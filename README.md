@@ -59,6 +59,7 @@ Una **plantilla lista para usar** que permite a **Product Managers**, **Diseñad
 - **IA-Button** - Botones especiales para casos de IA (variantes: primary con gradiente radial, secondary outlined; tamaños: sm, md, lg; badge siempre presente; pill shape) - **RENDERIZADO: HTML directo**
 - **Header Product** - Encabezado de producto con breadcrumb, botones de acción (back, info, AI, secundarios, primario, menú) - **RENDERIZADO: loadHeaderProduct()**
 - **Alert** - Notificaciones (tipos: success, info, warning, error; con/sin botón cerrar) - **RENDERIZADO: showAlert() o HTML directo**
+- **Accordion** - Bloques expandibles/colapsables (tamaños: xs, sm, md, lg; título obligatorio; numeración y descripción opcionales) - **RENDERIZADO: HTML directo o createAccordion()**
 - **Toast** - Notificaciones flotantes (tipos: success, info, warning, error; auto-cierre, pausa en hover) - **RENDERIZADO: showToast()**
 - **Input** - Campos de entrada (11 tipos: text, email, password, number, tel, url, select, textarea, search, autocomplete, calendar; tamaños: sm, md, lg; estados: default, hover, focus, invalid, disabled; con iconos, contador, helper text, mandatory/optional, validación manual, scroll infinito automático) - **RENDERIZADO: createInput()**
 - **Radio Button** - Opción circular para elegir una entre varias (tamaños: sm, md; sin JS; agrupar con mismo `name`) - **RENDERIZADO: HTML directo.** Requiere importar `radio-button.css` en la página o los radios se ven como nativos.
@@ -97,6 +98,7 @@ Todos los componentes UBITS requieren imports obligatorios:
 <link rel="stylesheet" href="../../components/ia-button.css">
 <link rel="stylesheet" href="../../components/header-product.css">
 <link rel="stylesheet" href="../../components/alert.css">
+<link rel="stylesheet" href="../../components/accordion.css">
 <link rel="stylesheet" href="../../components/toast.css">
 <link rel="stylesheet" href="../../components/input.css">
 <link rel="stylesheet" href="../../components/radio-button.css">
@@ -132,6 +134,7 @@ Todos los componentes UBITS requieren imports obligatorios:
 <!-- JavaScript OBLIGATORIO para componentes dinámicos -->
 <script src="../../components/header-product.js"></script>
 <script src="../../components/alert.js"></script>
+<script src="../../components/accordion.js"></script>
 <script src="../../components/toast.js"></script>
 <script src="../../components/input.js"></script>
 <script src="../../components/card-content.js"></script>
@@ -271,6 +274,7 @@ Todos los componentes UBITS requieren imports obligatorios:
 - **`documentacion/componentes/ia-button.html`** - Documentación del componente IA-Button
 - **`documentacion/componentes/header-product.html`** - Documentación del componente Header Product
 - **`documentacion/componentes/alert.html`** - Documentación del componente Alert
+- **`documentacion/componentes/accordion.html`** - Documentación del componente Accordion
 - **`documentacion/componentes/toast.html`** - Documentación del componente Toast
 - **`documentacion/componentes/input.html`** - Documentación del componente Input
 - **`documentacion/componentes/radio-button.html`** - Documentación del componente Radio Button
@@ -338,6 +342,7 @@ Todos los componentes UBITS requieren imports obligatorios:
 │   ├── ia-button.css + ia-button.js
 │   ├── header-product.css + header-product.js
 │   ├── alert.css + alert.js
+│   ├── accordion.css + accordion.js
 │   ├── toast.css + toast.js
 │   ├── input.css + input.js
 │   ├── card-content.css + card-content.js
@@ -731,6 +736,7 @@ loadCardContentCompact('mi-contenedor-compact', [
 - **`documentacion/componentes/ia-button.html`** - Documentación del componente IA-Button
 - **`documentacion/componentes/header-product.html`** - Documentación del componente Header Product
 - **`documentacion/componentes/alert.html`** - Documentación del componente Alert
+- **`documentacion/componentes/accordion.html`** - Documentación del componente Accordion
 - **`documentacion/componentes/toast.html`** - Documentación del componente Toast
 - **`documentacion/componentes/input.html`** - Documentación del componente Input
 - **`documentacion/componentes/radio-button.html`** - Documentación del componente Radio Button

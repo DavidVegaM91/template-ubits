@@ -91,13 +91,16 @@
     /* Ocupar todo el espacio disponible */
 }
 
-/* Encabezado del chat: igual que historial y canvas (texto izquierda, botones derecha) */
+/* Encabezado del chat: igual que historial y canvas (texto izquierda, botones derecha).
+   min-height fijo siempre: sin esto, al quitar --welcome el header se ve más bajo que en estado inicial. */
 .ubits-ia-chat-thread__header {
     flex-shrink: 0;
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: var(--gap-md);
+    box-sizing: border-box;
+    min-height: 48px;
     padding: var(--padding-sm) var(--padding-xl);
     border-bottom: 1px solid var(--ubits-border-1);
 }
@@ -1207,9 +1210,7 @@ body[data-theme="dark"] .ubits-ia-chat__main::before {
 .ubits-ia-chat .ubits-ia-chat-thread--welcome .ubits-ia-chat-thread__header {
     align-self: stretch;
     width: 100%;
-    box-sizing: border-box;
     flex-shrink: 0;
-    min-height: 48px;
 }
 
 .ubits-ia-chat .ubits-ia-chat-thread--welcome .ubits-ia-chat-thread__body {

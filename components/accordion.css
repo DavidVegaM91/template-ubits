@@ -1,0 +1,106 @@
+/* ========================================
+   UBITS ACCORDION COMPONENT
+   ======================================== */
+
+.ubits-accordion {
+    border: 1px solid var(--ubits-border-1);
+    border-radius: var(--border-radius-md);
+    background: var(--ubits-bg-1);
+    overflow: hidden;
+}
+
+.ubits-accordion--line {
+    border: none;
+    border-bottom: 1px solid var(--ubits-border-1);
+    border-radius: var(--border-radius-none);
+    background: transparent;
+}
+
+.ubits-accordion__header {
+    width: 100%;
+    border: none;
+    background: var(--ubits-bg-1);
+    color: var(--ubits-fg-1-high);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--gap-md);
+    cursor: pointer;
+    text-align: left;
+    padding: var(--padding-lg) var(--padding-xl);
+}
+
+.ubits-accordion--line .ubits-accordion__header {
+    background: transparent;
+}
+
+.ubits-accordion__header:hover {
+    background: var(--ubits-bg-2);
+}
+
+.ubits-accordion--line .ubits-accordion__header:hover {
+    background: transparent;
+}
+
+.ubits-accordion__header:focus-visible {
+    outline: 2px solid var(--ubits-accent-brand);
+    outline-offset: -2px;
+}
+
+.ubits-accordion__title-wrap {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--gap-sm);
+    min-width: 0;
+    flex: 1;
+}
+
+.ubits-accordion__title-content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-xs);
+    min-width: 0;
+}
+
+.ubits-accordion__number {
+    color: var(--ubits-fg-1-medium);
+    flex-shrink: 0;
+    padding-top: 1px;
+}
+
+.ubits-accordion__title {
+    margin: 0;
+    color: var(--ubits-fg-1-high);
+    min-width: 0;
+}
+
+.ubits-accordion__chevron {
+    color: var(--ubits-fg-1-medium);
+    transform: rotate(0deg);
+    transition: transform 0.2s ease;
+    flex-shrink: 0;
+}
+
+.ubits-accordion__chevron i {
+    color: inherit;
+}
+
+.ubits-accordion[data-open="true"] .ubits-accordion__chevron {
+    transform: rotate(180deg);
+}
+
+.ubits-accordion__content {
+    border-top: 1px solid var(--ubits-border-1);
+    color: var(--ubits-fg-1-medium);
+    padding: var(--padding-lg) var(--padding-xl);
+}
+
+.ubits-accordion--line .ubits-accordion__content {
+    border-top: none;
+}
+
+.ubits-accordion__description {
+    margin: 0;
+    color: var(--ubits-fg-1-medium);
+}
+

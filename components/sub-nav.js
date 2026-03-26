@@ -336,6 +336,7 @@ const PAGE_TO_TAB = {
     'sidebar.html': 'section3',
     'subnav.html': 'section3',
     'tab-bar.html': 'section3',
+    'accordion.html': 'section3',
     'alert.html': 'section3',
     'avatar.html': 'section3',
     'badge-tag.html': 'section3',

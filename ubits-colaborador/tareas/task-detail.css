@@ -160,8 +160,14 @@
     min-width: 100px;
 }
 
+#task-detail-plan-wrap {
+    width: 220px;
+    min-width: 220px;
+}
+
 #task-detail-vencimiento-wrap .ubits-input,
-#task-detail-mass-date-wrap .ubits-input {
+#task-detail-mass-date-wrap .ubits-input,
+#task-detail-plan-wrap .ubits-input {
     width: 100%;
     box-sizing: border-box;
 }

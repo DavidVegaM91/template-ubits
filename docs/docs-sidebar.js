@@ -11,6 +11,7 @@ const DOCS_SIDEBAR_SECTIONS = [
     { id: 'sub-nav', title: 'Sub-nav', group: 'navegacion' },
     { id: 'tab-bar', title: 'Tab-bar', group: 'navegacion' },
     // UI en orden alfabético
+    { id: 'accordion', title: 'Accordion', group: 'ui' },
     { id: 'alert', title: 'Alert', group: 'ui' },
     { id: 'save-indicator', title: 'Save Indicator', group: 'ui' },
     { id: 'avatar', title: 'Avatar', group: 'ui' },
@@ -216,6 +217,7 @@ function initDocsSidebar(activeSection) {
             'sidebar': 'sidebar.html',
             'sub-nav': 'subnav.html',
             'tab-bar': 'tab-bar.html',
+            'accordion': 'accordion.html',
             'button': 'button.html',
             'ia-button': 'ia-button.html',
             'loader': 'loader.html',

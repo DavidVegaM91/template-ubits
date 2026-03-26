@@ -407,6 +407,33 @@
         return [];
     }
 
+    function normalizeName(str) {
+        if (str == null) return '';
+        return String(str)
+            .toLowerCase()
+            .normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '')
+            .replace(/\s+/g, ' ')
+            .trim();
+    }
+
+    function getPlanesParaSelector() {
+        var targetCreator = 'María Alejandra Sánchez Pardo';
+        if (typeof TAREAS_PLANES_DB === 'undefined' || typeof TAREAS_PLANES_DB.getPlanesVistaPlanes !== 'function') return [];
+        var planes = TAREAS_PLANES_DB.getPlanesVistaPlanes();
+        if (!Array.isArray(planes)) return [];
+        return planes
+            .filter(function (p) {
+                return normalizeName(p && p.created_by) === normalizeName(targetCreator);
+            })
+            .map(function (p) {
+                return {
+                    id: p.id,
+                    name: p.name || 'Plan sin nombre'
+                };
+            });
+    }
+
     function openAssigneeDropdown(anchorEl, entity, onAfterUpdate) {
         if (!anchorEl || !entity || typeof window.getDropdownMenuHtml !== 'function' || typeof window.openDropdownMenu !== 'function' || typeof window.closeDropdownMenu !== 'function') return;
         var overlayId = 'task-detail-assignee-overlay-' + (entity.id != null ? String(entity.id) : 'main');
@@ -505,6 +532,19 @@
         var statusSlug = task.status === 'Finalizado' ? 'success' : (task.status === 'Vencido' ? 'error' : 'info');
         var prioridad = (task.priority || 'media').toLowerCase();
         var prioridadLabel = prioridad === 'alta' ? 'Alta' : prioridad === 'baja' ? 'Baja' : 'Media';
+        var planesDisponibles = getPlanesParaSelector();
+        var selectOptionsPlanes = [{ value: '', text: 'Seleccionar plan' }].concat(
+            planesDisponibles.map(function (p) {
+                return { value: String(p.id), text: p.name };
+            })
+        );
+        var selectedPlanValue = '';
+        if (task.planId != null && task.planId !== '') {
+            selectedPlanValue = String(task.planId);
+        } else if (task.planNombre) {
+            var planByName = planesDisponibles.find(function (p) { return p.name === task.planNombre; });
+            if (planByName) selectedPlanValue = String(planByName.id);
+        }
         var assigneeName = task.assignee_name || (task.assignee_email ? task.assignee_email.split('@')[0] : 'Sin asignar');
         var creatorName = task.created_by || 'Sin especificar';
         var assigneeBlock = typeof renderAvatar === 'function'
@@ -558,6 +598,9 @@
             '<span class="task-detail-meta-cell">' +
             '<span id="task-detail-vencimiento-label" class="ubits-body-sm-semibold task-detail-meta-label">Finaliza el:</span>' +
             '<div id="task-detail-vencimiento-wrap"></div></span>' +
+            '<span class="task-detail-meta-cell">' +
+            '<span id="task-detail-plan-label" class="ubits-body-sm-semibold task-detail-meta-label">Plan</span>' +
+            '<div id="task-detail-plan-wrap"></div></span>' +
             '</div>';
         var el = document.getElementById('task-detail-info-block');
         if (el) el.innerHTML = html;
@@ -590,6 +633,38 @@
             });
             var dateInput = document.querySelector('#task-detail-vencimiento-wrap .ubits-input');
             if (dateInput) dateInput.setAttribute('aria-labelledby', 'task-detail-vencimiento-label');
+        }
+        if (typeof createInput === 'function') {
+            createInput({
+                containerId: 'task-detail-plan-wrap',
+                type: 'select',
+                size: 'xs',
+                showLabel: false,
+                placeholder: 'Seleccionar plan',
+                selectOptions: selectOptionsPlanes,
+                value: selectedPlanValue,
+                onChange: function (val) {
+                    if (!estado.task) return;
+                    var selectedVal = val != null ? String(val) : '';
+                    var previousName = estado.task.planNombre || '';
+                    var planSeleccionado = planesDisponibles.find(function (p) { return String(p.id) === selectedVal; });
+                    if (!planSeleccionado) {
+                        estado.task.planId = null;
+                        estado.task.planNombre = null;
+                        if (previousName) pushActivity('fa-layer-group', currentUserName, 'quitó la tarea del plan "' + previousName + '".');
+                        triggerFakeSave();
+                        return;
+                    }
+                    estado.task.planId = planSeleccionado.id;
+                    estado.task.planNombre = planSeleccionado.name;
+                    if (previousName !== planSeleccionado.name) {
+                        pushActivity('fa-layer-group', currentUserName, 'asignó la tarea al plan "' + planSeleccionado.name + '".');
+                    }
+                    triggerFakeSave();
+                }
+            });
+            var planInput = document.querySelector('#task-detail-plan-wrap .ubits-input');
+            if (planInput) planInput.setAttribute('aria-labelledby', 'task-detail-plan-label');
         }
         if (typeof initTooltip === 'function') initTooltip('#task-detail-info-block [data-tooltip]');
         resizeTaskDetailTitle();

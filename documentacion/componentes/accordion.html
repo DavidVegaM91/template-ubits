@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="../../images/Ubits-logo-dark.svg">
+    <title>Accordion | UBITS Playground</title>
+    <link rel="stylesheet" href="../../general-styles/ubits-colors.css">
+    <link rel="stylesheet" href="../../general-styles/styles.css">
+    <link rel="stylesheet" href="../../general-styles/fontawesome-icons.css">
+    <link rel="stylesheet" href="../../general-styles/ubits-typography.css">
+    <link rel="stylesheet" href="../../components/sub-nav.css">
+    <link rel="stylesheet" href="../../components/sidebar.css">
+    <link rel="stylesheet" href="../../docs/docs-sidebar.css">
+    <link rel="stylesheet" href="../../docs/docstyles.css">
+    <link rel="stylesheet" href="../../components/button.css">
+    <link rel="stylesheet" href="../../components/switch.css">
+    <link rel="stylesheet" href="../../components/alert.css">
+    <link rel="stylesheet" href="../../components/toast.css">
+    <link rel="stylesheet" href="../../components/accordion.css">
+    <style>
+        .preview-control-btn.active {
+            background: var(--ubits-accent-brand) !important;
+            color: white !important;
+            border-color: var(--ubits-accent-brand) !important;
+        }
+
+        .preview-control-btn.active span {
+            color: white !important;
+        }
+    </style>
+</head>
+<body class="componentes-page" data-theme="light">
+    <main class="main-content">
+        <div id="top-nav-container"></div>
+        <div style="display: flex;">
+            <div id="docs-dropdown-container"></div>
+            <div id="docs-sidebar-container"></div>
+            <div class="components-content">
+                <div class="content-area" style="display: block; width: 100%;">
+                    <div style="text-align: center; margin-bottom: 60px;">
+                        <h1 class="ubits-display-d2-bold" style="margin-bottom: 24px; color: var(--ubits-accent-brand);">
+                            Accordion
+                        </h1>
+                        <p class="ubits-body-md-regular" style="max-width: 800px; margin: 0 auto 32px; line-height: 1.6;">
+                            Componente para mostrar y ocultar bloques de información de forma ordenada, con título obligatorio y campos opcionales de numeración y descripción.
+                        </p>
+                    </div>
+
+                    <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: var(--border-radius-lg); margin-bottom: 40px;">
+                        <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                            <i class="far fa-eye" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                            Preview del componente
+                        </h2>
+                        <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6;">
+                            Cambia el tamaño, la variante y activa o desactiva numeración y descripción (debajo del título) para ver las variaciones del Accordion.
+                        </p>
+
+                        <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: var(--border-radius-md);">
+                            <div id="accordion-preview"></div>
+                        </div>
+
+                        <div style="margin-top: 16px; display: flex; gap: var(--gap-md); flex-wrap: wrap; align-items: center;">
+                            <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn active" onclick="setAccordionSize('sm')"><span>SM</span></button>
+                            <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" onclick="setAccordionSize('md')"><span>MD</span></button>
+                            <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" onclick="setAccordionSize('lg')"><span>LG</span></button>
+
+                            <div style="display: flex; align-items: center; gap: var(--gap-sm); margin-left: 12px;">
+                                <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Variante</span>
+                                <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-variant-btn active" onclick="setAccordionVariant('filled')"><span>Con fondo</span></button>
+                                <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-variant-btn" onclick="setAccordionVariant('line')"><span>Solo línea</span></button>
+                            </div>
+
+                            <div style="display: flex; align-items: center; gap: var(--gap-sm); margin-left: 12px;">
+                                <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Numeración</span>
+                                <label class="ubits-switch ubits-switch--md">
+                                    <input type="checkbox" class="ubits-switch__input" id="toggle-number" checked onchange="renderAccordionPreview()">
+                                    <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
+                                </label>
+                            </div>
+
+                            <div style="display: flex; align-items: center; gap: var(--gap-sm);">
+                                <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Descripción</span>
+                                <label class="ubits-switch ubits-switch--md">
+                                    <input type="checkbox" class="ubits-switch__input" id="toggle-description" checked onchange="renderAccordionPreview()">
+                                    <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: var(--border-radius-lg); margin-bottom: 40px;">
+                        <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                            <i class="far fa-info-circle" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                            Características generales
+                        </h2>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--gap-lg);">
+                            <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
+                                <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-expand-alt"></i></div>
+                                <div class="ubits-body-sm-bold">Cuatro tamaños</div>
+                                <div class="ubits-body-sm-regular">SM, MD y LG para diferentes jerarquías de texto</div>
+                            </div>
+                            <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
+                                <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-heading"></i></div>
+                                <div class="ubits-body-sm-bold">Título obligatorio</div>
+                                <div class="ubits-body-sm-regular">Siempre muestra el tema principal del bloque</div>
+                            </div>
+                            <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
+                                <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-list-ol"></i></div>
+                                <div class="ubits-body-sm-bold">Campos opcionales</div>
+                                <div class="ubits-body-sm-regular">La descripción opcional va debajo del título en el encabezado</div>
+                            </div>
+                            <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
+                                <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-sliders-h"></i></div>
+                                <div class="ubits-body-sm-bold">Dos variantes</div>
+                                <div class="ubits-body-sm-regular">Con fondo completo o solo borde inferior sin fondo</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: var(--border-radius-lg); margin-bottom: 40px;">
+                        <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                            <i class="far fa-comments" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                            Prompts útiles
+                        </h2>
+                        <p class="ubits-body-md-regular" style="margin-bottom: 24px; color: var(--ubits-fg-1-medium);">
+                            Reemplaza los textos entre [corchetes] antes de enviarlos.
+                        </p>
+                        <div id="accordion-warning-alert" style="margin-bottom: 24px;"></div>
+
+                        <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
+                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                                <span class="ubits-body-md-bold" style="color: var(--ubits-fg-1-high);">Insertar accordion básico</span>
+                                <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('accordion-prompt-1')"><i class="far fa-copy"></i><span>Copiar</span></button>
+                            </div>
+                            <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-md);">
+                                <pre style="margin: 0; white-space: pre-wrap;"><code id="accordion-prompt-1">Inserta un Accordion UBITS en [ubicación] en tamaño [sm/md/lg], variante [filled/line], con título [texto]. Importa accordion.css y accordion.js.</code></pre>
+                            </div>
+                        </div>
+
+                        <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
+                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                                <span class="ubits-body-md-bold" style="color: var(--ubits-fg-1-high);">Accordion con numeración</span>
+                                <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('accordion-prompt-2')"><i class="far fa-copy"></i><span>Copiar</span></button>
+                            </div>
+                            <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-md);">
+                                <pre style="margin: 0; white-space: pre-wrap;"><code id="accordion-prompt-2">Inserta un Accordion UBITS en [ubicación] en tamaño [sm/md/lg], variante [filled/line], con numeración [ej: 1], título [texto] y descripción debajo del título [texto].</code></pre>
+                            </div>
+                        </div>
+
+                        <div>
+                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                                <span class="ubits-body-md-bold" style="color: var(--ubits-fg-1-high);">Actualizar tamaño y contenido</span>
+                                <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('accordion-prompt-3')"><i class="far fa-copy"></i><span>Copiar</span></button>
+                            </div>
+                            <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-md);">
+                                <pre style="margin: 0; white-space: pre-wrap;"><code id="accordion-prompt-3">Cambia el Accordion [nombre o selector] a tamaño [sm/md/lg] y variante [filled/line], mantén el título [texto], ajusta la descripción debajo del título a [texto] y deja el contenido interno con [HTML libre].</code></pre>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="background: var(--ubits-bg-1); border-radius: var(--border-radius-lg); margin-bottom: 40px; overflow: hidden;">
+                        <div style="padding: 32px; text-align: center; border-bottom: 1px solid var(--ubits-border-1);">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 0; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-code" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Documentación técnica
+                            </h2>
+                            <p class="ubits-body-md-regular" style="margin-top: 16px; color: var(--ubits-fg-1-medium);">
+                                Estructura, requisitos y API del componente.
+                            </p>
+                        </div>
+                        <div style="background: var(--ubits-bg-2); padding: 20px; text-align: center; cursor: pointer;" onclick="toggleTechnicalDocs()">
+                            <span class="ubits-body-md-regular" style="color: var(--ubits-accent-brand); display: flex; align-items: center; justify-content: center; gap: 8px;">
+                                <i class="far fa-chevron-down" id="tech-docs-chevron"></i>
+                                Mostrar
+                            </span>
+                        </div>
+
+                        <div id="technical-docs-content" style="display: none; padding: 32px;">
+                            <h3 class="ubits-body-md-bold" style="margin-bottom: 12px; color: var(--ubits-fg-1-high);">Requisitos</h3>
+                            <ul class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); line-height: 1.6;">
+                                <li><code>components/accordion.css</code></li>
+                                <li><code>components/accordion.js</code></li>
+                                <li><code>general-styles/fontawesome-icons.css</code></li>
+                                <li><code>general-styles/ubits-colors.css</code> y <code>general-styles/ubits-typography.css</code></li>
+                            </ul>
+
+                            <div style="margin-top: 24px; display: flex; justify-content: space-between; align-items: center;">
+                                <span class="ubits-body-md-regular">Estructura del componente</span>
+                                <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('accordion-structure-code')"><i class="far fa-copy"></i><span>Copiar</span></button>
+                            </div>
+                            <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-md); margin-top: 12px;">
+                                <pre style="margin: 0; white-space: pre-wrap;"><code id="accordion-structure-code">&lt;div class="ubits-accordion ubits-accordion--md ubits-accordion--filled" data-open="false"&gt;
+  &lt;button type="button" class="ubits-accordion__header" aria-expanded="false" aria-controls="faq-content"&gt;
+    &lt;div class="ubits-accordion__title-wrap"&gt;
+      &lt;span class="ubits-accordion__number ubits-body-md-regular"&gt;1&lt;/span&gt;
+      &lt;div class="ubits-accordion__title-content"&gt;
+        &lt;span class="ubits-accordion__title ubits-body-md-bold"&gt;Título del bloque&lt;/span&gt;
+        &lt;p class="ubits-accordion__description ubits-body-sm-regular"&gt;Descripción opcional debajo del título.&lt;/p&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;span class="ubits-accordion__chevron" aria-hidden="true"&gt;&lt;i class="far fa-chevron-down"&gt;&lt;/i&gt;&lt;/span&gt;
+  &lt;/button&gt;
+  &lt;div class="ubits-accordion__content" id="faq-content" hidden&gt;
+    &lt;!-- Aquí puede ir cualquier HTML: tablas, texto, formularios, etc. --&gt;
+    &lt;p class="ubits-body-md-regular"&gt;Contenido libre del accordion.&lt;/p&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+                            </div>
+
+                            <div style="margin-top: 24px; display: flex; justify-content: space-between; align-items: center;">
+                                <span class="ubits-body-md-regular">Cómo implementar</span>
+                                <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('accordion-implementation-code')"><i class="far fa-copy"></i><span>Copiar</span></button>
+                            </div>
+                            <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-md); margin-top: 12px;">
+                                <pre style="margin: 0; white-space: pre-wrap;"><code id="accordion-implementation-code">&lt;link rel="stylesheet" href="../../components/accordion.css"&gt;
+&lt;script src="../../components/accordion.js"&gt;&lt;/script&gt;
+
+&lt;div id="faq-accordion"&gt;&lt;/div&gt;
+
+&lt;script&gt;
+createAccordion({
+  containerId: 'faq-accordion',
+  size: 'md',
+  variant: 'filled', // 'filled' | 'line'
+  title: '¿Cómo funciona este proceso?',
+  number: '1',
+  description: 'Descripción opcional debajo del título.',
+  contentHtml: '&lt;p class="ubits-body-md-regular"&gt;Contenido libre dentro del accordion.&lt;/p&gt;',
+  isOpen: false
+});
+&lt;/script&gt;</code></pre>
+                            </div>
+
+                            <h3 class="ubits-body-md-bold" style="margin: 24px 0 12px; color: var(--ubits-fg-1-high);">API</h3>
+                            <p class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); line-height: 1.6;">
+                                <strong>createAccordion(config)</strong>: renderiza un accordion en un contenedor.<br>
+                                <strong>Config:</strong> <code>containerId</code> (obligatorio), <code>title</code> (obligatorio), <code>size</code> (<code>sm|md|lg</code>), <code>variant</code> (<code>filled|line</code>), <code>number</code> (opcional), <code>description</code> (opcional, se muestra debajo del título), <code>contentHtml</code> (opcional, contenido interno libre), <code>isOpen</code> (opcional).<br>
+                                <strong>initAccordions(selector)</strong>: inicializa acordeones ya renderizados en HTML.<br>
+                                <strong>toggleAccordion(target)</strong>: abre o cierra un accordion por selector o elemento.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div id="ubits-toast-container"></div>
+
+    <script src="../../components/sidebar.js"></script>
+    <script src="../../components/sub-nav.js"></script>
+    <script src="../../components/alert.js"></script>
+    <script src="../../components/toast.js"></script>
+    <script src="../../components/accordion.js"></script>
+    <script src="../../docs/docs-sidebar.js"></script>
+    <script src="../../script.js"></script>
+    <script>
+        var previewState = {
+            size: 'sm',
+            variant: 'filled'
+        };
+
+        function renderAccordionPreview() {
+            var hasNumber = document.getElementById('toggle-number').checked;
+            var hasDescription = document.getElementById('toggle-description').checked;
+            var preview = document.getElementById('accordion-preview');
+            var titleClassBySize = { sm: 'ubits-body-sm-bold', md: 'ubits-body-md-bold', lg: 'ubits-heading-h2' };
+            var numberClassBySize = { sm: 'ubits-body-sm-regular', md: 'ubits-body-md-regular', lg: 'ubits-body-md-bold' };
+            var descriptionClassBySize = { sm: 'ubits-body-sm-regular', md: 'ubits-body-sm-regular', lg: 'ubits-body-md-regular' };
+            var titleClass = titleClassBySize[previewState.size];
+            var numberClass = numberClassBySize[previewState.size];
+            var descriptionClass = descriptionClassBySize[previewState.size];
+
+            var numberHtml = hasNumber ? '<span class="ubits-accordion__number ' + numberClass + '">1</span>' : '';
+            var descriptionHtml = hasDescription
+                ? '<p class="ubits-accordion__description ' + descriptionClass + '">Esta descripción es opcional y va debajo del título.</p>'
+                : '';
+
+            preview.innerHTML = '' +
+                '<div class="ubits-accordion ubits-accordion--' + previewState.size + ' ubits-accordion--' + previewState.variant + '" data-open="false" id="accordion-preview-item">' +
+                    '<button type="button" class="ubits-accordion__header" aria-expanded="false" aria-controls="accordion-preview-content">' +
+                        '<div class="ubits-accordion__title-wrap">' +
+                            numberHtml +
+                            '<div class="ubits-accordion__title-content">' +
+                                '<span class="ubits-accordion__title ' + titleClass + '">Título del accordion</span>' +
+                                descriptionHtml +
+                            '</div>' +
+                        '</div>' +
+                        '<span class="ubits-accordion__chevron" aria-hidden="true"><i class="far fa-chevron-down"></i></span>' +
+                    '</button>' +
+                    '<div class="ubits-accordion__content" id="accordion-preview-content" hidden>' +
+                        '<div class="ubits-body-md-regular">Contenido libre del accordion. Aquí puede ir cualquier HTML.</div>' +
+                    '</div>' +
+                '</div>';
+
+            initAccordions('#accordion-preview-item');
+        }
+
+        function setAccordionSize(size) {
+            previewState.size = size;
+            document.querySelectorAll('.preview-control-btn').forEach(function (btn) {
+                btn.classList.remove('active');
+            });
+            var clicked = event.target.closest('.preview-control-btn');
+            if (clicked) clicked.classList.add('active');
+            renderAccordionPreview();
+        }
+
+        function setAccordionVariant(variant) {
+            previewState.variant = variant;
+            document.querySelectorAll('.preview-variant-btn').forEach(function (btn) {
+                btn.classList.remove('active');
+            });
+            var clicked = event.target.closest('.preview-variant-btn');
+            if (clicked) clicked.classList.add('active');
+            renderAccordionPreview();
+        }
+
+        function toggleTechnicalDocs() {
+            var content = document.getElementById('technical-docs-content');
+            var button = document.querySelector('[onclick="toggleTechnicalDocs()"]');
+            if (content.style.display === 'none' || content.style.display === '') {
+                content.style.display = 'block';
+                button.innerHTML = '<i class="far fa-chevron-up" id="tech-docs-chevron" style="color: var(--ubits-accent-brand);"></i> <span class="ubits-body-md-regular" style="color: var(--ubits-accent-brand);">Ocultar</span>';
+            } else {
+                content.style.display = 'none';
+                button.innerHTML = '<i class="far fa-chevron-down" id="tech-docs-chevron" style="color: var(--ubits-accent-brand);"></i> <span class="ubits-body-md-regular" style="color: var(--ubits-accent-brand);">Mostrar</span>';
+            }
+        }
+
+        function copyPrompt(promptId) {
+            var el = document.getElementById(promptId);
+            navigator.clipboard.writeText(el.textContent).then(function () {
+                showToast('success', 'Prompt copiado', { containerId: 'ubits-toast-container', duration: 2500 });
+            });
+        }
+
+        function copyCode(codeId) {
+            var el = document.getElementById(codeId);
+            navigator.clipboard.writeText(el.textContent).then(function () {
+                showToast('success', 'Código copiado', { containerId: 'ubits-toast-container', duration: 2500 });
+            });
+        }
+
+        function initAccordionDocsPage() {
+            loadSubNav('top-nav-container', 'documentacion');
+            setTimeout(function () {
+                document.querySelectorAll('.nav-tab.active, .hamburger-item.active').forEach(function (item) {
+                    item.classList.remove('active');
+                });
+                var navTab = document.querySelector('.nav-tab[data-tab="section3"]');
+                var hamburgerItem = document.querySelector('.hamburger-item[data-tab="section3"]');
+                if (navTab) navTab.classList.add('active');
+                if (hamburgerItem) hamburgerItem.classList.add('active');
+            }, 200);
+
+            loadDocsSidebar('accordion');
+            showAlert('warning', 'Antes de usar los prompts, reemplaza todos los textos entre [corchetes].', {
+                containerId: 'accordion-warning-alert',
+                noClose: true
+            });
+
+            renderAccordionPreview();
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initAccordionDocsPage);
+        } else {
+            initAccordionDocsPage();
+        }
+    </script>
+</body>
+</html>
