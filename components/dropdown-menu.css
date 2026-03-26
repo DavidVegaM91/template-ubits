@@ -114,7 +114,8 @@
     justify-content: flex-start;
     gap: var(--gap-md);
     padding: var(--padding-sm) var(--padding-md);
-    background: transparent;
+    /* Mismo fondo que el panel: evita filas “blanca vs gris” solo por selected */
+    background: var(--ubits-bg-1);
     border: none;
     border-radius: 0;
     cursor: pointer;
@@ -141,8 +142,41 @@
     transform: none;
 }
 
+/* Opción activa del menú (selected: true): sin segundo color de fondo; refuerzo en tipografía como el Select */
 .ubits-dropdown-menu__option--selected {
-    background: var(--ubits-bg-3);
+    background: var(--ubits-bg-1);
+}
+
+.ubits-dropdown-menu__option--selected:hover {
+    background: var(--ubits-bg-2);
+}
+
+.ubits-dropdown-menu__option--selected .ubits-dropdown-menu__option-text,
+.ubits-dropdown-menu__option--selected .ubits-radio__label,
+.ubits-dropdown-menu__option--selected .ubits-checkbox__label {
+    font-weight: var(--font-weight-semibold);
+}
+
+/* Ya elegido en otro contexto (p. ej. chips): mismo patrón que Input autocomplete (.ubits-autocomplete-option--selected) */
+.ubits-dropdown-menu__option--marked-chosen {
+    background-color: var(--ubits-bg-2) !important;
+    box-shadow: inset 3px 0 0 0 var(--ubits-accent-brand);
+}
+
+.ubits-dropdown-menu__option--marked-chosen:hover {
+    background-color: var(--ubits-bg-2) !important;
+}
+
+.ubits-dropdown-menu__option-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--gap-xs);
+    flex-shrink: 0;
+    color: var(--ubits-accent-brand);
+}
+
+.ubits-dropdown-menu__option-badge .ubits-body-sm-regular {
+    color: var(--ubits-fg-1-medium);
 }
 
 /* Texto de la opción (siempre regular, izquierda) */

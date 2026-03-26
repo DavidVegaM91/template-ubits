@@ -601,7 +601,19 @@
             '<span class="task-detail-meta-cell">' +
             '<span id="task-detail-plan-label" class="ubits-body-sm-semibold task-detail-meta-label">Plan</span>' +
             '<div id="task-detail-plan-wrap"></div></span>' +
-            '</div>';
+            '</div>' +
+            (selectedPlanValue
+                ? ''
+                : '<div id="task-detail-plan-alert-wrap" class="task-detail-plan-alert-wrap">' +
+                '<div class="ubits-alert ubits-alert--info ubits-alert--no-close" role="status">' +
+                '<div class="ubits-alert__icon">' +
+                '<i class="far fa-info-circle"></i>' +
+                '</div>' +
+                '<div class="ubits-alert__content">' +
+                '<div class="ubits-alert__text">Asigna la tarea a un plan para simplificar su organización y facilitar su seguimiento.</div>' +
+                '</div>' +
+                '</div>' +
+                '</div>');
         var el = document.getElementById('task-detail-info-block');
         if (el) el.innerHTML = html;
         if (typeof createInput === 'function') {
@@ -653,6 +665,7 @@
                         estado.task.planNombre = null;
                         if (previousName) pushActivity('fa-layer-group', currentUserName, 'quitó la tarea del plan "' + previousName + '".');
                         triggerFakeSave();
+                        setTimeout(function () { renderInfoBlock(); }, 0);
                         return;
                     }
                     estado.task.planId = planSeleccionado.id;
@@ -661,6 +674,7 @@
                         pushActivity('fa-layer-group', currentUserName, 'asignó la tarea al plan "' + planSeleccionado.name + '".');
                     }
                     triggerFakeSave();
+                    setTimeout(function () { renderInfoBlock(); }, 0);
                 }
             });
             var planInput = document.querySelector('#task-detail-plan-wrap .ubits-input');

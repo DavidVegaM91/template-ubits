@@ -359,6 +359,28 @@ textarea.ubits-input:disabled {
     flex: 1;
 }
 
+/* Valores ya elegidos fuera del input (p. ej. chips): estado seleccionado en el listado */
+.ubits-autocomplete-option--selected {
+    background-color: var(--ubits-bg-2) !important;
+    box-shadow: inset 3px 0 0 0 var(--ubits-accent-brand);
+}
+
+.ubits-autocomplete-dropdown .ubits-autocomplete-option--selected:hover {
+    background-color: var(--ubits-bg-2) !important;
+}
+
+.ubits-autocomplete-option__badge {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--gap-xs);
+    flex-shrink: 0;
+    color: var(--ubits-accent-brand);
+}
+
+.ubits-autocomplete-option__badge .ubits-body-sm-regular {
+    color: var(--ubits-fg-1-medium);
+}
+
 .ubits-autocomplete-checkbox {
     width: 16px;
     height: 16px;

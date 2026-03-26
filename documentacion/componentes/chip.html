@@ -18,6 +18,7 @@
     <link rel="stylesheet" href="../../components/button.css">
     <link rel="stylesheet" href="../../components/toast.css">
     <link rel="stylesheet" href="../../components/chip.css">
+    <link rel="stylesheet" href="../../components/avatar.css">
     <link rel="stylesheet" href="../../components/switch.css">
     <style>
         .preview-control-btn.active {
@@ -47,6 +48,21 @@
         }
         .chip-preview-row.chip-icon-off .ubits-chip > i:first-of-type {
             display: none;
+        }
+        .chip-preview-row--avatar .chip-preview-hover.ubits-chip {
+            background: var(--ubits-bg-gray-subtle-hover);
+            color: var(--ubits-fg-gray-subtle-hover);
+        }
+        .chip-preview-row--avatar .chip-preview-pressed.ubits-chip {
+            background: var(--ubits-bg-gray-subtle-pressed);
+            color: var(--ubits-fg-gray-subtle-hover);
+        }
+        .chip-preview-row--avatar .chip-preview-focus.ubits-chip {
+            background: var(--ubits-bg-gray-subtle-default);
+            color: var(--ubits-fg-gray-subtle-default);
+            outline: 2px solid var(--ubits-button-focus-ring);
+            outline-offset: 2px;
+            box-shadow: 0 0 0 4px var(--ubits-button-focus-ring);
         }
     </style>
 </head>
@@ -140,6 +156,61 @@
                                     </div>
                                 </div>
                             </div>
+                            <p class="ubits-body-md-regular" style="margin: 24px 0 16px; line-height: 1.6;">
+                                Variante con <strong class="ubits-body-md-semibold">avatar</strong> (persona o imagen a la izquierda). Usa <code class="ubits-body-sm-regular">ubits-chip--avatar</code> junto con <code class="ubits-body-sm-regular">ubits-chip--icon-left</code> y el componente <code class="ubits-body-sm-regular">.ubits-avatar</code> como primer hijo; el tamaño del avatar debe coincidir con el del chip (xs/sm/md).
+                            </p>
+                            <div style="background: var(--ubits-bg-1); padding: 24px; border-radius: 12px;">
+                                <div id="chip-preview-avatar" class="chip-preview-row chip-preview-row--avatar" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 24px 20px; align-items: start;">
+                                    <div style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
+                                        <span class="ubits-chip ubits-chip--xs ubits-chip--icon-left ubits-chip--avatar ubits-chip--close" data-preview-chip-avatar>
+                                            <span class="ubits-avatar ubits-avatar--xs"><img src="../../images/Profile-image.jpg" alt="" class="ubits-avatar__img"></span>
+                                            <span class="ubits-chip__text">Default</span>
+                                            <button type="button" class="ubits-chip__close" aria-label="Quitar"><i class="far fa-times"></i></button>
+                                        </span>
+                                        <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Default</span>
+                                    </div>
+                                    <div style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
+                                        <span class="ubits-chip ubits-chip--xs ubits-chip--icon-left ubits-chip--avatar ubits-chip--close chip-preview-hover" data-preview-chip-avatar>
+                                            <span class="ubits-avatar ubits-avatar--xs"><img src="../../images/Profile-image.jpg" alt="" class="ubits-avatar__img"></span>
+                                            <span class="ubits-chip__text">Hover</span>
+                                            <button type="button" class="ubits-chip__close" aria-label="Quitar"><i class="far fa-times"></i></button>
+                                        </span>
+                                        <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Hover</span>
+                                    </div>
+                                    <div style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
+                                        <span class="ubits-chip ubits-chip--xs ubits-chip--icon-left ubits-chip--avatar ubits-chip--close chip-preview-pressed" data-preview-chip-avatar>
+                                            <span class="ubits-avatar ubits-avatar--xs"><img src="../../images/Profile-image.jpg" alt="" class="ubits-avatar__img"></span>
+                                            <span class="ubits-chip__text">Pressed</span>
+                                            <button type="button" class="ubits-chip__close" aria-label="Quitar"><i class="far fa-times"></i></button>
+                                        </span>
+                                        <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Pressed</span>
+                                    </div>
+                                    <div style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
+                                        <span class="ubits-chip ubits-chip--xs ubits-chip--active ubits-chip--icon-left ubits-chip--avatar ubits-chip--close" data-preview-chip-avatar>
+                                            <span class="ubits-avatar ubits-avatar--xs"><img src="../../images/Profile-image.jpg" alt="" class="ubits-avatar__img"></span>
+                                            <span class="ubits-chip__text">Active</span>
+                                            <button type="button" class="ubits-chip__close" aria-label="Quitar"><i class="far fa-times"></i></button>
+                                        </span>
+                                        <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Active</span>
+                                    </div>
+                                    <div style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
+                                        <span class="ubits-chip ubits-chip--xs ubits-chip--icon-left ubits-chip--avatar ubits-chip--close chip-preview-focus" data-preview-chip-avatar>
+                                            <span class="ubits-avatar ubits-avatar--xs"><img src="../../images/Profile-image.jpg" alt="" class="ubits-avatar__img"></span>
+                                            <span class="ubits-chip__text">Focus</span>
+                                            <button type="button" class="ubits-chip__close" aria-label="Quitar"><i class="far fa-times"></i></button>
+                                        </span>
+                                        <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Focus</span>
+                                    </div>
+                                    <div style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
+                                        <span class="ubits-chip ubits-chip--xs ubits-chip--disabled ubits-chip--icon-left ubits-chip--avatar ubits-chip--close" data-preview-chip-avatar>
+                                            <span class="ubits-avatar ubits-avatar--xs"><img src="../../images/Profile-image.jpg" alt="" class="ubits-avatar__img"></span>
+                                            <span class="ubits-chip__text">Disabled</span>
+                                            <button type="button" class="ubits-chip__close" aria-label="Quitar" disabled><i class="far fa-times"></i></button>
+                                        </span>
+                                        <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Disabled</span>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
                         <!-- Características -->
@@ -158,6 +229,11 @@
                                     <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-icons"></i></div>
                                     <div class="ubits-body-sm-bold">Icono</div>
                                     <div class="ubits-body-sm-regular">Opcional a la izquierda (FontAwesome)</div>
+                                </div>
+                                <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-user-circle"></i></div>
+                                    <div class="ubits-body-sm-bold">Avatar</div>
+                                    <div class="ubits-body-sm-regular">Variante oficial: imagen o fallback junto al texto (requiere avatar.css)</div>
                                 </div>
                                 <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
                                     <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-times-circle"></i></div>
@@ -193,6 +269,19 @@
                                 </div>
                                 <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
                                     <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="chip-prompt-1">Inserta un Chip en [ubicación] con texto "[texto]".</code></pre>
+                                </div>
+                            </div>
+
+                            <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
+                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                                    <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Chip con avatar y botón quitar</h3>
+                                    <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('chip-prompt-avatar')">
+                                        <i class="far fa-copy"></i>
+                                        <span>Copiar</span>
+                                    </button>
+                                </div>
+                                <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
+                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="chip-prompt-avatar">Inserta un Chip en [ubicación] con variante avatar (clases ubits-chip ubits-chip--icon-left ubits-chip--avatar), tamaño [xs, sm o md], primer hijo el componente Avatar con la foto y texto "[nombre]". Importa chip.css y avatar.css.</code></pre>
                                 </div>
                             </div>
 
@@ -250,6 +339,13 @@
   &lt;button type="button" class="ubits-chip__close" aria-label="Quitar"&gt;&lt;i class="far fa-times"&gt;&lt;/i&gt;&lt;/button&gt;
 &lt;/span&gt;
 
+&lt;!-- Chip con avatar (requiere avatar.css) --&gt;
+&lt;span class="ubits-chip ubits-chip--sm ubits-chip--icon-left ubits-chip--avatar ubits-chip--close"&gt;
+  &lt;span class="ubits-avatar ubits-avatar--sm"&gt;&lt;img src="..." alt="" class="ubits-avatar__img"&gt;&lt;/span&gt;
+  &lt;span class="ubits-chip__text"&gt;María Pérez&lt;/span&gt;
+  &lt;button type="button" class="ubits-chip__close" aria-label="Quitar"&gt;&lt;i class="far fa-times"&gt;&lt;/i&gt;&lt;/button&gt;
+&lt;/span&gt;
+
 &lt;!-- Chip activo (seleccionado) --&gt;
 &lt;span class="ubits-chip ubits-chip--active ubits-chip--icon-left"&gt;
   &lt;i class="far fa-file-lines"&gt;&lt;/i&gt;
@@ -283,6 +379,7 @@
 .ubits-chip__text              /* Texto del chip */
 .ubits-chip__close             /* Botón quitar (dentro del chip) */
 .ubits-chip--icon-left         /* Icono a la izquierda */
+.ubits-chip--avatar            /* Avatar a la izquierda (con icon-left + .ubits-avatar) */
 .ubits-chip--close             /* Incluye botón de cierre */
 .ubits-chip--active            /* Estado seleccionado */
 .ubits-chip--disabled          /* Estado deshabilitado */</code></pre>
@@ -301,13 +398,14 @@
                                     </div>
                                     <div style="background: var(--ubits-bg-2); padding: 16px; border-radius: 8px; margin-bottom: 16px;">
                                         <div class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); line-height: 1.5;">
-                                            <strong>CSS:</strong> <code>components/chip.css</code><br>
-                                            <strong>Requisitos:</strong> <code>ubits-colors.css</code>, <code>fontawesome-icons.css</code> (si usas iconos)<br>
+                                            <strong>CSS:</strong> <code>components/chip.css</code>; variante avatar: también <code>components/avatar.css</code><br>
+                                            <strong>Requisitos:</strong> <code>ubits-colors.css</code>, <code>fontawesome-icons.css</code> (si usas iconos o avatar en fallback)<br>
                                             <strong>JavaScript:</strong> No requerido. Para quitar chips, escucha clic en <code>.ubits-chip__close</code>.
                                         </div>
                                     </div>
                                     <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
                                         <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code id="implementation-code">&lt;link rel="stylesheet" href="components/chip.css"&gt;
+&lt;link rel="stylesheet" href="components/avatar.css"&gt;
 &lt;link rel="stylesheet" href="general-styles/fontawesome-icons.css"&gt;
 
 &lt;span class="ubits-chip ubits-chip--icon-left ubits-chip--close"&gt;
@@ -386,6 +484,15 @@
             document.querySelectorAll('[data-preview-chip]').forEach(function(chip) {
                 chip.classList.remove('ubits-chip--xs', 'ubits-chip--sm', 'ubits-chip--md');
                 chip.classList.add('ubits-chip--' + size);
+            });
+            document.querySelectorAll('[data-preview-chip-avatar]').forEach(function(chip) {
+                chip.classList.remove('ubits-chip--xs', 'ubits-chip--sm', 'ubits-chip--md');
+                chip.classList.add('ubits-chip--' + size);
+                var av = chip.querySelector('.ubits-avatar');
+                if (av) {
+                    av.classList.remove('ubits-avatar--xs', 'ubits-avatar--sm', 'ubits-avatar--md');
+                    av.classList.add('ubits-avatar--' + size);
+                }
             });
         }
 

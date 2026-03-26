@@ -353,6 +353,13 @@
                                     <label class="ubits-input-label" style="display: block; margin-bottom: 8px; font-weight: 600; color: var(--ubits-fg-1-high);">
                                         Autocomplete Input
                                     </label>
+                                    <div style="display: flex; align-items: center; gap: var(--gap-md); margin-bottom: 12px; flex-wrap: wrap;">
+                                        <label class="ubits-switch ubits-switch--md">
+                                            <input type="checkbox" class="ubits-switch__input" id="autocomplete-marked-demo-switch" role="switch" aria-label="Preview opciones ya seleccionadas">
+                                            <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
+                                        </label>
+                                        <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Preview: marcar JavaScript y TypeScript como ya seleccionados</span>
+                                    </div>
                                     <div id="autocomplete-input-demo"></div>
                                 </div>
 
@@ -1169,6 +1176,7 @@ createInput(options)
     mandatoryType: 'obligatorio' | 'opcional',  // Tipo de mandatory
     selectOptions: Array,             // Opciones para SELECT
     autocompleteOptions: Array,       // Opciones para AUTOCOMPLETE
+    getAutocompleteMarkedValues: function, // Devuelve array de value ya elegidos (p. ej. chips); muestra estado "Seleccionado" en el listado
     onChange: function,               // Callback al cambiar valor
     onFocus: function,                // Callback al enfocar
     onBlur: function                  // Callback al desenfocar
@@ -1184,6 +1192,7 @@ input.blur()              // Desenfocar input
 input.disable()           // Deshabilitar input
 input.enable()            // Habilitar input
 input.setState(state)     // Cambiar estado (default, hover, focus, invalid, disabled)
+input.refreshAutocompleteMarked()  // Solo type autocomplete: actualiza marcas si cambian los valores devueltos por getAutocompleteMarkedValues
 
 // REGLAS CRÍTICAS
 // 1. SIEMPRE importar archivos requeridos
@@ -1820,8 +1829,9 @@ input.setState(state)     // Cambiar estado (default, hover, focus, invalid, dis
                 size: 'sm'
             });
 
-            // Autocomplete Input
-            createInput({
+            // Autocomplete Input (preview: marcar valores 1 y 2 como ya seleccionados con el switch)
+            window.__inputDocAutocompleteMarkedDemo = [];
+            var inputAutocompleteDemoApi = createInput({
                 containerId: 'autocomplete-input-demo',
                 type: 'autocomplete',
                 placeholder: 'Selecciona un lenguaje...',
@@ -1832,8 +1842,20 @@ input.setState(state)     // Cambiar estado (default, hover, focus, invalid, dis
                     {value: '3', text: 'Python'},
                     {value: '4', text: 'Java'},
                     {value: '5', text: 'C#'}
-                ]
+                ],
+                getAutocompleteMarkedValues: function () {
+                    return window.__inputDocAutocompleteMarkedDemo || [];
+                }
             });
+            var autocompleteMarkedDemoSwitch = document.getElementById('autocomplete-marked-demo-switch');
+            if (autocompleteMarkedDemoSwitch) {
+                autocompleteMarkedDemoSwitch.addEventListener('change', function () {
+                    window.__inputDocAutocompleteMarkedDemo = this.checked ? ['1', '2'] : [];
+                    if (inputAutocompleteDemoApi && typeof inputAutocompleteDemoApi.refreshAutocompleteMarked === 'function') {
+                        inputAutocompleteDemoApi.refreshAutocompleteMarked();
+                    }
+                });
+            }
 
             // Calendar Input
             createInput({

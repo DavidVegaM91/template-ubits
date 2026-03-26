@@ -10,6 +10,7 @@
    - Focus:    bg = bg-gray-subtle-default, fg = fg-gray-subtle-default + ring
    - Disabled: bg = bg-disabled, fg = fg-on-disabled
    Tamaños: XS 20px / 11px, SM 28px / 13px, MD 36px / 16px (alto / font-size)
+   Variante avatar: ubits-chip--avatar + icon-left + primer hijo .ubits-avatar (requiere avatar.css)
    ======================================== */
 
 /* Base chip: pill shape, flex, tokens. Por defecto XS. Altos fijos (line-height = height evita caja de línea mayor). */
@@ -116,6 +117,50 @@
     width: 24px;
     height: 24px;
     font-size: 16px;
+}
+
+/* ========== Avatar a la izquierda (persona / imagen) ========== */
+/* Requiere: avatar.css. Marca el chip con ubits-chip--avatar además de ubits-chip--icon-left. */
+/* El primer hijo debe ser .ubits-avatar con tamaño alineado al chip (xs→xs, sm→sm, md→md). */
+.ubits-chip--avatar.ubits-chip--icon-left {
+    flex-direction: row;
+    padding-left: 0;
+}
+
+.ubits-chip--xs.ubits-chip--avatar.ubits-chip--icon-left {
+    padding-right: var(--padding-sm);
+}
+
+.ubits-chip--sm.ubits-chip--avatar.ubits-chip--icon-left {
+    padding-right: var(--padding-md);
+}
+
+.ubits-chip--md.ubits-chip--avatar.ubits-chip--icon-left {
+    padding-right: var(--padding-lg);
+}
+
+.ubits-chip--avatar.ubits-chip--icon-left > .ubits-avatar:first-child {
+    flex-shrink: 0;
+    align-self: center;
+}
+
+/* Tamaño del avatar = alto del chip (sin solapar el borde del pill) */
+.ubits-chip--xs.ubits-chip--avatar.ubits-chip--icon-left > .ubits-avatar:first-child {
+    width: 20px;
+    height: 20px;
+    min-width: 20px;
+}
+
+.ubits-chip--sm.ubits-chip--avatar.ubits-chip--icon-left > .ubits-avatar:first-child {
+    width: 28px;
+    height: 28px;
+    min-width: 28px;
+}
+
+.ubits-chip--md.ubits-chip--avatar.ubits-chip--icon-left > .ubits-avatar:first-child {
+    width: 36px;
+    height: 36px;
+    min-width: 36px;
 }
 
 /* Botón de cierre: tamaño fijo, sin aportar altura extra */

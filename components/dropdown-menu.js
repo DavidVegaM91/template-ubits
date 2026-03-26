@@ -29,9 +29,10 @@
      * @param {Object} config
      * @param {string} config.overlayId - ID del overlay (cierre al clic fuera).
      * @param {string} [config.contentId] - ID del panel contenido (para posicionar).
-     * @param {Array<Object>} config.options - Opciones. Cada item: { text, value?, leftIcon?, rightIcon?, checkbox?, switch?, selected?, avatar?, radio? }.
+     * @param {Array<Object>} config.options - Opciones. Cada item: { text, value?, leftIcon?, rightIcon?, checkbox?, switch?, selected?, avatar?, radio?, alreadyChosen? }.
      *   - avatar: URL de imagen (avatar) a mostrar a la izquierda; si se define, tiene prioridad sobre leftIcon para esa opción.
      *   - radio: si config.radioGroup es true, cada opción se renderiza como radio oficial (ubits-radio--sm) con texto.
+     *   - alreadyChosen: true = mismo aspecto que opción ya elegida en Input autocomplete (fondo bg-2, barra de acento, badge "Seleccionado"). Solo filas botón/radio; no combinar con checkbox. No usar selected:true a la vez para el mismo ítem (el estado "activo" de menú usa selected; alreadyChosen es para "ya está en chips/otro contexto").
      * @param {boolean} [config.radioGroup=false] - Si true, las opciones se muestran como lista de radios (componente oficial ubits-radio). Requiere radio-button.css.
      * @param {string} [config.radioName] - name del grupo de radios (por defecto overlayId + '-radio').
      * @param {boolean} [config.hasAutocomplete=false] - Incluir bloque de autocomplete arriba.
@@ -66,16 +67,23 @@
         var footerSecondaryId = config.footerSecondaryId || overlayId + '-footer-secondary';
         var footerPrimaryId = config.footerPrimaryId || overlayId + '-footer-primary';
 
+        function markedChosenBadgeHtml() {
+            return '<span class="ubits-dropdown-menu__option-badge" aria-hidden="true"><i class="far fa-check"></i><span class="ubits-body-sm-regular">Seleccionado</span></span>';
+        }
+
         var optionsHtml = options.map(function (opt, index) {
             var value = opt.value != null ? escapeHtml(String(opt.value)) : '';
             var text = escapeHtml(opt.text != null ? String(opt.text) : '');
-            var selectedClass = opt.selected ? ' ubits-dropdown-menu__option--selected' : '';
+            var selectedClass = opt.selected && !opt.alreadyChosen ? ' ubits-dropdown-menu__option--selected' : '';
+            var markedClass = opt.alreadyChosen ? ' ubits-dropdown-menu__option--marked-chosen' : '';
             if (radioGroup) {
                 var radioChecked = opt.selected ? ' checked' : '';
-                return '<label class="ubits-dropdown-menu__option ubits-dropdown-menu__option--radio ubits-radio ubits-radio--sm' + selectedClass + '" data-value="' + value + '">' +
+                var badgeRadio = opt.alreadyChosen ? markedChosenBadgeHtml() : '';
+                return '<label class="ubits-dropdown-menu__option ubits-dropdown-menu__option--radio ubits-radio ubits-radio--sm' + selectedClass + markedClass + '" data-value="' + value + '">' +
                     '<input type="radio" class="ubits-radio__input" name="' + escapeHtml(radioName) + '" value="' + value + '"' + radioChecked + '>' +
                     '<span class="ubits-radio__circle"></span>' +
                     '<span class="ubits-radio__label">' + text + '</span>' +
+                    badgeRadio +
                     '</label>';
             }
             var left = '';
@@ -101,11 +109,14 @@
                 var checkedSwitch = opt.selected ? ' checked' : '';
                 right = '<span class="ubits-dropdown-menu__option-right"><input type="checkbox" role="switch" data-value="' + value + '"' + checkedSwitch + '></span>';
             }
+            if (opt.alreadyChosen && !opt.checkbox) {
+                right += markedChosenBadgeHtml();
+            }
             var inner = left + (opt.checkbox ? '' : '<span class="ubits-dropdown-menu__option-text">' + text + '</span>') + right;
             if (opt.checkbox) {
                 return '<div class="ubits-dropdown-menu__option' + selectedClass + '" data-value="' + value + '" data-option-label="' + text + '">' + left + '</div>';
             }
-            return '<button type="button" class="ubits-dropdown-menu__option' + selectedClass + '" data-value="' + value + '">' + inner + '</button>';
+            return '<button type="button" class="ubits-dropdown-menu__option' + selectedClass + markedClass + '" data-value="' + value + '">' + inner + '</button>';
         }).join('');
 
         var searchInputId = overlayId + '-autocomplete-input';

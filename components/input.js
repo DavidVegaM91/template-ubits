@@ -531,6 +531,8 @@
  *   - Soporta scroll infinito automático para listas largas (50+ opciones)
  *   - Carga 10 opciones por vez con loading visual automático
  * @param {Array} [options.autocompleteOptions] - Opciones para AUTOCOMPLETE (ej: [{value: '1', text: 'Opción 1'}, {value: '2', text: 'Opción 2'}])
+ * @param {Function} [options.getAutocompleteMarkedValues] - Solo autocomplete (sin showCheckboxes): devuelve array de value ya elegidos fuera del input (p. ej. chips). Tras cambiar esa lista, llamar refreshAutocompleteMarked() en la API devuelta.
+ * @param {number} [options.autocompleteLazyPageSize=10] - Autocomplete modo simple: filas por página al hacer scroll (carga perezosa hasta mostrar todas las opciones visibles/filtradas).
  * @param {string} [options.value] - Valor inicial del input
  * @param {Function} [options.onChange] - Callback cuando cambia el valor
  * @param {Function} [options.onFocus] - Callback cuando se enfoca
@@ -693,13 +695,114 @@ function normalizeTextForSearch(text) {
 }
 
 // Función para crear dropdown de autocompletado
-function createAutocompleteDropdown(container, inputElement, autocompleteOptions, onChange, multiple = false, showCheckboxes = false) {
+function createAutocompleteDropdown(container, inputElement, autocompleteOptions, onChange, multiple = false, showCheckboxes = false, extraOpts = {}) {
+    const getAutocompleteMarkedValues = extraOpts && typeof extraOpts.getAutocompleteMarkedValues === 'function'
+        ? extraOpts.getAutocompleteMarkedValues
+        : null;
+    const lazyPageSize = extraOpts && typeof extraOpts.lazyPageSize === 'number' && extraOpts.lazyPageSize > 0
+        ? extraOpts.lazyPageSize
+        : 10;
+
     console.log('createAutocompleteDropdown called with:', { container, inputElement, autocompleteOptions, onChange, multiple, showCheckboxes });
-    
+
     const dropdown = document.createElement('div');
     dropdown.className = 'ubits-autocomplete-dropdown';
     dropdown.style.display = 'none';
-    
+
+    /** Valores ya elegidos fuera del input (p. ej. chips). Solo modo simple (sin showCheckboxes). */
+    function getMarkedValueSet() {
+        if (showCheckboxes || !getAutocompleteMarkedValues) return null;
+        const arr = getAutocompleteMarkedValues();
+        if (!arr || !Array.isArray(arr)) return new Set();
+        return new Set(arr.map(String));
+    }
+
+    function applyMarkedToOptionWithSet(optionElement, value, markedSet) {
+        const v = String(value);
+        const isSel = markedSet.has(v);
+        optionElement.classList.toggle('ubits-autocomplete-option--selected', isSel);
+        optionElement.setAttribute('aria-selected', isSel ? 'true' : 'false');
+        const existingBadge = optionElement.querySelector('.ubits-autocomplete-option__badge');
+        if (isSel) {
+            if (!existingBadge) {
+                const badge = document.createElement('span');
+                badge.className = 'ubits-autocomplete-option__badge';
+                badge.setAttribute('aria-hidden', 'true');
+                const ic = document.createElement('i');
+                ic.className = 'far fa-check';
+                badge.appendChild(ic);
+                const lbl = document.createElement('span');
+                lbl.className = 'ubits-body-sm-regular';
+                lbl.textContent = 'Seleccionado';
+                badge.appendChild(lbl);
+                optionElement.appendChild(badge);
+            }
+        } else if (existingBadge) {
+            existingBadge.remove();
+        }
+    }
+
+    function applyMarkedToOption(optionElement, value) {
+        const ms = getMarkedValueSet();
+        if (ms === null) return;
+        applyMarkedToOptionWithSet(optionElement, value, ms);
+    }
+
+    function sortOptionsByText(arr) {
+        return arr.slice().sort(function (a, b) {
+            var ta = a && a.text != null ? String(a.text) : '';
+            var tb = b && b.text != null ? String(b.text) : '';
+            return ta.localeCompare(tb, 'es', { sensitivity: 'base' });
+        });
+    }
+
+    function detachLazyScroll() {
+        if (dropdown._lazyScrollHandler) {
+            dropdown.removeEventListener('scroll', dropdown._lazyScrollHandler);
+            dropdown._lazyScrollHandler = null;
+        }
+    }
+
+    /** Fila modo simple (sin checkboxes): orden alfabético + lazy en el padre */
+    function createSimpleOptionRow(option, searchTextForHighlight) {
+        const optionElement = document.createElement('div');
+        optionElement.className = 'ubits-autocomplete-option';
+        optionElement.dataset.value = option.value;
+        const textElement = document.createElement('span');
+        textElement.className = 'ubits-autocomplete-option-text';
+        if (searchTextForHighlight && String(searchTextForHighlight).length >= 1) {
+            const st = String(searchTextForHighlight);
+            const normalizedSearch = normalizeTextForSearch(st);
+            const normalizedOption = normalizeTextForSearch(option.text);
+            if (normalizedOption.includes(normalizedSearch)) {
+                const regex = new RegExp('(' + st.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'gi');
+                textElement.innerHTML = String(option.text).replace(regex, '<strong>$1</strong>');
+            } else {
+                textElement.textContent = option.text;
+            }
+        } else {
+            textElement.textContent = option.text;
+        }
+        optionElement.appendChild(textElement);
+        optionElement.addEventListener('mouseenter', function () {
+            this.style.backgroundColor = 'var(--ubits-bg-2)';
+        });
+        optionElement.addEventListener('mouseleave', function () {
+            this.style.backgroundColor = 'transparent';
+        });
+        optionElement.addEventListener('click', function () {
+            const selectedValue = this.dataset.value;
+            const selectedText = this.textContent.replace(/<[^>]*>/g, '');
+            inputElement.value = selectedText;
+            dropdown.style.display = 'none';
+            if (onChange && typeof onChange === 'function') {
+                onChange(selectedValue);
+            }
+        });
+        applyMarkedToOption(optionElement, option.value);
+        return optionElement;
+    }
+
     // Si es múltiple, mantener un Set de valores seleccionados
     const selectedValues = new Set();
     
@@ -707,7 +810,7 @@ function createAutocompleteDropdown(container, inputElement, autocompleteOptions
     function filterOptions(searchText) {
         // Si tiene checkboxes y está vacío, mostrar las primeras 5 opciones por defecto
         if (showCheckboxes && (!searchText || searchText.length < 1)) {
-            const defaultOptions = autocompleteOptions.slice(0, 5);
+            const defaultOptions = sortOptionsByText(autocompleteOptions).slice(0, 5);
             dropdown.innerHTML = '';
             
             defaultOptions.forEach(option => {
@@ -763,47 +866,73 @@ function createAutocompleteDropdown(container, inputElement, autocompleteOptions
             return;
         }
         
-        // Si no tiene checkboxes y está vacío: mostrar primeras opciones al hacer foco (máx. 10)
-        if (!searchText || searchText.length < 1) {
-            if (autocompleteOptions.length === 0) {
-            dropdown.style.display = 'none';
+        // Modo simple: orden alfabético (es) y carga incremental de lazyPageSize en lazyPageSize al hacer scroll
+        if (!showCheckboxes) {
+            detachLazyScroll();
+            dropdown.innerHTML = '';
+
+            var displayedOptions;
+            if (!searchText || searchText.length < 1) {
+                if (autocompleteOptions.length === 0) {
+                    dropdown.style.display = 'none';
+                    return;
+                }
+                displayedOptions = sortOptionsByText(autocompleteOptions);
+            } else {
+                displayedOptions = sortOptionsByText(autocompleteOptions.filter(function (option) {
+                    return normalizeTextForSearch(option.text).includes(normalizeTextForSearch(searchText));
+                }));
+            }
+
+            if (displayedOptions.length === 0) {
+                dropdown.style.display = 'none';
                 return;
             }
-            const defaultOptions = autocompleteOptions.slice(0, 10);
-            dropdown.innerHTML = '';
-            defaultOptions.forEach(option => {
-                const optionElement = document.createElement('div');
-                optionElement.className = 'ubits-autocomplete-option';
-                optionElement.dataset.value = option.value;
-                const textElement = document.createElement('span');
-                textElement.className = 'ubits-autocomplete-option-text';
-                textElement.textContent = option.text;
-                optionElement.appendChild(textElement);
-                optionElement.addEventListener('mouseenter', function () {
-                    this.style.backgroundColor = 'var(--ubits-bg-2)';
-                });
-                optionElement.addEventListener('mouseleave', function () {
-                    this.style.backgroundColor = 'transparent';
-                });
-                optionElement.addEventListener('click', function (e) {
-                    const selectedValue = this.dataset.value;
-                    const selectedText = this.textContent.replace(/<[^>]*>/g, '');
-                    inputElement.value = selectedText;
-                    dropdown.style.display = 'none';
-                    if (onChange && typeof onChange === 'function') {
-                        onChange(selectedValue);
-                    }
-                });
-                dropdown.appendChild(optionElement);
-            });
+
+            var renderedCount = 0;
+            var searchForHighlight = searchText && searchText.length >= 1 ? searchText : '';
+
+            function appendChunkSimple() {
+                var end = Math.min(renderedCount + lazyPageSize, displayedOptions.length);
+                var i;
+                for (i = renderedCount; i < end; i++) {
+                    dropdown.appendChild(createSimpleOptionRow(displayedOptions[i], searchForHighlight));
+                }
+                renderedCount = end;
+            }
+
+            function fillViewportIfNeeded() {
+                var safety = 0;
+                while (renderedCount < displayedOptions.length && safety < 500) {
+                    if (dropdown.scrollHeight > dropdown.clientHeight + 2) break;
+                    appendChunkSimple();
+                    safety++;
+                }
+            }
+
+            appendChunkSimple();
             dropdown.style.display = 'block';
+            fillViewportIfNeeded();
+            requestAnimationFrame(function () {
+                fillViewportIfNeeded();
+            });
+
+            function onLazyScroll() {
+                if (renderedCount >= displayedOptions.length) return;
+                if (dropdown.scrollTop + dropdown.clientHeight >= dropdown.scrollHeight - 32) {
+                    appendChunkSimple();
+                }
+            }
+            dropdown._lazyScrollHandler = onLazyScroll;
+            dropdown.addEventListener('scroll', onLazyScroll);
+
             return;
         }
-        
-        const filteredOptions = autocompleteOptions.filter(option => 
-            normalizeTextForSearch(option.text).includes(normalizeTextForSearch(searchText))
-        );
-        
+
+        const filteredOptions = sortOptionsByText(autocompleteOptions.filter(function (option) {
+            return normalizeTextForSearch(option.text).includes(normalizeTextForSearch(searchText));
+        }));
+
         // Limpiar dropdown anterior
         dropdown.innerHTML = '';
         
@@ -812,7 +941,7 @@ function createAutocompleteDropdown(container, inputElement, autocompleteOptions
             return;
         }
         
-        // Mostrar máximo 5 opciones
+        // Modo checkbox + búsqueda: máximo 5 resultados (ordenados)
         const optionsToShow = filteredOptions.slice(0, 5);
         
         optionsToShow.forEach(option => {
@@ -892,18 +1021,19 @@ function createAutocompleteDropdown(container, inputElement, autocompleteOptions
                     onChange(selectedValue);
                 }
             });
+            applyMarkedToOption(optionElement, option.value);
             dropdown.appendChild(optionElement);
         });
-        
+
         dropdown.style.display = 'block';
     }
-    
+
     // Event listener para el input
     inputElement.addEventListener('input', function () {
         filterOptions(this.value);
     });
     
-    // Event listener para focus: mostrar opciones (primeras 10 si vacío, o filtradas si hay texto)
+    // Event listener para focus: mostrar opciones (ordenadas + lazy scroll)
     inputElement.addEventListener('focus', function () {
             filterOptions(this.value);
     });
@@ -927,11 +1057,23 @@ function createAutocompleteDropdown(container, inputElement, autocompleteOptions
     }, true);
     
     container.appendChild(dropdown);
-    
+
     // Asegurar que el contenedor tenga position: relative
     if (getComputedStyle(container).position === 'static') {
         container.style.position = 'relative';
     }
+
+    return {
+        refreshAutocompleteMarked: function () {
+            if (showCheckboxes || !getAutocompleteMarkedValues) return;
+            const ms = getMarkedValueSet();
+            if (ms === null) return;
+            dropdown.querySelectorAll('.ubits-autocomplete-option').forEach(function (el) {
+                const v = el.dataset.value != null ? String(el.dataset.value) : '';
+                applyMarkedToOptionWithSet(el, v, ms);
+            });
+        }
+    };
 }
 
 /**
@@ -1313,7 +1455,10 @@ function createInput(options = {}) {
             multiple = false,
             showCheckboxes = false,
             calendarMaxDate = undefined,
-            calendarMinDate = undefined
+            calendarMinDate = undefined,
+            getAutocompleteMarkedValues = null,
+            /** Tamaño de cada página al hacer scroll en autocomplete (modo simple, sin checkboxes). Default 10. */
+            autocompleteLazyPageSize = 10
         } = options;
 
     // Validar parámetros requeridos
@@ -1327,6 +1472,8 @@ function createInput(options = {}) {
         console.error(`UBITS Input: No se encontró el contenedor con ID "${containerId}"`);
         return;
     }
+
+    let autocompleteDropdownCtl = null;
 
     function escapeAttr(str) {
         if (str == null) return '';
@@ -1627,7 +1774,10 @@ function createInput(options = {}) {
         }
         
         // Funcionalidad de sugerencias
-        createAutocompleteDropdown(container, inputElement, autocompleteOptions, onChange, multiple, showCheckboxes);
+        autocompleteDropdownCtl = createAutocompleteDropdown(container, inputElement, autocompleteOptions, onChange, multiple, showCheckboxes, {
+            getAutocompleteMarkedValues,
+            lazyPageSize: typeof autocompleteLazyPageSize === 'number' && autocompleteLazyPageSize > 0 ? autocompleteLazyPageSize : 10
+        });
     }
     
     // Si es CALENDAR, popup con el componente Calendar (createCalendar)
@@ -1758,7 +1908,7 @@ function createInput(options = {}) {
     // Usar validación manual en su lugar
 
     // Retornar métodos útiles
-    return {
+    const inputApi = {
         getValue: () => inputElement.value,
         setValue: (newValue) => {
             inputElement.value = newValue;
@@ -1781,12 +1931,12 @@ function createInput(options = {}) {
             // Remover estado anterior
             const stateClasses = ['ubits-input--hover', 'ubits-input--focus', 'ubits-input--active', 'ubits-input--invalid', 'ubits-input--disabled'];
             stateClasses.forEach(cls => inputElement.classList.remove(cls));
-            
+
             // Agregar nuevo estado
             if (newState !== 'default') {
                 inputElement.classList.add(`ubits-input--${newState}`);
             }
-            
+
             // Manejar disabled
             if (newState === 'disabled') {
                 inputElement.disabled = true;
@@ -1795,6 +1945,10 @@ function createInput(options = {}) {
             }
         }
     };
+    if (autocompleteDropdownCtl && typeof autocompleteDropdownCtl.refreshAutocompleteMarked === 'function') {
+        inputApi.refreshAutocompleteMarked = autocompleteDropdownCtl.refreshAutocompleteMarked;
+    }
+    return inputApi;
 }
 
 // Exportar función para uso global

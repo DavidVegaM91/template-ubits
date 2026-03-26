@@ -358,7 +358,7 @@ const fabMenuOptions = [
         label: 'Una tarea',
         icon: 'fa-tasks',
         onClick: () => {
-            // Sin acción
+            if (typeof window.openTaskCreateDrawerV2 === 'function') window.openTaskCreateDrawerV2();
         }
     },
     {
@@ -1835,6 +1835,644 @@ function getUbitsRadioHtml(opts) {
     return `<label class="${labelClass}"${idAttr}><input type="radio" name="${escapeHtml(name)}" class="ubits-radio__input" value="${escapeHtml(value)}" ${checked ? 'checked' : ''} onchange="${onchange}" /><span class="ubits-radio__circle"></span><span class="ubits-radio__label">${escapeHtml(label)}</span>${infoIcon}</label>`;
 }
 
+/* ---------- Drawer Crear tarea (Crear → Una tarea) ---------- */
+var TASK_CREATE_DRAWER_OVERLAY_ID = 'task-create-drawer-v2-overlay';
+var TASK_CREATE_PLAN_CREATOR_FILTER = 'María Alejandra Sánchez Pardo';
+var taskCreateDrawerEscHandler = null;
+var taskCreateDrawerInputRefs = null;
+var taskCreateDrawerState = {
+    assignment_mode: '',
+    assignees: [],
+    csvFile: null,
+    priority: 'media'
+};
+
+function normalizeNameTaskCreateDrawer(str) {
+    if (str == null) return '';
+    return String(str)
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/\s+/g, ' ')
+        .trim();
+}
+
+function ymdToDmySlashTaskCreate(ymd) {
+    if (!ymd) return '';
+    var p = String(ymd).trim().split('-');
+    if (p.length !== 3) return '';
+    return p[2] + '/' + p[1] + '/' + p[0];
+}
+
+function dmySlashToYmdTaskCreate(dmy) {
+    if (!dmy || !String(dmy).trim()) return '';
+    var parts = String(dmy).trim().split('/');
+    if (parts.length !== 3) return '';
+    var d = parts[0].padStart(2, '0');
+    var m = parts[1].padStart(2, '0');
+    var y = parts[2];
+    return y + '-' + m + '-' + d;
+}
+
+function getPlanesParaTaskCreateDrawer() {
+    if (typeof TAREAS_PLANES_DB === 'undefined' || typeof TAREAS_PLANES_DB.getPlanesVistaPlanes !== 'function') return [];
+    var planes = TAREAS_PLANES_DB.getPlanesVistaPlanes();
+    if (!Array.isArray(planes)) return [];
+    return planes
+        .filter(function (p) {
+            return normalizeNameTaskCreateDrawer(p && p.created_by) === normalizeNameTaskCreateDrawer(TASK_CREATE_PLAN_CREATOR_FILTER);
+        })
+        .map(function (p) {
+            return { id: p.id, name: p.name || 'Plan sin nombre' };
+        });
+}
+
+function cleanupTaskCreateDrawer() {
+    if (taskCreateDrawerEscHandler) {
+        document.removeEventListener('keydown', taskCreateDrawerEscHandler);
+        taskCreateDrawerEscHandler = null;
+    }
+    taskCreateDrawerInputRefs = null;
+    taskCreateDrawerState = {
+        assignment_mode: '',
+        assignees: [],
+        csvFile: null,
+        priority: 'media'
+    };
+}
+
+function closeTaskCreateDrawerV2() {
+    cleanupTaskCreateDrawer();
+    if (typeof closeDrawer === 'function') closeDrawer(TASK_CREATE_DRAWER_OVERLAY_ID);
+}
+
+function updateTaskCreatePlanAlertVisible() {
+    var alertEl = document.getElementById('task-create-v2-plan-alert');
+    if (!alertEl) return;
+    var v = '';
+    if (taskCreateDrawerInputRefs && taskCreateDrawerInputRefs.plan && typeof taskCreateDrawerInputRefs.plan.getValue === 'function') {
+        v = taskCreateDrawerInputRefs.plan.getValue() || '';
+    }
+    alertEl.style.display = !v || String(v).trim() === '' ? 'flex' : 'none';
+}
+
+function handleTaskCreateDrawerSubmit() {
+    var titleEl = document.getElementById('task-create-v2-title');
+    var title = (titleEl && titleEl.value || '').trim();
+    if (!title) {
+        if (typeof showToast === 'function') showToast('warning', 'Escribe un título para la tarea.');
+        return;
+    }
+    var priority = taskCreateDrawerState && taskCreateDrawerState.priority ? taskCreateDrawerState.priority : 'media';
+    var endYmd = '';
+    var planId = '';
+    if (taskCreateDrawerInputRefs) {
+        if (taskCreateDrawerInputRefs.endDate && typeof taskCreateDrawerInputRefs.endDate.getValue === 'function') {
+            endYmd = dmySlashToYmdTaskCreate(taskCreateDrawerInputRefs.endDate.getValue());
+        }
+        if (taskCreateDrawerInputRefs.plan && typeof taskCreateDrawerInputRefs.plan.getValue === 'function') {
+            planId = taskCreateDrawerInputRefs.plan.getValue() || '';
+        }
+    }
+    if (typeof showToast === 'function') {
+        var msg = 'Tarea creada (prototipo).';
+        if (!planId) msg += ' Puedes asignarla a un plan desde el detalle.';
+        if (endYmd) msg += ' Fecha límite: ' + endYmd + '.';
+        msg += ' Prioridad: ' + (priority === 'alta' ? 'alta' : priority === 'baja' ? 'baja' : 'media') + '.';
+        var mode = taskCreateDrawerState && taskCreateDrawerState.assignment_mode ? taskCreateDrawerState.assignment_mode : '';
+        if (mode === 'autocomplete') {
+            var n = (taskCreateDrawerState.assignees && taskCreateDrawerState.assignees.length) ? taskCreateDrawerState.assignees.length : 0;
+            msg += ' Asignados (chips): ' + n + '.';
+        } else if (mode === 'csv' && taskCreateDrawerState.csvFile && taskCreateDrawerState.csvFile.name) {
+            msg += ' Archivo: ' + taskCreateDrawerState.csvFile.name + '.';
+        } else if (!mode) {
+            msg += ' Asignación: sin modo elegido.';
+        }
+        showToast('success', msg);
+    }
+    closeTaskCreateDrawerV2();
+}
+
+function getUsuariosParaTaskCreateDrawer() {
+    if (typeof TAREAS_PLANES_DB === 'undefined' || typeof TAREAS_PLANES_DB.getEmpleadosEjemplo !== 'function') return [];
+    var emps = TAREAS_PLANES_DB.getEmpleadosEjemplo();
+    if (!Array.isArray(emps)) return [];
+    return emps.map(function (e, i) {
+        return {
+            id: String(e.username || e.id || i),
+            email: e.username || '',
+            full_name: e.nombre || e.username || 'Usuario',
+            avatar_url: (e.avatar && String(e.avatar).trim()) ? e.avatar : null
+        };
+    });
+}
+
+function renderTaskCreateAssignChips() {
+    var wrap = document.getElementById('task-create-v2-chips');
+    if (!wrap) return;
+    var list = (taskCreateDrawerState && taskCreateDrawerState.assignees) ? taskCreateDrawerState.assignees : [];
+    if (list.length === 0) {
+        wrap.innerHTML = '<p class="ubits-body-sm-regular task-create-v2__chips-empty">Busca y selecciona colaboradores; aparecerán aquí como chips.</p>';
+        if (taskCreateDrawerInputRefs && taskCreateDrawerInputRefs.assignSearch && typeof taskCreateDrawerInputRefs.assignSearch.refreshAutocompleteMarked === 'function') {
+            taskCreateDrawerInputRefs.assignSearch.refreshAutocompleteMarked();
+        }
+        return;
+    }
+    wrap.innerHTML = list.map(function (u) {
+        var safeId = escapeHtml(String(u.id));
+        var av = typeof renderAvatar === 'function'
+            ? renderAvatar({ nombre: u.full_name, avatar: u.avatar_url }, { size: 'xs' })
+            : '';
+        return (
+            '<span class="ubits-chip ubits-chip--sm ubits-chip--icon-left ubits-chip--avatar" data-user-id="' + safeId + '">' +
+            av +
+            '<span class="ubits-chip__text">' + escapeHtml(u.full_name) + '</span>' +
+            '<button type="button" class="ubits-chip__close" aria-label="Quitar colaborador" data-remove-user="' + safeId + '">' +
+            '<i class="far fa-times"></i></button></span>'
+        );
+    }).join('');
+    wrap.querySelectorAll('[data-remove-user]').forEach(function (btn) {
+        btn.addEventListener('click', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            removeTaskCreateAssigneeChip(btn.getAttribute('data-remove-user'));
+        });
+    });
+    if (taskCreateDrawerInputRefs && taskCreateDrawerInputRefs.assignSearch && typeof taskCreateDrawerInputRefs.assignSearch.refreshAutocompleteMarked === 'function') {
+        taskCreateDrawerInputRefs.assignSearch.refreshAutocompleteMarked();
+    }
+}
+
+function removeTaskCreateAssigneeChip(userId) {
+    if (!taskCreateDrawerState.assignees) taskCreateDrawerState.assignees = [];
+    taskCreateDrawerState.assignees = taskCreateDrawerState.assignees.filter(function (x) {
+        return String(x.id) !== String(userId);
+    });
+    renderTaskCreateAssignChips();
+}
+
+function addTaskCreateAssigneeById(userId) {
+    var users = getUsuariosParaTaskCreateDrawer();
+    var user = users.find(function (u) { return String(u.id) === String(userId); });
+    if (!user) return;
+    if (!taskCreateDrawerState.assignees) taskCreateDrawerState.assignees = [];
+    if (taskCreateDrawerState.assignees.some(function (x) { return String(x.id) === String(userId); })) return;
+    taskCreateDrawerState.assignees.push({
+        id: user.id,
+        full_name: user.full_name,
+        avatar_url: user.avatar_url || null
+    });
+    renderTaskCreateAssignChips();
+}
+
+function syncTaskCreateAssignmentModeUi() {
+    var mode = taskCreateDrawerState && taskCreateDrawerState.assignment_mode ? taskCreateDrawerState.assignment_mode : '';
+    var panelA = document.getElementById('task-create-v2-panel-autocomplete');
+    var panelC = document.getElementById('task-create-v2-panel-csv');
+    if (panelA) panelA.style.display = mode === 'autocomplete' ? '' : 'none';
+    if (panelC) panelC.style.display = mode === 'csv' ? '' : 'none';
+    document.querySelectorAll('#' + TASK_CREATE_DRAWER_OVERLAY_ID + ' input[name="task-create-v2-assign-mode"]').forEach(function (r) {
+        r.checked = mode !== '' && r.value === mode;
+    });
+}
+
+function formatTaskCreateFileSizeBytes(bytes) {
+    if (bytes == null || isNaN(bytes)) return '0 Bytes';
+    var n = Number(bytes);
+    if (n < 1024) return n + ' Bytes';
+    if (n < 1048576) return (Math.round(n / 102.4) / 10) + ' KB';
+    return (Math.round(n / 104857.6) / 10) + ' MB';
+}
+
+function updateTaskCreateCsvDropzoneUi() {
+    var root = document.getElementById(TASK_CREATE_DRAWER_OVERLAY_ID);
+    if (!root) return;
+    var emptyEl = root.querySelector('#task-create-v2-archivo-empty');
+    var cardEl = root.querySelector('#task-create-v2-archivo-file-card');
+    var dz = root.querySelector('#task-create-v2-archivo-dropzone');
+    var f = taskCreateDrawerState.csvFile;
+    if (!emptyEl || !cardEl || !dz) return;
+    if (f) {
+        emptyEl.style.display = 'none';
+        cardEl.style.display = 'flex';
+        cardEl.removeAttribute('hidden');
+        dz.classList.add('drawer-archivo-dropzone--has-file');
+        var nameEl = cardEl.querySelector('[data-task-create-archivo-nombre]');
+        var sizeEl = cardEl.querySelector('[data-task-create-archivo-tamano]');
+        if (nameEl) nameEl.textContent = f.name || 'archivo.csv';
+        if (sizeEl) sizeEl.textContent = formatTaskCreateFileSizeBytes(f.size);
+    } else {
+        emptyEl.style.display = '';
+        cardEl.style.display = 'none';
+        cardEl.setAttribute('hidden', 'hidden');
+        dz.classList.remove('drawer-archivo-dropzone--has-file');
+    }
+}
+
+function resetTaskCreateCsvFile() {
+    taskCreateDrawerState.csvFile = null;
+    updateTaskCreateCsvDropzoneUi();
+}
+
+function downloadTaskCreateCsvTemplate() {
+    function escapeCsvCell(val) {
+        var s = (val == null ? '' : String(val)).trim();
+        if (/[,\r\n"]/.test(s)) return '"' + s.replace(/"/g, '""') + '"';
+        return s;
+    }
+    var usernameEj = 'masanchez@fiqsha.demo';
+    if (typeof window.BD_MASTER_COLABORADORES !== 'undefined' && window.BD_MASTER_COLABORADORES.colaboradores && window.BD_MASTER_COLABORADORES.colaboradores.length) {
+        var c0 = window.BD_MASTER_COLABORADORES.colaboradores[0];
+        if (c0 && c0.username) usernameEj = String(c0.username).trim();
+    }
+    var headers = ['username'];
+    var contenido = headers.map(escapeCsvCell).join(',') + '\r\n' + escapeCsvCell(usernameEj);
+    var blob = new Blob(['\ufeff' + contenido], { type: 'text/csv;charset=utf-8' });
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'plantilla-asignados-tarea.csv';
+    a.click();
+    URL.revokeObjectURL(a.href);
+}
+
+function initTaskCreateCsvPanel() {
+    var root = document.getElementById(TASK_CREATE_DRAWER_OVERLAY_ID);
+    if (!root) return;
+    var dropzone = root.querySelector('#task-create-v2-archivo-dropzone');
+    var archivoInput = root.querySelector('#task-create-v2-archivo-input');
+    var btnSeleccionar = root.querySelector('#task-create-v2-archivo-btn-seleccionar');
+    var btnQuitar = root.querySelector('#task-create-v2-archivo-btn-quitar');
+    var btnPlantilla = root.querySelector('#task-create-v2-archivo-descargar-plantilla');
+
+    function onArchivoElegido(f) {
+        if (f && f.size > 5 * 1024 * 1024) {
+            if (typeof showToast === 'function') showToast('warning', 'El archivo supera 5 MB.');
+            return;
+        }
+        taskCreateDrawerState.csvFile = f || null;
+        updateTaskCreateCsvDropzoneUi();
+    }
+
+    if (btnPlantilla) {
+        btnPlantilla.addEventListener('click', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            downloadTaskCreateCsvTemplate();
+        });
+    }
+    if (btnSeleccionar) {
+        btnSeleccionar.addEventListener('click', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            if (archivoInput) archivoInput.click();
+        });
+    }
+    if (btnQuitar) {
+        btnQuitar.addEventListener('click', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            resetTaskCreateCsvFile();
+        });
+    }
+    if (dropzone) {
+        dropzone.addEventListener('click', function (e) {
+            if (e.target.closest && e.target.closest('#task-create-v2-archivo-btn-quitar')) return;
+            if (e.target === btnSeleccionar || (btnSeleccionar && btnSeleccionar.contains(e.target))) return;
+            if (archivoInput) archivoInput.click();
+        });
+        dropzone.addEventListener('dragover', function (e) {
+            e.preventDefault();
+            dropzone.classList.add('drawer-archivo-dropzone--dragover');
+        });
+        dropzone.addEventListener('dragleave', function () {
+            dropzone.classList.remove('drawer-archivo-dropzone--dragover');
+        });
+        dropzone.addEventListener('drop', function (e) {
+            e.preventDefault();
+            dropzone.classList.remove('drawer-archivo-dropzone--dragover');
+            if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+                onArchivoElegido(e.dataTransfer.files[0]);
+            }
+        });
+    }
+    if (archivoInput) {
+        archivoInput.addEventListener('change', function () {
+            if (this.files && this.files.length > 0) onArchivoElegido(this.files[0]);
+            this.value = '';
+        });
+    }
+    updateTaskCreateCsvDropzoneUi();
+}
+
+function initTaskCreateAssignmentSection() {
+    var users = getUsuariosParaTaskCreateDrawer();
+    var autocompleteOptions = users.map(function (u) {
+        return { value: String(u.id), text: u.full_name || u.email || 'Usuario' };
+    });
+    autocompleteOptions.sort(function (a, b) {
+        return String(a.text || '').localeCompare(String(b.text || ''), 'es', { sensitivity: 'base' });
+    });
+
+    document.querySelectorAll('#' + TASK_CREATE_DRAWER_OVERLAY_ID + ' input[name="task-create-v2-assign-mode"]').forEach(function (r) {
+        r.addEventListener('change', function () {
+            if (!this.checked) return;
+            taskCreateDrawerState.assignment_mode = this.value;
+            syncTaskCreateAssignmentModeUi();
+        });
+    });
+    syncTaskCreateAssignmentModeUi();
+
+    if (typeof createInput === 'function') {
+        var assignApi = createInput({
+            containerId: 'task-create-v2-autocomplete-wrap',
+            type: 'autocomplete',
+            label: '',
+            showLabel: false,
+            placeholder: 'Buscar colaborador para agregar…',
+            size: 'md',
+            autocompleteOptions: autocompleteOptions,
+            autocompleteLazyPageSize: 10,
+            getAutocompleteMarkedValues: function () {
+                return (taskCreateDrawerState.assignees || []).map(function (a) {
+                    return String(a.id);
+                });
+            },
+            onChange: function (val) {
+                if (!val) return;
+                addTaskCreateAssigneeById(val);
+                if (assignApi && typeof assignApi.setValue === 'function') assignApi.setValue('');
+            }
+        });
+        taskCreateDrawerInputRefs.assignSearch = assignApi;
+    }
+    renderTaskCreateAssignChips();
+    initTaskCreateCsvPanel();
+}
+
+function renderTaskCreatePriorityTrigger() {
+    var el = document.getElementById('task-create-v2-priority-trigger');
+    if (!el) return;
+    var p = taskCreateDrawerState && taskCreateDrawerState.priority ? taskCreateDrawerState.priority : 'media';
+    var map = {
+        alta: { variant: 'error', icon: 'fa-chevrons-up', label: 'Alta' },
+        media: { variant: 'warning', icon: 'fa-chevron-up', label: 'Media' },
+        baja: { variant: 'info', icon: 'fa-chevron-down', label: 'Baja' }
+    };
+    var cfg = map[p] || map.media;
+    el.innerHTML =
+        '<span class="ubits-status-tag ubits-status-tag--sm ubits-status-tag--' + cfg.variant + ' ubits-status-tag--icon-left">' +
+        '<i class="far ' + cfg.icon + '"></i>' +
+        '<span class="ubits-status-tag__text">' + cfg.label + '</span>' +
+        '</span>';
+}
+
+function openTaskCreatePriorityDropdown(anchorEl) {
+    if (!anchorEl || typeof window.getDropdownMenuHtml !== 'function' || typeof window.openDropdownMenu !== 'function' || typeof window.closeDropdownMenu !== 'function') return;
+    var overlayId = 'task-create-v2-priority-overlay';
+    var existing = document.getElementById(overlayId);
+    if (existing) existing.remove();
+    var options = [
+        { text: 'Alta', value: 'alta', leftIcon: 'chevrons-up' },
+        { text: 'Media', value: 'media', leftIcon: 'chevron-up' },
+        { text: 'Baja', value: 'baja', leftIcon: 'chevron-down' }
+    ];
+    var html = window.getDropdownMenuHtml({ overlayId: overlayId, options: options });
+    document.body.insertAdjacentHTML('beforeend', html);
+    var overlayEl = document.getElementById(overlayId);
+    if (!overlayEl) return;
+    overlayEl.style.zIndex = '10100';
+    var content = overlayEl.querySelector('.ubits-dropdown-menu__content');
+    if (content) {
+        content.addEventListener('click', function (e) {
+            var opt = e.target.closest('.ubits-dropdown-menu__option');
+            if (!opt) return;
+            var val = opt.getAttribute('data-value');
+            if (!val) return;
+            taskCreateDrawerState.priority = String(val);
+            if (typeof window.closeDropdownMenu === 'function') window.closeDropdownMenu(overlayId);
+            if (overlayEl.parentNode) overlayEl.remove();
+            renderTaskCreatePriorityTrigger();
+        });
+    }
+    overlayEl.addEventListener('click', function (e) {
+        if (e.target === overlayEl) {
+            if (typeof window.closeDropdownMenu === 'function') window.closeDropdownMenu(overlayId);
+            if (overlayEl.parentNode) overlayEl.remove();
+        }
+    });
+    window.openDropdownMenu(overlayId, anchorEl, { alignRight: true });
+}
+
+function bindTaskCreateDrawerEsc() {
+    taskCreateDrawerEscHandler = function (ev) {
+        if (ev.key !== 'Escape') return;
+        var el = document.getElementById(TASK_CREATE_DRAWER_OVERLAY_ID);
+        if (!el || el.style.display === 'none' || el.getAttribute('aria-hidden') === 'true') return;
+        ev.preventDefault();
+        closeTaskCreateDrawerV2();
+    };
+    document.addEventListener('keydown', taskCreateDrawerEscHandler);
+}
+
+function initTaskCreateDrawerFormFields() {
+    var db = typeof TAREAS_PLANES_DB !== 'undefined' ? TAREAS_PLANES_DB : null;
+    var todayYmd = db && typeof db.getTodayString === 'function' ? db.getTodayString() : '';
+
+    var planesList = getPlanesParaTaskCreateDrawer();
+    var planOptions = [{ value: '', text: 'Seleccionar plan' }].concat(
+        planesList.map(function (p) {
+            return { value: String(p.id), text: p.name };
+        })
+    );
+
+    taskCreateDrawerInputRefs = {};
+
+    if (typeof createInput === 'function') {
+        taskCreateDrawerInputRefs.endDate = createInput({
+            containerId: 'task-create-v2-end-date-wrap',
+            type: 'calendar',
+            label: 'Fecha de finalización',
+            placeholder: 'Selecciona una fecha',
+            value: ymdToDmySlashTaskCreate(todayYmd),
+            size: 'sm'
+        });
+        taskCreateDrawerInputRefs.plan = createInput({
+            containerId: 'task-create-v2-plan-wrap',
+            type: 'select',
+            label: 'Plan',
+            placeholder: 'Seleccionar plan',
+            selectOptions: planOptions,
+            size: 'sm',
+            onChange: function () {
+                updateTaskCreatePlanAlertVisible();
+            }
+        });
+    }
+
+    initTaskCreateAssignmentSection();
+
+    updateTaskCreatePlanAlertVisible();
+
+    var titleTa = document.getElementById('task-create-v2-title');
+    if (titleTa) {
+        function autoResize() {
+            titleTa.style.height = 'auto';
+            titleTa.style.height = Math.min(titleTa.scrollHeight, 200) + 'px';
+        }
+        titleTa.addEventListener('input', autoResize);
+        setTimeout(autoResize, 0);
+    }
+
+    var descTa = document.getElementById('task-create-v2-desc');
+    if (descTa) {
+        function autoResizeDesc() {
+            descTa.style.height = 'auto';
+            descTa.style.height = Math.min(descTa.scrollHeight, 220) + 'px';
+        }
+        descTa.addEventListener('input', autoResizeDesc);
+        setTimeout(autoResizeDesc, 0);
+    }
+
+    var cancelBtn = document.getElementById('task-create-v2-cancel');
+    var submitBtn = document.getElementById('task-create-v2-submit');
+    if (cancelBtn) cancelBtn.addEventListener('click', closeTaskCreateDrawerV2);
+    if (submitBtn) submitBtn.addEventListener('click', handleTaskCreateDrawerSubmit);
+
+    var prioTrigger = document.getElementById('task-create-v2-priority-trigger');
+    if (prioTrigger) {
+        prioTrigger.addEventListener('click', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            openTaskCreatePriorityDropdown(prioTrigger);
+        });
+        prioTrigger.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                openTaskCreatePriorityDropdown(prioTrigger);
+            }
+        });
+        renderTaskCreatePriorityTrigger();
+    }
+}
+
+function openTaskCreateDrawerV2() {
+    if (typeof openDrawer !== 'function') return;
+
+    cleanupTaskCreateDrawer();
+
+    var bodyHtml =
+        '<div class="task-create-v2">' +
+        '  <div class="task-create-v2__info">' +
+        '    <textarea id="task-create-v2-title" class="task-create-v2__title ubits-heading-h1" rows="1" maxlength="250" placeholder="Escribe el título de la tarea"></textarea>' +
+        '    <textarea id="task-create-v2-desc" class="task-create-v2__desc ubits-body-sm-regular" rows="1" maxlength="1200" placeholder="Agrega una descripción para dar contexto y claridad…"></textarea>' +
+        '  </div>' +
+        '  <div class="task-create-v2__meta-row task-create-v2__meta-row--attrs">' +
+        '    <div class="task-create-v2__meta-cell">' +
+        '      <span class="task-create-v2__meta-label ubits-body-sm-semibold">Finaliza el</span>' +
+        '      <div id="task-create-v2-end-date-wrap" class="task-create-v2__field-wrap task-create-v2__field-wrap--date"></div>' +
+        '    </div>' +
+        '    <div class="task-create-v2__meta-cell">' +
+        '      <span class="task-create-v2__meta-label ubits-body-sm-semibold">Plan</span>' +
+        '      <div id="task-create-v2-plan-wrap" class="task-create-v2__field-wrap task-create-v2__field-wrap--plan"></div>' +
+        '    </div>' +
+        '    <div class="task-create-v2__meta-cell">' +
+        '      <span class="task-create-v2__meta-label ubits-body-sm-semibold">Prioridad</span>' +
+        '      <div class="task-create-v2__field-wrap task-create-v2__field-wrap--priority">' +
+        '        <div class="task-create-v2__priority-trigger" id="task-create-v2-priority-trigger" role="button" tabindex="0" aria-haspopup="listbox" aria-label="Prioridad"></div>' +
+        '      </div>' +
+        '    </div>' +
+        '  </div>' +
+        '  <hr class="task-create-v2__divider" role="presentation" />' +
+        '  <div class="task-create-v2__assign-block">' +
+        '    <p class="task-create-v2__assign-heading ubits-body-sm-semibold">Asignación</p>' +
+        '    <div class="drawer-agregar-usuarios-options task-create-v2__mode-grid">' +
+        '      <label class="drawer-option-card ubits-radio ubits-radio--md">' +
+        '        <input type="radio" name="task-create-v2-assign-mode" class="ubits-radio__input" value="autocomplete">' +
+        '        <span class="ubits-radio__circle"></span>' +
+        '        <div class="drawer-option-card__main">' +
+        '          <div class="drawer-option-card__row">' +
+        '            <span class="drawer-option-card__icon"><i class="far fa-search"></i></span>' +
+        '            <span class="ubits-body-md-semibold drawer-option-card__title">Agregar colaboradores</span>' +
+        '          </div>' +
+        '          <p class="ubits-body-sm-regular drawer-option-card__desc">Busca y agrega personas con chips.</p>' +
+        '        </div>' +
+        '      </label>' +
+        '      <label class="drawer-option-card ubits-radio ubits-radio--md">' +
+        '        <input type="radio" name="task-create-v2-assign-mode" class="ubits-radio__input" value="csv">' +
+        '        <span class="ubits-radio__circle"></span>' +
+        '        <div class="drawer-option-card__main">' +
+        '          <div class="drawer-option-card__row">' +
+        '            <span class="drawer-option-card__icon"><i class="far fa-file-arrow-up"></i></span>' +
+        '            <span class="ubits-body-md-semibold drawer-option-card__title">Importar desde archivo</span>' +
+        '          </div>' +
+        '          <p class="ubits-body-sm-regular drawer-option-card__desc">Sube un CSV con los usuarios asignados (plantilla descargable).</p>' +
+        '        </div>' +
+        '      </label>' +
+        '    </div>' +
+        '    <div id="task-create-v2-panel-autocomplete" class="task-create-v2__assign-panel" style="display:none">' +
+        '      <div id="task-create-v2-autocomplete-wrap"></div>' +
+        '      <div id="task-create-v2-chips" class="task-create-v2__chips"></div>' +
+        '    </div>' +
+        '    <div id="task-create-v2-panel-csv" class="task-create-v2__assign-panel drawer-usuarios-panel drawer-usuarios-panel--archivo" style="display:none">' +
+        '      <div class="drawer-archivo-section">' +
+        '        <div class="drawer-archivo-header">' +
+        '          <h2 class="ubits-body-md-bold drawer-archivo-title">Importar archivo</h2>' +
+        '          <div class="drawer-archivo-actions">' +
+        '            <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="task-create-v2-archivo-descargar-plantilla"><i class="far fa-arrow-down-to-line"></i><span>Descargar plantilla</span></button>' +
+        '          </div>' +
+        '        </div>' +
+        '        <div class="drawer-archivo-dropzone" id="task-create-v2-archivo-dropzone">' +
+        '          <div class="drawer-archivo-empty" id="task-create-v2-archivo-empty">' +
+        '          <div class="drawer-archivo-dropzone-inner">' +
+        '            <div class="drawer-archivo-file-icon-wrap"><i class="far fa-file-arrow-up"></i></div>' +
+        '            <p class="ubits-body-md-semibold drawer-archivo-dropzone-title">Subir archivos</p>' +
+        '            <p class="ubits-body-sm-regular drawer-archivo-dropzone-formats">CSV &bull; Hasta 5mb</p>' +
+        '            <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="task-create-v2-archivo-btn-seleccionar"><i class="far fa-arrow-up-from-bracket"></i><span>Seleccionar archivos</span></button>' +
+        '          </div>' +
+        '          </div>' +
+        '          <div class="drawer-archivo-file-card" id="task-create-v2-archivo-file-card" hidden style="display:none" aria-live="polite">' +
+        '            <div class="drawer-archivo-file-card__icon-wrap" aria-hidden="true"><i class="far fa-file-lines"></i></div>' +
+        '            <div class="drawer-archivo-file-card__meta">' +
+        '              <span class="ubits-body-sm-semibold drawer-archivo-file-card__name" data-task-create-archivo-nombre></span>' +
+        '              <span class="ubits-body-sm-regular drawer-archivo-file-card__size" data-task-create-archivo-tamano></span>' +
+        '            </div>' +
+        '            <button type="button" class="ubits-button ubits-button--error-tertiary ubits-button--sm ubits-button--icon-only" id="task-create-v2-archivo-btn-quitar" aria-label="Quitar archivo"><i class="far fa-trash-alt"></i></button>' +
+        '          </div>' +
+        '          <input type="file" id="task-create-v2-archivo-input" accept=".csv,text/csv" style="display:none">' +
+        '        </div>' +
+        '      </div>' +
+        '    </div>' +
+        '  </div>' +
+        '  <div id="task-create-v2-plan-alert" class="ubits-alert ubits-alert--info ubits-alert--no-close" style="display:flex">' +
+        '    <div class="ubits-alert__icon"><i class="far fa-info-circle"></i></div>' +
+        '    <div class="ubits-alert__content"><div class="ubits-alert__text">Asigna la tarea a un plan para simplificar su organización y facilitar su seguimiento.</div></div>' +
+        '  </div>' +
+        '</div>';
+
+    var footerHtml =
+        '<p class="task-create-v2__footer-note ubits-body-sm-regular">Esta acción es un prototipo: la tarea no se guarda en la lista realmente.</p>' +
+        '<div class="task-create-v2__footer-actions">' +
+        '  <button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="task-create-v2-cancel"><span>Cancelar</span></button>' +
+        '  <button type="button" class="ubits-button ubits-button--primary ubits-button--md" id="task-create-v2-submit"><i class="far fa-check"></i><span>Crear tarea</span></button>' +
+        '</div>';
+
+    openDrawer({
+        overlayId: TASK_CREATE_DRAWER_OVERLAY_ID,
+        title: 'Nueva tarea',
+        subtitle: 'Completa los datos y asígnala a un plan para organizar mejor el seguimiento.',
+        bodyHtml: bodyHtml,
+        footerHtml: '<div class="task-create-v2__footer-wrap">' + footerHtml + '</div>',
+        size: 'md',
+        onClose: cleanupTaskCreateDrawer
+    });
+
+    bindTaskCreateDrawerEsc();
+
+    setTimeout(function () {
+        initTaskCreateDrawerFormFields();
+    }, 0);
+}
+
 // Inicializar FAB (se puede llamar desde cualquier página)
 function initFabButton() {
     const container = document.getElementById('fab-button-container');
@@ -1870,4 +2508,6 @@ document.addEventListener('DOMContentLoaded', function () {
     window.renderFabButton = renderFabButton;
     window.fabState = fabState;
     window.openCrearMenu = openCrearMenu;
+    window.openTaskCreateDrawerV2 = openTaskCreateDrawerV2;
+    window.closeTaskCreateDrawerV2 = closeTaskCreateDrawerV2;
 });
