@@ -12,7 +12,9 @@
  *     title: 'Título',
  *     bodyHtml: '<p class="ubits-body-sm-regular ubits-popover__text">...</p>',
  *     bodyText: 'Texto plano (alternativa a bodyHtml; se escapa)',
- *     actionsStartHtml: '', // opcional, columna izquierda (ej. Cerrar)
+ *     showCloseButton: true, // default: botón X en cabecera (arriba derecha)
+ *     closeButtonTooltip: 'Cerrar', // tooltip del botón X
+ *     actionsStartHtml: '', // opcional, columna izquierda (si necesitas contenido extra)
  *     actionsEndHtml: '<button class="ubits-button ...">OK</button>',
  *     titleRowHtml: '', // opcional: reemplaza el bloque de título por defecto (incluir id="[popoverId]-title" en el título si aplica)
  *     size: 'md', // 'sm' | 'md' | 'lg'
@@ -209,6 +211,8 @@
         var offset = typeof options.offset === 'number' ? options.offset : 8;
         var title = options.title != null ? String(options.title) : '';
         var titleRowHtml = options.titleRowHtml != null ? String(options.titleRowHtml) : '';
+        var showCloseButton = options.showCloseButton !== false && !titleRowHtml;
+        var closeButtonTooltip = options.closeButtonTooltip != null ? String(options.closeButtonTooltip) : 'Cerrar';
         var bodyHtml = options.bodyHtml != null ? String(options.bodyHtml) : '';
         var bodyText = options.bodyText != null ? String(options.bodyText) : '';
         if (!bodyHtml && bodyText) {
@@ -249,8 +253,29 @@
         if (titleRowHtml) {
             titleBlock = titleRowHtml;
         } else if (title) {
+            var headerClose = '';
+            if (showCloseButton) {
+                headerClose =
+                    '<div class="ubits-popover__header-actions">' +
+                    '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only ubits-popover__close-btn" aria-label="' + escapeHtml(closeButtonTooltip) + '" data-tooltip="' + escapeHtml(closeButtonTooltip) + '" data-tooltip-delay="1000" data-tooltip-position="top">' +
+                    '<i class="far fa-times"></i>' +
+                    '</button>' +
+                    '</div>';
+            }
             titleBlock =
-                '<p class="ubits-body-md-semibold ubits-popover__title" id="' + popoverId + '-title">' + escapeHtml(title) + '</p>';
+                '<div class="ubits-popover__header-row">' +
+                '<p class="ubits-body-md-semibold ubits-popover__title" id="' + popoverId + '-title">' + escapeHtml(title) + '</p>' +
+                headerClose +
+                '</div>';
+        } else if (showCloseButton) {
+            titleBlock =
+                '<div class="ubits-popover__header-row ubits-popover__header-row--close-only">' +
+                '<div class="ubits-popover__header-actions">' +
+                '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only ubits-popover__close-btn" aria-label="' + escapeHtml(closeButtonTooltip) + '" data-tooltip="' + escapeHtml(closeButtonTooltip) + '" data-tooltip-delay="1000" data-tooltip-position="top">' +
+                '<i class="far fa-times"></i>' +
+                '</button>' +
+                '</div>' +
+                '</div>';
         }
 
         var actionsBlock = '';
@@ -267,6 +292,20 @@
         el.innerHTML = '<div class="ubits-popover__surface">' + surfaceInner + arrowHtml + '</div>';
 
         document.body.appendChild(el);
+
+        var closeBtn = el.querySelector('.ubits-popover__close-btn');
+        if (closeBtn) {
+            closeBtn.addEventListener('click', function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                closePopover(popoverId);
+            });
+            if (typeof window.initTooltip === 'function') {
+                try {
+                    window.initTooltip('#' + popoverId + ' .ubits-popover__close-btn');
+                } catch (err) { /* ignore */ }
+            }
+        }
 
         el._ubitsPopoverAnchor = anchorEl;
         el._ubitsPopoverPlacement = placement;

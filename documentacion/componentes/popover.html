@@ -14,6 +14,7 @@
     <link rel="stylesheet" href="../../docs/docs-sidebar.css">
     <link rel="stylesheet" href="../../docs/docstyles.css">
     <link rel="stylesheet" href="../../components/button.css">
+    <link rel="stylesheet" href="../../components/tooltip.css">
     <link rel="stylesheet" href="../../components/popover.css">
     <link rel="stylesheet" href="../../components/alert.css">
     <link rel="stylesheet" href="../../components/toast.css">
@@ -73,6 +74,16 @@
                                             <input type="checkbox" class="ubits-checkbox__input" id="popover-opt-no-arrow">
                                             <span class="ubits-checkbox__box"><i class="far fa-check"></i></span>
                                             <span class="ubits-checkbox__label">Sin colita</span>
+                                        </label>
+                                        <label class="ubits-checkbox ubits-checkbox--sm ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">
+                                            <input type="checkbox" class="ubits-checkbox__input" id="popover-opt-secondary-btn" checked>
+                                            <span class="ubits-checkbox__box"><i class="far fa-check"></i></span>
+                                            <span class="ubits-checkbox__label">Botón secundario</span>
+                                        </label>
+                                        <label class="ubits-checkbox ubits-checkbox--sm ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">
+                                            <input type="checkbox" class="ubits-checkbox__input" id="popover-opt-progress">
+                                            <span class="ubits-checkbox__box"><i class="far fa-check"></i></span>
+                                            <span class="ubits-checkbox__label">Progreso (X de X)</span>
                                         </label>
                                     </div>
                                 </div>
@@ -195,7 +206,14 @@
                                 <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
                                     <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code id="structure-code">&lt;div class="ubits-popover ubits-popover--md ubits-popover--bottom ubits-popover--align-center" id="mi-popover" role="dialog" aria-labelledby="mi-popover-title"&gt;
   &lt;div class="ubits-popover__surface"&gt;
-    &lt;p class="ubits-body-md-semibold ubits-popover__title" id="mi-popover-title"&gt;Título&lt;/p&gt;
+    &lt;div class="ubits-popover__header-row"&gt;
+      &lt;p class="ubits-body-md-semibold ubits-popover__title" id="mi-popover-title"&gt;Título&lt;/p&gt;
+      &lt;div class="ubits-popover__header-actions"&gt;
+        &lt;button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only ubits-popover__close-btn" aria-label="Cerrar" data-tooltip="Cerrar"&gt;
+          &lt;i class="far fa-times"&gt;&lt;/i&gt;
+        &lt;/button&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
     &lt;p class="ubits-body-sm-regular ubits-popover__text"&gt;Cuerpo del mensaje.&lt;/p&gt;
     &lt;div class="ubits-popover__actions"&gt;...&lt;/div&gt;
     &lt;div class="ubits-popover__arrow" aria-hidden="true"&gt;&lt;/div&gt;
@@ -210,10 +228,11 @@
                                     <li><code>components/popover.css</code></li>
                                     <li><code>components/popover.js</code> — para <code>openPopover</code> / <code>closePopover</code> / <code>updatePopoverPosition</code></li>
                                     <li><code>components/button.css</code> + <code>fontawesome-icons.css</code> si usas botones en el pie</li>
+                                    <li><code>components/tooltip.css</code> + <code>components/tooltip.js</code> para tooltip del botón X (opcional)</li>
                                 </ul>
                                 <h3 class="ubits-body-md-bold" style="margin: 24px 0 12px; color: var(--ubits-fg-1-high);">API</h3>
                                 <div class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); line-height: 1.6;">
-                                    <p><strong>openPopover(options)</strong> — Crea el nodo (superficie <code>__surface</code> + <code>__arrow</code> si aplica), lo añade a <code>document.body</code>, posiciona y registra listeners. Opciones: <code>popoverId</code>, <code>anchorEl</code> (omitir para centrado), <code>placement</code>, <code>align</code> (como Tooltip), <code>noArrow</code> — <code>true</code> oculta la colita aunque haya ancla; sin ancla no hay flecha. Resto: <code>offset</code>, <code>title</code> o <code>titleRowHtml</code> (HTML completo del bloque de cabecera; si se usa, incluir <code>id="[popoverId]-title"</code> en el título para accesibilidad), <code>bodyHtml</code>/<code>bodyText</code>, <code>actionsStartHtml</code>, <code>actionsEndHtml</code>, <code>size</code>, <code>closeOnEscape</code>, <code>closeOnClickOutside</code>, <code>zIndex</code>, <code>ariaLabel</code>, <code>ariaModal</code>, <code>onClose</code>.</p>
+                                    <p><strong>openPopover(options)</strong> — Crea el nodo (superficie <code>__surface</code> + <code>__arrow</code> si aplica), lo añade a <code>document.body</code>, posiciona y registra listeners. Opciones: <code>popoverId</code>, <code>anchorEl</code> (omitir para centrado), <code>placement</code>, <code>align</code> (como Tooltip), <code>noArrow</code> — <code>true</code> oculta la colita aunque haya ancla; sin ancla no hay flecha. Resto: <code>offset</code>, <code>title</code> o <code>titleRowHtml</code> (HTML completo del bloque de cabecera; si se usa, incluir <code>id="[popoverId]-title"</code> en el título para accesibilidad), <code>showCloseButton</code> (default <code>true</code>; X icon-only arriba derecha), <code>closeButtonTooltip</code>, <code>bodyHtml</code>/<code>bodyText</code>, <code>actionsStartHtml</code>, <code>actionsEndHtml</code>, <code>size</code>, <code>closeOnEscape</code>, <code>closeOnClickOutside</code>, <code>zIndex</code>, <code>ariaLabel</code>, <code>ariaModal</code>, <code>onClose</code>.</p>
                                     <p><strong>closePopover(id)</strong> — Elimina el popover y ejecuta <code>onClose</code> si se definió.</p>
                                     <p><strong>updatePopoverPosition(id)</strong> — Vuelve a calcular posición tras cambios de DOM o tamaño del ancla.</p>
                                 </div>
@@ -228,6 +247,7 @@
   placement: 'bottom',
   title: 'Filtros',
   bodyText: 'Usa los filtros para acotar los resultados.',
+  showCloseButton: true,
   actionsEndHtml: '&lt;button type="button" class="ubits-button ubits-button--primary ubits-button--sm" onclick="closePopover(\'ayuda-filtro\')"&gt;&lt;span&gt;Entendido&lt;/span&gt;&lt;/button&gt;'
 });</code></pre>
                                 </div>
@@ -245,6 +265,7 @@
     <script src="../../components/alert.js"></script>
     <script src="../../components/toast.js"></script>
     <script src="../../components/input.js"></script>
+    <script src="../../components/tooltip.js"></script>
     <script src="../../components/popover.js"></script>
     <script src="../../docs/docs-sidebar.js"></script>
     <script src="../../script.js"></script>
@@ -264,6 +285,8 @@
         function initPopoverDocPreview() {
             var anchor = document.getElementById('popover-demo-anchor');
             var noArrowCheck = document.getElementById('popover-opt-no-arrow');
+            var secondaryBtnCheck = document.getElementById('popover-opt-secondary-btn');
+            var progressCheck = document.getElementById('popover-opt-progress');
             var currentPos = 'bottom';
             var currentAlignGen = 'center';
 
@@ -272,6 +295,16 @@
                 closePopover('demo-popover-doc');
                 var realAlign = mapPopoverGenericAlign(currentPos, currentAlignGen);
                 var noArrow = noArrowCheck ? noArrowCheck.checked : false;
+                var showSecondary = secondaryBtnCheck ? secondaryBtnCheck.checked : true;
+                var showProgress = progressCheck ? progressCheck.checked : false;
+                var actionsStartHtml = showProgress
+                    ? '<span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">2 de 6</span>'
+                    : '';
+                var actionsEndHtml = '';
+                if (showSecondary) {
+                    actionsEndHtml += '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" onclick="closePopover(\'demo-popover-doc\')"><span>Anterior</span></button>';
+                }
+                actionsEndHtml += '<button type="button" class="ubits-button ubits-button--primary ubits-button--sm" onclick="closePopover(\'demo-popover-doc\')"><span>Listo</span></button>';
                 setTimeout(function () {
                     openPopover({
                         popoverId: 'demo-popover-doc',
@@ -281,8 +314,8 @@
                         noArrow: noArrow,
                         title: 'Ejemplo de popover',
                         bodyText: 'Texto de ayuda o detalle. Puedes cerrar con Escape, con los botones o con clic fuera del panel.',
-                        actionsStartHtml: '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm" onclick="closePopover(\'demo-popover-doc\')"><span>Cerrar</span></button>',
-                        actionsEndHtml: '<button type="button" class="ubits-button ubits-button--primary ubits-button--sm" onclick="closePopover(\'demo-popover-doc\')"><span>Listo</span></button>'
+                        actionsStartHtml: actionsStartHtml,
+                        actionsEndHtml: actionsEndHtml
                     });
                 }, 50);
             }
@@ -325,6 +358,12 @@
 
             if (noArrowCheck) {
                 noArrowCheck.addEventListener('change', updatePopoverPreview);
+            }
+            if (secondaryBtnCheck) {
+                secondaryBtnCheck.addEventListener('change', updatePopoverPreview);
+            }
+            if (progressCheck) {
+                progressCheck.addEventListener('change', updatePopoverPreview);
             }
 
             setTimeout(updatePopoverPreview, 120);

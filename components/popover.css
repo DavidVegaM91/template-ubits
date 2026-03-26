@@ -53,6 +53,28 @@
     color: var(--ubits-fg-1-high);
 }
 
+.ubits-popover__header-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--gap-md);
+    margin-bottom: var(--gap-sm);
+}
+
+.ubits-popover__header-row .ubits-popover__title {
+    margin: 0;
+    flex: 1;
+    min-width: 0;
+}
+
+.ubits-popover__header-row--close-only {
+    justify-content: flex-end;
+}
+
+.ubits-popover__header-actions {
+    flex: 0 0 auto;
+}
+
 .ubits-popover__text {
     margin: 0 0 var(--gap-lg);
     color: var(--ubits-fg-1-high);
