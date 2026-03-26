@@ -301,7 +301,7 @@ body.page-tareas .dashboard-container {
     flex-wrap: nowrap !important;
     /* Sin stretch: cada día usa su altura natural; centrados en vertical respecto al más alto */
     align-items: center !important;
-    gap: var(--gap-lg) !important;
+    gap: var(--gap-sm) !important;
     overflow-x: hidden !important;
     overflow-y: hidden !important;
     flex: 1 1 0% !important;

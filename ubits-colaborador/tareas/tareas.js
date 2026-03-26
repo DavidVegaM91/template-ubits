@@ -484,8 +484,8 @@ const getDaysInMonth = () => {
     const selectedDayNum = selectedDate.getDate();
 
     const mobile = isCalendarMobile();
-    const daysBefore = mobile ? 1 : 3;
-    const maxDays = mobile ? 4 : 7;
+    const daysBefore = mobile ? 2 : 3;
+    const maxDays = mobile ? 5 : 7;
 
     // Día de inicio: N días antes del seleccionado (ahora permite días anteriores a hoy)
     let startDay = selectedDayNum - daysBefore;
