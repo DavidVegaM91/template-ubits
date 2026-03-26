@@ -105,7 +105,7 @@
     let displayLimit = SEGUIMIENTO_LOAD_MORE_SIZE;
     let viewOnlySelected = false;
     let selectedIds = new Set();
-    let currentSort = { column: 'fechaCreacion', direction: 'desc' }; // Por defecto: más reciente primero
+    let currentSort = { column: 'fechaCreacion', direction: 'desc' }; // Por defecto: descendente (fechas más recientes / tardías primero)
     // Filtros por tab: cada tab (Tareas / Planes) tiene su propio estado de filtros
     function getDefaultFilters() {
         return {
@@ -3059,12 +3059,26 @@
             e.stopPropagation();
             var col = btn.dataset.sort;
             var isAvance = col === 'avance';
-            var descText = isAvance ? 'Más avance primero' : 'Más reciente primero';
-            var ascText = isAvance ? 'Menos avance primero' : 'Más reciente al final';
+            var descText;
+            var ascText;
+            var descIcon;
+            var ascIcon;
+            if (isAvance) {
+                descText = 'Más avance primero';
+                ascText = 'Menos avance primero';
+                descIcon = 'arrow-up';
+                ascIcon = 'arrow-down';
+            } else {
+                /* Solo fechas: Descendente / Ascendente + flechas (futura→antigua / antigua→futura) */
+                descText = 'Descendente';
+                ascText = 'Ascendente';
+                descIcon = 'arrow-down';
+                ascIcon = 'arrow-up';
+            }
             var currentDir = currentSort.column === col ? currentSort.direction : null;
             var options = [
-                { text: descText, value: 'desc', leftIcon: 'arrow-up', selected: currentDir === 'desc' },
-                { text: ascText, value: 'asc', leftIcon: 'arrow-down', selected: currentDir === 'asc' }
+                { text: descText, value: 'desc', leftIcon: descIcon, selected: currentDir === 'desc' },
+                { text: ascText, value: 'asc', leftIcon: ascIcon, selected: currentDir === 'asc' }
             ];
             var existing = document.getElementById(overlayId);
             if (existing) existing.remove();

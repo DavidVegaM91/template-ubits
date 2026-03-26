@@ -662,11 +662,11 @@
                     var isNum = c && (c.sortType === 'number' || c.id === 'integrantes');
                     var isDate = c && c.sortType === 'date';
                     var currentDir = (sortColumn === col) ? sortDirection : null;
-                    var descText = isDate ? 'Más reciente primero' : (isNum ? 'Mayor a menor' : 'Z a A');
-                    var ascText = isDate ? 'Más reciente al final' : (isNum ? 'Menor a mayor' : 'A a Z');
+                    var descText = isDate ? 'Descendente' : (isNum ? 'Mayor a menor' : 'Z a A');
+                    var ascText = isDate ? 'Ascendente' : (isNum ? 'Menor a mayor' : 'A a Z');
                     var options = [
-                        { text: descText, value: 'desc', leftIcon: 'arrow-up', selected: currentDir === 'desc' },
-                        { text: ascText, value: 'asc', leftIcon: 'arrow-down', selected: currentDir === 'asc' }
+                        { text: descText, value: 'desc', leftIcon: isDate ? 'arrow-down' : 'arrow-up', selected: currentDir === 'desc' },
+                        { text: ascText, value: 'asc', leftIcon: isDate ? 'arrow-up' : 'arrow-down', selected: currentDir === 'asc' }
                     ];
                     var overlayId = sortOverlayPrefix + '-' + col;
                     var existing = document.getElementById(overlayId);
