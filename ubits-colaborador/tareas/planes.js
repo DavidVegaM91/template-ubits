@@ -1923,32 +1923,8 @@ function handleTaskCreateDrawerSubmit() {
         if (typeof showToast === 'function') showToast('warning', 'Escribe un título para la tarea.');
         return;
     }
-    var priority = taskCreateDrawerState && taskCreateDrawerState.priority ? taskCreateDrawerState.priority : 'media';
-    var endYmd = '';
-    var planId = '';
-    if (taskCreateDrawerInputRefs) {
-        if (taskCreateDrawerInputRefs.endDate && typeof taskCreateDrawerInputRefs.endDate.getValue === 'function') {
-            endYmd = dmySlashToYmdTaskCreate(taskCreateDrawerInputRefs.endDate.getValue());
-        }
-        if (taskCreateDrawerInputRefs.plan && typeof taskCreateDrawerInputRefs.plan.getValue === 'function') {
-            planId = taskCreateDrawerInputRefs.plan.getValue() || '';
-        }
-    }
     if (typeof showToast === 'function') {
-        var msg = 'Tarea creada (prototipo).';
-        if (!planId) msg += ' Puedes asignarla a un plan desde el detalle.';
-        if (endYmd) msg += ' Fecha límite: ' + endYmd + '.';
-        msg += ' Prioridad: ' + (priority === 'alta' ? 'alta' : priority === 'baja' ? 'baja' : 'media') + '.';
-        var mode = taskCreateDrawerState && taskCreateDrawerState.assignment_mode ? taskCreateDrawerState.assignment_mode : '';
-        if (mode === 'autocomplete') {
-            var n = (taskCreateDrawerState.assignees && taskCreateDrawerState.assignees.length) ? taskCreateDrawerState.assignees.length : 0;
-            msg += ' Asignados (chips): ' + n + '.';
-        } else if (mode === 'csv' && taskCreateDrawerState.csvFile && taskCreateDrawerState.csvFile.name) {
-            msg += ' Archivo: ' + taskCreateDrawerState.csvFile.name + '.';
-        } else if (!mode) {
-            msg += ' Asignación: sin modo elegido.';
-        }
-        showToast('success', msg);
+        showToast('success', 'Tarea creada exitosamente');
     }
     closeTaskCreateDrawerV2();
 }
