@@ -2,8 +2,11 @@
    UBITS TOOLTIP COMPONENT
    ======================================== */
 
-/* Elevación aplicada al contenedor para que contenido + colita sean una sola forma (benchmark: Material, Radix, Fluent) */
+/* Elevación aplicada al contenedor para que contenido + colita sean una sola forma (benchmark: Material, Radix, Fluent).
+ * Capas equivalentes a --ubits-elevation-overlay (--ubits-colors Figma R4); no se puede usar var(--ubits-elevation-*) en filter: drop-shadow. */
 .ubits-tooltip {
+    --ubits-tooltip-shadow-ambient: rgba(0, 0, 0, 0.12);
+    --ubits-tooltip-shadow-key: rgba(0, 0, 0, 0.14);
     position: fixed;
     z-index: 10000;
     width: max-content;
@@ -13,7 +16,8 @@
     opacity: 0;
     transition: opacity 0.2s ease;
     overflow: visible;
-    filter: drop-shadow(0px 1px 2px var(--ubits-bottom-nav-shadow-opacity)) drop-shadow(0px 0px 2px var(--ubits-bottom-nav-shadow-opacity));
+    filter: drop-shadow(0 0 2px var(--ubits-tooltip-shadow-ambient))
+        drop-shadow(0 4px 8px var(--ubits-tooltip-shadow-key));
 }
 
 .ubits-tooltip.ubits-tooltip--visible {

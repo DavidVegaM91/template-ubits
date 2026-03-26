@@ -223,13 +223,13 @@
 
             function getPlanActionOptionsByStatus(estado) {
                 if (estado === 'Vigente') {
-                    return [
+                return [
                         { text: 'Enviar recordatorio', value: 'send-reminders', leftIcon: 'bell' },
                         { text: 'Eliminar', value: 'delete-plan', leftIcon: 'trash' }
-                    ];
-                }
+                ];
+            }
                 if (estado === 'No vigente') {
-                    return [
+                return [
                         { text: 'Descargar certificados', value: 'download-certificates', leftIcon: 'download' },
                         { text: 'Eliminar', value: 'delete-plan', leftIcon: 'trash' }
                     ];
@@ -406,7 +406,7 @@
             renderPlanEstadoTagEditar();
             initPlanActions();
             document.title = 'UBITS Playground - LMS Creator - Detalle del plan de contenidos — ' + (planEditar && planEditar.nombre ? planEditar.nombre : '');
-
+            
             if (typeof loadHeaderProduct === 'function') {
                 loadHeaderProduct('header-product-container', {
                     productName: 'Detalle del plan de contenidos',
@@ -740,8 +740,8 @@
                                     var btn = emptySearchContainer.querySelector('.ubits-button--secondary');
                                     if (btn) {
                                         btn.onclick = function(e) {
-                                            e.preventDefault();
-                                            e.stopPropagation();
+                    e.preventDefault();
+                    e.stopPropagation();
                                             if (searchInput) { searchInput.value = ''; searchInput.dispatchEvent(new Event('input')); }
                                             filtrarYRenderizarCards();
                                         };
@@ -787,7 +787,7 @@
                             cardEl.dataset.courseId = course.id;
                             if (listSel.some(function(x) { return String(x.id) === String(course.id); })) {
                                 cardEl.classList.add('course-card-compact--selected');
-                            } else {
+                    } else {
                                 cardEl.classList.remove('course-card-compact--selected');
                             }
                         }
@@ -1030,20 +1030,20 @@
                     syncWizardPrimary();
                 }
 
-                function escapeDrawerHtml(t) { if (t == null) return ''; var d = document.createElement('div'); d.textContent = t; return d.innerHTML; }
-                function buildDrawerColabRowHtml(row) {
-                    var avatarUrl = (row.avatar && String(row.avatar).trim()) ? String(row.avatar).replace(/"/g, '&quot;') : '';
-                    var usuarioCell = '<div class="detalle-plan-usuario-cell">' +
-                        (avatarUrl
-                            ? '<span class="ubits-avatar ubits-avatar--sm"><img src="' + avatarUrl + '" alt="' + escapeDrawerHtml(row.nombre) + '" class="ubits-avatar__img"></span>'
-                            : '<span class="ubits-avatar ubits-avatar--sm"><span class="ubits-avatar__fallback"><i class="far fa-user"></i></span></span>') +
-                        '<span class="ubits-body-sm-regular">' + escapeDrawerHtml(row.nombre) + '</span></div>';
-                    return '<td data-col="username"><span class="ubits-body-sm-regular">' + escapeDrawerHtml(row.username) + '</span></td>' +
-                        '<td data-col="nombre">' + usuarioCell + '</td>' +
-                        '<td data-col="correo"><span class="ubits-body-sm-regular">' + escapeDrawerHtml(row.correo) + '</span></td>' +
-                        '<td data-col="area"><span class="ubits-body-sm-regular">' + escapeDrawerHtml(row.area) + '</span></td>' +
-                        '<td data-col="lider"><span class="ubits-body-sm-regular">' + escapeDrawerHtml(row.lider) + '</span></td>';
-                }
+                    function escapeDrawerHtml(t) { if (t == null) return ''; var d = document.createElement('div'); d.textContent = t; return d.innerHTML; }
+                    function buildDrawerColabRowHtml(row) {
+                        var avatarUrl = (row.avatar && String(row.avatar).trim()) ? String(row.avatar).replace(/"/g, '&quot;') : '';
+                        var usuarioCell = '<div class="detalle-plan-usuario-cell">' +
+                            (avatarUrl
+                                ? '<span class="ubits-avatar ubits-avatar--sm"><img src="' + avatarUrl + '" alt="' + escapeDrawerHtml(row.nombre) + '" class="ubits-avatar__img"></span>'
+                                : '<span class="ubits-avatar ubits-avatar--sm"><span class="ubits-avatar__fallback"><i class="far fa-user"></i></span></span>') +
+                            '<span class="ubits-body-sm-regular">' + escapeDrawerHtml(row.nombre) + '</span></div>';
+                        return '<td data-col="username"><span class="ubits-body-sm-regular">' + escapeDrawerHtml(row.username) + '</span></td>' +
+                            '<td data-col="nombre">' + usuarioCell + '</td>' +
+                            '<td data-col="correo"><span class="ubits-body-sm-regular">' + escapeDrawerHtml(row.correo) + '</span></td>' +
+                            '<td data-col="area"><span class="ubits-body-sm-regular">' + escapeDrawerHtml(row.area) + '</span></td>' +
+                            '<td data-col="lider"><span class="ubits-body-sm-regular">' + escapeDrawerHtml(row.lider) + '</span></td>';
+                    }
 
                 var drawerColabContainer = overlay.querySelector('#drawer-colab-data-table-container');
                 var drawerColabTablaRef = null;
@@ -1111,9 +1111,9 @@
                             });
                         });
                         if (typeof closeDrawer === 'function') closeDrawer('drawer-agregar-usuarios');
-                        if (asignacionesTablaRef && typeof asignacionesTablaRef.refresh === 'function') asignacionesTablaRef.refresh();
-                        bindAsignacionesRowsAfterRefresh();
-                        if (typeof updateGuardarButtonState === 'function') updateGuardarButtonState();
+                    if (asignacionesTablaRef && typeof asignacionesTablaRef.refresh === 'function') asignacionesTablaRef.refresh();
+                    bindAsignacionesRowsAfterRefresh();
+                    if (typeof updateGuardarButtonState === 'function') updateGuardarButtonState();
                         if (agregados > 0 && typeof iniciarAnimacionEstadoProcesandoAsignacion === 'function') iniciarAnimacionEstadoProcesandoAsignacion();
                         if (typeof showToast === 'function' && agregados > 0) showToast('success', 'Asignación(es) agregada(s) correctamente');
                     };
@@ -1125,9 +1125,9 @@
                             showWizardStep(1);
                             return;
                         }
-                        if (typeof closeDrawer === 'function') closeDrawer('drawer-agregar-usuarios');
+                if (typeof closeDrawer === 'function') closeDrawer('drawer-agregar-usuarios');
                     };
-                }
+            }
             }
 
             var asignacionesContainer = document.getElementById('asignaciones-data-table-container');

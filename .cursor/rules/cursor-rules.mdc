@@ -294,6 +294,7 @@ openModal({
 #### **3. 🔧 UTILITY COMPONENTS:**
 - **Profile Menu** → `components/profile-menu.css` + `components/profile-menu.js`
 - **Modal** (overlay, header/body/footer) → `components/modal.css` + `components/modal.js`. **Renderizado recomendado:** `openModal({ overlayId, title, bodyHtml, footerHtml?, size?, closeOnOverlayClick?, onClose? })` para estructura siempre correcta. **Si usas HTML directo:** título = `<span class="ubits-modal-title ubits-body-md-bold">Título</span>` (NO usar h2). Cerrar con `closeModal(overlayId)`.
+- **Coachmark** (product tour: máscara + spotlight + Popover por paso) → `components/coachmark.css` + `components/coachmark.js` — requiere `popover.css`, `popover.js`, `button.css`; API `UBITS_COACHMARK.start({ steps: [...] })` / `UBITS_COACHMARK.close()`. Doc: `documentacion/componentes/coachmark.html`
 - **Docs Sidebar** → `docs/docs-sidebar.css` + `docs/docs-sidebar.js`
 
 ## 📋 ARCHIVOS DEL PROYECTO - QUÉ HACE CADA UNO

@@ -74,6 +74,8 @@ Una **plantilla lista para usar** que permite a **Product Managers**, **Diseñad
 - **Tab** - Tabs de navegación (estados: active, inactive; tamaños: xs, sm, md, lg; variantes: con texto, icon-only; iconos opcionales) - **RENDERIZADO: HTML directo**
 - **Empty State** - Estados vacíos (icono, título, descripción, botones opcionales; tamaños de icono: sm, md, lg; casos de uso: búsqueda sin resultados, contenido vacío, estados iniciales) - **RENDERIZADO: loadEmptyState()**
 - **Paginator** - Paginación de resultados (navegación por páginas, items por página, callbacks de cambio) - **RENDERIZADO: loadPaginator()**
+- **Popover** - Panel flotante contextual (título, cuerpo, acciones; colita opcional como Tooltip; lado + alineación: 12 combinaciones; `noArrow` o sin ancla = sin flecha; cierre con Escape y clic fuera) - **RENDERIZADO: openPopover() / closePopover()**
+- **Coachmark** - Product tour (máscara + spotlight, texto del paso con Popover, pasos y navegación; `UBITS_COACHMARK.start` / `close`) - **RENDERIZADO: coachmark.js** (requiere `popover.js` + `button.css`)
 - **Copilot Chat** - Chat de asistente IA (interfaz de conversación con mensajes, input, historial) - **RENDERIZADO: loadCopilotChat()**
 - **Study Chat** - Chat de estudio con IA (interfaz especializada para aprendizaje) - **RENDERIZADO: loadStudyChat()**
 - **Avatar** - Avatar de usuario (tamaños, estados) - **RENDERIZADO: HTML directo**
@@ -110,6 +112,7 @@ Todos los componentes UBITS requieren imports obligatorios:
 <link rel="stylesheet" href="../../components/tab.css">
 <link rel="stylesheet" href="../../components/empty-state.css">
 <link rel="stylesheet" href="../../components/paginator.css">
+<link rel="stylesheet" href="../../components/popover.css">
 <link rel="stylesheet" href="../../components/copilot-chat.css">
 <link rel="stylesheet" href="../../components/study-chat.css">
 <link rel="stylesheet" href="../../components/floating-menu.css">
@@ -136,6 +139,7 @@ Todos los componentes UBITS requieren imports obligatorios:
 <script src="../../components/carousel-contents.js"></script>
 <script src="../../components/empty-state.js"></script>
 <script src="../../components/paginator.js"></script>
+<script src="../../components/popover.js"></script>
 <script src="../../components/copilot-chat.js"></script>
 <script src="../../components/study-chat.js"></script>
 <script src="../../components/floating-menu.js"></script>
@@ -287,6 +291,8 @@ Todos los componentes UBITS requieren imports obligatorios:
 - **`documentacion/componentes/dropdown-menu.html`** - Documentación del componente Dropdown Menu
 - **`documentacion/componentes/loader.html`** - Documentación del componente Loader
 - **`documentacion/componentes/modal.html`** - Documentación del componente Modal
+- **`documentacion/componentes/popover.html`** - Documentación del componente Popover
+- **`documentacion/componentes/coachmark.html`** - Documentación del componente Coachmark (product tour)
 - **`documentacion/componentes/table.html`** - Documentación del componente Table
 - **`documentacion/componentes/tooltip.html`** - Documentación del componente Tooltip
 
@@ -748,6 +754,8 @@ loadCardContentCompact('mi-contenedor-compact', [
 - **`documentacion/componentes/dropdown-menu.html`** - Documentación del componente Dropdown Menu
 - **`documentacion/componentes/loader.html`** - Documentación del componente Loader
 - **`documentacion/componentes/modal.html`** - Documentación del componente Modal
+- **`documentacion/componentes/popover.html`** - Documentación del componente Popover
+- **`documentacion/componentes/coachmark.html`** - Documentación del componente Coachmark (product tour)
 - **`documentacion/componentes/table.html`** - Documentación del componente Table
 - **`documentacion/componentes/tooltip.html`** - Documentación del componente Tooltip
 - **`documentacion/guias/colores.html`** - Guía de colores UBITS
