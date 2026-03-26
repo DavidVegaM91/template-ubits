@@ -149,6 +149,9 @@
     function buildSteps() {
         return COPY.map(function (cfg, i) {
             var stepNum = i + 1;
+            var align = 'center';
+            if (stepNum === 2 || stepNum === 3) align = 'left';
+            if (stepNum === 4) align = 'right';
             return {
                 title: cfg.title,
                 body: cfg.body,
@@ -156,7 +159,7 @@
                     return getTargetForStep(stepNum);
                 },
                 placement: 'bottom',
-                align: 'center'
+                align: align
             };
         });
     }
