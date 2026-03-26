@@ -14,6 +14,7 @@
     <link rel="stylesheet" href="../../docs/docs-sidebar.css">
     <link rel="stylesheet" href="../../docs/docstyles.css">
     <link rel="stylesheet" href="../../components/button.css">
+    <link rel="stylesheet" href="../../components/tooltip.css">
     <link rel="stylesheet" href="../../components/popover.css">
     <link rel="stylesheet" href="../../components/coachmark.css">
     <link rel="stylesheet" href="../../components/alert.css">
@@ -110,7 +111,7 @@
                             Prompts útiles
                         </h2>
                         <p class="ubits-body-md-regular" style="margin-bottom: 24px; color: var(--ubits-fg-1-medium);">
-                            Importa <code>coachmark.css</code>, <code>coachmark.js</code>, <code>popover.css</code>, <code>popover.js</code> y <code>button.css</code>. Reemplaza textos entre [corchetes].
+                            Importa <code>coachmark.css</code>, <code>coachmark.js</code>, <code>popover.css</code>, <code>popover.js</code>, <code>tooltip.css</code>, <code>tooltip.js</code> y <code>button.css</code>. Reemplaza textos entre [corchetes].
                         </p>
                         <div id="coachmark-warning-prompts" style="margin-bottom: 24px;"></div>
                         <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
@@ -119,7 +120,7 @@
                                 <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('coachmark-prompt-1')"><i class="far fa-copy"></i><span>Copiar</span></button>
                             </div>
                             <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-md);">
-                                <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="coachmark-prompt-1">Añade un coachmark UBITS que recorra [lista de zonas o selectores], con títulos y textos [descripción]. Importa coachmark.css, coachmark.js, popover.css, popover.js y button.css; usa UBITS_COACHMARK.start con showProgress true.</code></pre>
+                                <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="coachmark-prompt-1">Añade un coachmark UBITS que recorra [lista de zonas o selectores], con títulos y textos [descripción]. Importa coachmark.css, coachmark.js, popover.css, popover.js, tooltip.css, tooltip.js y button.css; usa UBITS_COACHMARK.start con showProgress true.</code></pre>
                             </div>
                         </div>
                         <div>
@@ -155,6 +156,7 @@
                                 <li><code>components/coachmark.css</code> + <code>components/coachmark.js</code></li>
                                 <li><code>components/popover.css</code> + <code>components/popover.js</code></li>
                                 <li><code>components/button.css</code> + <code>fontawesome-icons.css</code></li>
+                                <li><code>components/tooltip.css</code> + <code>components/tooltip.js</code> (tooltip «Cerrar» en el botón X de la cabecera)</li>
                                 <li>Estilos base: <code>ubits-colors.css</code>, <code>ubits-typography.css</code>, <code>styles.css</code></li>
                             </ul>
                             <h3 class="ubits-body-md-bold" style="margin: 24px 0 12px; color: var(--ubits-fg-1-high);">Capas</h3>
@@ -163,7 +165,7 @@
                             </p>
                             <h3 class="ubits-body-md-bold" style="margin: 24px 0 12px; color: var(--ubits-fg-1-high);">API</h3>
                             <p class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); line-height: 1.6;">
-                                <strong>UBITS_COACHMARK.start(options)</strong> — <code>steps</code> (array de <code>target</code> selector/elemento/función o <code>null</code>, <code>title</code>, <code>body</code> o <code>bodyHtml</code>, <code>placement</code>, <code>align</code>, <code>offset</code>, <code>size</code>, <code>showSpotlight</code>, <code>requireTarget</code>), <code>popoverId</code>, <code>startIndex</code> (índice 0-based del primer paso; útil en tours multi-página), <code>onBeforeNext(index, step)</code> / <code>onBeforePrev(index, step)</code> (devolver <code>false</code> para cancelar el paso y p. ej. navegar con <code>location.href</code>), <code>showProgress</code>, <code>padding</code>, <code>zIndexLayer</code>, <code>zIndexPopover</code>, <code>onComplete</code> (solo al pulsar Finalizar), <code>onDismiss(reason)</code> (<code>close</code> | <code>escape</code> | <code>missing-target</code> | <code>dismiss</code>; no se llama con <code>restart</code>), <code>onStepChange(index, step)</code>.<br><br>
+                                <strong>UBITS_COACHMARK.start(options)</strong> — <code>steps</code> (array de <code>target</code> selector/elemento/función o <code>null</code>, <code>title</code>, <code>body</code> o <code>bodyHtml</code>, <code>placement</code>, <code>align</code>, <code>offset</code>, <code>size</code>, <code>showSpotlight</code>, <code>requireTarget</code>), <code>popoverId</code>, <code>startIndex</code> (índice 0-based del primer paso; útil en tours multi-página), <code>onBeforeNext(index, step)</code> / <code>onBeforePrev(index, step)</code> (devolver <code>false</code> para cancelar el paso y p. ej. navegar con <code>location.href</code>), <code>showProgress</code> (si es true y hay más de un paso: texto <code>N de M</code> en el pie izquierdo; cabecera con título + botón cierre icon-only (<code>fa-times</code>, como en modal) con tooltip «Cerrar» a la derecha salvo en el último paso, donde solo <strong>Finalizar</strong>), <code>padding</code>, <code>zIndexLayer</code>, <code>zIndexPopover</code>, <code>onComplete</code> (solo al pulsar Finalizar), <code>onDismiss(reason)</code> (<code>close</code> | <code>escape</code> | <code>missing-target</code> | <code>dismiss</code>; no se llama con <code>restart</code>), <code>onStepChange(index, step)</code>.<br><br>
                                 <strong>UBITS_COACHMARK.close(reason)</strong> — cierra tour y popover.<br>
                                 <strong>UBITS_COACHMARK.next()</strong> / <strong>prev()</strong> — avanza o retrocede paso.<br>
                                 <strong>UBITS_COACHMARK.layout()</strong> — recalcula spotlight y posición del popover (tras cambios de layout).<br>
@@ -198,6 +200,7 @@
     <script src="../../components/alert.js"></script>
     <script src="../../components/toast.js"></script>
     <script src="../../components/popover.js"></script>
+    <script src="../../components/tooltip.js"></script>
     <script src="../../components/coachmark.js"></script>
     <script src="../../docs/docs-sidebar.js"></script>
     <script src="../../script.js"></script>

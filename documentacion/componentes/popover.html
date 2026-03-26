@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="../../images/Ubits-logo-dark.svg">
+    <title>Popover | UBITS Playground</title>
+    <link rel="stylesheet" href="../../general-styles/ubits-colors.css">
+    <link rel="stylesheet" href="../../general-styles/styles.css">
+    <link rel="stylesheet" href="../../general-styles/fontawesome-icons.css">
+    <link rel="stylesheet" href="../../general-styles/ubits-typography.css">
+    <link rel="stylesheet" href="../../components/sub-nav.css">
+    <link rel="stylesheet" href="../../components/sidebar.css">
+    <link rel="stylesheet" href="../../docs/docs-sidebar.css">
+    <link rel="stylesheet" href="../../docs/docstyles.css">
+    <link rel="stylesheet" href="../../components/button.css">
+    <link rel="stylesheet" href="../../components/popover.css">
+    <link rel="stylesheet" href="../../components/alert.css">
+    <link rel="stylesheet" href="../../components/toast.css">
+    <link rel="stylesheet" href="../../components/input.css">
+    <link rel="stylesheet" href="../../components/dropdown-menu.css">
+    <link rel="stylesheet" href="../../components/checkbox.css">
+    <style>
+        .popover-preview-area {
+            min-height: 220px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--ubits-bg-2);
+            border-radius: var(--border-radius-md);
+            border: 1px solid var(--ubits-border-1);
+            padding: var(--padding-2xl);
+        }
+    </style>
+</head>
+<body class="componentes-page" data-theme="light">
+    <main class="main-content">
+        <div id="top-nav-container"></div>
+        <div style="display: flex;">
+            <div id="docs-dropdown-container"></div>
+            <div id="docs-sidebar-container"></div>
+            <div class="components-content">
+                <div class="content-area" style="display: block; width: 100%;">
+                    <div style="text-align: center; margin-bottom: 60px;">
+                        <h1 class="ubits-display-d2-bold" style="margin-bottom: 24px; color: var(--ubits-accent-brand);">
+                            Popover
+                        </h1>
+                        <p class="ubits-body-md-regular" style="max-width: 800px; margin: 0 auto 32px; line-height: 1.6;">
+                            Panel flotante para mostrar ayuda contextual, confirmaciones ligeras o pasos sin ocupar toda la pantalla como un modal.
+                        </p>
+                    </div>
+
+                    <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: var(--border-radius-lg); margin-bottom: 40px;">
+                        <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                            <i class="far fa-eye" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                            Preview del componente
+                        </h2>
+                        <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6;">
+                            Usa los mismos selectores que en <strong>Tooltip</strong>: posición, alineación genérica (Inicio / Centro / Fin) y opción <strong>Sin colita</strong>. El panel se abre al cargar y al cambiar controles; puedes cerrar con <strong>Escape</strong>, los botones del pie o <strong>clic fuera</strong>.
+                        </p>
+                        <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: var(--border-radius-md);">
+                            <div class="popover-controls" style="display: flex; flex-wrap: wrap; gap: var(--gap-2xl); margin-bottom: var(--padding-2xl); padding-bottom: var(--padding-2xl); border-bottom: 1px solid var(--ubits-border-1);">
+                                <div style="flex: 1; min-width: 200px;">
+                                    <div id="popover-pos-container"></div>
+                                </div>
+                                <div style="flex: 1; min-width: 200px;">
+                                    <div id="popover-align-container"></div>
+                                </div>
+                                <div style="flex: 1; min-width: 200px;">
+                                    <label class="ubits-body-sm-bold" style="display: block; margin-bottom: var(--gap-sm); color: var(--ubits-fg-1-high);">Opciones</label>
+                                    <div style="display: flex; gap: var(--gap-lg); align-items: center; flex-wrap: wrap; min-height: 40px;">
+                                        <label class="ubits-checkbox ubits-checkbox--sm ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">
+                                            <input type="checkbox" class="ubits-checkbox__input" id="popover-opt-no-arrow">
+                                            <span class="ubits-checkbox__box"><i class="far fa-check"></i></span>
+                                            <span class="ubits-checkbox__label">Sin colita</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="popover-preview-area" style="position: relative; overflow: hidden;">
+                                <div id="popover-preview-target-container" style="display: flex; align-items: center; justify-content: center; width: 100%; min-height: 100%; padding: var(--padding-2xl);">
+                                    <div id="popover-demo-zone" style="background: var(--ubits-bg-1); padding: var(--padding-2xl); border-radius: var(--border-radius-md); border: 1px dashed var(--ubits-border-1); text-align: center; max-width: 320px;">
+                                        <p class="ubits-body-sm-bold" style="margin-bottom: var(--gap-sm); color: var(--ubits-accent-brand);">Zona de pruebas</p>
+                                        <p class="ubits-body-sm-regular" style="margin-bottom: var(--padding-lg); color: var(--ubits-fg-1-medium);">Usa los controles de arriba para cambiar posición y alineación. El popover se actualiza solo; también puedes volver a abrirlo con el botón inferior.</p>
+                                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="popover-demo-anchor" aria-describedby="demo-popover-doc">
+                                            <i class="far fa-crosshairs"></i>
+                                            <span>Ancla del popover</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="margin-top: var(--padding-lg); display: flex; flex-wrap: wrap; gap: var(--gap-sm); justify-content: center; align-items: center;">
+                                <button type="button" class="ubits-button ubits-button--primary ubits-button--md" onclick="openDemoPopover()">
+                                    <i class="far fa-window-restore"></i>
+                                    <span>Abrir popover</span>
+                                </button>
+                                <button type="button" class="ubits-button ubits-button--tertiary ubits-button--md" onclick="openCenteredDemo()">
+                                    <span>Centrado (sin ancla)</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: var(--border-radius-lg); margin-bottom: 40px;">
+                        <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                            <i class="far fa-info-circle" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                            Características generales
+                        </h2>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
+                            <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: var(--border-radius-md);">
+                                <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-location-arrow"></i></div>
+                                <div class="ubits-body-sm-bold">Anclaje</div>
+                                <div class="ubits-body-sm-regular">Lado, alineación y colita como Tooltip; sin ancla = centrado sin flecha</div>
+                            </div>
+                            <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: var(--border-radius-md);">
+                                <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-keyboard"></i></div>
+                                <div class="ubits-body-sm-bold">Cierre</div>
+                                <div class="ubits-body-sm-regular">Escape y clic fuera opcionales; botones con el componente Button</div>
+                            </div>
+                            <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: var(--border-radius-md);">
+                                <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-expand-arrows-alt"></i></div>
+                                <div class="ubits-body-sm-bold">Tamaños</div>
+                                <div class="ubits-body-sm-regular">Variantes sm, md y lg de ancho máximo</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: var(--border-radius-lg); margin-bottom: 40px;">
+                        <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                            <i class="far fa-comments" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                            Prompts útiles
+                        </h2>
+                        <p class="ubits-body-md-regular" style="margin-bottom: 24px; color: var(--ubits-fg-1-medium);">
+                            Importa <code>popover.css</code> y <code>popover.js</code> en tu página (y <code>button.css</code> si el pie lleva botones). Reemplaza los textos entre [corchetes].
+                        </p>
+
+                        <div id="popover-warning-prompts" style="margin-bottom: 24px;"></div>
+
+                        <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
+                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                                <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Abrir popover anclado</h3>
+                                <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('popover-prompt-1')"><i class="far fa-copy"></i><span>Copiar</span></button>
+                            </div>
+                            <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
+                                <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="popover-prompt-1">Inserta un popover UBITS anclado al botón o elemento [ubicación], con título [título], texto [mensaje] y botones [acciones]. Importa popover.css, popover.js y button.css.</code></pre>
+                            </div>
+                        </div>
+
+                        <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
+                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                                <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Popover centrado</h3>
+                                <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('popover-prompt-2')"><i class="far fa-copy"></i><span>Copiar</span></button>
+                            </div>
+                            <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
+                                <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="popover-prompt-2">Crea un popover centrado en pantalla con openPopover sin anchorEl, título [título] y texto [mensaje].</code></pre>
+                            </div>
+                        </div>
+
+                        <div>
+                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                                <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Cerrar desde código</h3>
+                                <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('popover-prompt-3')"><i class="far fa-copy"></i><span>Copiar</span></button>
+                            </div>
+                            <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
+                                <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="popover-prompt-3">Llama a closePopover con el id del popover cuando el usuario termine [acción específica].</code></pre>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="background: var(--ubits-bg-1); border-radius: 16px; margin-bottom: 40px; overflow: hidden;">
+                        <div style="padding: 32px; text-align: center; border-bottom: 1px solid var(--ubits-border-1);">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 0; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-code" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Documentación técnica
+                            </h2>
+                            <p class="ubits-body-md-regular" style="margin-top: 16px; color: var(--ubits-fg-1-medium);">
+                                Estructura HTML, API de JavaScript y requisitos de importación.
+                            </p>
+                        </div>
+                        <div style="background: var(--ubits-bg-2); padding: 20px; text-align: center; cursor: pointer;" onclick="toggleTechnicalDocs()">
+                            <span class="ubits-body-md-regular" style="color: var(--ubits-accent-brand); display: flex; align-items: center; justify-content: center; gap: 8px;">
+                                <i class="far fa-chevron-down" id="tech-docs-chevron" style="transition: transform 0.3s ease;"></i>
+                                Mostrar
+                            </span>
+                        </div>
+                        <div id="technical-docs-content" style="display: none; padding: 0;">
+                            <div style="padding: 32px; border-bottom: 1px solid var(--ubits-border-1);">
+                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;">
+                                    <h2 class="ubits-heading-h2" style="margin: 0; color: var(--ubits-fg-1-high);">
+                                        <i class="far fa-sitemap" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                        Estructura del componente
+                                    </h2>
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('structure-code')"><i class="far fa-copy"></i><span>Copiar</span></button>
+                                </div>
+                                <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
+                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code id="structure-code">&lt;div class="ubits-popover ubits-popover--md ubits-popover--bottom ubits-popover--align-center" id="mi-popover" role="dialog" aria-labelledby="mi-popover-title"&gt;
+  &lt;div class="ubits-popover__surface"&gt;
+    &lt;p class="ubits-body-md-semibold ubits-popover__title" id="mi-popover-title"&gt;Título&lt;/p&gt;
+    &lt;p class="ubits-body-sm-regular ubits-popover__text"&gt;Cuerpo del mensaje.&lt;/p&gt;
+    &lt;div class="ubits-popover__actions"&gt;...&lt;/div&gt;
+    &lt;div class="ubits-popover__arrow" aria-hidden="true"&gt;&lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+                                </div>
+                            </div>
+                            <div style="padding: 32px;">
+                                <h3 class="ubits-body-md-bold" style="margin-bottom: 12px; color: var(--ubits-fg-1-high);">Requisitos</h3>
+                                <ul class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); line-height: 1.6;">
+                                    <li><code>general-styles/ubits-colors.css</code>, <code>ubits-typography.css</code>, <code>styles.css</code></li>
+                                    <li><code>components/popover.css</code></li>
+                                    <li><code>components/popover.js</code> — para <code>openPopover</code> / <code>closePopover</code> / <code>updatePopoverPosition</code></li>
+                                    <li><code>components/button.css</code> + <code>fontawesome-icons.css</code> si usas botones en el pie</li>
+                                </ul>
+                                <h3 class="ubits-body-md-bold" style="margin: 24px 0 12px; color: var(--ubits-fg-1-high);">API</h3>
+                                <div class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); line-height: 1.6;">
+                                    <p><strong>openPopover(options)</strong> — Crea el nodo (superficie <code>__surface</code> + <code>__arrow</code> si aplica), lo añade a <code>document.body</code>, posiciona y registra listeners. Opciones: <code>popoverId</code>, <code>anchorEl</code> (omitir para centrado), <code>placement</code>, <code>align</code> (como Tooltip), <code>noArrow</code> — <code>true</code> oculta la colita aunque haya ancla; sin ancla no hay flecha. Resto: <code>offset</code>, <code>title</code> o <code>titleRowHtml</code> (HTML completo del bloque de cabecera; si se usa, incluir <code>id="[popoverId]-title"</code> en el título para accesibilidad), <code>bodyHtml</code>/<code>bodyText</code>, <code>actionsStartHtml</code>, <code>actionsEndHtml</code>, <code>size</code>, <code>closeOnEscape</code>, <code>closeOnClickOutside</code>, <code>zIndex</code>, <code>ariaLabel</code>, <code>ariaModal</code>, <code>onClose</code>.</p>
+                                    <p><strong>closePopover(id)</strong> — Elimina el popover y ejecuta <code>onClose</code> si se definió.</p>
+                                    <p><strong>updatePopoverPosition(id)</strong> — Vuelve a calcular posición tras cambios de DOM o tamaño del ancla.</p>
+                                </div>
+                                <div style="margin-top: 24px; display: flex; justify-content: space-between; align-items: center;">
+                                    <span class="ubits-body-md-regular">Ejemplo mínimo (openPopover)</span>
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('implement-code')"><i class="far fa-copy"></i><span>Copiar</span></button>
+                                </div>
+                                <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px; margin-top: 12px;">
+                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="implement-code">openPopover({
+  popoverId: 'ayuda-filtro',
+  anchorEl: document.getElementById('btn-filtro'),
+  placement: 'bottom',
+  title: 'Filtros',
+  bodyText: 'Usa los filtros para acotar los resultados.',
+  actionsEndHtml: '&lt;button type="button" class="ubits-button ubits-button--primary ubits-button--sm" onclick="closePopover(\'ayuda-filtro\')"&gt;&lt;span&gt;Entendido&lt;/span&gt;&lt;/button&gt;'
+});</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div id="ubits-toast-container"></div>
+    <script src="../../components/sidebar.js"></script>
+    <script src="../../components/sub-nav.js"></script>
+    <script src="../../components/alert.js"></script>
+    <script src="../../components/toast.js"></script>
+    <script src="../../components/input.js"></script>
+    <script src="../../components/popover.js"></script>
+    <script src="../../docs/docs-sidebar.js"></script>
+    <script src="../../script.js"></script>
+    <script>
+        var refreshPopoverDocPreview = function () {};
+
+        function mapPopoverGenericAlign(pos, alignGen) {
+            if (alignGen === 'start') {
+                return (pos === 'top' || pos === 'bottom') ? 'left' : 'top';
+            }
+            if (alignGen === 'end') {
+                return (pos === 'top' || pos === 'bottom') ? 'right' : 'bottom';
+            }
+            return 'center';
+        }
+
+        function initPopoverDocPreview() {
+            var anchor = document.getElementById('popover-demo-anchor');
+            var noArrowCheck = document.getElementById('popover-opt-no-arrow');
+            var currentPos = 'bottom';
+            var currentAlignGen = 'center';
+
+            function updatePopoverPreview() {
+                if (!anchor) return;
+                closePopover('demo-popover-doc');
+                var realAlign = mapPopoverGenericAlign(currentPos, currentAlignGen);
+                var noArrow = noArrowCheck ? noArrowCheck.checked : false;
+                setTimeout(function () {
+                    openPopover({
+                        popoverId: 'demo-popover-doc',
+                        anchorEl: anchor,
+                        placement: currentPos,
+                        align: realAlign,
+                        noArrow: noArrow,
+                        title: 'Ejemplo de popover',
+                        bodyText: 'Texto de ayuda o detalle. Puedes cerrar con Escape, con los botones o con clic fuera del panel.',
+                        actionsStartHtml: '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm" onclick="closePopover(\'demo-popover-doc\')"><span>Cerrar</span></button>',
+                        actionsEndHtml: '<button type="button" class="ubits-button ubits-button--primary ubits-button--sm" onclick="closePopover(\'demo-popover-doc\')"><span>Listo</span></button>'
+                    });
+                }, 50);
+            }
+
+            refreshPopoverDocPreview = updatePopoverPreview;
+
+            if (typeof createInput === 'function') {
+                createInput({
+                    containerId: 'popover-pos-container',
+                    type: 'select',
+                    label: 'Posición',
+                    value: 'bottom',
+                    selectOptions: [
+                        { value: 'top', text: 'Arriba' },
+                        { value: 'bottom', text: 'Abajo' },
+                        { value: 'left', text: 'Izquierda' },
+                        { value: 'right', text: 'Derecha' }
+                    ],
+                    onChange: function (val) {
+                        currentPos = val;
+                        updatePopoverPreview();
+                    }
+                });
+                createInput({
+                    containerId: 'popover-align-container',
+                    type: 'select',
+                    label: 'Alineación',
+                    value: 'center',
+                    selectOptions: [
+                        { value: 'start', text: 'Inicio' },
+                        { value: 'center', text: 'Centro' },
+                        { value: 'end', text: 'Fin' }
+                    ],
+                    onChange: function (val) {
+                        currentAlignGen = val;
+                        updatePopoverPreview();
+                    }
+                });
+            }
+
+            if (noArrowCheck) {
+                noArrowCheck.addEventListener('change', updatePopoverPreview);
+            }
+
+            setTimeout(updatePopoverPreview, 120);
+        }
+
+        function openDemoPopover() {
+            refreshPopoverDocPreview();
+        }
+
+        function openCenteredDemo() {
+            closePopover('demo-popover-doc');
+            openPopover({
+                popoverId: 'demo-popover-doc',
+                title: 'Sin ancla',
+                bodyText: 'Este popover está centrado en la ventana. No se pasa anchorEl en openPopover.',
+                actionsEndHtml: '<button type="button" class="ubits-button ubits-button--primary ubits-button--sm" onclick="closePopover(\'demo-popover-doc\')"><span>Cerrar</span></button>'
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            loadSubNav('top-nav-container', 'documentacion');
+            setTimeout(function () {
+                document.querySelectorAll('.nav-tab.active, .hamburger-item.active').forEach(function (item) {
+                    item.classList.remove('active');
+                });
+                var navTab = document.querySelector('.nav-tab[data-tab="section3"]');
+                var hamburgerItem = document.querySelector('.hamburger-item[data-tab="section3"]');
+                if (navTab) navTab.classList.add('active');
+                if (hamburgerItem) hamburgerItem.classList.add('active');
+            }, 200);
+            loadDocsSidebar('popover');
+            initPopoverDocPreview();
+            showAlert('warning', 'Antes de usar los prompts en Cursor, sustituye los textos entre [corchetes] por tus datos.', {
+                containerId: 'popover-warning-prompts',
+                noClose: true
+            });
+        });
+
+        function toggleTechnicalDocs() {
+            var content = document.getElementById('technical-docs-content');
+            var button = document.querySelector('[onclick="toggleTechnicalDocs()"]');
+            if (content.style.display === 'none' || content.style.display === '') {
+                content.style.display = 'block';
+                button.innerHTML = '<i class="far fa-chevron-up" id="tech-docs-chevron" style="color: var(--ubits-accent-brand);"></i> <span class="ubits-body-md-regular" style="color: var(--ubits-accent-brand);">Ocultar</span>';
+            } else {
+                content.style.display = 'none';
+                button.innerHTML = '<i class="far fa-chevron-down" id="tech-docs-chevron" style="color: var(--ubits-accent-brand);"></i> <span class="ubits-body-md-regular" style="color: var(--ubits-accent-brand);">Mostrar</span>';
+            }
+        }
+
+        function copyPrompt(promptId) {
+            var el = document.getElementById(promptId);
+            var text = el.textContent;
+            navigator.clipboard.writeText(text).then(function () {
+                showToast('success', 'Prompt copiado', { containerId: 'ubits-toast-container', duration: 2500 });
+            });
+        }
+
+        function copyCode(codeId) {
+            var el = document.getElementById(codeId);
+            navigator.clipboard.writeText(el.textContent).then(function () {
+                showToast('success', 'Código copiado', { containerId: 'ubits-toast-container', duration: 2500 });
+            });
+        }
+    </script>
+</body>
+</html>

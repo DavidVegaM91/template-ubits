@@ -1,6 +1,7 @@
 /**
  * UBITS Coachmark — product tour: overlay + spotlight + openPopover por paso.
  * Depende de: popover.js (openPopover, closePopover, updatePopoverPosition), button.css.
+ * Tooltip en el botón cerrar: tooltip.js + tooltip.css (initTooltip tras montar el popover).
  *
  * Uso:
  *   UBITS_COACHMARK.start({
@@ -15,7 +16,7 @@
  *     onComplete: function () {},
  *     onDismiss: function (reason) {}, // 'close' | 'escape' | 'missing-target' | 'dismiss' (no se llama con 'restart')
  *     onStepChange: function (index, step) {},
- *     showProgress: true,
+ *     showProgress: true, // pie izquierdo "N de M"; icon-only X en cabecera (salvo último paso)
  *     padding: 8,
  *     zIndexLayer: 10050,
  *     zIndexPopover: 10060
@@ -140,13 +141,40 @@
         }
     }
 
-    function buildActionsParts(index, total) {
+    function buildTitleRowHtml(popoverId, title, showDismiss) {
+        var safe = escapeHtml(title != null ? String(title) : '');
+        var dismissBtn = '';
+        if (showDismiss) {
+            dismissBtn =
+                '<div class="ubits-coachmark__header-actions">' +
+                '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" id="ubits-coachmark-btn-dismiss" aria-label="Cerrar" data-tooltip="Cerrar" data-tooltip-delay="1000" data-tooltip-position="top">' +
+                '<i class="far fa-times"></i>' +
+                '</button>' +
+                '</div>';
+        }
+        return (
+            '<div class="ubits-coachmark__header-row">' +
+            '<p class="ubits-body-md-semibold ubits-popover__title" id="' +
+            popoverId +
+            '-title">' +
+            safe +
+            '</p>' +
+            dismissBtn +
+            '</div>'
+        );
+    }
+
+    function buildActionsParts(index, total, showProgress) {
         var isFirst = index === 0;
         var isLast = index === total - 1;
         var start = '';
-        if (!isLast) {
+        if (showProgress && total > 1) {
             start =
-                '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm" id="ubits-coachmark-btn-dismiss"><span>Cerrar</span></button>';
+                '<span class="ubits-body-sm-regular ubits-coachmark__progress">' +
+                (index + 1) +
+                ' de ' +
+                total +
+                '</span>';
         }
         var end = '';
         if (!isFirst) {
@@ -163,27 +191,15 @@
         return { start: start, end: end };
     }
 
-    function buildBodyHtml(step, index, total, showProgress) {
-        var parts = [];
-        if (showProgress && total > 1) {
-            parts.push(
-                '<p class="ubits-body-sm-regular ubits-popover__text" style="margin-bottom:var(--gap-sm);opacity:0.85;">Paso ' +
-                    (index + 1) +
-                    ' de ' +
-                    total +
-                    '</p>'
-            );
-        }
+    function buildBodyHtml(step) {
         if (step.bodyHtml) {
-            parts.push(step.bodyHtml);
-        } else {
-            parts.push(
-                '<p class="ubits-body-sm-regular ubits-popover__text">' +
-                    escapeHtml(step.body != null ? String(step.body) : '') +
-                    '</p>'
-            );
+            return step.bodyHtml;
         }
-        return parts.join('');
+        return (
+            '<p class="ubits-body-sm-regular ubits-popover__text">' +
+            escapeHtml(step.body != null ? String(step.body) : '') +
+            '</p>'
+        );
     }
 
     function escapeHtml(text) {
@@ -204,6 +220,11 @@
         if (p) p.addEventListener('click', function () { goPrev(); });
         if (n) n.addEventListener('click', function () { goNext(); });
         if (f) f.addEventListener('click', function () { closeCoachmark('end'); });
+        if (d && typeof window.initTooltip === 'function' && active && active.popoverId) {
+            try {
+                window.initTooltip('#' + active.popoverId + ' #ubits-coachmark-btn-dismiss');
+            } catch (err) { /* ignore */ }
+        }
     }
 
     function goNext() {
@@ -278,8 +299,10 @@
         var size = step.size || 'md';
         var title = step.title != null ? String(step.title) : '';
         var total = steps.length;
-        var bodyInner = buildBodyHtml(step, index, total, active.showProgress === true);
-        var actionParts = buildActionsParts(index, total);
+        var isLast = index === total - 1;
+        var bodyInner = buildBodyHtml(step);
+        var actionParts = buildActionsParts(index, total, active.showProgress === true);
+        var titleRowHtml = buildTitleRowHtml(popoverId, title, !isLast);
 
         var scrim = active.scrimEl;
         var spotlight = active.spotlightEl;
@@ -301,7 +324,8 @@
                     placement: placement,
                     align: align,
                     offset: offset,
-                    title: title,
+                    title: '',
+                    titleRowHtml: titleRowHtml,
                     bodyHtml: bodyInner,
                     actionsStartHtml: actionParts.start,
                     actionsEndHtml: actionParts.end,

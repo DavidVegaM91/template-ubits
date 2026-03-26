@@ -46,3 +46,33 @@
 body.ubits-coachmark-active {
     overflow: hidden !important;
 }
+
+/* Tooltip del botón cerrar: por encima del popover del paso (z-index ~10060) */
+body.ubits-coachmark-active #ubits-tooltip-container {
+    z-index: 10070 !important;
+}
+
+/* Cabecera del popover: título + cierre icon-only (misma idea que modal) a la derecha */
+.ubits-coachmark__header-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--gap-md);
+    margin-bottom: var(--gap-sm);
+}
+
+.ubits-coachmark__header-row .ubits-popover__title {
+    margin: 0;
+    flex: 1;
+    min-width: 0;
+}
+
+.ubits-coachmark__header-actions {
+    flex-shrink: 0;
+}
+
+/* Progreso del tour en pie izquierdo: "1 de 6" (sin la palabra "Paso") */
+.ubits-coachmark__progress {
+    color: var(--ubits-fg-1-medium);
+    opacity: 0.9;
+}

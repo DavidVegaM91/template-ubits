@@ -14,6 +14,7 @@
  *     bodyText: 'Texto plano (alternativa a bodyHtml; se escapa)',
  *     actionsStartHtml: '', // opcional, columna izquierda (ej. Cerrar)
  *     actionsEndHtml: '<button class="ubits-button ...">OK</button>',
+ *     titleRowHtml: '', // opcional: reemplaza el bloque de título por defecto (incluir id="[popoverId]-title" en el título si aplica)
  *     size: 'md', // 'sm' | 'md' | 'lg'
  *     closeOnEscape: true,
  *     closeOnClickOutside: true,
@@ -207,6 +208,7 @@
         var align = normalizeAlign(placement, options.align);
         var offset = typeof options.offset === 'number' ? options.offset : 8;
         var title = options.title != null ? String(options.title) : '';
+        var titleRowHtml = options.titleRowHtml != null ? String(options.titleRowHtml) : '';
         var bodyHtml = options.bodyHtml != null ? String(options.bodyHtml) : '';
         var bodyText = options.bodyText != null ? String(options.bodyText) : '';
         if (!bodyHtml && bodyText) {
@@ -234,7 +236,7 @@
         el.className = 'ubits-popover' + sizeClass;
         el.setAttribute('role', 'dialog');
         el.setAttribute('aria-modal', options.ariaModal === true ? 'true' : 'false');
-        if (title) {
+        if (titleRowHtml || title) {
             el.setAttribute('aria-labelledby', popoverId + '-title');
         } else if (ariaLabel) {
             el.setAttribute('aria-label', ariaLabel);
@@ -243,9 +245,13 @@
         }
         el.style.zIndex = String(zIndex);
 
-        var titleBlock = title
-            ? ('<p class="ubits-body-md-semibold ubits-popover__title" id="' + popoverId + '-title">' + escapeHtml(title) + '</p>')
-            : '';
+        var titleBlock = '';
+        if (titleRowHtml) {
+            titleBlock = titleRowHtml;
+        } else if (title) {
+            titleBlock =
+                '<p class="ubits-body-md-semibold ubits-popover__title" id="' + popoverId + '-title">' + escapeHtml(title) + '</p>';
+        }
 
         var actionsBlock = '';
         if (actionsStartHtml || actionsEndHtml) {
