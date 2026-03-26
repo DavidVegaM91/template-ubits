@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="../../images/Ubits-logo-dark.svg">
+    <title>Coachmark | UBITS Playground</title>
+    <link rel="stylesheet" href="../../general-styles/ubits-colors.css">
+    <link rel="stylesheet" href="../../general-styles/styles.css">
+    <link rel="stylesheet" href="../../general-styles/fontawesome-icons.css">
+    <link rel="stylesheet" href="../../general-styles/ubits-typography.css">
+    <link rel="stylesheet" href="../../components/sub-nav.css">
+    <link rel="stylesheet" href="../../components/sidebar.css">
+    <link rel="stylesheet" href="../../docs/docs-sidebar.css">
+    <link rel="stylesheet" href="../../docs/docstyles.css">
+    <link rel="stylesheet" href="../../components/button.css">
+    <link rel="stylesheet" href="../../components/popover.css">
+    <link rel="stylesheet" href="../../components/coachmark.css">
+    <link rel="stylesheet" href="../../components/alert.css">
+    <link rel="stylesheet" href="../../components/toast.css">
+    <style>
+        .coachmark-demo-area {
+            min-height: 220px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+            gap: var(--gap-lg);
+            background: var(--ubits-bg-2);
+            border-radius: var(--border-radius-md);
+            border: 1px solid var(--ubits-border-1);
+            padding: var(--padding-2xl);
+        }
+    </style>
+</head>
+<body class="componentes-page" data-theme="light">
+    <main class="main-content">
+        <div id="top-nav-container"></div>
+        <div style="display: flex;">
+            <div id="docs-dropdown-container"></div>
+            <div id="docs-sidebar-container"></div>
+            <div class="components-content">
+                <div class="content-area" style="display: block; width: 100%;">
+                    <div style="text-align: center; margin-bottom: 60px;">
+                        <h1 class="ubits-display-d2-bold" style="margin-bottom: 24px; color: var(--ubits-accent-brand);">
+                            Coachmark
+                        </h1>
+                        <p class="ubits-body-md-regular" style="max-width: 800px; margin: 0 auto 32px; line-height: 1.6;">
+                            Product tour: máscara, spotlight en el elemento y texto del paso con el mismo Popover UBITS. Pasos, navegación y Escape para salir.
+                        </p>
+                    </div>
+
+                    <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: var(--border-radius-lg); margin-bottom: 40px;">
+                        <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                            <i class="far fa-eye" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                            Preview del componente
+                        </h2>
+                        <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6;">
+                            Pulsa <strong>Iniciar tour de ejemplo</strong> para recorrer cuatro pasos: tres anclados a botones y uno <strong>sin ancla</strong> (solo scrim + popover centrado).
+                        </p>
+                        <div class="coachmark-demo-area">
+                            <button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="coachmark-demo-a">
+                                <i class="far fa-star"></i>
+                                <span>Zona A</span>
+                            </button>
+                            <button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="coachmark-demo-b">
+                                <i class="far fa-bookmark"></i>
+                                <span>Zona B</span>
+                            </button>
+                            <button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="coachmark-demo-c">
+                                <i class="far fa-flag"></i>
+                                <span>Zona C</span>
+                            </button>
+                        </div>
+                        <div style="margin-top: var(--padding-lg); text-align: center;">
+                            <button type="button" class="ubits-button ubits-button--primary ubits-button--md" id="coachmark-demo-start" data-coachmark-demo-trigger="true" onclick="if (typeof window.runCoachmarkDocDemo === 'function') { window.runCoachmarkDocDemo(); }">
+                                <i class="far fa-map-signs"></i>
+                                <span>Iniciar tour de ejemplo</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: var(--border-radius-lg); margin-bottom: 40px;">
+                        <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                            <i class="far fa-info-circle" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                            Características generales
+                        </h2>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
+                            <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: var(--border-radius-md);">
+                                <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-layer-group"></i></div>
+                                <div class="ubits-body-sm-bold">Popover por paso</div>
+                                <div class="ubits-body-sm-regular">Mismo componente Popover: colita, alineación y botones UBITS</div>
+                            </div>
+                            <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: var(--border-radius-md);">
+                                <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-highlighter"></i></div>
+                                <div class="ubits-body-sm-bold">Spotlight</div>
+                                <div class="ubits-body-sm-regular">Hueco sobre el ancla; sin ancla, scrim a pantalla completa</div>
+                            </div>
+                            <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: var(--border-radius-md);">
+                                <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-route"></i></div>
+                                <div class="ubits-body-sm-bold">Navegación</div>
+                                <div class="ubits-body-sm-regular">Anterior, siguiente, cerrar y finalizar; bloqueo de clics fuera del panel</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: var(--border-radius-lg); margin-bottom: 40px;">
+                        <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                            <i class="far fa-comments" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                            Prompts útiles
+                        </h2>
+                        <p class="ubits-body-md-regular" style="margin-bottom: 24px; color: var(--ubits-fg-1-medium);">
+                            Importa <code>coachmark.css</code>, <code>coachmark.js</code>, <code>popover.css</code>, <code>popover.js</code> y <code>button.css</code>. Reemplaza textos entre [corchetes].
+                        </p>
+                        <div id="coachmark-warning-prompts" style="margin-bottom: 24px;"></div>
+                        <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
+                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                                <span class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Tour en una sola página</span>
+                                <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('coachmark-prompt-1')"><i class="far fa-copy"></i><span>Copiar</span></button>
+                            </div>
+                            <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-md);">
+                                <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="coachmark-prompt-1">Añade un coachmark UBITS que recorra [lista de zonas o selectores], con títulos y textos [descripción]. Importa coachmark.css, coachmark.js, popover.css, popover.js y button.css; usa UBITS_COACHMARK.start con showProgress true.</code></pre>
+                            </div>
+                        </div>
+                        <div>
+                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                                <span class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Cerrar tour desde código</span>
+                                <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('coachmark-prompt-2')"><i class="far fa-copy"></i><span>Copiar</span></button>
+                            </div>
+                            <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-md);">
+                                <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="coachmark-prompt-2">Cierra el coachmark con UBITS_COACHMARK.close cuando el usuario [condición].</code></pre>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="background: var(--ubits-bg-1); border-radius: 16px; margin-bottom: 40px; overflow: hidden;">
+                        <div style="padding: 32px; text-align: center; border-bottom: 1px solid var(--ubits-border-1);">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 0; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-code" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Documentación técnica
+                            </h2>
+                            <p class="ubits-body-md-regular" style="margin-top: 16px; color: var(--ubits-fg-1-medium);">
+                                API JavaScript, capas DOM y dependencias.
+                            </p>
+                        </div>
+                        <div style="background: var(--ubits-bg-2); padding: 20px; text-align: center; cursor: pointer;" onclick="toggleTechnicalDocs()">
+                            <span class="ubits-body-md-regular" style="color: var(--ubits-accent-brand); display: flex; align-items: center; justify-content: center; gap: 8px;">
+                                <i class="far fa-chevron-down" id="tech-docs-chevron"></i>
+                                Mostrar
+                            </span>
+                        </div>
+                        <div id="technical-docs-content" style="display: none; padding: 32px;">
+                            <h3 class="ubits-body-md-bold" style="margin-bottom: 12px; color: var(--ubits-fg-1-high);">Requisitos</h3>
+                            <ul class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); line-height: 1.6;">
+                                <li><code>components/coachmark.css</code> + <code>components/coachmark.js</code></li>
+                                <li><code>components/popover.css</code> + <code>components/popover.js</code></li>
+                                <li><code>components/button.css</code> + <code>fontawesome-icons.css</code></li>
+                                <li>Estilos base: <code>ubits-colors.css</code>, <code>ubits-typography.css</code>, <code>styles.css</code></li>
+                            </ul>
+                            <h3 class="ubits-body-md-bold" style="margin: 24px 0 12px; color: var(--ubits-fg-1-high);">Capas</h3>
+                            <p class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); line-height: 1.6;">
+                                <code>#ubits-coachmark-root</code> (z-index configurable) contiene scrim y spotlight. El Popover del paso se monta en <code>document.body</code> con z-index por encima (p. ej. 10060).
+                            </p>
+                            <h3 class="ubits-body-md-bold" style="margin: 24px 0 12px; color: var(--ubits-fg-1-high);">API</h3>
+                            <p class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); line-height: 1.6;">
+                                <strong>UBITS_COACHMARK.start(options)</strong> — <code>steps</code> (array de <code>target</code> selector/elemento/función o <code>null</code>, <code>title</code>, <code>body</code> o <code>bodyHtml</code>, <code>placement</code>, <code>align</code>, <code>offset</code>, <code>size</code>, <code>showSpotlight</code>, <code>requireTarget</code>), <code>popoverId</code>, <code>startIndex</code> (índice 0-based del primer paso; útil en tours multi-página), <code>onBeforeNext(index, step)</code> / <code>onBeforePrev(index, step)</code> (devolver <code>false</code> para cancelar el paso y p. ej. navegar con <code>location.href</code>), <code>showProgress</code>, <code>padding</code>, <code>zIndexLayer</code>, <code>zIndexPopover</code>, <code>onComplete</code> (solo al pulsar Finalizar), <code>onDismiss(reason)</code> (<code>close</code> | <code>escape</code> | <code>missing-target</code> | <code>dismiss</code>; no se llama con <code>restart</code>), <code>onStepChange(index, step)</code>.<br><br>
+                                <strong>UBITS_COACHMARK.close(reason)</strong> — cierra tour y popover.<br>
+                                <strong>UBITS_COACHMARK.next()</strong> / <strong>prev()</strong> — avanza o retrocede paso.<br>
+                                <strong>UBITS_COACHMARK.layout()</strong> — recalcula spotlight y posición del popover (tras cambios de layout).<br>
+                                <strong>UBITS_COACHMARK.isActive()</strong> — boolean.
+                            </p>
+                            <div style="margin-top: 24px; display: flex; justify-content: space-between; align-items: center;">
+                                <span class="ubits-body-md-regular">Ejemplo mínimo</span>
+                                <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('implement-code')"><i class="far fa-copy"></i><span>Copiar</span></button>
+                            </div>
+                            <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-md); margin-top: 12px;">
+                                <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="implement-code">UBITS_COACHMARK.start({
+  popoverId: 'mi-tour',
+  showProgress: true,
+  steps: [
+    { target: '#paso-1', title: 'Bienvenida', body: 'Texto del paso.', placement: 'bottom', align: 'center' },
+    { target: null, title: 'Resumen', body: 'Sin ancla: scrim + popover centrado.' }
+  ],
+  onComplete: function () { /* tour terminado con Finalizar */ },
+  onDismiss: function (reason) { /* close | escape | missing-target | end */ }
+});</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div id="ubits-toast-container"></div>
+    <script src="../../components/sidebar.js"></script>
+    <script src="../../components/sub-nav.js"></script>
+    <script src="../../components/alert.js"></script>
+    <script src="../../components/toast.js"></script>
+    <script src="../../components/popover.js"></script>
+    <script src="../../components/coachmark.js"></script>
+    <script src="../../docs/docs-sidebar.js"></script>
+    <script src="../../script.js"></script>
+    <script>
+        window.runCoachmarkDocDemo = function runCoachmarkDocDemo() {
+            var toastErr = function (msg) {
+                if (typeof showToast === 'function') {
+                    showToast('error', msg, { containerId: 'ubits-toast-container', duration: 5000 });
+                }
+            };
+            try {
+                if (typeof UBITS_COACHMARK === 'undefined' || typeof UBITS_COACHMARK.start !== 'function') {
+                    toastErr('No está disponible UBITS_COACHMARK.start. Comprueba que coachmark.js y popover.js carguen sin error.');
+                    return;
+                }
+                if (typeof window.openPopover !== 'function') {
+                    toastErr('openPopover no está definido (popover.js).');
+                    return;
+                }
+                var ok = UBITS_COACHMARK.start({
+                    popoverId: 'doc-coachmark-demo',
+                    showProgress: true,
+                    zIndexLayer: 100400,
+                    zIndexPopover: 100500,
+                    steps: [
+                        {
+                            target: '#coachmark-demo-a',
+                            title: 'Primera zona',
+                            body: 'El spotlight enmarca el elemento. El texto va en un Popover UBITS con colita hacia el ancla.',
+                            placement: 'bottom',
+                            align: 'center'
+                        },
+                        {
+                            target: '#coachmark-demo-b',
+                            title: 'Segunda zona',
+                            body: 'Puedes cambiar placement y align por paso (misma API que Popover).',
+                            placement: 'bottom',
+                            align: 'center'
+                        },
+                        {
+                            target: '#coachmark-demo-c',
+                            title: 'Tercera zona',
+                            body: 'Anterior y Siguiente usan los botones del sistema; la página queda bloqueada salvo el panel.',
+                            placement: 'top',
+                            align: 'center'
+                        },
+                        {
+                            target: null,
+                            title: 'Paso sin ancla',
+                            body: 'Sin selector: solo scrim atenuado y popover centrado (útil para bienvenidas o resúmenes).',
+                            placement: 'bottom',
+                            align: 'center'
+                        }
+                    ],
+                    onComplete: function () {
+                        if (typeof showToast === 'function') {
+                            showToast('success', 'Tour de ejemplo completado', { containerId: 'ubits-toast-container', duration: 2500 });
+                        }
+                    },
+                    onDismiss: function (reason) {
+                        if (reason === 'end' || reason === 'restart') return;
+                        if (typeof showToast === 'function') {
+                            showToast('info', 'Tour cerrado', { containerId: 'ubits-toast-container', duration: 2000 });
+                        }
+                    }
+                });
+                if (!ok) {
+                    toastErr('UBITS_COACHMARK.start devolvió false (pasos vacíos u openPopover no disponible al iniciar).');
+                }
+            } catch (err) {
+                toastErr((err && err.message) ? err.message : String(err));
+            }
+        };
+
+        function initCoachmarkDocPage() {
+            try {
+                loadSubNav('top-nav-container', 'documentacion');
+            } catch (e1) { /* ignore */ }
+            setTimeout(function () {
+                try {
+                    document.querySelectorAll('.nav-tab.active, .hamburger-item.active').forEach(function (item) {
+                        item.classList.remove('active');
+                    });
+                    var navTab = document.querySelector('.nav-tab[data-tab="section3"]');
+                    var hamburgerItem = document.querySelector('.hamburger-item[data-tab="section3"]');
+                    if (navTab) navTab.classList.add('active');
+                    if (hamburgerItem) hamburgerItem.classList.add('active');
+                } catch (e2) { /* ignore */ }
+            }, 200);
+            try {
+                loadDocsSidebar('coachmark');
+            } catch (e3) { /* ignore */ }
+            try {
+                showAlert('warning', 'Antes de usar los prompts en Cursor, sustituye los textos entre [corchetes] por tus datos.', {
+                    containerId: 'coachmark-warning-prompts',
+                    noClose: true
+                });
+            } catch (e4) { /* ignore */ }
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initCoachmarkDocPage);
+        } else {
+            initCoachmarkDocPage();
+        }
+
+        function toggleTechnicalDocs() {
+            var content = document.getElementById('technical-docs-content');
+            var button = document.querySelector('[onclick="toggleTechnicalDocs()"]');
+            if (content.style.display === 'none' || content.style.display === '') {
+                content.style.display = 'block';
+                button.innerHTML = '<i class="far fa-chevron-up" id="tech-docs-chevron" style="color: var(--ubits-accent-brand);"></i> <span class="ubits-body-md-regular" style="color: var(--ubits-accent-brand);">Ocultar</span>';
+            } else {
+                content.style.display = 'none';
+                button.innerHTML = '<i class="far fa-chevron-down" id="tech-docs-chevron" style="color: var(--ubits-accent-brand);"></i> <span class="ubits-body-md-regular" style="color: var(--ubits-accent-brand);">Mostrar</span>';
+            }
+        }
+
+        function copyPrompt(promptId) {
+            var el = document.getElementById(promptId);
+            navigator.clipboard.writeText(el.textContent).then(function () {
+                showToast('success', 'Prompt copiado', { containerId: 'ubits-toast-container', duration: 2500 });
+            });
+        }
+
+        function copyCode(codeId) {
+            var el = document.getElementById(codeId);
+            navigator.clipboard.writeText(el.textContent).then(function () {
+                showToast('success', 'Código copiado', { containerId: 'ubits-toast-container', duration: 2500 });
+            });
+        }
+    </script>
+</body>
+</html>

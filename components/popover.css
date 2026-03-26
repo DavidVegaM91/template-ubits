@@ -1,0 +1,188 @@
+/**
+ * UBITS Popover — panel flotante (título, cuerpo, acciones) + colita como Tooltip.
+ * Elevación en el contenedor (filter) para que superficie + flecha compartan sombra.
+ * Intensidad alineada con --ubits-elevation-overlay (Figma R4): mismas capas rgba;
+ * no se puede usar var(--ubits-elevation-*) completo en filter: drop-shadow.
+ * Requiere: ubits-colors, ubits-typography, button.css si hay botones en el pie.
+ */
+
+.ubits-popover {
+    /* Capas equivalentes a --ubits-elevation-overlay (popover en doc de tokens) */
+    --ubits-popover-shadow-ambient: rgba(0, 0, 0, 0.12);
+    --ubits-popover-shadow-key: rgba(0, 0, 0, 0.14);
+    position: fixed;
+    z-index: 10040;
+    box-sizing: border-box;
+    min-width: min(100vw - 32px, 280px);
+    max-width: min(100vw - 32px, 360px);
+    margin: 0;
+    padding: 0;
+    overflow: visible;
+    pointer-events: auto;
+    filter: drop-shadow(0 0 2px var(--ubits-popover-shadow-ambient))
+        drop-shadow(0 4px 8px var(--ubits-popover-shadow-key));
+}
+
+.ubits-popover * {
+    box-sizing: border-box;
+}
+
+.ubits-popover__surface {
+    position: relative;
+    background: var(--ubits-bg-1);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: var(--border-radius-md);
+    padding: var(--padding-lg);
+    overflow: visible;
+}
+
+.ubits-popover--sm {
+    max-width: min(100vw - 32px, 300px);
+}
+
+.ubits-popover--md {
+    max-width: min(100vw - 32px, 360px);
+}
+
+.ubits-popover--lg {
+    max-width: min(100vw - 32px, 420px);
+}
+
+.ubits-popover__title {
+    margin: 0 0 var(--gap-sm);
+    color: var(--ubits-fg-1-high);
+}
+
+.ubits-popover__text {
+    margin: 0 0 var(--gap-lg);
+    color: var(--ubits-fg-1-high);
+}
+
+.ubits-popover__text:last-child {
+    margin-bottom: 0;
+}
+
+.ubits-popover__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    width: 100%;
+    gap: var(--gap-md);
+}
+
+.ubits-popover__actions-start {
+    flex: 0 0 auto;
+    min-width: 0;
+}
+
+.ubits-popover__actions-start:empty {
+    display: none;
+}
+
+.ubits-popover__actions-end {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-end;
+    gap: var(--gap-sm);
+    margin-left: auto;
+}
+
+.ubits-popover__actions .ubits-button {
+    pointer-events: auto;
+}
+
+/* Colita (misma geometría que Tooltip; color = fondo de la superficie) */
+.ubits-popover__arrow {
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-style: solid;
+}
+
+.ubits-popover--no-arrow .ubits-popover__arrow {
+    display: none;
+}
+
+/* TOP: flecha abajo del panel */
+.ubits-popover--top .ubits-popover__arrow {
+    bottom: -9px;
+    border-width: 9px 9px 0 9px;
+    border-color: var(--ubits-bg-1) transparent transparent transparent;
+}
+
+.ubits-popover--top.ubits-popover--align-left .ubits-popover__arrow {
+    left: 12px;
+}
+
+.ubits-popover--top.ubits-popover--align-center .ubits-popover__arrow {
+    left: calc(50% - 9px);
+}
+
+.ubits-popover--top.ubits-popover--align-right .ubits-popover__arrow {
+    right: 12px;
+}
+
+/* BOTTOM: flecha arriba del panel */
+.ubits-popover--bottom .ubits-popover__arrow {
+    top: -9px;
+    border-width: 0 9px 9px 9px;
+    border-color: transparent transparent var(--ubits-bg-1) transparent;
+}
+
+.ubits-popover--bottom.ubits-popover--align-left .ubits-popover__arrow {
+    left: 12px;
+}
+
+.ubits-popover--bottom.ubits-popover--align-center .ubits-popover__arrow {
+    left: calc(50% - 9px);
+}
+
+.ubits-popover--bottom.ubits-popover--align-right .ubits-popover__arrow {
+    right: 12px;
+}
+
+/* LEFT: flecha a la derecha del panel */
+.ubits-popover--left .ubits-popover__arrow {
+    right: -9px;
+    border-width: 9px 0 9px 9px;
+    border-color: transparent transparent transparent var(--ubits-bg-1);
+}
+
+.ubits-popover--left.ubits-popover--align-top .ubits-popover__arrow {
+    top: 12px;
+}
+
+.ubits-popover--left.ubits-popover--align-center .ubits-popover__arrow {
+    top: calc(50% - 9px);
+}
+
+.ubits-popover--left.ubits-popover--align-bottom .ubits-popover__arrow {
+    bottom: 12px;
+}
+
+/* RIGHT: flecha a la izquierda del panel */
+.ubits-popover--right .ubits-popover__arrow {
+    left: -9px;
+    border-width: 9px 9px 9px 0;
+    border-color: transparent var(--ubits-bg-1) transparent transparent;
+}
+
+.ubits-popover--right.ubits-popover--align-top .ubits-popover__arrow {
+    top: 12px;
+}
+
+.ubits-popover--right.ubits-popover--align-center .ubits-popover__arrow {
+    top: calc(50% - 9px);
+}
+
+.ubits-popover--right.ubits-popover--align-bottom .ubits-popover__arrow {
+    bottom: 12px;
+}
+
+/* Centrado en viewport (sin ancla): sin colita */
+.ubits-popover--centered {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}

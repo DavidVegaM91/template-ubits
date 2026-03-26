@@ -1,0 +1,16 @@
+/* ========================================
+   Tour Seguimiento: refuerzo desktop ≥1280px (SubNav).
+   Overlay + spotlight: components/coachmark.css
+   ======================================== */
+
+@media (max-width: 1279px) {
+    #ubits-coachmark-root {
+        display: none !important;
+        visibility: hidden !important;
+        pointer-events: none !important;
+    }
+
+    body.ubits-coachmark-active {
+        overflow: auto !important;
+    }
+}

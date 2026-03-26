@@ -1,0 +1,48 @@
+/**
+ * UBITS Coachmark / product tour — máscara + spotlight + Popover para el paso.
+ * Requiere: coachmark.js, popover.css, button.css, ubits-colors (color-mix en spotlight).
+ */
+
+.ubits-coachmark {
+    position: fixed;
+    inset: 0;
+    z-index: 10050;
+    pointer-events: none;
+}
+
+.ubits-coachmark * {
+    box-sizing: border-box;
+}
+
+/* Pantalla completa atenuada cuando el paso no tiene ancla (popover centrado) */
+.ubits-coachmark__scrim {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background: color-mix(in srgb, var(--ubits-fg-1-high) 52%, transparent);
+}
+
+.ubits-coachmark__scrim--visible {
+    display: block;
+}
+
+/* Spotlight: “hueco” vía box-shadow (misma idea que recorridos Seguimiento) */
+.ubits-coachmark__spotlight {
+    display: none;
+    position: fixed;
+    pointer-events: none;
+    border-radius: var(--border-radius-md);
+    box-shadow: 0 0 0 9999px color-mix(in srgb, var(--ubits-fg-1-high) 52%, transparent);
+    z-index: 1;
+    transition: top 0.2s ease, left 0.2s ease, width 0.2s ease, height 0.2s ease;
+}
+
+.ubits-coachmark__spotlight--visible {
+    display: block;
+}
+
+body.ubits-coachmark-active {
+    overflow: hidden !important;
+}

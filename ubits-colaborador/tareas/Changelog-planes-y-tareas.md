@@ -14,6 +14,7 @@ Registro de cambios realizados en los archivos del módulo de Tareas y Planes (P
 - **Seguimiento líder:** `seguimiento-leader.css`, `seguimiento-leader.html`
 - **Base de datos unificada:** `bd-master/bd-tareas-y-planes.js` (antes `tareas-base-unificada.js` en esta carpeta)
 - **Plantilla:** `plantilla.html`, `plantilla.css`
+- **Coachmark Seguimiento:** `coachmark-seguimiento.js`, `coachmark-seguimiento.css` (incluidos en `tareas.html` y `seguimiento.html` junto con `components/popover.*` y `components/coachmark.*`)
 
 ---
 
@@ -400,6 +401,22 @@ Registro de cambios realizados en los archivos del módulo de Tareas y Planes (P
 
     Archivos: `tareas.js`, `tareas.css`, `task-detail.js`.
 
+49. [x] **Coachmark Seguimiento: textos del tour, URLs robustas y recuperación del hash**
+
+    Recorrido guiado **Seguimiento** (`coachmark-seguimiento.js`, `coachmark-seguimiento.css` en `tareas.html` y `seguimiento.html`):
+
+    - **Textos de los 6 pasos:** Se actualizaron título y cuerpo del array `COPY` con las descripciones acordadas (paso 1: consulta y gestión unificada; pasos 2–3: listas de tareas y planes con filtrar, ordenar y lote; paso 4: período/fechas; paso 5: totales por estado según período; paso 6: orden y filtros desde el encabezado de la tabla). Los títulos de los pasos 2 y 3 quedaron en **Tareas** y **Planes**.
+
+    - **Navegación paso 1 ↔ paso 2:** Los saltos `tareas.html` ↔ `seguimiento.html` con `#coachmark` usan **`hrefToSiblingHtml()`**, que resuelve la URL con `new URL(..., window.location.href)` para que el destino sea correcto en **file://**, subcarpetas y despliegues (Netlify u otros), no solo con rutas relativas simples.
+
+    - **Recuperación del hash (patrón similar a planes-formación + `#competencias`):** Si al llegar a **seguimiento** el fragmento `#coachmark` no está presente pero en **sessionStorage** hay un paso **2–6** reciente (marca de tiempo &lt; **10 minutos**, clave `ubitsCoachmarkSeguimiento`), al iniciar el boot se hace **`history.replaceState`** para inyectar `#coachmark` y el tour puede continuar. Así se mitiga la pérdida ocasional del hash tras **Siguiente** en el paso 1.
+
+50. [x] **Coachmark Seguimiento: componente oficial `UBITS_COACHMARK`**
+
+    Se sustituyó el overlay/popover hardcodeado (`#coachmark-root`) por **`components/coachmark.js`** + **`popover.js`**, con **`startIndex`** (primer paso según página/storage) y **`onBeforeNext` / `onBeforePrev`** para los saltos **tareas ↔ seguimiento** sin romper el flujo (paso 1 solo en `tareas.html`, pasos 2–6 en `seguimiento.html`). Se mantienen **`hrefToSiblingHtml`**, **`ensureCoachmarkHashFromStorage`**, hash `#coachmark`, viewport ≥1280px y cierre con **`UBITS_COACHMARK.close('restart')`** al redimensionar por debajo del umbral (sin limpiar storage, como antes).
+
+    Archivos: `components/coachmark.js` (opciones nuevas), `coachmark-seguimiento.js`, `coachmark-seguimiento.css` (solo refuerzo responsive), `tareas.html`, `seguimiento.html`, `Changelog-planes-y-tareas.md`.
+
 ---
 
-*Última actualización: ítems 1–20 (11 feb), 21–26 (19 feb), 27 (Cargar más), 28–30 (20 feb), 31 (21 feb), 32 (23 feb), 33 (nueva versión task-detail), 34 (dropdowns Estado y Prioridad en task-detail), 35 (panel de comentarios: adjuntar imágenes y archivos), 36 (implementación de subtask-detail), 37 (homologación encabezados plan-detail con task-detail), 38 (scroll-spy calendario horizontal, 10 mar), 39 (doble clic para cambio de nombre en tirillas y opción Cambiar nombre en subtareas), 40 (recordatorio registrado en historial en task-detail), 41 (plan-detail: asignados, filtro por persona, filtros aplicados y UI, 11 mar), 42 (task-detail: vencimiento sm, progress bar subtareas, botón Filtrar, Historial de cambios, nueva versión formulario subtareas, 12 mar), 43 (marca "- editado" en comentarios editados, 12 mar), 44 (filtro Asignado específico en tareas, 18 mar), 45 (estilos tirilla en celulares, 18 mar), 46 (Añadir colaborador seguimiento, 20 mar), 47 (resumen multiselect dropdown, 20 mar), 48 (añadir tarea/subtarea encima de listas y orden nuevo arriba, 25 mar) implementados.*
+*Última actualización: ítems 1–20 (11 feb), 21–26 (19 feb), 27 (Cargar más), 28–30 (20 feb), 31 (21 feb), 32 (23 feb), 33 (nueva versión task-detail), 34 (dropdowns Estado y Prioridad en task-detail), 35 (panel de comentarios: adjuntar imágenes y archivos), 36 (implementación de subtask-detail), 37 (homologación encabezados plan-detail con task-detail), 38 (scroll-spy calendario horizontal, 10 mar), 39 (doble clic para cambio de nombre en tirillas y opción Cambiar nombre en subtareas), 40 (recordatorio registrado en historial en task-detail), 41 (plan-detail: asignados, filtro por persona, filtros aplicados y UI, 11 mar), 42 (task-detail: vencimiento sm, progress bar subtareas, botón Filtrar, Historial de cambios, nueva versión formulario subtareas, 12 mar), 43 (marca "- editado" en comentarios editados, 12 mar), 44 (filtro Asignado específico en tareas, 18 mar), 45 (estilos tirilla en celulares, 18 mar), 46 (Añadir colaborador seguimiento, 20 mar), 47 (resumen multiselect dropdown, 20 mar), 48 (añadir tarea/subtarea encima de listas y orden nuevo arriba, 25 mar), 49 (coachmark Seguimiento: copy, URLs y hash, 25 mar), 50 (coachmark oficial multi-página, 25 mar) implementados.*
