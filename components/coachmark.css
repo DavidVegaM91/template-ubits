@@ -21,7 +21,7 @@
     inset: 0;
     z-index: 0;
     pointer-events: none;
-    background: color-mix(in srgb, var(--ubits-fg-1-high) 52%, transparent);
+    background: rgba(0, 0, 0, 0.7);
 }
 
 .ubits-coachmark__scrim--visible {
@@ -34,7 +34,7 @@
     position: fixed;
     pointer-events: none;
     border-radius: var(--border-radius-md);
-    box-shadow: 0 0 0 9999px color-mix(in srgb, var(--ubits-fg-1-high) 52%, transparent);
+    box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.7);
     z-index: 1;
     transition: top 0.2s ease, left 0.2s ease, width 0.2s ease, height 0.2s ease;
 }
