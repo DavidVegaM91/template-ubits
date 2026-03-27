@@ -16,7 +16,7 @@
  *     onComplete: function () {},
  *     onDismiss: function (reason) {}, // 'close' | 'escape' | 'missing-target' | 'dismiss' (no se llama con 'restart')
  *     onStepChange: function (index, step) {},
- *     showProgress: true, // pie izquierdo "N de M"; icon-only X en cabecera (salvo último paso)
+ *     showProgress: true, // pie izquierdo "N de M"; icon-only X en cabecera (salvo último paso); anterior/siguiente/finalizar icon-only (flechas + check)
  *     padding: 0, // default exacto al target (sin margen extra)
  *     zIndexLayer: 10050,
  *     zIndexPopover: 10060
@@ -179,14 +179,20 @@
         var end = '';
         if (!isFirst) {
             end +=
-                '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="ubits-coachmark-btn-prev"><span>Anterior</span></button>';
+                '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only" id="ubits-coachmark-btn-prev" aria-label="Anterior" data-tooltip="Anterior" data-tooltip-delay="1000" data-tooltip-position="top">' +
+                '<i class="far fa-arrow-left"></i>' +
+                '</button>';
         }
         if (!isLast) {
             end +=
-                '<button type="button" class="ubits-button ubits-button--primary ubits-button--sm" id="ubits-coachmark-btn-next"><span>Siguiente</span></button>';
+                '<button type="button" class="ubits-button ubits-button--primary ubits-button--sm ubits-button--icon-only" id="ubits-coachmark-btn-next" aria-label="Siguiente" data-tooltip="Siguiente" data-tooltip-delay="1000" data-tooltip-position="top">' +
+                '<i class="far fa-arrow-right"></i>' +
+                '</button>';
         } else {
             end +=
-                '<button type="button" class="ubits-button ubits-button--primary ubits-button--sm" id="ubits-coachmark-btn-finish"><span>Finalizar</span></button>';
+                '<button type="button" class="ubits-button ubits-button--primary ubits-button--sm ubits-button--icon-only" id="ubits-coachmark-btn-finish" aria-label="Finalizar" data-tooltip="Finalizar" data-tooltip-delay="1000" data-tooltip-position="top">' +
+                '<i class="far fa-check"></i>' +
+                '</button>';
         }
         return { start: start, end: end };
     }
@@ -220,9 +226,13 @@
         if (p) p.addEventListener('click', function () { goPrev(); });
         if (n) n.addEventListener('click', function () { goNext(); });
         if (f) f.addEventListener('click', function () { closeCoachmark('end'); });
-        if (d && typeof window.initTooltip === 'function' && active && active.popoverId) {
+        if (typeof window.initTooltip === 'function' && active && active.popoverId) {
+            var sel = '#' + active.popoverId + ' ';
             try {
-                window.initTooltip('#' + active.popoverId + ' #ubits-coachmark-btn-dismiss');
+                if (d) window.initTooltip(sel + '#ubits-coachmark-btn-dismiss');
+                if (p) window.initTooltip(sel + '#ubits-coachmark-btn-prev');
+                if (n) window.initTooltip(sel + '#ubits-coachmark-btn-next');
+                if (f) window.initTooltip(sel + '#ubits-coachmark-btn-finish');
             } catch (err) { /* ignore */ }
         }
     }
