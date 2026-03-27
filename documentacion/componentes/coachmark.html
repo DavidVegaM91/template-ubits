@@ -100,7 +100,7 @@
                             <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: var(--border-radius-md);">
                                 <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-route"></i></div>
                                 <div class="ubits-body-sm-bold">Navegación</div>
-                                <div class="ubits-body-sm-regular">Flechas anterior/siguiente, check para finalizar, cierre en cabecera; bloqueo de clics fuera del panel</div>
+                                <div class="ubits-body-sm-regular">Anterior, siguiente, cerrar y finalizar; bloqueo de clics fuera del panel</div>
                             </div>
                         </div>
                     </div>
@@ -188,9 +188,7 @@
         &lt;span class="ubits-body-sm-regular ubits-coachmark__progress"&gt;1 de 4&lt;/span&gt;
       &lt;/div&gt;
       &lt;div class="ubits-popover__actions-end"&gt;
-        &lt;button type="button" class="ubits-button ubits-button--primary ubits-button--sm ubits-button--icon-only" aria-label="Siguiente" data-tooltip="Siguiente"&gt;
-          &lt;i class="far fa-arrow-right"&gt;&lt;/i&gt;
-        &lt;/button&gt;
+        &lt;button class="ubits-button ubits-button--primary ubits-button--sm"&gt;&lt;span&gt;Siguiente&lt;/span&gt;&lt;/button&gt;
       &lt;/div&gt;
     &lt;/div&gt;
     &lt;div class="ubits-popover__arrow" aria-hidden="true"&gt;&lt;/div&gt;
@@ -219,7 +217,7 @@ body.ubits-coachmark-active      /* Bloqueo de scroll de fondo */</code></pre>
                             </p>
                             <h3 class="ubits-body-md-bold" style="margin: 24px 0 12px; color: var(--ubits-fg-1-high);">API</h3>
                             <p class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); line-height: 1.6;">
-                                <strong>UBITS_COACHMARK.start(options)</strong> — <code>steps</code> (array de <code>target</code> selector/elemento/función o <code>null</code>, <code>title</code>, <code>body</code> o <code>bodyHtml</code>, <code>placement</code>, <code>align</code>, <code>offset</code>, <code>size</code>, <code>showSpotlight</code>, <code>requireTarget</code>), <code>popoverId</code>, <code>startIndex</code> (índice 0-based del primer paso; útil en tours multi-página), <code>onBeforeNext(index, step)</code> / <code>onBeforePrev(index, step)</code> (devolver <code>false</code> para cancelar el paso y p. ej. navegar con <code>location.href</code>), <code>showProgress</code> (si es true y hay más de un paso: texto <code>N de M</code> en el pie izquierdo; cabecera con título + botón cierre icon-only (<code>fa-times</code>, como en modal) con tooltip «Cerrar» a la derecha salvo en el último paso, donde solo el botón de finalizar icon-only con <code>fa-check</code>), <code>padding</code> (default <code>0</code>, exacto al target), <code>zIndexLayer</code>, <code>zIndexPopover</code>, <code>onComplete</code> (solo al activar finalizar), <code>onDismiss(reason)</code> (<code>close</code> | <code>escape</code> | <code>missing-target</code> | <code>dismiss</code>; no se llama con <code>restart</code>), <code>onStepChange(index, step)</code>.<br><br>
+                                <strong>UBITS_COACHMARK.start(options)</strong> — <code>steps</code> (array de <code>target</code> selector/elemento/función o <code>null</code>, <code>title</code>, <code>body</code> o <code>bodyHtml</code>, <code>placement</code>, <code>align</code>, <code>offset</code>, <code>size</code>, <code>showSpotlight</code>, <code>requireTarget</code>), <code>popoverId</code>, <code>startIndex</code> (índice 0-based del primer paso; útil en tours multi-página), <code>onBeforeNext(index, step)</code> / <code>onBeforePrev(index, step)</code> (devolver <code>false</code> para cancelar el paso y p. ej. navegar con <code>location.href</code>), <code>showProgress</code> (si es true y hay más de un paso: texto <code>N de M</code> en el pie izquierdo; cabecera con título + botón cierre icon-only (<code>fa-times</code>, como en modal) con tooltip «Cerrar» a la derecha salvo en el último paso, donde solo <strong>Finalizar</strong>), <code>padding</code> (default <code>0</code>, exacto al target), <code>zIndexLayer</code>, <code>zIndexPopover</code>, <code>onComplete</code> (solo al pulsar Finalizar), <code>onDismiss(reason)</code> (<code>close</code> | <code>escape</code> | <code>missing-target</code> | <code>dismiss</code>; no se llama con <code>restart</code>), <code>onStepChange(index, step)</code>.<br><br>
                                 <strong>UBITS_COACHMARK.close(reason)</strong> — cierra tour y popover.<br>
                                 <strong>UBITS_COACHMARK.next()</strong> / <strong>prev()</strong> — avanza o retrocede paso.<br>
                                 <strong>UBITS_COACHMARK.layout()</strong> — recalcula spotlight y posición del popover (tras cambios de layout).<br>
@@ -323,7 +321,7 @@ body.ubits-coachmark-active      /* Bloqueo de scroll de fondo */</code></pre>
                         {
                             target: '#coachmark-demo-c',
                             title: 'Tercera zona',
-                            body: 'Las flechas y el check son botones icon-only del sistema; la página queda bloqueada salvo el panel.',
+                            body: 'Anterior y Siguiente usan los botones del sistema; la página queda bloqueada salvo el panel.',
                             placement: 'top',
                             align: 'center'
                         },
