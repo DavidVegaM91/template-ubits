@@ -153,26 +153,9 @@
     flex-shrink: 0;
 }
 
-/* Selector de academias - dropdown sin scroll (5 items completos) */
-/* Calcular altura exacta: 5 items * (12px padding-top + 20px line-height + 12px padding-bottom + 1px border) = 5 * 45px = 225px */
-#academia-selector-container .ubits-select-dropdown {
-    max-height: 225px !important; /* Altura exacta para 5 items */
-    height: 225px !important; /* Forzar altura exacta */
-    overflow-y: hidden !important; /* Sin scroll */
-    overflow-x: hidden !important;
-}
-
-/* Reducir padding de items para que quepan 5 items completos (igual que v6) */
-#academia-selector-container .ubits-select-option {
-    padding: var(--padding-md) var(--padding-lg) !important; /* Igual que v6 */
-    min-height: auto !important;
-    height: auto !important;
-    max-height: 44px !important; /* 12px + 20px + 12px = 44px por item */
-    font-size: var(--font-size-sm) !important; /* body-sm-regular como v6 */
-    line-height: 20px !important; /* body-sm-regular como v6 */
-    display: flex;
-    align-items: center;
-    box-sizing: border-box;
+/* Panel del selector de academias: createInput(select) inyecta #ubits-input-select-academia-selector-container (dropdown-menu) */
+#ubits-input-select-academia-selector-container.ubits-dropdown-menu__content {
+    min-width: min(320px, calc(100vw - 16px));
 }
 
 .catalog-chips-wrapper {
