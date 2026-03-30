@@ -317,7 +317,6 @@ const PAGE_TO_TAB = {
     // Aprendizaje
     'home-learn.html': 'home',
     'catalogo.html': 'catalog',
-    'catalogo-v5.html': 'catalog',
     'modo-estudio-ia.html': 'modo-estudio-ia',
     'u-corporativa.html': 'corporate',
     'zona-estudio.html': 'study-zone',

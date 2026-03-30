@@ -1053,7 +1053,7 @@
 }
 
 /* ========== Drawer competencias: cards y tabla dos líneas ========== */
-/* Mismo layout que catalogo-v5: flex con 3 columnas (flex-direction: column) para que al expandir una card solo crezca su columna */
+/* Mismo layout que catalogo.html: flex con 3 columnas (flex-direction: column) para que al expandir una card solo crezca su columna */
 .drawer-competencias-cards-grid {
     /* contenedor; el contenido lo inyecta JS con .drawer-competencias-grid-v1 */
 }

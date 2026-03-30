@@ -163,11 +163,11 @@ Este valor es **por plan** (no por asignación): todas las asignaciones del plan
 #### 4.3.1 Drawer "Agregar competencias" (detalle)
 
 - En **crear plan competencias**, el mismo drawer puede ser **wizard de 3 pasos** (tipo de asignación → participantes → competencias). Ver **§ 6.5** (el paso de catálogo aquí no usa el filtro UBITS/propio del plan de contenidos).
-- **Izquierda:** cards de competencia (mismo estilo que en catalogo-v5: imagen + nombre + "X habilidades"), **sin** status tag "Asignado" ni botones a la derecha. Búsqueda por texto (competencia, academia o habilidad).
+- **Izquierda:** cards de competencia (mismo estilo que en catalogo.html: imagen + nombre + "X habilidades"), **sin** status tag "Asignado" ni botones a la derecha. Búsqueda por texto (competencia, academia o habilidad).
 - **Selección:** al hacer clic en una card: (1) borde azul, (2) la card se expande y muestra la lista de **habilidades** hijas de esa competencia, cada una con un **checkbox** (todas marcadas por defecto); (3) la competencia se agrega a la tabla de la derecha.
 - **Habilidades:** el usuario puede desmarcar las que no quiera. Si desmarca **todas** las habilidades, la competencia se deselecciona y se elimina de la tabla (no tiene sentido una competencia sin habilidades).
 - **Tabla derecha:** una fila por competencia seleccionada. La celda de competencia tiene **dos líneas**: línea principal = nombre de la competencia, línea secundaria (estilo helper) = "X habilidad(es)". Botón eliminar quita la competencia de la selección.
-- **Datos guardados por asignación:** array de ítems `{ id, title, habilidades: [] }` (`id` = id de competencia en BD, p. ej. `comp-001`; `title` = nombre; `habilidades` = nombres seleccionados). Origen: `bd-master-competencias.js` + `bd-master-habilidades.js` y el helper `catalogo-competencias-drawer.js` (expone `CATALOGO_COMPETENCIAS_DRAWER`, mismas globales que catalogo-v5).
+- **Datos guardados por asignación:** array de ítems `{ id, title, habilidades: [] }` (`id` = id de competencia en BD, p. ej. `comp-001`; `title` = nombre; `habilidades` = nombres seleccionados). Origen: `bd-master-competencias.js` + `bd-master-habilidades.js` y el helper `catalogo-competencias-drawer.js` (expone `CATALOGO_COMPETENCIAS_DRAWER`, mismas globales que catalogo.html).
 
 #### 4.3.2 Edición de plan de competencias (`editar-plan-competencias.html`)
 

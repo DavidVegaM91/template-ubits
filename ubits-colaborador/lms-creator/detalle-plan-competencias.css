@@ -588,7 +588,7 @@
     box-sizing: border-box;
 }
 
-/* Drawer competencias: mismo layout que catalogo-v5 (flex con 3 columnas para que al expandir solo crezca la columna) */
+/* Drawer competencias: mismo layout que catalogo.html (flex con 3 columnas para que al expandir solo crezca la columna) */
 #drawer-detalle-plan-agregar-cursos .drawer-competencias-grid-v1 {
     display: flex;
     flex-wrap: wrap;

@@ -11,7 +11,6 @@
     <link rel="stylesheet" href="../../general-styles/styles.css">
     <link rel="stylesheet" href="../../general-styles/fontawesome-icons.css">
     <link rel="stylesheet" href="../../general-styles/ubits-typography.css">
-    <link rel="stylesheet" href="./aprendizaje-ia-gradientes.css">
     <link rel="stylesheet" href="../../components/sub-nav.css">
     <link rel="stylesheet" href="../../components/sidebar.css">
     <link rel="stylesheet" href="../../components/tab-bar.css">
@@ -219,11 +218,11 @@
 
         // Imágenes placeholder para academias (usando Unsplash)
         const academiaImageMap = {
-            'Academia de Habilidades Blandas': '../../images/academias/academia-habilidades-blandas.jpg',
-            'Academia de Inglés': '../../images/academias/academia-ingles.jpg',
-            'Academia de Negocios': '../../images/academias/academia-negocios.jpg',
-            'Academia de Compliance': '../../images/academias/academia-compliance.jpg',
-            'Academia de Tecnología': '../../images/academias/academia-tecnologia.jpg'
+            'Academia de Habilidades Blandas': 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=400&h=400&fit=crop',
+            'Academia de Inglés': 'https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=400&h=400&fit=crop',
+            'Academia de Negocios': 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=400&h=400&fit=crop',
+            'Academia de Compliance': 'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=400&h=400&fit=crop',
+            'Academia de Tecnología': 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=400&h=400&fit=crop'
         };
 
         // Iconos para habilidades (único por habilidad; bd-master + catalogo-competencias-drawer.js)
@@ -385,9 +384,8 @@
                                 // Aquí puedes agregar la lógica de filtros
                             });
                             
-                            // Botón de Modo IA (ia-button secundario, sm) - único con gradación naranja en catálogo
+                            // Botón de Modo IA (ia-button secundario, sm)
                             const iaButton = document.createElement('button');
-                            iaButton.id = 'catalogo-modo-ia-btn';
                             iaButton.className = 'ubits-ia-button ubits-ia-button--secondary ubits-ia-button--sm';
                             iaButton.innerHTML = '<i class="far fa-sparkles"></i><span>Modo IA</span>';
                             iaButton.addEventListener('click', function(e) {
@@ -424,29 +422,25 @@
                         searchContainer.appendChild(suggestionsContainer);
                     }
                     
-                    // Listener simple para input - solo mostrar sugerencias
+                    // Listener simple para input - solo mostrar sugerencias, no buscar
                     searchInput.addEventListener('input', function(e) {
                         const value = this.value;
                         console.log('📝 Input cambiado:', value);
+                        
+                        // Si el input está vacío, ocultar sugerencias
                         if (value === '') {
                             const suggestionsContainer = document.getElementById('search-suggestions-container');
-                            if (suggestionsContainer) suggestionsContainer.classList.remove('visible');
-                        } else {
-                            showSuggestions(value);
-                        }
-                    });
-
-                    // Enter: si el valor es Liderazgo, Inglés o Comunicación, ir a resultados
-                    searchInput.addEventListener('keydown', function(e) {
-                        if (e.key === 'Enter') {
-                            e.preventDefault();
-                            var val = (this.value || '').trim();
-                            var v = val.toLowerCase();
-                            if (v === 'liderazgo' || v === 'ingles' || v === 'inglés' || v === 'comunicacion' || v === 'comunicación') {
-                                irAResultados(val);
+                            if (suggestionsContainer) {
+                                suggestionsContainer.classList.remove('visible');
                             }
+                        } else {
+                            // Solo mostrar sugerencias si hay texto
+                        showSuggestions(value);
                         }
+                        // NO llamar handleSearch - la búsqueda está desactivada
                     });
+                    
+                    // El botón X ya está oculto, no necesitamos listener para él
                     
                     // Ocultar al hacer clic fuera
                     document.addEventListener('click', function(e) {
@@ -580,7 +574,7 @@
                         });
                         
                         // Re-renderizar catálogo completo (búsqueda desactivada)
-                        renderCatalog(catalogData.academias);
+                            renderCatalog(catalogData.academias);
                         
                         // Restaurar estado
                         setTimeout(() => {
@@ -651,36 +645,38 @@
             }, 200);
         });
 
-        // Función para renderizar "Lo más buscado" con botones secundarios oficiales UBITS (xs)
+        // Función para renderizar chips de búsquedas frecuentes
         function renderChips() {
-            const busquedasFrecuentes = ['Liderazgo', 'Inglés', 'Comunicación'];
+            const busquedasFrecuentes = [
+                'Liderazgo',
+                'Product Design',
+                'Marketing Digital',
+                'Desarrollo de Software',
+                'Data Skills'
+            ];
+
             const chipsContainer = document.getElementById('catalog-chips');
             chipsContainer.innerHTML = busquedasFrecuentes.map(busqueda => `
-                <button type="button" class="ubits-button ubits-button--secondary ubits-button--xs" onclick="handleChipClick('${busqueda.replace(/'/g, "\\'")}')">
-                    <span>${busqueda}</span>
-                </button>
+                <div class="catalog-chip" onclick="handleChipClick('${busqueda}')">
+                    <span class="ubits-body-sm-regular">${busqueda}</span>
+                </div>
             `).join('');
         }
 
-        function irAResultados(tema) {
-            var n = (tema || '').trim();
-            if (!n) return;
-            var normalizado = n.toLowerCase();
-            if (normalizado === 'liderazgo') { window.location.href = 'resultados-busqueda.html?q=' + encodeURIComponent('Liderazgo'); return; }
-            if (normalizado === 'ingles' || normalizado === 'inglés') { window.location.href = 'resultados-busqueda.html?q=' + encodeURIComponent('Inglés'); return; }
-            if (normalizado === 'comunicacion' || normalizado === 'comunicación') { window.location.href = 'resultados-busqueda.html?q=' + encodeURIComponent('Comunicación'); return; }
-        }
-
+        // Función para manejar click en chip
         function handleChipClick(busqueda) {
-            irAResultados(busqueda);
+            const searchInput = document.querySelector('#catalog-search-container input');
+            if (searchInput) {
+                searchInput.value = busqueda;
+                searchInput.dispatchEvent(new Event('input', { bubbles: true }));
+            }
         }
 
-        // Función de búsqueda
         // Función de búsqueda - DESACTIVADA (solo para diseño, no funcional)
         // En la vida real, esto enviaría a una página de resultados de búsqueda
         function handleSearch(event) {
             // La búsqueda está desactivada - no hacer nada
-            return;
+                return;
         }
 
         // Función para renderizar el catálogo
@@ -885,48 +881,14 @@
             
             const resultsContainer = document.getElementById('catalog-results');
             
-            // Event delegation para academias
-            resultsContainer.addEventListener('click', function(e) {
-                const academiaCard = e.target.closest('.academia-card-spotify');
-                if (academiaCard) {
-                    e.stopPropagation();
-                    const academiaNombre = academiaCard.dataset.academia;
-                    const competenciasContainer = document.querySelector(`.academia-competencias-container[data-academia="${academiaNombre}"]`);
-                    const isCurrentlyExpanded = academiaCard.classList.contains('expanded');
-                    
-                    // Cerrar todas las academias abiertas
-                    document.querySelectorAll('.academia-card-spotify.expanded').forEach(openCard => {
-                        if (openCard !== academiaCard) {
-                            openCard.classList.remove('expanded');
-                            const openAcademiaNombre = openCard.dataset.academia;
-                            const openContainer = document.querySelector(`.academia-competencias-container[data-academia="${openAcademiaNombre}"]`);
-                            if (openContainer) {
-                                openContainer.classList.remove('is-visible');
-                            }
-                        }
-                    });
-                    
-                    // Toggle la academia clickeada
-                    if (competenciasContainer) {
-                        if (isCurrentlyExpanded) {
-                            // Si ya estaba abierta, cerrarla
-                            academiaCard.classList.remove('expanded');
-                            competenciasContainer.classList.remove('is-visible');
-                        } else {
-                            // Si estaba cerrada, abrirla
-                            academiaCard.classList.add('expanded');
-                            competenciasContainer.classList.add('is-visible');
-                            
-                            // Scroll suave al contenedor (sin causar resize)
-                            requestAnimationFrame(() => {
-                                competenciasContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-                            });
-                        }
-                    }
+            // Verificar que el contenedor existe antes de agregar listeners
+            if (!resultsContainer) {
+                console.warn('catalog-results container not found, skipping event listeners');
                     return;
                 }
                 
                 // Event delegation para competencias
+            resultsContainer.addEventListener('click', function(e) {
                 const competenciaCard = e.target.closest('.competencia-card-v1');
                 if (competenciaCard) {
                     // Si el clic fue en el botón de filtro, no hacer nada
@@ -994,49 +956,125 @@
             });
         }
         
+        // Variable global para almacenar la academia seleccionada en la segunda sección
+        let selectedAcademia2 = 'Academia de Habilidades Blandas';
+        
         function renderCatalog(academias) {
             const resultsContainer = document.getElementById('catalog-results');
             
             if (academias.length === 0) {
-                resultsContainer.innerHTML = '';
+                if (resultsContainer) resultsContainer.innerHTML = '';
                 return;
             }
 
-            // Renderizar grid de academias
-            let academiasHtml = '<div class="academias-grid-spotify">';
+            // Renderizar sección con selector
+            if (resultsContainer) {
+                renderCatalogWithSelector(resultsContainer, academias);
+            }
             
-            academias.forEach(academia => {
-                const totalCompetencias = academia.competencias.length;
-                // Dividir el nombre: "Academia de" arriba, resto abajo
-                const nombreCompleto = academia.nombre;
-                const partes = nombreCompleto.split('Academia de ');
-                const prefijo = 'Academia de';
-                const resto = partes.length > 1 ? partes[1] : nombreCompleto;
-                
-                // Obtener imagen
-                const academiaImage = academiaImageMap[academia.nombre] || 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=400&h=400&fit=crop';
-                
-                // Todas las academias usan variante con imagen arriba
-                academiasHtml += `
-                    <div class="academia-card-spotify variant-image-top" data-academia="${academia.nombre}">
-                        <img src="${academiaImage}" alt="${academia.nombre}" class="academia-card-spotify-image">
-                        <div class="academia-card-spotify-content">
-                            <p class="ubits-body-md-semibold academia-card-spotify-title">
-                                <span>${prefijo}</span><br>
-                                <span>${resto}</span>
-                            </p>
-                            <p class="ubits-body-sm-regular academia-card-spotify-meta">${totalCompetencias} competencias</p>
-                        </div>
-                    </div>
-                `;
-            });
-            
-            academiasHtml += '</div>';
+            // Asegurar que los event listeners estén adjuntos (solo una vez)
+            attachCatalogEventListeners();
+        }
 
-            // Renderizar contenedores de competencias (inicialmente ocultos)
-            let competenciasHtml = '';
+        function renderCatalogWithSelector(container, academias) {
+            // Crear selector de academias si no existe
+            let selectorContainer = container.querySelector('#academia-selector-container');
+            if (!selectorContainer) {
+                selectorContainer = document.createElement('div');
+                selectorContainer.id = 'academia-selector-container';
+                selectorContainer.style.marginBottom = '24px';
+                container.insertBefore(selectorContainer, container.firstChild);
+            }
             
-            academias.forEach(academia => {
+            // Renderizar competencias inmediatamente (no dependen del selector para existir)
+            renderCompetenciasForSelector(container, selectedAcademia2, academias);
+            
+            // Verificar si el selector ya fue creado (buscar el input readonly que crea createInput)
+            const existingInput = selectorContainer.querySelector('input[readonly]');
+            if (!existingInput) {
+                // Verificar que createInput esté disponible
+                if (typeof createInput === 'function') {
+                    // Definir el callback onChange antes de crear el input
+                    const handleAcademiaChange = function(selectedValue) {
+                        selectedAcademia2 = selectedValue;
+                        renderCompetenciasForSelector(container, selectedAcademia2, academias);
+                    };
+                    
+                    createInput({
+                        containerId: 'academia-selector-container',
+                        type: 'select',
+                        label: 'Selecciona una academia',
+                        placeholder: 'Selecciona una academia...',
+                        selectOptions: academias.map(academia => ({
+                            value: academia.nombre,
+                            text: academia.nombre
+                        })),
+                        value: selectedAcademia2,
+                        onChange: handleAcademiaChange
+                    });
+                }
+            } else {
+                // Si el selector ya existe, necesitamos actualizar las opciones y el callback
+                // Para esto, es mejor recrear el selector con las nuevas opciones
+                selectorContainer.innerHTML = '';
+                const handleAcademiaChange = function(selectedValue) {
+                    selectedAcademia2 = selectedValue;
+                    renderCompetenciasForSelector(container, selectedAcademia2, academias);
+                };
+                
+                createInput({
+                    containerId: 'academia-selector-container',
+                    type: 'select',
+                    label: 'Selecciona una academia',
+                    placeholder: 'Selecciona una academia...',
+                    selectOptions: academias.map(academia => ({
+                        value: academia.nombre,
+                        text: academia.nombre
+                    })),
+                    value: selectedAcademia2,
+                    onChange: handleAcademiaChange
+                });
+            }
+        }
+
+        function renderCompetenciasForSelector(container, academiaNombre, academias) {
+            // Buscar un contenedor específico para las competencias o crear uno
+            let competenciasContainer = document.getElementById('competencias-container');
+            
+            if (!competenciasContainer) {
+                competenciasContainer = document.createElement('div');
+                competenciasContainer.id = 'competencias-container';
+                competenciasContainer.style.marginTop = '24px';
+                competenciasContainer.style.width = '100%';
+                
+                // Insertar después del selector en el contenedor principal
+                const selectorContainer = document.getElementById('academia-selector-container');
+                if (selectorContainer && selectorContainer.parentNode) {
+                    // Insertar después del contenedor del selector
+                    selectorContainer.parentNode.insertBefore(competenciasContainer, selectorContainer.nextSibling);
+                } else {
+                    // Si no se encuentra, insertar en el contenedor principal
+                    container.appendChild(competenciasContainer);
+                }
+            }
+            
+            // Asegurar que el contenedor esté en el DOM
+            if (!competenciasContainer.parentNode) {
+                const selectorContainer = document.getElementById('academia-selector-container');
+                if (selectorContainer && selectorContainer.parentNode) {
+                    selectorContainer.parentNode.insertBefore(competenciasContainer, selectorContainer.nextSibling);
+                } else {
+                    container.appendChild(competenciasContainer);
+                }
+            }
+            
+            const academia = academias.find(a => a.nombre === academiaNombre);
+            
+            if (!academia) {
+                competenciasContainer.innerHTML = '<p class="ubits-body-md-regular">No se encontró la academia seleccionada.</p>';
+                return;
+            }
+
                 // Ordenar competencias alfabéticamente
                 const competenciasOrdenadas = [...academia.competencias].sort((a, b) => 
                     a.nombre.localeCompare(b.nombre, 'es', { sensitivity: 'base' })
@@ -1055,14 +1093,14 @@
                     columns[i] = [];
                 }
                 
-                // Distribuir competencias en columnas para lectura de izquierda a derecha y arriba hacia abajo
+            // Distribuir competencias en columnas
                 competenciasOrdenadas.forEach((competencia, index) => {
                     const columnIndex = index % numColumns;
                     columns[columnIndex].push(competencia);
                 });
 
-                competenciasHtml += `
-                    <div class="academia-competencias-container" data-academia="${academia.nombre}">
+            const competenciasHtml = `
+                <div class="academia-competencias-container is-visible" data-academia="${academia.nombre}">
                         <div class="competencias-grid-v1">
                             ${columns.map(column => `
                                 <div class="competencias-column">
@@ -1113,12 +1151,23 @@
                         </div>
                     </div>
                 `;
-            });
 
-            resultsContainer.innerHTML = academiasHtml + competenciasHtml;
+            // Asegurar que el contenedor esté en el DOM antes de insertar HTML
+            if (!competenciasContainer.parentNode) {
+                const selectorContainer = container.querySelector('#academia-selector-container-2');
+                if (selectorContainer && selectorContainer.parentNode) {
+                    selectorContainer.parentNode.insertBefore(competenciasContainer, selectorContainer.nextSibling);
+                } else {
+                    container.appendChild(competenciasContainer);
+                }
+            }
             
-            // Asegurar que los event listeners estén adjuntos (solo una vez)
+            competenciasContainer.innerHTML = competenciasHtml;
+            
+            // Asegurar que los event listeners estén adjuntos
+            if (typeof attachCatalogEventListeners === 'function') {
             attachCatalogEventListeners();
+            }
 
             document.querySelectorAll('.competencia-card-v1-actions .ubits-button').forEach(button => {
                 button.addEventListener('mouseenter', function() {

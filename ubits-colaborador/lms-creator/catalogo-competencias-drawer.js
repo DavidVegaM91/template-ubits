@@ -10,7 +10,6 @@
  * - ubits-colaborador/lms-creator/crear-plan-competencias.html
  * - ubits-colaborador/lms-creator/detalle-plan-competencias.html
  * - ubits-colaborador/aprendizaje/catalogo.html
- * - ubits-colaborador/aprendizaje/catalogo-v5.html
  *
  * DEPENDENCIAS (orden obligatorio antes de este script)
  * - ../../bd-master/bd-master-competencias.js
