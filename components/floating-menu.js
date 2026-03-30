@@ -9,6 +9,7 @@ const FLOATING_MENU_SECTIONS = [
         icon: 'far fa-graduation-cap',
         subitems: [
             { id: 'inicio', title: 'Inicio', icon: 'far fa-home', url: '../../ubits-colaborador/aprendizaje/home-learn.html' },
+            { id: 'modo-estudio-ia', title: 'Modo estudio IA', icon: 'far fa-sparkles', url: '../../ubits-colaborador/aprendizaje/modo-estudio-ia.html' },
             { id: 'catalogo', title: 'Catálogo', icon: 'far fa-book', url: '../../ubits-colaborador/aprendizaje/catalogo.html' },
             { id: 'corporativa', title: 'U. Corporativa', icon: 'far fa-building-columns', url: '../../ubits-colaborador/aprendizaje/u-corporativa.html' },
             { id: 'zona-estudio', title: 'Zona de estudio', icon: 'far fa-books', url: '../../ubits-colaborador/aprendizaje/zona-estudio.html' }
@@ -259,6 +260,7 @@ function setActiveItemByCurrentPage() {
         'diagnostico.html': 'diagnostico',
         'reclutamiento.html': 'reclutamiento',
         'home-learn.html': 'inicio',
+        'modo-estudio-ia.html': 'modo-estudio-ia',
         'catalogo.html': 'catalogo',
         'u-corporativa.html': 'corporativa',
         'zona-estudio.html': 'zona-estudio',

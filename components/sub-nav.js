@@ -54,6 +54,7 @@ const TOP_NAV_VARIANTS = {
         tabs: [
             { id: 'home', label: 'Inicio', icon: 'far fa-home', url: '../../ubits-colaborador/aprendizaje/home-learn.html' },
             { id: 'modo-estudio-ia', label: 'Modo estudio IA', icon: 'far fa-sparkles', url: '../../ubits-colaborador/aprendizaje/modo-estudio-ia.html' },
+            { id: 'catalog', label: 'Catálogo', icon: 'far fa-book', url: '../../ubits-colaborador/aprendizaje/catalogo.html' },
             { id: 'corporate', label: 'U. Corporativa', icon: 'far fa-building-columns', url: '../../ubits-colaborador/aprendizaje/u-corporativa.html' },
             { id: 'study-zone', label: 'Zona de estudio', icon: 'far fa-books', url: '../../ubits-colaborador/aprendizaje/zona-estudio.html' }
         ]

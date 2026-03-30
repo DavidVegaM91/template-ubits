@@ -297,11 +297,9 @@
                 });
             }
             var btnHistorial = document.getElementById('btn-historial');
-            var btnHistorialWelcome = document.getElementById('btn-historial-welcome');
             if (btnHistorial) btnHistorial.addEventListener('click', function () { if (typeof openHistorialPanel === 'function') openHistorialPanel(); });
             var btnHistorialNuevoChat = document.getElementById('historial-panel-nuevo-chat');
             if (btnHistorialNuevoChat) btnHistorialNuevoChat.addEventListener('click', function () { if (typeof startNewChat === 'function') startNewChat(); });
-            if (btnHistorialWelcome) btnHistorialWelcome.addEventListener('click', function () { if (typeof openHistorialPanel === 'function') openHistorialPanel(); });
 
             // Listeners modal eliminar chat
             var deleteModalClose = document.getElementById('delete-chat-modal-close');

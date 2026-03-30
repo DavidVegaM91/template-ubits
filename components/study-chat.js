@@ -2616,13 +2616,6 @@ function createStudyChatHTML(options = {}) {
                     <p class="ubits-ia-chat-thread__welcome-prompt">¿Qué quieres <span class="ubits-ia-chat-thread__welcome-prompt-accent">aprender hoy</span>?</p>
                 </div>
             </div>` : '';
-    const welcomeTopBar = isTutorMode ? `
-            <div class="ubits-ia-chat-thread__welcome-top" id="ubits-ia-chat-thread-welcome-top" style="display: none;">
-                <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="btn-historial-welcome" aria-label="Ver historial de chats">
-                    <i class="far fa-clock-rotate-left"></i>
-                    <span>Ver historial</span>
-                        </button>
-            </div>` : '';
     return `
         <div class="ubits-ia-chat-thread" id="ubits-ia-chat-thread">
             <div class="ubits-ia-chat-thread__header" id="ubits-ia-chat-thread-header" style="${headerInlineStyle}" aria-label="Encabezado del chat">
@@ -2636,7 +2629,6 @@ function createStudyChatHTML(options = {}) {
                     </button>
                     </div>
                 </div>
-            ${welcomeTopBar}
             <div class="ubits-ia-chat-thread__body" id="ubits-ia-chat-thread-body">${welcomeBlock}</div>
             <div class="ubits-ia-chat-thread__input-area">
                 <div class="ubits-ia-chat-thread__input-container">

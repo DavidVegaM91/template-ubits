@@ -135,12 +135,7 @@ body.modo-estudio-ia-page .ubits-ia-chat__side.is-open .ubits-ia-chat-side__body
     display: none !important;
 }
 
-.modo-estudio-ia-page #btn-historial-welcome,
 .modo-estudio-ia-page #btn-historial {
-    display: none !important;
-}
-
-.modo-estudio-ia-page #ubits-ia-chat-thread-welcome-top {
     display: none !important;
 }
 
@@ -211,13 +206,8 @@ body.modo-estudio-ia-page .ubits-ia-chat__side.is-open .ubits-ia-chat-side__body
         display: inline-flex !important;
     }
 
-    .modo-estudio-ia-page #btn-historial,
-    .modo-estudio-ia-page #btn-historial-welcome {
+    .modo-estudio-ia-page #btn-historial {
         display: inline-flex !important;
-    }
-
-    .modo-estudio-ia-page #ubits-ia-chat-thread-welcome-top {
-        display: flex !important;
     }
 
     .modo-estudio-ia-page .content-sections > .section-single:first-child {
