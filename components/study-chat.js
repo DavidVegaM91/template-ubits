@@ -3873,7 +3873,7 @@ function showThinkingIndicator() {
 /**
  * Inicializa el chat de estudio (soporta Modo Tutor IA con empty state y panel derecho)
  * @param {string} containerId - ID del contenedor donde se renderizará el chat
- * @param {Object} options - userFirstName, competencies[], rightPanelId, placeholderId
+ * @param {Object} options - userFirstName, competencies[], rightPanelId, placeholderId, backNavigationHref (URL fija para el botón atrás móvil del hilo)
  */
 function initStudyChat(containerId, options = {}) {
     const container = document.getElementById(containerId);
@@ -3921,6 +3921,10 @@ function initStudyChat(containerId, options = {}) {
     var headerBackMobile = document.getElementById('ubits-ia-chat-thread-header-back-mobile');
     if (headerBackMobile) {
         headerBackMobile.addEventListener('click', function () {
+            if (options.backNavigationHref) {
+                window.location.href = options.backNavigationHref;
+                return;
+            }
             if (window.history.length > 1) {
                 window.history.back();
             } else {

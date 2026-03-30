@@ -193,14 +193,7 @@
                     breadcrumbItems: [], // Array vacío para ocultar breadcrumb
                     backButton: {
                         onClick: function () {
-                            console.log('Back button clicked');
-                            // Regresar a la página anterior del historial del navegador
-                            if (window.history.length > 1) {
-                                window.history.back();
-                            } else {
-                                // Si no hay historial, redirigir a catalogo.html como fallback
-                                window.location.href = 'catalogo.html';
-                            }
+                            window.location.href = '../ia-para-hr/ia-para-hr.html';
                         }
                     },
                     secondaryButtons: []
@@ -210,11 +203,7 @@
             var historialPanelBack = document.getElementById('historial-panel-back');
             if (historialPanelBack) {
                 historialPanelBack.addEventListener('click', function () {
-                    if (window.history.length > 1) {
-                        window.history.back();
-                    } else {
-                        window.location.href = 'catalogo.html';
-                    }
+                    window.location.href = '../ia-para-hr/ia-para-hr.html';
                 });
             }
 
@@ -229,6 +218,7 @@
                     rightPanelId: 'tutor-canvas-panel',
                     placeholderId: 'tutor-canvas-placeholder',
                     welcomeLayout: true,
+                    backNavigationHref: '../ia-para-hr/ia-para-hr.html',
                     podcastDefaults: {
                         title: 'Encuentra tu norte y gestiona tu energía',
                         audioUrl: '../../audios/Encuentra_tu_norte_y_gestiona_tu_energía.m4a',

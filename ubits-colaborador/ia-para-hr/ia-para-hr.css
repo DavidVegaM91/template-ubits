@@ -5,7 +5,7 @@
 .content-sections {
     display: flex;
     flex-direction: column;
-    gap: var(--gap-lg);
+    gap: var(--gap-2xl);
     flex: 1;
     min-width: 0;
     width: 100%;
@@ -25,23 +25,209 @@
     padding: 0 !important;
 }
 
-/* —— Hero (contenido centrado) —— */
+/* —— Hero (gradiente + orbes; contenido centrado) —— */
 .section-single > .ia-hr-hero {
     width: 100%;
     box-sizing: border-box;
     padding: var(--padding-4xl) var(--padding-lg) !important;
     border-radius: var(--border-radius-lg);
-    background: var(--ubits-bg-2-inverted) !important;
+    background: transparent !important;
     border: none !important;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
 }
 
 .ia-hr-hero {
     width: 100%;
     box-sizing: border-box;
+}
+
+.ia-hr-hero__visual {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    border-radius: inherit;
+    overflow: hidden;
+}
+
+/* Gradación hero: izquierda → derecha (especificación de diseño) */
+.ia-hr-hero__gradient {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        to right,
+        #0f111c 0%,
+        #070b56 50%,
+        #13145c 100%
+    );
+}
+
+/* Contenedor externo: movimiento lento; orbe interno: pulso de intensidad */
+.ia-hr-hero__orb-wrap {
+    position: absolute;
+    pointer-events: none;
+    will-change: transform;
+}
+
+.ia-hr-hero__orb-wrap--1 {
+    left: -14%;
+    top: 8%;
+    width: min(44vw, 360px);
+    height: min(44vw, 360px);
+    animation: ia-hr-orb-drift-a 22s ease-in-out infinite;
+}
+
+.ia-hr-hero__orb-wrap--2 {
+    right: -12%;
+    bottom: -6%;
+    width: min(52vw, 400px);
+    height: min(52vw, 400px);
+    animation: ia-hr-orb-drift-b 28s ease-in-out infinite;
+    animation-delay: -7s;
+}
+
+.ia-hr-hero__orb-wrap--3 {
+    left: 50%;
+    bottom: -38%;
+    width: min(36vw, 300px);
+    height: min(36vw, 300px);
+    animation: ia-hr-orb-drift-c 26s ease-in-out infinite;
+    animation-delay: -11s;
+}
+
+.ia-hr-hero__orb {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    filter: blur(52px);
+    opacity: 0.62;
+    will-change: opacity, transform;
+    animation: ia-hr-orb-glow 9s ease-in-out infinite alternate;
+}
+
+/* Orbe izquierda (#6d83b6) */
+.ia-hr-hero__orb--blue-accent {
+    background: radial-gradient(
+        circle at 35% 35%,
+        color-mix(in srgb, #6d83b6 72%, var(--ubits-fg-bold) 8%) 0%,
+        color-mix(in srgb, #6d83b6 28%, transparent) 52%,
+        transparent 66%
+    );
+    animation-duration: 10s;
+    animation-delay: -1s;
+}
+
+/* Azul marca UBITS (orbe derecha; referencia) */
+.ia-hr-hero__orb--blue-brand {
+    background: radial-gradient(
+        circle at 40% 40%,
+        color-mix(in srgb, var(--ubits-accent-brand) 64%, var(--ubits-fg-bold) 10%) 0%,
+        color-mix(in srgb, var(--ubits-accent-brand) 22%, transparent) 55%,
+        transparent 68%
+    );
+    animation-duration: 8.5s;
+    animation-delay: -3s;
+}
+
+/* Orbe centro / inferior (#66d3d8) */
+.ia-hr-hero__orb--blue-indigo {
+    background: radial-gradient(
+        circle at 30% 30%,
+        color-mix(in srgb, #66d3d8 58%, var(--ubits-fg-bold) 8%) 0%,
+        color-mix(in srgb, #66d3d8 20%, transparent) 54%,
+        transparent 70%
+    );
+    animation-duration: 11s;
+    animation-delay: -5s;
+}
+
+/* Desplazamiento en px/vw (no solo % del propio orbe): con blur alto, el % era casi imperceptible */
+@keyframes ia-hr-orb-drift-a {
+    0%,
+    100% {
+        transform: translate(0, 0) rotate(0deg);
+    }
+    25% {
+        transform: translate(calc(8px + 3vw), calc(-10px - 2.5vw)) rotate(2deg);
+    }
+    50% {
+        transform: translate(calc(-12px - 2vw), calc(14px + 3vw)) rotate(-1.5deg);
+    }
+    75% {
+        transform: translate(calc(10px + 2.5vw), calc(10px + 1vw)) rotate(1deg);
+    }
+}
+
+@keyframes ia-hr-orb-drift-b {
+    0%,
+    100% {
+        transform: translate(0, 0) rotate(0deg);
+    }
+    33% {
+        transform: translate(calc(-18px - 3.5vw), calc(12px + 2vw)) rotate(-2deg);
+    }
+    66% {
+        transform: translate(calc(14px + 3vw), calc(-16px - 2.5vw)) rotate(1.5deg);
+    }
+}
+
+/* translate(-50%, 0) mantiene el orbe centrado en X respecto al hero */
+@keyframes ia-hr-orb-drift-c {
+    0%,
+    100% {
+        transform: translate(-50%, 0) translate(0, 0) rotate(0deg);
+    }
+    25% {
+        transform: translate(-50%, 0) translate(calc(16px + 2.5vw), calc(-20px - 3vw)) rotate(2.5deg);
+    }
+    50% {
+        transform: translate(-50%, 0) translate(calc(-10px - 2vw), calc(8px + 2vw)) rotate(-2deg);
+    }
+    75% {
+        transform: translate(-50%, 0) translate(calc(6px + 1.5vw), calc(18px + 2.5vw)) rotate(1deg);
+    }
+}
+
+@keyframes ia-hr-orb-glow {
+    0%,
+    100% {
+        opacity: 0.48;
+        transform: scale(0.94);
+    }
+    50% {
+        opacity: 0.94;
+        transform: scale(1.06);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .ia-hr-hero__orb-wrap--1,
+    .ia-hr-hero__orb-wrap--2,
+    .ia-hr-hero__orb-wrap--3 {
+        animation: none;
+    }
+
+    .ia-hr-hero__orb-wrap--3 {
+        transform: translateX(-50%);
+    }
+
+    .ia-hr-hero__orb {
+        animation: none;
+        opacity: 0.68;
+        transform: none;
+    }
+}
+
+.ia-hr-hero__inner {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    width: 100%;
 }
 
 /* Ancho máximo unificado del contenido del hero (valor fuera de escala de tokens) */
@@ -61,26 +247,61 @@
     width: 100%;
 }
 
-.ia-hr-hero__search {
+/* Máquina de escribir (ejemplos de prompts) */
+.ia-hr-hero__typewriter {
     width: 100%;
     max-width: 800px;
     margin: 0 auto;
 }
 
-/* Input de búsqueda legible sobre fondo oscuro */
-.ia-hr-hero .ubits-input-wrapper {
-    width: 100%;
-    background: var(--ubits-bg-1);
-    border-radius: var(--border-radius-sm);
+.ia-hr-hero__typewriter-line {
+    margin: 0;
+    text-align: center;
+    color: var(--ubits-fg-1-medium-inverted);
 }
 
-.ia-hr-hero .ubits-input {
-    background: var(--ubits-bg-1);
+.ia-hr-hero__typewriter-text {
+    display: inline;
+    text-wrap: balance;
+}
+
+.ia-hr-hero__typewriter-cursor {
+    display: inline-block;
+    margin-left: 2px;
+    color: var(--ubits-fg-1-high-inverted);
+    font-weight: 600;
+    animation: ia-hr-typewriter-cursor 0.95s step-end infinite;
+}
+
+.ia-hr-hero__typewriter-cursor--static {
+    animation: none;
+    opacity: 1;
+}
+
+@keyframes ia-hr-typewriter-cursor {
+    0%,
+    49% {
+        opacity: 1;
+    }
+    50%,
+    100% {
+        opacity: 0;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .ia-hr-hero__typewriter-cursor {
+        animation: none;
+        opacity: 1;
+    }
+}
+
+[data-theme="dark"] .ia-hr-hero__typewriter-line {
+    color: var(--ubits-fg-1-medium);
+}
+
+[data-theme="dark"] .ia-hr-hero__typewriter-cursor {
     color: var(--ubits-fg-1-high);
-}
-
-[data-theme="dark"] .section-single > .ia-hr-hero {
-    background: var(--ubits-bg-2) !important;
 }
 
 [data-theme="dark"] .ia-hr-hero__title {

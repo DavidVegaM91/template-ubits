@@ -15,7 +15,6 @@
     <link rel="stylesheet" href="../../components/floating-menu.css">
     <link rel="stylesheet" href="../../components/profile-menu.css">
     <link rel="stylesheet" href="../../components/button.css">
-    <link rel="stylesheet" href="../../components/input.css">
     <link rel="stylesheet" href="../../components/tooltip.css">
     <link rel="stylesheet" href="../perfil/profile.css">
     <link rel="stylesheet" href="./ia-para-hr.css">
@@ -32,9 +31,28 @@
                     <!-- Hero -->
                     <div class="section-single">
                         <div class="ia-hr-hero">
-                            <h1 class="ubits-heading-h1 ia-hr-hero__title">Agentes de IA para HR</h1>
-                            <p class="ubits-body-md-regular ia-hr-hero__subtitle">Transforma tu área de HR hacia la nueva era, reduciendo la operatividad y escalando apoyos estratégicos.</p>
-                            <div id="ia-hr-search-container" class="ia-hr-hero__search" aria-label="Búsqueda"></div>
+                            <div class="ia-hr-hero__visual" aria-hidden="true">
+                                <div class="ia-hr-hero__gradient"></div>
+                                <div class="ia-hr-hero__orb-wrap ia-hr-hero__orb-wrap--1">
+                                    <div class="ia-hr-hero__orb ia-hr-hero__orb--blue-accent"></div>
+                                </div>
+                                <div class="ia-hr-hero__orb-wrap ia-hr-hero__orb-wrap--2">
+                                    <div class="ia-hr-hero__orb ia-hr-hero__orb--blue-brand"></div>
+                                </div>
+                                <div class="ia-hr-hero__orb-wrap ia-hr-hero__orb-wrap--3">
+                                    <div class="ia-hr-hero__orb ia-hr-hero__orb--blue-indigo"></div>
+                                </div>
+                            </div>
+                            <div class="ia-hr-hero__inner">
+                                <h1 class="ubits-heading-h1 ia-hr-hero__title">Agentes de IA para HR</h1>
+                                <p class="ubits-body-md-regular ia-hr-hero__subtitle">Transforma tu área de HR hacia la nueva era, reduciendo la operatividad y escalando apoyos estratégicos.</p>
+                                <p class="sr-only">Ejemplos de lo que puedes pedir a los agentes de IA.</p>
+                                <div class="ia-hr-hero__typewriter" aria-hidden="true">
+                                    <p class="ubits-body-md-regular ia-hr-hero__typewriter-line">
+                                        <span id="ia-hr-typewriter-text" class="ia-hr-hero__typewriter-text"></span><span class="ia-hr-hero__typewriter-cursor"></span>
+                                    </p>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -126,9 +144,9 @@
                                     </div>
                                 </div>
                                 <footer class="ia-hr-card__footer">
-                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--md ia-hr-card__cta">
+                                    <a href="../aprendizaje/modo-estudio-ia.html" class="ubits-button ubits-button--secondary ubits-button--md ia-hr-card__cta">
                                         <span>¿Qué quieres aprender?</span>
-                                    </button>
+                                    </a>
                                 </footer>
                             </article>
                             <article class="ia-hr-card" role="listitem">
@@ -169,7 +187,6 @@
     <script src="../../components/tab-bar.js"></script>
     <script src="../../components/floating-menu.js"></script>
     <script src="../../components/profile-menu.js"></script>
-    <script src="../../components/input.js"></script>
     <script src="../../script.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -182,17 +199,64 @@
                 setActiveDirectLink('ia-para-hr');
             }, 500);
 
-            if (typeof createInput === 'function') {
-                createInput({
-                    containerId: 'ia-hr-search-container',
-                    type: 'search',
-                    label: 'Buscar',
-                    showLabel: false,
-                    placeholder: 'Cómo puedo mejorar esta estructura...',
-                    leftIcon: 'fa-search',
-                    size: 'lg'
-                });
-            }
+            (function initIaHrTypewriter() {
+                var phrases = [
+                    'Ayúdame a revisar si mi estructura tiene demasiados niveles jerárquicos.',
+                    '¿Qué métricas debería mirar para medir el clima del equipo?',
+                    'Necesito un plan de formación para cerrar brechas de liderazgo en mi área.',
+                    'Simula qué pasaría si centralizamos el reclutamiento en una sola región.',
+                    '¿Cómo comunico un cambio de organigrama sin generar alarma innecesaria?',
+                    'Dame un checklist para evaluar la eficiencia de un proceso de HR.',
+                    '¿Qué benchmarks puedo usar para comparar políticas de talento?',
+                    'Tengo un cuello de botella en selección: ¿por dónde empiezo a diagnosticar?',
+                    'Ayúdame a priorizar iniciativas de bienestar con poco presupuesto.',
+                    '¿Qué alternativas tengo si quiero acortar los tiempos de onboarding?'
+                ];
+                var textEl = document.getElementById('ia-hr-typewriter-text');
+                var cursorEl = document.querySelector('.ia-hr-hero__typewriter-cursor');
+                if (!textEl) return;
+
+                if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                    textEl.textContent = phrases[0];
+                    if (cursorEl) cursorEl.classList.add('ia-hr-hero__typewriter-cursor--static');
+                    return;
+                }
+
+                var phraseIndex = 0;
+                var charIndex = 0;
+                var deleting = false;
+                var TYPE_MS = 42;
+                var DELETE_MS = 26;
+                var PAUSE_AFTER_FULL_MS = 2400;
+                var PAUSE_BEFORE_NEXT_MS = 500;
+
+                function step() {
+                    var phrase = phrases[phraseIndex];
+                    if (!deleting) {
+                        if (charIndex < phrase.length) {
+                            textEl.textContent = phrase.slice(0, charIndex + 1);
+                            charIndex += 1;
+                            setTimeout(step, TYPE_MS);
+                        } else {
+                            setTimeout(function () {
+                                deleting = true;
+                                step();
+                            }, PAUSE_AFTER_FULL_MS);
+                        }
+                    } else {
+                        if (charIndex > 0) {
+                            charIndex -= 1;
+                            textEl.textContent = phrase.slice(0, charIndex);
+                            setTimeout(step, DELETE_MS);
+                        } else {
+                            deleting = false;
+                            phraseIndex = (phraseIndex + 1) % phrases.length;
+                            setTimeout(step, PAUSE_BEFORE_NEXT_MS);
+                        }
+                    }
+                }
+                step();
+            })();
 
             if (typeof initTooltip === 'function') {
                 initTooltip();
