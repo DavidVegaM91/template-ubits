@@ -38,7 +38,7 @@
     <link rel="stylesheet" href="./modo-estudio-ia.css">
 </head>
 
-<body class="modo-estudio-ia-page modo-tutor-ia-page aprendizaje-ia-pages ubits-ia-chat-page" data-theme="light">
+<body class="modo-estudio-ia-page modo-tutor-ia-page aprendizaje-ia-pages ubits-ia-chat-page ia-chat-mobile-drawer-page" data-theme="light">
     <div class="dashboard-container">
         <div class="tooltip" id="tooltip"></div>
 
@@ -115,6 +115,8 @@
         </main>
     </div>
 
+    <div class="ia-chat-mobile-drawer-backdrop" id="ia-chat-mobile-drawer-backdrop" aria-hidden="true"></div>
+
     <!-- Tab Bar Container -->
     <div id="tab-bar-container"></div>
 
@@ -144,6 +146,7 @@
     <script src="../../components/modal.js"></script>
     <script src="../../components/empty-state.js"></script>
     <script src="../../components/loader.js"></script>
+    <script src="../../components/ia-chat-mobile-drawer.js"></script>
     <script src="../../components/study-chat.js"></script>
     <script src="../../script.js"></script>
     <script>
@@ -283,8 +286,16 @@
                 var historialPanel = document.getElementById('historial-panel');
                 if (historialPanel) historialPanel.classList.add('is-open');
                 if (typeof window.renderHistorialList === 'function') window.renderHistorialList();
+                if (typeof window.openIaChatMobileDrawer === 'function') window.openIaChatMobileDrawer();
             }
             window.openHistorialPanel = openHistorialPanel;
+            if (typeof initIaChatMobileDrawer === 'function') {
+                initIaChatMobileDrawer({
+                    closeButtonId: 'historial-panel-close',
+                    closeListSelector: '#historial-list',
+                    nuevoChatButtonId: 'historial-panel-nuevo-chat'
+                });
+            }
             var btnHistorial = document.getElementById('btn-historial');
             var btnHistorialWelcome = document.getElementById('btn-historial-welcome');
             if (btnHistorial) btnHistorial.addEventListener('click', function () { if (typeof openHistorialPanel === 'function') openHistorialPanel(); });
@@ -302,7 +313,9 @@
             if (deleteOverlay) deleteOverlay.addEventListener('click', function (e) { if (e.target === deleteOverlay && typeof cancelDeleteChatModal === 'function') cancelDeleteChatModal(); });
             if (deleteModalConfirm) deleteModalConfirm.addEventListener('click', function () { if (typeof confirmDeleteChat === 'function') confirmDeleteChat(); });
 
-            if (typeof openHistorialPanel === 'function') openHistorialPanel();
+            if (typeof openHistorialPanel === 'function' && window.matchMedia('(min-width: 1024px)').matches) {
+                openHistorialPanel();
+            }
         });
     </script>
 </body>

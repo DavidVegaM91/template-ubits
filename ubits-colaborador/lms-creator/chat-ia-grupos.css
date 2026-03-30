@@ -73,3 +73,18 @@ body.chat-ia-grupos-page[data-theme="dark"] .content-area {
     opacity: 0.7;
     pointer-events: none;
 }
+
+/* Móvil (≤1023px): drawer Mis chats; botón historial en header y cerrar en panel */
+@media (max-width: 1023px) {
+    .chat-ia-grupos-page #group-creation-historial-panel-close {
+        display: inline-flex !important;
+    }
+
+    .chat-ia-grupos-page #group-creation-chat-btn-historial-header {
+        display: inline-flex !important;
+    }
+
+    .chat-ia-grupos-page #group-creation-chat-btn-historial {
+        display: inline-flex !important;
+    }
+}

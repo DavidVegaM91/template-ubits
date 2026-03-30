@@ -24,7 +24,7 @@
     <link rel="stylesheet" href="./lms-creator.css">
     <link rel="stylesheet" href="./chat-ia-grupos.css">
 </head>
-<body class="chat-ia-grupos-page aprendizaje-ia-pages ubits-ia-chat-page" data-theme="light">
+<body class="chat-ia-grupos-page aprendizaje-ia-pages ubits-ia-chat-page ia-chat-mobile-drawer-page" data-theme="light">
     <div class="dashboard-container">
         <div class="tooltip" id="tooltip"></div>
         <div id="sidebar-container"></div>
@@ -75,6 +75,7 @@
         </main>
     </div>
 
+    <div class="ia-chat-mobile-drawer-backdrop" id="ia-chat-mobile-drawer-backdrop" aria-hidden="true"></div>
     <div id="tab-bar-container"></div>
     <div id="floating-menu-container"></div>
     <div id="profile-menu-container"></div>
@@ -86,6 +87,7 @@
     <script src="../../components/floating-menu.js"></script>
     <script src="../../components/profile-menu.js"></script>
     <script src="../../components/empty-state.js"></script>
+    <script src="../../components/ia-chat-mobile-drawer.js"></script>
     <script src="../../components/group-creation-chat.js"></script>
     <script src="../../script.js"></script>
     <script>
@@ -106,6 +108,13 @@
 
             if (typeof initGroupCreationChat === 'function') {
                 initGroupCreationChat('group-creation-chat-container', { welcomeLayout: true, userFirstName: 'María Alejandra' });
+            }
+            if (typeof initIaChatMobileDrawer === 'function') {
+                initIaChatMobileDrawer({
+                    closeButtonId: 'group-creation-historial-panel-close',
+                    closeListSelector: '#group-creation-historial-list',
+                    nuevoChatButtonId: 'group-creation-historial-panel-nuevo-chat'
+                });
             }
 
             /* Mismo patrón que editar-plan-contenidos.html (tab Planes de formación): esta vista pertenece al submódulo Grupos. */

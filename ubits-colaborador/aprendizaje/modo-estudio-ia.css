@@ -204,3 +204,23 @@ body.modo-estudio-ia-page .ubits-ia-chat__side.is-open .ubits-ia-chat-side__body
     background: var(--ubits-bg-1) !important;
     color: var(--ubits-accent-brand) !important;
 }
+
+/* Móvil (≤1023px): drawer Mis chats; botones historial y fila bienvenida; sin header-product */
+@media (max-width: 1023px) {
+    .modo-estudio-ia-page #historial-panel-close {
+        display: inline-flex !important;
+    }
+
+    .modo-estudio-ia-page #btn-historial,
+    .modo-estudio-ia-page #btn-historial-welcome {
+        display: inline-flex !important;
+    }
+
+    .modo-estudio-ia-page #ubits-ia-chat-thread-welcome-top {
+        display: flex !important;
+    }
+
+    .modo-estudio-ia-page .content-sections > .section-single:first-child {
+        display: none !important;
+    }
+}

@@ -2626,6 +2626,9 @@ function createStudyChatHTML(options = {}) {
     return `
         <div class="ubits-ia-chat-thread" id="ubits-ia-chat-thread">
             <div class="ubits-ia-chat-thread__header" id="ubits-ia-chat-thread-header" style="${headerInlineStyle}" aria-label="Encabezado del chat">
+                <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only ubits-ia-chat-thread__header-back-mobile" id="ubits-ia-chat-thread-header-back-mobile" data-tooltip="Volver" data-tooltip-position="bottom" aria-label="Volver a la página anterior">
+                    <i class="far fa-arrow-left"></i>
+                </button>
                 <input type="text" class="ubits-ia-chat-thread__header-title" id="ubits-ia-chat-thread-header-title" value="" placeholder="Nuevo chat" maxlength="80" aria-label="Nombre del chat editable" />
                 <div class="ubits-ia-chat-thread__header-actions">
                     <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" id="btn-historial" data-tooltip="Historial" data-tooltip-position="bottom" aria-label="Abrir historial de chats">
@@ -3919,6 +3922,17 @@ function initStudyChat(containerId, options = {}) {
             if (e.key === 'Enter') {
                 e.preventDefault();
                 headerTitleInput.blur();
+            }
+        });
+    }
+
+    var headerBackMobile = document.getElementById('ubits-ia-chat-thread-header-back-mobile');
+    if (headerBackMobile) {
+        headerBackMobile.addEventListener('click', function () {
+            if (window.history.length > 1) {
+                window.history.back();
+            } else {
+                window.location.href = 'catalogo.html';
             }
         });
     }

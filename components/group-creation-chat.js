@@ -55,6 +55,8 @@ function createGroupCreationChatHTML(options) {
         '<i class="far fa-comment-plus"></i><span>Nuevo chat</span></button>' +
         '</div>';
     var headerBar = '<div class="ubits-ia-chat-thread__header" id="group-creation-chat-header" style="' + headerStyle + '" aria-label="Encabezado del chat">' +
+        '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only ubits-ia-chat-thread__header-back-mobile" id="group-creation-chat-header-back-mobile" data-tooltip="Volver" data-tooltip-position="bottom" aria-label="Volver a grupos">' +
+        '<i class="far fa-arrow-left"></i></button>' +
         '<input type="text" class="ubits-ia-chat-thread__header-title" id="group-creation-chat-header-title" value="" placeholder="Nuevo chat" maxlength="80" aria-label="Nombre del chat" />' +
         '<div class="ubits-ia-chat-thread__header-actions">' +
         '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" id="group-creation-chat-btn-historial-header" data-tooltip="Historial" data-tooltip-position="bottom" aria-label="Abrir historial de chats">' +
@@ -467,6 +469,9 @@ function initGroupCreationChat(containerId, options) {
         var panel = document.getElementById('group-creation-historial-panel');
         if (panel) {
             panel.classList.add('is-open');
+            if (typeof window.openIaChatMobileDrawer === 'function') {
+                window.openIaChatMobileDrawer();
+            }
             renderGroupCreationHistorialList();
         }
     }
@@ -477,6 +482,12 @@ function initGroupCreationChat(containerId, options) {
     if (btnHistorialWelcome) btnHistorialWelcome.addEventListener('click', onVerHistorial);
     if (btnNuevoWelcome) btnNuevoWelcome.addEventListener('click', onNuevoChat);
     if (btnHistorialHeader) btnHistorialHeader.addEventListener('click', onVerHistorial);
+    var headerBackMobile = document.getElementById('group-creation-chat-header-back-mobile');
+    if (headerBackMobile) {
+        headerBackMobile.addEventListener('click', function () {
+            window.location.href = 'grupos.html';
+        });
+    }
     var btnHistorialNuevoChat = document.getElementById('group-creation-historial-panel-nuevo-chat');
     if (btnHistorialNuevoChat) btnHistorialNuevoChat.addEventListener('click', onNuevoChat);
 
