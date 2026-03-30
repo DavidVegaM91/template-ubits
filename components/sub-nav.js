@@ -613,7 +613,7 @@ window.navigateToTab = function(tabId, variant) {
  * @param {Array} customTabs - Array opcional de tabs personalizados
  */
 function checkAndActivateSelector(container, variant, customTabs = []) {
-    // Regla simple: >= 1280px = items, < 1280px = selector (excepto documentación)
+    // Regla simple: >= 1024px = items, < 1024px = selector (excepto documentación)
     if (variant === 'documentacion') {
         // Documentación siempre usa su propio sistema
         return;
@@ -622,8 +622,8 @@ function checkAndActivateSelector(container, variant, customTabs = []) {
     const subNav = container.querySelector('.sub-nav');
     if (!subNav) return;
     
-    if (window.innerWidth >= 1280) {
-        // Desktop (>= 1280px): siempre mostrar items
+    if (window.innerWidth >= 1024) {
+        // Desktop (>= 1024px): siempre mostrar items
         if (subNav.classList.contains('use-selector')) {
             subNav.classList.remove('use-selector');
             restoreOriginalTabs(container, variant, customTabs);
@@ -635,7 +635,7 @@ function checkAndActivateSelector(container, variant, customTabs = []) {
             }
         }
     } else {
-        // Mobile/Tablet (< 1280px): siempre mostrar selector
+        // Mobile/Tablet (< 1024px): siempre mostrar selector
         if (!subNav.classList.contains('use-selector')) {
             activateSelector(container, variant, customTabs);
         }

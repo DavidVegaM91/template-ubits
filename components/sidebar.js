@@ -77,7 +77,7 @@ function adjustSidebarHeight() {
 //
 // VARIANTE DEFAULT (data-section en el HTML):
 //   'inicio' (solo admin), 'empresa' (solo admin), 'aprendizaje', 'creator', 'diagnóstico',
-//   'desempeño', 'encuestas', 'reclutamiento', 'tareas', 'ubits-ai', 'ninguno'
+//   'desempeño', 'encuestas', 'reclutamiento', 'tareas', 'ia-para-hr', 'ninguno'
 //
 // VARIANTE ADMIN:
 //   Body: 'inicio', 'empresa', 'aprendizaje', 'diagnóstico', 'desempeño', 'encuestas'
@@ -249,7 +249,7 @@ function loadSidebar(variantOrActiveButton = 'default', activeButton = null) {
                     <button class="nav-button" data-section="tareas" data-tooltip="Tareas" onclick="window.location.href='${basePath}ubits-colaborador/tareas/tareas.html'" style="cursor: pointer;">
                         <i class="far fa-layer-group"></i>
                     </button>
-                    <button class="nav-button" data-section="ubits-ai" data-tooltip="UBITS AI" onclick="window.location.href='${basePath}ubits-colaborador/ubits-ai/ubits-ai.html'" style="cursor: pointer;">
+                    <button class="nav-button" data-section="ia-para-hr" data-tooltip="IA para HR" onclick="window.location.href='${basePath}ubits-colaborador/ia-para-hr/ia-para-hr.html'" style="cursor: pointer;">
                         <i class="far fa-sparkles"></i>
                     </button>
                 </div>

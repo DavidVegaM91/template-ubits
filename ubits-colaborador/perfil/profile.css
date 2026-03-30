@@ -120,7 +120,7 @@
     }
 }
 
-/* Fix para páginas sin SubNav - margin superior en móvil */
+/* Páginas sin SubNav: el espacio superior lo cubre `body.no-subnav .main-content` en styles.css (16px en móvil). */
 @media (max-width: 1023px) {
     .content-area {
         margin-top: 0 !important;

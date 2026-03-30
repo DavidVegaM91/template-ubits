@@ -11,8 +11,8 @@
     var STORAGE_MAX_AGE_MS = 10 * 60 * 1000;
     var TOTAL_STEPS = 6;
     var POPOVER_ID = 'ubits-coachmark-seguimiento-popover';
-    /** Mismo breakpoint que SubNav desktop: coachmark solo en ≥1280px */
-    var MIN_COACHMARK_VIEWPORT_WIDTH = 1280;
+    /** Mismo breakpoint que SubNav desktop: coachmark solo en ≥1024px */
+    var MIN_COACHMARK_VIEWPORT_WIDTH = 1024;
 
     var globalViewportResizeTimer = null;
 

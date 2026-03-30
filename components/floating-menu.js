@@ -73,10 +73,10 @@ const FLOATING_MENU_SECTIONS = [
         ]
     },
     {
-        id: 'ubits-ai',
-        title: 'UBITS AI',
+        id: 'ia-para-hr',
+        title: 'IA para HR',
         icon: 'far fa-sparkles',
-        url: '../../ubits-colaborador/ubits-ai/ubits-ai.html',
+        url: '../../ubits-colaborador/ia-para-hr/ia-para-hr.html',
         isLink: true,
         clickable: true
     }
@@ -256,7 +256,8 @@ function setActiveItemByCurrentPage() {
     
     // Mapear páginas a IDs de elementos (floating-menu: subitem id o section id para enlaces directos)
     const pageToElementMap = {
-        'ubits-ai.html': 'ubits-ai',
+        'ia-para-hr.html': 'ia-para-hr',
+        'ubits-ai.html': 'ia-para-hr',
         'diagnostico.html': 'diagnostico',
         'reclutamiento.html': 'reclutamiento',
         'home-learn.html': 'inicio',

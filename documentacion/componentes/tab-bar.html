@@ -317,7 +317,7 @@
                                     <div class="ubits-body-sm-bold">Enlaces directos</div>
                                 </div>
                                 <div class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">
-                                    Navegación directa: Encuestas, UBITS AI
+                                    Navegación directa: Encuestas, IA para HR
                                 </div>
                             </div>
                         </div>
@@ -529,13 +529,13 @@ updateActiveTabBarItem('modulos'); // Cambiar item activo</code></pre>
                             <div style="margin-bottom: 24px;">
                                 <h3 class="ubits-body-md-bold" style="margin-bottom: 12px; color: var(--ubits-fg-1-high);">setActiveDirectLink(linkId)</h3>
                                 <p class="ubits-body-md-regular" style="margin-bottom: 8px; line-height: 1.5;">
-                                    Activa un enlace directo del floating menu (como UBITS AI, Encuestas).
+                                    Activa un enlace directo del floating menu (como IA para HR, Encuestas).
                                 </p>
                                 <div style="background: var(--ubits-bg-2); padding: 12px; border-radius: var(--border-radius-sm); border-left: 4px solid var(--ubits-accent-brand);">
                                     <div class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">
                                         <strong>Parámetros:</strong> linkId (string) - ID del enlace directo<br>
-                                        <strong>IDs disponibles:</strong> 'ubits-ai', 'encuestas'<br>
-                                        <strong>Ejemplo:</strong> setActiveDirectLink('ubits-ai')
+                                        <strong>IDs disponibles:</strong> 'ia-para-hr', 'encuestas'<br>
+                                        <strong>Ejemplo:</strong> setActiveDirectLink('ia-para-hr')
                                     </div>
                                 </div>
                             </div>
@@ -567,7 +567,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Activar item específico con delay para DOM
     setTimeout(() => {
-        setActiveDirectLink('ubits-ai'); // Para enlaces directos
+        setActiveDirectLink('ia-para-hr'); // Para enlaces directos
         // O
         setActiveAccordionLink('inicio'); // Para subitems
     }, 500);

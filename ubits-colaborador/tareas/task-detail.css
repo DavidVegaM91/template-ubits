@@ -1073,32 +1073,6 @@
     flex-shrink: 0;
 }
 
-/* Responsive 1024–1279px: subnav fijo + tab-bar abajo (77px); 16px gap arriba y abajo del panel comentarios */
-@media (min-width: 1024px) and (max-width: 1279px) {
-    /* SubNav fijo al top (como en ≥1280px) */
-    .page-task-detail .sub-nav {
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        width: 100vw !important;
-        max-width: 100vw !important;
-        z-index: 1001;
-    }
-
-    /* Compensar el alto del SubNav fijo para que el contenido no quede detrás */
-    .page-task-detail .content-area.task-detail-content-area {
-        padding-top: 71px;
-    }
-
-    .task-detail-comments-block {
-        top: 88px;
-        /* subnav fijo (~71px) + ~16px gap */
-        height: calc(100dvh - 88px - 77px - 16px);
-        /* viewport - top - tab-bar (77px) - bottom gap (16px) */
-    }
-}
-
 /* Responsive ≤1023px: una columna, comentarios debajo en flujo normal (sin fixed) */
 @media (max-width: 1023px) {
     .task-detail-two-cols {

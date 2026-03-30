@@ -98,8 +98,8 @@
     color: var(--ubits-sidebar-button-fg-hover);
 }
 
-/* Responsive - Mostrar tab-bar solo en resoluciones menores a 1280px */
-@media (max-width: 1279px) {
+/* Responsive - Mostrar tab-bar solo en resoluciones menores a 1024px */
+@media (max-width: 1023px) {
     .tab-bar {
         display: block;
     }
@@ -138,8 +138,8 @@
     }
 }
 
-/* Desktop - Mostrar sidebar y ocultar tab-bar en resoluciones >= 1280px */
-@media (min-width: 1280px) {
+/* Desktop - Mostrar sidebar y ocultar tab-bar en resoluciones >= 1024px */
+@media (min-width: 1024px) {
     .tab-bar {
         display: none !important;
     }

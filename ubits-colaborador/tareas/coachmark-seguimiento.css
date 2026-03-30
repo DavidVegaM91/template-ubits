@@ -1,9 +1,9 @@
 /* ========================================
-   Tour Seguimiento: refuerzo desktop ≥1280px (SubNav).
+   Tour Seguimiento: refuerzo desktop ≥1024px (SubNav).
    Overlay + spotlight: components/coachmark.css
    ======================================== */
 
-@media (max-width: 1279px) {
+@media (max-width: 1023px) {
     #ubits-coachmark-root {
         display: none !important;
         visibility: hidden !important;

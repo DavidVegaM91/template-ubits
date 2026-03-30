@@ -240,8 +240,8 @@
     overflow: visible !important;
 }
 
-/* Tablet (769px–1279px): sin altura mínima extra; mantener gap normal debajo del header */
-@media (min-width: 769px) and (max-width: 1279px) {
+/* Tablet (769px–1023px): sin altura mínima extra; mantener gap normal debajo del header */
+@media (min-width: 769px) and (max-width: 1023px) {
 
     .widget-header-product,
     .section-single>.widget-header-product {

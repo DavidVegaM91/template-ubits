@@ -444,8 +444,8 @@
    RESPONSIVE DESIGN
    ======================================== */
 
-/* Aplicar comportamiento mobile desde el breakpoint más pequeño hasta 1280px */
-@media (max-width: 1279px) {
+/* Aplicar comportamiento mobile hasta 1023px (≥1024px = desktop con tabs en fila) */
+@media (max-width: 1023px) {
 
     /* Contenedor: ocupar todo el ancho de la pantalla (como el tab-bar) */
     /* Contenedor: ocupar todo el ancho de la pantalla (como el tab-bar) */
@@ -535,8 +535,8 @@
 
 /* El botón selector (Tareas/Planes) siempre muestra texto; no se convierte a icon-only. */
 
-/* Tablet (769px–1279px): más altura y padding vertical para que el logo y el label del selector no se corten */
-@media (min-width: 769px) and (max-width: 1279px) {
+/* Tablet (769px–1023px): más altura y padding vertical para que el logo y el label del selector no se corten */
+@media (min-width: 769px) and (max-width: 1023px) {
     .sub-nav {
         min-height: 52px;
         padding: var(--padding-sm) 12px;
@@ -657,7 +657,7 @@
 }
 
 /* Desktop: SubNav fijo al hacer scroll (position: fixed; sticky falla si un ancestro tiene overflow) */
-@media (min-width: 1280px) {
+@media (min-width: 1024px) {
     .sub-nav {
         position: fixed;
         top: var(--gap-lg);

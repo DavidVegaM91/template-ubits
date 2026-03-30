@@ -677,18 +677,12 @@ body.page-tareas .dashboard-container {
     color: var(--ubits-fg-1-medium);
 }
 
-/* Responsive para rango Tablet/Laptop pequeña (donde aparece tab-bar) */
-@media (max-width: 1279px) {
+/* Responsive donde aparece tab-bar (≤1023px) */
+@media (max-width: 1023px) {
     .main-content:has(.widget-vista-tareas) {
         /* Viewport - tab-bar(60px) - gap(16px) */
         max-height: calc(100vh - 60px - var(--gap-lg)) !important;
         overflow: visible !important;
-    }
-}
-
-@media (min-width: 1024px) and (max-width: 1279px) {
-    .widget-vista-tareas {
-        margin-bottom: 0 !important;
     }
 }
 

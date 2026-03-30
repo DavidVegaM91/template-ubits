@@ -566,7 +566,7 @@
 }
 
 /* Desktop: main-content tiene margin-top 16px, subnav termina en 56px → sidebar a 72px para 16px de margen */
-@media (min-width: 1280px) {
+@media (min-width: 1024px) {
     .iconos-page .alphabet-nav-icons {
         top: 72px; /* 16px margin main + 40px subnav + 16px margen */
     }

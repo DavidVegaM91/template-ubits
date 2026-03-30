@@ -15,8 +15,8 @@
     padding: var(--padding-lg) 0;
 }
 
-/* Solo visible en resoluciones inferiores a 1024px */
-@media (min-width: 1280px) {
+/* Ocultar panel en desktop (≥1024px coincide con sidebar visible) */
+@media (min-width: 1024px) {
     .floating-menu {
         display: none !important;
     }

@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="../../images/Ubits-logo-dark.svg">
+    <title>UBITS Playground - IA para HR</title>
+    
+    <link rel="stylesheet" href="../../general-styles/ubits-colors.css">
+    <link rel="stylesheet" href="../../general-styles/styles.css">
+    <link rel="stylesheet" href="../../general-styles/fontawesome-icons.css">
+    <link rel="stylesheet" href="../../general-styles/ubits-typography.css">
+    <link rel="stylesheet" href="../../components/sidebar.css">
+    <link rel="stylesheet" href="../../components/tab-bar.css">
+    <link rel="stylesheet" href="../../components/floating-menu.css">
+    <link rel="stylesheet" href="../../components/profile-menu.css">
+    <link rel="stylesheet" href="../../components/button.css">
+    <link rel="stylesheet" href="../../components/input.css">
+    <link rel="stylesheet" href="../../components/tooltip.css">
+    <link rel="stylesheet" href="../perfil/profile.css">
+    <link rel="stylesheet" href="./ia-para-hr.css">
+</head>
+<body data-theme="light" class="no-subnav">
+    <div class="dashboard-container">
+        <div class="tooltip" id="tooltip"></div>
+        
+        <div id="sidebar-container"></div>
+
+        <main class="main-content">
+            <div class="content-area">
+                <div class="content-sections">
+                    <!-- Hero -->
+                    <div class="section-single">
+                        <div class="ia-hr-hero">
+                            <h1 class="ubits-heading-h1 ia-hr-hero__title">Agentes de IA para HR</h1>
+                            <p class="ubits-body-md-regular ia-hr-hero__subtitle">Transforma tu área de HR hacia la nueva era, reduciendo la operatividad y escalando apoyos estratégicos.</p>
+                            <div id="ia-hr-search-container" class="ia-hr-hero__search" aria-label="Búsqueda"></div>
+                        </div>
+                    </div>
+
+                    <!-- Grid de agentes -->
+                    <div class="section-single">
+                        <div class="ia-hr-card-grid" role="list">
+                            <article class="ia-hr-card" role="listitem">
+                                <div class="ia-hr-card__body">
+                                    <div class="ia-hr-card__row">
+                                        <div class="ia-hr-card__icon ia-hr-card__icon--pink" aria-hidden="true">
+                                            <i class="far fa-cog"></i>
+                                        </div>
+                                        <div class="ia-hr-card__text">
+                                            <p class="ubits-body-md-bold ia-hr-card__title">Soporte técnico</p>
+                                            <p class="ubits-body-sm-regular ia-hr-card__desc">Acompañamiento en la implementación y solución de problemas de nuestros productos.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <footer class="ia-hr-card__footer">
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--md ia-hr-card__cta">
+                                        <span>Cuéntanos tu problema</span>
+                                    </button>
+                                </footer>
+                            </article>
+                            <article class="ia-hr-card" role="listitem">
+                                <div class="ia-hr-card__body">
+                                    <div class="ia-hr-card__row">
+                                        <div class="ia-hr-card__icon ia-hr-card__icon--blue" aria-hidden="true">
+                                            <i class="far fa-chart-line"></i>
+                                        </div>
+                                        <div class="ia-hr-card__text">
+                                            <p class="ubits-body-md-bold ia-hr-card__title">Diagnóstico de eficiencia organizacional</p>
+                                            <p class="ubits-body-sm-regular ia-hr-card__desc">Detecta las principales oportunidades para mejorar la eficiencia del diseño organizacional.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <footer class="ia-hr-card__footer">
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--md ia-hr-card__cta">
+                                        <span>Inicia el diagnóstico</span>
+                                    </button>
+                                </footer>
+                            </article>
+                            <article class="ia-hr-card" role="listitem">
+                                <div class="ia-hr-card__body">
+                                    <div class="ia-hr-card__row">
+                                        <div class="ia-hr-card__icon ia-hr-card__icon--blue" aria-hidden="true">
+                                            <i class="far fa-diagram-project"></i>
+                                        </div>
+                                        <div class="ia-hr-card__text">
+                                            <p class="ubits-body-md-bold ia-hr-card__title">Simulador de alternativas de estructuras</p>
+                                            <p class="ubits-body-sm-regular ia-hr-card__desc">Evalúa el impacto de potenciales cambios en la estructura organizacional.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <footer class="ia-hr-card__footer">
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--md ia-hr-card__cta">
+                                        <span>Simula alternativas</span>
+                                    </button>
+                                </footer>
+                            </article>
+                            <article class="ia-hr-card" role="listitem">
+                                <div class="ia-hr-card__body">
+                                    <div class="ia-hr-card__row">
+                                        <div class="ia-hr-card__icon ia-hr-card__icon--yellow" aria-hidden="true">
+                                            <i class="far fa-medal"></i>
+                                        </div>
+                                        <div class="ia-hr-card__text">
+                                            <p class="ubits-body-md-bold ia-hr-card__title">Consejero estratégico de gestión de talento</p>
+                                            <p class="ubits-body-sm-regular ia-hr-card__desc">Apoyo en decisiones clave sobre gestión de personas, con metodologías y benchmarks confiables.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <footer class="ia-hr-card__footer">
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--md ia-hr-card__cta">
+                                        <span>¿Qué situación quieres abordar?</span>
+                                    </button>
+                                </footer>
+                            </article>
+                            <article class="ia-hr-card" role="listitem">
+                                <div class="ia-hr-card__body">
+                                    <div class="ia-hr-card__row">
+                                        <div class="ia-hr-card__icon ia-hr-card__icon--purple" aria-hidden="true">
+                                            <i class="far fa-graduation-cap"></i>
+                                        </div>
+                                        <div class="ia-hr-card__text">
+                                            <p class="ubits-body-md-bold ia-hr-card__title">Aprende con IA</p>
+                                            <p class="ubits-body-sm-regular ia-hr-card__desc">Tutor personalizado a tu contexto para potenciar tu impacto en el trabajo.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <footer class="ia-hr-card__footer">
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--md ia-hr-card__cta">
+                                        <span>¿Qué quieres aprender?</span>
+                                    </button>
+                                </footer>
+                            </article>
+                            <article class="ia-hr-card" role="listitem">
+                                <div class="ia-hr-card__body">
+                                    <div class="ia-hr-card__row">
+                                        <div class="ia-hr-card__icon ia-hr-card__icon--teal" aria-hidden="true">
+                                            <i class="far fa-clipboard-list-check"></i>
+                                        </div>
+                                        <div class="ia-hr-card__text">
+                                            <p class="ubits-body-md-bold ia-hr-card__title">Establece una meta de formación</p>
+                                            <p class="ubits-body-sm-regular ia-hr-card__desc">Diseña y define planes de formación de competencias y contenidos en equipos e individuos de tu organización.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <footer class="ia-hr-card__footer">
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--md ia-hr-card__cta">
+                                        <span>Crear plan de formación</span>
+                                    </button>
+                                </footer>
+                            </article>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <button type="button" class="ubits-button ubits-button--primary ubits-button--md ubits-button--icon-only ia-hr-fab" id="ia-hr-fab-chat" data-tooltip="Abrir chat" data-tooltip-delay="600" aria-label="Abrir chat">
+        <i class="far fa-comments"></i>
+    </button>
+
+    <div id="tab-bar-container"></div>
+    <div id="floating-menu-container"></div>
+    <div id="profile-menu-container"></div>
+
+    <script src="../../components/tooltip.js"></script>
+    <script src="../../components/sidebar.js"></script>
+    <script src="../../components/tab-bar.js"></script>
+    <script src="../../components/floating-menu.js"></script>
+    <script src="../../components/profile-menu.js"></script>
+    <script src="../../components/input.js"></script>
+    <script src="../../script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            loadSidebar('ia-para-hr');
+            loadTabBar('tab-bar-container');
+            loadFloatingMenu('floating-menu-container');
+            loadProfileMenu('profile-menu-container');
+
+            setTimeout(function() {
+                setActiveDirectLink('ia-para-hr');
+            }, 500);
+
+            if (typeof createInput === 'function') {
+                createInput({
+                    containerId: 'ia-hr-search-container',
+                    type: 'search',
+                    label: 'Buscar',
+                    showLabel: false,
+                    placeholder: 'Cómo puedo mejorar esta estructura...',
+                    leftIcon: 'fa-search',
+                    size: 'lg'
+                });
+            }
+
+            if (typeof initTooltip === 'function') {
+                initTooltip();
+            }
+        });
+    </script>
+</body>
+</html>

@@ -381,9 +381,23 @@ body[data-theme="light"] .dashboard-container {
 }
 
 /* Desktop: reservar solo la altura del SubNav fixed (el margin-top ya da el gap superior; evita doble espacio) */
-@media (min-width: 1280px) {
+@media (min-width: 1024px) {
     .main-content {
         padding-top: 40px;
+    }
+
+    /* Páginas sin SubNav: añadir class="no-subnav" al body (sin top-nav-container / loadSubNav).
+       Evita el hueco de 40px reservado al SubNav fijo. */
+    body.no-subnav .main-content {
+        padding-top: 0 !important;
+    }
+}
+
+/* Páginas sin SubNav en móvil/tablet: 16px de aire superior en .main-content (token --gap-lg) */
+@media (max-width: 1023px) {
+    body.no-subnav .main-content {
+        padding-top: var(--gap-lg) !important;
+        box-sizing: border-box;
     }
 }
 
@@ -414,8 +428,8 @@ body[data-theme="light"] .dashboard-container {
     }
 }
 
-/* Tablet (769px–1279px): espacio arriba del subnav para que no se vea apeñuscado */
-@media (min-width: 769px) and (max-width: 1279px) {
+/* Tablet (769px–1023px): espacio arriba del subnav para que no se vea apeñuscado */
+@media (min-width: 769px) and (max-width: 1023px) {
     .main-content {
         gap: var(--gap-xl);
         margin: var(--gap-lg) var(--padding-md) 0 var(--padding-md);
@@ -448,7 +462,7 @@ body[data-theme="light"] .dashboard-container {
 }
 
 /* Documentación: subnav variante documentacion pegado al borde superior solo en móvil y tablet */
-@media (max-width: 1279px) {
+@media (max-width: 1023px) {
     body.componentes-page .main-content,
     body.documentacion-page .main-content,
     body.iconos-page .main-content {
@@ -630,7 +644,7 @@ body[data-theme="light"] .dashboard-container {
     }
 }
 
-/* Content Area sin fondo para UBITS AI */
+/* Content Area sin fondo para IA para HR (módulo colaborador) */
 .content-area.no-background {
     background-color: transparent !important;
     border: none !important;

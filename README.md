@@ -48,11 +48,13 @@ Una **plantilla lista para usar** que permite a **Product Managers**, **Diseñad
   - `admin-encuestas` - Administración de encuestas
   - `documentacion` - Solo para páginas de documentación
 - **Sidebar** - Navegación lateral con 2 variantes:
-  - **Variante default:** (opciones: admin, aprendizaje, diagnóstico, desempeño, encuestas, reclutamiento, tareas, ubits-ai, ninguno) - Con modo oscuro
+  - **Variante default:** (opciones: admin, aprendizaje, diagnóstico, desempeño, encuestas, reclutamiento, tareas, ia-para-hr, ninguno) - Con modo oscuro
   - **Variante admin:** (opciones: inicio, empresa, aprendizaje, diagnóstico, desempeño, encuestas; footer: api, centro-de-ayuda, modo-oscuro, perfil) - Incluye modo oscuro en footer
 - **TabBar** - Navegación móvil (opciones: modulos, perfil, modo-oscuro)
 - **Floating Menu** - Menú flotante modal para navegación móvil (acordeones con subitems)
 - **Profile Menu** - Menú desplegable del perfil de usuario
+
+**Páginas sin SubNav:** Si la página no usa SubNav (sin `#top-nav-container` ni `loadSubNav()`), añade **`class="no-subnav"`** al `<body>`. En `general-styles/styles.css` queda resuelto el espacio de **`.main-content`**: en **desktop (≥1024px)** se elimina el `padding-top` extra que reserva hueco al SubNav fijo; en **móvil/tablet (≤1023px)** se aplica **16px** de padding superior (`var(--gap-lg)`). Referencia: `ubits-colaborador/perfil/profile.html`, `ubits-colaborador/ia-para-hr/ia-para-hr.html`.
 
 ### **Componentes de UI:**
 - **Button** - Botones de acción (variantes: primary, secondary, tertiary; tamaños: sm, md, lg; iconos opcionales) - **RENDERIZADO: HTML directo**
@@ -230,7 +232,8 @@ Todos los componentes UBITS requieren imports obligatorios:
 
 #### **👤 Perfil y AI (ubits-colaborador/):**
 - **`perfil/profile.html`** - Perfil/Portal del colaborador
-- **`ubits-ai/ubits-ai.html`** - Página de UBITS AI (página en blanco basada en plantilla)
+- **`ia-para-hr/ia-para-hr.html`** - IA para HR (página en blanco basada en plantilla)
+- **`ubits-ai/ubits-ai.html`** - Redirección a `ia-para-hr/ia-para-hr.html` (compatibilidad con enlaces antiguos)
 
 #### **⚙️ Módulo de Administración (ubits-admin/):**
 - **`inicio/admin.html`** - Dashboard de administración (1 sección, sin SubNav)
@@ -382,6 +385,7 @@ Todos los componentes UBITS requieren imports obligatorios:
 │   ├── encuestas/
 │   ├── reclutamiento/
 │   ├── tareas/
+│   ├── ia-para-hr/
 │   ├── ubits-ai/
 │   └── perfil/
 ├── 📁 documentacion/         # Sistema de documentación

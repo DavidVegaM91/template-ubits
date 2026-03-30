@@ -154,6 +154,7 @@ function activateCurrentPageTab() {
         case 'profile':
             tabToActivate = document.querySelector('[data-tab="perfil"]');
             break;
+        case 'ia-para-hr':
         case 'ubits-ai':
         case 'home-learn':
         case 'catalogo':

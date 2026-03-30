@@ -253,7 +253,7 @@ openModal({
 - **SubNav** (Top navigation) → `components/sub-nav.css` + `components/sub-nav.js`
   - Variants: `template`, `aprendizaje`, `desempeno`, `encuestas`, `tareas`, `documentacion`
 - **Sidebar** (Left navigation) - 2 variantes → `components-sidebar.css` + `components/sidebar.js`  
-  - **Variante Default:** Body (`admin`, `aprendizaje`, `diagnóstico`, `desempeño`, `encuestas`, `reclutamiento`, `tareas`, `ubits-ai`, `ninguno`) + Footer (Modo oscuro, Perfil)
+  - **Variante Default:** Body (`admin`, `aprendizaje`, `diagnóstico`, `desempeño`, `encuestas`, `reclutamiento`, `tareas`, `ia-para-hr`, `ninguno`) + Footer (Modo oscuro, Perfil)
   - **Variante Admin:** Body (`inicio`, `empresa`, `aprendizaje`, `diagnóstico`, `desempeño`, `encuestas`) + Footer (API, Centro de ayuda, Modo oscuro, Perfil)
 - **TabBar** (Mobile navigation) → `components/tab-bar.css` + `components/tab-bar.js`
   - Features: Responsive, options: `modulos`, `perfil`, `modo-oscuro`
@@ -306,7 +306,7 @@ openModal({
 ### **👤 PÁGINAS FUNCIONALES:**
 - **`ubits-colaborador/perfil/profile.html`** - Perfil de usuario (ejemplo original del sistema modular)
 - **`ubits-colaborador/aprendizaje/home-learn.html`** - Dashboard de aprendizaje (ejemplo completo con 9 secciones)
-- **`ubits-colaborador/ubits-ai/ubits-ai.html`** - Página de UBITS AI (página en blanco basada en plantilla)
+- **`ubits-colaborador/ia-para-hr/ia-para-hr.html`** - IA para HR (página en blanco basada en plantilla). `ubits-ai/ubits-ai.html` redirige a esta ruta.
 
 ### **📚 FLUJO DE APRENDIZAJE (ubits-colaborador/aprendizaje/):**
 - **`catalogo.html`** - Catálogo de contenidos
@@ -430,7 +430,7 @@ ubits-colaborador/
 - `ubits-colaborador/encuestas/` - Páginas de encuestas
 - `ubits-colaborador/tareas/` - Páginas de tareas
 - `ubits-colaborador/reclutamiento/` - Páginas de reclutamiento
-- `ubits-colaborador/ubits-ai/` - Páginas de UBITS AI
+- `ubits-colaborador/ia-para-hr/` - IA para HR (`ubits-ai/` conserva redirección desde URL antigua)
 - `ubits-admin/empresa/` - Administración de empresa
 - `ubits-admin/aprendizaje/` - Administración de aprendizaje
 - `ubits-admin/desempeno/` - Administración de desempeño
@@ -1028,7 +1028,7 @@ document.addEventListener('DOMContentLoaded', function() {
 ```
 
 **Variante Default:**
-- **Body:** `admin`, `aprendizaje`, `diagnóstico`, `desempeño`, `encuestas`, `reclutamiento`, `tareas`, `ubits-ai`, `ninguno`
+- **Body:** `admin`, `aprendizaje`, `diagnóstico`, `desempeño`, `encuestas`, `reclutamiento`, `tareas`, `ia-para-hr`, `ninguno`
 - **Footer:** Modo oscuro, Perfil
 - **Profile Menu:** Ver mi perfil, Modo Administrador, Cambio de contraseña, Cerrar sesión
 
@@ -1619,7 +1619,7 @@ document.addEventListener('DOMContentLoaded', function() {
 ### **Sidebar - 2 Variantes Disponibles:**
 
 #### **Variante Default:**
-- **Body:** `admin`, `aprendizaje`, `diagnóstico`, `desempeño`, `encuestas`, `reclutamiento`, `tareas`, `ubits-ai`, `ninguno`
+- **Body:** `admin`, `aprendizaje`, `diagnóstico`, `desempeño`, `encuestas`, `reclutamiento`, `tareas`, `ia-para-hr`, `ninguno`
 - **Footer:** Modo oscuro, Perfil
 - **Profile Menu:** Ver mi perfil, Modo Administrador, Cambio de contraseña, Cerrar sesión
 - **Ejemplo:**
@@ -1970,49 +1970,29 @@ When issues are found, the validator creates a detailed prompt for Cursor with:
 </div>
 ```
 
-### **🚨 CRITICAL: PÁGINAS SIN SUBNAV - MARGIN SUPERIOR EN MÓVIL**
+### **🚨 CRITICAL: PÁGINAS SIN SUBNAV — `body.no-subnav` Y `.main-content`**
 
-**PROBLEMA IDENTIFICADO:** Cuando se quita el SubNav de una página, el `content-area` se ve pegado al borde superior en móvil.
+El layout global (`general-styles/styles.css`) añade **`padding-top: 40px`** a `.main-content` en **desktop (≥1024px)** para dejar hueco al **SubNav fijo**. Si la página **no** usa SubNav (sin `top-nav-container`, sin `loadSubNav()`, sin `sub-nav.css`/`sub-nav.js` salvo que otra parte lo requiera), ese padding deja un **hueco vacío arriba** en escritorio.
 
-**SOLUCIÓN OBLIGATORIA:** Añadir este CSS en páginas sin SubNav:
+**SOLUCIÓN OBLIGATORIA (implementada en el template):**
 
-```css
-/* Fix para páginas sin SubNav - margin superior en móvil */
-@media (max-width: 1023px) {
-    .content-area {
-        margin-top: 0 !important;
-    }
-}
-```
+1. Añade **`class="no-subnav"`** al `<body>` (junto a `data-theme` si aplica).
+   - Ejemplo: `<body data-theme="light" class="no-subnav">`
 
-**CUÁNDO APLICAR:**
-- ✅ **SIEMPRE** cuando se quite el SubNav de una página
-- ✅ **SIEMPRE** cuando se comente `<div id="top-nav-container"></div>`
-- ✅ **SIEMPRE** cuando se comente `loadSubNav()` en JavaScript
+2. **No** dupliques reglas en `<style>` inline para esto: ya está en **`general-styles/styles.css`**:
+   - **Desktop (≥1024px):** `body.no-subnav .main-content { padding-top: 0 !important; }` — quita el padding reservado al SubNav.
+   - **Móvil / tablet (≤1023px):** `body.no-subnav .main-content { padding-top: var(--gap-lg) !important; }` — **16px** de aire superior (token `--gap-lg`).
 
-**ARCHIVOS QUE YA LO TIENEN:**
-- `ubits-colaborador/perfil/profile.html` ✅
-- `diagnostico.html` ✅  
-- `reclutamiento.html` ✅
+**CUÁNDO APLICAR `no-subnav`:**
+- ✅ Siempre que la página **no** incluya SubNav (no contenedor `#top-nav-container` + no `loadSubNav()`).
 
-**EJEMPLO DE IMPLEMENTACIÓN:**
-```html
-<style>
-    /* ... otros estilos ... */
-    
-    /* Fix para páginas sin SubNav - margin superior en móvil */
-    @media (max-width: 1023px) {
-        .content-area {
-            margin-top: 0 !important;
-        }
-    }
-</style>
-```
+**PÁGINAS DE REFERENCIA EN EL REPO:**
+- `ubits-colaborador/perfil/profile.html`
+- `ubits-colaborador/ia-para-hr/ia-para-hr.html`
 
 **VALIDACIÓN:**
-- ✅ **Verificar** que en móvil el contenido no esté pegado al borde superior
-- ✅ **Probar** en diferentes tamaños de pantalla móvil
-- ✅ **Confirmar** que el espaciado se ve correcto
+- ✅ Desktop: sin franja vacía extra bajo el borde superior del viewport (sin SubNav).
+- ✅ Móvil: ~16px de separación entre el borde superior y el contenido.
 
 ### 12. TITLES AND TEXT (SENTENCE CASE)
 ```html
@@ -2048,7 +2028,7 @@ When issues are found, the validator creates a detailed prompt for Cursor with:
 
 ### Key Components
 - **SubNav** - Top navigation (variants: template, aprendizaje, desempeno, encuestas, tareas, documentacion)
-- **Sidebar** - Left navigation (options: admin, aprendizaje, diagnóstico, desempeño, encuestas, reclutamiento, tareas, ubits-ai, ninguno)
+- **Sidebar** - Left navigation (options: admin, aprendizaje, diagnóstico, desempeño, encuestas, reclutamiento, tareas, ia-para-hr, ninguno)
 - **TabBar** - Mobile navigation (options: modulos, perfil, modo-oscuro)
 - **Alert** - Notifications (types: success, info, warning, error; with/without close button)
 - **Button** - Actions (variants: primary, secondary, tertiary; sizes: sm, md, lg)
@@ -2071,7 +2051,7 @@ When issues are found, the validator creates a detailed prompt for Cursor with:
 
 When user requests to show a specific item as active in the floating menu, use this process:
 
-#### **1. FOR DIRECT LINKS (ubits-ai, encuestas):**
+#### **1. FOR DIRECT LINKS (ia-para-hr, encuestas):**
 ```javascript
 // In the specific HTML page, add this to DOMContentLoaded:
 setTimeout(() => {
@@ -2089,7 +2069,7 @@ setTimeout(() => {
 
 #### **3. AVAILABLE ITEM IDS:**
 **Direct Links:**
-- `ubits-ai` - UBITS AI page
+- `ia-para-hr` - IA para HR page
 - `encuestas` - Encuestas page
 
 **Accordion Subitems:**
@@ -2140,14 +2120,14 @@ setTimeout(() => {
 ```html
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    loadSidebar('ubits-ai');
+    loadSidebar('ia-para-hr');
     loadTabBar('tab-bar-container');
     loadFloatingMenu('floating-menu-container');
     loadProfileMenu('profile-menu-container');
     
-    // Activate UBITS AI in floating menu
+    // Activate IA para HR in floating menu
     setTimeout(() => {
-        setActiveDirectLink('ubits-ai');
+        setActiveDirectLink('ia-para-hr');
     }, 500);
 });
 </script>
@@ -2163,7 +2143,7 @@ document.addEventListener('DOMContentLoaded', function() {
 - **Encuestas** (direct link)
 - **Tareas** (accordion with subitems)
   - Planes, Tareas
-- **UBITS AI** (direct link)
+- **IA para HR** (direct link)
 
 #### **8. TROUBLESHOOTING:**
 - **Item not showing active?** Check if CSS rules exist for that item type
