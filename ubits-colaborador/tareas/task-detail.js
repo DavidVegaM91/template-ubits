@@ -40,6 +40,18 @@
             .replace(/"/g, '&quot;');
     }
 
+    /** Máximo `maxChars` caracteres en pantalla; si sobra, corta y añade "...". */
+    function truncateDisplayName(str, maxChars) {
+        maxChars = typeof maxChars === 'number' ? maxChars : 25;
+        if (str == null || str === '') return '';
+        var s = String(str);
+        if (s.length <= maxChars) return s;
+        var ell = '...';
+        var head = maxChars - ell.length;
+        if (head < 1) head = 1;
+        return s.slice(0, head) + ell;
+    }
+
     /** Formato absoluto compartido (evita "Hace un momento" con fechas futuras por diff negativo). */
     function formatCommentTimeAbsolute(d) {
         const meses = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
@@ -103,12 +115,24 @@
             status: 'Activo',
             priority: 'alta',
             endDate: '2026-02-20',
+            taskType: 'standard',
             assignee_name: 'María González',
             assignee_avatar_url: null,
             assignee_email: 'mgonzalez@ejemplo.com',
             created_by: 'Carlos Ruiz',
             created_by_avatar_url: null
         };
+    }
+
+    /** Tipo de tarea: solo `aprendizaje` o `standard` (por defecto todas las existentes). */
+    function normalizeTaskTypeOnTask(task) {
+        if (!task) return;
+        if (task.taskType === 'aprendizaje') return;
+        task.taskType = 'standard';
+    }
+
+    function taskTypeLabel(value) {
+        return value === 'aprendizaje' ? 'Aprendizaje' : 'Estándar';
     }
 
     function getMockSubtasks() {
@@ -547,6 +571,8 @@
         }
         var assigneeName = task.assignee_name || (task.assignee_email ? task.assignee_email.split('@')[0] : 'Sin asignar');
         var creatorName = task.created_by || 'Sin especificar';
+        var assigneeDisplay = truncateDisplayName(assigneeName, 25);
+        var creatorDisplay = truncateDisplayName(creatorName, 25);
         var assigneeBlock = typeof renderAvatar === 'function'
             ? renderAvatar({ nombre: assigneeName, avatar: task.assignee_avatar_url }, { size: 'xs' })
             : '<span class="ubits-avatar ubits-avatar--sm"><span class="ubits-avatar__fallback"><i class="far fa-user"></i></span></span>';
@@ -573,15 +599,19 @@
             '<span class="ubits-body-sm-semibold task-detail-meta-label">Asignado a</span>' +
             '<div class="task-detail-assignee-row" id="task-detail-assignee-row" role="button" tabindex="0">' +
             assigneeBlock +
-            '<span class="ubits-body-sm-regular">' + escapeHtml(assigneeName) + '</span>' +
+            '<span class="ubits-body-sm-regular task-detail-assignee-name-text" title="' + escapeHtml(assigneeName) + '">' + escapeHtml(assigneeDisplay) + '</span>' +
             '<i class="far fa-chevron-down" style="font-size: var(--font-size-sm); color: var(--ubits-fg-1-medium);"></i>' +
             '</div></div>' +
             '<div class="task-detail-meta-cell">' +
             '<span class="ubits-body-sm-semibold task-detail-meta-label">Creada por</span>' +
             '<div class="task-detail-creator-row">' +
             creatorBlock +
-            '<span class="ubits-body-sm-regular">' + escapeHtml(creatorName) + '</span>' +
-            '</div></div></div>' +
+            '<span class="ubits-body-sm-regular task-detail-creator-name-text" title="' + escapeHtml(creatorName) + '">' + escapeHtml(creatorDisplay) + '</span>' +
+            '</div></div>' +
+            '<div class="task-detail-meta-cell">' +
+            '<span id="task-detail-type-label" class="ubits-body-sm-semibold task-detail-meta-label">Tipo</span>' +
+            '<div id="task-detail-type-wrap"></div></div>' +
+            '</div>' +
             '<div class="task-detail-attributes-row">' +
             '<span class="task-detail-meta-cell">' +
             '<span class="ubits-body-sm-semibold task-detail-meta-label">Estado</span>' +
@@ -645,6 +675,33 @@
             });
             var dateInput = document.querySelector('#task-detail-vencimiento-wrap .ubits-input');
             if (dateInput) dateInput.setAttribute('aria-labelledby', 'task-detail-vencimiento-label');
+        }
+        if (typeof createInput === 'function') {
+            var taskTypeValue = task.taskType === 'aprendizaje' ? 'aprendizaje' : 'standard';
+            createInput({
+                containerId: 'task-detail-type-wrap',
+                type: 'select',
+                size: 'xs',
+                showLabel: false,
+                placeholder: 'Tipo',
+                selectOptions: [
+                    { value: 'standard', text: 'Estándar' },
+                    { value: 'aprendizaje', text: 'Aprendizaje' }
+                ],
+                value: taskTypeValue,
+                onChange: function (val) {
+                    if (!estado.task) return;
+                    var next = val === 'aprendizaje' ? 'aprendizaje' : 'standard';
+                    var prev = estado.task.taskType === 'aprendizaje' ? 'aprendizaje' : 'standard';
+                    if (prev === next) return;
+                    estado.task.taskType = next;
+                    pushActivity('fa-tag', currentUserName, 'cambió el tipo de tarea a ' + taskTypeLabel(next) + '.');
+                    triggerFakeSave();
+                    setTimeout(function () { renderInfoBlock(); }, 0);
+                }
+            });
+            var typeInput = document.querySelector('#task-detail-type-wrap .ubits-input');
+            if (typeInput) typeInput.setAttribute('aria-labelledby', 'task-detail-type-label');
         }
         if (typeof createInput === 'function') {
             createInput({
@@ -1734,6 +1791,7 @@
             estado.comments = getMockComments();
             estado.activities = getMockActivities();
         }
+        normalizeTaskTypeOnTask(estado.task);
 
         ensureTaskDetailHistoryAndOrder();
 

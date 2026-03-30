@@ -2173,18 +2173,46 @@
         var labelsPlanes = { id: 'ID del plan', nombre: 'Nombre del plan', asignados: 'Personas asignadas', creador: 'Creador del plan', areaCreador: 'Área del creador', estado: 'Estado del plan', avance: 'Progreso del plan', fechaCreacion: 'Fecha de creación', fechaFinalizacion: 'Fecha de finalización' };
         var labels = activeTab === 'planes' ? labelsPlanes : labelsTareas;
         var columnIds = getColumnIds();
-        var options = columnIds.map(function (col) {
-            return { text: labels[col] || col, value: col, checkbox: true, selected: columnVisibility[col] !== false };
+        var allColumnsSelected = columnIds.every(function (col) {
+            return columnVisibility[col] !== false;
         });
+        var options = [
+            { text: 'Seleccionar todas', value: '__select_all__', checkbox: true, selected: allColumnsSelected }
+        ].concat(columnIds.map(function (col) {
+            return { text: labels[col] || col, value: col, checkbox: true, selected: columnVisibility[col] !== false };
+        }));
         if (document.getElementById(overlayId)) document.getElementById(overlayId).remove();
         var html = window.getDropdownMenuHtml({ overlayId: overlayId, options: options });
         document.body.insertAdjacentHTML('beforeend', html);
         overlayEl = document.getElementById(overlayId);
         var columnsBtn = document.getElementById('seguimiento-columns-toggle');
         if (overlayEl && columnsBtn) {
+            function syncSelectAllCheckbox() {
+                var master = overlayEl.querySelector('input[data-value="__select_all__"]');
+                if (!master) return;
+                master.checked = columnIds.every(function (col) {
+                    return columnVisibility[col] !== false;
+                });
+            }
             overlayEl.querySelectorAll('.ubits-dropdown-menu__option-left input[type="checkbox"]').forEach(function (cb) {
                 cb.addEventListener('change', function () {
-                    columnVisibility[this.dataset.value] = this.checked;
+                    var val = this.dataset.value;
+                    if (val === '__select_all__') {
+                        var on = this.checked;
+                        columnIds.forEach(function (col) {
+                            columnVisibility[col] = on;
+                        });
+                        overlayEl.querySelectorAll('.ubits-dropdown-menu__option-left input[type="checkbox"]').forEach(function (c) {
+                            if (c.dataset.value !== '__select_all__') {
+                                c.checked = on;
+                            }
+                        });
+                        columnVisibilityByTab[activeTab] = Object.assign({}, columnVisibility);
+                        renderTable();
+                        return;
+                    }
+                    columnVisibility[val] = this.checked;
+                    syncSelectAllCheckbox();
                     columnVisibilityByTab[activeTab] = Object.assign({}, columnVisibility);
                     renderTable();
                 });
