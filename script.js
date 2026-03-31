@@ -86,19 +86,17 @@ function initDarkModeToggle() {
  * Carga el tema guardado en localStorage
  */
 function loadSavedTheme() {
-    // Solo cargar tema guardado si el body NO tiene data-theme explícito
-    const bodyTheme = document.body.getAttribute('data-theme');
-    if (bodyTheme && bodyTheme !== '') {
-        return; // Respetar el tema explícito del HTML
-    }
-    
     const savedTheme = localStorage.getItem('theme');
     if (savedTheme) {
+        // La mayoría de páginas traen `data-theme="light"` en el HTML como default.
+        // Si existe una preferencia guardada, debe prevalecer para que el modo sea persistente entre páginas.
         document.body.setAttribute('data-theme', savedTheme);
         
         // Actualizar icono y tooltip según el tema guardado
         const darkModeButton = document.querySelector('#darkmode-toggle i');
         const darkModeButtonContainer = document.querySelector('#darkmode-toggle');
+        const tabBarIcon = document.querySelector('[data-tab="modo-oscuro"] .tab-bar-icon');
+        const tabBarText = document.querySelector('[data-tab="modo-oscuro"] .tab-bar-text');
         
         if (savedTheme === 'dark') {
             if (darkModeButton) {
@@ -108,6 +106,12 @@ function loadSavedTheme() {
                 darkModeButtonContainer.setAttribute('data-tooltip', 'Modo claro');
                 darkModeButtonContainer.setAttribute('data-theme', 'dark');
             }
+            if (tabBarIcon) {
+                tabBarIcon.className = 'fa fa-sun-bright tab-bar-icon';
+            }
+            if (tabBarText) {
+                tabBarText.textContent = 'Modo claro';
+            }
         } else {
             if (darkModeButton) {
                 darkModeButton.className = 'fa fa-moon';
@@ -115,6 +119,12 @@ function loadSavedTheme() {
             if (darkModeButtonContainer) {
                 darkModeButtonContainer.setAttribute('data-tooltip', 'Modo oscuro');
                 darkModeButtonContainer.setAttribute('data-theme', 'light');
+            }
+            if (tabBarIcon) {
+                tabBarIcon.className = 'far fa-moon tab-bar-icon';
+            }
+            if (tabBarText) {
+                tabBarText.textContent = 'Modo oscuro';
             }
         }
         
