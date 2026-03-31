@@ -131,15 +131,18 @@
     animation-delay: -3s;
 }
 
-/* Orbe centro / inferior (#66d3d8); núcleo centrado para alinear el halo con el eje del hero */
+/* Orbe centro: más saturación y menos “gris” (sin mezcla con blanco; pulso más vivo) */
 .ia-hr-hero__orb--blue-indigo {
     background: radial-gradient(
         circle at 50% 50%,
-        color-mix(in srgb, #66d3d8 58%, var(--ubits-fg-bold) 8%) 0%,
-        color-mix(in srgb, #66d3d8 20%, transparent) 54%,
-        transparent 70%
+        #5fe8ec 0%,
+        color-mix(in srgb, #4dd4dc 78%, transparent) 38%,
+        color-mix(in srgb, #66d3d8 55%, transparent) 58%,
+        color-mix(in srgb, #66d3d8 22%, transparent) 72%,
+        transparent 82%
     );
-    animation-duration: 11s;
+    filter: blur(42px) saturate(1.55);
+    animation: ia-hr-orb-glow-center 10s ease-in-out infinite alternate;
     animation-delay: -5s;
 }
 
@@ -202,6 +205,18 @@
     }
 }
 
+@keyframes ia-hr-orb-glow-center {
+    0%,
+    100% {
+        opacity: 0.78;
+        transform: scale(0.96);
+    }
+    50% {
+        opacity: 1;
+        transform: scale(1.05);
+    }
+}
+
 @media (prefers-reduced-motion: reduce) {
     .ia-hr-hero__orb-wrap--1,
     .ia-hr-hero__orb-wrap--2,
@@ -217,6 +232,11 @@
         animation: none;
         opacity: 0.68;
         transform: none;
+    }
+
+    .ia-hr-hero__orb--blue-indigo {
+        opacity: 0.92;
+        filter: blur(42px) saturate(1.55);
     }
 }
 
