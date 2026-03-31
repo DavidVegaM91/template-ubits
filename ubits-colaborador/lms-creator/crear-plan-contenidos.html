@@ -727,6 +727,8 @@
                         return;
                     }
                     if (emptySearchContainer) {
+                        /* loadEmptyState pone class ubits-empty-state; el CSS #…-contenidos-empty-search.ubits-empty-state usa display:flex !important y anula display:none */
+                        emptySearchContainer.className = 'drawer-contenidos-empty-search-wrap';
                         emptySearchContainer.style.display = 'none';
                         emptySearchContainer.innerHTML = '';
                     }
@@ -2041,6 +2043,7 @@
                         return;
                     }
                     if (emptySearchContainer) {
+                        emptySearchContainer.className = 'drawer-contenidos-empty-search-wrap';
                         emptySearchContainer.style.display = 'none';
                         emptySearchContainer.innerHTML = '';
                     }

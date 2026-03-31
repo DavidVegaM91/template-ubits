@@ -104,7 +104,7 @@
     gap: var(--gap-md);
 }
 
-/* Alert info (sin plan): debajo de la fila de atributos */
+/* Alert info (sin plan): entre la fila de atributos y el bloque Aprendizaje (fondo bg-2) */
 .task-detail-plan-alert-wrap {
     width: 100%;
     margin-top: var(--gap-sm);
@@ -179,6 +179,8 @@
 #task-detail-learning-content-wrap {
     width: 100%;
     min-width: 0;
+    position: relative;
+    z-index: 3;
 }
 
 #task-detail-learning-content-wrap .ubits-input {
@@ -189,6 +191,8 @@
 .task-detail-learning-content-card-wrap {
     width: 100%;
     margin-top: var(--gap-md);
+    position: relative;
+    z-index: 0;
 }
 
 .task-detail-learning-content-card-wrap .course-card-compact {

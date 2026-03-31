@@ -362,8 +362,8 @@ body.page-tareas .dashboard-container {
     background: var(--ubits-bg-1);
     border: 1px solid var(--ubits-border-1);
     box-shadow: none;
-    /* Más alto que el resto: espacio bajo la línea (12px) + línea (3px) + aire sobre la línea (12px) */
-    padding: var(--padding-md) var(--padding-md) calc(var(--padding-md) + 3px + var(--padding-md)) var(--padding-md);
+    /* Más alto que el resto: espacio bajo la línea (md) + línea (3px) + aire bajo la línea (xs) */
+    padding: var(--padding-md) var(--padding-md) calc(var(--padding-md) + 3px + var(--padding-xs)) var(--padding-md);
 }
 
 /* Línea de acento estrecha bajo el día activo (centrada, no ancho completo) */
@@ -774,7 +774,7 @@ body.page-tareas .dashboard-container {
     }
 
     .calendar-header__controls>.calendar-horizontal .calendar-horizontal__day--selected {
-        padding: var(--padding-md) var(--padding-md) calc(var(--padding-md) + 3px + var(--padding-md)) var(--padding-md) !important;
+        padding: var(--padding-md) var(--padding-md) calc(var(--padding-md) + 3px + var(--padding-xs)) var(--padding-md) !important;
     }
 
     .calendar-header__controls>.calendar-horizontal .calendar-horizontal__day-number {

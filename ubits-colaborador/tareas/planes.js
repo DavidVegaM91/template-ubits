@@ -1,3 +1,14 @@
+/** Dropdown de autocomplete: mismo fix que task-detail (evita que tape el input). */
+function reparentLearningAutocompleteDropdown(containerId) {
+    var wrap = document.getElementById(containerId);
+    if (!wrap) return;
+    var dd = wrap.querySelector('.ubits-autocomplete-dropdown');
+    var innerWrapper = wrap.querySelector('.ubits-input-wrapper');
+    if (dd && innerWrapper && dd.parentNode === wrap) {
+        innerWrapper.appendChild(dd);
+    }
+}
+
 // Estado de la aplicación
 let fabState = {
     open: false
@@ -2009,9 +2020,9 @@ function initTaskCreateLearningFieldsIfNeeded() {
             if (!val) return;
             taskCreateDrawerState.learningContentId = String(val);
             renderTaskCreateLearningCard();
-            if (contentApi && typeof contentApi.setValue === 'function') contentApi.setValue('');
         }
     });
+    reparentLearningAutocompleteDropdown('task-create-v2-learning-wrap');
     if (!taskCreateDrawerInputRefs) taskCreateDrawerInputRefs = {};
     taskCreateDrawerInputRefs.learningContent = contentApi;
     var inp = document.querySelector('#task-create-v2-learning-wrap .ubits-input');
@@ -2528,6 +2539,10 @@ function openTaskCreateDrawerV2() {
         '      <div id="task-create-v2-type-wrap" class="task-create-v2__field-wrap task-create-v2__field-wrap--type"></div>' +
         '    </div>' +
         '  </div>' +
+        '  <div id="task-create-v2-plan-alert" class="ubits-alert ubits-alert--info ubits-alert--no-close" style="display:flex">' +
+        '    <div class="ubits-alert__icon"><i class="far fa-info-circle"></i></div>' +
+        '    <div class="ubits-alert__content"><div class="ubits-alert__text">Asigna la tarea a un plan para simplificar su organización y facilitar su seguimiento.</div></div>' +
+        '  </div>' +
         '  <div id="task-create-v2-learning-box" class="task-create-v2__learning-box" style="display:none">' +
         '    <div id="task-create-v2-learning-wrap"></div>' +
         '    <div id="task-create-v2-learning-card-wrap" class="task-create-v2__learning-card-wrap"></div>' +
@@ -2592,10 +2607,6 @@ function openTaskCreateDrawerV2() {
         '        </div>' +
         '      </div>' +
         '    </div>' +
-        '  </div>' +
-        '  <div id="task-create-v2-plan-alert" class="ubits-alert ubits-alert--info ubits-alert--no-close" style="display:flex">' +
-        '    <div class="ubits-alert__icon"><i class="far fa-info-circle"></i></div>' +
-        '    <div class="ubits-alert__content"><div class="ubits-alert__text">Asigna la tarea a un plan para simplificar su organización y facilitar su seguimiento.</div></div>' +
         '  </div>' +
         '</div>';
 

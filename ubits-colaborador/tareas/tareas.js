@@ -84,6 +84,49 @@ const getTodayString = () => {
 
 let today = getTodayString();
 
+/**
+ * Demo playground (solo vista tareas): una tarea tipo Aprendizaje por día visitado (María Alejandra).
+ * Mismo id fijo que la BD (TASK_ID_PROTO_APRENDIZAJE) para enlazar task-detail.html?id=…
+ */
+function ensureVistaTareasDemoAprendizaje(fechaKey) {
+    if (!fechaKey || typeof TAREAS_PLANES_DB === 'undefined' || typeof TAREAS_PLANES_DB.getUsuarioActual !== 'function') return;
+    var u = TAREAS_PLANES_DB.getUsuarioActual();
+    if (!u || u.nombre !== 'María Alejandra Sánchez Pardo') return;
+    if (!tareasEjemplo.porDia) tareasEjemplo.porDia = {};
+    var list = tareasEjemplo.porDia[fechaKey] || [];
+    var protoId = typeof TAREAS_PLANES_DB.TASK_ID_PROTO_APRENDIZAJE === 'number'
+        ? TAREAS_PLANES_DB.TASK_ID_PROTO_APRENDIZAJE
+        : 9000000000001;
+    if (list.some(function (t) { return taskIdMatches(t, protoId); })) return;
+    var planMeta = { id: null, name: null };
+    if (typeof TAREAS_PLANES_DB.getPlanesVistaPlanes === 'function') {
+        var planesList = TAREAS_PLANES_DB.getPlanesVistaPlanes();
+        var metas = planesList.find(function (p) { return (p.name || '').indexOf('Metas personales') === 0; });
+        if (metas) {
+            planMeta.id = metas.id;
+            planMeta.name = metas.name;
+        }
+    }
+    var fake = {
+        id: protoId,
+        name: 'Curso: Trabajo en equipo y colaboración',
+        done: false,
+        status: 'Activo',
+        endDate: fechaKey,
+        priority: 'media',
+        assignee_email: u.username || 'masanchez@fiqsha.demo',
+        assignee_name: u.nombre,
+        assignee_avatar_url: u.avatar || null,
+        created_by: u.nombre,
+        taskType: 'aprendizaje',
+        planId: planMeta.id,
+        planNombre: planMeta.name,
+        learningContentId: 'f012',
+        _demoVistaTareasAprendizaje: true
+    };
+    tareasEjemplo.porDia[fechaKey] = [fake].concat(list);
+}
+
 // Datos solo desde BD unificada
 if (typeof TAREAS_PLANES_DB !== 'undefined' && typeof TAREAS_PLANES_DB.getTareasVistaTareas === 'function') {
     tareasEjemplo = TAREAS_PLANES_DB.getTareasVistaTareas();
@@ -659,6 +702,7 @@ function renderTareasVencidas() {
 // Renderizar sección de día (no finalizadas primero; finalizadas al final, la recién marcada como primera del bloque)
 function renderDaySection(fecha) {
     const fechaKey = formatDate(fecha);
+    ensureVistaTareasDemoAprendizaje(fechaKey);
     const fechaFormateada = formatFullDate(fechaKey);
     const relativeName = getRelativeDayName(fechaKey);
     const esPasado = fechaKey < today;
@@ -1976,8 +2020,10 @@ function handleTaskClick(tareaId) {
                 assignee_email: tarea.assignee_email || null,
                 created_by: tarea.created_by || null,
                 created_by_avatar_url: tarea.created_by_avatar_url || null,
-                planId: tarea.planId || null,
-                planNombre: tarea.planNombre || null
+                planId: tarea.planId != null && tarea.planId !== '' ? tarea.planId : null,
+                planNombre: tarea.planNombre || null,
+                taskType: tarea.taskType || 'standard',
+                learningContentId: tarea.learningContentId != null && tarea.learningContentId !== '' ? String(tarea.learningContentId) : null
             }));
         }
     } catch (e) { /* sessionStorage no disponible (ej. file://) */ }

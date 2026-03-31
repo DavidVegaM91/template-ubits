@@ -1612,6 +1612,8 @@
 #task-create-v2-learning-wrap {
     width: 100%;
     min-width: 0;
+    position: relative;
+    z-index: 3;
 }
 
 #task-create-v2-learning-wrap .ubits-input {
@@ -1622,6 +1624,8 @@
 .task-create-v2__learning-card-wrap {
     width: 100%;
     margin-top: var(--gap-md);
+    position: relative;
+    z-index: 0;
 }
 
 .task-create-v2__learning-card-wrap .course-card-compact {

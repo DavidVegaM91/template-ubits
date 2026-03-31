@@ -1288,6 +1288,65 @@
         return { name: name, avatar: null };
     }
 
+    /** ID fijo para la tarea prototipo Aprendizaje (URL estable: task-detail.html?id=9000000000001). */
+    const TASK_ID_PROTO_APRENDIZAJE = 9000000000001;
+
+    /**
+     * Detalle canónico para demos: tarea tipo Aprendizaje con contenido Fiqsha y plan Metas personales.
+     */
+    function buildProtoAprendizajeTaskDetail() {
+        var u = getUsuarioActual();
+        var planesList = getPlanesVistaPlanes();
+        var planId = null;
+        var planNombre = null;
+        var metas = planesList.find(function (p) { return (p.name || '').indexOf('Metas personales') === 0; });
+        if (metas) {
+            planId = metas.id;
+            planNombre = metas.name;
+        }
+        var todayStr = getTodayString();
+        var fechaCreacion = new Date();
+        fechaCreacion.setDate(fechaCreacion.getDate() - 1);
+        var taskId = TASK_ID_PROTO_APRENDIZAJE;
+        var taskBase = {
+            id: taskId,
+            name: 'Curso: Trabajo en equipo y colaboración',
+            done: false,
+            status: 'Activo',
+            endDate: todayStr,
+            priority: 'media',
+            assignee_email: u.username || null,
+            assignee_name: u.nombre || null,
+            assignee_avatar_url: (u.avatar && String(u.avatar).trim()) ? u.avatar : null,
+            created_by: u.nombre,
+            created_by_avatar_url: (u.avatar && String(u.avatar).trim()) ? u.avatar : null,
+            planId: planId,
+            planNombre: planNombre,
+            taskType: 'aprendizaje',
+            learningContentId: 'f012',
+            description: 'Prototipo oficial de tarea de tipo Aprendizaje para demos y enlace compartido.',
+            created_at: fechaCreacion.toISOString()
+        };
+        var detalle = generarDetalleTarea(taskId, {
+            nombreTarea: taskBase.name,
+            creador: u.nombre,
+            creadorAvatar: u.avatar || null,
+            asignado: { nombre: u.nombre, avatar: u.avatar || null, username: u.username },
+            fechaCreacion: fechaCreacion,
+            endDateStr: todayStr,
+            prioridad: 'media',
+            done: false,
+            estado: 'Activo',
+            tieneSubtareas: true
+        }, 4242, 1);
+        return {
+            task: taskBase,
+            subtasks: detalle.subtasks,
+            comments: detalle.comments,
+            activities: detalle.activities
+        };
+    }
+
     /**
      * Devuelve el detalle completo de una tarea para task-detail.html: tarea (con created_at),
      * subtareas, comentarios y actividades (historial). Si la tarea no está en taskDetallePorId
@@ -1297,6 +1356,9 @@
      */
     function getTaskDetail(taskId) {
         const id = Number(taskId);
+        if (id === TASK_ID_PROTO_APRENDIZAJE) {
+            return buildProtoAprendizajeTaskDetail();
+        }
         if (taskDetallePorId[id]) {
             const d = taskDetallePorId[id];
             return {
@@ -1337,6 +1399,7 @@
     }
 
     global.TAREAS_PLANES_DB = {
+        TASK_ID_PROTO_APRENDIZAJE: TASK_ID_PROTO_APRENDIZAJE,
         getUsuarioActual: getUsuarioActual,
         getTareasVistaTareas: getTareasVistaTareas,
         getPlanesVistaPlanes: getPlanesVistaPlanes,

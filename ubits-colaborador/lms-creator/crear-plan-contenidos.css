@@ -1074,6 +1074,19 @@
     gap: var(--gap-md);
 }
 
+/* editar-plan-contenidos: drawer solo contenidos (mismo empty de búsqueda, otro id) */
+#drawer-editplan-contenidos-empty-search.ubits-empty-state {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: var(--gap-lg) !important;
+}
+#drawer-editplan-contenidos-empty-search.ubits-empty-state .ubits-empty-state__header {
+    gap: var(--gap-sm);
+}
+#drawer-editplan-contenidos-empty-search.ubits-empty-state .ubits-empty-state__footer {
+    gap: var(--gap-md);
+}
+
 /* Contenedor de resultados de búsqueda (columna izquierda): flex 1 para ocupar el espacio y scroll propio */
 .drawer-cursos-resultados-bg {
     background: var(--ubits-bg-2);
