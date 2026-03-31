@@ -419,4 +419,40 @@ Registro de cambios realizados en los archivos del módulo de Tareas y Planes (P
 
 ---
 
-*Última actualización: ítems 1–20 (11 feb), 21–26 (19 feb), 27 (Cargar más), 28–30 (20 feb), 31 (21 feb), 32 (23 feb), 33 (nueva versión task-detail), 34 (dropdowns Estado y Prioridad en task-detail), 35 (panel de comentarios: adjuntar imágenes y archivos), 36 (implementación de subtask-detail), 37 (homologación encabezados plan-detail con task-detail), 38 (scroll-spy calendario horizontal, 10 mar), 39 (doble clic para cambio de nombre en tirillas y opción Cambiar nombre en subtareas), 40 (recordatorio registrado en historial en task-detail), 41 (plan-detail: asignados, filtro por persona, filtros aplicados y UI, 11 mar), 42 (task-detail: vencimiento sm, progress bar subtareas, botón Filtrar, Historial de cambios, nueva versión formulario subtareas, 12 mar), 43 (marca "- editado" en comentarios editados, 12 mar), 44 (filtro Asignado específico en tareas, 18 mar), 45 (estilos tirilla en celulares, 18 mar), 46 (Añadir colaborador seguimiento, 20 mar), 47 (resumen multiselect dropdown, 20 mar), 48 (añadir tarea/subtarea encima de listas y orden nuevo arriba, 25 mar), 49 (coachmark Seguimiento: copy, URLs y hash, 25 mar), 50 (coachmark oficial multi-página, 25 mar) implementados.*
+## 31 de marzo de 2026
+
+51. [x] **Task-detail: tipo de tarea (Estándar / Aprendizaje), contenido ligado y icono de Aprendizaje**
+
+    Cambios en **detalle de tarea** (`task-detail.html`, `task-detail.js`, `task-detail.css`), con soporte en componentes de input/dropdown donde aplica:
+
+    - **Campo Tipo de tarea:** `createInput` tipo `select` con opciones **Estándar** y **Aprendizaje** (`taskType`). Se reordenó el bloque de metadatos (fecha de finalización, plan, tipo) según el diseño acordado. Al pasar a Estándar se desvincula el contenido de aprendizaje; al volver a Aprendizaje hay que elegir de nuevo un contenido.
+
+    - **Tipo Aprendizaje — selector de contenido:** Bloque con fondo `bg-2` y padding token que, solo si el tipo es Aprendizaje, muestra un **autocomplete** (`createInput` tipo `autocomplete`) que busca en los catálogos **`bd-contenidos-ubits.js`** y **`bd-contenidos-fiqsha.js`**. Al elegir un ítem se guarda `learningContentId` en la tarea, se registra actividad y debajo se renderiza **`loadCardContentCompact`** (componente oficial **card-content-compact**). Imports: `card-content-compact.css/js` y las dos BD de contenidos.
+
+    - **Icono de Aprendizaje junto al título:** Si el tipo es Aprendizaje, a la izquierda del título se muestra el mismo pictograma que el sidebar (**`far fa-graduation-cap`**), color **brand** (`--ubits-accent-brand`). El contenedor del icono tiene **alto fijo** `var(--size-4xl)` (32px) y **ancho automático** para abrazar el glifo; alineado con la primera línea del título cuando este crece a varias líneas (desktop: `align-items: flex-start` en la fila). En **mobile** (`≤1023px`) la fila del título usa **grid** en dos filas: arriba icono + acciones (recordatorio, eliminar), abajo el título a ancho completo (tipografía tipo **h2** en el textarea); en desktop sigue una sola fila.
+
+    - **Título en mobile:** Se eliminó el límite artificial de altura del textarea del título en mobile; `resizeTaskDetailTitle()` vuelve a crecer con el contenido como en desktop.
+
+    Archivos: `task-detail.html`, `task-detail.js`, `task-detail.css`. Ajustes globales relacionados con listas de select y menús: `components/input.js` (panel del select sin `overflow` que rompía esquinas), `components/dropdown-menu.css` (borde del panel).
+
+52. [x] **Planes: drawer «Nueva tarea» — tipo Aprendizaje, contenido y icono (paridad con task-detail)**
+
+    En **`planes.html` / `planes.js` / `planes.css`**, el drawer **Nueva tarea** (FAB Crear → una tarea) replica el comportamiento del detalle de tarea:
+
+    - **Tipo** a la **derecha de Prioridad** en la fila de metadatos (orden: Finaliza el, Plan, Prioridad, Tipo), con `createInput` tipo `select` (Estándar / Aprendizaje) y estado `taskCreateDrawerState.taskType` / `learningContentId`.
+
+    - Si **Aprendizaje:** bloque con fondo `bg-2`, autocomplete de contenidos (BD **UBITS** + **Fiqsha**) y **`loadCardContentCompact`** debajo; al volver a Estándar se limpia el vínculo y el bloque.
+
+    - **Icono** `fa-graduation-cap` en color brand a la izquierda del título (contenedor alto 32px, ancho al glifo), visible solo con tipo Aprendizaje.
+
+    - **Crear tarea:** si el tipo es Aprendizaje, exige haber seleccionado un contenido (toast de aviso).
+
+    - **Paridad visual con task-detail:** los controles de esa fila (**fecha**, **plan**, **tipo** y, en Aprendizaje, **autocomplete de contenido**) usan **`size: 'xs'`**. El campo **fecha** tiene ancho fijo **105px** en el drawer (`.task-create-v2__field-wrap--date`); el mismo ancho se aplicó en **task-detail** a `#task-detail-vencimiento-wrap` y `#task-detail-mass-date-wrap` para alinear “Finaliza el” entre ambas pantallas.
+
+    Imports añadidos en `planes.html`: `card-content-compact.css/js`, `bd-contenidos-ubits.js`, `bd-contenidos-fiqsha.js`.
+
+    Archivos: `planes.html`, `planes.js`, `planes.css`, `task-detail.css`.
+
+---
+
+*Última actualización: ítems 1–20 (11 feb), 21–26 (19 feb), 27 (Cargar más), 28–30 (20 feb), 31 (21 feb), 32 (23 feb), 33 (nueva versión task-detail), 34 (dropdowns Estado y Prioridad en task-detail), 35 (panel de comentarios: adjuntar imágenes y archivos), 36 (implementación de subtask-detail), 37 (homologación encabezados plan-detail con task-detail), 38 (scroll-spy calendario horizontal, 10 mar), 39 (doble clic para cambio de nombre en tirillas y opción Cambiar nombre en subtareas), 40 (recordatorio registrado en historial en task-detail), 41 (plan-detail: asignados, filtro por persona, filtros aplicados y UI, 11 mar), 42 (task-detail: vencimiento sm, progress bar subtareas, botón Filtrar, Historial de cambios, nueva versión formulario subtareas, 12 mar), 43 (marca "- editado" en comentarios editados, 12 mar), 44 (filtro Asignado específico en tareas, 18 mar), 45 (estilos tirilla en celulares, 18 mar), 46 (Añadir colaborador seguimiento, 20 mar), 47 (resumen multiselect dropdown, 20 mar), 48 (añadir tarea/subtarea encima de listas y orden nuevo arriba, 25 mar), 49 (coachmark Seguimiento: copy, URLs y hash, 25 mar), 50 (coachmark oficial multi-página, 25 mar), 51 (task-detail: tipo Aprendizaje, contenido, icono, 31 mar), 52 (planes: drawer Nueva tarea, paridad Aprendizaje + xs y fecha 105px, 31 mar) implementados.*

@@ -159,11 +159,11 @@
     justify-content: center;
 }
 
-/* Input de fecha (vencimiento) de la tarea padre y del panel Creación a partir de lista: ancho fijo 100px */
+/* Input de fecha (vencimiento) de la tarea padre y del panel Creación a partir de lista: ancho fijo 105px (alineado con drawer Nueva tarea en planes) */
 #task-detail-vencimiento-wrap,
 #task-detail-mass-date-wrap {
-    width: 100px;
-    min-width: 100px;
+    width: 105px;
+    min-width: 105px;
 }
 
 #task-detail-plan-wrap {
@@ -177,7 +177,7 @@
 }
 
 #task-detail-learning-content-wrap {
-    width: min(320px, 100%);
+    width: 100%;
     min-width: 0;
 }
 
@@ -204,15 +204,40 @@
     border-radius: var(--border-radius-md);
     box-sizing: border-box;
     max-width: 100%;
-    overflow: hidden;
+    overflow: visible;
+}
+
+.task-detail-learning-content-row {
+    width: 100%;
+    min-width: 0;
+}
+
+/* El autocomplete dropdown hereda font-size del contexto; aquí lo normalizamos a sm para que coincida
+   con el resto de dropdowns de task-detail (select / menus). */
+.task-detail-learning-content-box .ubits-autocomplete-dropdown,
+.task-detail-learning-content-box .ubits-autocomplete-option {
+    font-size: var(--font-size-sm);
 }
 
 #task-detail-vencimiento-wrap .ubits-input,
 #task-detail-mass-date-wrap .ubits-input,
-#task-detail-plan-wrap .ubits-input,
 #task-detail-type-wrap .ubits-input {
     width: 100%;
     box-sizing: border-box;
+}
+
+#task-detail-plan-wrap .ubits-input-wrapper {
+    max-width: 100%;
+    min-width: 0;
+}
+
+#task-detail-plan-wrap .ubits-input {
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .task-detail-assignee-row,
@@ -259,9 +284,34 @@
 /* Fila título + botones de acción (desktop: recordatorio, eliminar, opciones; mobile: solo opciones) */
 .task-detail-title-row {
     display: flex;
+    /*
+     * Desktop: al crecer el textarea (2+ líneas), queremos que icono y acciones
+     * se queden alineados con la primera línea (no centrados verticalmente).
+     */
     align-items: flex-start;
     gap: var(--gap-sm);
     min-width: 0;
+}
+
+/* Mismo pictograma que Aprendizaje en sidebar (fa-graduation-cap), color brand.
+   Alto fijo 32px (como botones icon-only sm); el ancho abraza el glifo. */
+.task-detail-title-type-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: auto;
+    min-width: 0;
+    height: var(--size-4xl);
+    box-sizing: border-box;
+    color: var(--ubits-accent-brand);
+    font-size: var(--font-size-md);
+    line-height: 1;
+}
+
+.task-detail-title-type-icon i {
+    display: block;
+    line-height: 1;
 }
 
 .task-detail-title-row .task-detail-title-editable {
@@ -293,11 +343,45 @@
 
 /* Mobile: solo el botón de opciones (⋮); los botones Enviar recordatorio y Eliminar se ocultan */
 @media (max-width: 1023px) {
+    .task-detail-title-row {
+        /* En mobile: 2 filas explícitas (evita “pegar arriba” por quirks de flex + textarea) */
+        display: grid;
+        grid-template-columns: auto 1fr auto;
+        grid-template-areas:
+            "icon . actions"
+            "title title title";
+        align-items: center;
+        row-gap: var(--gap-xs);
+    }
+
+    .task-detail-title-type-icon {
+        grid-area: icon;
+    }
+
+    .task-detail-title-type-icon i {
+        position: static;
+    }
+
+    .task-detail-title-actions {
+        grid-area: actions;
+        margin-left: 0;
+    }
+
+    /* Segunda fila: título en ancho completo */
+    .task-detail-title-row .task-detail-title-editable {
+        grid-area: title;
+        width: 100%;
+        /* En mobile el título se lee mejor como h2 */
+        font-size: var(--font-size-h2);
+        font-weight: 700;
+        line-height: 1.25;
+    }
+
     .task-detail-title-action-btns {
-        display: none;
+        display: flex;
     }
     .task-detail-title-options-btn {
-        display: inline-flex;
+        display: none;
     }
 }
 

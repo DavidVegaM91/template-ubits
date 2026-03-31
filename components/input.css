@@ -232,6 +232,18 @@ textarea.ubits-input:disabled {
     padding-right: 44px;
 }
 
+/* createInput: select y calendario usan input readonly + icono absoluto; el texto largo no debe solapar la flecha/calendario */
+.ubits-input-wrapper > input.ubits-input[readonly] {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    min-width: 0;
+}
+
+.ubits-input-wrapper > input.ubits-input[readonly] ~ i {
+    z-index: 2;
+}
+
 /* ========================================
    INPUT LABEL
    ======================================== */

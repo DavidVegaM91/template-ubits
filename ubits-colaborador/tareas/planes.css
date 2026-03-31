@@ -1437,6 +1437,38 @@
     gap: var(--gap-sm);
 }
 
+.task-create-v2__title-row {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--gap-sm);
+    min-width: 0;
+}
+
+/* Icono Aprendizaje: alto 32px, ancho al glifo; color brand (mismo criterio que task-detail) */
+.task-create-v2__title-type-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: auto;
+    min-width: 0;
+    height: var(--size-4xl);
+    box-sizing: border-box;
+    color: var(--ubits-accent-brand);
+    font-size: var(--font-size-md);
+    line-height: 1;
+}
+
+.task-create-v2__title-type-icon i {
+    display: block;
+    line-height: 1;
+}
+
+.task-create-v2__title-row .task-create-v2__title {
+    flex: 1;
+    min-width: 0;
+}
+
 .task-create-v2__title {
     font-family: 'Noto Sans', sans-serif;
     line-height: 1.25;
@@ -1526,15 +1558,20 @@
     flex-shrink: 0;
 }
 
-/* Mismos anchos que #task-detail-vencimiento-wrap / #task-detail-plan-wrap (task-detail.css) */
+/* Fecha en drawer Nueva tarea: un poco más ancho que vencimiento en task-detail (105px) */
 .task-create-v2__field-wrap--date {
-    width: 100px;
-    min-width: 100px;
+    width: 105px;
+    min-width: 105px;
 }
 
 .task-create-v2__field-wrap--plan {
-    width: 220px;
-    min-width: 220px;
+    width: 200px;
+    min-width: 200px;
+}
+
+.task-create-v2__field-wrap--type {
+    width: 100px;
+    min-width: 100px;
 }
 
 .task-create-v2__field-wrap--priority {
@@ -1542,8 +1579,54 @@
 }
 
 .task-create-v2__field-wrap--date .ubits-input,
+.task-create-v2__field-wrap--type .ubits-input {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Plan: texto largo no debe solapar el icono angle-down del select */
+.task-create-v2__field-wrap--plan .ubits-input-wrapper {
+    max-width: 100%;
+    min-width: 0;
+}
+
 .task-create-v2__field-wrap--plan .ubits-input {
     width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.task-create-v2__learning-box {
+    width: 100%;
+    background: var(--ubits-bg-2);
+    padding: var(--padding-md);
+    border-radius: var(--border-radius-md);
+    box-sizing: border-box;
+    max-width: 100%;
+    overflow: visible;
+}
+
+#task-create-v2-learning-wrap {
+    width: 100%;
+    min-width: 0;
+}
+
+#task-create-v2-learning-wrap .ubits-input {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.task-create-v2__learning-card-wrap {
+    width: 100%;
+    margin-top: var(--gap-md);
+}
+
+.task-create-v2__learning-card-wrap .course-card-compact {
+    width: 100%;
+    max-width: 100%;
     box-sizing: border-box;
 }
 
@@ -1669,7 +1752,7 @@
         width: auto;
         min-width: 0;
         flex: 1 1 12rem;
-        max-width: min(100%, 220px);
+        max-width: min(100%, 200px);
     }
 
     .task-create-v2__field-wrap--date {

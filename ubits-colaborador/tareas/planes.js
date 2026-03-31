@@ -1844,7 +1844,9 @@ var taskCreateDrawerState = {
     assignment_mode: '',
     assignees: [],
     csvFile: null,
-    priority: 'media'
+    priority: 'media',
+    taskType: 'standard',
+    learningContentId: null
 };
 
 function normalizeNameTaskCreateDrawer(str) {
@@ -1887,6 +1889,136 @@ function getPlanesParaTaskCreateDrawer() {
         });
 }
 
+/* Contenidos de aprendizaje (misma lógica que task-detail.js) */
+function tcNormalizeImagePath(img) {
+    if (!img) return '../../images/cards-learn/360-grados-Citas-glosas-reflexiones.jpeg';
+    if (/^https?:\/\//i.test(img)) return img;
+    if (img.indexOf('images/') === 0) return '../../' + img;
+    return img;
+}
+
+function tcGetNivelLabelFromId(nivelId) {
+    if (nivelId === 'niv-001') return 'Básico';
+    if (nivelId === 'niv-002') return 'Intermedio';
+    if (nivelId === 'niv-003') return 'Avanzado';
+    return 'Intermedio';
+}
+
+function tcGetAllLearningContents() {
+    var all = [];
+    if (window.BDS_CONTENIDOS_UBITS && Array.isArray(window.BDS_CONTENIDOS_UBITS.contents)) {
+        all = all.concat(window.BDS_CONTENIDOS_UBITS.contents);
+    }
+    if (window.BDS_CONTENIDOS_FIQSHA && Array.isArray(window.BDS_CONTENIDOS_FIQSHA.contents)) {
+        all = all.concat(window.BDS_CONTENIDOS_FIQSHA.contents);
+    }
+    return all;
+}
+
+function tcFindLearningContentById(id) {
+    var all = tcGetAllLearningContents();
+    return all.find(function (c) { return String(c.id) === String(id); }) || null;
+}
+
+function tcBuildLearningAutocompleteOptions() {
+    var all = tcGetAllLearningContents();
+    var opts = all.map(function (c) {
+        var t = c.titulo || c.title || 'Contenido';
+        var origin = c.origen === 'empresa_fiqsha' ? 'Fiqsha' : 'UBITS';
+        return { value: String(c.id), text: String(t) + ' · ' + origin };
+    });
+    opts.sort(function (a, b) {
+        return String(a.text || '').localeCompare(String(b.text || ''), 'es', { sensitivity: 'base' });
+    });
+    return opts;
+}
+
+function renderTaskCreateLearningCard() {
+    var wrapId = 'task-create-v2-learning-card-wrap';
+    var wrap = document.getElementById(wrapId);
+    if (!wrap) return;
+    wrap.innerHTML = '';
+    if (!taskCreateDrawerState || taskCreateDrawerState.taskType !== 'aprendizaje') return;
+    var selectedId = taskCreateDrawerState.learningContentId ? String(taskCreateDrawerState.learningContentId) : '';
+    if (!selectedId) return;
+    var content = tcFindLearningContentById(selectedId);
+    if (!content) {
+        taskCreateDrawerState.learningContentId = null;
+        return;
+    }
+    if (typeof window.loadCardContentCompact !== 'function') return;
+    var isFiqsha = content.origen === 'empresa_fiqsha';
+    var provider = isFiqsha ? 'Fiqsha Smart Consulting' : 'UBITS';
+    var providerLogo = isFiqsha ? '../../images/Favicons/Fiqsha Smart Consulting.jpg' : '../../images/Favicons/UBITS.jpg';
+    window.loadCardContentCompact(wrapId, [{
+        type: content.tipoContenido || 'Curso',
+        title: content.titulo || content.title || 'Contenido',
+        provider: provider,
+        providerLogo: providerLogo,
+        duration: String(content.tiempoValor || 60) + ' min',
+        level: tcGetNivelLabelFromId(content.nivelId),
+        progress: 0,
+        status: 'default',
+        image: tcNormalizeImagePath(content.imagen || content.image),
+        competency: 'Productividad',
+        language: content.idioma || 'Español'
+    }]);
+}
+
+function syncTaskCreateAprendizajeUi() {
+    var isAprend = taskCreateDrawerState && taskCreateDrawerState.taskType === 'aprendizaje';
+    var iconEl = document.getElementById('task-create-v2-type-icon');
+    var boxEl = document.getElementById('task-create-v2-learning-box');
+    if (iconEl) {
+        iconEl.hidden = !isAprend;
+        iconEl.setAttribute('aria-hidden', isAprend ? 'false' : 'true');
+    }
+    if (boxEl) {
+        boxEl.style.display = isAprend ? 'block' : 'none';
+    }
+    if (!isAprend) {
+        taskCreateDrawerState.learningContentId = null;
+        var lw = document.getElementById('task-create-v2-learning-wrap');
+        var cw = document.getElementById('task-create-v2-learning-card-wrap');
+        if (lw) lw.innerHTML = '';
+        if (cw) cw.innerHTML = '';
+        if (taskCreateDrawerInputRefs) taskCreateDrawerInputRefs.learningContent = null;
+        return;
+    }
+    initTaskCreateLearningFieldsIfNeeded();
+}
+
+function initTaskCreateLearningFieldsIfNeeded() {
+    if (taskCreateDrawerInputRefs && taskCreateDrawerInputRefs.learningContent) {
+        renderTaskCreateLearningCard();
+        return;
+    }
+    var wrap = document.getElementById('task-create-v2-learning-wrap');
+    if (!wrap || typeof createInput !== 'function') return;
+    var learningOpts = tcBuildLearningAutocompleteOptions();
+    var contentApi = createInput({
+        containerId: 'task-create-v2-learning-wrap',
+        type: 'autocomplete',
+        label: '',
+        showLabel: false,
+        placeholder: 'Buscar contenido…',
+        size: 'xs',
+        autocompleteOptions: learningOpts,
+        autocompleteLazyPageSize: 10,
+        onChange: function (val) {
+            if (!val) return;
+            taskCreateDrawerState.learningContentId = String(val);
+            renderTaskCreateLearningCard();
+            if (contentApi && typeof contentApi.setValue === 'function') contentApi.setValue('');
+        }
+    });
+    if (!taskCreateDrawerInputRefs) taskCreateDrawerInputRefs = {};
+    taskCreateDrawerInputRefs.learningContent = contentApi;
+    var inp = document.querySelector('#task-create-v2-learning-wrap .ubits-input');
+    if (inp) inp.setAttribute('aria-label', 'Seleccionar contenido');
+    renderTaskCreateLearningCard();
+}
+
 function cleanupTaskCreateDrawer() {
     if (taskCreateDrawerEscHandler) {
         document.removeEventListener('keydown', taskCreateDrawerEscHandler);
@@ -1897,7 +2029,9 @@ function cleanupTaskCreateDrawer() {
         assignment_mode: '',
         assignees: [],
         csvFile: null,
-        priority: 'media'
+        priority: 'media',
+        taskType: 'standard',
+        learningContentId: null
     };
 }
 
@@ -1921,6 +2055,10 @@ function handleTaskCreateDrawerSubmit() {
     var title = (titleEl && titleEl.value || '').trim();
     if (!title) {
         if (typeof showToast === 'function') showToast('warning', 'Escribe un título para la tarea.');
+        return;
+    }
+    if (taskCreateDrawerState && taskCreateDrawerState.taskType === 'aprendizaje' && !taskCreateDrawerState.learningContentId) {
+        if (typeof showToast === 'function') showToast('warning', 'Selecciona un contenido de aprendizaje.');
         return;
     }
     if (typeof showToast === 'function') {
@@ -2270,7 +2408,7 @@ function initTaskCreateDrawerFormFields() {
             label: 'Fecha de finalización',
             placeholder: 'Selecciona una fecha',
             value: ymdToDmySlashTaskCreate(todayYmd),
-            size: 'sm'
+            size: 'xs'
         });
         taskCreateDrawerInputRefs.plan = createInput({
             containerId: 'task-create-v2-plan-wrap',
@@ -2278,16 +2416,41 @@ function initTaskCreateDrawerFormFields() {
             label: 'Plan',
             placeholder: 'Seleccionar plan',
             selectOptions: planOptions,
-            size: 'sm',
+            size: 'xs',
             onChange: function () {
                 updateTaskCreatePlanAlertVisible();
             }
         });
+        taskCreateDrawerInputRefs.taskType = createInput({
+            containerId: 'task-create-v2-type-wrap',
+            type: 'select',
+            label: 'Tipo',
+            showLabel: false,
+            placeholder: 'Tipo',
+            size: 'xs',
+            selectOptions: [
+                { value: 'standard', text: 'Estándar' },
+                { value: 'aprendizaje', text: 'Aprendizaje' }
+            ],
+            value: taskCreateDrawerState.taskType === 'aprendizaje' ? 'aprendizaje' : 'standard',
+            onChange: function (val) {
+                var next = val === 'aprendizaje' ? 'aprendizaje' : 'standard';
+                if (taskCreateDrawerState.taskType === next) return;
+                taskCreateDrawerState.taskType = next;
+                if (next !== 'aprendizaje') {
+                    taskCreateDrawerState.learningContentId = null;
+                }
+                syncTaskCreateAprendizajeUi();
+            }
+        });
+        var typeInputEl = document.querySelector('#task-create-v2-type-wrap .ubits-input');
+        if (typeInputEl) typeInputEl.setAttribute('aria-labelledby', 'task-create-v2-type-label');
     }
 
     initTaskCreateAssignmentSection();
 
     updateTaskCreatePlanAlertVisible();
+    syncTaskCreateAprendizajeUi();
 
     var titleTa = document.getElementById('task-create-v2-title');
     if (titleTa) {
@@ -2339,7 +2502,10 @@ function openTaskCreateDrawerV2() {
     var bodyHtml =
         '<div class="task-create-v2">' +
         '  <div class="task-create-v2__info">' +
-        '    <textarea id="task-create-v2-title" class="task-create-v2__title ubits-heading-h1" rows="1" maxlength="250" placeholder="Escribe el título de la tarea"></textarea>' +
+        '    <div class="task-create-v2__title-row">' +
+        '      <span id="task-create-v2-type-icon" class="task-create-v2__title-type-icon" hidden aria-hidden="true" title="Aprendizaje"><i class="far fa-graduation-cap"></i></span>' +
+        '      <textarea id="task-create-v2-title" class="task-create-v2__title ubits-heading-h1" rows="1" maxlength="250" placeholder="Escribe el título de la tarea"></textarea>' +
+        '    </div>' +
         '    <textarea id="task-create-v2-desc" class="task-create-v2__desc ubits-body-sm-regular" rows="1" maxlength="1200" placeholder="Agrega una descripción para dar contexto y claridad…"></textarea>' +
         '  </div>' +
         '  <div class="task-create-v2__meta-row task-create-v2__meta-row--attrs">' +
@@ -2357,6 +2523,14 @@ function openTaskCreateDrawerV2() {
         '        <div class="task-create-v2__priority-trigger" id="task-create-v2-priority-trigger" role="button" tabindex="0" aria-haspopup="listbox" aria-label="Prioridad"></div>' +
         '      </div>' +
         '    </div>' +
+        '    <div class="task-create-v2__meta-cell">' +
+        '      <span id="task-create-v2-type-label" class="task-create-v2__meta-label ubits-body-sm-semibold">Tipo</span>' +
+        '      <div id="task-create-v2-type-wrap" class="task-create-v2__field-wrap task-create-v2__field-wrap--type"></div>' +
+        '    </div>' +
+        '  </div>' +
+        '  <div id="task-create-v2-learning-box" class="task-create-v2__learning-box" style="display:none">' +
+        '    <div id="task-create-v2-learning-wrap"></div>' +
+        '    <div id="task-create-v2-learning-card-wrap" class="task-create-v2__learning-card-wrap"></div>' +
         '  </div>' +
         '  <hr class="task-create-v2__divider" role="presentation" />' +
         '  <div class="task-create-v2__assign-block">' +

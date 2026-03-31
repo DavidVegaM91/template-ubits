@@ -1504,7 +1504,7 @@ function createInput(options = {}) {
     const leftIconClass = hasLeftIcon && leftIcon.startsWith('fa-') ? `far ${leftIcon}` : leftIcon;
     const rightIconClass = hasRightIcon && rightIcon.startsWith('fa-') ? `far ${rightIcon}` : rightIcon;
 
-    inputHTML += `<div style="position: relative; display: inline-block; width: 100%;">`;
+    inputHTML += `<div class="ubits-input-wrapper" style="position: relative; display: inline-block; width: 100%;">`;
     
     // Icono izquierdo con posicionamiento absoluto
     if (hasLeftIcon) {
@@ -1538,8 +1538,11 @@ function createInput(options = {}) {
     if (type === 'select') {
         console.log('Rendering SELECT with options:', selectOptions);
         // SELECT - usar input normal pero readonly y con rightIcon angle-down (siempre, no chevron-down)
+        // padding-right debe aplicarse SIEMPRE aunque el caller no pase rightIcon en options (hasRightIcon sería false y inputStyle no reservaría hueco).
+        const selectIconPadRight = { xs: '32px', sm: '36px', md: '40px', lg: '44px' }[size] || '40px';
         const selectValue = value ? selectOptions.find(opt => opt.value === value)?.text || placeholder : placeholder;
-        inputHTML += `<input type="text" class="${inputClasses.join(' ')}" style="${inputStyle}" value="${escapeAttr(selectValue)}" readonly>`;
+        const selectInputStyle = `width: 100%; ${paddingLeft} padding-right: ${selectIconPadRight};`;
+        inputHTML += `<input type="text" class="${inputClasses.join(' ')}" style="${selectInputStyle}" value="${escapeAttr(selectValue)}" readonly>`;
         
         // Siempre usar angle-down en selects (icono desplegable)
             finalRightIcon = 'fa-angle-down';

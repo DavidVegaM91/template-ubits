@@ -585,6 +585,9 @@
         var isAprendizaje = task.taskType === 'aprendizaje';
         var html =
             '<div class="task-detail-title-row">' +
+            (isAprendizaje
+                ? '<span class="task-detail-title-type-icon" title="Aprendizaje" aria-hidden="true"><i class="far fa-graduation-cap"></i></span>'
+                : '') +
             '<textarea class="task-detail-title-editable ubits-heading-h1" id="task-detail-title" placeholder="Título de la tarea" rows="1" maxlength="250">' + escapeHtml(task.name) + '</textarea>' +
             '<div class="task-detail-title-actions">' +
             '<div class="task-detail-title-action-btns">' +
@@ -635,10 +638,8 @@
             '</div>' +
             (isAprendizaje
                 ? '<div class="task-detail-learning-content-box">' +
-                '<div class="task-detail-attributes-row">' +
-                '<span class="task-detail-meta-cell">' +
-                '<span id="task-detail-learning-content-label" class="ubits-body-sm-semibold task-detail-meta-label">Seleccionar contenido</span>' +
-                '<div id="task-detail-learning-content-wrap"></div></span>' +
+                '<div class="task-detail-learning-content-row">' +
+                '<div id="task-detail-learning-content-wrap"></div>' +
                 '</div>' +
                 '<div id="task-detail-learning-content-card-wrap" class="task-detail-learning-content-card-wrap"></div>' +
                 '</div>'
@@ -854,12 +855,14 @@
                         pushActivity('fa-graduation-cap', currentUserName, 'ligó la tarea al contenido \"' + (chosen.titulo || chosen.title || 'Contenido') + '\".');
                     }
                     triggerFakeSave();
+                    // Render inmediato para que el usuario vea la card sin esperar el re-render completo.
+                    renderSelectedLearningContentCard();
                     setTimeout(function () { renderInfoBlock(); }, 0);
                     if (contentApi && typeof contentApi.setValue === 'function') contentApi.setValue('');
                 }
             });
             var contentInput = document.querySelector('#task-detail-learning-content-wrap .ubits-input');
-            if (contentInput) contentInput.setAttribute('aria-labelledby', 'task-detail-learning-content-label');
+            if (contentInput) contentInput.setAttribute('aria-label', 'Seleccionar contenido');
 
             renderSelectedLearningContentCard();
         }
@@ -1069,6 +1072,7 @@
         var ta = document.getElementById('task-detail-title');
         if (!ta) return;
         ta.style.height = 'auto';
+        ta.style.overflowY = 'hidden';
         ta.style.height = Math.max(24, ta.scrollHeight) + 'px';
     }
 
