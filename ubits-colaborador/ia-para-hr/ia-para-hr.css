@@ -72,11 +72,12 @@
 }
 
 .ia-hr-hero__orb-wrap--1 {
-    left: -14%;
-    top: 8%;
-    width: min(44vw, 360px);
-    height: min(44vw, 360px);
-    animation: ia-hr-orb-drift-a 22s ease-in-out infinite;
+    left: 50%;
+    bottom: -52%;
+    top: auto;
+    width: min(36vw, 300px);
+    height: min(36vw, 300px);
+    animation: ia-hr-orb-drift-c 26s ease-in-out infinite;
 }
 
 .ia-hr-hero__orb-wrap--2 {
@@ -89,12 +90,13 @@
 }
 
 .ia-hr-hero__orb-wrap--3 {
-    left: 50%;
-    bottom: -52%;
-    width: min(36vw, 300px);
-    height: min(36vw, 300px);
-    animation: ia-hr-orb-drift-c 26s ease-in-out infinite;
-    animation-delay: -11s;
+    left: -14%;
+    top: 8%;
+    bottom: auto;
+    width: min(44vw, 360px);
+    height: min(44vw, 360px);
+    animation: ia-hr-orb-drift-a 22s ease-in-out infinite;
+    animation-delay: -1s;
 }
 
 .ia-hr-hero__orb {
