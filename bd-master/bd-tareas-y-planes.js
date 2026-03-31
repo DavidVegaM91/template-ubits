@@ -1337,7 +1337,7 @@
             prioridad: 'media',
             done: false,
             estado: 'Activo',
-            tieneSubtareas: true
+            tieneSubtareas: false
         }, 4242, 1);
         return {
             task: taskBase,

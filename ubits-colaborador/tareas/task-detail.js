@@ -1144,11 +1144,15 @@
             '<i class="far fa-plus"></i><span class="ubits-body-sm-regular">Añadir subtarea</span></button>' +
             '</div>';
         var barPercent = total > 0 ? (100 * completed / total) : 0;
+        var progressRowHtml = total > 0
+            ? '<div class="task-detail-subtasks-bar"><div class="task-detail-subtasks-bar-fill" style="width:' + barPercent + '%"></div></div>' +
+            '<span class="ubits-body-sm-regular task-detail-subtasks-counter">' + completed + ' de ' + total + ' completadas</span>'
+            : '';
         var html =
             '<div class="task-detail-subtasks-header">' +
             '<h2 class="ubits-body-md-bold task-detail-subtasks-title"><i class="far fa-list-check"></i> Subtareas</h2>' +
-            '<div class="task-detail-subtasks-bar"><div class="task-detail-subtasks-bar-fill" style="width:' + barPercent + '%"></div></div>' +
-            '<span class="ubits-body-sm-regular task-detail-subtasks-counter">' + completed + ' de ' + total + ' completadas</span></div>' +
+            progressRowHtml +
+            '</div>' +
             addFormHtml +
             addSubtaskBtnRow +
             '<div class="task-detail-subtasks-list" id="task-detail-subtasks-list">' + listHtml + '</div>';
