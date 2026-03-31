@@ -582,6 +582,7 @@
 
         var prioridadIcon = { alta: 'fa-chevrons-up', media: 'fa-chevron-up', baja: 'fa-chevron-down' };
         var prioridadVariant = { alta: 'error', media: 'warning', baja: 'info' };
+        var isAprendizaje = task.taskType === 'aprendizaje';
         var html =
             '<div class="task-detail-title-row">' +
             '<textarea class="task-detail-title-editable ubits-heading-h1" id="task-detail-title" placeholder="Título de la tarea" rows="1" maxlength="250">' + escapeHtml(task.name) + '</textarea>' +
@@ -609,8 +610,8 @@
             '<span class="ubits-body-sm-regular task-detail-creator-name-text" title="' + escapeHtml(creatorName) + '">' + escapeHtml(creatorDisplay) + '</span>' +
             '</div></div>' +
             '<div class="task-detail-meta-cell">' +
-            '<span id="task-detail-type-label" class="ubits-body-sm-semibold task-detail-meta-label">Tipo</span>' +
-            '<div id="task-detail-type-wrap"></div></div>' +
+            '<span id="task-detail-vencimiento-label" class="ubits-body-sm-semibold task-detail-meta-label">Finaliza el:</span>' +
+            '<div id="task-detail-vencimiento-wrap"></div></div>' +
             '</div>' +
             '<div class="task-detail-attributes-row">' +
             '<span class="task-detail-meta-cell">' +
@@ -626,12 +627,22 @@
             '<i class="far ' + (prioridadIcon[prioridad] || 'fa-chevron-up') + '"></i><span class="ubits-badge-tag__text">' + escapeHtml(prioridadLabel) + '</span></span>' +
             '</div></span>' +
             '<span class="task-detail-meta-cell">' +
-            '<span id="task-detail-vencimiento-label" class="ubits-body-sm-semibold task-detail-meta-label">Finaliza el:</span>' +
-            '<div id="task-detail-vencimiento-wrap"></div></span>' +
-            '<span class="task-detail-meta-cell">' +
             '<span id="task-detail-plan-label" class="ubits-body-sm-semibold task-detail-meta-label">Plan</span>' +
             '<div id="task-detail-plan-wrap"></div></span>' +
+            '<span class="task-detail-meta-cell">' +
+            '<span id="task-detail-type-label" class="ubits-body-sm-semibold task-detail-meta-label">Tipo</span>' +
+            '<div id="task-detail-type-wrap"></div></span>' +
             '</div>' +
+            (isAprendizaje
+                ? '<div class="task-detail-learning-content-box">' +
+                '<div class="task-detail-attributes-row">' +
+                '<span class="task-detail-meta-cell">' +
+                '<span id="task-detail-learning-content-label" class="ubits-body-sm-semibold task-detail-meta-label">Seleccionar contenido</span>' +
+                '<div id="task-detail-learning-content-wrap"></div></span>' +
+                '</div>' +
+                '<div id="task-detail-learning-content-card-wrap" class="task-detail-learning-content-card-wrap"></div>' +
+                '</div>'
+                : '') +
             (selectedPlanValue
                 ? ''
                 : '<div id="task-detail-plan-alert-wrap" class="task-detail-plan-alert-wrap">' +
@@ -695,6 +706,11 @@
                     var prev = estado.task.taskType === 'aprendizaje' ? 'aprendizaje' : 'standard';
                     if (prev === next) return;
                     estado.task.taskType = next;
+                    if (next !== 'aprendizaje') {
+                        // Regla: al pasar a Estándar se desvincula el contenido.
+                        // Si vuelve a Aprendizaje, debe elegir nuevamente.
+                        estado.task.learningContentId = null;
+                    }
                     pushActivity('fa-tag', currentUserName, 'cambió el tipo de tarea a ' + taskTypeLabel(next) + '.');
                     triggerFakeSave();
                     setTimeout(function () { renderInfoBlock(); }, 0);
@@ -736,6 +752,116 @@
             });
             var planInput = document.querySelector('#task-detail-plan-wrap .ubits-input');
             if (planInput) planInput.setAttribute('aria-labelledby', 'task-detail-plan-label');
+        }
+
+        function normalizeImagePath(img) {
+            if (!img) return '../../images/cards-learn/360-grados-Citas-glosas-reflexiones.jpeg';
+            if (/^https?:\/\//i.test(img)) return img;
+            if (img.indexOf('images/') === 0) return '../../' + img;
+            return img;
+        }
+
+        function getNivelLabelFromId(nivelId) {
+            if (nivelId === 'niv-001') return 'Básico';
+            if (nivelId === 'niv-002') return 'Intermedio';
+            if (nivelId === 'niv-003') return 'Avanzado';
+            return 'Intermedio';
+        }
+
+        function getAllLearningContents() {
+            var all = [];
+            if (window.BDS_CONTENIDOS_UBITS && Array.isArray(window.BDS_CONTENIDOS_UBITS.contents)) {
+                all = all.concat(window.BDS_CONTENIDOS_UBITS.contents);
+            }
+            if (window.BDS_CONTENIDOS_FIQSHA && Array.isArray(window.BDS_CONTENIDOS_FIQSHA.contents)) {
+                all = all.concat(window.BDS_CONTENIDOS_FIQSHA.contents);
+            }
+            return all;
+        }
+
+        function findLearningContentById(id) {
+            var all = getAllLearningContents();
+            return all.find(function (c) { return String(c.id) === String(id); }) || null;
+        }
+
+        function buildLearningAutocompleteOptions() {
+            var all = getAllLearningContents();
+            var opts = all.map(function (c) {
+                var t = c.titulo || c.title || 'Contenido';
+                var origin = c.origen === 'empresa_fiqsha' ? 'Fiqsha' : 'UBITS';
+                return { value: String(c.id), text: String(t) + ' · ' + origin };
+            });
+            opts.sort(function (a, b) {
+                return String(a.text || '').localeCompare(String(b.text || ''), 'es', { sensitivity: 'base' });
+            });
+            return opts;
+        }
+
+        function renderSelectedLearningContentCard() {
+            if (!isAprendizaje) return;
+            var wrapId = 'task-detail-learning-content-card-wrap';
+            var wrap = document.getElementById(wrapId);
+            if (!wrap) return;
+            wrap.innerHTML = '';
+
+            var selectedId = estado.task && estado.task.learningContentId ? String(estado.task.learningContentId) : '';
+            if (!selectedId) return;
+
+            var content = findLearningContentById(selectedId);
+            if (!content) {
+                if (estado.task) estado.task.learningContentId = null;
+                return;
+            }
+
+            if (typeof window.loadCardContentCompact !== 'function') return;
+
+            var isFiqsha = content.origen === 'empresa_fiqsha';
+            var provider = isFiqsha ? 'Fiqsha Smart Consulting' : 'UBITS';
+            var providerLogo = isFiqsha ? '../../images/Favicons/Fiqsha Smart Consulting.jpg' : '../../images/Favicons/UBITS.jpg';
+
+            window.loadCardContentCompact(wrapId, [{
+                type: content.tipoContenido || 'Curso',
+                title: content.titulo || content.title || 'Contenido',
+                provider: provider,
+                providerLogo: providerLogo,
+                duration: String(content.tiempoValor || 60) + ' min',
+                level: getNivelLabelFromId(content.nivelId),
+                progress: 0,
+                status: 'default',
+                image: normalizeImagePath(content.imagen || content.image),
+                competency: 'Productividad',
+                language: content.idioma || 'Español'
+            }]);
+        }
+
+        // Seleccionar contenido (solo para tipo Aprendizaje)
+        if (isAprendizaje && typeof createInput === 'function') {
+            var learningOpts = buildLearningAutocompleteOptions();
+            var contentApi = createInput({
+                containerId: 'task-detail-learning-content-wrap',
+                type: 'autocomplete',
+                label: '',
+                showLabel: false,
+                placeholder: 'Buscar contenido…',
+                size: 'xs',
+                autocompleteOptions: learningOpts,
+                autocompleteLazyPageSize: 10,
+                onChange: function (val) {
+                    if (!val || !estado.task) return;
+                    estado.task.learningContentId = String(val);
+                    var chosen = findLearningContentById(val);
+                    if (chosen) {
+                        pushActivity('fa-graduation-cap', currentUserName, 'ligó la tarea al contenido \"' + (chosen.titulo || chosen.title || 'Contenido') + '\".');
+                    }
+                    triggerFakeSave();
+                    setTimeout(function () { renderInfoBlock(); }, 0);
+                    if (contentApi && typeof contentApi.setValue === 'function') contentApi.setValue('');
+                }
+            });
+            var contentInput = document.querySelector('#task-detail-learning-content-wrap .ubits-input');
+            if (contentInput) contentInput.setAttribute('aria-labelledby', 'task-detail-learning-content-label');
+
+            renderSelectedLearningContentCard();
         }
         if (typeof initTooltip === 'function') initTooltip('#task-detail-info-block [data-tooltip]');
         resizeTaskDetailTitle();

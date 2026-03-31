@@ -176,6 +176,37 @@
     min-width: 100px;
 }
 
+#task-detail-learning-content-wrap {
+    width: min(320px, 100%);
+    min-width: 0;
+}
+
+#task-detail-learning-content-wrap .ubits-input {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.task-detail-learning-content-card-wrap {
+    width: 100%;
+    margin-top: var(--gap-md);
+}
+
+.task-detail-learning-content-card-wrap .course-card-compact {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+.task-detail-learning-content-box {
+    width: 100%;
+    background: var(--ubits-bg-2);
+    padding: var(--padding-md);
+    border-radius: var(--border-radius-md);
+    box-sizing: border-box;
+    max-width: 100%;
+    overflow: hidden;
+}
+
 #task-detail-vencimiento-wrap .ubits-input,
 #task-detail-mass-date-wrap .ubits-input,
 #task-detail-plan-wrap .ubits-input,
