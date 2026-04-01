@@ -85,11 +85,12 @@ const getTodayString = () => {
 let today = getTodayString();
 
 /**
- * Demo playground (solo vista tareas): una tarea tipo Aprendizaje por día visitado (María Alejandra).
+ * Demo playground (solo vista tareas): una tarea tipo Aprendizaje solo el día calendario actual (hoy), María Alejandra.
  * Mismo id fijo que la BD (TASK_ID_PROTO_APRENDIZAJE) para enlazar task-detail.html?id=…
  */
 function ensureVistaTareasDemoAprendizaje(fechaKey) {
     if (!fechaKey || typeof TAREAS_PLANES_DB === 'undefined' || typeof TAREAS_PLANES_DB.getUsuarioActual !== 'function') return;
+    if (fechaKey !== getTodayString()) return;
     var u = TAREAS_PLANES_DB.getUsuarioActual();
     if (!u || u.nombre !== 'María Alejandra Sánchez Pardo') return;
     if (!tareasEjemplo.porDia) tareasEjemplo.porDia = {};
@@ -132,6 +133,28 @@ if (typeof TAREAS_PLANES_DB !== 'undefined' && typeof TAREAS_PLANES_DB.getTareas
     tareasEjemplo = TAREAS_PLANES_DB.getTareasVistaTareas();
     today = getTodayString();
 }
+/* Quitar demo curso/aprendizaje de días que no son hoy (estado previo antes de filtrar solo hoy) */
+(function pruneDemoAprendizajeFromNonTodayDays() {
+    if (!tareasEjemplo || !tareasEjemplo.porDia) return;
+    var protoId = (typeof TAREAS_PLANES_DB !== 'undefined' && typeof TAREAS_PLANES_DB.TASK_ID_PROTO_APRENDIZAJE === 'number')
+        ? TAREAS_PLANES_DB.TASK_ID_PROTO_APRENDIZAJE
+        : 9000000000001;
+    var hoy = getTodayString();
+    var pd = tareasEjemplo.porDia;
+    for (var key in pd) {
+        if (key === hoy) continue;
+        var list = pd[key];
+        if (!list || !list.length) continue;
+        var next = list.filter(function (t) {
+            if (!t || !t._demoVistaTareasAprendizaje) return true;
+            var a = Number(t.id);
+            var b = Number(protoId);
+            if (!isNaN(a) && !isNaN(b)) return a !== b;
+            return String(t.id) !== String(protoId);
+        });
+        if (next.length !== list.length) pd[key] = next;
+    }
+})();
 if (!estadoTareas.selectedDay) {
     estadoTareas.selectedDay = today;
 }
