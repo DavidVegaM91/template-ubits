@@ -420,9 +420,7 @@
         if (seeder(seed, baseIdx + 604) < 0.4) {
             pushAct('fa-chevrons-up', creador, 'cambió la prioridad a ' + prioridadLabel + '.', addHours(fechaCreacion, 2));
         }
-        if (seeder(seed, baseIdx + 605) < 0.3) {
-            pushAct('fa-circle-dot', asignadoNombre, 'cambió el estado a Por hacer.', addHours(fechaCreacion, 3));
-        }
+        /* No se registra "Por hacer": es el estado inicial al crear la tarea. */
         if (numSubtareas > 0) {
             if (numSubtareas === 1) {
                 pushAct('fa-plus-circle', asignadoNombre, 'añadió la subtarea "' + (subtasks[0].name) + '".', addHours(fechaCreacion, 4));

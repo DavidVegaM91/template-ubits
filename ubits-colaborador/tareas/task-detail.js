@@ -40,6 +40,39 @@
             .replace(/"/g, '&quot;');
     }
 
+    /** Copia la URL actual (detalle de tarea) al portapapeles y muestra toast de éxito. */
+    function copyTaskDetailPageUrlToClipboard() {
+        var url = typeof window !== 'undefined' && window.location ? window.location.href : '';
+        function toastOk() {
+            if (typeof showToast === 'function') showToast('success', 'Enlace de la tarea copiado.');
+        }
+        if (!url) {
+            toastOk();
+            return;
+        }
+        if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
+            navigator.clipboard.writeText(url).then(toastOk).catch(function () {
+                fallbackCopyTextToClipboard(url, toastOk);
+            });
+        } else {
+            fallbackCopyTextToClipboard(url, toastOk);
+        }
+    }
+    function fallbackCopyTextToClipboard(text, onDone) {
+        try {
+            var ta = document.createElement('textarea');
+            ta.value = text;
+            ta.setAttribute('readonly', '');
+            ta.style.position = 'fixed';
+            ta.style.left = '-9999px';
+            document.body.appendChild(ta);
+            ta.select();
+            document.execCommand('copy');
+            document.body.removeChild(ta);
+        } catch (e) { /* ignore */ }
+        if (typeof onDone === 'function') onDone();
+    }
+
     /**
      * createInput (autocomplete) coloca el dropdown como hermano del .ubits-input-wrapper dentro del contenedor;
      * con top:100% puede solapar el input. Mover el dropdown dentro del wrapper alinea el ancla al campo.
@@ -186,8 +219,7 @@
             { id: 'act-0', time: tenDaysAgo, icon: 'fa-circle-plus', author: 'Carlos Ruiz', text: 'creó la tarea.' },
             { id: 'act-1', time: nineDaysAgo, icon: 'fa-user-pen', author: 'Carlos Ruiz', text: 'asignó la tarea a María González.' },
             { id: 'act-2', time: eightDays, icon: 'fa-chevrons-up', author: 'Carlos Ruiz', text: 'cambió la prioridad a Alta.' },
-            { id: 'act-3', time: sixDays, icon: 'fa-circle-dot', author: 'María González', text: 'cambió el estado a Por hacer.' },
-            { id: 'act-4', time: fiveDays, icon: 'fa-plus-circle', author: 'María González', text: 'añadió la subtarea \u201cCrear cuenta de desarrollador en Stripe\u201d.' },
+            { id: 'act-4', time: sixDays, icon: 'fa-plus-circle', author: 'María González', text: 'añadió la subtarea \u201cCrear cuenta de desarrollador en Stripe\u201d.' },
             { id: 'act-5', time: fiveDays, icon: 'fa-plus-circle', author: 'María González', text: 'añadió la subtarea \u201cImplementar API de suscripciones\u201d.' },
             { id: 'act-6', time: threeDays, icon: 'fa-circle-check', author: 'Carlos Ruiz', text: 'marcó \u201cRevisar contratos vigentes\u201d como completada.' },
             { id: 'act-7', time: yesterday, icon: 'fa-calendar-pen', author: 'María González', text: 'cambió la fecha límite al 20 feb 2026.' }
@@ -226,6 +258,14 @@
         var comments = estado.comments;
         var activities = estado.activities;
         var subtasks = estado.subtasks || [];
+
+        /* "Por hacer" es el estado por defecto: no debe aparecer como evento en el historial */
+        for (var phIdx = activities.length - 1; phIdx >= 0; phIdx--) {
+            var aPh = activities[phIdx];
+            if (aPh && aPh.text && /^cambió el estado a Por hacer\.?$/i.test(String(aPh.text).trim())) {
+                activities.splice(phIdx, 1);
+            }
+        }
 
         var msCreated = parseIsoMs(task.created_at);
         var minCommentMs = Infinity;
@@ -353,6 +393,54 @@
                 c.time = new Date(m).toISOString();
             });
         })();
+
+        /* Aprendizaje + Finalizada: evento UBITS siempre el último del timeline (después de comentarios y actividades) */
+        for (var ubitsRm = activities.length - 1; ubitsRm >= 0; ubitsRm--) {
+            var aRm = activities[ubitsRm];
+            if (aRm && aRm.id && String(aRm.id).indexOf('act-seed-ubits-auto-finalizacion') === 0) {
+                if (!(task.taskType === 'aprendizaje' && task.status === 'Finalizado')) {
+                    activities.splice(ubitsRm, 1);
+                }
+            }
+        }
+        var hasUbitsAutoFinal = activities.some(function (a) {
+            if (a && a.id && String(a.id).indexOf('act-seed-ubits-auto-finalizacion') === 0) return true;
+            return !!(a && a.text && /Finalizada automáticamente/i.test(String(a.text)));
+        });
+        if (!hasUbitsAutoFinal && task.taskType === 'aprendizaje' && task.status === 'Finalizado') {
+            var maxTimelineMs = 0;
+            activities.forEach(function (a) {
+                if (a && a.id && String(a.id).indexOf('act-seed-ubits-auto-finalizacion') === 0) return;
+                var ma = parseIsoMs(a.time);
+                if (!isNaN(ma)) maxTimelineMs = Math.max(maxTimelineMs, ma);
+            });
+            comments.forEach(function (c) {
+                var mc = parseIsoMs(c.time);
+                if (!isNaN(mc)) maxTimelineMs = Math.max(maxTimelineMs, mc);
+            });
+            if (maxTimelineMs === 0) {
+                var fallbackMs = parseIsoMs(task.created_at);
+                maxTimelineMs = !isNaN(fallbackMs) ? fallbackMs : Date.now() - 3600000;
+            }
+            var ubitsMs = maxTimelineMs + 90000;
+            var nowCapU = Date.now();
+            if (task.endDate) {
+                var peU = String(task.endDate).split('-').map(Number);
+                if (peU.length === 3) {
+                    var endCapU = new Date(peU[0], peU[1] - 1, peU[2], 23, 59, 59, 999).getTime();
+                    if (!isNaN(endCapU)) nowCapU = Math.min(nowCapU, endCapU);
+                }
+            }
+            if (ubitsMs > nowCapU - 5000) ubitsMs = nowCapU - 5000;
+            if (ubitsMs <= maxTimelineMs) ubitsMs = maxTimelineMs + 60000;
+            activities.push({
+                id: 'act-seed-ubits-auto-finalizacion-' + (task.id != null ? String(task.id) : 't'),
+                time: new Date(ubitsMs).toISOString(),
+                icon: 'fa-sparkles',
+                author: 'UBITS',
+                text: 'cambió el estado a Finalizada automáticamente.'
+            });
+        }
     }
 
     function getFeedSortKey(item) {
@@ -622,6 +710,7 @@
             '<div class="task-detail-title-actions">' +
             '<div class="task-detail-title-action-btns">' +
             '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only" id="task-detail-title-recordatorio-btn" aria-label="Enviar recordatorio" data-tooltip="Enviar recordatorio"><i class="far fa-bell"></i></button>' +
+            '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only" id="task-detail-title-copy-link-btn" aria-label="Copiar enlace" data-tooltip="Copiar enlace"><i class="far fa-link"></i></button>' +
             '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only" id="task-detail-title-delete-btn" aria-label="Eliminar tarea" data-tooltip="Eliminar tarea"><i class="far fa-trash"></i></button>' +
             '</div>' +
             '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only task-detail-title-options-btn" id="task-detail-title-options-btn" aria-label="Opciones" data-tooltip="Opciones"><i class="far fa-ellipsis-vertical"></i></button>' +
@@ -698,7 +787,7 @@
                         }
                         if (ymd && ymd >= today && estado.task.status === 'Vencido') {
                             estado.task.status = 'Activo';
-                            pushActivity('fa-circle-dot', currentUserName, 'cambió el estado a Por hacer.');
+                            /* No registrar "Por hacer": es el estado por defecto; el cambio de fecha ya queda en el historial. */
                         }
                     }
                     pushActivity('fa-calendar-pen', currentUserName, 'cambió la fecha límite al ' + dateKeyLabel(ymd) + '.');
@@ -1076,6 +1165,7 @@
                 if (existing) existing.remove();
                 var options = [
                     { text: 'Enviar recordatorio', value: 'recordatorio', leftIcon: 'bell' },
+                    { text: 'Copiar enlace', value: 'copiar-enlace', leftIcon: 'link' },
                     { text: 'Eliminar', value: 'eliminar', leftIcon: 'trash' }
                 ];
                 var html = window.getDropdownMenuHtml({ overlayId: overlayId, options: options });
@@ -1095,6 +1185,8 @@
                                     triggerFakeSave();
                                     if (typeof showToast === 'function') showToast('success', 'Recordatorio enviado');
                                 });
+                            } else if (val === 'copiar-enlace') {
+                                copyTaskDetailPageUrlToClipboard();
                             } else if (val === 'eliminar') {
                                 if (typeof showModal === 'function') showModal('task-detail-delete-task-modal-overlay');
                             }
@@ -1120,6 +1212,14 @@
                     triggerFakeSave();
                     if (typeof showToast === 'function') showToast('success', 'Recordatorio enviado');
                 });
+            });
+        }
+        var copyLinkBtn = document.getElementById('task-detail-title-copy-link-btn');
+        if (copyLinkBtn) {
+            copyLinkBtn.addEventListener('click', function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                copyTaskDetailPageUrlToClipboard();
             });
         }
         var deleteTaskBtn = document.getElementById('task-detail-title-delete-btn');
@@ -1467,11 +1567,13 @@
         var comments = estado.comments;
         var activities = estado.activities;
         var task = estado.task;
-        /* Cuando creador y asignado son la misma persona, no mostrar sus comentarios (evitar "hablarse a sí mismo") */
+        /* Creador = asignado: ocultar comentarios mock del creador (evitar "hablarse sola" en demo).
+         * Sí mostrar los enviados desde el compositor (marcados con userSubmitted). */
         var isCreatorSameAsAssignee = task && task.created_by && task.assignee_name &&
             String(task.created_by).trim() === String(task.assignee_name).trim();
         var commentsToShow = isCreatorSameAsAssignee
             ? comments.filter(function (c) {
+                if (c && c.userSubmitted === true) return true;
                 var author = String(c.author || '').trim();
                 var creator = String(task.created_by || '').trim();
                 return author !== creator;
@@ -1712,7 +1814,8 @@
                     time: new Date().toISOString(),
                     text: text || '',
                     images: pendingImages.slice(),
-                    files: pendingFiles.slice()
+                    files: pendingFiles.slice(),
+                    userSubmitted: true
                 });
                 pendingImages.length = 0;
                 pendingFiles.length = 0;
