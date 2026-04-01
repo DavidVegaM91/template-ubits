@@ -2665,7 +2665,6 @@ function openTaskCreateDrawerV2() {
     openDrawer({
         overlayId: TASK_CREATE_DRAWER_OVERLAY_ID,
         title: 'Nueva tarea',
-        subtitle: 'Completa los datos y asígnala a un plan para organizar mejor el seguimiento.',
         bodyHtml: bodyHtml,
         footerHtml: '<div class="task-create-v2__footer-wrap">' + footerHtml + '</div>',
         size: 'md',

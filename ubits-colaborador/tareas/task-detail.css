@@ -211,6 +211,11 @@
     overflow: visible;
 }
 
+/* Aprendizaje + Finalizada: sin buscador; la card es lo primero — sin margen superior extra */
+.task-detail-learning-content-box--finished .task-detail-learning-content-card-wrap {
+    margin-top: 0;
+}
+
 .task-detail-learning-content-row {
     width: 100%;
     min-width: 0;

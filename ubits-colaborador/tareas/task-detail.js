@@ -598,6 +598,8 @@
         var prioridadIcon = { alta: 'fa-chevrons-up', media: 'fa-chevron-up', baja: 'fa-chevron-down' };
         var prioridadVariant = { alta: 'error', media: 'warning', baja: 'info' };
         var isAprendizaje = task.taskType === 'aprendizaje';
+        /** Con Aprendizaje + Finalizada no se muestra el buscador: el contenido ya no debe cambiarse. */
+        var isLearningFinished = isAprendizaje && task.status === 'Finalizado';
         var showPlanAlert = !selectedPlanValue;
         var planAlertHtml = showPlanAlert
             ? '<div id="task-detail-plan-alert-wrap" class="task-detail-plan-alert-wrap">' +
@@ -666,10 +668,12 @@
             '</div>' +
             (isAprendizaje && showPlanAlert ? planAlertHtml : '') +
             (isAprendizaje
-                ? '<div class="task-detail-learning-content-box">' +
-                '<div class="task-detail-learning-content-row">' +
-                '<div id="task-detail-learning-content-wrap"></div>' +
-                '</div>' +
+                ? '<div class="task-detail-learning-content-box' + (isLearningFinished ? ' task-detail-learning-content-box--finished' : '') + '">' +
+                (isLearningFinished
+                    ? ''
+                    : '<div class="task-detail-learning-content-row">' +
+                    '<div id="task-detail-learning-content-wrap"></div>' +
+                    '</div>') +
                 '<div id="task-detail-learning-content-card-wrap" class="task-detail-learning-content-card-wrap"></div>' +
                 '</div>'
                 : '') +
@@ -866,47 +870,49 @@
             }]);
         }
 
-        // Seleccionar contenido (solo para tipo Aprendizaje)
+        // Seleccionar contenido (solo Aprendizaje y tarea no finalizada)
         if (isAprendizaje && typeof createInput === 'function') {
-            var learningOpts = buildLearningAutocompleteOptions();
-            var learningInputValue = '';
-            if (estado.task && estado.task.learningContentId) {
-                var cPre = findLearningContentById(estado.task.learningContentId);
-                if (cPre) {
-                    var originPre = cPre.origen === 'empresa_fiqsha' ? 'Fiqsha' : 'UBITS';
-                    learningInputValue = String(cPre.titulo || cPre.title || '') + ' · ' + originPre;
-                }
-            }
-            createInput({
-                containerId: 'task-detail-learning-content-wrap',
-                type: 'autocomplete',
-                label: '',
-                showLabel: false,
-                placeholder: 'Buscar contenido…',
-                size: 'xs',
-                value: learningInputValue,
-                autocompleteOptions: learningOpts,
-                autocompleteLazyPageSize: 10,
-                onChange: function (val) {
-                    if (!val || !estado.task) return;
-                    estado.task.learningContentId = String(val);
-                    var chosen = findLearningContentById(val);
-                    if (chosen) {
-                        pushActivity('fa-graduation-cap', currentUserName, 'ligó la tarea al contenido \"' + (chosen.titulo || chosen.title || 'Contenido') + '\".');
+            if (!isLearningFinished) {
+                var learningOpts = buildLearningAutocompleteOptions();
+                var learningInputValue = '';
+                if (estado.task && estado.task.learningContentId) {
+                    var cPre = findLearningContentById(estado.task.learningContentId);
+                    if (cPre) {
+                        var originPre = cPre.origen === 'empresa_fiqsha' ? 'Fiqsha' : 'UBITS';
+                        learningInputValue = String(cPre.titulo || cPre.title || '') + ' · ' + originPre;
                     }
-                    // No triggerFakeSave ni renderInfoBlock aquí: el re-render completo recrea el input y
-                    // renderSaveIndicator en cabecera puede hacer perder el foco al escribir en el buscador.
-                    renderSelectedLearningContentCard();
                 }
-            });
-            reparentLearningAutocompleteDropdown('task-detail-learning-content-wrap');
-            var contentInput = document.querySelector('#task-detail-learning-content-wrap .ubits-input');
-            if (contentInput) {
-                contentInput.setAttribute('aria-label', 'Seleccionar contenido');
-                /* Feedback de guardado al salir del buscador (el onChange ya no llama triggerFakeSave). */
-                contentInput.addEventListener('blur', function () {
-                    if (estado.task && estado.task.learningContentId) triggerFakeSave();
+                createInput({
+                    containerId: 'task-detail-learning-content-wrap',
+                    type: 'autocomplete',
+                    label: '',
+                    showLabel: false,
+                    placeholder: 'Buscar contenido…',
+                    size: 'xs',
+                    value: learningInputValue,
+                    autocompleteOptions: learningOpts,
+                    autocompleteLazyPageSize: 10,
+                    onChange: function (val) {
+                        if (!val || !estado.task) return;
+                        estado.task.learningContentId = String(val);
+                        var chosen = findLearningContentById(val);
+                        if (chosen) {
+                            pushActivity('fa-graduation-cap', currentUserName, 'ligó la tarea al contenido \"' + (chosen.titulo || chosen.title || 'Contenido') + '\".');
+                        }
+                        // No triggerFakeSave ni renderInfoBlock aquí: el re-render completo recrea el input y
+                        // renderSaveIndicator en cabecera puede hacer perder el foco al escribir en el buscador.
+                        renderSelectedLearningContentCard();
+                    }
                 });
+                reparentLearningAutocompleteDropdown('task-detail-learning-content-wrap');
+                var contentInput = document.querySelector('#task-detail-learning-content-wrap .ubits-input');
+                if (contentInput) {
+                    contentInput.setAttribute('aria-label', 'Seleccionar contenido');
+                    /* Feedback de guardado al salir del buscador (el onChange ya no llama triggerFakeSave). */
+                    contentInput.addEventListener('blur', function () {
+                        if (estado.task && estado.task.learningContentId) triggerFakeSave();
+                    });
+                }
             }
 
             renderSelectedLearningContentCard();

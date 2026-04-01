@@ -382,7 +382,7 @@ body.page-tareas .dashboard-container {
 
 .calendar-horizontal__day--selected .calendar-horizontal__weekday {
     color: var(--ubits-fg-1-high);
-    font-weight: var(--font-weight-regular);
+    font-weight: var(--font-weight-bold);
 }
 
 .calendar-horizontal__day--selected .calendar-horizontal__day-number {
@@ -399,7 +399,7 @@ body.page-tareas .dashboard-container {
 
 .calendar-horizontal__day--selected.calendar-horizontal__day--today .calendar-horizontal__weekday {
     color: var(--ubits-fg-1-high);
-    font-weight: var(--font-weight-regular);
+    font-weight: var(--font-weight-bold);
 }
 
 .calendar-horizontal__day--selected.calendar-horizontal__day--today .calendar-horizontal__day-number {

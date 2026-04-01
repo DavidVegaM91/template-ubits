@@ -12,3 +12,9 @@
 .page-plantillas .ubits-header-product__product-info {
     display: none !important;
 }
+
+/* Drawer Nueva tarea (planes.js): ancho del select Tipo — paridad con task-detail (#task-detail-type-wrap, 115px). Carga después de planes.css. */
+.task-create-v2__field-wrap--type {
+    width: 115px;
+    min-width: 115px;
+}

@@ -463,4 +463,28 @@ Registro de cambios realizados en los archivos del módulo de Tareas y Planes (P
 
 ---
 
-*Última actualización: ítems 1–20 (11 feb), 21–26 (19 feb), 27 (Cargar más), 28–30 (20 feb), 31 (21 feb), 32 (23 feb), 33 (nueva versión task-detail), 34 (dropdowns Estado y Prioridad en task-detail), 35 (panel de comentarios: adjuntar imágenes y archivos), 36 (implementación de subtask-detail), 37 (homologación encabezados plan-detail con task-detail), 38 (scroll-spy calendario horizontal, 10 mar), 39 (doble clic para cambio de nombre en tirillas y opción Cambiar nombre en subtareas), 40 (recordatorio registrado en historial en task-detail), 41 (plan-detail: asignados, filtro por persona, filtros aplicados y UI, 11 mar), 42 (task-detail: vencimiento sm, progress bar subtareas, botón Filtrar, Historial de cambios, nueva versión formulario subtareas, 12 mar), 43 (marca "- editado" en comentarios editados, 12 mar), 44 (filtro Asignado específico en tareas, 18 mar), 45 (estilos tirilla en celulares, 18 mar), 46 (Añadir colaborador seguimiento, 20 mar), 47 (resumen multiselect dropdown, 20 mar), 48 (añadir tarea/subtarea encima de listas y orden nuevo arriba, 25 mar), 49 (coachmark Seguimiento: copy, URLs y hash, 25 mar), 50 (coachmark oficial multi-página, 25 mar), 51 (task-detail: tipo Aprendizaje, contenido, icono, 31 mar), 52 (planes: drawer Nueva tarea, paridad Aprendizaje + xs y fecha 105px, 31 mar), 53 (task-strip variante Aprendizaje + id prototipo 9000000000001, 31 mar) implementados.*
+## 1 de abril de 2026
+
+54. [x] **Task-detail Aprendizaje: tarea en progreso vs tarea finalizada**
+
+    En **detalle de tarea** (`task-detail.js`, `task-detail.css`), cuando el tipo es **Aprendizaje** se distinguen dos experiencias según el **estado**:
+
+    - **En progreso** (estado interno `Activo`; en UI **Por hacer**): se muestra el **autocomplete «Buscar contenido…»** (catálogos UBITS + Fiqsha) y, si hay contenido ligado, la **tarjeta compacta** (`loadCardContentCompact`) debajo.
+
+    - **Finalizada** (`status === 'Finalizado'`; en UI **Finalizada**): ya no tiene sentido cambiar el contenido; se **oculta el buscador** y solo permanece visible la **tarjeta** del contenido asociado. El contenedor del bloque lleva el modificador **`task-detail-learning-content-box--finished`**; en CSS se anula el `margin-top` extra de la tarjeta cuando no hay fila de búsqueda encima.
+
+    Archivos: `task-detail.js`, `task-detail.css`.
+
+55. [x] **Task-detail Aprendizaje: toasts al pulsar Estado (Por hacer vs Finalizada)**
+
+    Si la tarea es de tipo **Aprendizaje**, al hacer clic en el disparador de **Estado** (status tag) **no** se abre el menú Reabrir / Finalizar (como en tareas estándar) y en su lugar se muestra un **toast informativo** según el estado:
+
+    - **Por hacer** (tarea no finalizada): `showToast('info', 'La tarea finalizará automáticamente al completar el contenido.')`.
+
+    - **Finalizada**: `showToast('info', 'El curso ya está completado.')`.
+
+    Archivos: `task-detail.js`.
+
+---
+
+*Última actualización: ítems 1–20 (11 feb), 21–26 (19 feb), 27 (Cargar más), 28–30 (20 feb), 31 (21 feb), 32 (23 feb), 33 (nueva versión task-detail), 34 (dropdowns Estado y Prioridad en task-detail), 35 (panel de comentarios: adjuntar imágenes y archivos), 36 (implementación de subtask-detail), 37 (homologación encabezados plan-detail con task-detail), 38 (scroll-spy calendario horizontal, 10 mar), 39 (doble clic para cambio de nombre en tirillas y opción Cambiar nombre en subtareas), 40 (recordatorio registrado en historial en task-detail), 41 (plan-detail: asignados, filtro por persona, filtros aplicados y UI, 11 mar), 42 (task-detail: vencimiento sm, progress bar subtareas, botón Filtrar, Historial de cambios, nueva versión formulario subtareas, 12 mar), 43 (marca "- editado" en comentarios editados, 12 mar), 44 (filtro Asignado específico en tareas, 18 mar), 45 (estilos tirilla en celulares, 18 mar), 46 (Añadir colaborador seguimiento, 20 mar), 47 (resumen multiselect dropdown, 20 mar), 48 (añadir tarea/subtarea encima de listas y orden nuevo arriba, 25 mar), 49 (coachmark Seguimiento: copy, URLs y hash, 25 mar), 50 (coachmark oficial multi-página, 25 mar), 51 (task-detail: tipo Aprendizaje, contenido, icono, 31 mar), 52 (planes: drawer Nueva tarea, paridad Aprendizaje + xs y fecha 105px, 31 mar), 53 (task-strip variante Aprendizaje + id prototipo 9000000000001, 31 mar), 54 (task-detail Aprendizaje: progreso vs finalizada y ocultar buscador, 1 abr), 55 (task-detail Aprendizaje: toasts al pulsar Estado, 1 abr) implementados.*

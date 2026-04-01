@@ -1385,3 +1385,12 @@
         display: none;
     }
 }
+
+/* ========================================
+   Drawer Nueva tarea (planes.js): ancho select Tipo (115px, paridad task-detail).
+   `body` aumenta especificidad para que aplique aunque planes.css vaya después de seguimiento.css.
+   ======================================== */
+body .task-create-v2__field-wrap--type {
+    width: 115px;
+    min-width: 115px;
+}
