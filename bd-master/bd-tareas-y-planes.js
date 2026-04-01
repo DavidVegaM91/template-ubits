@@ -1290,11 +1290,16 @@
 
     /** ID fijo para la tarea prototipo Aprendizaje (URL estable: task-detail.html?id=9000000000001). */
     const TASK_ID_PROTO_APRENDIZAJE = 9000000000001;
+    /** Demo vista tareas: curso en progreso (75 %) — Comunicación asertiva para líderes (Fiqsha f016). */
+    const TASK_ID_PROTO_APRENDIZAJE_PROGRESO = 9000000000002;
+    /** Demo vista tareas: curso finalizado — Emplea los valores del liderazgo femenino (UBITS u040). */
+    const TASK_ID_PROTO_APRENDIZAJE_COMPLETADA = 9000000000003;
 
     /**
-     * Detalle canónico para demos: tarea tipo Aprendizaje con contenido Fiqsha y plan Metas personales.
+     * Detalle canónico para demos de tareas tipo Aprendizaje (Metas personales, hoy).
+     * @param {Object} spec - taskId, name, learningContentId, done, learningContentProgress?, learningCardStatus?, description?, seed, baseIdx
      */
-    function buildProtoAprendizajeTaskDetail() {
+    function buildProtoAprendizajeTaskDetailFromSpec(spec) {
         var u = getUsuarioActual();
         var planesList = getPlanesVistaPlanes();
         var planId = null;
@@ -1307,12 +1312,14 @@
         var todayStr = getTodayString();
         var fechaCreacion = new Date();
         fechaCreacion.setDate(fechaCreacion.getDate() - 1);
-        var taskId = TASK_ID_PROTO_APRENDIZAJE;
+        var taskId = spec.taskId;
+        var done = !!spec.done;
+        var estadoTxt = spec.status || (done ? 'Finalizado' : 'Activo');
         var taskBase = {
             id: taskId,
-            name: 'Curso: Trabajo en equipo y colaboración',
-            done: false,
-            status: 'Activo',
+            name: spec.name,
+            done: done,
+            status: estadoTxt,
             endDate: todayStr,
             priority: 'media',
             assignee_email: u.username || null,
@@ -1323,10 +1330,16 @@
             planId: planId,
             planNombre: planNombre,
             taskType: 'aprendizaje',
-            learningContentId: 'f012',
-            description: 'Prototipo oficial de tarea de tipo Aprendizaje para demos y enlace compartido.',
+            learningContentId: spec.learningContentId,
+            description: spec.description || '',
             created_at: fechaCreacion.toISOString()
         };
+        if (typeof spec.learningContentProgress === 'number') {
+            taskBase.learningContentProgress = spec.learningContentProgress;
+        }
+        if (spec.learningCardStatus) {
+            taskBase.learningCardStatus = spec.learningCardStatus;
+        }
         var detalle = generarDetalleTarea(taskId, {
             nombreTarea: taskBase.name,
             creador: u.nombre,
@@ -1335,16 +1348,59 @@
             fechaCreacion: fechaCreacion,
             endDateStr: todayStr,
             prioridad: 'media',
-            done: false,
-            estado: 'Activo',
+            done: done,
+            estado: estadoTxt === 'Finalizado' ? 'Finalizado' : 'Activo',
             tieneSubtareas: false
-        }, 4242, 1);
+        }, spec.seed || 4242, spec.baseIdx || 1);
         return {
             task: taskBase,
             subtasks: detalle.subtasks,
             comments: detalle.comments,
             activities: detalle.activities
         };
+    }
+
+    function buildProtoAprendizajeTaskDetail() {
+        return buildProtoAprendizajeTaskDetailFromSpec({
+            taskId: TASK_ID_PROTO_APRENDIZAJE,
+            name: 'Curso: Trabajo en equipo y colaboración',
+            learningContentId: 'f012',
+            done: false,
+            status: 'Activo',
+            description: 'Prototipo oficial de tarea de tipo Aprendizaje para demos y enlace compartido.',
+            seed: 4242,
+            baseIdx: 1
+        });
+    }
+
+    function buildProtoAprendizajeTaskDetailProgreso() {
+        return buildProtoAprendizajeTaskDetailFromSpec({
+            taskId: TASK_ID_PROTO_APRENDIZAJE_PROGRESO,
+            name: 'Curso: Comunicación asertiva para líderes',
+            learningContentId: 'f016',
+            done: false,
+            status: 'Activo',
+            learningContentProgress: 75,
+            learningCardStatus: 'progress',
+            description: 'Demo: contenido en progreso (75 %).',
+            seed: 5151,
+            baseIdx: 2
+        });
+    }
+
+    function buildProtoAprendizajeTaskDetailCompletada() {
+        return buildProtoAprendizajeTaskDetailFromSpec({
+            taskId: TASK_ID_PROTO_APRENDIZAJE_COMPLETADA,
+            name: 'Curso: Emplea los valores del liderazgo femenino',
+            learningContentId: 'u040',
+            done: true,
+            status: 'Finalizado',
+            learningContentProgress: 100,
+            learningCardStatus: 'completed',
+            description: 'Demo: contenido y tarea finalizados.',
+            seed: 6262,
+            baseIdx: 3
+        });
     }
 
     /**
@@ -1358,6 +1414,12 @@
         const id = Number(taskId);
         if (id === TASK_ID_PROTO_APRENDIZAJE) {
             return buildProtoAprendizajeTaskDetail();
+        }
+        if (id === TASK_ID_PROTO_APRENDIZAJE_PROGRESO) {
+            return buildProtoAprendizajeTaskDetailProgreso();
+        }
+        if (id === TASK_ID_PROTO_APRENDIZAJE_COMPLETADA) {
+            return buildProtoAprendizajeTaskDetailCompletada();
         }
         if (taskDetallePorId[id]) {
             const d = taskDetallePorId[id];
@@ -1400,6 +1462,8 @@
 
     global.TAREAS_PLANES_DB = {
         TASK_ID_PROTO_APRENDIZAJE: TASK_ID_PROTO_APRENDIZAJE,
+        TASK_ID_PROTO_APRENDIZAJE_PROGRESO: TASK_ID_PROTO_APRENDIZAJE_PROGRESO,
+        TASK_ID_PROTO_APRENDIZAJE_COMPLETADA: TASK_ID_PROTO_APRENDIZAJE_COMPLETADA,
         getUsuarioActual: getUsuarioActual,
         getTareasVistaTareas: getTareasVistaTareas,
         getPlanesVistaPlanes: getPlanesVistaPlanes,

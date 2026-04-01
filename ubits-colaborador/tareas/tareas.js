@@ -95,10 +95,17 @@ function ensureVistaTareasDemoAprendizaje(fechaKey) {
     if (!u || u.nombre !== 'María Alejandra Sánchez Pardo') return;
     if (!tareasEjemplo.porDia) tareasEjemplo.porDia = {};
     var list = tareasEjemplo.porDia[fechaKey] || [];
-    var protoId = typeof TAREAS_PLANES_DB.TASK_ID_PROTO_APRENDIZAJE === 'number'
-        ? TAREAS_PLANES_DB.TASK_ID_PROTO_APRENDIZAJE
-        : 9000000000001;
-    if (list.some(function (t) { return taskIdMatches(t, protoId); })) return;
+    var id1 = typeof TAREAS_PLANES_DB.TASK_ID_PROTO_APRENDIZAJE === 'number'
+        ? TAREAS_PLANES_DB.TASK_ID_PROTO_APRENDIZAJE : 9000000000001;
+    var id2 = typeof TAREAS_PLANES_DB.TASK_ID_PROTO_APRENDIZAJE_PROGRESO === 'number'
+        ? TAREAS_PLANES_DB.TASK_ID_PROTO_APRENDIZAJE_PROGRESO : 9000000000002;
+    var id3 = typeof TAREAS_PLANES_DB.TASK_ID_PROTO_APRENDIZAJE_COMPLETADA === 'number'
+        ? TAREAS_PLANES_DB.TASK_ID_PROTO_APRENDIZAJE_COMPLETADA : 9000000000003;
+    var demoIds = [id1, id2, id3];
+    var hasAllDemo = demoIds.every(function (did) {
+        return list.some(function (t) { return taskIdMatches(t, did); });
+    });
+    if (hasAllDemo) return;
     var planMeta = { id: null, name: null };
     if (typeof TAREAS_PLANES_DB.getPlanesVistaPlanes === 'function') {
         var planesList = TAREAS_PLANES_DB.getPlanesVistaPlanes();
@@ -108,11 +115,7 @@ function ensureVistaTareasDemoAprendizaje(fechaKey) {
             planMeta.name = metas.name;
         }
     }
-    var fake = {
-        id: protoId,
-        name: 'Curso: Trabajo en equipo y colaboración',
-        done: false,
-        status: 'Activo',
+    var base = {
         endDate: fechaKey,
         priority: 'media',
         assignee_email: u.username || 'masanchez@fiqsha.demo',
@@ -122,10 +125,38 @@ function ensureVistaTareasDemoAprendizaje(fechaKey) {
         taskType: 'aprendizaje',
         planId: planMeta.id,
         planNombre: planMeta.name,
-        learningContentId: 'f012',
         _demoVistaTareasAprendizaje: true
     };
-    tareasEjemplo.porDia[fechaKey] = [fake].concat(list);
+    var filtered = list.filter(function (t) {
+        if (!t || !t._demoVistaTareasAprendizaje) return true;
+        return !demoIds.some(function (did) { return taskIdMatches(t, did); });
+    });
+    var fake1 = Object.assign({}, base, {
+        id: id1,
+        name: 'Curso: Trabajo en equipo y colaboración',
+        done: false,
+        status: 'Activo',
+        learningContentId: 'f012'
+    });
+    var fake2 = Object.assign({}, base, {
+        id: id2,
+        name: 'Curso: Comunicación asertiva para líderes',
+        done: false,
+        status: 'Activo',
+        learningContentId: 'f016',
+        learningContentProgress: 75,
+        learningCardStatus: 'progress'
+    });
+    var fake3 = Object.assign({}, base, {
+        id: id3,
+        name: 'Curso: Emplea los valores del liderazgo femenino',
+        done: true,
+        status: 'Finalizado',
+        learningContentId: 'u040',
+        learningContentProgress: 100,
+        learningCardStatus: 'completed'
+    });
+    tareasEjemplo.porDia[fechaKey] = [fake1, fake2, fake3].concat(filtered);
 }
 
 // Datos solo desde BD unificada
@@ -133,12 +164,9 @@ if (typeof TAREAS_PLANES_DB !== 'undefined' && typeof TAREAS_PLANES_DB.getTareas
     tareasEjemplo = TAREAS_PLANES_DB.getTareasVistaTareas();
     today = getTodayString();
 }
-/* Quitar demo curso/aprendizaje de días que no son hoy (estado previo antes de filtrar solo hoy) */
+/* Quitar demos curso/aprendizaje (_demoVistaTareasAprendizaje) de días que no son hoy */
 (function pruneDemoAprendizajeFromNonTodayDays() {
     if (!tareasEjemplo || !tareasEjemplo.porDia) return;
-    var protoId = (typeof TAREAS_PLANES_DB !== 'undefined' && typeof TAREAS_PLANES_DB.TASK_ID_PROTO_APRENDIZAJE === 'number')
-        ? TAREAS_PLANES_DB.TASK_ID_PROTO_APRENDIZAJE
-        : 9000000000001;
     var hoy = getTodayString();
     var pd = tareasEjemplo.porDia;
     for (var key in pd) {
@@ -146,11 +174,7 @@ if (typeof TAREAS_PLANES_DB !== 'undefined' && typeof TAREAS_PLANES_DB.getTareas
         var list = pd[key];
         if (!list || !list.length) continue;
         var next = list.filter(function (t) {
-            if (!t || !t._demoVistaTareasAprendizaje) return true;
-            var a = Number(t.id);
-            var b = Number(protoId);
-            if (!isNaN(a) && !isNaN(b)) return a !== b;
-            return String(t.id) !== String(protoId);
+            return !t || !t._demoVistaTareasAprendizaje;
         });
         if (next.length !== list.length) pd[key] = next;
     }

@@ -838,6 +838,19 @@
             var provider = isFiqsha ? 'Fiqsha Smart Consulting' : 'UBITS';
             var providerLogo = isFiqsha ? '../../images/Favicons/Fiqsha Smart Consulting.jpg' : '../../images/Favicons/UBITS.jpg';
 
+            var progressVal = 0;
+            var statusVal = 'default';
+            if (estado.task) {
+                if (typeof estado.task.learningContentProgress === 'number') {
+                    progressVal = estado.task.learningContentProgress;
+                }
+                if (estado.task.learningCardStatus === 'progress' || estado.task.learningCardStatus === 'completed') {
+                    statusVal = estado.task.learningCardStatus;
+                } else if (estado.task.learningCardStatus === 'default') {
+                    statusVal = 'default';
+                }
+            }
+
             window.loadCardContentCompact(wrapId, [{
                 type: content.tipoContenido || 'Curso',
                 title: content.titulo || content.title || 'Contenido',
@@ -845,8 +858,8 @@
                 providerLogo: providerLogo,
                 duration: String(content.tiempoValor || 60) + ' min',
                 level: getNivelLabelFromId(content.nivelId),
-                progress: 0,
-                status: 'default',
+                progress: progressVal,
+                status: statusVal,
                 image: normalizeImagePath(content.imagen || content.image),
                 competency: 'Productividad',
                 language: content.idioma || 'Español'
@@ -945,6 +958,13 @@
             estadoTrigger.addEventListener('click', function (e) {
                 e.preventDefault();
                 e.stopPropagation();
+                var t0 = estado.task;
+                if (t0 && t0.taskType === 'aprendizaje' && t0.status !== 'Finalizado') {
+                    if (typeof showToast === 'function') {
+                        showToast('info', 'La tarea finalizará automáticamente al completar el contenido.');
+                    }
+                    return;
+                }
                 var overlayId = 'task-detail-estado-overlay';
                 var existing = document.getElementById(overlayId);
                 if (existing) existing.remove();
