@@ -68,13 +68,12 @@ function createGroupCreationChatHTML(options) {
         '<div class="ubits-ia-chat-thread__body" id="group-creation-chat-body">' + welcomeBlock + '</div>' +
         '<div class="ubits-ia-chat-thread__input-area">' +
         '<div class="ubits-ia-chat-thread__input-container">' +
+        '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only ubits-ia-chat-thread__input-attach" id="group-creation-chat-attach-btn" data-tooltip="Adjuntar" aria-label="Adjuntar"><i class="far fa-paperclip"></i></button>' +
         '<div class="ubits-ia-chat-thread__input-wrapper">' +
         '<textarea class="ubits-ia-chat-thread__input" id="group-creation-chat-input" placeholder="Escribir mensaje..." rows="1"></textarea>' +
         '</div>' +
-        '<div class="ubits-ia-chat-thread__input-actions">' +
-        '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only ubits-ia-chat-thread__input-attach" id="group-creation-chat-attach-btn" data-tooltip="Adjuntar" aria-label="Adjuntar"><i class="far fa-paperclip"></i></button>' +
         '<button type="button" class="ubits-ia-button ubits-ia-button--primary ubits-ia-button--sm ubits-ia-button--icon-only ubits-ia-chat-thread__input-send" id="group-creation-chat-send-btn" data-tooltip="Enviar" aria-label="Enviar"><i class="far fa-paper-plane"></i></button>' +
-        '</div></div>' +
+        '</div>' +
         '<div class="ubits-ia-chat-thread__suggestions" id="group-creation-chat-suggestions">' + suggestionButtons + '</div>' +
         '</div>' +
         '<p class="ubits-ia-chat-thread__disclaimer ubits-body-xs-regular">El chat puede cometer errores; verifica la información.</p>' +

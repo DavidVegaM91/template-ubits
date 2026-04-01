@@ -2210,6 +2210,33 @@ function renderChatMessages() {
 
     messages.forEach(function (msg) {
         if (!msg || !msg.type) return;
+        if (msg.contentSuggestions && msg.contentSuggestions.topicKey) {
+            var tkCs = msg.contentSuggestions.topicKey;
+            var htmlCardCs = getSearchSuggestionsCardHTML(tkCs, !panelIsOpen);
+            body.insertAdjacentHTML('beforeend', htmlCardCs);
+            var lastCs = body.lastElementChild;
+            var btnCs = lastCs ? lastCs.querySelector('.ubits-ia-chat-thread__resource-open-btn') : null;
+            if (btnCs) {
+                btnCs.addEventListener('click', function () {
+                    var topCs = this.getAttribute('data-topic');
+                    renderTutorPanel('searchResults', topCs, { filters: {} });
+                    hideOpenButtonsInChat();
+                });
+            }
+            return;
+        }
+        if (msg.quickReplies === 'competencyIntro' && msg.topic) {
+            var ckIntro = msg.topic;
+            var labIntro = TOPIC_LABELS[ckIntro] || ckIntro;
+            var defIntro = '';
+            if (ckIntro === 'japones') defIntro = 'Japonés no está en el catálogo UBITS, pero puedo ayudarte con temas básicos del idioma.';
+            else {
+                var cdIntro = UBITS_COMPETENCY_DATA[ckIntro];
+                defIntro = cdIntro ? cdIntro.definition : '';
+            }
+            insertCompetencyIntroMessage(ckIntro, labIntro, defIntro, { skipPush: true, noAnimate: true });
+            return;
+        }
         if (msg.resource) {
             var r = msg.resource;
             var resHtml = getResourceMessageHTML(r.type, r.topicKey, r.isNew, !panelIsOpen);
@@ -2632,13 +2659,11 @@ function createStudyChatHTML(options = {}) {
             <div class="ubits-ia-chat-thread__body" id="ubits-ia-chat-thread-body">${welcomeBlock}</div>
             <div class="ubits-ia-chat-thread__input-area">
                 <div class="ubits-ia-chat-thread__input-container">
+                    <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only ubits-ia-chat-thread__input-attach" id="ubits-ia-chat-thread-attach-btn" data-tooltip="Adjuntar" aria-label="Adjuntar"><i class="far fa-paperclip"></i></button>
                     <div class="ubits-ia-chat-thread__input-wrapper">
                         <textarea class="ubits-ia-chat-thread__input" id="ubits-ia-chat-thread-input" placeholder="Escribir mensaje..." rows="1"></textarea>
                     </div>
-                    <div class="ubits-ia-chat-thread__input-actions">
-                        <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only ubits-ia-chat-thread__input-attach" id="ubits-ia-chat-thread-attach-btn" data-tooltip="Adjuntar" aria-label="Adjuntar"><i class="far fa-paperclip"></i></button>
-                        <button type="button" class="ubits-ia-button ubits-ia-button--primary ubits-ia-button--sm ubits-ia-button--icon-only ubits-ia-chat-thread__input-send" id="ubits-ia-chat-thread-send-btn" data-tooltip="Enviar" aria-label="Enviar"><i class="far fa-paper-plane"></i></button>
-                    </div>
+                    <button type="button" class="ubits-ia-button ubits-ia-button--primary ubits-ia-button--sm ubits-ia-button--icon-only ubits-ia-chat-thread__input-send" id="ubits-ia-chat-thread-send-btn" data-tooltip="Enviar" aria-label="Enviar"><i class="far fa-paper-plane"></i></button>
                 </div>
                 <div class="ubits-ia-chat-thread__suggestions" id="ubits-ia-chat-thread-suggestions">${suggestionButtons}</div>
             </div>
@@ -2823,6 +2848,62 @@ function generateMockSearchResults(topicKey, filters) {
         results.push(item);
     }
     return results;
+}
+
+/**
+ * HTML de tarjeta en el hilo para abrir/cerrar el panel de sugerencias de contenido (mismo patrón que recursos quiz/flashcards).
+ * @param {string} topicKey
+ * @param {boolean} showOpenButton - si el botón Abrir debe mostrarse (panel cerrado)
+ */
+function getSearchSuggestionsCardHTML(topicKey, showOpenButton) {
+    var n = generateMockSearchResults(topicKey, {}).length;
+    var label = TOPIC_LABELS[topicKey] || topicKey;
+    var intro = 'Sugerencias de contenido para ' + escapeHTML(label) + '. Abre el panel con el botón o cierra con la X si prefieres seguir en el chat.';
+    var title = 'Sugerencias de contenido';
+    var meta = 'Hasta ' + n + ' contenidos relacionados';
+    var iconClass = 'far fa-layer-group';
+    var openVisibleClass = showOpenButton ? ' open-btn-visible' : '';
+    return '<div class="ubits-ia-chat-thread__message ubits-ia-chat-thread__message--ai ubits-ia-chat-thread__resource-msg' + openVisibleClass + '" data-resource-kind="searchSuggestions" data-resource-topic="' + topicKey + '">' +
+        '<div class="ubits-ia-chat-thread__text-globe ubits-ia-chat-thread__text-globe--ai">' +
+        '<p class="ubits-ia-chat-thread__message-text">' + intro + '</p>' +
+        '<div class="ubits-ia-chat-thread__resource-card">' +
+        '<div class="ubits-ia-chat-thread__resource-card-main">' +
+        '<span class="ubits-ia-chat-thread__resource-card-icon"><i class="' + iconClass + '"></i></span>' +
+        '<div class="ubits-ia-chat-thread__resource-card-content">' +
+        '<span class="ubits-ia-chat-thread__resource-card-title ubits-body-sm-bold">' + title.replace(/</g, '&lt;').replace(/"/g, '&quot;') + '</span>' +
+        '<span class="ubits-ia-chat-thread__resource-card-meta ubits-body-xs-regular">' + meta + '</span>' +
+        '</div></div>' +
+        '<div class="ubits-ia-chat-thread__resource-card-action ubits-ia-chat-thread__resource-open-wrap">' +
+        '<button type="button" class="ubits-button ubits-button--primary ubits-button--sm ubits-ia-chat-thread__resource-open-btn" data-open-kind="searchResults" data-topic="' + topicKey + '"><span>Abrir</span></button>' +
+        '</div></div></div></div>';
+}
+
+/**
+ * Añade mensaje con tarjeta para reabrir el panel de sugerencias de contenido.
+ * @param {string} topicKey
+ */
+function addContentSuggestionsMessage(topicKey) {
+    var body = document.getElementById('ubits-ia-chat-thread-body');
+    if (!body) return;
+    var panel = chatState.rightPanelId ? document.getElementById(chatState.rightPanelId) : null;
+    var panelIsOpen = panel && panel.classList.contains('is-open');
+    var html = getSearchSuggestionsCardHTML(topicKey, !panelIsOpen);
+    body.insertAdjacentHTML('beforeend', html);
+    var lastMsg = body.lastElementChild;
+    if (lastMsg) {
+        lastMsg.classList.add('ubits-ia-chat-thread__resource-msg--reveal');
+        setTimeout(function () { lastMsg.classList.remove('ubits-ia-chat-thread__resource-msg--reveal'); }, 520);
+    }
+    body.scrollTop = body.scrollHeight;
+    pushCurrentChatMessage({ type: 'ai', text: 'Sugerencias de contenido (' + (TOPIC_LABELS[topicKey] || topicKey) + ')', contentSuggestions: { topicKey: topicKey } });
+    var btn = lastMsg ? lastMsg.querySelector('.ubits-ia-chat-thread__resource-open-btn') : null;
+    if (btn) {
+        btn.addEventListener('click', function () {
+            var top = this.getAttribute('data-topic');
+            renderTutorPanel('searchResults', top, { filters: {} });
+            hideOpenButtonsInChat();
+        });
+    }
 }
 
 /**
@@ -3105,13 +3186,13 @@ function hideWelcomeBlock() {
     if (suggestions) suggestions.classList.add('ubits-ia-chat-thread__suggestions--hidden');
     var welcomeTop = document.getElementById('ubits-ia-chat-thread-welcome-top');
     if (welcomeTop) welcomeTop.style.display = 'none';
-    if (chatState.welcomeLayout) {
-        const root = document.getElementById('ubits-ia-chat-thread');
-        if (root) {
-            root.classList.remove('ubits-ia-chat-thread--welcome');
-            const wrapper = root.closest('.ubits-ia-chat__main');
-            if (wrapper) wrapper.classList.remove('ubits-ia-chat__main--welcome');
-        }
+    /* Quitar siempre --welcome del hilo al pasar a conversación; si no, el grid de bienvenida
+       (textarea arriba / botones abajo) sigue aplicando aunque el flag welcomeLayout falle. */
+    const root = document.getElementById('ubits-ia-chat-thread');
+    if (root) {
+        root.classList.remove('ubits-ia-chat-thread--welcome');
+        const wrapper = root.closest('.ubits-ia-chat__main');
+        if (wrapper) wrapper.classList.remove('ubits-ia-chat__main--welcome');
     }
     var header = document.getElementById('ubits-ia-chat-thread-header');
     var headerTitle = document.getElementById('ubits-ia-chat-thread-header-title');
@@ -3119,6 +3200,7 @@ function hideWelcomeBlock() {
         header.style.display = '';
         headerTitle.value = (chatState.currentChat && chatState.currentChat.title) ? chatState.currentChat.title : '';
     }
+    ensureThreadInputInteractive();
 }
 
 /**
@@ -3150,6 +3232,31 @@ function showWelcomeBlock() {
 
 var TOPIC_LABELS = { liderazgo: 'Liderazgo', comunicacion: 'Comunicación', ingles: 'Inglés', japones: 'Japonés', hiragana: 'Maratón Hiragana' };
 
+/** Texto del mensaje de usuario al elegir una acción del intro por competencia (data-path) */
+var COMPETENCY_PATH_USER_LABELS = {
+    tutor: 'Entrenar con tutor IA',
+    content: 'Sugerir contenidos',
+    skills: 'Recomendar temas'
+};
+
+function disableCompetencyPathButtons(containerEl) {
+    if (!containerEl) return;
+    containerEl.querySelectorAll('button[data-path]').forEach(function (btn) {
+        btn.disabled = true;
+    });
+}
+
+/** Asegura que el textarea del hilo sea editable (por si quedó bloqueado por estado del DOM o atributos). */
+function ensureThreadInputInteractive() {
+    var ta = document.getElementById('ubits-ia-chat-thread-input');
+    if (!ta) return;
+    ta.disabled = false;
+    ta.removeAttribute('readonly');
+    ta.removeAttribute('aria-disabled');
+    ta.style.pointerEvents = '';
+    ta.style.opacity = '';
+}
+
 /** Imágenes de competencias (carpeta images/imagenes competencias). Mismo mapeo que en catalogo.html. */
 var COMPETENCY_IMAGE_MAP = {
     'Liderazgo': 'Liderazgo.jpg',
@@ -3178,6 +3285,33 @@ var UBITS_COMPETENCY_DATA = {
         habilidades: ['Grammar', 'Listening', 'Reading', 'Speaking', 'Writing', 'Vocabulary']
     }
 };
+
+/** Tema del tutor → id de competencia en `bd-master/bd-master-habilidades.js` (Liderazgo comp-024, Comunicación comp-004, Inglés comp-020). */
+var COMPETENCIA_ID_BY_TOPIC = {
+    liderazgo: 'comp-024',
+    comunicacion: 'comp-004',
+    ingles: 'comp-020'
+};
+
+/**
+ * Habilidades por tema: prioriza BD maestra si está cargada; si no, `UBITS_COMPETENCY_DATA`.
+ * @param {string} topicKey - liderazgo | comunicacion | ingles | japones
+ * @returns {string[]}
+ */
+function getHabilidadesForTopicKey(topicKey) {
+    if (topicKey === 'japones') return JAPONES_GENERIC_SUBTOPICS.slice();
+    var compId = COMPETENCIA_ID_BY_TOPIC[topicKey];
+    if (compId && typeof window !== 'undefined' && window.BD_MASTER_HABILIDADES && window.BD_MASTER_HABILIDADES.habilidades) {
+        var list = window.BD_MASTER_HABILIDADES.habilidades.filter(function (h) {
+            return h && h.competenciaId === compId;
+        });
+        if (list.length) {
+            return list.map(function (h) { return h.nombre; });
+        }
+    }
+    var d = UBITS_COMPETENCY_DATA[topicKey];
+    return d && d.habilidades ? d.habilidades.slice() : [];
+}
 
 /** Por competencia: frases tras las cuales se inserta un tag "Contenido" (índice del contenido en CITATION_CONTENTS). */
 var DEFINITION_CITATIONS = {
@@ -3517,55 +3651,73 @@ function addMessageWithMaterialChoiceButtons(label, topic) {
 }
 
 /**
- * Muestra definición de la competencia + lista de subtemas y pregunta si le interesa alguno o prefiere ver recursos en general.
- * Al elegir un subtema o "Ver recursos en general", se ofrecen quiz/flashcards/plan/podcast.
- * @param {string} competencyKey - 'liderazgo' | 'comunicacion' | 'ingles' | 'japones'
- * @param {string} label - Nombre para mostrar (ej: "Liderazgo")
- * @param {string} definition - Texto de definición breve
- * @param {string[]} subtopics - Lista de habilidades o temas (ej: ['Empoderamiento', 'Motivación', ...])
+ * Inserta el bloque de bienvenida por competencia: definición (con citas si aplica), texto guía y tres acciones.
+ * @param {string} competencyKey
+ * @param {string} label
+ * @param {string} definition
+ * @param {{ skipPush?: boolean, noAnimate?: boolean }} [opts]
  */
-function addMessageWithDefinitionAndSubtopics(competencyKey, label, definition, subtopics) {
+function insertCompetencyIntroMessage(competencyKey, label, definition, opts) {
+    opts = opts || {};
     var body = document.getElementById('ubits-ia-chat-thread-body');
     if (!body) return;
-    var listText = subtopics.length > 0 ? subtopics.slice(0, 8).join(', ') + (subtopics.length > 8 ? '…' : '') : '';
+    var skillsList = getHabilidadesForTopicKey(competencyKey);
+    var introSentence = competencyKey === 'japones'
+        ? '¿Cómo quieres seguir con ' + label + '? Elige una opción o escribe en el chat lo que necesites.'
+        : '¿Cómo quieres seguir con ' + label + '? Puedes escoger entre las siguientes opciones o, si prefieres, escribirme la solicitud que desees.';
+    var introParagraph = '<p class="ubits-ia-chat-thread__message-text">' + wrapWordsInSpans(escapeHTML(introSentence)) + '</p>';
 
-    // Construir pregunta animable: envolver partes de texto en spans
-    var qPart1 = wrapWordsInSpans(' ¿Te interesa alguno de estos temas de');
-    var qPartLabel = '<strong>' + wrapWordsInSpans(escapeHTML(label)) + '</strong>';
-    var qPartRest = wrapWordsInSpans(': ' + escapeHTML(listText) + ', o prefieres ver recursos en general?');
-    var questionTextHTML = qPart1 + ' ' + qPartLabel + qPartRest;
-
-    var questionTextPlain = ' ¿Te interesa alguno de estos temas de ' + label + ': ' + listText + ', o prefieres ver recursos en general?';
-    var text = definition + questionTextPlain;
-    var timestamp = formatTime();
-    var contentHTML = null;
+    var fullContentHTML = '';
     if (CITATION_CONTENTS && CITATION_CONTENTS[competencyKey] && DEFINITION_CITATIONS && DEFINITION_CITATIONS[competencyKey]) {
-        contentHTML = buildDefinitionWithCitationTags(competencyKey, definition) +
-            '<p class="ubits-ia-chat-thread__message-text">' + questionTextHTML + '</p>';
+        fullContentHTML = buildDefinitionWithCitationTags(competencyKey, definition) + introParagraph;
+    } else {
+        fullContentHTML = '<p class="ubits-ia-chat-thread__message-text">' + wrapWordsInSpans(escapeHTML(definition)) + '</p>' + introParagraph;
     }
-    var choicesId = 'subtopic-choices-' + Date.now();
-    var buttonsHtml = subtopics.slice(0, 6).map(function (s, i) {
-        var esc = s.replace(/"/g, '&quot;').replace(/</g, '&lt;');
-        return '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-ia-chat-thread__material-choice-btn" data-subtopic="' + esc + '" data-subtopic-index="' + i + '"><span>' + s + '</span></button>';
+
+    var choicesId = 'competency-intro-main-' + Date.now();
+    var skillsWrapId = 'competency-intro-skills-' + Date.now();
+    var mainRow = '<div class="ubits-ia-chat-thread__material-choices ubits-ia-chat-thread__competency-intro-actions" id="' + choicesId + '">' +
+        '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" data-path="tutor"><span>Entrenar con tutor IA</span></button>' +
+        (competencyKey !== 'japones' ? '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" data-path="content"><span>Sugerir contenidos</span></button>' : '') +
+        '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" data-path="skills"><span>Recomendar temas</span></button>' +
+        '</div>';
+
+    var skillsChips = skillsList.map(function (s, i) {
+        var esc = String(s).replace(/"/g, '&quot;').replace(/</g, '&lt;');
+        return '<button type="button" class="ubits-button ubits-button--secondary ubits-button--xs ubits-ia-chat-thread__material-choice-btn" data-subtopic="' + esc + '" data-subtopic-index="' + i + '"><span>' + escapeHTML(String(s)) + '</span></button>';
     }).join('');
-    buttonsHtml += '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-ia-chat-thread__material-choice-btn" data-choice="general"><span>Ver recursos en general</span></button>';
-    var choicesDivHtml = '<div class="ubits-ia-chat-thread__material-choices" id="' + choicesId + '">' + buttonsHtml + '</div>';
-    var messageHTML = createMessageHTML('ai', text, timestamp, false, false, contentHTML, choicesDivHtml);
+
+    var skillsBlock = '<div class="ubits-ia-chat-thread__competency-skill-wrap" id="' + skillsWrapId + '" style="display:none" role="region" aria-label="Temas recomendados">' +
+        '<div class="ubits-ia-chat-thread__material-choices ubits-ia-chat-thread__competency-skill-chips">' + skillsChips + '</div></div>';
+
+    var timestamp = formatTime();
+    var messageHTML = createMessageHTML('ai', '', timestamp, false, false, fullContentHTML, mainRow + skillsBlock);
     var choicesHTML = '<div class="ubits-ia-chat-thread__message-with-choices">' + messageHTML + '</div>';
     body.insertAdjacentHTML('beforeend', choicesHTML);
     var wrapperEl = body.lastElementChild;
     var messageEl = wrapperEl.querySelector('.ubits-ia-chat-thread__message');
-    if (messageEl) {
+    if (messageEl && !opts.noAnimate) {
         messageEl.classList.add('ubits-ia-chat-thread__message--typing');
         animateWordsInMessage(messageEl, function () {
             messageEl.classList.remove('ubits-ia-chat-thread__message--typing');
             messageEl.classList.add('ubits-ia-chat-thread__message--typing-done');
         });
+    } else if (messageEl && opts.noAnimate) {
+        messageEl.classList.add('ubits-ia-chat-thread__message--typing-done');
+        messageEl.querySelectorAll('.ubits-ia-chat-thread__word').forEach(function (w) {
+            w.classList.add('ubits-ia-chat-thread__word--visible');
+        });
     }
     wrapperEl.classList.add('ubits-ia-chat-thread__message-with-choices--reveal');
     setTimeout(function () { wrapperEl.classList.remove('ubits-ia-chat-thread__message-with-choices--reveal'); }, 520);
     body.scrollTop = body.scrollHeight;
-    pushCurrentChatMessage({ type: 'ai', text: text, quickReplies: 'subtopics', topic: competencyKey });
+
+    var plainForHistory = definition + '\n\n' + (competencyKey === 'japones'
+        ? '¿Cómo quieres seguir? Elige una opción o escribe en el chat.'
+        : '¿Cómo quieres seguir? Opciones abajo o escribe en el chat.');
+    if (!opts.skipPush) {
+        pushCurrentChatMessage({ type: 'ai', text: plainForHistory, quickReplies: 'competencyIntro', topic: competencyKey });
+    }
     chatState.waitingForSubtopicChoice = true;
     chatState.currentCompetencyForSubtopics = competencyKey;
     chatState.lastAIMessageElement = messageEl;
@@ -3584,28 +3736,82 @@ function addMessageWithDefinitionAndSubtopics(competencyKey, label, definition, 
         tag.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openContentPreview(); } });
     });
 
-    var choicesEl = document.getElementById(choicesId);
-    if (!choicesEl) return;
-    choicesEl.querySelectorAll('.ubits-ia-chat-thread__material-choice-btn').forEach(function (btn) {
-        btn.addEventListener('click', function () {
-            chatState.waitingForSubtopicChoice = false;
-            var isGeneral = btn.getAttribute('data-choice') === 'general';
-            if (isGeneral) {
-                chatState.currentCompetencyForSubtopics = null;
-                chatState.currentTopicForSubtopic = null;
-                chatState.currentSubtopicIndex = null;
-            } else {
+    var mainEl = document.getElementById(choicesId);
+    var skillsWrap = document.getElementById(skillsWrapId);
+    if (mainEl) {
+        mainEl.querySelectorAll('button[data-path]').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                var path = this.getAttribute('data-path');
+                if (!path || this.disabled) return;
+                var userLine = COMPETENCY_PATH_USER_LABELS[path];
+                if (!userLine) return;
+
+                disableCompetencyPathButtons(mainEl);
+                addMessage('user', userLine);
+                ensureThreadInputInteractive();
+
+                if (path === 'tutor') {
+                    chatState.waitingForSubtopicChoice = false;
+                    chatState.currentCompetencyForSubtopics = null;
+                    if (skillsWrap) skillsWrap.style.display = 'none';
+                    var thinkingTutor = showThinkingIndicator();
+                    setTimeout(function () {
+                        if (thinkingTutor) thinkingTutor.remove();
+                        addMessageWithMaterialChoiceButtons(label, competencyKey);
+                        ensureThreadInputInteractive();
+                    }, 450);
+                } else if (path === 'content') {
+                    chatState.waitingForSubtopicChoice = false;
+                    chatState.currentCompetencyForSubtopics = null;
+                    renderTutorPanel('searchResults', competencyKey, { filters: {} });
+                    var thinkingContent = showThinkingIndicator();
+                    setTimeout(function () {
+                        if (thinkingContent) thinkingContent.remove();
+                        var topicName = TOPIC_LABELS[competencyKey] || label;
+                        addMessage('ai', '¡Claro! He buscado contenidos sobre ' + topicName + '. Te muestro los resultados en el panel.');
+                        addContentSuggestionsMessage(competencyKey);
+                        ensureThreadInputInteractive();
+                    }, 450);
+                } else if (path === 'skills') {
+                    var thinkingSkills = showThinkingIndicator();
+                    setTimeout(function () {
+                        if (thinkingSkills) thinkingSkills.remove();
+                        var topicNameSk = TOPIC_LABELS[competencyKey] || label;
+                        addMessage('ai', 'Aquí tienes temas recomendados para ' + topicNameSk + '. Elige uno o escribe en el chat lo que necesites.');
+                        if (skillsWrap) skillsWrap.style.display = 'block';
+                        body.scrollTop = body.scrollHeight;
+                        ensureThreadInputInteractive();
+                    }, 450);
+                }
+            });
+        });
+    }
+    if (skillsWrap) {
+        skillsWrap.querySelectorAll('.ubits-ia-chat-thread__material-choice-btn').forEach(function (btn) {
+            btn.addEventListener('click', function () {
                 var idx = parseInt(btn.getAttribute('data-subtopic-index'), 10);
                 if (!isNaN(idx)) {
                     chatState.currentTopicForSubtopic = competencyKey;
                     chatState.currentSubtopicIndex = idx;
                 }
+                chatState.waitingForSubtopicChoice = false;
                 chatState.currentCompetencyForSubtopics = null;
-            }
-            choicesEl.style.display = 'none';
-            addMessageWithMaterialChoiceButtons(label, competencyKey);
+                skillsWrap.style.display = 'none';
+                addMessageWithMaterialChoiceButtons(label, competencyKey);
+            });
         });
-    });
+    }
+}
+
+/**
+ * Muestra definición de la competencia + tres caminos (tutor IA, sugerencias de contenido, temas/habilidades).
+ * @param {string} competencyKey - 'liderazgo' | 'comunicacion' | 'ingles' | 'japones'
+ * @param {string} label - Nombre para mostrar (ej: "Liderazgo")
+ * @param {string} definition - Texto de definición breve
+ * @param {string[]} subtopics - Reservado por compatibilidad; las habilidades se toman de BD / UBITS_COMPETENCY_DATA.
+ */
+function addMessageWithDefinitionAndSubtopics(competencyKey, label, definition, subtopics) {
+    insertCompetencyIntroMessage(competencyKey, label, definition, {});
 }
 
 /** Temas sugeridos cuando se pide recurso sin tema (mismo orden que en el mensaje). */
@@ -3958,6 +4164,27 @@ function initStudyChat(containerId, options = {}) {
                 sendMessage();
             }
         });
+        ensureThreadInputInteractive();
+    }
+
+    /* Clic en el contenedor del input (no en botones): asegurar foco en el textarea.
+       Mitiga capas de pintado que en algunos navegadores interceptan el hit-test. */
+    var inputContainer = document.querySelector('.ubits-ia-chat-thread__input-container');
+    if (inputContainer && input) {
+        inputContainer.addEventListener('mousedown', function (e) {
+            if (e.button !== 0) return;
+            if (e.target.closest('button')) return;
+            if (e.target === input) return;
+            requestAnimationFrame(function () {
+                if (!input || input.disabled) return;
+                ensureThreadInputInteractive();
+                try {
+                    input.focus({ preventScroll: true });
+                } catch (err) {
+                    input.focus();
+                }
+            });
+        });
     }
 
     // Botón enviar
@@ -3972,8 +4199,7 @@ function initStudyChat(containerId, options = {}) {
         });
     }
 
-    // Chips de competencias (Modo Tutor): al clic = elegir tema, mostrar definición + subtemas; si es primera interacción y tema UBITS (Liderazgo/Inglés/Comunicación), abrir canvas "Sugerencias de contenido" con contenidos de 30 min
-    var UBITS_WELCOME_TOPICS = { liderazgo: true, ingles: true, comunicacion: true };
+    // Chips de competencias (Modo Tutor): al clic = elegir tema y mostrar definición + opciones (tutor IA, sugerencias, temas).
     competencyChips.forEach(btn => {
         btn.addEventListener('click', function () {
             hideWelcomeBlock();
@@ -3998,12 +4224,7 @@ function initStudyChat(containerId, options = {}) {
                     subtopics = data && data.habilidades ? data.habilidades.slice() : [];
                 }
                 addMessageWithDefinitionAndSubtopics(topic, label, definition, subtopics);
-
-                // Primera interacción con uno de los 3 temas UBITS: abrir canvas "Sugerencias de contenido" (sin filtro de duración para mostrar hasta 20 sugerencias)
-                if (!chatState.hasOpenedWelcomeContentCanvas && UBITS_WELCOME_TOPICS[topic]) {
-                    chatState.hasOpenedWelcomeContentCanvas = true;
-                    renderTutorPanel('searchResults', topic, { filters: {} });
-                }
+                ensureThreadInputInteractive();
             }, 1000);
         });
     });

@@ -86,6 +86,8 @@
     padding: var(--padding-none);
     box-sizing: border-box;
     min-height: 0;
+    /* Evita que el scroll/mask del body “coma” clics del área de input (WebKit). */
+    overflow: hidden;
     /* Permitir que flexbox funcione correctamente */
     flex: 1 1 0;
     /* Ocupar todo el espacio disponible */
@@ -103,6 +105,8 @@
     min-height: 48px;
     padding: var(--padding-sm) var(--padding-xl);
     border-bottom: 1px solid var(--ubits-border-1);
+    position: relative;
+    z-index: 2;
 }
 
 .ubits-ia-chat-thread__header-title {
@@ -158,6 +162,8 @@
     overflow-x: hidden;
     min-height: 0;
     padding: var(--padding-xl);
+    position: relative;
+    z-index: 0;
 }
 
 /* Scrollbar personalizado */
@@ -801,6 +807,10 @@
     gap: var(--gap-sm);
     flex-shrink: 0;
     padding: 0 var(--padding-xl) 0;
+    position: relative;
+    z-index: 3;
+    isolation: isolate;
+    pointer-events: auto;
 }
 
 /* Chat ya iniciado: sin padding lateral en móvil */
@@ -817,6 +827,9 @@
     margin-top: calc(var(--gap-sm) - var(--gap-2xl));
     flex-shrink: 0;
     padding: 0 var(--padding-xl);
+    position: relative;
+    z-index: 3;
+    pointer-events: auto;
 }
 
 /* Botones de sugerencias - usar componente UBITS button */
@@ -839,38 +852,31 @@
 
 /* Los botones de sugerencias usan el componente UBITS button oficial */
 
-/* Input de chat */
+/* Input de chat — fila base: adjuntar | textarea | enviar (misma fila en chat iniciado) */
 .ubits-ia-chat-thread__input-container {
     background: var(--ubits-bg-1);
     border: 1px solid var(--ubits-border-1);
     border-radius: var(--border-radius-md);
     padding: var(--padding-md);
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: center;
     gap: var(--gap-sm);
     width: 100%;
-}
-
-/* Chat iniciado: sin cambios extra, la columna ya ubica bien los elementos */
-.ubits-ia-chat-thread:not(.ubits-ia-chat-thread--welcome) .ubits-ia-chat-thread__input-container {
-    flex-direction: column;
+    position: relative;
+    z-index: 1;
+    pointer-events: auto;
+    box-sizing: border-box;
 }
 
 .ubits-ia-chat-thread__input-wrapper {
     display: flex;
     align-items: flex-start;
-    width: 100%;
+    flex: 1 1 0;
     min-width: 0;
     min-height: 28px;
     gap: var(--gap-none);
-}
-
-/* Fila de botones: adjuntar izquierda, enviar derecha */
-.ubits-ia-chat-thread__input-actions {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    width: 100%;
 }
 
 .ubits-ia-chat-thread__input-placeholder {
@@ -898,6 +904,9 @@
     overflow-y: auto;
     min-height: 28.8px;
     max-height: 144px;
+    position: relative;
+    z-index: 1;
+    pointer-events: auto;
     /* 5 líneas × 28.8px */
 }
 
@@ -905,7 +914,7 @@
     color: var(--ubits-fg-1-medium);
 }
 
-/* Botones adjuntar y enviar del input (orden: adjuntar | input | enviar cuando el chat está iniciado) */
+/* Iconos a los lados del campo de texto */
 .ubits-ia-chat-thread__input-attach,
 .ubits-ia-chat-thread__input-send {
     flex-shrink: 0;
@@ -1323,13 +1332,15 @@ body[data-theme="dark"] .ubits-ia-chat__main::before {
     padding-bottom: 0;
 }
 
+/* Bienvenida: misma fila que chat iniciado — adjuntar | textarea flexible | enviar */
 .ubits-ia-chat .ubits-ia-chat-thread--welcome .ubits-ia-chat-thread__input-container {
     display: grid;
-    grid-template-columns: 1fr;
-    grid-template-rows: auto auto;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    grid-template-rows: auto;
+    column-gap: var(--gap-sm);
+    row-gap: 0;
     min-height: auto;
     padding: var(--padding-md);
-    gap: var(--gap-md);
     min-width: 0;
     max-width: 100%;
     width: 100%;
@@ -1338,22 +1349,27 @@ body[data-theme="dark"] .ubits-ia-chat__main::before {
     border: 1px solid var(--ubits-border-1);
     background: var(--ubits-bg-1);
     box-shadow: none;
+    align-items: center;
 }
 
 .ubits-ia-chat .ubits-ia-chat-thread--welcome .ubits-ia-chat-thread__input-wrapper {
     grid-row: 1;
-    grid-column: 1;
+    grid-column: 2;
+    width: 100%;
+    min-width: 0;
 }
 
 .ubits-ia-chat .ubits-ia-chat-thread--welcome .ubits-ia-chat-thread__input-attach {
-    grid-row: 2;
+    grid-row: 1;
     grid-column: 1;
+    align-self: center;
     justify-self: start;
 }
 
 .ubits-ia-chat .ubits-ia-chat-thread--welcome .ubits-ia-chat-thread__input-send {
-    grid-row: 2;
-    grid-column: 1;
+    grid-row: 1;
+    grid-column: 3;
+    align-self: center;
     justify-self: end;
 }
 
@@ -1403,8 +1419,11 @@ body[data-theme="dark"] .ubits-ia-chat__main::before {
     max-width: 100%;
 }
 
+/* Chat iniciado: una sola fila — adjuntar | textarea flexible | enviar */
 .ubits-ia-chat .ubits-ia-chat-thread:not(.ubits-ia-chat-thread--welcome) .ubits-ia-chat-thread__input-container {
+    display: flex;
     flex-direction: row;
+    flex-wrap: nowrap;
     align-items: center;
     padding: var(--padding-sm) var(--padding-md);
     gap: var(--gap-sm);
@@ -1420,6 +1439,9 @@ body[data-theme="dark"] .ubits-ia-chat__main::before {
     min-width: 0;
     flex: 1 1 0;
     overflow: hidden;
+    align-self: stretch;
+    display: flex;
+    align-items: center;
 }
 
 .ubits-ia-chat .ubits-ia-chat-thread:not(.ubits-ia-chat-thread--welcome) .ubits-ia-chat-thread__input {
@@ -1428,16 +1450,8 @@ body[data-theme="dark"] .ubits-ia-chat__main::before {
     box-sizing: border-box;
 }
 
-.ubits-ia-chat .ubits-ia-chat-thread--welcome .ubits-ia-chat-thread__input-container {
-    min-width: 0;
-    max-width: 100%;
-    width: 100%;
-    box-sizing: border-box;
-    overflow: visible;
-}
-
 .ubits-ia-chat .ubits-ia-chat-thread__input-wrapper {
-    flex: 1;
+    flex: 1 1 0;
     min-width: 0;
     align-self: center;
 }

@@ -214,3 +214,19 @@ body.modo-estudio-ia-page .ubits-ia-chat__side.is-open .ubits-ia-chat-side__body
         display: none !important;
     }
 }
+
+/* Intro competencia: solo layout (el texto usa .ubits-ia-chat-thread__message-text como el resto del hilo) */
+.modo-estudio-ia-page .ubits-ia-chat-thread__competency-intro-actions {
+    flex-wrap: wrap;
+    margin-top: var(--gap-md);
+}
+
+.modo-estudio-ia-page .ubits-ia-chat-thread__competency-skill-wrap {
+    margin-top: var(--gap-md);
+    padding-top: var(--gap-md);
+    border-top: 1px solid var(--ubits-border-1);
+}
+
+.modo-estudio-ia-page .ubits-ia-chat-thread__competency-skill-chips {
+    flex-wrap: wrap;
+}
