@@ -952,7 +952,7 @@
             });
         }
 
-        /* Clic en Estado: dropdown Reabrir tarea (si Finalizada) o Finalizada (si Por hacer); Vencida = solo tooltip (title) */
+        /* Clic en Estado: Aprendizaje → toasts (no finalizar manual / no reabrir curso); resto: Reabrir o Finalizar; Vencida = tooltip */
         var estadoTrigger = document.getElementById('task-detail-estado-trigger');
         if (estadoTrigger && task.status !== 'Vencido' && typeof window.getDropdownMenuHtml === 'function' && typeof window.openDropdownMenu === 'function' && typeof window.closeDropdownMenu === 'function') {
             estadoTrigger.addEventListener('click', function (e) {
@@ -962,6 +962,12 @@
                 if (t0 && t0.taskType === 'aprendizaje' && t0.status !== 'Finalizado') {
                     if (typeof showToast === 'function') {
                         showToast('info', 'La tarea finalizará automáticamente al completar el contenido.');
+                    }
+                    return;
+                }
+                if (t0 && t0.taskType === 'aprendizaje' && t0.status === 'Finalizado') {
+                    if (typeof showToast === 'function') {
+                        showToast('info', 'El curso ya está completado.');
                     }
                     return;
                 }
