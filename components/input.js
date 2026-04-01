@@ -1135,6 +1135,10 @@ function setupSelectWithDropdownMenu(containerId, container, inputElement, selec
         var textEl = btn.querySelector('.ubits-dropdown-menu__option-text');
         var text = textEl ? textEl.textContent : '';
         inputElement.value = text;
+        dropdown.querySelectorAll('.ubits-dropdown-menu__option').forEach(function (optBtn) {
+            var v = optBtn.getAttribute('data-value') || '';
+            optBtn.classList.toggle('ubits-dropdown-menu__option--selected', v === val);
+        });
         dropdown.style.display = 'none';
         if (typeof onChange === 'function') onChange(val);
     }

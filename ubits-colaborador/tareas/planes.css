@@ -1445,6 +1445,11 @@
 }
 
 /* Icono Aprendizaje: alto 32px, ancho al glifo; color brand (mismo criterio que task-detail) */
+/* [hidden] debe ganar a display inline-flex (si no, el icono se ve también en tipo Estándar) */
+.task-create-v2__title-type-icon[hidden] {
+    display: none !important;
+}
+
 .task-create-v2__title-type-icon {
     display: inline-flex;
     align-items: center;

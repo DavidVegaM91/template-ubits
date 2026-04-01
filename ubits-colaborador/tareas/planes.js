@@ -1860,6 +1860,50 @@ var taskCreateDrawerState = {
     learningContentId: null
 };
 
+/**
+ * Deep link: con hash se abre el drawer "Nueva tarea" al cargar (ej. tareas.html#nueva-tarea).
+ * Alias: #crear-tarea. Al cerrar el drawer se quita el hash (replaceState).
+ */
+var TASK_CREATE_DEEPLINK_HASHES = ['nueva-tarea', 'crear-tarea'];
+
+function normalizeUrlHashFragment() {
+    var h = (typeof window !== 'undefined' && window.location && window.location.hash) ? window.location.hash : '';
+    h = h.replace(/^#/, '');
+    var q = h.indexOf('?');
+    if (q >= 0) h = h.slice(0, q);
+    return h.toLowerCase().trim();
+}
+
+function shouldOpenTaskCreateFromHash() {
+    return TASK_CREATE_DEEPLINK_HASHES.indexOf(normalizeUrlHashFragment()) !== -1;
+}
+
+function clearTaskCreateDeepLinkHash() {
+    if (!shouldOpenTaskCreateFromHash()) return;
+    try {
+        var path = window.location.pathname + (window.location.search || '');
+        if (typeof history.replaceState === 'function') {
+            history.replaceState(null, '', path);
+        }
+    } catch (e) { /* ignore */ }
+}
+
+function tryOpenTaskCreateFromHash() {
+    if (!shouldOpenTaskCreateFromHash()) return;
+    if (typeof openTaskCreateDrawerV2 !== 'function') return;
+    setTimeout(function () {
+        if (!shouldOpenTaskCreateFromHash()) return;
+        openTaskCreateDrawerV2();
+    }, 0);
+}
+
+function initTaskCreateDrawerDeepLink() {
+    tryOpenTaskCreateFromHash();
+    window.addEventListener('hashchange', function () {
+        tryOpenTaskCreateFromHash();
+    });
+}
+
 function normalizeNameTaskCreateDrawer(str) {
     if (str == null) return '';
     return String(str)
@@ -2049,6 +2093,7 @@ function cleanupTaskCreateDrawer() {
 function closeTaskCreateDrawerV2() {
     cleanupTaskCreateDrawer();
     if (typeof closeDrawer === 'function') closeDrawer(TASK_CREATE_DRAWER_OVERLAY_ID);
+    clearTaskCreateDeepLinkHash();
 }
 
 function updateTaskCreatePlanAlertVisible() {
@@ -2624,7 +2669,10 @@ function openTaskCreateDrawerV2() {
         bodyHtml: bodyHtml,
         footerHtml: '<div class="task-create-v2__footer-wrap">' + footerHtml + '</div>',
         size: 'md',
-        onClose: cleanupTaskCreateDrawer
+        onClose: function () {
+            cleanupTaskCreateDrawer();
+            clearTaskCreateDeepLinkHash();
+        }
     });
 
     bindTaskCreateDrawerEsc();
@@ -2671,4 +2719,7 @@ document.addEventListener('DOMContentLoaded', function () {
     window.openCrearMenu = openCrearMenu;
     window.openTaskCreateDrawerV2 = openTaskCreateDrawerV2;
     window.closeTaskCreateDrawerV2 = closeTaskCreateDrawerV2;
+    window.TASK_CREATE_DEEPLINK_HASHES = TASK_CREATE_DEEPLINK_HASHES.slice();
+    window.initTaskCreateDrawerDeepLink = initTaskCreateDrawerDeepLink;
+    initTaskCreateDrawerDeepLink();
 });

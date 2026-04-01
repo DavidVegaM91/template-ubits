@@ -143,7 +143,7 @@
     transform: none;
 }
 
-/* Opción activa del menú (selected: true): sin segundo color de fondo; refuerzo en tipografía como el Select */
+/* Opción activa (--selected): refuerzo en tipografía; la clase debe seguir al valor real (p. ej. input.js al elegir en select) */
 .ubits-dropdown-menu__option--selected {
     background: var(--ubits-bg-1);
 }
