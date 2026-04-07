@@ -575,7 +575,7 @@
                 var step3CompetenciasHtml = '<div id="drawer-wizard-step3" class="drawer-wizard-step" style="display:none">' +
                     '<div class="drawer-agregar-cursos drawer-agregar-cursos--single-col">' +
                     '<div class="drawer-agregar-cursos__left">' +
-                    '  <span class="drawer-agregar-cursos__section-title ubits-body-sm-semibold">Buscar y agregar competencias</span>' +
+                    '  <span class="drawer-agregar-cursos__section-title ubits-body-sm-semibold">Buscar y agregar competencias (máximo 8)</span>' +
                     '  <div class="drawer-cursos-search-row">' +
                     '    <div id="drawer-wiz-comp-search-container" class="drawer-cursos-search-input-wrap"></div>' +
                     '  </div>' +
@@ -713,7 +713,7 @@
                     });
                 }
 
-                function buildCardHtml(comp, isSelected) {
+                function buildCardHtml(comp, isSelected, isDisabled) {
                     var imgName = competenciaImageMap[comp.nombre] || 'Accountability.jpg';
                     var imgPath = imageBase + imgName;
                     var selectedItem = cursosSeleccionados.find(function(x) { return String(x.id) === String(comp.id); });
@@ -734,8 +734,9 @@
                             '<span class="ubits-body-sm-regular drawer-habilidad-title">' + escapeDrawerHtml(h) + '</span>' +
                             '<label class="ubits-checkbox ubits-checkbox--sm drawer-habilidad-check-wrap" onclick="event.stopPropagation();"><input type="checkbox" class="ubits-checkbox__input drawer-habilidad-check" data-habilidad="' + escapeDrawerHtml(h) + '"' + checkChecked + '><span class="ubits-checkbox__box"><i class="far fa-check"></i></span><span class="ubits-checkbox__label" aria-hidden="true"></span></label></div>';
                     }).join('');
-                    var cardClass = 'drawer-competencia-card competencia-card-v1' + (isSelected ? ' drawer-competencia-card--selected' : '') + (isExpanded ? ' expanded' : '');
+                    var cardClass = 'drawer-competencia-card competencia-card-v1' + (isSelected ? ' drawer-competencia-card--selected' : '') + (isExpanded ? ' expanded' : '') + (isDisabled ? ' drawer-competencia-card--disabled' : '');
                     var checkChecked = isSelected ? ' checked' : '';
+                    var checkDisabled = isDisabled ? ' disabled' : '';
                     return '<div class="drawer-competencia-card-wrapper">' +
                         '<div class="' + cardClass + '" data-competencia-id="' + escapeDrawerHtml(comp.id) + '" role="button" tabindex="0">' +
                         '<img src="' + escapeDrawerHtml(imgPath) + '" alt="" class="competencia-card-v1-image" loading="lazy" onerror="this.src=\'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=400&h=300&fit=crop\'">' +
@@ -745,7 +746,7 @@
                         '</div>' +
                         '<span class="drawer-competencia-card-check">' +
                         '<label class="ubits-checkbox ubits-checkbox--sm drawer-competencia-card-checkbox">' +
-                        '<input type="checkbox" class="ubits-checkbox__input" tabindex="-1"' + checkChecked + '>' +
+                        '<input type="checkbox" class="ubits-checkbox__input" tabindex="-1"' + checkChecked + checkDisabled + '>' +
                         '<span class="ubits-checkbox__box"><i class="far fa-check"></i></span>' +
                         '</label></span>' +
                         '</div>' +
@@ -837,12 +838,14 @@
                         emptySearchContainer.innerHTML = '';
                     }
                     cardsContainer.style.display = '';
+                    var isMaxReached = cursosSeleccionados.length >= 8;
                     var columns = [[], [], []];
                     filtrados.forEach(function(comp, i) { columns[i % 3].push(comp); });
                     var gridHtml = '<div class="drawer-competencias-grid-v1">' + columns.map(function(col) {
                         return '<div class="drawer-competencias-column">' + col.map(function(comp) {
                             var isSelected = cursosSeleccionados.some(function(x) { return String(x.id) === String(comp.id); });
-                            return buildCardHtml(comp, isSelected);
+                            var isDisabled = isMaxReached && !isSelected;
+                            return buildCardHtml(comp, isSelected, isDisabled);
                         }).join('') + '</div>';
                     }).join('') + '</div>';
                     cardsContainer.innerHTML = gridHtml;
@@ -853,6 +856,7 @@
                             var comp = catalogoCompetencias.find(function(c) { return String(c.id) === String(id); });
                             if (!comp) return;
                             var idx = cursosSeleccionados.findIndex(function(x) { return String(x.id) === String(id); });
+                            if (idx === -1 && cursosSeleccionados.length >= 8) return;
                             if (idx !== -1) {
                                 cursosSeleccionados.splice(idx, 1);
                             } else {
@@ -1194,7 +1198,7 @@
                 var p = 'drawer-editplan';
                 return '<div class="drawer-agregar-cursos drawer-agregar-cursos--single-col">' +
                     '<div class="drawer-agregar-cursos__left">' +
-                    '  <span class="drawer-agregar-cursos__section-title ubits-body-sm-semibold">Buscar y agregar competencias</span>' +
+                    '  <span class="drawer-agregar-cursos__section-title ubits-body-sm-semibold">Buscar y agregar competencias (máximo 8)</span>' +
                     '  <div class="drawer-cursos-search-row">' +
                     '    <div id="' + p + '-comp-search-container" class="drawer-cursos-search-input-wrap"></div>' +
                     '  </div>' +

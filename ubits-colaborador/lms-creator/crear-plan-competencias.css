@@ -763,13 +763,15 @@
 }
 
 #drawer-agregar-cursos .ubits-drawer-content,
-#drawer-agregar-usuarios .ubits-drawer-content {
+#drawer-agregar-usuarios .ubits-drawer-content,
+#drawer-agregar-competencias .ubits-drawer-content {
     min-height: 0;
 }
 
 /* Drawer Agregar cursos / wizard: scroll interno en resultados (lazy load), no en el body */
 #drawer-agregar-cursos .ubits-drawer-body,
-#drawer-agregar-usuarios .ubits-drawer-body {
+#drawer-agregar-usuarios .ubits-drawer-body,
+#drawer-agregar-competencias .ubits-drawer-body {
     overflow: hidden;
     display: flex;
     flex-direction: column;
@@ -832,6 +834,7 @@
     display: block;
     color: var(--ubits-fg-1-high);
     margin: 0 0 var(--gap-sm) 0;
+    flex-shrink: 0;
 }
 
 /* Fila buscador + botón filtro: input crece, botón alineado a la derecha */
@@ -839,6 +842,19 @@
     display: flex;
     align-items: center;
     gap: var(--gap-md);
+    flex-shrink: 0;
+}
+
+/* Competencias: reemplazar flex column por grid de 3 filas (título / buscador / resultados)
+   para darle altura definitiva (1fr) al contenedor de cards y que overflow-y: auto funcione.
+   Con flex puro el results-bg crece sin límite y scrollHeight === clientHeight → sin scroll. */
+#drawer-agregar-cursos .drawer-agregar-cursos__left,
+#drawer-agregar-usuarios #drawer-wizard-step3 .drawer-agregar-cursos__left,
+#drawer-agregar-competencias .drawer-agregar-cursos__left {
+    display: grid;
+    grid-template-rows: auto auto 1fr;
+    gap: var(--gap-md);
+    min-height: 0;
 }
 .drawer-cursos-search-input-wrap {
     flex: 1;
@@ -1164,6 +1180,17 @@
 
 .drawer-competencia-card-check .ubits-checkbox__label {
     display: none;
+}
+
+/* Estado disabled: máximo 8 competencias alcanzado */
+.drawer-competencia-card--disabled {
+    pointer-events: none;
+    opacity: 0.5;
+    border-color: var(--ubits-border-1) !important;
+}
+
+.drawer-competencia-card--disabled .competencia-card-v1-image {
+    filter: grayscale(1);
 }
 
 .competencia-habilidades-container.drawer-competencias-habilidades {
