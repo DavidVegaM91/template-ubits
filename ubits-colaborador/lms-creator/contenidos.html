@@ -25,6 +25,8 @@
     <link rel="stylesheet" href="../../components/input.css">
     <link rel="stylesheet" href="../../components/empty-state.css">
     <link rel="stylesheet" href="../../components/toast.css">
+    <link rel="stylesheet" href="../../components/avatar.css">
+    <link rel="stylesheet" href="../../components/card-content.css">
     <link rel="stylesheet" href="./lms-creator.css">
     <link rel="stylesheet" href="./contenidos.css">
 </head>
@@ -67,19 +69,19 @@
                                     </div>
                                     <div class="contenidos-view-toggle" role="group" aria-label="Ver como">
                                         <span class="contenidos-view-toggle__label ubits-body-md-regular">Ver como:</span>
-                                        <button type="button" class="contenidos-view-toggle__btn" id="contenidos-view-cuadricula" aria-pressed="false">
+                                        <button type="button" class="ubits-button ubits-button--tertiary ubits-button--md ubits-button--active" id="contenidos-view-cuadricula" aria-pressed="true">
                                             <i class="far fa-grid-2"></i>
-                                            <span class="ubits-body-md-semibold">Cuadrícula</span>
+                                            <span>Cuadrícula</span>
                                         </button>
-                                        <button type="button" class="contenidos-view-toggle__btn contenidos-view-toggle__btn--active" id="contenidos-view-tabla" aria-pressed="true">
+                                        <button type="button" class="ubits-button ubits-button--tertiary ubits-button--md" id="contenidos-view-tabla" aria-pressed="false">
                                             <i class="far fa-list-ul"></i>
-                                            <span class="ubits-body-md-semibold">Tabla</span>
+                                            <span>Tabla</span>
                                         </button>
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="contenidos-table-panel">
+                            <div class="contenidos-table-panel" style="display: none;">
                             <div class="ubits-table-wrapper ubits-table-wrapper--min-width contenidos-table-wrap">
                                 <table class="ubits-table creator-contenidos-table" id="creator-contenidos-table">
                                     <thead>
@@ -164,7 +166,12 @@
                                     </tbody>
                                 </table>
                             </div>
+                            </div>
+
                             <div id="contenidosTableEmpty" style="display: none;" aria-live="polite"></div>
+
+                            <div id="contenidos-cards-panel" class="contenidos-cards-panel" style="display: block;" aria-hidden="false">
+                                <div id="contenidos-cards-grid" class="contenidos-cards-grid"></div>
                             </div>
 
                             <div id="contenidos-paginador"></div>
@@ -193,11 +200,170 @@
     <script src="../../components/toast.js"></script>
     <script src="../../script.js"></script>
     <script src="../../bd-master/bd-master-niveles-contenido.js"></script>
+    <script src="../../bd-master/bd-master-aliados.js"></script>
     <script src="../../bd-master/bd-contenidos-fiqsha.js"></script>
+    <script src="../../components/avatar.js"></script>
+    <script src="../../components/card-content.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             if (typeof initTooltip === 'function') {
                 initTooltip('.widget-contenidos-creator [data-tooltip]');
+            }
+
+            var contenidosViewMode = 'grid';
+            var contenidosCardsBuilt = false;
+
+            var COMPETENCIA_POR_CATEGORIA_FIQSHA = {
+                'cfq-001': 'Liderazgo',
+                'cfq-002': 'Comunicación',
+                'cfq-003': 'Trabajo en equipo',
+                'cfq-004': 'Gestión de proyectos',
+                'cfq-005': 'Innovación',
+                'cfq-006': 'Marketing digital',
+                'cfq-007': 'Experiencia del cliente',
+                'cfq-008': 'Gestión financiera',
+                'cfq-009': 'People management',
+                'cfq-010': 'Inteligencia emocional',
+                'cfq-011': 'Resolución de problemas',
+                'cfq-012': 'Productividad',
+                'cfq-013': 'Negociación',
+                'cfq-014': 'Ventas',
+                'cfq-015': 'Marketing',
+                'cfq-016': 'Gestión del cambio',
+                'cfq-017': 'Desarrollo de software',
+                'cfq-018': 'Data skills',
+                'cfq-019': 'Wellness'
+            };
+
+            function cardDataFromFiqshaContent(c) {
+                var nivelesArr = window.BD_MASTER_NIVELES_CONTENIDO && window.BD_MASTER_NIVELES_CONTENIDO.niveles;
+                var nivelNombre = 'Básico';
+                if (nivelesArr && c.nivelId) {
+                    for (var j = 0; j < nivelesArr.length; j++) {
+                        if (nivelesArr[j].id === c.nivelId) {
+                            nivelNombre = nivelesArr[j].nombre || 'Básico';
+                            break;
+                        }
+                    }
+                }
+                var a = null;
+                var aliadosArr = window.BD_MASTER_ALIADOS && window.BD_MASTER_ALIADOS.aliados;
+                if (aliadosArr && c.proveedorAliadoId) {
+                    for (var k = 0; k < aliadosArr.length; k++) {
+                        if (aliadosArr[k].id === c.proveedorAliadoId) {
+                            a = aliadosArr[k];
+                            break;
+                        }
+                    }
+                }
+                var providerName = a && a.nombre ? a.nombre : 'UBITS';
+                var providerLogo = '../../images/Favicons/UBITS.jpg';
+                if (a && a.logo) {
+                    providerLogo = '../../' + String(a.logo).replace(/^\.\//, '');
+                }
+                var competency = COMPETENCIA_POR_CATEGORIA_FIQSHA[c.categoriaFiqshaId] || 'Liderazgo';
+                var imgPath = c.imagen
+                    ? ('../../' + String(c.imagen).replace(/^\.\//, ''))
+                    : '../../images/Profile-image.jpg';
+                return {
+                    type: c.tipoContenido || 'Curso',
+                    title: c.titulo || '',
+                    provider: providerName,
+                    providerLogo: providerLogo,
+                    duration: (c.tiempoValor != null ? String(c.tiempoValor) : '60') + ' min',
+                    level: nivelNombre,
+                    progress: 0,
+                    status: 'default',
+                    image: imgPath,
+                    competency: competency,
+                    language: c.idioma || 'Español'
+                };
+            }
+
+            function getContenidosDemosNoPublicados() {
+                return [
+                    {
+                        type: 'Curso',
+                        title: 'Desarrollo de habilidades de persuasión',
+                        nivel: 'Básico',
+                        visibilidad: 'Privado',
+                        competency: 'Negociación',
+                        image: 'https://images.unsplash.com/photo-1552664730-d307ca884978?w=640&h=360&fit=crop&q=80'
+                    },
+                    {
+                        type: 'Curso',
+                        title: 'Comunicación efectiva con el cliente',
+                        nivel: 'Básico',
+                        visibilidad: 'Borrador',
+                        competency: 'Comunicación',
+                        image: 'https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=640&h=360&fit=crop&q=80'
+                    },
+                    {
+                        type: 'Curso',
+                        title: 'Un gran liderazgo es una red, no una jerarquía',
+                        nivel: 'Básico',
+                        visibilidad: 'Oculto',
+                        competency: 'Liderazgo',
+                        image: 'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=640&h=360&fit=crop&q=80'
+                    },
+                    {
+                        type: 'Libro',
+                        title: 'Conocimiento de políticas y procedimientos internos',
+                        nivel: 'Básico',
+                        visibilidad: 'Archivado',
+                        competency: 'Cumplimiento (Compliance)',
+                        image: 'https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=640&h=360&fit=crop&q=80'
+                    }
+                ];
+            }
+
+            /* Cards en cuadrícula: loadCardContent + lmsTag (Publicado / Borrador / …) vía card-content.js; requiere status-tag.css */
+            function buildContenidosCardsPayload() {
+                var cards = [];
+                getContenidosDemosNoPublicados().forEach(function (d) {
+                    cards.push({
+                        type: d.type,
+                        title: d.title,
+                        provider: 'UBITS',
+                        providerLogo: '../../images/Favicons/UBITS.jpg',
+                        duration: '60 min',
+                        level: d.nivel,
+                        progress: 0,
+                        status: 'default',
+                        image: d.image,
+                        competency: d.competency,
+                        language: 'Español',
+                        lmsTag: d.visibilidad
+                    });
+                });
+                var bd = window.BDS_CONTENIDOS_FIQSHA;
+                if (bd && bd.contents) {
+                    bd.contents.forEach(function (c) {
+                        if (!c || !c.titulo) return;
+                        var row = cardDataFromFiqshaContent(c);
+                        row.lmsTag = 'Publicado';
+                        cards.push(row);
+                    });
+                }
+                return { cards: cards };
+            }
+
+            function renderContenidosCardsGrid() {
+                if (contenidosCardsBuilt || typeof loadCardContent !== 'function') return;
+                var payload = buildContenidosCardsPayload();
+                if (!payload.cards.length) return;
+                loadCardContent('contenidos-cards-grid', payload.cards);
+                var grid = document.getElementById('contenidos-cards-grid');
+                if (!grid) return;
+                var cards = grid.querySelectorAll('.course-card');
+                cards.forEach(function (card, i) {
+                    var wrap = document.createElement('div');
+                    wrap.className = 'contenidos-card-item';
+                    wrap.setAttribute('data-row-index', String(i));
+                    card.parentNode.insertBefore(wrap, card);
+                    wrap.appendChild(card);
+                });
+                contenidosCardsBuilt = true;
             }
 
             loadSidebar('creator');
@@ -332,7 +498,7 @@
                 function applyPaginationToRows() {
                     var all = getTableRows();
                     var matches = getSearchMatches();
-                    var ipp = contenidosPaginatorInst ? contenidosPaginatorInst.getItemsPerPage() : 10;
+                    var ipp = contenidosPaginatorInst ? contenidosPaginatorInst.getItemsPerPage() : 16;
                     var page = contenidosPaginatorInst ? contenidosPaginatorInst.getCurrentPage() : 1;
                     var totalMatch = matches.length;
                     var totalPages = Math.max(1, Math.ceil(totalMatch / ipp));
@@ -351,10 +517,22 @@
                     });
                 }
 
+                function syncContenidosCardsVisibility() {
+                    if (contenidosViewMode !== 'grid') return;
+                    var grid = document.getElementById('contenidos-cards-grid');
+                    if (!grid) return;
+                    var rows = getTableRows();
+                    rows.forEach(function (tr, i) {
+                        var item = grid.querySelector('.contenidos-card-item[data-row-index="' + i + '"]');
+                        if (item) item.style.display = tr.style.display;
+                    });
+                }
+
                 function syncListaContenidos() {
                     applyPaginationToRows();
                     updateResultsCount();
                     updateEmptyState();
+                    syncContenidosCardsVisibility();
                     var pagEl = document.getElementById('contenidos-paginador');
                     var m = getSearchMatches();
                     if (pagEl) {
@@ -387,13 +565,18 @@
 
                 function updateEmptyState() {
                     var tableWrap = document.querySelector('.contenidos-table-panel .contenidos-table-wrap');
+                    var cardsPanel = document.getElementById('contenidos-cards-panel');
                     var emptyEl = document.getElementById('contenidosTableEmpty');
-                    if (!tableWrap || !emptyEl) return;
+                    if (!emptyEl) return;
                     var visible = getSearchMatches();
                     var total = getTableRows().length;
                     var hasSearch = searchQuery.trim().length > 0;
                     if (total > 0 && visible.length === 0 && hasSearch) {
-                        tableWrap.style.display = 'none';
+                        if (contenidosViewMode === 'grid') {
+                            if (cardsPanel) cardsPanel.style.display = 'none';
+                        } else if (tableWrap) {
+                            tableWrap.style.display = 'none';
+                        }
                         emptyEl.style.display = 'flex';
                         if (typeof loadEmptyState === 'function' && !emptyEl.querySelector('.ubits-empty-state__title')) {
                             loadEmptyState('contenidosTableEmpty', {
@@ -413,7 +596,11 @@
                             });
                         }
                     } else {
-                        tableWrap.style.display = '';
+                        if (contenidosViewMode === 'grid') {
+                            if (cardsPanel) cardsPanel.style.display = '';
+                        } else if (tableWrap) {
+                            tableWrap.style.display = '';
+                        }
                         emptyEl.style.display = 'none';
                         emptyEl.innerHTML = '';
                     }
@@ -443,9 +630,9 @@
                 if (typeof loadPaginator === 'function') {
                     contenidosPaginatorInst = loadPaginator('contenidos-paginador', {
                         totalItems: _contenidosTotalFilas,
-                        itemsPerPage: 10,
+                        itemsPerPage: 16,
                         currentPage: 1,
-                        itemsPerPageOptions: [10, 20, 32, 50],
+                        itemsPerPageOptions: [16, 32, 48, 64, 80],
                         onPageChange: function () {
                             syncListaContenidos();
                         },
@@ -496,32 +683,60 @@
                     });
                 }
 
-                syncListaContenidos();
-            })();
+                var btnGrid = document.getElementById('contenidos-view-cuadricula');
+                var btnTable = document.getElementById('contenidos-view-tabla');
+                var tablePanel = document.querySelector('.contenidos-table-panel');
+                var cardsPanel = document.getElementById('contenidos-cards-panel');
 
-            var btnGrid = document.getElementById('contenidos-view-cuadricula');
-            var btnTable = document.getElementById('contenidos-view-tabla');
-            function setViewToggle(activeEl) {
-                if (!btnGrid || !btnTable) return;
-                var isGrid = activeEl === btnGrid;
-                btnGrid.classList.toggle('contenidos-view-toggle__btn--active', isGrid);
-                btnTable.classList.toggle('contenidos-view-toggle__btn--active', !isGrid);
-                btnGrid.setAttribute('aria-pressed', isGrid ? 'true' : 'false');
-                btnTable.setAttribute('aria-pressed', isGrid ? 'false' : 'true');
-            }
-            if (btnGrid) {
-                btnGrid.addEventListener('click', function() {
+                function setViewToggle(activeEl) {
+                    if (!btnGrid || !btnTable) return;
+                    var isGrid = activeEl === btnGrid;
+                    btnGrid.classList.toggle('ubits-button--active', isGrid);
+                    btnTable.classList.toggle('ubits-button--active', !isGrid);
+                    btnGrid.setAttribute('aria-pressed', isGrid ? 'true' : 'false');
+                    btnTable.setAttribute('aria-pressed', isGrid ? 'false' : 'true');
+                }
+
+                if (contenidosViewMode === 'grid') {
                     setViewToggle(btnGrid);
-                    if (typeof showToast === 'function') {
-                        showToast('info', 'Vista cuadrícula: pendiente de implementar.');
+                    renderContenidosCardsGrid();
+                    if (tablePanel) tablePanel.style.display = 'none';
+                    if (cardsPanel) {
+                        cardsPanel.style.display = '';
+                        cardsPanel.setAttribute('aria-hidden', 'false');
                     }
-                });
-            }
-            if (btnTable) {
-                btnTable.addEventListener('click', function() {
-                    setViewToggle(btnTable);
-                });
-            }
+                }
+
+                syncListaContenidos();
+
+                if (btnGrid) {
+                    btnGrid.addEventListener('click', function () {
+                        setViewToggle(btnGrid);
+                        contenidosViewMode = 'grid';
+                        if (!contenidosCardsBuilt) {
+                            renderContenidosCardsGrid();
+                        }
+                        if (tablePanel) tablePanel.style.display = 'none';
+                        if (cardsPanel) {
+                            cardsPanel.style.display = '';
+                            cardsPanel.setAttribute('aria-hidden', 'false');
+                        }
+                        syncListaContenidos();
+                    });
+                }
+                if (btnTable) {
+                    btnTable.addEventListener('click', function () {
+                        setViewToggle(btnTable);
+                        contenidosViewMode = 'table';
+                        if (tablePanel) tablePanel.style.display = '';
+                        if (cardsPanel) {
+                            cardsPanel.style.display = 'none';
+                            cardsPanel.setAttribute('aria-hidden', 'true');
+                        }
+                        syncListaContenidos();
+                    });
+                }
+            })();
 
             setTimeout(function() {
                 var tab = document.querySelector('.nav-tab[data-tab="contenidos"]');

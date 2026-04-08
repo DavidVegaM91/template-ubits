@@ -18,7 +18,9 @@
     <link rel="stylesheet" href="../../docs/docstyles.css">
     <link rel="stylesheet" href="../../components/button.css">
     <link rel="stylesheet" href="../../components/avatar.css">
+    <link rel="stylesheet" href="../../components/status-tag.css">
     <link rel="stylesheet" href="../../components/card-content.css">
+    <link rel="stylesheet" href="../../components/switch.css">
     <link rel="stylesheet" href="../../components/input.css">
     <link rel="stylesheet" href="../../components/dropdown-menu.css">
     <link rel="stylesheet" href="../../components/toast.css">
@@ -210,6 +212,19 @@
                         <div class="control-group"><div id="competencia-select-container"></div></div>
                         <div class="control-group"><div id="nivel-select-container"></div></div>
                         <div class="control-group"><div id="idioma-select-container"></div></div>
+                        <div class="control-group">
+                            <span class="control-label ubits-body-sm-semibold" style="color: var(--ubits-fg-1-high);">Tag LMS</span>
+                            <label class="ubits-switch ubits-switch--md" style="align-self: flex-start;">
+                                <input type="checkbox" class="ubits-switch__input" id="preview-lms-tag-switch" role="switch" aria-checked="false" aria-label="Mostrar tag LMS en la tarjeta">
+                                <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
+                            </label>
+                            <p class="ubits-body-sm-regular" style="margin: 0; color: var(--ubits-fg-1-medium); max-width: 280px;">
+                                Solo LMS Creator / contenidos. Apagado por defecto.
+                            </p>
+                        </div>
+                        <div class="control-group" id="lms-tag-value-group" style="display: none;">
+                            <div id="lms-tag-value-select-container"></div>
+                        </div>
                     </div>
                 </div>
 
@@ -696,6 +711,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                 <div style="background: var(--ubits-bg-2); padding: 12px; border-radius: 6px; border-left: 4px solid var(--ubits-accent-brand);">
                                     <div class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">
                                         <strong>Parámetros:</strong> cardData (object) - Datos de la card<br>
+                                        <strong>Opcional:</strong> <code>lmsTag</code> — visibilidad LMS: Publicado, Borrador, Privado, Oculto, Archivado. Muestra un status-tag arriba a la izquierda de la imagen (8px). Con <strong>Archivado</strong>, la imagen se muestra en escala de grises (<code>data-lms-tag</code> + CSS). Requiere <code>components/status-tag.css</code>. Uso típico: LMS Creator → Contenidos.<br>
                                         <strong>Ejemplo:</strong> renderCardContent(miCardData)
                                     </div>
                                 </div>
@@ -908,6 +924,8 @@ const logoMap = {
             competency: 'Inteligencia emocional',
             language: 'Español'
         };
+
+        var previewLmsTagChoice = 'Publicado';
         
         // Mapeo aliado -> logo (para preview)
         var cardPreviewLogoMap = {
@@ -1057,6 +1075,45 @@ const logoMap = {
                     updateCardPreview();
                 }
             });
+
+            createInput({
+                containerId: 'lms-tag-value-select-container',
+                type: 'select',
+                label: 'Etiqueta visibilidad',
+                placeholder: 'Seleccionar...',
+                selectOptions: [
+                    { value: 'Publicado', text: 'Publicado' },
+                    { value: 'Borrador', text: 'Borrador' },
+                    { value: 'Privado', text: 'Privado' },
+                    { value: 'Oculto', text: 'Oculto' },
+                    { value: 'Archivado', text: 'Archivado' }
+                ],
+                value: 'Publicado',
+                size: 'sm',
+                onChange: function(val) {
+                    previewLmsTagChoice = val;
+                    var sw = document.getElementById('preview-lms-tag-switch');
+                    if (sw && sw.checked) {
+                        currentCardData.lmsTag = val;
+                        updateCardPreview();
+                    }
+                }
+            });
+
+            var lmsSwitchEl = document.getElementById('preview-lms-tag-switch');
+            var lmsGroupEl = document.getElementById('lms-tag-value-group');
+            if (lmsSwitchEl) {
+                lmsSwitchEl.addEventListener('change', function() {
+                    lmsSwitchEl.setAttribute('aria-checked', lmsSwitchEl.checked ? 'true' : 'false');
+                    if (lmsGroupEl) lmsGroupEl.style.display = lmsSwitchEl.checked ? '' : 'none';
+                    if (lmsSwitchEl.checked) {
+                        currentCardData.lmsTag = previewLmsTagChoice;
+                    } else {
+                        delete currentCardData.lmsTag;
+                    }
+                    updateCardPreview();
+                });
+            }
         }
         
         // Actualizar preview del card

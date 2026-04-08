@@ -95,6 +95,31 @@ const STATUSES = {
     'completed': { class: 'course-status--completed', text: 'Completado' }
 };
 
+/**
+ * Tags de visibilidad LMS Creator (opcional en card; status-tag esquina superior izquierda de la imagen).
+ *
+ * Regla visual (card-content.css): si lmsTag === 'Archivado', la miniatura usa escala de grises (filter: grayscale)
+ * sobre .course-image para indicar contenido archivado. El atributo data-lms-tag="Archivado" en .course-card activa el estilo.
+ */
+const LMS_TAG_LABELS = ['Publicado', 'Borrador', 'Privado', 'Oculto', 'Archivado'];
+
+const LMS_TAG_TO_STATUS_CLASS = {
+    'Publicado': 'ubits-status-tag--success',
+    'Borrador': 'ubits-status-tag--info',
+    'Privado': 'ubits-status-tag--warning',
+    'Oculto': 'ubits-status-tag--neutral',
+    'Archivado': 'ubits-status-tag--error'
+};
+
+/**
+ * @param {string} label
+ * @returns {string|null} clase modificadora ubits-status-tag--* o null si no es válida
+ */
+function getLmsTagStatusClass(label) {
+    if (!label || typeof label !== 'string') return null;
+    return LMS_TAG_TO_STATUS_CLASS[label.trim()] || null;
+}
+
 // ALIADOS OFICIALES (18 proveedores)
 // NOTA: Las rutas son relativas al HTML que carga el componente, no al JS
 // Desde subcarpetas (ubits-admin/*, ubits-colaborador/*) usar: '../../images/Favicons/...'
@@ -172,6 +197,7 @@ function validateCardData(cardData) {
  * @param {string} cardData.image - Ruta de la imagen (puede ser cualquier imagen disponible en tu proyecto)
  * @param {string} cardData.competency - Competencia (Accountability, Administración de negocios, Agilidad, Comunicación, Cumplimiento (Compliance), Data skills, Desarrollo de software, Desarrollo web, Digital skills, e-Commerce, Emprendimiento, Experiencia del cliente, Gestión de procesos y operaciones, Gestión de proyectos, Gestión de recursos tecnológicos, Gestión del cambio, Gestión del riesgo, Gestión financiera, Herramientas tecnológicas, Inglés, Innovación, Inteligencia emocional, Lenguajes de Programación, Liderazgo, Marketing, Marketing digital, Negociación, People management, Product design, Productividad, Resolución de problemas, Trabajo en equipo, Ventas, Wellness)
  * @param {string} cardData.language - Idioma (Español, Inglés, etc.)
+ * @param {string} [cardData.lmsTag] - Opcional. Tag LMS (Publicado, Borrador, Privado, Oculto, Archivado) en la esquina superior izquierda de la imagen; solo pantallas como LMS Creator / contenidos. Si es Archivado, la imagen se muestra en blanco y negro (grayscale) vía data-lms-tag + CSS.
  */
 function renderCardContent(cardData) {
     // Determinar clase de estado
@@ -247,13 +273,31 @@ function renderCardContent(cardData) {
         }
     }
 
+    let lmsTagBlock = '';
+    /** Atributo data-lms-tag en la raíz de la card: usado por CSS (p. ej. Archivado → imagen en escala de grises). */
+    let lmsTagDataAttr = '';
+    if (cardData.lmsTag) {
+        const label = String(cardData.lmsTag).trim();
+        const lmsClass = getLmsTagStatusClass(label);
+        if (lmsClass) {
+            lmsTagDataAttr = ` data-lms-tag="${label}"`;
+            lmsTagBlock = `
+                <div class="course-card__lms-tag">
+                    <span class="ubits-status-tag ubits-status-tag--sm ${lmsClass}">
+                        <span class="ubits-status-tag__text">${label}</span>
+                    </span>
+                </div>`;
+        }
+    }
+
     // Template de la card
     return `
-        <div class="course-card" data-progress="${cardData.progress}" data-status="${cardData.status}">
+        <div class="course-card" data-progress="${cardData.progress}" data-status="${cardData.status}"${lmsTagDataAttr}>
             <div class="course-thumbnail-wrapper">
                 <div class="course-thumbnail">
                     <img src="${cardData.image}" alt="${cardData.title}" class="course-image">
                 </div>
+                ${lmsTagBlock}
                 ${(cardData.progress > 0 || cardData.status !== 'default') ? `
                 <div class="course-progress-overlay">
                     <div class="progress-bar">
@@ -353,6 +397,7 @@ window.renderCardContent = renderCardContent;
 window.loadCardContent = loadCardContent;
 window.validateCardData = validateCardData;
 window.getRecommendedDuration = getRecommendedDuration;
+window.getLmsTagStatusClass = getLmsTagStatusClass;
 
 // Exponer todas las opciones disponibles
 window.CARD_CONTENT_OPTIONS = {
@@ -362,7 +407,8 @@ window.CARD_CONTENT_OPTIONS = {
     DURATIONS,
     LANGUAGES,
     STATUSES,
-    PROVIDERS
+    PROVIDERS,
+    LMS_TAG_LABELS
 };
 
 // Exponer datos de ejemplo

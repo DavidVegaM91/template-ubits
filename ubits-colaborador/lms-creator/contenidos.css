@@ -105,42 +105,7 @@
     white-space: nowrap;
 }
 
-.contenidos-view-toggle__btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: var(--gap-sm);
-    padding: var(--padding-sm) var(--padding-md);
-    border: 1px solid transparent;
-    border-radius: var(--border-radius-sm);
-    background: transparent;
-    cursor: pointer;
-    font-family: 'Noto Sans', sans-serif;
-    font-size: var(--font-size-md);
-    font-weight: var(--font-weight-semibold);
-    line-height: 1;
-    color: var(--ubits-fg-1-medium);
-    box-sizing: border-box;
-}
-
-.contenidos-view-toggle__btn i {
-    font-size: var(--font-size-md);
-    color: inherit;
-}
-
-.contenidos-view-toggle__btn:hover:not(.contenidos-view-toggle__btn--active) {
-    background: var(--ubits-bg-1);
-}
-
-.contenidos-view-toggle__btn--active {
-    background: var(--ubits-button-active-bg);
-    color: var(--ubits-accent-brand);
-    border-color: transparent;
-}
-
-.contenidos-view-toggle__btn--active i {
-    color: var(--ubits-accent-brand);
-}
+/* Ver como: botones oficiales ubits-button--tertiary ubits-button--md (40px altura) */
 
 /* Panel tabla + empty state (mismo rol que .ubits-dt-table-wrapper) */
 .contenidos-table-panel {
@@ -215,6 +180,58 @@
     justify-content: space-between;
     flex-wrap: wrap;
     gap: var(--gap-md);
+}
+
+/* Vista cuadrícula: mismo patrón que u-corporativa (.grid-cards-container) */
+.contenidos-cards-panel {
+    width: 100%;
+    min-width: 0;
+}
+
+.contenidos-cards-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--gap-2xl);
+    width: 100%;
+    min-width: 0;
+    align-items: start;
+}
+
+.contenidos-card-item {
+    min-width: 0;
+    width: 100%;
+}
+
+.contenidos-card-item .course-card {
+    width: 100%;
+    min-width: 0;
+}
+
+/* Tag LMS (card-content): visibilidad sobre la miniatura; mismo criterio que documentación */
+.page-contenidos-creator .contenidos-cards-panel .course-card__lms-tag {
+    z-index: 3;
+}
+
+/* Tablet ancha: 3 columnas (como u-corporativa) */
+@media (max-width: 1365px) {
+    .contenidos-cards-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+/* Tablet: 2 columnas */
+@media (max-width: 1023px) {
+    .contenidos-cards-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: var(--gap-lg);
+    }
+}
+
+/* Móvil: 1 columna */
+@media (max-width: 480px) {
+    .contenidos-cards-grid {
+        grid-template-columns: minmax(0, 1fr);
+    }
 }
 
 @media (max-width: 768px) {
