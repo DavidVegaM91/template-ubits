@@ -26,9 +26,9 @@
     justify-content: space-between;
     flex-wrap: wrap;
     gap: var(--gap-md);
-    padding: var(--padding-sm) var(--padding-md);
+    padding: var(--padding-none);
     background: var(--ubits-bg-2);
-    border-radius: var(--border-radius-sm);
+    border-radius: var(--border-radius-none);
     box-sizing: border-box;
 }
 
@@ -204,9 +204,10 @@
 }
 
 .creator-contenidos-table tbody td[data-col="visibilidad"] .ubits-status-tag {
-    min-width: 0;
-    width: auto;
-    max-width: 100%;
+    box-sizing: border-box;
+    min-width: 80px;
+    width: 80px;
+    max-width: 80px;
 }
 
 .widget-contenidos-creator .ubits-paginator {

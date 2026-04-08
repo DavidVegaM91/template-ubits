@@ -118,6 +118,9 @@
     <script src="../../components/paginator.js"></script>
     <script src="../../components/empty-state.js"></script>
     <script src="../../script.js"></script>
+    <script src="../../bd-master/bd-master-niveles-contenido.js"></script>
+    <script src="../../bd-master/bd-master-aliados.js"></script>
+    <script src="../../bd-master/bd-contenidos-fiqsha.js"></script>
     <script>
         // Cargar componentes dinámicamente
         document.addEventListener('DOMContentLoaded', function() {
@@ -170,269 +173,92 @@
                 }
             }, 200);
 
-            // Datos de los cursos corporativos según Figma
-            const cursosCorporativos = [
-                {
-                    type: 'Curso',
-                    title: 'Inducción a la cultura y valores corporativos',
-                    provider: 'Fiqsha Smart Consulting',
-                    providerLogo: '../../images/Favicons/Fiqsha Smart Consulting.jpg',
-                    duration: '60 min',
-                    level: 'Básico',
-                    progress: 0,
-                    status: 'default',
-                    image: '../../images/cards-learn/U-Corporativa/Inducción-a-la-cultura-y-valores-corporativos.jpg',
-                    competency: 'Liderazgo',
-                    language: 'Español'
-                },
-                {
-                    type: 'Curso',
-                    title: 'Prevención del acoso laboral',
-                    provider: 'Fiqsha Smart Consulting',
-                    providerLogo: '../../images/Favicons/Fiqsha Smart Consulting.jpg',
-                    duration: '60 min',
-                    level: 'Básico',
-                    progress: 0,
-                    status: 'default',
-                    image: '../../images/cards-learn/U-Corporativa/prevencion-acoso-laboral.jpg',
-                    competency: 'Liderazgo',
-                    language: 'Español'
-                },
-                {
-                    type: 'Curso',
-                    title: 'Seguridad y salud en el trabajo 2025',
-                    provider: 'Fiqsha Smart Consulting',
-                    providerLogo: '../../images/Favicons/Fiqsha Smart Consulting.jpg',
-                    duration: '60 min',
-                    level: 'Básico',
-                    progress: 0,
-                    status: 'default',
-                    image: '../../images/cards-learn/U-Corporativa/seguridad-y-salud-en-el-trabajo.jpg',
-                    competency: 'Liderazgo',
-                    language: 'Español'
-                },
-                {
-                    type: 'Curso',
-                    title: 'Cumplimiento normativo y código de conducta',
-                    provider: 'Fiqsha Smart Consulting',
-                    providerLogo: '../../images/Favicons/Fiqsha Smart Consulting.jpg',
-                    duration: '60 min',
-                    level: 'Básico',
-                    progress: 0,
-                    status: 'default',
-                    image: '../../images/cards-learn/U-Corporativa/Cumplimiento-normativo-y-código-de-conducta.jpg',
-                    competency: 'Liderazgo',
-                    language: 'Español'
-                },
-                {
-                    type: 'Curso',
-                    title: 'Comunicación efectiva en el trabajo',
-                    provider: 'Fiqsha Smart Consulting',
-                    providerLogo: '../../images/Favicons/Fiqsha Smart Consulting.jpg',
-                    duration: '60 min',
-                    level: 'Básico',
-                    progress: 0,
-                    status: 'default',
-                    image: '../../images/cards-learn/U-Corporativa/Comunicación-efectiva-en-el-trabajo.jpg',
-                    competency: 'Comunicación',
-                    language: 'Español'
-                },
-                {
-                    type: 'Curso',
-                    title: 'Gestión del tiempo y productividad',
-                    provider: 'Fiqsha Smart Consulting',
-                    providerLogo: '../../images/Favicons/Fiqsha Smart Consulting.jpg',
-                    duration: '60 min',
-                    level: 'Básico',
-                    progress: 0,
-                    status: 'default',
-                    image: '../../images/cards-learn/U-Corporativa/gestion-del-tiempo-y-productividad.jpg',
-                    competency: 'Comunicación',
-                    language: 'Español'
-                },
-                {
-                    type: 'Curso',
-                    title: 'Resolución efectiva de conflictos en equipos de trabajo',
-                    provider: 'Fiqsha Smart Consulting',
-                    providerLogo: '../../images/Favicons/Fiqsha Smart Consulting.jpg',
-                    duration: '60 min',
-                    level: 'Básico',
-                    progress: 0,
-                    status: 'default',
-                    image: '../../images/cards-learn/U-Corporativa/resolucion-de-conflictos.jpg',
-                    competency: 'Comunicación',
-                    language: 'Español'
-                },
-                {
-                    type: 'Curso',
-                    title: 'Pensamiento crítico y toma de decisiones',
-                    provider: 'Fiqsha Smart Consulting',
-                    providerLogo: '../../images/Favicons/Fiqsha Smart Consulting.jpg',
-                    duration: '90 min',
-                    level: 'Intermedio',
-                    progress: 0,
-                    status: 'default',
-                    image: '../../images/cards-learn/U-Corporativa/Pensamiento-crítico-y-toma-de-decisiones.jpg',
-                    competency: 'Comunicación',
-                    language: 'Español'
-                },
-                {
-                    type: 'Curso',
-                    title: 'Creatividad e innovación',
-                    provider: 'Fiqsha Smart Consulting',
-                    providerLogo: '../../images/Favicons/Fiqsha Smart Consulting.jpg',
-                    duration: '60 min',
-                    level: 'Básico',
-                    progress: 0,
-                    status: 'default',
-                    image: '../../images/cards-learn/U-Corporativa/creatividad-e-innovacion.jpg',
-                    competency: 'Comunicación',
-                    language: 'Español'
-                },
-                {
-                    type: 'Curso',
-                    title: 'Presentaciones de alto impacto',
-                    provider: 'Fiqsha Smart Consulting',
-                    providerLogo: '../../images/Favicons/Fiqsha Smart Consulting.jpg',
-                    duration: '60 min',
-                    level: 'Básico',
-                    progress: 0,
-                    status: 'default',
-                    image: '../../images/cards-learn/U-Corporativa/presentaciones-de-alto-impacto.jpg',
-                    competency: 'Comunicación',
-                    language: 'Español'
-                },
-                {
-                    type: 'Curso',
-                    title: 'Manejo del estrés laboral',
-                    provider: 'Fiqsha Smart Consulting',
-                    providerLogo: '../../images/Favicons/Fiqsha Smart Consulting.jpg',
-                    duration: '30 min',
-                    level: 'Básico',
-                    progress: 0,
-                    status: 'default',
-                    image: '../../images/cards-learn/U-Corporativa/manejo-del-estres-laboral.jpg',
-                    competency: 'Comunicación',
-                    language: 'Español'
-                },
-                {
-                    type: 'Curso',
-                    title: 'Trabajo en equipo y colaboración',
-                    provider: 'Fiqsha Smart Consulting',
-                    providerLogo: '../../images/Favicons/Fiqsha Smart Consulting.jpg',
-                    duration: '60 min',
-                    level: 'Básico',
-                    progress: 0,
-                    status: 'default',
-                    image: '../../images/cards-learn/U-Corporativa/trabajo-en-equipo.jpg',
-                    competency: 'Comunicación',
-                    language: 'Español'
-                },
-                {
-                    type: 'Curso',
-                    title: 'Gestión de equipos remotos e híbridos',
-                    provider: 'Fiqsha Smart Consulting',
-                    providerLogo: '../../images/Favicons/Fiqsha Smart Consulting.jpg',
-                    duration: '60 min',
-                    level: 'Básico',
-                    progress: 0,
-                    status: 'default',
-                    image: '../../images/cards-learn/U-Corporativa/gestion-equipos-remotos.jpg',
-                    competency: 'Liderazgo',
-                    language: 'Español'
-                },
-                {
-                    type: 'Curso',
-                    title: 'Delegación efectiva',
-                    provider: 'Fiqsha Smart Consulting',
-                    providerLogo: '../../images/Favicons/Fiqsha Smart Consulting.jpg',
-                    duration: '60 min',
-                    level: 'Básico',
-                    progress: 0,
-                    status: 'default',
-                    image: '../../images/cards-learn/U-Corporativa/delegacion-efectiva.jpg',
-                    competency: 'Liderazgo',
-                    language: 'Español'
-                },
-                {
-                    type: 'Curso',
-                    title: 'Cómo dar y recibir feedback',
-                    provider: 'Fiqsha Smart Consulting',
-                    providerLogo: '../../images/Favicons/Fiqsha Smart Consulting.jpg',
-                    duration: '60 min',
-                    level: 'Básico',
-                    progress: 0,
-                    status: 'default',
-                    image: '../../images/cards-learn/U-Corporativa/dar-y-recibir-feedback.jpg',
-                    competency: 'Liderazgo',
-                    language: 'Español'
-                },
-                {
-                    type: 'Curso',
-                    title: 'Comunicación asertiva para líderes',
-                    provider: 'Fiqsha Smart Consulting',
-                    providerLogo: '../../images/Favicons/Fiqsha Smart Consulting.jpg',
-                    duration: '60 min',
-                    level: 'Básico',
-                    progress: 0,
-                    status: 'default',
-                    image: '../../images/cards-learn/U-Corporativa/Comunicación-asertiva-para-líderes.jpg',
-                    competency: 'Liderazgo',
-                    language: 'Español'
-                },
-                {
-                    type: 'Curso',
-                    title: 'Ciberseguridad y protección de datos',
-                    provider: 'Fiqsha Smart Consulting',
-                    providerLogo: '../../images/Favicons/Fiqsha Smart Consulting.jpg',
-                    duration: '60 min',
-                    level: 'Básico',
-                    progress: 0,
-                    status: 'default',
-                    image: '../../images/cards-learn/U-Corporativa/Ciberseguridad-y-protección-de-datos.jpg',
-                    competency: 'Herramientas tecnológicas',
-                    language: 'Español'
-                },
-                {
-                    type: 'Curso',
-                    title: 'Gestión de proyectos con metodologías ágiles',
-                    provider: 'Fiqsha Smart Consulting',
-                    providerLogo: '../../images/Favicons/Fiqsha Smart Consulting.jpg',
-                    duration: '60 min',
-                    level: 'Básico',
-                    progress: 0,
-                    status: 'default',
-                    image: '../../images/cards-learn/U-Corporativa/Gestión-de-proyectos-con-metodologías-ágiles.jpg',
-                    competency: 'Herramientas tecnológicas',
-                    language: 'Español'
-                },
-                {
-                    type: 'Curso',
-                    title: 'Uso eficiente del correo electrónico y calendarios',
-                    provider: 'Fiqsha Smart Consulting',
-                    providerLogo: '../../images/Favicons/Fiqsha Smart Consulting.jpg',
-                    duration: '60 min',
-                    level: 'Básico',
-                    progress: 0,
-                    status: 'default',
-                    image: '../../images/cards-learn/U-Corporativa/Uso-eficiente-del-correo-electrónico-y-calendarios.jpg',
-                    competency: 'Herramientas tecnológicas',
-                    language: 'Español'
-                },
-                {
-                    type: 'Curso',
-                    title: 'Motivación y reconocimiento del talento',
-                    provider: 'Fiqsha Smart Consulting',
-                    providerLogo: '../../images/Favicons/Fiqsha Smart Consulting.jpg',
-                    duration: '60 min',
-                    level: 'Básico',
-                    progress: 0,
-                    status: 'default',
-                    image: '../../images/cards-learn/U-Corporativa/motivacion-y-reconocimiento-del-talento.jpg',
-                    competency: 'Liderazgo',
-                    language: 'Español'
+            // Contenidos desde bd-master/bd-contenidos-fiqsha.js (BDS_CONTENIDOS_FIQSHA)
+            var COMPETENCIA_POR_CATEGORIA_FIQSHA = {
+                'cfq-001': 'Liderazgo',
+                'cfq-002': 'Comunicación',
+                'cfq-003': 'Trabajo en equipo',
+                'cfq-004': 'Gestión de proyectos',
+                'cfq-005': 'Innovación',
+                'cfq-006': 'Marketing digital',
+                'cfq-007': 'Experiencia del cliente',
+                'cfq-008': 'Gestión financiera',
+                'cfq-009': 'People management',
+                'cfq-010': 'Inteligencia emocional',
+                'cfq-011': 'Resolución de problemas',
+                'cfq-012': 'Productividad',
+                'cfq-013': 'Negociación',
+                'cfq-014': 'Ventas',
+                'cfq-015': 'Marketing',
+                'cfq-016': 'Gestión del cambio',
+                'cfq-017': 'Desarrollo de software',
+                'cfq-018': 'Data skills',
+                'cfq-019': 'Wellness'
+            };
+
+            function buildCursosCorporativosFromBd() {
+                var bd = typeof window !== 'undefined' && window.BDS_CONTENIDOS_FIQSHA;
+                if (!bd || !bd.contents || !bd.contents.length) {
+                    return [];
                 }
-            ];
+                var nivelesArr = window.BD_MASTER_NIVELES_CONTENIDO && window.BD_MASTER_NIVELES_CONTENIDO.niveles;
+                var aliadosArr = window.BD_MASTER_ALIADOS && window.BD_MASTER_ALIADOS.aliados;
+
+                function nivelNombrePorId(nivelId) {
+                    if (!nivelesArr || !nivelId) return 'Intermedio';
+                    for (var j = 0; j < nivelesArr.length; j++) {
+                        if (nivelesArr[j].id === nivelId) {
+                            return nivelesArr[j].nombre || 'Intermedio';
+                        }
+                    }
+                    return 'Intermedio';
+                }
+
+                function aliadoPorId(proveedorAliadoId) {
+                    if (!aliadosArr || !proveedorAliadoId) return null;
+                    for (var k = 0; k < aliadosArr.length; k++) {
+                        if (aliadosArr[k].id === proveedorAliadoId) {
+                            return aliadosArr[k];
+                        }
+                    }
+                    return null;
+                }
+
+                var out = [];
+                for (var i = 0; i < bd.contents.length; i++) {
+                    var c = bd.contents[i];
+                    var nivelNombre = nivelNombrePorId(c.nivelId);
+                    var a = aliadoPorId(c.proveedorAliadoId);
+                    var providerName = a && a.nombre ? a.nombre : 'UBITS';
+                    var providerLogo = '../../images/Favicons/UBITS.jpg';
+                    if (a && a.logo) {
+                        providerLogo = '../../' + String(a.logo).replace(/^\.\//, '');
+                    }
+                    var durMin = c.tiempoValor != null ? String(c.tiempoValor) : '60';
+                    var duration = durMin + ' min';
+                    var competency = COMPETENCIA_POR_CATEGORIA_FIQSHA[c.categoriaFiqshaId] || 'Liderazgo';
+                    var imgPath = c.imagen
+                        ? ('../../' + String(c.imagen).replace(/^\.\//, ''))
+                        : '../../images/Profile-image.jpg';
+                    var tipo = c.tipoContenido || 'Curso';
+                    out.push({
+                        type: tipo,
+                        title: c.titulo || '',
+                        provider: providerName,
+                        providerLogo: providerLogo,
+                        duration: duration,
+                        level: nivelNombre,
+                        progress: 0,
+                        status: 'default',
+                        image: imgPath,
+                        competency: competency,
+                        language: c.idioma || 'Español'
+                    });
+                }
+                return out;
+            }
+
+            const cursosCorporativos = buildCursosCorporativosFromBd();
 
             // Configuración de paginación usando componente oficial UBITS Paginator
             let currentPage = 1;
