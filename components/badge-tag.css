@@ -154,9 +154,21 @@
     background: var(--ubits-feedback-accent-error-inverted);
 }
 
-/* Filled con icono: icono blanco */
-.ubits-badge-tag--filled.ubits-badge-tag--with-icon i {
-    color: var(--ubits-fg-bold);
+/* Filled con icono: mismo acento que el indicador (color semántico, no blanco plano) */
+.ubits-badge-tag--filled.ubits-badge-tag--with-icon.ubits-badge-tag--success i {
+    color: var(--ubits-feedback-accent-success-inverted);
+}
+
+.ubits-badge-tag--filled.ubits-badge-tag--with-icon.ubits-badge-tag--info i {
+    color: var(--ubits-feedback-accent-info-inverted);
+}
+
+.ubits-badge-tag--filled.ubits-badge-tag--with-icon.ubits-badge-tag--warning i {
+    color: var(--ubits-feedback-accent-warning-inverted);
+}
+
+.ubits-badge-tag--filled.ubits-badge-tag--with-icon.ubits-badge-tag--error i {
+    color: var(--ubits-feedback-accent-error-inverted);
 }
 
 /* ========================================

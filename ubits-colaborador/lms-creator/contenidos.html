@@ -21,12 +21,14 @@
     <link rel="stylesheet" href="../../components/tooltip.css">
     <link rel="stylesheet" href="../../components/table.css">
     <link rel="stylesheet" href="../../components/status-tag.css">
+    <link rel="stylesheet" href="../../components/badge-tag.css">
     <link rel="stylesheet" href="../../components/paginator.css">
     <link rel="stylesheet" href="../../components/input.css">
     <link rel="stylesheet" href="../../components/empty-state.css">
     <link rel="stylesheet" href="../../components/toast.css">
     <link rel="stylesheet" href="../../components/avatar.css">
     <link rel="stylesheet" href="../../components/card-content.css">
+    <link rel="stylesheet" href="../../components/dropdown-menu.css">
     <link rel="stylesheet" href="./lms-creator.css">
     <link rel="stylesheet" href="./contenidos.css">
 </head>
@@ -68,7 +70,7 @@
                                         </button>
                                     </div>
                                     <div class="contenidos-view-toggle" role="group" aria-label="Ver como">
-                                        <span class="contenidos-view-toggle__label ubits-body-md-regular">Ver como:</span>
+                                        <span class="contenidos-view-toggle__label ubits-body-sm-regular">Ver como:</span>
                                         <button type="button" class="ubits-button ubits-button--tertiary ubits-button--md ubits-button--active" id="contenidos-view-cuadricula" aria-pressed="true">
                                             <i class="far fa-grid-2"></i>
                                             <span>Cuadrícula</span>
@@ -95,7 +97,7 @@
                                         </tr>
                                     </thead>
                                     <tbody id="creator-contenidos-tbody">
-                                        <tr data-contenido-demo="1">
+                                        <tr data-contenido-demo="1" data-legacy-lms="true">
                                             <td data-col="nombre"><span class="ubits-body-sm-regular">Desarrollo de habilidades de persuasión</span></td>
                                             <td data-col="tipo"><span class="ubits-body-sm-regular">Curso</span></td>
                                             <td data-col="creacion"><span class="ubits-body-sm-regular">20 feb 2026</span></td>
@@ -106,7 +108,7 @@
                                                 </span>
                                             </td>
                                             <td data-col="acciones">
-                                                <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" aria-haspopup="true" aria-expanded="false" aria-label="Acciones">
+                                                <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm js-contenidos-lms-actions-btn" data-lms-row-key="demo-1" data-legacy-lms="true" aria-haspopup="true" aria-expanded="false" aria-label="Acciones">
                                                     <span>Acciones</span>
                                                     <i class="far fa-chevron-down"></i>
                                                 </button>
@@ -123,13 +125,13 @@
                                                 </span>
                                             </td>
                                             <td data-col="acciones">
-                                                <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" aria-haspopup="true" aria-expanded="false" aria-label="Acciones">
+                                                <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm js-contenidos-lms-actions-btn" data-lms-row-key="demo-2" aria-haspopup="true" aria-expanded="false" aria-label="Acciones">
                                                     <span>Acciones</span>
                                                     <i class="far fa-chevron-down"></i>
                                                 </button>
                                             </td>
                                         </tr>
-                                        <tr data-contenido-demo="3">
+                                        <tr data-contenido-demo="3" data-legacy-lms="true">
                                             <td data-col="nombre"><span class="ubits-body-sm-regular">Un gran liderazgo es una red, no una jerarquía</span></td>
                                             <td data-col="tipo"><span class="ubits-body-sm-regular">Curso</span></td>
                                             <td data-col="creacion"><span class="ubits-body-sm-regular">20 feb 2026</span></td>
@@ -140,7 +142,7 @@
                                                 </span>
                                             </td>
                                             <td data-col="acciones">
-                                                <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" aria-haspopup="true" aria-expanded="false" aria-label="Acciones">
+                                                <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm js-contenidos-lms-actions-btn" data-lms-row-key="demo-3" data-legacy-lms="true" aria-haspopup="true" aria-expanded="false" aria-label="Acciones">
                                                     <span>Acciones</span>
                                                     <i class="far fa-chevron-down"></i>
                                                 </button>
@@ -157,7 +159,7 @@
                                                 </span>
                                             </td>
                                             <td data-col="acciones">
-                                                <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" aria-haspopup="true" aria-expanded="false" aria-label="Acciones">
+                                                <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm js-contenidos-lms-actions-btn" data-lms-row-key="demo-4" aria-haspopup="true" aria-expanded="false" aria-label="Acciones">
                                                     <span>Acciones</span>
                                                     <i class="far fa-chevron-down"></i>
                                                 </button>
@@ -203,12 +205,30 @@
     <script src="../../bd-master/bd-master-aliados.js"></script>
     <script src="../../bd-master/bd-contenidos-fiqsha.js"></script>
     <script src="../../components/avatar.js"></script>
+    <script src="../../components/dropdown-menu.js"></script>
     <script src="../../components/card-content.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             if (typeof initTooltip === 'function') {
                 initTooltip('.widget-contenidos-creator [data-tooltip]');
             }
+            if (typeof initCardContentLmsRowActions === 'function') {
+                initCardContentLmsRowActions();
+            }
+
+            function escapeHtmlAttrContenidos(s) {
+                if (s == null) return '';
+                return String(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
+            }
+
+            document.addEventListener('ubits-lms-content-action', function (ev) {
+                var d = ev.detail || {};
+                if (typeof showToast === 'function') {
+                    var suffix = d.rowKey ? ' · ' + d.rowKey : '';
+                    if (d.legacyLms) suffix += ' (Antiguo LMS)';
+                    showToast('info', (d.action || '') + suffix);
+                }
+            });
 
             var contenidosViewMode = 'grid';
             var contenidosCardsBuilt = false;
@@ -276,7 +296,8 @@
                     status: 'default',
                     image: imgPath,
                     competency: competency,
-                    language: c.idioma || 'Español'
+                    language: c.idioma || 'Español',
+                    legacyLms: c.legacyLms === true
                 };
             }
 
@@ -320,12 +341,12 @@
             /* Cards en cuadrícula: loadCardContent + lmsTag (Publicado / Borrador / …) vía card-content.js; requiere status-tag.css */
             function buildContenidosCardsPayload() {
                 var cards = [];
-                getContenidosDemosNoPublicados().forEach(function (d) {
+                getContenidosDemosNoPublicados().forEach(function (d, demoIdx) {
                     cards.push({
                         type: d.type,
                         title: d.title,
-                        provider: 'UBITS',
-                        providerLogo: '../../images/Favicons/UBITS.jpg',
+                        provider: 'Fiqsha Smart Consulting',
+                        providerLogo: '../../images/Favicons/Fiqsha Smart Consulting.jpg',
                         duration: '60 min',
                         level: d.nivel,
                         progress: 0,
@@ -333,7 +354,9 @@
                         image: d.image,
                         competency: d.competency,
                         language: 'Español',
-                        lmsTag: d.visibilidad
+                        lmsTag: d.visibilidad,
+                        lmsCardId: 'demo-' + (demoIdx + 1),
+                        legacyLms: demoIdx === 0 || demoIdx === 2
                     });
                 });
                 var bd = window.BDS_CONTENIDOS_FIQSHA;
@@ -342,6 +365,7 @@
                         if (!c || !c.titulo) return;
                         var row = cardDataFromFiqshaContent(c);
                         row.lmsTag = 'Publicado';
+                        row.lmsCardId = c.id != null ? String(c.id) : '';
                         cards.push(row);
                     });
                 }
@@ -352,9 +376,12 @@
                 if (contenidosCardsBuilt || typeof loadCardContent !== 'function') return;
                 var payload = buildContenidosCardsPayload();
                 if (!payload.cards.length) return;
-                loadCardContent('contenidos-cards-grid', payload.cards);
+                loadCardContent('contenidos-cards-grid', payload.cards, { lmsRowActions: true });
                 var grid = document.getElementById('contenidos-cards-grid');
                 if (!grid) return;
+                if (typeof initTooltip === 'function') {
+                    initTooltip('#contenidos-cards-grid [data-tooltip]');
+                }
                 var cards = grid.querySelectorAll('.course-card');
                 cards.forEach(function (card, i) {
                     var wrap = document.createElement('div');
@@ -376,18 +403,6 @@
                 loadHeaderProduct('header-product-container', {
                     productName: 'Contenidos',
                     breadcrumbItems: [],
-                    secondaryButtons: [
-                        {
-                            text: 'UBITS MAX',
-                            icon: 'fa-chevron-down',
-                            iconRight: true,
-                            onClick: function() {
-                                if (typeof showToast === 'function') {
-                                    showToast('info', 'Selector UBITS MAX (demo).');
-                                }
-                            }
-                        }
-                    ],
                     primaryButton: {
                         text: 'Crear contenido',
                         icon: 'fa-plus',
@@ -417,6 +432,7 @@
                     if (!c || !c.titulo) return;
                     var tr = document.createElement('tr');
                     tr.setAttribute('data-fiqsha-id', c.id || '');
+                    tr.setAttribute('data-legacy-lms', c.legacyLms === true ? 'true' : 'false');
                     var nivelNombre = mapNivel[c.nivelId] || 'Básico';
                     var tipoTxt = c.tipoContenido || 'Curso';
                     function appendTextCell(col, text) {
@@ -438,7 +454,8 @@
                     tr.appendChild(tdVis);
                     var tdAcc = document.createElement('td');
                     tdAcc.setAttribute('data-col', 'acciones');
-                    tdAcc.innerHTML = '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" aria-haspopup="true" aria-expanded="false" aria-label="Acciones"><span>Acciones</span><i class="far fa-chevron-down"></i></button>';
+                    var legacyAttr = c.legacyLms === true ? ' data-legacy-lms="true"' : '';
+                    tdAcc.innerHTML = '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm js-contenidos-lms-actions-btn" data-lms-row-key="' + escapeHtmlAttrContenidos(c.id) + '"' + legacyAttr + ' aria-haspopup="true" aria-expanded="false" aria-label="Acciones"><span>Acciones</span><i class="far fa-chevron-down"></i></button>';
                     tr.appendChild(tdAcc);
                     frag.appendChild(tr);
                 });
@@ -453,6 +470,8 @@
                 var searchQuery = '';
                 var isSearchMode = false;
                 var contenidosPaginatorInst = null;
+                /** 'lms-creator' = todos los contenidos; 'antiguo-lms' = solo filas con data-legacy-lms="true". */
+                var contenidosCatalogMode = 'lms-creator';
 
                 function normalizeText(t) {
                     if (t == null) return '';
@@ -481,9 +500,17 @@
                     return tbody ? Array.from(tbody.querySelectorAll('tr')) : [];
                 }
 
-                /** Filas que cumplen la búsqueda (o todas si no hay búsqueda) */
-                function getSearchMatches() {
+                function getCatalogFilteredRows() {
                     var rows = getTableRows();
+                    if (contenidosCatalogMode !== 'antiguo-lms') return rows;
+                    return rows.filter(function (tr) {
+                        return tr.getAttribute('data-legacy-lms') === 'true';
+                    });
+                }
+
+                /** Filas que cumplen catálogo y búsqueda */
+                function getSearchMatches() {
+                    var rows = getCatalogFilteredRows();
                     if (searchQuery.trim()) {
                         var q = normalizeText(searchQuery);
                         rows = rows.filter(function (r) {
@@ -536,15 +563,14 @@
                     var pagEl = document.getElementById('contenidos-paginador');
                     var m = getSearchMatches();
                     if (pagEl) {
-                        if (searchQuery.trim() && m.length === 0) pagEl.style.display = 'none';
-                        else pagEl.style.display = '';
+                        pagEl.style.display = m.length === 0 ? 'none' : '';
                     }
                 }
 
                 function updateResultsCount() {
                     var el = document.getElementById('contenidos-results-count');
                     if (!el) return;
-                    var total = getTableRows().length;
+                    var total = getCatalogFilteredRows().length;
                     var matchCount = getSearchMatches().length;
                     el.textContent = matchCount + '/' + total;
                 }
@@ -569,9 +595,29 @@
                     var emptyEl = document.getElementById('contenidosTableEmpty');
                     if (!emptyEl) return;
                     var visible = getSearchMatches();
-                    var total = getTableRows().length;
+                    var totalAll = getTableRows().length;
+                    var totalInCatalog = getCatalogFilteredRows().length;
                     var hasSearch = searchQuery.trim().length > 0;
-                    if (total > 0 && visible.length === 0 && hasSearch) {
+                    var catalogAntiguoVacio = contenidosCatalogMode === 'antiguo-lms' && totalInCatalog === 0 && totalAll > 0;
+                    if (catalogAntiguoVacio) {
+                        if (contenidosViewMode === 'grid') {
+                            if (cardsPanel) cardsPanel.style.display = 'none';
+                        } else if (tableWrap) {
+                            tableWrap.style.display = 'none';
+                        }
+                        emptyEl.style.display = 'flex';
+                        emptyEl.innerHTML = '';
+                        if (typeof loadEmptyState === 'function') {
+                            loadEmptyState('contenidosTableEmpty', {
+                                icon: 'fa-folder-open',
+                                iconSize: 'lg',
+                                title: 'No hay contenidos en Antiguo LMS',
+                                description: 'Cambia el catálogo a LMS Creator para ver todos los contenidos.'
+                            });
+                        }
+                        return;
+                    }
+                    if (totalAll > 0 && visible.length === 0 && hasSearch) {
                         if (contenidosViewMode === 'grid') {
                             if (cardsPanel) cardsPanel.style.display = 'none';
                         } else if (tableWrap) {
@@ -736,6 +782,37 @@
                         syncListaContenidos();
                     });
                 }
+
+                function initContenidosHeaderCatalogSelect() {
+                    var actions = document.querySelector('#header-product-container .ubits-header-product__actions');
+                    if (!actions || typeof createInput !== 'function') return;
+                    if (actions.querySelector('.contenidos-header-catalog')) return;
+                    var wrap = document.createElement('div');
+                    wrap.className = 'contenidos-header-catalog';
+                    wrap.innerHTML = '<span class="ubits-body-sm-regular contenidos-header-catalog__label">Catálogo:</span><div id="contenidos-header-catalog-select" class="contenidos-header-catalog__field"></div>';
+                    actions.insertBefore(wrap, actions.firstChild);
+                    createInput({
+                        containerId: 'contenidos-header-catalog-select',
+                        type: 'select',
+                        label: '',
+                        placeholder: 'Catálogo…',
+                        size: 'sm',
+                        selectOptions: [
+                            { value: 'lms-creator', text: 'LMS Creator' },
+                            { value: 'antiguo-lms', text: 'Antiguo LMS' }
+                        ],
+                        value: contenidosCatalogMode === 'antiguo-lms' ? 'antiguo-lms' : 'lms-creator',
+                        onChange: function (val) {
+                            contenidosCatalogMode = val === 'antiguo-lms' ? 'antiguo-lms' : 'lms-creator';
+                            if (contenidosPaginatorInst) {
+                                contenidosPaginatorInst.updateTotalItems(getSearchMatches().length);
+                                contenidosPaginatorInst.goToPage(1);
+                            }
+                            syncListaContenidos();
+                        }
+                    });
+                }
+                initContenidosHeaderCatalogSelect();
             })();
 
             setTimeout(function() {

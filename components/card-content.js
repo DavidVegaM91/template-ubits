@@ -120,6 +120,132 @@ function getLmsTagStatusClass(label) {
     return LMS_TAG_TO_STATUS_CLASS[label.trim()] || null;
 }
 
+/** Escapa comillas y & para usar en atributos HTML (data-lms-row-key, etc.). */
+function escapeHtmlAttr(str) {
+    if (str == null) return '';
+    return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;')
+        .replace(/</g, '&lt;');
+}
+
+/**
+ * Opciones del menú LMS para getDropdownMenuHtml (leftIcon sin prefijo fa-).
+ * Si isLegacyLms: contenido Antiguo LMS → incluye Restaurar e Informes además de Editar, Duplicar, Archivar.
+ */
+function getLmsRowActionsDropdownOptions(isLegacyLms) {
+    var base = [
+        { text: 'Editar', value: 'editar', leftIcon: 'pen' },
+        { text: 'Duplicar', value: 'duplicar', leftIcon: 'copy' }
+    ];
+    if (isLegacyLms) {
+        base.push(
+            { text: 'Restaurar', value: 'restaurar', leftIcon: 'arrow-rotate-left' },
+            { text: 'Informes', value: 'informes', leftIcon: 'chart-line' }
+        );
+    }
+    base.push({ text: 'Archivar', value: 'archivar', leftIcon: 'box-archive' });
+    return base;
+}
+
+/** Detecta Antiguo LMS: .course-card[data-legacy-lms], botón o fila con data-legacy-lms="true". */
+function isLegacyLmsLmsActionsContext(anchorEl) {
+    if (!anchorEl) return false;
+    var card = anchorEl.closest('.course-card');
+    if (card && card.getAttribute('data-legacy-lms') === 'true') return true;
+    if (anchorEl.getAttribute('data-legacy-lms') === 'true') return true;
+    var tr = anchorEl.closest('tr');
+    if (tr && tr.getAttribute('data-legacy-lms') === 'true') return true;
+    return false;
+}
+
+var LMS_ROW_ACTIONS_OVERLAY_ID = 'card-content-lms-row-actions-overlay';
+var _lmsActionsOpenAnchor = null;
+
+function openLmsRowActionsMenu(anchorEl) {
+    if (!anchorEl || typeof window.getDropdownMenuHtml !== 'function' ||
+        typeof window.openDropdownMenu !== 'function' ||
+        typeof window.closeDropdownMenu !== 'function') {
+        console.warn('UBITS: carga dropdown-menu.js para el menú de opciones de card-content.');
+        return;
+    }
+    if (_lmsActionsOpenAnchor && _lmsActionsOpenAnchor !== anchorEl) {
+        _lmsActionsOpenAnchor.setAttribute('aria-expanded', 'false');
+    }
+    _lmsActionsOpenAnchor = anchorEl;
+
+    var prev = document.getElementById(LMS_ROW_ACTIONS_OVERLAY_ID);
+    if (prev) {
+        prev.remove();
+    }
+
+    var legacyLms = isLegacyLmsLmsActionsContext(anchorEl);
+
+    document.body.insertAdjacentHTML('beforeend', window.getDropdownMenuHtml({
+        overlayId: LMS_ROW_ACTIONS_OVERLAY_ID,
+        options: getLmsRowActionsDropdownOptions(legacyLms)
+    }));
+
+    var overlay = document.getElementById(LMS_ROW_ACTIONS_OVERLAY_ID);
+    if (!overlay) return;
+
+    function tearDown() {
+        window.closeDropdownMenu(LMS_ROW_ACTIONS_OVERLAY_ID);
+        if (_lmsActionsOpenAnchor) {
+            _lmsActionsOpenAnchor.setAttribute('aria-expanded', 'false');
+            _lmsActionsOpenAnchor = null;
+        }
+        overlay.removeEventListener('click', onOverlayClick);
+        if (overlay.parentNode) {
+            overlay.parentNode.removeChild(overlay);
+        }
+    }
+
+    function onOverlayClick(ev) {
+        if (ev.target === overlay) {
+            tearDown();
+        }
+    }
+
+    overlay.addEventListener('click', onOverlayClick);
+
+    overlay.querySelectorAll('.ubits-dropdown-menu__option[data-value]').forEach(function (row) {
+        row.addEventListener('click', function (ev) {
+            ev.stopPropagation();
+            var val = row.getAttribute('data-value');
+            var key = anchorEl.getAttribute('data-lms-row-key') || '';
+            document.dispatchEvent(new CustomEvent('ubits-lms-content-action', {
+                bubbles: true,
+                detail: { action: val, rowKey: key, anchor: anchorEl, legacyLms: legacyLms }
+            }));
+            tearDown();
+        });
+    });
+
+    anchorEl.setAttribute('aria-expanded', 'true');
+    window.openDropdownMenu(LMS_ROW_ACTIONS_OVERLAY_ID, anchorEl, { alignRight: true });
+}
+
+var _lmsRowActionsDocBound = false;
+
+/**
+ * Registra el clic en botones de opciones LMS (card y tabla). Idempotente.
+ * Requiere dropdown-menu.js + dropdown-menu.css y button.css.
+ * Menú extendido (Restaurar, Informes) si .course-card[data-legacy-lms="true"] o el botón / tr tiene data-legacy-lms="true".
+ */
+function initCardContentLmsRowActions() {
+    if (_lmsRowActionsDocBound) return;
+    _lmsRowActionsDocBound = true;
+    document.addEventListener('click', function (e) {
+        var btn = e.target.closest('.course-card__lms-options-btn, .js-contenidos-lms-actions-btn');
+        if (!btn) return;
+        e.preventDefault();
+        e.stopPropagation();
+        openLmsRowActionsMenu(btn);
+    });
+}
+
 // ALIADOS OFICIALES (18 proveedores)
 // NOTA: Las rutas son relativas al HTML que carga el componente, no al JS
 // Desde subcarpetas (ubits-admin/*, ubits-colaborador/*) usar: '../../images/Favicons/...'
@@ -198,6 +324,9 @@ function validateCardData(cardData) {
  * @param {string} cardData.competency - Competencia (Accountability, Administración de negocios, Agilidad, Comunicación, Cumplimiento (Compliance), Data skills, Desarrollo de software, Desarrollo web, Digital skills, e-Commerce, Emprendimiento, Experiencia del cliente, Gestión de procesos y operaciones, Gestión de proyectos, Gestión de recursos tecnológicos, Gestión del cambio, Gestión del riesgo, Gestión financiera, Herramientas tecnológicas, Inglés, Innovación, Inteligencia emocional, Lenguajes de Programación, Liderazgo, Marketing, Marketing digital, Negociación, People management, Product design, Productividad, Resolución de problemas, Trabajo en equipo, Ventas, Wellness)
  * @param {string} cardData.language - Idioma (Español, Inglés, etc.)
  * @param {string} [cardData.lmsTag] - Opcional. Tag LMS (Publicado, Borrador, Privado, Oculto, Archivado) en la esquina superior izquierda de la imagen; solo pantallas como LMS Creator / contenidos. Si es Archivado, la imagen se muestra en blanco y negro (grayscale) vía data-lms-tag + CSS.
+ * @param {boolean} [cardData.lmsRowActions] - Si true, muestra botón de opciones (elipsis vertical, terciario xs) arriba a la derecha; menú Editar/Duplicar/Archivar o extendido si legacyLms. Requiere initCardContentLmsRowActions() y dropdown-menu.
+ * @param {string} [cardData.lmsCardId] - Identificador para data-lms-row-key (evento ubits-lms-content-action).
+ * @param {boolean} [cardData.legacyLms] - Si true, badge "Antiguo LMS" (outlined info + puntito) y menú de acciones con Restaurar e Informes. Requiere badge-tag.css.
  */
 function renderCardContent(cardData) {
     // Determinar clase de estado
@@ -290,14 +419,44 @@ function renderCardContent(cardData) {
         }
     }
 
+    let legacyLmsBlock = '';
+    let legacyLmsDataAttr = '';
+    if (cardData.legacyLms === true) {
+        legacyLmsDataAttr = ' data-legacy-lms="true"';
+        legacyLmsBlock = `
+                <div class="course-card__legacy-lms-badge">
+                    <span class="ubits-badge-tag ubits-badge-tag--outlined ubits-badge-tag--info ubits-badge-tag--sm course-card__legacy-lms-tag">
+                        <span class="ubits-badge-tag__indicator" aria-hidden="true"></span>
+                        <span class="ubits-badge-tag__text">Antiguo LMS</span>
+                    </span>
+                </div>`;
+    }
+
+    const showLmsOptions = cardData.lmsRowActions === true;
+    const lmsRowKey = escapeHtmlAttr(
+        cardData.lmsCardId != null ? String(cardData.lmsCardId) : (cardData.id != null ? String(cardData.id) : '')
+    );
+    const lmsOptionsBtn = showLmsOptions
+        ? `<div class="course-header__actions">
+                    <button type="button" class="ubits-button ubits-button--tertiary ubits-button--xs ubits-button--icon-only course-card__lms-options-btn"
+                        data-lms-row-key="${lmsRowKey}"
+                        aria-haspopup="true" aria-expanded="false"
+                        aria-label="Opciones del contenido"
+                        data-tooltip="Opciones" data-tooltip-delay="1000">
+                        <i class="far fa-ellipsis-vertical"></i>
+                    </button>
+                </div>`
+        : '';
+
     // Template de la card
     return `
-        <div class="course-card" data-progress="${cardData.progress}" data-status="${cardData.status}"${lmsTagDataAttr}>
+        <div class="course-card" data-progress="${cardData.progress}" data-status="${cardData.status}"${lmsTagDataAttr}${legacyLmsDataAttr}>
             <div class="course-thumbnail-wrapper">
                 <div class="course-thumbnail">
                     <img src="${cardData.image}" alt="${cardData.title}" class="course-image">
                 </div>
                 ${lmsTagBlock}
+                ${legacyLmsBlock}
                 ${(cardData.progress > 0 || cardData.status !== 'default') ? `
                 <div class="course-progress-overlay">
                     <div class="progress-bar">
@@ -312,6 +471,7 @@ function renderCardContent(cardData) {
                         <span class="course-type ubits-body-xs-regular">${cardData.type}</span>
                         ${statusText ? `<span class="course-status ${statusClass} ubits-body-sm-bold">${statusText}</span>` : ''}
                     </div>
+                    ${lmsOptionsBtn}
                 </div>
                 <h3 class="course-title ubits-body-sm-bold">${cardData.title}</h3>
                 ${providerHTML}
@@ -350,22 +510,45 @@ function renderCardContent(cardData) {
  * Carga múltiples course-cards en un contenedor
  * @param {string} containerId - ID del contenedor donde cargar las cards
  * @param {Array} cardsData - Array de objetos con datos de las cards
+ * @param {Object} [options] - { lmsRowActions: true } aplica menú de opciones LMS a todas las cards salvo que la card defina lmsRowActions: false
  */
-function loadCardContent(containerId, cardsData) {
+function loadCardContent(containerId, cardsData, options) {
     const container = document.getElementById(containerId);
     if (!container) {
         console.error(`Container with ID "${containerId}" not found`);
         return;
     }
 
+    const defaultLms = options && options.lmsRowActions === true;
+
     // Limpiar contenedor
     container.innerHTML = '';
 
     // Renderizar cada card
-    cardsData.forEach(cardData => {
-        const cardHTML = renderCardContent(cardData);
+    cardsData.forEach((cardData, index) => {
+        const merged = Object.assign({}, cardData);
+        if (defaultLms && merged.lmsRowActions === undefined) {
+            merged.lmsRowActions = true;
+        }
+        if (merged.lmsRowActions === true) {
+            if (merged.lmsCardId == null && merged.id != null) {
+                merged.lmsCardId = String(merged.id);
+            }
+            if (merged.lmsCardId == null) {
+                merged.lmsCardId = 'row-' + index;
+            }
+        }
+        const cardHTML = renderCardContent(merged);
         container.insertAdjacentHTML('beforeend', cardHTML);
     });
+
+    if (cardsData.some(function (c) {
+        const m = Object.assign({}, c);
+        if (defaultLms && m.lmsRowActions === undefined) m.lmsRowActions = true;
+        return m.lmsRowActions === true;
+    })) {
+        initCardContentLmsRowActions();
+    }
 }
 
 
@@ -395,6 +578,8 @@ const sampleCardData = {
 // Exponer funciones principales
 window.renderCardContent = renderCardContent;
 window.loadCardContent = loadCardContent;
+window.initCardContentLmsRowActions = initCardContentLmsRowActions;
+window.getLmsRowActionsDropdownOptions = getLmsRowActionsDropdownOptions;
 window.validateCardData = validateCardData;
 window.getRecommendedDuration = getRecommendedDuration;
 window.getLmsTagStatusClass = getLmsTagStatusClass;
@@ -469,6 +654,7 @@ console.log(window.CARD_CONTENT_OPTIONS);
  * 3. FontAwesome: <link rel="stylesheet" href="fontawesome-icons.css">
  * 4. UBITS Base: <link rel="stylesheet" href="ubits-colors.css">
  * 5. UBITS Typography: <link rel="stylesheet" href="ubits-typography.css">
+ * 6. Si usas lmsTag: status-tag.css. Si usas legacyLms: badge-tag.css.
  * 
  * IMPLEMENTACIÓN BÁSICA:
  * ```html

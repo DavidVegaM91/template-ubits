@@ -11,6 +11,7 @@ window.BDS_CONTENIDOS_FIQSHA = {
   "contents": [
     {
       "id": "f001",
+      "legacyLms": true,
       "origen": "empresa_fiqsha",
       "titulo": "Inducción a la cultura y valores corporativos",
       "descripcion": "Curso corporativo Fiqsha: Inducción a la cultura y valores corporativos. Categoría Cultura y valores.",

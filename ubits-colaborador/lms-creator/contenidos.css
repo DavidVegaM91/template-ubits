@@ -234,6 +234,33 @@
     }
 }
 
+/* Header product: selector Catálogo (máx. 150px) */
+.page-contenidos-creator .contenidos-header-catalog {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-sm);
+    flex-shrink: 0;
+    margin-right: var(--gap-md);
+    max-width: 100%;
+}
+
+.page-contenidos-creator .contenidos-header-catalog__label {
+    color: var(--ubits-fg-1-medium);
+    white-space: nowrap;
+}
+
+.page-contenidos-creator .contenidos-header-catalog__field {
+    width: 100%;
+    max-width: 150px;
+    flex: 0 0 auto;
+    min-width: 0;
+}
+
+.page-contenidos-creator .contenidos-header-catalog__field .ubits-input-container,
+.page-contenidos-creator .contenidos-header-catalog__field .ubits-input-wrapper {
+    max-width: 150px;
+}
+
 @media (max-width: 768px) {
     .contenidos-toolbar {
         align-items: flex-start;

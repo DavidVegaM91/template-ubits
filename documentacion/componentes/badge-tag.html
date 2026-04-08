@@ -16,8 +16,34 @@
     <link rel="stylesheet" href="../../docs/docs-sidebar.css">
     <link rel="stylesheet" href="../../docs/docstyles.css">
     <link rel="stylesheet" href="../../components/button.css">
+    <link rel="stylesheet" href="../../components/input.css">
+    <link rel="stylesheet" href="../../components/dropdown-menu.css">
+    <link rel="stylesheet" href="../../components/switch.css">
     <link rel="stylesheet" href="../../components/toast.css">
     <link rel="stylesheet" href="../../components/badge-tag.css">
+    <style>
+        .badge-tag-preview-controls {
+            display: flex;
+            flex-direction: column;
+            gap: var(--gap-lg);
+            margin-top: var(--gap-lg);
+        }
+        .badge-tag-preview-controls__row {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: var(--gap-md);
+        }
+        .badge-tag-preview-controls__label {
+            min-width: 80px;
+            margin: 0;
+        }
+        .badge-tag-preview-controls__field {
+            flex: 1;
+            min-width: min(100%, 220px);
+            max-width: 320px;
+        }
+    </style>
 </head>
 <body class="componentes-page" data-theme="light">
     <div class="dashboard-container">
@@ -47,104 +73,41 @@
                                 Preview del componente
                             </h2>
                             <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6;">
-                                Badge Tag con punto (por defecto) o con icono. Estilos outlined y filled; colores success, info, warning, error; tamaños sm, md, lg.
+                                Un solo ejemplo en vivo: elige estilo, color y tamaño con los selectores; usa los interruptores para punto, icono o solo icono. En <strong>filled</strong> con icono, el icono usa el acento semántico. Nota: en <strong>icon-only</strong> el componente fija 28×28px (el tamaño sm/md/lg no agranda esa variante).
                             </p>
 
-                            <p class="ubits-body-sm-bold" style="margin-bottom: 12px; color: var(--ubits-fg-1-medium);">Outlined (punto)</p>
-                            <div style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin-bottom: 24px;">
-                                <span class="ubits-badge-tag ubits-badge-tag--outlined ubits-badge-tag--success ubits-badge-tag--sm">
-                                    <span class="ubits-badge-tag__indicator"></span>
-                                    <span class="ubits-badge-tag__text">Badge text</span>
-                                </span>
-                                <span class="ubits-badge-tag ubits-badge-tag--outlined ubits-badge-tag--info ubits-badge-tag--sm">
-                                    <span class="ubits-badge-tag__indicator"></span>
-                                    <span class="ubits-badge-tag__text">Badge text</span>
-                                </span>
-                                <span class="ubits-badge-tag ubits-badge-tag--outlined ubits-badge-tag--warning ubits-badge-tag--sm">
-                                    <span class="ubits-badge-tag__indicator"></span>
-                                    <span class="ubits-badge-tag__text">Badge text</span>
-                                </span>
-                                <span class="ubits-badge-tag ubits-badge-tag--outlined ubits-badge-tag--error ubits-badge-tag--sm">
-                                    <span class="ubits-badge-tag__indicator"></span>
-                                    <span class="ubits-badge-tag__text">Badge text</span>
-                                </span>
+                            <div style="background: var(--ubits-bg-2); padding: var(--padding-xl); border-radius: var(--border-radius-sm); min-height: 120px; display: flex; align-items: center; justify-content: center;">
+                                <div id="badge-tag-preview-mount" aria-live="polite"></div>
                             </div>
 
-                            <p class="ubits-body-sm-bold" style="margin-bottom: 12px; color: var(--ubits-fg-1-medium);">Filled (punto)</p>
-                            <div style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin-bottom: 24px;">
-                                <span class="ubits-badge-tag ubits-badge-tag--filled ubits-badge-tag--success ubits-badge-tag--sm">
-                                    <span class="ubits-badge-tag__indicator"></span>
-                                    <span class="ubits-badge-tag__text">Badge text</span>
-                                </span>
-                                <span class="ubits-badge-tag ubits-badge-tag--filled ubits-badge-tag--info ubits-badge-tag--sm">
-                                    <span class="ubits-badge-tag__indicator"></span>
-                                    <span class="ubits-badge-tag__text">Badge text</span>
-                                </span>
-                                <span class="ubits-badge-tag ubits-badge-tag--filled ubits-badge-tag--warning ubits-badge-tag--sm">
-                                    <span class="ubits-badge-tag__indicator"></span>
-                                    <span class="ubits-badge-tag__text">Badge text</span>
-                                </span>
-                                <span class="ubits-badge-tag ubits-badge-tag--filled ubits-badge-tag--error ubits-badge-tag--sm">
-                                    <span class="ubits-badge-tag__indicator"></span>
-                                    <span class="ubits-badge-tag__text">Badge text</span>
-                                </span>
-                            </div>
-
-                            <p class="ubits-body-sm-bold" style="margin-bottom: 12px; color: var(--ubits-fg-1-medium);">Outlined con icono</p>
-                            <div style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin-bottom: 24px;">
-                                <span class="ubits-badge-tag ubits-badge-tag--outlined ubits-badge-tag--success ubits-badge-tag--sm ubits-badge-tag--with-icon">
-                                    <i class="far fa-check-circle"></i>
-                                    <span class="ubits-badge-tag__text">Completado</span>
-                                </span>
-                                <span class="ubits-badge-tag ubits-badge-tag--outlined ubits-badge-tag--info ubits-badge-tag--sm ubits-badge-tag--with-icon">
-                                    <i class="far fa-clock"></i>
-                                    <span class="ubits-badge-tag__text">En proceso</span>
-                                </span>
-                                <span class="ubits-badge-tag ubits-badge-tag--outlined ubits-badge-tag--warning ubits-badge-tag--sm ubits-badge-tag--with-icon">
-                                    <i class="far fa-exclamation-triangle"></i>
-                                    <span class="ubits-badge-tag__text">Pendiente</span>
-                                </span>
-                                <span class="ubits-badge-tag ubits-badge-tag--outlined ubits-badge-tag--error ubits-badge-tag--sm ubits-badge-tag--with-icon">
-                                    <i class="far fa-times-circle"></i>
-                                    <span class="ubits-badge-tag__text">Error</span>
-                                </span>
-                            </div>
-
-                            <p class="ubits-body-sm-bold" style="margin-bottom: 12px; color: var(--ubits-fg-1-medium);">Icon only (solo icono, sin texto)</p>
-                            <p class="ubits-body-sm-regular" style="margin-bottom: 12px; color: var(--ubits-fg-1-medium);">Para listas móviles (ej. task-strip): 28×28px, solo el icono.</p>
-                            <div style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin-bottom: 24px;">
-                                <span class="ubits-badge-tag ubits-badge-tag--outlined ubits-badge-tag--success ubits-badge-tag--sm ubits-badge-tag--with-icon ubits-badge-tag--icon-only">
-                                    <i class="far fa-check-circle"></i>
-                                    <span class="ubits-badge-tag__text">Completado</span>
-                                </span>
-                                <span class="ubits-badge-tag ubits-badge-tag--outlined ubits-badge-tag--info ubits-badge-tag--sm ubits-badge-tag--with-icon ubits-badge-tag--icon-only">
-                                    <i class="far fa-clock"></i>
-                                    <span class="ubits-badge-tag__text">Info</span>
-                                </span>
-                                <span class="ubits-badge-tag ubits-badge-tag--outlined ubits-badge-tag--warning ubits-badge-tag--sm ubits-badge-tag--with-icon ubits-badge-tag--icon-only">
-                                    <i class="far fa-chevron-up"></i>
-                                    <span class="ubits-badge-tag__text">Media</span>
-                                </span>
-                                <span class="ubits-badge-tag ubits-badge-tag--outlined ubits-badge-tag--error ubits-badge-tag--sm ubits-badge-tag--with-icon ubits-badge-tag--icon-only">
-                                    <i class="far fa-chevrons-up"></i>
-                                    <span class="ubits-badge-tag__text">Alta</span>
-                                </span>
-                            </div>
-
-                            <p class="ubits-body-sm-bold" style="margin-bottom: 12px; color: var(--ubits-fg-1-medium);">Tamaños (outlined, punto)</p>
-                            <div style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center;">
-                                <span class="ubits-badge-tag ubits-badge-tag--outlined ubits-badge-tag--success ubits-badge-tag--sm">
-                                    <span class="ubits-badge-tag__indicator"></span>
-                                    <span class="ubits-badge-tag__text">Small</span>
-                                </span>
-                                <span class="ubits-badge-tag ubits-badge-tag--outlined ubits-badge-tag--success ubits-badge-tag--md">
-                                    <span class="ubits-badge-tag__indicator"></span>
-                                    <span class="ubits-badge-tag__text">Medium</span>
-                                </span>
-                                <span class="ubits-badge-tag ubits-badge-tag--outlined ubits-badge-tag--success ubits-badge-tag--lg">
-                                    <span class="ubits-badge-tag__indicator"></span>
-                                    <span class="ubits-badge-tag__text">Large</span>
-                                </span>
+                            <div class="badge-tag-preview-controls">
+                                <div class="badge-tag-preview-controls__row">
+                                    <p class="badge-tag-preview-controls__label ubits-body-sm-bold" style="color: var(--ubits-fg-1-medium);">Estilo</p>
+                                    <div class="badge-tag-preview-controls__field" id="badge-preview-select-style"></div>
+                                </div>
+                                <div class="badge-tag-preview-controls__row">
+                                    <p class="badge-tag-preview-controls__label ubits-body-sm-bold" style="color: var(--ubits-fg-1-medium);">Color</p>
+                                    <div class="badge-tag-preview-controls__field" id="badge-preview-select-color"></div>
+                                </div>
+                                <div class="badge-tag-preview-controls__row">
+                                    <p class="badge-tag-preview-controls__label ubits-body-sm-bold" style="color: var(--ubits-fg-1-medium);">Tamaño</p>
+                                    <div class="badge-tag-preview-controls__field" id="badge-preview-select-tag-size"></div>
+                                </div>
+                                <div class="badge-tag-preview-controls__row" style="align-items: center; gap: var(--gap-md);">
+                                    <label class="ubits-switch ubits-switch--md" style="align-items: center; gap: var(--gap-sm); flex-wrap: wrap;">
+                                        <input type="checkbox" class="ubits-switch__input" id="badge-preview-use-icon" role="switch" aria-checked="false" aria-label="Usar icono en lugar de punto">
+                                        <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
+                                        <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Icono en lugar de punto</span>
+                                    </label>
+                                </div>
+                                <div class="badge-tag-preview-controls__row" style="align-items: center; gap: var(--gap-md);">
+                                    <label class="ubits-switch ubits-switch--md" style="align-items: center; gap: var(--gap-sm); flex-wrap: wrap;">
+                                        <input type="checkbox" class="ubits-switch__input" id="badge-preview-icon-only" role="switch" aria-checked="false" aria-label="Solo icono, sin texto visible" disabled>
+                                        <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
+                                        <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Solo icono (icon-only)</span>
+                                    </label>
+                                    <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Activa solo si usas icono. Útil en listas compactas (p. ej. task-strip).</span>
+                                </div>
                             </div>
                         </div>
 
@@ -363,6 +326,8 @@
     <script src="../../components/sub-nav.js"></script>
     <script src="../../components/alert.js"></script>
     <script src="../../components/toast.js"></script>
+    <script src="../../components/dropdown-menu.js"></script>
+    <script src="../../components/input.js"></script>
     <script src="../../docs/docs-sidebar.js"></script>
     <script src="../../script.js"></script>
     <script>
@@ -376,7 +341,166 @@
                     noClose: true
                 });
             }
+            initBadgeTagPreview();
         });
+
+        /* tagSize: no usar propiedad "size" (reservada / conflictos en runtime). */
+        var badgePreviewState = {
+            style: 'outlined',
+            color: 'success',
+            tagSize: 'sm',
+            useIcon: false,
+            iconOnly: false
+        };
+
+        var badgePreviewLabels = {
+            success: 'Completado',
+            info: 'En proceso',
+            warning: 'Pendiente',
+            error: 'Error'
+        };
+
+        var badgePreviewIcons = {
+            success: 'check-circle',
+            info: 'clock',
+            warning: 'exclamation-triangle',
+            error: 'times-circle'
+        };
+
+        function renderBadgeTagPreview() {
+            var mount = document.getElementById('badge-tag-preview-mount');
+            if (!mount) return;
+            var s = badgePreviewState;
+            var classes = [
+                'ubits-badge-tag',
+                'ubits-badge-tag--' + s.style,
+                'ubits-badge-tag--' + s.color,
+                'ubits-badge-tag--' + s.tagSize
+            ];
+            if (s.useIcon) {
+                classes.push('ubits-badge-tag--with-icon');
+                if (s.iconOnly) classes.push('ubits-badge-tag--icon-only');
+            }
+            var inner = '';
+            if (s.useIcon) {
+                inner = '<i class="far fa-' + badgePreviewIcons[s.color] + '"></i>';
+            } else {
+                inner = '<span class="ubits-badge-tag__indicator" aria-hidden="true"></span>';
+            }
+            inner += '<span class="ubits-badge-tag__text">' + badgePreviewLabels[s.color] + '</span>';
+            mount.innerHTML = '<span class="' + classes.join(' ') + '">' + inner + '</span>';
+        }
+
+        function syncBadgePreviewIconSwitches() {
+            var swIcon = document.getElementById('badge-preview-use-icon');
+            var swOnly = document.getElementById('badge-preview-icon-only');
+            if (swIcon) {
+                swIcon.checked = badgePreviewState.useIcon;
+                swIcon.setAttribute('aria-checked', badgePreviewState.useIcon ? 'true' : 'false');
+            }
+            if (swOnly) {
+                swOnly.checked = badgePreviewState.iconOnly;
+                swOnly.setAttribute('aria-checked', badgePreviewState.iconOnly ? 'true' : 'false');
+                swOnly.disabled = !badgePreviewState.useIcon;
+                if (!badgePreviewState.useIcon) {
+                    badgePreviewState.iconOnly = false;
+                    swOnly.checked = false;
+                    swOnly.setAttribute('aria-checked', 'false');
+                }
+            }
+        }
+
+        function onBadgePreviewUseIconChange() {
+            var sw = document.getElementById('badge-preview-use-icon');
+            badgePreviewState.useIcon = !!(sw && sw.checked);
+            if (!badgePreviewState.useIcon) badgePreviewState.iconOnly = false;
+            syncBadgePreviewIconSwitches();
+            renderBadgeTagPreview();
+        }
+
+        function onBadgePreviewIconOnlyChange() {
+            var sw = document.getElementById('badge-preview-icon-only');
+            badgePreviewState.iconOnly = !!(sw && sw.checked);
+            if (sw) sw.setAttribute('aria-checked', sw.checked ? 'true' : 'false');
+            renderBadgeTagPreview();
+        }
+
+        function initBadgeTagPreviewSelects() {
+            if (typeof createInput !== 'function') return;
+            var cStyle = document.getElementById('badge-preview-select-style');
+            var cColor = document.getElementById('badge-preview-select-color');
+            var cTagSize = document.getElementById('badge-preview-select-tag-size');
+            if (!cStyle || !cColor || !cTagSize) return;
+            if (cStyle.querySelector('.ubits-input-wrapper')) return;
+
+            createInput({
+                containerId: 'badge-preview-select-style',
+                type: 'select',
+                label: '',
+                placeholder: 'Elegir estilo…',
+                size: 'sm',
+                selectOptions: [
+                    { value: 'outlined', text: 'Outlined' },
+                    { value: 'filled', text: 'Filled' }
+                ],
+                value: badgePreviewState.style,
+                onChange: function (val) {
+                    badgePreviewState.style = val || 'outlined';
+                    renderBadgeTagPreview();
+                }
+            });
+
+            createInput({
+                containerId: 'badge-preview-select-color',
+                type: 'select',
+                label: '',
+                placeholder: 'Elegir color…',
+                size: 'sm',
+                selectOptions: [
+                    { value: 'success', text: 'Success' },
+                    { value: 'info', text: 'Info' },
+                    { value: 'warning', text: 'Warning' },
+                    { value: 'error', text: 'Error' }
+                ],
+                value: badgePreviewState.color,
+                onChange: function (val) {
+                    badgePreviewState.color = val || 'success';
+                    renderBadgeTagPreview();
+                }
+            });
+
+            createInput({
+                containerId: 'badge-preview-select-tag-size',
+                type: 'select',
+                label: '',
+                placeholder: 'Elegir tamaño…',
+                size: 'sm',
+                selectOptions: [
+                    { value: 'sm', text: 'Small (sm)' },
+                    { value: 'md', text: 'Medium (md)' },
+                    { value: 'lg', text: 'Large (lg)' }
+                ],
+                value: badgePreviewState.tagSize,
+                onChange: function (val) {
+                    badgePreviewState.tagSize = val || 'sm';
+                    renderBadgeTagPreview();
+                }
+            });
+        }
+
+        function initBadgeTagPreview() {
+            initBadgeTagPreviewSelects();
+            var swIcon = document.getElementById('badge-preview-use-icon');
+            var swOnly = document.getElementById('badge-preview-icon-only');
+            if (swIcon) {
+                swIcon.addEventListener('change', onBadgePreviewUseIconChange);
+            }
+            if (swOnly) {
+                swOnly.addEventListener('change', onBadgePreviewIconOnlyChange);
+            }
+            syncBadgePreviewIconSwitches();
+            renderBadgeTagPreview();
+        }
 
         function toggleTechnicalDocs() {
             var content = document.getElementById('technical-docs-content');

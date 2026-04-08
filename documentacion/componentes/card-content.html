@@ -19,11 +19,13 @@
     <link rel="stylesheet" href="../../components/button.css">
     <link rel="stylesheet" href="../../components/avatar.css">
     <link rel="stylesheet" href="../../components/status-tag.css">
+    <link rel="stylesheet" href="../../components/badge-tag.css">
     <link rel="stylesheet" href="../../components/card-content.css">
     <link rel="stylesheet" href="../../components/switch.css">
     <link rel="stylesheet" href="../../components/input.css">
     <link rel="stylesheet" href="../../components/dropdown-menu.css">
     <link rel="stylesheet" href="../../components/toast.css">
+    <link rel="stylesheet" href="../../components/tooltip.css">
     <style>
         /* Preview Styles */
         /* Preview control buttons - override UBITS button styles for active state */
@@ -224,6 +226,26 @@
                         </div>
                         <div class="control-group" id="lms-tag-value-group" style="display: none;">
                             <div id="lms-tag-value-select-container"></div>
+                        </div>
+                        <div class="control-group">
+                            <span class="control-label ubits-body-sm-semibold" style="color: var(--ubits-fg-1-high);">Botón opciones (LMS)</span>
+                            <label class="ubits-switch ubits-switch--md" style="align-self: flex-start;">
+                                <input type="checkbox" class="ubits-switch__input" id="preview-lms-options-switch" role="switch" aria-checked="false" aria-label="Mostrar botón de opciones en la tarjeta">
+                                <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
+                            </label>
+                            <p class="ubits-body-sm-regular" style="margin: 0; color: var(--ubits-fg-1-medium); max-width: 320px;">
+                                Activa el botón de elipsis (terciario, tamaño xs) arriba a la derecha. El menú Editar / Duplicar / Archivar se abre al hacer clic; si la card tiene Antiguo LMS (<code>legacyLms</code>), también Restaurar e Informes. Apagado por defecto.
+                            </p>
+                        </div>
+                        <div class="control-group">
+                            <span class="control-label ubits-body-sm-semibold" style="color: var(--ubits-fg-1-high);">Badge Antiguo LMS</span>
+                            <label class="ubits-switch ubits-switch--md" style="align-self: flex-start;">
+                                <input type="checkbox" class="ubits-switch__input" id="preview-legacy-lms-switch" role="switch" aria-checked="false" aria-label="Mostrar badge Antiguo LMS en la miniatura">
+                                <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
+                            </label>
+                            <p class="ubits-body-sm-regular" style="margin: 0; color: var(--ubits-fg-1-medium); max-width: 320px;">
+                                Badge tag outlined info tamaño sm (borde informativo y puntito de color), esquina superior derecha de la imagen. Apagado por defecto.
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -875,8 +897,10 @@ const logoMap = {
     <script src="../../components/toast.js"></script>
     <script src="../../docs/docs-sidebar.js"></script>
     <script src="../../components/avatar.js"></script>
+    <script src="../../components/dropdown-menu.js"></script>
     <script src="../../components/card-content.js"></script>
     <script src="../../components/input.js"></script>
+    <script src="../../components/tooltip.js"></script>
     <script src="../../script.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -1114,12 +1138,47 @@ const logoMap = {
                     updateCardPreview();
                 });
             }
+
+            var optSwitch = document.getElementById('preview-lms-options-switch');
+            if (optSwitch) {
+                optSwitch.addEventListener('change', function() {
+                    optSwitch.setAttribute('aria-checked', optSwitch.checked ? 'true' : 'false');
+                    if (optSwitch.checked) {
+                        currentCardData.lmsRowActions = true;
+                        currentCardData.lmsCardId = 'preview';
+                    } else {
+                        delete currentCardData.lmsRowActions;
+                        delete currentCardData.lmsCardId;
+                    }
+                    updateCardPreview();
+                });
+            }
+
+            var legacySwitch = document.getElementById('preview-legacy-lms-switch');
+            if (legacySwitch) {
+                legacySwitch.addEventListener('change', function() {
+                    legacySwitch.setAttribute('aria-checked', legacySwitch.checked ? 'true' : 'false');
+                    if (legacySwitch.checked) {
+                        currentCardData.legacyLms = true;
+                    } else {
+                        delete currentCardData.legacyLms;
+                    }
+                    updateCardPreview();
+                });
+            }
+
+            if (typeof initCardContentLmsRowActions === 'function') {
+                initCardContentLmsRowActions();
+            }
         }
         
         // Actualizar preview del card
         function updateCardPreview() {
             const container = document.getElementById('card-preview');
             container.innerHTML = renderCardContent(currentCardData);
+            if (typeof initTooltip === 'function') {
+                initTooltip('#card-preview [data-tooltip]');
+            }
         }
 
 
