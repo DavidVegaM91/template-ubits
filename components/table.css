@@ -23,6 +23,7 @@
     border: 1px solid var(--ubits-border-1);
     border-radius: var(--border-radius-sm);
     overflow: hidden;
+    background: var(--ubits-bg-1);
 }
 
 /* Cabecera */
@@ -30,7 +31,7 @@
     text-align: left;
     padding: 0 16px;
     height: 45px;
-    background: transparent;
+    background: var(--ubits-bg-1);
     color: var(--ubits-fg-1-medium);
     border-bottom: 1px solid var(--ubits-border-1);
     font-family: 'Noto Sans', sans-serif;
@@ -45,6 +46,7 @@
 .ubits-table tbody td {
     padding: 0 16px;
     height: 45px;
+    background: var(--ubits-bg-1);
     border-bottom: 1px solid var(--ubits-border-1);
     color: var(--ubits-fg-1-medium);
     vertical-align: middle;

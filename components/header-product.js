@@ -250,7 +250,7 @@
  * @param {Object} [options.backButton] - Configuración del botón de retroceso. {onClick: function}.
  * @param {Object} [options.infoButton] - Configuración del botón de información. {onClick: function}.
  * @param {Object} [options.aiButton] - Configuración del botón IA. {text: string, onClick: function}.
- * @param {Array} [options.secondaryButtons] - Array de botones secundarios. Cada botón: {text: string, icon: string, onClick: function}.
+ * @param {Array} [options.secondaryButtons] - Botones secundarios. Cada uno: {text, icon?, onClick, iconRight?}. Si iconRight es true, el icono va a la derecha del texto.
  * @param {Object} [options.primaryButton] - Configuración del botón primario. {text: string, icon: string, onClick: function}.
  * @param {Object} [options.menuButton] - Configuración del botón menú. {onClick: function}.
  *
@@ -583,7 +583,7 @@
  * @param {Object} options.backButton - Configuración del botón back {onClick: function}
  * @param {Object} options.infoButton - Configuración del botón de información {onClick: function}
  * @param {Object} options.aiButton - Configuración del botón IA {text: 'AI button', onClick: function}
- * @param {Array} options.secondaryButtons - Array de botones secundarios [{text: 'Button text', icon: 'fa-th', onClick: function}, ...]
+ * @param {Array} options.secondaryButtons - [{text, icon?, onClick, iconRight?}, ...]
  * @param {Object} options.primaryButton - Configuración del botón primario {text: 'Primary action', icon: 'fa-th', onClick: function}
  * @param {Object} options.menuButton - Configuración del botón menú {onClick: function}
  * @returns {string} HTML del header-product
@@ -625,12 +625,15 @@ function createHeaderProductHTML(options = {}) {
                 <span>${aiButton.text || 'AI button'}</span>
             </button>
         ` : '';
-        const secondaryButtonsHTML = secondaryButtons.map(btn => `
+        const secondaryButtonsHTML = secondaryButtons.map(btn => {
+            const iconHtml = btn.icon ? `<i class="far ${btn.icon}"></i>` : '';
+            const textHtml = `<span>${btn.text || 'Button text'}</span>`;
+            const inner = btn.iconRight && btn.icon ? `${textHtml}${iconHtml}` : `${iconHtml}${textHtml}`;
+            return `
             <button class="ubits-button ubits-button--secondary ubits-button--md" ${btn.onClick ? `onclick="${btn.onClick}"` : ''}>
-                ${btn.icon ? `<i class="far ${btn.icon}"></i>` : ''}
-                <span>${btn.text || 'Button text'}</span>
-            </button>
-        `).join('');
+                ${inner}
+            </button>`;
+        }).join('');
         const primaryButtonHTML = primaryButton ? `
             <button class="ubits-button ubits-button--primary ubits-button--md ubits-header-product__primary-action" ${primaryButton.onClick ? `onclick="${primaryButton.onClick}"` : ''}>
                 ${primaryButton.icon ? `<i class="far ${primaryButton.icon}"></i>` : ''}
@@ -691,13 +694,16 @@ function createHeaderProductHTML(options = {}) {
         </button>
     ` : '';
 
-    // Botones secundarios
-    const secondaryButtonsHTML = secondaryButtons.map(btn => `
+    // Botones secundarios (iconRight: true → texto antes del icono, ej. selector tipo dropdown)
+    const secondaryButtonsHTML = secondaryButtons.map(btn => {
+        const iconHtml = btn.icon ? `<i class="far ${btn.icon}"></i>` : '';
+        const textHtml = `<span>${btn.text || 'Button text'}</span>`;
+        const inner = btn.iconRight && btn.icon ? `${textHtml}${iconHtml}` : `${iconHtml}${textHtml}`;
+        return `
         <button class="ubits-button ubits-button--secondary ubits-button--md" ${btn.onClick ? `onclick="${btn.onClick}"` : ''}>
-            ${btn.icon ? `<i class="far ${btn.icon}"></i>` : ''}
-            <span>${btn.text || 'Button text'}</span>
-        </button>
-    `).join('');
+            ${inner}
+        </button>`;
+    }).join('');
 
     // Botón primario
     const primaryButtonHTML = primaryButton ? `
@@ -819,7 +825,7 @@ function createHeaderProductHTML(options = {}) {
  * @param {Object} [options.backButton] - Configuración del botón de retroceso. {onClick: function}.
  * @param {Object} [options.infoButton] - Configuración del botón de información. {onClick: function}.
  * @param {Object} [options.aiButton] - Configuración del botón IA. {text: string, onClick: function}.
- * @param {Array} [options.secondaryButtons] - Array de botones secundarios. Cada botón: {text: string, icon: string, onClick: function}.
+ * @param {Array} [options.secondaryButtons] - Botones secundarios. Cada uno: {text, icon?, onClick, iconRight?}. Si iconRight es true, el icono va a la derecha del texto.
  * @param {Object} [options.primaryButton] - Configuración del botón primario. {text: string, icon: string, onClick: function}.
  * @param {Object} [options.menuButton] - Configuración del botón menú. {onClick: function}.
  * 

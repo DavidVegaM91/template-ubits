@@ -5,8 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/svg+xml" href="../../images/Ubits-logo-dark.svg">
     <title>UBITS Playground - LMS Creator - Contenidos</title>
-    
-    <!-- Estilos locales -->
+
     <link rel="stylesheet" href="../../general-styles/ubits-colors.css">
     <link rel="stylesheet" href="../../general-styles/styles.css">
     <link rel="stylesheet" href="../../general-styles/fontawesome-icons.css">
@@ -20,13 +19,19 @@
     <link rel="stylesheet" href="../../components/ia-button.css">
     <link rel="stylesheet" href="../../components/header-product.css">
     <link rel="stylesheet" href="../../components/tooltip.css">
+    <link rel="stylesheet" href="../../components/table.css">
+    <link rel="stylesheet" href="../../components/status-tag.css">
+    <link rel="stylesheet" href="../../components/paginator.css">
+    <link rel="stylesheet" href="../../components/input.css">
+    <link rel="stylesheet" href="../../components/empty-state.css">
+    <link rel="stylesheet" href="../../components/toast.css">
     <link rel="stylesheet" href="./lms-creator.css">
     <link rel="stylesheet" href="./contenidos.css">
 </head>
-<body data-theme="light">
+<body data-theme="light" class="page-contenidos-creator">
     <div class="dashboard-container">
         <div class="tooltip" id="tooltip"></div>
-        
+
         <div id="sidebar-container"></div>
 
         <main class="main-content">
@@ -36,10 +41,133 @@
                     <div class="section-single">
                         <div class="widget-header-product" id="header-product-container"></div>
                     </div>
-                    <div class="section-single">
-                        <div class="widget-contenido-lms">
-                            <p class="ubits-body-md-regular">Contenidos</p>
-                            <br><br><br><br><br><br><br><br><br><br><br>
+                    <div class="section-single section-single--contenidos">
+                        <div class="widget-contenidos-creator">
+                            <!-- Barra tipo Figma actions-table -->
+                            <div class="contenidos-toolbar">
+                                <div class="contenidos-toolbar__title-block">
+                                    <span class="contenidos-toolbar__title ubits-body-md-bold">Lista de elementos</span>
+                                    <span class="contenidos-toolbar__meta">
+                                        <span id="contenidos-results-count" class="ubits-body-sm-regular" aria-live="polite"></span>
+                                        <span class="ubits-body-sm-regular">resultados</span>
+                                    </span>
+                                    <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only contenidos-toolbar__info-btn" data-tooltip="Información sobre la lista" data-tooltip-delay="1000" aria-label="Información">
+                                        <i class="far fa-circle-info"></i>
+                                    </button>
+                                </div>
+                                <div class="contenidos-toolbar__actions">
+                                    <div class="contenidos-toolbar__search-group">
+                                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--md ubits-button--icon-only contenidos-toolbar__search-toggle" id="contenidos-btn-buscar" data-tooltip="Buscar" data-tooltip-delay="1000" aria-label="Buscar">
+                                            <i class="far fa-magnifying-glass"></i>
+                                        </button>
+                                        <div id="contenidos-search-inline" class="contenidos-search-inline" style="display: none;" aria-hidden="true"></div>
+                                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--md ubits-button--icon-only contenidos-toolbar__filter-btn" id="contenidos-btn-filtro" data-tooltip="Filtrar" data-tooltip-delay="1000" aria-label="Filtrar">
+                                            <i class="far fa-filter"></i>
+                                        </button>
+                                    </div>
+                                    <div class="contenidos-view-toggle" role="group" aria-label="Ver como">
+                                        <span class="contenidos-view-toggle__label ubits-body-md-regular">Ver como:</span>
+                                        <button type="button" class="contenidos-view-toggle__btn" id="contenidos-view-cuadricula" aria-pressed="false">
+                                            <i class="far fa-grid-2"></i>
+                                            <span class="ubits-body-md-semibold">Cuadrícula</span>
+                                        </button>
+                                        <button type="button" class="contenidos-view-toggle__btn contenidos-view-toggle__btn--active" id="contenidos-view-tabla" aria-pressed="true">
+                                            <i class="far fa-list-ul"></i>
+                                            <span class="ubits-body-md-semibold">Tabla</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="contenidos-table-panel">
+                            <div class="ubits-table-wrapper ubits-table-wrapper--min-width contenidos-table-wrap">
+                                <table class="ubits-table creator-contenidos-table" id="creator-contenidos-table">
+                                    <thead>
+                                        <tr>
+                                            <th data-col="nombre" scope="col">Nombre del contenido</th>
+                                            <th data-col="tipo" scope="col">Tipo</th>
+                                            <th data-col="creacion" scope="col">Creación</th>
+                                            <th data-col="nivel" scope="col">Nivel</th>
+                                            <th data-col="visibilidad" scope="col">Visibilidad</th>
+                                            <th data-col="acciones" scope="col">Acciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="creator-contenidos-tbody">
+                                        <tr data-contenido-demo="1">
+                                            <td data-col="nombre"><span class="ubits-body-sm-regular">Desarrollo de habilidades de persuasión</span></td>
+                                            <td data-col="tipo"><span class="ubits-body-sm-regular">Curso</span></td>
+                                            <td data-col="creacion"><span class="ubits-body-sm-regular">20 feb 2026</span></td>
+                                            <td data-col="nivel"><span class="ubits-body-sm-regular">Básico</span></td>
+                                            <td data-col="visibilidad">
+                                                <span class="creator-contenidos-table__tag-wrap">
+                                                    <span class="ubits-status-tag ubits-status-tag--sm ubits-status-tag--warning"><span class="ubits-status-tag__text">Privado</span></span>
+                                                </span>
+                                            </td>
+                                            <td data-col="acciones">
+                                                <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" aria-haspopup="true" aria-expanded="false" aria-label="Acciones">
+                                                    <span>Acciones</span>
+                                                    <i class="far fa-chevron-down"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        <tr data-contenido-demo="2">
+                                            <td data-col="nombre"><span class="ubits-body-sm-regular">Comunicación efectiva con el cliente</span></td>
+                                            <td data-col="tipo"><span class="ubits-body-sm-regular">Curso</span></td>
+                                            <td data-col="creacion"><span class="ubits-body-sm-regular">20 feb 2026</span></td>
+                                            <td data-col="nivel"><span class="ubits-body-sm-regular">Básico</span></td>
+                                            <td data-col="visibilidad">
+                                                <span class="creator-contenidos-table__tag-wrap">
+                                                    <span class="ubits-status-tag ubits-status-tag--sm ubits-status-tag--info"><span class="ubits-status-tag__text">Borrador</span></span>
+                                                </span>
+                                            </td>
+                                            <td data-col="acciones">
+                                                <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" aria-haspopup="true" aria-expanded="false" aria-label="Acciones">
+                                                    <span>Acciones</span>
+                                                    <i class="far fa-chevron-down"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        <tr data-contenido-demo="3">
+                                            <td data-col="nombre"><span class="ubits-body-sm-regular">Un gran liderazgo es una red, no una jerarquía</span></td>
+                                            <td data-col="tipo"><span class="ubits-body-sm-regular">Curso</span></td>
+                                            <td data-col="creacion"><span class="ubits-body-sm-regular">20 feb 2026</span></td>
+                                            <td data-col="nivel"><span class="ubits-body-sm-regular">Básico</span></td>
+                                            <td data-col="visibilidad">
+                                                <span class="creator-contenidos-table__tag-wrap">
+                                                    <span class="ubits-status-tag ubits-status-tag--sm ubits-status-tag--neutral"><span class="ubits-status-tag__text">Oculto</span></span>
+                                                </span>
+                                            </td>
+                                            <td data-col="acciones">
+                                                <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" aria-haspopup="true" aria-expanded="false" aria-label="Acciones">
+                                                    <span>Acciones</span>
+                                                    <i class="far fa-chevron-down"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        <tr data-contenido-demo="4">
+                                            <td data-col="nombre"><span class="ubits-body-sm-regular">Conocimiento de políticas y procedimientos internos</span></td>
+                                            <td data-col="tipo"><span class="ubits-body-sm-regular">Libro</span></td>
+                                            <td data-col="creacion"><span class="ubits-body-sm-regular">20 feb 2026</span></td>
+                                            <td data-col="nivel"><span class="ubits-body-sm-regular">Básico</span></td>
+                                            <td data-col="visibilidad">
+                                                <span class="creator-contenidos-table__tag-wrap">
+                                                    <span class="ubits-status-tag ubits-status-tag--sm ubits-status-tag--error"><span class="ubits-status-tag__text">Archivado</span></span>
+                                                </span>
+                                            </td>
+                                            <td data-col="acciones">
+                                                <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" aria-haspopup="true" aria-expanded="false" aria-label="Acciones">
+                                                    <span>Acciones</span>
+                                                    <i class="far fa-chevron-down"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div id="contenidosTableEmpty" style="display: none;" aria-live="polite"></div>
+                            </div>
+
+                            <div id="contenidos-paginador"></div>
                         </div>
                     </div>
                 </div>
@@ -50,6 +178,7 @@
     <div id="tab-bar-container"></div>
     <div id="floating-menu-container"></div>
     <div id="profile-menu-container"></div>
+    <div id="ubits-toast-container"></div>
 
     <script src="../../components/tooltip.js"></script>
     <script src="../../components/sidebar.js"></script>
@@ -58,42 +187,362 @@
     <script src="../../components/floating-menu.js"></script>
     <script src="../../components/profile-menu.js"></script>
     <script src="../../components/header-product.js"></script>
+    <script src="../../components/input.js"></script>
+    <script src="../../components/empty-state.js"></script>
+    <script src="../../components/paginator.js"></script>
+    <script src="../../components/toast.js"></script>
     <script src="../../script.js"></script>
+    <script src="../../bd-master/bd-master-niveles-contenido.js"></script>
+    <script src="../../bd-master/bd-contenidos-fiqsha.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            if (typeof initTooltip === 'function') {
+                initTooltip('.widget-contenidos-creator [data-tooltip]');
+            }
+
             loadSidebar('creator');
             loadSubNav('top-nav-container', 'creator');
             loadTabBar('tab-bar-container');
             loadFloatingMenu('floating-menu-container');
             loadProfileMenu('profile-menu-container');
-            
+
             if (typeof loadHeaderProduct === 'function') {
                 loadHeaderProduct('header-product-container', {
                     productName: 'Contenidos',
                     breadcrumbItems: [],
-                    aiButton: { text: 'AI button', onClick: function() { console.log('AI button clicked'); } },
                     secondaryButtons: [
-                        { text: 'Button text', icon: 'fa-th', onClick: function() { console.log('Secondary button clicked'); } }
+                        {
+                            text: 'UBITS MAX',
+                            icon: 'fa-chevron-down',
+                            iconRight: true,
+                            onClick: function() {
+                                if (typeof showToast === 'function') {
+                                    showToast('info', 'Selector UBITS MAX (demo).');
+                                }
+                            }
+                        }
                     ],
-                    primaryButton: { text: 'Primary action', icon: 'fa-th', onClick: function() { console.log('Primary button clicked'); } },
-                    menuButton: { onClick: function() { console.log('Menu button clicked'); } }
+                    primaryButton: {
+                        text: 'Crear contenido',
+                        icon: 'fa-plus',
+                        onClick: function() {
+                            if (typeof showToast === 'function') {
+                                showToast('success', 'Crear contenido (demo).');
+                            }
+                        }
+                    }
                 });
             }
-            
-            setTimeout(() => {
-                const tab = document.querySelector('.nav-tab[data-tab="contenidos"]');
+
+            (function renderContenidosFiqshaPublicados() {
+                var bd = window.BDS_CONTENIDOS_FIQSHA;
+                var nivelesRoot = window.BD_MASTER_NIVELES_CONTENIDO;
+                var tbody = document.getElementById('creator-contenidos-tbody');
+                if (!bd || !bd.contents || !tbody) return;
+                var mapNivel = {};
+                if (nivelesRoot && Array.isArray(nivelesRoot.niveles)) {
+                    nivelesRoot.niveles.forEach(function (n) {
+                        if (n && n.id) mapNivel[n.id] = n.nombre || 'Básico';
+                    });
+                }
+                /* Filas demo (no publicado) van primero en el HTML; los publicados Fiqsha se añaden al final */
+                var frag = document.createDocumentFragment();
+                bd.contents.forEach(function (c) {
+                    if (!c || !c.titulo) return;
+                    var tr = document.createElement('tr');
+                    tr.setAttribute('data-fiqsha-id', c.id || '');
+                    var nivelNombre = mapNivel[c.nivelId] || 'Básico';
+                    var tipoTxt = c.tipoContenido || 'Curso';
+                    function appendTextCell(col, text) {
+                        var td = document.createElement('td');
+                        td.setAttribute('data-col', col);
+                        var span = document.createElement('span');
+                        span.className = 'ubits-body-sm-regular';
+                        span.textContent = text;
+                        td.appendChild(span);
+                        tr.appendChild(td);
+                    }
+                    appendTextCell('nombre', c.titulo);
+                    appendTextCell('tipo', tipoTxt);
+                    appendTextCell('creacion', '20 feb 2026');
+                    appendTextCell('nivel', nivelNombre);
+                    var tdVis = document.createElement('td');
+                    tdVis.setAttribute('data-col', 'visibilidad');
+                    tdVis.innerHTML = '<span class="creator-contenidos-table__tag-wrap"><span class="ubits-status-tag ubits-status-tag--sm ubits-status-tag--success"><span class="ubits-status-tag__text">Publicado</span></span></span>';
+                    tr.appendChild(tdVis);
+                    var tdAcc = document.createElement('td');
+                    tdAcc.setAttribute('data-col', 'acciones');
+                    tdAcc.innerHTML = '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" aria-haspopup="true" aria-expanded="false" aria-label="Acciones"><span>Acciones</span><i class="far fa-chevron-down"></i></button>';
+                    tr.appendChild(tdAcc);
+                    frag.appendChild(tr);
+                });
+                tbody.appendChild(frag);
+            })();
+
+            var _tbodyContenidos = document.getElementById('creator-contenidos-tbody');
+            var _contenidosTotalFilas = _tbodyContenidos ? _tbodyContenidos.querySelectorAll('tr').length : 24;
+
+            (function initContenidosTableSearch() {
+                var SEARCH_COLS = ['nombre', 'tipo', 'creacion', 'nivel', 'visibilidad'];
+                var searchQuery = '';
+                var isSearchMode = false;
+                var contenidosPaginatorInst = null;
+
+                function normalizeText(t) {
+                    if (t == null) return '';
+                    return String(t).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+                }
+
+                function getRowCellText(tr, colId) {
+                    var td = tr.querySelector('td[data-col="' + colId + '"]');
+                    if (!td) return '';
+                    var parts = [];
+                    td.querySelectorAll('.ubits-body-sm-regular, .ubits-body-md-regular').forEach(function (el) {
+                        if (el.closest('.ubits-avatar')) return;
+                        var tx = el.textContent.trim();
+                        if (tx) parts.push(tx);
+                    });
+                    td.querySelectorAll('.ubits-status-tag__text').forEach(function (el) {
+                        var tx = el.textContent.trim();
+                        if (tx) parts.push(tx);
+                    });
+                    if (parts.length > 0) return parts.join(' ');
+                    return td.textContent.trim();
+                }
+
+                function getTableRows() {
+                    var tbody = document.querySelector('#creator-contenidos-table tbody');
+                    return tbody ? Array.from(tbody.querySelectorAll('tr')) : [];
+                }
+
+                /** Filas que cumplen la búsqueda (o todas si no hay búsqueda) */
+                function getSearchMatches() {
+                    var rows = getTableRows();
+                    if (searchQuery.trim()) {
+                        var q = normalizeText(searchQuery);
+                        rows = rows.filter(function (r) {
+                            return SEARCH_COLS.some(function (colId) {
+                                return normalizeText(getRowCellText(r, colId)).indexOf(q) >= 0;
+                            });
+                        });
+                    }
+                    return rows;
+                }
+
+                function applyPaginationToRows() {
+                    var all = getTableRows();
+                    var matches = getSearchMatches();
+                    var ipp = contenidosPaginatorInst ? contenidosPaginatorInst.getItemsPerPage() : 10;
+                    var page = contenidosPaginatorInst ? contenidosPaginatorInst.getCurrentPage() : 1;
+                    var totalMatch = matches.length;
+                    var totalPages = Math.max(1, Math.ceil(totalMatch / ipp));
+                    if (page > totalPages) page = totalPages;
+                    if (page < 1) page = 1;
+                    var start = (page - 1) * ipp;
+                    var pageSlice = matches.slice(start, start + ipp);
+                    var matchSet = new Set(matches);
+                    var sliceSet = new Set(pageSlice);
+                    all.forEach(function (r) {
+                        if (!matchSet.has(r)) {
+                            r.style.display = 'none';
+                            return;
+                        }
+                        r.style.display = sliceSet.has(r) ? '' : 'none';
+                    });
+                }
+
+                function syncListaContenidos() {
+                    applyPaginationToRows();
+                    updateResultsCount();
+                    updateEmptyState();
+                    var pagEl = document.getElementById('contenidos-paginador');
+                    var m = getSearchMatches();
+                    if (pagEl) {
+                        if (searchQuery.trim() && m.length === 0) pagEl.style.display = 'none';
+                        else pagEl.style.display = '';
+                    }
+                }
+
+                function updateResultsCount() {
+                    var el = document.getElementById('contenidos-results-count');
+                    if (!el) return;
+                    var total = getTableRows().length;
+                    var matchCount = getSearchMatches().length;
+                    el.textContent = matchCount + '/' + total;
+                }
+
+                function clearContenidosSearch() {
+                    searchQuery = '';
+                    isSearchMode = false;
+                    var searchCont = document.getElementById('contenidos-search-inline');
+                    var toggle = document.getElementById('contenidos-btn-buscar');
+                    if (searchCont) {
+                        searchCont.innerHTML = '';
+                        searchCont.style.display = 'none';
+                        searchCont.setAttribute('aria-hidden', 'true');
+                    }
+                    if (toggle) toggle.style.display = '';
+                    refreshContenidosSearch();
+                }
+
+                function updateEmptyState() {
+                    var tableWrap = document.querySelector('.contenidos-table-panel .contenidos-table-wrap');
+                    var emptyEl = document.getElementById('contenidosTableEmpty');
+                    if (!tableWrap || !emptyEl) return;
+                    var visible = getSearchMatches();
+                    var total = getTableRows().length;
+                    var hasSearch = searchQuery.trim().length > 0;
+                    if (total > 0 && visible.length === 0 && hasSearch) {
+                        tableWrap.style.display = 'none';
+                        emptyEl.style.display = 'flex';
+                        if (typeof loadEmptyState === 'function' && !emptyEl.querySelector('.ubits-empty-state__title')) {
+                            loadEmptyState('contenidosTableEmpty', {
+                                icon: 'fa-search',
+                                iconSize: 'lg',
+                                title: 'No se encontraron resultados',
+                                description: 'Intenta ajustar tu búsqueda o filtros para encontrar lo que buscas.',
+                                buttons: {
+                                    secondary: {
+                                        text: 'Limpiar búsqueda',
+                                        icon: 'fa-times',
+                                        onClick: function () {
+                                            clearContenidosSearch();
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                    } else {
+                        tableWrap.style.display = '';
+                        emptyEl.style.display = 'none';
+                        emptyEl.innerHTML = '';
+                    }
+                }
+
+                function refreshContenidosSearch() {
+                    var m = getSearchMatches();
+                    var pagEl = document.getElementById('contenidos-paginador');
+                    if (searchQuery.trim() && m.length === 0) {
+                        if (pagEl) pagEl.style.display = 'none';
+                        syncListaContenidos();
+                        return;
+                    }
+                    if (pagEl) pagEl.style.display = '';
+                    if (contenidosPaginatorInst) {
+                        contenidosPaginatorInst.updateTotalItems(m.length);
+                        contenidosPaginatorInst.goToPage(1);
+                    } else {
+                        syncListaContenidos();
+                    }
+                }
+
+                getTableRows().forEach(function (tr, i) {
+                    tr.setAttribute('data-row-index', String(i));
+                });
+
+                if (typeof loadPaginator === 'function') {
+                    contenidosPaginatorInst = loadPaginator('contenidos-paginador', {
+                        totalItems: _contenidosTotalFilas,
+                        itemsPerPage: 10,
+                        currentPage: 1,
+                        itemsPerPageOptions: [10, 20, 32, 50],
+                        onPageChange: function () {
+                            syncListaContenidos();
+                        },
+                        onItemsPerPageChange: function () {
+                            syncListaContenidos();
+                        }
+                    });
+                }
+
+                var toggle = document.getElementById('contenidos-btn-buscar');
+                var searchCont = document.getElementById('contenidos-search-inline');
+                var filtroBtn = document.getElementById('contenidos-btn-filtro');
+                if (toggle && searchCont) {
+                    toggle.addEventListener('click', function (e) {
+                        e.stopPropagation();
+                        if (!isSearchMode && (searchCont.style.display === 'none' || searchCont.style.display === '' || !searchCont.innerHTML.trim())) {
+                            toggle.style.display = 'none';
+                            searchCont.style.display = 'flex';
+                            searchCont.setAttribute('aria-hidden', 'false');
+                            if (typeof createInput === 'function') {
+                                createInput({
+                                    containerId: 'contenidos-search-inline',
+                                    type: 'search',
+                                    size: 'md',
+                                    placeholder: 'Buscar...',
+                                    showLabel: false,
+                                    onChange: function (value) {
+                                        searchQuery = value || '';
+                                        refreshContenidosSearch();
+                                    }
+                                });
+                                setTimeout(function () {
+                                    var input = searchCont.querySelector('input');
+                                    if (input) input.focus();
+                                }, 100);
+                            }
+                            isSearchMode = true;
+                        }
+                    });
+
+                    document.addEventListener('click', function (e) {
+                        if (!isSearchMode) return;
+                        if (searchCont.contains(e.target) || toggle.contains(e.target)) return;
+                        if (filtroBtn && filtroBtn.contains(e.target)) return;
+                        if (!searchQuery || !String(searchQuery).trim()) {
+                            clearContenidosSearch();
+                        }
+                    });
+                }
+
+                syncListaContenidos();
+            })();
+
+            var btnGrid = document.getElementById('contenidos-view-cuadricula');
+            var btnTable = document.getElementById('contenidos-view-tabla');
+            function setViewToggle(activeEl) {
+                if (!btnGrid || !btnTable) return;
+                var isGrid = activeEl === btnGrid;
+                btnGrid.classList.toggle('contenidos-view-toggle__btn--active', isGrid);
+                btnTable.classList.toggle('contenidos-view-toggle__btn--active', !isGrid);
+                btnGrid.setAttribute('aria-pressed', isGrid ? 'true' : 'false');
+                btnTable.setAttribute('aria-pressed', isGrid ? 'false' : 'true');
+            }
+            if (btnGrid) {
+                btnGrid.addEventListener('click', function() {
+                    setViewToggle(btnGrid);
+                    if (typeof showToast === 'function') {
+                        showToast('info', 'Vista cuadrícula: pendiente de implementar.');
+                    }
+                });
+            }
+            if (btnTable) {
+                btnTable.addEventListener('click', function() {
+                    setViewToggle(btnTable);
+                });
+            }
+
+            setTimeout(function() {
+                var tab = document.querySelector('.nav-tab[data-tab="contenidos"]');
                 if (tab) {
-                    document.querySelectorAll('.nav-tab, .hamburger-item').forEach(item => item.classList.remove('active'));
+                    document.querySelectorAll('.nav-tab, .hamburger-item').forEach(function(item) {
+                        item.classList.remove('active');
+                    });
                     tab.classList.add('active');
                 }
-                const sidebarBtn = document.querySelector('.nav-button[data-section="creator"]');
+                var sidebarBtn = document.querySelector('.nav-button[data-section="creator"]');
                 if (sidebarBtn) {
-                    document.querySelectorAll('.nav-button').forEach(btn => btn.classList.remove('active'));
+                    document.querySelectorAll('.nav-button').forEach(function(btn) {
+                        btn.classList.remove('active');
+                    });
                     sidebarBtn.classList.add('active');
                 }
-                const modulosTab = document.querySelector('.tab-bar-item[data-tab="modulos"]');
+                var modulosTab = document.querySelector('.tab-bar-item[data-tab="modulos"]');
                 if (modulosTab) {
-                    document.querySelectorAll('.tab-bar-item').forEach(item => item.classList.remove('active'));
+                    document.querySelectorAll('.tab-bar-item').forEach(function(item) {
+                        item.classList.remove('active');
+                    });
                     modulosTab.classList.add('active');
                 }
                 if (typeof setActiveAccordionLink === 'function') {

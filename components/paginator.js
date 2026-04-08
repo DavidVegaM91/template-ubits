@@ -145,12 +145,13 @@ function loadPaginator(containerId, options = {}) {
         return;
     }
     
-    // Valores por defecto
+    const parsedItemsPerPage = Number(options.itemsPerPage);
+    // Valores por defecto (10 ítems/página si no se indica)
     const config = {
         totalItems: options.totalItems,
-        itemsPerPage: options.itemsPerPage || 16,
+        itemsPerPage: Number.isFinite(parsedItemsPerPage) && parsedItemsPerPage > 0 ? parsedItemsPerPage : 10,
         currentPage: options.currentPage || 1,
-        itemsPerPageOptions: options.itemsPerPageOptions || [16, 20, 32, 48],
+        itemsPerPageOptions: options.itemsPerPageOptions || [10, 16, 20, 32, 48],
         onPageChange: options.onPageChange || null,
         onItemsPerPageChange: options.onItemsPerPageChange || null,
         showItemsSelector: options.showItemsSelector !== false // default: true
@@ -167,16 +168,13 @@ function loadPaginator(containerId, options = {}) {
     
     // Función para renderizar el paginador
     function renderPaginator() {
-        const totalPages = getTotalPages();
-        
-        // Si los items totales son menores o iguales a itemsPerPage, ocultar el paginador completamente
-        if (config.totalItems <= itemsPerPage) {
-            container.innerHTML = '';
-            container.style.display = 'none';
-            return;
-        }
-        
-        // Mostrar el contenedor si estaba oculto
+        let totalPages = getTotalPages();
+        if (totalPages < 1) totalPages = 1;
+        if (currentPage > totalPages) currentPage = totalPages;
+        if (currentPage < 1) currentPage = 1;
+
+        // Mostrar siempre el contenedor si hay selector o navegación (no ocultar cuando cabe en una página:
+        // el usuario debe ver "20 por página" u otra opción configurada).
         container.style.display = '';
         
         // Limpiar contenedor pero preservar el selector si existe
