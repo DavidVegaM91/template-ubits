@@ -1097,6 +1097,64 @@
                 if (list.length) porDia[dateStr] = list;
             });
 
+            /**
+             * Días anteriores a hoy: en calendario/tareas.html deben listarse solo tareas finalizadas
+             * con endDate exacto en ese día (la regla "1 por reporte + propia + jefa" solo aplica a hoy→FIN_RANGO).
+             */
+            (function agregarDiasPasadosSoloFinalizados() {
+                const hoyStr = getTodayString();
+                function esTareaFinalizada(t) {
+                    return t && (t.done === true || t.status === 'Finalizado' || t.status === 'Finalizada');
+                }
+                const fechasPasadas = {};
+                function marcarFechas(lista) {
+                    (lista || []).forEach(function (t) {
+                        if (!t.endDate || t.endDate >= hoyStr || !esTareaFinalizada(t)) return;
+                        fechasPasadas[t.endDate] = true;
+                    });
+                }
+                reportesDirectos.forEach(function (emp) {
+                    const empId = emp.id || emp.idColaborador;
+                    marcarFechas(tareasPorEmpleado[empId] || []);
+                });
+                marcarFechas(tareasPorEmpleado['__self__'] || []);
+                if (jefa) {
+                    (data.grupales || []).forEach(function (t) {
+                        if (t.created_by && t.created_by === jefa.nombre && t.endDate && t.endDate < hoyStr && esTareaFinalizada(t)) {
+                            fechasPasadas[t.endDate] = true;
+                        }
+                    });
+                }
+                Object.keys(fechasPasadas).sort().forEach(function (dateStr) {
+                    const list = [];
+                    const ids = {};
+                    function pushUnique(t) {
+                        const tid = t.id;
+                        if (tid != null && ids[tid]) return;
+                        if (tid != null) ids[tid] = true;
+                        list.push(Object.assign({}, t));
+                    }
+                    reportesDirectos.forEach(function (emp) {
+                        const empId = emp.id || emp.idColaborador;
+                        (tareasPorEmpleado[empId] || []).forEach(function (t) {
+                            if (t.endDate !== dateStr || !esTareaFinalizada(t)) return;
+                            if (t.created_by === nombreUsuarioActual || (t.assignee_name && String(t.assignee_name).trim() === nombreUsuarioActual)) {
+                                pushUnique(t);
+                            }
+                        });
+                    });
+                    (tareasPorEmpleado['__self__'] || []).forEach(function (t) {
+                        if (t.endDate === dateStr && esTareaFinalizada(t)) pushUnique(t);
+                    });
+                    if (jefa) {
+                        (data.grupales || []).forEach(function (t) {
+                            if (t.created_by === jefa.nombre && t.endDate === dateStr && esTareaFinalizada(t)) pushUnique(t);
+                        });
+                    }
+                    if (list.length) porDia[dateStr] = list;
+                });
+            })();
+
             return { vencidas: vencidas, porDia: porDia };
         }
 

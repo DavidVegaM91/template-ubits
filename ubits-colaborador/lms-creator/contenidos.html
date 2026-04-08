@@ -26,6 +26,7 @@
     <link rel="stylesheet" href="../../components/input.css">
     <link rel="stylesheet" href="../../components/empty-state.css">
     <link rel="stylesheet" href="../../components/toast.css">
+    <link rel="stylesheet" href="../../components/modal.css">
     <link rel="stylesheet" href="../../components/avatar.css">
     <link rel="stylesheet" href="../../components/card-content.css">
     <link rel="stylesheet" href="../../components/dropdown-menu.css">
@@ -97,7 +98,7 @@
                                         </tr>
                                     </thead>
                                     <tbody id="creator-contenidos-tbody">
-                                        <tr data-contenido-demo="1" data-legacy-lms="true">
+                                        <tr data-contenido-demo="1" data-legacy-lms="true" data-tipo="Curso" data-categoria-fiqsha-id="" data-nivel-id="niv-001" data-idioma="Español">
                                             <td data-col="nombre"><span class="ubits-body-sm-regular">Desarrollo de habilidades de persuasión</span></td>
                                             <td data-col="tipo"><span class="ubits-body-sm-regular">Curso</span></td>
                                             <td data-col="creacion"><span class="ubits-body-sm-regular">20 feb 2026</span></td>
@@ -114,7 +115,7 @@
                                                 </button>
                                             </td>
                                         </tr>
-                                        <tr data-contenido-demo="2">
+                                        <tr data-contenido-demo="2" data-tipo="Curso" data-categoria-fiqsha-id="" data-nivel-id="niv-001" data-idioma="Español">
                                             <td data-col="nombre"><span class="ubits-body-sm-regular">Comunicación efectiva con el cliente</span></td>
                                             <td data-col="tipo"><span class="ubits-body-sm-regular">Curso</span></td>
                                             <td data-col="creacion"><span class="ubits-body-sm-regular">20 feb 2026</span></td>
@@ -131,7 +132,7 @@
                                                 </button>
                                             </td>
                                         </tr>
-                                        <tr data-contenido-demo="3" data-legacy-lms="true">
+                                        <tr data-contenido-demo="3" data-legacy-lms="true" data-tipo="Curso" data-categoria-fiqsha-id="" data-nivel-id="niv-001" data-idioma="Español">
                                             <td data-col="nombre"><span class="ubits-body-sm-regular">Un gran liderazgo es una red, no una jerarquía</span></td>
                                             <td data-col="tipo"><span class="ubits-body-sm-regular">Curso</span></td>
                                             <td data-col="creacion"><span class="ubits-body-sm-regular">20 feb 2026</span></td>
@@ -148,7 +149,7 @@
                                                 </button>
                                             </td>
                                         </tr>
-                                        <tr data-contenido-demo="4">
+                                        <tr data-contenido-demo="4" data-tipo="Libro" data-categoria-fiqsha-id="" data-nivel-id="niv-001" data-idioma="Español">
                                             <td data-col="nombre"><span class="ubits-body-sm-regular">Conocimiento de políticas y procedimientos internos</span></td>
                                             <td data-col="tipo"><span class="ubits-body-sm-regular">Libro</span></td>
                                             <td data-col="creacion"><span class="ubits-body-sm-regular">20 feb 2026</span></td>
@@ -200,8 +201,11 @@
     <script src="../../components/empty-state.js"></script>
     <script src="../../components/paginator.js"></script>
     <script src="../../components/toast.js"></script>
+    <script src="../../components/modal.js"></script>
     <script src="../../script.js"></script>
     <script src="../../bd-master/bd-master-niveles-contenido.js"></script>
+    <script src="../../bd-master/bd-master-tipos-contenido.js"></script>
+    <script src="../../bd-master/bd-master-categorias-fiqsha.js"></script>
     <script src="../../bd-master/bd-master-aliados.js"></script>
     <script src="../../bd-master/bd-contenidos-fiqsha.js"></script>
     <script src="../../components/avatar.js"></script>
@@ -433,6 +437,10 @@
                     var tr = document.createElement('tr');
                     tr.setAttribute('data-fiqsha-id', c.id || '');
                     tr.setAttribute('data-legacy-lms', c.legacyLms === true ? 'true' : 'false');
+                    tr.setAttribute('data-tipo', c.tipoContenido || 'Curso');
+                    tr.setAttribute('data-categoria-fiqsha-id', c.categoriaFiqshaId || '');
+                    tr.setAttribute('data-nivel-id', c.nivelId || '');
+                    tr.setAttribute('data-idioma', c.idioma || 'Español');
                     var nivelNombre = mapNivel[c.nivelId] || 'Básico';
                     var tipoTxt = c.tipoContenido || 'Curso';
                     function appendTextCell(col, text) {
@@ -472,6 +480,55 @@
                 var contenidosPaginatorInst = null;
                 /** 'lms-creator' = todos los contenidos; 'antiguo-lms' = solo filas con data-legacy-lms="true". */
                 var contenidosCatalogMode = 'lms-creator';
+                /** Filtros aplicados (valores de los select del modal). Vacío = sin filtrar ese criterio. */
+                var contenidosFiltrosActive = { tipo: '', categoriaId: '', nivelId: '', idioma: '' };
+                var contenidosFiltrosPending = { tipo: '', categoriaId: '', nivelId: '', idioma: '' };
+
+                function hasActiveContenidosFiltros() {
+                    var f = contenidosFiltrosActive;
+                    return !!(f.tipo || f.categoriaId || f.nivelId || f.idioma);
+                }
+
+                function rowPassesContenidosFilters(tr) {
+                    var f = contenidosFiltrosActive;
+                    if (f.tipo) {
+                        var t = (tr.getAttribute('data-tipo') || '').trim();
+                        if (t !== f.tipo) return false;
+                    }
+                    if (f.categoriaId) {
+                        var cat = tr.getAttribute('data-categoria-fiqsha-id') || '';
+                        if (cat !== f.categoriaId) return false;
+                    }
+                    if (f.nivelId) {
+                        var nv = tr.getAttribute('data-nivel-id') || '';
+                        if (nv !== f.nivelId) return false;
+                    }
+                    if (f.idioma) {
+                        var idm = (tr.getAttribute('data-idioma') || '').trim();
+                        if (idm !== f.idioma) return false;
+                    }
+                    return true;
+                }
+
+                function getFilterFilteredRows(rows) {
+                    if (!hasActiveContenidosFiltros()) return rows;
+                    return rows.filter(rowPassesContenidosFilters);
+                }
+
+                function syncContenidosFilterButtonState() {
+                    var fb = document.getElementById('contenidos-btn-filtro');
+                    if (fb) fb.classList.toggle('contenidos-toolbar__filter-btn--active', hasActiveContenidosFiltros());
+                }
+
+                function clearContenidosFiltros() {
+                    contenidosFiltrosActive = { tipo: '', categoriaId: '', nivelId: '', idioma: '' };
+                    contenidosFiltrosPending = { tipo: '', categoriaId: '', nivelId: '', idioma: '' };
+                    if (contenidosPaginatorInst) {
+                        contenidosPaginatorInst.updateTotalItems(getSearchMatches().length);
+                        contenidosPaginatorInst.goToPage(1);
+                    }
+                    syncListaContenidos();
+                }
 
                 function normalizeText(t) {
                     if (t == null) return '';
@@ -508,9 +565,10 @@
                     });
                 }
 
-                /** Filas que cumplen catálogo y búsqueda */
+                /** Filas que cumplen catálogo, filtros del modal y búsqueda */
                 function getSearchMatches() {
                     var rows = getCatalogFilteredRows();
+                    rows = getFilterFilteredRows(rows);
                     if (searchQuery.trim()) {
                         var q = normalizeText(searchQuery);
                         rows = rows.filter(function (r) {
@@ -560,6 +618,7 @@
                     updateResultsCount();
                     updateEmptyState();
                     syncContenidosCardsVisibility();
+                    syncContenidosFilterButtonState();
                     var pagEl = document.getElementById('contenidos-paginador');
                     var m = getSearchMatches();
                     if (pagEl) {
@@ -613,6 +672,34 @@
                                 iconSize: 'lg',
                                 title: 'No hay contenidos en Antiguo LMS',
                                 description: 'Cambia el catálogo a LMS Creator para ver todos los contenidos.'
+                            });
+                        }
+                        return;
+                    }
+                    var hasFilters = hasActiveContenidosFiltros();
+                    if (totalInCatalog > 0 && visible.length === 0 && hasFilters && !hasSearch) {
+                        if (contenidosViewMode === 'grid') {
+                            if (cardsPanel) cardsPanel.style.display = 'none';
+                        } else if (tableWrap) {
+                            tableWrap.style.display = 'none';
+                        }
+                        emptyEl.style.display = 'flex';
+                        emptyEl.innerHTML = '';
+                        if (typeof loadEmptyState === 'function') {
+                            loadEmptyState('contenidosTableEmpty', {
+                                icon: 'fa-filter',
+                                iconSize: 'lg',
+                                title: 'No hay resultados con estos filtros',
+                                description: 'Prueba con otros criterios o borra los filtros para ver más contenidos.',
+                                buttons: {
+                                    secondary: {
+                                        text: 'Borrar filtros',
+                                        icon: 'fa-times',
+                                        onClick: function () {
+                                            clearContenidosFiltros();
+                                        }
+                                    }
+                                }
                             });
                         }
                         return;
@@ -688,6 +775,142 @@
                     });
                 }
 
+                function openContenidosFiltrosModal() {
+                    if (typeof openModal !== 'function' || typeof createInput !== 'function') {
+                        if (typeof showToast === 'function') {
+                            showToast('error', 'Carga modal.js e input.js para usar filtros.');
+                        }
+                        return;
+                    }
+                    contenidosFiltrosPending = {
+                        tipo: contenidosFiltrosActive.tipo,
+                        categoriaId: contenidosFiltrosActive.categoriaId,
+                        nivelId: contenidosFiltrosActive.nivelId,
+                        idioma: contenidosFiltrosActive.idioma
+                    };
+                    var overlayId = 'contenidos-filtros-modal';
+                    var tiposRoot = window.BD_MASTER_TIPOS_CONTENIDO;
+                    var catRoot = window.BD_MASTER_CATEGORIAS_FIQSHA;
+                    var nivRoot = window.BD_MASTER_NIVELES_CONTENIDO;
+                    var selectTipos = [{ value: '', text: 'Todos los tipos' }];
+                    if (tiposRoot && Array.isArray(tiposRoot.tipos)) {
+                        tiposRoot.tipos.forEach(function (t) {
+                            if (t && t.nombre) selectTipos.push({ value: t.nombre, text: t.nombre });
+                        });
+                    }
+                    var selectCat = [{ value: '', text: 'Todas las categorías' }];
+                    if (catRoot && Array.isArray(catRoot.categorias)) {
+                        catRoot.categorias.forEach(function (c) {
+                            if (c && c.id) selectCat.push({ value: c.id, text: c.nombre || c.id });
+                        });
+                    }
+                    var selectNiv = [{ value: '', text: 'Todos los niveles' }];
+                    if (nivRoot && Array.isArray(nivRoot.niveles)) {
+                        nivRoot.niveles.forEach(function (n) {
+                            if (n && n.id) selectNiv.push({ value: n.id, text: n.nombre || n.id });
+                        });
+                    }
+                    var selectIdioma = [
+                        { value: '', text: 'Todos los idiomas' },
+                        { value: 'Español', text: 'Español' },
+                        { value: 'Inglés', text: 'Inglés' },
+                        { value: 'Portugués', text: 'Portugués' }
+                    ];
+                    var bodyHtml =
+                        '<div class="contenidos-filtros-modal-fields">' +
+                        '<div id="contenidos-filtro-tipo" class="contenidos-filtros-modal-field"></div>' +
+                        '<div id="contenidos-filtro-categoria" class="contenidos-filtros-modal-field"></div>' +
+                        '<div id="contenidos-filtro-nivel" class="contenidos-filtros-modal-field"></div>' +
+                        '<div id="contenidos-filtro-idioma" class="contenidos-filtros-modal-field"></div>' +
+                        '</div>';
+                    var overlay = openModal({
+                        overlayId: overlayId,
+                        title: 'Filtros',
+                        bodyHtml: bodyHtml,
+                        size: 'sm',
+                        closeOnOverlayClick: true,
+                        footerTertiary: {
+                            text: 'Borrar filtros',
+                            onClick: function () {
+                                contenidosFiltrosPending = { tipo: '', categoriaId: '', nivelId: '', idioma: '' };
+                                contenidosFiltrosActive = { tipo: '', categoriaId: '', nivelId: '', idioma: '' };
+                                if (typeof closeModal === 'function') closeModal(overlayId);
+                                if (contenidosPaginatorInst) {
+                                    contenidosPaginatorInst.updateTotalItems(getSearchMatches().length);
+                                    contenidosPaginatorInst.goToPage(1);
+                                }
+                                syncListaContenidos();
+                            }
+                        },
+                        footerHtml: '<button type="button" class="ubits-button ubits-button--primary ubits-button--md" id="contenidos-filtros-modal-aplicar"><span>Aplicar</span></button>'
+                    });
+                    var tertiaryBtn = overlay.querySelector('#' + overlayId + '-footer-tertiary');
+                    if (tertiaryBtn) {
+                        tertiaryBtn.classList.remove('ubits-button--tertiary');
+                        tertiaryBtn.classList.add('ubits-button--secondary');
+                    }
+                    function bindPending(key, val) {
+                        contenidosFiltrosPending[key] = val != null ? String(val) : '';
+                    }
+                    createInput({
+                        containerId: 'contenidos-filtro-tipo',
+                        type: 'select',
+                        label: '',
+                        placeholder: 'Tipo de contenido',
+                        size: 'md',
+                        selectOptions: selectTipos,
+                        value: contenidosFiltrosPending.tipo,
+                        onChange: function (v) { bindPending('tipo', v); }
+                    });
+                    createInput({
+                        containerId: 'contenidos-filtro-categoria',
+                        type: 'select',
+                        label: '',
+                        placeholder: 'Categoría',
+                        size: 'md',
+                        selectOptions: selectCat,
+                        value: contenidosFiltrosPending.categoriaId,
+                        onChange: function (v) { bindPending('categoriaId', v); }
+                    });
+                    createInput({
+                        containerId: 'contenidos-filtro-nivel',
+                        type: 'select',
+                        label: '',
+                        placeholder: 'Nivel',
+                        size: 'md',
+                        selectOptions: selectNiv,
+                        value: contenidosFiltrosPending.nivelId,
+                        onChange: function (v) { bindPending('nivelId', v); }
+                    });
+                    createInput({
+                        containerId: 'contenidos-filtro-idioma',
+                        type: 'select',
+                        label: '',
+                        placeholder: 'Idioma',
+                        size: 'md',
+                        selectOptions: selectIdioma,
+                        value: contenidosFiltrosPending.idioma,
+                        onChange: function (v) { bindPending('idioma', v); }
+                    });
+                    var aplicarBtn = document.getElementById('contenidos-filtros-modal-aplicar');
+                    if (aplicarBtn) {
+                        aplicarBtn.addEventListener('click', function () {
+                            contenidosFiltrosActive = {
+                                tipo: contenidosFiltrosPending.tipo,
+                                categoriaId: contenidosFiltrosPending.categoriaId,
+                                nivelId: contenidosFiltrosPending.nivelId,
+                                idioma: contenidosFiltrosPending.idioma
+                            };
+                            if (typeof closeModal === 'function') closeModal(overlayId);
+                            if (contenidosPaginatorInst) {
+                                contenidosPaginatorInst.updateTotalItems(getSearchMatches().length);
+                                contenidosPaginatorInst.goToPage(1);
+                            }
+                            syncListaContenidos();
+                        });
+                    }
+                }
+
                 var toggle = document.getElementById('contenidos-btn-buscar');
                 var searchCont = document.getElementById('contenidos-search-inline');
                 var filtroBtn = document.getElementById('contenidos-btn-filtro');
@@ -726,6 +949,14 @@
                         if (!searchQuery || !String(searchQuery).trim()) {
                             clearContenidosSearch();
                         }
+                    });
+                }
+
+                if (filtroBtn) {
+                    filtroBtn.addEventListener('click', function (e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        openContenidosFiltrosModal();
                     });
                 }
 

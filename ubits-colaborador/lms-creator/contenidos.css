@@ -234,6 +234,30 @@
     }
 }
 
+/* Filtros: botón activo cuando hay criterios aplicados */
+.contenidos-toolbar__filter-btn.contenidos-toolbar__filter-btn--active {
+    color: var(--ubits-accent-brand);
+    border-color: var(--ubits-accent-brand);
+}
+
+/* Modal filtros: selects apilados */
+.contenidos-filtros-modal-fields {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-lg);
+    width: 100%;
+}
+
+.contenidos-filtros-modal-field {
+    width: 100%;
+    min-width: 0;
+}
+
+.contenidos-filtros-modal-field .ubits-input-container {
+    width: 100%;
+    max-width: 100%;
+}
+
 /* Header product: selector Catálogo (máx. 150px) */
 .page-contenidos-creator .contenidos-header-catalog {
     display: flex;
