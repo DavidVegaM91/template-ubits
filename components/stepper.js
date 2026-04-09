@@ -5,7 +5,7 @@
  * - Paso completado: el número sigue visible en el círculo (color éxito); el <i class="far fa-check"> en el mark queda oculto por CSS (puede permanecer en el HTML por compatibilidad).
  * - Horizontal en viewport ≤1023px: solo el paso activo muestra .ubits-stepper__label; el resto solo el número (ver stepper.css).
  * - wireStepperVerticalCollapse: tras colapsar, re-inicializar tooltips del marco si usas initTooltip (ver documentación).
- * - Marco con clase ubits-stepper__vertical-frame--creator-rail: rail tipo sidebar creator (bg-1, borde), toggle nav-button con fa-angles-right/left y “Contraer” (mismo patrón que sidebar contenido creator).
+ * - Marco con clase ubits-stepper__vertical-frame--creator-rail: rail tipo sidebar creator (bg-1, borde), toggle nav-button con fa-angles-right/left y “Contraer” (mismo patrón que Sidebar contenidos LMS).
  *
  * @fileoverview stepper.js
  */
@@ -67,7 +67,7 @@
 
     /**
      * Colapsar / expandir títulos en stepper vertical (marco + botón).
-     * Variante creator-rail: clase ubits-stepper__vertical-frame--creator-rail en el marco y nav-button en el toggle (mismo icono y comportamiento que sidebar contenido creator).
+     * Variante creator-rail: clase ubits-stepper__vertical-frame--creator-rail en el marco y nav-button en el toggle (mismo icono y comportamiento que Sidebar contenidos LMS).
      * @param {HTMLElement} frameEl - .ubits-stepper__vertical-frame (con id recomendado para tooltips)
      * @param {HTMLButtonElement} toggleBtn - .ubits-stepper__vertical-toggle (ubits-button terciario clásico, o nav-button en creator-rail)
      * @param {Object} [options]

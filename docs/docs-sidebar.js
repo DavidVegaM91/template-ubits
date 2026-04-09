@@ -4,14 +4,17 @@
  */
 
 // Configuración del sidebar de documentación
-// Orden: introducción, navegación (fijo), UI (alfabético por title)
+// Orden: introducción, navegación (fijo), UI general (alfabético), aprendizaje (alfabético), operations (alfabético)
 const DOCS_SIDEBAR_SECTIONS = [
     { id: 'introduccion', title: 'Introducción', group: 'main' },
     { id: 'sidebar', title: 'Sidebar', group: 'navegacion' },
-    { id: 'sidebar-contenido-creator', title: 'Sidebar contenido creator', group: 'navegacion' },
     { id: 'sub-nav', title: 'Sub-nav', group: 'navegacion' },
     { id: 'tab-bar', title: 'Tab-bar', group: 'navegacion' },
-    // UI en orden alfabético
+    // Aprendizaje (alfabético por title)
+    { id: 'card-content', title: 'Card content', group: 'aprendizaje' },
+    { id: 'card-content-compact', title: 'Card content compact', group: 'aprendizaje' },
+    { id: 'sidebar-contenidos-lms', title: 'Sidebar contenidos LMS', group: 'aprendizaje' },
+    // UI general en orden alfabético
     { id: 'accordion', title: 'Accordion', group: 'ui' },
     { id: 'alert', title: 'Alert', group: 'ui' },
     { id: 'save-indicator', title: 'Save Indicator', group: 'ui' },
@@ -19,8 +22,6 @@ const DOCS_SIDEBAR_SECTIONS = [
     { id: 'badge-tag', title: 'Badge Tag', group: 'ui' },
     { id: 'button', title: 'Button', group: 'ui' },
     { id: 'calendar', title: 'Calendar', group: 'ui' },
-    { id: 'card-content', title: 'Card content', group: 'ui' },
-    { id: 'card-content-compact', title: 'Card content compact', group: 'ui' },
     { id: 'checkbox', title: 'Checkbox', group: 'ui' },
     { id: 'chip', title: 'Chip', group: 'ui' },
     { id: 'coachmark', title: 'Coachmark', group: 'ui' },
@@ -42,7 +43,9 @@ const DOCS_SIDEBAR_SECTIONS = [
     { id: 'tab', title: 'Tab', group: 'ui' },
     { id: 'table', title: 'Tabla', group: 'ui' },
     { id: 'toast', title: 'Toast', group: 'ui' },
-    { id: 'tooltip', title: 'Tooltip', group: 'ui' }
+    { id: 'tooltip', title: 'Tooltip', group: 'ui' },
+    // Operations (alfabético por title)
+    { id: 'task-strip', title: 'Task strip', group: 'operations' }
 ];
 
 /**
@@ -51,6 +54,8 @@ const DOCS_SIDEBAR_SECTIONS = [
 function buildDocsSidebarHTML() {
     const main = DOCS_SIDEBAR_SECTIONS.filter(s => s.group === 'main');
     const nav = DOCS_SIDEBAR_SECTIONS.filter(s => s.group === 'navegacion');
+    const aprendizaje = DOCS_SIDEBAR_SECTIONS.filter(s => s.group === 'aprendizaje').sort((a, b) => a.title.localeCompare(b.title));
+    const operations = DOCS_SIDEBAR_SECTIONS.filter(s => s.group === 'operations').sort((a, b) => a.title.localeCompare(b.title));
     const ui = DOCS_SIDEBAR_SECTIONS.filter(s => s.group === 'ui').sort((a, b) => a.title.localeCompare(b.title));
 
     const mainItems = main.map(s => `
@@ -74,8 +79,22 @@ function buildDocsSidebarHTML() {
                     </div>`).join('')}
                 </div>
                 <div class="docs-sidebar-subsection">
-                    <div class="docs-sidebar-subtitle">UI</div>
+                    <div class="docs-sidebar-subtitle">UI GENERAL</div>
                     ${ui.map(s => `
+                    <div class="docs-sidebar-item" data-section="${s.id}">
+                        <span class="docs-sidebar-text">${s.title}</span>
+                    </div>`).join('')}
+                </div>
+                <div class="docs-sidebar-subsection">
+                    <div class="docs-sidebar-subtitle">APRENDIZAJE</div>
+                    ${aprendizaje.map(s => `
+                    <div class="docs-sidebar-item" data-section="${s.id}">
+                        <span class="docs-sidebar-text">${s.title}</span>
+                    </div>`).join('')}
+                </div>
+                <div class="docs-sidebar-subsection">
+                    <div class="docs-sidebar-subtitle">OPERATIONS</div>
+                    ${operations.map(s => `
                     <div class="docs-sidebar-item" data-section="${s.id}">
                         <span class="docs-sidebar-text">${s.title}</span>
                     </div>`).join('')}
@@ -92,6 +111,8 @@ function buildDocsSidebarHTML() {
 function buildDocsDropdownHTML() {
     const main = DOCS_SIDEBAR_SECTIONS.filter(s => s.group === 'main');
     const nav = DOCS_SIDEBAR_SECTIONS.filter(s => s.group === 'navegacion');
+    const aprendizaje = DOCS_SIDEBAR_SECTIONS.filter(s => s.group === 'aprendizaje').sort((a, b) => a.title.localeCompare(b.title));
+    const operations = DOCS_SIDEBAR_SECTIONS.filter(s => s.group === 'operations').sort((a, b) => a.title.localeCompare(b.title));
     const ui = DOCS_SIDEBAR_SECTIONS.filter(s => s.group === 'ui').sort((a, b) => a.title.localeCompare(b.title));
 
     const mainItems = main.map(s => `
@@ -100,6 +121,16 @@ function buildDocsDropdownHTML() {
             </div>`).join('');
 
     const navItems = nav.map(s => `
+                    <div class="docs-dropdown-item" data-section="${s.id}">
+                        <span class="docs-dropdown-item-text ubits-body-md-regular">${s.title}</span>
+                    </div>`).join('');
+
+    const aprendizajeItems = aprendizaje.map(s => `
+                    <div class="docs-dropdown-item" data-section="${s.id}">
+                        <span class="docs-dropdown-item-text ubits-body-md-regular">${s.title}</span>
+                    </div>`).join('');
+
+    const operationsItems = operations.map(s => `
                     <div class="docs-dropdown-item" data-section="${s.id}">
                         <span class="docs-dropdown-item-text ubits-body-md-regular">${s.title}</span>
                     </div>`).join('');
@@ -124,8 +155,16 @@ function buildDocsDropdownHTML() {
                     ${navItems}
                 </div>
                 <div class="docs-dropdown-subgroup">
-                    <div class="docs-dropdown-subgroup-title ubits-body-sm-regular">UI</div>
+                    <div class="docs-dropdown-subgroup-title ubits-body-sm-regular">UI GENERAL</div>
                     ${uiItems}
+                </div>
+                <div class="docs-dropdown-subgroup">
+                    <div class="docs-dropdown-subgroup-title ubits-body-sm-regular">APRENDIZAJE</div>
+                    ${aprendizajeItems}
+                </div>
+                <div class="docs-dropdown-subgroup">
+                    <div class="docs-dropdown-subgroup-title ubits-body-sm-regular">OPERATIONS</div>
+                    ${operationsItems}
                 </div>
             </div>
         </div>
@@ -216,7 +255,7 @@ function initDocsSidebar(activeSection) {
         const sectionToFile = {
             'introduccion': 'componentes.html',
             'sidebar': 'sidebar.html',
-            'sidebar-contenido-creator': 'sidebar-contenido-creator.html',
+            'sidebar-contenidos-lms': 'sidebar-contenidos-lms.html',
             'sub-nav': 'subnav.html',
             'tab-bar': 'tab-bar.html',
             'accordion': 'accordion.html',
@@ -249,7 +288,8 @@ function initDocsSidebar(activeSection) {
             'modal': 'modal.html',
             'table': 'table.html',
             'tooltip': 'tooltip.html',
-            'calendar': 'calendar.html'
+            'calendar': 'calendar.html',
+            'task-strip': 'task-strip.html'
         };
         
         let targetFile = sectionToFile[section];

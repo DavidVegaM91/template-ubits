@@ -50,7 +50,7 @@ Una **plantilla lista para usar** que permite a **Product Managers**, **Diseñad
 - **Sidebar** - Navegación lateral con 2 variantes:
   - **Variante default:** (opciones: admin, aprendizaje, diagnóstico, desempeño, encuestas, reclutamiento, tareas, ia-para-hr, ninguno) - Con modo oscuro
   - **Variante admin:** (opciones: inicio, empresa, aprendizaje, diagnóstico, desempeño, encuestas; footer: api, centro-de-ayuda, modo-oscuro, perfil) - Incluye modo oscuro en footer
-- **Sidebar contenido creator** - Misma estructura que el Sidebar (`.sidebar` + `.nav-button` con iconos y tooltips), colores para superficie `--ubits-bg-1`; pasos del LMS Creator (Resultados → Visibilidad) - **RENDERIZADO: `loadSidebarContenidoCreator()`**
+- **Sidebar contenidos LMS** - Misma estructura que el Sidebar (`.sidebar` + `.nav-button` con iconos y tooltips), colores para superficie `--ubits-bg-1`; variantes **Publicado LMS Creator** (cinco pasos) y **Publicado Antiguo LMS** (sin Resultados; recursos como Módulos) vía `options.variant` - **RENDERIZADO: `loadSidebarContenidosLms()`**
 - **TabBar** - Navegación móvil (opciones: modulos, perfil, modo-oscuro)
 - **Floating Menu** - Menú flotante modal para navegación móvil (acordeones con subitems)
 - **Profile Menu** - Menú desplegable del perfil de usuario
@@ -73,7 +73,7 @@ Una **plantilla lista para usar** que permite a **Product Managers**, **Diseñad
 - **Card Content Compact** - Variante horizontal compacta de Card Content (misma funcionalidad, diseño optimizado para espacios reducidos, siempre horizontal) - **RENDERIZADO: loadCardContentCompact()**
 - **Carousel Contents** - Carruseles de contenido (navegación horizontal, flechas, responsive) - **RENDERIZADO: loadCarouselContents()**
 - **Status Tag** - Etiquetas de estado (tipos: success, info, warning, error, neutral; tamaños: xs, sm, md, lg; iconos opcionales izquierda/derecha) - **RENDERIZADO: HTML directo**
-- **Stepper** - Indicador de pasos de un flujo (horizontal, compacto, título bajo el círculo, combinación compacta, vertical colapsable clásico o **vertical rail creator** alineado al sidebar contenido creator) - **RENDERIZADO: HTML directo**; demo con clic opcional vía `initStepper()`; colapso vertical con `wireStepperVerticalCollapse()` en **stepper.js**. **CSS:** `stepper.css`. **Vertical clásico:** `button.css`, `tooltip.css`, `tooltip.js`. **Rail creator:** `styles.css` (`.nav-button`) + tooltip.
+- **Stepper** - Indicador de pasos de un flujo (horizontal, compacto, título bajo el círculo, combinación compacta, vertical colapsable clásico o **vertical rail creator** alineado al Sidebar contenidos LMS) - **RENDERIZADO: HTML directo**; demo con clic opcional vía `initStepper()`; colapso vertical con `wireStepperVerticalCollapse()` en **stepper.js**. **CSS:** `stepper.css`. **Vertical clásico:** `button.css`, `tooltip.css`, `tooltip.js`. **Rail creator:** `styles.css` (`.nav-button`) + tooltip.
 - **Badge Tag** - Badge tipo pill con punto de color o icono (outlined/filled; success, info, warning, error; sm, md, lg; normalmente punto, opcionalmente icono FontAwesome) - **RENDERIZADO: HTML directo**
 - **Tab** - Tabs de navegación (estados: active, inactive; tamaños: xs, sm, md, lg; variantes: con texto, icon-only; iconos opcionales) - **RENDERIZADO: HTML directo**
 - **Empty State** - Estados vacíos (icono, título, descripción, botones opcionales; tamaños de icono: sm, md, lg; casos de uso: búsqueda sin resultados, contenido vacío, estados iniciales) - **RENDERIZADO: loadEmptyState()**
@@ -123,7 +123,7 @@ Todos los componentes UBITS requieren imports obligatorios:
 <link rel="stylesheet" href="../../components/floating-menu.css">
 <link rel="stylesheet" href="../../components/profile-menu.css">
 <link rel="stylesheet" href="../../components/sidebar.css">
-<link rel="stylesheet" href="../../components/sidebar-contenido-creator.css">
+<link rel="stylesheet" href="../../components/sidebar-contenidos-lms.css">
 <link rel="stylesheet" href="../../components/sub-nav.css">
 <link rel="stylesheet" href="../../components/tab-bar.css">
 <link rel="stylesheet" href="../../components/avatar.css">
@@ -152,7 +152,7 @@ Todos los componentes UBITS requieren imports obligatorios:
 <script src="../../components/floating-menu.js"></script>
 <script src="../../components/profile-menu.js"></script>
 <script src="../../components/sidebar.js"></script>
-<script src="../../components/sidebar-contenido-creator.js"></script>
+<script src="../../components/sidebar-contenidos-lms.js"></script>
 <script src="../../components/sub-nav.js"></script>
 <script src="../../components/tab-bar.js"></script>
 <script src="../../components/calendar.js"></script>
@@ -274,7 +274,7 @@ Todos los componentes UBITS requieren imports obligatorios:
 #### **📖 Documentación de Componentes (documentacion/componentes/):**
 - **`documentacion/componentes.html`** - Introducción y bienvenida a los componentes UBITS
 - **`documentacion/componentes/sidebar.html`** - Documentación del componente Sidebar
-- **`documentacion/componentes/sidebar-contenido-creator.html`** - Documentación del Sidebar contenido creator (LMS Creator)
+- **`documentacion/componentes/sidebar-contenidos-lms.html`** - Documentación del Sidebar contenidos LMS (LMS Creator)
 - **`documentacion/componentes/subnav.html`** - Documentación del componente SubNav
 - **`documentacion/componentes/tab-bar.html`** - Documentación del componente TabBar
 - **`documentacion/componentes/button.html`** - Documentación del componente Button
@@ -342,7 +342,7 @@ Todos los componentes UBITS requieren imports obligatorios:
 ├── 📁 components/             # Componentes reutilizables UBITS
 │   ├── sub-nav.css + sub-nav.js
 │   ├── sidebar.css + sidebar.js
-│   ├── sidebar-contenido-creator.css + sidebar-contenido-creator.js
+│   ├── sidebar-contenidos-lms.css + sidebar-contenidos-lms.js
 │   ├── tab-bar.css + tab-bar.js
 │   ├── floating-menu.css + floating-menu.js
 │   ├── profile-menu.css + profile-menu.js
@@ -492,7 +492,7 @@ ubits-colaborador/
 
 <!-- Componentes que uses -->
 <link rel="stylesheet" href="../../components/sidebar.css">
-<link rel="stylesheet" href="../../components/sidebar-contenido-creator.css">
+<link rel="stylesheet" href="../../components/sidebar-contenidos-lms.css">
 <link rel="stylesheet" href="../../components/sub-nav.css">
 <!-- ... otros componentes -->
 
@@ -762,7 +762,7 @@ loadCardContentCompact('mi-contenedor-compact', [
 - **`documentacion/componentes/empty-state.html`** - Documentación del componente Empty State
 - **`documentacion/componentes/paginator.html`** - Documentación del componente Paginator
 - **`documentacion/componentes/sidebar.html`** - Documentación del componente Sidebar
-- **`documentacion/componentes/sidebar-contenido-creator.html`** - Documentación del Sidebar contenido creator (LMS Creator)
+- **`documentacion/componentes/sidebar-contenidos-lms.html`** - Documentación del Sidebar contenidos LMS (LMS Creator)
 - **`documentacion/componentes/subnav.html`** - Documentación del componente SubNav
 - **`documentacion/componentes/tab-bar.html`** - Documentación del componente TabBar
 - **`documentacion/componentes/avatar.html`** - Documentación del componente Avatar

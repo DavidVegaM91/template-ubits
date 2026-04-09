@@ -1,10 +1,10 @@
 /* ========================================
-   Sidebar contenido creator
+   Sidebar contenidos LMS
    Misma estructura y patrón visual que el Sidebar global (.sidebar + .nav-button en styles.css),
    con colores para superficie clara (--ubits-bg-1). No usa el fondo oscuro (--ubits-sidebar-bg).
    ======================================== */
 
-.sidebar.sidebar--contenido-creator {
+.sidebar.sidebar--contenidos-lms {
     background-color: var(--ubits-bg-1) !important;
     border: none;
     border-radius: var(--border-radius-sm);
@@ -29,7 +29,7 @@
     z-index: 1;
 }
 
-.sidebar.sidebar--contenido-creator .sidebar-main {
+.sidebar.sidebar--contenidos-lms .sidebar-main {
     display: flex;
     flex-direction: column;
     gap: var(--gap-lg);
@@ -39,7 +39,7 @@
     min-height: 0;
 }
 
-.sidebar.sidebar--contenido-creator .sidebar-body {
+.sidebar.sidebar--contenidos-lms .sidebar-body {
     flex: 1;
     display: flex;
     flex-direction: column;
@@ -52,108 +52,108 @@
 }
 
 /* Tema claro: anula estilos del sidebar oscuro (styles.css) para .nav-button */
-.sidebar.sidebar--contenido-creator .nav-button {
+.sidebar.sidebar--contenidos-lms .nav-button {
     background: transparent !important;
     box-shadow: none !important;
 }
 
-.sidebar.sidebar--contenido-creator .nav-button::before {
+.sidebar.sidebar--contenidos-lms .nav-button::before {
     display: none;
 }
 
-.sidebar.sidebar--contenido-creator .nav-button i {
+.sidebar.sidebar--contenidos-lms .nav-button i {
     color: var(--ubits-fg-1-medium) !important;
 }
 
-.sidebar.sidebar--contenido-creator .nav-button:hover {
+.sidebar.sidebar--contenidos-lms .nav-button:hover {
     background: var(--ubits-bg-2) !important;
     box-shadow: none !important;
     transform: scale(1.08);
 }
 
-.sidebar.sidebar--contenido-creator .nav-button:hover i {
+.sidebar.sidebar--contenidos-lms .nav-button:hover i {
     color: var(--ubits-fg-1-high) !important;
     transform: scale(1.1);
 }
 
-.sidebar.sidebar--contenido-creator .nav-button:active {
+.sidebar.sidebar--contenidos-lms .nav-button:active {
     background: var(--ubits-bg-2) !important;
     transform: scale(0.95);
 }
 
-.sidebar.sidebar--contenido-creator .nav-button:active i {
+.sidebar.sidebar--contenidos-lms .nav-button:active i {
     color: var(--ubits-fg-1-high) !important;
 }
 
-.sidebar.sidebar--contenido-creator .nav-button.active {
+.sidebar.sidebar--contenidos-lms .nav-button.active {
     background: var(--ubits-bg-active) !important;
 }
 
-.sidebar.sidebar--contenido-creator .nav-button.active i {
+.sidebar.sidebar--contenidos-lms .nav-button.active i {
     color: var(--ubits-accent-brand) !important;
 }
 
-.sidebar.sidebar--contenido-creator .nav-button:focus-visible {
+.sidebar.sidebar--contenidos-lms .nav-button:focus-visible {
     background: transparent !important;
     box-shadow: 0 0 0 2px var(--ubits-accent-brand) !important;
     outline: none;
 }
 
-.sidebar.sidebar--contenido-creator .nav-button:focus-visible i {
+.sidebar.sidebar--contenidos-lms .nav-button:focus-visible i {
     color: var(--ubits-fg-1-high) !important;
 }
 
 /* Modo oscuro: sigue siendo “sidebar sobre bg-1” dentro del creator */
-[data-theme="dark"] .sidebar.sidebar--contenido-creator {
+[data-theme="dark"] .sidebar.sidebar--contenidos-lms {
     background-color: var(--ubits-bg-1) !important;
 }
 
-[data-theme="dark"] .sidebar.sidebar--contenido-creator .nav-button i {
+[data-theme="dark"] .sidebar.sidebar--contenidos-lms .nav-button i {
     color: var(--ubits-fg-1-medium) !important;
 }
 
-[data-theme="dark"] .sidebar.sidebar--contenido-creator .nav-button:hover {
+[data-theme="dark"] .sidebar.sidebar--contenidos-lms .nav-button:hover {
     background: var(--ubits-bg-2) !important;
 }
 
-[data-theme="dark"] .sidebar.sidebar--contenido-creator .nav-button:hover i {
+[data-theme="dark"] .sidebar.sidebar--contenidos-lms .nav-button:hover i {
     color: var(--ubits-fg-1-high) !important;
 }
 
-[data-theme="dark"] .sidebar.sidebar--contenido-creator .nav-button.active {
+[data-theme="dark"] .sidebar.sidebar--contenidos-lms .nav-button.active {
     background: var(--ubits-bg-active) !important;
 }
 
-[data-theme="dark"] .sidebar.sidebar--contenido-creator .nav-button.active i {
+[data-theme="dark"] .sidebar.sidebar--contenidos-lms .nav-button.active i {
     color: var(--ubits-accent-brand) !important;
 }
 
 /* Etiquetas de paso: visibles solo en modo expandido */
-.sidebar.sidebar--contenido-creator:not(.sidebar--contenido-creator--expanded) .sidebar-contenido-creator__step-label {
+.sidebar.sidebar--contenidos-lms:not(.sidebar--contenidos-lms--expanded) .sidebar-contenidos-lms__step-label {
     display: none;
 }
 
-.sidebar.sidebar--contenido-creator .sidebar-contenido-creator__step-label {
+.sidebar.sidebar--contenidos-lms .sidebar-contenidos-lms__step-label {
     flex: 1;
     min-width: 0;
     text-align: left;
     color: var(--ubits-fg-1-medium);
 }
 
-.sidebar.sidebar--contenido-creator .nav-button.active .sidebar-contenido-creator__step-label {
+.sidebar.sidebar--contenidos-lms .nav-button.active .sidebar-contenidos-lms__step-label {
     color: var(--ubits-accent-brand);
 }
 
-.sidebar.sidebar--contenido-creator.sidebar--contenido-creator--expanded .nav-button:hover .sidebar-contenido-creator__step-label {
+.sidebar.sidebar--contenidos-lms.sidebar--contenidos-lms--expanded .nav-button:hover .sidebar-contenidos-lms__step-label {
     color: var(--ubits-fg-1-high);
 }
 
-.sidebar.sidebar--contenido-creator.sidebar--contenido-creator--expanded .nav-button.active:hover .sidebar-contenido-creator__step-label {
+.sidebar.sidebar--contenidos-lms.sidebar--contenidos-lms--expanded .nav-button.active:hover .sidebar-contenidos-lms__step-label {
     color: var(--ubits-accent-brand);
 }
 
 /* Modo expandido: rail ancho + filas icono + texto */
-.sidebar.sidebar--contenido-creator.sidebar--contenido-creator--expanded {
+.sidebar.sidebar--contenidos-lms.sidebar--contenidos-lms--expanded {
     width: 240px;
     min-width: 240px;
     max-width: 240px;
@@ -162,15 +162,15 @@
     align-items: stretch;
 }
 
-.sidebar.sidebar--contenido-creator.sidebar--contenido-creator--expanded .sidebar-main {
+.sidebar.sidebar--contenidos-lms.sidebar--contenidos-lms--expanded .sidebar-main {
     align-items: stretch;
 }
 
-.sidebar.sidebar--contenido-creator.sidebar--contenido-creator--expanded .sidebar-body {
+.sidebar.sidebar--contenidos-lms.sidebar--contenidos-lms--expanded .sidebar-body {
     align-items: stretch;
 }
 
-.sidebar.sidebar--contenido-creator.sidebar--contenido-creator--expanded .sidebar-body .nav-button[data-step] {
+.sidebar.sidebar--contenidos-lms.sidebar--contenidos-lms--expanded .sidebar-body .nav-button[data-step] {
     width: 100%;
     flex-direction: row;
     justify-content: flex-start;
@@ -181,12 +181,12 @@
     box-sizing: border-box;
 }
 
-.sidebar.sidebar--contenido-creator.sidebar--contenido-creator--expanded .sidebar-body .nav-button[data-step] i {
+.sidebar.sidebar--contenidos-lms.sidebar--contenidos-lms--expanded .sidebar-body .nav-button[data-step] i {
     flex-shrink: 0;
 }
 
 /* Footer: Expandir / Contraer */
-.sidebar.sidebar--contenido-creator .sidebar-contenido-creator__footer {
+.sidebar.sidebar--contenidos-lms .sidebar-contenidos-lms__footer {
     width: 100%;
     flex-shrink: 0;
     display: flex;
@@ -198,7 +198,7 @@
 }
 
 /* Toggle: mismo patrón circular que los demás .nav-button del rail (40×40, icono centrado). */
-.sidebar.sidebar--contenido-creator .sidebar-contenido-creator__toggle {
+.sidebar.sidebar--contenidos-lms .sidebar-contenidos-lms__toggle {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -207,7 +207,7 @@
 }
 
 /* Contraído: círculo como los pasos; no ocupar todo el ancho del footer. */
-.sidebar.sidebar--contenido-creator:not(.sidebar--contenido-creator--expanded) .sidebar-contenido-creator__toggle {
+.sidebar.sidebar--contenidos-lms:not(.sidebar--contenidos-lms--expanded) .sidebar-contenidos-lms__toggle {
     width: 40px;
     height: 40px;
     min-width: 40px;
@@ -218,11 +218,11 @@
     flex-shrink: 0;
 }
 
-.sidebar.sidebar--contenido-creator:not(.sidebar--contenido-creator--expanded) .sidebar-contenido-creator__toggle i {
+.sidebar.sidebar--contenidos-lms:not(.sidebar--contenidos-lms--expanded) .sidebar-contenidos-lms__toggle i {
     margin: 0;
 }
 
-.sidebar.sidebar--contenido-creator.sidebar--contenido-creator--expanded .sidebar-contenido-creator__toggle {
+.sidebar.sidebar--contenidos-lms.sidebar--contenidos-lms--expanded .sidebar-contenidos-lms__toggle {
     flex-direction: row;
     justify-content: flex-start;
     gap: var(--gap-md);
@@ -238,7 +238,7 @@
 
 /* Mismo tamaño que .nav-button en styles.css @media (max-width: 768px). */
 @media (max-width: 768px) {
-    .sidebar.sidebar--contenido-creator:not(.sidebar--contenido-creator--expanded) .sidebar-contenido-creator__toggle {
+    .sidebar.sidebar--contenidos-lms:not(.sidebar--contenidos-lms--expanded) .sidebar-contenidos-lms__toggle {
         width: 36px;
         height: 36px;
         min-width: 36px;
@@ -247,31 +247,31 @@
 }
 
 /* Contraído: solo icono (>>); el texto “Expandir” va en tooltip. Expandido: << + “Contraer”. */
-.sidebar.sidebar--contenido-creator:not(.sidebar--contenido-creator--expanded) .sidebar-contenido-creator__toggle-icon-expanded,
-.sidebar.sidebar--contenido-creator:not(.sidebar--contenido-creator--expanded) .sidebar-contenido-creator__toggle-label-expanded,
-.sidebar.sidebar--contenido-creator:not(.sidebar--contenido-creator--expanded) .sidebar-contenido-creator__toggle-label-collapsed,
-.sidebar.sidebar--contenido-creator.sidebar--contenido-creator--expanded .sidebar-contenido-creator__toggle-icon-collapsed,
-.sidebar.sidebar--contenido-creator.sidebar--contenido-creator--expanded .sidebar-contenido-creator__toggle-label-collapsed {
+.sidebar.sidebar--contenidos-lms:not(.sidebar--contenidos-lms--expanded) .sidebar-contenidos-lms__toggle-icon-expanded,
+.sidebar.sidebar--contenidos-lms:not(.sidebar--contenidos-lms--expanded) .sidebar-contenidos-lms__toggle-label-expanded,
+.sidebar.sidebar--contenidos-lms:not(.sidebar--contenidos-lms--expanded) .sidebar-contenidos-lms__toggle-label-collapsed,
+.sidebar.sidebar--contenidos-lms.sidebar--contenidos-lms--expanded .sidebar-contenidos-lms__toggle-icon-collapsed,
+.sidebar.sidebar--contenidos-lms.sidebar--contenidos-lms--expanded .sidebar-contenidos-lms__toggle-label-collapsed {
     display: none;
 }
 
-.sidebar.sidebar--contenido-creator .sidebar-contenido-creator__toggle-label-collapsed,
-.sidebar.sidebar--contenido-creator .sidebar-contenido-creator__toggle-label-expanded {
+.sidebar.sidebar--contenidos-lms .sidebar-contenidos-lms__toggle-label-collapsed,
+.sidebar.sidebar--contenidos-lms .sidebar-contenidos-lms__toggle-label-expanded {
     color: var(--ubits-fg-1-medium);
     text-align: center;
 }
 
-.sidebar.sidebar--contenido-creator.sidebar--contenido-creator--expanded .sidebar-contenido-creator__toggle-label-expanded {
+.sidebar.sidebar--contenidos-lms.sidebar--contenidos-lms--expanded .sidebar-contenidos-lms__toggle-label-expanded {
     text-align: left;
 }
 
-[data-theme="dark"] .sidebar.sidebar--contenido-creator .sidebar-contenido-creator__toggle-label-collapsed,
-[data-theme="dark"] .sidebar.sidebar--contenido-creator .sidebar-contenido-creator__toggle-label-expanded {
+[data-theme="dark"] .sidebar.sidebar--contenidos-lms .sidebar-contenidos-lms__toggle-label-collapsed,
+[data-theme="dark"] .sidebar.sidebar--contenidos-lms .sidebar-contenidos-lms__toggle-label-expanded {
     color: var(--ubits-fg-1-medium);
 }
 
 @media (max-width: 1023px) {
-    .sidebar.sidebar--contenido-creator {
+    .sidebar.sidebar--contenidos-lms {
         width: 100%;
         max-width: 100%;
         min-width: 0;
@@ -285,7 +285,7 @@
         gap: var(--gap-md);
     }
 
-    .sidebar.sidebar--contenido-creator .sidebar-main {
+    .sidebar.sidebar--contenidos-lms .sidebar-main {
         flex-direction: row;
         flex-wrap: wrap;
         justify-content: center;
@@ -293,14 +293,14 @@
         width: auto;
     }
 
-    .sidebar.sidebar--contenido-creator .sidebar-body {
+    .sidebar.sidebar--contenidos-lms .sidebar-body {
         flex-direction: row;
         flex-wrap: wrap;
         justify-content: center;
         flex: none;
     }
 
-    .sidebar.sidebar--contenido-creator.sidebar--contenido-creator--expanded {
+    .sidebar.sidebar--contenidos-lms.sidebar--contenidos-lms--expanded {
         flex-direction: column;
         width: 100%;
         max-width: 100%;
@@ -308,20 +308,20 @@
         align-items: stretch;
     }
 
-    .sidebar.sidebar--contenido-creator.sidebar--contenido-creator--expanded .sidebar-main {
+    .sidebar.sidebar--contenidos-lms.sidebar--contenidos-lms--expanded .sidebar-main {
         flex-direction: column;
         width: 100%;
         align-items: stretch;
     }
 
-    .sidebar.sidebar--contenido-creator.sidebar--contenido-creator--expanded .sidebar-body {
+    .sidebar.sidebar--contenidos-lms.sidebar--contenidos-lms--expanded .sidebar-body {
         flex-direction: column;
         flex-wrap: nowrap;
         align-items: stretch;
         width: 100%;
     }
 
-    .sidebar.sidebar--contenido-creator.sidebar--contenido-creator--expanded .sidebar-contenido-creator__footer {
+    .sidebar.sidebar--contenidos-lms.sidebar--contenidos-lms--expanded .sidebar-contenidos-lms__footer {
         width: 100%;
     }
 }

@@ -1,7 +1,7 @@
 /* ========================================
    UBITS STEPPER
    Pasos de un flujo (horizontal o vertical); tokens UBITS.
-   Vertical colapsable: marco .ubits-stepper__vertical-frame; variante creator-rail (tipo sidebar contenido creator) con nav.ubits-stepper__vertical-nav + .ubits-stepper__vertical-footer y toggle .nav-button.
+   Vertical colapsable: marco .ubits-stepper__vertical-frame; variante creator-rail (tipo Sidebar contenidos LMS) con nav.ubits-stepper__vertical-nav + .ubits-stepper__vertical-footer y toggle .nav-button.
    Documentación: documentacion/componentes/stepper.html
    ======================================== */
 
@@ -399,7 +399,7 @@
         transform var(--ubits-stepper-collapse-dur) var(--ubits-stepper-collapse-ease);
 }
 
-/* ---------- Vertical colapsable — variante rail creator (sidebar contenido creator) ---------- */
+/* ---------- Vertical colapsable — variante rail creator (Sidebar contenidos LMS) ---------- */
 .ubits-stepper__vertical-frame.ubits-stepper__vertical-frame--creator-rail {
     background-color: var(--ubits-bg-1);
     border: 1px solid var(--ubits-border-1);
@@ -457,7 +457,7 @@
     justify-content: stretch;
 }
 
-/* Toggle: mismos criterios que sidebar contenido creator (.nav-button sobre bg-1) */
+/* Toggle: mismos criterios que Sidebar contenidos LMS (.nav-button sobre bg-1) */
 .ubits-stepper__vertical-frame--creator-rail .nav-button.ubits-stepper__vertical-toggle {
     background: transparent !important;
     box-shadow: none !important;

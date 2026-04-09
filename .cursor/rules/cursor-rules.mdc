@@ -258,7 +258,7 @@ openModal({
 - **TabBar** (Mobile navigation) → `components/tab-bar.css` + `components/tab-bar.js`
   - Features: Responsive, options: `modulos`, `perfil`, `modo-oscuro`
 - **Floating Menu** (Modal navigation) → `components/floating-menu.css` + `components/floating-menu.js`
-- **Sidebar contenido creator** (Misma estructura que Sidebar: `.sidebar` + `.nav-button` + tooltips; colores para `bg-1` en LMS Creator) → `general-styles/styles.css` + `components/sidebar-contenido-creator.css` + `components/sidebar-contenido-creator.js` — `loadSidebarContenidoCreator()`, `setSidebarContenidoCreatorActive()`. Doc: `documentacion/componentes/sidebar-contenido-creator.html`
+- **Sidebar contenidos LMS** (Misma estructura que Sidebar: `.sidebar` + `.nav-button` + tooltips; colores para `bg-1` en LMS Creator) → `general-styles/styles.css` + `components/sidebar-contenidos-lms.css` + `components/sidebar-contenidos-lms.js` — `loadSidebarContenidosLms({ variant?: 'publicado-lms-creator' | 'publicado-antiguo-lms', ... })`, `setSidebarContenidosLmsActive()`. Variante antigua: sin Resultados; paso `recursos` con etiqueta Módulos. Doc: `documentacion/componentes/sidebar-contenidos-lms.html`
 
 #### **2. 🎨 UI COMPONENTS:**
 - **Button** (All actions) → `components/button.css`
@@ -353,7 +353,7 @@ openModal({
 
 **5. Documentación técnica – Sección desplegable, muy completa.** Todo lo técnico dentro de "Documentación técnica" con Mostrar/Ocultar (`toggleTechnicalDocs()`, `#technical-docs-content`). Incluir: Estructura del componente (HTML escapado), Requisitos (CSS/JS), Cómo implementar (ejemplo completo), API (parámetros, opciones), bugs/soluciones. En el **.js del componente** (components/): comentarios con bugs encontrados al implementar, ejemplos, datos enlazados.
 
-**6. Sidebar y SubNav.** Siempre añadir el componente en `docs/docs-sidebar.js` (orden alfabético por título) y en el mapeo sectionToFile. En `components/sub-nav.js`, añadir cada `nombre-componente.html` a `PAGE_TO_TAB` con valor `'section3'` para que el SubNav muestre activo "Componentes", no Inicio.
+**6. Sidebar y SubNav.** Siempre añadir el componente en `docs/docs-sidebar.js` (`group`: `main` | `navegacion` | `ui` | `aprendizaje` | `operations`; en el sidebar: Navegación → UI general → Aprendizaje → Operations; dentro de cada grupo, orden alfabético por `title`) y en el mapeo sectionToFile. En `components/sub-nav.js`, añadir cada `nombre-componente.html` a `PAGE_TO_TAB` con valor `'section3'` para que el SubNav muestre activo "Componentes", no Inicio.
 
 ### **🚫 EN PÁGINAS DE DOCUMENTACIÓN NO DEBE HABER:**
 

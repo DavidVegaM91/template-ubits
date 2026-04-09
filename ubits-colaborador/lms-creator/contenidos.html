@@ -32,7 +32,7 @@
     <link rel="stylesheet" href="../../components/card-content.css">
     <link rel="stylesheet" href="../../components/dropdown-menu.css">
     <link rel="stylesheet" href="../../components/drawer.css">
-    <link rel="stylesheet" href="../../components/sidebar-contenido-creator.css">
+    <link rel="stylesheet" href="../../components/sidebar-contenidos-lms.css">
     <link rel="stylesheet" href="./lms-creator.css">
     <link rel="stylesheet" href="./contenidos.css">
 </head>
@@ -138,7 +138,7 @@
     <script src="../../components/toast.js"></script>
     <script src="../../components/modal.js"></script>
     <script src="../../components/drawer.js"></script>
-    <script src="../../components/sidebar-contenido-creator.js"></script>
+    <script src="../../components/sidebar-contenidos-lms.js"></script>
     <script src="../../script.js"></script>
     <script src="../../bd-master/bd-master-niveles-contenido.js"></script>
     <script src="../../bd-master/bd-master-tipos-contenido.js"></script>
@@ -164,12 +164,36 @@
 
             /** Prefijo del id del overlay; el sufijo es el id del contenido (sanitizado). */
             var CONTENIDO_BORRADOR_DRAWER_ID_PREFIX = 'contenido-borrador-drawer-overlay--';
+            var CONTENIDO_ANTIGUO_LMS_DRAWER_ID_PREFIX = 'contenido-antiguo-lms-drawer-overlay--';
 
             function contenidoIdToDrawerOverlayId(contentId) {
                 var raw = String(contentId != null && contentId !== '' ? contentId : 'sin-id');
                 var safe = raw.replace(/[^a-zA-Z0-9_-]/g, '-');
                 if (!safe) safe = 'sin-id';
                 return CONTENIDO_BORRADOR_DRAWER_ID_PREFIX + safe;
+            }
+
+            /** Id único del rail del sidebar por contenido (evita duplicados si varios drawers siguen en el DOM ocultos). */
+            function contenidoIdToSidebarHostId(contentId) {
+                var raw = String(contentId != null && contentId !== '' ? contentId : 'sin-id');
+                var safe = raw.replace(/[^a-zA-Z0-9_-]/g, '-');
+                if (!safe) safe = 'sin-id';
+                return 'contenido-editor-sidebar-host--' + safe;
+            }
+
+            function contenidoIdToAntiguoDrawerOverlayId(contentId) {
+                var raw = String(contentId != null && contentId !== '' ? contentId : 'sin-id');
+                var safe = raw.replace(/[^a-zA-Z0-9_-]/g, '-');
+                if (!safe) safe = 'sin-id';
+                return CONTENIDO_ANTIGUO_LMS_DRAWER_ID_PREFIX + safe;
+            }
+
+            /** Host del sidebar en el drawer Antiguo LMS (distinto del borrador por si coexisten overlays ocultos). */
+            function contenidoIdToAntiguoSidebarHostId(contentId) {
+                var raw = String(contentId != null && contentId !== '' ? contentId : 'sin-id');
+                var safe = raw.replace(/[^a-zA-Z0-9_-]/g, '-');
+                if (!safe) safe = 'sin-id';
+                return 'contenido-antiguo-lms-sidebar-host--' + safe;
             }
 
             /**
@@ -258,11 +282,12 @@
             var CONTENIDO_EDITOR_VIDEO_DEMO_URL =
                 'https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4';
 
-            function getContenidoBorradorEditorBodyHtml() {
+            function getContenidoBorradorEditorBodyHtml(contentId) {
                 var videoSrc = escapeHtmlAttrContenidos(CONTENIDO_EDITOR_VIDEO_DEMO_URL);
+                var sidebarHostId = escapeHtmlAttrContenidos(contenidoIdToSidebarHostId(contentId));
                 return (
                     '<div id="contenido-borrador-editor-workspace" class="contenido-borrador-editor-workspace">' +
-                    '  <div id="contenido-editor-sidebar-host" class="contenido-borrador-editor__rail" aria-label="Pasos del contenido"></div>' +
+                    '  <div id="' + sidebarHostId + '" class="contenido-borrador-editor__rail" aria-label="Pasos del contenido"></div>' +
                     '  <div id="contenido-borrador-editor-index" class="contenido-borrador-editor__index">' +
                     '    <div id="contenido-borrador-seccion-1" class="contenido-borrador-editor__seccion contenido-borrador-editor__seccion--activa">' +
                     '      <div class="contenido-borrador-editor__seccion-head">' +
@@ -351,6 +376,20 @@
                 );
             }
 
+            function getContenidoAntiguoLmsEditorBodyHtml(contentId) {
+                var sidebarHostId = escapeHtmlAttrContenidos(contenidoIdToAntiguoSidebarHostId(contentId));
+                return (
+                    '<div class="contenido-antiguo-lms-editor-workspace">' +
+                    '  <div id="' +
+                    sidebarHostId +
+                    '" class="contenido-borrador-editor__rail" aria-label="Pasos del contenido"></div>' +
+                    '  <div class="contenido-antiguo-lms-editor__embed" role="region" aria-label="Vista embebida de Moodle">' +
+                    '    <p class="contenido-antiguo-lms-editor__embed-title ubits-display-d2-regular">Experiencia embebida de Moodle</p>' +
+                    '  </div>' +
+                    '</div>'
+                );
+            }
+
             function wireContenidoBorradorDrawerHeader(overlay) {
                 if (!overlay) return;
                 var titleSpan = overlay.querySelector('.ubits-drawer-header .ubits-drawer-title');
@@ -378,6 +417,73 @@
                 }
             }
 
+            function wireContenidoAntiguoLmsDrawerHeader(overlay) {
+                if (!overlay) return;
+                var titleSpan = overlay.querySelector('.ubits-drawer-header .ubits-drawer-title');
+                if (!titleSpan || !titleSpan.parentNode) return;
+                var headerText = titleSpan.parentNode;
+                headerText.classList.add('contenido-borrador-editor__drawer-header-text');
+                var row = document.createElement('div');
+                row.className = 'contenido-borrador-editor__drawer-title-row';
+                headerText.insertBefore(row, titleSpan);
+                row.appendChild(titleSpan);
+                var tag = document.createElement('span');
+                tag.className = 'ubits-status-tag ubits-status-tag--sm ubits-status-tag--info';
+                tag.innerHTML = '<span class="ubits-status-tag__text">Antiguo LMS</span>';
+                row.appendChild(tag);
+            }
+
+            function openContenidoAntiguoLmsEditorFromCard(courseCard) {
+                if (!courseCard || typeof openDrawer !== 'function') return;
+                var wrap = courseCard.closest('.contenidos-card-item');
+                var contentId = '';
+                if (wrap && wrap.getAttribute('data-contenido-id')) {
+                    contentId = wrap.getAttribute('data-contenido-id');
+                } else {
+                    var keyBtn = courseCard.querySelector('.course-card__lms-options-btn[data-lms-row-key]');
+                    contentId = keyBtn ? keyBtn.getAttribute('data-lms-row-key') : '';
+                }
+                var overlayId = contenidoIdToAntiguoDrawerOverlayId(contentId);
+                var titleEl = courseCard.querySelector('.course-title');
+                var title = titleEl ? titleEl.textContent.trim() : 'Contenido';
+                document.body.classList.add('contenido-borrador-drawer-abierto');
+                var overlayDrawer = openDrawer({
+                    overlayId: overlayId,
+                    title: title,
+                    bodyHtml: getContenidoAntiguoLmsEditorBodyHtml(contentId),
+                    size: 'full',
+                    closeOnOverlayClick: false,
+                    onClose: function () {
+                        document.body.classList.remove('contenido-borrador-drawer-abierto');
+                    }
+                });
+                if (overlayDrawer) {
+                    overlayDrawer.classList.add('contenido-antiguo-lms-drawer-overlay');
+                    overlayDrawer.setAttribute('data-contenido-id', contentId);
+                    overlayDrawer.setAttribute('data-antiguo-lms-drawer', 'true');
+                    var drawerPanel = overlayDrawer.querySelector('.ubits-drawer-content');
+                    if (drawerPanel) drawerPanel.id = 'contenido-antiguo-lms-drawer-panel';
+                    var drawerBody = overlayDrawer.querySelector('.ubits-drawer-body');
+                    if (drawerBody) drawerBody.id = 'contenido-antiguo-lms-drawer-body';
+                }
+                wireContenidoAntiguoLmsDrawerHeader(overlayDrawer);
+                var sidebarHostId = contenidoIdToAntiguoSidebarHostId(contentId);
+                setTimeout(function () {
+                    if (typeof loadSidebarContenidosLms === 'function') {
+                        loadSidebarContenidosLms(sidebarHostId, {
+                            variant: 'publicado-antiguo-lms',
+                            activeStep: 'recursos'
+                        });
+                    }
+                    if (typeof setSidebarContenidosLmsActive === 'function') {
+                        setSidebarContenidosLmsActive(sidebarHostId, 'recursos');
+                    }
+                    if (typeof initTooltip === 'function') {
+                        initTooltip('#' + overlayId + ' [data-tooltip]');
+                    }
+                }, 50);
+            }
+
             function openContenidoBorradorEditorFromCard(courseCard) {
                 if (!courseCard || typeof openDrawer !== 'function') return;
                 var wrap = courseCard.closest('.contenidos-card-item');
@@ -395,7 +501,7 @@
                 var overlayDrawer = openDrawer({
                     overlayId: overlayId,
                     title: title,
-                    bodyHtml: getContenidoBorradorEditorBodyHtml(),
+                    bodyHtml: getContenidoBorradorEditorBodyHtml(contentId),
                     size: 'full',
                     closeOnOverlayClick: false,
                     onClose: function () {
@@ -413,12 +519,16 @@
                     syncUrlAfterBorradorDrawerOpen(contentId);
                 }
                 wireContenidoBorradorDrawerHeader(overlayDrawer);
+                var sidebarHostId = contenidoIdToSidebarHostId(contentId);
                 setTimeout(function () {
-                    if (typeof loadSidebarContenidoCreator === 'function') {
-                        loadSidebarContenidoCreator('contenido-editor-sidebar-host', { activeStep: 'recursos' });
+                    if (typeof loadSidebarContenidosLms === 'function') {
+                        loadSidebarContenidosLms(sidebarHostId, {
+                            variant: 'publicado-lms-creator',
+                            activeStep: 'recursos'
+                        });
                     }
-                    if (typeof setSidebarContenidoCreatorActive === 'function') {
-                        setSidebarContenidoCreatorActive('contenido-editor-sidebar-host', 'recursos');
+                    if (typeof setSidebarContenidosLmsActive === 'function') {
+                        setSidebarContenidosLmsActive(sidebarHostId, 'recursos');
                     }
                     if (typeof initTooltip === 'function') {
                         initTooltip('#' + overlayId + ' [data-tooltip]');
@@ -457,8 +567,12 @@
                     if (ev.target.closest && ev.target.closest('.ubits-dropdown-menu')) return;
                     var card = ev.target.closest && ev.target.closest('.course-card');
                     if (!card) return;
+                    if (card.getAttribute('data-legacy-lms') === 'true') {
+                        ev.preventDefault();
+                        openContenidoAntiguoLmsEditorFromCard(card);
+                        return;
+                    }
                     if (card.getAttribute('data-lms-tag') !== 'Borrador') return;
-                    if (card.getAttribute('data-legacy-lms') === 'true') return;
                     ev.preventDefault();
                     openContenidoBorradorEditorFromCard(card);
                 });
@@ -593,7 +707,9 @@
                         'data-contenido-id',
                         contenidoIdAttr && contenidoIdAttr.length ? contenidoIdAttr : 'row-' + i
                     );
-                    if (card.getAttribute('data-lms-tag') === 'Borrador' && card.getAttribute('data-legacy-lms') !== 'true') {
+                    if (card.getAttribute('data-legacy-lms') === 'true') {
+                        wrap.classList.add('contenidos-card-item--abrir-antiguo-lms');
+                    } else if (card.getAttribute('data-lms-tag') === 'Borrador') {
                         wrap.classList.add('contenidos-card-item--abrir-editor');
                     }
                     card.parentNode.insertBefore(wrap, card);
@@ -702,7 +818,7 @@
                     bd.contentsCreatorOnly.forEach(function (c) {
                         if (!c || !c.titulo) return;
                         var tr = document.createElement('tr');
-                        tr.setAttribute('data-contenido-creator-only', 'true');
+                        tr.setAttribute('data-contenidos-lms-only', 'true');
                         tr.setAttribute('data-fiqsha-id', c.id || '');
                         tr.setAttribute('data-legacy-lms', c.legacyLms === true ? 'true' : 'false');
                         tr.setAttribute('data-tipo', c.tipoContenido || 'Curso');

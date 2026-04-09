@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="../../images/Ubits-logo-dark.svg">
+    <title>Task strip | UBITS Playground</title>
+
+    <link rel="stylesheet" href="../../general-styles/ubits-colors.css">
+    <link rel="stylesheet" href="../../general-styles/styles.css">
+    <link rel="stylesheet" href="../../general-styles/fontawesome-icons.css">
+    <link rel="stylesheet" href="../../general-styles/ubits-typography.css">
+    <link rel="stylesheet" href="../../components/sub-nav.css">
+    <link rel="stylesheet" href="../../components/alert.css">
+    <link rel="stylesheet" href="../../components/sidebar.css">
+    <link rel="stylesheet" href="../../docs/docs-sidebar.css">
+    <link rel="stylesheet" href="../../docs/docstyles.css">
+    <link rel="stylesheet" href="../../components/button.css">
+    <link rel="stylesheet" href="../../components/checkbox.css">
+    <link rel="stylesheet" href="../../components/status-tag.css">
+    <link rel="stylesheet" href="../../components/badge-tag.css">
+    <link rel="stylesheet" href="../../components/task-strip.css">
+    <link rel="stylesheet" href="../../components/tooltip.css">
+    <link rel="stylesheet" href="../../components/switch.css">
+    <link rel="stylesheet" href="../../components/toast.css">
+    <style>
+        .preview-variant-btn.active {
+            background: var(--ubits-accent-brand) !important;
+            color: white !important;
+            border-color: var(--ubits-accent-brand) !important;
+        }
+        .preview-variant-btn.active span {
+            color: white !important;
+        }
+        /* Cadena flex del layout docs: el área de contenido puede encoger y no empujar scroll */
+        body.componentes-page .components-content {
+            min-width: 0;
+        }
+        /* Preview: sin scroll horizontal; la tirilla se adapta al ancho del contenedor gris */
+        .task-strip-doc-preview {
+            width: 100%;
+            min-width: 0;
+            max-width: 100%;
+            overflow-x: hidden;
+            box-sizing: border-box;
+        }
+        .task-strip-doc-preview .tarea-item {
+            min-width: 0 !important;
+            width: 100%;
+            max-width: 100%;
+            box-sizing: border-box;
+            grid-template-columns: minmax(0, 1fr) minmax(0, auto);
+        }
+        .task-strip-doc-preview .tarea-item__actions {
+            min-width: 0;
+            max-width: 100%;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+            row-gap: var(--gap-xs);
+        }
+        .task-strip-doc-preview .tarea-actions {
+            flex-wrap: wrap;
+            min-width: 0;
+            max-width: 100%;
+        }
+        .task-strip-doc-preview .tarea-status .ubits-status-tag {
+            min-width: 0;
+            width: auto;
+        }
+        .task-strip-doc-preview .tarea-fecha .tarea-fecha-btn {
+            width: auto;
+            min-width: 0;
+        }
+        .task-strip-doc-preview .tarea-priority-badge {
+            width: auto;
+            min-width: 0;
+        }
+    </style>
+</head>
+<body class="componentes-page" data-theme="light">
+    <div class="dashboard-container">
+        <div class="tooltip" id="tooltip"></div>
+
+        <main class="main-content">
+            <div id="top-nav-container"></div>
+
+            <div style="display: flex;">
+            <div id="docs-dropdown-container"></div>
+            <div id="docs-sidebar-container"></div>
+
+            <div class="components-content">
+                <div class="content-area" style="display: block; width: 100%;">
+                    <div style="text-align: center; margin-bottom: 60px;">
+                        <h1 class="ubits-display-d2-bold" style="margin-bottom: 24px; color: var(--ubits-accent-brand);">
+                            Task strip
+                        </h1>
+                        <p class="ubits-body-md-regular" style="max-width: 800px; margin: 0 auto 32px; line-height: 1.6;">
+                            Fila compacta para una tarea en listas de operaciones: completado, nombre, estado, vencimiento, prioridad, persona asignada y acciones. Se usa en Tareas y en el detalle de un plan.
+                        </p>
+                    </div>
+
+                    <div class="task-strip-preview-section" style="background: var(--ubits-bg-1); padding: 32px; border-radius: var(--border-radius-lg); margin-bottom: 40px; width: 100%; min-width: 0; box-sizing: border-box;">
+                        <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                            <i class="far fa-eye" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                            Preview del componente
+                        </h2>
+                        <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6;">
+                            El HTML lo genera <code style="font-family: monospace; font-size: var(--font-size-sm);">renderTaskStrip(tarea, opts)</code>. Cambia el ejemplo con los botones; el interruptor oculta el botón «Agregar a un plan» (útil en vistas donde no aplica).
+                        </p>
+
+                        <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: var(--border-radius-md); position: relative; width: 100%; min-width: 0; box-sizing: border-box;">
+                            <div id="task-strip-preview-wrap" class="task-strip-doc-preview">
+                                <div id="task-strip-preview"></div>
+                            </div>
+                        </div>
+
+                        <div style="margin-top: 24px; display: flex; flex-wrap: wrap; gap: var(--gap-sm); align-items: center;">
+                            <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-variant-btn active" data-variant="activa" onclick="setPreviewVariant('activa')">
+                                <span>Por hacer</span>
+                            </button>
+                            <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-variant-btn" data-variant="vencida" onclick="setPreviewVariant('vencida')">
+                                <span>Vencida</span>
+                            </button>
+                            <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-variant-btn" data-variant="finalizada" onclick="setPreviewVariant('finalizada')">
+                                <span>Finalizada</span>
+                            </button>
+                            <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-variant-btn" data-variant="aprendizaje" onclick="setPreviewVariant('aprendizaje')">
+                                <span>Aprendizaje</span>
+                            </button>
+                            <div style="display: flex; align-items: center; gap: var(--gap-sm); margin-left: var(--gap-md);">
+                                <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Ocultar «Agregar a plan»:</span>
+                                <label class="ubits-switch ubits-switch--md">
+                                    <input type="checkbox" class="ubits-switch__input" id="preview-hide-add-plan" role="switch" onchange="renderTaskStripPreview()">
+                                    <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: var(--border-radius-lg); margin-bottom: 40px;">
+                        <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                            <i class="far fa-info-circle" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                            Características generales
+                        </h2>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--gap-lg);">
+                            <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
+                                <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-list-check"></i></div>
+                                <div class="ubits-body-sm-bold">Una fila, toda la información</div>
+                                <div class="ubits-body-sm-regular">Checkbox, título editable, etiqueta opcional y columna de acciones alineada</div>
+                            </div>
+                            <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
+                                <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-graduation-cap"></i></div>
+                                <div class="ubits-body-sm-bold">Variante aprendizaje</div>
+                                <div class="ubits-body-sm-regular">Icono de formación junto al título cuando la tarea es de tipo aprendizaje</div>
+                            </div>
+                            <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
+                                <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-tags"></i></div>
+                                <div class="ubits-body-sm-bold">Estado y prioridad UBITS</div>
+                                <div class="ubits-body-sm-regular">Status tag y badge de prioridad coherentes con el sistema de diseño</div>
+                            </div>
+                            <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
+                                <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-user"></i></div>
+                                <div class="ubits-body-sm-bold">Asignación visible</div>
+                                <div class="ubits-body-sm-regular">Avatar, iniciales o placeholder según los datos de la tarea</div>
+                            </div>
+                            <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
+                                <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-code"></i></div>
+                                <div class="ubits-body-sm-bold">Renderizado por función</div>
+                                <div class="ubits-body-sm-regular">Misma API en la lista de tareas y en el detalle de plan</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: var(--border-radius-lg); margin-bottom: 40px;">
+                        <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                            <i class="far fa-comments" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                            Prompts útiles
+                        </h2>
+                        <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6; color: var(--ubits-fg-1-medium);">
+                            Copia el prompt y personaliza lo que va entre corchetes. Indica siempre los CSS y JS del componente y de checkbox, button, status-tag, badge-tag y tooltip para que la tirilla se vea completa.
+                        </p>
+                        <div id="task-strip-warning-alert" style="margin-bottom: 32px;"></div>
+                        <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
+                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                                <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Listar tareas como tirillas</h3>
+                                <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('task-strip-prompt-0')">
+                                    <i class="far fa-copy"></i>
+                                    <span>Copiar</span>
+                                </button>
+                            </div>
+                            <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm);">
+                                <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="task-strip-prompt-0">En [ubicación], renderiza una lista de tareas usando la función renderTaskStrip con los datos de [origen de datos]. Cada objeto debe tener al menos nombre, estado, fecha de vencimiento, prioridad y asignado. Importa task-strip.css, checkbox.css, button.css, status-tag.css, badge-tag.css, tooltip.js y task-strip.js, y llama a initTooltip en los elementos con data-tooltip después de pintar.</code></pre>
+                            </div>
+                        </div>
+                        <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
+                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                                <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Tirilla de tarea de aprendizaje</h3>
+                                <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('task-strip-prompt-1')">
+                                    <i class="far fa-copy"></i>
+                                    <span>Copiar</span>
+                                </button>
+                            </div>
+                            <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm);">
+                                <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="task-strip-prompt-1">Para las tareas de [lista o flujo] que sean de formación, marca cada ítem con taskType aprendizaje para que la tirilla muestre el icono de birrete junto al título. Mantén task-strip.css y el resto de dependencias del componente.</code></pre>
+                            </div>
+                        </div>
+                        <div>
+                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                                <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Sin botón agregar a plan</h3>
+                                <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('task-strip-prompt-2')">
+                                    <i class="far fa-copy"></i>
+                                    <span>Copiar</span>
+                                </button>
+                            </div>
+                            <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm);">
+                                <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="task-strip-prompt-2">Al renderizar tirillas en [pantalla], pasa hideAddToPlan true en las opciones de renderTaskStrip para ocultar el botón de agregar a un plan.</code></pre>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="background: var(--ubits-bg-1); border-radius: var(--border-radius-lg); margin-bottom: 40px; overflow: hidden;">
+                        <div style="padding: 32px; text-align: center; border-bottom: 1px solid var(--ubits-border-1);">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 0; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-code" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Documentación técnica
+                            </h2>
+                            <p class="ubits-body-md-regular" style="margin-top: 16px; color: var(--ubits-fg-1-medium);">
+                                Requisitos, API de renderTaskStrip, edición inline del nombre y notas de implementación.
+                            </p>
+                        </div>
+                        <div style="background: var(--ubits-bg-2); padding: 20px; text-align: center; cursor: pointer;" onclick="toggleTechnicalDocs()">
+                            <span class="ubits-body-md-regular" style="color: var(--ubits-accent-brand); display: flex; align-items: center; justify-content: center; gap: 8px;">
+                                <i class="far fa-chevron-down" id="tech-docs-chevron" style="transition: transform 0.3s ease;"></i>
+                                Mostrar
+                            </span>
+                        </div>
+                        <div id="technical-docs-content" style="display: none; padding: 0;">
+                        <div style="padding: 32px; border-bottom: 1px solid var(--ubits-border-1);">
+                            <h3 class="ubits-body-md-bold" style="margin-bottom: 16px; color: var(--ubits-fg-1-high);">Requisitos obligatorios</h3>
+                            <div style="background: var(--ubits-bg-2); padding: 16px; border-radius: var(--border-radius-sm);">
+                                <pre style="margin: 0; font-family: 'Courier New', monospace; font-size: var(--font-size-sm); line-height: 1.6; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code>&lt;!-- CSS (orden recomendado: tokens → componentes base → task-strip) --&gt;
+&lt;link rel="stylesheet" href="../../general-styles/ubits-colors.css"&gt;
+&lt;link rel="stylesheet" href="../../general-styles/ubits-typography.css"&gt;
+&lt;link rel="stylesheet" href="../../general-styles/fontawesome-icons.css"&gt;
+&lt;link rel="stylesheet" href="../../components/button.css"&gt;
+&lt;link rel="stylesheet" href="../../components/checkbox.css"&gt;
+&lt;link rel="stylesheet" href="../../components/status-tag.css"&gt;
+&lt;link rel="stylesheet" href="../../components/badge-tag.css"&gt;
+&lt;link rel="stylesheet" href="../../components/task-strip.css"&gt;
+&lt;link rel="stylesheet" href="../../components/tooltip.css"&gt;
+
+&lt;!-- JavaScript --&gt;
+&lt;script src="../../components/tooltip.js"&gt;&lt;/script&gt;
+&lt;script src="../../components/task-strip.js"&gt;&lt;/script&gt;</code></pre>
+                            </div>
+                        </div>
+
+                        <div style="padding: 32px; border-bottom: 1px solid var(--ubits-border-1);">
+                            <h3 class="ubits-body-md-bold" style="margin-bottom: 16px; color: var(--ubits-fg-1-high);">Estructura generada (resumen)</h3>
+                            <p class="ubits-body-md-regular" style="margin-bottom: 16px; line-height: 1.6; color: var(--ubits-fg-1-medium);">
+                                Raíz <code style="font-family: monospace;">.tarea-item</code> con <code style="font-family: monospace;">data-tarea-id</code>. Modificadores: <code style="font-family: monospace;">.tarea-item--completed</code>, <code style="font-family: monospace;">.tarea-item--overdue</code>, <code style="font-family: monospace;">.tarea-item--aprendizaje</code>.
+                            </p>
+                            <div style="background: var(--ubits-bg-2); padding: 16px; border-radius: var(--border-radius-sm);">
+                                <pre style="margin: 0; font-family: 'Courier New', monospace; font-size: var(--font-size-sm); line-height: 1.6; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code>&lt;div class="tarea-item" data-tarea-id="..."&gt;
+  &lt;div class="tarea-item__main"&gt;
+    &lt;span class="tarea-item__radio"&gt;... ubits-checkbox redondo ...&lt;/span&gt;
+    &lt;div class="tarea-content"&gt;
+      &lt;div class="tarea-titulo-wrap"&gt;... título + botón editar nombre ...&lt;/div&gt;
+      &lt;!-- opcional: .tarea-etiqueta --&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class="tarea-item__actions"&gt;
+    &lt;!-- status-tag, fecha, prioridad badge-tag, asignado, menú, detalle --&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+                            </div>
+                        </div>
+
+                        <div style="padding: 32px; border-bottom: 1px solid var(--ubits-border-1);">
+                            <h3 class="ubits-body-md-bold" style="margin-bottom: 16px; color: var(--ubits-fg-1-high);">renderTaskStrip(tarea, opts)</h3>
+                            <p class="ubits-body-md-regular" style="margin-bottom: 16px; line-height: 1.6; color: var(--ubits-fg-1-medium);">
+                                Devuelve un string HTML. Tras insertarlo en el DOM, conviene llamar <code style="font-family: monospace;">initTooltip</code> en los nodos con <code style="font-family: monospace;">data-tooltip</code>.
+                            </p>
+                            <div style="overflow-x: auto;">
+                                <table style="width: 100%; border-collapse: collapse;">
+                                    <thead>
+                                        <tr style="background: var(--ubits-bg-2);">
+                                            <th class="ubits-body-sm-bold" style="padding: 12px; text-align: left; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-high);">Campo (tarea)</th>
+                                            <th class="ubits-body-sm-bold" style="padding: 12px; text-align: left; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-high);">Notas</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td class="ubits-body-sm-regular" style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium); font-family: monospace;">id, name</td>
+                                            <td class="ubits-body-sm-regular" style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium);">Identificador y título mostrado</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="ubits-body-sm-regular" style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium); font-family: monospace;">done, status</td>
+                                            <td class="ubits-body-sm-regular" style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium);">Finalizado y texto de estado interno (Activo, Finalizado, etc.)</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="ubits-body-sm-regular" style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium); font-family: monospace;">endDate</td>
+                                            <td class="ubits-body-sm-regular" style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium);">String comparable con <code style="font-family: monospace;">opts.today</code> (p. ej. YYYY-MM-DD) para vencimiento</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="ubits-body-sm-regular" style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium); font-family: monospace;">priority</td>
+                                            <td class="ubits-body-sm-regular" style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium);">alta | media | baja (por defecto media)</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="ubits-body-sm-regular" style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium); font-family: monospace;">etiqueta</td>
+                                            <td class="ubits-body-sm-regular" style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium);">Texto opcional bajo el bloque principal</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="ubits-body-sm-regular" style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium); font-family: monospace;">taskType</td>
+                                            <td class="ubits-body-sm-regular" style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium);">Si vale <code style="font-family: monospace;">aprendizaje</code>, layout con icono de birrete</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="ubits-body-sm-regular" style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium); font-family: monospace;">assignee_*</td>
+                                            <td class="ubits-body-sm-regular" style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium);">Nombre, correo o URL de avatar; o usar <code style="font-family: monospace;">getAssignee</code> / <code style="font-family: monospace;">renderAvatar</code> en opts</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div style="margin-top: var(--gap-lg); overflow-x: auto;">
+                                <table style="width: 100%; border-collapse: collapse;">
+                                    <thead>
+                                        <tr style="background: var(--ubits-bg-2);">
+                                            <th class="ubits-body-sm-bold" style="padding: 12px; text-align: left; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-high);">Opción (opts)</th>
+                                            <th class="ubits-body-sm-bold" style="padding: 12px; text-align: left; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-high);">Notas</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td class="ubits-body-sm-regular" style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium); font-family: monospace;">today</td>
+                                            <td class="ubits-body-sm-regular" style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium);">Fecha de referencia para marcar vencidas</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="ubits-body-sm-regular" style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium); font-family: monospace;">esVencidaSection</td>
+                                            <td class="ubits-body-sm-regular" style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium);">Si es true, la fila se trata como vencida aunque la fecha no lo indique (bloque de vencidas)</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="ubits-body-sm-regular" style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium); font-family: monospace;">formatDate, escapeHtml</td>
+                                            <td class="ubits-body-sm-regular" style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium);">Formateo de fecha en pantalla y escape de texto (por defecto básico)</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="ubits-body-sm-regular" style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium); font-family: monospace;">getAssignee, renderAvatar</td>
+                                            <td class="ubits-body-sm-regular" style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium);">Personalizar quién se muestra y cómo (p. ej. componente Avatar)</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="ubits-body-sm-regular" style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium); font-family: monospace;">hideAddToPlan</td>
+                                            <td class="ubits-body-sm-regular" style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium);">Oculta el botón de agregar a plan</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div style="padding: 32px; border-bottom: 1px solid var(--ubits-border-1);">
+                            <h3 class="ubits-body-md-bold" style="margin-bottom: 16px; color: var(--ubits-fg-1-high);">Edición inline del nombre</h3>
+                            <p class="ubits-body-md-regular" style="margin-bottom: 16px; line-height: 1.6; color: var(--ubits-fg-1-medium);">
+                                <code style="font-family: monospace;">startInlineEditTaskName(tareaItemElement, taskId, onSave)</code> sustituye el título por un input; al guardar se invoca <code style="font-family: monospace;">onSave(nuevoNombre)</code>. Debes enlazar el gesto (doble clic o botón lápiz) en tu página y persistir el cambio donde corresponda.
+                            </p>
+                        </div>
+
+                        <div style="padding: 32px;">
+                            <h3 class="ubits-body-md-bold" style="margin-bottom: 16px; color: var(--ubits-fg-1-high);">Ejemplo mínimo</h3>
+                            <div style="background: var(--ubits-bg-2); padding: 16px; border-radius: var(--border-radius-sm);">
+                                <pre style="margin: 0; font-family: 'Courier New', monospace; font-size: var(--font-size-sm); line-height: 1.6; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code>var tarea = {
+  id: 1,
+  name: 'Mi tarea',
+  done: false,
+  status: 'Activo',
+  endDate: '2026-04-10',
+  priority: 'media',
+  assignee_name: 'Ana'
+};
+var html = renderTaskStrip(tarea, {
+  today: '2026-03-31',
+  formatDate: function (d) {
+    if (!d) return '';
+    var p = d.split('-');
+    return p[2] + '/' + p[1] + '/' + p[0];
+  }
+});
+document.getElementById('lista').innerHTML = html;
+initTooltip('#lista [data-tooltip]');</code></pre>
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </div>
+        </main>
+    </div>
+
+    <div id="ubits-toast-container"></div>
+
+    <script src="../../components/sidebar.js"></script>
+    <script src="../../components/sub-nav.js"></script>
+    <script src="../../components/alert.js"></script>
+    <script src="../../components/toast.js"></script>
+    <script src="../../components/tooltip.js"></script>
+    <script src="../../components/task-strip.js"></script>
+    <script src="../../docs/docs-sidebar.js"></script>
+    <script>
+        function toggleTechnicalDocs() {
+            var content = document.getElementById('technical-docs-content');
+            var isHidden = content.style.display === 'none' || !content.style.display;
+            content.style.display = isHidden ? 'block' : 'none';
+            var trigger = content.previousElementSibling;
+            if (trigger) {
+                var span = trigger.querySelector('span');
+                if (span) {
+                    span.innerHTML = isHidden
+                        ? '<i class="far fa-chevron-up" id="tech-docs-chevron" style="transition: transform 0.3s ease;"></i>Ocultar'
+                        : '<i class="far fa-chevron-down" id="tech-docs-chevron" style="transition: transform 0.3s ease;"></i>Mostrar';
+                }
+            }
+        }
+        function copyPrompt(promptId) {
+            var el = document.getElementById(promptId);
+            if (!el) return;
+            var text = el.textContent;
+            navigator.clipboard.writeText(text).then(function() {
+                var btn = document.querySelector('[onclick="copyPrompt(\'' + promptId + '\')"]');
+                if (btn) {
+                    var icon = btn.querySelector('i');
+                    var span = btn.querySelector('span');
+                    if (icon) icon.className = 'far fa-check';
+                    if (span) span.textContent = 'Copiado';
+                    setTimeout(function() { if (icon) icon.className = 'far fa-copy'; if (span) span.textContent = 'Copiar'; }, 2000);
+                }
+                if (typeof showToast === 'function') showToast('success', '¡Prompt copiado!', { containerId: 'ubits-toast-container', duration: 3500 });
+            }).catch(function() {
+                if (typeof showToast === 'function') showToast('error', 'Error al copiar', { containerId: 'ubits-toast-container', duration: 3500 });
+            });
+        }
+    </script>
+    <script>
+        var PREVIEW_TODAY = '2026-03-31';
+        var previewVariant = 'activa';
+        /* Misma foto que María en tareas.html (bd-master-colaboradores: Profile-image.jpg) */
+        var MARIA_AVATAR_DOC = '../../images/Profile-image.jpg';
+        var taskStripSamples = {
+            activa: { id: 'demo-1', name: 'Revisar informe mensual', done: false, status: 'Activo', endDate: '2026-04-15', priority: 'media', assignee_name: 'María Alejandra Sánchez Pardo', assignee_avatar_url: MARIA_AVATAR_DOC },
+            vencida: { id: 'demo-2', name: 'Enviar propuesta al cliente', done: false, status: 'Activo', endDate: '2026-03-10', priority: 'alta', assignee_name: 'María Alejandra Sánchez Pardo', assignee_avatar_url: MARIA_AVATAR_DOC },
+            finalizada: { id: 'demo-3', name: 'Actualizar documentación del equipo', done: true, status: 'Finalizado', endDate: '2026-03-20', priority: 'baja', assignee_name: 'María Alejandra Sánchez Pardo', assignee_avatar_url: MARIA_AVATAR_DOC },
+            aprendizaje: { id: 'demo-4', name: 'Completar curso de onboarding', done: false, status: 'Activo', endDate: '2026-04-01', priority: 'media', taskType: 'aprendizaje', assignee_name: 'María Alejandra Sánchez Pardo', assignee_avatar_url: MARIA_AVATAR_DOC }
+        };
+
+        function formatPreviewDate(d) {
+            if (!d) return '';
+            var p = String(d).split('-');
+            if (p.length !== 3) return d;
+            return p[2] + '/' + p[1] + '/' + p[0];
+        }
+
+        function getTaskStripPreviewOpts() {
+            var hideEl = document.getElementById('preview-hide-add-plan');
+            return {
+                today: PREVIEW_TODAY,
+                formatDate: formatPreviewDate,
+                esVencidaSection: previewVariant === 'vencida',
+                hideAddToPlan: !!(hideEl && hideEl.checked)
+            };
+        }
+
+        function renderTaskStripPreview() {
+            var container = document.getElementById('task-strip-preview');
+            if (!container || typeof renderTaskStrip !== 'function') return;
+            var task = taskStripSamples[previewVariant];
+            container.innerHTML = renderTaskStrip(task, getTaskStripPreviewOpts());
+            if (typeof initTooltip === 'function') {
+                initTooltip('#task-strip-preview [data-tooltip]');
+            }
+        }
+
+        function setPreviewVariant(v) {
+            previewVariant = v;
+            document.querySelectorAll('.preview-variant-btn').forEach(function(btn) {
+                btn.classList.toggle('active', btn.getAttribute('data-variant') === v);
+            });
+            renderTaskStripPreview();
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            loadSidebar('ninguno');
+            loadSubNav('top-nav-container', 'documentacion');
+            loadDocsSidebar('task-strip');
+            if (typeof showAlert === 'function') {
+                showAlert('warning', 'Antes de enviar estos prompts a Cursor, reemplaza los textos entre [corchetes] con la información de tu página.', { containerId: 'task-strip-warning-alert', noClose: true });
+            }
+            renderTaskStripPreview();
+        });
+    </script>
+</body>
+</html>
