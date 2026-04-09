@@ -85,12 +85,36 @@
             var h = u.hostname.toLowerCase();
             if (h.includes('youtube.com') || h.includes('youtube-nocookie.com')) {
                 u.searchParams.set('controls', '1');
+                u.searchParams.set('playsinline', '1');
             }
             return u.toString();
         } catch (e) {
             var sep = embed.indexOf('?') >= 0 ? '&' : '?';
             return embed + sep + 'autoplay=1';
         }
+    }
+
+    var EDIT_HITLAYER_CLASS = 'ubits-learn-img-trailer__edit-hitlayer';
+
+    function wireEditHitlayer(root) {
+        var existing = root.querySelector('.' + EDIT_HITLAYER_CLASS);
+        if (existing) existing.remove();
+        var editWrap = root.querySelector('.ubits-learn-img-trailer__edit');
+        var btn = editWrap && editWrap.querySelector('button');
+        if (!btn) return;
+        var layer = document.createElement('button');
+        layer.type = 'button';
+        layer.className = EDIT_HITLAYER_CLASS;
+        layer.setAttribute('aria-label', LEARN_CONTENT_IMG_TRAILER_DEFAULTS.editButton);
+        layer.setAttribute('title', LEARN_CONTENT_IMG_TRAILER_DEFAULTS.editButton);
+        layer.addEventListener('click', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            btn.click();
+        });
+        btn.setAttribute('tabindex', '-1');
+        btn.setAttribute('aria-hidden', 'true');
+        root.appendChild(layer);
     }
 
     /**
@@ -131,6 +155,7 @@
             escapeHtml(src) +
             '" allowfullscreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe>';
         root.classList.add('ubits-learn-img-trailer--playing');
+        wireEditHitlayer(root);
     }
 
     /** Sin nodo raíz: abre el enlace del tráiler en una pestaña nueva. */
