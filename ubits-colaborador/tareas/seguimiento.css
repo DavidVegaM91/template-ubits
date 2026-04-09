@@ -151,10 +151,12 @@
     gap: var(--gap-sm);
 }
 
-/* Fila solo para alert móvil: encima del bloque header-product, sin tarjeta (fondo/padding/radio) */
+/* Fila solo para alert móvil: encima del bloque header-product, sin tarjeta (fondo/padding/radio).
+   Chaining + !important: planes.css carga después y redefine .section-single { display: flex }, lo que
+   dejaba esta sección visible en desktop y el gap de .content-sections creaba hueco encima de los tabs. */
 @media (min-width: 1024px) {
-    .section-single--seguimiento-mobile-alert-only {
-        display: none;
+    .section-single.section-single--seguimiento-mobile-alert-only {
+        display: none !important;
     }
 }
 
