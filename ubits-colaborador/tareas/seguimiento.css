@@ -151,9 +151,26 @@
     gap: var(--gap-sm);
 }
 
-/* Alert experiencia desktop */
+/* Fila solo para alert móvil: encima del bloque header-product, sin tarjeta (fondo/padding/radio) */
+@media (min-width: 1024px) {
+    .section-single--seguimiento-mobile-alert-only {
+        display: none;
+    }
+}
+
+.section-single--seguimiento-mobile-alert-only > .seguimiento-alert-experiencia {
+    background-color: transparent !important;
+    padding: var(--padding-none) !important;
+    border-radius: var(--border-radius-none) !important;
+    border: none !important;
+    flex: 0 0 auto;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Alert móvil: sin margen extra bajo el wrapper (el gap entre section-singles separa del header-product) */
 .seguimiento-alert-experiencia {
-    margin-bottom: var(--gap-md);
+    margin-bottom: 0;
 }
 
 /* Tabla: usa componente UBITS (components/table.css). Contener overflow en resoluciones pequeñas para que el scroll horizontal enmarque la tabla y no se salga del contenedor. */

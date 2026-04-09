@@ -63,6 +63,13 @@
             <div id="top-nav-container"></div>
             <div class="content-area">
                 <div class="content-sections">
+                    <!-- Alert móvil: fila propia encima del header-product (sin caja; solo &lt;1024px) -->
+                    <div class="section-single section-single--seguimiento-mobile-alert-only">
+                        <div class="seguimiento-alert-experiencia" id="seguimiento-alert-mobile"
+                            style="display: none;">
+                            <div id="seguimiento-alert-container"></div>
+                        </div>
+                    </div>
                     <!-- Header product: Tabs Tareas | Planes + botón Crear -->
                     <div class="section-single">
                         <div class="widget-header-product" id="header-product-seguimiento"></div>
@@ -233,12 +240,6 @@
                                         <span>Eliminar</span>
                                     </button>
                                 </div>
-                            </div>
-
-                            <!-- Alert experiencia desktop -->
-                            <div class="seguimiento-alert-experiencia" id="seguimiento-alert-mobile"
-                                style="display: none;">
-                                <div id="seguimiento-alert-container"></div>
                             </div>
 
                             <!-- Tabla (componente UBITS table) -->
