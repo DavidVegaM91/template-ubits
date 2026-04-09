@@ -9,8 +9,6 @@
 .ubits-learn-img-trailer {
     --learn-img-trailer-radius: var(--border-radius-lg);
     --learn-img-trailer-inner-radius: var(--border-radius-lg);
-    /* Franja superior sin iframe: el iframe robaba clics al botón Editar (z-index no basta sobre replaced content). */
-    --learn-img-trailer-embed-top-offset: calc(var(--padding-sm) + var(--size-4xl) + var(--padding-sm));
     display: block;
     position: relative;
     width: 100%;
@@ -188,7 +186,12 @@
     display: none;
 }
 
-/* Reproducción en línea: iframe debajo de la franja del Editar para que el clic no lo coma el embed */
+/* Reproducción en línea: iframe a pantalla completa. Host con pointer-events: none + iframe auto
+   evita que el embed robe clics al botón Editar (sin recortar el vídeo). */
+.ubits-learn-img-trailer--playing {
+    isolation: isolate;
+}
+
 .ubits-learn-img-trailer__embed-host {
     display: none;
     position: absolute;
@@ -201,6 +204,7 @@
 
 .ubits-learn-img-trailer--playing .ubits-learn-img-trailer__embed-host {
     display: block;
+    pointer-events: none;
 }
 
 .ubits-learn-img-trailer--playing .ubits-learn-img-trailer__media {
@@ -210,9 +214,15 @@
 
 .ubits-learn-img-trailer__embed-host iframe {
     position: absolute;
-    top: var(--learn-img-trailer-embed-top-offset);
+    top: 0;
     left: 0;
     width: 100%;
-    height: calc(100% - var(--learn-img-trailer-embed-top-offset));
+    height: 100%;
     border: 0;
+    pointer-events: auto;
+}
+
+.ubits-learn-img-trailer--playing .ubits-learn-img-trailer__edit {
+    z-index: 6;
+    pointer-events: auto;
 }

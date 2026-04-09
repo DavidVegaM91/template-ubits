@@ -74,10 +74,23 @@
         }
     }
 
-    function embedUrlWithAutoplay(embed) {
+    /**
+     * Añade autoplay (tras clic del usuario) y, en YouTube, controls=1 explícito.
+     */
+    function finalizeEmbedSrc(embed) {
         if (!embed) return '';
-        var sep = embed.indexOf('?') >= 0 ? '&' : '?';
-        return embed + sep + 'autoplay=1';
+        try {
+            var u = new URL(embed);
+            u.searchParams.set('autoplay', '1');
+            var h = u.hostname.toLowerCase();
+            if (h.includes('youtube.com') || h.includes('youtube-nocookie.com')) {
+                u.searchParams.set('controls', '1');
+            }
+            return u.toString();
+        } catch (e) {
+            var sep = embed.indexOf('?') >= 0 ? '&' : '?';
+            return embed + sep + 'autoplay=1';
+        }
     }
 
     /**
@@ -102,7 +115,7 @@
             return;
         }
         var iframeTitle = LEARN_CONTENT_IMG_TRAILER_DEFAULTS.iframeTitle || 'Tráiler';
-        var src = embedUrlWithAutoplay(embed);
+        var src = finalizeEmbedSrc(embed);
         var host = root.querySelector('.ubits-learn-img-trailer__embed-host');
         if (!host) {
             host = document.createElement('div');
