@@ -25,6 +25,28 @@
             border-color: var(--ubits-accent-brand) !important;
         }
         .preview-control-btn.active span { color: white !important; }
+
+        /* Doc: caja bg-2 de 400px en variante vertical (el rail llena ese alto) */
+        #stepper-doc-preview-host.stepper-doc-preview-host--vertical-tall {
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+            box-sizing: border-box;
+            min-height: 400px;
+            height: 400px;
+        }
+
+        #stepper-doc-preview-host.stepper-doc-preview-host--vertical-tall #stepper-doc-vertical-area {
+            flex: 1 1 auto;
+            display: flex !important;
+            flex-direction: column;
+            min-height: 0;
+        }
+
+        #stepper-doc-preview-host.stepper-doc-preview-host--vertical-tall #stepper-doc-v-frame {
+            flex: 1 1 auto;
+            min-height: 100%;
+        }
     </style>
 </head>
 <body class="componentes-page" data-theme="light">
@@ -46,13 +68,13 @@
                             </p>
                         </div>
 
-                        <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; margin-bottom: 40px;">
+                        <div id="stepper-doc-preview-section" style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; margin-bottom: 40px;">
                             <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
                                 <i class="far fa-eye" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
                                 Preview del componente
                             </h2>
                             <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6;">
-                                Elige una de las cinco variantes con los botones. En horizontal puedes cambiar de paso haciendo clic en cada uno. En vertical, usa <strong>Colapsar</strong> para ver solo los números (el botón compacto muestra un tooltip al pasar el cursor).
+                                Elige una de las cinco variantes con los botones. En horizontal puedes cambiar de paso haciendo clic en cada uno. En <strong>vertical</strong>, el preview usa una caja de <strong>400px</strong> de alto: el rail <strong>ocupa ese alto</strong> (como un sidebar en su columna). Por defecto la demo viene <strong>contraída</strong> (solo círculos); el pie muestra <strong>Expandir</strong> con tooltip. Comparte esta vista con la URL que incluye <code>#vertical</code> (p. ej. <code>stepper.html#vertical</code>). El rail usa <code>--creator-rail</code> (alineado al sidebar LMS Creator).
                             </p>
 
                             <div style="margin-bottom: 20px; display: flex; flex-wrap: wrap; gap: var(--gap-sm); align-items: center;">
@@ -69,11 +91,11 @@
                                     <span>Compacto + título abajo</span>
                                 </button>
                                 <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn stepper-variant-btn" data-variant="vertical" onclick="setStepperDocVariant('vertical')">
-                                    <span>Vertical colapsable</span>
+                                    <span>Vertical</span>
                                 </button>
                             </div>
 
-                            <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: 12px; position: relative; min-height: 120px;">
+                            <div id="stepper-doc-preview-host" style="background: var(--ubits-bg-2); padding: 24px; border-radius: 12px; position: relative; min-height: 120px;">
                                 <div id="stepper-doc-horizontal-area">
                                     <nav aria-label="Preview stepper horizontal">
                                         <ol class="ubits-stepper ubits-stepper--horizontal js-stepper-doc-demo" id="stepper-doc-ol-horizontal">
@@ -104,8 +126,8 @@
                                     </nav>
                                 </div>
                                 <div id="stepper-doc-vertical-area" style="display: none;">
-                                    <div class="ubits-stepper__vertical-frame" id="stepper-doc-v-frame">
-                                        <nav aria-label="Preview stepper vertical">
+                                    <div class="ubits-stepper__vertical-frame ubits-stepper__vertical-frame--creator-rail is-collapsed" id="stepper-doc-v-frame">
+                                        <nav class="ubits-stepper__vertical-nav" aria-label="Preview stepper vertical">
                                             <ol class="ubits-stepper ubits-stepper--vertical js-stepper-doc-demo" id="stepper-doc-ol-vertical">
                                                 <li class="ubits-stepper__step ubits-stepper__step--done" data-step-label="Datos básicos">
                                                     <span class="ubits-stepper__mark" aria-hidden="true">
@@ -130,10 +152,11 @@
                                                 </li>
                                             </ol>
                                         </nav>
-                                        <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-stepper__vertical-toggle" id="stepper-doc-v-toggle" aria-expanded="true">
-                                            <i class="far fa-chevron-left" aria-hidden="true"></i>
-                                            <span>Colapsar</span>
-                                        </button>
+                                        <div class="ubits-stepper__vertical-footer">
+                                            <button type="button" class="nav-button ubits-stepper__vertical-toggle" id="stepper-doc-v-toggle" aria-expanded="false" aria-label="Expandir la lista de pasos">
+                                                <i class="far fa-angles-right" aria-hidden="true"></i>
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -170,8 +193,8 @@
                                 </div>
                                 <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
                                     <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-arrows-alt-v"></i></div>
-                                    <div class="ubits-body-sm-bold">Vertical colapsable</div>
-                                    <div class="ubits-body-sm-regular">Lista en columna con línea entre círculos; botón para ocultar los títulos y dejar solo números.</div>
+                                    <div class="ubits-body-sm-bold">Vertical</div>
+                                    <div class="ubits-body-sm-regular">Lista en columna con estados y conector; el alto del rail sigue al del contenedor. En doc se muestra con <code>--creator-rail</code> (marco claro); pie con <code>nav-button</code>, doble flecha y Contraer / tooltip Expandir.</div>
                                 </div>
                             </div>
                         </div>
@@ -182,7 +205,7 @@
                                 Prompts útiles
                             </h2>
                             <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6; color: var(--ubits-fg-1-medium);">
-                                Copia el texto, cambia lo que va entre [corchetes] y pégalo en Cursor. Indica siempre que importe los estilos del stepper (y botón si usas colapsar).
+                                Copia el texto, cambia lo que va entre [corchetes] y pégalo en Cursor. Indica siempre que importe los estilos del stepper; en la variante <strong>vertical</strong> con pie tipo rail (expandir/contraer) añade <code>styles.css</code> (<code>.nav-button</code>) y tooltip si aplica.
                             </p>
                             <div id="stepper-warning-alert" style="margin-bottom: 32px;"></div>
 
@@ -227,14 +250,14 @@
 
                             <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
                                 <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
-                                    <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Lista vertical con botón para ocultar títulos</h3>
+                                    <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Lista vertical (expandir / contraer)</h3>
                                     <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('stepper-prompt-4')">
                                         <i class="far fa-copy"></i>
                                         <span>Copiar</span>
                                     </button>
                                 </div>
                                 <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
-                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="stepper-prompt-4">En la columna [izquierda o derecha] de [pantalla] pon el stepper en vertical con un botón pequeño que diga Colapsar: al pulsarlo deben ocultarse los nombres de los pasos y verse solo los círculos; al volver a pulsar, que reaparezcan los nombres. Sigue la variante vertical colapsable de la documentación del Stepper en la plantilla UBITS (mismos estilos y comportamiento que el ejemplo).</code></pre>
+                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="stepper-prompt-4">En la columna [izquierda o derecha] de [pantalla] pon el stepper vertical con marco claro (modificador creator-rail si quieres el mismo aspecto que el sidebar LMS Creator): pasos con línea conectora y estados, y en el pie un nav-button con icono de doble flecha: contraer oculta los títulos (solo círculos) y expandir los muestra de nuevo con tooltip Expandir cuando está contraído. Importa stepper.css, styles.css (nav-button), tooltip y la plantilla UBITS.</code></pre>
                                 </div>
                             </div>
 
@@ -305,7 +328,7 @@
                                     <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;">
                                         <h2 class="ubits-heading-h2" style="margin: 0; color: var(--ubits-fg-1-high);">
                                             <i class="far fa-arrows-alt-v" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
-                                            Vertical colapsable
+                                            Vertical
                                         </h2>
                                         <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('stepper-structure-v')">
                                             <i class="far fa-copy"></i>
@@ -313,19 +336,25 @@
                                         </button>
                                     </div>
                                     <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
-                                        <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code id="stepper-structure-v">&lt;div class="ubits-stepper__vertical-frame" id="mi-stepper-marco"&gt;
-  &lt;nav aria-label="Pasos"&gt;
+                                        <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code id="stepper-structure-v">&lt;div class="ubits-stepper__vertical-frame ubits-stepper__vertical-frame--creator-rail" id="mi-stepper-marco"&gt;
+  &lt;nav class="ubits-stepper__vertical-nav" aria-label="Pasos"&gt;
     &lt;ol class="ubits-stepper ubits-stepper--vertical"&gt;
-      &lt;!-- li.ubits-stepper__step como arriba, sin li rail --&gt;
+      &lt;!-- li.ubits-stepper__step (done / active / pending), sin li.rail --&gt;
     &lt;/ol&gt;
   &lt;/nav&gt;
-  &lt;button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-stepper__vertical-toggle" id="mi-stepper-toggle" aria-expanded="true"&gt;
-    &lt;i class="far fa-chevron-left" aria-hidden="true"&gt;&lt;/i&gt;&lt;span&gt;Colapsar&lt;/span&gt;
-  &lt;/button&gt;
+  &lt;div class="ubits-stepper__vertical-footer"&gt;
+    &lt;button type="button" class="nav-button ubits-stepper__vertical-toggle" id="mi-stepper-toggle" aria-expanded="true" aria-label="Contraer la lista de pasos"&gt;
+      &lt;i class="far fa-angles-left" aria-hidden="true"&gt;&lt;/i&gt;
+      &lt;span class="ubits-body-sm-regular"&gt;Contraer&lt;/span&gt;
+    &lt;/button&gt;
+  &lt;/div&gt;
 &lt;/div&gt;
 &lt;script&gt;
   wireStepperVerticalCollapse(document.getElementById('mi-stepper-marco'), document.getElementById('mi-stepper-toggle'));
 &lt;/script&gt;</code></pre>
+                                        <p class="ubits-body-sm-regular" style="margin-top: 16px; color: var(--ubits-fg-1-medium);">
+                                            Modificador <code>ubits-stepper__vertical-frame--creator-rail</code>: rail visual alineado al sidebar contenido creator. Sin esa clase, el marco usa el modo clásico: botón <code>ubits-button ubits-button--tertiary ubits-button--sm</code> con chevrons y texto “Colapsar”.
+                                        </p>
                                     </div>
                                 </div>
                                 <div style="padding: 32px; border-bottom: 1px solid var(--ubits-border-1);">
@@ -334,8 +363,9 @@
                                     </h2>
                                     <div class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); line-height: 1.6;">
                                         <strong>CSS:</strong> <code>components/stepper.css</code>; base <code>ubits-colors.css</code>, <code>ubits-typography.css</code>, <code>fontawesome-icons.css</code>.<br>
-                                        <strong>Colapsar vertical:</strong> <code>components/button.css</code>, <code>components/tooltip.css</code>, <code>components/tooltip.js</code>, <code>components/stepper.js</code>.<br>
-                                        <strong>JS opcional:</strong> <code>initStepper(ol)</code> para demo con clic; <code>setStepperStepStates(ol, índice)</code> si controlas el paso desde tu lógica; <code>wireStepperVerticalCollapse(marco, botón)</code> para colapsar.
+                                        <strong>Colapsar vertical (clásico):</strong> <code>components/button.css</code>, <code>components/tooltip.css</code>, <code>components/tooltip.js</code>, <code>components/stepper.js</code>.<br>
+                                        <strong>Vertical con pie tipo rail (nav-button):</strong> además <code>general-styles/styles.css</code> (clases <code>.nav-button</code>).<br>
+                                        <strong>JS opcional:</strong> <code>initStepper(ol)</code> para demo con clic; <code>setStepperStepStates(ol, índice)</code> si controlas el paso desde tu lógica; <code>wireStepperVerticalCollapse(marco, botón)</code> o <code>wireStepperVerticalCollapse(marco, botón, { creatorRail: true })</code>.
                                     </div>
                                 </div>
                             </div>
@@ -356,17 +386,34 @@
     <script src="../../components/stepper.js"></script>
     <script src="../../docs/docs-sidebar.js"></script>
     <script>
+        var STEPPER_DOC_PREVIEW_URL_HASH = '#vertical';
+
+        function syncStepperDocPreviewUrl(variantKey) {
+            var base = location.pathname + location.search;
+            var h = (location.hash || '').toLowerCase();
+            if (variantKey === 'vertical') {
+                if (h !== STEPPER_DOC_PREVIEW_URL_HASH) {
+                    history.replaceState(null, '', base + STEPPER_DOC_PREVIEW_URL_HASH);
+                }
+            } else if (h === STEPPER_DOC_PREVIEW_URL_HASH) {
+                history.replaceState(null, '', base);
+            }
+        }
+
         function setStepperDocVariant(key) {
             var horizArea = document.getElementById('stepper-doc-horizontal-area');
             var vertArea = document.getElementById('stepper-doc-vertical-area');
             var olH = document.getElementById('stepper-doc-ol-horizontal');
+            var previewHost = document.getElementById('stepper-doc-preview-host');
             document.querySelectorAll('.stepper-variant-btn').forEach(function (btn) {
                 btn.classList.toggle('active', btn.getAttribute('data-variant') === key);
             });
             if (key === 'vertical') {
+                if (previewHost) previewHost.classList.add('stepper-doc-preview-host--vertical-tall');
                 horizArea.style.display = 'none';
                 vertArea.style.display = '';
             } else {
+                if (previewHost) previewHost.classList.remove('stepper-doc-preview-host--vertical-tall');
                 horizArea.style.display = '';
                 vertArea.style.display = 'none';
                 var classes = ['ubits-stepper', 'ubits-stepper--horizontal', 'js-stepper-doc-demo'];
@@ -377,6 +424,12 @@
                 }
                 olH.className = classes.join(' ');
             }
+            syncStepperDocPreviewUrl(key);
+        }
+
+        function scrollStepperDocPreviewIntoView() {
+            var sec = document.getElementById('stepper-doc-preview-section');
+            if (sec) sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
 
         document.addEventListener('DOMContentLoaded', function () {
@@ -399,7 +452,18 @@
                     document.getElementById('stepper-doc-v-toggle')
                 );
             }
-            setStepperDocVariant('h');
+            var openVertical = (location.hash || '').toLowerCase() === STEPPER_DOC_PREVIEW_URL_HASH;
+            setStepperDocVariant(openVertical ? 'vertical' : 'h');
+            if (openVertical) {
+                setTimeout(scrollStepperDocPreviewIntoView, 150);
+            }
+
+            window.addEventListener('hashchange', function () {
+                if ((location.hash || '').toLowerCase() === STEPPER_DOC_PREVIEW_URL_HASH) {
+                    setStepperDocVariant('vertical');
+                    setTimeout(scrollStepperDocPreviewIntoView, 50);
+                }
+            });
         });
 
         function toggleTechnicalDocs() {

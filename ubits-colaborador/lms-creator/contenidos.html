@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/svg+xml" href="../../images/Ubits-logo-dark.svg">
     <title>UBITS Playground - LMS Creator - Contenidos</title>
-
+    
     <link rel="stylesheet" href="../../general-styles/ubits-colors.css">
     <link rel="stylesheet" href="../../general-styles/styles.css">
     <link rel="stylesheet" href="../../general-styles/fontawesome-icons.css">
@@ -16,6 +16,7 @@
     <link rel="stylesheet" href="../../components/floating-menu.css">
     <link rel="stylesheet" href="../../components/profile-menu.css">
     <link rel="stylesheet" href="../../components/button.css">
+    <link rel="stylesheet" href="../../components/save-indicator.css">
     <link rel="stylesheet" href="../../components/ia-button.css">
     <link rel="stylesheet" href="../../components/header-product.css">
     <link rel="stylesheet" href="../../components/tooltip.css">
@@ -30,13 +31,15 @@
     <link rel="stylesheet" href="../../components/avatar.css">
     <link rel="stylesheet" href="../../components/card-content.css">
     <link rel="stylesheet" href="../../components/dropdown-menu.css">
+    <link rel="stylesheet" href="../../components/drawer.css">
+    <link rel="stylesheet" href="../../components/sidebar-contenido-creator.css">
     <link rel="stylesheet" href="./lms-creator.css">
     <link rel="stylesheet" href="./contenidos.css">
 </head>
 <body data-theme="light" class="page-contenidos-creator">
     <div class="dashboard-container">
         <div class="tooltip" id="tooltip"></div>
-
+        
         <div id="sidebar-container"></div>
 
         <main class="main-content">
@@ -97,76 +100,7 @@
                                             <th data-col="acciones" scope="col">Acciones</th>
                                         </tr>
                                     </thead>
-                                    <tbody id="creator-contenidos-tbody">
-                                        <tr data-contenido-demo="1" data-legacy-lms="true" data-tipo="Curso" data-categoria-fiqsha-id="" data-nivel-id="niv-001" data-idioma="Español">
-                                            <td data-col="nombre"><span class="ubits-body-sm-regular">Desarrollo de habilidades de persuasión</span></td>
-                                            <td data-col="tipo"><span class="ubits-body-sm-regular">Curso</span></td>
-                                            <td data-col="creacion"><span class="ubits-body-sm-regular">20 feb 2026</span></td>
-                                            <td data-col="nivel"><span class="ubits-body-sm-regular">Básico</span></td>
-                                            <td data-col="visibilidad">
-                                                <span class="creator-contenidos-table__tag-wrap">
-                                                    <span class="ubits-status-tag ubits-status-tag--sm ubits-status-tag--warning"><span class="ubits-status-tag__text">Privado</span></span>
-                                                </span>
-                                            </td>
-                                            <td data-col="acciones">
-                                                <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm js-contenidos-lms-actions-btn" data-lms-row-key="demo-1" data-legacy-lms="true" aria-haspopup="true" aria-expanded="false" aria-label="Acciones">
-                                                    <span>Acciones</span>
-                                                    <i class="far fa-chevron-down"></i>
-                                                </button>
-                                            </td>
-                                        </tr>
-                                        <tr data-contenido-demo="2" data-tipo="Curso" data-categoria-fiqsha-id="" data-nivel-id="niv-001" data-idioma="Español">
-                                            <td data-col="nombre"><span class="ubits-body-sm-regular">Comunicación efectiva con el cliente</span></td>
-                                            <td data-col="tipo"><span class="ubits-body-sm-regular">Curso</span></td>
-                                            <td data-col="creacion"><span class="ubits-body-sm-regular">20 feb 2026</span></td>
-                                            <td data-col="nivel"><span class="ubits-body-sm-regular">Básico</span></td>
-                                            <td data-col="visibilidad">
-                                                <span class="creator-contenidos-table__tag-wrap">
-                                                    <span class="ubits-status-tag ubits-status-tag--sm ubits-status-tag--info"><span class="ubits-status-tag__text">Borrador</span></span>
-                                                </span>
-                                            </td>
-                                            <td data-col="acciones">
-                                                <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm js-contenidos-lms-actions-btn" data-lms-row-key="demo-2" aria-haspopup="true" aria-expanded="false" aria-label="Acciones">
-                                                    <span>Acciones</span>
-                                                    <i class="far fa-chevron-down"></i>
-                                                </button>
-                                            </td>
-                                        </tr>
-                                        <tr data-contenido-demo="3" data-legacy-lms="true" data-tipo="Curso" data-categoria-fiqsha-id="" data-nivel-id="niv-001" data-idioma="Español">
-                                            <td data-col="nombre"><span class="ubits-body-sm-regular">Un gran liderazgo es una red, no una jerarquía</span></td>
-                                            <td data-col="tipo"><span class="ubits-body-sm-regular">Curso</span></td>
-                                            <td data-col="creacion"><span class="ubits-body-sm-regular">20 feb 2026</span></td>
-                                            <td data-col="nivel"><span class="ubits-body-sm-regular">Básico</span></td>
-                                            <td data-col="visibilidad">
-                                                <span class="creator-contenidos-table__tag-wrap">
-                                                    <span class="ubits-status-tag ubits-status-tag--sm ubits-status-tag--neutral"><span class="ubits-status-tag__text">Oculto</span></span>
-                                                </span>
-                                            </td>
-                                            <td data-col="acciones">
-                                                <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm js-contenidos-lms-actions-btn" data-lms-row-key="demo-3" data-legacy-lms="true" aria-haspopup="true" aria-expanded="false" aria-label="Acciones">
-                                                    <span>Acciones</span>
-                                                    <i class="far fa-chevron-down"></i>
-                                                </button>
-                                            </td>
-                                        </tr>
-                                        <tr data-contenido-demo="4" data-tipo="Libro" data-categoria-fiqsha-id="" data-nivel-id="niv-001" data-idioma="Español">
-                                            <td data-col="nombre"><span class="ubits-body-sm-regular">Conocimiento de políticas y procedimientos internos</span></td>
-                                            <td data-col="tipo"><span class="ubits-body-sm-regular">Libro</span></td>
-                                            <td data-col="creacion"><span class="ubits-body-sm-regular">20 feb 2026</span></td>
-                                            <td data-col="nivel"><span class="ubits-body-sm-regular">Básico</span></td>
-                                            <td data-col="visibilidad">
-                                                <span class="creator-contenidos-table__tag-wrap">
-                                                    <span class="ubits-status-tag ubits-status-tag--sm ubits-status-tag--error"><span class="ubits-status-tag__text">Archivado</span></span>
-                                                </span>
-                                            </td>
-                                            <td data-col="acciones">
-                                                <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm js-contenidos-lms-actions-btn" data-lms-row-key="demo-4" aria-haspopup="true" aria-expanded="false" aria-label="Acciones">
-                                                    <span>Acciones</span>
-                                                    <i class="far fa-chevron-down"></i>
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    </tbody>
+                                    <tbody id="creator-contenidos-tbody"></tbody>
                                 </table>
                             </div>
                             </div>
@@ -191,6 +125,7 @@
     <div id="ubits-toast-container"></div>
 
     <script src="../../components/tooltip.js"></script>
+    <script src="../../components/save-indicator.js"></script>
     <script src="../../components/sidebar.js"></script>
     <script src="../../components/sub-nav.js"></script>
     <script src="../../components/tab-bar.js"></script>
@@ -202,6 +137,8 @@
     <script src="../../components/paginator.js"></script>
     <script src="../../components/toast.js"></script>
     <script src="../../components/modal.js"></script>
+    <script src="../../components/drawer.js"></script>
+    <script src="../../components/sidebar-contenido-creator.js"></script>
     <script src="../../script.js"></script>
     <script src="../../bd-master/bd-master-niveles-contenido.js"></script>
     <script src="../../bd-master/bd-master-tipos-contenido.js"></script>
@@ -223,6 +160,308 @@
             function escapeHtmlAttrContenidos(s) {
                 if (s == null) return '';
                 return String(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
+            }
+
+            /** Prefijo del id del overlay; el sufijo es el id del contenido (sanitizado). */
+            var CONTENIDO_BORRADOR_DRAWER_ID_PREFIX = 'contenido-borrador-drawer-overlay--';
+
+            function contenidoIdToDrawerOverlayId(contentId) {
+                var raw = String(contentId != null && contentId !== '' ? contentId : 'sin-id');
+                var safe = raw.replace(/[^a-zA-Z0-9_-]/g, '-');
+                if (!safe) safe = 'sin-id';
+                return CONTENIDO_BORRADOR_DRAWER_ID_PREFIX + safe;
+            }
+
+            /**
+             * Hash del editor borrador = id numérico del curso en BD (p. ej. #24001).
+             * Compatibilidad: #editar-contenido=demo-2 (enlaces antiguos).
+             */
+            var CONTENIDO_BORRADOR_HASH_LEGACY_PREFIX = '#editar-contenido=';
+            var contenidoBorradorOpenedWithHistoryPush = false;
+            var contenidoBorradorUrlActiveId = '';
+
+            function buildBorradorUrlHash(contentId) {
+                return '#' + encodeURIComponent(String(contentId != null && contentId !== '' ? contentId : 'sin-id'));
+            }
+
+            function getContentIdFromBorradorUrlHash() {
+                var h = location.hash || '';
+                if (h.indexOf(CONTENIDO_BORRADOR_HASH_LEGACY_PREFIX) === 0) {
+                    try {
+                        return normalizeLegacyBorradorUrlContentId(
+                            decodeURIComponent(h.slice(CONTENIDO_BORRADOR_HASH_LEGACY_PREFIX.length))
+                        );
+                    } catch (e) {
+                        return '';
+                    }
+                }
+                if (!h || h.charAt(0) !== '#' || h.length < 2) return '';
+                if (h.indexOf('=') >= 0) return '';
+                try {
+                    return normalizeLegacyBorradorUrlContentId(decodeURIComponent(h.slice(1)));
+                } catch (e2) {
+                    return '';
+                }
+            }
+
+            /** Ids demo-* en URLs o enlaces viejos → ids numéricos en `contentsCreatorOnly`. */
+            function normalizeLegacyBorradorUrlContentId(cid) {
+                var map = { 'demo-1': '24000', 'demo-2': '24001', 'demo-3': '24002', 'demo-4': '24003' };
+                return map[cid] != null ? map[cid] : cid;
+            }
+
+            function syncUrlAfterBorradorDrawerOpen(contentId) {
+                contenidoBorradorUrlActiveId = String(contentId != null && contentId !== '' ? contentId : '');
+                var targetHash = buildBorradorUrlHash(contentId);
+                if (location.hash !== targetHash) {
+                    history.pushState(
+                        { ubitsLmsCreatorBorrador: true, contentId: contenidoBorradorUrlActiveId },
+                        '',
+                        location.pathname + location.search + targetHash
+                    );
+                    contenidoBorradorOpenedWithHistoryPush = true;
+                } else {
+                    contenidoBorradorOpenedWithHistoryPush = false;
+                }
+            }
+
+            function syncUrlAfterBorradorDrawerClose() {
+                if (contenidoBorradorOpenedWithHistoryPush) {
+                    contenidoBorradorOpenedWithHistoryPush = false;
+                    contenidoBorradorUrlActiveId = '';
+                    history.back();
+                    return;
+                }
+                var ah = contenidoBorradorUrlActiveId;
+                contenidoBorradorUrlActiveId = '';
+                if (!ah) return;
+                var shortHash = buildBorradorUrlHash(ah);
+                var legacyHash = CONTENIDO_BORRADOR_HASH_LEGACY_PREFIX + encodeURIComponent(ah);
+                if (location.hash === shortHash || location.hash === legacyHash) {
+                    history.replaceState(null, '', location.pathname + location.search);
+                }
+            }
+
+            window.addEventListener('popstate', function () {
+                var overlay = document.querySelector('.ubits-drawer-overlay.contenido-borrador-drawer-overlay');
+                if (!overlay || overlay.getAttribute('aria-hidden') === 'true') return;
+                if (!getContentIdFromBorradorUrlHash()) {
+                    overlay.style.display = 'none';
+                    overlay.setAttribute('aria-hidden', 'true');
+                    document.body.classList.remove('contenido-borrador-drawer-abierto');
+                    contenidoBorradorOpenedWithHistoryPush = false;
+                    contenidoBorradorUrlActiveId = '';
+                }
+            });
+
+            /** Video demo público (CC0); sustituir por URL del recurso real cuando exista backend. */
+            var CONTENIDO_EDITOR_VIDEO_DEMO_URL =
+                'https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4';
+
+            function getContenidoBorradorEditorBodyHtml() {
+                var videoSrc = escapeHtmlAttrContenidos(CONTENIDO_EDITOR_VIDEO_DEMO_URL);
+                return (
+                    '<div id="contenido-borrador-editor-workspace" class="contenido-borrador-editor-workspace">' +
+                    '  <div id="contenido-editor-sidebar-host" class="contenido-borrador-editor__rail" aria-label="Pasos del contenido"></div>' +
+                    '  <div id="contenido-borrador-editor-index" class="contenido-borrador-editor__index">' +
+                    '    <div id="contenido-borrador-seccion-1" class="contenido-borrador-editor__seccion contenido-borrador-editor__seccion--activa">' +
+                    '      <div class="contenido-borrador-editor__seccion-head">' +
+                    '        <span class="contenido-borrador-editor__seccion-title ubits-body-md-bold">Sección 1: Bases para comunicarte con el cliente</span>' +
+                    '        <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" aria-label="Opciones de sección"><i class="far fa-ellipsis-vertical"></i></button>' +
+                    '      </div>' +
+                    '      <div class="contenido-borrador-editor__paginas">' +
+                    '        <div class="contenido-borrador-editor__pagina contenido-borrador-editor__pagina--activa">' +
+                    '          <span class="contenido-borrador-editor__pagina-bar" aria-hidden="true"></span>' +
+                    '          <i class="far fa-video contenido-borrador-editor__pagina-icon" aria-hidden="true"></i>' +
+                    '          <span class="contenido-borrador-editor__pagina-text ubits-body-sm-bold">Introducción: qué es comunicación efectiva con el cliente</span>' +
+                    '          <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" aria-label="Opciones de página"><i class="far fa-ellipsis-vertical"></i></button>' +
+                    '        </div>' +
+                    '        <div class="contenido-borrador-editor__pagina">' +
+                    '          <i class="far fa-file-lines contenido-borrador-editor__pagina-icon" aria-hidden="true"></i>' +
+                    '          <span class="contenido-borrador-editor__pagina-text ubits-body-sm-semibold">Escucha activa y mensajes claros</span>' +
+                    '          <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" aria-label="Opciones de página"><i class="far fa-ellipsis-vertical"></i></button>' +
+                    '        </div>' +
+                    '        <div class="contenido-borrador-editor__pagina">' +
+                    '          <i class="far fa-file-pdf contenido-borrador-editor__pagina-icon" aria-hidden="true"></i>' +
+                    '          <span class="contenido-borrador-editor__pagina-text ubits-body-sm-semibold">Guía: tono y canal según el contexto</span>' +
+                    '          <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" aria-label="Opciones de página"><i class="far fa-ellipsis-vertical"></i></button>' +
+                    '        </div>' +
+                    '        <div class="contenido-borrador-editor__pagina">' +
+                    '          <i class="far fa-video contenido-borrador-editor__pagina-icon" aria-hidden="true"></i>' +
+                    '          <span class="contenido-borrador-editor__pagina-text ubits-body-sm-semibold">Empatía y manejo de la primera reacción del cliente</span>' +
+                    '          <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" aria-label="Opciones de página"><i class="far fa-ellipsis-vertical"></i></button>' +
+                    '        </div>' +
+                    '      </div>' +
+                    '    </div>' +
+                    '    <div id="contenido-borrador-seccion-2" class="contenido-borrador-editor__seccion">' +
+                    '      <div class="contenido-borrador-editor__seccion-head">' +
+                    '        <span class="contenido-borrador-editor__seccion-title ubits-body-md-bold">Sección 2: Práctica y seguimiento con el cliente</span>' +
+                    '      </div>' +
+                    '      <div class="contenido-borrador-editor__paginas">' +
+                    '        <div class="contenido-borrador-editor__pagina">' +
+                    '          <i class="far fa-window-maximize contenido-borrador-editor__pagina-icon" aria-hidden="true"></i>' +
+                    '          <span class="contenido-borrador-editor__pagina-text ubits-body-sm-semibold">Simulador: cliente insatisfecho o en desacuerdo</span>' +
+                    '          <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" aria-label="Opciones de página"><i class="far fa-ellipsis-vertical"></i></button>' +
+                    '        </div>' +
+                    '        <div class="contenido-borrador-editor__pagina">' +
+                    '          <i class="far fa-file-zipper contenido-borrador-editor__pagina-icon" aria-hidden="true"></i>' +
+                    '          <span class="contenido-borrador-editor__pagina-text ubits-body-sm-semibold">Taller: cierre de conversación y próximos pasos</span>' +
+                    '          <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" aria-label="Opciones de página"><i class="far fa-ellipsis-vertical"></i></button>' +
+                    '        </div>' +
+                    '        <div class="contenido-borrador-editor__pagina">' +
+                    '          <i class="far fa-file-lines contenido-borrador-editor__pagina-icon" aria-hidden="true"></i>' +
+                    '          <span class="contenido-borrador-editor__pagina-text ubits-body-sm-semibold">Checklist antes de llamada o reunión con el cliente</span>' +
+                    '          <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" aria-label="Opciones de página"><i class="far fa-ellipsis-vertical"></i></button>' +
+                    '        </div>' +
+                    '        <div class="contenido-borrador-editor__pagina">' +
+                    '          <i class="far fa-list-check contenido-borrador-editor__pagina-icon" aria-hidden="true"></i>' +
+                    '          <span class="contenido-borrador-editor__pagina-text ubits-body-sm-semibold">Evaluación: comunicación efectiva con el cliente</span>' +
+                    '          <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" aria-label="Opciones de página"><i class="far fa-ellipsis-vertical"></i></button>' +
+                    '        </div>' +
+                    '      </div>' +
+                    '    </div>' +
+                    '  </div>' +
+                    '  <div id="contenido-borrador-editor-resource" class="contenido-borrador-editor__resource">' +
+                    '    <div class="contenido-borrador-editor__recurso-principal">' +
+                    '      <div class="contenido-borrador-editor__media">' +
+                    '        <video class="contenido-borrador-editor__media-video" controls playsinline preload="metadata" src="' + videoSrc + '">' +
+                    '          Tu navegador no admite reproducción de video HTML5.' +
+                    '        </video>' +
+                    '      </div>' +
+                    '      <div class="contenido-borrador-editor__media-actions">' +
+                    '        <button type="button" class="ubits-button ubits-button--secondary ubits-button--xs"><i class="far fa-arrows-rotate"></i><span>Reemplazar</span></button>' +
+                    '        <button type="button" class="ubits-button ubits-button--error-secondary ubits-button--xs"><i class="far fa-trash"></i><span>Eliminar</span></button>' +
+                    '      </div>' +
+                    '    </div>' +
+                    '    <div id="contenido-borrador-editor-complementarios" class="contenido-borrador-editor__complementarios" aria-label="Recursos complementarios">' +
+                    '      <p class="contenido-borrador-editor__complementarios-title ubits-body-sm-regular">Añade un recurso complementario (opcional)</p>' +
+                    '      <div class="contenido-borrador-editor__complementarios-row">' +
+                    '        <button type="button" class="ubits-button ubits-button--secondary ubits-button--md contenido-borrador-editor__complementario-btn">' +
+                    '          <i class="far fa-file-lines" aria-hidden="true"></i>' +
+                    '          <span class="ubits-body-sm-regular">Texto</span>' +
+                    '        </button>' +
+                    '        <button type="button" class="ubits-button ubits-button--secondary ubits-button--md contenido-borrador-editor__complementario-btn">' +
+                    '          <i class="far fa-download" aria-hidden="true"></i>' +
+                    '          <span class="ubits-body-sm-regular">Archivo descargable</span>' +
+                    '        </button>' +
+                    '      </div>' +
+                    '    </div>' +
+                    '  </div>' +
+                    '</div>'
+                );
+            }
+
+            function wireContenidoBorradorDrawerHeader(overlay) {
+                if (!overlay) return;
+                var titleSpan = overlay.querySelector('.ubits-drawer-header .ubits-drawer-title');
+                if (!titleSpan || !titleSpan.parentNode) return;
+                var headerText = titleSpan.parentNode;
+                headerText.classList.add('contenido-borrador-editor__drawer-header-text');
+                var row = document.createElement('div');
+                row.className = 'contenido-borrador-editor__drawer-title-row';
+                headerText.insertBefore(row, titleSpan);
+                row.appendChild(titleSpan);
+                var tag = document.createElement('span');
+                tag.className = 'ubits-status-tag ubits-status-tag--sm ubits-status-tag--info';
+                tag.innerHTML = '<span class="ubits-status-tag__text">Borrador</span>';
+                row.appendChild(tag);
+                var saveHost = document.createElement('span');
+                saveHost.id = 'contenido-editor-save-indicator';
+                saveHost.className = 'contenido-borrador-editor__drawer-save-host';
+                row.appendChild(saveHost);
+                if (typeof renderSaveIndicator === 'function') {
+                    renderSaveIndicator('contenido-editor-save-indicator', {
+                        state: 'idle',
+                        idleVariant: 'plain',
+                        size: 'xs'
+                    });
+                }
+            }
+
+            function openContenidoBorradorEditorFromCard(courseCard) {
+                if (!courseCard || typeof openDrawer !== 'function') return;
+                var wrap = courseCard.closest('.contenidos-card-item');
+                var contentId = '';
+                if (wrap && wrap.getAttribute('data-contenido-id')) {
+                    contentId = wrap.getAttribute('data-contenido-id');
+                } else {
+                    var keyBtn = courseCard.querySelector('.course-card__lms-options-btn[data-lms-row-key]');
+                    contentId = keyBtn ? keyBtn.getAttribute('data-lms-row-key') : '';
+                }
+                var overlayId = contenidoIdToDrawerOverlayId(contentId);
+                var titleEl = courseCard.querySelector('.course-title');
+                var title = titleEl ? titleEl.textContent.trim() : 'Contenido';
+                document.body.classList.add('contenido-borrador-drawer-abierto');
+                var overlayDrawer = openDrawer({
+                    overlayId: overlayId,
+                    title: title,
+                    bodyHtml: getContenidoBorradorEditorBodyHtml(),
+                    size: 'full',
+                    closeOnOverlayClick: false,
+                    onClose: function () {
+                        document.body.classList.remove('contenido-borrador-drawer-abierto');
+                        syncUrlAfterBorradorDrawerClose();
+                    }
+                });
+                if (overlayDrawer) {
+                    overlayDrawer.classList.add('contenido-borrador-drawer-overlay');
+                    overlayDrawer.setAttribute('data-contenido-id', contentId);
+                    var drawerPanel = overlayDrawer.querySelector('.ubits-drawer-content');
+                    if (drawerPanel) drawerPanel.id = 'contenido-borrador-drawer-panel';
+                    var drawerBody = overlayDrawer.querySelector('.ubits-drawer-body');
+                    if (drawerBody) drawerBody.id = 'contenido-borrador-drawer-body';
+                    syncUrlAfterBorradorDrawerOpen(contentId);
+                }
+                wireContenidoBorradorDrawerHeader(overlayDrawer);
+                setTimeout(function () {
+                    if (typeof loadSidebarContenidoCreator === 'function') {
+                        loadSidebarContenidoCreator('contenido-editor-sidebar-host', { activeStep: 'recursos' });
+                    }
+                    if (typeof setSidebarContenidoCreatorActive === 'function') {
+                        setSidebarContenidoCreatorActive('contenido-editor-sidebar-host', 'recursos');
+                    }
+                    if (typeof initTooltip === 'function') {
+                        initTooltip('#' + overlayId + ' [data-tooltip]');
+                    }
+                }, 50);
+            }
+
+            function tryOpenContenidoBorradorFromUrlHash() {
+                var cid = getContentIdFromBorradorUrlHash();
+                if (!cid) return;
+                if (document.body.classList.contains('contenido-borrador-drawer-abierto')) return;
+                var grid = document.getElementById('contenidos-cards-grid');
+                if (!grid) return;
+                var wraps = grid.querySelectorAll('.contenidos-card-item');
+                var card = null;
+                for (var i = 0; i < wraps.length; i++) {
+                    if (wraps[i].getAttribute('data-contenido-id') === cid) {
+                        var c = wraps[i].querySelector('.course-card');
+                        if (
+                            c &&
+                            c.getAttribute('data-lms-tag') === 'Borrador' &&
+                            c.getAttribute('data-legacy-lms') !== 'true'
+                        ) {
+                            card = c;
+                        }
+                        break;
+                    }
+                }
+                if (card) openContenidoBorradorEditorFromCard(card);
+            }
+
+            var gridContenidos = document.getElementById('contenidos-cards-grid');
+            if (gridContenidos) {
+                gridContenidos.addEventListener('click', function (ev) {
+                    if (ev.target.closest && ev.target.closest('.course-card__lms-options-btn')) return;
+                    if (ev.target.closest && ev.target.closest('.ubits-dropdown-menu')) return;
+                    var card = ev.target.closest && ev.target.closest('.course-card');
+                    if (!card) return;
+                    if (card.getAttribute('data-lms-tag') !== 'Borrador') return;
+                    if (card.getAttribute('data-legacy-lms') === 'true') return;
+                    ev.preventDefault();
+                    openContenidoBorradorEditorFromCard(card);
+                });
             }
 
             document.addEventListener('ubits-lms-content-action', function (ev) {
@@ -305,65 +544,20 @@
                 };
             }
 
-            function getContenidosDemosNoPublicados() {
-                return [
-                    {
-                        type: 'Curso',
-                        title: 'Desarrollo de habilidades de persuasión',
-                        nivel: 'Básico',
-                        visibilidad: 'Privado',
-                        competency: 'Negociación',
-                        image: 'https://images.unsplash.com/photo-1552664730-d307ca884978?w=640&h=360&fit=crop&q=80'
-                    },
-                    {
-                        type: 'Curso',
-                        title: 'Comunicación efectiva con el cliente',
-                        nivel: 'Básico',
-                        visibilidad: 'Borrador',
-                        competency: 'Comunicación',
-                        image: 'https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=640&h=360&fit=crop&q=80'
-                    },
-                    {
-                        type: 'Curso',
-                        title: 'Un gran liderazgo es una red, no una jerarquía',
-                        nivel: 'Básico',
-                        visibilidad: 'Oculto',
-                        competency: 'Liderazgo',
-                        image: 'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=640&h=360&fit=crop&q=80'
-                    },
-                    {
-                        type: 'Libro',
-                        title: 'Conocimiento de políticas y procedimientos internos',
-                        nivel: 'Básico',
-                        visibilidad: 'Archivado',
-                        competency: 'Cumplimiento (Compliance)',
-                        image: 'https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=640&h=360&fit=crop&q=80'
-                    }
-                ];
-            }
-
             /* Cards en cuadrícula: loadCardContent + lmsTag (Publicado / Borrador / …) vía card-content.js; requiere status-tag.css */
             function buildContenidosCardsPayload() {
                 var cards = [];
-                getContenidosDemosNoPublicados().forEach(function (d, demoIdx) {
-                    cards.push({
-                        type: d.type,
-                        title: d.title,
-                        provider: 'Fiqsha Smart Consulting',
-                        providerLogo: '../../images/Favicons/Fiqsha Smart Consulting.jpg',
-                        duration: '60 min',
-                        level: d.nivel,
-                        progress: 0,
-                        status: 'default',
-                        image: d.image,
-                        competency: d.competency,
-                        language: 'Español',
-                        lmsTag: d.visibilidad,
-                        lmsCardId: 'demo-' + (demoIdx + 1),
-                        legacyLms: demoIdx === 0 || demoIdx === 2
-                    });
-                });
                 var bd = window.BDS_CONTENIDOS_FIQSHA;
+                if (bd && Array.isArray(bd.contentsCreatorOnly)) {
+                    bd.contentsCreatorOnly.forEach(function (c) {
+                        if (!c || !c.titulo) return;
+                        var row = cardDataFromFiqshaContent(c);
+                        row.lmsTag = c.visibilidadLms || 'Privado';
+                        row.lmsCardId = c.id != null ? String(c.id) : '';
+                        row.legacyLms = c.legacyLms === true;
+                        cards.push(row);
+                    });
+                }
                 if (bd && bd.contents) {
                     bd.contents.forEach(function (c) {
                         if (!c || !c.titulo) return;
@@ -391,10 +585,24 @@
                     var wrap = document.createElement('div');
                     wrap.className = 'contenidos-card-item';
                     wrap.setAttribute('data-row-index', String(i));
+                    var lmsKeyBtn = card.querySelector('.course-card__lms-options-btn[data-lms-row-key]');
+                    var contenidoIdAttr = lmsKeyBtn
+                        ? lmsKeyBtn.getAttribute('data-lms-row-key')
+                        : '';
+                    wrap.setAttribute(
+                        'data-contenido-id',
+                        contenidoIdAttr && contenidoIdAttr.length ? contenidoIdAttr : 'row-' + i
+                    );
+                    if (card.getAttribute('data-lms-tag') === 'Borrador' && card.getAttribute('data-legacy-lms') !== 'true') {
+                        wrap.classList.add('contenidos-card-item--abrir-editor');
+                    }
                     card.parentNode.insertBefore(wrap, card);
                     wrap.appendChild(card);
                 });
                 contenidosCardsBuilt = true;
+                setTimeout(function () {
+                    tryOpenContenidoBorradorFromUrlHash();
+                }, 0);
             }
 
             loadSidebar('creator');
@@ -402,7 +610,7 @@
             loadTabBar('tab-bar-container');
             loadFloatingMenu('floating-menu-container');
             loadProfileMenu('profile-menu-container');
-
+            
             if (typeof loadHeaderProduct === 'function') {
                 loadHeaderProduct('header-product-container', {
                     productName: 'Contenidos',
@@ -419,28 +627,27 @@
                 });
             }
 
-            (function renderContenidosFiqshaPublicados() {
+            (function renderContenidosFiqshaTableRows() {
                 var bd = window.BDS_CONTENIDOS_FIQSHA;
                 var nivelesRoot = window.BD_MASTER_NIVELES_CONTENIDO;
                 var tbody = document.getElementById('creator-contenidos-tbody');
-                if (!bd || !bd.contents || !tbody) return;
+                if (!bd || !tbody) return;
                 var mapNivel = {};
                 if (nivelesRoot && Array.isArray(nivelesRoot.niveles)) {
                     nivelesRoot.niveles.forEach(function (n) {
                         if (n && n.id) mapNivel[n.id] = n.nombre || 'Básico';
                     });
                 }
-                /* Filas demo (no publicado) van primero en el HTML; los publicados Fiqsha se añaden al final */
-                var frag = document.createDocumentFragment();
-                bd.contents.forEach(function (c) {
-                    if (!c || !c.titulo) return;
-                    var tr = document.createElement('tr');
-                    tr.setAttribute('data-fiqsha-id', c.id || '');
-                    tr.setAttribute('data-legacy-lms', c.legacyLms === true ? 'true' : 'false');
-                    tr.setAttribute('data-tipo', c.tipoContenido || 'Curso');
-                    tr.setAttribute('data-categoria-fiqsha-id', c.categoriaFiqshaId || '');
-                    tr.setAttribute('data-nivel-id', c.nivelId || '');
-                    tr.setAttribute('data-idioma', c.idioma || 'Español');
+                function visibilidadLmsToTagModifier(vis) {
+                    var v = String(vis || '');
+                    if (v === 'Privado') return 'warning';
+                    if (v === 'Borrador') return 'info';
+                    if (v === 'Oculto') return 'neutral';
+                    if (v === 'Archivado') return 'error';
+                    return 'neutral';
+                }
+                function appendFiqshaRow(tr, c, opts) {
+                    opts = opts || {};
                     var nivelNombre = mapNivel[c.nivelId] || 'Básico';
                     var tipoTxt = c.tipoContenido || 'Curso';
                     function appendTextCell(col, text) {
@@ -458,15 +665,74 @@
                     appendTextCell('nivel', nivelNombre);
                     var tdVis = document.createElement('td');
                     tdVis.setAttribute('data-col', 'visibilidad');
-                    tdVis.innerHTML = '<span class="creator-contenidos-table__tag-wrap"><span class="ubits-status-tag ubits-status-tag--sm ubits-status-tag--success"><span class="ubits-status-tag__text">Publicado</span></span></span>';
+                    var wrap = document.createElement('span');
+                    wrap.className = 'creator-contenidos-table__tag-wrap';
+                    var tag = document.createElement('span');
+                    var tagMod = opts.tagModifier || 'success';
+                    var labelText = opts.visibilidadLabel || 'Publicado';
+                    tag.className = 'ubits-status-tag ubits-status-tag--sm ubits-status-tag--' + tagMod;
+                    var tagInner = document.createElement('span');
+                    tagInner.className = 'ubits-status-tag__text';
+                    tagInner.textContent = labelText;
+                    tag.appendChild(tagInner);
+                    wrap.appendChild(tag);
+                    tdVis.appendChild(wrap);
                     tr.appendChild(tdVis);
                     var tdAcc = document.createElement('td');
                     tdAcc.setAttribute('data-col', 'acciones');
-                    var legacyAttr = c.legacyLms === true ? ' data-legacy-lms="true"' : '';
-                    tdAcc.innerHTML = '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm js-contenidos-lms-actions-btn" data-lms-row-key="' + escapeHtmlAttrContenidos(c.id) + '"' + legacyAttr + ' aria-haspopup="true" aria-expanded="false" aria-label="Acciones"><span>Acciones</span><i class="far fa-chevron-down"></i></button>';
+                    var btn = document.createElement('button');
+                    btn.type = 'button';
+                    btn.className = 'ubits-button ubits-button--secondary ubits-button--sm js-contenidos-lms-actions-btn';
+                    btn.setAttribute('data-lms-row-key', c.id != null ? String(c.id) : '');
+                    if (c.legacyLms === true) btn.setAttribute('data-legacy-lms', 'true');
+                    btn.setAttribute('aria-haspopup', 'true');
+                    btn.setAttribute('aria-expanded', 'false');
+                    btn.setAttribute('aria-label', 'Acciones');
+                    var spanBtn = document.createElement('span');
+                    spanBtn.textContent = 'Acciones';
+                    btn.appendChild(spanBtn);
+                    var ic = document.createElement('i');
+                    ic.className = 'far fa-chevron-down';
+                    btn.appendChild(ic);
+                    tdAcc.appendChild(btn);
                     tr.appendChild(tdAcc);
-                    frag.appendChild(tr);
-                });
+                }
+                var fragCreator = document.createDocumentFragment();
+                if (Array.isArray(bd.contentsCreatorOnly)) {
+                    bd.contentsCreatorOnly.forEach(function (c) {
+                        if (!c || !c.titulo) return;
+                        var tr = document.createElement('tr');
+                        tr.setAttribute('data-contenido-creator-only', 'true');
+                        tr.setAttribute('data-fiqsha-id', c.id || '');
+                        tr.setAttribute('data-legacy-lms', c.legacyLms === true ? 'true' : 'false');
+                        tr.setAttribute('data-tipo', c.tipoContenido || 'Curso');
+                        tr.setAttribute('data-categoria-fiqsha-id', c.categoriaFiqshaId || '');
+                        tr.setAttribute('data-nivel-id', c.nivelId || '');
+                        tr.setAttribute('data-idioma', c.idioma || 'Español');
+                        var vis = c.visibilidadLms || 'Privado';
+                        appendFiqshaRow(tr, c, {
+                            tagModifier: visibilidadLmsToTagModifier(vis),
+                            visibilidadLabel: vis
+                        });
+                        fragCreator.appendChild(tr);
+                    });
+                }
+                tbody.appendChild(fragCreator);
+                var frag = document.createDocumentFragment();
+                if (Array.isArray(bd.contents)) {
+                    bd.contents.forEach(function (c) {
+                        if (!c || !c.titulo) return;
+                        var tr = document.createElement('tr');
+                        tr.setAttribute('data-fiqsha-id', c.id || '');
+                        tr.setAttribute('data-legacy-lms', c.legacyLms === true ? 'true' : 'false');
+                        tr.setAttribute('data-tipo', c.tipoContenido || 'Curso');
+                        tr.setAttribute('data-categoria-fiqsha-id', c.categoriaFiqshaId || '');
+                        tr.setAttribute('data-nivel-id', c.nivelId || '');
+                        tr.setAttribute('data-idioma', c.idioma || 'Español');
+                        appendFiqshaRow(tr, c, { tagModifier: 'success', visibilidadLabel: 'Publicado' });
+                        frag.appendChild(tr);
+                    });
+                }
                 tbody.appendChild(frag);
             })();
 
@@ -992,6 +1258,10 @@
                         contenidosViewMode = 'grid';
                         if (!contenidosCardsBuilt) {
                             renderContenidosCardsGrid();
+                        } else {
+                            setTimeout(function () {
+                                tryOpenContenidoBorradorFromUrlHash();
+                            }, 0);
                         }
                         if (tablePanel) tablePanel.style.display = 'none';
                         if (cardsPanel) {

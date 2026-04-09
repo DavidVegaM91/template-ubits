@@ -16,7 +16,7 @@ Carpeta única de **bases de datos del playground** (JavaScript en `window`, sin
 | `bd-master-colaboradores.js` | `window.BD_MASTER_COLABORADORES` | Empresa referencia + **55 colaboradores** Fiqsha (`colaboradores[]`). |
 | `bd-tareas-y-planes.js` | `window.TAREAS_PLANES_DB` | Tareas, planes, seguimiento, datos generados; lee colaboradores del maestro. |
 | `bd-contenidos-ubits.js` | `window.BDS_CONTENIDOS_UBITS` | Catálogo de contenidos UBITS (`contents[]`, ~85 ítems). |
-| `bd-contenidos-fiqsha.js` | `window.BDS_CONTENIDOS_FIQSHA` | Catálogo de contenidos empresa Fiqsha (`contents[]`). |
+| `bd-contenidos-fiqsha.js` | `window.BDS_CONTENIDOS_FIQSHA` | Catálogo empresa Fiqsha: `contents[]` (publicado) y `contentsCreatorOnly[]` (privado/borrador/oculto/archivado; **solo** `lms-creator/contenidos.html`). |
 
 ---
 
@@ -35,7 +35,8 @@ Ruta relativa típica desde HTML: `../../bd-master/nombre-archivo.js` (desde `ub
 | `detalle-plan-competencias.html` | Igual | Igual | Igual. |
 | `crear-plan-contenidos.html`, `editar-plan-contenidos.html`, `detalle-plan.html` | Planes por contenidos | `bd-master-niveles-contenido.js`, `bd-master-aliados.js`, `bd-master-competencias.js`, `bd-master-habilidades.js`, `bd-master-categorias-fiqsha.js`, `bd-contenidos-ubits.js`, `bd-contenidos-fiqsha.js`; listas: `bd-master-colaboradores.js`, `bd-tareas-y-planes.js` | Maestros y catálogos de contenidos para el drawer y asignaciones (sin detallar helpers fuera de esta carpeta). |
 | `planes-formacion.html` | Lista de planes | *(mock local en página; sin `bd-master` en el listado)* | Datos de ejemplo de planes LMS Creator. |
-| `contenidos.html`, `categorias.html`, `chat-ia-grupos.html` | Placeholder | — | Sin BD aún. |
+| `contenidos.html` | Lista contenidos LMS Creator | `bd-contenidos-fiqsha.js` (+ maestros ya enlazados en la página) | Cuadrícula y tabla: primero `contentsCreatorOnly`, luego `contents`. El resto del playground que use Fiqsha debe leer **solo** `contents`. |
+| `categorias.html`, `chat-ia-grupos.html` | Placeholder | — | Sin BD aún. |
 
 ### Tareas — `ubits-colaborador/tareas/`
 
@@ -74,7 +75,8 @@ Ruta relativa típica desde HTML: `../../bd-master/nombre-archivo.js` (desde `ub
 
 ### Fiqsha (`BDS_CONTENIDOS_FIQSHA`)
 
-`origen`, `titulo`, `descripcion`, `imagen`, `tipoContenido`, `nivelId`, `tiempoValor`, `unidadTiempo`, `idioma`, `categoriaFiqshaId`, `proveedorAliadoId`; sin bloque de competencias/habilidades UBITS del modelo empresa. Campos de compatibilidad: `id`, `title`, `imagePath`.
+- **`contents[]` (publicado):** mismo esquema que antes — `origen`, `titulo`, `descripcion`, `imagen`, `tipoContenido`, `nivelId`, `tiempoValor`, `unidadTiempo`, `idioma`, `categoriaFiqshaId`, `proveedorAliadoId`; campos de compatibilidad `id`, `title`, `imagePath`, `legacyLms` si aplica.
+- **`contentsCreatorOnly[]` (no publicado):** misma forma que un ítem de `contents` para reutilizar helpers de tarjeta/tabla, más **`visibilidadLms`**: `Privado` \| `Borrador` \| `Oculto` \| `Archivado`. El campo **`id`** es el identificador de curso en LMS (en el playground, rango demo `24000`–`24003` en `contentsCreatorOnly`); en `lms-creator/contenidos.html` el editor borrador sincroniza la URL como `#` + ese id (p. ej. `#24001`). No concatenar este array en catálogos de u-corporativa, planes, tareas ni drawers que consuman solo el catálogo publicado.
 
 ---
 

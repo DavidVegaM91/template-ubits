@@ -178,6 +178,7 @@ Este patrón de **contenido complementario** (Texto / Archivo descargable) apare
 ## Notas para implementación
 
 - Reutilizar componentes UBITS del template (`documentacion/componentes.html`) para botones, inputs, alerts, toasts, etc.  
+- **Navegación lateral de pasos** (Resultados → Visibilidad): **Sidebar contenido creator** — misma pieza que el Sidebar global (`aside.sidebar`, `sidebar-body`, `nav-button` + `data-tooltip`), con modificador `sidebar--contenido-creator` para fondo claro (`bg-1`). Archivos: `components/sidebar-contenido-creator.css`, `components/sidebar-contenido-creator.js` (requiere `styles.css` por `.nav-button`). Doc: `documentacion/componentes/sidebar-contenido-creator.html`.  
 - Mantener tokens y tipografía UBITS; CSS de página en archivo dedicado junto al HTML del Creator cuando corresponda.  
 - Cualquier cambio a este documento debe reflejar acuerdos de producto y, si es posible, el nodo de Figma afectado.
 

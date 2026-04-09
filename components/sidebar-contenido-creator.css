@@ -1,0 +1,327 @@
+/* ========================================
+   Sidebar contenido creator
+   Misma estructura y patrón visual que el Sidebar global (.sidebar + .nav-button en styles.css),
+   con colores para superficie clara (--ubits-bg-1). No usa el fondo oscuro (--ubits-sidebar-bg).
+   ======================================== */
+
+.sidebar.sidebar--contenido-creator {
+    background-color: var(--ubits-bg-1) !important;
+    border: none;
+    border-radius: var(--border-radius-sm);
+    position: relative !important;
+    left: auto !important;
+    top: auto !important;
+    width: 96px;
+    min-width: 96px;
+    max-width: 96px;
+    height: auto;
+    min-height: min(578px, 70vh);
+    max-height: calc(100vh - var(--gap-2xl));
+    padding: var(--padding-lg) var(--padding-4xl);
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-lg);
+    align-items: center;
+    justify-content: flex-start;
+    overflow-x: hidden;
+    overflow-y: auto;
+    box-sizing: border-box;
+    z-index: 1;
+}
+
+.sidebar.sidebar--contenido-creator .sidebar-main {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-lg);
+    align-items: center;
+    width: 100%;
+    flex: 1;
+    min-height: 0;
+}
+
+.sidebar.sidebar--contenido-creator .sidebar-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-sm);
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+    min-width: 0;
+    min-height: 0;
+}
+
+/* Tema claro: anula estilos del sidebar oscuro (styles.css) para .nav-button */
+.sidebar.sidebar--contenido-creator .nav-button {
+    background: transparent !important;
+    box-shadow: none !important;
+}
+
+.sidebar.sidebar--contenido-creator .nav-button::before {
+    display: none;
+}
+
+.sidebar.sidebar--contenido-creator .nav-button i {
+    color: var(--ubits-fg-1-medium) !important;
+}
+
+.sidebar.sidebar--contenido-creator .nav-button:hover {
+    background: var(--ubits-bg-2) !important;
+    box-shadow: none !important;
+    transform: scale(1.08);
+}
+
+.sidebar.sidebar--contenido-creator .nav-button:hover i {
+    color: var(--ubits-fg-1-high) !important;
+    transform: scale(1.1);
+}
+
+.sidebar.sidebar--contenido-creator .nav-button:active {
+    background: var(--ubits-bg-2) !important;
+    transform: scale(0.95);
+}
+
+.sidebar.sidebar--contenido-creator .nav-button:active i {
+    color: var(--ubits-fg-1-high) !important;
+}
+
+.sidebar.sidebar--contenido-creator .nav-button.active {
+    background: var(--ubits-bg-active) !important;
+}
+
+.sidebar.sidebar--contenido-creator .nav-button.active i {
+    color: var(--ubits-accent-brand) !important;
+}
+
+.sidebar.sidebar--contenido-creator .nav-button:focus-visible {
+    background: transparent !important;
+    box-shadow: 0 0 0 2px var(--ubits-accent-brand) !important;
+    outline: none;
+}
+
+.sidebar.sidebar--contenido-creator .nav-button:focus-visible i {
+    color: var(--ubits-fg-1-high) !important;
+}
+
+/* Modo oscuro: sigue siendo “sidebar sobre bg-1” dentro del creator */
+[data-theme="dark"] .sidebar.sidebar--contenido-creator {
+    background-color: var(--ubits-bg-1) !important;
+}
+
+[data-theme="dark"] .sidebar.sidebar--contenido-creator .nav-button i {
+    color: var(--ubits-fg-1-medium) !important;
+}
+
+[data-theme="dark"] .sidebar.sidebar--contenido-creator .nav-button:hover {
+    background: var(--ubits-bg-2) !important;
+}
+
+[data-theme="dark"] .sidebar.sidebar--contenido-creator .nav-button:hover i {
+    color: var(--ubits-fg-1-high) !important;
+}
+
+[data-theme="dark"] .sidebar.sidebar--contenido-creator .nav-button.active {
+    background: var(--ubits-bg-active) !important;
+}
+
+[data-theme="dark"] .sidebar.sidebar--contenido-creator .nav-button.active i {
+    color: var(--ubits-accent-brand) !important;
+}
+
+/* Etiquetas de paso: visibles solo en modo expandido */
+.sidebar.sidebar--contenido-creator:not(.sidebar--contenido-creator--expanded) .sidebar-contenido-creator__step-label {
+    display: none;
+}
+
+.sidebar.sidebar--contenido-creator .sidebar-contenido-creator__step-label {
+    flex: 1;
+    min-width: 0;
+    text-align: left;
+    color: var(--ubits-fg-1-medium);
+}
+
+.sidebar.sidebar--contenido-creator .nav-button.active .sidebar-contenido-creator__step-label {
+    color: var(--ubits-accent-brand);
+}
+
+.sidebar.sidebar--contenido-creator.sidebar--contenido-creator--expanded .nav-button:hover .sidebar-contenido-creator__step-label {
+    color: var(--ubits-fg-1-high);
+}
+
+.sidebar.sidebar--contenido-creator.sidebar--contenido-creator--expanded .nav-button.active:hover .sidebar-contenido-creator__step-label {
+    color: var(--ubits-accent-brand);
+}
+
+/* Modo expandido: rail ancho + filas icono + texto */
+.sidebar.sidebar--contenido-creator.sidebar--contenido-creator--expanded {
+    width: 240px;
+    min-width: 240px;
+    max-width: 240px;
+    padding-left: var(--padding-md);
+    padding-right: var(--padding-md);
+    align-items: stretch;
+}
+
+.sidebar.sidebar--contenido-creator.sidebar--contenido-creator--expanded .sidebar-main {
+    align-items: stretch;
+}
+
+.sidebar.sidebar--contenido-creator.sidebar--contenido-creator--expanded .sidebar-body {
+    align-items: stretch;
+}
+
+.sidebar.sidebar--contenido-creator.sidebar--contenido-creator--expanded .sidebar-body .nav-button[data-step] {
+    width: 100%;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    gap: var(--gap-md);
+    padding-left: var(--padding-md);
+    padding-right: var(--padding-md);
+    box-sizing: border-box;
+}
+
+.sidebar.sidebar--contenido-creator.sidebar--contenido-creator--expanded .sidebar-body .nav-button[data-step] i {
+    flex-shrink: 0;
+}
+
+/* Footer: Expandir / Contraer */
+.sidebar.sidebar--contenido-creator .sidebar-contenido-creator__footer {
+    width: 100%;
+    flex-shrink: 0;
+    display: flex;
+    justify-content: center;
+    padding-top: var(--gap-md);
+    margin-top: var(--gap-sm);
+    border-top: none;
+    box-sizing: border-box;
+}
+
+/* Toggle: mismo patrón circular que los demás .nav-button del rail (40×40, icono centrado). */
+.sidebar.sidebar--contenido-creator .sidebar-contenido-creator__toggle {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+}
+
+/* Contraído: círculo como los pasos; no ocupar todo el ancho del footer. */
+.sidebar.sidebar--contenido-creator:not(.sidebar--contenido-creator--expanded) .sidebar-contenido-creator__toggle {
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    max-width: 40px;
+    padding: var(--padding-sm);
+    border-radius: var(--border-radius-full);
+    gap: 0;
+    flex-shrink: 0;
+}
+
+.sidebar.sidebar--contenido-creator:not(.sidebar--contenido-creator--expanded) .sidebar-contenido-creator__toggle i {
+    margin: 0;
+}
+
+.sidebar.sidebar--contenido-creator.sidebar--contenido-creator--expanded .sidebar-contenido-creator__toggle {
+    flex-direction: row;
+    justify-content: flex-start;
+    gap: var(--gap-md);
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    height: auto;
+    min-height: 40px;
+    padding-left: var(--padding-md);
+    padding-right: var(--padding-md);
+    border-radius: var(--border-radius-sm);
+}
+
+/* Mismo tamaño que .nav-button en styles.css @media (max-width: 768px). */
+@media (max-width: 768px) {
+    .sidebar.sidebar--contenido-creator:not(.sidebar--contenido-creator--expanded) .sidebar-contenido-creator__toggle {
+        width: 36px;
+        height: 36px;
+        min-width: 36px;
+        max-width: 36px;
+    }
+}
+
+/* Contraído: solo icono (>>); el texto “Expandir” va en tooltip. Expandido: << + “Contraer”. */
+.sidebar.sidebar--contenido-creator:not(.sidebar--contenido-creator--expanded) .sidebar-contenido-creator__toggle-icon-expanded,
+.sidebar.sidebar--contenido-creator:not(.sidebar--contenido-creator--expanded) .sidebar-contenido-creator__toggle-label-expanded,
+.sidebar.sidebar--contenido-creator:not(.sidebar--contenido-creator--expanded) .sidebar-contenido-creator__toggle-label-collapsed,
+.sidebar.sidebar--contenido-creator.sidebar--contenido-creator--expanded .sidebar-contenido-creator__toggle-icon-collapsed,
+.sidebar.sidebar--contenido-creator.sidebar--contenido-creator--expanded .sidebar-contenido-creator__toggle-label-collapsed {
+    display: none;
+}
+
+.sidebar.sidebar--contenido-creator .sidebar-contenido-creator__toggle-label-collapsed,
+.sidebar.sidebar--contenido-creator .sidebar-contenido-creator__toggle-label-expanded {
+    color: var(--ubits-fg-1-medium);
+    text-align: center;
+}
+
+.sidebar.sidebar--contenido-creator.sidebar--contenido-creator--expanded .sidebar-contenido-creator__toggle-label-expanded {
+    text-align: left;
+}
+
+[data-theme="dark"] .sidebar.sidebar--contenido-creator .sidebar-contenido-creator__toggle-label-collapsed,
+[data-theme="dark"] .sidebar.sidebar--contenido-creator .sidebar-contenido-creator__toggle-label-expanded {
+    color: var(--ubits-fg-1-medium);
+}
+
+@media (max-width: 1023px) {
+    .sidebar.sidebar--contenido-creator {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+        min-height: 0;
+        max-height: none;
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: center;
+        padding: var(--padding-md);
+        gap: var(--gap-md);
+    }
+
+    .sidebar.sidebar--contenido-creator .sidebar-main {
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+        flex: none;
+        width: auto;
+    }
+
+    .sidebar.sidebar--contenido-creator .sidebar-body {
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+        flex: none;
+    }
+
+    .sidebar.sidebar--contenido-creator.sidebar--contenido-creator--expanded {
+        flex-direction: column;
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+        align-items: stretch;
+    }
+
+    .sidebar.sidebar--contenido-creator.sidebar--contenido-creator--expanded .sidebar-main {
+        flex-direction: column;
+        width: 100%;
+        align-items: stretch;
+    }
+
+    .sidebar.sidebar--contenido-creator.sidebar--contenido-creator--expanded .sidebar-body {
+        flex-direction: column;
+        flex-wrap: nowrap;
+        align-items: stretch;
+        width: 100%;
+    }
+
+    .sidebar.sidebar--contenido-creator.sidebar--contenido-creator--expanded .sidebar-contenido-creator__footer {
+        width: 100%;
+    }
+}

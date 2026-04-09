@@ -1,6 +1,7 @@
 /* ========================================
    UBITS STEPPER
    Pasos de un flujo (horizontal o vertical); tokens UBITS.
+   Vertical colapsable: marco .ubits-stepper__vertical-frame; variante creator-rail (tipo sidebar contenido creator) con nav.ubits-stepper__vertical-nav + .ubits-stepper__vertical-footer y toggle .nav-button.
    Documentación: documentacion/componentes/stepper.html
    ======================================== */
 
@@ -385,17 +386,169 @@
 }
 
 /* width: fit-content solo con texto; si no, pisamos el icon-only cuadrado oficial (32×32 sm) */
-.ubits-stepper__vertical-frame .ubits-stepper__vertical-toggle:not(.ubits-button--icon-only) {
+.ubits-stepper__vertical-frame:not(.ubits-stepper__vertical-frame--creator-rail) .ubits-stepper__vertical-toggle:not(.ubits-button--icon-only) {
     width: fit-content;
     max-width: 100%;
 }
 
-.ubits-stepper__vertical-frame .ubits-stepper__vertical-toggle {
+.ubits-stepper__vertical-frame:not(.ubits-stepper__vertical-frame--creator-rail) .ubits-stepper__vertical-toggle {
     align-self: flex-start;
     flex-shrink: 0;
     transition:
         opacity calc(var(--ubits-stepper-collapse-dur) * 0.6) var(--ubits-stepper-collapse-ease),
         transform var(--ubits-stepper-collapse-dur) var(--ubits-stepper-collapse-ease);
+}
+
+/* ---------- Vertical colapsable — variante rail creator (sidebar contenido creator) ---------- */
+.ubits-stepper__vertical-frame.ubits-stepper__vertical-frame--creator-rail {
+    background-color: var(--ubits-bg-1);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: var(--border-radius-sm);
+    padding: var(--padding-lg) var(--padding-4xl);
+    gap: var(--gap-lg);
+    box-sizing: border-box;
+    width: 240px;
+    min-width: 240px;
+    max-width: 240px;
+    align-items: stretch;
+    transition:
+        max-width var(--ubits-stepper-collapse-dur) var(--ubits-stepper-collapse-ease),
+        min-width var(--ubits-stepper-collapse-dur) var(--ubits-stepper-collapse-ease),
+        width var(--ubits-stepper-collapse-dur) var(--ubits-stepper-collapse-ease),
+        box-shadow 0.35s ease;
+}
+
+.ubits-stepper__vertical-frame.ubits-stepper__vertical-frame--creator-rail.is-collapsed {
+    width: 96px;
+    min-width: 96px;
+    max-width: 96px;
+    align-items: center;
+}
+
+.ubits-stepper__vertical-frame--creator-rail > .ubits-stepper__vertical-nav {
+    flex: 1;
+    min-height: 0;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+}
+
+.ubits-stepper__vertical-frame--creator-rail.is-collapsed > .ubits-stepper__vertical-nav {
+    align-items: center;
+}
+
+.ubits-stepper__vertical-frame--creator-rail > .ubits-stepper__vertical-nav > .ubits-stepper--vertical {
+    width: 100%;
+}
+
+.ubits-stepper__vertical-frame--creator-rail .ubits-stepper__vertical-footer {
+    width: 100%;
+    flex-shrink: 0;
+    display: flex;
+    justify-content: center;
+    padding-top: var(--gap-md);
+    margin-top: var(--gap-sm);
+    border-top: 1px solid var(--ubits-border-1);
+    box-sizing: border-box;
+}
+
+.ubits-stepper__vertical-frame--creator-rail:not(.is-collapsed) .ubits-stepper__vertical-footer {
+    justify-content: stretch;
+}
+
+/* Toggle: mismos criterios que sidebar contenido creator (.nav-button sobre bg-1) */
+.ubits-stepper__vertical-frame--creator-rail .nav-button.ubits-stepper__vertical-toggle {
+    background: transparent !important;
+    box-shadow: none !important;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    flex-shrink: 0;
+    box-sizing: border-box;
+}
+
+.ubits-stepper__vertical-frame--creator-rail .nav-button.ubits-stepper__vertical-toggle::before {
+    display: none;
+}
+
+.ubits-stepper__vertical-frame--creator-rail .nav-button.ubits-stepper__vertical-toggle i {
+    color: var(--ubits-fg-1-medium) !important;
+}
+
+.ubits-stepper__vertical-frame--creator-rail .nav-button.ubits-stepper__vertical-toggle:hover {
+    background: var(--ubits-bg-2) !important;
+    transform: scale(1.08);
+}
+
+.ubits-stepper__vertical-frame--creator-rail .nav-button.ubits-stepper__vertical-toggle:hover i {
+    color: var(--ubits-fg-1-high) !important;
+    transform: scale(1.1);
+}
+
+.ubits-stepper__vertical-frame--creator-rail .nav-button.ubits-stepper__vertical-toggle:active {
+    background: var(--ubits-bg-2) !important;
+    transform: scale(0.95);
+}
+
+.ubits-stepper__vertical-frame--creator-rail .nav-button.ubits-stepper__vertical-toggle:focus-visible {
+    box-shadow: 0 0 0 2px var(--ubits-accent-brand) !important;
+    outline: none;
+}
+
+.ubits-stepper__vertical-frame--creator-rail.is-collapsed .nav-button.ubits-stepper__vertical-toggle {
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    max-width: 40px;
+    padding: var(--padding-sm);
+    border-radius: var(--border-radius-full);
+}
+
+.ubits-stepper__vertical-frame--creator-rail:not(.is-collapsed) .nav-button.ubits-stepper__vertical-toggle {
+    flex-direction: row;
+    justify-content: flex-start;
+    gap: var(--gap-md);
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    height: auto;
+    min-height: 40px;
+    padding-left: var(--padding-md);
+    padding-right: var(--padding-md);
+    border-radius: var(--border-radius-sm);
+}
+
+.ubits-stepper__vertical-frame--creator-rail:not(.is-collapsed) .nav-button.ubits-stepper__vertical-toggle span {
+    color: var(--ubits-fg-1-medium);
+}
+
+[data-theme="dark"] .ubits-stepper__vertical-frame--creator-rail {
+    background-color: var(--ubits-bg-1) !important;
+    border-color: var(--ubits-border-1);
+}
+
+[data-theme="dark"] .ubits-stepper__vertical-frame--creator-rail .nav-button.ubits-stepper__vertical-toggle i {
+    color: var(--ubits-fg-1-medium) !important;
+}
+
+[data-theme="dark"] .ubits-stepper__vertical-frame--creator-rail .nav-button.ubits-stepper__vertical-toggle:hover {
+    background: var(--ubits-bg-2) !important;
+}
+
+[data-theme="dark"] .ubits-stepper__vertical-frame--creator-rail .nav-button.ubits-stepper__vertical-toggle:hover i {
+    color: var(--ubits-fg-1-high) !important;
+}
+
+@media (max-width: 768px) {
+    .ubits-stepper__vertical-frame--creator-rail.is-collapsed .nav-button.ubits-stepper__vertical-toggle {
+        width: 36px;
+        height: 36px;
+        min-width: 36px;
+        max-width: 36px;
+    }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -406,7 +559,12 @@
     .ubits-stepper__vertical-frame,
     .ubits-stepper__vertical-frame .ubits-stepper--vertical .ubits-stepper__step,
     .ubits-stepper__vertical-frame .ubits-stepper__label,
-    .ubits-stepper__vertical-frame .ubits-stepper__vertical-toggle {
+    .ubits-stepper__vertical-frame:not(.ubits-stepper__vertical-frame--creator-rail) .ubits-stepper__vertical-toggle {
+        transition-duration: 0.01ms !important;
+        transition-delay: 0s !important;
+    }
+
+    .ubits-stepper__vertical-frame--creator-rail {
         transition-duration: 0.01ms !important;
         transition-delay: 0s !important;
     }

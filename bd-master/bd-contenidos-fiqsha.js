@@ -4,9 +4,12 @@
  * Tipos de contenido (lista canónica): `bd-master/bd-master-tipos-contenido.js` (alineado con card-content CONTENT_TYPES).
  * Sin competencias/habilidades UBITS en modelo; sin expertos ni nivel inglés.
  * Nivel: `nivelId` → `bd-master-niveles-contenido.js`. Proveedor: `proveedorAliadoId` (`aly-018` Fiqsha) → `bd-master-aliados.js`.
+ *
+ * `contents` — catálogo publicado: úsalo en u-corporativa, planes, tareas, drawer de catálogo, etc.
+ * `contentsCreatorOnly` — privado/borrador/oculto/archivado: SOLO `lms-creator/contenidos.html` (no mezclar en otros consumidores de `contents`).
  */
 window.BDS_CONTENIDOS_FIQSHA = {
-  "version": "2.0",
+  "version": "2.1",
   "source": "catálogo Fiqsha/empresa; categorías por id en bd-master-categorias-fiqsha.js",
   "total": 20,
   "contents": [
@@ -330,6 +333,78 @@ window.BDS_CONTENIDOS_FIQSHA = {
       "nivelId": "niv-001",
       "proveedorAliadoId": "aly-018",
       "categoriaFiqshaId": "cfq-019"
+    }
+  ],
+  "contentsCreatorOnly": [
+    {
+      "id": "24000",
+      "legacyLms": true,
+      "origen": "lms_creator_no_publicado",
+      "titulo": "Desarrollo de habilidades de persuasión",
+      "descripcion": "Contenido no publicado (privado). Solo listado en LMS Creator — Contenidos.",
+      "imagen": "images/cards-learn/U-Corporativa/delegacion-efectiva.jpg",
+      "tipoContenido": "Curso",
+      "tiempoValor": 60,
+      "unidadTiempo": "minutos",
+      "idioma": "Español",
+      "title": "Desarrollo de habilidades de persuasión",
+      "imagePath": "cards-learn/U-Corporativa/delegacion-efectiva.jpg",
+      "nivelId": "niv-001",
+      "proveedorAliadoId": "aly-018",
+      "categoriaFiqshaId": "cfq-013",
+      "visibilidadLms": "Privado"
+    },
+    {
+      "id": "24001",
+      "origen": "lms_creator_no_publicado",
+      "titulo": "Comunicación efectiva con el cliente",
+      "descripcion": "Borrador en LMS Creator; editor fullscreen al abrir la tarjeta.",
+      "imagen": "images/cards-learn/U-Corporativa/Comunicación-efectiva-en-el-trabajo.jpg",
+      "tipoContenido": "Curso",
+      "tiempoValor": 60,
+      "unidadTiempo": "minutos",
+      "idioma": "Español",
+      "title": "Comunicación efectiva con el cliente",
+      "imagePath": "cards-learn/U-Corporativa/Comunicación-efectiva-en-el-trabajo.jpg",
+      "nivelId": "niv-001",
+      "proveedorAliadoId": "aly-018",
+      "categoriaFiqshaId": "cfq-004",
+      "visibilidadLms": "Borrador"
+    },
+    {
+      "id": "24002",
+      "legacyLms": true,
+      "origen": "lms_creator_no_publicado",
+      "titulo": "Un gran liderazgo es una red, no una jerarquía",
+      "descripcion": "Contenido oculto; Antiguo LMS.",
+      "imagen": "images/cards-learn/U-Corporativa/Inducción-a-la-cultura-y-valores-corporativos.jpg",
+      "tipoContenido": "Curso",
+      "tiempoValor": 60,
+      "unidadTiempo": "minutos",
+      "idioma": "Español",
+      "title": "Un gran liderazgo es una red, no una jerarquía",
+      "imagePath": "cards-learn/U-Corporativa/Inducción-a-la-cultura-y-valores-corporativos.jpg",
+      "nivelId": "niv-001",
+      "proveedorAliadoId": "aly-018",
+      "categoriaFiqshaId": "cfq-001",
+      "visibilidadLms": "Oculto"
+    },
+    {
+      "id": "24003",
+      "origen": "lms_creator_no_publicado",
+      "titulo": "Conocimiento de políticas y procedimientos internos",
+      "descripcion": "Libro archivado; solo inventario creator.",
+      "imagen": "images/cards-learn/U-Corporativa/Cumplimiento-normativo-y-código-de-conducta.jpg",
+      "tipoContenido": "Libro",
+      "tiempoValor": 45,
+      "unidadTiempo": "minutos",
+      "idioma": "Español",
+      "title": "Conocimiento de políticas y procedimientos internos",
+      "imagePath": "cards-learn/U-Corporativa/Cumplimiento-normativo-y-código-de-conducta.jpg",
+      "nivelId": "niv-001",
+      "proveedorAliadoId": "aly-018",
+      "categoriaFiqshaId": "cfq-002",
+      "visibilidadLms": "Archivado"
     }
   ]
 };

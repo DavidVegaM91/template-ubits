@@ -8,6 +8,7 @@
 const DOCS_SIDEBAR_SECTIONS = [
     { id: 'introduccion', title: 'Introducción', group: 'main' },
     { id: 'sidebar', title: 'Sidebar', group: 'navegacion' },
+    { id: 'sidebar-contenido-creator', title: 'Sidebar contenido creator', group: 'navegacion' },
     { id: 'sub-nav', title: 'Sub-nav', group: 'navegacion' },
     { id: 'tab-bar', title: 'Tab-bar', group: 'navegacion' },
     // UI en orden alfabético
@@ -215,6 +216,7 @@ function initDocsSidebar(activeSection) {
         const sectionToFile = {
             'introduccion': 'componentes.html',
             'sidebar': 'sidebar.html',
+            'sidebar-contenido-creator': 'sidebar-contenido-creator.html',
             'sub-nav': 'subnav.html',
             'tab-bar': 'tab-bar.html',
             'accordion': 'accordion.html',

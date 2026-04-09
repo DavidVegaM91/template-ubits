@@ -308,3 +308,332 @@
         flex: 0 0 auto;
     }
 }
+
+/* Tarjetas borrador (no Antiguo LMS): abrir editor al clic */
+.contenidos-card-item--abrir-editor .course-card {
+    cursor: pointer;
+}
+
+/*
+ * Drawer borrador a pantalla completa: el fondo no debe seguir scrolleando ni mostrar barra.
+ * styles.css fuerza body { overflow-y: auto !important }; hace falta !important y bloquear html.
+ */
+html:has(body.contenido-borrador-drawer-abierto),
+body.contenido-borrador-drawer-abierto {
+    overflow: hidden !important;
+}
+
+body.contenido-borrador-drawer-abierto {
+    overscroll-behavior: none;
+}
+
+/* Drawer full: cuerpo sin padding para el layout Creator (rail + índice + recurso) */
+.contenido-borrador-drawer-overlay .ubits-drawer-body {
+    padding: var(--padding-none);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    min-height: 0;
+}
+
+.contenido-borrador-editor-workspace {
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    flex: 1 1 auto;
+    min-height: 0;
+    min-width: 0;
+    background: var(--ubits-bg-2);
+    gap: var(--gap-lg);
+    padding: var(--padding-lg);
+    box-sizing: border-box;
+}
+
+.contenido-borrador-editor__rail {
+    flex-shrink: 0;
+    display: flex;
+    align-items: stretch;
+}
+
+.contenido-borrador-drawer-overlay .contenido-borrador-editor__rail .sidebar.sidebar--contenido-creator {
+    min-height: 100%;
+    max-height: none;
+    height: auto;
+    align-self: stretch;
+    border: none;
+    box-shadow: none;
+}
+
+/* Rail de pasos: sin bordes; el acento es solo fondo/icono (sidebar-contenido-creator.css) */
+.contenido-borrador-drawer-overlay .sidebar.sidebar--contenido-creator .nav-button[data-step] {
+    border: none;
+    box-shadow: none;
+}
+
+.contenido-borrador-drawer-overlay .sidebar.sidebar--contenido-creator .sidebar-contenido-creator__footer {
+    border-top: none;
+}
+
+.contenido-borrador-editor__index {
+    width: min(100%, 422px);
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-lg);
+    overflow-y: auto;
+    min-height: 0;
+    min-width: 0;
+}
+
+.contenido-borrador-editor__seccion {
+    background: var(--ubits-bg-1);
+    border-radius: var(--border-radius-md);
+    padding: var(--padding-md);
+    box-sizing: border-box;
+    border: 1px solid transparent;
+}
+
+.contenido-borrador-editor__seccion--activa {
+    border-color: var(--ubits-accent-brand);
+}
+
+.contenido-borrador-editor__seccion-head {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-sm);
+    min-height: 36px;
+    padding: var(--padding-xs) var(--padding-none);
+}
+
+.contenido-borrador-editor__seccion-title {
+    flex: 1;
+    min-width: 0;
+    color: var(--ubits-fg-1-high);
+}
+
+.contenido-borrador-editor__paginas {
+    display: flex;
+    flex-direction: column;
+    border: none;
+    border-radius: var(--border-radius-sm);
+    overflow: visible;
+}
+
+.contenido-borrador-editor__pagina {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-sm);
+    padding: var(--padding-none) var(--padding-lg);
+    min-height: 48px;
+    border: none;
+    background: var(--ubits-bg-1);
+    box-sizing: border-box;
+}
+
+.contenido-borrador-editor__pagina--activa {
+    background: var(--ubits-bg-2);
+    padding-left: var(--padding-none);
+}
+
+.contenido-borrador-editor__pagina-bar {
+    width: 5px;
+    align-self: stretch;
+    flex-shrink: 0;
+    background: var(--ubits-accent-brand);
+    border-radius: 0 var(--border-radius-xs) var(--border-radius-xs) 0;
+}
+
+.contenido-borrador-editor__pagina-icon {
+    width: 24px;
+    text-align: center;
+    flex-shrink: 0;
+    color: var(--ubits-fg-1-medium);
+}
+
+.contenido-borrador-editor__pagina--activa .contenido-borrador-editor__pagina-icon {
+    color: var(--ubits-accent-brand);
+}
+
+.contenido-borrador-editor__pagina-text {
+    flex: 1;
+    min-width: 0;
+    color: var(--ubits-fg-1-medium);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.contenido-borrador-editor__pagina--activa .contenido-borrador-editor__pagina-text {
+    color: var(--ubits-accent-brand);
+}
+
+/* Columna derecha: scroll; sin “tarjeta” envolviendo todo (como Figma: video sobre fondo del workspace). */
+.contenido-borrador-editor__resource {
+    flex: 1 1 auto;
+    min-width: 0;
+    min-height: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-xl);
+    padding: var(--padding-none);
+    margin: var(--padding-none);
+    background: transparent;
+    border: none;
+    border-radius: var(--border-radius-none);
+    box-sizing: border-box;
+}
+
+/* Bloque video + acciones: sin fondo propio ni padding de sección (solo el reproductor y botones). */
+.contenido-borrador-editor__recurso-principal {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-md);
+    flex-shrink: 0;
+    align-self: stretch;
+    padding: var(--padding-none);
+    margin: var(--padding-none);
+    background: transparent;
+    border: none;
+}
+
+/* Título + Borrador + guardado agrupados al inicio (pegados al título, no al borde del header) */
+.contenido-borrador-drawer-overlay .ubits-drawer-header__text.contenido-borrador-editor__drawer-header-text {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.contenido-borrador-drawer-overlay .contenido-borrador-editor__drawer-title-row {
+    display: inline-flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: var(--gap-sm);
+    min-width: 0;
+    max-width: 100%;
+}
+
+.contenido-borrador-drawer-overlay .contenido-borrador-editor__drawer-title-row .ubits-drawer-title {
+    flex: 0 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.contenido-borrador-drawer-overlay .contenido-borrador-editor__drawer-title-row .ubits-status-tag {
+    flex-shrink: 0;
+}
+
+.contenido-borrador-drawer-overlay .contenido-borrador-editor__drawer-save-host {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    line-height: 0;
+}
+
+/* Save indicator oficial junto al título: alinea con texto y tag */
+.contenido-borrador-drawer-overlay .contenido-borrador-editor__drawer-save-host .ubits-save-indicator {
+    vertical-align: middle;
+}
+
+/* 16:9 fijo: ::before aporta altura (56.25% = 9/16 del ancho); el video va absolute y no colapsa el flex. */
+.contenido-borrador-editor__media {
+    width: 100%;
+    max-width: 100%;
+    flex-shrink: 0;
+    align-self: stretch;
+    position: relative;
+    border-radius: var(--border-radius-sm);
+    overflow: hidden;
+    background: var(--ubits-bg-3);
+    box-sizing: border-box;
+}
+
+.contenido-borrador-editor__media::before {
+    content: '';
+    display: block;
+    width: 100%;
+    padding-bottom: 56.25%;
+    pointer-events: none;
+}
+
+.contenido-borrador-editor__media-video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+    background: var(--ubits-bg-4);
+}
+
+.contenido-borrador-editor__media-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: var(--gap-md);
+}
+
+/* Sección aparte: tarjeta sobre el fondo bg-2 del workspace (recursos complementarios). */
+.contenido-borrador-editor__complementarios {
+    flex-shrink: 0;
+    align-self: stretch;
+    padding: var(--padding-xl) var(--padding-2xl);
+    border-radius: var(--border-radius-md);
+    background: var(--ubits-bg-1);
+    border: none;
+    box-sizing: border-box;
+}
+
+.contenido-borrador-editor__complementarios-title {
+    margin: 0 0 var(--gap-md);
+    text-align: left;
+    color: var(--ubits-fg-1-medium);
+}
+
+.contenido-borrador-editor__complementarios-row {
+    display: flex;
+    gap: var(--gap-lg);
+    flex-wrap: wrap;
+}
+
+.contenido-borrador-editor__complementarios-row .contenido-borrador-editor__complementario-btn {
+    flex: 1 1 120px;
+    min-width: 0;
+    flex-direction: column;
+    min-height: 88px;
+    justify-content: center;
+    align-items: center;
+    gap: var(--gap-sm);
+}
+
+.contenido-borrador-editor__complementarios-row .contenido-borrador-editor__complementario-btn > i {
+    font-size: var(--font-size-h2);
+    color: var(--ubits-accent-brand);
+}
+
+@media (max-width: 1023px) {
+    .contenido-borrador-editor-workspace {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .contenido-borrador-editor__index {
+        width: 100%;
+        max-height: 40vh;
+    }
+
+    .contenido-borrador-editor__rail {
+        justify-content: center;
+    }
+
+    .contenido-borrador-drawer-overlay .contenido-borrador-editor__rail .sidebar.sidebar--contenido-creator {
+        min-height: min(400px, 50vh);
+    }
+}

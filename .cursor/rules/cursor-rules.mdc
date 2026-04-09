@@ -258,6 +258,7 @@ openModal({
 - **TabBar** (Mobile navigation) → `components/tab-bar.css` + `components/tab-bar.js`
   - Features: Responsive, options: `modulos`, `perfil`, `modo-oscuro`
 - **Floating Menu** (Modal navigation) → `components/floating-menu.css` + `components/floating-menu.js`
+- **Sidebar contenido creator** (Misma estructura que Sidebar: `.sidebar` + `.nav-button` + tooltips; colores para `bg-1` en LMS Creator) → `general-styles/styles.css` + `components/sidebar-contenido-creator.css` + `components/sidebar-contenido-creator.js` — `loadSidebarContenidoCreator()`, `setSidebarContenidoCreatorActive()`. Doc: `documentacion/componentes/sidebar-contenido-creator.html`
 
 #### **2. 🎨 UI COMPONENTS:**
 - **Button** (All actions) → `components/button.css`
@@ -282,7 +283,7 @@ openModal({
   - Types: `success`, `info`, `warning`, `error`, `neutral`
   - Sizes: `xs`, `sm`, `md`, `lg`
   - Options: with/without icons (left/right)
-- **Stepper** (Pasos de flujo) → `components/stepper.css` + `components/stepper.js` (JS opcional: `initStepper`, `wireStepperVerticalCollapse`)
+- **Stepper** (Pasos de flujo) → `components/stepper.css` + `components/stepper.js` (JS opcional: `initStepper`, `wireStepperVerticalCollapse`). Vertical colapsable estilo sidebar creator: marco `ubits-stepper__vertical-frame--creator-rail` + `nav` con `ubits-stepper__vertical-nav` + pie `ubits-stepper__vertical-footer` y toggle `nav-button` (requiere `styles.css` por `.nav-button`).
   - Variantes: horizontal, horizontal compacto, horizontal con título bajo el círculo, compacto + título abajo, vertical colapsable
   - Doc: `documentacion/componentes/stepper.html`
 - **Tab** (Navigation tabs) → `components/tab.css` + `components/tab.js`

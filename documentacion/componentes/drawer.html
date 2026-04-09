@@ -33,7 +33,7 @@
                         <div style="text-align: center; margin-bottom: 60px;">
                             <h1 class="ubits-display-d2-bold" style="margin-bottom: 24px; color: var(--ubits-accent-brand);">Drawer</h1>
                             <p class="ubits-body-md-regular" style="max-width: 800px; margin: 0 auto 32px; line-height: 1.6;">
-                                Panel que se desliza desde la derecha. Sirve para filtros, formularios laterales o opciones sin salir de la página. Se cierra con la X, los botones o tocando fuera.
+                                Panel que se desliza desde la derecha (o en modo <strong>pantalla completa</strong> ocupa todo el viewport). Sirve para filtros, formularios laterales, editores de contenido o opciones sin salir de la página. Se cierra con la X, los botones o tocando fuera (si el panel no cubre todo el overlay).
                             </p>
                         </div>
 
@@ -44,7 +44,7 @@
                                 Preview del componente
                             </h2>
                             <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6;">
-                                Haz clic en un botón para abrir el drawer en el tamaño indicado. Cierra con el botón X, Cancelar, Aplicar o clic fuera del panel.
+                                Haz clic en un botón para abrir el drawer en el tamaño indicado. La opción <strong>pantalla completa</strong> usa <code>size: 'full'</code> (útil para flujos tipo editor). Cierra con la X, Cancelar, Aplicar o clic fuera del panel cuando el overlay sea visible.
                             </p>
                             <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: 12px; position: relative;">
                                 <div id="drawer-preview" style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center;">
@@ -63,6 +63,10 @@
                                     <button type="button" class="ubits-button ubits-button--secondary ubits-button--md drawer-demo-btn" data-size="lg">
                                         <i class="far fa-sliders"></i>
                                         <span>Abrir drawer LG</span>
+                                    </button>
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--md drawer-demo-btn" data-size="full">
+                                        <i class="far fa-window-maximize"></i>
+                                        <span>Abrir drawer pantalla completa</span>
                                     </button>
                                 </div>
                             </div>
@@ -93,7 +97,7 @@
                                 <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
                                     <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-ruler"></i></div>
                                     <div class="ubits-body-sm-bold">Anchos</div>
-                                    <div class="ubits-body-sm-regular">Varios anchos del panel: pequeño, mediano y grande</div>
+                                    <div class="ubits-body-sm-regular">XS a LG por ancho máximo; <strong>full</strong> para ocupar todo el viewport</div>
                                 </div>
                             </div>
                         </div>
@@ -203,6 +207,8 @@
 .ubits-drawer-content--sm  /* Ancho máx. 440px */
 .ubits-drawer-content--md  /* Ancho máx. 800px */
 .ubits-drawer-content--lg  /* Ancho máx. 1200px */
+.ubits-drawer-content--full  /* 100% ancho y alto útil; sin borde izquierdo ni sombra lateral */
+.ubits-drawer-overlay--full  /* Overlay con justify stretch para que el panel llene el viewport */
 .ubits-drawer-header    /* Header: padding, border-bottom, título + botón cerrar */
 .ubits-drawer-title     /* Título: usar con ubits-body-md-bold */
 .ubits-drawer-body      /* Body: padding, overflow-y auto, flex 1 */
@@ -267,6 +273,7 @@
             }
             var demoOverlayId = 'drawer-demo-overlay';
             var demoBodyHtml = '<p class="ubits-body-md-regular" style="color: var(--ubits-fg-1-medium);">Contenido del body. Aquí puedes poner filtros, formularios, listas, etc. El panel ocupa todo el alto de la pantalla y está fijo a la derecha.</p>';
+            var demoBodyFullHtml = '<p class="ubits-body-md-regular" style="color: var(--ubits-fg-1-medium); margin-bottom: var(--gap-md);">Modo <strong>pantalla completa</strong> (<code>size: \'full\'</code>): el panel usa el 100% del ancho y alto del viewport. Pensado para editores (p. ej. LMS Creator con índice + recurso).</p>' + demoBodyHtml;
             var demoFooterHtml = '<button type="button" class="ubits-button ubits-button--secondary ubits-button--md" onclick="closeDrawer(\'' + demoOverlayId + '\')"><span>Cancelar</span></button><button type="button" class="ubits-button ubits-button--primary ubits-button--md" onclick="closeDrawer(\'' + demoOverlayId + '\')"><span>Aplicar</span></button>';
             document.querySelectorAll('.drawer-demo-btn').forEach(function(btn) {
                 var size = btn.getAttribute('data-size') || 'md';
@@ -274,8 +281,8 @@
                     btn.addEventListener('click', function() {
                         openDrawer({
                             overlayId: demoOverlayId,
-                            title: 'Drawer ' + size.toUpperCase(),
-                            bodyHtml: demoBodyHtml,
+                            title: size === 'full' ? 'Drawer pantalla completa' : 'Drawer ' + size.toUpperCase(),
+                            bodyHtml: size === 'full' ? demoBodyFullHtml : demoBodyHtml,
                             footerHtml: demoFooterHtml,
                             size: size,
                             closeOnOverlayClick: true

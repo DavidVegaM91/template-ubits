@@ -5,6 +5,7 @@
  *
  * Uso:
  *   openDrawer({ overlayId: 'mi-drawer', title: 'Filtros', bodyHtml: '...', footerHtml: '...', size: 'md' });
+ *   size: 'full' — panel al 100% del viewport (p. ej. editor LMS Creator); el overlay usa justify stretch.
  *   closeDrawer('mi-drawer');
  *   getDrawerHtml({ overlayId, title, bodyHtml, footerHtml?, size?, closeButtonId? }) para inyectar en el DOM.
  *
@@ -15,6 +16,7 @@
     'use strict';
 
     var overlayCounter = 0;
+    var DRAWER_SIZES = ['xs', 'sm', 'md', 'lg', 'full'];
 
     function escapeHtml(text) {
         if (text == null) return '';
@@ -30,7 +32,7 @@
      * @param {string} options.title - Título del header (se escapa HTML).
      * @param {string} options.bodyHtml - HTML del cuerpo.
      * @param {string} [options.footerHtml] - HTML del pie (botones). Opcional.
-     * @param {string} [options.size] - 'xs' | 'sm' | 'md' | 'lg'. Ancho del panel.
+     * @param {string} [options.size] - 'xs' | 'sm' | 'md' | 'lg' | 'full'. Ancho del panel; 'full' = pantalla completa.
      * @param {boolean} [options.closeOnOverlayClick=true] - Cerrar al clic fuera del contenido.
      * @param {function} [options.onClose] - Callback al cerrar.
      */
@@ -45,7 +47,7 @@
         var closeOnOverlayClick = options.closeOnOverlayClick !== false;
         var onClose = options.onClose || null;
 
-        var sizeClass = size && ['xs', 'sm', 'md', 'lg'].indexOf(size) >= 0
+        var sizeClass = size && DRAWER_SIZES.indexOf(size) >= 0
             ? ' ubits-drawer-content--' + size
             : ' ubits-drawer-content--md';
 
@@ -56,7 +58,7 @@
 
         overlay = document.createElement('div');
         overlay.id = overlayId;
-        overlay.className = 'ubits-drawer-overlay';
+        overlay.className = 'ubits-drawer-overlay' + (size === 'full' ? ' ubits-drawer-overlay--full' : '');
         overlay.setAttribute('aria-hidden', 'false');
         overlay.setAttribute('role', 'dialog');
         overlay.setAttribute('aria-modal', 'true');
@@ -137,7 +139,7 @@
      * @param {string} options.title - Título del header (se escapa HTML).
      * @param {string} options.bodyHtml - HTML del cuerpo.
      * @param {string} [options.footerHtml] - HTML del pie. Opcional.
-     * @param {string} [options.size] - 'xs' | 'sm' | 'md' | 'lg'. Por defecto 'md'.
+     * @param {string} [options.size] - 'xs' | 'sm' | 'md' | 'lg' | 'full'. Por defecto 'md'.
      * @param {string} [options.contentId] - ID opcional del div .ubits-drawer-content.
      * @param {string} [options.titleId] - ID opcional del span del título.
      * @param {string} [options.closeButtonId] - ID opcional del botón cerrar.
@@ -150,12 +152,13 @@
         var subtitle = options.subtitle != null ? String(options.subtitle) : '';
         var bodyHtml = options.bodyHtml != null ? options.bodyHtml : '';
         var footerHtml = options.footerHtml != null ? options.footerHtml : '';
-        var size = options.size && ['xs', 'sm', 'md', 'lg'].indexOf(options.size) >= 0 ? options.size : 'md';
+        var size = options.size && DRAWER_SIZES.indexOf(options.size) >= 0 ? options.size : 'md';
         var contentId = options.contentId || '';
         var titleId = options.titleId || '';
         var closeButtonId = options.closeButtonId || '';
 
         var sizeClass = ' ubits-drawer-content--' + size;
+        var overlayExtraClass = size === 'full' ? ' ubits-drawer-overlay--full' : '';
         var contentIdAttr = contentId ? (' id="' + contentId + '"') : '';
         var titleIdAttr = titleId ? (' id="' + titleId + '"') : '';
         var closeIdAttr = closeButtonId ? (' id="' + closeButtonId + '"') : '';
@@ -167,7 +170,7 @@
             '<i class="far fa-times"></i>' +
             '</button>';
 
-        return '<div class="ubits-drawer-overlay" id="' + overlayId + '" style="display: none;" aria-hidden="true">' +
+        return '<div class="ubits-drawer-overlay' + overlayExtraClass + '" id="' + overlayId + '" style="display: none;" aria-hidden="true">' +
             '<div class="ubits-drawer-content' + sizeClass + '"' + contentIdAttr + ' onclick="event.stopPropagation();">' +
             '<div class="ubits-drawer-header">' + headerContent + '</div>' +
             '<div class="ubits-drawer-body">' + bodyHtml + '</div>' +
