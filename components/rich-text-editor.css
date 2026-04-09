@@ -1,0 +1,160 @@
+/* ========================================
+   UBITS — Rich text editor (WYSIWYG)
+   Barra de formato + área contenteditable. Creator v3 / Figma Descripción.
+   Requiere: ubits-colors.css, ubits-typography.css, button.css, fontawesome-icons.css.
+   Opcional: clase .ubits-rich-text-editor--show-required-hint en el root (p. ej. preview en doc) para mostrar .ubits-rich-text-editor__hint.
+   ======================================== */
+
+.ubits-rich-text-editor {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-sm);
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    padding: var(--padding-none);
+    border: none;
+    border-radius: var(--border-radius-none);
+    background: transparent;
+}
+
+.ubits-rich-text-editor__label-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--gap-xs);
+    width: 100%;
+}
+
+.ubits-rich-text-editor__label {
+    margin: 0;
+    color: var(--ubits-fg-1-high);
+}
+
+/* Oculto por defecto; el contenedor (p. ej. preview) puede añadir .ubits-rich-text-editor--show-required-hint al root. */
+.ubits-rich-text-editor__hint {
+    display: none;
+    margin: 0;
+    color: var(--ubits-fg-1-medium);
+}
+
+.ubits-rich-text-editor--show-required-hint .ubits-rich-text-editor__hint {
+    display: inline;
+}
+
+.ubits-rich-text-editor__toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--gap-xs);
+}
+
+.ubits-rich-text-editor__toolbar .ubits-button--icon-only {
+    flex-shrink: 0;
+}
+
+.ubits-rich-text-editor__sep {
+    width: 1px;
+    height: var(--size-lg);
+    align-self: center;
+    background: var(--ubits-border-1);
+    flex-shrink: 0;
+}
+
+.ubits-rich-text-editor__editor-shell {
+    position: relative;
+    box-sizing: border-box;
+    min-height: 120px;
+    max-height: min(480px, 70vh);
+    resize: vertical;
+    overflow: auto;
+    border: none;
+    border-radius: var(--border-radius-none);
+    background: transparent;
+}
+
+.ubits-rich-text-editor__field {
+    position: relative;
+    box-sizing: border-box;
+    min-height: 104px;
+    padding: var(--padding-md);
+    margin: 0;
+    outline: none;
+    color: var(--ubits-fg-1-medium);
+    font-family: 'Noto Sans', sans-serif;
+    font-size: var(--font-size-md);
+    line-height: 1.5;
+}
+
+.ubits-rich-text-editor__field:focus {
+    outline: none;
+}
+
+.ubits-rich-text-editor__toolbar .ubits-button:focus,
+.ubits-rich-text-editor__toolbar .ubits-button:focus-visible {
+    outline: none;
+    box-shadow: none;
+}
+
+.ubits-rich-text-editor__field.is-empty::before {
+    content: attr(data-placeholder);
+    position: absolute;
+    left: var(--padding-md);
+    top: var(--padding-md);
+    right: var(--padding-md);
+    color: var(--ubits-fg-1-medium);
+    pointer-events: none;
+    font-family: 'Noto Sans', sans-serif;
+    font-size: var(--font-size-md);
+    line-height: 1.5;
+}
+
+.ubits-rich-text-editor__field.is-empty:focus::before {
+    opacity: 0.45;
+}
+
+/* Contenido generado por el navegador dentro del editor */
+.ubits-rich-text-editor__field ul,
+.ubits-rich-text-editor__field ol {
+    margin: 0.5em 0;
+    padding-left: 1.5em;
+}
+
+.ubits-rich-text-editor__field a {
+    color: var(--ubits-accent-brand);
+    text-decoration: underline;
+}
+
+.ubits-rich-text-editor__field img {
+    max-width: 100%;
+    height: auto;
+    vertical-align: middle;
+    border-radius: var(--border-radius-xs);
+}
+
+.ubits-rich-text-editor__field pre,
+.ubits-rich-text-editor__field code {
+    font-family: ui-monospace, monospace;
+    font-size: 0.9em;
+}
+
+.ubits-rich-text-editor__field pre {
+    margin: 0.5em 0;
+    padding: var(--padding-sm);
+    background: var(--ubits-bg-2);
+    border-radius: var(--border-radius-xs);
+    overflow-x: auto;
+}
+
+.ubits-rich-text-editor--disabled {
+    opacity: 0.65;
+    pointer-events: none;
+}
+
+.ubits-rich-text-editor__file {
+    position: absolute;
+    width: 0;
+    height: 0;
+    opacity: 0;
+    pointer-events: none;
+}

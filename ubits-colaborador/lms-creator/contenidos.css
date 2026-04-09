@@ -324,17 +324,21 @@
  * styles.css fuerza body { overflow-y: auto !important }; hace falta !important y bloquear html.
  */
 html:has(body.contenido-borrador-drawer-abierto),
-body.contenido-borrador-drawer-abierto {
+body.contenido-borrador-drawer-abierto,
+html:has(body.crear-contenido-drawer-abierto),
+body.crear-contenido-drawer-abierto {
     overflow: hidden !important;
 }
 
-body.contenido-borrador-drawer-abierto {
+body.contenido-borrador-drawer-abierto,
+body.crear-contenido-drawer-abierto {
     overscroll-behavior: none;
 }
 
 /* Drawer full: cuerpo sin padding para el layout Creator (rail + índice + recurso) o Antiguo LMS */
 .contenido-borrador-drawer-overlay .ubits-drawer-body,
-.contenido-antiguo-lms-drawer-overlay .ubits-drawer-body {
+.contenido-antiguo-lms-drawer-overlay .ubits-drawer-body,
+.crear-contenido-drawer-overlay .ubits-drawer-body {
     padding: var(--padding-none);
     display: flex;
     flex-direction: column;
@@ -542,6 +546,7 @@ body.contenido-borrador-drawer-abierto {
 }
 
 /* Título + Borrador + guardado agrupados al inicio (pegados al título, no al borde del header) */
+.crear-contenido-drawer-overlay .ubits-drawer-header__text.contenido-borrador-editor__drawer-header-text,
 .contenido-antiguo-lms-drawer-overlay .ubits-drawer-header__text.contenido-borrador-editor__drawer-header-text,
 .contenido-borrador-drawer-overlay .ubits-drawer-header__text.contenido-borrador-editor__drawer-header-text {
     flex: 1;
@@ -551,6 +556,7 @@ body.contenido-borrador-drawer-abierto {
     align-items: center;
 }
 
+.crear-contenido-drawer-overlay .contenido-borrador-editor__drawer-title-row,
 .contenido-antiguo-lms-drawer-overlay .contenido-borrador-editor__drawer-title-row,
 .contenido-borrador-drawer-overlay .contenido-borrador-editor__drawer-title-row {
     display: inline-flex;
@@ -562,6 +568,7 @@ body.contenido-borrador-drawer-abierto {
     max-width: 100%;
 }
 
+.crear-contenido-drawer-overlay .contenido-borrador-editor__drawer-title-row .ubits-drawer-title,
 .contenido-antiguo-lms-drawer-overlay .contenido-borrador-editor__drawer-title-row .ubits-drawer-title,
 .contenido-borrador-drawer-overlay .contenido-borrador-editor__drawer-title-row .ubits-drawer-title {
     flex: 0 1 auto;
@@ -571,11 +578,13 @@ body.contenido-borrador-drawer-abierto {
     white-space: nowrap;
 }
 
+.crear-contenido-drawer-overlay .contenido-borrador-editor__drawer-title-row .ubits-status-tag,
 .contenido-antiguo-lms-drawer-overlay .contenido-borrador-editor__drawer-title-row .ubits-status-tag,
 .contenido-borrador-drawer-overlay .contenido-borrador-editor__drawer-title-row .ubits-status-tag {
     flex-shrink: 0;
 }
 
+.crear-contenido-drawer-overlay .contenido-borrador-editor__drawer-save-host,
 .contenido-borrador-drawer-overlay .contenido-borrador-editor__drawer-save-host {
     flex-shrink: 0;
     display: inline-flex;
@@ -584,6 +593,7 @@ body.contenido-borrador-drawer-abierto {
 }
 
 /* Save indicator oficial junto al título: alinea con texto y tag */
+.crear-contenido-drawer-overlay .contenido-borrador-editor__drawer-save-host .ubits-save-indicator,
 .contenido-borrador-drawer-overlay .contenido-borrador-editor__drawer-save-host .ubits-save-indicator {
     vertical-align: middle;
 }
@@ -694,4 +704,247 @@ body.contenido-borrador-drawer-abierto {
     .contenido-antiguo-lms-drawer-overlay .contenido-borrador-editor__rail .sidebar.sidebar--contenidos-lms {
         min-height: min(400px, 50vh);
     }
+
+    .crear-contenido-editor-workspace {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .crear-contenido-editor__rail {
+        justify-content: center;
+    }
+
+    .crear-contenido-portada__cabecera,
+    .crear-contenido-portada__cuerpo {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* —— Drawer «Crear contenido» (paso 1 Portada) —— */
+
+.crear-contenido-editor-workspace {
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    flex: 1 1 auto;
+    min-height: 0;
+    min-width: 0;
+    background: var(--ubits-bg-2);
+    gap: var(--gap-lg);
+    padding: var(--padding-lg);
+    box-sizing: border-box;
+}
+
+.crear-contenido-editor__rail {
+    flex-shrink: 0;
+    display: flex;
+    align-items: stretch;
+}
+
+.crear-contenido-editor__main {
+    flex: 1 1 auto;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-xl);
+    overflow-y: auto;
+    min-height: 0;
+}
+
+.contenidos-creator-titulo-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-xs);
+    align-items: flex-start;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+.contenidos-creator-titulo-input {
+    width: 100%;
+    margin: 0;
+    padding: var(--padding-none);
+    border: none;
+    background: transparent;
+    color: var(--ubits-fg-1-high);
+    outline: none;
+    box-sizing: border-box;
+}
+
+.contenidos-creator-titulo-input::placeholder {
+    color: var(--ubits-fg-1-low);
+}
+
+.contenidos-creator-titulo-input:focus {
+    box-shadow: none;
+}
+
+.contenidos-creator-titulo-hint {
+    margin: 0;
+    color: var(--ubits-fg-1-medium);
+}
+
+/* Fila 1: una sola franja a todo el ancho — título (~60%) | miniatura (~40%). Fila 2: descripción | ficha (6fr/4fr). */
+.crear-contenido-portada__cabecera {
+    display: grid;
+    grid-template-columns: minmax(0, 6fr) minmax(0, 4fr);
+    gap: var(--gap-xl);
+    align-items: start;
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    padding: var(--padding-lg) var(--padding-xl);
+    background: var(--ubits-bg-1);
+    border: none;
+    border-radius: var(--border-radius-md);
+}
+
+.crear-contenido-portada__cabecera-titulo {
+    min-width: 0;
+    align-self: center;
+}
+
+/* El título no lleva tarjeta propia: el fondo es el de la franja completa. */
+.crear-contenido-portada__cabecera-titulo .contenidos-creator-titulo-wrap {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+    background: transparent;
+    border-radius: 0;
+}
+
+.crear-contenido-portada__cabecera-media {
+    min-width: 0;
+    box-sizing: border-box;
+}
+
+/* Miniatura sin tarjeta anidada: solo etiqueta + bloque 16:9 dentro de la misma sección. */
+.crear-contenido-portada__cabecera-media .contenidos-creator-card--dentro-cabecera {
+    padding: 0;
+    margin: 0;
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+}
+
+/* Miniatura ocupa el ancho de la columna (el componente limita a 555px por defecto). */
+.crear-contenido-portada__cabecera-media .ubits-learn-img-trailer {
+    max-width: 100%;
+}
+
+.crear-contenido-portada__cuerpo {
+    display: grid;
+    grid-template-columns: minmax(0, 6fr) minmax(0, 4fr);
+    gap: var(--gap-xl);
+    align-items: start;
+    width: 100%;
+    min-width: 0;
+}
+
+.crear-contenido-portada__cuerpo-desc,
+.crear-contenido-portada__cuerpo-ficha {
+    min-width: 0;
+}
+
+.crear-contenido-portada__cuerpo-desc .contenidos-creator-card--descripcion {
+    flex: 0 1 auto;
+    min-height: 0;
+}
+
+/* Editor con altura cómoda; scroll interno si el texto crece. */
+.crear-contenido-portada__cuerpo-desc .ubits-rich-text-editor__editor-shell {
+    max-height: min(360px, 52vh);
+    overflow-y: auto;
+}
+
+/* Ficha en columna estrecha: por defecto una columna (salvo fila tiempo+unidad). */
+.crear-contenido-portada__cuerpo-ficha .contenidos-creator-ficha-row {
+    grid-template-columns: 1fr;
+}
+
+/* Tiempo aproximado y unidad de tiempo siempre en la misma fila. */
+.crear-contenido-portada__cuerpo-ficha .contenidos-creator-ficha-row--tiempo-unidad {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+}
+
+@media (max-width: 1023px) {
+    .crear-contenido-portada__cuerpo-ficha .contenidos-creator-ficha-row {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .crear-contenido-portada__cuerpo-ficha .contenidos-creator-ficha-row--tiempo-unidad {
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    }
+}
+
+@media (max-width: 639px) {
+    .crear-contenido-portada__cuerpo-ficha .contenidos-creator-ficha-row:not(.contenidos-creator-ficha-row--tiempo-unidad) {
+        grid-template-columns: 1fr;
+    }
+
+    .crear-contenido-portada__cuerpo-ficha .contenidos-creator-ficha-row--tiempo-unidad {
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    }
+}
+
+.contenidos-creator-card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-md);
+    padding: var(--padding-lg);
+    border-radius: var(--border-radius-md);
+    background: var(--ubits-bg-1);
+    box-sizing: border-box;
+    width: 100%;
+    min-width: 0;
+}
+
+.contenidos-creator-card--descripcion {
+    flex: 1 1 auto;
+    min-height: 0;
+}
+
+.contenidos-creator-field-label {
+    margin: 0;
+    color: var(--ubits-fg-1-high);
+}
+
+.contenidos-creator-ficha-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--gap-md);
+    width: 100%;
+}
+
+@media (max-width: 639px) {
+    .contenidos-creator-ficha-row {
+        grid-template-columns: 1fr;
+    }
+}
+
+.contenidos-creator-file-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* Stepper creator-rail en drawer Crear contenido: sin borde (override del componente en contexto página). */
+.crear-contenido-drawer-overlay .ubits-stepper__vertical-frame--creator-rail {
+    border: none;
+    box-shadow: none;
+}
+
+.crear-contenido-drawer-overlay .ubits-stepper__vertical-frame--creator-rail .ubits-stepper__vertical-footer {
+    border-top: none;
+    padding-top: var(--gap-sm);
+    margin-top: 0;
 }

@@ -1,0 +1,62 @@
+/* ========================================
+   LMS Creator — Modal portada / tráiler (Creator v3)
+   Cuerpo del modal abierto con openModal(); tokens UBITS.
+   ======================================== */
+
+.portada-modal__stack {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-md);
+    max-width: 555px;
+    width: 100%;
+}
+
+.portada-modal__section-title {
+    margin: 0;
+    color: var(--ubits-fg-1-high);
+}
+
+.portada-modal__intro {
+    margin: 0;
+    color: var(--ubits-fg-1-high);
+}
+
+.portada-modal__thumb-wrap {
+    width: 100%;
+    max-width: 555px;
+}
+
+.portada-modal__learn.ubits-learn-img-trailer {
+    max-width: none;
+}
+
+.portada-modal__trailer-host {
+    width: 100%;
+}
+
+.portada-modal__trailer-host .ubits-input-wrapper {
+    width: 100%;
+}
+
+.portada-modal__info {
+    display: flex;
+    gap: var(--gap-sm);
+    align-items: flex-start;
+}
+
+.portada-modal__info > i {
+    flex-shrink: 0;
+    margin-top: 2px;
+    color: var(--ubits-fg-1-medium);
+    font-size: var(--font-size-md);
+}
+
+.portada-modal__info p {
+    margin: 0;
+    color: var(--ubits-fg-1-medium);
+}
+
+/* Por encima del drawer full-screen (mismo z-index base que modal). */
+#portada-media-modal-overlay.ubits-modal-overlay {
+    z-index: 1200;
+}

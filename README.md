@@ -71,6 +71,8 @@ Una **plantilla lista para usar** que permite a **Product Managers**, **Diseñad
 - **Switch** - Interruptor on/off (pista ovalada + thumb; tamaños: sm, md; estados: off, on, disabled) - **RENDERIZADO: HTML directo.** Requiere importar `switch.css` y `ubits-colors.css`.
 - **Card Content** - Cards para contenidos de aprendizaje (11 tipos, 35 competencias, 18 aliados, estados de progreso) - **RENDERIZADO: loadCardContent()**
 - **Card Content Compact** - Variante horizontal compacta de Card Content (misma funcionalidad, diseño optimizado para espacios reducidos, siempre horizontal) - **RENDERIZADO: loadCardContentCompact()**
+- **Learn content imagen y tráiler** - Bloque de aprendizaje para cargar imagen y/o tráiler en video (estados vacío, hover, error, imagen, preview con play) - **RENDERIZADO: HTML + `learn-content-img-trailer.css`; JS opcional `initLearnContentImgTrailer()`**
+- **Rich text editor** - Editor de texto enriquecido (contenteditable, barra de formato: negrita, listas, alineación, imagen, enlace, etc.) - **RENDERIZADO: HTML + `rich-text-editor.css` + `initRichTextEditor()` / `initAllRichTextEditors()`**
 - **Carousel Contents** - Carruseles de contenido (navegación horizontal, flechas, responsive) - **RENDERIZADO: loadCarouselContents()**
 - **Status Tag** - Etiquetas de estado (tipos: success, info, warning, error, neutral; tamaños: xs, sm, md, lg; iconos opcionales izquierda/derecha) - **RENDERIZADO: HTML directo**
 - **Stepper** - Indicador de pasos de un flujo (horizontal, compacto, título bajo el círculo, combinación compacta, vertical colapsable clásico o **vertical rail creator** alineado al Sidebar contenidos LMS) - **RENDERIZADO: HTML directo**; demo con clic opcional vía `initStepper()`; colapso vertical con `wireStepperVerticalCollapse()` en **stepper.js**. **CSS:** `stepper.css`. **Vertical clásico:** `button.css`, `tooltip.css`, `tooltip.js`. **Rail creator:** `styles.css` (`.nav-button`) + tooltip.
@@ -289,6 +291,8 @@ Todos los componentes UBITS requieren imports obligatorios:
 - **`documentacion/componentes/switch.html`** - Documentación del componente Switch
 - **`documentacion/componentes/card-content.html`** - Documentación del componente Card Content
 - **`documentacion/componentes/card-content-compact.html`** - Documentación del componente Card Content Compact
+- **`documentacion/componentes/learn-content-img-trailer.html`** - Documentación Learn content imagen y tráiler (Figma Learn-Components)
+- **`documentacion/componentes/rich-text-editor.html`** - Documentación Rich text editor (Creator v3)
 - **`documentacion/componentes/status-tag.html`** - Documentación del componente Status Tag
 - **`documentacion/componentes/stepper.html`** - Documentación del componente Stepper
 - **`documentacion/componentes/switch.html`** - Documentación del componente Switch
@@ -754,6 +758,8 @@ loadCardContentCompact('mi-contenedor-compact', [
 - **`documentacion/componentes/switch.html`** - Documentación del componente Switch
 - **`documentacion/componentes/card-content.html`** - Documentación del componente Card Content
 - **`documentacion/componentes/card-content-compact.html`** - Documentación del componente Card Content Compact
+- **`documentacion/componentes/learn-content-img-trailer.html`** - Documentación Learn content imagen y tráiler (Figma Learn-Components)
+- **`documentacion/componentes/rich-text-editor.html`** - Documentación Rich text editor (Creator v3)
 - **`documentacion/componentes/status-tag.html`** - Documentación del componente Status Tag
 - **`documentacion/componentes/stepper.html`** - Documentación del componente Stepper
 - **`documentacion/componentes/switch.html`** - Documentación del componente Switch

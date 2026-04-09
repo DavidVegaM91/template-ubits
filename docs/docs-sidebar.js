@@ -13,6 +13,7 @@ const DOCS_SIDEBAR_SECTIONS = [
     // Aprendizaje (alfabético por title)
     { id: 'card-content', title: 'Card content', group: 'aprendizaje' },
     { id: 'card-content-compact', title: 'Card content compact', group: 'aprendizaje' },
+    { id: 'learn-content-img-trailer', title: 'Learn content imagen y tráiler', group: 'aprendizaje' },
     { id: 'sidebar-contenidos-lms', title: 'Sidebar contenidos LMS', group: 'aprendizaje' },
     // UI general en orden alfabético
     { id: 'accordion', title: 'Accordion', group: 'ui' },
@@ -37,6 +38,7 @@ const DOCS_SIDEBAR_SECTIONS = [
     { id: 'paginator', title: 'Paginator', group: 'ui' },
     { id: 'popover', title: 'Popover', group: 'ui' },
     { id: 'radio-button', title: 'Radio Button', group: 'ui' },
+    { id: 'rich-text-editor', title: 'Rich text editor', group: 'ui' },
     { id: 'status-tag', title: 'Status Tag', group: 'ui' },
     { id: 'stepper', title: 'Stepper', group: 'ui' },
     { id: 'switch', title: 'Switch', group: 'ui' },
@@ -268,6 +270,7 @@ function initDocsSidebar(activeSection) {
             'badge-tag': 'badge-tag.html',
             'card-content': 'card-content.html',
             'card-content-compact': 'card-content-compact.html',
+            'learn-content-img-trailer': 'learn-content-img-trailer.html',
             'checkbox': 'checkbox.html',
             'chip': 'chip.html',
             'coachmark': 'coachmark.html',
@@ -280,6 +283,7 @@ function initDocsSidebar(activeSection) {
             'paginator': 'paginator.html',
             'popover': 'popover.html',
             'radio-button': 'radio-button.html',
+            'rich-text-editor': 'rich-text-editor.html',
             'empty-state': 'empty-state.html',
             'header-product': 'header-product.html',
             'dropdown-menu': 'dropdown-menu.html',

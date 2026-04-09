@@ -1,0 +1,187 @@
+/* ========================================
+   UBITS — Learn content: imagen y tráiler
+   Bloque único (Figma Learn-Components · Img y trailer content).
+   Estados: vacío, hover, error, imagen cargada, tráiler (preview con play).
+   Textos por defecto (CTA, hint, Editar, aria): learn-content-img-trailer.js → LEARN_CONTENT_IMG_TRAILER_DEFAULTS.
+   Requiere: ubits-colors.css, ubits-typography.css, button.css, fontawesome-icons.css.
+   ======================================== */
+
+.ubits-learn-img-trailer {
+    --learn-img-trailer-radius: var(--border-radius-lg);
+    --learn-img-trailer-inner-radius: var(--border-radius-lg);
+    display: block;
+    position: relative;
+    width: 100%;
+    max-width: 555px;
+    /* Siempre 16:9 (Figma); la altura sale del ancho. Requiere contenedor con ancho definido (evitar flex item con solo hijos absolute). */
+    aspect-ratio: 16 / 9;
+    box-sizing: border-box;
+    border-radius: var(--learn-img-trailer-radius);
+    border: 1px solid var(--ubits-border-1);
+    background: var(--ubits-bg-1);
+    overflow: hidden;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.ubits-learn-img-trailer:hover:not(.ubits-learn-img-trailer--image):not(.ubits-learn-img-trailer--trailer):not(.ubits-learn-img-trailer--error),
+.ubits-learn-img-trailer--state-hover {
+    border-color: var(--ubits-accent-brand);
+    box-shadow: 0 0 0 1px var(--ubits-accent-brand);
+}
+
+.ubits-learn-img-trailer--error {
+    border-color: var(--ubits-btn-error-secondary-border);
+    box-shadow: 0 0 0 1px var(--ubits-btn-error-secondary-border);
+}
+
+.ubits-learn-img-trailer--error:hover,
+.ubits-learn-img-trailer--error.ubits-learn-img-trailer--state-hover {
+    border-color: var(--ubits-btn-error-secondary-border);
+    box-shadow: 0 0 0 1px var(--ubits-btn-error-secondary-border);
+}
+
+/* --- Vacío / error: capa sobre el mismo rectángulo 16:9 --- */
+.ubits-learn-img-trailer__empty {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--gap-md);
+    padding: var(--padding-xl);
+    box-sizing: border-box;
+}
+
+.ubits-learn-img-trailer__cta.ubits-button span {
+    text-align: center;
+}
+
+.ubits-learn-img-trailer__hint {
+    margin: 0;
+    max-width: 42ch;
+    text-align: center;
+    color: var(--ubits-fg-1-medium);
+}
+
+.ubits-learn-img-trailer__error-msg {
+    margin: 0;
+    max-width: 42ch;
+    text-align: center;
+    color: var(--ubits-feedback-accent-error);
+}
+
+.ubits-learn-img-trailer:not(.ubits-learn-img-trailer--error) .ubits-learn-img-trailer__error-msg {
+    display: none;
+}
+
+/* --- Imagen o tráiler: media a pantalla completa del bloque --- */
+.ubits-learn-img-trailer--image .ubits-learn-img-trailer__empty,
+.ubits-learn-img-trailer--trailer .ubits-learn-img-trailer__empty {
+    display: none;
+}
+
+.ubits-learn-img-trailer:not(.ubits-learn-img-trailer--image):not(.ubits-learn-img-trailer--trailer)
+    .ubits-learn-img-trailer__media {
+    display: none;
+}
+
+.ubits-learn-img-trailer__media {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    border-radius: var(--learn-img-trailer-inner-radius);
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    display: block;
+}
+
+.ubits-learn-img-trailer__img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Tráiler: play centrado — Figma Learn-Components 232:7183 (99×55, fondo negro ~70 %, FA Solid ~23px blanco). */
+.ubits-learn-img-trailer__trailer-scrim {
+    display: none;
+    position: absolute;
+    inset: 0;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+}
+
+.ubits-learn-img-trailer--trailer .ubits-learn-img-trailer__trailer-scrim {
+    display: flex;
+    pointer-events: auto;
+}
+
+/* Figma 232:7183: sin velo sobre toda la imagen (antes bg-4 + opacity en claro = overlay blanquecino). */
+.ubits-learn-img-trailer__trailer-scrim-bg {
+    display: none;
+    pointer-events: none;
+}
+
+.ubits-learn-img-trailer__play {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 99px;
+    height: 55px;
+    padding: 0;
+    border: none;
+    border-radius: var(--border-radius-xs);
+    /* Misma intención que Figma rgba(0,0,0,0.7); token de velo oscuro. */
+    background: var(--ubits-bg-dim);
+    color: var(--ubits-fg-bold);
+    cursor: pointer;
+    flex-shrink: 0;
+    line-height: 0;
+    transition: transform 0.15s ease;
+    /* ubits-typography fuerza Noto en [class*="ubits-"] y rompe el glifo FA del hijo i en algunos navegadores. */
+    font-family: 'Font Awesome 6 Pro', 'Font Awesome 6 Free', sans-serif !important;
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+.ubits-learn-img-trailer__play:hover {
+    transform: scale(1.03);
+}
+
+.ubits-learn-img-trailer__play:focus-visible {
+    outline: 2px solid var(--ubits-accent-brand);
+    outline-offset: 2px;
+}
+
+.ubits-learn-img-trailer__play i {
+    font-family: 'Font Awesome 6 Pro', 'Font Awesome 6 Free', sans-serif !important;
+    font-weight: 900;
+    font-size: var(--font-size-h1);
+    line-height: 1;
+    margin: 0;
+    color: var(--ubits-fg-bold);
+}
+
+/* Solo estado «solo imagen»: con --trailer también lleva --image; no ocultar el scrim ahí. */
+.ubits-learn-img-trailer--image:not(.ubits-learn-img-trailer--trailer) .ubits-learn-img-trailer__trailer-scrim {
+    display: none;
+}
+
+/* Botón Editar flotante (esquina superior derecha) */
+.ubits-learn-img-trailer__edit {
+    position: absolute;
+    top: var(--padding-sm);
+    right: var(--padding-sm);
+    z-index: 3;
+}
+
+.ubits-learn-img-trailer:not(.ubits-learn-img-trailer--image):not(.ubits-learn-img-trailer--trailer)
+    .ubits-learn-img-trailer__edit {
+    display: none;
+}

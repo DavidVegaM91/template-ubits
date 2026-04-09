@@ -32,9 +32,13 @@
     <link rel="stylesheet" href="../../components/card-content.css">
     <link rel="stylesheet" href="../../components/dropdown-menu.css">
     <link rel="stylesheet" href="../../components/drawer.css">
+    <link rel="stylesheet" href="../../components/stepper.css">
+    <link rel="stylesheet" href="../../components/learn-content-img-trailer.css">
+    <link rel="stylesheet" href="../../components/rich-text-editor.css">
     <link rel="stylesheet" href="../../components/sidebar-contenidos-lms.css">
     <link rel="stylesheet" href="./lms-creator.css">
     <link rel="stylesheet" href="./contenidos.css">
+    <link rel="stylesheet" href="./portada-media-modal.css">
 </head>
 <body data-theme="light" class="page-contenidos-creator">
     <div class="dashboard-container">
@@ -138,7 +142,12 @@
     <script src="../../components/toast.js"></script>
     <script src="../../components/modal.js"></script>
     <script src="../../components/drawer.js"></script>
+    <script src="../../components/stepper.js"></script>
+    <script src="../../components/learn-content-img-trailer.js"></script>
+    <script src="../../components/rich-text-editor.js"></script>
     <script src="../../components/sidebar-contenidos-lms.js"></script>
+    <script src="./portada-media-modal.js"></script>
+    <script src="./crear-contenido-drawer.js"></script>
     <script src="../../script.js"></script>
     <script src="../../bd-master/bd-master-niveles-contenido.js"></script>
     <script src="../../bd-master/bd-master-tipos-contenido.js"></script>
@@ -210,6 +219,7 @@
 
             function getContentIdFromBorradorUrlHash() {
                 var h = location.hash || '';
+                if (h === '#crear-contenido') return '';
                 if (h.indexOf(CONTENIDO_BORRADOR_HASH_LEGACY_PREFIX) === 0) {
                     try {
                         return normalizeLegacyBorradorUrlContentId(
@@ -718,6 +728,9 @@
                 contenidosCardsBuilt = true;
                 setTimeout(function () {
                     tryOpenContenidoBorradorFromUrlHash();
+                    if (typeof tryOpenCrearContenidoFromUrlHash === 'function') {
+                        tryOpenCrearContenidoFromUrlHash();
+                    }
                 }, 0);
             }
 
@@ -735,8 +748,8 @@
                         text: 'Crear contenido',
                         icon: 'fa-plus',
                         onClick: function() {
-                            if (typeof showToast === 'function') {
-                                showToast('success', 'Crear contenido (demo).');
+                            if (typeof openCrearContenidoDrawer === 'function') {
+                                openCrearContenidoDrawer();
                             }
                         }
                     }
@@ -1377,6 +1390,9 @@
                         } else {
                             setTimeout(function () {
                                 tryOpenContenidoBorradorFromUrlHash();
+                                if (typeof tryOpenCrearContenidoFromUrlHash === 'function') {
+                                    tryOpenCrearContenidoFromUrlHash();
+                                }
                             }, 0);
                         }
                         if (tablePanel) tablePanel.style.display = 'none';

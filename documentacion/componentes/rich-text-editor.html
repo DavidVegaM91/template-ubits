@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="../../images/Ubits-logo-dark.svg">
+    <title>Rich text editor | UBITS Playground</title>
+    <link rel="stylesheet" href="../../general-styles/ubits-colors.css">
+    <link rel="stylesheet" href="../../general-styles/styles.css">
+    <link rel="stylesheet" href="../../general-styles/fontawesome-icons.css">
+    <link rel="stylesheet" href="../../general-styles/ubits-typography.css">
+    <link rel="stylesheet" href="../../components/sub-nav.css">
+    <link rel="stylesheet" href="../../components/sidebar.css">
+    <link rel="stylesheet" href="../../components/button.css">
+    <link rel="stylesheet" href="../../components/switch.css">
+    <link rel="stylesheet" href="../../components/toast.css">
+    <link rel="stylesheet" href="../../components/rich-text-editor.css">
+    <link rel="stylesheet" href="../../docs/docs-sidebar.css">
+    <link rel="stylesheet" href="../../docs/docstyles.css">
+</head>
+<body class="componentes-page" data-theme="light">
+    <div class="dashboard-container">
+        <div class="tooltip" id="tooltip"></div>
+        <main class="main-content">
+            <div id="top-nav-container"></div>
+            <div style="display: flex;">
+                <div id="docs-dropdown-container"></div>
+                <div id="docs-sidebar-container"></div>
+                <div class="components-content">
+                    <div class="content-area" style="display: block; width: 100%;">
+                        <div style="text-align: center; margin-bottom: 60px;">
+                            <h1 class="ubits-display-d2-bold" style="margin-bottom: 24px; color: var(--ubits-accent-brand);">
+                                Rich text editor
+                            </h1>
+                            <p class="ubits-body-md-regular" style="max-width: 800px; margin: 0 auto 32px; line-height: 1.6;">
+                                Editor de texto enriquecido con barra de formato (negrita, cursiva, subrayado, listas, alineación, imagen, enlace y más). Implementación en HTML, CSS y JavaScript puro: área <code class="ubits-body-md-regular" style="color: var(--ubits-fg-1-medium);">contenteditable</code> y comandos del navegador. Referencia: <a href="https://www.figma.com/design/NxOcUG8QAVc44KYTQexH0b/%F0%9F%9F%A2-Creator-v3?node-id=40008022-3845&amp;m=dev" class="ubits-body-md-regular" style="color: var(--ubits-accent-brand); text-decoration: underline;">Creator v3 · Descripción</a>.
+                            </p>
+                        </div>
+
+                        <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: var(--border-radius-lg); margin-bottom: 40px;">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-eye" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Preview del componente
+                            </h2>
+                            <p class="ubits-body-md-regular" style="margin-bottom: 16px; line-height: 1.6;">
+                                Escribe en el área, usa los iconos de la barra e inserta imagen desde archivo. Enlace e imagen por URL usan un diálogo del navegador (prototipo).
+                            </p>
+                            <div style="display: flex; align-items: center; flex-wrap: wrap; gap: var(--gap-md); margin-bottom: var(--gap-lg);">
+                                <span class="ubits-body-sm-semibold" style="color: var(--ubits-fg-1-high);">Controles del preview</span>
+                                <label class="ubits-switch ubits-switch--md" for="rte-preview-required-switch">
+                                    <input type="checkbox" class="ubits-switch__input" id="rte-preview-required-switch" aria-label="Mostrar texto (Obligatorio) junto a la etiqueta">
+                                    <span class="ubits-switch__track"><span class="ubits-switch__thumb"></span></span>
+                                </label>
+                                <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Mostrar «(Obligatorio)» en la etiqueta del editor</span>
+                            </div>
+                            <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: var(--border-radius-md); width: 100%; box-sizing: border-box;">
+                                <div id="rte-demo" class="ubits-rich-text-editor" data-rich-text-editor>
+                                    <div class="ubits-rich-text-editor__label-row">
+                                        <p class="ubits-rich-text-editor__label ubits-body-sm-semibold">Descripción</p>
+                                        <p class="ubits-rich-text-editor__hint ubits-body-xs-regular">(Obligatorio)</p>
+                                    </div>
+                                    <div class="ubits-rich-text-editor__toolbar" role="toolbar" aria-label="Formato de texto">
+                                        <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" data-rich-cmd="bold" aria-label="Negrita" title="Negrita"><i class="fas fa-bold"></i></button>
+                                        <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" data-rich-cmd="italic" aria-label="Cursiva" title="Cursiva"><i class="fas fa-italic"></i></button>
+                                        <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" data-rich-cmd="underline" aria-label="Subrayado" title="Subrayado"><i class="fas fa-underline"></i></button>
+                                        <span class="ubits-rich-text-editor__sep" aria-hidden="true"></span>
+                                        <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" data-rich-cmd="insertOrderedList" aria-label="Lista numerada" title="Lista numerada"><i class="fas fa-list-ol"></i></button>
+                                        <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" data-rich-cmd="insertUnorderedList" aria-label="Lista con viñetas" title="Lista con viñetas"><i class="fas fa-list-ul"></i></button>
+                                        <span class="ubits-rich-text-editor__sep" aria-hidden="true"></span>
+                                        <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" data-rich-cmd="justifyLeft" aria-label="Alinear a la izquierda" title="Alinear a la izquierda"><i class="fas fa-align-left"></i></button>
+                                        <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" data-rich-cmd="justifyCenter" aria-label="Centrar" title="Centrar"><i class="fas fa-align-center"></i></button>
+                                        <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" data-rich-cmd="justifyRight" aria-label="Alinear a la derecha" title="Alinear a la derecha"><i class="fas fa-align-right"></i></button>
+                                        <span class="ubits-rich-text-editor__sep" aria-hidden="true"></span>
+                                        <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" data-rich-cmd="insertImage" aria-label="Insertar imagen" title="Insertar imagen"><i class="far fa-image"></i></button>
+                                        <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" data-rich-cmd="insertVideo" aria-label="Insertar video" title="Insertar enlace a video"><i class="fas fa-film"></i></button>
+                                        <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" data-rich-cmd="createLink" aria-label="Insertar enlace" title="Insertar enlace"><i class="fas fa-link"></i></button>
+                                        <span class="ubits-rich-text-editor__sep" aria-hidden="true"></span>
+                                        <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" data-rich-cmd="formatCode" aria-label="Bloque de código" title="Bloque de código"><i class="fas fa-code"></i></button>
+                                        <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" data-rich-cmd="removeFormat" aria-label="Quitar formato" title="Quitar formato"><i class="fas fa-remove-format"></i></button>
+                                    </div>
+                                    <input type="file" class="ubits-rich-text-editor__file" accept="image/*" tabindex="-1" aria-hidden="true">
+                                    <div class="ubits-rich-text-editor__editor-shell">
+                                        <div id="rte-field-demo" class="ubits-rich-text-editor__field ubits-body-md-regular is-empty" contenteditable="true" role="textbox" aria-multiline="true" spellcheck="true" data-placeholder="Añade una descripción para contenido aquí"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: var(--border-radius-lg); margin-bottom: 40px;">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-info-circle" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Características generales
+                            </h2>
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--gap-lg);">
+                                <div style="text-align: center; padding: var(--padding-md); background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: var(--gap-sm);"><i class="fas fa-bold"></i></div>
+                                    <div class="ubits-body-sm-bold">Formato inline</div>
+                                    <div class="ubits-body-sm-regular">Negrita, cursiva y subrayado sobre la selección.</div>
+                                </div>
+                                <div style="text-align: center; padding: var(--padding-md); background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: var(--gap-sm);"><i class="fas fa-list-ul"></i></div>
+                                    <div class="ubits-body-sm-bold">Listas</div>
+                                    <div class="ubits-body-sm-regular">Listas ordenadas y con viñetas.</div>
+                                </div>
+                                <div style="text-align: center; padding: var(--padding-md); background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: var(--gap-sm);"><i class="fas fa-align-left"></i></div>
+                                    <div class="ubits-body-sm-bold">Alineación</div>
+                                    <div class="ubits-body-sm-regular">Izquierda, centro y derecha.</div>
+                                </div>
+                                <div style="text-align: center; padding: var(--padding-md); background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: var(--gap-sm);"><i class="far fa-image"></i></div>
+                                    <div class="ubits-body-sm-bold">Medios y enlaces</div>
+                                    <div class="ubits-body-sm-regular">Imagen desde archivo, enlace a video y URL con enlace.</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: var(--border-radius-lg); margin-bottom: 40px;">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-comments" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Prompts útiles
+                            </h2>
+                            <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px;">
+                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                                    <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Añadir editor enriquecido</h3>
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('rte-p1')"><i class="far fa-copy"></i><span>Copiar</span></button>
+                                </div>
+                                <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm);">
+                                    <pre style="margin: 0; font-size: var(--font-size-sm); white-space: pre-wrap;"><code id="rte-p1" class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">En la pantalla [nombre], coloca el editor de texto enriquecido UBITS (rich-text-editor.css, button.css, fontawesome-icons.css, rich-text-editor.js). Incluye etiqueta, barra con negrita, listas, alineación, imagen y enlace, y área editable. Inicializa con initRichTextEditor o initAllRichTextEditors. Importa los estilos en el orden de la documentación.</code></pre>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="background: var(--ubits-bg-1); border-radius: var(--border-radius-lg); margin-bottom: 40px; overflow: hidden;">
+                            <div style="padding: 32px; text-align: center; border-bottom: 1px solid var(--ubits-border-1);">
+                                <h2 class="ubits-heading-h2" style="margin-bottom: 0; color: var(--ubits-fg-1-high);">
+                                    <i class="far fa-code" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                    Documentación técnica
+                                </h2>
+                                <p class="ubits-body-md-regular" style="margin-top: 16px; color: var(--ubits-fg-1-medium);">API, requisitos y limitaciones.</p>
+                            </div>
+                            <div style="background: var(--ubits-bg-2); padding: 20px; text-align: center; cursor: pointer;" onclick="toggleTechnicalDocs()">
+                                <span class="ubits-body-md-regular" style="color: var(--ubits-accent-brand); display: flex; align-items: center; justify-content: center; gap: 8px;">
+                                    <i class="far fa-chevron-down"></i> Mostrar
+                                </span>
+                            </div>
+                            <div id="technical-docs-content" style="display: none; padding: 0;">
+                                <div style="padding: 32px; border-bottom: 1px solid var(--ubits-border-1);">
+                                    <h2 class="ubits-heading-h2" style="margin-bottom: 16px;">Implementación</h2>
+                                    <p class="ubits-body-md-regular" style="color: var(--ubits-fg-1-medium); margin-bottom: 16px;">El proyecto es HTML, CSS y JS sin build: el área editable es un <code class="ubits-body-sm-regular">div</code> con <code class="ubits-body-sm-regular">contenteditable="true"</code>. La barra usa <code class="ubits-body-sm-regular">document.execCommand</code> (soportado en navegadores para este patrón; obsoleto a nivel estándar, suficiente para plantilla y prototipos).</p>
+                                    <p class="ubits-body-md-regular" style="color: var(--ubits-fg-1-medium); margin-bottom: 16px;">El texto <code class="ubits-body-sm-regular">(Obligatorio)</code> en <code class="ubits-body-sm-regular">.ubits-rich-text-editor__hint</code> está oculto por defecto. Para mostrarlo, añade la clase <code class="ubits-body-sm-regular">ubits-rich-text-editor--show-required-hint</code> al contenedor raíz del editor (desde la página o un control de preview); el componente JS no incluye interruptor interno para esto.</p>
+                                    <pre style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm); overflow-x: auto;"><code id="rte-tech-api" class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">initRichTextEditor('#contenedor')
+initAllRichTextEditors()
+getRichTextHtml('#contenedor')  → string HTML
+setRichTextHtml('#contenedor', html)</code></pre>
+                                </div>
+                                <div style="padding: 32px;">
+                                    <div style="display: flex; justify-content: space-between; margin-bottom: 16px;">
+                                        <h2 class="ubits-heading-h2" style="margin: 0;">Requisitos CSS/JS</h2>
+                                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('rte-tech-req')"><i class="far fa-copy"></i><span>Copiar</span></button>
+                                    </div>
+                                    <pre style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm);"><code id="rte-tech-req" class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">components/rich-text-editor.css
+components/rich-text-editor.js
+components/button.css
+general-styles/fontawesome-icons.css
+general-styles/ubits-typography.css
+general-styles/ubits-colors.css</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <div id="ubits-toast-container"></div>
+    <script src="../../components/sidebar.js"></script>
+    <script src="../../components/sub-nav.js"></script>
+    <script src="../../components/toast.js"></script>
+    <script src="../../components/rich-text-editor.js"></script>
+    <script src="../../docs/docs-sidebar.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            if (typeof loadSubNav === 'function') loadSubNav('top-nav-container', 'documentacion');
+            if (typeof loadSidebar === 'function') loadSidebar('ninguno');
+            if (typeof loadDocsSidebar === 'function') loadDocsSidebar('rich-text-editor');
+            if (typeof initRichTextEditor === 'function') initRichTextEditor('#rte-demo');
+            var rteRoot = document.getElementById('rte-demo');
+            var previewRequiredSw = document.getElementById('rte-preview-required-switch');
+            if (rteRoot && previewRequiredSw) {
+                previewRequiredSw.setAttribute('role', 'switch');
+                function syncPreviewRequiredHint() {
+                    var on = previewRequiredSw.checked;
+                    rteRoot.classList.toggle('ubits-rich-text-editor--show-required-hint', on);
+                    previewRequiredSw.setAttribute('aria-checked', on ? 'true' : 'false');
+                }
+                previewRequiredSw.addEventListener('change', syncPreviewRequiredHint);
+            }
+        });
+        function toggleTechnicalDocs() {
+            var content = document.getElementById('technical-docs-content');
+            var open = content.style.display === 'none' || !content.style.display;
+            content.style.display = open ? 'block' : 'none';
+            var trigger = content.previousElementSibling;
+            if (trigger && trigger.querySelector('span')) {
+                trigger.querySelector('span').innerHTML = open
+                    ? '<i class="far fa-chevron-up"></i> Ocultar'
+                    : '<i class="far fa-chevron-down"></i> Mostrar';
+            }
+        }
+        function copyPrompt(id) {
+            var t = document.getElementById(id);
+            if (t) navigator.clipboard.writeText(t.textContent).then(function () {
+                if (typeof showToast === 'function') showToast('success', 'Copiado', { containerId: 'ubits-toast-container' });
+            });
+        }
+        function copyCode(id) {
+            var t = document.getElementById(id);
+            if (t) navigator.clipboard.writeText(t.textContent).then(function () {
+                if (typeof showToast === 'function') showToast('success', 'Copiado', { containerId: 'ubits-toast-container' });
+            });
+        }
+    </script>
+</body>
+</html>

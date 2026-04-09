@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="../../images/Ubits-logo-dark.svg">
+    <title>Learn content: imagen y tráiler | UBITS Playground</title>
+    <link rel="stylesheet" href="../../general-styles/ubits-colors.css">
+    <link rel="stylesheet" href="../../general-styles/styles.css">
+    <link rel="stylesheet" href="../../general-styles/fontawesome-icons.css">
+    <link rel="stylesheet" href="../../general-styles/ubits-typography.css">
+    <link rel="stylesheet" href="../../components/sub-nav.css">
+    <link rel="stylesheet" href="../../components/sidebar.css">
+    <link rel="stylesheet" href="../../components/button.css">
+    <link rel="stylesheet" href="../../components/toast.css">
+    <link rel="stylesheet" href="../../components/learn-content-img-trailer.css">
+    <link rel="stylesheet" href="../../docs/docs-sidebar.css">
+    <link rel="stylesheet" href="../../docs/docstyles.css">
+    <style>
+        .preview-control-btn.active {
+            background: var(--ubits-accent-brand) !important;
+            color: white !important;
+            border-color: var(--ubits-accent-brand) !important;
+        }
+        .preview-control-btn.active span { color: white !important; }
+    </style>
+</head>
+<body class="componentes-page" data-theme="light">
+    <div class="dashboard-container">
+        <div class="tooltip" id="tooltip"></div>
+        <main class="main-content">
+            <div id="top-nav-container"></div>
+            <div style="display: flex;">
+                <div id="docs-dropdown-container"></div>
+                <div id="docs-sidebar-container"></div>
+                <div class="components-content">
+                    <div class="content-area" style="display: block; width: 100%;">
+                        <div style="text-align: center; margin-bottom: 60px;">
+                            <h1 class="ubits-display-d2-bold" style="margin-bottom: 24px; color: var(--ubits-accent-brand);">
+                                Learn content: imagen y tráiler
+                            </h1>
+                            <p class="ubits-body-md-regular" style="max-width: 800px; margin: 0 auto 32px; line-height: 1.6;">
+                                Bloque para la creación de contenido en aprendizaje: portada en JPG o PNG y opción de tráiler en vídeo. Incluye estados vacío, hover, error, imagen cargada y vista previa del tráiler con reproducción. El contenedor mantiene siempre proporción 16:9 (ancho disponible × aspect-ratio). Referencia Figma: <a href="https://www.figma.com/design/ZWcvS9Z7YQaz59GZIrnWM6/Learn-Components?node-id=232-7183&amp;m=dev" class="ubits-body-md-regular" style="color: var(--ubits-accent-brand); text-decoration: underline;">Learn-Components · estado tráiler (232:7183)</a>.
+                            </p>
+                        </div>
+
+                        <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: var(--border-radius-lg); margin-bottom: 40px;">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-eye" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Preview del componente
+                            </h2>
+                            <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6;">
+                                Cambia el estado con los botones. En vacío, el borde azul también aparece al pasar el ratón por el bloque. El estado «Hover (forzado)» simula ese borde sin depender del puntero.
+                            </p>
+                            <div style="margin-bottom: 20px; display: flex; flex-wrap: wrap; gap: var(--gap-sm); align-items: center;">
+                                <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn lcb-state-btn active" data-lcb-state="empty"><span>Vacío</span></button>
+                                <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn lcb-state-btn" data-lcb-state="hover"><span>Hover forzado</span></button>
+                                <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn lcb-state-btn" data-lcb-state="error"><span>Error</span></button>
+                                <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn lcb-state-btn" data-lcb-state="image"><span>Imagen</span></button>
+                                <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn lcb-state-btn" data-lcb-state="trailer"><span>Tráiler</span></button>
+                            </div>
+                            <!-- Bloque (no flex centrado): si el padre es flex sin ancho, hijos solo absolute → ancho 0 y colapsa el 16:9 -->
+                            <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: var(--border-radius-md); width: 100%; box-sizing: border-box;">
+                                <div id="lcb-preview-mount" style="width: 100%; max-width: 555px; margin-left: auto; margin-right: auto;"></div>
+                            </div>
+                        </div>
+
+                        <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: var(--border-radius-lg); margin-bottom: 40px;">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-info-circle" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Características generales
+                            </h2>
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--gap-lg);">
+                                <div style="text-align: center; padding: var(--padding-md); background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: var(--gap-sm);"><i class="far fa-image"></i></div>
+                                <div class="ubits-body-sm-bold">Proporción 16:9</div>
+                                <div class="ubits-body-sm-regular">Misma relación de aspecto en vacío, error, imagen y tráiler.</div>
+                                </div>
+                                <div style="text-align: center; padding: var(--padding-md); background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: var(--gap-sm);"><i class="far fa-film"></i></div>
+                                    <div class="ubits-body-sm-bold">Vista de tráiler</div>
+                                    <div class="ubits-body-sm-regular">Overlay y control de play centrado sobre la miniatura.</div>
+                                </div>
+                                <div style="text-align: center; padding: var(--padding-md); background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: var(--gap-sm);"><i class="far fa-pen-to-square"></i></div>
+                                    <div class="ubits-body-sm-bold">Editar</div>
+                                    <div class="ubits-body-sm-regular">Botón secundario flotante cuando ya hay imagen o tráiler.</div>
+                                </div>
+                                <div style="text-align: center; padding: var(--padding-md); background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: var(--gap-sm);"><i class="far fa-circle-exclamation"></i></div>
+                                    <div class="ubits-body-sm-bold">Error</div>
+                                    <div class="ubits-body-sm-regular">Borde y mensaje con tokens de feedback de error UBITS.</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: var(--border-radius-lg); margin-bottom: 40px;">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-comments" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Prompts útiles
+                            </h2>
+                            <p class="ubits-body-md-regular" style="margin-bottom: 24px; color: var(--ubits-fg-1-medium);">
+                                Copia y personaliza. Pide importar <code>learn-content-img-trailer.css</code>, <code>button.css</code> y <code>fontawesome-icons.css</code>.
+                            </p>
+                            <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
+                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                                    <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Insertar bloque en el editor de contenido</h3>
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('lcb-p1')"><i class="far fa-copy"></i><span>Copiar</span></button>
+                                </div>
+                                <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm);">
+                                    <pre style="margin: 0; font-size: var(--font-size-sm); white-space: pre-wrap;"><code id="lcb-p1" class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">En la pantalla [nombre] de aprendizaje, en [ubicación], coloca el bloque UBITS «Learn content imagen y tráiler» como en la documentación: botón «Subir imagen de portada», texto de ayuda debajo (JPG o PNG y tráiler opcional), y estados error, imagen llena y tráiler con play. Usa tokens UBITS y el CSS del componente.</code></pre>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="background: var(--ubits-bg-1); border-radius: var(--border-radius-lg); margin-bottom: 40px; overflow: hidden;">
+                            <div style="padding: 32px; text-align: center; border-bottom: 1px solid var(--ubits-border-1);">
+                                <h2 class="ubits-heading-h2" style="margin-bottom: 0; color: var(--ubits-fg-1-high);">
+                                    <i class="far fa-code" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                    Documentación técnica
+                                </h2>
+                                <p class="ubits-body-md-regular" style="margin-top: 16px; color: var(--ubits-fg-1-medium);">Estructura, clases y requisitos.</p>
+                            </div>
+                            <div style="background: var(--ubits-bg-2); padding: 20px; text-align: center; cursor: pointer;" onclick="toggleTechnicalDocs()">
+                                <span class="ubits-body-md-regular" style="color: var(--ubits-accent-brand); display: flex; align-items: center; justify-content: center; gap: 8px;">
+                                    <i class="far fa-chevron-down"></i> Mostrar
+                                </span>
+                            </div>
+                            <div id="technical-docs-content" style="display: none; padding: 0;">
+                                <div style="padding: 32px; border-bottom: 1px solid var(--ubits-border-1);">
+                                    <div style="display: flex; justify-content: space-between; margin-bottom: 24px;">
+                                        <h2 class="ubits-heading-h2" style="margin: 0;">Clases y estados</h2>
+                                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('lcb-tech-classes')"><i class="far fa-copy"></i><span>Copiar</span></button>
+                                    </div>
+                                    <pre style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm); overflow-x: auto;"><code id="lcb-tech-classes" class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Raíz: .ubits-learn-img-trailer (aspect-ratio 16/9 siempre; ancho 100%, max-width 555px)
+Estados en la raíz:
+  .ubits-learn-img-trailer--error          → borde error + mensaje visible
+  .ubits-learn-img-trailer--image          → muestra imagen y botón Editar
+  .ubits-learn-img-trailer--trailer        → además overlay + play (requiere --image)
+  .ubits-learn-img-trailer--state-hover    → borde marca (solo demo / foco forzado)
+
+Hijos:
+  .ubits-learn-img-trailer__empty
+  .ubits-learn-img-trailer__cta            → botón secundario UBITS
+  .ubits-learn-img-trailer__hint
+  .ubits-learn-img-trailer__error-msg
+  .ubits-learn-img-trailer__media         → figure
+  .ubits-learn-img-trailer__img
+  .ubits-learn-img-trailer__trailer-scrim
+  .ubits-learn-img-trailer__trailer-scrim-bg
+  .ubits-learn-img-trailer__play
+  .ubits-learn-img-trailer__edit</code></pre>
+                                </div>
+                                <div style="padding: 32px;">
+                                    <div style="display: flex; justify-content: space-between; margin-bottom: 16px;">
+                                        <h2 class="ubits-heading-h2" style="margin: 0;">Requisitos</h2>
+                                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('lcb-tech-req')"><i class="far fa-copy"></i><span>Copiar</span></button>
+                                    </div>
+                                    <pre style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm);"><code id="lcb-tech-req" class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">CSS: general-styles/ubits-colors.css, components/button.css,
+     general-styles/fontawesome-icons.css, general-styles/ubits-typography.css,
+     components/learn-content-img-trailer.css
+JS (opcional): components/learn-content-img-trailer.js
+     Copys: LEARN_CONTENT_IMG_TRAILER_DEFAULTS (cta, hint, editButton, playAriaLabel, …)
+     HTML vacío: getLearnContentImgTrailerEmptyHtml({ ctaId?, iconClass?, includeErrorPlaceholder? })
+     Botón Editar: getLearnContentImgTrailerEditHtml({ editButtonId? })
+     initLearnContentImgTrailer('#id', { onPlay: function () { ... } })
+     o data-learn-img-trailer-init en la raíz + initAllLearnContentImgTrailers()</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <div id="ubits-toast-container"></div>
+    <script src="../../components/sidebar.js"></script>
+    <script src="../../components/sub-nav.js"></script>
+    <script src="../../components/toast.js"></script>
+    <script src="../../components/learn-content-img-trailer.js"></script>
+    <script src="../../docs/docs-sidebar.js"></script>
+    <script>
+        var LCB_DEMO_IMG = '../../images/cards-learn/introduccion-al-growth-marketing.jpeg';
+
+        function lcbBuildHtml(state) {
+            var c = ['ubits-learn-img-trailer'];
+            if (state === 'error') c.push('ubits-learn-img-trailer--error');
+            if (state === 'hover') c.push('ubits-learn-img-trailer--state-hover');
+            if (state === 'image' || state === 'trailer') c.push('ubits-learn-img-trailer--image');
+            if (state === 'trailer') c.push('ubits-learn-img-trailer--trailer');
+
+            var def = typeof LEARN_CONTENT_IMG_TRAILER_DEFAULTS !== 'undefined' ? LEARN_CONTENT_IMG_TRAILER_DEFAULTS : {};
+            var empty =
+                typeof getLearnContentImgTrailerEmptyHtml === 'function'
+                    ? getLearnContentImgTrailerEmptyHtml({
+                          includeErrorPlaceholder: true,
+                          iconClass: 'fas fa-photo-film',
+                          errorPlaceholder: 'Mensaje de error'
+                      })
+                    : '';
+
+            var media = '';
+            if (state === 'image' || state === 'trailer') {
+                media =
+                    '<figure class="ubits-learn-img-trailer__media">' +
+                    '<img class="ubits-learn-img-trailer__img" src="' +
+                    LCB_DEMO_IMG +
+                    '" alt="">' +
+                    '<div class="ubits-learn-img-trailer__trailer-scrim" aria-hidden="false">' +
+                    '<span class="ubits-learn-img-trailer__trailer-scrim-bg" aria-hidden="true"></span>' +
+                    '<button type="button" class="ubits-learn-img-trailer__play" aria-label="' +
+                    (def.playAriaLabel || 'Reproducir tráiler') +
+                    '">' +
+                    '<i class="fas fa-play"></i></button></div></figure>';
+            }
+
+            var edit = '';
+            if (state === 'image' || state === 'trailer') {
+                edit = typeof getLearnContentImgTrailerEditHtml === 'function' ? getLearnContentImgTrailerEditHtml({}) : '';
+            }
+
+            return (
+                '<div id="lcb-preview-root" class="' +
+                c.join(' ') +
+                '" role="region" aria-label="' +
+                (def.regionAriaLabel || 'Imagen o tráiler del contenido') +
+                '" data-learn-img-trailer-init>' +
+                empty +
+                media +
+                edit +
+                '</div>'
+            );
+        }
+
+        function lcbSetPreviewState(state) {
+            var mount = document.getElementById('lcb-preview-mount');
+            if (!mount) return;
+            mount.innerHTML = lcbBuildHtml(state);
+            document.querySelectorAll('.lcb-state-btn').forEach(function (b) {
+                b.classList.toggle('active', b.getAttribute('data-lcb-state') === state);
+            });
+            if (typeof initLearnContentImgTrailer === 'function') {
+                initLearnContentImgTrailer('#lcb-preview-root', {
+                    onPlay: function () {
+                        if (typeof showToast === 'function') {
+                            showToast('info', 'Aquí enlazas el reproductor o la URL del tráiler.', {
+                                containerId: 'ubits-toast-container',
+                                duration: 3000
+                            });
+                        }
+                    }
+                });
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            if (typeof loadSubNav === 'function') loadSubNav('top-nav-container', 'documentacion');
+            if (typeof loadSidebar === 'function') loadSidebar('ninguno');
+            if (typeof loadDocsSidebar === 'function') loadDocsSidebar('learn-content-img-trailer');
+            lcbSetPreviewState('empty');
+            document.querySelectorAll('.lcb-state-btn').forEach(function (btn) {
+                btn.addEventListener('click', function () {
+                    lcbSetPreviewState(btn.getAttribute('data-lcb-state'));
+                });
+            });
+        });
+
+        function toggleTechnicalDocs() {
+            var content = document.getElementById('technical-docs-content');
+            var open = content.style.display === 'none' || !content.style.display;
+            content.style.display = open ? 'block' : 'none';
+            var trigger = content.previousElementSibling;
+            if (trigger && trigger.querySelector('span')) {
+                trigger.querySelector('span').innerHTML = open
+                    ? '<i class="far fa-chevron-up"></i> Ocultar'
+                    : '<i class="far fa-chevron-down"></i> Mostrar';
+            }
+        }
+
+        function copyPrompt(id) {
+            var t = document.getElementById(id);
+            if (t) navigator.clipboard.writeText(t.textContent).then(function () {
+                if (typeof showToast === 'function') showToast('success', 'Copiado', { containerId: 'ubits-toast-container' });
+            });
+        }
+
+        function copyCode(id) {
+            var t = document.getElementById(id);
+            if (t) navigator.clipboard.writeText(t.textContent).then(function () {
+                if (typeof showToast === 'function') showToast('success', 'Copiado', { containerId: 'ubits-toast-container' });
+            });
+        }
+    </script>
+</body>
+</html>

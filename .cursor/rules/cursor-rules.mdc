@@ -276,6 +276,8 @@ openModal({
   - Sizes: `sm` (32px), `md` (40px), `lg` (48px)
   - Features: icons, counter, helper text, mandatory text, scroll infinito automático
 - **Card Content** (Learning cards) → `components/card-content.css` + `components/card-content.js`
+- **Learn content imagen y tráiler** (bloque creación contenido aprendizaje) → `components/learn-content-img-trailer.css` + opcional `learn-content-img-trailer.js` (`initLearnContentImgTrailer`). Doc: `documentacion/componentes/learn-content-img-trailer.html`
+- **Rich text editor** (editor enriquecido Creator) → `components/rich-text-editor.css` + `components/rich-text-editor.js` (`initRichTextEditor`, `getRichTextHtml`). Doc: `documentacion/componentes/rich-text-editor.html`
   - 11 content types, 35 competencies, 18 providers
 - **Carousel Contents** (Content carousels) → `components/carousel-contents.css` + `components/carousel-contents.js`
   - Features: Horizontal scrolling, navigation arrows, responsive
@@ -341,7 +343,7 @@ openModal({
 
 ### **🚨 ESTÁNDAR: PÁGINA DE DOC DE COMPONENTE DECENTE**
 
-**Referencias que SÍ cumplen (no tocar):** alert, avatar, button, calendar, card-content, card-content-compact, dropdown-menu, ia-button, input, paginator, toast, tooltip. **Base:** `component-doc-template.html`. **Tono:** como `alert.html` y `button.html`.
+**Referencias que SÍ cumplen (no tocar):** alert, avatar, button, calendar, card-content, card-content-compact, learn-content-img-trailer, rich-text-editor, dropdown-menu, ia-button, input, paginator, toast, tooltip. **Base:** `component-doc-template.html`. **Tono:** como `alert.html` y `button.html`.
 
 **1. Descripción (Hero) – Sencilla, nada técnico.** Título + descripción en lenguaje de negocio (para qué sirve, dónde se usa). Sin clases, API ni archivos en la descripción principal.
 
@@ -1864,6 +1866,12 @@ Before finishing any task, verify:
 <!-- Card Content component -->
 <link rel="stylesheet" href="components/card-content.css">
 <!-- Required when using: loadCardContent() -->
+
+<!-- Learn content imagen y tráiler -->
+<link rel="stylesheet" href="components/learn-content-img-trailer.css">
+<!-- Required when using: .ubits-learn-img-trailer (+ button.css, fontawesome). JS opcional: learn-content-img-trailer.js -->
+<link rel="stylesheet" href="components/rich-text-editor.css">
+<!-- Required when using: .ubits-rich-text-editor (+ button.css, fontawesome). JS: rich-text-editor.js (initRichTextEditor) -->
 ```
 
 ### **CRITICAL COMPONENT CSS RULES:**
