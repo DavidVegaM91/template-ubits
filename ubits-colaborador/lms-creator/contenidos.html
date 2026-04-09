@@ -208,6 +208,7 @@
             /**
              * Hash del editor borrador = id numérico del curso en BD (p. ej. #24001).
              * Compatibilidad: #editar-contenido=demo-2 (enlaces antiguos).
+             * Antiguo LMS: #antiguo-lms=<id> (contenidos con badge Antiguo LMS; no colisiona con #id borrador).
              */
             var CONTENIDO_BORRADOR_HASH_LEGACY_PREFIX = '#editar-contenido=';
             var contenidoBorradorOpenedWithHistoryPush = false;
@@ -276,7 +277,72 @@
                 }
             }
 
+            /** Hash del drawer Antiguo LMS: #antiguo-lms=<id> (no colisiona con borrador #id ni #crear-contenido). */
+            var CONTENIDO_ANTIGUO_LMS_HASH_PREFIX = '#antiguo-lms=';
+            var contenidoAntiguoLmsOpenedWithHistoryPush = false;
+            var contenidoAntiguoLmsUrlActiveId = '';
+
+            function buildAntiguoLmsUrlHash(contentId) {
+                return (
+                    CONTENIDO_ANTIGUO_LMS_HASH_PREFIX +
+                    encodeURIComponent(String(contentId != null && contentId !== '' ? contentId : 'sin-id'))
+                );
+            }
+
+            function getContentIdFromAntiguoLmsUrlHash() {
+                var h = location.hash || '';
+                if (h.indexOf(CONTENIDO_ANTIGUO_LMS_HASH_PREFIX) !== 0) return '';
+                try {
+                    return normalizeLegacyBorradorUrlContentId(
+                        decodeURIComponent(h.slice(CONTENIDO_ANTIGUO_LMS_HASH_PREFIX.length))
+                    );
+                } catch (e) {
+                    return '';
+                }
+            }
+
+            function syncUrlAfterAntiguoLmsDrawerOpen(contentId) {
+                contenidoAntiguoLmsUrlActiveId = String(contentId != null && contentId !== '' ? contentId : '');
+                var targetHash = buildAntiguoLmsUrlHash(contentId);
+                if (location.hash !== targetHash) {
+                    history.pushState(
+                        { ubitsLmsCreatorAntiguoLms: true, contentId: contenidoAntiguoLmsUrlActiveId },
+                        '',
+                        location.pathname + location.search + targetHash
+                    );
+                    contenidoAntiguoLmsOpenedWithHistoryPush = true;
+                } else {
+                    contenidoAntiguoLmsOpenedWithHistoryPush = false;
+                }
+            }
+
+            function syncUrlAfterAntiguoLmsDrawerClose() {
+                if (contenidoAntiguoLmsOpenedWithHistoryPush) {
+                    contenidoAntiguoLmsOpenedWithHistoryPush = false;
+                    contenidoAntiguoLmsUrlActiveId = '';
+                    history.back();
+                    return;
+                }
+                var ah = contenidoAntiguoLmsUrlActiveId;
+                contenidoAntiguoLmsUrlActiveId = '';
+                if (!ah) return;
+                var antHash = buildAntiguoLmsUrlHash(ah);
+                if (location.hash === antHash) {
+                    history.replaceState(null, '', location.pathname + location.search);
+                }
+            }
+
             window.addEventListener('popstate', function () {
+                var overlayAntiguo = document.querySelector('.ubits-drawer-overlay.contenido-antiguo-lms-drawer-overlay');
+                if (overlayAntiguo && overlayAntiguo.getAttribute('aria-hidden') !== 'true') {
+                    if (!getContentIdFromAntiguoLmsUrlHash()) {
+                        overlayAntiguo.style.display = 'none';
+                        overlayAntiguo.setAttribute('aria-hidden', 'true');
+                        document.body.classList.remove('contenido-borrador-drawer-abierto');
+                        contenidoAntiguoLmsOpenedWithHistoryPush = false;
+                        contenidoAntiguoLmsUrlActiveId = '';
+                    }
+                }
                 var overlay = document.querySelector('.ubits-drawer-overlay.contenido-borrador-drawer-overlay');
                 if (!overlay || overlay.getAttribute('aria-hidden') === 'true') return;
                 if (!getContentIdFromBorradorUrlHash()) {
@@ -286,6 +352,11 @@
                     contenidoBorradorOpenedWithHistoryPush = false;
                     contenidoBorradorUrlActiveId = '';
                 }
+            });
+
+            window.addEventListener('hashchange', function () {
+                tryOpenContenidoAntiguoLmsFromUrlHash();
+                tryOpenContenidoBorradorFromUrlHash();
             });
 
             /** Video demo público (CC0); sustituir por URL del recurso real cuando exista backend. */
@@ -465,6 +536,7 @@
                     closeOnOverlayClick: false,
                     onClose: function () {
                         document.body.classList.remove('contenido-borrador-drawer-abierto');
+                        syncUrlAfterAntiguoLmsDrawerClose();
                     }
                 });
                 if (overlayDrawer) {
@@ -475,6 +547,7 @@
                     if (drawerPanel) drawerPanel.id = 'contenido-antiguo-lms-drawer-panel';
                     var drawerBody = overlayDrawer.querySelector('.ubits-drawer-body');
                     if (drawerBody) drawerBody.id = 'contenido-antiguo-lms-drawer-body';
+                    syncUrlAfterAntiguoLmsDrawerOpen(contentId);
                 }
                 wireContenidoAntiguoLmsDrawerHeader(overlayDrawer);
                 var sidebarHostId = contenidoIdToAntiguoSidebarHostId(contentId);
@@ -568,6 +641,26 @@
                     }
                 }
                 if (card) openContenidoBorradorEditorFromCard(card);
+            }
+
+            function tryOpenContenidoAntiguoLmsFromUrlHash() {
+                var cid = getContentIdFromAntiguoLmsUrlHash();
+                if (!cid) return;
+                if (document.body.classList.contains('contenido-borrador-drawer-abierto')) return;
+                var grid = document.getElementById('contenidos-cards-grid');
+                if (!grid) return;
+                var wraps = grid.querySelectorAll('.contenidos-card-item');
+                var card = null;
+                for (var i = 0; i < wraps.length; i++) {
+                    if (wraps[i].getAttribute('data-contenido-id') === cid) {
+                        var c = wraps[i].querySelector('.course-card');
+                        if (c && c.getAttribute('data-legacy-lms') === 'true') {
+                            card = c;
+                        }
+                        break;
+                    }
+                }
+                if (card) openContenidoAntiguoLmsEditorFromCard(card);
             }
 
             var gridContenidos = document.getElementById('contenidos-cards-grid');
@@ -727,6 +820,7 @@
                 });
                 contenidosCardsBuilt = true;
                 setTimeout(function () {
+                    tryOpenContenidoAntiguoLmsFromUrlHash();
                     tryOpenContenidoBorradorFromUrlHash();
                     if (typeof tryOpenCrearContenidoFromUrlHash === 'function') {
                         tryOpenCrearContenidoFromUrlHash();
@@ -1389,6 +1483,7 @@
                             renderContenidosCardsGrid();
                         } else {
                             setTimeout(function () {
+                                tryOpenContenidoAntiguoLmsFromUrlHash();
                                 tryOpenContenidoBorradorFromUrlHash();
                                 if (typeof tryOpenCrearContenidoFromUrlHash === 'function') {
                                     tryOpenCrearContenidoFromUrlHash();
