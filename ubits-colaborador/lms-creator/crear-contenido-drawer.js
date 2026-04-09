@@ -268,6 +268,7 @@
         block.classList.add('ubits-learn-img-trailer--image');
         if (hasTrailer) block.classList.add('ubits-learn-img-trailer--trailer');
         else block.classList.remove('ubits-learn-img-trailer--trailer');
+        block.classList.remove('ubits-learn-img-trailer--playing');
         block.removeAttribute('data-img-trailer-init');
         block.removeAttribute('data-learn-img-trailer-init');
         block.innerHTML =
@@ -276,6 +277,8 @@
             getLearnContentImgTrailerEditHtml({ editButtonId: 'crear-contenido-portada-cambiar' });
         var img = block.querySelector('.ubits-learn-img-trailer__img');
         if (img) img.src = dataUrl;
+        if (hasTrailer) block.setAttribute('data-trailer-url', crearContenidoPortadaTrailerUrl);
+        else block.removeAttribute('data-trailer-url');
         var cambiar = document.getElementById('crear-contenido-portada-cambiar');
         if (cambiar) {
             cambiar.addEventListener('click', function (e) {

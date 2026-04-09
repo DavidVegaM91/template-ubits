@@ -89,7 +89,9 @@
 
     function buildThumbInnerHtml(dataUrl, trailerUrl) {
         var hasImg = dataUrl && String(dataUrl).length > 0;
-        var hasTrailer = !!(trailerUrl && String(trailerUrl).trim());
+        var tv = trailerUrl != null ? String(trailerUrl).trim() : '';
+        var hasTrailer = tv.length > 0;
+        var trailerDataAttr = hasTrailer && hasImg ? ' data-trailer-url="' + esc(tv) + '"' : '';
         if (!hasImg) {
             return (
                 '<div class="portada-modal__thumb-wrap">' +
@@ -108,7 +110,9 @@
             '<div class="portada-modal__thumb-wrap">' +
             '<div class="' +
             rootClass +
-            '">' +
+            '"' +
+            trailerDataAttr +
+            '>' +
             global.getLearnContentImgTrailerEmptyHtml({ hint: getPortadaModalImageHint() }) +
             buildFigureHtml(dataUrl, hasTrailer) +
             global.getLearnContentImgTrailerEditHtml({ editButtonId: 'portada-modal-img-edit' }) +
@@ -133,7 +137,7 @@
             '</div>' +
             '<div class="portada-modal__info">' +
             '<i class="far fa-circle-info" aria-hidden="true"></i>' +
-            '<p class="ubits-body-xs-regular">Para previsualizar el tráiler debes dar clic en el botón «Confirmar» y verlo en la página de Información general.</p>' +
+            '<p class="ubits-body-xs-regular">Puedes reproducir el tráiler con el botón de play. Al confirmar, la portada y el enlace quedan guardados en Información general.</p>' +
             '</div>' +
             '</div>'
         );
@@ -144,17 +148,7 @@
         if (thumbHost && global.initLearnContentImgTrailer) {
             thumbHost.removeAttribute('data-img-trailer-init');
             thumbHost.removeAttribute('data-learn-img-trailer-init');
-            global.initLearnContentImgTrailer(thumbHost, {
-                onPlay: function () {
-                    if (typeof global.showToast === 'function') {
-                        global.showToast(
-                            'info',
-                            'Vista previa del tráiler disponible tras confirmar en Información general.',
-                            { containerId: 'ubits-toast-container', duration: 3500 }
-                        );
-                    }
-                }
-            });
+            global.initLearnContentImgTrailer(thumbHost, {});
         }
     }
 
@@ -227,6 +221,11 @@
             var tv = getTrailerUrlFromInput();
             if (rootEl) {
                 rootEl.innerHTML = buildThumbInnerHtml(dataUrl, tv);
+                var learn = rootEl.querySelector('.portada-modal__learn');
+                if (learn) {
+                    if (tv && String(tv).trim()) learn.setAttribute('data-trailer-url', String(tv).trim());
+                    else learn.removeAttribute('data-trailer-url');
+                }
                 wireThumbAndPlay(document.getElementById(OVERLAY_ID));
                 bindThumbCtas();
             }

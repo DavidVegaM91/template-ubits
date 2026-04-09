@@ -2,7 +2,8 @@
  * UBITS — Learn content: imagen y tráiler
  * Textos por defecto: LEARN_CONTENT_IMG_TRAILER_DEFAULTS
  * Marcado vacío: getLearnContentImgTrailerEmptyHtml({ ... })
- * Demo: al hacer clic en play (estado tráiler) muestra toast o dispara callback.
+ * Reproducir tráiler: data-trailer-url en la raíz + clic en play carga el iframe en el mismo bloque
+ * (YouTube, Vimeo, Drive). Sin embed: nueva pestaña. Opcional onPlay() sustituye el comportamiento.
  *
  * @param {string|HTMLElement} rootSelector - .ubits-learn-img-trailer
  * @param {{ onPlay?: function(): void }} [options]
@@ -17,7 +18,8 @@
         editButton: 'Editar',
         playAriaLabel: 'Reproducir tráiler',
         regionAriaLabel: 'Imagen o tráiler del contenido',
-        toastPlayFallback: 'Reproducir tráiler (conecta tu reproductor o URL).'
+        toastPlayFallback: 'Añade un enlace de tráiler para reproducirlo.',
+        iframeTitle: 'Tráiler'
     };
 
     function escapeHtml(s) {
@@ -27,6 +29,112 @@
             .replace(/</g, '&lt;')
             .replace(/>/g, '&gt;')
             .replace(/"/g, '&quot;');
+    }
+
+    /**
+     * Devuelve URL lista para iframe si es soportada; si no, null (abrir página en nueva pestaña).
+     */
+    function getTrailerEmbedUrl(raw) {
+        if (!raw || !String(raw).trim()) return null;
+        try {
+            var u = new URL(String(raw).trim());
+            if (u.protocol !== 'http:' && u.protocol !== 'https:') return null;
+            var h = u.hostname.toLowerCase();
+            if (h.includes('youtube.com') || h.includes('youtube-nocookie.com')) {
+                if (u.pathname.indexOf('/embed/') === 0) {
+                    return u.origin + u.pathname + u.search;
+                }
+                var v = u.searchParams.get('v');
+                if (v) return 'https://www.youtube-nocookie.com/embed/' + encodeURIComponent(v) + '?rel=0';
+                var shorts = u.pathname.split('/').filter(Boolean);
+                var si = shorts.indexOf('shorts');
+                if (si >= 0 && shorts[si + 1]) {
+                    return 'https://www.youtube-nocookie.com/embed/' + encodeURIComponent(shorts[si + 1].split('?')[0]) + '?rel=0';
+                }
+            }
+            if (h === 'youtu.be') {
+                var yid = u.pathname.replace(/^\//, '').split('/')[0];
+                if (yid) return 'https://www.youtube-nocookie.com/embed/' + encodeURIComponent(yid.split('?')[0]) + '?rel=0';
+            }
+            if (h.includes('vimeo.com')) {
+                if (h.indexOf('player.') === 0 || u.pathname.indexOf('/video/') !== -1) {
+                    var pv = u.pathname.match(/\/video\/(\d+)/);
+                    if (pv) return 'https://player.vimeo.com/video/' + pv[1];
+                }
+                var vm = u.pathname.match(/\/(\d+)(?:\/|$)/);
+                if (vm) return 'https://player.vimeo.com/video/' + vm[1];
+            }
+            if (h.includes('drive.google.com') && u.pathname.indexOf('/file/d/') !== -1) {
+                var dm = u.pathname.match(/\/file\/d\/([^/]+)/);
+                if (dm) return 'https://drive.google.com/file/d/' + dm[1] + '/preview';
+            }
+            return null;
+        } catch (e) {
+            return null;
+        }
+    }
+
+    function embedUrlWithAutoplay(embed) {
+        if (!embed) return '';
+        var sep = embed.indexOf('?') >= 0 ? '&' : '?';
+        return embed + sep + 'autoplay=1';
+    }
+
+    /**
+     * Inserta iframe de reproducción en el bloque (misma caja 16:9), encima de la imagen.
+     */
+    function playTrailerInline(root, pageUrl) {
+        var url = pageUrl != null ? String(pageUrl).trim() : '';
+        if (!url) {
+            if (typeof window.showToast === 'function') {
+                window.showToast('info', LEARN_CONTENT_IMG_TRAILER_DEFAULTS.toastPlayFallback, {
+                    containerId: 'ubits-toast-container',
+                    duration: 3500
+                });
+            }
+            return;
+        }
+        var embed = getTrailerEmbedUrl(url);
+        if (!embed) {
+            try {
+                window.open(url, '_blank', 'noopener,noreferrer');
+            } catch (err) {}
+            return;
+        }
+        var iframeTitle = LEARN_CONTENT_IMG_TRAILER_DEFAULTS.iframeTitle || 'Tráiler';
+        var src = embedUrlWithAutoplay(embed);
+        var host = root.querySelector('.ubits-learn-img-trailer__embed-host');
+        if (!host) {
+            host = document.createElement('div');
+            host.className = 'ubits-learn-img-trailer__embed-host';
+            var edit = root.querySelector('.ubits-learn-img-trailer__edit');
+            if (edit) root.insertBefore(host, edit);
+            else root.appendChild(host);
+        }
+        host.innerHTML =
+            '<iframe title="' +
+            escapeHtml(iframeTitle) +
+            '" src="' +
+            escapeHtml(src) +
+            '" allowfullscreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe>';
+        root.classList.add('ubits-learn-img-trailer--playing');
+    }
+
+    /** Sin nodo raíz: abre el enlace del tráiler en una pestaña nueva. */
+    function playTrailerVideo(pageUrl) {
+        var url = pageUrl != null ? String(pageUrl).trim() : '';
+        if (!url) {
+            if (typeof window.showToast === 'function') {
+                window.showToast('info', LEARN_CONTENT_IMG_TRAILER_DEFAULTS.toastPlayFallback, {
+                    containerId: 'ubits-toast-container',
+                    duration: 3500
+                });
+            }
+            return;
+        }
+        try {
+            window.open(url, '_blank', 'noopener,noreferrer');
+        } catch (err) {}
     }
 
     /**
@@ -100,9 +208,10 @@
                 e.stopPropagation();
                 if (typeof options.onPlay === 'function') {
                     options.onPlay();
-                } else if (typeof window.showToast === 'function') {
-                    window.showToast('info', LEARN_CONTENT_IMG_TRAILER_DEFAULTS.toastPlayFallback);
+                    return;
                 }
+                var dataUrl = root.getAttribute('data-trailer-url');
+                playTrailerInline(root, dataUrl);
             });
         }
     }
@@ -118,4 +227,7 @@
     window.getLearnContentImgTrailerEditHtml = getLearnContentImgTrailerEditHtml;
     window.initLearnContentImgTrailer = initLearnContentImgTrailer;
     window.initAllLearnContentImgTrailers = initAllLearnContentImgTrailers;
+    window.getTrailerEmbedUrl = getTrailerEmbedUrl;
+    window.playLearnContentTrailerInline = playTrailerInline;
+    window.playLearnContentTrailer = playTrailerVideo;
 })();
