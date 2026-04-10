@@ -697,7 +697,7 @@
     padding: var(--padding-md);
     background: var(--ubits-bg-2);
     border: none;
-    border-radius: var(--border-radius-md);
+    border-radius: var(--border-radius-lg);
 }
 
 .ubits-ia-chat-thread__resource-card-main {
@@ -856,7 +856,7 @@
 .ubits-ia-chat-thread__input-container {
     background: var(--ubits-bg-1);
     border: 1px solid var(--ubits-border-1);
-    border-radius: var(--border-radius-md);
+    border-radius: var(--border-radius-lg);
     padding: var(--padding-md);
     display: flex;
     flex-direction: row;

@@ -976,7 +976,7 @@
 /* Indicador visual: contenidos ya seleccionados en el drawer */
 .drawer-cursos-resultados-bg .course-card-compact--selected {
     border: 2px solid var(--ubits-accent-brand);
-    border-radius: var(--border-radius-sm);
+    border-radius: var(--border-radius-lg);
     box-sizing: border-box;
 }
 
@@ -1108,11 +1108,11 @@
     gap: var(--gap-none);
 }
 
-/* Mismo border-radius que card-content-compact (var(--border-radius-sm)) */
+/* Mismo border-radius que card-content-compact (var(--border-radius-lg)) */
 .drawer-competencia-card {
     background: var(--ubits-bg-1);
     border: 1px solid var(--ubits-border-1);
-    border-radius: var(--border-radius-sm);
+    border-radius: var(--border-radius-lg);
     overflow: hidden;
     cursor: pointer;
     display: flex;
@@ -1198,7 +1198,7 @@
     margin-top: var(--gap-sm);
     padding: var(--padding-sm);
     background: var(--ubits-bg-1);
-    border-radius: var(--border-radius-sm);
+    border-radius: var(--border-radius-lg);
 }
 
 .competencia-habilidades-container.drawer-competencias-habilidades.is-visible {

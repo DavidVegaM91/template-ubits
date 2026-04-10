@@ -5,7 +5,7 @@
 /* NOTA: ubits-colors.css debe cargarse ANTES de este archivo en el HTML */
 
 body {
-    background-color: #F3F3F4 !important; /* Color directo para Netlify */
+    background-color: var(--ubits-bg-2) !important;
     margin: 0;
     padding: var(--padding-none);
     overflow-x: hidden;
@@ -17,11 +17,11 @@ body {
 
 /* Asegurar fondo claro explícitamente - CRITICAL para Netlify */
 body[data-theme="light"] {
-    background-color: #F3F3F4 !important;
+    background-color: var(--ubits-bg-2) !important;
 }
 
 body[data-theme="light"] .dashboard-container {
-    background-color: #F3F3F4 !important;
+    background-color: var(--ubits-bg-2) !important;
 }
 
 /* Scroll bar UBITS: color token, fondo transparente (WebKit: Chrome, Safari, Edge) */
@@ -67,7 +67,7 @@ body[data-theme="light"] .dashboard-container {
     align-items: center;
     justify-content: flex-start;
     overflow: hidden;
-    border-radius: var(--border-radius-sm);
+    border-radius: var(--border-radius-lg);
     position: fixed;
     left: 24px;
     top: 16px;
@@ -102,7 +102,7 @@ body[data-theme="light"] .dashboard-container {
     cursor: pointer;
     transition: all 0.2s ease;
     padding: var(--padding-xs);
-    border-radius: var(--border-radius-sm);
+    border-radius: var(--border-radius-lg);
 }
 
 .logo:hover {
@@ -305,7 +305,7 @@ body[data-theme="light"] .dashboard-container {
     background: var(--ubits-sidebar-bg);
     color: var(--ubits-fg-1-high-static-inverted);
     padding: var(--padding-sm) var(--padding-md);
-    border-radius: var(--border-radius-sm);
+    border-radius: var(--border-radius-lg);
     white-space: nowrap;
     z-index: 10000;
     box-shadow: 0px 2px 8px rgba(0,0,0,0.15);
@@ -749,16 +749,16 @@ body[data-theme="dark"] .content-area.no-background {
     }
 }
 
-/* Modo claro - FORZAR explícitamente (CRITICAL para Netlify) - DEBE IR ANTES de modo oscuro */
+/* Modo claro - FORZAR explícitamente - DEBE IR ANTES de modo oscuro */
 body[data-theme="light"],
 body:not([data-theme="dark"]) {
-    background-color: #F3F3F4 !important;
+    background-color: var(--ubits-bg-2) !important;
     overflow-y: auto !important;
 }
 
 body[data-theme="light"] .dashboard-container,
 body:not([data-theme="dark"]) .dashboard-container {
-    background-color: #F3F3F4 !important;
+    background-color: var(--ubits-bg-2) !important;
     overflow-y: visible !important;
 }
 
@@ -807,16 +807,16 @@ body:not([data-theme="dark"]) .dashboard-container {
     color: var(--ubits-fg-2-medium-static-inverted) !important;
 }
 
-/* Modo claro - FORZAR explícitamente (CRITICAL para Netlify) - DEBE IR DESPUÉS de modo oscuro para sobrescribir */
+/* Modo claro - FORZAR explícitamente - DEBE IR DESPUÉS de modo oscuro para sobrescribir */
 body[data-theme="light"],
 body:not([data-theme="dark"]) {
-    background-color: #F3F3F4 !important;
+    background-color: var(--ubits-bg-2) !important;
     overflow-y: auto !important;
 }
 
 body[data-theme="light"] .dashboard-container,
 body:not([data-theme="dark"]) .dashboard-container {
-    background-color: #F3F3F4 !important;
+    background-color: var(--ubits-bg-2) !important;
     overflow-y: visible !important;
 }
 
@@ -965,7 +965,7 @@ body {
     width: 200px;
     background: var(--ubits-sidebar-bg);
     border: 1px solid var(--ubits-border-1);
-    border-radius: var(--border-radius-sm);
+    border-radius: var(--border-radius-lg);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     z-index: 2000;
     padding: var(--padding-sm) 0;

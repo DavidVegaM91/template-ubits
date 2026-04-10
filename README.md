@@ -82,7 +82,6 @@ Una **plantilla lista para usar** que permite a **Product Managers**, **Diseñad
 - **Paginator** - Paginación de resultados (navegación por páginas, items por página, callbacks de cambio) - **RENDERIZADO: loadPaginator()**
 - **Popover** - Panel flotante contextual (título, cuerpo, acciones; colita opcional como Tooltip; lado + alineación: 12 combinaciones; `noArrow` o sin ancla = sin flecha; cierre con Escape y clic fuera) - **RENDERIZADO: openPopover() / closePopover()**
 - **Coachmark** - Product tour (máscara + spotlight, texto del paso con Popover, pasos y navegación; `UBITS_COACHMARK.start` / `close`) - **RENDERIZADO: coachmark.js** (requiere `popover.js` + `button.css`)
-- **Copilot Chat** - Chat de asistente IA (interfaz de conversación con mensajes, input, historial) - **RENDERIZADO: loadCopilotChat()**
 - **Study Chat** - Chat de estudio con IA (interfaz especializada para aprendizaje) - **RENDERIZADO: loadStudyChat()**
 - **Avatar** - Avatar de usuario (tamaños, estados) - **RENDERIZADO: HTML directo**
 - **Calendar** - Selector de fechas (usado también por Input type calendar) - **RENDERIZADO: componente interno / HTML**
@@ -120,7 +119,6 @@ Todos los componentes UBITS requieren imports obligatorios:
 <link rel="stylesheet" href="../../components/empty-state.css">
 <link rel="stylesheet" href="../../components/paginator.css">
 <link rel="stylesheet" href="../../components/popover.css">
-<link rel="stylesheet" href="../../components/copilot-chat.css">
 <link rel="stylesheet" href="../../components/study-chat.css">
 <link rel="stylesheet" href="../../components/floating-menu.css">
 <link rel="stylesheet" href="../../components/profile-menu.css">
@@ -149,7 +147,6 @@ Todos los componentes UBITS requieren imports obligatorios:
 <script src="../../components/empty-state.js"></script>
 <script src="../../components/paginator.js"></script>
 <script src="../../components/popover.js"></script>
-<script src="../../components/copilot-chat.js"></script>
 <script src="../../components/study-chat.js"></script>
 <script src="../../components/floating-menu.js"></script>
 <script src="../../components/profile-menu.js"></script>
@@ -368,7 +365,6 @@ Todos los componentes UBITS requieren imports obligatorios:
 │   ├── tab.css + tab.js
 │   ├── empty-state.css + empty-state.js
 │   ├── paginator.css + paginator.js
-│   ├── copilot-chat.css + copilot-chat.js
 │   ├── study-chat.css + study-chat.js
 │   ├── avatar.css + avatar.js
 │   ├── calendar.css + calendar.js

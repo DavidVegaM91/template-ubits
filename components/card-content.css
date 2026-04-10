@@ -7,7 +7,7 @@
 .course-card {
     background: var(--ubits-bg-1);
     border: 1px solid transparent;
-    border-radius: var(--border-radius-sm);
+    border-radius: var(--border-radius-lg);
     overflow: hidden;
     transition: border-color 0.2s ease;
     cursor: pointer;

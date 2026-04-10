@@ -1135,7 +1135,7 @@
 /* Indicador visual: contenidos ya seleccionados en el drawer */
 .drawer-cursos-resultados-bg .course-card-compact--selected {
     border: 2px solid var(--ubits-accent-brand);
-    border-radius: var(--border-radius-sm);
+    border-radius: var(--border-radius-lg);
     box-sizing: border-box;
 }
 

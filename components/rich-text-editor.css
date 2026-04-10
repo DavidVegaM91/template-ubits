@@ -1,6 +1,6 @@
 /* ========================================
    UBITS — Rich text editor (WYSIWYG)
-   Barra de formato + área contenteditable. Creator v3 / Figma Descripción.
+   Barra de formato + área contenteditable (barra en una fila; scroll horizontal si no cabe).
    Requiere: ubits-colors.css, ubits-typography.css, button.css, fontawesome-icons.css.
    Opcional: clase .ubits-rich-text-editor--show-required-hint en el root (p. ej. preview en doc) para mostrar .ubits-rich-text-editor__hint.
    ======================================== */
@@ -44,9 +44,31 @@
 
 .ubits-rich-text-editor__toolbar {
     display: flex;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     align-items: center;
     gap: var(--gap-xs);
+    max-width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    scrollbar-color: var(--ubits-border-1) var(--ubits-bg-2);
+    padding-bottom: var(--padding-none);
+    box-sizing: border-box;
+}
+
+.ubits-rich-text-editor__toolbar::-webkit-scrollbar {
+    height: 3px;
+}
+
+.ubits-rich-text-editor__toolbar::-webkit-scrollbar-track {
+    background: var(--ubits-bg-2);
+    border-radius: var(--border-radius-full);
+}
+
+.ubits-rich-text-editor__toolbar::-webkit-scrollbar-thumb {
+    background: var(--ubits-border-1);
+    border-radius: var(--border-radius-full);
 }
 
 .ubits-rich-text-editor__toolbar .ubits-button--icon-only {

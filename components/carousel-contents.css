@@ -9,7 +9,7 @@
     position: relative;
     width: 100%;
     aspect-ratio: 21 / 9;
-    border-radius: var(--border-radius-sm);
+    border-radius: var(--border-radius-lg);
     overflow: hidden;
     background: var(--ubits-bg-1);
     touch-action: pan-x pan-y pinch-zoom; /* Permitir swipe horizontal y vertical */
@@ -52,7 +52,7 @@
     width: 100%;
     height: 100%;
     z-index: 1;
-    border-radius: var(--border-radius-sm);
+    border-radius: var(--border-radius-lg);
     overflow: hidden;
 }
 
@@ -472,7 +472,7 @@
     max-width: calc((100% - (3 * 24px)) / 4);
     min-width: calc((100% - (3 * 24px)) / 4);
     aspect-ratio: 3 / 4;
-    border-radius: var(--border-radius-sm);
+    border-radius: var(--border-radius-lg);
     overflow: hidden;
     position: relative;
     background: var(--ubits-bg-1);
@@ -1003,7 +1003,7 @@
     gap: var(--gap-none);
     align-items: stretch;
     background: var(--ubits-bg-1);
-    border-radius: var(--border-radius-sm);
+    border-radius: var(--border-radius-lg);
     overflow: hidden;
     width: 100%;
     max-width: 100%;

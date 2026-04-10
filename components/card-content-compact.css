@@ -7,7 +7,7 @@
 .course-card-compact {
     background: var(--ubits-bg-1);
     border: 1px solid transparent;
-    border-radius: var(--border-radius-sm);
+    border-radius: var(--border-radius-lg);
     overflow: hidden;
     transition: border-color 0.2s ease;
     cursor: pointer;
@@ -43,7 +43,7 @@
     flex-shrink: 0;
     width: 85px;
     height: 48px;
-    border-radius: var(--border-radius-sm);
+    border-radius: var(--border-radius-lg);
     overflow: hidden;
 }
 
@@ -79,7 +79,7 @@
     right: 0;
     padding: var(--padding-none);
     height: 4px;
-    border-radius: 0 0 8px 8px;
+    border-radius: 0 0 var(--border-radius-lg) var(--border-radius-lg);
     overflow: hidden;
 }
 

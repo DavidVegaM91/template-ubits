@@ -646,7 +646,7 @@
 .competencia-card-v1 {
     background: var(--ubits-bg-1);
     border: 1px solid transparent;
-    border-radius: var(--border-radius-sm);
+    border-radius: var(--border-radius-lg);
     overflow: visible;
     cursor: default;
     display: flex;
@@ -685,7 +685,7 @@
     object-fit: cover;
     background: var(--ubits-bg-2);
     flex-shrink: 0;
-    border-radius: var(--border-radius-sm) 0 0 6px;
+    border-radius: var(--border-radius-lg) 0 0 var(--border-radius-lg);
 }
 
 .competencia-card-v1-content {
@@ -749,7 +749,7 @@
     margin-top: 8px;
     padding: var(--padding-none);
     background: var(--ubits-bg-2);
-    border-radius: var(--border-radius-sm);
+    border-radius: var(--border-radius-lg);
     overflow: hidden;
 }
 

@@ -403,7 +403,7 @@
 .ubits-stepper__vertical-frame.ubits-stepper__vertical-frame--creator-rail {
     background-color: var(--ubits-bg-1);
     border: 1px solid var(--ubits-border-1);
-    border-radius: var(--border-radius-sm);
+    border-radius: var(--border-radius-lg);
     padding: var(--padding-lg) var(--padding-4xl);
     gap: var(--gap-lg);
     box-sizing: border-box;
@@ -518,7 +518,7 @@
     min-height: 40px;
     padding-left: var(--padding-md);
     padding-right: var(--padding-md);
-    border-radius: var(--border-radius-sm);
+    border-radius: var(--border-radius-lg);
 }
 
 .ubits-stepper__vertical-frame--creator-rail:not(.is-collapsed) .nav-button.ubits-stepper__vertical-toggle span {

@@ -7,7 +7,7 @@
 .sidebar.sidebar--contenidos-lms {
     background-color: var(--ubits-bg-1) !important;
     border: none;
-    border-radius: var(--border-radius-sm);
+    border-radius: var(--border-radius-lg);
     position: relative !important;
     left: auto !important;
     top: auto !important;
@@ -233,7 +233,7 @@
     min-height: 40px;
     padding-left: var(--padding-md);
     padding-right: var(--padding-md);
-    border-radius: var(--border-radius-sm);
+    border-radius: var(--border-radius-lg);
 }
 
 /* Mismo tamaño que .nav-button en styles.css @media (max-width: 768px). */

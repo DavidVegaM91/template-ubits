@@ -1040,7 +1040,7 @@ body.ia-chat-side-panel-open #tab-bar-container {
     min-width: 0;
     padding: var(--padding-xs) var(--padding-sm);
     border: 1px solid var(--ubits-border-1);
-    border-radius: var(--border-radius-sm);
+    border-radius: var(--border-radius-lg);
     background: var(--ubits-bg-1);
     color: var(--ubits-fg-1-high);
     font-family: 'Noto Sans', sans-serif;

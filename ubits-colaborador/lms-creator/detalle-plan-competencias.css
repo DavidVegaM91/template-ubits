@@ -584,7 +584,7 @@
 }
 #drawer-detalle-plan-agregar-cursos .drawer-cursos-resultados-bg .course-card-compact--selected {
     border: 2px solid var(--ubits-accent-brand);
-    border-radius: var(--border-radius-sm);
+    border-radius: var(--border-radius-lg);
     box-sizing: border-box;
 }
 
