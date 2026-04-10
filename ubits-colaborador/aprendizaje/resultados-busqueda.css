@@ -101,7 +101,7 @@
 }
 
 .resultados-overview-panel__header-title {
-    font-family: 'Noto Sans', sans-serif;
+    font-family: var(--ubits-font-family-sans);
     font-size: var(--font-size-md);
     font-weight: var(--font-weight-bold);
     color: var(--ubits-fg-1-high);
@@ -141,13 +141,13 @@
 
 .resultados-overview-panel__definition {
     color: var(--ubits-fg-1-medium);
-    font-family: 'Noto Sans', sans-serif;
+    font-family: var(--ubits-font-family-sans);
     font-size: var(--font-size-md);
     line-height: 24px;
 }
 
 .resultados-overview-panel__skills-label {
-    font-family: 'Noto Sans', sans-serif;
+    font-family: var(--ubits-font-family-sans);
     font-size: var(--font-size-sm);
     font-weight: var(--font-weight-bold);
     color: var(--ubits-fg-1-high);
@@ -250,7 +250,7 @@
 }
 
 .resultados-recurso-option-title {
-    font-family: 'Noto Sans', sans-serif;
+    font-family: var(--ubits-font-family-sans);
     font-size: var(--font-size-sm);
     font-weight: var(--font-weight-bold);
     color: var(--ubits-fg-1-high);
@@ -261,7 +261,7 @@
 }
 
 .resultados-recurso-option-desc {
-    font-family: 'Noto Sans', sans-serif;
+    font-family: var(--ubits-font-family-sans);
     font-size: var(--font-size-xs);
     line-height: 16px;
     color: var(--ubits-fg-1-medium);
@@ -311,7 +311,7 @@
 .buscador-title {
     color: var(--ubits-fg-1-high);
     margin: 0;
-    font-family: 'Noto Sans', sans-serif;
+    font-family: var(--ubits-font-family-sans);
     font-size: var(--font-size-md);
     font-weight: var(--font-weight-bold);
     line-height: 24px;
@@ -325,14 +325,14 @@
 
 .buscador-results-count {
     color: var(--ubits-fg-1-medium);
-    font-family: 'Noto Sans', sans-serif;
+    font-family: var(--ubits-font-family-sans);
     font-size: var(--font-size-sm);
     font-weight: var(--font-weight-regular);
 }
 
 .buscador-results-text {
     color: var(--ubits-fg-1-medium);
-    font-family: 'Noto Sans', sans-serif;
+    font-family: var(--ubits-font-family-sans);
     font-size: var(--font-size-sm);
     font-weight: var(--font-weight-regular);
 }

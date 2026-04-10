@@ -71,7 +71,7 @@
     min-width: 0;
     text-align: left;
     box-sizing: border-box;
-    font-family: 'Noto Sans', sans-serif;
+    font-family: var(--ubits-font-family-sans);
     font-size: var(--font-size-sm);
     font-weight: var(--font-weight-regular);
     color: var(--ubits-fg-1-high);

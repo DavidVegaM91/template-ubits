@@ -34,7 +34,7 @@
 
 /* Nombre editable inline (como plan-detail) */
 .widget-crear-grupo .task-detail-title-editable {
-    font-family: 'Noto Sans', sans-serif;
+    font-family: var(--ubits-font-family-sans);
     line-height: 1.25;
     color: var(--ubits-fg-1-high);
     border: none;
@@ -62,7 +62,7 @@
 
 /* Descripción editable inline (como plan-detail) */
 .widget-crear-grupo .task-detail-desc-editable {
-    font-family: 'Noto Sans', sans-serif;
+    font-family: var(--ubits-font-family-sans);
     font-size: var(--font-size-sm);
     line-height: 1.5;
     color: var(--ubits-fg-1-medium);

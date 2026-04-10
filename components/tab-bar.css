@@ -89,7 +89,7 @@
     text-align: center;
     line-height: 1.2;
     transition: color 0.2s ease;
-    font-family: 'Noto Sans', sans-serif !important;
+    font-family: var(--ubits-font-family-sans) !important;
     font-size: var(--font-size-sm);
     font-weight: var(--font-weight-regular);
 }

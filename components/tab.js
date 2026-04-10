@@ -130,7 +130,7 @@
  * - El componente tab usa los mismos altos que el componente button
  * - Los iconos son OPCIONALES - por defecto los tabs no tienen iconos
  * - Los iconos deben usar FontAwesome (preferiblemente outline: `far`) cuando se usen
- * - El texto usa tipografía UBITS (Noto Sans)
+ * - El texto usa tipografía UBITS (Inter)
  * - El estado activo cambia el font-weight a 700 (bold)
  * - Todos los colores usan tokens UBITS (var(--ubits-*))
  * - Para tabs sin icono, simplemente omite el elemento <i>

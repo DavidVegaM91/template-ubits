@@ -215,7 +215,7 @@
     height: var(--ubits-stepper-ring);
     border-radius: var(--border-radius-full);
     box-sizing: border-box;
-    font-family: 'Noto Sans', sans-serif;
+    font-family: var(--ubits-font-family-sans);
     font-size: var(--font-size-sm);
     font-weight: var(--font-weight-semibold);
     line-height: 1;
@@ -266,7 +266,7 @@
 }
 
 .ubits-stepper__label {
-    font-family: 'Noto Sans', sans-serif;
+    font-family: var(--ubits-font-family-sans);
     font-size: var(--font-size-sm);
     line-height: 1.35;
     color: var(--ubits-fg-1-medium);

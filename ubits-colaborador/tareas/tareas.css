@@ -334,7 +334,7 @@ body.page-tareas .dashboard-container {
     border-radius: var(--border-radius-md);
     cursor: pointer;
     transition: all 0.2s ease;
-    font-family: 'Noto Sans', sans-serif;
+    font-family: var(--ubits-font-family-sans);
     position: relative;
     white-space: nowrap;
     box-sizing: border-box;

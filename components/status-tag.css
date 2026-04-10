@@ -16,7 +16,7 @@
     gap: var(--gap-sm);
     padding: var(--padding-sm) var(--padding-md);
     border-radius: var(--border-radius-sm);
-    font-family: 'Noto Sans', sans-serif;
+    font-family: var(--ubits-font-family-sans);
     font-size: var(--font-size-xs);
     font-weight: var(--font-weight-semibold);
     line-height: 16px;

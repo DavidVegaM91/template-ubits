@@ -16,7 +16,7 @@
     padding: var(--padding-md);
     border: none;
     border-radius: var(--border-radius-sm);
-    font-family: 'Noto Sans', sans-serif;
+    font-family: var(--ubits-font-family-sans);
     font-weight: var(--font-weight-semibold);
     line-height: 1;
     text-decoration: none;
@@ -124,7 +124,7 @@
    ======================================== */
 
 .ubits-tab span {
-    font-family: 'Noto Sans', sans-serif;
+    font-family: var(--ubits-font-family-sans);
     font-size: var(--font-size-sm);
     font-weight: var(--font-weight-semibold);
     line-height: 13px;
@@ -150,7 +150,7 @@
 
 /* Aplicar tipografía UBITS al texto del tab medium */
 .ubits-tab span {
-    font-family: 'Noto Sans', sans-serif;
+    font-family: var(--ubits-font-family-sans);
     font-size: var(--font-size-sm);
     font-weight: var(--font-weight-semibold);
     line-height: 13px;
@@ -180,7 +180,7 @@
 
 /* Aplicar tipografía UBITS al texto del tab extra small - ubits-body-xs-semibold */
 .ubits-tab--xs span {
-    font-family: 'Noto Sans', sans-serif;
+    font-family: var(--ubits-font-family-sans);
     font-size: var(--font-size-xs);
     font-weight: var(--font-weight-semibold);
     line-height: 11px;
@@ -209,7 +209,7 @@
 
 /* Aplicar tipografía UBITS al texto del tab small - ubits-body-sm-semibold */
 .ubits-tab--sm span {
-    font-family: 'Noto Sans', sans-serif;
+    font-family: var(--ubits-font-family-sans);
     font-size: var(--font-size-sm);
     font-weight: var(--font-weight-semibold);
     line-height: 13px;
@@ -238,7 +238,7 @@
 
 /* Aplicar tipografía UBITS al texto del tab large */
 .ubits-tab--lg span {
-    font-family: 'Noto Sans', sans-serif;
+    font-family: var(--ubits-font-family-sans);
     font-size: var(--font-size-h2);
     font-weight: var(--font-weight-semibold);
     line-height: 20px;

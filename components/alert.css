@@ -9,7 +9,7 @@
     padding: var(--padding-sm);
     border-radius: var(--border-radius-md);
     position: relative;
-    font-family: 'Noto Sans', sans-serif;
+    font-family: var(--ubits-font-family-sans);
     box-sizing: border-box;
     width: 100%;
 }

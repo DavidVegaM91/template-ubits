@@ -30,7 +30,7 @@
     color: var(--ubits-fg-1-high-inverted);
     padding: var(--padding-sm) var(--padding-md);
     border-radius: var(--border-radius-sm);
-    font-family: 'Noto Sans', sans-serif;
+    font-family: var(--ubits-font-family-sans);
     font-size: var(--font-size-sm);
     line-height: 19.5px;
     font-weight: var(--font-weight-regular);

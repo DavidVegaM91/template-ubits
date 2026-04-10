@@ -37,7 +37,7 @@
 }
 
 .widget-crear-plan-contenidos .task-detail-title-editable {
-    font-family: 'Noto Sans', sans-serif;
+    font-family: var(--ubits-font-family-sans);
     line-height: 1.25;
     color: var(--ubits-fg-1-high);
     border: none;
@@ -126,7 +126,7 @@
 }
 
 .asignacion-plan-card__stat-value {
-    font-family: 'Noto Sans', sans-serif;
+    font-family: var(--ubits-font-family-sans);
     font-size: var(--font-size-h1);
     font-weight: var(--font-weight-bold);
     line-height: 1.2;
@@ -252,7 +252,7 @@
 }
 
 .asignacion-plan-card__stat-value--masivo {
-    font-family: 'Noto Sans', sans-serif;
+    font-family: var(--ubits-font-family-sans);
     font-size: var(--font-size-h1);
     font-weight: var(--font-weight-bold);
     line-height: 1.2;

@@ -24,7 +24,7 @@
 }
 
 .sidebar-title {
-    font-family: 'Noto Sans', sans-serif;
+    font-family: var(--ubits-font-family-sans);
     font-size: var(--font-size-sm);
     font-weight: var(--font-weight-semibold);
     color: var(--ubits-fg-1-high);
@@ -39,7 +39,7 @@
 }
 
 .sidebar-subtitle {
-    font-family: 'Noto Sans', sans-serif;
+    font-family: var(--ubits-font-family-sans);
     font-size: var(--font-size-sm);
     font-weight: var(--font-weight-semibold);
     color: var(--ubits-fg-1-medium);
@@ -72,7 +72,7 @@
 }
 
 .sidebar-text {
-    font-family: 'Noto Sans', sans-serif;
+    font-family: var(--ubits-font-family-sans);
     font-size: var(--font-size-sm);
     color: var(--ubits-fg-1-high);
     transition: color 0.2s ease;

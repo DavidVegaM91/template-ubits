@@ -15,7 +15,7 @@
     padding: 4px 8px;
     min-height: 28px;
     border-radius: 1000px;
-    font-family: 'Noto Sans', sans-serif;
+    font-family: var(--ubits-font-family-sans);
     font-size: 13px;
     font-weight: var(--font-weight-regular);
     line-height: 1;

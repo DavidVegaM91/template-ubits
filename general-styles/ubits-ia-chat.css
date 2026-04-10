@@ -116,7 +116,7 @@
     padding: 0;
     border: none;
     background: transparent;
-    font-family: 'Noto Sans', sans-serif;
+    font-family: var(--ubits-font-family-sans);
     font-size: var(--font-size-md);
     font-weight: var(--font-weight-semibold);
     line-height: 1.4;
@@ -250,7 +250,7 @@
 }
 
 .ubits-ia-chat-thread__welcome-greeting {
-    font-family: 'Noto Sans', sans-serif;
+    font-family: var(--ubits-font-family-sans);
     font-size: var(--font-size-md);
     font-weight: var(--font-weight-regular);
     line-height: 24px;
@@ -259,7 +259,7 @@
 }
 
 .ubits-ia-chat-thread__welcome-prompt {
-    font-family: 'Noto Sans', sans-serif;
+    font-family: var(--ubits-font-family-sans);
     font-size: var(--font-size-h1);
     font-weight: var(--font-weight-regular);
     line-height: 28px;
@@ -316,7 +316,7 @@
 }
 
 .ubits-ia-chat-thread__courses-prompt {
-    font-family: 'Noto Sans', sans-serif;
+    font-family: var(--ubits-font-family-sans);
     font-size: var(--font-size-sm);
     font-weight: var(--font-weight-regular);
     line-height: 20px;
@@ -338,7 +338,7 @@
 }
 
 .ubits-ia-chat-thread__plan-title {
-    font-family: 'Noto Sans', sans-serif;
+    font-family: var(--ubits-font-family-sans);
     font-size: var(--font-size-md);
     font-weight: var(--font-weight-regular);
     line-height: 24px;
@@ -354,7 +354,7 @@
 }
 
 .ubits-ia-chat-thread__plan-detail-item {
-    font-family: 'Noto Sans', sans-serif;
+    font-family: var(--ubits-font-family-sans);
     font-size: var(--font-size-sm);
     font-weight: var(--font-weight-regular);
     line-height: 20px;
@@ -367,7 +367,7 @@
 }
 
 .ubits-ia-chat-thread__plan-courses-title {
-    font-family: 'Noto Sans', sans-serif;
+    font-family: var(--ubits-font-family-sans);
     font-size: var(--font-size-sm);
     font-weight: var(--font-weight-semibold);
     line-height: 20px;
@@ -377,7 +377,7 @@
 }
 
 .ubits-ia-chat-thread__plan-prompt {
-    font-family: 'Noto Sans', sans-serif;
+    font-family: var(--ubits-font-family-sans);
     font-size: var(--font-size-sm);
     font-weight: var(--font-weight-regular);
     line-height: 20px;
@@ -466,7 +466,7 @@
 
 /* Texto del mensaje */
 .ubits-ia-chat-thread__message-text {
-    font-family: 'Noto Sans', sans-serif;
+    font-family: var(--ubits-font-family-sans);
     font-size: var(--font-size-md);
     line-height: 24px;
     margin: 0 0 8px 0;
@@ -648,7 +648,7 @@
 
 /* Timestamp */
 .ubits-ia-chat-thread__timestamp {
-    font-family: 'Noto Sans', sans-serif;
+    font-family: var(--ubits-font-family-sans);
     font-size: var(--font-size-xs);
     font-weight: var(--font-weight-regular);
     line-height: 19.5px;
@@ -792,7 +792,7 @@
 }
 
 .ubits-ia-chat-thread__typing-text {
-    font-family: 'Noto Sans', sans-serif;
+    font-family: var(--ubits-font-family-sans);
     font-style: normal;
     font-size: var(--font-size-sm);
     line-height: 20px;
@@ -881,7 +881,7 @@
 
 .ubits-ia-chat-thread__input-placeholder {
     flex: 1;
-    font-family: 'Noto Sans', sans-serif;
+    font-family: var(--ubits-font-family-sans);
     font-size: var(--font-size-md);
     font-weight: var(--font-weight-regular);
     line-height: 28.8px;
@@ -894,7 +894,7 @@
     border: none;
     outline: none;
     background: transparent;
-    font-family: 'Noto Sans', sans-serif;
+    font-family: var(--ubits-font-family-sans);
     font-size: var(--font-size-md);
     font-weight: var(--font-weight-regular);
     line-height: 28.8px;

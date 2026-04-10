@@ -144,7 +144,7 @@
     flex-shrink: 0;
     line-height: 0;
     transition: transform 0.15s ease;
-    /* ubits-typography fuerza Noto en [class*="ubits-"] y rompe el glifo FA del hijo i en algunos navegadores. */
+    /* ubits-typography fuerza Inter en [class*="ubits-"] y rompe el glifo FA del hijo i en algunos navegadores. */
     font-family: 'Font Awesome 6 Pro', 'Font Awesome 6 Free', sans-serif !important;
     -webkit-appearance: none;
     appearance: none;

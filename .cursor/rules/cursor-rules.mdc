@@ -707,7 +707,7 @@ border: 1px solid var(--ubits-border-1);
 
 **If you MUST create custom CSS, ALWAYS include:**
 ```css
-font-family: 'Noto Sans', sans-serif;
+font-family: var(--ubits-font-family-sans);
 font-size: [appropriate size];
 line-height: [appropriate line-height];
 ```

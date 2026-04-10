@@ -16,7 +16,7 @@
     padding: var(--padding-md) var(--padding-lg);
     border: none;
     border-radius: var(--border-radius-sm);
-    font-family: 'Noto Sans', sans-serif;
+    font-family: var(--ubits-font-family-sans);
     font-weight: var(--font-weight-semibold);
     line-height: 1;
     text-decoration: none;
@@ -308,7 +308,7 @@
 
 /* Aplicar tipografía UBITS al texto del botón medium */
 .ubits-button span {
-    font-family: 'Noto Sans', sans-serif;
+    font-family: var(--ubits-font-family-sans);
     font-size: var(--font-size-md);
     font-weight: var(--font-weight-semibold);
     line-height: 24px;
@@ -330,7 +330,7 @@
 
 /* Aplicar tipografía UBITS al texto del botón extra small - ubits-body-xs-semibold */
 .ubits-button--xs span {
-    font-family: 'Noto Sans', sans-serif;
+    font-family: var(--ubits-font-family-sans);
     font-size: var(--font-size-xs);
     font-weight: var(--font-weight-semibold);
     line-height: 16.5px;
@@ -351,7 +351,7 @@
 
 /* Aplicar tipografía UBITS al texto del botón small - ubits-body-sm-semibold */
 .ubits-button--sm span {
-    font-family: 'Noto Sans', sans-serif;
+    font-family: var(--ubits-font-family-sans);
     font-size: var(--font-size-sm);
     font-weight: var(--font-weight-semibold);
     line-height: 19.5px;
@@ -372,7 +372,7 @@
 
 /* Aplicar tipografía UBITS al texto del botón large */
 .ubits-button--lg span {
-    font-family: 'Noto Sans', sans-serif;
+    font-family: var(--ubits-font-family-sans);
     font-size: var(--font-size-h2);
     font-weight: var(--font-weight-semibold);
     line-height: 30px;
@@ -400,7 +400,7 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    font-family: 'Noto Sans', sans-serif;
+    font-family: var(--ubits-font-family-sans);
     line-height: 1;
     color: var(--ubits-btn-primary-fg) !important;
 }

@@ -103,7 +103,7 @@
     justify-content: center;
     gap: var(--gap-sm);
     padding: var(--padding-sm) var(--padding-md);
-    font-family: 'Noto Sans', sans-serif;
+    font-family: var(--ubits-font-family-sans);
     font-size: var(--font-size-sm);
     color: var(--ubits-fg-1-medium);
 }
@@ -124,7 +124,7 @@
     min-width: 0;
     box-sizing: border-box;
     text-align: left;
-    font-family: 'Noto Sans', sans-serif;
+    font-family: var(--ubits-font-family-sans);
     font-size: var(--font-size-sm);
     font-weight: var(--font-weight-regular);
     color: var(--ubits-fg-1-high);

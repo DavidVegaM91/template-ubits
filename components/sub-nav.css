@@ -63,7 +63,7 @@
 
 /* Nav Title */
 .nav-title {
-    font-family: 'Noto Sans', sans-serif;
+    font-family: var(--ubits-font-family-sans);
     font-weight: var(--font-weight-semibold);
     font-size: var(--font-size-md);
     line-height: 24px;
@@ -161,7 +161,7 @@
 }
 
 .hamburger-item span {
-    font-family: 'Noto Sans', sans-serif;
+    font-family: var(--ubits-font-family-sans);
     font-size: var(--font-size-sm);
     line-height: 20px;
     white-space: nowrap;
@@ -213,7 +213,7 @@
 
 /* Nav Tab Text */
 .nav-tab span {
-    font-family: 'Noto Sans', sans-serif;
+    font-family: var(--ubits-font-family-sans);
     font-size: var(--font-size-md);
     color: var(--ubits-fg-1-medium);
     text-align: left;
@@ -279,7 +279,7 @@
 }
 
 .module-name-label {
-    font-family: 'Noto Sans', sans-serif;
+    font-family: var(--ubits-font-family-sans);
     font-size: var(--font-size-xs);
     line-height: 11px;
     color: var(--ubits-fg-1-medium);
@@ -310,7 +310,7 @@
     color: var(--ubits-btn-secondary-fg-default);
     border: 1px solid var(--ubits-btn-secondary-border);
     border-radius: var(--border-radius-sm);
-    font-family: 'Noto Sans', sans-serif;
+    font-family: var(--ubits-font-family-sans);
     font-weight: var(--font-weight-semibold);
     line-height: 0;
     cursor: pointer;
@@ -334,7 +334,7 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    font-family: 'Noto Sans', sans-serif;
+    font-family: var(--ubits-font-family-sans);
     font-size: var(--font-size-sm);
     /* Tamaño SM: igual que ubits-button--sm span */
     font-weight: var(--font-weight-semibold);
@@ -406,7 +406,7 @@
 }
 
 .module-selector-item span {
-    font-family: 'Noto Sans', sans-serif;
+    font-family: var(--ubits-font-family-sans);
     font-size: var(--font-size-sm);
     line-height: 20px;
     white-space: nowrap;

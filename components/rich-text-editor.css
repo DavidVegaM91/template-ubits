@@ -103,7 +103,7 @@
     margin: 0;
     outline: none;
     color: var(--ubits-fg-1-medium);
-    font-family: 'Noto Sans', sans-serif;
+    font-family: var(--ubits-font-family-sans);
     font-size: var(--font-size-md);
     line-height: 1.5;
 }
@@ -126,7 +126,7 @@
     right: var(--padding-md);
     color: var(--ubits-fg-1-medium);
     pointer-events: none;
-    font-family: 'Noto Sans', sans-serif;
+    font-family: var(--ubits-font-family-sans);
     font-size: var(--font-size-md);
     line-height: 1.5;
 }

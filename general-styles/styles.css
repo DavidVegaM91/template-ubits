@@ -1,3 +1,6 @@
+/* Inter: pesos 400 / 600 / 700 (alineados con tipografía UBITS) */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
 /* Tokens de espaciado, gap, padding, border-radius y size (UBITS Playground) */
 @import url('ubits-spacing-tokens.css');
 
@@ -312,7 +315,7 @@ body[data-theme="light"] .dashboard-container {
     pointer-events: none;
     opacity: 0;
     transition: opacity 0.2s ease;
-    font-family: 'Noto Sans', sans-serif;
+    font-family: var(--ubits-font-family-sans);
     font-size: var(--font-size-sm);
     font-weight: var(--font-weight-regular);
 }
@@ -875,7 +878,7 @@ body[data-theme="dark"] .content-placeholder p {
 
 /* ===== STEP NUMBERS ===== */
 .step-number {
-    font-family: 'Noto Sans', sans-serif;
+    font-family: var(--ubits-font-family-sans);
     font-size: var(--font-size-h1);
     font-weight: var(--font-weight-bold);
     line-height: 1;
@@ -987,7 +990,7 @@ body {
 
 .sidebar-profile-menu .profile-menu-item span {
     color: inherit;
-    font-family: 'Noto Sans', sans-serif;
+    font-family: var(--ubits-font-family-sans);
     font-size: var(--font-size-sm);
     font-weight: var(--font-weight-regular);
     line-height: 19.5px;

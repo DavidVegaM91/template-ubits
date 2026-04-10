@@ -140,7 +140,7 @@
                                 <!-- Selector Icon Container Size -->
                                 <div style="display: flex; align-items: center; gap: var(--gap-sm);">
                                     <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Icon container size:</span>
-                                    <select id="preview-icon-size-select" onchange="updatePreview()" style="padding: 6px 12px; border-radius: var(--border-radius-sm); background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-family: 'Noto Sans', sans-serif; font-size: var(--font-size-sm);">
+                                    <select id="preview-icon-size-select" onchange="updatePreview()" style="padding: 6px 12px; border-radius: var(--border-radius-sm); background: var(--ubits-bg-1); color: var(--ubits-fg-1-high); font-family: var(--ubits-font-family-sans); font-size: var(--font-size-sm);">
                                         <option value="sm">sm</option>
                                         <option value="md">md</option>
                                         <option value="lg" selected>lg</option>
@@ -503,48 +503,48 @@ setTimeout(() => {
                                 <table style="width: 100%; border-collapse: collapse;">
                                     <thead>
                                         <tr style="background: var(--ubits-bg-2);">
-                                            <th style="padding: 12px; text-align: left; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-high); font-family: 'Noto Sans', sans-serif; font-size: var(--font-size-sm); font-weight: 700;">Parámetro</th>
-                                            <th style="padding: 12px; text-align: left; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-high); font-family: 'Noto Sans', sans-serif; font-size: var(--font-size-sm); font-weight: 700;">Tipo</th>
-                                            <th style="padding: 12px; text-align: left; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-high); font-family: 'Noto Sans', sans-serif; font-size: var(--font-size-sm); font-weight: 700;">Requerido</th>
-                                            <th style="padding: 12px; text-align: left; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-high); font-family: 'Noto Sans', sans-serif; font-size: var(--font-size-sm); font-weight: 700;">Descripción</th>
+                                            <th style="padding: 12px; text-align: left; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-high); font-family: var(--ubits-font-family-sans); font-size: var(--font-size-sm); font-weight: 700;">Parámetro</th>
+                                            <th style="padding: 12px; text-align: left; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-high); font-family: var(--ubits-font-family-sans); font-size: var(--font-size-sm); font-weight: 700;">Tipo</th>
+                                            <th style="padding: 12px; text-align: left; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-high); font-family: var(--ubits-font-family-sans); font-size: var(--font-size-sm); font-weight: 700;">Requerido</th>
+                                            <th style="padding: 12px; text-align: left; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-high); font-family: var(--ubits-font-family-sans); font-size: var(--font-size-sm); font-weight: 700;">Descripción</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <tr>
                                             <td style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium); font-family: 'Courier New', monospace; font-size: var(--font-size-sm);">containerId</td>
-                                            <td style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium); font-family: 'Noto Sans', sans-serif; font-size: var(--font-size-sm);">string</td>
-                                            <td style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium); font-family: 'Noto Sans', sans-serif; font-size: var(--font-size-sm);">Sí</td>
-                                            <td style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium); font-family: 'Noto Sans', sans-serif; font-size: var(--font-size-sm);">ID del contenedor donde se renderizará el empty state</td>
+                                            <td style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium); font-family: var(--ubits-font-family-sans); font-size: var(--font-size-sm);">string</td>
+                                            <td style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium); font-family: var(--ubits-font-family-sans); font-size: var(--font-size-sm);">Sí</td>
+                                            <td style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium); font-family: var(--ubits-font-family-sans); font-size: var(--font-size-sm);">ID del contenedor donde se renderizará el empty state</td>
                                         </tr>
                                         <tr>
                                             <td style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium); font-family: 'Courier New', monospace; font-size: var(--font-size-sm);">options.icon</td>
-                                            <td style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium); font-family: 'Noto Sans', sans-serif; font-size: var(--font-size-sm);">string</td>
-                                            <td style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium); font-family: 'Noto Sans', sans-serif; font-size: var(--font-size-sm);">No</td>
-                                            <td style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium); font-family: 'Noto Sans', sans-serif; font-size: var(--font-size-sm);">Clase FontAwesome del icono (ej: 'fa-grid', default: 'fa-grid')</td>
+                                            <td style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium); font-family: var(--ubits-font-family-sans); font-size: var(--font-size-sm);">string</td>
+                                            <td style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium); font-family: var(--ubits-font-family-sans); font-size: var(--font-size-sm);">No</td>
+                                            <td style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium); font-family: var(--ubits-font-family-sans); font-size: var(--font-size-sm);">Clase FontAwesome del icono (ej: 'fa-grid', default: 'fa-grid')</td>
                                         </tr>
                                         <tr>
                                             <td style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium); font-family: 'Courier New', monospace; font-size: var(--font-size-sm);">options.iconSize</td>
-                                            <td style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium); font-family: 'Noto Sans', sans-serif; font-size: var(--font-size-sm);">string</td>
-                                            <td style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium); font-family: 'Noto Sans', sans-serif; font-size: var(--font-size-sm);">No</td>
-                                            <td style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium); font-family: 'Noto Sans', sans-serif; font-size: var(--font-size-sm);">Tamaño del contenedor: 'sm' (28x28px, icono 12px), 'md' (32x32px, icono 16px), 'lg' (36x36px, icono 20px). Default: 'lg'</td>
+                                            <td style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium); font-family: var(--ubits-font-family-sans); font-size: var(--font-size-sm);">string</td>
+                                            <td style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium); font-family: var(--ubits-font-family-sans); font-size: var(--font-size-sm);">No</td>
+                                            <td style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium); font-family: var(--ubits-font-family-sans); font-size: var(--font-size-sm);">Tamaño del contenedor: 'sm' (28x28px, icono 12px), 'md' (32x32px, icono 16px), 'lg' (36x36px, icono 20px). Default: 'lg'</td>
                                         </tr>
                                         <tr>
                                             <td style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium); font-family: 'Courier New', monospace; font-size: var(--font-size-sm);">options.title</td>
-                                            <td style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium); font-family: 'Noto Sans', sans-serif; font-size: var(--font-size-sm);">string</td>
-                                            <td style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium); font-family: 'Noto Sans', sans-serif; font-size: var(--font-size-sm);">Sí</td>
-                                            <td style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium); font-family: 'Noto Sans', sans-serif; font-size: var(--font-size-sm);">Título del empty state</td>
+                                            <td style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium); font-family: var(--ubits-font-family-sans); font-size: var(--font-size-sm);">string</td>
+                                            <td style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium); font-family: var(--ubits-font-family-sans); font-size: var(--font-size-sm);">Sí</td>
+                                            <td style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium); font-family: var(--ubits-font-family-sans); font-size: var(--font-size-sm);">Título del empty state</td>
                                         </tr>
                                         <tr>
                                             <td style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium); font-family: 'Courier New', monospace; font-size: var(--font-size-sm);">options.description</td>
-                                            <td style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium); font-family: 'Noto Sans', sans-serif; font-size: var(--font-size-sm);">string</td>
-                                            <td style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium); font-family: 'Noto Sans', sans-serif; font-size: var(--font-size-sm);">Sí</td>
-                                            <td style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium); font-family: 'Noto Sans', sans-serif; font-size: var(--font-size-sm);">Descripción del empty state</td>
+                                            <td style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium); font-family: var(--ubits-font-family-sans); font-size: var(--font-size-sm);">string</td>
+                                            <td style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium); font-family: var(--ubits-font-family-sans); font-size: var(--font-size-sm);">Sí</td>
+                                            <td style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium); font-family: var(--ubits-font-family-sans); font-size: var(--font-size-sm);">Descripción del empty state</td>
                                         </tr>
                                         <tr>
                                             <td style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium); font-family: 'Courier New', monospace; font-size: var(--font-size-sm);">options.buttons</td>
-                                            <td style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium); font-family: 'Noto Sans', sans-serif; font-size: var(--font-size-sm);">object</td>
-                                            <td style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium); font-family: 'Noto Sans', sans-serif; font-size: var(--font-size-sm);">No</td>
-                                            <td style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium); font-family: 'Noto Sans', sans-serif; font-size: var(--font-size-sm);">Configuración de los botones (secondary: {text, icon, onClick}, primary: {text, icon, onClick})</td>
+                                            <td style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium); font-family: var(--ubits-font-family-sans); font-size: var(--font-size-sm);">object</td>
+                                            <td style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium); font-family: var(--ubits-font-family-sans); font-size: var(--font-size-sm);">No</td>
+                                            <td style="padding: 12px; border-bottom: 1px solid var(--ubits-border-1); color: var(--ubits-fg-1-medium); font-family: var(--ubits-font-family-sans); font-size: var(--font-size-sm);">Configuración de los botones (secondary: {text, icon, onClick}, primary: {text, icon, onClick})</td>
                                         </tr>
                                     </tbody>
                                 </table>

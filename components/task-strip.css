@@ -300,7 +300,7 @@
     justify-content: center;
     cursor: pointer;
     font-size: 13px;
-    font-family: 'Noto Sans', sans-serif;
+    font-family: var(--ubits-font-family-sans);
     font-weight: var(--font-weight-regular);
 }
 .tarea-priority-badge .ubits-badge-tag__text {

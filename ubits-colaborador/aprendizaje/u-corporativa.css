@@ -74,7 +74,7 @@
 .encabezado-title {
     color: var(--ubits-fg-1-high);
     margin: 0;
-    font-family: 'Noto Sans', sans-serif;
+    font-family: var(--ubits-font-family-sans);
     font-size: var(--font-size-d3);
     font-weight: var(--font-weight-bold);
     line-height: 48px;
@@ -83,7 +83,7 @@
 .encabezado-description {
     color: var(--ubits-fg-1-medium);
     margin: 0;
-    font-family: 'Noto Sans', sans-serif;
+    font-family: var(--ubits-font-family-sans);
     font-size: var(--font-size-sm);
     font-weight: var(--font-weight-regular);
     line-height: 19.5px;
@@ -120,7 +120,7 @@
 .buscador-title {
     color: var(--ubits-fg-1-high);
     margin: 0;
-    font-family: 'Noto Sans', sans-serif;
+    font-family: var(--ubits-font-family-sans);
     font-size: var(--font-size-md);
     font-weight: var(--font-weight-bold);
     line-height: 24px;
@@ -134,7 +134,7 @@
 
 .buscador-results-count {
     color: var(--ubits-fg-1-medium);
-    font-family: 'Noto Sans', sans-serif;
+    font-family: var(--ubits-font-family-sans);
     font-size: var(--font-size-sm);
     font-weight: var(--font-weight-regular);
     line-height: 13px;
@@ -142,7 +142,7 @@
 
 .buscador-results-text {
     color: var(--ubits-fg-1-medium);
-    font-family: 'Noto Sans', sans-serif;
+    font-family: var(--ubits-font-family-sans);
     font-size: var(--font-size-sm);
     font-weight: var(--font-weight-regular);
     line-height: 19.5px;

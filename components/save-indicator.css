@@ -13,7 +13,7 @@
     padding: 0;
     min-height: 0;
     border-radius: var(--border-radius-sm);
-    font-family: 'Noto Sans', sans-serif;
+    font-family: var(--ubits-font-family-sans);
     font-weight: var(--font-weight-semibold);
     color: var(--ubits-fg-1-high);
     box-sizing: border-box;

@@ -36,7 +36,7 @@
 }
 
 .floating-menu-title {
-    font-family: 'Noto Sans', sans-serif;
+    font-family: var(--ubits-font-family-sans);
     font-size: var(--font-size-h2);
     font-weight: var(--font-weight-semibold);
     color: var(--ubits-sidebar-button-fg-default);
@@ -85,7 +85,7 @@
 .accordion-title {
     display: flex;
     align-items: center;
-    font-family: 'Noto Sans', sans-serif;
+    font-family: var(--ubits-font-family-sans);
     font-size: var(--font-size-sm);
     font-weight: var(--font-weight-semibold);
     color: var(--ubits-sidebar-button-fg-default);

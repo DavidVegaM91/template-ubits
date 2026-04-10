@@ -1,10 +1,10 @@
 /* ========================================
    ESTILOS ESPECÍFICOS PARA planes
    Alineado con task-group-home y task-group-card-list: colores --ubits-*,
-   fuentes Noto Sans, tokens --font-size-*, --gap-*, --padding-*, --border-radius-*
+   fuentes Inter, tokens --font-size-*, --gap-*, --padding-*, --border-radius-*
    ======================================== */
 
-/* Fuente coherente con task-group (var(--font-family, "Noto Sans")) */
+/* Fuente coherente con task-group (var(--font-family, "Inter")) */
 .page-planes,
 .page-planes .content-sections,
 .page-planes .plan-section,
@@ -12,7 +12,7 @@
 .page-planes .plans-empty,
 .page-planes .plan-card,
 .page-planes .plan-grid {
-    font-family: var(--font-family, "Noto Sans"), sans-serif;
+    font-family: var(--font-family, var(--ubits-font-family-sans));
 }
 
 /* Estilos específicos para content-sections - idéntico a left-wrapper */
@@ -200,7 +200,7 @@
     color: var(--ubits-btn-primary-fg) !important;
     border: none !important;
     border-radius: var(--border-radius-sm, 8px) !important;
-    font-family: var(--font-family, "Noto Sans"), sans-serif !important;
+    font-family: var(--font-family, var(--ubits-font-family-sans)) !important;
     font-size: var(--font-size-md, 16px) !important;
     font-weight: var(--font-weight-semibold) !important;
     cursor: pointer !important;
@@ -263,7 +263,7 @@
     border: none;
     text-align: left;
     color: var(--ubits-fg-1-high);
-    font-family: var(--font-family, "Noto Sans"), sans-serif;
+    font-family: var(--font-family, var(--ubits-font-family-sans));
     font-size: var(--font-size-sm, 13px);
     font-weight: var(--font-weight-regular);
     cursor: pointer;
@@ -399,13 +399,13 @@
     color: var(--ubits-fg-1-high);
     font-size: var(--font-size-md);
     font-weight: var(--font-weight-semibold);
-    font-family: 'Noto Sans', sans-serif;
+    font-family: var(--ubits-font-family-sans);
 }
 
 .template-form-helper {
     color: var(--ubits-fg-1-medium);
     font-size: var(--font-size-sm);
-    font-family: 'Noto Sans', sans-serif;
+    font-family: var(--ubits-font-family-sans);
 }
 
 .template-form-helper--inline {
@@ -1006,7 +1006,7 @@
 
 /* Empty state - alineado con task-group-card-list__empty-state y tipografía módulo */
 .plans-empty__title {
-    font-family: var(--font-family, "Noto Sans"), sans-serif;
+    font-family: var(--font-family, var(--ubits-font-family-sans));
     font-size: var(--font-size-h1, 24px);
     font-weight: var(--font-weight-bold);
     color: var(--ubits-fg-1-high);
@@ -1014,7 +1014,7 @@
 }
 
 .plans-empty__desc {
-    font-family: var(--font-family, "Noto Sans"), sans-serif;
+    font-family: var(--font-family, var(--ubits-font-family-sans));
     font-size: var(--font-size-md, 16px);
     font-weight: var(--font-weight-regular);
     line-height: 1.5;
@@ -1082,7 +1082,7 @@
 
 /* Título de sección - alineado con .task-group-card-list__title (font-size-h2 24px, color-fg-1-medium) */
 .plan-section__title {
-    font-family: var(--font-family, "Noto Sans"), sans-serif;
+    font-family: var(--font-family, var(--ubits-font-family-sans));
     font-size: var(--font-size-h2);
     font-style: normal;
     font-weight: var(--font-weight-bold);
@@ -1118,7 +1118,7 @@
 }
 
 .plan-section__status-badge__text {
-    font-family: var(--font-family, "Noto Sans"), sans-serif;
+    font-family: var(--font-family, var(--ubits-font-family-sans));
     font-size: var(--font-size-sm, 13px);
     font-weight: var(--font-weight-semibold);
     color: var(--ubits-fg-1-medium);
@@ -1126,7 +1126,7 @@
 
 /* Subtítulo de sección vacía (task-group-card-list__subtitle) */
 .plan-section__subtitle {
-    font-family: var(--font-family, "Noto Sans"), sans-serif;
+    font-family: var(--font-family, var(--ubits-font-family-sans));
     font-size: var(--font-size-md, 16px);
     font-style: normal;
     font-weight: var(--font-weight-regular);
@@ -1183,7 +1183,7 @@
     display: flex;
     align-items: center;
     gap: var(--gap-sm);
-    font-family: var(--font-family, "Noto Sans"), sans-serif;
+    font-family: var(--font-family, var(--ubits-font-family-sans));
     font-size: var(--font-size-sm);
     font-weight: var(--font-weight-regular);
     color: var(--ubits-fg-2-medium);
@@ -1271,7 +1271,7 @@
     flex: 1;
     min-width: 0;
     max-width: 100%;
-    font-family: var(--font-family, "Noto Sans"), sans-serif;
+    font-family: var(--font-family, var(--ubits-font-family-sans));
     font-size: var(--font-size-sm);
     font-weight: var(--font-weight-bold);
     line-height: 19.5px;
@@ -1292,7 +1292,7 @@
 }
 
 .plan-card__date {
-    font-family: var(--font-family, "Noto Sans"), sans-serif;
+    font-family: var(--font-family, var(--ubits-font-family-sans));
     font-size: var(--font-size-sm);
     font-weight: var(--font-weight-regular);
     color: var(--ubits-fg-2-medium);
@@ -1328,7 +1328,7 @@
 }
 
 .plan-card__tasks-info {
-    font-family: var(--font-family, "Noto Sans"), sans-serif;
+    font-family: var(--font-family, var(--ubits-font-family-sans));
     font-size: var(--font-size-sm);
     font-weight: var(--font-weight-regular);
     color: var(--ubits-fg-2-medium);
@@ -1341,7 +1341,7 @@
 }
 
 .plan-card__progress-val {
-    font-family: var(--font-family, "Noto Sans"), sans-serif;
+    font-family: var(--font-family, var(--ubits-font-family-sans));
     font-size: var(--font-size-sm);
     font-weight: var(--font-weight-semibold);
     color: var(--ubits-fg-2-medium);
@@ -1369,7 +1369,7 @@
     justify-content: flex-end;
     gap: var(--gap-md);
     margin-top: var(--gap-lg);
-    font-family: var(--font-family, "Noto Sans"), sans-serif;
+    font-family: var(--font-family, var(--ubits-font-family-sans));
     font-size: var(--font-size-sm);
     font-weight: var(--font-weight-regular);
     color: var(--ubits-fg-2-medium);
@@ -1475,7 +1475,7 @@
 }
 
 .task-create-v2__title {
-    font-family: 'Noto Sans', sans-serif;
+    font-family: var(--ubits-font-family-sans);
     line-height: 1.25;
     color: var(--ubits-fg-1-high);
     border: none;
@@ -1502,7 +1502,7 @@
 }
 
 .task-create-v2__desc {
-    font-family: 'Noto Sans', sans-serif;
+    font-family: var(--ubits-font-family-sans);
     font-size: var(--font-size-sm);
     line-height: 1.5;
     color: var(--ubits-fg-1-medium);

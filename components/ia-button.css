@@ -48,7 +48,7 @@
     gap: var(--gap-sm);
     border: none;
     border-radius: var(--border-radius-full); /* Pill shape - completo */
-    font-family: 'Noto Sans', sans-serif;
+    font-family: var(--ubits-font-family-sans);
     font-weight: var(--font-weight-semibold);
     line-height: 1;
     text-decoration: none;
@@ -246,7 +246,7 @@
 
 .ubits-ia-button.ubits-ia-button--xs span,
 .ubits-ia-button--xs span {
-    font-family: 'Noto Sans', sans-serif;
+    font-family: var(--ubits-font-family-sans);
     font-size: var(--font-size-xs) !important;
     font-weight: var(--font-weight-semibold);
     line-height: 1;
@@ -275,7 +275,7 @@
 
 .ubits-ia-button.ubits-ia-button--sm span,
 .ubits-ia-button--sm span {
-    font-family: 'Noto Sans', sans-serif;
+    font-family: var(--ubits-font-family-sans);
     font-size: var(--font-size-sm) !important;
     font-weight: var(--font-weight-semibold);
     line-height: 1;
@@ -315,7 +315,7 @@
 
 .ubits-ia-button.ubits-ia-button--md span,
 .ubits-ia-button--md span {
-    font-family: 'Noto Sans', sans-serif;
+    font-family: var(--ubits-font-family-sans);
     font-size: var(--font-size-md) !important;
     font-weight: var(--font-weight-semibold);
     line-height: 1;
@@ -331,7 +331,7 @@
 }
 
 .ubits-ia-button:not(.ubits-ia-button--xs):not(.ubits-ia-button--sm):not(.ubits-ia-button--md):not(.ubits-ia-button--lg) span {
-    font-family: 'Noto Sans', sans-serif;
+    font-family: var(--ubits-font-family-sans);
     font-size: var(--font-size-md);
     font-weight: var(--font-weight-semibold);
     line-height: 1;
@@ -360,7 +360,7 @@
 
 .ubits-ia-button.ubits-ia-button--lg span,
 .ubits-ia-button--lg span {
-    font-family: 'Noto Sans', sans-serif;
+    font-family: var(--ubits-font-family-sans);
     font-size: var(--font-size-h2) !important;
     font-weight: var(--font-weight-semibold);
     line-height: 1;

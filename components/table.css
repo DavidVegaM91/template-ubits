@@ -34,7 +34,7 @@
     background: var(--ubits-bg-1);
     color: var(--ubits-fg-1-medium);
     border-bottom: 1px solid var(--ubits-border-1);
-    font-family: 'Noto Sans', sans-serif;
+    font-family: var(--ubits-font-family-sans);
     font-size: var(--font-size-sm);
     font-weight: var(--font-weight-semibold);
     line-height: 20px;
@@ -54,7 +54,7 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    font-family: 'Noto Sans', sans-serif;
+    font-family: var(--ubits-font-family-sans);
     font-size: var(--font-size-sm);
     font-weight: var(--font-weight-regular);
     line-height: 16px;
@@ -96,7 +96,7 @@
 
 /* Tipo celda: texto (usar ubits-body-sm-regular dentro) */
 .ubits-table__cell-text {
-    font-family: 'Noto Sans', sans-serif;
+    font-family: var(--ubits-font-family-sans);
     font-size: var(--font-size-sm);
     font-weight: var(--font-weight-regular);
     line-height: 16px;

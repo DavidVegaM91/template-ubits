@@ -363,7 +363,7 @@ body.ia-chat-side-panel-open #tab-bar-container {
     align-items: stretch;
     gap: var(--gap-sm);
     cursor: pointer;
-    font-family: 'Noto Sans', sans-serif;
+    font-family: var(--ubits-font-family-sans);
     font-size: var(--font-size-sm);
     line-height: 20px;
     color: var(--ubits-fg-1-medium);
@@ -467,7 +467,7 @@ body.ia-chat-side-panel-open #tab-bar-container {
     margin-top: 12px;
     padding: var(--padding-md) var(--padding-md);
     border-radius: var(--border-radius-sm);
-    font-family: 'Noto Sans', sans-serif;
+    font-family: var(--ubits-font-family-sans);
     font-size: var(--font-size-sm);
     line-height: 20px;
     color: var(--ubits-fg-1-medium);
@@ -567,7 +567,7 @@ body.ia-chat-side-panel-open #tab-bar-container {
 
 .ubits-ia-chat-side__quiz-progress-text {
     flex-shrink: 0;
-    font-family: 'Noto Sans', sans-serif;
+    font-family: var(--ubits-font-family-sans);
     font-size: var(--font-size-sm);
     font-weight: var(--font-weight-regular);
     color: var(--ubits-fg-1-high);
@@ -585,7 +585,7 @@ body.ia-chat-side-panel-open #tab-bar-container {
     gap: var(--gap-sm);
     padding: var(--padding-xs) var(--padding-md);
     border-radius: var(--border-radius-sm);
-    font-family: 'Noto Sans', sans-serif;
+    font-family: var(--ubits-font-family-sans);
     font-size: var(--font-size-sm);
     font-weight: var(--font-weight-regular);
 }
@@ -637,7 +637,7 @@ body.ia-chat-side-panel-open #tab-bar-container {
 }
 
 .ubits-ia-chat-side__quiz-result-title {
-    font-family: 'Noto Sans', sans-serif;
+    font-family: var(--ubits-font-family-sans);
     font-size: var(--font-size-h2);
     font-weight: var(--font-weight-regular);
     line-height: 28px;
@@ -668,14 +668,14 @@ body.ia-chat-side-panel-open #tab-bar-container {
 }
 
 .ubits-ia-chat-side__quiz-result-card-label {
-    font-family: 'Noto Sans', sans-serif;
+    font-family: var(--ubits-font-family-sans);
     font-size: var(--font-size-sm);
     font-weight: var(--font-weight-regular);
     color: var(--ubits-fg-1-medium);
 }
 
 .ubits-ia-chat-side__quiz-result-card-value {
-    font-family: 'Noto Sans', sans-serif;
+    font-family: var(--ubits-font-family-sans);
     font-size: var(--font-size-h1);
     font-weight: var(--font-weight-regular);
     color: var(--ubits-fg-1-high);
@@ -692,7 +692,7 @@ body.ia-chat-side-panel-open #tab-bar-container {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    font-family: 'Noto Sans', sans-serif;
+    font-family: var(--ubits-font-family-sans);
     font-size: var(--font-size-sm);
     color: var(--ubits-fg-1-medium);
 }
@@ -703,7 +703,7 @@ body.ia-chat-side-panel-open #tab-bar-container {
 }
 
 .ubits-ia-chat-side__quiz-result-section-title {
-    font-family: 'Noto Sans', sans-serif;
+    font-family: var(--ubits-font-family-sans);
     font-size: var(--font-size-md);
     font-weight: var(--font-weight-regular);
     color: var(--ubits-fg-1-high);
@@ -748,14 +748,14 @@ body.ia-chat-side-panel-open #tab-bar-container {
 }
 
 .ubits-ia-chat-side__quiz-result-option-title {
-    font-family: 'Noto Sans', sans-serif;
+    font-family: var(--ubits-font-family-sans);
     font-size: var(--font-size-sm);
     font-weight: var(--font-weight-regular);
     color: var(--ubits-fg-1-high);
 }
 
 .ubits-ia-chat-side__quiz-result-option-desc {
-    font-family: 'Noto Sans', sans-serif;
+    font-family: var(--ubits-font-family-sans);
     font-size: var(--font-size-sm);
     line-height: 18px;
     color: var(--ubits-fg-1-medium);
@@ -827,7 +827,7 @@ body.ia-chat-side-panel-open #tab-bar-container {
 
 .ubits-ia-chat-side__fc-progress-text {
     flex-shrink: 0;
-    font-family: 'Noto Sans', sans-serif;
+    font-family: var(--ubits-font-family-sans);
     font-size: var(--font-size-sm);
     font-weight: var(--font-weight-regular);
     color: var(--ubits-fg-1-high);
@@ -887,7 +887,7 @@ body.ia-chat-side-panel-open #tab-bar-container {
 
 .ubits-ia-chat-side__fc-face p {
     margin: 0;
-    font-family: 'Noto Sans', sans-serif;
+    font-family: var(--ubits-font-family-sans);
     font-size: var(--font-size-sm);
     line-height: 20px;
     color: var(--ubits-fg-1-high);
@@ -946,7 +946,7 @@ body.ia-chat-side-panel-open #tab-bar-container {
 
 /* Plan de estudio (propuesta: nombre, fechas, prioridad, tareas) */
 .ubits-ia-chat-side__learning-plan .ubits-ia-chat-thread__learning-plan-title {
-    font-family: 'Noto Sans', sans-serif;
+    font-family: var(--ubits-font-family-sans);
     font-size: var(--font-size-md);
     font-weight: var(--font-weight-semibold);
     color: var(--ubits-fg-1-high);
@@ -961,7 +961,7 @@ body.ia-chat-side-panel-open #tab-bar-container {
 }
 
 .ubits-ia-chat-thread__learning-plan-detail-item {
-    font-family: 'Noto Sans', sans-serif;
+    font-family: var(--ubits-font-family-sans);
     font-size: var(--font-size-sm);
     color: var(--ubits-fg-1-medium);
 }
@@ -1044,7 +1044,7 @@ body.ia-chat-side-panel-open #tab-bar-container {
     border-radius: var(--border-radius-lg);
     background: var(--ubits-bg-1);
     color: var(--ubits-fg-1-high);
-    font-family: 'Noto Sans', sans-serif;
+    font-family: var(--ubits-font-family-sans);
     font-size: var(--font-size-sm);
     line-height: 20px;
     box-sizing: border-box;
@@ -1091,7 +1091,7 @@ body.ia-chat-side-panel-open #tab-bar-container {
     border: none;
     background: transparent;
     color: var(--ubits-fg-1-high);
-    font-family: 'Noto Sans', sans-serif;
+    font-family: var(--ubits-font-family-sans);
     font-size: var(--font-size-sm);
     cursor: pointer;
     text-align: left;
@@ -1173,7 +1173,7 @@ body.ia-chat-side-panel-open #tab-bar-container {
 
 .ubits-ia-chat-side__plan-task-card-meta {
     color: var(--ubits-fg-1-medium);
-    font-family: 'Noto Sans', sans-serif;
+    font-family: var(--ubits-font-family-sans);
 }
 
 /* Nivel y duración con iconos (mismo criterio que card-content-compact) */

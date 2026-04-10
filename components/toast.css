@@ -23,7 +23,7 @@
     padding: var(--padding-sm); /* match alert */
     border-radius: var(--border-radius-md); /* match alert */
     position: relative; /* for pseudo border */
-    font-family: 'Noto Sans', sans-serif;
+    font-family: var(--ubits-font-family-sans);
     box-sizing: border-box;
     background: var(--ubits-bg-1);
     color: var(--ubits-fg-1-high);

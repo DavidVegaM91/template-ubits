@@ -309,7 +309,7 @@
     pointer-events: none;
     transition: opacity 0.2s ease;
     z-index: 10000;
-    font-family: 'Noto Sans', sans-serif;
+    font-family: var(--ubits-font-family-sans);
     font-weight: var(--font-weight-regular);
     visibility: hidden;
 }
@@ -812,7 +812,7 @@
     pointer-events: none;
     transition: opacity 0.2s ease;
     z-index: 1000;
-    font-family: 'Noto Sans', sans-serif;
+    font-family: var(--ubits-font-family-sans);
     font-weight: var(--font-weight-regular);
 }
 

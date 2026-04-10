@@ -94,7 +94,7 @@
 
 /* Texto del porcentaje (X%): mismos estilos que plan-detail (plan-detail-card__percent) */
 .detalle-plan-progress-card__percent {
-    font-family: 'Noto Sans', sans-serif;
+    font-family: var(--ubits-font-family-sans);
     font-size: var(--font-size-sm);
     font-weight: var(--font-weight-regular);
     line-height: 19.5px;

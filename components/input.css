@@ -11,7 +11,7 @@
     width: 100%;
     padding: var(--padding-md) var(--padding-sm);
     font-size: 1rem;
-    font-family: 'Noto Sans', sans-serif;
+    font-family: var(--ubits-font-family-sans);
     color: var(--ubits-fg-1-high);
     background: var(--ubits-bg-1);
     border: 1px solid var(--ubits-border-1);
@@ -102,7 +102,7 @@
     font-size: var(--font-size-xs);
     line-height: 16.5px;
     height: 28px;
-    font-family: 'Noto Sans', sans-serif;
+    font-family: var(--ubits-font-family-sans);
 }
 
 .ubits-input--sm {
@@ -252,7 +252,7 @@ textarea.ubits-input:disabled {
     display: block;
     color: var(--ubits-fg-1-high);
     margin-bottom: 8px;
-    font-family: 'Noto Sans', sans-serif;
+    font-family: var(--ubits-font-family-sans);
     font-size: var(--font-size-sm);
     font-weight: var(--font-weight-semibold);
     line-height: 19.5px;
@@ -260,7 +260,7 @@ textarea.ubits-input:disabled {
 
 .ubits-input-mandatory {
     color: var(--ubits-fg-1-medium);
-    font-family: 'Noto Sans', sans-serif;
+    font-family: var(--ubits-font-family-sans);
     font-size: var(--font-size-xs);
     font-weight: var(--font-weight-regular);
     line-height: 16.5px;
@@ -277,7 +277,7 @@ textarea.ubits-input:disabled {
     flex-direction: column;
     align-items: stretch;
     gap: var(--gap-xs, 4px);
-    font-family: 'Noto Sans', sans-serif;
+    font-family: var(--ubits-font-family-sans);
     font-size: var(--font-size-sm);
     font-weight: var(--font-weight-regular);
     line-height: 19.5px;
@@ -294,7 +294,7 @@ textarea.ubits-input:disabled {
 }
 
 .ubits-input-counter {
-    font-family: 'Noto Sans', sans-serif;
+    font-family: var(--ubits-font-family-sans);
     font-size: var(--font-size-sm);
     font-weight: var(--font-weight-regular);
     line-height: 19.5px;

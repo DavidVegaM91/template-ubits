@@ -1,10 +1,10 @@
 /* ========================================
    ESTILOS DETALLE DEL PLAN
-   Alineado con task-group-detail: colores --ubits-*, fuentes Noto Sans,
+   Alineado con task-group-detail: colores --ubits-*, fuentes Inter,
    tokens --font-size-*, --padding-*, --gap-*, --border-radius-*
    ======================================== */
 
-/* Coherencia de fuentes: Noto Sans en toda la página (design system) */
+/* Coherencia de fuentes: Inter en toda la página (design system) */
 .page-plan-detail,
 .page-plan-detail .main-content,
 .page-plan-detail .content-area,
@@ -18,10 +18,10 @@
 .page-plan-detail .plan-detail-feedback__ai-text span,
 .page-plan-detail input,
 .page-plan-detail button {
-    font-family: var(--font-family, "Noto Sans"), sans-serif;
+    font-family: var(--font-family, var(--ubits-font-family-sans));
 }
 
-/* Iconos: mantener Font Awesome (no heredar Noto Sans) */
+/* Iconos: mantener Font Awesome (no heredar Inter) */
 .page-plan-detail i[class*="fa-"],
 .page-plan-detail .plan-detail-empty__icon {
     font-family: "Font Awesome 6 Pro", "Font Awesome 6 Free", "Font Awesome 6 Brands", sans-serif !important;
@@ -87,7 +87,7 @@
 /* Título: alineado con .task-group-detail-header__title (h2 20px, color-fg-2-high, line-height 100%) */
 .plan-detail-title {
     margin: 0;
-    font-family: var(--font-family, "Noto Sans"), sans-serif;
+    font-family: var(--font-family, var(--ubits-font-family-sans));
     font-size: var(--font-size-h2, 20px);
     font-style: normal;
     font-weight: var(--font-weight-bold);
@@ -135,7 +135,7 @@
 
 /* Título editable inline: mismos estilos que task-detail */
 .plan-detail-card .task-detail-title-editable {
-    font-family: 'Noto Sans', sans-serif;
+    font-family: var(--ubits-font-family-sans);
     line-height: 1.25;
     color: var(--ubits-fg-1-high);
     border: none;
@@ -165,7 +165,7 @@
 
 /* Descripción editable inline: mismos estilos que task-detail */
 .plan-detail-card .task-detail-desc-editable {
-    font-family: 'Noto Sans', sans-serif;
+    font-family: var(--ubits-font-family-sans);
     font-size: var(--font-size-sm);
     line-height: 1.5;
     color: var(--ubits-fg-1-medium);
@@ -364,7 +364,7 @@
 
 /* Descripción body: body/md regular, fg-1-medium */
 .plan-detail-card__desc-text {
-    font-family: 'Noto Sans', sans-serif;
+    font-family: var(--ubits-font-family-sans);
     font-size: var(--font-size-md);
     font-weight: var(--font-weight-regular);
     line-height: 24px;
@@ -374,7 +374,7 @@
 
 
 .plan-detail-card__text {
-    font-family: 'Noto Sans', sans-serif;
+    font-family: var(--ubits-font-family-sans);
     font-size: var(--font-size-md);
     font-weight: var(--font-weight-regular);
     line-height: 24px;
@@ -409,7 +409,7 @@
 
 /* Número XXX/XXX: peso regular */
 .plan-detail-card__count-regular {
-    font-family: 'Noto Sans', sans-serif;
+    font-family: var(--ubits-font-family-sans);
     font-size: var(--font-size-xs);
     font-weight: var(--font-weight-regular);
     color: var(--ubits-fg-1-medium);
@@ -431,7 +431,7 @@
 
 /* Porcentaje: body/sm semibold, fg-1-medium */
 .plan-detail-card__percent {
-    font-family: 'Noto Sans', sans-serif;
+    font-family: var(--ubits-font-family-sans);
     font-size: var(--font-size-sm);
     font-weight: var(--font-weight-regular);
     line-height: 19.5px;
@@ -485,7 +485,7 @@
 /* Título sección tareas: alineado con módulo (font-family, font-size-md, color-fg-1-high) */
 .plan-detail-tasks-card__title {
     margin: 0;
-    font-family: var(--font-family, "Noto Sans"), sans-serif;
+    font-family: var(--font-family, var(--ubits-font-family-sans));
     font-size: var(--font-size-md, 16px);
     font-weight: var(--font-weight-bold);
     color: var(--ubits-fg-1-high);
@@ -592,7 +592,7 @@
 /* Empty state: alineado con task-group (font-family, font-size, color-fg-1-high/medium) */
 .plan-detail-empty__title {
     margin: 0 0 var(--gap-sm, 8px) 0;
-    font-family: var(--font-family, "Noto Sans"), sans-serif;
+    font-family: var(--font-family, var(--ubits-font-family-sans));
     font-size: var(--font-size-h2, 20px);
     font-weight: var(--font-weight-bold);
     color: var(--ubits-fg-1-high);
@@ -600,7 +600,7 @@
 
 .plan-detail-empty__desc {
     margin: 0 0 var(--gap-2xl, 24px) 0;
-    font-family: var(--font-family, "Noto Sans"), sans-serif;
+    font-family: var(--font-family, var(--ubits-font-family-sans));
     font-size: var(--font-size-md, 16px);
     font-weight: var(--font-weight-regular);
     line-height: 1.5;
@@ -625,7 +625,7 @@
 }
 
 .plan-detail-feedback__ai-text span {
-    font-family: var(--font-family, "Noto Sans"), sans-serif;
+    font-family: var(--font-family, var(--ubits-font-family-sans));
     font-weight: var(--font-weight-regular);
     font-size: var(--font-size-sm, 13px);
     font-style: normal;

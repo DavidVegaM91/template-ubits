@@ -35,7 +35,7 @@
 }
 
 .docs-sidebar-title {
-    font-family: 'Noto Sans', sans-serif;
+    font-family: var(--ubits-font-family-sans);
     font-size: var(--font-size-sm);
     font-weight: var(--font-weight-semibold);
     color: var(--ubits-fg-1-high);
@@ -49,7 +49,7 @@
 }
 
 .docs-sidebar-subtitle {
-    font-family: 'Noto Sans', sans-serif;
+    font-family: var(--ubits-font-family-sans);
     font-size: var(--font-size-sm);
     font-weight: var(--font-weight-semibold);
     color: var(--ubits-fg-1-medium);
@@ -83,7 +83,7 @@
 }
 
 .docs-sidebar-text {
-    font-family: 'Noto Sans', sans-serif;
+    font-family: var(--ubits-font-family-sans);
     font-size: var(--font-size-sm);
     font-weight: var(--font-weight-regular);
     color: var(--ubits-fg-1-medium);
@@ -119,7 +119,7 @@
 }
 
 .docs-dropdown-text {
-    font-family: 'Noto Sans', sans-serif;
+    font-family: var(--ubits-font-family-sans);
     font-size: var(--font-size-sm);
     font-weight: var(--font-weight-regular);
     color: var(--ubits-fg-1-medium);
@@ -176,7 +176,7 @@
 }
 
 .docs-dropdown-item-text {
-    font-family: 'Noto Sans', sans-serif;
+    font-family: var(--ubits-font-family-sans);
     font-size: var(--font-size-sm);
     font-weight: var(--font-weight-regular);
     color: var(--ubits-fg-1-medium);
@@ -192,7 +192,7 @@
 }
 
 .docs-dropdown-group-title {
-    font-family: 'Noto Sans', sans-serif;
+    font-family: var(--ubits-font-family-sans);
     font-size: var(--font-size-sm);
     font-weight: var(--font-weight-semibold);
     color: var(--ubits-fg-1-high);
@@ -210,7 +210,7 @@
 }
 
 .docs-dropdown-subgroup-title {
-    font-family: 'Noto Sans', sans-serif;
+    font-family: var(--ubits-font-family-sans);
     font-size: var(--font-size-xs);
     font-weight: var(--font-weight-semibold);
     color: var(--ubits-fg-1-medium);
