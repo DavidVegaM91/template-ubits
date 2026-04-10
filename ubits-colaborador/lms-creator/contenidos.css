@@ -879,6 +879,11 @@ body.crear-contenido-drawer-abierto {
     box-sizing: border-box;
 }
 
+/* Stepper horizontal oficial: solo se muestra en ≤1023px (ver bloque responsive abajo). */
+.crear-contenido-drawer-overlay .crear-contenido-stepper-mobile {
+    display: none;
+}
+
 .contenidos-creator-titulo-wrap {
     display: flex;
     flex-direction: column;
@@ -1093,10 +1098,6 @@ body.crear-contenido-drawer-abierto {
         gap: var(--gap-sm);
     }
 
-    .crear-contenido-drawer-overlay .crear-contenido-portada__cabecera {
-        padding: var(--padding-sm) var(--padding-md);
-    }
-
     .crear-contenido-drawer-overlay .ubits-drawer-header {
         padding-left: max(var(--padding-md), env(safe-area-inset-left, 0px));
         padding-right: max(var(--padding-md), env(safe-area-inset-right, 0px));
@@ -1105,5 +1106,85 @@ body.crear-contenido-drawer-abierto {
     .crear-contenido-drawer-overlay .ubits-drawer-footer {
         padding-left: max(var(--padding-md), env(safe-area-inset-left, 0px));
         padding-right: max(var(--padding-md), env(safe-area-inset-right, 0px));
+    }
+}
+
+/*
+ * Drawer «Crear contenido» — solo viewport ≤1023px (breakpoint “móvil/tablet” del template).
+ * - Workspace en columna (la regla base .crear-contenido-editor-workspace viene después y ponía row).
+ * - Stepper: variante oficial horizontal compacta (#crear-contenido-stepper-ol-mobile); el vertical se oculta.
+ * - Portada: una columna (título → miniatura; descripción → ficha). La regla base 6fr/4fr va después del
+ *   primer @media 1023px sin .crear-contenido-drawer-overlay, por eso hace falta re-forzar aquí.
+ * Desktop ≥1024px: este bloque no aplica.
+ */
+@media (max-width: 1023px) {
+    /*
+     * Halo del paso activo: box-shadow 0 0 0 4px (--ubits-bg-active).
+     * El <ol> horizontal lleva overflow-x: auto (stepper.css ≤1023px); ese scrollport recorta
+     * sombras que salen del .mark. El padding del <nav> no basta: el recorte aplica al borde del <ol>.
+     * Inset en el ol + ligero en el nav para alinear con el card de portada.
+     */
+    .crear-contenido-drawer-overlay .crear-contenido-editor-workspace {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .crear-contenido-drawer-overlay .crear-contenido-editor__rail {
+        flex: 0 0 auto;
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+        align-self: stretch;
+    }
+
+    .crear-contenido-drawer-overlay .crear-contenido-editor__main {
+        flex: 1 1 auto;
+        min-height: 0;
+        overflow-y: auto;
+        overflow-x: hidden;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    /* Rail vertical desktop oculto en móvil (el horizontal oficial está en .crear-contenido-stepper-mobile). */
+    .crear-contenido-drawer-overlay #crear-contenido-stepper-frame {
+        display: none !important;
+    }
+
+    .crear-contenido-drawer-overlay .crear-contenido-stepper-mobile {
+        display: block;
+        width: 100%;
+        box-sizing: border-box;
+        flex-shrink: 0;
+        padding-inline: 0;
+    }
+
+    /* Aire dentro del scrollport del ol (evita que el halo del paso 1 quede “a filo” y se corte). */
+    .crear-contenido-drawer-overlay #crear-contenido-stepper-ol-mobile.ubits-stepper--horizontal {
+        padding-inline: var(--gap-sm);
+        box-sizing: border-box;
+    }
+
+    .crear-contenido-drawer-overlay .crear-contenido-stepper-mobile .ubits-stepper--horizontal {
+        width: 100%;
+        max-width: 100%;
+    }
+
+    /* Título+miniatura y descripción+ficha: apilados (la base del componente redefine grid a dos columnas). */
+    .crear-contenido-drawer-overlay .crear-contenido-portada__cabecera,
+    .crear-contenido-drawer-overlay .crear-contenido-portada__cuerpo {
+        grid-template-columns: 1fr;
+    }
+
+    /* Sobre el primer @media 1023px (.crear-contenido-portada__cabecera { padding: md }): mismo criterio que tarjetas (padding-lg). */
+    .crear-contenido-drawer-overlay .crear-contenido-portada__cabecera {
+        padding: var(--padding-lg) var(--padding-xl);
+    }
+
+    .crear-contenido-drawer-overlay .crear-contenido-portada__cabecera-titulo {
+        order: 0;
+    }
+
+    .crear-contenido-drawer-overlay .crear-contenido-portada__cabecera-media {
+        order: 1;
     }
 }

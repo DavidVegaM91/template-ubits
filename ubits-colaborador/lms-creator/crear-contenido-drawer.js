@@ -73,6 +73,38 @@
         return d.innerHTML;
     }
 
+    /**
+     * Variante oficial horizontal compacta (solo CSS móvil ≤1023px la muestra; desktop usa el vertical).
+     * Incluye li.ubits-stepper__rail entre pasos (estructura oficial del componente).
+     */
+    function getStepperHtmlMobile() {
+        return (
+            '<nav class="crear-contenido-stepper-mobile" aria-label="Pasos de creación">' +
+            '  <ol class="ubits-stepper ubits-stepper--horizontal ubits-stepper--horizontal-compact" id="crear-contenido-stepper-ol-mobile">' +
+            '    <li class="ubits-stepper__step ubits-stepper__step--active" data-step-label="Portada" aria-current="step">' +
+            '      <span class="ubits-stepper__mark" aria-hidden="true"><span class="ubits-stepper__mark-num">1</span><i class="far fa-check" aria-hidden="true"></i></span>' +
+            '      <span class="ubits-stepper__label">Portada</span>' +
+            '    </li>' +
+            '    <li class="ubits-stepper__rail" aria-hidden="true"></li>' +
+            '    <li class="ubits-stepper__step ubits-stepper__step--pending" data-step-label="Recursos">' +
+            '      <span class="ubits-stepper__mark" aria-hidden="true"><span class="ubits-stepper__mark-num">2</span><i class="far fa-check" aria-hidden="true"></i></span>' +
+            '      <span class="ubits-stepper__label">Recursos</span>' +
+            '    </li>' +
+            '    <li class="ubits-stepper__rail" aria-hidden="true"></li>' +
+            '    <li class="ubits-stepper__step ubits-stepper__step--pending" data-step-label="Certificado">' +
+            '      <span class="ubits-stepper__mark" aria-hidden="true"><span class="ubits-stepper__mark-num">3</span><i class="far fa-check" aria-hidden="true"></i></span>' +
+            '      <span class="ubits-stepper__label">Certificado</span>' +
+            '    </li>' +
+            '    <li class="ubits-stepper__rail" aria-hidden="true"></li>' +
+            '    <li class="ubits-stepper__step ubits-stepper__step--pending" data-step-label="Publicación">' +
+            '      <span class="ubits-stepper__mark" aria-hidden="true"><span class="ubits-stepper__mark-num">4</span><i class="far fa-check" aria-hidden="true"></i></span>' +
+            '      <span class="ubits-stepper__label">Publicación</span>' +
+            '    </li>' +
+            '  </ol>' +
+            '</nav>'
+        );
+    }
+
     function getStepperHtml() {
         return (
             '<div class="ubits-stepper__vertical-frame ubits-stepper__vertical-frame--creator-rail is-collapsed" id="crear-contenido-stepper-frame">' +
@@ -182,6 +214,7 @@
             '<div class="crear-contenido-editor-workspace">' +
             '  <div class="crear-contenido-editor__rail">' +
             getStepperHtml() +
+            getStepperHtmlMobile() +
             '  </div>' +
             '  <div class="crear-contenido-editor__main">' +
             '    <div class="crear-contenido-portada__cabecera">' +
@@ -498,8 +531,10 @@
             wireStepperVerticalCollapse(frame, toggle, { creatorRail: true });
         }
         if (typeof setStepperStepStates === 'function') {
-            var ol = overlay.querySelector('#crear-contenido-stepper-ol');
-            if (ol) setStepperStepStates(ol, 0);
+            var olDesk = overlay.querySelector('#crear-contenido-stepper-ol');
+            var olMob = overlay.querySelector('#crear-contenido-stepper-ol-mobile');
+            if (olDesk) setStepperStepStates(olDesk, 0);
+            if (olMob) setStepperStepStates(olMob, 0);
         }
         if (typeof initTooltip === 'function') {
             initTooltip('#' + OVERLAY_ID + ' [data-tooltip]');
