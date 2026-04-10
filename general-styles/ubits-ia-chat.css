@@ -965,6 +965,24 @@
     padding: 0 !important;
 }
 
+/*
+ * Layout modular (p. ej. modo-estudio-ia.css, lms-creator.css): .section-single > div
+ * aplica border: none con selector .section-single > div (1 clase + 1 elemento),
+ * que gana a .ubits-ia-chat-historial / .ubits-ia-chat__main solo con 1 clase.
+ * Restablecer borde del shell cuando el chat está en .section-single.ubits-ia-chat.
+ * En móvil drawer, body.ia-chat-mobile-drawer-page … border … !important sigue mandando.
+ */
+.section-single.ubits-ia-chat > .ubits-ia-chat-historial,
+.section-single.ubits-ia-chat > .ubits-ia-chat__main {
+    border: 1px solid var(--ubits-border-1);
+    box-sizing: border-box;
+}
+
+.section-single.ubits-ia-chat > .ubits-ia-chat__side.is-open {
+    border: 1px solid var(--ubits-border-1);
+    box-sizing: border-box;
+}
+
 /* ---------------------------------------------------------------------------
    Panel de lista de conversaciones (Mis chats)
    --------------------------------------------------------------------------- */
@@ -980,8 +998,9 @@
     padding: 0;
     margin: 0;
     background: var(--ubits-bg-1);
-    border: none;
+    border: 1px solid var(--ubits-border-1);
     border-radius: var(--border-radius-lg);
+    box-sizing: border-box;
 }
 
 .ubits-ia-chat-historial__header {
@@ -1142,7 +1161,9 @@
     display: flex;
     flex-direction: column;
     background-color: transparent;
+    border: 1px solid var(--ubits-border-1);
     border-radius: var(--border-radius-lg);
+    box-sizing: border-box;
     position: relative;
     isolation: isolate;
     overflow: hidden;
@@ -1676,6 +1697,7 @@ body.ia-chat-mobile-drawer-scroll-lock {
         z-index: 1101 !important;
         margin: 0 !important;
         border-radius: 0 !important;
+        border: none !important;
         border-right: 1px solid var(--ubits-border-1) !important;
         box-shadow: var(--ubits-elevation-overlay) !important;
         transform: translateX(-100%);
