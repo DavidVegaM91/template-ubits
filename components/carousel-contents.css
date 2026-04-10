@@ -13,6 +13,13 @@
     overflow: hidden;
     background: var(--ubits-bg-1);
     touch-action: pan-x pan-y pinch-zoom; /* Permitir swipe horizontal y vertical */
+    border: 1px solid var(--ubits-border-1);
+    box-sizing: border-box;
+    transition: border-color 0.2s ease;
+}
+
+.carousel-contents--hero:hover {
+    border-color: var(--ubits-accent-brand);
 }
 
 /* Zoom effect on hover */
@@ -639,7 +646,7 @@
     overflow: visible;
     padding: var(--padding-none);
     margin: 0;
-    border: 1px solid transparent;
+    border: 1px solid var(--ubits-border-1);
     flex: 0 0 calc((100% - (7 * 24px)) / 8);
     width: calc((100% - (7 * 24px)) / 8);
     max-width: calc((100% - (7 * 24px)) / 8);
@@ -651,7 +658,7 @@
 }
 
 .carousel-contents--allies__card:hover {
-    border-color: var(--ubits-border-1);
+    border-color: var(--ubits-accent-brand);
 }
 
 /* Imagen del aliado */
@@ -1008,6 +1015,12 @@
     width: 100%;
     max-width: 100%;
     box-sizing: border-box;
+    border: 1px solid var(--ubits-border-1);
+    transition: opacity 0.5s ease, border-color 0.2s ease;
+}
+
+.carousel-contents--outstanding__slide.active:hover {
+    border-color: var(--ubits-accent-brand);
 }
 
 /* Contenido izquierda */

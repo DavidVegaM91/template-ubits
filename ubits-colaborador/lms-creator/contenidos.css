@@ -19,6 +19,19 @@
     color: var(--ubits-fg-1-medium);
 }
 
+/* Barra de lista + filtros aplicados: un solo bloque con fondo bg-1 */
+.contenidos-toolbar-strip {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-md);
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    background: var(--ubits-bg-1);
+    border-radius: var(--border-radius-md);
+    padding: var(--padding-md) var(--padding-lg);
+}
+
 /* Barra “Lista de elementos” + acciones (actions-table) */
 .contenidos-toolbar {
     display: flex;
@@ -27,7 +40,7 @@
     flex-wrap: wrap;
     gap: var(--gap-md);
     padding: var(--padding-none);
-    background: var(--ubits-bg-2);
+    background: transparent;
     border-radius: var(--border-radius-none);
     box-sizing: border-box;
 }
@@ -235,6 +248,36 @@
 }
 
 /* Filtros: botón activo cuando hay criterios aplicados */
+/* Filtros aplicados (mismo patrón que ubits-data-table / seguimiento) */
+.page-contenidos-creator .contenidos-filtros-aplicados {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--gap-md);
+    width: 100%;
+    min-width: 0;
+}
+
+.page-contenidos-creator .contenidos-filtros-aplicados .filtros-chips-container {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--gap-sm);
+    min-width: 0;
+    flex: 1 1 auto;
+}
+
+.page-contenidos-creator .contenidos-filtros-aplicados .filtros-chips-container .ubits-chip {
+    max-width: min(200px, 100%);
+}
+
+.page-contenidos-creator .contenidos-filtros-aplicados .filtros-chips-container .ubits-chip__text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    min-width: 0;
+}
+
 .contenidos-toolbar__filter-btn.contenidos-toolbar__filter-btn--active {
     color: var(--ubits-accent-brand);
     border-color: var(--ubits-accent-brand);
@@ -286,6 +329,10 @@
 }
 
 @media (max-width: 768px) {
+    .contenidos-toolbar-strip {
+        padding: var(--padding-sm) var(--padding-md);
+    }
+
     .contenidos-toolbar {
         align-items: flex-start;
         flex-direction: column;
@@ -344,6 +391,43 @@ body.crear-contenido-drawer-abierto {
     flex-direction: column;
     overflow: hidden;
     min-height: 0;
+}
+
+/* Crear contenido: panel a alto de viewport (móvil / dynamic viewport) y cadena flex para scroll en __main */
+.crear-contenido-drawer-overlay.ubits-drawer-overlay {
+    align-items: stretch;
+    justify-content: stretch;
+    min-height: 100vh;
+    min-height: 100dvh;
+}
+
+.crear-contenido-drawer-overlay .ubits-drawer-content.ubits-drawer-content--full {
+    min-height: 0;
+    height: 100%;
+    max-height: 100dvh;
+}
+
+.crear-contenido-drawer-overlay .ubits-drawer-body {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow: hidden;
+    overflow-x: hidden;
+}
+
+.crear-contenido-drawer-overlay .ubits-drawer-header {
+    padding-top: max(var(--padding-lg), env(safe-area-inset-top, 0px));
+    padding-left: max(var(--padding-xl), env(safe-area-inset-left, 0px));
+    padding-right: max(var(--padding-xl), env(safe-area-inset-right, 0px));
+    flex-wrap: wrap;
+    row-gap: var(--gap-sm);
+}
+
+.crear-contenido-drawer-overlay .ubits-drawer-footer {
+    padding-bottom: max(var(--padding-lg), env(safe-area-inset-bottom, 0px));
+    padding-left: max(var(--padding-xl), env(safe-area-inset-left, 0px));
+    padding-right: max(var(--padding-xl), env(safe-area-inset-right, 0px));
+    flex-wrap: wrap;
+    justify-content: flex-end;
 }
 
 .contenido-borrador-editor-workspace {
@@ -708,15 +792,47 @@ body.crear-contenido-drawer-abierto {
     .crear-contenido-editor-workspace {
         flex-direction: column;
         align-items: stretch;
+        padding: var(--padding-md);
+        gap: var(--gap-md);
     }
 
-    .crear-contenido-editor__rail {
-        justify-content: center;
+    /* El rail del stepper deja de ser 240px fijos: ancho fluido para no desbordar el viewport */
+    .crear-contenido-drawer-overlay .crear-contenido-editor__rail {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+        align-self: stretch;
+        justify-content: stretch;
+    }
+
+    .crear-contenido-drawer-overlay .crear-contenido-editor__rail .ubits-stepper__vertical-frame.ubits-stepper__vertical-frame--creator-rail {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+        align-self: stretch;
+        padding: var(--padding-md) var(--padding-lg);
+        box-sizing: border-box;
+    }
+
+    /* Collapsado: mantener franja compacta centrada */
+    .crear-contenido-drawer-overlay .crear-contenido-editor__rail .ubits-stepper__vertical-frame--creator-rail.is-collapsed {
+        width: auto;
+        min-width: 0;
+        max-width: 100%;
+        align-self: center;
     }
 
     .crear-contenido-portada__cabecera,
     .crear-contenido-portada__cuerpo {
         grid-template-columns: 1fr;
+    }
+
+    .crear-contenido-portada__cabecera {
+        padding: var(--padding-md);
+    }
+
+    .crear-contenido-portada__cuerpo-desc .ubits-rich-text-editor__editor-shell {
+        max-height: min(280px, 42vh);
     }
 }
 
@@ -748,7 +864,19 @@ body.crear-contenido-drawer-abierto {
     flex-direction: column;
     gap: var(--gap-xl);
     overflow-y: auto;
+    overflow-x: hidden;
     min-height: 0;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* En el drawer, el workspace debe llenar el body y acotar el scroll a la columna principal */
+.crear-contenido-drawer-overlay .crear-contenido-editor-workspace {
+    flex: 1 1 auto;
+    min-height: 0;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+    box-sizing: border-box;
 }
 
 .contenidos-creator-titulo-wrap {
@@ -947,4 +1075,35 @@ body.crear-contenido-drawer-abierto {
     border-top: none;
     padding-top: var(--gap-sm);
     margin-top: 0;
+}
+
+@media (max-width: 639px) {
+    .crear-contenido-drawer-overlay .contenidos-creator-titulo-input {
+        font-size: clamp(1.125rem, 5vw, 1.5rem);
+        line-height: 1.3;
+    }
+
+    .crear-contenido-drawer-overlay .contenido-borrador-editor__drawer-title-row {
+        flex-wrap: wrap;
+        row-gap: var(--gap-xs);
+    }
+
+    .crear-contenido-drawer-overlay .crear-contenido-editor-workspace {
+        padding: var(--padding-sm);
+        gap: var(--gap-sm);
+    }
+
+    .crear-contenido-drawer-overlay .crear-contenido-portada__cabecera {
+        padding: var(--padding-sm) var(--padding-md);
+    }
+
+    .crear-contenido-drawer-overlay .ubits-drawer-header {
+        padding-left: max(var(--padding-md), env(safe-area-inset-left, 0px));
+        padding-right: max(var(--padding-md), env(safe-area-inset-right, 0px));
+    }
+
+    .crear-contenido-drawer-overlay .ubits-drawer-footer {
+        padding-left: max(var(--padding-md), env(safe-area-inset-left, 0px));
+        padding-right: max(var(--padding-md), env(safe-area-inset-right, 0px));
+    }
 }

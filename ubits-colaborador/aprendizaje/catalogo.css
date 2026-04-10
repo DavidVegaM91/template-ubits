@@ -278,7 +278,7 @@
     overflow: visible;
     padding: var(--padding-none);
     margin: 0;
-    border: 1px solid transparent;
+    border: 1px solid var(--ubits-border-1);
     flex: 0 0 calc((100% - (7 * 24px)) / 8);
     width: calc((100% - (7 * 24px)) / 8);
     max-width: calc((100% - (7 * 24px)) / 8);
@@ -290,7 +290,7 @@
 }
 
 .tipo-contenido-card:hover {
-    border-color: var(--ubits-border-1);
+    border-color: var(--ubits-accent-brand);
 }
 
 /* Tooltip para cards de aliados */
@@ -424,18 +424,18 @@
     cursor: pointer;
     padding: var(--padding-lg);
     background: var(--ubits-bg-1);
-    border: 1px solid transparent;
-    border-radius: var(--border-radius-sm);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: var(--border-radius-lg);
     flex: 0 0 calc((100% - (7 * 24px)) / 8);
     width: calc((100% - (7 * 24px)) / 8);
     max-width: calc((100% - (7 * 24px)) / 8);
-    transition: all 0.2s ease;
+    transition: border-color 0.2s ease, color 0.2s ease;
     min-height: 100px;
     box-sizing: border-box;
 }
 
 .tipo-contenido-card-nuevo:hover {
-    border-color: var(--ubits-border-1);
+    border-color: var(--ubits-accent-brand);
 }
 
 .tipo-contenido-icon-nuevo {
@@ -645,7 +645,7 @@
 /* Cards de competencia estilo v1 - horizontales compactas */
 .competencia-card-v1 {
     background: var(--ubits-bg-1);
-    border: 1px solid transparent;
+    border: 1px solid var(--ubits-border-1);
     border-radius: var(--border-radius-lg);
     overflow: visible;
     cursor: default;
@@ -659,7 +659,7 @@
 }
 
 .competencia-card-v1:hover {
-    border-color: var(--ubits-border-1);
+    border-color: var(--ubits-accent-brand);
 }
 
 .competencia-card-v1-actions {

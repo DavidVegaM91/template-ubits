@@ -23,6 +23,7 @@
     <link rel="stylesheet" href="../../components/table.css">
     <link rel="stylesheet" href="../../components/status-tag.css">
     <link rel="stylesheet" href="../../components/badge-tag.css">
+    <link rel="stylesheet" href="../../components/chip.css">
     <link rel="stylesheet" href="../../components/paginator.css">
     <link rel="stylesheet" href="../../components/input.css">
     <link rel="stylesheet" href="../../components/empty-state.css">
@@ -55,6 +56,7 @@
                     </div>
                     <div class="section-single section-single--contenidos">
                         <div class="widget-contenidos-creator">
+                            <div class="contenidos-toolbar-strip">
                             <!-- Barra tipo Figma actions-table -->
                             <div class="contenidos-toolbar">
                                 <div class="contenidos-toolbar__title-block">
@@ -89,6 +91,16 @@
                                         </button>
                                     </div>
                                 </div>
+                            </div>
+
+                            <div class="widget-filtros-aplicados contenidos-filtros-aplicados" id="contenidos-filtros-aplicados" style="display: none;" aria-live="polite">
+                                <span class="ubits-body-sm-regular">Filtros aplicados:</span>
+                                <div class="filtros-chips-container" id="contenidos-filtros-chips-container"></div>
+                                <button type="button" class="ubits-button ubits-button--tertiary ubits-button--xs" id="contenidos-clear-all-filters-btn" aria-label="Limpiar todos los filtros">
+                                    <i class="far fa-filter-slash"></i>
+                                    <span>Limpiar filtros</span>
+                                </button>
+                            </div>
                             </div>
 
                             <div class="contenidos-table-panel" style="display: none;">
@@ -1009,6 +1021,139 @@
                     if (fb) fb.classList.toggle('contenidos-toolbar__filter-btn--active', hasActiveContenidosFiltros());
                 }
 
+                function escapeHtmlContenidosChip(str) {
+                    if (str == null) return '';
+                    return String(str)
+                        .replace(/&/g, '&amp;')
+                        .replace(/</g, '&lt;')
+                        .replace(/>/g, '&gt;')
+                        .replace(/"/g, '&quot;');
+                }
+
+                function resolveContenidosCategoriaNombre(id) {
+                    var catRoot = window.BD_MASTER_CATEGORIAS_FIQSHA;
+                    if (!catRoot || !Array.isArray(catRoot.categorias) || !id) return id || '';
+                    for (var i = 0; i < catRoot.categorias.length; i++) {
+                        var c = catRoot.categorias[i];
+                        if (c && c.id === id) return c.nombre || id;
+                    }
+                    return id;
+                }
+
+                function resolveContenidosNivelNombre(id) {
+                    var nivRoot = window.BD_MASTER_NIVELES_CONTENIDO;
+                    if (!nivRoot || !Array.isArray(nivRoot.niveles) || !id) return id || '';
+                    for (var j = 0; j < nivRoot.niveles.length; j++) {
+                        var n = nivRoot.niveles[j];
+                        if (n && n.id === id) return n.nombre || id;
+                    }
+                    return id;
+                }
+
+                function renderContenidosFiltrosAplicados() {
+                    var wrap = document.getElementById('contenidos-filtros-aplicados');
+                    var chipsCont = document.getElementById('contenidos-filtros-chips-container');
+                    if (!wrap || !chipsCont) return;
+                    var f = contenidosFiltrosActive;
+                    var chips = [];
+                    if (f.tipo) {
+                        chips.push({
+                            label: 'Tipo',
+                            value: f.tipo,
+                            remove: function () {
+                                contenidosFiltrosActive.tipo = '';
+                                contenidosFiltrosPending.tipo = '';
+                                if (contenidosPaginatorInst) {
+                                    contenidosPaginatorInst.updateTotalItems(getSearchMatches().length);
+                                    contenidosPaginatorInst.goToPage(1);
+                                }
+                                syncListaContenidos();
+                            }
+                        });
+                    }
+                    if (f.categoriaId) {
+                        chips.push({
+                            label: 'Categoría',
+                            value: resolveContenidosCategoriaNombre(f.categoriaId),
+                            remove: function () {
+                                contenidosFiltrosActive.categoriaId = '';
+                                contenidosFiltrosPending.categoriaId = '';
+                                if (contenidosPaginatorInst) {
+                                    contenidosPaginatorInst.updateTotalItems(getSearchMatches().length);
+                                    contenidosPaginatorInst.goToPage(1);
+                                }
+                                syncListaContenidos();
+                            }
+                        });
+                    }
+                    if (f.nivelId) {
+                        chips.push({
+                            label: 'Nivel',
+                            value: resolveContenidosNivelNombre(f.nivelId),
+                            remove: function () {
+                                contenidosFiltrosActive.nivelId = '';
+                                contenidosFiltrosPending.nivelId = '';
+                                if (contenidosPaginatorInst) {
+                                    contenidosPaginatorInst.updateTotalItems(getSearchMatches().length);
+                                    contenidosPaginatorInst.goToPage(1);
+                                }
+                                syncListaContenidos();
+                            }
+                        });
+                    }
+                    if (f.idioma) {
+                        chips.push({
+                            label: 'Idioma',
+                            value: f.idioma,
+                            remove: function () {
+                                contenidosFiltrosActive.idioma = '';
+                                contenidosFiltrosPending.idioma = '';
+                                if (contenidosPaginatorInst) {
+                                    contenidosPaginatorInst.updateTotalItems(getSearchMatches().length);
+                                    contenidosPaginatorInst.goToPage(1);
+                                }
+                                syncListaContenidos();
+                            }
+                        });
+                    }
+                    if (chips.length === 0) {
+                        wrap.style.display = 'none';
+                        chipsCont.innerHTML = '';
+                        return;
+                    }
+                    wrap.style.display = 'flex';
+                    chipsCont.innerHTML = chips
+                        .map(function (chip, index) {
+                            var full = chip.label + ': ' + chip.value;
+                            var labelVal = full.replace(/"/g, '&quot;');
+                            return (
+                                '<span class="ubits-chip ubits-chip--xs ubits-chip--close contenidos-filtro-chip" data-chip-index="' +
+                                index +
+                                '" data-tooltip="' +
+                                labelVal +
+                                '">' +
+                                '<span class="ubits-chip__text">' +
+                                escapeHtmlContenidosChip(full) +
+                                '</span>' +
+                                '<button type="button" class="ubits-chip__close" data-chip-index="' +
+                                index +
+                                '" aria-label="Quitar filtro"><i class="far fa-times"></i></button></span>'
+                            );
+                        })
+                        .join('');
+                    chipsCont.querySelectorAll('.ubits-chip__close').forEach(function (btn) {
+                        btn.addEventListener('click', function () {
+                            var idx = parseInt(btn.getAttribute('data-chip-index'), 10);
+                            if (!isNaN(idx) && chips[idx] && typeof chips[idx].remove === 'function') {
+                                chips[idx].remove();
+                            }
+                        });
+                    });
+                    if (typeof initTooltip === 'function') {
+                        initTooltip('#contenidos-filtros-chips-container .ubits-chip[data-tooltip]');
+                    }
+                }
+
                 function clearContenidosFiltros() {
                     contenidosFiltrosActive = { tipo: '', categoriaId: '', nivelId: '', idioma: '' };
                     contenidosFiltrosPending = { tipo: '', categoriaId: '', nivelId: '', idioma: '' };
@@ -1108,6 +1253,7 @@
                     updateEmptyState();
                     syncContenidosCardsVisibility();
                     syncContenidosFilterButtonState();
+                    renderContenidosFiltrosAplicados();
                     var pagEl = document.getElementById('contenidos-paginador');
                     var m = getSearchMatches();
                     if (pagEl) {
@@ -1446,6 +1592,13 @@
                         e.preventDefault();
                         e.stopPropagation();
                         openContenidosFiltrosModal();
+                    });
+                }
+
+                var clearAllFiltrosBtn = document.getElementById('contenidos-clear-all-filters-btn');
+                if (clearAllFiltrosBtn) {
+                    clearAllFiltrosBtn.addEventListener('click', function () {
+                        clearContenidosFiltros();
                     });
                 }
 

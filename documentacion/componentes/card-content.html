@@ -105,9 +105,9 @@
             box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.1);
         }
         
-        /* Hover state simulation */
+        /* Hover state simulation (mismo borde que :hover del componente) */
         .course-card.hover-state {
-           
+            border-color: var(--ubits-accent-brand);
         }
         
         .course-card.hover-state .course-image {
@@ -117,7 +117,6 @@
         /* Quitar animación de entrada para el preview */
         .single-card-preview .course-card {
             animation: none !important;
-            border: none !important; /* Sin borde por defecto, igual que el componente real */
         }
         
         /* Asegurar que el avatar del provider sea 28px en el preview */
