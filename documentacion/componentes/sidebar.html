@@ -127,6 +127,9 @@
                         <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" onclick="setPreviewVariant('admin')">
                             <span>Variante Admin</span>
                         </button>
+                        <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" onclick="setPreviewVariant('creator')">
+                            <span>Variante LMS Creator</span>
+                        </button>
                     </div>
                 </div>
 
@@ -452,6 +455,8 @@ updateActiveSidebarButton('desempeño'); // Cambiar botón activo</code></pre>
                 loadSidebar('default', 'aprendizaje');
             } else if (variant === 'admin') {
                 loadSidebar('admin', 'inicio');
+            } else if (variant === 'creator') {
+                loadSidebar('creator', 'lms-creator');
             }
             
             // Actualizar controles

@@ -14,6 +14,7 @@ const DOCS_SIDEBAR_SECTIONS = [
     { id: 'card-content', title: 'Card content', group: 'aprendizaje' },
     { id: 'card-content-compact', title: 'Card content compact', group: 'aprendizaje' },
     { id: 'learn-content-img-trailer', title: 'Learn content imagen y tráiler', group: 'aprendizaje' },
+    { id: 'paginas-creator', title: 'Paginas creator', group: 'aprendizaje' },
     { id: 'sidebar-contenidos-lms', title: 'Sidebar contenidos LMS', group: 'aprendizaje' },
     // UI general en orden alfabético
     { id: 'accordion', title: 'Accordion', group: 'ui' },
@@ -271,6 +272,7 @@ function initDocsSidebar(activeSection) {
             'card-content': 'card-content.html',
             'card-content-compact': 'card-content-compact.html',
             'learn-content-img-trailer': 'learn-content-img-trailer.html',
+            'paginas-creator': 'paginas-creator.html',
             'checkbox': 'checkbox.html',
             'chip': 'chip.html',
             'coachmark': 'coachmark.html',

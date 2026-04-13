@@ -1,0 +1,118 @@
+/**
+ * Paginas Creator — fila de lista para navegación de páginas (Learn Creator).
+ * Estados: default, hover, active (franja izquierda + menú ellipsis).
+ * Requiere: ubits-colors, ubits-typography, fontawesome, button.css para el menú.
+ */
+
+.ubits-paginas-creator {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.ubits-paginas-creator__item {
+    display: flex;
+    align-items: stretch;
+    width: 100%;
+    box-sizing: border-box;
+    background: var(--ubits-bg-1);
+    border-bottom: 1px solid var(--ubits-border-1);
+}
+
+.ubits-paginas-creator__item:hover,
+.ubits-paginas-creator__item.is-force-hover,
+.ubits-paginas-creator__item.is-active {
+    background: var(--ubits-bg-2);
+}
+
+.ubits-paginas-creator__row {
+    flex: 1 1 auto;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: var(--gap-sm);
+    min-height: var(--space-12);
+    margin: 0;
+    padding: var(--padding-lg) var(--padding-lg) var(--padding-lg) 0;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    text-align: left;
+    font: inherit;
+    color: inherit;
+    box-sizing: border-box;
+}
+
+.ubits-paginas-creator__row:focus-visible {
+    outline: 2px solid var(--ubits-accent-brand);
+    outline-offset: -2px;
+    z-index: 1;
+}
+
+.ubits-paginas-creator__rail {
+    flex-shrink: 0;
+    align-self: stretch;
+    width: 0;
+    margin: 0;
+    border-radius: var(--border-radius-xs);
+    background: transparent;
+    transition: width 0.15s ease, background-color 0.15s ease;
+}
+
+.ubits-paginas-creator__item.is-active .ubits-paginas-creator__rail {
+    width: var(--space-1);
+    background: var(--ubits-accent-brand);
+}
+
+.ubits-paginas-creator__icon {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--ubits-fg-1-high);
+    font-size: var(--font-size-md);
+    line-height: 1;
+}
+
+.ubits-paginas-creator__icon i {
+    display: block;
+}
+
+.ubits-paginas-creator__label {
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.ubits-paginas-creator__item:not(.is-active):not(:hover):not(.is-force-hover) .ubits-paginas-creator__label {
+    color: var(--ubits-fg-1-medium);
+    font-weight: 600;
+}
+
+.ubits-paginas-creator__item:hover:not(.is-active) .ubits-paginas-creator__label,
+.ubits-paginas-creator__item.is-force-hover:not(.is-active) .ubits-paginas-creator__label {
+    color: var(--ubits-fg-1-high);
+    font-weight: 700;
+}
+
+.ubits-paginas-creator__item.is-active .ubits-paginas-creator__label {
+    color: var(--ubits-accent-brand);
+    font-weight: 700;
+}
+
+.ubits-paginas-creator__menu {
+    display: none;
+    flex-shrink: 0;
+    align-self: center;
+    margin-right: var(--padding-sm);
+}
+
+.ubits-paginas-creator__item.is-active .ubits-paginas-creator__menu {
+    display: inline-flex;
+}
+
+.ubits-paginas-creator__menu:focus-visible {
+    outline: 2px solid var(--ubits-accent-brand);
+    outline-offset: 2px;
+}

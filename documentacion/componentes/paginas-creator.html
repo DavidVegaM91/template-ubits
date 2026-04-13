@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="../../images/Ubits-logo-dark.svg">
+    <title>Páginas Creator | UBITS Playground</title>
+    <link rel="stylesheet" href="../../general-styles/ubits-colors.css">
+    <link rel="stylesheet" href="../../general-styles/styles.css">
+    <link rel="stylesheet" href="../../general-styles/fontawesome-icons.css">
+    <link rel="stylesheet" href="../../general-styles/ubits-typography.css">
+    <link rel="stylesheet" href="../../components/sub-nav.css">
+    <link rel="stylesheet" href="../../components/sidebar.css">
+    <link rel="stylesheet" href="../../components/button.css">
+    <link rel="stylesheet" href="../../components/toast.css">
+    <link rel="stylesheet" href="../../components/dropdown-menu.css">
+    <link rel="stylesheet" href="../../components/paginas-creator.css">
+    <link rel="stylesheet" href="../../docs/docs-sidebar.css">
+    <link rel="stylesheet" href="../../docs/docstyles.css">
+    <style>
+        .preview-control-btn.active {
+            background: var(--ubits-accent-brand) !important;
+            color: white !important;
+            border-color: var(--ubits-accent-brand) !important;
+        }
+        .preview-control-btn.active span { color: white !important; }
+    </style>
+</head>
+<body class="componentes-page" data-theme="light">
+    <div class="dashboard-container">
+        <div class="tooltip" id="tooltip"></div>
+        <main class="main-content">
+            <div id="top-nav-container"></div>
+            <div style="display: flex;">
+                <div id="docs-dropdown-container"></div>
+                <div id="docs-sidebar-container"></div>
+                <div class="components-content">
+                    <div class="content-area" style="display: block; width: 100%;">
+                        <div style="text-align: center; margin-bottom: 60px;">
+                            <h1 class="ubits-display-d2-bold" style="margin-bottom: 24px; color: var(--ubits-accent-brand);">
+                                Páginas Creator
+                            </h1>
+                            <p class="ubits-body-md-regular" style="max-width: 800px; margin: 0 auto 32px; line-height: 1.6;">
+                                Fila de lista para el panel lateral del creador de contenidos: icono según tipo de página, título y estados default, hover y activo (franja vertical y botón de menú). Referencia Figma: <a href="https://www.figma.com/design/ZWcvS9Z7YQaz59GZIrnWM6/Learn-Components?node-id=241-18282&amp;m=dev" class="ubits-body-md-regular" style="color: var(--ubits-accent-brand); text-decoration: underline;">Learn-Components · lista de páginas (241:18282)</a>.
+                            </p>
+                        </div>
+
+                        <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: var(--border-radius-lg); margin-bottom: 40px;">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-eye" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Preview del componente
+                            </h2>
+                            <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6;">
+                                Cambia el estado y el tipo de página. «Hover forzado» aplica el mismo fondo y tipografía que el puntero encima, sin depender del ratón. En estado <strong>Activo</strong>, el botón de tres puntos abre el menú con iconos; al elegir una opción verás un toast de demostración.
+                            </p>
+                            <div style="margin-bottom: 16px;">
+                                <p class="ubits-body-sm-bold" style="margin: 0 0 var(--gap-sm) 0; color: var(--ubits-fg-1-high);">Estado</p>
+                                <div style="display: flex; flex-wrap: wrap; gap: var(--gap-sm); align-items: center;">
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn pc-state-btn active" data-pc-state="default"><span>Default</span></button>
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn pc-state-btn" data-pc-state="hover"><span>Hover forzado</span></button>
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn pc-state-btn" data-pc-state="active"><span>Activo</span></button>
+                                </div>
+                            </div>
+                            <div style="margin-bottom: 20px;">
+                                <p class="ubits-body-sm-bold" style="margin: 0 0 var(--gap-sm) 0; color: var(--ubits-fg-1-high);">Tipo de página</p>
+                                <div style="display: flex; flex-wrap: wrap; gap: var(--gap-sm); align-items: center;">
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn pc-tipo-btn active" data-pc-tipo="blank-page"><span>Blank page</span></button>
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn pc-tipo-btn" data-pc-tipo="video"><span>Video</span></button>
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn pc-tipo-btn" data-pc-tipo="texto"><span>Texto</span></button>
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn pc-tipo-btn" data-pc-tipo="pdf"><span>PDF</span></button>
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn pc-tipo-btn" data-pc-tipo="encuesta"><span>Encuesta</span></button>
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn pc-tipo-btn" data-pc-tipo="embebido"><span>Embebido</span></button>
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn pc-tipo-btn" data-pc-tipo="scorm"><span>Scorm</span></button>
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn pc-tipo-btn" data-pc-tipo="evaluacion"><span>Evaluación</span></button>
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn pc-tipo-btn" data-pc-tipo="fin"><span>Fin</span></button>
+                                </div>
+                            </div>
+                            <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: var(--border-radius-md); width: 100%; max-width: 420px; box-sizing: border-box;">
+                                <div id="pc-preview-mount"></div>
+                            </div>
+                        </div>
+
+                        <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: var(--border-radius-lg); margin-bottom: 40px;">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-info-circle" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Características generales
+                            </h2>
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--gap-lg);">
+                                <div style="text-align: center; padding: var(--padding-md); background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: var(--gap-sm);"><i class="far fa-file-lines"></i></div>
+                                    <div class="ubits-body-sm-bold">Icono por tipo</div>
+                                    <div class="ubits-body-sm-regular">Cada tipo de página tiene un icono reconocible en la lista.</div>
+                                </div>
+                                <div style="text-align: center; padding: var(--padding-md); background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: var(--gap-sm);"><i class="far fa-list"></i></div>
+                                    <div class="ubits-body-sm-bold">Estados claros</div>
+                                    <div class="ubits-body-sm-regular">Default, resaltado al pasar el ratón y fila seleccionada con color de marca.</div>
+                                </div>
+                                <div style="text-align: center; padding: var(--padding-md); background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: var(--gap-sm);"><i class="far fa-ellipsis-vertical"></i></div>
+                                    <div class="ubits-body-sm-bold">Menú en activo</div>
+                                    <div class="ubits-body-sm-regular">El botón de más acciones solo aparece cuando la fila está activa y abre un dropdown con mover arriba, mover abajo y eliminar.</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: var(--border-radius-lg); margin-bottom: 40px;">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-comments" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Prompts útiles
+                            </h2>
+                            <p class="ubits-body-md-regular" style="margin-bottom: 24px; color: var(--ubits-fg-1-medium);">
+                                Copia y personaliza. Pide importar <code>paginas-creator.css</code>, <code>dropdown-menu.css</code>, <code>button.css</code>, <code>fontawesome-icons.css</code> y los scripts <code>dropdown-menu.js</code> y <code>paginas-creator.js</code> (en ese orden).
+                            </p>
+                            <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
+                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                                    <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Lista de páginas en el creador</h3>
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('pc-p1')"><i class="far fa-copy"></i><span>Copiar</span></button>
+                                </div>
+                                <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm);">
+                                    <pre style="margin: 0; font-size: var(--font-size-sm); white-space: pre-wrap;"><code id="pc-p1" class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">En la barra lateral del creador de contenidos en [nombre de pantalla], añade la lista de páginas con el componente UBITS «Páginas Creator»: filas con icono según tipo, título, estado activo con franja vertical y menú de acciones. Usa tokens UBITS y el CSS del componente.</code></pre>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="background: var(--ubits-bg-1); border-radius: var(--border-radius-lg); margin-bottom: 40px; overflow: hidden;">
+                            <div style="padding: 32px; text-align: center; border-bottom: 1px solid var(--ubits-border-1);">
+                                <h2 class="ubits-heading-h2" style="margin-bottom: 0; color: var(--ubits-fg-1-high);">
+                                    <i class="far fa-code" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                    Documentación técnica
+                                </h2>
+                                <p class="ubits-body-md-regular" style="margin-top: 16px; color: var(--ubits-fg-1-medium);">Estructura, clases y requisitos.</p>
+                            </div>
+                            <div style="background: var(--ubits-bg-2); padding: 20px; text-align: center; cursor: pointer;" onclick="toggleTechnicalDocs()">
+                                <span class="ubits-body-md-regular" style="color: var(--ubits-accent-brand); display: flex; align-items: center; justify-content: center; gap: 8px;">
+                                    <i class="far fa-chevron-down"></i> Mostrar
+                                </span>
+                            </div>
+                            <div id="technical-docs-content" style="display: none; padding: 0;">
+                                <div style="padding: 32px; border-bottom: 1px solid var(--ubits-border-1);">
+                                    <div style="display: flex; justify-content: space-between; margin-bottom: 24px;">
+                                        <h2 class="ubits-heading-h2" style="margin: 0;">Estructura HTML</h2>
+                                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('pc-tech-html')"><i class="far fa-copy"></i><span>Copiar</span></button>
+                                    </div>
+                                    <pre style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm); overflow-x: auto;"><code id="pc-tech-html" class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">&lt;div class="ubits-paginas-creator" role="list"&gt;
+  &lt;div class="ubits-paginas-creator__item is-active" role="listitem" data-paginas-creator-key="id-pagina"&gt;
+    &lt;button type="button" class="ubits-paginas-creator__row" aria-current="true"&gt;
+      &lt;span class="ubits-paginas-creator__rail" aria-hidden="true"&gt;&lt;/span&gt;
+      &lt;span class="ubits-paginas-creator__icon"&gt;&lt;i class="far fa-file"&gt;&lt;/i&gt;&lt;/span&gt;
+      &lt;span class="ubits-paginas-creator__label ubits-body-sm-semibold"&gt;Título&lt;/span&gt;
+    &lt;/button&gt;
+    &lt;button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only ubits-paginas-creator__menu" aria-label="Más acciones"&gt;
+      &lt;i class="far fa-ellipsis-vertical"&gt;&lt;/i&gt;
+    &lt;/button&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+                                </div>
+                                <div style="padding: 32px; border-bottom: 1px solid var(--ubits-border-1);">
+                                    <div style="display: flex; justify-content: space-between; margin-bottom: 24px;">
+                                        <h2 class="ubits-heading-h2" style="margin: 0;">Clases y estados</h2>
+                                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('pc-tech-classes')"><i class="far fa-copy"></i><span>Copiar</span></button>
+                                    </div>
+                                    <pre style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm); overflow-x: auto;"><code id="pc-tech-classes" class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Contenedor: .ubits-paginas-creator (role="list")
+Ítem: .ubits-paginas-creator__item
+  .is-active     → fila seleccionada: franja, texto marca, menú visible
+  .is-force-hover → solo demo: mismo aspecto que :hover sin puntero
+Fila clicable: .ubits-paginas-creator__row
+Franja: .ubits-paginas-creator__rail (ancho con --space-1 en activo)
+Icono: .ubits-paginas-creator__icon &gt; i.far.fa-*
+Título: .ubits-paginas-creator__label (+ ubits-body-sm-semibold)
+Menú: .ubits-paginas-creator__menu (botón UBITS tertiary sm icon-only)
+     → dropdown UBITS: Mover arriba, Mover abajo, Eliminar (iconos)
+data-paginas-creator-key en el ítem (opcional) → llega en el evento como pageKey</code></pre>
+                                </div>
+                                <div style="padding: 32px;">
+                                    <div style="display: flex; justify-content: space-between; margin-bottom: 16px;">
+                                        <h2 class="ubits-heading-h2" style="margin: 0;">Requisitos e implementación</h2>
+                                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('pc-tech-req')"><i class="far fa-copy"></i><span>Copiar</span></button>
+                                    </div>
+                                    <pre style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm); overflow-x: auto;"><code id="pc-tech-req" class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">CSS: general-styles/ubits-colors.css, general-styles/ubits-typography.css,
+     general-styles/fontawesome-icons.css, components/button.css,
+     components/dropdown-menu.css, components/paginas-creator.css
+JS: components/dropdown-menu.js (antes de paginas-creator.js),
+     components/paginas-creator.js
+     paginasCreatorIconClass('video') → clase del &lt;i&gt;
+     paginasCreatorItemHtml({ label, tipo, active, menuAriaLabel, pageKey })
+     initPaginasCreatorMenus('#contenedor-estable') — delegación del menú
+Evento al elegir opción: ubits-paginas-creator-action
+     detail: { action, pageKey, label, anchor, item }
+Tipos reconocidos en JS: blank-page, video, texto, pdf, encuesta,
+     embebido, scorm, evaluacion, fin</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <div id="ubits-toast-container"></div>
+    <script src="../../components/sidebar.js"></script>
+    <script src="../../components/sub-nav.js"></script>
+    <script src="../../components/toast.js"></script>
+    <script src="../../components/dropdown-menu.js"></script>
+    <script src="../../components/paginas-creator.js"></script>
+    <script src="../../docs/docs-sidebar.js"></script>
+    <script>
+        var pcPreviewState = { state: 'default', tipo: 'blank-page' };
+
+        function pcTipoLabel(tipo) {
+            var map = {
+                'blank-page': 'Blank page',
+                video: 'Video',
+                texto: 'Texto enriquecido',
+                pdf: 'Documento PDF',
+                encuesta: 'Encuesta',
+                embebido: 'Contenido embebido',
+                scorm: 'Paquete Scorm',
+                evaluacion: 'Evaluación',
+                fin: 'Página de cierre'
+            };
+            return map[tipo] || 'Página';
+        }
+
+        function pcRenderPreview() {
+            var mount = document.getElementById('pc-preview-mount');
+            if (!mount || typeof paginasCreatorItemHtml !== 'function') return;
+            var active = pcPreviewState.state === 'active';
+            mount.innerHTML =
+                '<div class="ubits-paginas-creator" role="list">' +
+                paginasCreatorItemHtml({
+                    label: pcTipoLabel(pcPreviewState.tipo),
+                    tipo: pcPreviewState.tipo,
+                    active: active,
+                    pageKey: 'preview-pagina'
+                }) +
+                '</div>';
+            var item = mount.querySelector('.ubits-paginas-creator__item');
+            if (item && pcPreviewState.state === 'hover') {
+                item.classList.add('is-force-hover');
+            }
+            document.querySelectorAll('.pc-state-btn').forEach(function (b) {
+                b.classList.toggle('active', b.getAttribute('data-pc-state') === pcPreviewState.state);
+            });
+            document.querySelectorAll('.pc-tipo-btn').forEach(function (b) {
+                b.classList.toggle('active', b.getAttribute('data-pc-tipo') === pcPreviewState.tipo);
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            if (typeof loadSubNav === 'function') loadSubNav('top-nav-container', 'documentacion');
+            if (typeof loadSidebar === 'function') loadSidebar('ninguno');
+            if (typeof loadDocsSidebar === 'function') loadDocsSidebar('paginas-creator');
+            if (typeof initPaginasCreatorMenus === 'function') {
+                initPaginasCreatorMenus('#pc-preview-mount');
+            }
+            document.addEventListener('ubits-paginas-creator-action', function (ev) {
+                var d = ev.detail || {};
+                var map = {
+                    'mover-arriba': 'Mover arriba',
+                    'mover-abajo': 'Mover abajo',
+                    eliminar: 'Eliminar'
+                };
+                var accion = map[d.action] || d.action || 'Acción';
+                var msg = accion + (d.label ? ' · ' + d.label : '');
+                if (typeof showToast === 'function') {
+                    showToast('info', msg, { containerId: 'ubits-toast-container', duration: 2500 });
+                }
+            });
+            pcRenderPreview();
+            document.querySelectorAll('.pc-state-btn').forEach(function (btn) {
+                btn.addEventListener('click', function () {
+                    pcPreviewState.state = btn.getAttribute('data-pc-state') || 'default';
+                    pcRenderPreview();
+                });
+            });
+            document.querySelectorAll('.pc-tipo-btn').forEach(function (btn) {
+                btn.addEventListener('click', function () {
+                    pcPreviewState.tipo = btn.getAttribute('data-pc-tipo') || 'blank-page';
+                    pcRenderPreview();
+                });
+            });
+        });
+
+        function toggleTechnicalDocs() {
+            var content = document.getElementById('technical-docs-content');
+            var open = content.style.display === 'none' || !content.style.display;
+            content.style.display = open ? 'block' : 'none';
+            var trigger = content.previousElementSibling;
+            if (trigger && trigger.querySelector('span')) {
+                trigger.querySelector('span').innerHTML = open
+                    ? '<i class="far fa-chevron-up"></i> Ocultar'
+                    : '<i class="far fa-chevron-down"></i> Mostrar';
+            }
+        }
+
+        function copyPrompt(id) {
+            var t = document.getElementById(id);
+            if (t) navigator.clipboard.writeText(t.textContent).then(function () {
+                if (typeof showToast === 'function') showToast('success', 'Copiado', { containerId: 'ubits-toast-container' });
+            });
+        }
+
+        function copyCode(id) {
+            var t = document.getElementById(id);
+            if (t) navigator.clipboard.writeText(t.textContent).then(function () {
+                if (typeof showToast === 'function') showToast('success', 'Copiado', { containerId: 'ubits-toast-container' });
+            });
+        }
+    </script>
+</body>
+</html>
