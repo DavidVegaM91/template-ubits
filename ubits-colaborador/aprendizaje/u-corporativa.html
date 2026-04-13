@@ -130,44 +130,33 @@
             loadFloatingMenu('floating-menu-container');
             loadProfileMenu('profile-menu-container');
             
-            // Activar el tab "U. Corporativa" específicamente después de cargar el SubNav
             setTimeout(() => {
-                // Remover active de todos los tabs (desktop y móvil)
                 document.querySelectorAll('.nav-tab, .hamburger-item').forEach(item => {
                     item.classList.remove('active');
                 });
                 
-                // Activar el tab U. Corporativa en desktop
                 const corporateTab = document.querySelector('.nav-tab[data-tab="corporate"]');
                 if (corporateTab) {
                     corporateTab.classList.add('active');
                 }
                 
-                // Activar el tab U. Corporativa en móvil (hamburger menu)
                 const corporateHamburger = document.querySelector('.hamburger-item[data-tab="corporate"]');
                 if (corporateHamburger) {
                     corporateHamburger.classList.add('active');
                 }
                 
-                // Activar el botón de aprendizaje en el sidebar
                 const aprendizajeButton = document.querySelector('.nav-button[data-section="aprendizaje"]');
                 if (aprendizajeButton) {
-                    // Remover active de todos los botones del sidebar
                     document.querySelectorAll('.nav-button').forEach(btn => btn.classList.remove('active'));
-                    // Activar el botón de aprendizaje
                     aprendizajeButton.classList.add('active');
                 }
                 
-                // Activar el botón "Módulos" del Tab-bar móvil
                 const modulosTabBarItem = document.querySelector('.tab-bar-item[data-tab="modulos"]');
                 if (modulosTabBarItem) {
-                    // Remover active de todos los items del tab-bar
                     document.querySelectorAll('.tab-bar-item').forEach(item => item.classList.remove('active'));
-                    // Activar el item módulos
                     modulosTabBarItem.classList.add('active');
                 }
                 
-                // Activar la opción "U. Corporativa" dentro del grupo "Aprendizaje" del floating menu
                 if (typeof setActiveAccordionLink === 'function') {
                     setActiveAccordionLink('corporativa');
                 }

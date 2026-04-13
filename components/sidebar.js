@@ -50,18 +50,22 @@ function adjustSidebarHeight() {
 // ----------------------------------------
 // Para que el ítem del sidebar se marque activo automáticamente, usa una de estas formas:
 //
-// 1) Un solo argumento (recomendado para variante default):
+// 1) Un solo argumento (recomendado para variante default o creator):
 //    loadSidebar('aprendizaje')   → sidebar default, ítem "Aprendizaje" activo
-//    loadSidebar('creator')      → sidebar default, ítem "LMS Creator" activo
 //    loadSidebar('tareas')        → sidebar default, ítem "Tareas" activo
 //    loadSidebar('diagnóstico')   → sidebar default, ítem "Diagnóstico" activo
-//    (Cualquier data-section de la variante default.)
+//    loadSidebar('creator')       → sidebar variante Creator, ítem "LMS Creator" activo (default interno)
+//    (Cualquier data-section de la variante default; 'creator' solo como variante, ver punto 2.)
 //
 // 2) Dos argumentos con variante explícita:
 //    loadSidebar('default', 'aprendizaje')  → default, ítem "Aprendizaje" activo
-//    loadSidebar('default', 'creator')      → default, ítem "LMS Creator" activo
+//    loadSidebar('default', 'creator')      → default, ítem "LMS Creator" activo (acceso rápido colaborador)
 //    loadSidebar('admin', 'inicio')          → admin, ítem "Inicio" activo
 //    loadSidebar('admin', 'empresa')         → admin, ítem "Empresa" activo
+//    loadSidebar('creator', 'lms-creator')  → Creator: ítem "LMS Creator" activo
+//    loadSidebar('creator', 'planes-formacion') → Creator: "Planes de formación" activo
+//    loadSidebar('creator', 'certificados')  → Creator: "Certificados" activo
+//    loadSidebar('creator', 'personalizacion') → Creator: "Personalización" activo
 //
 // NO usar loadSidebar('sidebar-container', 'aprendizaje'): el primer argumento
 // 'sidebar-container' no es un data-section, por tanto ningún botón recibe la
@@ -72,8 +76,8 @@ function adjustSidebarHeight() {
 // ----------------------------------------
 // PARÁMETROS
 // ----------------------------------------
-//   - variantOrActiveButton (string): 'default' | 'admin' | o bien la sección a activar (API de un argumento)
-//   - activeButton (string, opcional): Sección a activar cuando el primer parámetro es 'default' o 'admin'
+//   - variantOrActiveButton (string): 'default' | 'admin' | 'creator' | o bien la sección a activar (API de un argumento en default)
+//   - activeButton (string, opcional): Sección a activar cuando el primer parámetro es 'default', 'admin' o 'creator'
 //
 // VARIANTE DEFAULT (data-section en el HTML):
 //   'inicio' (solo admin), 'empresa' (solo admin), 'aprendizaje', 'creator', 'diagnóstico',
@@ -83,11 +87,17 @@ function adjustSidebarHeight() {
 //   Body: 'inicio', 'empresa', 'aprendizaje', 'diagnóstico', 'desempeño', 'encuestas'
 //   Uso: loadSidebar('admin', 'inicio')
 //
+// VARIANTE CREATOR (LMS Creator / planes / certificados / UC):
+//   Body: 'lms-creator', 'planes-formacion', 'certificados', 'personalizacion'
+//   Uso: loadSidebar('creator', 'planes-formacion')
+//   Un solo argumento loadSidebar('creator') activa 'lms-creator' por defecto.
+//
 // ----------------------------------------
 // EJEMPLOS
 // ----------------------------------------
-//   loadSidebar('creator')              // LMS Creator activo (recomendado)
-//   loadSidebar('aprendizaje')          // Aprendizaje activo
+//   loadSidebar('creator', 'lms-creator')   // Variante Creator, LMS Creator activo
+//   loadSidebar('creator')                  // Igual: default interno lms-creator
+//   loadSidebar('aprendizaje')              // Aprendizaje activo (sidebar default)
 //   loadSidebar('default', 'aprendizaje')
 //   loadSidebar('admin', 'inicio')
 //   loadSidebar()                       // Sin sección activa
@@ -99,18 +109,22 @@ function adjustSidebarHeight() {
 //   - components-sidebar.css (o components/sidebar.css)
 //   - components/sidebar.js
 function loadSidebar(variantOrActiveButton = 'default', activeButton = null) {
-    // Compatibilidad hacia atrás: si el primer parámetro es una opción de sección (no 'default' ni 'admin'), 
-    // significa que se está usando la API antigua (sin variante)
+    // Compatibilidad hacia atrás: si el primer parámetro no es una variante conocida,
+    // se usa la API antigua (sidebar default + ese data-section como activo).
+    const VARIANT_KEYS = ['default', 'admin', 'creator'];
     let variant = 'default';
     let actualActiveButton = activeButton;
-    
-    if (variantOrActiveButton !== 'default' && variantOrActiveButton !== 'admin') {
-        // Es la API antigua: primer parámetro es activeButton
+
+    if (!VARIANT_KEYS.includes(variantOrActiveButton)) {
         variant = 'default';
         actualActiveButton = variantOrActiveButton;
     } else {
         variant = variantOrActiveButton;
         actualActiveButton = activeButton;
+    }
+
+    if (variant === 'creator' && !actualActiveButton) {
+        actualActiveButton = 'lms-creator';
     }
     
     console.log('loadSidebar llamado con variant:', variant, 'activeButton:', actualActiveButton);
@@ -197,6 +211,76 @@ function loadSidebar(variantOrActiveButton = 'default', activeButton = null) {
                 <i class="far fa-user-gear"></i>
                 <span>Modo colaborador</span>
             </div>
+            <div class="profile-menu-item" onclick="window.location.href='${basePath}ubits-colaborador/lms-creator/contenidos.html'">
+                <i class="far fa-bolt"></i>
+                <span>Modo LMS Creator</span>
+            </div>
+            <div class="profile-menu-divider"></div>
+            <div class="profile-menu-item" onclick="window.open('${basePath}documentacion/documentacion.html', '_blank')">
+                <i class="far fa-book"></i>
+                <span>Documentación</span>
+            </div>
+            <div class="profile-menu-divider"></div>
+            <div class="profile-menu-item" onclick="handlePasswordChange()">
+                <i class="far fa-key"></i>
+                <span>Cambio de contraseña</span>
+            </div>
+            <div class="profile-menu-item" onclick="handleLogout()">
+                <i class="far fa-sign-out"></i>
+                <span>Cerrar sesión</span>
+            </div>
+        </div>
+    `;
+    } else if (variant === 'creator') {
+        // Variante Creator: accesos a LMS Creator, planes, certificados y universidad corporativa (mismo pie que colaborador)
+        sidebarHTML = `
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-main">
+                <div class="sidebar-header">
+                    <div class="logo" onclick="window.location.href='${basePath}ubits-colaborador/lms-creator/contenidos.html'" style="cursor: pointer;">
+                        <img src="${basePath}images/Ubits-logo.svg" alt="UBITS Logo" />
+                    </div>
+                </div>
+                <div class="sidebar-body">
+                    <button class="nav-button" data-section="lms-creator" data-tooltip="LMS Creator" onclick="window.location.href='${basePath}ubits-colaborador/lms-creator/contenidos.html'" style="cursor: pointer;">
+                        <i class="far fa-bolt"></i>
+                    </button>
+                    <button class="nav-button" data-section="planes-formacion" data-tooltip="Planes de formación" onclick="window.location.href='${basePath}ubits-colaborador/lms-creator/planes-formacion.html'" style="cursor: pointer;">
+                        <i class="far fa-layer-group"></i>
+                    </button>
+                    <button class="nav-button" data-section="certificados" data-tooltip="Certificados" onclick="window.location.href='${basePath}ubits-colaborador/lms-creator/certificados.html'" style="cursor: pointer;">
+                        <i class="far fa-award"></i>
+                    </button>
+                    <button class="nav-button" data-section="personalizacion" data-tooltip="Personalización" onclick="window.location.href='${basePath}ubits-colaborador/lms-creator/personalizacion-u-corporativa.html'" style="cursor: pointer;">
+                        <i class="far fa-palette"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="sidebar-footer">
+                <button class="nav-button" id="darkmode-toggle" data-tooltip="Modo oscuro" data-theme="light">
+                    <i class="far fa-moon"></i>
+                </button>
+                <div class="user-avatar-container">
+                    <div class="user-avatar" id="sidebar-avatar-creator" onclick="toggleSidebarProfileMenu(event)">
+                        <img src="${basePath}images/Profile-image.jpg" alt="Usuario" class="avatar-image">
+                    </div>
+                </div>
+            </div>
+        </aside>
+        <div class="sidebar-profile-menu" id="sidebar-profile-menu">
+            <div class="profile-menu-item" onclick="window.location.href='${basePath}ubits-colaborador/perfil/profile.html'">
+                <i class="far fa-user"></i>
+                <span>Ver mi perfil</span>
+            </div>
+            <div class="profile-menu-divider"></div>
+            <div class="profile-menu-item" onclick="window.location.href='${basePath}index.html'">
+                <i class="far fa-user-gear"></i>
+                <span>Modo colaborador</span>
+            </div>
+            <div class="profile-menu-item" onclick="window.location.href='${basePath}ubits-admin/inicio/admin.html'">
+                <i class="far fa-laptop"></i>
+                <span>Modo administrador</span>
+            </div>
             <div class="profile-menu-divider"></div>
             <div class="profile-menu-item" onclick="window.open('${basePath}documentacion/documentacion.html', '_blank')">
                 <i class="far fa-book"></i>
@@ -277,7 +361,11 @@ function loadSidebar(variantOrActiveButton = 'default', activeButton = null) {
             <div class="profile-menu-divider"></div>
             <div class="profile-menu-item" onclick="window.location.href='${basePath}ubits-admin/inicio/admin.html'">
                 <i class="far fa-laptop"></i>
-                <span>Modo Administrador</span>
+                <span>Modo administrador</span>
+            </div>
+            <div class="profile-menu-item" onclick="window.location.href='${basePath}ubits-colaborador/lms-creator/contenidos.html'">
+                <i class="far fa-bolt"></i>
+                <span>Modo LMS Creator</span>
             </div>
             <div class="profile-menu-divider"></div>
             <div class="profile-menu-item" onclick="window.open('${basePath}documentacion/documentacion.html', '_blank')">
@@ -531,12 +619,14 @@ function initSidebarProfileMenuClickOutside() {
         const menu = document.getElementById('sidebar-profile-menu');
         const avatarAdmin = document.getElementById('sidebar-avatar-admin');
         const avatarDefault = document.getElementById('sidebar-avatar-default');
+        const avatarCreator = document.getElementById('sidebar-avatar-creator');
         
         if (menu && menu.classList.contains('show')) {
             // Si el click no fue en el menú ni en el avatar, cerrar el menú
             if (!menu.contains(e.target) && 
                 !avatarAdmin?.contains(e.target) && 
-                !avatarDefault?.contains(e.target)) {
+                !avatarDefault?.contains(e.target) &&
+                !avatarCreator?.contains(e.target)) {
                 hideSidebarProfileMenu();
             }
         }

@@ -252,7 +252,7 @@ openModal({
 #### **1. 🧭 NAVIGATION COMPONENTS:**
 - **SubNav** (Top navigation) → `components/sub-nav.css` + `components/sub-nav.js`
   - Variants: `template`, `aprendizaje`, `desempeno`, `encuestas`, `tareas`, `documentacion`
-- **Sidebar** (Left navigation) - 2 variantes → `components-sidebar.css` + `components/sidebar.js`  
+- **Sidebar** (Left navigation) - 3 variantes (default, admin, creator) → `components-sidebar.css` + `components/sidebar.js`  
   - **Variante Default:** Body (`admin`, `aprendizaje`, `diagnóstico`, `desempeño`, `encuestas`, `reclutamiento`, `tareas`, `ia-para-hr`, `ninguno`) + Footer (Modo oscuro, Perfil)
   - **Variante Admin:** Body (`inicio`, `empresa`, `aprendizaje`, `diagnóstico`, `desempeño`, `encuestas`) + Footer (API, Centro de ayuda, Modo oscuro, Perfil)
 - **TabBar** (Mobile navigation) → `components/tab-bar.css` + `components/tab-bar.js`
@@ -1012,7 +1012,7 @@ document.addEventListener('DOMContentLoaded', function() {
 - `components/sub-nav.css`
 - `components/sub-nav.js`
 
-#### **2. SIDEBAR (Left Navigation) - 2 Variantes**
+#### **2. SIDEBAR (Left Navigation) - 3 Variantes**
 
 ```html
 <!-- Container for Sidebar -->
@@ -1026,6 +1026,9 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Variante Admin
     loadSidebar('admin', 'inicio'); // Activa sidebar admin con inicio
+
+    // Variante Creator (LMS Creator, colaborador)
+    loadSidebar('creator', 'lms-creator');
 });
 </script>
 ```
@@ -1033,12 +1036,17 @@ document.addEventListener('DOMContentLoaded', function() {
 **Variante Default:**
 - **Body:** `admin`, `aprendizaje`, `diagnóstico`, `desempeño`, `encuestas`, `reclutamiento`, `tareas`, `ia-para-hr`, `ninguno`
 - **Footer:** Modo oscuro, Perfil
-- **Profile Menu:** Ver mi perfil, Modo Administrador, Cambio de contraseña, Cerrar sesión
+- **Profile Menu:** Ver mi perfil; **Modo administrador** y **Modo LMS Creator** (seguidos, sin divisor entre ellos); Documentación; Cambio de contraseña; Cerrar sesión (los dos últimos sin divisor entre sí).
 
 **Variante Admin:**
 - **Body:** `inicio`, `empresa`, `aprendizaje`, `diagnóstico`, `desempeño`, `encuestas`
 - **Footer:** API, Centro de ayuda, Modo oscuro, Perfil
-- **Profile Menu:** Ver mi perfil, Modo colaborador, Cambio de contraseña, Cerrar sesión
+- **Profile Menu:** Ver mi perfil; **Modo colaborador** y **Modo LMS Creator** (seguidos, sin divisor entre ellos); Documentación; Cambio de contraseña; Cerrar sesión.
+
+**Variante Creator:**
+- **Body:** `lms-creator`, `planes-formacion`, `certificados`, `personalizacion`
+- **Footer:** Modo oscuro, Perfil
+- **Profile Menu:** Ver mi perfil; **Modo colaborador** y **Modo administrador** (seguidos, sin divisor entre ellos); Documentación; Cambio de contraseña; Cerrar sesión.
 
 **Required files:**
 - `components/sidebar.js`
@@ -1619,12 +1627,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
 ## 🎯 SIDEBAR Y TAB-BAR OPCIONES
 
-### **Sidebar - 2 Variantes Disponibles:**
+### **Sidebar - 3 Variantes Disponibles:**
 
 #### **Variante Default:**
 - **Body:** `admin`, `aprendizaje`, `diagnóstico`, `desempeño`, `encuestas`, `reclutamiento`, `tareas`, `ia-para-hr`, `ninguno`
 - **Footer:** Modo oscuro, Perfil
-- **Profile Menu:** Ver mi perfil, Modo Administrador, Cambio de contraseña, Cerrar sesión
+- **Profile Menu:** Ver mi perfil; Modo administrador + Modo LMS Creator (sin divisor entre ambos); Documentación; Cambio de contraseña; Cerrar sesión.
 - **Ejemplo:**
   ```html
   <script>
@@ -1637,12 +1645,27 @@ document.addEventListener('DOMContentLoaded', function() {
 #### **Variante Admin:**
 - **Body:** `inicio`, `empresa`, `aprendizaje`, `diagnóstico`, `desempeño`, `encuestas`
 - **Footer:** API, Centro de ayuda, Modo oscuro, Perfil
-- **Profile Menu:** Ver mi perfil, Modo colaborador, Cambio de contraseña, Cerrar sesión
+- **Profile Menu:** Ver mi perfil; Modo colaborador + Modo LMS Creator (sin divisor entre ambos); Documentación; Cambio de contraseña; Cerrar sesión.
 - **Ejemplo:**
   ```html
   <script>
   document.addEventListener('DOMContentLoaded', function() {
       loadSidebar('admin', 'inicio');
+  });
+  </script>
+  ```
+
+#### **Variante Creator (LMS Creator / planes / certificados / UC):**
+- **Body:** `lms-creator`, `planes-formacion`, `certificados`, `personalizacion` (universidad corporativa en LMS Creator: `lms-creator/personalizacion-u-corporativa.html`; la vista colaborador sigue en `aprendizaje/u-corporativa.html`)
+- **Footer:** Modo oscuro, Perfil (menú: Modo colaborador + Modo administrador sin divisor; Documentación; contraseña y sesión).
+- **SubNav por módulo (no mezclar pestañas):** `loadSubNav(..., 'creator-lms')` (Contenidos + Categorías), `creator-planes` (Planes + Grupos), `creator-certificados` (Descarga + Configuración), `creator-personalizacion` (Universidad corporativa + Seguimiento).
+- **Ejemplo:**
+  ```html
+  <script>
+  document.addEventListener('DOMContentLoaded', function() {
+      loadSidebar('creator', 'lms-creator');
+      loadSubNav('top-nav-container', 'creator-lms');
+      // Planes: loadSubNav(..., 'creator-planes'); etc.
   });
   </script>
   ```
@@ -2036,8 +2059,8 @@ El layout global (`general-styles/styles.css`) añade **`padding-top: 40px`** a 
 - `components/` - Reusable components
 
 ### Key Components
-- **SubNav** - Top navigation (variants: template, aprendizaje, desempeno, encuestas, tareas, documentacion)
-- **Sidebar** - Left navigation (options: admin, aprendizaje, diagnóstico, desempeño, encuestas, reclutamiento, tareas, ia-para-hr, ninguno)
+- **SubNav** - Top navigation (variants: template, aprendizaje, desempeno, encuestas, tareas, documentacion, creator-lms, creator-planes, creator-certificados, creator-personalizacion, admin-*, empresa, etc.)
+- **Sidebar** - Left navigation (variantes **default**, **admin**, **creator**; ítems: ver `components/sidebar.js`)
 - **TabBar** - Mobile navigation (options: modulos, perfil, modo-oscuro)
 - **Alert** - Notifications (types: success, info, warning, error; with/without close button)
 - **Button** - Actions (variants: primary, secondary, tertiary; sizes: sm, md, lg)

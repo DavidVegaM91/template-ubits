@@ -15,7 +15,7 @@ function getProfileMenuHTML() {
     const isAdminContext = (window.location.pathname || '').indexOf('ubits-admin') !== -1;
     const modoItem = isAdminContext
         ? { href: basePath + 'index.html', icon: 'fa-user-gear', text: 'Modo colaborador' }
-        : { href: basePath + 'ubits-admin/inicio/admin.html', icon: 'fa-laptop', text: 'Modo Administrador' };
+        : { href: basePath + 'ubits-admin/inicio/admin.html', icon: 'fa-laptop', text: 'Modo administrador' };
 
     return `
         <div class="profile-menu" id="profile-menu">

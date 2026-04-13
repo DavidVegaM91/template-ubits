@@ -89,8 +89,8 @@
     <script src="../../script.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            loadSidebar('creator');
-            loadSubNav('top-nav-container', 'creator');
+            loadSidebar('creator', 'planes-formacion');
+            loadSubNav('top-nav-container', 'creator-planes');
             loadTabBar('tab-bar-container');
             loadFloatingMenu('floating-menu-container');
             loadProfileMenu('profile-menu-container');
@@ -122,7 +122,7 @@
                     document.querySelectorAll('.nav-tab, .hamburger-item').forEach(function(item) { item.classList.remove('active'); });
                     tab.classList.add('active');
                 }
-                var sidebarBtn = document.querySelector('.nav-button[data-section="creator"]');
+                var sidebarBtn = document.querySelector('.nav-button[data-section="planes-formacion"]');
                 if (sidebarBtn) {
                     document.querySelectorAll('.nav-button').forEach(function(btn) { btn.classList.remove('active'); });
                     sidebarBtn.classList.add('active');

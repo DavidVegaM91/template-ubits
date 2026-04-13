@@ -127,8 +127,8 @@
             var planTipoInput = document.getElementById('plan-tipo');
             if (planTipoInput) planTipoInput.value = planTipo;
 
-            loadSidebar('creator');
-            loadSubNav('top-nav-container', 'creator');
+            loadSidebar('creator', 'planes-formacion');
+            loadSubNav('top-nav-container', 'creator-planes');
             loadTabBar('tab-bar-container');
             loadFloatingMenu('floating-menu-container');
             loadProfileMenu('profile-menu-container');
@@ -160,12 +160,12 @@
             }
             
             setTimeout(() => {
-                const tab = document.querySelector('.nav-tab[data-tab="planes-formacion"]');
+                const tab = document.querySelector('.nav-tab[data-tab="planes"]');
                 if (tab) {
                     document.querySelectorAll('.nav-tab, .hamburger-item').forEach(item => item.classList.remove('active'));
                     tab.classList.add('active');
                 }
-                const sidebarBtn = document.querySelector('.nav-button[data-section="creator"]');
+                const sidebarBtn = document.querySelector('.nav-button[data-section="planes-formacion"]');
                 if (sidebarBtn) {
                     document.querySelectorAll('.nav-button').forEach(btn => btn.classList.remove('active'));
                     sidebarBtn.classList.add('active');

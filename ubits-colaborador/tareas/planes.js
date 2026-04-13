@@ -1862,9 +1862,12 @@ var taskCreateDrawerState = {
 
 /**
  * Deep link: con hash se abre el drawer "Nueva tarea" al cargar (ej. tareas.html#nueva-tarea).
- * Alias: #crear-tarea. Al cerrar el drawer se quita el hash (replaceState).
+ * Alias: #crear-tarea. Al abrir desde el FAB se hace pushState a #nueva-tarea; al cerrar, history.back o replaceState.
  */
 var TASK_CREATE_DEEPLINK_HASHES = ['nueva-tarea', 'crear-tarea'];
+/** Hash canónico al abrir el drawer desde la UI (compartir / atrás del navegador). */
+var TASK_CREATE_URL_HASH_PRIMARY = '#nueva-tarea';
+var taskCreateDrawerOpenedWithHistoryPush = false;
 
 function normalizeUrlHashFragment() {
     var h = (typeof window !== 'undefined' && window.location && window.location.hash) ? window.location.hash : '';
@@ -1878,14 +1881,47 @@ function shouldOpenTaskCreateFromHash() {
     return TASK_CREATE_DEEPLINK_HASHES.indexOf(normalizeUrlHashFragment()) !== -1;
 }
 
-function clearTaskCreateDeepLinkHash() {
-    if (!shouldOpenTaskCreateFromHash()) return;
+function syncUrlAfterTaskCreateDrawerOpen() {
+    if (shouldOpenTaskCreateFromHash()) {
+        taskCreateDrawerOpenedWithHistoryPush = false;
+        return;
+    }
+    try {
+        var url = window.location.pathname + (window.location.search || '') + TASK_CREATE_URL_HASH_PRIMARY;
+        if (typeof history.pushState === 'function') {
+            history.pushState({ ubitsTaskCreateDrawer: true }, '', url);
+            taskCreateDrawerOpenedWithHistoryPush = true;
+        }
+    } catch (e) { /* ignore */ }
+}
+
+function syncUrlAfterTaskCreateDrawerClose() {
+    if (!shouldOpenTaskCreateFromHash()) {
+        taskCreateDrawerOpenedWithHistoryPush = false;
+        return;
+    }
+    if (taskCreateDrawerOpenedWithHistoryPush) {
+        taskCreateDrawerOpenedWithHistoryPush = false;
+        try {
+            if (typeof history.back === 'function') history.back();
+        } catch (e) { /* ignore */ }
+        return;
+    }
     try {
         var path = window.location.pathname + (window.location.search || '');
         if (typeof history.replaceState === 'function') {
             history.replaceState(null, '', path);
         }
     } catch (e) { /* ignore */ }
+}
+
+function onPopStateTaskCreateDrawer() {
+    var el = document.getElementById(TASK_CREATE_DRAWER_OVERLAY_ID);
+    if (!el || el.getAttribute('aria-hidden') === 'true') return;
+    if (shouldOpenTaskCreateFromHash()) return;
+    taskCreateDrawerOpenedWithHistoryPush = false;
+    cleanupTaskCreateDrawer();
+    if (typeof closeDrawer === 'function') closeDrawer(TASK_CREATE_DRAWER_OVERLAY_ID);
 }
 
 function tryOpenTaskCreateFromHash() {
@@ -1900,8 +1936,18 @@ function tryOpenTaskCreateFromHash() {
 function initTaskCreateDrawerDeepLink() {
     tryOpenTaskCreateFromHash();
     window.addEventListener('hashchange', function () {
+        var el = document.getElementById(TASK_CREATE_DRAWER_OVERLAY_ID);
+        if (el && el.getAttribute('aria-hidden') !== 'true') {
+            if (!shouldOpenTaskCreateFromHash()) {
+                taskCreateDrawerOpenedWithHistoryPush = false;
+                cleanupTaskCreateDrawer();
+                if (typeof closeDrawer === 'function') closeDrawer(TASK_CREATE_DRAWER_OVERLAY_ID);
+                return;
+            }
+        }
         tryOpenTaskCreateFromHash();
     });
+    window.addEventListener('popstate', onPopStateTaskCreateDrawer);
 }
 
 function normalizeNameTaskCreateDrawer(str) {
@@ -2093,7 +2139,7 @@ function cleanupTaskCreateDrawer() {
 function closeTaskCreateDrawerV2() {
     cleanupTaskCreateDrawer();
     if (typeof closeDrawer === 'function') closeDrawer(TASK_CREATE_DRAWER_OVERLAY_ID);
-    clearTaskCreateDeepLinkHash();
+    syncUrlAfterTaskCreateDrawerClose();
 }
 
 function updateTaskCreatePlanAlertVisible() {
@@ -2670,7 +2716,7 @@ function openTaskCreateDrawerV2() {
         size: 'md',
         onClose: function () {
             cleanupTaskCreateDrawer();
-            clearTaskCreateDeepLinkHash();
+            syncUrlAfterTaskCreateDrawerClose();
         }
     });
 
@@ -2679,6 +2725,8 @@ function openTaskCreateDrawerV2() {
     setTimeout(function () {
         initTaskCreateDrawerFormFields();
     }, 0);
+
+    syncUrlAfterTaskCreateDrawerOpen();
 }
 
 // Inicializar FAB (se puede llamar desde cualquier página)

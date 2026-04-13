@@ -23,7 +23,11 @@ const FLOATING_MENU_SECTIONS = [
             { id: 'contenidos', title: 'Contenidos', icon: 'far fa-folder-open', url: '../../ubits-colaborador/lms-creator/contenidos.html' },
             { id: 'categorias', title: 'Categorías', icon: 'far fa-tags', url: '../../ubits-colaborador/lms-creator/categorias.html' },
             { id: 'planes-formacion', title: 'Planes de formación', icon: 'far fa-clipboard-list', url: '../../ubits-colaborador/lms-creator/planes-formacion.html' },
-            { id: 'grupos', title: 'Grupos', icon: 'far fa-users', url: '../../ubits-colaborador/lms-creator/grupos.html' }
+            { id: 'grupos', title: 'Grupos', icon: 'far fa-users', url: '../../ubits-colaborador/lms-creator/grupos.html' },
+            { id: 'certificados-descarga', title: 'Certificados (descarga)', icon: 'far fa-download', url: '../../ubits-colaborador/lms-creator/certificados.html' },
+            { id: 'certificados-config', title: 'Certificados (configuración)', icon: 'far fa-sliders', url: '../../ubits-colaborador/lms-creator/certificados-configuracion.html' },
+            { id: 'personalizacion-u-corporativa', title: 'Universidad corporativa', icon: 'far fa-building-columns', url: '../../ubits-colaborador/lms-creator/personalizacion-u-corporativa.html' },
+            { id: 'personalizacion-seguimiento', title: 'Seguimiento (UC)', icon: 'far fa-chart-line', url: '../../ubits-colaborador/lms-creator/personalizacion-seguimiento.html' }
         ]
     },
     {
@@ -276,12 +280,20 @@ function setActiveItemByCurrentPage() {
         // LMS Creator (acordeón creator)
         'contenidos.html': 'contenidos',
         'categorias.html': 'categorias',
+        'certificados.html': 'certificados-descarga',
         'grupos.html': 'grupos',
         'crear-grupo.html': 'grupos',
         'chat-ia-grupos.html': 'grupos',
         'detalle-plan.html': 'planes-formacion',
         'planes-formacion.html': 'planes-formacion',
-        'crear-plan-contenidos.html': 'contenidos'
+        'crear-plan-contenidos.html': 'planes-formacion',
+        'crear-plan-competencias.html': 'planes-formacion',
+        'editar-plan-contenidos.html': 'planes-formacion',
+        'editar-plan-competencias.html': 'planes-formacion',
+        'detalle-plan-competencias.html': 'planes-formacion',
+        'certificados-configuracion.html': 'certificados-config',
+        'personalizacion-seguimiento.html': 'personalizacion-seguimiento',
+        'personalizacion-u-corporativa.html': 'personalizacion-u-corporativa'
     };
     
     const activeElementId = pageToElementMap[currentPage];

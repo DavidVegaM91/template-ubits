@@ -840,8 +840,8 @@
                 }, 0);
             }
 
-            loadSidebar('creator');
-            loadSubNav('top-nav-container', 'creator');
+            loadSidebar('creator', 'lms-creator');
+            loadSubNav('top-nav-container', 'creator-lms');
             loadTabBar('tab-bar-container');
             loadFloatingMenu('floating-menu-container');
             loadProfileMenu('profile-menu-container');
@@ -1704,7 +1704,7 @@
                     });
                     tab.classList.add('active');
                 }
-                var sidebarBtn = document.querySelector('.nav-button[data-section="creator"]');
+                var sidebarBtn = document.querySelector('.nav-button[data-section="lms-creator"]');
                 if (sidebarBtn) {
                     document.querySelectorAll('.nav-button').forEach(function(btn) {
                         btn.classList.remove('active');

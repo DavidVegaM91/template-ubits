@@ -79,8 +79,8 @@
     <script src="../../bd-master/bd-tareas-y-planes.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            loadSidebar('creator');
-            loadSubNav('top-nav-container', 'creator');
+            loadSidebar('creator', 'planes-formacion');
+            loadSubNav('top-nav-container', 'creator-planes');
             loadTabBar('tab-bar-container');
             loadFloatingMenu('floating-menu-container');
             loadProfileMenu('profile-menu-container');
@@ -230,7 +230,7 @@
                     document.querySelectorAll('.nav-tab, .hamburger-item').forEach(item => item.classList.remove('active'));
                     tab.classList.add('active');
                 }
-                const sidebarBtn = document.querySelector('.nav-button[data-section="creator"]');
+                const sidebarBtn = document.querySelector('.nav-button[data-section="planes-formacion"]');
                 if (sidebarBtn) {
                     document.querySelectorAll('.nav-button').forEach(btn => btn.classList.remove('active'));
                     sidebarBtn.classList.add('active');

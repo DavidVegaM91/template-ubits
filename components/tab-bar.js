@@ -159,6 +159,8 @@ function activateCurrentPageTab() {
         case 'home-learn':
         case 'catalogo':
         case 'u-corporativa':
+        case 'personalizacion-u-corporativa':
+        case 'personalizacion-seguimiento':
         case 'zona-estudio':
         case 'diagnostico':
         case 'evaluaciones-360':
