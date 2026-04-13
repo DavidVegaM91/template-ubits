@@ -1,0 +1,165 @@
+/**
+ * Sección Creator — título siempre body/md/bold + fg/1/high (activa o no). Cabecera centrada en altura, padding vertical sm y laterales md, min-height --space-12. Menú ⋮ si activa.
+ * Requiere: paginas-creator.css, ubits-colors, ubits-typography, button.css.
+ */
+
+.ubits-seccion-creator {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.ubits-seccion-creator-index {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.ubits-seccion-creator-index__stack {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-md);
+}
+
+.ubits-seccion-creator__section {
+    margin: 0;
+    padding: 0;
+    border: 1px solid var(--ubits-border-1);
+    border-radius: var(--border-radius-lg);
+    background: var(--ubits-bg-1);
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+.ubits-seccion-creator__section.is-active {
+    border-color: var(--ubits-accent-brand);
+}
+
+.ubits-seccion-creator__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--gap-sm);
+    /* Vertical sm, laterales md */
+    padding: var(--padding-sm) var(--padding-md);
+    min-height: var(--space-12);
+    box-sizing: border-box;
+}
+
+.ubits-seccion-creator__title-wrap {
+    flex: 1 1 auto;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    min-height: 0;
+}
+
+/* Título + lápiz (comportamiento tipo task-strip) */
+.ubits-seccion-creator__title-inner {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-xs);
+    min-width: 0;
+    flex: 1 1 auto;
+}
+
+.ubits-seccion-creator__title-inner .ubits-seccion-creator__title {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+/* Título: body/md (16px / 24px) explícito para igualar Figma aunque haya herencias raras */
+.ubits-seccion-creator__title {
+    margin: 0;
+    font-size: var(--font-size-md);
+    line-height: 24px;
+    color: var(--ubits-fg-1-high);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    word-break: break-word;
+}
+
+.ubits-seccion-creator__title-edit-btn {
+    flex-shrink: 0;
+    opacity: 0;
+    transition: opacity 0.15s ease;
+}
+
+.ubits-seccion-creator__title-inner:hover .ubits-seccion-creator__title-edit-btn {
+    opacity: 1;
+}
+
+.ubits-seccion-creator__title-inner.ubits-seccion-creator__title-edit-wrap {
+    min-width: var(--size-xl);
+}
+
+.ubits-seccion-creator__title-edit-input {
+    width: 100%;
+    min-width: var(--size-xl);
+    font-family: var(--ubits-font-family-sans);
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-bold);
+    line-height: 24px;
+    color: var(--ubits-fg-1-high);
+    border: none;
+    background: transparent;
+    padding: 0;
+    margin: 0;
+    outline: none;
+    cursor: text;
+    box-sizing: border-box;
+}
+
+.ubits-seccion-creator__title-edit-input:hover,
+.ubits-seccion-creator__title-edit-input:focus {
+    background: var(--ubits-bg-3);
+    border-radius: var(--border-radius-xs);
+}
+
+.ubits-seccion-creator__section-menu {
+    display: none;
+    flex-shrink: 0;
+    margin-right: 0;
+}
+
+.ubits-seccion-creator__section.is-active .ubits-seccion-creator__section-menu {
+    display: inline-flex;
+}
+
+.ubits-seccion-creator__section-menu:focus-visible {
+    outline: 2px solid var(--ubits-accent-brand);
+    outline-offset: 2px;
+}
+
+/* Sin cabecera de sección (Índice creator con secciones desactivadas): lista de páginas como primer bloque */
+.ubits-seccion-creator__section--no-header .ubits-seccion-creator__pages {
+    border-top: none;
+}
+
+.ubits-seccion-creator__pages {
+    border-top: 1px solid var(--ubits-border-1);
+    background: var(--ubits-bg-1);
+}
+
+.ubits-seccion-creator__pages .ubits-paginas-creator__item:last-child {
+    border-bottom: none;
+}
+
+/* «Añadir página»: dentro del recuadro de la sección activa (Figma) */
+.ubits-seccion-creator__add-wrap {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: var(--padding-md) var(--padding-lg) var(--padding-lg);
+    border-top: 1px solid var(--ubits-border-1);
+    background: var(--ubits-bg-1);
+    box-sizing: border-box;
+}
+
+.ubits-seccion-creator__add-wrap .ubits-button {
+    max-width: 100%;
+}
+
+.ubits-seccion-creator__add-btn span {
+    text-align: center;
+}

@@ -387,6 +387,8 @@ const PAGE_TO_TAB = {
     'card-content-compact.html': 'section3',
     'learn-content-img-trailer.html': 'section3',
     'paginas-creator.html': 'section3',
+    'seccion-creator.html': 'section3',
+    'indice-creator.html': 'section3',
     'rich-text-editor.html': 'section3',
     'checkbox.html': 'section3',
     'chip.html': 'section3',

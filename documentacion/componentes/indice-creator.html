@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="../../images/Ubits-logo-dark.svg">
+    <title>Índice Creator | UBITS Playground</title>
+    <link rel="stylesheet" href="../../general-styles/ubits-colors.css">
+    <link rel="stylesheet" href="../../general-styles/styles.css">
+    <link rel="stylesheet" href="../../general-styles/fontawesome-icons.css">
+    <link rel="stylesheet" href="../../general-styles/ubits-typography.css">
+    <link rel="stylesheet" href="../../components/sub-nav.css">
+    <link rel="stylesheet" href="../../components/sidebar.css">
+    <link rel="stylesheet" href="../../components/button.css">
+    <link rel="stylesheet" href="../../components/switch.css">
+    <link rel="stylesheet" href="../../components/toast.css">
+    <link rel="stylesheet" href="../../components/dropdown-menu.css">
+    <link rel="stylesheet" href="../../components/paginas-creator.css">
+    <link rel="stylesheet" href="../../components/seccion-creator.css">
+    <link rel="stylesheet" href="../../components/indice-creator.css">
+    <link rel="stylesheet" href="../../docs/docs-sidebar.css">
+    <link rel="stylesheet" href="../../docs/docstyles.css">
+    <style>
+        .preview-control-btn.active {
+            background: var(--ubits-accent-brand) !important;
+            color: white !important;
+            border-color: var(--ubits-accent-brand) !important;
+        }
+        .preview-control-btn.active span { color: white !important; }
+    </style>
+</head>
+<body class="componentes-page" data-theme="light">
+    <div class="dashboard-container">
+        <div class="tooltip" id="tooltip"></div>
+        <main class="main-content">
+            <div id="top-nav-container"></div>
+            <div style="display: flex;">
+                <div id="docs-dropdown-container"></div>
+                <div id="docs-sidebar-container"></div>
+                <div class="components-content">
+                    <div class="content-area" style="display: block; width: 100%;">
+                        <div style="text-align: center; margin-bottom: 60px;">
+                            <h1 class="ubits-display-d2-bold" style="margin-bottom: 24px; color: var(--ubits-accent-brand);">
+                                Índice Creator
+                            </h1>
+                            <p class="ubits-body-md-regular" style="max-width: 800px; margin: 0 auto 32px; line-height: 1.6;">
+                                Panel izquierdo del <strong>paso Recursos</strong> en la creación de contenidos: interruptor para usar <strong>secciones</strong> (módulos), listado de secciones y páginas, y <strong>«Añadir sección»</strong> al pie cuando las secciones están activas. Si las secciones están desactivadas, todas las páginas se muestran en <strong>un solo bloque</strong> <strong>sin cabecera de sección</strong>. Referencia Figma: <a href="https://www.figma.com/design/ZWcvS9Z7YQaz59GZIrnWM6/Learn-Components?node-id=242-5621&amp;m=dev" class="ubits-body-md-regular" style="color: var(--ubits-accent-brand); text-decoration: underline;">Learn-Components · Índice (242:5621)</a>. Contexto de producto: <a href="../../ubits-colaborador/lms-creator/contexto-creacion-contenido.md" class="ubits-body-md-regular" style="color: var(--ubits-accent-brand); text-decoration: underline;">contexto-creacion-contenido.md</a>.
+                            </p>
+                        </div>
+
+                        <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: var(--border-radius-lg); margin-bottom: 40px;">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-eye" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Preview del componente
+                            </h2>
+                            <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6;">
+                                Datos de ejemplo alineados con Figma (242:5621): curso de ejemplo sobre <strong>gestión de conflictos</strong>. El interruptor solo cambia la demo entre <strong>lista única</strong> (sin cabeceras de sección) y <strong>varias secciones</strong> + «Añadir sección». <strong>Clic en una página:</strong> queda activa solo esa fila y su sección (borde de marca); el resto de secciones y páginas se desactivan. En producto conviene persistir el estado al cambiar el interruptor interno.
+                            </p>
+                            <div style="margin-bottom: 20px; display: flex; flex-wrap: wrap; align-items: center; gap: var(--gap-md);">
+                                <span class="ubits-body-sm-bold" style="color: var(--ubits-fg-1-high);">Previsualizar multiples secciones</span>
+                                <label class="ubits-switch ubits-switch--md">
+                                    <input type="checkbox" class="ubits-switch__input" id="ic-preview-mode" aria-label="Previsualizar multiples secciones">
+                                    <span class="ubits-switch__track">
+                                        <span class="ubits-switch__thumb"></span>
+                                    </span>
+                                </label>
+                            </div>
+                            <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: var(--border-radius-md); width: 100%; max-width: 420px; box-sizing: border-box;">
+                                <div id="ic-preview-mount"></div>
+                            </div>
+                        </div>
+
+                        <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: var(--border-radius-lg); margin-bottom: 40px;">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-info-circle" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Características generales
+                            </h2>
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--gap-lg);">
+                                <div style="text-align: center; padding: var(--padding-md); background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: var(--gap-sm);"><i class="far fa-toggle-on"></i></div>
+                                    <div class="ubits-body-sm-bold">Interruptor de secciones</div>
+                                    <div class="ubits-body-sm-regular">Por defecto desactivado en producto; al activarlo aparecen varias secciones y el botón para añadir más.</div>
+                                </div>
+                                <div style="text-align: center; padding: var(--padding-md); background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: var(--gap-sm);"><i class="far fa-layer-group"></i></div>
+                                    <div class="ubits-body-sm-bold">Contenidos largos</div>
+                                    <div class="ubits-body-sm-regular">Las secciones ayudan a organizar cursos extensos; en piezas cortas suele bastar una sola lista de páginas.</div>
+                                </div>
+                                <div style="text-align: center; padding: var(--padding-md); background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: var(--gap-sm);"><i class="far fa-plus"></i></div>
+                                    <div class="ubits-body-sm-bold">Añadir sección</div>
+                                    <div class="ubits-body-sm-regular">Solo visible cuando el uso de secciones está activo; secundario a ancho completo bajo el índice.</div>
+                                </div>
+                                <div style="text-align: center; padding: var(--padding-md); background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: var(--gap-sm);"><i class="far fa-list"></i></div>
+                                    <div class="ubits-body-sm-bold">Una sola lista</div>
+                                    <div class="ubits-body-sm-regular">Sin secciones, no se muestra cabecera de sección: solo páginas y «Añadir página» en el mismo bloque.</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: var(--border-radius-lg); margin-bottom: 40px;">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-comments" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Prompts útiles
+                            </h2>
+                            <p class="ubits-body-md-regular" style="margin-bottom: 24px; color: var(--ubits-fg-1-medium);">
+                                Copia y personaliza. Pide importar <code>switch.css</code>, <code>paginas-creator.css</code>, <code>seccion-creator.css</code>, <code>indice-creator.css</code>, <code>button.css</code>, <code>dropdown-menu.css</code> y los JS en orden: <code>dropdown-menu.js</code>, <code>tooltip.js</code>, <code>paginas-creator.js</code>, <code>seccion-creator.js</code>, <code>indice-creator.js</code>.
+                            </p>
+                            <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
+                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                                    <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Índice del creador en el paso Recursos</h3>
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('ic-p1')"><i class="far fa-copy"></i><span>Copiar</span></button>
+                                </div>
+                                <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm);">
+                                    <pre style="margin: 0; font-size: var(--font-size-sm); white-space: pre-wrap;"><code id="ic-p1" class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">En el panel izquierdo del paso Recursos en [ubicación], coloca el componente UBITS «Índice Creator»: interruptor «Habilitar el uso de secciones», y debajo el listado (secciones con páginas y «Añadir página», o una sola lista de páginas sin título de sección si las secciones están desactivadas). Si las secciones están activas, añade al final el botón «Añadir sección». Importa los CSS y JS del componente para que no se vea roto.</code></pre>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="background: var(--ubits-bg-1); border-radius: var(--border-radius-lg); margin-bottom: 40px; overflow: hidden;">
+                            <div style="padding: 32px; text-align: center; border-bottom: 1px solid var(--ubits-border-1);">
+                                <h2 class="ubits-heading-h2" style="margin-bottom: 0; color: var(--ubits-fg-1-high);">
+                                    <i class="far fa-code" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                    Documentación técnica
+                                </h2>
+                                <p class="ubits-body-md-regular" style="margin-top: 16px; color: var(--ubits-fg-1-medium);">Estructura, API y eventos.</p>
+                            </div>
+                            <div style="background: var(--ubits-bg-2); padding: 20px; text-align: center; cursor: pointer;" onclick="toggleTechnicalDocs()">
+                                <span class="ubits-body-md-regular" style="color: var(--ubits-accent-brand); display: flex; align-items: center; justify-content: center; gap: 8px;">
+                                    <i class="far fa-chevron-down"></i> Mostrar
+                                </span>
+                            </div>
+                            <div id="technical-docs-content" style="display: none; padding: 0;">
+                                <div style="padding: 32px; border-bottom: 1px solid var(--ubits-border-1);">
+                                    <div style="display: flex; justify-content: space-between; margin-bottom: 24px;">
+                                        <h2 class="ubits-heading-h2" style="margin: 0;">Estructura y API</h2>
+                                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('ic-tech')"><i class="far fa-copy"></i><span>Copiar</span></button>
+                                    </div>
+                                    <pre style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm); overflow-x: auto;"><code id="ic-tech" class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Contenedor: .ubits-indice-creator
+Tarjeta interruptor: .ubits-indice-creator__toggle-card (label + .ubits-switch)
+Cuerpo: .ubits-indice-creator__body
+  · Con secciones: .ubits-indice-creator__index-wrap &gt; .ubits-seccion-creator-index … + .ubits-indice-creator__add-section &gt; botón .ubits-indice-creator__add-section-btn
+  · Sin secciones: .ubits-indice-creator__single-wrap &gt; .ubits-seccion-creator__section--no-header (sin cabecera; solo páginas + «Añadir página»)
+
+indiceCreatorHtml({
+  sectionsEnabled: true|false,  // false por defecto en producto; true = varias secciones + «Añadir sección»
+  toggleId?, toggleLabel?,
+  sections?, indexOpts?,        // modo secciones → seccionCreatorIndexHtml
+  pages?, singleSection?, singleSectionKey?, addSectionButtonId?, addPageLabel?
+})
+
+initIndiceCreator(rootSelector | elemento) — delega initSeccionCreator; cablea toggle y «Añadir sección»
+
+Eventos:
+  ubits-indice-creator-sections-toggle — detail: { sectionsEnabled, root }
+  ubits-indice-creator-add-section — detail: { root }
+(Reutiliza ubits-seccion-creator-* y ubits-paginas-creator-* dentro del bloque)</code></pre>
+                                </div>
+                                <div style="padding: 32px;">
+                                    <div style="display: flex; justify-content: space-between; margin-bottom: 16px;">
+                                        <h2 class="ubits-heading-h2" style="margin: 0;">Requisitos</h2>
+                                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('ic-req')"><i class="far fa-copy"></i><span>Copiar</span></button>
+                                    </div>
+                                    <pre style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm); overflow-x: auto;"><code id="ic-req" class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">CSS: switch.css, button.css, dropdown-menu.css, paginas-creator.css, seccion-creator.css, indice-creator.css (+ colores, tipografía, fontawesome)
+JS (orden): dropdown-menu.js → tooltip.js → paginas-creator.js → seccion-creator.js → indice-creator.js</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <div id="ubits-toast-container"></div>
+    <script src="../../components/sidebar.js"></script>
+    <script src="../../components/sub-nav.js"></script>
+    <script src="../../components/toast.js"></script>
+    <script src="../../components/dropdown-menu.js"></script>
+    <script src="../../components/tooltip.js"></script>
+    <script src="../../components/paginas-creator.js"></script>
+    <script src="../../components/seccion-creator.js"></script>
+    <script src="../../components/indice-creator.js"></script>
+    <script src="../../docs/docs-sidebar.js"></script>
+    <script>
+        /* Misma estructura y títulos que Figma Learn-Components · Índice Creator (242:5621) */
+        var IC_FIGMA_SECTIONS = [
+            {
+                title: 'Sección 1: Fundamentos',
+                sectionKey: 'fig-s1',
+                active: true,
+                pages: [
+                    { label: '¿Qué es un conflicto?', tipo: 'video', active: true, pageKey: 'ic-p1' },
+                    { label: 'Modelos y estilos de manejo de conflictos', tipo: 'texto', active: false, pageKey: 'ic-p2' },
+                    { label: 'Guía: mapa del conflicto', tipo: 'pdf', active: false, pageKey: 'ic-p3' },
+                    { label: 'Comunicación para desescalar conflictos', tipo: 'video', active: false, pageKey: 'ic-p4' }
+                ]
+            },
+            {
+                title: 'Sección 2: Herramientas y técnicas para resolver conflictos',
+                sectionKey: 'fig-s2',
+                active: false,
+                pages: [
+                    { label: 'Simulador de conversación difícil', tipo: 'embebido', active: false, pageKey: 'ic-p5' },
+                    { label: 'Taller interactivo: pasos para una negociación ganar-ganar', tipo: 'scorm', active: false, pageKey: 'ic-p6' },
+                    { label: 'Checklist para una conversación difícil', tipo: 'texto', active: false, pageKey: 'ic-p7' },
+                    { label: 'Evaluación final', tipo: 'evaluacion', active: false, pageKey: 'ic-p8' }
+                ]
+            },
+            {
+                title: 'Cierre',
+                sectionKey: 'fig-s3',
+                active: false,
+                pages: [
+                    { label: 'Encuesta de satisfacción', tipo: 'encuesta', active: false, pageKey: 'ic-p9' },
+                    { label: 'Fin del contenido', tipo: 'fin', active: false, pageKey: 'ic-p10' }
+                ]
+            }
+        ];
+        var IC_FIGMA_FLAT_PAGES = [
+            { label: '¿Qué es un conflicto?', tipo: 'video', active: true, pageKey: 'ic-u1' },
+            { label: 'Modelos y estilos de manejo de conflictos', tipo: 'texto', active: false, pageKey: 'ic-u2' },
+            { label: 'Guía: mapa del conflicto', tipo: 'pdf', active: false, pageKey: 'ic-u3' },
+            { label: 'Comunicación para desescalar conflictos', tipo: 'video', active: false, pageKey: 'ic-u4' },
+            { label: 'Simulador de conversación difícil', tipo: 'embebido', active: false, pageKey: 'ic-u5' },
+            { label: 'Taller interactivo: pasos para una negociación ganar-ganar', tipo: 'scorm', active: false, pageKey: 'ic-u6' },
+            { label: 'Checklist para una conversación difícil', tipo: 'texto', active: false, pageKey: 'ic-u7' },
+            { label: 'Evaluación final', tipo: 'evaluacion', active: false, pageKey: 'ic-u8' },
+            { label: 'Encuesta de satisfacción', tipo: 'encuesta', active: false, pageKey: 'ic-u9' },
+            { label: 'Fin del contenido', tipo: 'fin', active: false, pageKey: 'ic-u10' }
+        ];
+
+        function icDemoSectionsEnabled() {
+            return document.getElementById('ic-preview-mode') && document.getElementById('ic-preview-mode').checked;
+        }
+
+        function icRenderPreview() {
+            var mount = document.getElementById('ic-preview-mount');
+            if (!mount || typeof indiceCreatorHtml !== 'function') return;
+            var secOn = icDemoSectionsEnabled();
+            if (secOn) {
+                mount.innerHTML = indiceCreatorHtml({
+                    sectionsEnabled: true,
+                    toggleId: 'ic-demo-toggle-inner',
+                    sections: IC_FIGMA_SECTIONS,
+                    indexOpts: { addButtonId: 'ic-demo-add-page', addButtonLabel: 'Añadir página' },
+                    addSectionButtonId: 'ic-demo-add-section'
+                });
+            } else {
+                mount.innerHTML = indiceCreatorHtml({
+                    sectionsEnabled: false,
+                    toggleId: 'ic-demo-toggle-inner',
+                    pages: IC_FIGMA_FLAT_PAGES,
+                    singleSectionKey: 'flat'
+                });
+            }
+            if (typeof initIndiceCreator === 'function') {
+                initIndiceCreator('#ic-preview-mount');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            if (typeof loadSubNav === 'function') loadSubNav('top-nav-container', 'documentacion');
+            if (typeof loadSidebar === 'function') loadSidebar('ninguno');
+            if (typeof loadDocsSidebar === 'function') loadDocsSidebar('indice-creator');
+            var mode = document.getElementById('ic-preview-mode');
+            if (mode) {
+                mode.checked = false;
+                mode.addEventListener('change', icRenderPreview);
+            }
+            icRenderPreview();
+            document.addEventListener('ubits-indice-creator-sections-toggle', function (ev) {
+                var d = ev.detail || {};
+                if (typeof showToast === 'function') {
+                    showToast('info', 'Secciones: ' + (d.sectionsEnabled ? 'activadas' : 'desactivadas') + ' (conectar persistencia)', {
+                        containerId: 'ubits-toast-container',
+                        duration: 2600
+                    });
+                }
+            });
+            document.addEventListener('ubits-indice-creator-add-section', function () {
+                if (typeof showToast === 'function') {
+                    showToast('info', 'Añadir sección (demo)', { containerId: 'ubits-toast-container', duration: 2200 });
+                }
+            });
+        });
+
+        function toggleTechnicalDocs() {
+            var content = document.getElementById('technical-docs-content');
+            var open = content.style.display === 'none' || !content.style.display;
+            content.style.display = open ? 'block' : 'none';
+            var trigger = content.previousElementSibling;
+            if (trigger && trigger.querySelector('span')) {
+                trigger.querySelector('span').innerHTML = open
+                    ? '<i class="far fa-chevron-up"></i> Ocultar'
+                    : '<i class="far fa-chevron-down"></i> Mostrar';
+            }
+        }
+
+        function copyPrompt(id) {
+            var t = document.getElementById(id);
+            if (t) navigator.clipboard.writeText(t.textContent).then(function () {
+                if (typeof showToast === 'function') showToast('success', 'Copiado', { containerId: 'ubits-toast-container' });
+            });
+        }
+
+        function copyCode(id) {
+            var t = document.getElementById(id);
+            if (t) navigator.clipboard.writeText(t.textContent).then(function () {
+                if (typeof showToast === 'function') showToast('success', 'Copiado', { containerId: 'ubits-toast-container' });
+            });
+        }
+    </script>
+</body>
+</html>

@@ -9,6 +9,7 @@ Documento de referencia para implementar el flujo de **creación de contenido** 
 ## Referencia de diseño (Figma)
 
 - **Archivo:** [Creator v3 (Figma)](https://www.figma.com/design/NxOcUG8QAVc44KYTQexH0b/%F0%9F%9F%A2-Creator-v3?node-id=40006338-29266&m=dev)  
+- **Learn-Components (piezas del creador):** [Learn-Components](https://www.figma.com/design/ZWcvS9Z7YQaz59GZIrnWM6/Learn-Components?node-id=242-5621&m=dev) — p. ej. **Índice Creator** (nodo `242:5621`): panel izquierdo del paso Recursos con interruptor de secciones, listado y «Añadir sección». Implementación UBITS: `components/indice-creator.css` + `indice-creator.js`, doc `documentacion/componentes/indice-creator.html`.  
 - **Uso:** alinear layout, estados y jerarquía visual con el diseño oficial; las reglas de negocio de este documento tienen prioridad si hubiera discrepancia puntual (resolver en revisión con producto).
 
 ---
@@ -101,11 +102,14 @@ Los dos paneles trabajan acoplados: la selección de página en la izquierda det
 - Si el usuario **activa** secciones:  
   - Se muestra un **título de bloque** relacionado con secciones (según copy/Figma).  
   - En la **parte inferior** del panel izquierdo aparece un botón **“Añadir sección”**.  
+- Si el usuario **desactiva** secciones (o nunca las activa): **todas las páginas** se representan **en una sola sección lógica**, **sin mostrar cabecera de título de sección** (no aporta valor si no hay más de una sección). Sigue existiendo la lista tipo **Páginas creator** y **«Añadir página»** dentro del mismo bloque.  
+- **Componente UBITS:** **Índice Creator** (`indiceCreatorHtml` / `initIndiceCreator`) compone el interruptor, el índice de **Sección creator** cuando aplica y el contenedor del botón **«Añadir sección»**. Referencia visual: Figma Learn-Components [242:5621](https://www.figma.com/design/ZWcvS9Z7YQaz59GZIrnWM6/Learn-Components?node-id=242-5621&m=dev).  
 - La lógica exacta de anidación (página dentro de sección, orden, etc.) debe alinearse con Figma; lo aquí descrito es el comportamiento narrado por producto.
 
 ### Páginas
 
 - Las **páginas** son las unidades que componen el contenido en el sentido de **lecciones** o pantallas de consumo.  
+- **Selección:** al hacer **clic en una página**, esa fila queda activa y su **sección padre** pasa a ser la única sección activa (p. ej. borde de acento); el resto de páginas y secciones dejan de estar activas. Solo puede haber **una página activa y una sección activa** a la vez en el índice (comportamiento en `paginas-creator.js` + `seccion-creator.js`).  
 - En el **centro** del panel izquierdo hay un botón **“Añadir página”**.
 
 ### Panel derecho: empty state inicial
@@ -182,4 +186,4 @@ Este patrón de **contenido complementario** (Texto / Archivo descargable) apare
 - Mantener tokens y tipografía UBITS; CSS de página en archivo dedicado junto al HTML del Creator cuando corresponda.  
 - Cualquier cambio a este documento debe reflejar acuerdos de producto y, si es posible, el nodo de Figma afectado.
 
-*Última actualización: documento inicial + pasos 1–2 (parcial) y recursos Video/Texto.*
+*Última actualización: documento inicial + pasos 1–2 (parcial) y recursos Video/Texto; ampliación Índice Creator (Figma 242:5621) y variante sin secciones.*

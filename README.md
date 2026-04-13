@@ -133,7 +133,9 @@ Las páginas del Creator suelen cargar **`lms-creator.css`** más el **CSS homó
 - **Card Content** - Cards para contenidos de aprendizaje (11 tipos, 35 competencias, 18 aliados, estados de progreso) - **RENDERIZADO: loadCardContent()**
 - **Card Content Compact** - Variante horizontal compacta de Card Content (misma funcionalidad, diseño optimizado para espacios reducidos, siempre horizontal) - **RENDERIZADO: loadCardContentCompact()**
 - **Learn content imagen y tráiler** - Bloque de aprendizaje para cargar imagen y/o tráiler en video (estados vacío, hover, error, imagen, preview con play) - **RENDERIZADO: HTML + `learn-content-img-trailer.css`; JS opcional `initLearnContentImgTrailer()`**
-- **Paginas creator** - Fila de lista del panel de páginas en el creador de contenidos (icono por tipo, estados default/hover/activo, franja y menú en activo con dropdown: mover arriba, mover abajo, eliminar) - **RENDERIZADO: HTML + `paginas-creator.css` + `dropdown-menu.css` + `button.css`; JS `dropdown-menu.js` + `paginas-creator.js` (`paginasCreatorItemHtml`, `initPaginasCreatorMenus`, evento `ubits-paginas-creator-action`)**
+- **Paginas creator** - Lista del panel (icono por tipo; 1 clic = activar; 2 clics / lápiz / menú «Cambiar nombre» = edición inline; menú ⋮: mover / eliminar) - **RENDERIZADO: HTML + `paginas-creator.css` + `dropdown-menu.css` + `button.css`; JS `dropdown-menu.js` + `tooltip.js` + `paginas-creator.js` (`paginasCreatorItemHtml`, `initPaginasCreator`, eventos `ubits-paginas-creator-action`, `ubits-paginas-creator-activate`, `ubits-paginas-creator-label-save`)**
+- **Seccion creator** - Bloque (anida Paginas creator): título siempre **body/md/bold** + fg alto; menú ⋮ **Editar sección** → `ubits-seccion-creator-edit-section` (modal en la pantalla); «Añadir página» si activa - **RENDERIZADO: HTML + `seccion-creator.css` + Paginas creator + `tooltip.js`; JS `seccion-creator.js` (`seccionCreatorHtml`, `initSeccionCreator`, eventos `ubits-seccion-creator-edit-section`, …)**
+- **Índice creator** - Panel izquierdo paso Recursos (interruptor de secciones, índice de secciones o lista única sin cabecera de sección, «Añadir sección» si aplica) - **RENDERIZADO: HTML + `switch.css` + `indice-creator.css` + Sección/Páginas creator; JS `indice-creator.js` tras `seccion-creator.js` (`indiceCreatorHtml`, `initIndiceCreator`, eventos `ubits-indice-creator-sections-toggle`, `ubits-indice-creator-add-section`)**
 - **Rich text editor** - Editor de texto enriquecido (contenteditable, barra de formato: negrita, listas, alineación, imagen, enlace, etc.) - **RENDERIZADO: HTML + `rich-text-editor.css` + `initRichTextEditor()` / `initAllRichTextEditors()`**
 - **Carousel Contents** - Carruseles de contenido (navegación horizontal, flechas, responsive) - **RENDERIZADO: loadCarouselContents()**
 - **Status Tag** - Etiquetas de estado (tipos: success, info, warning, error, neutral; tamaños: xs, sm, md, lg; iconos opcionales izquierda/derecha) - **RENDERIZADO: HTML directo**
@@ -351,7 +353,9 @@ Todos los componentes UBITS requieren imports obligatorios:
 - **`documentacion/componentes/card-content.html`** - Documentación del componente Card Content
 - **`documentacion/componentes/card-content-compact.html`** - Documentación del componente Card Content Compact
 - **`documentacion/componentes/learn-content-img-trailer.html`** - Documentación Learn content imagen y tráiler (Figma Learn-Components)
+- **`documentacion/componentes/indice-creator.html`** - Documentación Índice creator (Figma Learn-Components 242:5621)
 - **`documentacion/componentes/paginas-creator.html`** - Documentación Paginas creator (Figma Learn-Components)
+- **`documentacion/componentes/seccion-creator.html`** - Documentación Seccion creator (Figma Learn-Components 242:5368)
 - **`documentacion/componentes/rich-text-editor.html`** - Documentación Rich text editor (Creator v3)
 - **`documentacion/componentes/status-tag.html`** - Documentación del componente Status Tag
 - **`documentacion/componentes/stepper.html`** - Documentación del componente Stepper
@@ -842,7 +846,9 @@ loadCardContentCompact('mi-contenedor-compact', [
 - **`documentacion/componentes/card-content.html`** - Documentación del componente Card Content
 - **`documentacion/componentes/card-content-compact.html`** - Documentación del componente Card Content Compact
 - **`documentacion/componentes/learn-content-img-trailer.html`** - Documentación Learn content imagen y tráiler (Figma Learn-Components)
+- **`documentacion/componentes/indice-creator.html`** - Documentación Índice creator (Figma Learn-Components 242:5621)
 - **`documentacion/componentes/paginas-creator.html`** - Documentación Paginas creator (Figma Learn-Components)
+- **`documentacion/componentes/seccion-creator.html`** - Documentación Seccion creator (Figma Learn-Components 242:5368)
 - **`documentacion/componentes/rich-text-editor.html`** - Documentación Rich text editor (Creator v3)
 - **`documentacion/componentes/status-tag.html`** - Documentación del componente Status Tag
 - **`documentacion/componentes/stepper.html`** - Documentación del componente Stepper

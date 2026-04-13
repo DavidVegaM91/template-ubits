@@ -144,14 +144,15 @@
                                     </div>
                                     <pre style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm); overflow-x: auto;"><code id="pc-tech-html" class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">&lt;div class="ubits-paginas-creator" role="list"&gt;
   &lt;div class="ubits-paginas-creator__item is-active" role="listitem" data-paginas-creator-key="id-pagina"&gt;
-    &lt;button type="button" class="ubits-paginas-creator__row" aria-current="true"&gt;
+    &lt;div tabindex="0" class="ubits-paginas-creator__row" aria-current="true" aria-label="…"&gt;
       &lt;span class="ubits-paginas-creator__rail" aria-hidden="true"&gt;&lt;/span&gt;
-      &lt;span class="ubits-paginas-creator__icon"&gt;&lt;i class="far fa-file"&gt;&lt;/i&gt;&lt;/span&gt;
-      &lt;span class="ubits-paginas-creator__label ubits-body-sm-semibold"&gt;Título&lt;/span&gt;
-    &lt;/button&gt;
-    &lt;button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only ubits-paginas-creator__menu" aria-label="Más acciones"&gt;
-      &lt;i class="far fa-ellipsis-vertical"&gt;&lt;/i&gt;
-    &lt;/button&gt;
+      &lt;span class="ubits-paginas-creator__icon-wrap"&gt;&lt;i class="far fa-file"&gt;&lt;/i&gt;&lt;/span&gt;
+      &lt;div class="ubits-paginas-creator__label-wrap"&gt;
+        &lt;span class="ubits-paginas-creator__label ubits-body-sm-semibold"&gt;Título&lt;/span&gt;
+        &lt;button type="button" class="… ubits-paginas-creator__edit-name-btn" data-tooltip="Cambiar nombre"&gt;…&lt;/button&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;button type="button" class="… ubits-paginas-creator__menu" aria-label="Más acciones"&gt;⋮&lt;/button&gt;
   &lt;/div&gt;
 &lt;/div&gt;</code></pre>
                                 </div>
@@ -164,12 +165,12 @@
 Ítem: .ubits-paginas-creator__item
   .is-active     → fila seleccionada: franja, texto marca, menú visible
   .is-force-hover → solo demo: mismo aspecto que :hover sin puntero
-Fila clicable: .ubits-paginas-creator__row
-Franja: .ubits-paginas-creator__rail (ancho con --space-1 en activo)
-Icono: .ubits-paginas-creator__icon &gt; i.far.fa-*
-Título: .ubits-paginas-creator__label (+ ubits-body-sm-semibold)
+Fila clicable: .ubits-paginas-creator__row (div; 1 clic = activar; 2 clics en título o botón lápiz = editar)
+Franja: .ubits-paginas-creator__rail (ancho --space-1 siempre; inactiva transparente; activa marca; alto = fila)
+Icono: .ubits-paginas-creator__icon-wrap 24×24 (--size-2xl) &gt; i.far.fa-*
+Título: .label-wrap &gt; .label + .edit-name-btn (tooltip «Cambiar nombre»)
 Menú: .ubits-paginas-creator__menu (botón UBITS tertiary sm icon-only)
-     → dropdown UBITS: Mover arriba, Mover abajo, Eliminar (iconos)
+     → dropdown UBITS: Cambiar nombre (edición inline), Mover arriba/abajo, Eliminar
 data-paginas-creator-key en el ítem (opcional) → llega en el evento como pageKey</code></pre>
                                 </div>
                                 <div style="padding: 32px;">
@@ -180,13 +181,15 @@ data-paginas-creator-key en el ítem (opcional) → llega en el evento como page
                                     <pre style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm); overflow-x: auto;"><code id="pc-tech-req" class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">CSS: general-styles/ubits-colors.css, general-styles/ubits-typography.css,
      general-styles/fontawesome-icons.css, components/button.css,
      components/dropdown-menu.css, components/paginas-creator.css
-JS: components/dropdown-menu.js (antes de paginas-creator.js),
+JS: components/dropdown-menu.js, components/tooltip.js (antes de paginas-creator.js),
      components/paginas-creator.js
      paginasCreatorIconClass('video') → clase del &lt;i&gt;
      paginasCreatorItemHtml({ label, tipo, active, menuAriaLabel, pageKey })
-     initPaginasCreatorMenus('#contenedor-estable') — delegación del menú
-Evento al elegir opción: ubits-paginas-creator-action
-     detail: { action, pageKey, label, anchor, item }
+     initPaginasCreator('#contenedor') — menú ⋮, activación, edición inline, tooltips
+Eventos: ubits-paginas-creator-action (menú ⋮; «Cambiar nombre» no emite action, abre edición inline)
+     ubits-paginas-creator-activate (fila activa)
+     ubits-paginas-creator-label-save (nombre guardado)
+     detail: { action, pageKey, label, anchor, item } según evento
 Tipos reconocidos en JS: blank-page, video, texto, pdf, encuesta,
      embebido, scorm, evaluacion, fin</code></pre>
                                 </div>
@@ -202,6 +205,7 @@ Tipos reconocidos en JS: blank-page, video, texto, pdf, encuesta,
     <script src="../../components/sub-nav.js"></script>
     <script src="../../components/toast.js"></script>
     <script src="../../components/dropdown-menu.js"></script>
+    <script src="../../components/tooltip.js"></script>
     <script src="../../components/paginas-creator.js"></script>
     <script src="../../docs/docs-sidebar.js"></script>
     <script>
@@ -245,13 +249,18 @@ Tipos reconocidos en JS: blank-page, video, texto, pdf, encuesta,
             document.querySelectorAll('.pc-tipo-btn').forEach(function (b) {
                 b.classList.toggle('active', b.getAttribute('data-pc-tipo') === pcPreviewState.tipo);
             });
+            if (typeof initTooltip === 'function') {
+                initTooltip('#pc-preview-mount [data-tooltip]');
+            }
         }
 
         document.addEventListener('DOMContentLoaded', function () {
             if (typeof loadSubNav === 'function') loadSubNav('top-nav-container', 'documentacion');
             if (typeof loadSidebar === 'function') loadSidebar('ninguno');
             if (typeof loadDocsSidebar === 'function') loadDocsSidebar('paginas-creator');
-            if (typeof initPaginasCreatorMenus === 'function') {
+            if (typeof initPaginasCreator === 'function') {
+                initPaginasCreator('#pc-preview-mount');
+            } else if (typeof initPaginasCreatorMenus === 'function') {
                 initPaginasCreatorMenus('#pc-preview-mount');
             }
             document.addEventListener('ubits-paginas-creator-action', function (ev) {

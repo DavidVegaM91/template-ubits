@@ -1,0 +1,62 @@
+/**
+ * Índice Creator — interruptor + cuerpo (índice de secciones o lista única).
+ * Requiere: switch.css, button.css, seccion-creator.css, paginas-creator.css, ubits-colors, ubits-typography.
+ */
+
+.ubits-indice-creator {
+    width: 100%;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-lg);
+}
+
+.ubits-indice-creator__toggle-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--gap-md);
+    padding: var(--padding-md) var(--padding-lg);
+    background: var(--ubits-bg-1);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: var(--border-radius-lg);
+    box-sizing: border-box;
+}
+
+.ubits-indice-creator__toggle-text {
+    flex: 1 1 auto;
+    min-width: 0;
+    color: var(--ubits-fg-1-medium);
+}
+
+.ubits-indice-creator__body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-md);
+    min-width: 0;
+}
+
+.ubits-indice-creator__index-wrap,
+.ubits-indice-creator__single-wrap {
+    width: 100%;
+    min-width: 0;
+}
+
+/* Botón ancho completo al pie (Figma 242:5621) */
+.ubits-indice-creator__add-section {
+    width: 100%;
+    box-sizing: border-box;
+    padding: var(--padding-md);
+    background: var(--ubits-bg-1);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: var(--border-radius-md);
+}
+
+.ubits-indice-creator__add-section-btn {
+    width: 100%;
+    justify-content: center;
+}
+
+.ubits-indice-creator__add-section-btn span {
+    text-align: center;
+}

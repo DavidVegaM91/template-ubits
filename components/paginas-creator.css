@@ -1,7 +1,7 @@
 /**
- * Paginas Creator — fila de lista para navegación de páginas (Learn Creator).
- * Estados: default, hover, active (franja izquierda + menú ellipsis).
- * Requiere: ubits-colors, ubits-typography, fontawesome, button.css para el menú.
+ * Paginas Creator — fila de lista (Learn Creator, Figma 241:18282).
+ * Franja izq. siempre --space-1 de ancho; inactiva transparente (alinea iconos); activa marca.
+ * Iconos en contenedor 24×24 (--size-2xl). Requiere: ubits-colors, ubits-typography, fontawesome, button.css.
  */
 
 .ubits-paginas-creator {
@@ -25,6 +25,7 @@
 }
 
 .ubits-paginas-creator__row {
+    position: relative;
     flex: 1 1 auto;
     min-width: 0;
     display: flex;
@@ -32,7 +33,8 @@
     gap: var(--gap-sm);
     min-height: var(--space-12);
     margin: 0;
-    padding: var(--padding-lg) var(--padding-lg) var(--padding-lg) 0;
+    /* Espacio de la franja izq. (misma anchura que .rail; la rail va en absolute y cubre todo el alto) */
+    padding: var(--padding-md) var(--padding-lg) var(--padding-md) var(--space-1);
     border: none;
     background: transparent;
     cursor: pointer;
@@ -48,33 +50,61 @@
     z-index: 1;
 }
 
+/* Franja izq. a todo el alto del botón-fila; ancho fijo siempre (inactiva = transparente → iconos alineados) */
 .ubits-paginas-creator__rail {
-    flex-shrink: 0;
-    align-self: stretch;
-    width: 0;
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: var(--space-1);
     margin: 0;
-    border-radius: var(--border-radius-xs);
+    border-radius: var(--border-radius-none);
     background: transparent;
-    transition: width 0.15s ease, background-color 0.15s ease;
+    transition: background-color 0.15s ease;
+    pointer-events: none;
 }
 
 .ubits-paginas-creator__item.is-active .ubits-paginas-creator__rail {
-    width: var(--space-1);
     background: var(--ubits-accent-brand);
 }
 
-.ubits-paginas-creator__icon {
+/* Figma: icono centrado en área 24×24 */
+.ubits-paginas-creator__icon-wrap {
     flex-shrink: 0;
+    width: var(--size-2xl);
+    height: var(--size-2xl);
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    color: var(--ubits-fg-1-high);
-    font-size: var(--font-size-md);
+    box-sizing: border-box;
+    color: var(--ubits-fg-1-medium);
+}
+
+.ubits-paginas-creator__icon-wrap i {
+    display: block;
+    font-size: var(--font-size-sm);
     line-height: 1;
 }
 
-.ubits-paginas-creator__icon i {
-    display: block;
+.ubits-paginas-creator__item:hover:not(.is-active) .ubits-paginas-creator__icon-wrap,
+.ubits-paginas-creator__item.is-force-hover:not(.is-active) .ubits-paginas-creator__icon-wrap {
+    color: var(--ubits-fg-1-high);
+}
+
+.ubits-paginas-creator__item.is-active .ubits-paginas-creator__icon-wrap {
+    color: var(--ubits-accent-brand);
+}
+
+.ubits-paginas-creator__label-wrap {
+    flex: 1 1 auto;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: var(--gap-xs);
+}
+
+.ubits-paginas-creator__label-wrap.ubits-paginas-creator__label-edit-wrap {
+    min-width: var(--size-xl);
 }
 
 .ubits-paginas-creator__label {
@@ -83,6 +113,40 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+}
+
+/* Botón lápiz: como task-strip (visible al hover sobre el título) */
+.ubits-paginas-creator__edit-name-btn {
+    flex-shrink: 0;
+    opacity: 0;
+    transition: opacity 0.15s ease;
+}
+
+.ubits-paginas-creator__label-wrap:hover .ubits-paginas-creator__edit-name-btn {
+    opacity: 1;
+}
+
+.ubits-paginas-creator__label-edit-input {
+    width: 100%;
+    min-width: var(--size-xl);
+    font-family: var(--ubits-font-family-sans);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    line-height: 19.5px;
+    color: var(--ubits-fg-1-high);
+    border: none;
+    background: transparent;
+    padding: 0;
+    margin: 0;
+    outline: none;
+    cursor: text;
+    box-sizing: border-box;
+}
+
+.ubits-paginas-creator__label-edit-input:hover,
+.ubits-paginas-creator__label-edit-input:focus {
+    background: var(--ubits-bg-3);
+    border-radius: var(--border-radius-xs);
 }
 
 .ubits-paginas-creator__item:not(.is-active):not(:hover):not(.is-force-hover) .ubits-paginas-creator__label {
@@ -105,7 +169,7 @@
     display: none;
     flex-shrink: 0;
     align-self: center;
-    margin-right: var(--padding-sm);
+    margin-right: var(--padding-md);
 }
 
 .ubits-paginas-creator__item.is-active .ubits-paginas-creator__menu {
