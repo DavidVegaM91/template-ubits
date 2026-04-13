@@ -54,12 +54,11 @@ function adjustSidebarHeight() {
 //    loadSidebar('aprendizaje')   → sidebar default, ítem "Aprendizaje" activo
 //    loadSidebar('tareas')        → sidebar default, ítem "Tareas" activo
 //    loadSidebar('diagnóstico')   → sidebar default, ítem "Diagnóstico" activo
-//    loadSidebar('creator')       → sidebar variante Creator, ítem "LMS Creator" activo (default interno)
-//    (Cualquier data-section de la variante default; 'creator' solo como variante, ver punto 2.)
+//    loadSidebar('creator')       → variante Creator; sin segundo arg activa "lms-creator" (ver variante Creator abajo)
 //
 // 2) Dos argumentos con variante explícita:
 //    loadSidebar('default', 'aprendizaje')  → default, ítem "Aprendizaje" activo
-//    loadSidebar('default', 'creator')      → default, ítem "LMS Creator" activo (acceso rápido colaborador)
+//    (En default ya no hay botón LMS Creator en el rail; el acceso es por menú de perfil → "Modo LMS Creator".)
 //    loadSidebar('admin', 'inicio')          → admin, ítem "Inicio" activo
 //    loadSidebar('admin', 'empresa')         → admin, ítem "Empresa" activo
 //    loadSidebar('creator', 'lms-creator')  → Creator: ítem "LMS Creator" activo
@@ -80,7 +79,7 @@ function adjustSidebarHeight() {
 //   - activeButton (string, opcional): Sección a activar cuando el primer parámetro es 'default', 'admin' o 'creator'
 //
 // VARIANTE DEFAULT (data-section en el HTML):
-//   'inicio' (solo admin), 'empresa' (solo admin), 'aprendizaje', 'creator', 'diagnóstico',
+//   'inicio' (solo admin), 'empresa' (solo admin), 'aprendizaje', 'diagnóstico',
 //   'desempeño', 'encuestas', 'reclutamiento', 'tareas', 'ia-para-hr', 'ninguno'
 //
 // VARIANTE ADMIN:
@@ -314,9 +313,6 @@ function loadSidebar(variantOrActiveButton = 'default', activeButton = null) {
                 <div class="sidebar-body">
                     <button class="nav-button" data-section="aprendizaje" data-tooltip="Aprendizaje" onclick="window.location.href='${basePath}ubits-colaborador/aprendizaje/home-learn.html'" style="cursor: pointer;">
                         <i class="far fa-graduation-cap"></i>
-                    </button>
-                    <button class="nav-button" data-section="creator" data-tooltip="LMS Creator" onclick="window.location.href='${basePath}ubits-colaborador/lms-creator/contenidos.html'" style="cursor: pointer;">
-                        <i class="far fa-bolt"></i>
                     </button>
                     <button class="nav-button" data-section="diagnóstico" data-tooltip="Diagnóstico" onclick="window.location.href='${basePath}ubits-colaborador/diagnostico/diagnostico.html'" style="cursor: pointer;">
                         <i class="far fa-chart-mixed"></i>

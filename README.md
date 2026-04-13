@@ -47,15 +47,76 @@ Una **plantilla lista para usar** que permite a **Product Managers**, **Diseñad
   - `admin-diagnostico` - Administración de diagnóstico
   - `admin-encuestas` - Administración de encuestas
   - `documentacion` - Solo para páginas de documentación
-- **Sidebar** - Navegación lateral con 2 variantes:
-  - **Variante default:** (opciones: admin, aprendizaje, diagnóstico, desempeño, encuestas, reclutamiento, tareas, ia-para-hr, ninguno) - Con modo oscuro
+  - `creator-lms` - LMS Creator: Contenidos, Categorías (`ubits-colaborador/lms-creator/`)
+  - `creator-planes` - LMS Creator: Planes, Grupos
+  - `creator-certificados` - LMS Creator: Descarga, Configuración
+  - `creator-personalizacion` - LMS Creator: Universidad corporativa, Seguimiento
+- **Sidebar** - Navegación lateral con **3 variantes** (`components/sidebar.js`):
+  - **Variante default:** (opciones: admin, aprendizaje, diagnóstico, desempeño, encuestas, reclutamiento, tareas, ia-para-hr, ninguno) — modo oscuro en footer. **No** incluye acceso directo en el rail a LMS Creator; el colaborador entra por el menú del avatar (**Modo LMS Creator**) o desde **Aprendizaje → Universidad corporativa** (botón *Acceder a LMS Creator* → `lms-creator/contenidos.html`).
   - **Variante admin:** (opciones: inicio, empresa, aprendizaje, diagnóstico, desempeño, encuestas; footer: api, centro-de-ayuda, modo-oscuro, perfil) - Incluye modo oscuro en footer
+  - **Variante creator:** rail oscuro con cuatro módulos del producto LMS Creator — `lms-creator` (Contenidos), `planes-formacion`, `certificados`, `personalizacion`. Uso típico: `loadSidebar('creator', 'lms-creator')` (o la sección activa correspondiente). Detalle en [LMS Creator (producto aparte)](#lms-creator-producto-aparte-del-colaborador) más abajo.
 - **Sidebar contenidos LMS** - Misma estructura que el Sidebar (`.sidebar` + `.nav-button` con iconos y tooltips), colores para superficie `--ubits-bg-1`; variantes **Publicado LMS Creator** (cinco pasos) y **Publicado Antiguo LMS** (sin Resultados; recursos como Módulos) vía `options.variant` - **RENDERIZADO: `loadSidebarContenidosLms()`**
 - **TabBar** - Navegación móvil (opciones: modulos, perfil, modo-oscuro)
 - **Floating Menu** - Menú flotante modal para navegación móvil (acordeones con subitems)
 - **Profile Menu** - Menú desplegable del perfil de usuario
 
 **Páginas sin SubNav:** Si la página no usa SubNav (sin `#top-nav-container` ni `loadSubNav()`), añade **`class="no-subnav"`** al `<body>`. En `general-styles/styles.css` queda resuelto el espacio de **`.main-content`**: en **desktop (≥1024px)** se elimina el `padding-top` extra que reserva hueco al SubNav fijo; en **móvil/tablet (≤1023px)** se aplica **16px** de padding superior (`var(--gap-lg)`). Referencia: `ubits-colaborador/perfil/profile.html`, `ubits-colaborador/ia-para-hr/ia-para-hr.html`.
+
+### LMS Creator (producto aparte del colaborador)
+
+El **LMS Creator** es un producto de prototipo dentro del playground: vive en **`ubits-colaborador/lms-creator/`**, comparte shell UBITS (SubNav, TabBar, Floating menu, toasts) pero tiene **su propia barra lateral** (variante **`creator`** del Sidebar) y **SubNav por módulo** (no mezclar pestañas entre módulos).
+
+#### **Cómo entra el usuario**
+
+| Origen | Comportamiento |
+|--------|----------------|
+| Menú del avatar (sidebar default) | **Modo LMS Creator** → `lms-creator/contenidos.html` |
+| `aprendizaje/u-corporativa.html` | Botón **Acceder a LMS Creator** → `../lms-creator/contenidos.html` |
+| Floating menu (móvil) | Acordeón **LMS Creator** con enlaces a cada vista principal |
+
+En el **rail del sidebar default** no hay icono dedicado al Creator (solo las rutas anteriores).
+
+#### **Sidebar variante `creator`**
+
+`loadSidebar('creator', '<sección>')` — si omites el segundo argumento, la sección activa por defecto es **`lms-creator`**.
+
+| `data-section` (2.º arg) | Destino principal del ícono |
+|--------------------------|------------------------------|
+| `lms-creator` | `contenidos.html` |
+| `planes-formacion` | `planes-formacion.html` |
+| `certificados` | `certificados.html` |
+| `personalizacion` | `personalizacion-u-corporativa.html` |
+
+El logo del sidebar Creator también lleva a **Contenidos**. El menú de perfil del Creator incluye **Modo colaborador** (vuelta al playground colaborador) y **Modo administrador**, además de documentación y sesión (ver `components/sidebar.js`).
+
+#### **SubNav: un módulo = una variante**
+
+Cada bloque de pestañas tiene su propia clave en **`components/sub-nav.js`**:
+
+| Variante `loadSubNav(..., '…')` | Pestañas (IDs `data-tab`) | HTML de entrada típico |
+|---------------------------------|---------------------------|-------------------------|
+| `creator-lms` | Contenidos (`contenidos`), Categorías (`categorias`) | `contenidos.html`, `categorias.html` |
+| `creator-planes` | Planes (`planes`), Grupos (`grupos`) | `planes-formacion.html`, `grupos.html` y flujos hijos (crear/editar/detalle plan o grupo, chat IA grupos) — el mapeo de archivo → tab activo está en `sub-nav.js` (`PAGE_TO_TAB` con prefijo `lms-creator/`). |
+| `creator-certificados` | Descarga (`descarga`), Configuración (`configuracion`) | `certificados.html`, `certificados-configuracion.html` |
+| `creator-personalizacion` | Universidad corporativa (`universidad-corporativa`), Seguimiento (`seguimiento`) | `personalizacion-u-corporativa.html`, `personalizacion-seguimiento.html` |
+
+Las páginas del Creator suelen cargar **`lms-creator.css`** más el **CSS homónimo** de la página (`contenidos.css`, `planes-formacion.css`, etc.).
+
+#### **Inventario de HTML en `lms-creator/`**
+
+- **LMS + Categorías:** `contenidos.html`, `categorias.html`
+- **Planes y grupos:** `planes-formacion.html`, `grupos.html`, `crear-plan-contenidos.html`, `crear-plan-competencias.html`, `editar-plan-contenidos.html`, `editar-plan-competencias.html`, `detalle-plan.html`, `detalle-plan-competencias.html`, `crear-grupo.html`, `detalle-grupo.html`, `chat-ia-grupos.html`
+- **Certificados:** `certificados.html`, `certificados-configuracion.html` (stubs alineados a la plantilla vacía tipo categorías + `header-product`)
+- **Personalización UC:** `personalizacion-u-corporativa.html`, `personalizacion-seguimiento.html` (mismo patrón stub donde aplica)
+
+**Vista colaborador** de universidad corporativa (catálogo consumo): sigue en **`aprendizaje/u-corporativa.html`**; la personalización en Creator es la pareja **`personalizacion-u-corporativa.html`**.
+
+#### **Contexto en Markdown (no es UI)**
+
+- `ubits-colaborador/lms-creator/contexto-creacion-contenido.md` — creación de contenidos / formatos
+- `ubits-colaborador/lms-creator/contexto-planes-formacion-y-grupos.md` — planes, grupos, estados, flujos
+
+**Datos y utilidades:** muchas vistas enlazan **`bd-master/`** y **`general-utils/humanizador-fechas.js`**; el detalle por archivo está en **`bd-master/README.md`**.
 
 ### **Componentes de UI:**
 - **Button** - Botones de acción (variantes: primary, secondary, tertiary; tamaños: sm, md, lg; iconos opcionales) - **RENDERIZADO: HTML directo**
@@ -384,12 +445,34 @@ Todos los componentes UBITS requieren imports obligatorios:
 │   └── otros/
 ├── 📁 ubits-colaborador/     # Módulo de colaborador
 │   ├── inicio/
-│   ├── aprendizaje/
+│   ├── aprendizaje/                    # Módulo — SubNav aprendizaje
+│   │   ├── Inicio
+│   │   ├── Modo estudio IA
+│   │   ├── Catálogo
+│   │   ├── U. Corporativa
+│   │   └── Zona de estudio
+│   ├── lms-creator/                    # Producto LMS Creator (carpeta del módulo)
+│   │   ├── LMS Creator                 # SubNav creator-lms
+│   │   │   ├── Contenidos
+│   │   │   └── Categorías
+│   │   ├── Planes de formación         # SubNav creator-planes
+│   │   │   ├── Planes
+│   │   │   └── Grupos
+│   │   ├── Certificados                # SubNav creator-certificados
+│   │   │   ├── Descarga
+│   │   │   └── Configuración
+│   │   └── Personalización             # SubNav creator-personalizacion
+│   │       ├── Universidad corporativa
+│   │       └── Seguimiento
 │   ├── diagnostico/
 │   ├── desempeno/
 │   ├── encuestas/
 │   ├── reclutamiento/
-│   ├── tareas/
+│   ├── tareas/                         # Módulo — SubNav tareas
+│   │   ├── Tareas
+│   │   ├── Planes
+│   │   ├── Plantillas
+│   │   └── Seguimiento
 │   ├── ia-para-hr/
 │   ├── ubits-ai/
 │   └── perfil/
@@ -411,6 +494,8 @@ Todos los componentes UBITS requieren imports obligatorios:
     ├── imagenes competencias/ # Imágenes de competencias (35 imágenes)
     └── empty-states/         # Estados vacíos (2 SVG)
 ```
+
+*(En `lms-creator/` el árbol anterior resume **módulos y pestañas** del producto; hay más archivos en disco — flujos crear/editar/detalle, drawers, `lms-creator.css`, `contexto-*.md` —; ver [LMS Creator (producto aparte del colaborador)](#lms-creator-producto-aparte-del-colaborador) y `bd-master/README.md`.)*
 
 ### **📁 Contenido de `general-styles/` (qué encuentra en cada archivo):**
 | Archivo | Contenido |
