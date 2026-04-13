@@ -231,18 +231,34 @@
     font-weight: var(--font-weight-semibold);
 }
 
-.nav-tab.active::after {
+/* Línea inferior: animación tipo “grow” desde el centro (scaleX); activo = marca; hover solo en desktop */
+.nav-tab::after {
     content: '';
     position: absolute;
     bottom: 0;
     left: 0;
     right: 0;
     height: 3px;
-    background-color: var(--ubits-accent-brand);
+    background-color: transparent;
     border-radius: var(--border-radius-xs);
+    transform: scaleX(0);
+    transform-origin: center;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.2s ease;
+    pointer-events: none;
 }
 
-/* Hover States */
+.nav-tab.active::after {
+    background-color: var(--ubits-accent-brand);
+    transform: scaleX(1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .nav-tab::after {
+        transition-duration: 0.01ms;
+    }
+}
+
+/* Hover States (tablet/móvil: fondo bg-2; desktop: solo línea inferior, ver media ≥1024px) */
 .nav-tab:hover {
     background-color: var(--ubits-bg-2);
     border-radius: var(--border-radius-sm);
@@ -671,6 +687,32 @@
     .sub-nav[data-variant="documentacion"] {
         left: var(--gap-2xl);
         right: var(--gap-2xl);
+    }
+
+    /* Tabs: hover sin fondo; misma línea animada que el activo, color más neutro */
+    .nav-tab:hover {
+        background-color: transparent;
+        border-radius: var(--border-radius-none);
+    }
+
+    .nav-tab:hover:not(.active)::after {
+        background-color: var(--ubits-border-1);
+        transform: scaleX(1);
+    }
+
+    .nav-tab:focus-visible:not(.active) {
+        background-color: transparent;
+        outline: none;
+    }
+
+    .nav-tab:focus-visible:not(.active)::after {
+        background-color: var(--ubits-accent-brand);
+        transform: scaleX(1);
+    }
+
+    .nav-tab:focus-visible.active {
+        outline: 2px solid var(--ubits-accent-brand);
+        outline-offset: 2px;
     }
 }
 
