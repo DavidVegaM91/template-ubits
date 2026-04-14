@@ -169,3 +169,15 @@ body.page-crear-contenido {
     gap: var(--gap-md);
     flex-wrap: wrap;
 }
+
+/*
+ * Fase 5 (paridad con body.crear-contenido-drawer-abierto en contenidos.css):
+ * menús ⋮ de Páginas creator se portan a document.body; subir dropdown por encima del shell.
+ */
+body.crear-contenido-app-open .ubits-dropdown-menu__overlay {
+    z-index: 1200;
+}
+
+body.crear-contenido-app-open .ubits-dropdown-menu__content {
+    z-index: 1201;
+}

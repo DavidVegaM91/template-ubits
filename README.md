@@ -104,7 +104,7 @@ Las páginas del Creator suelen cargar **`lms-creator.css`** más el **CSS homó
 
 #### **Inventario de HTML en `lms-creator/`**
 
-- **LMS + Categorías:** `contenidos.html`, `categorias.html`
+- **LMS + Categorías:** `contenidos.html`, `categorias.html`, `crear-contenido.html` (mismo flujo de creación que el drawer de contenidos, en **página dedicada**; abrir `ubits-colaborador/lms-creator/crear-contenido.html` en el navegador, opcionalmente `#recursos` o `#portada`)
 - **Planes y grupos:** `planes-formacion.html`, `grupos.html`, `crear-plan-contenidos.html`, `crear-plan-competencias.html`, `editar-plan-contenidos.html`, `editar-plan-competencias.html`, `detalle-plan.html`, `detalle-plan-competencias.html`, `crear-grupo.html`, `detalle-grupo.html`, `chat-ia-grupos.html`
 - **Certificados:** `certificados.html`, `certificados-configuracion.html` (stubs alineados a la plantilla vacía tipo categorías + `header-product`)
 - **Personalización UC:** `personalizacion-u-corporativa.html`, `personalizacion-seguimiento.html` (mismo patrón stub donde aplica)
@@ -113,7 +113,8 @@ Las páginas del Creator suelen cargar **`lms-creator.css`** más el **CSS homó
 
 #### **Contexto en Markdown (no es UI)**
 
-- `ubits-colaborador/lms-creator/contexto-creacion-contenido.md` — creación de contenidos / formatos
+- `ubits-colaborador/lms-creator/contexto-creacion-contenido.md` — creación de contenidos / formatos (incluye **Implementación en página dedicada** y rutas QA)
+- `ubits-colaborador/lms-creator/crear-contenido-plan.md` — plan por fases (drawer vs página, checklist)
 - `ubits-colaborador/lms-creator/contexto-planes-formacion-y-grupos.md` — planes, grupos, estados, flujos
 
 **Datos y utilidades:** muchas vistas enlazan **`bd-master/`** y **`general-utils/humanizador-fechas.js`**; el detalle por archivo está en **`bd-master/README.md`**.

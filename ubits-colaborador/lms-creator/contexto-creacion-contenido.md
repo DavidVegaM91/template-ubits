@@ -67,7 +67,25 @@ Además del flujo en **drawer** desde `contenidos.html`, existe una **página HT
 | Lista + drawer | `contenidos.html#crear-contenido-recursos` o `contenidos.html#crear-contenido-step-recursos` (alias) |
 | Página dedicada | **`crear-contenido.html#recursos`** (canónico). Siguen admitiéndose como alias los hashes largos del drawer; la URL se normaliza a `#recursos`. |
 
-**Paso 1 (Portada) en la página dedicada:** `crear-contenido.html#crear-contenido` o sin hash. El cableado vive en `crear-contenido.js` (sin overlay).
+**Paso 1 (Portada) en la página dedicada:** `crear-contenido.html#portada` o sin hash. El hash antiguo `#crear-contenido` se reconoce y se normaliza a `#portada`. El cableado vive en `crear-contenido.js` (sin overlay).
+
+### Implementación en página dedicada (assets, QA y z-index)
+
+Documentación técnica **sin** sustituir la descripción del prototipo **drawer** en `contenidos.html` (sigue siendo referencia hasta un corte acordado con producto).
+
+| Qué | Detalle |
+|-----|---------|
+| **HTML** | `ubits-colaborador/lms-creator/crear-contenido.html` |
+| **CSS de página** | `ubits-colaborador/lms-creator/crear-contenido.css` (carga **después** de `contenidos.css` para overrides del shell y tokens) |
+| **JS de página** | `ubits-colaborador/lms-creator/crear-contenido.js` |
+| **Modal portada (imagen / tráiler)** | `portada-media-modal.js`, `portada-media-modal.css` |
+| **Maestros** | `bd-master/bd-master-*.js` (tipos, niveles, categorías), enlazados en el HTML de la página |
+
+- **Abrir para QA:** doble clic en el archivo o `file:///…/crear-contenido.html`; rutas relativas desde la carpeta `lms-creator/`: `crear-contenido.html`, `crear-contenido.html#recursos`, `crear-contenido.html#portada`.
+- **Body:** además de `page-crear-contenido` y `no-subnav`, la página usa `crear-contenido-drawer-overlay` **solo** para heredar en cascada las reglas de layout de `contenidos.css` (workspace, pasos, rail) **sin** instanciar el componente Drawer.
+- **`crear-contenido-app-open`:** clase **exclusiva** de esta página. Sube el z-index de los menús **dropdown** del índice (⋮ en Páginas creator, montados en `body`) por encima del shell — mismo criterio que `body.crear-contenido-drawer-abierto` en la lista de contenidos.
+- **Responsive:** el bloque móvil del stepper y rejillas del Resources block siguen los `@media` de `contenidos.css` bajo `.crear-contenido-drawer-overlay`; el header del shell reduce padding en **639px** (`crear-contenido.css`).
+- **Modo oscuro / tokens:** colores y tipografía UBITS vía hojas globales; para probar tema oscuro, usar `data-theme="dark"` en `<html>` o `<body>` como en el resto del template.
 
 ---
 
@@ -180,16 +198,17 @@ Los dos paneles trabajan acoplados: la selección de página en la izquierda det
 - **Icono en el índice (Páginas creator) hasta elegir recurso:** mientras la página **no tenga aún un recurso principal** asignado, la fila en el índice debe **seguir mostrando el icono de página en blanco** (`blank-page` / `far fa-file` en `paginas-creator.js`), el mismo que al crear la página. **Al seleccionar un tipo de recurso** (y completar el flujo que defina producto), el icono de la fila debe **actualizarse** al que corresponda al tipo (video, PDF, embebido, etc.). *Esta sincronización índice ↔ recurso aún no está implementada en el playground;* la UI actual añade páginas en blanco y el panel derecho con **Resources block** en variante `default`; cuando exista estado de recurso por página, enlazarlo con `tipo` en `paginasCreatorItemHtml` / datos del índice.  
 - **Selección:** al hacer **clic en una página**, esa fila queda activa y su **sección padre** pasa a ser la única sección activa (p. ej. borde de acento); el resto de páginas y secciones dejan de estar activas. Solo puede haber **una página activa y una sección activa** a la vez en el índice (comportamiento en `paginas-creator.js` + `seccion-creator.js`).  
 - **Añadir una página** (equivalente en resultado; dos entradas):  
-  1. **Empty state del panel derecho** («Añade tu primera página» / CTA equivalente cuando no hay páginas), **o**  
+  1. **Empty state del panel derecho** (CTA cuando no hay páginas), **o**  
   2. Botón **«Añadir página»** en la parte inferior de **cada sección** (solo en la sección activa cuando hay secciones; en modo sin secciones, el botón del bloque único).  
 - **Orden y menú de opciones (⋮):** cada fila de página puede **moverse** con acciones **«Mover arriba»** / **«Mover abajo»** desde el menú de opciones.  
   - Si la página es la **primera del contenido completo** (primera fila del índice global), **no** se ofrece **«Mover arriba»**.  
   - Si la página es la **última del contenido completo**, **no** se ofrece **«Mover abajo»**.  
   - **Entre secciones:** una página que es la **primera de la sección 2** puede subir con **«Mover arriba»** hasta ser la **última de la sección 1** (y así sucesivamente); solo deja de poder **subir** al llegar a ser la primera del contenido. Simétricamente para **bajar** hasta ser la última del contenido.
 
-### Panel derecho: empty state «Añade tu primera página»
+### Panel derecho: empty state sin páginas
 
 - Se muestra **solo cuando no existe ninguna página** en el contenido (lista vacía en el índice).  
+- **Copy (página dedicada `crear-contenido.html`):** título *«Añade tu primera página»*, descripción sobre añadir páginas y recursos (video, texto, PDF) y CTA **primario** «Añadir página»; en el **drawer** puede seguir el texto anterior hasta alineación explícita.  
 - **En cuanto se añade la primera página**, el panel derecho deja ese empty y pasa al flujo de **selector de tipo de recurso** (u otra vista según el tipo de recurso); **no** debe volver a mostrarse este empty salvo que el usuario **elimine todas las páginas** y vuelva a quedar el índice en cero páginas.  
 - **Disparadores equivalentes** para crear la primera (y siguientes) páginas: CTA del empty state **o** **«Añadir página»** en el panel izquierdo (según sección activa).  
 - Efecto esperado al añadir: en el **panel izquierdo** aparece la **fila de página** (Páginas creator) y queda **activa/seleccionada**; en el **derecho** se muestra el **selector general de recursos** para esa página.
@@ -284,4 +303,4 @@ Este patrón de **contenido complementario** (Texto / Archivo descargable) apare
 - Mantener tokens y tipografía UBITS; CSS de página en archivo dedicado junto al HTML del Creator cuando corresponda.  
 - Cualquier cambio a este documento debe reflejar acuerdos de producto y, cuando aplique, la documentación UBITS del componente tocado.
 
-*Última actualización: página dedicada paso 2 con hash corto `#recursos`; drawer sigue con `#crear-contenido-recursos`. `crear-contenido.js`. Layout footer anclado; footer paso 1 sin Anterior. Resto: paso 2 índice/recursos; paso 3 validación; portada; recursos Video/Texto.*
+*Última actualización: hash Portada `#portada` (legacy `#crear-contenido`); empty state título «Añade tu primera página» y CTA primario.*

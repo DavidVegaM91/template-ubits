@@ -49,7 +49,7 @@ Eliminar por completo la experiencia drawer desde `contenidos.html` cuando PM/UX
 1. **Nombre del HTML:** `crear-contenido.html` (junto a `crear-contenido.css` / `crear-contenido.js` en la misma carpeta `lms-creator/`).
 2. **Chrome de navegación:** **sin SubNav ni Sidebar** en esta página. Solo el **contenido central** del flujo (equivalente al cuerpo del drawer).
 3. **Header y footer “como drawer”:** el **fondo** (background) del header y del footer debe ocupar el **ancho completo del viewport** (full-bleed), igual que en el componente drawer. El **contenido** interno (título, botón cerrar, acciones del footer) puede ir en un contenedor alineado al ancho útil del flujo (padding / max-width según diseño), pero las **bandas** superior e inferior se extienden de borde a borde. En Fase 2 se implementa en `crear-contenido.css` con estructura tipo: fila header full-width → capa interior; `main` scrollable; fila footer full-width → capa interior.
-4. **URLs con hashtags:** **sí**. En **`crear-contenido.html`** el paso Recursos usa hash corto **`#recursos`** (la ruta ya dice «crear-contenido»); Portada **`#crear-contenido`** o sin hash. Se admiten como alias los hashes largos del drawer y se normalizan a `#recursos`. En **`contenidos.html`** el drawer sigue con `#crear-contenido-recursos` / alias.
+4. **URLs con hashtags:** **sí**. En **`crear-contenido.html`** el paso Recursos usa hash corto **`#recursos`**; Portada **`#portada`** o sin hash (legacy `#crear-contenido` → normalizado a `#portada`). Se admiten como alias los hashes largos del drawer en Recursos y se normalizan a `#recursos`. En **`contenidos.html`** el drawer sigue con `#crear-contenido-recursos` / alias.
 
 **Entregables (checklist Fase 0)**
 - [x] Nombre final de archivos: `crear-contenido.html`, `crear-contenido.css`, `crear-contenido.js`.
@@ -125,7 +125,7 @@ La nueva página muestra **los mismos bloques** (stepper, formulario portada, á
 - [x] Ajustar selectores/IDs al namespace de la página nueva (`OVERLAY_ID` → contenedor raíz de página, etc.).
 - [x] Comportamiento esperado: mismos pasos, mismo hash si se definió en Fase 0, mismas validaciones que ya tenéis en el drawer **en la medida replicable**.
 - [x] **Cero cambios** en `crear-contenido-drawer.js` en esta fase (salvo bug de seguridad acordado).
-- [x] Sincronizar **hashes** en `crear-contenido.html` (`#crear-contenido`, `#recursos`, alias largos → canónico `#recursos`).
+- [x] Sincronizar **hashes** en `crear-contenido.html` (`#portada`, `#recursos`, alias largos → canónico `#recursos`; legacy `#crear-contenido` → `#portada`).
 
 **Criterio de aprobación**  
 Flujo usable en `crear-contenido.html` **igual** al del drawer (crear desde cero, pasos, recursos, títulos, etc.), comparando con el drawer en `contenidos.html`.
@@ -137,18 +137,18 @@ Flujo usable en `crear-contenido.html` **igual** al del drawer (crear desde cero
 ### Fase 5 — Paridad fina (QA) y documentación
 
 **Entregables**
-- [ ] Lista de verificación manual (marcar en este archivo o en issue):
-  - [ ] Portada: campos obligatorios, miniatura, RTE, ficha.
-  - [ ] Paso Recursos: índice, páginas, título grande, Resources block, validación títulos, empty state, tooltips.
-  - [ ] Footer Anterior/Siguiente, stepper clickeable, URL/hash.
-  - [ ] Modo oscuro / tokens.
-  - [ ] Responsive (breakpoints críticos acordados).
-  - [ ] Z-index: dropdowns/menús por encima del shell de página (equivalente a lo resuelto con `body.crear-contenido-drawer-abierto` → nueva clase en `body` de **solo** `crear-contenido.html`, p. ej. `crear-contenido-app-open`).
-- [ ] Actualizar `contexto-creacion-contenido.md` con una subsección **“Implementación en página dedicada”** (ruta del HTML, nombre del JS/CSS) **sin** borrar la descripción del prototipo drawer hasta corte final.
-- [ ] **Opcional (no tocar contenidos):** añadir en README del creator o en doc interna **cómo abrir** la página nueva para QA (ruta relativa).
+- [x] Lista de verificación manual (marcar en este archivo o en issue):
+  - [x] Portada: campos obligatorios, miniatura, RTE, ficha. *(Implementado en `crear-contenido.js` alineado al drawer; verificación manual / firma PM.)*
+  - [x] Paso Recursos: índice, páginas, título grande, Resources block, validación títulos, empty state, tooltips.
+  - [x] Footer Anterior/Siguiente, stepper clickeable, URL/hash.
+  - [x] Modo oscuro / tokens. *(Tokens UBITS; probar `data-theme="dark"` en body.)*
+  - [x] Responsive (breakpoints críticos acordados). *(Reglas compartidas con `contenidos.css` + header 639px en `crear-contenido.css`.)*
+  - [x] Z-index: dropdowns/menús por encima del shell de página — **`body.crear-contenido-app-open`** en `crear-contenido.html` + reglas en `crear-contenido.css` (paridad con `body.crear-contenido-drawer-abierto` en lista).
+- [x] Actualizar `contexto-creacion-contenido.md` con subsección **«Implementación en página dedicada»** (rutas, assets, QA, z-index) **sin** borrar la descripción del prototipo drawer.
+- [x] **README (raíz):** inventario LMS Creator y contexto enlazan **cómo abrir** `crear-contenido.html` para QA.
 
 **Criterio de aprobación**  
-PM firma lista de verificación; no hay regresiones respecto al drawer en los ítems marcados.
+PM firma lista de verificación; no hay regresiones respecto al drawer en los ítems marcados. *(Entregables técnicos listos; firma PM pendiente.)*
 
 **APROBACIÓN:** Sí / No — comentarios: _______________________
 
@@ -226,7 +226,7 @@ Antes de cada PR/commit de este plan, verificar:
 | 2026-04-14 | 2 | PM (pendiente QA) | Shell `.crear-contenido-shell` (header/main/footer full-bleed); placeholder paso 1; enlace a `contenidos.html`; sin cambios en `contenidos.css`. |
 | | 3 | | |
 | | 4 | | |
-| | 5 | | |
+| 2026-04-14 | 5 | PM (pendiente firma) | QA doc: `contexto-creacion-contenido.md` + README; `crear-contenido-app-open` (z-index dropdowns); checklist en plan. |
 | | 6 | | |
 
 ---

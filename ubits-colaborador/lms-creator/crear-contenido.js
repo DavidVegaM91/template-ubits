@@ -497,11 +497,11 @@
         if (host) host.style.display = '';
         window.loadEmptyState(CREAR_CONTENIDO_RECURSOS_EMPTY_HOST_ID, {
             icon: 'fa-file',
-            title: 'No has creado una página',
+            title: 'Añade tu primera página',
             description:
                 'Agrega páginas para ofrecer a tus estudiantes una experiencia de aprendizaje única. Dentro de las páginas podrás agregar recursos de video, texto, o pdf.',
             buttons: {
-                secondary: {
+                primary: {
                     text: 'Añadir página',
                     icon: 'fa-plus',
                     onClick: function () {
@@ -889,9 +889,10 @@
         window.addEventListener('hashchange', applyCrearContenidoPageHash);
     }
 
-    /** Página dedicada: rutas cortas (#recursos / #crear-contenido). Los hashes largos del drawer siguen reconocidos como alias. */
-    var HASH_PAGE_PORTADA = '#crear-contenido';
+    /** Página dedicada: Portada `#portada`, Recursos `#recursos`. Alias legacy y del drawer documentados en applyCrearContenidoPageHash. */
+    var HASH_PAGE_PORTADA = '#portada';
     var HASH_PAGE_RECURSOS = '#recursos';
+    var HASH_PAGE_PORTADA_LEGACY = '#crear-contenido';
     var HASH_DRAWER_RECURSOS = '#crear-contenido-recursos';
     var HASH_DRAWER_RECURSOS_ALIAS = '#crear-contenido-step-recursos';
 
@@ -969,11 +970,15 @@
         if (isRecursosUrlHash(h)) {
             goToCrearContenidoPageStep(1, { skipUrl: true });
             if (h === HASH_DRAWER_RECURSOS || h === HASH_DRAWER_RECURSOS_ALIAS) {
-                var path = location.pathname + location.search;
-                history.replaceState(null, '', path + HASH_PAGE_RECURSOS);
+                var pathR = location.pathname + location.search;
+                history.replaceState(null, '', pathR + HASH_PAGE_RECURSOS);
             }
-        } else if (h === HASH_PAGE_PORTADA || h === '') {
+        } else if (h === HASH_PAGE_PORTADA || h === HASH_PAGE_PORTADA_LEGACY || h === '') {
             goToCrearContenidoPageStep(0, { skipUrl: true });
+            if (h === HASH_PAGE_PORTADA_LEGACY) {
+                var pathP = location.pathname + location.search;
+                history.replaceState(null, '', pathP + HASH_PAGE_PORTADA);
+            }
         }
     }
 
