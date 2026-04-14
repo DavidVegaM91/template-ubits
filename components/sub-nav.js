@@ -93,7 +93,7 @@ const TOP_NAV_VARIANTS = {
     'creator-planes': {
         name: 'Planes de formación',
         tabs: [
-            { id: 'planes', label: 'Planes', icon: 'far fa-clipboard-list', url: '../../ubits-colaborador/lms-creator/planes-formacion.html' },
+            { id: 'planes', label: 'Planes de formación', icon: 'far fa-clipboard-list', url: '../../ubits-colaborador/lms-creator/planes-formacion.html' },
             { id: 'grupos', label: 'Grupos', icon: 'far fa-users', url: '../../ubits-colaborador/lms-creator/grupos.html' }
         ]
     },

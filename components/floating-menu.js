@@ -172,9 +172,9 @@ const FLOATING_MENU_SECTIONS_CREATOR = [
     {
         id: 'creator-planes',
         title: 'Planes de formación',
-        icon: 'far fa-layer-group',
+        icon: 'far fa-clipboard-list',
         subitems: [
-            { id: 'planes-formacion', title: 'Planes', icon: 'far fa-clipboard-list', url: '../../ubits-colaborador/lms-creator/planes-formacion.html' },
+            { id: 'planes-formacion', title: 'Planes de formación', icon: 'far fa-clipboard-list', url: '../../ubits-colaborador/lms-creator/planes-formacion.html' },
             { id: 'grupos', title: 'Grupos', icon: 'far fa-users', url: '../../ubits-colaborador/lms-creator/grupos.html' }
         ]
     },

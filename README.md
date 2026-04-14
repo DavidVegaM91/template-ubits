@@ -48,7 +48,7 @@ Una **plantilla lista para usar** que permite a **Product Managers**, **Diseñad
   - `admin-encuestas` - Administración de encuestas
   - `documentacion` - Solo para páginas de documentación
   - `creator-lms` - LMS Creator: Contenidos, Categorías (`ubits-colaborador/lms-creator/`)
-  - `creator-planes` - LMS Creator: Planes, Grupos
+  - `creator-planes` - LMS Creator: Planes de formación, Grupos
   - `creator-certificados` - LMS Creator: Descarga, Configuración
   - `creator-personalizacion` - LMS Creator: Universidad corporativa, Seguimiento
 - **Sidebar** - Navegación lateral con **3 variantes** (`components/sidebar.js`):
@@ -96,7 +96,7 @@ Cada bloque de pestañas tiene su propia clave en **`components/sub-nav.js`**:
 | Variante `loadSubNav(..., '…')` | Pestañas (IDs `data-tab`) | HTML de entrada típico |
 |---------------------------------|---------------------------|-------------------------|
 | `creator-lms` | Contenidos (`contenidos`), Categorías (`categorias`) | `contenidos.html`, `categorias.html` |
-| `creator-planes` | Planes (`planes`), Grupos (`grupos`) | `planes-formacion.html`, `grupos.html` y flujos hijos (crear/editar/detalle plan o grupo, chat IA grupos) — el mapeo de archivo → tab activo está en `sub-nav.js` (`PAGE_TO_TAB` con prefijo `lms-creator/`). |
+| `creator-planes` | Planes de formación (`planes`), Grupos (`grupos`) | `planes-formacion.html`, `grupos.html` y flujos hijos (crear/editar/detalle plan o grupo, chat IA grupos) — el mapeo de archivo → tab activo está en `sub-nav.js` (`PAGE_TO_TAB` con prefijo `lms-creator/`). |
 | `creator-certificados` | Descarga (`descarga`), Configuración (`configuracion`) | `certificados.html`, `certificados-configuracion.html` |
 | `creator-personalizacion` | Universidad corporativa (`universidad-corporativa`), Seguimiento (`seguimiento`) | `personalizacion-u-corporativa.html`, `personalizacion-seguimiento.html` |
 

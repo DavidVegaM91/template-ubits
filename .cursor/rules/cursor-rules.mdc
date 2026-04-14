@@ -1661,7 +1661,7 @@ document.addEventListener('DOMContentLoaded', function() {
 #### **Variante Creator (LMS Creator / planes / certificados / UC):**
 - **Body:** `lms-creator`, `planes-formacion`, `certificados`, `personalizacion` (universidad corporativa en LMS Creator: `lms-creator/personalizacion-u-corporativa.html`; la vista colaborador sigue en `aprendizaje/u-corporativa.html`)
 - **Footer:** Modo oscuro, Perfil (menú: Modo colaborador + Modo administrador sin divisor; Documentación; contraseña y sesión).
-- **SubNav por módulo (no mezclar pestañas):** `loadSubNav(..., 'creator-lms')` (Contenidos + Categorías), `creator-planes` (Planes + Grupos), `creator-certificados` (Descarga + Configuración), `creator-personalizacion` (Universidad corporativa + Seguimiento).
+- **SubNav por módulo (no mezclar pestañas):** `loadSubNav(..., 'creator-lms')` (Contenidos + Categorías), `creator-planes` (Planes de formación + Grupos), `creator-certificados` (Descarga + Configuración), `creator-personalizacion` (Universidad corporativa + Seguimiento).
 - **Ejemplo:**
   ```html
   <script>
