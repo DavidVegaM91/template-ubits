@@ -1,12 +1,19 @@
 /**
  * LMS Creator — Página dedicada crear-contenido.html (modo página, sin drawer).
- * Un solo archivo: portada (inputs, RTE, miniatura), hashes URL, paso Recursos (índice + empty + eventos),
- * mismo criterio que crear-contenido-drawer.js sin duplicar en otro .js.
+ * Un solo archivo: portada (inputs, RTE, miniatura), hashes URL, paso Recursos (índice + empty + eventos).
+ * Lógica alineada a crear-contenido-drawer.js (duplicado controlado; deuda técnica: extraer crear-contenido-shared.js).
  */
 (function () {
     'use strict';
 
     var crearContenidoPortadaTrailerUrl = '';
+    var crearContenidoInputApis = {};
+    /** 0 = Portada, 1 = Recursos (mismo criterio que crear-contenido-drawer.js). */
+    var pageCurrentStep = 0;
+    var portadaValidationFlash = false;
+    var recursosTitlesValidationFlash = false;
+    var PORTADA_INVALID_CLASS = 'crear-contenido-portada-field--invalid';
+    var CATEGORIA_SELECT_PLACEHOLDER_TEXT = 'Selecciona una opción';
 
     function escAttr(s) {
         return String(s || '')
@@ -72,6 +79,7 @@
         if (typeof window.initLearnContentImgTrailer === 'function') {
             window.initLearnContentImgTrailer(block, {});
         }
+        refreshCrearContenidoPageSiguienteState();
     }
 
     function openPortadaModalPage() {
@@ -121,25 +129,31 @@
     }
 
     function initFichaInputs() {
+        crearContenidoInputApis = {};
         var o = buildSelectOptionsFromMaster();
         if (typeof createInput !== 'function') return;
-        createInput({
+        var tick = function () {
+            refreshCrearContenidoPageSiguienteState();
+        };
+        crearContenidoInputApis.tipo = createInput({
             containerId: 'crear-contenido-in-tipo',
             type: 'select',
             label: 'Tipo de contenido',
             size: 'sm',
             selectOptions: o.tipos,
-            value: o.tipos[0] ? o.tipos[0].value : ''
+            value: o.tipos[0] ? o.tipos[0].value : '',
+            onChange: tick
         });
-        createInput({
+        crearContenidoInputApis.nivel = createInput({
             containerId: 'crear-contenido-in-nivel',
             type: 'select',
             label: 'Nivel',
             size: 'sm',
             selectOptions: o.niveles,
-            value: o.niveles[0] ? o.niveles[0].value : ''
+            value: o.niveles[0] ? o.niveles[0].value : '',
+            onChange: tick
         });
-        createInput({
+        crearContenidoInputApis.idioma = createInput({
             containerId: 'crear-contenido-in-idioma',
             type: 'select',
             label: 'Idioma',
@@ -149,17 +163,19 @@
                 { value: 'en', text: 'Inglés' },
                 { value: 'pt', text: 'Portugués' }
             ],
-            value: 'es'
+            value: 'es',
+            onChange: tick
         });
-        createInput({
+        crearContenidoInputApis.tiempo = createInput({
             containerId: 'crear-contenido-in-tiempo',
             type: 'number',
             label: 'Tiempo aproximado',
             placeholder: 'Ej. 30',
             size: 'sm',
-            value: '30'
+            value: '30',
+            onChange: tick
         });
-        createInput({
+        crearContenidoInputApis.unidad = createInput({
             containerId: 'crear-contenido-in-unidad',
             type: 'select',
             label: 'Unidad de tiempo',
@@ -168,21 +184,147 @@
                 { value: 'min', text: 'Minutos' },
                 { value: 'h', text: 'Horas' }
             ],
-            value: 'min'
+            value: 'min',
+            onChange: tick
         });
         var catOpts = [{ value: '', text: 'Selecciona una opción' }].concat(o.categorias);
         var firstRealCat = (o.categorias || []).filter(function (c) {
             return c && c.id != null && String(c.id).trim() !== '';
         })[0];
         var defaultCatId = firstRealCat ? String(firstRealCat.id) : '';
-        createInput({
+        crearContenidoInputApis.categoria = createInput({
             containerId: 'crear-contenido-in-categoria',
             type: 'select',
             label: 'Categoría',
-            placeholder: 'Selecciona una opción',
+            placeholder: CATEGORIA_SELECT_PLACEHOLDER_TEXT,
             size: 'sm',
             selectOptions: catOpts,
-            value: defaultCatId
+            value: defaultCatId,
+            onChange: tick
+        });
+        refreshCrearContenidoPageSiguienteState();
+    }
+
+    function stripHtml(html) {
+        var t = document.createElement('div');
+        t.innerHTML = html || '';
+        return (t.textContent || '').replace(/\u00a0/g, ' ').trim();
+    }
+
+    function parseTiempoPositive(raw) {
+        if (raw == null) return NaN;
+        var s = String(raw)
+            .trim()
+            .replace(/\s/g, '')
+            .replace(',', '.');
+        if (s === '') return NaN;
+        var n = parseFloat(s);
+        return isNaN(n) || n <= 0 ? NaN : n;
+    }
+
+    function clearPortadaInvalidMarks() {
+        document.querySelectorAll('#crear-contenido-step-portada .' + PORTADA_INVALID_CLASS).forEach(function (el) {
+            el.classList.remove(PORTADA_INVALID_CLASS);
+        });
+    }
+
+    function getCrearContenidoPortadaCompleteness() {
+        var missing = [];
+        var titulo = document.getElementById('crear-contenido-titulo');
+        var tituloOk = titulo && titulo.value.trim().length > 0;
+        if (!tituloOk) missing.push('titulo');
+
+        var block = document.getElementById('crear-contenido-img-trailer');
+        var portadaOk =
+            block &&
+            (block.classList.contains('ubits-learn-img-trailer--image') ||
+                block.classList.contains('ubits-learn-img-trailer--trailer'));
+        if (!portadaOk && block) {
+            var img = block.querySelector('.ubits-learn-img-trailer__img');
+            var src = img && img.getAttribute('src');
+            if (src && String(src).trim().length > 0) {
+                portadaOk = true;
+            }
+        }
+        if (!portadaOk) missing.push('portada');
+
+        var descOk = false;
+        if (typeof window.getRichTextHtml === 'function') {
+            var h = window.getRichTextHtml('#crear-contenido-rte');
+            descOk = stripHtml(h).length > 0;
+        }
+        var rteField = document.getElementById('crear-contenido-rte-field');
+        if (!descOk && rteField) {
+            var rtePlain = (rteField.innerText || '').replace(/\u00a0/g, ' ').trim();
+            descOk = rtePlain.length > 0;
+        }
+        if (!descOk) missing.push('descripcion');
+
+        var a = crearContenidoInputApis;
+        if (!a.tipo || !String(a.tipo.getValue() || '').trim()) missing.push('tipo');
+        if (!a.nivel || !String(a.nivel.getValue() || '').trim()) missing.push('nivel');
+        if (!a.idioma || !String(a.idioma.getValue() || '').trim()) missing.push('idioma');
+        var tv = a.tiempo ? String(a.tiempo.getValue()) : '';
+        if (isNaN(parseTiempoPositive(tv))) missing.push('tiempo');
+        if (!a.unidad || !String(a.unidad.getValue() || '').trim()) missing.push('unidad');
+        var catDisp = a.categoria ? String(a.categoria.getValue() || '').trim() : '';
+        var catOk =
+            catDisp.length > 0 &&
+            catDisp !== CATEGORIA_SELECT_PLACEHOLDER_TEXT &&
+            catDisp !== 'Selecciona una opción...';
+        if (!catOk) missing.push('categoria');
+
+        return { complete: missing.length === 0, missing: missing };
+    }
+
+    function isCrearContenidoPortadaComplete() {
+        return getCrearContenidoPortadaCompleteness().complete;
+    }
+
+    function syncPortadaInvalidOutline() {
+        if (!portadaValidationFlash) {
+            clearPortadaInvalidMarks();
+            return;
+        }
+        var st = getCrearContenidoPortadaCompleteness();
+        if (st.complete) {
+            portadaValidationFlash = false;
+            clearPortadaInvalidMarks();
+            return;
+        }
+        clearPortadaInvalidMarks();
+        st.missing.forEach(function (key) {
+            if (key === 'titulo') {
+                var t = document.getElementById('crear-contenido-titulo');
+                var lab = t && t.closest('.contenidos-creator-titulo-wrap');
+                if (lab) lab.classList.add(PORTADA_INVALID_CLASS);
+            } else if (key === 'portada') {
+                var mediaHost = document.querySelector(
+                    '#crear-contenido-step-portada .crear-contenido-portada__cabecera-media'
+                );
+                if (mediaHost) mediaHost.classList.add(PORTADA_INVALID_CLASS);
+            } else if (key === 'descripcion') {
+                var rte = document.getElementById('crear-contenido-rte');
+                if (rte) rte.classList.add(PORTADA_INVALID_CLASS);
+            } else if (key === 'tipo') {
+                var el = document.getElementById('crear-contenido-in-tipo');
+                if (el) el.classList.add(PORTADA_INVALID_CLASS);
+            } else if (key === 'nivel') {
+                var n = document.getElementById('crear-contenido-in-nivel');
+                if (n) n.classList.add(PORTADA_INVALID_CLASS);
+            } else if (key === 'idioma') {
+                var i = document.getElementById('crear-contenido-in-idioma');
+                if (i) i.classList.add(PORTADA_INVALID_CLASS);
+            } else if (key === 'tiempo') {
+                var ti = document.getElementById('crear-contenido-in-tiempo');
+                if (ti) ti.classList.add(PORTADA_INVALID_CLASS);
+            } else if (key === 'unidad') {
+                var u = document.getElementById('crear-contenido-in-unidad');
+                if (u) u.classList.add(PORTADA_INVALID_CLASS);
+            } else if (key === 'categoria') {
+                var c = document.getElementById('crear-contenido-in-categoria');
+                if (c) c.classList.add(PORTADA_INVALID_CLASS);
+            }
         });
     }
 
@@ -199,6 +341,70 @@
     function getRecursosPaginasList() {
         var m = getRecursosIndiceMount();
         return m ? m.querySelector('.ubits-paginas-creator') : null;
+    }
+
+    function isValidRecursosPageTitle(text) {
+        var t = String(text != null ? text : '').trim();
+        if (!t) return false;
+        if (t.toLowerCase() === 'sin título') return false;
+        return true;
+    }
+
+    function getRecursosPaginasItemTitleForValidation(item) {
+        if (!item) return '';
+        if (item.classList.contains('is-active')) {
+            var inp = document.getElementById('crear-contenido-recursos-page-title');
+            if (inp) return String(inp.value || '').trim();
+        }
+        var lab = item.querySelector('.ubits-paginas-creator__label');
+        return lab ? String(lab.textContent || '').trim() : '';
+    }
+
+    function collectRecursosPageTitleValidation() {
+        var list = getRecursosPaginasList();
+        if (!list) return { allValid: true, invalidItems: [] };
+        var items = list.querySelectorAll(':scope > .ubits-paginas-creator__item');
+        var invalidItems = [];
+        items.forEach(function (item) {
+            if (!isValidRecursosPageTitle(getRecursosPaginasItemTitleForValidation(item))) {
+                invalidItems.push(item);
+            }
+        });
+        return { allValid: invalidItems.length === 0, invalidItems: invalidItems };
+    }
+
+    function clearRecursosTitleValidationVisuals() {
+        var mount = getRecursosIndiceMount();
+        if (mount) {
+            mount.querySelectorAll('.ubits-paginas-creator__item.ubits-paginas-creator__item--error').forEach(function (el) {
+                el.classList.remove('ubits-paginas-creator__item--error');
+            });
+        }
+        var wrap = document.querySelector(
+            '#crear-contenido-recursos-page-title-section .crear-contenido-recursos__page-title-wrap'
+        );
+        if (wrap) wrap.classList.remove(PORTADA_INVALID_CLASS);
+    }
+
+    function syncRecursosTitleValidationVisuals() {
+        clearRecursosTitleValidationVisuals();
+        if (!recursosTitlesValidationFlash) return;
+        var st = collectRecursosPageTitleValidation();
+        st.invalidItems.forEach(function (item) {
+            item.classList.add('ubits-paginas-creator__item--error');
+        });
+        var active = document.querySelector(
+            '#crear-contenido-recursos-indice-mount .ubits-paginas-creator__item.is-active'
+        );
+        if (active && st.invalidItems.indexOf(active) !== -1) {
+            var wrap = document.querySelector(
+                '#crear-contenido-recursos-page-title-section .crear-contenido-recursos__page-title-wrap'
+            );
+            if (wrap) wrap.classList.add(PORTADA_INVALID_CLASS);
+        }
+        if (st.allValid) {
+            recursosTitlesValidationFlash = false;
+        }
     }
 
     function clickRecursosSeccionAddPage() {
@@ -291,9 +497,9 @@
         if (host) host.style.display = '';
         window.loadEmptyState(CREAR_CONTENIDO_RECURSOS_EMPTY_HOST_ID, {
             icon: 'fa-file',
-            title: 'Añade tu primera página',
+            title: 'No has creado una página',
             description:
-                'Las páginas son las lecciones o pantallas de tu contenido. Usa «Añadir página» en el índice o el botón de abajo para empezar.',
+                'Agrega páginas para ofrecer a tus estudiantes una experiencia de aprendizaje única. Dentro de las páginas podrás agregar recursos de video, texto, o pdf.',
             buttons: {
                 secondary: {
                     text: 'Añadir página',
@@ -469,9 +675,184 @@
             var list = getRecursosPaginasList();
             var n = list ? list.querySelectorAll(':scope > .ubits-paginas-creator__item').length : 0;
             btn.disabled = n === 0;
+            btn.setAttribute('aria-disabled', n === 0 ? 'true' : 'false');
             return;
         }
-        btn.disabled = true;
+        var ok = isCrearContenidoPortadaComplete();
+        btn.disabled = !ok;
+        btn.setAttribute('aria-disabled', ok ? 'false' : 'true');
+        syncPortadaInvalidOutline();
+    }
+
+    function wireCrearContenidoPageStepperStepClicks() {
+        function bindOl(ol) {
+            if (!ol) return;
+            var steps = ol.querySelectorAll(':scope > li.ubits-stepper__step');
+            steps.forEach(function (li, i) {
+                li.style.cursor = 'pointer';
+                if (li.getAttribute('tabindex') == null) {
+                    li.setAttribute('tabindex', '0');
+                }
+                function go() {
+                    if (i === 0) {
+                        goToCrearContenidoPageStep(0);
+                        return;
+                    }
+                    if (i === 1) {
+                        if (!isCrearContenidoPortadaComplete()) {
+                            portadaValidationFlash = true;
+                            syncPortadaInvalidOutline();
+                            if (typeof window.showToast === 'function') {
+                                window.showToast('warning', 'Completa la portada para ir a Recursos.', {
+                                    containerId: 'ubits-toast-container',
+                                    duration: 3500
+                                });
+                            }
+                            return;
+                        }
+                        portadaValidationFlash = false;
+                        clearPortadaInvalidMarks();
+                        goToCrearContenidoPageStep(1);
+                        return;
+                    }
+                    if (typeof window.showToast === 'function') {
+                        window.showToast('info', 'Este paso estará disponible pronto.', {
+                            containerId: 'ubits-toast-container',
+                            duration: 2500
+                        });
+                    }
+                }
+                li.addEventListener('click', go);
+                li.addEventListener('keydown', function (e) {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        go();
+                    }
+                });
+            });
+        }
+        bindOl(document.getElementById('crear-contenido-stepper-ol'));
+        bindOl(document.getElementById('crear-contenido-stepper-ol-mobile'));
+    }
+
+    function wireCrearContenidoPageInteractionsDeferred() {
+        var rte = document.getElementById('crear-contenido-rte-field');
+        if (rte) {
+            rte.addEventListener('input', function () {
+                refreshCrearContenidoPageSiguienteState();
+            });
+            rte.addEventListener('paste', function () {
+                setTimeout(function () {
+                    refreshCrearContenidoPageSiguienteState();
+                }, 0);
+            });
+        }
+        var titulo = document.getElementById('crear-contenido-titulo');
+        if (titulo) {
+            titulo.addEventListener('input', function () {
+                refreshCrearContenidoPageSiguienteState();
+            });
+        }
+        var portadaStep = document.getElementById('crear-contenido-step-portada');
+        if (portadaStep) {
+            portadaStep.addEventListener('input', function () {
+                refreshCrearContenidoPageSiguienteState();
+            });
+            portadaStep.addEventListener('change', function () {
+                refreshCrearContenidoPageSiguienteState();
+            });
+        }
+        var imgBlock = document.getElementById('crear-contenido-img-trailer');
+        if (imgBlock) {
+            function portadaBlockHasImageOrTrailerClass(el) {
+                var c = (el && el.getAttribute('class')) || '';
+                return (
+                    c.indexOf('ubits-learn-img-trailer--image') !== -1 ||
+                    c.indexOf('ubits-learn-img-trailer--trailer') !== -1
+                );
+            }
+            var lastPortadaMediaState = portadaBlockHasImageOrTrailerClass(imgBlock);
+            new MutationObserver(function () {
+                var next = portadaBlockHasImageOrTrailerClass(imgBlock);
+                if (next === lastPortadaMediaState) return;
+                lastPortadaMediaState = next;
+                refreshCrearContenidoPageSiguienteState();
+            }).observe(imgBlock, { attributes: true, attributeFilter: ['class'] });
+        }
+        var sig = document.getElementById('crear-contenido-btn-siguiente');
+        if (sig) {
+            sig.addEventListener('click', function () {
+                if (pageCurrentStep === 1) {
+                    if (sig.disabled) {
+                        if (typeof window.showToast === 'function') {
+                            window.showToast('warning', 'Añade al menos una página para continuar.', {
+                                containerId: 'ubits-toast-container',
+                                duration: 3500
+                            });
+                        }
+                        return;
+                    }
+                    var st = collectRecursosPageTitleValidation();
+                    if (!st.allValid) {
+                        recursosTitlesValidationFlash = true;
+                        var first = st.invalidItems[0];
+                        if (first && typeof window.setPaginasCreatorActiveItem === 'function') {
+                            window.setPaginasCreatorActiveItem(first);
+                        }
+                        syncRecursosRightTitleFromActive();
+                        syncRecursosTitleValidationVisuals();
+                        var titInp = document.getElementById('crear-contenido-recursos-page-title');
+                        if (titInp) titInp.focus();
+                        if (typeof window.showToast === 'function') {
+                            window.showToast(
+                                'warning',
+                                'Todas las páginas deben tener un título. Revisa las marcadas en rojo.',
+                                {
+                                    containerId: 'ubits-toast-container',
+                                    duration: 4000
+                                }
+                            );
+                        }
+                        return;
+                    }
+                    recursosTitlesValidationFlash = false;
+                    clearRecursosTitleValidationVisuals();
+                    if (typeof window.showToast === 'function') {
+                        window.showToast('info', 'Siguiente paso disponible próximamente.', {
+                            containerId: 'ubits-toast-container',
+                            duration: 2500
+                        });
+                    }
+                    return;
+                }
+                if (pageCurrentStep !== 0) return;
+                if (sig.disabled) {
+                    portadaValidationFlash = true;
+                    syncPortadaInvalidOutline();
+                    if (typeof window.showToast === 'function') {
+                        window.showToast('warning', 'Completa todos los campos obligatorios de la portada.', {
+                            containerId: 'ubits-toast-container',
+                            duration: 3500
+                        });
+                    }
+                    return;
+                }
+                portadaValidationFlash = false;
+                clearPortadaInvalidMarks();
+                goToCrearContenidoPageStep(1);
+            });
+        }
+        var ant = document.getElementById('crear-contenido-btn-anterior');
+        if (ant) {
+            ant.addEventListener('click', function () {
+                if (pageCurrentStep >= 1) {
+                    goToCrearContenidoPageStep(0);
+                }
+            });
+        }
+        setTimeout(function () {
+            refreshCrearContenidoPageSiguienteState();
+        }, 500);
     }
 
     function initCrearContenidoPage() {
@@ -500,6 +881,10 @@
         }
         initFichaInputs();
         wirePortadaCta();
+        setTimeout(function () {
+            wireCrearContenidoPageInteractionsDeferred();
+        }, 0);
+        wireCrearContenidoPageStepperStepClicks();
         applyCrearContenidoPageHash();
         window.addEventListener('hashchange', applyCrearContenidoPageHash);
     }
@@ -524,9 +909,13 @@
             if (stepIndex >= 1) {
                 ant.style.display = '';
                 ant.removeAttribute('aria-hidden');
+                ant.disabled = false;
+                ant.setAttribute('aria-disabled', 'false');
             } else {
                 ant.style.display = 'none';
                 ant.setAttribute('aria-hidden', 'true');
+                ant.disabled = true;
+                ant.setAttribute('aria-disabled', 'true');
             }
         }
         refreshCrearContenidoPageSiguienteState();
@@ -539,6 +928,12 @@
     function goToCrearContenidoPageStep(stepIndex, opts) {
         opts = opts || {};
         var idx = stepIndex >= 1 ? 1 : 0;
+        var prevStep = pageCurrentStep;
+        pageCurrentStep = idx;
+        if (prevStep !== pageCurrentStep) {
+            recursosTitlesValidationFlash = false;
+            clearRecursosTitleValidationVisuals();
+        }
         var portadaEl = document.getElementById('crear-contenido-step-portada');
         var recursosEl = document.getElementById('crear-contenido-step-recursos');
         if (portadaEl) {

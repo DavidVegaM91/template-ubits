@@ -119,13 +119,13 @@ La nueva página muestra **los mismos bloques** (stepper, formulario portada, á
 ### Fase 4 — JS dedicado: modo “página” (nuevo archivo, drawer intacto)
 
 **Entregables**
-- [ ] Crear `crear-contenido.js` que:
+- [x] Crear `crear-contenido.js` que:
   - En `DOMContentLoaded`, inicialice el flujo montando listeners sobre el **root** de la página nueva (no sobre `openDrawer`).
   - Reutilice **lógica** equivalente a la de `crear-contenido-drawer.js` mediante **copia inicial** (duplicado controlado) o extracción a un tercer archivo **nuevo** (`crear-contenido-shared.js`) que **importen** tanto el drawer como la página — **solo si** se acuerda no editar `crear-contenido-drawer.js` en la primera iteración: entonces **duplicar** en `crear-contenido.js` y documentar deuda técnica para unificar después.
-- [ ] Ajustar selectores/IDs al namespace de la página nueva (`OVERLAY_ID` → contenedor raíz de página, etc.).
-- [ ] Comportamiento esperado: mismos pasos, mismo hash si se definió en Fase 0, mismas validaciones que ya tenéis en el drawer **en la medida replicable**.
-- [ ] **Cero cambios** en `crear-contenido-drawer.js` en esta fase (salvo bug de seguridad acordado).
-- [ ] Sincronizar **hashes** en `crear-contenido.html` (`#crear-contenido`, `#recursos`, alias largos → canónico `#recursos`).
+- [x] Ajustar selectores/IDs al namespace de la página nueva (`OVERLAY_ID` → contenedor raíz de página, etc.).
+- [x] Comportamiento esperado: mismos pasos, mismo hash si se definió en Fase 0, mismas validaciones que ya tenéis en el drawer **en la medida replicable**.
+- [x] **Cero cambios** en `crear-contenido-drawer.js` en esta fase (salvo bug de seguridad acordado).
+- [x] Sincronizar **hashes** en `crear-contenido.html` (`#crear-contenido`, `#recursos`, alias largos → canónico `#recursos`).
 
 **Criterio de aprobación**  
 Flujo usable en `crear-contenido.html` **igual** al del drawer (crear desde cero, pasos, recursos, títulos, etc.), comparando con el drawer en `contenidos.html`.

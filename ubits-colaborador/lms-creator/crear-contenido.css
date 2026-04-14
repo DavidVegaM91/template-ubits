@@ -121,10 +121,15 @@ body.page-crear-contenido {
 
 /* Fase 3: mismo cuerpo que el drawer — workspace llena el main (contenidos.css estiliza el interior) */
 .crear-contenido-shell__main > .crear-contenido-editor-workspace {
+    box-sizing: border-box;
     flex: 1 1 auto;
     min-height: 0;
     min-width: 0;
     width: 100%;
+    max-width: 1440px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: var(--padding-2xl);
 }
 
 /* --- Footer: fondo a todo el ancho del viewport --- */
