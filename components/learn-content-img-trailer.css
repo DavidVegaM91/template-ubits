@@ -29,15 +29,18 @@
     box-shadow: 0 0 0 1px var(--ubits-accent-brand);
 }
 
+/* Mismo criterio de invalidación que inputs obligatorios (--ubits-feedback-accent-error). */
 .ubits-learn-img-trailer--error {
-    border-color: var(--ubits-btn-error-secondary-border);
-    box-shadow: 0 0 0 1px var(--ubits-btn-error-secondary-border);
+    border-width: 2px;
+    border-style: solid;
+    border-color: var(--ubits-feedback-accent-error);
+    box-shadow: none;
 }
 
 .ubits-learn-img-trailer--error:hover,
 .ubits-learn-img-trailer--error.ubits-learn-img-trailer--state-hover {
-    border-color: var(--ubits-btn-error-secondary-border);
-    box-shadow: 0 0 0 1px var(--ubits-btn-error-secondary-border);
+    border-color: var(--ubits-feedback-accent-error);
+    box-shadow: none;
 }
 
 /* --- Vacío / error: capa sobre el mismo rectángulo 16:9 --- */

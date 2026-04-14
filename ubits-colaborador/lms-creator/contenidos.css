@@ -427,7 +427,87 @@ body.crear-contenido-drawer-abierto {
     padding-left: max(var(--padding-xl), env(safe-area-inset-left, 0px));
     padding-right: max(var(--padding-xl), env(safe-area-inset-right, 0px));
     flex-wrap: wrap;
-    justify-content: flex-end;
+    justify-content: stretch;
+}
+
+.crear-contenido-drawer-footer-actions {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    gap: var(--gap-md);
+    flex-wrap: wrap;
+}
+
+.crear-contenido-drawer-footer-actions__grow {
+    flex: 1 1 auto;
+    min-width: var(--gap-md);
+}
+
+/* Pasos del drawer: solo uno visible (Portada vs Recursos — no mezclar layouts). */
+.crear-contenido-step--portada:not(.crear-contenido-step--visible),
+.crear-contenido-step--recursos:not(.crear-contenido-step--visible) {
+    display: none !important;
+}
+
+.crear-contenido-step--portada.crear-contenido-step--visible {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    min-height: 0;
+    gap: var(--gap-xl);
+    width: 100%;
+}
+
+.crear-contenido-step--recursos.crear-contenido-step--visible {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    min-height: 0;
+    min-width: 0;
+    width: 100%;
+}
+
+.crear-contenido-recursos__workspace {
+    display: flex;
+    flex-direction: row;
+    flex: 1 1 auto;
+    min-height: 0;
+    gap: var(--gap-lg);
+    align-items: stretch;
+    width: 100%;
+    min-width: 0;
+}
+
+.crear-contenido-recursos__indice {
+    flex: 0 0 min(320px, 38vw);
+    max-width: 400px;
+    min-width: 0;
+    align-self: stretch;
+}
+
+.crear-contenido-recursos__indice-mount {
+    min-width: 0;
+}
+
+.crear-contenido-recursos__preview {
+    flex: 1 1 auto;
+    min-width: 0;
+    min-height: min(360px, 50vh);
+    background: var(--ubits-bg-1);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: var(--border-radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--padding-lg);
+    box-sizing: border-box;
+}
+
+.crear-contenido-recursos__empty-host {
+    width: 100%;
+    max-width: 480px;
+    display: flex;
+    justify-content: center;
 }
 
 .contenido-borrador-editor-workspace {
@@ -968,6 +1048,41 @@ body.crear-contenido-drawer-abierto {
     max-width: 100%;
 }
 
+/* Portada: obligatorios incompletos (stepper / Siguiente deshabilitado) */
+.crear-contenido-drawer-overlay #crear-contenido-step-portada .crear-contenido-portada-field--invalid.contenidos-creator-titulo-wrap .contenidos-creator-titulo-input {
+    border-width: 2px;
+    border-style: solid;
+    border-color: var(--ubits-feedback-accent-error);
+    border-radius: var(--border-radius-sm);
+}
+
+/*
+ * Portada sin imagen: la marca invalid va en .cabecera-media (no en #crear-contenido-img-trailer — MutationObserver).
+ * Mismo token que .ubits-learn-img-trailer--error (learn-content-img-trailer.css).
+ */
+.crear-contenido-drawer-overlay
+    #crear-contenido-step-portada
+    .crear-contenido-portada__cabecera-media.crear-contenido-portada-field--invalid
+    .ubits-learn-img-trailer {
+    border-width: 2px;
+    border-style: solid;
+    border-color: var(--ubits-feedback-accent-error);
+    box-shadow: none;
+}
+
+.crear-contenido-drawer-overlay #crear-contenido-step-portada #crear-contenido-rte.crear-contenido-portada-field--invalid .ubits-rich-text-editor__editor-shell {
+    border-width: 2px;
+    border-style: solid;
+    border-color: var(--ubits-feedback-accent-error);
+    border-radius: var(--border-radius-sm);
+}
+
+.crear-contenido-drawer-overlay #crear-contenido-step-portada .crear-contenido-portada-field--invalid .ubits-input {
+    border-width: 2px !important;
+    border-style: solid !important;
+    border-color: var(--ubits-feedback-accent-error) !important;
+}
+
 .crear-contenido-portada__cuerpo {
     display: grid;
     grid-template-columns: minmax(0, 6fr) minmax(0, 4fr);
@@ -1167,6 +1282,16 @@ body.crear-contenido-drawer-abierto {
     .crear-contenido-drawer-overlay .crear-contenido-stepper-mobile .ubits-stepper--horizontal {
         width: 100%;
         max-width: 100%;
+    }
+
+    .crear-contenido-drawer-overlay .crear-contenido-recursos__workspace {
+        flex-direction: column;
+    }
+
+    .crear-contenido-drawer-overlay .crear-contenido-recursos__indice {
+        flex: 0 0 auto;
+        max-width: 100%;
+        width: 100%;
     }
 
     /* Título+miniatura y descripción+ficha: apilados (la base del componente redefine grid a dos columnas). */

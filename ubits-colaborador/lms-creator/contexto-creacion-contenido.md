@@ -9,6 +9,7 @@ Documento de referencia para implementar el flujo de **creación de contenido** 
 ## Referencia de diseño (Figma)
 
 - **Archivo:** [Creator v3 (Figma)](https://www.figma.com/design/NxOcUG8QAVc44KYTQexH0b/%F0%9F%9F%A2-Creator-v3?node-id=40006338-29266&m=dev)  
+- **Paso 2 Recursos (empty / cuerpo del drawer):** [Creator v3 — nodo `40008263-5937`](https://www.figma.com/design/NxOcUG8QAVc44KYTQexH0b/%F0%9F%9F%A2-Creator-v3?node-id=40008263-5937&m=dev)  
 - **Learn-Components (piezas del creador):** [Learn-Components](https://www.figma.com/design/ZWcvS9Z7YQaz59GZIrnWM6/Learn-Components?node-id=242-5621&m=dev) — p. ej. **Índice Creator** (nodo `242:5621`): panel izquierdo del paso Recursos con interruptor de secciones, listado y «Añadir sección». Implementación UBITS: `components/indice-creator.css` + `indice-creator.js`, doc `documentacion/componentes/indice-creator.html`.  
 - **Uso:** alinear layout, estados y jerarquía visual con el diseño oficial; las reglas de negocio de este documento tienen prioridad si hubiera discrepancia puntual (resolver en revisión con producto).
 
@@ -36,6 +37,15 @@ El asistente de creación tiene **4 pasos**, en este orden:
 | 2 | Recursos | Descrito en detalle (parcial: complementarios ampliados en mensajes futuros) |
 | 3 | Certificado | Solo nombre de paso; detalle pendiente |
 | 4 | Publicación | Solo nombre de paso; detalle pendiente |
+
+### URL y cierre (playground `contenidos.html`)
+
+- El flujo vive en el **drawer a pantalla completa** de la lista de contenidos; **cerrar el drawer** (cualquier paso) deja la URL en **`contenidos.html` sin hash** de creación (vuelta a la lista).
+- **Hashes solo prototipo / compartir vista:**
+  - `#crear-contenido` — abre el drawer en **paso 1 (Portada)**.
+  - `#crear-contenido-recursos` — abre el drawer en **paso 2 (Recursos)** con índice creator + empty state (útil para diseño sin rellenar portada).
+  - `#crear-contenido-step-recursos` — **mismo efecto** que `#crear-contenido-recursos` (alias por nombre de paso); al avanzar con «Siguiente» la URL pasa al hash canónico `#crear-contenido-recursos`.
+- En producto real, validar que solo se permita el paso 2 si la portada cumple reglas de negocio (en el template, el stepper exige portada completa para ir a Recursos salvo entrada directa por URL de prototipo).
 
 ---
 
@@ -76,6 +86,38 @@ Capturar la **identidad visual y la metadata** del contenido antes de construir 
 
 - Debe estar **completo** todo lo obligatorio.  
 - Lo **único opcional** en este paso es el **trailer** (y, por tanto, el comportamiento play/embebido asociado).
+
+### Validación en pantalla y resaltado en rojo (playground)
+
+Cuando el usuario intenta avanzar sin tener la portada completa, la interfaz **indica qué falta** con **toast** y **borde rojo** en los obligatorios incompletos (mismo criterio visual que inputs en error: token **`--ubits-feedback-accent-error`**, borde **2px**).
+
+**Disparadores (comportamiento actual en `contenidos.html` + `crear-contenido-drawer.js`):**
+
+1. **Stepper — clic en el paso 2 «Recursos»** estando aún en Portada sin cumplir la regla de completitud → toast de aviso (*«Completa la portada para ir a Recursos.»*) y se activa el modo de **resaltado** hasta que todo quede válido.  
+2. **Botón «Siguiente»** con el CTA **deshabilitado** (misma portada incompleta) → toast (*«Completa todos los campos obligatorios de la portada.»*) y el mismo resaltado.
+
+**Qué se marca en rojo (según lo que falte):**
+
+| Área | Qué se resalta |
+|------|----------------|
+| Título | Input del título |
+| Imagen de portada | Borde del bloque **Learn content imagen y tráiler** (`.ubits-learn-img-trailer`); la clase de aviso de validación vive en el contenedor `.crear-contenido-portada__cabecera-media` para no interferir con la lógica interna del componente |
+| Descripción | Contenedor del **rich text editor** (shell del editor) |
+| Ficha técnica | Cada campo **createInput** afectado (tipo, nivel, idioma, tiempo, unidad, categoría) |
+
+**Comportamiento del resaltado:**
+
+- Los bordes se **actualizan** conforme el usuario corrige cada campo (desaparece el rojo en lo ya válido).  
+- Al **completar** todo lo obligatorio, se limpia el resaltado y el toast deja de aplicarse para ese intento.  
+- Al **cerrar el drawer** o **abrir de nuevo** el flujo de creación, se resetea el estado de aviso/resaltado.
+
+**Valores por defecto en el prototipo** (para que cuenten como «rellenos» sin tocar el control, salvo que el usuario los cambie):
+
+- **Tiempo aproximado:** `30`.  
+- **Categoría:** primera categoría del maestro si existe **id** no vacío; no cuenta como elegida la opción solo visual *«Selecciona una opción»*.  
+- **Tipo, nivel, idioma, unidad:** primera opción / valor fijo según ya definía el drawer.
+
+**Implementación de referencia:** `ubits-colaborador/lms-creator/crear-contenido-drawer.js` (completitud, flags, stepper, «Siguiente»), estilos en `ubits-colaborador/lms-creator/contenidos.css` (clase `crear-contenido-portada-field--invalid`). Estado de error del componente de miniatura: `components/learn-content-img-trailer.css` (`.ubits-learn-img-trailer--error` alineado al rojo intenso de validación).
 
 ---
 
@@ -186,4 +228,4 @@ Este patrón de **contenido complementario** (Texto / Archivo descargable) apare
 - Mantener tokens y tipografía UBITS; CSS de página en archivo dedicado junto al HTML del Creator cuando corresponda.  
 - Cualquier cambio a este documento debe reflejar acuerdos de producto y, si es posible, el nodo de Figma afectado.
 
-*Última actualización: documento inicial + pasos 1–2 (parcial) y recursos Video/Texto; ampliación Índice Creator (Figma 242:5621) y variante sin secciones.*
+*Última actualización: validación portada (toast + bordes rojos, defaults tiempo/categoría); URLs `#crear-contenido` / `#crear-contenido-recursos` / alias `#crear-contenido-step-recursos`; cierre sin hash; Figma paso 2 empty (`40008263-5937`); pasos 1–2 (parcial) y recursos Video/Texto; Índice Creator (242:5621) y variante sin secciones.*

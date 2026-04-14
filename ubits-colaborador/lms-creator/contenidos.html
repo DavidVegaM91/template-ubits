@@ -32,6 +32,10 @@
     <link rel="stylesheet" href="../../components/avatar.css">
     <link rel="stylesheet" href="../../components/card-content.css">
     <link rel="stylesheet" href="../../components/dropdown-menu.css">
+    <link rel="stylesheet" href="../../components/switch.css">
+    <link rel="stylesheet" href="../../components/paginas-creator.css">
+    <link rel="stylesheet" href="../../components/seccion-creator.css">
+    <link rel="stylesheet" href="../../components/indice-creator.css">
     <link rel="stylesheet" href="../../components/drawer.css">
     <link rel="stylesheet" href="../../components/stepper.css">
     <link rel="stylesheet" href="../../components/learn-content-img-trailer.css">
@@ -168,6 +172,9 @@
     <script src="../../bd-master/bd-contenidos-fiqsha.js"></script>
     <script src="../../components/avatar.js"></script>
     <script src="../../components/dropdown-menu.js"></script>
+    <script src="../../components/paginas-creator.js"></script>
+    <script src="../../components/seccion-creator.js"></script>
+    <script src="../../components/indice-creator.js"></script>
     <script src="../../components/card-content.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -232,7 +239,7 @@
 
             function getContentIdFromBorradorUrlHash() {
                 var h = location.hash || '';
-                if (h === '#crear-contenido') return '';
+                if (h === '#crear-contenido' || h === '#crear-contenido-recursos' || h === '#crear-contenido-step-recursos') return '';
                 if (h.indexOf(CONTENIDO_BORRADOR_HASH_LEGACY_PREFIX) === 0) {
                     try {
                         return normalizeLegacyBorradorUrlContentId(

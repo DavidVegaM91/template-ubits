@@ -1,21 +1,38 @@
 /**
- * LMS Creator — Drawer «Crear contenido» (paso 1 Portada).
+ * LMS Creator — Drawer «Crear contenido» (pasos 1 Portada, 2 Recursos — más pasos después).
  * Depende: openDrawer/closeDrawer, createInput, initRichTextEditor,
  * learn-content-img-trailer.js (getLearnContentImgTrailerEmptyHtml, getLearnContentImgTrailerEditHtml, initLearnContentImgTrailer),
  * portada-media-modal.js (openPortadaTrailerModal), modal.js (openModal),
- * initTooltip, renderSaveIndicator, setStepperStepStates, wireStepperVerticalCollapse, BD_MASTER_*.
+ * initTooltip, renderSaveIndicator, setStepperStepStates, wireStepperVerticalCollapse, BD_MASTER_*,
+ * indice-creator.js (+ paginas-creator, seccion-creator, switch), empty-state.js (loadEmptyState).
  */
 (function (global) {
     'use strict';
 
     var OVERLAY_ID = 'crear-contenido-drawer-overlay';
-    /** Hash en la URL al tener abierto el drawer (compartir / atrás del navegador). */
+    /** Paso 1 — Portada (URL compartible). */
     var CREAR_CONTENIDO_URL_HASH = '#crear-contenido';
+    /** Paso 2 — Recursos (prototipo / empty; sin paso 1 no se avanza por UI). */
+    var CREAR_CONTENIDO_RECURSOS_URL_HASH = '#crear-contenido-recursos';
+    /** Alias por si se comparte o enlaza con el nombre «step» en el hash. */
+    var CREAR_CONTENIDO_STEP_RECURSOS_URL_HASH = '#crear-contenido-step-recursos';
+
+    function isCrearContenidoRecursosUrlHash(h) {
+        return h === CREAR_CONTENIDO_RECURSOS_URL_HASH || h === CREAR_CONTENIDO_STEP_RECURSOS_URL_HASH;
+    }
     var crearContenidoOpenedWithHistoryPush = false;
+    /** 0 = Portada, 1 = Recursos (índice + preview). */
+    var crearContenidoCurrentStep = 0;
+    /** Índice creator + empty state del paso 2 ya montados en este overlay. */
+    var crearContenidoRecursosUiDone = false;
     /** APIs devueltas por createInput (paso 1). */
     var crearContenidoInputApis = {};
     /** URL del tráiler (paso portada), persistido al confirmar el modal. */
     var crearContenidoPortadaTrailerUrl = '';
+    /** Tras intentar ir a Recursos sin portada completa: mostrar bordes en obligatorios hasta completarlos. */
+    var crearContenidoPortadaValidationFlash = false;
+    var PORTADA_INVALID_CLASS = 'crear-contenido-portada-field--invalid';
+    var CATEGORIA_SELECT_PLACEHOLDER_TEXT = 'Selecciona una opción';
 
     function syncUrlAfterCrearContenidoDrawerOpen() {
         if (location.hash !== CREAR_CONTENIDO_URL_HASH) {
@@ -31,22 +48,27 @@
     }
 
     function syncUrlAfterCrearContenidoDrawerClose() {
-        if (location.hash !== CREAR_CONTENIDO_URL_HASH) {
+        var h = location.hash || '';
+        if (h !== CREAR_CONTENIDO_URL_HASH && !isCrearContenidoRecursosUrlHash(h)) {
             crearContenidoOpenedWithHistoryPush = false;
             return;
         }
-        if (crearContenidoOpenedWithHistoryPush) {
-            crearContenidoOpenedWithHistoryPush = false;
-            history.back();
-            return;
-        }
+        crearContenidoOpenedWithHistoryPush = false;
         history.replaceState(null, '', location.pathname + location.search);
     }
 
     function onPopStateCrearContenidoDrawer() {
         var overlay = document.getElementById(OVERLAY_ID);
         if (!overlay || overlay.getAttribute('aria-hidden') === 'true') return;
-        if (location.hash === CREAR_CONTENIDO_URL_HASH) return;
+        var h = location.hash || '';
+        if (h === CREAR_CONTENIDO_URL_HASH) {
+            goToCrearContenidoStep(0, { skipUrl: true });
+            return;
+        }
+        if (isCrearContenidoRecursosUrlHash(h)) {
+            goToCrearContenidoStep(1, { skipUrl: true });
+            return;
+        }
         crearContenidoOpenedWithHistoryPush = false;
         if (typeof closeDrawer === 'function') {
             closeDrawer(OVERLAY_ID);
@@ -54,16 +76,37 @@
         document.body.classList.remove('crear-contenido-drawer-abierto');
         crearContenidoInputApis = {};
         crearContenidoPortadaTrailerUrl = '';
+        crearContenidoCurrentStep = 0;
+        crearContenidoRecursosUiDone = false;
+        syncUrlAfterCrearContenidoDrawerClose();
+    }
+
+    function onHashChangeCrearContenidoDrawer() {
+        var h = location.hash || '';
+        var overlay = document.getElementById(OVERLAY_ID);
+        if (!overlay || overlay.getAttribute('aria-hidden') === 'true') {
+            if (h === CREAR_CONTENIDO_URL_HASH || isCrearContenidoRecursosUrlHash(h)) {
+                tryOpenCrearContenidoFromUrlHash();
+            }
+            return;
+        }
+        if (h === CREAR_CONTENIDO_URL_HASH) {
+            goToCrearContenidoStep(0, { skipUrl: true });
+        } else if (isCrearContenidoRecursosUrlHash(h)) {
+            goToCrearContenidoStep(1, { skipUrl: true });
+        }
     }
 
     if (typeof window !== 'undefined' && window.addEventListener) {
         window.addEventListener('popstate', onPopStateCrearContenidoDrawer);
+        window.addEventListener('hashchange', onHashChangeCrearContenidoDrawer);
     }
 
     function tryOpenCrearContenidoFromUrlHash() {
-        if (location.hash !== CREAR_CONTENIDO_URL_HASH) return;
+        var h = location.hash || '';
+        if (h !== CREAR_CONTENIDO_URL_HASH && !isCrearContenidoRecursosUrlHash(h)) return;
         if (document.body.classList.contains('crear-contenido-drawer-abierto')) return;
-        openCrearContenidoDrawer();
+        openCrearContenidoDrawer({ initialStep: isCrearContenidoRecursosUrlHash(h) ? 1 : 0 });
     }
 
     function esc(s) {
@@ -217,23 +260,35 @@
             getStepperHtmlMobile() +
             '  </div>' +
             '  <div class="crear-contenido-editor__main">' +
-            '    <div class="crear-contenido-portada__cabecera">' +
-            '      <div class="crear-contenido-portada__cabecera-titulo">' +
-            '        <label class="contenidos-creator-titulo-wrap">' +
-            '          <input type="text" id="crear-contenido-titulo" class="contenidos-creator-titulo-input ubits-display-d3-bold" placeholder="Escribe aquí el título del contenido" autocomplete="off" maxlength="180" aria-label="Nombre del contenido">' +
-            '          <span class="contenidos-creator-titulo-hint ubits-body-xs-regular">Máximo 180 caracteres.</span>' +
-            '        </label>' +
-            '      </div>' +
-            '      <div class="crear-contenido-portada__cabecera-media">' +
+            '    <div id="crear-contenido-step-portada" class="crear-contenido-step crear-contenido-step--portada crear-contenido-step--visible" data-crear-step="portada">' +
+            '      <div class="crear-contenido-portada__cabecera">' +
+            '        <div class="crear-contenido-portada__cabecera-titulo">' +
+            '          <label class="contenidos-creator-titulo-wrap">' +
+            '            <input type="text" id="crear-contenido-titulo" class="contenidos-creator-titulo-input ubits-display-d3-bold" placeholder="Escribe aquí el título del contenido" autocomplete="off" maxlength="180" aria-label="Nombre del contenido">' +
+            '            <span class="contenidos-creator-titulo-hint ubits-body-xs-regular">Máximo 180 caracteres.</span>' +
+            '          </label>' +
+            '        </div>' +
+            '        <div class="crear-contenido-portada__cabecera-media">' +
             getMiniaturaBlockHtml({ cabeceraUnica: true }) +
+            '        </div>' +
+            '      </div>' +
+            '      <div class="crear-contenido-portada__cuerpo">' +
+            '        <div class="crear-contenido-portada__cuerpo-desc">' +
+            getRichTextCardHtml() +
+            '        </div>' +
+            '        <div class="crear-contenido-portada__cuerpo-ficha">' +
+            getFichaTecnicaHostsHtml() +
+            '        </div>' +
             '      </div>' +
             '    </div>' +
-            '    <div class="crear-contenido-portada__cuerpo">' +
-            '      <div class="crear-contenido-portada__cuerpo-desc">' +
-            getRichTextCardHtml() +
-            '      </div>' +
-            '      <div class="crear-contenido-portada__cuerpo-ficha">' +
-            getFichaTecnicaHostsHtml() +
+            '    <div id="crear-contenido-step-recursos" class="crear-contenido-step crear-contenido-step--recursos" data-crear-step="recursos">' +
+            '      <div class="crear-contenido-recursos__workspace">' +
+            '        <aside class="crear-contenido-recursos__indice" aria-label="Índice del contenido">' +
+            '          <div id="crear-contenido-recursos-indice-mount" class="crear-contenido-recursos__indice-mount"></div>' +
+            '        </aside>' +
+            '        <div class="crear-contenido-recursos__preview" role="region" aria-label="Vista previa de recursos">' +
+            '          <div id="crear-contenido-recursos-empty-host" class="crear-contenido-recursos__empty-host"></div>' +
+            '        </div>' +
             '      </div>' +
             '    </div>' +
             '  </div>' +
@@ -421,7 +476,7 @@
             label: 'Tiempo aproximado',
             placeholder: 'Ej. 30',
             size: 'sm',
-            value: '',
+            value: '30',
             onChange: tick
         });
         crearContenidoInputApis.unidad = createInput({
@@ -437,16 +492,21 @@
             onChange: tick
         });
         var catOpts = [{ value: '', text: 'Selecciona una opción' }].concat(o.categorias);
+        var firstRealCat = (o.categorias || []).filter(function (c) {
+            return c && c.id != null && String(c.id).trim() !== '';
+        })[0];
+        var defaultCatId = firstRealCat ? String(firstRealCat.id) : '';
         crearContenidoInputApis.categoria = createInput({
             containerId: 'crear-contenido-in-categoria',
             type: 'select',
             label: 'Categoría',
-            placeholder: 'Selecciona una opción',
+            placeholder: CATEGORIA_SELECT_PLACEHOLDER_TEXT,
             size: 'sm',
             selectOptions: catOpts,
-            value: '',
+            value: defaultCatId,
             onChange: tick
         });
+        refreshCrearContenidoSiguienteState();
     }
 
     function stripHtml(html) {
@@ -455,33 +515,291 @@
         return (t.textContent || '').replace(/\u00a0/g, ' ').trim();
     }
 
-    function refreshCrearContenidoSiguienteState() {
-        var btn = document.getElementById('crear-contenido-btn-siguiente');
-        if (!btn) return;
+    function parseTiempoPositive(raw) {
+        if (raw == null) return NaN;
+        var s = String(raw)
+            .trim()
+            .replace(/\s/g, '')
+            .replace(',', '.');
+        if (s === '') return NaN;
+        var n = parseFloat(s);
+        return isNaN(n) || n <= 0 ? NaN : n;
+    }
+
+    function clearPortadaInvalidMarks() {
+        document.querySelectorAll('#crear-contenido-step-portada .' + PORTADA_INVALID_CLASS).forEach(function (el) {
+            el.classList.remove(PORTADA_INVALID_CLASS);
+        });
+    }
+
+    /**
+     * @returns {{ complete: boolean, missing: string[] }}
+     * missing: titulo | portada | descripcion | tipo | nivel | idioma | tiempo | unidad | categoria
+     */
+    function getCrearContenidoPortadaCompleteness() {
+        var missing = [];
         var titulo = document.getElementById('crear-contenido-titulo');
         var tituloOk = titulo && titulo.value.trim().length > 0;
+        if (!tituloOk) missing.push('titulo');
+
         var block = document.getElementById('crear-contenido-img-trailer');
         var portadaOk =
             block &&
             (block.classList.contains('ubits-learn-img-trailer--image') ||
                 block.classList.contains('ubits-learn-img-trailer--trailer'));
+        if (!portadaOk && block) {
+            var img = block.querySelector('.ubits-learn-img-trailer__img');
+            var src = img && img.getAttribute('src');
+            if (src && String(src).trim().length > 0) {
+                portadaOk = true;
+            }
+        }
+        if (!portadaOk) missing.push('portada');
+
         var descOk = false;
         if (typeof getRichTextHtml === 'function') {
             var h = getRichTextHtml('#crear-contenido-rte');
             descOk = stripHtml(h).length > 0;
         }
+        var rteField = document.getElementById('crear-contenido-rte-field');
+        if (!descOk && rteField) {
+            var rtePlain = (rteField.innerText || '').replace(/\u00a0/g, ' ').trim();
+            descOk = rtePlain.length > 0;
+        }
+        if (!descOk) missing.push('descripcion');
+
         var a = crearContenidoInputApis;
-        var tipoOk = a.tipo && String(a.tipo.getValue()).length > 0;
-        var nivelOk = a.nivel && String(a.nivel.getValue()).length > 0;
-        var idiomaOk = a.idioma && String(a.idioma.getValue()).length > 0;
+        if (!a.tipo || !String(a.tipo.getValue() || '').trim()) missing.push('tipo');
+        if (!a.nivel || !String(a.nivel.getValue() || '').trim()) missing.push('nivel');
+        if (!a.idioma || !String(a.idioma.getValue() || '').trim()) missing.push('idioma');
         var tv = a.tiempo ? String(a.tiempo.getValue()) : '';
-        var tiempoOk = tv !== '' && !isNaN(Number(tv)) && Number(tv) > 0;
-        var unidadOk = a.unidad && String(a.unidad.getValue()).length > 0;
-        var cv = a.categoria ? String(a.categoria.getValue()) : '';
-        var catOk = cv.length > 0;
-        var allOk =
-            tituloOk && portadaOk && descOk && tipoOk && nivelOk && idiomaOk && tiempoOk && unidadOk && catOk;
-        btn.disabled = !allOk;
+        if (isNaN(parseTiempoPositive(tv))) missing.push('tiempo');
+        if (!a.unidad || !String(a.unidad.getValue() || '').trim()) missing.push('unidad');
+        var catDisp = a.categoria ? String(a.categoria.getValue() || '').trim() : '';
+        var catOk =
+            catDisp.length > 0 &&
+            catDisp !== CATEGORIA_SELECT_PLACEHOLDER_TEXT &&
+            catDisp !== 'Selecciona una opción...';
+        if (!catOk) missing.push('categoria');
+
+        return { complete: missing.length === 0, missing: missing };
+    }
+
+    function syncPortadaInvalidOutline() {
+        if (!crearContenidoPortadaValidationFlash) {
+            clearPortadaInvalidMarks();
+            return;
+        }
+        var st = getCrearContenidoPortadaCompleteness();
+        if (st.complete) {
+            crearContenidoPortadaValidationFlash = false;
+            clearPortadaInvalidMarks();
+            return;
+        }
+        clearPortadaInvalidMarks();
+        st.missing.forEach(function (key) {
+            if (key === 'titulo') {
+                var t = document.getElementById('crear-contenido-titulo');
+                var lab = t && t.closest('.contenidos-creator-titulo-wrap');
+                if (lab) lab.classList.add(PORTADA_INVALID_CLASS);
+            } else if (key === 'portada') {
+                var mediaHost = document.querySelector(
+                    '#crear-contenido-step-portada .crear-contenido-portada__cabecera-media'
+                );
+                if (mediaHost) mediaHost.classList.add(PORTADA_INVALID_CLASS);
+            } else if (key === 'descripcion') {
+                var rte = document.getElementById('crear-contenido-rte');
+                if (rte) rte.classList.add(PORTADA_INVALID_CLASS);
+            } else if (key === 'tipo') {
+                var el = document.getElementById('crear-contenido-in-tipo');
+                if (el) el.classList.add(PORTADA_INVALID_CLASS);
+            } else if (key === 'nivel') {
+                var n = document.getElementById('crear-contenido-in-nivel');
+                if (n) n.classList.add(PORTADA_INVALID_CLASS);
+            } else if (key === 'idioma') {
+                var i = document.getElementById('crear-contenido-in-idioma');
+                if (i) i.classList.add(PORTADA_INVALID_CLASS);
+            } else if (key === 'tiempo') {
+                var ti = document.getElementById('crear-contenido-in-tiempo');
+                if (ti) ti.classList.add(PORTADA_INVALID_CLASS);
+            } else if (key === 'unidad') {
+                var u = document.getElementById('crear-contenido-in-unidad');
+                if (u) u.classList.add(PORTADA_INVALID_CLASS);
+            } else if (key === 'categoria') {
+                var c = document.getElementById('crear-contenido-in-categoria');
+                if (c) c.classList.add(PORTADA_INVALID_CLASS);
+            }
+        });
+    }
+
+    function isCrearContenidoPortadaComplete() {
+        return getCrearContenidoPortadaCompleteness().complete;
+    }
+
+    function initCrearContenidoRecursosStepOnce() {
+        if (crearContenidoRecursosUiDone) return;
+        crearContenidoRecursosUiDone = true;
+        var mount = document.getElementById('crear-contenido-recursos-indice-mount');
+        if (mount && typeof global.indiceCreatorHtml === 'function') {
+            mount.innerHTML = global.indiceCreatorHtml({
+                sectionsEnabled: false,
+                toggleId: 'crear-contenido-recursos-indice-sections-toggle',
+                singleSectionKey: 'crear-contenido-recursos-default',
+                singleSection: { pages: [] }
+            });
+            if (typeof global.initIndiceCreator === 'function') {
+                global.initIndiceCreator(mount);
+            }
+            if (typeof global.initTooltip === 'function') {
+                global.initTooltip('#crear-contenido-recursos-indice-mount [data-tooltip]');
+            }
+        }
+        if (typeof global.loadEmptyState === 'function') {
+            global.loadEmptyState('crear-contenido-recursos-empty-host', {
+                icon: 'fa-file',
+                title: 'Añade tu primera página',
+                description:
+                    'Las páginas son las lecciones o pantallas de tu contenido. Usa «Añadir página» en el índice o el botón de abajo para empezar.',
+                buttons: {
+                    primary: {
+                        text: 'Añadir página',
+                        icon: 'fa-plus',
+                        onClick: function () {
+                            var b = document.querySelector(
+                                '#crear-contenido-recursos-indice-mount .ubits-seccion-creator__add-btn'
+                            );
+                            if (b) {
+                                b.click();
+                            } else if (typeof global.showToast === 'function') {
+                                global.showToast('info', 'Añadir página — próximamente.', {
+                                    containerId: 'ubits-toast-container',
+                                    duration: 2500
+                                });
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    }
+
+    function syncCrearContenidoUrlForStep(stepIndex) {
+        var path = location.pathname + location.search;
+        var target = stepIndex >= 1 ? CREAR_CONTENIDO_RECURSOS_URL_HASH : CREAR_CONTENIDO_URL_HASH;
+        if (location.hash === target) return;
+        history.replaceState({ ubitsLmsCrearContenidoStep: stepIndex }, '', path + target);
+    }
+
+    function updateCrearContenidoFooterForStep() {
+        var ant = document.getElementById('crear-contenido-btn-anterior');
+        var sig = document.getElementById('crear-contenido-btn-siguiente');
+        if (!sig) return;
+        if (ant) {
+            if (crearContenidoCurrentStep >= 1) {
+                ant.style.display = '';
+                ant.removeAttribute('aria-hidden');
+            } else {
+                ant.style.display = 'none';
+                ant.setAttribute('aria-hidden', 'true');
+            }
+        }
+        if (crearContenidoCurrentStep >= 1) {
+            sig.disabled = true;
+        }
+    }
+
+    function goToCrearContenidoStep(stepIndex, opts) {
+        opts = opts || {};
+        var overlay = document.getElementById(OVERLAY_ID);
+        if (!overlay || overlay.getAttribute('aria-hidden') === 'true') return;
+        crearContenidoCurrentStep = stepIndex >= 1 ? 1 : 0;
+        var portadaEl = document.getElementById('crear-contenido-step-portada');
+        var recursosEl = document.getElementById('crear-contenido-step-recursos');
+        if (portadaEl) {
+            portadaEl.classList.toggle('crear-contenido-step--visible', crearContenidoCurrentStep === 0);
+        }
+        if (recursosEl) {
+            recursosEl.classList.toggle('crear-contenido-step--visible', crearContenidoCurrentStep === 1);
+        }
+        if (typeof global.setStepperStepStates === 'function') {
+            var olDesk = overlay.querySelector('#crear-contenido-stepper-ol');
+            var olMob = overlay.querySelector('#crear-contenido-stepper-ol-mobile');
+            if (olDesk) global.setStepperStepStates(olDesk, crearContenidoCurrentStep);
+            if (olMob) global.setStepperStepStates(olMob, crearContenidoCurrentStep);
+        }
+        if (crearContenidoCurrentStep === 1) {
+            initCrearContenidoRecursosStepOnce();
+        }
+        updateCrearContenidoFooterForStep();
+        refreshCrearContenidoSiguienteState();
+        if (!opts.skipUrl) {
+            syncCrearContenidoUrlForStep(crearContenidoCurrentStep);
+        }
+        if (typeof global.initTooltip === 'function') {
+            global.initTooltip('#' + OVERLAY_ID + ' [data-tooltip]');
+        }
+    }
+
+    function wireCrearContenidoStepperStepClicks(overlay) {
+        function bindOl(ol) {
+            if (!ol) return;
+            var steps = ol.querySelectorAll(':scope > li.ubits-stepper__step');
+            steps.forEach(function (li, i) {
+                li.style.cursor = 'pointer';
+                if (li.getAttribute('tabindex') == null) {
+                    li.setAttribute('tabindex', '0');
+                }
+                function go() {
+                    if (i === 0) {
+                        goToCrearContenidoStep(0);
+                        return;
+                    }
+                    if (i === 1) {
+                        if (!isCrearContenidoPortadaComplete()) {
+                            crearContenidoPortadaValidationFlash = true;
+                            syncPortadaInvalidOutline();
+                            if (typeof global.showToast === 'function') {
+                                global.showToast('warning', 'Completa la portada para ir a Recursos.', {
+                                    containerId: 'ubits-toast-container',
+                                    duration: 3500
+                                });
+                            }
+                            return;
+                        }
+                        crearContenidoPortadaValidationFlash = false;
+                        clearPortadaInvalidMarks();
+                        goToCrearContenidoStep(1);
+                        return;
+                    }
+                    if (typeof global.showToast === 'function') {
+                        global.showToast('info', 'Este paso estará disponible pronto.', {
+                            containerId: 'ubits-toast-container',
+                            duration: 2500
+                        });
+                    }
+                }
+                li.addEventListener('click', go);
+                li.addEventListener('keydown', function (e) {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        go();
+                    }
+                });
+            });
+        }
+        bindOl(overlay.querySelector('#crear-contenido-stepper-ol'));
+        bindOl(overlay.querySelector('#crear-contenido-stepper-ol-mobile'));
+    }
+
+    function refreshCrearContenidoSiguienteState() {
+        var btn = document.getElementById('crear-contenido-btn-siguiente');
+        if (!btn) return;
+        if (crearContenidoCurrentStep >= 1) {
+            btn.disabled = true;
+            return;
+        }
+        btn.disabled = !isCrearContenidoPortadaComplete();
+        syncPortadaInvalidOutline();
     }
 
     function wireCrearContenidoInteractions(overlay) {
@@ -496,6 +814,11 @@
                 rte.addEventListener('input', function () {
                     refreshCrearContenidoSiguienteState();
                 });
+                rte.addEventListener('paste', function () {
+                    setTimeout(function () {
+                        refreshCrearContenidoSiguienteState();
+                    }, 0);
+                });
             }
             var titulo = document.getElementById('crear-contenido-titulo');
             if (titulo) {
@@ -503,20 +826,57 @@
                     refreshCrearContenidoSiguienteState();
                 });
             }
+            var portadaStep = document.getElementById('crear-contenido-step-portada');
+            if (portadaStep) {
+                portadaStep.addEventListener('input', function () {
+                    refreshCrearContenidoSiguienteState();
+                });
+                portadaStep.addEventListener('change', function () {
+                    refreshCrearContenidoSiguienteState();
+                });
+            }
             var imgBlock = document.getElementById('crear-contenido-img-trailer');
             if (imgBlock) {
+                function portadaBlockHasImageOrTrailerClass(el) {
+                    var c = (el && el.getAttribute('class')) || '';
+                    return (
+                        c.indexOf('ubits-learn-img-trailer--image') !== -1 ||
+                        c.indexOf('ubits-learn-img-trailer--trailer') !== -1
+                    );
+                }
+                var lastPortadaMediaState = portadaBlockHasImageOrTrailerClass(imgBlock);
                 new MutationObserver(function () {
+                    var next = portadaBlockHasImageOrTrailerClass(imgBlock);
+                    if (next === lastPortadaMediaState) return;
+                    lastPortadaMediaState = next;
                     refreshCrearContenidoSiguienteState();
                 }).observe(imgBlock, { attributes: true, attributeFilter: ['class'] });
             }
             var sig = document.getElementById('crear-contenido-btn-siguiente');
             if (sig) {
                 sig.addEventListener('click', function () {
-                    if (typeof showToast === 'function') {
-                        showToast('info', 'Siguiente paso (Recursos) — pendiente de implementar.', {
-                            containerId: 'ubits-toast-container',
-                            duration: 3000
-                        });
+                    if (crearContenidoCurrentStep !== 0) return;
+                    if (sig.disabled) {
+                        crearContenidoPortadaValidationFlash = true;
+                        syncPortadaInvalidOutline();
+                        if (typeof global.showToast === 'function') {
+                            global.showToast('warning', 'Completa todos los campos obligatorios de la portada.', {
+                                containerId: 'ubits-toast-container',
+                                duration: 3500
+                            });
+                        }
+                        return;
+                    }
+                    crearContenidoPortadaValidationFlash = false;
+                    clearPortadaInvalidMarks();
+                    goToCrearContenidoStep(1);
+                });
+            }
+            var ant = document.getElementById('crear-contenido-btn-anterior');
+            if (ant) {
+                ant.addEventListener('click', function () {
+                    if (crearContenidoCurrentStep >= 1) {
+                        goToCrearContenidoStep(0);
                     }
                 });
             }
@@ -530,34 +890,42 @@
         if (frame && toggle && typeof wireStepperVerticalCollapse === 'function') {
             wireStepperVerticalCollapse(frame, toggle, { creatorRail: true });
         }
-        if (typeof setStepperStepStates === 'function') {
-            var olDesk = overlay.querySelector('#crear-contenido-stepper-ol');
-            var olMob = overlay.querySelector('#crear-contenido-stepper-ol-mobile');
-            if (olDesk) setStepperStepStates(olDesk, 0);
-            if (olMob) setStepperStepStates(olMob, 0);
-        }
+        wireCrearContenidoStepperStepClicks(overlay);
         if (typeof initTooltip === 'function') {
             initTooltip('#' + OVERLAY_ID + ' [data-tooltip]');
         }
     }
 
-    function openCrearContenidoDrawer() {
+    function openCrearContenidoDrawer(opts) {
+        opts = opts || {};
         if (typeof openDrawer !== 'function') return;
         var existing = document.getElementById(OVERLAY_ID);
         if (existing) existing.remove();
+        crearContenidoRecursosUiDone = false;
+        crearContenidoCurrentStep = 0;
+        crearContenidoPortadaValidationFlash = false;
         document.body.classList.add('crear-contenido-drawer-abierto');
+        var footerInner =
+            '<div class="crear-contenido-drawer-footer-actions">' +
+            '  <button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="crear-contenido-btn-anterior" style="display:none" aria-hidden="true"><span>Anterior</span></button>' +
+            '  <span class="crear-contenido-drawer-footer-actions__grow" aria-hidden="true"></span>' +
+            '  <button type="button" class="ubits-button ubits-button--primary ubits-button--md" id="crear-contenido-btn-siguiente" disabled><span>Siguiente</span></button>' +
+            '</div>';
         var overlay = openDrawer({
             overlayId: OVERLAY_ID,
             title: 'Crear contenido',
             bodyHtml: getCrearContenidoBodyHtml(),
-            footerHtml:
-                '<button type="button" class="ubits-button ubits-button--primary ubits-button--md" id="crear-contenido-btn-siguiente" disabled><span>Siguiente</span></button>',
+            footerHtml: footerInner,
             size: 'full',
             closeOnOverlayClick: false,
             onClose: function () {
                 document.body.classList.remove('crear-contenido-drawer-abierto');
                 crearContenidoInputApis = {};
                 crearContenidoPortadaTrailerUrl = '';
+                crearContenidoCurrentStep = 0;
+                crearContenidoRecursosUiDone = false;
+                crearContenidoPortadaValidationFlash = false;
+                clearPortadaInvalidMarks();
                 syncUrlAfterCrearContenidoDrawerClose();
             }
         });
@@ -565,7 +933,24 @@
             overlay.classList.add('crear-contenido-drawer-overlay');
             wireCrearContenidoDrawerHeader(overlay);
             wireCrearContenidoInteractions(overlay);
-            syncUrlAfterCrearContenidoDrawerOpen();
+            var initialStep = opts.initialStep === 1 ? 1 : 0;
+            /* goTo y sync URL deben ir después del setTimeout(0) de initFichaInputs / RTE, si no Siguiente queda deshabilitado (APIs vacías). */
+            setTimeout(function () {
+                goToCrearContenidoStep(initialStep, { skipUrl: true });
+                if (initialStep === 0) {
+                    syncUrlAfterCrearContenidoDrawerOpen();
+                } else {
+                    if (!isCrearContenidoRecursosUrlHash(location.hash)) {
+                        history.replaceState(
+                            { ubitsLmsCrearContenidoStep: 1 },
+                            '',
+                            location.pathname + location.search + CREAR_CONTENIDO_RECURSOS_URL_HASH
+                        );
+                    }
+                    crearContenidoOpenedWithHistoryPush = false;
+                }
+                refreshCrearContenidoSiguienteState();
+            }, 0);
         }
     }
 
