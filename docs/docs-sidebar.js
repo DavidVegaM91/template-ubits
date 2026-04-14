@@ -9,6 +9,7 @@ const DOCS_SIDEBAR_SECTIONS = [
     { id: 'introduccion', title: 'Introducción', group: 'main' },
     { id: 'sidebar', title: 'Sidebar', group: 'navegacion' },
     { id: 'sub-nav', title: 'Sub-nav', group: 'navegacion' },
+    { id: 'submenu', title: 'Submenu', group: 'navegacion' },
     { id: 'tab-bar', title: 'Tab-bar', group: 'navegacion' },
     // Aprendizaje (alfabético por title)
     { id: 'card-content', title: 'Card content', group: 'aprendizaje' },
@@ -40,7 +41,6 @@ const DOCS_SIDEBAR_SECTIONS = [
     { id: 'modal', title: 'Modal', group: 'ui' },
     { id: 'paginator', title: 'Paginator', group: 'ui' },
     { id: 'popover', title: 'Popover', group: 'ui' },
-    { id: 'submenu', title: 'Submenu', group: 'ui' },
     { id: 'radio-button', title: 'Radio Button', group: 'ui' },
     { id: 'rich-text-editor', title: 'Rich text editor', group: 'ui' },
     { id: 'status-tag', title: 'Status Tag', group: 'ui' },
