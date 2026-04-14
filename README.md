@@ -56,8 +56,8 @@ Una **plantilla lista para usar** que permite a **Product Managers**, **Diseñad
   - **Variante admin:** (opciones: inicio, empresa, aprendizaje, diagnóstico, desempeño, encuestas; footer: api, centro-de-ayuda, modo-oscuro, perfil) - Incluye modo oscuro en footer
   - **Variante creator:** rail oscuro con cuatro módulos del producto LMS Creator — `lms-creator` (Contenidos), `planes-formacion`, `certificados`, `personalizacion`. Uso típico: `loadSidebar('creator', 'lms-creator')` (o la sección activa correspondiente). Detalle en [LMS Creator (producto aparte)](#lms-creator-producto-aparte-del-colaborador) más abajo.
 - **Sidebar contenidos LMS** - Misma estructura que el Sidebar (`.sidebar` + `.nav-button` con iconos y tooltips), colores para superficie `--ubits-bg-1`; variantes **Publicado LMS Creator** (cinco pasos) y **Publicado Antiguo LMS** (sin Resultados; recursos como Módulos) vía `options.variant` - **RENDERIZADO: `loadSidebarContenidosLms()`**
-- **TabBar** - Navegación móvil (opciones: modulos, perfil, modo-oscuro)
-- **Floating Menu** - Menú flotante modal para navegación móvil (acordeones con subitems)
+- **TabBar** - Navegación móvil (primer tab abre el floating menu; opciones: modulos, perfil, modo-oscuro). **Variantes** (segundo argumento de `loadTabBar`): omitido o `'default'` → primer tab «Módulos» (colaborador); `'admin'` → «Admin» (páginas `ubits-admin/`); `'creator'` → «LMS Creator» (páginas `ubits-colaborador/lms-creator/`). Debe coincidir con `loadFloatingMenu(containerId, variant)` en la misma página.
+- **Floating Menu** - Menú flotante modal para navegación móvil (acordeones con subitems). **Variantes** `'default' | 'admin' | 'creator'`: misma estructura de módulos que el README (colaborador / administración / LMS Creator).
 - **Profile Menu** - Menú desplegable del perfil de usuario
 
 **Páginas sin SubNav:** Si la página no usa SubNav (sin `#top-nav-container` ni `loadSubNav()`), añade **`class="no-subnav"`** al `<body>`. En `general-styles/styles.css` queda resuelto el espacio de **`.main-content`**: en **desktop (≥1024px)** se elimina el `padding-top` extra que reserva hueco al SubNav fijo; en **móvil/tablet (≤1023px)** se aplica **16px** de padding superior (`var(--gap-lg)`). Referencia: `ubits-colaborador/perfil/profile.html`, `ubits-colaborador/ia-para-hr/ia-para-hr.html`.
@@ -445,11 +445,26 @@ Todos los componentes UBITS requieren imports obligatorios:
 │   ├── tooltip.css + tooltip.js
 ├── 📁 ubits-admin/           # Módulo de administración
 │   ├── inicio/
-│   ├── empresa/
-│   ├── aprendizaje/
-│   ├── diagnostico/
-│   ├── desempeno/
-│   ├── encuestas/
+│   ├── empresa/                         # Módulo — SubNav empresa
+│   │   ├── Gestión de usuarios
+│   │   ├── Organigrama
+│   │   ├── Datos de empresa
+│   │   ├── Personalización
+│   │   ├── Roles y permisos
+│   │   └── Comunicaciones
+│   ├── aprendizaje/                     # Módulo — SubNav admin-aprendizaje
+│   │   ├── Planes de formación
+│   │   ├── Universidad corporativa
+│   │   ├── Certificados
+│   │   └── Seguimiento
+│   ├── diagnostico/                     # Módulo — SubNav admin-diagnostico
+│   │   └── Diagnóstico
+│   ├── desempeno/                       # Módulo — SubNav admin-desempeño
+│   │   ├── Evaluaciones 360
+│   │   ├── Objetivos
+│   │   └── Matriz de Talento
+│   ├── encuestas/                       # Módulo — SubNav admin-encuestas
+│   │   └── Encuestas
 │   └── otros/
 ├── 📁 ubits-colaborador/     # Módulo de colaborador
 │   ├── inicio/
@@ -472,16 +487,23 @@ Todos los componentes UBITS requieren imports obligatorios:
 │   │   └── Personalización             # SubNav creator-personalizacion
 │   │       ├── Universidad corporativa
 │   │       └── Seguimiento
-│   ├── diagnostico/
-│   ├── desempeno/
-│   ├── encuestas/
-│   ├── reclutamiento/
+│   ├── diagnostico/                     # Módulo — SubNav diagnostico
+│   │   └── Diagnóstico
+│   ├── desempeno/                       # Módulo — SubNav desempeno
+│   │   ├── Evaluaciones 360
+│   │   ├── Objetivos
+│   │   ├── Métricas
+│   │   └── Reportes
+│   ├── encuestas/                       # Módulo — SubNav encuestas
+│   │   └── Encuestas
+│   ├── reclutamiento/                   # Módulo — SubNav reclutamiento
+│   │   └── Reclutamiento
 │   ├── tareas/                         # Módulo — SubNav tareas
 │   │   ├── Tareas
 │   │   ├── Planes
 │   │   ├── Plantillas
 │   │   └── Seguimiento
-│   ├── ia-para-hr/
+│   ├── ia-para-hr/                      # Módulo — sin SubNav (solo título)
 │   ├── ubits-ai/
 │   └── perfil/
 ├── 📁 documentacion/         # Sistema de documentación

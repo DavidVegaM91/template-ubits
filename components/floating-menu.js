@@ -2,7 +2,8 @@
    FLOATING MENU COMPONENT (MODAL)
    ======================================== */
 
-const FLOATING_MENU_SECTIONS = [
+/** Colaborador (módulos + LMS Creator en un acordeón; IA, etc.) */
+const FLOATING_MENU_SECTIONS_DEFAULT = [
     {
         id: 'aprendizaje',
         title: 'Aprendizaje',
@@ -86,8 +87,229 @@ const FLOATING_MENU_SECTIONS = [
     }
 ];
 
-function getFloatingMenuHTML() {
-    const sectionsHTML = FLOATING_MENU_SECTIONS.map(section => {
+/** Administración — alineado con README / sidebar admin */
+const FLOATING_MENU_SECTIONS_ADMIN = [
+    {
+        id: 'admin-inicio',
+        title: 'Inicio',
+        icon: 'far fa-house',
+        url: '../../ubits-admin/inicio/admin.html',
+        isLink: true,
+        clickable: true
+    },
+    {
+        id: 'admin-empresa',
+        title: 'Empresa',
+        icon: 'far fa-building',
+        subitems: [
+            { id: 'gestion-usuarios', title: 'Gestión de usuarios', icon: 'far fa-users', url: '../../ubits-admin/empresa/gestion-de-usuarios.html' },
+            { id: 'organigrama', title: 'Organigrama', icon: 'far fa-sitemap', url: '../../ubits-admin/empresa/organigrama.html' },
+            { id: 'datos-de-empresa', title: 'Datos de empresa', icon: 'far fa-building', url: '../../ubits-admin/empresa/datos-de-empresa.html' },
+            { id: 'personalizacion-empresa', title: 'Personalización', icon: 'far fa-paint-brush', url: '../../ubits-admin/empresa/personalizacion.html' },
+            { id: 'roles-permisos', title: 'Roles y permisos', icon: 'far fa-user-shield', url: '../../ubits-admin/empresa/roles-y-permisos.html' },
+            { id: 'comunicaciones', title: 'Comunicaciones', icon: 'far fa-envelope', url: '../../ubits-admin/empresa/comunicaciones.html' }
+        ]
+    },
+    {
+        id: 'admin-aprendizaje',
+        title: 'Aprendizaje',
+        icon: 'far fa-graduation-cap',
+        subitems: [
+            { id: 'admin-planes-formacion', title: 'Planes de formación', icon: 'far fa-clipboard-list-check', url: '../../ubits-admin/aprendizaje/planes-formacion.html' },
+            { id: 'admin-u-corporativa', title: 'Universidad corporativa', icon: 'far fa-building-columns', url: '../../ubits-admin/aprendizaje/admin-u-corporativa.html' },
+            { id: 'admin-certificados', title: 'Certificados', icon: 'far fa-file-certificate', url: '../../ubits-admin/aprendizaje/admin-certificados.html' },
+            { id: 'admin-seguimiento-aprendizaje', title: 'Seguimiento', icon: 'far fa-chart-line', url: '../../ubits-admin/aprendizaje/seguimiento.html' }
+        ]
+    },
+    {
+        id: 'admin-diagnostico',
+        title: 'Diagnóstico',
+        icon: 'far fa-chart-mixed',
+        url: '../../ubits-admin/diagnostico/admin-diagnostico.html',
+        isLink: true,
+        clickable: true
+    },
+    {
+        id: 'admin-desempeno',
+        title: 'Desempeño',
+        icon: 'far fa-bars-progress',
+        subitems: [
+            { id: 'admin-eval-360', title: 'Evaluaciones 360', icon: 'far fa-chart-pie', url: '../../ubits-admin/desempeno/admin-360.html' },
+            { id: 'admin-objetivos', title: 'Objetivos', icon: 'far fa-bullseye', url: '../../ubits-admin/desempeno/admin-objetivos.html' },
+            { id: 'admin-matriz-talento', title: 'Matriz de Talento', icon: 'far fa-sitemap', url: '../../ubits-admin/desempeno/admin-matriz-talento.html' }
+        ]
+    },
+    {
+        id: 'admin-encuestas',
+        title: 'Encuestas',
+        icon: 'far fa-clipboard-list-check',
+        url: '../../ubits-admin/encuestas/admin-encuestas.html',
+        isLink: true,
+        clickable: true
+    },
+    {
+        id: 'admin-otros',
+        title: 'Otros',
+        icon: 'far fa-ellipsis-h',
+        subitems: [
+            { id: 'admin-api', title: 'API', icon: 'far fa-code', url: '../../ubits-admin/otros/admin-api.html' },
+            { id: 'admin-help', title: 'Centro de ayuda', icon: 'far fa-circle-question', url: '../../ubits-admin/otros/admin-help-center.html' }
+        ]
+    }
+];
+
+/** LMS Creator — cuatro bloques como SubNav creator-* (README) */
+const FLOATING_MENU_SECTIONS_CREATOR = [
+    {
+        id: 'creator-lms',
+        title: 'LMS Creator',
+        icon: 'far fa-bolt',
+        subitems: [
+            { id: 'contenidos', title: 'Contenidos', icon: 'far fa-folder-open', url: '../../ubits-colaborador/lms-creator/contenidos.html' },
+            { id: 'categorias', title: 'Categorías', icon: 'far fa-tags', url: '../../ubits-colaborador/lms-creator/categorias.html' }
+        ]
+    },
+    {
+        id: 'creator-planes',
+        title: 'Planes de formación',
+        icon: 'far fa-layer-group',
+        subitems: [
+            { id: 'planes-formacion', title: 'Planes', icon: 'far fa-clipboard-list', url: '../../ubits-colaborador/lms-creator/planes-formacion.html' },
+            { id: 'grupos', title: 'Grupos', icon: 'far fa-users', url: '../../ubits-colaborador/lms-creator/grupos.html' }
+        ]
+    },
+    {
+        id: 'creator-certificados',
+        title: 'Certificados',
+        icon: 'far fa-award',
+        subitems: [
+            { id: 'certificados-descarga', title: 'Descarga', icon: 'far fa-download', url: '../../ubits-colaborador/lms-creator/certificados.html' },
+            { id: 'certificados-config', title: 'Configuración', icon: 'far fa-sliders', url: '../../ubits-colaborador/lms-creator/certificados-configuracion.html' }
+        ]
+    },
+    {
+        id: 'creator-personalizacion',
+        title: 'Personalización',
+        icon: 'far fa-palette',
+        subitems: [
+            { id: 'personalizacion-u-corporativa', title: 'Universidad corporativa', icon: 'far fa-building-columns', url: '../../ubits-colaborador/lms-creator/personalizacion-u-corporativa.html' },
+            { id: 'personalizacion-seguimiento', title: 'Seguimiento', icon: 'far fa-chart-line', url: '../../ubits-colaborador/lms-creator/personalizacion-seguimiento.html' }
+        ]
+    }
+];
+
+function getSectionsForVariant(variant) {
+    if (variant === 'admin') return FLOATING_MENU_SECTIONS_ADMIN;
+    if (variant === 'creator') return FLOATING_MENU_SECTIONS_CREATOR;
+    return FLOATING_MENU_SECTIONS_DEFAULT;
+}
+
+function getFloatingMenuHeaderTitle(variant) {
+    if (variant === 'admin') return 'Administración';
+    if (variant === 'creator') return 'LMS Creator';
+    return 'Módulos';
+}
+
+function getCurrentFloatingMenuSections() {
+    return window.currentFloatingMenuSections || FLOATING_MENU_SECTIONS_DEFAULT;
+}
+
+/**
+ * Panel tab-bar «Mi perfil»: mismo layout que Módulos / Admin / LMS Creator (acordeón flotante).
+ */
+function getFloatingProfileMenuHTML(variant) {
+    variant = variant || 'default';
+    const base = '../../';
+    const parts = [];
+
+    function rowLink(id, title, iconClass, href, anchorExtra) {
+        anchorExtra = anchorExtra || '';
+        return (
+            '<a href="' + href + '" class="accordion-link direct-link" id="link-' + id + '"' + anchorExtra + '>' +
+            '<div class="accordion-icon-circle" id="circle-' + id + '">' +
+            '<i class="' + iconClass + '" id="icon-' + id + '"></i>' +
+            '</div>' +
+            '<span class="ubits-body-md-regular">' + title + '</span>' +
+            '<i class="far fa-chevron-right accordion-chevron"></i>' +
+            '</a>'
+        );
+    }
+
+    parts.push(rowLink('fp-ver-perfil', 'Ver mi perfil', 'far fa-user', base + 'ubits-colaborador/perfil/profile.html', ''));
+
+    if (variant === 'admin') {
+        parts.push(rowLink('fp-modo-colab', 'Modo colaborador', 'far fa-user-gear', base + 'index.html', ''));
+        parts.push(rowLink('fp-modo-creator', 'Modo LMS Creator', 'far fa-bolt', base + 'ubits-colaborador/lms-creator/contenidos.html', ''));
+    } else if (variant === 'creator') {
+        parts.push(rowLink('fp-modo-colab', 'Modo colaborador', 'far fa-user-gear', base + 'index.html', ''));
+        parts.push(rowLink('fp-modo-admin', 'Modo administrador', 'far fa-laptop', base + 'ubits-admin/inicio/admin.html', ''));
+    } else {
+        parts.push(rowLink('fp-modo-admin', 'Modo administrador', 'far fa-laptop', base + 'ubits-admin/inicio/admin.html', ''));
+        parts.push(rowLink('fp-modo-creator', 'Modo LMS Creator', 'far fa-bolt', base + 'ubits-colaborador/lms-creator/contenidos.html', ''));
+    }
+
+    parts.push(rowLink('fp-doc', 'Documentación', 'far fa-book', base + 'documentacion/documentacion.html', ' target="_blank" rel="noopener noreferrer"'));
+
+    parts.push(
+        '<a href="#" class="accordion-link direct-link" id="link-fp-pwd" onclick="handleProfileFloatingPassword(event); return false;">' +
+        '<div class="accordion-icon-circle" id="circle-fp-pwd">' +
+        '<i class="far fa-key" id="icon-fp-pwd"></i>' +
+        '</div>' +
+        '<span class="ubits-body-md-regular">Cambio de contraseña</span>' +
+        '<i class="far fa-chevron-right accordion-chevron"></i>' +
+        '</a>'
+    );
+    parts.push(
+        '<a href="#" class="accordion-link direct-link" id="link-fp-logout" onclick="handleProfileFloatingLogout(event); return false;">' +
+        '<div class="accordion-icon-circle" id="circle-fp-logout">' +
+        '<i class="far fa-sign-out-alt" id="icon-fp-logout"></i>' +
+        '</div>' +
+        '<span class="ubits-body-md-regular">Cerrar sesión</span>' +
+        '<i class="far fa-chevron-right accordion-chevron"></i>' +
+        '</a>'
+    );
+
+    return (
+        '<div class="floating-menu" id="floating-menu-profile">' +
+        '<div class="floating-menu-header">' +
+        '<h2 class="floating-menu-title ubits-heading-h2">Perfil</h2>' +
+        '<button type="button" class="floating-menu-close" onclick="hideFloatingProfileMenu()" aria-label="Cerrar">' +
+        '<i class="far fa-times"></i>' +
+        '</button>' +
+        '</div>' +
+        '<div class="floating-menu-content">' +
+        parts.join('') +
+        '</div>' +
+        '</div>'
+    );
+}
+
+function handleProfileFloatingPassword(event) {
+    if (event) event.preventDefault();
+    hideFloatingProfileMenu();
+    alert('Próximamente: Cambio de contraseña');
+}
+
+function handleProfileFloatingLogout(event) {
+    if (event) event.preventDefault();
+    hideFloatingProfileMenu();
+    if (confirm('¿Estás seguro de que quieres cerrar sesión?')) {
+        alert('Sesión cerrada');
+    }
+}
+
+function syncFloatingMenusBodyOverflow() {
+    const fm = document.getElementById('floating-menu');
+    const fp = document.getElementById('floating-menu-profile');
+    const anyOpen = (fm && fm.classList.contains('show')) || (fp && fp.classList.contains('show'));
+    document.body.style.overflow = anyOpen ? 'hidden' : '';
+}
+
+function getFloatingMenuHTML(variant) {
+    variant = variant || 'default';
+    const sections = getSectionsForVariant(variant);
+    const headerTitle = getFloatingMenuHeaderTitle(variant);
+    const sectionsHTML = sections.map(section => {
         // Si es un enlace directo (no acordeón)
         if (section.isLink) {
             if (section.clickable) {
@@ -144,7 +366,7 @@ function getFloatingMenuHTML() {
     return `
         <div class="floating-menu" id="floating-menu">
             <div class="floating-menu-header">
-                <h2 class="floating-menu-title ubits-heading-h2">Módulos</h2>
+                <h2 class="floating-menu-title ubits-heading-h2">${headerTitle}</h2>
                 <button class="floating-menu-close" onclick="hideFloatingMenu()">
                     <i class="far fa-times"></i>
                 </button>
@@ -156,45 +378,61 @@ function getFloatingMenuHTML() {
     `;
 }
 
-function loadFloatingMenu(containerId) {
+function loadFloatingMenu(containerId, variant) {
+    variant = variant || 'default';
     const container = document.getElementById(containerId);
     if (!container) {
         console.error(`Contenedor '${containerId}' no encontrado`);
         return;
     }
 
-    container.innerHTML = getFloatingMenuHTML();
+    window.currentFloatingMenuSections = getSectionsForVariant(variant);
+    window._floatingMenuVariant = variant;
+    container.innerHTML = getFloatingMenuHTML(variant) + getFloatingProfileMenuHTML(variant);
     addFloatingMenuEventListeners();
 }
 
 function addFloatingMenuEventListeners() {
-    // Cerrar con ESC
-    document.addEventListener('keydown', function(e) {
+    if (window._ubitsFloatingMenuListenersBound) {
+        return;
+    }
+    window._ubitsFloatingMenuListenersBound = true;
+
+    document.addEventListener('keydown', function (e) {
         if (e.key === 'Escape') {
             hideFloatingMenu();
+            hideFloatingProfileMenu();
         }
     });
 
-    // Cerrar al hacer click fuera del modal
-    document.addEventListener('click', function(e) {
+    document.addEventListener('click', function (e) {
         const floatingMenu = document.getElementById('floating-menu');
+        const fmp = document.getElementById('floating-menu-profile');
         const modulosTab = document.querySelector('[data-tab="modulos"]');
-        
+        const perfilTab = document.querySelector('[data-tab="perfil"]');
+
         if (floatingMenu && floatingMenu.classList.contains('show')) {
-            if (!floatingMenu.contains(e.target) && !modulosTab.contains(e.target)) {
+            if (!floatingMenu.contains(e.target) && modulosTab && !modulosTab.contains(e.target)) {
                 hideFloatingMenu();
+            }
+        }
+        if (fmp && fmp.classList.contains('show')) {
+            if (!fmp.contains(e.target) && perfilTab && !perfilTab.contains(e.target)) {
+                hideFloatingProfileMenu();
             }
         }
     });
 }
 
 function showFloatingMenu() {
+    const fp = document.getElementById('floating-menu-profile');
+    if (fp) {
+        fp.classList.remove('show');
+    }
     const floatingMenu = document.getElementById('floating-menu');
     if (floatingMenu) {
         floatingMenu.classList.add('show');
-        document.body.style.overflow = 'hidden';
-        
-        // Activar automáticamente el elemento según la página actual
+        syncFloatingMenusBodyOverflow();
         setActiveItemByCurrentPage();
     }
 }
@@ -203,8 +441,16 @@ function hideFloatingMenu() {
     const floatingMenu = document.getElementById('floating-menu');
     if (floatingMenu) {
         floatingMenu.classList.remove('show');
-        document.body.style.overflow = '';
     }
+    syncFloatingMenusBodyOverflow();
+}
+
+function hideFloatingProfileMenu() {
+    const el = document.getElementById('floating-menu-profile');
+    if (el) {
+        el.classList.remove('show');
+    }
+    syncFloatingMenusBodyOverflow();
 }
 
 function toggleAccordion(sectionId) {
@@ -235,7 +481,7 @@ function toggleAccordion(sectionId) {
 // Función para cerrar todos los acordeones
 function closeAllAccordions() {
     // Obtener todas las secciones que tienen acordeón (no enlaces directos)
-    const accordionSections = FLOATING_MENU_SECTIONS.filter(section => !section.isLink);
+    const accordionSections = getCurrentFloatingMenuSections().filter(section => !section.isLink);
     
     accordionSections.forEach(section => {
         const body = document.getElementById(`body-${section.id}`);
@@ -257,9 +503,9 @@ function closeAllAccordions() {
 // Función para activar elemento según la página actual
 function setActiveItemByCurrentPage() {
     const currentPage = window.location.pathname.split('/').pop() || 'index.html';
-    
-    // Mapear páginas a IDs de elementos (floating-menu: subitem id o section id para enlaces directos)
-    const pageToElementMap = {
+    const variant = window._floatingMenuVariant || 'default';
+
+    const pageToElementMapDefault = {
         'ia-para-hr.html': 'ia-para-hr',
         'ubits-ai.html': 'ia-para-hr',
         'diagnostico.html': 'diagnostico',
@@ -277,7 +523,6 @@ function setActiveItemByCurrentPage() {
         'planes.html': 'planes',
         'tareas.html': 'tareas',
         'plantilla.html': 'plantillas',
-        // LMS Creator (acordeón creator)
         'contenidos.html': 'contenidos',
         'categorias.html': 'categorias',
         'certificados.html': 'certificados-descarga',
@@ -295,14 +540,58 @@ function setActiveItemByCurrentPage() {
         'personalizacion-seguimiento.html': 'personalizacion-seguimiento',
         'personalizacion-u-corporativa.html': 'personalizacion-u-corporativa'
     };
-    
+
+    const pageToElementMapAdmin = {
+        'admin.html': 'admin-inicio',
+        'gestion-de-usuarios.html': 'gestion-usuarios',
+        'organigrama.html': 'organigrama',
+        'datos-de-empresa.html': 'datos-de-empresa',
+        'personalizacion.html': 'personalizacion-empresa',
+        'roles-y-permisos.html': 'roles-permisos',
+        'comunicaciones.html': 'comunicaciones',
+        'planes-formacion.html': 'admin-planes-formacion',
+        'admin-u-corporativa.html': 'admin-u-corporativa',
+        'admin-certificados.html': 'admin-certificados',
+        'seguimiento.html': 'admin-seguimiento-aprendizaje',
+        'admin-diagnostico.html': 'admin-diagnostico',
+        'admin-360.html': 'admin-eval-360',
+        'admin-objetivos.html': 'admin-objetivos',
+        'admin-matriz-talento.html': 'admin-matriz-talento',
+        'admin-encuestas.html': 'admin-encuestas',
+        'admin-api.html': 'admin-api',
+        'admin-help-center.html': 'admin-help'
+    };
+
+    const pageToElementMapCreator = {
+        'contenidos.html': 'contenidos',
+        'categorias.html': 'categorias',
+        'planes-formacion.html': 'planes-formacion',
+        'grupos.html': 'grupos',
+        'crear-grupo.html': 'grupos',
+        'chat-ia-grupos.html': 'grupos',
+        'detalle-grupo.html': 'grupos',
+        'detalle-plan.html': 'planes-formacion',
+        'crear-plan-contenidos.html': 'planes-formacion',
+        'crear-plan-competencias.html': 'planes-formacion',
+        'editar-plan-contenidos.html': 'planes-formacion',
+        'editar-plan-competencias.html': 'planes-formacion',
+        'detalle-plan-competencias.html': 'planes-formacion',
+        'certificados.html': 'certificados-descarga',
+        'certificados-configuracion.html': 'certificados-config',
+        'personalizacion-u-corporativa.html': 'personalizacion-u-corporativa',
+        'personalizacion-seguimiento.html': 'personalizacion-seguimiento'
+    };
+
+    let pageToElementMap = pageToElementMapDefault;
+    if (variant === 'admin') pageToElementMap = pageToElementMapAdmin;
+    else if (variant === 'creator') pageToElementMap = pageToElementMapCreator;
+
     const activeElementId = pageToElementMap[currentPage];
-    
+
     if (activeElementId) {
-        // Usar setTimeout para asegurar que el DOM esté completamente cargado
         setTimeout(() => {
-            const section = FLOATING_MENU_SECTIONS.find(s => s.id === activeElementId);
-            
+            const section = getCurrentFloatingMenuSections().find(s => s.id === activeElementId);
+
             if (section && section.isLink) {
                 setActiveDirectLink(activeElementId);
             } else {
@@ -367,6 +656,10 @@ window.getFloatingMenuHTML = getFloatingMenuHTML;
 window.loadFloatingMenu = loadFloatingMenu;
 window.showFloatingMenu = showFloatingMenu;
 window.hideFloatingMenu = hideFloatingMenu;
+window.hideFloatingProfileMenu = hideFloatingProfileMenu;
+window.syncFloatingMenusBodyOverflow = syncFloatingMenusBodyOverflow;
+window.handleProfileFloatingPassword = handleProfileFloatingPassword;
+window.handleProfileFloatingLogout = handleProfileFloatingLogout;
 window.toggleAccordion = toggleAccordion;
 window.closeAllAccordions = closeAllAccordions;
 window.setActiveAccordionLink = setActiveAccordionLink;

@@ -492,12 +492,6 @@ updateActiveSidebarButton('desempeño'); // Cambiar botón activo</code></pre>
                     sidebar.style.boxSizing = 'border-box';
                 }
                 
-                // Desactivar el profile menu en el preview
-                const profileMenu = container.querySelector('.sidebar-profile-menu');
-                if (profileMenu) {
-                    profileMenu.style.display = 'none';
-                }
-                
                 // Desactivar navegación en preview: logo y avatar sin interacción.
                 // Los .nav-button mantienen pointer-events para que funcionen los tooltips (hover).
                 container.querySelectorAll('.logo, .user-avatar').forEach(button => {

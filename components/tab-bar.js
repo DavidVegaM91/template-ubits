@@ -4,15 +4,26 @@
 
 /**
  * Genera el HTML del tab-bar
+ * @param {string} variant - 'default' | 'admin' | 'creator' (primer tab + menú flotante alineados con README)
  * @returns {string} HTML del tab-bar
  */
-function getTabBarHTML() {
+function getTabBarHTML(variant) {
+    variant = variant || 'default';
+    let firstLabel = 'Módulos';
+    let firstIconClass = 'far fa-grid-2 tab-bar-icon';
+    if (variant === 'admin') {
+        firstLabel = 'Admin';
+        firstIconClass = 'far fa-laptop tab-bar-icon';
+    } else if (variant === 'creator') {
+        firstLabel = 'LMS Creator';
+        firstIconClass = 'far fa-bolt tab-bar-icon';
+    }
     return `
         <div class="tab-bar" id="tab-bar">
             <div class="tab-bar-content">
                 <div class="tab-bar-item" data-tab="modulos" onclick="navigateToTab('modulos')">
-                    <i class="far fa-grid-2 tab-bar-icon"></i>
-                    <span class="tab-bar-text">Módulos</span>
+                    <i class="${firstIconClass}"></i>
+                    <span class="tab-bar-text">${firstLabel}</span>
                 </div>
                 <div class="tab-bar-item" data-tab="perfil" onclick="navigateToTab('perfil')">
                     <img src="../../images/Profile-image.jpg" alt="Mi perfil" class="tab-bar-avatar">
@@ -30,8 +41,11 @@ function getTabBarHTML() {
 /**
  * Carga el tab-bar en el contenedor especificado
  * @param {string} containerId - ID del contenedor donde cargar el tab-bar
+ * @param {string} variant - 'default' | 'admin' | 'creator'
  */
-function loadTabBar(containerId) {
+function loadTabBar(containerId, variant) {
+    variant = variant || 'default';
+    window._tabBarVariant = variant;
     const container = document.getElementById(containerId);
     if (!container) {
         console.error(`Contenedor '${containerId}' no encontrado`);
@@ -41,7 +55,7 @@ function loadTabBar(containerId) {
     // Usar directamente el HTML generado - tab-bar.html es una página completa, no un componente
     // CRITICAL: No hacer fetch de tab-bar.html porque es una página HTML completa con DOCTYPE, head, body, etc.
     // Usar getTabBarHTML() que genera solo el HTML del componente
-    container.innerHTML = getTabBarHTML();
+    container.innerHTML = getTabBarHTML(variant);
     
     // Agregar event listeners
     addTabBarEventListeners();
@@ -72,6 +86,9 @@ function addTabBarEventListeners() {
                 if (typeof hideFloatingMenu === 'function') {
                     hideFloatingMenu();
                 }
+                if (typeof hideFloatingProfileMenu === 'function') {
+                    hideFloatingProfileMenu();
+                }
                 if (typeof hideProfileMenu === 'function') {
                     hideProfileMenu();
                 }
@@ -82,30 +99,47 @@ function addTabBarEventListeners() {
                 return;
             }
             
-            // Si es módulos, toggle floating menu
+            // Si es módulos, toggle floating menu (mismo patrón que Admin / LMS Creator)
             if (tabId === 'modulos') {
                 e.stopPropagation();
+                const perfilPanel = document.getElementById('floating-menu-profile');
+                if (perfilPanel && perfilPanel.classList.contains('show')) {
+                    perfilPanel.classList.remove('show');
+                }
                 const modulosMenu = document.getElementById('floating-menu');
                 if (modulosMenu) {
                     if (modulosMenu.classList.contains('show')) {
                         modulosMenu.classList.remove('show');
                     } else {
                         modulosMenu.classList.add('show');
+                        if (typeof setActiveItemByCurrentPage === 'function') {
+                            setActiveItemByCurrentPage();
+                        }
                     }
+                }
+                if (typeof syncFloatingMenusBodyOverflow === 'function') {
+                    syncFloatingMenusBodyOverflow();
                 }
                 return;
             }
             
-            // Si es perfil, toggle profile menu
+            // Si es perfil, mismo tipo de panel flotante que Módulos (no submenu)
             if (tabId === 'perfil') {
                 e.stopPropagation();
-                const perfilMenu = document.getElementById('profile-menu');
-                if (perfilMenu) {
-                    if (perfilMenu.classList.contains('show')) {
-                        perfilMenu.classList.remove('show');
+                const modulosMenu = document.getElementById('floating-menu');
+                if (modulosMenu && modulosMenu.classList.contains('show')) {
+                    modulosMenu.classList.remove('show');
+                }
+                const perfilPanel = document.getElementById('floating-menu-profile');
+                if (perfilPanel) {
+                    if (perfilPanel.classList.contains('show')) {
+                        perfilPanel.classList.remove('show');
                     } else {
-                        perfilMenu.classList.add('show');
+                        perfilPanel.classList.add('show');
                     }
+                }
+                if (typeof syncFloatingMenusBodyOverflow === 'function') {
+                    syncFloatingMenusBodyOverflow();
                 }
                 return;
             }
@@ -146,6 +180,16 @@ function activateCurrentPageTab() {
     allTabs.forEach(tab => {
         tab.classList.remove('active');
     });
+
+    const variant = window._tabBarVariant || 'default';
+    if (variant === 'admin' || variant === 'creator') {
+        const modulosTab = document.querySelector('[data-tab="modulos"]');
+        if (modulosTab) {
+            modulosTab.classList.add('active');
+            console.log('Tab activado (variante producto):', variant);
+        }
+        return;
+    }
     
     // Activar el tab correspondiente a la página actual
     let tabToActivate = null;

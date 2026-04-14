@@ -39,7 +39,7 @@ function adjustSidebarHeight() {
     sidebar.style.top = topMargin + 'px';
 }
 
-/** Submenu al hover: mismo ID siempre para no acumular paneles */
+/** Submenu al hover: mismo ID siempre para no acumular paneles (avatar incluido: mismo patrón que módulos / modo oscuro) */
 const UBITS_SIDEBAR_HOVER_SUBMENU_ID = 'ubits-sidebar-hover-submenu';
 
 /** data-section del rail → clave en TOP_NAV_VARIANTS (null = solo título con data-sidebar-label) */
@@ -312,6 +312,17 @@ function initSidebarSubmenuHover(variant, basePath) {
         });
         darkBtn.setAttribute('data-sidebar-hover', 'theme');
     }
+
+    sidebar.querySelectorAll('.sidebar-footer .user-avatar').forEach(function (avatarEl) {
+        wireSidebarSubmenuHover(avatarEl, function (done) {
+            const el = openForAnchor(avatarEl, {
+                title: 'Perfil',
+                options: buildSidebarAvatarSubmenuOptions(variant, basePath)
+            });
+            if (typeof done === 'function') done(el);
+        });
+        avatarEl.setAttribute('data-sidebar-hover', 'profile');
+    });
 }
 
 function bindSidebarSubmenuSelectOnce() {
@@ -323,6 +334,26 @@ function bindSidebarSubmenuSelectOnce() {
         if (!d.anchor.closest('.sidebar')) return;
         const v = d.value;
         if (v == null || v === '' || v === '#') return;
+
+        if (typeof v === 'string' && v.indexOf('action:') === 0) {
+            const action = v.replace(/^action:/, '');
+            if (action === 'documentacion') {
+                const basePath = getBasePath();
+                window.open(basePath + 'documentacion/documentacion.html', '_blank');
+                return;
+            }
+            if (action === 'password') {
+                alert('Próximamente: Cambio de contraseña');
+                return;
+            }
+            if (action === 'logout') {
+                if (confirm('¿Estás seguro de que quieres cerrar sesión?')) {
+                    alert('Sesión cerrada');
+                }
+                return;
+            }
+        }
+
         window.location.href = v;
     });
 }
@@ -482,43 +513,12 @@ function loadSidebar(variantOrActiveButton = 'default', activeButton = null) {
                     <i class="far fa-moon"></i>
                 </button>
                 <div class="user-avatar-container">
-                    <div class="user-avatar" id="sidebar-avatar-admin" onclick="toggleSidebarProfileMenu(event)">
+                    <div class="user-avatar" id="sidebar-avatar-admin" role="button" tabindex="0" aria-label="Menú de cuenta">
                         <img src="${basePath}images/Profile-image.jpg" alt="Usuario" class="avatar-image">
                     </div>
                 </div>
             </div>
         </aside>
-        
-        <!-- Profile menu para sidebar admin -->
-        <div class="sidebar-profile-menu" id="sidebar-profile-menu">
-            <div class="profile-menu-item" onclick="window.location.href='${basePath}ubits-colaborador/perfil/profile.html'">
-                <i class="far fa-user"></i>
-                <span>Ver mi perfil</span>
-            </div>
-            <div class="profile-menu-divider"></div>
-            <div class="profile-menu-item" onclick="window.location.href='${basePath}index.html'">
-                <i class="far fa-user-gear"></i>
-                <span>Modo colaborador</span>
-            </div>
-            <div class="profile-menu-item" onclick="window.location.href='${basePath}ubits-colaborador/lms-creator/contenidos.html'">
-                <i class="far fa-bolt"></i>
-                <span>Modo LMS Creator</span>
-            </div>
-            <div class="profile-menu-divider"></div>
-            <div class="profile-menu-item" onclick="window.open('${basePath}documentacion/documentacion.html', '_blank')">
-                <i class="far fa-book"></i>
-                <span>Documentación</span>
-            </div>
-            <div class="profile-menu-divider"></div>
-            <div class="profile-menu-item" onclick="handlePasswordChange()">
-                <i class="far fa-key"></i>
-                <span>Cambio de contraseña</span>
-            </div>
-            <div class="profile-menu-item" onclick="handleLogout()">
-                <i class="far fa-sign-out"></i>
-                <span>Cerrar sesión</span>
-            </div>
-        </div>
     `;
     } else if (variant === 'creator') {
         // Variante Creator: accesos a LMS Creator, planes, certificados y universidad corporativa (mismo pie que colaborador)
@@ -550,41 +550,12 @@ function loadSidebar(variantOrActiveButton = 'default', activeButton = null) {
                     <i class="far fa-moon"></i>
                 </button>
                 <div class="user-avatar-container">
-                    <div class="user-avatar" id="sidebar-avatar-creator" onclick="toggleSidebarProfileMenu(event)">
+                    <div class="user-avatar" id="sidebar-avatar-creator" role="button" tabindex="0" aria-label="Menú de cuenta">
                         <img src="${basePath}images/Profile-image.jpg" alt="Usuario" class="avatar-image">
                     </div>
                 </div>
             </div>
         </aside>
-        <div class="sidebar-profile-menu" id="sidebar-profile-menu">
-            <div class="profile-menu-item" onclick="window.location.href='${basePath}ubits-colaborador/perfil/profile.html'">
-                <i class="far fa-user"></i>
-                <span>Ver mi perfil</span>
-            </div>
-            <div class="profile-menu-divider"></div>
-            <div class="profile-menu-item" onclick="window.location.href='${basePath}index.html'">
-                <i class="far fa-user-gear"></i>
-                <span>Modo colaborador</span>
-            </div>
-            <div class="profile-menu-item" onclick="window.location.href='${basePath}ubits-admin/inicio/admin.html'">
-                <i class="far fa-laptop"></i>
-                <span>Modo administrador</span>
-            </div>
-            <div class="profile-menu-divider"></div>
-            <div class="profile-menu-item" onclick="window.open('${basePath}documentacion/documentacion.html', '_blank')">
-                <i class="far fa-book"></i>
-                <span>Documentación</span>
-            </div>
-            <div class="profile-menu-divider"></div>
-            <div class="profile-menu-item" onclick="handlePasswordChange()">
-                <i class="far fa-key"></i>
-                <span>Cambio de contraseña</span>
-            </div>
-            <div class="profile-menu-item" onclick="handleLogout()">
-                <i class="far fa-sign-out"></i>
-                <span>Cerrar sesión</span>
-            </div>
-        </div>
     `;
     } else {
         // Variante Default
@@ -631,52 +602,18 @@ function loadSidebar(variantOrActiveButton = 'default', activeButton = null) {
                     <i class="far fa-moon"></i>
                 </button>
                 <div class="user-avatar-container">
-                    <div class="user-avatar" id="sidebar-avatar-default" onclick="toggleSidebarProfileMenu(event)">
+                    <div class="user-avatar" id="sidebar-avatar-default" role="button" tabindex="0" aria-label="Menú de cuenta">
                         <img src="${basePath}images/Profile-image.jpg" alt="Usuario" class="avatar-image">
                     </div>
                 </div>
             </div>
         </aside>
-        
-        <!-- Profile menu para sidebar default -->
-        <div class="sidebar-profile-menu" id="sidebar-profile-menu">
-            <div class="profile-menu-item" onclick="window.location.href='${basePath}ubits-colaborador/perfil/profile.html'">
-                <i class="far fa-user"></i>
-                <span>Ver mi perfil</span>
-            </div>
-            <div class="profile-menu-divider"></div>
-            <div class="profile-menu-item" onclick="window.location.href='${basePath}ubits-admin/inicio/admin.html'">
-                <i class="far fa-laptop"></i>
-                <span>Modo administrador</span>
-            </div>
-            <div class="profile-menu-item" onclick="window.location.href='${basePath}ubits-colaborador/lms-creator/contenidos.html'">
-                <i class="far fa-bolt"></i>
-                <span>Modo LMS Creator</span>
-            </div>
-            <div class="profile-menu-divider"></div>
-            <div class="profile-menu-item" onclick="window.open('${basePath}documentacion/documentacion.html', '_blank')">
-                <i class="far fa-book"></i>
-                <span>Documentación</span>
-            </div>
-            <div class="profile-menu-divider"></div>
-            <div class="profile-menu-item" onclick="handlePasswordChange()">
-                <i class="far fa-key"></i>
-                <span>Cambio de contraseña</span>
-            </div>
-            <div class="profile-menu-item" onclick="handleLogout()">
-                <i class="far fa-sign-out"></i>
-                <span>Cerrar sesión</span>
-            </div>
-        </div>
     `;
     }
     
     // Insertar el HTML
     sidebarContainer.innerHTML = sidebarHTML;
     console.log('HTML insertado en sidebar container');
-    
-    // Inicializar el listener de click fuera del menú de perfil
-    initSidebarProfileMenuClickOutside();
     
     // Ajustar altura del sidebar dinámicamente
     adjustSidebarHeight();
@@ -775,62 +712,29 @@ function updateActiveSidebarButton(activeButton) {
     }
 }
 
-// Funciones para el profile menu del sidebar
-function toggleSidebarProfileMenu(event) {
-    event.stopPropagation(); // Evitar que el click se propague
-    const menu = document.getElementById('sidebar-profile-menu');
-    if (menu) {
-        const isShowing = menu.classList.contains('show');
-        if (isShowing) {
-            menu.classList.remove('show');
-        } else {
-            menu.classList.add('show');
-        }
-    }
-}
+function buildSidebarAvatarSubmenuOptions(variant, basePath) {
+    const options = [];
 
-function hideSidebarProfileMenu() {
-    const menu = document.getElementById('sidebar-profile-menu');
-    if (menu) {
-        menu.classList.remove('show');
-    }
-}
+    options.push({
+        text: 'Ver mi perfil',
+        value: basePath + 'ubits-colaborador/perfil/profile.html',
+        leftIcon: 'user'
+    });
 
-// Cerrar el menú al hacer clic fuera de él
-function initSidebarProfileMenuClickOutside() {
-    // Remover listener anterior si existe para evitar duplicados
-    if (window._sidebarProfileMenuClickHandler) {
-        document.removeEventListener('click', window._sidebarProfileMenuClickHandler);
+    if (variant === 'admin') {
+        options.push({ text: 'Modo colaborador', value: basePath + 'index.html', leftIcon: 'user-gear' });
+        options.push({ text: 'Modo LMS Creator', value: basePath + 'ubits-colaborador/lms-creator/contenidos.html', leftIcon: 'bolt' });
+    } else if (variant === 'creator') {
+        options.push({ text: 'Modo colaborador', value: basePath + 'index.html', leftIcon: 'user-gear' });
+        options.push({ text: 'Modo administrador', value: basePath + 'ubits-admin/inicio/admin.html', leftIcon: 'laptop' });
+    } else {
+        options.push({ text: 'Modo administrador', value: basePath + 'ubits-admin/inicio/admin.html', leftIcon: 'laptop' });
+        options.push({ text: 'Modo LMS Creator', value: basePath + 'ubits-colaborador/lms-creator/contenidos.html', leftIcon: 'bolt' });
     }
-    
-    // Crear nuevo handler
-    window._sidebarProfileMenuClickHandler = function(e) {
-        const menu = document.getElementById('sidebar-profile-menu');
-        const avatarAdmin = document.getElementById('sidebar-avatar-admin');
-        const avatarDefault = document.getElementById('sidebar-avatar-default');
-        const avatarCreator = document.getElementById('sidebar-avatar-creator');
-        
-        if (menu && menu.classList.contains('show')) {
-            // Si el click no fue en el menú ni en el avatar, cerrar el menú
-            if (!menu.contains(e.target) && 
-                !avatarAdmin?.contains(e.target) && 
-                !avatarDefault?.contains(e.target) &&
-                !avatarCreator?.contains(e.target)) {
-                hideSidebarProfileMenu();
-            }
-        }
-    };
-    
-    // Agregar el listener
-    document.addEventListener('click', window._sidebarProfileMenuClickHandler);
-}
 
-// Exportar funciones globalmente
-window.showSidebarProfileMenu = function() {
-    const menu = document.getElementById('sidebar-profile-menu');
-    if (menu) {
-        menu.classList.add('show');
-    }
-};
-window.hideSidebarProfileMenu = hideSidebarProfileMenu;
-window.toggleSidebarProfileMenu = toggleSidebarProfileMenu;
+    options.push({ text: 'Documentación', value: 'action:documentacion', leftIcon: 'book' });
+    options.push({ text: 'Cambio de contraseña', value: 'action:password', leftIcon: 'key' });
+    options.push({ text: 'Cerrar sesión', value: 'action:logout', leftIcon: 'sign-out-alt' });
+
+    return options;
+}
