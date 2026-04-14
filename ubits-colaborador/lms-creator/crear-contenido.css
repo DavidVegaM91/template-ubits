@@ -47,33 +47,29 @@
     min-height: 0;
 }
 
+/* <a> como botón: forzar border-box para que height:32px sea el total, igual que <button> */
 .crear-contenido-shell__header > .ubits-button {
     flex-shrink: 0;
+    box-sizing: border-box;
 }
 
-.crear-contenido-shell__header-primary.contenido-borrador-editor__drawer-header-text {
-    flex: 1 1 0%;
+.crear-contenido__header-left {
+    flex: 1;
     min-width: 0;
-    min-height: 0;
     display: flex;
     align-items: center;
-    justify-content: flex-start;
 }
 
-.crear-contenido-shell .contenido-borrador-editor__drawer-title-row {
-    display: flex;
+.crear-contenido__header-title-row {
+    display: inline-flex;
     flex-direction: row;
-    flex-wrap: nowrap;
     align-items: center;
     gap: var(--gap-sm);
     min-width: 0;
     max-width: 100%;
-    /* Mismo alto que .ubits-button--sm.ubits-button--icon-only (32px) — evita “struts”/line-box raros */
-    max-height: var(--space-8);
-    overflow: hidden;
 }
 
-.crear-contenido-shell .contenido-borrador-editor__drawer-title-row .ubits-drawer-title {
+.crear-contenido__header-title {
     flex: 0 1 auto;
     min-width: 0;
     overflow: hidden;
@@ -83,18 +79,18 @@
     color: var(--ubits-fg-1-high);
 }
 
-.crear-contenido-shell .contenido-borrador-editor__drawer-title-row .ubits-status-tag {
+.crear-contenido__header-title-row .ubits-status-tag {
     flex-shrink: 0;
 }
 
-.crear-contenido-shell .contenido-borrador-editor__drawer-save-host {
+.crear-contenido__header-save {
     flex-shrink: 0;
     display: inline-flex;
     align-items: center;
     line-height: 0;
 }
 
-.crear-contenido-shell .contenido-borrador-editor__drawer-save-host .ubits-save-indicator {
+.crear-contenido__header-save .ubits-save-indicator {
     vertical-align: middle;
 }
 

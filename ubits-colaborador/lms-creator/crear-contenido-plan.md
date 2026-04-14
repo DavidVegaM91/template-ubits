@@ -192,6 +192,17 @@ Navegación clara hacia la página nueva; la experiencia drawer sigue disponible
 | Reglas CSS conflictivas | Todo lo nuevo bajo prefijo del shell (p. ej. `.crear-contenido-shell`) en `crear-contenido.css`. |
 | Paso 4 con drawer anidado | Resuelto al no usar drawer en el contenedor principal de esta experiencia. |
 
+### 5.1 Bug ya visto (no repetir): `<a>` con clases de Button y `box-sizing`
+
+Al maquetar el header (Fase 2), el alto **no** coincidía con el drawer (~65px vs ~86px). La causa **no** era solo flex/gap: el **cierre** es un **enlace** (`<a href="contenidos.html">`) con las mismas clases que un botón UBITS (`ubits-button`, `sm`, `icon-only`).
+
+| Qué pasa | Detalle |
+|----------|---------|
+| **Síntoma** | El enlace “botón” mide **más alto** de lo esperado; el **flex** del header adopta ese alto y la cabecera se infla. |
+| **Por qué** | En `components/button.css`, `height` (p. ej. **32px** en `sm`) está pensada como **alto total** del control. Los `<button>` suelen acabar comportándose como **`border-box`** en la práctica. Un `<a class="ubits-button">` puede seguir en **`content-box`**: entonces `height: 32px` aplica solo al **contenido** y el **padding vertical se suma** por fuera (~51px de alto real), no 32px. |
+| **Corrección** | En `crear-contenido.css`, en el selector del cierre (p. ej. `.crear-contenido-shell__header > .ubits-button`), añadir **`box-sizing: border-box`** para que `height` y padding cuadren como en el drawer (que usa `<button>`). Alternativa: usar `<button type="button">` + navegación por JS si no debe ser enlace nativo. |
+| **Regla para quien implemente** | Si en **cualquier página** se reutilizan clases de `button.css` en un **`<a>`**, no dar por hecho que el tamaño coincide con `<button>`: comprobar modelo de caja o fijar `border-box` en ese contexto. `button.css` no fuerza `box-sizing` globalmente sobre enlaces. |
+
 ---
 
 ## 6. Checklist rápido “no romper lo existente”
@@ -202,6 +213,7 @@ Antes de cada PR/commit de este plan, verificar:
 - [ ] `crear-contenido-drawer.js` — sin cambios no acordados.
 - [ ] `contenidos.css` — sin borrar bloques `crear-contenido-drawer-*` / `crear-contenido-recursos-*` usados por el drawer.
 - [ ] Nuevos archivos referenciados correctamente desde la página nueva.
+- [ ] Si hay **`<a class="ubits-button">`**: `box-sizing: border-box` en CSS de página o verificar alto (ver §5.1).
 
 ---
 
@@ -219,4 +231,4 @@ Antes de cada PR/commit de este plan, verificar:
 
 ---
 
-*Documento generado como guía de implementación. Última actualización: Fase 2 maquetación shell lista (pendiente aprobación PM).*
+*Documento generado como guía de implementación. Última actualización: §5.1 documentación bug `<a>` + Button / `box-sizing` (header crear-contenido).*
