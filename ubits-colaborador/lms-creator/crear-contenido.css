@@ -4,10 +4,17 @@
    Referencia visual: components/drawer.css + .crear-contenido-drawer-overlay en contenidos.css (solo lectura al diseñar).
    ======================================== */
 
-/* --- Página: una columna, alto viewport, sin scroll en body (scroll en main) --- */
-.page-crear-contenido {
+/* --- Página: alto fijo al viewport; scroll solo en la columna editor (como el drawer).
+   styles.css pone body { overflow-y: auto !important; } — hay que anularlo aquí o el footer
+   baja con el documento y hay que hacer scroll para verlo. --- */
+body.page-crear-contenido {
     margin: 0;
-    overflow: hidden;
+    box-sizing: border-box;
+    height: 100vh;
+    height: 100dvh;
+    max-height: 100vh;
+    max-height: 100dvh;
+    overflow: hidden !important;
     overscroll-behavior: none;
 }
 
@@ -15,8 +22,9 @@
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
-    min-height: 100vh;
-    min-height: 100dvh;
+    height: 100%;
+    min-height: 0;
+    max-height: 100%;
     width: 100%;
     background: var(--ubits-bg-1);
     color: var(--ubits-fg-1-medium);
@@ -101,13 +109,11 @@
     }
 }
 
-/* --- Main: ocupa el espacio restante y hace scroll --- */
+/* --- Main: ocupa el hueco entre header y footer; el scroll va en .crear-contenido-editor__main (contenidos.css) --- */
 .crear-contenido-shell__main {
     flex: 1 1 auto;
     min-height: 0;
-    overflow-y: auto;
-    overflow-x: hidden;
-    -webkit-overflow-scrolling: touch;
+    overflow: hidden;
     display: flex;
     flex-direction: column;
     background: var(--ubits-bg-2);

@@ -49,7 +49,7 @@ Eliminar por completo la experiencia drawer desde `contenidos.html` cuando PM/UX
 1. **Nombre del HTML:** `crear-contenido.html` (junto a `crear-contenido.css` / `crear-contenido.js` en la misma carpeta `lms-creator/`).
 2. **Chrome de navegación:** **sin SubNav ni Sidebar** en esta página. Solo el **contenido central** del flujo (equivalente al cuerpo del drawer).
 3. **Header y footer “como drawer”:** el **fondo** (background) del header y del footer debe ocupar el **ancho completo del viewport** (full-bleed), igual que en el componente drawer. El **contenido** interno (título, botón cerrar, acciones del footer) puede ir en un contenedor alineado al ancho útil del flujo (padding / max-width según diseño), pero las **bandas** superior e inferior se extienden de borde a borde. En Fase 2 se implementa en `crear-contenido.css` con estructura tipo: fila header full-width → capa interior; `main` scrollable; fila footer full-width → capa interior.
-4. **URLs con hashtags:** **sí**, mantener el mismo criterio que hoy para saltar a pasos (`#crear-contenido`, `#crear-contenido-recursos`, y alias si existía en drawer, p. ej. `#crear-contenido-step-recursos`) sobre la URL `crear-contenido.html` para QA rápido.
+4. **URLs con hashtags:** **sí**. En **`crear-contenido.html`** el paso Recursos usa hash corto **`#recursos`** (la ruta ya dice «crear-contenido»); Portada **`#crear-contenido`** o sin hash. Se admiten como alias los hashes largos del drawer y se normalizan a `#recursos`. En **`contenidos.html`** el drawer sigue con `#crear-contenido-recursos` / alias.
 
 **Entregables (checklist Fase 0)**
 - [x] Nombre final de archivos: `crear-contenido.html`, `crear-contenido.css`, `crear-contenido.js`.
@@ -125,7 +125,7 @@ La nueva página muestra **los mismos bloques** (stepper, formulario portada, á
 - [ ] Ajustar selectores/IDs al namespace de la página nueva (`OVERLAY_ID` → contenedor raíz de página, etc.).
 - [ ] Comportamiento esperado: mismos pasos, mismo hash si se definió en Fase 0, mismas validaciones que ya tenéis en el drawer **en la medida replicable**.
 - [ ] **Cero cambios** en `crear-contenido-drawer.js` en esta fase (salvo bug de seguridad acordado).
-- [ ] Sincronizar **hashes** con la misma semántica que el drawer (`#crear-contenido`, `#crear-contenido-recursos`, etc.) sobre `crear-contenido.html`.
+- [ ] Sincronizar **hashes** en `crear-contenido.html` (`#crear-contenido`, `#recursos`, alias largos → canónico `#recursos`).
 
 **Criterio de aprobación**  
 Flujo usable en `crear-contenido.html` **igual** al del drawer (crear desde cero, pasos, recursos, títulos, etc.), comparando con el drawer en `contenidos.html`.

@@ -52,6 +52,23 @@ El asistente de creación tiene **4 pasos**, en este orden:
   - `#crear-contenido-step-recursos` — **mismo efecto** que `#crear-contenido-recursos` (alias por nombre de paso); al avanzar con «Siguiente» la URL pasa al hash canónico `#crear-contenido-recursos`.
 - En producto real, validar que solo se permita el paso 2 si la portada cumple reglas de negocio (en el template, el stepper exige portada completa para ir a Recursos salvo entrada directa por URL de prototipo).
 
+### Página dedicada (`crear-contenido.html`)
+
+Además del flujo en **drawer** desde `contenidos.html`, existe una **página HTML propia** que replica el **cuerpo** del mismo flujo (misma estructura de pasos, portada, recursos, etc.) sin usar `openDrawer`. Plan de trabajo: `crear-contenido-plan.md`. Archivos: `crear-contenido.html`, `crear-contenido.css`, `crear-contenido.js`. La experiencia en drawer **sigue siendo la referencia** hasta un corte acordado con producto; no se elimina el drawer desde lista sin decisión explícita.
+
+**Layout (footer siempre visible):** en `general-styles/styles.css`, `body` lleva `overflow-y: auto !important`, lo que hace que **todo el documento** haga scroll y el **footer** del shell quede **al final del contenido** (hay que bajar para verlo). En `crear-contenido.css` la página usa `body.page-crear-contenido` con **alto fijo al viewport** (`100vh` / `100dvh`) y **`overflow: hidden !important`** para anular ese comportamiento. El **scroll** del contenido queda en la **columna central** (`.crear-contenido-editor__main`, reglas en `contenidos.css`), igual que dentro del drawer — no en el `main` del shell ni en el `body`.
+
+**Footer — paso 1 (Portada):** no debe mostrarse el botón **Anterior** (no aplica “paso previo”). Mismo criterio que el drawer: botón `#crear-contenido-btn-anterior` con **`display: none`** y **`aria-hidden="true"`** mientras se está en Portada; **`#crear-contenido-btn-siguiente`** para **Siguiente**. Cuando la lógica de cambio de paso viva en `crear-contenido.js`, mostrar **Anterior** al pasar a pasos posteriores, alineado a `crear-contenido-drawer.js`.
+
+**Enlaces directos al paso 2 (Recursos):**
+
+| Entorno | URL (ruta relativa desde `lms-creator/`) |
+|---------|------------------------------------------|
+| Lista + drawer | `contenidos.html#crear-contenido-recursos` o `contenidos.html#crear-contenido-step-recursos` (alias) |
+| Página dedicada | **`crear-contenido.html#recursos`** (canónico). Siguen admitiéndose como alias los hashes largos del drawer; la URL se normaliza a `#recursos`. |
+
+**Paso 1 (Portada) en la página dedicada:** `crear-contenido.html#crear-contenido` o sin hash. El cableado vive en `crear-contenido.js` (sin overlay).
+
 ---
 
 ## Paso 1 — Portada
@@ -267,4 +284,4 @@ Este patrón de **contenido complementario** (Texto / Archivo descargable) apare
 - Mantener tokens y tipografía UBITS; CSS de página en archivo dedicado junto al HTML del Creator cuando corresponda.  
 - Cualquier cambio a este documento debe reflejar acuerdos de producto y, cuando aplique, la documentación UBITS del componente tocado.
 
-*Última actualización: paso 2 — página nueva: título inline + Resources block; icono blank en índice hasta recurso (documentado, pendiente enlace con tipo); nombres de sección «Sección N», empty state solo sin páginas, añadir página (derecha / botón por sección), modal al desactivar secciones con páginas repartidas, orden global mover arriba/abajo; paso 3 — validación páginas/secciones vacías + clases `--error` en Páginas y Sección creator; validación portada paso 1; hashes de creación; recursos Video/Texto.*
+*Última actualización: página dedicada paso 2 con hash corto `#recursos`; drawer sigue con `#crear-contenido-recursos`. `crear-contenido.js`. Layout footer anclado; footer paso 1 sin Anterior. Resto: paso 2 índice/recursos; paso 3 validación; portada; recursos Video/Texto.*
