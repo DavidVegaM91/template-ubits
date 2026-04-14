@@ -40,6 +40,7 @@ const DOCS_SIDEBAR_SECTIONS = [
     { id: 'modal', title: 'Modal', group: 'ui' },
     { id: 'paginator', title: 'Paginator', group: 'ui' },
     { id: 'popover', title: 'Popover', group: 'ui' },
+    { id: 'submenu', title: 'Submenu', group: 'ui' },
     { id: 'radio-button', title: 'Radio Button', group: 'ui' },
     { id: 'rich-text-editor', title: 'Rich text editor', group: 'ui' },
     { id: 'status-tag', title: 'Status Tag', group: 'ui' },
@@ -299,6 +300,7 @@ function initDocsSidebar(activeSection) {
             'table': 'table.html',
             'tooltip': 'tooltip.html',
             'calendar': 'calendar.html',
+            'submenu': 'submenu.html',
             'task-strip': 'task-strip.html'
         };
         

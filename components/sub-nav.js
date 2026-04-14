@@ -403,6 +403,7 @@ const PAGE_TO_TAB = {
     'loader.html': 'section3',
     'modal.html': 'section3',
     'popover.html': 'section3',
+    'submenu.html': 'section3',
     'paginator.html': 'section3',
     'radio-button.html': 'section3',
     'save-indicator.html': 'section3',

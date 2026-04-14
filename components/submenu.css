@@ -1,0 +1,133 @@
+/**
+ * UBITS Submenu — panel flotante tipo “flyout” / submenú de navegación.
+ * Similar a Popover en posicionamiento (arriba/abajo/izquierda/derecha + alineación inicio/centro/fin),
+ * pero sin colita, con lista de opciones y título opcional.
+ *
+ * Defaults:
+ * - Variante: dark (tokens inverted)
+ * - Título: visible
+ * - Radius: --border-radius-lg (16px)
+ *
+ * Requiere: ubits-colors, ubits-typography, fontawesome-icons.css si hay iconos.
+ */
+
+.ubits-submenu {
+    /* Elevación similar a tooltip/popover: una sola sombra para toda la forma */
+    --ubits-submenu-shadow-ambient: rgba(0, 0, 0, 0.12);
+    --ubits-submenu-shadow-key: rgba(0, 0, 0, 0.14);
+
+    /* Theme tokens (default: dark/inverted) */
+    --ubits-submenu-bg: var(--ubits-bg-1-inverted);
+    --ubits-submenu-fg: var(--ubits-fg-1-high-inverted);
+    --ubits-submenu-fg-muted: var(--ubits-fg-1-medium-inverted);
+    --ubits-submenu-border: var(--ubits-border-1-inverted);
+    --ubits-submenu-hover: var(--ubits-bg-2-inverted);
+
+    position: fixed;
+    z-index: 10020;
+    box-sizing: border-box;
+    min-width: 220px;
+    max-width: min(100vw - 32px, 360px);
+    margin: 0;
+    padding: 0;
+    overflow: visible;
+    pointer-events: auto;
+    filter: drop-shadow(0 0 2px var(--ubits-submenu-shadow-ambient))
+        drop-shadow(0 4px 8px var(--ubits-submenu-shadow-key));
+}
+
+.ubits-submenu * {
+    box-sizing: border-box;
+}
+
+/* Variante clara (similar a Tooltip "normal") */
+.ubits-submenu--light {
+    --ubits-submenu-bg: var(--ubits-bg-1);
+    --ubits-submenu-fg: var(--ubits-fg-1-high);
+    --ubits-submenu-fg-muted: var(--ubits-fg-1-medium);
+    --ubits-submenu-border: var(--ubits-border-1);
+    --ubits-submenu-hover: var(--ubits-bg-2);
+}
+
+.ubits-submenu__surface {
+    background: var(--ubits-submenu-bg);
+    color: var(--ubits-submenu-fg);
+    border: 1px solid var(--ubits-submenu-border);
+    border-radius: var(--border-radius-lg);
+    overflow: hidden;
+}
+
+.ubits-submenu__header {
+    padding: var(--padding-md) var(--padding-lg);
+    border-bottom: 1px solid var(--ubits-submenu-border);
+}
+
+.ubits-submenu__header:empty {
+    display: none;
+}
+
+.ubits-submenu__title {
+    margin: 0;
+    color: var(--ubits-submenu-fg);
+}
+
+.ubits-submenu__options {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    width: 100%;
+    max-height: min(60vh, 420px);
+    overflow-y: auto;
+}
+
+.ubits-submenu__option {
+    appearance: none;
+    border: none;
+    background: transparent;
+    color: var(--ubits-submenu-fg);
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: var(--gap-md);
+    padding: var(--padding-sm) var(--padding-lg);
+    cursor: pointer;
+    text-align: left;
+    font-family: var(--ubits-font-family-sans);
+}
+
+.ubits-submenu__option:hover {
+    background: var(--ubits-submenu-hover);
+}
+
+.ubits-submenu__option:focus-visible {
+    outline: 2px solid var(--ubits-accent-brand);
+    outline-offset: -2px;
+}
+
+.ubits-submenu__option-left {
+    display: inline-flex;
+    align-items: center;
+    flex-shrink: 0;
+    width: 18px;
+    justify-content: center;
+}
+
+.ubits-submenu__option-left i {
+    color: var(--ubits-submenu-fg-muted);
+    font-size: var(--font-size-sm);
+}
+
+.ubits-submenu__option-text {
+    flex: 1 1 auto;
+    min-width: 0;
+    color: var(--ubits-submenu-fg);
+}
+
+.ubits-submenu__option-text.ubits-body-sm-regular,
+.ubits-submenu__option-text.ubits-body-sm-semibold,
+.ubits-submenu__option-text.ubits-body-sm-bold {
+    /* En caso de herencias raras: asegurar color por token del componente */
+    color: var(--ubits-submenu-fg);
+}
+

@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="../../images/Ubits-logo-dark.svg">
+    <title>Submenu | UBITS Playground</title>
+
+    <link rel="stylesheet" href="../../general-styles/ubits-colors.css">
+    <link rel="stylesheet" href="../../general-styles/styles.css">
+    <link rel="stylesheet" href="../../general-styles/fontawesome-icons.css">
+    <link rel="stylesheet" href="../../general-styles/ubits-typography.css">
+
+    <link rel="stylesheet" href="../../components/sub-nav.css">
+    <link rel="stylesheet" href="../../components/sidebar.css">
+    <link rel="stylesheet" href="../../components/button.css">
+    <link rel="stylesheet" href="../../components/checkbox.css">
+    <link rel="stylesheet" href="../../components/input.css">
+    <link rel="stylesheet" href="../../components/submenu.css">
+    <link rel="stylesheet" href="../../components/toast.css">
+
+    <link rel="stylesheet" href="../../docs/docs-sidebar.css">
+    <link rel="stylesheet" href="../../docs/docstyles.css">
+
+    <style>
+        .submenu-preview-area {
+            min-height: 220px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--ubits-bg-2);
+            border-radius: var(--border-radius-md);
+            border: 1px solid var(--ubits-border-1);
+            padding: var(--padding-2xl);
+            position: relative;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body class="componentes-page" data-theme="light">
+    <div class="dashboard-container">
+        <main class="main-content">
+            <div id="top-nav-container"></div>
+            <div style="display: flex;">
+                <div id="docs-dropdown-container"></div>
+                <div id="docs-sidebar-container"></div>
+
+                <div class="components-content">
+                    <div class="content-area" style="display: block; width: 100%;">
+                        <div style="text-align: center; margin-bottom: 60px;">
+                            <h1 class="ubits-display-d2-bold" style="margin-bottom: 24px; color: var(--ubits-accent-brand);">
+                                Submenu
+                            </h1>
+                            <p class="ubits-body-md-regular" style="max-width: 800px; margin: 0 auto 32px; line-height: 1.6;">
+                                Panel flotante tipo <strong>submenú</strong> (flyout) para navegación: título opcional y lista de opciones. Se posiciona con
+                                <strong>arriba/abajo/izquierda/derecha</strong> + alineación <strong>inicio/centro/fin</strong>, nunca se sale del viewport, y se cierra con <strong>clic fuera</strong> o <strong>Escape</strong>.
+                            </p>
+                        </div>
+
+                        <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: var(--border-radius-lg); margin-bottom: 40px;">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-eye" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Preview del componente
+                            </h2>
+                            <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6;">
+                                Igual que Popover en cuanto a posicionamiento, pero <strong>sin colita</strong>. Por defecto es <strong>dark</strong> (superficie inverted) y con <strong>título</strong> encendido.
+                            </p>
+
+                            <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: var(--border-radius-md);">
+                                <div style="display: flex; flex-wrap: wrap; gap: var(--gap-2xl); margin-bottom: var(--padding-2xl); padding-bottom: var(--padding-2xl); border-bottom: 1px solid var(--ubits-border-1);">
+                                    <div style="flex: 1; min-width: 200px;">
+                                        <div id="submenu-pos-container"></div>
+                                    </div>
+                                    <div style="flex: 1; min-width: 200px;">
+                                        <div id="submenu-align-container"></div>
+                                    </div>
+                                    <div style="flex: 1; min-width: 260px;">
+                                        <label class="ubits-body-sm-bold" style="display: block; margin-bottom: var(--gap-sm); color: var(--ubits-fg-1-high);">Opciones</label>
+                                        <div style="display: flex; gap: var(--gap-lg); align-items: center; flex-wrap: wrap; min-height: 40px;">
+                                            <label class="ubits-checkbox ubits-checkbox--sm ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">
+                                                <input type="checkbox" class="ubits-checkbox__input" id="submenu-opt-light">
+                                                <span class="ubits-checkbox__box"><i class="far fa-check"></i></span>
+                                                <span class="ubits-checkbox__label">Claro</span>
+                                            </label>
+                                            <label class="ubits-checkbox ubits-checkbox--sm ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">
+                                                <input type="checkbox" class="ubits-checkbox__input" id="submenu-opt-title" checked>
+                                                <span class="ubits-checkbox__box"><i class="far fa-check"></i></span>
+                                                <span class="ubits-checkbox__label">Título</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="submenu-preview-area">
+                                    <div style="background: var(--ubits-bg-1); padding: var(--padding-2xl); border-radius: var(--border-radius-md); border: 1px dashed var(--ubits-border-1); text-align: center; max-width: 340px;">
+                                        <p class="ubits-body-sm-bold" style="margin-bottom: var(--gap-sm); color: var(--ubits-accent-brand);">Zona de pruebas</p>
+                                        <p class="ubits-body-sm-regular" style="margin-bottom: var(--padding-lg); color: var(--ubits-fg-1-medium);">
+                                            Usa los controles para cambiar posición/alineación. El submenú se abre anclado al botón.
+                                        </p>
+                                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="submenu-demo-anchor">
+                                            <i class="far fa-bars"></i>
+                                            <span>Abrir submenú</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: var(--border-radius-lg); margin-bottom: 40px;">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-info-circle" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Características generales
+                            </h2>
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: var(--gap-lg);">
+                                <div style="text-align: center; padding: var(--padding-md); background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: var(--gap-sm);"><i class="far fa-arrows-up-down-left-right"></i></div>
+                                    <div class="ubits-body-sm-bold">Posicionamiento</div>
+                                    <div class="ubits-body-sm-regular">Arriba/abajo/izquierda/derecha + alineación inicio/centro/fin.</div>
+                                </div>
+                                <div style="text-align: center; padding: var(--padding-md); background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: var(--gap-sm);"><i class="far fa-maximize"></i></div>
+                                    <div class="ubits-body-sm-bold">Nunca sale del viewport</div>
+                                    <div class="ubits-body-sm-regular">Si no cabe, hace flip y luego clamp para quedar dentro de pantalla.</div>
+                                </div>
+                                <div style="text-align: center; padding: var(--padding-md); background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: var(--gap-sm);"><i class="far fa-moon"></i></div>
+                                    <div class="ubits-body-sm-bold">Variantes</div>
+                                    <div class="ubits-body-sm-regular">Dark por defecto (inverted) y opción clara.</div>
+                                </div>
+                                <div style="text-align: center; padding: var(--padding-md); background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: var(--gap-sm);"><i class="far fa-xmark"></i></div>
+                                    <div class="ubits-body-sm-bold">Cierre</div>
+                                    <div class="ubits-body-sm-regular">Clic fuera o Escape cierran el submenú automáticamente.</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: var(--border-radius-lg); margin-bottom: 40px;">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-comments" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Prompts útiles
+                            </h2>
+                            <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
+                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                                    <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Submenú anclado a un ítem del sidebar</h3>
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('sm-p1')"><i class="far fa-copy"></i><span>Copiar</span></button>
+                                </div>
+                                <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm);">
+                                    <pre style="margin: 0; font-size: var(--font-size-sm); white-space: pre-wrap;"><code id="sm-p1" class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Crea un submenú (flyout) para un item del sidebar usando el componente UBITS Submenu. Debe abrirse al clic, cerrar con clic fuera o Escape, y posicionarse a la derecha del item con alineación inicio. Debe tener título (por defecto encendido) y una lista de opciones (cada una con icono opcional). Usa variante dark por defecto y provee opción light si se necesita.</code></pre>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="background: var(--ubits-bg-1); border-radius: var(--border-radius-lg); margin-bottom: 40px; overflow: hidden;">
+                            <div style="padding: 32px; text-align: center; border-bottom: 1px solid var(--ubits-border-1);">
+                                <h2 class="ubits-heading-h2" style="margin-bottom: 0; color: var(--ubits-fg-1-high);">
+                                    <i class="far fa-code" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                    Documentación técnica
+                                </h2>
+                                <p class="ubits-body-md-regular" style="margin-top: 16px; color: var(--ubits-fg-1-medium);">API, opciones y eventos.</p>
+                            </div>
+                            <div style="background: var(--ubits-bg-2); padding: 20px; text-align: center; cursor: pointer;" onclick="toggleTechnicalDocs()">
+                                <span class="ubits-body-md-regular" style="color: var(--ubits-accent-brand); display: flex; align-items: center; justify-content: center; gap: 8px;">
+                                    <i class="far fa-chevron-down"></i> Mostrar
+                                </span>
+                            </div>
+                            <div id="technical-docs-content" style="display: none; padding: 0;">
+                                <div style="padding: 32px; border-bottom: 1px solid var(--ubits-border-1);">
+                                    <div style="display: flex; justify-content: space-between; margin-bottom: 24px;">
+                                        <h2 class="ubits-heading-h2" style="margin: 0;">API</h2>
+                                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('sm-tech')"><i class="far fa-copy"></i><span>Copiar</span></button>
+                                    </div>
+                                    <pre style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm); overflow-x: auto;"><code id="sm-tech" class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">openSubmenu({\n  submenuId: 'mi-submenu',\n  anchorEl: HTMLElement,                  // obligatorio\n  placement: 'top'|'bottom'|'left'|'right',\n  align: 'start'|'center'|'end',          // inicio/centro/fin\n  offset: 8,\n  variant: 'dark'|'light',                // dark por defecto\n  title: 'Título',\n  showTitle: true,                        // true por defecto\n  options: [{ text, value, leftIcon? }],\n  closeOnEscape: true,\n  closeOnClickOutside: true,\n  zIndex: 10020,\n  onClose: function () {}\n});\n\ncloseSubmenu('mi-submenu');\nupdateSubmenuPosition('mi-submenu');\n\nEvento: ubits-submenu-select → detail: { value, text, anchor, submenu }</code></pre>
+                                </div>
+                                <div style="padding: 32px;">
+                                    <div style="display: flex; justify-content: space-between; margin-bottom: 16px;">
+                                        <h2 class="ubits-heading-h2" style="margin: 0;">Requisitos</h2>
+                                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('sm-req')"><i class="far fa-copy"></i><span>Copiar</span></button>
+                                    </div>
+                                    <pre style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm); overflow-x: auto;"><code id="sm-req" class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">CSS: submenu.css (+ ubits-colors.css, ubits-typography.css, fontawesome-icons.css)\nJS: submenu.js</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div id="ubits-toast-container"></div>
+
+    <script src="../../components/sidebar.js"></script>
+    <script src="../../components/sub-nav.js"></script>
+    <script src="../../components/toast.js"></script>
+    <script src="../../components/input.js"></script>
+    <script src="../../components/submenu.js"></script>
+    <script src="../../docs/docs-sidebar.js"></script>
+
+    <script>
+        var smState = { placement: 'right', align: 'start', light: false, title: true };
+
+        function smRenderControls() {
+            if (typeof createInput !== 'function') return;
+            createInput({
+                containerId: 'submenu-pos-container',
+                type: 'select',
+                label: 'Posición',
+                placeholder: 'Selecciona…',
+                selectOptions: [
+                    { value: 'top', text: 'Arriba' },
+                    { value: 'bottom', text: 'Abajo' },
+                    { value: 'left', text: 'Izquierda' },
+                    { value: 'right', text: 'Derecha' }
+                ],
+                value: smState.placement,
+                onChange: function (val) { smState.placement = val; smOpen(); }
+            });
+            createInput({
+                containerId: 'submenu-align-container',
+                type: 'select',
+                label: 'Alineación',
+                placeholder: 'Selecciona…',
+                selectOptions: [
+                    { value: 'start', text: 'Inicio' },
+                    { value: 'center', text: 'Centro' },
+                    { value: 'end', text: 'Fin' }
+                ],
+                value: smState.align,
+                onChange: function (val) { smState.align = val; smOpen(); }
+            });
+        }
+
+        function smOpen() {
+            var anchor = document.getElementById('submenu-demo-anchor');
+            if (!anchor || typeof openSubmenu !== 'function') return;
+            openSubmenu({
+                submenuId: 'demo-submenu',
+                anchorEl: anchor,
+                placement: smState.placement,
+                align: smState.align,
+                offset: 8,
+                variant: smState.light ? 'light' : 'dark',
+                title: 'Sección: Aprendizaje',
+                showTitle: smState.title,
+                options: [
+                    { text: 'Inicio', value: 'home', leftIcon: 'home' },
+                    { text: 'Catálogo', value: 'catalog', leftIcon: 'grid-2' },
+                    { text: 'Universidad corporativa', value: 'corp', leftIcon: 'graduation-cap' },
+                    { text: 'Zona de estudio', value: 'study', leftIcon: 'book-open' }
+                ]
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            if (typeof loadSubNav === 'function') loadSubNav('top-nav-container', 'documentacion');
+            if (typeof loadSidebar === 'function') loadSidebar('ninguno');
+            if (typeof loadDocsSidebar === 'function') loadDocsSidebar('submenu');
+
+            smRenderControls();
+            smOpen();
+
+            var cbLight = document.getElementById('submenu-opt-light');
+            if (cbLight) cbLight.addEventListener('change', function () { smState.light = cbLight.checked; smOpen(); });
+
+            var cbTitle = document.getElementById('submenu-opt-title');
+            if (cbTitle) cbTitle.addEventListener('change', function () { smState.title = cbTitle.checked; smOpen(); });
+
+            var anchor = document.getElementById('submenu-demo-anchor');
+            if (anchor) anchor.addEventListener('click', function () { smOpen(); });
+
+            document.addEventListener('ubits-submenu-select', function (ev) {
+                var d = ev.detail || {};
+                if (typeof showToast === 'function') {
+                    showToast('info', 'Seleccionado: ' + (d.text || d.value), { containerId: 'ubits-toast-container', duration: 2200 });
+                }
+            });
+        });
+
+        function toggleTechnicalDocs() {
+            var content = document.getElementById('technical-docs-content');
+            var open = content.style.display === 'none' || !content.style.display;
+            content.style.display = open ? 'block' : 'none';
+            var trigger = content.previousElementSibling;
+            if (trigger && trigger.querySelector('span')) {
+                trigger.querySelector('span').innerHTML = open
+                    ? '<i class=\"far fa-chevron-up\"></i> Ocultar'
+                    : '<i class=\"far fa-chevron-down\"></i> Mostrar';
+            }
+        }
+
+        function copyPrompt(id) {
+            var t = document.getElementById(id);
+            if (t) navigator.clipboard.writeText(t.textContent).then(function () {
+                if (typeof showToast === 'function') showToast('success', 'Copiado', { containerId: 'ubits-toast-container' });
+            });
+        }
+
+        function copyCode(id) {
+            var t = document.getElementById(id);
+            if (t) navigator.clipboard.writeText(t.textContent).then(function () {
+                if (typeof showToast === 'function') showToast('success', 'Copiado', { containerId: 'ubits-toast-container' });
+            });
+        }
+    </script>
+</body>
+</html>
+

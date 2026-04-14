@@ -346,7 +346,7 @@ openModal({
 
 ### **🚨 ESTÁNDAR: PÁGINA DE DOC DE COMPONENTE DECENTE**
 
-**Referencias que SÍ cumplen (no tocar):** alert, avatar, button, calendar, card-content, card-content-compact, learn-content-img-trailer, indice-creator, paginas-creator, seccion-creator, rich-text-editor, dropdown-menu, ia-button, input, paginator, toast, tooltip. **Base:** `component-doc-template.html`. **Tono:** como `alert.html` y `button.html`.
+**Referencias que SÍ cumplen (no tocar):** alert, avatar, button, calendar, card-content, card-content-compact, learn-content-img-trailer, indice-creator, paginas-creator, seccion-creator, rich-text-editor, dropdown-menu, ia-button, input, paginator, popover, submenu, toast, tooltip. **Base:** `component-doc-template.html`. **Tono:** como `alert.html` y `button.html`.
 
 **1. Descripción (Hero) – Sencilla, nada técnico.** Título + descripción en lenguaje de negocio (para qué sirve, dónde se usa). Sin clases, API ni archivos en la descripción principal.
 

@@ -145,6 +145,7 @@ Las páginas del Creator suelen cargar **`lms-creator.css`** más el **CSS homó
 - **Empty State** - Estados vacíos (icono, título, descripción, botones opcionales; tamaños de icono: sm, md, lg; casos de uso: búsqueda sin resultados, contenido vacío, estados iniciales) - **RENDERIZADO: loadEmptyState()**
 - **Paginator** - Paginación de resultados (navegación por páginas, items por página, callbacks de cambio) - **RENDERIZADO: loadPaginator()**
 - **Popover** - Panel flotante contextual (título, cuerpo, acciones; colita opcional como Tooltip; lado + alineación: 12 combinaciones; `noArrow` o sin ancla = sin flecha; cierre con Escape y clic fuera) - **RENDERIZADO: openPopover() / closePopover()**
+- **Submenu** - Panel flotante tipo submenú/flyout (sin colita): posicionamiento (top/bottom/left/right) + alineación (inicio/centro/fin), clamp al viewport, cierre con clic fuera o Escape; título opcional; variantes dark (default) y light - **RENDERIZADO: openSubmenu() / closeSubmenu()**
 - **Coachmark** - Product tour (máscara + spotlight, texto del paso con Popover, pasos y navegación; `UBITS_COACHMARK.start` / `close`) - **RENDERIZADO: coachmark.js** (requiere `popover.js` + `button.css`)
 - **Study Chat** - Chat de estudio con IA (interfaz especializada para aprendizaje) - **RENDERIZADO: loadStudyChat()**
 - **Avatar** - Avatar de usuario (tamaños, estados) - **RENDERIZADO: HTML directo**
@@ -371,6 +372,7 @@ Todos los componentes UBITS requieren imports obligatorios:
 - **`documentacion/componentes/loader.html`** - Documentación del componente Loader
 - **`documentacion/componentes/modal.html`** - Documentación del componente Modal
 - **`documentacion/componentes/popover.html`** - Documentación del componente Popover
+- **`documentacion/componentes/submenu.html`** - Documentación del componente Submenu
 - **`documentacion/componentes/coachmark.html`** - Documentación del componente Coachmark (product tour)
 - **`documentacion/componentes/table.html`** - Documentación del componente Table
 - **`documentacion/componentes/tooltip.html`** - Documentación del componente Tooltip
@@ -868,6 +870,7 @@ loadCardContentCompact('mi-contenedor-compact', [
 - **`documentacion/componentes/loader.html`** - Documentación del componente Loader
 - **`documentacion/componentes/modal.html`** - Documentación del componente Modal
 - **`documentacion/componentes/popover.html`** - Documentación del componente Popover
+- **`documentacion/componentes/submenu.html`** - Documentación del componente Submenu
 - **`documentacion/componentes/coachmark.html`** - Documentación del componente Coachmark (product tour)
 - **`documentacion/componentes/table.html`** - Documentación del componente Table
 - **`documentacion/componentes/tooltip.html`** - Documentación del componente Tooltip
