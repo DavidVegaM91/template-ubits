@@ -473,8 +473,8 @@ function loadSidebar(variantOrActiveButton = 'default', activeButton = null) {
             <div class="sidebar-main">
                 <!-- Header -->
                 <div class="sidebar-header">
-                    <div class="logo" onclick="window.location.href='${basePath}ubits-admin/inicio/admin.html'" style="cursor: pointer;">
-                        <img src="${basePath}images/Ubits-logo.svg" alt="UBITS Logo" />
+                    <div class="logo" aria-hidden="true">
+                        <img src="${basePath}images/Ubits-logo.svg" alt="" />
                     </div>
                 </div>
                 
@@ -526,8 +526,8 @@ function loadSidebar(variantOrActiveButton = 'default', activeButton = null) {
         <aside class="sidebar" id="sidebar">
             <div class="sidebar-main">
                 <div class="sidebar-header">
-                    <div class="logo" onclick="window.location.href='${basePath}ubits-colaborador/lms-creator/contenidos.html'" style="cursor: pointer;">
-                        <img src="${basePath}images/Ubits-logo.svg" alt="UBITS Logo" />
+                    <div class="logo" aria-hidden="true">
+                        <img src="${basePath}images/Ubits-logo.svg" alt="" />
                     </div>
                 </div>
                 <div class="sidebar-body">
@@ -565,8 +565,8 @@ function loadSidebar(variantOrActiveButton = 'default', activeButton = null) {
             <div class="sidebar-main">
                 <!-- Header -->
                 <div class="sidebar-header">
-                    <div class="logo" onclick="window.location.href='${basePath}index.html'" style="cursor: pointer;">
-                        <img src="${basePath}images/Ubits-logo.svg" alt="UBITS Logo" />
+                    <div class="logo" aria-hidden="true">
+                        <img src="${basePath}images/Ubits-logo.svg" alt="" />
                     </div>
                 </div>
                 

@@ -331,3 +331,14 @@
 [data-theme="dark"] .dropdown-subgroup-title {
     color: var(--ubits-fg-2-medium);
 }
+
+/* Logo UBITS en el rail: solo marca, sin enlace ni feedback de interacción */
+.sidebar .logo {
+    cursor: default;
+    pointer-events: none;
+}
+
+.sidebar .logo:hover {
+    background: transparent;
+    transform: none;
+}
