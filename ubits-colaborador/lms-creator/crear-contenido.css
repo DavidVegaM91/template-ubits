@@ -108,26 +108,17 @@
     overflow-y: auto;
     overflow-x: hidden;
     -webkit-overflow-scrolling: touch;
+    display: flex;
+    flex-direction: column;
+    background: var(--ubits-bg-2);
 }
 
-/* Canvas del flujo: ancho acotado, centrado (sin sidebar) */
-.crear-contenido-shell__main-inner {
-    box-sizing: border-box;
+/* Fase 3: mismo cuerpo que el drawer — workspace llena el main (contenidos.css estiliza el interior) */
+.crear-contenido-shell__main > .crear-contenido-editor-workspace {
+    flex: 1 1 auto;
+    min-height: 0;
+    min-width: 0;
     width: 100%;
-    max-width: min(100%, 1200px);
-    margin: 0 auto;
-    padding: var(--padding-xl);
-}
-
-@media (max-width: 768px) {
-    .crear-contenido-shell__main-inner {
-        padding: var(--padding-lg);
-    }
-}
-
-.crear-contenido-shell__placeholder {
-    margin: 0;
-    color: var(--ubits-fg-1-medium);
 }
 
 /* --- Footer: fondo a todo el ancho del viewport --- */

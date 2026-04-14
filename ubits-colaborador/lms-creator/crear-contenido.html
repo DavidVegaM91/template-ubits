@@ -14,12 +14,28 @@
     <link rel="stylesheet" href="../../components/status-tag.css">
     <link rel="stylesheet" href="../../components/save-indicator.css">
     <link rel="stylesheet" href="../../components/tooltip.css">
+    <link rel="stylesheet" href="../../components/modal.css">
+    <link rel="stylesheet" href="../../components/input.css">
+    <link rel="stylesheet" href="../../components/empty-state.css">
+    <link rel="stylesheet" href="../../components/toast.css">
+    <link rel="stylesheet" href="../../components/stepper.css">
+    <link rel="stylesheet" href="../../components/learn-content-img-trailer.css">
+    <link rel="stylesheet" href="../../components/rich-text-editor.css">
+    <link rel="stylesheet" href="../../components/dropdown-menu.css">
+    <link rel="stylesheet" href="../../components/switch.css">
+    <link rel="stylesheet" href="../../components/paginas-creator.css">
+    <link rel="stylesheet" href="../../components/seccion-creator.css">
+    <link rel="stylesheet" href="../../components/indice-creator.css">
+    <link rel="stylesheet" href="../../components/resources-card.css">
+    <link rel="stylesheet" href="../../components/resources-block.css">
+    <link rel="stylesheet" href="./contenidos.css">
+    <link rel="stylesheet" href="./portada-media-modal.css">
     <link rel="stylesheet" href="./crear-contenido.css">
 </head>
-<body data-theme="light" class="no-subnav page-crear-contenido">
+<body data-theme="light" class="no-subnav page-crear-contenido crear-contenido-drawer-overlay">
     <div class="tooltip" id="tooltip"></div>
+    <div id="ubits-toast-container"></div>
     <div class="crear-contenido-shell" id="crear-contenido-root">
-        <!-- Misma lógica visual que el drawer (drawer.css): padding-lg/xl + borde; fila de 32px = alto botón sm icon-only (sin importar drawer.css para evitar cascadas raras con gap/padding). -->
         <header class="crear-contenido-shell__header" role="banner">
             <div class="crear-contenido__header-left">
                 <div class="crear-contenido__header-title-row">
@@ -27,30 +43,14 @@
                     <span class="ubits-status-tag ubits-status-tag--sm ubits-status-tag--info">
                         <span class="ubits-status-tag__text">Borrador</span>
                     </span>
-                    <span
-                        id="crear-contenido-save-indicator"
-                        class="crear-contenido__header-save"
-                    ></span>
+                    <span id="crear-contenido-save-indicator" class="crear-contenido__header-save"></span>
                 </div>
             </div>
-            <a
-                id="crear-contenido-close-to-contenidos"
-                href="contenidos.html"
-                class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only"
-                aria-label="Volver a Contenidos"
-                data-tooltip="Salir del proceso"
-                data-tooltip-delay="1000"
-            >
-                <i class="far fa-times"></i>
-            </a>
+            <a id="crear-contenido-close-to-contenidos" href="contenidos.html" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" aria-label="Volver a Contenidos" data-tooltip="Salir del proceso" data-tooltip-delay="1000"><i class="far fa-times"></i></a>
         </header>
 
         <main class="crear-contenido-shell__main" id="crear-contenido-main" tabindex="-1">
-            <div class="crear-contenido-shell__main-inner">
-                <p class="ubits-body-md-regular crear-contenido-shell__placeholder">
-                    Paso 1 (placeholder) — Fase 2. Aquí irá el flujo (portada, stepper, etc.).
-                </p>
-            </div>
+<div class="crear-contenido-editor-workspace">  <div class="crear-contenido-editor__rail"><div class="ubits-stepper__vertical-frame ubits-stepper__vertical-frame--creator-rail is-collapsed" id="crear-contenido-stepper-frame">  <nav class="ubits-stepper__vertical-nav" aria-label="Pasos de creación">    <ol class="ubits-stepper ubits-stepper--vertical" id="crear-contenido-stepper-ol">      <li class="ubits-stepper__step ubits-stepper__step--active" data-step-label="Portada" aria-current="step">        <span class="ubits-stepper__mark" aria-hidden="true"><span class="ubits-stepper__mark-num">1</span><i class="far fa-check" aria-hidden="true"></i></span>        <span class="ubits-stepper__label">Portada</span>      </li>      <li class="ubits-stepper__step ubits-stepper__step--pending" data-step-label="Recursos">        <span class="ubits-stepper__mark" aria-hidden="true"><span class="ubits-stepper__mark-num">2</span><i class="far fa-check" aria-hidden="true"></i></span>        <span class="ubits-stepper__label">Recursos</span>      </li>      <li class="ubits-stepper__step ubits-stepper__step--pending" data-step-label="Certificado">        <span class="ubits-stepper__mark" aria-hidden="true"><span class="ubits-stepper__mark-num">3</span><i class="far fa-check" aria-hidden="true"></i></span>        <span class="ubits-stepper__label">Certificado</span>      </li>      <li class="ubits-stepper__step ubits-stepper__step--pending" data-step-label="Publicación">        <span class="ubits-stepper__mark" aria-hidden="true"><span class="ubits-stepper__mark-num">4</span><i class="far fa-check" aria-hidden="true"></i></span>        <span class="ubits-stepper__label">Publicación</span>      </li>    </ol>  </nav>  <div class="ubits-stepper__vertical-footer">    <button type="button" class="nav-button ubits-stepper__vertical-toggle" id="crear-contenido-stepper-toggle" aria-expanded="false" aria-label="Expandir la lista de pasos">      <i class="far fa-angles-right" aria-hidden="true"></i>    </button>  </div></div><nav class="crear-contenido-stepper-mobile" aria-label="Pasos de creación">  <ol class="ubits-stepper ubits-stepper--horizontal ubits-stepper--horizontal-compact" id="crear-contenido-stepper-ol-mobile">    <li class="ubits-stepper__step ubits-stepper__step--active" data-step-label="Portada" aria-current="step">      <span class="ubits-stepper__mark" aria-hidden="true"><span class="ubits-stepper__mark-num">1</span><i class="far fa-check" aria-hidden="true"></i></span>      <span class="ubits-stepper__label">Portada</span>    </li>    <li class="ubits-stepper__rail" aria-hidden="true"></li>    <li class="ubits-stepper__step ubits-stepper__step--pending" data-step-label="Recursos">      <span class="ubits-stepper__mark" aria-hidden="true"><span class="ubits-stepper__mark-num">2</span><i class="far fa-check" aria-hidden="true"></i></span>      <span class="ubits-stepper__label">Recursos</span>    </li>    <li class="ubits-stepper__rail" aria-hidden="true"></li>    <li class="ubits-stepper__step ubits-stepper__step--pending" data-step-label="Certificado">      <span class="ubits-stepper__mark" aria-hidden="true"><span class="ubits-stepper__mark-num">3</span><i class="far fa-check" aria-hidden="true"></i></span>      <span class="ubits-stepper__label">Certificado</span>    </li>    <li class="ubits-stepper__rail" aria-hidden="true"></li>    <li class="ubits-stepper__step ubits-stepper__step--pending" data-step-label="Publicación">      <span class="ubits-stepper__mark" aria-hidden="true"><span class="ubits-stepper__mark-num">4</span><i class="far fa-check" aria-hidden="true"></i></span>      <span class="ubits-stepper__label">Publicación</span>    </li>  </ol></nav>  </div>  <div class="crear-contenido-editor__main">    <div id="crear-contenido-step-portada" class="crear-contenido-step crear-contenido-step--portada crear-contenido-step--visible" data-crear-step="portada">      <div class="crear-contenido-portada__cabecera">        <div class="crear-contenido-portada__cabecera-titulo">          <label class="contenidos-creator-titulo-wrap">            <input type="text" id="crear-contenido-titulo" class="contenidos-creator-titulo-input ubits-display-d3-bold" placeholder="Escribe aquí el título del contenido" autocomplete="off" maxlength="180" aria-label="Nombre del contenido">            <span class="contenidos-creator-titulo-hint ubits-body-xs-regular">Máximo 180 caracteres.</span>          </label>        </div>        <div class="crear-contenido-portada__cabecera-media"><div class="contenidos-creator-card contenidos-creator-card--dentro-cabecera">  <div id="crear-contenido-img-trailer" class="ubits-learn-img-trailer" data-learn-img-trailer-init role="region" aria-label="Miniatura del contenido"><div class="ubits-learn-img-trailer__empty"><button type="button" class="ubits-button ubits-button--secondary ubits-button--md ubits-learn-img-trailer__cta" id="crear-contenido-portada-cta"><i class="far fa-image"></i><span>Subir imagen de portada</span></button><p class="ubits-learn-img-trailer__hint ubits-body-sm-regular">Imagen en JPG o PNG. Además, tienes la opción de agregar un tráiler de video</p></div>  </div></div>        </div>      </div>      <div class="crear-contenido-portada__cuerpo">        <div class="crear-contenido-portada__cuerpo-desc"><div class="contenidos-creator-card contenidos-creator-card--descripcion">  <div id="crear-contenido-rte" class="ubits-rich-text-editor" data-rich-text-editor>    <div class="ubits-rich-text-editor__label-row">      <p class="ubits-rich-text-editor__label ubits-body-sm-semibold">Descripción</p>      <p class="ubits-rich-text-editor__hint ubits-body-xs-regular">(Obligatorio)</p>    </div>    <div class="ubits-rich-text-editor__toolbar" role="toolbar" aria-label="Formato">      <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" data-rich-cmd="bold" aria-label="Negrita"><i class="fas fa-bold"></i></button>      <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" data-rich-cmd="italic" aria-label="Cursiva"><i class="fas fa-italic"></i></button>      <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" data-rich-cmd="underline" aria-label="Subrayado"><i class="fas fa-underline"></i></button>      <span class="ubits-rich-text-editor__sep" aria-hidden="true"></span>      <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" data-rich-cmd="insertOrderedList" aria-label="Lista numerada"><i class="fas fa-list-ol"></i></button>      <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" data-rich-cmd="insertUnorderedList" aria-label="Lista con viñetas"><i class="fas fa-list-ul"></i></button>      <span class="ubits-rich-text-editor__sep" aria-hidden="true"></span>      <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" data-rich-cmd="justifyLeft" aria-label="Alinear izquierda"><i class="fas fa-align-left"></i></button>      <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" data-rich-cmd="justifyCenter" aria-label="Centrar"><i class="fas fa-align-center"></i></button>      <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" data-rich-cmd="justifyRight" aria-label="Alinear derecha"><i class="fas fa-align-right"></i></button>      <span class="ubits-rich-text-editor__sep" aria-hidden="true"></span>      <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" data-rich-cmd="insertImage" aria-label="Imagen"><i class="far fa-image"></i></button>      <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" data-rich-cmd="insertVideo" aria-label="Video"><i class="fas fa-film"></i></button>      <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" data-rich-cmd="createLink" aria-label="Enlace"><i class="fas fa-link"></i></button>      <span class="ubits-rich-text-editor__sep" aria-hidden="true"></span>      <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" data-rich-cmd="formatCode" aria-label="Código"><i class="fas fa-code"></i></button>      <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" data-rich-cmd="removeFormat" aria-label="Quitar formato"><i class="fas fa-remove-format"></i></button>    </div>    <input type="file" class="ubits-rich-text-editor__file" accept="image/*" tabindex="-1" aria-hidden="true">    <div class="ubits-rich-text-editor__editor-shell">      <div class="ubits-rich-text-editor__field ubits-body-md-regular is-empty" contenteditable="true" role="textbox" aria-multiline="true" data-placeholder="Añade una descripción para el contenido aquí" id="crear-contenido-rte-field"></div>    </div>  </div></div>        </div>        <div class="crear-contenido-portada__cuerpo-ficha"><div class="contenidos-creator-card">  <p class="contenidos-creator-field-label ubits-body-sm-semibold">Ficha técnica</p>  <div id="crear-contenido-in-tipo"></div>  <div class="contenidos-creator-ficha-row">    <div id="crear-contenido-in-nivel"></div>    <div id="crear-contenido-in-idioma"></div>  </div>  <div class="contenidos-creator-ficha-row contenidos-creator-ficha-row--tiempo-unidad">    <div id="crear-contenido-in-tiempo"></div>    <div id="crear-contenido-in-unidad"></div>  </div>  <div id="crear-contenido-in-categoria"></div></div>        </div>      </div>    </div>    <div id="crear-contenido-step-recursos" class="crear-contenido-step crear-contenido-step--recursos" data-crear-step="recursos">      <div class="crear-contenido-recursos__workspace">        <aside class="crear-contenido-recursos__indice" aria-label="Índice del contenido">          <div id="crear-contenido-recursos-indice-mount" class="crear-contenido-recursos__indice-mount"></div>        </aside>        <div id="crear-contenido-recursos-preview" class="crear-contenido-recursos__preview" role="region" aria-label="Vista previa de recursos">          <div id="ccCrearContenidoRecursosEmpty" class="crear-contenido-recursos__empty-host"></div>          <div id="crear-contenido-recursos-page-title-section" class="crear-contenido-recursos__page-title-section" hidden>            <label class="contenidos-creator-titulo-wrap crear-contenido-recursos__page-title-wrap">              <input type="text" id="crear-contenido-recursos-page-title" class="contenidos-creator-titulo-input ubits-heading-h2" placeholder="Escribe el título de la página" autocomplete="off" maxlength="120" aria-label="Título de la página">            </label>          </div>          <div id="crear-contenido-recursos-resources-mount" class="crear-contenido-recursos__resources-mount" hidden></div>        </div>      </div>    </div>  </div></div>
         </main>
 
         <footer class="crear-contenido-shell__footer-band" role="contentinfo">
@@ -58,22 +58,8 @@
                 <div class="crear-contenido-shell__footer-actions">
                     <span class="crear-contenido-shell__footer-grow" aria-hidden="true"></span>
                     <div class="crear-contenido-shell__footer-nav">
-                        <button
-                            type="button"
-                            class="ubits-button ubits-button--secondary ubits-button--md"
-                            disabled
-                            aria-disabled="true"
-                        >
-                            <span>Anterior</span>
-                        </button>
-                        <button
-                            type="button"
-                            class="ubits-button ubits-button--primary ubits-button--md"
-                            disabled
-                            aria-disabled="true"
-                        >
-                            <span>Siguiente</span>
-                        </button>
+                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--md" disabled aria-disabled="true"><span>Anterior</span></button>
+                        <button type="button" class="ubits-button ubits-button--primary ubits-button--md" disabled aria-disabled="true"><span>Siguiente</span></button>
                     </div>
                 </div>
             </div>
@@ -81,19 +67,17 @@
     </div>
     <script src="../../components/tooltip.js"></script>
     <script src="../../components/save-indicator.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            if (typeof renderSaveIndicator === 'function') {
-                renderSaveIndicator('crear-contenido-save-indicator', {
-                    state: 'idle',
-                    idleVariant: 'plain',
-                    size: 'xs'
-                });
-            }
-            if (typeof initTooltip === 'function') {
-                initTooltip('#crear-contenido-close-to-contenidos');
-            }
-        });
-    </script>
+    <script src="../../components/input.js"></script>
+    <script src="../../components/empty-state.js"></script>
+    <script src="../../components/toast.js"></script>
+    <script src="../../components/modal.js"></script>
+    <script src="../../components/stepper.js"></script>
+    <script src="../../components/learn-content-img-trailer.js"></script>
+    <script src="../../components/rich-text-editor.js"></script>
+    <script src="./portada-media-modal.js"></script>
+    <script src="../../bd-master/bd-master-niveles-contenido.js"></script>
+    <script src="../../bd-master/bd-master-tipos-contenido.js"></script>
+    <script src="../../bd-master/bd-master-categorias-fiqsha.js"></script>
+    <script src="./crear-contenido.js"></script>
 </body>
 </html>

@@ -104,10 +104,10 @@ Comparación visual lado a lado: abrir drawer en `contenidos.html` y `crear-cont
 ### Fase 3 — Réplica HTML del contenido del drawer (markup + IDs en scope nuevo)
 
 **Entregables**
-- [ ] Pegar/adaptar en `crear-contenido.html` el **mismo HTML** que genera el cuerpo del drawer (portada, stepper, paso recursos, etc.) desde `getCrearContenidoBodyHtml()` / estructura actual, con estos matices:
+- [x] Pegar/adaptar en `crear-contenido.html` el **mismo HTML** que genera el cuerpo del drawer (portada, stepper, paso recursos, etc.) desde `getCrearContenidoBodyHtml()` / estructura actual, con estos matices:
   - **Prefijos o IDs únicos** si hace falta evitar colisión al abrir `contenidos` en la misma sesión (ideal: namespace `cc-page-` para IDs en la página nueva).
   - Mismos componentes CSS/JS referenciados que ya usa el drawer (button, input, stepper, modal, etc.) vía rutas relativas.
-- [ ] **No** eliminar ni alterar el string/HTML dentro de `crear-contenido-drawer.js`; la fuente de verdad para “copiar” es **lectura** del archivo o del DOM renderizado, pero el archivo drawer **permanece sin cambios**.
+- [x] **No** eliminar ni alterar el string/HTML dentro de `crear-contenido-drawer.js`; la fuente de verdad para “copiar” es **lectura** del archivo o del DOM renderizado, pero el archivo drawer **permanece sin cambios**.
 
 **Criterio de aprobación**  
 La nueva página muestra **los mismos bloques** (stepper, formulario portada, área paso 2, etc.) que el drawer; puede estar sin cablear JS.
