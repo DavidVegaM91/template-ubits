@@ -1,0 +1,173 @@
+/* ========================================
+   LMS Creator — Crear contenido (página dedicada)
+   Shell tipo drawer fullscreen: header/footer full-bleed, main scrollable (Fase 2).
+   Referencia visual: components/drawer.css + .crear-contenido-drawer-overlay en contenidos.css (solo lectura al diseñar).
+   ======================================== */
+
+/* --- Página: una columna, alto viewport, sin scroll en body (scroll en main) --- */
+.page-crear-contenido {
+    margin: 0;
+    overflow: hidden;
+    overscroll-behavior: none;
+}
+
+.crear-contenido-shell {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    min-height: 100dvh;
+    width: 100%;
+    background: var(--ubits-bg-1);
+    color: var(--ubits-fg-1-medium);
+}
+
+/* --- Header: equivalente a .ubits-drawer-header en drawer.css, definido aquí sin importar drawer.css.
+   Motivo: importar drawer.css + overrides parciales de padding/gap generaba alturas ~80–90px según navegador
+   (gap afecta filas; padding shorthand + longhands en cascada).
+   Referencia drawer.css L66–73: padding-lg vertical, padding-xl horizontal, border-bottom 1px, flex row,
+   align-items center; espacio entre columnas = gap-md (solo column-gap abajo). */
+.crear-contenido-shell__header {
+    box-sizing: border-box;
+    width: 100%;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: space-between;
+    column-gap: var(--gap-md);
+    row-gap: 0;
+    background: var(--ubits-bg-1);
+    border-bottom: 1px solid var(--ubits-border-1);
+    padding-top: max(var(--padding-lg), env(safe-area-inset-top, 0px));
+    padding-bottom: var(--padding-lg);
+    padding-left: max(var(--padding-xl), env(safe-area-inset-left, 0px));
+    padding-right: max(var(--padding-xl), env(safe-area-inset-right, 0px));
+    min-height: 0;
+}
+
+.crear-contenido-shell__header > .ubits-button {
+    flex-shrink: 0;
+}
+
+.crear-contenido-shell__header-primary.contenido-borrador-editor__drawer-header-text {
+    flex: 1 1 0%;
+    min-width: 0;
+    min-height: 0;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.crear-contenido-shell .contenido-borrador-editor__drawer-title-row {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: var(--gap-sm);
+    min-width: 0;
+    max-width: 100%;
+    /* Mismo alto que .ubits-button--sm.ubits-button--icon-only (32px) — evita “struts”/line-box raros */
+    max-height: var(--space-8);
+    overflow: hidden;
+}
+
+.crear-contenido-shell .contenido-borrador-editor__drawer-title-row .ubits-drawer-title {
+    flex: 0 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    margin: 0;
+    color: var(--ubits-fg-1-high);
+}
+
+.crear-contenido-shell .contenido-borrador-editor__drawer-title-row .ubits-status-tag {
+    flex-shrink: 0;
+}
+
+.crear-contenido-shell .contenido-borrador-editor__drawer-save-host {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    line-height: 0;
+}
+
+.crear-contenido-shell .contenido-borrador-editor__drawer-save-host .ubits-save-indicator {
+    vertical-align: middle;
+}
+
+@media (max-width: 639px) {
+    .crear-contenido-shell__header {
+        padding-left: max(var(--padding-md), env(safe-area-inset-left, 0px));
+        padding-right: max(var(--padding-md), env(safe-area-inset-right, 0px));
+    }
+}
+
+/* --- Main: ocupa el espacio restante y hace scroll --- */
+.crear-contenido-shell__main {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Canvas del flujo: ancho acotado, centrado (sin sidebar) */
+.crear-contenido-shell__main-inner {
+    box-sizing: border-box;
+    width: 100%;
+    max-width: min(100%, 1200px);
+    margin: 0 auto;
+    padding: var(--padding-xl);
+}
+
+@media (max-width: 768px) {
+    .crear-contenido-shell__main-inner {
+        padding: var(--padding-lg);
+    }
+}
+
+.crear-contenido-shell__placeholder {
+    margin: 0;
+    color: var(--ubits-fg-1-medium);
+}
+
+/* --- Footer: fondo a todo el ancho del viewport --- */
+.crear-contenido-shell__footer-band {
+    flex-shrink: 0;
+    width: 100%;
+    background: var(--ubits-bg-1);
+    border-top: 1px solid var(--ubits-border-1);
+    box-sizing: border-box;
+}
+
+.crear-contenido-shell__footer-inner {
+    padding-bottom: max(var(--padding-md), env(safe-area-inset-bottom, 0px));
+    padding-left: max(var(--padding-xl), env(safe-area-inset-left, 0px));
+    padding-right: max(var(--padding-xl), env(safe-area-inset-right, 0px));
+    padding-top: var(--padding-md);
+    box-sizing: border-box;
+}
+
+.crear-contenido-shell__footer-actions {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    gap: var(--gap-md);
+    flex-wrap: wrap;
+    justify-content: stretch;
+}
+
+.crear-contenido-shell__footer-grow {
+    flex: 1 1 auto;
+    min-width: var(--gap-md);
+}
+
+.crear-contenido-shell__footer-nav {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--gap-md);
+    flex-wrap: wrap;
+}

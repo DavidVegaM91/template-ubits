@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="../../images/Ubits-logo-dark.svg">
+    <title>Crear contenido - UBITS LMS Creator</title>
+
+    <link rel="stylesheet" href="../../general-styles/ubits-colors.css">
+    <link rel="stylesheet" href="../../general-styles/styles.css">
+    <link rel="stylesheet" href="../../general-styles/fontawesome-icons.css">
+    <link rel="stylesheet" href="../../general-styles/ubits-typography.css">
+    <link rel="stylesheet" href="../../components/button.css">
+    <link rel="stylesheet" href="../../components/status-tag.css">
+    <link rel="stylesheet" href="../../components/save-indicator.css">
+    <link rel="stylesheet" href="../../components/tooltip.css">
+    <link rel="stylesheet" href="./crear-contenido.css">
+</head>
+<body data-theme="light" class="no-subnav page-crear-contenido">
+    <div class="tooltip" id="tooltip"></div>
+    <div class="crear-contenido-shell" id="crear-contenido-root">
+        <!-- Misma lógica visual que el drawer (drawer.css): padding-lg/xl + borde; fila de 32px = alto botón sm icon-only (sin importar drawer.css para evitar cascadas raras con gap/padding). -->
+        <header class="crear-contenido-shell__header" role="banner">
+            <div class="crear-contenido-shell__header-primary contenido-borrador-editor__drawer-header-text">
+                <div class="contenido-borrador-editor__drawer-title-row">
+                    <span class="ubits-drawer-title ubits-body-md-bold">Crear contenido</span>
+                    <span class="ubits-status-tag ubits-status-tag--sm ubits-status-tag--info">
+                        <span class="ubits-status-tag__text">Borrador</span>
+                    </span>
+                    <span
+                        id="crear-contenido-save-indicator"
+                        class="contenido-borrador-editor__drawer-save-host"
+                    ></span>
+                </div>
+            </div>
+            <a
+                id="crear-contenido-close-to-contenidos"
+                href="contenidos.html"
+                class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only"
+                aria-label="Volver a Contenidos"
+                data-tooltip="Salir del proceso"
+                data-tooltip-delay="1000"
+            >
+                <i class="far fa-times"></i>
+            </a>
+        </header>
+
+        <main class="crear-contenido-shell__main" id="crear-contenido-main" tabindex="-1">
+            <div class="crear-contenido-shell__main-inner">
+                <p class="ubits-body-md-regular crear-contenido-shell__placeholder">
+                    Paso 1 (placeholder) — Fase 2. Aquí irá el flujo (portada, stepper, etc.).
+                </p>
+            </div>
+        </main>
+
+        <footer class="crear-contenido-shell__footer-band" role="contentinfo">
+            <div class="crear-contenido-shell__footer-inner">
+                <div class="crear-contenido-shell__footer-actions">
+                    <span class="crear-contenido-shell__footer-grow" aria-hidden="true"></span>
+                    <div class="crear-contenido-shell__footer-nav">
+                        <button
+                            type="button"
+                            class="ubits-button ubits-button--secondary ubits-button--md"
+                            disabled
+                            aria-disabled="true"
+                        >
+                            <span>Anterior</span>
+                        </button>
+                        <button
+                            type="button"
+                            class="ubits-button ubits-button--primary ubits-button--md"
+                            disabled
+                            aria-disabled="true"
+                        >
+                            <span>Siguiente</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+    <script src="../../components/tooltip.js"></script>
+    <script src="../../components/save-indicator.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            if (typeof renderSaveIndicator === 'function') {
+                renderSaveIndicator('crear-contenido-save-indicator', {
+                    state: 'idle',
+                    idleVariant: 'plain',
+                    size: 'xs'
+                });
+            }
+            if (typeof initTooltip === 'function') {
+                initTooltip('#crear-contenido-close-to-contenidos');
+            }
+        });
+    </script>
+</body>
+</html>
