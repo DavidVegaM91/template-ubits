@@ -9,6 +9,7 @@
  *
  * Eventos: ubits-paginas-creator-action, ubits-paginas-creator-activate, ubits-paginas-creator-label-save
  * Menú ⋮: primera opción «Cambiar nombre» → edición inline (no emite action).
+ * Estado validación: clase `ubits-paginas-creator__item--error` en la fila (p. ej. página sin recursos al ir a paso 3).
  * @see documentacion/componentes/paginas-creator.html
  */
 (function (global) {

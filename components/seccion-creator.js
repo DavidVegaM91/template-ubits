@@ -3,6 +3,7 @@
  * Carga previa: dropdown-menu.js, tooltip.js (tooltips), paginas-creator.js.
  * Eventos: ubits-seccion-creator-add-page, ubits-seccion-creator-section-action, ubits-seccion-creator-edit-section (modal Editar sección),
  *   ubits-seccion-creator-activate, ubits-seccion-creator-title-save
+ * Estado validación: clase `ubits-seccion-creator__section--error` en `.ubits-seccion-creator__section` (p. ej. sección sin páginas).
  * @see documentacion/componentes/seccion-creator.html
  */
 (function (global) {

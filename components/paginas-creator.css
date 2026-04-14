@@ -68,6 +68,17 @@
     background: var(--ubits-accent-brand);
 }
 
+/*
+ * Validación (p. ej. avanzar a Certificado): página sin recursos.
+ * Mismo criterio que portada obligatoria incompleta: --ubits-feedback-accent-error, 2px.
+ * La pantalla añade/quita la clase .ubits-paginas-creator__item--error en la fila.
+ */
+.ubits-paginas-creator__item.ubits-paginas-creator__item--error {
+    position: relative;
+    z-index: 1;
+    box-shadow: inset 0 0 0 2px var(--ubits-feedback-accent-error);
+}
+
 /* Figma: icono centrado en área 24×24 */
 .ubits-paginas-creator__icon-wrap {
     flex-shrink: 0;

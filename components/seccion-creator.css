@@ -33,6 +33,21 @@
     border-color: var(--ubits-accent-brand);
 }
 
+/*
+ * Validación (p. ej. avanzar a Certificado): sección sin páginas (con uso de secciones activo).
+ * Mismo token y grosor que portada / páginas creator --error.
+ * La pantalla añade/quita .ubits-seccion-creator__section--error en el <section>.
+ */
+.ubits-seccion-creator__section.ubits-seccion-creator__section--error {
+    border-width: 2px;
+    border-style: solid;
+    border-color: var(--ubits-feedback-accent-error);
+}
+
+.ubits-seccion-creator__section.is-active.ubits-seccion-creator__section--error {
+    border-color: var(--ubits-feedback-accent-error);
+}
+
 .ubits-seccion-creator__header {
     display: flex;
     align-items: center;

@@ -143,8 +143,12 @@ Los dos paneles trabajan acoplados: la selección de página en la izquierda det
 - **Por defecto: desactivado**, porque muchas empresas crean contenidos cortos sin módulos.  
 - Si el usuario **activa** secciones:  
   - Se muestra un **título de bloque** relacionado con secciones (según copy/Figma).  
+  - Cada sección muestra **siempre su nombre** en la cabecera del bloque **Sección creator** (no ocultar el título cuando el modo secciones está encendido).  
+  - **Nombre por defecto al crear una sección:** **«Sección N»**, donde **N** es el **ordinal de esa sección** dentro del contenido (1 para la primera sección creada, 2 para la segunda, etc.). La implementación que monte el índice debe generar ese título inicial al añadir sección; el usuario puede renombrarlo después (edición inline ya prevista en el componente).  
   - En la **parte inferior** del panel izquierdo aparece un botón **“Añadir sección”**.  
 - Si el usuario **desactiva** secciones (o nunca las activa): **todas las páginas** se representan **en una sola sección lógica**, **sin mostrar cabecera de título de sección** (no aporta valor si no hay más de una sección). Sigue existiendo la lista tipo **Páginas creator** y **«Añadir página»** dentro del mismo bloque.  
+- **Desactivar secciones cuando ya hay varias secciones con páginas repartidas:** debe mostrarse un **modal de advertencia** explicando que **todas las páginas pasarán a una única sección** (orden global según reglas de producto / implementación). Si el usuario confirma, se aplica el colapso; si cancela, el interruptor vuelve al estado **activado**.  
+- **Excepción sin modal:** si existen **varias secciones** pero **solo la primera** tiene páginas y el resto está vacío, el usuario puede **activar y desactivar** el uso de secciones **sin** modal ni fricción (no hay riesgo de reorganizar páginas entre secciones con contenido).  
 - **Componente UBITS:** **Índice Creator** (`indiceCreatorHtml` / `initIndiceCreator`) compone el interruptor, el índice de **Sección creator** cuando aplica y el contenedor del botón **«Añadir sección»**. Referencia visual: Figma Learn-Components [242:5621](https://www.figma.com/design/ZWcvS9Z7YQaz59GZIrnWM6/Learn-Components?node-id=242-5621&m=dev).  
 - La lógica exacta de anidación (página dentro de sección, orden, etc.) debe alinearse con Figma; lo aquí descrito es el comportamiento narrado por producto.
 
@@ -152,17 +156,36 @@ Los dos paneles trabajan acoplados: la selección de página en la izquierda det
 
 - Las **páginas** son las unidades que componen el contenido en el sentido de **lecciones** o pantallas de consumo.  
 - **Selección:** al hacer **clic en una página**, esa fila queda activa y su **sección padre** pasa a ser la única sección activa (p. ej. borde de acento); el resto de páginas y secciones dejan de estar activas. Solo puede haber **una página activa y una sección activa** a la vez en el índice (comportamiento en `paginas-creator.js` + `seccion-creator.js`).  
-- En el **centro** del panel izquierdo hay un botón **“Añadir página”**.
+- **Añadir una página** (equivalente en resultado; dos entradas):  
+  1. **Empty state del panel derecho** («Añade tu primera página» / CTA equivalente cuando no hay páginas), **o**  
+  2. Botón **«Añadir página»** en la parte inferior de **cada sección** (solo en la sección activa cuando hay secciones; en modo sin secciones, el botón del bloque único).  
+- **Orden y menú de opciones (⋮):** cada fila de página puede **moverse** con acciones **«Mover arriba»** / **«Mover abajo»** desde el menú de opciones.  
+  - Si la página es la **primera del contenido completo** (primera fila del índice global), **no** se ofrece **«Mover arriba»**.  
+  - Si la página es la **última del contenido completo**, **no** se ofrece **«Mover abajo»**.  
+  - **Entre secciones:** una página que es la **primera de la sección 2** puede subir con **«Mover arriba»** hasta ser la **última de la sección 1** (y así sucesivamente); solo deja de poder **subir** al llegar a ser la primera del contenido. Simétricamente para **bajar** hasta ser la última del contenido.
 
-### Panel derecho: empty state inicial
+### Panel derecho: empty state «Añade tu primera página»
 
-- Muestra un **empty state** que invita a **añadir una página**.  
-- **Disparadores equivalentes:**  
-  - Clic en el CTA del empty state **o**  
-  - Clic en **“Añadir página”** en el panel izquierdo.  
-- Efecto esperado:  
-  - En el **panel izquierdo** se añade un **card de página** y queda en estado **activo/seleccionado**.  
-  - En el **panel derecho** deja el empty y pasa a mostrar el **selector general de recursos** disponibles para esa página (lista de cards de tipos de recurso).
+- Se muestra **solo cuando no existe ninguna página** en el contenido (lista vacía en el índice).  
+- **En cuanto se añade la primera página**, el panel derecho deja ese empty y pasa al flujo de **selector de tipo de recurso** (u otra vista según Figma); **no** debe volver a mostrarse este empty salvo que el usuario **elimine todas las páginas** y vuelva a quedar el índice en cero páginas.  
+- **Disparadores equivalentes** para crear la primera (y siguientes) páginas: CTA del empty state **o** **«Añadir página»** en el panel izquierdo (según sección activa).  
+- Efecto esperado al añadir: en el **panel izquierdo** aparece la **fila de página** (Páginas creator) y queda **activa/seleccionada**; en el **derecho** se muestra el **selector general de recursos** para esa página.
+
+### Paso 3 — Certificado (validación al salir del paso 2)
+
+Antes de permitir avanzar al **paso 3**, debe cumplirse:
+
+1. **Ninguna página vacía:** toda página debe tener **al menos un recurso** asignado (definición de “vacía” = sin recursos).  
+2. **Ninguna sección vacía** (solo aplica si **uso de secciones** está activo): toda sección debe tener **al menos una página**.
+
+Si no se cumple, la UI debe **bloquear el avance** y marcar en **rojo** los elementos incumplidos:
+
+| Caso | Componente / clase (CSS en `components/`) |
+|------|---------------------------------------------|
+| Página sin recursos | **Páginas creator** — añadir clase **`ubits-paginas-creator__item--error`** en la fila (`.ubits-paginas-creator__item`). Borde: **2px** sólido, color **`var(--ubits-feedback-accent-error)`** (mismo criterio que portada incompleta en el paso 1). |
+| Sección sin páginas | **Sección creator** — añadir clase **`ubits-seccion-creator__section--error`** en el bloque (`.ubits-seccion-creator__section`). Mismo token y grosor. |
+
+La lógica que añade o quita estas clases vive en la pantalla que orqueste el drawer / stepper (p. ej. `crear-contenido-drawer.js` cuando exista el paso 3); los componentes solo exponen el **estado visual** documentado aquí.
 
 ### Tipos de recurso (selector general)
 
@@ -216,7 +239,8 @@ Este patrón de **contenido complementario** (Texto / Archivo descargable) apare
 
 - Detalle de **contenido complementario** en todos los recursos donde aplique.  
 - Flujos de: Video desde computador, PDF, Embebido, Scorm, Evaluación final, Encuesta libre.  
-- Pasos **3 — Certificado** y **4 — Publicación**.  
+- Paso **3 — Certificado** (contenido de pantalla más allá de la regla de bloqueo desde paso 2).  
+- Paso **4 — Publicación**.  
 - Reglas de validación global (publicar, borradores, etc.) si aplica.
 
 ---
@@ -228,4 +252,4 @@ Este patrón de **contenido complementario** (Texto / Archivo descargable) apare
 - Mantener tokens y tipografía UBITS; CSS de página en archivo dedicado junto al HTML del Creator cuando corresponda.  
 - Cualquier cambio a este documento debe reflejar acuerdos de producto y, si es posible, el nodo de Figma afectado.
 
-*Última actualización: validación portada (toast + bordes rojos, defaults tiempo/categoría); URLs `#crear-contenido` / `#crear-contenido-recursos` / alias `#crear-contenido-step-recursos`; cierre sin hash; Figma paso 2 empty (`40008263-5937`); pasos 1–2 (parcial) y recursos Video/Texto; Índice Creator (242:5621) y variante sin secciones.*
+*Última actualización: paso 2 — nombres de sección «Sección N», empty state solo sin páginas, añadir página (derecha / botón por sección), modal al desactivar secciones con páginas repartidas, orden global mover arriba/abajo; paso 3 — validación páginas/secciones vacías + clases `--error` en Páginas y Sección creator; validación portada paso 1; hashes de creación; Figma paso 2 empty (`40008263-5937`); recursos Video/Texto.*
