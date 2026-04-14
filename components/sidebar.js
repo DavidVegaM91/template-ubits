@@ -39,6 +39,294 @@ function adjustSidebarHeight() {
     sidebar.style.top = topMargin + 'px';
 }
 
+/** Submenu al hover: mismo ID siempre para no acumular paneles */
+const UBITS_SIDEBAR_HOVER_SUBMENU_ID = 'ubits-sidebar-hover-submenu';
+
+/** data-section del rail → clave en TOP_NAV_VARIANTS (null = solo título con data-sidebar-label) */
+const SIDEBAR_SECTION_TO_SUBNAV = {
+    default: {
+        'aprendizaje': 'aprendizaje',
+        'diagnóstico': 'diagnostico',
+        'desempeño': 'desempeno',
+        'encuestas': 'encuestas',
+        'reclutamiento': 'reclutamiento',
+        'tareas': 'tareas',
+        'ia-para-hr': null
+    },
+    admin: {
+        'inicio': null,
+        'empresa': 'empresa',
+        'aprendizaje': 'admin-aprendizaje',
+        'diagnóstico': 'admin-diagnostico',
+        'desempeño': 'admin-desempeño',
+        'encuestas': 'admin-encuestas'
+    },
+    creator: {
+        'lms-creator': 'creator-lms',
+        'planes-formacion': 'creator-planes',
+        'certificados': 'creator-certificados',
+        'personalizacion': 'creator-personalizacion'
+    }
+};
+
+function sidebarResolveTabUrl(tabUrl, basePath) {
+    if (!tabUrl) return '#';
+    const rel = String(tabUrl).replace(/^\.\.\/\.\.\//, '');
+    return basePath + rel;
+}
+
+function sidebarTabIconToLeftIcon(iconClass) {
+    if (!iconClass) return '';
+    const parts = String(iconClass).trim().split(/\s+/);
+    const fa = parts.filter(function (p) { return p.indexOf('fa-') === 0; }).pop();
+    if (!fa) return '';
+    return fa.replace(/^fa-/, '');
+}
+
+function sidebarBuildModuleSubmenu(dataSection, variant, basePath) {
+    const map = SIDEBAR_SECTION_TO_SUBNAV[variant] || {};
+    const navKey = map[dataSection];
+    const btn = document.querySelector('.sidebar .nav-button[data-section="' + dataSection + '"]');
+    const labelFallback = (btn && btn.getAttribute('data-sidebar-label')) || '';
+
+    if (navKey == null) {
+        return { title: labelFallback, options: [] };
+    }
+    if (!window.TOP_NAV_VARIANTS) {
+        return { title: labelFallback || '', options: [] };
+    }
+    const cfg = window.TOP_NAV_VARIANTS[navKey];
+    if (!cfg) {
+        return { title: labelFallback || '', options: [] };
+    }
+    const title = cfg.name || labelFallback;
+    const options = [];
+    (cfg.tabs || []).forEach(function (tab) {
+        if (!tab) return;
+        options.push({
+            text: tab.label,
+            value: sidebarResolveTabUrl(tab.url, basePath),
+            leftIcon: sidebarTabIconToLeftIcon(tab.icon)
+        });
+    });
+    return { title: title, options: options };
+}
+
+function ensureSidebarHoverAssets(basePath, callback) {
+    if (!document.querySelector('link[href*="components/submenu.css"]')) {
+        const link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.href = basePath + 'components/submenu.css';
+        document.head.appendChild(link);
+    }
+
+    function loadSubmenuJsThenCb() {
+        if (typeof window.openSubmenu === 'function') {
+            callback();
+            return;
+        }
+        const s = document.createElement('script');
+        s.src = basePath + 'components/submenu.js';
+        s.onload = function () { callback(); };
+        s.onerror = function () { callback(); };
+        document.head.appendChild(s);
+    }
+
+    function ensureTopNavThenSubmenu() {
+        if (window.TOP_NAV_VARIANTS) {
+            loadSubmenuJsThenCb();
+            return;
+        }
+        const existing = document.querySelector('script[src*="components/sub-nav.js"]');
+        if (existing) {
+            if (window.TOP_NAV_VARIANTS) {
+                loadSubmenuJsThenCb();
+            } else {
+                existing.addEventListener('load', function onSubNavLoad() {
+                    existing.removeEventListener('load', onSubNavLoad);
+                    loadSubmenuJsThenCb();
+                });
+            }
+            return;
+        }
+        const sn = document.createElement('script');
+        sn.src = basePath + 'components/sub-nav.js';
+        sn.onload = function () { loadSubmenuJsThenCb(); };
+        sn.onerror = function () { loadSubmenuJsThenCb(); };
+        document.head.appendChild(sn);
+    }
+
+    ensureTopNavThenSubmenu();
+}
+
+function cleanupSidebarHoverBindings(root) {
+    if (!root) return;
+    root.querySelectorAll('[data-sidebar-hover]').forEach(function (el) {
+        if (typeof el._ubitsSidebarHoverClear === 'function') {
+            el._ubitsSidebarHoverClear();
+            el._ubitsSidebarHoverClear = null;
+        }
+    });
+}
+
+function wireSidebarSubmenuHover(anchorEl, openFn) {
+    const showDelay = 200;
+    const hideDelay = 180;
+    let showTimer = null;
+    let hideTimer = null;
+    let submenuEl = null;
+
+    function clearShow() {
+        if (showTimer) {
+            clearTimeout(showTimer);
+            showTimer = null;
+        }
+    }
+    function clearHide() {
+        if (hideTimer) {
+            clearTimeout(hideTimer);
+            hideTimer = null;
+        }
+    }
+    function scheduleHide() {
+        clearHide();
+        hideTimer = setTimeout(function () {
+            if (typeof window.closeSubmenu === 'function') {
+                window.closeSubmenu(UBITS_SIDEBAR_HOVER_SUBMENU_ID);
+            }
+            submenuEl = null;
+        }, hideDelay);
+    }
+    function cancelHide() {
+        clearHide();
+    }
+
+    function onSubmenuPointerEnter() {
+        cancelHide();
+    }
+    function onSubmenuPointerLeave() {
+        scheduleHide();
+    }
+
+    const onEnter = function () {
+        if (window.innerWidth < 1024) return;
+        clearHide();
+        clearShow();
+        showTimer = setTimeout(function () {
+            showTimer = null;
+            if (window.innerWidth < 1024) return;
+            openFn(function (el) {
+                submenuEl = el;
+                if (submenuEl) {
+                    submenuEl.addEventListener('mouseenter', onSubmenuPointerEnter);
+                    submenuEl.addEventListener('mouseleave', onSubmenuPointerLeave);
+                }
+            });
+        }, showDelay);
+    };
+    const onLeave = function () {
+        clearShow();
+        scheduleHide();
+    };
+
+    anchorEl.addEventListener('mouseenter', onEnter);
+    anchorEl.addEventListener('mouseleave', onLeave);
+
+    anchorEl._ubitsSidebarHoverClear = function () {
+        clearShow();
+        clearHide();
+        anchorEl.removeEventListener('mouseenter', onEnter);
+        anchorEl.removeEventListener('mouseleave', onLeave);
+        if (submenuEl) {
+            submenuEl.removeEventListener('mouseenter', onSubmenuPointerEnter);
+            submenuEl.removeEventListener('mouseleave', onSubmenuPointerLeave);
+        }
+    };
+}
+
+function initSidebarSubmenuHover(variant, basePath) {
+    if (window.innerWidth < 1024) {
+        if (typeof window.hideTooltip === 'function') window.hideTooltip();
+        if (typeof window.closeSubmenu === 'function') window.closeSubmenu(UBITS_SIDEBAR_HOVER_SUBMENU_ID);
+        return;
+    }
+
+    const sidebar = document.getElementById('sidebar');
+    if (!sidebar) return;
+
+    cleanupSidebarHoverBindings(sidebar);
+
+    if (typeof window.openSubmenu !== 'function') {
+        return;
+    }
+
+    const openForAnchor = function (anchor, cfg) {
+        if (typeof window.closeSubmenu === 'function') {
+            window.closeSubmenu(UBITS_SIDEBAR_HOVER_SUBMENU_ID);
+        }
+        const title = cfg.title || '';
+        const options = cfg.options || [];
+        const showTitle = Boolean(title);
+        const el = window.openSubmenu({
+            submenuId: UBITS_SIDEBAR_HOVER_SUBMENU_ID,
+            anchorEl: anchor,
+            placement: 'right',
+            align: 'start',
+            offset: 8,
+            variant: 'dark',
+            title: title,
+            showTitle: showTitle,
+            options: options,
+            closeOnEscape: true,
+            closeOnClickOutside: true
+        });
+        return el;
+    };
+
+    sidebar.querySelectorAll('.sidebar-body .nav-button[data-section]').forEach(function (btn) {
+        const section = btn.getAttribute('data-section');
+        if (!section) return;
+        wireSidebarSubmenuHover(btn, function (done) {
+            const cfg = sidebarBuildModuleSubmenu(section, variant, basePath);
+            const el = openForAnchor(btn, cfg);
+            if (typeof done === 'function') done(el);
+        });
+        btn.setAttribute('data-sidebar-hover', 'module');
+    });
+
+    sidebar.querySelectorAll('.sidebar-footer .nav-button[data-sidebar-hover="simple"]').forEach(function (btn) {
+        const t = btn.getAttribute('data-sidebar-title') || '';
+        wireSidebarSubmenuHover(btn, function (done) {
+            const el = openForAnchor(btn, { title: t, options: [] });
+            if (typeof done === 'function') done(el);
+        });
+    });
+
+    const darkBtn = document.getElementById('darkmode-toggle');
+    if (darkBtn) {
+        wireSidebarSubmenuHover(darkBtn, function (done) {
+            const currentTheme = document.body.getAttribute('data-theme') || 'light';
+            const themeTitle = currentTheme === 'dark' ? 'Modo claro' : 'Modo oscuro';
+            const el = openForAnchor(darkBtn, { title: themeTitle, options: [] });
+            if (typeof done === 'function') done(el);
+        });
+        darkBtn.setAttribute('data-sidebar-hover', 'theme');
+    }
+}
+
+function bindSidebarSubmenuSelectOnce() {
+    if (window._ubitsSidebarSubmenuNavBound) return;
+    window._ubitsSidebarSubmenuNavBound = true;
+    document.addEventListener('ubits-submenu-select', function (e) {
+        const d = e.detail;
+        if (!d || !d.anchor || !d.anchor.closest) return;
+        if (!d.anchor.closest('.sidebar')) return;
+        const v = d.value;
+        if (v == null || v === '' || v === '#') return;
+        window.location.href = v;
+    });
+}
+
 // ========================================
 //   SIDEBAR COMPONENT - DOCUMENTACIÓN
 // ========================================
@@ -125,7 +413,9 @@ function loadSidebar(variantOrActiveButton = 'default', activeButton = null) {
     if (variant === 'creator' && !actualActiveButton) {
         actualActiveButton = 'lms-creator';
     }
-    
+
+    window._ubitsSidebarVariant = variant;
+
     console.log('loadSidebar llamado con variant:', variant, 'activeButton:', actualActiveButton);
     
     // Buscar el contenedor del sidebar
@@ -159,22 +449,22 @@ function loadSidebar(variantOrActiveButton = 'default', activeButton = null) {
                 
                 <!-- Body -->
                 <div class="sidebar-body">
-                    <button class="nav-button" data-section="inicio" data-tooltip="Inicio" onclick="window.location.href='${basePath}ubits-admin/inicio/admin.html'" style="cursor: pointer;">
+                    <button class="nav-button" data-section="inicio" data-sidebar-label="Inicio" onclick="window.location.href='${basePath}ubits-admin/inicio/admin.html'" style="cursor: pointer;">
                         <i class="far fa-house"></i>
                     </button>
-                    <button class="nav-button" data-section="empresa" data-tooltip="Empresa" onclick="window.location.href='${basePath}ubits-admin/empresa/gestion-de-usuarios.html'" style="cursor: pointer;">
+                    <button class="nav-button" data-section="empresa" onclick="window.location.href='${basePath}ubits-admin/empresa/gestion-de-usuarios.html'" style="cursor: pointer;">
                         <i class="far fa-building"></i>
                     </button>
-                    <button class="nav-button" data-section="aprendizaje" data-tooltip="Aprendizaje" onclick="window.location.href='${basePath}ubits-admin/aprendizaje/planes-formacion.html'" style="cursor: pointer;">
+                    <button class="nav-button" data-section="aprendizaje" onclick="window.location.href='${basePath}ubits-admin/aprendizaje/planes-formacion.html'" style="cursor: pointer;">
                         <i class="far fa-graduation-cap"></i>
                     </button>
-                    <button class="nav-button" data-section="diagnóstico" data-tooltip="Diagnóstico" onclick="window.location.href='${basePath}ubits-admin/diagnostico/admin-diagnostico.html'" style="cursor: pointer;">
+                    <button class="nav-button" data-section="diagnóstico" onclick="window.location.href='${basePath}ubits-admin/diagnostico/admin-diagnostico.html'" style="cursor: pointer;">
                         <i class="far fa-chart-mixed"></i>
                     </button>
-                    <button class="nav-button" data-section="desempeño" data-tooltip="Desempeño" onclick="window.location.href='${basePath}ubits-admin/desempeno/admin-360.html'" style="cursor: pointer;">
+                    <button class="nav-button" data-section="desempeño" onclick="window.location.href='${basePath}ubits-admin/desempeno/admin-360.html'" style="cursor: pointer;">
                         <i class="far fa-bars-progress"></i>
                     </button>
-                    <button class="nav-button" data-section="encuestas" data-tooltip="Encuestas" onclick="window.location.href='${basePath}ubits-admin/encuestas/admin-encuestas.html'" style="cursor: pointer;">
+                    <button class="nav-button" data-section="encuestas" onclick="window.location.href='${basePath}ubits-admin/encuestas/admin-encuestas.html'" style="cursor: pointer;">
                         <i class="far fa-clipboard"></i>
                     </button>
                 </div>
@@ -182,13 +472,13 @@ function loadSidebar(variantOrActiveButton = 'default', activeButton = null) {
             
             <!-- Footer -->
             <div class="sidebar-footer">
-                <button class="nav-button" data-tooltip="API" onclick="window.location.href='${basePath}ubits-admin/otros/admin-api.html'" style="cursor: pointer;">
+                <button class="nav-button" data-sidebar-hover="simple" data-sidebar-title="API" onclick="window.location.href='${basePath}ubits-admin/otros/admin-api.html'" style="cursor: pointer;">
                     <i class="far fa-code"></i>
                 </button>
-                <button class="nav-button" data-tooltip="Centro de ayuda" onclick="window.location.href='${basePath}ubits-admin/otros/admin-help-center.html'" style="cursor: pointer;">
+                <button class="nav-button" data-sidebar-hover="simple" data-sidebar-title="Centro de ayuda" onclick="window.location.href='${basePath}ubits-admin/otros/admin-help-center.html'" style="cursor: pointer;">
                     <i class="far fa-circle-question"></i>
                 </button>
-                <button class="nav-button" id="darkmode-toggle" data-tooltip="Modo oscuro" data-theme="light">
+                <button class="nav-button" id="darkmode-toggle" data-theme="light">
                     <i class="far fa-moon"></i>
                 </button>
                 <div class="user-avatar-container">
@@ -241,22 +531,22 @@ function loadSidebar(variantOrActiveButton = 'default', activeButton = null) {
                     </div>
                 </div>
                 <div class="sidebar-body">
-                    <button class="nav-button" data-section="lms-creator" data-tooltip="LMS Creator" onclick="window.location.href='${basePath}ubits-colaborador/lms-creator/contenidos.html'" style="cursor: pointer;">
+                    <button class="nav-button" data-section="lms-creator" onclick="window.location.href='${basePath}ubits-colaborador/lms-creator/contenidos.html'" style="cursor: pointer;">
                         <i class="far fa-bolt"></i>
                     </button>
-                    <button class="nav-button" data-section="planes-formacion" data-tooltip="Planes de formación" onclick="window.location.href='${basePath}ubits-colaborador/lms-creator/planes-formacion.html'" style="cursor: pointer;">
+                    <button class="nav-button" data-section="planes-formacion" onclick="window.location.href='${basePath}ubits-colaborador/lms-creator/planes-formacion.html'" style="cursor: pointer;">
                         <i class="far fa-layer-group"></i>
                     </button>
-                    <button class="nav-button" data-section="certificados" data-tooltip="Certificados" onclick="window.location.href='${basePath}ubits-colaborador/lms-creator/certificados.html'" style="cursor: pointer;">
+                    <button class="nav-button" data-section="certificados" onclick="window.location.href='${basePath}ubits-colaborador/lms-creator/certificados.html'" style="cursor: pointer;">
                         <i class="far fa-award"></i>
                     </button>
-                    <button class="nav-button" data-section="personalizacion" data-tooltip="Personalización" onclick="window.location.href='${basePath}ubits-colaborador/lms-creator/personalizacion-u-corporativa.html'" style="cursor: pointer;">
+                    <button class="nav-button" data-section="personalizacion" onclick="window.location.href='${basePath}ubits-colaborador/lms-creator/personalizacion-u-corporativa.html'" style="cursor: pointer;">
                         <i class="far fa-palette"></i>
                     </button>
                 </div>
             </div>
             <div class="sidebar-footer">
-                <button class="nav-button" id="darkmode-toggle" data-tooltip="Modo oscuro" data-theme="light">
+                <button class="nav-button" id="darkmode-toggle" data-theme="light">
                     <i class="far fa-moon"></i>
                 </button>
                 <div class="user-avatar-container">
@@ -311,25 +601,25 @@ function loadSidebar(variantOrActiveButton = 'default', activeButton = null) {
                 
                 <!-- Body -->
                 <div class="sidebar-body">
-                    <button class="nav-button" data-section="aprendizaje" data-tooltip="Aprendizaje" onclick="window.location.href='${basePath}ubits-colaborador/aprendizaje/home-learn.html'" style="cursor: pointer;">
+                    <button class="nav-button" data-section="aprendizaje" onclick="window.location.href='${basePath}ubits-colaborador/aprendizaje/home-learn.html'" style="cursor: pointer;">
                         <i class="far fa-graduation-cap"></i>
                     </button>
-                    <button class="nav-button" data-section="diagnóstico" data-tooltip="Diagnóstico" onclick="window.location.href='${basePath}ubits-colaborador/diagnostico/diagnostico.html'" style="cursor: pointer;">
+                    <button class="nav-button" data-section="diagnóstico" onclick="window.location.href='${basePath}ubits-colaborador/diagnostico/diagnostico.html'" style="cursor: pointer;">
                         <i class="far fa-chart-mixed"></i>
                     </button>
-                    <button class="nav-button" data-section="desempeño" data-tooltip="Desempeño" onclick="window.location.href='${basePath}ubits-colaborador/desempeno/evaluaciones-360.html'" style="cursor: pointer;">
+                    <button class="nav-button" data-section="desempeño" onclick="window.location.href='${basePath}ubits-colaborador/desempeno/evaluaciones-360.html'" style="cursor: pointer;">
                         <i class="far fa-bars-progress"></i>
                     </button>
-                    <button class="nav-button" data-section="encuestas" data-tooltip="Encuestas" onclick="window.location.href='${basePath}ubits-colaborador/encuestas/encuestas.html'" style="cursor: pointer;">
+                    <button class="nav-button" data-section="encuestas" onclick="window.location.href='${basePath}ubits-colaborador/encuestas/encuestas.html'" style="cursor: pointer;">
                         <i class="far fa-clipboard"></i>
                     </button>
-                    <button class="nav-button" data-section="reclutamiento" data-tooltip="Reclutamiento" onclick="window.location.href='${basePath}ubits-colaborador/reclutamiento/reclutamiento.html'" style="cursor: pointer;">
+                    <button class="nav-button" data-section="reclutamiento" onclick="window.location.href='${basePath}ubits-colaborador/reclutamiento/reclutamiento.html'" style="cursor: pointer;">
                         <i class="far fa-users"></i>
                     </button>
-                    <button class="nav-button" data-section="tareas" data-tooltip="Tareas" onclick="window.location.href='${basePath}ubits-colaborador/tareas/tareas.html'" style="cursor: pointer;">
+                    <button class="nav-button" data-section="tareas" onclick="window.location.href='${basePath}ubits-colaborador/tareas/tareas.html'" style="cursor: pointer;">
                         <i class="far fa-layer-group"></i>
                     </button>
-                    <button class="nav-button" data-section="ia-para-hr" data-tooltip="IA para HR" onclick="window.location.href='${basePath}ubits-colaborador/ia-para-hr/ia-para-hr.html'" style="cursor: pointer;">
+                    <button class="nav-button" data-section="ia-para-hr" data-sidebar-label="IA para HR" onclick="window.location.href='${basePath}ubits-colaborador/ia-para-hr/ia-para-hr.html'" style="cursor: pointer;">
                         <i class="far fa-sparkles"></i>
                     </button>
                 </div>
@@ -337,7 +627,7 @@ function loadSidebar(variantOrActiveButton = 'default', activeButton = null) {
             
             <!-- Footer -->
             <div class="sidebar-footer">
-                <button class="nav-button" id="darkmode-toggle" data-tooltip="Modo oscuro" data-theme="light">
+                <button class="nav-button" id="darkmode-toggle" data-theme="light">
                     <i class="far fa-moon"></i>
                 </button>
                 <div class="user-avatar-container">
@@ -400,142 +690,45 @@ function loadSidebar(variantOrActiveButton = 'default', activeButton = null) {
         }
     }
     
-    // Función para actualizar el tooltip del botón de modo oscuro/claro
+    // Tras cambiar tema: cerrar tooltip/submenú (el título del hover se recalcula al abrir)
     function updateDarkModeTooltip() {
-        const darkModeButton = document.getElementById('darkmode-toggle');
-        if (!darkModeButton) return;
-        
-        const currentTheme = document.body.getAttribute('data-theme') || 'light';
-        const tooltipText = currentTheme === 'dark' ? 'Modo claro' : 'Modo oscuro';
-        
-        // Ocultar tooltip actual si está visible
         if (typeof hideTooltip === 'function') {
             hideTooltip();
         }
-        
-        // Actualizar el atributo data-tooltip
-        darkModeButton.setAttribute('data-tooltip', tooltipText);
-        
-        // Reinicializar tooltip para este botón (initTooltip ahora maneja la limpieza de listeners)
-        if (typeof initTooltip === 'function') {
-            setTimeout(() => {
-                initTooltip('#darkmode-toggle');
-            }, 50);
+        if (typeof window.closeSubmenu === 'function') {
+            window.closeSubmenu(UBITS_SIDEBAR_HOVER_SUBMENU_ID);
         }
     }
-    
-    // Exportar función globalmente para que pueda ser llamada desde script.js
+
     window.updateDarkModeTooltip = updateDarkModeTooltip;
-    
-    // Inicializar tooltips DESPUÉS de que el HTML esté insertado
-    // Usar setTimeout para asegurar que el DOM esté completamente renderizado
-    setTimeout(() => {
-        initSidebarTooltips();
-        updateDarkModeTooltip(); // Actualizar tooltip del botón de modo oscuro
-    }, 50);
-    
-    // Inicializar tooltips oficiales UBITS para los botones del sidebar
-    // Solo en desktop (pantallas >= 1024px) y excluyendo logo y avatar
-    function initSidebarTooltips() {
-        // Verificar si estamos en desktop
-        if (window.innerWidth < 1024) {
-            return; // No mostrar tooltips en móvil
-        }
-        
-        // Seleccionar todos los botones con data-tooltip (excluyendo logo y avatar)
-        // El logo no tiene data-tooltip y el avatar tampoco, así que están excluidos automáticamente
-        const tooltipButtons = document.querySelectorAll('.sidebar .nav-button[data-tooltip]');
-        
-        if (tooltipButtons.length === 0) {
-            console.log('No se encontraron botones con data-tooltip en el sidebar');
-            return;
-        }
-        
-        console.log('Inicializando tooltips para', tooltipButtons.length, 'botones del sidebar');
-        
-        tooltipButtons.forEach(button => {
-            // Remover listeners anteriores si existen (para evitar duplicados)
-            if (button._tooltipShowHandler) {
-                button.removeEventListener('mouseenter', button._tooltipShowHandler);
-                button.removeEventListener('mouseleave', button._tooltipHideHandler);
+
+    bindSidebarSubmenuSelectOnce();
+
+    setTimeout(function () {
+        ensureSidebarHoverAssets(basePath, function () {
+            try {
+                initSidebarSubmenuHover(variant, basePath);
+            } catch (err) {
+                console.warn('Sidebar submenu hover:', err);
             }
-            
-            // Configurar atributos para tooltips sin cola, posición derecha
-            button.setAttribute('data-tooltip-no-arrow', '');
-            button.setAttribute('data-tooltip-position', 'right');
-            button.setAttribute('data-tooltip-align', 'center');
-            button.setAttribute('data-tooltip-delay', '200');
+            updateDarkModeTooltip();
         });
-        
-        // Inicializar tooltips si la función está disponible
-        if (typeof initTooltip === 'function') {
-            console.log('Usando initTooltip() para inicializar tooltips');
-            initTooltip('.sidebar .nav-button[data-tooltip]');
-        } else if (typeof showTooltip === 'function') {
-            // Fallback: inicializar manualmente con showTooltip
-            console.log('Usando showTooltip() manualmente para inicializar tooltips');
-            tooltipButtons.forEach(button => {
-                const tooltipText = button.getAttribute('data-tooltip');
-                
-                let tooltipTimeout;
-                let currentTooltip = null;
-                
-                const showTooltipHandler = function() {
-                    // Verificar que sigamos en desktop antes de mostrar
-                    if (window.innerWidth < 1024) {
-                        return;
-                    }
-                    tooltipTimeout = setTimeout(() => {
-                        if (typeof showTooltip === 'function') {
-                            currentTooltip = showTooltip(button, tooltipText, {
-                                position: 'right',
-                                align: 'center',
-                                delay: 0,
-                                duration: 0,
-                                noArrow: true
-                            });
-                        }
-                    }, 200);
-                };
-                
-                const hideTooltipHandler = function() {
-                    if (tooltipTimeout) clearTimeout(tooltipTimeout);
-                    if (typeof hideTooltip === 'function') {
-                        hideTooltip();
-                    }
-                    currentTooltip = null;
-                };
-                
-                button.addEventListener('mouseenter', showTooltipHandler);
-                button.addEventListener('mouseleave', hideTooltipHandler);
-                
-                // Guardar handlers para poder limpiarlos si es necesario
-                button._tooltipShowHandler = showTooltipHandler;
-                button._tooltipHideHandler = hideTooltipHandler;
-            });
-        } else {
-            console.warn('Tooltip component no está disponible. Asegúrate de importar tooltip.js');
-            // Intentar de nuevo después de un breve delay
-            setTimeout(() => {
-                if (typeof initTooltip === 'function' || typeof showTooltip === 'function') {
-                    initSidebarTooltips();
-                }
-            }, 500);
-        }
-    }
-    
-    // Re-inicializar tooltips en resize (por si cambia de móvil a desktop)
-    let resizeTimeout;
-    window.addEventListener('resize', function() {
-        clearTimeout(resizeTimeout);
-        resizeTimeout = setTimeout(() => {
-            // Si cambiamos de móvil a desktop, inicializar tooltips
+    }, 50);
+
+    let resizeTimeoutSubmenu;
+    window.addEventListener('resize', function () {
+        clearTimeout(resizeTimeoutSubmenu);
+        resizeTimeoutSubmenu = setTimeout(function () {
+            const bp = getBasePath();
+            const v = window._ubitsSidebarVariant || 'default';
             if (window.innerWidth >= 1024) {
-                initSidebarTooltips();
+                ensureSidebarHoverAssets(bp, function () {
+                    initSidebarSubmenuHover(v, bp);
+                });
             } else {
-                // Si cambiamos a móvil, ocultar tooltips activos
-                if (typeof hideTooltip === 'function') {
-                    hideTooltip();
+                if (typeof hideTooltip === 'function') hideTooltip();
+                if (typeof window.closeSubmenu === 'function') {
+                    window.closeSubmenu(UBITS_SIDEBAR_HOVER_SUBMENU_ID);
                 }
             }
         }, 250);

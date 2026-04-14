@@ -4,24 +4,26 @@
  * pero sin colita, con lista de opciones y título opcional.
  *
  * Defaults:
- * - Variante: dark (tokens inverted)
+ * - Variante: dark (mismo fondo y lectura que el sidebar: --ubits-sidebar-*)
  * - Título: visible
  * - Radius: --border-radius-lg (16px)
+ *
+ * Elevación: mismas capas que .ubits-popover (equivalentes a --ubits-elevation-overlay en ubits-colors;
+ * filter: drop-shadow porque box-shadow no se puede expresar con var(--ubits-elevation-overlay) en filter).
  *
  * Requiere: ubits-colors, ubits-typography, fontawesome-icons.css si hay iconos.
  */
 
 .ubits-submenu {
-    /* Elevación similar a tooltip/popover: una sola sombra para toda la forma */
+    /* Capas equivalentes a --ubits-elevation-overlay (Figma R4), alineado con components/popover.css */
     --ubits-submenu-shadow-ambient: rgba(0, 0, 0, 0.12);
     --ubits-submenu-shadow-key: rgba(0, 0, 0, 0.14);
 
-    /* Theme tokens (default: dark/inverted) */
-    --ubits-submenu-bg: var(--ubits-bg-1-inverted);
-    --ubits-submenu-fg: var(--ubits-fg-1-high-inverted);
-    --ubits-submenu-fg-muted: var(--ubits-fg-1-medium-inverted);
-    --ubits-submenu-border: var(--ubits-border-1-inverted);
-    --ubits-submenu-hover: var(--ubits-bg-2-inverted);
+    /* Misma superficie que el rail (.sidebar): no usar --ubits-bg-*-inverted (en tema oscuro pasan a claros) */
+    --ubits-submenu-bg: var(--ubits-sidebar-bg);
+    --ubits-submenu-fg: var(--ubits-sidebar-button-fg-default);
+    --ubits-submenu-fg-muted: var(--ubits-sidebar-button-fg-disabled);
+    --ubits-submenu-hover: var(--ubits-sidebar-button-bg-pressed);
 
     position: fixed;
     z-index: 10020;
@@ -45,21 +47,19 @@
     --ubits-submenu-bg: var(--ubits-bg-1);
     --ubits-submenu-fg: var(--ubits-fg-1-high);
     --ubits-submenu-fg-muted: var(--ubits-fg-1-medium);
-    --ubits-submenu-border: var(--ubits-border-1);
     --ubits-submenu-hover: var(--ubits-bg-2);
 }
 
 .ubits-submenu__surface {
     background: var(--ubits-submenu-bg);
     color: var(--ubits-submenu-fg);
-    border: 1px solid var(--ubits-submenu-border);
+    border: none;
     border-radius: var(--border-radius-lg);
     overflow: hidden;
 }
 
 .ubits-submenu__header {
     padding: var(--padding-md) var(--padding-lg);
-    border-bottom: 1px solid var(--ubits-submenu-border);
 }
 
 .ubits-submenu__header:empty {

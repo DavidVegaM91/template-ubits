@@ -863,6 +863,9 @@ function activateSelector(container, variant, customTabs = []) {
 }
 
 // Exportar funciones para uso global
+// Config de tabs por módulo (p. ej. hover submenu en sidebar)
+window.TOP_NAV_VARIANTS = TOP_NAV_VARIANTS;
+
 window.getTopNavHTML = getTopNavHTML;
 window.loadSubNav = loadSubNav;
 window.getTopNavVariant = getTopNavVariant;

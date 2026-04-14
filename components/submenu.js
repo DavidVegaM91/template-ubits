@@ -9,7 +9,7 @@
  *     align: 'start',            // 'start' | 'center' | 'end' (inicio/centro/fin)
  *     offset: 8,
  *     variant: 'dark',           // 'dark' (default) | 'light'
- *     title: 'Sección',
+ *     title: 'Aprendizaje',
  *     showTitle: true,           // default: true
  *     options: [{ text, value, leftIcon? }],
  *     closeOnEscape: true,       // default: true
@@ -219,7 +219,7 @@
         el._ubitsSubmenuOnClose = onClose;
 
         var titleBlock = (showTitle && title)
-            ? '<div class="ubits-submenu__header"><p class="ubits-submenu__title ubits-body-md-bold" id="' + escapeHtml(submenuId) + '-title">' + escapeHtml(title) + '</p></div>'
+            ? '<div class="ubits-submenu__header"><p class="ubits-submenu__title ubits-body-md-semibold" id="' + escapeHtml(submenuId) + '-title">' + escapeHtml(title) + '</p></div>'
             : '';
 
         var optionsHtml = (opts || []).map(buildOptionHtml).join('');
