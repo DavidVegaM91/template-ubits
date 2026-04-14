@@ -371,21 +371,17 @@
  * styles.css fuerza body { overflow-y: auto !important }; hace falta !important y bloquear html.
  */
 html:has(body.contenido-borrador-drawer-abierto),
-body.contenido-borrador-drawer-abierto,
-html:has(body.crear-contenido-drawer-abierto),
-body.crear-contenido-drawer-abierto {
+body.contenido-borrador-drawer-abierto {
     overflow: hidden !important;
 }
 
-body.contenido-borrador-drawer-abierto,
-body.crear-contenido-drawer-abierto {
+body.contenido-borrador-drawer-abierto {
     overscroll-behavior: none;
 }
 
 /* Drawer full: cuerpo sin padding para el layout Creator (rail + índice + recurso) o Antiguo LMS */
 .contenido-borrador-drawer-overlay .ubits-drawer-body,
-.contenido-antiguo-lms-drawer-overlay .ubits-drawer-body,
-.crear-contenido-drawer-overlay .ubits-drawer-body {
+.contenido-antiguo-lms-drawer-overlay .ubits-drawer-body {
     padding: var(--padding-none);
     display: flex;
     flex-direction: column;
@@ -393,76 +389,7 @@ body.crear-contenido-drawer-abierto {
     min-height: 0;
 }
 
-/* Crear contenido: panel a alto de viewport (móvil / dynamic viewport) y cadena flex para scroll en __main */
-.crear-contenido-drawer-overlay.ubits-drawer-overlay {
-    align-items: stretch;
-    justify-content: stretch;
-    min-height: 100vh;
-    min-height: 100dvh;
-}
-
-.crear-contenido-drawer-overlay .ubits-drawer-content.ubits-drawer-content--full {
-    min-height: 0;
-    height: 100%;
-    max-height: 100dvh;
-}
-
-.crear-contenido-drawer-overlay .ubits-drawer-body {
-    flex: 1 1 auto;
-    min-height: 0;
-    overflow: hidden;
-    overflow-x: hidden;
-}
-
-.crear-contenido-drawer-overlay .ubits-drawer-header {
-    padding-top: max(var(--padding-lg), env(safe-area-inset-top, 0px));
-    padding-left: max(var(--padding-xl), env(safe-area-inset-left, 0px));
-    padding-right: max(var(--padding-xl), env(safe-area-inset-right, 0px));
-    flex-wrap: wrap;
-    row-gap: var(--gap-sm);
-}
-
-.crear-contenido-drawer-overlay .ubits-drawer-footer {
-    padding-bottom: max(var(--padding-lg), env(safe-area-inset-bottom, 0px));
-    padding-left: max(var(--padding-xl), env(safe-area-inset-left, 0px));
-    padding-right: max(var(--padding-xl), env(safe-area-inset-right, 0px));
-    flex-wrap: wrap;
-    justify-content: stretch;
-}
-
-.crear-contenido-drawer-footer-actions {
-    display: flex;
-    width: 100%;
-    align-items: center;
-    gap: var(--gap-md);
-    flex-wrap: wrap;
-}
-
-.crear-contenido-drawer-footer-actions__grow {
-    flex: 1 1 auto;
-    min-width: var(--gap-md);
-}
-
-.crear-contenido-drawer-footer-actions__nav {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--gap-md);
-    flex-wrap: wrap;
-}
-
-/*
- * Menú ⋮ de páginas creator se monta en document.body (paginas-creator.js); el drawer va a z-index 1101.
- * Mientras el drawer está abierto, subimos el dropdown por encima del panel.
- */
-body.crear-contenido-drawer-abierto .ubits-dropdown-menu__overlay {
-    z-index: 1200;
-}
-
-body.crear-contenido-drawer-abierto .ubits-dropdown-menu__content {
-    z-index: 1201;
-}
-
-/* Pasos del drawer: solo uno visible (Portada vs Recursos — no mezclar layouts). */
+/* Pasos (Portada vs Recursos) en crear-contenido.html — mismo marcado que el antiguo drawer. */
 .crear-contenido-step--portada:not(.crear-contenido-step--visible),
 .crear-contenido-step--recursos:not(.crear-contenido-step--visible) {
     display: none !important;
@@ -830,7 +757,6 @@ body.crear-contenido-drawer-abierto .ubits-dropdown-menu__content {
 }
 
 /* Título + Borrador + guardado agrupados al inicio (pegados al título, no al borde del header) */
-.crear-contenido-drawer-overlay .ubits-drawer-header__text.contenido-borrador-editor__drawer-header-text,
 .contenido-antiguo-lms-drawer-overlay .ubits-drawer-header__text.contenido-borrador-editor__drawer-header-text,
 .contenido-borrador-drawer-overlay .ubits-drawer-header__text.contenido-borrador-editor__drawer-header-text {
     flex: 1;
@@ -840,7 +766,6 @@ body.crear-contenido-drawer-abierto .ubits-dropdown-menu__content {
     align-items: center;
 }
 
-.crear-contenido-drawer-overlay .contenido-borrador-editor__drawer-title-row,
 .contenido-antiguo-lms-drawer-overlay .contenido-borrador-editor__drawer-title-row,
 .contenido-borrador-drawer-overlay .contenido-borrador-editor__drawer-title-row {
     display: inline-flex;
@@ -852,7 +777,6 @@ body.crear-contenido-drawer-abierto .ubits-dropdown-menu__content {
     max-width: 100%;
 }
 
-.crear-contenido-drawer-overlay .contenido-borrador-editor__drawer-title-row .ubits-drawer-title,
 .contenido-antiguo-lms-drawer-overlay .contenido-borrador-editor__drawer-title-row .ubits-drawer-title,
 .contenido-borrador-drawer-overlay .contenido-borrador-editor__drawer-title-row .ubits-drawer-title {
     flex: 0 1 auto;
@@ -862,13 +786,12 @@ body.crear-contenido-drawer-abierto .ubits-dropdown-menu__content {
     white-space: nowrap;
 }
 
-.crear-contenido-drawer-overlay .contenido-borrador-editor__drawer-title-row .ubits-status-tag,
 .contenido-antiguo-lms-drawer-overlay .contenido-borrador-editor__drawer-title-row .ubits-status-tag,
 .contenido-borrador-drawer-overlay .contenido-borrador-editor__drawer-title-row .ubits-status-tag {
     flex-shrink: 0;
 }
 
-.crear-contenido-drawer-overlay .contenido-borrador-editor__drawer-save-host,
+.contenido-antiguo-lms-drawer-overlay .contenido-borrador-editor__drawer-save-host,
 .contenido-borrador-drawer-overlay .contenido-borrador-editor__drawer-save-host {
     flex-shrink: 0;
     display: inline-flex;
@@ -877,7 +800,7 @@ body.crear-contenido-drawer-abierto .ubits-dropdown-menu__content {
 }
 
 /* Save indicator oficial junto al título: alinea con texto y tag */
-.crear-contenido-drawer-overlay .contenido-borrador-editor__drawer-save-host .ubits-save-indicator,
+.contenido-antiguo-lms-drawer-overlay .contenido-borrador-editor__drawer-save-host .ubits-save-indicator,
 .contenido-borrador-drawer-overlay .contenido-borrador-editor__drawer-save-host .ubits-save-indicator {
     vertical-align: middle;
 }
@@ -1331,16 +1254,6 @@ body.crear-contenido-drawer-abierto .ubits-dropdown-menu__content {
     .crear-contenido-drawer-overlay .crear-contenido-editor-workspace {
         padding: var(--padding-sm);
         gap: var(--gap-sm);
-    }
-
-    .crear-contenido-drawer-overlay .ubits-drawer-header {
-        padding-left: max(var(--padding-md), env(safe-area-inset-left, 0px));
-        padding-right: max(var(--padding-md), env(safe-area-inset-right, 0px));
-    }
-
-    .crear-contenido-drawer-overlay .ubits-drawer-footer {
-        padding-left: max(var(--padding-md), env(safe-area-inset-left, 0px));
-        padding-right: max(var(--padding-md), env(safe-area-inset-right, 0px));
     }
 }
 

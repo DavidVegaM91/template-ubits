@@ -171,7 +171,7 @@ body.page-crear-contenido {
 }
 
 /*
- * Fase 5 (paridad con body.crear-contenido-drawer-abierto en contenidos.css):
+ * Menús ⋮ del índice (Páginas creator) por encima del shell:
  * menús ⋮ de Páginas creator se portan a document.body; subir dropdown por encima del shell.
  */
 body.crear-contenido-app-open .ubits-dropdown-menu__overlay {

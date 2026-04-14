@@ -427,6 +427,7 @@ const PAGE_TO_TAB = {
     'reclutamiento.html': 'reclutamiento',
     // LMS Creator (rutas con prefijo lms-creator/ vía getPageKeyForSubNav)
     'lms-creator/contenidos.html': 'contenidos',
+    'lms-creator/crear-contenido.html': 'contenidos',
     'lms-creator/categorias.html': 'categorias',
     'lms-creator/planes-formacion.html': 'planes',
     'lms-creator/grupos.html': 'grupos',

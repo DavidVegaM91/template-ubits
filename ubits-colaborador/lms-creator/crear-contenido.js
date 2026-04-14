@@ -1,14 +1,14 @@
 /**
  * LMS Creator — Página dedicada crear-contenido.html (modo página, sin drawer).
  * Un solo archivo: portada (inputs, RTE, miniatura), hashes URL, paso Recursos (índice + empty + eventos).
- * Lógica alineada a crear-contenido-drawer.js (duplicado controlado; deuda técnica: extraer crear-contenido-shared.js).
+ * Lógica del flujo crear contenido (tras corte: antiguo drawer de lista sustituido por esta página).
  */
 (function () {
     'use strict';
 
     var crearContenidoPortadaTrailerUrl = '';
     var crearContenidoInputApis = {};
-    /** 0 = Portada, 1 = Recursos (mismo criterio que crear-contenido-drawer.js). */
+    /** 0 = Portada, 1 = Recursos */
     var pageCurrentStep = 0;
     var portadaValidationFlash = false;
     var recursosTitlesValidationFlash = false;
@@ -328,7 +328,7 @@
         });
     }
 
-    /* ---------- Paso Recursos (página dedicada; misma idea que crear-contenido-drawer.js) ---------- */
+    /* ---------- Paso Recursos ---------- */
     var CREAR_CONTENIDO_RECURSOS_EMPTY_HOST_ID = 'ccCrearContenidoRecursosEmpty';
     var recursosUiDone = false;
     var recursosPageSeq = 0;

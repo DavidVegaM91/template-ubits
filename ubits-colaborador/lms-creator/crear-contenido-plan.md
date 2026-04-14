@@ -1,7 +1,8 @@
 # Plan: Crear contenido en página dedicada (réplica de la experiencia actual)
 
 **Estado:** guía de trabajo — no sustituye acuerdos de producto.  
-**Ubicación sugerida del plan:** `ubits-colaborador/lms-creator/crear-contenido-plan.md`
+**Ubicación sugerida del plan:** `ubits-colaborador/lms-creator/crear-contenido-plan.md`  
+**Corte aplicado (2026-04):** la lista `contenidos.html` ya no embebe el flujo en drawer; la ruta oficial es `crear-contenido.html` + `crear-contenido.js`; `crear-contenido-drawer.js` fue eliminado.
 
 ---
 
@@ -10,12 +11,12 @@
 ### Objetivo
 Tener **una página HTML aparte** (misma apariencia “pantalla completa” que hoy el drawer) para el flujo **Crear contenido**, **sin** usar el componente **drawer** (`openDrawer`), de modo que en el **paso 4** se pueda usar un **drawer real** sin anidar drawers.
 
-### Restricción crítica (hasta nuevo aviso)
-- **No modificar, no borrar ni “simplificar”** la experiencia actual embebida en `contenidos.html` + `crear-contenido-drawer.js` + estilos asociados en `contenidos.css` (y cualquier cable que abra el drawer desde lista).
-- **Solo añadir archivos nuevos** y, cuando haga falta enlazar, preferir **nuevos enlaces o rutas** que apunten a la página nueva **sin quitar** el comportamiento viejo (hasta fase de corte acordada con PM).
+### Restricción crítica (histórica — vigente hasta el corte)
+- ~~**No modificar, no borrar ni “simplificar”** la experiencia embebida en `contenidos.html` + `crear-contenido-drawer.js`…~~ **Cumplido y cerrado:** el corte eliminó el drawer de lista y el archivo `crear-contenido-drawer.js`.
+- La lista redirige hashes legacy (`#crear-contenido`, etc.) a `crear-contenido.html`; el botón **«Crear contenido»** abre la página dedicada.
 
-### Meta final (fuera del alcance inmediato de este plan)
-Eliminar por completo la experiencia drawer desde `contenidos.html` cuando PM/UX den el OK. Eso será **una fase posterior explícita**; **no** forma parte de las fases de réplica descritas aquí como obligatorias.
+### Meta final
+**Hecha:** la experiencia drawer desde `contenidos.html` fue retirada; `crear-contenido.html` es la ruta única para crear desde el playground del template.
 
 ---
 
@@ -23,7 +24,7 @@ Eliminar por completo la experiencia drawer desde `contenidos.html` cuando PM/UX
 
 | Principio | Detalle |
 |-----------|---------|
-| Comparación | La experiencia “vieja” (drawer) sigue intacta para comparar lado a lado. |
+| Comparación | *(Histórico)* Drawer en lista para comparar lado a lado; tras el corte solo queda la página dedicada. |
 | Réplica visual/funcional | La página nueva debe comportarse **igual** (pasos, portada, recursos, validaciones, índice, etc.) salvo decisiones explícitas documentadas abajo. |
 | CSS por página | La página nueva tiene **su propio** `crear-contenido.css`; **no** mezclar reglas nuevas dentro de `contenidos.css` si pueden vivir en el CSS de la página (salvo tokens/variables globales ya existentes). |
 | JS | Preferir **`crear-contenido.js`** que monte el flujo en modo “página” (`root` en DOM) sin tocar la API del drawer hasta una fase de refactor opcional. |
@@ -32,7 +33,7 @@ Eliminar por completo la experiencia drawer desde `contenidos.html` cuando PM/UX
 ### Nombres de archivos (cerrados en Fase 0)
 - `ubits-colaborador/lms-creator/crear-contenido.html`
 - `ubits-colaborador/lms-creator/crear-contenido.css`
-- `ubits-colaborador/lms-creator/crear-contenido.js` (Fases posteriores; lógica de la vista página; **sin editar** `crear-contenido-drawer.js` al inicio)
+- `ubits-colaborador/lms-creator/crear-contenido.js` (lógica del flujo en página; el antiguo `crear-contenido-drawer.js` fue eliminado en el corte)
 
 ---
 
@@ -49,7 +50,7 @@ Eliminar por completo la experiencia drawer desde `contenidos.html` cuando PM/UX
 1. **Nombre del HTML:** `crear-contenido.html` (junto a `crear-contenido.css` / `crear-contenido.js` en la misma carpeta `lms-creator/`).
 2. **Chrome de navegación:** **sin SubNav ni Sidebar** en esta página. Solo el **contenido central** del flujo (equivalente al cuerpo del drawer).
 3. **Header y footer “como drawer”:** el **fondo** (background) del header y del footer debe ocupar el **ancho completo del viewport** (full-bleed), igual que en el componente drawer. El **contenido** interno (título, botón cerrar, acciones del footer) puede ir en un contenedor alineado al ancho útil del flujo (padding / max-width según diseño), pero las **bandas** superior e inferior se extienden de borde a borde. En Fase 2 se implementa en `crear-contenido.css` con estructura tipo: fila header full-width → capa interior; `main` scrollable; fila footer full-width → capa interior.
-4. **URLs con hashtags:** **sí**. En **`crear-contenido.html`** el paso Recursos usa hash corto **`#recursos`**; Portada **`#portada`** o sin hash (legacy `#crear-contenido` → normalizado a `#portada`). Se admiten como alias los hashes largos del drawer en Recursos y se normalizan a `#recursos`. En **`contenidos.html`** el drawer sigue con `#crear-contenido-recursos` / alias.
+4. **URLs con hashtags:** **sí**. En **`crear-contenido.html`** el paso Recursos usa hash corto **`#recursos`**; Portada **`#portada`** o sin hash (legacy `#crear-contenido` → normalizado a `#portada`). Alias largos se normalizan a `#recursos`. Desde **`contenidos.html`**, los hashes legacy del antiguo drawer redirigen a `crear-contenido.html` con el hash canónico.
 
 **Entregables (checklist Fase 0)**
 - [x] Nombre final de archivos: `crear-contenido.html`, `crear-contenido.css`, `crear-contenido.js`.
@@ -107,7 +108,7 @@ Comparación visual lado a lado: abrir drawer en `contenidos.html` y `crear-cont
 - [x] Pegar/adaptar en `crear-contenido.html` el **mismo HTML** que genera el cuerpo del drawer (portada, stepper, paso recursos, etc.) desde `getCrearContenidoBodyHtml()` / estructura actual, con estos matices:
   - **Prefijos o IDs únicos** si hace falta evitar colisión al abrir `contenidos` en la misma sesión (ideal: namespace `cc-page-` para IDs en la página nueva).
   - Mismos componentes CSS/JS referenciados que ya usa el drawer (button, input, stepper, modal, etc.) vía rutas relativas.
-- [x] **No** eliminar ni alterar el string/HTML dentro de `crear-contenido-drawer.js`; la fuente de verdad para “copiar” es **lectura** del archivo o del DOM renderizado, pero el archivo drawer **permanece sin cambios**.
+- [x] **No** eliminar ni alterar el string/HTML dentro de `crear-contenido-drawer.js` *(fase histórica; el archivo fue retirado en el corte)*; la fuente de verdad para “copiar” era **lectura** del archivo o del DOM renderizado.
 
 **Criterio de aprobación**  
 La nueva página muestra **los mismos bloques** (stepper, formulario portada, área paso 2, etc.) que el drawer; puede estar sin cablear JS.
@@ -124,7 +125,7 @@ La nueva página muestra **los mismos bloques** (stepper, formulario portada, á
   - Reutilice **lógica** equivalente a la de `crear-contenido-drawer.js` mediante **copia inicial** (duplicado controlado) o extracción a un tercer archivo **nuevo** (`crear-contenido-shared.js`) que **importen** tanto el drawer como la página — **solo si** se acuerda no editar `crear-contenido-drawer.js` en la primera iteración: entonces **duplicar** en `crear-contenido.js` y documentar deuda técnica para unificar después.
 - [x] Ajustar selectores/IDs al namespace de la página nueva (`OVERLAY_ID` → contenedor raíz de página, etc.).
 - [x] Comportamiento esperado: mismos pasos, mismo hash si se definió en Fase 0, mismas validaciones que ya tenéis en el drawer **en la medida replicable**.
-- [x] **Cero cambios** en `crear-contenido-drawer.js` en esta fase (salvo bug de seguridad acordado).
+- [x] **Cero cambios** en `crear-contenido-drawer.js` en esta fase *(histórico; archivo eliminado tras el corte)*.
 - [x] Sincronizar **hashes** en `crear-contenido.html` (`#portada`, `#recursos`, alias largos → canónico `#recursos`; legacy `#crear-contenido` → `#portada`).
 
 **Criterio de aprobación**  
@@ -143,8 +144,8 @@ Flujo usable en `crear-contenido.html` **igual** al del drawer (crear desde cero
   - [x] Footer Anterior/Siguiente, stepper clickeable, URL/hash.
   - [x] Modo oscuro / tokens. *(Tokens UBITS; probar `data-theme="dark"` en body.)*
   - [x] Responsive (breakpoints críticos acordados). *(Reglas compartidas con `contenidos.css` + header 639px en `crear-contenido.css`.)*
-  - [x] Z-index: dropdowns/menús por encima del shell de página — **`body.crear-contenido-app-open`** en `crear-contenido.html` + reglas en `crear-contenido.css` (paridad con `body.crear-contenido-drawer-abierto` en lista).
-- [x] Actualizar `contexto-creacion-contenido.md` con subsección **«Implementación en página dedicada»** (rutas, assets, QA, z-index) **sin** borrar la descripción del prototipo drawer.
+  - [x] Z-index: dropdowns/menús por encima del shell de página — **`body.crear-contenido-app-open`** en `crear-contenido.html` + reglas en `crear-contenido.css` (antes se comparaba con `body.crear-contenido-drawer-abierto` en lista; drawer de lista eliminado).
+- [x] Actualizar `contexto-creacion-contenido.md` con subsección **«Implementación en página dedicada»** (rutas, assets, QA, z-index); el corte documenta el fin del drawer en lista.
 - [x] **README (raíz):** inventario LMS Creator y contexto enlazan **cómo abrir** `crear-contenido.html` para QA.
 
 **Criterio de aprobación**  
@@ -154,32 +155,31 @@ PM firma lista de verificación; no hay regresiones respecto al drawer en los í
 
 ---
 
-### Fase 6 — Entrada de usuario (solo cuando PM lo pida; sigue sin borrar drawer)
+### Fase 6 — Entrada de usuario (histórica; sustituida por el corte)
 
-**Entregables**
-- [ ] Desde la UI que corresponda (p. ej. botón “Crear contenido” en `contenidos.html`), **añadir** enlace o segunda acción que abra `crear-contenido.html` **en la misma pestaña o nueva** — **sin** quitar el comportamiento actual del drawer hasta decisión explícita.
-- [ ] O mantener **solo** documentación para abrir la página manualmente hasta el corte.
+**Entregables originales (Fase 6 antes del corte)**
+- [x] Segunda acción «Vista página completa» + drawer en lista. *(Obsoleto.)*
 
-**Nota:** Si esta fase **modifica** `contenidos.html`, debe ser **solo adición** (nuevo botón o menú “Probar nueva experiencia”) para no romper la comparación. PM puede pedir **no tocar** `contenidos.html` hasta después de Fase 5.
+**Estado tras el corte**
+- [x] Un solo botón primario **«Crear contenido»** en `contenidos.html` → `crear-contenido.html` (misma pestaña).
+- [x] Sin drawer de creación en lista; sin `crear-contenido-drawer.js`.
 
 **Criterio de aprobación**  
-Navegación clara hacia la página nueva; la experiencia drawer sigue disponible.
+Navegación clara hacia la página dedicada; sin flujo duplicado en drawer.
 
 **APROBACIÓN:** Sí / No — comentarios: _______________________
 
 ---
 
-## 4. Fase futura (explícita — NO ejecutar hasta acuerdo)
+## 4. Corte — drawer de `contenidos.html` (ejecutado)
 
-### “Corte” — eliminar drawer de `contenidos.html`
+**Cuándo:** tras acordar que `crear-contenido.html` es la ruta oficial.
 
-**Cuándo:** después de aprobación PM y de que la página nueva sea la ruta oficial.
-
-**Tareas típicas (referencia, no ejecutar ahora)**
-- [ ] Redirigir botón “Crear contenido” solo a la página nueva.
-- [ ] Eliminar HTML/JS/CSS del drawer en `contenidos.html` y reglas solo usadas por el drawer en `contenidos.css`.
-- [ ] Deprecar o eliminar `crear-contenido-drawer.js` o fusionar con `crear-contenido.js` / shared.
-- [ ] Actualizar enlaces en sidebar/sub-nav si apuntaban al flujo viejo.
+**Checklist (completado)**
+- [x] Botón «Crear contenido» solo abre la página nueva.
+- [x] Eliminados HTML/JS del drawer en `contenidos.html`; limpieza de reglas solo del drawer en `contenidos.css` (se mantienen selectores `.crear-contenido-drawer-overlay` en body de `crear-contenido.html` para layout compartido con `contenidos.css`).
+- [x] Eliminado `crear-contenido-drawer.js`; lógica en `crear-contenido.js`.
+- [x] Mapeos en `sub-nav.js` / `floating-menu.js` para `crear-contenido.html` → contexto contenidos.
 
 ---
 
@@ -187,7 +187,7 @@ Navegación clara hacia la página nueva; la experiencia drawer sigue disponible
 
 | Riesgo | Mitigación |
 |--------|------------|
-| Duplicación de JS (drawer vs página) | Aceptado hasta corte; documentar deuda; unificar en fase posterior. |
+| Duplicación de JS (drawer vs página) | Resuelta en el corte: un solo archivo `crear-contenido.js`. |
 | IDs duplicados si misma sesión abre ambas vistas | Namespace `cc-page-*` en la página nueva. |
 | Reglas CSS conflictivas | Todo lo nuevo bajo prefijo del shell (p. ej. `.crear-contenido-shell`) en `crear-contenido.css`. |
 | Paso 4 con drawer anidado | Resuelto al no usar drawer en el contenedor principal de esta experiencia. |
@@ -205,14 +205,14 @@ Al maquetar el header (Fase 2), el alto **no** coincidía con el drawer (~65px v
 
 ---
 
-## 6. Checklist rápido “no romper lo existente”
+## 6. Checklist rápido (post-corte)
 
-Antes de cada PR/commit de este plan, verificar:
+Antes de cada PR/commit que toque el flujo crear contenido, verificar:
 
-- [ ] `contenidos.html` — sin eliminaciones de la experiencia drawer (salvo Fase 6 explícita y acordada).
-- [ ] `crear-contenido-drawer.js` — sin cambios no acordados.
-- [ ] `contenidos.css` — sin borrar bloques `crear-contenido-drawer-*` / `crear-contenido-recursos-*` usados por el drawer.
-- [ ] Nuevos archivos referenciados correctamente desde la página nueva.
+- [ ] `contenidos.html` — botón «Crear contenido» → `crear-contenido.html`; redirección de hashes legacy si se cambian rutas.
+- [ ] `crear-contenido.js` / `crear-contenido.html` — imports y rutas relativas correctos desde `lms-creator/`.
+- [ ] `contenidos.css` — no eliminar reglas bajo `.crear-contenido-drawer-overlay` / `crear-contenido-recursos-*` que usa la **página** `crear-contenido.html` (clase histórica en body).
+- [ ] Nuevos archivos referenciados correctamente desde la página dedicada.
 - [ ] Si hay **`<a class="ubits-button">`**: `box-sizing: border-box` en CSS de página o verificar alto (ver §5.1).
 
 ---
@@ -227,8 +227,9 @@ Antes de cada PR/commit de este plan, verificar:
 | | 3 | | |
 | | 4 | | |
 | 2026-04-14 | 5 | PM (pendiente firma) | QA doc: `contexto-creacion-contenido.md` + README; `crear-contenido-app-open` (z-index dropdowns); checklist en plan. |
-| | 6 | | |
+| 2026-04-14 | 6 | PM (pendiente firma) | `contenidos.html`: botón sec. «Vista página completa» → `crear-contenido.html`; drawer intacto. |
+| 2026-04-14 | Corte | PM (pendiente firma) | Lista sin drawer; `crear-contenido.html` oficial; eliminado `crear-contenido-drawer.js`; hashes legacy redirigen; sub-nav/floating-menu mapean `crear-contenido.html`. |
 
 ---
 
-*Documento generado como guía de implementación. Última actualización: §5.1 documentación bug `<a>` + Button / `box-sizing` (header crear-contenido).*
+*Documento generado como guía de implementación. Última actualización: corte aplicado (§4); checklist §6 post-corte.*

@@ -45,7 +45,6 @@
     <link rel="stylesheet" href="../../components/sidebar-contenidos-lms.css">
     <link rel="stylesheet" href="./lms-creator.css">
     <link rel="stylesheet" href="./contenidos.css">
-    <link rel="stylesheet" href="./portada-media-modal.css">
 </head>
 <body data-theme="light" class="page-contenidos-creator">
     <div class="dashboard-container">
@@ -164,8 +163,6 @@
     <script src="../../components/learn-content-img-trailer.js"></script>
     <script src="../../components/rich-text-editor.js"></script>
     <script src="../../components/sidebar-contenidos-lms.js"></script>
-    <script src="./portada-media-modal.js"></script>
-    <script src="./crear-contenido-drawer.js"></script>
     <script src="../../script.js"></script>
     <script src="../../bd-master/bd-master-niveles-contenido.js"></script>
     <script src="../../bd-master/bd-master-tipos-contenido.js"></script>
@@ -182,6 +179,17 @@
     <script src="../../components/card-content.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            var _hCrearLegacy = location.hash || '';
+            if (
+                _hCrearLegacy === '#crear-contenido' ||
+                _hCrearLegacy === '#crear-contenido-recursos' ||
+                _hCrearLegacy === '#crear-contenido-step-recursos'
+            ) {
+                location.replace(
+                    'crear-contenido.html' + (_hCrearLegacy === '#crear-contenido' ? '#portada' : '#recursos')
+                );
+                return;
+            }
             if (typeof initTooltip === 'function') {
                 initTooltip('.widget-contenidos-creator [data-tooltip]');
             }
@@ -845,9 +853,6 @@
                 setTimeout(function () {
                     tryOpenContenidoAntiguoLmsFromUrlHash();
                     tryOpenContenidoBorradorFromUrlHash();
-                    if (typeof tryOpenCrearContenidoFromUrlHash === 'function') {
-                        tryOpenCrearContenidoFromUrlHash();
-                    }
                 }, 0);
             }
 
@@ -864,10 +869,8 @@
                     primaryButton: {
                         text: 'Crear contenido',
                         icon: 'fa-plus',
-                        onClick: function() {
-                            if (typeof openCrearContenidoDrawer === 'function') {
-                                openCrearContenidoDrawer();
-                            }
+                        onClick: function () {
+                            window.location.href = 'crear-contenido.html';
                         }
                     }
                 });
@@ -1649,9 +1652,6 @@
                             setTimeout(function () {
                                 tryOpenContenidoAntiguoLmsFromUrlHash();
                                 tryOpenContenidoBorradorFromUrlHash();
-                                if (typeof tryOpenCrearContenidoFromUrlHash === 'function') {
-                                    tryOpenCrearContenidoFromUrlHash();
-                                }
                             }, 0);
                         }
                         if (tablePanel) tablePanel.style.display = 'none';

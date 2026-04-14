@@ -564,6 +564,7 @@ function setActiveItemByCurrentPage() {
 
     const pageToElementMapCreator = {
         'contenidos.html': 'contenidos',
+        'crear-contenido.html': 'contenidos',
         'categorias.html': 'categorias',
         'planes-formacion.html': 'planes-formacion',
         'grupos.html': 'grupos',

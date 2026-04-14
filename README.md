@@ -104,7 +104,7 @@ Las páginas del Creator suelen cargar **`lms-creator.css`** más el **CSS homó
 
 #### **Inventario de HTML en `lms-creator/`**
 
-- **LMS + Categorías:** `contenidos.html`, `categorias.html`, `crear-contenido.html` (mismo flujo de creación que el drawer de contenidos, en **página dedicada**; abrir `ubits-colaborador/lms-creator/crear-contenido.html` en el navegador, opcionalmente `#recursos` o `#portada`)
+- **LMS + Categorías:** `contenidos.html`, `categorias.html`, `crear-contenido.html` (creación de contenido en **página dedicada**; desde **`contenidos.html`** el botón **«Crear contenido»** abre `crear-contenido.html`; hashes legacy en la lista redirigen a la misma página)
 - **Planes y grupos:** `planes-formacion.html`, `grupos.html`, `crear-plan-contenidos.html`, `crear-plan-competencias.html`, `editar-plan-contenidos.html`, `editar-plan-competencias.html`, `detalle-plan.html`, `detalle-plan-competencias.html`, `crear-grupo.html`, `detalle-grupo.html`, `chat-ia-grupos.html`
 - **Certificados:** `certificados.html`, `certificados-configuracion.html` (stubs alineados a la plantilla vacía tipo categorías + `header-product`)
 - **Personalización UC:** `personalizacion-u-corporativa.html`, `personalizacion-seguimiento.html` (mismo patrón stub donde aplica)

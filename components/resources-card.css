@@ -1,6 +1,6 @@
 /**
  * Resources card — tarjeta de tipo de recurso (Learn-Components, Figma 247:5165).
- * Estados: default (borde 1px), hover / focus-visible (borde 2px marca), disabled (fondo disabled).
+ * Estados: default (borde 1px), hover / focus-visible (borde 1px color marca), disabled (fondo disabled).
  * Dimensiones Figma: ancho 153.75px, alto fijo 86px, padding (vertical sm + horizontal md para encajar), radio lg, etiqueta 12px/18px máx. 2 líneas + ellipsis.
  * Requiere: ubits-colors.css, ubits-typography.css (tokens), fontawesome-icons.css.
  */
@@ -94,22 +94,19 @@
     text-overflow: ellipsis;
 }
 
-/* Hover / foco teclado: borde 2px marca (Figma fila central) */
+/* Hover / foco teclado: mismo grosor 1px, solo color marca (evita borde 2px “pesado”) */
 .ubits-resources-card:hover:not(:disabled):not([aria-disabled='true']),
 .ubits-resources-card.is-hover:not(:disabled):not([aria-disabled='true']) {
-    border-width: 2px;
+    border-width: 1px;
     border-color: var(--ubits-accent-brand);
     background: var(--ubits-bg-2);
-    /* Mantiene el caja útil igual que a 1px de borde (86px total con box-sizing) */
-    padding: calc(var(--padding-sm) - 1px) calc(var(--padding-md) - 1px);
 }
 
 .ubits-resources-card:focus-visible {
     outline: none;
-    border-width: 2px;
+    border-width: 1px;
     border-color: var(--ubits-accent-brand);
-    box-shadow: 0 0 0 2px var(--ubits-accent-brand);
-    padding: calc(var(--padding-sm) - 1px) calc(var(--padding-md) - 1px);
+    box-shadow: none;
 }
 
 /* Disabled (Figma fila inferior): fondo disabled, borde sutil, texto e icono fg disabled */
