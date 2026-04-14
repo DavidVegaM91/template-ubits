@@ -126,6 +126,17 @@
     white-space: nowrap;
 }
 
+/* Sin título aún: mismo copy que el panel derecho (solo visual; textContent sigue vacío para validación). */
+.ubits-paginas-creator__label:empty::after {
+    content: 'Escribe el título de la página';
+    color: var(--ubits-fg-1-low);
+    font-weight: 500;
+}
+
+.ubits-paginas-creator__item.is-active .ubits-paginas-creator__label:empty::after {
+    color: var(--ubits-fg-1-medium);
+}
+
 /* Botón lápiz: como task-strip (visible al hover sobre el título) */
 .ubits-paginas-creator__edit-name-btn {
     flex-shrink: 0;

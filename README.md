@@ -134,6 +134,8 @@ Las páginas del Creator suelen cargar **`lms-creator.css`** más el **CSS homó
 - **Card Content Compact** - Variante horizontal compacta de Card Content (misma funcionalidad, diseño optimizado para espacios reducidos, siempre horizontal) - **RENDERIZADO: loadCardContentCompact()**
 - **Learn content imagen y tráiler** - Bloque de aprendizaje para cargar imagen y/o tráiler en video (estados vacío, hover, error, imagen, preview con play) - **RENDERIZADO: HTML + `learn-content-img-trailer.css`; JS opcional `initLearnContentImgTrailer()`**
 - **Paginas creator** - Lista del panel (icono por tipo; 1 clic = activar; 2 clics / lápiz / menú «Cambiar nombre» = edición inline; menú ⋮: mover / eliminar) - **RENDERIZADO: HTML + `paginas-creator.css` + `dropdown-menu.css` + `button.css`; JS `dropdown-menu.js` + `tooltip.js` + `paginas-creator.js` (`paginasCreatorItemHtml`, `initPaginasCreator`, eventos `ubits-paginas-creator-action`, `ubits-paginas-creator-activate`, `ubits-paginas-creator-label-save`)**
+- **Resources card** - Tarjeta compacta para elegir el tipo de recurso en el paso Recursos del LMS Creator (12 tipos; estados default, hover, focus y disabled) - **RENDERIZADO: HTML + `resources-card.css`; JS `resources-card.js` (`resourcesCardHtml`, `RESOURCES_CARD_META`, `RESOURCES_CARD_TYPES_ORDER`)**
+- **Resources block** - Panel del paso Recursos (selector de 8 tipos o formularios video/PDF/mp4/SCORM/embebido + Cancelar; 15 variantes, incl. `default-error` sin recurso) - **RENDERIZADO: HTML + `resources-block.css` + `resources-card.css` + `button.css` + `input.css` + `dropdown-menu.css`; JS `dropdown-menu.js` + `input.js` + `resources-card.js` + `resources-block.js` (`resourcesBlockHtml`, `RESOURCES_BLOCK_VARIANTS_ORDER`, `initResourcesBlockFields` tras inyectar HTML)**
 - **Seccion creator** - Bloque (anida Paginas creator): título siempre **body/md/bold** + fg alto; menú ⋮ **Editar sección** → `ubits-seccion-creator-edit-section` (modal en la pantalla); «Añadir página» si activa - **RENDERIZADO: HTML + `seccion-creator.css` + Paginas creator + `tooltip.js`; JS `seccion-creator.js` (`seccionCreatorHtml`, `initSeccionCreator`, eventos `ubits-seccion-creator-edit-section`, …)**
 - **Índice creator** - Panel izquierdo paso Recursos (interruptor de secciones, índice de secciones o lista única sin cabecera de sección, «Añadir sección» si aplica) - **RENDERIZADO: HTML + `switch.css` + `indice-creator.css` + Sección/Páginas creator; JS `indice-creator.js` tras `seccion-creator.js` (`indiceCreatorHtml`, `initIndiceCreator`, eventos `ubits-indice-creator-sections-toggle`, `ubits-indice-creator-add-section`)**
 - **Rich text editor** - Editor de texto enriquecido (contenteditable, barra de formato: negrita, listas, alineación, imagen, enlace, etc.) - **RENDERIZADO: HTML + `rich-text-editor.css` + `initRichTextEditor()` / `initAllRichTextEditors()`**
@@ -356,6 +358,8 @@ Todos los componentes UBITS requieren imports obligatorios:
 - **`documentacion/componentes/learn-content-img-trailer.html`** - Documentación Learn content imagen y tráiler (Figma Learn-Components)
 - **`documentacion/componentes/indice-creator.html`** - Documentación Índice creator (Figma Learn-Components 242:5621)
 - **`documentacion/componentes/paginas-creator.html`** - Documentación Paginas creator (Figma Learn-Components)
+- **`documentacion/componentes/resources-card.html`** - Documentación Resources card (Figma Learn-Components 247:5165)
+- **`documentacion/componentes/resources-block.html`** - Documentación Resources block (Figma Learn-Components 248:6265)
 - **`documentacion/componentes/seccion-creator.html`** - Documentación Seccion creator (Figma Learn-Components 242:5368)
 - **`documentacion/componentes/rich-text-editor.html`** - Documentación Rich text editor (Creator v3)
 - **`documentacion/componentes/status-tag.html`** - Documentación del componente Status Tag
@@ -872,6 +876,8 @@ loadCardContentCompact('mi-contenedor-compact', [
 - **`documentacion/componentes/learn-content-img-trailer.html`** - Documentación Learn content imagen y tráiler (Figma Learn-Components)
 - **`documentacion/componentes/indice-creator.html`** - Documentación Índice creator (Figma Learn-Components 242:5621)
 - **`documentacion/componentes/paginas-creator.html`** - Documentación Paginas creator (Figma Learn-Components)
+- **`documentacion/componentes/resources-card.html`** - Documentación Resources card (Figma Learn-Components 247:5165)
+- **`documentacion/componentes/resources-block.html`** - Documentación Resources block (Figma Learn-Components 248:6265)
 - **`documentacion/componentes/seccion-creator.html`** - Documentación Seccion creator (Figma Learn-Components 242:5368)
 - **`documentacion/componentes/rich-text-editor.html`** - Documentación Rich text editor (Creator v3)
 - **`documentacion/componentes/status-tag.html`** - Documentación del componente Status Tag

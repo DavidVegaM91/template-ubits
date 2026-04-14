@@ -1,0 +1,142 @@
+/**
+ * Resources card — tarjeta de tipo de recurso (Learn-Components, Figma 247:5165).
+ * Estados: default (borde 1px), hover / focus-visible (borde 2px marca), disabled (fondo disabled).
+ * Dimensiones Figma: ancho 153.75px, alto fijo 86px, padding (vertical sm + horizontal md para encajar), radio lg, etiqueta 12px/18px máx. 2 líneas + ellipsis.
+ * Requiere: ubits-colors.css, ubits-typography.css (tokens), fontawesome-icons.css.
+ */
+
+.ubits-resources-card {
+    --ubits-rc-icon-size: var(--font-size-h2); /* 20px — tamaño icono Figma */
+
+    appearance: none;
+    -webkit-appearance: none;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    max-width: 153.75px;
+    height: 86px;
+    min-height: 86px;
+    margin: 0;
+    padding: var(--padding-sm) var(--padding-md);
+    border-radius: var(--border-radius-lg);
+    background: var(--ubits-bg-2);
+    border-width: 1px;
+    border-style: solid;
+    border-color: var(--ubits-border-1);
+    font-family: var(--ubits-font-family-sans);
+    text-align: center;
+    cursor: pointer;
+    overflow: hidden;
+    /* No animar border-width: con padding compensado en :hover, interpolar el borde
+       deja fotogramas con ancho de contenido distinto y -webkit-line-clamp parpadea
+       (sobre todo etiquetas largas en flex, p. ej. «Video desde el computador»). */
+    transition:
+        background-color 0.15s ease,
+        border-color 0.15s ease,
+        box-shadow 0.15s ease;
+}
+
+.ubits-resources-card__inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    flex: 1 1 auto;
+    min-height: 0;
+    width: 100%;
+    max-height: 100%;
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
+/* Icono: centrado; altura acotada para caber en 86px totales con etiqueta 2×18px */
+.ubits-resources-card__icon-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    min-height: 28px;
+    margin: 0 0 var(--gap-xs) 0;
+    flex-shrink: 0;
+    font-size: var(--ubits-rc-icon-size);
+    line-height: 1;
+    color: var(--ubits-accent-brand);
+}
+
+.ubits-resources-card__icon-wrap i {
+    display: block;
+    line-height: 1;
+}
+
+/* Figma: Helvetica Now 12 / 18 — no hay token 12px en escala tipográfica UBITS; valor de diseño Learn-Components */
+.ubits-resources-card__label {
+    margin: 0;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    font-family: var(--ubits-font-family-sans);
+    font-weight: var(--font-weight-regular);
+    font-size: 12px;
+    line-height: 18px;
+    color: var(--ubits-fg-1-medium);
+    word-break: break-word;
+    overflow-wrap: break-word;
+    flex-shrink: 1;
+    min-height: 0;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Hover / foco teclado: borde 2px marca (Figma fila central) */
+.ubits-resources-card:hover:not(:disabled):not([aria-disabled='true']),
+.ubits-resources-card.is-hover:not(:disabled):not([aria-disabled='true']) {
+    border-width: 2px;
+    border-color: var(--ubits-accent-brand);
+    background: var(--ubits-bg-2);
+    /* Mantiene el caja útil igual que a 1px de borde (86px total con box-sizing) */
+    padding: calc(var(--padding-sm) - 1px) calc(var(--padding-md) - 1px);
+}
+
+.ubits-resources-card:focus-visible {
+    outline: none;
+    border-width: 2px;
+    border-color: var(--ubits-accent-brand);
+    box-shadow: 0 0 0 2px var(--ubits-accent-brand);
+    padding: calc(var(--padding-sm) - 1px) calc(var(--padding-md) - 1px);
+}
+
+/* Disabled (Figma fila inferior): fondo disabled, borde sutil, texto e icono fg disabled */
+.ubits-resources-card:disabled,
+.ubits-resources-card[aria-disabled='true'] {
+    background: var(--ubits-bg-disabled);
+    border-width: 1px;
+    border-style: solid;
+    border-color: var(--ubits-border-1);
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+.ubits-resources-card:disabled .ubits-resources-card__icon-wrap,
+.ubits-resources-card[aria-disabled='true'] .ubits-resources-card__icon-wrap,
+.ubits-resources-card:disabled .ubits-resources-card__label,
+.ubits-resources-card[aria-disabled='true'] .ubits-resources-card__label {
+    color: var(--ubits-fg-disabled);
+}
+
+/* Contenedor de grillas en documentación o selector de recursos */
+.ubits-resources-card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(153.75px, max-content));
+    gap: var(--gap-md);
+    align-items: start;
+    justify-content: start;
+    width: 100%;
+    box-sizing: border-box;
+}

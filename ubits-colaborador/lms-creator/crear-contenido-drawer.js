@@ -4,7 +4,8 @@
  * learn-content-img-trailer.js (getLearnContentImgTrailerEmptyHtml, getLearnContentImgTrailerEditHtml, initLearnContentImgTrailer),
  * portada-media-modal.js (openPortadaTrailerModal), modal.js (openModal),
  * initTooltip, renderSaveIndicator, setStepperStepStates, wireStepperVerticalCollapse, BD_MASTER_*,
- * indice-creator.js (+ paginas-creator, seccion-creator, switch), empty-state.js (loadEmptyState).
+ * indice-creator.js (+ paginas-creator, seccion-creator, switch), empty-state.js (loadEmptyState),
+ * resources-card.js + resources-block.js (resourcesBlockHtml, initResourcesBlockFields).
  */
 (function (global) {
     'use strict';
@@ -25,6 +26,16 @@
     var crearContenidoCurrentStep = 0;
     /** Índice creator + empty state del paso 2 ya montados en este overlay. */
     var crearContenidoRecursosUiDone = false;
+    /** Contador de keys para filas de página en el prototipo. */
+    var crearContenidoRecursosPageSeq = 0;
+    /** True tras intentar «Siguiente» en Recursos con alguna página sin título válido. */
+    var crearContenidoRecursosTitlesValidationFlash = false;
+    /**
+     * ID sin guiones: empty-state.js define window.ubitsEmptyStatePrimary_${id}(); los guiones rompen el onclick.
+     */
+    var CREAR_CONTENIDO_RECURSOS_EMPTY_HOST_ID = 'ccCrearContenidoRecursosEmpty';
+    /** Listeners de documento del paso 2 (add page, activate, etc.) — una sola vez por carga de contenidos.html. */
+    var crearContenidoRecursosEventsBound = false;
     /** APIs devueltas por createInput (paso 1). */
     var crearContenidoInputApis = {};
     /** URL del tráiler (paso portada), persistido al confirmar el modal. */
@@ -286,8 +297,16 @@
             '        <aside class="crear-contenido-recursos__indice" aria-label="Índice del contenido">' +
             '          <div id="crear-contenido-recursos-indice-mount" class="crear-contenido-recursos__indice-mount"></div>' +
             '        </aside>' +
-            '        <div class="crear-contenido-recursos__preview" role="region" aria-label="Vista previa de recursos">' +
-            '          <div id="crear-contenido-recursos-empty-host" class="crear-contenido-recursos__empty-host"></div>' +
+            '        <div id="crear-contenido-recursos-preview" class="crear-contenido-recursos__preview" role="region" aria-label="Vista previa de recursos">' +
+            '          <div id="' +
+            CREAR_CONTENIDO_RECURSOS_EMPTY_HOST_ID +
+            '" class="crear-contenido-recursos__empty-host"></div>' +
+            '          <div id="crear-contenido-recursos-page-title-section" class="crear-contenido-recursos__page-title-section" hidden>' +
+            '            <label class="contenidos-creator-titulo-wrap crear-contenido-recursos__page-title-wrap">' +
+            '              <input type="text" id="crear-contenido-recursos-page-title" class="contenidos-creator-titulo-input ubits-heading-h2" placeholder="Escribe el título de la página" autocomplete="off" maxlength="120" aria-label="Título de la página">' +
+            '            </label>' +
+            '          </div>' +
+            '          <div id="crear-contenido-recursos-resources-mount" class="crear-contenido-recursos__resources-mount" hidden></div>' +
             '        </div>' +
             '      </div>' +
             '    </div>' +
@@ -636,9 +655,347 @@
         return getCrearContenidoPortadaCompleteness().complete;
     }
 
+    function getCrearContenidoRecursosIndiceMount() {
+        return document.getElementById('crear-contenido-recursos-indice-mount');
+    }
+
+    function getCrearContenidoRecursosPaginasList() {
+        var m = getCrearContenidoRecursosIndiceMount();
+        return m ? m.querySelector('.ubits-paginas-creator') : null;
+    }
+
+    function clickCrearContenidoRecursosSeccionAddPage() {
+        var b = document.querySelector(
+            '#crear-contenido-recursos-indice-mount .ubits-seccion-creator__add-btn'
+        );
+        if (b) {
+            b.click();
+            return true;
+        }
+        return false;
+    }
+
+    function isValidCrearContenidoRecursosTitle(text) {
+        var t = String(text != null ? text : '').trim();
+        if (!t) return false;
+        if (t.toLowerCase() === 'sin título') return false;
+        return true;
+    }
+
+    function getPaginasItemTitleForValidation(item) {
+        if (!item) return '';
+        if (item.classList.contains('is-active')) {
+            var inp = document.getElementById('crear-contenido-recursos-page-title');
+            if (inp) return String(inp.value || '').trim();
+        }
+        var lab = item.querySelector('.ubits-paginas-creator__label');
+        return lab ? String(lab.textContent || '').trim() : '';
+    }
+
+    function collectRecursosPageTitleValidation() {
+        var list = getCrearContenidoRecursosPaginasList();
+        if (!list) return { allValid: true, invalidItems: [] };
+        var items = list.querySelectorAll(':scope > .ubits-paginas-creator__item');
+        var invalidItems = [];
+        items.forEach(function (item) {
+            if (!isValidCrearContenidoRecursosTitle(getPaginasItemTitleForValidation(item))) {
+                invalidItems.push(item);
+            }
+        });
+        return { allValid: invalidItems.length === 0, invalidItems: invalidItems };
+    }
+
+    function clearRecursosTitleValidationVisuals() {
+        var mount = getCrearContenidoRecursosIndiceMount();
+        if (mount) {
+            mount.querySelectorAll('.ubits-paginas-creator__item.ubits-paginas-creator__item--error').forEach(function (el) {
+                el.classList.remove('ubits-paginas-creator__item--error');
+            });
+        }
+        var wrap = document.querySelector(
+            '#crear-contenido-recursos-page-title-section .crear-contenido-recursos__page-title-wrap'
+        );
+        if (wrap) wrap.classList.remove(PORTADA_INVALID_CLASS);
+    }
+
+    function syncRecursosTitleValidationVisuals() {
+        clearRecursosTitleValidationVisuals();
+        if (!crearContenidoRecursosTitlesValidationFlash) return;
+        var st = collectRecursosPageTitleValidation();
+        st.invalidItems.forEach(function (item) {
+            item.classList.add('ubits-paginas-creator__item--error');
+        });
+        var active = document.querySelector(
+            '#crear-contenido-recursos-indice-mount .ubits-paginas-creator__item.is-active'
+        );
+        if (active && st.invalidItems.indexOf(active) !== -1) {
+            var wrap = document.querySelector(
+                '#crear-contenido-recursos-page-title-section .crear-contenido-recursos__page-title-wrap'
+            );
+            if (wrap) wrap.classList.add(PORTADA_INVALID_CLASS);
+        }
+        if (st.allValid) {
+            crearContenidoRecursosTitlesValidationFlash = false;
+        }
+    }
+
+    function loadCrearContenidoRecursosEmptyPanel() {
+        if (typeof global.loadEmptyState !== 'function') return;
+        var prev = document.getElementById('crear-contenido-recursos-preview');
+        var titleSec = document.getElementById('crear-contenido-recursos-page-title-section');
+        var rb = document.getElementById('crear-contenido-recursos-resources-mount');
+        if (prev) prev.classList.remove('crear-contenido-recursos__preview--editor');
+        if (titleSec) {
+            titleSec.hidden = true;
+            titleSec.setAttribute('hidden', 'hidden');
+        }
+        if (rb) {
+            rb.innerHTML = '';
+            rb.hidden = true;
+            rb.setAttribute('hidden', 'hidden');
+        }
+        var host = document.getElementById(CREAR_CONTENIDO_RECURSOS_EMPTY_HOST_ID);
+        if (host) host.style.display = '';
+        global.loadEmptyState(CREAR_CONTENIDO_RECURSOS_EMPTY_HOST_ID, {
+            icon: 'fa-file',
+            title: 'Añade tu primera página',
+            description:
+                'Las páginas son las lecciones o pantallas de tu contenido. Usa «Añadir página» en el índice o el botón de abajo para empezar.',
+            buttons: {
+                secondary: {
+                    text: 'Añadir página',
+                    icon: 'fa-plus',
+                    onClick: function () {
+                        if (!clickCrearContenidoRecursosSeccionAddPage() && typeof global.showToast === 'function') {
+                            global.showToast('info', 'No se pudo abrir el índice. Vuelve a abrir el paso Recursos.', {
+                                containerId: 'ubits-toast-container',
+                                duration: 2500
+                            });
+                        }
+                    }
+                }
+            }
+        });
+        refreshCrearContenidoSiguienteState();
+    }
+
+    function setCrearContenidoRecursosEditorVisible(visible) {
+        var prev = document.getElementById('crear-contenido-recursos-preview');
+        var emptyHost = document.getElementById(CREAR_CONTENIDO_RECURSOS_EMPTY_HOST_ID);
+        var titleSec = document.getElementById('crear-contenido-recursos-page-title-section');
+        var rb = document.getElementById('crear-contenido-recursos-resources-mount');
+        if (!prev || !titleSec || !rb) return;
+        if (visible) {
+            prev.classList.add('crear-contenido-recursos__preview--editor');
+            if (emptyHost) emptyHost.style.display = 'none';
+            titleSec.hidden = false;
+            titleSec.removeAttribute('hidden');
+            rb.hidden = false;
+            rb.removeAttribute('hidden');
+        } else {
+            prev.classList.remove('crear-contenido-recursos__preview--editor');
+            if (emptyHost) emptyHost.style.display = '';
+            titleSec.hidden = true;
+            titleSec.setAttribute('hidden', 'hidden');
+            rb.hidden = true;
+            rb.setAttribute('hidden', 'hidden');
+        }
+    }
+
+    function syncCrearContenidoRecursosRightTitleFromActive() {
+        var activeLabel = document.querySelector(
+            '#crear-contenido-recursos-indice-mount .ubits-paginas-creator__item.is-active .ubits-paginas-creator__label'
+        );
+        var inp = document.getElementById('crear-contenido-recursos-page-title');
+        if (inp && activeLabel) inp.value = (activeLabel.textContent || '').trim();
+    }
+
+    /** Título grande → etiqueta de la fila activa (en tiempo real; no durante edición inline en la fila). */
+    function syncCrearContenidoRecursosActiveLabelFromPageTitleInput() {
+        var inp = document.getElementById('crear-contenido-recursos-page-title');
+        var label = document.querySelector(
+            '#crear-contenido-recursos-indice-mount .ubits-paginas-creator__item.is-active .ubits-paginas-creator__label'
+        );
+        if (!inp || !label) return;
+        var wrap = label.closest('.ubits-paginas-creator__label-wrap');
+        if (wrap && wrap.classList.contains('ubits-paginas-creator__label-edit-wrap')) return;
+        label.textContent = inp.value != null ? String(inp.value) : '';
+    }
+
+    function persistCrearContenidoRecursosRightTitleToActiveItem() {
+        var inp = document.getElementById('crear-contenido-recursos-page-title');
+        var activeLabel = document.querySelector(
+            '#crear-contenido-recursos-indice-mount .ubits-paginas-creator__item.is-active .ubits-paginas-creator__label'
+        );
+        if (!inp || !activeLabel) return;
+        var v = (inp.value || '').trim();
+        /* Vacío permitido: el placeholder del panel derecho guía; la validación al avanzar exige título. */
+        activeLabel.textContent = v;
+    }
+
+    function renderCrearContenidoRecursosResourcesBlock() {
+        var mount = document.getElementById('crear-contenido-recursos-resources-mount');
+        if (!mount || typeof global.resourcesBlockHtml !== 'function') return;
+        mount.innerHTML = global.resourcesBlockHtml({ variant: 'default' });
+        if (typeof global.initResourcesBlockFields === 'function') {
+            global.initResourcesBlockFields(mount);
+        }
+    }
+
+    function onCrearContenidoSecAddPage(ev) {
+        var d = ev.detail || {};
+        var anchor = d.anchor;
+        var mount = getCrearContenidoRecursosIndiceMount();
+        if (!anchor || !mount || !mount.contains(anchor)) return;
+
+        var list = getCrearContenidoRecursosPaginasList();
+        if (!list || typeof global.paginasCreatorItemHtml !== 'function') return;
+
+        crearContenidoRecursosPageSeq += 1;
+        var pageKey = 'cc-pg-' + crearContenidoRecursosPageSeq;
+        /* Sin título inicial: el panel derecho muestra el placeholder «Escribe el título de la página». */
+        var label = '';
+
+        list.querySelectorAll('.ubits-paginas-creator__item.is-active').forEach(function (el) {
+            el.classList.remove('is-active');
+            var row = el.querySelector('.ubits-paginas-creator__row');
+            if (row) row.removeAttribute('aria-current');
+        });
+
+        list.insertAdjacentHTML(
+            'beforeend',
+            global.paginasCreatorItemHtml({
+                label: label,
+                tipo: 'blank-page',
+                active: true,
+                pageKey: pageKey
+            })
+        );
+
+        var newItem = list.querySelector('.ubits-paginas-creator__item[data-paginas-creator-key="' + pageKey + '"]');
+        if (newItem && typeof global.setPaginasCreatorActiveItem === 'function') {
+            global.setPaginasCreatorActiveItem(newItem);
+        }
+
+        var titInp = document.getElementById('crear-contenido-recursos-page-title');
+        if (titInp) titInp.value = '';
+        setCrearContenidoRecursosEditorVisible(true);
+        renderCrearContenidoRecursosResourcesBlock();
+        if (typeof global.initTooltip === 'function') {
+            global.initTooltip('#crear-contenido-recursos-indice-mount [data-tooltip]');
+        }
+        refreshCrearContenidoSiguienteState();
+    }
+
+    function onCrearContenidoPaginasActivate(ev) {
+        var item = ev.detail && ev.detail.item;
+        var mount = getCrearContenidoRecursosIndiceMount();
+        if (!item || !mount || !mount.contains(item)) return;
+        syncCrearContenidoRecursosRightTitleFromActive();
+        renderCrearContenidoRecursosResourcesBlock();
+        if (crearContenidoRecursosTitlesValidationFlash) {
+            syncRecursosTitleValidationVisuals();
+        }
+        refreshCrearContenidoSiguienteState();
+    }
+
+    function onCrearContenidoPaginasLabelSave(ev) {
+        var d = ev.detail || {};
+        var item = d.item;
+        var mount = getCrearContenidoRecursosIndiceMount();
+        if (!item || !mount || !mount.contains(item)) return;
+        if (!item.classList.contains('is-active')) return;
+        var inp = document.getElementById('crear-contenido-recursos-page-title');
+        if (inp) inp.value = (d.newLabel != null ? String(d.newLabel) : '').trim();
+        if (crearContenidoRecursosTitlesValidationFlash) {
+            syncRecursosTitleValidationVisuals();
+        }
+        refreshCrearContenidoSiguienteState();
+    }
+
+    function onCrearContenidoPaginasAction(ev) {
+        var d = ev.detail || {};
+        var item = d.item;
+        var mount = getCrearContenidoRecursosIndiceMount();
+        if (!item || !mount || !mount.contains(item)) return;
+        if (d.action === 'mover-arriba' || d.action === 'mover-abajo') {
+            if (typeof global.initTooltip === 'function') {
+                global.initTooltip('#crear-contenido-recursos-indice-mount [data-tooltip]');
+            }
+            if (crearContenidoRecursosTitlesValidationFlash) {
+                syncRecursosTitleValidationVisuals();
+            }
+            refreshCrearContenidoSiguienteState();
+            return;
+        }
+        if (d.action !== 'eliminar') return;
+        item.remove();
+
+        var list = getCrearContenidoRecursosPaginasList();
+        var items = list ? list.querySelectorAll('.ubits-paginas-creator__item') : null;
+        if (!list || !items || items.length === 0) {
+            setCrearContenidoRecursosEditorVisible(false);
+            loadCrearContenidoRecursosEmptyPanel();
+            refreshCrearContenidoSiguienteState();
+            return;
+        }
+        var first = list.querySelector('.ubits-paginas-creator__item');
+        if (first && typeof global.setPaginasCreatorActiveItem === 'function') {
+            global.setPaginasCreatorActiveItem(first);
+        }
+        syncCrearContenidoRecursosRightTitleFromActive();
+        renderCrearContenidoRecursosResourcesBlock();
+        if (crearContenidoRecursosTitlesValidationFlash) {
+            syncRecursosTitleValidationVisuals();
+        }
+        refreshCrearContenidoSiguienteState();
+    }
+
+    function onCrearContenidoRecursosPageTitleFocusOut(ev) {
+        if (!ev.target || ev.target.id !== 'crear-contenido-recursos-page-title') return;
+        var ov = document.getElementById(OVERLAY_ID);
+        if (!ov || ov.getAttribute('aria-hidden') === 'true') return;
+        persistCrearContenidoRecursosRightTitleToActiveItem();
+        if (crearContenidoRecursosTitlesValidationFlash) {
+            syncRecursosTitleValidationVisuals();
+        }
+    }
+
+    function bindCrearContenidoRecursosStepEventsOnce() {
+        if (crearContenidoRecursosEventsBound) return;
+        crearContenidoRecursosEventsBound = true;
+        document.addEventListener('ubits-seccion-creator-add-page', onCrearContenidoSecAddPage);
+        document.addEventListener('ubits-paginas-creator-activate', onCrearContenidoPaginasActivate);
+        document.addEventListener('ubits-paginas-creator-action', onCrearContenidoPaginasAction);
+        document.addEventListener('ubits-paginas-creator-label-save', onCrearContenidoPaginasLabelSave);
+        document.addEventListener('focusout', onCrearContenidoRecursosPageTitleFocusOut, true);
+        document.addEventListener('input', function (ev) {
+            if (!ev.target || ev.target.id !== 'crear-contenido-recursos-page-title') return;
+            syncCrearContenidoRecursosActiveLabelFromPageTitleInput();
+            if (crearContenidoRecursosTitlesValidationFlash) {
+                syncRecursosTitleValidationVisuals();
+            }
+        });
+        document.addEventListener('ubits-paginas-creator-label-input', function (ev) {
+            var d = ev.detail || {};
+            var item = d.item;
+            if (!item || !item.classList.contains('is-active')) return;
+            var mount = getCrearContenidoRecursosIndiceMount();
+            if (!mount || !mount.contains(item)) return;
+            var ov = document.getElementById(OVERLAY_ID);
+            if (!ov || ov.getAttribute('aria-hidden') === 'true') return;
+            var inp = document.getElementById('crear-contenido-recursos-page-title');
+            if (inp) inp.value = d.value != null ? String(d.value) : '';
+            if (crearContenidoRecursosTitlesValidationFlash) {
+                syncRecursosTitleValidationVisuals();
+            }
+        });
+    }
+
     function initCrearContenidoRecursosStepOnce() {
         if (crearContenidoRecursosUiDone) return;
         crearContenidoRecursosUiDone = true;
+        crearContenidoRecursosPageSeq = 0;
         var mount = document.getElementById('crear-contenido-recursos-indice-mount');
         if (mount && typeof global.indiceCreatorHtml === 'function') {
             mount.innerHTML = global.indiceCreatorHtml({
@@ -654,33 +1011,8 @@
                 global.initTooltip('#crear-contenido-recursos-indice-mount [data-tooltip]');
             }
         }
-        if (typeof global.loadEmptyState === 'function') {
-            global.loadEmptyState('crear-contenido-recursos-empty-host', {
-                icon: 'fa-file',
-                title: 'Añade tu primera página',
-                description:
-                    'Las páginas son las lecciones o pantallas de tu contenido. Usa «Añadir página» en el índice o el botón de abajo para empezar.',
-                buttons: {
-                    primary: {
-                        text: 'Añadir página',
-                        icon: 'fa-plus',
-                        onClick: function () {
-                            var b = document.querySelector(
-                                '#crear-contenido-recursos-indice-mount .ubits-seccion-creator__add-btn'
-                            );
-                            if (b) {
-                                b.click();
-                            } else if (typeof global.showToast === 'function') {
-                                global.showToast('info', 'Añadir página — próximamente.', {
-                                    containerId: 'ubits-toast-container',
-                                    duration: 2500
-                                });
-                            }
-                        }
-                    }
-                }
-            });
-        }
+        loadCrearContenidoRecursosEmptyPanel();
+        bindCrearContenidoRecursosStepEventsOnce();
     }
 
     function syncCrearContenidoUrlForStep(stepIndex) {
@@ -704,7 +1036,7 @@
             }
         }
         if (crearContenidoCurrentStep >= 1) {
-            sig.disabled = true;
+            refreshCrearContenidoSiguienteState();
         }
     }
 
@@ -712,7 +1044,12 @@
         opts = opts || {};
         var overlay = document.getElementById(OVERLAY_ID);
         if (!overlay || overlay.getAttribute('aria-hidden') === 'true') return;
+        var prevStep = crearContenidoCurrentStep;
         crearContenidoCurrentStep = stepIndex >= 1 ? 1 : 0;
+        if (prevStep !== crearContenidoCurrentStep) {
+            crearContenidoRecursosTitlesValidationFlash = false;
+            clearRecursosTitleValidationVisuals();
+        }
         var portadaEl = document.getElementById('crear-contenido-step-portada');
         var recursosEl = document.getElementById('crear-contenido-step-recursos');
         if (portadaEl) {
@@ -795,7 +1132,9 @@
         var btn = document.getElementById('crear-contenido-btn-siguiente');
         if (!btn) return;
         if (crearContenidoCurrentStep >= 1) {
-            btn.disabled = true;
+            var list = getCrearContenidoRecursosPaginasList();
+            var n = list ? list.querySelectorAll(':scope > .ubits-paginas-creator__item').length : 0;
+            btn.disabled = n === 0;
             return;
         }
         btn.disabled = !isCrearContenidoPortadaComplete();
@@ -855,6 +1194,45 @@
             var sig = document.getElementById('crear-contenido-btn-siguiente');
             if (sig) {
                 sig.addEventListener('click', function () {
+                    if (crearContenidoCurrentStep === 1) {
+                        if (sig.disabled) {
+                            if (typeof global.showToast === 'function') {
+                                global.showToast('warning', 'Añade al menos una página para continuar.', {
+                                    containerId: 'ubits-toast-container',
+                                    duration: 3500
+                                });
+                            }
+                            return;
+                        }
+                        var st = collectRecursosPageTitleValidation();
+                        if (!st.allValid) {
+                            crearContenidoRecursosTitlesValidationFlash = true;
+                            var first = st.invalidItems[0];
+                            if (first && typeof global.setPaginasCreatorActiveItem === 'function') {
+                                global.setPaginasCreatorActiveItem(first);
+                            }
+                            syncCrearContenidoRecursosRightTitleFromActive();
+                            syncRecursosTitleValidationVisuals();
+                            var titInp = document.getElementById('crear-contenido-recursos-page-title');
+                            if (titInp) titInp.focus();
+                            if (typeof global.showToast === 'function') {
+                                global.showToast('warning', 'Todas las páginas deben tener un título. Revisa las marcadas en rojo.', {
+                                    containerId: 'ubits-toast-container',
+                                    duration: 4000
+                                });
+                            }
+                            return;
+                        }
+                        crearContenidoRecursosTitlesValidationFlash = false;
+                        clearRecursosTitleValidationVisuals();
+                        if (typeof global.showToast === 'function') {
+                            global.showToast('info', 'Siguiente paso disponible próximamente.', {
+                                containerId: 'ubits-toast-container',
+                                duration: 2500
+                            });
+                        }
+                        return;
+                    }
                     if (crearContenidoCurrentStep !== 0) return;
                     if (sig.disabled) {
                         crearContenidoPortadaValidationFlash = true;
@@ -902,14 +1280,19 @@
         var existing = document.getElementById(OVERLAY_ID);
         if (existing) existing.remove();
         crearContenidoRecursosUiDone = false;
+        crearContenidoRecursosPageSeq = 0;
         crearContenidoCurrentStep = 0;
         crearContenidoPortadaValidationFlash = false;
+        crearContenidoRecursosTitlesValidationFlash = false;
+        clearRecursosTitleValidationVisuals();
         document.body.classList.add('crear-contenido-drawer-abierto');
         var footerInner =
             '<div class="crear-contenido-drawer-footer-actions">' +
-            '  <button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="crear-contenido-btn-anterior" style="display:none" aria-hidden="true"><span>Anterior</span></button>' +
             '  <span class="crear-contenido-drawer-footer-actions__grow" aria-hidden="true"></span>' +
-            '  <button type="button" class="ubits-button ubits-button--primary ubits-button--md" id="crear-contenido-btn-siguiente" disabled><span>Siguiente</span></button>' +
+            '  <div class="crear-contenido-drawer-footer-actions__nav">' +
+            '    <button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="crear-contenido-btn-anterior" style="display:none" aria-hidden="true"><span>Anterior</span></button>' +
+            '    <button type="button" class="ubits-button ubits-button--primary ubits-button--md" id="crear-contenido-btn-siguiente" disabled><span>Siguiente</span></button>' +
+            '  </div>' +
             '</div>';
         var overlay = openDrawer({
             overlayId: OVERLAY_ID,
@@ -925,6 +1308,8 @@
                 crearContenidoCurrentStep = 0;
                 crearContenidoRecursosUiDone = false;
                 crearContenidoPortadaValidationFlash = false;
+                crearContenidoRecursosTitlesValidationFlash = false;
+                clearRecursosTitleValidationVisuals();
                 clearPortadaInvalidMarks();
                 syncUrlAfterCrearContenidoDrawerClose();
             }

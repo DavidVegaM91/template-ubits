@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="../../images/Ubits-logo-dark.svg">
+    <title>Resources block | UBITS Playground</title>
+    <link rel="stylesheet" href="../../general-styles/ubits-colors.css">
+    <link rel="stylesheet" href="../../general-styles/styles.css">
+    <link rel="stylesheet" href="../../general-styles/fontawesome-icons.css">
+    <link rel="stylesheet" href="../../general-styles/ubits-typography.css">
+    <link rel="stylesheet" href="../../components/sub-nav.css">
+    <link rel="stylesheet" href="../../components/sidebar.css">
+    <link rel="stylesheet" href="../../components/button.css">
+    <link rel="stylesheet" href="../../components/toast.css">
+    <link rel="stylesheet" href="../../components/dropdown-menu.css">
+    <link rel="stylesheet" href="../../components/input.css">
+    <link rel="stylesheet" href="../../components/resources-card.css">
+    <link rel="stylesheet" href="../../components/resources-block.css">
+    <link rel="stylesheet" href="../../docs/docs-sidebar.css">
+    <link rel="stylesheet" href="../../docs/docstyles.css">
+    <style>
+        .preview-control-btn.active {
+            background: var(--ubits-accent-brand) !important;
+            color: white !important;
+            border-color: var(--ubits-accent-brand) !important;
+        }
+        .preview-control-btn.active span { color: white !important; }
+    </style>
+</head>
+<body class="componentes-page" data-theme="light">
+    <div class="dashboard-container">
+        <div class="tooltip" id="tooltip"></div>
+        <main class="main-content">
+            <div id="top-nav-container"></div>
+            <div style="display: flex;">
+                <div id="docs-dropdown-container"></div>
+                <div id="docs-sidebar-container"></div>
+                <div class="components-content">
+                    <div class="content-area" style="display: block; width: 100%;">
+                        <div style="text-align: center; margin-bottom: 60px;">
+                            <h1 class="ubits-display-d2-bold" style="margin-bottom: 24px; color: var(--ubits-accent-brand);">
+                                Resources block
+                            </h1>
+                            <p class="ubits-body-md-regular" style="max-width: 800px; margin: 0 auto 32px; line-height: 1.6;">
+                                Panel del paso Recursos del LMS Creator: selector de ocho tipos o formularios (video, archivos, SCORM, embebido) con acción Cancelar. Referencia Figma Learn-Components:
+                                <a href="https://www.figma.com/design/ZWcvS9Z7YQaz59GZIrnWM6/Learn-Components?node-id=248-6265&amp;m=dev" class="ubits-body-md-regular" style="color: var(--ubits-accent-brand); text-decoration: underline;">Resources block (248:6265)</a>.
+                            </p>
+                        </div>
+
+                        <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: var(--border-radius-lg); margin-bottom: 40px;">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-eye" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Preview del componente
+                            </h2>
+                            <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6;">
+                                Elige la variante con el <strong class="ubits-body-md-semibold">Input select</strong> oficial (<code class="ubits-body-sm-regular">createInput</code>). Incluye <code class="ubits-body-sm-regular">resources-card.js</code> antes de <code class="ubits-body-sm-regular">resources-block.js</code>; tras pintar el preview, <code class="ubits-body-sm-regular">initResourcesBlockFields</code> monta los campos <code class="ubits-body-sm-regular">sm</code> alineados con los botones <code class="ubits-body-sm-regular">sm</code>.
+                            </p>
+                            <div style="margin-bottom: 20px; max-width: 420px;">
+                                <div id="rb-doc-variant-input"></div>
+                            </div>
+                            <div style="background: var(--ubits-bg-4); padding: 24px; border-radius: var(--border-radius-md); width: 100%; max-width: 900px; box-sizing: border-box; overflow-x: auto;">
+                                <div id="rb-preview-mount"></div>
+                            </div>
+                        </div>
+
+                        <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: var(--border-radius-lg); margin-bottom: 40px;">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-info-circle" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Características generales
+                            </h2>
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--gap-lg);">
+                                <div style="text-align: center; padding: var(--padding-md); background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: var(--gap-sm);"><i class="far fa-layer-group"></i></div>
+                                    <div class="ubits-body-sm-bold">Un bloque, muchas vistas</div>
+                                    <div class="ubits-body-sm-regular">Quince variantes alineadas al lienzo Figma: selector, video, PDF, mp4, SCORM, embebido y bloqueo.</div>
+                                </div>
+                                <div style="text-align: center; padding: var(--padding-md); background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: var(--gap-sm);"><i class="far fa-exclamation-circle"></i></div>
+                                    <div class="ubits-body-sm-bold">Página sin recurso</div>
+                                    <div class="ubits-body-sm-regular">La variante <code class="ubits-body-sm-regular">default-error</code> es el mismo selector que <code class="ubits-body-sm-regular">default</code> con borde rojo: al avanzar dejando la página sin recurso, al abrirla se muestra así.</div>
+                                </div>
+                                <div style="text-align: center; padding: var(--padding-md); background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: var(--gap-sm);"><i class="far fa-palette"></i></div>
+                                    <div class="ubits-body-sm-bold">Tokens y botones UBITS</div>
+                                    <div class="ubits-body-sm-regular">Superficie <code class="ubits-body-sm-regular">bg-1</code>, cancelar con botón error secundario oficial.</div>
+                                </div>
+                                <div style="text-align: center; padding: var(--padding-md); background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: var(--gap-sm);"><i class="far fa-puzzle-piece"></i></div>
+                                    <div class="ubits-body-sm-bold">Compone con Resources card</div>
+                                    <div class="ubits-body-sm-regular">La variante default reutiliza las tarjetas del componente Resources card.</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: var(--border-radius-lg); margin-bottom: 40px;">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-comments" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Prompts útiles
+                            </h2>
+                            <p class="ubits-body-md-regular" style="margin-bottom: 24px; color: var(--ubits-fg-1-medium);">
+                                Copia y personaliza. Indica importar <code>dropdown-menu.css</code>, <code>input.css</code>, <code>button.css</code>, <code>resources-card.css</code>, <code>resources-block.css</code>, <code>dropdown-menu.js</code> e <code>input.js</code> (antes de <code>resources-block.js</code>), más <code>resources-card.js</code>.
+                            </p>
+                            <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px;">
+                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                                    <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Panel Recursos</h3>
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('rb-p1')"><i class="far fa-copy"></i><span>Copiar</span></button>
+                                </div>
+                                <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm);">
+                                    <pre style="margin: 0; font-size: var(--font-size-sm); white-space: pre-wrap;"><code id="rb-p1" class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">En [pantalla] del LMS Creator, añade el bloque UBITS «Resources block» para el paso Recursos: primero el selector de tipos (variante default) y al elegir un tipo muestra la variante correspondiente (video-empty, pdf-empty, etc.). Importa dropdown-menu.js e input.js antes de resources-card.js y resources-block.js; CSS: dropdown-menu, input, resources-card, resources-block y button. Tras asignar innerHTML con resourcesBlockHtml({ variant: '[variante]' }), llama initResourcesBlockFields(contenedor) para montar los Input UBITS (tamaño sm) y selects oficiales.</code></pre>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="background: var(--ubits-bg-1); border-radius: var(--border-radius-lg); margin-bottom: 40px; overflow: hidden;">
+                            <div style="padding: 32px; text-align: center; border-bottom: 1px solid var(--ubits-border-1);">
+                                <h2 class="ubits-heading-h2" style="margin-bottom: 0; color: var(--ubits-fg-1-high);">
+                                    <i class="far fa-code" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                    Documentación técnica
+                                </h2>
+                                <p class="ubits-body-md-regular" style="margin-top: 16px; color: var(--ubits-fg-1-medium);">Estructura, clases y API.</p>
+                            </div>
+                            <div style="background: var(--ubits-bg-2); padding: 20px; text-align: center; cursor: pointer;" onclick="toggleTechnicalDocs()">
+                                <span class="ubits-body-md-regular" style="color: var(--ubits-accent-brand); display: flex; align-items: center; justify-content: center; gap: 8px;">
+                                    <i class="far fa-chevron-down"></i> Mostrar
+                                </span>
+                            </div>
+                            <div id="technical-docs-content" style="display: none; padding: 0;">
+                                <div style="padding: 32px; border-bottom: 1px solid var(--ubits-border-1);">
+                                    <div style="display: flex; justify-content: space-between; margin-bottom: 24px;">
+                                        <h2 class="ubits-heading-h2" style="margin: 0;">Requisitos</h2>
+                                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('rb-tech-req')"><i class="far fa-copy"></i><span>Copiar</span></button>
+                                    </div>
+                                    <pre style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm); overflow-x: auto;"><code id="rb-tech-req" class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">CSS: ubits-colors, styles, fontawesome-icons, ubits-typography, button, toast, dropdown-menu, input, resources-card, resources-block
+JS (orden): dropdown-menu.js → input.js → resources-card.js → resources-block.js
+
+resourcesBlockHtml({ variant?, className? })
+initResourcesBlockFields(contenedorRaíz) — tras innerHTML del bloque (monta createInput sm en data-rb-slot)
+
+variant: default | default-error | video-empty | video-filled | video-error |
+  pdf-empty | pdf-error | mp4-empty | mp4-error |
+  scorm-empty | scorm-error |
+  embed-empty | embed-filled | embed-error | embed-blocked
+
+default-error — mismo HTML que default; borde error (página sin recurso al avanzar de paso)
+
+RESOURCES_BLOCK_SELECTOR_TYPES — ocho tipos del selector (default)
+RESOURCES_BLOCK_VARIANTS_ORDER — lista de variantes para UI</code></pre>
+                                </div>
+                                <div style="padding: 32px;">
+                                    <div style="display: flex; justify-content: space-between; margin-bottom: 16px;">
+                                        <h2 class="ubits-heading-h2" style="margin: 0;">Clases principales</h2>
+                                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('rb-tech-cls')"><i class="far fa-copy"></i><span>Copiar</span></button>
+                                    </div>
+                                    <pre style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm); overflow-x: auto;"><code id="rb-tech-cls" class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">.ubits-resources-block — ancho máx. 803px
+.ubits-resources-block--default — selector + título + .ubits-resources-block__grid
+.ubits-resources-block--default-error — modificador con default (borde --ubits-feedback-accent-error)
+.ubits-resources-block--stack — superficie + cancelar alineados a la derecha
+.ubits-resources-block__surface — min-height 308px, padding 40px, radio lg
+.ubits-resources-block__surface--embed — variante embebido / bloqueado
+.ubits-resources-block__field-stack, __field-inline, __input-cell, __input-mount, __embed-stack, __upload, __blocked
+Cancelar: ubits-button--error-secondary ubits-button--sm
+Campos: createInput size sm; helper con clases ubits-input-helper; botones sm alineados en __field-inline</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <div id="ubits-toast-container"></div>
+    <script src="../../components/sidebar.js"></script>
+    <script src="../../components/sub-nav.js"></script>
+    <script src="../../components/toast.js"></script>
+    <script src="../../components/dropdown-menu.js"></script>
+    <script src="../../components/input.js"></script>
+    <script src="../../components/resources-card.js"></script>
+    <script src="../../components/resources-block.js"></script>
+    <script src="../../docs/docs-sidebar.js"></script>
+    <script>
+        var RB_OPTION_LABELS = {
+            'default': 'Selector (8 tipos)',
+            'default-error': 'Selector · sin recurso (borde error)',
+            'video-empty': 'Video · enlace vacío',
+            'video-filled': 'Video · enlace cargado',
+            'video-error': 'Video · error de enlace',
+            'pdf-empty': 'PDF · vacío',
+            'pdf-error': 'PDF · error',
+            'mp4-empty': 'Video archivo · vacío',
+            'mp4-error': 'Video archivo · error',
+            'scorm-empty': 'SCORM · vacío',
+            'scorm-error': 'SCORM · error',
+            'embed-empty': 'Embebido · vacío',
+            'embed-filled': 'Embebido · relleno',
+            'embed-error': 'Embebido · error',
+            'embed-blocked': 'Embebido · no embebible'
+        };
+
+        function rbVariantSelectOptions() {
+            if (typeof RESOURCES_BLOCK_VARIANTS_ORDER === 'undefined') return [];
+            return RESOURCES_BLOCK_VARIANTS_ORDER.map(function (v) {
+                return { value: v, text: RB_OPTION_LABELS[v] || v };
+            });
+        }
+
+        function rbRender(variant) {
+            var mount = document.getElementById('rb-preview-mount');
+            if (!mount || typeof resourcesBlockHtml !== 'function') return;
+            var v = variant != null && String(variant).trim() !== '' ? String(variant).trim() : 'default';
+            mount.innerHTML = resourcesBlockHtml({ variant: v });
+            if (typeof initResourcesBlockFields === 'function') {
+                initResourcesBlockFields(mount);
+            }
+        }
+
+        function rbInitVariantPicker() {
+            if (typeof createInput !== 'function') return;
+            createInput({
+                containerId: 'rb-doc-variant-input',
+                type: 'select',
+                size: 'sm',
+                label: 'Variante',
+                showLabel: true,
+                placeholder: 'Selecciona variante…',
+                selectOptions: rbVariantSelectOptions(),
+                value: 'default',
+                showHelper: false,
+                onChange: function (val) {
+                    rbRender(val);
+                }
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            if (typeof loadSubNav === 'function') loadSubNav('top-nav-container', 'documentacion');
+            if (typeof loadSidebar === 'function') loadSidebar('ninguno');
+            if (typeof loadDocsSidebar === 'function') loadDocsSidebar('resources-block');
+            rbInitVariantPicker();
+            rbRender('default');
+        });
+
+        function toggleTechnicalDocs() {
+            var content = document.getElementById('technical-docs-content');
+            var open = content.style.display === 'none' || !content.style.display;
+            content.style.display = open ? 'block' : 'none';
+            var trigger = content.previousElementSibling;
+            if (trigger && trigger.querySelector('span')) {
+                trigger.querySelector('span').innerHTML = open
+                    ? '<i class="far fa-chevron-up"></i> Ocultar'
+                    : '<i class="far fa-chevron-down"></i> Mostrar';
+            }
+        }
+
+        function copyPrompt(id) {
+            var t = document.getElementById(id);
+            if (t) navigator.clipboard.writeText(t.textContent).then(function () {
+                if (typeof showToast === 'function') showToast('success', 'Copiado', { containerId: 'ubits-toast-container' });
+            });
+        }
+
+        function copyCode(id) {
+            var t = document.getElementById(id);
+            if (t) navigator.clipboard.writeText(t.textContent).then(function () {
+                if (typeof showToast === 'function') showToast('success', 'Copiado', { containerId: 'ubits-toast-container' });
+            });
+        }
+    </script>
+</body>
+</html>

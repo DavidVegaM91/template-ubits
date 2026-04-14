@@ -1,5 +1,5 @@
 /* ========================================
-   LMS Creator — Contenidos (alineado Figma Creator v3, Home table)
+   LMS Creator — Contenidos (lista / home Creator)
    ======================================== */
 
 /* Sin tarjeta: el layout LMS añade fondo/padding al hijo de .section-single; aquí se anula. */
@@ -443,6 +443,25 @@ body.crear-contenido-drawer-abierto {
     min-width: var(--gap-md);
 }
 
+.crear-contenido-drawer-footer-actions__nav {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--gap-md);
+    flex-wrap: wrap;
+}
+
+/*
+ * Menú ⋮ de páginas creator se monta en document.body (paginas-creator.js); el drawer va a z-index 1101.
+ * Mientras el drawer está abierto, subimos el dropdown por encima del panel.
+ */
+body.crear-contenido-drawer-abierto .ubits-dropdown-menu__overlay {
+    z-index: 1200;
+}
+
+body.crear-contenido-drawer-abierto .ubits-dropdown-menu__content {
+    z-index: 1201;
+}
+
 /* Pasos del drawer: solo uno visible (Portada vs Recursos — no mezclar layouts). */
 .crear-contenido-step--portada:not(.crear-contenido-step--visible),
 .crear-contenido-step--recursos:not(.crear-contenido-step--visible) {
@@ -508,6 +527,107 @@ body.crear-contenido-drawer-abierto {
     max-width: 480px;
     display: flex;
     justify-content: center;
+}
+
+/* Paso 2 — panel derecho con página: preview sin caja blanca; título y Resources block en secciones separadas */
+.crear-contenido-recursos__preview.crear-contenido-recursos__preview--editor {
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    gap: var(--gap-lg);
+    background: transparent;
+    border: none;
+    border-radius: var(--border-radius-none);
+    padding: var(--padding-none);
+}
+
+.crear-contenido-recursos__page-title-section {
+    width: 100%;
+    min-width: 0;
+    margin: 0;
+    padding: var(--padding-none);
+    background: transparent;
+    box-sizing: border-box;
+    flex-shrink: 0;
+}
+
+.crear-contenido-recursos__page-title-section[hidden] {
+    display: none !important;
+}
+
+.crear-contenido-recursos__page-title-wrap {
+    width: 100%;
+    max-width: 100%;
+}
+
+.crear-contenido-recursos__resources-mount {
+    width: 100%;
+    min-width: 0;
+    flex: 1 1 auto;
+    padding: var(--padding-none);
+    background: transparent;
+    box-sizing: border-box;
+}
+
+.crear-contenido-recursos__resources-mount[hidden] {
+    display: none !important;
+}
+
+/* Resources block: ancho de columna (sin cap 803px del componente) y rejilla adaptable por breakpoint */
+.crear-contenido-drawer-overlay .crear-contenido-recursos__resources-mount .ubits-resources-block {
+    max-width: none;
+}
+
+.crear-contenido-drawer-overlay .crear-contenido-recursos__resources-mount .ubits-resources-block__grid {
+    display: grid;
+    width: 100%;
+    column-gap: var(--gap-lg);
+    row-gap: var(--gap-lg);
+    justify-items: stretch;
+    align-items: stretch;
+    /* Máximo 4 columnas; cards estiran al ancho de celda; gap fijo 16px (--gap-lg). */
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+}
+
+@media (min-width: 440px) {
+    .crear-contenido-drawer-overlay .crear-contenido-recursos__resources-mount .ubits-resources-block__grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (min-width: 640px) {
+    .crear-contenido-drawer-overlay .crear-contenido-recursos__resources-mount .ubits-resources-block__grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+@media (min-width: 880px) {
+    .crear-contenido-drawer-overlay .crear-contenido-recursos__resources-mount .ubits-resources-block__grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+}
+
+.crear-contenido-drawer-overlay .crear-contenido-recursos__resources-mount .ubits-resources-block__grid .ubits-resources-card {
+    width: 100%;
+    max-width: 100%;
+    flex: none;
+    justify-self: stretch;
+}
+
+.crear-contenido-drawer-overlay #crear-contenido-recursos-page-title {
+    text-align: left;
+    width: 100%;
+    color: var(--ubits-fg-1-high);
+}
+
+.crear-contenido-drawer-overlay
+    #crear-contenido-recursos-page-title-section
+    .crear-contenido-recursos__page-title-wrap.crear-contenido-portada-field--invalid
+    .contenidos-creator-titulo-input {
+    border-width: 2px;
+    border-style: solid;
+    border-color: var(--ubits-feedback-accent-error);
+    border-radius: var(--border-radius-sm);
 }
 
 .contenido-borrador-editor-workspace {
@@ -678,7 +798,7 @@ body.crear-contenido-drawer-abierto {
     color: var(--ubits-accent-brand);
 }
 
-/* Columna derecha: scroll; sin “tarjeta” envolviendo todo (como Figma: video sobre fondo del workspace). */
+/* Columna derecha: scroll; sin “tarjeta” envolviendo todo (video sobre fondo del workspace). */
 .contenido-borrador-editor__resource {
     flex: 1 1 auto;
     min-width: 0;

@@ -1,0 +1,205 @@
+/**
+ * Resources block — panel del paso Recursos (Learn-Components, Figma 248:6265).
+ * Variantes: selector (default y default-error), formularios video/PDF/mp4/SCORM/embebido y cancelar.
+ * Requiere: ubits-colors.css, ubits-typography.css, fontawesome-icons.css, button.css, resources-card.css.
+ */
+
+.ubits-resources-block {
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 803px;
+    font-family: var(--ubits-font-family-sans);
+}
+
+.ubits-resources-block *,
+.ubits-resources-block *::before,
+.ubits-resources-block *::after {
+    box-sizing: border-box;
+}
+
+/* —— Default: título + rejilla de 8 tarjetas (mismo paso que Resources card) —— */
+.ubits-resources-block--default {
+    background: var(--ubits-bg-1);
+    border-radius: var(--border-radius-lg);
+    padding: var(--padding-6xl) var(--padding-md);
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--gap-lg);
+}
+
+.ubits-resources-block__title {
+    margin: 0;
+    width: 100%;
+    text-align: center;
+    color: var(--ubits-fg-1-high);
+}
+
+.ubits-resources-block__grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--gap-lg);
+    justify-content: center;
+    align-items: flex-start;
+    width: 100%;
+}
+
+/* En bloque Figma las cards usan ancho ~180,75px. Ancho y flex-basis fijos evitan
+   recálculos de línea al hover (flex + width:100% + max-width solo dejaba la caja
+   más sensible al borde/padding). */
+.ubits-resources-block__grid .ubits-resources-card {
+    width: 180.75px;
+    max-width: 180.75px;
+    flex: 0 0 180.75px;
+}
+
+/* Misma UI que default: aviso al avanzar sin recurso en la página (resaltado en listado + borde al abrir) */
+.ubits-resources-block--default.ubits-resources-block--default-error {
+    border: 1px solid var(--ubits-feedback-accent-error);
+}
+
+/* —— Variantes con superficie + Cancelar —— */
+.ubits-resources-block--stack {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: var(--gap-sm);
+}
+
+.ubits-resources-block__surface {
+    width: 100%;
+    min-height: 308px;
+    padding: var(--padding-6xl);
+    background: var(--ubits-bg-1);
+    border-radius: var(--border-radius-lg);
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: center;
+    gap: var(--gap-lg);
+}
+
+.ubits-resources-block__surface--embed {
+    gap: var(--gap-lg);
+}
+
+.ubits-resources-block__embed-stack {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-lg);
+    width: 100%;
+}
+
+/* Video / URL embebido: fila input + Cargar (Figma); helper debajo a ancho completo */
+.ubits-resources-block__field-stack {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--gap-xs);
+    width: 100%;
+}
+
+.ubits-resources-block__field-inline {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: var(--gap-md);
+    width: 100%;
+}
+
+.ubits-resources-block__input-cell {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+/* Helper generado por createInput al moverlo al stack: sin margen extra (el gap del stack basta) */
+.ubits-resources-block__field-stack > .ubits-input-helper {
+    width: 100%;
+    margin-top: 0;
+}
+
+.ubits-resources-block__field-stack--error .ubits-input-helper,
+.ubits-resources-block__field-stack--error .ubits-input-helper-text {
+    color: var(--ubits-feedback-accent-error);
+}
+
+/* Contenedor vacío hasta createInput (altura alineada a input sm) */
+.ubits-resources-block__input-mount {
+    width: 100%;
+    min-height: 32px;
+}
+
+.ubits-resources-block__footer {
+    flex-shrink: 0;
+}
+
+/* Carga de archivo (PDF / mp4 / SCORM): columna centrada */
+.ubits-resources-block__upload {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--gap-sm);
+    width: 100%;
+    text-align: center;
+}
+
+.ubits-resources-block__upload > .ubits-resources-block__hint {
+    width: 100%;
+    text-align: center;
+}
+
+.ubits-resources-block__hint {
+    margin: 0;
+    max-width: 100%;
+    color: var(--ubits-fg-1-medium);
+}
+
+.ubits-resources-block__hint--high {
+    color: var(--ubits-fg-1-high);
+}
+
+.ubits-resources-block__hint--error {
+    color: var(--ubits-feedback-accent-error);
+}
+
+/* Enlace no embebible (empty state compacto) */
+.ubits-resources-block__blocked {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--gap-md);
+    width: 100%;
+    padding: var(--padding-xl);
+    background: var(--ubits-bg-1);
+    border-radius: var(--border-radius-sm);
+    text-align: center;
+}
+
+.ubits-resources-block__blocked-icon-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--padding-sm);
+    background: var(--ubits-bg-2);
+    border-radius: var(--border-radius-sm);
+}
+
+.ubits-resources-block__blocked-icon-wrap i {
+    font-size: var(--font-size-d4);
+    line-height: 1;
+    color: var(--ubits-fg-1-medium);
+}
+
+.ubits-resources-block__blocked-title {
+    margin: 0;
+    width: 100%;
+    color: var(--ubits-fg-1-high);
+}
+
+.ubits-resources-block__blocked-text {
+    margin: 0;
+    width: 100%;
+    color: var(--ubits-fg-1-medium);
+}

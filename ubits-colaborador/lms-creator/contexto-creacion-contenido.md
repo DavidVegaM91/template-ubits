@@ -6,12 +6,17 @@ Documento de referencia para implementar el flujo de **creación de contenido** 
 
 ---
 
-## Referencia de diseño (Figma)
+## Referencias de diseño
 
-- **Archivo:** [Creator v3 (Figma)](https://www.figma.com/design/NxOcUG8QAVc44KYTQexH0b/%F0%9F%9F%A2-Creator-v3?node-id=40006338-29266&m=dev)  
-- **Paso 2 Recursos (empty / cuerpo del drawer):** [Creator v3 — nodo `40008263-5937`](https://www.figma.com/design/NxOcUG8QAVc44KYTQexH0b/%F0%9F%9F%A2-Creator-v3?node-id=40008263-5937&m=dev)  
-- **Learn-Components (piezas del creador):** [Learn-Components](https://www.figma.com/design/ZWcvS9Z7YQaz59GZIrnWM6/Learn-Components?node-id=242-5621&m=dev) — p. ej. **Índice Creator** (nodo `242:5621`): panel izquierdo del paso Recursos con interruptor de secciones, listado y «Añadir sección». Implementación UBITS: `components/indice-creator.css` + `indice-creator.js`, doc `documentacion/componentes/indice-creator.html`.  
-- **Uso:** alinear layout, estados y jerarquía visual con el diseño oficial; las reglas de negocio de este documento tienen prioridad si hubiera discrepancia puntual (resolver en revisión con producto).
+Los bocetos en herramienta de diseño fueron **exploratorios**; la fuente de verdad para implementación es **este documento**, la **documentación UBITS** de cada componente y lo acordado con **producto**. No se enlazan archivos externos de diseño para evitar roturas cuando se publique un diseño consolidado.
+
+- **Creator v3 (prototipo):** flujo del asistente (portada, paso Recursos en drawer, etc.).  
+- **Paso 2 Recursos (vacío):** índice + empty state del panel derecho cuando aún no hay páginas.  
+- **Paso 2 — página recién añadida:** panel derecho con **título editable** arriba y **Resources block** debajo.  
+- **Índice Creator:** panel izquierdo del paso Recursos (interruptor de secciones, listado, «Añadir sección»). Implementación: `components/indice-creator.css` + `indice-creator.js`, doc `documentacion/componentes/indice-creator.html`.  
+- **Resources card** (selector de tipo de recurso): `components/resources-card.css` + `resources-card.js`, doc `documentacion/componentes/resources-card.html`.  
+- **Resources block** (panel del recurso): `resources-block.css` + `resources-block.js` (requiere `resources-card`, `button`, `input`, `dropdown-menu`; tras `innerHTML` con `resourcesBlockHtml` llamar `initResourcesBlockFields(contenedor)`). Variante `default-error`: mismo selector que `default` con borde de error cuando la página quedó sin recurso al avanzar de paso. Doc `documentacion/componentes/resources-block.html`.  
+- **Criterio:** layout, estados y jerarquía alineados al sistema UBITS y a las reglas aquí descritas; en discrepancia puntual, prioriza **negocio + producto** y la doc del componente.
 
 ---
 
@@ -63,7 +68,7 @@ Capturar la **identidad visual y la metadata** del contenido antes de construir 
 2. **Trailer del contenido (opcional)**  
    - El usuario puede pegar un **enlace** al trailer.  
    - Si **no** hay trailer: el preview muestra solo la imagen de portada.  
-   - Si **hay** trailer: el preview muestra la imagen de portada con un **botón de reproducción (play)** encima (o el patrón que defina Figma).  
+   - Si **hay** trailer: el preview muestra la imagen de portada con un **botón de reproducción (play)** encima (o el patrón que defina producto / diseño final).  
    - Al hacer clic en play, el trailer se reproduce **en ese mismo espacio**, usando los **controles nativos del reproductor embebido** según el origen del video.  
    - Orígenes soportados (el enlace debe tener **visibilidad pública**):  
      - Vimeo  
@@ -132,7 +137,7 @@ Definir la **estructura del contenido** (secciones opcionales, páginas/leccione
 | Panel | Ubicación | Rol |
 |-------|-----------|-----|
 | **Izquierda** | Configuración de la estructura | Secciones (opcional), páginas, acciones “Añadir página” / “Añadir sección”. |
-| **Derecha** | Previsualizador de recursos | Empty state, selector de tipo de recurso, configuración del recurso activo, previews. |
+| **Derecha** | Previsualizador de recursos | Empty state sin páginas; con página activa: **título editable** + **Resources block** (`default`); luego formularios / previews según tipo. |
 
 Los dos paneles trabajan acoplados: la selección de página en la izquierda determina qué se edita/previsualiza a la derecha.
 
@@ -142,19 +147,20 @@ Los dos paneles trabajan acoplados: la selección de página en la izquierda det
 - **Secciones** = subdivisores de alto nivel del contenido (equivalente a lo que muchas veces se llama **módulos** en un curso).  
 - **Por defecto: desactivado**, porque muchas empresas crean contenidos cortos sin módulos.  
 - Si el usuario **activa** secciones:  
-  - Se muestra un **título de bloque** relacionado con secciones (según copy/Figma).  
+  - Se muestra un **título de bloque** relacionado con secciones (según copy acordado).  
   - Cada sección muestra **siempre su nombre** en la cabecera del bloque **Sección creator** (no ocultar el título cuando el modo secciones está encendido).  
   - **Nombre por defecto al crear una sección:** **«Sección N»**, donde **N** es el **ordinal de esa sección** dentro del contenido (1 para la primera sección creada, 2 para la segunda, etc.). La implementación que monte el índice debe generar ese título inicial al añadir sección; el usuario puede renombrarlo después (edición inline ya prevista en el componente).  
   - En la **parte inferior** del panel izquierdo aparece un botón **“Añadir sección”**.  
 - Si el usuario **desactiva** secciones (o nunca las activa): **todas las páginas** se representan **en una sola sección lógica**, **sin mostrar cabecera de título de sección** (no aporta valor si no hay más de una sección). Sigue existiendo la lista tipo **Páginas creator** y **«Añadir página»** dentro del mismo bloque.  
 - **Desactivar secciones cuando ya hay varias secciones con páginas repartidas:** debe mostrarse un **modal de advertencia** explicando que **todas las páginas pasarán a una única sección** (orden global según reglas de producto / implementación). Si el usuario confirma, se aplica el colapso; si cancela, el interruptor vuelve al estado **activado**.  
 - **Excepción sin modal:** si existen **varias secciones** pero **solo la primera** tiene páginas y el resto está vacío, el usuario puede **activar y desactivar** el uso de secciones **sin** modal ni fricción (no hay riesgo de reorganizar páginas entre secciones con contenido).  
-- **Componente UBITS:** **Índice Creator** (`indiceCreatorHtml` / `initIndiceCreator`) compone el interruptor, el índice de **Sección creator** cuando aplica y el contenedor del botón **«Añadir sección»**. Referencia visual: Figma Learn-Components [242:5621](https://www.figma.com/design/ZWcvS9Z7YQaz59GZIrnWM6/Learn-Components?node-id=242-5621&m=dev).  
-- La lógica exacta de anidación (página dentro de sección, orden, etc.) debe alinearse con Figma; lo aquí descrito es el comportamiento narrado por producto.
+- **Componente UBITS:** **Índice Creator** (`indiceCreatorHtml` / `initIndiceCreator`) compone el interruptor, el índice de **Sección creator** cuando aplica y el contenedor del botón **«Añadir sección»**. Documentación: `documentacion/componentes/indice-creator.html`.  
+- La lógica exacta de anidación (página dentro de sección, orden, etc.) debe alinearse con diseño y producto; lo aquí descrito es el comportamiento acordado.
 
 ### Páginas
 
 - Las **páginas** son las unidades que componen el contenido en el sentido de **lecciones** o pantallas de consumo.  
+- **Icono en el índice (Páginas creator) hasta elegir recurso:** mientras la página **no tenga aún un recurso principal** asignado, la fila en el índice debe **seguir mostrando el icono de página en blanco** (`blank-page` / `far fa-file` en `paginas-creator.js`), el mismo que al crear la página. **Al seleccionar un tipo de recurso** (y completar el flujo que defina producto), el icono de la fila debe **actualizarse** al que corresponda al tipo (video, PDF, embebido, etc.). *Esta sincronización índice ↔ recurso aún no está implementada en el playground;* la UI actual añade páginas en blanco y el panel derecho con **Resources block** en variante `default`; cuando exista estado de recurso por página, enlazarlo con `tipo` en `paginasCreatorItemHtml` / datos del índice.  
 - **Selección:** al hacer **clic en una página**, esa fila queda activa y su **sección padre** pasa a ser la única sección activa (p. ej. borde de acento); el resto de páginas y secciones dejan de estar activas. Solo puede haber **una página activa y una sección activa** a la vez en el índice (comportamiento en `paginas-creator.js` + `seccion-creator.js`).  
 - **Añadir una página** (equivalente en resultado; dos entradas):  
   1. **Empty state del panel derecho** («Añade tu primera página» / CTA equivalente cuando no hay páginas), **o**  
@@ -167,9 +173,16 @@ Los dos paneles trabajan acoplados: la selección de página en la izquierda det
 ### Panel derecho: empty state «Añade tu primera página»
 
 - Se muestra **solo cuando no existe ninguna página** en el contenido (lista vacía en el índice).  
-- **En cuanto se añade la primera página**, el panel derecho deja ese empty y pasa al flujo de **selector de tipo de recurso** (u otra vista según Figma); **no** debe volver a mostrarse este empty salvo que el usuario **elimine todas las páginas** y vuelva a quedar el índice en cero páginas.  
+- **En cuanto se añade la primera página**, el panel derecho deja ese empty y pasa al flujo de **selector de tipo de recurso** (u otra vista según el tipo de recurso); **no** debe volver a mostrarse este empty salvo que el usuario **elimine todas las páginas** y vuelva a quedar el índice en cero páginas.  
 - **Disparadores equivalentes** para crear la primera (y siguientes) páginas: CTA del empty state **o** **«Añadir página»** en el panel izquierdo (según sección activa).  
 - Efecto esperado al añadir: en el **panel izquierdo** aparece la **fila de página** (Páginas creator) y queda **activa/seleccionada**; en el **derecho** se muestra el **selector general de recursos** para esa página.
+
+### Panel derecho: página recién añadida
+
+- **Orden vertical:**  
+  1. **Título de la página**, **editable inline** en el panel derecho (mismo criterio que el nombre en la fila del índice: al guardar o al perder foco debe mantenerse alineado con la etiqueta de la página activa en Páginas creator).  
+  2. Debajo, el componente **Resources block** en variante **`default`** (selector de ocho tipos de recurso), con las dependencias UBITS ya definidas para ese bloque.  
+- **Implementación de referencia en el playground:** `crear-contenido-drawer.js` (montaje del índice, evento `ubits-seccion-creator-add-page`, título `#crear-contenido-recursos-page-title`, contenedor `#crear-contenido-recursos-resources-mount`) y estilos en `contenidos.css` (prefijo `crear-contenido-recursos__page-editor`, `__preview--editor`).
 
 ### Paso 3 — Certificado (validación al salir del paso 2)
 
@@ -189,7 +202,9 @@ La lógica que añade o quita estas clases vive en la pantalla que orqueste el d
 
 ### Tipos de recurso (selector general)
 
-Al configurar una página, el usuario puede añadir uno de estos tipos (presentados como cards u otro patrón según Figma):
+**Componentes UBITS:** tarjetas del selector — `resources-card.css` / `resources-card.js` (`documentacion/componentes/resources-card.html`). Panel completo (selector, formularios por tipo, cancelar) — `resources-block.css` / `resources-block.js` + `input`/`dropdown-menu` y `initResourcesBlockFields` (`documentacion/componentes/resources-block.html`).
+
+Al configurar una página, el usuario puede añadir uno de estos tipos (presentados como cards en el Resources block o el patrón que defina producto):
 
 1. Video (por enlace)  
 2. Video desde el computador  
@@ -216,7 +231,7 @@ Al configurar una página, el usuario puede añadir uno de estos tipos (presenta
 
 2. **Tras añadir/cargar el video con éxito**  
    - Se muestra el **preview del video** embebido.  
-   - Debajo del preview: botón **Eliminar** (quita este recurso de la página y vuelve al flujo coherente con diseño; alinear con Figma si hay confirmación).  
+   - Debajo del preview: botón **Eliminar** (quita este recurso de la página y vuelve al flujo coherente; definir con producto si hace falta confirmación).  
    - Debajo de Eliminar: bloque **“Contenido complementario”** (nombre orientativo): invita a añadir material extra con **dos** opciones en formato **cards**:  
      - **Texto**  
      - **Archivo descargable**  
@@ -250,6 +265,6 @@ Este patrón de **contenido complementario** (Texto / Archivo descargable) apare
 - Reutilizar componentes UBITS del template (`documentacion/componentes.html`) para botones, inputs, alerts, toasts, etc.  
 - **Navegación lateral de pasos**: **Sidebar contenidos LMS** — misma pieza que el Sidebar global (`aside.sidebar`, `sidebar-body`, `nav-button` + `data-tooltip`), con modificador `sidebar--contenidos-lms` para fondo claro (`bg-1`). **Variante Publicado LMS Creator** (por defecto): cinco pasos de Resultados a Visibilidad. **Variante Publicado Antiguo LMS** (`options.variant: 'publicado-antiguo-lms'`): sin Resultados; el paso con `data-step="recursos"` se etiqueta **Módulos** (mismo icono). Archivos: `components/sidebar-contenidos-lms.css`, `components/sidebar-contenidos-lms.js` (requiere `styles.css` por `.nav-button`). Doc: `documentacion/componentes/sidebar-contenidos-lms.html`.  
 - Mantener tokens y tipografía UBITS; CSS de página en archivo dedicado junto al HTML del Creator cuando corresponda.  
-- Cualquier cambio a este documento debe reflejar acuerdos de producto y, si es posible, el nodo de Figma afectado.
+- Cualquier cambio a este documento debe reflejar acuerdos de producto y, cuando aplique, la documentación UBITS del componente tocado.
 
-*Última actualización: paso 2 — nombres de sección «Sección N», empty state solo sin páginas, añadir página (derecha / botón por sección), modal al desactivar secciones con páginas repartidas, orden global mover arriba/abajo; paso 3 — validación páginas/secciones vacías + clases `--error` en Páginas y Sección creator; validación portada paso 1; hashes de creación; Figma paso 2 empty (`40008263-5937`); recursos Video/Texto.*
+*Última actualización: paso 2 — página nueva: título inline + Resources block; icono blank en índice hasta recurso (documentado, pendiente enlace con tipo); nombres de sección «Sección N», empty state solo sin páginas, añadir página (derecha / botón por sección), modal al desactivar secciones con páginas repartidas, orden global mover arriba/abajo; paso 3 — validación páginas/secciones vacías + clases `--error` en Páginas y Sección creator; validación portada paso 1; hashes de creación; recursos Video/Texto.*

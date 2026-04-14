@@ -17,6 +17,8 @@ const DOCS_SIDEBAR_SECTIONS = [
     { id: 'learn-content-img-trailer', title: 'Learn content imagen y tráiler', group: 'aprendizaje' },
     { id: 'indice-creator', title: 'Indice creator', group: 'aprendizaje' },
     { id: 'paginas-creator', title: 'Paginas creator', group: 'aprendizaje' },
+    { id: 'resources-card', title: 'Resources card', group: 'aprendizaje' },
+    { id: 'resources-block', title: 'Resources block', group: 'aprendizaje' },
     { id: 'seccion-creator', title: 'Seccion creator', group: 'aprendizaje' },
     { id: 'sidebar-contenidos-lms', title: 'Sidebar contenidos LMS', group: 'aprendizaje' },
     // UI general en orden alfabético
@@ -277,6 +279,8 @@ function initDocsSidebar(activeSection) {
             'learn-content-img-trailer': 'learn-content-img-trailer.html',
             'indice-creator': 'indice-creator.html',
             'paginas-creator': 'paginas-creator.html',
+            'resources-card': 'resources-card.html',
+            'resources-block': 'resources-block.html',
             'seccion-creator': 'seccion-creator.html',
             'checkbox': 'checkbox.html',
             'chip': 'chip.html',

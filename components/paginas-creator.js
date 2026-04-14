@@ -7,12 +7,16 @@
  * el resto de páginas del ámbito y la sección padre pasa a ser la única activa (borde de marca) vía
  * setSeccionCreatorActiveSection (seccion-creator.js).
  *
- * Eventos: ubits-paginas-creator-action, ubits-paginas-creator-activate, ubits-paginas-creator-label-save
+ * Eventos: ubits-paginas-creator-action, ubits-paginas-creator-activate, ubits-paginas-creator-label-save,
+ * ubits-paginas-creator-label-input (solo durante edición inline: valor provisional para sincronizar panel derecho).
  * Menú ⋮: primera opción «Cambiar nombre» → edición inline (no emite action).
  * Estado validación: clase `ubits-paginas-creator__item--error` en la fila (p. ej. página sin recursos al ir a paso 3).
  * @see documentacion/componentes/paginas-creator.html
  */
 (function (global) {
+    /** Placeholder por defecto para título de página (lista + input inline). */
+    var PAGINAS_CREATOR_PAGE_TITLE_PLACEHOLDER = 'Escribe el título de la página';
+
     var MENU_OVERLAY_ID = 'ubits-paginas-creator-menu-overlay';
     var _menuOpenAnchor = null;
     var ACTIVATE_DELAY_MS = 300;
@@ -59,6 +63,60 @@
             { text: 'Mover abajo', value: 'mover-abajo', leftIcon: 'arrow-down' },
             { text: 'Eliminar', value: 'eliminar', leftIcon: 'trash' }
         ];
+    }
+
+    /** Ámbito de orden global: índice creator, índice de secciones, bloque sección o la lista sola. */
+    function findPaginasNavigationScope(item) {
+        if (!item) return null;
+        return (
+            item.closest('.ubits-indice-creator') ||
+            item.closest('.ubits-seccion-creator-index') ||
+            item.closest('.ubits-seccion-creator') ||
+            item.closest('.ubits-paginas-creator')
+        );
+    }
+
+    function getOrderedPaginasItemsInScope(scope) {
+        if (!scope || !scope.querySelectorAll) return [];
+        return Array.prototype.slice.call(scope.querySelectorAll('.ubits-paginas-creator__item'));
+    }
+
+    /**
+     * Reordena la fila en el orden global del ámbito (incluye saltar entre secciones en índice con varias listas).
+     * @param {HTMLElement} item
+     * @param {number} delta -1 = arriba, +1 = abajo
+     * @returns {boolean}
+     */
+    function movePaginasCreatorItem(item, delta) {
+        var scope = findPaginasNavigationScope(item);
+        if (!scope) return false;
+        var items = getOrderedPaginasItemsInScope(scope);
+        var i = items.indexOf(item);
+        if (i < 0) return false;
+        if (delta === -1 && i > 0) {
+            var prev = items[i - 1];
+            prev.parentNode.insertBefore(item, prev);
+            return true;
+        }
+        if (delta === 1 && i < items.length - 1) {
+            var next = items[i + 1];
+            next.parentNode.insertBefore(item, next.nextSibling);
+            return true;
+        }
+        return false;
+    }
+
+    function getPaginasCreatorMenuOptionsForItem(item) {
+        var base = getPaginasCreatorMenuOptions();
+        var scope = findPaginasNavigationScope(item);
+        var ordered = scope ? getOrderedPaginasItemsInScope(scope) : [];
+        var idx = ordered.indexOf(item);
+        return base.filter(function (opt) {
+            var v = opt.value;
+            if (v === 'mover-arriba') return idx > 0;
+            if (v === 'mover-abajo') return idx >= 0 && idx < ordered.length - 1;
+            return true;
+        });
     }
 
     function ensureRootId(root) {
@@ -150,6 +208,7 @@
         input.type = 'text';
         input.className = 'ubits-paginas-creator__label-edit-input';
         input.value = currentName;
+        input.setAttribute('placeholder', PAGINAS_CREATOR_PAGE_TITLE_PLACEHOLDER);
         input.setAttribute('data-paginas-creator-key', pageKey != null ? String(pageKey) : '');
         var finished = false;
 
@@ -209,6 +268,20 @@
             }
         });
 
+        input.addEventListener('input', function () {
+            var doc = global.document || document;
+            doc.dispatchEvent(
+                new CustomEvent('ubits-paginas-creator-label-input', {
+                    bubbles: true,
+                    detail: {
+                        pageKey: pageKey,
+                        item: item,
+                        value: input.value != null ? String(input.value) : ''
+                    }
+                })
+            );
+        });
+
         wrap.classList.add('ubits-paginas-creator__label-edit-wrap');
         wrap.innerHTML = '';
         wrap.appendChild(input);
@@ -237,18 +310,20 @@
         var doc = global.document || (typeof document !== 'undefined' ? document : null);
         if (!doc || !doc.body) return;
 
+        var item = anchorEl.closest('.ubits-paginas-creator__item');
+        if (!item) return;
+
         doc.body.insertAdjacentHTML(
             'beforeend',
             global.getDropdownMenuHtml({
                 overlayId: MENU_OVERLAY_ID,
-                options: getPaginasCreatorMenuOptions()
+                options: getPaginasCreatorMenuOptionsForItem(item)
             })
         );
 
         var overlay = doc.getElementById(MENU_OVERLAY_ID);
         if (!overlay) return;
 
-        var item = anchorEl.closest('.ubits-paginas-creator__item');
         var pageKey = item && item.getAttribute('data-paginas-creator-key') ? item.getAttribute('data-paginas-creator-key') : '';
         var labelEl = item && item.querySelector('.ubits-paginas-creator__label');
         var labelText = labelEl ? labelEl.textContent.trim() : '';
@@ -278,6 +353,40 @@
                 if (val === 'cambiar-nombre') {
                     tearDown();
                     startInlineEditPaginasCreatorLabel(item, pageKey, null);
+                    return;
+                }
+                if (val === 'mover-arriba') {
+                    movePaginasCreatorItem(item, -1);
+                    tearDown();
+                    doc.dispatchEvent(
+                        new CustomEvent('ubits-paginas-creator-action', {
+                            bubbles: true,
+                            detail: {
+                                action: val,
+                                pageKey: pageKey,
+                                label: labelText,
+                                anchor: anchorEl,
+                                item: item
+                            }
+                        })
+                    );
+                    return;
+                }
+                if (val === 'mover-abajo') {
+                    movePaginasCreatorItem(item, 1);
+                    tearDown();
+                    doc.dispatchEvent(
+                        new CustomEvent('ubits-paginas-creator-action', {
+                            bubbles: true,
+                            detail: {
+                                action: val,
+                                pageKey: pageKey,
+                                label: labelText,
+                                anchor: anchorEl,
+                                item: item
+                            }
+                        })
+                    );
                     return;
                 }
                 doc.dispatchEvent(
@@ -418,18 +527,31 @@
      */
     function paginasCreatorItemHtml(opts) {
         opts = opts || {};
-        var label = opts.label != null ? String(opts.label) : 'Sin título';
+        /* '' explícito = fila sin título (placeholder en pantalla); omitir label sigue siendo «Sin título». */
+        var label =
+            opts.label === ''
+                ? ''
+                : opts.label != null
+                  ? String(opts.label)
+                  : 'Sin título';
+        var labelTrim = label.trim();
         var tipo = normalizeTipo(opts.tipo);
         var active = !!opts.active;
-        var menuLabel = opts.menuAriaLabel || ('Más acciones para ' + label);
+        var menuLabel =
+            opts.menuAriaLabel ||
+            (labelTrim ? 'Más acciones para ' + labelTrim : 'Más acciones para esta página');
         var pageKey = opts.pageKey != null ? String(opts.pageKey) : '';
         var dataKeyAttr = pageKey ? ' data-paginas-creator-key="' + escapeAttr(pageKey) + '"' : '';
         var itemClass = 'ubits-paginas-creator__item' + (active ? ' is-active' : '');
+        var rowAria =
+            labelTrim.length > 0
+                ? 'Seleccionar página ' + labelTrim
+                : 'Seleccionar página (sin título)';
         var rowAttrs =
             ' tabindex="0" class="ubits-paginas-creator__row"' +
             (active ? ' aria-current="true"' : '') +
             ' aria-label="' +
-            escapeAttr('Seleccionar página ' + label) +
+            escapeAttr(rowAria) +
             '"';
         return (
             '<div class="' +
@@ -447,7 +569,7 @@
             '"></i></span>' +
             '<div class="ubits-paginas-creator__label-wrap">' +
             '<span class="ubits-paginas-creator__label ubits-body-sm-semibold">' +
-            escapeHtml(label) +
+            escapeHtml(labelTrim) +
             '</span>' +
             buildEditNameBtnHtml() +
             '</div>' +
@@ -470,4 +592,5 @@
     global.startInlineEditPaginasCreatorLabel = startInlineEditPaginasCreatorLabel;
     global.setPaginasCreatorActiveItem = setPaginasCreatorActiveItem;
     global.PAGINAS_CREATOR_TIPO_ICONS = TIPO_ICONS;
+    global.PAGINAS_CREATOR_PAGE_TITLE_PLACEHOLDER = PAGINAS_CREATOR_PAGE_TITLE_PLACEHOLDER;
 })(typeof window !== 'undefined' ? window : this);

@@ -406,6 +406,8 @@ const PAGE_TO_TAB = {
     'submenu.html': 'section3',
     'paginator.html': 'section3',
     'radio-button.html': 'section3',
+    'resources-card.html': 'section3',
+    'resources-block.html': 'section3',
     'save-indicator.html': 'section3',
     'status-tag.html': 'section3',
     'stepper.html': 'section3',
