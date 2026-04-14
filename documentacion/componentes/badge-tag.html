@@ -73,7 +73,7 @@
                                 Preview del componente
                             </h2>
                             <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6;">
-                                Un solo ejemplo en vivo: elige estilo, color y tamaño con los selectores; usa los interruptores para punto, icono o solo icono. En <strong>filled</strong> con icono, el icono usa el acento semántico. Nota: en <strong>icon-only</strong> el componente fija 28×28px (el tamaño sm/md/lg no agranda esa variante).
+                                Un solo ejemplo en vivo: elige estilo, color y tamaño con los selectores; usa los interruptores para punto, icono o solo icono. En <strong>filled</strong> con icono, el icono usa el acento semántico. Nota: en <strong>icon-only</strong> el cuadrado depende del tamaño: <strong>xs</strong> 20×20px (misma altura que Status Tag xs), <strong>sm</strong> 28×28px; md/lg no agrandan esa variante respecto a sm.
                             </p>
 
                             <div style="background: var(--ubits-bg-2); padding: var(--padding-xl); border-radius: var(--border-radius-sm); min-height: 120px; display: flex; align-items: center; justify-content: center;">
@@ -136,7 +136,7 @@
                                 <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
                                     <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-expand-arrows-alt"></i></div>
                                     <div class="ubits-body-sm-bold">Tamaños</div>
-                                    <div class="ubits-body-sm-regular">Tres tamaños: sm, md y lg</div>
+                                    <div class="ubits-body-sm-regular">Cuatro tamaños: xs (20px, alineado a Status Tag xs), sm, md y lg</div>
                                 </div>
                             </div>
                         </div>
@@ -161,7 +161,7 @@
                                     </button>
                                 </div>
                                 <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
-                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="badge-tag-prompt-1">Inserta un Badge Tag en [ubicación] con texto "[texto]", color [success, info, warning o error], estilo [outlined o filled] y tamaño [sm, md o lg]. Debe importar badge-tag.css y alert.css.</code></pre>
+                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="badge-tag-prompt-1">Inserta un Badge Tag en [ubicación] con texto "[texto]", color [success, info, warning o error], estilo [outlined o filled] y tamaño [xs, sm, md o lg]. Debe importar badge-tag.css y alert.css.</code></pre>
                                 </div>
                             </div>
 
@@ -187,7 +187,7 @@
                                     </button>
                                 </div>
                                 <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
-                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="badge-tag-prompt-4">Cambia el Badge Tag de [ubicación o descripción] para que use tamaño [sm, md o lg].</code></pre>
+                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="badge-tag-prompt-4">Cambia el Badge Tag de [ubicación o descripción] para que use tamaño [xs, sm, md o lg].</code></pre>
                                 </div>
                             </div>
                         </div>
@@ -260,6 +260,7 @@
 .ubits-badge-tag--error     /* Rojo */
 
 /* Tamaño */
+.ubits-badge-tag--xs        /* 20px alto (misma métrica que status-tag--xs) */
 .ubits-badge-tag--sm        /* 28px min-height */
 .ubits-badge-tag--md        /* 32px */
 .ubits-badge-tag--lg        /* 36px */
@@ -476,6 +477,7 @@
                 placeholder: 'Elegir tamaño…',
                 size: 'sm',
                 selectOptions: [
+                    { value: 'xs', text: 'Extra small (xs)' },
                     { value: 'sm', text: 'Small (sm)' },
                     { value: 'md', text: 'Medium (md)' },
                     { value: 'lg', text: 'Large (lg)' }

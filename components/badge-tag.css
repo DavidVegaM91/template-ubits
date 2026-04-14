@@ -173,7 +173,33 @@
 
 /* ========================================
    TAMAÑOS
+   (xs alineado a status-tag--xs: 20px alto, mismos paddings/gap/tipografía)
    ======================================== */
+
+.ubits-badge-tag--xs {
+    min-height: 20px;
+    height: 20px;
+    padding: var(--padding-xs) var(--padding-sm);
+    font-size: var(--font-size-xs);
+    line-height: 16px;
+    gap: var(--gap-xs);
+}
+
+.ubits-badge-tag--xs .ubits-badge-tag__indicator {
+    width: 6px;
+    height: 6px;
+}
+
+.ubits-badge-tag--xs .ubits-badge-tag__text {
+    line-height: 16px;
+}
+
+.ubits-badge-tag--xs.ubits-badge-tag--with-icon i {
+    font-size: var(--font-size-xs);
+    width: 10px;
+    height: 10px;
+    line-height: 1;
+}
 
 .ubits-badge-tag--sm {
     min-height: 28px;
@@ -247,4 +273,15 @@
 
 .ubits-badge-tag--icon-only.ubits-badge-tag--with-icon i {
     font-size: 12px;
+}
+
+.ubits-badge-tag--icon-only.ubits-badge-tag--xs {
+    min-width: 20px;
+    width: 20px;
+    min-height: 20px;
+    height: 20px;
+}
+
+.ubits-badge-tag--icon-only.ubits-badge-tag--xs.ubits-badge-tag--with-icon i {
+    font-size: var(--font-size-xs);
 }

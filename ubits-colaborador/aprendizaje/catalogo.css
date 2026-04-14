@@ -647,7 +647,8 @@
     background: var(--ubits-bg-1);
     border: 1px solid var(--ubits-border-1);
     border-radius: var(--border-radius-lg);
-    overflow: visible;
+    /* Recorta imagen y contenido al radio del card (evita grieta blanca img vs borde) */
+    overflow: hidden;
     cursor: default;
     display: flex;
     flex-direction: row;
@@ -685,7 +686,7 @@
     object-fit: cover;
     background: var(--ubits-bg-2);
     flex-shrink: 0;
-    border-radius: var(--border-radius-lg) 0 0 var(--border-radius-lg);
+    border-radius: var(--border-radius-none);
 }
 
 .competencia-card-v1-content {
@@ -725,11 +726,10 @@
     color: inherit;
 }
 
-/* Ajuste para status-tag dentro del título */
-.competencia-card-v1-title .ubits-status-tag {
-    margin-left: 6px;
+/* Ajuste para badge-tag (asignado) dentro del título */
+.competencia-card-v1-title .ubits-badge-tag {
     flex-shrink: 0;
-    }
+}
     
 .competencia-card-v1-count {
     color: var(--ubits-fg-1-medium);

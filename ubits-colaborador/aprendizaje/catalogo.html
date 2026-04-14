@@ -21,7 +21,7 @@
     <link rel="stylesheet" href="../../components/dropdown-menu.css">
     <link rel="stylesheet" href="../../components/button.css">
     <link rel="stylesheet" href="../../components/carousel-contents.css">
-    <link rel="stylesheet" href="../../components/status-tag.css">
+    <link rel="stylesheet" href="../../components/badge-tag.css">
     <link rel="stylesheet" href="../../components/ia-button.css">
     <link rel="stylesheet" href="../../components/tooltip.css">
     <link rel="stylesheet" href="./profile.css">
@@ -1118,7 +1118,7 @@
                                                         <div class="competencia-card-v1-title-wrapper">
                                                             <p class="ubits-body-sm-semibold competencia-card-v1-title">
                                                                 <span class="competencia-card-v1-title-text">${competencia.nombre}</span>
-                                                                ${isAssigned ? '<span class="ubits-status-tag ubits-status-tag--info ubits-status-tag--xs"><span class="ubits-status-tag__text">Asignado</span></span>' : ''}
+                                                                ${isAssigned ? '<span class="ubits-badge-tag ubits-badge-tag--outlined ubits-badge-tag--info ubits-badge-tag--xs" aria-label="Contenido asignado"><span class="ubits-badge-tag__indicator" aria-hidden="true"></span><span class="ubits-badge-tag__text">Asignado</span></span>' : ''}
                                                             </p>
                                                         </div>
                                                         <p class="ubits-body-xs-regular competencia-card-v1-count">${competencia.habilidades.length} habilidades</p>
@@ -1199,8 +1199,8 @@
                     // Resetear clases
                     this.classList.remove('tooltip-top', 'tooltip-bottom', 'tooltip-left', 'tooltip-right');
                     
-                    // Determinar posición vertical
-                    const useBottom = spaceAbove < tooltipHeight + margin;
+                    // Determinar posición vertical (siempre abajo en fila competencia: el card recorta con overflow:hidden)
+                    const useBottom = true;
                     
                     // Determinar posición horizontal
                     let horizontalPos = 'center';
