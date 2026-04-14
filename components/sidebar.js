@@ -42,6 +42,23 @@ function adjustSidebarHeight() {
 /** Submenu al hover: mismo ID siempre para no acumular paneles (avatar incluido: mismo patrón que módulos / modo oscuro) */
 const UBITS_SIDEBAR_HOVER_SUBMENU_ID = 'ubits-sidebar-hover-submenu';
 
+/**
+ * Distancia rail → panel submenu (placement right). Usa token --gap-4xl (general-styles/ubits-spacing-tokens.css).
+ * Fallback 32px (= --space-8) si el token no está disponible.
+ */
+function getSidebarSubmenuOffsetPx() {
+    var fallback = 32;
+    try {
+        var raw = getComputedStyle(document.documentElement).getPropertyValue('--gap-4xl').trim();
+        if (!raw) return fallback;
+        var n = parseFloat(raw);
+        if (isNaN(n) || n < 0) return fallback;
+        return n;
+    } catch (e) {
+        return fallback;
+    }
+}
+
 /** data-section del rail → clave en TOP_NAV_VARIANTS (null = solo título con data-sidebar-label) */
 const SIDEBAR_SECTION_TO_SUBNAV = {
     default: {
@@ -272,7 +289,7 @@ function initSidebarSubmenuHover(variant, basePath) {
             anchorEl: anchor,
             placement: 'right',
             align: 'start',
-            offset: 8,
+            offset: getSidebarSubmenuOffsetPx(),
             variant: 'dark',
             title: title,
             showTitle: showTitle,
