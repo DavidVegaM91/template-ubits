@@ -342,6 +342,11 @@
     /**
      * Oculta el tooltip actual
      */
+    /** Suprimir hover/focus tooltips (p. ej. durante drag & drop de Páginas creator). */
+    function isTooltipGloballySuppressed() {
+        return document.body && document.body.classList.contains('ubits-paginas-creator-dragging');
+    }
+
     function hideTooltip() {
         const container = ensureContainer();
         const tooltips = container.querySelectorAll('.ubits-tooltip');
@@ -405,7 +410,9 @@
 
             // Mostrar en hover (texto actual por si data-tooltip cambia dinámicamente)
             const mouseEnterHandler = function () {
+                if (isTooltipGloballySuppressed()) return;
                 tooltipTimeout = setTimeout(() => {
+                    if (isTooltipGloballySuppressed()) return;
                     var text = element.getAttribute('data-tooltip');
                     if (text) currentTooltip = showTooltip(element, text, getOptions());
                 }, delay);
@@ -428,9 +435,11 @@
 
             // Mostrar en focus (accesibilidad)
             const focusHandler = function () {
+                if (isTooltipGloballySuppressed()) return;
                 var text = element.getAttribute('data-tooltip');
                 if (!text) return;
                 tooltipTimeout = setTimeout(() => {
+                    if (isTooltipGloballySuppressed()) return;
                     currentTooltip = showTooltip(element, text, getOptions());
                 }, delay);
             };

@@ -425,6 +425,42 @@
         root._ubitsPaginasCreatorInit = true;
         ensureRootId(root);
 
+        function setBodyDraggingSuppressed(on) {
+            var doc = global.document || document;
+            var b = doc && doc.body;
+            if (!b || !b.classList) return;
+            b.classList.toggle('ubits-paginas-creator-dragging', !!on);
+        }
+
+        function clearDragVisualState() {
+            if (root._ubitsPaginasDraggingItem) {
+                root._ubitsPaginasDraggingItem.classList.remove('is-dragging');
+                root._ubitsPaginasDraggingItem = null;
+            }
+            root.querySelectorAll('.ubits-paginas-creator__item.is-drop-before').forEach(function (el) {
+                el.classList.remove('is-drop-before');
+            });
+            root.querySelectorAll('.ubits-paginas-creator__item.is-drop-after').forEach(function (el) {
+                el.classList.remove('is-drop-after');
+            });
+        }
+
+        function emitReorderEvent(item) {
+            var doc = global.document || document;
+            if (!doc || typeof doc.dispatchEvent !== 'function') return;
+            var scope = item ? findPaginasNavigationScope(item) : null;
+            doc.dispatchEvent(
+                new CustomEvent('ubits-paginas-creator-action', {
+                    bubbles: true,
+                    detail: {
+                        action: 'reordenar',
+                        item: item,
+                        anchor: scope || root
+                    }
+                })
+            );
+        }
+
         root.addEventListener('click', function (e) {
             var t = e.target;
             if (!t || !t.closest) return;
@@ -487,6 +523,82 @@
                 root._ubitsPaginasActivateT = null;
                 setPaginasCreatorActiveItem(item);
             }, ACTIVATE_DELAY_MS);
+        });
+
+        // Drag & drop para reordenar: solo desde el "handle" (icono/tipo).
+        root.addEventListener('dragstart', function (e) {
+            var t = e.target;
+            if (!t || !t.closest) return;
+            var handle = t.closest('.ubits-paginas-creator__drag-handle');
+            if (!handle || !root.contains(handle)) return;
+            var item = handle.closest('.ubits-paginas-creator__item');
+            if (!item || !root.contains(item)) return;
+            clearActivateTimeout(root);
+            clearDragVisualState();
+            root._ubitsPaginasDraggingItem = item;
+            item.classList.add('is-dragging');
+            setBodyDraggingSuppressed(true);
+            if (typeof global.hideTooltip === 'function') {
+                global.hideTooltip();
+            }
+            try {
+                if (e.dataTransfer) {
+                    e.dataTransfer.effectAllowed = 'move';
+                    e.dataTransfer.setData('text/plain', item.getAttribute('data-paginas-creator-key') || '');
+                }
+            } catch (_) {}
+        });
+
+        root.addEventListener('dragover', function (e) {
+            if (!root._ubitsPaginasDraggingItem) return;
+            var dragging = root._ubitsPaginasDraggingItem;
+            var t = e.target;
+            if (!t || !t.closest) return;
+            var overItem = t.closest('.ubits-paginas-creator__item');
+            if (!overItem || !root.contains(overItem)) return;
+            if (overItem === dragging) return;
+
+            e.preventDefault(); // necesario para permitir drop
+
+            var row = overItem.querySelector('.ubits-paginas-creator__row');
+            var rect = (row || overItem).getBoundingClientRect();
+            var midpoint = rect.top + rect.height / 2;
+            var before = e.clientY < midpoint;
+
+            // Visual: línea de inserción antes/después del ítem sobre el que se pasa.
+            root.querySelectorAll('.ubits-paginas-creator__item.is-drop-before').forEach(function (el) {
+                if (el !== overItem) el.classList.remove('is-drop-before');
+            });
+            root.querySelectorAll('.ubits-paginas-creator__item.is-drop-after').forEach(function (el) {
+                if (el !== overItem) el.classList.remove('is-drop-after');
+            });
+            overItem.classList.toggle('is-drop-before', before);
+            overItem.classList.toggle('is-drop-after', !before);
+
+            // Reordenar en DOM (preview inmediato).
+            var parent = overItem.parentNode;
+            if (!parent) return;
+            if (before) {
+                parent.insertBefore(dragging, overItem);
+            } else {
+                parent.insertBefore(dragging, overItem.nextSibling);
+            }
+        });
+
+        root.addEventListener('drop', function (e) {
+            if (!root._ubitsPaginasDraggingItem) return;
+            e.preventDefault();
+            var item = root._ubitsPaginasDraggingItem;
+            clearDragVisualState();
+            emitReorderEvent(item);
+            refreshTooltipsInRoot(root);
+        });
+
+        /* dragend siempre llega (a veces después de drop); aquí se quita la supresión de tooltips y el estado visual. */
+        root.addEventListener('dragend', function () {
+            clearDragVisualState();
+            setBodyDraggingSuppressed(false);
+            refreshTooltipsInRoot(root);
         });
 
         root.addEventListener('dblclick', function (e) {
@@ -563,7 +675,7 @@
             rowAttrs +
             '>' +
             '<span class="ubits-paginas-creator__rail" aria-hidden="true"></span>' +
-            '<span class="ubits-paginas-creator__icon-wrap">' +
+            '<span class="ubits-paginas-creator__icon-wrap ubits-paginas-creator__drag-handle" draggable="true" aria-label="Arrastrar para reordenar" data-tooltip="Arrastrar para reordenar" data-tooltip-delay="1000">' +
             '<i class="' +
             paginasCreatorIconClass(tipo) +
             '"></i></span>' +

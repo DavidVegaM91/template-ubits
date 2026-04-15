@@ -91,6 +91,30 @@
     color: var(--ubits-fg-1-medium);
 }
 
+.ubits-paginas-creator__drag-handle {
+    cursor: grab;
+}
+
+.ubits-paginas-creator__drag-handle:active {
+    cursor: grabbing;
+}
+
+.ubits-paginas-creator__item.is-dragging .ubits-paginas-creator__drag-handle {
+    cursor: grabbing;
+}
+
+.ubits-paginas-creator__item.is-dragging {
+    opacity: 0.92;
+}
+
+.ubits-paginas-creator__item.is-drop-before {
+    box-shadow: inset 0 2px 0 0 var(--ubits-accent-brand);
+}
+
+.ubits-paginas-creator__item.is-drop-after {
+    box-shadow: inset 0 -2px 0 0 var(--ubits-accent-brand);
+}
+
 .ubits-paginas-creator__icon-wrap i {
     display: block;
     font-size: var(--font-size-sm);

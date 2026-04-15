@@ -587,7 +587,7 @@
         var item = d.item;
         var mount = getRecursosIndiceMount();
         if (!item || !mount || !mount.contains(item)) return;
-        if (d.action === 'mover-arriba' || d.action === 'mover-abajo') {
+        if (d.action === 'mover-arriba' || d.action === 'mover-abajo' || d.action === 'reordenar') {
             if (typeof initTooltip === 'function') {
                 initTooltip('#crear-contenido-recursos-indice-mount [data-tooltip]');
             }
