@@ -114,10 +114,25 @@ Las páginas del Creator suelen cargar **`lms-creator.css`** más el **CSS homó
 #### **Contexto en Markdown (no es UI)**
 
 - `ubits-colaborador/lms-creator/contexto-creacion-contenido.md` — creación de contenidos / formatos (incluye **Implementación en página dedicada** y rutas QA)
-- `ubits-colaborador/lms-creator/crear-contenido-plan.md` — plan por fases (drawer vs página, checklist)
+- `ubits-colaborador/lms-creator/crear-contenido-plan.md` — plan por fases del corte a página dedicada (checklist; histórico de migración sin drawer en lista)
 - `ubits-colaborador/lms-creator/contexto-planes-formacion-y-grupos.md` — planes, grupos, estados, flujos
 
 **Datos y utilidades:** muchas vistas enlazan **`bd-master/`** y **`general-utils/humanizador-fechas.js`**; el detalle por archivo está en **`bd-master/README.md`**.
+
+#### **Referencia: drag & drop para reordenar (Paginas creator)**
+
+Patrón documentado para reutilizarlo en otros flujos o listas similares.
+
+| Qué | Dónde |
+|-----|--------|
+| **Lógica DnD** | `components/paginas-creator.js`, dentro de `initPaginasCreator(root)` |
+| **HTML del handle** | Mismo archivo, `paginasCreatorItemHtml()`: el icono de tipo va en `<span class="ubits-paginas-creator__icon-wrap ubits-paginas-creator__drag-handle" draggable="true" …>` (solo ese nodo inicia el arrastre; el resto de la fila sigue siendo clic para activar / doble clic para editar). |
+| **Estilos** | `components/paginas-creator.css`: `.ubits-paginas-creator__drag-handle` (`cursor: grab` / `:active` y `.is-dragging` → `grabbing`); `.is-drop-before` / `.is-drop-after` (línea de inserción arriba/abajo); `.is-dragging` solo opacidad (sin borde/outline en el ítem arrastrado). |
+| **Evento al soltar** | `document` → `CustomEvent` **`ubits-paginas-creator-action`** con `detail.action === 'reordenar'` y `detail.item` (la fila movida). Coexiste con `mover-arriba` / `mover-abajo` / `eliminar` del menú ⋮. |
+| **Consumo actual** | `ubits-colaborador/lms-creator/crear-contenido.js`: en el listener de `ubits-paginas-creator-action` también trata **`reordenar`** (igual que mover arriba/abajo: refrescar tooltips del mount y estado del flujo). |
+| **Tooltips durante arrastre** | En `dragstart`: clase **`ubits-paginas-creator-dragging`** en `document.body` + `hideTooltip()`. En `dragend`: se quita la clase. `components/tooltip.js` comprueba esa clase en **mouseenter** y **focus** (antes del timeout y antes de `showTooltip`) para no mostrar tooltips mientras dura el arrastre. |
+
+**Mapeo rápido para otro reordenamiento:** (1) Si es otra lista dentro del mismo componente, reutiliza el mismo patrón en `paginas-creator.js` o extrae funciones compartidas. (2) Si es otro componente con DnD + `data-tooltip`, o bien reutiliza la clase en `body` + la misma guarda en `tooltip.js`, o bien generaliza a una API tipo `setTooltipDragSuppression(true/false)` y una sola clase semántica (p. ej. `ubits-suppress-tooltips`) para no acoplar el tooltip a un solo producto. (3) Mantén siempre una alternativa **sin arrastrar** (botones / menú) por **WCAG 2.5.7** (arrastre no esencial).
 
 ### **Componentes de UI:**
 - **Button** - Botones de acción (variantes: primary, secondary, tertiary; tamaños: sm, md, lg; iconos opcionales) - **RENDERIZADO: HTML directo**
@@ -134,7 +149,7 @@ Las páginas del Creator suelen cargar **`lms-creator.css`** más el **CSS homó
 - **Card Content** - Cards para contenidos de aprendizaje (11 tipos, 35 competencias, 18 aliados, estados de progreso) - **RENDERIZADO: loadCardContent()**
 - **Card Content Compact** - Variante horizontal compacta de Card Content (misma funcionalidad, diseño optimizado para espacios reducidos, siempre horizontal) - **RENDERIZADO: loadCardContentCompact()**
 - **Learn content imagen y tráiler** - Bloque de aprendizaje para cargar imagen y/o tráiler en video (estados vacío, hover, error, imagen, preview con play) - **RENDERIZADO: HTML + `learn-content-img-trailer.css`; JS opcional `initLearnContentImgTrailer()`**
-- **Paginas creator** - Lista del panel (icono por tipo; 1 clic = activar; 2 clics / lápiz / menú «Cambiar nombre» = edición inline; menú ⋮: mover / eliminar) - **RENDERIZADO: HTML + `paginas-creator.css` + `dropdown-menu.css` + `button.css`; JS `dropdown-menu.js` + `tooltip.js` + `paginas-creator.js` (`paginasCreatorItemHtml`, `initPaginasCreator`, eventos `ubits-paginas-creator-action`, `ubits-paginas-creator-activate`, `ubits-paginas-creator-label-save`)**
+- **Paginas creator** - Lista del panel (icono por tipo; 1 clic = activar; 2 clics / lápiz / menú «Cambiar nombre» = edición inline; menú ⋮: mover arriba/abajo / eliminar; **reordenar arrastrando** el icono tipo «asa» con DnD HTML5 y evento `reordenar`) - **RENDERIZADO: HTML + `paginas-creator.css` + `dropdown-menu.css` + `button.css`; JS `dropdown-menu.js` + `tooltip.js` + `paginas-creator.js` (`paginasCreatorItemHtml`, `initPaginasCreator`, eventos `ubits-paginas-creator-action`, `ubits-paginas-creator-activate`, `ubits-paginas-creator-label-save`). Ver tabla *Referencia: drag & drop* arriba en LMS Creator.**
 - **Resources card** - Tarjeta compacta para elegir el tipo de recurso en el paso Recursos del LMS Creator (12 tipos; estados default, hover, focus y disabled) - **RENDERIZADO: HTML + `resources-card.css`; JS `resources-card.js` (`resourcesCardHtml`, `RESOURCES_CARD_META`, `RESOURCES_CARD_TYPES_ORDER`)**
 - **Resources block** - Panel del paso Recursos (selector de 8 tipos o formularios video/PDF/mp4/SCORM/embebido + Cancelar; 15 variantes, incl. `default-error` sin recurso) - **RENDERIZADO: HTML + `resources-block.css` + `resources-card.css` + `button.css` + `input.css` + `dropdown-menu.css`; JS `dropdown-menu.js` + `input.js` + `resources-card.js` + `resources-block.js` (`resourcesBlockHtml`, `RESOURCES_BLOCK_VARIANTS_ORDER`, `initResourcesBlockFields` tras inyectar HTML)**
 - **Seccion creator** - Bloque (anida Paginas creator): título siempre **body/md/bold** + fg alto; menú ⋮ **Editar sección** → `ubits-seccion-creator-edit-section` (modal en la pantalla); «Añadir página» si activa - **RENDERIZADO: HTML + `seccion-creator.css` + Paginas creator + `tooltip.js`; JS `seccion-creator.js` (`seccionCreatorHtml`, `initSeccionCreator`, eventos `ubits-seccion-creator-edit-section`, …)**
@@ -530,7 +545,7 @@ Todos los componentes UBITS requieren imports obligatorios:
     └── empty-states/         # Estados vacíos (2 SVG)
 ```
 
-*(En `lms-creator/` el árbol anterior resume **módulos y pestañas** del producto; hay más archivos en disco — flujos crear/editar/detalle, drawers, `lms-creator.css`, `contexto-*.md` —; ver [LMS Creator (producto aparte del colaborador)](#lms-creator-producto-aparte-del-colaborador) y `bd-master/README.md`.)*
+*(En `lms-creator/` el árbol anterior resume **módulos y pestañas** del producto; hay más archivos en disco — flujos crear/editar/detalle, **crear contenido** en página dedicada `crear-contenido.html`, otros flujos con drawer/overlay donde aplique, `lms-creator.css`, `contexto-*.md` —; ver [LMS Creator (producto aparte del colaborador)](#lms-creator-producto-aparte-del-colaborador) y `bd-master/README.md`.)*
 
 ### **📁 Contenido de `general-styles/` (qué encuentra en cada archivo):**
 | Archivo | Contenido |

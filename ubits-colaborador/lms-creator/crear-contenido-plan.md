@@ -1,22 +1,25 @@
-# Plan: Crear contenido en página dedicada (réplica de la experiencia actual)
+# Plan: Crear contenido — página dedicada (flujo real)
 
-**Estado:** guía de trabajo — no sustituye acuerdos de producto.  
-**Ubicación sugerida del plan:** `ubits-colaborador/lms-creator/crear-contenido-plan.md`  
-**Corte aplicado (2026-04):** la lista `contenidos.html` ya no embebe el flujo en drawer; la ruta oficial es `crear-contenido.html` + `crear-contenido.js`; `crear-contenido-drawer.js` fue eliminado.
+**Estado:** guía de trabajo y registro del corte — no sustituye acuerdos de producto.  
+**Ubicación:** `ubits-colaborador/lms-creator/crear-contenido-plan.md`  
+
+**Flujo real (playground):** **solo** `crear-contenido.html` + `crear-contenido.css` + `crear-contenido.js`. Desde `contenidos.html`, el botón **«Crear contenido»** abre esa página; los hashes legacy en la lista redirigen al hash canónico en la página dedicada. No hay flujo embebido en lista ni script `crear-contenido-drawer.js` (eliminado en el corte 2026-04).
+
+Las menciones a “drawer” más abajo son **histórico de migración** o **criterio visual** (p. ej. full-bleed header/footer, bug del `<a>` botón); **no** describen una UI actual paralela.
 
 ---
 
 ## 1. Objetivo y restricciones (lectura obligatoria)
 
-### Objetivo
-Tener **una página HTML aparte** (misma apariencia “pantalla completa” que hoy el drawer) para el flujo **Crear contenido**, **sin** usar el componente **drawer** (`openDrawer`), de modo que en el **paso 4** se pueda usar un **drawer real** sin anidar drawers.
+### Objetivo (cumplido)
+**Una página HTML dedicada** para **Crear contenido**, **sin** usar el componente **Drawer** (`openDrawer`) como contenedor del flujo principal, de modo que pasos posteriores (p. ej. publicación) puedan usar overlays o drawers **sin anidar** el shell del asistente.
 
-### Restricción crítica (histórica — vigente hasta el corte)
-- ~~**No modificar, no borrar ni “simplificar”** la experiencia embebida en `contenidos.html` + `crear-contenido-drawer.js`…~~ **Cumplido y cerrado:** el corte eliminó el drawer de lista y el archivo `crear-contenido-drawer.js`.
-- La lista redirige hashes legacy (`#crear-contenido`, etc.) a `crear-contenido.html`; el botón **«Crear contenido»** abre la página dedicada.
+### Corte (cerrado)
+- Eliminado el flujo embebido en lista y **`crear-contenido-drawer.js`**.
+- `contenidos.html` solo enlaza / normaliza hacia `crear-contenido.html`.
 
-### Meta final
-**Hecha:** la experiencia drawer desde `contenidos.html` fue retirada; `crear-contenido.html` es la ruta única para crear desde el playground del template.
+### Fuente de verdad
+**`crear-contenido.html`** es la única ruta de creación en el template; cualquier doc o QA debe partir de ahí.
 
 ---
 
@@ -24,10 +27,10 @@ Tener **una página HTML aparte** (misma apariencia “pantalla completa” que 
 
 | Principio | Detalle |
 |-----------|---------|
-| Comparación | *(Histórico)* Drawer en lista para comparar lado a lado; tras el corte solo queda la página dedicada. |
-| Réplica visual/funcional | La página nueva debe comportarse **igual** (pasos, portada, recursos, validaciones, índice, etc.) salvo decisiones explícitas documentadas abajo. |
-| CSS por página | La página nueva tiene **su propio** `crear-contenido.css`; **no** mezclar reglas nuevas dentro de `contenidos.css` si pueden vivir en el CSS de la página (salvo tokens/variables globales ya existentes). |
-| JS | Preferir **`crear-contenido.js`** que monte el flujo en modo “página” (`root` en DOM) sin tocar la API del drawer hasta una fase de refactor opcional. |
+| Evolución | *(Histórico)* Durante el corte se comparó con el prototipo embebido; hoy la referencia es **solo** la página dedicada. |
+| Paridad producto | La página debe cumplir pasos, portada, recursos, validaciones, índice, etc., según `contexto-creacion-contenido.md` y acuerdos vigentes. |
+| CSS por página | **`crear-contenido.css`** para el shell y overrides; reglas compartidas de workspace en `contenidos.css` vía clase en `body` (ver checklist §6). |
+| JS | **`crear-contenido.js`**: listeners en el DOM de la página (`#crear-contenido-root` / ids del HTML), sin `openDrawer` para este flujo. |
 | Rutas | Desde subcarpeta `lms-creator/`, imports `../../components/...`, `../../general-styles/...` como el resto del Creator. |
 
 ### Nombres de archivos (cerrados en Fase 0)
@@ -48,15 +51,15 @@ Tener **una página HTML aparte** (misma apariencia “pantalla completa” que 
 **Decisiones cerradas (PM — esta iteración)**
 
 1. **Nombre del HTML:** `crear-contenido.html` (junto a `crear-contenido.css` / `crear-contenido.js` en la misma carpeta `lms-creator/`).
-2. **Chrome de navegación:** **sin SubNav ni Sidebar** en esta página. Solo el **contenido central** del flujo (equivalente al cuerpo del drawer).
-3. **Header y footer “como drawer”:** el **fondo** (background) del header y del footer debe ocupar el **ancho completo del viewport** (full-bleed), igual que en el componente drawer. El **contenido** interno (título, botón cerrar, acciones del footer) puede ir en un contenedor alineado al ancho útil del flujo (padding / max-width según diseño), pero las **bandas** superior e inferior se extienden de borde a borde. En Fase 2 se implementa en `crear-contenido.css` con estructura tipo: fila header full-width → capa interior; `main` scrollable; fila footer full-width → capa interior.
-4. **URLs con hashtags:** **sí**. En **`crear-contenido.html`** el paso Recursos usa hash corto **`#recursos`**; Portada **`#portada`** o sin hash (legacy `#crear-contenido` → normalizado a `#portada`). Alias largos se normalizan a `#recursos`. Desde **`contenidos.html`**, los hashes legacy del antiguo drawer redirigen a `crear-contenido.html` con el hash canónico.
+2. **Chrome de navegación:** **sin SubNav ni Sidebar** en esta página. Solo el **contenido central** del asistente (shell propio).
+3. **Header y footer full-bleed:** el **fondo** (background) del header y del footer ocupa el **ancho completo del viewport**; el **contenido** interno (título, cerrar/volver, acciones del footer) va en contenedor con padding / max-width. Implementación: `crear-contenido.css` (`.crear-contenido-shell`, bandas header/footer). Referencia visual histórica: criterio similar al componente Drawer en `components/drawer.css` (solo inspiración, no dependencia).
+4. **URLs con hashtags:** **sí**. En **`crear-contenido.html`** el paso Recursos usa **`#recursos`**; Portada **`#portada`** o sin hash (legacy `#crear-contenido` → `#portada`). Alias largos → **`#recursos`**. Desde **`contenidos.html`**, hashes legacy de la antigua URL embebida redirigen a `crear-contenido.html` con hash canónico.
 
 **Entregables (checklist Fase 0)**
 - [x] Nombre final de archivos: `crear-contenido.html`, `crear-contenido.css`, `crear-contenido.js`.
 - [x] Layout: sin SubNav ni Sidebar; solo contenido central + header/footer full-width en background.
 - [x] Hashes en la nueva URL: mantener para navegación entre pasos.
-- [x] Confirmación: **no se toca** `contenidos.html` ni `crear-contenido-drawer.js` en esta fase (solo documentación del plan).
+- [x] *(Histórico Fase 0)* No tocar `contenidos.html` en la primera iteración — **superado** por el corte: `contenidos.html` solo enlaza y redirige; `crear-contenido-drawer.js` eliminado.
 
 **Criterio de aprobación**  
 Checklist verbal/documentado arriba completado.
@@ -72,7 +75,7 @@ Checklist verbal/documentado arriba completado.
   - DOCTYPE, `lang`, meta viewport, favicon coherente con LMS Creator.
   - Imports base UBITS: `ubits-colors.css`, `styles.css`, `fontawesome-icons.css`, `ubits-typography.css`.
   - **Sin** SubNav, Sidebar ni TabBar (Fase 0).
-  - Contenedor raíz vacío o con un título placeholder **sin** copiar aún el body del drawer.
+  - Contenedor raíz vacío o con un título placeholder **sin** copiar aún el markup completo del flujo.
   - Link a `crear-contenido.css` **al final** del `<head>`.
 - [x] Crear `crear-contenido.css` con solo comentario de sección y, si aplica, clase raíz en `body` o wrapper (p. ej. `body` + clase `.crear-contenido-root` según convención que se use en Fase 2).
 - [x] **No** enlazar desde `contenidos.html` todavía (opcional: enlace oculto en comentario HTML solo para dev — mejor no tocar `contenidos.html` en absoluto en esta fase).
@@ -84,52 +87,48 @@ Abrís `crear-contenido.html` en el navegador: carga sin errores 404 de CSS/JS c
 
 ---
 
-### Fase 2 — Maquetación estática “tipo drawer fullscreen” (sin JS del flujo)
+### Fase 2 — Maquetación estática pantalla completa (sin JS del flujo)
 
 **Entregables**
-- [x] En `crear-contenido.html`, estructura **visual** equivalente a la pantalla completa del drawer:
+- [x] En `crear-contenido.html`, estructura **visual** pantalla completa del asistente:
   - **Header:** banda **100% viewport** de fondo; interior con título “Crear contenido”, acción cerrar/volver (enlace a `contenidos.html` **solo** en esta página).
   - **Main:** área scrollable, ancho del contenido acotado al “canvas” del flujo (sin sidebar).
   - **Footer:** banda **100% viewport** de fondo; interior con zona Anterior / Siguiente (puede ser estático o deshabilitado).
-- [x] En `crear-contenido.css`, layout con tokens UBITS: altura viewport, flex column, footer pegado abajo, **full-bleed** en header/footer (referencia visual: header/footer del drawer en `components/drawer.css` + reglas `crear-contenido-drawer-overlay` en `contenidos.css` — **solo lectura**, replicar criterio en clases nuevas, p. ej. `.crear-contenido-shell`, `.crear-contenido-shell__header-band`, `.crear-contenido-shell__footer-band`).
+- [x] En `crear-contenido.css`, layout con tokens UBITS: altura viewport, flex column, footer pegado abajo, **full-bleed** en header/footer (criterio alineado a `components/drawer.css` como referencia + reglas bajo **`.crear-contenido-drawer-overlay`** en `contenidos.css` para workspace; clases del shell: `.crear-contenido-shell`, etc.).
 - [x] **No** copiar aún stepper funcional ni pasos 1–2 con datos; puede ser un bloque “Paso 1 (placeholder)”.
 - [x] **No modificar** `contenidos.css` salvo que sea estrictamente necesario; preferir todo en `crear-contenido.css`.
 
 **Criterio de aprobación**  
-Comparación visual lado a lado: abrir drawer en `contenidos.html` y `crear-contenido.html` — **marco general** (cabecera/footer a ancho completo, proporciones del cuerpo) alineado con tolerancia razonable de PM.
+**Marco general** de la página dedicada (cabecera/footer a ancho completo, proporciones del cuerpo, scroll en columna central) alineado con diseño / producto y con `contexto-creacion-contenido.md`.
 
 **APROBACIÓN:** Sí / No — comentarios: _______________________
 
 ---
 
-### Fase 3 — Réplica HTML del contenido del drawer (markup + IDs en scope nuevo)
+### Fase 3 — Markup del flujo en la página (IDs en scope nuevo)
 
 **Entregables**
-- [x] Pegar/adaptar en `crear-contenido.html` el **mismo HTML** que genera el cuerpo del drawer (portada, stepper, paso recursos, etc.) desde `getCrearContenidoBodyHtml()` / estructura actual, con estos matices:
-  - **Prefijos o IDs únicos** si hace falta evitar colisión al abrir `contenidos` en la misma sesión (ideal: namespace `cc-page-` para IDs en la página nueva).
-  - Mismos componentes CSS/JS referenciados que ya usa el drawer (button, input, stepper, modal, etc.) vía rutas relativas.
-- [x] **No** eliminar ni alterar el string/HTML dentro de `crear-contenido-drawer.js` *(fase histórica; el archivo fue retirado en el corte)*; la fuente de verdad para “copiar” era **lectura** del archivo o del DOM renderizado.
+- [x] En `crear-contenido.html`, HTML de portada, stepper, paso recursos, etc., con **IDs / prefijos únicos** en la página (p. ej. namespace coherente con el HTML actual).
+  - Mismos componentes UBITS (button, input, stepper, modal, etc.) vía rutas relativas.
+- [x] *(Histórico)* La fuente temporal del markup fue el antiguo script embebido ya **eliminado**; la fuente de verdad viva es **`crear-contenido.html`**.
 
 **Criterio de aprobación**  
-La nueva página muestra **los mismos bloques** (stepper, formulario portada, área paso 2, etc.) que el drawer; puede estar sin cablear JS.
+La página muestra **los bloques** del flujo (stepper, portada, área paso 2, etc.); el cableado JS puede venir en Fase 4.
 
 **APROBACIÓN:** Sí / No — comentarios: _______________________
 
 ---
 
-### Fase 4 — JS dedicado: modo “página” (nuevo archivo, drawer intacto)
+### Fase 4 — JS dedicado en la página (`crear-contenido.js`)
 
 **Entregables**
-- [x] Crear `crear-contenido.js` que:
-  - En `DOMContentLoaded`, inicialice el flujo montando listeners sobre el **root** de la página nueva (no sobre `openDrawer`).
-  - Reutilice **lógica** equivalente a la de `crear-contenido-drawer.js` mediante **copia inicial** (duplicado controlado) o extracción a un tercer archivo **nuevo** (`crear-contenido-shared.js`) que **importen** tanto el drawer como la página — **solo si** se acuerda no editar `crear-contenido-drawer.js` en la primera iteración: entonces **duplicar** en `crear-contenido.js` y documentar deuda técnica para unificar después.
-- [x] Ajustar selectores/IDs al namespace de la página nueva (`OVERLAY_ID` → contenedor raíz de página, etc.).
-- [x] Comportamiento esperado: mismos pasos, mismo hash si se definió en Fase 0, mismas validaciones que ya tenéis en el drawer **en la medida replicable**.
-- [x] **Cero cambios** en `crear-contenido-drawer.js` en esta fase *(histórico; archivo eliminado tras el corte)*.
-- [x] Sincronizar **hashes** en `crear-contenido.html` (`#portada`, `#recursos`, alias largos → canónico `#recursos`; legacy `#crear-contenido` → `#portada`).
+- [x] Crear `crear-contenido.js` que en `DOMContentLoaded` monte listeners sobre el **DOM de la página** (root e ids del HTML), **no** sobre `openDrawer`.
+- [x] Ajustar selectores/IDs al namespace de la página.
+- [x] Pasos, hashes y validaciones según `contexto-creacion-contenido.md` y `crear-contenido.js` vigente.
+- [x] Sincronizar **hashes** (`#portada`, `#recursos`, alias → canónico; legacy `#crear-contenido` → `#portada`).
 
 **Criterio de aprobación**  
-Flujo usable en `crear-contenido.html` **igual** al del drawer (crear desde cero, pasos, recursos, títulos, etc.), comparando con el drawer en `contenidos.html`.
+Flujo usable en **`crear-contenido.html`** (portada, recursos, títulos, índice, etc.) sin depender de UI embebida en lista.
 
 **APROBACIÓN:** Sí / No — comentarios: _______________________
 
@@ -139,17 +138,17 @@ Flujo usable en `crear-contenido.html` **igual** al del drawer (crear desde cero
 
 **Entregables**
 - [x] Lista de verificación manual (marcar en este archivo o en issue):
-  - [x] Portada: campos obligatorios, miniatura, RTE, ficha. *(Implementado en `crear-contenido.js` alineado al drawer; verificación manual / firma PM.)*
+  - [x] Portada: campos obligatorios, miniatura, RTE, ficha. *(Implementado en `crear-contenido.js`; verificación manual / firma PM.)*
   - [x] Paso Recursos: índice, páginas, título grande, Resources block, validación títulos, empty state, tooltips.
   - [x] Footer Anterior/Siguiente, stepper clickeable, URL/hash.
   - [x] Modo oscuro / tokens. *(Tokens UBITS; probar `data-theme="dark"` en body.)*
   - [x] Responsive (breakpoints críticos acordados). *(Reglas compartidas con `contenidos.css` + header 639px en `crear-contenido.css`.)*
-  - [x] Z-index: dropdowns/menús por encima del shell de página — **`body.crear-contenido-app-open`** en `crear-contenido.html` + reglas en `crear-contenido.css` (antes se comparaba con `body.crear-contenido-drawer-abierto` en lista; drawer de lista eliminado).
-- [x] Actualizar `contexto-creacion-contenido.md` con subsección **«Implementación en página dedicada»** (rutas, assets, QA, z-index); el corte documenta el fin del drawer en lista.
+  - [x] Z-index: dropdowns/menús por encima del shell — **`body.crear-contenido-app-open`** en `crear-contenido.html` + reglas en `crear-contenido.css`.
+- [x] Actualizar `contexto-creacion-contenido.md` con subsección **«Implementación en página dedicada»** (rutas, assets, QA, z-index).
 - [x] **README (raíz):** inventario LMS Creator y contexto enlazan **cómo abrir** `crear-contenido.html` para QA.
 
 **Criterio de aprobación**  
-PM firma lista de verificación; no hay regresiones respecto al drawer en los ítems marcados. *(Entregables técnicos listos; firma PM pendiente.)*
+PM firma lista de verificación sobre la **página dedicada**. *(Entregables técnicos listos; firma PM pendiente.)*
 
 **APROBACIÓN:** Sí / No — comentarios: _______________________
 
@@ -158,26 +157,26 @@ PM firma lista de verificación; no hay regresiones respecto al drawer en los í
 ### Fase 6 — Entrada de usuario (histórica; sustituida por el corte)
 
 **Entregables originales (Fase 6 antes del corte)**
-- [x] Segunda acción «Vista página completa» + drawer en lista. *(Obsoleto.)*
+- [x] Segunda acción «Vista página completa» + flujo embebido en lista. *(Obsoleto.)*
 
 **Estado tras el corte**
 - [x] Un solo botón primario **«Crear contenido»** en `contenidos.html` → `crear-contenido.html` (misma pestaña).
-- [x] Sin drawer de creación en lista; sin `crear-contenido-drawer.js`.
+- [x] Sin flujo de creación embebido en lista; sin `crear-contenido-drawer.js`.
 
 **Criterio de aprobación**  
-Navegación clara hacia la página dedicada; sin flujo duplicado en drawer.
+Navegación clara hacia **`crear-contenido.html`**; un solo flujo de creación en el playground.
 
 **APROBACIÓN:** Sí / No — comentarios: _______________________
 
 ---
 
-## 4. Corte — drawer de `contenidos.html` (ejecutado)
+## 4. Corte — lista `contenidos.html` sin flujo embebido (ejecutado)
 
 **Cuándo:** tras acordar que `crear-contenido.html` es la ruta oficial.
 
 **Checklist (completado)**
-- [x] Botón «Crear contenido» solo abre la página nueva.
-- [x] Eliminados HTML/JS del drawer en `contenidos.html`; limpieza de reglas solo del drawer en `contenidos.css` (se mantienen selectores `.crear-contenido-drawer-overlay` en body de `crear-contenido.html` para layout compartido con `contenidos.css`).
+- [x] Botón «Crear contenido» solo abre la página dedicada.
+- [x] Eliminado el flujo embebido en `contenidos.html` y su JS; limpieza de CSS que solo servía a esa variante. Se **mantienen** en `contenidos.css` los selectores bajo **`.crear-contenido-drawer-overlay`** porque el **`body`** de `crear-contenido.html` aún usa ese nombre de clase como **hook** compartido de layout (ver `contexto-creacion-contenido.md` — no es el componente Drawer).
 - [x] Eliminado `crear-contenido-drawer.js`; lógica en `crear-contenido.js`.
 - [x] Mapeos en `sub-nav.js` / `floating-menu.js` para `crear-contenido.html` → contexto contenidos.
 
@@ -187,20 +186,20 @@ Navegación clara hacia la página dedicada; sin flujo duplicado en drawer.
 
 | Riesgo | Mitigación |
 |--------|------------|
-| Duplicación de JS (drawer vs página) | Resuelta en el corte: un solo archivo `crear-contenido.js`. |
+| Duplicación de JS (lista vs página) | Resuelta en el corte: un solo archivo `crear-contenido.js`. |
 | IDs duplicados si misma sesión abre ambas vistas | Namespace `cc-page-*` en la página nueva. |
 | Reglas CSS conflictivas | Todo lo nuevo bajo prefijo del shell (p. ej. `.crear-contenido-shell`) en `crear-contenido.css`. |
-| Paso 4 con drawer anidado | Resuelto al no usar drawer en el contenedor principal de esta experiencia. |
+| Paso 4 con overlay anidado en shell incorrecto | Resuelto al usar página dedicada como contenedor principal del asistente. |
 
 ### 5.1 Bug ya visto (no repetir): `<a>` con clases de Button y `box-sizing`
 
-Al maquetar el header (Fase 2), el alto **no** coincidía con el drawer (~65px vs ~86px). La causa **no** era solo flex/gap: el **cierre** es un **enlace** (`<a href="contenidos.html">`) con las mismas clases que un botón UBITS (`ubits-button`, `sm`, `icon-only`).
+Al maquetar el header (Fase 2), el alto del botón de cierre **no** coincidía con el de un `<button>` UBITS equivalente (~65px vs ~86px). La causa **no** era solo flex/gap: el **cierre** es un **enlace** (`<a href="contenidos.html">`) con las mismas clases que un botón UBITS (`ubits-button`, `sm`, `icon-only`).
 
 | Qué pasa | Detalle |
 |----------|---------|
 | **Síntoma** | El enlace “botón” mide **más alto** de lo esperado; el **flex** del header adopta ese alto y la cabecera se infla. |
 | **Por qué** | En `components/button.css`, `height` (p. ej. **32px** en `sm`) está pensada como **alto total** del control. Los `<button>` suelen acabar comportándose como **`border-box`** en la práctica. Un `<a class="ubits-button">` puede seguir en **`content-box`**: entonces `height: 32px` aplica solo al **contenido** y el **padding vertical se suma** por fuera (~51px de alto real), no 32px. |
-| **Corrección** | En `crear-contenido.css`, en el selector del cierre (p. ej. `.crear-contenido-shell__header > .ubits-button`), añadir **`box-sizing: border-box`** para que `height` y padding cuadren como en el drawer (que usa `<button>`). Alternativa: usar `<button type="button">` + navegación por JS si no debe ser enlace nativo. |
+| **Corrección** | En `crear-contenido.css`, en el selector del cierre (p. ej. `.crear-contenido-shell__header > .ubits-button`), añadir **`box-sizing: border-box`** para que `height` y padding cuadren como en un **`<button>`** nativo con las mismas clases. Alternativa: usar `<button type="button">` + navegación por JS si no debe ser enlace nativo. |
 | **Regla para quien implemente** | Si en **cualquier página** se reutilizan clases de `button.css` en un **`<a>`**, no dar por hecho que el tamaño coincide con `<button>`: comprobar modelo de caja o fijar `border-box` en ese contexto. `button.css` no fuerza `box-sizing` globalmente sobre enlaces. |
 
 ---
@@ -227,9 +226,9 @@ Antes de cada PR/commit que toque el flujo crear contenido, verificar:
 | | 3 | | |
 | | 4 | | |
 | 2026-04-14 | 5 | PM (pendiente firma) | QA doc: `contexto-creacion-contenido.md` + README; `crear-contenido-app-open` (z-index dropdowns); checklist en plan. |
-| 2026-04-14 | 6 | PM (pendiente firma) | `contenidos.html`: botón sec. «Vista página completa» → `crear-contenido.html`; drawer intacto. |
-| 2026-04-14 | Corte | PM (pendiente firma) | Lista sin drawer; `crear-contenido.html` oficial; eliminado `crear-contenido-drawer.js`; hashes legacy redirigen; sub-nav/floating-menu mapean `crear-contenido.html`. |
+| 2026-04-14 | 6 | PM (pendiente firma) | *(Obsoleto)* Idea de segunda entrada + drawer en lista — sustituido por un solo CTA a página dedicada (ver §3 Fase 6). |
+| 2026-04-14 | Corte | PM (pendiente firma) | Lista sin flujo embebido; `crear-contenido.html` oficial; eliminado `crear-contenido-drawer.js`; hashes legacy redirigen; sub-nav/floating-menu mapean `crear-contenido.html`. |
 
 ---
 
-*Documento generado como guía de implementación. Última actualización: corte aplicado (§4); checklist §6 post-corte.*
+*Documento generado como guía de implementación. Última actualización: flujo real solo en página dedicada; §4 corte aplicado; checklist §6; redacción alineada sin “drawer” como UI paralela de creación.*

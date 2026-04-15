@@ -16,6 +16,7 @@ Los bocetos en herramienta de diseño fueron **exploratorios**; la fuente de ver
 - **Índice Creator:** panel izquierdo del paso Recursos (interruptor de secciones, listado, «Añadir sección»). Implementación: `components/indice-creator.css` + `indice-creator.js`, doc `documentacion/componentes/indice-creator.html`.  
 - **Resources card** (selector de tipo de recurso): `components/resources-card.css` + `resources-card.js`, doc `documentacion/componentes/resources-card.html`.  
 - **Resources block** (panel del recurso): `resources-block.css` + `resources-block.js` (requiere `resources-card`, `button`, `input`, `dropdown-menu`; tras `innerHTML` con `resourcesBlockHtml` llamar `initResourcesBlockFields(contenedor)`). Variante `default-error`: mismo selector que `default` con borde de error cuando la página quedó sin recurso al avanzar de paso. Doc `documentacion/componentes/resources-block.html`.  
+- **Páginas creator** (orden de páginas en el índice): `paginas-creator.css` + `paginas-creator.js`; doc `documentacion/componentes/paginas-creator.html`. Reordenar: menú ⋮ **Mover arriba/abajo** y **arrastrar y soltar** desde el icono (detalle técnico en `README.md`, tabla *Referencia: drag & drop para reordenar*).  
 - **Criterio:** layout, estados y jerarquía alineados al sistema UBITS y a las reglas aquí descritas; en discrepancia puntual, prioriza **negocio + producto** y la doc del componente.
 
 ---
@@ -45,15 +46,15 @@ El asistente de creación tiene **4 pasos**, en este orden:
 
 ### Lista de contenidos (`contenidos.html`) y cierre del corte
 
-- El flujo de **crear contenido** está en la **página dedicada** `crear-contenido.html` (shell propio, sin drawer en la lista).
+- El flujo de **crear contenido** está **solo** en la **página dedicada** `crear-contenido.html` (shell propio a pantalla completa). No existe variante embebida en lista ni drawer de creación en `contenidos.html`.
 - Desde **`contenidos.html`**, el botón **«Crear contenido»** del header navega a **`crear-contenido.html`** (misma pestaña).
 - **Enlaces antiguos** con hash en la lista (`#crear-contenido`, `#crear-contenido-recursos`, `#crear-contenido-step-recursos`) se **redirigen** automáticamente a `crear-contenido.html` con hash canónico (`#portada` o `#recursos`).
 
 ### Página dedicada (`crear-contenido.html`) — fuente de verdad del flujo
 
-**Plan de trabajo:** `crear-contenido-plan.md`. **Archivos:** `crear-contenido.html`, `crear-contenido.css`, `crear-contenido.js`. El antiguo drawer embebido en lista (**`crear-contenido-drawer.js`**, eliminado en el corte) quedó sustituido por esta página; la lógica vive en **`crear-contenido.js`**.
+**Plan de trabajo:** `crear-contenido-plan.md`. **Archivos:** `crear-contenido.html`, `crear-contenido.css`, `crear-contenido.js`. Toda la lógica del flujo vive en **`crear-contenido.js`** (el antiguo script de drawer en lista fue retirado en el corte; no volver a documentarlo como ruta alternativa).
 
-**Layout (footer siempre visible):** en `general-styles/styles.css`, `body` lleva `overflow-y: auto !important`, lo que hace que **todo el documento** haga scroll y el **footer** del shell quede **al final del contenido** (hay que bajar para verlo). En `crear-contenido.css` la página usa `body.page-crear-contenido` con **alto fijo al viewport** (`100vh` / `100dvh`) y **`overflow: hidden !important`** para anular ese comportamiento. El **scroll** del contenido queda en la **columna central** (`.crear-contenido-editor__main`, reglas en `contenidos.css`), igual que dentro del drawer — no en el `main` del shell ni en el `body`.
+**Layout (footer siempre visible):** en `general-styles/styles.css`, `body` lleva `overflow-y: auto !important`, lo que hace que **todo el documento** haga scroll y el **footer** del shell quede **al final del contenido** (hay que bajar para verlo). En `crear-contenido.css` la página usa `body.page-crear-contenido` con **alto fijo al viewport** (`100vh` / `100dvh`) y **`overflow: hidden !important`** para anular ese comportamiento. El **scroll** del contenido queda en la **columna central** (`.crear-contenido-editor__main`, reglas en `contenidos.css` bajo el hook de layout del Creator), igual que en el **workspace** de esta pantalla — no en el `main` del shell ni en el `body`.
 
 **Footer — paso 1 (Portada):** no debe mostrarse el botón **Anterior** (no aplica “paso previo”). Botón `#crear-contenido-btn-anterior` con **`display: none`** y **`aria-hidden="true"`** mientras se está en Portada; **`#crear-contenido-btn-siguiente`** para **Siguiente**. En paso Recursos, **Anterior** habilitado (lógica en `crear-contenido.js`).
 
@@ -68,7 +69,7 @@ El asistente de creación tiene **4 pasos**, en este orden:
 
 ### Implementación en página dedicada (assets, QA y z-index)
 
-Documentación técnica del **corte** a página dedicada (drawer de lista retirado).
+Documentación técnica del **corte** a página dedicada (único flujo soportado en el playground).
 
 | Qué | Detalle |
 |-----|---------|
@@ -79,7 +80,7 @@ Documentación técnica del **corte** a página dedicada (drawer de lista retira
 | **Maestros** | `bd-master/bd-master-*.js` (tipos, niveles, categorías), enlazados en el HTML de la página |
 
 - **Abrir para QA:** doble clic en el archivo o `file:///…/crear-contenido.html`; rutas relativas desde la carpeta `lms-creator/`: `crear-contenido.html`, `crear-contenido.html#recursos`, `crear-contenido.html#portada`.
-- **Body:** además de `page-crear-contenido` y `no-subnav`, la página usa la clase histórica `crear-contenido-drawer-overlay` para heredar en cascada las reglas de layout compartidas en `contenidos.css` (workspace, pasos, rail); **no** hay componente Drawer.
+- **Body:** además de `page-crear-contenido` y `no-subnav`, la página usa la clase **`crear-contenido-drawer-overlay`** (nombre **histórico** heredado del corte) solo como **hook CSS** para reglas compartidas en `contenidos.css` (workspace, pasos, rail). **No** implica montar este flujo con el componente **Drawer** (`openDrawer` / overlay de lista).
 - **`crear-contenido-app-open`:** clase **exclusiva** de esta página. Sube el z-index de los menús **dropdown** del índice (⋮ en Páginas creator, montados en `body`) por encima del shell.
 - **Responsive:** el bloque móvil del stepper y rejillas del Resources block siguen los `@media` de `contenidos.css` bajo `.crear-contenido-drawer-overlay`; el header del shell reduce padding en **639px** (`crear-contenido.css`).
 - **Modo oscuro / tokens:** colores y tipografía UBITS vía hojas globales; para probar tema oscuro, usar `data-theme="dark"` en `<html>` o `<body>` como en el resto del template.
@@ -146,13 +147,13 @@ Cuando el usuario intenta avanzar sin tener la portada completa, la interfaz **i
 
 - Los bordes se **actualizan** conforme el usuario corrige cada campo (desaparece el rojo en lo ya válido).  
 - Al **completar** todo lo obligatorio, se limpia el resaltado y el toast deja de aplicarse para ese intento.  
-- Al **cerrar el drawer** o **abrir de nuevo** el flujo de creación, se resetea el estado de aviso/resaltado.
+- Al **salir de la página** de creación (p. ej. volver a Contenidos) o **abrir de nuevo** el flujo desde cero, se resetea el estado de aviso/resaltado.
 
 **Valores por defecto en el prototipo** (para que cuenten como «rellenos» sin tocar el control, salvo que el usuario los cambie):
 
 - **Tiempo aproximado:** `30`.  
 - **Categoría:** primera categoría del maestro si existe **id** no vacío; no cuenta como elegida la opción solo visual *«Selecciona una opción»*.  
-- **Tipo, nivel, idioma, unidad:** primera opción / valor fijo según ya definía el drawer.
+- **Tipo, nivel, idioma, unidad:** primera opción / valor fijo según ya definía el prototipo en la página dedicada.
 
 **Implementación de referencia:** `ubits-colaborador/lms-creator/crear-contenido.js` (completitud, flags, stepper, «Siguiente»), estilos en `ubits-colaborador/lms-creator/contenidos.css` (clase `crear-contenido-portada-field--invalid`). Estado de error del componente de miniatura: `components/learn-content-img-trailer.css` (`.ubits-learn-img-trailer--error` alineado al rojo intenso de validación).
 
@@ -168,7 +169,7 @@ Definir la **estructura del contenido** (secciones opcionales, páginas/leccione
 
 | Panel | Ubicación | Rol |
 |-------|-----------|-----|
-| **Izquierda** | Configuración de la estructura | Secciones (opcional), páginas, acciones “Añadir página” / “Añadir sección”. |
+| **Izquierda** | Configuración de la estructura | Secciones (opcional), lista **Páginas creator** (selección, menú ⋮, **reordenar arrastrando** el icono de tipo), acciones “Añadir página” / “Añadir sección”. |
 | **Derecha** | Previsualizador de recursos | Empty state sin páginas; con página activa: **título editable** + **Resources block** (`default`); luego formularios / previews según tipo. |
 
 Los dos paneles trabajan acoplados: la selección de página en la izquierda determina qué se edita/previsualiza a la derecha.
@@ -197,15 +198,17 @@ Los dos paneles trabajan acoplados: la selección de página en la izquierda det
 - **Añadir una página** (equivalente en resultado; dos entradas):  
   1. **Empty state del panel derecho** (CTA cuando no hay páginas), **o**  
   2. Botón **«Añadir página»** en la parte inferior de **cada sección** (solo en la sección activa cuando hay secciones; en modo sin secciones, el botón del bloque único).  
-- **Orden y menú de opciones (⋮):** cada fila de página puede **moverse** con acciones **«Mover arriba»** / **«Mover abajo»** desde el menú de opciones.  
+- **Orden — menú (⋮) y arrastrar y soltar:** cada fila de página puede **reordenarse** de dos maneras (complementarias; el menú sigue siendo la alternativa **sin arrastrar**, p. ej. accesibilidad **WCAG 2.5.7**):  
+  1. **Arrastrar y soltar:** el **icono de tipo** de la fila actúa como **asa de arrastre** (HTML5 DnD en **Páginas creator**). El usuario **arrastra** la fila y **suelta** en la posición deseada; durante el arrastre no se muestran tooltips sobre elementos con `data-tooltip`. Al soltar se emite el evento documento **`ubits-paginas-creator-action`** con `detail.action === 'reordenar'`. Implementación: `components/paginas-creator.js` + `components/paginas-creator.css`; integración en la página dedicada: `crear-contenido.js`. Tabla técnica y mapeo para futuros listados: **`README.md`** → sección *Referencia: drag & drop para reordenar (Paginas creator)*.  
+  2. **Menú de opciones (⋮):** acciones **«Mover arriba»** / **«Mover abajo»** (misma regla de orden global que el arrastre).  
   - Si la página es la **primera del contenido completo** (primera fila del índice global), **no** se ofrece **«Mover arriba»**.  
   - Si la página es la **última del contenido completo**, **no** se ofrece **«Mover abajo»**.  
-  - **Entre secciones:** una página que es la **primera de la sección 2** puede subir con **«Mover arriba»** hasta ser la **última de la sección 1** (y así sucesivamente); solo deja de poder **subir** al llegar a ser la primera del contenido. Simétricamente para **bajar** hasta ser la última del contenido.
+  - **Entre secciones:** una página que es la **primera de la sección 2** puede subir con **«Mover arriba»** (o arrastrando) hasta ser la **última de la sección 1** (y así sucesivamente); solo deja de poder **subir** al llegar a ser la primera del contenido. Simétricamente para **bajar** hasta ser la última del contenido.
 
 ### Panel derecho: empty state sin páginas
 
 - Se muestra **solo cuando no existe ninguna página** en el contenido (lista vacía en el índice).  
-- **Copy (página dedicada `crear-contenido.html`):** título *«Añade tu primera página»*, descripción sobre añadir páginas y recursos (video, texto, PDF) y CTA **primario** «Añadir página»; en el **drawer** puede seguir el texto anterior hasta alineación explícita.  
+- **Copy (`crear-contenido.html`):** título *«Añade tu primera página»*, descripción sobre añadir páginas y recursos (video, texto, PDF) y CTA **primario** «Añadir página». Es la **fuente de verdad** de copy para este flujo en el playground.  
 - **En cuanto se añade la primera página**, el panel derecho deja ese empty y pasa al flujo de **selector de tipo de recurso** (u otra vista según el tipo de recurso); **no** debe volver a mostrarse este empty salvo que el usuario **elimine todas las páginas** y vuelva a quedar el índice en cero páginas.  
 - **Disparadores equivalentes** para crear la primera (y siguientes) páginas: CTA del empty state **o** **«Añadir página»** en el panel izquierdo (según sección activa).  
 - Efecto esperado al añadir: en el **panel izquierdo** aparece la **fila de página** (Páginas creator) y queda **activa/seleccionada**; en el **derecho** se muestra el **selector general de recursos** para esa página.
@@ -215,7 +218,7 @@ Los dos paneles trabajan acoplados: la selección de página en la izquierda det
 - **Orden vertical:**  
   1. **Título de la página**, **editable inline** en el panel derecho (mismo criterio que el nombre en la fila del índice: al guardar o al perder foco debe mantenerse alineado con la etiqueta de la página activa en Páginas creator).  
   2. Debajo, el componente **Resources block** en variante **`default`** (selector de ocho tipos de recurso), con las dependencias UBITS ya definidas para ese bloque.  
-- **Implementación de referencia en el playground:** `crear-contenido.js` (montaje del índice, evento `ubits-seccion-creator-add-page`, título `#crear-contenido-recursos-page-title`, contenedor `#crear-contenido-recursos-resources-mount`) y estilos en `contenidos.css` (prefijo `crear-contenido-recursos__page-editor`, `__preview--editor`).
+- **Implementación de referencia en el playground:** `crear-contenido.js` (montaje del índice, eventos `ubits-seccion-creator-add-page`, **`ubits-paginas-creator-action`** incl. `reordenar`, `ubits-paginas-creator-activate`, título `#crear-contenido-recursos-page-title`, contenedor `#crear-contenido-recursos-resources-mount`) y estilos en `contenidos.css` (prefijo `crear-contenido-recursos__page-editor`, `__preview--editor`).
 
 ### Paso 3 — Certificado (validación al salir del paso 2)
 
@@ -300,4 +303,4 @@ Este patrón de **contenido complementario** (Texto / Archivo descargable) apare
 - Mantener tokens y tipografía UBITS; CSS de página en archivo dedicado junto al HTML del Creator cuando corresponda.  
 - Cualquier cambio a este documento debe reflejar acuerdos de producto y, cuando aplique, la documentación UBITS del componente tocado.
 
-*Última actualización: corte — drawer de lista eliminado; `crear-contenido.html` como ruta oficial; redirección de hashes legacy desde `contenidos.html`.*
+*Última actualización: flujo **solo** en `crear-contenido.html` (ruta oficial); redirección de hashes legacy desde `contenidos.html`. Reordenación de páginas por DnD (icono) + evento `reordenar`; README con tabla de referencia técnica.*
