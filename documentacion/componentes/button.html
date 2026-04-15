@@ -31,45 +31,6 @@
         .preview-control-btn.active span {
             color: white !important;
         }
-        
-        /* Badge: posición igual que components/button.css (salido para no tapar texto) */
-        .ubits-button__badge {
-            position: absolute;
-            top: -8px;
-            right: -12px;
-            min-width: 10px;
-            min-height: 10px;
-            background: var(--ubits-button-badge);
-            border-radius: 50%;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 10px;
-            font-weight: 600;
-            color: var(--ubits-btn-primary-fg) !important;
-        }
-        .ubits-button--icon-only .ubits-button__badge {
-            top: -8px;
-            right: -8px;
-        }
-        .ubits-button__badge:empty { width: 10px; height: 10px; top: -2px; right: -4px; }
-        .ubits-button--icon-only .ubits-button__badge:empty { top: -2px; right: -2px; }
-        .ubits-button__badge:not(:empty) {
-            padding: 0 5px;
-            height: 18px;
-            min-width: 18px;
-            border-radius: var(--border-radius-full);
-            font-size: 10px;
-            font-weight: 500;
-            color: var(--ubits-btn-primary-fg) !important;
-        }
-        .ubits-button__badge--circle:not(:empty) {
-            width: 18px; height: 18px; min-width: 18px; padding: 0; border-radius: 50%;
-        }
-        
-        .ubits-button {
-            position: relative;
-        }
     </style>
 </head>
 <body class="componentes-page" data-theme="light">
@@ -359,7 +320,7 @@
                             </button>
                         </div>
                         <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
-                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="button-prompt-5">Agrega un indicador al botón [nombre_del_boton]: un punto rojo de notificación o un número (por ejemplo &lt;span class="ubits-button__badge"&gt;3&lt;/span&gt;).</code></pre>
+                            <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="button-prompt-5">Agrega un indicador al botón [nombre_del_boton]: Attention badge sm en variante error (rojo, por defecto en botones), punto o número, por ejemplo &lt;span class="ubits-attention-badge ubits-attention-badge--sm ubits-attention-badge--error"&gt;3&lt;/span&gt; como hijo directo del botón. Si necesitas otra variante (info, warning, neutral), indícalo aparte. Importa button.css (ya incluye attention-badge.css).</code></pre>
                         </div>
                     </div>
 
@@ -469,7 +430,10 @@
 /* Modificadores */
 .ubits-button--icon-only /* Solo icono, sin texto */
   /* Extra Small: 28x28px, Small: 32x32px, Medium: 40x40px, Large: 48x48px */
-  /* Uso: Acciones secundarias, eliminar, controles compactos */</code></pre>
+  /* Uso: Acciones secundarias, eliminar, controles compactos */
+
+/* Contador / puntito: Attention badge (sm, error) como hijo directo — estilos en attention-badge.css (importado por button.css) */
+.ubits-attention-badge.ubits-attention-badge--sm.ubits-attention-badge--error /* por defecto en botón; info / warning / neutral si el producto lo pide */</code></pre>
                                 </div>
                             </div>
 
@@ -491,7 +455,7 @@
                                     <h3 class="ubits-body-md-bold" style="margin-bottom: 12px; color: var(--ubits-fg-1-high);">🔧 REQUISITOS OBLIGATORIOS:</h3>
                                     <div class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); line-height: 1.5;">
                                         <strong>CSS Requerido:</strong><br>
-                                        • <code>components/button.css</code> - Estilos del componente<br>
+                                        • <code>components/button.css</code> - Estilos del componente (importa <code>attention-badge.css</code>; badge por defecto: sm + <code>error</code>)<br>
                                         • <code>fontawesome-icons.css</code> - Iconos FontAwesome<br>
                                         • <code>ubits-colors.css</code> - Tokens de color UBITS<br>
                                         • <code>ubits-typography.css</code> - Tipografía UBITS<br><br>
@@ -548,18 +512,18 @@
   &lt;i class="far fa-trash"&gt;&lt;/i&gt;
 &lt;/button&gt;
 
-&lt;!-- Badge: puntito (vacío) --&gt;
+&lt;!-- Badge: Attention badge sm (error, rojo por defecto), puntito --&gt;
 &lt;button class="ubits-button ubits-button--primary ubits-button--md"&gt;
   &lt;i class="far fa-bell"&gt;&lt;/i&gt;
   &lt;span&gt;Notificaciones&lt;/span&gt;
-  &lt;span class="ubits-button__badge"&gt;&lt;/span&gt;
+  &lt;span class="ubits-attention-badge ubits-attention-badge--sm ubits-attention-badge--error ubits-attention-badge--dot-only" aria-hidden="true"&gt;&lt;/span&gt;
 &lt;/button&gt;
 
 &lt;!-- Badge con número (1, 2, 3…) --&gt;
 &lt;button class="ubits-button ubits-button--primary ubits-button--md"&gt;
   &lt;i class="far fa-bell"&gt;&lt;/i&gt;
   &lt;span&gt;Notificaciones&lt;/span&gt;
-  &lt;span class="ubits-button__badge"&gt;3&lt;/span&gt;
+  &lt;span class="ubits-attention-badge ubits-attention-badge--sm ubits-attention-badge--error"&gt;3&lt;/span&gt;
 &lt;/button&gt;</code></pre>
                                 </div>
                             </div>
@@ -681,8 +645,17 @@
             const disabledAttr = isDisabled ? ' disabled' : '';
             const iconOnlyClass = isIconOnly ? ` ubits-button--icon-only` : '';
             const textHTML = isIconOnly ? '' : `<span>${text}</span>`;
-            const circleClass = (badgeValue !== null && badgeValue !== '' && String(badgeValue).length === 1) ? ' ubits-button__badge--circle' : '';
-            const badgeHTML = badgeValue === null ? '' : `<span class="ubits-button__badge${circleClass}">${badgeValue}</span>`;
+            const attnBase = 'ubits-attention-badge ubits-attention-badge--sm ubits-attention-badge--error';
+            let badgeHTML = '';
+            if (badgeValue !== null) {
+                if (badgeValue === '') {
+                    badgeHTML = `<span class="${attnBase} ubits-attention-badge--dot-only" aria-hidden="true"></span>`;
+                } else {
+                    const s = String(badgeValue);
+                    const circleClass = s.length === 1 ? ' ubits-attention-badge--circle' : '';
+                    badgeHTML = `<span class="${attnBase}${circleClass}">${s}</span>`;
+                }
+            }
             return `<button class="ubits-button ubits-button--${variant} ubits-button--${size}${iconOnlyClass}"${disabledAttr}>
                 ${iconHTML}
                 ${textHTML}

@@ -3,6 +3,8 @@
    Componente de botón con todas las variantes
    ======================================== */
 
+@import url('attention-badge.css');
+
 /* ========================================
    BASE BUTTON STYLES
    ======================================== */
@@ -306,8 +308,8 @@
     /* Hereda de ubits-body-md-semibold: 16px, weight 600, line-height 24px */
 }
 
-/* Aplicar tipografía UBITS al texto del botón medium */
-.ubits-button span {
+/* Aplicar tipografía UBITS al texto del botón medium (no al Attention badge: es otro span) */
+.ubits-button span:not(.ubits-attention-badge) {
     font-family: var(--ubits-font-family-sans);
     font-size: var(--font-size-md);
     font-weight: var(--font-weight-semibold);
@@ -329,7 +331,7 @@
 }
 
 /* Aplicar tipografía UBITS al texto del botón extra small - ubits-body-xs-semibold */
-.ubits-button--xs span {
+.ubits-button--xs span:not(.ubits-attention-badge) {
     font-family: var(--ubits-font-family-sans);
     font-size: var(--font-size-xs);
     font-weight: var(--font-weight-semibold);
@@ -350,7 +352,7 @@
 }
 
 /* Aplicar tipografía UBITS al texto del botón small - ubits-body-sm-semibold */
-.ubits-button--sm span {
+.ubits-button--sm span:not(.ubits-attention-badge) {
     font-family: var(--ubits-font-family-sans);
     font-size: var(--font-size-sm);
     font-weight: var(--font-weight-semibold);
@@ -371,7 +373,7 @@
 }
 
 /* Aplicar tipografía UBITS al texto del botón large */
-.ubits-button--lg span {
+.ubits-button--lg span:not(.ubits-attention-badge) {
     font-family: var(--ubits-font-family-sans);
     font-size: var(--font-size-h2);
     font-weight: var(--font-weight-semibold);
@@ -385,69 +387,27 @@
 }
 
 /* ========================================
-   BUTTON BADGE (puntito o número: 1, 2, 3…)
-   Texto siempre blanco (token oficial) en todos los tipos de botón.
+   BADGE EN BOTÓN = Attention badge (sm, error por defecto): estilos en attention-badge.css
+   Solo anclaje al botón (position relative ya está en .ubits-button).
    ======================================== */
 
-.ubits-button__badge {
+.ubits-button > .ubits-attention-badge.ubits-attention-badge--sm {
     position: absolute;
     top: -8px;
     right: -12px;
-    min-width: 10px;
-    min-height: 10px;
-    background: var(--ubits-button-badge);
-    border-radius: 50%;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    font-family: var(--ubits-font-family-sans);
-    line-height: 1;
-    color: var(--ubits-btn-primary-fg) !important;
 }
 
-/* Texto blanco en badge para todos los tipos de botón (forzado para que no herede del botón) */
-.ubits-button--primary .ubits-button__badge,
-.ubits-button--secondary .ubits-button__badge,
-.ubits-button--tertiary .ubits-button__badge,
-.ubits-button--error .ubits-button__badge,
-.ubits-button--error-secondary .ubits-button__badge,
-.ubits-button--error-tertiary .ubits-button__badge {
-    color: var(--ubits-btn-primary-fg) !important;
-}
-
-/* Badge vacío = solo puntito (más adentro que el badge con número) */
-.ubits-button__badge:empty {
-    width: 10px;
-    height: 10px;
+.ubits-button > .ubits-attention-badge.ubits-attention-badge--sm.ubits-attention-badge--dot-only {
     top: -2px;
     right: -4px;
 }
 
-/* Badge con número: por defecto pill que abraza el contenido */
-.ubits-button__badge:not(:empty) {
-    padding: 0 5px;
-    height: 18px;
-    min-width: 18px;
-    border-radius: var(--border-radius-full);
-    font-size: 10px;
-    font-weight: var(--font-weight-semibold);
-}
-
-/* Un solo dígito: circular. Añadir clase ubits-button__badge--circle al span del badge. */
-.ubits-button__badge--circle:not(:empty) {
-    width: 18px;
-    height: 18px;
-    min-width: 18px;
-    padding: 0;
-    border-radius: 50%;
-}
-
-.ubits-button--icon-only .ubits-button__badge {
+.ubits-button--icon-only > .ubits-attention-badge.ubits-attention-badge--sm {
     top: -8px;
     right: -8px;
 }
 
-.ubits-button--icon-only .ubits-button__badge:empty {
+.ubits-button--icon-only > .ubits-attention-badge.ubits-attention-badge--sm.ubits-attention-badge--dot-only {
     top: -2px;
     right: -2px;
 }

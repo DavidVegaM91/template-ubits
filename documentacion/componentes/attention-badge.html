@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="../../images/Ubits-logo-dark.svg">
+    <title>Attention badge | UBITS Playground</title>
+
+    <link rel="stylesheet" href="../../general-styles/ubits-colors.css">
+    <link rel="stylesheet" href="../../general-styles/styles.css">
+    <link rel="stylesheet" href="../../general-styles/fontawesome-icons.css">
+    <link rel="stylesheet" href="../../general-styles/ubits-typography.css">
+    <link rel="stylesheet" href="../../components/sub-nav.css">
+    <link rel="stylesheet" href="../../components/sidebar.css">
+    <link rel="stylesheet" href="../../docs/docs-sidebar.css">
+    <link rel="stylesheet" href="../../docs/docstyles.css">
+    <link rel="stylesheet" href="../../components/button.css">
+    <link rel="stylesheet" href="../../components/alert.css">
+    <link rel="stylesheet" href="../../components/input.css">
+    <link rel="stylesheet" href="../../components/dropdown-menu.css">
+    <link rel="stylesheet" href="../../components/switch.css">
+    <link rel="stylesheet" href="../../components/toast.css">
+    <link rel="stylesheet" href="../../components/attention-badge.css">
+    <style>
+        .preview-control-btn.active {
+            background: var(--ubits-accent-brand) !important;
+            color: white !important;
+            border-color: var(--ubits-accent-brand) !important;
+        }
+        .preview-control-btn.active span {
+            color: white !important;
+        }
+        .attention-badge-preview-controls {
+            display: flex;
+            flex-direction: column;
+            gap: var(--gap-lg);
+            margin-top: var(--gap-lg);
+        }
+        .attention-badge-preview-controls__row {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: var(--gap-md);
+        }
+    </style>
+</head>
+<body class="componentes-page" data-theme="light">
+    <div class="dashboard-container">
+        <div class="tooltip" id="tooltip"></div>
+
+        <main class="main-content">
+            <div id="top-nav-container"></div>
+            <div style="display: flex;">
+                <div id="docs-dropdown-container"></div>
+                <div id="docs-sidebar-container"></div>
+
+                <div class="components-content">
+                    <div class="content-area" style="display: block; width: 100%;">
+                        <div style="text-align: center; margin-bottom: 60px;">
+                            <h1 class="ubits-display-d2-bold" style="margin-bottom: 24px; color: var(--ubits-accent-brand);">
+                                Attention badge
+                            </h1>
+                            <p class="ubits-body-md-regular" style="max-width: 800px; margin: 0 auto 32px; line-height: 1.6;">
+                                Indicador compacto para conteos y avisos que deben destacar junto a un título o acción, sin ocupar el espacio de una etiqueta de estado completa.
+                            </p>
+                        </div>
+
+                        <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; margin-bottom: 40px;">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-eye" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Preview del componente
+                            </h2>
+                            <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6;">
+                                Elige variante de color, tamaño y si quieres número, solo punto o un dígito en círculo. La variante <strong>error</strong> usa el mismo rojo intenso que el badge del botón y los conteos urgentes en listas; <strong>warning</strong> usa el acento warning sólido con texto claro.
+                            </p>
+
+                            <div style="background: var(--ubits-bg-2); padding: var(--padding-xl); border-radius: var(--border-radius-sm); min-height: 100px; display: flex; align-items: center; justify-content: center;">
+                                <span id="attention-badge-preview-mount" aria-live="polite"></span>
+                            </div>
+
+                            <div class="attention-badge-preview-controls">
+                                <div class="attention-badge-preview-controls__row">
+                                    <p class="ubits-body-sm-bold" style="margin: 0; min-width: 72px; color: var(--ubits-fg-1-medium);">Color</p>
+                                    <div style="display: flex; flex-wrap: wrap; gap: var(--gap-sm);">
+                                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-attn-variant="neutral" onclick="setAttentionVariant('neutral')"><span>Neutral</span></button>
+                                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn active" data-attn-variant="error" onclick="setAttentionVariant('error')"><span>Error</span></button>
+                                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-attn-variant="warning" onclick="setAttentionVariant('warning')"><span>Warning</span></button>
+                                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-attn-variant="info" onclick="setAttentionVariant('info')"><span>Info</span></button>
+                                    </div>
+                                </div>
+                                <div class="attention-badge-preview-controls__row" style="align-items: center;">
+                                    <label class="ubits-switch ubits-switch--md" style="align-items: center; gap: var(--gap-sm); flex-wrap: wrap;">
+                                        <input type="checkbox" class="ubits-switch__input" id="attention-preview-size-md" role="switch" aria-checked="false" aria-label="Usar tamaño mediano en listas">
+                                        <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
+                                        <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Tamaño md (secciones tipo vencidas)</span>
+                                    </label>
+                                </div>
+                                <div class="attention-badge-preview-controls__row" style="align-items: center;">
+                                    <label class="ubits-switch ubits-switch--md" style="align-items: center; gap: var(--gap-sm); flex-wrap: wrap;">
+                                        <input type="checkbox" class="ubits-switch__input" id="attention-preview-dot-only" role="switch" aria-checked="false" aria-label="Mostrar solo punto">
+                                        <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
+                                        <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Solo punto (sin número)</span>
+                                    </label>
+                                </div>
+                                <div class="attention-badge-preview-controls__row" style="align-items: center;">
+                                    <label class="ubits-switch ubits-switch--md" style="align-items: center; gap: var(--gap-sm); flex-wrap: wrap;">
+                                        <input type="checkbox" class="ubits-switch__input" id="attention-preview-circle" role="switch" aria-checked="false" aria-label="Un solo dígito en círculo" disabled>
+                                        <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
+                                        <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Un dígito en círculo (3)</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; margin-bottom: 40px;">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-info-circle" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Características generales
+                            </h2>
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
+                                <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-bell"></i></div>
+                                    <div class="ubits-body-sm-bold">Aviso compacto</div>
+                                    <div class="ubits-body-sm-regular">Ideal para llamar la atención sobre un número o un pendiente sin abrir un mensaje largo</div>
+                                </div>
+                                <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-palette"></i></div>
+                                    <div class="ubits-body-sm-bold">Cuatro tonos</div>
+                                    <div class="ubits-body-sm-regular">Neutral, error, warning e info, pensados para distintos niveles de urgencia o categoría</div>
+                                </div>
+                                <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-ruler-combined"></i></div>
+                                    <div class="ubits-body-sm-bold">Dos tamaños</div>
+                                    <div class="ubits-body-sm-regular">Pequeño alineado al badge del botón; mediano alineado a conteos en cabeceras de sección</div>
+                                </div>
+                                <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-circle"></i></div>
+                                    <div class="ubits-body-sm-bold">Punto o número</div>
+                                    <div class="ubits-body-sm-regular">Puedes mostrar un número, un solo dígito en círculo o solo el punto cuando no haya cifra que mostrar</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; margin-bottom: 40px;">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-comments" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Prompts útiles
+                            </h2>
+                            <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6; color: var(--ubits-fg-1-medium);">
+                                Copia el prompt y sustituye lo que va entre corchetes. Pide importar attention-badge.css para que no se vea roto.
+                            </p>
+                            <div id="attention-badge-warning-alert" style="margin-bottom: 32px;"></div>
+
+                            <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
+                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                                    <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Insertar attention badge con número</h3>
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('attention-badge-prompt-1')">
+                                        <i class="far fa-copy"></i>
+                                        <span>Copiar</span>
+                                    </button>
+                                </div>
+                                <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
+                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="attention-badge-prompt-1">Inserta un attention badge en [ubicación] con el número [número], variante de color [neutral, error, warning o info] y tamaño [sm o md]. Importa attention-badge.css.</code></pre>
+                                </div>
+                            </div>
+
+                            <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
+                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                                    <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Solo punto de aviso</h3>
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('attention-badge-prompt-2')">
+                                        <i class="far fa-copy"></i>
+                                        <span>Copiar</span>
+                                    </button>
+                                </div>
+                                <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
+                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="attention-badge-prompt-2">Inserta un attention badge solo punto (sin número) en [ubicación], variante [neutral, error, warning o info], tamaño [sm o md], con texto accesible [etiqueta para lector de pantalla]. Importa attention-badge.css.</code></pre>
+                                </div>
+                            </div>
+
+                            <div>
+                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                                    <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Un dígito en círculo</h3>
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('attention-badge-prompt-3')">
+                                        <i class="far fa-copy"></i>
+                                        <span>Copiar</span>
+                                    </button>
+                                </div>
+                                <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
+                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="attention-badge-prompt-3">En [ubicación], muestra un attention badge circular con un solo dígito [del 1 al 9], variante [neutral, error, warning o info], tamaño [sm o md]. Añade la clase de círculo que indica la documentación técnica. Importa attention-badge.css.</code></pre>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="background: var(--ubits-bg-1); border-radius: 16px; margin-bottom: 40px; overflow: hidden;">
+                            <div style="padding: 32px; text-align: center; border-bottom: 1px solid var(--ubits-border-1);">
+                                <h2 class="ubits-heading-h2" style="margin-bottom: 0; color: var(--ubits-fg-1-high);">
+                                    <i class="far fa-code" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                    Documentación técnica
+                                </h2>
+                                <p class="ubits-body-md-regular" style="margin-top: 16px; color: var(--ubits-fg-1-medium);">
+                                    Estructura, clases y requisitos para implementar Attention badge.
+                                </p>
+                            </div>
+                            <div style="background: var(--ubits-bg-2); padding: 20px; text-align: center; cursor: pointer;" onclick="toggleTechnicalDocs()">
+                                <span class="ubits-body-md-regular" style="color: var(--ubits-accent-brand); display: flex; align-items: center; justify-content: center; gap: 8px;">
+                                    <i class="far fa-chevron-down" style="transition: transform 0.3s ease;"></i>
+                                    Mostrar
+                                </span>
+                            </div>
+                            <div id="technical-docs-content" style="display: none; padding: 0;">
+                                <div style="padding: 32px; border-bottom: 1px solid var(--ubits-border-1);">
+                                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;">
+                                        <h2 class="ubits-heading-h2" style="margin: 0; color: var(--ubits-fg-1-high);">
+                                            <i class="far fa-sitemap" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                            Estructura del componente
+                                        </h2>
+                                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('attention-structure-code')">
+                                            <i class="far fa-copy"></i>
+                                            <span>Copiar</span>
+                                        </button>
+                                    </div>
+                                    <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
+                                        <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code id="attention-structure-code">&lt;!-- Con número (12 o más dígitos: pill) --&gt;
+&lt;span class="ubits-attention-badge ubits-attention-badge--sm ubits-attention-badge--error" aria-label="12 pendientes"&gt;12&lt;/span&gt;
+
+&lt;!-- Un solo dígito: añadir --circle --&gt;
+&lt;span class="ubits-attention-badge ubits-attention-badge--sm ubits-attention-badge--error ubits-attention-badge--circle" aria-label="3 pendientes"&gt;3&lt;/span&gt;
+
+&lt;!-- Solo punto: clase --dot-only y aria-label en el span --&gt;
+&lt;span class="ubits-attention-badge ubits-attention-badge--sm ubits-attention-badge--error ubits-attention-badge--dot-only" aria-label="Hay pendientes"&gt;&lt;/span&gt;</code></pre>
+                                    </div>
+                                </div>
+                                <div style="padding: 32px; border-bottom: 1px solid var(--ubits-border-1);">
+                                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;">
+                                        <h2 class="ubits-heading-h2" style="margin: 0; color: var(--ubits-fg-1-high);">
+                                            <i class="far fa-tags" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                            Clases disponibles
+                                        </h2>
+                                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('attention-classes-code')">
+                                            <i class="far fa-copy"></i>
+                                            <span>Copiar</span>
+                                        </button>
+                                    </div>
+                                    <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
+                                        <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code id="attention-classes-code">.ubits-attention-badge
+.ubits-attention-badge--sm | --md
+.ubits-attention-badge--neutral | --error | --warning | --info
+.ubits-attention-badge--dot-only   /* sin texto; usar aria-label */
+.ubits-attention-badge--circle     /* un dígito 1–9; incompatible con --dot-only */</code></pre>
+                                    </div>
+                                </div>
+                                <div style="padding: 32px;">
+                                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;">
+                                        <h2 class="ubits-heading-h2" style="margin: 0; color: var(--ubits-fg-1-high);">
+                                            <i class="far fa-code-branch" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                            Cómo implementar
+                                        </h2>
+                                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('attention-implementation-code')">
+                                            <i class="far fa-copy"></i>
+                                            <span>Copiar</span>
+                                        </button>
+                                    </div>
+                                    <div style="background: var(--ubits-bg-2); padding: 16px; border-radius: 8px; margin-bottom: 16px;">
+                                        <h3 class="ubits-body-md-bold" style="margin-bottom: 12px; color: var(--ubits-fg-1-high);">Requisitos</h3>
+                                        <div class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); line-height: 1.5;">
+                                            <strong>CSS:</strong> <code>components/attention-badge.css</code> y <code>general-styles/ubits-colors.css</code> (carga típica vía estilos base del proyecto).<br>
+                                            <strong>JavaScript:</strong> no requerido.<br>
+                                            <strong>Tipografía del número:</strong> hereda del contexto; el componente fija familia, peso y tamaño según tamaño sm/md.
+                                        </div>
+                                    </div>
+                                    <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
+                                        <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code id="attention-implementation-code">&lt;link rel="stylesheet" href="../../components/attention-badge.css"&gt;
+
+&lt;span class="ubits-attention-badge ubits-attention-badge--md ubits-attention-badge--error" aria-label="8 elementos vencidos"&gt;8&lt;/span&gt;</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div id="ubits-toast-container"></div>
+
+    <script src="../../components/sidebar.js"></script>
+    <script src="../../components/sub-nav.js"></script>
+    <script src="../../components/alert.js"></script>
+    <script src="../../components/toast.js"></script>
+    <script src="../../components/dropdown-menu.js"></script>
+    <script src="../../components/input.js"></script>
+    <script src="../../docs/docs-sidebar.js"></script>
+    <script src="../../script.js"></script>
+    <script>
+        var attentionPreviewState = {
+            variant: 'error',
+            size: 'sm',
+            dotOnly: false,
+            circle: false
+        };
+
+        function attentionPreviewClasses() {
+            var s = attentionPreviewState;
+            var list = [
+                'ubits-attention-badge',
+                'ubits-attention-badge--' + s.size,
+                'ubits-attention-badge--' + s.variant
+            ];
+            if (s.dotOnly) list.push('ubits-attention-badge--dot-only');
+            else if (s.circle) list.push('ubits-attention-badge--circle');
+            return list;
+        }
+
+        function renderAttentionBadgePreview() {
+            var mount = document.getElementById('attention-badge-preview-mount');
+            if (!mount) return;
+            var s = attentionPreviewState;
+            var cls = attentionPreviewClasses().join(' ');
+            var label = s.dotOnly ? 'Hay elementos que requieren atención' : (s.circle ? '3 pendientes' : '12 pendientes');
+            var text = s.dotOnly ? '' : (s.circle ? '3' : '12');
+            mount.innerHTML = '<span class="' + cls + '" aria-label="' + label + '">' + text + '</span>';
+        }
+
+        function setAttentionVariant(variant) {
+            attentionPreviewState.variant = variant;
+            document.querySelectorAll('[data-attn-variant]').forEach(function (b) {
+                b.classList.toggle('active', b.getAttribute('data-attn-variant') === variant);
+            });
+            renderAttentionBadgePreview();
+        }
+
+        function syncAttentionCircleDisabled() {
+            var sw = document.getElementById('attention-preview-circle');
+            if (sw) sw.disabled = attentionPreviewState.dotOnly;
+            if (sw && sw.disabled) {
+                attentionPreviewState.circle = false;
+                sw.checked = false;
+                sw.setAttribute('aria-checked', 'false');
+            }
+        }
+
+        function initAttentionBadgePreview() {
+            var swSize = document.getElementById('attention-preview-size-md');
+            var swDot = document.getElementById('attention-preview-dot-only');
+            var swCircle = document.getElementById('attention-preview-circle');
+            if (swSize) {
+                swSize.addEventListener('change', function () {
+                    attentionPreviewState.size = swSize.checked ? 'md' : 'sm';
+                    swSize.setAttribute('aria-checked', swSize.checked ? 'true' : 'false');
+                    renderAttentionBadgePreview();
+                });
+            }
+            if (swDot) {
+                swDot.addEventListener('change', function () {
+                    attentionPreviewState.dotOnly = !!swDot.checked;
+                    swDot.setAttribute('aria-checked', attentionPreviewState.dotOnly ? 'true' : 'false');
+                    syncAttentionCircleDisabled();
+                    renderAttentionBadgePreview();
+                });
+            }
+            if (swCircle) {
+                swCircle.addEventListener('change', function () {
+                    attentionPreviewState.circle = !!swCircle.checked && !attentionPreviewState.dotOnly;
+                    swCircle.setAttribute('aria-checked', attentionPreviewState.circle ? 'true' : 'false');
+                    renderAttentionBadgePreview();
+                });
+            }
+            syncAttentionCircleDisabled();
+            renderAttentionBadgePreview();
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            if (typeof loadSubNav === 'function') loadSubNav('top-nav-container', 'documentacion');
+            if (typeof loadSidebar === 'function') loadSidebar('ninguno');
+            if (typeof loadDocsSidebar === 'function') loadDocsSidebar('attention-badge');
+            if (typeof showAlert === 'function') {
+                showAlert('warning', 'Antes de enviar estos prompts a Cursor, reemplaza todos los textos entre corchetes con la información específica de tu proyecto.', {
+                    containerId: 'attention-badge-warning-alert',
+                    noClose: true
+                });
+            }
+            initAttentionBadgePreview();
+        });
+
+        function toggleTechnicalDocs() {
+            var content = document.getElementById('technical-docs-content');
+            var isHidden = content.style.display === 'none' || !content.style.display;
+            content.style.display = isHidden ? 'block' : 'none';
+            var trigger = content.previousElementSibling;
+            if (trigger) {
+                var span = trigger.querySelector('span');
+                if (span) {
+                    span.innerHTML = isHidden
+                        ? '<i class="far fa-chevron-up" style="transition: transform 0.3s ease;"></i>Ocultar'
+                        : '<i class="far fa-chevron-down" style="transition: transform 0.3s ease;"></i>Mostrar';
+                }
+            }
+        }
+
+        function copyPrompt(promptId) {
+            var el = document.getElementById(promptId);
+            var text = el.textContent;
+            navigator.clipboard.writeText(text).then(function () {
+                var btn = document.querySelector('[onclick="copyPrompt(\'' + promptId + '\')"]');
+                var icon = btn.querySelector('i');
+                var span = btn.querySelector('span');
+                icon.className = 'far fa-check';
+                span.textContent = 'Copiado';
+                if (typeof showToast === 'function') showToast('success', '¡Prompt copiado!', { containerId: 'ubits-toast-container', duration: 3500 });
+                setTimeout(function () { icon.className = 'far fa-copy'; span.textContent = 'Copiar'; }, 2000);
+            }).catch(function () {
+                if (typeof showToast === 'function') showToast('error', 'Error al copiar', { containerId: 'ubits-toast-container', duration: 3500 });
+            });
+        }
+
+        function copyCode(elementId) {
+            var el = document.getElementById(elementId);
+            var text = el.textContent;
+            navigator.clipboard.writeText(text).then(function () {
+                var btn = event.target.closest('button');
+                var icon = btn.querySelector('i');
+                var span = btn.querySelector('span');
+                var origIcon = icon.className;
+                var origText = span.textContent;
+                icon.className = 'far fa-check';
+                span.textContent = 'Copiado!';
+                if (typeof showToast === 'function') showToast('success', 'Código copiado al portapapeles', { containerId: 'ubits-toast-container', duration: 3500 });
+                setTimeout(function () { icon.className = origIcon; span.textContent = origText; }, 2000);
+            }).catch(function () {
+                if (typeof showToast === 'function') showToast('error', 'Error al copiar', { containerId: 'ubits-toast-container', duration: 3500 });
+            });
+        }
+    </script>
+</body>
+</html>

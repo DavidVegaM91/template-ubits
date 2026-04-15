@@ -396,8 +396,8 @@ p:not([class*="ubits-"]), span:not([class*="ubits-"]) {
     font-family: var(--ubits-font-family-sans) !important;
 }
 
-/* PROTECCIÓN ESPECÍFICA PARA SPANS EN BOTONES */
-.ubits-button span {
+/* PROTECCIÓN ESPECÍFICA PARA SPANS EN BOTONES (texto del botón; no Attention badge) */
+.ubits-button span:not(.ubits-attention-badge) {
     color: inherit !important;
 }
 

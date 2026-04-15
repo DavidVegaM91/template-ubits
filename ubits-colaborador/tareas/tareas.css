@@ -498,12 +498,13 @@ body.page-tareas .dashboard-container {
     color: var(--ubits-accent-brand);
 }
 
-/* Contenedor con scroll infinito */
+/* Contenedor con scroll infinito: padding-top fijo respecto al calendario (no solo en Vencidas, para que al filtrar y ocultarse Vencidas no quede Sin fecha pegado al borde) */
 .tareas-scroll-container {
     flex: 1;
     min-height: 0;
     overflow-y: auto;
     overflow-x: hidden;
+    padding-top: var(--gap-xl);
     padding-right: var(--padding-sm);
     scrollbar-width: thin;
     scrollbar-color: var(--ubits-border-1) transparent;
@@ -528,57 +529,46 @@ body.page-tareas .dashboard-container {
     background: var(--ubits-fg-1-medium);
 }
 
-/* Contenedor de tareas vencidas (PRIMERO) */
+/* Contenedor de tareas vencidas (PRIMERO); el aire superior va en .tareas-scroll-container */
 .tareas-overdue-container {
-    /* Un poco más de aire respecto a la línea del calendario sin romper el layout */
-    padding-top: var(--gap-xl);
     margin-bottom: var(--space-8);
 }
 
-.tareas-overdue-header {
+/* Bloque sin fecha: debajo de vencidas */
+.tareas-no-due-container {
+    margin-bottom: var(--space-8);
+}
+
+.tareas-overdue-header,
+.tareas-no-due-header {
     display: flex;
     align-items: center;
     gap: var(--gap-md);
     margin-bottom: var(--gap-lg);
 }
 
-.tareas-overdue-header .ubits-button--icon-only i {
+.tareas-overdue-header .ubits-button--icon-only i,
+.tareas-no-due-header .ubits-button--icon-only i {
     transition: transform 0.2s ease;
 }
 
-.tareas-overdue-header h2 {
+.tareas-overdue-header h2,
+.tareas-no-due-header h2 {
     margin: 0;
     color: var(--ubits-fg-1-high);
 }
 
-/* Badge de cantidad (rojo, letra blanca, como el del componente botón) */
-.tareas-overdue-badge {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 20px;
-    height: 20px;
-    padding: 0 6px;
-    border-radius: 10px;
-    background: var(--ubits-button-badge);
-    color: var(--ubits-btn-primary-fg);
-    font-size: var(--font-size-xs);
-    font-weight: var(--font-weight-semibold);
-    line-height: 1;
-}
+/* Conteos en cabeceras: Attention badge oficial (estilos en attention-badge.css vía button.css) */
 
-/* Un solo dígito (1-9): circular */
-.tareas-overdue-badge.tareas-overdue-badge--circle {
-    width: 20px;
-    min-width: 20px;
-    padding: 0;
-    border-radius: 50%;
-}
-
-.tareas-overdue-content {
+.tareas-overdue-content,
+.tareas-no-due-content {
     display: flex;
     flex-direction: column;
     gap: var(--gap-sm);
+}
+
+.tareas-no-due-content[hidden] {
+    display: none !important;
 }
 
 /* Contenedores de días del calendario */
@@ -804,7 +794,7 @@ body.page-tareas .dashboard-container {
         padding: 9.5px 8px !important;
         box-sizing: border-box !important;
     }
-    #tareas-filtros-btn span {
+    #tareas-filtros-btn .tareas-filtros-btn__label {
         display: none !important;
     }
 }

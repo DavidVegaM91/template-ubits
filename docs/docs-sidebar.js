@@ -24,6 +24,7 @@ const DOCS_SIDEBAR_SECTIONS = [
     // UI general en orden alfabético
     { id: 'accordion', title: 'Accordion', group: 'ui' },
     { id: 'alert', title: 'Alert', group: 'ui' },
+    { id: 'attention-badge', title: 'Attention badge', group: 'ui' },
     { id: 'save-indicator', title: 'Save Indicator', group: 'ui' },
     { id: 'avatar', title: 'Avatar', group: 'ui' },
     { id: 'badge-tag', title: 'Badge Tag', group: 'ui' },
@@ -271,6 +272,7 @@ function initDocsSidebar(activeSection) {
             'ia-button': 'ia-button.html',
             'loader': 'loader.html',
             'alert': 'alert.html',
+            'attention-badge': 'attention-badge.html',
             'save-indicator': 'save-indicator.html',
             'avatar': 'avatar.html',
             'badge-tag': 'badge-tag.html',

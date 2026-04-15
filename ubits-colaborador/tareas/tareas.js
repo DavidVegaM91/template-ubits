@@ -4,8 +4,8 @@
    Datos: bd-master/bd-tareas-y-planes.js (TAREAS_PLANES_DB).
    ======================================== */
 
-// Datos de tareas: única fuente TAREAS_PLANES_DB.getTareasVistaTareas() (estructura { vencidas, porDia }).
-let tareasEjemplo = { vencidas: [], porDia: {} };
+// Datos de tareas: TAREAS_PLANES_DB.getTareasVistaTareas() ({ vencidas, porDia }); sinFechaVencimiento se fusiona en cliente.
+let tareasEjemplo = { vencidas: [], porDia: {}, sinFechaVencimiento: [] };
 
 // Planes y usuarios para dropdowns (mover tarea / asignar): desde BD unificada si existe.
 function getPlanesParaDropdown() {
@@ -31,6 +31,7 @@ let estadoTareas = {
     currentDate: new Date(), // Fecha actual para el mes mostrado
     showMonthPicker: false,
     showOverdueSection: true,
+    showNoDueSection: false,
     diasRenderizados: [],
     diasCargados: 0,
     diasPorCarga: 7,
@@ -164,6 +165,56 @@ if (typeof TAREAS_PLANES_DB !== 'undefined' && typeof TAREAS_PLANES_DB.getTareas
     tareasEjemplo = TAREAS_PLANES_DB.getTareasVistaTareas();
     today = getTodayString();
 }
+if (!Array.isArray(tareasEjemplo.sinFechaVencimiento)) {
+    tareasEjemplo.sinFechaVencimiento = [];
+}
+/** Tres tareas de ejemplo sin fecha de vencimiento (playground). IDs fijos 9200000000001–3. */
+function ensureSinFechaVencimientoDemoTasks() {
+    var DEMO_IDS = [9200000000001, 9200000000002, 9200000000003];
+    if (!tareasEjemplo.sinFechaVencimiento) tareasEjemplo.sinFechaVencimiento = [];
+    var list = tareasEjemplo.sinFechaVencimiento;
+    var hasAll = DEMO_IDS.every(function (id) {
+        return list.some(function (t) {
+            return t && Number(t.id) === id;
+        });
+    });
+    if (hasAll) return;
+    var u = (typeof TAREAS_PLANES_DB !== 'undefined' && TAREAS_PLANES_DB.getUsuarioActual)
+        ? TAREAS_PLANES_DB.getUsuarioActual()
+        : { nombre: 'Usuario demo', username: 'usuario@ubits.demo', avatar: null };
+    var nombre = u.nombre || 'Usuario demo';
+    var username = u.username || 'usuario@ubits.demo';
+    var filtered = list.filter(function (t) {
+        return !t || !t._demoSinFechaVencimiento;
+    });
+    var planMeta = { id: null, name: null };
+    if (typeof TAREAS_PLANES_DB !== 'undefined' && typeof TAREAS_PLANES_DB.getPlanesVistaPlanes === 'function') {
+        var planesList = TAREAS_PLANES_DB.getPlanesVistaPlanes();
+        var metas = planesList.find(function (p) { return (p.name || '').indexOf('Metas personales') === 0; });
+        if (metas) {
+            planMeta.id = metas.id;
+            planMeta.name = metas.name;
+        }
+    }
+    var base = {
+        endDate: null,
+        done: false,
+        status: 'Activo',
+        assignee_email: username,
+        assignee_name: nombre,
+        assignee_avatar_url: u.avatar || null,
+        created_by: nombre,
+        planId: planMeta.id,
+        planNombre: planMeta.name,
+        _demoSinFechaVencimiento: true
+    };
+    tareasEjemplo.sinFechaVencimiento = filtered.concat([
+        Object.assign({}, base, { id: DEMO_IDS[0], name: 'Revisar documentación del módulo', priority: 'media' }),
+        Object.assign({}, base, { id: DEMO_IDS[1], name: 'Coordinar reunión con stakeholders', priority: 'alta' }),
+        Object.assign({}, base, { id: DEMO_IDS[2], name: 'Actualizar backlog en la herramienta', priority: 'baja' })
+    ]);
+}
+ensureSinFechaVencimientoDemoTasks();
 /* Quitar demos curso/aprendizaje (_demoVistaTareasAprendizaje) de días que no son hoy */
 (function pruneDemoAprendizajeFromNonTodayDays() {
     if (!tareasEjemplo || !tareasEjemplo.porDia) return;
@@ -197,13 +248,14 @@ function getAssigneesAsignadosPorMi() {
         list.push(name);
     }
     (tareasEjemplo.vencidas || []).forEach(add);
+    (tareasEjemplo.sinFechaVencimiento || []).forEach(add);
     const porDia = tareasEjemplo.porDia || {};
     for (const key in porDia) { (porDia[key] || []).forEach(add); }
     list.sort(function (a, b) { return a.localeCompare(b, 'es'); });
     return list;
 }
 
-// Devuelve { vencidas, porDia } aplicando filtros (Estado, Prioridad, Asignación). Fuente: tareasEjemplo.
+// Devuelve { vencidas, porDia, sinFecha } aplicando filtros (Estado, Prioridad, Asignación). Fuente: tareasEjemplo.
 function getTareasFiltradas() {
     const f = estadoTareas.filtros || {};
     const estados = f.estados || [];
@@ -226,13 +278,50 @@ function getTareasFiltradas() {
     }
 
     const vencidas = (tareasEjemplo.vencidas || []).filter(pasaFiltro);
+    const sinFecha = (tareasEjemplo.sinFechaVencimiento || []).filter(pasaFiltro);
     const porDia = {};
     const dias = tareasEjemplo.porDia || {};
     for (const fechaKey in dias) {
         const list = (dias[fechaKey] || []).filter(pasaFiltro);
         if (list.length > 0) porDia[fechaKey] = list;
     }
-    return { vencidas, porDia };
+    return { vencidas, porDia, sinFecha };
+}
+
+/** Criterios de filtro activos en la vista (para badge del botón Filtros). */
+function getTareasFiltrosAplicadosCount() {
+    var f = estadoTareas.filtros || {};
+    var n = 0;
+    if ((f.estados || []).length > 0) n++;
+    if ((f.prioridades || []).length > 0) n++;
+    if (f.asignacion && f.asignacion !== 'todas') n++;
+    if (f.asignacion === 'asignadas-por-mi' && (f.asignadosEspecificos || []).length > 0) n++;
+    return n;
+}
+
+/**
+ * Attention badge sm (error) en el botón Filtros solo cuando hay filtros aplicados.
+ * Sin nodo en el DOM si el conteo es 0.
+ */
+function updateTareasFiltrosButtonBadge() {
+    var btn = document.getElementById('tareas-filtros-btn');
+    if (!btn) return;
+    var c = getTareasFiltrosAplicadosCount();
+    var badge = document.getElementById('tareas-filtros-btn-badge');
+    if (c <= 0) {
+        if (badge && badge.parentNode) badge.parentNode.removeChild(badge);
+        btn.setAttribute('aria-label', 'Abrir filtros');
+        return;
+    }
+    if (!badge) {
+        badge = document.createElement('span');
+        badge.id = 'tareas-filtros-btn-badge';
+        badge.className = 'ubits-attention-badge ubits-attention-badge--sm ubits-attention-badge--error';
+        btn.appendChild(badge);
+    }
+    badge.textContent = String(c);
+    badge.classList.toggle('ubits-attention-badge--circle', c >= 1 && c <= 9);
+    btn.setAttribute('aria-label', 'Abrir filtros (' + c + ' ' + (c === 1 ? 'filtro aplicado' : 'filtros aplicados') + ')');
 }
 
 // Filtros de tareas: dropdown con contenido personalizado (customBodyHtml), como encabezados de seguimiento.
@@ -376,6 +465,8 @@ function openFiltrosDropdown() {
                     }
                     window.closeDropdownMenu(TAREAS_FILTROS_ASIGNADOS_ESPECIFICOS_OVERLAY_ID);
                     if (anchorEl) anchorEl.setAttribute('aria-expanded', 'false');
+                    updateTareasFiltrosButtonBadge();
+                    renderAllTasks();
                 }
             });
         }
@@ -706,7 +797,10 @@ function renderTareasVencidas() {
     const container = document.getElementById('overdue-content');
     const section = document.getElementById('overdue-section');
     const header = document.getElementById('overdue-header');
-    if (!container) return;
+    if (!container) {
+        renderTareasSinFecha();
+        return;
+    }
 
     const datos = getTareasFiltradas();
     const todasVencidas = (datos.vencidas || []).filter(t => t.status === 'Vencido' || t.done === true || t.status === 'Finalizado');
@@ -718,6 +812,9 @@ function renderTareasVencidas() {
     if (section) section.style.display = totalCount === 0 ? 'none' : '';
     if (totalCount === 0) {
         container.innerHTML = '';
+        var overdueBadgeEl = document.getElementById('overdue-count-badge');
+        if (overdueBadgeEl) overdueBadgeEl.remove();
+        renderTareasSinFecha();
         return;
     }
 
@@ -729,20 +826,75 @@ function renderTareasVencidas() {
     if (content) content.style.display = estadoTareas.showOverdueSection ? 'block' : 'none';
     if (icon) icon.style.transform = estadoTareas.showOverdueSection ? 'rotate(0deg)' : 'rotate(-90deg)';
 
-    // Badge rojo con número total (circular si un solo dígito, pill si dos o más)
+    // Attention badge (componente oficial): error / sm; círculo si 1–9 dígitos
     if (header) {
-        let badge = header.querySelector('.tareas-overdue-badge');
+        let badge = document.getElementById('overdue-count-badge');
         if (!badge) {
             badge = document.createElement('span');
-            badge.className = 'tareas-overdue-badge';
+            badge.id = 'overdue-count-badge';
+            badge.className = 'ubits-attention-badge ubits-attention-badge--sm ubits-attention-badge--error';
             badge.setAttribute('aria-label', 'Cantidad de tareas vencidas');
             header.appendChild(badge);
         }
         badge.textContent = String(totalCount);
-        badge.classList.toggle('tareas-overdue-badge--circle', totalCount >= 1 && totalCount <= 9);
+        badge.classList.toggle('ubits-attention-badge--circle', totalCount >= 1 && totalCount <= 9);
     }
 
     container.innerHTML = listaOrdenada.map(tarea => window.renderTaskStrip(tarea, getTaskStripOpts(true))).join('');
+    if (typeof initTooltip === 'function') initTooltip('[data-tooltip]');
+    renderTareasSinFecha();
+}
+
+// Sin fecha de vencimiento: colapsado por defecto (estadoTareas.showNoDueSection); badge con total.
+function renderTareasSinFecha() {
+    const container = document.getElementById('no-due-content');
+    const section = document.getElementById('no-due-section');
+    const header = document.getElementById('no-due-header');
+    const toggleBtn = document.getElementById('no-due-toggle');
+    if (!container) return;
+
+    const datos = getTareasFiltradas();
+    const raw = datos.sinFecha || [];
+    const listaOrdenada = raw.slice().sort(function (a, b) {
+        if (a.done !== b.done) return (a.done ? 1 : 0) - (b.done ? 1 : 0);
+        if (a.done && b.done) return (a._justFinalized ? 0 : 1) - (b._justFinalized ? 0 : 1);
+        return 0;
+    });
+    const totalCount = listaOrdenada.length;
+
+    if (section) section.style.display = totalCount === 0 ? 'none' : '';
+    if (totalCount === 0) {
+        container.innerHTML = '';
+        if (header) {
+            var oldNoDueBadge = document.getElementById('no-due-count-badge');
+            if (oldNoDueBadge) oldNoDueBadge.remove();
+        }
+        return;
+    }
+
+    const expanded = !!estadoTareas.showNoDueSection;
+    if (expanded) container.removeAttribute('hidden');
+    else container.setAttribute('hidden', '');
+
+    const icon = toggleBtn ? toggleBtn.querySelector('i') : null;
+    if (icon) icon.style.transform = expanded ? 'rotate(0deg)' : 'rotate(-90deg)';
+
+    if (header) {
+        var badge = document.getElementById('no-due-count-badge');
+        if (!badge) {
+            badge = document.createElement('span');
+            badge.id = 'no-due-count-badge';
+            badge.className = 'ubits-attention-badge ubits-attention-badge--sm ubits-attention-badge--error';
+            badge.setAttribute('aria-label', 'Cantidad de tareas sin fecha de vencimiento');
+            header.appendChild(badge);
+        }
+        badge.textContent = String(totalCount);
+        badge.classList.toggle('ubits-attention-badge--circle', totalCount >= 1 && totalCount <= 9);
+    }
+
+    container.innerHTML = listaOrdenada.map(function (tarea) {
+        return window.renderTaskStrip(tarea, getTaskStripOpts(false));
+    }).join('');
     if (typeof initTooltip === 'function') initTooltip('[data-tooltip]');
 }
 
@@ -1174,6 +1326,14 @@ function initTareasView() {
         });
     }
 
+    const noDueToggle = document.getElementById('no-due-toggle');
+    if (noDueToggle) {
+        noDueToggle.addEventListener('click', function () {
+            estadoTareas.showNoDueSection = !estadoTareas.showNoDueSection;
+            renderTareasSinFecha();
+        });
+    }
+
     // Botón filtros: abre dropdown (como encabezados de seguimiento)
     const filtrosBtn = document.getElementById('tareas-filtros-btn');
     if (filtrosBtn) {
@@ -1228,6 +1388,19 @@ function initTareasView() {
                         } else {
                             renderTareasVencidas();
                         }
+                        return;
+                    }
+
+                    const noDueContent = document.getElementById('no-due-content');
+                    const isInNoDueSection = noDueContent && noDueContent.contains(control);
+                    tarea = (tareasEjemplo.sinFechaVencimiento || []).find(function (t) { return taskIdMatches(t, tareaId); });
+                    if (tarea && isInNoDueSection) {
+                        tarea.done = !tarea.done;
+                        tarea.status = tarea.done ? 'Finalizado' : 'Activo';
+                        if (tarea.done) tarea._justFinalized = true;
+                        else tarea._justFinalized = false;
+                        input.checked = tarea.done;
+                        renderTareasSinFecha();
                         return;
                     }
 
@@ -1462,13 +1635,8 @@ function initTareasView() {
                 const badge = e.target.closest('.tarea-priority-badge');
                 const tareaId = parseInt(badge.dataset.tareaId || badge.getAttribute('data-tarea-id'), 10);
                 if (isNaN(tareaId)) return;
-                let tarea = tareasEjemplo.vencidas.find(function (t) { return taskIdMatches(t, tareaId); });
-                if (!tarea) {
-                    for (var fk in tareasEjemplo.porDia) {
-                        tarea = tareasEjemplo.porDia[fk].find(function (t) { return taskIdMatches(t, tareaId); });
-                        if (tarea) break;
-                    }
-                }
+                const resPriority = findTaskById(tareaId);
+                const tarea = resPriority.tarea;
                 if (!tarea) return;
                 var overlayId = 'tarea-strip-priority-overlay-' + tareaId;
                 var existing = document.getElementById(overlayId);
@@ -1763,6 +1931,8 @@ function initTareasView() {
             handleToday();
         });
     }
+
+    updateTareasFiltrosButtonBadge();
 }
 
 // Usuario por defecto para tareas creadas inline (modo colaborador)
@@ -1821,20 +1991,9 @@ function handleCreateTaskInline(fechaKey, nombreTarea) {
 
 // Función para actualizar prioridad de tarea
 function handleUpdatePriority(tareaId) {
-    // Buscar tarea en vencidas
-    let tarea = tareasEjemplo.vencidas.find(t => taskIdMatches(t, tareaId));
-    let ubicacion = 'vencidas';
-
-    if (!tarea) {
-        // Buscar en tareas por día
-        for (const fechaKey in tareasEjemplo.porDia) {
-            tarea = tareasEjemplo.porDia[fechaKey].find(t => taskIdMatches(t, tareaId));
-            if (tarea) {
-                ubicacion = fechaKey;
-                break;
-            }
-        }
-    }
+    const found = findTaskById(tareaId);
+    const tarea = found.tarea;
+    const ubicacion = found.ubicacion;
 
     if (tarea) {
         // Rotar prioridad: baja -> media -> alta -> baja
@@ -1846,6 +2005,8 @@ function handleUpdatePriority(tareaId) {
         // Re-renderizar
         if (ubicacion === 'vencidas') {
             renderTareasVencidas();
+        } else if (ubicacion === 'sin-fecha') {
+            renderTareasSinFecha();
         } else {
             const dayContainer = document.querySelector(`.tareas-day-container[data-date="${ubicacion}"]`);
             if (dayContainer) {
@@ -1867,6 +2028,13 @@ function handleDelete(tareaId) {
     if (indexVencidas !== -1) {
         tareasEjemplo.vencidas.splice(indexVencidas, 1);
         renderTareasVencidas();
+        return;
+    }
+
+    const indexSinFecha = (tareasEjemplo.sinFechaVencimiento || []).findIndex(t => taskIdMatches(t, tareaId));
+    if (indexSinFecha !== -1) {
+        tareasEjemplo.sinFechaVencimiento.splice(indexSinFecha, 1);
+        renderTareasSinFecha();
         return;
     }
 
@@ -1898,10 +2066,12 @@ function taskIdMatches(t, id) {
     return String(t.id) === String(id);
 }
 
-// Encontrar tarea por id (en vencidas o en porDia) y devolver { tarea, ubicacion } (ubicacion = 'vencidas' o fechaKey)
+// Encontrar tarea por id (vencidas, sin fecha, porDía). ubicacion: 'vencidas' | 'sin-fecha' | fechaKey YYYY-MM-DD
 function findTaskById(tareaId) {
     let tarea = tareasEjemplo.vencidas.find(t => taskIdMatches(t, tareaId));
     if (tarea) return { tarea, ubicacion: 'vencidas' };
+    tarea = (tareasEjemplo.sinFechaVencimiento || []).find(function (t) { return taskIdMatches(t, tareaId); });
+    if (tarea) return { tarea, ubicacion: 'sin-fecha' };
     for (const fechaKey in tareasEjemplo.porDia) {
         tarea = tareasEjemplo.porDia[fechaKey].find(t => taskIdMatches(t, tareaId));
         if (tarea) return { tarea, ubicacion: fechaKey };
@@ -1918,6 +2088,8 @@ function handleUpdateTaskEndDate(tareaId, newYmd) {
 
     if (ubicacion === 'vencidas') {
         tareasEjemplo.vencidas = tareasEjemplo.vencidas.filter(t => !taskIdMatches(t, tareaId));
+    } else if (ubicacion === 'sin-fecha') {
+        tareasEjemplo.sinFechaVencimiento = (tareasEjemplo.sinFechaVencimiento || []).filter(t => !taskIdMatches(t, tareaId));
     } else if (ubicacion) {
         tareasEjemplo.porDia[ubicacion] = (tareasEjemplo.porDia[ubicacion] || []).filter(t => !taskIdMatches(t, tareaId));
     }
@@ -1926,13 +2098,16 @@ function handleUpdateTaskEndDate(tareaId, newYmd) {
         if (!tareasEjemplo.porDia[newYmd]) tareasEjemplo.porDia[newYmd] = [];
         tareasEjemplo.porDia[newYmd].push(tarea);
     } else {
-        tareasEjemplo.vencidas.push(tarea);
+        if (!tareasEjemplo.sinFechaVencimiento) tareasEjemplo.sinFechaVencimiento = [];
+        tareasEjemplo.sinFechaVencimiento.push(tarea);
     }
 
     renderTareasVencidas();
     const daysContainer = document.getElementById('days-container');
     if (daysContainer) {
-        [ubicacion, newYmd].filter(Boolean).forEach(fechaKey => {
+        [ubicacion, newYmd].filter(function (k) {
+            return k && k !== 'vencidas' && k !== 'sin-fecha' && /^\d{4}-\d{2}-\d{2}$/.test(String(k));
+        }).forEach(fechaKey => {
             const dayContainer = daysContainer.querySelector(`.tareas-day-container[data-date="${fechaKey}"]`);
             if (dayContainer) {
                 const fecha = parseDateString(fechaKey);
@@ -2036,6 +2211,7 @@ function renderAllTasks() {
             }
         });
     }
+    updateTareasFiltrosButtonBadge();
 }
 
 // Escapar HTML

@@ -1168,11 +1168,11 @@ showToast('info', 'Ya estás en la documentación 😆', {
     <span>Simple button</span>
 </button>
 
-<!-- Button with badge -->
+<!-- Button with badge (Attention badge sm + error; hijo directo del botón) -->
 <button class="ubits-button ubits-button--primary ubits-button--md">
     <i class="far fa-check"></i>
     <span>Button text</span>
-    <span class="ubits-button__badge"></span>
+    <span class="ubits-attention-badge ubits-attention-badge--sm ubits-attention-badge--error ubits-attention-badge--dot-only" aria-hidden="true"></span>
 </button>
 
 <!-- Icon only button -->
@@ -1214,7 +1214,7 @@ showToast('info', 'Ya estás en la documentación 😆', {
   - Uso: Acciones secundarias, botones de eliminar, controles compactos
 
 **Badge support:**
-- `ubits-button__badge` - Red dot indicator (no text, no border)
+- Attention badge como hijo directo: por defecto `ubits-attention-badge ubits-attention-badge--sm ubits-attention-badge--error` (rojo; puntito: `ubits-attention-badge--dot-only`; un dígito: `ubits-attention-badge--circle`). Otras variantes (`info`, `warning`, `neutral`) si el caso de uso lo pide. Estilos vía `attention-badge.css` (importado por `button.css`).
 
 **Required files:**
 - `components/button.css`

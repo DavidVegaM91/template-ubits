@@ -1,0 +1,98 @@
+/**
+ * UBITS Attention Badge
+ * Conteos compactos (p. ej. botón Filtros, secciones de listas).
+ * Métricas sm alineadas a .ubits-button__badge:not(:empty) y :empty (punto).
+ * Métricas md alineadas a .tareas-overdue-badge en tareas.css.
+ */
+
+.ubits-attention-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    font-family: var(--ubits-font-family-sans);
+    font-weight: var(--font-weight-semibold);
+    line-height: 1;
+    flex-shrink: 0;
+}
+
+/* —— Tamaño sm (botón) —— */
+.ubits-attention-badge--sm {
+    height: 18px;
+    min-width: 18px;
+    padding: 0 5px;
+    border-radius: var(--border-radius-full);
+    /* Misma caja numérica que ubits-button__badge:not(:empty); 10px no está en escala de font-size */
+    font-size: 10px;
+}
+
+.ubits-attention-badge--sm.ubits-attention-badge--dot-only {
+    width: 10px;
+    height: 10px;
+    min-width: 10px;
+    min-height: 10px;
+    padding: 0;
+    border-radius: 50%;
+}
+
+.ubits-attention-badge--sm.ubits-attention-badge--circle:not(.ubits-attention-badge--dot-only) {
+    width: 18px;
+    min-width: 18px;
+    padding: 0;
+    border-radius: 50%;
+}
+
+/* —— Tamaño md (secciones tipo vencidas en tareas) —— */
+.ubits-attention-badge--md {
+    height: 20px;
+    min-width: 20px;
+    padding: 0 6px;
+    border-radius: 10px;
+    font-size: var(--font-size-xs);
+}
+
+.ubits-attention-badge--md.ubits-attention-badge--dot-only {
+    width: 20px;
+    height: 20px;
+    min-width: 20px;
+    min-height: 20px;
+    padding: 0;
+    border-radius: 50%;
+}
+
+.ubits-attention-badge--md.ubits-attention-badge--circle:not(.ubits-attention-badge--dot-only) {
+    width: 20px;
+    min-width: 20px;
+    padding: 0;
+    border-radius: 50%;
+}
+
+/* —— Variantes de color —— */
+.ubits-attention-badge--neutral {
+    background: var(--ubits-bg-2);
+    color: var(--ubits-fg-1-high);
+    box-shadow: 0 0 0 1px var(--ubits-border-1);
+}
+
+.ubits-attention-badge--neutral.ubits-attention-badge--dot-only {
+    background: var(--ubits-fg-1-medium);
+    box-shadow: none;
+}
+
+/* Misma cápsula roja que el badge del botón / conteos urgentes en listas */
+.ubits-attention-badge--error {
+    background: var(--ubits-button-badge);
+    color: var(--ubits-btn-primary-fg);
+}
+
+/* Aviso: acento warning sólido + texto claro (misma lógica que error/info) */
+.ubits-attention-badge--warning {
+    background: var(--ubits-feedback-accent-warning);
+    color: var(--ubits-btn-primary-fg);
+}
+
+/* Info: --accent-info-static-inverted (alineado a guía de tokens en colores.html). */
+.ubits-attention-badge--info {
+    background: var(--ubits-feedback-accent-info-static-inverted);
+    color: var(--ubits-btn-primary-fg);
+}

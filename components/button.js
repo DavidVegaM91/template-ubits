@@ -32,11 +32,11 @@
  *   <i class="far fa-trash"></i>
  * </button>
  * 
- * <!-- Button con badge -->
+ * <!-- Button con badge (Attention badge sm + error; hijo directo del botón) -->
  * <button class="ubits-button ubits-button--primary ubits-button--md">
  *   <i class="far fa-bell"></i>
  *   <span>Notificaciones</span>
- *   <span class="ubits-button__badge"></span>
+ *   <span class="ubits-attention-badge ubits-attention-badge--sm ubits-attention-badge--error ubits-attention-badge--dot-only" aria-hidden="true"></span>
  * </button>
  * ```
  * 
@@ -88,7 +88,7 @@
  * <button class="ubits-button ubits-button--primary ubits-button--md" onclick="verNotificaciones()">
  *   <i class="far fa-bell"></i>
  *   <span>Notificaciones</span>
- *   <span class="ubits-button__badge"></span>
+ *   <span class="ubits-attention-badge ubits-attention-badge--sm ubits-attention-badge--error ubits-attention-badge--dot-only" aria-hidden="true"></span>
  * </button>
  * ```
  * 

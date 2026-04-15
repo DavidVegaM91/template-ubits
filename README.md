@@ -139,6 +139,7 @@ Patrón documentado para reutilizarlo en otros flujos o listas similares.
 - **IA-Button** - Botones especiales para casos de IA (variantes: primary con gradiente radial, secondary outlined; tamaños: sm, md, lg; badge siempre presente; pill shape) - **RENDERIZADO: HTML directo**
 - **Header Product** - Encabezado de producto con breadcrumb, botones de acción (back, info, AI, secundarios, primario, menú) - **RENDERIZADO: loadHeaderProduct()**
 - **Alert** - Notificaciones (tipos: success, info, warning, error; con/sin botón cerrar) - **RENDERIZADO: showAlert() o HTML directo**
+- **Attention badge** - Conteos compactos y punto de aviso (variantes: neutral; error = rojo intenso tipo badge de botón; warning = acento warning sólido con texto claro; info; tamaños sm/md; número, dígito en círculo o solo punto) - **RENDERIZADO: HTML directo** — `attention-badge.css`
 - **Accordion** - Bloques expandibles/colapsables (tamaños: xs, sm, md, lg; título obligatorio; numeración y descripción opcionales) - **RENDERIZADO: HTML directo o createAccordion()**
 - **Toast** - Notificaciones flotantes (tipos: success, info, warning, error; auto-cierre, pausa en hover) - **RENDERIZADO: showToast()**
 - **Input** - Campos de entrada (11 tipos: text, email, password, number, tel, url, select, textarea, search, autocomplete, calendar; tamaños: sm, md, lg; estados: default, hover, focus, invalid, disabled; con iconos, contador, helper text, mandatory/optional, validación manual, scroll infinito automático) - **RENDERIZADO: createInput()**
@@ -363,6 +364,7 @@ Todos los componentes UBITS requieren imports obligatorios:
 - **`documentacion/componentes/ia-button.html`** - Documentación del componente IA-Button
 - **`documentacion/componentes/header-product.html`** - Documentación del componente Header Product
 - **`documentacion/componentes/alert.html`** - Documentación del componente Alert
+- **`documentacion/componentes/attention-badge.html`** - Documentación del componente Attention badge
 - **`documentacion/componentes/accordion.html`** - Documentación del componente Accordion
 - **`documentacion/componentes/toast.html`** - Documentación del componente Toast
 - **`documentacion/componentes/input.html`** - Documentación del componente Input
@@ -881,6 +883,7 @@ loadCardContentCompact('mi-contenedor-compact', [
 - **`documentacion/componentes/ia-button.html`** - Documentación del componente IA-Button
 - **`documentacion/componentes/header-product.html`** - Documentación del componente Header Product
 - **`documentacion/componentes/alert.html`** - Documentación del componente Alert
+- **`documentacion/componentes/attention-badge.html`** - Documentación del componente Attention badge
 - **`documentacion/componentes/accordion.html`** - Documentación del componente Accordion
 - **`documentacion/componentes/toast.html`** - Documentación del componente Toast
 - **`documentacion/componentes/input.html`** - Documentación del componente Input
