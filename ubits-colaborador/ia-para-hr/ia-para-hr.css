@@ -2,6 +2,17 @@
    ESTILOS ESPECÍFICOS PARA ia-para-hr
    ======================================== */
 
+/* Misma animación de borde IA que los botones secundarios de sugerencias (ubits-ia-chat) */
+@keyframes ia-hr-card-border-shift {
+    0%,
+    100% {
+        background-position: 0 0, 0% 50%;
+    }
+    50% {
+        background-position: 0 0, 100% 50%;
+    }
+}
+
 .content-sections {
     display: flex;
     flex-direction: column;
@@ -18,394 +29,223 @@
     width: 100%;
 }
 
-/* Rompe el “card” blanco por defecto solo en la rejilla de tarjetas */
-.section-single > .ia-hr-card-grid {
-    background: transparent !important;
-    border: none !important;
-    padding: 0 !important;
-}
-
-/* —— Hero (gradiente + orbes; contenido centrado) —— */
-.section-single > .ia-hr-hero {
+/* Shell único: misma base que la columna central del chat IA (orbes en ::before) */
+.section-single > .ia-hr-shell {
+    flex: 1;
     width: 100%;
     box-sizing: border-box;
-    padding: var(--padding-4xl) var(--padding-lg) !important;
-    border-radius: var(--border-radius-lg);
-    background: transparent !important;
-    border: none !important;
     position: relative;
-    overflow: hidden;
     isolation: isolate;
+    overflow: hidden;
+    border-radius: var(--border-radius-lg);
+    border: 1px solid var(--ubits-border-1);
+    background-color: var(--ubits-bg-1);
+    /* Por encima del padding heredado de .section-single > div en viewports pequeños (profile.css) */
+    padding: var(--padding-3xl) var(--padding-xl) var(--padding-4xl) !important;
 }
 
-.ia-hr-hero {
-    width: 100%;
-    box-sizing: border-box;
-}
-
-.ia-hr-hero__visual {
+.ia-hr-shell::before {
+    content: '';
     position: absolute;
     inset: 0;
     z-index: 0;
     pointer-events: none;
     border-radius: inherit;
-    overflow: hidden;
+    background:
+        radial-gradient(ellipse 100% 80% at 10% calc(-5% - 70px), rgba(var(--modo-ia-glow-orb-rgb-1), 0.2) 0%, transparent 50%),
+        radial-gradient(ellipse 95% 78% at 50% calc(-8% - 25px), rgba(var(--modo-ia-glow-orb-rgb-2), 0.2) 0%, transparent 48%),
+        radial-gradient(ellipse 95% 75% at 90% calc(-5% - 70px), rgba(var(--modo-ia-glow-orb-rgb-3), 0.2) 0%, transparent 50%);
 }
 
-/* Gradación hero: izquierda → derecha (especificación de diseño) */
-.ia-hr-hero__gradient {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(
-        to right,
-        #0f111c 0%,
-        #070b56 50%,
-        #13145c 100%
-    );
+body[data-theme="dark"] .ia-hr-shell::before {
+    background:
+        radial-gradient(ellipse 100% 80% at 10% calc(-5% - 70px), rgba(var(--modo-ia-glow-orb-rgb-1), 0.2) 0%, transparent 50%),
+        radial-gradient(ellipse 95% 78% at 50% calc(-8% - 25px), rgba(var(--modo-ia-glow-orb-rgb-2), 0.2) 0%, transparent 48%),
+        radial-gradient(ellipse 95% 75% at 90% calc(-5% - 70px), rgba(var(--modo-ia-glow-orb-rgb-3), 0.2) 0%, transparent 50%);
 }
 
-/* Contenedor externo: movimiento lento; orbe interno: pulso de intensidad */
-.ia-hr-hero__orb-wrap {
-    position: absolute;
-    pointer-events: none;
-    will-change: transform;
-}
-
-.ia-hr-hero__orb-wrap--1 {
-    left: 50%;
-    bottom: -52%;
-    top: auto;
-    width: min(36vw, 300px);
-    height: min(36vw, 300px);
-    animation: ia-hr-orb-drift-c 26s ease-in-out infinite;
-}
-
-.ia-hr-hero__orb-wrap--2 {
-    right: -12%;
-    bottom: -6%;
-    width: min(52vw, 400px);
-    height: min(52vw, 400px);
-    animation: ia-hr-orb-drift-b 28s ease-in-out infinite;
-    animation-delay: -7s;
-}
-
-.ia-hr-hero__orb-wrap--3 {
-    left: -14%;
-    top: 8%;
-    bottom: auto;
-    width: min(44vw, 360px);
-    height: min(44vw, 360px);
-    animation: ia-hr-orb-drift-a 22s ease-in-out infinite;
-    animation-delay: -1s;
-}
-
-.ia-hr-hero__orb {
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-    filter: blur(52px);
-    opacity: 0.62;
-    will-change: opacity, transform;
-    animation: ia-hr-orb-glow 9s ease-in-out infinite alternate;
-}
-
-/* Orbe izquierda (#6d83b6) */
-.ia-hr-hero__orb--blue-accent {
-    background: radial-gradient(
-        circle at 35% 35%,
-        color-mix(in srgb, #6d83b6 72%, var(--ubits-fg-bold) 8%) 0%,
-        color-mix(in srgb, #6d83b6 28%, transparent) 52%,
-        transparent 66%
-    );
-    animation-duration: 10s;
-    animation-delay: -1s;
-}
-
-/* Azul marca UBITS (orbe derecha; referencia) */
-.ia-hr-hero__orb--blue-brand {
-    background: radial-gradient(
-        circle at 40% 40%,
-        color-mix(in srgb, var(--ubits-accent-brand) 64%, var(--ubits-fg-bold) 10%) 0%,
-        color-mix(in srgb, var(--ubits-accent-brand) 22%, transparent) 55%,
-        transparent 68%
-    );
-    animation-duration: 8.5s;
-    animation-delay: -3s;
-}
-
-/* Orbe centro: más saturación y menos “gris” (sin mezcla con blanco; pulso más vivo) */
-.ia-hr-hero__orb--blue-indigo {
-    background: radial-gradient(
-        circle at 50% 50%,
-        #5fe8ec 0%,
-        color-mix(in srgb, #4dd4dc 78%, transparent) 38%,
-        color-mix(in srgb, #66d3d8 55%, transparent) 58%,
-        color-mix(in srgb, #66d3d8 22%, transparent) 72%,
-        transparent 82%
-    );
-    filter: blur(42px) saturate(1.55);
-    animation: ia-hr-orb-glow-center 10s ease-in-out infinite alternate;
-    animation-delay: -5s;
-}
-
-/* Desplazamiento en px/vw (no solo % del propio orbe): con blur alto, el % era casi imperceptible */
-@keyframes ia-hr-orb-drift-a {
-    0%,
-    100% {
-        transform: translate(0, 0) rotate(0deg);
-    }
-    25% {
-        transform: translate(calc(8px + 3vw), calc(-10px - 2.5vw)) rotate(2deg);
-    }
-    50% {
-        transform: translate(calc(-12px - 2vw), calc(14px + 3vw)) rotate(-1.5deg);
-    }
-    75% {
-        transform: translate(calc(10px + 2.5vw), calc(10px + 1vw)) rotate(1deg);
-    }
-}
-
-@keyframes ia-hr-orb-drift-b {
-    0%,
-    100% {
-        transform: translate(0, 0) rotate(0deg);
-    }
-    33% {
-        transform: translate(calc(-18px - 3.5vw), calc(12px + 2vw)) rotate(-2deg);
-    }
-    66% {
-        transform: translate(calc(14px + 3vw), calc(-16px - 2.5vw)) rotate(1.5deg);
-    }
-}
-
-/* translate(-50%, 0) + deriva suave; poco movimiento en X para que siga viéndose centrado */
-@keyframes ia-hr-orb-drift-c {
-    0%,
-    100% {
-        transform: translate(-50%, 0) translate(0, 0) rotate(0deg);
-    }
-    25% {
-        transform: translate(-50%, 0) translate(calc(4px + 0.6vw), calc(-14px - 2vw)) rotate(1.2deg);
-    }
-    50% {
-        transform: translate(-50%, 0) translate(calc(-4px - 0.6vw), calc(10px + 2vw)) rotate(-1.2deg);
-    }
-    75% {
-        transform: translate(-50%, 0) translate(calc(3px + 0.5vw), calc(16px + 2vw)) rotate(0.8deg);
-    }
-}
-
-@keyframes ia-hr-orb-glow {
-    0%,
-    100% {
-        opacity: 0.48;
-        transform: scale(0.94);
-    }
-    50% {
-        opacity: 0.94;
-        transform: scale(1.06);
-    }
-}
-
-@keyframes ia-hr-orb-glow-center {
-    0%,
-    100% {
-        opacity: 0.78;
-        transform: scale(0.96);
-    }
-    50% {
-        opacity: 1;
-        transform: scale(1.05);
-    }
-}
-
-@media (prefers-reduced-motion: reduce) {
-    .ia-hr-hero__orb-wrap--1,
-    .ia-hr-hero__orb-wrap--2,
-    .ia-hr-hero__orb-wrap--3 {
-        animation: none;
-    }
-
-    .ia-hr-hero__orb-wrap--3 {
-        transform: translateX(-50%);
-    }
-
-    .ia-hr-hero__orb {
-        animation: none;
-        opacity: 0.68;
-        transform: none;
-    }
-
-    .ia-hr-hero__orb--blue-indigo {
-        opacity: 0.92;
-        filter: blur(42px) saturate(1.55);
-    }
-}
-
-.ia-hr-hero__inner {
+.ia-hr-shell__intro {
     position: relative;
     z-index: 1;
     display: flex;
     flex-direction: column;
     align-items: center;
     text-align: center;
+    max-width: 920px;
+    margin: 0 auto var(--gap-3xl);
     width: 100%;
 }
 
-/* Ancho máximo unificado del contenido del hero (valor fuera de escala de tokens) */
-.ia-hr-hero__title {
-    color: var(--ubits-fg-1-high-inverted);
-    text-align: center;
+.ia-hr-shell__title {
     margin: 0 0 var(--gap-md);
+    padding: 0;
     width: 100%;
-    max-width: 800px;
 }
 
-.ia-hr-hero__subtitle {
-    color: var(--ubits-fg-1-medium-inverted);
+/* Solo «Agentes IA» con gradiente; el resto del título usa color de texto normal */
+.ia-hr-shell__title-line {
+    display: block;
     text-align: center;
-    margin: 0 auto var(--gap-2xl);
-    max-width: 800px;
-    width: 100%;
-}
-
-/* Máquina de escribir (ejemplos de prompts) */
-.ia-hr-hero__typewriter {
-    width: 100%;
-    max-width: 800px;
-    margin: 0 auto;
-}
-
-.ia-hr-hero__typewriter-line {
-    margin: 0;
-    text-align: center;
-    color: var(--ubits-fg-1-medium-inverted);
-}
-
-.ia-hr-hero__typewriter-text {
-    display: inline;
     text-wrap: balance;
-}
-
-.ia-hr-hero__typewriter-cursor {
-    display: inline-block;
-    margin-left: 2px;
-    color: var(--ubits-fg-1-high-inverted);
     font-weight: 600;
-    animation: ia-hr-typewriter-cursor 0.95s step-end infinite;
 }
 
-.ia-hr-hero__typewriter-cursor--static {
-    animation: none;
-    opacity: 1;
+.ia-hr-shell__title-accent {
+    background: linear-gradient(
+        135deg,
+        var(--modo-ia-gradient-a) 0%,
+        var(--modo-ia-gradient-b) 35%,
+        var(--modo-ia-gradient-c) 67%,
+        var(--modo-ia-gradient-d) 100%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
 }
 
-@keyframes ia-hr-typewriter-cursor {
-    0%,
-    49% {
-        opacity: 1;
-    }
-    50%,
-    100% {
-        opacity: 0;
-    }
-}
-
-@media (prefers-reduced-motion: reduce) {
-    .ia-hr-hero__typewriter-cursor {
-        animation: none;
-        opacity: 1;
-    }
-}
-
-[data-theme="dark"] .ia-hr-hero__typewriter-line {
-    color: var(--ubits-fg-1-medium);
-}
-
-[data-theme="dark"] .ia-hr-hero__typewriter-cursor {
+.ia-hr-shell__title-rest {
     color: var(--ubits-fg-1-high);
 }
 
-[data-theme="dark"] .ia-hr-hero__title {
-    color: var(--ubits-fg-1-high);
+.ia-hr-shell__subtitle {
+    margin: 0;
+    color: var(--ubits-fg-2-medium);
+    max-width: 560px;
 }
 
-[data-theme="dark"] .ia-hr-hero__subtitle {
-    color: var(--ubits-fg-1-medium);
+[data-theme="dark"] .ia-hr-shell__subtitle {
+    color: var(--ubits-fg-2-medium);
+}
+
+[data-theme="dark"] .ia-hr-shell__title-rest {
+    color: var(--ubits-fg-1-high);
 }
 
 /* —— Grid de tarjetas —— */
 .ia-hr-card-grid {
+    position: relative;
+    z-index: 1;
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: var(--gap-lg);
     width: 100%;
-    list-style: none;
     margin: 0;
     padding: 0;
 }
 
-.ia-hr-card {
+a.ia-hr-card,
+button.ia-hr-card {
     display: flex;
     flex-direction: column;
-    align-items: stretch;
-    gap: 0;
+    align-items: flex-start;
+    justify-content: flex-start;
+    text-align: left;
+    gap: var(--gap-md);
     margin: 0;
-    padding: var(--padding-lg);
-    background: var(--ubits-bg-1);
-    border: none;
-    border-radius: var(--border-radius-lg);
+    padding: var(--padding-xl) var(--padding-lg);
     box-sizing: border-box;
     min-height: 0;
-    height: 100%;
-}
-
-/* Contenido superior: crece y empuja el footer con el CTA al borde inferior de la celda del grid */
-.ia-hr-card__body {
-    flex: 1 1 auto;
-    min-height: 0;
-    display: flex;
-    flex-direction: column;
-}
-
-/* Footer: solo ancla el botón; sin línea ni borde; aire mínimo respecto al texto (token 12px) */
-.ia-hr-card__footer {
-    margin: 0;
-    margin-top: auto;
-    padding: 0;
-    padding-top: var(--padding-md);
-    border: none;
-    background: transparent;
+    height: auto;
     width: 100%;
-    flex-shrink: 0;
+    position: relative;
+    border-radius: var(--border-radius-lg);
+    border: none;
+    /* Borde interior 1px: no cambia el tamaño de la caja (no “brinco” en la grilla) */
+    box-shadow: inset 0 0 0 1px var(--ubits-border-1);
+    background-color: var(--ubits-bg-1);
+    cursor: pointer;
+    text-decoration: none;
+    color: inherit;
+    font: inherit;
+    appearance: none;
+    -webkit-appearance: none;
+    transition: box-shadow 0.15s ease;
 }
 
-/* Icono a la izquierda; título y descripción a la derecha */
-.ia-hr-card__row {
-    display: flex;
-    flex-direction: row;
-    align-items: flex-start;
-    gap: var(--gap-md);
-    min-width: 0;
+/* Capa interior: borde gradiente 2px solo en hover (el trazo vive dentro del card) */
+a.ia-hr-card::before,
+button.ia-hr-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    opacity: 0;
+    box-sizing: border-box;
+    border: 2px solid transparent;
+    background:
+        linear-gradient(var(--ubits-bg-1), var(--ubits-bg-1)) padding-box,
+        linear-gradient(
+            90deg,
+            var(--modo-ia-gradient-a),
+            var(--modo-ia-gradient-b),
+            var(--modo-ia-gradient-c),
+            var(--modo-ia-gradient-d),
+            var(--modo-ia-gradient-a)
+        )
+            border-box;
+    background-size: 100% 100%, 400% 100%;
+    background-position: 0 0, 0% 50%;
+    background-origin: padding-box, border-box;
+    background-clip: padding-box, border-box;
 }
 
-.ia-hr-card__text {
-    display: flex;
-    flex-direction: column;
-    gap: var(--gap-sm);
-    flex: 1;
-    min-width: 0;
-    text-align: left;
+a.ia-hr-card:hover,
+button.ia-hr-card:hover {
+    box-shadow: none;
+}
+
+a.ia-hr-card:hover::before,
+button.ia-hr-card:hover::before {
+    opacity: 1;
+    animation: ia-hr-card-border-shift 5s ease-in-out infinite;
+}
+
+a.ia-hr-card > *,
+button.ia-hr-card > * {
+    position: relative;
+    z-index: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    a.ia-hr-card:hover::before,
+    button.ia-hr-card:hover::before {
+        animation: none;
+        background-position: 0 0, 0% 50%;
+    }
+}
+
+/* Foco: anillo exterior; sin hover se mantiene el inset 1px */
+a.ia-hr-card:focus-visible,
+button.ia-hr-card:focus-visible {
+    outline: none;
+}
+
+a.ia-hr-card:focus-visible:not(:hover),
+button.ia-hr-card:focus-visible:not(:hover) {
+    box-shadow:
+        inset 0 0 0 1px var(--ubits-border-1),
+        0 0 0 2px var(--ubits-accent-brand);
+}
+
+a.ia-hr-card:hover:focus-visible,
+button.ia-hr-card:hover:focus-visible {
+    box-shadow: 0 0 0 2px var(--ubits-accent-brand);
 }
 
 .ia-hr-card__title {
     color: var(--ubits-fg-1-high);
     margin: 0;
+    width: 100%;
+    text-align: left;
 }
 
 .ia-hr-card__desc {
-    color: var(--ubits-fg-1-medium);
+    color: var(--ubits-fg-2-medium);
     margin: 0;
+    width: 100%;
+    text-align: left;
 }
 
 .ia-hr-card__icon {
@@ -418,6 +258,7 @@
     justify-content: center;
     background: var(--ubits-bg-2);
     font-size: var(--font-size-md);
+    flex-shrink: 0;
 }
 
 .ia-hr-card__icon--pink i {
@@ -440,27 +281,9 @@
     color: var(--ubits-accent-teal);
 }
 
-.ia-hr-card__cta {
-    width: 100%;
-    justify-content: center;
-    flex-shrink: 0;
-}
-
-/* —— FAB chat —— */
-.ia-hr-fab {
-    position: fixed;
-    right: var(--padding-lg);
-    bottom: var(--padding-lg);
-    z-index: 1005;
-}
-
 @media (max-width: 1023px) {
     .ia-hr-card-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-
-    .ia-hr-fab {
-        bottom: calc(var(--padding-lg) + 56px);
     }
 }
 
@@ -469,7 +292,13 @@
         grid-template-columns: 1fr;
     }
 
-    .ia-hr-hero {
-        padding: var(--padding-2xl) var(--padding-md);
+    .section-single > .ia-hr-shell {
+        padding: var(--padding-2xl) var(--padding-md) var(--padding-3xl) !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .section-single > .ia-hr-shell {
+        padding: var(--padding-xl) var(--padding-md) var(--padding-2xl) !important;
     }
 }
