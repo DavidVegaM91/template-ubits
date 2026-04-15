@@ -2075,8 +2075,12 @@ let chatState = {
     hasOpenedWelcomeContentCanvas: false, // true tras abrir "Sugerencias de contenido" desde un chip de primera interacción (Liderazgo/Inglés/Comunicación)
     // Historial y nuevo chat (Bloque 2)
     chats: [],
-    currentChat: { id: null, title: '', createdAt: 0, messages: [] }
+    currentChat: { id: null, title: '', createdAt: 0, messages: [] },
+    historialSearchQuery: ''
 };
+
+/** Búsqueda expandible en panel Mis chats (modo-estudio-ia): UI + filtro en renderHistorialList */
+var historialSearchMode = false;
 
 /**
  * Añade un mensaje al chat actual en memoria (para historial).
@@ -2526,6 +2530,18 @@ function renderHistorialList() {
     var items = hasCurrent ? [cur].concat(saved) : saved;
     var sortTime = function (c) { return c.lastInteractedAt || c.createdAt || 0; };
     items.sort(function (a, b) { return sortTime(b) - sortTime(a); });
+    var q = (chatState.historialSearchQuery || '').trim().toLowerCase();
+    var itemsFiltered = items;
+    if (q) {
+        itemsFiltered = items.filter(function (chat) {
+            var id = chat.id || '';
+            var topicKey = chat.topic || (id && id === currentId ? chatState.currentTopic : null);
+            var topicLabel = (topicKey && TOPIC_LABELS[topicKey]) ? TOPIC_LABELS[topicKey] : null;
+            var descriptionText = topicLabel ? ('Sesión de estudio sobre ' + topicLabel) : 'Sesión de estudio con IA';
+            var title = (chat.title || 'Nuevo chat').toLowerCase();
+            return title.indexOf(q) !== -1 || descriptionText.toLowerCase().indexOf(q) !== -1;
+        });
+    }
     var footerNuevoChat = document.getElementById('historial-panel-nuevo-chat');
     if (footerNuevoChat) footerNuevoChat.disabled = items.length === 0;
     if (items.length === 0) {
@@ -2541,10 +2557,16 @@ function renderHistorialList() {
         listEl.style.display = 'none';
         return;
     }
+    if (itemsFiltered.length === 0 && q) {
+        emptyEl.style.display = 'none';
+        listEl.style.display = 'flex';
+        listEl.innerHTML = '<div class="ubits-ia-chat-historial__search-empty ubits-body-sm-regular">No se encontraron resultados</div>';
+        return;
+    }
     emptyEl.style.display = 'none';
     listEl.style.display = 'flex';
     var html = '';
-    items.forEach(function (chat) {
+    itemsFiltered.forEach(function (chat) {
         var id = chat.id || '';
         var title = (chat.title || 'Nuevo chat').replace(/</g, '&lt;').replace(/"/g, '&quot;');
         var isActive = id && currentId === id;
@@ -2608,6 +2630,68 @@ function renderHistorialList() {
 }
 
 /**
+ * Panel Mis chats: botón lupa → input búsqueda (createInput); clic fuera sin texto → vuelve título + lupa.
+ */
+function initHistorialSearch() {
+    var toggle = document.getElementById('historial-search-toggle');
+    var container = document.getElementById('historial-search-container');
+    var title = document.getElementById('historial-panel-title');
+    var headerStart = document.getElementById('historial-header-start');
+    if (!toggle || !container || !title || !headerStart) return;
+
+    function collapseHistorialSearch() {
+        if (!historialSearchMode) return;
+        historialSearchMode = false;
+        chatState.historialSearchQuery = '';
+        container.innerHTML = '';
+        container.style.display = 'none';
+        container.setAttribute('aria-hidden', 'true');
+        title.style.display = '';
+        toggle.style.display = '';
+        headerStart.classList.remove('ubits-ia-chat-historial__header-start--search-open');
+        renderHistorialList();
+        if (typeof window.initTooltip === 'function') window.initTooltip('#historial-search-toggle[data-tooltip]');
+    }
+
+    toggle.addEventListener('click', function (e) {
+        e.stopPropagation();
+        if (historialSearchMode) return;
+        historialSearchMode = true;
+        title.style.display = 'none';
+        toggle.style.display = 'none';
+        container.style.display = 'flex';
+        container.setAttribute('aria-hidden', 'false');
+        headerStart.classList.add('ubits-ia-chat-historial__header-start--search-open');
+        container.innerHTML = '';
+        if (typeof createInput === 'function') {
+            createInput({
+                containerId: 'historial-search-container',
+                type: 'search',
+                placeholder: 'Buscar conversación...',
+                size: 'xs',
+                showLabel: false,
+                onChange: function (val) {
+                    chatState.historialSearchQuery = val || '';
+                    renderHistorialList();
+                }
+            });
+            setTimeout(function () {
+                var inp = container.querySelector('input');
+                if (inp) inp.focus();
+            }, 100);
+        }
+    });
+
+    document.addEventListener('click', function (e) {
+        if (!historialSearchMode) return;
+        if (container.contains(e.target) || toggle.contains(e.target)) return;
+        var q = (chatState.historialSearchQuery || '').trim();
+        if (q !== '') return;
+        collapseHistorialSearch();
+    });
+}
+
+/**
  * Mapeo de competencia (label) a id de tema
  */
 const COMPETENCY_TO_TOPIC = {
@@ -2627,6 +2711,9 @@ function createStudyChatHTML(options = {}) {
     const isTutorMode = competencies.length > 0;
     const headerInlineStyle = options.welcomeLayout === true ? '' : 'display: none;';
     const userFirstName = options.userFirstName || 'Usuario';
+    const inputPlaceholder = options.welcomeLayout === true
+        ? '¿Cuéntame cómo te puedo ayudar?'
+        : 'Escribir mensaje...';
     const suggestionButtons = isTutorMode
         ? `<span class="ubits-ia-chat-thread__suggestions-label ubits-body-xs-regular">Recomendado para ti:</span>` + competencies.map(c => `<button class="ubits-button ubits-button--secondary ubits-button--xs ubits-ia-chat-thread__competency-chip" data-competency="${COMPETENCY_TO_TOPIC[c] || c.toLowerCase().replace(/\s/g, '')}" data-label="${c}"><span>${c}</span></button>`).join('\n')
         : `
@@ -2659,11 +2746,11 @@ function createStudyChatHTML(options = {}) {
             <div class="ubits-ia-chat-thread__body" id="ubits-ia-chat-thread-body">${welcomeBlock}</div>
             <div class="ubits-ia-chat-thread__input-area">
                 <div class="ubits-ia-chat-thread__input-container">
-                    <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only ubits-ia-chat-thread__input-attach" id="ubits-ia-chat-thread-attach-btn" data-tooltip="Adjuntar" aria-label="Adjuntar"><i class="far fa-paperclip"></i></button>
+                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only ubits-ia-chat-thread__input-attach" id="ubits-ia-chat-thread-attach-btn" data-tooltip="Adjuntar" aria-label="Adjuntar"><i class="far fa-plus"></i></button>
                     <div class="ubits-ia-chat-thread__input-wrapper">
-                        <textarea class="ubits-ia-chat-thread__input" id="ubits-ia-chat-thread-input" placeholder="Escribir mensaje..." rows="1"></textarea>
+                        <textarea class="ubits-ia-chat-thread__input" id="ubits-ia-chat-thread-input" placeholder="${inputPlaceholder}" rows="1"></textarea>
                     </div>
-                    <button type="button" class="ubits-ia-button ubits-ia-button--primary ubits-ia-button--sm ubits-ia-button--icon-only ubits-ia-chat-thread__input-send" id="ubits-ia-chat-thread-send-btn" data-tooltip="Enviar" aria-label="Enviar"><i class="far fa-paper-plane"></i></button>
+                    <button type="button" class="ubits-ia-button ubits-ia-button--primary ubits-ia-button--sm ubits-ia-button--icon-only ubits-ia-chat-thread__input-send" id="ubits-ia-chat-thread-send-btn" data-tooltip="Enviar" aria-label="Enviar"><i class="far fa-arrow-right"></i></button>
                 </div>
                 <div class="ubits-ia-chat-thread__suggestions" id="ubits-ia-chat-thread-suggestions">${suggestionButtons}</div>
             </div>
@@ -4805,6 +4892,7 @@ function initStudyChat(containerId, options = {}) {
     }
 
     notifyModoEstudioIaActionsVisibility();
+    initHistorialSearch();
 }
 
 // Exportar funciones para uso global

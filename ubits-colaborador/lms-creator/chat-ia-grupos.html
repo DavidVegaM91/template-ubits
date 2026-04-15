@@ -17,6 +17,7 @@
     <link rel="stylesheet" href="../../components/floating-menu.css">
     <link rel="stylesheet" href="../../components/profile-menu.css">
     <link rel="stylesheet" href="../../components/button.css">
+    <link rel="stylesheet" href="../../components/input.css">
     <link rel="stylesheet" href="../../components/ia-button.css">
     <link rel="stylesheet" href="../../general-styles/ubits-ia-chat.css">
     <link rel="stylesheet" href="../../components/empty-state.css">
@@ -36,14 +37,21 @@
                     <div class="section-single ubits-ia-chat">
                         <div class="ubits-ia-chat-historial is-open" id="group-creation-historial-panel" aria-label="Mis chats">
                             <div class="ubits-ia-chat-historial__header">
-                                <div class="ubits-ia-chat-historial__header-start">
+                                <div class="ubits-ia-chat-historial__header-start" id="group-creation-historial-header-start">
                                     <button type="button"
                                         class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only"
                                         id="group-creation-historial-panel-back" data-tooltip="Volver" data-tooltip-delay="1000"
                                         aria-label="Volver a grupos">
                                         <i class="far fa-arrow-left"></i>
                                     </button>
-                                    <span class="ubits-body-md-bold">Mis chats</span>
+                                    <span id="group-creation-historial-panel-title" class="ubits-body-md-bold">Mis chats</span>
+                                    <button type="button"
+                                        class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only"
+                                        id="group-creation-historial-search-toggle" data-tooltip="Buscar" data-tooltip-delay="1000"
+                                        aria-label="Buscar conversaciones">
+                                        <i class="far fa-search"></i>
+                                    </button>
+                                    <div id="group-creation-historial-search-container" class="ubits-ia-chat-historial__search-field" style="display: none;" aria-hidden="true"></div>
                                 </div>
                                 <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" id="group-creation-historial-panel-close" data-tooltip="Cerrar" data-tooltip-delay="1000" aria-label="Cerrar panel Mis chats">
                                     <i class="far fa-times"></i>
@@ -87,6 +95,7 @@
     <script src="../../components/floating-menu.js"></script>
     <script src="../../components/profile-menu.js"></script>
     <script src="../../components/empty-state.js"></script>
+    <script src="../../components/input.js"></script>
     <script src="../../components/ia-chat-mobile-drawer.js"></script>
     <script src="../../components/group-creation-chat.js"></script>
     <script src="../../script.js"></script>

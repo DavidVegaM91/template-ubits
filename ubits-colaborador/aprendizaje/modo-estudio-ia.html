@@ -64,14 +64,21 @@
                         <div class="ubits-ia-chat-historial is-open" id="historial-panel"
                             aria-label="Mis chats">
                             <div class="ubits-ia-chat-historial__header">
-                                <div class="ubits-ia-chat-historial__header-start">
+                                <div class="ubits-ia-chat-historial__header-start" id="historial-header-start">
                                     <button type="button"
                                         class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only"
                                         id="historial-panel-back" data-tooltip="Volver" data-tooltip-delay="1000"
                                         aria-label="Volver a la página anterior">
                                         <i class="far fa-arrow-left"></i>
                                     </button>
-                                    <span class="ubits-body-md-bold">Mis chats</span>
+                                    <span id="historial-panel-title" class="ubits-body-md-bold">Mis chats</span>
+                                    <button type="button"
+                                        class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only"
+                                        id="historial-search-toggle" data-tooltip="Buscar" data-tooltip-delay="1000"
+                                        aria-label="Buscar conversaciones">
+                                        <i class="far fa-search"></i>
+                                    </button>
+                                    <div id="historial-search-container" class="ubits-ia-chat-historial__search-field" style="display: none;" aria-hidden="true"></div>
                                 </div>
                                 <button type="button"
                                     class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only"

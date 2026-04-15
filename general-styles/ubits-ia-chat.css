@@ -103,7 +103,7 @@
     gap: var(--gap-md);
     box-sizing: border-box;
     min-height: 48px;
-    padding: var(--padding-sm) var(--padding-xl);
+    padding: var(--padding-sm) var(--padding-md);
     border-bottom: 1px solid var(--ubits-border-1);
     position: relative;
     z-index: 2;
@@ -952,7 +952,7 @@
 .ubits-ia-chat {
     display: flex !important;
     flex-direction: row !important;
-    gap: var(--gap-xl) !important;
+    gap: var(--gap-sm) !important; /* 8px — separación entre columnas (historial | chat | panel) */
     flex: 1 1 0 !important;
     min-height: 0 !important;
     overflow: hidden !important;
@@ -1012,7 +1012,7 @@
     width: 100%;
     box-sizing: border-box;
     min-height: 48px;
-    padding: var(--padding-sm) var(--padding-xl);
+    padding: var(--padding-sm) var(--padding-md);
     border-bottom: 1px solid var(--ubits-border-1);
 }
 
@@ -1030,6 +1030,49 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+}
+
+/* Título ocupa el espacio central; la lupa queda al extremo derecho del bloque (antes del cierre del panel) */
+.ubits-ia-chat-historial__header-start #historial-panel-title,
+.ubits-ia-chat-historial__header-start #group-creation-historial-panel-title {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.ubits-ia-chat-historial__header-start #historial-panel-back,
+.ubits-ia-chat-historial__header-start #group-creation-historial-panel-back {
+    flex-shrink: 0;
+}
+
+.ubits-ia-chat-historial__header-start #historial-search-toggle,
+.ubits-ia-chat-historial__header-start #group-creation-historial-search-toggle {
+    flex-shrink: 0;
+}
+
+/* Búsqueda expandible (Mis chats): input ocupa hueco junto al botón atrás; título + lupa ocultos en --search-open */
+.ubits-ia-chat-historial__search-field {
+    flex: 1;
+    min-width: 0;
+    display: none;
+    align-items: center;
+    box-sizing: border-box;
+}
+
+.ubits-ia-chat-historial__header-start--search-open .ubits-ia-chat-historial__search-field {
+    display: flex;
+}
+
+.ubits-ia-chat-historial__header-start--search-open #historial-panel-title,
+.ubits-ia-chat-historial__header-start--search-open #historial-search-toggle,
+.ubits-ia-chat-historial__header-start--search-open #group-creation-historial-panel-title,
+.ubits-ia-chat-historial__header-start--search-open #group-creation-historial-search-toggle {
+    display: none !important;
+}
+
+.ubits-ia-chat-historial__search-empty {
+    padding: var(--padding-sm) var(--padding-md);
+    color: var(--ubits-fg-1-medium);
+    text-align: center;
 }
 
 .ubits-ia-chat-historial__body {

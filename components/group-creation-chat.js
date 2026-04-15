@@ -34,6 +34,7 @@ function createGroupChatMessageHTML(type, text) {
 function createGroupCreationChatHTML(options) {
     options = options || {};
     var headerStyle = (options.welcomeLayout !== false) ? '' : 'display: none;';
+    var inputPh = (options.welcomeLayout !== false) ? '¿Cuéntame cómo te puedo ayudar?' : 'Escribir mensaje...';
     var userFirstName = escapeHtml(options.userFirstName || 'María Alejandra');
     var suggestionButtons = '<span class="ubits-ia-chat-thread__suggestions-label ubits-body-xs-regular">Puedo ayudarte a:</span>' +
         '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" data-suggestion="crear"><span>Crear grupos</span></button>' +
@@ -68,11 +69,11 @@ function createGroupCreationChatHTML(options) {
         '<div class="ubits-ia-chat-thread__body" id="group-creation-chat-body">' + welcomeBlock + '</div>' +
         '<div class="ubits-ia-chat-thread__input-area">' +
         '<div class="ubits-ia-chat-thread__input-container">' +
-        '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only ubits-ia-chat-thread__input-attach" id="group-creation-chat-attach-btn" data-tooltip="Adjuntar" aria-label="Adjuntar"><i class="far fa-paperclip"></i></button>' +
+        '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only ubits-ia-chat-thread__input-attach" id="group-creation-chat-attach-btn" data-tooltip="Adjuntar" aria-label="Adjuntar"><i class="far fa-plus"></i></button>' +
         '<div class="ubits-ia-chat-thread__input-wrapper">' +
-        '<textarea class="ubits-ia-chat-thread__input" id="group-creation-chat-input" placeholder="Escribir mensaje..." rows="1"></textarea>' +
+        '<textarea class="ubits-ia-chat-thread__input" id="group-creation-chat-input" placeholder="' + inputPh + '" rows="1"></textarea>' +
         '</div>' +
-        '<button type="button" class="ubits-ia-button ubits-ia-button--primary ubits-ia-button--sm ubits-ia-button--icon-only ubits-ia-chat-thread__input-send" id="group-creation-chat-send-btn" data-tooltip="Enviar" aria-label="Enviar"><i class="far fa-paper-plane"></i></button>' +
+        '<button type="button" class="ubits-ia-button ubits-ia-button--primary ubits-ia-button--sm ubits-ia-button--icon-only ubits-ia-chat-thread__input-send" id="group-creation-chat-send-btn" data-tooltip="Enviar" aria-label="Enviar"><i class="far fa-arrow-right"></i></button>' +
         '</div>' +
         '<div class="ubits-ia-chat-thread__suggestions" id="group-creation-chat-suggestions">' + suggestionButtons + '</div>' +
         '</div>' +
@@ -121,8 +122,11 @@ function getMockResponse(suggestionKey, userMessage) {
 /** Estado del chat de grupos (historial y chat actual) */
 var groupCreationState = {
     chats: [],
-    currentChat: { id: null, title: '', createdAt: 0, lastInteractedAt: 0, messages: [] }
+    currentChat: { id: null, title: '', createdAt: 0, lastInteractedAt: 0, messages: [] },
+    historialSearchQuery: ''
 };
+
+var groupHistorialSearchMode = false;
 
 function formatGroupCreationHistorialDate(timestamp) {
     if (!timestamp) return '';
@@ -269,6 +273,15 @@ function initGroupCreationChat(containerId, options) {
         var items = hasCurrent ? [cur].concat(saved) : saved;
         var sortTime = function (c) { return c.lastInteractedAt || c.createdAt || 0; };
         items.sort(function (a, b) { return sortTime(b) - sortTime(a); });
+        var q = (groupCreationState.historialSearchQuery || '').trim().toLowerCase();
+        var itemsFiltered = items;
+        if (q) {
+            itemsFiltered = items.filter(function (chat) {
+                var title = (chat.title || 'Nuevo chat').toLowerCase();
+                var desc = 'chat sobre grupos';
+                return title.indexOf(q) !== -1 || desc.indexOf(q) !== -1;
+            });
+        }
         var footerNuevoChat = document.getElementById('group-creation-historial-panel-nuevo-chat');
         if (footerNuevoChat) footerNuevoChat.disabled = items.length === 0;
         if (items.length === 0) {
@@ -284,10 +297,16 @@ function initGroupCreationChat(containerId, options) {
             listEl.style.display = 'none';
             return;
         }
+        if (itemsFiltered.length === 0 && q) {
+            emptyEl.style.display = 'none';
+            listEl.style.display = 'flex';
+            listEl.innerHTML = '<div class="ubits-ia-chat-historial__search-empty ubits-body-sm-regular">No se encontraron resultados</div>';
+            return;
+        }
         emptyEl.style.display = 'none';
         listEl.style.display = 'flex';
         var html = '';
-        items.forEach(function (chat) {
+        itemsFiltered.forEach(function (chat) {
             var id = chat.id || '';
             var title = (chat.title || 'Nuevo chat').replace(/</g, '&lt;').replace(/"/g, '&quot;');
             var isActive = id && currentId === id;
@@ -504,6 +523,65 @@ function initGroupCreationChat(containerId, options) {
             }
         });
     }
+
+    (function initGroupHistorialSearchInner() {
+        var toggle = document.getElementById('group-creation-historial-search-toggle');
+        var container = document.getElementById('group-creation-historial-search-container');
+        var title = document.getElementById('group-creation-historial-panel-title');
+        var headerStart = document.getElementById('group-creation-historial-header-start');
+        if (!toggle || !container || !title || !headerStart) return;
+
+        function collapseGroupHistorialSearch() {
+            if (!groupHistorialSearchMode) return;
+            groupHistorialSearchMode = false;
+            groupCreationState.historialSearchQuery = '';
+            container.innerHTML = '';
+            container.style.display = 'none';
+            container.setAttribute('aria-hidden', 'true');
+            title.style.display = '';
+            toggle.style.display = '';
+            headerStart.classList.remove('ubits-ia-chat-historial__header-start--search-open');
+            renderGroupCreationHistorialList();
+            if (typeof window.initTooltip === 'function') window.initTooltip('#group-creation-historial-search-toggle[data-tooltip]');
+        }
+
+        toggle.addEventListener('click', function (e) {
+            e.stopPropagation();
+            if (groupHistorialSearchMode) return;
+            groupHistorialSearchMode = true;
+            title.style.display = 'none';
+            toggle.style.display = 'none';
+            container.style.display = 'flex';
+            container.setAttribute('aria-hidden', 'false');
+            headerStart.classList.add('ubits-ia-chat-historial__header-start--search-open');
+            container.innerHTML = '';
+            if (typeof createInput === 'function') {
+                createInput({
+                    containerId: 'group-creation-historial-search-container',
+                    type: 'search',
+                    placeholder: 'Buscar conversación...',
+                    size: 'xs',
+                    showLabel: false,
+                    onChange: function (val) {
+                        groupCreationState.historialSearchQuery = val || '';
+                        renderGroupCreationHistorialList();
+                    }
+                });
+                setTimeout(function () {
+                    var inp = container.querySelector('input');
+                    if (inp) inp.focus();
+                }, 100);
+            }
+        });
+
+        document.addEventListener('click', function (e) {
+            if (!groupHistorialSearchMode) return;
+            if (container.contains(e.target) || toggle.contains(e.target)) return;
+            var qq = (groupCreationState.historialSearchQuery || '').trim();
+            if (qq !== '') return;
+            collapseGroupHistorialSearch();
+        });
+    })();
 
     renderGroupCreationHistorialList();
 }

@@ -151,7 +151,7 @@ body.ia-chat-side-panel-open #tab-bar-container {
 
 /* Header, body y footer del panel (mismos estilos que componente modal UBITS) */
 .ubits-ia-chat-side__header {
-    padding: var(--padding-sm) var(--padding-xl);
+    padding: var(--padding-sm) var(--padding-md);
     border-bottom: 1px solid var(--ubits-border-1);
     display: flex;
     justify-content: space-between;
