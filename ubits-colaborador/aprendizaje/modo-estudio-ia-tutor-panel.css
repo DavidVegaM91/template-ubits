@@ -265,7 +265,7 @@ body.ia-chat-side-panel-open #tab-bar-container {
 }
 
 .ubits-ia-chat-side__footer {
-    padding: var(--padding-lg) var(--padding-xl);
+    padding: var(--padding-md);
     border-top: 1px solid var(--ubits-border-1);
     display: flex;
     justify-content: flex-end;
