@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="../../../images/Ubits-logo-dark.svg">
+    <title>Evaluaciones 360 - Admin | UBITS</title>
+
+    <link rel="stylesheet" href="../../../general-styles/ubits-colors.css">
+    <link rel="stylesheet" href="../../../general-styles/styles.css">
+    <link rel="stylesheet" href="../../../general-styles/fontawesome-icons.css">
+    <link rel="stylesheet" href="../../../general-styles/ubits-typography.css">
+    <link rel="stylesheet" href="../../../components/sub-nav.css">
+    <link rel="stylesheet" href="../../../components/sidebar.css">
+    <link rel="stylesheet" href="../../../components/tab-bar.css">
+    <link rel="stylesheet" href="../../../components/floating-menu.css">
+    <link rel="stylesheet" href="../../../components/profile-menu.css">
+    <link rel="stylesheet" href="../../../components/button.css">
+    <link rel="stylesheet" href="../../../components/ia-button.css">
+    <link rel="stylesheet" href="../../../components/header-product.css">
+    <link rel="stylesheet" href="../../../components/tooltip.css">
+    <link rel="stylesheet" href="../../../components/table.css">
+    <link rel="stylesheet" href="../../../components/status-tag.css">
+    <link rel="stylesheet" href="../../../components/checkbox.css">
+    <link rel="stylesheet" href="../../../components/tab.css">
+    <link rel="stylesheet" href="../../../components/dropdown-menu.css">
+    <link rel="stylesheet" href="../../../components/input.css">
+    <link rel="stylesheet" href="../../../components/modal.css">
+    <link rel="stylesheet" href="../../../components/empty-state.css">
+    <link rel="stylesheet" href="../../../components/toast.css">
+    <link rel="stylesheet" href="../../../components/chip.css">
+    <link rel="stylesheet" href="../../../components/ubits-data-table.css">
+    <link rel="stylesheet" href="./admin-360.css">
+</head>
+<body data-theme="light" class="page-admin-360">
+<div class="dashboard-container">
+    <div class="tooltip" id="tooltip"></div>
+    <div id="sidebar-container"></div>
+
+    <main class="main-content">
+        <div id="top-nav-container"></div>
+        <div class="content-area">
+            <div class="content-sections">
+
+                <!-- Header product -->
+                <div class="section-single">
+                    <div class="widget-header-product" id="header-product-container"></div>
+                </div>
+
+                <!-- Data table de evaluaciones -->
+                <div class="section-single section-single--a360-tabla">
+                    <div class="widget-360-tabla">
+                        <div id="a360-data-table-container" class="a360-tabla"></div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+</div>
+
+<div id="a360-modals-container"></div>
+<div id="tab-bar-container"></div>
+<div id="floating-menu-container"></div>
+<div id="profile-menu-container"></div>
+<div id="ubits-toast-container"></div>
+
+<script src="../../../components/tooltip.js"></script>
+<script src="../../../components/sidebar.js"></script>
+<script src="../../../components/sub-nav.js"></script>
+<script src="../../../components/tab-bar.js"></script>
+<script src="../../../components/floating-menu.js"></script>
+<script src="../../../components/profile-menu.js"></script>
+<script src="../../../components/header-product.js"></script>
+<script src="../../../components/dropdown-menu.js"></script>
+<script src="../../../components/input.js"></script>
+<script src="../../../components/modal.js"></script>
+<script src="../../../components/toast.js"></script>
+<script src="../../../components/ubits-data-table.js"></script>
+<script src="../../../script.js"></script>
+<script src="../../../general-utils/humanizador-fechas.js"></script>
+<script src="../../../bd-master/bd-master-colaboradores.js"></script>
+<script src="../../../bd-master/bd-evaluaciones-360.js"></script>
+<script>
+(function () {
+    'use strict';
+
+    var tablaRef = null;
+    var pendingDeleteId = null;
+    var pendingFinishId = null;
+
+    /* ── helpers ── */
+    function escapeHtml(t) {
+        if (t == null) return '';
+        var d = document.createElement('div');
+        d.textContent = t;
+        return d.innerHTML;
+    }
+
+    function getEstadoTagType(estado) {
+        if (estado === 'activa')     return 'warning';
+        if (estado === 'finalizada') return 'success';
+        return 'neutral';
+    }
+
+    function getEstadoLabel(estado) {
+        var labels = { borrador: 'Borrador', activa: 'Activa', finalizada: 'Finalizada' };
+        return labels[estado] || estado;
+    }
+
+    function formatDate(d) {
+        if (!d) return '—';
+        var parts = d.split('-');
+        if (parts.length !== 3) return d;
+        return parts[2] + '/' + parts[1] + '/' + parts[0];
+    }
+
+    /* ── modal eliminar ── */
+    function buildDeleteModal() {
+        if (typeof getModalHtml !== 'function') return;
+        var body = '<p class="ubits-body-md-regular">¿Estás seguro de que deseas eliminar esta evaluación? Esta acción no se puede deshacer.</p>';
+        var footer = '<button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="a360-delete-cancel"><span>Cancelar</span></button>' +
+            '<button type="button" class="ubits-button ubits-button--error ubits-button--md" id="a360-delete-confirm"><span>Eliminar</span></button>';
+        document.getElementById('a360-modals-container').innerHTML =
+            getModalHtml({ overlayId: 'a360-delete-overlay', title: 'Eliminar evaluación', bodyHtml: body, footerHtml: footer, size: 'sm', closeButtonId: 'a360-delete-close' });
+    }
+
+    function openDeleteModal(id) {
+        pendingDeleteId = id;
+        var overlay = document.getElementById('a360-delete-overlay');
+        if (overlay) { overlay.style.display = 'flex'; overlay.removeAttribute('aria-hidden'); }
+    }
+    function closeDeleteModal() {
+        pendingDeleteId = null;
+        var overlay = document.getElementById('a360-delete-overlay');
+        if (overlay) { overlay.style.display = 'none'; overlay.setAttribute('aria-hidden', 'true'); }
+    }
+
+    /* ── modal finalizar ── */
+    function openFinishModal(id) {
+        pendingFinishId = id;
+        var ev = BD_EVALUACIONES_360.getEvaluacionById(id);
+        openModal({
+            overlayId: 'a360-finish-modal',
+            title: 'Finalizar evaluación',
+            bodyHtml: '<p class="ubits-body-md-regular">¿Deseas finalizar <strong>' + escapeHtml(ev ? ev.nombre : '') + '</strong>? Los evaluadores ya no podrán responder.</p>',
+            footerHtml: '<button class="ubits-button ubits-button--secondary ubits-button--md" onclick="closeModal(\'a360-finish-modal\')"><span>Cancelar</span></button>' +
+                '<button class="ubits-button ubits-button--primary ubits-button--md" id="a360-confirm-finish-btn"><span>Finalizar</span></button>',
+            size: 'sm',
+            closeOnOverlayClick: true
+        });
+        setTimeout(function () {
+            var btn = document.getElementById('a360-confirm-finish-btn');
+            if (btn) btn.addEventListener('click', function () {
+                var ev2 = BD_EVALUACIONES_360.getEvaluacionById(pendingFinishId);
+                if (ev2) ev2.estado = 'finalizada';
+                closeModal('a360-finish-modal');
+                if (tablaRef && typeof tablaRef.refresh === 'function') tablaRef.refresh();
+                showToast('success', 'Evaluación finalizada correctamente');
+            });
+        }, 50);
+    }
+
+    /* ── row HTML para ubits-data-table ── */
+    function buildRowHtml(row) {
+        var tipo = getEstadoTagType(row.estado);
+        var label = getEstadoLabel(row.estado);
+        var tagHtml = '<span class="ubits-status-tag ubits-status-tag--' + tipo + ' ubits-status-tag--sm"><span class="ubits-status-tag__text">' + escapeHtml(label) + '</span></span>';
+        var accionesBtn = '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only js-a360-row-acciones-btn" ' +
+            'data-id="' + escapeHtml(String(row.id)) + '" data-estado="' + escapeHtml(row.estado) + '" ' +
+            'aria-label="Acciones" data-tooltip="Acciones" data-tooltip-delay="500">' +
+            '<i class="far fa-ellipsis-vertical"></i></button>';
+        return '<td data-col="nombre"><span class="ubits-body-sm-regular">' + escapeHtml(row.nombre) + '</span></td>' +
+            '<td data-col="fecha-inicio" data-date="' + escapeHtml(row.fechaInicio) + '"><span class="ubits-body-sm-regular">' + escapeHtml(formatDate(row.fechaInicio)) + '</span></td>' +
+            '<td data-col="fecha-fin" data-date="' + escapeHtml(row.fechaFin) + '"><span class="ubits-body-sm-regular">' + escapeHtml(formatDate(row.fechaFin)) + '</span></td>' +
+            '<td data-col="estado">' + tagHtml + '</td>' +
+            '<td data-col="acciones" class="a360-tabla__td-acciones">' + accionesBtn + '</td>';
+    }
+
+    /* ── menú contextual por fila ── */
+    function openRowMenu(btn, id, estado) {
+        if (typeof getDropdownMenuHtml !== 'function' || typeof openDropdownMenu !== 'function') return;
+        var ACCIONES_POR_ESTADO = {
+            borrador:   [{ text: 'Editar',             value: 'editar',       leftIcon: 'pen'              },
+                         { text: 'Duplicar',            value: 'duplicar',     leftIcon: 'copy'             },
+                         { text: 'Eliminar',            value: 'eliminar',     leftIcon: 'trash', danger: true }],
+            activa:     [{ text: 'Editar',             value: 'editar',       leftIcon: 'pen'              },
+                         { text: 'Finalizar',           value: 'finalizar',    leftIcon: 'flag-checkered'   },
+                         { text: 'Enviar recordatorio', value: 'recordatorio', leftIcon: 'bell'             },
+                         { text: 'Duplicar',            value: 'duplicar',     leftIcon: 'copy'             },
+                         { text: 'Eliminar',            value: 'eliminar',     leftIcon: 'trash', danger: true }],
+            finalizada: [{ text: 'Ver detalle',        value: 'ver',          leftIcon: 'eye'              },
+                         { text: 'Duplicar',            value: 'duplicar',     leftIcon: 'copy'             },
+                         { text: 'Eliminar',            value: 'eliminar',     leftIcon: 'trash', danger: true }]
+        };
+        var options = ACCIONES_POR_ESTADO[estado] || ACCIONES_POR_ESTADO['borrador'];
+        var overlayId = 'a360-row-menu-overlay';
+        var prev = document.getElementById(overlayId);
+        if (prev) prev.remove();
+        document.body.insertAdjacentHTML('beforeend', getDropdownMenuHtml({ overlayId: overlayId, options: options }));
+        var overlay = document.getElementById(overlayId);
+        if (!overlay) return;
+        overlay.style.zIndex = '10100';
+        overlay.querySelectorAll('.ubits-dropdown-menu__option').forEach(function (opt) {
+            opt.addEventListener('click', function () {
+                var val = this.getAttribute('data-value');
+                closeDropdownMenu(overlayId);
+                if (overlay.parentNode) overlay.remove();
+                handleAccion(id, val);
+            });
+        });
+        overlay.addEventListener('click', function (e) {
+            if (e.target === overlay) { closeDropdownMenu(overlayId); if (overlay.parentNode) overlay.remove(); }
+        });
+        openDropdownMenu(overlayId, btn, { alignRight: true });
+    }
+
+    /* ── acciones ── */
+    function handleAccion(id, accion) {
+        if (accion === 'editar' || accion === 'ver') {
+            window.location.href = 'crear-360.html?id=' + id;
+        } else if (accion === 'duplicar') {
+            var orig = BD_EVALUACIONES_360.getEvaluacionById(id);
+            if (orig) {
+                var clone = JSON.parse(JSON.stringify(orig));
+                clone.nombre = 'Copia de ' + orig.nombre;
+                clone.estado = 'borrador';
+                clone.checks = { tipo: false, competencias: false, evaluados: false, resultados: false };
+                BD_EVALUACIONES_360.addEvaluacion(clone);
+                if (tablaRef && typeof tablaRef.refresh === 'function') tablaRef.refresh();
+                showToast('success', 'Evaluación duplicada');
+            }
+        } else if (accion === 'eliminar') {
+            openDeleteModal(id);
+        } else if (accion === 'finalizar') {
+            openFinishModal(id);
+        } else if (accion === 'recordatorio') {
+            showToast('info', 'Recordatorio enviado a los evaluadores');
+        }
+    }
+
+    /* ── inicialización ── */
+    document.addEventListener('DOMContentLoaded', function () {
+        loadSidebar('admin', 'desempeño');
+        loadSubNav('top-nav-container', 'admin-desempeño');
+        loadTabBar('tab-bar-container', 'admin');
+        loadFloatingMenu('floating-menu-container', 'admin');
+        loadProfileMenu('profile-menu-container');
+
+        /* header product */
+        if (typeof loadHeaderProduct === 'function') {
+            loadHeaderProduct('header-product-container', {
+                productName: 'Evaluaciones 360',
+                breadcrumbItems: [],
+                primaryButton: {
+                    text: 'Crear evaluación',
+                    icon: 'fa-plus',
+                    onClick: function () { window.location.href = 'crear-360.html'; }
+                }
+            });
+        }
+
+        /* modal de eliminar */
+        buildDeleteModal();
+
+        /* ubits-data-table */
+        if (typeof createUbitsDataTable === 'function') {
+            tablaRef = createUbitsDataTable({
+                containerId: 'a360-data-table-container',
+                tableId: 'a360-table',
+                title: 'Lista de evaluaciones',
+                columns: [
+                    { id: 'nombre',       label: 'Nombre',       sortable: true },
+                    { id: 'fecha-inicio', label: 'Fecha inicio',  sortable: true, sortType: 'date' },
+                    { id: 'fecha-fin',    label: 'Fecha fin',     sortable: true, sortType: 'date' },
+                    { id: 'estado',       label: 'Estado',        filterable: true },
+                    { id: 'acciones',     label: 'Acciones' }
+                ],
+                getData: function () {
+                    return BD_EVALUACIONES_360.getEvaluaciones();
+                },
+                rowIdField: 'id',
+                buildRowHtml: buildRowHtml,
+                features: { checkboxes: true, search: true, filters: true, verSeleccionados: false, actionBar: true, resultsCount: true },
+                actionBarButtons: [
+                    {
+                        id: 'eliminar',
+                        label: 'Eliminar',
+                        icon: 'fa-trash',
+                        variant: 'error-secondary',
+                        onClick: function (selectedIds) {
+                            if (!selectedIds || selectedIds.length === 0) return;
+                            /* borrar en lote */
+                            selectedIds.forEach(function (id) { BD_EVALUACIONES_360.deleteEvaluacion(id); });
+                            if (tablaRef && typeof tablaRef.refresh === 'function') tablaRef.refresh();
+                            showToast('success', selectedIds.length + ' evaluación(es) eliminada(s)');
+                        }
+                    }
+                ],
+                emptyState: {
+                    message: 'Aún no tienes evaluaciones',
+                    icon: 'far fa-clipboard-list',
+                    description: 'Crea tu primera evaluación 360 usando el botón de arriba.'
+                },
+                emptySearchState: {
+                    message: 'No se encontraron resultados',
+                    description: 'Intenta ajustar tu búsqueda o filtros para encontrar lo que buscas.',
+                    buttonText: 'Limpiar búsqueda'
+                },
+                i18n: {
+                    selectAll: 'Seleccionar todo',
+                    deselectAll: 'Deseleccionar todo',
+                    clearFilters: 'Limpiar filtros',
+                    filtrosAplicados: 'Filtros aplicados',
+                    buscar: 'Buscar'
+                }
+            });
+
+            setTimeout(function () {
+                if (typeof initTooltip === 'function') initTooltip('#a360-data-table-container [data-tooltip]');
+            }, 50);
+        }
+
+        /* delegación de clics en la tabla */
+        var tableContainer = document.getElementById('a360-data-table-container');
+        if (tableContainer) {
+            tableContainer.addEventListener('click', function (e) {
+                var accionBtn = e.target.closest('.js-a360-row-acciones-btn');
+                if (accionBtn) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    openRowMenu(accionBtn, accionBtn.dataset.id, accionBtn.dataset.estado);
+                    return;
+                }
+                /* clic en fila → editar si borrador/activa */
+                var row = e.target.closest('tbody tr[data-id]');
+                if (!row || e.target.closest('.ubits-checkbox') || e.target.closest('input[type="checkbox"]') || e.target.closest('.js-a360-row-acciones-btn')) return;
+                var id = row.getAttribute('data-id');
+                if (id) window.location.href = 'crear-360.html?id=' + id;
+            });
+        }
+
+        /* modal eliminar — listeners */
+        var deleteClose   = document.getElementById('a360-delete-close');
+        var deleteCancel  = document.getElementById('a360-delete-cancel');
+        var deleteConfirm = document.getElementById('a360-delete-confirm');
+        var deleteOverlay = document.getElementById('a360-delete-overlay');
+
+        function closeDel() { closeDeleteModal(); }
+        if (deleteClose)   deleteClose.addEventListener('click', closeDel);
+        if (deleteCancel)  deleteCancel.addEventListener('click', closeDel);
+        if (deleteOverlay) deleteOverlay.addEventListener('click', function (e) { if (e.target === deleteOverlay) closeDel(); });
+        if (deleteConfirm) deleteConfirm.addEventListener('click', function () {
+            if (pendingDeleteId) {
+                BD_EVALUACIONES_360.deleteEvaluacion(pendingDeleteId);
+                if (tablaRef && typeof tablaRef.refresh === 'function') tablaRef.refresh();
+                showToast('success', 'Evaluación eliminada');
+            }
+            closeDel();
+        });
+
+        /* toast desde crear-360 */
+        var params = new URLSearchParams(window.location.search);
+        if (params.get('toast') === 'created') {
+            setTimeout(function () { showToast('success', 'Evaluación creada exitosamente'); }, 300);
+            history.replaceState(null, '', window.location.pathname);
+        }
+    });
+}());
+</script>
+</body>
+</html>

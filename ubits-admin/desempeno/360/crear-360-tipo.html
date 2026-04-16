@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="../../../images/Ubits-logo-dark.svg">
+    <title>Tipo de evaluación | 360 UBITS</title>
+
+    <link rel="stylesheet" href="../../../general-styles/ubits-colors.css">
+    <link rel="stylesheet" href="../../../general-styles/styles.css">
+    <link rel="stylesheet" href="../../../general-styles/fontawesome-icons.css">
+    <link rel="stylesheet" href="../../../general-styles/ubits-typography.css">
+    <link rel="stylesheet" href="../../../general-styles/layout-immersive.css">
+    <link rel="stylesheet" href="../../../components/button.css">
+    <link rel="stylesheet" href="../../../components/input.css">
+    <link rel="stylesheet" href="../../../components/modal.css">
+    <link rel="stylesheet" href="../../../components/toast.css">
+    <link rel="stylesheet" href="../../../components/tooltip.css">
+    <link rel="stylesheet" href="../../../components/tab-bar.css">
+    <link rel="stylesheet" href="../../../components/floating-menu.css">
+    <link rel="stylesheet" href="../../../components/profile-menu.css">
+    <link rel="stylesheet" href="../../../components/sidebar.css">
+    <link rel="stylesheet" href="../../../components/alert.css">
+    <link rel="stylesheet" href="./crear-360-tipo.css">
+</head>
+<body data-theme="light" class="page-layout-immersive page-crear360-tipo">
+
+<div class="ubits-layout-immersive">
+
+    <!-- Header -->
+    <header class="ubits-layout-immersive__header">
+        <div class="ubits-layout-immersive__header-inner">
+            <button type="button"
+                class="ubits-button ubits-button--tertiary ubits-button--md ubits-button--icon-only"
+                id="tipo360-btn-back"
+                data-tooltip="Volver" data-tooltip-delay="800"
+                aria-label="Volver">
+                <i class="far fa-arrow-left"></i>
+            </button>
+            <div class="ubits-layout-immersive__leading">
+                <div class="ubits-layout-immersive__title-row">
+                    <span class="ubits-layout-immersive__title ubits-body-md-bold">Tipo de evaluación</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main -->
+    <main class="ubits-layout-immersive__main">
+        <div class="ubits-layout-immersive__stage">
+
+            <section class="tipo360-description">
+                <h2 class="ubits-body-md-bold">Selecciona quiénes participarán</h2>
+                <p class="ubits-body-md-regular">Activa cada tipo de evaluador y asigna el porcentaje de peso. El total debe sumar exactamente el <strong>100%</strong>.</p>
+            </section>
+
+            <!-- Total indicator -->
+            <div class="tipo360-total-bar">
+                <span class="ubits-body-sm-regular">Total de pesos:</span>
+                <span class="ubits-body-md-bold tipo360-total-num" id="tipo360-total">0%</span>
+                <span id="tipo360-total-alert" class="tipo360-total-alert" style="display:none;">
+                    <i class="far fa-exclamation-circle"></i>
+                    <span class="ubits-body-sm-regular">Debe sumar 100%</span>
+                </span>
+                <span id="tipo360-total-ok" class="tipo360-total-ok" style="display:none;">
+                    <i class="far fa-circle-check"></i>
+                    <span class="ubits-body-sm-regular">Listo</span>
+                </span>
+            </div>
+
+            <!-- Cards de tipos -->
+            <div class="tipo360-cards" id="tipo360-cards"></div>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="ubits-layout-immersive__footer">
+        <div class="ubits-layout-immersive__footer-inner">
+            <div class="ubits-layout-immersive__footer-actions">
+                <div class="ubits-layout-immersive__footer-grow"></div>
+                <div class="ubits-layout-immersive__footer-nav">
+                    <button type="button"
+                        class="ubits-button ubits-button--secondary ubits-button--md"
+                        id="tipo360-btn-cancel">
+                        <span>Cancelar</span>
+                    </button>
+                    <button type="button"
+                        class="ubits-button ubits-button--primary ubits-button--md"
+                        id="tipo360-btn-save"
+                        disabled>
+                        <i class="far fa-save"></i>
+                        <span>Guardar configuración</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </footer>
+</div>
+
+<div id="tab-bar-container"></div>
+<div id="floating-menu-container"></div>
+<div id="profile-menu-container"></div>
+<div id="ubits-toast-container"></div>
+
+<script src="../../../components/tooltip.js"></script>
+<script src="../../../components/sidebar.js"></script>
+<script src="../../../components/tab-bar.js"></script>
+<script src="../../../components/floating-menu.js"></script>
+<script src="../../../components/profile-menu.js"></script>
+<script src="../../../components/input.js"></script>
+<script src="../../../components/modal.js"></script>
+<script src="../../../components/toast.js"></script>
+<script src="../../../script.js"></script>
+<script src="../../../bd-master/bd-evaluaciones-360.js"></script>
+<script>
+(function () {
+    'use strict';
+
+    var DRAFT_KEY = 'AXS360_DRAFT';
+    var _tipos = [];
+
+    function loadDraft() {
+        try { return JSON.parse(sessionStorage.getItem(DRAFT_KEY)) || {}; }
+        catch (e) { return {}; }
+    }
+    function saveDraft(d) { sessionStorage.setItem(DRAFT_KEY, JSON.stringify(d)); }
+
+    /* calcular total */
+    function calcTotal() {
+        return _tipos.reduce(function (acc, t) {
+            return acc + (t.activo ? (parseInt(t.peso, 10) || 0) : 0);
+        }, 0);
+    }
+
+    function updateTotal() {
+        var total = calcTotal();
+        var numEl = document.getElementById('tipo360-total');
+        var alertEl = document.getElementById('tipo360-total-alert');
+        var okEl = document.getElementById('tipo360-total-ok');
+        var saveBtn = document.getElementById('tipo360-btn-save');
+        var alMenosUno = _tipos.some(function (t) { return t.activo; });
+
+        numEl.textContent = total + '%';
+        numEl.style.color = total === 100 ? 'var(--ubits-feedback-accent-success)' : (total > 100 ? 'var(--ubits-feedback-accent-error)' : 'var(--ubits-fg-1-high)');
+
+        if (total === 100 && alMenosUno) {
+            alertEl.style.display = 'none';
+            okEl.style.display = '';
+            saveBtn.disabled = false;
+        } else {
+            alertEl.style.display = alMenosUno ? '' : 'none';
+            okEl.style.display = 'none';
+            saveBtn.disabled = true;
+        }
+    }
+
+    /* renderizar cards */
+    function renderCards() {
+        var container = document.getElementById('tipo360-cards');
+        container.innerHTML = '';
+
+        _tipos.forEach(function (tipo, idx) {
+            var card = document.createElement('div');
+            card.className = 'tipo360-card' + (tipo.activo ? ' tipo360-card--activo' : '');
+            card.innerHTML =
+                '<div class="tipo360-card__left">' +
+                '<label class="tipo360-toggle">' +
+                '<input type="checkbox" class="tipo360-toggle__input" data-idx="' + idx + '" ' + (tipo.activo ? 'checked' : '') + '>' +
+                '<span class="tipo360-toggle__track"></span>' +
+                '</label>' +
+                '</div>' +
+                '<div class="tipo360-card__center">' +
+                '<span class="ubits-body-md-bold tipo360-card__nombre">' + tipo.nombre + '</span>' +
+                '<span class="ubits-body-sm-regular tipo360-card__desc">' + tipo.descripcion + '</span>' +
+                '</div>' +
+                '<div class="tipo360-card__right" id="tipo360-peso-wrap-' + idx + '">' +
+                '</div>';
+
+            container.appendChild(card);
+
+            /* input peso */
+            createInput({
+                containerId: 'tipo360-peso-wrap-' + idx,
+                type: 'number',
+                label: 'Peso %',
+                placeholder: '0',
+                size: 'sm',
+                value: tipo.activo ? String(tipo.peso) : '',
+                disabled: !tipo.activo,
+                onChange: function (val) {
+                    _tipos[idx].peso = parseInt(val, 10) || 0;
+                    updateTotal();
+                }
+            });
+
+            /* toggle */
+            card.querySelector('.tipo360-toggle__input').addEventListener('change', function (e) {
+                _tipos[idx].activo = e.target.checked;
+                _tipos[idx].peso = e.target.checked ? _tipos[idx].pesoSugerido : 0;
+                renderCards();
+                updateTotal();
+            });
+        });
+
+        updateTotal();
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        loadSidebar('admin', 'desempeño');
+        loadTabBar('tab-bar-container', 'admin');
+        loadFloatingMenu('floating-menu-container', 'admin');
+        loadProfileMenu('profile-menu-container');
+
+        var draft = loadDraft();
+        var savedTipos = draft.tipo || [];
+
+        /* Mezclar datos base con guardado en draft */
+        _tipos = BD_EVALUACIONES_360.tiposEvaluacion.map(function (base) {
+            var saved = savedTipos.find(function (s) { return s.id === base.id; });
+            return {
+                id: base.id,
+                nombre: base.nombre,
+                descripcion: base.descripcion,
+                pesoSugerido: base.pesoSugerido,
+                activo: saved ? saved.activo : false,
+                peso: saved ? saved.peso : base.pesoSugerido
+            };
+        });
+
+        renderCards();
+
+        document.getElementById('tipo360-btn-back').addEventListener('click', function () {
+            window.location.href = 'crear-360.html';
+        });
+        document.getElementById('tipo360-btn-cancel').addEventListener('click', function () {
+            window.location.href = 'crear-360.html';
+        });
+        document.getElementById('tipo360-btn-save').addEventListener('click', function () {
+            var d = loadDraft();
+            d.tipo = _tipos.map(function (t) { return { id: t.id, activo: t.activo, peso: t.peso }; });
+            if (!d.checks) d.checks = {};
+            d.checks.tipo = true;
+            saveDraft(d);
+            window.location.href = 'crear-360.html?saved=tipo';
+        });
+
+        if (typeof initTooltip === 'function') initTooltip('[data-tooltip]');
+    });
+}());
+</script>
+</body>
+</html>

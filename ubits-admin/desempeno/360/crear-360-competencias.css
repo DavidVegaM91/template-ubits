@@ -1,0 +1,118 @@
+/* ========================================
+   Crear 360 — Competencias y enunciados
+   ======================================== */
+
+.comp360-description {
+    margin-bottom: var(--gap-xl);
+}
+.comp360-description h2 { color: var(--ubits-fg-1-high); margin: 0 0 var(--gap-sm); }
+.comp360-description p  { color: var(--ubits-fg-1-medium); margin: 0; max-width: 640px; }
+
+.comp360-header-counter {
+    flex-shrink: 0;
+    color: var(--ubits-fg-2-medium);
+}
+
+/* lista */
+.comp360-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-sm);
+}
+
+.comp360-item {
+    background: var(--ubits-bg-1);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: var(--border-radius-lg);
+    overflow: hidden;
+    transition: border-color 0.15s;
+}
+
+.comp360-item--selected {
+    border-color: var(--ubits-accent-brand);
+}
+
+.comp360-item__header {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-md);
+    padding: var(--padding-md) var(--padding-lg);
+    cursor: default;
+}
+
+/* checkbox custom */
+.comp360-item__check-label {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+.comp360-item__checkbox {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+.comp360-item__check-box {
+    width: 20px;
+    height: 20px;
+    border-radius: var(--border-radius-sm);
+    border: 2px solid var(--ubits-border-1);
+    background: var(--ubits-bg-1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s, border-color 0.15s;
+}
+.comp360-item__check-box i {
+    font-size: 11px;
+    color: #fff;
+    opacity: 0;
+    transition: opacity 0.1s;
+}
+.comp360-item__checkbox:checked + .comp360-item__check-box {
+    background: var(--ubits-accent-brand);
+    border-color: var(--ubits-accent-brand);
+}
+.comp360-item__checkbox:checked + .comp360-item__check-box i {
+    opacity: 1;
+}
+
+.comp360-item__nombre {
+    flex: 1;
+    color: var(--ubits-fg-1-high);
+}
+
+.comp360-item__count {
+    color: var(--ubits-fg-2-medium);
+    flex-shrink: 0;
+}
+
+/* enunciados */
+.comp360-item__enunciados {
+    padding: 0 var(--padding-lg) var(--padding-md) calc(var(--padding-lg) + 20px + var(--gap-md));
+    border-top: 1px solid var(--ubits-border-1);
+    background: var(--ubits-bg-2);
+}
+
+.comp360-item__enunciados ul {
+    list-style: none;
+    margin: var(--gap-md) 0 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-sm);
+}
+
+.comp360-item__enunciados li {
+    color: var(--ubits-fg-1-medium);
+    display: flex;
+    gap: var(--gap-sm);
+}
+
+.comp360-enum {
+    color: var(--ubits-fg-2-medium);
+    flex-shrink: 0;
+    min-width: 16px;
+}

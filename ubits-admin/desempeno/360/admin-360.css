@@ -1,0 +1,108 @@
+/* ========================================
+   Admin 360 — Home (Evaluaciones 360)
+   Patrón de layout copiado de lms-creator.css
+   ======================================== */
+
+/* ── Layout de secciones ── */
+.page-admin-360 .content-sections {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-lg);
+    flex: 1;
+    min-width: 0;
+    width: 100%;
+    overflow: visible;
+    max-height: none;
+}
+
+.page-admin-360 .section-single {
+    display: flex;
+    width: 100%;
+}
+
+.page-admin-360 .section-dual {
+    display: flex;
+    gap: var(--gap-xl);
+}
+
+/* Widgets: fondo, borde y padding */
+.page-admin-360 .section-single > div,
+.page-admin-360 .section-dual > div {
+    background-color: var(--ubits-bg-1);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: var(--border-radius-lg);
+    padding: var(--padding-md) !important;
+    width: 100%;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+/* Header-product: sin fondo ni borde propios */
+.page-admin-360 .section-single > .widget-header-product {
+    background-color: transparent !important;
+    border: none !important;
+    padding: var(--padding-none) !important;
+}
+
+/* widget de tabla: hereda el padding base de section-single > div */
+.page-admin-360 .section-single--a360-tabla > .widget-360-tabla {
+    overflow: visible;
+}
+
+@media (max-width: 1023px) {
+    .page-admin-360 .section-dual {
+        flex-direction: column;
+        gap: var(--gap-lg);
+    }
+}
+
+@media (max-width: 480px) {
+    .page-admin-360 .section-single > div,
+    .page-admin-360 .section-dual > div {
+        padding: var(--padding-sm) !important;
+    }
+}
+
+/* ── Tabla 360 ── */
+
+/* Filas clickeables */
+#a360-data-table-container.a360-tabla tbody tr[data-id] {
+    cursor: pointer;
+}
+
+/* Columna acciones */
+.section-single--a360-tabla .ubits-table thead th[data-col="nombre"] {
+    min-width: 180px;
+}
+
+.section-single--a360-tabla .ubits-table thead th[data-col="fecha-inicio"],
+.section-single--a360-tabla .ubits-table thead th[data-col="fecha-fin"] {
+    min-width: 120px;
+}
+
+.section-single--a360-tabla .ubits-table thead th[data-col="estado"] {
+    min-width: 100px;
+}
+
+.section-single--a360-tabla .ubits-table thead th[data-col="acciones"],
+.section-single--a360-tabla .ubits-table tbody td[data-col="acciones"] {
+    width: 88px;
+    min-width: 88px;
+    max-width: 104px;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.a360-tabla__td-acciones {
+    cursor: default;
+}
+
+/* Menú contextual por encima de la tabla */
+.page-admin-360 #a360-row-menu-overlay.ubits-dropdown-menu__overlay {
+    z-index: 10100;
+}
+.page-admin-360 #a360-row-menu-overlay .ubits-dropdown-menu__content {
+    z-index: 10101;
+}

@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="../../../images/Ubits-logo-dark.svg">
+    <title>Evaluados | 360 UBITS</title>
+
+    <link rel="stylesheet" href="../../../general-styles/ubits-colors.css">
+    <link rel="stylesheet" href="../../../general-styles/styles.css">
+    <link rel="stylesheet" href="../../../general-styles/fontawesome-icons.css">
+    <link rel="stylesheet" href="../../../general-styles/ubits-typography.css">
+    <link rel="stylesheet" href="../../../general-styles/layout-immersive.css">
+    <link rel="stylesheet" href="../../../components/button.css">
+    <link rel="stylesheet" href="../../../components/input.css">
+    <link rel="stylesheet" href="../../../components/modal.css">
+    <link rel="stylesheet" href="../../../components/toast.css">
+    <link rel="stylesheet" href="../../../components/tooltip.css">
+    <link rel="stylesheet" href="../../../components/tab-bar.css">
+    <link rel="stylesheet" href="../../../components/floating-menu.css">
+    <link rel="stylesheet" href="../../../components/profile-menu.css">
+    <link rel="stylesheet" href="../../../components/sidebar.css">
+    <link rel="stylesheet" href="../../../components/empty-state.css">
+    <link rel="stylesheet" href="./crear-360-evaluados.css">
+</head>
+<body data-theme="light" class="page-layout-immersive page-crear360-evaluados">
+
+<div class="ubits-layout-immersive">
+
+    <!-- Header -->
+    <header class="ubits-layout-immersive__header">
+        <div class="ubits-layout-immersive__header-inner">
+            <button type="button"
+                class="ubits-button ubits-button--tertiary ubits-button--md ubits-button--icon-only"
+                id="eval360-btn-back"
+                data-tooltip="Volver" data-tooltip-delay="800"
+                aria-label="Volver">
+                <i class="far fa-arrow-left"></i>
+            </button>
+            <div class="ubits-layout-immersive__leading">
+                <div class="ubits-layout-immersive__title-row">
+                    <span class="ubits-layout-immersive__title ubits-body-md-bold">Evaluados</span>
+                </div>
+            </div>
+            <div class="eval360-header-counter">
+                <span class="ubits-body-sm-regular" id="eval360-selected-count">0 evaluados configurados</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main -->
+    <main class="ubits-layout-immersive__main">
+        <div class="ubits-layout-immersive__stage">
+
+            <section class="eval360-description">
+                <h2 class="ubits-body-md-bold">Selecciona los colaboradores a evaluar</h2>
+                <p class="ubits-body-md-regular">Elige los colaboradores que serán evaluados en esta evaluación 360. Debes configurar al menos un evaluado para poder continuar.</p>
+            </section>
+
+            <!-- Búsqueda inline -->
+            <div class="eval360-search-bar">
+                <div id="eval360-search-input" class="eval360-search-input"></div>
+                <span class="ubits-body-sm-regular eval360-search-help">Busca por nombre, cargo o área</span>
+            </div>
+
+            <!-- Lista de colaboradores -->
+            <div class="eval360-list" id="eval360-list"></div>
+
+            <!-- Modal: configurar evaluadores de un evaluado -->
+            <div id="eval360-config-modal-overlay" style="display:none;"></div>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="ubits-layout-immersive__footer">
+        <div class="ubits-layout-immersive__footer-inner">
+            <div class="ubits-layout-immersive__footer-actions">
+                <div class="ubits-layout-immersive__footer-grow"></div>
+                <div class="ubits-layout-immersive__footer-nav">
+                    <button type="button"
+                        class="ubits-button ubits-button--secondary ubits-button--md"
+                        id="eval360-btn-cancel">
+                        <span>Cancelar</span>
+                    </button>
+                    <button type="button"
+                        class="ubits-button ubits-button--primary ubits-button--md"
+                        id="eval360-btn-save"
+                        disabled>
+                        <i class="far fa-save"></i>
+                        <span>Guardar evaluados</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </footer>
+</div>
+
+<div id="tab-bar-container"></div>
+<div id="floating-menu-container"></div>
+<div id="profile-menu-container"></div>
+<div id="ubits-toast-container"></div>
+
+<script src="../../../components/tooltip.js"></script>
+<script src="../../../components/sidebar.js"></script>
+<script src="../../../components/tab-bar.js"></script>
+<script src="../../../components/floating-menu.js"></script>
+<script src="../../../components/profile-menu.js"></script>
+<script src="../../../components/dropdown-menu.js"></script>
+<script src="../../../components/input.js"></script>
+<script src="../../../components/modal.js"></script>
+<script src="../../../components/empty-state.js"></script>
+<script src="../../../components/toast.js"></script>
+<script src="../../../script.js"></script>
+<script src="../../../bd-master/bd-master-colaboradores.js"></script>
+<script src="../../../bd-master/bd-evaluaciones-360.js"></script>
+<script>
+(function () {
+    'use strict';
+
+    var DRAFT_KEY = 'AXS360_DRAFT';
+    var _colaboradores = [];
+    var _evaluados = {};   /* id → { seleccionado, configurado } */
+    var _busqueda = '';
+
+    function loadDraft() {
+        try { return JSON.parse(sessionStorage.getItem(DRAFT_KEY)) || {}; }
+        catch (e) { return {}; }
+    }
+    function saveDraft(d) { sessionStorage.setItem(DRAFT_KEY, JSON.stringify(d)); }
+
+    function countSelected() {
+        return Object.keys(_evaluados).filter(function (id) { return _evaluados[id].seleccionado; }).length;
+    }
+
+    function updateCounter() {
+        var n = countSelected();
+        var el = document.getElementById('eval360-selected-count');
+        if (el) el.textContent = n + (n === 1 ? ' evaluado configurado' : ' evaluados configurados');
+        var saveBtn = document.getElementById('eval360-btn-save');
+        if (saveBtn) saveBtn.disabled = n === 0;
+    }
+
+    function initials(nombre) {
+        var parts = nombre.split(' ').filter(Boolean);
+        return (parts[0][0] + (parts[1] ? parts[1][0] : '')).toUpperCase();
+    }
+
+    function renderList() {
+        var container = document.getElementById('eval360-list');
+        var filtrados = _colaboradores.filter(function (c) {
+            if (!_busqueda) return true;
+            var q = _busqueda.toLowerCase();
+            return c.nombre.toLowerCase().indexOf(q) >= 0
+                || (c.cargo || '').toLowerCase().indexOf(q) >= 0
+                || (c.area || '').toLowerCase().indexOf(q) >= 0;
+        });
+
+        if (filtrados.length === 0) {
+            container.innerHTML = '<p class="ubits-body-md-regular eval360-no-results">No se encontraron colaboradores.</p>';
+            return;
+        }
+
+        container.innerHTML = filtrados.map(function (c) {
+            var sel = _evaluados[c.id] && _evaluados[c.id].seleccionado;
+            var conf = _evaluados[c.id] && _evaluados[c.id].configurado;
+            return '<div class="eval360-row' + (sel ? ' eval360-row--selected' : '') + '" data-id="' + c.id + '">' +
+                '<label class="eval360-row__check-label">' +
+                '<input type="checkbox" class="eval360-row__checkbox eval360-chk" data-id="' + c.id + '" ' + (sel ? 'checked' : '') + '>' +
+                '<span class="eval360-row__check-box"><i class="far fa-check"></i></span>' +
+                '</label>' +
+                '<div class="eval360-row__avatar">' +
+                (c.avatar ? '<img src="' + c.avatar + '" alt="" class="eval360-avatar-img">' :
+                    '<span class="eval360-avatar-placeholder ubits-body-sm-bold">' + initials(c.nombre) + '</span>') +
+                '</div>' +
+                '<div class="eval360-row__info">' +
+                '<span class="ubits-body-md-regular eval360-row__nombre">' + c.nombre + '</span>' +
+                '<span class="ubits-body-sm-regular eval360-row__meta">' + (c.cargo || '') + ' · ' + (c.area || '') + '</span>' +
+                '</div>' +
+                (sel ? '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm eval360-btn-config" data-id="' + c.id + '" data-nombre="' + c.nombre + '">' +
+                    (conf ? '<i class="far fa-circle-check eval360-done-icon"></i>' : '') +
+                    '<span>' + (conf ? 'Ver evaluadores' : 'Asignar evaluadores') + '</span>' +
+                    '</button>' : '') +
+                '</div>';
+        }).join('');
+
+        /* listeners */
+        container.querySelectorAll('.eval360-chk').forEach(function (chk) {
+            chk.addEventListener('change', function (e) {
+                var id = e.target.dataset.id;
+                if (!_evaluados[id]) _evaluados[id] = { seleccionado: false, configurado: false };
+                _evaluados[id].seleccionado = e.target.checked;
+                renderList();
+                updateCounter();
+            });
+        });
+
+        container.querySelectorAll('.eval360-btn-config').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                abrirModalConfig(btn.dataset.id, btn.dataset.nombre);
+            });
+        });
+    }
+
+    /* Modal de asignación de evaluadores */
+    function abrirModalConfig(evaluadoId, evaluadoNombre) {
+        var todos = _colaboradores.filter(function (c) { return c.id !== evaluadoId; });
+        var actual = (_evaluados[evaluadoId] && _evaluados[evaluadoId].evaluadores) || [];
+
+        var rows = todos.map(function (c) {
+            var selEval = actual.indexOf(c.id) >= 0;
+            return '<label class="eval360-modal-row">' +
+                '<input type="checkbox" class="eval360-modal-chk" data-id="' + c.id + '" ' + (selEval ? 'checked' : '') + '>' +
+                '<span class="eval360-modal-check-box"><i class="far fa-check"></i></span>' +
+                '<span class="ubits-body-sm-regular">' + c.nombre + '</span>' +
+                '<span class="ubits-body-sm-regular eval360-modal-meta">' + (c.cargo || '') + '</span>' +
+                '</label>';
+        }).join('');
+
+        openModal({
+            overlayId: 'eval360-config-modal',
+            title: 'Evaluadores de ' + evaluadoNombre,
+            bodyHtml: '<p class="ubits-body-sm-regular" style="margin-bottom:var(--gap-md); color:var(--ubits-fg-2-medium);">Selecciona quiénes evaluarán a este colaborador.</p>' +
+                '<div class="eval360-modal-list">' + rows + '</div>',
+            footerHtml: '<button class="ubits-button ubits-button--secondary ubits-button--md" onclick="closeModal(\'eval360-config-modal\')"><span>Cancelar</span></button>' +
+                '<button class="ubits-button ubits-button--primary ubits-button--md" id="eval360-modal-save-btn"><span>Guardar evaluadores</span></button>',
+            size: 'md',
+            closeOnOverlayClick: true
+        });
+
+        setTimeout(function () {
+            var saveBtn = document.getElementById('eval360-modal-save-btn');
+            if (saveBtn) saveBtn.addEventListener('click', function () {
+                var selIds = [];
+                document.querySelectorAll('.eval360-modal-chk:checked').forEach(function (chk) {
+                    selIds.push(chk.dataset.id);
+                });
+                if (!_evaluados[evaluadoId]) _evaluados[evaluadoId] = { seleccionado: true };
+                _evaluados[evaluadoId].evaluadores = selIds;
+                _evaluados[evaluadoId].configurado = selIds.length > 0;
+                closeModal('eval360-config-modal');
+                renderList();
+                updateCounter();
+            });
+        }, 50);
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        loadSidebar('admin', 'desempeño');
+        loadTabBar('tab-bar-container', 'admin');
+        loadFloatingMenu('floating-menu-container', 'admin');
+        loadProfileMenu('profile-menu-container');
+
+        _colaboradores = BD_MASTER_COLABORADORES.colaboradores || [];
+
+        var draft = loadDraft();
+        _evaluados = draft.evaluados || {};
+
+        /* Búsqueda */
+        createInput({
+            containerId: 'eval360-search-input',
+            type: 'search',
+            placeholder: 'Buscar colaborador...',
+            size: 'md',
+            onChange: function (val) {
+                _busqueda = val || '';
+                renderList();
+            }
+        });
+
+        renderList();
+        updateCounter();
+
+        document.getElementById('eval360-btn-back').addEventListener('click', function () {
+            window.location.href = 'crear-360.html';
+        });
+        document.getElementById('eval360-btn-cancel').addEventListener('click', function () {
+            window.location.href = 'crear-360.html';
+        });
+        document.getElementById('eval360-btn-save').addEventListener('click', function () {
+            var d = loadDraft();
+            d.evaluados = _evaluados;
+            if (!d.checks) d.checks = {};
+            d.checks.evaluados = true;
+            saveDraft(d);
+            window.location.href = 'crear-360.html?saved=evaluados';
+        });
+
+        if (typeof initTooltip === 'function') initTooltip('[data-tooltip]');
+    });
+}());
+</script>
+</body>
+</html>
