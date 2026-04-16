@@ -22,7 +22,6 @@
     <link rel="stylesheet" href="../../../components/floating-menu.css">
     <link rel="stylesheet" href="../../../components/profile-menu.css">
     <link rel="stylesheet" href="../../../components/sidebar.css">
-    <link rel="stylesheet" href="../../../components/alert.css">
     <link rel="stylesheet" href="./crear-360.css">
 </head>
 <body data-theme="light" class="page-layout-immersive page-crear-360">
@@ -79,9 +78,6 @@
                     </div>
                 </div>
             </section>
-
-            <!-- Alert error validación -->
-            <div id="crear360-alert-container" style="display:none; margin-bottom: var(--gap-lg);"></div>
 
             <!-- 4 option cards (bloqueadas hasta guardar) -->
             <section class="crear360-cards-section" id="crear360-cards-section">
@@ -245,7 +241,6 @@
 <script src="../../../components/input.js"></script>
 <script src="../../../components/modal.js"></script>
 <script src="../../../components/toast.js"></script>
-<script src="../../../components/alert.js"></script>
 <script src="../../../script.js"></script>
 <script src="../../../bd-master/bd-evaluaciones-360.js"></script>
 <script>
@@ -307,11 +302,27 @@
         if (title) title.textContent = nombre && nombre.trim() ? nombre.trim() : 'Nueva evaluación 360';
     }
 
+    /* ── APIs de inputs (para setState + helper text desde guardarEvaluacion) ── */
+    var _inputNombreApi = null;
+    var _inputInicioApi = null;
+    var _inputFinApi    = null;
+
+    function setInputError(api, containerId, msg) {
+        if (api && typeof api.setState === 'function') api.setState('invalid');
+        var el = document.querySelector('#' + containerId + ' .ubits-input-helper-text');
+        if (el) { el.textContent = msg; el.style.color = 'var(--ubits-feedback-accent-error)'; }
+    }
+    function clearInputError(api, containerId) {
+        if (api && typeof api.setState === 'function') api.setState('default');
+        var el = document.querySelector('#' + containerId + ' .ubits-input-helper-text');
+        if (el) { el.textContent = '\u00a0'; el.style.color = ''; }
+    }
+
     /* ── renderizar formulario ── */
     function renderForm(draft) {
         var saved = !!(draft && draft.guardado);
 
-        createInput({
+        _inputNombreApi = createInput({
             containerId: 'crear360-input-nombre',
             label: 'Nombre de la evaluación',
             placeholder: 'Ej. Evaluación 360 Liderazgo Q3',
@@ -319,40 +330,49 @@
             size: 'md',
             value: draft ? (draft.nombre || '') : '',
             disabled: saved,
+            showHelper: true,
+            helperText: '\u00a0',
             onChange: function (val) {
                 var d = loadDraft() || {};
                 d.nombre = val;
                 saveDraft(d);
                 syncHeader(val);
+                clearInputError(_inputNombreApi, 'crear360-input-nombre');
                 checkFormModified();
             }
         });
 
-        createInput({
+        _inputInicioApi = createInput({
             containerId: 'crear360-input-inicio',
             label: 'Fecha de inicio',
             type: 'calendar',
             size: 'md',
             value: draft ? (draft.fechaInicio || '') : '',
             disabled: saved,
+            showHelper: true,
+            helperText: '\u00a0',
             onChange: function (val) {
                 var d = loadDraft() || {};
                 d.fechaInicio = val;
                 saveDraft(d);
+                clearInputError(_inputInicioApi, 'crear360-input-inicio');
                 checkFormModified();
             }
         });
 
-        createInput({
+        _inputFinApi = createInput({
             containerId: 'crear360-input-fin',
             label: 'Fecha de fin',
             type: 'calendar',
             size: 'md',
             value: draft ? (draft.fechaFin || '') : '',
+            showHelper: true,
+            helperText: '\u00a0',
             onChange: function (val) {
                 var d = loadDraft() || {};
                 d.fechaFin = val;
                 saveDraft(d);
+                clearInputError(_inputFinApi, 'crear360-input-fin');
                 checkFormModified();
             }
         });
@@ -382,35 +402,37 @@
     /* ── validar y guardar ── */
     function guardarEvaluacion() {
         var draft = loadDraft() || {};
-        var alertContainer = document.getElementById('crear360-alert-container');
 
         var nombre = draft.nombre || '';
         var inicio = draft.fechaInicio || '';
         var fin = draft.fechaFin || '';
 
-        /* Intentar leer inputs directamente si draft no tiene valores */
+        /* Leer input directamente si draft no tiene valor aún */
         if (!nombre) {
             var nombreInp = document.querySelector('#crear360-input-nombre input');
             if (nombreInp) nombre = nombreInp.value;
         }
 
-        if (!nombre || nombre.trim().length < 3) {
-            alertContainer.style.display = '';
-            showAlert('error', 'El nombre de la evaluación debe tener al menos 3 caracteres.', { containerId: 'crear360-alert-container', noClose: false });
-            return false;
+        /* Limpiar errores previos */
+        clearInputError(_inputNombreApi, 'crear360-input-nombre');
+        clearInputError(_inputInicioApi, 'crear360-input-inicio');
+        clearInputError(_inputFinApi,    'crear360-input-fin');
+
+        /* Validar — mostrar todos los errores juntos, focus en el primero */
+        var hasError = false;
+        if (!fin) {
+            setInputError(_inputFinApi, 'crear360-input-fin', 'Selecciona la fecha de fin.');
+            hasError = true;
         }
         if (!inicio) {
-            alertContainer.style.display = '';
-            showAlert('error', 'Debes seleccionar la fecha de inicio.', { containerId: 'crear360-alert-container', noClose: false });
-            return false;
+            setInputError(_inputInicioApi, 'crear360-input-inicio', 'Selecciona la fecha de inicio.');
+            hasError = true;
         }
-        if (!fin) {
-            alertContainer.style.display = '';
-            showAlert('error', 'Debes seleccionar la fecha de fin.', { containerId: 'crear360-alert-container', noClose: false });
-            return false;
+        if (!nombre || nombre.trim().length < 3) {
+            setInputError(_inputNombreApi, 'crear360-input-nombre', 'El nombre debe tener al menos 3 caracteres.');
+            hasError = true;
         }
-
-        alertContainer.style.display = 'none';
+        if (hasError) return false;
 
         draft.nombre = nombre.trim();
         draft.guardado = true;
