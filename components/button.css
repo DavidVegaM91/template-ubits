@@ -20,6 +20,9 @@
     border-radius: var(--border-radius-sm);
     font-family: var(--ubits-font-family-sans);
     font-weight: var(--font-weight-semibold);
+    /* Evita que <button> herede font-size: small del browser (distinto a <a> que hereda del padre).
+       Garantiza que los iconos <i> tengan el mismo tamaño independientemente del elemento HTML usado. */
+    font-size: inherit;
     line-height: 1;
     text-decoration: none;
     cursor: pointer;
