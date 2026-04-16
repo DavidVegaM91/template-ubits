@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="../../images/Ubits-logo-dark.svg">
+    <title>Gestión de contenidos - LMS Creator | UBITS</title>
+
+    <link rel="stylesheet" href="../../general-styles/ubits-colors.css">
+    <link rel="stylesheet" href="../../general-styles/styles.css">
+    <link rel="stylesheet" href="../../general-styles/fontawesome-icons.css">
+    <link rel="stylesheet" href="../../general-styles/ubits-typography.css">
+    <link rel="stylesheet" href="../../components/sidebar.css">
+    <link rel="stylesheet" href="../../components/tab-bar.css">
+    <link rel="stylesheet" href="../../components/floating-menu.css">
+    <link rel="stylesheet" href="../../components/profile-menu.css">
+    <link rel="stylesheet" href="../../components/tooltip.css">
+    <link rel="stylesheet" href="../../components/toast.css">
+    <link rel="stylesheet" href="./lms-creator.css">
+    <link rel="stylesheet" href="./contenidos-sin-migrar.css">
+</head>
+<body data-theme="light" class="page-contenidos-sin-migrar no-subnav">
+    <div class="dashboard-container">
+        <div class="tooltip" id="tooltip"></div>
+
+        <div id="sidebar-container"></div>
+
+        <main class="main-content">
+            <div class="content-area">
+                <div class="content-sections contenidos-sin-migrar-sections">
+                    <div class="section-single">
+                        <div class="contenidos-sin-migrar-shell">
+                            <header class="contenidos-sin-migrar-intro">
+                                <h1 class="contenidos-sin-migrar-title">
+                                    <span class="ubits-display-d2-bold contenidos-sin-migrar-title-line">
+                                        Gestión de contenidos
+                                    </span>
+                                </h1>
+                                <p class="ubits-body-md-regular contenidos-sin-migrar-subtitle">
+                                    En este espacio aparecerá tu contenido migrado. Una vez finalice el proceso, podrás crear y administrar nuevo contenido.
+                                </p>
+                            </header>
+                            <div class="contenidos-sin-migrar-video-wrap">
+                                <iframe
+                                    src="https://www.youtube.com/embed/L_LUpnjgPso"
+                                    title="Vídeo de ejemplo (Big Buck Bunny)"
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                    allowfullscreen></iframe>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div id="tab-bar-container"></div>
+    <div id="floating-menu-container"></div>
+    <div id="profile-menu-container"></div>
+    <div id="ubits-toast-container"></div>
+
+    <script src="../../components/tooltip.js"></script>
+    <script src="../../components/sidebar.js"></script>
+    <script src="../../components/tab-bar.js"></script>
+    <script src="../../components/floating-menu.js"></script>
+    <script src="../../components/profile-menu.js"></script>
+    <script src="../../components/toast.js"></script>
+    <script src="../../script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            loadSidebar('creator', 'lms-creator');
+            loadTabBar('tab-bar-container', 'creator');
+            loadFloatingMenu('floating-menu-container', 'creator');
+            loadProfileMenu('profile-menu-container');
+
+            setTimeout(function () {
+                var sidebarBtn = document.querySelector('.nav-button[data-section="lms-creator"]');
+                if (sidebarBtn) {
+                    document.querySelectorAll('.nav-button').forEach(function (btn) {
+                        btn.classList.remove('active');
+                    });
+                    sidebarBtn.classList.add('active');
+                }
+                var modulosTab = document.querySelector('.tab-bar-item[data-tab="modulos"]');
+                if (modulosTab) {
+                    document.querySelectorAll('.tab-bar-item').forEach(function (item) {
+                        item.classList.remove('active');
+                    });
+                    modulosTab.classList.add('active');
+                }
+                if (typeof setActiveAccordionLink === 'function') {
+                    setActiveAccordionLink('contenidos');
+                }
+            }, 200);
+        });
+    </script>
+</body>
+</html>

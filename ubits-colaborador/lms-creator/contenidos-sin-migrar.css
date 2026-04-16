@@ -1,0 +1,99 @@
+/* ========================================
+   LMS Creator — Contenidos sin migrar
+   Intro + vídeo: tipografía y paddings alineados con ia-para-hr (sin orbes ni gradientes).
+   ======================================== */
+
+.page-contenidos-sin-migrar .content-area {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.contenidos-sin-migrar-sections {
+    width: 100%;
+}
+
+/* Misma caja que .ia-hr-shell (padding, borde, fondo), sin ::before de orbes ni aprendizaje-ia-gradientes */
+.page-contenidos-sin-migrar .section-single > .contenidos-sin-migrar-shell {
+    flex: 1;
+    width: 100%;
+    box-sizing: border-box;
+    position: relative;
+    border-radius: var(--border-radius-lg);
+    border: 1px solid var(--ubits-border-1);
+    background-color: var(--ubits-bg-1);
+    padding: var(--padding-3xl) var(--padding-xl) var(--padding-4xl) !important;
+}
+
+/* Equivalente a .ia-hr-shell__intro */
+.contenidos-sin-migrar-intro {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    max-width: 920px;
+    margin: 0 auto var(--gap-3xl);
+    width: 100%;
+}
+
+/* Equivalente a .ia-hr-shell__title */
+.contenidos-sin-migrar-title {
+    margin: 0 0 var(--gap-md);
+    padding: 0;
+    width: 100%;
+}
+
+/* Equivalente a .ia-hr-shell__title-line: una sola línea, color sólido (sin parte con gradiente) */
+.contenidos-sin-migrar-title-line {
+    display: block;
+    text-align: center;
+    text-wrap: balance;
+    font-weight: 600;
+    color: var(--ubits-fg-1-high);
+}
+
+[data-theme="dark"] .contenidos-sin-migrar-title-line {
+    color: var(--ubits-fg-1-high);
+}
+
+/* Equivalente a .ia-hr-shell__subtitle */
+.contenidos-sin-migrar-subtitle {
+    margin: 0;
+    color: var(--ubits-fg-2-medium);
+    max-width: 560px;
+}
+
+[data-theme="dark"] .contenidos-sin-migrar-subtitle {
+    color: var(--ubits-fg-2-medium);
+}
+
+.contenidos-sin-migrar-video-wrap {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 700px;
+    margin: 0 auto;
+    aspect-ratio: 16 / 9;
+    box-sizing: border-box;
+}
+
+.contenidos-sin-migrar-video-wrap iframe {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border: 0;
+    border-radius: var(--border-radius-md);
+}
+
+@media (max-width: 767px) {
+    .page-contenidos-sin-migrar .section-single > .contenidos-sin-migrar-shell {
+        padding: var(--padding-2xl) var(--padding-md) var(--padding-3xl) !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .page-contenidos-sin-migrar .section-single > .contenidos-sin-migrar-shell {
+        padding: var(--padding-xl) var(--padding-md) var(--padding-2xl) !important;
+    }
+}
