@@ -16,6 +16,13 @@
     border-top: 4px solid var(--ubits-accent-brand);
 }
 
+/* La sección (grid) no lleva marco de styles.css; cada widget sí */
+.page-task-detail .content-sections > .section-single.task-detail-section--body > .task-detail-two-cols {
+    border: none !important;
+    background: transparent !important;
+    box-shadow: none !important;
+}
+
 .task-detail-sections {
     display: flex;
     flex-direction: column;
@@ -59,6 +66,7 @@
 /* Tarjeta blanca independiente (info tarea, subtareas o comentarios) */
 .task-detail-card {
     background-color: var(--ubits-bg-1);
+    border: 1px solid var(--ubits-border-1);
     border-radius: var(--border-radius-md);
     padding: var(--padding-xl);
     width: 100%;
@@ -91,7 +99,7 @@
     min-height: 0;
     background: var(--ubits-bg-1);
     border-radius: var(--border-radius-md);
-    border: none;
+    border: 1px solid var(--ubits-border-1);
     overflow: hidden;
     /* El right se recalcula con JS al cargar y al redimensionar */
     z-index: 20;
