@@ -133,11 +133,12 @@ body.page-crear-contenido {
     background: var(--ubits-bg-2);
 }
 
-/* Fase 3: workspace crece con el contenido; el main hace scroll (no overflow:hidden que recorte). */
+/* Fase 3: workspace crece con el contenido; el main hace scroll (no overflow:hidden que recorte).
+   stretch: rail + columna editor comparten alto; el flex-start del índice Recursos sigue en .crear-contenido-recursos__workspace (contenidos.css). */
 .crear-contenido-shell__main > .crear-contenido-editor-workspace {
     box-sizing: border-box;
     flex: 1 1 auto;
-    min-height: min-content;
+    min-height: max(100%, min-content);
     min-width: 0;
     width: 100%;
     max-width: 1440px;
@@ -145,16 +146,21 @@ body.page-crear-contenido {
     margin-right: auto;
     padding: var(--padding-2xl);
     overflow: visible;
-    align-items: flex-start;
+    align-items: stretch;
 }
 
-/* Rail: sticky dentro del scroll del main (desktop fila). */
+/* Rail: columna flex para que el marco vertical crezca; el nav del stepper usa flex:1 (stepper.css). */
 .crear-contenido-shell__main > .crear-contenido-editor-workspace > .crear-contenido-editor__rail {
-    position: sticky;
-    top: 0;
-    align-self: flex-start;
-    z-index: 2;
+    align-self: stretch;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
     background: var(--ubits-bg-2);
+}
+
+.crear-contenido-shell__main > .crear-contenido-editor-workspace > .crear-contenido-editor__rail > .ubits-stepper__vertical-frame--creator-rail {
+    flex: 1 1 auto;
+    min-height: 0;
 }
 
 /* --- Footer: fondo a todo el ancho del viewport --- */
