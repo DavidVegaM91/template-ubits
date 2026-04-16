@@ -1,0 +1,190 @@
+/* ========================================
+   UBITS — Layout inmersivo (fullscreen product)
+   Cáscara reutilizable: sin sidebar/subnav; header + main scroll + footer fijos al viewport;
+   bandas full-bleed; contenido acotado con --ubits-layout-immersive-max-width (default 1440px).
+   No enlazar en páginas que no usen este patrón.
+   ======================================== */
+
+/* Anula scroll del documento (styles.css fuerza overflow-y en body): shell ocupa viewport. */
+body.page-layout-immersive {
+    margin: 0;
+    box-sizing: border-box;
+    height: 100vh;
+    height: 100dvh;
+    max-height: 100vh;
+    max-height: 100dvh;
+    overflow: hidden !important;
+    overscroll-behavior: none;
+}
+
+.ubits-layout-immersive {
+    --ubits-layout-immersive-max-width: 1440px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 0;
+    max-height: 100%;
+    width: 100%;
+    background: var(--ubits-bg-1);
+    color: var(--ubits-fg-1-medium);
+}
+
+/* Banda superior: borde full-bleed; interior acotado. */
+.ubits-layout-immersive__header {
+    box-sizing: border-box;
+    width: 100%;
+    flex-shrink: 0;
+    background: var(--ubits-bg-1);
+    border-bottom: 1px solid var(--ubits-border-1);
+    min-height: 0;
+}
+
+.ubits-layout-immersive__header-inner {
+    box-sizing: border-box;
+    width: 100%;
+    max-width: var(--ubits-layout-immersive-max-width);
+    margin-left: auto;
+    margin-right: auto;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: space-between;
+    column-gap: var(--gap-md);
+    row-gap: 0;
+    padding-top: max(var(--padding-lg), env(safe-area-inset-top, 0px));
+    padding-bottom: var(--padding-lg);
+    padding-left: max(var(--padding-2xl), env(safe-area-inset-left, 0px));
+    padding-right: max(var(--padding-2xl), env(safe-area-inset-right, 0px));
+    min-height: 0;
+}
+
+.ubits-layout-immersive__header-inner > .ubits-button {
+    flex-shrink: 0;
+    box-sizing: border-box;
+}
+
+.ubits-layout-immersive__leading {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+}
+
+.ubits-layout-immersive__title-row {
+    display: inline-flex;
+    flex-direction: row;
+    align-items: center;
+    gap: var(--gap-sm);
+    min-width: 0;
+    max-width: 100%;
+}
+
+.ubits-layout-immersive__title-row .ubits-status-tag {
+    flex-shrink: 0;
+}
+
+.ubits-layout-immersive__title {
+    flex: 0 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    margin: 0;
+    color: var(--ubits-fg-1-high);
+}
+
+.ubits-layout-immersive__save-slot {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    line-height: 0;
+}
+
+.ubits-layout-immersive__save-slot .ubits-save-indicator {
+    vertical-align: middle;
+}
+
+@media (max-width: 639px) {
+    .ubits-layout-immersive__header-inner {
+        padding-left: max(var(--padding-md), env(safe-area-inset-left, 0px));
+        padding-right: max(var(--padding-md), env(safe-area-inset-right, 0px));
+    }
+
+    .ubits-layout-immersive__footer-actions {
+        padding-left: max(var(--padding-md), env(safe-area-inset-left, 0px));
+        padding-right: max(var(--padding-md), env(safe-area-inset-right, 0px));
+    }
+}
+
+/* Área central: un solo scrollport vertical. */
+.ubits-layout-immersive__main {
+    flex: 1 1 0;
+    min-height: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+    display: flex;
+    flex-direction: column;
+    background: var(--ubits-bg-2);
+}
+
+/* Escenario dentro del main: max-width centrado; `main` en selector gana a reglas solo `.crear-contenido-editor-workspace` de contenidos.css. */
+main.ubits-layout-immersive__main > .ubits-layout-immersive__stage {
+    box-sizing: border-box;
+    flex: 1 1 auto;
+    min-height: max(100%, min-content);
+    min-width: 0;
+    width: 100%;
+    max-width: var(--ubits-layout-immersive-max-width);
+    margin-left: auto;
+    margin-right: auto;
+    padding: var(--padding-2xl);
+    overflow: visible;
+    align-items: stretch;
+}
+
+/* Banda inferior: borde full-bleed. */
+.ubits-layout-immersive__footer {
+    flex-shrink: 0;
+    width: 100%;
+    background: var(--ubits-bg-1);
+    border-top: 1px solid var(--ubits-border-1);
+    box-sizing: border-box;
+}
+
+.ubits-layout-immersive__footer-inner {
+    padding-top: var(--padding-md);
+    padding-bottom: max(var(--padding-md), env(safe-area-inset-bottom, 0px));
+    padding-left: 0;
+    padding-right: 0;
+    box-sizing: border-box;
+}
+
+.ubits-layout-immersive__footer-actions {
+    display: flex;
+    width: 100%;
+    max-width: var(--ubits-layout-immersive-max-width);
+    margin-left: auto;
+    margin-right: auto;
+    box-sizing: border-box;
+    align-items: center;
+    gap: var(--gap-md);
+    flex-wrap: wrap;
+    justify-content: stretch;
+    padding-left: max(var(--padding-2xl), env(safe-area-inset-left, 0px));
+    padding-right: max(var(--padding-2xl), env(safe-area-inset-right, 0px));
+}
+
+.ubits-layout-immersive__footer-grow {
+    flex: 1 1 auto;
+    min-width: var(--gap-md);
+}
+
+.ubits-layout-immersive__footer-nav {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--gap-md);
+    flex-wrap: wrap;
+}

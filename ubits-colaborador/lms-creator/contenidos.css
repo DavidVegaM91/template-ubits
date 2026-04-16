@@ -398,7 +398,7 @@ body.contenido-borrador-drawer-abierto {
 .crear-contenido-step--portada.crear-contenido-step--visible {
     display: flex;
     flex-direction: column;
-    /* shrink 0: la columna no se encoge por debajo del contenido; el scroll lo aplica #crear-contenido-main (crear-contenido.css). */
+    /* shrink 0: la columna no se encoge por debajo del contenido; el scroll lo aplica #crear-contenido-main (layout-immersive.css). */
     flex: 1 0 auto;
     gap: var(--gap-xl);
     width: 100%;
@@ -986,7 +986,7 @@ body.contenido-borrador-drawer-abierto {
     display: flex;
     flex-direction: column;
     gap: var(--gap-xl);
-    /* Scroll en #crear-contenido-main (crear-contenido.css); aquí evita scroll anidado y recortes. */
+    /* Scroll en #crear-contenido-main (layout-immersive.css); aquí evita scroll anidado y recortes. */
     overflow: visible;
     min-height: 0;
 }

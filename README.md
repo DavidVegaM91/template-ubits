@@ -22,6 +22,19 @@ Una **plantilla lista para usar** que permite a **Product Managers**, **Diseñad
 6. **🎨 Usa SOLO tokens UBITS** - `var(--ubits-...)` NUNCA colores hardcodeados
 7. **📁 IMPORTANTE: Nueva estructura de carpetas** - El proyecto ahora está organizado en módulos (`ubits-admin/`, `ubits-colaborador/`, `documentacion/`)
 
+## Layouts de página (cuatro experiencias)
+
+Elige **una** familia por pantalla. Mezclar patrones (por ejemplo SubNav dentro de un flujo inmersivo) suele romper espaciados y scroll.
+
+| # | Nombre | Referencia | Qué incluye | CSS / `body` |
+|---|--------|------------|--------------|--------------|
+| **1** | **Estándar (producto)** | [`index.html`](index.html) | `dashboard-container` → Sidebar + `main.main-content` → `#top-nav-container` + SubNav (`loadSubNav`) + `content-area` + `content-sections` / widgets. Móvil: TabBar, Floating menu, Profile menu. | Base (`ubits-colors`, `styles`, tipografía, FontAwesome) + CSS de navegación + **`script.js`**. CSS de página al final (p. ej. `index.css`). **Sin** `no-subnav` salvo que apliques el layout 2 en la misma URL. |
+| **2** | **Sin SubNav** | [`ubits-colaborador/ia-para-hr/ia-para-hr.html`](ubits-colaborador/ia-para-hr/ia-para-hr.html) | Mismo esqueleto que el estándar (Sidebar + `main.main-content` + secciones) pero **sin** barra superior: no `#top-nav-container` ni `loadSubNav()`. **`class="no-subnav"`** en `<body>`: en `general-styles/styles.css` se corrige el padding de `.main-content` (sin hueco “fantasma” del SubNav en desktop; aire controlado en móvil). | Base + Sidebar / TabBar / … + CSS de página. |
+| **3** | **Inmersivo** | [`ubits-colaborador/lms-creator/crear-contenido.html`](ubits-colaborador/lms-creator/crear-contenido.html) | Sin Sidebar ni SubNav: raíz **`.ubits-layout-immersive`**, cabecera **`.ubits-layout-immersive__header`** (banda full-bleed + **`.ubits-layout-immersive__header-inner`** acotado), **`main.ubits-layout-immersive__main`** (scroll único entre header y pie), pie **`.ubits-layout-immersive__footer`**. Contenido acotado: hijo directo del `main` con **`.ubits-layout-immersive__stage`** (max-width por **`--ubits-layout-immersive-max-width`**, por defecto 1440px). Dentro, secciones o flujos propios del producto. | **`body.page-layout-immersive`** (y **`no-subnav`**). Importar **`general-styles/layout-immersive.css`**. **`script.js`** para tema en `localStorage`. Lógica y estilos del producto en el CSS de la página (p. ej. `crear-contenido.css`). |
+| **4** | **Documentación** | [`documentacion/componentes.html`](documentacion/componentes.html) | SubNav variante **`documentacion`**, Docs Sidebar, `main-content` y área de contenido de documentación. En páginas **`documentacion/componentes/*.html`**: sin TabBar, Floating menu ni Profile menu (ver reglas del template). | `docs-sidebar` + `docstyles` + `sub-nav` + base. |
+
+**Mantenimiento:** ajustes a la cáscara inmersiva → **`general-styles/layout-immersive.css`**. Ajustes al hueco “sin SubNav” → **`general-styles/styles.css`**. Evita copiar reglas de layout en un CSS de página salvo overrides muy localizados.
+
 ## 🚀 Cómo usar esta plantilla
 
 1. **Descarga:** Haz clon o descarga como ZIP
@@ -60,7 +73,7 @@ Una **plantilla lista para usar** que permite a **Product Managers**, **Diseñad
 - **Floating Menu** - Menú flotante modal para navegación móvil (acordeones con subitems). **Variantes** `'default' | 'admin' | 'creator'`: misma estructura de módulos que el README (colaborador / administración / LMS Creator).
 - **Profile Menu** - Menú desplegable del perfil de usuario
 
-**Páginas sin SubNav:** Si la página no usa SubNav (sin `#top-nav-container` ni `loadSubNav()`), añade **`class="no-subnav"`** al `<body>`. En `general-styles/styles.css` queda resuelto el espacio de **`.main-content`**: en **desktop (≥1024px)** se elimina el `padding-top` extra que reserva hueco al SubNav fijo; en **móvil/tablet (≤1023px)** se aplica **16px** de padding superior (`var(--gap-lg)`). Referencia: `ubits-colaborador/perfil/profile.html`, `ubits-colaborador/ia-para-hr/ia-para-hr.html`.
+**Páginas sin SubNav (layout 2):** Ver [Layouts de página (cuatro experiencias)](#layouts-de-página-cuatro-experiencias). Referencias rápidas: `ubits-colaborador/perfil/profile.html`, `ubits-colaborador/ia-para-hr/ia-para-hr.html`.
 
 ### LMS Creator (producto aparte del colaborador)
 
@@ -104,7 +117,7 @@ Las páginas del Creator suelen cargar **`lms-creator.css`** más el **CSS homó
 
 #### **Inventario de HTML en `lms-creator/`**
 
-- **LMS + Categorías:** `contenidos.html`, `categorias.html`, `crear-contenido.html` (creación de contenido en **página dedicada**; desde **`contenidos.html`** el botón **«Crear contenido»** abre `crear-contenido.html`; hashes legacy en la lista redirigen a la misma página)
+- **LMS + Categorías:** `contenidos.html`, `categorias.html`, `crear-contenido.html` (creación de contenido en **página dedicada**, **layout inmersivo** `layout-immersive.css`; desde **`contenidos.html`** el botón **«Crear contenido»** abre `crear-contenido.html`; hashes legacy en la lista redirigen a la misma página)
 - **Planes y grupos:** `planes-formacion.html`, `grupos.html`, `crear-plan-contenidos.html`, `crear-plan-competencias.html`, `editar-plan-contenidos.html`, `editar-plan-competencias.html`, `detalle-plan.html`, `detalle-plan-competencias.html`, `crear-grupo.html`, `detalle-grupo.html`, `chat-ia-grupos.html`
 - **Certificados:** `certificados.html`, `certificados-configuracion.html` (stubs alineados a la plantilla vacía tipo categorías + `header-product`)
 - **Personalización UC:** `personalizacion-u-corporativa.html`, `personalizacion-seguimiento.html` (mismo patrón stub donde aplica)
@@ -423,6 +436,7 @@ Todos los componentes UBITS requieren imports obligatorios:
 │   ├── ubits-typography.css   # Clases de tipografía UBITS oficiales
 │   ├── ubits-spacing-tokens.css # Tokens de espaciado, padding, gap, border-radius y size
 │   ├── fontawesome-icons.css  # Iconos FontAwesome
+│   ├── layout-immersive.css   # Cáscara inmersiva (layout 3): .ubits-layout-immersive*, body.page-layout-immersive
 │   └── styles.css             # Estilos globales compartidos (importa ubits-spacing-tokens)
 ├── 📁 general-utils/          # Utilidades JavaScript transversales (no son componentes UBITS)
 │   └── humanizador-fechas.js   # Fechas humanizadas y estado de planes por fechas (window.*)
@@ -556,7 +570,8 @@ Todos los componentes UBITS requieren imports obligatorios:
 | **`ubits-typography.css`** | Clases de tipografía oficiales: display (d1–d4), headings (h1, h2), body (md/sm, regular/semibold/bold). **Obligatorio** para todo texto. |
 | **`ubits-spacing-tokens.css`** | Tokens de espaciado: `--space-*` (0–96px), `--padding-xs/sm/md/lg/…`, `--gap-*`, `--border-radius-*`, `--size-*`. Usado por `styles.css` y componentes. |
 | **`fontawesome-icons.css`** | Definición de iconos FontAwesome (clases `far`, `fas`, etc.). **Obligatorio** cuando uses componentes con iconos. |
-| **`styles.css`** | Estilos globales: reset, body, scrollbar, layout (dashboard-container, content-area), import de `ubits-spacing-tokens.css`. Cargar en todas las páginas. |
+| **`styles.css`** | Estilos globales: reset, body, scrollbar, layout (dashboard-container, content-area), `body.no-subnav` + `.main-content`, import de `ubits-spacing-tokens.css`. Cargar en todas las páginas. |
+| **`layout-immersive.css`** | **Solo layout 3 (inmersivo):** viewport fijo en `body.page-layout-immersive`, columna **`.ubits-layout-immersive`**, header/main/footer, **`.ubits-layout-immersive__stage`** (max-width centrado; variable `--ubits-layout-immersive-max-width`). No enlazar en páginas estándar con Sidebar. |
 
 ### **📁 `bd-master/` — datos de simulación (playground)**
 

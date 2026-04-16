@@ -1,156 +1,11 @@
 /* ========================================
    LMS Creator — Crear contenido (página dedicada)
-   Shell tipo drawer fullscreen: header/footer full-bleed, main scrollable (Fase 2).
-   Referencia visual: components/drawer.css + .crear-contenido-drawer-overlay en contenidos.css (solo lectura al diseñar).
+   Cáscara: general-styles/layout-immersive.css (clases .ubits-layout-immersive*).
+   Aquí solo layout propio del flujo Creator (rail, stepper, modales, etc.).
    ======================================== */
 
-/* --- Página: alto fijo al viewport; scroll solo en la columna editor (como el drawer).
-   styles.css pone body { overflow-y: auto !important; } — hay que anularlo aquí o el footer
-   baja con el documento y hay que hacer scroll para verlo. --- */
-body.page-crear-contenido {
-    margin: 0;
-    box-sizing: border-box;
-    height: 100vh;
-    height: 100dvh;
-    max-height: 100vh;
-    max-height: 100dvh;
-    overflow: hidden !important;
-    overscroll-behavior: none;
-}
-
-.crear-contenido-shell {
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    min-height: 0;
-    max-height: 100%;
-    width: 100%;
-    background: var(--ubits-bg-1);
-    color: var(--ubits-fg-1-medium);
-}
-
-/* --- Header: banda full-bleed (borde como el footer); el contenido va en __header-inner max 1440. --- */
-.crear-contenido-shell__header {
-    box-sizing: border-box;
-    width: 100%;
-    flex-shrink: 0;
-    background: var(--ubits-bg-1);
-    border-bottom: 1px solid var(--ubits-border-1);
-    min-height: 0;
-}
-
-.crear-contenido-shell__header-inner {
-    box-sizing: border-box;
-    width: 100%;
-    max-width: 1440px;
-    margin-left: auto;
-    margin-right: auto;
-    display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
-    align-items: center;
-    justify-content: space-between;
-    column-gap: var(--gap-md);
-    row-gap: 0;
-    padding-top: max(var(--padding-lg), env(safe-area-inset-top, 0px));
-    padding-bottom: var(--padding-lg);
-    padding-left: max(var(--padding-2xl), env(safe-area-inset-left, 0px));
-    padding-right: max(var(--padding-2xl), env(safe-area-inset-right, 0px));
-    min-height: 0;
-}
-
-/* <a> como botón: forzar border-box para que height:32px sea el total, igual que <button> */
-.crear-contenido-shell__header-inner > .ubits-button {
-    flex-shrink: 0;
-    box-sizing: border-box;
-}
-
-.crear-contenido__header-left {
-    flex: 1;
-    min-width: 0;
-    display: flex;
-    align-items: center;
-}
-
-.crear-contenido__header-title-row {
-    display: inline-flex;
-    flex-direction: row;
-    align-items: center;
-    gap: var(--gap-sm);
-    min-width: 0;
-    max-width: 100%;
-}
-
-.crear-contenido__header-title {
-    flex: 0 1 auto;
-    min-width: 0;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    margin: 0;
-    color: var(--ubits-fg-1-high);
-}
-
-.crear-contenido__header-title-row .ubits-status-tag {
-    flex-shrink: 0;
-}
-
-.crear-contenido__header-save {
-    flex-shrink: 0;
-    display: inline-flex;
-    align-items: center;
-    line-height: 0;
-}
-
-.crear-contenido__header-save .ubits-save-indicator {
-    vertical-align: middle;
-}
-
-@media (max-width: 639px) {
-    .crear-contenido-shell__header-inner {
-        padding-left: max(var(--padding-md), env(safe-area-inset-left, 0px));
-        padding-right: max(var(--padding-md), env(safe-area-inset-right, 0px));
-    }
-
-    .crear-contenido-shell__footer-actions {
-        padding-left: max(var(--padding-md), env(safe-area-inset-left, 0px));
-        padding-right: max(var(--padding-md), env(safe-area-inset-right, 0px));
-    }
-}
-
-/* --- Main: ocupa el hueco entre header y footer; scroll en ESTE elemento (un solo scrollport).
-   El scroll en .crear-contenido-editor__main fallaba en cadena flex (altura mal resuelta → recorte).
-   El rail usa position:sticky para seguir visible al bajar. --- */
-.crear-contenido-shell__main {
-    flex: 1 1 0;
-    min-height: 0;
-    overflow-y: auto;
-    overflow-x: hidden;
-    -webkit-overflow-scrolling: touch;
-    display: flex;
-    flex-direction: column;
-    background: var(--ubits-bg-2);
-}
-
-/* Fase 3: workspace crece con el contenido; el main hace scroll (no overflow:hidden que recorte).
-   stretch: rail + columna editor comparten alto; el flex-start del índice Recursos sigue en .crear-contenido-recursos__workspace (contenidos.css). */
-.crear-contenido-shell__main > .crear-contenido-editor-workspace {
-    box-sizing: border-box;
-    flex: 1 1 auto;
-    min-height: max(100%, min-content);
-    min-width: 0;
-    width: 100%;
-    max-width: 1440px;
-    margin-left: auto;
-    margin-right: auto;
-    padding: var(--padding-2xl);
-    overflow: visible;
-    align-items: stretch;
-}
-
-/* Rail: columna flex para que el marco vertical crezca; el nav del stepper usa flex:1 (stepper.css). */
-.crear-contenido-shell__main > .crear-contenido-editor-workspace > .crear-contenido-editor__rail {
+/* Rail + stepper: columna flex dentro del stage; el marco vertical usa flex:1 en stepper.css. */
+#crear-contenido-main > .crear-contenido-editor-workspace > .crear-contenido-editor__rail {
     align-self: stretch;
     min-height: 0;
     display: flex;
@@ -158,53 +13,9 @@ body.page-crear-contenido {
     background: var(--ubits-bg-2);
 }
 
-.crear-contenido-shell__main > .crear-contenido-editor-workspace > .crear-contenido-editor__rail > .ubits-stepper__vertical-frame--creator-rail {
+#crear-contenido-main > .crear-contenido-editor-workspace > .crear-contenido-editor__rail > .ubits-stepper__vertical-frame--creator-rail {
     flex: 1 1 auto;
     min-height: 0;
-}
-
-/* --- Footer: fondo a todo el ancho del viewport --- */
-.crear-contenido-shell__footer-band {
-    flex-shrink: 0;
-    width: 100%;
-    background: var(--ubits-bg-1);
-    border-top: 1px solid var(--ubits-border-1);
-    box-sizing: border-box;
-}
-
-.crear-contenido-shell__footer-inner {
-    padding-top: var(--padding-md);
-    padding-bottom: max(var(--padding-md), env(safe-area-inset-bottom, 0px));
-    padding-left: 0;
-    padding-right: 0;
-    box-sizing: border-box;
-}
-
-.crear-contenido-shell__footer-actions {
-    display: flex;
-    width: 100%;
-    max-width: 1440px;
-    margin-left: auto;
-    margin-right: auto;
-    box-sizing: border-box;
-    align-items: center;
-    gap: var(--gap-md);
-    flex-wrap: wrap;
-    justify-content: stretch;
-    padding-left: max(var(--padding-2xl), env(safe-area-inset-left, 0px));
-    padding-right: max(var(--padding-2xl), env(safe-area-inset-right, 0px));
-}
-
-.crear-contenido-shell__footer-grow {
-    flex: 1 1 auto;
-    min-width: var(--gap-md);
-}
-
-.crear-contenido-shell__footer-nav {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--gap-md);
-    flex-wrap: wrap;
 }
 
 /*

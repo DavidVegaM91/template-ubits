@@ -52,7 +52,7 @@ Las menciones a “drawer” más abajo son **histórico de migración** o **cri
 
 1. **Nombre del HTML:** `crear-contenido.html` (junto a `crear-contenido.css` / `crear-contenido.js` en la misma carpeta `lms-creator/`).
 2. **Chrome de navegación:** **sin SubNav ni Sidebar** en esta página. Solo el **contenido central** del asistente (shell propio).
-3. **Header y footer full-bleed:** el **fondo** (background) del header y del footer ocupa el **ancho completo del viewport**; el **contenido** interno (título, cerrar/volver, acciones del footer) va en contenedor con padding / max-width. Implementación: `crear-contenido.css` (`.crear-contenido-shell`, bandas header/footer). Referencia visual histórica: criterio similar al componente Drawer en `components/drawer.css` (solo inspiración, no dependencia).
+3. **Header y footer full-bleed:** el **fondo** (background) del header y del footer ocupa el **ancho completo del viewport**; el **contenido** interno va acotado con max-width. Implementación transversal: `general-styles/layout-immersive.css` (`.ubits-layout-immersive*`). Referencia visual histórica: criterio similar al componente Drawer en `components/drawer.css` (solo inspiración, no dependencia).
 4. **URLs con hashtags:** **sí**. En **`crear-contenido.html`** el paso Recursos usa **`#recursos`**; Portada **`#portada`** o sin hash (legacy `#crear-contenido` → `#portada`). Alias largos → **`#recursos`**. Desde **`contenidos.html`**, hashes legacy de la antigua URL embebida redirigen a `crear-contenido.html` con hash canónico.
 
 **Entregables (checklist Fase 0)**
@@ -94,7 +94,7 @@ Abrís `crear-contenido.html` en el navegador: carga sin errores 404 de CSS/JS c
   - **Header:** banda **100% viewport** de fondo; interior con título “Crear contenido”, acción cerrar/volver (enlace a `contenidos.html` **solo** en esta página).
   - **Main:** área scrollable, ancho del contenido acotado al “canvas” del flujo (sin sidebar).
   - **Footer:** banda **100% viewport** de fondo; interior con zona Anterior / Siguiente (puede ser estático o deshabilitado).
-- [x] En `crear-contenido.css`, layout con tokens UBITS: altura viewport, flex column, footer pegado abajo, **full-bleed** en header/footer (criterio alineado a `components/drawer.css` como referencia + reglas bajo **`.crear-contenido-drawer-overlay`** en `contenidos.css` para workspace; clases del shell: `.crear-contenido-shell`, etc.).
+- [x] Cáscara inmersiva en `layout-immersive.css` (`.ubits-layout-immersive*`); `crear-contenido.css` solo Creator (rail, stepper, z-index). Reglas workspace bajo **`.crear-contenido-drawer-overlay`** en `contenidos.css`.
 - [x] **No** copiar aún stepper funcional ni pasos 1–2 con datos; puede ser un bloque “Paso 1 (placeholder)”.
 - [x] **No modificar** `contenidos.css` salvo que sea estrictamente necesario; preferir todo en `crear-contenido.css`.
 
@@ -188,7 +188,7 @@ Navegación clara hacia **`crear-contenido.html`**; un solo flujo de creación e
 |--------|------------|
 | Duplicación de JS (lista vs página) | Resuelta en el corte: un solo archivo `crear-contenido.js`. |
 | IDs duplicados si misma sesión abre ambas vistas | Namespace `cc-page-*` en la página nueva. |
-| Reglas CSS conflictivas | Todo lo nuevo bajo prefijo del shell (p. ej. `.crear-contenido-shell`) en `crear-contenido.css`. |
+| Reglas CSS conflictivas | Layout inmersivo en `layout-immersive.css`; prefijo Creator en `crear-contenido.css`. |
 | Paso 4 con overlay anidado en shell incorrecto | Resuelto al usar página dedicada como contenedor principal del asistente. |
 
 ### 5.1 Bug ya visto (no repetir): `<a>` con clases de Button y `box-sizing`
@@ -199,7 +199,7 @@ Al maquetar el header (Fase 2), el alto del botón de cierre **no** coincidía c
 |----------|---------|
 | **Síntoma** | El enlace “botón” mide **más alto** de lo esperado; el **flex** del header adopta ese alto y la cabecera se infla. |
 | **Por qué** | En `components/button.css`, `height` (p. ej. **32px** en `sm`) está pensada como **alto total** del control. Los `<button>` suelen acabar comportándose como **`border-box`** en la práctica. Un `<a class="ubits-button">` puede seguir en **`content-box`**: entonces `height: 32px` aplica solo al **contenido** y el **padding vertical se suma** por fuera (~51px de alto real), no 32px. |
-| **Corrección** | En `crear-contenido.css`, en el selector del cierre (p. ej. `.crear-contenido-shell__header > .ubits-button`), añadir **`box-sizing: border-box`** para que `height` y padding cuadren como en un **`<button>`** nativo con las mismas clases. Alternativa: usar `<button type="button">` + navegación por JS si no debe ser enlace nativo. |
+| **Corrección** | En `layout-immersive.css`, `.ubits-layout-immersive__header-inner > .ubits-button` con **`box-sizing: border-box`** para ancla con clases de botón. Alternativa: `<button type="button">` + JS. |
 | **Regla para quien implemente** | Si en **cualquier página** se reutilizan clases de `button.css` en un **`<a>`**, no dar por hecho que el tamaño coincide con `<button>`: comprobar modelo de caja o fijar `border-box` en ese contexto. `button.css` no fuerza `box-sizing` globalmente sobre enlaces. |
 
 ---
@@ -222,7 +222,7 @@ Antes de cada PR/commit que toque el flujo crear contenido, verificar:
 |-------|------|----------------|-------|
 | 2026-04-14 | 0 | PM (pendiente firma) | Nombres `crear-contenido.*`; sin SubNav/Sidebar; header/footer full-bleed; hashes OK. |
 | 2026-04-14 | 1 | PM (pendiente QA) | `crear-contenido.html` + `crear-contenido.css` esqueleto; sin tocar `contenidos.html`. |
-| 2026-04-14 | 2 | PM (pendiente QA) | Shell `.crear-contenido-shell` (header/main/footer full-bleed); placeholder paso 1; enlace a `contenidos.html`; sin cambios en `contenidos.css`. |
+| 2026-04-14 | 2 | PM (pendiente QA) | Cáscara `.ubits-layout-immersive`; placeholder paso 1; enlace a `contenidos.html`. |
 | | 3 | | |
 | | 4 | | |
 | 2026-04-14 | 5 | PM (pendiente firma) | QA doc: `contexto-creacion-contenido.md` + README; `crear-contenido-app-open` (z-index dropdowns); checklist en plan. |
