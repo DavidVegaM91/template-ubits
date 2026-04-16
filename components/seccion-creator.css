@@ -137,6 +137,8 @@
     margin-right: 0;
 }
 
+.ubits-seccion-creator__section:hover .ubits-seccion-creator__section-menu,
+.ubits-seccion-creator__section:focus-within .ubits-seccion-creator__section-menu,
 .ubits-seccion-creator__section.is-active .ubits-seccion-creator__section-menu {
     display: inline-flex;
 }

@@ -228,6 +228,9 @@
     margin-right: var(--padding-md);
 }
 
+.ubits-paginas-creator__item:hover .ubits-paginas-creator__menu,
+.ubits-paginas-creator__item.is-force-hover .ubits-paginas-creator__menu,
+.ubits-paginas-creator__item:focus-within .ubits-paginas-creator__menu,
 .ubits-paginas-creator__item.is-active .ubits-paginas-creator__menu {
     display: inline-flex;
 }

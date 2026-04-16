@@ -43,7 +43,7 @@
                                 Sección Creator
                             </h1>
                             <p class="ubits-body-md-regular" style="max-width: 800px; margin: 0 auto 32px; line-height: 1.6;">
-                                <strong>Una sección</strong> agrupa páginas bajo un título (body/md/bold y fg/1/high siempre — Figma 283:5631; hasta dos líneas): si está activa, borde de marca, menú ⋮ en el título y el botón <strong>«Añadir página»</strong> <strong>dentro</strong> del mismo recuadro, bajo la lista. Lista <strong>Páginas creator</strong> con tokens de espaciado y color. El <strong>índice</strong> (varias secciones) usa <code>seccionCreatorIndexHtml</code>; «Añadir página» solo en la sección activa. Referencias: <a href="https://www.figma.com/design/ZWcvS9Z7YQaz59GZIrnWM6/Learn-Components?node-id=264-5594&amp;m=dev" class="ubits-body-md-regular" style="color: var(--ubits-accent-brand); text-decoration: underline;">Sección activa (264:5594)</a>, <a href="https://www.figma.com/design/ZWcvS9Z7YQaz59GZIrnWM6/Learn-Components?node-id=283-5631&amp;m=dev" class="ubits-body-md-regular" style="color: var(--ubits-accent-brand); text-decoration: underline;">Título sección (283:5631)</a>, <a href="https://www.figma.com/design/ZWcvS9Z7YQaz59GZIrnWM6/Learn-Components?node-id=242-5368&amp;m=dev" class="ubits-body-md-regular" style="color: var(--ubits-accent-brand); text-decoration: underline;">Índice (242:5368)</a>.
+                                <strong>Una sección</strong> agrupa páginas bajo un título (body/md/bold y fg/1/high siempre — Figma 283:5631; hasta dos líneas): al pasar el mouse por la sección (y cuando está activa) aparece el menú ⋮ en el título; si está activa, además tiene borde de marca y el botón <strong>«Añadir página»</strong> <strong>dentro</strong> del mismo recuadro, bajo la lista. Lista <strong>Páginas creator</strong> con tokens de espaciado y color. El <strong>índice</strong> (varias secciones) usa <code>seccionCreatorIndexHtml</code>; «Añadir página» solo en la sección activa. Referencias: <a href="https://www.figma.com/design/ZWcvS9Z7YQaz59GZIrnWM6/Learn-Components?node-id=264-5594&amp;m=dev" class="ubits-body-md-regular" style="color: var(--ubits-accent-brand); text-decoration: underline;">Sección activa (264:5594)</a>, <a href="https://www.figma.com/design/ZWcvS9Z7YQaz59GZIrnWM6/Learn-Components?node-id=283-5631&amp;m=dev" class="ubits-body-md-regular" style="color: var(--ubits-accent-brand); text-decoration: underline;">Título sección (283:5631)</a>, <a href="https://www.figma.com/design/ZWcvS9Z7YQaz59GZIrnWM6/Learn-Components?node-id=242-5368&amp;m=dev" class="ubits-body-md-regular" style="color: var(--ubits-accent-brand); text-decoration: underline;">Índice (242:5368)</a>.
                             </p>
                         </div>
 
@@ -92,7 +92,7 @@
                                 <div style="text-align: center; padding: var(--padding-md); background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
                                     <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: var(--gap-sm);"><i class="far fa-heading"></i></div>
                                     <div class="ubits-body-sm-bold">Título hasta 2 líneas</div>
-                                    <div class="ubits-body-sm-regular">Encabezado body/md bold + fg alto; a la derecha, menú ⋮ si la sección está activa.</div>
+                                    <div class="ubits-body-sm-regular">Encabezado body/md bold + fg alto; a la derecha, menú ⋮ visible al hover de la sección (y si está activa).</div>
                                 </div>
                                 <div style="text-align: center; padding: var(--padding-md); background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
                                     <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: var(--gap-sm);"><i class="far fa-square"></i></div>
@@ -121,7 +121,7 @@
                                     <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('sc-p1')"><i class="far fa-copy"></i><span>Copiar</span></button>
                                 </div>
                                 <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm);">
-                                    <pre style="margin: 0; font-size: var(--font-size-sm); white-space: pre-wrap;"><code id="sc-p1" class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">En la barra lateral del creador en [ubicación], coloca el bloque UBITS «Sección Creator»: título body/md bold de hasta dos líneas, menú ⋮ en el título si la sección está activa, lista Páginas creator, y «Añadir página» terciario centrado dentro del mismo recuadro bajo las páginas (solo si activa). Usa tokens UBITS y los CSS del componente.</code></pre>
+                                    <pre style="margin: 0; font-size: var(--font-size-sm); white-space: pre-wrap;"><code id="sc-p1" class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">En la barra lateral del creador en [ubicación], coloca el bloque UBITS «Sección Creator»: título body/md bold de hasta dos líneas, menú ⋮ visible al pasar el mouse por la sección (y si está activa), lista Páginas creator, y «Añadir página» terciario centrado dentro del mismo recuadro bajo las páginas (solo si activa). Usa tokens UBITS y los CSS del componente.</code></pre>
                                 </div>
                             </div>
                         </div>
@@ -170,7 +170,7 @@
                                     <pre style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm); overflow-x: auto;"><code id="sc-tech-classes" class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Bloque: .ubits-seccion-creator
 Sección: .ubits-seccion-creator__section + .is-active (borde marca); .ubits-seccion-creator__section--error (validación: sección sin páginas, borde 2px --ubits-feedback-accent-error); esquinas --border-radius-lg (16px)
 Cabecera: .ubits-seccion-creator__header (flex: título + menú)
-Menú título: .ubits-seccion-creator__section-menu (visible si .is-active)
+Menú título: .ubits-seccion-creator__section-menu (visible al hover de la sección, con foco/teclado y si .is-active)
 Título: .title-inner &gt; .title (siempre ubits-body-md-bold + fg alto) + .title-edit-btn
 Páginas: .ubits-seccion-creator__pages &gt; .ubits-paginas-creator
 Añadir (dentro de &lt;section&gt; si activa): .ubits-seccion-creator__add-wrap + .add-btn (tertiary sm, Figma 264:5594)

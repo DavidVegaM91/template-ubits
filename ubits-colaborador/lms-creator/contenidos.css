@@ -6,6 +6,7 @@
 .page-contenidos-creator .section-single--contenidos > .widget-contenidos-creator {
     background: transparent !important;
     padding: var(--padding-none) !important;
+    border: none !important;
     border-radius: var(--border-radius-none);
     box-shadow: none;
 }

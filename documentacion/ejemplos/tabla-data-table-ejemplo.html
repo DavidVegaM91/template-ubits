@@ -111,7 +111,7 @@
         var buildRowHtml = typeof options.buildRowHtml === 'function' ? options.buildRowHtml : function () { return ''; };
         var features = options.features || {};
         var emptyState = options.emptyState || { message: 'No hay elementos.', icon: 'far fa-folder-open' };
-        var emptySearchState = options.emptySearchState || { message: 'No hay resultados para tu búsqueda.' };
+        var emptySearchState = options.emptySearchState || { message: 'No se encontraron resultados', description: 'Intenta ajustar tu búsqueda o filtros para encontrar lo que buscas.', buttonText: 'Limpiar búsqueda' };
         var actionBarButtons = options.actionBarButtons || [];
         var i18n = Object.assign({}, defaultI18n, options.i18n || {});
         var title = options.title || '';
@@ -422,8 +422,8 @@
                     loadEmptyState(emptyStateId, {
                         icon: 'fa-search',
                         iconSize: 'lg',
-                        title: emptySearchState.message || 'No hay resultados para tu búsqueda.',
-                        description: emptySearchState.description || ' '
+                        title: emptySearchState.message || 'No se encontraron resultados',
+                        description: emptySearchState.description || 'Intenta ajustar tu búsqueda o filtros para encontrar lo que buscas.'
                     });
                 } else {
                     emptyEl.innerHTML = '<p class="ubits-body-md-regular">' + escapeHtml(emptySearchState.message) + '</p>';
@@ -603,7 +603,7 @@
                     features: { checkboxes: true, search: true, filters: true, verSeleccionados: true, actionBar: true, resultsCount: true, columnsToggle: true },
                     primaryButton: { text: 'Nueva tarea', icon: 'fa-plus', onClick: function () { if (typeof showToast === 'function') showToast('info', 'Nueva tarea'); } },
                     emptyState: { message: 'Aún no hay tareas.', icon: 'far fa-tasks', description: 'Crea tu primera tarea para comenzar el seguimiento.' },
-                    emptySearchState: { message: 'No se encontraron resultados.', description: 'Intenta ajustar tu búsqueda o filtros.' },
+                    emptySearchState: { message: 'No se encontraron resultados', description: 'Intenta ajustar tu búsqueda o filtros para encontrar lo que buscas.', buttonText: 'Limpiar búsqueda' },
                     actionBarButtons: [
                         { id: 'reasignar', label: 'Reasignar', icon: 'far fa-user-plus', onClick: function (ids) { if (typeof showToast === 'function') showToast('info', 'Reasignar'); } },
                         { id: 'cambiar-prioridad', label: 'Cambiar prioridad', icon: 'far fa-sliders', onClick: function () { if (typeof showToast === 'function') showToast('info', 'Cambiar prioridad'); } },

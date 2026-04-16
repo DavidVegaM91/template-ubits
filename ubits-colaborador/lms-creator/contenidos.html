@@ -1376,15 +1376,16 @@
                         emptyEl.innerHTML = '';
                         if (typeof loadEmptyState === 'function') {
                             loadEmptyState('contenidosTableEmpty', {
-                                icon: 'fa-filter',
+                                icon: 'fa-search',
                                 iconSize: 'lg',
-                                title: 'No hay resultados con estos filtros',
-                                description: 'Prueba con otros criterios o borra los filtros para ver más contenidos.',
+                                title: 'No se encontraron resultados',
+                                description: 'Intenta ajustar tu búsqueda o filtros para encontrar lo que buscas.',
                                 buttons: {
                                     secondary: {
-                                        text: 'Borrar filtros',
+                                        text: 'Limpiar búsqueda',
                                         icon: 'fa-times',
                                         onClick: function () {
+                                            clearContenidosSearch();
                                             clearContenidosFiltros();
                                         }
                                     }

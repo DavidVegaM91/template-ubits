@@ -584,7 +584,7 @@
                         buildRowHtml: buildDrawerColabRowHtml,
                         features: { checkboxes: true, search: true, filters: true, verSeleccionados: true, resultsCount: true },
                         emptyState: { message: 'No hay colaboradores disponibles para agregar', icon: 'far fa-user' },
-                        emptySearchState: { message: 'No se encontraron resultados', description: 'Intenta ajustar tu búsqueda.', buttonText: 'Limpiar búsqueda' },
+                        emptySearchState: { message: 'No se encontraron resultados', description: 'Intenta ajustar tu búsqueda o filtros para encontrar lo que buscas.', buttonText: 'Limpiar búsqueda' },
                         i18n: {
                             selectAll: 'Seleccionar todo',
                             deselectAll: 'Deseleccionar todo',
@@ -675,7 +675,7 @@
                         return list;
                     })(),
                     emptyState: { message: 'No hay asignaciones', icon: 'far fa-user-group', description: 'Aún no hay colaboradores asignados a este plan. Agrega asignaciones para ver el progreso.' },
-                    emptySearchState: { message: 'No se encontraron resultados', description: 'Intenta ajustar tu búsqueda.', buttonText: 'Limpiar búsqueda' },
+                    emptySearchState: { message: 'No se encontraron resultados', description: 'Intenta ajustar tu búsqueda o filtros para encontrar lo que buscas.', buttonText: 'Limpiar búsqueda' },
                     i18n: {
                         selectAll: 'Seleccionar todo',
                         deselectAll: 'Deseleccionar todo',
@@ -880,7 +880,7 @@
                                     icon: 'fa-search',
                                     iconSize: 'lg',
                                     title: 'No se encontraron resultados',
-                                    description: 'Intenta ajustar tu búsqueda.',
+                                    description: 'Intenta ajustar tu búsqueda o filtros para encontrar lo que buscas.',
                                     buttons: { secondary: { text: 'Limpiar búsqueda', icon: 'fa-times', onClick: function() {} } }
                                 });
                                 setTimeout(function() {
@@ -1046,7 +1046,7 @@
                                     icon: 'fa-search',
                                     iconSize: 'lg',
                                     title: 'No se encontraron resultados',
-                                    description: 'Intenta ajustar tu búsqueda.',
+                                    description: 'Intenta ajustar tu búsqueda o filtros para encontrar lo que buscas.',
                                     buttons: { secondary: { text: 'Limpiar búsqueda', icon: 'fa-times', onClick: function() {} } }
                                 });
                                 setTimeout(function() {

@@ -477,7 +477,7 @@
                         } }
                     ],
                     emptyState: { message: 'Aún no hay asignaciones', icon: 'far fa-user-check', description: 'Agrega asignaciones para definir quiénes tendrán acceso a este plan.' },
-                    emptySearchState: { message: 'No se encontraron resultados', description: 'Intenta ajustar tu búsqueda.', buttonText: 'Limpiar búsqueda' },
+                    emptySearchState: { message: 'No se encontraron resultados', description: 'Intenta ajustar tu búsqueda o filtros para encontrar lo que buscas.', buttonText: 'Limpiar búsqueda' },
                     i18n: { selectAll: 'Seleccionar todo', deselectAll: 'Deseleccionar todo', verSeleccionados: 'Ver seleccionados', buscar: 'Buscar' }
                 });
             }
@@ -688,7 +688,7 @@
                                     icon: 'fa-search',
                                     iconSize: 'lg',
                                     title: 'No se encontraron resultados',
-                                    description: 'Intenta ajustar tu búsqueda.',
+                                    description: 'Intenta ajustar tu búsqueda o filtros para encontrar lo que buscas.',
                                     buttons: { secondary: { text: 'Limpiar búsqueda', icon: 'fa-times', onClick: function() {} } }
                                 });
                                 setTimeout(function() {
@@ -714,12 +714,25 @@
                             emptySearchContainer.innerHTML = '';
                             if (typeof loadEmptyState === 'function') {
                                 loadEmptyState('drawer-wiz-contenidos-empty-search', {
-                                    icon: 'fa-eye',
+                                    icon: 'fa-search',
                                     iconSize: 'lg',
-                                    title: 'Sin contenidos agregados en estos resultados',
-                                    description: 'Ninguno de los contenidos ya agregados coincide con la búsqueda o el filtro. Prueba otra búsqueda o deja de ver solo seleccionados.',
-                                    buttons: {}
+                                    title: 'No se encontraron resultados',
+                                    description: 'Intenta ajustar tu búsqueda o filtros para encontrar lo que buscas.',
+                                    buttons: { secondary: { text: 'Limpiar búsqueda', icon: 'fa-times', onClick: function() {} } }
                                 });
+                                setTimeout(function() {
+                                    var btn = emptySearchContainer.querySelector('.ubits-button--secondary');
+                                    if (btn) {
+                                        btn.onclick = function(e) {
+                                            e.preventDefault();
+                                            e.stopPropagation();
+                                            overlay._wizViewOnlySeleccionados = false;
+                                            if (searchInput) { searchInput.value = ''; searchInput.dispatchEvent(new Event('input')); }
+                                            updateVerSeleccionadosBar();
+                                            filtrarYRenderizarCards();
+                                        };
+                                    }
+                                }, 50);
                             }
                         }
                         cardsContainer.style.display = 'none';
@@ -1266,7 +1279,7 @@
                         buildRowHtml: buildDrawerColabRowHtml,
                         features: { checkboxes: true, search: true, filters: true, verSeleccionados: true, resultsCount: true },
                         emptyState: { message: 'No hay colaboradores', icon: 'far fa-user' },
-                        emptySearchState: { message: 'No se encontraron resultados', description: 'Intenta ajustar tu búsqueda.', buttonText: 'Limpiar búsqueda' },
+                        emptySearchState: { message: 'No se encontraron resultados', description: 'Intenta ajustar tu búsqueda o filtros para encontrar lo que buscas.', buttonText: 'Limpiar búsqueda' },
                         i18n: { selectAll: 'Seleccionar todo', deselectAll: 'Deseleccionar todo', verSeleccionados: 'Ver seleccionados', buscar: 'Buscar' }
                     });
                     drawerColabContainer.addEventListener('change', function(e) {
@@ -1295,7 +1308,7 @@
                         buildRowHtml: buildDrawerGruposRowHtml,
                         features: { checkboxes: true, search: true, verSeleccionados: true, resultsCount: true },
                         emptyState: { message: 'No hay grupos', icon: 'far fa-users' },
-                        emptySearchState: { message: 'No se encontraron resultados', description: 'Intenta ajustar tu búsqueda.', buttonText: 'Limpiar búsqueda' },
+                        emptySearchState: { message: 'No se encontraron resultados', description: 'Intenta ajustar tu búsqueda o filtros para encontrar lo que buscas.', buttonText: 'Limpiar búsqueda' },
                         i18n: { selectAll: 'Seleccionar todo', deselectAll: 'Deseleccionar todo', verSeleccionados: 'Ver seleccionados', buscar: 'Buscar' }
                     });
                     drawerGruposContainer.addEventListener('change', function(e) {
@@ -2004,7 +2017,7 @@
                                     icon: 'fa-search',
                                     iconSize: 'lg',
                                     title: 'No se encontraron resultados',
-                                    description: 'Intenta ajustar tu búsqueda.',
+                                    description: 'Intenta ajustar tu búsqueda o filtros para encontrar lo que buscas.',
                                     buttons: { secondary: { text: 'Limpiar búsqueda', icon: 'fa-times', onClick: function() {} } }
                                 });
                                 setTimeout(function() {
@@ -2030,12 +2043,25 @@
                             emptySearchContainer.innerHTML = '';
                             if (typeof loadEmptyState === 'function') {
                                 loadEmptyState('drawer-contenidos-empty-search', {
-                                    icon: 'fa-eye',
+                                    icon: 'fa-search',
                                     iconSize: 'lg',
-                                    title: 'Sin contenidos agregados en estos resultados',
-                                    description: 'Ninguno de los contenidos ya agregados coincide con la búsqueda o el filtro. Prueba otra búsqueda o deja de ver solo seleccionados.',
-                                    buttons: {}
+                                    title: 'No se encontraron resultados',
+                                    description: 'Intenta ajustar tu búsqueda o filtros para encontrar lo que buscas.',
+                                    buttons: { secondary: { text: 'Limpiar búsqueda', icon: 'fa-times', onClick: function() {} } }
                                 });
+                                setTimeout(function() {
+                                    var btn = emptySearchContainer.querySelector('.ubits-button--secondary');
+                                    if (btn) {
+                                        btn.onclick = function(e) {
+                                            e.preventDefault();
+                                            e.stopPropagation();
+                                            overlay._drawerCursosViewOnly = false;
+                                            if (searchInput) { searchInput.value = ''; searchInput.dispatchEvent(new Event('input')); }
+                                            updateDrawerCursosVerBar();
+                                            filtrarYRenderizarCards();
+                                        };
+                                    }
+                                }, 50);
                             }
                         }
                         cardsContainer.style.display = 'none';

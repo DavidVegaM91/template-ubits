@@ -27,6 +27,7 @@
 .section-single > .widget-grid-cursos-propios {
     padding: var(--padding-none) !important;
     background: transparent !important;
+    border: none !important;
 }
         
 

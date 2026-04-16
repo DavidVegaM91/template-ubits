@@ -48,6 +48,24 @@ En pantallas donde **solo hay un botón de filtros** en la barra (icono `fa-filt
 
 **No es este patrón:** listas donde cada columna tiene su propio `fa-filter` en el `<thead>` (p. ej. seguimiento), ni tablas data-table con filtros solo por columna; ahí el “activo” se marca **por columna**, no con un único contador en un botón global.
 
+## Patrón: empty state cuando no hay resultados (búsqueda y/o filtros)
+
+Cuando una lista, tabla o cuadrícula tiene **datos de fondo** pero la combinación de **búsqueda** y/o **filtros** deja **cero filas visibles**, el empty state debe ser **siempre el mismo** (copy fijo del producto):
+
+| Campo | Texto obligatorio |
+|--------|-------------------|
+| **Icono** | `fa-search` (tamaño `lg` en `loadEmptyState`) |
+| **Título** | `No se encontraron resultados` |
+| **Descripción** | `Intenta ajustar tu búsqueda o filtros para encontrar lo que buscas.` |
+| **Botón secundario** | Texto `Limpiar búsqueda`, icono `fa-times`, variante **secondary** del Button UBITS |
+
+**Implementación:**
+
+- **`createUbitsDataTable`** (`components/ubits-data-table.js`): el estado vacío por búsqueda/filtros usa `options.emptySearchState` con claves `message`, `description` y `buttonText` alineadas a la tabla anterior. Si no pasas `emptySearchState`, el componente ya trae estos valores por defecto.
+- **Listas a mano** (p. ej. `contenidos.html`, `u-corporativa.html`, `seguimiento.js`): llamar a `loadEmptyState` con el mismo `title`, `description` y `buttons.secondary` que la tabla. El `onClick` del botón debe **quitar búsqueda y filtros** según aplique en esa pantalla (p. ej. en Creator contenidos se limpian ambos).
+
+**No uses** otro título tipo “Sin resultados” ni otro texto de cuerpo para este caso; mantén el copy único para que PM, diseño y usuarios vean la misma franquicia en todo el playground.
+
 ## 🚀 Cómo usar esta plantilla
 
 1. **Descarga:** Haz clon o descarga como ZIP
@@ -186,7 +204,7 @@ Patrón documentado para reutilizarlo en otros flujos o listas similares.
 - **Stepper** - Indicador de pasos de un flujo (horizontal, compacto, título bajo el círculo, combinación compacta, vertical colapsable clásico o **vertical rail creator** alineado al Sidebar contenidos LMS) - **RENDERIZADO: HTML directo**; demo con clic opcional vía `initStepper()`; colapso vertical con `wireStepperVerticalCollapse()` en **stepper.js**. **CSS:** `stepper.css`. **Vertical clásico:** `button.css`, `tooltip.css`, `tooltip.js`. **Rail creator:** `styles.css` (`.nav-button`) + tooltip.
 - **Badge Tag** - Badge tipo pill con punto de color o icono (outlined/filled; success, info, warning, error; sm, md, lg; normalmente punto, opcionalmente icono FontAwesome) - **RENDERIZADO: HTML directo**
 - **Tab** - Tabs de navegación (estados: active, inactive; tamaños: xs, sm, md, lg; variantes: con texto, icon-only; iconos opcionales) - **RENDERIZADO: HTML directo**
-- **Empty State** - Estados vacíos (icono, título, descripción, botones opcionales; tamaños de icono: sm, md, lg; casos de uso: búsqueda sin resultados, contenido vacío, estados iniciales) - **RENDERIZADO: loadEmptyState()**
+- **Empty State** - Estados vacíos (icono, título, descripción, botones opcionales; tamaños de icono: sm, md, lg; casos de uso: contenido vacío, estados iniciales; **búsqueda/filtros sin resultados:** copy fijo en la sección *Patrón: empty state cuando no hay resultados* más arriba) - **RENDERIZADO: loadEmptyState()**
 - **Paginator** - Paginación de resultados (navegación por páginas, items por página, callbacks de cambio) - **RENDERIZADO: loadPaginator()**
 - **Popover** - Panel flotante contextual (título, cuerpo, acciones; colita opcional como Tooltip; lado + alineación: 12 combinaciones; `noArrow` o sin ancla = sin flecha; cierre con Escape y clic fuera) - **RENDERIZADO: openPopover() / closePopover()**
 - **Submenu** - Panel flotante tipo submenú/flyout (sin colita): posicionamiento (top/bottom/left/right) + alineación (inicio/centro/fin), clamp al viewport, cierre con clic fuera o Escape; título opcional; variantes dark (default) y light - **RENDERIZADO: openSubmenu() / closeSubmenu()**
