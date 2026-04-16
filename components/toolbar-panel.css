@@ -1,5 +1,5 @@
 /**
- * UBITS Toolbar panel — bloque con fondo para barra de título + acciones y contenido relacionado (chips, filtros).
+ * UBITS Toolbar panel — bloque con fondo y borde 1px (--ubits-border-1) para barra de título + acciones y contenido relacionado (chips, filtros).
  * Uso transversal: listas, tablas, catálogos.
  *
  * Implementación (leer al cablear en una página):
@@ -21,6 +21,7 @@
     min-width: 0;
     box-sizing: border-box;
     background: var(--ubits-bg-1);
+    border: 1px solid var(--ubits-border-1);
     border-radius: var(--border-radius-md);
     padding: var(--padding-md) var(--padding-lg);
 }

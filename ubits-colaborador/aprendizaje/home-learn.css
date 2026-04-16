@@ -52,13 +52,14 @@
     gap: var(--gap-xl);
 }
 
-/* Widgets en secciones - sin altura mínima forzada */
-.section-single > div,
-.section-dual > div,
-.section-triple > div,
-.section-quad > div {
+/* Widgets en secciones - sin altura mínima forzada.
+   border: none !important: anula el borde 1px de styles.css (.content-sections > … > div). */
+.content-sections > .section-single > div,
+.content-sections .section-dual > div,
+.content-sections .section-triple > div,
+.content-sections .section-quad > div {
     background-color: var(--ubits-bg-1);
-    border: none;
+    border: none !important;
     border-radius: var(--border-radius-lg);
     padding: var(--padding-md) !important; /* !important para sobrescribir el reset */
     width: 100%;
