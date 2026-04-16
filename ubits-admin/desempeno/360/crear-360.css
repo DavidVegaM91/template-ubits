@@ -35,7 +35,7 @@
     background: var(--ubits-bg-1);
     border: 1px solid var(--ubits-border-1);
     border-radius: var(--border-radius-lg);
-    padding: var(--padding-2xl);
+    padding: var(--padding-lg);
 }
 
 .crear360-form {
@@ -69,7 +69,7 @@
     background: var(--ubits-bg-1);
     border: 1px solid var(--ubits-border-1);
     border-radius: var(--border-radius-lg);
-    padding: var(--padding-xl);
+    padding: var(--padding-lg);
     display: flex;
     align-items: center;
     gap: var(--gap-lg);
@@ -103,36 +103,8 @@
     pointer-events: none;
 }
 
-/* icono de la sección */
-.crear360-option-card__icon-wrap {
-    width: 40px;
-    height: 40px;
-    border-radius: var(--border-radius-md);
-    background: var(--ubits-bg-3);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    font-size: 16px;
-    color: var(--ubits-fg-1-medium);
-    transition: background 0.15s, color 0.15s;
-}
-
-.crear360-option-card:hover:not(.crear360-option-card--locked) .crear360-option-card__icon-wrap {
-    background: var(--ubits-accent-brand);
-    color: #fff;
-}
-
-.crear360-option-card--done .crear360-option-card__icon-wrap {
-    background: var(--ubits-feedback-accent-success);
-    color: #fff;
-}
-
-/* bloque leading: icono + texto */
+/* bloque leading */
 .crear360-option-card__leading {
-    display: flex;
-    align-items: center;
-    gap: var(--gap-md);
     flex: 1;
     min-width: 0;
 }
@@ -142,6 +114,28 @@
     flex-direction: column;
     gap: var(--gap-xs);
     min-width: 0;
+}
+
+/* fila icono + título */
+.crear360-option-card__title-row {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-sm);
+}
+
+.crear360-option-card__icon {
+    font-size: 14px;
+    color: var(--ubits-fg-2-medium);
+    flex-shrink: 0;
+    transition: color 0.15s;
+}
+
+.crear360-option-card:hover:not(.crear360-option-card--locked) .crear360-option-card__icon {
+    color: var(--ubits-accent-brand);
+}
+
+.crear360-option-card--done .crear360-option-card__icon {
+    color: var(--ubits-feedback-accent-success);
 }
 
 .crear360-option-card__title {
