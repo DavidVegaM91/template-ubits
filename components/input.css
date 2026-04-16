@@ -40,7 +40,7 @@
 }
 
 .ubits-input::placeholder {
-    color: var(--ubits-fg-1-low);
+    color: var(--ubits-input-text-default);
 }
 
 /* ========================================

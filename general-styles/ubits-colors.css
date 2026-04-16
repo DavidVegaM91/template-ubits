@@ -69,7 +69,7 @@
   /* Use it for secondary foreground elements (such as text or icons) on primary backgrounds. */
   --ubits-fg-1-medium: #5c646f;
   --ubits-fg-1-medium-inverted: #d0d2d5;
-  --ubits-fg-1-high-static: #303a47;
+  --ubits-input-text-default: #5c646f;
   --ubits-fg-1-high-static-inverted: #edeeef;
   --ubits-fg-1-medium-static: #5c646f;
   --ubits-fg-1-medium-static-inverted: #d0d2d5;
@@ -649,7 +649,7 @@
   --ubits-fg-1-high-static-inverted: #edeeef;
   --ubits-fg-1-medium: #d0d2d5;
   --ubits-fg-1-medium-inverted: #5c646f;
-  --ubits-fg-1-medium-static: #5c646f;
+  --ubits-input-text-default: #edeeef;
   --ubits-fg-1-medium-static-inverted: #d0d2d5;
   
   --ubits-fg-2-high: #ffffff;
