@@ -160,19 +160,28 @@
     border-bottom: none;
 }
 
-/* «Añadir página»: dentro del recuadro de la sección activa (Figma) */
+/* Lista sin páginas: evita doble línea entre área de lista y botón «Añadir página» */
+.ubits-seccion-creator__pages:has(.ubits-paginas-creator:empty) + .ubits-seccion-creator__add-wrap {
+    border-top: none;
+}
+
+/* «Añadir página»: ancho completo como «Añadir sección» en Índice creator */
 .ubits-seccion-creator__add-wrap {
     display: flex;
-    justify-content: center;
-    align-items: center;
+    justify-content: stretch;
+    align-items: stretch;
+    width: 100%;
+    box-sizing: border-box;
     padding: var(--padding-md) var(--padding-lg) var(--padding-lg);
     border-top: 1px solid var(--ubits-border-1);
     background: var(--ubits-bg-1);
-    box-sizing: border-box;
 }
 
-.ubits-seccion-creator__add-wrap .ubits-button {
+.ubits-seccion-creator__add-wrap .ubits-button.ubits-seccion-creator__add-btn {
+    width: 100%;
     max-width: 100%;
+    justify-content: center;
+    box-sizing: border-box;
 }
 
 .ubits-seccion-creator__add-btn span {

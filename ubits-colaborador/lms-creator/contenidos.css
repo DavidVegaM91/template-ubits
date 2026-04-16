@@ -398,8 +398,8 @@ body.contenido-borrador-drawer-abierto {
 .crear-contenido-step--portada.crear-contenido-step--visible {
     display: flex;
     flex-direction: column;
-    flex: 1 1 auto;
-    min-height: 0;
+    /* shrink 0: la columna no se encoge por debajo del contenido; el scroll lo aplica #crear-contenido-main (crear-contenido.css). */
+    flex: 1 0 auto;
     gap: var(--gap-xl);
     width: 100%;
 }
@@ -407,8 +407,7 @@ body.contenido-borrador-drawer-abierto {
 .crear-contenido-step--recursos.crear-contenido-step--visible {
     display: flex;
     flex-direction: column;
-    flex: 1 1 auto;
-    min-height: 0;
+    flex: 1 0 auto;
     min-width: 0;
     width: 100%;
 }
@@ -419,7 +418,8 @@ body.contenido-borrador-drawer-abierto {
     flex: 1 1 auto;
     min-height: 0;
     gap: var(--gap-lg);
-    align-items: stretch;
+    /* flex-start: cada columna solo usa su alto intrínseco; con stretch el preview vacío igualaba el alto del índice (empty state enorme). */
+    align-items: flex-start;
     width: 100%;
     min-width: 0;
 }
@@ -428,7 +428,7 @@ body.contenido-borrador-drawer-abierto {
     flex: 0 0 min(320px, 38vw);
     max-width: 400px;
     min-width: 0;
-    align-self: stretch;
+    align-self: flex-start;
 }
 
 .crear-contenido-recursos__indice-mount {
@@ -965,7 +965,7 @@ body.contenido-borrador-drawer-abierto {
     display: flex;
     flex-direction: row;
     align-items: stretch;
-    flex: 1 1 auto;
+    flex: 1 1 0;
     min-height: 0;
     min-width: 0;
     background: var(--ubits-bg-2);
@@ -981,15 +981,14 @@ body.contenido-borrador-drawer-abierto {
 }
 
 .crear-contenido-editor__main {
-    flex: 1 1 auto;
+    flex: 1 1 0;
     min-width: 0;
     display: flex;
     flex-direction: column;
     gap: var(--gap-xl);
-    overflow-y: auto;
-    overflow-x: hidden;
+    /* Scroll en #crear-contenido-main (crear-contenido.css); aquí evita scroll anidado y recortes. */
+    overflow: visible;
     min-height: 0;
-    -webkit-overflow-scrolling: touch;
 }
 
 /* En el drawer, el workspace debe llenar el body y acotar el scroll a la columna principal */
@@ -1288,9 +1287,7 @@ body.contenido-borrador-drawer-abierto {
     .crear-contenido-drawer-overlay .crear-contenido-editor__main {
         flex: 1 1 auto;
         min-height: 0;
-        overflow-y: auto;
-        overflow-x: hidden;
-        -webkit-overflow-scrolling: touch;
+        overflow: visible;
     }
 
     /* Rail vertical desktop oculto en móvil (el horizontal oficial está en .crear-contenido-stepper-mobile). */

@@ -5,7 +5,8 @@
  *
  * En índice con varias secciones (Sección creator / Índice creator): al activar una página se desactivan
  * el resto de páginas del ámbito y la sección padre pasa a ser la única activa (borde de marca) vía
- * setSeccionCreatorActiveSection (seccion-creator.js).
+ * setSeccionCreatorActiveSection (seccion-creator.js). «Mover arriba/abajo» y DnD cruzan listas usando
+ * .ubits-seccion-creator-index__stack (última fila de una sección ↔ primera de la siguiente).
  *
  * Eventos: ubits-paginas-creator-action, ubits-paginas-creator-activate, ubits-paginas-creator-label-save,
  * ubits-paginas-creator-label-input (solo durante edición inline: valor provisional para sincronizar panel derecho).
@@ -82,6 +83,102 @@
     }
 
     /**
+     * Vecino de sección en el stack (solo elementos .ubits-seccion-creator__section).
+     */
+    function getAdjacentSeccionCreatorSection(sectionEl, dir) {
+        if (!sectionEl) return null;
+        var s = dir === -1 ? sectionEl.previousElementSibling : sectionEl.nextElementSibling;
+        while (s) {
+            if (s.classList && s.classList.contains('ubits-seccion-creator__section')) return s;
+            s = dir === -1 ? s.previousElementSibling : s.nextElementSibling;
+        }
+        return null;
+    }
+
+    /**
+     * Índice con varias secciones: cada lista es un .ubits-paginas-creator distinto; el orden global
+     * cruza secciones (última fila de la sección N ↔ primera de la N+1).
+     */
+    function movePaginasCreatorItemInSectionIndex(item, delta, stack) {
+        var sectionEl = item.closest('.ubits-seccion-creator__section');
+        if (!sectionEl || !stack.contains(sectionEl)) return false;
+        var listEl = item.closest('.ubits-paginas-creator');
+        if (!listEl) return false;
+        var pageItems = Array.prototype.slice.call(listEl.querySelectorAll(':scope > .ubits-paginas-creator__item'));
+        var pi = pageItems.indexOf(item);
+        if (pi < 0) return false;
+
+        if (delta === -1) {
+            if (pi > 0) {
+                var prev = pageItems[pi - 1];
+                listEl.insertBefore(item, prev);
+                return true;
+            }
+            var prevSec = getAdjacentSeccionCreatorSection(sectionEl, -1);
+            if (!prevSec) return false;
+            var prevList = prevSec.querySelector('.ubits-paginas-creator');
+            if (!prevList) return false;
+            prevList.appendChild(item);
+            return true;
+        }
+        if (delta === 1) {
+            if (pi < pageItems.length - 1) {
+                var next = pageItems[pi + 1];
+                listEl.insertBefore(item, next.nextSibling);
+                return true;
+            }
+            var nextSec = getAdjacentSeccionCreatorSection(sectionEl, 1);
+            if (!nextSec) return false;
+            var nextList = nextSec.querySelector('.ubits-paginas-creator');
+            if (!nextList) return false;
+            var firstNext = nextList.querySelector(':scope > .ubits-paginas-creator__item');
+            if (firstNext) {
+                nextList.insertBefore(item, firstNext);
+            } else {
+                nextList.appendChild(item);
+            }
+            return true;
+        }
+        return false;
+    }
+
+    function canMovePaginasCreatorUp(item, scope) {
+        if (!item || !scope) return false;
+        var stack = scope.querySelector('.ubits-seccion-creator-index__stack');
+        if (stack) {
+            var sectionEl = item.closest('.ubits-seccion-creator__section');
+            if (!sectionEl || !stack.contains(sectionEl)) return false;
+            var listEl = item.closest('.ubits-paginas-creator');
+            if (!listEl) return false;
+            var pageItems = Array.prototype.slice.call(listEl.querySelectorAll(':scope > .ubits-paginas-creator__item'));
+            var pi = pageItems.indexOf(item);
+            if (pi > 0) return true;
+            return !!getAdjacentSeccionCreatorSection(sectionEl, -1);
+        }
+        var items = getOrderedPaginasItemsInScope(scope);
+        var idx = items.indexOf(item);
+        return idx > 0;
+    }
+
+    function canMovePaginasCreatorDown(item, scope) {
+        if (!item || !scope) return false;
+        var stack = scope.querySelector('.ubits-seccion-creator-index__stack');
+        if (stack) {
+            var sectionEl = item.closest('.ubits-seccion-creator__section');
+            if (!sectionEl || !stack.contains(sectionEl)) return false;
+            var listEl = item.closest('.ubits-paginas-creator');
+            if (!listEl) return false;
+            var pageItems = Array.prototype.slice.call(listEl.querySelectorAll(':scope > .ubits-paginas-creator__item'));
+            var pi = pageItems.indexOf(item);
+            if (pi < pageItems.length - 1) return true;
+            return !!getAdjacentSeccionCreatorSection(sectionEl, 1);
+        }
+        var items = getOrderedPaginasItemsInScope(scope);
+        var idx = items.indexOf(item);
+        return idx >= 0 && idx < items.length - 1;
+    }
+
+    /**
      * Reordena la fila en el orden global del ámbito (incluye saltar entre secciones en índice con varias listas).
      * @param {HTMLElement} item
      * @param {number} delta -1 = arriba, +1 = abajo
@@ -90,6 +187,10 @@
     function movePaginasCreatorItem(item, delta) {
         var scope = findPaginasNavigationScope(item);
         if (!scope) return false;
+        var stack = scope.querySelector('.ubits-seccion-creator-index__stack');
+        if (stack) {
+            return movePaginasCreatorItemInSectionIndex(item, delta, stack);
+        }
         var items = getOrderedPaginasItemsInScope(scope);
         var i = items.indexOf(item);
         if (i < 0) return false;
@@ -109,12 +210,17 @@
     function getPaginasCreatorMenuOptionsForItem(item) {
         var base = getPaginasCreatorMenuOptions();
         var scope = findPaginasNavigationScope(item);
-        var ordered = scope ? getOrderedPaginasItemsInScope(scope) : [];
-        var idx = ordered.indexOf(item);
+        if (!scope) {
+            return base.filter(function (opt) {
+                var v = opt.value;
+                if (v === 'mover-arriba' || v === 'mover-abajo') return false;
+                return true;
+            });
+        }
         return base.filter(function (opt) {
             var v = opt.value;
-            if (v === 'mover-arriba') return idx > 0;
-            if (v === 'mover-abajo') return idx >= 0 && idx < ordered.length - 1;
+            if (v === 'mover-arriba') return canMovePaginasCreatorUp(item, scope);
+            if (v === 'mover-abajo') return canMovePaginasCreatorDown(item, scope);
             return true;
         });
     }
@@ -443,6 +549,43 @@
             root.querySelectorAll('.ubits-paginas-creator__item.is-drop-after').forEach(function (el) {
                 el.classList.remove('is-drop-after');
             });
+            root.querySelectorAll('.ubits-paginas-creator--drop-target-empty').forEach(function (el) {
+                el.classList.remove('ubits-paginas-creator--drop-target-empty');
+            });
+        }
+
+        function resolvePaginasListFromEventTarget(t) {
+            if (!t || !t.closest) return null;
+            var listEl = t.closest('.ubits-paginas-creator');
+            if (listEl && root.contains(listEl)) return listEl;
+            var pages = t.closest('.ubits-seccion-creator__pages');
+            if (pages && root.contains(pages)) {
+                var inner = pages.querySelector('.ubits-paginas-creator');
+                if (inner && root.contains(inner)) return inner;
+            }
+            var sec = t.closest('.ubits-seccion-creator__section');
+            if (sec && root.contains(sec)) {
+                var pl = sec.querySelector('.ubits-seccion-creator__pages .ubits-paginas-creator');
+                if (pl && root.contains(pl)) return pl;
+            }
+            return null;
+        }
+
+        /** Si la lista vacía tiene altura 0, el punto puede caer en el padre: resolvemos por elementsFromPoint. */
+        function findEmptyPaginasListUnderPoint(doc, clientX, clientY) {
+            if (!doc || typeof doc.elementsFromPoint !== 'function') return null;
+            var stack = doc.elementsFromPoint(clientX, clientY);
+            if (!stack || !stack.length) return null;
+            for (var i = 0; i < stack.length; i++) {
+                var listEl = resolvePaginasListFromEventTarget(stack[i]);
+                if (listEl && root.contains(listEl) && isEmptyPaginasList(listEl)) return listEl;
+            }
+            return null;
+        }
+
+        function isEmptyPaginasList(listEl) {
+            if (!listEl) return false;
+            return listEl.querySelectorAll(':scope > .ubits-paginas-creator__item').length === 0;
         }
 
         function emitReorderEvent(item) {
@@ -553,10 +696,34 @@
             if (!root._ubitsPaginasDraggingItem) return;
             var dragging = root._ubitsPaginasDraggingItem;
             var t = e.target;
-            if (!t || !t.closest) return;
+            if (!t || !t.closest || !root.contains(t)) return;
             var overItem = t.closest('.ubits-paginas-creator__item');
-            if (!overItem || !root.contains(overItem)) return;
-            if (overItem === dragging) return;
+
+            root.querySelectorAll('.ubits-paginas-creator--drop-target-empty').forEach(function (el) {
+                el.classList.remove('ubits-paginas-creator--drop-target-empty');
+            });
+
+            if (overItem === dragging) {
+                e.preventDefault();
+                return;
+            }
+
+            /* Lista vacía: soltar sobre el contenedor (incl. hit area 0px → elementsFromPoint) */
+            if (!overItem) {
+                e.preventDefault();
+                var doc = global.document || document;
+                var emptyList = resolvePaginasListFromEventTarget(t);
+                if (!emptyList || !isEmptyPaginasList(emptyList)) {
+                    emptyList = findEmptyPaginasListUnderPoint(doc, e.clientX, e.clientY);
+                }
+                if (emptyList && isEmptyPaginasList(emptyList)) {
+                    emptyList.appendChild(dragging);
+                    emptyList.classList.add('ubits-paginas-creator--drop-target-empty');
+                }
+                return;
+            }
+
+            if (!root.contains(overItem)) return;
 
             e.preventDefault(); // necesario para permitir drop
 
@@ -697,6 +864,7 @@
 
     global.paginasCreatorIconClass = paginasCreatorIconClass;
     global.paginasCreatorItemHtml = paginasCreatorItemHtml;
+    global.movePaginasCreatorItem = movePaginasCreatorItem;
     global.getPaginasCreatorMenuOptions = getPaginasCreatorMenuOptions;
     global.openPaginasCreatorMenu = openPaginasCreatorMenu;
     global.initPaginasCreatorMenus = initPaginasCreatorMenus;

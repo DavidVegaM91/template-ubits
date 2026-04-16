@@ -32,7 +32,7 @@
         var id = opts.addSectionButtonId ? ' id="' + escapeAttr(String(opts.addSectionButtonId).trim()) + '"' : '';
         return (
             '<div class="ubits-indice-creator__add-section">' +
-            '<button type="button" class="ubits-button ubits-button--secondary ubits-button--md ubits-indice-creator__add-section-btn"' +
+            '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-indice-creator__add-section-btn"' +
             id +
             '>' +
             '<i class="far fa-plus"></i>' +

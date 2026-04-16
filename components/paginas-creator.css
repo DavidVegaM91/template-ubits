@@ -9,6 +9,16 @@
     box-sizing: border-box;
 }
 
+/*
+ * Lista vacía: sin hueco fijo en reposo. Solo al pasar con un arrastre: franja superior
+ * (sin rectángulo completo que parezca “borde inferior”).
+ */
+.ubits-paginas-creator--drop-target-empty {
+    min-height: var(--space-12);
+    box-shadow: inset 0 3px 0 0 var(--ubits-accent-brand);
+    border-radius: var(--border-radius-sm);
+}
+
 .ubits-paginas-creator__item {
     display: flex;
     align-items: stretch;

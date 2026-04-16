@@ -169,6 +169,61 @@
         ];
     }
 
+    /** Hermano sección en el stack (solo .ubits-seccion-creator__section). */
+    function getSiblingSectionBlock(sectionEl, dir) {
+        if (!sectionEl) return null;
+        var s = dir === -1 ? sectionEl.previousElementSibling : sectionEl.nextElementSibling;
+        while (s) {
+            if (s.classList && s.classList.contains('ubits-seccion-creator__section')) return s;
+            s = dir === -1 ? s.previousElementSibling : s.nextElementSibling;
+        }
+        return null;
+    }
+
+    /**
+     * Reordena bloques de sección dentro de .ubits-seccion-creator-index__stack (solo índice multi-sección).
+     * @param {number} delta -1 arriba, +1 abajo
+     */
+    function moveSeccionCreatorSectionInStack(sectionEl, delta) {
+        var stack = sectionEl && sectionEl.closest('.ubits-seccion-creator-index__stack');
+        if (!stack || !stack.contains(sectionEl)) return false;
+        if (delta === -1) {
+            var prev = getSiblingSectionBlock(sectionEl, -1);
+            if (!prev) return false;
+            stack.insertBefore(sectionEl, prev);
+            return true;
+        }
+        if (delta === 1) {
+            var next = getSiblingSectionBlock(sectionEl, 1);
+            if (!next) return false;
+            if (next.nextSibling) {
+                stack.insertBefore(sectionEl, next.nextSibling);
+            } else {
+                stack.appendChild(sectionEl);
+            }
+            return true;
+        }
+        return false;
+    }
+
+    function getSeccionCreatorSectionMenuOptionsForSection(sectionEl) {
+        var base = getSeccionCreatorSectionMenuOptions();
+        var stack = sectionEl && sectionEl.closest('.ubits-seccion-creator-index__stack');
+        if (!stack || !stack.contains(sectionEl)) {
+            return base.filter(function (opt) {
+                var v = opt.value;
+                if (v === 'seccion-mover-arriba' || v === 'seccion-mover-abajo') return false;
+                return true;
+            });
+        }
+        return base.filter(function (opt) {
+            var v = opt.value;
+            if (v === 'seccion-mover-arriba') return !!getSiblingSectionBlock(sectionEl, -1);
+            if (v === 'seccion-mover-abajo') return !!getSiblingSectionBlock(sectionEl, 1);
+            return true;
+        });
+    }
+
     function openSeccionCreatorSectionMenu(anchorEl) {
         if (
             !anchorEl ||
@@ -190,18 +245,19 @@
         var doc = global.document || (typeof document !== 'undefined' ? document : null);
         if (!doc || !doc.body) return;
 
+        var sectionEl = anchorEl.closest('.ubits-seccion-creator__section');
+
         doc.body.insertAdjacentHTML(
             'beforeend',
             global.getDropdownMenuHtml({
                 overlayId: SECTION_MENU_OVERLAY_ID,
-                options: getSeccionCreatorSectionMenuOptions()
+                options: getSeccionCreatorSectionMenuOptionsForSection(sectionEl)
             })
         );
 
         var overlay = doc.getElementById(SECTION_MENU_OVERLAY_ID);
         if (!overlay) return;
 
-        var sectionEl = anchorEl.closest('.ubits-seccion-creator__section');
         var sectionKey =
             sectionEl && sectionEl.getAttribute('data-seccion-creator-key')
                 ? sectionEl.getAttribute('data-seccion-creator-key')
@@ -244,6 +300,15 @@
                     );
                     return;
                 }
+                if (val === 'seccion-mover-arriba') {
+                    moveSeccionCreatorSectionInStack(sectionEl, -1);
+                    var indUp = sectionEl && sectionEl.closest('.ubits-indice-creator');
+                    if (indUp) refreshTooltipsInRoot(indUp);
+                } else if (val === 'seccion-mover-abajo') {
+                    moveSeccionCreatorSectionInStack(sectionEl, 1);
+                    var indDown = sectionEl && sectionEl.closest('.ubits-indice-creator');
+                    if (indDown) refreshTooltipsInRoot(indDown);
+                }
                 doc.dispatchEvent(
                     new CustomEvent('ubits-seccion-creator-section-action', {
                         bubbles: true,
@@ -266,7 +331,7 @@
     }
 
     /**
-     * Bloque &lt;section&gt; (título, páginas, opcional «Añadir página» dentro si activa e includeAddButton).
+     * Bloque &lt;section&gt; (título, páginas, «Añadir página» por sección salvo includeAddButton: false).
      * @param {Object} s - { title, active?, sectionKey?, pages?, includeAddButton?, addButtonId?, addButtonLabel?, sectionMenuAriaLabel?, hideTitle? }
      *   hideTitle: si true, no se renderiza cabecera (título ⋮); uso en Índice creator sin secciones (una sola lista de páginas).
      */
@@ -281,7 +346,8 @@
         var active = !!s.active;
         var key = s.sectionKey != null ? String(s.sectionKey) : '';
         var pages = s.pages || [];
-        var includeAdd = s.includeAddButton === true && active;
+        /* «Añadir página» en todas las secciones si includeAddButton no es false (índice multi-sección). */
+        var includeAdd = s.includeAddButton !== false;
         var secClass =
             'ubits-seccion-creator__section' +
             (active ? ' is-active' : '') +
@@ -367,12 +433,12 @@
         opts = opts || {};
         var o = Object.assign({}, opts);
         if (o.active === undefined) o.active = true;
-        o.includeAddButton = o.active === true;
+        if (o.includeAddButton === undefined) o.includeAddButton = true;
         return '<div class="ubits-seccion-creator">' + seccionCreatorSectionHtml(o) + '</div>';
     }
 
     /**
-     * Índice: varias secciones; «Añadir página» solo dentro de la sección con active: true.
+     * Índice: varias secciones; «Añadir página» visible en cada sección (antes solo en la activa).
      * @param {Object} opts - { sections: Array, addButtonId?, addButtonLabel? }
      */
     function seccionCreatorIndexHtml(opts) {
@@ -383,10 +449,10 @@
         var stackHtml = sections
             .map(function (sec) {
                 var copy = Object.assign({}, sec);
-                copy.includeAddButton = !!sec.active;
-                if (sec.active) {
-                    if (addId) copy.addButtonId = addId;
-                    copy.addButtonLabel = addLabel;
+                copy.includeAddButton = true;
+                copy.addButtonLabel = addLabel;
+                if (addId && sec.active) {
+                    copy.addButtonId = addId;
                 }
                 return seccionCreatorSectionHtml(copy);
             })

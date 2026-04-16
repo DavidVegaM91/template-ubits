@@ -333,14 +333,452 @@
     var recursosUiDone = false;
     var recursosPageSeq = 0;
     var recursosEventsBound = false;
+    /** Uso de secciones (paso Recursos): interruptor Índice creator */
+    var recursosSectionsEnabled = false;
+    var recursosSectionIdSeq = 1;
+    /** sectionKey -> { descriptionHtml: string } */
+    var recursosSectionMeta = {};
+    var CC_MODAL_DISABLE_SEC = 'cc-modal-deshabilitar-secciones';
+    var CC_MODAL_EDIT_SEC = 'cc-modal-editar-seccion';
 
     function getRecursosIndiceMount() {
         return document.getElementById('crear-contenido-recursos-indice-mount');
     }
 
+    function readTipoFromPaginasItem(item) {
+        var icon = item && item.querySelector('.ubits-paginas-creator__drag-handle i');
+        if (!icon) return 'blank-page';
+        var cls = icon.className || '';
+        var map = window.PAGINAS_CREATOR_TIPO_ICONS || {};
+        for (var tipo in map) {
+            if (Object.prototype.hasOwnProperty.call(map, tipo)) {
+                var fa = 'fa-' + map[tipo];
+                if (cls.indexOf(fa) !== -1) return tipo;
+            }
+        }
+        return 'blank-page';
+    }
+
+    function collectPagesDataFromList(listEl) {
+        if (!listEl) return [];
+        var items = listEl.querySelectorAll(':scope > .ubits-paginas-creator__item');
+        return Array.prototype.map.call(items, function (item) {
+            var pk = item.getAttribute('data-paginas-creator-key') || '';
+            var lab = item.querySelector('.ubits-paginas-creator__label');
+            var label = lab ? String(lab.textContent || '').trim() : '';
+            return {
+                pageKey: pk,
+                label: label,
+                tipo: readTipoFromPaginasItem(item),
+                active: item.classList.contains('is-active')
+            };
+        });
+    }
+
+    function recursosSerializeSectionsFromDom() {
+        var mount = getRecursosIndiceMount();
+        if (!mount) return [];
+        var secs = mount.querySelectorAll('.ubits-seccion-creator-index__stack > .ubits-seccion-creator__section');
+        return Array.prototype.map.call(secs, function (sec) {
+            var key = sec.getAttribute('data-seccion-creator-key') || '';
+            var titleEl = sec.querySelector('.ubits-seccion-creator__title');
+            var title = titleEl ? String(titleEl.textContent || '').trim() : '';
+            var list = sec.querySelector('.ubits-paginas-creator');
+            return {
+                key: key,
+                title: title,
+                pages: collectPagesDataFromList(list),
+                active: sec.classList.contains('is-active')
+            };
+        });
+    }
+
+    function recursosSerializeSingleSectionFromDom() {
+        var mount = getRecursosIndiceMount();
+        if (!mount) return [];
+        var list = mount.querySelector('.ubits-indice-creator__single-wrap .ubits-paginas-creator');
+        return collectPagesDataFromList(list);
+    }
+
+    function recursosShouldShowDisableSectionsModal() {
+        var model = recursosSerializeSectionsFromDom();
+        if (model.length < 2) return false;
+        var withPages = 0;
+        model.forEach(function (s) {
+            if ((s.pages || []).length > 0) withPages += 1;
+        });
+        return withPages >= 2;
+    }
+
+    function recursosMergeAllPagesFromDomInOrder() {
+        var model = recursosSerializeSectionsFromDom();
+        var all = [];
+        model.forEach(function (s) {
+            (s.pages || []).forEach(function (p) {
+                all.push(p);
+            });
+        });
+        var activeKey = '';
+        model.forEach(function (s) {
+            (s.pages || []).forEach(function (p) {
+                if (p.active) activeKey = p.pageKey;
+            });
+        });
+        return { pages: all, activePageKey: activeKey };
+    }
+
+    function recursosBuildIndiceMultiHtml(sectionsModel) {
+        var idx = sectionsModel.map(function (s) {
+            return {
+                sectionKey: s.key,
+                title: s.title,
+                pages: (s.pages || []).map(function (p) {
+                    return {
+                        label: p.label,
+                        pageKey: p.pageKey,
+                        tipo: p.tipo,
+                        active: !!p.active
+                    };
+                }),
+                active: !!s.active,
+                hideTitle: false
+            };
+        });
+        return window.indiceCreatorHtml({
+            sectionsEnabled: true,
+            toggleId: 'crear-contenido-recursos-indice-sections-toggle',
+            sections: idx,
+            indexOpts: { sections: idx }
+        });
+    }
+
+    function recursosMountHtmlAndInit(html) {
+        var mount = getRecursosIndiceMount();
+        if (!mount) return;
+        delete mount._ccSecDblCapture;
+        mount.innerHTML = html;
+        if (typeof window.initIndiceCreator === 'function') {
+            window.initIndiceCreator(mount);
+        }
+        if (typeof initTooltip === 'function') {
+            initTooltip('#crear-contenido-recursos-indice-mount [data-tooltip]');
+        }
+        bindRecursosIndiceTitleDblClickCapture();
+    }
+
+    function recursosRestoreActivePagePreferred(preferredPageKey) {
+        var mount = getRecursosIndiceMount();
+        if (!mount) return;
+        var sel = preferredPageKey
+            ? mount.querySelector('.ubits-paginas-creator__item[data-paginas-creator-key="' + preferredPageKey.replace(/"/g, '\\"') + '"]')
+            : null;
+        if (!sel) {
+            sel = mount.querySelector('.ubits-paginas-creator__item');
+        }
+        if (sel && typeof window.setPaginasCreatorActiveItem === 'function') {
+            window.setPaginasCreatorActiveItem(sel);
+        }
+        syncRecursosRightTitleFromActive();
+    }
+
+    function recursosApplySectionsToggleOn() {
+        var pages = recursosSerializeSingleSectionFromDom();
+        var activePk = '';
+        pages.forEach(function (p) {
+            if (p.active) activePk = p.pageKey;
+        });
+        var key = 'cc-sec-' + recursosSectionIdSeq++;
+        if (!recursosSectionMeta[key]) recursosSectionMeta[key] = { descriptionHtml: '' };
+        pages.forEach(function (p) {
+            p.active = false;
+        });
+        if (pages.length) {
+            var pick = activePk || pages[0].pageKey;
+            pages.forEach(function (p) {
+                p.active = p.pageKey === pick;
+            });
+        }
+        recursosSectionsEnabled = true;
+        var sectionsModel = [
+            {
+                key: key,
+                title: 'Sección 1',
+                pages: pages,
+                active: true
+            }
+        ];
+        recursosMountHtmlAndInit(recursosBuildIndiceMultiHtml(sectionsModel));
+        recursosRestoreActivePagePreferred(activePk || (pages[0] && pages[0].pageKey));
+        refreshCrearContenidoPageSiguienteState();
+    }
+
+    function recursosApplySectionsToggleOff() {
+        var merged = recursosMergeAllPagesFromDomInOrder();
+        var pages = merged.pages.map(function (p) {
+            return {
+                pageKey: p.pageKey,
+                label: p.label,
+                tipo: p.tipo,
+                active: false
+            };
+        });
+        if (pages.length) {
+            var pick = merged.activePageKey || pages[0].pageKey;
+            pages.forEach(function (p) {
+                p.active = p.pageKey === pick;
+            });
+        }
+        recursosSectionsEnabled = false;
+        recursosMountHtmlAndInit(
+            window.indiceCreatorHtml({
+                sectionsEnabled: false,
+                toggleId: 'crear-contenido-recursos-indice-sections-toggle',
+                singleSectionKey: 'crear-contenido-recursos-default',
+                singleSection: { pages: pages }
+            })
+        );
+        recursosRestoreActivePagePreferred(merged.activePageKey || (pages[0] && pages[0].pageKey));
+        refreshCrearContenidoPageSiguienteState();
+    }
+
+    function openDisableSectionsModal() {
+        if (typeof window.openModal !== 'function' || typeof window.closeModal !== 'function') return;
+        window.openModal({
+            overlayId: CC_MODAL_DISABLE_SEC,
+            title: 'Deshabilitar secciones',
+            bodyHtml:
+                '<p class="ubits-body-md-regular" style="margin:0;color:var(--ubits-fg-1-medium);">' +
+                'Estás a punto de deshabilitar el uso de secciones; al hacerlo, todas las páginas se moverán a una única sección. ' +
+                'Esta acción no se puede deshacer. ¿Estás seguro de deshabilitar las secciones?' +
+                '</p>',
+            footerHtml:
+                '<button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="cc-mod-disable-cancel"><span>Cancelar</span></button>' +
+                '<button type="button" class="ubits-button ubits-button--primary ubits-button--md" id="cc-mod-disable-confirm"><span>Sí, deshabilitar</span></button>',
+            size: 'sm',
+            closeOnOverlayClick: true
+        });
+        var ov = document.getElementById(CC_MODAL_DISABLE_SEC);
+        if (!ov) return;
+        var cancel = ov.querySelector('#cc-mod-disable-cancel');
+        var ok = ov.querySelector('#cc-mod-disable-confirm');
+        function close() {
+            window.closeModal(CC_MODAL_DISABLE_SEC);
+        }
+        if (cancel) {
+            cancel.addEventListener('click', close);
+        }
+        if (ok) {
+            ok.addEventListener('click', function () {
+                close();
+                recursosApplySectionsToggleOff();
+                var tgl = document.getElementById('crear-contenido-recursos-indice-sections-toggle');
+                if (tgl) tgl.checked = false;
+            });
+        }
+    }
+
+    function getRteModalBodyFragment() {
+        return (
+            '<div class="cc-sec-modal-rte-host ubits-rich-text-editor" id="cc-sec-modal-rte-root" data-rich-text-editor>' +
+            '<div class="ubits-rich-text-editor__label-row">' +
+            '<p class="ubits-rich-text-editor__label ubits-body-sm-semibold">Descripción</p>' +
+            '<p class="ubits-rich-text-editor__hint ubits-body-xs-regular">(Opcional)</p>' +
+            '</div>' +
+            '<div class="ubits-rich-text-editor__toolbar" role="toolbar" aria-label="Formato">' +
+            '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" data-rich-cmd="bold" aria-label="Negrita"><i class="fas fa-bold"></i></button>' +
+            '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" data-rich-cmd="italic" aria-label="Cursiva"><i class="fas fa-italic"></i></button>' +
+            '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" data-rich-cmd="underline" aria-label="Subrayado"><i class="fas fa-underline"></i></button>' +
+            '</div>' +
+            '<input type="file" class="ubits-rich-text-editor__file" accept="image/*" tabindex="-1" aria-hidden="true">' +
+            '<div class="ubits-rich-text-editor__editor-shell">' +
+            '<div class="ubits-rich-text-editor__field ubits-body-md-regular is-empty" contenteditable="true" role="textbox" aria-multiline="true" data-placeholder="Descripción de la sección"></div>' +
+            '</div></div>'
+        );
+    }
+
+    function openCrearContenidoEditSectionModal(sectionKey, titleText, descriptionHtml) {
+        if (typeof window.openModal !== 'function' || typeof window.closeModal !== 'function') return;
+        var sk = String(sectionKey || '');
+        var initialTitle = String(titleText != null ? titleText : '').trim();
+        var initialDesc = String(descriptionHtml != null ? descriptionHtml : '');
+        window.openModal({
+            overlayId: CC_MODAL_EDIT_SEC,
+            title: 'Editar sección',
+            bodyHtml:
+                '<div class="cc-sec-modal-fields" style="display:flex;flex-direction:column;gap:var(--gap-lg);">' +
+                '<div>' +
+                '<label class="ubits-body-sm-semibold" for="cc-sec-modal-title" style="display:block;margin-bottom:var(--gap-sm);color:var(--ubits-fg-1-high);">Título de la sección</label>' +
+                '<input type="text" id="cc-sec-modal-title" class="cc-sec-modal-title-input ubits-body-md-regular" maxlength="180" autocomplete="off" aria-required="true" />' +
+                '</div>' +
+                '<div>' +
+                getRteModalBodyFragment() +
+                '</div></div>',
+            footerHtml:
+                '<button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="cc-sec-modal-cancel"><span>Cancelar</span></button>' +
+                '<button type="button" class="ubits-button ubits-button--primary ubits-button--md" id="cc-sec-modal-save" disabled aria-disabled="true"><span>Guardar</span></button>',
+            size: 'md',
+            closeOnOverlayClick: true
+        });
+        var ov = document.getElementById(CC_MODAL_EDIT_SEC);
+        if (!ov) return;
+        var titleInp = ov.querySelector('#cc-sec-modal-title');
+        var saveBtn = ov.querySelector('#cc-sec-modal-save');
+        var cancelBtn = ov.querySelector('#cc-sec-modal-cancel');
+        if (titleInp) titleInp.value = initialTitle;
+        var rteRoot = ov.querySelector('#cc-sec-modal-rte-root');
+        if (rteRoot) {
+            rteRoot.removeAttribute('data-rich-text-initialized');
+        }
+        if (typeof window.setRichTextHtml === 'function' && rteRoot) {
+            window.setRichTextHtml(rteRoot, initialDesc);
+        }
+        if (typeof window.initRichTextEditor === 'function' && rteRoot) {
+            window.initRichTextEditor(rteRoot);
+        }
+        function currentDescHtml() {
+            return typeof window.getRichTextHtml === 'function' && rteRoot
+                ? window.getRichTextHtml(rteRoot)
+                : '';
+        }
+        function updateSaveEnabled() {
+            var t = titleInp ? String(titleInp.value || '').trim() : '';
+            var dirty =
+                t !== initialTitle ||
+                String(currentDescHtml()).trim() !== String(initialDesc || '').trim();
+            if (saveBtn) {
+                var valid = t.length > 0;
+                saveBtn.disabled = !dirty || !valid;
+                saveBtn.setAttribute('aria-disabled', saveBtn.disabled ? 'true' : 'false');
+            }
+        }
+        function closeEdit() {
+            window.closeModal(CC_MODAL_EDIT_SEC);
+        }
+        if (titleInp) {
+            titleInp.addEventListener('input', updateSaveEnabled);
+        }
+        if (rteRoot) {
+            var ed = rteRoot.querySelector('.ubits-rich-text-editor__field');
+            if (ed) {
+                ed.addEventListener('input', updateSaveEnabled);
+            }
+        }
+        updateSaveEnabled();
+        if (cancelBtn) cancelBtn.addEventListener('click', closeEdit);
+        if (saveBtn) {
+            saveBtn.addEventListener('click', function () {
+                var t = titleInp ? String(titleInp.value || '').trim() : '';
+                if (!t) {
+                    if (typeof window.showToast === 'function') {
+                        window.showToast('warning', 'El título de la sección es obligatorio.', {
+                            containerId: 'ubits-toast-container',
+                            duration: 3000
+                        });
+                    }
+                    return;
+                }
+                var desc = currentDescHtml();
+                if (!recursosSectionMeta[sk]) recursosSectionMeta[sk] = {};
+                recursosSectionMeta[sk].descriptionHtml = desc;
+                var mount = getRecursosIndiceMount();
+                var sec = mount && mount.querySelector('.ubits-seccion-creator__section[data-seccion-creator-key="' + sk + '"]');
+                var titleSpan = sec && sec.querySelector('.ubits-seccion-creator__title');
+                if (titleSpan) titleSpan.textContent = t;
+                closeEdit();
+            });
+        }
+    }
+
+    function bindRecursosIndiceTitleDblClickCapture() {
+        var mount = getRecursosIndiceMount();
+        if (!mount || mount._ccSecDblCapture) return;
+        mount._ccSecDblCapture = true;
+        mount.addEventListener(
+            'dblclick',
+            function (e) {
+                if (!recursosSectionsEnabled) return;
+                if (e.target.closest('.ubits-seccion-creator__title-edit-btn')) return;
+                var inner = e.target.closest('.ubits-seccion-creator__title-inner');
+                if (!inner || !mount.contains(inner)) return;
+                if (e.target.closest('.ubits-seccion-creator__title-edit-wrap')) return;
+                e.preventDefault();
+                e.stopPropagation();
+                var sec = inner.closest('.ubits-seccion-creator__section');
+                if (!sec) return;
+                var sk = sec.getAttribute('data-seccion-creator-key') || '';
+                var tEl = sec.querySelector('.ubits-seccion-creator__title');
+                var title = tEl ? String(tEl.textContent || '').trim() : '';
+                var meta = recursosSectionMeta[sk] || {};
+                openCrearContenidoEditSectionModal(sk, title, meta.descriptionHtml || '');
+            },
+            true
+        );
+    }
+
+    function onRecursosIndiceSectionsToggle(ev) {
+        var d = ev.detail || {};
+        var mount = getRecursosIndiceMount();
+        if (!d.root || !mount || !mount.contains(d.root)) return;
+        var want = !!d.sectionsEnabled;
+        if (want === recursosSectionsEnabled) return;
+        if (want) {
+            recursosApplySectionsToggleOn();
+        } else {
+            if (recursosShouldShowDisableSectionsModal()) {
+                var tgl2 = document.getElementById('crear-contenido-recursos-indice-sections-toggle');
+                if (tgl2) tgl2.checked = true;
+                openDisableSectionsModal();
+            } else {
+                recursosApplySectionsToggleOff();
+            }
+        }
+    }
+
+    function onRecursosIndiceAddSection(ev) {
+        var d = ev.detail || {};
+        var mount = getRecursosIndiceMount();
+        if (!d.root || !mount || !mount.contains(d.root)) return;
+        if (!recursosSectionsEnabled) return;
+        var model = recursosSerializeSectionsFromDom();
+        var n = model.length;
+        model.forEach(function (s) {
+            s.active = false;
+        });
+        var newKey = 'cc-sec-' + recursosSectionIdSeq++;
+        if (!recursosSectionMeta[newKey]) recursosSectionMeta[newKey] = { descriptionHtml: '' };
+        model.push({
+            key: newKey,
+            title: 'Sección ' + (n + 1),
+            pages: [],
+            active: true
+        });
+        recursosMountHtmlAndInit(recursosBuildIndiceMultiHtml(model));
+        refreshCrearContenidoPageSiguienteState();
+    }
+
+    function onRecursosSeccionCreatorEditSection(ev) {
+        var d = ev.detail || {};
+        var mount = getRecursosIndiceMount();
+        if (!d.section || !mount || !mount.contains(d.section)) return;
+        if (!recursosSectionsEnabled) return;
+        var sk = d.sectionKey != null ? String(d.sectionKey) : '';
+        var meta = recursosSectionMeta[sk] || {};
+        openCrearContenidoEditSectionModal(sk, d.title != null ? d.title : '', meta.descriptionHtml || '');
+    }
+
     function getRecursosPaginasList() {
         var m = getRecursosIndiceMount();
-        return m ? m.querySelector('.ubits-paginas-creator') : null;
+        if (!m) return null;
+        if (!recursosSectionsEnabled) {
+            return m.querySelector('.ubits-paginas-creator');
+        }
+        var activeSec = m.querySelector('.ubits-seccion-creator__section.is-active');
+        if (activeSec) {
+            var pl = activeSec.querySelector('.ubits-paginas-creator');
+            if (pl) return pl;
+        }
+        var first = m.querySelector('.ubits-seccion-creator-index__stack .ubits-seccion-creator__section .ubits-paginas-creator');
+        return first || m.querySelector('.ubits-paginas-creator');
     }
 
     function isValidRecursosPageTitle(text) {
@@ -361,9 +799,9 @@
     }
 
     function collectRecursosPageTitleValidation() {
-        var list = getRecursosPaginasList();
-        if (!list) return { allValid: true, invalidItems: [] };
-        var items = list.querySelectorAll(':scope > .ubits-paginas-creator__item');
+        var mount = getRecursosIndiceMount();
+        if (!mount) return { allValid: true, invalidItems: [] };
+        var items = mount.querySelectorAll('.ubits-paginas-creator__item');
         var invalidItems = [];
         items.forEach(function (item) {
             if (!isValidRecursosPageTitle(getRecursosPaginasItemTitleForValidation(item))) {
@@ -376,7 +814,7 @@
     function clearRecursosTitleValidationVisuals() {
         var mount = getRecursosIndiceMount();
         if (mount) {
-            mount.querySelectorAll('.ubits-paginas-creator__item.ubits-paginas-creator__item--error').forEach(function (el) {
+            mount.querySelectorAll('.ubits-paginas-creator__item').forEach(function (el) {
                 el.classList.remove('ubits-paginas-creator__item--error');
             });
         }
@@ -524,7 +962,11 @@
         var mount = getRecursosIndiceMount();
         if (!anchor || !mount || !mount.contains(anchor)) return;
 
-        var list = getRecursosPaginasList();
+        var sec = anchor.closest('.ubits-seccion-creator__section');
+        var list = sec ? sec.querySelector('.ubits-paginas-creator') : null;
+        if (!list || !mount.contains(list)) {
+            list = getRecursosPaginasList();
+        }
         if (!list || typeof window.paginasCreatorItemHtml !== 'function') return;
 
         recursosPageSeq += 1;
@@ -623,6 +1065,9 @@
         if (recursosEventsBound) return;
         recursosEventsBound = true;
         document.addEventListener('ubits-seccion-creator-add-page', onRecursosSecAddPage);
+        document.addEventListener('ubits-indice-creator-sections-toggle', onRecursosIndiceSectionsToggle);
+        document.addEventListener('ubits-indice-creator-add-section', onRecursosIndiceAddSection);
+        document.addEventListener('ubits-seccion-creator-edit-section', onRecursosSeccionCreatorEditSection);
         document.addEventListener('ubits-paginas-creator-activate', onRecursosPaginasActivate);
         document.addEventListener('ubits-paginas-creator-action', onRecursosPaginasAction);
         document.addEventListener('ubits-paginas-creator-label-save', onRecursosPaginasLabelSave);
@@ -647,20 +1092,18 @@
         if (recursosUiDone) return;
         recursosUiDone = true;
         recursosPageSeq = 0;
-        var mount = document.getElementById('crear-contenido-recursos-indice-mount');
-        if (mount && typeof window.indiceCreatorHtml === 'function') {
-            mount.innerHTML = window.indiceCreatorHtml({
-                sectionsEnabled: false,
-                toggleId: 'crear-contenido-recursos-indice-sections-toggle',
-                singleSectionKey: 'crear-contenido-recursos-default',
-                singleSection: { pages: [] }
-            });
-            if (typeof window.initIndiceCreator === 'function') {
-                window.initIndiceCreator(mount);
-            }
-            if (typeof initTooltip === 'function') {
-                initTooltip('#crear-contenido-recursos-indice-mount [data-tooltip]');
-            }
+        recursosSectionsEnabled = false;
+        recursosSectionIdSeq = 1;
+        recursosSectionMeta = {};
+        if (typeof window.indiceCreatorHtml === 'function') {
+            recursosMountHtmlAndInit(
+                window.indiceCreatorHtml({
+                    sectionsEnabled: false,
+                    toggleId: 'crear-contenido-recursos-indice-sections-toggle',
+                    singleSectionKey: 'crear-contenido-recursos-default',
+                    singleSection: { pages: [] }
+                })
+            );
         }
         loadRecursosEmptyPanel();
         bindRecursosEventsOnce();
