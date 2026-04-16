@@ -18,6 +18,7 @@
     <link rel="stylesheet" href="../../../components/modal.css">
     <link rel="stylesheet" href="../../../components/toast.css">
     <link rel="stylesheet" href="../../../components/empty-state.css">
+    <link rel="stylesheet" href="../../../components/switch.css">
     <link rel="stylesheet" href="../../../general-styles/layout-immersive.css">
     <link rel="stylesheet" href="./crear-360.css">
 </head>
@@ -205,23 +206,49 @@
         <div data-view="resultados" id="crear360-view-resultados" class="ubits-layout-immersive__stage crear360-view--hidden">
 
             <section class="res360-description">
-                <h2 class="ubits-body-md-bold">Define los rangos de calificación</h2>
-                <p class="ubits-body-md-regular">Configura entre 3 y 5 rangos. Cada rango tiene un nombre, un intervalo numérico (mín – máx) y un color de identificación.</p>
+                <p class="ubits-body-md-regular">Puedes personalizar la forma en que se verán los resultados de esta evaluación, <strong>elige una escala y configura los rangos según tus criterios.</strong> Así podrás ajustar la medición para reflejar con precisión el desempeño de tus colaboradores.</p>
             </section>
 
-            <div class="res360-controls">
-                <div class="res360-cantidad-wrap">
-                    <span class="ubits-body-md-regular res360-cantidad-label">Cantidad de rangos:</span>
-                    <div class="res360-cantidad-btns" id="res360-cantidad-btns">
-                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm res360-cant-btn" data-n="3">3</button>
-                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm res360-cant-btn" data-n="4">4</button>
-                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm res360-cant-btn" data-n="5">5</button>
-                    </div>
-                </div>
-            </div>
+            <div class="res360-layout">
 
-            <div class="res360-preview" id="res360-preview"></div>
-            <div class="res360-table-wrap" id="res360-table-wrap"></div>
+                <!-- Columna izquierda: selects + tabla de parámetros -->
+                <div class="res360-main-col">
+                    <div class="res360-selects">
+                        <div id="res360-select-escala"></div>
+                        <div id="res360-select-cantidad"></div>
+                    </div>
+                    <div class="res360-params-list" id="res360-params-list"></div>
+                </div>
+
+                <!-- Columna derecha: toggles -->
+                <div class="res360-toggles-col">
+                    <label class="res360-toggle-row">
+                        <label class="ubits-switch ubits-switch--md">
+                            <input type="checkbox" class="ubits-switch__input" id="res360-toggle-lideres">
+                            <span class="ubits-switch__track"><span class="ubits-switch__thumb"></span></span>
+                        </label>
+                        <span class="ubits-body-sm-regular">Permitir vista de resultados a los líderes</span>
+                        <i class="far fa-circle-info res360-info-icon" data-tooltip="Los líderes podrán ver los resultados de sus equipos." data-tooltip-delay="600"></i>
+                    </label>
+                    <label class="res360-toggle-row">
+                        <label class="ubits-switch ubits-switch--md">
+                            <input type="checkbox" class="ubits-switch__input" id="res360-toggle-nosabe">
+                            <span class="ubits-switch__track"><span class="ubits-switch__thumb"></span></span>
+                        </label>
+                        <span class="ubits-body-sm-regular">Permitir respuesta de "No sabe / No responde"</span>
+                        <i class="far fa-circle-info res360-info-icon" data-tooltip="Habilita una opción adicional para que el evaluador indique que no tiene información suficiente." data-tooltip-delay="600"></i>
+                    </label>
+                    <label class="res360-toggle-row">
+                        <label class="ubits-switch ubits-switch--md">
+                            <input type="checkbox" class="ubits-switch__input" id="res360-toggle-anonimato">
+                            <span class="ubits-switch__track"><span class="ubits-switch__thumb"></span></span>
+                        </label>
+                        <span class="ubits-body-sm-regular">Asegurar anonimato (No aplica para descendente y autoevaluación)</span>
+                        <i class="far fa-circle-info res360-info-icon" data-tooltip="Las respuestas de pares, clientes y ascendentes serán anónimas." data-tooltip-delay="600"></i>
+                    </label>
+                </div>
+
+            </div>
         </div><!-- /view resultados -->
 
     </main>
@@ -1004,153 +1031,160 @@
     /* ══════════════════════════════════════════════════════════
        VISTA: CONFIGURACIÓN DE RESULTADOS
        ══════════════════════════════════════════════════════════ */
-    var COLORES = [
-        { id: 'rojo',     label: 'Rojo',     hex: '#EF4444' },
-        { id: 'naranja',  label: 'Naranja',  hex: '#F97316' },
-        { id: 'amarillo', label: 'Amarillo', hex: '#EAB308' },
-        { id: 'verde',    label: 'Verde',    hex: '#22C55E' },
-        { id: 'azul',     label: 'Azul',     hex: '#3B82F6' }
+
+    var RES_ESCALAS = [
+        { value: '5',  text: 'De 1 a 5'  },
+        { value: '4',  text: 'De 1 a 4'  },
+        { value: '10', text: 'De 1 a 10' }
     ];
 
-    var RES_DEFAULTS = {
-        3: [
-            { nombre: 'Por mejorar',   min: 1, max: 2, color: 'rojo'     },
-            { nombre: 'En desarrollo', min: 3, max: 4, color: 'amarillo' },
-            { nombre: 'Destacado',     min: 5, max: 5, color: 'verde'    }
-        ],
-        4: [
-            { nombre: 'Por mejorar', min: 1, max: 1, color: 'rojo'     },
-            { nombre: 'Regular',     min: 2, max: 3, color: 'naranja'  },
-            { nombre: 'Bueno',       min: 4, max: 4, color: 'amarillo' },
-            { nombre: 'Destacado',   min: 5, max: 5, color: 'verde'    }
-        ],
-        5: [
-            { nombre: 'Crítico',     min: 1, max: 1, color: 'rojo'     },
-            { nombre: 'Por mejorar', min: 2, max: 2, color: 'naranja'  },
-            { nombre: 'Regular',     min: 3, max: 3, color: 'amarillo' },
-            { nombre: 'Bueno',       min: 4, max: 4, color: 'azul'     },
-            { nombre: 'Destacado',   min: 5, max: 5, color: 'verde'    }
-        ]
+    var RES_CANTIDADES = [
+        { value: '3', text: '3 Parámetros' },
+        { value: '4', text: '4 Parámetros' },
+        { value: '5', text: '5 Parámetros' }
+    ];
+
+    var RES_PARAM_DEFAULTS = {
+        3: ['Por mejorar', 'En desarrollo', 'Destacado'],
+        4: ['Por mejorar', 'Regular',       'Bueno',        'Destacado'],
+        5: ['Crítico',     'Por mejorar',   'Regular',      'Bueno',    'Destacado']
     };
 
+    /* Estado de la vista */
+    var _resEscala    = '5';
+    var _resCantidad  = 4;
+    var _resParams    = [];   /* [{nombre, desde, hasta}] */
+
+    function buildDefaultParams(cantidad, escalaMax) {
+        var nombres = RES_PARAM_DEFAULTS[cantidad] || RES_PARAM_DEFAULTS[4];
+        var max = parseInt(escalaMax, 10) || 5;
+        /* distribuye los rangos uniformemente */
+        return nombres.map(function (nombre, i) {
+            var desde = Math.round(1 + i * (max - 1) / cantidad);
+            var hasta = i === cantidad - 1 ? max : Math.round(1 + (i + 1) * (max - 1) / cantidad) - 1;
+            return { nombre: nombre, desde: desde, hasta: hasta };
+        });
+    }
+
     function renderResultadosView() {
-        var savedRes = draft.resultados;
-        var initialCantidad = (savedRes && savedRes.cantidad) ? savedRes.cantidad : 4;
-        setResCantidad(initialCantidad);
+        var saved = draft.resultados;
+        _resEscala   = (saved && saved.escala)    || '5';
+        _resCantidad = (saved && saved.cantidad)  || 4;
+        _resParams   = (saved && saved.params)
+            ? JSON.parse(JSON.stringify(saved.params))
+            : buildDefaultParams(_resCantidad, _resEscala);
+
+        /* Recrear selects */
+        var escalaEl    = document.getElementById('res360-select-escala');
+        var cantidadEl  = document.getElementById('res360-select-cantidad');
+        if (escalaEl)   escalaEl.innerHTML   = '';
+        if (cantidadEl) cantidadEl.innerHTML = '';
+
+        createInput({
+            containerId: 'res360-select-escala',
+            type: 'select',
+            label: 'Escala',
+            size: 'md',
+            value: _resEscala,
+            selectOptions: RES_ESCALAS,
+            onChange: function (val) {
+                _resEscala = val;
+                _resParams = buildDefaultParams(_resCantidad, _resEscala);
+                renderResParams();
+            }
+        });
+
+        createInput({
+            containerId: 'res360-select-cantidad',
+            type: 'select',
+            label: 'Cantidad de parámetros',
+            size: 'md',
+            value: String(_resCantidad),
+            selectOptions: RES_CANTIDADES,
+            onChange: function (val) {
+                _resCantidad = parseInt(val, 10);
+                _resParams   = buildDefaultParams(_resCantidad, _resEscala);
+                renderResParams();
+            }
+        });
+
+        renderResParams();
+
+        /* Restaurar toggles */
+        var toggleLideres  = document.getElementById('res360-toggle-lideres');
+        var toggleNoSabe   = document.getElementById('res360-toggle-nosabe');
+        var toggleAnonimato= document.getElementById('res360-toggle-anonimato');
+        if (toggleLideres)   toggleLideres.checked   = !!(saved && saved.permitirLideres);
+        if (toggleNoSabe)    toggleNoSabe.checked    = !!(saved && saved.permitirNoSabe);
+        if (toggleAnonimato) toggleAnonimato.checked = !!(saved && saved.asegurarAnonimato);
+
         var saveBtn = document.getElementById('crear360-btn-sub-save');
         if (saveBtn) saveBtn.disabled = false;
     }
 
-    function getColorHex(colorId) {
-        var c = COLORES.find(function (x) { return x.id === colorId; });
-        return c ? c.hex : '#888';
-    }
-
-    function renderResPreview() {
-        var container = document.getElementById('res360-preview');
-        if (!container || !_rangos.length) { if (container) container.innerHTML = ''; return; }
-
-        var bars = _rangos.map(function (r) {
-            var hex = getColorHex(r.color);
-            return '<div class="res360-preview-bar" style="background:' + hex + ';" title="' + r.nombre + ' (' + r.min + '–' + r.max + ')">' +
-                '<span class="res360-preview-label ubits-body-sm-bold">' + r.nombre + '</span>' +
-                '<span class="res360-preview-range ubits-body-sm-regular">' + r.min + '–' + r.max + '</span>' +
-                '</div>';
-        }).join('');
-
-        container.innerHTML = '<div class="res360-preview-inner">' + bars + '</div>';
-    }
-
-    function renderResTable() {
-        var container = document.getElementById('res360-table-wrap');
+    function renderResParams() {
+        var container = document.getElementById('res360-params-list');
         if (!container) return;
+        container.innerHTML = '';
 
-        container.innerHTML =
-            '<div class="res360-table">' +
-                '<div class="res360-table__header">' +
-                    '<span class="ubits-body-sm-bold">#</span>' +
-                    '<span class="ubits-body-sm-bold">Nombre del rango</span>' +
-                    '<span class="ubits-body-sm-bold">Mínimo</span>' +
-                    '<span class="ubits-body-sm-bold">Máximo</span>' +
-                    '<span class="ubits-body-sm-bold">Color</span>' +
-                '</div>' +
-                '<div class="res360-table__body" id="res360-rows"></div>' +
-            '</div>';
-
-        var rowsContainer = document.getElementById('res360-rows');
-
-        _rangos.forEach(function (rango, idx) {
+        _resParams.forEach(function (param, idx) {
             var row = document.createElement('div');
-            row.className = 'res360-table__row';
+            row.className = 'res360-param-row';
+            row.id = 'res360-param-row-' + idx;
 
-            var numCell = document.createElement('span');
-            numCell.className = 'ubits-body-sm-regular res360-table__num';
-            numCell.textContent = idx + 1;
-            row.appendChild(numCell);
+            var nameCell = document.createElement('div');
+            nameCell.className = 'res360-param-name';
+            nameCell.id = 'res360-param-name-' + idx;
 
-            var nombreCell = document.createElement('div');
-            nombreCell.className = 'res360-table__cell-nombre';
-            nombreCell.id = 'res360-nombre-' + idx;
-            row.appendChild(nombreCell);
+            var desdeCell = document.createElement('div');
+            desdeCell.className = 'res360-param-num';
+            desdeCell.id = 'res360-param-desde-' + idx;
 
-            var minCell = document.createElement('div');
-            minCell.className = 'res360-table__cell-num';
-            minCell.id = 'res360-min-' + idx;
-            row.appendChild(minCell);
+            var hastaCell = document.createElement('div');
+            hastaCell.className = 'res360-param-num';
+            hastaCell.id = 'res360-param-hasta-' + idx;
 
-            var maxCell = document.createElement('div');
-            maxCell.className = 'res360-table__cell-num';
-            maxCell.id = 'res360-max-' + idx;
-            row.appendChild(maxCell);
+            row.appendChild(nameCell);
+            row.appendChild(desdeCell);
+            row.appendChild(hastaCell);
+            container.appendChild(row);
 
-            var colorCell = document.createElement('div');
-            colorCell.className = 'res360-table__cell-color';
-            colorCell.innerHTML = '<div class="res360-color-picker">' +
-                COLORES.map(function (c) {
-                    return '<button type="button" class="res360-color-btn ' + (rango.color === c.id ? 'res360-color-btn--selected' : '') + '" ' +
-                        'style="background:' + c.hex + ';" data-color="' + c.id + '" data-idx="' + idx + '" title="' + c.label + '" aria-label="' + c.label + '">' +
-                        (rango.color === c.id ? '<i class="far fa-check" style="color:#fff;font-size:10px;"></i>' : '') +
-                        '</button>';
-                }).join('') +
-                '</div>';
-            row.appendChild(colorCell);
-
-            rowsContainer.appendChild(row);
-
-            createInput({ containerId: 'res360-nombre-' + idx, type: 'text',   placeholder: 'Nombre', size: 'sm', value: rango.nombre,        onChange: function (val) { _rangos[idx].nombre = val;                      renderResPreview(); } });
-            createInput({ containerId: 'res360-min-'    + idx, type: 'number', placeholder: '0',      size: 'sm', value: String(rango.min),    onChange: function (val) { _rangos[idx].min = parseInt(val, 10) || 0;    renderResPreview(); } });
-            createInput({ containerId: 'res360-max-'    + idx, type: 'number', placeholder: '0',      size: 'sm', value: String(rango.max),    onChange: function (val) { _rangos[idx].max = parseInt(val, 10) || 0;    renderResPreview(); } });
-
-            colorCell.querySelectorAll('.res360-color-btn').forEach(function (btn) {
-                btn.addEventListener('click', function () {
-                    _rangos[parseInt(btn.dataset.idx, 10)].color = btn.dataset.color;
-                    renderResTable();
-                    renderResPreview();
-                });
+            createInput({
+                containerId: 'res360-param-name-'  + idx,
+                type: 'text', size: 'sm',
+                placeholder: 'Nombre del parámetro',
+                value: param.nombre,
+                onChange: function (val) { _resParams[idx].nombre = val; }
+            });
+            createInput({
+                containerId: 'res360-param-desde-' + idx,
+                type: 'number', size: 'sm',
+                label: 'Desde',
+                value: String(param.desde),
+                onChange: function (val) { _resParams[idx].desde = parseInt(val, 10) || 0; }
+            });
+            createInput({
+                containerId: 'res360-param-hasta-' + idx,
+                type: 'number', size: 'sm',
+                label: 'Hasta',
+                value: String(param.hasta),
+                onChange: function (val) { _resParams[idx].hasta = parseInt(val, 10) || 0; }
             });
         });
-
-        renderResPreview();
-    }
-
-    function setResCantidad(n) {
-        _cantidad = n;
-        var savedRes = draft.resultados;
-        if (savedRes && savedRes.cantidad === n && savedRes.rangos && savedRes.rangos.length === n) {
-            _rangos = JSON.parse(JSON.stringify(savedRes.rangos));
-        } else {
-            _rangos = JSON.parse(JSON.stringify(RES_DEFAULTS[n]));
-        }
-
-        document.querySelectorAll('.res360-cant-btn').forEach(function (btn) {
-            btn.classList.toggle('ubits-button--active', parseInt(btn.dataset.n, 10) === n);
-        });
-
-        renderResTable();
     }
 
     function saveResultados() {
-        draft.resultados = { cantidad: _cantidad, rangos: _rangos };
+        var toggleLideres   = document.getElementById('res360-toggle-lideres');
+        var toggleNoSabe    = document.getElementById('res360-toggle-nosabe');
+        var toggleAnonimato = document.getElementById('res360-toggle-anonimato');
+        draft.resultados = {
+            escala:            _resEscala,
+            cantidad:          _resCantidad,
+            params:            JSON.parse(JSON.stringify(_resParams)),
+            permitirLideres:   toggleLideres   ? toggleLideres.checked   : false,
+            permitirNoSabe:    toggleNoSabe    ? toggleNoSabe.checked    : false,
+            asegurarAnonimato: toggleAnonimato ? toggleAnonimato.checked : false
+        };
         draft.checks.resultados = true;
         showToast('success', 'Configuración de resultados guardada');
         showView('hub');
@@ -1211,12 +1245,6 @@
             history.back();
         });
         document.getElementById('crear360-btn-sub-save').addEventListener('click', saveCurrentSubView);
-
-        /* Botones de cantidad en resultados */
-        document.getElementById('res360-cantidad-btns').addEventListener('click', function (e) {
-            var btn = e.target.closest('.res360-cant-btn');
-            if (btn) setResCantidad(parseInt(btn.dataset.n, 10));
-        });
 
         /* Manejo del botón atrás del navegador */
         window.addEventListener('popstate', function (e) {
