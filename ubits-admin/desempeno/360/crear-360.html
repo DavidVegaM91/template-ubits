@@ -10,21 +10,17 @@
     <link rel="stylesheet" href="../../../general-styles/styles.css">
     <link rel="stylesheet" href="../../../general-styles/fontawesome-icons.css">
     <link rel="stylesheet" href="../../../general-styles/ubits-typography.css">
-    <link rel="stylesheet" href="../../../general-styles/layout-immersive.css">
     <link rel="stylesheet" href="../../../components/button.css">
+    <link rel="stylesheet" href="../../../components/status-tag.css">
+    <link rel="stylesheet" href="../../../components/tooltip.css">
     <link rel="stylesheet" href="../../../components/input.css">
     <link rel="stylesheet" href="../../../components/calendar.css">
     <link rel="stylesheet" href="../../../components/modal.css">
     <link rel="stylesheet" href="../../../components/toast.css">
-    <link rel="stylesheet" href="../../../components/status-tag.css">
-    <link rel="stylesheet" href="../../../components/tooltip.css">
-    <link rel="stylesheet" href="../../../components/tab-bar.css">
-    <link rel="stylesheet" href="../../../components/floating-menu.css">
-    <link rel="stylesheet" href="../../../components/profile-menu.css">
-    <link rel="stylesheet" href="../../../components/sidebar.css">
+    <link rel="stylesheet" href="../../../general-styles/layout-immersive.css">
     <link rel="stylesheet" href="./crear-360.css">
 </head>
-<body data-theme="light" class="page-layout-immersive page-crear-360">
+<body data-theme="light" class="no-subnav page-layout-immersive page-crear-360">
 
 <div class="ubits-layout-immersive">
 
@@ -34,9 +30,7 @@
             <div class="ubits-layout-immersive__leading">
                 <div class="ubits-layout-immersive__title-row">
                     <span class="ubits-layout-immersive__title ubits-body-md-bold">Crear evaluación 360</span>
-                    <span id="crear360-status-tag"
-                        class="ubits-status-tag ubits-status-tag--sm ubits-status-tag--neutral"
-                        style="display:none;">
+                    <span class="ubits-status-tag ubits-status-tag--sm ubits-status-tag--info">
                         <span class="ubits-status-tag__text">Borrador</span>
                     </span>
                 </div>
@@ -379,8 +373,6 @@
         if (saveChangesBtn) saveChangesBtn.style.display = saved ? '' : 'none';
 
         /* Status tag */
-        var statusTag = document.getElementById('crear360-status-tag');
-        if (statusTag) statusTag.style.display = saved ? '' : 'none';
 
     }
 
