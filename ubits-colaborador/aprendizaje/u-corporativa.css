@@ -21,17 +21,21 @@
     width: 100%;
 }
 
-/* Widgets sin padding ni fondo */
-.section-single > .widget-encabezado-universidad,
+/* Widgets sin padding ni fondo (el encabezado UC lleva borde propio abajo) */
+.section-single > .widget-encabezado-universidad {
+    padding: var(--padding-none) !important;
+    background: transparent !important;
+}
+
 .section-single > .widget-buscador-filtros,
 .section-single > .widget-grid-cursos-propios {
     padding: var(--padding-none) !important;
     background: transparent !important;
     border: none !important;
 }
-        
 
-/* Encabezado Universidad Corporativa */
+/* Encabezado Universidad Corporativa (selector + .widget: gana a styles.css .content-sections > .section-single > div) */
+.content-sections > .section-single > .widget-encabezado-universidad,
 .widget-encabezado-universidad {
     width: 100%;
     max-width: 100%;
@@ -39,6 +43,7 @@
     border-radius: var(--border-radius-sm);
     overflow: hidden;
     background: var(--ubits-bg-1);
+    border: 1px solid var(--ubits-border-1);
     border-left: 4px solid var(--ubits-accent-brand);
     display: flex;
     flex-direction: row;
@@ -229,10 +234,11 @@
         gap: var(--gap-lg);
     }
 
+    .content-sections > .section-single > .widget-encabezado-universidad,
     .widget-encabezado-universidad {
         flex-direction: column;
+        border: 1px solid var(--ubits-border-1);
         border-top: 4px solid var(--ubits-accent-brand);
-        border-left: none;
         align-items: flex-start;
     }
     
@@ -264,6 +270,7 @@
         grid-template-columns: 1fr;
     }
 
+    .content-sections > .section-single > .widget-encabezado-universidad,
     .widget-encabezado-universidad {
         min-height: auto;
         height: auto;

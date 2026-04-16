@@ -22,17 +22,6 @@
     <link rel="stylesheet" href="../../components/toast.css">
     <style>
         /* Preview Styles */
-        /* Preview control buttons - override UBITS button styles for active state */
-        .preview-control-btn.active {
-            background: var(--ubits-accent-brand) !important;
-            color: white !important;
-            border-color: var(--ubits-accent-brand) !important;
-        }
-        
-        .preview-control-btn.active span {
-            color: white !important;
-        }
-        
         /* Forzar mostrar Tab-bar en preview */
         #tab-bar-preview-real {
             display: block !important;
@@ -63,14 +52,13 @@
             border: 1px solid var(--ubits-border-1) !important;
         }
         
-        /* Floating Menu en preview - forzar visibilidad */
+        /* Floating Menu en preview: solo UN panel visible (Módulos vs Perfil comparten contenedor; sin .show = oculto) */
         #floating-menu-container .floating-menu {
             position: relative !important;
             top: auto !important;
             left: auto !important;
             right: auto !important;
             bottom: auto !important;
-            display: block !important;
             min-height: 500px !important;
             max-height: 600px !important;
             overflow-y: auto !important;
@@ -81,7 +69,11 @@
             margin-left: auto !important;
             margin-right: auto !important;
         }
-        
+
+        #floating-menu-container .floating-menu:not(.show) {
+            display: none !important;
+        }
+
         #floating-menu-container .floating-menu.show {
             display: block !important;
         }
@@ -102,61 +94,6 @@
             color: var(--ubits-sidebar-button-fg-default) !important;
         }
         
-        /* Profile Menu Preview Container */
-        #profile-menu-preview-container {
-            align-items: flex-end !important;
-            justify-content: center !important;
-        }
-        
-        #profile-menu-content {
-            width: 100% !important;
-            display: flex !important;
-            justify-content: center !important;
-        }
-        
-        #profile-menu-preview-container.show {
-            display: flex !important;
-        }
-        
-        /* Asegurar que solo uno sea visible a la vez */
-        #floating-menu-container:not([style*="display: none"]) ~ #profile-menu-preview-container {
-            display: none !important;
-        }
-        
-        /* Profile Menu en preview */
-        #profile-menu-content .profile-menu {
-            position: relative !important;
-            background: var(--ubits-sidebar-bg) !important;
-            border-radius: var(--border-radius-sm) !important;
-            
-            padding: 8px 0 !important;
-            width: 100% !important;
-            max-width: 400px !important;
-            display: block !important;
-        }
-        
-        #profile-menu-content .profile-menu-item {
-            display: flex !important;
-            align-items: center !important;
-            padding: 12px 16px !important;
-            text-decoration: none !important;
-            color: var(--ubits-sidebar-button-fg-default) !important;
-            transition: background 0.2s ease !important;
-        }
-        
-        #profile-menu-content .profile-menu-item:hover {
-            background: var(--ubits-sidebar-button-bg-pressed) !important;
-        }
-        
-        #profile-menu-content .profile-menu-icon {
-            margin-right: 12px !important;
-            width: 16px !important;
-            color: var(--ubits-sidebar-button-fg-default) !important;
-        }
-        
-        #profile-menu-content .profile-menu-text {
-            color: var(--ubits-sidebar-button-fg-default) !important;
-        }
     </style>
 </head>
 <body class="componentes-page" data-theme="light">
@@ -199,19 +136,14 @@
                         Preview del componente
                     </h2>
                     <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6;">
-                        Aquí puedes ver el componente Tab-bar en acción. Haz clic en "Módulos" para ver el <strong>Floating Menu</strong> con sus accordions interactivos.
+                        Usa los ítems del Tab-bar del preview: <strong>Módulos</strong> abre el menú de secciones; <strong>Mi perfil</strong> abre el panel de cuenta (mismo comportamiento que en móvil).
                     </p>
                     
                     <!-- Preview Container -->
                     <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: var(--border-radius-md); position: relative;">
                         
-                        <!-- Floating Menu Container -->
+                        <!-- Floating Menu (Módulos + Perfil: dos paneles; solo uno con .show — igual que en producto) -->
                         <div id="floating-menu-container"></div>
-                        
-                        <!-- Profile Menu Preview Container -->
-                        <div id="profile-menu-preview-container" style="display: none; height: 532px; width: 100%; max-width: 400px; margin: 0 auto 12px auto; align-items: flex-end; justify-content: center;">
-                            <div id="profile-menu-content"></div>
-                        </div>
                         
                         <!-- Tab-bar Real de UBITS -->
                         <div id="tab-bar-preview-container" style="display: flex; justify-content: center; align-items: flex-end;">
@@ -235,16 +167,6 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    
-                    <!-- Preview Controls -->
-                    <div style="margin-top: 16px; display: flex; gap: var(--gap-md); flex-wrap: wrap;">
-                        <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn active" onclick="setPreviewOption('modulos')">
-                            <span>Módulos (Floating Menu)</span>
-                        </button>
-                        <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" onclick="setPreviewOption('perfil')">
-                            <span>Mi perfil</span>
-                        </button>
                     </div>
                 </div>
 
@@ -685,29 +607,18 @@ document.addEventListener('DOMContentLoaded', function() {
             // Cargar floating menu para el preview
             loadFloatingMenu('floating-menu-container');
             
-            // Cargar profile menu para el preview
-            loadProfileMenu('profile-menu-content');
-            
             // Cargar alert de warning para prompts usando el componente oficial
             showAlert('warning', 'Importante: Antes de enviar estos prompts a Cursor, reemplaza todos los textos entre [corchetes] con la información específica de tu proyecto.', {
                 containerId: 'tabbar-warning-alert',
                 noClose: true
             });
             
-            // Mostrar floating menu automáticamente en el preview y ocultar profile menu
+            // Preview inicial: solo panel Módulos; panel Perfil (#floating-menu-profile) sin .show
             setTimeout(() => {
                 const floatingMenu = document.getElementById('floating-menu');
-                const profileMenuContainer = document.getElementById('profile-menu-preview-container');
-                
-                if (floatingMenu) {
-                    floatingMenu.classList.add('show');
-                }
-                
-                // Asegurar que profile menu esté oculto inicialmente
-                if (profileMenuContainer) {
-                    profileMenuContainer.classList.remove('show');
-                    profileMenuContainer.style.display = 'none';
-                }
+                const floatingMenuProfile = document.getElementById('floating-menu-profile');
+                if (floatingMenu) floatingMenu.classList.add('show');
+                if (floatingMenuProfile) floatingMenuProfile.classList.remove('show');
             }, 500);
         });
 
@@ -722,53 +633,22 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             });
             
-            // Manejar cambio de contenido - EXCLUSIVO
             const floatingMenuContainer = document.getElementById('floating-menu-container');
-            const profileMenuContainer = document.getElementById('profile-menu-preview-container');
             const floatingMenu = document.getElementById('floating-menu');
-            
+            const floatingMenuProfile = document.getElementById('floating-menu-profile');
+
             if (option === 'modulos') {
-                // SOLO mostrar floating menu
-                floatingMenuContainer.style.display = 'block';
-                profileMenuContainer.classList.remove('show');
-                profileMenuContainer.style.display = 'none';
-                
-                setTimeout(() => {
-                    if (floatingMenu) {
-                        floatingMenu.classList.add('show');
-                    }
-                }, 100);
-                
+                if (floatingMenuContainer) floatingMenuContainer.style.display = 'block';
+                if (floatingMenu) floatingMenu.classList.add('show');
+                if (floatingMenuProfile) floatingMenuProfile.classList.remove('show');
             } else if (option === 'perfil') {
-                // SOLO mostrar profile menu
-                floatingMenuContainer.style.display = 'none';
-                profileMenuContainer.classList.add('show');
-                
-                // Ocultar floating menu explícitamente
-                if (floatingMenu) {
-                    floatingMenu.classList.remove('show');
-                }
-                
+                if (floatingMenuContainer) floatingMenuContainer.style.display = 'block';
+                if (floatingMenu) floatingMenu.classList.remove('show');
+                if (floatingMenuProfile) floatingMenuProfile.classList.add('show');
             } else {
-                // Para otras opciones, ocultar ambos
-                floatingMenuContainer.style.display = 'none';
-                profileMenuContainer.classList.remove('show');
-                profileMenuContainer.style.display = 'none';
-                
-                if (floatingMenu) {
-                    floatingMenu.classList.remove('show');
-                }
-            }
-            
-            // Actualizar controles
-            const controlButtons = document.querySelectorAll('.preview-control-btn');
-            controlButtons.forEach(button => {
-                button.classList.remove('active');
-            });
-            
-            const activeControl = document.querySelector(`[onclick="setPreviewOption('${option}')"]`);
-            if (activeControl) {
-                activeControl.classList.add('active');
+                if (floatingMenuContainer) floatingMenuContainer.style.display = 'none';
+                if (floatingMenu) floatingMenu.classList.remove('show');
+                if (floatingMenuProfile) floatingMenuProfile.classList.remove('show');
             }
         }
 

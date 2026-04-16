@@ -288,7 +288,7 @@ function initSidebarSubmenuHover(variant, basePath) {
             submenuId: UBITS_SIDEBAR_HOVER_SUBMENU_ID,
             anchorEl: anchor,
             placement: 'right',
-            align: 'start',
+            align: cfg.align != null ? cfg.align : 'start',
             offset: getSidebarSubmenuOffsetPx(),
             variant: 'dark',
             title: title,
@@ -333,6 +333,7 @@ function initSidebarSubmenuHover(variant, basePath) {
     sidebar.querySelectorAll('.sidebar-footer .user-avatar').forEach(function (avatarEl) {
         wireSidebarSubmenuHover(avatarEl, function (done) {
             const el = openForAnchor(avatarEl, {
+                align: 'end',
                 title: 'Perfil',
                 options: buildSidebarAvatarSubmenuOptions(variant, basePath)
             });
