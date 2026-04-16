@@ -554,7 +554,7 @@
 /* layout dos columnas */
 .res360-layout {
     display: grid;
-    grid-template-columns: 1fr 320px;
+    grid-template-columns: 1fr 400px;
     gap: var(--gap-2xl);
     align-items: start;
 }
