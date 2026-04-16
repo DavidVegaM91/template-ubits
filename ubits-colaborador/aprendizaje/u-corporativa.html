@@ -19,7 +19,11 @@
     <link rel="stylesheet" href="../../components/avatar.css">
     <link rel="stylesheet" href="../../components/card-content.css">
     <link rel="stylesheet" href="../../components/button.css">
+    <link rel="stylesheet" href="../../components/toolbar-panel.css">
+    <link rel="stylesheet" href="../../components/dropdown-menu.css">
     <link rel="stylesheet" href="../../components/input.css">
+    <link rel="stylesheet" href="../../components/chip.css">
+    <link rel="stylesheet" href="../../components/modal.css">
     <link rel="stylesheet" href="../../components/paginator.css">
     <link rel="stylesheet" href="../../components/empty-state.css">
     <link rel="stylesheet" href="../../components/tooltip.css">
@@ -60,37 +64,49 @@
                         </div>
                     </div>
 
-                    <!-- Sección buscador y filtros -->
+                    <!-- U. corporativa = vista colaborador del catálogo publicado (BDS contents); filtros = mismo modal que lms-creator/contenidos.html -->
                     <div class="section-single">
                         <div class="widget-buscador-filtros">
-                            <div class="buscador-header">
-                                <div class="buscador-title-container">
-                                    <h2 class="buscador-title">Lista de contenidos</h2>
-                                    <div class="buscador-results">
-                                        <span class="buscador-results-count" id="buscador-results-count">0</span>
-                                        <span class="buscador-results-text">resultados</span>
+                            <div class="ubits-toolbar-panel" id="ucorporativa-toolbar-panel">
+                                <div class="ubits-toolbar-panel__bar">
+                                    <div class="ubits-toolbar-panel__title-block">
+                                        <span class="ubits-toolbar-panel__title ubits-body-md-bold">Lista de contenidos</span>
+                                        <span class="ubits-toolbar-panel__meta">
+                                            <span class="ubits-body-sm-regular" id="buscador-results-count" aria-live="polite">0</span>
+                                            <span class="ubits-body-sm-regular">resultados</span>
+                                        </span>
+                                    </div>
+                                    <div class="ubits-toolbar-panel__actions">
+                                        <div class="ubits-toolbar-panel__search-group" id="ucorporativa-search-group">
+                                            <button type="button" id="buscador-toggle-btn" class="ubits-button ubits-button--secondary ubits-button--md ubits-button--icon-only ubits-toolbar-panel__search-toggle" data-tooltip="Buscar" data-tooltip-delay="1000" aria-label="Buscar">
+                                                <i class="far fa-magnifying-glass"></i>
+                                            </button>
+                                            <div id="buscador-input-container" class="ubits-toolbar-panel__search-inline" style="display: none;" aria-hidden="true"></div>
+                                            <button type="button" id="ucorporativa-btn-filtro" class="ubits-button ubits-button--secondary ubits-button--md ubits-button--icon-only ubits-toolbar-panel__filter-btn" data-tooltip="Filtrar" data-tooltip-delay="1000" aria-label="Filtrar">
+                                                <i class="far fa-filter"></i>
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="buscador-actions">
-                                    <div id="buscador-input-container" style="display: none;"></div>
-                                    <button id="buscador-toggle-btn" class="ubits-button ubits-button--secondary ubits-button--md ubits-button--icon-only">
-                                        <i class="far fa-search"></i>
-                                    </button>
-                                    <button class="ubits-button ubits-button--secondary ubits-button--md ubits-button--icon-only">
-                                        <i class="far fa-filter"></i>
+                                <div class="widget-filtros-aplicados ucorp-filtros-aplicados" id="ucorp-filtros-aplicados" style="display: none;" aria-live="polite">
+                                    <span class="ubits-body-sm-regular">Filtros aplicados:</span>
+                                    <div class="filtros-chips-container" id="ucorp-filtros-chips-container"></div>
+                                    <button type="button" class="ubits-button ubits-button--tertiary ubits-button--xs" id="ucorp-clear-all-filters-btn" aria-label="Limpiar todos los filtros">
+                                        <i class="far fa-filter-slash"></i>
+                                        <span>Limpiar filtros</span>
                                     </button>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Sección grid cards cursos propios -->
+                    <!-- Sección grid cards cursos propios (empty state entre grid y paginador = mismo bloque que el listado) -->
                     <div class="section-single">
                         <div class="widget-grid-cursos-propios">
                             <div class="grid-cards-container" id="cursos-corporativos-container"></div>
+                            <div id="empty-state-no-results" style="display: none;"></div>
                             <div class="paginador-container" id="paginador-container"></div>
                         </div>
-                        <div id="empty-state-no-results" style="display: none;"></div>
                     </div>
                 </div>
             </div>
@@ -114,12 +130,16 @@
     <script src="../../components/profile-menu.js"></script>
     <script src="../../components/avatar.js"></script>
     <script src="../../components/card-content.js"></script>
+    <script src="../../components/dropdown-menu.js"></script>
+    <script src="../../components/modal.js"></script>
     <script src="../../components/input.js"></script>
     <script src="../../components/paginator.js"></script>
     <script src="../../components/empty-state.js"></script>
     <script src="../../script.js"></script>
     <script src="../../bd-master/bd-master-niveles-contenido.js"></script>
     <script src="../../bd-master/bd-master-aliados.js"></script>
+    <script src="../../bd-master/bd-master-categorias-fiqsha.js"></script>
+    <script src="../../bd-master/bd-master-tipos-contenido.js"></script>
     <script src="../../bd-master/bd-contenidos-fiqsha.js"></script>
     <script>
         // Cargar componentes dinámicamente
@@ -161,6 +181,10 @@
                     setActiveAccordionLink('corporativa');
                 }
             }, 200);
+
+            if (typeof initTooltip === 'function') {
+                initTooltip('#ucorporativa-toolbar-panel [data-tooltip]');
+            }
 
             // Contenidos desde bd-master/bd-contenidos-fiqsha.js (BDS_CONTENIDOS_FIQSHA)
             var COMPETENCIA_POR_CATEGORIA_FIQSHA = {
@@ -241,7 +265,9 @@
                         status: 'default',
                         image: imgPath,
                         competency: competency,
-                        language: c.idioma || 'Español'
+                        language: (c.idioma || 'Español').trim(),
+                        categoriaFiqshaId: c.categoriaFiqshaId || '',
+                        nivelId: c.nivelId || ''
                     });
                 }
                 return out;
@@ -249,50 +275,353 @@
 
             const cursosCorporativos = buildCursosCorporativosFromBd();
 
-            // Configuración de paginación usando componente oficial UBITS Paginator
-            let currentPage = 1;
-            let itemsPerPageValue = 16; // Valor por defecto
-            let paginatorInstance = null;
-            let cursosFiltrados = [...cursosCorporativos]; // Copia de todos los cursos para filtrado
-            let searchQuery = ''; // Texto de búsqueda actual
+            /** Mismos criterios que `lms-creator/contenidos.html` (modal Filtros: tipo, categoría Fiqsha, nivel, idioma). */
+            var ucorpFiltrosActive = { tipo: '', categoriaId: '', nivelId: '', idioma: '' };
+            var ucorpFiltrosPending = { tipo: '', categoriaId: '', nivelId: '', idioma: '' };
 
-            // Función para filtrar cursos basándose en el texto de búsqueda
-            function filterCourses(searchText) {
-                searchQuery = searchText.toLowerCase().trim();
-                
-                if (searchQuery === '') {
-                    // Si no hay búsqueda, mostrar todos los cursos
-                    cursosFiltrados = [...cursosCorporativos];
-                } else {
-                    // Filtrar cursos que coincidan con el texto de búsqueda
-                    cursosFiltrados = cursosCorporativos.filter(curso => {
-                        // Buscar en título
-                        const titleMatch = curso.title.toLowerCase().includes(searchQuery);
-                        // Buscar en competencia
-                        const competencyMatch = curso.competency.toLowerCase().includes(searchQuery);
-                        // Buscar en tipo de contenido
-                        const typeMatch = curso.type.toLowerCase().includes(searchQuery);
-                        // Buscar en nivel
-                        const levelMatch = curso.level.toLowerCase().includes(searchQuery);
-                        
-                        return titleMatch || competencyMatch || typeMatch || levelMatch;
-                    });
-                }
-                
-                // Resetear a la primera página cuando se filtra
-                currentPage = 1;
-                
-                // Re-renderizar cards y actualizar paginador
-                renderCards();
-                updatePaginator();
+            let currentPage = 1;
+            let itemsPerPageValue = 16;
+            let paginatorInstance = null;
+            let cursosFiltrados = [];
+            let currentSearchValue = '';
+
+            function hasActiveUcorpFiltros() {
+                var f = ucorpFiltrosActive;
+                return !!(f.tipo || f.categoriaId || f.nivelId || f.idioma);
             }
 
-            // Función para actualizar el contador de resultados
-            function updateResultsCount() {
-                const resultsCountElement = document.getElementById('buscador-results-count');
-                if (resultsCountElement) {
-                    resultsCountElement.textContent = cursosFiltrados.length;
+            function cursoPassesModalFilters(curso) {
+                var f = ucorpFiltrosActive;
+                if (f.tipo && (curso.type || '') !== f.tipo) return false;
+                if (f.categoriaId && (curso.categoriaFiqshaId || '') !== f.categoriaId) return false;
+                if (f.nivelId && (curso.nivelId || '') !== f.nivelId) return false;
+                if (f.idioma && String(curso.language || '').trim() !== f.idioma) return false;
+                return true;
+            }
+
+            function escapeHtmlUcorpChip(str) {
+                if (str == null) return '';
+                return String(str)
+                    .replace(/&/g, '&amp;')
+                    .replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;')
+                    .replace(/"/g, '&quot;');
+            }
+
+            function resolveUcorpCategoriaNombre(id) {
+                var catRoot = window.BD_MASTER_CATEGORIAS_FIQSHA;
+                if (!catRoot || !Array.isArray(catRoot.categorias) || !id) return id || '';
+                for (var i = 0; i < catRoot.categorias.length; i++) {
+                    var c = catRoot.categorias[i];
+                    if (c && c.id === id) return c.nombre || id;
                 }
+                return id;
+            }
+
+            function resolveUcorpNivelNombre(id) {
+                var nivRoot = window.BD_MASTER_NIVELES_CONTENIDO;
+                if (!nivRoot || !Array.isArray(nivRoot.niveles) || !id) return id || '';
+                for (var j = 0; j < nivRoot.niveles.length; j++) {
+                    var n = nivRoot.niveles[j];
+                    if (n && n.id === id) return n.nombre || id;
+                }
+                return id;
+            }
+
+            function getUcorpFiltrosAplicadosCount() {
+                var f = ucorpFiltrosActive;
+                var n = 0;
+                if (f.tipo) n++;
+                if (f.categoriaId) n++;
+                if (f.nivelId) n++;
+                if (f.idioma) n++;
+                return n;
+            }
+
+            function updateUcorpFiltrosButtonBadge() {
+                var btn = document.getElementById('ucorporativa-btn-filtro');
+                if (!btn) return;
+                var c = getUcorpFiltrosAplicadosCount();
+                var badge = document.getElementById('ucorp-btn-filtro-badge');
+                if (c <= 0) {
+                    if (badge && badge.parentNode) badge.parentNode.removeChild(badge);
+                    btn.setAttribute('aria-label', 'Filtrar');
+                    return;
+                }
+                if (!badge) {
+                    badge = document.createElement('span');
+                    badge.id = 'ucorp-btn-filtro-badge';
+                    badge.className = 'ubits-attention-badge ubits-attention-badge--sm ubits-attention-badge--error';
+                    btn.appendChild(badge);
+                }
+                badge.textContent = String(c);
+                badge.classList.toggle('ubits-attention-badge--circle', c >= 1 && c <= 9);
+                btn.setAttribute(
+                    'aria-label',
+                    'Filtrar (' + c + ' ' + (c === 1 ? 'filtro aplicado' : 'filtros aplicados') + ')'
+                );
+            }
+
+            function syncUcorpFilterButtonState() {
+                var fb = document.getElementById('ucorporativa-btn-filtro');
+                if (fb) fb.classList.toggle('ubits-button--active', hasActiveUcorpFiltros());
+            }
+
+            function renderUcorpFiltrosAplicados() {
+                var wrap = document.getElementById('ucorp-filtros-aplicados');
+                var chipsCont = document.getElementById('ucorp-filtros-chips-container');
+                if (!wrap || !chipsCont) return;
+                var f = ucorpFiltrosActive;
+                var chips = [];
+                if (f.tipo) {
+                    chips.push({
+                        label: 'Tipo',
+                        value: f.tipo,
+                        remove: function () {
+                            ucorpFiltrosActive.tipo = '';
+                            ucorpFiltrosPending.tipo = '';
+                            applyFiltersAndRender();
+                        }
+                    });
+                }
+                if (f.categoriaId) {
+                    chips.push({
+                        label: 'Categoría',
+                        value: resolveUcorpCategoriaNombre(f.categoriaId),
+                        remove: function () {
+                            ucorpFiltrosActive.categoriaId = '';
+                            ucorpFiltrosPending.categoriaId = '';
+                            applyFiltersAndRender();
+                        }
+                    });
+                }
+                if (f.nivelId) {
+                    chips.push({
+                        label: 'Nivel',
+                        value: resolveUcorpNivelNombre(f.nivelId),
+                        remove: function () {
+                            ucorpFiltrosActive.nivelId = '';
+                            ucorpFiltrosPending.nivelId = '';
+                            applyFiltersAndRender();
+                        }
+                    });
+                }
+                if (f.idioma) {
+                    chips.push({
+                        label: 'Idioma',
+                        value: f.idioma,
+                        remove: function () {
+                            ucorpFiltrosActive.idioma = '';
+                            ucorpFiltrosPending.idioma = '';
+                            applyFiltersAndRender();
+                        }
+                    });
+                }
+                if (chips.length === 0) {
+                    wrap.style.display = 'none';
+                    chipsCont.innerHTML = '';
+                    return;
+                }
+                wrap.style.display = 'flex';
+                chipsCont.innerHTML = chips
+                    .map(function (chip, index) {
+                        var full = chip.label + ': ' + chip.value;
+                        var labelVal = full.replace(/"/g, '&quot;');
+                        return (
+                            '<span class="ubits-chip ubits-chip--xs ubits-chip--close ucorp-filtro-chip" data-chip-index="' +
+                            index +
+                            '" data-tooltip="' +
+                            labelVal +
+                            '">' +
+                            '<span class="ubits-chip__text">' +
+                            escapeHtmlUcorpChip(full) +
+                            '</span>' +
+                            '<button type="button" class="ubits-chip__close" data-chip-index="' +
+                            index +
+                            '" aria-label="Quitar filtro"><i class="far fa-times"></i></button></span>'
+                        );
+                    })
+                    .join('');
+                chipsCont.querySelectorAll('.ubits-chip__close').forEach(function (btn) {
+                    btn.addEventListener('click', function () {
+                        var idx = parseInt(btn.getAttribute('data-chip-index'), 10);
+                        if (!isNaN(idx) && chips[idx] && typeof chips[idx].remove === 'function') {
+                            chips[idx].remove();
+                        }
+                    });
+                });
+                if (typeof initTooltip === 'function') {
+                    initTooltip('#ucorp-filtros-chips-container .ubits-chip[data-tooltip]');
+                }
+            }
+
+            function clearUcorpFiltros() {
+                ucorpFiltrosActive = { tipo: '', categoriaId: '', nivelId: '', idioma: '' };
+                ucorpFiltrosPending = { tipo: '', categoriaId: '', nivelId: '', idioma: '' };
+                applyFiltersAndRender();
+            }
+
+            function openUcorpFiltrosModal() {
+                if (typeof openModal !== 'function' || typeof createInput !== 'function') {
+                    if (typeof showToast === 'function') {
+                        showToast('error', 'Carga modal.js e input.js para usar filtros.');
+                    }
+                    return;
+                }
+                ucorpFiltrosPending = {
+                    tipo: ucorpFiltrosActive.tipo,
+                    categoriaId: ucorpFiltrosActive.categoriaId,
+                    nivelId: ucorpFiltrosActive.nivelId,
+                    idioma: ucorpFiltrosActive.idioma
+                };
+                var overlayId = 'ucorp-filtros-modal';
+                var tiposRoot = window.BD_MASTER_TIPOS_CONTENIDO;
+                var catRoot = window.BD_MASTER_CATEGORIAS_FIQSHA;
+                var nivRoot = window.BD_MASTER_NIVELES_CONTENIDO;
+                var selectTipos = [{ value: '', text: 'Todos los tipos' }];
+                if (tiposRoot && Array.isArray(tiposRoot.tipos)) {
+                    tiposRoot.tipos.forEach(function (t) {
+                        if (t && t.nombre) selectTipos.push({ value: t.nombre, text: t.nombre });
+                    });
+                }
+                var selectCat = [{ value: '', text: 'Todas las categorías' }];
+                if (catRoot && Array.isArray(catRoot.categorias)) {
+                    catRoot.categorias.forEach(function (c) {
+                        if (c && c.id) selectCat.push({ value: c.id, text: c.nombre || c.id });
+                    });
+                }
+                var selectNiv = [{ value: '', text: 'Todos los niveles' }];
+                if (nivRoot && Array.isArray(nivRoot.niveles)) {
+                    nivRoot.niveles.forEach(function (n) {
+                        if (n && n.id) selectNiv.push({ value: n.id, text: n.nombre || n.id });
+                    });
+                }
+                var selectIdioma = [
+                    { value: '', text: 'Todos los idiomas' },
+                    { value: 'Español', text: 'Español' },
+                    { value: 'Inglés', text: 'Inglés' },
+                    { value: 'Portugués', text: 'Portugués' }
+                ];
+                var bodyHtml =
+                    '<div class="ucorp-filtros-modal-fields">' +
+                    '<div id="ucorp-filtro-tipo" class="ucorp-filtros-modal-field"></div>' +
+                    '<div id="ucorp-filtro-categoria" class="ucorp-filtros-modal-field"></div>' +
+                    '<div id="ucorp-filtro-nivel" class="ucorp-filtros-modal-field"></div>' +
+                    '<div id="ucorp-filtro-idioma" class="ucorp-filtros-modal-field"></div>' +
+                    '</div>';
+                var overlay = openModal({
+                    overlayId: overlayId,
+                    title: 'Filtros',
+                    bodyHtml: bodyHtml,
+                    size: 'sm',
+                    closeOnOverlayClick: true,
+                    footerTertiary: {
+                        text: 'Borrar filtros',
+                        onClick: function () {
+                            ucorpFiltrosPending = { tipo: '', categoriaId: '', nivelId: '', idioma: '' };
+                            ucorpFiltrosActive = { tipo: '', categoriaId: '', nivelId: '', idioma: '' };
+                            if (typeof closeModal === 'function') closeModal(overlayId);
+                            applyFiltersAndRender();
+                        }
+                    },
+                    footerHtml: '<button type="button" class="ubits-button ubits-button--primary ubits-button--md" id="ucorp-filtros-modal-aplicar"><span>Aplicar</span></button>'
+                });
+                var tertiaryBtn = overlay.querySelector('#' + overlayId + '-footer-tertiary');
+                if (tertiaryBtn) {
+                    tertiaryBtn.classList.remove('ubits-button--tertiary');
+                    tertiaryBtn.classList.add('ubits-button--secondary');
+                }
+                function bindPending(key, val) {
+                    ucorpFiltrosPending[key] = val != null ? String(val) : '';
+                }
+                createInput({
+                    containerId: 'ucorp-filtro-tipo',
+                    type: 'select',
+                    label: '',
+                    placeholder: 'Tipo de contenido',
+                    size: 'md',
+                    selectOptions: selectTipos,
+                    value: ucorpFiltrosPending.tipo,
+                    onChange: function (v) { bindPending('tipo', v); }
+                });
+                createInput({
+                    containerId: 'ucorp-filtro-categoria',
+                    type: 'select',
+                    label: '',
+                    placeholder: 'Categoría',
+                    size: 'md',
+                    selectOptions: selectCat,
+                    value: ucorpFiltrosPending.categoriaId,
+                    onChange: function (v) { bindPending('categoriaId', v); }
+                });
+                createInput({
+                    containerId: 'ucorp-filtro-nivel',
+                    type: 'select',
+                    label: '',
+                    placeholder: 'Nivel',
+                    size: 'md',
+                    selectOptions: selectNiv,
+                    value: ucorpFiltrosPending.nivelId,
+                    onChange: function (v) { bindPending('nivelId', v); }
+                });
+                createInput({
+                    containerId: 'ucorp-filtro-idioma',
+                    type: 'select',
+                    label: '',
+                    placeholder: 'Idioma',
+                    size: 'md',
+                    selectOptions: selectIdioma,
+                    value: ucorpFiltrosPending.idioma,
+                    onChange: function (v) { bindPending('idioma', v); }
+                });
+                var aplicarBtn = document.getElementById('ucorp-filtros-modal-aplicar');
+                if (aplicarBtn) {
+                    aplicarBtn.addEventListener('click', function () {
+                        ucorpFiltrosActive = {
+                            tipo: ucorpFiltrosPending.tipo,
+                            categoriaId: ucorpFiltrosPending.categoriaId,
+                            nivelId: ucorpFiltrosPending.nivelId,
+                            idioma: ucorpFiltrosPending.idioma
+                        };
+                        if (typeof closeModal === 'function') closeModal(overlayId);
+                        applyFiltersAndRender();
+                    });
+                }
+            }
+
+            function applyFiltersAndRender() {
+                var list = cursosCorporativos.filter(function (curso) {
+                    return cursoPassesModalFilters(curso);
+                });
+                var sq = (currentSearchValue || '').toLowerCase().trim();
+                if (sq) {
+                    list = list.filter(function (curso) {
+                        return (
+                            curso.title.toLowerCase().includes(sq) ||
+                            curso.competency.toLowerCase().includes(sq) ||
+                            curso.type.toLowerCase().includes(sq) ||
+                            curso.level.toLowerCase().includes(sq)
+                        );
+                    });
+                }
+                cursosFiltrados = list;
+                currentPage = 1;
+                renderCards();
+                updatePaginator();
+                syncUcorpFilterButtonState();
+                renderUcorpFiltrosAplicados();
+                updateUcorpFiltrosButtonBadge();
+                if (typeof initTooltip === 'function') {
+                    initTooltip('#ucorporativa-toolbar-panel [data-tooltip]');
+                }
+            }
+
+            function updateResultsCount() {
+                var el = document.getElementById('buscador-results-count');
+                if (!el) return;
+                var total = cursosCorporativos.length;
+                var matchCount = cursosFiltrados.length;
+                el.textContent = matchCount + '/' + total;
             }
 
             // Función para renderizar cards de la página actual
@@ -427,55 +756,47 @@
             // Funcionalidad del botón de búsqueda
             const buscadorToggleBtn = document.getElementById('buscador-toggle-btn');
             const buscadorInputContainer = document.getElementById('buscador-input-container');
-            const buscadorActions = buscadorInputContainer?.closest('.buscador-actions');
+            const buscadorSearchGroup = document.getElementById('ucorporativa-search-group');
             let searchInputInstance = null;
             let isSearchMode = false;
-            let currentSearchValue = ''; // Almacenar el valor actual de búsqueda
-            
-            // Función para limpiar la búsqueda (usada por el botón X y el empty state)
-            // Hacerla global para que el botón del empty state pueda accederla
+
             window.clearSearchUCorporativa = function() {
+                ucorpFiltrosActive = { tipo: '', categoriaId: '', nivelId: '', idioma: '' };
+                ucorpFiltrosPending = { tipo: '', categoriaId: '', nivelId: '', idioma: '' };
                 currentSearchValue = '';
-                
-                // Asegurarse de que el empty state se oculte antes de filtrar
+
                 const emptyStateContainer = document.getElementById('empty-state-no-results');
                 if (emptyStateContainer) {
                     emptyStateContainer.style.display = 'none';
                     emptyStateContainer.innerHTML = '';
                     emptyStateContainer.className = '';
                 }
-                
-                filterCourses('');
+
+                applyFiltersAndRender();
                 
                 // Si el input está abierto, cerrarlo también
                 if (isSearchMode) {
                     buscadorInputContainer.innerHTML = '';
                     buscadorInputContainer.style.display = 'none';
+                    buscadorInputContainer.setAttribute('aria-hidden', 'true');
                     buscadorToggleBtn.style.display = 'flex';
                     isSearchMode = false;
                     searchInputInstance = null;
+                    if (buscadorSearchGroup) {
+                        buscadorSearchGroup.classList.remove('ucorporativa-search-mode-active');
+                    }
                 }
             };
-            
-            // Alias local para mantener compatibilidad
-            const clearSearch = window.clearSearchUCorporativa;
-            
-            // Cargar cards iniciales y paginador
-            renderCards();
-            initializePaginator();
-            
-            // Actualizar contador de resultados inicial
-            updateResultsCount();
-            
+
             // Función para cerrar el input de búsqueda
             function closeSearchInput(clearSearchParam = true) {
                 if (isSearchMode) {
                     buscadorInputContainer.innerHTML = '';
                     buscadorInputContainer.style.display = 'none';
+                    buscadorInputContainer.setAttribute('aria-hidden', 'true');
                     buscadorToggleBtn.style.display = 'flex';
-                    // Remover clase cuando se cierra el buscador
-                    if (buscadorActions) {
-                        buscadorActions.classList.remove('search-mode-active');
+                    if (buscadorSearchGroup) {
+                        buscadorSearchGroup.classList.remove('ucorporativa-search-mode-active');
                     }
                     isSearchMode = false;
                     searchInputInstance = null;
@@ -483,7 +804,7 @@
                     // Limpiar búsqueda y restaurar todos los cursos solo si se solicita
                     if (clearSearchParam) {
                         currentSearchValue = '';
-                        filterCourses('');
+                        applyFiltersAndRender();
                     }
                 }
             }
@@ -500,10 +821,10 @@
                     if (!isSearchMode) {
                         // Convertir botón en input de búsqueda
                         buscadorToggleBtn.style.display = 'none';
-                        buscadorInputContainer.style.display = 'block';
-                        // Agregar clase para indicar que el buscador está activo (para CSS)
-                        if (buscadorActions) {
-                            buscadorActions.classList.add('search-mode-active');
+                        buscadorInputContainer.style.display = 'flex';
+                        buscadorInputContainer.removeAttribute('aria-hidden');
+                        if (buscadorSearchGroup) {
+                            buscadorSearchGroup.classList.add('ucorporativa-search-mode-active');
                         }
                         
                         // Crear input de búsqueda UBITS
@@ -514,29 +835,15 @@
                                 placeholder: 'Buscar contenidos...',
                                 size: 'md',
                                 onChange: function(value) {
-                                    // Almacenar el valor actual
                                     currentSearchValue = value || '';
-                                    // Ejecutar búsqueda cuando el usuario escribe
-                                    filterCourses(value);
+                                    applyFiltersAndRender();
                                 }
                             });
                             
-                            // Agregar botón para cerrar búsqueda y focus automático
-                            setTimeout(() => {
-                                const inputWrapper = buscadorInputContainer.querySelector('.ubits-input-wrapper');
+                            setTimeout(function () {
+                                var inputWrapper = buscadorInputContainer.querySelector('.ubits-input-wrapper');
                                 if (inputWrapper) {
-                                    const closeBtn = document.createElement('button');
-                                    closeBtn.className = 'ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only';
-                                    closeBtn.style.marginLeft = '8px';
-                                    closeBtn.innerHTML = '<i class="far fa-times"></i>';
-                                    closeBtn.addEventListener('click', function(e) {
-                                        e.stopPropagation(); // Prevenir que el clic se propague
-                                        clearSearch(); // Limpiar búsqueda y cerrar input
-                                    });
-                                    buscadorInputContainer.appendChild(closeBtn);
-                                    
-                                    // Focus automático en el input
-                                    const inputElement = inputWrapper.querySelector('input');
+                                    var inputElement = inputWrapper.querySelector('input');
                                     if (inputElement) {
                                         inputElement.focus();
                                     }
@@ -544,26 +851,47 @@
                             }, 100);
                             
                             isSearchMode = true;
+                            if (typeof initTooltip === 'function') {
+                                initTooltip('#ucorporativa-toolbar-panel [data-tooltip]');
+                            }
                         }
                     }
                 });
                 
-                // Detectar clics fuera del input para cerrarlo (solo si no hay búsqueda activa)
                 document.addEventListener('click', function(e) {
                     if (isSearchMode) {
-                        const isClickInside = buscadorInputContainer.contains(e.target) || 
-                                             buscadorToggleBtn.contains(e.target);
+                        var filtroBtnUc = document.getElementById('ucorporativa-btn-filtro');
+                        var filtrosWrap = document.getElementById('ucorp-filtros-aplicados');
+                        if (filtroBtnUc && filtroBtnUc.contains(e.target)) return;
+                        if (filtrosWrap && filtrosWrap.contains(e.target)) return;
+                        if (e.target.closest && e.target.closest('.ubits-modal-overlay')) return;
+                        var isClickInside = buscadorInputContainer.contains(e.target) ||
+                            buscadorToggleBtn.contains(e.target);
                         if (!isClickInside) {
-                            // Verificar si hay texto usando la variable almacenada
                             if (!hasSearchText()) {
-                                // Solo cerrar si no hay texto
                                 closeSearchInput(true);
                             }
-                            // Si hay texto, mantener el input abierto (no hacer nada)
                         }
                     }
                 });
             }
+
+            var ucorpBtnFiltro = document.getElementById('ucorporativa-btn-filtro');
+            if (ucorpBtnFiltro) {
+                ucorpBtnFiltro.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    openUcorpFiltrosModal();
+                });
+            }
+            var ucorpClearAllFiltros = document.getElementById('ucorp-clear-all-filters-btn');
+            if (ucorpClearAllFiltros) {
+                ucorpClearAllFiltros.addEventListener('click', function () {
+                    clearUcorpFiltros();
+                });
+            }
+
+            applyFiltersAndRender();
         });
     </script>
 </body>

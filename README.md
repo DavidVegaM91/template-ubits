@@ -18,7 +18,7 @@ Una **plantilla lista para usar** que permite a **Product Managers**, **Diseñad
 2. **🎯 Edita `index.html`** - Tu página principal (se despliega en Netlify)
 3. **📄 Usa `documentacion/plantilla-ubits.html`** - Para crear páginas nuevas
 4. **👀 Mira `documentacion/componentes.html`** - Ve todos los componentes disponibles
-5. **📖 LEE LA DOCUMENTACIÓN DEL COMPONENTE** - Antes de implementar cualquier componente, lee su página de documentación (ej: `documentacion/componentes/button.html`, `documentacion/componentes/alert.html`) para entender cómo usarlo correctamente
+5. **📖 LEE LA DOCUMENTACIÓN DEL COMPONENTE** - Antes de implementar cualquier componente, lee su página de documentación (ej: `documentacion/componentes/button.html`, `documentacion/componentes/alert.html`) para entender cómo usarlo correctamente. Si la pantalla lleva **barra de lista** (`ubits-toolbar-panel`), lee además **`documentacion/componentes/toolbar-panel.html`** y la sección [Toolbar panel](#toolbar-panel-ubits-toolbar-panel) más abajo (preconexión de CSS/JS y orden de scripts).
 6. **🎨 Usa SOLO tokens UBITS** - `var(--ubits-...)` NUNCA colores hardcodeados
 7. **📁 IMPORTANTE: Nueva estructura de carpetas** - El proyecto ahora está organizado en módulos (`ubits-admin/`, `ubits-colaborador/`, `documentacion/`)
 
@@ -65,6 +65,34 @@ Cuando una lista, tabla o cuadrícula tiene **datos de fondo** pero la combinaci
 - **Listas a mano** (p. ej. `contenidos.html`, `u-corporativa.html`, `seguimiento.js`): llamar a `loadEmptyState` con el mismo `title`, `description` y `buttons.secondary` que la tabla. El `onClick` del botón debe **quitar búsqueda y filtros** según aplique en esa pantalla (p. ej. en Creator contenidos se limpian ambos).
 
 **No uses** otro título tipo “Sin resultados” ni otro texto de cuerpo para este caso; mantén el copy único para que PM, diseño y usuarios vean la misma franquicia en todo el playground.
+
+## Toolbar panel (`ubits-toolbar-panel`)
+
+Bloque reutilizable para la **barra** de una lista o catálogo (título + meta a la izquierda, acciones a la derecha). El CSS **`components/toolbar-panel.css`** solo define layout y tokens; **no** incluye búsqueda, filtros, lista ni lógica: eso lo implementa cada página y su JS.
+
+**Cualquier IA o persona que implemente esta barra en una página nueva debe:**
+
+1. Leer **`documentacion/componentes/toolbar-panel.html`** (descripción y preview) y el bloque de comentarios al inicio de **`components/toolbar-panel.css`** (checklist de imports y scripts).
+2. Seguir **esta sección del README** y el bloque **«Implementar Toolbar panel»** en **`.cursor/rules/cursor-rules.mdc`** (checklist y orden de scripts).
+
+**Imports mínimos (casi siempre):** `general-styles` (colors, styles, fontawesome, typography) + **`components/button.css`** + **`components/toolbar-panel.css`**.
+
+**Según lo que cablees en la barra o debajo de ella:**
+
+| Pieza | CSS / JS | Notas |
+|--------|-----------|--------|
+| Tooltips en iconos | `tooltip.css`, `tooltip.js`, `initTooltip(...)` | Tras re-renderizar badges o chips. |
+| Búsqueda expandible (lupa → `createInput` search) | `input.css`, `input.js` | Contenedor `ubits-toolbar-panel__search-inline`; copiar el flujo de **`lms-creator/contenidos.html`** (sin botón extra de cerrar al lado del input: colapso con clic fuera si está vacío; empty state para limpiar si no hay resultados). |
+| Select (`createInput` type `select`) | **`dropdown-menu.css`**, **`dropdown-menu.js` antes de `input.js`** | Sin dropdown el desplegable del Input se ve mal. |
+| Modal de filtros | `modal.css`, `modal.js` | `openModal` / `closeModal`. |
+| Chips «Filtros aplicados» | `chip.css` | Opcional pero alineado con Contenidos / tareas. |
+| Empty state sin resultados | `empty-state.css` | Mismo copy que la sección [Patrón: empty state cuando no hay resultados](#patrón-empty-state-cuando-no-hay-resultados-búsqueda-yo-filtros) de este README. |
+| Tabla UBITS bajo «Tabla» | `table.css` | Misma fuente de datos que la cuadrícula. |
+| Un solo botón Filtrar con varios criterios | Badge vía `button.css` | Clase **`ubits-button--active`**, attention badge con **número de criterios**, `aria-label` con conteo — ver [Patrón: un solo botón «Filtrar» con varios criterios](#patrón-un-solo-botón-filtrar-con-varios-criterios). |
+| Contador en `__meta` | Tipografía + tu JS | Debe reflejar **ítems visibles / total** (o el criterio que defina producto). |
+| Ver como cuadrícula / tabla | Botones tertiary mutuamente excluyentes | `ubits-button--active` y `aria-pressed`; tu JS cambia la vista debajo del panel, no el CSS del toolbar. |
+
+**Referencia de producto:** `ubits-colaborador/lms-creator/contenidos.html` + `contenidos.css`.
 
 ## 🚀 Cómo usar esta plantilla
 
@@ -154,6 +182,8 @@ Las páginas del Creator suelen cargar **`lms-creator.css`** más el **CSS homó
 - **Personalización UC:** `personalizacion-u-corporativa.html`, `personalizacion-seguimiento.html` (mismo patrón stub donde aplica)
 
 **Vista colaborador** de universidad corporativa (catálogo consumo): sigue en **`aprendizaje/u-corporativa.html`**; la personalización en Creator es la pareja **`personalizacion-u-corporativa.html`**.
+
+**Universidad corporativa y LMS Creator (contenidos publicados):** la lista de **`ubits-colaborador/aprendizaje/u-corporativa.html`** debe mostrar **los mismos contenidos publicados** que expone el catálogo **`contents`** en `bd-master/bd-contenidos-fiqsha.js` (lo que en producto equivaldría a lo creado y dejado en estado publicado por la empresa en **LMS Creator → Contenidos**, `ubits-colaborador/lms-creator/contenidos.html`). Los **filtros** de la vista colaborador (tipo, categoría Fiqsha, nivel, idioma) están alineados con el **modal Filtros** de esa página Creator para que PM, diseño y datos mock sigan una sola verdad.
 
 #### **Contexto en Markdown (no es UI)**
 

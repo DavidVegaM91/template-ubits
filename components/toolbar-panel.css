@@ -1,0 +1,135 @@
+/**
+ * UBITS Toolbar panel — bloque con fondo para barra de título + acciones y contenido relacionado (chips, filtros).
+ * Uso transversal: listas, tablas, catálogos.
+ *
+ * Implementación (leer al cablear en una página):
+ * - Casi siempre: button.css + este archivo (+ estilos base UBITS y fontawesome).
+ * - Tooltips en iconos: tooltip.css + tooltip.js; initTooltip tras re-render.
+ * - Búsqueda expandible (createInput search): input.css + input.js; contenedor .ubits-toolbar-panel__search-inline. NO añadir un segundo botón (X) junto al input en __search-inline — patrón en contenidos.html (lupa + campo + filtros; clic fuera vacío = colapsar).
+ * - Select (createInput select): dropdown-menu.css y cargar dropdown-menu.js ANTES de input.js.
+ * - Modal de filtros: modal.css + modal.js. Chips: chip.css. Empty sin resultados: empty-state.css. Tabla UBITS: table.css.
+ * - Patrones de producto (un solo botón Filtrar con badge, copy de empty state): README del repo.
+ * - Checklist extendido para automatización: .cursor/rules/cursor-rules.mdc → «Implementar Toolbar panel».
+ * - Referencia en pantalla: ubits-colaborador/lms-creator/contenidos.html + contenidos.css.
+ */
+
+.ubits-toolbar-panel {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-md);
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    background: var(--ubits-bg-1);
+    border-radius: var(--border-radius-md);
+    padding: var(--padding-md) var(--padding-lg);
+}
+
+.ubits-toolbar-panel__bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: var(--gap-md);
+    padding: var(--padding-none);
+    background: transparent;
+    border-radius: var(--border-radius-none);
+    box-sizing: border-box;
+}
+
+.ubits-toolbar-panel__title-block {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-sm);
+    flex-wrap: wrap;
+    min-width: 0;
+}
+
+.ubits-toolbar-panel__title {
+    color: var(--ubits-fg-1-high);
+}
+
+.ubits-toolbar-panel__meta {
+    display: inline-flex;
+    align-items: baseline;
+    gap: var(--gap-xs);
+    color: var(--ubits-fg-1-medium);
+}
+
+.ubits-toolbar-panel__actions {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-md);
+    flex-wrap: wrap;
+}
+
+/* Orden típico: lupa → campo búsqueda (al expandir) → filtro u otros iconos */
+.ubits-toolbar-panel__search-group {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-sm);
+    flex-wrap: nowrap;
+    min-width: 0;
+}
+
+.ubits-toolbar-panel__search-toggle,
+.ubits-toolbar-panel__filter-btn {
+    flex-shrink: 0;
+}
+
+/* Ancho acotado para input de búsqueda embebido en la barra */
+.ubits-toolbar-panel__search-inline {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-sm);
+    min-width: 200px;
+    max-width: min(280px, 72vw);
+    flex: 0 0 auto;
+}
+
+.ubits-toolbar-panel__search-inline .ubits-input-container {
+    flex: 1 1 auto;
+    min-width: 0;
+    max-width: 100%;
+}
+
+/* Grupo de controles secundarios (ej. vista cuadrícula / tabla) */
+.ubits-toolbar-panel__control-group {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-sm);
+    flex-wrap: wrap;
+}
+
+.ubits-toolbar-panel__control-label {
+    color: var(--ubits-fg-1-medium);
+    white-space: nowrap;
+}
+
+@media (max-width: 768px) {
+    .ubits-toolbar-panel {
+        padding: var(--padding-sm) var(--padding-md);
+    }
+
+    .ubits-toolbar-panel__bar {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .ubits-toolbar-panel__actions {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .ubits-toolbar-panel__search-group {
+        flex-wrap: nowrap;
+        max-width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .ubits-toolbar-panel__search-inline {
+        max-width: min(240px, 55vw);
+        flex: 0 0 auto;
+    }
+}

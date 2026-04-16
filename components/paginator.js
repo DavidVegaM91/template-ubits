@@ -79,8 +79,8 @@
  * - showItemsSelector: Mostrar selector de items por página (default: true)
  * 
  * CARACTERÍSTICAS:
- * - Navegación con botones anterior/siguiente
- * - Números de página con elipses inteligentes
+ * - Navegación (primera/anterior/números/siguiente/última) siempre en el DOM; con 1 página los laterales van deshabilitados
+ * - Números de página (ventana de hasta 5)
  * - Selector de items por página con dropdown inteligente
  * - Posicionamiento automático del dropdown (arriba/abajo según espacio)
  * - Responsive y adaptable
@@ -185,53 +185,49 @@ function loadPaginator(containerId, options = {}) {
         container.className = 'ubits-paginator';
         
         let html = '';
-        
-        // Solo mostrar botones de navegación si hay más de una página
-        if (totalPages > 1) {
-            // Botón primera página (<<)
-            html += `
-                <button class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only" ${currentPage === 1 ? 'disabled' : ''} onclick="window.ubitsPaginatorGoToPage('${containerId}', 1)" aria-label="Primera página">
+
+        // Navegación siempre visible (incluso con 1 página): misma UI en todas las pantallas; botones deshabilitados cuando no aplican.
+        var navDisabled = totalPages <= 1;
+        var atFirst = currentPage <= 1 || navDisabled;
+        var atLast = currentPage >= totalPages || navDisabled;
+
+        html += `
+                <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only" ${atFirst ? 'disabled' : ''} onclick="window.ubitsPaginatorGoToPage('${containerId}', 1)" aria-label="Primera página">
                     <i class="far fa-chevrons-left"></i>
                 </button>
             `;
-            // Botón anterior (<)
-            html += `
-                <button class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only" ${currentPage === 1 ? 'disabled' : ''} onclick="window.ubitsPaginatorGoToPage('${containerId}', ${currentPage - 1})" aria-label="Página anterior">
+        html += `
+                <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only" ${atFirst ? 'disabled' : ''} onclick="window.ubitsPaginatorGoToPage('${containerId}', ${currentPage - 1})" aria-label="Página anterior">
                     <i class="far fa-chevron-left"></i>
                 </button>
             `;
-            
-            // Siempre mostrar 5 números de página (ventana deslizante)
-            const visibleCount = Math.min(5, totalPages);
-            let start = Math.max(1, Math.min(currentPage - Math.floor(visibleCount / 2), totalPages - visibleCount + 1));
-            for (let i = 0; i < visibleCount; i++) {
-                const pageNum = start + i;
-                const isActive = pageNum === currentPage;
-                html += `
-                    <button class="ubits-button ubits-button--secondary ${isActive ? 'ubits-button--active' : ''} ubits-button--sm" onclick="window.ubitsPaginatorGoToPage('${containerId}', ${pageNum})" ${isActive ? 'aria-current="page"' : ''}>
+
+        const visibleCount = Math.min(5, totalPages);
+        let start = Math.max(1, Math.min(currentPage - Math.floor(visibleCount / 2), totalPages - visibleCount + 1));
+        for (let i = 0; i < visibleCount; i++) {
+            const pageNum = start + i;
+            const isActive = pageNum === currentPage;
+            html += `
+                    <button type="button" class="ubits-button ubits-button--secondary ${isActive ? 'ubits-button--active' : ''} ubits-button--sm" onclick="window.ubitsPaginatorGoToPage('${containerId}', ${pageNum})" ${isActive ? 'aria-current="page"' : ''}>
                         <span>${pageNum}</span>
                     </button>
                 `;
-            }
-            
-            // Botón siguiente (>)
-            html += `
-                <button class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only" ${currentPage === totalPages ? 'disabled' : ''} onclick="window.ubitsPaginatorGoToPage('${containerId}', ${currentPage + 1})" aria-label="Página siguiente">
+        }
+
+        html += `
+                <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only" ${atLast ? 'disabled' : ''} onclick="window.ubitsPaginatorGoToPage('${containerId}', ${currentPage + 1})" aria-label="Página siguiente">
                     <i class="far fa-chevron-right"></i>
                 </button>
             `;
-            // Botón última página (>>)
-            html += `
-                <button class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only" ${currentPage === totalPages ? 'disabled' : ''} onclick="window.ubitsPaginatorGoToPage('${containerId}', ${totalPages})" aria-label="Última página">
+        html += `
+                <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only" ${atLast ? 'disabled' : ''} onclick="window.ubitsPaginatorGoToPage('${containerId}', ${totalPages})" aria-label="Última página">
                     <i class="far fa-chevrons-right"></i>
                 </button>
             `;
-        }
-        
+
         container.innerHTML = html;
         
-        // Crear selector de items por página SIEMPRE (si está habilitado)
-        // El selector siempre debe mostrarse, incluso cuando hay solo una página o cuando no hay botones de navegación
+        // Crear selector de items por página SIEMPRE (si está habilitado). La navegación arriba también se muestra con 1 página (deshabilitada).
         if (config.showItemsSelector) {
             // Verificar si el selector ya existe para evitar duplicados
             let selectContainer = document.getElementById(`${containerId}-items-select`);

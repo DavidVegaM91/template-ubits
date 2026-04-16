@@ -52,6 +52,7 @@ const DOCS_SIDEBAR_SECTIONS = [
     { id: 'tab', title: 'Tab', group: 'ui' },
     { id: 'table', title: 'Tabla', group: 'ui' },
     { id: 'toast', title: 'Toast', group: 'ui' },
+    { id: 'toolbar-panel', title: 'Toolbar panel', group: 'ui' },
     { id: 'tooltip', title: 'Tooltip', group: 'ui' },
     // Operations (alfabético por title)
     { id: 'task-strip', title: 'Task strip', group: 'operations' }
@@ -289,6 +290,7 @@ function initDocsSidebar(activeSection) {
             'coachmark': 'coachmark.html',
             'input': 'input.html',
             'toast': 'toast.html',
+            'toolbar-panel': 'toolbar-panel.html',
             'status-tag': 'status-tag.html',
             'stepper': 'stepper.html',
             'switch': 'switch.html',

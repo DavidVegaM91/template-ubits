@@ -416,6 +416,7 @@ const PAGE_TO_TAB = {
     'task-strip.html': 'section3',
     'table.html': 'section3',
     'toast.html': 'section3',
+    'toolbar-panel.html': 'section3',
     'tooltip.html': 'section3',
     'colores.html': 'section4',
     'iconos.html': 'section5',

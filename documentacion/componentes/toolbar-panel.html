@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="../../images/Ubits-logo-dark.svg">
+    <title>Toolbar panel | UBITS Playground</title>
+    <link rel="stylesheet" href="../../general-styles/ubits-colors.css">
+    <link rel="stylesheet" href="../../general-styles/styles.css">
+    <link rel="stylesheet" href="../../general-styles/fontawesome-icons.css">
+    <link rel="stylesheet" href="../../general-styles/ubits-typography.css">
+    <link rel="stylesheet" href="../../components/sub-nav.css">
+    <link rel="stylesheet" href="../../components/alert.css">
+    <link rel="stylesheet" href="../../components/sidebar.css">
+    <link rel="stylesheet" href="../../components/button.css">
+    <link rel="stylesheet" href="../../components/switch.css">
+    <link rel="stylesheet" href="../../components/tooltip.css">
+    <link rel="stylesheet" href="../../components/toolbar-panel.css">
+    <link rel="stylesheet" href="../../components/table.css">
+    <link rel="stylesheet" href="../../docs/docs-sidebar.css">
+    <link rel="stylesheet" href="../../docs/docstyles.css">
+    <link rel="stylesheet" href="../../components/toast.css">
+    <style>
+        body.componentes-page .components-content { min-width: 0; }
+    </style>
+</head>
+<body class="componentes-page" data-theme="light">
+    <div class="dashboard-container">
+        <div class="tooltip" id="tooltip"></div>
+        <div id="ubits-toast-container"></div>
+
+        <main class="main-content">
+            <div id="top-nav-container"></div>
+            <div style="display: flex;">
+                <div id="docs-dropdown-container"></div>
+                <div id="docs-sidebar-container"></div>
+                <div class="components-content">
+                    <div class="content-area" style="display: block; width: 100%;">
+                        <div style="text-align: center; margin-bottom: 60px;">
+                            <h1 class="ubits-display-d2-bold" style="margin-bottom: 24px; color: var(--ubits-accent-brand);">
+                                Toolbar panel
+                            </h1>
+                            <p class="ubits-body-md-regular" style="max-width: 800px; margin: 0 auto 32px; line-height: 1.6;">
+                                Bloque con fondo para la cabecera de una lista o tabla: título, texto de apoyo (por ejemplo recuento) y acciones alineadas a la derecha. Sirve en catálogos, inventarios, LMS Creator y cualquier pantalla que necesite la misma barra de contexto.
+                            </p>
+                        </div>
+
+                        <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: var(--border-radius-lg); margin-bottom: 40px; width: 100%; min-width: 0; box-sizing: border-box;">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-eye" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Preview del componente
+                            </h2>
+                            <p class="ubits-body-md-regular" style="margin-bottom: var(--gap-md); line-height: 1.6;">
+                                Solo se muestra la <strong>barra</strong> del toolbar (sin lista ni filtros aplicados). El interruptor es único de esta página de documentación: en el producto decides con PM si llevas o no el bloque «Ver como».
+                            </p>
+                            <div style="margin-bottom: var(--gap-lg); display: flex; flex-wrap: wrap; gap: var(--gap-md); align-items: center;">
+                                <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); white-space: nowrap;">Mostrar «Ver como» (cuadrícula / tabla)</span>
+                                <label class="ubits-switch ubits-switch--md">
+                                    <input type="checkbox" class="ubits-switch__input" id="toolbar-panel-preview-toggle-ver-como" checked role="switch" aria-checked="true" aria-label="Mostrar u ocultar el grupo Ver como en el preview">
+                                    <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
+                                </label>
+                            </div>
+                            <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: var(--border-radius-md); position: relative; width: 100%; min-width: 0; box-sizing: border-box;">
+                                <div id="toolbar-panel-doc-preview">
+                                    <div class="ubits-toolbar-panel">
+                                        <div class="ubits-toolbar-panel__bar">
+                                            <div class="ubits-toolbar-panel__title-block">
+                                                <span class="ubits-toolbar-panel__title ubits-body-md-bold">Elementos del catálogo</span>
+                                                <span class="ubits-toolbar-panel__meta">
+                                                    <span class="ubits-body-sm-regular" aria-live="polite">12/48</span>
+                                                    <span class="ubits-body-sm-regular">resultados</span>
+                                                </span>
+                                            </div>
+                                            <div class="ubits-toolbar-panel__actions">
+                                                <div class="ubits-toolbar-panel__search-group">
+                                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--md ubits-button--icon-only ubits-toolbar-panel__search-toggle" data-tooltip="Buscar (en producto: abre búsqueda)" data-tooltip-delay="1000" aria-label="Buscar">
+                                                        <i class="far fa-magnifying-glass"></i>
+                                                    </button>
+                                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--md ubits-button--icon-only ubits-toolbar-panel__filter-btn" data-tooltip="Filtrar (en producto: modal o drawer)" data-tooltip-delay="1000" aria-label="Filtrar">
+                                                        <i class="far fa-filter"></i>
+                                                    </button>
+                                                </div>
+                                                <div class="ubits-toolbar-panel__control-group" id="toolbar-panel-preview-ver-como-group" role="group" aria-label="Vista">
+                                                    <span class="ubits-toolbar-panel__control-label ubits-body-sm-regular">Ver como:</span>
+                                                    <button type="button" class="ubits-button ubits-button--tertiary ubits-button--md ubits-button--active" id="toolbar-panel-doc-view-cuadricula" aria-pressed="true">
+                                                        <i class="far fa-grid-2"></i>
+                                                        <span>Cuadrícula</span>
+                                                    </button>
+                                                    <button type="button" class="ubits-button ubits-button--tertiary ubits-button--md" id="toolbar-panel-doc-view-tabla" aria-pressed="false">
+                                                        <i class="far fa-list-ul"></i>
+                                                        <span>Tabla</span>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: var(--border-radius-lg); margin-bottom: 40px;">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-info-circle" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Características generales
+                            </h2>
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--gap-lg);">
+                                <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-layer-group"></i></div>
+                                    <div class="ubits-body-sm-bold">Contenedor único</div>
+                                    <div class="ubits-body-sm-regular">Fondo y radios coherentes con el resto de tarjetas del producto</div>
+                                </div>
+                                <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-arrows-left-right"></i></div>
+                                    <div class="ubits-body-sm-bold">Barra flexible</div>
+                                    <div class="ubits-body-sm-regular">Título y acciones se reparten; en móvil la barra se apila de forma ordenada</div>
+                                </div>
+                                <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-link"></i></div>
+                                    <div class="ubits-body-sm-bold">Misma pieza en varios flujos</div>
+                                    <div class="ubits-body-sm-regular">Catálogos, LMS Creator u otras listas pueden compartir la misma barra; lo que cambia es qué acciones muestras</div>
+                                </div>
+                                <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-puzzle-piece"></i></div>
+                                    <div class="ubits-body-sm-bold">Componible</div>
+                                    <div class="ubits-body-sm-regular">Los botones son el componente Button oficial; puedes añadir o quitar grupos según la pantalla</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: var(--border-radius-lg); margin-bottom: 40px;">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-comments" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Prompts útiles
+                            </h2>
+                            <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6; color: var(--ubits-fg-1-medium);">
+                                Copia el prompt y sustituye lo que va entre corchetes. Si vas a cablear búsqueda, filtros o vistas, despliega la <strong>documentación técnica</strong> más abajo o revisa el <code style="font-family: monospace;">README.md</code> del repositorio (sección Toolbar panel).
+                            </p>
+                            <div id="toolbar-panel-warning-alert" style="margin-bottom: 32px;"></div>
+                            <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
+                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                                    <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Barra de lista reutilizable</h3>
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('toolbar-panel-prompt-0')">
+                                        <i class="far fa-copy"></i>
+                                        <span>Copiar</span>
+                                    </button>
+                                </div>
+                                <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm);">
+                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="toolbar-panel-prompt-0">En [ubicación de la página], añade un bloque toolbar panel (título [título], meta con contador y acciones). Sigue la sección «Toolbar panel» del README y las reglas Cursor «Implementar Toolbar panel»: importa toolbar-panel.css, button.css, fontawesome y el resto de dependencias según si hay búsqueda, select, modal, chips o empty state.</code></pre>
+                                </div>
+                            </div>
+                            <div style="padding-bottom: 24px;">
+                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                                    <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Búsqueda expandible en la barra</h3>
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('toolbar-panel-prompt-1')">
+                                        <i class="far fa-copy"></i>
+                                        <span>Copiar</span>
+                                    </button>
+                                </div>
+                                <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm);">
+                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="toolbar-panel-prompt-1">En [pantalla], cablea la barra como en Contenidos: lupa que oculta el botón y muestra createInput type search en .ubits-toolbar-panel__search-inline; clic fuera sin texto colapsa. Si hay filtros con select: dropdown-menu.css y dropdown-menu.js antes de input.js. Actualiza el contador del meta con visibles/total y aplica el patrón del README para el botón Filtrar (active + badge).</code></pre>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="background: var(--ubits-bg-1); border-radius: var(--border-radius-lg); margin-bottom: 40px; overflow: hidden;">
+                            <div style="padding: 32px; text-align: center; border-bottom: 1px solid var(--ubits-border-1);">
+                                <h2 class="ubits-heading-h2" style="margin-bottom: 0; color: var(--ubits-fg-1-high);">
+                                    <i class="far fa-code" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                    Documentación técnica
+                                </h2>
+                                <p class="ubits-body-md-regular" style="margin-top: 16px; color: var(--ubits-fg-1-medium);">
+                                    Estructura BEM, requisitos de CSS/JS y checklist cuando combines la barra con búsqueda, filtros o tabla.
+                                </p>
+                            </div>
+                            <div style="background: var(--ubits-bg-2); padding: 20px; text-align: center; cursor: pointer;" onclick="toggleTechnicalDocs()">
+                                <span class="ubits-body-md-regular" style="color: var(--ubits-accent-brand); display: flex; align-items: center; justify-content: center; gap: 8px;">
+                                    <i class="far fa-chevron-down" id="tech-docs-chevron" style="transition: transform 0.3s ease;"></i>
+                                    Mostrar
+                                </span>
+                            </div>
+                            <div id="technical-docs-content" style="display: none; padding: 0;">
+                                <div style="padding: 32px; border-bottom: 1px solid var(--ubits-border-1);">
+                                    <h3 class="ubits-body-md-bold" style="margin-bottom: 16px; color: var(--ubits-fg-1-high);">Requisitos</h3>
+                                    <div style="background: var(--ubits-bg-2); padding: 16px; border-radius: var(--border-radius-sm);">
+                                        <pre style="margin: 0; font-family: 'Courier New', monospace; font-size: var(--font-size-sm); line-height: 1.6; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code>&lt;link rel="stylesheet" href="../../general-styles/ubits-colors.css"&gt;
+&lt;link rel="stylesheet" href="../../general-styles/styles.css"&gt;
+&lt;link rel="stylesheet" href="../../general-styles/ubits-typography.css"&gt;
+&lt;link rel="stylesheet" href="../../general-styles/fontawesome-icons.css"&gt;
+&lt;link rel="stylesheet" href="../../components/button.css"&gt;
+&lt;link rel="stylesheet" href="../../components/toolbar-panel.css"&gt;
+&lt;!-- Opcional: búsqueda con Input --&gt;
+&lt;link rel="stylesheet" href="../../components/input.css"&gt;
+&lt;link rel="stylesheet" href="../../components/dropdown-menu.css"&gt;
+&lt;script src="../../components/dropdown-menu.js"&gt;&lt;/script&gt;
+&lt;script src="../../components/input.js"&gt;&lt;/script&gt;
+&lt;!-- Opcional: tooltips en iconos --&gt;
+&lt;link rel="stylesheet" href="../../components/tooltip.css"&gt;
+&lt;script src="../../components/tooltip.js"&gt;&lt;/script&gt;</code></pre>
+                                    </div>
+                                </div>
+                                <div style="padding: 32px; border-bottom: 1px solid var(--ubits-border-1);">
+                                    <h3 class="ubits-body-md-bold" style="margin-bottom: 16px; color: var(--ubits-fg-1-high);">Estructura HTML (ejemplo)</h3>
+                                    <div style="display: flex; justify-content: flex-end; margin-bottom: 8px;">
+                                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('toolbar-panel-tech-html')">
+                                            <i class="far fa-copy"></i>
+                                            <span>Copiar</span>
+                                        </button>
+                                    </div>
+                                    <div style="background: var(--ubits-bg-2); padding: 16px; border-radius: var(--border-radius-sm);">
+                                        <pre style="margin: 0; font-family: 'Courier New', monospace; font-size: var(--font-size-sm); line-height: 1.6; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code id="toolbar-panel-tech-html">&lt;div class="ubits-toolbar-panel"&gt;
+  &lt;div class="ubits-toolbar-panel__bar"&gt;
+    &lt;div class="ubits-toolbar-panel__title-block"&gt;
+      &lt;span class="ubits-toolbar-panel__title ubits-body-md-bold"&gt;Título&lt;/span&gt;
+      &lt;span class="ubits-toolbar-panel__meta"&gt;
+        &lt;span class="ubits-body-sm-regular"&gt;0&lt;/span&gt;
+        &lt;span class="ubits-body-sm-regular"&gt;resultados&lt;/span&gt;
+      &lt;/span&gt;
+    &lt;/div&gt;
+    &lt;div class="ubits-toolbar-panel__actions"&gt;
+      &lt;div class="ubits-toolbar-panel__search-group"&gt;
+        &lt;button type="button" class="ubits-button ubits-button--secondary ubits-button--md ubits-button--icon-only ubits-toolbar-panel__search-toggle" aria-label="Buscar"&gt;…&lt;/button&gt;
+        &lt;div id="mi-busqueda" class="ubits-toolbar-panel__search-inline" style="display:none;"&gt;&lt;/div&gt;
+        &lt;button type="button" class="ubits-button … ubits-toolbar-panel__filter-btn" aria-label="Filtrar"&gt;…&lt;/button&gt;
+      &lt;/div&gt;
+      &lt;div class="ubits-toolbar-panel__control-group" role="group" aria-label="Vista"&gt;
+        &lt;span class="ubits-toolbar-panel__control-label ubits-body-sm-regular"&gt;Ver como:&lt;/span&gt;
+        &lt;!-- botones tertiary --&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+  &lt;!-- chips, alertas o tabla debajo --&gt;
+&lt;/div&gt;</code></pre>
+                                    </div>
+                                </div>
+                                <div style="padding: 32px;">
+                                    <h3 class="ubits-body-md-bold" style="margin-bottom: 16px; color: var(--ubits-fg-1-high);">Clases principales</h3>
+                                    <ul class="ubits-body-md-regular" style="margin: 0; padding-left: 1.25rem; color: var(--ubits-fg-1-medium); line-height: 1.7;">
+                                        <li><code style="font-family: monospace;">ubits-toolbar-panel</code>: contenedor del bloque (fondo, padding, apilado vertical).</li>
+                                        <li><code style="font-family: monospace;">ubits-toolbar-panel__bar</code>: fila principal título versus acciones.</li>
+                                        <li><code style="font-family: monospace;">ubits-toolbar-panel__title-block</code>, <code style="font-family: monospace;">__title</code>, <code style="font-family: monospace;">__meta</code>: cabecera izquierda.</li>
+                                        <li><code style="font-family: monospace;">ubits-toolbar-panel__actions</code>: zona derecha (búsqueda, filtros, conmutadores).</li>
+                                        <li><code style="font-family: monospace;">ubits-toolbar-panel__search-group</code>, <code style="font-family: monospace;">__search-inline</code>, <code style="font-family: monospace;">__search-toggle</code>, <code style="font-family: monospace;">__filter-btn</code>: patrón lupa + input + filtro.</li>
+                                        <li><code style="font-family: monospace;">ubits-toolbar-panel__control-group</code>, <code style="font-family: monospace;">__control-label</code>: grupo de botones de vista u opciones secundarias.</li>
+                                    </ul>
+                                    <p class="ubits-body-md-regular" style="margin-top: var(--gap-lg); color: var(--ubits-fg-1-medium);">
+                                        Referencia en producto: <code style="font-family: monospace;">ubits-colaborador/lms-creator/contenidos.html</code> (lista de contenidos del LMS Creator).
+                                    </p>
+                                    <h3 class="ubits-body-md-bold" style="margin: var(--gap-xl) 0 var(--gap-md); color: var(--ubits-fg-1-high);">Checklist de imports y piezas relacionadas</h3>
+                                    <ol class="ubits-body-md-regular" style="margin: 0; padding-left: 1.25rem; color: var(--ubits-fg-1-medium); line-height: 1.75;">
+                                        <li>Base + <code style="font-family: monospace;">button.css</code> + <code style="font-family: monospace;">toolbar-panel.css</code>.</li>
+                                        <li>Iconos en barra: <code style="font-family: monospace;">tooltip.css</code> + <code style="font-family: monospace;">tooltip.js</code> + <code style="font-family: monospace;">initTooltip</code> tras cambios dinámicos.</li>
+                                        <li>Búsqueda expandible: <code style="font-family: monospace;">input.css</code> + <code style="font-family: monospace;">input.js</code> + contenedor <code style="font-family: monospace;">.ubits-toolbar-panel__search-inline</code>.</li>
+                                        <li>Select en filtros: <code style="font-family: monospace;">dropdown-menu.css</code> + <code style="font-family: monospace;">dropdown-menu.js</code> antes de <code style="font-family: monospace;">input.js</code>.</li>
+                                        <li>Modal de filtros: <code style="font-family: monospace;">modal.css</code> + <code style="font-family: monospace;">modal.js</code>.</li>
+                                        <li>Chips / empty / tabla: <code style="font-family: monospace;">chip.css</code>, <code style="font-family: monospace;">empty-state.css</code>, <code style="font-family: monospace;">table.css</code> según aplique.</li>
+                                        <li>Patrones de producto: README «Un solo botón Filtrar» y «Empty state cuando no hay resultados».</li>
+                                    </ol>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="../../components/sidebar.js"></script>
+    <script src="../../components/sub-nav.js"></script>
+    <script src="../../components/alert.js"></script>
+    <script src="../../components/toast.js"></script>
+    <script src="../../components/tooltip.js"></script>
+    <script src="../../docs/docs-sidebar.js"></script>
+    <script>
+        function toggleTechnicalDocs() {
+            var content = document.getElementById('technical-docs-content');
+            var isHidden = content.style.display === 'none' || !content.style.display;
+            content.style.display = isHidden ? 'block' : 'none';
+            var trigger = content.previousElementSibling;
+            if (trigger) {
+                var span = trigger.querySelector('span');
+                if (span) {
+                    span.innerHTML = isHidden
+                        ? '<i class="far fa-chevron-up" id="tech-docs-chevron" style="transition: transform 0.3s ease;"></i>Ocultar'
+                        : '<i class="far fa-chevron-down" id="tech-docs-chevron" style="transition: transform 0.3s ease;"></i>Mostrar';
+                }
+            }
+        }
+        function copyPrompt(promptId) {
+            var el = document.getElementById(promptId);
+            if (!el) return;
+            var text = el.textContent;
+            navigator.clipboard.writeText(text).then(function() {
+                var btn = document.querySelector('[onclick="copyPrompt(\'' + promptId + '\')"]');
+                if (btn) {
+                    var icon = btn.querySelector('i');
+                    var span = btn.querySelector('span');
+                    if (icon) icon.className = 'far fa-check';
+                    if (span) span.textContent = 'Copiado';
+                    setTimeout(function() { if (icon) icon.className = 'far fa-copy'; if (span) span.textContent = 'Copiar'; }, 2000);
+                }
+                if (typeof showToast === 'function') showToast('success', '¡Copiado!', { containerId: 'ubits-toast-container', duration: 3500 });
+            }).catch(function() {
+                if (typeof showToast === 'function') showToast('error', 'Error al copiar', { containerId: 'ubits-toast-container', duration: 3500 });
+            });
+        }
+        function toolbarPanelDocSetVerComoPreviewVisible(show) {
+            var g = document.getElementById('toolbar-panel-preview-ver-como-group');
+            var sw = document.getElementById('toolbar-panel-preview-toggle-ver-como');
+            if (g) {
+                g.style.display = show ? '' : 'none';
+                g.setAttribute('aria-hidden', show ? 'false' : 'true');
+            }
+            if (sw) {
+                sw.checked = !!show;
+                sw.setAttribute('aria-checked', show ? 'true' : 'false');
+            }
+            if (typeof initTooltip === 'function') initTooltip('#toolbar-panel-doc-preview [data-tooltip]');
+        }
+
+        function initToolbarPanelDocPreviewControls() {
+            var sw = document.getElementById('toolbar-panel-preview-toggle-ver-como');
+            if (sw) {
+                sw.addEventListener('change', function () {
+                    toolbarPanelDocSetVerComoPreviewVisible(this.checked);
+                });
+            }
+            var btnGrid = document.getElementById('toolbar-panel-doc-view-cuadricula');
+            var btnTable = document.getElementById('toolbar-panel-doc-view-tabla');
+            function setViewToggle(activeEl) {
+                if (!btnGrid || !btnTable) return;
+                var isGrid = activeEl === btnGrid;
+                btnGrid.classList.toggle('ubits-button--active', isGrid);
+                btnTable.classList.toggle('ubits-button--active', !isGrid);
+                btnGrid.setAttribute('aria-pressed', isGrid ? 'true' : 'false');
+                btnTable.setAttribute('aria-pressed', isGrid ? 'false' : 'true');
+            }
+            if (btnGrid) btnGrid.addEventListener('click', function () { setViewToggle(btnGrid); });
+            if (btnTable) btnTable.addEventListener('click', function () { setViewToggle(btnTable); });
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            loadSidebar('ninguno');
+            loadSubNav('top-nav-container', 'documentacion');
+            loadDocsSidebar('toolbar-panel');
+            if (typeof showAlert === 'function') {
+                showAlert('warning', 'Antes de enviar estos prompts a Cursor, reemplaza los textos entre [corchetes] con la información de tu página.', { containerId: 'toolbar-panel-warning-alert', noClose: true });
+            }
+            initToolbarPanelDocPreviewControls();
+            toolbarPanelDocSetVerComoPreviewVisible(true);
+        });
+    </script>
+</body>
+</html>

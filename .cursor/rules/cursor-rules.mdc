@@ -43,6 +43,23 @@ This is a UBITS template for creating interfaces quickly with Cursor AI. The val
 3. **📦 IMPORT**: Add required CSS for each component used (rutas relativas desde subcarpetas: `../../components/...`)
 4. **✅ VALIDATE**: Use `documentacion/validador-ubits.html` before finishing (MANDATORY)
 
+### **🛠️ AL implementar Toolbar panel (`ubits-toolbar-panel`) en cualquier página (OBLIGATORIO para IAs):**
+`components/toolbar-panel.css` solo define el **layout de la barra** (título + meta + acciones). Búsqueda, filtros, lista, contador y vistas son **de la página** y su JS. Antes de cablear la barra, lee en este orden: **comentario de cabecera en `components/toolbar-panel.css`** (checklist), **`README.md`** (sección «Toolbar panel» + patrones «Un solo botón Filtrar» y empty state sin resultados) y, si hace falta contexto visual, **`documentacion/componentes/toolbar-panel.html`** (preview humano; el detalle técnico está en «Documentación técnica» desplegable de esa página).
+
+1. **Mínimo habitual:** estilos base UBITS + **`components/button.css`** + **`components/toolbar-panel.css`**.
+2. **Iconos con `data-tooltip` en la barra:** `tooltip.css`, `tooltip.js`, `initTooltip(...)` tras re-render (badges, chips, etc.).
+3. **Búsqueda expandible (lupa → `createInput` type `search`):** `input.css`, `input.js`, contenedor **`ubits-toolbar-panel__search-inline`** (patrón canónico: **`ubits-colaborador/lms-creator/contenidos.html`** — copiar ese flujo, no improvisar).
+   - **PROHIBIDO:** Añadir otro **`ubits-button`** (p. ej. cerrar con `fa-times`) **junto** al `createInput` dentro de `__search-inline`. No forma parte del patrón del template; duplica UX (el Input tipo `search` ya cubre limpiar texto) y ya ocurrió un error al implementar la toolbar en otra página. **Colapsar la barra:** clic fuera con campo vacío → volver a la lupa; si no hay resultados, **empty state** con «Limpiar búsqueda» según README.
+4. **`createInput` type `select`** (barra o modal de filtros): **`dropdown-menu.css`** y script **`dropdown-menu.js` antes de `input.js`** (si no, el desplegable del Input se rompe).
+5. **Modal de filtros:** `modal.css`, `modal.js` (`openModal` / `closeModal`).
+6. **Chips «Filtros aplicados»:** `chip.css` (opcional; alineado con Contenidos / Tareas).
+7. **Empty state cuando búsqueda/filtros dejan 0 ítems:** `empty-state.css` + copy fijo del README (patrón empty state).
+8. **Tabla UBITS bajo vista «tabla»:** `table.css`; misma fuente de datos que la cuadrícula.
+9. **Un solo botón «Filtrar» con varios criterios:** clase **`ubits-button--active`**, **attention badge** con número de criterios (no filas), **`aria-label`** con conteo — README «Patrón: un solo botón Filtrar».
+10. **«Ver como» cuadrícula / lista:** dos **`ubits-button--tertiary`** mutuamente excluyentes, **`aria-pressed`**, **`ubits-button--active`** en el seleccionado; el cambio de vista es JS/CSS **debajo** del panel, no dentro de `toolbar-panel.css`.
+
+**Referencia de producto:** `ubits-colaborador/lms-creator/contenidos.html` + `contenidos.css`.
+
 ### **🚨 WHEN CHANGING AN OFFICIAL COMPONENT (modal, input, button, etc.):**
 **Los componentes UBITS se usan con HTML hardcodeado en varias páginas. Si cambias la estructura o clases de un componente oficial (en `components/*.css`, `components/*.js` o su documentación), DEBES:**
 
@@ -271,6 +288,7 @@ openModal({
 - **Toast** (Floating notifications) → `components/toast.css` + `components/toast.js`
   - Types: `success`, `info`, `warning`, `error`
   - Features: auto-close, pause on hover, stacking
+- **Toolbar panel** (bloque con barra título + meta + acciones; búsqueda inline y grupo de controles opcionales) → `components/toolbar-panel.css` + `components/button.css` (y `input.css` + `dropdown-menu.css` / `dropdown-menu.js` antes de `input.js` si hay `createInput` tipo `select` en la barra o en modal de filtros). Clases: `ubits-toolbar-panel`, `__bar`, `__title-block`, `__meta`, `__actions`, `__search-group`, `__search-inline`, `__control-group`. Doc: `documentacion/componentes/toolbar-panel.html`
 - **Input** (Form fields) → `components/input.css` + `components/input.js`
   - Types: `text`, `email`, `password`, `number`, `tel`, `url`, `select`, `textarea`, `search`, `autocomplete`, `calendar`
   - Sizes: `sm` (32px), `md` (40px), `lg` (48px)
@@ -318,7 +336,7 @@ openModal({
 
 ### **📚 FLUJO DE APRENDIZAJE (ubits-colaborador/aprendizaje/):**
 - **`catalogo.html`** - Catálogo de contenidos
-- **`u-corporativa.html`** - Universidad corporativa
+- **`u-corporativa.html`** - Universidad corporativa: lista **solo** `BDS_CONTENIDOS_FIQSHA.contents` (publicados); reflejo colaborador de lo publicado en **LMS Creator `lms-creator/contenidos.html`**. Filtros (tipo, categoría Fiqsha, nivel, idioma) alineados con el modal Filtros de Contenidos; ver README «Universidad corporativa y LMS Creator».
 - **`zona-estudio.html`** - Zona de estudio
 - **`modo-estudio-ia.html`** - Modo de estudio con IA
 
@@ -348,7 +366,7 @@ openModal({
 
 ### **🚨 ESTÁNDAR: PÁGINA DE DOC DE COMPONENTE DECENTE**
 
-**Referencias que SÍ cumplen (no tocar):** alert, avatar, button, calendar, card-content, card-content-compact, learn-content-img-trailer, indice-creator, paginas-creator, seccion-creator, rich-text-editor, dropdown-menu, ia-button, input, paginator, popover, submenu, toast, tooltip. **Base:** `component-doc-template.html`. **Tono:** como `alert.html` y `button.html`.
+**Referencias que SÍ cumplen (no tocar):** alert, avatar, button, calendar, card-content, card-content-compact, learn-content-img-trailer, indice-creator, paginas-creator, seccion-creator, rich-text-editor, dropdown-menu, ia-button, input, paginator, popover, submenu, toast, toolbar-panel, tooltip. **Base:** `component-doc-template.html`. **Tono:** como `alert.html` y `button.html`.
 
 **1. Descripción (Hero) – Sencilla, nada técnico.** Título + descripción en lenguaje de negocio (para qué sirve, dónde se usa). Sin clases, API ni archivos en la descripción principal.
 
@@ -581,7 +599,7 @@ ubits-colaborador/
 1. **Tooltips en encabezados:** Todo botón en `<thead>` (ordenar, filtrar) debe llevar `data-tooltip="[Texto descriptivo]"` y `data-tooltip-delay="1000"`. Ejemplo: "Ordenar por nombre", "Filtrar por estado".
 2. **Tooltips en columna de checkboxes:** El `<th>` del "Seleccionar todo" debe tener `data-tooltip="Seleccionar todo"` (actualizable a "Deseleccionar todo" por JS). Cada `<td class="ubits-table__td--checkbox">` de fila debe tener `data-tooltip="Seleccionar"` (actualizable a "Deseleccionar" al marcar). Tras renderizar o cambiar selección, llamar `initTooltip('#id-tabla thead [data-tooltip]')` e `initTooltip('#id-tabla tbody .ubits-table__td--checkbox[data-tooltip]')`.
 3. **Checkbox "Seleccionar todo":** Mantener estado `indeterminate` cuando hay filas seleccionadas pero no todas: `selectAll.indeterminate = checkedCount > 0 && checkedCount < visibleLength`. Actualizar el `data-tooltip` del `<th>` a "Deseleccionar todo" o "Seleccionar todo" según el estado.
-4. **Búsqueda expandible:** Si la búsqueda se abre como input al hacer clic en la lupa, al hacer clic fuera **sin haber escrito nada** el input debe contraerse de nuevo y mostrarse solo el botón icon-only (igual que en seguimiento: `isSearchMode`, listener de `document.click` que comprueba `!searchQuery` y colapsa).
+4. **Búsqueda expandible:** Si la búsqueda se abre como input al hacer clic en la lupa, al hacer clic fuera **sin haber escrito nada** el input debe contraerse de nuevo y mostrarse solo el botón icon-only (igual que en seguimiento: `isSearchMode`, listener de `document.click` que comprueba `!searchQuery` y colapsa). **En toolbar (`ubits-toolbar-panel__search-inline`):** no añadir un segundo botón de cierre al lado del input; seguir `contenidos.html` / reglas «Implementar Toolbar panel».
 5. **Empty state por búsqueda:** Cuando no hay resultados por búsqueda/filtros (pero sí hay datos), mostrar empty state con icono de búsqueda, título "No se encontraron resultados" y botón "Limpiar búsqueda" funcional que limpie búsqueda (y filtros si aplica), cierre el input de búsqueda y vuelva a aplicar visibilidad.
 
 **Referencia:** `ubits-colaborador/tareas/seguimiento.html`, `seguimiento.js` (initSearchToggle, renderTable empty state, updateSelectAll, tooltips en thead/tbody).
@@ -605,6 +623,7 @@ ubits-colaborador/
    - ❌ **`span`** - Not a valid class name
    - ❌ **`ubits-button__text`** - DOES NOT EXIST
    - ❌ **`ubits-button__label`** - DOES NOT EXIST
+7. **❌ NEVER add a manual close button** (p. ej. `ubits-button--icon-only` con `fa-times`) **next to** `createInput` type `search` inside **`ubits-toolbar-panel__search-inline`**. El patrón oficial es el de **`contenidos.html`**: solo lupa + campo + (filtro u otros iconos); colapsar con clic fuera si no hay texto; vaciar desde empty state «Limpiar búsqueda» cuando aplique.
 
 **If you catch yourself doing ANY of these, STOP and fix immediately.**
 
@@ -1859,6 +1878,11 @@ Before finishing any task, verify:
 <!-- Desde la raíz: <link rel="stylesheet" href="components/toast.css"> -->
 <!-- Required when using: showToast() -->
 
+<!-- Toolbar panel (barra de lista / acciones) -->
+<!-- Desde subcarpetas: <link rel="stylesheet" href="../../components/toolbar-panel.css"> -->
+<!-- Desde la raíz: <link rel="stylesheet" href="components/toolbar-panel.css"> -->
+<!-- Required when using: .ubits-toolbar-panel y descendientes; suele ir con button.css e input.css si hay búsqueda; dropdown-menu.css + dropdown-menu.js si hay select (lista desplegable del Input) -->
+
 <!-- Input component -->
 <!-- Desde subcarpetas: <link rel="stylesheet" href="../../components/input.css"> -->
 <!-- Desde la raíz: <link rel="stylesheet" href="components/input.css"> -->
@@ -1908,6 +1932,8 @@ Before finishing any task, verify:
 <!-- Required when using: .ubits-indice-creator tras seccion-creator.css; JS: indice-creator.js tras seccion-creator.js; initIndiceCreator(root) -->
 <link rel="stylesheet" href="components/rich-text-editor.css">
 <!-- Required when using: .ubits-rich-text-editor (+ button.css, fontawesome). JS: rich-text-editor.js (initRichTextEditor) -->
+<link rel="stylesheet" href="components/toolbar-panel.css">
+<!-- Required when using: .ubits-toolbar-panel (+ button.css; input.css; dropdown-menu.css/js si hay select) -->
 ```
 
 ### **CRITICAL COMPONENT CSS RULES:**
@@ -2086,6 +2112,7 @@ El layout global (`general-styles/styles.css`) añade **`padding-top: 40px`** a 
 - `components/floating-menu.css` + `components/floating-menu.js` - Floating Menu component
 - `components/alert.css` + `components/alert.js` - Alert component
 - `components/toast.css` + `components/toast.js` - Toast component
+- `components/toolbar-panel.css` - Toolbar panel (layout barra título + acciones)
 - `components/modal.css` + `components/modal.js` - Modal component
 - `components/button.css` - Button component
 - `docs/docs-sidebar.css` + `docs/docs-sidebar.js` - Docs Sidebar component

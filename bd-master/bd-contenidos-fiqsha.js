@@ -6,6 +6,7 @@
  * Nivel: `nivelId` → `bd-master-niveles-contenido.js`. Proveedor: `proveedorAliadoId` (`aly-018` Fiqsha) → `bd-master-aliados.js`.
  *
  * `contents` — catálogo publicado: úsalo en u-corporativa, planes, tareas, drawer de catálogo, etc.
+ *   **Universidad corporativa (`aprendizaje/u-corporativa.html`):** debe listar solo este catálogo publicado; es el reflejo en colaborador de lo que la empresa gestiona como **Publicado** en `lms-creator/contenidos.html` (misma BD, mismos criterios de filtro tipo/categoría/nivel/idioma que el modal Filtros del Creator).
  * `contentsCreatorOnly` — privado/borrador/oculto/archivado: SOLO `lms-creator/contenidos.html` (no mezclar en otros consumidores de `contents`).
  */
 window.BDS_CONTENIDOS_FIQSHA = {

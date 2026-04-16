@@ -96,91 +96,84 @@
     margin-top: 0;
 }
 
-/* Buscador y filtros */
+/* Toolbar panel (lista de contenidos): estilos del bloque vienen de components/toolbar-panel.css */
 .widget-buscador-filtros {
     display: flex;
     flex-direction: column;
-    gap: var(--gap-2xl);
+    gap: var(--gap-md);
     width: 100%;
 }
 
-.buscador-header {
+/* Filtros aplicados (misma maqueta que lms-creator/contenidos.css → .contenidos-filtros-aplicados) */
+.ucorp-filtros-aplicados {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: var(--gap-md);
     width: 100%;
-}
-
-.buscador-title-container {
-    display: flex;
-    gap: var(--gap-sm);
-    align-items: center;
-    flex: 0 0 auto;
-}
-
-.buscador-title {
-    color: var(--ubits-fg-1-high);
-    margin: 0;
-    font-family: var(--ubits-font-family-sans);
-    font-size: var(--font-size-md);
-    font-weight: var(--font-weight-bold);
-    line-height: 24px;
-}
-
-.buscador-results {
-    display: flex;
-    gap: var(--gap-xs);
-    align-items: center;
-}
-
-.buscador-results-count {
-    color: var(--ubits-fg-1-medium);
-    font-family: var(--ubits-font-family-sans);
-    font-size: var(--font-size-sm);
-    font-weight: var(--font-weight-regular);
-    line-height: 13px;
-}
-
-.buscador-results-text {
-    color: var(--ubits-fg-1-medium);
-    font-family: var(--ubits-font-family-sans);
-    font-size: var(--font-size-sm);
-    font-weight: var(--font-weight-regular);
-    line-height: 19.5px;
-}
-
-.buscador-actions {
-    display: flex;
-    gap: var(--gap-sm);
-    align-items: center;
-    flex: 0 0 auto;
-}
-
-/* Contenedor del input de búsqueda */
-#buscador-input-container {
-    flex: 1;
     min-width: 0;
 }
 
-/* En mobile: cuando el input está visible, debe ocupar el ancho disponible pero mantener el botón de filtros al lado */
+.ucorp-filtros-aplicados .filtros-chips-container {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--gap-sm);
+    min-width: 0;
+    flex: 1 1 auto;
+}
+
+.ucorp-filtros-aplicados .filtros-chips-container .ubits-chip {
+    max-width: min(200px, 100%);
+}
+
+.ucorp-filtros-aplicados .filtros-chips-container .ubits-chip__text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    min-width: 0;
+}
+
+.ucorp-filtros-modal-fields {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-lg);
+    width: 100%;
+}
+
+.ucorp-filtros-modal-field {
+    width: 100%;
+    min-width: 0;
+}
+
+.ucorp-filtros-modal-field .ubits-input-container {
+    width: 100%;
+    max-width: 100%;
+}
+
+/* Con búsqueda abierta, el campo puede crecer dentro del grupo */
+#ucorporativa-search-group.ucorporativa-search-mode-active #buscador-input-container {
+    flex: 1 1 auto;
+    min-width: 0;
+    max-width: none;
+}
+
+#buscador-input-container {
+    min-width: 0;
+}
+
 @media (max-width: 768px) {
-    #buscador-input-container {
-        flex: 1 1 auto !important;
-        min-width: 0;
-        max-width: none;
-    }
-    
     #buscador-input-container .ubits-input-wrapper {
         width: 100% !important;
     }
-    
+
     #buscador-input-container .ubits-input {
         width: 100% !important;
     }
-    
-    .buscador-actions {
+
+    #ucorporativa-search-group.ucorporativa-search-mode-active {
         width: 100%;
-        flex-wrap: nowrap; /* Mantener elementos en la misma línea */
+        flex-wrap: nowrap;
     }
 }
 
@@ -257,21 +250,6 @@
         box-sizing: border-box;
         aspect-ratio: 21 / 9;
         border-bottom: 1px solid var(--ubits-border-1);
-    }
-
-    .buscador-header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: var(--gap-lg);
-    }
-    
-    .buscador-title-container {
-        width: 100%;
-    }
-
-    .buscador-actions {
-        width: 100%;
-        justify-content: flex-end;
     }
 
     .grid-cards-container {

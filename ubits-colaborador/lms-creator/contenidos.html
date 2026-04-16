@@ -16,6 +16,7 @@
     <link rel="stylesheet" href="../../components/floating-menu.css">
     <link rel="stylesheet" href="../../components/profile-menu.css">
     <link rel="stylesheet" href="../../components/button.css">
+    <link rel="stylesheet" href="../../components/toolbar-panel.css">
     <link rel="stylesheet" href="../../components/save-indicator.css">
     <link rel="stylesheet" href="../../components/ia-button.css">
     <link rel="stylesheet" href="../../components/header-product.css">
@@ -61,31 +62,28 @@
                     </div>
                     <div class="section-single section-single--contenidos">
                         <div class="widget-contenidos-creator">
-                            <div class="contenidos-toolbar-strip">
-                            <!-- Barra tipo Figma actions-table -->
-                            <div class="contenidos-toolbar">
-                                <div class="contenidos-toolbar__title-block">
-                                    <span class="contenidos-toolbar__title ubits-body-md-bold">Lista de elementos</span>
-                                    <span class="contenidos-toolbar__meta">
+                            <div class="ubits-toolbar-panel">
+                            <!-- Barra tipo Figma actions-table (componente transversal toolbar-panel) -->
+                            <div class="ubits-toolbar-panel__bar">
+                                <div class="ubits-toolbar-panel__title-block">
+                                    <span class="ubits-toolbar-panel__title ubits-body-md-bold">Lista de elementos</span>
+                                    <span class="ubits-toolbar-panel__meta">
                                         <span id="contenidos-results-count" class="ubits-body-sm-regular" aria-live="polite"></span>
                                         <span class="ubits-body-sm-regular">resultados</span>
                                     </span>
-                                    <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only contenidos-toolbar__info-btn" data-tooltip="Información sobre la lista" data-tooltip-delay="1000" aria-label="Información">
-                                        <i class="far fa-circle-info"></i>
-                                    </button>
                                 </div>
-                                <div class="contenidos-toolbar__actions">
-                                    <div class="contenidos-toolbar__search-group">
-                                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--md ubits-button--icon-only contenidos-toolbar__search-toggle" id="contenidos-btn-buscar" data-tooltip="Buscar" data-tooltip-delay="1000" aria-label="Buscar">
+                                <div class="ubits-toolbar-panel__actions">
+                                    <div class="ubits-toolbar-panel__search-group">
+                                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--md ubits-button--icon-only ubits-toolbar-panel__search-toggle" id="contenidos-btn-buscar" data-tooltip="Buscar" data-tooltip-delay="1000" aria-label="Buscar">
                                             <i class="far fa-magnifying-glass"></i>
                                         </button>
-                                        <div id="contenidos-search-inline" class="contenidos-search-inline" style="display: none;" aria-hidden="true"></div>
-                                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--md ubits-button--icon-only contenidos-toolbar__filter-btn" id="contenidos-btn-filtro" data-tooltip="Filtrar" data-tooltip-delay="1000" aria-label="Filtrar">
+                                        <div id="contenidos-search-inline" class="ubits-toolbar-panel__search-inline" style="display: none;" aria-hidden="true"></div>
+                                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--md ubits-button--icon-only ubits-toolbar-panel__filter-btn" id="contenidos-btn-filtro" data-tooltip="Filtrar" data-tooltip-delay="1000" aria-label="Filtrar">
                                             <i class="far fa-filter"></i>
                                         </button>
                                     </div>
-                                    <div class="contenidos-view-toggle" role="group" aria-label="Ver como">
-                                        <span class="contenidos-view-toggle__label ubits-body-sm-regular">Ver como:</span>
+                                    <div class="ubits-toolbar-panel__control-group" role="group" aria-label="Ver como">
+                                        <span class="ubits-toolbar-panel__control-label ubits-body-sm-regular">Ver como:</span>
                                         <button type="button" class="ubits-button ubits-button--tertiary ubits-button--md ubits-button--active" id="contenidos-view-cuadricula" aria-pressed="true">
                                             <i class="far fa-grid-2"></i>
                                             <span>Cuadrícula</span>
