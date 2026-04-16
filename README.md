@@ -159,7 +159,7 @@ En el **rail del sidebar default** no hay icono dedicado al Creator (solo las ru
 | `certificados` | `certificados.html` |
 | `personalizacion` | `personalizacion-u-corporativa.html` |
 
-El logo UBITS en el header del sidebar es solo marca (sin enlace ni hover de interacción) en todas las variantes. El menú de perfil del Creator incluye **Modo colaborador** (vuelta al playground colaborador) y **Modo administrador**, además de documentación y sesión (ver `components/sidebar.js`).
+El logo UBITS en el header del sidebar es solo marca (sin enlace ni hover de interacción) en todas las variantes. El menú de perfil del Creator incluye **Modo Colaborador** (enlace a `ubits-colaborador/perfil/profile.html`) y **Modo Administrador**, además de documentación y sesión (ver `components/sidebar.js`).
 
 #### **SubNav: un módulo = una variante**
 

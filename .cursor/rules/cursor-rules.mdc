@@ -1060,17 +1060,17 @@ document.addEventListener('DOMContentLoaded', function() {
 **Variante Default:**
 - **Body:** `admin`, `aprendizaje`, `diagnóstico`, `desempeño`, `encuestas`, `reclutamiento`, `tareas`, `ia-para-hr`, `ninguno`
 - **Footer:** Modo oscuro, Perfil
-- **Profile Menu:** Ver mi perfil; **Modo administrador** y **Modo LMS Creator** (seguidos, sin divisor entre ellos); Documentación; Cambio de contraseña; Cerrar sesión (los dos últimos sin divisor entre sí).
+- **Profile Menu:** Ver mi perfil; **Modo Administrador** y **Modo LMS Creator** (seguidos, sin divisor entre ellos); Documentación; Cambio de contraseña; Cerrar sesión (los dos últimos sin divisor entre sí).
 
 **Variante Admin:**
 - **Body:** `inicio`, `empresa`, `aprendizaje`, `diagnóstico`, `desempeño`, `encuestas`
 - **Footer:** API, Centro de ayuda, Modo oscuro, Perfil
-- **Profile Menu:** Ver mi perfil; **Modo colaborador** y **Modo LMS Creator** (seguidos, sin divisor entre ellos); Documentación; Cambio de contraseña; Cerrar sesión.
+- **Profile Menu:** Ver mi perfil; **Modo Colaborador** y **Modo LMS Creator** (seguidos, sin divisor entre ellos); Documentación; Cambio de contraseña; Cerrar sesión.
 
 **Variante Creator:**
 - **Body:** `lms-creator`, `planes-formacion`, `certificados`, `personalizacion`
 - **Footer:** Modo oscuro, Perfil
-- **Profile Menu:** Ver mi perfil; **Modo colaborador** y **Modo administrador** (seguidos, sin divisor entre ellos); Documentación; Cambio de contraseña; Cerrar sesión.
+- **Profile Menu:** Ver mi perfil; **Modo Colaborador** y **Modo Administrador** (seguidos, sin divisor entre ellos); Documentación; Cambio de contraseña; Cerrar sesión.
 
 **Required files:**
 - `components/sidebar.js`
@@ -1656,7 +1656,7 @@ document.addEventListener('DOMContentLoaded', function() {
 #### **Variante Default:**
 - **Body:** `admin`, `aprendizaje`, `diagnóstico`, `desempeño`, `encuestas`, `reclutamiento`, `tareas`, `ia-para-hr`, `ninguno`
 - **Footer:** Modo oscuro, Perfil
-- **Profile Menu:** Ver mi perfil; Modo administrador + Modo LMS Creator (sin divisor entre ambos); Documentación; Cambio de contraseña; Cerrar sesión.
+- **Profile Menu:** Ver mi perfil; Modo Administrador + Modo LMS Creator (sin divisor entre ambos); Documentación; Cambio de contraseña; Cerrar sesión.
 - **Ejemplo:**
   ```html
   <script>
@@ -1669,7 +1669,7 @@ document.addEventListener('DOMContentLoaded', function() {
 #### **Variante Admin:**
 - **Body:** `inicio`, `empresa`, `aprendizaje`, `diagnóstico`, `desempeño`, `encuestas`
 - **Footer:** API, Centro de ayuda, Modo oscuro, Perfil
-- **Profile Menu:** Ver mi perfil; Modo colaborador + Modo LMS Creator (sin divisor entre ambos); Documentación; Cambio de contraseña; Cerrar sesión.
+- **Profile Menu:** Ver mi perfil; Modo Colaborador + Modo LMS Creator (sin divisor entre ambos); Documentación; Cambio de contraseña; Cerrar sesión.
 - **Ejemplo:**
   ```html
   <script>
@@ -1681,7 +1681,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 #### **Variante Creator (LMS Creator / planes / certificados / UC):**
 - **Body:** `lms-creator`, `planes-formacion`, `certificados`, `personalizacion` (universidad corporativa en LMS Creator: `lms-creator/personalizacion-u-corporativa.html`; la vista colaborador sigue en `aprendizaje/u-corporativa.html`)
-- **Footer:** Modo oscuro, Perfil (menú: Modo colaborador + Modo administrador sin divisor; Documentación; contraseña y sesión).
+- **Footer:** Modo oscuro, Perfil (menú: Modo Colaborador + Modo Administrador sin divisor; Documentación; contraseña y sesión).
 - **SubNav por módulo (no mezclar pestañas):** `loadSubNav(..., 'creator-lms')` (Contenidos + Categorías), `creator-planes` (Planes de formación + Grupos), `creator-certificados` (Descarga + Configuración), `creator-personalizacion` (Universidad corporativa + Seguimiento).
 - **Ejemplo:**
   ```html
