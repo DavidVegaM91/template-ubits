@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="../../../images/Ubits-logo-dark.svg">
+    <title>Crear evaluación 360 | UBITS</title>
+
+    <link rel="stylesheet" href="../../../general-styles/ubits-colors.css">
+    <link rel="stylesheet" href="../../../general-styles/styles.css">
+    <link rel="stylesheet" href="../../../general-styles/fontawesome-icons.css">
+    <link rel="stylesheet" href="../../../general-styles/ubits-typography.css">
+    <link rel="stylesheet" href="../../../general-styles/layout-immersive.css">
+    <link rel="stylesheet" href="../../../components/button.css">
+    <link rel="stylesheet" href="../../../components/input.css">
+    <link rel="stylesheet" href="../../../components/calendar.css">
+    <link rel="stylesheet" href="../../../components/modal.css">
+    <link rel="stylesheet" href="../../../components/toast.css">
+    <link rel="stylesheet" href="../../../components/status-tag.css">
+    <link rel="stylesheet" href="../../../components/tooltip.css">
+    <link rel="stylesheet" href="../../../components/tab-bar.css">
+    <link rel="stylesheet" href="../../../components/floating-menu.css">
+    <link rel="stylesheet" href="../../../components/profile-menu.css">
+    <link rel="stylesheet" href="../../../components/sidebar.css">
+    <link rel="stylesheet" href="../../../components/alert.css">
+    <link rel="stylesheet" href="./crear-360.css">
+</head>
+<body data-theme="light" class="page-layout-immersive page-crear-360">
+
+<div class="ubits-layout-immersive">
+
+    <!-- ── Header ── -->
+    <header class="ubits-layout-immersive__header">
+        <div class="ubits-layout-immersive__header-inner">
+            <button type="button"
+                class="ubits-button ubits-button--tertiary ubits-button--md ubits-button--icon-only"
+                id="crear360-btn-back"
+                data-tooltip="Volver a Evaluaciones 360" data-tooltip-delay="800"
+                aria-label="Volver">
+                <i class="far fa-arrow-left"></i>
+            </button>
+            <div class="ubits-layout-immersive__leading">
+                <div class="ubits-layout-immersive__title-row">
+                    <h1 class="ubits-layout-immersive__title ubits-body-md-bold" id="crear360-header-title">
+                        Nueva evaluación 360
+                    </h1>
+                    <span id="crear360-status-tag" style="display:none;">
+                        <span class="ubits-status-tag ubits-status-tag--neutral ubits-status-tag--sm"><span>Borrador</span></span>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- ── Main scrollable ── -->
+    <main class="ubits-layout-immersive__main">
+        <div class="ubits-layout-immersive__stage">
+
+            <!-- Descripción -->
+            <section class="crear360-description">
+                <h2 class="ubits-body-md-bold">Configura tu evaluación 360</h2>
+                <p class="ubits-body-md-regular">Define el nombre y las fechas de la evaluación. Luego completa las 4 secciones de configuración para poder activarla.</p>
+            </section>
+
+            <!-- Formulario nombre + fechas -->
+            <section class="crear360-form-section" id="crear360-form-section">
+                <div class="crear360-form">
+                    <div id="crear360-input-nombre" class="crear360-form-field"></div>
+                    <div id="crear360-input-inicio" class="crear360-form-field"></div>
+                    <div id="crear360-input-fin" class="crear360-form-field"></div>
+                    <!-- Botón Guardar visible solo antes de guardar -->
+                    <div id="crear360-save-inline-wrap" class="crear360-save-inline-wrap">
+                        <button type="button"
+                            class="ubits-button ubits-button--primary ubits-button--md"
+                            id="crear360-btn-save-inline">
+                            <i class="far fa-save"></i>
+                            <span>Guardar evaluación</span>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Alert error validación -->
+            <div id="crear360-alert-container" style="display:none; margin-bottom: var(--gap-lg);"></div>
+
+            <!-- 4 option cards (bloqueadas hasta guardar) -->
+            <section class="crear360-cards-section" id="crear360-cards-section">
+                <div class="crear360-cards-grid" id="crear360-cards-grid">
+
+                    <!-- Card 1: Tipo de evaluación -->
+                    <article class="crear360-option-card" id="crear360-card-tipo" data-card="tipo">
+                        <div class="crear360-option-card__header">
+                            <div class="crear360-option-card__title-block">
+                                <span class="crear360-option-card__num ubits-body-sm-bold">1</span>
+                                <span class="ubits-body-md-bold crear360-option-card__title">Tipo de evaluación</span>
+                                <span class="crear360-option-card__check" id="crear360-check-tipo" style="display:none;">
+                                    <i class="far fa-circle-check"></i>
+                                </span>
+                            </div>
+                            <button type="button"
+                                class="ubits-button ubits-button--secondary ubits-button--sm crear360-option-card__btn"
+                                id="crear360-btn-tipo" disabled>
+                                <i class="far fa-sliders"></i>
+                                <span>Configurar</span>
+                            </button>
+                        </div>
+                        <div class="crear360-option-card__body">
+                            <p class="ubits-body-sm-regular">Define quiénes participarán en la evaluación y el peso porcentual de cada perspectiva.</p>
+                            <ul class="crear360-option-card__hints">
+                                <li class="ubits-body-sm-regular">Autoevaluación</li>
+                                <li class="ubits-body-sm-regular">Jefe inmediato</li>
+                                <li class="ubits-body-sm-regular">Pares, subalternos, clientes internos</li>
+                            </ul>
+                        </div>
+                    </article>
+
+                    <!-- Card 2: Competencias y enunciados -->
+                    <article class="crear360-option-card" id="crear360-card-competencias" data-card="competencias">
+                        <div class="crear360-option-card__header">
+                            <div class="crear360-option-card__title-block">
+                                <span class="crear360-option-card__num ubits-body-sm-bold">2</span>
+                                <span class="ubits-body-md-bold crear360-option-card__title">Competencias y enunciados</span>
+                                <span class="crear360-option-card__check" id="crear360-check-competencias" style="display:none;">
+                                    <i class="far fa-circle-check"></i>
+                                </span>
+                            </div>
+                            <button type="button"
+                                class="ubits-button ubits-button--secondary ubits-button--sm crear360-option-card__btn"
+                                id="crear360-btn-competencias" disabled>
+                                <i class="far fa-list-check"></i>
+                                <span>Configurar</span>
+                            </button>
+                        </div>
+                        <div class="crear360-option-card__body">
+                            <p class="ubits-body-sm-regular">Selecciona las competencias que serán evaluadas y los enunciados que guiarán las respuestas.</p>
+                            <ul class="crear360-option-card__hints">
+                                <li class="ubits-body-sm-regular">8 competencias disponibles</li>
+                                <li class="ubits-body-sm-regular">3 enunciados por competencia</li>
+                            </ul>
+                        </div>
+                    </article>
+
+                    <!-- Card 3: Evaluados -->
+                    <article class="crear360-option-card" id="crear360-card-evaluados" data-card="evaluados">
+                        <div class="crear360-option-card__header">
+                            <div class="crear360-option-card__title-block">
+                                <span class="crear360-option-card__num ubits-body-sm-bold">3</span>
+                                <span class="ubits-body-md-bold crear360-option-card__title">Evaluados</span>
+                                <span class="crear360-option-card__check" id="crear360-check-evaluados" style="display:none;">
+                                    <i class="far fa-circle-check"></i>
+                                </span>
+                            </div>
+                            <button type="button"
+                                class="ubits-button ubits-button--secondary ubits-button--sm crear360-option-card__btn"
+                                id="crear360-btn-evaluados" disabled>
+                                <i class="far fa-users"></i>
+                                <span>Configurar</span>
+                            </button>
+                        </div>
+                        <div class="crear360-option-card__body">
+                            <p class="ubits-body-sm-regular">Asigna los colaboradores que serán evaluados y configura quiénes los evaluarán.</p>
+                            <ul class="crear360-option-card__hints">
+                                <li class="ubits-body-sm-regular">Selección desde el directorio de la empresa</li>
+                                <li class="ubits-body-sm-regular">Asignación individual de evaluadores</li>
+                            </ul>
+                        </div>
+                    </article>
+
+                    <!-- Card 4: Configuración de resultados -->
+                    <article class="crear360-option-card" id="crear360-card-resultados" data-card="resultados">
+                        <div class="crear360-option-card__header">
+                            <div class="crear360-option-card__title-block">
+                                <span class="crear360-option-card__num ubits-body-sm-bold">4</span>
+                                <span class="ubits-body-md-bold crear360-option-card__title">Configuración de resultados</span>
+                                <span class="crear360-option-card__check" id="crear360-check-resultados" style="display:none;">
+                                    <i class="far fa-circle-check"></i>
+                                </span>
+                            </div>
+                            <button type="button"
+                                class="ubits-button ubits-button--secondary ubits-button--sm crear360-option-card__btn"
+                                id="crear360-btn-resultados" disabled>
+                                <i class="far fa-chart-bar"></i>
+                                <span>Configurar</span>
+                            </button>
+                        </div>
+                        <div class="crear360-option-card__body">
+                            <p class="ubits-body-sm-regular">Define los rangos de calificación y sus colores para interpretar los resultados.</p>
+                            <ul class="crear360-option-card__hints">
+                                <li class="ubits-body-sm-regular">3 a 5 rangos configurables</li>
+                                <li class="ubits-body-sm-regular">Color e etiqueta por rango</li>
+                            </ul>
+                        </div>
+                    </article>
+
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <!-- ── Footer sticky ── -->
+    <footer class="ubits-layout-immersive__footer" id="crear360-footer">
+        <div class="ubits-layout-immersive__footer-inner">
+            <div class="ubits-layout-immersive__footer-actions">
+                <div class="ubits-layout-immersive__footer-grow"></div>
+                <div class="ubits-layout-immersive__footer-nav">
+                    <button type="button"
+                        class="ubits-button ubits-button--secondary ubits-button--md"
+                        id="crear360-btn-save-changes"
+                        style="display:none;">
+                        <i class="far fa-save"></i>
+                        <span>Guardar cambios</span>
+                    </button>
+                    <button type="button"
+                        class="ubits-button ubits-button--primary ubits-button--md"
+                        id="crear360-btn-activate"
+                        disabled>
+                        <i class="far fa-bolt"></i>
+                        <span>Activar evaluación</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </footer>
+</div>
+
+<!-- Modal cancelar (salir sin guardar) -->
+<div id="crear360-cancel-modal-overlay" style="display:none;"></div>
+
+<!-- Modal confirmar activación -->
+<div id="crear360-activate-modal-overlay" style="display:none;"></div>
+
+<div id="tab-bar-container"></div>
+<div id="floating-menu-container"></div>
+<div id="profile-menu-container"></div>
+<div id="ubits-toast-container"></div>
+
+<script src="../../../components/tooltip.js"></script>
+<script src="../../../components/sidebar.js"></script>
+<script src="../../../components/tab-bar.js"></script>
+<script src="../../../components/floating-menu.js"></script>
+<script src="../../../components/profile-menu.js"></script>
+<script src="../../../components/dropdown-menu.js"></script>
+<script src="../../../components/calendar.js"></script>
+<script src="../../../components/input.js"></script>
+<script src="../../../components/modal.js"></script>
+<script src="../../../components/toast.js"></script>
+<script src="../../../components/alert.js"></script>
+<script src="../../../script.js"></script>
+<script src="../../../bd-master/bd-evaluaciones-360.js"></script>
+<script>
+(function () {
+    'use strict';
+
+    var DRAFT_KEY = 'AXS360_DRAFT';
+
+    /* ── draft state ── */
+    function loadDraft() {
+        try { return JSON.parse(sessionStorage.getItem(DRAFT_KEY)) || null; }
+        catch (e) { return null; }
+    }
+    function saveDraft(draft) {
+        sessionStorage.setItem(DRAFT_KEY, JSON.stringify(draft));
+    }
+    function clearDraft() {
+        sessionStorage.removeItem(DRAFT_KEY);
+    }
+
+    /* ── estado de los 4 checks ── */
+    function updateChecksUI(draft) {
+        var checks = (draft && draft.checks) || {};
+        var allDone = checks.tipo && checks.competencias && checks.evaluados && checks.resultados;
+        ['tipo', 'competencias', 'evaluados', 'resultados'].forEach(function (k) {
+            var card = document.getElementById('crear360-card-' + k);
+            var check = document.getElementById('crear360-check-' + k);
+            var btn = document.getElementById('crear360-btn-' + k);
+            if (checks[k]) {
+                if (card) card.classList.add('crear360-option-card--done');
+                if (check) check.style.display = '';
+                if (btn) btn.querySelector('span').textContent = 'Ver detalle';
+            } else {
+                if (card) card.classList.remove('crear360-option-card--done');
+                if (check) check.style.display = 'none';
+                if (btn) btn.querySelector('span').textContent = 'Configurar';
+            }
+        });
+        var activateBtn = document.getElementById('crear360-btn-activate');
+        if (activateBtn) activateBtn.disabled = !allDone;
+    }
+
+    /* ── habilitar/deshabilitar cards ── */
+    function setCardsEnabled(enabled) {
+        ['tipo', 'competencias', 'evaluados', 'resultados'].forEach(function (k) {
+            var btn = document.getElementById('crear360-btn-' + k);
+            var card = document.getElementById('crear360-card-' + k);
+            if (btn) btn.disabled = !enabled;
+            if (card) {
+                if (enabled) card.classList.remove('crear360-option-card--locked');
+                else card.classList.add('crear360-option-card--locked');
+            }
+        });
+    }
+
+    /* ── sync nombre en header ── */
+    function syncHeader(nombre) {
+        var title = document.getElementById('crear360-header-title');
+        if (title) title.textContent = nombre && nombre.trim() ? nombre.trim() : 'Nueva evaluación 360';
+    }
+
+    /* ── renderizar formulario ── */
+    function renderForm(draft) {
+        var saved = !!(draft && draft.guardado);
+
+        createInput({
+            containerId: 'crear360-input-nombre',
+            label: 'Nombre de la evaluación',
+            placeholder: 'Ej. Evaluación 360 Liderazgo Q3',
+            type: 'text',
+            size: 'md',
+            value: draft ? (draft.nombre || '') : '',
+            disabled: saved,
+            onChange: function (val) {
+                var d = loadDraft() || {};
+                d.nombre = val;
+                saveDraft(d);
+                syncHeader(val);
+                checkFormModified();
+            }
+        });
+
+        createInput({
+            containerId: 'crear360-input-inicio',
+            label: 'Fecha de inicio',
+            type: 'calendar',
+            size: 'md',
+            value: draft ? (draft.fechaInicio || '') : '',
+            disabled: saved,
+            onChange: function (val) {
+                var d = loadDraft() || {};
+                d.fechaInicio = val;
+                saveDraft(d);
+                checkFormModified();
+            }
+        });
+
+        createInput({
+            containerId: 'crear360-input-fin',
+            label: 'Fecha de fin',
+            type: 'calendar',
+            size: 'md',
+            value: draft ? (draft.fechaFin || '') : '',
+            onChange: function (val) {
+                var d = loadDraft() || {};
+                d.fechaFin = val;
+                saveDraft(d);
+                checkFormModified();
+            }
+        });
+
+        /* Botón inline visible solo si no guardado */
+        var inlineWrap = document.getElementById('crear360-save-inline-wrap');
+        if (inlineWrap) inlineWrap.style.display = saved ? 'none' : '';
+
+        /* Footer: guardar cambios visible solo si guardado */
+        var saveChangesBtn = document.getElementById('crear360-btn-save-changes');
+        if (saveChangesBtn) saveChangesBtn.style.display = saved ? '' : 'none';
+
+        /* Status tag */
+        var statusTag = document.getElementById('crear360-status-tag');
+        if (statusTag) statusTag.style.display = saved ? '' : 'none';
+
+        syncHeader(draft ? draft.nombre : '');
+    }
+
+    var _formModified = false;
+    function checkFormModified() {
+        _formModified = true;
+        var saveChangesBtn = document.getElementById('crear360-btn-save-changes');
+        if (saveChangesBtn) saveChangesBtn.style.display = '';
+    }
+
+    /* ── validar y guardar ── */
+    function guardarEvaluacion() {
+        var draft = loadDraft() || {};
+        var alertContainer = document.getElementById('crear360-alert-container');
+
+        var nombre = draft.nombre || '';
+        var inicio = draft.fechaInicio || '';
+        var fin = draft.fechaFin || '';
+
+        /* Intentar leer inputs directamente si draft no tiene valores */
+        if (!nombre) {
+            var nombreInp = document.querySelector('#crear360-input-nombre input');
+            if (nombreInp) nombre = nombreInp.value;
+        }
+
+        if (!nombre || nombre.trim().length < 3) {
+            alertContainer.style.display = '';
+            showAlert('error', 'El nombre de la evaluación debe tener al menos 3 caracteres.', { containerId: 'crear360-alert-container', noClose: false });
+            return false;
+        }
+        if (!inicio) {
+            alertContainer.style.display = '';
+            showAlert('error', 'Debes seleccionar la fecha de inicio.', { containerId: 'crear360-alert-container', noClose: false });
+            return false;
+        }
+        if (!fin) {
+            alertContainer.style.display = '';
+            showAlert('error', 'Debes seleccionar la fecha de fin.', { containerId: 'crear360-alert-container', noClose: false });
+            return false;
+        }
+
+        alertContainer.style.display = 'none';
+
+        draft.nombre = nombre.trim();
+        draft.guardado = true;
+        if (!draft.checks) draft.checks = { tipo: false, competencias: false, evaluados: false, resultados: false };
+        saveDraft(draft);
+
+        _formModified = false;
+        return true;
+    }
+
+    /* ── activar evaluación ── */
+    function activarEvaluacion() {
+        var draft = loadDraft();
+        if (!draft || !draft.checks) return;
+
+        openModal({
+            overlayId: 'crear360-activate-modal',
+            title: 'Activar evaluación',
+            bodyHtml: '<p class="ubits-body-md-regular">Al activar la evaluación <strong>' + (draft.nombre || '') + '</strong>, se notificará a los evaluadores. ¿Deseas continuar?</p>',
+            footerHtml: '<button class="ubits-button ubits-button--secondary ubits-button--md" onclick="closeModal(\'crear360-activate-modal\')"><span>Cancelar</span></button>' +
+                '<button class="ubits-button ubits-button--primary ubits-button--md" id="crear360-confirm-activate-btn"><span>Activar</span></button>',
+            size: 'sm',
+            closeOnOverlayClick: true
+        });
+
+        setTimeout(function () {
+            var btn = document.getElementById('crear360-confirm-activate-btn');
+            if (btn) btn.addEventListener('click', function () {
+                BD_EVALUACIONES_360.addEvaluacion({
+                    nombre: draft.nombre,
+                    fechaInicio: draft.fechaInicio || '',
+                    fechaFin: draft.fechaFin || '',
+                    checks: { tipo: true, competencias: true, evaluados: true, resultados: true }
+                });
+                clearDraft();
+                closeModal('crear360-activate-modal');
+                window.location.href = 'admin-360.html?toast=created';
+            });
+        }, 50);
+    }
+
+    /* ── cancelar / salir ── */
+    function confirmarSalir() {
+        var draft = loadDraft();
+        if (!draft || !draft.guardado) {
+            /* Sin guardar: preguntar */
+            openModal({
+                overlayId: 'crear360-cancel-modal',
+                title: 'Salir sin guardar',
+                bodyHtml: '<p class="ubits-body-md-regular">Los datos no guardados se perderán. ¿Deseas salir de todas formas?</p>',
+                footerHtml: '<button class="ubits-button ubits-button--secondary ubits-button--md" onclick="closeModal(\'crear360-cancel-modal\')"><span>Quedarse</span></button>' +
+                    '<button class="ubits-button ubits-button--primary ubits-button--md" id="crear360-confirm-exit-btn"><span>Salir</span></button>',
+                size: 'sm',
+                closeOnOverlayClick: true
+            });
+            setTimeout(function () {
+                var btn = document.getElementById('crear360-confirm-exit-btn');
+                if (btn) btn.addEventListener('click', function () {
+                    clearDraft();
+                    window.location.href = 'admin-360.html';
+                });
+            }, 50);
+        } else {
+            window.location.href = 'admin-360.html';
+        }
+    }
+
+    /* ── inicialización ── */
+    document.addEventListener('DOMContentLoaded', function () {
+        loadSidebar('admin', 'desempeño');
+        loadTabBar('tab-bar-container', 'admin');
+        loadFloatingMenu('floating-menu-container', 'admin');
+        loadProfileMenu('profile-menu-container');
+
+        var draft = loadDraft();
+        renderForm(draft);
+        var saved = !!(draft && draft.guardado);
+        setCardsEnabled(saved);
+        updateChecksUI(draft);
+
+        /* Botón volver */
+        document.getElementById('crear360-btn-back').addEventListener('click', confirmarSalir);
+
+        /* Botón guardar inline */
+        document.getElementById('crear360-btn-save-inline').addEventListener('click', function () {
+            if (guardarEvaluacion()) {
+                var d = loadDraft();
+                renderForm(d);
+                setCardsEnabled(true);
+                updateChecksUI(d);
+                showToast('success', 'Evaluación guardada');
+            }
+        });
+
+        /* Botón guardar cambios (footer) */
+        document.getElementById('crear360-btn-save-changes').addEventListener('click', function () {
+            if (guardarEvaluacion()) {
+                showToast('success', 'Cambios guardados');
+            }
+        });
+
+        /* Botón activar */
+        document.getElementById('crear360-btn-activate').addEventListener('click', activarEvaluacion);
+
+        /* Botones de cada card → sub-pantallas */
+        var RUTAS = {
+            tipo:         'crear-360-tipo.html',
+            competencias: 'crear-360-competencias.html',
+            evaluados:    'crear-360-evaluados.html',
+            resultados:   'crear-360-resultados.html'
+        };
+        ['tipo', 'competencias', 'evaluados', 'resultados'].forEach(function (k) {
+            var btn = document.getElementById('crear360-btn-' + k);
+            if (btn) btn.addEventListener('click', function () {
+                window.location.href = RUTAS[k];
+            });
+        });
+
+        /* Leer check param de vuelta de sub-pantallas */
+        var params = new URLSearchParams(window.location.search);
+        var savedCheck = params.get('saved');
+        if (savedCheck) {
+            var d2 = loadDraft();
+            if (d2 && d2.checks) {
+                d2.checks[savedCheck] = true;
+                saveDraft(d2);
+                updateChecksUI(d2);
+            }
+            showToast('success', 'Configuración guardada');
+            history.replaceState(null, '', window.location.pathname);
+        }
+
+        if (typeof initTooltip === 'function') {
+            initTooltip('[data-tooltip]');
+        }
+    });
+}());
+</script>
+</body>
+</html>
