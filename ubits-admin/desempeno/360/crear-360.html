@@ -464,13 +464,21 @@
 
     function setInputError(api, containerId, msg) {
         if (api && typeof api.setState === 'function') api.setState('invalid');
-        var el = document.querySelector('#' + containerId + ' .ubits-input-helper-text');
-        if (el) { el.textContent = msg; el.style.color = 'var(--ubits-feedback-accent-error)'; }
+        var container = document.getElementById(containerId);
+        if (!container) return;
+        var errEl = container.querySelector('.crear360-input-error');
+        if (!errEl) {
+            errEl = document.createElement('span');
+            errEl.className = 'crear360-input-error ubits-body-sm-regular';
+            container.appendChild(errEl);
+        }
+        errEl.textContent = msg;
     }
     function clearInputError(api, containerId) {
         if (api && typeof api.setState === 'function') api.setState('default');
-        var el = document.querySelector('#' + containerId + ' .ubits-input-helper-text');
-        if (el) { el.textContent = '\u00a0'; el.style.color = ''; }
+        var container = document.getElementById(containerId);
+        var errEl = container && container.querySelector('.crear360-input-error');
+        if (errEl) errEl.parentNode.removeChild(errEl);
     }
 
     /* ══════════════════════════════════════════════════════════
@@ -495,8 +503,6 @@
             size: 'md',
             value: draft.nombre || '',
             disabled: saved,
-            showHelper: true,
-            helperText: '\u00a0',
             onChange: function (val) {
                 draft.nombre = val;
                 clearInputError(_inputNombreApi, 'crear360-input-nombre');
@@ -511,8 +517,6 @@
             size: 'md',
             value: draft.fechaInicio || '',
             disabled: saved,
-            showHelper: true,
-            helperText: '\u00a0',
             onChange: function (val) {
                 draft.fechaInicio = val;
                 clearInputError(_inputInicioApi, 'crear360-input-inicio');
@@ -527,8 +531,6 @@
             size: 'md',
             value: draft.fechaFin || '',
             disabled: saved,
-            showHelper: true,
-            helperText: '\u00a0',
             onChange: function (val) {
                 draft.fechaFin = val;
                 clearInputError(_inputFinApi, 'crear360-input-fin');
