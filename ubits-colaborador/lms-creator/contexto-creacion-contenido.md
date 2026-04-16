@@ -176,19 +176,40 @@ Los dos paneles trabajan acoplados: la selección de página en la izquierda det
 
 ### Secciones (`sections-toggle`)
 
+**Ámbito:** el interruptor y el índice viven en el componente **Índice Creator**, **solo** en el **paso 2 (Recursos)** de la página dedicada **`crear-contenido.html#recursos`**. La pieza ya está montada en el playground; falta **cablear el switch** para cumplir las reglas de esta subsección.
+
 - Control tipo **interruptor** para **activar o desactivar** el uso de **secciones**.  
 - **Secciones** = subdivisores de alto nivel del contenido (equivalente a lo que muchas veces se llama **módulos** en un curso).  
 - **Por defecto: desactivado**, porque muchas empresas crean contenidos cortos sin módulos.  
-- Si el usuario **activa** secciones:  
-  - Se muestra un **título de bloque** relacionado con secciones (según copy acordado).  
-  - Cada sección muestra **siempre su nombre** en la cabecera del bloque **Sección creator** (no ocultar el título cuando el modo secciones está encendido).  
-  - **Nombre por defecto al crear una sección:** **«Sección N»**, donde **N** es el **ordinal de esa sección** dentro del contenido (1 para la primera sección creada, 2 para la segunda, etc.). La implementación que monte el índice debe generar ese título inicial al añadir sección; el usuario puede renombrarlo después (edición inline ya prevista en el componente).  
-  - En la **parte inferior** del panel izquierdo aparece un botón **“Añadir sección”**.  
-- Si el usuario **desactiva** secciones (o nunca las activa): **todas las páginas** se representan **en una sola sección lógica**, **sin mostrar cabecera de título de sección** (no aporta valor si no hay más de una sección). Sigue existiendo la lista tipo **Páginas creator** y **«Añadir página»** dentro del mismo bloque.  
-- **Desactivar secciones cuando ya hay varias secciones con páginas repartidas:** debe mostrarse un **modal de advertencia** explicando que **todas las páginas pasarán a una única sección** (orden global según reglas de producto / implementación). Si el usuario confirma, se aplica el colapso; si cancela, el interruptor vuelve al estado **activado**.  
-- **Excepción sin modal:** si existen **varias secciones** pero **solo la primera** tiene páginas y el resto está vacío, el usuario puede **activar y desactivar** el uso de secciones **sin** modal ni fricción (no hay riesgo de reorganizar páginas entre secciones con contenido).  
-- **Componente UBITS:** **Índice Creator** (`indiceCreatorHtml` / `initIndiceCreator`) compone el interruptor, el índice de **Sección creator** cuando aplica y el contenedor del botón **«Añadir sección»**. Documentación: `documentacion/componentes/indice-creator.html`.  
-- La lógica exacta de anidación (página dentro de sección, orden, etc.) debe alinearse con diseño y producto; lo aquí descrito es el comportamiento acordado.
+
+**Cabecera y nombre de cada sección (componente Sección creator)**  
+- El **título visible** de cada bloque es el del componente **Sección creator**.  
+- **Nombre por defecto** al crear una sección: **«Sección 1»**, **«Sección 2»**, … según el **orden de creación** de esa sección en el contenido (el usuario puede personalizarlo después).  
+
+**Cómo editar título y descripción de una sección**  
+- **Doble clic** en el nombre de la sección en el índice, **o** menú **⋮** → **«Editar sección»**.  
+- Se abre un **modal UBITS** oficial (`openModal` / estructura del componente **Modal**).  
+- **Campos:**  
+  - **Título de la sección** — input, **obligatorio**.  
+  - **Descripción** — **opcional**, con el componente **rich text editor** (`initRichTextEditor` / doc del componente).  
+- **Footer del modal:**  
+  - Botón **primario «Guardar»**: **deshabilitado** hasta que se detecte **algún cambio** en cualquiera de los campos respecto al valor al abrir el modal.  
+  - Botón **«Cancelar»**: cierra el modal sin guardar.  
+
+Si el usuario **activa** secciones:  
+- Cada sección muestra **siempre** su nombre en la cabecera del bloque **Sección creator** (no ocultar el título con el modo secciones encendido).  
+- En la **parte inferior** del panel izquierdo aparece el botón **«Añadir sección»**.  
+
+Si el usuario **desactiva** secciones (o nunca las activa): **todas las páginas** quedan en **una única sección lógica** **sin** cabecera de nombre visible; solo se agrupan las filas de **Páginas creator** y el botón **«Añadir página»** al pie. El comportamiento visual con el switch **apagado** está definido en el **preview** de **`documentacion/componentes/indice-creator.html`** (misma variante que debe replicar el playground).
+
+**Modal al deshabilitar secciones** (cuando ya hay **varias secciones con páginas repartidas**):  
+- **Título:** «Deshabilitar secciones»  
+- **Cuerpo:** «Estás a punto de deshabilitar el uso de secciones; al hacerlo, todas las páginas se moverán a una única sección. Esta acción no se puede deshacer. ¿Estás seguro de deshabilitar las secciones?»  
+- **Botones:** primario **«Sí, deshabilitar»** (confirma y aplica el colapso); secundario **«Cancelar»** (cierra y el interruptor vuelve a **activado** / uso de secciones sigue).  
+
+**Excepción sin modal:** si hay **varias secciones** pero **solo la primera** tiene páginas y el resto está vacío, se puede **activar y desactivar** el uso de secciones **sin** modal.
+
+**Componente UBITS:** **Índice Creator** (`indiceCreatorHtml` / `initIndiceCreator`) compone el interruptor, las **Sección creator** cuando aplica y **«Añadir sección»**. Doc: `documentacion/componentes/indice-creator.html`.
 
 ### Páginas
 
