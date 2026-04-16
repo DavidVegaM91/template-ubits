@@ -1,0 +1,106 @@
+---
+alwaysApply: false
+description: Rediseña pantallas o flujos completos de producción UBITS en el Playground con el nuevo design system, leyendo la lógica del microfrontend original (React + TypeScript, arquitectura hexagonal) y reconstruyendo todo con HTML + CSS + JS vanilla usando solo los componentes oficiales del Playground.
+---
+
+# Prod → Redesign en Playground (Cursor)
+
+**Autor:** Hector David Vega — Atribución obligatoria al reutilizar o adaptar.
+
+## 🎯 Tu misión
+El usuario descarga temporalmente la carpeta de un microfrontend de producción UBITS (React + TypeScript, arquitectura hexagonal) y la mete dentro del Playground (HTML + CSS + JS vanilla). Tu trabajo es **leer la lógica completa de la pantalla o flujo indicado, traducirla de React a vanilla, y rediseñarla desde cero en el Playground con el nuevo design system UBITS**.
+
+**No reutilices nada del código del repo descargado** — ni componentes, ni clases, ni estilos, ni imports de librerías, ni SCSS, ni Tailwind. Solo entiendes la lógica y la estructura funcional, y rehaces todo con los componentes oficiales del Playground.
+
+## 🚨 Reglas obligatorias ANTES de escribir una línea
+1. Leer `README.md` para saber qué componentes UBITS existen y cómo se renderizan.
+2. Leer `.cursor/rules/cursor-rules.mdc` para respetar todas las reglas del design system.
+3. Si la pantalla lleva toolbar de lista/catálogo, leer además `documentacion/componentes/toolbar-panel.html` y la sección «Implementar Toolbar panel» de `cursor-rules.mdc`.
+4. Si la pantalla lleva tabla, modal, filtros, empty state o cualquier componente específico, leer su página en `documentacion/componentes/<componente>.html` antes de implementarlo.
+5. Nunca inventar componentes — usar solo los que existen en el Playground.
+6. Nunca usar colores hardcodeados — siempre `var(--ubits-...)`.
+7. Nunca usar SCSS, Tailwind ni clases de la librería original — solo CSS con tokens UBITS.
+8. El output debe ser uno o varios `.html` standalone que funcionen sin instalar dependencias.
+9. Respetar la estructura de carpetas del Playground (`ubits-admin/`, `ubits-colaborador/`, `ubits-colaborador/lms-creator/`, etc.).
+
+## 📖 Qué archivos leer del repo descargado (en este orden)
+1. El `.tsx` de la vista principal (ej. `modules/<feature>/adapters/input/<pantalla>/<pantalla>.tsx`).
+2. Los servicios que consume la vista (`modules/<feature>/application/*.service.ts`).
+3. El modelo de dominio y enums (`modules/<feature>/domain/*.model.ts`, `*.enum.ts`).
+4. Hooks propios referenciados desde la vista (`utils/hooks/*`, `@utils/*`).
+5. Subcomponentes internos que usa la vista (`components/` del módulo o de `common/`).
+6. Rutas asociadas si es un flujo multi-pantalla (`app.router.tsx`, archivos de routing).
+
+**Lo que sí ignoras:** tests (`*.test.*`), `webpack.config.js`, `next.config.js`, `package.json`, SCSS, archivos de Sentry, de tracking, claves i18n (solo miras para saber qué copy va, pero escribes el texto directo en español).
+
+## 🔁 Mapeo React/TS → HTML/Vanilla (obligatorio)
+
+| En producción (React/TS) | En el Playground (vanilla) |
+|---|---|
+| `useState` / `useReducer` | Variables en el `.js` de la página + listeners DOM |
+| `useEffect` al montar | `document.addEventListener('DOMContentLoaded', ...)` |
+| `useTranslation` / claves i18n | Copy en español hardcodeado |
+| Servicios + DI + llamadas API | Mock de datos en `bd-master/<feature>.js` o en el `.js` de la página |
+| Router con `/ruta/:id/detalle` | Un `.html` por vista, enlazadas entre sí |
+| Librería de UI propia / Tailwind | Componentes UBITS oficiales (`ubits-button`, `createInput`, etc.) |
+| Estados loading / error / empty | `loader`, `alert`, `empty-state` del Playground |
+| Drawer / Modal de librería | `modal.js` / `drawer.js` UBITS |
+| Permisos / roles | Se documentan en el copy o se omiten si no son críticos para el prototipo |
+
+## 🧱 Cómo elegir el layout (hacerlo antes de escribir HTML)
+
+| Layout Playground | Cuándo usarlo |
+|---|---|
+| **Estándar** (Sidebar + SubNav + contenido) | Listados, dashboards, detalles estándar dentro de un módulo con tabs. |
+| **Sin SubNav** (`body.no-subnav`) | Perfiles, páginas aisladas, IA para HR, pantallas sin tabs superiores en prod. |
+| **Inmersivo** (`layout-immersive.css`, `body.page-layout-immersive`) | Flujos de creación/edición con header propio, scroll único y footer sticky (ej. crear contenido, crear plan). |
+| **Documentación** | Solo para páginas dentro de `documentacion/`. **No usar** en rediseños de producto. |
+
+## ✅ Decisiones explícitas que debes mostrar ANTES de escribir HTML
+Resume al usuario y **espera confirmación** antes de continuar:
+
+1. **Layout elegido** y por qué.
+2. **Archivos HTML a crear**: si es una sola pantalla o un flujo con varias vistas, cuántos `.html` separas.
+3. **Ruta de cada archivo** en el Playground (ej. `ubits-colaborador/tareas/tareas-nueva.html`).
+4. **Variante de SubNav / Sidebar / TabBar** que usarás (`default`, `admin`, `creator`, etc.).
+5. **Datos mock**: qué archivo en `bd-master/` creas o extiendes, y con qué forma.
+6. **Estados cubiertos**: loading, empty (sin datos), empty (filtros sin resultados), error, con datos, filtros activos.
+7. **Responsive**: qué componentes móviles aplican (TabBar, Floating menu, Profile menu).
+8. **Qué queda fuera del alcance** (permisos, llamadas reales, features imposibles sin backend).
+
+## 🛠️ Flujo de trabajo
+1. Leer los archivos del microfrontend según la lista de arriba.
+2. Identificar datos, estados, acciones del usuario, casos edge, responsive.
+3. Presentar al usuario el resumen de decisiones y esperar su OK.
+4. Mapear cada elemento funcional al componente UBITS correspondiente.
+5. Generar el HTML rediseñado con los imports UBITS correctos (rutas relativas `../../components/...`).
+6. Crear el `.css` y `.js` hermanos si la pantalla lo necesita.
+7. Crear o extender el mock en `bd-master/` si aplica.
+8. Hacer un check mental contra `documentacion/validador-ubits.html` (tokens, tipografía, componentes oficiales).
+9. Mostrar resumen de cambios y preguntar: «¿Quedó bien o ajustamos algo?»
+10. Cuando el usuario confirme, preguntar: «¿Puedo borrar la carpeta del repo descargado para dejar el Playground limpio?»
+
+## 🎯 Criterio de aceptación (no marcar como terminado si falta alguno)
+- [ ] Pasa mentalmente el validador UBITS (tokens, tipografía, componentes).
+- [ ] Usa solo componentes oficiales del Playground con imports correctos.
+- [ ] Preserva todas las acciones y estados de la pantalla original.
+- [ ] Tiene responsive correcto (TabBar, Floating menu y Profile menu si el layout lo exige).
+- [ ] Los datos mock están en `bd-master/` o en el `.js` de la página, nunca inline duplicados en el HTML.
+- [ ] Ningún import, clase o color del repo viejo aparece en el output.
+- [ ] Las rutas relativas desde subcarpetas son `../../components/...` y `../../general-styles/...`.
+
+## 🚫 Errores comunes a evitar
+- Copiar clases CSS del repo viejo (ej. `className="task-container__header"`).
+- Usar `style="color: #123456"` en vez de `var(--ubits-fg-1-high)`.
+- Crear botones custom en vez de `ubits-button`.
+- Olvidar importar el CSS del componente (los botones se ven sin estilos).
+- Meter toda la pantalla en un solo `.html` cuando en realidad es un flujo multi-pantalla.
+- Dejar copy en inglés porque venía de claves i18n.
+- Omitir estados loading/empty/error porque "no se ven en el screenshot".
+
+## 🧹 Cómo usar
+1. Descargar la carpeta del microfrontend de producción y meterla al Playground temporalmente.
+2. Decirle a Cursor: «Rediseña [nombre de la pantalla o flujo] que está en [nombre de la carpeta]».
+3. Revisar el resumen de decisiones y confirmar o ajustar.
+4. Revisar el HTML final, pedir ajustes si es necesario.
+5. Confirmar cuando esté listo y dejar que Cursor limpie la carpeta temporal.

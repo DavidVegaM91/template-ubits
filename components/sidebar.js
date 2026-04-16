@@ -3,6 +3,10 @@ function getBasePath() {
     const path = window.location.pathname;
     
     // Detectar la profundidad basándose en patrones de carpetas del proyecto
+    // Páginas 3 niveles de profundidad (ubits-admin/desempeno/360/, etc.)
+    if (path.includes('/ubits-admin/desempeno/360/')) {
+        return '../../../';
+    }
     // Páginas en subcarpetas de segundo nivel (ubits-colaborador/*, ubits-admin/*)
     if (path.includes('/ubits-colaborador/') || path.includes('/ubits-admin/')) {
         return '../../';
@@ -510,7 +514,7 @@ function loadSidebar(variantOrActiveButton = 'default', activeButton = null) {
                     <button class="nav-button" data-section="diagnóstico" onclick="window.location.href='${basePath}ubits-admin/diagnostico/admin-diagnostico.html'" style="cursor: pointer;">
                         <i class="far fa-chart-mixed"></i>
                     </button>
-                    <button class="nav-button" data-section="desempeño" onclick="window.location.href='${basePath}ubits-admin/desempeno/admin-360.html'" style="cursor: pointer;">
+                    <button class="nav-button" data-section="desempeño" onclick="window.location.href='${basePath}ubits-admin/desempeno/360/admin-360.html'" style="cursor: pointer;">
                         <i class="far fa-bars-progress"></i>
                     </button>
                     <button class="nav-button" data-section="encuestas" onclick="window.location.href='${basePath}ubits-admin/encuestas/admin-encuestas.html'" style="cursor: pointer;">
