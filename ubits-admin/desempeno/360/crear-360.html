@@ -17,6 +17,7 @@
     <link rel="stylesheet" href="../../../components/calendar.css">
     <link rel="stylesheet" href="../../../components/modal.css">
     <link rel="stylesheet" href="../../../components/toast.css">
+    <link rel="stylesheet" href="../../../components/empty-state.css">
     <link rel="stylesheet" href="../../../general-styles/layout-immersive.css">
     <link rel="stylesheet" href="./crear-360.css">
 </head>
@@ -24,43 +25,30 @@
 
 <div class="ubits-layout-immersive">
 
-    <!-- ── Header ── -->
+    <!-- ── Header dinámico ── -->
     <header class="ubits-layout-immersive__header">
-        <div class="ubits-layout-immersive__header-inner">
-            <div class="ubits-layout-immersive__leading">
-                <div class="ubits-layout-immersive__title-row">
-                    <span class="ubits-layout-immersive__title ubits-body-md-bold">Crear evaluación 360</span>
-                    <span class="ubits-status-tag ubits-status-tag--sm ubits-status-tag--info">
-                        <span class="ubits-status-tag__text">Borrador</span>
-                    </span>
-                </div>
-            </div>
-            <a href="javascript:void(0)"
-                class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only"
-                id="crear360-btn-back"
-                data-tooltip="Salir del proceso" data-tooltip-delay="1000"
-                aria-label="Salir">
-                <i class="far fa-times"></i>
-            </a>
+        <div class="ubits-layout-immersive__header-inner" id="crear360-header-inner">
+            <!-- Rellenado por JS en cada cambio de vista -->
         </div>
     </header>
 
-    <!-- ── Main scrollable ── -->
-    <main class="ubits-layout-immersive__main">
-        <div class="ubits-layout-immersive__stage">
+    <!-- ── Main scrollable (todas las vistas conviven aquí) ── -->
+    <main class="ubits-layout-immersive__main" id="crear360-main">
 
-            <!-- Descripción -->
+        <!-- ════════════════════════════════════════
+             VISTA: hub  (pantalla principal)
+             ════════════════════════════════════════ -->
+        <div data-view="hub" id="crear360-view-hub" class="ubits-layout-immersive__stage">
+
             <section class="crear360-description">
                 <p class="ubits-body-md-regular">Define el nombre y las fechas de la evaluación. Luego completa las 4 secciones de configuración para poder activarla.</p>
             </section>
 
-            <!-- Formulario nombre + fechas -->
             <section class="crear360-form-section" id="crear360-form-section">
                 <div class="crear360-form">
                     <div id="crear360-input-nombre" class="crear360-form-field"></div>
                     <div id="crear360-input-inicio" class="crear360-form-field"></div>
-                    <div id="crear360-input-fin" class="crear360-form-field"></div>
-                    <!-- Botón Guardar visible solo antes de guardar -->
+                    <div id="crear360-input-fin"    class="crear360-form-field"></div>
                     <div id="crear360-save-inline-wrap" class="crear360-save-inline-wrap">
                         <button type="button"
                             class="ubits-button ubits-button--primary ubits-button--md"
@@ -72,11 +60,10 @@
                 </div>
             </section>
 
-            <!-- 4 option cards (bloqueadas hasta guardar) -->
-            <section class="crear360-cards-section" id="crear360-cards-section">
-                <div class="crear360-cards-grid" id="crear360-cards-grid">
+            <section class="crear360-cards-section">
+                <div class="crear360-cards-grid">
 
-                    <!-- Card 1: Tipo de evaluación -->
+                    <!-- Card 1 -->
                     <article class="crear360-option-card" id="crear360-card-tipo" data-card="tipo">
                         <div class="crear360-option-card__header">
                             <div class="crear360-option-card__title-block">
@@ -103,7 +90,7 @@
                         </div>
                     </article>
 
-                    <!-- Card 2: Competencias y enunciados -->
+                    <!-- Card 2 -->
                     <article class="crear360-option-card" id="crear360-card-competencias" data-card="competencias">
                         <div class="crear360-option-card__header">
                             <div class="crear360-option-card__title-block">
@@ -129,7 +116,7 @@
                         </div>
                     </article>
 
-                    <!-- Card 3: Evaluados -->
+                    <!-- Card 3 -->
                     <article class="crear360-option-card" id="crear360-card-evaluados" data-card="evaluados">
                         <div class="crear360-option-card__header">
                             <div class="crear360-option-card__title-block">
@@ -155,7 +142,7 @@
                         </div>
                     </article>
 
-                    <!-- Card 4: Configuración de resultados -->
+                    <!-- Card 4 -->
                     <article class="crear360-option-card" id="crear360-card-resultados" data-card="resultados">
                         <div class="crear360-option-card__header">
                             <div class="crear360-option-card__title-block">
@@ -176,47 +163,148 @@
                             <p class="ubits-body-sm-regular">Define los rangos de calificación y sus colores para interpretar los resultados.</p>
                             <ul class="crear360-option-card__hints">
                                 <li class="ubits-body-sm-regular">3 a 5 rangos configurables</li>
-                                <li class="ubits-body-sm-regular">Color e etiqueta por rango</li>
+                                <li class="ubits-body-sm-regular">Color y etiqueta por rango</li>
                             </ul>
                         </div>
                     </article>
 
                 </div>
             </section>
+        </div><!-- /view hub -->
 
-        </div>
+        <!-- ════════════════════════════════════════
+             VISTA: tipo  (tipo de evaluación)
+             ════════════════════════════════════════ -->
+        <div data-view="tipo" id="crear360-view-tipo" class="ubits-layout-immersive__stage crear360-view--hidden">
+
+            <section class="tipo360-description">
+                <h2 class="ubits-body-md-bold">Selecciona quiénes participarán</h2>
+                <p class="ubits-body-md-regular">Activa cada tipo de evaluador y asigna el porcentaje de peso. El total debe sumar exactamente el <strong>100%</strong>.</p>
+            </section>
+
+            <div class="tipo360-total-bar">
+                <span class="ubits-body-sm-regular">Total de pesos:</span>
+                <span class="ubits-body-md-bold tipo360-total-num" id="tipo360-total">0%</span>
+                <span id="tipo360-total-alert" class="tipo360-total-alert" style="display:none;">
+                    <i class="far fa-exclamation-circle"></i>
+                    <span class="ubits-body-sm-regular">Debe sumar 100%</span>
+                </span>
+                <span id="tipo360-total-ok" class="tipo360-total-ok" style="display:none;">
+                    <i class="far fa-circle-check"></i>
+                    <span class="ubits-body-sm-regular">Listo</span>
+                </span>
+            </div>
+
+            <div class="tipo360-cards" id="tipo360-cards"></div>
+        </div><!-- /view tipo -->
+
+        <!-- ════════════════════════════════════════
+             VISTA: competencias
+             ════════════════════════════════════════ -->
+        <div data-view="competencias" id="crear360-view-competencias" class="ubits-layout-immersive__stage crear360-view--hidden">
+
+            <section class="comp360-description">
+                <h2 class="ubits-body-md-bold">Selecciona las competencias a evaluar</h2>
+                <p class="ubits-body-md-regular">Elige al menos una competencia. Cada competencia incluye 3 enunciados que los evaluadores responderán. Puedes expandir cada competencia para revisar sus enunciados.</p>
+            </section>
+
+            <div class="comp360-list" id="comp360-list"></div>
+        </div><!-- /view competencias -->
+
+        <!-- ════════════════════════════════════════
+             VISTA: evaluados
+             ════════════════════════════════════════ -->
+        <div data-view="evaluados" id="crear360-view-evaluados" class="ubits-layout-immersive__stage crear360-view--hidden">
+
+            <section class="eval360-description">
+                <h2 class="ubits-body-md-bold">Selecciona los colaboradores a evaluar</h2>
+                <p class="ubits-body-md-regular">Elige los colaboradores que serán evaluados en esta evaluación 360. Debes configurar al menos un evaluado para poder continuar.</p>
+            </section>
+
+            <div class="eval360-search-bar">
+                <div id="eval360-search-input" class="eval360-search-input"></div>
+                <span class="ubits-body-sm-regular eval360-search-help">Busca por nombre, cargo o área</span>
+            </div>
+
+            <div class="eval360-list" id="eval360-list"></div>
+        </div><!-- /view evaluados -->
+
+        <!-- ════════════════════════════════════════
+             VISTA: resultados
+             ════════════════════════════════════════ -->
+        <div data-view="resultados" id="crear360-view-resultados" class="ubits-layout-immersive__stage crear360-view--hidden">
+
+            <section class="res360-description">
+                <h2 class="ubits-body-md-bold">Define los rangos de calificación</h2>
+                <p class="ubits-body-md-regular">Configura entre 3 y 5 rangos. Cada rango tiene un nombre, un intervalo numérico (mín – máx) y un color de identificación.</p>
+            </section>
+
+            <div class="res360-controls">
+                <div class="res360-cantidad-wrap">
+                    <span class="ubits-body-md-regular res360-cantidad-label">Cantidad de rangos:</span>
+                    <div class="res360-cantidad-btns" id="res360-cantidad-btns">
+                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm res360-cant-btn" data-n="3">3</button>
+                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm res360-cant-btn" data-n="4">4</button>
+                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm res360-cant-btn" data-n="5">5</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="res360-preview" id="res360-preview"></div>
+            <div class="res360-table-wrap" id="res360-table-wrap"></div>
+        </div><!-- /view resultados -->
+
     </main>
 
     <!-- ── Footer sticky ── -->
-    <footer class="ubits-layout-immersive__footer" id="crear360-footer">
+    <footer class="ubits-layout-immersive__footer">
         <div class="ubits-layout-immersive__footer-inner">
             <div class="ubits-layout-immersive__footer-actions">
                 <div class="ubits-layout-immersive__footer-grow"></div>
                 <div class="ubits-layout-immersive__footer-nav">
-                    <button type="button"
-                        class="ubits-button ubits-button--secondary ubits-button--md"
-                        id="crear360-btn-save-changes"
-                        style="display:none;">
-                        <i class="far fa-save"></i>
-                        <span>Guardar cambios</span>
-                    </button>
-                    <button type="button"
-                        class="ubits-button ubits-button--primary ubits-button--md"
-                        id="crear360-btn-activate"
-                        disabled>
-                        <i class="far fa-bolt"></i>
-                        <span>Activar evaluación</span>
-                    </button>
+
+                    <!-- Footer: hub -->
+                    <div id="crear360-footer-hub" class="crear360-footer-slot">
+                        <button type="button"
+                            class="ubits-button ubits-button--secondary ubits-button--md"
+                            id="crear360-btn-save-changes"
+                            style="display:none;">
+                            <i class="far fa-save"></i>
+                            <span>Guardar cambios</span>
+                        </button>
+                        <button type="button"
+                            class="ubits-button ubits-button--primary ubits-button--md"
+                            id="crear360-btn-activate"
+                            disabled>
+                            <i class="far fa-bolt"></i>
+                            <span>Activar evaluación</span>
+                        </button>
+                    </div>
+
+                    <!-- Footer: sub-vistas -->
+                    <div id="crear360-footer-sub" class="crear360-footer-slot" style="display:none;">
+                        <button type="button"
+                            class="ubits-button ubits-button--secondary ubits-button--md"
+                            id="crear360-btn-sub-cancel">
+                            <span>Cancelar</span>
+                        </button>
+                        <button type="button"
+                            class="ubits-button ubits-button--primary ubits-button--md"
+                            id="crear360-btn-sub-save"
+                            disabled>
+                            <i class="far fa-save"></i>
+                            <span>Guardar configuración</span>
+                        </button>
+                    </div>
+
                 </div>
             </div>
         </div>
     </footer>
 </div>
 
-<!-- Modal cancelar (salir sin guardar) -->
-<div id="crear360-cancel-modal-overlay" style="display:none;"></div>
-
-<!-- Modal confirmar activación -->
+<!-- Modal overlays (generados por openModal) -->
+<div id="crear360-cancel-modal-overlay"   style="display:none;"></div>
 <div id="crear360-activate-modal-overlay" style="display:none;"></div>
 
 <div id="tab-bar-container"></div>
@@ -233,64 +321,150 @@
 <script src="../../../components/calendar.js"></script>
 <script src="../../../components/input.js"></script>
 <script src="../../../components/modal.js"></script>
+<script src="../../../components/empty-state.js"></script>
 <script src="../../../components/toast.js"></script>
 <script src="../../../script.js"></script>
+<script src="../../../bd-master/bd-master-colaboradores.js"></script>
 <script src="../../../bd-master/bd-evaluaciones-360.js"></script>
 <script>
 (function () {
     'use strict';
 
-    var DRAFT_KEY = 'AXS360_DRAFT';
+    /* ══════════════════════════════════════════════════════════
+       ESTADO EN MEMORIA — se resetea al recargar (intencional)
+       ══════════════════════════════════════════════════════════ */
+    var draft = {
+        nombre: '', fechaInicio: '', fechaFin: '',
+        guardado: false,
+        checks: { tipo: false, competencias: false, evaluados: false, resultados: false },
+        tipo: [], competencias: [], evaluados: {}, resultados: null
+    };
 
-    /* ── draft state ── */
-    function loadDraft() {
-        try { return JSON.parse(sessionStorage.getItem(DRAFT_KEY)) || null; }
-        catch (e) { return null; }
-    }
-    function saveDraft(draft) {
-        sessionStorage.setItem(DRAFT_KEY, JSON.stringify(draft));
-    }
-    function clearDraft() {
-        sessionStorage.removeItem(DRAFT_KEY);
-    }
+    /* ── Estado por sub-vista ── */
+    var _tipos         = [];
+    var _competencias  = [];
+    var _evaluados     = {};
+    var _busqueda      = '';
+    var _cantidad      = 4;
+    var _rangos        = [];
 
-    /* ── estado de los 4 checks ── */
-    function updateChecksUI(draft) {
-        var checks = (draft && draft.checks) || {};
-        var allDone = checks.tipo && checks.competencias && checks.evaluados && checks.resultados;
-        ['tipo', 'competencias', 'evaluados', 'resultados'].forEach(function (k) {
-            var card = document.getElementById('crear360-card-' + k);
-            var check = document.getElementById('crear360-check-' + k);
-            var btn = document.getElementById('crear360-btn-' + k);
-            if (checks[k]) {
-                if (card) card.classList.add('crear360-option-card--done');
-                if (check) check.style.display = '';
-                if (btn) btn.querySelector('span').textContent = 'Ver detalle';
-            } else {
-                if (card) card.classList.remove('crear360-option-card--done');
-                if (check) check.style.display = 'none';
-                if (btn) btn.querySelector('span').textContent = 'Configurar';
-            }
+    /* ── Vista activa ── */
+    var _currentView = 'hub';
+    var SUB_VIEW_TITLES = {
+        tipo:         'Tipo de evaluación',
+        competencias: 'Competencias y enunciados',
+        evaluados:    'Evaluados',
+        resultados:   'Configuración de resultados'
+    };
+
+    /* ══════════════════════════════════════════════════════════
+       ROUTING
+       ══════════════════════════════════════════════════════════ */
+    function showView(viewId) {
+        /* Limpiar calendar pickers antes de cambiar vista (evita acumulación) */
+        if (viewId !== 'hub') cleanupCalendarPickers();
+
+        ['hub', 'tipo', 'competencias', 'evaluados', 'resultados'].forEach(function (v) {
+            var el = document.getElementById('crear360-view-' + v);
+            if (el) el.classList.toggle('crear360-view--hidden', v !== viewId);
         });
-        var activateBtn = document.getElementById('crear360-btn-activate');
-        if (activateBtn) activateBtn.disabled = !allDone;
+
+        _currentView = viewId;
+
+        /* header */
+        renderHeader(viewId);
+
+        /* footer */
+        var hubFoot = document.getElementById('crear360-footer-hub');
+        var subFoot = document.getElementById('crear360-footer-sub');
+        if (viewId === 'hub') {
+            if (hubFoot) hubFoot.style.display = '';
+            if (subFoot) subFoot.style.display = 'none';
+        } else {
+            if (hubFoot) hubFoot.style.display = 'none';
+            if (subFoot) subFoot.style.display = '';
+        }
+
+        /* scroll al tope */
+        var main = document.getElementById('crear360-main');
+        if (main) main.scrollTop = 0;
+
+        /* inicializar contenido de la vista */
+        if (viewId === 'hub')          renderHubView();
+        else if (viewId === 'tipo')    renderTipoView();
+        else if (viewId === 'competencias') renderCompetenciasView();
+        else if (viewId === 'evaluados')    renderEvaluadosView();
+        else if (viewId === 'resultados')   renderResultadosView();
+
+        if (typeof initTooltip === 'function') initTooltip('[data-tooltip]');
     }
 
-    /* ── habilitar/deshabilitar cards ── */
-    function setCardsEnabled(enabled) {
-        ['tipo', 'competencias', 'evaluados', 'resultados'].forEach(function (k) {
-            var btn = document.getElementById('crear360-btn-' + k);
-            var card = document.getElementById('crear360-card-' + k);
-            if (btn) btn.disabled = !enabled;
-            if (card) {
-                if (enabled) card.classList.remove('crear360-option-card--locked');
-                else card.classList.add('crear360-option-card--locked');
+    /* ══════════════════════════════════════════════════════════
+       HEADER DINÁMICO
+       ══════════════════════════════════════════════════════════ */
+    function renderHeader(viewId) {
+        var inner = document.getElementById('crear360-header-inner');
+        if (!inner) return;
+
+        if (viewId === 'hub') {
+            inner.innerHTML =
+                '<div class="ubits-layout-immersive__leading">' +
+                    '<div class="ubits-layout-immersive__title-row">' +
+                        '<span class="ubits-layout-immersive__title ubits-body-md-bold">Crear evaluación 360</span>' +
+                        '<span class="ubits-status-tag ubits-status-tag--sm ubits-status-tag--info">' +
+                            '<span class="ubits-status-tag__text">Borrador</span>' +
+                        '</span>' +
+                    '</div>' +
+                '</div>' +
+                '<a href="javascript:void(0)" id="crear360-btn-close" ' +
+                    'class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" ' +
+                    'data-tooltip="Salir del proceso" data-tooltip-delay="1000" aria-label="Salir">' +
+                    '<i class="far fa-times"></i>' +
+                '</a>';
+
+            document.getElementById('crear360-btn-close').addEventListener('click', confirmarSalir);
+        } else {
+            var title = SUB_VIEW_TITLES[viewId] || '';
+            var counter = '';
+            if (viewId === 'competencias') {
+                counter = '<div class="crear360-header-counter">' +
+                    '<span id="comp360-selected-count" class="ubits-body-sm-regular">0 seleccionadas</span>' +
+                    '</div>';
+            } else if (viewId === 'evaluados') {
+                counter = '<div class="crear360-header-counter">' +
+                    '<span id="eval360-selected-count" class="ubits-body-sm-regular">0 evaluados configurados</span>' +
+                    '</div>';
             }
+
+            inner.innerHTML =
+                '<a href="javascript:void(0)" id="crear360-btn-back" ' +
+                    'class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" ' +
+                    'data-tooltip="Volver" data-tooltip-delay="800" aria-label="Volver">' +
+                    '<i class="far fa-arrow-left"></i>' +
+                '</a>' +
+                '<div class="ubits-layout-immersive__leading">' +
+                    '<div class="ubits-layout-immersive__title-row">' +
+                        '<span class="ubits-layout-immersive__title ubits-body-md-bold">' + title + '</span>' +
+                    '</div>' +
+                '</div>' +
+                counter;
+
+            document.getElementById('crear360-btn-back').addEventListener('click', function () {
+                showView('hub');
+            });
+        }
+    }
+
+    /* ══════════════════════════════════════════════════════════
+       UTILIDADES
+       ══════════════════════════════════════════════════════════ */
+    function cleanupCalendarPickers() {
+        document.querySelectorAll('[id^="ubits-calendar-picker-"]').forEach(function (el) {
+            if (el.parentNode) el.parentNode.removeChild(el);
         });
     }
 
-    /* ── sync nombre en header ── */
-    /* ── APIs de inputs (para setState + helper text desde guardarEvaluacion) ── */
+    /* ── Helpers de error en inputs ── */
     var _inputNombreApi = null;
     var _inputInicioApi = null;
     var _inputFinApi    = null;
@@ -306,9 +480,19 @@
         if (el) { el.textContent = '\u00a0'; el.style.color = ''; }
     }
 
-    /* ── renderizar formulario ── */
-    function renderForm(draft) {
-        var saved = !!(draft && draft.guardado);
+    /* ══════════════════════════════════════════════════════════
+       VISTA: HUB
+       ══════════════════════════════════════════════════════════ */
+    var _formModified = false;
+
+    function renderHubView() {
+        var saved = draft.guardado;
+
+        /* Limpiar containers antes de re-crear inputs */
+        ['crear360-input-nombre', 'crear360-input-inicio', 'crear360-input-fin'].forEach(function (id) {
+            var el = document.getElementById(id);
+            if (el) el.innerHTML = '';
+        });
 
         _inputNombreApi = createInput({
             containerId: 'crear360-input-nombre',
@@ -316,14 +500,12 @@
             placeholder: 'Ej. Evaluación 360 Liderazgo Q3',
             type: 'text',
             size: 'md',
-            value: draft ? (draft.nombre || '') : '',
+            value: draft.nombre || '',
             disabled: saved,
             showHelper: true,
             helperText: '\u00a0',
             onChange: function (val) {
-                var d = loadDraft() || {};
-                d.nombre = val;
-                saveDraft(d);
+                draft.nombre = val;
                 clearInputError(_inputNombreApi, 'crear360-input-nombre');
                 checkFormModified();
             }
@@ -334,14 +516,12 @@
             label: 'Fecha de inicio',
             type: 'calendar',
             size: 'md',
-            value: draft ? (draft.fechaInicio || '') : '',
+            value: draft.fechaInicio || '',
             disabled: saved,
             showHelper: true,
             helperText: '\u00a0',
             onChange: function (val) {
-                var d = loadDraft() || {};
-                d.fechaInicio = val;
-                saveDraft(d);
+                draft.fechaInicio = val;
                 clearInputError(_inputInicioApi, 'crear360-input-inicio');
                 checkFormModified();
             }
@@ -352,63 +532,81 @@
             label: 'Fecha de fin',
             type: 'calendar',
             size: 'md',
-            value: draft ? (draft.fechaFin || '') : '',
+            value: draft.fechaFin || '',
+            disabled: saved,
             showHelper: true,
             helperText: '\u00a0',
             onChange: function (val) {
-                var d = loadDraft() || {};
-                d.fechaFin = val;
-                saveDraft(d);
+                draft.fechaFin = val;
                 clearInputError(_inputFinApi, 'crear360-input-fin');
                 checkFormModified();
             }
         });
 
-        /* Botón inline visible solo si no guardado */
         var inlineWrap = document.getElementById('crear360-save-inline-wrap');
         if (inlineWrap) inlineWrap.style.display = saved ? 'none' : '';
 
-        /* Footer: guardar cambios visible solo si guardado */
         var saveChangesBtn = document.getElementById('crear360-btn-save-changes');
-        if (saveChangesBtn) saveChangesBtn.style.display = saved ? '' : 'none';
+        if (saveChangesBtn) saveChangesBtn.style.display = (saved && _formModified) ? '' : 'none';
 
-        /* Status tag */
-
+        updateHubChecksUI();
     }
 
-    var _formModified = false;
     function checkFormModified() {
+        if (!draft.guardado) return;
         _formModified = true;
-        var saveChangesBtn = document.getElementById('crear360-btn-save-changes');
-        if (saveChangesBtn) saveChangesBtn.style.display = '';
+        var btn = document.getElementById('crear360-btn-save-changes');
+        if (btn) btn.style.display = '';
     }
 
-    /* ── validar y guardar ── */
+    function updateHubChecksUI() {
+        var checks = draft.checks || {};
+        var allDone = checks.tipo && checks.competencias && checks.evaluados && checks.resultados;
+        var saved = draft.guardado;
+
+        ['tipo', 'competencias', 'evaluados', 'resultados'].forEach(function (k) {
+            var card  = document.getElementById('crear360-card-' + k);
+            var check = document.getElementById('crear360-check-' + k);
+            var btn   = document.getElementById('crear360-btn-' + k);
+
+            if (checks[k]) {
+                if (card)  card.classList.add('crear360-option-card--done');
+                if (check) check.style.display = '';
+                if (btn)   btn.querySelector('span').textContent = 'Ver detalle';
+            } else {
+                if (card)  card.classList.remove('crear360-option-card--done');
+                if (check) check.style.display = 'none';
+                if (btn)   btn.querySelector('span').textContent = 'Configurar';
+            }
+
+            if (btn)  btn.disabled = !saved;
+            if (card) {
+                if (saved) card.classList.remove('crear360-option-card--locked');
+                else       card.classList.add('crear360-option-card--locked');
+            }
+        });
+
+        var activateBtn = document.getElementById('crear360-btn-activate');
+        if (activateBtn) activateBtn.disabled = !allDone;
+    }
+
     function guardarEvaluacion() {
-        var draft = loadDraft() || {};
-
         var nombre = draft.nombre || '';
-        var inicio = draft.fechaInicio || '';
-        var fin = draft.fechaFin || '';
-
-        /* Leer input directamente si draft no tiene valor aún */
         if (!nombre) {
-            var nombreInp = document.querySelector('#crear360-input-nombre input');
-            if (nombreInp) nombre = nombreInp.value;
+            var el = document.querySelector('#crear360-input-nombre input');
+            if (el) nombre = el.value;
         }
 
-        /* Limpiar errores previos */
         clearInputError(_inputNombreApi, 'crear360-input-nombre');
         clearInputError(_inputInicioApi, 'crear360-input-inicio');
         clearInputError(_inputFinApi,    'crear360-input-fin');
 
-        /* Validar — mostrar todos los errores juntos, focus en el primero */
         var hasError = false;
-        if (!fin) {
+        if (!draft.fechaFin) {
             setInputError(_inputFinApi, 'crear360-input-fin', 'Selecciona la fecha de fin.');
             hasError = true;
         }
-        if (!inicio) {
+        if (!draft.fechaInicio) {
             setInputError(_inputInicioApi, 'crear360-input-inicio', 'Selecciona la fecha de inicio.');
             hasError = true;
         }
@@ -418,51 +616,14 @@
         }
         if (hasError) return false;
 
-        draft.nombre = nombre.trim();
+        draft.nombre   = nombre.trim();
         draft.guardado = true;
-        if (!draft.checks) draft.checks = { tipo: false, competencias: false, evaluados: false, resultados: false };
-        saveDraft(draft);
-
-        _formModified = false;
+        _formModified  = false;
         return true;
     }
 
-    /* ── activar evaluación ── */
-    function activarEvaluacion() {
-        var draft = loadDraft();
-        if (!draft || !draft.checks) return;
-
-        openModal({
-            overlayId: 'crear360-activate-modal',
-            title: 'Activar evaluación',
-            bodyHtml: '<p class="ubits-body-md-regular">Al activar la evaluación <strong>' + (draft.nombre || '') + '</strong>, se notificará a los evaluadores. ¿Deseas continuar?</p>',
-            footerHtml: '<button class="ubits-button ubits-button--secondary ubits-button--md" onclick="closeModal(\'crear360-activate-modal\')"><span>Cancelar</span></button>' +
-                '<button class="ubits-button ubits-button--primary ubits-button--md" id="crear360-confirm-activate-btn"><span>Activar</span></button>',
-            size: 'sm',
-            closeOnOverlayClick: true
-        });
-
-        setTimeout(function () {
-            var btn = document.getElementById('crear360-confirm-activate-btn');
-            if (btn) btn.addEventListener('click', function () {
-                BD_EVALUACIONES_360.addEvaluacion({
-                    nombre: draft.nombre,
-                    fechaInicio: draft.fechaInicio || '',
-                    fechaFin: draft.fechaFin || '',
-                    checks: { tipo: true, competencias: true, evaluados: true, resultados: true }
-                });
-                clearDraft();
-                closeModal('crear360-activate-modal');
-                window.location.href = 'admin-360.html?toast=created';
-            });
-        }, 50);
-    }
-
-    /* ── cancelar / salir ── */
     function confirmarSalir() {
-        var draft = loadDraft();
-        if (!draft || !draft.guardado) {
-            /* Sin guardar: preguntar */
+        if (!draft.guardado) {
             openModal({
                 overlayId: 'crear360-cancel-modal',
                 title: 'Salir sin guardar',
@@ -475,7 +636,6 @@
             setTimeout(function () {
                 var btn = document.getElementById('crear360-confirm-exit-btn');
                 if (btn) btn.addEventListener('click', function () {
-                    clearDraft();
                     window.location.href = 'admin-360.html';
                 });
             }, 50);
@@ -484,75 +644,579 @@
         }
     }
 
-    /* ── inicialización ── */
+    function activarEvaluacion() {
+        openModal({
+            overlayId: 'crear360-activate-modal',
+            title: 'Activar evaluación',
+            bodyHtml: '<p class="ubits-body-md-regular">Al activar la evaluación <strong>' + (draft.nombre || '') + '</strong>, se notificará a los evaluadores. ¿Deseas continuar?</p>',
+            footerHtml: '<button class="ubits-button ubits-button--secondary ubits-button--md" onclick="closeModal(\'crear360-activate-modal\')"><span>Cancelar</span></button>' +
+                '<button class="ubits-button ubits-button--primary ubits-button--md" id="crear360-confirm-activate-btn"><span>Activar</span></button>',
+            size: 'sm',
+            closeOnOverlayClick: true
+        });
+        setTimeout(function () {
+            var btn = document.getElementById('crear360-confirm-activate-btn');
+            if (btn) btn.addEventListener('click', function () {
+                BD_EVALUACIONES_360.addEvaluacion({
+                    nombre: draft.nombre,
+                    fechaInicio: draft.fechaInicio || '',
+                    fechaFin:    draft.fechaFin    || '',
+                    checks: { tipo: true, competencias: true, evaluados: true, resultados: true }
+                });
+                closeModal('crear360-activate-modal');
+                window.location.href = 'admin-360.html?toast=created';
+            });
+        }, 50);
+    }
+
+    /* ══════════════════════════════════════════════════════════
+       VISTA: TIPO DE EVALUACIÓN
+       ══════════════════════════════════════════════════════════ */
+    function renderTipoView() {
+        if (_tipos.length === 0) {
+            _tipos = BD_EVALUACIONES_360.tiposEvaluacion.map(function (base) {
+                var saved = (draft.tipo || []).find(function (s) { return s.id === base.id; });
+                return {
+                    id: base.id,
+                    nombre: base.nombre,
+                    descripcion: base.descripcion,
+                    pesoSugerido: base.pesoSugerido,
+                    activo: saved ? saved.activo : false,
+                    peso:   saved ? saved.peso   : base.pesoSugerido
+                };
+            });
+        }
+        renderTipoCards();
+        updateTipoFooter();
+    }
+
+    function calcTipoTotal() {
+        return _tipos.reduce(function (acc, t) {
+            return acc + (t.activo ? (parseInt(t.peso, 10) || 0) : 0);
+        }, 0);
+    }
+
+    function updateTipoTotal() {
+        var total = calcTipoTotal();
+        var numEl    = document.getElementById('tipo360-total');
+        var alertEl  = document.getElementById('tipo360-total-alert');
+        var okEl     = document.getElementById('tipo360-total-ok');
+        var alMenosUno = _tipos.some(function (t) { return t.activo; });
+
+        if (numEl) {
+            numEl.textContent = total + '%';
+            numEl.style.color = total === 100
+                ? 'var(--ubits-feedback-accent-success)'
+                : (total > 100 ? 'var(--ubits-feedback-accent-error)' : 'var(--ubits-fg-1-high)');
+        }
+        if (alertEl) alertEl.style.display = (alMenosUno && total !== 100) ? '' : 'none';
+        if (okEl)    okEl.style.display    = (alMenosUno && total === 100) ? '' : 'none';
+
+        updateTipoFooter();
+    }
+
+    function updateTipoFooter() {
+        var total      = calcTipoTotal();
+        var alMenosUno = _tipos.some(function (t) { return t.activo; });
+        var saveBtn    = document.getElementById('crear360-btn-sub-save');
+        if (saveBtn) saveBtn.disabled = !(alMenosUno && total === 100);
+    }
+
+    function renderTipoCards() {
+        var container = document.getElementById('tipo360-cards');
+        if (!container) return;
+        container.innerHTML = '';
+
+        _tipos.forEach(function (tipo, idx) {
+            var card = document.createElement('div');
+            card.className = 'tipo360-card' + (tipo.activo ? ' tipo360-card--activo' : '');
+            card.innerHTML =
+                '<div class="tipo360-card__left">' +
+                    '<label class="tipo360-toggle">' +
+                        '<input type="checkbox" class="tipo360-toggle__input" data-idx="' + idx + '" ' + (tipo.activo ? 'checked' : '') + '>' +
+                        '<span class="tipo360-toggle__track"></span>' +
+                    '</label>' +
+                '</div>' +
+                '<div class="tipo360-card__center">' +
+                    '<span class="ubits-body-md-bold tipo360-card__nombre">' + tipo.nombre + '</span>' +
+                    '<span class="ubits-body-sm-regular tipo360-card__desc">' + tipo.descripcion + '</span>' +
+                '</div>' +
+                '<div class="tipo360-card__right" id="tipo360-peso-wrap-' + idx + '"></div>';
+
+            container.appendChild(card);
+
+            createInput({
+                containerId: 'tipo360-peso-wrap-' + idx,
+                type: 'number',
+                label: 'Peso %',
+                placeholder: '0',
+                size: 'sm',
+                value: tipo.activo ? String(tipo.peso) : '',
+                disabled: !tipo.activo,
+                onChange: function (val) {
+                    _tipos[idx].peso = parseInt(val, 10) || 0;
+                    updateTipoTotal();
+                }
+            });
+
+            card.querySelector('.tipo360-toggle__input').addEventListener('change', function (e) {
+                _tipos[idx].activo = e.target.checked;
+                _tipos[idx].peso   = e.target.checked ? _tipos[idx].pesoSugerido : 0;
+                renderTipoCards();
+                updateTipoTotal();
+            });
+        });
+
+        updateTipoTotal();
+    }
+
+    function saveTipo() {
+        draft.tipo = _tipos.map(function (t) { return { id: t.id, activo: t.activo, peso: t.peso }; });
+        draft.checks.tipo = true;
+        showToast('success', 'Configuración guardada');
+        showView('hub');
+    }
+
+    /* ══════════════════════════════════════════════════════════
+       VISTA: COMPETENCIAS Y ENUNCIADOS
+       ══════════════════════════════════════════════════════════ */
+    function renderCompetenciasView() {
+        if (_competencias.length === 0) {
+            _competencias = BD_EVALUACIONES_360.competenciasBase.map(function (base) {
+                var saved = (draft.competencias || []).find(function (s) { return s.id === base.id; });
+                return {
+                    id: base.id,
+                    nombre: base.nombre,
+                    enunciados: base.enunciados,
+                    seleccionada: saved ? saved.seleccionada : false,
+                    expandida: false
+                };
+            });
+        }
+        renderCompetenciasList();
+    }
+
+    function updateCompetenciasCounter() {
+        var sel    = _competencias.filter(function (c) { return c.seleccionada; }).length;
+        var countEl = document.getElementById('comp360-selected-count');
+        if (countEl) countEl.textContent = sel + (sel === 1 ? ' seleccionada' : ' seleccionadas');
+        var saveBtn = document.getElementById('crear360-btn-sub-save');
+        if (saveBtn) saveBtn.disabled = sel === 0;
+    }
+
+    function renderCompetenciasList() {
+        var container = document.getElementById('comp360-list');
+        if (!container) return;
+        container.innerHTML = '';
+
+        _competencias.forEach(function (comp, idx) {
+            var item = document.createElement('div');
+            item.className = 'comp360-item' + (comp.seleccionada ? ' comp360-item--selected' : '');
+            item.innerHTML =
+                '<div class="comp360-item__header" data-idx="' + idx + '">' +
+                    '<label class="comp360-item__check-label">' +
+                        '<input type="checkbox" class="comp360-item__checkbox" data-idx="' + idx + '" ' + (comp.seleccionada ? 'checked' : '') + '>' +
+                        '<span class="comp360-item__check-box"><i class="far fa-check"></i></span>' +
+                    '</label>' +
+                    '<span class="ubits-body-md-bold comp360-item__nombre">' + comp.nombre + '</span>' +
+                    '<span class="ubits-body-sm-regular comp360-item__count">' + comp.enunciados.length + ' enunciados</span>' +
+                    '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only comp360-item__expand-btn" data-idx="' + idx + '" aria-label="Expandir">' +
+                        '<i class="far fa-chevron-' + (comp.expandida ? 'up' : 'down') + '"></i>' +
+                    '</button>' +
+                '</div>' +
+                '<div class="comp360-item__enunciados" style="' + (comp.expandida ? '' : 'display:none;') + '">' +
+                    '<ul>' +
+                    comp.enunciados.map(function (e, i) {
+                        return '<li class="ubits-body-sm-regular"><span class="comp360-enum">' + (i + 1) + '.</span> ' + e + '</li>';
+                    }).join('') +
+                    '</ul>' +
+                '</div>';
+
+            container.appendChild(item);
+
+            item.querySelector('.comp360-item__checkbox').addEventListener('change', function (e) {
+                _competencias[idx].seleccionada = e.target.checked;
+                renderCompetenciasList();
+                updateCompetenciasCounter();
+            });
+
+            item.querySelector('.comp360-item__expand-btn').addEventListener('click', function () {
+                _competencias[idx].expandida = !_competencias[idx].expandida;
+                renderCompetenciasList();
+            });
+        });
+
+        updateCompetenciasCounter();
+    }
+
+    function saveCompetencias() {
+        draft.competencias = _competencias.map(function (c) { return { id: c.id, seleccionada: c.seleccionada }; });
+        draft.checks.competencias = true;
+        showToast('success', 'Competencias guardadas');
+        showView('hub');
+    }
+
+    /* ══════════════════════════════════════════════════════════
+       VISTA: EVALUADOS
+       ══════════════════════════════════════════════════════════ */
+    function renderEvaluadosView() {
+        _evaluados = draft.evaluados || {};
+        _busqueda  = '';
+
+        /* Recrear input de búsqueda */
+        var searchContainer = document.getElementById('eval360-search-input');
+        if (searchContainer) searchContainer.innerHTML = '';
+
+        createInput({
+            containerId: 'eval360-search-input',
+            type: 'search',
+            placeholder: 'Buscar colaborador...',
+            size: 'md',
+            onChange: function (val) {
+                _busqueda = val || '';
+                renderEvaluadosList();
+            }
+        });
+
+        renderEvaluadosList();
+        updateEvaluadosCounter();
+    }
+
+    function updateEvaluadosCounter() {
+        var n = Object.keys(_evaluados).filter(function (id) { return _evaluados[id] && _evaluados[id].seleccionado; }).length;
+        var el = document.getElementById('eval360-selected-count');
+        if (el) el.textContent = n + (n === 1 ? ' evaluado configurado' : ' evaluados configurados');
+        var saveBtn = document.getElementById('crear360-btn-sub-save');
+        if (saveBtn) saveBtn.disabled = n === 0;
+    }
+
+    function initials(nombre) {
+        var parts = nombre.split(' ').filter(Boolean);
+        return (parts[0][0] + (parts[1] ? parts[1][0] : '')).toUpperCase();
+    }
+
+    function renderEvaluadosList() {
+        var container  = document.getElementById('eval360-list');
+        if (!container) return;
+        var colaboradores = (typeof BD_MASTER_COLABORADORES !== 'undefined' && BD_MASTER_COLABORADORES.colaboradores) || [];
+        var filtrados  = colaboradores.filter(function (c) {
+            if (!_busqueda) return true;
+            var q = _busqueda.toLowerCase();
+            return c.nombre.toLowerCase().indexOf(q) >= 0
+                || (c.cargo || '').toLowerCase().indexOf(q) >= 0
+                || (c.area  || '').toLowerCase().indexOf(q) >= 0;
+        });
+
+        if (filtrados.length === 0) {
+            container.innerHTML = '<p class="ubits-body-md-regular eval360-no-results">No se encontraron colaboradores.</p>';
+            return;
+        }
+
+        container.innerHTML = filtrados.map(function (c) {
+            var sel  = _evaluados[c.id] && _evaluados[c.id].seleccionado;
+            var conf = _evaluados[c.id] && _evaluados[c.id].configurado;
+            return '<div class="eval360-row' + (sel ? ' eval360-row--selected' : '') + '" data-id="' + c.id + '">' +
+                '<label class="eval360-row__check-label">' +
+                    '<input type="checkbox" class="eval360-row__checkbox eval360-chk" data-id="' + c.id + '" ' + (sel ? 'checked' : '') + '>' +
+                    '<span class="eval360-row__check-box"><i class="far fa-check"></i></span>' +
+                '</label>' +
+                '<div class="eval360-row__avatar">' +
+                    (c.avatar
+                        ? '<img src="' + c.avatar + '" alt="" class="eval360-avatar-img">'
+                        : '<span class="eval360-avatar-placeholder ubits-body-sm-bold">' + initials(c.nombre) + '</span>') +
+                '</div>' +
+                '<div class="eval360-row__info">' +
+                    '<span class="ubits-body-md-regular eval360-row__nombre">' + c.nombre + '</span>' +
+                    '<span class="ubits-body-sm-regular eval360-row__meta">' + (c.cargo || '') + ' · ' + (c.area || '') + '</span>' +
+                '</div>' +
+                (sel
+                    ? '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm eval360-btn-config" data-id="' + c.id + '" data-nombre="' + c.nombre + '">' +
+                        (conf ? '<i class="far fa-circle-check eval360-done-icon"></i>' : '') +
+                        '<span>' + (conf ? 'Ver evaluadores' : 'Asignar evaluadores') + '</span>' +
+                        '</button>'
+                    : '') +
+                '</div>';
+        }).join('');
+
+        container.querySelectorAll('.eval360-chk').forEach(function (chk) {
+            chk.addEventListener('change', function (e) {
+                var id = e.target.dataset.id;
+                if (!_evaluados[id]) _evaluados[id] = { seleccionado: false, configurado: false };
+                _evaluados[id].seleccionado = e.target.checked;
+                renderEvaluadosList();
+                updateEvaluadosCounter();
+            });
+        });
+
+        container.querySelectorAll('.eval360-btn-config').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                abrirModalEvaluadores(btn.dataset.id, btn.dataset.nombre);
+            });
+        });
+    }
+
+    function abrirModalEvaluadores(evaluadoId, evaluadoNombre) {
+        var colaboradores = (typeof BD_MASTER_COLABORADORES !== 'undefined' && BD_MASTER_COLABORADORES.colaboradores) || [];
+        var todos  = colaboradores.filter(function (c) { return c.id !== evaluadoId; });
+        var actual = (_evaluados[evaluadoId] && _evaluados[evaluadoId].evaluadores) || [];
+
+        var rows = todos.map(function (c) {
+            var selEval = actual.indexOf(c.id) >= 0;
+            return '<label class="eval360-modal-row">' +
+                '<input type="checkbox" class="eval360-modal-chk" data-id="' + c.id + '" ' + (selEval ? 'checked' : '') + '>' +
+                '<span class="eval360-modal-check-box"><i class="far fa-check"></i></span>' +
+                '<span class="ubits-body-sm-regular">' + c.nombre + '</span>' +
+                '<span class="ubits-body-sm-regular eval360-modal-meta">' + (c.cargo || '') + '</span>' +
+                '</label>';
+        }).join('');
+
+        openModal({
+            overlayId: 'eval360-config-modal',
+            title: 'Evaluadores de ' + evaluadoNombre,
+            bodyHtml: '<p class="ubits-body-sm-regular" style="margin-bottom:var(--gap-md);color:var(--ubits-fg-2-medium);">Selecciona quiénes evaluarán a este colaborador.</p>' +
+                '<div class="eval360-modal-list">' + rows + '</div>',
+            footerHtml: '<button class="ubits-button ubits-button--secondary ubits-button--md" onclick="closeModal(\'eval360-config-modal\')"><span>Cancelar</span></button>' +
+                '<button class="ubits-button ubits-button--primary ubits-button--md" id="eval360-modal-save-btn"><span>Guardar evaluadores</span></button>',
+            size: 'md',
+            closeOnOverlayClick: true
+        });
+
+        setTimeout(function () {
+            var saveBtn = document.getElementById('eval360-modal-save-btn');
+            if (saveBtn) saveBtn.addEventListener('click', function () {
+                var selIds = [];
+                document.querySelectorAll('.eval360-modal-chk:checked').forEach(function (chk) {
+                    selIds.push(chk.dataset.id);
+                });
+                if (!_evaluados[evaluadoId]) _evaluados[evaluadoId] = { seleccionado: true };
+                _evaluados[evaluadoId].evaluadores  = selIds;
+                _evaluados[evaluadoId].configurado  = selIds.length > 0;
+                closeModal('eval360-config-modal');
+                renderEvaluadosList();
+                updateEvaluadosCounter();
+            });
+        }, 50);
+    }
+
+    function saveEvaluados() {
+        draft.evaluados = _evaluados;
+        draft.checks.evaluados = true;
+        showToast('success', 'Evaluados guardados');
+        showView('hub');
+    }
+
+    /* ══════════════════════════════════════════════════════════
+       VISTA: CONFIGURACIÓN DE RESULTADOS
+       ══════════════════════════════════════════════════════════ */
+    var COLORES = [
+        { id: 'rojo',     label: 'Rojo',     hex: '#EF4444' },
+        { id: 'naranja',  label: 'Naranja',  hex: '#F97316' },
+        { id: 'amarillo', label: 'Amarillo', hex: '#EAB308' },
+        { id: 'verde',    label: 'Verde',    hex: '#22C55E' },
+        { id: 'azul',     label: 'Azul',     hex: '#3B82F6' }
+    ];
+
+    var RES_DEFAULTS = {
+        3: [
+            { nombre: 'Por mejorar',   min: 1, max: 2, color: 'rojo'     },
+            { nombre: 'En desarrollo', min: 3, max: 4, color: 'amarillo' },
+            { nombre: 'Destacado',     min: 5, max: 5, color: 'verde'    }
+        ],
+        4: [
+            { nombre: 'Por mejorar', min: 1, max: 1, color: 'rojo'     },
+            { nombre: 'Regular',     min: 2, max: 3, color: 'naranja'  },
+            { nombre: 'Bueno',       min: 4, max: 4, color: 'amarillo' },
+            { nombre: 'Destacado',   min: 5, max: 5, color: 'verde'    }
+        ],
+        5: [
+            { nombre: 'Crítico',     min: 1, max: 1, color: 'rojo'     },
+            { nombre: 'Por mejorar', min: 2, max: 2, color: 'naranja'  },
+            { nombre: 'Regular',     min: 3, max: 3, color: 'amarillo' },
+            { nombre: 'Bueno',       min: 4, max: 4, color: 'azul'     },
+            { nombre: 'Destacado',   min: 5, max: 5, color: 'verde'    }
+        ]
+    };
+
+    function renderResultadosView() {
+        var savedRes = draft.resultados;
+        var initialCantidad = (savedRes && savedRes.cantidad) ? savedRes.cantidad : 4;
+        setResCantidad(initialCantidad);
+        var saveBtn = document.getElementById('crear360-btn-sub-save');
+        if (saveBtn) saveBtn.disabled = false;
+    }
+
+    function getColorHex(colorId) {
+        var c = COLORES.find(function (x) { return x.id === colorId; });
+        return c ? c.hex : '#888';
+    }
+
+    function renderResPreview() {
+        var container = document.getElementById('res360-preview');
+        if (!container || !_rangos.length) { if (container) container.innerHTML = ''; return; }
+
+        var bars = _rangos.map(function (r) {
+            var hex = getColorHex(r.color);
+            return '<div class="res360-preview-bar" style="background:' + hex + ';" title="' + r.nombre + ' (' + r.min + '–' + r.max + ')">' +
+                '<span class="res360-preview-label ubits-body-sm-bold">' + r.nombre + '</span>' +
+                '<span class="res360-preview-range ubits-body-sm-regular">' + r.min + '–' + r.max + '</span>' +
+                '</div>';
+        }).join('');
+
+        container.innerHTML = '<div class="res360-preview-inner">' + bars + '</div>';
+    }
+
+    function renderResTable() {
+        var container = document.getElementById('res360-table-wrap');
+        if (!container) return;
+
+        container.innerHTML =
+            '<div class="res360-table">' +
+                '<div class="res360-table__header">' +
+                    '<span class="ubits-body-sm-bold">#</span>' +
+                    '<span class="ubits-body-sm-bold">Nombre del rango</span>' +
+                    '<span class="ubits-body-sm-bold">Mínimo</span>' +
+                    '<span class="ubits-body-sm-bold">Máximo</span>' +
+                    '<span class="ubits-body-sm-bold">Color</span>' +
+                '</div>' +
+                '<div class="res360-table__body" id="res360-rows"></div>' +
+            '</div>';
+
+        var rowsContainer = document.getElementById('res360-rows');
+
+        _rangos.forEach(function (rango, idx) {
+            var row = document.createElement('div');
+            row.className = 'res360-table__row';
+
+            var numCell = document.createElement('span');
+            numCell.className = 'ubits-body-sm-regular res360-table__num';
+            numCell.textContent = idx + 1;
+            row.appendChild(numCell);
+
+            var nombreCell = document.createElement('div');
+            nombreCell.className = 'res360-table__cell-nombre';
+            nombreCell.id = 'res360-nombre-' + idx;
+            row.appendChild(nombreCell);
+
+            var minCell = document.createElement('div');
+            minCell.className = 'res360-table__cell-num';
+            minCell.id = 'res360-min-' + idx;
+            row.appendChild(minCell);
+
+            var maxCell = document.createElement('div');
+            maxCell.className = 'res360-table__cell-num';
+            maxCell.id = 'res360-max-' + idx;
+            row.appendChild(maxCell);
+
+            var colorCell = document.createElement('div');
+            colorCell.className = 'res360-table__cell-color';
+            colorCell.innerHTML = '<div class="res360-color-picker">' +
+                COLORES.map(function (c) {
+                    return '<button type="button" class="res360-color-btn ' + (rango.color === c.id ? 'res360-color-btn--selected' : '') + '" ' +
+                        'style="background:' + c.hex + ';" data-color="' + c.id + '" data-idx="' + idx + '" title="' + c.label + '" aria-label="' + c.label + '">' +
+                        (rango.color === c.id ? '<i class="far fa-check" style="color:#fff;font-size:10px;"></i>' : '') +
+                        '</button>';
+                }).join('') +
+                '</div>';
+            row.appendChild(colorCell);
+
+            rowsContainer.appendChild(row);
+
+            createInput({ containerId: 'res360-nombre-' + idx, type: 'text',   placeholder: 'Nombre', size: 'sm', value: rango.nombre,        onChange: function (val) { _rangos[idx].nombre = val;                      renderResPreview(); } });
+            createInput({ containerId: 'res360-min-'    + idx, type: 'number', placeholder: '0',      size: 'sm', value: String(rango.min),    onChange: function (val) { _rangos[idx].min = parseInt(val, 10) || 0;    renderResPreview(); } });
+            createInput({ containerId: 'res360-max-'    + idx, type: 'number', placeholder: '0',      size: 'sm', value: String(rango.max),    onChange: function (val) { _rangos[idx].max = parseInt(val, 10) || 0;    renderResPreview(); } });
+
+            colorCell.querySelectorAll('.res360-color-btn').forEach(function (btn) {
+                btn.addEventListener('click', function () {
+                    _rangos[parseInt(btn.dataset.idx, 10)].color = btn.dataset.color;
+                    renderResTable();
+                    renderResPreview();
+                });
+            });
+        });
+
+        renderResPreview();
+    }
+
+    function setResCantidad(n) {
+        _cantidad = n;
+        var savedRes = draft.resultados;
+        if (savedRes && savedRes.cantidad === n && savedRes.rangos && savedRes.rangos.length === n) {
+            _rangos = JSON.parse(JSON.stringify(savedRes.rangos));
+        } else {
+            _rangos = JSON.parse(JSON.stringify(RES_DEFAULTS[n]));
+        }
+
+        document.querySelectorAll('.res360-cant-btn').forEach(function (btn) {
+            btn.classList.toggle('ubits-button--active', parseInt(btn.dataset.n, 10) === n);
+        });
+
+        renderResTable();
+    }
+
+    function saveResultados() {
+        draft.resultados = { cantidad: _cantidad, rangos: _rangos };
+        draft.checks.resultados = true;
+        showToast('success', 'Configuración de resultados guardada');
+        showView('hub');
+    }
+
+    /* ══════════════════════════════════════════════════════════
+       DISPATCHER: guardar sub-vista activa
+       ══════════════════════════════════════════════════════════ */
+    function saveCurrentSubView() {
+        if      (_currentView === 'tipo')         saveTipo();
+        else if (_currentView === 'competencias') saveCompetencias();
+        else if (_currentView === 'evaluados')    saveEvaluados();
+        else if (_currentView === 'resultados')   saveResultados();
+    }
+
+    /* ══════════════════════════════════════════════════════════
+       INICIALIZACIÓN
+       ══════════════════════════════════════════════════════════ */
     document.addEventListener('DOMContentLoaded', function () {
         loadSidebar('admin', 'desempeño');
         loadTabBar('tab-bar-container', 'admin');
         loadFloatingMenu('floating-menu-container', 'admin');
         loadProfileMenu('profile-menu-container');
 
-        var draft = loadDraft();
-        renderForm(draft);
-        var saved = !!(draft && draft.guardado);
-        setCardsEnabled(saved);
-        updateChecksUI(draft);
-
-        /* Botón volver */
-        document.getElementById('crear360-btn-back').addEventListener('click', confirmarSalir);
-
-        /* Botón guardar inline */
+        /* Botones estáticos del hub */
         document.getElementById('crear360-btn-save-inline').addEventListener('click', function () {
             if (guardarEvaluacion()) {
-                var d = loadDraft();
-                renderForm(d);
-                setCardsEnabled(true);
-                updateChecksUI(d);
+                renderHubView();
                 showToast('success', 'Evaluación guardada');
             }
         });
-
-        /* Botón guardar cambios (footer) */
         document.getElementById('crear360-btn-save-changes').addEventListener('click', function () {
             if (guardarEvaluacion()) {
                 showToast('success', 'Cambios guardados');
+                var btn = document.getElementById('crear360-btn-save-changes');
+                if (btn) btn.style.display = 'none';
             }
         });
-
-        /* Botón activar */
         document.getElementById('crear360-btn-activate').addEventListener('click', activarEvaluacion);
 
-        /* Botones de cada card → sub-pantallas */
-        var RUTAS = {
-            tipo:         'crear-360-tipo.html',
-            competencias: 'crear-360-competencias.html',
-            evaluados:    'crear-360-evaluados.html',
-            resultados:   'crear-360-resultados.html'
-        };
+        /* Cards del hub → navegar a sub-vista */
         ['tipo', 'competencias', 'evaluados', 'resultados'].forEach(function (k) {
             var btn = document.getElementById('crear360-btn-' + k);
-            if (btn) btn.addEventListener('click', function () {
-                window.location.href = RUTAS[k];
-            });
+            if (btn) btn.addEventListener('click', function () { showView(k); });
         });
 
-        /* Leer check param de vuelta de sub-pantallas */
-        var params = new URLSearchParams(window.location.search);
-        var savedCheck = params.get('saved');
-        if (savedCheck) {
-            var d2 = loadDraft();
-            if (d2 && d2.checks) {
-                d2.checks[savedCheck] = true;
-                saveDraft(d2);
-                updateChecksUI(d2);
-            }
-            showToast('success', 'Configuración guardada');
-            history.replaceState(null, '', window.location.pathname);
-        }
+        /* Footer sub-vista */
+        document.getElementById('crear360-btn-sub-cancel').addEventListener('click', function () {
+            showView('hub');
+        });
+        document.getElementById('crear360-btn-sub-save').addEventListener('click', saveCurrentSubView);
 
-        if (typeof initTooltip === 'function') {
-            initTooltip('[data-tooltip]');
-        }
+        /* Botones de cantidad en resultados */
+        document.getElementById('res360-cantidad-btns').addEventListener('click', function (e) {
+            var btn = e.target.closest('.res360-cant-btn');
+            if (btn) setResCantidad(parseInt(btn.dataset.n, 10));
+        });
+
+        /* Vista inicial */
+        showView('hub');
     });
+
 }());
 </script>
 </body>
