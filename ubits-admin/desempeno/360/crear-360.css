@@ -1,0 +1,165 @@
+/* ========================================
+   Crear 360 — Hub inmersivo
+   ======================================== */
+
+/* descripción intro */
+.crear360-description {
+    margin-bottom: var(--gap-2xl);
+}
+.crear360-description h2 {
+    color: var(--ubits-fg-1-high);
+    margin: 0 0 var(--gap-sm);
+}
+.crear360-description p {
+    color: var(--ubits-fg-1-medium);
+    margin: 0;
+}
+
+/* formulario */
+.crear360-form-section {
+    margin-bottom: var(--gap-2xl);
+    background: var(--ubits-bg-1);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: var(--border-radius-lg);
+    padding: var(--padding-2xl);
+}
+
+.crear360-form {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr auto;
+    gap: var(--gap-lg);
+    align-items: end;
+}
+
+.crear360-form-field {
+    min-width: 0;
+}
+
+.crear360-save-inline-wrap {
+    padding-bottom: 2px;
+}
+
+/* grid de 4 cards */
+.crear360-cards-section {
+    margin-bottom: var(--gap-2xl);
+}
+
+.crear360-cards-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--gap-lg);
+}
+
+/* option card */
+.crear360-option-card {
+    background: var(--ubits-bg-1);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: var(--border-radius-lg);
+    padding: var(--padding-xl);
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-md);
+    transition: border-color 0.15s;
+}
+
+.crear360-option-card--done {
+    border-color: var(--ubits-feedback-accent-success);
+}
+
+.crear360-option-card--locked {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+/* header de cada card */
+.crear360-option-card__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--gap-sm);
+    flex-wrap: wrap;
+}
+
+.crear360-option-card__title-block {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-sm);
+    min-width: 0;
+}
+
+.crear360-option-card__num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: var(--border-radius-full);
+    background: var(--ubits-bg-3);
+    color: var(--ubits-fg-1-medium);
+    flex-shrink: 0;
+}
+
+.crear360-option-card--done .crear360-option-card__num {
+    background: var(--ubits-feedback-accent-success);
+    color: #fff;
+}
+
+.crear360-option-card__title {
+    color: var(--ubits-fg-1-high);
+}
+
+.crear360-option-card__check {
+    color: var(--ubits-feedback-accent-success);
+    font-size: 16px;
+    flex-shrink: 0;
+}
+
+/* body de la card */
+.crear360-option-card__body p {
+    color: var(--ubits-fg-1-medium);
+    margin: 0 0 var(--gap-sm);
+}
+
+.crear360-option-card__hints {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-xs);
+}
+
+.crear360-option-card__hints li {
+    color: var(--ubits-fg-2-medium);
+    padding-left: var(--padding-lg);
+    position: relative;
+}
+
+.crear360-option-card__hints li::before {
+    content: '·';
+    position: absolute;
+    left: var(--padding-sm);
+    color: var(--ubits-fg-2-medium);
+}
+
+/* ── Responsive ── */
+@media (max-width: 1023px) {
+    .crear360-form {
+        grid-template-columns: 1fr 1fr;
+    }
+    .crear360-save-inline-wrap {
+        grid-column: span 2;
+    }
+}
+
+@media (max-width: 767px) {
+    .crear360-form {
+        grid-template-columns: 1fr;
+    }
+    .crear360-save-inline-wrap {
+        grid-column: span 1;
+    }
+    .crear360-cards-grid {
+        grid-template-columns: 1fr;
+    }
+}

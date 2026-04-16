@@ -40,8 +40,8 @@
             </button>
             <div class="ubits-layout-immersive__leading">
                 <div class="ubits-layout-immersive__title-row">
-                    <h1 class="ubits-layout-immersive__title ubits-body-md-bold" id="crear360-header-title">
-                        Nueva evaluación 360
+                    <h1 class="ubits-layout-immersive__title ubits-body-md-bold">
+                        Crear evaluación 360
                     </h1>
                     <span id="crear360-status-tag" style="display:none;">
                         <span class="ubits-status-tag ubits-status-tag--neutral ubits-status-tag--sm"><span>Borrador</span></span>
@@ -57,7 +57,6 @@
 
             <!-- Descripción -->
             <section class="crear360-description">
-                <h2 class="ubits-body-md-bold">Configura tu evaluación 360</h2>
                 <p class="ubits-body-md-regular">Define el nombre y las fechas de la evaluación. Luego completa las 4 secciones de configuración para poder activarla.</p>
             </section>
 
@@ -297,11 +296,6 @@
     }
 
     /* ── sync nombre en header ── */
-    function syncHeader(nombre) {
-        var title = document.getElementById('crear360-header-title');
-        if (title) title.textContent = nombre && nombre.trim() ? nombre.trim() : 'Nueva evaluación 360';
-    }
-
     /* ── APIs de inputs (para setState + helper text desde guardarEvaluacion) ── */
     var _inputNombreApi = null;
     var _inputInicioApi = null;
@@ -336,7 +330,6 @@
                 var d = loadDraft() || {};
                 d.nombre = val;
                 saveDraft(d);
-                syncHeader(val);
                 clearInputError(_inputNombreApi, 'crear360-input-nombre');
                 checkFormModified();
             }
@@ -389,7 +382,6 @@
         var statusTag = document.getElementById('crear360-status-tag');
         if (statusTag) statusTag.style.display = saved ? '' : 'none';
 
-        syncHeader(draft ? draft.nombre : '');
     }
 
     var _formModified = false;
