@@ -64,107 +64,78 @@
                 <div class="crear360-cards-grid">
 
                     <!-- Card 1 -->
-                    <article class="crear360-option-card" id="crear360-card-tipo" data-card="tipo">
-                        <div class="crear360-option-card__header">
-                            <div class="crear360-option-card__title-block">
-                                <span class="crear360-option-card__num ubits-body-sm-bold">1</span>
-                                <span class="ubits-body-md-bold crear360-option-card__title">Tipo de evaluación</span>
-                                <span class="crear360-option-card__check" id="crear360-check-tipo" style="display:none;">
-                                    <i class="far fa-circle-check"></i>
-                                </span>
-                            </div>
-                            <button type="button"
-                                class="ubits-button ubits-button--secondary ubits-button--sm crear360-option-card__btn"
-                                id="crear360-btn-tipo" disabled>
+                    <article class="crear360-option-card crear360-option-card--locked" id="crear360-card-tipo" role="button" tabindex="0" aria-label="Configurar tipo de evaluación">
+                        <div class="crear360-option-card__leading">
+                            <div class="crear360-option-card__icon-wrap">
                                 <i class="far fa-sliders"></i>
-                                <span>Configurar</span>
-                            </button>
+                            </div>
+                            <div class="crear360-option-card__info">
+                                <span class="ubits-body-md-bold crear360-option-card__title">Tipo de evaluación</span>
+                                <p class="ubits-body-sm-regular">Define quiénes participarán en la evaluación y el peso porcentual de cada perspectiva.</p>
+                            </div>
                         </div>
-                        <div class="crear360-option-card__body">
-                            <p class="ubits-body-sm-regular">Define quiénes participarán en la evaluación y el peso porcentual de cada perspectiva.</p>
-                            <ul class="crear360-option-card__hints">
-                                <li class="ubits-body-sm-regular">Autoevaluación</li>
-                                <li class="ubits-body-sm-regular">Jefe inmediato</li>
-                                <li class="ubits-body-sm-regular">Pares, subalternos, clientes internos</li>
-                            </ul>
+                        <div class="crear360-option-card__trailing">
+                            <span class="crear360-option-card__check" id="crear360-check-tipo" style="display:none;">
+                                <i class="far fa-circle-check"></i>
+                            </span>
+                            <i class="far fa-chevron-right crear360-option-card__arrow"></i>
                         </div>
                     </article>
 
                     <!-- Card 2 -->
-                    <article class="crear360-option-card" id="crear360-card-competencias" data-card="competencias">
-                        <div class="crear360-option-card__header">
-                            <div class="crear360-option-card__title-block">
-                                <span class="crear360-option-card__num ubits-body-sm-bold">2</span>
-                                <span class="ubits-body-md-bold crear360-option-card__title">Competencias y enunciados</span>
-                                <span class="crear360-option-card__check" id="crear360-check-competencias" style="display:none;">
-                                    <i class="far fa-circle-check"></i>
-                                </span>
-                            </div>
-                            <button type="button"
-                                class="ubits-button ubits-button--secondary ubits-button--sm crear360-option-card__btn"
-                                id="crear360-btn-competencias" disabled>
+                    <article class="crear360-option-card crear360-option-card--locked" id="crear360-card-competencias" role="button" tabindex="0" aria-label="Configurar competencias y enunciados">
+                        <div class="crear360-option-card__leading">
+                            <div class="crear360-option-card__icon-wrap">
                                 <i class="far fa-list-check"></i>
-                                <span>Configurar</span>
-                            </button>
+                            </div>
+                            <div class="crear360-option-card__info">
+                                <span class="ubits-body-md-bold crear360-option-card__title">Competencias y enunciados</span>
+                                <p class="ubits-body-sm-regular">Selecciona las competencias que serán evaluadas y los enunciados que guiarán las respuestas.</p>
+                            </div>
                         </div>
-                        <div class="crear360-option-card__body">
-                            <p class="ubits-body-sm-regular">Selecciona las competencias que serán evaluadas y los enunciados que guiarán las respuestas.</p>
-                            <ul class="crear360-option-card__hints">
-                                <li class="ubits-body-sm-regular">8 competencias disponibles</li>
-                                <li class="ubits-body-sm-regular">3 enunciados por competencia</li>
-                            </ul>
+                        <div class="crear360-option-card__trailing">
+                            <span class="crear360-option-card__check" id="crear360-check-competencias" style="display:none;">
+                                <i class="far fa-circle-check"></i>
+                            </span>
+                            <i class="far fa-chevron-right crear360-option-card__arrow"></i>
                         </div>
                     </article>
 
                     <!-- Card 3 -->
-                    <article class="crear360-option-card" id="crear360-card-evaluados" data-card="evaluados">
-                        <div class="crear360-option-card__header">
-                            <div class="crear360-option-card__title-block">
-                                <span class="crear360-option-card__num ubits-body-sm-bold">3</span>
-                                <span class="ubits-body-md-bold crear360-option-card__title">Evaluados</span>
-                                <span class="crear360-option-card__check" id="crear360-check-evaluados" style="display:none;">
-                                    <i class="far fa-circle-check"></i>
-                                </span>
-                            </div>
-                            <button type="button"
-                                class="ubits-button ubits-button--secondary ubits-button--sm crear360-option-card__btn"
-                                id="crear360-btn-evaluados" disabled>
+                    <article class="crear360-option-card crear360-option-card--locked" id="crear360-card-evaluados" role="button" tabindex="0" aria-label="Configurar evaluados">
+                        <div class="crear360-option-card__leading">
+                            <div class="crear360-option-card__icon-wrap">
                                 <i class="far fa-users"></i>
-                                <span>Configurar</span>
-                            </button>
+                            </div>
+                            <div class="crear360-option-card__info">
+                                <span class="ubits-body-md-bold crear360-option-card__title">Evaluados</span>
+                                <p class="ubits-body-sm-regular">Asigna los colaboradores que serán evaluados y configura quiénes los evaluarán.</p>
+                            </div>
                         </div>
-                        <div class="crear360-option-card__body">
-                            <p class="ubits-body-sm-regular">Asigna los colaboradores que serán evaluados y configura quiénes los evaluarán.</p>
-                            <ul class="crear360-option-card__hints">
-                                <li class="ubits-body-sm-regular">Selección desde el directorio de la empresa</li>
-                                <li class="ubits-body-sm-regular">Asignación individual de evaluadores</li>
-                            </ul>
+                        <div class="crear360-option-card__trailing">
+                            <span class="crear360-option-card__check" id="crear360-check-evaluados" style="display:none;">
+                                <i class="far fa-circle-check"></i>
+                            </span>
+                            <i class="far fa-chevron-right crear360-option-card__arrow"></i>
                         </div>
                     </article>
 
                     <!-- Card 4 -->
-                    <article class="crear360-option-card" id="crear360-card-resultados" data-card="resultados">
-                        <div class="crear360-option-card__header">
-                            <div class="crear360-option-card__title-block">
-                                <span class="crear360-option-card__num ubits-body-sm-bold">4</span>
-                                <span class="ubits-body-md-bold crear360-option-card__title">Configuración de resultados</span>
-                                <span class="crear360-option-card__check" id="crear360-check-resultados" style="display:none;">
-                                    <i class="far fa-circle-check"></i>
-                                </span>
-                            </div>
-                            <button type="button"
-                                class="ubits-button ubits-button--secondary ubits-button--sm crear360-option-card__btn"
-                                id="crear360-btn-resultados" disabled>
+                    <article class="crear360-option-card crear360-option-card--locked" id="crear360-card-resultados" role="button" tabindex="0" aria-label="Configurar resultados">
+                        <div class="crear360-option-card__leading">
+                            <div class="crear360-option-card__icon-wrap">
                                 <i class="far fa-chart-bar"></i>
-                                <span>Configurar</span>
-                            </button>
+                            </div>
+                            <div class="crear360-option-card__info">
+                                <span class="ubits-body-md-bold crear360-option-card__title">Configuración de resultados</span>
+                                <p class="ubits-body-sm-regular">Define los rangos de calificación y sus colores para interpretar los resultados.</p>
+                            </div>
                         </div>
-                        <div class="crear360-option-card__body">
-                            <p class="ubits-body-sm-regular">Define los rangos de calificación y sus colores para interpretar los resultados.</p>
-                            <ul class="crear360-option-card__hints">
-                                <li class="ubits-body-sm-regular">3 a 5 rangos configurables</li>
-                                <li class="ubits-body-sm-regular">Color y etiqueta por rango</li>
-                            </ul>
+                        <div class="crear360-option-card__trailing">
+                            <span class="crear360-option-card__check" id="crear360-check-resultados" style="display:none;">
+                                <i class="far fa-circle-check"></i>
+                            </span>
+                            <i class="far fa-chevron-right crear360-option-card__arrow"></i>
                         </div>
                     </article>
 
@@ -360,7 +331,14 @@
     /* ══════════════════════════════════════════════════════════
        ROUTING
        ══════════════════════════════════════════════════════════ */
-    function showView(viewId) {
+
+    /* Muestra una vista y actualiza la URL hash.
+       pushHistory=true (por defecto) añade entrada al historial;
+       pushHistory=false la reemplaza (usado al manejar popstate). */
+    function showView(viewId, opts) {
+        opts = opts || {};
+        var pushHistory = opts.pushHistory !== false;
+
         /* Limpiar calendar pickers antes de cambiar vista (evita acumulación) */
         if (viewId !== 'hub') cleanupCalendarPickers();
 
@@ -370,6 +348,14 @@
         });
 
         _currentView = viewId;
+
+        /* URL hash */
+        var hash = '#' + viewId;
+        if (pushHistory) {
+            history.pushState({ view: viewId }, '', hash);
+        } else {
+            history.replaceState({ view: viewId }, '', hash);
+        }
 
         /* header */
         renderHeader(viewId);
@@ -390,8 +376,8 @@
         if (main) main.scrollTop = 0;
 
         /* inicializar contenido de la vista */
-        if (viewId === 'hub')          renderHubView();
-        else if (viewId === 'tipo')    renderTipoView();
+        if (viewId === 'hub')               renderHubView();
+        else if (viewId === 'tipo')         renderTipoView();
         else if (viewId === 'competencias') renderCompetenciasView();
         else if (viewId === 'evaluados')    renderEvaluadosView();
         else if (viewId === 'resultados')   renderResultadosView();
@@ -450,7 +436,7 @@
                 counter;
 
             document.getElementById('crear360-btn-back').addEventListener('click', function () {
-                showView('hub');
+                history.back();
             });
         }
     }
@@ -458,6 +444,14 @@
     /* ══════════════════════════════════════════════════════════
        UTILIDADES
        ══════════════════════════════════════════════════════════ */
+
+    var VALID_VIEWS = ['hub', 'tipo', 'competencias', 'evaluados', 'resultados'];
+
+    function viewFromHash() {
+        var hash = (window.location.hash || '').replace('#', '');
+        return VALID_VIEWS.indexOf(hash) >= 0 ? hash : 'hub';
+    }
+
     function cleanupCalendarPickers() {
         document.querySelectorAll('[id^="ubits-calendar-picker-"]').forEach(function (el) {
             if (el.parentNode) el.parentNode.removeChild(el);
@@ -562,27 +556,28 @@
     function updateHubChecksUI() {
         var checks = draft.checks || {};
         var allDone = checks.tipo && checks.competencias && checks.evaluados && checks.resultados;
-        var saved = draft.guardado;
+        var saved   = draft.guardado;
 
         ['tipo', 'competencias', 'evaluados', 'resultados'].forEach(function (k) {
             var card  = document.getElementById('crear360-card-' + k);
             var check = document.getElementById('crear360-check-' + k);
-            var btn   = document.getElementById('crear360-btn-' + k);
 
             if (checks[k]) {
                 if (card)  card.classList.add('crear360-option-card--done');
                 if (check) check.style.display = '';
-                if (btn)   btn.querySelector('span').textContent = 'Ver detalle';
             } else {
                 if (card)  card.classList.remove('crear360-option-card--done');
                 if (check) check.style.display = 'none';
-                if (btn)   btn.querySelector('span').textContent = 'Configurar';
             }
 
-            if (btn)  btn.disabled = !saved;
             if (card) {
-                if (saved) card.classList.remove('crear360-option-card--locked');
-                else       card.classList.add('crear360-option-card--locked');
+                if (saved) {
+                    card.classList.remove('crear360-option-card--locked');
+                    card.setAttribute('tabindex', '0');
+                } else {
+                    card.classList.add('crear360-option-card--locked');
+                    card.setAttribute('tabindex', '-1');
+                }
             }
         });
 
@@ -1195,15 +1190,24 @@
         });
         document.getElementById('crear360-btn-activate').addEventListener('click', activarEvaluacion);
 
-        /* Cards del hub → navegar a sub-vista */
+        /* Cards del hub → navegar a sub-vista (click + Enter/Space para accesibilidad) */
         ['tipo', 'competencias', 'evaluados', 'resultados'].forEach(function (k) {
-            var btn = document.getElementById('crear360-btn-' + k);
-            if (btn) btn.addEventListener('click', function () { showView(k); });
+            var card = document.getElementById('crear360-card-' + k);
+            if (!card) return;
+            card.addEventListener('click', function () {
+                if (!card.classList.contains('crear360-option-card--locked')) showView(k);
+            });
+            card.addEventListener('keydown', function (e) {
+                if ((e.key === 'Enter' || e.key === ' ') && !card.classList.contains('crear360-option-card--locked')) {
+                    e.preventDefault();
+                    showView(k);
+                }
+            });
         });
 
-        /* Footer sub-vista */
+        /* Footer sub-vista — Cancelar usa history.back() para respetar el historial */
         document.getElementById('crear360-btn-sub-cancel').addEventListener('click', function () {
-            showView('hub');
+            history.back();
         });
         document.getElementById('crear360-btn-sub-save').addEventListener('click', saveCurrentSubView);
 
@@ -1213,8 +1217,15 @@
             if (btn) setResCantidad(parseInt(btn.dataset.n, 10));
         });
 
-        /* Vista inicial */
-        showView('hub');
+        /* Manejo del botón atrás del navegador */
+        window.addEventListener('popstate', function (e) {
+            var viewId = (e.state && e.state.view) || viewFromHash();
+            showView(viewId, { pushHistory: false });
+        });
+
+        /* Vista inicial según URL hash */
+        var initialView = viewFromHash();
+        showView(initialView, { pushHistory: false });
     });
 
 }());

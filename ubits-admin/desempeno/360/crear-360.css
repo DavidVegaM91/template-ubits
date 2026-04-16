@@ -64,94 +64,117 @@
     gap: var(--gap-lg);
 }
 
-/* option card */
+/* option card — card entero clickeable */
 .crear360-option-card {
     background: var(--ubits-bg-1);
     border: 1px solid var(--ubits-border-1);
     border-radius: var(--border-radius-lg);
     padding: var(--padding-xl);
     display: flex;
-    flex-direction: column;
-    gap: var(--gap-md);
-    transition: border-color 0.15s;
+    align-items: center;
+    gap: var(--gap-lg);
+    cursor: pointer;
+    user-select: none;
+    transition: border-color 0.15s, background 0.15s;
+    outline: none;
+}
+
+.crear360-option-card:hover:not(.crear360-option-card--locked) {
+    background: var(--ubits-bg-2);
+    border-color: var(--ubits-accent-brand);
+}
+
+.crear360-option-card:focus-visible:not(.crear360-option-card--locked) {
+    box-shadow: 0 0 0 2px var(--ubits-accent-brand);
+    border-color: var(--ubits-accent-brand);
 }
 
 .crear360-option-card--done {
     border-color: var(--ubits-feedback-accent-success);
 }
 
+.crear360-option-card--done:hover {
+    border-color: var(--ubits-feedback-accent-success);
+}
+
 .crear360-option-card--locked {
-    opacity: 0.5;
+    opacity: 0.45;
+    cursor: not-allowed;
     pointer-events: none;
 }
 
-.crear360-option-card__header {
+/* icono de la sección */
+.crear360-option-card__icon-wrap {
+    width: 40px;
+    height: 40px;
+    border-radius: var(--border-radius-md);
+    background: var(--ubits-bg-3);
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    gap: var(--gap-sm);
-    flex-wrap: wrap;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 16px;
+    color: var(--ubits-fg-1-medium);
+    transition: background 0.15s, color 0.15s;
 }
 
-.crear360-option-card__title-block {
+.crear360-option-card:hover:not(.crear360-option-card--locked) .crear360-option-card__icon-wrap {
+    background: var(--ubits-accent-brand);
+    color: #fff;
+}
+
+.crear360-option-card--done .crear360-option-card__icon-wrap {
+    background: var(--ubits-feedback-accent-success);
+    color: #fff;
+}
+
+/* bloque leading: icono + texto */
+.crear360-option-card__leading {
     display: flex;
     align-items: center;
-    gap: var(--gap-sm);
+    gap: var(--gap-md);
+    flex: 1;
     min-width: 0;
 }
 
-.crear360-option-card__num {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 24px;
-    height: 24px;
-    border-radius: var(--border-radius-full);
-    background: var(--ubits-bg-3);
-    color: var(--ubits-fg-1-medium);
-    flex-shrink: 0;
-}
-
-.crear360-option-card--done .crear360-option-card__num {
-    background: var(--ubits-feedback-accent-success);
-    color: #fff;
+.crear360-option-card__info {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-xs);
+    min-width: 0;
 }
 
 .crear360-option-card__title {
     color: var(--ubits-fg-1-high);
 }
 
-.crear360-option-card__check {
-    color: var(--ubits-feedback-accent-success);
-    font-size: 16px;
+.crear360-option-card__info p {
+    color: var(--ubits-fg-1-medium);
+    margin: 0;
+}
+
+/* bloque trailing: check + flecha */
+.crear360-option-card__trailing {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-sm);
     flex-shrink: 0;
 }
 
-.crear360-option-card__body p {
-    color: var(--ubits-fg-1-medium);
-    margin: 0 0 var(--gap-sm);
+.crear360-option-card__check {
+    color: var(--ubits-feedback-accent-success);
+    font-size: 18px;
 }
 
-.crear360-option-card__hints {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    gap: var(--gap-xs);
-}
-
-.crear360-option-card__hints li {
+.crear360-option-card__arrow {
     color: var(--ubits-fg-2-medium);
-    padding-left: var(--padding-lg);
-    position: relative;
+    font-size: 14px;
+    transition: transform 0.15s, color 0.15s;
 }
 
-.crear360-option-card__hints li::before {
-    content: '·';
-    position: absolute;
-    left: var(--padding-sm);
-    color: var(--ubits-fg-2-medium);
+.crear360-option-card:hover:not(.crear360-option-card--locked) .crear360-option-card__arrow {
+    transform: translateX(3px);
+    color: var(--ubits-accent-brand);
 }
 
 /* ════════════════════════════════════════
