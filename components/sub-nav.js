@@ -7,6 +7,10 @@ function getSubNavBasePath() {
     const path = window.location.pathname;
     
     // Detectar la profundidad basándose en patrones de carpetas del proyecto
+    // Páginas 3 niveles de profundidad (ubits-admin/desempeno/360/, etc.)
+    if (path.includes('/ubits-admin/desempeno/360/')) {
+        return '../../../';
+    }
     // Páginas en subcarpetas de segundo nivel (ubits-colaborador/*, ubits-admin/*)
     if (path.includes('/ubits-colaborador/') || path.includes('/ubits-admin/')) {
         return '../../';
@@ -134,7 +138,7 @@ const TOP_NAV_VARIANTS = {
     'admin-desempeño': {
         name: 'Desempeño',
         tabs: [
-            { id: 'evaluations', label: 'Evaluaciones 360', icon: 'far fa-chart-pie', url: '../../ubits-admin/desempeno/admin-360.html' },
+            { id: 'evaluations', label: 'Evaluaciones 360', icon: 'far fa-chart-pie', url: '../../ubits-admin/desempeno/360/admin-360.html' },
             { id: 'objectives', label: 'Objetivos', icon: 'far fa-bullseye', url: '../../ubits-admin/desempeno/admin-objetivos.html' },
             { id: 'matriz-talento', label: 'Matriz de Talento', icon: 'far fa-sitemap', url: '../../ubits-admin/desempeno/admin-matriz-talento.html' }
         ]
@@ -631,6 +635,15 @@ function getCorrectTabUrl(tabConfig, variant) {
         // Si estamos en documentacion/ (raíz)
         else {
             targetUrl = tabConfig.url;
+        }
+    } else if (targetUrl) {
+        // Las URLs de tabs usan '../../' asumiendo profundidad de 2 niveles.
+        // Para páginas más profundas (ej. ubits-admin/desempeno/360/) se ajusta
+        // el prefijo usando basePath calculado para la página actual.
+        const stdPrefix = '../../';
+        const basePath = getSubNavBasePath();
+        if (targetUrl.startsWith(stdPrefix) && basePath !== stdPrefix) {
+            targetUrl = basePath + targetUrl.slice(stdPrefix.length);
         }
     }
     
