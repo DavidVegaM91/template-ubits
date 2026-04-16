@@ -302,6 +302,7 @@ function getTareasFiltrosAplicadosCount() {
 /**
  * Attention badge sm (error) en el botón Filtros solo cuando hay filtros aplicados.
  * Sin nodo en el DOM si el conteo es 0.
+ * Estado visual “activo”: clase oficial ubits-button--active (secondary), como contenidos.html.
  */
 function updateTareasFiltrosButtonBadge() {
     var btn = document.getElementById('tareas-filtros-btn');
@@ -311,17 +312,18 @@ function updateTareasFiltrosButtonBadge() {
     if (c <= 0) {
         if (badge && badge.parentNode) badge.parentNode.removeChild(badge);
         btn.setAttribute('aria-label', 'Abrir filtros');
-        return;
+    } else {
+        if (!badge) {
+            badge = document.createElement('span');
+            badge.id = 'tareas-filtros-btn-badge';
+            badge.className = 'ubits-attention-badge ubits-attention-badge--sm ubits-attention-badge--error';
+            btn.appendChild(badge);
+        }
+        badge.textContent = String(c);
+        badge.classList.toggle('ubits-attention-badge--circle', c >= 1 && c <= 9);
+        btn.setAttribute('aria-label', 'Abrir filtros (' + c + ' ' + (c === 1 ? 'filtro aplicado' : 'filtros aplicados') + ')');
     }
-    if (!badge) {
-        badge = document.createElement('span');
-        badge.id = 'tareas-filtros-btn-badge';
-        badge.className = 'ubits-attention-badge ubits-attention-badge--sm ubits-attention-badge--error';
-        btn.appendChild(badge);
-    }
-    badge.textContent = String(c);
-    badge.classList.toggle('ubits-attention-badge--circle', c >= 1 && c <= 9);
-    btn.setAttribute('aria-label', 'Abrir filtros (' + c + ' ' + (c === 1 ? 'filtro aplicado' : 'filtros aplicados') + ')');
+    btn.classList.toggle('ubits-button--active', c > 0);
 }
 
 // Filtros de tareas: dropdown con contenido personalizado (customBodyHtml), como encabezados de seguimiento.

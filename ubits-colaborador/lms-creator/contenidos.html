@@ -1032,7 +1032,46 @@
 
                 function syncContenidosFilterButtonState() {
                     var fb = document.getElementById('contenidos-btn-filtro');
-                    if (fb) fb.classList.toggle('contenidos-toolbar__filter-btn--active', hasActiveContenidosFiltros());
+                    if (fb) fb.classList.toggle('ubits-button--active', hasActiveContenidosFiltros());
+                }
+
+                /** Número de criterios de filtro activos (para badge en el botón Filtrar; mismo criterio que chips). */
+                function getContenidosFiltrosAplicadosCount() {
+                    var f = contenidosFiltrosActive;
+                    var n = 0;
+                    if (f.tipo) n++;
+                    if (f.categoriaId) n++;
+                    if (f.nivelId) n++;
+                    if (f.idioma) n++;
+                    return n;
+                }
+
+                /**
+                 * Attention badge sm (error) en el botón Filtrar cuando hay filtros aplicados.
+                 * Sin nodo en el DOM si el conteo es 0 (como tareas.html / tareas.js).
+                 */
+                function updateContenidosFiltrosButtonBadge() {
+                    var btn = document.getElementById('contenidos-btn-filtro');
+                    if (!btn) return;
+                    var c = getContenidosFiltrosAplicadosCount();
+                    var badge = document.getElementById('contenidos-btn-filtro-badge');
+                    if (c <= 0) {
+                        if (badge && badge.parentNode) badge.parentNode.removeChild(badge);
+                        btn.setAttribute('aria-label', 'Filtrar');
+                        return;
+                    }
+                    if (!badge) {
+                        badge = document.createElement('span');
+                        badge.id = 'contenidos-btn-filtro-badge';
+                        badge.className = 'ubits-attention-badge ubits-attention-badge--sm ubits-attention-badge--error';
+                        btn.appendChild(badge);
+                    }
+                    badge.textContent = String(c);
+                    badge.classList.toggle('ubits-attention-badge--circle', c >= 1 && c <= 9);
+                    btn.setAttribute(
+                        'aria-label',
+                        'Filtrar (' + c + ' ' + (c === 1 ? 'filtro aplicado' : 'filtros aplicados') + ')'
+                    );
                 }
 
                 function escapeHtmlContenidosChip(str) {
@@ -1268,6 +1307,7 @@
                     syncContenidosCardsVisibility();
                     syncContenidosFilterButtonState();
                     renderContenidosFiltrosAplicados();
+                    updateContenidosFiltrosButtonBadge();
                     var pagEl = document.getElementById('contenidos-paginador');
                     var m = getSearchMatches();
                     if (pagEl) {

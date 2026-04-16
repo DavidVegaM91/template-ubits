@@ -1,7 +1,7 @@
 /**
- * LMS Creator — Página dedicada crear-contenido.html (modo página, sin drawer).
+ * LMS Creator — Página dedicada crear-contenido.html.
  * Un solo archivo: portada (inputs, RTE, miniatura), hashes URL, paso Recursos (índice + empty + eventos).
- * Lógica del flujo crear contenido (tras corte: antiguo drawer de lista sustituido por esta página).
+ * Lógica del flujo crear contenido (solo esta página; la lista solo enlaza aquí).
  */
 (function () {
     'use strict';
@@ -1332,7 +1332,7 @@
         window.addEventListener('hashchange', applyCrearContenidoPageHash);
     }
 
-    /** Página dedicada: Portada `#portada`, Recursos `#recursos`. Alias legacy y del drawer documentados en applyCrearContenidoPageHash. */
+    /** Portada `#portada`, Recursos `#recursos`. Alias legacy en applyCrearContenidoPageHash. */
     var HASH_PAGE_PORTADA = '#portada';
     var HASH_PAGE_RECURSOS = '#recursos';
     var HASH_PAGE_PORTADA_LEGACY = '#crear-contenido';

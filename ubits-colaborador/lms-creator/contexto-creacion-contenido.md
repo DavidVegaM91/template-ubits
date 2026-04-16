@@ -52,7 +52,7 @@ El asistente de creación tiene **4 pasos**, en este orden:
 
 ### Página dedicada (`crear-contenido.html`) — fuente de verdad del flujo
 
-**Plan de trabajo:** `crear-contenido-plan.md`. **Archivos:** `crear-contenido.html`, `crear-contenido.css`, `crear-contenido.js`. Toda la lógica del flujo vive en **`crear-contenido.js`** (el antiguo script de drawer en lista fue retirado en el corte; no volver a documentarlo como ruta alternativa).
+**Archivos del flujo:** `crear-contenido.html`, `crear-contenido.css`, `crear-contenido.js`. Toda la lógica vive en **`crear-contenido.js`**.
 
 **Layout (footer siempre visible):** en `general-styles/styles.css`, `body` lleva `overflow-y: auto !important`, lo que hace que **todo el documento** haga scroll y el **footer** quede **al final del contenido**. Esta pantalla usa la **cáscara inmersiva transversal** `general-styles/layout-immersive.css`: clase raíz **`.ubits-layout-immersive`**, `body.page-layout-immersive` (alto viewport + `overflow: hidden !important`) y **scroll en** `#crear-contenido-main` (clase **`.ubits-layout-immersive__main`**). El escenario acotado a 1440px va en **`.ubits-layout-immersive__stage`** (aquí comparte nodo con `.crear-contenido-editor-workspace`). Ajustes propios del flujo Creator (rail, stepper, z-index dropdowns) siguen en **`crear-contenido.css`**.
 
@@ -74,15 +74,15 @@ Documentación técnica del **corte** a página dedicada (único flujo soportado
 | Qué | Detalle |
 |-----|---------|
 | **HTML** | `ubits-colaborador/lms-creator/crear-contenido.html` |
-| **CSS de página** | `ubits-colaborador/lms-creator/crear-contenido.css` (carga **después** de `contenidos.css` para overrides del shell y tokens) |
+| **CSS de página** | `ubits-colaborador/lms-creator/crear-contenido.css` (flujo completo; **no** depende de `contenidos.css` de la lista) |
 | **JS de página** | `ubits-colaborador/lms-creator/crear-contenido.js` |
 | **Modal portada (imagen / tráiler)** | `portada-media-modal.js`, `portada-media-modal.css` |
 | **Maestros** | `bd-master/bd-master-*.js` (tipos, niveles, categorías), enlazados en el HTML de la página |
 
 - **Abrir para QA:** doble clic en el archivo o `file:///…/crear-contenido.html`; rutas relativas desde la carpeta `lms-creator/`: `crear-contenido.html`, `crear-contenido.html#recursos`, `crear-contenido.html#portada`.
-- **Body:** `no-subnav`, **`page-layout-immersive`** (activa la cáscara inmersiva genérica), `page-crear-contenido` (hook de página), **`crear-contenido-drawer-overlay`** (nombre **histórico**) como hook en `contenidos.css` (workspace, pasos, rail). **No** implica el componente **Drawer** (`openDrawer` / overlay de lista).
+- **Body:** `no-subnav`, **`page-layout-immersive`**, **`page-crear-contenido`** (hook en **`crear-contenido.css`** para workspace, pasos, rail, recursos, validaciones).
 - **`crear-contenido-app-open`:** clase **exclusiva** de esta página. Sube el z-index de los menús **dropdown** del índice (⋮ en Páginas creator, montados en `body`) por encima del shell.
-- **Responsive:** el bloque móvil del stepper y rejillas del Resources block siguen los `@media` de `contenidos.css` bajo `.crear-contenido-drawer-overlay`; el header del shell reduce padding en **639px** (`crear-contenido.css`).
+- **Responsive:** breakpoints del flujo en **`crear-contenido.css`** (prefijo **`body.page-crear-contenido`** donde aplica); el header del shell reduce padding en **639px** en el mismo archivo.
 - **Modo oscuro / tokens:** colores y tipografía UBITS vía hojas globales; para probar tema oscuro, usar `data-theme="dark"` en `<html>` o `<body>` como en el resto del template.
 
 ---

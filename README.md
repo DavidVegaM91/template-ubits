@@ -35,6 +35,19 @@ Elige **una** familia por pantalla. Mezclar patrones (por ejemplo SubNav dentro 
 
 **Mantenimiento:** ajustes a la cáscara inmersiva → **`general-styles/layout-immersive.css`**. Ajustes al hueco “sin SubNav” → **`general-styles/styles.css`**. Evita copiar reglas de layout en un CSS de página salvo overrides muy localizados.
 
+## Patrón: un solo botón «Filtrar» con varios criterios
+
+En pantallas donde **solo hay un botón de filtros** en la barra (icono `fa-filter`) y **detrás hay muchas opciones** (modal, drawer o panel con varios campos: estado, prioridad, tipo, categoría, etc.), el template espera este comportamiento para que el usuario vea **de un vistazo** que hay filtros activos y **cuántos criterios** lleva aplicados:
+
+1. **Estado visual del botón:** cuando exista **al menos un criterio** distinto del “todo / vacío”, el botón debe llevar la clase oficial **`ubits-button--active`** sobre la variante que uses (en las referencias del repo es **`ubits-button--secondary`**). Así se usa el estado “seleccionado” del Button sin inventar bordes ni colores en el CSS de la página.
+2. **Contador en el botón:** un **Attention badge** oficial (`ubits-attention-badge ubits-attention-badge--sm ubits-attention-badge--error`) como **hijo directo** del botón, mostrando el **número de criterios activos** (no el número de filas filtradas). Con 0 criterios, no debe quedar badge en el DOM. Para 1–9, puede usarse **`ubits-attention-badge--circle`** como en la documentación del componente. Estilos vía **`components/button.css`** (importa `attention-badge.css`).
+3. **Accesibilidad:** actualizar **`aria-label`** del botón para incluir el conteo cuando sea mayor que cero (p. ej. «Abrir filtros (3 filtros aplicados)»).
+4. **Opcional recomendado:** fila de **chips** “Filtros aplicados” con quitar individual y “Limpiar filtros”, alineado con tablas tipo seguimiento / lista de contenidos.
+
+**Referencias en el repo:** [`ubits-colaborador/tareas/tareas.html`](ubits-colaborador/tareas/tareas.html) + [`tareas.js`](ubits-colaborador/tareas/tareas.js) (`updateTareasFiltrosButtonBadge`, `getTareasFiltrosAplicadosCount`); [`ubits-colaborador/lms-creator/contenidos.html`](ubits-colaborador/lms-creator/contenidos.html) (`updateContenidosFiltrosButtonBadge`, chips y modal de filtros).
+
+**No es este patrón:** listas donde cada columna tiene su propio `fa-filter` en el `<thead>` (p. ej. seguimiento), ni tablas data-table con filtros solo por columna; ahí el “activo” se marca **por columna**, no con un único contador en un botón global.
+
 ## 🚀 Cómo usar esta plantilla
 
 1. **Descarga:** Haz clon o descarga como ZIP
@@ -127,7 +140,6 @@ Las páginas del Creator suelen cargar **`lms-creator.css`** más el **CSS homó
 #### **Contexto en Markdown (no es UI)**
 
 - `ubits-colaborador/lms-creator/contexto-creacion-contenido.md` — creación de contenidos / formatos (incluye **Implementación en página dedicada** y rutas QA)
-- `ubits-colaborador/lms-creator/crear-contenido-plan.md` — plan por fases del corte a página dedicada (checklist; histórico de migración sin drawer en lista)
 - `ubits-colaborador/lms-creator/contexto-planes-formacion-y-grupos.md` — planes, grupos, estados, flujos
 
 **Datos y utilidades:** muchas vistas enlazan **`bd-master/`** y **`general-utils/humanizador-fechas.js`**; el detalle por archivo está en **`bd-master/README.md`**.
