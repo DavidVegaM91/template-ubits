@@ -111,6 +111,17 @@
                                     </button>
                                 </div>
                             </div>
+
+                            <!-- Controles: estado -->
+                            <div style="margin-top: 16px; display: flex; align-items: center; gap: var(--gap-md);">
+                                <p class="ubits-body-sm-semibold" style="color: var(--ubits-fg-1-medium); margin: 0;">Estado</p>
+                                <button id="preview-error-toggle"
+                                        class="ubits-button ubits-button--secondary ubits-button--sm"
+                                        onclick="togglePreviewError()">
+                                    <i class="far fa-circle-exclamation"></i>
+                                    <span>Activar error</span>
+                                </button>
+                            </div>
                         </div>
 
                         <!-- ── Características generales ── -->
@@ -452,15 +463,41 @@ Si el valor de algún campo se actualiza por código, usa autoResizeInlineEdit(e
             'ubits-body-xs-regular','ubits-body-xs-semibold','ubits-body-xs-bold'
         ];
 
+        function togglePreviewError() {
+            var field = document.getElementById('inline-edit-preview-field');
+            var btn = document.getElementById('preview-error-toggle');
+            var span = btn.querySelector('span');
+            var icon = btn.querySelector('i');
+            if (field.classList.contains('is-invalid')) {
+                field.classList.remove('is-invalid');
+                span.textContent = 'Activar error';
+                icon.className = 'far fa-circle-exclamation';
+                btn.classList.remove('active');
+            } else {
+                field.classList.add('is-invalid');
+                field.value = '';
+                field.placeholder = 'Este campo es obligatorio...';
+                span.textContent = 'Quitar error';
+                icon.className = 'far fa-circle-xmark';
+                btn.classList.add('active');
+                autoResizeInlineEdit(field);
+            }
+        }
+
         function setPreviewVariant(typoClass, placeholder) {
             var field = document.getElementById('inline-edit-preview-field');
-            // Quitar todas las clases tipográficas anteriores
             ALL_TYPO_CLASSES.forEach(function (cls) { field.classList.remove(cls); });
-            // Aplicar la nueva
+            field.classList.remove('is-invalid');
             field.classList.add(typoClass);
             field.placeholder = placeholder;
             autoResizeInlineEdit(field);
-            // Actualizar botones activos
+            // Resetear toggle de error si estaba activo
+            var errorBtn = document.getElementById('preview-error-toggle');
+            if (errorBtn) {
+                errorBtn.classList.remove('active');
+                errorBtn.querySelector('span').textContent = 'Activar error';
+                errorBtn.querySelector('i').className = 'far fa-circle-exclamation';
+            }
             document.querySelectorAll('.preview-control-btn').forEach(function (btn) {
                 btn.classList.remove('active');
             });

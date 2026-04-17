@@ -299,7 +299,14 @@
         var titleEl = document.getElementById('subtask-detail-title');
         if (titleEl) {
             titleEl.addEventListener('blur', function () {
-                if (estado.subtask) estado.subtask.name = this.value.trim() || estado.subtask.name;
+                if (estado.subtask) {
+                    if (!this.value.trim()) {
+                        this.value = estado.subtask.name || '';
+                        if (typeof autoResizeInlineEdit === 'function') autoResizeInlineEdit(this);
+                    } else {
+                        estado.subtask.name = this.value.trim();
+                    }
+                }
                 triggerFakeSave();
             });
         }

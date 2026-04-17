@@ -1014,7 +1014,12 @@
         if (titleEl) {
             titleEl.addEventListener('blur', function () {
                 if (estado.task) {
-                    estado.task.name = this.value.trim() || estado.task.name;
+                    if (!this.value.trim()) {
+                        this.value = estado.task.name || '';
+                        if (typeof autoResizeInlineEdit === 'function') autoResizeInlineEdit(this);
+                    } else {
+                        estado.task.name = this.value.trim();
+                    }
                     triggerFakeSave();
                 }
             });

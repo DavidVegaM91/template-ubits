@@ -910,7 +910,12 @@ function initPlanDetail() {
         titleInput.addEventListener('blur', function () {
             const plan = window.planDetailPlanCache && window.planDetailPlanCache[planId];
             if (plan) {
-                plan.name = this.value.trim() || plan.name || 'Plan';
+                if (!this.value.trim()) {
+                    this.value = plan.name || 'Plan';
+                    if (typeof autoResizeInlineEdit === 'function') autoResizeInlineEdit(this);
+                } else {
+                    plan.name = this.value.trim();
+                }
                 if (typeof renderSaveIndicator === 'function') {
                     renderSaveIndicator('header-product-container-save-indicator', { state: 'saving', size: 'xs' });
                     setTimeout(function () {

@@ -29,41 +29,14 @@
     margin: 0;
 }
 
-/* Nombre del plan editable inline (estilos de plan-detail / task-detail) */
+/* Nombre del plan editable inline — estilos base cubiertos por inline-edit.css */
 .crear-plan-contenidos-form__field--nombre-plan {
     display: flex;
     flex-direction: column;
     gap: var(--gap-xs);
 }
 
-.widget-crear-plan-contenidos .task-detail-title-editable {
-    font-family: var(--ubits-font-family-sans);
-    line-height: 1.25;
-    color: var(--ubits-fg-1-high);
-    border: none;
-    background: transparent;
-    width: 100%;
-    min-height: 1.25em;
-    padding: 0;
-    margin: 0;
-    resize: none;
-    overflow: hidden;
-    outline: none;
-    cursor: text;
-    position: relative;
-    z-index: 1;
-    box-sizing: border-box;
-}
-
-.widget-crear-plan-contenidos .task-detail-title-editable:hover,
-.widget-crear-plan-contenidos .task-detail-title-editable:focus {
-    background: var(--ubits-bg-2);
-    border-radius: var(--border-radius-xs);
-}
-
-.widget-crear-plan-contenidos .task-detail-title-editable::placeholder {
-    color: var(--ubits-fg-1-low);
-}
+/* Estilos base y estados cubiertos por components/inline-edit.css (.ubits-inline-edit) */
 
 /* Vigencia - fechas en fila */
 .crear-plan-contenidos-vigencia-row {

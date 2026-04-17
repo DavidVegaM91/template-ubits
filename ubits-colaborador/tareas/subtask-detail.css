@@ -46,6 +46,9 @@
     gap: var(--gap-lg);
     min-width: 0;
     max-width: 100%;
+    border: none !important;
+    background: transparent !important;
+    box-shadow: none !important;
 }
 
 /* Línea divisora entre descripción y los 5 ítems */

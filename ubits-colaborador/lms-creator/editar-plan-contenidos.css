@@ -10,7 +10,7 @@
     gap: var(--gap-md);
 }
 
-.crear-plan-contenidos-form__field--nombre-plan.editar-plan-nombre-row .task-detail-title-editable {
+.crear-plan-contenidos-form__field--nombre-plan.editar-plan-nombre-row .ubits-inline-edit {
     flex: 1;
     min-width: 0;
 }

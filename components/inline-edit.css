@@ -53,12 +53,43 @@ textarea.ubits-inline-edit {
 }
 
 /* ──────────────── Estados interactivos ──────────────── */
+/*
+   box-shadow en lugar de solo background para que el hover
+   sea visible sobre cualquier fondo (bg-1 o bg-2).
+   Sin box-shadow en base → no hay layout shift.
+*/
 .ubits-inline-edit:hover {
     background: var(--ubits-bg-2);
+    box-shadow: 0 0 0 1px var(--ubits-border-1);
 }
 
 .ubits-inline-edit:focus {
     background: var(--ubits-bg-2);
+    box-shadow: 0 0 0 1px var(--ubits-accent-brand);
+    outline: none;
+}
+
+/* ──────────────── Variante error (campo obligatorio vacío) ──────────────── */
+/*
+   Uso: añadir clase is-invalid al elemento cuando falle la validación.
+     titleEl.classList.add('is-invalid');
+     titleEl.classList.remove('is-invalid'); // al escribir o al restaurar valor
+*/
+.ubits-inline-edit.is-invalid {
+    border: 1px solid var(--ubits-feedback-accent-error);
+    border-radius: var(--border-radius-xs);
+    padding: 0 var(--padding-xs);
+}
+
+.ubits-inline-edit.is-invalid:focus {
+    border-color: var(--ubits-feedback-accent-error);
+    box-shadow: 0 0 0 2px rgba(233, 52, 60, 0.10);
+    background: var(--ubits-bg-2);
+}
+
+.ubits-inline-edit.is-invalid::placeholder {
+    color: var(--ubits-feedback-accent-error);
+    opacity: 0.7;
 }
 
 /* ──────────────── Variante readonly / disabled ──────────────── */
