@@ -47,7 +47,7 @@
 
     var estado = { task: null, subtask: null };
     var today = getTodayString();
-    var SAVE_INDICATOR_ID = 'subtask-detail-header-container-save-indicator';
+    var SAVE_INDICATOR_ID = 'subtask-detail-save-indicator';
 
     function triggerFakeSave() {
         if (typeof renderSaveIndicator !== 'function') return;
@@ -463,18 +463,15 @@
 
         var taskId = getTaskIdFromUrl();
         var backUrl = taskId != null ? ('task-detail.html?id=' + encodeURIComponent(taskId)) : 'task-detail.html';
-        if (typeof loadHeaderProduct === 'function') {
-            loadHeaderProduct('subtask-detail-header-container', {
-                productName: 'Detalle de la subtarea',
-                breadcrumbItems: [],
-                backButton: {
-                    onClick: function () { window.location.href = backUrl; }
-                },
-                secondaryButtons: []
-            });
+
+        var btnBack = document.getElementById('subtask-detail-btn-back');
+        if (btnBack) {
+            btnBack.addEventListener('click', function () { window.location.href = backUrl; });
         }
+        if (typeof initTooltip === 'function') initTooltip('#subtask-detail-btn-back');
+
         if (typeof renderSaveIndicator === 'function') {
-            renderSaveIndicator('subtask-detail-header-container-save-indicator', { state: 'idle', size: 'xs' });
+            renderSaveIndicator(SAVE_INDICATOR_ID, { state: 'idle', size: 'xs' });
         }
 
         /* Modal eliminar subtarea (desde botón Opciones): al confirmar, ir a task-detail y toast */

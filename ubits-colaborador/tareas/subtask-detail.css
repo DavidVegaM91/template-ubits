@@ -4,51 +4,15 @@
    Reutiliza estilos de task-detail (info block, meta row, etc.).
    ======================================== */
 
-.page-subtask-detail {
-    background-color: var(--ubits-bg-2);
+/* Columna única: acota el ancho del stage para que la card no se estire a 1440px */
+.page-subtask-detail .ubits-layout-immersive {
+    --ubits-layout-immersive-max-width: 800px;
 }
 
-.subtask-detail-content-area {
-    padding: 0;
-    padding-bottom: 16px;
-    max-width: 100%;
-    width: 100%;
-    box-sizing: border-box;
-}
-
-.subtask-detail-sections {
+.subtask-detail-stage {
     display: flex;
     flex-direction: column;
     gap: var(--gap-lg);
-    flex: 1;
-    min-width: 0;
-}
-
-.subtask-detail-section--header .widget-header-product {
-    background: transparent !important;
-    padding: 0 !important;
-    border: none !important;
-}
-
-.page-subtask-detail .ubits-header-product__product-title h2 {
-    display: block;
-}
-
-.subtask-detail-section--body {
-    flex: 1;
-    min-width: 0;
-    min-height: 0;
-}
-
-.subtask-detail-single-col {
-    display: flex;
-    flex-direction: column;
-    gap: var(--gap-lg);
-    min-width: 0;
-    max-width: 100%;
-    border: none !important;
-    background: transparent !important;
-    box-shadow: none !important;
 }
 
 /* Línea divisora entre descripción y los 5 ítems */
