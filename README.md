@@ -229,6 +229,7 @@ Patrón documentado para reutilizarlo en otros flujos o listas similares.
 - **Seccion creator** - Bloque (anida Paginas creator): título siempre **body/md/bold** + fg alto; menú ⋮ **Editar sección** → `ubits-seccion-creator-edit-section` (modal en la pantalla); «Añadir página» si activa - **RENDERIZADO: HTML + `seccion-creator.css` + Paginas creator + `tooltip.js`; JS `seccion-creator.js` (`seccionCreatorHtml`, `initSeccionCreator`, eventos `ubits-seccion-creator-edit-section`, …)**
 - **Índice creator** - Panel izquierdo paso Recursos (interruptor de secciones, índice de secciones o lista única sin cabecera de sección, «Añadir sección» si aplica) - **RENDERIZADO: HTML + `switch.css` + `indice-creator.css` + Sección/Páginas creator; JS `indice-creator.js` tras `seccion-creator.js` (`indiceCreatorHtml`, `initIndiceCreator`, eventos `ubits-indice-creator-sections-toggle`, `ubits-indice-creator-add-section`)**
 - **Rich text editor** - Editor de texto enriquecido (contenteditable, barra de formato: negrita, listas, alineación, imagen, enlace, etc.) - **RENDERIZADO: HTML + `rich-text-editor.css` + `initRichTextEditor()` / `initAllRichTextEditors()`**
+- **Inline Edit** - Campo de texto editable directamente en pantalla (textarea o input; hereda cualquier clase tipográfica UBITS; placeholder diferenciado; auto-resize automático en textarea; hover/focus con fondo sutil; readonly; modo oscuro incluido) - **RENDERIZADO: HTML directo + `inline-edit.css`; JS `inline-edit.js` (`initInlineEdit()`, `autoResizeInlineEdit()`) solo para textarea**
 - **Carousel Contents** - Carruseles de contenido (navegación horizontal, flechas, responsive) - **RENDERIZADO: loadCarouselContents()**
 - **Status Tag** - Etiquetas de estado (tipos: success, info, warning, error, neutral; tamaños: xs, sm, md, lg; iconos opcionales izquierda/derecha) - **RENDERIZADO: HTML directo**
 - **Stepper** - Indicador de pasos de un flujo (horizontal, compacto, título bajo el círculo, combinación compacta, vertical colapsable clásico o **vertical rail creator** alineado al Sidebar contenidos LMS) - **RENDERIZADO: HTML directo**; demo con clic opcional vía `initStepper()`; colapso vertical con `wireStepperVerticalCollapse()` en **stepper.js**. **CSS:** `stepper.css`. **Vertical clásico:** `button.css`, `tooltip.css`, `tooltip.js`. **Rail creator:** `styles.css` (`.nav-button`) + tooltip.
@@ -453,6 +454,7 @@ Todos los componentes UBITS requieren imports obligatorios:
 - **`documentacion/componentes/resources-block.html`** - Documentación Resources block (Figma Learn-Components 248:6265)
 - **`documentacion/componentes/seccion-creator.html`** - Documentación Seccion creator (Figma Learn-Components 242:5368)
 - **`documentacion/componentes/rich-text-editor.html`** - Documentación Rich text editor (Creator v3)
+- **`documentacion/componentes/inline-edit.html`** - Documentación del componente Inline Edit
 - **`documentacion/componentes/status-tag.html`** - Documentación del componente Status Tag
 - **`documentacion/componentes/stepper.html`** - Documentación del componente Stepper
 - **`documentacion/componentes/switch.html`** - Documentación del componente Switch
@@ -974,6 +976,7 @@ loadCardContentCompact('mi-contenedor-compact', [
 - **`documentacion/componentes/resources-block.html`** - Documentación Resources block (Figma Learn-Components 248:6265)
 - **`documentacion/componentes/seccion-creator.html`** - Documentación Seccion creator (Figma Learn-Components 242:5368)
 - **`documentacion/componentes/rich-text-editor.html`** - Documentación Rich text editor (Creator v3)
+- **`documentacion/componentes/inline-edit.html`** - Documentación del componente Inline Edit
 - **`documentacion/componentes/status-tag.html`** - Documentación del componente Status Tag
 - **`documentacion/componentes/stepper.html`** - Documentación del componente Stepper
 - **`documentacion/componentes/switch.html`** - Documentación del componente Switch

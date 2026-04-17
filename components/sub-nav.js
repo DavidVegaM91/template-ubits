@@ -404,6 +404,7 @@ const PAGE_TO_TAB = {
     'empty-state.html': 'section3',
     'header-product.html': 'section3',
     'ia-button.html': 'section3',
+    'inline-edit.html': 'section3',
     'input.html': 'section3',
     'loader.html': 'section3',
     'modal.html': 'section3',

@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="../../images/Ubits-logo-dark.svg">
+    <title>Inline Edit | UBITS Playground</title>
+
+    <link rel="stylesheet" href="../../general-styles/ubits-colors.css">
+    <link rel="stylesheet" href="../../general-styles/styles.css">
+    <link rel="stylesheet" href="../../general-styles/fontawesome-icons.css">
+    <link rel="stylesheet" href="../../general-styles/ubits-typography.css">
+    <link rel="stylesheet" href="../../components/sub-nav.css">
+    <link rel="stylesheet" href="../../components/alert.css">
+    <link rel="stylesheet" href="../../components/sidebar.css">
+    <link rel="stylesheet" href="../../docs/docs-sidebar.css">
+    <link rel="stylesheet" href="../../docs/docstyles.css">
+    <link rel="stylesheet" href="../../components/button.css">
+    <link rel="stylesheet" href="../../components/toast.css">
+    <link rel="stylesheet" href="../../components/inline-edit.css">
+    <style>
+        .preview-control-btn.active {
+            background: var(--ubits-accent-brand) !important;
+            color: white !important;
+            border-color: var(--ubits-accent-brand) !important;
+        }
+        .preview-control-btn.active span {
+            color: white !important;
+        }
+        /* Contenedor de preview con ancho acotado para que se vea como contexto real */
+        .inline-edit-preview-wrap {
+            background: var(--ubits-bg-1);
+            border: 1px solid var(--ubits-border-1);
+            border-radius: var(--border-radius-md);
+            padding: 24px 28px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+    </style>
+</head>
+<body class="componentes-page" data-theme="light">
+    <div class="dashboard-container">
+        <div class="tooltip" id="tooltip"></div>
+
+        <main class="main-content">
+            <div id="top-nav-container"></div>
+
+            <div style="display: flex;">
+                <div id="docs-dropdown-container"></div>
+                <div id="docs-sidebar-container"></div>
+
+                <div class="components-content">
+                    <div class="content-area" style="display: block; width: 100%;">
+
+                        <!-- ── Hero ── -->
+                        <div style="text-align: center; margin-bottom: 60px;">
+                            <h1 class="ubits-display-d2-bold" style="margin-bottom: 24px; color: var(--ubits-accent-brand);">
+                                Inline Edit
+                            </h1>
+                            <p class="ubits-body-md-regular" style="max-width: 800px; margin: 0 auto 32px; line-height: 1.6;">
+                                Campo de texto que se puede editar directamente en la pantalla, sin abrir un formulario aparte.
+                                Sirve para títulos, descripciones y cualquier texto que el usuario deba poder cambiar en el momento, sin interrumpir el flujo.
+                            </p>
+                        </div>
+
+                        <!-- ── Preview ── -->
+                        <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; margin-bottom: 40px;">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 8px; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-eye" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Preview del componente
+                            </h2>
+                            <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6; color: var(--ubits-fg-1-medium);">
+                                Haz clic dentro del campo para editarlo. Prueba las diferentes variantes tipográficas con los controles de abajo.
+                            </p>
+
+                            <!-- Preview container -->
+                            <div style="background: var(--ubits-bg-2); padding: 32px; border-radius: 12px;">
+                                <div class="inline-edit-preview-wrap">
+                                    <textarea
+                                        id="inline-edit-preview-field"
+                                        class="ubits-inline-edit ubits-display-d3-bold"
+                                        placeholder="Escribe aquí el título del contenido..."
+                                        rows="1"
+                                    ></textarea>
+                                </div>
+                            </div>
+
+                            <!-- Controles: variante tipográfica -->
+                            <div style="margin-top: 20px;">
+                                <p class="ubits-body-sm-semibold" style="color: var(--ubits-fg-1-medium); margin-bottom: 10px;">Variante tipográfica</p>
+                                <div style="display: flex; flex-wrap: wrap; gap: var(--gap-sm);">
+                                    <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn active"
+                                            onclick="setPreviewVariant('ubits-display-d3-bold', 'Escribe aquí el título del contenido...')">
+                                        <span>Display D3 Bold</span>
+                                    </button>
+                                    <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn"
+                                            onclick="setPreviewVariant('ubits-heading-h1', 'Nombre de la sección...')">
+                                        <span>Heading H1</span>
+                                    </button>
+                                    <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn"
+                                            onclick="setPreviewVariant('ubits-heading-h2', 'Nombre del grupo...')">
+                                        <span>Heading H2</span>
+                                    </button>
+                                    <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn"
+                                            onclick="setPreviewVariant('ubits-body-md-regular', 'Añade una descripción para este elemento...')">
+                                        <span>Body MD Regular</span>
+                                    </button>
+                                    <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn"
+                                            onclick="setPreviewVariant('ubits-body-sm-regular', 'Escribe un comentario o nota adicional...')">
+                                        <span>Body SM Regular</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- ── Características generales ── -->
+                        <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; margin-bottom: 40px;">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-info-circle" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Características generales
+                            </h2>
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--gap-lg);">
+                                <div style="text-align: center; padding: 20px 16px; background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 10px;"><i class="far fa-text-size"></i></div>
+                                    <div class="ubits-body-sm-bold" style="margin-bottom: 6px;">Hereda la tipografía</div>
+                                    <div class="ubits-body-sm-regular">Funciona con cualquier clase tipográfica UBITS: display, heading o body.</div>
+                                </div>
+                                <div style="text-align: center; padding: 20px 16px; background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 10px;"><i class="far fa-paint-brush"></i></div>
+                                    <div class="ubits-body-sm-bold" style="margin-bottom: 6px;">Placeholder diferenciado</div>
+                                    <div class="ubits-body-sm-regular">El texto guía usa el mismo color que los inputs UBITS, claro en claro y claro en oscuro.</div>
+                                </div>
+                                <div style="text-align: center; padding: 20px 16px; background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 10px;"><i class="far fa-expand-alt"></i></div>
+                                    <div class="ubits-body-sm-bold" style="margin-bottom: 6px;">Auto-resize automático</div>
+                                    <div class="ubits-body-sm-regular">El campo crece con el contenido: nunca aparece barra de scroll ni texto cortado.</div>
+                                </div>
+                                <div style="text-align: center; padding: 20px 16px; background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 10px;"><i class="far fa-hand-pointer"></i></div>
+                                    <div class="ubits-body-sm-bold" style="margin-bottom: 6px;">Fondo sutil al interactuar</div>
+                                    <div class="ubits-body-sm-regular">Al pasar el cursor o hacer foco aparece un fondo suave que indica que el campo es editable.</div>
+                                </div>
+                                <div style="text-align: center; padding: 20px 16px; background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 10px;"><i class="far fa-moon"></i></div>
+                                    <div class="ubits-body-sm-bold" style="margin-bottom: 6px;">Modo oscuro incluido</div>
+                                    <div class="ubits-body-sm-regular">Todos los colores usan tokens UBITS: cambian solos al cambiar de tema.</div>
+                                </div>
+                                <div style="text-align: center; padding: 20px 16px; background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 10px;"><i class="far fa-lock"></i></div>
+                                    <div class="ubits-body-sm-bold" style="margin-bottom: 6px;">Variante de solo lectura</div>
+                                    <div class="ubits-body-sm-regular">Atributo <code>readonly</code> desactiva la edición sin cambiar la apariencia del texto.</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- ── Prompts útiles ── -->
+                        <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; margin-bottom: 40px;">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 8px; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-comments" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Prompts útiles
+                            </h2>
+                            <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6; color: var(--ubits-fg-1-medium);">
+                                Copia el prompt, reemplaza lo que va entre [corchetes] y pégalo en Cursor.
+                            </p>
+
+                            <div id="component-warning-alert" style="margin-bottom: 32px;"></div>
+
+                            <!-- Prompt 1 -->
+                            <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
+                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                                    <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Añadir título editable inline</h3>
+                                    <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('inline-edit-prompt-1')">
+                                        <i class="far fa-copy"></i><span>Copiar</span>
+                                    </button>
+                                </div>
+                                <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm);">
+                                    <pre style="margin:0; font-family:'Monaco','Menlo','Ubuntu Mono',monospace; font-size:var(--font-size-sm); line-height:1.5; color:var(--ubits-fg-1-medium); white-space:pre-wrap;"><code id="inline-edit-prompt-1">Añade un campo editable inline para el título en [ubicación dentro de la página], en tamaño [display-d3-bold / heading-h1 / heading-h2], con placeholder "[texto de ejemplo]".
+Importa los estilos components/inline-edit.css y el script components/inline-edit.js, y llama a initInlineEdit() después de renderizar el contenido.</code></pre>
+                                </div>
+                            </div>
+
+                            <!-- Prompt 2 -->
+                            <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
+                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                                    <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Añadir descripción editable inline</h3>
+                                    <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('inline-edit-prompt-2')">
+                                        <i class="far fa-copy"></i><span>Copiar</span>
+                                    </button>
+                                </div>
+                                <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm);">
+                                    <pre style="margin:0; font-family:'Monaco','Menlo','Ubuntu Mono',monospace; font-size:var(--font-size-sm); line-height:1.5; color:var(--ubits-fg-1-medium); white-space:pre-wrap;"><code id="inline-edit-prompt-2">Añade un campo de descripción editable inline en [ubicación], en tamaño body-md-regular, con placeholder "[texto guía para el usuario]".
+Importa components/inline-edit.css y components/inline-edit.js, y llama a initInlineEdit() tras insertar el HTML.</code></pre>
+                                </div>
+                            </div>
+
+                            <!-- Prompt 3 -->
+                            <div>
+                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                                    <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Inicializar campos inline-edit tras renderizado dinámico</h3>
+                                    <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('inline-edit-prompt-3')">
+                                        <i class="far fa-copy"></i><span>Copiar</span>
+                                    </button>
+                                </div>
+                                <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm);">
+                                    <pre style="margin:0; font-family:'Monaco','Menlo','Ubuntu Mono',monospace; font-size:var(--font-size-sm); line-height:1.5; color:var(--ubits-fg-1-medium); white-space:pre-wrap;"><code id="inline-edit-prompt-3">En [nombre de la función de renderizado de la página], después de insertar el HTML en el DOM, llama a initInlineEdit(contenedor) para activar el auto-resize de todos los textarea.ubits-inline-edit dentro de ese contenedor.
+Si el valor de algún campo se actualiza por código, usa autoResizeInlineEdit(elemento) para ajustar la altura.</code></pre>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- ── Documentación técnica (colapsable) ── -->
+                        <div style="background: var(--ubits-bg-1); border-radius: 16px; margin-bottom: 40px; overflow: hidden;">
+                            <!-- Header del acordeón -->
+                            <div style="padding: 32px; text-align: center; border-bottom: 1px solid var(--ubits-border-1);">
+                                <h2 class="ubits-heading-h2" style="margin-bottom: 0; color: var(--ubits-fg-1-high);">
+                                    <i class="far fa-code" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                    Documentación técnica
+                                </h2>
+                                <p class="ubits-body-md-regular" style="margin-top: 12px; color: var(--ubits-fg-1-medium);">
+                                    Estructura HTML, imports necesarios y API completa del componente.
+                                </p>
+                            </div>
+
+                            <!-- Botón Mostrar/Ocultar -->
+                            <div style="background: var(--ubits-bg-2); padding: 20px; text-align: center; cursor: pointer;" onclick="toggleTechnicalDocs()">
+                                <span class="ubits-body-md-regular" style="color: var(--ubits-accent-brand); display: flex; align-items: center; justify-content: center; gap: var(--gap-sm);">
+                                    <i class="far fa-chevron-down" id="tech-docs-chevron" style="transition: transform 0.3s ease;"></i>
+                                    Mostrar
+                                </span>
+                            </div>
+
+                            <!-- Contenido colapsable -->
+                            <div id="technical-docs-content" style="display: none; padding: 0;">
+
+                                <!-- Estructura del componente -->
+                                <div style="padding: 32px; border-bottom: 1px solid var(--ubits-border-1);">
+                                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;">
+                                        <h2 class="ubits-heading-h2" style="margin: 0; color: var(--ubits-fg-1-high);">
+                                            <i class="far fa-sitemap" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                            Estructura del componente
+                                        </h2>
+                                        <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('ie-structure-code')">
+                                            <i class="far fa-copy"></i><span>Copiar</span>
+                                        </button>
+                                    </div>
+                                    <p class="ubits-body-md-regular" style="margin-bottom: 16px; color: var(--ubits-fg-1-medium); line-height: 1.6;">
+                                        Siempre combina <code>ubits-inline-edit</code> con una clase tipográfica UBITS.
+                                        Para múltiples líneas usa <code>&lt;textarea&gt;</code>; para una sola línea, <code>&lt;input type="text"&gt;</code>.
+                                    </p>
+                                    <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: var(--border-radius-md);">
+                                        <pre style="margin:0; font-family:'Monaco','Menlo','Ubuntu Mono',monospace; font-size:var(--font-size-sm); line-height:1.5; color:var(--ubits-fg-1-medium); overflow-x:auto;"><code id="ie-structure-code">&lt;!-- Título grande (multilinea, auto-resize) --&gt;
+&lt;textarea
+    class="ubits-inline-edit ubits-display-d3-bold"
+    placeholder="Escribe el título del contenido..."
+    rows="1"
+&gt;&lt;/textarea&gt;
+
+&lt;!-- Encabezado de sección (multilinea) --&gt;
+&lt;textarea
+    class="ubits-inline-edit ubits-heading-h2"
+    placeholder="Nombre de la sección..."
+    rows="1"
+&gt;&lt;/textarea&gt;
+
+&lt;!-- Descripción (multilinea) --&gt;
+&lt;textarea
+    class="ubits-inline-edit ubits-body-md-regular"
+    placeholder="Añade una descripción..."
+    rows="1"
+&gt;&lt;/textarea&gt;
+
+&lt;!-- Una sola línea fija (sin auto-resize, no necesita JS) --&gt;
+&lt;input
+    type="text"
+    class="ubits-inline-edit ubits-heading-h1"
+    placeholder="Nombre del plan..."
+&gt;
+
+&lt;!-- Solo lectura --&gt;
+&lt;textarea
+    class="ubits-inline-edit ubits-body-md-regular"
+    readonly
+&gt;Texto no editable&lt;/textarea&gt;</code></pre>
+                                    </div>
+                                </div>
+
+                                <!-- Cómo implementar -->
+                                <div style="padding: 32px; border-bottom: 1px solid var(--ubits-border-1);">
+                                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;">
+                                        <h2 class="ubits-heading-h2" style="margin: 0; color: var(--ubits-fg-1-high);">
+                                            <i class="far fa-code" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                            Cómo implementar
+                                        </h2>
+                                        <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('ie-implement-code')">
+                                            <i class="far fa-copy"></i><span>Copiar</span>
+                                        </button>
+                                    </div>
+                                    <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: var(--border-radius-md);">
+                                        <pre style="margin:0; font-family:'Monaco','Menlo','Ubuntu Mono',monospace; font-size:var(--font-size-sm); line-height:1.5; color:var(--ubits-fg-1-medium); overflow-x:auto;"><code id="ie-implement-code">&lt;!-- 1. Importar CSS (después de ubits-typography.css) --&gt;
+&lt;link rel="stylesheet" href="../../components/inline-edit.css"&gt;
+
+&lt;!-- 2. Importar JS (solo si usas textarea; input no lo necesita) --&gt;
+&lt;script src="../../components/inline-edit.js"&gt;&lt;/script&gt;
+
+&lt;!-- 3. HTML --&gt;
+&lt;textarea
+    id="mi-titulo"
+    class="ubits-inline-edit ubits-display-d3-bold"
+    placeholder="Escribe el título..."
+    rows="1"
+&gt;&lt;/textarea&gt;
+
+&lt;!-- 4. Inicializar (el JS se auto-inicia al cargar la página,
+        pero si insertas HTML dinámicamente, llama a: --&gt;
+&lt;script&gt;
+    // Tras renderizar HTML con inline-edits:
+    initInlineEdit(document.getElementById('mi-contenedor'));
+
+    // Si cambias el valor por código:
+    const campo = document.getElementById('mi-titulo');
+    campo.value = 'Nuevo título';
+    autoResizeInlineEdit(campo);
+&lt;/script&gt;</code></pre>
+                                    </div>
+                                </div>
+
+                                <!-- API -->
+                                <div style="padding: 32px; border-bottom: 1px solid var(--ubits-border-1);">
+                                    <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                                        <i class="far fa-cogs" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                        API y funciones
+                                    </h2>
+
+                                    <!-- initInlineEdit -->
+                                    <div style="margin-bottom: 24px;">
+                                        <h3 class="ubits-body-md-bold" style="margin-bottom: 10px; color: var(--ubits-fg-1-high);">initInlineEdit(root?)</h3>
+                                        <p class="ubits-body-md-regular" style="margin-bottom: 10px; line-height: 1.5; color: var(--ubits-fg-1-medium);">
+                                            Inicializa el auto-resize en todos los <code>textarea.ubits-inline-edit</code> dentro de <code>root</code>.
+                                            Si no se pasa <code>root</code>, busca en todo el documento. Usa un guard interno para evitar doble binding.
+                                        </p>
+                                        <div style="background: var(--ubits-bg-2); padding: 12px 16px; border-radius: var(--border-radius-sm); border-left: 4px solid var(--ubits-accent-brand);">
+                                            <div class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">
+                                                <strong>Parámetro:</strong> <code>root</code> — HTMLElement o Document (opcional, default: <code>document</code>)<br>
+                                                <strong>Ejemplo:</strong> <code>initInlineEdit(document.getElementById('mi-sección'))</code>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- autoResizeInlineEdit -->
+                                    <div>
+                                        <h3 class="ubits-body-md-bold" style="margin-bottom: 10px; color: var(--ubits-fg-1-high);">autoResizeInlineEdit(el)</h3>
+                                        <p class="ubits-body-md-regular" style="margin-bottom: 10px; line-height: 1.5; color: var(--ubits-fg-1-medium);">
+                                            Ajusta la altura de un textarea individual al contenido actual.
+                                            Úsalo cuando cambies el valor del campo por código (<code>campo.value = '...'</code>).
+                                        </p>
+                                        <div style="background: var(--ubits-bg-2); padding: 12px 16px; border-radius: var(--border-radius-sm); border-left: 4px solid var(--ubits-accent-brand);">
+                                            <div class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">
+                                                <strong>Parámetro:</strong> <code>el</code> — HTMLTextAreaElement<br>
+                                                <strong>Ejemplo:</strong> <code>autoResizeInlineEdit(document.getElementById('mi-titulo'))</code>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Variantes tipográficas disponibles -->
+                                <div style="padding: 32px;">
+                                    <h2 class="ubits-heading-h2" style="margin-bottom: 16px; color: var(--ubits-fg-1-high);">
+                                        <i class="far fa-text-size" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                        Clases tipográficas compatibles
+                                    </h2>
+                                    <p class="ubits-body-md-regular" style="margin-bottom: 20px; color: var(--ubits-fg-1-medium); line-height: 1.6;">
+                                        Cualquier clase tipográfica UBITS funciona como companion de <code>ubits-inline-edit</code>.
+                                        El color del texto lo fija la clase tipográfica:
+                                        <strong>display y heading → <code>fg-1-high</code></strong>,
+                                        <strong>body → <code>fg-1-medium</code></strong>.
+                                    </p>
+                                    <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-md); overflow-x: auto;">
+                                        <table style="width: 100%; border-collapse: collapse; font-size: var(--font-size-sm);">
+                                            <thead>
+                                                <tr style="border-bottom: 1px solid var(--ubits-border-1);">
+                                                    <th class="ubits-body-sm-semibold" style="text-align: left; padding: 8px 12px; color: var(--ubits-fg-1-high);">Clase</th>
+                                                    <th class="ubits-body-sm-semibold" style="text-align: left; padding: 8px 12px; color: var(--ubits-fg-1-high);">Tamaño</th>
+                                                    <th class="ubits-body-sm-semibold" style="text-align: left; padding: 8px 12px; color: var(--ubits-fg-1-high);">Uso típico</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr style="border-bottom: 1px solid var(--ubits-border-1);"><td class="ubits-body-sm-regular" style="padding: 8px 12px; color: var(--ubits-fg-1-medium);"><code>ubits-display-d1-bold</code></td><td class="ubits-body-sm-regular" style="padding: 8px 12px; color: var(--ubits-fg-1-medium);">40px</td><td class="ubits-body-sm-regular" style="padding: 8px 12px; color: var(--ubits-fg-1-medium);">Título hero de página</td></tr>
+                                                <tr style="border-bottom: 1px solid var(--ubits-border-1);"><td class="ubits-body-sm-regular" style="padding: 8px 12px; color: var(--ubits-fg-1-medium);"><code>ubits-display-d2-bold</code></td><td class="ubits-body-sm-regular" style="padding: 8px 12px; color: var(--ubits-fg-1-medium);">36px</td><td class="ubits-body-sm-regular" style="padding: 8px 12px; color: var(--ubits-fg-1-medium);">Título principal de sección grande</td></tr>
+                                                <tr style="border-bottom: 1px solid var(--ubits-border-1);"><td class="ubits-body-sm-regular" style="padding: 8px 12px; color: var(--ubits-fg-1-medium);"><code>ubits-display-d3-bold</code></td><td class="ubits-body-sm-regular" style="padding: 8px 12px; color: var(--ubits-fg-1-medium);">32px</td><td class="ubits-body-sm-regular" style="padding: 8px 12px; color: var(--ubits-fg-1-medium);">Título de contenido / plan</td></tr>
+                                                <tr style="border-bottom: 1px solid var(--ubits-border-1);"><td class="ubits-body-sm-regular" style="padding: 8px 12px; color: var(--ubits-fg-1-medium);"><code>ubits-display-d4-bold</code></td><td class="ubits-body-sm-regular" style="padding: 8px 12px; color: var(--ubits-fg-1-medium);">28px</td><td class="ubits-body-sm-regular" style="padding: 8px 12px; color: var(--ubits-fg-1-medium);">Título de tarjeta o modal</td></tr>
+                                                <tr style="border-bottom: 1px solid var(--ubits-border-1);"><td class="ubits-body-sm-regular" style="padding: 8px 12px; color: var(--ubits-fg-1-medium);"><code>ubits-heading-h1</code></td><td class="ubits-body-sm-regular" style="padding: 8px 12px; color: var(--ubits-fg-1-medium);">24px</td><td class="ubits-body-sm-regular" style="padding: 8px 12px; color: var(--ubits-fg-1-medium);">Encabezado de sección</td></tr>
+                                                <tr style="border-bottom: 1px solid var(--ubits-border-1);"><td class="ubits-body-sm-regular" style="padding: 8px 12px; color: var(--ubits-fg-1-medium);"><code>ubits-heading-h2</code></td><td class="ubits-body-sm-regular" style="padding: 8px 12px; color: var(--ubits-fg-1-medium);">20px</td><td class="ubits-body-sm-regular" style="padding: 8px 12px; color: var(--ubits-fg-1-medium);">Nombre de grupo o paso</td></tr>
+                                                <tr style="border-bottom: 1px solid var(--ubits-border-1);"><td class="ubits-body-sm-regular" style="padding: 8px 12px; color: var(--ubits-fg-1-medium);"><code>ubits-body-md-regular / bold</code></td><td class="ubits-body-sm-regular" style="padding: 8px 12px; color: var(--ubits-fg-1-medium);">16px</td><td class="ubits-body-sm-regular" style="padding: 8px 12px; color: var(--ubits-fg-1-medium);">Descripción, nota</td></tr>
+                                                <tr><td class="ubits-body-sm-regular" style="padding: 8px 12px; color: var(--ubits-fg-1-medium);"><code>ubits-body-sm-regular / bold</code></td><td class="ubits-body-sm-regular" style="padding: 8px 12px; color: var(--ubits-fg-1-medium);">13px</td><td class="ubits-body-sm-regular" style="padding: 8px 12px; color: var(--ubits-fg-1-medium);">Comentario, helper text editable</td></tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div id="ubits-toast-container"></div>
+
+    <script src="../../components/sidebar.js"></script>
+    <script src="../../components/sub-nav.js"></script>
+    <script src="../../components/alert.js"></script>
+    <script src="../../components/toast.js"></script>
+    <script src="../../components/inline-edit.js"></script>
+    <script src="../../docs/docs-sidebar.js"></script>
+    <script src="../../script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            loadSubNav('top-nav-container', 'documentacion');
+
+            setTimeout(function () {
+                document.querySelectorAll('.nav-tab.active, .hamburger-item.active').forEach(function (el) {
+                    el.classList.remove('active');
+                });
+                var navTab = document.querySelector('.nav-tab[data-tab="section3"]');
+                var hamburgerItem = document.querySelector('.hamburger-item[data-tab="section3"]');
+                if (navTab) navTab.classList.add('active');
+                if (hamburgerItem) hamburgerItem.classList.add('active');
+            }, 200);
+
+            loadDocsSidebar('inline-edit');
+
+            showAlert('warning', 'Antes de enviar estos prompts a Cursor, reemplaza todos los textos entre [corchetes] con la información específica de tu proyecto.', {
+                containerId: 'component-warning-alert',
+                noClose: true
+            });
+
+            // Inicializar el textarea del preview
+            initInlineEdit(document.querySelector('.inline-edit-preview-wrap'));
+        });
+
+        /* ── Controles del preview ── */
+        var ALL_TYPO_CLASSES = [
+            'ubits-display-d1-regular','ubits-display-d1-semibold','ubits-display-d1-bold',
+            'ubits-display-d2-regular','ubits-display-d2-semibold','ubits-display-d2-bold',
+            'ubits-display-d3-regular','ubits-display-d3-semibold','ubits-display-d3-bold',
+            'ubits-display-d4-regular','ubits-display-d4-semibold','ubits-display-d4-bold',
+            'ubits-heading-h1','ubits-heading-h2',
+            'ubits-body-md-regular','ubits-body-md-semibold','ubits-body-md-bold',
+            'ubits-body-sm-regular','ubits-body-sm-semibold','ubits-body-sm-bold',
+            'ubits-body-xs-regular','ubits-body-xs-semibold','ubits-body-xs-bold'
+        ];
+
+        function setPreviewVariant(typoClass, placeholder) {
+            var field = document.getElementById('inline-edit-preview-field');
+            // Quitar todas las clases tipográficas anteriores
+            ALL_TYPO_CLASSES.forEach(function (cls) { field.classList.remove(cls); });
+            // Aplicar la nueva
+            field.classList.add(typoClass);
+            field.placeholder = placeholder;
+            autoResizeInlineEdit(field);
+            // Actualizar botones activos
+            document.querySelectorAll('.preview-control-btn').forEach(function (btn) {
+                btn.classList.remove('active');
+            });
+            event.currentTarget.classList.add('active');
+        }
+
+        /* ── Acordeón de documentación técnica ── */
+        function toggleTechnicalDocs() {
+            var content = document.getElementById('technical-docs-content');
+            var btn = document.querySelector('[onclick="toggleTechnicalDocs()"]');
+            if (content.style.display === 'none' || content.style.display === '') {
+                content.style.display = 'block';
+                btn.innerHTML = '<i class="far fa-chevron-up" style="color:var(--ubits-accent-brand);"></i> <span class="ubits-body-md-regular" style="color:var(--ubits-accent-brand);">Ocultar</span>';
+            } else {
+                content.style.display = 'none';
+                btn.innerHTML = '<i class="far fa-chevron-down" style="color:var(--ubits-accent-brand);"></i> <span class="ubits-body-md-regular" style="color:var(--ubits-accent-brand);">Mostrar</span>';
+            }
+        }
+
+        /* ── Copiar prompt ── */
+        function copyPrompt(id) {
+            var text = document.getElementById(id).textContent;
+            navigator.clipboard.writeText(text).then(function () {
+                var btn = document.querySelector('[onclick="copyPrompt(\'' + id + '\')"]');
+                var icon = btn.querySelector('i'); var span = btn.querySelector('span');
+                icon.className = 'far fa-check'; span.textContent = 'Copiado';
+                btn.classList.add('ubits-button--active');
+                showToast('success', '¡Prompt copiado!', { containerId: 'ubits-toast-container', duration: 3500 });
+                setTimeout(function () { icon.className = 'far fa-copy'; span.textContent = 'Copiar'; btn.classList.remove('ubits-button--active'); }, 2000);
+            }).catch(function () {
+                showToast('error', 'Error al copiar el prompt', { containerId: 'ubits-toast-container', duration: 6500 });
+            });
+        }
+
+        /* ── Copiar código ── */
+        function copyCode(id) {
+            var text = document.getElementById(id).textContent;
+            navigator.clipboard.writeText(text).then(function () {
+                var btn = document.querySelector('[onclick="copyCode(\'' + id + '\')"]');
+                var icon = btn.querySelector('i'); var span = btn.querySelector('span');
+                icon.className = 'far fa-check'; span.textContent = 'Copiado';
+                btn.classList.add('ubits-button--active');
+                showToast('success', '¡Código copiado!', { containerId: 'ubits-toast-container', duration: 3500 });
+                setTimeout(function () { icon.className = 'far fa-copy'; span.textContent = 'Copiar'; btn.classList.remove('ubits-button--active'); }, 2000);
+            }).catch(function () {
+                showToast('error', 'Error al copiar el código', { containerId: 'ubits-toast-container', duration: 6500 });
+            });
+        }
+    </script>
+</body>
+</html>

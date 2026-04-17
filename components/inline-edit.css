@@ -1,0 +1,139 @@
+/* ========================================
+   UBITS — Inline Edit
+   Campo de texto editable inline que hereda la tipografía
+   de la clase UBITS que se le adjunte.
+
+   USO OBLIGATORIO: combinar siempre con una clase tipográfica:
+     <textarea class="ubits-inline-edit ubits-display-d3-bold"
+               placeholder="Escribe aquí el título..."></textarea>
+     <input    class="ubits-inline-edit ubits-heading-h2"
+               placeholder="Nombre de la sección">
+     <textarea class="ubits-inline-edit ubits-body-md-regular"
+               placeholder="Añade una descripción..."></textarea>
+
+   El color del texto lo fija la clase tipográfica (fg-1-high para
+   display/heading, fg-1-medium para body). El placeholder siempre
+   usa --ubits-input-text-default, igual que el componente Input.
+
+   Para textarea: importar inline-edit.js y llamar initInlineEdit()
+   para el auto-resize automático al escribir.
+   ======================================== */
+
+/* ──────────────── Base ──────────────── */
+.ubits-inline-edit {
+    display: block;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    border: none;
+    background: transparent;
+    outline: none;
+    box-sizing: border-box;
+    resize: none;
+    overflow: hidden;
+    cursor: text;
+    /* Hereda color de la clase tipográfica companion */
+    color: inherit;
+    /* Border-radius para el fondo hover/focus */
+    border-radius: var(--border-radius-xs);
+    transition: background 0.12s ease;
+}
+
+/* ──────────────── Textarea ──────────────── */
+textarea.ubits-inline-edit {
+    overflow-y: hidden;
+    min-height: 1em;
+}
+
+/* ──────────────── Placeholder ──────────────── */
+/* Mismo color que .ubits-input::placeholder (Input UBITS) */
+.ubits-inline-edit::placeholder {
+    color: var(--ubits-input-text-default);
+    opacity: 1; /* Normaliza en Firefox */
+}
+
+/* ──────────────── Estados interactivos ──────────────── */
+.ubits-inline-edit:hover {
+    background: var(--ubits-bg-2);
+}
+
+.ubits-inline-edit:focus {
+    background: var(--ubits-bg-2);
+}
+
+/* ──────────────── Variante readonly / disabled ──────────────── */
+.ubits-inline-edit[readonly],
+.ubits-inline-edit:disabled {
+    cursor: default;
+    pointer-events: none;
+    opacity: 0.55;
+}
+
+/* ──────────────── Compatibilidad tipográfica ──────────────── */
+/*
+   Display (d1–d4): line-height explícita en px — se preserva.
+   Heading (h1–h2): line-height: 1 — se preserva.
+   Body (md/sm/xs):  line-height en px — se preserva.
+   El componente no redefine ningún valor tipográfico; todo lo hereda
+   de la clase companion para garantizar consistencia con el sistema.
+*/
+
+/* display/d1 companion */
+.ubits-inline-edit.ubits-display-d1-regular,
+.ubits-inline-edit.ubits-display-d1-semibold,
+.ubits-inline-edit.ubits-display-d1-bold {
+    line-height: 60px;
+}
+
+/* display/d2 */
+.ubits-inline-edit.ubits-display-d2-regular,
+.ubits-inline-edit.ubits-display-d2-semibold,
+.ubits-inline-edit.ubits-display-d2-bold {
+    line-height: 54px;
+}
+
+/* display/d3 */
+.ubits-inline-edit.ubits-display-d3-regular,
+.ubits-inline-edit.ubits-display-d3-semibold,
+.ubits-inline-edit.ubits-display-d3-bold {
+    line-height: 48px;
+}
+
+/* display/d4 */
+.ubits-inline-edit.ubits-display-d4-regular,
+.ubits-inline-edit.ubits-display-d4-semibold,
+.ubits-inline-edit.ubits-display-d4-bold {
+    line-height: 42px;
+}
+
+/* heading/h1 y h2: line-height: 1 ya está en la clase tipográfica.
+   Al ser textarea, forzamos line-height explícita para que scrollHeight
+   se calcule bien en el auto-resize del JS. */
+.ubits-inline-edit.ubits-heading-h1 {
+    line-height: 1.25;
+}
+
+.ubits-inline-edit.ubits-heading-h2 {
+    line-height: 1.25;
+}
+
+/* body/md */
+.ubits-inline-edit.ubits-body-md-regular,
+.ubits-inline-edit.ubits-body-md-semibold,
+.ubits-inline-edit.ubits-body-md-bold {
+    line-height: 24px;
+}
+
+/* body/sm */
+.ubits-inline-edit.ubits-body-sm-regular,
+.ubits-inline-edit.ubits-body-sm-semibold,
+.ubits-inline-edit.ubits-body-sm-bold {
+    line-height: 19.5px;
+}
+
+/* body/xs */
+.ubits-inline-edit.ubits-body-xs-regular,
+.ubits-inline-edit.ubits-body-xs-semibold,
+.ubits-inline-edit.ubits-body-xs-bold {
+    line-height: 16.5px;
+}
