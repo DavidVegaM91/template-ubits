@@ -434,6 +434,28 @@ Si se incluyen, su HTML se inyecta en la página y se ve como “código basura�
 - **Archivos en `components/`** - Componentes del sistema UBITS
 - **Archivos en `docs/`** - Sistema de documentación
 
+### **🚨 SI EXCEPCIONALMENTE DEBES EDITAR ALGUNO DE ESOS ARCHIVOS (ej. añadir un token nuevo):**
+
+**PROTOCOLO OBLIGATORIO — sin excepción:**
+
+1. **En el `StrReplace`, ancla siempre con la línea que queda DESPUÉS del punto de inserción** — inclúyela tanto en `old_string` como en `new_string`. Así, si olvidas preservar una línea existente, el replace falla en lugar de borrarla silenciosamente.
+
+ ```
+ ✅ CORRECTO — la línea posterior ancla el bloque:
+ old_string:                              new_string:
+ --token-existente-a: valor;             --token-existente-a: valor;
+ --token-posterior: valor;    →          --token-nuevo: valor;          ← inserción
+                                          --token-posterior: valor;      ← preservada
+
+ ❌ MAL — terminar old_string justo antes del punto de inserción:
+ old_string:                              new_string:
+ --token-existente-a: valor;             --token-existente-a: valor;
+                              →          --token-nuevo: valor;
+                                          ← token-posterior desaparece sin warning
+ ```
+
+2. **Corre `git diff` ANTES de hacer commit** y lee cada línea con `-` para confirmar que no se eliminó nada existente. Si hay alguna línea con `-` que no debería estar, corrige antes de commitear.
+
 ## 📄 CREAR NUEVAS PÁGINAS - ESTRUCTURA OBLIGATORIA
 
 ### **🚨 REGLA CRÍTICA: Cada página HTML debe tener su CSS separado**
