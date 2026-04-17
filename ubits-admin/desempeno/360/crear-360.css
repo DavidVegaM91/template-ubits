@@ -62,7 +62,7 @@
 
 /* grid de 4 cards */
 .crear360-cards-section {
-    margin-bottom: var(--gap-2xl);
+    margin-bottom: 0;
 }
 
 .crear360-cards-grid {

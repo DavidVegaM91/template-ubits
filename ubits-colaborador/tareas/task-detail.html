@@ -100,13 +100,25 @@
             var block = document.querySelector('.task-detail-comments-block');
             if (!col || !block) return;
             if (window.innerWidth < 1024) {
-                // En mobile/tablet: limpiar estilos inline para ceder al CSS normal
-                block.style.left = '';
-                block.style.width = '';
+                // En mobile/tablet: forzar reseteo de estilos fijos
+                block.style.position = 'static';
+                block.style.top = 'auto';
+                block.style.right = 'auto';
+                block.style.width = '100%';
+                block.style.height = 'auto';
+                block.style.minHeight = '0';
+                block.style.maxHeight = '600px';
                 return;
             }
+            // En desktop, limpiar estilos inline de mobile y calcular right
+            block.style.position = '';
+            block.style.top = '';
+            block.style.height = '';
+            block.style.minHeight = '';
+            block.style.maxHeight = '';
+            
             var rect = col.getBoundingClientRect();
-            block.style.left = rect.left + 'px';
+            block.style.right = (window.innerWidth - rect.right) + 'px';
             block.style.width = rect.width + 'px';
         }
         window.addEventListener('load', positionCommentsPanel);

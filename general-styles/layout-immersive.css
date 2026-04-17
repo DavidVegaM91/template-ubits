@@ -133,16 +133,22 @@ body.page-layout-immersive {
 /* Escenario dentro del main: max-width centrado; `main` en selector gana a reglas solo `.crear-contenido-editor-workspace` de contenidos.css. */
 main.ubits-layout-immersive__main > .ubits-layout-immersive__stage {
     box-sizing: border-box;
-    flex: 1 1 auto;
-    min-height: max(100%, min-content);
+    flex: 1 0 auto;
     min-width: 0;
     width: 100%;
     max-width: var(--ubits-layout-immersive-max-width);
     margin-left: auto;
     margin-right: auto;
-    padding: var(--padding-2xl);
+    padding: var(--padding-xl) var(--padding-2xl);
     overflow: visible;
     align-items: stretch;
+}
+
+@media (max-width: 639px) {
+    main.ubits-layout-immersive__main > .ubits-layout-immersive__stage {
+        padding-left: max(var(--padding-md), env(safe-area-inset-left, 0px));
+        padding-right: max(var(--padding-md), env(safe-area-inset-right, 0px));
+    }
 }
 
 /* Banda inferior: borde full-bleed. */
