@@ -130,7 +130,7 @@
     }
 
     const today = getTodayString();
-    var SAVE_INDICATOR_ID = 'task-detail-header-container-save-indicator';
+    var SAVE_INDICATOR_ID = 'task-detail-save-indicator';
 
     function triggerFakeSave() {
         if (typeof renderSaveIndicator !== 'function') return;
@@ -2450,18 +2450,8 @@
             });
         });
 
-        if (typeof loadHeaderProduct === 'function') {
-            loadHeaderProduct('task-detail-header-container', {
-                productName: 'Detalle de la tarea',
-                breadcrumbItems: [],
-                backButton: {
-                    onClick: function () { window.history.back(); }
-                },
-                secondaryButtons: []
-            });
-            if (typeof renderSaveIndicator === 'function') {
-                renderSaveIndicator('task-detail-header-container-save-indicator', { state: 'idle', size: 'xs' });
-            }
+        if (typeof renderSaveIndicator === 'function') {
+            renderSaveIndicator(SAVE_INDICATOR_ID, { state: 'idle', size: 'xs' });
         }
 
         renderInfoBlock();
