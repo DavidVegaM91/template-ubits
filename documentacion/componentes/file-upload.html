@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="../../images/Ubits-logo-dark.svg">
+    <title>File Upload | UBITS Playground</title>
+
+    <link rel="stylesheet" href="../../general-styles/ubits-colors.css">
+    <link rel="stylesheet" href="../../general-styles/styles.css">
+    <link rel="stylesheet" href="../../general-styles/fontawesome-icons.css">
+    <link rel="stylesheet" href="../../general-styles/ubits-typography.css">
+    <link rel="stylesheet" href="../../components/sub-nav.css">
+    <link rel="stylesheet" href="../../components/tab-bar.css">
+    <link rel="stylesheet" href="../../components/alert.css">
+    <link rel="stylesheet" href="../../components/sidebar.css">
+    <link rel="stylesheet" href="../../docs/docs-sidebar.css">
+    <link rel="stylesheet" href="../../docs/docstyles.css">
+    <link rel="stylesheet" href="../../components/button.css">
+    <link rel="stylesheet" href="../../components/switch.css">
+    <link rel="stylesheet" href="../../components/toast.css">
+    <link rel="stylesheet" href="../../components/file-upload.css">
+
+    <style>
+        .preview-control-btn.active {
+            background: var(--ubits-accent-brand) !important;
+            color: white !important;
+            border-color: var(--ubits-accent-brand) !important;
+        }
+        .preview-control-btn.active span {
+            color: white !important;
+        }
+        .file-upload-preview-wrap {
+            max-width: 480px;
+            width: 100%;
+        }
+    </style>
+</head>
+<body class="componentes-page" data-theme="light">
+    <div class="dashboard-container">
+        <div class="tooltip" id="tooltip"></div>
+
+        <main class="main-content">
+            <div id="top-nav-container"></div>
+
+            <div style="display: flex;">
+                <div id="docs-dropdown-container"></div>
+                <div id="docs-sidebar-container"></div>
+
+                <div class="components-content">
+                    <div class="content-area" style="display: block; width: 100%;">
+
+                        <!-- Hero -->
+                        <div style="text-align: center; margin-bottom: 60px;">
+                            <h1 class="ubits-display-d2-bold" style="margin-bottom: 24px; color: var(--ubits-accent-brand);">
+                                File Upload
+                            </h1>
+                            <p class="ubits-body-md-regular" style="max-width: 800px; margin: 0 auto 32px; line-height: 1.6;">
+                                Bloque para importar archivos con arrastre o selección manual. Incluye descarga de plantillas, validación automática de tipo y peso, card con el archivo cargado y botón opcional de informe de errores cuando el contenido presenta inconsistencias.
+                            </p>
+                        </div>
+
+                        <!-- Preview Section -->
+                        <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; margin-bottom: 40px;">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-eye" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Preview del componente
+                            </h2>
+                            <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6;">
+                                Aquí puedes ver el componente File Upload en acción. Usa los controles para explorar los distintos estados.
+                            </p>
+
+                            <!-- Preview Container -->
+                            <div style="background: var(--ubits-bg-2); padding: 32px; border-radius: 12px; display: flex; justify-content: center;">
+                                <div class="file-upload-preview-wrap">
+                                    <div id="preview-container"></div>
+                                </div>
+                            </div>
+
+                            <!-- Preview Controls -->
+                            <div style="margin-top: 16px; display: flex; gap: 12px; flex-wrap: wrap; align-items: center;">
+                                <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn active" onclick="setPreviewState('empty')">
+                                    <span>Vacío</span>
+                                </button>
+                                <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" onclick="setPreviewState('file')">
+                                    <span>Con archivo</span>
+                                </button>
+                                <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" onclick="setPreviewState('error-type')">
+                                    <span>Error: tipo</span>
+                                </button>
+                                <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" onclick="setPreviewState('error-size')">
+                                    <span>Error: peso</span>
+                                </button>
+                                <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" onclick="setPreviewState('report')">
+                                    <span>Informe de errores</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Características generales -->
+                        <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; margin-bottom: 40px;">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-info-circle" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Características generales
+                            </h2>
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
+                                <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-cloud-arrow-up"></i></div>
+                                    <div class="ubits-body-sm-bold">Drag &amp; drop</div>
+                                    <div class="ubits-body-sm-regular">Arrastra el archivo sobre la zona o haz clic para seleccionarlo desde el explorador.</div>
+                                </div>
+                                <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-shield-check"></i></div>
+                                    <div class="ubits-body-sm-bold">Validación automática</div>
+                                    <div class="ubits-body-sm-regular">Valida tipo de archivo y tamaño al seleccionarlo, mostrando un mensaje de error claro.</div>
+                                </div>
+                                <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-arrow-down-to-line"></i></div>
+                                    <div class="ubits-body-sm-bold">Botones de descarga</div>
+                                    <div class="ubits-body-sm-regular">Hasta 3 botones en el encabezado para descargar plantillas o listas de referencia.</div>
+                                </div>
+                                <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-circle-exclamation"></i></div>
+                                    <div class="ubits-body-sm-bold">Informe de errores</div>
+                                    <div class="ubits-body-sm-regular">Botón error-secondary oculto por defecto; se activa cuando el servidor detecta problemas en el contenido.</div>
+                                </div>
+                                <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-file-lines"></i></div>
+                                    <div class="ubits-body-sm-bold">Card de archivo</div>
+                                    <div class="ubits-body-sm-regular">Muestra nombre y tamaño del archivo cargado con botón para eliminarlo y volver al estado inicial.</div>
+                                </div>
+                                <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-moon"></i></div>
+                                    <div class="ubits-body-sm-bold">Modo oscuro</div>
+                                    <div class="ubits-body-sm-regular">Todos los colores usan tokens UBITS, compatible con tema claro y oscuro automáticamente.</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Prompts útiles -->
+                        <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; margin-bottom: 40px;">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-comments" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Prompts útiles
+                            </h2>
+                            <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6; color: var(--ubits-fg-1-medium);">
+                                Usa estos prompts con Cursor AI para insertar y configurar el componente File Upload.
+                            </p>
+
+                            <!-- Prompt 1 -->
+                            <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
+                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                                    <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">
+                                        Insertar bloque de importación CSV
+                                    </h3>
+                                    <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('prompt-1')">
+                                        <i class="far fa-copy"></i>
+                                        <span>Copiar</span>
+                                    </button>
+                                </div>
+                                <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
+                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="prompt-1">Añade el componente ubits-file-upload en [ubicación] de la página. Configúralo con:
+- Título: "Importar archivo"
+- 1 botón de descarga: "Descargar plantilla" (icono arrow-down-to-line)
+- Tipos aceptados: .csv
+- Límite de peso: 5 MB
+Importa components/file-upload.css antes del CSS de la página y components/file-upload.js antes de cerrar el body. Reemplaza los textos entre [corchetes].</code></pre>
+                                </div>
+                            </div>
+
+                            <!-- Prompt 2 -->
+                            <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
+                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                                    <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">
+                                        Mostrar botón de informe de errores
+                                    </h3>
+                                    <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('prompt-2')">
+                                        <i class="far fa-copy"></i>
+                                        <span>Copiar</span>
+                                    </button>
+                                </div>
+                                <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
+                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="prompt-2">Cuando el servidor devuelva errores al procesar el archivo en [ubicación], llama a fileUploadShowErrorReport('[id-del-componente]', true) para mostrar el botón "Informe de errores". Ese botón debe descargar el archivo de errores que devuelve el servidor.</code></pre>
+                                </div>
+                            </div>
+
+                            <!-- Prompt 3 -->
+                            <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
+                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                                    <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">
+                                        Importación de SCORM con múltiples descargas
+                                    </h3>
+                                    <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('prompt-3')">
+                                        <i class="far fa-copy"></i>
+                                        <span>Copiar</span>
+                                    </button>
+                                </div>
+                                <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
+                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="prompt-3">Añade el componente ubits-file-upload en [ubicación] para subir paquetes SCORM. Configúralo con:
+- Título: "Importar SCORM"
+- 2 botones de descarga: "Requisitos técnicos" y "Lista de compatibilidad"
+- Tipos aceptados: .zip
+- Límite de peso: 100 MB
+Importa components/file-upload.css y components/file-upload.js.</code></pre>
+                                </div>
+                            </div>
+
+                            <!-- Prompt 4 -->
+                            <div>
+                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                                    <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">
+                                        Mostrar un error externo (del servidor)
+                                    </h3>
+                                    <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('prompt-4')">
+                                        <i class="far fa-copy"></i>
+                                        <span>Copiar</span>
+                                    </button>
+                                </div>
+                                <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
+                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="prompt-4">Cuando la API devuelva un error al procesar el archivo en [ubicación], llama a fileUploadSetError('[id-del-componente]', '[mensaje de error]') para mostrar el borde rojo y el mensaje debajo del dropzone. Cuando el usuario quite el archivo o corrija la situación, llama a fileUploadClearError('[id-del-componente]').</code></pre>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Technical Documentation -->
+                        <div style="background: var(--ubits-bg-1); border-radius: 16px; margin-bottom: 40px; overflow: hidden;">
+                            <!-- Header del acordeón -->
+                            <div style="padding: 32px; text-align: center; border-bottom: 1px solid var(--ubits-border-1);">
+                                <h2 class="ubits-heading-h2" style="margin-bottom: 0; color: var(--ubits-fg-1-high);">
+                                    <i class="far fa-code" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                    Documentación técnica
+                                </h2>
+                                <p class="ubits-body-md-regular" style="margin-top: 16px; color: var(--ubits-fg-1-medium);">
+                                    Información técnica detallada para implementar el componente File Upload.
+                                </p>
+                            </div>
+
+                            <!-- Botón de expansión -->
+                            <div style="background: var(--ubits-bg-2); padding: 20px; text-align: center; cursor: pointer;" onclick="toggleTechnicalDocs()">
+                                <span class="ubits-body-md-regular" style="color: var(--ubits-accent-brand); display: flex; align-items: center; justify-content: center; gap: 8px;">
+                                    <i class="far fa-chevron-down" id="tech-docs-chevron" style="transition: transform 0.3s ease;"></i>
+                                    <span id="tech-docs-toggle-text">Mostrar</span>
+                                </span>
+                            </div>
+
+                            <!-- Contenido del acordeón -->
+                            <div id="technical-docs-content" style="display: none; padding: 0;">
+
+                                <!-- Requisitos -->
+                                <div style="padding: 32px; border-bottom: 1px solid var(--ubits-border-1);">
+                                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;">
+                                        <h2 class="ubits-heading-h2" style="margin: 0; color: var(--ubits-fg-1-high);">
+                                            <i class="far fa-file-import" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                            Requisitos (CSS y JS)
+                                        </h2>
+                                        <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('code-requirements')">
+                                            <i class="far fa-copy"></i>
+                                            <span>Copiar</span>
+                                        </button>
+                                    </div>
+                                    <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
+                                        <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code id="code-requirements">&lt;!-- CSS obligatorio (desde subcarpetas ubits-admin/*, ubits-colaborador/*) --&gt;
+&lt;link rel="stylesheet" href="../../components/button.css"&gt;
+&lt;link rel="stylesheet" href="../../components/file-upload.css"&gt;
+&lt;link rel="stylesheet" href="../../general-styles/fontawesome-icons.css"&gt;
+
+&lt;!-- JS obligatorio --&gt;
+&lt;script src="../../components/file-upload.js"&gt;&lt;/script&gt;</code></pre>
+                                    </div>
+                                </div>
+
+                                <!-- Estructura HTML -->
+                                <div style="padding: 32px; border-bottom: 1px solid var(--ubits-border-1);">
+                                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;">
+                                        <h2 class="ubits-heading-h2" style="margin: 0; color: var(--ubits-fg-1-high);">
+                                            <i class="far fa-sitemap" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                            Estructura HTML completa
+                                        </h2>
+                                        <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('code-html')">
+                                            <i class="far fa-copy"></i>
+                                            <span>Copiar</span>
+                                        </button>
+                                    </div>
+                                    <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
+                                        <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code id="code-html">&lt;div class="ubits-file-upload" id="mi-file-upload" data-file-upload&gt;
+
+  &lt;!-- Encabezado --&gt;
+  &lt;div class="ubits-file-upload__header"&gt;
+    &lt;h2 class="ubits-body-md-bold ubits-file-upload__title"&gt;Importar archivo&lt;/h2&gt;
+    &lt;div class="ubits-file-upload__actions"&gt;
+      &lt;!-- Hasta 3 botones de descarga --&gt;
+      &lt;button type="button" class="ubits-button ubits-button--secondary ubits-button--sm"
+              data-file-upload-download&gt;
+        &lt;i class="far fa-arrow-down-to-line"&gt;&lt;/i&gt;
+        &lt;span&gt;Descargar plantilla&lt;/span&gt;
+      &lt;/button&gt;
+      &lt;!-- Botón informe de errores (oculto por defecto) --&gt;
+      &lt;button type="button" class="ubits-button ubits-button--error-secondary ubits-button--sm
+              ubits-file-upload__error-report-btn" data-file-upload-error-report style="display:none"&gt;
+        &lt;i class="far fa-circle-exclamation"&gt;&lt;/i&gt;
+        &lt;span&gt;Informe de errores&lt;/span&gt;
+      &lt;/button&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+
+  &lt;!-- Dropzone --&gt;
+  &lt;div class="ubits-file-upload__dropzone" data-file-upload-dropzone&gt;
+
+    &lt;!-- Estado vacío --&gt;
+    &lt;div class="ubits-file-upload__empty" data-file-upload-empty&gt;
+      &lt;div class="ubits-file-upload__dropzone-inner"&gt;
+        &lt;div class="ubits-file-upload__icon-wrap"&gt;
+          &lt;i class="far fa-file-arrow-up"&gt;&lt;/i&gt;
+        &lt;/div&gt;
+        &lt;p class="ubits-body-md-semibold ubits-file-upload__dropzone-title"&gt;Subir archivos&lt;/p&gt;
+        &lt;p class="ubits-body-sm-regular ubits-file-upload__dropzone-formats"&gt;CSV &amp;bull; Hasta 5mb&lt;/p&gt;
+        &lt;button type="button" class="ubits-button ubits-button--secondary ubits-button--sm"
+                data-file-upload-select&gt;
+          &lt;i class="far fa-arrow-up-from-bracket"&gt;&lt;/i&gt;
+          &lt;span&gt;Seleccionar archivos&lt;/span&gt;
+        &lt;/button&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+
+    &lt;!-- Card de archivo cargado --&gt;
+    &lt;div class="ubits-file-upload__file-card" data-file-upload-card style="display:none" aria-live="polite"&gt;
+      &lt;div class="ubits-file-upload__file-icon-wrap" aria-hidden="true"&gt;
+        &lt;i class="far fa-file-lines"&gt;&lt;/i&gt;
+      &lt;/div&gt;
+      &lt;div class="ubits-file-upload__file-meta"&gt;
+        &lt;span class="ubits-body-sm-semibold ubits-file-upload__file-name" data-file-upload-name&gt;&lt;/span&gt;
+        &lt;span class="ubits-body-sm-regular ubits-file-upload__file-size" data-file-upload-size&gt;&lt;/span&gt;
+      &lt;/div&gt;
+      &lt;button type="button" class="ubits-button ubits-button--error-tertiary ubits-button--sm
+              ubits-button--icon-only" data-file-upload-remove aria-label="Quitar archivo"&gt;
+        &lt;i class="far fa-trash-alt"&gt;&lt;/i&gt;
+      &lt;/button&gt;
+    &lt;/div&gt;
+
+    &lt;!-- Input oculto --&gt;
+    &lt;input type="file" data-file-upload-input accept=".csv,text/csv" style="display:none"&gt;
+  &lt;/div&gt;
+
+  &lt;!-- Helper text de error (oculto por defecto) --&gt;
+  &lt;p class="ubits-body-sm-regular ubits-file-upload__helper" data-file-upload-helper style="display:none"&gt;&lt;/p&gt;
+
+&lt;/div&gt;</code></pre>
+                                    </div>
+                                </div>
+
+                                <!-- createFileUpload() -->
+                                <div style="padding: 32px; border-bottom: 1px solid var(--ubits-border-1);">
+                                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;">
+                                        <h2 class="ubits-heading-h2" style="margin: 0; color: var(--ubits-fg-1-high);">
+                                            <i class="far fa-terminal" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                            Implementación con createFileUpload()
+                                        </h2>
+                                        <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('code-js')">
+                                            <i class="far fa-copy"></i>
+                                            <span>Copiar</span>
+                                        </button>
+                                    </div>
+                                    <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
+                                        <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code id="code-js">createFileUpload({
+  containerId: 'mi-contenedor',   // ID del div donde se inyecta (requerido)
+  id: 'mi-file-upload',           // ID del elemento raíz generado (opcional)
+  title: 'Importar archivo',      // Título del encabezado
+  accept: '.csv,text/csv',        // Tipos aceptados (atributo accept)
+  maxSizeMb: 5,                   // Límite de peso en MB
+  formats: 'CSV \u2022 Hasta 5mb',    // Texto de formatos (opcional; derivado de accept si se omite)
+  downloadButtons: [              // Hasta 3 botones de descarga
+    {
+      label: 'Descargar plantilla',
+      icon: 'arrow-down-to-line',   // Clase FA sin el prefijo 'far fa-'
+      onClick: function () { /* descargar plantilla */ }
+    }
+  ],
+  onChange: function (file) {
+    // file = File | null
+    if (file) console.log('Archivo seleccionado:', file.name);
+    else console.log('Archivo eliminado');
+  },
+  onError: function (err) {
+    // err = { type: 'type' | 'size', message: string }
+    console.warn(err.type, err.message);
+  }
+});
+
+// ── API auxiliar ──────────────────────────────────────────────
+
+// Mostrar / ocultar el botón "Informe de errores" (tras procesar en servidor)
+fileUploadShowErrorReport('mi-file-upload', true);
+
+// Mostrar error externo (respuesta del servidor)
+fileUploadSetError('mi-file-upload', 'Se encontraron 3 usuarios que no existen.');
+
+// Limpiar error inline
+fileUploadClearError('mi-file-upload');</code></pre>
+                                    </div>
+                                </div>
+
+                                <!-- Clases de estado -->
+                                <div style="padding: 32px; border-bottom: 1px solid var(--ubits-border-1);">
+                                    <h2 class="ubits-heading-h2" style="margin: 0 0 24px; color: var(--ubits-fg-1-high);">
+                                        <i class="far fa-tags" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                        Clases de estado del dropzone
+                                    </h2>
+                                    <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
+                                        <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code>/* Se añaden al elemento .ubits-file-upload__dropzone */
+
+.ubits-file-upload__dropzone--dragover   /* Drag activo encima del dropzone (borde + fondo azul) */
+.ubits-file-upload__dropzone--has-file   /* Archivo cargado (oculta estado vacío, muestra file card) */
+.ubits-file-upload__dropzone--invalid    /* Error de tipo/peso o del servidor (borde rojo) */</code></pre>
+                                    </div>
+                                </div>
+
+                                <!-- Tipos de error -->
+                                <div style="padding: 32px;">
+                                    <h2 class="ubits-heading-h2" style="margin: 0 0 24px; color: var(--ubits-fg-1-high);">
+                                        <i class="far fa-triangle-exclamation" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                        Tipos de error y cuándo usarlos
+                                    </h2>
+                                    <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
+                                        <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code>/* Tipo incorrecto (automático) */
+// Borde rojo en dropzone + helper text rojo.
+// Ejemplo: subir un .pdf cuando solo se acepta .csv.
+// El JS lo detecta solo al seleccionar/arrastrar.
+
+/* Peso excedido (automático) */
+// Borde rojo en dropzone + helper text rojo.
+// Ejemplo: archivo de 12 MB con límite de 5 MB.
+// El JS lo detecta solo al seleccionar/arrastrar.
+
+/* Error de contenido (manual — del servidor) */
+// Botón "Informe de errores" en el encabezado.
+// Ejemplo: CSV con usuarios inexistentes, SCORM corrupto.
+// Llamar: fileUploadShowErrorReport('id', true)
+
+/* Error externo genérico (manual — del servidor) */
+// Borde rojo + helper text personalizado.
+// Ejemplo: respuesta 400 con mensaje específico.
+// Llamar: fileUploadSetError('id', 'Mensaje de error')</code></pre>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Toast container -->
+    <div id="ubits-toast-container"></div>
+
+    <!-- Scripts -->
+    <script src="../../components/sub-nav.js"></script>
+    <script src="../../components/tab-bar.js"></script>
+    <script src="../../components/alert.js"></script>
+    <script src="../../components/sidebar.js"></script>
+    <script src="../../docs/docs-sidebar.js"></script>
+    <script src="../../components/toast.js"></script>
+    <script src="../../components/tooltip.js"></script>
+    <script src="../../components/file-upload.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            loadSubNav('top-nav-container', 'documentacion');
+            loadSidebar('ninguno');
+            loadDocsSidebar('file-upload');
+
+            createFileUpload({
+                containerId: 'preview-container',
+                id: 'preview-file-upload',
+                title: 'Importar archivo',
+                accept: '.csv,text/csv',
+                maxSizeMb: 5,
+                downloadButtons: [
+                    {
+                        label: 'Descargar plantilla',
+                        icon: 'arrow-down-to-line',
+                        onClick: function () {
+                            showToast('info', 'Descarga de plantilla (demo)', { duration: 3500 });
+                        }
+                    }
+                ],
+                onChange: function (file) {
+                    if (file) showToast('success', 'Archivo seleccionado: ' + file.name, { duration: 3500 });
+                }
+            });
+        });
+
+        /* ── Estado del preview ─────────────────── */
+        var previewStates = {
+            empty: function (el) {
+                var dropzone = el.querySelector('[data-file-upload-dropzone]');
+                var emptyEl  = el.querySelector('[data-file-upload-empty]');
+                var cardEl   = el.querySelector('[data-file-upload-card]');
+                var helperEl = el.querySelector('[data-file-upload-helper]');
+                var errorBtn = el.querySelector('[data-file-upload-error-report]');
+                dropzone.className = 'ubits-file-upload__dropzone';
+                emptyEl.style.display  = '';
+                cardEl.style.display   = 'none';
+                helperEl.style.display = 'none';
+                helperEl.textContent   = '';
+                if (errorBtn) errorBtn.style.display = 'none';
+            },
+            file: function (el) {
+                previewStates.empty(el);
+                var dropzone = el.querySelector('[data-file-upload-dropzone]');
+                var emptyEl  = el.querySelector('[data-file-upload-empty]');
+                var cardEl   = el.querySelector('[data-file-upload-card]');
+                var nameEl   = el.querySelector('[data-file-upload-name]');
+                var sizeEl   = el.querySelector('[data-file-upload-size]');
+                dropzone.classList.add('ubits-file-upload__dropzone--has-file');
+                emptyEl.style.display = 'none';
+                cardEl.style.display  = '';
+                nameEl.textContent    = 'usuarios_carga_masiva.csv';
+                sizeEl.textContent    = '128,4 KB';
+            },
+            'error-type': function (el) {
+                previewStates.empty(el);
+                fileUploadSetError(el, 'El archivo no es compatible. Solo se aceptan: .csv, text/csv.');
+            },
+            'error-size': function (el) {
+                previewStates.empty(el);
+                fileUploadSetError(el, 'El archivo es demasiado grande. El límite es 5 MB.');
+            },
+            report: function (el) {
+                previewStates.file(el);
+                fileUploadShowErrorReport(el, true);
+            }
+        };
+
+        function setPreviewState(state) {
+            var el = document.getElementById('preview-file-upload');
+            if (!el || !previewStates[state]) return;
+            previewStates[state](el);
+            document.querySelectorAll('.preview-control-btn').forEach(function (btn) {
+                btn.classList.toggle('active', btn.getAttribute('onclick') && btn.getAttribute('onclick').indexOf("'" + state + "'") !== -1);
+            });
+        }
+
+        /* ── Acordeón de docs técnicas ──────────── */
+        function toggleTechnicalDocs() {
+            var content    = document.getElementById('technical-docs-content');
+            var toggleText = document.getElementById('tech-docs-toggle-text');
+            var chevron    = document.getElementById('tech-docs-chevron');
+            var isVisible  = content.style.display !== 'none';
+            content.style.display  = isVisible ? 'none' : 'block';
+            toggleText.textContent  = isVisible ? 'Mostrar' : 'Ocultar';
+            chevron.style.transform = isVisible ? 'rotate(0deg)' : 'rotate(180deg)';
+        }
+
+        /* ── Copiar prompt ──────────────────────── */
+        function copyPrompt(promptId) {
+            var el = document.getElementById(promptId);
+            navigator.clipboard.writeText(el.textContent.trim()).then(function () {
+                var btn  = document.querySelector('[onclick="copyPrompt(\'' + promptId + '\')"]');
+                var icon = btn.querySelector('i');
+                var text = btn.querySelector('span');
+                icon.className = 'far fa-check';
+                text.textContent = 'Copiado';
+                btn.classList.add('ubits-button--active');
+                showToast('success', '¡Prompt copiado!', { duration: 3500 });
+                setTimeout(function () {
+                    icon.className = 'far fa-copy';
+                    text.textContent = 'Copiar';
+                    btn.classList.remove('ubits-button--active');
+                }, 2000);
+            }).catch(function () {
+                showToast('error', 'Error al copiar el prompt', { duration: 6500 });
+            });
+        }
+
+        /* ── Copiar código ──────────────────────── */
+        function copyCode(elementId) {
+            var codeEl = document.getElementById(elementId);
+            navigator.clipboard.writeText(codeEl.textContent.trim()).then(function () {
+                var btn  = event.target.closest('button');
+                var icon = btn.querySelector('i');
+                var span = btn.querySelector('span');
+                var origIcon = icon.className;
+                var origText = span.textContent;
+                icon.className = 'far fa-check';
+                span.textContent = 'Copiado!';
+                btn.classList.add('ubits-button--active');
+                setTimeout(function () {
+                    icon.className = origIcon;
+                    span.textContent = origText;
+                    btn.classList.remove('ubits-button--active');
+                }, 2000);
+            });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,225 @@
+/* ========================================
+   UBITS — File Upload
+   Bloque de importación de archivos con dropzone,
+   card de archivo cargado, mensajes de error inline
+   y botón de informe de errores descargable.
+
+   RENDERIZADO: HTML directo o createFileUpload().
+   Requiere: button.css, fontawesome-icons.css.
+   JS: file-upload.js (drag & drop, validación, estados).
+
+   Estructura BEM:
+     .ubits-file-upload
+       __header            — título + acciones
+       __title             — h2 del bloque
+       __actions           — grupo de botones
+       __download-btn      — hasta 3 botones --secondary (descarga de plantillas / listas)
+       __error-report-btn  — --error-secondary; oculto por defecto; descarga informe de errores
+       __dropzone          — zona de arrastre con estados:
+         --dragover          — archivo arrastrado encima
+         --has-file          — archivo cargado correctamente
+         --invalid           — error de tipo o de peso (borde rojo)
+       __empty             — estado vacío del dropzone
+       __dropzone-inner    — contenido centrado dentro del estado vacío
+       __icon-wrap         — círculo con icono de upload
+       __dropzone-title    — texto "Subir archivos"
+       __dropzone-formats  — texto "CSV · Hasta 5mb"
+       __select-btn        — botón "Seleccionar archivos"
+       __file-card         — card con el archivo cargado
+       __file-icon-wrap    — icono tipo de archivo
+       __file-meta         — contenedor nombre + tamaño
+       __file-name         — nombre del archivo (truncado)
+       __file-size         — tamaño del archivo
+       __remove-btn        — --error-tertiary icon-only; quita el archivo
+       __input             — input[type=file] oculto
+       __helper            — mensaje de error inline debajo del dropzone
+   ======================================== */
+
+.ubits-file-upload {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-lg);
+    width: 100%;
+}
+
+/* ── Header ─────────────────────────────── */
+.ubits-file-upload__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: var(--gap-sm);
+}
+
+.ubits-file-upload__title {
+    margin: 0;
+    color: var(--ubits-fg-1-high);
+    flex-shrink: 0;
+}
+
+.ubits-file-upload__actions {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--gap-sm);
+}
+
+/* ── Dropzone ────────────────────────────── */
+.ubits-file-upload__dropzone {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    box-sizing: border-box;
+    padding: var(--padding-2xl);
+    border: 1px dashed var(--ubits-border-1);
+    border-radius: var(--border-radius-sm);
+    background: var(--ubits-bg-1);
+    cursor: pointer;
+    min-height: 140px;
+    transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.ubits-file-upload__dropzone:hover:not(.ubits-file-upload__dropzone--has-file):not(.ubits-file-upload__dropzone--invalid),
+.ubits-file-upload__dropzone--dragover {
+    border-color: var(--ubits-accent-brand);
+    background: var(--ubits-bg-2);
+}
+
+.ubits-file-upload__dropzone--has-file {
+    cursor: default;
+    padding: var(--padding-md);
+    min-height: 0;
+}
+
+.ubits-file-upload__dropzone--has-file:hover:not(.ubits-file-upload__dropzone--dragover) {
+    border-color: var(--ubits-border-1);
+    background: var(--ubits-bg-1);
+}
+
+/* Estado de error: borde rojo */
+.ubits-file-upload__dropzone--invalid {
+    border-color: var(--ubits-feedback-accent-error) !important;
+    background: var(--ubits-bg-1);
+}
+
+/* ── Estado vacío (empty) ────────────────── */
+.ubits-file-upload__empty {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.ubits-file-upload__dropzone-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--gap-md);
+    pointer-events: none;
+}
+
+/* Los botones dentro del dropzone necesitan recibir eventos */
+.ubits-file-upload__dropzone .ubits-button {
+    pointer-events: auto;
+}
+
+/* Icono circular */
+.ubits-file-upload__icon-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border: 1px solid var(--ubits-border-1);
+    border-radius: var(--border-radius-full);
+    color: var(--ubits-fg-1-medium);
+    transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+.ubits-file-upload__dropzone:hover:not(.ubits-file-upload__dropzone--has-file):not(.ubits-file-upload__dropzone--invalid) .ubits-file-upload__icon-wrap,
+.ubits-file-upload__dropzone--dragover .ubits-file-upload__icon-wrap {
+    color: var(--ubits-accent-brand);
+    border-color: var(--ubits-accent-brand);
+}
+
+.ubits-file-upload__icon-wrap i {
+    font-size: 16px;
+}
+
+.ubits-file-upload__dropzone-title {
+    margin: 0;
+    color: var(--ubits-fg-1-high);
+}
+
+.ubits-file-upload__dropzone-formats {
+    margin: 0;
+    color: var(--ubits-fg-1-medium);
+    text-align: center;
+}
+
+/* ── File card (archivo cargado) ─────────── */
+.ubits-file-upload__file-card {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: var(--gap-md);
+    width: min(100%, 400px);
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
+    align-self: center;
+    padding: var(--padding-md);
+    background: var(--ubits-bg-1);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: var(--border-radius-sm);
+    box-sizing: border-box;
+    pointer-events: auto;
+    text-align: start;
+}
+
+.ubits-file-upload__file-icon-wrap {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: var(--border-radius-sm);
+    background: var(--ubits-bg-2);
+    border: 1px solid var(--ubits-border-1);
+    color: var(--ubits-fg-1-medium);
+}
+
+.ubits-file-upload__file-icon-wrap i {
+    font-size: 18px;
+}
+
+.ubits-file-upload__file-meta {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-xs);
+    align-items: flex-start;
+}
+
+.ubits-file-upload__file-name {
+    display: block;
+    width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: var(--ubits-fg-1-high);
+}
+
+.ubits-file-upload__file-size {
+    color: var(--ubits-fg-1-medium);
+}
+
+/* ── Helper text (error inline) ─────────── */
+.ubits-file-upload__helper {
+    margin: 0;
+    color: var(--ubits-feedback-accent-error);
+}
