@@ -451,6 +451,7 @@
     var _eval360ColabTablaRef  = null;
     var _eval360GruposTablaRef = null;
     var _eval360ArchivoListo   = false;
+    var _eval360ArchivoErrores = [];
 
     var _eval360GruposMock = [
         { id: 'g-ventas',        nombre: 'Ventas',             descripcion: 'Asesoría comercial y cierre de negocios',              integrantes: 7  },
@@ -1103,6 +1104,203 @@
         if (gruposSel) gruposSel.textContent = nGrupos;
     }
 
+    /* ══════════════════════════════════════════════════════════
+       VISTA: EVALUADOS — LÓGICA DE ARCHIVO CSV
+       ══════════════════════════════════════════════════════════ */
+
+    var EVAL360_TIPOS_VALIDOS = ['descendente', 'ascendente', 'paralela', 'autoevaluacion', 'cliente'];
+
+    function eval360NormalizeStr(s) {
+        return (s || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim();
+    }
+
+    function eval360ParseCSVLine(line) {
+        var result = [], cur = '', inQ = false;
+        for (var i = 0; i < line.length; i++) {
+            var c = line[i];
+            if (c === '"') {
+                if (inQ && line[i + 1] === '"') { cur += '"'; i++; }
+                else inQ = !inQ;
+            } else if (c === ',' && !inQ) {
+                result.push(cur); cur = '';
+            } else { cur += c; }
+        }
+        result.push(cur);
+        return result;
+    }
+
+    function eval360DescargarPlantilla() {
+        var colaboradores = (typeof BD_MASTER_COLABORADORES !== 'undefined' && BD_MASTER_COLABORADORES.colaboradores) || [];
+        /* Tomar 5 usuarios distintos para los ejemplos */
+        function username(idx) { return (colaboradores[idx] && colaboradores[idx].username) ? colaboradores[idx].username : 'usuario' + (idx + 1) + '@empresa.demo'; }
+        var rows = [
+            'Evaluador username,Evaluado username,Tipo de evaluacion',
+            username(0) + ',' + username(1) + ',descendente',
+            username(1) + ',' + username(0) + ',ascendente',
+            username(2) + ',' + username(3) + ',paralela',
+            username(4) + ',' + username(4) + ',autoevaluación',
+            username(2) + ',' + username(0) + ',cliente'
+        ];
+        var csv  = '\uFEFF' + rows.join('\r\n'); /* BOM UTF-8 para Excel */
+        var blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+        var url  = URL.createObjectURL(blob);
+        var a    = document.createElement('a');
+        a.href     = url;
+        a.download = 'plantilla-evaluados-360.csv';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    }
+
+    function eval360ValidarCSV(file) {
+        var fuEl = document.getElementById('eval360-archivo-fu');
+        var reader = new FileReader();
+        reader.onload = function (e) {
+            var text  = e.target.result;
+            var lines = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n').split('\n').filter(function (l) { return l.trim() !== ''; });
+            var data  = lines.slice(1); /* omitir encabezado */
+
+            /* ── Validación general del archivo ── */
+            if (data.length === 0) {
+                fileUploadSetError(fuEl, 'El archivo está vacío o solo contiene la fila de títulos.');
+                _eval360ArchivoListo   = false;
+                _eval360ArchivoErrores = [];
+                fileUploadShowErrorReport(fuEl, false);
+                eval360SyncFooter();
+                return;
+            }
+            if (data.length > 3000) {
+                fileUploadSetError(fuEl, 'El archivo supera el límite de 3.000 filas de datos (tiene ' + data.length + ').');
+                _eval360ArchivoListo   = false;
+                _eval360ArchivoErrores = [];
+                fileUploadShowErrorReport(fuEl, false);
+                eval360SyncFooter();
+                return;
+            }
+
+            /* ── Construir índice de usuarios válidos ── */
+            var colaboradores = (typeof BD_MASTER_COLABORADORES !== 'undefined' && BD_MASTER_COLABORADORES.colaboradores) || [];
+            var userIndex = {};
+            colaboradores.forEach(function (c) { if (c.username) userIndex[c.username.toLowerCase()] = true; });
+
+            /* ── Validar cada fila ── */
+            var errores = [];
+            data.forEach(function (line, idx) {
+                var rowNum  = idx + 2; /* fila 1 = encabezado */
+                var cells   = eval360ParseCSVLine(line);
+                var evalador = (cells[0] || '').trim();
+                var evaluado = (cells[1] || '').trim();
+                var tipoRaw  = (cells[2] || '').trim();
+                var tipoNorm = eval360NormalizeStr(tipoRaw);
+
+                /* 1. Datos faltantes */
+                var faltantes = [];
+                if (!evalador) faltantes.push('Evaluador username');
+                if (!evaluado) faltantes.push('Evaluado username');
+                if (!tipoRaw)  faltantes.push('Tipo de evaluación');
+                if (faltantes.length > 0) {
+                    errores.push({ fila: rowNum, mensaje: 'Faltan datos requeridos: ' + faltantes.join(', ') + '.' });
+                    return; /* saltar más validaciones para esta fila */
+                }
+
+                /* 2. Tipo de evaluación inválido */
+                if (!EVAL360_TIPOS_VALIDOS.includes(tipoNorm)) {
+                    errores.push({ fila: rowNum, mensaje: 'Tipo "' + tipoRaw + '" no es válido. Tipos permitidos: descendente, ascendente, paralela, autoevaluación, cliente.' });
+                }
+
+                /* 3. Misma persona: solo permitido en autoevaluación */
+                var misma = (evalador.toLowerCase() === evaluado.toLowerCase());
+                if (misma && tipoNorm !== 'autoevaluacion') {
+                    errores.push({ fila: rowNum, mensaje: 'Evaluador y evaluado son la misma persona (' + evalador + '), pero el tipo no es autoevaluación.' });
+                }
+                if (!misma && tipoNorm === 'autoevaluacion') {
+                    errores.push({ fila: rowNum, mensaje: 'El tipo es autoevaluación, pero evaluador (' + evalador + ') y evaluado (' + evaluado + ') son personas distintas.' });
+                }
+
+                /* 4. Usuarios en la base de datos
+                      Para tipo "cliente" el evaluador puede ser externo; el evaluado siempre debe estar en BD. */
+                if (tipoNorm !== 'cliente' && !userIndex[evalador.toLowerCase()]) {
+                    errores.push({ fila: rowNum, mensaje: 'El evaluador "' + evalador + '" no está registrado en la empresa.' });
+                }
+                if (!userIndex[evaluado.toLowerCase()]) {
+                    errores.push({ fila: rowNum, mensaje: 'El evaluado "' + evaluado + '" no está registrado en la empresa.' });
+                }
+            });
+
+            /* ── Actualizar estado ── */
+            _eval360ArchivoErrores = errores;
+
+            if (errores.length > 0) {
+                var plural = errores.length === 1 ? 'error encontrado' : 'errores encontrados';
+                fileUploadSetError(fuEl, errores.length + ' ' + plural + '. Revisa el informe de errores para más detalles.');
+                fileUploadShowErrorReport(fuEl, true);
+                _eval360ArchivoListo = false;
+            } else {
+                fileUploadClearError(fuEl);
+                fileUploadShowErrorReport(fuEl, false);
+                _eval360ArchivoListo = true;
+                var countEl = document.getElementById('eval360-count-archivo-sel');
+                if (countEl) countEl.textContent = data.length;
+            }
+            eval360SyncFooter();
+        };
+        reader.onerror = function () {
+            fileUploadSetError(document.getElementById('eval360-archivo-fu'), 'No se pudo leer el archivo. Intenta de nuevo.');
+            _eval360ArchivoListo = false;
+            eval360SyncFooter();
+        };
+        reader.readAsText(file, 'UTF-8');
+    }
+
+    function eval360BuildErrorReportHtml(errores) {
+        if (!errores || errores.length === 0) return '<p class="ubits-body-md-regular">No hay errores.</p>';
+        var tipoCount = {
+            'datos-faltantes': 0,
+            'tipo-invalido': 0,
+            'autoevaluacion': 0,
+            'usuario-invalido': 0
+        };
+        /* Agrupar hasta los primeros 50 errores para no saturar el modal */
+        var visible = errores.slice(0, 50);
+        var rows = visible.map(function (err) {
+            return '<tr>' +
+                '<td class="ubits-table__td"><span class="ubits-body-sm-semibold">Fila ' + err.fila + '</span></td>' +
+                '<td class="ubits-table__td"><span class="ubits-body-sm-regular" style="color:var(--ubits-fg-1-medium)">' + err.mensaje + '</span></td>' +
+                '</tr>';
+        }).join('');
+        var nota = errores.length > 50
+            ? '<p class="ubits-body-sm-regular" style="color:var(--ubits-fg-1-medium);margin-top:var(--gap-md)">Mostrando 50 de ' + errores.length + ' errores. Corrige los primeros y vuelve a cargar el archivo.</p>'
+            : '';
+        return '<table class="ubits-table" style="width:100%;border-collapse:collapse">' +
+            '<thead><tr class="ubits-table__head-row">' +
+            '<th class="ubits-table__th" style="width:90px"><span class="ubits-body-sm-semibold">Fila</span></th>' +
+            '<th class="ubits-table__th"><span class="ubits-body-sm-semibold">Problema</span></th>' +
+            '</tr></thead>' +
+            '<tbody>' + rows + '</tbody>' +
+            '</table>' + nota;
+    }
+
+    function eval360InitArchivoErrorReport(fuEl) {
+        if (!fuEl) return;
+        var errBtn = fuEl.querySelector('[data-file-upload-error-report]');
+        if (errBtn && !errBtn.dataset.eval360bound) {
+            errBtn.dataset.eval360bound = '1';
+            errBtn.addEventListener('click', function (e) {
+                e.stopPropagation();
+                if (typeof openModal !== 'function') return;
+                openModal({
+                    overlayId:           'modal-eval360-errores-csv',
+                    title:               'Informe de errores — archivo importado',
+                    bodyHtml:            eval360BuildErrorReportHtml(_eval360ArchivoErrores),
+                    footerHtml:          '<button class="ubits-button ubits-button--primary ubits-button--md" onclick="closeModal(\'modal-eval360-errores-csv\')"><span>Cerrar</span></button>',
+                    size:                'md',
+                    closeOnOverlayClick: true
+                });
+            });
+        }
+    }
+
     function eval360InitColabTable() {
         var container = document.getElementById('eval360-colab-dt-container');
         if (!container || typeof createUbitsDataTable !== 'function') return;
@@ -1221,19 +1419,41 @@
         /* Inicializar file-upload para opción "desde archivo" */
         setTimeout(function () {
             var fuContainer = document.getElementById('eval360-archivo-fu-container');
-            if (fuContainer && fuContainer.children.length === 0 && typeof createFileUpload === 'function') {
-                createFileUpload({
-                    containerId: 'eval360-archivo-fu-container',
-                    accept: '.xlsx,.csv',
-                    label: 'Arrastra tu archivo aquí o haz clic para seleccionarlo',
-                    sublabel: 'Formatos permitidos: .xlsx, .csv',
-                    onChange: function (files) {
-                        _eval360ArchivoListo = files && files.length > 0;
-                        var span = document.getElementById('eval360-count-archivo-sel');
-                        if (span) span.textContent = _eval360ArchivoListo ? '1' : '0';
+            if (!fuContainer || typeof createFileUpload !== 'function') return;
+            if (fuContainer.children.length === 0) {
+                var fuEl = createFileUpload({
+                    containerId:     'eval360-archivo-fu-container',
+                    id:              'eval360-archivo-fu',
+                    title:           'Importar evaluados',
+                    accept:          '.csv,text/csv',
+                    maxSizeMb:       1,
+                    formats:         'CSV \u2022 Hasta 1 MB \u2022 M\u00e1x. 3.000 filas',
+                    downloadButtons: [{
+                        label:   'Descargar plantilla',
+                        icon:    'file-arrow-down',
+                        onClick: eval360DescargarPlantilla
+                    }],
+                    onChange: function (file) {
+                        if (!file) {
+                            _eval360ArchivoListo   = false;
+                            _eval360ArchivoErrores = [];
+                            var span = document.getElementById('eval360-count-archivo-sel');
+                            if (span) span.textContent = '0';
+                            eval360SyncFooter();
+                            return;
+                        }
+                        eval360ValidarCSV(file);
+                    },
+                    onError: function () {
+                        _eval360ArchivoListo   = false;
+                        _eval360ArchivoErrores = [];
                         eval360SyncFooter();
                     }
                 });
+                eval360InitArchivoErrorReport(fuEl);
+            } else {
+                /* Ya existe (si se navega y vuelve) — re-enlazar el botón de informe */
+                eval360InitArchivoErrorReport(document.getElementById('eval360-archivo-fu'));
             }
         }, 150);
     }
