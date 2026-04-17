@@ -4,15 +4,11 @@
    Reutiliza estilos de task-detail (info block, meta row, etc.).
    ======================================== */
 
-/* Columna única: acota el ancho del stage para que la card no se estire a 1440px */
-.page-subtask-detail .ubits-layout-immersive {
-    --ubits-layout-immersive-max-width: 800px;
-}
-
 .subtask-detail-stage {
     display: flex;
     flex-direction: column;
     gap: var(--gap-lg);
+    max-width: 800px;
 }
 
 /* Línea divisora entre descripción y los 5 ítems */
