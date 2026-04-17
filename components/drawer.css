@@ -93,6 +93,7 @@
     padding: var(--padding-xl);
     overflow-y: auto;
     flex: 1;
+    background: var(--ubits-bg-2);
 }
 
 .ubits-drawer-footer {

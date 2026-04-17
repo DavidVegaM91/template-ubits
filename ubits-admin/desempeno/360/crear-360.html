@@ -20,6 +20,14 @@
     <link rel="stylesheet" href="../../../components/empty-state.css">
     <link rel="stylesheet" href="../../../components/switch.css">
     <link rel="stylesheet" href="../../../general-styles/layout-immersive.css">
+    <link rel="stylesheet" href="../../../components/stepper.css">
+    <link rel="stylesheet" href="../../../components/radio-button.css">
+    <link rel="stylesheet" href="../../../components/table.css">
+    <link rel="stylesheet" href="../../../components/avatar.css">
+    <link rel="stylesheet" href="../../../components/checkbox.css">
+    <link rel="stylesheet" href="../../../components/chip.css">
+    <link rel="stylesheet" href="../../../components/ubits-data-table.css">
+    <link rel="stylesheet" href="../../../components/file-upload.css">
     <link rel="stylesheet" href="./crear-360.css">
 </head>
 <body data-theme="light" class="no-subnav page-layout-immersive page-crear-360">
@@ -181,17 +189,112 @@
              ════════════════════════════════════════ -->
         <div data-view="evaluados" id="crear360-view-evaluados" class="ubits-layout-immersive__stage crear360-view--hidden">
 
-            <section class="eval360-description">
-                <h2 class="ubits-body-md-bold">Selecciona los colaboradores a evaluar</h2>
-                <p class="ubits-body-sm-regular">Elige los colaboradores que serán evaluados en esta evaluación 360. Debes configurar al menos un evaluado para poder continuar.</p>
-            </section>
+            <div class="eval360-wizard-root">
 
-            <div class="eval360-search-bar">
-                <div id="eval360-search-input" class="eval360-search-input"></div>
-                <span class="ubits-body-sm-regular eval360-search-help">Busca por nombre, cargo o área</span>
+                <!-- Stepper -->
+                <nav class="drawer-wizard-stepper-nav" id="eval360-wiz-stepper-nav">
+                    <ol class="ubits-stepper ubits-stepper--horizontal ubits-stepper--horizontal-compact" id="eval360-wiz-stepper-ol">
+                        <li class="ubits-stepper__step ubits-stepper__step--active" data-step-label="Tipo de selección">
+                            <span class="ubits-stepper__mark" aria-hidden="true">
+                                <span class="ubits-stepper__mark-num">1</span>
+                                <i class="far fa-check" aria-hidden="true"></i>
+                            </span>
+                            <span class="ubits-stepper__label">Tipo de selección</span>
+                        </li>
+                        <li class="ubits-stepper__rail" aria-hidden="true"></li>
+                        <li class="ubits-stepper__step ubits-stepper__step--pending" data-step-label="Selección">
+                            <span class="ubits-stepper__mark" aria-hidden="true">
+                                <span class="ubits-stepper__mark-num">2</span>
+                                <i class="far fa-check" aria-hidden="true"></i>
+                            </span>
+                            <span class="ubits-stepper__label">Selección</span>
+                        </li>
+                    </ol>
+                </nav>
+
+                <!-- ── Paso 1: Tipo de selección (option cards) ── -->
+                <div id="eval360-wizard-step1" class="eval360-wizard-step">
+                    <div class="drawer-agregar-usuarios-options">
+
+                        <label class="drawer-option-card ubits-radio ubits-radio--md" data-opcion="toda-empresa">
+                            <input type="radio" name="eval360-tipo" class="ubits-radio__input" value="toda-empresa" checked>
+                            <span class="ubits-radio__circle"></span>
+                            <div class="drawer-option-card__main">
+                                <div class="drawer-option-card__row">
+                                    <span class="drawer-option-card__icon"><i class="far fa-building"></i></span>
+                                    <span class="ubits-body-md-semibold drawer-option-card__title">Toda la empresa</span>
+                                </div>
+                                <p class="ubits-body-sm-regular drawer-option-card__desc">Todos los colaboradores de la empresa serán evaluados en esta evaluación 360.</p>
+                                <span class="drawer-option-card__count ubits-body-md-regular">
+                                    <span class="ubits-body-md-bold" id="eval360-count-empresa-sel">0</span>/<span class="ubits-body-md-bold" id="eval360-count-empresa-total">0</span> seleccionados
+                                </span>
+                            </div>
+                        </label>
+
+                        <label class="drawer-option-card ubits-radio ubits-radio--md" data-opcion="por-colaborador">
+                            <input type="radio" name="eval360-tipo" class="ubits-radio__input" value="por-colaborador">
+                            <span class="ubits-radio__circle"></span>
+                            <div class="drawer-option-card__main">
+                                <div class="drawer-option-card__row">
+                                    <span class="drawer-option-card__icon"><i class="far fa-user"></i></span>
+                                    <span class="ubits-body-md-semibold drawer-option-card__title">Por colaborador</span>
+                                </div>
+                                <p class="ubits-body-sm-regular drawer-option-card__desc">Selecciona individualmente los colaboradores que serán evaluados.</p>
+                                <span class="drawer-option-card__count ubits-body-md-regular">
+                                    <span class="ubits-body-md-bold" id="eval360-count-colab-sel">0</span>/<span class="ubits-body-md-bold" id="eval360-count-colab-total">0</span> seleccionados
+                                </span>
+                            </div>
+                        </label>
+
+                        <label class="drawer-option-card ubits-radio ubits-radio--md" data-opcion="por-grupos">
+                            <input type="radio" name="eval360-tipo" class="ubits-radio__input" value="por-grupos">
+                            <span class="ubits-radio__circle"></span>
+                            <div class="drawer-option-card__main">
+                                <div class="drawer-option-card__row">
+                                    <span class="drawer-option-card__icon"><i class="far fa-users"></i></span>
+                                    <span class="ubits-body-md-semibold drawer-option-card__title">Por grupos</span>
+                                </div>
+                                <p class="ubits-body-sm-regular drawer-option-card__desc">Selecciona uno o más grupos para incluir a todos sus integrantes como evaluados.</p>
+                                <span class="drawer-option-card__count ubits-body-md-regular">
+                                    <span class="ubits-body-md-bold" id="eval360-count-grupos-sel">0</span>/<span class="ubits-body-md-bold" id="eval360-count-grupos-total">10</span> seleccionados
+                                </span>
+                            </div>
+                        </label>
+
+                        <label class="drawer-option-card ubits-radio ubits-radio--md" data-opcion="desde-archivo">
+                            <input type="radio" name="eval360-tipo" class="ubits-radio__input" value="desde-archivo">
+                            <span class="ubits-radio__circle"></span>
+                            <div class="drawer-option-card__main">
+                                <div class="drawer-option-card__row">
+                                    <span class="drawer-option-card__icon"><i class="far fa-file-upload"></i></span>
+                                    <span class="ubits-body-md-semibold drawer-option-card__title">Desde archivo</span>
+                                </div>
+                                <p class="ubits-body-sm-regular drawer-option-card__desc">Sube un archivo .xlsx o .csv con los colaboradores que serán evaluados.</p>
+                                <span class="drawer-option-card__count ubits-body-md-regular">
+                                    <span class="ubits-body-md-bold" id="eval360-count-archivo-sel">0</span> importados
+                                </span>
+                            </div>
+                        </label>
+
+                    </div>
+
+                    <!-- Panel archivo (visible en step 1 cuando se selecciona "desde archivo") -->
+                    <div class="eval360-archivo-panel" id="eval360-panel-archivo" style="display:none">
+                        <div id="eval360-archivo-fu-container"></div>
+                    </div>
+                </div>
+
+                <!-- ── Paso 2: Selección por tabla ── -->
+                <div id="eval360-wizard-step2" class="eval360-wizard-step drawer-wizard-step--participantes" style="display:none">
+                    <div class="drawer-usuarios-panel drawer-usuarios-panel--colaborador" id="eval360-panel-colaborador" style="display:none">
+                        <div id="eval360-colab-dt-container" class="drawer-colab-dt-wrapper"></div>
+                    </div>
+                    <div class="drawer-usuarios-panel drawer-usuarios-panel--grupos" id="eval360-panel-grupos" style="display:none">
+                        <div id="eval360-grupos-dt-container" class="drawer-grupos-dt-wrapper"></div>
+                    </div>
+                </div>
+
             </div>
-
-            <div class="eval360-list" id="eval360-list"></div>
         </div><!-- /view evaluados -->
 
         <!-- ════════════════════════════════════════
@@ -303,6 +406,7 @@
 <div id="ubits-toast-container"></div>
 
 <script src="../../../components/tooltip.js"></script>
+<script src="../../../components/stepper.js"></script>
 <script src="../../../components/sidebar.js"></script>
 <script src="../../../components/tab-bar.js"></script>
 <script src="../../../components/floating-menu.js"></script>
@@ -313,6 +417,8 @@
 <script src="../../../components/modal.js"></script>
 <script src="../../../components/empty-state.js"></script>
 <script src="../../../components/toast.js"></script>
+<script src="../../../components/ubits-data-table.js"></script>
+<script src="../../../components/file-upload.js"></script>
 <script src="../../../script.js"></script>
 <script src="../../../bd-master/bd-master-colaboradores.js"></script>
 <script src="../../../bd-master/bd-evaluaciones-360.js"></script>
@@ -334,12 +440,31 @@
     var _tipos         = [];
     var _competencias  = [];
     var _evaluados     = {};
-    var _busqueda      = '';
     var _cantidad      = 4;
     var _rangos        = [];
 
     /* ── Vista activa ── */
     var _currentView = 'hub';
+
+    /* ── Wizard evaluados ── */
+    var _eval360Step           = 1;
+    var _eval360ColabTablaRef  = null;
+    var _eval360GruposTablaRef = null;
+    var _eval360ArchivoListo   = false;
+
+    var _eval360GruposMock = [
+        { id: 'g-ventas',        nombre: 'Ventas',             descripcion: 'Asesoría comercial y cierre de negocios',              integrantes: 7  },
+        { id: 'g-instalaciones', nombre: 'Instalaciones',       descripcion: 'Instalación de productos en sitio',                   integrantes: 9  },
+        { id: 'g-reparaciones',  nombre: 'Reparaciones',        descripcion: 'Servicio técnico y mantenimiento',                    integrantes: 6  },
+        { id: 'g-atencion',      nombre: 'Atención al Cliente', descripcion: 'Soporte y seguimiento postventa',                     integrantes: 7  },
+        { id: 'g-logistica',     nombre: 'Logística',           descripcion: 'Bodega, inventarios y entregas',                      integrantes: 4  },
+        { id: 'g-admin',         nombre: 'Administración',      descripcion: 'Gestión administrativa y financiera',                 integrantes: 5  },
+        { id: 'g-marketing',     nombre: 'Marketing',           descripcion: 'Publicidad, diseño y redes sociales',                 integrantes: 4  },
+        { id: 'g-rrhh',          nombre: 'Recursos Humanos',    descripcion: 'Gestión de personas, objetivos, encuestas y nómina',  integrantes: 3  },
+        { id: 'g-lideres',       nombre: 'Líderes',             descripcion: 'Jefes y coordinadores de cada departamento',          integrantes: 10 },
+        { id: 'g-operativo',     nombre: 'Personal operativo',  descripcion: 'Colaboradores que reportan a un líder',               integrantes: 41 }
+    ];
+
     var SUB_VIEW_TITLES = {
         tipo:         'Tipo de evaluación',
         competencias: 'Competencias y enunciados',
@@ -879,149 +1004,273 @@
     }
 
     /* ══════════════════════════════════════════════════════════
-       VISTA: EVALUADOS
+       VISTA: EVALUADOS — WIZARD (stepper + cards + tablas)
        ══════════════════════════════════════════════════════════ */
-    function renderEvaluadosView() {
-        _evaluados = draft.evaluados || {};
-        _busqueda  = '';
 
-        /* Recrear input de búsqueda */
-        var searchContainer = document.getElementById('eval360-search-input');
-        if (searchContainer) searchContainer.innerHTML = '';
+    function eval360GetOpcion() {
+        var r = document.querySelector('input[name="eval360-tipo"]:checked');
+        return r ? r.value : 'toda-empresa';
+    }
 
-        createInput({
-            containerId: 'eval360-search-input',
-            type: 'search',
-            placeholder: 'Buscar colaborador...',
-            size: 'md',
-            onChange: function (val) {
-                _busqueda = val || '';
-                renderEvaluadosList();
+    function eval360SyncFooter() {
+        var saveBtn   = document.getElementById('crear360-btn-sub-save');
+        var cancelBtn = document.getElementById('crear360-btn-sub-cancel');
+        if (!saveBtn || !cancelBtn) return;
+        var saveSp   = saveBtn.querySelector('span');
+        var cancelSp = cancelBtn.querySelector('span');
+        var op = eval360GetOpcion();
+        if (_eval360Step === 1) {
+            if (op === 'desde-archivo') {
+                if (saveSp)   saveSp.textContent   = 'Importar';
+                saveBtn.disabled = !_eval360ArchivoListo;
+            } else {
+                if (saveSp)   saveSp.textContent   = (op === 'toda-empresa') ? 'Guardar' : 'Siguiente';
+                saveBtn.disabled = false;
+            }
+            if (cancelSp) cancelSp.textContent = 'Cancelar';
+        } else {
+            if (saveSp)   saveSp.textContent   = 'Guardar';
+            if (cancelSp) cancelSp.textContent = 'Anterior';
+            eval360SyncSaveBtnStep2();
+        }
+    }
+
+    function eval360SyncSaveBtnStep2() {
+        var saveBtn = document.getElementById('crear360-btn-sub-save');
+        if (!saveBtn) return;
+        var op  = eval360GetOpcion();
+        var dis = true;
+        if (op === 'por-colaborador') {
+            dis = !_eval360ColabTablaRef || typeof _eval360ColabTablaRef.getSelectedIds !== 'function'
+                  || _eval360ColabTablaRef.getSelectedIds().length === 0;
+        } else if (op === 'por-grupos') {
+            dis = !_eval360GruposTablaRef || typeof _eval360GruposTablaRef.getSelectedIds !== 'function'
+                  || _eval360GruposTablaRef.getSelectedIds().length === 0;
+        } else {
+            dis = false;
+        }
+        saveBtn.disabled = dis;
+    }
+
+    function eval360GoToStep(num) {
+        _eval360Step = num;
+        var step1 = document.getElementById('eval360-wizard-step1');
+        var step2 = document.getElementById('eval360-wizard-step2');
+        var archivoPanel = document.getElementById('eval360-panel-archivo');
+        var op = eval360GetOpcion();
+
+        if (step1) step1.style.display = (num === 1) ? '' : 'none';
+        if (step2) step2.style.display = (num === 2) ? '' : 'none';
+
+        /* Panel archivo: solo en step 1, solo cuando la opción es desde-archivo */
+        if (archivoPanel) archivoPanel.style.display = (num === 1 && op === 'desde-archivo') ? '' : 'none';
+
+        if (num === 2) {
+            var colabPanel  = document.getElementById('eval360-panel-colaborador');
+            var gruposPanel = document.getElementById('eval360-panel-grupos');
+            if (colabPanel)  { colabPanel.style.display  = (op === 'por-colaborador') ? 'flex' : 'none'; colabPanel.style.flexDirection  = 'column'; }
+            if (gruposPanel) { gruposPanel.style.display = (op === 'por-grupos')      ? 'flex' : 'none'; gruposPanel.style.flexDirection = 'column'; }
+            if (op === 'por-colaborador' && !_eval360ColabTablaRef)  eval360InitColabTable();
+            if (op === 'por-grupos'      && !_eval360GruposTablaRef) eval360InitGruposTable();
+        }
+
+        var ol = document.getElementById('eval360-wiz-stepper-ol');
+        if (ol && typeof setStepperStepStates === 'function') setStepperStepStates(ol, num - 1);
+
+        eval360SyncFooter();
+    }
+
+    function eval360UpdateCardCounts() {
+        var colaboradores = (typeof BD_MASTER_COLABORADORES !== 'undefined' && BD_MASTER_COLABORADORES.colaboradores) || [];
+        var total = colaboradores.length;
+        var op    = eval360GetOpcion();
+
+        var empTot = document.getElementById('eval360-count-empresa-total');
+        var empSel = document.getElementById('eval360-count-empresa-sel');
+        if (empTot) empTot.textContent = total;
+        if (empSel) empSel.textContent = (op === 'toda-empresa') ? total : '0';
+
+        var colabTot = document.getElementById('eval360-count-colab-total');
+        var colabSel = document.getElementById('eval360-count-colab-sel');
+        if (colabTot) colabTot.textContent = total;
+        var nColab = (_eval360ColabTablaRef && typeof _eval360ColabTablaRef.getSelectedIds === 'function')
+            ? _eval360ColabTablaRef.getSelectedIds().length : 0;
+        if (colabSel) colabSel.textContent = nColab;
+
+        var gruposSel = document.getElementById('eval360-count-grupos-sel');
+        var nGrupos = (_eval360GruposTablaRef && typeof _eval360GruposTablaRef.getSelectedIds === 'function')
+            ? _eval360GruposTablaRef.getSelectedIds().length : 0;
+        if (gruposSel) gruposSel.textContent = nGrupos;
+    }
+
+    function eval360InitColabTable() {
+        var container = document.getElementById('eval360-colab-dt-container');
+        if (!container || typeof createUbitsDataTable !== 'function') return;
+        var colaboradores = (typeof BD_MASTER_COLABORADORES !== 'undefined' && BD_MASTER_COLABORADORES.colaboradores) || [];
+        var rows = colaboradores.map(function (c) {
+            return {
+                id:     c.id,
+                nombre: (c.nombre || ''),
+                correo: (c.username || ''),
+                area:   (c.area || ''),
+                lider:  (c.jefe || '—'),
+                cargo:  (c.cargo || ''),
+                avatar: c.avatar || null
+            };
+        });
+        function esc(t) { if (t == null) return ''; var d = document.createElement('div'); d.textContent = t; return d.innerHTML; }
+        function buildRowHtml(row) {
+            var av = (row.avatar && String(row.avatar).trim())
+                ? '<span class="ubits-avatar ubits-avatar--sm"><img src="' + String(row.avatar).replace(/"/g, '&quot;') + '" alt="' + esc(row.nombre) + '" class="ubits-avatar__img"></span>'
+                : '<span class="ubits-avatar ubits-avatar--sm"><span class="ubits-avatar__fallback"><i class="far fa-user"></i></span></span>';
+            return '<td data-col="nombre"><div class="eval360-usuario-cell">' + av +
+                '<div><span class="ubits-body-sm-regular">' + esc(row.nombre) + '</span><br>' +
+                '<span class="ubits-body-sm-regular" style="color:var(--ubits-fg-1-low)">' + esc(row.correo) + '</span></div></div></td>' +
+                '<td data-col="area"><span class="ubits-body-sm-regular">'  + esc(row.area)  + '</span></td>' +
+                '<td data-col="lider"><span class="ubits-body-sm-regular">' + esc(row.lider) + '</span></td>';
+        }
+        _eval360ColabTablaRef = createUbitsDataTable({
+            containerId:      'eval360-colab-dt-container',
+            tableId:          'eval360-colab-table',
+            title:            'Lista de colaboradores',
+            columns:          [{ id: 'nombre', label: 'Nombre', filterable: true }, { id: 'area', label: 'Área', filterable: true }, { id: 'lider', label: 'Líder', filterable: true }],
+            getData:          function () { return rows; },
+            rowIdField:       'id',
+            buildRowHtml:     buildRowHtml,
+            features:         { checkboxes: true, search: true, verSeleccionados: true, resultsCount: true },
+            emptyState:       { message: 'No hay colaboradores', icon: 'far fa-user' },
+            emptySearchState: { message: 'No se encontraron resultados', description: 'Intenta ajustar tu búsqueda.', buttonText: 'Limpiar búsqueda' },
+            i18n:             { selectAll: 'Seleccionar todo', deselectAll: 'Deseleccionar todo', verSeleccionados: 'Ver seleccionados', buscar: 'Buscar' }
+        });
+        container.addEventListener('change', function (e) {
+            if (e.target && e.target.matches && e.target.matches('input[type="checkbox"]')) {
+                eval360UpdateCardCounts();
+                eval360SyncSaveBtnStep2();
+                updateEvaluadosCounter();
             }
         });
+    }
 
-        renderEvaluadosList();
-        updateEvaluadosCounter();
+    function eval360InitGruposTable() {
+        var container = document.getElementById('eval360-grupos-dt-container');
+        if (!container || typeof createUbitsDataTable !== 'function') return;
+        function esc(t) { if (t == null) return ''; var d = document.createElement('div'); d.textContent = t; return d.innerHTML; }
+        function buildRowHtml(row) {
+            return '<td data-col="nombre"><span class="ubits-body-sm-regular">'       + esc(row.nombre)       + '</span></td>' +
+                   '<td data-col="descripcion"><span class="ubits-body-sm-regular">'  + esc(row.descripcion)  + '</span></td>' +
+                   '<td data-col="integrantes"><span class="ubits-body-sm-regular">'  + esc(String(row.integrantes)) + '</span></td>';
+        }
+        _eval360GruposTablaRef = createUbitsDataTable({
+            containerId:      'eval360-grupos-dt-container',
+            tableId:          'eval360-grupos-table',
+            title:            'Lista de grupos',
+            columns:          [{ id: 'nombre', label: 'Nombre', sortable: true }, { id: 'descripcion', label: 'Descripción', sortable: true }, { id: 'integrantes', label: 'Integrantes', sortable: true, sortType: 'number' }],
+            getData:          function () { return _eval360GruposMock; },
+            rowIdField:       'id',
+            buildRowHtml:     buildRowHtml,
+            features:         { checkboxes: true, search: true, verSeleccionados: true, resultsCount: true },
+            emptyState:       { message: 'No hay grupos', icon: 'far fa-users' },
+            emptySearchState: { message: 'No se encontraron resultados', description: 'Intenta ajustar tu búsqueda.', buttonText: 'Limpiar búsqueda' },
+            i18n:             { selectAll: 'Seleccionar todo', deselectAll: 'Deseleccionar todo', verSeleccionados: 'Ver seleccionados', buscar: 'Buscar' }
+        });
+        container.addEventListener('change', function (e) {
+            if (e.target && e.target.matches && e.target.matches('input[type="checkbox"]')) {
+                eval360UpdateCardCounts();
+                eval360SyncSaveBtnStep2();
+                updateEvaluadosCounter();
+            }
+        });
+    }
+
+    function renderEvaluadosView() {
+        _eval360Step           = 1;
+        _eval360ColabTablaRef  = null;
+        _eval360GruposTablaRef = null;
+        _eval360ArchivoListo   = false;
+
+        /* Restaurar selección guardada */
+        var saved        = draft.evaluados;
+        var tipoGuardado = (saved && saved.tipo) ? saved.tipo : 'toda-empresa';
+        document.querySelectorAll('input[name="eval360-tipo"]').forEach(function (r) {
+            r.checked = (r.value === tipoGuardado);
+            r.onchange = function () {
+                /* Actualizar panel archivo cuando cambia la opción */
+                var archivoPanel = document.getElementById('eval360-panel-archivo');
+                if (archivoPanel) archivoPanel.style.display = (this.value === 'desde-archivo') ? '' : 'none';
+                eval360UpdateCardCounts();
+                eval360SyncFooter();
+            };
+        });
+
+        /* Stepper clickeable para volver al paso 1 */
+        setTimeout(function () {
+            var ol = document.getElementById('eval360-wiz-stepper-ol');
+            if (!ol) return;
+            var stepItems = ol.querySelectorAll('li');
+            if (stepItems[0]) {
+                stepItems[0].style.cursor = 'pointer';
+                stepItems[0].addEventListener('click', function () {
+                    if (_eval360Step === 2) eval360GoToStep(1);
+                });
+            }
+        }, 100);
+
+        eval360GoToStep(1);
+        eval360UpdateCardCounts();
+
+        /* Inicializar file-upload para opción "desde archivo" */
+        setTimeout(function () {
+            var fuContainer = document.getElementById('eval360-archivo-fu-container');
+            if (fuContainer && fuContainer.children.length === 0 && typeof createFileUpload === 'function') {
+                createFileUpload({
+                    containerId: 'eval360-archivo-fu-container',
+                    accept: '.xlsx,.csv',
+                    label: 'Arrastra tu archivo aquí o haz clic para seleccionarlo',
+                    sublabel: 'Formatos permitidos: .xlsx, .csv',
+                    onChange: function (files) {
+                        _eval360ArchivoListo = files && files.length > 0;
+                        var span = document.getElementById('eval360-count-archivo-sel');
+                        if (span) span.textContent = _eval360ArchivoListo ? '1' : '0';
+                        eval360SyncFooter();
+                    }
+                });
+            }
+        }, 150);
     }
 
     function updateEvaluadosCounter() {
-        var n = Object.keys(_evaluados).filter(function (id) { return _evaluados[id] && _evaluados[id].seleccionado; }).length;
         var el = document.getElementById('eval360-selected-count');
-        if (el) el.textContent = n + (n === 1 ? ' evaluado configurado' : ' evaluados configurados');
-        var saveBtn = document.getElementById('crear360-btn-sub-save');
-        if (saveBtn) saveBtn.disabled = n === 0;
-    }
-
-    function initials(nombre) {
-        var parts = nombre.split(' ').filter(Boolean);
-        return (parts[0][0] + (parts[1] ? parts[1][0] : '')).toUpperCase();
-    }
-
-    function renderEvaluadosList() {
-        var container  = document.getElementById('eval360-list');
-        if (!container) return;
+        if (!el) return;
+        var op            = eval360GetOpcion();
         var colaboradores = (typeof BD_MASTER_COLABORADORES !== 'undefined' && BD_MASTER_COLABORADORES.colaboradores) || [];
-        var filtrados  = colaboradores.filter(function (c) {
-            if (!_busqueda) return true;
-            var q = _busqueda.toLowerCase();
-            return c.nombre.toLowerCase().indexOf(q) >= 0
-                || (c.cargo || '').toLowerCase().indexOf(q) >= 0
-                || (c.area  || '').toLowerCase().indexOf(q) >= 0;
-        });
-
-        if (filtrados.length === 0) {
-            container.innerHTML = '<p class="ubits-body-md-regular eval360-no-results">No se encontraron colaboradores.</p>';
-            return;
+        var n = 0;
+        if (op === 'toda-empresa') {
+            n = colaboradores.length;
+        } else if (op === 'por-colaborador' && _eval360ColabTablaRef && typeof _eval360ColabTablaRef.getSelectedIds === 'function') {
+            n = _eval360ColabTablaRef.getSelectedIds().length;
+        } else if (op === 'por-grupos' && _eval360GruposTablaRef && typeof _eval360GruposTablaRef.getSelectedIds === 'function') {
+            n = _eval360GruposTablaRef.getSelectedIds().length;
         }
-
-        container.innerHTML = filtrados.map(function (c) {
-            var sel  = _evaluados[c.id] && _evaluados[c.id].seleccionado;
-            var conf = _evaluados[c.id] && _evaluados[c.id].configurado;
-            return '<div class="eval360-row' + (sel ? ' eval360-row--selected' : '') + '" data-id="' + c.id + '">' +
-                '<label class="eval360-row__check-label">' +
-                    '<input type="checkbox" class="eval360-row__checkbox eval360-chk" data-id="' + c.id + '" ' + (sel ? 'checked' : '') + '>' +
-                    '<span class="eval360-row__check-box"><i class="far fa-check"></i></span>' +
-                '</label>' +
-                '<div class="eval360-row__avatar">' +
-                    (c.avatar
-                        ? '<img src="' + c.avatar + '" alt="" class="eval360-avatar-img">'
-                        : '<span class="eval360-avatar-placeholder ubits-body-sm-bold">' + initials(c.nombre) + '</span>') +
-                '</div>' +
-                '<div class="eval360-row__info">' +
-                    '<span class="ubits-body-md-regular eval360-row__nombre">' + c.nombre + '</span>' +
-                    '<span class="ubits-body-sm-regular eval360-row__meta">' + (c.cargo || '') + ' · ' + (c.area || '') + '</span>' +
-                '</div>' +
-                (sel
-                    ? '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm eval360-btn-config" data-id="' + c.id + '" data-nombre="' + c.nombre + '">' +
-                        (conf ? '<i class="far fa-circle-check eval360-done-icon"></i>' : '') +
-                        '<span>' + (conf ? 'Ver evaluadores' : 'Asignar evaluadores') + '</span>' +
-                        '</button>'
-                    : '') +
-                '</div>';
-        }).join('');
-
-        container.querySelectorAll('.eval360-chk').forEach(function (chk) {
-            chk.addEventListener('change', function (e) {
-                var id = e.target.dataset.id;
-                if (!_evaluados[id]) _evaluados[id] = { seleccionado: false, configurado: false };
-                _evaluados[id].seleccionado = e.target.checked;
-                renderEvaluadosList();
-                updateEvaluadosCounter();
-            });
-        });
-
-        container.querySelectorAll('.eval360-btn-config').forEach(function (btn) {
-            btn.addEventListener('click', function () {
-                abrirModalEvaluadores(btn.dataset.id, btn.dataset.nombre);
-            });
-        });
-    }
-
-    function abrirModalEvaluadores(evaluadoId, evaluadoNombre) {
-        var colaboradores = (typeof BD_MASTER_COLABORADORES !== 'undefined' && BD_MASTER_COLABORADORES.colaboradores) || [];
-        var todos  = colaboradores.filter(function (c) { return c.id !== evaluadoId; });
-        var actual = (_evaluados[evaluadoId] && _evaluados[evaluadoId].evaluadores) || [];
-
-        var rows = todos.map(function (c) {
-            var selEval = actual.indexOf(c.id) >= 0;
-            return '<label class="eval360-modal-row">' +
-                '<input type="checkbox" class="eval360-modal-chk" data-id="' + c.id + '" ' + (selEval ? 'checked' : '') + '>' +
-                '<span class="eval360-modal-check-box"><i class="far fa-check"></i></span>' +
-                '<span class="ubits-body-sm-regular">' + c.nombre + '</span>' +
-                '<span class="ubits-body-sm-regular eval360-modal-meta">' + (c.cargo || '') + '</span>' +
-                '</label>';
-        }).join('');
-
-        openModal({
-            overlayId: 'eval360-config-modal',
-            title: 'Evaluadores de ' + evaluadoNombre,
-            bodyHtml: '<p class="ubits-body-sm-regular" style="margin-bottom:var(--gap-md);color:var(--ubits-fg-2-medium);">Selecciona quiénes evaluarán a este colaborador.</p>' +
-                '<div class="eval360-modal-list">' + rows + '</div>',
-            footerHtml: '<button class="ubits-button ubits-button--secondary ubits-button--md" onclick="closeModal(\'eval360-config-modal\')"><span>Cancelar</span></button>' +
-                '<button class="ubits-button ubits-button--primary ubits-button--md" id="eval360-modal-save-btn"><span>Guardar evaluadores</span></button>',
-            size: 'md',
-            closeOnOverlayClick: true
-        });
-
-        setTimeout(function () {
-            var saveBtn = document.getElementById('eval360-modal-save-btn');
-            if (saveBtn) saveBtn.addEventListener('click', function () {
-                var selIds = [];
-                document.querySelectorAll('.eval360-modal-chk:checked').forEach(function (chk) {
-                    selIds.push(chk.dataset.id);
-                });
-                if (!_evaluados[evaluadoId]) _evaluados[evaluadoId] = { seleccionado: true };
-                _evaluados[evaluadoId].evaluadores  = selIds;
-                _evaluados[evaluadoId].configurado  = selIds.length > 0;
-                closeModal('eval360-config-modal');
-                renderEvaluadosList();
-                updateEvaluadosCounter();
-            });
-        }, 50);
+        el.textContent = n + (n === 1 ? ' evaluado seleccionado' : ' evaluados seleccionados');
     }
 
     function saveEvaluados() {
-        draft.evaluados = _evaluados;
+        var op            = eval360GetOpcion();
+        var colaboradores = (typeof BD_MASTER_COLABORADORES !== 'undefined' && BD_MASTER_COLABORADORES.colaboradores) || [];
+        var result        = { tipo: op, personas: [], grupos: [] };
+        if (op === 'toda-empresa') {
+            result.personas = colaboradores.map(function (c) { return c.id; });
+        } else if (op === 'por-colaborador' && _eval360ColabTablaRef) {
+            result.personas = _eval360ColabTablaRef.getSelectedIds();
+        } else if (op === 'por-grupos' && _eval360GruposTablaRef) {
+            result.grupos = _eval360GruposTablaRef.getSelectedIds().map(function (id) {
+                var g = _eval360GruposMock.find(function (gr) { return gr.id === id; });
+                return g ? { id: g.id, nombre: g.nombre } : null;
+            }).filter(Boolean);
+        } else if (op === 'desde-archivo') {
+            result.archivoImportado = _eval360ArchivoListo;
+        }
+        draft.evaluados        = result;
         draft.checks.evaluados = true;
         showToast('success', 'Evaluados guardados');
         showView('hub');
@@ -1195,7 +1444,14 @@
     function saveCurrentSubView() {
         if      (_currentView === 'tipo')         saveTipo();
         else if (_currentView === 'competencias') saveCompetencias();
-        else if (_currentView === 'evaluados')    saveEvaluados();
+        else if (_currentView === 'evaluados') {
+            var op = eval360GetOpcion();
+            if (_eval360Step === 1 && op !== 'toda-empresa' && op !== 'desde-archivo') {
+                eval360GoToStep(2);
+            } else {
+                saveEvaluados();
+            }
+        }
         else if (_currentView === 'resultados')   saveResultados();
     }
 
@@ -1239,9 +1495,13 @@
             });
         });
 
-        /* Footer sub-vista — Cancelar usa history.back() para respetar el historial */
+        /* Footer sub-vista — Cancelar respeta el wizard de evaluados */
         document.getElementById('crear360-btn-sub-cancel').addEventListener('click', function () {
-            history.back();
+            if (_currentView === 'evaluados' && _eval360Step === 2) {
+                eval360GoToStep(1);
+            } else {
+                history.back();
+            }
         });
         document.getElementById('crear360-btn-sub-save').addEventListener('click', saveCurrentSubView);
 
