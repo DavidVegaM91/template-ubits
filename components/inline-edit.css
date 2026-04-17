@@ -60,7 +60,6 @@ textarea.ubits-inline-edit {
 */
 .ubits-inline-edit:hover {
     background: var(--ubits-bg-2);
-    box-shadow: 0 0 0 1px var(--ubits-border-1);
 }
 
 .ubits-inline-edit:focus {
