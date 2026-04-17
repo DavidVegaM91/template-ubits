@@ -1054,7 +1054,7 @@ body {
 .content-sections .section-triple > div,
 .content-sections .section-quad > div {
     border-radius: var(--border-radius-lg) !important;
-    border: 1px solid var(--ubits-border-1);
+    border: none;
 }
 
 /* Header de producto: sin marco de tarjeta (alinea con content-area / SubNav). */
