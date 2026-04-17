@@ -826,7 +826,7 @@ function renderTareasVencidas() {
     const toggleBtn = document.getElementById('overdue-toggle');
     const icon = toggleBtn ? toggleBtn.querySelector('i') : null;
     if (content) content.style.display = estadoTareas.showOverdueSection ? 'block' : 'none';
-    if (icon) icon.style.transform = estadoTareas.showOverdueSection ? 'rotate(0deg)' : 'rotate(-90deg)';
+    if (icon) icon.style.transform = estadoTareas.showOverdueSection ? 'rotate(180deg)' : 'rotate(0deg)';
 
     // Attention badge (componente oficial): error / sm; círculo si 1–9 dígitos
     if (header) {
@@ -879,14 +879,14 @@ function renderTareasSinFecha() {
     else container.setAttribute('hidden', '');
 
     const icon = toggleBtn ? toggleBtn.querySelector('i') : null;
-    if (icon) icon.style.transform = expanded ? 'rotate(0deg)' : 'rotate(-90deg)';
+    if (icon) icon.style.transform = expanded ? 'rotate(180deg)' : 'rotate(0deg)';
 
     if (header) {
         var badge = document.getElementById('no-due-count-badge');
         if (!badge) {
             badge = document.createElement('span');
             badge.id = 'no-due-count-badge';
-            badge.className = 'ubits-attention-badge ubits-attention-badge--sm ubits-attention-badge--error';
+            badge.className = 'ubits-attention-badge ubits-attention-badge--sm ubits-attention-badge--info';
             badge.setAttribute('aria-label', 'Cantidad de tareas sin fecha de vencimiento');
             header.appendChild(badge);
         }
@@ -1323,7 +1323,7 @@ function initTareasView() {
             const icon = overdueToggle.querySelector('i');
             if (content && icon) {
                 content.style.display = estadoTareas.showOverdueSection ? 'block' : 'none';
-                icon.style.transform = estadoTareas.showOverdueSection ? 'rotate(0deg)' : 'rotate(-90deg)';
+                icon.style.transform = estadoTareas.showOverdueSection ? 'rotate(180deg)' : 'rotate(0deg)';
             }
         });
     }
