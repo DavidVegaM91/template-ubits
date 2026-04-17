@@ -182,126 +182,89 @@
    VISTA: TIPO DE EVALUACIÓN
    ════════════════════════════════════════ */
 
+/* Descripción: fila izquierda (instrucción) + derecha (total en vivo) */
 .tipo360-description {
-    margin-bottom: var(--gap-xl);
-}
-.tipo360-description h2 { color: var(--ubits-fg-1-high); margin: 0 0 var(--gap-sm); }
-.tipo360-description p  { color: var(--ubits-fg-1-medium); margin: 0; }
-
-.tipo360-total-bar {
     display: flex;
     align-items: center;
-    gap: var(--gap-sm);
-    padding: var(--padding-md) var(--padding-lg);
-    background: var(--ubits-bg-2);
-    border: 1px solid var(--ubits-border-1);
-    border-radius: var(--border-radius-md);
+    justify-content: space-between;
+    gap: var(--gap-xl);
     margin-bottom: var(--gap-xl);
+}
+
+.tipo360-desc-left {
+    color: var(--ubits-fg-1-medium);
+    margin: 0;
+}
+
+.tipo360-desc-right {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-xs);
+    flex-shrink: 0;
+    color: var(--ubits-fg-1-medium);
 }
 
 .tipo360-total-num {
-    font-size: 20px;
-    min-width: 56px;
-    color: var(--ubits-fg-1-high);
-}
-
-.tipo360-total-alert {
-    display: flex;
-    align-items: center;
-    gap: var(--gap-xs);
     color: var(--ubits-feedback-accent-error);
 }
 
-.tipo360-total-ok {
-    display: flex;
-    align-items: center;
-    gap: var(--gap-xs);
-    color: var(--ubits-feedback-accent-success);
-}
-
+/* Grid 2 columnas */
 .tipo360-cards {
-    display: flex;
-    flex-direction: column;
-    gap: var(--gap-md);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--gap-lg);
+    margin-bottom: var(--gap-md);
 }
 
+/* Card: dos filas (título+switch / descripción+peso) */
 .tipo360-card {
     display: flex;
-    align-items: center;
-    gap: var(--gap-lg);
+    flex-direction: column;
+    gap: var(--gap-sm);
     background: var(--ubits-bg-1);
     border: 1px solid var(--ubits-border-1);
     border-radius: var(--border-radius-lg);
-    padding: var(--padding-lg) var(--padding-xl);
+    padding: var(--padding-lg);
     transition: border-color 0.15s;
 }
 
 .tipo360-card--activo {
     border-color: var(--ubits-accent-brand);
-    background: var(--ubits-bg-2);
 }
 
-.tipo360-card__left { flex-shrink: 0; }
-
-.tipo360-card__center {
-    flex: 1;
-    min-width: 0;
+/* Fila 1: título (izq) — switch (der) */
+.tipo360-card__row-title {
     display: flex;
-    flex-direction: column;
-    gap: var(--gap-xs);
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--gap-lg);
+}
+
+/* Fila 2: descripción (izq) — peso (der) */
+.tipo360-card__row-desc {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--gap-lg);
 }
 
 .tipo360-card__nombre { color: var(--ubits-fg-1-high); }
-.tipo360-card__desc   { color: var(--ubits-fg-2-medium); }
+.tipo360-card__desc   { color: var(--ubits-fg-2-medium); flex: 1; min-width: 0; }
 
-.tipo360-card__right {
-    flex-shrink: 0;
-    width: 120px;
+/* Contenedor del Input UBITS oficial de peso */
+.tipo360-peso-wrap {
+    width: 80px;
 }
 
-/* toggle switch */
-.tipo360-toggle {
-    position: relative;
-    display: inline-flex;
-    align-items: center;
-    cursor: pointer;
+/* Opacidad leve en cards inactivas (sin afectar el switch) */
+.tipo360-card:not(.tipo360-card--activo) .tipo360-card__nombre,
+.tipo360-card:not(.tipo360-card--activo) .tipo360-card__row-desc {
+    opacity: 0.7;
 }
 
-.tipo360-toggle__input {
-    position: absolute;
-    opacity: 0;
-    width: 0;
-    height: 0;
-}
-
-.tipo360-toggle__track {
-    width: 40px;
-    height: 22px;
-    border-radius: var(--border-radius-full);
-    background: var(--ubits-border-1);
-    transition: background 0.2s;
-    position: relative;
-    display: block;
-}
-
-.tipo360-toggle__track::after {
-    content: '';
-    position: absolute;
-    top: 3px;
-    left: 3px;
-    width: 16px;
-    height: 16px;
-    border-radius: var(--border-radius-full);
-    background: #fff;
-    transition: transform 0.2s;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
-}
-
-.tipo360-toggle__input:checked + .tipo360-toggle__track {
-    background: var(--ubits-accent-brand);
-}
-.tipo360-toggle__input:checked + .tipo360-toggle__track::after {
-    transform: translateX(18px);
+/* Mensajes de validación del total */
+.tipo360-total-bar {
+    margin-top: var(--gap-xs);
 }
 
 /* ════════════════════════════════════════
@@ -645,11 +608,8 @@
     .crear360-cards-grid {
         grid-template-columns: 1fr;
     }
-    .tipo360-card {
-        flex-wrap: wrap;
-    }
-    .tipo360-card__right {
-        width: 100%;
+    .tipo360-cards {
+        grid-template-columns: 1fr;
     }
     .eval360-search-bar {
         flex-direction: column;

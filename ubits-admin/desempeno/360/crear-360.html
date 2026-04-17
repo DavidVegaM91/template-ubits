@@ -149,24 +149,18 @@
         <div data-view="tipo" id="crear360-view-tipo" class="ubits-layout-immersive__stage crear360-view--hidden">
 
             <section class="tipo360-description">
-                <h2 class="ubits-body-md-bold">Selecciona quiénes participarán</h2>
-                <p class="ubits-body-sm-regular">Activa cada tipo de evaluador y asigna el porcentaje de peso. El total debe sumar exactamente el <strong>100%</strong>.</p>
+                <p class="ubits-body-sm-regular tipo360-desc-left">Activa cada tipo de evaluador y asigna el porcentaje de peso.</p>
+                <div class="tipo360-desc-right">
+                    <span class="ubits-body-sm-regular">El total debe ser 100%. Llevas</span>
+                    <strong class="tipo360-total-num ubits-heading-h2" id="tipo360-total">0</strong>
+                    <span class="ubits-heading-h2">/100</span>
+                </div>
             </section>
 
-            <div class="tipo360-total-bar">
-                <span class="ubits-body-sm-regular">Total de pesos:</span>
-                <span class="ubits-body-md-bold tipo360-total-num" id="tipo360-total">0%</span>
-                <span id="tipo360-total-alert" class="tipo360-total-alert" style="display:none;">
-                    <i class="far fa-exclamation-circle"></i>
-                    <span class="ubits-body-sm-regular">Debe sumar 100%</span>
-                </span>
-                <span id="tipo360-total-ok" class="tipo360-total-ok" style="display:none;">
-                    <i class="far fa-circle-check"></i>
-                    <span class="ubits-body-sm-regular">Listo</span>
-                </span>
-            </div>
-
             <div class="tipo360-cards" id="tipo360-cards"></div>
+
+            <div class="tipo360-total-bar">
+            </div>
         </div><!-- /view tipo -->
 
         <!-- ════════════════════════════════════════
@@ -289,8 +283,7 @@
                             class="ubits-button ubits-button--primary ubits-button--md"
                             id="crear360-btn-sub-save"
                             disabled>
-                            <i class="far fa-save"></i>
-                            <span>Guardar configuración</span>
+                            <span>Guardar</span>
                         </button>
                     </div>
 
@@ -723,19 +716,15 @@
 
     function updateTipoTotal() {
         var total = calcTipoTotal();
-        var numEl    = document.getElementById('tipo360-total');
-        var alertEl  = document.getElementById('tipo360-total-alert');
-        var okEl     = document.getElementById('tipo360-total-ok');
+        var numEl = document.getElementById('tipo360-total');
         var alMenosUno = _tipos.some(function (t) { return t.activo; });
 
         if (numEl) {
-            numEl.textContent = total + '%';
+            numEl.textContent = total;
             numEl.style.color = total === 100
                 ? 'var(--ubits-feedback-accent-success)'
-                : (total > 100 ? 'var(--ubits-feedback-accent-error)' : 'var(--ubits-fg-1-high)');
+                : (total > 0 ? 'var(--ubits-feedback-accent-error)' : 'var(--ubits-fg-1-high)');
         }
-        if (alertEl) alertEl.style.display = (alMenosUno && total !== 100) ? '' : 'none';
-        if (okEl)    okEl.style.display    = (alMenosUno && total === 100) ? '' : 'none';
 
         updateTipoFooter();
     }
@@ -756,34 +745,42 @@
             var card = document.createElement('div');
             card.className = 'tipo360-card' + (tipo.activo ? ' tipo360-card--activo' : '');
             card.innerHTML =
-                '<div class="tipo360-card__left">' +
-                    '<label class="tipo360-toggle">' +
-                        '<input type="checkbox" class="tipo360-toggle__input" data-idx="' + idx + '" ' + (tipo.activo ? 'checked' : '') + '>' +
-                        '<span class="tipo360-toggle__track"></span>' +
+                '<div class="tipo360-card__row-title">' +
+                    '<span class="ubits-body-md-bold tipo360-card__nombre">' + tipo.nombre + '</span>' +
+                    '<label class="ubits-switch ubits-switch--md">' +
+                        '<input type="checkbox" class="ubits-switch__input tipo360-toggle__input" data-idx="' + idx + '" ' + (tipo.activo ? 'checked' : '') + '>' +
+                        '<span class="ubits-switch__track"><span class="ubits-switch__thumb"></span></span>' +
                     '</label>' +
                 '</div>' +
-                '<div class="tipo360-card__center">' +
-                    '<span class="ubits-body-md-bold tipo360-card__nombre">' + tipo.nombre + '</span>' +
+                '<div class="tipo360-card__row-desc">' +
                     '<span class="ubits-body-sm-regular tipo360-card__desc">' + tipo.descripcion + '</span>' +
-                '</div>' +
-                '<div class="tipo360-card__right" id="tipo360-peso-wrap-' + idx + '"></div>';
+                    '<div id="tipo360-peso-wrap-' + idx + '" class="tipo360-peso-wrap"></div>' +
+                '</div>';
 
             container.appendChild(card);
 
+            /* Input UBITS oficial para el peso (sin label propio, va en la fila) */
             createInput({
                 containerId: 'tipo360-peso-wrap-' + idx,
                 type: 'number',
-                label: 'Peso %',
                 placeholder: '0',
                 size: 'sm',
+                rightIcon: 'fa-percent',
                 value: tipo.activo ? String(tipo.peso) : '',
-                disabled: !tipo.activo,
-                onChange: function (val) {
-                    _tipos[idx].peso = parseInt(val, 10) || 0;
-                    updateTipoTotal();
-                }
+                disabled: !tipo.activo
             });
 
+            /* Listener nativo para actualización en tiempo real */
+            var pesoWrap = document.getElementById('tipo360-peso-wrap-' + idx);
+            var pesoNative = pesoWrap && pesoWrap.querySelector('input');
+            if (pesoNative) {
+                pesoNative.addEventListener('input', function (e) {
+                    _tipos[idx].peso = parseInt(e.target.value, 10) || 0;
+                    updateTipoTotal();
+                });
+            }
+
+            /* Toggle activar / desactivar tipo */
             card.querySelector('.tipo360-toggle__input').addEventListener('change', function (e) {
                 _tipos[idx].activo = e.target.checked;
                 _tipos[idx].peso   = e.target.checked ? _tipos[idx].pesoSugerido : 0;
