@@ -42,7 +42,7 @@
     display: grid;
     grid-template-columns: 1fr 1fr 1fr auto;
     gap: var(--gap-lg);
-    align-items: end;
+    align-items: flex-start;
 }
 
 .crear360-form-field {
