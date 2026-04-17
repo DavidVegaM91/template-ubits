@@ -18,6 +18,7 @@
     <link rel="stylesheet" href="../../components/profile-menu.css">
     <link rel="stylesheet" href="../../components/button.css">
     <link rel="stylesheet" href="../../components/inline-edit.css">
+    <link rel="stylesheet" href="../../components/file-upload.css">
     <link rel="stylesheet" href="../../components/ia-button.css">
     <link rel="stylesheet" href="../../components/header-product.css">
     <link rel="stylesheet" href="../../components/tooltip.css">
@@ -93,6 +94,7 @@
 
     <script src="../../components/tooltip.js"></script>
     <script src="../../components/inline-edit.js"></script>
+    <script src="../../components/file-upload.js"></script>
     <script src="../../components/avatar.js"></script>
     <script src="../../components/sidebar.js"></script>
     <script src="../../components/sub-nav.js"></script>
@@ -373,35 +375,7 @@
                     '</label>' +
                     '</div>' +
                     '<div class="drawer-usuarios-panel drawer-usuarios-panel--archivo" id="drawer-usuarios-archivo-panel" style="display:none">' +
-                    '  <div class="drawer-archivo-section">' +
-                    '    <div class="drawer-archivo-header">' +
-                    '      <h2 class="ubits-body-md-bold drawer-archivo-title">Importar archivo</h2>' +
-                    '      <div class="drawer-archivo-actions">' +
-                    '        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="drawer-archivo-descargar-lista"><i class="far fa-arrow-down-to-line"></i><span>Descargar lista de colaboradores</span></button>' +
-                    '        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="drawer-archivo-descargar-competencias"><i class="far fa-arrow-down-to-line"></i><span>Descargar lista de competencias</span></button>' +
-                    '        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="drawer-archivo-descargar-plantilla"><i class="far fa-arrow-down-to-line"></i><span>Descargar plantilla</span></button>' +
-                    '      </div>' +
-                    '    </div>' +
-                    '    <div class="drawer-archivo-dropzone" id="drawer-archivo-dropzone">' +
-                    '      <div class="drawer-archivo-empty" id="drawer-archivo-empty">' +
-                    '      <div class="drawer-archivo-dropzone-inner">' +
-                    '        <div class="drawer-archivo-file-icon-wrap"><i class="far fa-file-arrow-up"></i></div>' +
-                    '        <p class="ubits-body-md-semibold drawer-archivo-dropzone-title">Subir archivos</p>' +
-                    '        <p class="ubits-body-sm-regular drawer-archivo-dropzone-formats">CSV &bull; Hasta 5mb</p>' +
-                    '        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="drawer-archivo-btn-seleccionar"><i class="far fa-arrow-up-from-bracket"></i><span>Seleccionar archivos</span></button>' +
-                    '      </div>' +
-                    '      </div>' +
-                    '      <div class="drawer-archivo-file-card" id="drawer-archivo-file-card" hidden style="display:none" aria-live="polite">' +
-                    '        <div class="drawer-archivo-file-card__icon-wrap" aria-hidden="true"><i class="far fa-file-lines"></i></div>' +
-                    '        <div class="drawer-archivo-file-card__meta">' +
-                    '          <span class="ubits-body-sm-semibold drawer-archivo-file-card__name" data-drawer-archivo-nombre></span>' +
-                    '          <span class="ubits-body-sm-regular drawer-archivo-file-card__size" data-drawer-archivo-tamano></span>' +
-                    '        </div>' +
-                    '        <button type="button" class="ubits-button ubits-button--error-tertiary ubits-button--sm ubits-button--icon-only" id="drawer-archivo-btn-quitar" aria-label="Quitar archivo"><i class="far fa-trash-alt"></i></button>' +
-                    '      </div>' +
-                    '      <input type="file" id="drawer-archivo-input" accept=".csv,text/csv" style="display:none">' +
-                    '    </div>' +
-                    '  </div>' +
+                    '  <div id="drawer-archivo-fu-container"></div>' +
                     '</div></div>';
                 var stepParticipantesHtml = '<div id="drawer-wizard-step2" class="drawer-wizard-step drawer-wizard-step--participantes" style="display:none">' +
                     '<div class="drawer-usuarios-panel drawer-usuarios-panel--colaborador" id="drawer-usuarios-colaborador-panel" style="display:none">' +
@@ -1096,33 +1070,22 @@
                     return (Math.round(n / 104857.6) / 10) + ' MB';
                 }
 
-                function updateArchivoDropzoneUI() {
-                    var emptyEl = overlay.querySelector('#drawer-archivo-empty');
-                    var cardEl = overlay.querySelector('#drawer-archivo-file-card');
-                    var dz = overlay.querySelector('#drawer-archivo-dropzone');
-                    var f = overlay._archivoImportFile;
-                    if (!emptyEl || !cardEl || !dz) return;
-                    if (f) {
-                        emptyEl.style.display = 'none';
-                        cardEl.style.display = 'flex';
-                        cardEl.removeAttribute('hidden');
-                        dz.classList.add('drawer-archivo-dropzone--has-file');
-                        var nameEl = cardEl.querySelector('[data-drawer-archivo-nombre]');
-                        var sizeEl = cardEl.querySelector('[data-drawer-archivo-tamano]');
-                        if (nameEl) nameEl.textContent = f.name || 'archivo.csv';
-                        if (sizeEl) sizeEl.textContent = formatFileSizeBytes(f.size);
-                    } else {
-                        emptyEl.style.display = '';
-                        cardEl.style.display = 'none';
-                        cardEl.setAttribute('hidden', 'hidden');
-                        dz.classList.remove('drawer-archivo-dropzone--has-file');
-                    }
-                }
-
                 function resetArchivoWizard() {
                     overlay._archivoFileReady = false;
                     overlay._archivoImportFile = null;
-                    updateArchivoDropzoneUI();
+                    var fuEl = overlay.querySelector('[data-file-upload]');
+                    if (fuEl) {
+                        var emptyEl = fuEl.querySelector('[data-file-upload-empty]');
+                        var cardEl  = fuEl.querySelector('[data-file-upload-card]');
+                        var dz      = fuEl.querySelector('[data-file-upload-dropzone]');
+                        var helper  = fuEl.querySelector('[data-file-upload-helper]');
+                        var inp     = fuEl.querySelector('[data-file-upload-input]');
+                        if (emptyEl) emptyEl.style.display = '';
+                        if (cardEl)  cardEl.style.display  = 'none';
+                        if (dz)      dz.className = 'ubits-file-upload__dropzone';
+                        if (helper)  { helper.style.display = 'none'; helper.textContent = ''; }
+                        if (inp)     inp.value = '';
+                    }
                 }
 
                 if (overlay._editarAsignacion && wizardOpts.item) {
@@ -1630,57 +1593,6 @@
                     });
                 }
 
-                var dropzone = overlay.querySelector('#drawer-archivo-dropzone');
-                var archivoInput = overlay.querySelector('#drawer-archivo-input');
-                var btnSeleccionar = overlay.querySelector('#drawer-archivo-btn-seleccionar');
-                var btnQuitarArchivo = overlay.querySelector('#drawer-archivo-btn-quitar');
-
-                if (btnSeleccionar) {
-                    btnSeleccionar.addEventListener('click', function(e) {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        if (archivoInput) archivoInput.click();
-                    });
-                }
-                if (btnQuitarArchivo) {
-                    btnQuitarArchivo.addEventListener('click', function(e) {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        resetArchivoWizard();
-                        syncWizardPrimary();
-                    });
-                }
-                function onArchivoElegido(f) {
-                    overlay._archivoImportFile = f || null;
-                    overlay._archivoFileReady = !!f;
-                    updateArchivoDropzoneUI();
-                    syncWizardPrimary();
-                }
-                if (dropzone) {
-                dropzone.addEventListener('click', function(e) {
-                        if (e.target.closest && e.target.closest('#drawer-archivo-btn-quitar')) return;
-                    if (e.target === btnSeleccionar || (btnSeleccionar && btnSeleccionar.contains(e.target))) return;
-                    if (archivoInput) archivoInput.click();
-                });
-                dropzone.addEventListener('dragover', function(e) { e.preventDefault(); dropzone.classList.add('drawer-archivo-dropzone--dragover'); });
-                dropzone.addEventListener('dragleave', function() { dropzone.classList.remove('drawer-archivo-dropzone--dragover'); });
-                dropzone.addEventListener('drop', function(e) {
-                    e.preventDefault();
-                    dropzone.classList.remove('drawer-archivo-dropzone--dragover');
-                    if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length > 0) {
-                            onArchivoElegido(e.dataTransfer.files[0]);
-                    }
-                });
-                }
-                if (archivoInput) {
-                archivoInput.addEventListener('change', function() {
-                    if (this.files && this.files.length > 0) {
-                            onArchivoElegido(this.files[0]);
-                    }
-                    this.value = '';
-                });
-                }
-
                 function escapeCsvCell(val) {
                     var s = (val == null ? '' : String(val)).trim();
                     if (/[,\r\n"]/.test(s)) return '"' + s.replace(/"/g, '""') + '"';
@@ -1694,53 +1606,71 @@
                     a.click();
                     URL.revokeObjectURL(a.href);
                 }
-                var btnDescargarLista = overlay.querySelector('#drawer-archivo-descargar-lista');
-                var btnDescargarPlantilla = overlay.querySelector('#drawer-archivo-descargar-plantilla');
-                if (btnDescargarLista) {
-                    btnDescargarLista.addEventListener('click', function() {
-                        var headers = ['username', 'nombre', 'correo', 'area', 'lider'];
-                        var filas = [headers.map(escapeCsvCell).join(',')];
-                        empleadosDrawer.forEach(function(e) {
-                            filas.push([e.username, e.nombre, e.correo, e.area, e.lider].map(escapeCsvCell).join(','));
-                        });
-                        descargarCsv('lista-colaboradores.csv', filas.join('\r\n'));
-                    });
-                }
-                var btnDescargarCompetencias = overlay.querySelector('#drawer-archivo-descargar-competencias');
-                if (btnDescargarCompetencias) {
-                    btnDescargarCompetencias.addEventListener('click', function() {
-                        var headers = ['id', 'nombre'];
-                        var filas = [headers.map(escapeCsvCell).join(',')];
-                        var comps = (window.BD_MASTER_COMPETENCIAS && window.BD_MASTER_COMPETENCIAS.competencias) || catalogoCompetencias || [];
-                        comps.forEach(function(c) {
-                            if (!c || c.id == null) return;
-                            filas.push([c.id, c.nombre || ''].map(escapeCsvCell).join(','));
-                        });
-                        descargarCsv('lista-competencias-maestro.csv', filas.join('\r\n'));
-                    });
-                }
-                if (btnDescargarPlantilla) {
-                    btnDescargarPlantilla.addEventListener('click', function() {
-                        var usernameEj = 'pateleber@fiqsha.demo';
-                        var idsCompEj = '';
-                        if (typeof window.BD_MASTER_COLABORADORES !== 'undefined' && window.BD_MASTER_COLABORADORES.colaboradores && window.BD_MASTER_COLABORADORES.colaboradores.length) {
-                            var c0 = window.BD_MASTER_COLABORADORES.colaboradores[0];
-                            if (c0 && c0.username) usernameEj = String(c0.username).trim();
+
+                createFileUpload({
+                    containerId: 'drawer-archivo-fu-container',
+                    id: 'drawer-archivo-fu',
+                    title: 'Importar archivo',
+                    accept: '.csv,text/csv',
+                    maxSizeMb: 5,
+                    onChange: function(file) {
+                        overlay._archivoImportFile = file || null;
+                        overlay._archivoFileReady = !!file;
+                        syncWizardPrimary();
+                    },
+                    downloadButtons: [
+                        {
+                            label: 'Descargar lista de colaboradores',
+                            icon: 'arrow-down-to-line',
+                            onClick: function() {
+                                var headers = ['username', 'nombre', 'correo', 'area', 'lider'];
+                                var filas = [headers.map(escapeCsvCell).join(',')];
+                                empleadosDrawer.forEach(function(e) {
+                                    filas.push([e.username, e.nombre, e.correo, e.area, e.lider].map(escapeCsvCell).join(','));
+                                });
+                                descargarCsv('lista-colaboradores.csv', filas.join('\r\n'));
+                            }
+                        },
+                        {
+                            label: 'Descargar lista de competencias',
+                            icon: 'arrow-down-to-line',
+                            onClick: function() {
+                                var headers = ['id', 'nombre'];
+                                var filas = [headers.map(escapeCsvCell).join(',')];
+                                var comps = (window.BD_MASTER_COMPETENCIAS && window.BD_MASTER_COMPETENCIAS.competencias) || catalogoCompetencias || [];
+                                comps.forEach(function(c) {
+                                    if (!c || c.id == null) return;
+                                    filas.push([c.id, c.nombre || ''].map(escapeCsvCell).join(','));
+                                });
+                                descargarCsv('lista-competencias-maestro.csv', filas.join('\r\n'));
+                            }
+                        },
+                        {
+                            label: 'Descargar plantilla',
+                            icon: 'arrow-down-to-line',
+                            onClick: function() {
+                                var usernameEj = 'pateleber@fiqsha.demo';
+                                var idsCompEj = '';
+                                if (typeof window.BD_MASTER_COLABORADORES !== 'undefined' && window.BD_MASTER_COLABORADORES.colaboradores && window.BD_MASTER_COLABORADORES.colaboradores.length) {
+                                    var c0 = window.BD_MASTER_COLABORADORES.colaboradores[0];
+                                    if (c0 && c0.username) usernameEj = String(c0.username).trim();
+                                }
+                                var comps = (window.BD_MASTER_COMPETENCIAS && window.BD_MASTER_COMPETENCIAS.competencias) || catalogoCompetencias || [];
+                                var idsTomados = [];
+                                for (var i = 0; i < comps.length && idsTomados.length < 3; i++) {
+                                    var comp = comps[i];
+                                    if (!comp || comp.id == null) continue;
+                                    idsTomados.push(String(comp.id));
+                                }
+                                if (idsTomados.length > 0) idsCompEj = idsTomados.join(',');
+                                var headers = ['username', 'IDCompetencias'];
+                                var filaDatos = [usernameEj, idsCompEj].map(escapeCsvCell).join(',');
+                                var contenido = headers.map(escapeCsvCell).join(',') + '\r\n' + filaDatos;
+                                descargarCsv('plantilla-importacion-asignaciones-competencias.csv', contenido);
+                            }
                         }
-                        var comps = (window.BD_MASTER_COMPETENCIAS && window.BD_MASTER_COMPETENCIAS.competencias) || catalogoCompetencias || [];
-                        var idsTomados = [];
-                        for (var i = 0; i < comps.length && idsTomados.length < 3; i++) {
-                            var comp = comps[i];
-                            if (!comp || comp.id == null) continue;
-                            idsTomados.push(String(comp.id));
-                        }
-                        if (idsTomados.length > 0) idsCompEj = idsTomados.join(',');
-                        var headers = ['username', 'IDCompetencias'];
-                        var filaDatos = [usernameEj, idsCompEj].map(escapeCsvCell).join(',');
-                        var contenido = headers.map(escapeCsvCell).join(',') + '\r\n' + filaDatos;
-                        descargarCsv('plantilla-importacion-asignaciones-competencias.csv', contenido);
-                    });
-                }
+                    ]
+                });
             }
 
             function cerrarDrawerYActualizar() {

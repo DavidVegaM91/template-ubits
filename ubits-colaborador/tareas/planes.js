@@ -2260,34 +2260,23 @@ function formatTaskCreateFileSizeBytes(bytes) {
     return (Math.round(n / 104857.6) / 10) + ' MB';
 }
 
-function updateTaskCreateCsvDropzoneUi() {
-    var root = document.getElementById(TASK_CREATE_DRAWER_OVERLAY_ID);
-    if (!root) return;
-    var emptyEl = root.querySelector('#task-create-v2-archivo-empty');
-    var cardEl = root.querySelector('#task-create-v2-archivo-file-card');
-    var dz = root.querySelector('#task-create-v2-archivo-dropzone');
-    var f = taskCreateDrawerState.csvFile;
-    if (!emptyEl || !cardEl || !dz) return;
-    if (f) {
-        emptyEl.style.display = 'none';
-        cardEl.style.display = 'flex';
-        cardEl.removeAttribute('hidden');
-        dz.classList.add('drawer-archivo-dropzone--has-file');
-        var nameEl = cardEl.querySelector('[data-task-create-archivo-nombre]');
-        var sizeEl = cardEl.querySelector('[data-task-create-archivo-tamano]');
-        if (nameEl) nameEl.textContent = f.name || 'archivo.csv';
-        if (sizeEl) sizeEl.textContent = formatTaskCreateFileSizeBytes(f.size);
-    } else {
-        emptyEl.style.display = '';
-        cardEl.style.display = 'none';
-        cardEl.setAttribute('hidden', 'hidden');
-        dz.classList.remove('drawer-archivo-dropzone--has-file');
-    }
-}
-
 function resetTaskCreateCsvFile() {
     taskCreateDrawerState.csvFile = null;
-    updateTaskCreateCsvDropzoneUi();
+    var root = document.getElementById(TASK_CREATE_DRAWER_OVERLAY_ID);
+    if (!root) return;
+    var fuEl = root.querySelector('[data-file-upload]');
+    if (fuEl) {
+        var emptyEl = fuEl.querySelector('[data-file-upload-empty]');
+        var cardEl  = fuEl.querySelector('[data-file-upload-card]');
+        var dz      = fuEl.querySelector('[data-file-upload-dropzone]');
+        var helper  = fuEl.querySelector('[data-file-upload-helper]');
+        var inp     = fuEl.querySelector('[data-file-upload-input]');
+        if (emptyEl) emptyEl.style.display = '';
+        if (cardEl)  cardEl.style.display  = 'none';
+        if (dz)      dz.className = 'ubits-file-upload__dropzone';
+        if (helper)  { helper.style.display = 'none'; helper.textContent = ''; }
+        if (inp)     inp.value = '';
+    }
 }
 
 function downloadTaskCreateCsvTemplate() {
@@ -2312,72 +2301,26 @@ function downloadTaskCreateCsvTemplate() {
 }
 
 function initTaskCreateCsvPanel() {
-    var root = document.getElementById(TASK_CREATE_DRAWER_OVERLAY_ID);
-    if (!root) return;
-    var dropzone = root.querySelector('#task-create-v2-archivo-dropzone');
-    var archivoInput = root.querySelector('#task-create-v2-archivo-input');
-    var btnSeleccionar = root.querySelector('#task-create-v2-archivo-btn-seleccionar');
-    var btnQuitar = root.querySelector('#task-create-v2-archivo-btn-quitar');
-    var btnPlantilla = root.querySelector('#task-create-v2-archivo-descargar-plantilla');
-
-    function onArchivoElegido(f) {
-        if (f && f.size > 5 * 1024 * 1024) {
-            if (typeof showToast === 'function') showToast('warning', 'El archivo supera 5 MB.');
-            return;
-        }
-        taskCreateDrawerState.csvFile = f || null;
-        updateTaskCreateCsvDropzoneUi();
-    }
-
-    if (btnPlantilla) {
-        btnPlantilla.addEventListener('click', function (e) {
-            e.preventDefault();
-            e.stopPropagation();
-            downloadTaskCreateCsvTemplate();
-        });
-    }
-    if (btnSeleccionar) {
-        btnSeleccionar.addEventListener('click', function (e) {
-            e.preventDefault();
-            e.stopPropagation();
-            if (archivoInput) archivoInput.click();
-        });
-    }
-    if (btnQuitar) {
-        btnQuitar.addEventListener('click', function (e) {
-            e.preventDefault();
-            e.stopPropagation();
-            resetTaskCreateCsvFile();
-        });
-    }
-    if (dropzone) {
-        dropzone.addEventListener('click', function (e) {
-            if (e.target.closest && e.target.closest('#task-create-v2-archivo-btn-quitar')) return;
-            if (e.target === btnSeleccionar || (btnSeleccionar && btnSeleccionar.contains(e.target))) return;
-            if (archivoInput) archivoInput.click();
-        });
-        dropzone.addEventListener('dragover', function (e) {
-            e.preventDefault();
-            dropzone.classList.add('drawer-archivo-dropzone--dragover');
-        });
-        dropzone.addEventListener('dragleave', function () {
-            dropzone.classList.remove('drawer-archivo-dropzone--dragover');
-        });
-        dropzone.addEventListener('drop', function (e) {
-            e.preventDefault();
-            dropzone.classList.remove('drawer-archivo-dropzone--dragover');
-            if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length > 0) {
-                onArchivoElegido(e.dataTransfer.files[0]);
+    if (typeof createFileUpload !== 'function') return;
+    createFileUpload({
+        containerId: 'task-create-v2-fu-container',
+        id: 'task-create-v2-fu',
+        title: 'Importar archivo',
+        accept: '.csv,text/csv',
+        maxSizeMb: 5,
+        onChange: function(file) {
+            taskCreateDrawerState.csvFile = file || null;
+        },
+        downloadButtons: [
+            {
+                label: 'Descargar plantilla',
+                icon: 'arrow-down-to-line',
+                onClick: function() {
+                    downloadTaskCreateCsvTemplate();
+                }
             }
-        });
-    }
-    if (archivoInput) {
-        archivoInput.addEventListener('change', function () {
-            if (this.files && this.files.length > 0) onArchivoElegido(this.files[0]);
-            this.value = '';
-        });
-    }
-    updateTaskCreateCsvDropzoneUi();
+        ]
+    });
 }
 
 function initTaskCreateAssignmentSection() {
@@ -2670,33 +2613,7 @@ function openTaskCreateDrawerV2() {
         '      <div id="task-create-v2-chips" class="task-create-v2__chips"></div>' +
         '    </div>' +
         '    <div id="task-create-v2-panel-csv" class="task-create-v2__assign-panel drawer-usuarios-panel drawer-usuarios-panel--archivo" style="display:none">' +
-        '      <div class="drawer-archivo-section">' +
-        '        <div class="drawer-archivo-header">' +
-        '          <h2 class="ubits-body-md-bold drawer-archivo-title">Importar archivo</h2>' +
-        '          <div class="drawer-archivo-actions">' +
-        '            <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="task-create-v2-archivo-descargar-plantilla"><i class="far fa-arrow-down-to-line"></i><span>Descargar plantilla</span></button>' +
-        '          </div>' +
-        '        </div>' +
-        '        <div class="drawer-archivo-dropzone" id="task-create-v2-archivo-dropzone">' +
-        '          <div class="drawer-archivo-empty" id="task-create-v2-archivo-empty">' +
-        '          <div class="drawer-archivo-dropzone-inner">' +
-        '            <div class="drawer-archivo-file-icon-wrap"><i class="far fa-file-arrow-up"></i></div>' +
-        '            <p class="ubits-body-md-semibold drawer-archivo-dropzone-title">Subir archivos</p>' +
-        '            <p class="ubits-body-sm-regular drawer-archivo-dropzone-formats">CSV &bull; Hasta 5mb</p>' +
-        '            <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="task-create-v2-archivo-btn-seleccionar"><i class="far fa-arrow-up-from-bracket"></i><span>Seleccionar archivos</span></button>' +
-        '          </div>' +
-        '          </div>' +
-        '          <div class="drawer-archivo-file-card" id="task-create-v2-archivo-file-card" hidden style="display:none" aria-live="polite">' +
-        '            <div class="drawer-archivo-file-card__icon-wrap" aria-hidden="true"><i class="far fa-file-lines"></i></div>' +
-        '            <div class="drawer-archivo-file-card__meta">' +
-        '              <span class="ubits-body-sm-semibold drawer-archivo-file-card__name" data-task-create-archivo-nombre></span>' +
-        '              <span class="ubits-body-sm-regular drawer-archivo-file-card__size" data-task-create-archivo-tamano></span>' +
-        '            </div>' +
-        '            <button type="button" class="ubits-button ubits-button--error-tertiary ubits-button--sm ubits-button--icon-only" id="task-create-v2-archivo-btn-quitar" aria-label="Quitar archivo"><i class="far fa-trash-alt"></i></button>' +
-        '          </div>' +
-        '          <input type="file" id="task-create-v2-archivo-input" accept=".csv,text/csv" style="display:none">' +
-        '        </div>' +
-        '      </div>' +
+        '      <div id="task-create-v2-fu-container"></div>' +
         '    </div>' +
         '  </div>' +
         '</div>';

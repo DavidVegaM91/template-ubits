@@ -26,7 +26,7 @@
  *
  * Bugs / notas de implementación:
  *   - El click en el dropzone se delega al <input type="file"> oculto; si el usuario hace clic
- *     directamente en el botón "Seleccionar archivos", se usa stopPropagation para evitar doble
+ *     directamente en el botón "Seleccionar archivo", se usa stopPropagation para evitar doble
  *     apertura del diálogo del sistema.
  *   - pointer-events: none en .ubits-file-upload__dropzone-inner es necesario para que los
  *     eventos de drag/click burbujeen al dropzone sin ser interceptados por los hijos de texto.
@@ -95,10 +95,10 @@
                 '<div class="ubits-file-upload__empty" data-file-upload-empty>' +
                   '<div class="ubits-file-upload__dropzone-inner">' +
                     '<div class="ubits-file-upload__icon-wrap"><i class="far fa-file-arrow-up"></i></div>' +
-                    '<p class="ubits-body-md-semibold ubits-file-upload__dropzone-title">Subir archivos</p>' +
+                    '<p class="ubits-body-md-semibold ubits-file-upload__dropzone-title">Subir archivo</p>' +
                     '<p class="ubits-body-sm-regular ubits-file-upload__dropzone-formats">' + formats + '</p>' +
                     '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-file-upload__select-btn" data-file-upload-select>' +
-                      '<i class="far fa-arrow-up-from-bracket"></i><span>Seleccionar archivos</span>' +
+                      '<i class="far fa-arrow-up-from-bracket"></i><span>Seleccionar archivo</span>' +
                     '</button>' +
                   '</div>' +
                 '</div>' +
