@@ -124,7 +124,7 @@
     margin: 0 0 var(--gap-sm) 0;
 }
 
-.plan-detail-card__title-row .task-detail-title-editable {
+.plan-detail-card__title-row .ubits-inline-edit {
     flex: 1;
     min-width: 0;
 }
@@ -133,35 +133,7 @@
     flex-shrink: 0;
 }
 
-/* Título editable inline: mismos estilos que task-detail */
-.plan-detail-card .task-detail-title-editable {
-    font-family: var(--ubits-font-family-sans);
-    line-height: 1.25;
-    color: var(--ubits-fg-1-high);
-    border: none;
-    background: transparent;
-    width: 100%;
-    min-height: 1.25em;
-    padding: 0;
-    margin: 0;
-    resize: none;
-    overflow: hidden;
-    outline: none;
-    cursor: text;
-    position: relative;
-    z-index: 1;
-    box-sizing: border-box;
-}
-
-.plan-detail-card .task-detail-title-editable:hover,
-.plan-detail-card .task-detail-title-editable:focus {
-    background: var(--ubits-bg-2);
-    border-radius: var(--border-radius-xs);
-}
-
-.plan-detail-card .task-detail-title-editable::placeholder {
-    color: var(--ubits-fg-1-low);
-}
+/* Estilos base del título editable cubiertos por components/inline-edit.css (.ubits-inline-edit) */
 
 /* Descripción editable inline: mismos estilos que task-detail */
 .plan-detail-card .task-detail-desc-editable {

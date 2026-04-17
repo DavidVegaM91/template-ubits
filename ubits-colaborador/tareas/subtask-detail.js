@@ -217,7 +217,7 @@
         var isVencida = sub.status === 'Vencido' && !sub.done;
         var html =
             '<div class="task-detail-title-row">' +
-            '<textarea class="task-detail-title-editable ubits-heading-h1" id="subtask-detail-title" placeholder="Nombre de la subtarea" rows="1" maxlength="250">' + escapeHtml(sub.name || '') + '</textarea>' +
+            '<textarea class="ubits-inline-edit ubits-heading-h1" id="subtask-detail-title" placeholder="Nombre de la subtarea" rows="1" maxlength="250">' + escapeHtml(sub.name || '') + '</textarea>' +
             '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" id="subtask-detail-title-options-btn" aria-label="Opciones" data-tooltip="Opciones"><i class="far fa-ellipsis-vertical"></i></button>' +
             '</div>' +
             '<textarea class="task-detail-desc-editable ubits-body-sm-regular" id="subtask-detail-desc" placeholder="Descripción de la subtarea" rows="1">' + escapeHtml(sub.description || '') + '</textarea>' +
@@ -286,25 +286,18 @@
         }
         if (typeof initTooltip === 'function') initTooltip('#subtask-detail-info-block [data-tooltip]');
 
-        function resizeTitle() {
-            var ta = document.getElementById('subtask-detail-title');
-            if (!ta) return;
-            ta.style.height = 'auto';
-            ta.style.height = Math.max(24, ta.scrollHeight) + 'px';
-        }
         function resizeDesc() {
             var ta = document.getElementById('subtask-detail-desc');
             if (!ta) return;
             ta.style.height = '0';
             ta.style.height = ta.scrollHeight + 'px';
         }
-        resizeTitle();
+        if (typeof initInlineEdit === 'function') initInlineEdit(document.getElementById('subtask-detail-info-block'));
         resizeDesc();
         requestAnimationFrame(resizeDesc);
 
         var titleEl = document.getElementById('subtask-detail-title');
         if (titleEl) {
-            titleEl.addEventListener('input', resizeTitle);
             titleEl.addEventListener('blur', function () {
                 if (estado.subtask) estado.subtask.name = this.value.trim() || estado.subtask.name;
                 triggerFakeSave();

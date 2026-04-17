@@ -706,7 +706,7 @@
             (isAprendizaje
                 ? '<span class="task-detail-title-type-icon" title="Aprendizaje" aria-hidden="true"><i class="far fa-graduation-cap"></i></span>'
                 : '') +
-            '<textarea class="task-detail-title-editable ubits-heading-h1" id="task-detail-title" placeholder="Título de la tarea" rows="1" maxlength="250">' + escapeHtml(task.name) + '</textarea>' +
+            '<textarea class="ubits-inline-edit ubits-heading-h1" id="task-detail-title" placeholder="Título de la tarea" rows="1" maxlength="250">' + escapeHtml(task.name) + '</textarea>' +
             '<div class="task-detail-title-actions">' +
             '<div class="task-detail-title-action-btns">' +
             '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only" id="task-detail-title-recordatorio-btn" aria-label="Enviar recordatorio" data-tooltip="Enviar recordatorio"><i class="far fa-bell"></i></button>' +
@@ -1007,12 +1007,11 @@
             renderSelectedLearningContentCard();
         }
         if (typeof initTooltip === 'function') initTooltip('#task-detail-info-block [data-tooltip]');
-        resizeTaskDetailTitle();
+        if (typeof initInlineEdit === 'function') initInlineEdit(document.getElementById('task-detail-info-block'));
         resizeTaskDetailDesc();
         requestAnimationFrame(function () { resizeTaskDetailDesc(); });
         var titleEl = document.getElementById('task-detail-title');
         if (titleEl) {
-            titleEl.addEventListener('input', resizeTaskDetailTitle);
             titleEl.addEventListener('blur', function () {
                 if (estado.task) {
                     estado.task.name = this.value.trim() || estado.task.name;
@@ -1233,11 +1232,9 @@
     }
 
     function resizeTaskDetailTitle() {
-        var ta = document.getElementById('task-detail-title');
-        if (!ta) return;
-        ta.style.height = 'auto';
-        ta.style.overflowY = 'hidden';
-        ta.style.height = Math.max(24, ta.scrollHeight) + 'px';
+        if (typeof autoResizeInlineEdit === 'function') {
+            autoResizeInlineEdit(document.getElementById('task-detail-title'));
+        }
     }
 
     function resizeTaskDetailDesc() {

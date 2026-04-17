@@ -169,10 +169,9 @@ function loadPlanAndTasks(planId) {
 }
 
 function resizePlanTitle() {
-    const ta = document.getElementById('plan-detail-title');
-    if (!ta) return;
-    ta.style.height = 'auto';
-    ta.style.height = Math.max(24, ta.scrollHeight) + 'px';
+    if (typeof autoResizeInlineEdit === 'function') {
+        autoResizeInlineEdit(document.getElementById('plan-detail-title'));
+    }
 }
 
 function resizePlanDesc() {
@@ -257,7 +256,7 @@ function renderPlanDetail(planId) {
 
     if (titleEl) {
         titleEl.value = plan.name || '';
-        resizePlanTitle();
+        if (typeof autoResizeInlineEdit === 'function') autoResizeInlineEdit(titleEl);
     }
     if (descEl) {
         descEl.value = plan.description || '';
@@ -903,11 +902,11 @@ function initPlanDetail() {
     }
     if (typeof initTooltip === 'function') initTooltip('#plan-detail-options-btn');
 
-    /* Título y descripción editables inline (como task-detail): resize y guardar en caché al blur */
+    /* Título y descripción editables inline: ubits-inline-edit maneja el resize vía initInlineEdit */
+    if (typeof initInlineEdit === 'function') initInlineEdit(document.getElementById('plan-detail-card'));
     const titleInput = document.getElementById('plan-detail-title');
     const descInput = document.getElementById('plan-detail-desc');
     if (titleInput) {
-        titleInput.addEventListener('input', resizePlanTitle);
         titleInput.addEventListener('blur', function () {
             const plan = window.planDetailPlanCache && window.planDetailPlanCache[planId];
             if (plan) {
