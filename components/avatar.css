@@ -73,6 +73,32 @@
 }
 
 /* ========================================
+   Variante Modo: avatar con badge de rol (Admin / LMS Creator)
+   Úsalo cuando el usuario está en modo Admin o LMS Creator.
+   En modo Colaborador (por defecto) no se usa este wrapper.
+   Requiere: badge-tag.css para el badge de rol.
+   ======================================== */
+
+.ubits-avatar-modo {
+    position: relative;
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+/* Badge de rol posicionado en la esquina inferior derecha del avatar */
+.ubits-avatar-modo__badge {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    pointer-events: none;
+    z-index: 1;
+    padding-left: 6px !important;
+    padding-right: 6px !important;
+}
+
+/* ========================================
    Profile list: varios avatares superpuestos (+N)
    ======================================== */
 

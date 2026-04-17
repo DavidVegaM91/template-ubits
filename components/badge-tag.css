@@ -250,6 +250,20 @@
 }
 
 /* ========================================
+   VARIANTE: TEXT ONLY (solo texto, sin punto ni icono)
+   Úsalo cuando la etiqueta solo necesita transmitir texto,
+   sin indicador visual (ej. badge de rol "Admin" / "LMS" en el avatar).
+   ======================================== */
+
+.ubits-badge-tag--text-only .ubits-badge-tag__indicator {
+    display: none;
+}
+
+.ubits-badge-tag--text-only i {
+    display: none;
+}
+
+/* ========================================
    VARIANTE: ICON ONLY (solo icono, sin texto)
    Para prioridad/estado en listas móviles (ej. task-strip)
    ======================================== */

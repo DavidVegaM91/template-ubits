@@ -19,6 +19,7 @@
     <link rel="stylesheet" href="../../docs/docstyles.css">
     <link rel="stylesheet" href="../../components/button.css">
     <link rel="stylesheet" href="../../components/toast.css">
+    <link rel="stylesheet" href="../../components/badge-tag.css">
     <link rel="stylesheet" href="../../components/avatar.css">
     <style>
         .preview-control-btn.active {
@@ -67,11 +68,11 @@
                                 Preview del componente
                             </h2>
                             <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6;">
-                                Usa los controles para cambiar tipo (avatar único / profile list), tamaño y variante (imagen o icono).
+                                Usa los controles para cambiar tipo (avatar único / profile list), tamaño, variante (imagen o icono) y modo de rol (Admin / LMS Creator).
                             </p>
                             
-                            <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: 12px; position: relative;">
-                                <div id="avatar-preview" style="display: flex; flex-wrap: wrap; gap: 24px; align-items: center;">
+                            <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: 12px; position: relative; padding-bottom: 32px;">
+                                <div id="avatar-preview" style="display: flex; flex-wrap: wrap; gap: 24px; align-items: center; min-height: 60px;">
                                     <!-- Se actualiza por JS -->
                                 </div>
                             </div>
@@ -116,6 +117,20 @@
                                         </button>
                                     </div>
                                 </div>
+                                <div id="avatar-mode-controls" style="margin-bottom: 16px;">
+                                    <span class="ubits-body-sm-bold" style="color: var(--ubits-fg-1-medium); margin-right: 12px;">Modo de rol:</span>
+                                    <div style="display: inline-flex; gap: 8px; flex-wrap: wrap;">
+                                        <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn active" onclick="setPreviewMode(null)">
+                                            <span>Colaborador (sin badge)</span>
+                                        </button>
+                                        <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" onclick="setPreviewMode('admin')">
+                                            <span>Admin</span>
+                                        </button>
+                                        <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" onclick="setPreviewMode('lms')">
+                                            <span>LMS Creator</span>
+                                        </button>
+                                    </div>
+                                </div>
                                 <div id="profile-list-count-controls" style="margin-bottom: 16px; display: none;">
                                     <span class="ubits-body-sm-bold" style="color: var(--ubits-fg-1-medium); margin-right: 12px;">Cantidad (profile list):</span>
                                     <div style="display: inline-flex; gap: 8px; flex-wrap: wrap;">
@@ -154,6 +169,11 @@
                                     <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-expand-arrows-alt"></i></div>
                                     <div class="ubits-body-sm-bold">Tamaños</div>
                                     <div class="ubits-body-sm-regular">XS (20px), SM (28px), MD (36px), LG (40px)</div>
+                                </div>
+                                <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-id-badge"></i></div>
+                                    <div class="ubits-body-sm-bold">Modo de rol</div>
+                                    <div class="ubits-body-sm-regular">Badge "Admin" (amber) o "LMS" (azul) para roles especiales. Colaborador no muestra badge.</div>
                                 </div>
                             </div>
                         </div>
@@ -246,6 +266,26 @@
   &lt;span class="ubits-avatar__fallback"&gt;&lt;i class="far fa-user"&gt;&lt;/i&gt;&lt;/span&gt;
 &lt;/span&gt;
 
+&lt;!-- Avatar Modo Admin (icono fa-laptop, outlined info) - requiere badge-tag.css --&gt;
+&lt;span class="ubits-avatar-modo"&gt;
+  &lt;span class="ubits-avatar ubits-avatar--md"&gt;
+    &lt;img src="url" alt="Nombre" class="ubits-avatar__img"&gt;
+  &lt;/span&gt;
+  &lt;span class="ubits-avatar-modo__badge ubits-badge-tag ubits-badge-tag--outlined ubits-badge-tag--info ubits-badge-tag--xs ubits-badge-tag--with-icon ubits-badge-tag--icon-only"&gt;
+    &lt;i class="far fa-laptop"&gt;&lt;/i&gt;
+  &lt;/span&gt;
+&lt;/span&gt;
+
+&lt;!-- Avatar Modo LMS Creator (icono fa-bolt, outlined info) - requiere badge-tag.css --&gt;
+&lt;span class="ubits-avatar-modo"&gt;
+  &lt;span class="ubits-avatar ubits-avatar--md"&gt;
+    &lt;img src="url" alt="Nombre" class="ubits-avatar__img"&gt;
+  &lt;/span&gt;
+  &lt;span class="ubits-avatar-modo__badge ubits-badge-tag ubits-badge-tag--outlined ubits-badge-tag--info ubits-badge-tag--xs ubits-badge-tag--with-icon ubits-badge-tag--icon-only"&gt;
+    &lt;i class="far fa-bolt"&gt;&lt;/i&gt;
+  &lt;/span&gt;
+&lt;/span&gt;
+
 &lt;!-- Profile list (varios avatares +N) --&gt;
 &lt;div class="ubits-profile-list ubits-profile-list--md"&gt;
   &lt;span class="ubits-profile-list__avatar" style="z-index: 3; margin-right: -5px;"&gt;...avatar...&lt;/span&gt;
@@ -271,6 +311,10 @@
 .ubits-avatar__img         /* Imagen interna */
 .ubits-avatar__fallback    /* Fallback: icono */
 
+/* Variante Modo (wrapper con badge de rol) - requiere badge-tag.css */
+.ubits-avatar-modo         /* Wrapper relativo que contiene avatar + badge */
+.ubits-avatar-modo__badge  /* Badge posicionado en la parte inferior, centrado */
+
 /* Profile list */
 .ubits-profile-list        /* Contenedor */
 .ubits-profile-list--xs | --sm | --md | --lg
@@ -291,17 +335,30 @@
                                         <h3 class="ubits-body-md-bold" style="margin-bottom: 12px; color: var(--ubits-fg-1-high);">Requisitos</h3>
                                         <div class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); line-height: 1.5;">
                                             CSS: components/avatar.css, general-styles/fontawesome-icons.css (para fallback icono).<br>
+                                            CSS adicional (solo variante Modo): components/badge-tag.css<br>
                                             JS: components/avatar.js (para renderAvatar y renderProfileList).
                                         </div>
                                     </div>
                                     <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
-                                        <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); overflow-x: auto; text-align: left;"><code id="avatar-impl-code">// Avatar único
+                                        <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); overflow-x: auto; text-align: left;"><code id="avatar-impl-code">// Avatar único (Colaborador - sin badge)
 document.getElementById('mi-avatar').innerHTML = renderAvatar(
   { nombre: 'Patricia Bermúdez', avatar: 'https://...' },
   { size: 'md' }
 );
 
-// Profile list
+// Avatar Modo Admin
+document.getElementById('mi-avatar').innerHTML = renderAvatar(
+  { nombre: 'Patricia Bermúdez', avatar: 'https://...' },
+  { size: 'md', mode: 'admin' }
+);
+
+// Avatar Modo LMS Creator
+document.getElementById('mi-avatar').innerHTML = renderAvatar(
+  { nombre: 'Patricia Bermúdez', avatar: 'https://...' },
+  { size: 'md', mode: 'lms' }
+);
+
+// Profile list (no soporta mode)
 var personas = [
   { nombre: 'Ana García', avatar: 'https://...' },
   { nombre: 'Luis Pérez', avatar: null }
@@ -336,6 +393,7 @@ document.getElementById('lista').innerHTML = renderProfileList(personas, { size:
         var previewSize = 'md';
         var previewVariant = 'imagen';
         var profileListCount = 3;
+        var previewMode = null;
 
         var demoPersonaImagen = {
             nombre: 'Ana García',
@@ -371,13 +429,17 @@ document.getElementById('lista').innerHTML = renderProfileList(personas, { size:
 
         function updateAvatarPreview() {
             var container = document.getElementById('avatar-preview');
-            var opts = { size: previewSize };
+            var modeControls = document.getElementById('avatar-mode-controls');
             if (previewType === 'avatar') {
                 var persona = previewVariant === 'imagen' ? demoPersonaImagen : demoPersonaIcono;
+                var opts = { size: previewSize };
+                if (previewMode) opts.mode = previewMode;
                 container.innerHTML = renderAvatar(persona, opts);
+                if (modeControls) modeControls.style.display = 'block';
             } else {
                 var list = demoPersonas.slice(0, profileListCount);
                 container.innerHTML = renderProfileList(list, { size: previewSize, maxVisible: 3 });
+                if (modeControls) modeControls.style.display = 'none';
             }
         }
 
@@ -404,6 +466,15 @@ document.getElementById('lista').innerHTML = renderProfileList(personas, { size:
         function setPreviewVariant(variant) {
             previewVariant = variant;
             document.querySelectorAll('[onclick^="setPreviewVariant"]').forEach(function(btn) {
+                btn.classList.remove('active');
+            });
+            event.target.closest('.preview-control-btn').classList.add('active');
+            updateAvatarPreview();
+        }
+
+        function setPreviewMode(mode) {
+            previewMode = mode;
+            document.querySelectorAll('[onclick^="setPreviewMode"]').forEach(function(btn) {
                 btn.classList.remove('active');
             });
             event.target.closest('.preview-control-btn').classList.add('active');

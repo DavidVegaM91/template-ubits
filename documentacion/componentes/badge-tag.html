@@ -73,7 +73,7 @@
                                 Preview del componente
                             </h2>
                             <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6;">
-                                Un solo ejemplo en vivo: elige estilo, color y tamaño con los selectores; usa los interruptores para punto, icono o solo icono. En <strong>filled</strong> con icono, el icono usa el acento semántico. Nota: en <strong>icon-only</strong> el cuadrado depende del tamaño: <strong>xs</strong> 20×20px (misma altura que Status Tag xs), <strong>sm</strong> 28×28px; md/lg no agrandan esa variante respecto a sm.
+                                Un solo ejemplo en vivo: elige estilo, color y tamaño con los selectores; usa los interruptores para punto, icono, solo icono o solo texto. En <strong>filled</strong> con icono, el icono usa el acento semántico. La variante <strong>solo texto</strong> no muestra punto ni icono, ideal para etiquetas de rol (ej. "Admin", "LMS"). Nota: en <strong>icon-only</strong> el cuadrado depende del tamaño: <strong>xs</strong> 20×20px (misma altura que Status Tag xs), <strong>sm</strong> 28×28px; md/lg no agrandan esa variante respecto a sm.
                             </p>
 
                             <div style="background: var(--ubits-bg-2); padding: var(--padding-xl); border-radius: var(--border-radius-sm); min-height: 120px; display: flex; align-items: center; justify-content: center;">
@@ -108,6 +108,14 @@
                                     </label>
                                     <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Activa solo si usas icono. Útil en listas compactas (p. ej. task-strip).</span>
                                 </div>
+                                <div class="badge-tag-preview-controls__row" style="align-items: center; gap: var(--gap-md);">
+                                    <label class="ubits-switch ubits-switch--md" style="align-items: center; gap: var(--gap-sm); flex-wrap: wrap;">
+                                        <input type="checkbox" class="ubits-switch__input" id="badge-preview-text-only" role="switch" aria-checked="false" aria-label="Solo texto, sin punto ni icono">
+                                        <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
+                                        <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Solo texto (text-only)</span>
+                                    </label>
+                                    <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Sin punto ni icono. Ideal para etiquetas de rol (ej. "Admin", "LMS").</span>
+                                </div>
                             </div>
                         </div>
 
@@ -137,6 +145,11 @@
                                     <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-expand-arrows-alt"></i></div>
                                     <div class="ubits-body-sm-bold">Tamaños</div>
                                     <div class="ubits-body-sm-regular">Cuatro tamaños: xs (20px, alineado a Status Tag xs), sm, md y lg</div>
+                                </div>
+                                <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-font"></i></div>
+                                    <div class="ubits-body-sm-bold">Solo texto</div>
+                                    <div class="ubits-body-sm-regular">Variante text-only sin punto ni icono, para etiquetas de rol o contexto (ej. "Admin", "LMS")</div>
                                 </div>
                             </div>
                         </div>
@@ -233,6 +246,11 @@
 &lt;span class="ubits-badge-tag ubits-badge-tag--outlined ubits-badge-tag--success ubits-badge-tag--sm ubits-badge-tag--with-icon"&gt;
   &lt;i class="far fa-check-circle"&gt;&lt;/i&gt;
   &lt;span class="ubits-badge-tag__text"&gt;Completado&lt;/span&gt;
+&lt;/span&gt;
+
+&lt;!-- Badge Tag solo texto (sin punto ni icono, clase --text-only) --&gt;
+&lt;span class="ubits-badge-tag ubits-badge-tag--filled ubits-badge-tag--warning ubits-badge-tag--xs ubits-badge-tag--text-only"&gt;
+  &lt;span class="ubits-badge-tag__text"&gt;Admin&lt;/span&gt;
 &lt;/span&gt;</code></pre>
                                     </div>
                                 </div>
@@ -266,7 +284,10 @@
 .ubits-badge-tag--lg        /* 36px */
 
 /* Indicador: icono en lugar de punto (solo clases FontAwesome en el &lt;i&gt;) */
-.ubits-badge-tag--with-icon</code></pre>
+.ubits-badge-tag--with-icon
+
+/* Variante solo texto (sin punto ni icono) */
+.ubits-badge-tag--text-only</code></pre>
                                     </div>
                                 </div>
                                 <!-- Cómo implementar -->
@@ -309,6 +330,15 @@
 &lt;span class="ubits-badge-tag ubits-badge-tag--filled ubits-badge-tag--error ubits-badge-tag--sm"&gt;
   &lt;span class="ubits-badge-tag__indicator"&gt;&lt;/span&gt;
   &lt;span class="ubits-badge-tag__text"&gt;Alta&lt;/span&gt;
+&lt;/span&gt;
+
+&lt;!-- Solo texto (text-only): sin punto ni icono --&gt;
+&lt;span class="ubits-badge-tag ubits-badge-tag--filled ubits-badge-tag--warning ubits-badge-tag--xs ubits-badge-tag--text-only"&gt;
+  &lt;span class="ubits-badge-tag__text"&gt;Admin&lt;/span&gt;
+&lt;/span&gt;
+
+&lt;span class="ubits-badge-tag ubits-badge-tag--filled ubits-badge-tag--info ubits-badge-tag--xs ubits-badge-tag--text-only"&gt;
+  &lt;span class="ubits-badge-tag__text"&gt;LMS&lt;/span&gt;
 &lt;/span&gt;</code></pre>
                                     </div>
                                 </div>
@@ -351,7 +381,8 @@
             color: 'success',
             tagSize: 'sm',
             useIcon: false,
-            iconOnly: false
+            iconOnly: false,
+            textOnly: false
         };
 
         var badgePreviewLabels = {
@@ -378,12 +409,16 @@
                 'ubits-badge-tag--' + s.color,
                 'ubits-badge-tag--' + s.tagSize
             ];
-            if (s.useIcon) {
+            if (s.textOnly) {
+                classes.push('ubits-badge-tag--text-only');
+            } else if (s.useIcon) {
                 classes.push('ubits-badge-tag--with-icon');
                 if (s.iconOnly) classes.push('ubits-badge-tag--icon-only');
             }
             var inner = '';
-            if (s.useIcon) {
+            if (s.textOnly) {
+                // solo texto: ni indicador ni icono
+            } else if (s.useIcon) {
                 inner = '<i class="far fa-' + badgePreviewIcons[s.color] + '"></i>';
             } else {
                 inner = '<span class="ubits-badge-tag__indicator" aria-hidden="true"></span>';
@@ -395,19 +430,25 @@
         function syncBadgePreviewIconSwitches() {
             var swIcon = document.getElementById('badge-preview-use-icon');
             var swOnly = document.getElementById('badge-preview-icon-only');
+            var swText = document.getElementById('badge-preview-text-only');
             if (swIcon) {
                 swIcon.checked = badgePreviewState.useIcon;
                 swIcon.setAttribute('aria-checked', badgePreviewState.useIcon ? 'true' : 'false');
+                swIcon.disabled = badgePreviewState.textOnly;
             }
             if (swOnly) {
                 swOnly.checked = badgePreviewState.iconOnly;
                 swOnly.setAttribute('aria-checked', badgePreviewState.iconOnly ? 'true' : 'false');
-                swOnly.disabled = !badgePreviewState.useIcon;
-                if (!badgePreviewState.useIcon) {
+                swOnly.disabled = !badgePreviewState.useIcon || badgePreviewState.textOnly;
+                if (!badgePreviewState.useIcon || badgePreviewState.textOnly) {
                     badgePreviewState.iconOnly = false;
                     swOnly.checked = false;
                     swOnly.setAttribute('aria-checked', 'false');
                 }
+            }
+            if (swText) {
+                swText.checked = badgePreviewState.textOnly;
+                swText.setAttribute('aria-checked', badgePreviewState.textOnly ? 'true' : 'false');
             }
         }
 
@@ -415,6 +456,7 @@
             var sw = document.getElementById('badge-preview-use-icon');
             badgePreviewState.useIcon = !!(sw && sw.checked);
             if (!badgePreviewState.useIcon) badgePreviewState.iconOnly = false;
+            if (badgePreviewState.useIcon) badgePreviewState.textOnly = false;
             syncBadgePreviewIconSwitches();
             renderBadgeTagPreview();
         }
@@ -423,6 +465,17 @@
             var sw = document.getElementById('badge-preview-icon-only');
             badgePreviewState.iconOnly = !!(sw && sw.checked);
             if (sw) sw.setAttribute('aria-checked', sw.checked ? 'true' : 'false');
+            renderBadgeTagPreview();
+        }
+
+        function onBadgePreviewTextOnlyChange() {
+            var sw = document.getElementById('badge-preview-text-only');
+            badgePreviewState.textOnly = !!(sw && sw.checked);
+            if (badgePreviewState.textOnly) {
+                badgePreviewState.useIcon = false;
+                badgePreviewState.iconOnly = false;
+            }
+            syncBadgePreviewIconSwitches();
             renderBadgeTagPreview();
         }
 
@@ -494,11 +547,15 @@
             initBadgeTagPreviewSelects();
             var swIcon = document.getElementById('badge-preview-use-icon');
             var swOnly = document.getElementById('badge-preview-icon-only');
+            var swText = document.getElementById('badge-preview-text-only');
             if (swIcon) {
                 swIcon.addEventListener('change', onBadgePreviewUseIconChange);
             }
             if (swOnly) {
                 swOnly.addEventListener('change', onBadgePreviewIconOnlyChange);
+            }
+            if (swText) {
+                swText.addEventListener('change', onBadgePreviewTextOnlyChange);
             }
             syncBadgePreviewIconSwitches();
             renderBadgeTagPreview();

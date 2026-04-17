@@ -538,6 +538,7 @@ function loadSidebar(variantOrActiveButton = 'default', activeButton = null) {
                     <div class="user-avatar" id="sidebar-avatar-admin" role="button" tabindex="0" aria-label="Menú de cuenta">
                         <img src="${basePath}images/Profile-image.jpg" alt="Usuario" class="avatar-image">
                     </div>
+                    <span class="sidebar-modo-badge" aria-hidden="true"><i class="far fa-laptop"></i></span>
                 </div>
             </div>
         </aside>
@@ -575,6 +576,7 @@ function loadSidebar(variantOrActiveButton = 'default', activeButton = null) {
                     <div class="user-avatar" id="sidebar-avatar-creator" role="button" tabindex="0" aria-label="Menú de cuenta">
                         <img src="${basePath}images/Profile-image.jpg" alt="Usuario" class="avatar-image">
                     </div>
+                    <span class="sidebar-modo-badge" aria-hidden="true"><i class="far fa-bolt"></i></span>
                 </div>
             </div>
         </aside>
