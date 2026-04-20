@@ -1649,7 +1649,7 @@
                     _fileReady   = false;
                     if (importarBtn) importarBtn.disabled = true;
                     if (!file) return;
-                    leerArchivoComoFilas(file, function (filas, err) {
+                    leerArchivoComoFilas(file, function (err, filas) {
                         if (err) { _currentFile = null; return; }
                         var resultado = _modoImport === 'organigrama'
                             ? eval360ValidarOrganigrama(filas)
@@ -1827,9 +1827,10 @@
         var headers = filas[0].map(function (h) { return eval360Norm(h); });
         var colEvaluador = headers.indexOf('evaluador');
         var colEvaluado  = headers.indexOf('evaluado');
-        var colTipo      = headers.findIndex(function (h) {
-            return h === 'tipo_evaluacion' || h === 'tipo de evaluacion' || h === 'tipo';
-        });
+        var colTipo = -1;
+        for (var _ti = 0; _ti < headers.length; _ti++) {
+            if (headers[_ti] === 'tipo_evaluacion' || headers[_ti] === 'tipo de evaluacion' || headers[_ti] === 'tipo') { colTipo = _ti; break; }
+        }
 
         var faltantes = [];
         if (colEvaluador === -1) faltantes.push('"evaluador"');
