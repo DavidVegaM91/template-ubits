@@ -1632,6 +1632,7 @@
             _fileReady   = false;
             var importarBtn = document.getElementById('eval360ImportarBtn');
             if (importarBtn) importarBtn.disabled = true;
+            var _erroresActuales = [];
 
             createFileUpload({
                 containerId: 'eval360ImportFuWrap',
@@ -1647,26 +1648,46 @@
                 onChange: function (file) {
                     _currentFile = file || null;
                     _fileReady   = false;
+                    _erroresActuales = [];
                     if (importarBtn) importarBtn.disabled = true;
+                    var fuEl = document.getElementById('eval360ImportFu');
+                    if (fuEl) { fileUploadClearError(fuEl); fileUploadShowErrorReport(fuEl, false); }
                     if (!file) return;
+
                     leerArchivoComoFilas(file, function (err, filas) {
-                        if (err) { _currentFile = null; return; }
+                        var fuEl2 = document.getElementById('eval360ImportFu');
+                        if (err) {
+                            _currentFile = null;
+                            if (fuEl2) fileUploadSetError(fuEl2, 'No se pudo leer el archivo.');
+                            return;
+                        }
                         var resultado = _modoImport === 'organigrama'
                             ? eval360ValidarOrganigrama(filas)
                             : eval360ValidarLibre(filas);
+
                         if (resultado.errores.length) {
-                            eval360MostrarErroresImport(resultado.errores);
+                            _erroresActuales = resultado.errores;
+                            if (fuEl2) {
+                                fileUploadSetError(fuEl2, resultado.errores.length + ' error(es) encontrado(s). Revisa el informe para ver el detalle.');
+                                fileUploadShowErrorReport(fuEl2, true);
+                                var reportBtn = fuEl2.querySelector('[data-file-upload-error-report]');
+                                if (reportBtn) {
+                                    reportBtn.onclick = function () { eval360MostrarErroresImport(_erroresActuales); };
+                                }
+                            }
                         } else {
                             _fileReady = true;
-                            if (importarBtn) importarBtn.disabled = false;
-                            /* Guardar filas válidas para procesar al importar */
                             _eval360ImportFilas = resultado.filas;
+                            if (importarBtn) importarBtn.disabled = false;
+                            if (fuEl2) { fileUploadClearError(fuEl2); fileUploadShowErrorReport(fuEl2, false); }
                         }
                     });
                 },
                 onError: function () {
-                    _currentFile = null; _fileReady = false;
+                    _currentFile = null; _fileReady = false; _erroresActuales = [];
                     if (importarBtn) importarBtn.disabled = true;
+                    var fuEl = document.getElementById('eval360ImportFu');
+                    if (fuEl) { fileUploadClearError(fuEl); fileUploadShowErrorReport(fuEl, false); }
                 }
             });
         }
