@@ -1512,12 +1512,11 @@
         var colaboradores = (typeof BD_MASTER_COLABORADORES !== 'undefined' && BD_MASTER_COLABORADORES.colaboradores) || [];
         var rows = colaboradores.map(function (c) {
             return {
-                id:     c.id,
-                nombre: (c.nombre || ''),
-                correo: (c.username || ''),
-                area:   (c.area || ''),
-                lider:  (c.jefe || '—'),
-                avatar: c.avatar || null
+                id:       c.id,
+                nombre:   (c.nombre || ''),
+                username: (c.username || ''),
+                area:     (c.area || ''),
+                avatar:   c.avatar || null
             };
         });
         function esc(t) { if (t == null) return ''; var d = document.createElement('div'); d.textContent = t; return d.innerHTML; }
@@ -1525,11 +1524,10 @@
             var av = (row.avatar && String(row.avatar).trim())
                 ? '<span class="ubits-avatar ubits-avatar--sm"><img src="' + String(row.avatar).replace(/"/g, '&quot;') + '" alt="' + esc(row.nombre) + '" class="ubits-avatar__img"></span>'
                 : '<span class="ubits-avatar ubits-avatar--sm"><span class="ubits-avatar__fallback"><i class="far fa-user"></i></span></span>';
-            return '<td data-col="nombre"><div class="eval360-usuario-cell">' + av +
-                '<div><span class="ubits-body-sm-regular">' + esc(row.nombre) + '</span><br>' +
-                '<span class="ubits-body-sm-regular" style="color:var(--ubits-fg-1-low)">' + esc(row.correo) + '</span></div></div></td>' +
-                '<td data-col="area"><span class="ubits-body-sm-regular">'  + esc(row.area)  + '</span></td>' +
-                '<td data-col="lider"><span class="ubits-body-sm-regular">' + esc(row.lider) + '</span></td>';
+            return '<td data-col="evaluado"><div class="eval360-usuario-cell">' + av +
+                '<span class="ubits-body-sm-regular">' + esc(row.nombre) + '</span></div></td>' +
+                '<td data-col="username"><span class="ubits-body-sm-regular">' + esc(row.username) + '</span></td>' +
+                '<td data-col="area"><span class="ubits-body-sm-regular">'     + esc(row.area)     + '</span></td>';
         }
         /* Restaurar selección previa del draft */
         var savedIds = (draft.evaluados && Array.isArray(draft.evaluados.personas)) ? draft.evaluados.personas : [];
@@ -1537,7 +1535,7 @@
             containerId:      'eval360-colab-dt-container',
             tableId:          'eval360-colab-table',
             title:            'Lista de colaboradores',
-            columns:          [{ id: 'nombre', label: 'Nombre', filterable: true }, { id: 'area', label: 'Área', filterable: true }, { id: 'lider', label: 'Líder', filterable: true }],
+            columns:          [{ id: 'evaluado', label: 'Evaluado', filterable: true }, { id: 'username', label: 'Username', filterable: true }, { id: 'area', label: 'Área', filterable: true }],
             getData:          function () { return rows; },
             rowIdField:       'id',
             buildRowHtml:     buildRowHtml,
