@@ -317,6 +317,22 @@
             });
 
             setTimeout(function () {
+                /* Inyectar botón "Resultados generales" al lado derecho del buscador */
+                var headerRight = document.querySelector('#a360-data-table-container .ubits-dt-header-right');
+                if (headerRight) {
+                    var searchInline = headerRight.querySelector('.ubits-dt-search-inline');
+                    var anchorEl = searchInline || headerRight.querySelector('.ubits-dt-search-toggle');
+                    var btn = document.createElement('button');
+                    btn.type    = 'button';
+                    btn.id      = 'a360-btn-resultados-generales';
+                    btn.className = 'ubits-button ubits-button--secondary ubits-button--md';
+                    btn.innerHTML = '<i class="far fa-chart-line-up"></i><span>Resultados generales</span>';
+                    if (anchorEl) {
+                        anchorEl.insertAdjacentElement('afterend', btn);
+                    } else {
+                        headerRight.appendChild(btn);
+                    }
+                }
                 if (typeof initTooltip === 'function') initTooltip('#a360-data-table-container [data-tooltip]');
             }, 50);
         }
