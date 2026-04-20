@@ -87,7 +87,7 @@
 }
 
 .crear360-option-card:hover:not(.crear360-option-card--locked) {
-    background: var(--ubits-bg-2);
+    background: var(--ubits-bg-1);
     border-color: var(--ubits-accent-brand);
 }
 
@@ -675,8 +675,12 @@
     .crear360-form {
         grid-template-columns: 1fr 1fr;
     }
+    /* Primera fila: solo nombre a ancho completo. Segunda fila: fecha inicio + fecha fin. */
+    #crear360-input-nombre {
+        grid-column: 1 / -1;
+    }
     .crear360-save-inline-wrap {
-        grid-column: span 2;
+        grid-column: 1 / -1;
     }
     .res360-layout {
         grid-template-columns: 1fr;
