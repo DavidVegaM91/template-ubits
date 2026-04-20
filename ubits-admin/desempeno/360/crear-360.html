@@ -1088,14 +1088,11 @@
 
                     if (errores.length) {
                         openModal({
-                            overlayId: 'comp360ImportErrorModal',
-                            title: 'Errores en el archivo',
-                            bodyHtml: '<ul style="margin:0;padding-left:var(--padding-lg);display:flex;flex-direction:column;gap:var(--gap-sm)">' +
-                                errores.slice(0, 50).map(function (er) { return '<li class="ubits-body-sm-regular" style="color:var(--ubits-fg-1-medium)">' + er + '</li>'; }).join('') +
-                                (errores.length > 50 ? '<li class="ubits-body-sm-regular" style="color:var(--ubits-fg-2-medium)">…y ' + (errores.length - 50) + ' errores más.</li>' : '') +
-                                '</ul>',
+                            overlayId:  'comp360ImportErrorModal',
+                            title:      'Errores en el archivo (' + errores.length + ')',
+                            bodyHtml:   buildImportErrorTableHtml(errores),
                             footerHtml: '<button class="ubits-button ubits-button--primary ubits-button--md" onclick="closeModal(\'comp360ImportErrorModal\')"><span>Entendido</span></button>',
-                            size: 'sm'
+                            size:       'md'
                         });
                         return;
                     }
@@ -1222,16 +1219,11 @@
 
                     if (errores.length) {
                         openModal({
-                            overlayId: 'comp360EnumImportErrorModal',
-                            title: 'Errores en el archivo',
-                            bodyHtml: '<ul style="margin:0;padding-left:var(--padding-lg);display:flex;flex-direction:column;gap:var(--gap-sm)">' +
-                                errores.slice(0, 50).map(function (e) {
-                                    return '<li class="ubits-body-sm-regular" style="color:var(--ubits-fg-1-medium)">' + e + '</li>';
-                                }).join('') +
-                                (errores.length > 50 ? '<li class="ubits-body-sm-regular" style="color:var(--ubits-fg-2-medium)">…y ' + (errores.length - 50) + ' errores más.</li>' : '') +
-                                '</ul>',
+                            overlayId:  'comp360EnumImportErrorModal',
+                            title:      'Errores en el archivo (' + errores.length + ')',
+                            bodyHtml:   buildImportErrorTableHtml(errores),
                             footerHtml: '<button class="ubits-button ubits-button--primary ubits-button--md" onclick="closeModal(\'comp360EnumImportErrorModal\')"><span>Entendido</span></button>',
-                            size: 'sm'
+                            size:       'md'
                         });
                         return;
                     }
@@ -1923,20 +1915,47 @@
         return { errores: errores, filas: filasValidas };
     }
 
+    /* ── Tabla de errores compartida (Fila / Problema) ── */
+    function buildImportErrorTableHtml(errores) {
+        var MAX = 50;
+        var visible = errores.slice(0, MAX);
+        var rows = visible.map(function (e) {
+            var m = /^Fila\s+(\d+):\s*(.+)$/i.exec(e);
+            var fila     = m ? m[1] : '—';
+            var problema = m ? m[2] : e;
+            return '<tr>' +
+                '<td class="ubits-table__td" style="white-space:nowrap;width:60px">' +
+                    '<span class="ubits-body-sm-regular">' + fila + '</span>' +
+                '</td>' +
+                '<td class="ubits-table__td">' +
+                    '<span class="ubits-body-sm-regular">' + problema + '</span>' +
+                '</td>' +
+            '</tr>';
+        }).join('');
+        var nota = errores.length > MAX
+            ? '<p class="ubits-body-sm-regular" style="margin-top:var(--gap-sm);color:var(--ubits-fg-1-low)">…y ' + (errores.length - MAX) + ' error(es) más no mostrados.</p>'
+            : '';
+        return '<div style="overflow-x:auto">' +
+            '<table class="ubits-table" style="width:100%;border-collapse:collapse">' +
+                '<thead>' +
+                    '<tr>' +
+                        '<th class="ubits-table__th"><span class="ubits-body-sm-bold">Fila</span></th>' +
+                        '<th class="ubits-table__th"><span class="ubits-body-sm-bold">Problema</span></th>' +
+                    '</tr>' +
+                '</thead>' +
+                '<tbody>' + rows + '</tbody>' +
+            '</table>' +
+        '</div>' + nota;
+    }
+
     /* ── Mostrar errores de importación en modal ── */
     function eval360MostrarErroresImport(errores) {
-        var liItems = errores.slice(0, 50).map(function (e) {
-            return '<li class="ubits-body-sm-regular" style="margin-bottom:var(--gap-xs)">' + e + '</li>';
-        }).join('');
-        var nota = errores.length > 50
-            ? '<p class="ubits-body-sm-regular" style="margin-top:var(--gap-sm);color:var(--ubits-fg-1-low)">…y ' + (errores.length - 50) + ' error(es) más.</p>'
-            : '';
         openModal({
-            overlayId: 'eval360ImportErrorModal',
-            title:     'Errores en el archivo (' + errores.length + ')',
-            bodyHtml:  '<ul style="padding-left:var(--padding-lg);margin:0">' + liItems + '</ul>' + nota,
-            footerHtml:'<button class="ubits-button ubits-button--primary ubits-button--md" onclick="closeModal(\'eval360ImportErrorModal\')"><span>Entendido</span></button>',
-            size:      'sm'
+            overlayId:  'eval360ImportErrorModal',
+            title:      'Errores en el archivo (' + errores.length + ')',
+            bodyHtml:   buildImportErrorTableHtml(errores),
+            footerHtml: '<button class="ubits-button ubits-button--primary ubits-button--md" onclick="closeModal(\'eval360ImportErrorModal\')"><span>Entendido</span></button>',
+            size:       'md'
         });
     }
 
