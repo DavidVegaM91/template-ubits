@@ -377,7 +377,7 @@ El archivo solo lleva la columna `username`. El sistema asigna evaluadores autom
 | Columna `username` no encontrada | «La columna requerida "username" no fue encontrada. Verifica que uses la plantilla correcta.» |
 | Solo encabezado, sin datos | «El archivo no tiene filas de datos (solo tiene el encabezado).» |
 | Campo `username` vacío en fila | «Fila N: el campo "username" está vacío.» |
-| Username no existe en BD | «Fila N: el usuario "X" no existe en la base de datos.» |
+| Username no existe en BD | «Fila N: el usuario "X" no existe en la base de datos de colaboradores.» |
 
 Retorna `{ errores: [], filas: [{ username }] }`.
 
@@ -393,7 +393,7 @@ El archivo tiene 3 columnas: `evaluador`, `evaluado`, `tipo_evaluacion`. Permite
 | cgarcl@fiqsha.demo | rospid@fiqsha.demo | ascendente |
 | cgarcl@fiqsha.demo | lrodrm@fiqsha.demo | paralela |
 | pateleber@fiqsha.demo | pateleber@fiqsha.demo | autoevaluacion |
-| carlos.mendez@proveedorexterno.com | cgarcl@fiqsha.demo | cliente |
+| asuarg@fiqsha.demo | cgarcl@fiqsha.demo | cliente |
 
 **Valores válidos de `tipo_evaluacion`:** `descendente`, `ascendente`, `paralela`, `autoevaluacion`, `cliente` (normalizado, sin acento en autoevaluación).
 
@@ -410,12 +410,12 @@ El archivo tiene 3 columnas: `evaluador`, `evaluado`, `tipo_evaluacion`. Permite
 | Campo tipo_evaluacion vacío | «Fila N: el campo "tipo_evaluacion" está vacío.» |
 | Tipo no válido | «Fila N: tipo de evaluación "X" no es válido. Valores admitidos: descendente, ascendente, paralela, autoevaluación, cliente.» |
 | Tipo no activo en la configuración | «Fila N: el tipo "X" no está activo en la configuración de esta evaluación 360.» |
-| Evaluador no existe en BD (excepto tipo `cliente`) | «Fila N: el evaluador "X" no existe en la base de datos.» |
-| Evaluado no existe en BD | «Fila N: el evaluado "X" no existe en la base de datos.» |
+| Evaluador no existe en BD | «Fila N: el evaluador "X" no existe en la base de datos de colaboradores.» |
+| Evaluado no existe en BD | «Fila N: el evaluado "X" no existe en la base de datos de colaboradores.» |
 | Autoevaluación con personas distintas | «Fila N: en autoevaluación el evaluador y el evaluado deben ser la misma persona.» |
 | Tipo ≠ autoevaluación con misma persona | «Fila N: evaluador y evaluado son la misma persona. Solo se permite en autoevaluación.» |
 
-> **Excepción cliente:** el evaluador de tipo `cliente` no necesita estar en `BD_MASTER_COLABORADORES` (puede ser un email de cliente externo).
+> **Evaluador y evaluado:** en modo Libre, ambos usernames deben existir en `BD_MASTER_COLABORADORES` para **todos** los tipos de evaluación, incluido `cliente` (no se admiten evaluadores externos ficticios como `cliente_externo`).
 
 > **Check de tipo activo:** se usa `eval360GetTiposActivos().map(t => eval360Norm(t.nombre))`. Se usa `.nombre` (no `.id`) porque los IDs internos (`jefe`, `pares`, etc.) no coinciden con los valores del CSV.
 

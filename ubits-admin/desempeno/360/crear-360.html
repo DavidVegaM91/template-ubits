@@ -1753,7 +1753,7 @@
             'cgarcl@fiqsha.demo,rospid@fiqsha.demo,ascendente\n' +
             'cgarcl@fiqsha.demo,lrodrm@fiqsha.demo,paralela\n' +
             'pateleber@fiqsha.demo,pateleber@fiqsha.demo,autoevaluacion\n' +
-            'carlos.mendez@proveedorexterno.com,cgarcl@fiqsha.demo,cliente';
+            'asuarg@fiqsha.demo,cgarcl@fiqsha.demo,cliente';
         var blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
         var url  = URL.createObjectURL(blob);
         var a    = document.createElement('a');
@@ -1766,7 +1766,11 @@
     function eval360ValidarOrganigrama(filas) {
         var errores = [];
         var colaboradores = (typeof BD_MASTER_COLABORADORES !== 'undefined' && BD_MASTER_COLABORADORES.colaboradores) || [];
-        var usernamesValidos = new Set(colaboradores.map(function (c) { return eval360Norm(c.username); }));
+        var usernamesValidos = new Set();
+        colaboradores.forEach(function (c) {
+            var u = eval360Norm(c.username);
+            if (u) usernamesValidos.add(u);
+        });
 
         if (!filas || filas.length === 0) {
             errores.push('El archivo está vacío o solo contiene la fila de encabezados.');
@@ -1800,7 +1804,7 @@
                 return;
             }
             if (!usernamesValidos.has(username)) {
-                errores.push('Fila ' + nRow + ': el usuario "' + (fila[colIdx] || '').trim() + '" no existe en la base de datos.');
+                errores.push('Fila ' + nRow + ': el usuario "' + (fila[colIdx] || '').trim() + '" no existe en la base de datos de colaboradores.');
                 return;
             }
             filasValidas.push({ username: username });
@@ -1823,7 +1827,11 @@
     function eval360ValidarLibre(filas) {
         var errores = [];
         var colaboradores = (typeof BD_MASTER_COLABORADORES !== 'undefined' && BD_MASTER_COLABORADORES.colaboradores) || [];
-        var usernamesValidos = new Set(colaboradores.map(function (c) { return eval360Norm(c.username); }));
+        var usernamesValidos = new Set();
+        colaboradores.forEach(function (c) {
+            var u = eval360Norm(c.username);
+            if (u) usernamesValidos.add(u);
+        });
 
         /* Tipos activos en el draft — usar siempre nombre para comparar con lo que escribe el usuario */
         var tiposActivos = eval360GetTiposActivos().map(function (t) { return eval360Norm(t.nombre); });
@@ -1886,14 +1894,14 @@
                 return;
             }
 
-            /* Usuarios en BD (clientes externos se permiten en tipo "cliente") */
+            /* Evaluador y evaluado deben existir en BD_MASTER_COLABORADORES (todos los tipos, incl. cliente) */
             var evaluadorNorm = eval360Norm(evaluador);
-            if (tipoNorm !== 'cliente' && !usernamesValidos.has(evaluadorNorm)) {
-                errores.push('Fila ' + nRow + ': el evaluador "' + evaluador + '" no existe en la base de datos.');
+            if (!usernamesValidos.has(evaluadorNorm)) {
+                errores.push('Fila ' + nRow + ': el evaluador "' + evaluador + '" no existe en la base de datos de colaboradores.');
                 return;
             }
             if (!usernamesValidos.has(eval360Norm(evaluado))) {
-                errores.push('Fila ' + nRow + ': el evaluado "' + evaluado + '" no existe en la base de datos.');
+                errores.push('Fila ' + nRow + ': el evaluado "' + evaluado + '" no existe en la base de datos de colaboradores.');
                 return;
             }
 
