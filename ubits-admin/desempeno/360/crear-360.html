@@ -1920,14 +1920,17 @@
         var MAX = 50;
         var visible = errores.slice(0, MAX);
         var rows = visible.map(function (e) {
-            var m = /^Fila\s+(\d+):\s*(.+)$/i.exec(e);
-            var fila     = m ? m[1] : '—';
-            var problema = m ? m[2] : e;
+            /* Extrae "Fila N" del inicio del mensaje — formato: "Fila 3: texto..." */
+            var colonIdx = e.indexOf(': ');
+            var prefijo  = colonIdx > 0 ? e.substring(0, colonIdx).trim() : '';
+            var filaMatch = /^Fila\s+(\d+)$/i.exec(prefijo);
+            var fila     = filaMatch ? filaMatch[1] : '—';
+            var problema = filaMatch ? e.substring(colonIdx + 2) : e;
             return '<tr>' +
-                '<td class="ubits-table__td" style="white-space:nowrap;width:60px">' +
+                '<td style="padding:10px 16px;border-bottom:1px solid var(--ubits-border-1);white-space:nowrap;width:56px;vertical-align:top">' +
                     '<span class="ubits-body-sm-regular">' + fila + '</span>' +
                 '</td>' +
-                '<td class="ubits-table__td">' +
+                '<td style="padding:10px 16px;border-bottom:1px solid var(--ubits-border-1);white-space:normal;word-break:break-word;vertical-align:top">' +
                     '<span class="ubits-body-sm-regular">' + problema + '</span>' +
                 '</td>' +
             '</tr>';
@@ -1935,12 +1938,12 @@
         var nota = errores.length > MAX
             ? '<p class="ubits-body-sm-regular" style="margin-top:var(--gap-sm);color:var(--ubits-fg-1-low)">…y ' + (errores.length - MAX) + ' error(es) más no mostrados.</p>'
             : '';
-        return '<div style="overflow-x:auto">' +
-            '<table class="ubits-table" style="width:100%;border-collapse:collapse">' +
+        return '<div class="ubits-table-wrapper">' +
+            '<table class="ubits-table">' +
                 '<thead>' +
                     '<tr>' +
-                        '<th class="ubits-table__th"><span class="ubits-body-sm-bold">Fila</span></th>' +
-                        '<th class="ubits-table__th"><span class="ubits-body-sm-bold">Problema</span></th>' +
+                        '<th style="text-align:left;padding:0 16px;height:40px;white-space:nowrap;width:56px">Fila</th>' +
+                        '<th style="text-align:left;padding:0 16px;height:40px">Problema</th>' +
                     '</tr>' +
                 '</thead>' +
                 '<tbody>' + rows + '</tbody>' +
