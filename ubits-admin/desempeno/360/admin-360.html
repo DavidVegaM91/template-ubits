@@ -296,7 +296,11 @@
                     { id: 'acciones',     label: 'Acciones' }
                 ],
                 getData: function () {
-                    return BD_EVALUACIONES_360.getEvaluaciones();
+                    var items = BD_EVALUACIONES_360.getEvaluaciones().slice();
+                    items.sort(function (a, b) {
+                        return (b.fechaInicio || '').localeCompare(a.fechaInicio || '');
+                    });
+                    return items;
                 },
                 rowIdField: 'id',
                 buildRowHtml: buildRowHtml,
