@@ -218,6 +218,59 @@
     color: var(--ubits-fg-1-medium);
 }
 
+/* ── Estado cargando (uploading) ─────────── */
+/*
+   Activar con fileUploadSetProgress(el, percent):
+   - Oculta el botón eliminar y el tamaño del archivo
+   - Muestra la barra de progreso en su lugar
+   - 0-99 %: barra azul (accent-brand); 100 %: barra verde (feedback-success)
+*/
+.ubits-file-upload__file-card--uploading {
+    cursor: default;
+}
+
+.ubits-file-upload__file-card--uploading .ubits-file-upload__file-size {
+    display: none !important;
+}
+
+.ubits-file-upload__file-card--uploading .ubits-file-upload__remove-btn {
+    display: none !important;
+}
+
+/* Contenedor de la barra */
+.ubits-file-upload__progress-bar {
+    display: none;
+    width: 100%;
+    height: 6px;
+    border-radius: var(--border-radius-full);
+    background: var(--ubits-bg-3);
+    overflow: hidden;
+}
+
+.ubits-file-upload__file-card--uploading .ubits-file-upload__progress-bar {
+    display: block;
+}
+
+/* Relleno de la barra */
+.ubits-file-upload__progress-fill {
+    height: 100%;
+    width: 0%;
+    border-radius: var(--border-radius-full);
+    background: var(--ubits-accent-brand);
+    transition: width 0.15s ease, background 0.3s ease;
+}
+
+/* Al llegar a 100 % la barra se vuelve verde */
+.ubits-file-upload__progress-fill--complete {
+    background: var(--ubits-feedback-accent-success);
+}
+
+/* Dropzone bloqueado mientras carga (sin hover ni click) */
+.ubits-file-upload__dropzone--uploading {
+    cursor: default !important;
+    pointer-events: none;
+}
+
 /* ── Helper text (error inline) ─────────── */
 .ubits-file-upload__helper {
     margin: 0;

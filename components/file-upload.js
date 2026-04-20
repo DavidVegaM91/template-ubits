@@ -7,6 +7,9 @@
  *   fileUploadShowErrorReport(idOrEl, visible)  — muestra / oculta el botón "Informe de errores"
  *   fileUploadSetError(idOrEl, message)         — muestra un error externo (p. ej. procesado en servidor)
  *   fileUploadClearError(idOrEl)               — limpia el error inline
+ *   fileUploadSetProgress(idOrEl, percent)      — activa estado "cargando": oculta botón eliminar,
+ *                                                 muestra barra de progreso (azul 0-99 %, verde 100 %)
+ *   fileUploadClearProgress(idOrEl)             — vuelve al estado normal (con botón eliminar)
  *
  * Opciones de createFileUpload():
  *   containerId       {string}   ID del contenedor donde inyectar el HTML (requerido)
@@ -107,6 +110,9 @@
                   '<div class="ubits-file-upload__file-meta">' +
                     '<span class="ubits-body-sm-semibold ubits-file-upload__file-name" data-file-upload-name></span>' +
                     '<span class="ubits-body-sm-regular ubits-file-upload__file-size" data-file-upload-size></span>' +
+                    '<div class="ubits-file-upload__progress-bar" data-file-upload-progress-bar>' +
+                      '<div class="ubits-file-upload__progress-fill" data-file-upload-progress-fill></div>' +
+                    '</div>' +
                   '</div>' +
                   '<button type="button" class="ubits-button ubits-button--error-tertiary ubits-button--sm ubits-button--icon-only ubits-file-upload__remove-btn" data-file-upload-remove aria-label="Quitar archivo">' +
                     '<i class="far fa-trash-alt"></i>' +
@@ -345,6 +351,58 @@
         if (helperEl) { helperEl.style.display = 'none'; helperEl.textContent = ''; }
     }
 
+    /**
+     * Activa el estado "cargando" en el componente.
+     * Oculta el botón eliminar y muestra una barra de progreso en su lugar.
+     *   percent: 0-100
+     *   0-99 → barra azul (accent-brand)
+     *   100  → barra verde (feedback-success)
+     *
+     * Uso típico:
+     *   fileUploadSetProgress(el, 0);           // inicia carga
+     *   fileUploadSetProgress(el, 45);          // actualiza
+     *   fileUploadSetProgress(el, 100);         // completo (verde)
+     *   fileUploadClearProgress(el);            // vuelve al estado normal
+     */
+    function fileUploadSetProgress(idOrEl, percent) {
+        var el = typeof idOrEl === 'string' ? document.getElementById(idOrEl) : idOrEl;
+        if (!el) return;
+        var pct = Math.max(0, Math.min(100, percent));
+        var card     = el.querySelector('[data-file-upload-card]');
+        var dropzone = el.querySelector('[data-file-upload-dropzone]');
+        var fill     = el.querySelector('[data-file-upload-progress-fill]');
+
+        if (card) card.classList.add('ubits-file-upload__file-card--uploading');
+        if (dropzone) dropzone.classList.add('ubits-file-upload__dropzone--uploading');
+        if (fill) {
+            fill.style.width = pct + '%';
+            if (pct >= 100) {
+                fill.classList.add('ubits-file-upload__progress-fill--complete');
+            } else {
+                fill.classList.remove('ubits-file-upload__progress-fill--complete');
+            }
+        }
+    }
+
+    /**
+     * Vuelve al estado normal del card (con botón eliminar, sin barra de progreso).
+     * Llamar cuando la carga termina o falla.
+     */
+    function fileUploadClearProgress(idOrEl) {
+        var el = typeof idOrEl === 'string' ? document.getElementById(idOrEl) : idOrEl;
+        if (!el) return;
+        var card     = el.querySelector('[data-file-upload-card]');
+        var dropzone = el.querySelector('[data-file-upload-dropzone]');
+        var fill     = el.querySelector('[data-file-upload-progress-fill]');
+
+        if (card) card.classList.remove('ubits-file-upload__file-card--uploading');
+        if (dropzone) dropzone.classList.remove('ubits-file-upload__dropzone--uploading');
+        if (fill) {
+            fill.style.width = '0%';
+            fill.classList.remove('ubits-file-upload__progress-fill--complete');
+        }
+    }
+
     /* ─── exposición global ──────────────────────────── */
 
     window.createFileUpload          = createFileUpload;
@@ -352,6 +410,8 @@
     window.fileUploadShowErrorReport = fileUploadShowErrorReport;
     window.fileUploadSetError        = fileUploadSetError;
     window.fileUploadClearError      = fileUploadClearError;
+    window.fileUploadSetProgress     = fileUploadSetProgress;
+    window.fileUploadClearProgress   = fileUploadClearProgress;
 
     /* Auto-init sobre HTML estático */
     if (document.readyState === 'loading') {

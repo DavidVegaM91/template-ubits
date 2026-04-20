@@ -94,6 +94,9 @@
                                 <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" onclick="setPreviewState('report')">
                                     <span>Informe de errores</span>
                                 </button>
+                                <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" onclick="setPreviewState('uploading')">
+                                    <span>Con archivo cargando</span>
+                                </button>
                             </div>
                         </div>
 
@@ -410,7 +413,17 @@ fileUploadClearError('mi-file-upload');</code></pre>
 
 .ubits-file-upload__dropzone--dragover   /* Drag activo encima del dropzone (borde + fondo azul) */
 .ubits-file-upload__dropzone--has-file   /* Archivo cargado (oculta estado vacío, muestra file card) */
-.ubits-file-upload__dropzone--invalid    /* Error de tipo/peso o del servidor (borde rojo) */</code></pre>
+.ubits-file-upload__dropzone--invalid    /* Error de tipo/peso o del servidor (borde rojo) */
+.ubits-file-upload__dropzone--uploading  /* Carga en curso: bloquea interacción (pointer-events none) */
+
+/* Se añaden al elemento .ubits-file-upload__file-card */
+
+.ubits-file-upload__file-card--uploading /* Oculta botón eliminar y tamaño; muestra barra de progreso */
+
+/* Barra de progreso */
+.ubits-file-upload__progress-bar         /* Contenedor de la barra (gris) */
+.ubits-file-upload__progress-fill        /* Relleno azul 0-99 % */
+.ubits-file-upload__progress-fill--complete  /* Relleno verde al llegar a 100 % */</code></pre>
                                     </div>
                                 </div>
 
@@ -439,7 +452,16 @@ fileUploadClearError('mi-file-upload');</code></pre>
 /* Error externo genérico (manual — del servidor) */
 // Borde rojo + helper text personalizado.
 // Ejemplo: respuesta 400 con mensaje específico.
-// Llamar: fileUploadSetError('id', 'Mensaje de error')</code></pre>
+// Llamar: fileUploadSetError('id', 'Mensaje de error')
+
+/* Carga en curso (manual — llamar tras recibir el archivo) */
+// Oculta botón eliminar, muestra barra de progreso (azul → verde al 100 %).
+// Bloquea el dropzone mientras dura la carga.
+// Llamar con percent 0-100; al terminar, llamar fileUploadClearProgress.
+fileUploadSetProgress('mi-file-upload', 0);    // inicia (0 %)
+fileUploadSetProgress('mi-file-upload', 45);   // actualiza (azul)
+fileUploadSetProgress('mi-file-upload', 100);  // completo (verde)
+fileUploadClearProgress('mi-file-upload');      // vuelve al estado normal</code></pre>
                                     </div>
                                 </div>
 
@@ -493,8 +515,13 @@ fileUploadClearError('mi-file-upload');</code></pre>
         });
 
         /* ── Estado del preview ─────────────────── */
+        var _uploadingTimer = null; /* referencia al intervalo de demo de carga */
+
         var previewStates = {
             empty: function (el) {
+                /* Cancelar animación de carga si estaba en curso */
+                if (_uploadingTimer) { clearInterval(_uploadingTimer); _uploadingTimer = null; }
+                fileUploadClearProgress(el);
                 var dropzone = el.querySelector('[data-file-upload-dropzone]');
                 var emptyEl  = el.querySelector('[data-file-upload-empty]');
                 var cardEl   = el.querySelector('[data-file-upload-card]');
@@ -531,6 +558,22 @@ fileUploadClearError('mi-file-upload');</code></pre>
             report: function (el) {
                 previewStates.file(el);
                 fileUploadShowErrorReport(el, true);
+            },
+            uploading: function (el) {
+                /* Mostrar el archivo y arrancar la animación de 0 → 100 % en 3 s */
+                previewStates.file(el);
+                if (_uploadingTimer) { clearInterval(_uploadingTimer); _uploadingTimer = null; }
+                var pct = 0;
+                fileUploadSetProgress(el, 0);
+                /* Avanzar ~1 % cada 30 ms → 100 pasos × 30 ms = 3000 ms */
+                _uploadingTimer = setInterval(function () {
+                    pct += 1;
+                    fileUploadSetProgress(el, pct);
+                    if (pct >= 100) {
+                        clearInterval(_uploadingTimer);
+                        _uploadingTimer = null;
+                    }
+                }, 30);
             }
         };
 
