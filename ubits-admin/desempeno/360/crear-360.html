@@ -84,7 +84,7 @@
                                     <i class="far fa-sliders crear360-option-card__icon"></i>
                                     <span class="ubits-body-md-bold crear360-option-card__title">Tipo de evaluación</span>
                                 </div>
-                                <p class="ubits-body-sm-regular">Define quiénes participarán en la evaluación y el peso porcentual de cada perspectiva.</p>
+                                <p class="ubits-body-sm-regular crear360-hub-card-desc" data-hub-card="tipo">Define quiénes participarán en la evaluación y el peso porcentual de cada perspectiva.</p>
                             </div>
                         </div>
                         <div class="crear360-option-card__trailing">
@@ -103,7 +103,7 @@
                                     <i class="far fa-list-check crear360-option-card__icon"></i>
                                     <span class="ubits-body-md-bold crear360-option-card__title">Competencias y enunciados</span>
                                 </div>
-                                <p class="ubits-body-sm-regular">Selecciona las competencias que serán evaluadas y los enunciados que guiarán las respuestas.</p>
+                                <p class="ubits-body-sm-regular crear360-hub-card-desc" data-hub-card="competencias">Selecciona las competencias que serán evaluadas y los enunciados que guiarán las respuestas.</p>
                             </div>
                         </div>
                         <div class="crear360-option-card__trailing">
@@ -122,7 +122,7 @@
                                     <i class="far fa-users crear360-option-card__icon"></i>
                                     <span class="ubits-body-md-bold crear360-option-card__title">Evaluados</span>
                                 </div>
-                                <p class="ubits-body-sm-regular">Asigna los colaboradores que serán evaluados y configura quiénes los evaluarán.</p>
+                                <p class="ubits-body-sm-regular crear360-hub-card-desc" data-hub-card="evaluados">Asigna los colaboradores que serán evaluados y configura quiénes los evaluarán.</p>
                             </div>
                         </div>
                         <div class="crear360-option-card__trailing">
@@ -141,7 +141,7 @@
                                     <i class="far fa-chart-bar crear360-option-card__icon"></i>
                                     <span class="ubits-body-md-bold crear360-option-card__title">Configuración de resultados</span>
                                 </div>
-                                <p class="ubits-body-sm-regular">Define los rangos de calificación y sus colores para interpretar los resultados.</p>
+                                <p class="ubits-body-sm-regular crear360-hub-card-desc" data-hub-card="resultados">Define los rangos de calificación y sus colores para interpretar los resultados.</p>
                             </div>
                         </div>
                         <div class="crear360-option-card__trailing">
@@ -609,7 +609,170 @@
         if (btn) btn.style.display = '';
     }
 
+    /* Textos por defecto de las tarjetas del hub (cuando la sección no está completada) */
+    var HUB_CARD_DESC_DEFAULT = {
+        tipo:           'Define quiénes participarán en la evaluación y el peso porcentual de cada perspectiva.',
+        competencias:   'Selecciona las competencias que serán evaluadas y los enunciados que guiarán las respuestas.',
+        evaluados:      'Asigna los colaboradores que serán evaluados y configura quiénes los evaluarán.',
+        resultados:     'Define los rangos de calificación y sus colores para interpretar los resultados.'
+    };
+
+    /* Mapeo id interno de tipo → clave usada en importación modo libre */
+    var TIPO_ID_TO_LIBRE_KEY = { auto: 'autoevaluacion', jefe: 'descendente', pares: 'paralela', subalternos: 'ascendente', cliente: 'cliente' };
+
+    function hubNombreTipoPorId(id) {
+        var bases = (typeof BD_EVALUACIONES_360 !== 'undefined' && BD_EVALUACIONES_360.tiposEvaluacion) || [];
+        for (var i = 0; i < bases.length; i++) {
+            if (bases[i].id === id) return bases[i].nombre;
+        }
+        return id;
+    }
+
+    function hubTiposActivosDraft() {
+        return (draft.tipo || []).filter(function (t) { return t.activo; });
+    }
+
+    function hubSummaryTipoText() {
+        var parts = [];
+        hubTiposActivosDraft().forEach(function (t) {
+            parts.push(hubNombreTipoPorId(t.id) + ' (' + (parseInt(t.peso, 10) || 0) + '%)');
+        });
+        return parts.length ? parts.join(', ') : '—';
+    }
+
+    function hubCountEnunciadosPorTipoId(tipoId) {
+        var comps = draft.competencias || [];
+        var n = 0;
+        comps.forEach(function (c) {
+            if (c.seleccionada === false) return;
+            (c.enunciados || []).forEach(function (en) {
+                var tipos = en.tiposEvaluacion || [];
+                if (tipos.indexOf(tipoId) !== -1) n++;
+            });
+        });
+        return n;
+    }
+
+    /** Al menos una competencia seleccionada en draft */
+    function hubCompetenciaTieneSeleccionDraft() {
+        return (draft.competencias || []).some(function (c) { return c.seleccionada !== false; });
+    }
+
+    /**
+     * Competencias «al día»: hay selección y cada tipo activo en #tipo tiene ≥ 1 enunciado
+     * en competencias seleccionadas. Si no hay tipos activos, basta con tener selección.
+     */
+    function hubCompetenciasCompleto() {
+        if (!hubCompetenciaTieneSeleccionDraft()) return false;
+        var activos = hubTiposActivosDraft();
+        if (!activos.length) return true;
+        for (var i = 0; i < activos.length; i++) {
+            if (hubCountEnunciadosPorTipoId(activos[i].id) < 1) return false;
+        }
+        return true;
+    }
+
+    /** Hay trabajo en competencias pero falta enunciado en algún tipo activo */
+    function hubCompetenciasIncompletaHub() {
+        return hubCompetenciaTieneSeleccionDraft() && !hubCompetenciasCompleto();
+    }
+
+    function hubSummaryCompetenciasHtml() {
+        var activos = hubTiposActivosDraft();
+        if (!activos.length) return 'Enunciados: —';
+        var parts = [];
+        activos.forEach(function (t) {
+            var nombre = hubNombreTipoPorId(t.id);
+            var cnt    = hubCountEnunciadosPorTipoId(t.id);
+            if (cnt === 0) {
+                parts.push(
+                    '<span class="crear360-hub-card-desc__warn">' +
+                    '<i class="far fa-triangle-exclamation" aria-hidden="true"></i>' +
+                    hubEscHtml(nombre) + ' (0)</span>'
+                );
+            } else {
+                parts.push(hubEscHtml(nombre) + ' (' + cnt + ')');
+            }
+        });
+        return 'Enunciados: ' + parts.join(', ');
+    }
+
+    function hubLibreCountForTipoId(tipoId) {
+        var key = TIPO_ID_TO_LIBRE_KEY[tipoId] || tipoId;
+        var n = 0;
+        (draft.evaluados && draft.evaluados.asignaciones || []).forEach(function (row) {
+            if (row && row.tipo === key) n++;
+        });
+        return n;
+    }
+
+    function hubSummaryEvaluadosText() {
+        var activos = hubTiposActivosDraft();
+        var libre   = draft.evaluados && draft.evaluados.tipo === 'libre' && Array.isArray(draft.evaluados.asignaciones);
+        var nPersonas = (draft.evaluados && draft.evaluados.personas) ? draft.evaluados.personas.length : 0;
+        var parts = [];
+        activos.forEach(function (t) {
+            var nombre = hubNombreTipoPorId(t.id);
+            var n      = libre ? hubLibreCountForTipoId(t.id) : nPersonas;
+            parts.push(nombre + ' (' + n + ')');
+        });
+        return parts.length ? parts.join(', ') : (nPersonas ? nPersonas + ' evaluado(s)' : '—');
+    }
+
+    function hubEscHtml(s) {
+        return String(s || '')
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/"/g, '&quot;');
+    }
+
+    function hubSummaryResultadosText() {
+        var r = draft.resultados;
+        if (!r) return '—';
+        var max    = parseInt(r.escala, 10) || 5;
+        var params = r.params || [];
+        var names  = params.map(function (p) { return String(p.nombre || '').trim(); }).join(', ');
+        return 'Escala del 1 al ' + max + ', ' + params.length + ' parámetro' + (params.length === 1 ? '' : 's') +
+            (names ? ' (' + names + ')' : '');
+    }
+
+    function buildHubCardSummaryHtml(key) {
+        if (key === 'tipo')         return hubSummaryTipoText();
+        if (key === 'competencias') return hubSummaryCompetenciasHtml();
+        if (key === 'evaluados')   return hubSummaryEvaluadosText();
+        if (key === 'resultados')  return hubSummaryResultadosText();
+        return '';
+    }
+
+    function refreshHubCardDescriptions() {
+        ['tipo', 'competencias', 'evaluados', 'resultados'].forEach(function (k) {
+            var card = document.getElementById('crear360-card-' + k);
+            var p    = card && card.querySelector('.crear360-hub-card-desc');
+            if (!p) return;
+            if (k === 'competencias') {
+                if (hubCompetenciasCompleto() || hubCompetenciasIncompletaHub()) {
+                    p.innerHTML = buildHubCardSummaryHtml(k);
+                    p.classList.add('crear360-hub-card-desc--summary');
+                } else {
+                    p.textContent = HUB_CARD_DESC_DEFAULT[k] || '';
+                    p.classList.remove('crear360-hub-card-desc--summary');
+                }
+                return;
+            }
+            if (draft.checks[k]) {
+                p.textContent = buildHubCardSummaryHtml(k);
+                p.classList.add('crear360-hub-card-desc--summary');
+            } else {
+                p.textContent = HUB_CARD_DESC_DEFAULT[k] || '';
+                p.classList.remove('crear360-hub-card-desc--summary');
+            }
+        });
+    }
+
     function updateHubChecksUI() {
+        /* Competencias: check solo si cada tipo activo tiene ≥ 1 enunciado */
+        draft.checks.competencias = hubCompetenciasCompleto();
+
         var checks = draft.checks || {};
         var allDone = checks.tipo && checks.competencias && checks.evaluados && checks.resultados;
         var saved   = draft.guardado;
@@ -618,12 +781,21 @@
             var card  = document.getElementById('crear360-card-' + k);
             var check = document.getElementById('crear360-check-' + k);
 
-            if (checks[k]) {
-                if (card)  card.classList.add('crear360-option-card--done');
+            if (card) {
+                card.classList.remove('crear360-option-card--done', 'crear360-option-card--incomplete');
+            }
+            if (check) check.style.display = 'none';
+
+            if (k === 'competencias') {
+                if (hubCompetenciasCompleto()) {
+                    if (card) card.classList.add('crear360-option-card--done');
+                    if (check) check.style.display = '';
+                } else if (hubCompetenciasIncompletaHub()) {
+                    if (card) card.classList.add('crear360-option-card--incomplete');
+                }
+            } else if (checks[k]) {
+                if (card) card.classList.add('crear360-option-card--done');
                 if (check) check.style.display = '';
-            } else {
-                if (card)  card.classList.remove('crear360-option-card--done');
-                if (check) check.style.display = 'none';
             }
 
             if (card) {
@@ -639,6 +811,8 @@
 
         var activateBtn = document.getElementById('crear360-btn-activate');
         if (activateBtn) activateBtn.disabled = !allDone;
+
+        refreshHubCardDescriptions();
     }
 
     function guardarEvaluacion() {
@@ -839,7 +1013,14 @@
         /* Restaurar competencias guardadas en draft si aún no están en memoria */
         if (_competencias.length === 0 && Array.isArray(draft.competencias) && draft.competencias.length > 0) {
             _competencias = draft.competencias.map(function (c) {
-                return { id: c.id, nombre: c.nombre, descripcion: c.descripcion || '', seleccionada: c.seleccionada !== false, expandida: false };
+                return {
+                    id: c.id,
+                    nombre: c.nombre,
+                    descripcion: c.descripcion || '',
+                    seleccionada: c.seleccionada !== false,
+                    expandida: false,
+                    enunciados: Array.isArray(c.enunciados) ? JSON.parse(JSON.stringify(c.enunciados)) : []
+                };
             });
         }
 
@@ -1478,10 +1659,20 @@
 
     function saveCompetencias() {
         draft.competencias = _competencias.map(function (c) {
-            return { id: c.id, nombre: c.nombre, descripcion: c.descripcion || '', seleccionada: c.seleccionada };
+            return {
+                id: c.id,
+                nombre: c.nombre,
+                descripcion: c.descripcion || '',
+                seleccionada: c.seleccionada,
+                enunciados: Array.isArray(c.enunciados) ? JSON.parse(JSON.stringify(c.enunciados)) : []
+            };
         });
-        draft.checks.competencias = _competencias.some(function (c) { return c.seleccionada; });
-        showToast('success', 'Competencias guardadas');
+        draft.checks.competencias = hubCompetenciasCompleto();
+        if (draft.checks.competencias) {
+            showToast('success', 'Competencias guardadas');
+        } else {
+            showToast('warning', 'Añade al menos un enunciado por cada tipo de evaluación activo para marcar la sección como completa.');
+        }
         showView('hub');
     }
 

@@ -29,6 +29,21 @@
     margin: 0;
 }
 
+/* Resumen en tarjetas del hub (sección completada) */
+.crear360-hub-card-desc--summary {
+    line-height: 1.45;
+}
+
+.crear360-hub-card-desc .crear360-hub-card-desc__warn {
+    color: var(--ubits-feedback-accent-error);
+    font-weight: 500;
+}
+
+.crear360-hub-card-desc .crear360-hub-card-desc__warn i {
+    color: var(--ubits-feedback-accent-error);
+    margin-right: var(--gap-xs);
+}
+
 /* formulario */
 .crear360-form-section {
     margin-bottom: var(--gap-2xl);
@@ -102,6 +117,20 @@
 
 .crear360-option-card--done:hover {
     border-color: var(--ubits-feedback-accent-success);
+}
+
+/* Competencias: guardado pero falta enunciado en algún tipo activo */
+.crear360-option-card--incomplete {
+    border-color: var(--ubits-feedback-accent-error);
+}
+
+.crear360-option-card--incomplete:hover:not(.crear360-option-card--locked) {
+    background: var(--ubits-bg-1);
+    border-color: var(--ubits-feedback-accent-error);
+}
+
+.crear360-option-card--incomplete .crear360-option-card__icon {
+    color: var(--ubits-feedback-accent-error);
 }
 
 .crear360-option-card--locked {
@@ -681,6 +710,10 @@
     }
     .crear360-save-inline-wrap {
         grid-column: 1 / -1;
+        /* Sin padding superior: alinear visualmente con los campos (el de escritorio compensaba labels) */
+        padding-top: 0;
+        display: flex;
+        justify-content: flex-end;
     }
     .res360-layout {
         grid-template-columns: 1fr;

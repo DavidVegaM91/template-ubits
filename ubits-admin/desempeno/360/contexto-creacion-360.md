@@ -107,7 +107,26 @@ Al hacer clic en **«Confirmar»** (`#crear360-btn-save-inline`) se ejecuta `gua
 
 - **Bloqueado** (`crear360-option-card--locked`): tarjetas con `tabindex="-1"`, no clicables. Aplica mientras `draft.guardado === false`.
 - **Desbloqueado**: se quita `--locked` y el usuario puede entrar a cada sección.
-- **Completado** (`crear360-option-card--done`): se añade al guardar cada sección; muestra el ícono `fa-circle-check` en la tarjeta.
+- **Completado** (`crear360-option-card--done`): borde verde e ícono `fa-circle-check` cuando la sección cumple los requisitos (en **Competencias**, solo si además cada tipo activo en `#tipo` tiene al menos un enunciado en competencias seleccionadas).
+- **Competencias incompleta** (`crear360-option-card--incomplete`): hay al menos una competencia seleccionada en `draft.competencias` pero falta enunciado en algún tipo activo → borde rojo, **sin** check. `draft.checks.competencias` permanece `false` hasta completar.
+
+### Tarjetas completadas: resumen en lugar de la descripción
+
+Cuando una tarjeta del hub está en estado **completado** (`--done`), el texto que antes actuaba como **descripción introductoria** de la sección debe sustituirse por un **resumen** de lo que el usuario configuró dentro de esa sección (datos legibles de un vistazo).
+
+| Tarjeta | Contenido del resumen (ejemplo) |
+|---------|----------------------------------|
+| **Tipo de evaluación** | Lista de tipos **activos** con su **peso %** tal como quedaron en `#tipo`, en un solo renglón separado por comas. Ejemplo: `Autoevaluación (5%), Descendente (95%)`. |
+| **Competencias y enunciados** | Prefijo **«Enunciados:»** seguido del desglose **por cada tipo de evaluación** (los mismos tipos que participan en la evaluación): cuántos enunciados tiene asignados cada uno. Ejemplo: `Enunciados: Autoevaluación (0), Descendente (10)`. Si un tipo tiene **0 enunciados**, debe mostrarse un **icono de advertencia** (p. ej. `fa-triangle-exclamation`) junto a ese tipo y tanto el **texto del tipo con (0)** como el **icono** deben ir en **color rojo** (feedback de error) para resaltar que falta contenido en esa perspectiva. |
+| **Evaluados** | Conteo de asignaciones **por tipo de evaluación** (según la configuración vigente). Ejemplo: `Autoevaluación (15), Descendente (8)`. (Los números reflejan cuántas relaciones evaluador/evaluado o filas aplicables existen por tipo, según defina la implementación.) |
+| **Configuración de resultados** | **Escala** elegida y **cantidad de parámetros**, más los **nombres** de los rangos entre paréntesis. Ejemplo: `Escala del 1 al 100, 5 parámetros (malo, aceptable, bueno, sobresaliente, excelente)`. |
+
+**Notas de UX**
+
+- El resumen sustituye a la descripción **solo** cuando la tarjeta está completada; en estados bloqueado o desbloqueado sin completar se mantiene el copy introductorio habitual.
+- En **Competencias y enunciados**, el aviso en rojo con icono aplica **únicamente** a los tipos con conteo 0; el resto de tipos se muestran con estilo neutro o de éxito según el sistema de diseño.
+
+**Implementación en código:** `updateHubChecksUI()` recalcula `draft.checks.competencias = hubCompetenciasCompleto()` en cada visita al hub. `refreshHubCardDescriptions()` (llamada al final de `updateHubChecksUI()`) actualiza los `<p class="crear360-hub-card-desc">`: en competencias muestra el resumen «Enunciados:…» tanto si está completo como si está incompleto (con avisos en rojo). En modo **Evaluados** por tabla (`por-colaborador`), el conteo por tipo usa el mismo número de evaluados seleccionados para cada tipo activo; en modo **libre** con `asignaciones[]`, los conteos se obtienen por tipo a partir de las filas importadas.
 
 ### Edición después de confirmar
 
@@ -321,7 +340,7 @@ Si hay errores: modal con tabla Fila / Problema. Si no: enunciados añadidos a s
 
 Deshabilitado si `_competencias.length === 0` (se oculta el footer en el empty state).
 
-`saveCompetencias()` escribe `draft.competencias = [..._competencias]` y pone `draft.checks.competencias = true`.
+`saveCompetencias()` serializa cada competencia en `draft.competencias` con `id`, `nombre`, `descripcion`, `seleccionada` y **`enunciados[]`** (copia profunda), y pone `draft.checks.competencias = true`. Los enunciados son necesarios para el resumen del hub y para restaurar `_competencias` al volver a la vista.
 
 ---
 
