@@ -22,6 +22,7 @@
     <link rel="stylesheet" href="../../../general-styles/layout-immersive.css">
     <link rel="stylesheet" href="../../../components/stepper.css">
     <link rel="stylesheet" href="../../../components/radio-button.css">
+    <link rel="stylesheet" href="../../../components/selection-card.css">
     <link rel="stylesheet" href="../../../components/table.css">
     <link rel="stylesheet" href="../../../components/avatar.css">
     <link rel="stylesheet" href="../../../components/checkbox.css">
@@ -214,63 +215,63 @@
 
                 <!-- ── Paso 1: Tipo de selección (option cards) ── -->
                 <div id="eval360-wizard-step1" class="eval360-wizard-step">
-                    <div class="drawer-agregar-usuarios-options">
+                    <div class="ubits-selection-card-group ubits-selection-card-group--4">
 
-                        <label class="drawer-option-card ubits-radio ubits-radio--md" data-opcion="toda-empresa">
+                        <label class="ubits-selection-card ubits-radio ubits-radio--md" data-opcion="toda-empresa">
                             <input type="radio" name="eval360-tipo" class="ubits-radio__input" value="toda-empresa" checked>
                             <span class="ubits-radio__circle"></span>
-                            <div class="drawer-option-card__main">
-                                <div class="drawer-option-card__row">
-                                    <span class="drawer-option-card__icon"><i class="far fa-building"></i></span>
-                                    <span class="ubits-body-md-semibold drawer-option-card__title">Toda la empresa</span>
+                            <div class="ubits-selection-card__body">
+                                <div class="ubits-selection-card__header">
+                                    <span class="ubits-selection-card__icon"><i class="far fa-building"></i></span>
+                                    <span class="ubits-body-md-semibold ubits-selection-card__title">Toda la empresa</span>
                                 </div>
-                                <p class="ubits-body-sm-regular drawer-option-card__desc">Todos los colaboradores de la empresa serán evaluados en esta evaluación 360.</p>
-                                <span class="drawer-option-card__count ubits-body-md-regular">
+                                <p class="ubits-body-sm-regular ubits-selection-card__desc">Todos los colaboradores de la empresa serán evaluados en esta evaluación 360.</p>
+                                <span class="ubits-selection-card__meta ubits-body-md-regular">
                                     <span class="ubits-body-md-bold" id="eval360-count-empresa-sel">0</span>/<span class="ubits-body-md-bold" id="eval360-count-empresa-total">0</span> seleccionados
                                 </span>
                             </div>
                         </label>
 
-                        <label class="drawer-option-card ubits-radio ubits-radio--md" data-opcion="por-colaborador">
+                        <label class="ubits-selection-card ubits-radio ubits-radio--md" data-opcion="por-colaborador">
                             <input type="radio" name="eval360-tipo" class="ubits-radio__input" value="por-colaborador">
                             <span class="ubits-radio__circle"></span>
-                            <div class="drawer-option-card__main">
-                                <div class="drawer-option-card__row">
-                                    <span class="drawer-option-card__icon"><i class="far fa-user"></i></span>
-                                    <span class="ubits-body-md-semibold drawer-option-card__title">Por colaborador</span>
+                            <div class="ubits-selection-card__body">
+                                <div class="ubits-selection-card__header">
+                                    <span class="ubits-selection-card__icon"><i class="far fa-user"></i></span>
+                                    <span class="ubits-body-md-semibold ubits-selection-card__title">Por colaborador</span>
                                 </div>
-                                <p class="ubits-body-sm-regular drawer-option-card__desc">Selecciona individualmente los colaboradores que serán evaluados.</p>
-                                <span class="drawer-option-card__count ubits-body-md-regular">
+                                <p class="ubits-body-sm-regular ubits-selection-card__desc">Selecciona individualmente los colaboradores que serán evaluados.</p>
+                                <span class="ubits-selection-card__meta ubits-body-md-regular">
                                     <span class="ubits-body-md-bold" id="eval360-count-colab-sel">0</span>/<span class="ubits-body-md-bold" id="eval360-count-colab-total">0</span> seleccionados
                                 </span>
                             </div>
                         </label>
 
-                        <label class="drawer-option-card ubits-radio ubits-radio--md" data-opcion="por-grupos">
+                        <label class="ubits-selection-card ubits-radio ubits-radio--md" data-opcion="por-grupos">
                             <input type="radio" name="eval360-tipo" class="ubits-radio__input" value="por-grupos">
                             <span class="ubits-radio__circle"></span>
-                            <div class="drawer-option-card__main">
-                                <div class="drawer-option-card__row">
-                                    <span class="drawer-option-card__icon"><i class="far fa-users"></i></span>
-                                    <span class="ubits-body-md-semibold drawer-option-card__title">Por grupos</span>
+                            <div class="ubits-selection-card__body">
+                                <div class="ubits-selection-card__header">
+                                    <span class="ubits-selection-card__icon"><i class="far fa-users"></i></span>
+                                    <span class="ubits-body-md-semibold ubits-selection-card__title">Por grupos</span>
                                 </div>
-                                <p class="ubits-body-sm-regular drawer-option-card__desc">Selecciona uno o más grupos para incluir a todos sus integrantes como evaluados.</p>
-                                <span class="drawer-option-card__count ubits-body-md-regular">
+                                <p class="ubits-body-sm-regular ubits-selection-card__desc">Selecciona uno o más grupos para incluir a todos sus integrantes como evaluados.</p>
+                                <span class="ubits-selection-card__meta ubits-body-md-regular">
                                     <span class="ubits-body-md-bold" id="eval360-count-grupos-sel">0</span>/<span class="ubits-body-md-bold" id="eval360-count-grupos-total">10</span> seleccionados
                                 </span>
                             </div>
                         </label>
 
-                        <label class="drawer-option-card ubits-radio ubits-radio--md" data-opcion="desde-archivo">
+                        <label class="ubits-selection-card ubits-radio ubits-radio--md" data-opcion="desde-archivo">
                             <input type="radio" name="eval360-tipo" class="ubits-radio__input" value="desde-archivo">
                             <span class="ubits-radio__circle"></span>
-                            <div class="drawer-option-card__main">
-                                <div class="drawer-option-card__row">
-                                    <span class="drawer-option-card__icon"><i class="far fa-file-upload"></i></span>
-                                    <span class="ubits-body-md-semibold drawer-option-card__title">Desde archivo</span>
+                            <div class="ubits-selection-card__body">
+                                <div class="ubits-selection-card__header">
+                                    <span class="ubits-selection-card__icon"><i class="far fa-file-upload"></i></span>
+                                    <span class="ubits-body-md-semibold ubits-selection-card__title">Desde archivo</span>
                                 </div>
-                                <p class="ubits-body-sm-regular drawer-option-card__desc">Sube un archivo .xlsx o .csv con los colaboradores que serán evaluados.</p>
-                                <span class="drawer-option-card__count ubits-body-md-regular">
+                                <p class="ubits-body-sm-regular ubits-selection-card__desc">Sube un archivo .xlsx o .csv con los colaboradores que serán evaluados.</p>
+                                <span class="ubits-selection-card__meta ubits-body-md-regular">
                                     <span class="ubits-body-md-bold" id="eval360-count-archivo-sel">0</span> importados
                                 </span>
                             </div>

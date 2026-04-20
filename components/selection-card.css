@@ -1,0 +1,197 @@
+/* ========================================
+   UBITS SELECTION CARD COMPONENT
+   Tarjeta interactiva para elegir una opción entre varias (radio button estilizado como card).
+   Se combina siempre con ubits-radio (radio-button.css) para el mecanismo de selección.
+
+   REQUISITOS (imports obligatorios):
+     1. radio-button.css    — mecanismo radio nativo
+     2. selection-card.css  — este archivo (layout + estados del card)
+     3. fontawesome-icons.css — para el icono del slot __icon
+
+   USO:
+   <label class="ubits-selection-card ubits-radio ubits-radio--md" data-opcion="valor">
+       <input type="radio" class="ubits-radio__input" name="grupo" value="valor">
+       <span class="ubits-radio__circle"></span>
+       <div class="ubits-selection-card__body">
+           <div class="ubits-selection-card__header">
+               <span class="ubits-selection-card__icon"><i class="far fa-building"></i></span>
+               <span class="ubits-body-md-semibold ubits-selection-card__title">Título</span>
+           </div>
+           <p class="ubits-body-sm-regular ubits-selection-card__desc">Descripción.</p>
+           <span class="ubits-selection-card__meta ubits-body-md-regular">meta info</span>
+       </div>
+   </label>
+
+   GRUPOS (contextos donde se usan varios cards juntos):
+   <div class="ubits-selection-card-group">...</div>                  — 1 columna (default)
+   <div class="ubits-selection-card-group ubits-selection-card-group--2">...</div>  — 2 col
+   <div class="ubits-selection-card-group ubits-selection-card-group--3">...</div>  — 3 col
+   <div class="ubits-selection-card-group ubits-selection-card-group--4">...</div>  — 4 col
+
+   ESTADOS:
+   - Default:   borde border-1, fondo bg-1
+   - Hover:     borde border-2 (solo cambio de borde, sin cambio de fondo)
+   - Checked:   borde accent-brand, fondo bg-2
+   - Disabled:  opacidad 0.5, cursor not-allowed
+
+   SLOT __meta (opcional):
+   Contador o dato de contexto ("3 / 10 seleccionados"), alineado abajo a la izquierda.
+   Puede tener hijos con ubits-body-md-bold para resaltar el número.
+   ======================================== */
+
+/* ── Grupo (grid de cards) ── */
+.ubits-selection-card-group {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--gap-md);
+}
+
+.ubits-selection-card-group--2 {
+    grid-template-columns: repeat(2, 1fr);
+}
+
+.ubits-selection-card-group--3 {
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.ubits-selection-card-group--4 {
+    grid-template-columns: repeat(4, 1fr);
+}
+
+/* ── Card base ── */
+.ubits-selection-card {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--gap-md);
+    padding: var(--padding-md);
+    background: var(--ubits-bg-1);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: var(--border-radius-sm);
+    cursor: pointer;
+    transition: border-color 0.2s ease, background 0.2s ease;
+    min-width: 0;
+    box-sizing: border-box;
+}
+
+/* El input radio se ocupa solo del estado interno; se oculta visualmente vía radio-button.css */
+.ubits-selection-card .ubits-radio__input {
+    order: -1; /* fuera del flujo visible pero mantiene semántica */
+}
+
+/* ── Body: contenido izquierda ── */
+.ubits-selection-card__body {
+    order: 1;
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-xs);
+    align-items: stretch;
+}
+
+/* ── Radio circle: derecha ── */
+.ubits-selection-card .ubits-radio__circle {
+    order: 2;
+    flex-shrink: 0;
+}
+
+/* ── Header: icono + título en una fila ── */
+.ubits-selection-card__header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: var(--gap-sm);
+}
+
+/* ── Icono ── */
+.ubits-selection-card__icon {
+    flex-shrink: 0;
+    width: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--ubits-fg-1-medium);
+}
+
+.ubits-selection-card__icon i {
+    font-size: 16px;
+    color: inherit;
+}
+
+/* ── Título ── */
+.ubits-selection-card__title {
+    color: var(--ubits-fg-1-high);
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* ── Descripción ── */
+.ubits-selection-card__desc {
+    color: var(--ubits-fg-1-medium);
+    margin: 0;
+    line-height: 1.5;
+}
+
+/* ── Meta (contador, fecha u otro dato de contexto) ── */
+.ubits-selection-card__meta {
+    color: var(--ubits-fg-1-medium);
+}
+
+.ubits-selection-card__meta .ubits-body-md-bold,
+.ubits-selection-card__meta strong {
+    color: var(--ubits-fg-1-high);
+}
+
+/* ════════════════════════════════
+   ESTADOS
+   ════════════════════════════════ */
+
+/* Hover: solo borde, sin cambio de fondo */
+.ubits-selection-card:not(.ubits-selection-card--disabled):hover {
+    border-color: var(--ubits-border-2);
+}
+
+/* Seleccionado (radio checked) */
+.ubits-selection-card:has(.ubits-radio__input:checked) {
+    border-color: var(--ubits-accent-brand);
+    background: var(--ubits-bg-1);
+}
+
+/* Focus visible (accesibilidad teclado) */
+.ubits-selection-card:has(.ubits-radio__input:focus-visible) {
+    outline: 2px solid var(--ubits-button-focus-ring);
+    outline-offset: 2px;
+}
+
+/* Disabled */
+.ubits-selection-card--disabled,
+.ubits-selection-card:has(.ubits-radio__input:disabled) {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+/* ════════════════════════════════
+   RESPONSIVE
+   ════════════════════════════════ */
+
+/* En tablet/móvil: grupos de 4 y 3 colapsan a 2 columnas */
+@media (max-width: 900px) {
+    .ubits-selection-card-group--4,
+    .ubits-selection-card-group--3 {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* En móvil: todos los grupos colapsan a 1 columna */
+@media (max-width: 600px) {
+    .ubits-selection-card-group--4,
+    .ubits-selection-card-group--3,
+    .ubits-selection-card-group--2 {
+        grid-template-columns: 1fr;
+    }
+}

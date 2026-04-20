@@ -24,6 +24,7 @@
     <link rel="stylesheet" href="../../components/tooltip.css">
     <link rel="stylesheet" href="../../components/input.css">
     <link rel="stylesheet" href="../../components/radio-button.css">
+    <link rel="stylesheet" href="../../components/selection-card.css">
     <link rel="stylesheet" href="../../components/calendar.css">
     <link rel="stylesheet" href="../../components/dropdown-menu.css">
     <link rel="stylesheet" href="../../components/drawer.css">
@@ -293,53 +294,53 @@
                     '<span class="ubits-stepper__label">Contenidos</span></li>' +
                     '</ol></nav>';
                 var step1Html = '<div id="drawer-wizard-step1" class="drawer-wizard-step">' +
-                    '<div class="drawer-agregar-usuarios-options">' +
-                    '<label class="drawer-option-card ubits-radio ubits-radio--md" data-opcion="toda-empresa">' +
+                    '<div class="ubits-selection-card-group ubits-selection-card-group--4">' +
+                    '<label class="ubits-selection-card ubits-radio ubits-radio--md" data-opcion="toda-empresa">' +
                     '  <input type="radio" name="tipo-agregar-usuarios" class="ubits-radio__input" value="toda-empresa">' +
                     '  <span class="ubits-radio__circle"></span>' +
-                    '  <div class="drawer-option-card__main">' +
-                    '    <div class="drawer-option-card__row">' +
-                    '      <span class="drawer-option-card__icon"><i class="far fa-building"></i></span>' +
-                    '      <span class="ubits-body-md-semibold drawer-option-card__title">Agregar toda la empresa</span>' +
+                    '  <div class="ubits-selection-card__body">' +
+                    '    <div class="ubits-selection-card__header">' +
+                    '      <span class="ubits-selection-card__icon"><i class="far fa-building"></i></span>' +
+                    '      <span class="ubits-body-md-semibold ubits-selection-card__title">Toda la empresa</span>' +
                     '    </div>' +
-                    '    <p class="ubits-body-sm-regular drawer-option-card__desc">Asigna el plan a todos los colaboradores de la empresa de una sola vez.</p>' +
-                    '    <span class="drawer-option-card__count ubits-body-md-regular"><span class="ubits-body-md-bold">0</span>/<span class="ubits-body-md-bold" data-drawer-total>0</span> seleccionados</span>' +
+                    '    <p class="ubits-body-sm-regular ubits-selection-card__desc">Asigna el plan a todos los colaboradores de la empresa de una sola vez.</p>' +
+                    '    <span class="ubits-selection-card__meta ubits-body-md-regular"><span class="ubits-body-md-bold">0</span>/<span class="ubits-body-md-bold" data-drawer-total>0</span> seleccionados</span>' +
                     '  </div>' +
                     '</label>' +
-                    '<label class="drawer-option-card ubits-radio ubits-radio--md" data-opcion="por-colaborador">' +
+                    '<label class="ubits-selection-card ubits-radio ubits-radio--md" data-opcion="por-colaborador">' +
                     '  <input type="radio" name="tipo-agregar-usuarios" class="ubits-radio__input" value="por-colaborador">' +
                     '  <span class="ubits-radio__circle"></span>' +
-                    '  <div class="drawer-option-card__main">' +
-                    '    <div class="drawer-option-card__row">' +
-                    '      <span class="drawer-option-card__icon"><i class="far fa-user"></i></span>' +
-                    '      <span class="ubits-body-md-semibold drawer-option-card__title">Agregar colaborador</span>' +
+                    '  <div class="ubits-selection-card__body">' +
+                    '    <div class="ubits-selection-card__header">' +
+                    '      <span class="ubits-selection-card__icon"><i class="far fa-user"></i></span>' +
+                    '      <span class="ubits-body-md-semibold ubits-selection-card__title">Por colaborador</span>' +
                     '    </div>' +
-                    '    <p class="ubits-body-sm-regular drawer-option-card__desc">Busca y agrega colaboradores individualmente a la lista de participantes.</p>' +
-                    '    <span class="drawer-option-card__count ubits-body-md-regular"><span class="ubits-body-md-bold">0</span>/<span class="ubits-body-md-bold" data-drawer-total>0</span> seleccionados</span>' +
+                    '    <p class="ubits-body-sm-regular ubits-selection-card__desc">Busca y agrega colaboradores individualmente a la lista de participantes.</p>' +
+                    '    <span class="ubits-selection-card__meta ubits-body-md-regular"><span class="ubits-body-md-bold">0</span>/<span class="ubits-body-md-bold" data-drawer-total>0</span> seleccionados</span>' +
                     '  </div>' +
                     '</label>' +
-                    '<label class="drawer-option-card ubits-radio ubits-radio--md" data-opcion="por-grupos">' +
+                    '<label class="ubits-selection-card ubits-radio ubits-radio--md" data-opcion="por-grupos">' +
                     '  <input type="radio" name="tipo-agregar-usuarios" class="ubits-radio__input" value="por-grupos">' +
                     '  <span class="ubits-radio__circle"></span>' +
-                    '  <div class="drawer-option-card__main">' +
-                    '    <div class="drawer-option-card__row">' +
-                    '      <span class="drawer-option-card__icon"><i class="far fa-users"></i></span>' +
-                    '      <span class="ubits-body-md-semibold drawer-option-card__title">Agregar por grupos</span>' +
+                    '  <div class="ubits-selection-card__body">' +
+                    '    <div class="ubits-selection-card__header">' +
+                    '      <span class="ubits-selection-card__icon"><i class="far fa-users"></i></span>' +
+                    '      <span class="ubits-body-md-semibold ubits-selection-card__title">Por grupos</span>' +
                     '    </div>' +
-                    '    <p class="ubits-body-sm-regular drawer-option-card__desc">Selecciona uno o más grupos para asignar el plan a sus integrantes.</p>' +
-                    '    <span class="drawer-option-card__count ubits-body-md-regular"><span class="ubits-body-md-bold">0</span>/<span class="ubits-body-md-bold">4</span> seleccionados</span>' +
+                    '    <p class="ubits-body-sm-regular ubits-selection-card__desc">Selecciona uno o más grupos para asignar el plan a sus integrantes.</p>' +
+                    '    <span class="ubits-selection-card__meta ubits-body-md-regular"><span class="ubits-body-md-bold">0</span>/<span class="ubits-body-md-bold">4</span> seleccionados</span>' +
                     '  </div>' +
                     '</label>' +
-                    '<label class="drawer-option-card ubits-radio ubits-radio--md" data-opcion="desde-archivo">' +
+                    '<label class="ubits-selection-card ubits-radio ubits-radio--md" data-opcion="desde-archivo">' +
                     '  <input type="radio" name="tipo-agregar-usuarios" class="ubits-radio__input" value="desde-archivo">' +
                     '  <span class="ubits-radio__circle"></span>' +
-                    '  <div class="drawer-option-card__main">' +
-                    '    <div class="drawer-option-card__row">' +
-                    '      <span class="drawer-option-card__icon"><i class="far fa-file-arrow-up"></i></span>' +
-                    '      <span class="ubits-body-md-semibold drawer-option-card__title">Agregar desde archivo</span>' +
+                    '  <div class="ubits-selection-card__body">' +
+                    '    <div class="ubits-selection-card__header">' +
+                    '      <span class="ubits-selection-card__icon"><i class="far fa-file-arrow-up"></i></span>' +
+                    '      <span class="ubits-body-md-semibold ubits-selection-card__title">Desde archivo</span>' +
                     '    </div>' +
-                    '    <p class="ubits-body-sm-regular drawer-option-card__desc">Importa un CSV con participantes y los contenidos asignados a cada uno.</p>' +
-                    '    <span class="drawer-option-card__count ubits-body-md-regular"><span class="ubits-body-md-bold">0</span>/<span class="ubits-body-md-bold" data-drawer-total>0</span> seleccionados</span>' +
+                    '    <p class="ubits-body-sm-regular ubits-selection-card__desc">Importa un CSV con participantes y los contenidos asignados a cada uno.</p>' +
+                    '    <span class="ubits-selection-card__meta ubits-body-md-regular"><span class="ubits-body-md-bold">0</span> importados</span>' +
                     '  </div>' +
                     '</label>' +
                     '</div>' +
@@ -1153,7 +1154,7 @@
 
                 var totalEmpresa = 0;
                 function actualizarContadorTodaEmpresa(seleccionado) {
-                    var cardEmpresa = overlay.querySelector('.drawer-option-card[data-opcion="toda-empresa"] .drawer-option-card__count');
+                    var cardEmpresa = overlay.querySelector('.ubits-selection-card[data-opcion="toda-empresa"] .ubits-selection-card__meta');
                     if (cardEmpresa) {
                         cardEmpresa.innerHTML = seleccionado
                             ? '<span class="ubits-body-md-bold">' + totalEmpresa + '</span>/<span class="ubits-body-md-bold">' + totalEmpresa + '</span> seleccionados'
@@ -1198,22 +1199,22 @@
                     return { id: id, username: getUsernameEmpleado(e), nombre: (e.nombre || '').trim(), correo: getUsernameEmpleado(e), area: (e.area || '').trim(), lider: (e.jefe || '').trim(), avatar: e.avatar || null };
                 });
                 totalEmpresa = empleadosDrawer.length;
-                var cardEmpresaCount = overlay.querySelector('.drawer-option-card[data-opcion="toda-empresa"] .drawer-option-card__count');
+                var cardEmpresaCount = overlay.querySelector('.ubits-selection-card[data-opcion="toda-empresa"] .ubits-selection-card__meta');
                 if (cardEmpresaCount) cardEmpresaCount.innerHTML = '<span class="ubits-body-md-bold">0</span>/<span class="ubits-body-md-bold">' + totalEmpresa + '</span> seleccionados';
-                var cardArchivoCount = overlay.querySelector('.drawer-option-card[data-opcion="desde-archivo"] .drawer-option-card__count');
-                if (cardArchivoCount) cardArchivoCount.innerHTML = '<span class="ubits-body-md-bold">0</span>/<span class="ubits-body-md-bold">' + totalEmpresa + '</span> seleccionados';
+                var cardArchivoCount = overlay.querySelector('.ubits-selection-card[data-opcion="desde-archivo"] .ubits-selection-card__meta');
+                if (cardArchivoCount) cardArchivoCount.innerHTML = '<span class="ubits-body-md-bold">0</span> importados';
                 var drawerColabTotal = empleadosDrawer.length;
                 var drawerGruposTotal = gruposMock.length;
                 var drawerColabTablaRef = null;
                 var drawerGruposTablaRef = null;
                 function updateDrawerCardColabCount() {
-                    var card = overlay.querySelector('.drawer-option-card[data-opcion="por-colaborador"] .drawer-option-card__count');
+                    var card = overlay.querySelector('.ubits-selection-card[data-opcion="por-colaborador"] .ubits-selection-card__meta');
                     if (!card) return;
                     var n = (drawerColabTablaRef && typeof drawerColabTablaRef.getSelectedIds === 'function') ? drawerColabTablaRef.getSelectedIds().length : 0;
                     card.innerHTML = '<span class="ubits-body-md-bold">' + n + '</span>/<span class="ubits-body-md-bold">' + drawerColabTotal + '</span> seleccionados';
                 }
                 function updateDrawerCardGruposCount() {
-                    var card = overlay.querySelector('.drawer-option-card[data-opcion="por-grupos"] .drawer-option-card__count');
+                    var card = overlay.querySelector('.ubits-selection-card[data-opcion="por-grupos"] .ubits-selection-card__meta');
                     if (!card) return;
                     var n = (drawerGruposTablaRef && typeof drawerGruposTablaRef.getSelectedIds === 'function') ? drawerGruposTablaRef.getSelectedIds().length : 0;
                     card.innerHTML = '<span class="ubits-body-md-bold">' + n + '</span>/<span class="ubits-body-md-bold">' + drawerGruposTotal + '</span> seleccionados';

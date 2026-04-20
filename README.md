@@ -229,6 +229,7 @@ Patrón documentado para reutilizarlo en otros flujos o listas similares.
 - **Seccion creator** - Bloque (anida Paginas creator): título siempre **body/md/bold** + fg alto; menú ⋮ **Editar sección** → `ubits-seccion-creator-edit-section` (modal en la pantalla); «Añadir página» si activa - **RENDERIZADO: HTML + `seccion-creator.css` + Paginas creator + `tooltip.js`; JS `seccion-creator.js` (`seccionCreatorHtml`, `initSeccionCreator`, eventos `ubits-seccion-creator-edit-section`, …)**
 - **Índice creator** - Panel izquierdo paso Recursos (interruptor de secciones, índice de secciones o lista única sin cabecera de sección, «Añadir sección» si aplica) - **RENDERIZADO: HTML + `switch.css` + `indice-creator.css` + Sección/Páginas creator; JS `indice-creator.js` tras `seccion-creator.js` (`indiceCreatorHtml`, `initIndiceCreator`, eventos `ubits-indice-creator-sections-toggle`, `ubits-indice-creator-add-section`)**
 - **Rich text editor** - Editor de texto enriquecido (contenteditable, barra de formato: negrita, listas, alineación, imagen, enlace, etc.) - **RENDERIZADO: HTML + `rich-text-editor.css` + `initRichTextEditor()` / `initAllRichTextEditors()`**
+- **Selection Card** - Tarjeta interactiva de selección exclusiva (radio button estilizado como card; icono + título + descripción + meta info opcional; grupos de 1–4 columnas; estados hover, checked, disabled, foco) - **RENDERIZADO: HTML directo.** Requiere `selection-card.css` + `radio-button.css`
 - **File Upload** - Bloque de importación de archivos con dropzone (arrastre + selección), card de archivo cargado, validación automática de tipo y peso con error inline (borde rojo + helper text), hasta 3 botones de descarga de plantillas y botón de informe de errores opcional (`--error-secondary`, oculto por defecto, para errores en el contenido procesado en servidor) - **RENDERIZADO: HTML directo + `createFileUpload()` ; CSS `file-upload.css` + `button.css`; JS `file-upload.js` (`createFileUpload()`, `initFileUpload()`, `fileUploadShowErrorReport()`, `fileUploadSetError()`, `fileUploadClearError()`)**
 - **Inline Edit** - Campo de texto editable directamente en pantalla (textarea o input; hereda cualquier clase tipográfica UBITS; placeholder diferenciado; auto-resize automático en textarea; hover/focus con fondo sutil; readonly; modo oscuro incluido) - **RENDERIZADO: HTML directo + `inline-edit.css`; JS `inline-edit.js` (`initInlineEdit()`, `autoResizeInlineEdit()`) solo para textarea**
 - **Carousel Contents** - Carruseles de contenido (navegación horizontal, flechas, responsive) - **RENDERIZADO: loadCarouselContents()**
@@ -527,6 +528,7 @@ Todos los componentes UBITS requieren imports obligatorios:
 │   ├── carousel-contents.css + carousel-contents.js
 │   ├── status-tag.css
 │   ├── radio-button.css
+│   ├── selection-card.css
 │   ├── checkbox.css
 │   ├── chip.css
 │   ├── badge-tag.css
@@ -977,6 +979,7 @@ loadCardContentCompact('mi-contenedor-compact', [
 - **`documentacion/componentes/resources-block.html`** - Documentación Resources block (Figma Learn-Components 248:6265)
 - **`documentacion/componentes/seccion-creator.html`** - Documentación Seccion creator (Figma Learn-Components 242:5368)
 - **`documentacion/componentes/rich-text-editor.html`** - Documentación Rich text editor (Creator v3)
+- **`documentacion/componentes/selection-card.html`** - Documentación Selection Card
 - **`documentacion/componentes/file-upload.html`** - Documentación del componente File Upload
 - **`documentacion/componentes/inline-edit.html`** - Documentación del componente Inline Edit
 - **`documentacion/componentes/status-tag.html`** - Documentación del componente Status Tag

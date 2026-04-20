@@ -2584,27 +2584,27 @@ function openTaskCreateDrawerV2() {
         '  <hr class="task-create-v2__divider" role="presentation" />' +
         '  <div class="task-create-v2__assign-block">' +
         '    <p class="task-create-v2__assign-heading ubits-body-sm-semibold">Asignación</p>' +
-        '    <div class="drawer-agregar-usuarios-options task-create-v2__mode-grid">' +
-        '      <label class="drawer-option-card ubits-radio ubits-radio--md">' +
+        '    <div class="ubits-selection-card-group ubits-selection-card-group--2 task-create-v2__mode-grid">' +
+        '      <label class="ubits-selection-card ubits-radio ubits-radio--md">' +
         '        <input type="radio" name="task-create-v2-assign-mode" class="ubits-radio__input" value="autocomplete">' +
         '        <span class="ubits-radio__circle"></span>' +
-        '        <div class="drawer-option-card__main">' +
-        '          <div class="drawer-option-card__row">' +
-        '            <span class="drawer-option-card__icon"><i class="far fa-search"></i></span>' +
-        '            <span class="ubits-body-md-semibold drawer-option-card__title">Agregar colaboradores</span>' +
+        '        <div class="ubits-selection-card__body">' +
+        '          <div class="ubits-selection-card__header">' +
+        '            <span class="ubits-selection-card__icon"><i class="far fa-search"></i></span>' +
+        '            <span class="ubits-body-md-semibold ubits-selection-card__title">Agregar colaboradores</span>' +
         '          </div>' +
-        '          <p class="ubits-body-sm-regular drawer-option-card__desc">Busca y agrega personas con chips.</p>' +
+        '          <p class="ubits-body-sm-regular ubits-selection-card__desc">Busca y agrega personas con chips.</p>' +
         '        </div>' +
         '      </label>' +
-        '      <label class="drawer-option-card ubits-radio ubits-radio--md">' +
+        '      <label class="ubits-selection-card ubits-radio ubits-radio--md">' +
         '        <input type="radio" name="task-create-v2-assign-mode" class="ubits-radio__input" value="csv">' +
         '        <span class="ubits-radio__circle"></span>' +
-        '        <div class="drawer-option-card__main">' +
-        '          <div class="drawer-option-card__row">' +
-        '            <span class="drawer-option-card__icon"><i class="far fa-file-arrow-up"></i></span>' +
-        '            <span class="ubits-body-md-semibold drawer-option-card__title">Importar desde archivo</span>' +
+        '        <div class="ubits-selection-card__body">' +
+        '          <div class="ubits-selection-card__header">' +
+        '            <span class="ubits-selection-card__icon"><i class="far fa-file-arrow-up"></i></span>' +
+        '            <span class="ubits-body-md-semibold ubits-selection-card__title">Importar desde archivo</span>' +
         '          </div>' +
-        '          <p class="ubits-body-sm-regular drawer-option-card__desc">Sube un CSV con los usuarios asignados (plantilla descargable).</p>' +
+        '          <p class="ubits-body-sm-regular ubits-selection-card__desc">Sube un CSV con los usuarios asignados (plantilla descargable).</p>' +
         '        </div>' +
         '      </label>' +
         '    </div>' +

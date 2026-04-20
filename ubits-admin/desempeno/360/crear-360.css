@@ -618,7 +618,6 @@
         grid-template-columns: 1fr 80px 80px;
     }
     .eval360-wizard-root { padding: 0; }
-    .drawer-agregar-usuarios-options { grid-template-columns: 1fr; }
 }
 
 /* ════════════════════════════════════════
@@ -634,97 +633,6 @@
 
 .drawer-wizard-stepper-nav {
     flex-shrink: 0;
-}
-
-/* 4 cards en fila (igual que en el drawer oficial) */
-.drawer-agregar-usuarios-options {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: var(--gap-md);
-}
-
-/* Estructura tipo Figma: contenido izquierda, radio derecha */
-.drawer-option-card {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-    gap: var(--gap-md);
-    padding: var(--padding-md);
-    background: var(--ubits-bg-1);
-    border: 1px solid var(--ubits-border-1);
-    border-radius: var(--border-radius-sm);
-    cursor: pointer;
-    transition: border-color 0.2s ease, background 0.2s ease;
-    min-width: 0;
-}
-
-.drawer-option-card .ubits-radio__input {
-    order: -1;
-}
-
-.drawer-option-card__main {
-    order: 1;
-    flex: 1;
-    min-width: 0;
-    display: flex;
-    flex-direction: column;
-    gap: var(--gap-xs);
-    align-items: stretch;
-}
-
-.drawer-option-card .ubits-radio__circle {
-    order: 2;
-    flex-shrink: 0;
-}
-
-.drawer-option-card__row {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: var(--gap-sm);
-}
-
-.drawer-option-card__icon {
-    flex-shrink: 0;
-    width: 16px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--ubits-fg-1-medium);
-}
-
-.drawer-option-card__icon i {
-    font-size: 16px;
-}
-
-.drawer-option-card__title {
-    color: var(--ubits-fg-1-high);
-}
-
-.drawer-option-card__desc {
-    color: var(--ubits-fg-1-medium);
-    margin: 0;
-    line-height: 1.5;
-}
-
-.drawer-option-card__count {
-    color: var(--ubits-fg-1-medium);
-}
-
-.drawer-option-card__count .ubits-body-md-bold {
-    color: var(--ubits-fg-1-high);
-}
-
-/* Hover: solo borde, sin cambio de fondo */
-.drawer-option-card:hover {
-    border-color: var(--ubits-border-2);
-}
-
-/* Seleccionado */
-.drawer-option-card:has(input:checked) {
-    border-color: var(--ubits-accent-brand);
-    background: var(--ubits-bg-2);
 }
 
 /* Panel archivo (step 1 inline) */
@@ -765,16 +673,7 @@
     color: var(--ubits-fg-1-medium);
 }
 
-@media (max-width: 900px) {
-    .drawer-agregar-usuarios-options {
-        grid-template-columns: repeat(2, 1fr);
-    }
-}
-
 @media (max-width: 480px) {
-    .drawer-agregar-usuarios-options {
-        grid-template-columns: 1fr;
-    }
     .eval360-wizard-root {
         padding: 0;
     }

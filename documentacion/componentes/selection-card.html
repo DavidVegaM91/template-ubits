@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="../../images/Ubits-logo-dark.svg">
+    <title>Selection Card - Tarjeta de selección | UBITS Playground</title>
+
+    <link rel="stylesheet" href="../../general-styles/ubits-colors.css">
+    <link rel="stylesheet" href="../../general-styles/styles.css">
+    <link rel="stylesheet" href="../../general-styles/fontawesome-icons.css">
+    <link rel="stylesheet" href="../../general-styles/ubits-typography.css">
+    <link rel="stylesheet" href="../../components/sub-nav.css">
+    <link rel="stylesheet" href="../../components/sidebar.css">
+    <link rel="stylesheet" href="../../components/button.css">
+    <link rel="stylesheet" href="../../components/toast.css">
+    <link rel="stylesheet" href="../../components/radio-button.css">
+    <link rel="stylesheet" href="../../components/selection-card.css">
+    <link rel="stylesheet" href="../../docs/docs-sidebar.css">
+    <link rel="stylesheet" href="../../docs/docstyles.css">
+    <style>
+        .preview-control-btn.active {
+            background: var(--ubits-accent-brand) !important;
+            color: white !important;
+            border-color: var(--ubits-accent-brand) !important;
+        }
+        .preview-control-btn.active span { color: white !important; }
+
+        /* Área de preview */
+        .sc-preview-wrap {
+            background: var(--ubits-bg-2);
+            border-radius: var(--border-radius-sm);
+            padding: var(--padding-2xl);
+        }
+
+        /* Tabla de API */
+        .sc-api-table { width: 100%; border-collapse: collapse; font-family: var(--ubits-font-family-sans); }
+        .sc-api-table th, .sc-api-table td { padding: 10px 12px; border: 1px solid var(--ubits-border-1); text-align: left; font-size: 13px; }
+        .sc-api-table th { background: var(--ubits-bg-2); color: var(--ubits-fg-1-high); font-weight: 600; }
+        .sc-api-table td { color: var(--ubits-fg-1-medium); }
+        .sc-api-table code { background: var(--ubits-bg-2); padding: 2px 6px; border-radius: 4px; font-family: monospace; font-size: 12px; color: var(--ubits-fg-1-high); }
+    </style>
+</head>
+<body class="componentes-page" data-theme="light">
+<div class="dashboard-container">
+    <div class="tooltip" id="tooltip"></div>
+
+    <main class="main-content">
+        <div id="top-nav-container"></div>
+
+        <div style="display: flex;">
+            <div id="docs-dropdown-container"></div>
+            <div id="docs-sidebar-container"></div>
+
+            <div class="components-content">
+                <div class="content-area" style="display: block; width: 100%;">
+
+                    <!-- ══ HERO ══ -->
+                    <div style="text-align: center; margin-bottom: 60px;">
+                        <h1 class="ubits-display-d2-bold" style="margin-bottom: 16px; color: var(--ubits-accent-brand);">
+                            Selection Card
+                        </h1>
+                        <p class="ubits-body-md-regular" style="max-width: 720px; margin: 0 auto; line-height: 1.6; color: var(--ubits-fg-1-medium);">
+                            Tarjeta interactiva para que el usuario elija <strong>una opción entre varias</strong>.
+                            Cada card representa una ruta o método diferente —como «Toda la empresa», «Por colaborador»,
+                            «Por grupos» o «Desde archivo»— y usa un radio button invisible que la hace accesible y semántica.
+                        </p>
+                    </div>
+
+                    <!-- ══ PREVIEW ══ -->
+                    <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: var(--border-radius-lg); margin-bottom: 40px;">
+                        <h2 class="ubits-heading-h2" style="margin-bottom: 8px; color: var(--ubits-fg-1-high);">
+                            <i class="far fa-eye" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                            Preview del componente
+                        </h2>
+                        <p class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); margin-bottom: 24px;">
+                            Haz clic en cualquier card para verla seleccionada.
+                        </p>
+
+                        <!-- Controles de columnas -->
+                        <div style="display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap;">
+                            <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" onclick="setColumns(1, this)"><span>1 columna</span></button>
+                            <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" onclick="setColumns(2, this)"><span>2 columnas</span></button>
+                            <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" onclick="setColumns(3, this)"><span>3 columnas</span></button>
+                            <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn active" onclick="setColumns(4, this)"><span>4 columnas</span></button>
+                        </div>
+
+                        <div class="sc-preview-wrap">
+                            <div class="ubits-selection-card-group ubits-selection-card-group--4" id="sc-preview-group">
+
+                                <!-- Card 1: Toda la empresa -->
+                                <label class="ubits-selection-card ubits-radio ubits-radio--md" data-opcion="toda-empresa">
+                                    <input type="radio" name="sc-preview" class="ubits-radio__input" value="toda-empresa" checked>
+                                    <span class="ubits-radio__circle"></span>
+                                    <div class="ubits-selection-card__body">
+                                        <div class="ubits-selection-card__header">
+                                            <span class="ubits-selection-card__icon"><i class="far fa-building"></i></span>
+                                            <span class="ubits-body-md-semibold ubits-selection-card__title">Toda la empresa</span>
+                                        </div>
+                                        <p class="ubits-body-sm-regular ubits-selection-card__desc">Todos los colaboradores de la empresa serán incluidos.</p>
+                                        <span class="ubits-selection-card__meta ubits-body-md-regular">
+                                            <span class="ubits-body-md-bold">48</span>/48 seleccionados
+                                        </span>
+                                    </div>
+                                </label>
+
+                                <!-- Card 2: Por colaborador -->
+                                <label class="ubits-selection-card ubits-radio ubits-radio--md" data-opcion="por-colaborador">
+                                    <input type="radio" name="sc-preview" class="ubits-radio__input" value="por-colaborador">
+                                    <span class="ubits-radio__circle"></span>
+                                    <div class="ubits-selection-card__body">
+                                        <div class="ubits-selection-card__header">
+                                            <span class="ubits-selection-card__icon"><i class="far fa-user"></i></span>
+                                            <span class="ubits-body-md-semibold ubits-selection-card__title">Por colaborador</span>
+                                        </div>
+                                        <p class="ubits-body-sm-regular ubits-selection-card__desc">Selecciona individualmente los colaboradores que participarán.</p>
+                                        <span class="ubits-selection-card__meta ubits-body-md-regular">
+                                            <span class="ubits-body-md-bold">0</span>/48 seleccionados
+                                        </span>
+                                    </div>
+                                </label>
+
+                                <!-- Card 3: Por grupos -->
+                                <label class="ubits-selection-card ubits-radio ubits-radio--md" data-opcion="por-grupos">
+                                    <input type="radio" name="sc-preview" class="ubits-radio__input" value="por-grupos">
+                                    <span class="ubits-radio__circle"></span>
+                                    <div class="ubits-selection-card__body">
+                                        <div class="ubits-selection-card__header">
+                                            <span class="ubits-selection-card__icon"><i class="far fa-users"></i></span>
+                                            <span class="ubits-body-md-semibold ubits-selection-card__title">Por grupos</span>
+                                        </div>
+                                        <p class="ubits-body-sm-regular ubits-selection-card__desc">Selecciona uno o más grupos para incluir a todos sus integrantes.</p>
+                                        <span class="ubits-selection-card__meta ubits-body-md-regular">
+                                            <span class="ubits-body-md-bold">0</span>/10 seleccionados
+                                        </span>
+                                    </div>
+                                </label>
+
+                                <!-- Card 4: Desde archivo -->
+                                <label class="ubits-selection-card ubits-radio ubits-radio--md" data-opcion="desde-archivo">
+                                    <input type="radio" name="sc-preview" class="ubits-radio__input" value="desde-archivo">
+                                    <span class="ubits-radio__circle"></span>
+                                    <div class="ubits-selection-card__body">
+                                        <div class="ubits-selection-card__header">
+                                            <span class="ubits-selection-card__icon"><i class="far fa-file-upload"></i></span>
+                                            <span class="ubits-body-md-semibold ubits-selection-card__title">Desde archivo</span>
+                                        </div>
+                                        <p class="ubits-body-sm-regular ubits-selection-card__desc">Sube un archivo CSV con la lista de personas a incluir.</p>
+                                        <span class="ubits-selection-card__meta ubits-body-md-regular">
+                                            <span class="ubits-body-md-bold">0</span> importados
+                                        </span>
+                                    </div>
+                                </label>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ══ CARACTERÍSTICAS ══ -->
+                    <div style="margin-bottom: 40px;">
+                        <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                            <i class="far fa-list-check" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                            Características generales
+                        </h2>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 16px;">
+
+                            <div style="background: var(--ubits-bg-1); border: 1px solid var(--ubits-border-1); border-radius: var(--border-radius-sm); padding: 20px;">
+                                <div style="font-size: 24px; margin-bottom: 12px; color: var(--ubits-accent-brand);"><i class="far fa-radio"></i></div>
+                                <p class="ubits-body-md-bold" style="color: var(--ubits-fg-1-high); margin-bottom: 6px;">Selección exclusiva</p>
+                                <p class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Solo un card puede estar activo a la vez dentro del mismo grupo. Usa radio buttons nativos por debajo.</p>
+                            </div>
+
+                            <div style="background: var(--ubits-bg-1); border: 1px solid var(--ubits-border-1); border-radius: var(--border-radius-sm); padding: 20px;">
+                                <div style="font-size: 24px; margin-bottom: 12px; color: var(--ubits-accent-brand);"><i class="far fa-layer-group"></i></div>
+                                <p class="ubits-body-md-bold" style="color: var(--ubits-fg-1-high); margin-bottom: 6px;">4 variantes de grid</p>
+                                <p class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">El contenedor grupo admite 1, 2, 3 o 4 columnas. Colapsa automáticamente en pantallas pequeñas.</p>
+                            </div>
+
+                            <div style="background: var(--ubits-bg-1); border: 1px solid var(--ubits-border-1); border-radius: var(--border-radius-sm); padding: 20px;">
+                                <div style="font-size: 24px; margin-bottom: 12px; color: var(--ubits-accent-brand);"><i class="far fa-universal-access"></i></div>
+                                <p class="ubits-body-md-bold" style="color: var(--ubits-fg-1-high); margin-bottom: 6px;">Accesible por teclado</p>
+                                <p class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Navegable con Tab y flechas. El foco visible es consistente con el sistema de diseño UBITS.</p>
+                            </div>
+
+                            <div style="background: var(--ubits-bg-1); border: 1px solid var(--ubits-border-1); border-radius: var(--border-radius-sm); padding: 20px;">
+                                <div style="font-size: 24px; margin-bottom: 12px; color: var(--ubits-accent-brand);"><i class="far fa-hashtag"></i></div>
+                                <p class="ubits-body-md-bold" style="color: var(--ubits-fg-1-high); margin-bottom: 6px;">Slot de meta info</p>
+                                <p class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Slot opcional <code>__meta</code> para mostrar contadores, fechas u otros datos contextuales en la parte inferior.</p>
+                            </div>
+
+                            <div style="background: var(--ubits-bg-1); border: 1px solid var(--ubits-border-1); border-radius: var(--border-radius-sm); padding: 20px;">
+                                <div style="font-size: 24px; margin-bottom: 12px; color: var(--ubits-accent-brand);"><i class="far fa-ban"></i></div>
+                                <p class="ubits-body-md-bold" style="color: var(--ubits-fg-1-high); margin-bottom: 6px;">Estado disabled</p>
+                                <p class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Clase <code>ubits-selection-card--disabled</code> o atributo <code>disabled</code> en el input reduce la opacidad e inhabilita la interacción.</p>
+                            </div>
+
+                            <div style="background: var(--ubits-bg-1); border: 1px solid var(--ubits-border-1); border-radius: var(--border-radius-sm); padding: 20px;">
+                                <div style="font-size: 24px; margin-bottom: 12px; color: var(--ubits-accent-brand);"><i class="far fa-moon"></i></div>
+                                <p class="ubits-body-md-bold" style="color: var(--ubits-fg-1-high); margin-bottom: 6px;">Modo oscuro incluido</p>
+                                <p class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Todos los tokens de color se adaptan automáticamente con <code>data-theme="dark"</code>.</p>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- ══ PROMPTS ÚTILES ══ -->
+                    <div style="margin-bottom: 40px;">
+                        <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                            <i class="far fa-comment-dots" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                            Prompts útiles
+                        </h2>
+
+                        <div style="background: var(--ubits-bg-1); border: 1px solid var(--ubits-border-1); border-radius: var(--border-radius-sm); padding: 20px; margin-bottom: 16px;">
+                            <p class="ubits-body-md-bold" style="color: var(--ubits-fg-1-high); margin-bottom: 12px;">Insertar 4 selection cards en la vista [nombre de la vista]</p>
+                            <pre style="background: var(--ubits-bg-2); border-radius: var(--border-radius-xs); padding: 16px; overflow-x: auto; margin: 0;"><code id="prompt-1" style="font-family: monospace; font-size: 13px; color: var(--ubits-fg-1-medium);">Inserta un grupo de 4 selection cards (ubits-selection-card) en [ubicación], usando el CSS selection-card.css y radio-button.css. Los 4 tipos son: [Opción A], [Opción B], [Opción C], [Opción D]. Cada card tiene icono [ícono], título y descripción breve. Agrupa los 4 en un contenedor ubits-selection-card-group ubits-selection-card-group--4 y usa el mismo name de radio para que sean mutuamente excluyentes.</code></pre>
+                            <button class="ubits-button ubits-button--tertiary ubits-button--sm" style="margin-top: 12px;" onclick="copyPrompt('prompt-1')">
+                                <i class="far fa-copy"></i><span>Copiar</span>
+                            </button>
+                        </div>
+
+                        <div style="background: var(--ubits-bg-1); border: 1px solid var(--ubits-border-1); border-radius: var(--border-radius-sm); padding: 20px; margin-bottom: 16px;">
+                            <p class="ubits-body-md-bold" style="color: var(--ubits-fg-1-high); margin-bottom: 12px;">Cambiar la cantidad de columnas del grupo</p>
+                            <pre style="background: var(--ubits-bg-2); border-radius: var(--border-radius-xs); padding: 16px; overflow-x: auto; margin: 0;"><code id="prompt-2" style="font-family: monospace; font-size: 13px; color: var(--ubits-fg-1-medium);">Cambia el contenedor de selection cards en [ubicación] a [2 / 3 / 4] columnas cambiando la clase del grupo a ubits-selection-card-group--[2/3/4].</code></pre>
+                            <button class="ubits-button ubits-button--tertiary ubits-button--sm" style="margin-top: 12px;" onclick="copyPrompt('prompt-2')">
+                                <i class="far fa-copy"></i><span>Copiar</span>
+                            </button>
+                        </div>
+
+                        <div style="background: var(--ubits-bg-1); border: 1px solid var(--ubits-border-1); border-radius: var(--border-radius-sm); padding: 20px; margin-bottom: 16px;">
+                            <p class="ubits-body-md-bold" style="color: var(--ubits-fg-1-high); margin-bottom: 12px;">Añadir un slot de contador al card</p>
+                            <pre style="background: var(--ubits-bg-2); border-radius: var(--border-radius-xs); padding: 16px; overflow-x: auto; margin: 0;"><code id="prompt-3" style="font-family: monospace; font-size: 13px; color: var(--ubits-fg-1-medium);">Al selection card de [nombre] agrégale un slot de meta info al final del __body con el texto "[N] seleccionados", donde N es un span con clase ubits-body-md-bold y se actualiza dinámicamente con JS cuando cambia la selección en la tabla/lista asociada.</code></pre>
+                            <button class="ubits-button ubits-button--tertiary ubits-button--sm" style="margin-top: 12px;" onclick="copyPrompt('prompt-3')">
+                                <i class="far fa-copy"></i><span>Copiar</span>
+                            </button>
+                        </div>
+
+                        <div class="ubits-alert ubits-alert--info ubits-alert--no-close" style="margin-top: 8px;">
+                            <div class="ubits-alert__icon"><i class="far fa-circle-info"></i></div>
+                            <div class="ubits-alert__content">
+                                <div class="ubits-alert__text">Reemplaza los textos entre [corchetes] con los valores específicos de tu pantalla antes de enviar el prompt.</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ══ DOCUMENTACIÓN TÉCNICA (colapsable) ══ -->
+                    <div style="background: var(--ubits-bg-1); border: 1px solid var(--ubits-border-1); border-radius: var(--border-radius-sm); overflow: hidden; margin-bottom: 40px;">
+                        <div style="padding: 20px 24px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; gap: 16px;" onclick="toggleTechnicalDocs()">
+                            <div>
+                                <p class="ubits-body-md-bold" style="color: var(--ubits-fg-1-high); margin: 0;">Documentación técnica</p>
+                                <p class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); margin: 4px 0 0;">Estructura HTML, clases, imports y API del componente</p>
+                            </div>
+                            <button class="ubits-button ubits-button--secondary ubits-button--sm" id="tech-docs-btn" style="white-space: nowrap; flex-shrink: 0;">
+                                <i class="far fa-chevron-down"></i><span>Mostrar</span>
+                            </button>
+                        </div>
+
+                        <div id="technical-docs-content" style="display: none; padding: 0 24px 24px; border-top: 1px solid var(--ubits-border-1);">
+
+                            <!-- Estructura HTML -->
+                            <div style="margin-top: 24px; margin-bottom: 24px;">
+                                <p class="ubits-body-md-bold" style="color: var(--ubits-fg-1-high); margin-bottom: 12px;">Estructura HTML — card completo</p>
+                                <pre style="background: var(--ubits-bg-2); border-radius: var(--border-radius-xs); padding: 16px; overflow-x: auto; margin: 0;"><code id="code-html" style="font-family: monospace; font-size: 12px; color: var(--ubits-fg-1-medium);">&lt;!-- Grupo contenedor (grid) --&gt;
+&lt;div class="ubits-selection-card-group ubits-selection-card-group--4"&gt;
+
+    &lt;label class="ubits-selection-card ubits-radio ubits-radio--md" data-opcion="toda-empresa"&gt;
+        &lt;input type="radio" class="ubits-radio__input" name="mi-grupo" value="toda-empresa" checked&gt;
+        &lt;span class="ubits-radio__circle"&gt;&lt;/span&gt;
+        &lt;div class="ubits-selection-card__body"&gt;
+            &lt;div class="ubits-selection-card__header"&gt;
+                &lt;span class="ubits-selection-card__icon"&gt;&lt;i class="far fa-building"&gt;&lt;/i&gt;&lt;/span&gt;
+                &lt;span class="ubits-body-md-semibold ubits-selection-card__title"&gt;Toda la empresa&lt;/span&gt;
+            &lt;/div&gt;
+            &lt;p class="ubits-body-sm-regular ubits-selection-card__desc"&gt;Descripción breve de la opción.&lt;/p&gt;
+            &lt;!-- __meta es opcional --&gt;
+            &lt;span class="ubits-selection-card__meta ubits-body-md-regular"&gt;
+                &lt;span class="ubits-body-md-bold"&gt;48&lt;/span&gt;/48 seleccionados
+            &lt;/span&gt;
+        &lt;/div&gt;
+    &lt;/label&gt;
+
+    &lt;!-- Repetir para cada opción del grupo --&gt;
+
+&lt;/div&gt;</code></pre>
+                                <button class="ubits-button ubits-button--tertiary ubits-button--sm" style="margin-top: 10px;" onclick="copyPrompt('code-html')">
+                                    <i class="far fa-copy"></i><span>Copiar</span>
+                                </button>
+                            </div>
+
+                            <!-- Clases disponibles -->
+                            <div style="margin-bottom: 24px;">
+                                <p class="ubits-body-md-bold" style="color: var(--ubits-fg-1-high); margin-bottom: 12px;">Clases disponibles</p>
+                                <table class="sc-api-table">
+                                    <thead>
+                                        <tr><th>Clase</th><th>Tipo</th><th>Descripción</th></tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr><td><code>ubits-selection-card</code></td><td>Base</td><td>Card base. Siempre se combina con <code>ubits-radio</code> y <code>ubits-radio--md</code></td></tr>
+                                        <tr><td><code>ubits-selection-card--disabled</code></td><td>Modificador</td><td>Opacidad 0.5 y <code>pointer-events: none</code>. Alternativa: <code>disabled</code> en el <code>&lt;input&gt;</code></td></tr>
+                                        <tr><td><code>ubits-selection-card-group</code></td><td>Contenedor</td><td>Grid base (1 columna). Agrupa las cards</td></tr>
+                                        <tr><td><code>ubits-selection-card-group--2</code></td><td>Grid mod.</td><td>2 columnas</td></tr>
+                                        <tr><td><code>ubits-selection-card-group--3</code></td><td>Grid mod.</td><td>3 columnas → colapsa a 2 en &lt;900px</td></tr>
+                                        <tr><td><code>ubits-selection-card-group--4</code></td><td>Grid mod.</td><td>4 columnas → colapsa a 2 en &lt;900px, a 1 en &lt;600px</td></tr>
+                                        <tr><td><code>ubits-selection-card__body</code></td><td>Slot</td><td>Contenido izquierda del card (columna flex)</td></tr>
+                                        <tr><td><code>ubits-selection-card__header</code></td><td>Slot</td><td>Fila icono + título</td></tr>
+                                        <tr><td><code>ubits-selection-card__icon</code></td><td>Slot</td><td>Wrapper del icono FontAwesome. 16px, color fg-1-medium</td></tr>
+                                        <tr><td><code>ubits-selection-card__title</code></td><td>Slot</td><td>Nombre de la opción. Usar con <code>ubits-body-md-semibold</code></td></tr>
+                                        <tr><td><code>ubits-selection-card__desc</code></td><td>Slot</td><td>Descripción breve. Usar con <code>ubits-body-sm-regular</code></td></tr>
+                                        <tr><td><code>ubits-selection-card__meta</code></td><td>Slot (opcional)</td><td>Contador o dato contextual inferior. Usar con <code>ubits-body-md-regular</code></td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <!-- Requisitos -->
+                            <div style="margin-bottom: 24px;">
+                                <p class="ubits-body-md-bold" style="color: var(--ubits-fg-1-high); margin-bottom: 12px;">Imports obligatorios</p>
+                                <pre style="background: var(--ubits-bg-2); border-radius: var(--border-radius-xs); padding: 16px; overflow-x: auto; margin: 0;"><code id="code-imports" style="font-family: monospace; font-size: 12px; color: var(--ubits-fg-1-medium);">&lt;!-- CSS --&gt;
+&lt;link rel="stylesheet" href="../../components/radio-button.css"&gt;
+&lt;link rel="stylesheet" href="../../components/selection-card.css"&gt;
+&lt;link rel="stylesheet" href="../../general-styles/fontawesome-icons.css"&gt;</code></pre>
+                                <button class="ubits-button ubits-button--tertiary ubits-button--sm" style="margin-top: 10px;" onclick="copyPrompt('code-imports')">
+                                    <i class="far fa-copy"></i><span>Copiar</span>
+                                </button>
+                                <p class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); margin-top: 12px;">No hay JS propio del componente. El mecanismo de selección es nativo del navegador (radio buttons HTML agrupados por <code>name</code>).</p>
+                            </div>
+
+                            <!-- Contextos de uso -->
+                            <div>
+                                <p class="ubits-body-md-bold" style="color: var(--ubits-fg-1-high); margin-bottom: 8px;">Contextos donde se usa en el playground</p>
+                                <ul style="margin: 0; padding-left: 20px;">
+                                    <li class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); margin-bottom: 6px;"><code>ubits-admin/desempeno/360/crear-360.html#evaluados</code> — elegir el método de asignación de evaluados (4 opciones).</li>
+                                    <li class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Drawer «Agregar asignación» en <code>ubits-colaborador/lms-creator/crear-plan-contenidos.html</code> — elegir el tipo de asignación de un plan de formación.</li>
+                                </ul>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div><!-- /content-area -->
+            </div><!-- /components-content -->
+        </div>
+    </main>
+</div>
+
+<div id="ubits-toast-container"></div>
+
+<script src="../../components/tooltip.js"></script>
+<script src="../../components/sub-nav.js"></script>
+<script src="../../components/sidebar.js"></script>
+<script src="../../components/toast.js"></script>
+<script src="../../docs/docs-sidebar.js"></script>
+<script src="../../script.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    loadSubNav('top-nav-container', 'documentacion');
+    loadSidebar('ninguno');
+    loadDocsSidebar('selection-card');
+    if (typeof initTooltip === 'function') initTooltip('[data-tooltip]');
+});
+
+function setColumns(n, btn) {
+    var group = document.getElementById('sc-preview-group');
+    group.className = 'ubits-selection-card-group' + (n > 1 ? ' ubits-selection-card-group--' + n : '');
+    document.querySelectorAll('.preview-control-btn').forEach(function (b) { b.classList.remove('active'); });
+    btn.classList.add('active');
+}
+
+function toggleTechnicalDocs() {
+    var content = document.getElementById('technical-docs-content');
+    var btn     = document.getElementById('tech-docs-btn');
+    var open    = content.style.display !== 'none';
+    content.style.display = open ? 'none' : 'block';
+    btn.querySelector('i').className  = open ? 'far fa-chevron-down' : 'far fa-chevron-up';
+    btn.querySelector('span').textContent = open ? 'Mostrar' : 'Ocultar';
+}
+
+function copyPrompt(id) {
+    var el   = document.getElementById(id);
+    var text = el ? el.textContent : '';
+    if (!text) return;
+    navigator.clipboard.writeText(text).then(function () {
+        showToast('success', 'Copiado al portapapeles');
+    }).catch(function () {
+        showToast('error', 'No se pudo copiar');
+    });
+}
+</script>
+</body>
+</html>
