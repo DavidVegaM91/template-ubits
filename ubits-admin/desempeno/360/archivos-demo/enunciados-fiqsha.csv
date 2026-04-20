@@ -1,31 +1,31 @@
 competencia,enunciado,tipo_respuesta,ascendente,descendente,paralela,cliente,autoevaluacion
-Liderazgo transformador,"Define una visión clara del trabajo y la comunica de forma inspiradora a su equipo.",1-5 Desempeño,1,1,0,0,1
-Liderazgo transformador,"Reconoce los logros individuales y colectivos de manera oportuna y significativa.",1-5 Regularidad,1,1,1,0,0
-Liderazgo transformador,"Delega responsabilidades considerando las fortalezas y el plan de desarrollo de cada persona.",1-5 Desempeño,1,1,0,0,1
+Liderazgo transformador,"Define una visión clara del trabajo y la comunica de forma inspiradora a su equipo.",De 1 a 5,1,1,0,0,1
+Liderazgo transformador,"Reconoce los logros individuales y colectivos de manera oportuna y significativa.",De 1 a 10,1,1,1,0,0
+Liderazgo transformador,"Delega responsabilidades considerando las fortalezas y el plan de desarrollo de cada persona.",De 1 a 5,1,1,0,0,1
 Liderazgo transformador,"¿Qué aspecto del liderazgo de esta persona tiene mayor impacto positivo en el equipo?",Respuesta abierta - obligatoria,1,1,1,0,0
-Pensamiento analítico,"Utiliza datos y métricas para sustentar sus propuestas y decisiones.",1-5 Desempeño,0,1,1,0,1
-Pensamiento analítico,"Identifica las causas raíz de los problemas antes de proponer soluciones.",1-5 Regularidad,0,1,1,0,1
-Pensamiento analítico,"Interpreta correctamente la información disponible y extrae conclusiones accionables.",1-5 Desempeño,0,1,1,0,1
+Pensamiento analítico,"Utiliza datos y métricas para sustentar sus propuestas y decisiones.",De 1 a 5,0,1,1,0,1
+Pensamiento analítico,"Identifica las causas raíz de los problemas antes de proponer soluciones.",De 1 a 10,0,1,1,0,1
+Pensamiento analítico,"Interpreta correctamente la información disponible y extrae conclusiones accionables.",De 1 a 100,0,1,1,0,1
 Pensamiento analítico,"Describe una situación reciente en la que esta persona utilizó el análisis de datos para resolver un problema.",Respuesta abierta,0,1,1,0,0
-Colaboración efectiva,"Contribuye activamente a los proyectos del equipo asumiendo responsabilidad por los resultados colectivos.",1-5 Desempeño,1,1,1,0,1
-Colaboración efectiva,"Comparte información y conocimiento relevante con sus compañeros de forma proactiva.",1-5 Regularidad,0,1,1,0,1
-Colaboración efectiva,"Resuelve los desacuerdos con sus compañeros de manera constructiva y orientada a soluciones.",1-5 Desempeño,0,0,1,0,1
+Colaboración efectiva,"Contribuye activamente a los proyectos del equipo asumiendo responsabilidad por los resultados colectivos.",De 1 a 5,1,1,1,0,1
+Colaboración efectiva,"Comparte información y conocimiento relevante con sus compañeros de forma proactiva.",De 1 a 10,0,1,1,0,1
+Colaboración efectiva,"Resuelve los desacuerdos con sus compañeros de manera constructiva y orientada a soluciones.",De 1 a 5,0,0,1,0,1
 Colaboración efectiva,"¿En qué situación esta persona demostró ser un referente de trabajo en equipo?",Respuesta abierta,1,1,1,0,0
-Comunicación asertiva,"Expresa sus ideas de forma clara y estructurada adaptándose al contexto y la audiencia.",1-5 Desempeño,1,1,1,1,1
-Comunicación asertiva,"Escucha activamente a sus interlocutores sin interrumpir y valida lo que comprende.",1-5 Regularidad,1,1,1,1,1
-Comunicación asertiva,"Da y recibe retroalimentación de forma constructiva y con apertura.",1-5 Desempeño,1,1,1,0,1
+Comunicación asertiva,"Expresa sus ideas de forma clara y estructurada adaptándose al contexto y la audiencia.",De 1 a 5,1,1,1,1,1
+Comunicación asertiva,"Escucha activamente a sus interlocutores sin interrumpir y valida lo que comprende.",De 1 a 10,1,1,1,1,1
+Comunicación asertiva,"Da y recibe retroalimentación de forma constructiva y con apertura.",De 1 a 5,1,1,1,0,1
 Comunicación asertiva,"¿Hay algún aspecto de la comunicación de esta persona que consideras que podría mejorar?",Respuesta abierta,1,1,1,1,0
-Orientación al cliente,"Entiende las necesidades del cliente y propone soluciones alineadas a sus expectativas.",1-5 Desempeño,0,1,0,1,1
-Orientación al cliente,"Responde con rapidez y efectividad a las solicitudes y quejas de los clientes.",1-5 Regularidad,0,1,0,1,0
-Orientación al cliente,"Anticipa necesidades del cliente antes de que sean explícitamente solicitadas.",1-5 Desempeño,0,1,0,1,1
+Orientación al cliente,"Entiende las necesidades del cliente y propone soluciones alineadas a sus expectativas.",De 1 a 5,0,1,0,1,1
+Orientación al cliente,"Responde con rapidez y efectividad a las solicitudes y quejas de los clientes.",De 1 a 10,0,1,0,1,0
+Orientación al cliente,"Anticipa necesidades del cliente antes de que sean explícitamente solicitadas.",De 1 a 5,0,1,0,1,1
 Orientación al cliente,"Describe cómo esta persona ha generado valor concreto para un cliente en los últimos meses.",Respuesta abierta - obligatoria,0,1,0,1,0
-Innovación y creatividad,"Propone ideas nuevas y mejoras concretas a los procesos y productos del equipo.",1-5 Regularidad,1,1,1,0,1
-Innovación y creatividad,"Experimenta con nuevos enfoques y aprende de los resultados incluso cuando no son los esperados.",1-5 Desempeño,0,1,1,0,1
-Innovación y creatividad,"Cuestiona el statu quo y plantea alternativas que mejoran la forma de trabajar.",1-5 Regularidad,1,1,1,0,1
-Gestión del tiempo y productividad,"Prioriza sus tareas según impacto y urgencia cumpliendo con los plazos establecidos.",1-5 Desempeño,0,1,0,0,1
-Gestión del tiempo y productividad,"Organiza su trabajo de forma eficiente evitando reprocesos y tiempos muertos.",1-5 Regularidad,0,1,0,0,1
-Gestión del tiempo y productividad,"Avisa con anticipación cuando un plazo está en riesgo y propone alternativas viables.",1-5 Regularidad,1,1,0,0,0
-Adaptabilidad al cambio,"Se ajusta con rapidez a nuevas prioridades o cambios en los proyectos sin perder efectividad.",1-5 Desempeño,1,1,1,0,1
-Adaptabilidad al cambio,"Adopta nuevas herramientas o metodologías con disposición positiva y curva de aprendizaje ágil.",1-5 Regularidad,0,1,1,0,1
-Adaptabilidad al cambio,"Mantiene su rendimiento y actitud positiva en situaciones de incertidumbre o cambio organizacional.",1-5 Desempeño,1,1,1,0,1
+Innovación y creatividad,"Propone ideas nuevas y mejoras concretas a los procesos y productos del equipo.",De 1 a 10,1,1,1,0,1
+Innovación y creatividad,"Experimenta con nuevos enfoques y aprende de los resultados incluso cuando no son los esperados.",De 1 a 5,0,1,1,0,1
+Innovación y creatividad,"Cuestiona el statu quo y plantea alternativas que mejoran la forma de trabajar.",De 1 a 10,1,1,1,0,1
+Gestión del tiempo y productividad,"Prioriza sus tareas según impacto y urgencia cumpliendo con los plazos establecidos.",De 1 a 5,0,1,0,0,1
+Gestión del tiempo y productividad,"Organiza su trabajo de forma eficiente evitando reprocesos y tiempos muertos.",De 1 a 10,0,1,0,0,1
+Gestión del tiempo y productividad,"Avisa con anticipación cuando un plazo está en riesgo y propone alternativas viables.",De 1 a 10,1,1,0,0,0
+Adaptabilidad al cambio,"Se ajusta con rapidez a nuevas prioridades o cambios en los proyectos sin perder efectividad.",De 1 a 5,1,1,1,0,1
+Adaptabilidad al cambio,"Adopta nuevas herramientas o metodologías con disposición positiva y curva de aprendizaje ágil.",De 1 a 10,0,1,1,0,1
+Adaptabilidad al cambio,"Mantiene su rendimiento y actitud positiva en situaciones de incertidumbre o cambio organizacional.",De 1 a 5,1,1,1,0,1
 Adaptabilidad al cambio,"¿Cómo reaccionó esta persona ante un cambio importante en el equipo o la empresa?",Respuesta abierta,1,1,1,0,0

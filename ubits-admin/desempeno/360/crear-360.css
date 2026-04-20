@@ -490,6 +490,13 @@
 .comp360-enum-escala-option {
     display: flex;
     align-items: flex-start;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.comp360-enum-escala-option .ubits-radio__label {
+    flex: 1;
+    min-width: 0;
 }
 
 /* ════════════════════════════════════════
@@ -664,6 +671,15 @@
 
 .res360-param-name,
 .res360-param-num { min-width: 0; }
+
+/* Desde / último Hasta: relleno automático, estilo solo lectura */
+.res360-param-num--derived .ubits-input,
+.res360-param-num--derived .ubits-input:disabled {
+    background: var(--ubits-bg-3);
+    border-color: var(--ubits-border-2);
+    color: var(--ubits-fg-1-medium);
+    cursor: default;
+}
 
 /* columna de toggles */
 .res360-toggles-col {

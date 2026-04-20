@@ -15,13 +15,13 @@ Documento de referencia para implementar o extender el flujo de **creación de u
 | Tipos de evaluación, competencias base, helper `addEvaluacion` | `bd-master/bd-evaluaciones-360.js` |
 | Colaboradores (tablas y validación de archivos) | `bd-master/bd-master-colaboradores.js` |
 | Listado de evaluaciones (destino al activar / salir) | `ubits-admin/desempeno/360/admin-360.html` |
-| Archivos demo (CSV de ejemplo) | `ubits-admin/desempeno/360/archivos-demo/` |
+| Archivo demo CSV de enunciados (ejemplo Fiqsha) | `ubits-admin/desempeno/360/archivos-demo/enunciados-fiqsha.csv` |
 
 ---
 
 ## Visión general del flujo
 
-El flujo vive en una **página inmersiva dedicada** (`crear-360.html`). Funciona como un **hub con cuatro secciones independientes**: el usuario guarda primero los datos básicos y luego configura cada sección en sub-vistas. La evaluación solo se puede activar cuando las **cuatro secciones** están completadas.
+El flujo vive en una **página inmersiva dedicada** (`crear-360.html`). Funciona como un **hub con cuatro secciones independientes**: el usuario confirma primero los datos básicos (nombre y fechas), configura **Tipo de evaluación** y, solo después de **guardar** esa sección (`draft.checks.tipo === true`), se desbloquean las tarjetas de **Competencias y enunciados**, **Evaluados** y **Configuración de resultados**. La evaluación solo se puede activar cuando las **cuatro secciones** están completadas.
 
 ### Layout
 
@@ -101,12 +101,14 @@ Tres campos obligatorios creados con `createInput()`:
 
 Al hacer clic en **«Confirmar»** (`#crear360-btn-save-inline`) se ejecuta `guardarEvaluacion()`:
 - Si hay errores: inputs marcados con `setState('invalid')` y mensaje de error debajo (`#crear360-input-error`).
-- Si es válido: `draft.guardado = true`, se oculta el botón «Confirmar», se desbloquean las cuatro tarjetas.
+- Si es válido: `draft.guardado = true`, se oculta el botón «Confirmar», y se desbloquea **únicamente la tarjeta «Tipo de evaluación»**. Las otras tres permanecen bloqueadas hasta que el usuario entre a `#tipo`, ajuste activación/pesos y pulse **Guardar** en esa sub-vista (`saveTipo()` → `draft.checks.tipo = true`).
 
 ### Estado: bloqueado vs desbloqueado
 
-- **Bloqueado** (`crear360-option-card--locked`): tarjetas con `tabindex="-1"`, no clicables. Aplica mientras `draft.guardado === false`.
-- **Desbloqueado**: se quita `--locked` y el usuario puede entrar a cada sección.
+- **Bloqueado** (`crear360-option-card--locked`): tarjetas con `tabindex="-1"`, no clicables.
+  - Mientras `draft.guardado === false`: las **cuatro** tarjetas de configuración están bloqueadas.
+  - Mientras `draft.guardado === true` y `draft.checks.tipo === false`: solo **Tipo de evaluación** está desbloqueado; **Competencias y enunciados**, **Evaluados** y **Configuración de resultados** siguen bloqueadas.
+- **Desbloqueado** (las cuatro navegables): `draft.guardado === true` y `draft.checks.tipo === true`. Se quita `--locked` en cada tarjeta accesible y `tabindex="0"`.
 - **Completado** (`crear360-option-card--done`): borde verde e ícono `fa-circle-check` cuando la sección cumple los requisitos (en **Competencias**, solo si además cada tipo activo en `#tipo` tiene al menos un enunciado en competencias seleccionadas).
 - **Competencias incompleta** (`crear360-option-card--incomplete`): hay al menos una competencia seleccionada en `draft.competencias` pero falta enunciado en algún tipo activo → borde rojo, **sin** check. `draft.checks.competencias` permanece `false` hasta completar.
 
@@ -126,7 +128,7 @@ Cuando una tarjeta del hub está en estado **completado** (`--done`), el texto q
 - El resumen sustituye a la descripción **solo** cuando la tarjeta está completada; en estados bloqueado o desbloqueado sin completar se mantiene el copy introductorio habitual.
 - En **Competencias y enunciados**, el aviso en rojo con icono aplica **únicamente** a los tipos con conteo 0; el resto de tipos se muestran con estilo neutro o de éxito según el sistema de diseño.
 
-**Implementación en código:** `updateHubChecksUI()` recalcula `draft.checks.competencias = hubCompetenciasCompleto()` en cada visita al hub. `refreshHubCardDescriptions()` (llamada al final de `updateHubChecksUI()`) actualiza los `<p class="crear360-hub-card-desc">`: en competencias muestra el resumen «Enunciados:…» tanto si está completo como si está incompleto (con avisos en rojo). En modo **Evaluados** por tabla (`por-colaborador`), el conteo por tipo usa el mismo número de evaluados seleccionados para cada tipo activo; en modo **libre** con `asignaciones[]`, los conteos se obtienen por tipo a partir de las filas importadas.
+**Implementación en código:** `updateHubChecksUI()` recalcula `draft.checks.competencias = hubCompetenciasCompleto()` en cada visita al hub y aplica el desbloqueo progresivo de tarjetas según `draft.guardado` y `draft.checks.tipo`. `showView()` usa `hubSubVistaPermitida(viewId)` para impedir abrir por URL (`#competencias`, etc.) una sección aún no permitida (muestra toast y fuerza `#hub` con `replaceState`). `refreshHubCardDescriptions()` (llamada al final de `updateHubChecksUI()`) actualiza los `<p class="crear360-hub-card-desc">`: en competencias muestra el resumen «Enunciados:…» tanto si está completo como si está incompleto (con avisos en rojo). En modo **Evaluados** por tabla (`por-colaborador`), el conteo por tipo usa el mismo número de evaluados seleccionados para cada tipo activo; en modo **libre** con `asignaciones[]`, los conteos se obtienen por tipo a partir de las filas importadas.
 
 ### Edición después de confirmar
 
@@ -198,7 +200,7 @@ El input de peso está **deshabilitado** cuando el tipo está inactivo. Las tarj
 
 Habilitado solo si: hay al menos un tipo activo **y** la suma es exactamente 100.
 
-`saveTipo()` escribe en `draft.tipo = [{id, activo, peso}, ...]` y pone `draft.checks.tipo = true`.
+`saveTipo()` escribe en `draft.tipo = [{id, activo, peso}, ...]` y pone `draft.checks.tipo = true`. Al volver al hub (`showView('hub')`), `updateHubChecksUI()` desbloquea las tarjetas de Competencias, Evaluados y Configuración de resultados.
 
 ---
 
@@ -215,7 +217,7 @@ El administrador crea desde cero las competencias que serán evaluadas, y para c
 ```js
 _competencias = [
     {
-        id:          'comp-<timestamp>',  // o 'comp-imp-<timestamp>-<i>'
+        id:          'comp-<timestamp>',
         nombre:      'Trabajo en equipo',
         descripcion: 'Breve descripción de la competencia.',
         seleccionada: true,
@@ -225,7 +227,7 @@ _competencias = [
                 id:              'en-<timestamp>',
                 texto:           'Colabora activamente...',
                 tipoRespuesta:   'calificacion' | 'abierta',
-                escala:          'desempeno' | 'regularidad' | null,
+                escala:          'regularidad' | 'desempeno' | '5' | '10' | '100' | null,  // calificación: cómo ve el evaluado la escala 1–5 (regularidad/desempeño); 5/10/100 solo por import CSV numérico
                 obligatoria:     false | true,
                 tiposEvaluacion: ['ascendente', 'paralela', ...]  // subconjunto de TIPO_IDS
             }
@@ -240,17 +242,14 @@ Cuando `_competencias.length === 0` se muestra el empty state (`loadEmptyState`)
 - Icono: `fa-clipboard-list`
 - Título: «Añade una competencia»
 - Descripción breve
-- Botón secundario: **«Añadir una por una»** → abre `openComp360Modal()`
-- Botón primario: **«Añadir desde archivo»** → abre `openComp360ImportDrawer()`
+- Botón primario único: **«Añadir competencia»** → `openComp360Modal()`
 - El footer sub-vistas se **oculta** en este estado.
 
 ### Modo lista (con al menos 1 competencia)
 
 Header de la lista con dos botones:
 - **«Añadir enunciados desde archivo»** → `openComp360ImportEnunciadosDrawer()`
-- **«Añadir competencia»** → abre un dropdown (`comp360AddDropdown`) con dos opciones:
-  - «Añadir una por una» → `openComp360Modal()`
-  - «Añadir desde archivo» → `openComp360ImportDrawer()`
+- **«Añadir competencia»** → `openComp360Modal()` (misma acción que en el empty state; ya no hay dropdown ni importación masiva de competencias)
 
 Cada ítem de competencia (`comp360-item`) muestra:
 - Nombre en `ubits-body-md-bold`
@@ -274,31 +273,16 @@ Para una competencia específica (por índice). Campos:
 | Campo | Tipo | Notas |
 |-------|------|-------|
 | Enunciado | `textarea` | Obligatorio |
-| Tipo de respuesta | `select` | Opciones: «Calificación del 1 al 5» / «Respuesta abierta» |
-| Sub-opciones calificación | `select` (condicional) | Desempeño / Regularidad |
-| Sub-opciones respuesta abierta | `select` (condicional) | Opcional / Obligatoria |
+| Tipo de respuesta | `select` (`createInput`) | «Calificación del 1 al 5» / «Respuesta abierta» |
+| Cómo se muestra la calificación (solo si 1–5) | radios `ubits-radio` | **Regularidad** (Nunca → Siempre) o **Desempeño** (Por mejorar → Excelente); define la etiqueta que ve el evaluado. Se guarda `enunciado.escala` como `'regularidad'` o `'desempeno'`. Independiente de la escala numérica de **Configuración de resultados** (admin). |
+| Obligatoria (solo si abierta) | checkbox | Por defecto marcada |
 | Tipos de evaluación activos | switches `ubits-switch--md` | Uno por tipo activo en `_tipos`; todos marcados por defecto |
 
 Los tipos del modal se leen de `_tipos` (en memoria) → `draft.tipo` → BD completa (fallback).
 
-Botón «Añadir» habilitado cuando el enunciado tiene texto. Al confirmar, el enunciado se añade al array `enunciados[]` de la competencia y se re-renderiza la vista.
+Botón «Añadir» habilitado cuando hay texto de enunciado, tipo de respuesta elegido y, si es calificación 1–5, una opción Regularidad/Desempeño seleccionada. Al confirmar, el enunciado se añade al array `enunciados[]` de la competencia y se re-renderiza la vista.
 
-### Drawer: Añadir competencias desde archivo (`openComp360ImportDrawer`)
-
-- Drawer oficial (`openDrawer`), id: `comp360DrawerImport`
-- Acepta: CSV, `.xlsx`, `.xls` (constante `ACCEPT_TABULAR`); máx. 2 MB
-- **Plantilla descargable** (nombre: `plantilla-competencias-360.csv`):
-
-| Nombre competencia | Descripcion |
-|--------------------|-------------|
-| Liderazgo | Inspira y motiva al equipo... |
-| (ejemplos) | |
-
-- **Validaciones por fila:**
-  - `cols[0]` (nombre) no puede estar vacío
-  - `cols[1]` (descripción) no puede estar vacío
-- Si hay errores: modal con tabla Fila / Problema (`buildImportErrorTableHtml`).
-- Si no hay errores: competencias añadidas a `_competencias[]` con `seleccionada: true`; toast de éxito; re-renderiza la vista.
+> **Importación masiva de competencias:** no está implementada en el prototipo (solo creación manual con el modal y, opcionalmente, importación de **enunciados** desde archivo).
 
 ### Drawer: Añadir enunciados desde archivo (`openComp360ImportEnunciadosDrawer`)
 
@@ -315,10 +299,11 @@ Estructura de la plantilla (8 columnas):
 
 **Valores válidos de `tipo_respuesta`:**
 
-| Valor en CSV | `tipoRespuesta` | `escala` | `obligatoria` |
+| Valor en CSV (comparación sin distinguir mayúsculas) | `tipoRespuesta` | `escala` | `obligatoria` |
 |-------------|----------------|----------|--------------|
-| `1-5 Desempeño` | `calificacion` | `desempeno` | `false` |
-| `1-5 Regularidad` | `calificacion` | `regularidad` | `false` |
+| `1-5 Desempeño` | `calificacion` | `'desempeno'` | `false` |
+| `1-5 Regularidad` | `calificacion` | `'regularidad'` | `false` |
+| `De 1 a 5` / `De 1 a 10` / `De 1 a 100` | `calificacion` | `'5'` / `'10'` / `'100'` | `false` (etiqueta numérica en importación; distinto del modal Regularidad/Desempeño) |
 | `Respuesta abierta - obligatoria` | `abierta` | `null` | `true` |
 | `Respuesta abierta` | `abierta` | `null` | `false` |
 
@@ -340,7 +325,7 @@ Si hay errores: modal con tabla Fila / Problema. Si no: enunciados añadidos a s
 
 Deshabilitado si `_competencias.length === 0` (se oculta el footer en el empty state).
 
-`saveCompetencias()` serializa cada competencia en `draft.competencias` con `id`, `nombre`, `descripcion`, `seleccionada` y **`enunciados[]`** (copia profunda), y pone `draft.checks.competencias = true`. Los enunciados son necesarios para el resumen del hub y para restaurar `_competencias` al volver a la vista.
+`saveCompetencias()` serializa cada competencia en `draft.competencias` con `id`, `nombre`, `descripcion`, `seleccionada` y **`enunciados[]`** (copia profunda), y asigna `draft.checks.competencias` según `hubCompetenciasCompleto()` (ver hub: borde verde solo si cada tipo activo tiene ≥ 1 enunciado). Los enunciados son necesarios para el resumen del hub y para restaurar `_competencias` al volver a la vista.
 
 ---
 
@@ -490,10 +475,10 @@ Definir la escala de calificación, los parámetros de resultado con sus rangos,
 
 | Select | Opciones | Variable |
 |--------|----------|----------|
-| Escala | «De 1 a 5» / «De 1 a 4» / «De 1 a 10» | `_resEscala` (default: `'5'`) |
+| Escala | «De 1 a 5» / «De 1 a 10» / «De 1 a 100» | `_resEscala` (default: `'5'`). Valores guardados antiguos distintos de 5/10/100 se normalizan a `'5'`. |
 | Cantidad de parámetros | «3 Parámetros» / «4 Parámetros» / «5 Parámetros» | `_resCantidad` (default: `4`) |
 
-Al cambiar cualquiera de estos selects, los rangos se recalculan con `buildDefaultParams(cantidad, escalaMax)` que distribuye los rangos uniformemente y usa nombres predefinidos:
+Al cambiar cualquiera de estos selects, los rangos se recalculan con `buildDefaultParams(cantidad, escalaMax)` (nombres desde `RES_PARAM_DEFAULTS` y reparto inicial de **hasta** en los tramos intermedios), seguido de `fillResParamDerivedInto()` que aplica la regla de negocio de rangos.
 
 ```js
 RES_PARAM_DEFAULTS = {
@@ -505,7 +490,17 @@ RES_PARAM_DEFAULTS = {
 
 **Tabla de parámetros** (`#res360-params-list`):
 
-Cada parámetro tiene 3 campos inline (`createInput` tamaño `sm`): Nombre, Desde, Hasta. El usuario puede ajustar libremente cada rango.
+Cada fila tiene nombre (texto editable) y dos columnas numéricas **Desde** / **Hasta**:
+
+| Campo | Editable | Comportamiento |
+|-------|----------|----------------|
+| **Desde** (todas las filas) | No (`state: 'disabled'`, tipo texto formateado) | Fila 1: siempre **1**. Filas siguientes: **hasta de la fila anterior + 0,01** (constante `RES_PARAM_GAP`), para evitar solapes entre tramos. |
+| **Hasta** (filas 1 … N−1) | Sí (`type: 'number'`) | El usuario define el tope del tramo; al cambiar, se ejecuta `fillResParamDerivedInto` y `syncResParamRangeInputsOnly()` para recalcular los **desde** y el último **hasta** sin re-montar toda la lista (se conserva el foco). |
+| **Hasta** (fila N) | No | Siempre el **máximo de la escala** elegida (p. ej. 5 en «De 1 a 5»). |
+
+Si solo hay **un** parámetro, **desde = 1** y **hasta = máximo**, ambos bloqueados.
+
+Estilos: celdas automáticas llevan `res360-param-num--derived` (fondo gris tipo solo lectura en `crear-360.css`).
 
 **Switches (columna derecha)**:
 
@@ -629,15 +624,14 @@ Los **líderes** (9) también tienen `username` y sirven como datos de ejemplo e
 | `input.css` + `input.js` | `components/input.*` | Campos del hub, pesos en Tipo, rangos en Resultados |
 | `calendar.css` + `calendar.js` | `components/calendar.*` | Fechas de inicio y fin |
 | `modal.css` + `modal.js` | `components/modal.*` | Activación, salida, Nueva competencia, Añadir enunciado, errores CSV |
-| `drawer.css` + `drawer.js` | `components/drawer.*` | Import drawers (competencias, enunciados, evaluados) |
+| `drawer.css` + `drawer.js` | `components/drawer.*` | Drawers de importación: enunciados y evaluados |
 | `toast.css` + `toast.js` | `components/toast.*` | Confirmación al guardar cada sección y al importar |
 | `switch.css` | `components/switch.css` | Tipos en vista Tipo, toggles en Resultados, tipos en modal enunciado |
-| `file-upload.css` + `file-upload.js` | `components/file-upload.*` | Todos los drawers de importación |
+| `file-upload.css` + `file-upload.js` | `components/file-upload.*` | Drawers de importación (enunciados, evaluados) |
 | `ubits-data-table.css` + `.js` | `components/ubits-data-table.*` | Tabla de evaluados |
 | `table.css` | `components/table.css` | Tabla de errores en modales |
 | `avatar.css` | `components/avatar.css` | Avatares en la tabla de evaluados |
 | `empty-state.css` + `.js` | `components/empty-state.*` | Vista Competencias sin datos |
-| `dropdown-menu.js` + `.css` | `components/dropdown-menu.*` | Dropdown «Añadir competencia»; requerido por `input.js` |
 | `status-tag.css` | `components/status-tag.css` | Tag «Borrador» en el header del hub |
 | `tooltip.css` + `.js` | `components/tooltip.*` | Tooltips en botones del header e iconos de info |
 | `selection-card.css` | `components/selection-card.css` | Importado (componente `ubits-selection-card`) |
@@ -659,8 +653,7 @@ ubits-admin/desempeno/360/
 ├── admin-360.html              ← Lista de evaluaciones (destino al activar / salir)
 ├── contexto-creacion-360.md    ← Este documento
 └── archivos-demo/
-    ├── competencias-fiqsha.csv ← 8 competencias de ejemplo para Fiqsha
-    └── enunciados-fiqsha.csv   ← 30 enunciados de ejemplo para Fiqsha
+    └── enunciados-fiqsha.csv   ← 30 enunciados de ejemplo para Fiqsha (competencias ya existentes en el CSV)
 
 bd-master/
 ├── bd-evaluaciones-360.js      ← Tipos, competencias base (referencia), helper addEvaluacion
@@ -674,7 +667,7 @@ bd-master/
 - **Reset de calendar al cambiar vista:** `cleanupCalendarPickers()` destruye los pickers flotantes antes de cambiar de vista.
 - **Restaurar estado al volver:** cada `render*View()` recupera los valores de `draft.*` para no mostrar la vista vacía cuando el usuario vuelve a editar una sección ya guardada. `_tipos` y `_competencias` persisten en la sesión.
 - **File upload re-entrada (evaluados):** `montarFileUploader()` limpia siempre el contenedor antes de crear un nuevo uploader (para el cambio de modo). El estado `_fileReady` y `_eval360ImportFilas` se resetean al cambiar de modo.
-- **Modales overlay:** los overlays de confirmación tienen contenedores fijos en el HTML (`#crear360-cancel-modal-overlay`, `#crear360-activate-modal-overlay`). Los modales de errores CSV y de competencias son generados dinámicamente por `openModal`.
+- **Modales overlay:** los overlays de confirmación tienen contenedores fijos en el HTML (`#crear360-cancel-modal-overlay`, `#crear360-activate-modal-overlay`). Los modales de errores de importación CSV (enunciados / evaluados) se generan dinámicamente por `openModal`.
 - **Comparación de tipos en validación:** siempre usar `t.nombre` (normalizado), nunca `t.id`. Los IDs internos (`jefe`, `pares`, `auto`, `subalternos`) no coinciden con los valores del CSV.
 - **Sin servidor:** el template es puramente HTML/CSS/JS. Abrir con doble clic o `file:///…/crear-360.html`.
 
@@ -689,4 +682,4 @@ bd-master/
 
 ---
 
-*Última actualización: abril 2026. Flujo implementado: hub, tipo, competencias (sistema propio de creación + importación CSV/Excel), evaluados (tabla única + drawer de importación organigrama/libre), resultados. Activación con llamada a `BD_EVALUACIONES_360.addEvaluacion`.*
+*Última actualización: abril 2026. Flujo implementado: hub con **desbloqueo progresivo** (tras datos básicos solo tarjeta Tipo hasta `checks.tipo`; luego Competencias, Evaluados y Resultados), tipo, competencias (creación manual de competencias + importación CSV/Excel solo de **enunciados**), evaluados (tabla única + drawer de importación organigrama/libre), resultados. Activación con llamada a `BD_EVALUACIONES_360.addEvaluacion`.*
