@@ -473,11 +473,6 @@
         } else {
             var title = SUB_VIEW_TITLES[viewId] || '';
             var counter = '';
-            if (viewId === 'evaluados') {
-                counter = '<div class="crear360-header-counter">' +
-                    '<span id="eval360-selected-count" class="ubits-body-sm-regular">0 evaluados configurados</span>' +
-                    '</div>';
-            }
 
             inner.innerHTML =
                 '<a href="javascript:void(0)" id="crear360-btn-back" ' +
@@ -1549,7 +1544,6 @@
         });
         container.addEventListener('change', function (e) {
             if (e.target && e.target.matches && e.target.matches('input[type="checkbox"]')) {
-                updateEvaluadosCounter();
                 var saveBtn = document.getElementById('crear360-btn-sub-save');
                 if (saveBtn) saveBtn.disabled = (_eval360ColabTablaRef.getSelectedIds().length === 0);
             }
@@ -1568,14 +1562,6 @@
             var sel = _eval360ColabTablaRef ? _eval360ColabTablaRef.getSelectedIds().length : 0;
             saveBtn.disabled = sel === 0;
         }
-    }
-
-    function updateEvaluadosCounter() {
-        var el = document.getElementById('eval360-selected-count');
-        if (!el) return;
-        var n = (_eval360ColabTablaRef && typeof _eval360ColabTablaRef.getSelectedIds === 'function')
-            ? _eval360ColabTablaRef.getSelectedIds().length : 0;
-        el.textContent = n + (n === 1 ? ' evaluado seleccionado' : ' evaluados seleccionados');
     }
 
     function saveEvaluados() {
