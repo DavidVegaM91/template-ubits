@@ -1518,6 +1518,8 @@
                 area:     (c.area || ''),
                 avatar:   c.avatar || null
             };
+        }).sort(function (a, b) {
+            return a.evaluado.localeCompare(b.evaluado, 'es', { sensitivity: 'base' });
         });
         function esc(t) { if (t == null) return ''; var d = document.createElement('div'); d.textContent = t; return d.innerHTML; }
         function buildRowHtml(row) {
