@@ -1513,7 +1513,7 @@
         var rows = colaboradores.map(function (c) {
             return {
                 id:       c.id,
-                nombre:   (c.nombre || ''),
+                evaluado: (c.nombre || ''),   /* campo de texto para sort */
                 username: (c.username || ''),
                 area:     (c.area || ''),
                 avatar:   c.avatar || null
@@ -1525,7 +1525,7 @@
                 ? '<span class="ubits-avatar ubits-avatar--sm"><img src="' + String(row.avatar).replace(/"/g, '&quot;') + '" alt="' + esc(row.nombre) + '" class="ubits-avatar__img"></span>'
                 : '<span class="ubits-avatar ubits-avatar--sm"><span class="ubits-avatar__fallback"><i class="far fa-user"></i></span></span>';
             return '<td data-col="evaluado"><div class="eval360-usuario-cell">' + av +
-                '<span class="ubits-body-sm-regular">' + esc(row.nombre) + '</span></div></td>' +
+                '<span class="ubits-body-sm-regular">' + esc(row.evaluado) + '</span></div></td>' +
                 '<td data-col="username"><span class="ubits-body-sm-regular">' + esc(row.username) + '</span></td>' +
                 '<td data-col="area"><span class="ubits-body-sm-regular">'     + esc(row.area)     + '</span></td>';
         }
@@ -1535,7 +1535,7 @@
             containerId:      'eval360-colab-dt-container',
             tableId:          'eval360-colab-table',
             title:            'Lista de colaboradores',
-            columns:          [{ id: 'evaluado', label: 'Evaluado', filterable: true }, { id: 'username', label: 'Username', filterable: true }, { id: 'area', label: 'Área', filterable: true }],
+            columns:          [{ id: 'evaluado', label: 'Evaluado', sortable: true }, { id: 'username', label: 'Username', sortable: true }, { id: 'area', label: 'Área', sortable: true }],
             getData:          function () { return rows; },
             rowIdField:       'id',
             buildRowHtml:     buildRowHtml,
