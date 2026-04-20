@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="../../../components/button.css">
     <link rel="stylesheet" href="../../../components/status-tag.css">
     <link rel="stylesheet" href="../../../components/tooltip.css">
+    <link rel="stylesheet" href="../../../components/dropdown-menu.css">
     <link rel="stylesheet" href="../../../components/input.css">
     <link rel="stylesheet" href="../../../components/calendar.css">
     <link rel="stylesheet" href="../../../components/modal.css">
@@ -29,7 +30,10 @@
     <link rel="stylesheet" href="../../../components/chip.css">
     <link rel="stylesheet" href="../../../components/ubits-data-table.css">
     <link rel="stylesheet" href="../../../components/file-upload.css">
+    <link rel="stylesheet" href="../../../components/drawer.css">
     <link rel="stylesheet" href="./crear-360.css">
+    <!-- SheetJS: lectura de archivos Excel (.xlsx / .xls) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 </head>
 <body data-theme="light" class="no-subnav page-layout-immersive page-crear-360">
 
@@ -177,12 +181,25 @@
              ════════════════════════════════════════ -->
         <div data-view="competencias" id="crear360-view-competencias" class="ubits-layout-immersive__stage crear360-view--hidden">
 
-            <section class="comp360-description">
-                <h2 class="ubits-body-md-bold">Selecciona las competencias a evaluar</h2>
-                <p class="ubits-body-sm-regular">Elige al menos una competencia. Cada competencia incluye 3 enunciados que los evaluadores responderán. Puedes expandir cada competencia para revisar sus enunciados.</p>
+            <!-- empty state: visible cuando no hay competencias -->
+            <div id="comp360EmptyState"></div>
+
+            <!-- cabecera + lista: visible cuando hay al menos 1 competencia -->
+            <section class="comp360-description" id="comp360DescSection" style="display:none;">
+                <div class="comp360-description__row">
+                    <div></div>
+                    <div class="comp360-header-actions">
+                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="comp360-btn-import-enunciados">
+                            <i class="far fa-file-arrow-up"></i><span>Añadir enunciados desde archivo</span>
+                        </button>
+                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="comp360-btn-add-more">
+                            <i class="far fa-plus"></i><span>Añadir competencia</span>
+                        </button>
+                    </div>
+                </div>
             </section>
 
-            <div class="comp360-list" id="comp360-list"></div>
+            <div class="comp360-list" id="comp360-list" style="display:none;"></div>
         </div><!-- /view competencias -->
 
         <!-- ════════════════════════════════════════
@@ -406,6 +423,22 @@
 <div id="profile-menu-container"></div>
 <div id="ubits-toast-container"></div>
 
+<!-- Dropdown: añadir competencia -->
+<div id="comp360AddDropdown" class="ubits-dropdown-menu__overlay" style="display:none;" aria-hidden="true">
+    <div class="ubits-dropdown-menu__content" onclick="event.stopPropagation();">
+        <div class="ubits-dropdown-menu__options">
+            <button type="button" class="ubits-dropdown-menu__option" data-value="una">
+                <span class="ubits-dropdown-menu__option-left"><i class="far fa-plus"></i></span>
+                <span class="ubits-dropdown-menu__option-text ubits-body-md-regular">Añadir una por una</span>
+            </button>
+            <button type="button" class="ubits-dropdown-menu__option" data-value="archivo">
+                <span class="ubits-dropdown-menu__option-left"><i class="far fa-file-arrow-up"></i></span>
+                <span class="ubits-dropdown-menu__option-text ubits-body-md-regular">Añadir desde archivo</span>
+            </button>
+        </div>
+    </div>
+</div>
+
 <script src="../../../components/tooltip.js"></script>
 <script src="../../../components/stepper.js"></script>
 <script src="../../../components/sidebar.js"></script>
@@ -420,6 +453,7 @@
 <script src="../../../components/toast.js"></script>
 <script src="../../../components/ubits-data-table.js"></script>
 <script src="../../../components/file-upload.js"></script>
+<script src="../../../components/drawer.js"></script>
 <script src="../../../script.js"></script>
 <script src="../../../bd-master/bd-master-colaboradores.js"></script>
 <script src="../../../bd-master/bd-evaluaciones-360.js"></script>
@@ -439,7 +473,7 @@
 
     /* ── Estado por sub-vista ── */
     var _tipos         = [];
-    var _competencias  = [];
+    var _competencias  = [];  /* array de competencias creadas por el usuario */
     var _evaluados     = {};
     var _cantidad      = 4;
     var _rangos        = [];
@@ -521,6 +555,10 @@
         var main = document.getElementById('crear360-main');
         if (main) main.scrollTop = 0;
 
+        /* Al salir de competencias sin guardar, limpiar memoria para que
+           renderCompetenciasView pueda restaurar desde draft al volver */
+        /* (no hay que hacer nada: _competencias persiste en memoria de sesión) */
+
         /* inicializar contenido de la vista */
         if (viewId === 'hub')               renderHubView();
         else if (viewId === 'tipo')         renderTipoView();
@@ -558,11 +596,7 @@
         } else {
             var title = SUB_VIEW_TITLES[viewId] || '';
             var counter = '';
-            if (viewId === 'competencias') {
-                counter = '<div class="crear360-header-counter">' +
-                    '<span id="comp360-selected-count" class="ubits-body-sm-regular">0 seleccionadas</span>' +
-                    '</div>';
-            } else if (viewId === 'evaluados') {
+            if (viewId === 'evaluados') {
                 counter = '<div class="crear360-header-counter">' +
                     '<span id="eval360-selected-count" class="ubits-body-sm-regular">0 evaluados configurados</span>' +
                     '</div>';
@@ -930,25 +964,588 @@
        VISTA: COMPETENCIAS Y ENUNCIADOS
        ══════════════════════════════════════════════════════════ */
     function renderCompetenciasView() {
-        if (_competencias.length === 0) {
-            _competencias = BD_EVALUACIONES_360.competenciasBase.map(function (base) {
-                var saved = (draft.competencias || []).find(function (s) { return s.id === base.id; });
-                return {
-                    id: base.id,
-                    nombre: base.nombre,
-                    enunciados: base.enunciados,
-                    seleccionada: saved ? saved.seleccionada : false,
-                    expandida: false
-                };
+        /* Restaurar competencias guardadas en draft si aún no están en memoria */
+        if (_competencias.length === 0 && Array.isArray(draft.competencias) && draft.competencias.length > 0) {
+            _competencias = draft.competencias.map(function (c) {
+                return { id: c.id, nombre: c.nombre, descripcion: c.descripcion || '', seleccionada: c.seleccionada !== false, expandida: false };
             });
         }
-        renderCompetenciasList();
+
+        if (_competencias.length === 0) {
+            /* ── MODO EMPTY STATE ── */
+            document.getElementById('comp360EmptyState').style.display = '';
+            document.getElementById('comp360DescSection').style.display = 'none';
+            document.getElementById('comp360-list').style.display = 'none';
+            var subFoot = document.getElementById('crear360-footer-sub');
+            if (subFoot) subFoot.style.display = 'none';
+
+            loadEmptyState('comp360EmptyState', {
+                icon: 'fa-clipboard-list',
+                title: 'Añade una competencia',
+                description: 'Empieza a clasificar los enunciados de tu evaluación, añade competencias y enunciados según tus necesidades.',
+                buttons: {
+                    secondary: {
+                        text: 'Añadir una por una',
+                        icon: 'fa-plus',
+                        onClick: openComp360Modal
+                    },
+                    primary: {
+                        text: 'Añadir desde archivo',
+                        icon: 'fa-file-arrow-up',
+                        onClick: openComp360ImportDrawer
+                    }
+                }
+            });
+        } else {
+            /* ── MODO LISTA ── */
+            document.getElementById('comp360EmptyState').style.display = 'none';
+            document.getElementById('comp360DescSection').style.display = '';
+            document.getElementById('comp360-list').style.display = '';
+            var subFoot = document.getElementById('crear360-footer-sub');
+            if (subFoot) subFoot.style.display = '';
+
+            renderCompetenciasList();
+
+            /* Botón "Añadir competencia" en la cabecera de la lista */
+            var btnAddMore = document.getElementById('comp360-btn-add-more');
+            if (btnAddMore) {
+                btnAddMore.onclick = function (e) {
+                    e.stopPropagation();
+                    openComp360AddDropdown(btnAddMore);
+                };
+            }
+
+            var btnImportEnunciados = document.getElementById('comp360-btn-import-enunciados');
+            if (btnImportEnunciados) {
+                btnImportEnunciados.onclick = function () { openComp360ImportEnunciadosDrawer(); };
+            }
+        }
+    }
+
+    /* Abre el modal oficial para crear una competencia */
+    function openComp360Modal() {
+        openModal({
+            overlayId: 'comp360ModalNuevaComp',
+            title: 'Nueva competencia',
+            bodyHtml:
+                '<div id="comp360ModalNombreWrap"></div>' +
+                '<div id="comp360ModalDescWrap" style="margin-top:var(--gap-lg)"></div>',
+            footerHtml:
+                '<button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="comp360ModalCancelarBtn"><span>Cancelar</span></button>' +
+                '<button type="button" class="ubits-button ubits-button--primary ubits-button--md" id="comp360ModalCrearBtn" disabled><span>Crear</span></button>',
+            size: 'sm',
+            closeOnOverlayClick: false
+        });
+
+        /* Inputs oficiales */
+        setTimeout(function () {
+            createInput({
+                containerId: 'comp360ModalNombreWrap',
+                label: 'Nombre',
+                placeholder: 'Ej. Trabajo en equipo',
+                type: 'text',
+                size: 'md',
+                onChange: validateComp360Modal
+            });
+            createInput({
+                containerId: 'comp360ModalDescWrap',
+                label: 'Descripción',
+                placeholder: 'Describe brevemente esta competencia...',
+                type: 'textarea',
+                size: 'md',
+                onChange: validateComp360Modal
+            });
+
+            var cancelBtn = document.getElementById('comp360ModalCancelarBtn');
+            var crearBtn  = document.getElementById('comp360ModalCrearBtn');
+
+            if (cancelBtn) cancelBtn.addEventListener('click', function () { closeModal('comp360ModalNuevaComp'); });
+
+            if (crearBtn) crearBtn.addEventListener('click', function () {
+                var nombreEl = document.querySelector('#comp360ModalNombreWrap input');
+                var descEl   = document.querySelector('#comp360ModalDescWrap textarea');
+                if (!nombreEl || !descEl) return;
+                var nombre = nombreEl.value.trim();
+                var desc   = descEl.value.trim();
+                if (!nombre || !desc) return;
+                _competencias.push({
+                    id: 'comp-' + Date.now(),
+                    nombre: nombre,
+                    descripcion: desc,
+                    seleccionada: true,
+                    expandida: false
+                });
+                closeModal('comp360ModalNuevaComp');
+                renderCompetenciasView();
+            });
+        }, 80);
+    }
+
+    /* ── Dropdown: Añadir competencia ── */
+    function initComp360AddDropdown() {
+        var overlay = document.getElementById('comp360AddDropdown');
+        if (!overlay || overlay._comp360Init) return;
+        overlay._comp360Init = true;
+
+        overlay.querySelectorAll('.ubits-dropdown-menu__option').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                closeDropdownMenu('comp360AddDropdown');
+                if (btn.dataset.value === 'una') {
+                    openComp360Modal();
+                } else {
+                    openComp360ImportDrawer();
+                }
+            });
+        });
+
+        document.addEventListener('click', function (e) {
+            var overlay = document.getElementById('comp360AddDropdown');
+            if (overlay && overlay.style.display !== 'none') {
+                closeDropdownMenu('comp360AddDropdown');
+            }
+        });
+    }
+
+    function openComp360AddDropdown(anchorEl) {
+        initComp360AddDropdown();
+        openDropdownMenu('comp360AddDropdown', anchorEl, { minWidthFromAnchor: true });
+    }
+
+    /* ── Utilidad: leer archivo CSV o Excel como array de filas ── */
+    function leerArchivoComoFilas(file, callback) {
+        var esExcel = /\.(xlsx|xls)$/i.test(file.name);
+        if (esExcel) {
+            var reader = new FileReader();
+            reader.onload = function (ev) {
+                var data     = new Uint8Array(ev.target.result);
+                var workbook = XLSX.read(data, { type: 'array' });
+                var sheet    = workbook.Sheets[workbook.SheetNames[0]];
+                var rows     = XLSX.utils.sheet_to_json(sheet, { header: 1, defval: '' });
+                callback(null, rows);
+            };
+            reader.onerror = function () { callback('No se pudo leer el archivo.', null); };
+            reader.readAsArrayBuffer(file);
+        } else {
+            var reader = new FileReader();
+            reader.onload = function (ev) {
+                var text  = ev.target.result.replace(/^\uFEFF/, '');
+                var lines = text.split(/\r?\n/).filter(function (l) { return l.trim(); });
+                var rows  = lines.map(function (line) {
+                    return line.match(/(".*?"|[^,]+)(?=,|$)|(?<=,|^)(?=,|$)/g)
+                        || line.split(',');
+                }).map(function (cols) {
+                    return cols.map(function (c) { return (c || '').replace(/^"|"$/g, '').trim(); });
+                });
+                callback(null, rows);
+            };
+            reader.onerror = function () { callback('No se pudo leer el archivo.', null); };
+            reader.readAsText(file);
+        }
+    }
+
+    var ACCEPT_TABULAR = '.csv,text/csv,.xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,.xls,application/vnd.ms-excel';
+    var FORMATS_TABULAR = 'CSV, Excel (.xlsx / .xls) · máx. 2 MB';
+
+    /* ── Drawer: Añadir competencias desde archivo ── */
+    function openComp360ImportDrawer() {
+        var _currentFile = null;
+
+        openDrawer({
+            overlayId: 'comp360DrawerImport',
+            title: 'Añadir competencias desde archivo',
+            bodyHtml: '<div id="comp360ImportFuContainer"></div>',
+            footerHtml:
+                '<button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="comp360ImportCancelarBtn"><span>Cancelar</span></button>' +
+                '<button type="button" class="ubits-button ubits-button--primary ubits-button--md" id="comp360ImportarBtn" disabled><span>Importar</span></button>',
+            size: 'md',
+            onClose: function () { _currentFile = null; }
+        });
+
+        setTimeout(function () {
+            var cancelBtn   = document.getElementById('comp360ImportCancelarBtn');
+            var importarBtn = document.getElementById('comp360ImportarBtn');
+
+            if (cancelBtn) cancelBtn.addEventListener('click', function () { closeDrawer('comp360DrawerImport'); });
+
+            createFileUpload({
+                containerId: 'comp360ImportFuContainer',
+                id:          'comp360ImportFu',
+                accept:      ACCEPT_TABULAR,
+                maxSizeMb:   2,
+                formats:     FORMATS_TABULAR,
+                downloadButtons: [{
+                    label: 'Descargar plantilla',
+                    icon:  'file-arrow-down',
+                    onClick: function () {
+                        var bom = '\uFEFF';
+                        var csv = bom + 'Nombre competencia,Descripcion\n' +
+                            'Liderazgo,Inspira y motiva al equipo hacia el logro de objetivos.\n' +
+                            'Trabajo en equipo,Colabora activamente con los compañeros para alcanzar metas comunes.\n' +
+                            'Comunicación,Transmite ideas de forma clara y efectiva en distintos contextos.';
+                        var blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+                        var url  = URL.createObjectURL(blob);
+                        var a    = document.createElement('a');
+                        a.href = url; a.download = 'plantilla-competencias-360.csv';
+                        document.body.appendChild(a); a.click();
+                        document.body.removeChild(a); URL.revokeObjectURL(url);
+                    }
+                }],
+                onChange: function (file) {
+                    _currentFile = file;
+                    if (importarBtn) importarBtn.disabled = !file;
+                },
+                onError: function () {
+                    _currentFile = null;
+                    if (importarBtn) importarBtn.disabled = true;
+                }
+            });
+
+            if (importarBtn) importarBtn.addEventListener('click', function () {
+                if (!_currentFile) return;
+                leerArchivoComoFilas(_currentFile, function (err, rows) {
+                    if (err) { showToast('error', err); return; }
+                    var errores   = [];
+                    var importadas = [];
+                    rows.slice(1).forEach(function (cols, i) {
+                        var nombre = String(cols[0] || '').trim();
+                        var desc   = String(cols[1] || '').trim();
+                        if (!nombre) { errores.push('Fila ' + (i + 2) + ': falta el nombre de la competencia.'); return; }
+                        if (!desc)   { errores.push('Fila ' + (i + 2) + ': falta la descripción.'); return; }
+                        importadas.push({ id: 'comp-imp-' + Date.now() + '-' + i, nombre: nombre, descripcion: desc, seleccionada: true, expandida: false });
+                    });
+
+                    if (errores.length) {
+                        openModal({
+                            overlayId: 'comp360ImportErrorModal',
+                            title: 'Errores en el archivo',
+                            bodyHtml: '<ul style="margin:0;padding-left:var(--padding-lg);display:flex;flex-direction:column;gap:var(--gap-sm)">' +
+                                errores.slice(0, 50).map(function (er) { return '<li class="ubits-body-sm-regular" style="color:var(--ubits-fg-1-medium)">' + er + '</li>'; }).join('') +
+                                (errores.length > 50 ? '<li class="ubits-body-sm-regular" style="color:var(--ubits-fg-2-medium)">…y ' + (errores.length - 50) + ' errores más.</li>' : '') +
+                                '</ul>',
+                            footerHtml: '<button class="ubits-button ubits-button--primary ubits-button--md" onclick="closeModal(\'comp360ImportErrorModal\')"><span>Entendido</span></button>',
+                            size: 'sm'
+                        });
+                        return;
+                    }
+                    if (!importadas.length) { showToast('warning', 'El archivo no contiene filas de datos.'); return; }
+                    importadas.forEach(function (c) { _competencias.push(c); });
+                    closeDrawer('comp360DrawerImport');
+                    renderCompetenciasView();
+                    showToast('success', importadas.length + (importadas.length === 1 ? ' competencia importada.' : ' competencias importadas.'));
+                });
+            });
+        }, 80);
+    }
+
+    /* ── Drawer: Añadir enunciados desde archivo ── */
+    function openComp360ImportEnunciadosDrawer() {
+        var _currentFile = null;
+
+        openDrawer({
+            overlayId: 'comp360DrawerImportEnum',
+            title: 'Añadir enunciados desde archivo',
+            bodyHtml: '<div id="comp360ImportEnumFuContainer"></div>',
+            footerHtml:
+                '<button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="comp360ImportEnumCancelarBtn"><span>Cancelar</span></button>' +
+                '<button type="button" class="ubits-button ubits-button--primary ubits-button--md" id="comp360ImportEnumBtn" disabled><span>Importar</span></button>',
+            size: 'md',
+            onClose: function () { _currentFile = null; }
+        });
+
+        setTimeout(function () {
+            var cancelBtn  = document.getElementById('comp360ImportEnumCancelarBtn');
+            var importarBtn = document.getElementById('comp360ImportEnumBtn');
+
+            if (cancelBtn) cancelBtn.addEventListener('click', function () { closeDrawer('comp360DrawerImportEnum'); });
+
+            /* Nombres de competencias disponibles para los ejemplos */
+            var nombresComp = _competencias.length
+                ? [_competencias[0].nombre, (_competencias[1] || _competencias[0]).nombre]
+                : ['Liderazgo', 'Comunicación'];
+
+            var bom  = '\uFEFF';
+            var csvTemplate = bom +
+                'competencia,enunciado,tipo_respuesta,ascendente,descendente,paralela,cliente,autoevaluacion\n' +
+                nombresComp[0] + ',Inspira y motiva a su equipo hacia el logro de objetivos.,1-5 Desempeño,1,1,1,0,0\n' +
+                nombresComp[0] + ',Toma decisiones asertivas en situaciones de presión.,1-5 Regularidad,1,1,0,0,1\n' +
+                nombresComp[1] + ',Expresa sus ideas de forma clara y estructurada.,Respuesta abierta - obligatoria,1,1,1,0,1\n' +
+                nombresComp[1] + ',Escucha activamente a sus interlocutores.,1-5 Desempeño,0,1,1,1,0\n' +
+                nombresComp[1] + ',Adapta su comunicación al perfil de cada interlocutor.,Respuesta abierta,1,1,1,0,0\n';
+
+            createFileUpload({
+                containerId: 'comp360ImportEnumFuContainer',
+                id:          'comp360ImportEnumFu',
+                accept:      ACCEPT_TABULAR,
+                maxSizeMb:   2,
+                formats:     FORMATS_TABULAR,
+                downloadButtons: [{
+                    label: 'Descargar plantilla',
+                    icon:  'file-arrow-down',
+                    onClick: function () {
+                        var blob = new Blob([csvTemplate], { type: 'text/csv;charset=utf-8;' });
+                        var url  = URL.createObjectURL(blob);
+                        var a    = document.createElement('a');
+                        a.href = url; a.download = 'plantilla-enunciados-360.csv';
+                        document.body.appendChild(a); a.click();
+                        document.body.removeChild(a); URL.revokeObjectURL(url);
+                    }
+                }],
+                onChange: function (file) {
+                    _currentFile = file;
+                    if (importarBtn) importarBtn.disabled = !file;
+                },
+                onError: function () {
+                    _currentFile = null;
+                    if (importarBtn) importarBtn.disabled = true;
+                }
+            });
+
+            if (importarBtn) importarBtn.addEventListener('click', function () {
+                if (!_currentFile) return;
+                leerArchivoComoFilas(_currentFile, function (err, rows) {
+                    if (err) { showToast('error', err); return; }
+
+                    var TIPOS_VALIDOS = {
+                        '1-5 desempeño':              { tipoRespuesta: 'calificacion', escala: 'desempeno', obligatoria: false },
+                        '1-5 regularidad':             { tipoRespuesta: 'calificacion', escala: 'regularidad', obligatoria: false },
+                        'respuesta abierta - obligatoria': { tipoRespuesta: 'abierta', escala: null, obligatoria: true },
+                        'respuesta abierta':           { tipoRespuesta: 'abierta', escala: null, obligatoria: false }
+                    };
+                    var TIPO_IDS = ['ascendente', 'descendente', 'paralela', 'cliente', 'autoevaluacion'];
+                    /* Mapear nombres de competencias a índices */
+                    var compMap = {};
+                    _competencias.forEach(function (c, i) { compMap[c.nombre.trim().toLowerCase()] = i; });
+
+                    var errores   = [];
+                    var importadas = 0;
+
+                    rows.slice(1).forEach(function (cols, i) {
+                        var fila = i + 2;
+                        cols = cols.map(function (c) { return String(c || '').trim(); });
+
+                        var compNombre = cols[0] || '';
+                        var texto      = cols[1] || '';
+                        var tipoKey    = (cols[2] || '').toLowerCase();
+                        var tiposEval  = TIPO_IDS.filter(function (_, j) { return cols[3 + j] === '1'; });
+
+                        if (!compNombre) { errores.push('Fila ' + fila + ': falta el nombre de la competencia.'); return; }
+                        if (!(compNombre.toLowerCase() in compMap)) { errores.push('Fila ' + fila + ': la competencia "' + compNombre + '" no existe.'); return; }
+                        if (!texto) { errores.push('Fila ' + fila + ': falta el texto del enunciado.'); return; }
+                        if (!TIPOS_VALIDOS[tipoKey]) { errores.push('Fila ' + fila + ': tipo de respuesta "' + (cols[2] || '') + '" no válido.'); return; }
+                        if (!tiposEval.length) { errores.push('Fila ' + fila + ': debe marcarse al menos un tipo de evaluación.'); return; }
+
+                        var cfg   = TIPOS_VALIDOS[tipoKey];
+                        var compIdx = compMap[compNombre.toLowerCase()];
+                        if (!Array.isArray(_competencias[compIdx].enunciados)) _competencias[compIdx].enunciados = [];
+                        _competencias[compIdx].enunciados.push({
+                            id: 'en-imp-' + Date.now() + '-' + i,
+                            texto: texto,
+                            tipoRespuesta: cfg.tipoRespuesta,
+                            escala: cfg.escala,
+                            obligatoria: cfg.obligatoria,
+                            tiposEvaluacion: tiposEval
+                        });
+                        importadas++;
+                    });
+
+                    if (errores.length) {
+                        openModal({
+                            overlayId: 'comp360EnumImportErrorModal',
+                            title: 'Errores en el archivo',
+                            bodyHtml: '<ul style="margin:0;padding-left:var(--padding-lg);display:flex;flex-direction:column;gap:var(--gap-sm)">' +
+                                errores.slice(0, 50).map(function (e) {
+                                    return '<li class="ubits-body-sm-regular" style="color:var(--ubits-fg-1-medium)">' + e + '</li>';
+                                }).join('') +
+                                (errores.length > 50 ? '<li class="ubits-body-sm-regular" style="color:var(--ubits-fg-2-medium)">…y ' + (errores.length - 50) + ' errores más.</li>' : '') +
+                                '</ul>',
+                            footerHtml: '<button class="ubits-button ubits-button--primary ubits-button--md" onclick="closeModal(\'comp360EnumImportErrorModal\')"><span>Entendido</span></button>',
+                            size: 'sm'
+                        });
+                        return;
+                    }
+
+                    if (!importadas) { showToast('warning', 'El archivo no contiene filas de datos.'); return; }
+
+                    closeDrawer('comp360DrawerImportEnum');
+                    renderCompetenciasView();
+                    showToast('success', importadas + (importadas === 1 ? ' enunciado importado.' : ' enunciados importados.'));
+                });
+            });
+        }, 80);
+    }
+
+    /* ── Modal: Añadir enunciado ── */
+    function openComp360EnunciadoModal(compIdx) {
+        /* Tipos activos: preferir _tipos en memoria, si no el draft, si no todos los de BD */
+        var tiposActivos = _tipos.filter(function (t) { return t.activo; });
+        if (tiposActivos.length === 0 && Array.isArray(draft.tipo)) {
+            tiposActivos = draft.tipo.filter(function (t) { return t.activo; });
+        }
+        if (tiposActivos.length === 0) {
+            tiposActivos = BD_EVALUACIONES_360.tiposEvaluacion.map(function (t) {
+                return { id: t.id, nombre: t.nombre, activo: true };
+            });
+        }
+
+        var switchesHtml = tiposActivos.map(function (t) {
+            return '<label class="comp360-enum-tipo-row">' +
+                '<label class="ubits-switch ubits-switch--md">' +
+                    '<input type="checkbox" class="ubits-switch__input comp360-enum-tipo-switch" data-tipo-id="' + t.id + '" checked>' +
+                    '<span class="ubits-switch__track"><span class="ubits-switch__thumb"></span></span>' +
+                '</label>' +
+                '<span class="ubits-body-md-regular">' + t.nombre + '</span>' +
+            '</label>';
+        }).join('');
+
+        var bodyHtml =
+            '<p class="ubits-body-sm-regular comp360-enum-modal-desc">Escribe un enunciado o pregunta relacionada con la competencia a evaluar y selecciona el tipo de respuesta, puede ser abierta o de calificación.</p>' +
+            '<div id="comp360EnunciadoTextoWrap"></div>' +
+            '<div id="comp360EnunciadoTipoWrap" style="margin-top:var(--gap-lg)"></div>' +
+            '<div id="comp360EnunciadoSubOpciones" style="margin-top:var(--gap-lg);display:none;"></div>' +
+            (tiposActivos.length > 0
+                ? '<div class="comp360-enum-tipos-section">' +
+                  '<p class="ubits-body-sm-regular comp360-enum-tipos-label">Este enunciado será añadido a:</p>' +
+                  '<div class="comp360-enum-tipos-grid">' + switchesHtml + '</div>' +
+                  '</div>'
+                : '');
+
+        openModal({
+            overlayId: 'comp360ModalEnunciado',
+            title: 'Añadir enunciado',
+            bodyHtml: bodyHtml,
+            footerHtml:
+                '<button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="comp360EnunciadoCancelarBtn"><span>Cancelar</span></button>' +
+                '<button type="button" class="ubits-button ubits-button--primary ubits-button--md" id="comp360EnunciadoAnadirBtn" disabled><span>Añadir</span></button>',
+            size: 'sm',
+            closeOnOverlayClick: false
+        });
+
+        setTimeout(function () {
+            createInput({
+                containerId: 'comp360EnunciadoTextoWrap',
+                type: 'textarea',
+                placeholder: 'Escribe tu enunciado',
+                size: 'md',
+                onChange: validateComp360Enunciado
+            });
+
+            createInput({
+                containerId: 'comp360EnunciadoTipoWrap',
+                type: 'select',
+                label: 'Tipo de respuesta',
+                placeholder: 'Tipo de respuesta',
+                size: 'md',
+                selectOptions: [
+                    { value: 'calificacion', text: 'Calificación del 1 al 5' },
+                    { value: 'abierta',      text: 'Respuesta abierta' }
+                ],
+                onChange: function (val) {
+                    renderComp360EnunciadoSubOpciones(val);
+                    validateComp360Enunciado();
+                }
+            });
+
+            var cancelBtn = document.getElementById('comp360EnunciadoCancelarBtn');
+            var anadirBtn = document.getElementById('comp360EnunciadoAnadirBtn');
+
+            if (cancelBtn) cancelBtn.addEventListener('click', function () { closeModal('comp360ModalEnunciado'); });
+
+            if (anadirBtn) anadirBtn.addEventListener('click', function () {
+                var textoEl = document.querySelector('#comp360EnunciadoTextoWrap textarea');
+                var tipoEl  = document.querySelector('#comp360EnunciadoTipoWrap select');
+                if (!textoEl || !tipoEl || !textoEl.value.trim() || !tipoEl.value) return;
+
+                var enunciado = {
+                    id: 'en-' + Date.now(),
+                    texto: textoEl.value.trim(),
+                    tipoRespuesta: tipoEl.value,
+                    escala: null,
+                    obligatoria: false,
+                    tiposEvaluacion: []
+                };
+
+                if (tipoEl.value === 'calificacion') {
+                    var escalaChecked = document.querySelector('#comp360EnunciadoSubOpciones .ubits-checkbox__input:checked');
+                    if (escalaChecked) enunciado.escala = escalaChecked.value;
+                }
+                if (tipoEl.value === 'abierta') {
+                    var obligEl = document.querySelector('#comp360EnunciadoSubOpciones .ubits-checkbox__input');
+                    enunciado.obligatoria = obligEl ? obligEl.checked : false;
+                }
+
+                document.querySelectorAll('.comp360-enum-tipo-switch:checked').forEach(function (sw) {
+                    enunciado.tiposEvaluacion.push(sw.dataset.tipoId);
+                });
+
+                if (!Array.isArray(_competencias[compIdx].enunciados)) _competencias[compIdx].enunciados = [];
+                _competencias[compIdx].enunciados.push(enunciado);
+                _competencias[compIdx].expandida = true;
+
+                closeModal('comp360ModalEnunciado');
+                renderCompetenciasList();
+            });
+        }, 80);
+    }
+
+    function renderComp360EnunciadoSubOpciones(tipo) {
+        var container = document.getElementById('comp360EnunciadoSubOpciones');
+        if (!container) return;
+        if (tipo === 'calificacion') {
+            container.style.display = '';
+            container.innerHTML =
+                '<label class="ubits-checkbox ubits-checkbox--md comp360-enum-escala-option">' +
+                    '<input type="checkbox" class="ubits-checkbox__input" value="regularidad">' +
+                    '<span class="ubits-checkbox__box"><i class="far fa-check"></i></span>' +
+                    '<div class="ubits-checkbox__label">' +
+                        '<span class="ubits-body-sm-semibold">Regularidad: </span>' +
+                        '<span class="ubits-body-sm-regular">1. Nunca, 2. Casi nunca, 3. A veces, 4. Casi siempre, 5. Siempre</span>' +
+                    '</div>' +
+                '</label>' +
+                '<label class="ubits-checkbox ubits-checkbox--md comp360-enum-escala-option" style="margin-top:var(--gap-md)">' +
+                    '<input type="checkbox" class="ubits-checkbox__input" value="desempeno">' +
+                    '<span class="ubits-checkbox__box"><i class="far fa-check"></i></span>' +
+                    '<div class="ubits-checkbox__label">' +
+                        '<span class="ubits-body-sm-semibold">Desempeño: </span>' +
+                        '<span class="ubits-body-sm-regular">1. Por mejorar, 2. Aceptable, 3. Bueno, 4. Muy bueno, 5. Excelente</span>' +
+                    '</div>' +
+                '</label>';
+        } else if (tipo === 'abierta') {
+            container.style.display = '';
+            container.innerHTML =
+                '<label class="ubits-checkbox ubits-checkbox--md">' +
+                    '<input type="checkbox" class="ubits-checkbox__input" value="obligatoria" checked>' +
+                    '<span class="ubits-checkbox__box"><i class="far fa-check"></i></span>' +
+                    '<span class="ubits-checkbox__label ubits-body-md-regular">Obligatoria</span>' +
+                '</label>';
+        } else {
+            container.innerHTML = '';
+            container.style.display = 'none';
+        }
+    }
+
+    function validateComp360Enunciado() {
+        setTimeout(function () {
+            var textoEl = document.querySelector('#comp360EnunciadoTextoWrap textarea');
+            var tipoEl  = document.querySelector('#comp360EnunciadoTipoWrap select');
+            var btn     = document.getElementById('comp360EnunciadoAnadirBtn');
+            if (!btn) return;
+            btn.disabled = !(textoEl && textoEl.value.trim() && tipoEl && tipoEl.value);
+        }, 10);
+    }
+
+    /* Habilita/deshabilita el botón Crear según los campos del modal */
+    function validateComp360Modal() {
+        setTimeout(function () {
+            var nombreEl = document.querySelector('#comp360ModalNombreWrap input');
+            var descEl   = document.querySelector('#comp360ModalDescWrap textarea');
+            var crearBtn = document.getElementById('comp360ModalCrearBtn');
+            if (!crearBtn) return;
+            crearBtn.disabled = !(nombreEl && nombreEl.value.trim() && descEl && descEl.value.trim());
+        }, 10);
     }
 
     function updateCompetenciasCounter() {
-        var sel    = _competencias.filter(function (c) { return c.seleccionada; }).length;
-        var countEl = document.getElementById('comp360-selected-count');
-        if (countEl) countEl.textContent = sel + (sel === 1 ? ' seleccionada' : ' seleccionadas');
+        var sel     = _competencias.filter(function (c) { return c.seleccionada; }).length;
         var saveBtn = document.getElementById('crear360-btn-sub-save');
         if (saveBtn) saveBtn.disabled = sel === 0;
     }
@@ -968,30 +1565,47 @@
                         '<span class="comp360-item__check-box"><i class="far fa-check"></i></span>' +
                     '</label>' +
                     '<span class="ubits-body-md-bold comp360-item__nombre">' + comp.nombre + '</span>' +
-                    '<span class="ubits-body-sm-regular comp360-item__count">' + comp.enunciados.length + ' enunciados</span>' +
                     '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only comp360-item__expand-btn" data-idx="' + idx + '" aria-label="Expandir">' +
                         '<i class="far fa-chevron-' + (comp.expandida ? 'up' : 'down') + '"></i>' +
                     '</button>' +
                 '</div>' +
                 '<div class="comp360-item__enunciados" style="' + (comp.expandida ? '' : 'display:none;') + '">' +
-                    '<ul>' +
-                    comp.enunciados.map(function (e, i) {
-                        return '<li class="ubits-body-sm-regular"><span class="comp360-enum">' + (i + 1) + '.</span> ' + e + '</li>';
-                    }).join('') +
-                    '</ul>' +
+                    (Array.isArray(comp.enunciados) && comp.enunciados.length > 0
+                        ? '<ul class="comp360-enum-list">' +
+                          comp.enunciados.map(function (en, ei) {
+                              var badge = en.tipoRespuesta === 'calificacion'
+                                  ? (en.escala === 'regularidad' ? 'Regularidad 1-5' : en.escala === 'desempeno' ? 'Desempeño 1-5' : 'Calificación 1-5')
+                                  : 'Respuesta abierta' + (en.obligatoria ? ' · Obligatoria' : '');
+                              return '<li class="comp360-enum-item">' +
+                                  '<span class="comp360-enum-num ubits-body-sm-regular">' + (ei + 1) + '.</span>' +
+                                  '<span class="ubits-body-sm-regular comp360-enum-texto">' + en.texto + '</span>' +
+                                  '<span class="comp360-enum-badge ubits-body-sm-regular">' + badge + '</span>' +
+                              '</li>';
+                          }).join('') +
+                          '</ul>'
+                        : '') +
+                    '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm comp360-item__add-enunciado" data-idx="' + idx + '">' +
+                        '<i class="far fa-plus"></i><span>Añadir enunciado</span>' +
+                    '</button>' +
                 '</div>';
 
             container.appendChild(item);
 
             item.querySelector('.comp360-item__checkbox').addEventListener('change', function (e) {
                 _competencias[idx].seleccionada = e.target.checked;
-                renderCompetenciasList();
+                item.classList.toggle('comp360-item--selected', e.target.checked);
                 updateCompetenciasCounter();
             });
 
-            item.querySelector('.comp360-item__expand-btn').addEventListener('click', function () {
+            var expandBtn = item.querySelector('.comp360-item__expand-btn');
+            if (expandBtn) expandBtn.addEventListener('click', function () {
                 _competencias[idx].expandida = !_competencias[idx].expandida;
                 renderCompetenciasList();
+            });
+
+            var addEnunciadoBtn = item.querySelector('.comp360-item__add-enunciado');
+            if (addEnunciadoBtn) addEnunciadoBtn.addEventListener('click', function () {
+                openComp360EnunciadoModal(idx);
             });
         });
 
@@ -999,8 +1613,10 @@
     }
 
     function saveCompetencias() {
-        draft.competencias = _competencias.map(function (c) { return { id: c.id, seleccionada: c.seleccionada }; });
-        draft.checks.competencias = true;
+        draft.competencias = _competencias.map(function (c) {
+            return { id: c.id, nombre: c.nombre, descripcion: c.descripcion || '', seleccionada: c.seleccionada };
+        });
+        draft.checks.competencias = _competencias.some(function (c) { return c.seleccionada; });
         showToast('success', 'Competencias guardadas');
         showView('hub');
     }

@@ -277,6 +277,22 @@
 .comp360-description h2 { color: var(--ubits-fg-1-high); margin: 0 0 var(--gap-sm); }
 .comp360-description p  { color: var(--ubits-fg-1-medium); margin: 0; }
 
+.comp360-description__row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--gap-lg);
+}
+.comp360-description__row > div {
+    flex: 1;
+}
+.comp360-header-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-sm);
+    flex-shrink: 0;
+}
+
 .comp360-list {
     display: flex;
     flex-direction: column;
@@ -352,7 +368,7 @@
 }
 
 .comp360-item__enunciados {
-    padding: 0 var(--padding-lg) var(--padding-md) calc(var(--padding-lg) + 20px + var(--gap-md));
+    padding: var(--padding-md) var(--padding-lg);
     border-top: 1px solid var(--ubits-border-1);
     background: var(--ubits-bg-2);
 }
@@ -376,6 +392,75 @@
     color: var(--ubits-fg-2-medium);
     flex-shrink: 0;
     min-width: 16px;
+}
+
+/* Lista de enunciados dentro del acordeón */
+.comp360-enum-list {
+    list-style: none;
+    margin: 0 0 var(--gap-md);
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-sm);
+}
+
+.comp360-enum-item {
+    display: flex;
+    align-items: baseline;
+    gap: var(--gap-sm);
+}
+
+.comp360-enum-num {
+    color: var(--ubits-fg-2-medium);
+    flex-shrink: 0;
+    min-width: 16px;
+}
+
+.comp360-enum-texto {
+    flex: 1;
+    color: var(--ubits-fg-1-medium);
+}
+
+.comp360-enum-badge {
+    flex-shrink: 0;
+    padding: 2px var(--padding-xs);
+    background: var(--ubits-bg-3);
+    border-radius: var(--border-radius-xs);
+    color: var(--ubits-fg-1-medium);
+    white-space: nowrap;
+}
+
+/* Modal enunciado: descripción, tipos switches, subOpciones */
+.comp360-enum-modal-desc {
+    color: var(--ubits-fg-1-medium);
+    margin-bottom: var(--gap-lg);
+}
+
+.comp360-enum-tipos-section {
+    margin-top: var(--gap-lg);
+}
+
+.comp360-enum-tipos-label {
+    color: var(--ubits-fg-1-medium);
+    margin-bottom: var(--gap-md);
+}
+
+.comp360-enum-tipos-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--gap-md) var(--gap-2xl);
+}
+
+.comp360-enum-tipo-row {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-md);
+    cursor: pointer;
+}
+
+.comp360-enum-escala-option {
+    display: flex;
+    align-items: flex-start;
 }
 
 /* ════════════════════════════════════════
