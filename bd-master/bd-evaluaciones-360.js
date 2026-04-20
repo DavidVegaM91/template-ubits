@@ -20,33 +20,33 @@ window.BD_EVALUACIONES_360 = {
     },
     {
       id: 'AXS002',
-      nombre: 'Evaluación 360 Desempeño Comercial',
-      fechaInicio: '2025-04-01',
-      fechaFin: '2025-06-30',
+      nombre: 'Evaluación 360 Desempeño Comercial Q2 2026',
+      fechaInicio: '2026-04-01',
+      fechaFin: '2026-06-30',
       estado: 'activa',
       checks: { tipo: true, competencias: true, evaluados: true, resultados: true }
     },
     {
       id: 'AXS003',
-      nombre: 'Evaluación 360 Equipos Técnicos',
-      fechaInicio: '2025-07-01',
-      fechaFin: '2025-09-30',
+      nombre: 'Evaluación 360 Equipos Técnicos Q3 2026',
+      fechaInicio: '2026-07-01',
+      fechaFin: '2026-09-30',
       estado: 'borrador',
       checks: { tipo: true, competencias: true, evaluados: false, resultados: false }
     },
     {
       id: 'AXS004',
-      nombre: 'Evaluación 360 Gerencia y Directores',
-      fechaInicio: '2025-05-15',
-      fechaFin: '2025-08-15',
+      nombre: 'Evaluación 360 Gerencia y Directores Q2 2026',
+      fechaInicio: '2026-04-10',
+      fechaFin: '2026-08-15',
       estado: 'activa',
       checks: { tipo: true, competencias: true, evaluados: true, resultados: true }
     },
     {
       id: 'AXS005',
-      nombre: 'Evaluación 360 Cultura Organizacional 2024',
-      fechaInicio: '2024-09-01',
-      fechaFin: '2024-12-31',
+      nombre: 'Evaluación 360 Cultura Organizacional 2025',
+      fechaInicio: '2025-09-01',
+      fechaFin: '2025-12-31',
       estado: 'finalizada',
       checks: { tipo: true, competencias: true, evaluados: true, resultados: true }
     }

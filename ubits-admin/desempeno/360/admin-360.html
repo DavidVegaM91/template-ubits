@@ -97,6 +97,17 @@
         return d.innerHTML;
     }
 
+    /* Calcula el estado real a partir de las fechas (ignora el campo estado guardado) */
+    function calcEstado(fechaInicio, fechaFin) {
+        var hoy = new Date();
+        hoy.setHours(0, 0, 0, 0);
+        var fin    = fechaFin    ? new Date(fechaFin)    : null;
+        var inicio = fechaInicio ? new Date(fechaInicio) : null;
+        if (fin    && fin    < hoy)  return 'finalizada';
+        if (inicio && inicio <= hoy) return 'activa';
+        return 'borrador';
+    }
+
     function getEstadoTagType(estado) {
         if (estado === 'activa')     return 'success';
         if (estado === 'finalizada') return 'neutral';
@@ -163,11 +174,12 @@
 
     /* ── row HTML para ubits-data-table ── */
     function buildRowHtml(row) {
-        var tipo = getEstadoTagType(row.estado);
-        var label = getEstadoLabel(row.estado);
+        var estadoCalc = calcEstado(row.fechaInicio, row.fechaFin);
+        var tipo  = getEstadoTagType(estadoCalc);
+        var label = getEstadoLabel(estadoCalc);
         var tagHtml = '<span class="ubits-status-tag ubits-status-tag--' + tipo + ' ubits-status-tag--sm"><span class="ubits-status-tag__text">' + escapeHtml(label) + '</span></span>';
         var accionesBtn = '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only js-a360-row-acciones-btn" ' +
-            'data-id="' + escapeHtml(String(row.id)) + '" data-estado="' + escapeHtml(row.estado) + '" ' +
+            'data-id="' + escapeHtml(String(row.id)) + '" data-estado="' + escapeHtml(estadoCalc) + '" ' +
             'aria-label="Acciones" data-tooltip="Acciones" data-tooltip-delay="500">' +
             '<i class="far fa-ellipsis-vertical"></i></button>';
         return '<td data-col="nombre"><span class="ubits-body-sm-regular">' + escapeHtml(row.nombre) + '</span></td>' +
