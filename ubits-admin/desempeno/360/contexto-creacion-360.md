@@ -1,8 +1,8 @@
 # Contexto: creación de una evaluación 360
 
-Documento de referencia para implementar o extender el flujo de **creación de una evaluación 360** dentro del módulo Desempeño (área Administrador). Aquí se documenta el estado actual del prototipo, la lógica de negocio de cada sección y los detalles técnicos de implementación.
+Documento de referencia para implementar o extender el flujo de **creación de una evaluación 360** dentro del módulo Desempeño (área Administrador). Describe el estado actual del prototipo, la lógica de negocio de cada sección y los detalles técnicos de implementación.
 
-**Objetivo de este archivo:** que, al leerlo, no queden dudas sobre el proceso de negocio ni sobre la pantalla al construir cada vista. Se irá ampliando con mensajes posteriores.
+**Objetivo:** que al leerlo no queden dudas sobre el proceso de negocio ni sobre la pantalla, al construir o modificar cada vista.
 
 ---
 
@@ -12,34 +12,36 @@ Documento de referencia para implementar o extender el flujo de **creación de u
 |-----|------|
 | HTML principal | `ubits-admin/desempeno/360/crear-360.html` |
 | CSS de página | `ubits-admin/desempeno/360/crear-360.css` |
-| Datos: tipos de evaluación y competencias | `bd-master/bd-evaluaciones-360.js` |
-| Datos: colaboradores (para tablas y validación CSV) | `bd-master/bd-master-colaboradores.js` |
+| Tipos de evaluación, competencias base, helper `addEvaluacion` | `bd-master/bd-evaluaciones-360.js` |
+| Colaboradores (tablas y validación de archivos) | `bd-master/bd-master-colaboradores.js` |
 | Listado de evaluaciones (destino al activar / salir) | `ubits-admin/desempeno/360/admin-360.html` |
+| Archivos demo (CSV de ejemplo) | `ubits-admin/desempeno/360/archivos-demo/` |
 
 ---
 
 ## Visión general del flujo
 
-El flujo de creación vive en una **página inmersiva dedicada** (`crear-360.html`) y funciona como un **hub con secciones independientes**: el usuario primero guarda los datos básicos y luego configura cada sección en sub-vistas independientes. Sólo cuando las **cuatro secciones** están completadas puede activar la evaluación.
+El flujo vive en una **página inmersiva dedicada** (`crear-360.html`). Funciona como un **hub con cuatro secciones independientes**: el usuario guarda primero los datos básicos y luego configura cada sección en sub-vistas. La evaluación solo se puede activar cuando las **cuatro secciones** están completadas.
 
 ### Layout
 
 Usa la cáscara inmersiva transversal **`general-styles/layout-immersive.css`**:
 
-- Clase raíz: **`.ubits-layout-immersive`**
-- `body` lleva: `no-subnav page-layout-immersive page-crear-360`
+- Clase raíz: `.ubits-layout-immersive`
+- `<body>` lleva: `data-theme="light" class="no-subnav page-layout-immersive page-crear-360"`
 - El scroll vive en `#crear360-main` (`.ubits-layout-immersive__main`)
-- El header y el footer son fijos (`__header` y `__footer`)
+- Header y footer son fijos (`__header` y `__footer`)
 
 ### Vistas (sub-páginas en memoria)
 
-El flujo tiene **5 vistas** que se alternan dentro del mismo DOM. El cambio de vista está manejado por `showView(viewId)` que:
+El flujo tiene **5 vistas** que se alternan dentro del mismo DOM. El cambio de vista está gestionado por `showView(viewId)` que:
 
 1. Alterna la clase `crear360-view--hidden` en los `data-view="*"` del HTML
 2. Actualiza el hash de la URL (`history.pushState`)
 3. Renderiza el header dinámico
 4. Intercambia el footer (hub vs sub-vista)
 5. Inicializa el contenido de la vista
+6. Hace scroll al tope de `#crear360-main`
 
 | Vista | `viewId` | Hash URL |
 |-------|----------|----------|
@@ -51,34 +53,33 @@ El flujo tiene **5 vistas** que se alternan dentro del mismo DOM. El cambio de v
 
 ### Navegación con historial del navegador
 
-- Las flechas «atrás» y «adelante» del navegador funcionan porque cada vista empuja al historial.
+- Las flechas «atrás» / «adelante» del navegador funcionan porque cada vista empuja al historial.
 - El botón **←** del header de sub-vistas llama `history.back()`.
 - El evento `popstate` intercepta cambios de hash y llama `showView` con `pushHistory: false` para no apilar duplicados.
+- `cleanupCalendarPickers()` se llama antes de salir de `hub` para destruir los pickers flotantes de `calendar.js`.
 
 ### Estado en memoria (`draft`)
 
-Todo el estado del formulario vive en un objeto `draft` (no hay localStorage):
+Todo el estado del formulario vive en un objeto `draft` (sin localStorage, se pierde al recargar — intencional en el prototipo):
 
 ```js
 draft = {
-    nombre: '',
+    nombre:     '',
     fechaInicio: '',
-    fechaFin: '',
-    guardado: false,                  // true tras "Confirmar" en el hub
-    checks: {                         // true cuando se guarda cada sección
-        tipo: false,
+    fechaFin:   '',
+    guardado:   false,          // true tras "Confirmar" en el hub
+    checks: {                   // true cuando se guarda cada sección
+        tipo:         false,
         competencias: false,
-        evaluados: false,
-        resultados: false
+        evaluados:    false,
+        resultados:   false
     },
-    tipo: [],                         // array de {id, activo, peso}
-    competencias: [],                 // array de {id, seleccionada}
-    evaluados: {},                    // objeto con tipo y personas/grupos
-    resultados: null                  // objeto con escala, params, toggles
+    tipo:         [],           // [{id, activo, peso}]
+    competencias: [],           // [{id, nombre, descripcion, seleccionada, enunciados[]}]
+    evaluados:    {},           // ver sección Evaluados
+    resultados:   null          // {escala, cantidad, params, permitirLideres, permitirNoSabe, asegurarAnonimato}
 }
 ```
-
-**Importante:** el estado se pierde al recargar la página (intencional en el prototipo).
 
 ---
 
@@ -99,18 +100,18 @@ Tres campos obligatorios creados con `createInput()`:
 | Fecha de fin | `calendar` | Requerida |
 
 Al hacer clic en **«Confirmar»** (`#crear360-btn-save-inline`) se ejecuta `guardarEvaluacion()`:
-- Si hay errores, se marcan los inputs con `setState('invalid')` y un mensaje de error (`crear360-input-error`) debajo.
-- Si es válido, `draft.guardado = true`, se oculta el botón «Confirmar» y se desbloquean las cuatro tarjetas de configuración.
+- Si hay errores: inputs marcados con `setState('invalid')` y mensaje de error debajo (`#crear360-input-error`).
+- Si es válido: `draft.guardado = true`, se oculta el botón «Confirmar», se desbloquean las cuatro tarjetas.
 
 ### Estado: bloqueado vs desbloqueado
 
-- **Bloqueado** (`crear360-option-card--locked`): las tarjetas tienen `tabindex="-1"` y no son clicables. Aplica mientras `draft.guardado === false`.
+- **Bloqueado** (`crear360-option-card--locked`): tarjetas con `tabindex="-1"`, no clicables. Aplica mientras `draft.guardado === false`.
 - **Desbloqueado**: se quita `--locked` y el usuario puede entrar a cada sección.
 - **Completado** (`crear360-option-card--done`): se añade al guardar cada sección; muestra el ícono `fa-circle-check` en la tarjeta.
 
 ### Edición después de confirmar
 
-Al editar los inputs cuando el formulario ya está guardado (`draft.guardado === true`), `_formModified` se pone en `true` y aparece el botón **«Guardar cambios»** en el footer (oculto antes). Ese botón llama al mismo `guardarEvaluacion()`.
+Al editar los inputs cuando el formulario ya está guardado (`draft.guardado === true`), `_formModified` se pone en `true` y aparece el botón **«Guardar cambios»** en el footer. Ese botón llama al mismo `guardarEvaluacion()`.
 
 ### Footer hub
 
@@ -121,7 +122,7 @@ Al editar los inputs cuando el formulario ya está guardado (`draft.guardado ===
 
 ### Activar evaluación
 
-Al hacer clic en **«Activar evaluación»** se abre un modal de confirmación (`openModal`). Al confirmar:
+Al hacer clic en **«Activar evaluación»** se abre un modal de confirmación. Al confirmar:
 1. Se llama `BD_EVALUACIONES_360.addEvaluacion(...)` con los datos del `draft`.
 2. Se cierra el modal.
 3. Se redirige a `admin-360.html?toast=created`.
@@ -142,11 +143,16 @@ Activar qué tipos de evaluador participarán y asignarles un peso porcentual. L
 
 ### Fuente de datos
 
-Los tipos provienen de `BD_EVALUACIONES_360.tiposEvaluacion` (`bd-master/bd-evaluaciones-360.js`):
+Los tipos provienen de `BD_EVALUACIONES_360.tiposEvaluacion`:
 
 ```js
 [{ id, nombre, descripcion, pesoSugerido }, ...]
 ```
+
+IDs internos en la BD: `auto`, `jefe`, `pares`, `subalternos`, `cliente`.  
+Nombres visibles: `Autoevaluación`, `Descendente`, `Paralela`, `Ascendente`, `Cliente interno`.
+
+> **Importante:** para toda comparación con valores de archivos CSV/Excel se usa `t.nombre` (normalizado), nunca `t.id` (los ids internos no coinciden con los valores que escribe el usuario).
 
 Al entrar a la vista por primera vez se inicializa `_tipos[]` combinando los datos base con los valores guardados en `draft.tipo` (si existen).
 
@@ -155,22 +161,25 @@ Al entrar a la vista por primera vez se inicializa `_tipos[]` combinando los dat
 Cada tarjeta (`tipo360-card`) muestra dos filas:
 
 - **Fila 1:** nombre del tipo (izquierda) + switch de activación (derecha, `ubits-switch--md`).
-- **Fila 2:** descripción (izquierda) + input de peso `%` (derecha, `createInput` tipo `number`, tamaño `sm`, `rightIcon: 'fa-percent'`).
+- **Fila 2:** descripción (izquierda) + input de peso `%` (derecha, `createInput` tipo `number`, tamaño `sm`, `rightIcon: 'fa-percent'`, ancho 60 px).
 
-El input de peso está **deshabilitado** cuando el tipo está inactivo.
+El input de peso está **deshabilitado** cuando el tipo está inactivo. Las tarjetas inactivas tienen opacidad `0.7`. Las activas mantienen fondo `bg-1` (sin cambio de color al activar).
 
-### Regla de suma y estado del botón «Guardar»
+### Indicador de total (header de la vista)
 
-- El total se actualiza en tiempo real con cada `input` nativo en el campo de peso.
-- El número del total (`#tipo360-total`) cambia de color:
+- Texto fijo: «El total debe ser 100%. Llevas»
+- `#tipo360-total` muestra el valor en tiempo real con tipografía `ubits-heading-h2`.
+- A su lado: «/100» también en `ubits-heading-h2`.
+- El número cambia de color:
   - Verde (`--ubits-feedback-accent-success`) cuando el total es exactamente 100.
   - Rojo (`--ubits-feedback-accent-error`) cuando está entre 1 y 99 o supera 100.
-  - Color neutro (`--ubits-fg-1-high`) cuando es 0.
-- **«Guardar» habilitado** solo si: hay al menos un tipo activo Y la suma es exactamente 100.
+  - Neutro (`--ubits-fg-1-high`) cuando es 0.
 
-### Guardar
+### Botón «Guardar»
 
-`saveTipo()` escribe en `draft.tipo` y pone `draft.checks.tipo = true`.
+Habilitado solo si: hay al menos un tipo activo **y** la suma es exactamente 100.
+
+`saveTipo()` escribe en `draft.tipo = [{id, activo, peso}, ...]` y pone `draft.checks.tipo = true`.
 
 ---
 
@@ -178,35 +187,141 @@ El input de peso está **deshabilitado** cuando el tipo está inactivo.
 
 ### Propósito
 
-Seleccionar las competencias que serán evaluadas. Cada competencia incluye 3 enunciados (preguntas) que los evaluadores responderán.
+El administrador crea desde cero las competencias que serán evaluadas, y para cada competencia define los enunciados (preguntas) que los evaluadores responderán.
 
-### Fuente de datos
+> **Cambio de modelo:** las competencias ya **no** provienen de `BD_EVALUACIONES_360.competenciasBase`. Son 100% creadas por el usuario durante la sesión. `_competencias[]` almacena el estado en memoria; `draft.competencias` persiste entre sub-vistas.
 
-`BD_EVALUACIONES_360.competenciasBase` → `{ id, nombre, enunciados: string[] }`.
+### Estructura de datos de `_competencias`
 
-Al entrar, se inicializa `_competencias[]` combinando con `draft.competencias`.
+```js
+_competencias = [
+    {
+        id:          'comp-<timestamp>',  // o 'comp-imp-<timestamp>-<i>'
+        nombre:      'Trabajo en equipo',
+        descripcion: 'Breve descripción de la competencia.',
+        seleccionada: true,
+        expandida:   false,
+        enunciados:  [
+            {
+                id:              'en-<timestamp>',
+                texto:           'Colabora activamente...',
+                tipoRespuesta:   'calificacion' | 'abierta',
+                escala:          'desempeno' | 'regularidad' | null,
+                obligatoria:     false | true,
+                tiposEvaluacion: ['ascendente', 'paralela', ...]  // subconjunto de TIPO_IDS
+            }
+        ]
+    }
+]
+```
 
-### Lista de competencias
+### Modo empty state (sin competencias)
 
-Cada ítem (`comp360-item`) muestra:
+Cuando `_competencias.length === 0` se muestra el empty state (`loadEmptyState`) con:
+- Icono: `fa-clipboard-list`
+- Título: «Añade una competencia»
+- Descripción breve
+- Botón secundario: **«Añadir una por una»** → abre `openComp360Modal()`
+- Botón primario: **«Añadir desde archivo»** → abre `openComp360ImportDrawer()`
+- El footer sub-vistas se **oculta** en este estado.
 
-- Checkbox de selección.
-- Nombre en `ubits-body-md-bold`.
-- Conteo de enunciados (ej: «3 enunciados»).
-- Botón expandir/colapsar (`fa-chevron-down` / `fa-chevron-up`).
-- Lista de enunciados (oculta por defecto), numerada.
+### Modo lista (con al menos 1 competencia)
 
-El ítem seleccionado añade la clase `comp360-item--selected`.
+Header de la lista con dos botones:
+- **«Añadir enunciados desde archivo»** → `openComp360ImportEnunciadosDrawer()`
+- **«Añadir competencia»** → abre un dropdown (`comp360AddDropdown`) con dos opciones:
+  - «Añadir una por una» → `openComp360Modal()`
+  - «Añadir desde archivo» → `openComp360ImportDrawer()`
 
-### Contador en el header
+Cada ítem de competencia (`comp360-item`) muestra:
+- Nombre en `ubits-body-md-bold`
+- Descripción en `ubits-body-sm-regular`
+- Número de enunciados
+- Botón expandir/colapsar (`fa-chevron-down` / `fa-chevron-up`)
+- Al expandir: lista de enunciados + botón secundario sm **«Añadir enunciado»** → `openComp360EnunciadoModal(compIdx)`
 
-`#comp360-selected-count` muestra «N seleccionada(s)» y se actualiza en cada cambio.
+### Modal: Nueva competencia (`openComp360Modal`)
+
+Campos obligatorios para habilitar el botón «Crear»:
+- **Nombre** (`createInput` tipo `text`)
+- **Descripción** (`createInput` tipo `textarea`)
+
+Al crear: se añade a `_competencias[]` con `seleccionada: true` y se llama `renderCompetenciasView()`.
+
+### Modal: Añadir enunciado (`openComp360EnunciadoModal`)
+
+Para una competencia específica (por índice). Campos:
+
+| Campo | Tipo | Notas |
+|-------|------|-------|
+| Enunciado | `textarea` | Obligatorio |
+| Tipo de respuesta | `select` | Opciones: «Calificación del 1 al 5» / «Respuesta abierta» |
+| Sub-opciones calificación | `select` (condicional) | Desempeño / Regularidad |
+| Sub-opciones respuesta abierta | `select` (condicional) | Opcional / Obligatoria |
+| Tipos de evaluación activos | switches `ubits-switch--md` | Uno por tipo activo en `_tipos`; todos marcados por defecto |
+
+Los tipos del modal se leen de `_tipos` (en memoria) → `draft.tipo` → BD completa (fallback).
+
+Botón «Añadir» habilitado cuando el enunciado tiene texto. Al confirmar, el enunciado se añade al array `enunciados[]` de la competencia y se re-renderiza la vista.
+
+### Drawer: Añadir competencias desde archivo (`openComp360ImportDrawer`)
+
+- Drawer oficial (`openDrawer`), id: `comp360DrawerImport`
+- Acepta: CSV, `.xlsx`, `.xls` (constante `ACCEPT_TABULAR`); máx. 2 MB
+- **Plantilla descargable** (nombre: `plantilla-competencias-360.csv`):
+
+| Nombre competencia | Descripcion |
+|--------------------|-------------|
+| Liderazgo | Inspira y motiva al equipo... |
+| (ejemplos) | |
+
+- **Validaciones por fila:**
+  - `cols[0]` (nombre) no puede estar vacío
+  - `cols[1]` (descripción) no puede estar vacío
+- Si hay errores: modal con tabla Fila / Problema (`buildImportErrorTableHtml`).
+- Si no hay errores: competencias añadidas a `_competencias[]` con `seleccionada: true`; toast de éxito; re-renderiza la vista.
+
+### Drawer: Añadir enunciados desde archivo (`openComp360ImportEnunciadosDrawer`)
+
+- Drawer oficial (`openDrawer`), id: `comp360DrawerImportEnum`
+- Acepta: CSV, `.xlsx`, `.xls`; máx. 2 MB
+- **Plantilla descargable** (nombre: `plantilla-enunciados-360.csv`): generada dinámicamente con los nombres de las primeras dos competencias existentes como ejemplos.
+
+Estructura de la plantilla (8 columnas):
+
+| competencia | enunciado | tipo_respuesta | ascendente | descendente | paralela | cliente | autoevaluacion |
+|-------------|-----------|---------------|------------|-------------|---------|---------|---------------|
+| Liderazgo | Inspira y motiva... | 1-5 Desempeño | 1 | 1 | 1 | 0 | 0 |
+| (ejemplos) | | | | | | | |
+
+**Valores válidos de `tipo_respuesta`:**
+
+| Valor en CSV | `tipoRespuesta` | `escala` | `obligatoria` |
+|-------------|----------------|----------|--------------|
+| `1-5 Desempeño` | `calificacion` | `desempeno` | `false` |
+| `1-5 Regularidad` | `calificacion` | `regularidad` | `false` |
+| `Respuesta abierta - obligatoria` | `abierta` | `null` | `true` |
+| `Respuesta abierta` | `abierta` | `null` | `false` |
+
+**Validaciones por fila:**
+
+| Regla | Mensaje |
+|-------|---------|
+| Nombre de competencia vacío | «Fila N: falta el nombre de la competencia.» |
+| Competencia no existe en `_competencias` | «Fila N: la competencia "X" no existe.» |
+| Texto del enunciado vacío | «Fila N: falta el texto del enunciado.» |
+| `tipo_respuesta` no válido | «Fila N: tipo de respuesta "X" no válido.» |
+| Ningún tipo de evaluación marcado (cols 3-7 ninguna `"1"`) | «Fila N: debe marcarse al menos un tipo de evaluación.» |
+
+Si hay errores: modal con tabla Fila / Problema. Si no: enunciados añadidos a sus competencias; toast; re-renderiza.
+
+**`TIPO_IDS` para enunciados:** `['ascendente', 'descendente', 'paralela', 'cliente', 'autoevaluacion']` — cols 3 a 7 del CSV.
 
 ### Botón «Guardar»
 
-Deshabilitado si no hay ninguna competencia seleccionada.
+Deshabilitado si `_competencias.length === 0` (se oculta el footer en el empty state).
 
-`saveCompetencias()` escribe en `draft.competencias` y pone `draft.checks.competencias = true`.
+`saveCompetencias()` escribe `draft.competencias = [..._competencias]` y pone `draft.checks.competencias = true`.
 
 ---
 
@@ -214,132 +329,133 @@ Deshabilitado si no hay ninguna competencia seleccionada.
 
 ### Propósito
 
-Definir qué colaboradores serán evaluados en esta evaluación 360. El flujo usa un **wizard de 2 pasos** con stepper horizontal compacto (`ubits-stepper--horizontal-compact`).
+Seleccionar qué colaboradores serán evaluados en esta evaluación 360. La selección se hace mediante una tabla con checkboxes. Se puede complementar con importación desde archivo.
 
-### Paso 1 — Tipo de selección
+> **Modelo actual:** tabla única de todos los colaboradores. El antiguo wizard de 2 pasos con cards de tipo de selección fue eliminado.
 
-Cuatro cards con radio buttons (`drawer-option-card`), estructuradas igual que en el drawer de `crear-plan-contenidos.html`:
+### Tabla de colaboradores (`eval360InitColabTable`)
 
-| Opción | Valor | Descripción |
-|--------|-------|-------------|
-| Toda la empresa | `toda-empresa` | Selecciona automáticamente todos los colaboradores |
-| Por colaborador | `por-colaborador` | Tabla `ubits-data-table` de colaboradores (paso 2) |
-| Por grupos | `por-grupos` | Tabla `ubits-data-table` de grupos (paso 2) |
-| Desde archivo | `desde-archivo` | Sube un CSV; panel de file-upload en el mismo paso 1 |
+Creada con `createUbitsDataTable` en el contenedor `#eval360-colab-dt-container`.
 
-Cada card muestra un contador de seleccionados que se actualiza con `eval360UpdateCardCounts()`.
+| Columna | Campo | Características |
+|---------|-------|----------------|
+| Evaluado | `evaluado` (nombre) | Avatar + nombre; `sortable: true` |
+| Username | `username` | Solo texto; `sortable: true` |
+| Área | `area` | Solo texto; `sortable: true` |
 
-**Comportamiento del footer según opción:**
+- **Datos:** `BD_MASTER_COLABORADORES.colaboradores` — 55 colaboradores. Todos tienen `username` (formato `inicial_4letrasPrimerApellido_inicialSegundoApellido@fiqsha.demo`, e.g. `cgarcl@fiqsha.demo`).
+- **Orden por defecto:** A-Z por nombre del evaluado (`localeCompare('es', { sensitivity: 'base' })`).
+- **Botón primario:** «Añadir desde archivo» (`fa-file-arrow-up`) → llama `openEval360ImportDrawer()`.
+- **Búsqueda:** estándar del componente `ubits-data-table`.
+- **Checkboxes:** selección múltiple estándar. El botón «Guardar» se habilita al seleccionar al menos 1.
+- La selección previa de `draft.evaluados.personas` se restaura al volver a la vista.
 
-| Opción seleccionada | Botón primario | Botón secundario |
-|--------------------|----------------|-----------------|
-| `toda-empresa` | «Guardar» | «Cancelar» |
-| `por-colaborador` o `por-grupos` | «Siguiente» | «Cancelar» |
-| `desde-archivo` | «Importar» (deshabilitado hasta archivo válido) | «Cancelar» |
+### Drawer: Añadir desde archivo (`openEval360ImportDrawer`)
 
-El clic sobre el paso 1 del stepper (cuando se está en el paso 2) vuelve al paso 1.
+- Drawer oficial (`openDrawer`), id: `eval360DrawerImport`
+- Dos modos radio (uno al lado del otro): **«Basado en organigrama»** y **«Libre»**
+- Al cambiar el modo se re-monta el file uploader (`montarFileUploader()`) y actualiza la descripción (`actualizarDesc()`)
 
-### Paso 2 — Selección (solo `por-colaborador` y `por-grupos`)
+#### Modo: Basado en organigrama
 
-El panel visible depende de la opción elegida en el paso 1:
+El archivo solo lleva la columna `username`. El sistema asigna evaluadores automáticamente según el organigrama y los tipos activos configurados en `#tipo`.
 
-**Panel colaboradores** (`#eval360-panel-colaborador`):
-- Tabla `createUbitsDataTable`, id `eval360-colab-table`.
-- Título: «Lista de colaboradores».
-- Columnas: Nombre (avatar + correo), Área, Líder.
-- Datos: `BD_MASTER_COLABORADORES.colaboradores` → campos `nombre`, `username` (como correo), `area`, `jefe` (como líder), `avatar`.
+**Plantilla** (`plantilla-evaluados-organigrama.csv`):
 
-**Panel grupos** (`#eval360-panel-grupos`):
-- Tabla `createUbitsDataTable`, id `eval360-grupos-table`.
-- Título: «Lista de grupos».
-- Columnas: Nombre, Descripción, Integrantes.
-- Datos: `_eval360GruposMock` (10 grupos de ejemplo definidos en el JS de la página).
+| username |
+|----------|
+| rospid@fiqsha.demo |
+| fcastr@fiqsha.demo |
+| (ejemplos) |
 
-Ambas tablas tienen: checkboxes, búsqueda, «Ver seleccionados», contador de resultados.
-
-**Botón «Guardar» en paso 2:** deshabilitado si no hay filas seleccionadas. El botón cancelar en paso 2 dice «Anterior» y vuelve al paso 1.
-
-### Opción: Desde archivo (panel inline en paso 1)
-
-El panel `#eval360-panel-archivo` se muestra/oculta según la opción radio activa, dentro del paso 1 (no avanza al paso 2).
-
-Componente: `createFileUpload` (`components/file-upload.css` + `file-upload.js`).
-
-Configuración:
-
-```js
-createFileUpload({
-    containerId:     'eval360-archivo-fu-container',
-    id:              'eval360-archivo-fu',
-    title:           'Importar evaluados',
-    accept:          '.csv,text/csv',
-    maxSizeMb:       1,
-    formats:         'CSV • Hasta 1 MB • Máx. 3.000 filas',
-    downloadButtons: [{ label: 'Descargar plantilla', icon: 'file-arrow-down', onClick: eval360DescargarPlantilla }],
-    onChange:        /* → eval360ValidarCSV(file) */,
-    onError:         /* limpia estado y deshabilita botón */
-})
-```
-
-#### Plantilla descargable
-
-`eval360DescargarPlantilla()` genera y descarga un CSV con BOM UTF-8 (compatible Excel):
-
-| Evaluador username | Evaluado username | Tipo de evaluacion |
-|--------------------|-------------------|--------------------|
-| (usuario 0) | (usuario 1) | descendente |
-| (usuario 1) | (usuario 0) | ascendente |
-| (usuario 2) | (usuario 3) | paralela |
-| (usuario 4) | (usuario 4) | autoevaluación |
-| (usuario 2) | (usuario 0) | cliente |
-
-Los usernames se toman de `BD_MASTER_COLABORADORES.colaboradores[i].username`.
-
-#### Validaciones del archivo
-
-**Generales** (previas a validar filas):
-1. El componente valida tipo (`.csv`, `text/csv`) y tamaño (≤ 1 MB) de forma nativa.
-2. El archivo no puede estar vacío ni tener solo la fila de títulos → error inline.
-3. No puede superar 3.000 filas de datos → error inline.
-
-**Por fila** (ejecutadas en `eval360ValidarCSV`):
+**Validaciones** (`eval360ValidarOrganigrama`):
 
 | Regla | Mensaje |
 |-------|---------|
-| Campos faltantes | Lista qué columna/s están vacías en esa fila |
-| Tipo de evaluación inválido | Solo se aceptan: `descendente`, `ascendente`, `paralela`, `autoevaluación`, `cliente` (comparación normalizada sin acentos) |
-| Misma persona, tipo ≠ autoevaluación | «Evaluador y evaluado son la misma persona, pero el tipo no es autoevaluación.» |
-| `autoevaluación` con personas distintas | «El tipo es autoevaluación, pero evaluador y evaluado son personas distintas.» |
-| Evaluador no en BD (excepto tipo `cliente`) | «El evaluador "X" no está registrado en la empresa.» |
-| Evaluado no en BD | «El evaluado "X" no está registrado en la empresa.» |
+| Archivo vacío (sin datos) | «El archivo está vacío o solo contiene la fila de encabezados.» |
+| Más de 3.000 filas | «El archivo supera las 3.000 filas permitidas (N filas).» |
+| Columna `username` no encontrada | «La columna requerida "username" no fue encontrada. Verifica que uses la plantilla correcta.» |
+| Solo encabezado, sin datos | «El archivo no tiene filas de datos (solo tiene el encabezado).» |
+| Campo `username` vacío en fila | «Fila N: el campo "username" está vacío.» |
+| Username no existe en BD | «Fila N: el usuario "X" no existe en la base de datos.» |
 
-Si hay errores se activa el botón «Informe de errores» (`.ubits-file-upload__error-report-btn`) y se muestra un modal con tabla Fila / Problema (máx. 50 visibles). El botón «Importar» permanece deshabilitado.
+Retorna `{ errores: [], filas: [{ username }] }`.
 
-Si no hay errores, `_eval360ArchivoListo = true` y el botón «Importar» se habilita.
+#### Modo: Libre
 
-#### Variables de estado del wizard evaluados
+El archivo tiene 3 columnas: `evaluador`, `evaluado`, `tipo_evaluacion`. Permite asignaciones personalizadas fuera del organigrama.
+
+**Plantilla** (`plantilla-evaluados-libre.csv`):
+
+| evaluador | evaluado | tipo_evaluacion |
+|-----------|----------|----------------|
+| rospid@fiqsha.demo | cgarcl@fiqsha.demo | descendente |
+| cgarcl@fiqsha.demo | rospid@fiqsha.demo | ascendente |
+| cgarcl@fiqsha.demo | lrodrm@fiqsha.demo | paralela |
+| pateleber@fiqsha.demo | pateleber@fiqsha.demo | autoevaluacion |
+| carlos.mendez@proveedorexterno.com | cgarcl@fiqsha.demo | cliente |
+
+**Valores válidos de `tipo_evaluacion`:** `descendente`, `ascendente`, `paralela`, `autoevaluacion`, `cliente` (normalizado, sin acento en autoevaluación).
+
+**Validaciones** (`eval360ValidarLibre`):
+
+| Regla | Mensaje |
+|-------|---------|
+| Archivo vacío | «El archivo está vacío o solo contiene la fila de encabezados.» |
+| Más de 3.000 filas | «El archivo supera las 3.000 filas permitidas (N filas).» |
+| Columnas requeridas faltantes | «Faltan columnas requeridas: "X", "Y". Usa la plantilla de modo Libre.» |
+| Solo encabezado | «El archivo no tiene filas de datos (solo tiene el encabezado).» |
+| Campo evaluador vacío | «Fila N: el campo "evaluador" está vacío.» |
+| Campo evaluado vacío | «Fila N: el campo "evaluado" está vacío.» |
+| Campo tipo_evaluacion vacío | «Fila N: el campo "tipo_evaluacion" está vacío.» |
+| Tipo no válido | «Fila N: tipo de evaluación "X" no es válido. Valores admitidos: descendente, ascendente, paralela, autoevaluación, cliente.» |
+| Tipo no activo en la configuración | «Fila N: el tipo "X" no está activo en la configuración de esta evaluación 360.» |
+| Evaluador no existe en BD (excepto tipo `cliente`) | «Fila N: el evaluador "X" no existe en la base de datos.» |
+| Evaluado no existe en BD | «Fila N: el evaluado "X" no existe en la base de datos.» |
+| Autoevaluación con personas distintas | «Fila N: en autoevaluación el evaluador y el evaluado deben ser la misma persona.» |
+| Tipo ≠ autoevaluación con misma persona | «Fila N: evaluador y evaluado son la misma persona. Solo se permite en autoevaluación.» |
+
+> **Excepción cliente:** el evaluador de tipo `cliente` no necesita estar en `BD_MASTER_COLABORADORES` (puede ser un email de cliente externo).
+
+> **Check de tipo activo:** se usa `eval360GetTiposActivos().map(t => eval360Norm(t.nombre))`. Se usa `.nombre` (no `.id`) porque los IDs internos (`jefe`, `pares`, etc.) no coinciden con los valores del CSV.
+
+Retorna `{ errores: [], filas: [{ evaluador, evaluado, tipo }] }`.
+
+#### Flujo de error reporting en el file uploader
+
+El file uploader de evaluados sigue el patrón oficial del componente `file-upload.js`:
+
+1. Si hay errores de validación: `fileUploadSetError(fuEl, 'N error(es)...')` + `fileUploadShowErrorReport(fuEl, true)` + se conecta el botón «Informe de errores» → `eval360MostrarErroresImport(errores)`.
+2. Si no hay errores: `fileUploadClearError(fuEl)` + `fileUploadShowErrorReport(fuEl, false)` + botón «Importar» habilitado.
+
+`eval360MostrarErroresImport(errores)` abre un modal con `buildImportErrorTableHtml(errores)`.
+
+#### Aplicar importación (`eval360AplicarImport`)
+
+- **Organigrama:** resuelve usernames a IDs de colaboradores → combina con la selección manual existente en la tabla (`_eval360ColabTablaRef.getSelectedIds()`) → actualiza `draft.evaluados` y re-renderiza la tabla.
+- **Libre:** guarda en `draft.evaluados = { tipo: 'libre', asignaciones: filas, personas: [ids únicos de evaluados] }` → re-renderiza la tabla.
+
+Después de aplicar: toast de éxito con el número de evaluados importados.
+
+### Estado de memoria (evaluados)
 
 ```js
-_eval360Step           = 1;             // paso actual (1 o 2)
-_eval360ColabTablaRef  = null;          // ref al ubits-data-table de colaboradores
-_eval360GruposTablaRef = null;          // ref al ubits-data-table de grupos
-_eval360ArchivoListo   = false;         // true si el CSV pasó todas las validaciones
-_eval360ArchivoErrores = [];            // [{fila, mensaje}] del último CSV cargado
-_eval360GruposMock     = [...];         // 10 grupos de ejemplo (datos del playground)
+var _eval360ColabTablaRef  = null;  // ref al ubits-data-table de colaboradores
+var _eval360ImportFilas    = null;  // filas válidas del último archivo parseado
 ```
 
-### Guardar evaluados
+### Guardar evaluados (`saveEvaluados`)
 
-`saveEvaluados()` construye `draft.evaluados` según la opción:
+Lee los IDs seleccionados de `_eval360ColabTablaRef.getSelectedIds()`.  
+`draft.evaluados = { tipo: 'por-colaborador', personas: ids, grupos: [] }`.  
+`draft.checks.evaluados = ids.length > 0`.  
+Toast de éxito + vuelve al hub.
 
-| Opción | Qué guarda |
-|--------|-----------|
-| `toda-empresa` | `{ tipo, personas: [todos los ids] }` |
-| `por-colaborador` | `{ tipo, personas: [ids seleccionados en la tabla] }` |
-| `por-grupos` | `{ tipo, grupos: [{id, nombre}] }` |
-| `desde-archivo` | `{ tipo, archivoImportado: true }` |
+### Footer sub-vista evaluados
 
-Luego `draft.checks.evaluados = true`, muestra toast de éxito y vuelve al hub.
+| Botón secundario | Botón primario |
+|-----------------|----------------|
+| «Cancelar» (vuelve al hub) | «Guardar» (deshabilitado si ningún colaborador seleccionado) |
 
 ---
 
@@ -347,34 +463,42 @@ Luego `draft.checks.evaluados = true`, muestra toast de éxito y vuelve al hub.
 
 ### Propósito
 
-Definir la escala de calificación, la cantidad de parámetros de resultado y sus rangos; además configurar tres opciones de comportamiento.
+Definir la escala de calificación, los parámetros de resultado con sus rangos, y tres opciones de comportamiento de la evaluación.
 
 ### Campos
 
-**Selects** (creados con `createInput` tipo `select`):
+**Selects** (`createInput` tipo `select`):
 
 | Select | Opciones | Variable |
 |--------|----------|----------|
-| Escala | «De 1 a 5» / «De 1 a 4» / «De 1 a 10» | `_resEscala` |
-| Cantidad de parámetros | «3 Parámetros» / «4 Parámetros» / «5 Parámetros» | `_resCantidad` |
+| Escala | «De 1 a 5» / «De 1 a 4» / «De 1 a 10» | `_resEscala` (default: `'5'`) |
+| Cantidad de parámetros | «3 Parámetros» / «4 Parámetros» / «5 Parámetros» | `_resCantidad` (default: `4`) |
 
-Al cambiar cualquiera de estos selects, los rangos se recalculan con `buildDefaultParams(cantidad, escalaMax)` que distribuye los rangos uniformemente y usa nombres predefinidos (`RES_PARAM_DEFAULTS`).
+Al cambiar cualquiera de estos selects, los rangos se recalculan con `buildDefaultParams(cantidad, escalaMax)` que distribuye los rangos uniformemente y usa nombres predefinidos:
+
+```js
+RES_PARAM_DEFAULTS = {
+    3: ['Por mejorar', 'En desarrollo', 'Destacado'],
+    4: ['Por mejorar', 'Regular', 'Bueno', 'Destacado'],
+    5: ['Crítico', 'Por mejorar', 'Regular', 'Bueno', 'Destacado']
+}
+```
 
 **Tabla de parámetros** (`#res360-params-list`):
 
 Cada parámetro tiene 3 campos inline (`createInput` tamaño `sm`): Nombre, Desde, Hasta. El usuario puede ajustar libremente cada rango.
 
-**Switches (opciones de comportamiento)**:
+**Switches (columna derecha)**:
 
-| Switch | ID | Descripción |
-|--------|----|-------------|
-| Permitir que los líderes vean los resultados antes de publicar | `res360-toggle-lideres` | |
-| Habilitar «No sé» como opción de respuesta | `res360-toggle-nosabe` | Permite que el evaluador indique desconocimiento |
-| Asegurar anonimato | `res360-toggle-anonimato` | No aplica a descendente ni autoevaluación |
+| ID | Label | Descripción en tooltip |
+|----|-------|----------------------|
+| `res360-toggle-lideres` | Permitir vista de resultados a los líderes | Los líderes podrán ver los resultados de sus equipos. |
+| `res360-toggle-nosabe` | Permitir respuesta de "No sabe / No responde" | Habilita una opción adicional para indicar falta de información. |
+| `res360-toggle-anonimato` | Asegurar anonimato (No aplica para descendente y autoevaluación) | Las respuestas de pares, clientes y ascendentes serán anónimas. |
 
 ### Botón «Guardar»
 
-Siempre habilitado en esta vista (ningún campo es obligatorio para guardar).
+Siempre habilitado (ningún campo es obligatorio para guardar).
 
 `saveResultados()` escribe en `draft.resultados = { escala, cantidad, params, permitirLideres, permitirNoSabe, asegurarAnonimato }` y pone `draft.checks.resultados = true`.
 
@@ -393,21 +517,73 @@ Visible solo en la vista `hub`.
 
 ### Sub-vistas (`#crear360-footer-sub`)
 
-Visible en las 4 sub-vistas. El texto de los botones cambia según la vista y el estado:
+Visible en las 4 sub-vistas. Botones:
 
-| Vista / estado | Botón primario | Botón secundario |
-|----------------|----------------|-----------------|
-| `tipo` | «Guardar» | «Cancelar» |
-| `competencias` | «Guardar» | «Cancelar» |
-| `evaluados` paso 1, opción `toda-empresa` | «Guardar» | «Cancelar» |
-| `evaluados` paso 1, opción `por-colaborador` / `por-grupos` | «Siguiente» | «Cancelar» |
-| `evaluados` paso 1, opción `desde-archivo` | «Importar» (dis. hasta CSV válido) | «Cancelar» |
-| `evaluados` paso 2 | «Guardar» (dis. sin selección) | «Anterior» |
-| `resultados` | «Guardar» | «Cancelar» |
-
-El botón «Cancelar» en sub-vistas llama `history.back()` (equivalente al botón ← del header). **Excepción:** en `evaluados` paso 2, hace `eval360GoToStep(1)` en lugar de volver al hub.
+| Vista | Botón secundario | Botón primario |
+|-------|-----------------|----------------|
+| `tipo` | «Cancelar» → `history.back()` | «Guardar» (dis. si suma ≠ 100 o ningún tipo activo) |
+| `competencias` | «Cancelar» → `history.back()` | «Guardar» (dis. si `_competencias.length === 0`) |
+| `evaluados` | «Cancelar» → `history.back()` | «Guardar» (dis. si ningún colaborador seleccionado) |
+| `resultados` | «Cancelar» → `history.back()` | «Guardar» (siempre habilitado) |
 
 El botón primario llama `saveCurrentSubView()`, que despacha a la función `save*` de la vista activa.
+
+---
+
+## Utilidades compartidas
+
+### `leerArchivoComoFilas(file, callback)`
+
+Lee un archivo CSV o Excel y llama `callback(err, filas)` (convención **error-first**):
+- **Excel (`.xlsx` / `.xls`):** usa SheetJS (`XLSX.read`) con `header: 1, defval: ''`.
+- **CSV:** `FileReader.readAsText`, quita BOM, divide por `\r?\n`, parsea columnas con comillas.
+- `filas` es un array de arrays: `filas[0]` = cabeceras, `filas[1..n]` = datos.
+
+> SheetJS se carga via CDN: `https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js`
+
+**Constantes para los file uploaders:**
+
+```js
+ACCEPT_TABULAR  = '.csv,text/csv,.xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,.xls,application/vnd.ms-excel'
+FORMATS_TABULAR = 'CSV, Excel (.xlsx / .xls) · máx. 2 MB'
+```
+
+### `eval360Norm(s)`
+
+Normaliza un string para comparación: minúsculas + quita tildes (NFD) + trim.
+
+```js
+eval360Norm('Autoevaluación') // → 'autoevaluacion'
+eval360Norm('  Descendente ') // → 'descendente'
+```
+
+### `eval360GetTiposActivos()`
+
+Retorna los tipos activos (con `activo: true`) del estado en memoria. Fallback en orden:
+1. `_tipos.filter(t => t.activo)` (estado de la vista Tipo)
+2. `draft.tipo.filter(t => t.activo)` (guardado en draft)
+3. Todos los tipos de `BD_EVALUACIONES_360.tiposEvaluacion` con `activo: true` (fallback total)
+
+### `buildImportErrorTableHtml(errores)`
+
+Genera HTML con una tabla `ubits-table` de dos columnas (Fila / Problema) a partir de un array de strings con formato `"Fila N: mensaje"`. Muestra máximo 50 errores. Los errores sin prefijo «Fila N» muestran «—» en la columna Fila. El texto de la columna Problema hace wrap (`white-space: normal`).
+
+### `TIPOS_NORM_MAP` y `TIPOS_VALIDOS_360`
+
+```js
+TIPOS_VALIDOS_360 = ['descendente', 'ascendente', 'paralela', 'autoevaluacion', 'cliente']
+
+TIPOS_NORM_MAP = {
+    'autoevaluación': 'autoevaluacion',
+    'autoevaluacion': 'autoevaluacion',
+    'descendente':    'descendente',
+    'ascendente':     'ascendente',
+    'paralela':       'paralela',
+    'cliente':        'cliente'
+}
+```
+
+Usados en `eval360ValidarLibre` para normalizar el valor de `tipo_evaluacion` del CSV antes de validarlo.
 
 ---
 
@@ -415,35 +591,43 @@ El botón primario llama `saveCurrentSubView()`, que despacha a la función `sav
 
 | Archivo | Qué expone | Usado en |
 |---------|-----------|----------|
-| `bd-evaluaciones-360.js` | `BD_EVALUACIONES_360.tiposEvaluacion` (tipos y pesos sugeridos) | Vista Tipo |
-| `bd-evaluaciones-360.js` | `BD_EVALUACIONES_360.competenciasBase` (competencias y enunciados) | Vista Competencias |
+| `bd-evaluaciones-360.js` | `BD_EVALUACIONES_360.tiposEvaluacion` (5 tipos con ids internos: `auto`, `jefe`, `pares`, `subalternos`, `cliente`) | Vista Tipo |
+| `bd-evaluaciones-360.js` | `BD_EVALUACIONES_360.competenciasBase` (8 competencias con enunciados; solo referencia, no se usa en la vista Competencias) | — |
 | `bd-evaluaciones-360.js` | `BD_EVALUACIONES_360.addEvaluacion(datos)` | Al activar |
-| `bd-master-colaboradores.js` | `BD_MASTER_COLABORADORES.colaboradores[]` | Tabla evaluados; validación CSV |
+| `bd-master-colaboradores.js` | `BD_MASTER_COLABORADORES.colaboradores[]` — 55 colaboradores con `username` completo | Tabla evaluados; validación de archivos |
 
-Los tipos de evaluación en el CSV (para validación y para la plantilla descargable) son: **descendente**, **ascendente**, **paralela**, **autoevaluación**, **cliente**. La validación normaliza tildes y capitalización.
+**Formato de `username`:** `inicial_4letrasPrimerApellido_inicialSegundoApellido@fiqsha.demo`  
+Ejemplo: Carlos García López → `cgarcl@fiqsha.demo`
+
+Los **líderes** (9) también tienen `username` y sirven como datos de ejemplo en las plantillas descargables.
 
 ---
 
 ## Componentes UBITS usados
 
-| Componente | Importación | Uso en el flujo |
-|-----------|-------------|----------------|
-| `input.css` + `input.js` | `components/input.*` | Todos los campos del formulario y tablas |
+| Componente | Importación | Uso |
+|-----------|-------------|-----|
+| `input.css` + `input.js` | `components/input.*` | Campos del hub, pesos en Tipo, rangos en Resultados |
 | `calendar.css` + `calendar.js` | `components/calendar.*` | Fechas de inicio y fin |
-| `modal.css` + `modal.js` | `components/modal.*` | Confirmación de activación, confirmación de salida, informe de errores CSV |
-| `toast.css` + `toast.js` | `components/toast.*` | Confirmación al guardar cada sección |
-| `switch.css` | `components/switch.css` | Toggles en tipos y en configuración de resultados |
-| `stepper.css` + `stepper.js` | `components/stepper.*` | Wizard de evaluados (horizontal compacto) |
-| `radio-button.css` | `components/radio-button.css` | Option cards del wizard evaluados |
-| `ubits-data-table.css` + `.js` | `components/ubits-data-table.*` | Tablas de colaboradores y grupos |
-| `avatar.css` | `components/avatar.css` | Avatares en la tabla de colaboradores |
-| `file-upload.css` + `.js` | `components/file-upload.*` | Opción «Desde archivo» en evaluados |
-| `checkbox.css` | `components/checkbox.css` | Checkboxes en las tablas |
+| `modal.css` + `modal.js` | `components/modal.*` | Activación, salida, Nueva competencia, Añadir enunciado, errores CSV |
+| `drawer.css` + `drawer.js` | `components/drawer.*` | Import drawers (competencias, enunciados, evaluados) |
+| `toast.css` + `toast.js` | `components/toast.*` | Confirmación al guardar cada sección y al importar |
+| `switch.css` | `components/switch.css` | Tipos en vista Tipo, toggles en Resultados, tipos en modal enunciado |
+| `file-upload.css` + `file-upload.js` | `components/file-upload.*` | Todos los drawers de importación |
+| `ubits-data-table.css` + `.js` | `components/ubits-data-table.*` | Tabla de evaluados |
+| `table.css` | `components/table.css` | Tabla de errores en modales |
+| `avatar.css` | `components/avatar.css` | Avatares en la tabla de evaluados |
+| `empty-state.css` + `.js` | `components/empty-state.*` | Vista Competencias sin datos |
+| `dropdown-menu.js` + `.css` | `components/dropdown-menu.*` | Dropdown «Añadir competencia»; requerido por `input.js` |
 | `status-tag.css` | `components/status-tag.css` | Tag «Borrador» en el header del hub |
-| `tooltip.css` + `.js` | `components/tooltip.*` | Tooltips en botones del header y switches |
-| `empty-state.css` + `.js` | `components/empty-state.*` | Tablas sin resultados |
-| `dropdown-menu.js` | `components/dropdown-menu.js` | Requerido por `input.js` para selects |
+| `tooltip.css` + `.js` | `components/tooltip.*` | Tooltips en botones del header e iconos de info |
+| `selection-card.css` | `components/selection-card.css` | Importado (componente `ubits-selection-card`) |
+| `chip.css` | `components/chip.css` | Importado |
+| `stepper.css` + `.js` | `components/stepper.*` | Importado (no activo actualmente) |
+| `radio-button.css` | `components/radio-button.css` | Radio buttons del drawer de evaluados (modos organigrama / libre) |
+| `checkbox.css` | `components/checkbox.css` | Checkboxes en la tabla |
 | `layout-immersive.css` | `general-styles/layout-immersive.css` | Shell de la página |
+| **SheetJS** | CDN (`xlsx.full.min.js` v0.18.5) | Parseo de archivos `.xlsx` / `.xls` |
 
 ---
 
@@ -451,37 +635,39 @@ Los tipos de evaluación en el CSV (para validación y para la plantilla descarg
 
 ```
 ubits-admin/desempeno/360/
-├── crear-360.html          ← Flujo completo de creación (esta página)
-├── crear-360.css           ← Estilos específicos del flujo
-├── admin-360.html          ← Lista de evaluaciones (destino al activar / salir)
-├── contexto-creacion-360.md ← Este documento
-└── (otros archivos del módulo 360)
+├── crear-360.html              ← Flujo completo de creación (esta página)
+├── crear-360.css               ← Estilos específicos del flujo
+├── admin-360.html              ← Lista de evaluaciones (destino al activar / salir)
+├── contexto-creacion-360.md    ← Este documento
+└── archivos-demo/
+    ├── competencias-fiqsha.csv ← 8 competencias de ejemplo para Fiqsha
+    └── enunciados-fiqsha.csv   ← 30 enunciados de ejemplo para Fiqsha
 
 bd-master/
-├── bd-evaluaciones-360.js  ← Tipos, competencias, helpers
-└── bd-master-colaboradores.js ← Colaboradores de la empresa (Fiqsha demo)
+├── bd-evaluaciones-360.js      ← Tipos, competencias base (referencia), helper addEvaluacion
+└── bd-master-colaboradores.js  ← 55 colaboradores Fiqsha con username completo
 ```
 
 ---
 
 ## Notas para implementación
 
-- **Reset de calendario al cambiar vista:** `cleanupCalendarPickers()` elimina los pickers flotantes de `calendar.js` antes de cambiar de vista para evitar que queden huérfanos en el DOM.
-- **Restaurar estado al volver:** cada `render*View()` recupera los valores guardados de `draft.*` para no mostrar la vista vacía cuando el usuario vuelve a editar una sección ya guardada.
-- **Stepper del wizard evaluados:** se inicializa con HTML estático en el HTML; `setStepperStepStates(ol, stepIndex)` (de `stepper.js`) controla el estado visual de los pasos. El paso 1 del stepper es clickeable para volver desde el paso 2.
-- **File upload re-entrada:** el file upload de «Desde archivo» se crea solo si el contenedor está vacío (primer acceso); en accesos posteriores solo se re-enlaza el botón de informe de errores para no duplicar el componente.
-- **Modales overlays:** los overlays de los modales de confirmación tienen contenedores fijos en el HTML (`#crear360-cancel-modal-overlay`, `#crear360-activate-modal-overlay`). El modal del informe de errores CSV usa `overlayId: 'modal-eval360-errores-csv'` (generado dinámicamente por `openModal`).
+- **Reset de calendar al cambiar vista:** `cleanupCalendarPickers()` destruye los pickers flotantes antes de cambiar de vista.
+- **Restaurar estado al volver:** cada `render*View()` recupera los valores de `draft.*` para no mostrar la vista vacía cuando el usuario vuelve a editar una sección ya guardada. `_tipos` y `_competencias` persisten en la sesión.
+- **File upload re-entrada (evaluados):** `montarFileUploader()` limpia siempre el contenedor antes de crear un nuevo uploader (para el cambio de modo). El estado `_fileReady` y `_eval360ImportFilas` se resetean al cambiar de modo.
+- **Modales overlay:** los overlays de confirmación tienen contenedores fijos en el HTML (`#crear360-cancel-modal-overlay`, `#crear360-activate-modal-overlay`). Los modales de errores CSV y de competencias son generados dinámicamente por `openModal`.
+- **Comparación de tipos en validación:** siempre usar `t.nombre` (normalizado), nunca `t.id`. Los IDs internos (`jefe`, `pares`, `auto`, `subalternos`) no coinciden con los valores del CSV.
 - **Sin servidor:** el template es puramente HTML/CSS/JS. Abrir con doble clic o `file:///…/crear-360.html`.
 
 ---
 
 ## Secciones pendientes de documentar
 
-- Flujo de **edición** de una evaluación 360 existente (si aplica una página `editar-360.html`).
-- Vista de **detalle y seguimiento** del proceso de evaluación una vez activado.
+- Flujo de **edición** de una evaluación 360 existente (si aplica `editar-360.html`).
+- Vista de **detalle y seguimiento** del proceso una vez activado.
 - Lógica de **notificaciones a evaluadores** (actualmente simulada con toast al activar).
-- Gestión de la evaluación desde la perspectiva del **evaluador** (módulo Colaborador).
+- Gestión desde la perspectiva del **evaluador** (módulo Colaborador).
 
 ---
 
-*Última actualización: mayo 2026. Flujo implementado: hub, tipo, competencias, evaluados (wizard 2 pasos + CSV), resultados. Activación con llamada a `BD_EVALUACIONES_360.addEvaluacion`.*
+*Última actualización: abril 2026. Flujo implementado: hub, tipo, competencias (sistema propio de creación + importación CSV/Excel), evaluados (tabla única + drawer de importación organigrama/libre), resultados. Activación con llamada a `BD_EVALUACIONES_360.addEvaluacion`.*
