@@ -255,9 +255,60 @@
     document.addEventListener('DOMContentLoaded', function () {
         loadSidebar('admin', 'desempeño');
         loadSubNav('top-nav-container', 'admin-desempeño');
+        /* Forzar tab activo tras el timer interno del componente (200 ms) */
+        setTimeout(function () {
+            var nav = document.getElementById('top-nav-container');
+            if (!nav) return;
+            nav.querySelectorAll('.nav-tab').forEach(function (t) { t.classList.remove('active'); });
+            var target = nav.querySelector('.nav-tab[data-tab="evaluations"]');
+            if (target) target.classList.add('active');
+        }, 350);
+        /* Corregir rutas del selector de SubNav: página 3 niveles de profundidad,
+           el componente genera URLs con '../../' (2 niveles) y no pasa por
+           getCorrectTabUrl(). Se intercepta el clic usando data-tab + getCorrectTabUrl
+           (función global de sub-nav.js) para obtener el path ajustado correctamente,
+           sin depender del atributo href (que puede estar modificado). */
+        (function fixSubNavSelectorPaths() {
+            var nav = document.getElementById('top-nav-container');
+            if (!nav) return;
+            nav.addEventListener('click', function (e) {
+                var item = e.target.closest('.module-selector-item');
+                if (!item) return;
+                var tabId = item.getAttribute('data-tab');
+                if (!tabId) return;
+                /* Buscar configuración del tab en la variante admin-desempeño */
+                var tabs = (typeof TOP_NAV_VARIANTS !== 'undefined' &&
+                            TOP_NAV_VARIANTS['admin-desempeño'])
+                           ? TOP_NAV_VARIANTS['admin-desempeño'].tabs : [];
+                var tabConfig = null;
+                for (var i = 0; i < tabs.length; i++) {
+                    if (tabs[i].id === tabId) { tabConfig = tabs[i]; break; }
+                }
+                if (!tabConfig || !tabConfig.url) return;
+                /* getCorrectTabUrl ajusta el prefijo según la profundidad actual */
+                var correctUrl = typeof getCorrectTabUrl === 'function'
+                    ? getCorrectTabUrl(tabConfig, 'admin-desempeño')
+                    : tabConfig.url;
+                e.preventDefault();
+                e.stopImmediatePropagation();
+                window.location.href = correctUrl;
+            }, true);
+        })();
         loadTabBar('tab-bar-container', 'admin');
         loadFloatingMenu('floating-menu-container', 'admin');
         loadProfileMenu('profile-menu-container');
+        /* Corregir rutas del floating menu: esta página está 3 niveles de profundidad
+           pero el componente genera URLs con '../../' (2 niveles). */
+        (function fixFloatingMenuPaths() {
+            var container = document.getElementById('floating-menu-container');
+            if (!container) return;
+            container.querySelectorAll('a[href]').forEach(function (a) {
+                var h = a.getAttribute('href');
+                if (h && h.startsWith('../../')) {
+                    a.setAttribute('href', '../' + h);
+                }
+            });
+        })();
 
         /* header product */
         if (typeof loadHeaderProduct === 'function') {

@@ -2209,6 +2209,17 @@
         loadTabBar('tab-bar-container', 'admin');
         loadFloatingMenu('floating-menu-container', 'admin');
         loadProfileMenu('profile-menu-container');
+        /* Corregir rutas del floating menu: página 3 niveles de profundidad */
+        (function fixFloatingMenuPaths() {
+            var container = document.getElementById('floating-menu-container');
+            if (!container) return;
+            container.querySelectorAll('a[href]').forEach(function (a) {
+                var h = a.getAttribute('href');
+                if (h && h.startsWith('../../')) {
+                    a.setAttribute('href', '../' + h);
+                }
+            });
+        })();
 
         /* Botones estáticos del hub */
         document.getElementById('crear360-btn-save-inline').addEventListener('click', function () {

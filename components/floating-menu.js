@@ -134,7 +134,7 @@ const FLOATING_MENU_SECTIONS_ADMIN = [
         title: 'Desempeño',
         icon: 'far fa-bars-progress',
         subitems: [
-            { id: 'admin-eval-360', title: 'Evaluaciones 360', icon: 'far fa-chart-pie', url: '../../ubits-admin/desempeno/admin-360.html' },
+            { id: 'admin-eval-360', title: 'Evaluaciones 360', icon: 'far fa-chart-pie', url: '../../ubits-admin/desempeno/360/admin-360.html' },
             { id: 'admin-objetivos', title: 'Objetivos', icon: 'far fa-bullseye', url: '../../ubits-admin/desempeno/admin-objetivos.html' },
             { id: 'admin-matriz-talento', title: 'Matriz de Talento', icon: 'far fa-sitemap', url: '../../ubits-admin/desempeno/admin-matriz-talento.html' }
         ]
