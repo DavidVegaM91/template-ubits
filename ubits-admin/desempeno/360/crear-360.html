@@ -1532,7 +1532,7 @@
             containerId:      'eval360-colab-dt-container',
             tableId:          'eval360-colab-table',
             title:            'Lista de colaboradores',
-            columns:          [{ id: 'evaluado', label: 'Evaluado', sortable: true }, { id: 'username', label: 'Username', sortable: true }, { id: 'area', label: 'Área', sortable: true }],
+            columns:          [{ id: 'evaluado', label: 'Evaluado', sortable: true }, { id: 'username', label: 'Username', sortable: true }, { id: 'area', label: 'Área', filterable: true }],
             getData:          function () { return rows; },
             rowIdField:       'id',
             buildRowHtml:     buildRowHtml,
