@@ -1825,8 +1825,8 @@
         var colaboradores = (typeof BD_MASTER_COLABORADORES !== 'undefined' && BD_MASTER_COLABORADORES.colaboradores) || [];
         var usernamesValidos = new Set(colaboradores.map(function (c) { return eval360Norm(c.username); }));
 
-        /* Tipos activos en el draft */
-        var tiposActivos = eval360GetTiposActivos().map(function (t) { return eval360Norm(t.id || t.nombre); });
+        /* Tipos activos en el draft — usar siempre nombre para comparar con lo que escribe el usuario */
+        var tiposActivos = eval360GetTiposActivos().map(function (t) { return eval360Norm(t.nombre); });
 
         if (!filas || filas.length === 0) {
             errores.push('El archivo está vacío o solo contiene la fila de encabezados.');
