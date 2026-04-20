@@ -1538,6 +1538,7 @@
             buildRowHtml:     buildRowHtml,
             features:         { checkboxes: true, search: true, verSeleccionados: true, resultsCount: true },
             initialSelected:  savedIds,
+            primaryButton:    { text: 'Añadir desde archivo', icon: 'fa-file-arrow-up', onClick: openEval360ImportDrawer },
             emptyState:       { message: 'No hay colaboradores', icon: 'far fa-user' },
             emptySearchState: { message: 'No se encontraron resultados', description: 'Intenta ajustar tu búsqueda.', buttonText: 'Limpiar búsqueda' },
             i18n:             { selectAll: 'Seleccionar todo', deselectAll: 'Deseleccionar todo', verSeleccionados: 'Ver seleccionados', buscar: 'Buscar' }
@@ -1548,6 +1549,417 @@
                 if (saveBtn) saveBtn.disabled = (_eval360ColabTablaRef.getSelectedIds().length === 0);
             }
         });
+    }
+
+    /* ════════════════════════════════════════════════════════════
+       DRAWER: Añadir evaluados desde archivo
+       ════════════════════════════════════════════════════════════ */
+
+    /* Devuelve los tipos activos del draft (o todos si aún no se guardaron) */
+    function eval360GetTiposActivos() {
+        var tipos = _tipos.filter(function (t) { return t.activo; });
+        if (tipos.length === 0 && Array.isArray(draft.tipo)) {
+            tipos = draft.tipo.filter(function (t) { return t.activo; });
+        }
+        if (tipos.length === 0 && typeof BD_EVALUACIONES_360 !== 'undefined') {
+            tipos = BD_EVALUACIONES_360.tiposEvaluacion.map(function (t) {
+                return { id: t.id, nombre: t.nombre, activo: true };
+            });
+        }
+        return tipos;
+    }
+
+    /* Normaliza string: minúsculas, sin tildes, sin espacios extra */
+    function eval360Norm(s) {
+        if (!s) return '';
+        return s.toString().trim().toLowerCase()
+            .normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    }
+
+    function openEval360ImportDrawer() {
+        var _modoImport   = 'organigrama'; /* 'organigrama' | 'libre' */
+        var _currentFile  = null;
+        var _fileReady    = false;
+
+        var tiposActivos = eval360GetTiposActivos();
+        var nombresTipos = tiposActivos.map(function (t) { return t.nombre; }).join(', ');
+
+        /* ── HTML del body del drawer ── */
+        var bodyHtml =
+            '<div class="eval360-import-drawer">' +
+
+            /* Radio buttons modo */
+            '<div class="eval360-import-modes">' +
+            '<label class="ubits-radio ubits-radio--md eval360-import-mode-label" id="eval360-import-lbl-org">' +
+              '<input type="radio" name="eval360ImportMode" class="ubits-radio__input" value="organigrama" checked>' +
+              '<span class="ubits-radio__circle"></span>' +
+              '<span class="ubits-radio__label ubits-body-md-regular">Basado en organigrama</span>' +
+            '</label>' +
+            '<label class="ubits-radio ubits-radio--md eval360-import-mode-label" id="eval360-import-lbl-libre">' +
+              '<input type="radio" name="eval360ImportMode" class="ubits-radio__input" value="libre">' +
+              '<span class="ubits-radio__circle"></span>' +
+              '<span class="ubits-radio__label ubits-body-md-regular">Libre</span>' +
+            '</label>' +
+            '</div>' +
+
+            /* Descripción dinámica */
+            '<p class="ubits-body-sm-regular eval360-import-desc" id="eval360ImportDesc">' +
+              'Sube un archivo con los usernames de los evaluados. El sistema asignará automáticamente sus evaluadores según el organigrama y los tipos activos: <strong>' + nombresTipos + '</strong>.' +
+            '</p>' +
+
+            /* Contenedor del file uploader (se recrea al cambiar modo) */
+            '<div id="eval360ImportFuWrap"></div>' +
+
+            '</div>';
+
+        openDrawer({
+            overlayId:  'eval360DrawerImport',
+            title:      'Añadir desde archivo',
+            bodyHtml:   bodyHtml,
+            footerHtml:
+                '<button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="eval360ImportCancelarBtn"><span>Cancelar</span></button>' +
+                '<button type="button" class="ubits-button ubits-button--primary ubits-button--md" id="eval360ImportarBtn" disabled><span>Importar</span></button>',
+            size: 'md',
+            onClose: function () { _currentFile = null; _fileReady = false; }
+        });
+
+        /* ── Montar file uploader según el modo actual ── */
+        function montarFileUploader() {
+            var wrap = document.getElementById('eval360ImportFuWrap');
+            if (!wrap) return;
+            wrap.innerHTML = '';
+            _currentFile = null;
+            _fileReady   = false;
+            var importarBtn = document.getElementById('eval360ImportarBtn');
+            if (importarBtn) importarBtn.disabled = true;
+
+            createFileUpload({
+                containerId: 'eval360ImportFuWrap',
+                id:          'eval360ImportFu',
+                accept:      ACCEPT_TABULAR,
+                maxSizeMb:   2,
+                formats:     FORMATS_TABULAR,
+                downloadButtons: [{
+                    label:   _modoImport === 'organigrama' ? 'Descargar plantilla (organigrama)' : 'Descargar plantilla (libre)',
+                    icon:    'file-arrow-down',
+                    onClick: _modoImport === 'organigrama' ? eval360DescargarPlantillaOrg : eval360DescargarPlantillaLibre
+                }],
+                onChange: function (file) {
+                    _currentFile = file || null;
+                    _fileReady   = false;
+                    if (importarBtn) importarBtn.disabled = true;
+                    if (!file) return;
+                    leerArchivoComoFilas(file, function (filas, err) {
+                        if (err) { _currentFile = null; return; }
+                        var resultado = _modoImport === 'organigrama'
+                            ? eval360ValidarOrganigrama(filas)
+                            : eval360ValidarLibre(filas);
+                        if (resultado.errores.length) {
+                            eval360MostrarErroresImport(resultado.errores);
+                        } else {
+                            _fileReady = true;
+                            if (importarBtn) importarBtn.disabled = false;
+                            /* Guardar filas válidas para procesar al importar */
+                            _eval360ImportFilas = resultado.filas;
+                        }
+                    });
+                },
+                onError: function () {
+                    _currentFile = null; _fileReady = false;
+                    if (importarBtn) importarBtn.disabled = true;
+                }
+            });
+        }
+
+        /* ── Descripcion según modo ── */
+        function actualizarDesc() {
+            var desc = document.getElementById('eval360ImportDesc');
+            if (!desc) return;
+            if (_modoImport === 'organigrama') {
+                desc.innerHTML = 'Sube un archivo con los usernames de los evaluados. El sistema asignará automáticamente sus evaluadores según el organigrama y los tipos activos: <strong>' + nombresTipos + '</strong>.';
+            } else {
+                desc.innerHTML = 'Sube un archivo con evaluador, evaluado y tipo de evaluación. Te permite asignaciones personalizadas fuera del organigrama.';
+            }
+        }
+
+        setTimeout(function () {
+            /* Cancelar */
+            var cancelBtn = document.getElementById('eval360ImportCancelarBtn');
+            if (cancelBtn) cancelBtn.addEventListener('click', function () { closeDrawer('eval360DrawerImport'); });
+
+            /* Importar */
+            var importarBtn = document.getElementById('eval360ImportarBtn');
+            if (importarBtn) {
+                importarBtn.addEventListener('click', function () {
+                    if (!_fileReady || !_eval360ImportFilas) return;
+                    eval360AplicarImport(_modoImport, _eval360ImportFilas);
+                    closeDrawer('eval360DrawerImport');
+                });
+            }
+
+            /* Cambio de modo */
+            document.querySelectorAll('input[name="eval360ImportMode"]').forEach(function (r) {
+                r.addEventListener('change', function () {
+                    if (!this.checked) return;
+                    _modoImport = this.value;
+                    actualizarDesc();
+                    montarFileUploader();
+                });
+            });
+
+            /* Montar uploader inicial */
+            montarFileUploader();
+        }, 150);
+    }
+
+    /* Filas válidas del último archivo cargado */
+    var _eval360ImportFilas = null;
+
+    /* ── Plantilla: Basado en organigrama ── */
+    function eval360DescargarPlantillaOrg() {
+        var bom = '\uFEFF';
+        var csv = bom + 'username\n' +
+            'rospid@fiqsha.demo\n' +
+            'fcastr@fiqsha.demo\n' +
+            'cvargm@fiqsha.demo\n' +
+            'asuarg@fiqsha.demo\n' +
+            'mjimep@fiqsha.demo';
+        var blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+        var url  = URL.createObjectURL(blob);
+        var a    = document.createElement('a');
+        a.href = url; a.download = 'plantilla-evaluados-organigrama.csv';
+        document.body.appendChild(a); a.click();
+        setTimeout(function () { document.body.removeChild(a); URL.revokeObjectURL(url); }, 500);
+    }
+
+    /* ── Plantilla: Libre ── */
+    function eval360DescargarPlantillaLibre() {
+        var bom = '\uFEFF';
+        var csv = bom + 'evaluador,evaluado,tipo_evaluacion\n' +
+            'rospid@fiqsha.demo,cgarcl@fiqsha.demo,descendente\n' +
+            'cgarcl@fiqsha.demo,rospid@fiqsha.demo,ascendente\n' +
+            'cgarcl@fiqsha.demo,lrodrm@fiqsha.demo,paralela\n' +
+            'pateleber@fiqsha.demo,pateleber@fiqsha.demo,autoevaluacion\n' +
+            'cliente_externo,cgarcl@fiqsha.demo,cliente';
+        var blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+        var url  = URL.createObjectURL(blob);
+        var a    = document.createElement('a');
+        a.href = url; a.download = 'plantilla-evaluados-libre.csv';
+        document.body.appendChild(a); a.click();
+        setTimeout(function () { document.body.removeChild(a); URL.revokeObjectURL(url); }, 500);
+    }
+
+    /* ── Validación: modo organigrama ── */
+    function eval360ValidarOrganigrama(filas) {
+        var errores = [];
+        var colaboradores = (typeof BD_MASTER_COLABORADORES !== 'undefined' && BD_MASTER_COLABORADORES.colaboradores) || [];
+        var usernamesValidos = new Set(colaboradores.map(function (c) { return eval360Norm(c.username); }));
+
+        if (!filas || filas.length === 0) {
+            errores.push('El archivo está vacío o solo contiene la fila de encabezados.');
+            return { errores: errores, filas: [] };
+        }
+        if (filas.length > 3000) {
+            errores.push('El archivo supera las 3.000 filas permitidas (' + filas.length + ' filas).');
+        }
+
+        /* Validar cabecera */
+        var headers = filas[0].map(function (h) { return eval360Norm(h); });
+        if (!headers.includes('username')) {
+            errores.push('La columna requerida "username" no fue encontrada. Verifica que uses la plantilla correcta.');
+            return { errores: errores, filas: [] };
+        }
+        var colIdx = headers.indexOf('username');
+
+        var filasValidas = [];
+        var dataRows     = filas.slice(1);
+
+        if (dataRows.length === 0) {
+            errores.push('El archivo no tiene filas de datos (solo tiene el encabezado).');
+            return { errores: errores, filas: [] };
+        }
+
+        dataRows.forEach(function (fila, i) {
+            var nRow = i + 2;
+            var username = eval360Norm(fila[colIdx] || '');
+            if (!username) {
+                errores.push('Fila ' + nRow + ': el campo "username" está vacío.');
+                return;
+            }
+            if (!usernamesValidos.has(username)) {
+                errores.push('Fila ' + nRow + ': el usuario "' + (fila[colIdx] || '').trim() + '" no existe en la base de datos.');
+                return;
+            }
+            filasValidas.push({ username: username });
+        });
+
+        return { errores: errores, filas: filasValidas };
+    }
+
+    /* ── Validación: modo libre ── */
+    var TIPOS_VALIDOS_360 = ['descendente', 'ascendente', 'paralela', 'autoevaluacion', 'cliente'];
+    var TIPOS_NORM_MAP    = {
+        'autoevaluaci\u00f3n': 'autoevaluacion',
+        'autoevaluacion':      'autoevaluacion',
+        'descendente':         'descendente',
+        'ascendente':          'ascendente',
+        'paralela':            'paralela',
+        'cliente':             'cliente'
+    };
+
+    function eval360ValidarLibre(filas) {
+        var errores = [];
+        var colaboradores = (typeof BD_MASTER_COLABORADORES !== 'undefined' && BD_MASTER_COLABORADORES.colaboradores) || [];
+        var usernamesValidos = new Set(colaboradores.map(function (c) { return eval360Norm(c.username); }));
+
+        /* Tipos activos en el draft */
+        var tiposActivos = eval360GetTiposActivos().map(function (t) { return eval360Norm(t.id || t.nombre); });
+
+        if (!filas || filas.length === 0) {
+            errores.push('El archivo está vacío o solo contiene la fila de encabezados.');
+            return { errores: errores, filas: [] };
+        }
+        if (filas.length > 3000) {
+            errores.push('El archivo supera las 3.000 filas permitidas (' + filas.length + ' filas).');
+        }
+
+        /* Validar cabecera */
+        var headers = filas[0].map(function (h) { return eval360Norm(h); });
+        var colEvaluador = headers.indexOf('evaluador');
+        var colEvaluado  = headers.indexOf('evaluado');
+        var colTipo      = headers.findIndex(function (h) {
+            return h === 'tipo_evaluacion' || h === 'tipo de evaluacion' || h === 'tipo';
+        });
+
+        var faltantes = [];
+        if (colEvaluador === -1) faltantes.push('"evaluador"');
+        if (colEvaluado  === -1) faltantes.push('"evaluado"');
+        if (colTipo      === -1) faltantes.push('"tipo_evaluacion"');
+        if (faltantes.length) {
+            errores.push('Faltan columnas requeridas: ' + faltantes.join(', ') + '. Usa la plantilla de modo Libre.');
+            return { errores: errores, filas: [] };
+        }
+
+        var dataRows = filas.slice(1);
+        if (dataRows.length === 0) {
+            errores.push('El archivo no tiene filas de datos (solo tiene el encabezado).');
+            return { errores: errores, filas: [] };
+        }
+
+        var filasValidas = [];
+        dataRows.forEach(function (fila, i) {
+            var nRow      = i + 2;
+            var evaluador = (fila[colEvaluador] || '').trim();
+            var evaluado  = (fila[colEvaluado]  || '').trim();
+            var tipoRaw   = (fila[colTipo]      || '').trim();
+            var tipoNorm  = TIPOS_NORM_MAP[eval360Norm(tipoRaw)] || eval360Norm(tipoRaw);
+
+            /* Campos vacíos */
+            if (!evaluador) { errores.push('Fila ' + nRow + ': el campo "evaluador" está vacío.'); return; }
+            if (!evaluado)  { errores.push('Fila ' + nRow + ': el campo "evaluado" está vacío.');  return; }
+            if (!tipoRaw)   { errores.push('Fila ' + nRow + ': el campo "tipo_evaluacion" está vacío.'); return; }
+
+            /* Tipo válido */
+            if (!TIPOS_VALIDOS_360.includes(tipoNorm)) {
+                errores.push('Fila ' + nRow + ': tipo de evaluación "' + tipoRaw + '" no es válido. Valores admitidos: descendente, ascendente, paralela, autoevaluación, cliente.');
+                return;
+            }
+
+            /* Tipo activo en la configuración */
+            var tipoEnDraft = tiposActivos.some(function (ta) { return eval360Norm(ta) === tipoNorm || ta.startsWith(tipoNorm); });
+            if (!tipoEnDraft && tiposActivos.length > 0) {
+                errores.push('Fila ' + nRow + ': el tipo "' + tipoRaw + '" no está activo en la configuración de esta evaluación 360.');
+                return;
+            }
+
+            /* Usuarios en BD (clientes externos se permiten en tipo "cliente") */
+            var evaluadorNorm = eval360Norm(evaluador);
+            if (tipoNorm !== 'cliente' && !usernamesValidos.has(evaluadorNorm)) {
+                errores.push('Fila ' + nRow + ': el evaluador "' + evaluador + '" no existe en la base de datos.');
+                return;
+            }
+            if (!usernamesValidos.has(eval360Norm(evaluado))) {
+                errores.push('Fila ' + nRow + ': el evaluado "' + evaluado + '" no existe en la base de datos.');
+                return;
+            }
+
+            /* Autoevaluación: evaluador === evaluado */
+            if (tipoNorm === 'autoevaluacion' && evaluadorNorm !== eval360Norm(evaluado)) {
+                errores.push('Fila ' + nRow + ': en autoevaluación el evaluador y el evaluado deben ser la misma persona.');
+                return;
+            }
+
+            /* Otros tipos: no pueden ser la misma persona */
+            if (tipoNorm !== 'autoevaluacion' && evaluadorNorm === eval360Norm(evaluado)) {
+                errores.push('Fila ' + nRow + ': evaluador y evaluado son la misma persona. Solo se permite en autoevaluación.');
+                return;
+            }
+
+            filasValidas.push({ evaluador: evaluador, evaluado: evaluado, tipo: tipoNorm });
+        });
+
+        return { errores: errores, filas: filasValidas };
+    }
+
+    /* ── Mostrar errores de importación en modal ── */
+    function eval360MostrarErroresImport(errores) {
+        var liItems = errores.slice(0, 50).map(function (e) {
+            return '<li class="ubits-body-sm-regular" style="margin-bottom:var(--gap-xs)">' + e + '</li>';
+        }).join('');
+        var nota = errores.length > 50
+            ? '<p class="ubits-body-sm-regular" style="margin-top:var(--gap-sm);color:var(--ubits-fg-1-low)">…y ' + (errores.length - 50) + ' error(es) más.</p>'
+            : '';
+        openModal({
+            overlayId: 'eval360ImportErrorModal',
+            title:     'Errores en el archivo (' + errores.length + ')',
+            bodyHtml:  '<ul style="padding-left:var(--padding-lg);margin:0">' + liItems + '</ul>' + nota,
+            footerHtml:'<button class="ubits-button ubits-button--primary ubits-button--md" onclick="closeModal(\'eval360ImportErrorModal\')"><span>Entendido</span></button>',
+            size:      'sm'
+        });
+    }
+
+    /* ── Aplicar importación al draft y refrescar tabla ── */
+    function eval360AplicarImport(modo, filas) {
+        var colaboradores = (typeof BD_MASTER_COLABORADORES !== 'undefined' && BD_MASTER_COLABORADORES.colaboradores) || [];
+        var colabByUsername = {};
+        colaboradores.forEach(function (c) { colabByUsername[eval360Norm(c.username)] = c; });
+
+        if (modo === 'organigrama') {
+            /* Seleccionar en la tabla los colaboradores del archivo */
+            var ids = [];
+            filas.forEach(function (f) {
+                var c = colabByUsername[f.username];
+                if (c) ids.push(c.id);
+            });
+            /* Combinar con la selección manual existente */
+            if (_eval360ColabTablaRef && typeof _eval360ColabTablaRef.getSelectedIds === 'function') {
+                var yaSeleccionados = _eval360ColabTablaRef.getSelectedIds();
+                var combinados = Array.from(new Set(yaSeleccionados.concat(ids)));
+                /* Re-inicializar la tabla con la selección combinada */
+                draft.evaluados = { tipo: 'por-colaborador', personas: combinados, grupos: [] };
+            } else {
+                draft.evaluados = { tipo: 'por-colaborador', personas: ids, grupos: [] };
+            }
+        } else {
+            /* Modo libre: guardar la asignación directa */
+            draft.evaluados = {
+                tipo:         'libre',
+                asignaciones: filas,
+                personas:     Array.from(new Set(filas.map(function (f) {
+                    var c = colabByUsername[eval360Norm(f.evaluado)];
+                    return c ? c.id : null;
+                }).filter(Boolean)))
+            };
+        }
+
+        /* Re-renderizar la tabla para reflejar la nueva selección */
+        var container = document.getElementById('eval360-colab-dt-container');
+        if (container) container.innerHTML = '';
+        _eval360ColabTablaRef = null;
+        eval360InitColabTable();
+
+        var n = draft.evaluados.personas ? draft.evaluados.personas.length : filas.length;
+        showToast('success', n + (n === 1 ? ' evaluado importado' : ' evaluados importados'));
     }
 
     function renderEvaluadosView() {

@@ -718,3 +718,29 @@
 .eval360-usuario-cell .ubits-body-sm-regular {
     color: var(--ubits-fg-1-medium);
 }
+
+/* ════════════════════════════════════════
+   DRAWER: Añadir evaluados desde archivo
+   ════════════════════════════════════════ */
+
+.eval360-import-drawer {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-lg);
+}
+
+.eval360-import-modes {
+    display: flex;
+    flex-direction: row;
+    gap: var(--gap-2xl);
+    flex-wrap: wrap;
+}
+
+.eval360-import-mode-label {
+    cursor: pointer;
+}
+
+.eval360-import-desc {
+    color: var(--ubits-fg-1-medium);
+    margin: 0;
+}
