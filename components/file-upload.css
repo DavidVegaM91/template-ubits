@@ -237,18 +237,33 @@
     display: none !important;
 }
 
+/* Fila que agrupa la barra + el texto de porcentaje */
+.ubits-file-upload__progress-wrap {
+    display: none;
+    align-items: center;
+    gap: var(--gap-sm);
+    width: 100%;
+}
+
+.ubits-file-upload__file-card--uploading .ubits-file-upload__progress-wrap {
+    display: flex;
+}
+
+/* Texto de porcentaje */
+.ubits-file-upload__progress-pct {
+    flex-shrink: 0;
+    color: var(--ubits-fg-1-medium);
+    min-width: 28px;
+    text-align: right;
+}
+
 /* Contenedor de la barra */
 .ubits-file-upload__progress-bar {
-    display: none;
-    width: 100%;
+    flex: 1;
     height: 6px;
     border-radius: var(--border-radius-full);
     background: var(--ubits-bg-3);
     overflow: hidden;
-}
-
-.ubits-file-upload__file-card--uploading .ubits-file-upload__progress-bar {
-    display: block;
 }
 
 /* Relleno de la barra */

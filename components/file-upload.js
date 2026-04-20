@@ -110,8 +110,11 @@
                   '<div class="ubits-file-upload__file-meta">' +
                     '<span class="ubits-body-sm-semibold ubits-file-upload__file-name" data-file-upload-name></span>' +
                     '<span class="ubits-body-sm-regular ubits-file-upload__file-size" data-file-upload-size></span>' +
-                    '<div class="ubits-file-upload__progress-bar" data-file-upload-progress-bar>' +
-                      '<div class="ubits-file-upload__progress-fill" data-file-upload-progress-fill></div>' +
+                    '<div class="ubits-file-upload__progress-wrap">' +
+                      '<div class="ubits-file-upload__progress-bar" data-file-upload-progress-bar>' +
+                        '<div class="ubits-file-upload__progress-fill" data-file-upload-progress-fill></div>' +
+                      '</div>' +
+                      '<span class="ubits-body-sm-regular ubits-file-upload__progress-pct" data-file-upload-progress-pct>0%</span>' +
                     '</div>' +
                   '</div>' +
                   '<button type="button" class="ubits-button ubits-button--error-tertiary ubits-button--sm ubits-button--icon-only ubits-file-upload__remove-btn" data-file-upload-remove aria-label="Quitar archivo">' +
@@ -371,6 +374,7 @@
         var card     = el.querySelector('[data-file-upload-card]');
         var dropzone = el.querySelector('[data-file-upload-dropzone]');
         var fill     = el.querySelector('[data-file-upload-progress-fill]');
+        var pctEl    = el.querySelector('[data-file-upload-progress-pct]');
 
         if (card) card.classList.add('ubits-file-upload__file-card--uploading');
         if (dropzone) dropzone.classList.add('ubits-file-upload__dropzone--uploading');
@@ -382,6 +386,7 @@
                 fill.classList.remove('ubits-file-upload__progress-fill--complete');
             }
         }
+        if (pctEl) pctEl.textContent = pct + '%';
     }
 
     /**
@@ -394,6 +399,7 @@
         var card     = el.querySelector('[data-file-upload-card]');
         var dropzone = el.querySelector('[data-file-upload-dropzone]');
         var fill     = el.querySelector('[data-file-upload-progress-fill]');
+        var pctEl    = el.querySelector('[data-file-upload-progress-pct]');
 
         if (card) card.classList.remove('ubits-file-upload__file-card--uploading');
         if (dropzone) dropzone.classList.remove('ubits-file-upload__dropzone--uploading');
@@ -401,6 +407,7 @@
             fill.style.width = '0%';
             fill.classList.remove('ubits-file-upload__progress-fill--complete');
         }
+        if (pctEl) pctEl.textContent = '0%';
     }
 
     /* ─── exposición global ──────────────────────────── */
