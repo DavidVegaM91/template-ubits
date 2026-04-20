@@ -702,52 +702,13 @@
     .res360-param-row {
         grid-template-columns: 1fr 80px 80px;
     }
-    .eval360-wizard-root { padding: 0; }
 }
 
 /* ════════════════════════════════════════
-   VISTA: EVALUADOS — WIZARD
+   VISTA: EVALUADOS — tabla de colaboradores
    ════════════════════════════════════════ */
 
-.eval360-wizard-root {
-    display: flex;
-    flex-direction: column;
-    gap: var(--gap-xl);
-    padding-bottom: var(--padding-2xl);
-}
-
-.drawer-wizard-stepper-nav {
-    flex-shrink: 0;
-}
-
-/* Panel archivo (step 1 inline) */
-.eval360-archivo-panel {
-    margin-top: var(--gap-md);
-}
-
-/* Paso 2 — paneles de tabla */
-.eval360-wizard-step {
-    width: 100%;
-}
-
-.drawer-wizard-step--participantes {
-    display: flex;
-    flex-direction: column;
-    gap: var(--gap-md);
-}
-
-.drawer-usuarios-panel {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-}
-
-.drawer-colab-dt-wrapper,
-.drawer-grupos-dt-wrapper {
-    width: 100%;
-}
-
-/* Avatar + nombre en línea en tablas */
+/* Avatar + nombre en línea en la tabla */
 .eval360-usuario-cell {
     display: flex;
     align-items: center;
@@ -756,10 +717,4 @@
 
 .eval360-usuario-cell .ubits-body-sm-regular {
     color: var(--ubits-fg-1-medium);
-}
-
-@media (max-width: 480px) {
-    .eval360-wizard-root {
-        padding: 0;
-    }
 }

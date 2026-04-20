@@ -206,113 +206,7 @@
              VISTA: evaluados
              ════════════════════════════════════════ -->
         <div data-view="evaluados" id="crear360-view-evaluados" class="ubits-layout-immersive__stage crear360-view--hidden">
-
-            <div class="eval360-wizard-root">
-
-                <!-- Stepper -->
-                <nav class="drawer-wizard-stepper-nav" id="eval360-wiz-stepper-nav">
-                    <ol class="ubits-stepper ubits-stepper--horizontal ubits-stepper--horizontal-compact" id="eval360-wiz-stepper-ol">
-                        <li class="ubits-stepper__step ubits-stepper__step--active" data-step-label="Tipo de selección">
-                            <span class="ubits-stepper__mark" aria-hidden="true">
-                                <span class="ubits-stepper__mark-num">1</span>
-                                <i class="far fa-check" aria-hidden="true"></i>
-                            </span>
-                            <span class="ubits-stepper__label">Tipo de selección</span>
-                        </li>
-                        <li class="ubits-stepper__rail" aria-hidden="true"></li>
-                        <li class="ubits-stepper__step ubits-stepper__step--pending" data-step-label="Selección">
-                            <span class="ubits-stepper__mark" aria-hidden="true">
-                                <span class="ubits-stepper__mark-num">2</span>
-                                <i class="far fa-check" aria-hidden="true"></i>
-                            </span>
-                            <span class="ubits-stepper__label">Selección</span>
-                        </li>
-                    </ol>
-                </nav>
-
-                <!-- ── Paso 1: Tipo de selección (option cards) ── -->
-                <div id="eval360-wizard-step1" class="eval360-wizard-step">
-                    <div class="ubits-selection-card-group ubits-selection-card-group--4">
-
-                        <label class="ubits-selection-card ubits-radio ubits-radio--md" data-opcion="toda-empresa">
-                            <input type="radio" name="eval360-tipo" class="ubits-radio__input" value="toda-empresa" checked>
-                            <span class="ubits-radio__circle"></span>
-                            <div class="ubits-selection-card__body">
-                                <div class="ubits-selection-card__header">
-                                    <span class="ubits-selection-card__icon"><i class="far fa-building"></i></span>
-                                    <span class="ubits-body-md-semibold ubits-selection-card__title">Toda la empresa</span>
-                                </div>
-                                <p class="ubits-body-sm-regular ubits-selection-card__desc">Todos los colaboradores de la empresa serán evaluados en esta evaluación 360.</p>
-                                <span class="ubits-selection-card__meta ubits-body-md-regular">
-                                    <span class="ubits-body-md-bold" id="eval360-count-empresa-sel">0</span>/<span class="ubits-body-md-bold" id="eval360-count-empresa-total">0</span> seleccionados
-                                </span>
-                            </div>
-                        </label>
-
-                        <label class="ubits-selection-card ubits-radio ubits-radio--md" data-opcion="por-colaborador">
-                            <input type="radio" name="eval360-tipo" class="ubits-radio__input" value="por-colaborador">
-                            <span class="ubits-radio__circle"></span>
-                            <div class="ubits-selection-card__body">
-                                <div class="ubits-selection-card__header">
-                                    <span class="ubits-selection-card__icon"><i class="far fa-user"></i></span>
-                                    <span class="ubits-body-md-semibold ubits-selection-card__title">Por colaborador</span>
-                                </div>
-                                <p class="ubits-body-sm-regular ubits-selection-card__desc">Selecciona individualmente los colaboradores que serán evaluados.</p>
-                                <span class="ubits-selection-card__meta ubits-body-md-regular">
-                                    <span class="ubits-body-md-bold" id="eval360-count-colab-sel">0</span>/<span class="ubits-body-md-bold" id="eval360-count-colab-total">0</span> seleccionados
-                                </span>
-                            </div>
-                        </label>
-
-                        <label class="ubits-selection-card ubits-radio ubits-radio--md" data-opcion="por-grupos">
-                            <input type="radio" name="eval360-tipo" class="ubits-radio__input" value="por-grupos">
-                            <span class="ubits-radio__circle"></span>
-                            <div class="ubits-selection-card__body">
-                                <div class="ubits-selection-card__header">
-                                    <span class="ubits-selection-card__icon"><i class="far fa-users"></i></span>
-                                    <span class="ubits-body-md-semibold ubits-selection-card__title">Por grupos</span>
-                                </div>
-                                <p class="ubits-body-sm-regular ubits-selection-card__desc">Selecciona uno o más grupos para incluir a todos sus integrantes como evaluados.</p>
-                                <span class="ubits-selection-card__meta ubits-body-md-regular">
-                                    <span class="ubits-body-md-bold" id="eval360-count-grupos-sel">0</span>/<span class="ubits-body-md-bold" id="eval360-count-grupos-total">10</span> seleccionados
-                                </span>
-                            </div>
-                        </label>
-
-                        <label class="ubits-selection-card ubits-radio ubits-radio--md" data-opcion="desde-archivo">
-                            <input type="radio" name="eval360-tipo" class="ubits-radio__input" value="desde-archivo">
-                            <span class="ubits-radio__circle"></span>
-                            <div class="ubits-selection-card__body">
-                                <div class="ubits-selection-card__header">
-                                    <span class="ubits-selection-card__icon"><i class="far fa-file-upload"></i></span>
-                                    <span class="ubits-body-md-semibold ubits-selection-card__title">Desde archivo</span>
-                                </div>
-                                <p class="ubits-body-sm-regular ubits-selection-card__desc">Sube un archivo .xlsx o .csv con los colaboradores que serán evaluados.</p>
-                                <span class="ubits-selection-card__meta ubits-body-md-regular">
-                                    <span class="ubits-body-md-bold" id="eval360-count-archivo-sel">0</span> importados
-                                </span>
-                            </div>
-                        </label>
-
-                    </div>
-
-                    <!-- Panel archivo (visible en step 1 cuando se selecciona "desde archivo") -->
-                    <div class="eval360-archivo-panel" id="eval360-panel-archivo" style="display:none">
-                        <div id="eval360-archivo-fu-container"></div>
-                    </div>
-                </div>
-
-                <!-- ── Paso 2: Selección por tabla ── -->
-                <div id="eval360-wizard-step2" class="eval360-wizard-step drawer-wizard-step--participantes" style="display:none">
-                    <div class="drawer-usuarios-panel drawer-usuarios-panel--colaborador" id="eval360-panel-colaborador" style="display:none">
-                        <div id="eval360-colab-dt-container" class="drawer-colab-dt-wrapper"></div>
-                    </div>
-                    <div class="drawer-usuarios-panel drawer-usuarios-panel--grupos" id="eval360-panel-grupos" style="display:none">
-                        <div id="eval360-grupos-dt-container" class="drawer-grupos-dt-wrapper"></div>
-                    </div>
-                </div>
-
-            </div>
+            <div id="eval360-colab-dt-container"></div>
         </div><!-- /view evaluados -->
 
         <!-- ════════════════════════════════════════
@@ -481,25 +375,8 @@
     /* ── Vista activa ── */
     var _currentView = 'hub';
 
-    /* ── Wizard evaluados ── */
-    var _eval360Step           = 1;
+    /* ── Vista: evaluados ── */
     var _eval360ColabTablaRef  = null;
-    var _eval360GruposTablaRef = null;
-    var _eval360ArchivoListo   = false;
-    var _eval360ArchivoErrores = [];
-
-    var _eval360GruposMock = [
-        { id: 'g-ventas',        nombre: 'Ventas',             descripcion: 'Asesoría comercial y cierre de negocios',              integrantes: 7  },
-        { id: 'g-instalaciones', nombre: 'Instalaciones',       descripcion: 'Instalación de productos en sitio',                   integrantes: 9  },
-        { id: 'g-reparaciones',  nombre: 'Reparaciones',        descripcion: 'Servicio técnico y mantenimiento',                    integrantes: 6  },
-        { id: 'g-atencion',      nombre: 'Atención al Cliente', descripcion: 'Soporte y seguimiento postventa',                     integrantes: 7  },
-        { id: 'g-logistica',     nombre: 'Logística',           descripcion: 'Bodega, inventarios y entregas',                      integrantes: 4  },
-        { id: 'g-admin',         nombre: 'Administración',      descripcion: 'Gestión administrativa y financiera',                 integrantes: 5  },
-        { id: 'g-marketing',     nombre: 'Marketing',           descripcion: 'Publicidad, diseño y redes sociales',                 integrantes: 4  },
-        { id: 'g-rrhh',          nombre: 'Recursos Humanos',    descripcion: 'Gestión de personas, objetivos, encuestas y nómina',  integrantes: 3  },
-        { id: 'g-lideres',       nombre: 'Líderes',             descripcion: 'Jefes y coordinadores de cada departamento',          integrantes: 10 },
-        { id: 'g-operativo',     nombre: 'Personal operativo',  descripcion: 'Colaboradores que reportan a un líder',               integrantes: 41 }
-    ];
 
     var SUB_VIEW_TITLES = {
         tipo:         'Tipo de evaluación',
@@ -1625,298 +1502,9 @@
        VISTA: EVALUADOS — WIZARD (stepper + cards + tablas)
        ══════════════════════════════════════════════════════════ */
 
-    function eval360GetOpcion() {
-        var r = document.querySelector('input[name="eval360-tipo"]:checked');
-        return r ? r.value : 'toda-empresa';
-    }
-
-    function eval360SyncFooter() {
-        var saveBtn   = document.getElementById('crear360-btn-sub-save');
-        var cancelBtn = document.getElementById('crear360-btn-sub-cancel');
-        if (!saveBtn || !cancelBtn) return;
-        var saveSp   = saveBtn.querySelector('span');
-        var cancelSp = cancelBtn.querySelector('span');
-        var op = eval360GetOpcion();
-        if (_eval360Step === 1) {
-            if (op === 'desde-archivo') {
-                if (saveSp)   saveSp.textContent   = 'Importar';
-                saveBtn.disabled = !_eval360ArchivoListo;
-            } else {
-                if (saveSp)   saveSp.textContent   = (op === 'toda-empresa') ? 'Guardar' : 'Siguiente';
-                saveBtn.disabled = false;
-            }
-            if (cancelSp) cancelSp.textContent = 'Cancelar';
-        } else {
-            if (saveSp)   saveSp.textContent   = 'Guardar';
-            if (cancelSp) cancelSp.textContent = 'Anterior';
-            eval360SyncSaveBtnStep2();
-        }
-    }
-
-    function eval360SyncSaveBtnStep2() {
-        var saveBtn = document.getElementById('crear360-btn-sub-save');
-        if (!saveBtn) return;
-        var op  = eval360GetOpcion();
-        var dis = true;
-        if (op === 'por-colaborador') {
-            dis = !_eval360ColabTablaRef || typeof _eval360ColabTablaRef.getSelectedIds !== 'function'
-                  || _eval360ColabTablaRef.getSelectedIds().length === 0;
-        } else if (op === 'por-grupos') {
-            dis = !_eval360GruposTablaRef || typeof _eval360GruposTablaRef.getSelectedIds !== 'function'
-                  || _eval360GruposTablaRef.getSelectedIds().length === 0;
-        } else {
-            dis = false;
-        }
-        saveBtn.disabled = dis;
-    }
-
-    function eval360GoToStep(num) {
-        _eval360Step = num;
-        var step1 = document.getElementById('eval360-wizard-step1');
-        var step2 = document.getElementById('eval360-wizard-step2');
-        var archivoPanel = document.getElementById('eval360-panel-archivo');
-        var op = eval360GetOpcion();
-
-        if (step1) step1.style.display = (num === 1) ? '' : 'none';
-        if (step2) step2.style.display = (num === 2) ? '' : 'none';
-
-        /* Panel archivo: solo en step 1, solo cuando la opción es desde-archivo */
-        if (archivoPanel) archivoPanel.style.display = (num === 1 && op === 'desde-archivo') ? '' : 'none';
-
-        if (num === 2) {
-            var colabPanel  = document.getElementById('eval360-panel-colaborador');
-            var gruposPanel = document.getElementById('eval360-panel-grupos');
-            if (colabPanel)  { colabPanel.style.display  = (op === 'por-colaborador') ? 'flex' : 'none'; colabPanel.style.flexDirection  = 'column'; }
-            if (gruposPanel) { gruposPanel.style.display = (op === 'por-grupos')      ? 'flex' : 'none'; gruposPanel.style.flexDirection = 'column'; }
-            if (op === 'por-colaborador' && !_eval360ColabTablaRef)  eval360InitColabTable();
-            if (op === 'por-grupos'      && !_eval360GruposTablaRef) eval360InitGruposTable();
-        }
-
-        var ol = document.getElementById('eval360-wiz-stepper-ol');
-        if (ol && typeof setStepperStepStates === 'function') setStepperStepStates(ol, num - 1);
-
-        eval360SyncFooter();
-    }
-
-    function eval360UpdateCardCounts() {
-        var colaboradores = (typeof BD_MASTER_COLABORADORES !== 'undefined' && BD_MASTER_COLABORADORES.colaboradores) || [];
-        var total = colaboradores.length;
-        var op    = eval360GetOpcion();
-
-        var empTot = document.getElementById('eval360-count-empresa-total');
-        var empSel = document.getElementById('eval360-count-empresa-sel');
-        if (empTot) empTot.textContent = total;
-        if (empSel) empSel.textContent = (op === 'toda-empresa') ? total : '0';
-
-        var colabTot = document.getElementById('eval360-count-colab-total');
-        var colabSel = document.getElementById('eval360-count-colab-sel');
-        if (colabTot) colabTot.textContent = total;
-        var nColab = (_eval360ColabTablaRef && typeof _eval360ColabTablaRef.getSelectedIds === 'function')
-            ? _eval360ColabTablaRef.getSelectedIds().length : 0;
-        if (colabSel) colabSel.textContent = nColab;
-
-        var gruposSel = document.getElementById('eval360-count-grupos-sel');
-        var nGrupos = (_eval360GruposTablaRef && typeof _eval360GruposTablaRef.getSelectedIds === 'function')
-            ? _eval360GruposTablaRef.getSelectedIds().length : 0;
-        if (gruposSel) gruposSel.textContent = nGrupos;
-    }
-
     /* ══════════════════════════════════════════════════════════
-       VISTA: EVALUADOS — LÓGICA DE ARCHIVO CSV
+       VISTA: EVALUADOS — tabla directa de colaboradores
        ══════════════════════════════════════════════════════════ */
-
-    var EVAL360_TIPOS_VALIDOS = ['descendente', 'ascendente', 'paralela', 'autoevaluacion', 'cliente'];
-
-    function eval360NormalizeStr(s) {
-        return (s || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim();
-    }
-
-    function eval360ParseCSVLine(line) {
-        var result = [], cur = '', inQ = false;
-        for (var i = 0; i < line.length; i++) {
-            var c = line[i];
-            if (c === '"') {
-                if (inQ && line[i + 1] === '"') { cur += '"'; i++; }
-                else inQ = !inQ;
-            } else if (c === ',' && !inQ) {
-                result.push(cur); cur = '';
-            } else { cur += c; }
-        }
-        result.push(cur);
-        return result;
-    }
-
-    function eval360DescargarPlantilla() {
-        var colaboradores = (typeof BD_MASTER_COLABORADORES !== 'undefined' && BD_MASTER_COLABORADORES.colaboradores) || [];
-        /* Tomar 5 usuarios distintos para los ejemplos */
-        function username(idx) { return (colaboradores[idx] && colaboradores[idx].username) ? colaboradores[idx].username : 'usuario' + (idx + 1) + '@empresa.demo'; }
-        var rows = [
-            'Evaluador username,Evaluado username,Tipo de evaluacion',
-            username(0) + ',' + username(1) + ',descendente',
-            username(1) + ',' + username(0) + ',ascendente',
-            username(2) + ',' + username(3) + ',paralela',
-            username(4) + ',' + username(4) + ',autoevaluación',
-            username(2) + ',' + username(0) + ',cliente'
-        ];
-        var csv  = '\uFEFF' + rows.join('\r\n'); /* BOM UTF-8 para Excel */
-        var blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-        var url  = URL.createObjectURL(blob);
-        var a    = document.createElement('a');
-        a.href     = url;
-        a.download = 'plantilla-evaluados-360.csv';
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-    }
-
-    function eval360ValidarCSV(file) {
-        var fuEl = document.getElementById('eval360-archivo-fu');
-        var reader = new FileReader();
-        reader.onload = function (e) {
-            var text  = e.target.result;
-            var lines = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n').split('\n').filter(function (l) { return l.trim() !== ''; });
-            var data  = lines.slice(1); /* omitir encabezado */
-
-            /* ── Validación general del archivo ── */
-            if (data.length === 0) {
-                fileUploadSetError(fuEl, 'El archivo está vacío o solo contiene la fila de títulos.');
-                _eval360ArchivoListo   = false;
-                _eval360ArchivoErrores = [];
-                fileUploadShowErrorReport(fuEl, false);
-                eval360SyncFooter();
-                return;
-            }
-            if (data.length > 3000) {
-                fileUploadSetError(fuEl, 'El archivo supera el límite de 3.000 filas de datos (tiene ' + data.length + ').');
-                _eval360ArchivoListo   = false;
-                _eval360ArchivoErrores = [];
-                fileUploadShowErrorReport(fuEl, false);
-                eval360SyncFooter();
-                return;
-            }
-
-            /* ── Construir índice de usuarios válidos ── */
-            var colaboradores = (typeof BD_MASTER_COLABORADORES !== 'undefined' && BD_MASTER_COLABORADORES.colaboradores) || [];
-            var userIndex = {};
-            colaboradores.forEach(function (c) { if (c.username) userIndex[c.username.toLowerCase()] = true; });
-
-            /* ── Validar cada fila ── */
-            var errores = [];
-            data.forEach(function (line, idx) {
-                var rowNum  = idx + 2; /* fila 1 = encabezado */
-                var cells   = eval360ParseCSVLine(line);
-                var evalador = (cells[0] || '').trim();
-                var evaluado = (cells[1] || '').trim();
-                var tipoRaw  = (cells[2] || '').trim();
-                var tipoNorm = eval360NormalizeStr(tipoRaw);
-
-                /* 1. Datos faltantes */
-                var faltantes = [];
-                if (!evalador) faltantes.push('Evaluador username');
-                if (!evaluado) faltantes.push('Evaluado username');
-                if (!tipoRaw)  faltantes.push('Tipo de evaluación');
-                if (faltantes.length > 0) {
-                    errores.push({ fila: rowNum, mensaje: 'Faltan datos requeridos: ' + faltantes.join(', ') + '.' });
-                    return; /* saltar más validaciones para esta fila */
-                }
-
-                /* 2. Tipo de evaluación inválido */
-                if (!EVAL360_TIPOS_VALIDOS.includes(tipoNorm)) {
-                    errores.push({ fila: rowNum, mensaje: 'Tipo "' + tipoRaw + '" no es válido. Tipos permitidos: descendente, ascendente, paralela, autoevaluación, cliente.' });
-                }
-
-                /* 3. Misma persona: solo permitido en autoevaluación */
-                var misma = (evalador.toLowerCase() === evaluado.toLowerCase());
-                if (misma && tipoNorm !== 'autoevaluacion') {
-                    errores.push({ fila: rowNum, mensaje: 'Evaluador y evaluado son la misma persona (' + evalador + '), pero el tipo no es autoevaluación.' });
-                }
-                if (!misma && tipoNorm === 'autoevaluacion') {
-                    errores.push({ fila: rowNum, mensaje: 'El tipo es autoevaluación, pero evaluador (' + evalador + ') y evaluado (' + evaluado + ') son personas distintas.' });
-                }
-
-                /* 4. Usuarios en la base de datos
-                      Para tipo "cliente" el evaluador puede ser externo; el evaluado siempre debe estar en BD. */
-                if (tipoNorm !== 'cliente' && !userIndex[evalador.toLowerCase()]) {
-                    errores.push({ fila: rowNum, mensaje: 'El evaluador "' + evalador + '" no está registrado en la empresa.' });
-                }
-                if (!userIndex[evaluado.toLowerCase()]) {
-                    errores.push({ fila: rowNum, mensaje: 'El evaluado "' + evaluado + '" no está registrado en la empresa.' });
-                }
-            });
-
-            /* ── Actualizar estado ── */
-            _eval360ArchivoErrores = errores;
-
-            if (errores.length > 0) {
-                var plural = errores.length === 1 ? 'error encontrado' : 'errores encontrados';
-                fileUploadSetError(fuEl, errores.length + ' ' + plural + '. Revisa el informe de errores para más detalles.');
-                fileUploadShowErrorReport(fuEl, true);
-                _eval360ArchivoListo = false;
-            } else {
-                fileUploadClearError(fuEl);
-                fileUploadShowErrorReport(fuEl, false);
-                _eval360ArchivoListo = true;
-                var countEl = document.getElementById('eval360-count-archivo-sel');
-                if (countEl) countEl.textContent = data.length;
-            }
-            eval360SyncFooter();
-        };
-        reader.onerror = function () {
-            fileUploadSetError(document.getElementById('eval360-archivo-fu'), 'No se pudo leer el archivo. Intenta de nuevo.');
-            _eval360ArchivoListo = false;
-            eval360SyncFooter();
-        };
-        reader.readAsText(file, 'UTF-8');
-    }
-
-    function eval360BuildErrorReportHtml(errores) {
-        if (!errores || errores.length === 0) return '<p class="ubits-body-md-regular">No hay errores.</p>';
-        var tipoCount = {
-            'datos-faltantes': 0,
-            'tipo-invalido': 0,
-            'autoevaluacion': 0,
-            'usuario-invalido': 0
-        };
-        /* Agrupar hasta los primeros 50 errores para no saturar el modal */
-        var visible = errores.slice(0, 50);
-        var rows = visible.map(function (err) {
-            return '<tr>' +
-                '<td class="ubits-table__td"><span class="ubits-body-sm-semibold">Fila ' + err.fila + '</span></td>' +
-                '<td class="ubits-table__td"><span class="ubits-body-sm-regular" style="color:var(--ubits-fg-1-medium)">' + err.mensaje + '</span></td>' +
-                '</tr>';
-        }).join('');
-        var nota = errores.length > 50
-            ? '<p class="ubits-body-sm-regular" style="color:var(--ubits-fg-1-medium);margin-top:var(--gap-md)">Mostrando 50 de ' + errores.length + ' errores. Corrige los primeros y vuelve a cargar el archivo.</p>'
-            : '';
-        return '<table class="ubits-table" style="width:100%;border-collapse:collapse">' +
-            '<thead><tr class="ubits-table__head-row">' +
-            '<th class="ubits-table__th" style="width:90px"><span class="ubits-body-sm-semibold">Fila</span></th>' +
-            '<th class="ubits-table__th"><span class="ubits-body-sm-semibold">Problema</span></th>' +
-            '</tr></thead>' +
-            '<tbody>' + rows + '</tbody>' +
-            '</table>' + nota;
-    }
-
-    function eval360InitArchivoErrorReport(fuEl) {
-        if (!fuEl) return;
-        var errBtn = fuEl.querySelector('[data-file-upload-error-report]');
-        if (errBtn && !errBtn.dataset.eval360bound) {
-            errBtn.dataset.eval360bound = '1';
-            errBtn.addEventListener('click', function (e) {
-                e.stopPropagation();
-                if (typeof openModal !== 'function') return;
-                openModal({
-                    overlayId:           'modal-eval360-errores-csv',
-                    title:               'Informe de errores — archivo importado',
-                    bodyHtml:            eval360BuildErrorReportHtml(_eval360ArchivoErrores),
-                    footerHtml:          '<button class="ubits-button ubits-button--primary ubits-button--md" onclick="closeModal(\'modal-eval360-errores-csv\')"><span>Cerrar</span></button>',
-                    size:                'md',
-                    closeOnOverlayClick: true
-                });
-            });
-        }
-    }
 
     function eval360InitColabTable() {
         var container = document.getElementById('eval360-colab-dt-container');
@@ -1929,7 +1517,6 @@
                 correo: (c.username || ''),
                 area:   (c.area || ''),
                 lider:  (c.jefe || '—'),
-                cargo:  (c.cargo || ''),
                 avatar: c.avatar || null
             };
         });
@@ -1944,6 +1531,8 @@
                 '<td data-col="area"><span class="ubits-body-sm-regular">'  + esc(row.area)  + '</span></td>' +
                 '<td data-col="lider"><span class="ubits-body-sm-regular">' + esc(row.lider) + '</span></td>';
         }
+        /* Restaurar selección previa del draft */
+        var savedIds = (draft.evaluados && Array.isArray(draft.evaluados.personas)) ? draft.evaluados.personas : [];
         _eval360ColabTablaRef = createUbitsDataTable({
             containerId:      'eval360-colab-dt-container',
             tableId:          'eval360-colab-table',
@@ -1953,167 +1542,52 @@
             rowIdField:       'id',
             buildRowHtml:     buildRowHtml,
             features:         { checkboxes: true, search: true, verSeleccionados: true, resultsCount: true },
+            initialSelected:  savedIds,
             emptyState:       { message: 'No hay colaboradores', icon: 'far fa-user' },
             emptySearchState: { message: 'No se encontraron resultados', description: 'Intenta ajustar tu búsqueda.', buttonText: 'Limpiar búsqueda' },
             i18n:             { selectAll: 'Seleccionar todo', deselectAll: 'Deseleccionar todo', verSeleccionados: 'Ver seleccionados', buscar: 'Buscar' }
         });
         container.addEventListener('change', function (e) {
             if (e.target && e.target.matches && e.target.matches('input[type="checkbox"]')) {
-                eval360UpdateCardCounts();
-                eval360SyncSaveBtnStep2();
                 updateEvaluadosCounter();
-            }
-        });
-    }
-
-    function eval360InitGruposTable() {
-        var container = document.getElementById('eval360-grupos-dt-container');
-        if (!container || typeof createUbitsDataTable !== 'function') return;
-        function esc(t) { if (t == null) return ''; var d = document.createElement('div'); d.textContent = t; return d.innerHTML; }
-        function buildRowHtml(row) {
-            return '<td data-col="nombre"><span class="ubits-body-sm-regular">'       + esc(row.nombre)       + '</span></td>' +
-                   '<td data-col="descripcion"><span class="ubits-body-sm-regular">'  + esc(row.descripcion)  + '</span></td>' +
-                   '<td data-col="integrantes"><span class="ubits-body-sm-regular">'  + esc(String(row.integrantes)) + '</span></td>';
-        }
-        _eval360GruposTablaRef = createUbitsDataTable({
-            containerId:      'eval360-grupos-dt-container',
-            tableId:          'eval360-grupos-table',
-            title:            'Lista de grupos',
-            columns:          [{ id: 'nombre', label: 'Nombre', sortable: true }, { id: 'descripcion', label: 'Descripción', sortable: true }, { id: 'integrantes', label: 'Integrantes', sortable: true, sortType: 'number' }],
-            getData:          function () { return _eval360GruposMock; },
-            rowIdField:       'id',
-            buildRowHtml:     buildRowHtml,
-            features:         { checkboxes: true, search: true, verSeleccionados: true, resultsCount: true },
-            emptyState:       { message: 'No hay grupos', icon: 'far fa-users' },
-            emptySearchState: { message: 'No se encontraron resultados', description: 'Intenta ajustar tu búsqueda.', buttonText: 'Limpiar búsqueda' },
-            i18n:             { selectAll: 'Seleccionar todo', deselectAll: 'Deseleccionar todo', verSeleccionados: 'Ver seleccionados', buscar: 'Buscar' }
-        });
-        container.addEventListener('change', function (e) {
-            if (e.target && e.target.matches && e.target.matches('input[type="checkbox"]')) {
-                eval360UpdateCardCounts();
-                eval360SyncSaveBtnStep2();
-                updateEvaluadosCounter();
+                var saveBtn = document.getElementById('crear360-btn-sub-save');
+                if (saveBtn) saveBtn.disabled = (_eval360ColabTablaRef.getSelectedIds().length === 0);
             }
         });
     }
 
     function renderEvaluadosView() {
-        _eval360Step           = 1;
-        _eval360ColabTablaRef  = null;
-        _eval360GruposTablaRef = null;
-        _eval360ArchivoListo   = false;
-
-        /* Restaurar selección guardada */
-        var saved        = draft.evaluados;
-        var tipoGuardado = (saved && saved.tipo) ? saved.tipo : 'toda-empresa';
-        document.querySelectorAll('input[name="eval360-tipo"]').forEach(function (r) {
-            r.checked = (r.value === tipoGuardado);
-            r.onchange = function () {
-                /* Actualizar panel archivo cuando cambia la opción */
-                var archivoPanel = document.getElementById('eval360-panel-archivo');
-                if (archivoPanel) archivoPanel.style.display = (this.value === 'desde-archivo') ? '' : 'none';
-                eval360UpdateCardCounts();
-                eval360SyncFooter();
-            };
-        });
-
-        /* Stepper clickeable para volver al paso 1 */
-        setTimeout(function () {
-            var ol = document.getElementById('eval360-wiz-stepper-ol');
-            if (!ol) return;
-            var stepItems = ol.querySelectorAll('li');
-            if (stepItems[0]) {
-                stepItems[0].style.cursor = 'pointer';
-                stepItems[0].addEventListener('click', function () {
-                    if (_eval360Step === 2) eval360GoToStep(1);
-                });
-            }
-        }, 100);
-
-        eval360GoToStep(1);
-        eval360UpdateCardCounts();
-
-        /* Inicializar file-upload para opción "desde archivo" */
-        setTimeout(function () {
-            var fuContainer = document.getElementById('eval360-archivo-fu-container');
-            if (!fuContainer || typeof createFileUpload !== 'function') return;
-            if (fuContainer.children.length === 0) {
-                var fuEl = createFileUpload({
-                    containerId:     'eval360-archivo-fu-container',
-                    id:              'eval360-archivo-fu',
-                    title:           'Importar evaluados',
-                    accept:          '.csv,text/csv',
-                    maxSizeMb:       1,
-                    formats:         'CSV \u2022 Hasta 1 MB \u2022 M\u00e1x. 3.000 filas',
-                    downloadButtons: [{
-                        label:   'Descargar plantilla',
-                        icon:    'file-arrow-down',
-                        onClick: eval360DescargarPlantilla
-                    }],
-                    onChange: function (file) {
-                        if (!file) {
-                            _eval360ArchivoListo   = false;
-                            _eval360ArchivoErrores = [];
-                            var span = document.getElementById('eval360-count-archivo-sel');
-                            if (span) span.textContent = '0';
-                            eval360SyncFooter();
-                            return;
-                        }
-                        eval360ValidarCSV(file);
-                    },
-                    onError: function () {
-                        _eval360ArchivoListo   = false;
-                        _eval360ArchivoErrores = [];
-                        eval360SyncFooter();
-                    }
-                });
-                eval360InitArchivoErrorReport(fuEl);
-            } else {
-                /* Ya existe (si se navega y vuelve) — re-enlazar el botón de informe */
-                eval360InitArchivoErrorReport(document.getElementById('eval360-archivo-fu'));
-            }
-        }, 150);
+        _eval360ColabTablaRef = null;
+        /* Limpiar contenedor para re-renderizar si se vuelve a entrar */
+        var container = document.getElementById('eval360-colab-dt-container');
+        if (container) container.innerHTML = '';
+        eval360InitColabTable();
+        /* Estado inicial del botón Guardar */
+        var saveBtn = document.getElementById('crear360-btn-sub-save');
+        if (saveBtn) {
+            var sel = _eval360ColabTablaRef ? _eval360ColabTablaRef.getSelectedIds().length : 0;
+            saveBtn.disabled = sel === 0;
+        }
     }
 
     function updateEvaluadosCounter() {
         var el = document.getElementById('eval360-selected-count');
         if (!el) return;
-        var op            = eval360GetOpcion();
-        var colaboradores = (typeof BD_MASTER_COLABORADORES !== 'undefined' && BD_MASTER_COLABORADORES.colaboradores) || [];
-        var n = 0;
-        if (op === 'toda-empresa') {
-            n = colaboradores.length;
-        } else if (op === 'por-colaborador' && _eval360ColabTablaRef && typeof _eval360ColabTablaRef.getSelectedIds === 'function') {
-            n = _eval360ColabTablaRef.getSelectedIds().length;
-        } else if (op === 'por-grupos' && _eval360GruposTablaRef && typeof _eval360GruposTablaRef.getSelectedIds === 'function') {
-            n = _eval360GruposTablaRef.getSelectedIds().length;
-        }
+        var n = (_eval360ColabTablaRef && typeof _eval360ColabTablaRef.getSelectedIds === 'function')
+            ? _eval360ColabTablaRef.getSelectedIds().length : 0;
         el.textContent = n + (n === 1 ? ' evaluado seleccionado' : ' evaluados seleccionados');
     }
 
     function saveEvaluados() {
-        var op            = eval360GetOpcion();
-        var colaboradores = (typeof BD_MASTER_COLABORADORES !== 'undefined' && BD_MASTER_COLABORADORES.colaboradores) || [];
-        var result        = { tipo: op, personas: [], grupos: [] };
-        if (op === 'toda-empresa') {
-            result.personas = colaboradores.map(function (c) { return c.id; });
-        } else if (op === 'por-colaborador' && _eval360ColabTablaRef) {
-            result.personas = _eval360ColabTablaRef.getSelectedIds();
-        } else if (op === 'por-grupos' && _eval360GruposTablaRef) {
-            result.grupos = _eval360GruposTablaRef.getSelectedIds().map(function (id) {
-                var g = _eval360GruposMock.find(function (gr) { return gr.id === id; });
-                return g ? { id: g.id, nombre: g.nombre } : null;
-            }).filter(Boolean);
-        } else if (op === 'desde-archivo') {
-            result.archivoImportado = _eval360ArchivoListo;
-        }
-        draft.evaluados        = result;
-        draft.checks.evaluados = true;
+        var ids = (_eval360ColabTablaRef && typeof _eval360ColabTablaRef.getSelectedIds === 'function')
+            ? _eval360ColabTablaRef.getSelectedIds() : [];
+        draft.evaluados        = { tipo: 'por-colaborador', personas: ids, grupos: [] };
+        draft.checks.evaluados = ids.length > 0;
         showToast('success', 'Evaluados guardados');
         showView('hub');
     }
 
-    /* ══════════════════════════════════════════════════════════
+        /* ══════════════════════════════════════════════════════════
        VISTA: CONFIGURACIÓN DE RESULTADOS
        ══════════════════════════════════════════════════════════ */
 
@@ -2281,14 +1755,7 @@
     function saveCurrentSubView() {
         if      (_currentView === 'tipo')         saveTipo();
         else if (_currentView === 'competencias') saveCompetencias();
-        else if (_currentView === 'evaluados') {
-            var op = eval360GetOpcion();
-            if (_eval360Step === 1 && op !== 'toda-empresa' && op !== 'desde-archivo') {
-                eval360GoToStep(2);
-            } else {
-                saveEvaluados();
-            }
-        }
+        else if (_currentView === 'evaluados') saveEvaluados();
         else if (_currentView === 'resultados')   saveResultados();
     }
 
@@ -2332,13 +1799,9 @@
             });
         });
 
-        /* Footer sub-vista — Cancelar respeta el wizard de evaluados */
+        /* Footer sub-vista — Cancelar vuelve al hub */
         document.getElementById('crear360-btn-sub-cancel').addEventListener('click', function () {
-            if (_currentView === 'evaluados' && _eval360Step === 2) {
-                eval360GoToStep(1);
-            } else {
-                history.back();
-            }
+            history.back();
         });
         document.getElementById('crear360-btn-sub-save').addEventListener('click', saveCurrentSubView);
 
