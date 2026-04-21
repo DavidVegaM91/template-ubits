@@ -75,7 +75,7 @@ draft = {
         resultados:   false
     },
     tipo:         [],           // [{id, activo, peso}]
-    competencias: [],           // [{id, nombre, descripcion, seleccionada, enunciados[]}]
+    competencias: [],           // [{id, nombre, descripcion, enunciados[]}]
     evaluados:    {},           // ver sección Evaluados
     resultados:   null          // {escala, cantidad, params, permitirLideres, permitirNoSabe, asegurarAnonimato}
 }
@@ -109,8 +109,8 @@ Al hacer clic en **«Confirmar»** (`#crear360-btn-save-inline`) se ejecuta `gua
   - Mientras `draft.guardado === false`: las **cuatro** tarjetas de configuración están bloqueadas.
   - Mientras `draft.guardado === true` y `draft.checks.tipo === false`: solo **Tipo de evaluación** está desbloqueado; **Competencias y enunciados**, **Evaluados** y **Configuración de resultados** siguen bloqueadas.
 - **Desbloqueado** (las cuatro navegables): `draft.guardado === true` y `draft.checks.tipo === true`. Se quita `--locked` en cada tarjeta accesible y `tabindex="0"`.
-- **Completado** (`crear360-option-card--done`): borde verde e ícono `fa-circle-check` cuando la sección cumple los requisitos (en **Competencias**, solo si además cada tipo activo en `#tipo` tiene al menos un enunciado en competencias seleccionadas).
-- **Competencias incompleta** (`crear360-option-card--incomplete`): hay al menos una competencia seleccionada en `draft.competencias` pero falta enunciado en algún tipo activo → borde rojo, **sin** check. `draft.checks.competencias` permanece `false` hasta completar.
+- **Completado** (`crear360-option-card--done`): borde verde e ícono `fa-circle-check` cuando la sección cumple los requisitos (en **Competencias**, solo si además cada tipo activo en `#tipo` tiene al menos un enunciado).
+- **Competencias incompleta** (`crear360-option-card--incomplete`): hay al menos una competencia en `draft.competencias` pero falta enunciado en algún tipo activo → borde rojo, **sin** check. `draft.checks.competencias` permanece `false` hasta completar.
 
 ### Tarjetas completadas: resumen en lugar de la descripción
 
@@ -170,10 +170,10 @@ Los tipos provienen de `BD_EVALUACIONES_360.tiposEvaluacion`:
 [{ id, nombre, descripcion, pesoSugerido }, ...]
 ```
 
-IDs internos en la BD: `auto`, `jefe`, `pares`, `subalternos`, `cliente`.  
+IDs internos en la BD: `autoevaluacion`, `descendente`, `paralela`, `ascendente`, `cliente`.  
 Nombres visibles: `Autoevaluación`, `Descendente`, `Paralela`, `Ascendente`, `Cliente interno`.
 
-> **Importante:** para toda comparación con valores de archivos CSV/Excel se usa `t.nombre` (normalizado), nunca `t.id` (los ids internos no coinciden con los valores que escribe el usuario).
+> Los IDs coinciden con los valores usados en archivos CSV/Excel, por lo que `tiposEvaluacion` de los enunciados almacena directamente el ID (p. ej. `['ascendente', 'autoevaluacion']`).
 
 Al entrar a la vista por primera vez se inicializa `_tipos[]` combinando los datos base con los valores guardados en `draft.tipo` (si existen).
 
@@ -184,7 +184,7 @@ La primera celda del grid es una **card maestra** (`tipo360-card tipo360-card--m
 - Switch **marcado** → activa todos los tipos con su `pesoSugerido`.
 - Switch **desmarcado** → desactiva todos y pone peso a 0.
 - Switch en estado **indeterminado** → algunos activos, no todos (se setea con `masterInput.indeterminate`).
-- Fondo `--ubits-bg-2` cuando está inactiva o indeterminada; cambia a `--ubits-bg-1` cuando todos están activos (`tipo360-card--activo`). Borde punteado (`border-style: dashed`) para distinguirla visualmente.
+- Fondo y borde siempre iguales a los del resto de cards (`--ubits-bg-1`, borde sólido). No cambia visualmente al activarse; solo el switch refleja el estado.
 - No tiene input de peso propio.
 
 ### Tarjetas de tipo
@@ -230,7 +230,6 @@ _competencias = [
         id:          'comp-<timestamp>',
         nombre:      'Trabajo en equipo',
         descripcion: 'Breve descripción de la competencia.',
-        seleccionada: true,
         expandida:   false,
         enunciados:  [
             {
@@ -257,13 +256,15 @@ Cuando `_competencias.length === 0` se muestra el empty state (`loadEmptyState`)
 
 ### Modo lista (con al menos 1 competencia)
 
-Header de la lista con dos botones:
+Header de la lista renderizado con el componente oficial **`header-product`** (`loadHeaderProduct`) dentro de una estructura `content-sections > section-single > widget-header-product`. Contiene dos botones secundarios:
 - **«Cargar enunciados»** → `openComp360ImportEnunciadosDrawer()` (el drawer conserva el título «Cargar enunciados masivamente»; solo el texto del botón es más corto)
-- **«Añadir competencia»** → `openComp360Modal()` (misma acción que en el empty state; ya no hay dropdown ni importación masiva de competencias)
+- **«Añadir competencia»** → `openComp360Modal()`
+
+En mobile los botones se apilan verticalmente (full-width) via CSS scoped en `crear-360.css`.
 
 Cada ítem de competencia (`comp360-item`) muestra:
-- **Checkbox oficial UBITS** (`ubits-checkbox ubits-checkbox--sm`) a la izquierda para incluir/excluir la competencia de la evaluación. La clase `.comp360-item__checkbox` se mantiene en el `input` para que los listeners la encuentren.
 - Nombre en `ubits-body-md-bold`
+- **`attention-badge` neutral** (`ubits-attention-badge--sm --neutral`) al lado del nombre con el conteo de enunciados de esa competencia. Se recalcula en cada `renderCompetenciasList()`.
 - **Botones de acción** (`comp360-item__actions`): **Editar** (`ubits-button--tertiary --sm --icon-only`, `fa-pen`) y **Eliminar** (`ubits-button--error-tertiary --sm --icon-only`, `fa-trash`). En desktop solo visibles al hacer hover sobre el ítem (`@media (hover: hover)` → `opacity: 0` por defecto, `opacity: 1` en hover); en touch siempre visibles.
 - Botón expandir/colapsar (`fa-chevron-down` / `fa-chevron-up`)
 - Al expandir: lista de enunciados + botón secundario sm **«Añadir enunciado»** → `openComp360EnunciadoModal(compIdx)`
@@ -336,7 +337,7 @@ Botón «Añadir» habilitado cuando hay texto de enunciado, tipo de respuesta e
 - Drawer oficial (`openDrawer`), id: `comp360DrawerImportEnum`
 - Acepta: CSV, `.xlsx`, `.xls`; máx. 2 MB
 - **Al seleccionar o soltar el archivo** (`createFileUpload` → `onChange`): se lee con `leerArchivoComoFilas` y se valida de inmediato con `comp360ValidateEnunciadosImportRows`. El botón **«Importar»** solo se habilita si no hay errores y hay al menos una fila de datos. Si hay errores: mensaje en el `file-upload` (`fileUploadSetError`), botón **«Informe de errores»** (`fileUploadShowErrorReport`) y modal con tabla al pulsarlo.
-- **Competencia nueva:** si el nombre en la columna `competencia` no coincide con ninguna existente, **no es error**: al pulsar **«Importar»** se crea la competencia en `_competencias` (id `comp-imp-*`, descripción vacía, seleccionada, sin expandir por defecto) y se añaden los enunciados con `comp360ApplyEnunciadosImportFilas`.
+- **Competencia nueva:** si el nombre en la columna `competencia` no coincide con ninguna existente, **no es error**: al pulsar **«Importar»** se crea la competencia en `_competencias` (id `comp-imp-*`, descripción vacía, sin expandir por defecto) y se añaden los enunciados con `comp360ApplyEnunciadosImportFilas`.
 - **Plantilla descargable** (nombre: `plantilla-enunciados-360.csv`): generada dinámicamente con los nombres de las primeras dos competencias existentes como ejemplos.
 
 Estructura de la plantilla (8 columnas):
@@ -373,7 +374,7 @@ Solo encabezado o sin filas de datos: error al cargar el archivo (no se habilita
 
 Deshabilitado si `_competencias.length === 0` (se oculta el footer en el empty state).
 
-`saveCompetencias()` serializa cada competencia en `draft.competencias` con `id`, `nombre`, `descripcion`, `seleccionada` y **`enunciados[]`** (copia profunda), y asigna `draft.checks.competencias` según `hubCompetenciasCompleto()` (ver hub: borde verde solo si cada tipo activo tiene ≥ 1 enunciado). Los enunciados son necesarios para el resumen del hub y para restaurar `_competencias` al volver a la vista.
+`saveCompetencias()` serializa cada competencia en `draft.competencias` con `id`, `nombre`, `descripcion` y **`enunciados[]`** (copia profunda), y asigna `draft.checks.competencias` según `hubCompetenciasCompleto()` (borde verde solo si hay al menos una competencia y cada tipo activo tiene ≥ 1 enunciado). Los enunciados son necesarios para el resumen del hub y para restaurar `_competencias` al volver a la vista.
 
 ---
 
@@ -469,7 +470,7 @@ El archivo tiene 3 columnas: `evaluador`, `evaluado`, `tipo_evaluacion`. Permite
 
 > **Evaluador y evaluado:** en modo Libre, ambos usernames deben existir en `BD_MASTER_COLABORADORES` para **todos** los tipos de evaluación, incluido `cliente` (no se admiten evaluadores externos ficticios como `cliente_externo`).
 
-> **Check de tipo activo:** se usa `eval360GetTiposActivos().map(t => eval360Norm(t.nombre))`. Se usa `.nombre` (no `.id`) porque los IDs internos (`jefe`, `pares`, etc.) no coinciden con los valores del CSV.
+> **Check de tipo activo:** se usa `eval360GetTiposActivos().map(t => eval360Norm(t.nombre))` para normalizar el nombre visible del tipo antes de compararlo con el CSV.
 
 Retorna `{ errores: [], filas: [{ evaluador, evaluado, tipo }] }`.
 
@@ -653,7 +654,7 @@ Usados en `eval360ValidarLibre` para normalizar el valor de `tipo_evaluacion` de
 
 | Archivo | Qué expone | Usado en |
 |---------|-----------|----------|
-| `bd-evaluaciones-360.js` | `BD_EVALUACIONES_360.tiposEvaluacion` (5 tipos con ids internos: `auto`, `jefe`, `pares`, `subalternos`, `cliente`) | Vista Tipo |
+| `bd-evaluaciones-360.js` | `BD_EVALUACIONES_360.tiposEvaluacion` (5 tipos con IDs oficiales UBITS: `autoevaluacion`, `descendente`, `paralela`, `ascendente`, `cliente`) | Vista Tipo |
 | `bd-evaluaciones-360.js` | `BD_EVALUACIONES_360.competenciasBase` (8 competencias con enunciados; solo referencia, no se usa en la vista Competencias) | — |
 | `bd-evaluaciones-360.js` | `BD_EVALUACIONES_360.addEvaluacion(datos)` | Al activar |
 | `bd-master-colaboradores.js` | `BD_MASTER_COLABORADORES.colaboradores[]` — 55 colaboradores con `username` completo | Tabla evaluados; validación de archivos |
@@ -717,7 +718,7 @@ bd-master/
 - **Restaurar estado al volver:** cada `render*View()` recupera los valores de `draft.*` para no mostrar la vista vacía cuando el usuario vuelve a editar una sección ya guardada. `_tipos` y `_competencias` persisten en la sesión.
 - **File upload re-entrada (evaluados):** `montarFileUploader()` limpia siempre el contenedor antes de crear un nuevo uploader (para el cambio de modo). El estado `_fileReady` y `_eval360ImportFilas` se resetean al cambiar de modo.
 - **Modales overlay:** los overlays de confirmación tienen contenedores fijos en el HTML (`#crear360-cancel-modal-overlay`, `#crear360-activate-modal-overlay`). Los modales de errores de importación CSV (enunciados / evaluados) se generan dinámicamente por `openModal`.
-- **Comparación de tipos en validación:** siempre usar `t.nombre` (normalizado), nunca `t.id`. Los IDs internos (`jefe`, `pares`, `auto`, `subalternos`) no coinciden con los valores del CSV.
+- **Comparación de tipos:** los IDs de `BD_EVALUACIONES_360.tiposEvaluacion` (`autoevaluacion`, `descendente`, `paralela`, `ascendente`, `cliente`) coinciden con los valores del CSV y con los valores de `tiposEvaluacion` en los enunciados. No se necesita ningún mapeo adicional.
 - **Sin servidor:** el template es puramente HTML/CSS/JS. Abrir con doble clic o `file:///…/crear-360.html`.
 
 ---
@@ -731,4 +732,4 @@ bd-master/
 
 ---
 
-*Última actualización: abril 2026. Flujo implementado: hub con **desbloqueo progresivo** (tras datos básicos solo tarjeta Tipo hasta `checks.tipo`; luego Competencias, Evaluados y Resultados), tipo (con **card maestra** para activar/desactivar todos a la vez), competencias (modal con **tabs Crear/Banco**, botones **Editar/Eliminar** por ítem, importación CSV/Excel de enunciados con smart-match por nombre), evaluados (tabla única + drawer de importación organigrama/libre), resultados. Activación con llamada a `BD_EVALUACIONES_360.addEvaluacion`.*
+*Última actualización: abril 2026. Flujo implementado: hub con **desbloqueo progresivo** (tras datos básicos solo tarjeta Tipo hasta `checks.tipo`; luego Competencias, Evaluados y Resultados), tipo (con **card maestra** siempre con borde sólido y bg-1), competencias (**header-product oficial** + `content-sections`, **attention-badge** con conteo de enunciados por ítem, modal con **tabs Crear/Banco**, botones **Editar/Eliminar** por ítem, importación CSV/Excel de enunciados con smart-match por nombre), evaluados (tabla única + drawer de importación organigrama/libre), resultados. IDs de tipos alineados con nombres oficiales UBITS. Activación con llamada a `BD_EVALUACIONES_360.addEvaluacion`.*
