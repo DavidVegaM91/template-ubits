@@ -629,15 +629,15 @@ Definir la escala de calificación, los parámetros de resultado con sus rangos,
 | Select | Opciones | Variable |
 |--------|----------|----------|
 | Escala | «De 1 a 5» / «De 1 a 10» / «De 1 a 100» | `_resEscala` (default: `'5'`). Valores guardados antiguos distintos de 5/10/100 se normalizan a `'5'`. |
-| Cantidad de parámetros | «3 Parámetros» / «4 Parámetros» / «5 Parámetros» | `_resCantidad` (default: `4`) |
+| Cantidad de parámetros | «3 Parámetros» / «4 Parámetros» / «5 Parámetros» | `_resCantidad` (default: `5`) |
 
 Al cambiar cualquiera de estos selects, los rangos se recalculan con `buildDefaultParams(cantidad, escalaMax)` (nombres desde `RES_PARAM_DEFAULTS` y reparto inicial de **hasta** en los tramos intermedios), seguido de `fillResParamDerivedInto()` que aplica la regla de negocio de rangos.
 
 ```js
 RES_PARAM_DEFAULTS = {
-    3: ['Por mejorar', 'En desarrollo', 'Destacado'],
-    4: ['Por mejorar', 'Regular', 'Bueno', 'Destacado'],
-    5: ['Crítico', 'Por mejorar', 'Regular', 'Bueno', 'Destacado']
+    3: ['Por mejorar', 'Bueno', 'Excelente'],
+    4: ['Por mejorar', 'Bueno', 'Sobresaliente', 'Excelente'],
+    5: ['Por mejorar', 'Aceptable', 'Bueno', 'Sobresaliente', 'Excelente']
 }
 ```
 

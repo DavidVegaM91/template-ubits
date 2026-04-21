@@ -3442,9 +3442,9 @@
     ];
 
     var RES_PARAM_DEFAULTS = {
-        3: ['Por mejorar', 'En desarrollo', 'Destacado'],
-        4: ['Por mejorar', 'Regular',       'Bueno',        'Destacado'],
-        5: ['Crítico',     'Por mejorar',   'Regular',      'Bueno',    'Destacado']
+        3: ['Por mejorar', 'Bueno',         'Excelente'],
+        4: ['Por mejorar', 'Bueno',         'Sobresaliente', 'Excelente'],
+        5: ['Por mejorar', 'Aceptable',     'Bueno',         'Sobresaliente', 'Excelente']
     };
 
     /** Separación entre el "hasta" de un parámetro y el "desde" del siguiente (evita solapes). */
@@ -3452,7 +3452,7 @@
 
     /* Estado de la vista */
     var _resEscala    = '5';
-    var _resCantidad  = 4;
+    var _resCantidad  = 5;
     var _resParams    = [];   /* [{nombre, desde, hasta}] */
 
     function formatResParamNum(v) {
@@ -3509,7 +3509,7 @@
     }
 
     function buildDefaultParams(cantidad, escalaMax) {
-        var nombres = RES_PARAM_DEFAULTS[cantidad] || RES_PARAM_DEFAULTS[4];
+        var nombres = RES_PARAM_DEFAULTS[cantidad] || RES_PARAM_DEFAULTS[5];
         var max = parseInt(escalaMax, 10) || 5;
         var n = nombres.length;
         var params = [];
@@ -3529,7 +3529,7 @@
         if (['5', '10', '100'].indexOf(String(_resEscala)) < 0) {
             _resEscala = '5';
         }
-        _resCantidad = (saved && saved.cantidad)  || 4;
+        _resCantidad = (saved && saved.cantidad)  || 5;
         _resParams   = (saved && saved.params)
             ? JSON.parse(JSON.stringify(saved.params))
             : buildDefaultParams(_resCantidad, _resEscala);
