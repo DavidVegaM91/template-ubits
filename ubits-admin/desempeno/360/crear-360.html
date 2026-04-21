@@ -232,7 +232,7 @@
         <div data-view="resultados" id="crear360-view-resultados" class="ubits-layout-immersive__stage crear360-view--hidden">
 
             <section class="res360-description">
-                <p class="ubits-body-sm-regular">Puedes personalizar la forma en que se verán los resultados de esta evaluación, <strong>elige una escala y configura los rangos según tus criterios.</strong> Así podrás ajustar la medición para reflejar con precisión el desempeño de tus colaboradores.</p>
+                <p class="ubits-body-sm-regular">Define cómo verás los resultados de esta evaluación: escala y rangos según tus criterios.</p>
             </section>
 
             <div class="res360-layout">
@@ -1918,10 +1918,17 @@
     var COMP360_ENUM_MENU_OVERLAY_ID = 'comp360-enum-menu-overlay';
     var _comp360EnumMenuAnchor = null;
 
+    /** Texto bajo el enunciado en `comp360-enum-card`: solo tipos activos en #tipo (draft / _tipos). */
     function comp360TiposEvaluacionLine(en) {
-        var ids = Array.isArray(en.tiposEvaluacion) ? en.tiposEvaluacion : [];
+        var ids = Array.isArray(en.tiposEvaluacion) ? en.tiposEvaluacion.map(String) : [];
         if (!ids.length) return 'Ningún tipo de evaluación';
-        return ids.map(function (id) { return hubNombreTipoPorId(id); }).join(', ');
+        var activo = {};
+        eval360GetTiposActivos().forEach(function (t) { activo[String(t.id)] = true; });
+        var visibles = ids.filter(function (id) { return activo[id]; });
+        if (!visibles.length) {
+            return 'Ninguno de los tipos de este enunciado está activo en la evaluación';
+        }
+        return visibles.map(function (id) { return hubNombreTipoPorId(id); }).join(', ');
     }
 
     function comp360MoveEnunciado(compIdx, enIdx, delta) {
@@ -3077,6 +3084,7 @@
             rowIdField:       'evaluadoId',
             buildRowHtml:     buildEval360AsignRowHtml,
             features:         { search: true, resultsCount: true },
+            primaryButton:    { text: 'Cargar desde archivo', icon: 'fa-file-arrow-up', variant: 'secondary', onClick: openEval360ImportDrawer },
             searchColumnIds:  ['evaluado'],
             initialSort:      { column: 'evaluado', direction: 'asc' },
             emptySearchState: { message: 'No se encontraron resultados', description: 'Intenta ajustar tu búsqueda.', buttonText: 'Limpiar búsqueda' },

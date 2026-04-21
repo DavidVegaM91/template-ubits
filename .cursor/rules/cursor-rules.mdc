@@ -1179,13 +1179,15 @@ showToast('info', 'Ya estás en la documentación 😆', {
 ```
 
 **Available types:**
-- `success` - Verde (3.5s)
-- `info` - Azul (3.5s)
-- `warning` - Amarillo (5s)
-- `error` - Rojo (6.5s)
+- `success` - Verde (base 3.5s)
+- `info` - Azul (base 3.5s)
+- `warning` - Amarillo (base 5s)
+- `error` - Rojo (base 6.5s)
+
+Sin `duration`, el cierre usa el **máximo** entre la base del tipo y `toastDurationMs(message)` (~50 ms/carácter, min 2s, max 7s). Override opcional: `readingTime: { minMs, maxMs, msPerChar }`.
 
 **Features:**
-- Auto-close after specified duration
+- Auto-close (duración explícita o por tipo + lectura del texto vía `toastDurationMs`)
 - Pause on hover/focus
 - Stacking (max 3 visible)
 - Accessible (ARIA roles)

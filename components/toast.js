@@ -8,11 +8,16 @@
 // - 'error' - Rojo (6.5s)
 //
 // OPTIONS:
-// - duration: number (milliseconds, 0 = persistent)
+// - duration: number (milliseconds, 0 = persistent). Si se omite, la duración es
+//   max(duración por tipo, toastDurationMs(message)) — escala con la longitud del texto.
+// - readingTime: { minMs?, maxMs?, msPerChar? } — overrides para toastDurationMs (solo si no pasas duration)
 // - noClose: boolean (hide close button)
 // - pauseOnHover: boolean (pause on mouse hover)
 // - action: {label: string, onClick: function} (action button)
 // - containerId: string (custom container ID)
+//
+// HELPERS:
+// - toastDurationMs(text, opts?) → heurística ~50 ms/carácter, min 2s, max 7s (UX común)
 //
 // EXAMPLES:
 // showToast('success', '¡Operación exitosa!');
@@ -131,6 +136,24 @@
     }
   }
 
+  /**
+   * Duración sugerida (ms) según longitud del mensaje, para lectura cómoda en toasts.
+   * Heurística ampliamente citada: ~50 ms por carácter (≈200 palabras/min en inglés),
+   * con piso 2 s y techo 7 s (mensajes más largos suelen ir mejor en banner/modal).
+   * @param {string} [message]
+   * @param {{ minMs?: number, maxMs?: number, msPerChar?: number }} [opts]
+   * @returns {number}
+   */
+  function toastDurationMs(message, opts) {
+    const o = opts || {};
+    const minMs = typeof o.minMs === 'number' ? o.minMs : 2000;
+    const maxMs = typeof o.maxMs === 'number' ? o.maxMs : 7000;
+    const msPerChar = typeof o.msPerChar === 'number' ? o.msPerChar : 50;
+    const str = message == null ? '' : String(message);
+    const raw = str.length * msPerChar;
+    return Math.min(maxMs, Math.max(minMs, raw));
+  }
+
   function showToast(type, message, options = {}) {
     const container = ensureContainer(options.containerId);
     const toast = createToastElement(type, message, options);
@@ -139,9 +162,12 @@
     // Limit visible stack
     limitStack(container, DEFAULTS.maxVisible);
 
-    // Duration handling
+    // Duration handling: explícito, persistente (0), o max(tipo, lectura por texto)
     const base = DEFAULTS.durations[type] || DEFAULTS.durations.info;
-    const duration = typeof options.duration === 'number' ? options.duration : base;
+    const duration =
+      typeof options.duration === 'number'
+        ? options.duration
+        : Math.max(base, toastDurationMs(message, options.readingTime));
     let remaining = duration;
     let timerId;
     let startTs;
@@ -176,6 +202,7 @@
 
   // Expose globally
   window.showToast = showToast;
+  window.toastDurationMs = toastDurationMs;
 
 /* ========================================
    DOCUMENTACIÓN DE RENDERIZADO UBITS
@@ -207,7 +234,8 @@
  * ```
  * 
  * TIPOS DISPONIBLES: 'success', 'info', 'warning', 'error'
- * DURACIONES: success/info (3.5s), warning (5s), error (6.5s)
+ * DURACIONES: sin `duration`, se usa max(tipo base, toastDurationMs(message)).
+ *   Tipos: success/info (3.5s), warning (5s), error (6.5s). Ver `toastDurationMs`.
  * FEATURES: auto-close, pause on hover, stacking (max 3), accessible
  */
 })();

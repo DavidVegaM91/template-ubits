@@ -15,7 +15,9 @@ Documento de referencia para implementar o extender el flujo de **creación de u
 | Tipos de evaluación, competencias base, helper `addEvaluacion` | `bd-master/bd-evaluaciones-360.js` |
 | Colaboradores (tablas y validación de archivos) | `bd-master/bd-master-colaboradores.js` |
 | Listado de evaluaciones (destino al activar / salir) | `ubits-admin/desempeno/360/admin-360.html` |
-| Archivo demo CSV de enunciados (ejemplo Fiqsha) | `ubits-admin/desempeno/360/archivos-demo/enunciados-fiqsha.csv` |
+| Demo CSV evaluados (modo libre, Fiqsha) | `ubits-admin/desempeno/360/archivos-demo/ej-evaluados-libre.csv` |
+| Demo CSV evaluados (organigrama, Fiqsha) | `ubits-admin/desempeno/360/archivos-demo/ej-evaluados-organigrama.csv` |
+| Demo CSV enunciados (Fiqsha) | `ubits-admin/desempeno/360/archivos-demo/ej-enunciados.csv` |
 
 ---
 
@@ -270,7 +272,7 @@ Cada ítem de competencia (`comp360-item`) muestra:
 - **`attention-badge` neutral** (`ubits-attention-badge--sm --neutral`) al lado del nombre con el conteo de enunciados de esa competencia. Se recalcula en cada `renderCompetenciasList()`.
 - **Botones de acción** (`comp360-item__actions`): **Editar** (`ubits-button--tertiary --sm --icon-only`, `fa-pen`) y **Eliminar** (`ubits-button--error-tertiary --sm --icon-only`, `fa-trash`). En desktop solo visibles al hacer hover sobre el ítem (`@media (hover: hover)` → `opacity: 0` por defecto, `opacity: 1` en hover); en touch siempre visibles.
 - Botón expandir/colapsar (`fa-chevron-down` / `fa-chevron-up`)
-- Al expandir: lista de enunciados + botón secundario sm **«Añadir enunciado»** → `openComp360EnunciadoModal(compIdx)`
+- Al expandir: lista de enunciados (`comp360-enum-card`) + botón secundario sm **«Añadir enunciado»** → `openComp360EnunciadoModal(compIdx)`. En cada tarjeta, la línea de tipos bajo el texto del enunciado usa **`comp360TiposEvaluacionLine`**: solo muestra los tipos del enunciado que siguen **activos** en `#tipo` (`eval360GetTiposActivos()`); si ninguno coincide, muestra un aviso en texto.
 
 ### Modal: Añadir competencia (`openComp360Modal`)
 
@@ -292,7 +294,7 @@ Las competencias que ya están en `_competencias` aparecen con el checkbox **mar
 
 Al añadir: se llama `renderCompetenciasView()`.
 
-> **Smart import:** `comp360ApplyEnunciadosImportFilas` ya detecta si la competencia del CSV existe en `_competencias` por nombre (normalizado a minúsculas). Si existe, añade los enunciados a la competencia existente; si no, crea la competencia nueva (`comp-imp-*`, descripción vacía). Esto asegura consistencia al cargar `enunciados-fiqsha.csv` después de haber añadido competencias del banco.
+> **Smart import:** `comp360ApplyEnunciadosImportFilas` ya detecta si la competencia del CSV existe en `_competencias` por nombre (normalizado a minúsculas). Si existe, añade los enunciados a la competencia existente; si no, crea la competencia nueva (`comp-imp-*`, descripción vacía). Esto asegura consistencia al cargar `ej-enunciados.csv` después de haber añadido competencias del banco.
 
 ### Modal: Editar competencia (`openComp360EditModal(idx)`)
 
@@ -409,6 +411,8 @@ Creada con `createUbitsDataTable` en el contenedor `#eval360-colab-dt-container`
 
 El archivo solo lleva la columna `username`. El sistema asigna evaluadores automáticamente según el organigrama y los tipos activos configurados en `#tipo`.
 
+Demo en repo: **`archivos-demo/ej-evaluados-organigrama.csv`**.
+
 **Plantilla** (`plantilla-evaluados-organigrama.csv`):
 
 | username |
@@ -436,7 +440,7 @@ El archivo tiene 3 columnas: `evaluador`, `evaluado`, `tipo_evaluacion`. Permite
 
 **Plantilla** (`plantilla-evaluados-libre.csv`):
 
-El archivo de ejemplo `archivos-demo/ejemplo-evaluados-libre.csv` incluye filas para **los cinco tipos** (`descendente`, `ascendente`, `paralela`, `autoevaluacion`, `cliente`) con usernames válidos de la BD.
+El archivo de ejemplo **`archivos-demo/ej-evaluados-libre.csv`** incluye filas para **los cinco tipos** (`descendente`, `ascendente`, `paralela`, `autoevaluacion`, `cliente`) con usernames válidos de la BD.
 
 **Valores válidos de `tipo_evaluacion`:** `descendente`, `ascendente`, `paralela`, `autoevaluacion`, `cliente` (también «autoevaluación», «cliente interno», etc.; se normalizan vía `TIPOS_NORM_MAP`).
 
@@ -530,7 +534,7 @@ Mostrar y gestionar las asignaciones de evaluadores por evaluado, generadas medi
 
 ### Tabla de evaluados asignados
 
-`createUbitsDataTable` en `#eval360-asign-dt-container` (`_eval360AsignTablaRef`). Título **«Lista de evaluados»**, contador **visible/total**, búsqueda oficial (lupa → input). Opciones: `searchColumnIds: ['evaluado']` (solo nombre del evaluado), `initialSort: { column: 'evaluado', direction: 'asc' }`.
+`createUbitsDataTable` en `#eval360-asign-dt-container` (`_eval360AsignTablaRef`). Título **«Lista de evaluados»**, contador **visible/total**, búsqueda oficial (lupa → input), botón secundario **«Cargar desde archivo»** (`primaryButton` con `variant: 'secondary'`, mismo `openEval360ImportDrawer` que en la lista de colaboradores) para volver a importar sin salir de la vista. Opciones: `searchColumnIds: ['evaluado']` (solo nombre del evaluado), `initialSort: { column: 'evaluado', direction: 'asc' }`.
 
 | Columna | Descripción |
 |---------|-------------|
@@ -801,7 +805,9 @@ ubits-admin/desempeno/360/
 ├── admin-360.html              ← Lista de evaluaciones (destino al activar / salir)
 ├── contexto-creacion-360.md    ← Este documento
 └── archivos-demo/
-    └── enunciados-fiqsha.csv   ← 30 enunciados de ejemplo para Fiqsha (competencias ya existentes en el CSV)
+    ├── ej-enunciados.csv              ← demo masiva de enunciados (competencias en columnas del CSV)
+    ├── ej-evaluados-libre.csv         ← demo modo libre (todos los tipos)
+    └── ej-evaluados-organigrama.csv   ← demo organigrama (usernames)
 
 bd-master/
 ├── bd-evaluaciones-360.js      ← Tipos, competencias base (referencia), helper addEvaluacion

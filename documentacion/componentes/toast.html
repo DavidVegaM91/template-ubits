@@ -348,12 +348,13 @@ showToast('warning', 'Datos no guardados', {
                                 <div style="background: var(--ubits-bg-2); padding: 12px; border-radius: var(--border-radius-sm); border-left: 4px solid var(--ubits-accent-brand);">
                                     <div class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">
                                         <strong>Parámetros:</strong><br>
-                                        • type: 'success' (3.5s), 'info' (3.5s), 'warning' (5s), 'error' (6.5s)<br>
+                                        • type: 'success' (base 3.5s), 'info' (3.5s), 'warning' (5s), 'error' (6.5s)<br>
                                         • message: Texto del toast (string)<br>
-                                        • options: { containerId, duration, noClose, pauseOnHover, action }<br><br>
+                                        • options: { containerId, duration, readingTime, noClose, pauseOnHover, action }<br><br>
                                         <strong>Opciones disponibles:</strong><br>
                                         • containerId: string (ID del contenedor, default: 'ubits-toast-container')<br>
-                                        • duration: number (milisegundos, 0 = persistente)<br>
+                                        • duration: number (milisegundos, 0 = persistente). Si no se envía, la duración es el mayor entre la base del tipo y <code>toastDurationMs(message)</code> (~50 ms/carácter, min 2s, max 7s).<br>
+                                        • readingTime: { minMs, maxMs, msPerChar } — ajusta solo la parte por texto (cuando no pasas <code>duration</code>)<br>
                                         • noClose: boolean (ocultar botón cerrar)<br>
                                         • pauseOnHover: boolean (pausar en hover, default: true)<br>
                                         • action: {label: string, onClick: function} (botón de acción)<br><br>
@@ -361,6 +362,19 @@ showToast('warning', 'Datos no guardados', {
                                         showToast('success', '¡Guardado!');<br>
                                         showToast('error', 'Error al guardar', { noClose: true });<br>
                                         showToast('warning', 'Datos no guardados', { action: { label: 'Guardar', onClick: save } });
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="margin-bottom: 24px;">
+                                <h3 class="ubits-body-md-bold" style="margin-bottom: 12px; color: var(--ubits-fg-1-high);">toastDurationMs(message, options?)</h3>
+                                <p class="ubits-body-md-regular" style="margin-bottom: 8px; line-height: 1.5;">
+                                    Devuelve milisegundos según la longitud del texto (heurística de lectura). Útil si quieres fijar <code>duration</code> a mano o usarla fuera de <code>showToast</code>.
+                                </p>
+                                <div style="background: var(--ubits-bg-2); padding: 12px; border-radius: var(--border-radius-sm); border-left: 4px solid var(--ubits-accent-brand);">
+                                    <div class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">
+                                        toastDurationMs('Hola'); // 2000<br>
+                                        toastDurationMs('x'.repeat(100)); // 5000<br>
+                                        toastDurationMs('muy largo…', { maxMs: 9000 }); // hasta 9000 si subes el techo
                                     </div>
                                 </div>
                             </div>
