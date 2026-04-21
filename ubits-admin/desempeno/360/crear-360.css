@@ -459,6 +459,49 @@
     white-space: nowrap;
 }
 
+/* Tarjetas de enunciados (lista dentro del acordeón de competencia) */
+.comp360-enum-cards {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-sm);
+    margin: 0 0 var(--gap-md);
+    padding: 0;
+}
+
+.comp360-enum-card {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--gap-md);
+    padding: var(--padding-md) var(--padding-lg);
+    background: var(--ubits-bg-1);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: var(--border-radius-md);
+    box-sizing: border-box;
+}
+
+.comp360-enum-card__main {
+    flex: 1;
+    min-width: 0;
+}
+
+.comp360-enum-card__enunciado {
+    margin: 0;
+    color: var(--ubits-fg-1-high);
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+.comp360-enum-card__tipos {
+    margin: var(--gap-xs) 0 0;
+    color: var(--ubits-fg-2-medium);
+}
+
+.comp360-enum-card__menu {
+    flex-shrink: 0;
+    align-self: flex-start;
+}
+
 /* Modal enunciado: descripción, tipos switches, subOpciones */
 .comp360-enum-modal-desc {
     color: var(--ubits-fg-1-medium);

@@ -190,7 +190,7 @@
                     <div></div>
                     <div class="comp360-header-actions">
                         <button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="comp360-btn-import-enunciados">
-                            <i class="far fa-file-arrow-up"></i><span>Añadir enunciados desde archivo</span>
+                            <i class="far fa-file-arrow-up"></i><span>Cargar enunciados masivamente</span>
                         </button>
                         <button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="comp360-btn-add-more">
                             <i class="far fa-plus"></i><span>Añadir competencia</span>
@@ -325,8 +325,9 @@
 <script src="../../../components/floating-menu.js"></script>
 <script src="../../../components/profile-menu.js"></script>
 <script src="../../../components/calendar.js"></script>
-<script src="../../../components/input.js"></script>
-<script src="../../../components/modal.js"></script>
+    <script src="../../../components/input.js"></script>
+    <script src="../../../components/dropdown-menu.js"></script>
+    <script src="../../../components/modal.js"></script>
 <script src="../../../components/empty-state.js"></script>
 <script src="../../../components/toast.js"></script>
 <script src="../../../components/ubits-data-table.js"></script>
@@ -1180,23 +1181,109 @@
     var ACCEPT_TABULAR = '.csv,text/csv,.xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,.xls,application/vnd.ms-excel';
     var FORMATS_TABULAR = 'CSV, Excel (.xlsx / .xls) · máx. 2 MB';
 
-    /* ── Drawer: Añadir enunciados desde archivo ── */
+    function comp360GetTiposValidosEnunciadosImport() {
+        return {
+            '1-5 desempeño':              { tipoRespuesta: 'calificacion', escala: 'desempeno', obligatoria: false },
+            '1-5 regularidad':            { tipoRespuesta: 'calificacion', escala: 'regularidad', obligatoria: false },
+            'de 1 a 5':                   { tipoRespuesta: 'calificacion', escala: '5', obligatoria: false },
+            'de 1 a 10':                  { tipoRespuesta: 'calificacion', escala: '10', obligatoria: false },
+            'de 1 a 100':                 { tipoRespuesta: 'calificacion', escala: '100', obligatoria: false },
+            'respuesta abierta - obligatoria': { tipoRespuesta: 'abierta', escala: null, obligatoria: true },
+            'respuesta abierta':           { tipoRespuesta: 'abierta', escala: null, obligatoria: false }
+        };
+    }
+
+    /** Valida filas de importación (sin exigir que la competencia exista). */
+    function comp360ValidateEnunciadosImportRows(rows) {
+        var TIPOS_VALIDOS = comp360GetTiposValidosEnunciadosImport();
+        var TIPO_IDS = ['ascendente', 'descendente', 'paralela', 'cliente', 'autoevaluacion'];
+        var errores = [];
+        var filasOk = [];
+        if (!rows || rows.length < 2) {
+            return { errores: ['El archivo no tiene filas de datos (solo encabezado o vacío).'], filasOk: [] };
+        }
+        rows.slice(1).forEach(function (cols, i) {
+            var fila = i + 2;
+            cols = cols.map(function (c) { return String(c || '').trim(); });
+            var compNombre = cols[0] || '';
+            var texto      = cols[1] || '';
+            var tipoKey    = (cols[2] || '').toLowerCase();
+            var tiposEval  = TIPO_IDS.filter(function (_, j) { return cols[3 + j] === '1'; });
+            if (!compNombre) { errores.push('Fila ' + fila + ': falta el nombre de la competencia.'); return; }
+            if (!texto) { errores.push('Fila ' + fila + ': falta el texto del enunciado.'); return; }
+            if (!TIPOS_VALIDOS[tipoKey]) { errores.push('Fila ' + fila + ': tipo de respuesta "' + (cols[2] || '') + '" no válido.'); return; }
+            if (!tiposEval.length) { errores.push('Fila ' + fila + ': debe marcarse al menos un tipo de evaluación.'); return; }
+            var cfg = TIPOS_VALIDOS[tipoKey];
+            filasOk.push({
+                compNombre: compNombre.trim(),
+                texto: texto,
+                tipoRespuesta: cfg.tipoRespuesta,
+                escala: cfg.escala,
+                obligatoria: cfg.obligatoria,
+                tiposEvaluacion: tiposEval
+            });
+        });
+        return { errores: errores, filasOk: filasOk };
+    }
+
+    /** Aplica filas válidas: crea competencias nuevas si hace falta y añade enunciados. */
+    function comp360ApplyEnunciadosImportFilas(filasOk) {
+        var compMap = {};
+        _competencias.forEach(function (c, i) { compMap[c.nombre.trim().toLowerCase()] = i; });
+        var t0 = Date.now();
+        filasOk.forEach(function (row, i) {
+            var key = row.compNombre.toLowerCase();
+            var compIdx;
+            if (!(key in compMap)) {
+                _competencias.push({
+                    id: 'comp-imp-' + t0 + '-' + i + '-' + Math.random().toString(36).slice(2, 8),
+                    nombre: row.compNombre,
+                    descripcion: '',
+                    seleccionada: true,
+                    expandida: false,
+                    enunciados: []
+                });
+                compIdx = _competencias.length - 1;
+                compMap[key] = compIdx;
+            } else {
+                compIdx = compMap[key];
+            }
+            if (!Array.isArray(_competencias[compIdx].enunciados)) _competencias[compIdx].enunciados = [];
+            _competencias[compIdx].enunciados.push({
+                id: 'en-imp-' + t0 + '-' + i,
+                texto: row.texto,
+                tipoRespuesta: row.tipoRespuesta,
+                escala: row.escala,
+                obligatoria: row.obligatoria,
+                tiposEvaluacion: row.tiposEvaluacion
+            });
+        });
+    }
+
+    /* ── Drawer: Cargar enunciados masivamente ── */
     function openComp360ImportEnunciadosDrawer() {
         var _currentFile = null;
+        var _importFilasOk = null;
+        var _importErrores = [];
+        var FU_ID = 'comp360ImportEnumFu';
 
         openDrawer({
             overlayId: 'comp360DrawerImportEnum',
-            title: 'Añadir enunciados desde archivo',
+            title: 'Cargar enunciados masivamente',
             bodyHtml: '<div id="comp360ImportEnumFuContainer"></div>',
             footerHtml:
                 '<button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="comp360ImportEnumCancelarBtn"><span>Cancelar</span></button>' +
                 '<button type="button" class="ubits-button ubits-button--primary ubits-button--md" id="comp360ImportEnumBtn" disabled><span>Importar</span></button>',
             size: 'md',
-            onClose: function () { _currentFile = null; }
+            onClose: function () {
+                _currentFile = null;
+                _importFilasOk = null;
+                _importErrores = [];
+            }
         });
 
         setTimeout(function () {
-            var cancelBtn  = document.getElementById('comp360ImportEnumCancelarBtn');
+            var cancelBtn   = document.getElementById('comp360ImportEnumCancelarBtn');
             var importarBtn = document.getElementById('comp360ImportEnumBtn');
 
             if (cancelBtn) cancelBtn.addEventListener('click', function () { closeDrawer('comp360DrawerImportEnum'); });
@@ -1215,9 +1302,42 @@
                 nombresComp[1] + ',Escucha activamente a sus interlocutores.,1-5 Desempeño,0,1,1,1,0\n' +
                 nombresComp[1] + ',Adapta su comunicación al perfil de cada interlocutor.,Respuesta abierta,1,1,1,0,0\n';
 
-            createFileUpload({
+            function runImportValidationOnFile(file) {
+                _importFilasOk = null;
+                _importErrores = [];
+                if (typeof fileUploadClearError === 'function') fileUploadClearError(FU_ID);
+                if (typeof fileUploadShowErrorReport === 'function') fileUploadShowErrorReport(FU_ID, false);
+                if (importarBtn) importarBtn.disabled = true;
+                if (!file) return;
+                leerArchivoComoFilas(file, function (err, rows) {
+                    if (err) {
+                        if (typeof fileUploadSetError === 'function') fileUploadSetError(FU_ID, err);
+                        return;
+                    }
+                    var result = comp360ValidateEnunciadosImportRows(rows);
+                    if (result.errores.length) {
+                        _importErrores = result.errores;
+                        if (typeof fileUploadSetError === 'function') {
+                            fileUploadSetError(FU_ID, 'El archivo tiene ' + result.errores.length + ' error(es). Usa «Informe de errores» para ver el detalle.');
+                        }
+                        if (typeof fileUploadShowErrorReport === 'function') fileUploadShowErrorReport(FU_ID, true);
+                        return;
+                    }
+                    if (!result.filasOk.length) {
+                        if (typeof fileUploadSetError === 'function') {
+                            fileUploadSetError(FU_ID, 'El archivo no contiene filas de datos.');
+                        }
+                        return;
+                    }
+                    if (typeof fileUploadClearError === 'function') fileUploadClearError(FU_ID);
+                    _importFilasOk = result.filasOk;
+                    if (importarBtn) importarBtn.disabled = false;
+                });
+            }
+
+            var fuEl = createFileUpload({
                 containerId: 'comp360ImportEnumFuContainer',
-                id:          'comp360ImportEnumFu',
+                id:          FU_ID,
                 accept:      ACCEPT_TABULAR,
                 maxSizeMb:   2,
                 formats:     FORMATS_TABULAR,
@@ -1235,89 +1355,54 @@
                 }],
                 onChange: function (file) {
                     _currentFile = file;
-                    if (importarBtn) importarBtn.disabled = !file;
+                    runImportValidationOnFile(file);
                 },
                 onError: function () {
                     _currentFile = null;
+                    _importFilasOk = null;
+                    _importErrores = [];
                     if (importarBtn) importarBtn.disabled = true;
                 }
             });
 
-            if (importarBtn) importarBtn.addEventListener('click', function () {
-                if (!_currentFile) return;
-                leerArchivoComoFilas(_currentFile, function (err, rows) {
-                    if (err) { showToast('error', err); return; }
-
-                    var TIPOS_VALIDOS = {
-                        '1-5 desempeño':              { tipoRespuesta: 'calificacion', escala: 'desempeno', obligatoria: false },
-                        '1-5 regularidad':            { tipoRespuesta: 'calificacion', escala: 'regularidad', obligatoria: false },
-                        'de 1 a 5':                   { tipoRespuesta: 'calificacion', escala: '5', obligatoria: false },
-                        'de 1 a 10':                  { tipoRespuesta: 'calificacion', escala: '10', obligatoria: false },
-                        'de 1 a 100':                 { tipoRespuesta: 'calificacion', escala: '100', obligatoria: false },
-                        'respuesta abierta - obligatoria': { tipoRespuesta: 'abierta', escala: null, obligatoria: true },
-                        'respuesta abierta':           { tipoRespuesta: 'abierta', escala: null, obligatoria: false }
-                    };
-                    var TIPO_IDS = ['ascendente', 'descendente', 'paralela', 'cliente', 'autoevaluacion'];
-                    /* Mapear nombres de competencias a índices */
-                    var compMap = {};
-                    _competencias.forEach(function (c, i) { compMap[c.nombre.trim().toLowerCase()] = i; });
-
-                    var errores   = [];
-                    var importadas = 0;
-
-                    rows.slice(1).forEach(function (cols, i) {
-                        var fila = i + 2;
-                        cols = cols.map(function (c) { return String(c || '').trim(); });
-
-                        var compNombre = cols[0] || '';
-                        var texto      = cols[1] || '';
-                        var tipoKey    = (cols[2] || '').toLowerCase();
-                        var tiposEval  = TIPO_IDS.filter(function (_, j) { return cols[3 + j] === '1'; });
-
-                        if (!compNombre) { errores.push('Fila ' + fila + ': falta el nombre de la competencia.'); return; }
-                        if (!(compNombre.toLowerCase() in compMap)) { errores.push('Fila ' + fila + ': la competencia "' + compNombre + '" no existe.'); return; }
-                        if (!texto) { errores.push('Fila ' + fila + ': falta el texto del enunciado.'); return; }
-                        if (!TIPOS_VALIDOS[tipoKey]) { errores.push('Fila ' + fila + ': tipo de respuesta "' + (cols[2] || '') + '" no válido.'); return; }
-                        if (!tiposEval.length) { errores.push('Fila ' + fila + ': debe marcarse al menos un tipo de evaluación.'); return; }
-
-                        var cfg   = TIPOS_VALIDOS[tipoKey];
-                        var compIdx = compMap[compNombre.toLowerCase()];
-                        if (!Array.isArray(_competencias[compIdx].enunciados)) _competencias[compIdx].enunciados = [];
-                        _competencias[compIdx].enunciados.push({
-                            id: 'en-imp-' + Date.now() + '-' + i,
-                            texto: texto,
-                            tipoRespuesta: cfg.tipoRespuesta,
-                            escala: cfg.escala,
-                            obligatoria: cfg.obligatoria,
-                            tiposEvaluacion: tiposEval
-                        });
-                        importadas++;
-                    });
-
-                    if (errores.length) {
+            if (fuEl) {
+                var errRep = fuEl.querySelector('[data-file-upload-error-report]');
+                if (errRep) {
+                    errRep.addEventListener('click', function () {
+                        if (!_importErrores.length) return;
                         openModal({
                             overlayId:  'comp360EnumImportErrorModal',
-                            title:      'Errores en el archivo (' + errores.length + ')',
-                            bodyHtml:   buildImportErrorTableHtml(errores),
+                            title:      'Errores en el archivo (' + _importErrores.length + ')',
+                            bodyHtml:   buildImportErrorTableHtml(_importErrores),
                             footerHtml: '<button class="ubits-button ubits-button--primary ubits-button--md" onclick="closeModal(\'comp360EnumImportErrorModal\')"><span>Entendido</span></button>',
                             size:       'md'
                         });
-                        return;
-                    }
+                    });
+                }
+            }
 
-                    if (!importadas) { showToast('warning', 'El archivo no contiene filas de datos.'); return; }
-
-                    closeDrawer('comp360DrawerImportEnum');
-                    renderCompetenciasView();
-                    showToast('success', importadas + (importadas === 1 ? ' enunciado importado.' : ' enunciados importados.'));
-                });
+            if (importarBtn) importarBtn.addEventListener('click', function () {
+                if (!_importFilasOk || !_importFilasOk.length) {
+                    showToast('warning', 'Selecciona un archivo válido antes de importar.');
+                    return;
+                }
+                comp360ApplyEnunciadosImportFilas(_importFilasOk);
+                var n = _importFilasOk.length;
+                closeDrawer('comp360DrawerImportEnum');
+                renderCompetenciasView();
+                showToast('success', n + (n === 1 ? ' enunciado importado.' : ' enunciados importados.'));
             });
         }, 80);
     }
 
-    /* ── Modal: Añadir enunciado ── */
-    function openComp360EnunciadoModal(compIdx) {
-        _comp360EnunciadoTipoValue = '';
+    /* ── Modal: Añadir / editar enunciado ── */
+    function openComp360EnunciadoModal(compIdx, editEnIdx) {
+        var existing = null;
+        if (typeof editEnIdx === 'number' && editEnIdx >= 0 && _competencias[compIdx] && Array.isArray(_competencias[compIdx].enunciados)) {
+            existing = _competencias[compIdx].enunciados[editEnIdx] || null;
+        }
+
+        _comp360EnunciadoTipoValue = existing ? String(existing.tipoRespuesta || '') : '';
         /* Tipos activos: preferir _tipos en memoria, si no el draft, si no todos los de BD */
         var tiposActivos = _tipos.filter(function (t) { return t.activo; });
         if (tiposActivos.length === 0 && Array.isArray(draft.tipo)) {
@@ -1329,15 +1414,22 @@
             });
         }
 
+        var tiposSel = existing && Array.isArray(existing.tiposEvaluacion) ? existing.tiposEvaluacion.map(String) : [];
+
         var switchesHtml = tiposActivos.map(function (t) {
+            var checked = existing ? tiposSel.indexOf(String(t.id)) >= 0 : true;
             return '<label class="comp360-enum-tipo-row">' +
                 '<label class="ubits-switch ubits-switch--md">' +
-                    '<input type="checkbox" class="ubits-switch__input comp360-enum-tipo-switch" data-tipo-id="' + t.id + '" checked>' +
+                    '<input type="checkbox" class="ubits-switch__input comp360-enum-tipo-switch" data-tipo-id="' + t.id + '" ' + (checked ? 'checked' : '') + '>' +
                     '<span class="ubits-switch__track"><span class="ubits-switch__thumb"></span></span>' +
                 '</label>' +
                 '<span class="ubits-body-md-regular">' + t.nombre + '</span>' +
             '</label>';
         }).join('');
+
+        var tiposLabel = existing
+            ? 'Este enunciado participa en:'
+            : 'Este enunciado será añadido a:';
 
         var bodyHtml =
             '<p class="ubits-body-sm-regular comp360-enum-modal-desc">Escribe un enunciado o pregunta relacionada con la competencia a evaluar y selecciona el tipo de respuesta, puede ser abierta o de calificación.</p>' +
@@ -1346,28 +1438,33 @@
             '<div id="comp360EnunciadoSubOpciones" style="margin-top:var(--gap-lg);display:none;"></div>' +
             (tiposActivos.length > 0
                 ? '<div class="comp360-enum-tipos-section">' +
-                  '<p class="ubits-body-sm-regular comp360-enum-tipos-label">Este enunciado será añadido a:</p>' +
+                  '<p class="ubits-body-sm-regular comp360-enum-tipos-label">' + tiposLabel + '</p>' +
                   '<div class="comp360-enum-tipos-grid">' + switchesHtml + '</div>' +
                   '</div>'
                 : '');
 
         openModal({
             overlayId: 'comp360ModalEnunciado',
-            title: 'Añadir enunciado',
+            title: existing ? 'Editar enunciado' : 'Añadir enunciado',
             bodyHtml: bodyHtml,
             footerHtml:
                 '<button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="comp360EnunciadoCancelarBtn"><span>Cancelar</span></button>' +
-                '<button type="button" class="ubits-button ubits-button--primary ubits-button--md" id="comp360EnunciadoAnadirBtn" disabled><span>Añadir</span></button>',
+                '<button type="button" class="ubits-button ubits-button--primary ubits-button--md" id="comp360EnunciadoAnadirBtn" disabled><span>' + (existing ? 'Guardar' : 'Añadir') + '</span></button>',
             size: 'sm',
             closeOnOverlayClick: false
         });
 
         setTimeout(function () {
+            var subPrefs = existing
+                ? { escala: existing.escala, obligatoria: !!existing.obligatoria }
+                : null;
+
             createInput({
                 containerId: 'comp360EnunciadoTextoWrap',
                 type: 'textarea',
                 placeholder: 'Escribe tu enunciado',
                 size: 'md',
+                value: existing && existing.texto ? String(existing.texto) : '',
                 onChange: validateComp360Enunciado
             });
 
@@ -1377,16 +1474,19 @@
                 label: 'Tipo de respuesta',
                 placeholder: 'Tipo de respuesta',
                 size: 'md',
+                value: existing && existing.tipoRespuesta ? String(existing.tipoRespuesta) : '',
                 selectOptions: [
                     { value: 'calificacion', text: 'Calificación del 1 al 5' },
                     { value: 'abierta',      text: 'Respuesta abierta' }
                 ],
                 onChange: function (val) {
                     _comp360EnunciadoTipoValue = val != null ? String(val) : '';
-                    renderComp360EnunciadoSubOpciones(_comp360EnunciadoTipoValue);
+                    renderComp360EnunciadoSubOpciones(_comp360EnunciadoTipoValue, subPrefs);
                     validateComp360Enunciado();
                 }
             });
+
+            renderComp360EnunciadoSubOpciones(_comp360EnunciadoTipoValue, subPrefs);
 
             var cancelBtn = document.getElementById('comp360EnunciadoCancelarBtn');
             var anadirBtn = document.getElementById('comp360EnunciadoAnadirBtn');
@@ -1399,7 +1499,7 @@
                 if (!textoEl || !textoEl.value.trim() || !tipoVal) return;
 
                 var enunciado = {
-                    id: 'en-' + Date.now(),
+                    id: existing && existing.id ? existing.id : 'en-' + Date.now(),
                     texto: textoEl.value.trim(),
                     tipoRespuesta: tipoVal,
                     escala: null,
@@ -1421,7 +1521,11 @@
                 });
 
                 if (!Array.isArray(_competencias[compIdx].enunciados)) _competencias[compIdx].enunciados = [];
-                _competencias[compIdx].enunciados.push(enunciado);
+                if (existing) {
+                    _competencias[compIdx].enunciados[editEnIdx] = enunciado;
+                } else {
+                    _competencias[compIdx].enunciados.push(enunciado);
+                }
                 _competencias[compIdx].expandida = true;
 
                 closeModal('comp360ModalEnunciado');
@@ -1446,14 +1550,19 @@
         return 'Calificación 1-5';
     }
 
-    function renderComp360EnunciadoSubOpciones(tipo) {
+    function renderComp360EnunciadoSubOpciones(tipo, prefs) {
+        prefs = prefs || {};
         var container = document.getElementById('comp360EnunciadoSubOpciones');
         if (!container) return;
         if (tipo === 'calificacion') {
             container.style.display = '';
+            var rawEsc = prefs.escala != null ? String(prefs.escala) : '';
+            var useDesempeno = rawEsc === 'desempeno';
+            var regChecked = useDesempeno ? '' : ' checked';
+            var desChecked = useDesempeno ? ' checked' : '';
             container.innerHTML =
                 '<label class="ubits-radio ubits-radio--md comp360-enum-escala-option">' +
-                    '<input type="radio" name="comp360-enum-escala" class="ubits-radio__input" value="regularidad" checked>' +
+                    '<input type="radio" name="comp360-enum-escala" class="ubits-radio__input" value="regularidad"' + regChecked + '>' +
                     '<span class="ubits-radio__circle"></span>' +
                     '<span class="ubits-radio__label">' +
                         '<span class="ubits-body-sm-semibold">Regularidad: </span>' +
@@ -1461,7 +1570,7 @@
                     '</span>' +
                 '</label>' +
                 '<label class="ubits-radio ubits-radio--md comp360-enum-escala-option" style="margin-top:var(--gap-md)">' +
-                    '<input type="radio" name="comp360-enum-escala" class="ubits-radio__input" value="desempeno">' +
+                    '<input type="radio" name="comp360-enum-escala" class="ubits-radio__input" value="desempeno"' + desChecked + '>' +
                     '<span class="ubits-radio__circle"></span>' +
                     '<span class="ubits-radio__label">' +
                         '<span class="ubits-body-sm-semibold">Desempeño: </span>' +
@@ -1473,9 +1582,12 @@
             });
         } else if (tipo === 'abierta') {
             container.style.display = '';
+            var obligChecked = prefs && Object.prototype.hasOwnProperty.call(prefs, 'obligatoria')
+                ? !!prefs.obligatoria
+                : true;
             container.innerHTML =
                 '<label class="ubits-checkbox ubits-checkbox--md comp360-enum-obligatoria">' +
-                    '<input type="checkbox" class="ubits-checkbox__input" value="obligatoria" checked>' +
+                    '<input type="checkbox" class="ubits-checkbox__input" value="obligatoria"' + (obligChecked ? ' checked' : '') + '>' +
                     '<span class="ubits-checkbox__box"><i class="far fa-check"></i></span>' +
                     '<span class="ubits-checkbox__label ubits-body-md-regular">Obligatoria</span>' +
                 '</label>';
@@ -1517,6 +1629,130 @@
         if (saveBtn) saveBtn.disabled = sel === 0;
     }
 
+    var COMP360_ENUM_MENU_OVERLAY_ID = 'comp360-enum-menu-overlay';
+    var _comp360EnumMenuAnchor = null;
+
+    function comp360TiposEvaluacionLine(en) {
+        var ids = Array.isArray(en.tiposEvaluacion) ? en.tiposEvaluacion : [];
+        if (!ids.length) return 'Ningún tipo de evaluación';
+        return ids.map(function (id) { return hubNombreTipoPorId(id); }).join(', ');
+    }
+
+    function comp360MoveEnunciado(compIdx, enIdx, delta) {
+        var arr = _competencias[compIdx] && _competencias[compIdx].enunciados;
+        if (!Array.isArray(arr)) return;
+        var j = enIdx + delta;
+        if (j < 0 || j >= arr.length) return;
+        var tmp = arr[enIdx];
+        arr[enIdx] = arr[j];
+        arr[j] = tmp;
+        renderCompetenciasList();
+    }
+
+    function getComp360EnunciadoMenuOptions(enIdx, total) {
+        var opts = [
+            { text: 'Editar', value: 'editar', leftIcon: 'pen-to-square' },
+            { text: 'Mover arriba', value: 'mover-arriba', leftIcon: 'arrow-up' },
+            { text: 'Mover abajo', value: 'mover-abajo', leftIcon: 'arrow-down' },
+            { text: 'Eliminar', value: 'eliminar', leftIcon: 'trash' }
+        ];
+        return opts.filter(function (o) {
+            if (o.value === 'mover-arriba') return enIdx > 0;
+            if (o.value === 'mover-abajo') return enIdx < total - 1;
+            return true;
+        });
+    }
+
+    function openComp360EnunciadoMenu(anchorEl) {
+        if (
+            !anchorEl ||
+            typeof getDropdownMenuHtml !== 'function' ||
+            typeof openDropdownMenu !== 'function' ||
+            typeof closeDropdownMenu !== 'function'
+        ) {
+            console.warn('UBITS: carga dropdown-menu.js para el menú de enunciados 360.');
+            return;
+        }
+        if (_comp360EnumMenuAnchor && _comp360EnumMenuAnchor !== anchorEl) {
+            _comp360EnumMenuAnchor.setAttribute('aria-expanded', 'false');
+        }
+        _comp360EnumMenuAnchor = anchorEl;
+
+        var card = anchorEl.closest('.comp360-enum-card');
+        if (!card) return;
+        var compIdx = parseInt(card.getAttribute('data-comp-idx'), 10);
+        var enIdx   = parseInt(card.getAttribute('data-en-idx'), 10);
+        if (isNaN(compIdx) || isNaN(enIdx) || !_competencias[compIdx]) return;
+
+        var list = _competencias[compIdx].enunciados;
+        var total = Array.isArray(list) ? list.length : 0;
+
+        var prev = document.getElementById(COMP360_ENUM_MENU_OVERLAY_ID);
+        if (prev) prev.remove();
+
+        document.body.insertAdjacentHTML(
+            'beforeend',
+            getDropdownMenuHtml({
+                overlayId: COMP360_ENUM_MENU_OVERLAY_ID,
+                options: getComp360EnunciadoMenuOptions(enIdx, total)
+            })
+        );
+
+        var overlay = document.getElementById(COMP360_ENUM_MENU_OVERLAY_ID);
+        if (!overlay) return;
+
+        function tearDown() {
+            closeDropdownMenu(COMP360_ENUM_MENU_OVERLAY_ID);
+            if (_comp360EnumMenuAnchor) {
+                _comp360EnumMenuAnchor.setAttribute('aria-expanded', 'false');
+                _comp360EnumMenuAnchor = null;
+            }
+            overlay.removeEventListener('click', onOverlayClick);
+            if (overlay.parentNode) overlay.parentNode.removeChild(overlay);
+        }
+
+        function onOverlayClick(ev) {
+            if (ev.target === overlay) tearDown();
+        }
+
+        overlay.addEventListener('click', onOverlayClick);
+
+        overlay.querySelectorAll('.ubits-dropdown-menu__option[data-value]').forEach(function (row) {
+            row.addEventListener('click', function (ev) {
+                ev.stopPropagation();
+                var val = row.getAttribute('data-value');
+                if (val === 'editar') {
+                    tearDown();
+                    openComp360EnunciadoModal(compIdx, enIdx);
+                    return;
+                }
+                if (val === 'mover-arriba') {
+                    comp360MoveEnunciado(compIdx, enIdx, -1);
+                    tearDown();
+                    return;
+                }
+                if (val === 'mover-abajo') {
+                    comp360MoveEnunciado(compIdx, enIdx, 1);
+                    tearDown();
+                    return;
+                }
+                if (val === 'eliminar') {
+                    if (Array.isArray(_competencias[compIdx].enunciados)) {
+                        _competencias[compIdx].enunciados.splice(enIdx, 1);
+                    }
+                    tearDown();
+                    renderCompetenciasList();
+                    return;
+                }
+                tearDown();
+            });
+        });
+
+        anchorEl.setAttribute('aria-expanded', 'true');
+        anchorEl.setAttribute('aria-haspopup', 'true');
+        openDropdownMenu(COMP360_ENUM_MENU_OVERLAY_ID, anchorEl, { alignRight: true });
+    }
+
     function renderCompetenciasList() {
         var container = document.getElementById('comp360-list');
         if (!container) return;
@@ -1538,18 +1774,20 @@
                 '</div>' +
                 '<div class="comp360-item__enunciados" style="' + (comp.expandida ? '' : 'display:none;') + '">' +
                     (Array.isArray(comp.enunciados) && comp.enunciados.length > 0
-                        ? '<ul class="comp360-enum-list">' +
+                        ? '<div class="comp360-enum-cards" role="list">' +
                           comp.enunciados.map(function (en, ei) {
-                              var badge = en.tipoRespuesta === 'calificacion'
-                                  ? comp360EscalaBadgeLabel(en.escala)
-                                  : 'Respuesta abierta' + (en.obligatoria ? ' · Obligatoria' : '');
-                              return '<li class="comp360-enum-item">' +
-                                  '<span class="comp360-enum-num ubits-body-sm-regular">' + (ei + 1) + '.</span>' +
-                                  '<span class="ubits-body-sm-regular comp360-enum-texto">' + en.texto + '</span>' +
-                                  '<span class="comp360-enum-badge ubits-body-sm-regular">' + badge + '</span>' +
-                              '</li>';
+                              var tiposLine = comp360TiposEvaluacionLine(en);
+                              return '<div class="comp360-enum-card" role="listitem" data-comp-idx="' + idx + '" data-en-idx="' + ei + '">' +
+                                  '<div class="comp360-enum-card__main">' +
+                                      '<p class="comp360-enum-card__enunciado ubits-body-md-regular">' + hubEscHtml(en.texto || '') + '</p>' +
+                                      '<p class="comp360-enum-card__tipos ubits-body-sm-regular">' + hubEscHtml(tiposLine) + '</p>' +
+                                  '</div>' +
+                                  '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only comp360-enum-card__menu" aria-label="Opciones del enunciado">' +
+                                      '<i class="far fa-ellipsis-vertical"></i>' +
+                                  '</button>' +
+                              '</div>';
                           }).join('') +
-                          '</ul>'
+                          '</div>'
                         : '') +
                     '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm comp360-item__add-enunciado" data-idx="' + idx + '">' +
                         '<i class="far fa-plus"></i><span>Añadir enunciado</span>' +
@@ -1573,6 +1811,13 @@
             var addEnunciadoBtn = item.querySelector('.comp360-item__add-enunciado');
             if (addEnunciadoBtn) addEnunciadoBtn.addEventListener('click', function () {
                 openComp360EnunciadoModal(idx);
+            });
+
+            item.querySelectorAll('.comp360-enum-card__menu').forEach(function (menuBtn) {
+                menuBtn.addEventListener('click', function (e) {
+                    e.stopPropagation();
+                    openComp360EnunciadoMenu(menuBtn);
+                });
             });
         });
 

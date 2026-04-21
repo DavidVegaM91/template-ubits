@@ -248,7 +248,7 @@ Cuando `_competencias.length === 0` se muestra el empty state (`loadEmptyState`)
 ### Modo lista (con al menos 1 competencia)
 
 Header de la lista con dos botones:
-- **«Añadir enunciados desde archivo»** → `openComp360ImportEnunciadosDrawer()`
+- **«Cargar enunciados masivamente»** → `openComp360ImportEnunciadosDrawer()`
 - **«Añadir competencia»** → `openComp360Modal()` (misma acción que en el empty state; ya no hay dropdown ni importación masiva de competencias)
 
 Cada ítem de competencia (`comp360-item`) muestra:
@@ -284,10 +284,12 @@ Botón «Añadir» habilitado cuando hay texto de enunciado, tipo de respuesta e
 
 > **Importación masiva de competencias:** no está implementada en el prototipo (solo creación manual con el modal y, opcionalmente, importación de **enunciados** desde archivo).
 
-### Drawer: Añadir enunciados desde archivo (`openComp360ImportEnunciadosDrawer`)
+### Drawer: Cargar enunciados masivamente (`openComp360ImportEnunciadosDrawer`)
 
 - Drawer oficial (`openDrawer`), id: `comp360DrawerImportEnum`
 - Acepta: CSV, `.xlsx`, `.xls`; máx. 2 MB
+- **Al seleccionar o soltar el archivo** (`createFileUpload` → `onChange`): se lee con `leerArchivoComoFilas` y se valida de inmediato con `comp360ValidateEnunciadosImportRows`. El botón **«Importar»** solo se habilita si no hay errores y hay al menos una fila de datos. Si hay errores: mensaje en el `file-upload` (`fileUploadSetError`), botón **«Informe de errores»** (`fileUploadShowErrorReport`) y modal con tabla al pulsarlo.
+- **Competencia nueva:** si el nombre en la columna `competencia` no coincide con ninguna existente, **no es error**: al pulsar **«Importar»** se crea la competencia en `_competencias` (id `comp-imp-*`, descripción vacía, seleccionada, sin expandir por defecto) y se añaden los enunciados con `comp360ApplyEnunciadosImportFilas`.
 - **Plantilla descargable** (nombre: `plantilla-enunciados-360.csv`): generada dinámicamente con los nombres de las primeras dos competencias existentes como ejemplos.
 
 Estructura de la plantilla (8 columnas):
@@ -312,12 +314,11 @@ Estructura de la plantilla (8 columnas):
 | Regla | Mensaje |
 |-------|---------|
 | Nombre de competencia vacío | «Fila N: falta el nombre de la competencia.» |
-| Competencia no existe en `_competencias` | «Fila N: la competencia "X" no existe.» |
 | Texto del enunciado vacío | «Fila N: falta el texto del enunciado.» |
 | `tipo_respuesta` no válido | «Fila N: tipo de respuesta "X" no válido.» |
 | Ningún tipo de evaluación marcado (cols 3-7 ninguna `"1"`) | «Fila N: debe marcarse al menos un tipo de evaluación.» |
 
-Si hay errores: modal con tabla Fila / Problema. Si no: enunciados añadidos a sus competencias; toast; re-renderiza.
+Solo encabezado o sin filas de datos: error al cargar el archivo (no se habilita Importar). Con archivo válido: **Importar** aplica las filas; toast y `renderCompetenciasView()`.
 
 **`TIPO_IDS` para enunciados:** `['ascendente', 'descendente', 'paralela', 'cliente', 'autoevaluacion']` — cols 3 a 7 del CSV.
 
