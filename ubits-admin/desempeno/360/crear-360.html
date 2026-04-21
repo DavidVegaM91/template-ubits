@@ -1104,8 +1104,38 @@
     function saveTipo() {
         draft.tipo = _tipos.map(function (t) { return { id: t.id, activo: t.activo, peso: t.peso }; });
         draft.checks.tipo = true;
+        var asignSnap = (draft.evaluados && draft.evaluados.tipo === 'libre-asignaciones' && Array.isArray(draft.evaluados.asignaciones))
+            ? JSON.stringify(draft.evaluados.asignaciones)
+            : null;
+        if (asignSnap != null) {
+            eval360FiltrarAsignacionesPorTiposActivos();
+            if (asignSnap !== JSON.stringify(draft.evaluados.asignaciones || [])) {
+                showToast('info', 'Las asignaciones de evaluados se ajustaron a los tipos que quedaron activos.');
+            }
+        }
         showToast('success', 'Configuración guardada');
         showView('hub');
+    }
+
+    /** Quita evaluadores cuyo tipo ya no está activo; elimina evaluados sin evaluadores. Sincroniza draft y _eval360AsignacionesData. */
+    function eval360FiltrarAsignacionesPorTiposActivos() {
+        if (!(draft.evaluados && draft.evaluados.tipo === 'libre-asignaciones' && Array.isArray(draft.evaluados.asignaciones))) return;
+        var permitidos = {};
+        eval360GetTiposActivos().forEach(function (t) { permitidos[t.id] = true; });
+        var filtradas = draft.evaluados.asignaciones.map(function (row) {
+            var evs = (row.evaluadores || []).filter(function (e) { return permitidos[e.tipo]; });
+            return {
+                evaluadoId: row.evaluadoId,
+                nombre:     row.nombre,
+                area:       row.area || '',
+                avatar:     row.avatar != null ? row.avatar : null,
+                evaluadores: evs
+            };
+        }).filter(function (row) { return (row.evaluadores || []).length > 0; });
+        draft.evaluados.asignaciones = filtradas;
+        draft.evaluados.personas = filtradas.map(function (a) { return a.evaluadoId; });
+        draft.checks.evaluados = filtradas.length > 0;
+        _eval360AsignacionesData = JSON.parse(JSON.stringify(filtradas));
     }
 
     /* ══════════════════════════════════════════════════════════
@@ -2288,6 +2318,7 @@
                             : eval360ValidarLibre(filas);
 
                         if (resultado.errores.length) {
+                            _eval360ImportOmitidasTipo = 0;
                             _erroresActuales = resultado.errores;
                             if (fuEl2) {
                                 fileUploadSetError(fuEl2, resultado.errores.length + ' error(es) encontrado(s). Revisa el informe para ver el detalle.');
@@ -2300,6 +2331,7 @@
                         } else {
                             _fileReady = true;
                             _eval360ImportFilas = resultado.filas;
+                            _eval360ImportOmitidasTipo = (typeof resultado.omitidasPorTipo === 'number') ? resultado.omitidasPorTipo : 0;
                             if (importarBtn) importarBtn.disabled = false;
                             if (fuEl2) { fileUploadClearError(fuEl2); fileUploadShowErrorReport(fuEl2, false); }
                         }
@@ -2321,7 +2353,7 @@
             if (_modoImport === 'organigrama') {
                 desc.innerHTML = 'Sube un archivo con los usernames de los evaluados. El sistema asignará automáticamente sus evaluadores según el organigrama y los tipos activos: <strong>' + nombresTipos + '</strong>.';
             } else {
-                desc.innerHTML = 'Sube un archivo con evaluador, evaluado y tipo de evaluación. Te permite asignaciones personalizadas fuera del organigrama.';
+                desc.innerHTML = 'Sube un archivo con evaluador, evaluado y tipo de evaluación. Solo se importan filas cuyo tipo coincide con los <strong>activos</strong> en «Tipo de evaluación»; el resto se omite sin bloquear la importación.';
             }
         }
 
@@ -2340,6 +2372,7 @@
                         closeDrawer('eval360DrawerImport');
                     } else {
                         /* Flujo libre: simular progreso de carga antes de cerrar */
+                        var omitidasSnap = _eval360ImportOmitidasTipo;
                         importarBtn.disabled = true;
                         var cancelBtn2 = document.getElementById('eval360ImportCancelarBtn');
                         if (cancelBtn2) cancelBtn2.disabled = true;
@@ -2356,6 +2389,9 @@
                                     eval360AplicarImport('libre', _eval360ImportFilas);
                                     closeDrawer('eval360DrawerImport');
                                     showView('evaluados-asignados');
+                                    if (omitidasSnap > 0 && typeof showToast === 'function') {
+                                        showToast('info', 'Se omitieron ' + omitidasSnap + ' fila(s) cuyo tipo no está activo en «Tipo de evaluación»; el resto se importó.');
+                                    }
                                 }, 400);
                             }
                         }, STEP_MS);
@@ -2380,16 +2416,28 @@
 
     /* Filas válidas del último archivo cargado */
     var _eval360ImportFilas = null;
+    var _eval360ImportOmitidasTipo = 0;
 
     /* ── Plantilla: Basado en organigrama ── */
     function eval360DescargarPlantillaOrg() {
         var bom = '\uFEFF';
         var csv = bom + 'username\n' +
+            'pateleber@fiqsha.demo\n' +
             'rospid@fiqsha.demo\n' +
             'fcastr@fiqsha.demo\n' +
-            'cvargm@fiqsha.demo\n' +
+            'cgarcl@fiqsha.demo\n' +
+            'lrodrm@fiqsha.demo\n' +
             'asuarg@fiqsha.demo\n' +
-            'mjimep@fiqsha.demo';
+            'cvargm@fiqsha.demo\n' +
+            'mjimep@fiqsha.demo\n' +
+            'amorer@fiqsha.demo\n' +
+            'jlopeg@fiqsha.demo\n' +
+            'dmartr@fiqsha.demo\n' +
+            'crdiaz@fiqsha.demo\n' +
+            'ariosc@fiqsha.demo\n' +
+            'marisc@fiqsha.demo\n' +
+            'dgutio@fiqsha.demo\n' +
+            'mhernd@fiqsha.demo';
         var blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
         var url  = URL.createObjectURL(blob);
         var a    = document.createElement('a');
@@ -2403,10 +2451,15 @@
         var bom = '\uFEFF';
         var csv = bom + 'evaluador,evaluado,tipo_evaluacion\n' +
             'rospid@fiqsha.demo,cgarcl@fiqsha.demo,descendente\n' +
+            'lrodrm@fiqsha.demo,cgarcl@fiqsha.demo,paralela\n' +
             'cgarcl@fiqsha.demo,rospid@fiqsha.demo,ascendente\n' +
-            'cgarcl@fiqsha.demo,lrodrm@fiqsha.demo,paralela\n' +
             'pateleber@fiqsha.demo,pateleber@fiqsha.demo,autoevaluacion\n' +
-            'asuarg@fiqsha.demo,cgarcl@fiqsha.demo,cliente';
+            'asuarg@fiqsha.demo,cgarcl@fiqsha.demo,cliente\n' +
+            'mjimep@fiqsha.demo,mjimep@fiqsha.demo,autoevaluacion\n' +
+            'amorer@fiqsha.demo,marisc@fiqsha.demo,descendente\n' +
+            'marisc@fiqsha.demo,amorer@fiqsha.demo,ascendente\n' +
+            'dgutio@fiqsha.demo,scasts@fiqsha.demo,paralela\n' +
+            'mjimep@fiqsha.demo,cgarcl@fiqsha.demo,cliente';
         var blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
         var url  = URL.createObjectURL(blob);
         var a    = document.createElement('a');
@@ -2474,11 +2527,14 @@
         'descendente':         'descendente',
         'ascendente':          'ascendente',
         'paralela':            'paralela',
-        'cliente':             'cliente'
+        'cliente':             'cliente',
+        'cliente interno':     'cliente',
+        'clienteinterno':      'cliente'
     };
 
     function eval360ValidarLibre(filas) {
         var errores = [];
+        var omitidasPorTipo = 0;
         var colaboradores = (typeof BD_MASTER_COLABORADORES !== 'undefined' && BD_MASTER_COLABORADORES.colaboradores) || [];
         var usernamesValidos = new Set();
         colaboradores.forEach(function (c) {
@@ -2486,12 +2542,12 @@
             if (u) usernamesValidos.add(u);
         });
 
-        /* Tipos activos en el draft — usar siempre nombre para comparar con lo que escribe el usuario */
-        var tiposActivos = eval360GetTiposActivos().map(function (t) { return eval360Norm(t.nombre); });
+        var tiposActivosIds = new Set();
+        eval360GetTiposActivos().forEach(function (t) { tiposActivosIds.add(t.id); });
 
         if (!filas || filas.length === 0) {
             errores.push('El archivo está vacío o solo contiene la fila de encabezados.');
-            return { errores: errores, filas: [] };
+            return { errores: errores, filas: [], omitidasPorTipo: 0 };
         }
         if (filas.length > 3000) {
             errores.push('El archivo supera las 3.000 filas permitidas (' + filas.length + ' filas).');
@@ -2512,13 +2568,13 @@
         if (colTipo      === -1) faltantes.push('"tipo_evaluacion"');
         if (faltantes.length) {
             errores.push('Faltan columnas requeridas: ' + faltantes.join(', ') + '. Usa la plantilla de modo Libre.');
-            return { errores: errores, filas: [] };
+            return { errores: errores, filas: [], omitidasPorTipo: 0 };
         }
 
         var dataRows = filas.slice(1);
         if (dataRows.length === 0) {
             errores.push('El archivo no tiene filas de datos (solo tiene el encabezado).');
-            return { errores: errores, filas: [] };
+            return { errores: errores, filas: [], omitidasPorTipo: 0 };
         }
 
         var filasValidas = [];
@@ -2540,10 +2596,9 @@
                 return;
             }
 
-            /* Tipo activo en la configuración */
-            var tipoEnDraft = tiposActivos.some(function (ta) { return eval360Norm(ta) === tipoNorm || ta.startsWith(tipoNorm); });
-            if (!tipoEnDraft && tiposActivos.length > 0) {
-                errores.push('Fila ' + nRow + ': el tipo "' + tipoRaw + '" no está activo en la configuración de esta evaluación 360.');
+            /* Tipo activo en #tipo: filas con tipos desactivados se omiten (no son error) */
+            if (tiposActivosIds.size > 0 && !tiposActivosIds.has(tipoNorm)) {
+                omitidasPorTipo++;
                 return;
             }
 
@@ -2573,7 +2628,13 @@
             filasValidas.push({ evaluador: evaluador, evaluado: evaluado, tipo: tipoNorm });
         });
 
-        return { errores: errores, filas: filasValidas };
+        if (filasValidas.length === 0 && omitidasPorTipo > 0 && errores.length === 0) {
+            errores.push('Todas las filas del archivo corresponden a tipos de evaluación que no están activos en «Tipo de evaluación». Activa los tipos que necesites o ajusta el CSV.');
+        } else if (filasValidas.length === 0 && dataRows.length > 0 && errores.length === 0) {
+            errores.push('No quedó ninguna fila válida para importar. Revisa evaluadores, evaluados y tipos admitidos.');
+        }
+
+        return { errores: errores, filas: filasValidas, omitidasPorTipo: omitidasPorTipo };
     }
 
     /* ── Tabla de errores compartida (Fila / Problema) ── */

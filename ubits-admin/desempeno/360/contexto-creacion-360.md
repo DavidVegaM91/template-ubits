@@ -212,7 +212,7 @@ El input de peso está **deshabilitado** cuando el tipo está inactivo. Las tarj
 
 Habilitado solo si: hay al menos un tipo activo **y** la suma es exactamente 100.
 
-`saveTipo()` escribe en `draft.tipo = [{id, activo, peso}, ...]` y pone `draft.checks.tipo = true`. Al volver al hub (`showView('hub')`), `updateHubChecksUI()` desbloquea las tarjetas de Competencias, Evaluados y Configuración de resultados.
+`saveTipo()` escribe en `draft.tipo = [{id, activo, peso}, ...]` y pone `draft.checks.tipo = true`. Si ya existen asignaciones en modo libre (`draft.evaluados.tipo === 'libre-asignaciones'` con `asignaciones[]`), llama a **`eval360FiltrarAsignacionesPorTiposActivos()`** para quitar evaluadores cuyo tipo dejó de estar activo y eliminar evaluados sin evaluadores; sincroniza `draft` y `_eval360AsignacionesData`. Si el conjunto cambia, muestra un toast informativo. Al volver al hub (`showView('hub')`), `updateHubChecksUI()` desbloquea las tarjetas de Competencias, Evaluados y Configuración de resultados.
 
 ---
 
@@ -436,15 +436,9 @@ El archivo tiene 3 columnas: `evaluador`, `evaluado`, `tipo_evaluacion`. Permite
 
 **Plantilla** (`plantilla-evaluados-libre.csv`):
 
-| evaluador | evaluado | tipo_evaluacion |
-|-----------|----------|----------------|
-| rospid@fiqsha.demo | cgarcl@fiqsha.demo | descendente |
-| cgarcl@fiqsha.demo | rospid@fiqsha.demo | ascendente |
-| cgarcl@fiqsha.demo | lrodrm@fiqsha.demo | paralela |
-| pateleber@fiqsha.demo | pateleber@fiqsha.demo | autoevaluacion |
-| asuarg@fiqsha.demo | cgarcl@fiqsha.demo | cliente |
+El archivo de ejemplo `archivos-demo/ejemplo-evaluados-libre.csv` incluye filas para **los cinco tipos** (`descendente`, `ascendente`, `paralela`, `autoevaluacion`, `cliente`) con usernames válidos de la BD.
 
-**Valores válidos de `tipo_evaluacion`:** `descendente`, `ascendente`, `paralela`, `autoevaluacion`, `cliente` (normalizado, sin acento en autoevaluación).
+**Valores válidos de `tipo_evaluacion`:** `descendente`, `ascendente`, `paralela`, `autoevaluacion`, `cliente` (también «autoevaluación», «cliente interno», etc.; se normalizan vía `TIPOS_NORM_MAP`).
 
 **Validaciones** (`eval360ValidarLibre`):
 
@@ -458,17 +452,17 @@ El archivo tiene 3 columnas: `evaluador`, `evaluado`, `tipo_evaluacion`. Permite
 | Campo evaluado vacío | «Fila N: el campo "evaluado" está vacío.» |
 | Campo tipo_evaluacion vacío | «Fila N: el campo "tipo_evaluacion" está vacío.» |
 | Tipo no válido | «Fila N: tipo de evaluación "X" no es válido. Valores admitidos: descendente, ascendente, paralela, autoevaluación, cliente.» |
-| Tipo no activo en la configuración | «Fila N: el tipo "X" no está activo en la configuración de esta evaluación 360.» |
+| Todas las filas omitidas por tipo inactivo | «Todas las filas del archivo corresponden a tipos… no están activos en «Tipo de evaluación»…» |
 | Evaluador no existe en BD | «Fila N: el evaluador "X" no existe en la base de datos de colaboradores.» |
 | Evaluado no existe en BD | «Fila N: el evaluado "X" no existe en la base de datos de colaboradores.» |
 | Autoevaluación con personas distintas | «Fila N: en autoevaluación el evaluador y el evaluado deben ser la misma persona.» |
 | Tipo ≠ autoevaluación con misma persona | «Fila N: evaluador y evaluado son la misma persona. Solo se permite en autoevaluación.» |
 
-> **Evaluador y evaluado:** en modo Libre, ambos usernames deben existir en `BD_MASTER_COLABORADORES` para **todos** los tipos de evaluación, incluido `cliente` (no se admiten evaluadores externos ficticios como `cliente_externo`).
+> **Evaluador y evaluado:** en modo Libre, ambos usernames deben existir en `BD_MASTER_COLABORADORES` para **todos** los tipos de evaluación, incluido `cliente`.
 
-> **Check de tipo activo:** se usa `eval360GetTiposActivos().map(t => eval360Norm(t.nombre))` para normalizar el nombre visible del tipo antes de compararlo con el CSV.
+> **Tipos activos:** si una fila tiene un tipo **válido** pero **no está activo** en `#tipo`, la fila **se omite** (no genera error). Se devuelve `omitidasPorTipo` en el resultado; tras importar con éxito, si `omitidasPorTipo > 0`, se muestra un toast informativo.
 
-Retorna `{ errores: [], filas: [{ evaluador, evaluado, tipo }] }`.
+Retorna `{ errores: [], filas: [{ evaluador, evaluado, tipo }], omitidasPorTipo }`.
 
 #### Flujo de error reporting en el file uploader
 
