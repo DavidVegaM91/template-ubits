@@ -437,6 +437,7 @@ body.page-tareas .dashboard-container {
     flex-shrink: 0 !important;
 }
 
+
 /* Controles de navegación (Hoy + flechas) - no se encogen */
 .calendar-today-nav {
     display: flex !important;
@@ -786,17 +787,7 @@ body.page-tareas .dashboard-container {
         padding: var(--padding-md) !important;
     }
 
-    /* Botón Filtros: icon-only oficial (sm = 32x32) en celulares */
-    #tareas-filtros-btn {
-        width: 32px !important;
-        height: 32px !important;
-        min-width: 32px !important;
-        padding: 9.5px 8px !important;
-        box-sizing: border-box !important;
-    }
-    #tareas-filtros-btn .tareas-filtros-btn__label {
-        display: none !important;
-    }
+    /* Botones icon-only sm en la barra de filtros (tamaños ya resueltos por ubits-button--sm --icon-only) */
 }
 
 

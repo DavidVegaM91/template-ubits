@@ -146,14 +146,25 @@
 
                                             <button
                                                 type="button"
-                                                class="ubits-button ubits-button--secondary ubits-button--sm"
+                                                class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only"
+                                                id="tareas-refresh-btn"
+                                                aria-label="Refrescar datos"
+                                                data-tooltip="Refrescar datos"
+                                                data-tooltip-delay="1000"
+                                            >
+                                                <i class="far fa-arrows-rotate"></i>
+                                            </button>
+                                            <button
+                                                type="button"
+                                                class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only"
                                                 id="tareas-filtros-btn"
                                                 aria-haspopup="dialog"
                                                 aria-expanded="false"
                                                 aria-label="Abrir filtros"
+                                                data-tooltip="Filtros"
+                                                data-tooltip-delay="1000"
                                             >
                                                 <i class="far fa-filter"></i>
-                                                <span class="tareas-filtros-btn__label">Filtros</span>
                                             </button>
                                         </div>
                                     </div>

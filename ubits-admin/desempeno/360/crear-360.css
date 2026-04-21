@@ -291,6 +291,25 @@
     opacity: 0.7;
 }
 
+/* Card maestra: primera celda del grid, mismo tamaño que las demás */
+.tipo360-card--maestra {
+    background: var(--ubits-bg-2);
+    border-style: dashed;
+}
+
+.tipo360-card--maestra.tipo360-card--activo {
+    background: var(--ubits-bg-1);
+}
+
+.tipo360-master-icon {
+    margin-right: var(--gap-sm);
+    color: var(--ubits-fg-2-medium);
+}
+
+.tipo360-card--maestra.tipo360-card--activo .tipo360-master-icon {
+    color: var(--ubits-accent-brand);
+}
+
 /* Mensajes de validación del total */
 .tipo360-total-bar {
     margin-top: var(--gap-xs);
@@ -540,6 +559,69 @@
 .comp360-enum-escala-option .ubits-radio__label {
     flex: 1;
     min-width: 0;
+}
+
+/* ════════════════════════════════════════
+   MODAL: NUEVA COMPETENCIA (tabs + banco)
+   ════════════════════════════════════════ */
+
+/* Wrapper de los tabs — fondo bg-2 con padding según guía del componente Tab */
+.comp360-modal-tabs-wrap {
+    display: flex;
+    gap: 4px;
+    background: var(--ubits-bg-2);
+    padding: 4px;
+    border-radius: var(--border-radius-sm);
+    margin-bottom: var(--gap-xl);
+}
+
+.comp360-modal-tabs-wrap .ubits-tab {
+    flex: 1;
+    justify-content: center;
+}
+
+/* Lista del banco de competencias */
+.comp360-banco-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-xs);
+}
+
+.comp360-banco-item {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-sm);
+    padding: var(--padding-sm) var(--padding-md);
+    border-radius: var(--border-radius-md);
+    border: 1px solid var(--ubits-border-1);
+    cursor: pointer;
+    transition: background 0.15s;
+}
+
+.comp360-banco-item:not(.comp360-banco-item--added):hover {
+    background: var(--ubits-bg-2);
+}
+
+.comp360-banco-item--added {
+    opacity: 0.65;
+    cursor: default;
+}
+
+.comp360-banco-item__nombre {
+    flex: 1;
+    color: var(--ubits-fg-1-high);
+}
+
+/* Badge "Ya añadida" */
+.comp360-banco-tag {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--ubits-feedback-accent-success);
+    background: var(--ubits-feedback-bg-success);
+    padding: 2px 8px;
+    border-radius: var(--border-radius-full);
+    white-space: nowrap;
+    flex-shrink: 0;
 }
 
 /* ════════════════════════════════════════

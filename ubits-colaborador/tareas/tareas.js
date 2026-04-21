@@ -1150,7 +1150,7 @@ function updateMonthYearDisplay() {
     const currentYear = document.getElementById('current-year');
     if (currentMonth && currentYear) {
         const selectedDate = parseDateString(estadoTareas.selectedDay);
-        currentMonth.textContent = getMonthName(selectedDate);
+        currentMonth.textContent = getMonthName(selectedDate).slice(0, 3);
         currentYear.textContent = selectedDate.getFullYear();
     }
 }
@@ -1333,6 +1333,14 @@ function initTareasView() {
         noDueToggle.addEventListener('click', function () {
             estadoTareas.showNoDueSection = !estadoTareas.showNoDueSection;
             renderTareasSinFecha();
+        });
+    }
+
+    // Botón refrescar datos
+    const refreshBtn = document.getElementById('tareas-refresh-btn');
+    if (refreshBtn) {
+        refreshBtn.addEventListener('click', function () {
+            if (typeof showToast === 'function') showToast('success', 'Datos refrescados');
         });
     }
 

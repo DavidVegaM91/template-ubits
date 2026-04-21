@@ -31,6 +31,7 @@
     <link rel="stylesheet" href="../../../components/ubits-data-table.css">
     <link rel="stylesheet" href="../../../components/file-upload.css">
     <link rel="stylesheet" href="../../../components/drawer.css">
+    <link rel="stylesheet" href="../../../components/tab.css">
     <link rel="stylesheet" href="./crear-360.css">
     <!-- SheetJS: lectura de archivos Excel (.xlsx / .xls) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
@@ -628,6 +629,18 @@
     /* Mapeo id interno de tipo → clave usada en importación modo libre */
     var TIPO_ID_TO_LIBRE_KEY = { auto: 'autoevaluacion', jefe: 'descendente', pares: 'paralela', subalternos: 'ascendente', cliente: 'cliente' };
 
+    /* Banco de competencias reutilizables (simulan evaluaciones pasadas / catálogo de empresa) */
+    var BANCO_COMPETENCIAS_360 = [
+        'Liderazgo transformador',
+        'Pensamiento analítico',
+        'Colaboración efectiva',
+        'Comunicación asertiva',
+        'Innovación y creatividad',
+        'Adaptabilidad al cambio',
+        'Orientación al cliente',
+        'Gestión del tiempo y productividad'
+    ];
+
     function hubNombreTipoPorId(id) {
         var bases = (typeof BD_EVALUACIONES_360 !== 'undefined' && BD_EVALUACIONES_360.tiposEvaluacion) || [];
         for (var i = 0; i < bases.length; i++) {
@@ -965,6 +978,38 @@
         if (!container) return;
         container.innerHTML = '';
 
+        /* ── Card maestra: controla todos los tipos a la vez ── */
+        var todosActivos  = _tipos.every(function (t) { return t.activo; });
+        var algunoActivo  = _tipos.some(function (t) { return t.activo; });
+        var masterCard = document.createElement('div');
+        masterCard.className = 'tipo360-card tipo360-card--maestra' + (todosActivos ? ' tipo360-card--activo' : '');
+        masterCard.innerHTML =
+            '<div class="tipo360-card__row-title">' +
+                '<span class="ubits-body-md-bold tipo360-card__nombre">' +
+                    '<i class="far fa-layer-group tipo360-master-icon"></i>Todos los evaluadores' +
+                '</span>' +
+                '<label class="ubits-switch ubits-switch--md">' +
+                    '<input type="checkbox" class="ubits-switch__input" id="tipo360-master-toggle" ' + (todosActivos ? 'checked' : '') + '>' +
+                    '<span class="ubits-switch__track"><span class="ubits-switch__thumb"></span></span>' +
+                '</label>' +
+            '</div>' +
+            '<div class="tipo360-card__row-desc">' +
+                '<span class="ubits-body-sm-regular tipo360-card__desc">Activa o desactiva todos los tipos de evaluación de una sola vez.</span>' +
+            '</div>';
+        container.appendChild(masterCard);
+
+        var masterInput = masterCard.querySelector('#tipo360-master-toggle');
+        masterInput.indeterminate = algunoActivo && !todosActivos;
+        masterInput.addEventListener('change', function (e) {
+            var activar = e.target.checked;
+            _tipos.forEach(function (t) {
+                t.activo = activar;
+                t.peso   = activar ? t.pesoSugerido : 0;
+            });
+            renderTipoCards();
+            updateTipoTotal();
+        });
+
         _tipos.forEach(function (tipo, idx) {
             var card = document.createElement('div');
             card.className = 'tipo360-card' + (tipo.activo ? ' tipo360-card--activo' : '');
@@ -1087,23 +1132,32 @@
         }
     }
 
-    /* Abre el modal oficial para crear una competencia */
+    /* Abre el modal oficial para añadir competencias (nueva o desde banco) */
     function openComp360Modal() {
         openModal({
             overlayId: 'comp360ModalNuevaComp',
-            title: 'Nueva competencia',
+            title: 'Añadir competencia',
             bodyHtml:
-                '<div id="comp360ModalNombreWrap"></div>' +
-                '<div id="comp360ModalDescWrap" style="margin-top:var(--gap-lg)"></div>',
+                '<div class="comp360-modal-tabs-wrap">' +
+                    '<button type="button" class="ubits-tab ubits-tab--sm ubits-tab--active" data-modal-tab="crear">Crear competencia</button>' +
+                    '<button type="button" class="ubits-tab ubits-tab--sm" data-modal-tab="banco">Banco de competencias</button>' +
+                '</div>' +
+                '<div id="comp360-modal-panel-crear">' +
+                    '<div id="comp360ModalNombreWrap"></div>' +
+                    '<div id="comp360ModalDescWrap" style="margin-top:var(--gap-lg)"></div>' +
+                '</div>' +
+                '<div id="comp360-modal-panel-banco" style="display:none">' +
+                    '<div id="comp360ModalBancoList" class="comp360-banco-list"></div>' +
+                '</div>',
             footerHtml:
                 '<button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="comp360ModalCancelarBtn"><span>Cancelar</span></button>' +
-                '<button type="button" class="ubits-button ubits-button--primary ubits-button--md" id="comp360ModalCrearBtn" disabled><span>Crear</span></button>',
+                '<button type="button" class="ubits-button ubits-button--primary ubits-button--md" id="comp360ModalCrearBtn" disabled><span>Añadir</span></button>',
             size: 'sm',
             closeOnOverlayClick: false
         });
 
-        /* Inputs oficiales */
         setTimeout(function () {
+            /* ── Tab 1: Crear competencia ── */
             createInput({
                 containerId: 'comp360ModalNombreWrap',
                 label: 'Nombre',
@@ -1121,25 +1175,85 @@
                 onChange: validateComp360Modal
             });
 
+            /* ── Tab 2: Banco de competencias ── */
+            var bancoList = document.getElementById('comp360ModalBancoList');
+            if (bancoList) {
+                var yaEnEval = {};
+                _competencias.forEach(function (c) { yaEnEval[c.nombre.trim().toLowerCase()] = true; });
+
+                bancoList.innerHTML = BANCO_COMPETENCIAS_360.map(function (nombre) {
+                    var yaAdded = !!yaEnEval[nombre.toLowerCase()];
+                    return '<label class="comp360-banco-item' + (yaAdded ? ' comp360-banco-item--added' : '') + '">' +
+                        '<label class="ubits-checkbox ubits-checkbox--md">' +
+                            '<input type="checkbox" class="ubits-checkbox__input" data-nombre="' + nombre + '" ' + (yaAdded ? 'checked disabled' : '') + '>' +
+                            '<span class="ubits-checkbox__box"></span>' +
+                        '</label>' +
+                        '<span class="ubits-body-sm-regular comp360-banco-item__nombre">' + nombre + '</span>' +
+                        (yaAdded ? '<span class="comp360-banco-tag">Ya añadida</span>' : '') +
+                    '</label>';
+                }).join('');
+
+                bancoList.querySelectorAll('input[type="checkbox"]').forEach(function (cb) {
+                    cb.addEventListener('change', validateComp360Modal);
+                });
+            }
+
+            /* ── Cambio de tab ── */
+            var tabBtns = document.querySelectorAll('#comp360ModalNuevaComp [data-modal-tab]');
+            tabBtns.forEach(function (btn) {
+                btn.addEventListener('click', function () {
+                    tabBtns.forEach(function (b) { b.classList.remove('ubits-tab--active'); });
+                    btn.classList.add('ubits-tab--active');
+                    var tab = btn.dataset.modalTab;
+                    document.getElementById('comp360-modal-panel-crear').style.display = tab === 'crear' ? '' : 'none';
+                    document.getElementById('comp360-modal-panel-banco').style.display  = tab === 'banco'  ? '' : 'none';
+                });
+            });
+
+            /* ── Botones footer ── */
             var cancelBtn = document.getElementById('comp360ModalCancelarBtn');
-            var crearBtn  = document.getElementById('comp360ModalCrearBtn');
+            var añadirBtn = document.getElementById('comp360ModalCrearBtn');
 
             if (cancelBtn) cancelBtn.addEventListener('click', function () { closeModal('comp360ModalNuevaComp'); });
 
-            if (crearBtn) crearBtn.addEventListener('click', function () {
+            if (añadirBtn) añadirBtn.addEventListener('click', function () {
                 var nombreEl = document.querySelector('#comp360ModalNombreWrap input');
                 var descEl   = document.querySelector('#comp360ModalDescWrap textarea');
-                if (!nombreEl || !descEl) return;
-                var nombre = nombreEl.value.trim();
-                var desc   = descEl.value.trim();
-                if (!nombre || !desc) return;
-                _competencias.push({
-                    id: 'comp-' + Date.now(),
-                    nombre: nombre,
-                    descripcion: desc,
-                    seleccionada: true,
-                    expandida: true
+                var nombre   = nombreEl ? nombreEl.value.trim() : '';
+                var desc     = descEl   ? descEl.value.trim()   : '';
+
+                /* Añadir competencia nueva si los campos están llenos */
+                if (nombre && desc) {
+                    _competencias.push({
+                        id: 'comp-' + Date.now(),
+                        nombre: nombre,
+                        descripcion: desc,
+                        seleccionada: true,
+                        expandida: true,
+                        enunciados: []
+                    });
+                }
+
+                /* Añadir competencias del banco seleccionadas que no estén ya en la evaluación */
+                var yaExistentes = {};
+                _competencias.forEach(function (c) { yaExistentes[c.nombre.trim().toLowerCase()] = true; });
+                document.querySelectorAll('#comp360ModalBancoList input[type="checkbox"]').forEach(function (cb) {
+                    if (cb.checked && !cb.disabled) {
+                        var nombreBanco = cb.dataset.nombre;
+                        if (nombreBanco && !yaExistentes[nombreBanco.toLowerCase()]) {
+                            _competencias.push({
+                                id: 'comp-banco-' + Date.now() + '-' + Math.random().toString(36).slice(2, 6),
+                                nombre: nombreBanco,
+                                descripcion: '',
+                                seleccionada: true,
+                                expandida: false,
+                                enunciados: []
+                            });
+                            yaExistentes[nombreBanco.toLowerCase()] = true;
+                        }
+                    }
                 });
+
                 closeModal('comp360ModalNuevaComp');
                 renderCompetenciasView();
             });
@@ -1612,14 +1726,22 @@
         }, 10);
     }
 
-    /* Habilita/deshabilita el botón Crear según los campos del modal */
+    /* Habilita/deshabilita el botón Añadir según tab activo y campos */
     function validateComp360Modal() {
         setTimeout(function () {
-            var nombreEl = document.querySelector('#comp360ModalNombreWrap input');
-            var descEl   = document.querySelector('#comp360ModalDescWrap textarea');
-            var crearBtn = document.getElementById('comp360ModalCrearBtn');
-            if (!crearBtn) return;
-            crearBtn.disabled = !(nombreEl && nombreEl.value.trim() && descEl && descEl.value.trim());
+            var añadirBtn = document.getElementById('comp360ModalCrearBtn');
+            if (!añadirBtn) return;
+
+            var nombreEl  = document.querySelector('#comp360ModalNombreWrap input');
+            var descEl    = document.querySelector('#comp360ModalDescWrap textarea');
+            var tab1Valid = !!(nombreEl && nombreEl.value.trim() && descEl && descEl.value.trim());
+
+            var tab2Valid = Array.prototype.some.call(
+                document.querySelectorAll('#comp360ModalBancoList input[type="checkbox"]'),
+                function (cb) { return cb.checked && !cb.disabled; }
+            );
+
+            añadirBtn.disabled = !(tab1Valid || tab2Valid);
         }, 10);
     }
 
