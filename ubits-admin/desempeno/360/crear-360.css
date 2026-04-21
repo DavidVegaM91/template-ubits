@@ -293,8 +293,7 @@
 
 /* Card maestra: primera celda del grid, mismo tamaño que las demás */
 .tipo360-card--maestra {
-    background: var(--ubits-bg-2);
-    border-style: dashed;
+    background: var(--ubits-bg-1);
 }
 
 .tipo360-card--maestra.tipo360-card--activo {
@@ -319,28 +318,6 @@
    VISTA: COMPETENCIAS Y ENUNCIADOS
    ════════════════════════════════════════ */
 
-.comp360-description {
-    margin-bottom: var(--gap-xl);
-}
-.comp360-description h2 { color: var(--ubits-fg-1-high); margin: 0 0 var(--gap-sm); }
-.comp360-description p  { color: var(--ubits-fg-1-medium); margin: 0; }
-
-.comp360-description__row {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: var(--gap-lg);
-}
-.comp360-description__row > div {
-    flex: 1;
-}
-.comp360-header-actions {
-    display: flex;
-    align-items: center;
-    gap: var(--gap-sm);
-    flex-shrink: 0;
-}
-
 .comp360-list {
     display: flex;
     flex-direction: column;
@@ -355,9 +332,6 @@
     transition: border-color 0.15s;
 }
 
-.comp360-item--selected {
-    border-color: var(--ubits-accent-brand);
-}
 
 .comp360-item__header {
     display: flex;
@@ -367,47 +341,40 @@
     cursor: default;
 }
 
-.comp360-item__check-label {
-    position: relative;
-    display: inline-flex;
-    align-items: center;
-    cursor: pointer;
-    flex-shrink: 0;
-}
-.comp360-item__checkbox {
-    position: absolute;
-    opacity: 0;
-    width: 0;
-    height: 0;
-}
-.comp360-item__check-box {
-    width: 20px;
-    height: 20px;
-    border-radius: var(--border-radius-sm);
-    border: 2px solid var(--ubits-border-1);
-    background: var(--ubits-bg-1);
+
+.comp360-item__nombre-wrap {
+    flex: 1;
     display: flex;
     align-items: center;
-    justify-content: center;
-    transition: background 0.15s, border-color 0.15s;
-}
-.comp360-item__check-box i {
-    font-size: 11px;
-    color: #fff;
-    opacity: 0;
-    transition: opacity 0.1s;
-}
-.comp360-item__checkbox:checked + .comp360-item__check-box {
-    background: var(--ubits-accent-brand);
-    border-color: var(--ubits-accent-brand);
-}
-.comp360-item__checkbox:checked + .comp360-item__check-box i {
-    opacity: 1;
+    gap: var(--gap-sm);
+    min-width: 0;
 }
 
 .comp360-item__nombre {
-    flex: 1;
     color: var(--ubits-fg-1-high);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.comp360-item__actions {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-xs);
+    flex-shrink: 0;
+}
+
+/* Desktop: ocultos por defecto, visibles al hover del ítem */
+@media (hover: hover) {
+    .comp360-item__actions {
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.15s;
+    }
+    .comp360-item:hover .comp360-item__actions {
+        opacity: 1;
+        pointer-events: auto;
+    }
 }
 
 .comp360-item__count {
@@ -591,25 +558,15 @@
     display: flex;
     align-items: center;
     gap: var(--gap-sm);
-    padding: var(--padding-sm) var(--padding-md);
-    border-radius: var(--border-radius-md);
-    border: 1px solid var(--ubits-border-1);
-    cursor: pointer;
-    transition: background 0.15s;
+    padding: var(--padding-xs) 0;
 }
 
-.comp360-banco-item:not(.comp360-banco-item--added):hover {
-    background: var(--ubits-bg-2);
+.comp360-banco-item .ubits-checkbox {
+    flex: 1;
 }
 
 .comp360-banco-item--added {
-    opacity: 0.65;
-    cursor: default;
-}
-
-.comp360-banco-item__nombre {
-    flex: 1;
-    color: var(--ubits-fg-1-high);
+    opacity: 0.55;
 }
 
 /* Badge "Ya añadida" */
@@ -879,6 +836,29 @@
     }
     .res360-param-row {
         grid-template-columns: 1fr 80px 80px;
+    }
+
+    /* ── Stage: reducir padding superior en mobile ── */
+    #crear360-view-competencias.ubits-layout-immersive__stage {
+        padding-top: var(--padding-md);
+    }
+
+    /* ── Header-product de competencias: botones apilados en mobile ── */
+    #comp360-header-product-container .ubits-header-product__product-info {
+        display: none;
+    }
+    #comp360-header-product-container .ubits-header-product__actions {
+        margin-left: 0 !important;
+        width: 100%;
+        flex-direction: column;
+        gap: var(--gap-sm);
+        padding: 0 !important;
+    }
+    #comp360-header-product-container .ubits-header-product__actions .ubits-button {
+        width: 100%;
+        justify-content: center;
+        height: auto !important;
+        min-height: 36px !important;
     }
 }
 

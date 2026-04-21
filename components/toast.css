@@ -10,8 +10,8 @@
     flex-direction: column;
     align-items: center;
     gap: var(--gap-md);
-    width: auto;
-    max-width: 560px;
+    width: max-content;
+    max-width: min(560px, calc(100vw - 32px));
     z-index: 10000;
     pointer-events: none;
 }
@@ -28,7 +28,7 @@
     background: var(--ubits-bg-1);
     color: var(--ubits-fg-1-high);
     width: max-content;
-    max-width: 560px;
+    max-width: min(560px, calc(100vw - 32px));
     pointer-events: auto; /* interactuable */
 }
 
@@ -68,6 +68,8 @@
     display: flex;
     align-items: center;
     min-height: 24px; /* match alert */
+    word-break: break-word;
+    overflow-wrap: break-word;
 }
 
 .ubits-toast__close {

@@ -54,10 +54,10 @@ window.BD_EVALUACIONES_360 = {
 
   /* ─── Tipos de evaluación disponibles ─── */
   tiposEvaluacion: [
-    { id: 'auto',        nombre: 'Autoevaluación',  descripcion: 'El colaborador se evalúa a sí mismo.',                                                            pesoSugerido: 10 },
-    { id: 'jefe',        nombre: 'Descendente',     descripcion: 'Supervisor evalúa al subordinado.',                                                                pesoSugerido: 40 },
-    { id: 'pares',       nombre: 'Paralela',         descripcion: 'Colaborador evalúa a sus colegas (pares).',                                                      pesoSugerido: 20 },
-    { id: 'subalternos', nombre: 'Ascendente',       descripcion: 'Colaborador evalúa al supervisor.',                                                              pesoSugerido: 20 },
+    { id: 'autoevaluacion', nombre: 'Autoevaluación',  descripcion: 'El colaborador se evalúa a sí mismo.',                                                          pesoSugerido: 10 },
+    { id: 'descendente',   nombre: 'Descendente',     descripcion: 'Supervisor evalúa al subordinado.',                                                              pesoSugerido: 40 },
+    { id: 'paralela',      nombre: 'Paralela',        descripcion: 'Colaborador evalúa a sus colegas (pares).',                                                      pesoSugerido: 20 },
+    { id: 'ascendente',    nombre: 'Ascendente',      descripcion: 'Colaborador evalúa al supervisor.',                                                              pesoSugerido: 20 },
     { id: 'cliente',     nombre: 'Cliente interno',  descripcion: 'Se evalúan usuarios específicos que no tienen relación directa en el organigrama.',              pesoSugerido: 10 }
   ],
 

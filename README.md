@@ -35,6 +35,8 @@ Elige **una** familia por pantalla. Mezclar patrones (por ejemplo SubNav dentro 
 
 **Mantenimiento:** ajustes a la cáscara inmersiva → **`general-styles/layout-immersive.css`**. Ajustes al hueco “sin SubNav” → **`general-styles/styles.css`**. Evita copiar reglas de layout en un CSS de página salvo overrides muy localizados.
 
+> **Convención para el contenido del stage inmersivo:** dentro de `.ubits-layout-immersive__stage`, usa **`.content-sections`** como contenedor directo de las secciones apiladas. Aplica el mismo `display: flex; flex-direction: column; gap: var(--gap-xl)` que el resto de layouts, manteniendo espaciado consistente entre secciones. Si la vista necesita un `header-product`, envuélvelo en `div.section-single > div.widget-header-product` (igual que en páginas con Sidebar). Layouts altamente especializados con estructura propia (p. ej. editor con rail lateral como `crear-contenido.html`) pueden omitir `.content-sections` si su estructura lo requiere.
+
 ## Patrón: un solo botón «Filtrar» con varios criterios
 
 En pantallas donde **solo hay un botón de filtros** en la barra (icono `fa-filter`) y **detrás hay muchas opciones** (modal, drawer o panel con varios campos: estado, prioridad, tipo, categoría, etc.), el template espera este comportamiento para que el usuario vea **de un vistazo** que hay filtros activos y **cuántos criterios** lleva aplicados:

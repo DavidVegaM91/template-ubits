@@ -177,9 +177,19 @@ Nombres visibles: `Autoevaluación`, `Descendente`, `Paralela`, `Ascendente`, `C
 
 Al entrar a la vista por primera vez se inicializa `_tipos[]` combinando los datos base con los valores guardados en `draft.tipo` (si existen).
 
+### Card maestra «Todos los evaluadores»
+
+La primera celda del grid es una **card maestra** (`tipo360-card tipo360-card--maestra`) que controla todos los tipos a la vez:
+
+- Switch **marcado** → activa todos los tipos con su `pesoSugerido`.
+- Switch **desmarcado** → desactiva todos y pone peso a 0.
+- Switch en estado **indeterminado** → algunos activos, no todos (se setea con `masterInput.indeterminate`).
+- Fondo `--ubits-bg-2` cuando está inactiva o indeterminada; cambia a `--ubits-bg-1` cuando todos están activos (`tipo360-card--activo`). Borde punteado (`border-style: dashed`) para distinguirla visualmente.
+- No tiene input de peso propio.
+
 ### Tarjetas de tipo
 
-Cada tarjeta (`tipo360-card`) muestra dos filas:
+Cada tarjeta individual (`tipo360-card`) muestra dos filas:
 
 - **Fila 1:** nombre del tipo (izquierda) + switch de activación (derecha, `ubits-switch--md`).
 - **Fila 2:** descripción (izquierda) + input de peso `%` (derecha, `createInput` tipo `number`, tamaño `sm`, `rightIcon: 'fa-percent'`, ancho 60 px).
@@ -248,23 +258,60 @@ Cuando `_competencias.length === 0` se muestra el empty state (`loadEmptyState`)
 ### Modo lista (con al menos 1 competencia)
 
 Header de la lista con dos botones:
-- **«Cargar enunciados masivamente»** → `openComp360ImportEnunciadosDrawer()`
+- **«Cargar enunciados»** → `openComp360ImportEnunciadosDrawer()` (el drawer conserva el título «Cargar enunciados masivamente»; solo el texto del botón es más corto)
 - **«Añadir competencia»** → `openComp360Modal()` (misma acción que en el empty state; ya no hay dropdown ni importación masiva de competencias)
 
 Cada ítem de competencia (`comp360-item`) muestra:
+- **Checkbox oficial UBITS** (`ubits-checkbox ubits-checkbox--sm`) a la izquierda para incluir/excluir la competencia de la evaluación. La clase `.comp360-item__checkbox` se mantiene en el `input` para que los listeners la encuentren.
 - Nombre en `ubits-body-md-bold`
-- Descripción en `ubits-body-sm-regular`
-- Número de enunciados
+- **Botones de acción** (`comp360-item__actions`): **Editar** (`ubits-button--tertiary --sm --icon-only`, `fa-pen`) y **Eliminar** (`ubits-button--error-tertiary --sm --icon-only`, `fa-trash`). En desktop solo visibles al hacer hover sobre el ítem (`@media (hover: hover)` → `opacity: 0` por defecto, `opacity: 1` en hover); en touch siempre visibles.
 - Botón expandir/colapsar (`fa-chevron-down` / `fa-chevron-up`)
 - Al expandir: lista de enunciados + botón secundario sm **«Añadir enunciado»** → `openComp360EnunciadoModal(compIdx)`
 
-### Modal: Nueva competencia (`openComp360Modal`)
+### Modal: Añadir competencia (`openComp360Modal`)
 
-Campos obligatorios para habilitar el botón «Crear»:
-- **Nombre** (`createInput` tipo `text`)
-- **Descripción** (`createInput` tipo `textarea`)
+El modal tiene **dos tabs** (`ubits-tab --sm`) en la parte superior del body:
 
-Al crear: se añade a `_competencias[]` con `seleccionada: true` y se llama `renderCompetenciasView()`.
+#### Tab «Crear competencia»
+Campos para habilitar el botón «Añadir»:
+- **Nombre** (`createInput` tipo `text`) — obligatorio
+- **Descripción** (`createInput` tipo `textarea`) — obligatoria
+
+#### Tab «Banco de competencias»
+Lista de checkboxes oficiales (`ubits-checkbox --sm`) con las competencias predefinidas de la constante `BANCO_COMPETENCIAS_360`:
+
+```js
+BANCO_COMPETENCIAS_360 = [
+    'Liderazgo transformador', 'Pensamiento analítico', 'Colaboración efectiva',
+    'Comunicación asertiva', 'Innovación y creatividad', 'Adaptabilidad al cambio',
+    'Orientación al cliente', 'Gestión del tiempo y productividad'
+]
+```
+
+Las competencias que ya están en `_competencias` aparecen con el checkbox **marcado y deshabilitado** y con el badge «Ya añadida». Las demás se pueden seleccionar libremente.
+
+**Botón «Añadir»** (reemplaza al antiguo «Crear»): habilitado si el Tab 1 tiene nombre + descripción rellenos **o** si el Tab 2 tiene al menos una competencia nueva seleccionada. Al confirmar, se añaden:
+1. La competencia nueva del Tab 1 (si está completa).
+2. Las competencias del banco seleccionadas que aún no existen en `_competencias`.
+
+Al añadir: se llama `renderCompetenciasView()`.
+
+> **Smart import:** `comp360ApplyEnunciadosImportFilas` ya detecta si la competencia del CSV existe en `_competencias` por nombre (normalizado a minúsculas). Si existe, añade los enunciados a la competencia existente; si no, crea la competencia nueva (`comp-imp-*`, descripción vacía). Esto asegura consistencia al cargar `enunciados-fiqsha.csv` después de haber añadido competencias del banco.
+
+### Modal: Editar competencia (`openComp360EditModal(idx)`)
+
+Abre un modal `sm` pre-poblado con `nombre` y `descripcion` de `_competencias[idx]`. El botón «Guardar» se habilita cuando el campo nombre tiene texto. Al guardar actualiza `_competencias[idx]` y llama `renderCompetenciasList()`.
+
+### Modal: Confirmar eliminación (`openComp360DeleteModal(idx)`)
+
+| Campo | Contenido |
+|-------|-----------|
+| Título | «Eliminar competencia» |
+| Body | «¿Estás seguro? Esta acción no se puede deshacer y todos los enunciados dentro de esta competencia también se eliminarán.» |
+| Botón secundario | «Cancelar» |
+| Botón primario | «Eliminar» (`ubits-button--error`) |
+
+Al confirmar: `_competencias.splice(idx, 1)` + `renderCompetenciasView()` + toast «Competencia eliminada».
 
 ### Modal: Añadir enunciado (`openComp360EnunciadoModal`)
 
@@ -624,7 +671,8 @@ Los **líderes** (9) también tienen `username` y sirven como datos de ejemplo e
 |-----------|-------------|-----|
 | `input.css` + `input.js` | `components/input.*` | Campos del hub, pesos en Tipo, rangos en Resultados |
 | `calendar.css` + `calendar.js` | `components/calendar.*` | Fechas de inicio y fin |
-| `modal.css` + `modal.js` | `components/modal.*` | Activación, salida, Nueva competencia, Añadir enunciado, errores CSV |
+| `modal.css` + `modal.js` | `components/modal.*` | Activación, salida, Añadir/Editar/Eliminar competencia, Añadir enunciado, errores CSV |
+| `tab.css` | `components/tab.css` | Tabs «Crear competencia» / «Banco de competencias» dentro del modal Nueva competencia |
 | `drawer.css` + `drawer.js` | `components/drawer.*` | Drawers de importación: enunciados y evaluados |
 | `toast.css` + `toast.js` | `components/toast.*` | Confirmación al guardar cada sección y al importar |
 | `switch.css` | `components/switch.css` | Tipos en vista Tipo, toggles en Resultados, tipos en modal enunciado |
@@ -683,4 +731,4 @@ bd-master/
 
 ---
 
-*Última actualización: abril 2026. Flujo implementado: hub con **desbloqueo progresivo** (tras datos básicos solo tarjeta Tipo hasta `checks.tipo`; luego Competencias, Evaluados y Resultados), tipo, competencias (creación manual de competencias + importación CSV/Excel solo de **enunciados**), evaluados (tabla única + drawer de importación organigrama/libre), resultados. Activación con llamada a `BD_EVALUACIONES_360.addEvaluacion`.*
+*Última actualización: abril 2026. Flujo implementado: hub con **desbloqueo progresivo** (tras datos básicos solo tarjeta Tipo hasta `checks.tipo`; luego Competencias, Evaluados y Resultados), tipo (con **card maestra** para activar/desactivar todos a la vez), competencias (modal con **tabs Crear/Banco**, botones **Editar/Eliminar** por ítem, importación CSV/Excel de enunciados con smart-match por nombre), evaluados (tabla única + drawer de importación organigrama/libre), resultados. Activación con llamada a `BD_EVALUACIONES_360.addEvaluacion`.*

@@ -32,6 +32,7 @@
     <link rel="stylesheet" href="../../../components/file-upload.css">
     <link rel="stylesheet" href="../../../components/drawer.css">
     <link rel="stylesheet" href="../../../components/tab.css">
+    <link rel="stylesheet" href="../../../components/header-product.css">
     <link rel="stylesheet" href="./crear-360.css">
     <!-- SheetJS: lectura de archivos Excel (.xlsx / .xls) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
@@ -186,21 +187,12 @@
             <div id="comp360EmptyState"></div>
 
             <!-- cabecera + lista: visible cuando hay al menos 1 competencia -->
-            <section class="comp360-description" id="comp360DescSection" style="display:none;">
-                <div class="comp360-description__row">
-                    <div></div>
-                    <div class="comp360-header-actions">
-                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="comp360-btn-import-enunciados">
-                            <i class="far fa-file-arrow-up"></i><span>Cargar enunciados masivamente</span>
-                        </button>
-                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="comp360-btn-add-more">
-                            <i class="far fa-plus"></i><span>Añadir competencia</span>
-                        </button>
-                    </div>
+            <div class="content-sections" id="comp360DescSection" style="display:none;">
+                <div class="section-single">
+                    <div class="widget-header-product" id="comp360-header-product-container"></div>
                 </div>
-            </section>
-
-            <div class="comp360-list" id="comp360-list" style="display:none;"></div>
+                <div class="comp360-list" id="comp360-list"></div>
+            </div>
         </div><!-- /view competencias -->
 
         <!-- ════════════════════════════════════════
@@ -319,6 +311,7 @@
 <div id="ubits-toast-container"></div>
 
 
+<script src="../../../components/header-product.js"></script>
 <script src="../../../components/tooltip.js"></script>
 <script src="../../../components/stepper.js"></script>
 <script src="../../../components/sidebar.js"></script>
@@ -626,8 +619,6 @@
         resultados:     'Define los rangos de calificación y sus colores para interpretar los resultados.'
     };
 
-    /* Mapeo id interno de tipo → clave usada en importación modo libre */
-    var TIPO_ID_TO_LIBRE_KEY = { auto: 'autoevaluacion', jefe: 'descendente', pares: 'paralela', subalternos: 'ascendente', cliente: 'cliente' };
 
     /* Banco de competencias reutilizables (simulan evaluaciones pasadas / catálogo de empresa) */
     var BANCO_COMPETENCIAS_360 = [
@@ -665,7 +656,6 @@
         var comps = draft.competencias || [];
         var n = 0;
         comps.forEach(function (c) {
-            if (c.seleccionada === false) return;
             (c.enunciados || []).forEach(function (en) {
                 var tipos = en.tiposEvaluacion || [];
                 if (tipos.indexOf(tipoId) !== -1) n++;
@@ -674,17 +664,12 @@
         return n;
     }
 
-    /** Al menos una competencia seleccionada en draft */
-    function hubCompetenciaTieneSeleccionDraft() {
-        return (draft.competencias || []).some(function (c) { return c.seleccionada !== false; });
-    }
-
     /**
-     * Competencias «al día»: hay selección y cada tipo activo en #tipo tiene ≥ 1 enunciado
-     * en competencias seleccionadas. Si no hay tipos activos, basta con tener selección.
+     * Competencias «al día»: hay al menos una competencia y cada tipo activo en #tipo
+     * tiene ≥ 1 enunciado. Si no hay tipos activos, basta con tener competencias.
      */
     function hubCompetenciasCompleto() {
-        if (!hubCompetenciaTieneSeleccionDraft()) return false;
+        if (!(draft.competencias || []).length) return false;
         var activos = hubTiposActivosDraft();
         if (!activos.length) return true;
         for (var i = 0; i < activos.length; i++) {
@@ -695,7 +680,7 @@
 
     /** Hay trabajo en competencias pero falta enunciado en algún tipo activo */
     function hubCompetenciasIncompletaHub() {
-        return hubCompetenciaTieneSeleccionDraft() && !hubCompetenciasCompleto();
+        return _competencias.length > 0 && !hubCompetenciasCompleto();
     }
 
     function hubSummaryCompetenciasHtml() {
@@ -719,7 +704,7 @@
     }
 
     function hubLibreCountForTipoId(tipoId) {
-        var key = TIPO_ID_TO_LIBRE_KEY[tipoId] || tipoId;
+        var key = tipoId;
         var n = 0;
         (draft.evaluados && draft.evaluados.asignaciones || []).forEach(function (row) {
             if (row && row.tipo === key) n++;
@@ -1079,7 +1064,6 @@
                     id: c.id,
                     nombre: c.nombre,
                     descripcion: c.descripcion || '',
-                    seleccionada: c.seleccionada !== false,
                     expandida: false,
                     enunciados: Array.isArray(c.enunciados) ? JSON.parse(JSON.stringify(c.enunciados)) : []
                 };
@@ -1090,7 +1074,6 @@
             /* ── MODO EMPTY STATE ── */
             document.getElementById('comp360EmptyState').style.display = '';
             document.getElementById('comp360DescSection').style.display = 'none';
-            document.getElementById('comp360-list').style.display = 'none';
             var subFoot = document.getElementById('crear360-footer-sub');
             if (subFoot) subFoot.style.display = 'none';
 
@@ -1110,25 +1093,27 @@
             /* ── MODO LISTA ── */
             document.getElementById('comp360EmptyState').style.display = 'none';
             document.getElementById('comp360DescSection').style.display = '';
-            document.getElementById('comp360-list').style.display = '';
             var subFoot = document.getElementById('crear360-footer-sub');
             if (subFoot) subFoot.style.display = '';
 
+            if (typeof loadHeaderProduct === 'function') {
+                loadHeaderProduct('comp360-header-product-container', {
+                    secondaryButtons: [
+                        {
+                            text: 'Cargar enunciados',
+                            icon: 'fa-file-arrow-up',
+                            onClick: function () { openComp360ImportEnunciadosDrawer(); }
+                        },
+                        {
+                            text: 'Añadir competencia',
+                            icon: 'fa-plus',
+                            onClick: function () { openComp360Modal(); }
+                        }
+                    ]
+                });
+            }
+
             renderCompetenciasList();
-
-            /* Botón "Añadir competencia" en la cabecera de la lista */
-            var btnAddMore = document.getElementById('comp360-btn-add-more');
-            if (btnAddMore) {
-                btnAddMore.onclick = function (e) {
-                    e.stopPropagation();
-                    openComp360Modal();
-                };
-            }
-
-            var btnImportEnunciados = document.getElementById('comp360-btn-import-enunciados');
-            if (btnImportEnunciados) {
-                btnImportEnunciados.onclick = function () { openComp360ImportEnunciadosDrawer(); };
-            }
         }
     }
 
@@ -1183,14 +1168,14 @@
 
                 bancoList.innerHTML = BANCO_COMPETENCIAS_360.map(function (nombre) {
                     var yaAdded = !!yaEnEval[nombre.toLowerCase()];
-                    return '<label class="comp360-banco-item' + (yaAdded ? ' comp360-banco-item--added' : '') + '">' +
-                        '<label class="ubits-checkbox ubits-checkbox--md">' +
+                    return '<div class="comp360-banco-item' + (yaAdded ? ' comp360-banco-item--added' : '') + '">' +
+                        '<label class="ubits-checkbox ubits-checkbox--sm">' +
                             '<input type="checkbox" class="ubits-checkbox__input" data-nombre="' + nombre + '" ' + (yaAdded ? 'checked disabled' : '') + '>' +
-                            '<span class="ubits-checkbox__box"></span>' +
+                            '<span class="ubits-checkbox__box"><i class="far fa-check"></i></span>' +
+                            '<span class="ubits-checkbox__label ubits-body-sm-regular">' + nombre + '</span>' +
                         '</label>' +
-                        '<span class="ubits-body-sm-regular comp360-banco-item__nombre">' + nombre + '</span>' +
                         (yaAdded ? '<span class="comp360-banco-tag">Ya añadida</span>' : '') +
-                    '</label>';
+                    '</div>';
                 }).join('');
 
                 bancoList.querySelectorAll('input[type="checkbox"]').forEach(function (cb) {
@@ -1228,7 +1213,6 @@
                         id: 'comp-' + Date.now(),
                         nombre: nombre,
                         descripcion: desc,
-                        seleccionada: true,
                         expandida: true,
                         enunciados: []
                     });
@@ -1245,7 +1229,6 @@
                                 id: 'comp-banco-' + Date.now() + '-' + Math.random().toString(36).slice(2, 6),
                                 nombre: nombreBanco,
                                 descripcion: '',
-                                seleccionada: true,
                                 expandida: false,
                                 enunciados: []
                             });
@@ -1310,6 +1293,7 @@
     /** Valida filas de importación (sin exigir que la competencia exista). */
     function comp360ValidateEnunciadosImportRows(rows) {
         var TIPOS_VALIDOS = comp360GetTiposValidosEnunciadosImport();
+        /* Columnas del CSV en el mismo orden que los IDs oficiales */
         var TIPO_IDS = ['ascendente', 'descendente', 'paralela', 'cliente', 'autoevaluacion'];
         var errores = [];
         var filasOk = [];
@@ -1353,7 +1337,6 @@
                     id: 'comp-imp-' + t0 + '-' + i + '-' + Math.random().toString(36).slice(2, 8),
                     nombre: row.compNombre,
                     descripcion: '',
-                    seleccionada: true,
                     expandida: false,
                     enunciados: []
                 });
@@ -1746,9 +1729,90 @@
     }
 
     function updateCompetenciasCounter() {
-        var sel     = _competencias.filter(function (c) { return c.seleccionada; }).length;
         var saveBtn = document.getElementById('crear360-btn-sub-save');
-        if (saveBtn) saveBtn.disabled = sel === 0;
+        if (saveBtn) saveBtn.disabled = _competencias.length === 0;
+    }
+
+    /* Modal: editar nombre y descripción de una competencia */
+    function openComp360EditModal(idx) {
+        var comp = _competencias[idx];
+        if (!comp) return;
+        openModal({
+            overlayId: 'comp360ModalEditComp',
+            title: 'Editar competencia',
+            bodyHtml:
+                '<div id="comp360EditNombreWrap"></div>' +
+                '<div id="comp360EditDescWrap" style="margin-top:var(--gap-lg)"></div>',
+            footerHtml:
+                '<button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="comp360EditCancelarBtn"><span>Cancelar</span></button>' +
+                '<button type="button" class="ubits-button ubits-button--primary ubits-button--md" id="comp360EditGuardarBtn"><span>Guardar</span></button>',
+            size: 'sm',
+            closeOnOverlayClick: false
+        });
+        setTimeout(function () {
+            createInput({
+                containerId: 'comp360EditNombreWrap',
+                label: 'Nombre',
+                type: 'text',
+                size: 'md',
+                value: comp.nombre,
+                onChange: function () {
+                    var el = document.querySelector('#comp360EditNombreWrap input');
+                    var btn = document.getElementById('comp360EditGuardarBtn');
+                    if (btn) btn.disabled = !(el && el.value.trim());
+                }
+            });
+            createInput({
+                containerId: 'comp360EditDescWrap',
+                label: 'Descripción',
+                type: 'textarea',
+                size: 'md',
+                value: comp.descripcion
+            });
+            var cancelBtn  = document.getElementById('comp360EditCancelarBtn');
+            var guardarBtn = document.getElementById('comp360EditGuardarBtn');
+            if (cancelBtn)  cancelBtn.addEventListener('click',  function () { closeModal('comp360ModalEditComp'); });
+            if (guardarBtn) guardarBtn.addEventListener('click', function () {
+                var nombreEl = document.querySelector('#comp360EditNombreWrap input');
+                var descEl   = document.querySelector('#comp360EditDescWrap textarea');
+                var nombre   = nombreEl ? nombreEl.value.trim() : '';
+                if (!nombre) return;
+                _competencias[idx].nombre      = nombre;
+                _competencias[idx].descripcion = descEl ? descEl.value.trim() : '';
+                closeModal('comp360ModalEditComp');
+                renderCompetenciasList();
+            });
+        }, 80);
+    }
+
+    /* Modal: confirmar eliminación de una competencia */
+    function openComp360DeleteModal(idx) {
+        var comp = _competencias[idx];
+        if (!comp) return;
+        openModal({
+            overlayId: 'comp360ModalDeleteComp',
+            title: 'Eliminar competencia',
+            bodyHtml:
+                '<p class="ubits-body-md-regular" style="color:var(--ubits-fg-1-medium);margin:0;">' +
+                '¿Estás seguro? Esta acción no se puede deshacer y todos los enunciados dentro de esta competencia también se eliminarán.' +
+                '</p>',
+            footerHtml:
+                '<button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="comp360DeleteCancelarBtn"><span>Cancelar</span></button>' +
+                '<button type="button" class="ubits-button ubits-button--error ubits-button--md" id="comp360DeleteConfirmBtn"><span>Eliminar</span></button>',
+            size: 'sm',
+            closeOnOverlayClick: true
+        });
+        setTimeout(function () {
+            var cancelBtn  = document.getElementById('comp360DeleteCancelarBtn');
+            var confirmBtn = document.getElementById('comp360DeleteConfirmBtn');
+            if (cancelBtn)  cancelBtn.addEventListener('click',  function () { closeModal('comp360ModalDeleteComp'); });
+            if (confirmBtn) confirmBtn.addEventListener('click', function () {
+                _competencias.splice(idx, 1);
+                closeModal('comp360ModalDeleteComp');
+                renderCompetenciasView();
+                showToast('success', 'Competencia eliminada');
+            });
+        }, 80);
     }
 
     var COMP360_ENUM_MENU_OVERLAY_ID = 'comp360-enum-menu-overlay';
@@ -1882,14 +1946,22 @@
 
         _competencias.forEach(function (comp, idx) {
             var item = document.createElement('div');
-            item.className = 'comp360-item' + (comp.seleccionada ? ' comp360-item--selected' : '');
+            item.className = 'comp360-item';
+            var numEnunciados = Array.isArray(comp.enunciados) ? comp.enunciados.length : 0;
             item.innerHTML =
                 '<div class="comp360-item__header" data-idx="' + idx + '">' +
-                    '<label class="comp360-item__check-label">' +
-                        '<input type="checkbox" class="comp360-item__checkbox" data-idx="' + idx + '" ' + (comp.seleccionada ? 'checked' : '') + '>' +
-                        '<span class="comp360-item__check-box"><i class="far fa-check"></i></span>' +
-                    '</label>' +
-                    '<span class="ubits-body-md-bold comp360-item__nombre">' + comp.nombre + '</span>' +
+                    '<div class="comp360-item__nombre-wrap">' +
+                        '<span class="ubits-body-md-bold comp360-item__nombre">' + comp.nombre + '</span>' +
+                        '<span class="ubits-attention-badge ubits-attention-badge--sm ubits-attention-badge--neutral" aria-label="' + numEnunciados + ' enunciados">' + numEnunciados + '</span>' +
+                    '</div>' +
+                    '<div class="comp360-item__actions">' +
+                        '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only comp360-item__edit-btn" data-idx="' + idx + '" aria-label="Editar competencia">' +
+                            '<i class="far fa-pen"></i>' +
+                        '</button>' +
+                        '<button type="button" class="ubits-button ubits-button--error-tertiary ubits-button--sm ubits-button--icon-only comp360-item__delete-btn" data-idx="' + idx + '" aria-label="Eliminar competencia">' +
+                            '<i class="far fa-trash"></i>' +
+                        '</button>' +
+                    '</div>' +
                     '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only comp360-item__expand-btn" data-idx="' + idx + '" aria-label="Expandir">' +
                         '<i class="far fa-chevron-' + (comp.expandida ? 'up' : 'down') + '"></i>' +
                     '</button>' +
@@ -1918,16 +1990,22 @@
 
             container.appendChild(item);
 
-            item.querySelector('.comp360-item__checkbox').addEventListener('change', function (e) {
-                _competencias[idx].seleccionada = e.target.checked;
-                item.classList.toggle('comp360-item--selected', e.target.checked);
-                updateCompetenciasCounter();
-            });
-
             var expandBtn = item.querySelector('.comp360-item__expand-btn');
             if (expandBtn) expandBtn.addEventListener('click', function () {
                 _competencias[idx].expandida = !_competencias[idx].expandida;
                 renderCompetenciasList();
+            });
+
+            var editBtn = item.querySelector('.comp360-item__edit-btn');
+            if (editBtn) editBtn.addEventListener('click', function (e) {
+                e.stopPropagation();
+                openComp360EditModal(idx);
+            });
+
+            var deleteBtn = item.querySelector('.comp360-item__delete-btn');
+            if (deleteBtn) deleteBtn.addEventListener('click', function (e) {
+                e.stopPropagation();
+                openComp360DeleteModal(idx);
             });
 
             var addEnunciadoBtn = item.querySelector('.comp360-item__add-enunciado');
@@ -1943,7 +2021,6 @@
             });
         });
 
-        updateCompetenciasCounter();
     }
 
     function saveCompetencias() {
@@ -1952,7 +2029,6 @@
                 id: c.id,
                 nombre: c.nombre,
                 descripcion: c.descripcion || '',
-                seleccionada: c.seleccionada,
                 enunciados: Array.isArray(c.enunciados) ? JSON.parse(JSON.stringify(c.enunciados)) : []
             };
         });
