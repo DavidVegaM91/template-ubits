@@ -274,7 +274,8 @@
                     html += '<button type="button" class="ubits-button ubits-button--secondary ubits-button--md ubits-button--icon-only ubits-dt-columns-toggle" id="' + instanceId + '-columns-toggle" aria-label="' + escapeHtml(i18n.columnasVisibles) + '" data-tooltip="' + escapeHtml(i18n.columnasVisibles) + '" data-tooltip-delay="1000"><i class="far fa-columns-3"></i></button>';
                 }
                 if (primaryButton && primaryButton.text) {
-                    html += '<button type="button" class="ubits-button ubits-button--primary ubits-button--md ubits-dt-primary-btn" id="' + instanceId + '-primary-btn">';
+                    var pbVariant = (primaryButton.variant === 'secondary') ? 'ubits-button--secondary' : 'ubits-button--primary';
+                    html += '<button type="button" class="ubits-button ' + pbVariant + ' ubits-button--md ubits-dt-primary-btn" id="' + instanceId + '-primary-btn">';
                     if (primaryButton.icon) html += '<i class="far ' + escapeHtml(String(primaryButton.icon).replace(/^fa-/, 'fa-')) + '"></i>';
                     html += '<span>' + escapeHtml(primaryButton.text) + '</span></button>';
                 }

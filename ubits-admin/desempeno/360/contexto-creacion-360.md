@@ -34,7 +34,7 @@ Usa la cáscara inmersiva transversal **`general-styles/layout-immersive.css`**:
 
 ### Vistas (sub-páginas en memoria)
 
-El flujo tiene **5 vistas** que se alternan dentro del mismo DOM. El cambio de vista está gestionado por `showView(viewId)` que:
+El flujo tiene **7 vistas** que se alternan dentro del mismo DOM. El cambio de vista está gestionado por `showView(viewId)` que:
 
 1. Alterna la clase `crear360-view--hidden` en los `data-view="*"` del HTML
 2. Actualiza el hash de la URL (`history.pushState`)
@@ -43,13 +43,15 @@ El flujo tiene **5 vistas** que se alternan dentro del mismo DOM. El cambio de v
 5. Inicializa el contenido de la vista
 6. Hace scroll al tope de `#crear360-main`
 
-| Vista | `viewId` | Hash URL |
-|-------|----------|----------|
-| Hub (pantalla principal) | `hub` | `#hub` |
-| Tipo de evaluación | `tipo` | `#tipo` |
-| Competencias y enunciados | `competencias` | `#competencias` |
-| Evaluados | `evaluados` | `#evaluados` |
-| Configuración de resultados | `resultados` | `#resultados` |
+| Vista | `viewId` | Hash URL | Descripción |
+|-------|----------|----------|-------------|
+| Hub (pantalla principal) | `hub` | `#hub` | Cards de las 4 secciones |
+| Tipo de evaluación | `tipo` | `#tipo` | Selección de tipos activos |
+| Competencias y enunciados | `competencias` | `#competencias` | Lista de competencias + enunciados |
+| Evaluados (selección manual) | `evaluados` | `#evaluados` | Tabla con checkboxes + carga desde archivo |
+| Evaluados asignados | `evaluados-asignados` | `#evaluados-asignados` | Tabla de asignaciones; acceso desde libre o tras procesar organigrama |
+| Editar asignación | `editar-asignacion` | `#editar-asignacion` | Detalle de evaluadores de un evaluado |
+| Configuración de resultados | `resultados` | `#resultados` | Escala + parámetros |
 
 ### Navegación con historial del navegador
 
@@ -382,7 +384,7 @@ Deshabilitado si `_competencias.length === 0` (se oculta el footer en el empty s
 
 ### Propósito
 
-Seleccionar qué colaboradores serán evaluados en esta evaluación 360. La selección se hace mediante una tabla con checkboxes. Se puede complementar con importación desde archivo.
+Seleccionar qué colaboradores serán evaluados en esta evaluación 360. La selección se hace mediante una tabla con checkboxes. Se puede complementar con importación desde archivo (botón secundario «Cargar desde archivo»).
 
 > **Modelo actual:** tabla única de todos los colaboradores. El antiguo wizard de 2 pasos con cards de tipo de selección fue eliminado.
 
@@ -398,16 +400,17 @@ Creada con `createUbitsDataTable` en el contenedor `#eval360-colab-dt-container`
 
 - **Datos:** `BD_MASTER_COLABORADORES.colaboradores` — 55 colaboradores. Todos tienen `username` (formato `inicial_4letrasPrimerApellido_inicialSegundoApellido@fiqsha.demo`, e.g. `cgarcl@fiqsha.demo`).
 - **Orden por defecto:** A-Z por nombre del evaluado (`localeCompare('es', { sensitivity: 'base' })`).
-- **Botón primario:** «Añadir desde archivo» (`fa-file-arrow-up`) → llama `openEval360ImportDrawer()`.
+- **Botón primario:** «Cargar desde archivo» (`fa-file-arrow-up`, variante `secondary`) → llama `openEval360ImportDrawer()`.
 - **Búsqueda:** estándar del componente `ubits-data-table`.
 - **Checkboxes:** selección múltiple estándar. El botón «Guardar» se habilita al seleccionar al menos 1.
 - La selección previa de `draft.evaluados.personas` se restaura al volver a la vista.
 
-### Drawer: Añadir desde archivo (`openEval360ImportDrawer`)
+### Drawer: Cargar desde archivo (`openEval360ImportDrawer`)
 
-- Drawer oficial (`openDrawer`), id: `eval360DrawerImport`
+- Drawer oficial (`openDrawer`), id: `eval360DrawerImport`, título «Cargar desde archivo»
 - Dos modos radio (uno al lado del otro): **«Basado en organigrama»** y **«Libre»**
 - Al cambiar el modo se re-monta el file uploader (`montarFileUploader()`) y actualiza la descripción (`actualizarDesc()`)
+- El botón de descarga del file uploader dice siempre **«Descargar plantilla»** (sin sufijo por modo)
 
 #### Modo: Basado en organigrama
 
@@ -483,18 +486,32 @@ El file uploader de evaluados sigue el patrón oficial del componente `file-uplo
 
 `eval360MostrarErroresImport(errores)` abre un modal con `buildImportErrorTableHtml(errores)`.
 
-#### Aplicar importación (`eval360AplicarImport`)
+#### Flujos de aplicación al importar (`eval360AplicarImport`)
 
-- **Organigrama:** resuelve usernames a IDs de colaboradores → combina con la selección manual existente en la tabla (`_eval360ColabTablaRef.getSelectedIds()`) → actualiza `draft.evaluados` y re-renderiza la tabla.
-- **Libre:** guarda en `draft.evaluados = { tipo: 'libre', asignaciones: filas, personas: [ids únicos de evaluados] }` → re-renderiza la tabla.
+El comportamiento difiere según el modo:
 
-Después de aplicar: toast de éxito con el número de evaluados importados.
+**Organigrama:**
+1. Resuelve usernames a IDs de colaboradores.
+2. Guarda `draft.evaluados = { tipo: 'organigrama-procesando', personas: ids, grupos: [] }` y `draft.checks.evaluados = false`.
+3. Cierra el drawer y navega al **hub** con `showView('hub')`.
+4. Muestra toast informativo: «Recibimos tu archivo. El sistema está asignando evaluadores según el organigrama y te notificará por correo cuando termine.»
+5. Muestra en el card de Evaluados (hub) el `status-tag` warning «Procesando asignaciones» (`far fa-arrows-rotate`).
+6. Si el usuario hace clic en el card mientras está en estado procesando → toast de info: «Tus evaluaciones están siendo asignadas. Cuando el proceso finalice, te lo informaremos por correo.»
+7. Tras **4 segundos** (simulación de demo): genera asignaciones con `eval360GenerarAsignacionesOrganigrama(ids)` → guarda como `draft.evaluados.tipo = 'libre-asignaciones'` → `draft.checks.evaluados = true` → refresca el hub.
+
+**Libre:**
+1. Deshabilita el botón «Importar» y «Cancelar» en el drawer.
+2. Anima el file uploader con `fileUploadSetProgress` de 0% a 100% en ~1,5 s (30 ms × 3% por paso).
+3. Al llegar a 100%, cierra el drawer y navega a `showView('evaluados-asignados')`.
+4. Los datos se guardan con `eval360BuildAsignacionesLibre(filas, colabByUsername)` → `_eval360AsignacionesData` → `draft.evaluados = { tipo: 'libre-asignaciones', asignaciones, personas }`.
 
 ### Estado de memoria (evaluados)
 
 ```js
-var _eval360ColabTablaRef  = null;  // ref al ubits-data-table de colaboradores
-var _eval360ImportFilas    = null;  // filas válidas del último archivo parseado
+var _eval360ColabTablaRef     = null;    // ref al ubits-data-table de colaboradores
+var _eval360ImportFilas       = null;    // filas válidas del último archivo parseado
+var _eval360AsignacionesData  = [];      // [{evaluadoId, nombre, area, avatar, evaluadores:[{id,nombre,area,avatar,tipo,tipoNombre}]}]
+var _eval360EditandoIdx       = -1;      // índice en _eval360AsignacionesData del evaluado en edición
 ```
 
 ### Guardar evaluados (`saveEvaluados`)
@@ -509,6 +526,103 @@ Toast de éxito + vuelve al hub.
 | Botón secundario | Botón primario |
 |-----------------|----------------|
 | «Cancelar» (vuelve al hub) | «Guardar» (deshabilitado si ningún colaborador seleccionado) |
+
+---
+
+## Vista: Evaluados asignados (`evaluados-asignados`)
+
+### Propósito
+
+Mostrar y gestionar las asignaciones de evaluadores por evaluado, generadas mediante importación libre o procesadas del organigrama.
+
+### Cuándo se muestra
+
+- Tras importar en modo **libre**: el archivo se valida, se simula progreso de carga y al llegar al 100% se navega automáticamente a `#evaluados-asignados`.
+- Cuando `draft.evaluados.tipo === 'libre-asignaciones'` y el usuario hace clic en el card de Evaluados del hub.
+- Cuando se completa el procesamiento de organigrama (4 s en demo), el card de Evaluados también lleva a esta vista al hacer clic.
+
+### Tabla de evaluados asignados
+
+Tabla manual HTML/CSS (no `ubits-data-table`) con clases UBITS estándar:
+
+| Columna | Descripción |
+|---------|-------------|
+| **Evaluado** | Avatar (`renderAvatar` size `sm`) + nombre |
+| **Área** | Área del evaluado |
+| **Evaluadores** | Profile list (`renderProfileList` size `sm`, `maxVisible: 3`, `showTooltip: true`). Al hacer clic en `+X` abre un **popover** (`#eval360-eval-popover`) con la lista completa de evaluadores restantes (avatar + nombre), hasta 6 items visibles con scroll. |
+| *(sin título)* | Botón `fa-ellipsis-vertical` icon-only secundario con `data-tooltip="Opciones"`. Al hacer clic abre un dropdown (componente oficial `getDropdownMenuHtml`) con opciones: **Editar** (`pen`) y **Eliminar** (`trash`). |
+
+- **Búsqueda:** input de búsqueda en tiempo real filtra por nombre y área del evaluado.
+- **Contador:** «N evaluado(s)» a la derecha del buscador.
+- **Eliminar evaluado:** abre modal de confirmación, luego remueve de `_eval360AsignacionesData` y actualiza `draft.evaluados`.
+- **Editar evaluado:** fija `_eval360EditandoIdx = idx` y navega a `showView('editar-asignacion')`.
+- Botón «Guardar» del footer: `saveEvaluadosAsignados()` → `draft.checks.evaluados = true` + vuelve al hub.
+
+### `eval360BuildAsignacionesLibre(filas, colabByUsername)`
+
+Agrupa las filas del CSV libre por evaluado:
+```js
+[{
+    evaluadoId: 'COL001',
+    nombre:     'Carlos García López',
+    area:       'Tecnología',
+    avatar:     null,
+    evaluadores: [
+        { id: 'COL002', nombre: 'Ana Martínez', area: 'RRHH', avatar: null, tipo: 'descendente', tipoNombre: 'Descendente' }
+    ]
+}]
+```
+
+### `eval360GenerarAsignacionesOrganigrama(ids)`
+
+Para cada evaluado genera asignaciones simuladas basadas en colaboradores del mismo área:
+- **Autoevaluación:** el propio evaluado.
+- **Descendente:** primer colaborador del mismo área distinto al evaluado.
+- **Paralela:** hasta 2 colaboradores del mismo área (pares).
+
+---
+
+## Vista: Editar asignación (`editar-asignacion`)
+
+### Propósito
+
+Ver y modificar los evaluadores asignados a un evaluado específico.
+
+### Header
+
+Dinámico: «Editar evaluadores de [nombre del evaluado]» — construido en `renderHeader()` con `_eval360AsignacionesData[_eval360EditandoIdx].nombre`.
+
+### Tabla de evaluadores
+
+| Columna | Descripción |
+|---------|-------------|
+| **Evaluador** | Avatar (`renderAvatar` size `sm`) + nombre |
+| **Área** | Área del evaluador |
+| **Tipo de evaluación** | `tipoNombre` del evaluador |
+| **Eliminar** | Botón `fa-trash` `error-secondary` icon-only. Al hacer clic elimina el evaluador del array `evalData.evaluadores` y refresca el `tbody`. |
+
+- **Búsqueda:** input en tiempo real filtra por nombre y área del evaluador.
+- **Botón «Añadir evaluador»** (primario, sm): abre `openAnadirEvaluadorModal(_eval360EditandoIdx)`.
+
+### Modal: Añadir evaluador (`openAnadirEvaluadorModal`)
+
+Modal oficial (`openModal`), id: `eval360-add-evaluador-modal`, título «Añadir evaluador», tamaño `md`.
+
+**Estructura del body:**
+1. **Autocomplete** (`createInput` tipo `autocomplete`) que busca en `BD_MASTER_COLABORADORES.colaboradores`. Al seleccionar un colaborador:
+   - Muestra la sección de tipos de evaluación (`#eval360-add-eval-tipo-section`).
+2. **Tipos de evaluación** (radio buttons con clase `ubits-radio--sm` en fila con `flex-wrap`): uno por cada tipo activo de `eval360GetTiposActivos()`.
+   - El botón «Añadir» se habilita solo cuando hay colaborador **y** tipo seleccionados.
+
+**Footer:**
+- «Cancelar» (secondary) → cierra el modal.
+- «Añadir» (primary, deshabilitado hasta cumplir condiciones) → agrega `{ id, nombre, area, avatar, tipo, tipoNombre }` a `evalData.evaluadores` → cierra modal → refresca `tbody` → toast de éxito.
+
+### Footer sub-vista editar-asignacion
+
+| Botón secundario | Botón primario |
+|-----------------|----------------|
+| «Cancelar» (vuelve a `evaluados-asignados`) | «Guardar» (habilitado siempre; `saveEditarAsignacion()` → toast + vuelve a `evaluados-asignados`) |
 
 ---
 
