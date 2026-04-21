@@ -831,6 +831,24 @@
     .tipo360-cards {
         grid-template-columns: 1fr;
     }
+
+    /* Tipo de evaluación: instrucción arriba, total abajo (evita columnas espichadas) */
+    .tipo360-description {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--gap-md);
+    }
+
+    .tipo360-desc-left {
+        width: 100%;
+    }
+
+    .tipo360-desc-right {
+        width: 100%;
+        justify-content: flex-start;
+        flex-wrap: wrap;
+    }
+
     .res360-selects {
         grid-template-columns: 1fr;
     }
