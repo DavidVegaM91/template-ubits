@@ -2821,7 +2821,14 @@
         var overlayEl2 = document.getElementById(overlayId);
         if (!overlayEl2) return;
         overlayEl2.style.zIndex = '10100';
-        if (typeof window.openDropdownMenu === 'function') window.openDropdownMenu(overlayId, btn);
+        /* Cierre al clic en el fondo transparente (mismo patrón que planes-formacion.html) */
+        overlayEl2.addEventListener('click', function (ev) {
+            if (ev.target === overlayEl2) {
+                if (typeof window.closeDropdownMenu === 'function') window.closeDropdownMenu(overlayId);
+                if (overlayEl2.parentNode) overlayEl2.remove();
+            }
+        });
+        if (typeof window.openDropdownMenu === 'function') window.openDropdownMenu(overlayId, btn, { alignRight: true });
         overlayEl2.querySelectorAll('.ubits-dropdown-menu__option').forEach(function (opt) {
             opt.addEventListener('click', function () {
                 var val = this.getAttribute('data-value');
