@@ -1,0 +1,12 @@
+evaluador,evaluado,tipo_evaluacion
+rospid@fiqsha.demo,cgarcl@fiqsha.demo,descendente
+lrodrm@fiqsha.demo,cgarcl@fiqsha.demo,paralela
+mhernd@fiqsha.demo,cgarcl@fiqsha.demo,paralela
+cgarcl@fiqsha.demo,rospid@fiqsha.demo,ascendente
+lrodrm@fiqsha.demo,rospid@fiqsha.demo,paralela
+pateleber@fiqsha.demo,pateleber@fiqsha.demo,autoevaluacion
+cvargm@fiqsha.demo,jlopeg@fiqsha.demo,descendente
+jlopeg@fiqsha.demo,cvargm@fiqsha.demo,ascendente
+asuarg@fiqsha.demo,cgarcl@fiqsha.demo,cliente
+fcastr@fiqsha.demo,dmartr@fiqsha.demo,descendente
+dmartr@fiqsha.demo,fcastr@fiqsha.demo,ascendente
