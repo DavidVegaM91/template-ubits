@@ -381,6 +381,7 @@
     /* ── Estado evaluados-asignados ── */
     var _eval360AsignacionesData = []; /* [{evaluadoId, nombre, area, avatar, evaluadores:[{id,nombre,area,avatar,tipo,tipoNombre}]}] */
     var _eval360EditandoIdx      = -1; /* índice en _eval360AsignacionesData del evaluado que se está editando */
+    var _eval360AsignTablaRef    = null; /* ref createUbitsDataTable — lista evaluados asignados */
 
     /* ── Vista activa ── */
     var _currentView = 'hub';
@@ -2762,185 +2763,167 @@
        VISTA: EVALUADOS ASIGNADOS
        ══════════════════════════════════════════════════════════ */
 
+    function eval360AsignInitTooltips() {
+        setTimeout(function () {
+            if (typeof initTooltip === 'function') {
+                initTooltip('#eval360-asign-dt-container [data-tooltip]');
+                initTooltip('#eval360-asign-table thead [data-tooltip]');
+            }
+        }, 50);
+    }
+
+    /** Delegación: popover +X de evaluadores y menú ellipsis (sobre #eval360-asign-dt-container) */
+    function eval360AsignOnContainerClick(e) {
+        var countChip = e.target.closest('.ubits-profile-list__count');
+        if (countChip) {
+            e.preventDefault();
+            e.stopPropagation();
+            var tr = countChip.closest('tr[data-id]');
+            if (!tr) return;
+            var rid = tr.getAttribute('data-id');
+            var rowData = _eval360AsignacionesData.find(function (r) { return String(r.evaluadoId) === String(rid); });
+            if (!rowData || !rowData.evaluadores) return;
+            var restantes = rowData.evaluadores.slice(3);
+            var listEl    = document.getElementById('eval360-eval-popover-list');
+            var popEl     = document.getElementById('eval360-eval-popover');
+            var overlayEl = document.getElementById('eval360-eval-popover-overlay');
+            if (!listEl || !popEl || !overlayEl) return;
+            listEl.innerHTML = restantes.map(function (ev) {
+                var av = (typeof renderAvatar === 'function')
+                    ? renderAvatar({ nombre: ev.nombre, avatar: ev.avatar || null }, { size: 'sm' })
+                    : '';
+                return '<div class="eval360-eval-popover-item">' + av + '<span class="ubits-body-sm-regular">' + hubEscHtml(ev.nombre) + '</span></div>';
+            }).join('');
+            var rect = countChip.getBoundingClientRect();
+            popEl.style.top   = (rect.bottom + window.scrollY + 4) + 'px';
+            popEl.style.left  = (rect.left + window.scrollX) + 'px';
+            popEl.style.display = '';
+            overlayEl.style.display = '';
+            return;
+        }
+
+        var btn = e.target.closest('.js-eval360-asign-opts-btn');
+        if (!btn) return;
+        e.preventDefault();
+        e.stopPropagation();
+        var rid2 = btn.getAttribute('data-evaluado-id');
+        var idx  = _eval360AsignacionesData.findIndex(function (r) { return String(r.evaluadoId) === String(rid2); });
+        if (idx < 0) return;
+        var overlayId = 'eval360-asign-opts-overlay';
+        var prev = document.getElementById(overlayId);
+        if (prev) { prev.remove(); return; }
+        if (typeof window.getDropdownMenuHtml !== 'function') return;
+        var options = [
+            { text: 'Editar', value: 'editar', leftIcon: 'pen' },
+            { text: 'Eliminar', value: 'eliminar', leftIcon: 'trash' }
+        ];
+        document.body.insertAdjacentHTML('beforeend', window.getDropdownMenuHtml({ overlayId: overlayId, options: options }));
+        var overlayEl2 = document.getElementById(overlayId);
+        if (!overlayEl2) return;
+        overlayEl2.style.zIndex = '10100';
+        if (typeof window.openDropdownMenu === 'function') window.openDropdownMenu(overlayId, btn);
+        overlayEl2.querySelectorAll('.ubits-dropdown-menu__option').forEach(function (opt) {
+            opt.addEventListener('click', function () {
+                var val = this.getAttribute('data-value');
+                if (typeof window.closeDropdownMenu === 'function') window.closeDropdownMenu(overlayId);
+                if (overlayEl2.parentNode) overlayEl2.remove();
+                if (val === 'editar') {
+                    _eval360EditandoIdx = idx;
+                    showView('editar-asignacion');
+                } else if (val === 'eliminar') {
+                    eval360ConfirmarEliminarEvaluado(idx);
+                }
+            });
+        });
+    }
+
+    function eval360AsignEvalPopoverOverlayInit() {
+        var popOverlay = document.getElementById('eval360-eval-popover-overlay');
+        if (!popOverlay || popOverlay.dataset.eval360Bound === '1') return;
+        popOverlay.dataset.eval360Bound = '1';
+        popOverlay.addEventListener('click', function () {
+            this.style.display = 'none';
+            var popEl = document.getElementById('eval360-eval-popover');
+            if (popEl) popEl.style.display = 'none';
+        });
+    }
+
+    function buildEval360AsignRowHtml(row) {
+        var profileListHtml = typeof renderProfileList === 'function'
+            ? renderProfileList((row.evaluadores || []).map(function (e) { return { nombre: e.nombre, avatar: e.avatar || null }; }), { size: 'sm', maxVisible: 3, showTooltip: true, tooltipDelay: 600 })
+            : '<span class="ubits-body-sm-regular">' + (row.evaluadores ? row.evaluadores.length : 0) + '</span>';
+
+        var evaluadoAvatar = (typeof renderAvatar === 'function')
+            ? renderAvatar({ nombre: row.nombre, avatar: row.avatar || null }, { size: 'sm' })
+            : '<span class="ubits-avatar ubits-avatar--sm"><span class="ubits-avatar__fallback"><i class="far fa-user"></i></span></span>';
+
+        var nombresEvalSearch = (row.evaluadores || []).map(function (e) { return e.nombre || ''; }).filter(Boolean).join(' ');
+
+        return '<td data-col="evaluado"><div class="ubits-table__cell-assignee">' + evaluadoAvatar +
+            '<span class="ubits-body-sm-regular">' + hubEscHtml(row.nombre) + '</span></div></td>' +
+            '<td data-col="area"><span class="ubits-body-sm-regular">' + hubEscHtml(row.area) + '</span></td>' +
+            '<td data-col="evaluadores"><span class="sr-only ubits-body-sm-regular" aria-hidden="true">' + hubEscHtml(nombresEvalSearch) + '</span>' +
+            '<div class="ubits-table__cell-assignee">' + profileListHtml + '</div></td>' +
+            '<td data-col="acciones" class="ubits-table__td--actions">' +
+                '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only js-eval360-asign-opts-btn" data-evaluado-id="' + String(row.evaluadoId).replace(/"/g, '&quot;') + '" aria-label="Opciones" data-tooltip="Opciones" data-tooltip-delay="600">' +
+                    '<i class="far fa-ellipsis-vertical"></i>' +
+                '</button></td>';
+    }
+
     function renderEvaluadosAsignadosView() {
         var container = document.getElementById('eval360-asign-dt-container');
         if (!container) return;
 
-        /* Ocultar el botón Guardar del footer (solo se usa para confirmar edición) */
         var saveBtn = document.getElementById('crear360-btn-sub-save');
         if (saveBtn) saveBtn.disabled = true;
 
-        /* Sincronizar desde draft si fuera necesario */
         if (draft.evaluados && draft.evaluados.tipo === 'libre-asignaciones' && Array.isArray(draft.evaluados.asignaciones)) {
             _eval360AsignacionesData = draft.evaluados.asignaciones;
         }
 
-        var rows = _eval360AsignacionesData;
+        _eval360AsignTablaRef = null;
+        container.removeEventListener('click', eval360AsignOnContainerClick);
+        container.innerHTML = '';
 
-        if (!rows.length) {
-            container.innerHTML = '';
+        if (!_eval360AsignacionesData.length) {
             if (typeof loadEmptyState === 'function') {
                 loadEmptyState(container.id, { message: 'No hay evaluados asignados', icon: 'far fa-users' });
             }
             return;
         }
 
-        /* Construir tabla manual */
-        var html =
-            '<div class="eval360-asign-header">' +
-                '<div class="eval360-asign-search-wrap">' +
-                    '<div class="ubits-input ubits-input--sm" id="eval360-asign-search-wrap">' +
-                        '<i class="far fa-search ubits-input__icon ubits-input__icon--left"></i>' +
-                        '<input type="text" class="ubits-input__field" id="eval360-asign-search" placeholder="Buscar evaluado..." aria-label="Buscar evaluado">' +
-                    '</div>' +
-                '</div>' +
-                '<span class="ubits-body-sm-regular eval360-asign-count">' + rows.length + ' evaluado' + (rows.length !== 1 ? 's' : '') + '</span>' +
-            '</div>' +
-            '<div class="ubits-table-wrap">' +
-            '<table class="ubits-table" id="eval360-asign-table">' +
-                '<thead>' +
-                    '<tr>' +
-                        '<th class="ubits-table__th"><span class="ubits-body-sm-bold">Evaluado</span></th>' +
-                        '<th class="ubits-table__th"><span class="ubits-body-sm-bold">Área</span></th>' +
-                        '<th class="ubits-table__th"><span class="ubits-body-sm-bold">Evaluadores</span></th>' +
-                        '<th class="ubits-table__th ubits-table__th--actions"></th>' +
-                    '</tr>' +
-                '</thead>' +
-                '<tbody id="eval360-asign-tbody">' +
-                    buildEval360AsignTbody(rows) +
-                '</tbody>' +
-            '</table>' +
-            '</div>';
+        if (typeof createUbitsDataTable !== 'function') return;
 
-        container.innerHTML = html;
+        eval360AsignEvalPopoverOverlayInit();
 
-        /* Inicializar tooltips en los avatares */
-        setTimeout(function () {
-            if (typeof initTooltip === 'function') initTooltip('#eval360-asign-table [data-tooltip]');
-        }, 50);
-
-        /* Listener unificado del container (se agrega con cloneNode para evitar acumulación) */
-        var newContainer = container.cloneNode(true);
-        container.parentNode.replaceChild(newContainer, container);
-        container = newContainer;
-
-        /* Restaurar búsqueda tras clonar */
-        var searchInput2 = document.getElementById('eval360-asign-search');
-        if (searchInput2) {
-            searchInput2.addEventListener('input', function () {
-                var q = this.value.trim().toLowerCase();
-                var tbody2 = document.getElementById('eval360-asign-tbody');
-                if (!tbody2) return;
-                tbody2.innerHTML = buildEval360AsignTbody(
-                    q ? rows.filter(function (r) {
-                        return r.nombre.toLowerCase().includes(q) || (r.area || '').toLowerCase().includes(q);
-                    }) : rows
-                );
-                setTimeout(function () {
-                    if (typeof initTooltip === 'function') initTooltip('#eval360-asign-table [data-tooltip]');
-                }, 50);
-            });
-        }
-
-        /* Cerrar popover al hacer clic en overlay */
-        var popOverlay = document.getElementById('eval360-eval-popover-overlay');
-        if (popOverlay) {
-            var newOverlay = popOverlay.cloneNode(true);
-            popOverlay.parentNode.replaceChild(newOverlay, popOverlay);
-            newOverlay.addEventListener('click', function () {
-                this.style.display = 'none';
-                var popEl = document.getElementById('eval360-eval-popover');
-                if (popEl) popEl.style.display = 'none';
-            });
-        }
-
-        /* Delegación unificada: +X popover + ellipsis dropdown */
-        container.addEventListener('click', function (e) {
-            /* +X del profile list */
-            var countChip = e.target.closest('.ubits-profile-list__count');
-            if (countChip) {
-                e.preventDefault();
-                e.stopPropagation();
-                var tr = countChip.closest('tr[data-evaluado-idx]');
-                if (!tr) return;
-                var rowIdx = parseInt(tr.getAttribute('data-evaluado-idx'), 10);
-                var rowData = rows[rowIdx];
-                if (!rowData) return;
-                var restantes = rowData.evaluadores.slice(3);
-                var listEl   = document.getElementById('eval360-eval-popover-list');
-                var popEl    = document.getElementById('eval360-eval-popover');
-                var overlayEl = document.getElementById('eval360-eval-popover-overlay');
-                if (!listEl || !popEl || !overlayEl) return;
-                listEl.innerHTML = restantes.map(function (ev) {
-                    var av = (typeof renderAvatar === 'function')
-                        ? renderAvatar({ nombre: ev.nombre, avatar: ev.avatar || null }, { size: 'sm' })
-                        : '';
-                    return '<div class="eval360-eval-popover-item">' + av + '<span class="ubits-body-sm-regular">' + hubEscHtml(ev.nombre) + '</span></div>';
-                }).join('');
-                var rect = countChip.getBoundingClientRect();
-                popEl.style.top  = (rect.bottom + window.scrollY + 4) + 'px';
-                popEl.style.left = (rect.left + window.scrollX) + 'px';
-                popEl.style.display = '';
-                overlayEl.style.display = '';
-                return;
-            }
-
-            /* Botón ellipsis */
-            var btn = e.target.closest('.js-eval360-asign-opts-btn');
-            if (!btn) return;
-            e.preventDefault();
-            e.stopPropagation();
-            var idx = parseInt(btn.getAttribute('data-idx'), 10);
-            var overlayId = 'eval360-asign-opts-overlay';
-            var prev = document.getElementById(overlayId);
-            if (prev) { prev.remove(); return; }
-            if (typeof window.getDropdownMenuHtml !== 'function') return;
-            var options = [
-                { text: 'Editar', value: 'editar', leftIcon: 'pen' },
-                { text: 'Eliminar', value: 'eliminar', leftIcon: 'trash' }
-            ];
-            document.body.insertAdjacentHTML('beforeend', window.getDropdownMenuHtml({ overlayId: overlayId, options: options }));
-            var overlayEl2 = document.getElementById(overlayId);
-            if (!overlayEl2) return;
-            overlayEl2.style.zIndex = '10100';
-            if (typeof window.openDropdownMenu === 'function') window.openDropdownMenu(overlayId, btn);
-            overlayEl2.querySelectorAll('.ubits-dropdown-menu__option').forEach(function (opt) {
-                opt.addEventListener('click', function () {
-                    var val = this.getAttribute('data-value');
-                    if (typeof window.closeDropdownMenu === 'function') window.closeDropdownMenu(overlayId);
-                    if (overlayEl2.parentNode) overlayEl2.remove();
-                    if (val === 'editar') {
-                        _eval360EditandoIdx = idx;
-                        showView('editar-asignacion');
-                    } else if (val === 'eliminar') {
-                        eval360ConfirmarEliminarEvaluado(idx);
-                    }
-                });
-            });
+        _eval360AsignTablaRef = createUbitsDataTable({
+            containerId:      'eval360-asign-dt-container',
+            tableId:          'eval360-asign-table',
+            title:            'Lista de evaluados',
+            columns:          [
+                { id: 'evaluado', label: 'Evaluado', sortable: true },
+                { id: 'area', label: 'Área', sortable: true },
+                { id: 'evaluadores', label: 'Evaluadores', sortable: false },
+                { id: 'acciones', label: 'Acciones', sortable: false }
+            ],
+            getData:          function () { return _eval360AsignacionesData.slice(); },
+            rowIdField:       'evaluadoId',
+            buildRowHtml:     buildEval360AsignRowHtml,
+            features:         { search: true, resultsCount: true },
+            emptySearchState: { message: 'No se encontraron resultados', description: 'Intenta ajustar tu búsqueda.', buttonText: 'Limpiar búsqueda' },
+            i18n:             { buscarPlaceholder: 'Buscar evaluado...', buscar: 'Buscar' }
         });
-    }
 
-    function buildEval360AsignTbody(rows) {
-        return rows.map(function (row, idx) {
-            var profileListHtml = typeof renderProfileList === 'function'
-                ? renderProfileList(row.evaluadores.map(function (e) { return { nombre: e.nombre, avatar: e.avatar || null }; }), { size: 'sm', maxVisible: 3, showTooltip: true, tooltipDelay: 600 })
-                : '<span class="ubits-body-sm-regular">' + row.evaluadores.length + '</span>';
+        if (_eval360AsignTablaRef && typeof _eval360AsignTablaRef.refresh === 'function') {
+            var _origRefreshAsign = _eval360AsignTablaRef.refresh;
+            _eval360AsignTablaRef.refresh = function () {
+                _origRefreshAsign();
+                eval360AsignInitTooltips();
+            };
+        }
 
-            var evaluadoAvatar = (typeof renderAvatar === 'function')
-                ? renderAvatar({ nombre: row.nombre, avatar: row.avatar || null }, { size: 'sm' })
-                : '<span class="ubits-avatar ubits-avatar--sm"><span class="ubits-avatar__fallback"><i class="far fa-user"></i></span></span>';
-
-            return '<tr class="ubits-table__row" data-evaluado-idx="' + idx + '">' +
-                '<td class="ubits-table__td"><div class="ubits-table__cell-assignee">' + evaluadoAvatar + '<span class="ubits-body-sm-regular">' + hubEscHtml(row.nombre) + '</span></div></td>' +
-                '<td class="ubits-table__td"><span class="ubits-body-sm-regular">' + hubEscHtml(row.area) + '</span></td>' +
-                '<td class="ubits-table__td"><div class="ubits-table__cell-assignee">' + profileListHtml + '</div></td>' +
-                '<td class="ubits-table__td ubits-table__td--actions">' +
-                    '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only js-eval360-asign-opts-btn" data-idx="' + idx + '" aria-label="Opciones" data-tooltip="Opciones" data-tooltip-delay="600">' +
-                        '<i class="far fa-ellipsis-vertical"></i>' +
-                    '</button>' +
-                '</td>' +
-            '</tr>';
-        }).join('');
+        container.addEventListener('click', eval360AsignOnContainerClick);
+        eval360AsignInitTooltips();
     }
 
     function eval360ConfirmarEliminarEvaluado(idx) {

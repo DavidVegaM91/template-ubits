@@ -904,10 +904,9 @@
 }
 
 /* ════════════════════════════════════════
-   VISTA: Evaluados asignados
+   VISTA: Evaluados asignados / Editar asignación
    ════════════════════════════════════════ */
 
-.eval360-asign-header,
 .eval360-editar-asign-header {
     display: flex;
     align-items: center;
@@ -916,21 +915,9 @@
     flex-wrap: wrap;
 }
 
-.eval360-asign-search-wrap,
 .eval360-editar-asign-search-wrap {
     flex: 1;
     min-width: 160px;
-}
-
-.eval360-asign-count {
-    color: var(--ubits-fg-1-medium);
-    white-space: nowrap;
-    flex-shrink: 0;
-}
-
-.ubits-table-wrap {
-    overflow-x: auto;
-    width: 100%;
 }
 
 .ubits-table__th--actions,
