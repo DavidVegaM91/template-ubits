@@ -130,7 +130,7 @@ Cuando una tarjeta del hub está en estado **completado** (`--done`), el texto q
 - El resumen sustituye a la descripción **solo** cuando la tarjeta está completada; en estados bloqueado o desbloqueado sin completar se mantiene el copy introductorio habitual.
 - En **Competencias y enunciados**, el aviso en rojo con icono aplica **únicamente** a los tipos con conteo 0; el resto de tipos se muestran con estilo neutro o de éxito según el sistema de diseño.
 
-**Implementación en código:** `updateHubChecksUI()` recalcula `draft.checks.competencias = hubCompetenciasCompleto()` en cada visita al hub y aplica el desbloqueo progresivo de tarjetas según `draft.guardado` y `draft.checks.tipo`. `showView()` usa `hubSubVistaPermitida(viewId)` para impedir abrir por URL (`#competencias`, etc.) una sección aún no permitida (muestra toast y fuerza `#hub` con `replaceState`). `refreshHubCardDescriptions()` (llamada al final de `updateHubChecksUI()`) actualiza los `<p class="crear360-hub-card-desc">`: en competencias muestra el resumen «Enunciados:…» tanto si está completo como si está incompleto (con avisos en rojo). En modo **Evaluados** por tabla (`por-colaborador`), el conteo por tipo usa el mismo número de evaluados seleccionados para cada tipo activo; en modo **libre** con `asignaciones[]`, los conteos se obtienen por tipo a partir de las filas importadas.
+**Implementación en código:** `updateHubChecksUI()` recalcula `draft.checks.competencias = hubCompetenciasCompleto()` en cada visita al hub y aplica el desbloqueo progresivo de tarjetas según `draft.guardado` y `draft.checks.tipo`. `showView()` usa `hubSubVistaPermitida(viewId)` para impedir abrir por URL (`#competencias`, etc.) una sección aún no permitida (muestra toast y fuerza `#hub` con `replaceState`). `refreshHubCardDescriptions()` (llamada al final de `updateHubChecksUI()`) actualiza los `<p class="crear360-hub-card-desc">`: en competencias muestra el resumen «Enunciados:…» tanto si está completo como si está incompleto (con avisos en rojo). En **Evaluados**, cuando `draft.evaluados.tipo === 'libre-asignaciones'` y hay `asignaciones[]` (tras **Asignar** desde tabla o tras importación / demo organigrama), los conteos por tipo se calculan desde esas asignaciones; si aún no hay asignaciones, el resumen usa el número de evaluados en `personas` por tipo como aproximación.
 
 ### Edición después de confirmar
 
@@ -253,7 +253,8 @@ Cuando `_competencias.length === 0` se muestra el empty state (`loadEmptyState`)
 - Icono: `fa-clipboard-list`
 - Título: «Añade una competencia»
 - Descripción breve
-- Botón primario único: **«Añadir competencia»** → `openComp360Modal()`
+- Botón secundario: **«Cargar enunciados»** → `openComp360ImportEnunciadosDrawer()` (mismo drawer que en modo lista)
+- Botón primario: **«Añadir competencia»** → `openComp360Modal()`
 - El footer sub-vistas se **oculta** en este estado.
 
 ### Modo lista (con al menos 1 competencia)
@@ -281,21 +282,13 @@ Campos para habilitar el botón «Añadir»:
 - **Descripción** (`createInput` tipo `textarea`) — obligatoria
 
 #### Tab «Banco de competencias»
-Lista de checkboxes oficiales (`ubits-checkbox --sm`) con las competencias predefinidas de la constante `BANCO_COMPETENCIAS_360`:
-
-```js
-BANCO_COMPETENCIAS_360 = [
-    'Liderazgo transformador', 'Pensamiento analítico', 'Colaboración efectiva',
-    'Comunicación asertiva', 'Innovación y creatividad', 'Adaptabilidad al cambio',
-    'Orientación al cliente', 'Gestión del tiempo y productividad'
-]
-```
+Lista de checkboxes oficiales (`ubits-checkbox --sm`) con las competencias predefinidas de la constante `BANCO_COMPETENCIAS_360` (array de `{ nombre, descripcion }`). En el listado del banco **solo se muestra el nombre**; la `descripcion` se copia al modelo al añadir la competencia a la evaluación y **solo se ve** al abrir el modal **Editar competencia** sobre una fila ya añadida.
 
 Las competencias que ya están en `_competencias` aparecen con el checkbox **marcado y deshabilitado** y con el badge «Ya añadida». Las demás se pueden seleccionar libremente.
 
 **Botón «Añadir»** (reemplaza al antiguo «Crear»): habilitado si el Tab 1 tiene nombre + descripción rellenos **o** si el Tab 2 tiene al menos una competencia nueva seleccionada. Al confirmar, se añaden:
 1. La competencia nueva del Tab 1 (si está completa).
-2. Las competencias del banco seleccionadas que aún no existen en `_competencias`.
+2. Las competencias del banco seleccionadas que aún no existen en `_competencias` (con la descripción del catálogo si aplica).
 
 Al añadir: se llama `renderCompetenciasView()`.
 
@@ -497,7 +490,7 @@ El comportamiento difiere según el modo:
 4. Muestra toast informativo: «Recibimos tu archivo. El sistema está asignando evaluadores según el organigrama y te notificará por correo cuando termine.»
 5. Muestra en el card de Evaluados (hub) el `status-tag` warning «Procesando asignaciones» (`far fa-arrows-rotate`).
 6. Si el usuario hace clic en el card mientras está en estado procesando → toast de info: «Tus evaluaciones están siendo asignadas. Cuando el proceso finalice, te lo informaremos por correo.»
-7. Tras **4 segundos** (simulación de demo): genera asignaciones con `eval360GenerarAsignacionesOrganigrama(ids)` → guarda como `draft.evaluados.tipo = 'libre-asignaciones'` → `draft.checks.evaluados = true` → refresca el hub.
+7. Tras **4 segundos** (simulación de demo): genera asignaciones con `eval360GenerarAsignacionesOrganigrama(ids)` (organigrama `jefe` en BD + tipos activos) → guarda como `draft.evaluados.tipo = 'libre-asignaciones'` → `draft.checks.evaluados = true` → refresca el hub.
 
 **Libre:**
 1. Deshabilita el botón «Importar» y «Cancelar» en el drawer.
@@ -514,18 +507,18 @@ var _eval360AsignacionesData  = [];      // [{evaluadoId, nombre, area, avatar, 
 var _eval360EditandoIdx       = -1;      // índice en _eval360AsignacionesData del evaluado en edición
 ```
 
-### Guardar evaluados (`saveEvaluados`)
+### Asignar evaluados (`saveEvaluados`)
 
-Lee los IDs seleccionados de `_eval360ColabTablaRef.getSelectedIds()`.  
-`draft.evaluados = { tipo: 'por-colaborador', personas: ids, grupos: [] }`.  
-`draft.checks.evaluados = ids.length > 0`.  
-Toast de éxito + vuelve al hub.
+Lee los IDs seleccionados de `_eval360ColabTablaRef.getSelectedIds()`. Si no hay ninguno, no hace nada.  
+Construye `_eval360AsignacionesData = eval360GenerarAsignacionesOrganigrama(ids)` usando `BD_MASTER_COLABORADORES` (`jefe`, reportes directos por nombre, misma área para paralela, otra área para cliente interno) y solo los tipos activos en `#tipo`.  
+`draft.evaluados = { tipo: 'libre-asignaciones', asignaciones, personas: ids }`, `draft.checks.evaluados = true`.  
+Toast de éxito + navega a **`#evaluados-asignados`**.
 
 ### Footer sub-vista evaluados
 
 | Botón secundario | Botón primario |
 |-----------------|----------------|
-| «Cancelar» (vuelve al hub) | «Guardar» (deshabilitado si ningún colaborador seleccionado) |
+| «Cancelar» (vuelve al hub) | **«Asignar»** (etiqueta fijada en `showView` cuando la vista es `evaluados`; deshabilitado si ningún colaborador seleccionado) |
 
 ---
 
@@ -543,20 +536,18 @@ Mostrar y gestionar las asignaciones de evaluadores por evaluado, generadas medi
 
 ### Tabla de evaluados asignados
 
-Tabla manual HTML/CSS (no `ubits-data-table`) con clases UBITS estándar:
+`createUbitsDataTable` en `#eval360-asign-dt-container` (`_eval360AsignTablaRef`). Título **«Lista de evaluados»**, contador **visible/total**, búsqueda oficial (lupa → input). Opciones: `searchColumnIds: ['evaluado']` (solo nombre del evaluado), `initialSort: { column: 'evaluado', direction: 'asc' }`.
 
 | Columna | Descripción |
 |---------|-------------|
-| **Evaluado** | Avatar (`renderAvatar` size `sm`) + nombre |
+| **Evaluado** | Avatar (`renderAvatar` size `sm`) + nombre (`buildEval360AsignRowHtml`) |
 | **Área** | Área del evaluado |
-| **Evaluadores** | Profile list (`renderProfileList` size `sm`, `maxVisible: 3`, `showTooltip: true`). Al hacer clic en `+X` abre un **popover** (`#eval360-eval-popover`) con la lista completa de evaluadores restantes (avatar + nombre), hasta 6 items visibles con scroll. |
-| *(sin título)* | Botón `fa-ellipsis-vertical` icon-only secundario con `data-tooltip="Opciones"`. Al hacer clic abre un dropdown (componente oficial `getDropdownMenuHtml`) con opciones: **Editar** (`pen`) y **Eliminar** (`trash`). |
+| **Evaluadores** | Profile list (`renderProfileList` size `sm`, `maxVisible: 3`, `showTooltip: true`). Al hacer clic en `+X` abre un **popover** (`#eval360-eval-popover`) con evaluadores a partir del 4.º (delegación `eval360AsignOnContainerClick` en el contenedor). |
+| **Acciones** | Botón `fa-ellipsis-vertical` icon-only secundario. Dropdown `getDropdownMenuHtml` + clic en overlay para cerrar: **Editar** / **Eliminar**. |
 
-- **Búsqueda:** input de búsqueda en tiempo real filtra por nombre y área del evaluado.
-- **Contador:** «N evaluado(s)» a la derecha del buscador.
-- **Eliminar evaluado:** abre modal de confirmación, luego remueve de `_eval360AsignacionesData` y actualiza `draft.evaluados`.
-- **Editar evaluado:** fija `_eval360EditandoIdx = idx` y navega a `showView('editar-asignacion')`.
-- Botón «Guardar» del footer: `saveEvaluadosAsignados()` → `draft.checks.evaluados = true` + vuelve al hub.
+- **Eliminar evaluado:** modal de confirmación → `renderEvaluadosAsignadosView()`.
+- **Editar evaluado:** `_eval360EditandoIdx` + `showView('editar-asignacion')`.
+- Botón «Guardar» del footer: `saveEvaluadosAsignados()` → hub.
 
 ### `eval360BuildAsignacionesLibre(filas, colabByUsername)`
 
@@ -594,29 +585,28 @@ Dinámico: «Editar evaluadores de [nombre del evaluado]» — construido en `re
 
 ### Tabla de evaluadores
 
+`createUbitsDataTable` en `#eval360-editar-asign-container` (`_eval360EditarTablaRef`). Título **«Lista de evaluadores»**, `primaryButton` «Añadir evaluador», búsqueda solo en columna **evaluador** (`searchColumnIds`), orden inicial A–Z por evaluador (`initialSort`). Filas desde `getData()` mapeando `evalData.evaluadores` con `_rowKey = id + '|' + tipo` para `rowIdField`.
+
 | Columna | Descripción |
 |---------|-------------|
-| **Evaluador** | Avatar (`renderAvatar` size `sm`) + nombre |
+| **Evaluador** | Avatar + nombre (`buildEval360EditarRowHtml`) |
 | **Área** | Área del evaluador |
-| **Tipo de evaluación** | `tipoNombre` del evaluador |
-| **Eliminar** | Botón `fa-trash` `error-secondary` icon-only. Al hacer clic elimina el evaluador del array `evalData.evaluadores` y refresca el `tbody`. |
-
-- **Búsqueda:** input en tiempo real filtra por nombre y área del evaluador.
-- **Botón «Añadir evaluador»** (primario, sm): abre `openAnadirEvaluadorModal(_eval360EditandoIdx)`.
+| **Tipo de evaluación** | `tipoNombre` |
+| **Eliminar** | Botón `error-secondary` icon-only; `eval360EditarOnContainerClick` abre **modal de confirmación** (`eval360ConfirmarEliminarEvaluador`, `overlayId: eval360-delete-evaluador-modal`) y solo tras confirmar se elimina la fila y se hace `refresh()` del data table. |
 
 ### Modal: Añadir evaluador (`openAnadirEvaluadorModal`)
 
-Modal oficial (`openModal`), id: `eval360-add-evaluador-modal`, título «Añadir evaluador», tamaño `md`.
+Modal oficial (`openModal`) con **`overlayId: eval360-add-evaluador-modal`** (obligatorio para que `closeModal` y los `querySelector` del body encuentren el overlay), título «Añadir evaluador», tamaño `md`.
 
-**Estructura del body:**
-1. **Autocomplete** (`createInput` tipo `autocomplete`) que busca en `BD_MASTER_COLABORADORES.colaboradores`. Al seleccionar un colaborador:
-   - Muestra la sección de tipos de evaluación (`#eval360-add-eval-tipo-section`).
-2. **Tipos de evaluación** (radio buttons con clase `ubits-radio--sm` en fila con `flex-wrap`): uno por cada tipo activo de `eval360GetTiposActivos()`.
+**Estructura del body (mismo patrón que «Añadir colaborador» en `seguimiento.html` / planes):**
+1. **Filtro** con input estilo dropdown (`ubits-dropdown-menu__autocomplete-wrap` + `ubits-input--sm`, placeholder «Filtrar por colaborador...», icono lupa y limpiar).
+2. **Lista** `ubits-dropdown-menu__options` con filas `ubits-dropdown-menu__option` y **checkboxes** `ubits-checkbox--sm` (una sola selección a la vez: al marcar uno se desmarcan el resto). Orden alfabético por nombre. El filtro muestra como máximo **10** coincidencias a la vez (en seguimiento son 5); el texto de búsqueda se compara sin tildes contra nombre y área (`data-colab-search`).
+3. Al haber colaborador marcado: se muestra **Tipo de evaluación** (`#eval360-add-eval-tipo-section`) con radios `ubits-radio--sm` (`eval360GetTiposActivos()`).
    - El botón «Añadir» se habilita solo cuando hay colaborador **y** tipo seleccionados.
 
 **Footer:**
 - «Cancelar» (secondary) → cierra el modal.
-- «Añadir» (primary, deshabilitado hasta cumplir condiciones) → agrega `{ id, nombre, area, avatar, tipo, tipoNombre }` a `evalData.evaluadores` → cierra modal → refresca `tbody` → toast de éxito.
+- «Añadir» (primary, deshabilitado hasta cumplir condiciones) → agrega la fila a `evalData.evaluadores` → cierra modal → `_eval360EditarTablaRef.refresh()` + tooltips → toast de éxito.
 
 ### Footer sub-vista editar-asignacion
 

@@ -904,21 +904,8 @@
 }
 
 /* ════════════════════════════════════════
-   VISTA: Evaluados asignados / Editar asignación
+   VISTA: acciones en tabla (columna elipsis / eliminar)
    ════════════════════════════════════════ */
-
-.eval360-editar-asign-header {
-    display: flex;
-    align-items: center;
-    gap: var(--gap-md);
-    margin-bottom: var(--gap-lg);
-    flex-wrap: wrap;
-}
-
-.eval360-editar-asign-search-wrap {
-    flex: 1;
-    min-width: 160px;
-}
 
 .ubits-table__th--actions,
 .ubits-table__td--actions {
@@ -974,6 +961,21 @@
     display: flex;
     flex-direction: column;
     gap: var(--gap-sm);
+}
+
+/* Filtro + lista tipo seguimiento (añadir colaborador): checkboxes, hasta 10 filas visibles por filtro */
+.eval360-add-eval-filter-wrap {
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.eval360-add-eval-colab-options {
+    max-height: 400px;
+    margin-top: var(--gap-xs);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: var(--border-radius-sm);
+    background: var(--ubits-bg-1);
+    box-sizing: border-box;
 }
 
 .eval360-add-eval-lbl {

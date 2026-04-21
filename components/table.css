@@ -3,6 +3,13 @@
    Tabla con cabecera, filas y tipos de celda:
    texto, checkbox, progress bar, avatar, profile list, status tag, prioridad.
    Quien use el componente puede añadir/quitar columnas y tipos de contenido.
+
+   Cuándo usar solo esta tabla a mano vs. Data Table (`ubits-data-table.js`):
+   Si la pantalla es **solo una vista de datos en tabla** (barra con título, búsqueda,
+   contador X/Y, orden, filtros, vacíos), usa **`createUbitsDataTable`** — no montes
+   `<table class="ubits-table">` + buscador propio. Reserva el patrón **toolbar panel +
+   tabla + cuadrícula de cards** para vistas **mixtas** (p. ej. Contenidos: lista y
+   mosaico). Ver README («Tabla solo de datos: Data Table») y `documentacion/componentes/ubits-data-table.html`.
    ======================================== */
 
 /* Wrapper: scroll horizontal en móvil */

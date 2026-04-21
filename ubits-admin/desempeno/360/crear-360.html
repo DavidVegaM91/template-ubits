@@ -382,6 +382,7 @@
     var _eval360AsignacionesData = []; /* [{evaluadoId, nombre, area, avatar, evaluadores:[{id,nombre,area,avatar,tipo,tipoNombre}]}] */
     var _eval360EditandoIdx      = -1; /* índice en _eval360AsignacionesData del evaluado que se está editando */
     var _eval360AsignTablaRef    = null; /* ref createUbitsDataTable — lista evaluados asignados */
+    var _eval360EditarTablaRef   = null; /* ref createUbitsDataTable — editar evaluadores del evaluado */
 
     /* ── Vista activa ── */
     var _currentView = 'hub';
@@ -461,6 +462,9 @@
             if (hubFoot) hubFoot.style.display = 'none';
             if (subFoot) subFoot.style.display = '';
         }
+
+        var subSaveLabel = document.querySelector('#crear360-btn-sub-save span');
+        if (subSaveLabel) subSaveLabel.textContent = (viewId === 'evaluados') ? 'Asignar' : 'Guardar';
 
         /* scroll al tope */
         var main = document.getElementById('crear360-main');
@@ -658,16 +662,16 @@
     };
 
 
-    /* Banco de competencias reutilizables (simulan evaluaciones pasadas / catálogo de empresa) */
+    /* Banco de competencias (solo nombre en el listado del modal; descripción se guarda al añadir y se ve al editar la competencia en la evaluación) */
     var BANCO_COMPETENCIAS_360 = [
-        'Liderazgo transformador',
-        'Pensamiento analítico',
-        'Colaboración efectiva',
-        'Comunicación asertiva',
-        'Innovación y creatividad',
-        'Adaptabilidad al cambio',
-        'Orientación al cliente',
-        'Gestión del tiempo y productividad'
+        { nombre: 'Liderazgo transformador', descripcion: 'Capacidad para inspirar y alinear al equipo hacia una visión común, tomando decisiones difíciles con empatía y coherencia.' },
+        { nombre: 'Pensamiento analítico', descripcion: 'Uso de datos y razonamiento lógico para descomponer problemas, detectar causas raíz y fundamentar conclusiones.' },
+        { nombre: 'Colaboración efectiva', descripcion: 'Contribución activa a objetivos compartidos, compartiendo información y apoyando a otros para lograr resultados conjuntos.' },
+        { nombre: 'Comunicación asertiva', descripcion: 'Expresión clara de ideas y necesidades, escucha activa y manejo constructivo de desacuerdos en distintos niveles de la organización.' },
+        { nombre: 'Innovación y creatividad', descripcion: 'Propuesta de ideas nuevas, experimentación controlada y mejora continua de procesos, productos o formas de trabajo.' },
+        { nombre: 'Adaptabilidad al cambio', descripcion: 'Ajuste ágil a nuevas prioridades, herramientas o contextos manteniendo el foco en resultados y bienestar del equipo.' },
+        { nombre: 'Orientación al cliente', descripcion: 'Anticipación de necesidades de clientes internos o externos y entrega de soluciones que generen valor y confianza.' },
+        { nombre: 'Gestión del tiempo y productividad', descripcion: 'Organización personal de tareas y plazos, priorización efectiva y cumplimiento de compromisos sin sacrificar la calidad.' }
     ];
 
     function hubNombreTipoPorId(id) {
@@ -1133,6 +1137,11 @@
                 title: 'Añade una competencia',
                 description: 'Empieza a clasificar los enunciados de tu evaluación, añade competencias y enunciados según tus necesidades.',
                 buttons: {
+                    secondary: {
+                        text: 'Cargar enunciados',
+                        icon: 'fa-file-arrow-up',
+                        onClick: function () { openComp360ImportEnunciadosDrawer(); }
+                    },
                     primary: {
                         text: 'Añadir competencia',
                         icon: 'fa-plus',
@@ -1217,13 +1226,15 @@
                 var yaEnEval = {};
                 _competencias.forEach(function (c) { yaEnEval[c.nombre.trim().toLowerCase()] = true; });
 
-                bancoList.innerHTML = BANCO_COMPETENCIAS_360.map(function (nombre) {
-                    var yaAdded = !!yaEnEval[nombre.toLowerCase()];
+                bancoList.innerHTML = BANCO_COMPETENCIAS_360.map(function (item) {
+                    var nombre = item.nombre || '';
+                    var yaAdded = !!yaEnEval[nombre.trim().toLowerCase()];
+                    var nombreAttr = String(nombre).replace(/"/g, '&quot;');
                     return '<div class="comp360-banco-item' + (yaAdded ? ' comp360-banco-item--added' : '') + '">' +
                         '<label class="ubits-checkbox ubits-checkbox--sm">' +
-                            '<input type="checkbox" class="ubits-checkbox__input" data-nombre="' + nombre + '" ' + (yaAdded ? 'checked disabled' : '') + '>' +
+                            '<input type="checkbox" class="ubits-checkbox__input" data-nombre="' + nombreAttr + '" ' + (yaAdded ? 'checked disabled' : '') + '>' +
                             '<span class="ubits-checkbox__box"><i class="far fa-check"></i></span>' +
-                            '<span class="ubits-checkbox__label ubits-body-sm-regular">' + nombre + '</span>' +
+                            '<span class="ubits-checkbox__label ubits-body-sm-regular">' + hubEscHtml(nombre) + '</span>' +
                         '</label>' +
                         (yaAdded ? '<span class="comp360-banco-tag">Ya añadida</span>' : '') +
                     '</div>';
@@ -1275,15 +1286,23 @@
                 document.querySelectorAll('#comp360ModalBancoList input[type="checkbox"]').forEach(function (cb) {
                     if (cb.checked && !cb.disabled) {
                         var nombreBanco = cb.dataset.nombre;
-                        if (nombreBanco && !yaExistentes[nombreBanco.toLowerCase()]) {
+                        if (nombreBanco && !yaExistentes[nombreBanco.trim().toLowerCase()]) {
+                            var descBanco = '';
+                            for (var bi = 0; bi < BANCO_COMPETENCIAS_360.length; bi++) {
+                                var it = BANCO_COMPETENCIAS_360[bi];
+                                if (it && String(it.nombre).trim() === String(nombreBanco).trim()) {
+                                    descBanco = it.descripcion || '';
+                                    break;
+                                }
+                            }
                             _competencias.push({
                                 id: 'comp-banco-' + Date.now() + '-' + Math.random().toString(36).slice(2, 6),
-                                nombre: nombreBanco,
-                                descripcion: '',
+                                nombre: nombreBanco.trim(),
+                                descripcion: descBanco,
                                 expandida: false,
                                 enunciados: []
                             });
-                            yaExistentes[nombreBanco.toLowerCase()] = true;
+                            yaExistentes[nombreBanco.trim().toLowerCase()] = true;
                         }
                     }
                 });
@@ -2136,18 +2155,22 @@
             rowIdField:       'id',
             buildRowHtml:     buildRowHtml,
             features:         { checkboxes: true, search: true, verSeleccionados: true, resultsCount: true },
-            initialSelected:  savedIds,
+            initialSelectedIds: savedIds,
             primaryButton:    { text: 'Cargar desde archivo', icon: 'fa-file-arrow-up', variant: 'secondary', onClick: openEval360ImportDrawer },
             emptyState:       { message: 'No hay colaboradores', icon: 'far fa-user' },
             emptySearchState: { message: 'No se encontraron resultados', description: 'Intenta ajustar tu búsqueda.', buttonText: 'Limpiar búsqueda' },
             i18n:             { selectAll: 'Seleccionar todo', deselectAll: 'Deseleccionar todo', verSeleccionados: 'Ver seleccionados', buscar: 'Buscar' }
         });
-        container.addEventListener('change', function (e) {
-            if (e.target && e.target.matches && e.target.matches('input[type="checkbox"]')) {
-                var saveBtn = document.getElementById('crear360-btn-sub-save');
-                if (saveBtn) saveBtn.disabled = (_eval360ColabTablaRef.getSelectedIds().length === 0);
+        function syncEvaluadosAssignBtn() {
+            var saveBtn = document.getElementById('crear360-btn-sub-save');
+            if (saveBtn && _eval360ColabTablaRef) {
+                saveBtn.disabled = (_eval360ColabTablaRef.getSelectedIds().length === 0);
             }
+        }
+        container.addEventListener('change', function (e) {
+            if (e.target && e.target.matches && e.target.matches('input[type="checkbox"]')) syncEvaluadosAssignBtn();
         });
+        setTimeout(syncEvaluadosAssignBtn, 0);
     }
 
     /* ════════════════════════════════════════════════════════════
@@ -2693,42 +2716,115 @@
         return orden.map(function (id) { return mapaEvaluados[id]; });
     }
 
-    /** Genera asignaciones simuladas para el flujo de organigrama (demo) */
+    /** Evita duplicar la misma relación evaluador+tipo para un evaluado */
+    function eval360PushEvaluadorUnico(evaluadores, ev) {
+        if (!ev || ev.id == null) return;
+        var tid = String(ev.tipo || '');
+        var dupe = evaluadores.some(function (e) {
+            return String(e.id) === String(ev.id) && String(e.tipo || '') === tid;
+        });
+        if (dupe) return;
+        evaluadores.push(ev);
+    }
+
+    /**
+     * Genera asignaciones por evaluado usando organigrama (`jefe` en BD_MASTER_COLABORADORES)
+     * y solo los tipos activos en #tipo (draft / _tipos).
+     */
     function eval360GenerarAsignacionesOrganigrama(ids) {
         var colaboradores = (typeof BD_MASTER_COLABORADORES !== 'undefined' && BD_MASTER_COLABORADORES.colaboradores) || [];
         var colabById = {};
         colaboradores.forEach(function (c) { colabById[c.id] = c; });
+
+        function colabPorNombreJefe(nombreJefe) {
+            if (!nombreJefe) return null;
+            var j = String(nombreJefe).trim();
+            if (!j) return null;
+            return colaboradores.find(function (c) { return String(c.nombre || '').trim() === j; }) || null;
+        }
+
+        function reportesDirectos(nombrePersona) {
+            if (!nombrePersona) return [];
+            var n = String(nombrePersona).trim();
+            return colaboradores.filter(function (c) {
+                return c && String(c.jefe || '').trim() === n && String(c.nombre || '').trim() !== n;
+            });
+        }
+
         var tiposActivos = eval360GetTiposActivos();
+        var activo = {};
+        tiposActivos.forEach(function (t) { activo[t.id] = true; });
+
         var resultado = [];
         ids.forEach(function (evalId) {
             var evaluado = colabById[evalId];
             if (!evaluado) return;
             var evaluadores = [];
-            /* Autoevaluación: el propio evaluado */
-            var tipoAuto = tiposActivos.find(function (t) { return t.id === 'autoevaluacion'; });
-            if (tipoAuto) {
-                evaluadores.push({ id: evaluado.id, nombre: evaluado.nombre, area: evaluado.area || '', avatar: evaluado.avatar || null, tipo: 'autoevaluacion', tipoNombre: tipoAuto.nombre });
-            }
-            /* Descendente: hasta 1 persona del mismo área (el primero que no sea el evaluado) */
-            var tipoDesc = tiposActivos.find(function (t) { return t.id === 'descendente'; });
-            if (tipoDesc) {
-                var posibleJefe = colaboradores.find(function (c) { return c.id !== evalId && c.area === evaluado.area; });
-                if (posibleJefe) {
-                    evaluadores.push({ id: posibleJefe.id, nombre: posibleJefe.nombre, area: posibleJefe.area || '', avatar: posibleJefe.avatar || null, tipo: 'descendente', tipoNombre: tipoDesc.nombre });
-                }
-            }
-            /* Paralela: hasta 2 pares del mismo área */
-            var tipoPar = tiposActivos.find(function (t) { return t.id === 'paralela'; });
-            if (tipoPar) {
-                var pares = colaboradores.filter(function (c) { return c.id !== evalId && c.area === evaluado.area; }).slice(0, 2);
-                pares.forEach(function (par) {
-                    evaluadores.push({ id: par.id, nombre: par.nombre, area: par.area || '', avatar: par.avatar || null, tipo: 'paralela', tipoNombre: tipoPar.nombre });
+            var areaEv = String(evaluado.area || '');
+
+            if (activo['autoevaluacion']) {
+                var tipoAuto = tiposActivos.find(function (t) { return t.id === 'autoevaluacion'; });
+                eval360PushEvaluadorUnico(evaluadores, {
+                    id: evaluado.id, nombre: evaluado.nombre, area: areaEv, avatar: evaluado.avatar || null,
+                    tipo: 'autoevaluacion', tipoNombre: tipoAuto ? tipoAuto.nombre : 'Autoevaluación'
                 });
             }
+
+            /* Descendente: el superior inmediato (`jefe`) evalúa al colaborador */
+            if (activo['descendente']) {
+                var tipoDesc = tiposActivos.find(function (t) { return t.id === 'descendente'; });
+                var jefeCol = colabPorNombreJefe(evaluado.jefe);
+                if (jefeCol && String(jefeCol.id) !== String(evaluado.id)) {
+                    eval360PushEvaluadorUnico(evaluadores, {
+                        id: jefeCol.id, nombre: jefeCol.nombre, area: jefeCol.area || '', avatar: jefeCol.avatar || null,
+                        tipo: 'descendente', tipoNombre: tipoDesc ? tipoDesc.nombre : 'Descendente'
+                    });
+                }
+            }
+
+            /* Ascendente: quienes reportan al evaluado evalúan a su jefe */
+            if (activo['ascendente']) {
+                var tipoAsc = tiposActivos.find(function (t) { return t.id === 'ascendente'; });
+                reportesDirectos(evaluado.nombre).slice(0, 3).forEach(function (rep) {
+                    eval360PushEvaluadorUnico(evaluadores, {
+                        id: rep.id, nombre: rep.nombre, area: rep.area || '', avatar: rep.avatar || null,
+                        tipo: 'ascendente', tipoNombre: tipoAsc ? tipoAsc.nombre : 'Ascendente'
+                    });
+                });
+            }
+
+            /* Paralela: colegas de la misma área (excluye al evaluado) */
+            if (activo['paralela']) {
+                var tipoPar = tiposActivos.find(function (t) { return t.id === 'paralela'; });
+                colaboradores
+                    .filter(function (c) { return String(c.id) !== String(evaluado.id) && String(c.area || '') === areaEv; })
+                    .slice(0, 2)
+                    .forEach(function (par) {
+                        eval360PushEvaluadorUnico(evaluadores, {
+                            id: par.id, nombre: par.nombre, area: par.area || '', avatar: par.avatar || null,
+                            tipo: 'paralela', tipoNombre: tipoPar ? tipoPar.nombre : 'Paralela'
+                        });
+                    });
+            }
+
+            /* Cliente interno: un colaborador de otra área como referente cruzado */
+            if (activo['cliente']) {
+                var tipoCli = tiposActivos.find(function (t) { return t.id === 'cliente'; });
+                var otro = colaboradores.find(function (c) {
+                    return String(c.id) !== String(evaluado.id) && String(c.area || '') !== areaEv;
+                });
+                if (otro) {
+                    eval360PushEvaluadorUnico(evaluadores, {
+                        id: otro.id, nombre: otro.nombre, area: otro.area || '', avatar: otro.avatar || null,
+                        tipo: 'cliente', tipoNombre: tipoCli ? tipoCli.nombre : 'Cliente interno'
+                    });
+                }
+            }
+
             resultado.push({
                 evaluadoId: evaluado.id,
                 nombre:     evaluado.nombre,
-                area:       evaluado.area || '',
+                area:       areaEv,
                 avatar:     evaluado.avatar || null,
                 evaluadores: evaluadores
             });
@@ -2742,7 +2838,7 @@
         var container = document.getElementById('eval360-colab-dt-container');
         if (container) container.innerHTML = '';
         eval360InitColabTable();
-        /* Estado inicial del botón Guardar */
+        /* Botón «Asignar»: deshabilitado hasta que haya al menos un evaluado seleccionado */
         var saveBtn = document.getElementById('crear360-btn-sub-save');
         if (saveBtn) {
             var sel = _eval360ColabTablaRef ? _eval360ColabTablaRef.getSelectedIds().length : 0;
@@ -2753,10 +2849,16 @@
     function saveEvaluados() {
         var ids = (_eval360ColabTablaRef && typeof _eval360ColabTablaRef.getSelectedIds === 'function')
             ? _eval360ColabTablaRef.getSelectedIds() : [];
-        draft.evaluados        = { tipo: 'por-colaborador', personas: ids, grupos: [] };
+        if (!ids.length) return;
+        _eval360AsignacionesData = eval360GenerarAsignacionesOrganigrama(ids);
+        draft.evaluados = {
+            tipo:          'libre-asignaciones',
+            asignaciones:  _eval360AsignacionesData,
+            personas:      ids.slice()
+        };
         draft.checks.evaluados = ids.length > 0;
-        showToast('success', 'Evaluados guardados');
-        showView('hub');
+        showToast('success', 'Evaluadores asignados según el organigrama y los tipos de evaluación activos.');
+        showView('evaluados-asignados');
     }
 
     /* ══════════════════════════════════════════════════════════
@@ -2864,13 +2966,10 @@
             ? renderAvatar({ nombre: row.nombre, avatar: row.avatar || null }, { size: 'sm' })
             : '<span class="ubits-avatar ubits-avatar--sm"><span class="ubits-avatar__fallback"><i class="far fa-user"></i></span></span>';
 
-        var nombresEvalSearch = (row.evaluadores || []).map(function (e) { return e.nombre || ''; }).filter(Boolean).join(' ');
-
         return '<td data-col="evaluado"><div class="ubits-table__cell-assignee">' + evaluadoAvatar +
             '<span class="ubits-body-sm-regular">' + hubEscHtml(row.nombre) + '</span></div></td>' +
             '<td data-col="area"><span class="ubits-body-sm-regular">' + hubEscHtml(row.area) + '</span></td>' +
-            '<td data-col="evaluadores"><span class="sr-only ubits-body-sm-regular" aria-hidden="true">' + hubEscHtml(nombresEvalSearch) + '</span>' +
-            '<div class="ubits-table__cell-assignee">' + profileListHtml + '</div></td>' +
+            '<td data-col="evaluadores"><div class="ubits-table__cell-assignee">' + profileListHtml + '</div></td>' +
             '<td data-col="acciones" class="ubits-table__td--actions">' +
                 '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only js-eval360-asign-opts-btn" data-evaluado-id="' + String(row.evaluadoId).replace(/"/g, '&quot;') + '" aria-label="Opciones" data-tooltip="Opciones" data-tooltip-delay="600">' +
                     '<i class="far fa-ellipsis-vertical"></i>' +
@@ -2882,7 +2981,6 @@
         if (!container) return;
 
         var saveBtn = document.getElementById('crear360-btn-sub-save');
-        if (saveBtn) saveBtn.disabled = true;
 
         if (draft.evaluados && draft.evaluados.tipo === 'libre-asignaciones' && Array.isArray(draft.evaluados.asignaciones)) {
             _eval360AsignacionesData = draft.evaluados.asignaciones;
@@ -2896,6 +2994,7 @@
             if (typeof loadEmptyState === 'function') {
                 loadEmptyState(container.id, { message: 'No hay evaluados asignados', icon: 'far fa-users' });
             }
+            if (saveBtn) saveBtn.disabled = false;
             return;
         }
 
@@ -2917,6 +3016,8 @@
             rowIdField:       'evaluadoId',
             buildRowHtml:     buildEval360AsignRowHtml,
             features:         { search: true, resultsCount: true },
+            searchColumnIds:  ['evaluado'],
+            initialSort:      { column: 'evaluado', direction: 'asc' },
             emptySearchState: { message: 'No se encontraron resultados', description: 'Intenta ajustar tu búsqueda.', buttonText: 'Limpiar búsqueda' },
             i18n:             { buscarPlaceholder: 'Buscar evaluado...', buscar: 'Buscar' }
         });
@@ -2931,13 +3032,15 @@
 
         container.addEventListener('click', eval360AsignOnContainerClick);
         eval360AsignInitTooltips();
+
+        if (saveBtn) saveBtn.disabled = false;
     }
 
     function eval360ConfirmarEliminarEvaluado(idx) {
         var row = _eval360AsignacionesData[idx];
         if (!row) return;
         openModal({
-            id: 'eval360-delete-evaluado-modal',
+            overlayId: 'eval360-delete-evaluado-modal',
             title: 'Eliminar evaluado',
             bodyHtml: '<p class="ubits-body-md-regular">¿Estás seguro de que deseas eliminar a <strong>' + hubEscHtml(row.nombre) + '</strong> de la lista de evaluados? Esta acción no se puede deshacer.</p>',
             footerHtml:
@@ -2971,6 +3074,90 @@
        VISTA: EDITAR ASIGNACIÓN
        ══════════════════════════════════════════════════════════ */
 
+    function eval360EditarInitTooltips() {
+        setTimeout(function () {
+            if (typeof initTooltip === 'function') {
+                initTooltip('#eval360-editar-asign-container [data-tooltip]');
+                initTooltip('#eval360-editar-table thead [data-tooltip]');
+            }
+        }, 50);
+    }
+
+    function eval360EditarOnContainerClick(e) {
+        var delBtn = e.target.closest('.js-eval360-del-evaluador-btn');
+        if (!delBtn) return;
+        var raw = delBtn.getAttribute('data-row-key');
+        if (!raw) return;
+        var rowKey = decodeURIComponent(raw);
+        eval360ConfirmarEliminarEvaluador(rowKey);
+    }
+
+    function eval360ConfirmarEliminarEvaluador(rowKey) {
+        var evalData = _eval360AsignacionesData[_eval360EditandoIdx];
+        if (!evalData || !evalData.evaluadores) return;
+        var sep = rowKey.indexOf('|');
+        if (sep < 0) return;
+        var idWanted = rowKey.slice(0, sep);
+        var tipoWanted = rowKey.slice(sep + 1);
+        var idxEv = evalData.evaluadores.findIndex(function (ev) {
+            return String(ev.id) === idWanted && String(ev.tipo || '') === tipoWanted;
+        });
+        if (idxEv < 0) return;
+        var ev = evalData.evaluadores[idxEv];
+        var nombreEv = ev && ev.nombre ? ev.nombre : 'este evaluador';
+        var tipoNom = ev && ev.tipoNombre ? ev.tipoNombre : (ev && ev.tipo ? String(ev.tipo) : '');
+
+        openModal({
+            overlayId: 'eval360-delete-evaluador-modal',
+            title: 'Eliminar evaluador',
+            bodyHtml:
+                '<p class="ubits-body-md-regular" style="margin:0;">¿Estás seguro de que deseas eliminar a <strong>' + hubEscHtml(nombreEv) + '</strong>' +
+                (tipoNom ? ' como evaluador <strong>' + hubEscHtml(tipoNom) + '</strong>' : '') +
+                ' de la asignación de <strong>' + hubEscHtml(evalData.nombre || 'este evaluado') + '</strong>? ' +
+                'Si ya hubiera respuestas asociadas en un entorno real, se perderían para esta relación evaluador–evaluado. Esta acción no se puede deshacer.</p>',
+            footerHtml:
+                '<button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="eval360-del-evaluador-cancel"><span>Cancelar</span></button>' +
+                '<button type="button" class="ubits-button ubits-button--error ubits-button--md" id="eval360-del-evaluador-confirm"><span>Eliminar</span></button>',
+            size: 'sm',
+            closeOnOverlayClick: true
+        });
+        setTimeout(function () {
+            var cancelBtn = document.getElementById('eval360-del-evaluador-cancel');
+            var confirmBtn = document.getElementById('eval360-del-evaluador-confirm');
+            if (cancelBtn) cancelBtn.addEventListener('click', function () { closeModal('eval360-delete-evaluador-modal'); });
+            if (confirmBtn) confirmBtn.addEventListener('click', function () {
+                closeModal('eval360-delete-evaluador-modal');
+                var ed = _eval360AsignacionesData[_eval360EditandoIdx];
+                if (!ed || !ed.evaluadores) return;
+                var j = ed.evaluadores.findIndex(function (e) {
+                    return String(e.id) === idWanted && String(e.tipo || '') === tipoWanted;
+                });
+                if (j < 0) return;
+                ed.evaluadores.splice(j, 1);
+                if (_eval360EditarTablaRef && typeof _eval360EditarTablaRef.refresh === 'function') {
+                    _eval360EditarTablaRef.refresh();
+                    eval360EditarInitTooltips();
+                }
+                showToast('success', 'Evaluador eliminado');
+            });
+        }, 150);
+    }
+
+    function buildEval360EditarRowHtml(row) {
+        var avatarHtml = (typeof renderAvatar === 'function')
+            ? renderAvatar({ nombre: row.nombre, avatar: row.avatar || null }, { size: 'sm' })
+            : '<span class="ubits-avatar ubits-avatar--sm"><span class="ubits-avatar__fallback"><i class="far fa-user"></i></span></span>';
+        var rk = encodeURIComponent(row._rowKey);
+        return '<td data-col="evaluador"><div class="ubits-table__cell-assignee">' + avatarHtml +
+            '<span class="ubits-body-sm-regular">' + hubEscHtml(row.nombre) + '</span></div></td>' +
+            '<td data-col="area"><span class="ubits-body-sm-regular">' + hubEscHtml(row.area) + '</span></td>' +
+            '<td data-col="tipo"><span class="ubits-body-sm-regular">' + hubEscHtml(row.tipoNombre) + '</span></td>' +
+            '<td data-col="eliminar" class="ubits-table__td--actions">' +
+                '<button type="button" class="ubits-button ubits-button--error-secondary ubits-button--sm ubits-button--icon-only js-eval360-del-evaluador-btn" data-row-key="' + rk + '" aria-label="Eliminar evaluador" data-tooltip="Eliminar" data-tooltip-delay="600">' +
+                    '<i class="far fa-trash"></i>' +
+                '</button></td>';
+    }
+
     function renderEditarAsignacionView() {
         var container = document.getElementById('eval360-editar-asign-container');
         if (!container) return;
@@ -2980,123 +3167,133 @@
 
         var evalData = _eval360AsignacionesData[_eval360EditandoIdx];
         if (!evalData) {
+            _eval360EditarTablaRef = null;
             container.innerHTML = '<p class="ubits-body-md-regular">No se encontraron datos del evaluado.</p>';
             return;
         }
 
-        var evaluadores = evalData.evaluadores || [];
+        _eval360EditarTablaRef = null;
+        container.removeEventListener('click', eval360EditarOnContainerClick);
+        container.innerHTML = '';
 
-        var html =
-            '<div class="eval360-editar-asign-header">' +
-                '<div class="eval360-editar-asign-search-wrap">' +
-                    '<div class="ubits-input ubits-input--sm" id="eval360-editar-search-input-wrap">' +
-                        '<i class="far fa-search ubits-input__icon ubits-input__icon--left"></i>' +
-                        '<input type="text" class="ubits-input__field" id="eval360-editar-search" placeholder="Buscar evaluador..." aria-label="Buscar evaluador">' +
-                    '</div>' +
-                '</div>' +
-                '<button type="button" class="ubits-button ubits-button--primary ubits-button--sm" id="eval360-add-evaluador-btn">' +
-                    '<i class="far fa-plus"></i><span>Añadir evaluador</span>' +
-                '</button>' +
-            '</div>' +
-            '<div class="ubits-table-wrap">' +
-            '<table class="ubits-table" id="eval360-editar-table">' +
-                '<thead>' +
-                    '<tr>' +
-                        '<th class="ubits-table__th"><span class="ubits-body-sm-bold">Evaluador</span></th>' +
-                        '<th class="ubits-table__th"><span class="ubits-body-sm-bold">Área</span></th>' +
-                        '<th class="ubits-table__th"><span class="ubits-body-sm-bold">Tipo de evaluación</span></th>' +
-                        '<th class="ubits-table__th ubits-table__th--actions"><span class="ubits-body-sm-bold">Eliminar</span></th>' +
-                    '</tr>' +
-                '</thead>' +
-                '<tbody id="eval360-editar-tbody">' +
-                    buildEval360EditarTbody(evaluadores) +
-                '</tbody>' +
-            '</table>' +
-            '</div>';
+        if (typeof createUbitsDataTable !== 'function') return;
 
-        container.innerHTML = html;
-
-        setTimeout(function () {
-            if (typeof initTooltip === 'function') initTooltip('#eval360-editar-table [data-tooltip]');
-        }, 50);
-
-        /* Búsqueda en vivo */
-        var searchInput = document.getElementById('eval360-editar-search');
-        if (searchInput) {
-            searchInput.addEventListener('input', function () {
-                var q = this.value.trim().toLowerCase();
-                var tbody = document.getElementById('eval360-editar-tbody');
-                if (!tbody) return;
-                tbody.innerHTML = buildEval360EditarTbody(
-                    q ? evaluadores.filter(function (ev) {
-                        return ev.nombre.toLowerCase().includes(q) || (ev.area || '').toLowerCase().includes(q);
-                    }) : evaluadores
-                );
-            });
-        }
-
-        /* Botón añadir evaluador */
-        var addBtn = document.getElementById('eval360-add-evaluador-btn');
-        if (addBtn) addBtn.addEventListener('click', function () { openAnadirEvaluadorModal(_eval360EditandoIdx); });
-
-        /* Botones eliminar evaluador */
-        container.addEventListener('click', function (e) {
-            var delBtn = e.target.closest('.js-eval360-del-evaluador-btn');
-            if (!delBtn) return;
-            var evalIdx = parseInt(delBtn.getAttribute('data-eval-idx'), 10);
-            var evalData2 = _eval360AsignacionesData[_eval360EditandoIdx];
-            if (!evalData2) return;
-            evalData2.evaluadores.splice(evalIdx, 1);
-            var tbody = document.getElementById('eval360-editar-tbody');
-            if (tbody) tbody.innerHTML = buildEval360EditarTbody(evalData2.evaluadores);
+        _eval360EditarTablaRef = createUbitsDataTable({
+            containerId:      'eval360-editar-asign-container',
+            tableId:          'eval360-editar-table',
+            title:            'Lista de evaluadores',
+            columns:          [
+                { id: 'evaluador', label: 'Evaluador', sortable: true },
+                { id: 'area', label: 'Área', sortable: true },
+                { id: 'tipo', label: 'Tipo de evaluación', sortable: true },
+                { id: 'eliminar', label: 'Eliminar', sortable: false }
+            ],
+            getData: function () {
+                var ed = _eval360AsignacionesData[_eval360EditandoIdx];
+                var list = (ed && ed.evaluadores) ? ed.evaluadores.slice() : [];
+                return list.map(function (ev) {
+                    return {
+                        _rowKey:    String(ev.id) + '|' + String(ev.tipo || ''),
+                        nombre:     ev.nombre || '',
+                        area:       ev.area || '',
+                        tipoNombre: ev.tipoNombre || ev.tipo || '',
+                        avatar:     ev.avatar || null
+                    };
+                });
+            },
+            rowIdField:       '_rowKey',
+            buildRowHtml:     buildEval360EditarRowHtml,
+            features:         { search: true, resultsCount: true },
+            searchColumnIds:  ['evaluador'],
+            initialSort:      { column: 'evaluador', direction: 'asc' },
+            primaryButton:    { text: 'Añadir evaluador', icon: 'fa-plus', variant: 'secondary', onClick: function () { openAnadirEvaluadorModal(_eval360EditandoIdx); } },
+            emptyState:       { message: 'Sin evaluadores asignados', icon: 'far fa-user', description: ' ' },
+            emptySearchState: { message: 'No se encontraron resultados', description: 'Intenta ajustar tu búsqueda.', buttonText: 'Limpiar búsqueda' },
+            i18n:             { buscarPlaceholder: 'Buscar evaluador...', buscar: 'Buscar' }
         });
-    }
 
-    function buildEval360EditarTbody(evaluadores) {
-        if (!evaluadores.length) {
-            return '<tr class="ubits-table__row"><td class="ubits-table__td" colspan="4"><span class="ubits-body-sm-regular" style="color:var(--ubits-fg-1-medium);">Sin evaluadores asignados.</span></td></tr>';
+        if (_eval360EditarTablaRef && typeof _eval360EditarTablaRef.refresh === 'function') {
+            var _origRefreshEdit = _eval360EditarTablaRef.refresh;
+            _eval360EditarTablaRef.refresh = function () {
+                _origRefreshEdit();
+                eval360EditarInitTooltips();
+            };
         }
-        return evaluadores.map(function (ev, idx) {
-            var avatarHtml = (typeof renderAvatar === 'function')
-                ? renderAvatar({ nombre: ev.nombre, avatar: ev.avatar || null }, { size: 'sm' })
-                : '<span class="ubits-avatar ubits-avatar--sm"><span class="ubits-avatar__fallback"><i class="far fa-user"></i></span></span>';
-            return '<tr class="ubits-table__row">' +
-                '<td class="ubits-table__td"><div class="ubits-table__cell-assignee">' + avatarHtml + '<span class="ubits-body-sm-regular">' + hubEscHtml(ev.nombre) + '</span></div></td>' +
-                '<td class="ubits-table__td"><span class="ubits-body-sm-regular">' + hubEscHtml(ev.area) + '</span></td>' +
-                '<td class="ubits-table__td"><span class="ubits-body-sm-regular">' + hubEscHtml(ev.tipoNombre || ev.tipo) + '</span></td>' +
-                '<td class="ubits-table__td ubits-table__td--actions">' +
-                    '<button type="button" class="ubits-button ubits-button--error-secondary ubits-button--sm ubits-button--icon-only js-eval360-del-evaluador-btn" data-eval-idx="' + idx + '" aria-label="Eliminar evaluador" data-tooltip="Eliminar" data-tooltip-delay="600">' +
-                        '<i class="far fa-trash"></i>' +
-                    '</button>' +
-                '</td>' +
-            '</tr>';
-        }).join('');
+
+        container.addEventListener('click', eval360EditarOnContainerClick);
+        eval360EditarInitTooltips();
     }
 
     function openAnadirEvaluadorModal(asignacionIdx) {
         var evalData = _eval360AsignacionesData[asignacionIdx];
         if (!evalData) return;
 
-        var colaboradores = (typeof BD_MASTER_COLABORADORES !== 'undefined' && BD_MASTER_COLABORADORES.colaboradores) || [];
-        var tiposActivos  = eval360GetTiposActivos();
+        var COLAB_FILTER_VISIBLE_MAX = 10;
 
-        /* Construir opciones para el autocomplete */
-        var acOptions = colaboradores.map(function (c) {
-            return { value: c.id, text: c.nombre, meta: c.area || '' };
+        function normalizeColabSearchText(text) {
+            if (!text) return '';
+            return String(text)
+                .toLowerCase()
+                .normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '');
+        }
+
+        function escAttr(s) {
+            return String(s || '')
+                .replace(/&/g, '&amp;')
+                .replace(/"/g, '&quot;')
+                .replace(/</g, '&lt;');
+        }
+
+        function escHtml(s) {
+            return String(s || '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/"/g, '&quot;');
+        }
+
+        var rawList = (typeof BD_MASTER_COLABORADORES !== 'undefined' && BD_MASTER_COLABORADORES.colaboradores) ? BD_MASTER_COLABORADORES.colaboradores.slice() : [];
+        rawList.sort(function (a, b) {
+            return String(a.nombre || '').localeCompare(String(b.nombre || ''), 'es');
         });
+        var colaboradores = rawList;
+
+        var tiposActivos = eval360GetTiposActivos();
 
         var tiposHtml = tiposActivos.map(function (t) {
             return '<label class="ubits-radio ubits-radio--sm eval360-add-eval-tipo-lbl">' +
-                '<input type="radio" name="eval360AddEvalTipo" class="ubits-radio__input" value="' + t.id + '">' +
+                '<input type="radio" name="eval360AddEvalTipo" class="ubits-radio__input" value="' + escAttr(t.id) + '">' +
                 '<span class="ubits-radio__circle"></span>' +
-                '<span class="ubits-radio__label ubits-body-sm-regular">' + t.nombre + '</span>' +
+                '<span class="ubits-radio__label ubits-body-sm-regular">' + escHtml(t.nombre) + '</span>' +
             '</label>';
         }).join('');
+
+        var optionsHtml = colaboradores.map(function (c) {
+            var id = escAttr(c.id);
+            var nombre = escHtml(c.nombre || '');
+            var searchBlob = escAttr(String(c.nombre || '') + ' ' + String(c.area || ''));
+            return '<div class="ubits-dropdown-menu__option" data-colab-search="' + searchBlob + '">' +
+                '<span class="ubits-dropdown-menu__option-left">' +
+                '<label class="ubits-checkbox ubits-checkbox--sm">' +
+                '<input type="checkbox" class="ubits-checkbox__input" data-value="' + id + '">' +
+                '<span class="ubits-checkbox__box"><i class="fas fa-check"></i></span>' +
+                '<span class="ubits-checkbox__label">' + nombre + '</span>' +
+                '</label></span></div>';
+        }).join('');
+
+        var filterInputId = 'eval360-add-eval-filter-input';
+        var filterClearId = 'eval360-add-eval-filter-clear';
 
         var bodyHtml =
             '<div class="eval360-add-eval-body">' +
                 '<label class="ubits-body-sm-bold eval360-add-eval-lbl">Colaborador</label>' +
-                '<div id="eval360-add-eval-autocomplete-wrap"></div>' +
+                '<div class="ubits-dropdown-menu__autocomplete-wrap eval360-add-eval-filter-wrap">' +
+                '<div class="ubits-input-wrapper ubits-dropdown-menu__search-wrapper">' +
+                '<input type="text" id="' + filterInputId + '" class="ubits-input ubits-input--sm" placeholder="Filtrar por colaborador..." autocomplete="off" aria-label="Filtrar colaboradores" style="width:100%;padding-left:36px;padding-right:36px;box-sizing:border-box;">' +
+                '<i class="far fa-search" aria-hidden="true" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--ubits-fg-1-medium);pointer-events:none;"></i>' +
+                '<i class="far fa-times" id="' + filterClearId + '" aria-hidden="true" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);color:var(--ubits-fg-1-medium);cursor:pointer;display:none;"></i>' +
+                '</div></div>' +
+                '<div id="eval360-add-eval-colab-list" class="ubits-dropdown-menu__options eval360-add-eval-colab-options">' + optionsHtml + '</div>' +
                 '<div id="eval360-add-eval-tipo-section" style="display:none;">' +
                     '<label class="ubits-body-sm-bold eval360-add-eval-lbl" style="margin-top:var(--gap-md);">Tipo de evaluación</label>' +
                     '<div class="eval360-add-eval-tipos">' + tiposHtml + '</div>' +
@@ -3104,7 +3301,7 @@
             '</div>';
 
         openModal({
-            id: 'eval360-add-evaluador-modal',
+            overlayId: 'eval360-add-evaluador-modal',
             title: 'Añadir evaluador',
             bodyHtml: bodyHtml,
             footerHtml:
@@ -3116,45 +3313,99 @@
         var _selectedColabId = null;
 
         setTimeout(function () {
-            /* Montar autocomplete */
-            if (typeof createInput === 'function') {
-                createInput({
-                    containerId: 'eval360-add-eval-autocomplete-wrap',
-                    id:          'eval360-add-eval-ac',
-                    type:        'autocomplete',
-                    placeholder: 'Buscar colaborador...',
-                    autocompleteOptions: acOptions,
-                    onChange: function (val) {
-                        _selectedColabId = val || null;
-                        var tipoSection = document.getElementById('eval360-add-eval-tipo-section');
-                        var confirmBtn  = document.getElementById('eval360-add-eval-confirm');
-                        if (tipoSection) tipoSection.style.display = val ? '' : 'none';
-                        /* Habilitar Añadir solo si hay tipo seleccionado también */
-                        var tipoChecked = document.querySelector('input[name="eval360AddEvalTipo"]:checked');
-                        if (confirmBtn) confirmBtn.disabled = !(val && tipoChecked);
+            var listRoot = document.getElementById('eval360-add-eval-colab-list');
+            var inputEl  = document.getElementById(filterInputId);
+            var clearIcon = document.getElementById(filterClearId);
+            var tipoSection = document.getElementById('eval360-add-eval-tipo-section');
+            var confirmBtn  = document.getElementById('eval360-add-eval-confirm');
+
+            function syncConfirmDisabled() {
+                var tipoChecked = document.querySelector('#eval360-add-evaluador-modal input[name="eval360AddEvalTipo"]:checked');
+                if (confirmBtn) confirmBtn.disabled = !(_selectedColabId && tipoChecked);
+            }
+
+            function updateTipoVisibility() {
+                if (tipoSection) tipoSection.style.display = _selectedColabId ? '' : 'none';
+                if (!_selectedColabId) {
+                    document.querySelectorAll('#eval360-add-evaluador-modal input[name="eval360AddEvalTipo"]').forEach(function (r) { r.checked = false; });
+                }
+                syncConfirmDisabled();
+            }
+
+            var optionEls = listRoot ? listRoot.querySelectorAll('.ubits-dropdown-menu__option') : [];
+
+            function filterVisibleColabOptions(searchVal) {
+                var q = normalizeColabSearchText(searchVal || '');
+                var shown = 0;
+                optionEls.forEach(function (opt) {
+                    var blob = opt.getAttribute('data-colab-search') || '';
+                    var match = !q || normalizeColabSearchText(blob).indexOf(q) >= 0;
+                    if (match && shown < COLAB_FILTER_VISIBLE_MAX) {
+                        opt.style.display = '';
+                        shown++;
+                    } else {
+                        opt.style.display = 'none';
                     }
                 });
             }
 
-            /* Activar/desactivar Añadir según selección de tipo */
-            document.querySelectorAll('input[name="eval360AddEvalTipo"]').forEach(function (r) {
-                r.addEventListener('change', function () {
-                    var confirmBtn = document.getElementById('eval360-add-eval-confirm');
-                    if (confirmBtn) confirmBtn.disabled = !(_selectedColabId && this.checked);
+            if (listRoot) {
+                listRoot.addEventListener('change', function (ev) {
+                    var t = ev.target;
+                    if (!t || t.type !== 'checkbox' || !t.classList.contains('ubits-checkbox__input')) return;
+                    if (t.checked) {
+                        listRoot.querySelectorAll('.ubits-checkbox__input').forEach(function (cb) {
+                            if (cb !== t) cb.checked = false;
+                        });
+                        _selectedColabId = t.getAttribute('data-value') || null;
+                    } else {
+                        _selectedColabId = null;
+                    }
+                    updateTipoVisibility();
                 });
+            }
+
+            if (inputEl && clearIcon) {
+                function toggleClearIcon() {
+                    clearIcon.style.display = inputEl.value.length > 0 ? 'block' : 'none';
+                }
+                clearIcon.addEventListener('click', function (ev) {
+                    ev.preventDefault();
+                    ev.stopPropagation();
+                    inputEl.value = '';
+                    toggleClearIcon();
+                    filterVisibleColabOptions('');
+                    inputEl.focus();
+                });
+                inputEl.addEventListener('input', function () {
+                    toggleClearIcon();
+                    filterVisibleColabOptions(this.value);
+                });
+                inputEl.addEventListener('focus', function () {
+                    filterVisibleColabOptions(this.value);
+                });
+                filterVisibleColabOptions('');
+                toggleClearIcon();
+                setTimeout(function () { inputEl.focus(); }, 80);
+            } else {
+                filterVisibleColabOptions('');
+            }
+
+            document.querySelectorAll('#eval360-add-evaluador-modal input[name="eval360AddEvalTipo"]').forEach(function (r) {
+                r.addEventListener('change', syncConfirmDisabled);
             });
 
-            var cancelBtn  = document.getElementById('eval360-add-eval-cancel');
-            var confirmBtn = document.getElementById('eval360-add-eval-confirm');
-            if (cancelBtn)  cancelBtn.addEventListener('click',  function () { closeModal('eval360-add-evaluador-modal'); });
-            if (confirmBtn) confirmBtn.addEventListener('click', function () {
+            var cancelBtn = document.getElementById('eval360-add-eval-cancel');
+            var confirmBtnEl = document.getElementById('eval360-add-eval-confirm');
+            if (cancelBtn) cancelBtn.addEventListener('click', function () { closeModal('eval360-add-evaluador-modal'); });
+            if (confirmBtnEl) confirmBtnEl.addEventListener('click', function () {
                 if (!_selectedColabId) return;
-                var tipoInput = document.querySelector('input[name="eval360AddEvalTipo"]:checked');
+                var tipoInput = document.querySelector('#eval360-add-evaluador-modal input[name="eval360AddEvalTipo"]:checked');
                 if (!tipoInput) return;
-                var tipoId    = tipoInput.value;
+                var tipoId = tipoInput.value;
                 var tiposNoms = {};
                 tiposActivos.forEach(function (t) { tiposNoms[t.id] = t.nombre; });
-                var colab = colaboradores.find(function (c) { return c.id === _selectedColabId; });
+                var colab = colaboradores.find(function (c) { return String(c.id) === String(_selectedColabId); });
                 if (!colab) return;
                 evalData.evaluadores.push({
                     id:         colab.id,
@@ -3165,9 +3416,10 @@
                     tipoNombre: tiposNoms[tipoId] || tipoId
                 });
                 closeModal('eval360-add-evaluador-modal');
-                /* Refrescar la tabla */
-                var tbody = document.getElementById('eval360-editar-tbody');
-                if (tbody) tbody.innerHTML = buildEval360EditarTbody(evalData.evaluadores);
+                if (_eval360EditarTablaRef && typeof _eval360EditarTablaRef.refresh === 'function') {
+                    _eval360EditarTablaRef.refresh();
+                    eval360EditarInitTooltips();
+                }
                 showToast('success', colab.nombre + ' añadido como evaluador');
             });
         }, 150);

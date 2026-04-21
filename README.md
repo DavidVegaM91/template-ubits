@@ -96,6 +96,14 @@ Bloque reutilizable para la **barra** de una lista o catálogo (título + meta a
 
 **Referencia de producto:** `ubits-colaborador/lms-creator/contenidos.html` + `contenidos.css`.
 
+## Tabla solo de datos: Data Table (`createUbitsDataTable`)
+
+Si la pantalla **solo** presenta un listado tabular (filas/columnas) con barra de título, **contador visible/total**, **búsqueda** (lupa → input), orden por columna, filtros opcionales, empty states y acciones en header, debes usar el componente **`createUbitsDataTable`** (`components/ubits-data-table.js` + `ubits-data-table.css` + `table.css` + dependencias del propio data table: `dropdown-menu`, `empty-state`, `tooltip`, etc.). **No** armes a mano un `<table class="ubits-table">` con un input de búsqueda paralelo: duplica UX y se desalinea del sistema.
+
+**Único caso en que no basta el Data Table:** vistas **mixtas** donde la misma fuente de datos se muestra alternando **tabla y otra vista** (p. ej. cuadrícula de cards) bajo un **`ubits-toolbar-panel`** con meta, filtros globales y toggles tabla/mosaico — ahí el toolbar + tabla + grid sigue el patrón documentado en [Toolbar panel](#toolbar-panel-ubits-toolbar-panel) y en `contenidos.html`.
+
+**Documentación:** `documentacion/componentes/ubits-data-table.html` y comentario de cabecera en `components/table.css`.
+
 ## 🚀 Cómo usar esta plantilla
 
 1. **Descarga:** Haz clon o descarga como ZIP

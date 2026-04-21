@@ -26,7 +26,10 @@
  * -----------------------------------------------------------------------------
  *
  * Uso: createUbitsDataTable({ containerId, tableId, columns, getData, rowIdField, buildRowHtml, features, ... })
+ * Opciones útiles: searchColumnIds (búsqueda solo en esas columnas), initialSort ({ column, direction }).
  * API: table.getSelectedIds(), table.getVisibleRows(), table.setFilter(), table.refresh()
+ *
+ * Pantallas que son solo tabla de datos: usar siempre este componente (ver README «Tabla solo de datos»).
  *
  * -----------------------------------------------------------------------------
  * TABLA TIPO SEGUIMIENTO (cuando el producto pide algo que va más allá del componente)
@@ -126,9 +129,11 @@
      * @param {Object} [options.emptyState] - { message, icon }
      * @param {Object} [options.emptySearchState] - { message, description, buttonText } (empty de búsqueda; por defecto igual que seguimiento: título "No se encontraron resultados", botón "Limpiar búsqueda")
      * @param {Array} [options.actionBarButtons] - [{ id, label, icon, onClick(selectedIds) }]
-     * @param {Object} [options.primaryButton] - { text: string, icon?: string, onClick: function() } botón primario en el header (al lado del botón Columnas)
+     * @param {Object} [options.primaryButton] - { text: string, icon?: string, variant?: 'secondary', onClick: function() } botón en el header (slot «primary»; por defecto estilo primario; `variant: 'secondary'` para secundario)
      * @param {Object} [options.i18n]
      * @param {string} [options.title] - título opcional en la barra superior
+     * @param {string[]} [options.searchColumnIds] - Si `features.search` y hay al menos un id válido, la búsqueda solo considera esas columnas (`data-col`). Si se omite, se busca en todas las columnas.
+     * @param {{ column: string, direction?: 'asc'|'desc' }} [options.initialSort] - Orden inicial por columna (debe existir en `columns` y ser ordenable en la UI si muestra botón de orden).
      */
     function createUbitsDataTable(options) {
         options = options || {};
@@ -149,11 +154,22 @@
         var primaryButton = options.primaryButton || null;
         var i18n = Object.assign({}, defaultI18n, options.i18n || {});
         var title = options.title || '';
+        var searchColumnIds = Array.isArray(options.searchColumnIds) && options.searchColumnIds.length > 0
+            ? options.searchColumnIds.filter(function (id) {
+                return columns.some(function (c) { return c.id === id; });
+            })
+            : null;
+        if (searchColumnIds && searchColumnIds.length === 0) searchColumnIds = null;
 
         var searchQuery = '';
         var filters = {};
         var sortColumn = null;
         var sortDirection = 'asc';
+        var initSort = options.initialSort;
+        if (initSort && initSort.column && columns.some(function (c) { return c.id === initSort.column; })) {
+            sortColumn = initSort.column;
+            sortDirection = initSort.direction === 'desc' ? 'desc' : 'asc';
+        }
         var viewOnlySelected = false;
         var initialSelectedIds = Array.isArray(options.initialSelectedIds) ? options.initialSelectedIds : [];
         var selectedIds = new Set(initialSelectedIds);
@@ -205,9 +221,12 @@
             var rows = getTableRows();
             if (features.search && searchQuery.trim()) {
                 var q = normalizeText(searchQuery);
+                var colsForSearch = (searchColumnIds && searchColumnIds.length)
+                    ? searchColumnIds
+                    : columns.map(function (c) { return c.id; });
                 rows = rows.filter(function (r) {
-                    return columns.some(function (c) {
-                        return normalizeText(getRowCellText(r, c.id)).indexOf(q) >= 0;
+                    return colsForSearch.some(function (colId) {
+                        return normalizeText(getRowCellText(r, colId)).indexOf(q) >= 0;
                     });
                 });
             }

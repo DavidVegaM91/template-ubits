@@ -124,6 +124,19 @@
                             </div>
                         </div>
 
+                        <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: var(--border-radius-lg); margin-bottom: 40px;">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-table" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                ¿Data Table o solo <code>ubits-table</code>?
+                            </h2>
+                            <p class="ubits-body-md-regular" style="margin-bottom: 16px; line-height: 1.6; color: var(--ubits-fg-1-medium);">
+                                Si la pantalla es <strong>únicamente</strong> una lista en tabla (sin cuadrícula de cards ni toggle tabla/mosaico), usa <strong>este componente</strong>: evita duplicar la barra (título, X/Y, lupa → input) a mano sobre <code>table.css</code>.
+                            </p>
+                            <p class="ubits-body-md-regular" style="margin: 0; line-height: 1.6; color: var(--ubits-fg-1-medium);">
+                                El patrón <strong>toolbar panel + tabla + grid de cards</strong> (p. ej. Contenidos) es para vistas <strong>mixtas</strong>. Detalle en el README: sección «Tabla solo de datos: Data Table» y en la documentación de <a href="table.html">Tabla</a> (aviso al inicio).
+                            </p>
+                        </div>
+
                         <!-- Checklist para tabla nueva -->
                         <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: var(--border-radius-lg); margin-bottom: 40px;">
                             <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
@@ -135,7 +148,7 @@
                             </p>
                             <ul class="ubits-body-md-regular" style="margin: 0; padding-left: 24px; line-height: 1.8;">
                                 <li>Incluir <code>ubits-data-table.css</code> y <code>ubits-data-table.js</code> en la página (y si usas búsqueda/filtros/columnas: <code>table.css</code>, <code>button.css</code>, <code>input.css</code>, <code>checkbox.css</code>, <code>dropdown-menu.css</code>, <code>tooltip.css</code> según features).</li>
-                                <li>Definir el config: <code>containerId</code>, <code>columns</code>, <code>getData</code>, <code>rowIdField</code>, <code>buildRowHtml</code>, <code>features</code> (checkboxes, search, filters, verSeleccionados, actionBar, resultsCount, columnsToggle), y opcionalmente <code>primaryButton</code>, <code>emptyState</code>, <code>emptySearchState</code>, <code>actionBarButtons</code>, <code>i18n</code>, <code>title</code>.</li>
+                                <li>Definir el config: <code>containerId</code>, <code>columns</code>, <code>getData</code>, <code>rowIdField</code>, <code>buildRowHtml</code>, <code>features</code> (checkboxes, search, filters, verSeleccionados, actionBar, resultsCount, columnsToggle), y opcionalmente <code>primaryButton</code>, <code>emptyState</code>, <code>emptySearchState</code>, <code>actionBarButtons</code>, <code>i18n</code>, <code>title</code>, <code>searchColumnIds</code> (búsqueda solo en ciertas columnas), <code>initialSort</code> (orden inicial por columna).</li>
                                 <li>Implementar <code>buildRowHtml(row)</code> para devolver el HTML de las celdas (sin la columna de checkbox; el componente la añade si <code>features.checkboxes</code> es true). Usar <code>data-col="idColumna"</code> en cada <code>td</code> para que orden y filtros funcionen.</li>
                                 <li>Probar: checkboxes (seleccionar todo / fila), empty state sin datos, búsqueda, filtros por columna, ver seleccionados, barra de acciones y botón primario si los activaste.</li>
                             </ul>
@@ -194,7 +207,9 @@
                                         <li><strong>emptyState</strong> (object): message, icon. Estado cuando no hay datos.</li>
                                         <li><strong>emptySearchState</strong> (object): message, description, buttonText. Estado cuando la búsqueda no devuelve resultados.</li>
                                         <li><strong>actionBarButtons</strong> (array): { id, label, icon, onClick(selectedIds), variant? }.</li>
-                                        <li><strong>primaryButton</strong> (object): { text, icon?, onClick() }. Botón primario en el header a la derecha del botón Columnas.</li>
+                                        <li><strong>primaryButton</strong> (object): { text, icon?, onClick(), variant? }. Botón en el header a la derecha del botón Columnas; <code>variant: 'secondary'</code> usa botón secundario.</li>
+                                        <li><strong>searchColumnIds</strong> (string[], opcional): si hay búsqueda y el array no está vacío, el texto solo se compara contra esas columnas (<code>data-col</code>). Si se omite, se busca en todas las columnas.</li>
+                                        <li><strong>initialSort</strong> (object, opcional): <code>{ column: 'idColumna', direction: 'asc' | 'desc' }</code> para el orden al cargar (la columna debe existir en <code>columns</code>).</li>
                                         <li><strong>i18n</strong> (object): selectAll, deselectAll, verSeleccionados, clearFilters, filtrosAplicados, buscar, columnasVisibles.</li>
                                         <li><strong>title</strong> (string): título opcional en la barra superior.</li>
                                     </ul>
