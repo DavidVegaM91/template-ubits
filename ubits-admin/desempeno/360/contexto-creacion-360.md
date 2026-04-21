@@ -164,7 +164,7 @@ El botón ✕ del header llama `confirmarSalir()`:
 
 ### Propósito
 
-Activar qué tipos de evaluador participarán y asignarles un peso porcentual. La suma de los pesos activos debe ser exactamente **100** para poder guardar.
+Activar qué tipos de evaluación participan y asignar un peso porcentual a cada uno. La suma de los pesos activos debe ser exactamente **100** para poder guardar.
 
 ### Fuente de datos
 
