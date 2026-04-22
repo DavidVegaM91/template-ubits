@@ -2744,7 +2744,10 @@ function createStudyChatHTML(options = {}) {
                     </div>
                 </div>
             <div class="ubits-ia-chat-thread__body" id="ubits-ia-chat-thread-body">${welcomeBlock}</div>
+            <input type="file" id="ubits-ia-chat-thread-files" accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.txt,.csv,.ppt,.pptx" multiple hidden />
             <div class="ubits-ia-chat-thread__input-area">
+                <div class="ubits-ia-chat-thread__pending-images-strip" id="ubits-ia-chat-thread-pending-images"></div>
+                <div class="ubits-ia-chat-thread__pending-files-strip" id="ubits-ia-chat-thread-pending-files"></div>
                 <div class="ubits-ia-chat-thread__input-container">
                     <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only ubits-ia-chat-thread__input-attach" id="ubits-ia-chat-thread-attach-btn" data-tooltip="Adjuntar" aria-label="Adjuntar"><i class="far fa-plus"></i></button>
                     <div class="ubits-ia-chat-thread__input-wrapper">
@@ -4233,8 +4236,74 @@ function initStudyChat(containerId, options = {}) {
     const input = document.getElementById('ubits-ia-chat-thread-input');
     const sendBtn = document.getElementById('ubits-ia-chat-thread-send-btn');
     const attachBtn = document.getElementById('ubits-ia-chat-thread-attach-btn');
+    const fileInput = document.getElementById('ubits-ia-chat-thread-files');
     const suggestionBtns = document.querySelectorAll('.ubits-ia-chat-thread__suggestions .ubits-button');
     const competencyChips = document.querySelectorAll('.ubits-ia-chat-thread__competency-chip');
+    let pendingImages = [];
+    let pendingFiles = [];
+
+    function buildAttachmentsHtml(images, files) {
+        const imagesHtml = (images || []).map(src =>
+            '<img src="' + escapeHtml(src) + '" alt="Imagen adjunta" class="ubits-ia-chat-thread__msg-attachment-img" />'
+        ).join('');
+        const filesHtml = (files || []).map(f =>
+            '<span class="ubits-chip ubits-chip--sm ubits-chip--icon-left ubits-ia-chat-thread__msg-file-chip"><i class="far fa-file-lines"></i><span class="ubits-chip__text">' + escapeHtml((f && f.name) ? f.name : 'Archivo') + '</span></span>'
+        ).join('');
+        let out = '';
+        if (imagesHtml) out += '<div class="ubits-ia-chat-thread__msg-attachments-images">' + imagesHtml + '</div>';
+        if (filesHtml) out += '<div class="ubits-ia-chat-thread__msg-attachments-files">' + filesHtml + '</div>';
+        return out;
+    }
+
+    function renderPendingImagesPreview() {
+        const strip = document.getElementById('ubits-ia-chat-thread-pending-images');
+        if (!strip) return;
+        if (!pendingImages.length) {
+            strip.innerHTML = '';
+            strip.style.display = 'none';
+            return;
+        }
+        strip.style.display = 'flex';
+        strip.innerHTML = pendingImages.map((src, idx) =>
+            '<div class="ubits-ia-chat-thread__pending-img-wrap">' +
+                '<img src="' + escapeHtml(src) + '" alt="Imagen adjunta" class="ubits-ia-chat-thread__pending-img" />' +
+                '<button type="button" class="ubits-ia-chat-thread__pending-img-remove" data-idx="' + idx + '" aria-label="Eliminar imagen"><i class="far fa-times"></i></button>' +
+            '</div>'
+        ).join('');
+        strip.querySelectorAll('.ubits-ia-chat-thread__pending-img-remove').forEach(btn => {
+            btn.addEventListener('click', function () {
+                const idx = Number(this.getAttribute('data-idx'));
+                if (Number.isNaN(idx)) return;
+                pendingImages.splice(idx, 1);
+                renderPendingImagesPreview();
+            });
+        });
+    }
+
+    function renderPendingFilesPreview() {
+        const strip = document.getElementById('ubits-ia-chat-thread-pending-files');
+        if (!strip) return;
+        if (!pendingFiles.length) {
+            strip.innerHTML = '';
+            strip.style.display = 'none';
+            return;
+        }
+        strip.style.display = 'flex';
+        strip.innerHTML = pendingFiles.map((f, idx) =>
+            '<span class="ubits-chip ubits-chip--sm ubits-chip--icon-left ubits-chip--close ubits-ia-chat-thread__pending-file-chip">' +
+                '<i class="far fa-file-lines"></i><span class="ubits-chip__text">' + escapeHtml((f && f.name) ? f.name : 'Archivo') + '</span>' +
+                '<button type="button" class="ubits-chip__close ubits-ia-chat-thread__pending-file-remove" data-idx="' + idx + '" aria-label="Quitar archivo"><i class="far fa-times"></i></button>' +
+            '</span>'
+        ).join('');
+        strip.querySelectorAll('.ubits-ia-chat-thread__pending-file-remove').forEach(btn => {
+            btn.addEventListener('click', function () {
+                const idx = Number(this.getAttribute('data-idx'));
+                if (Number.isNaN(idx)) return;
+                pendingFiles.splice(idx, 1);
+                renderPendingFilesPreview();
+            });
+        });
+    }
 
     // Auto-resize del textarea (máx 5 líneas = 144px; luego scroll interno)
     var MAX_INPUT_HEIGHT = 144;
@@ -4279,10 +4348,32 @@ function initStudyChat(containerId, options = {}) {
         sendBtn.addEventListener('click', sendMessage);
     }
 
-    // Botón adjuntar (por ahora solo log)
-    if (attachBtn) {
-        attachBtn.addEventListener('click', function () {
-            console.log('Adjuntar archivo');
+    if (attachBtn && fileInput) {
+        attachBtn.addEventListener('click', function () { fileInput.click(); });
+        fileInput.addEventListener('change', function () {
+            const files = this.files;
+            if (!files || !files.length) return;
+            let toLoad = 0;
+            for (let i = 0; i < files.length; i++) {
+                if (files[i].type && files[i].type.startsWith('image/')) toLoad++;
+            }
+            let loaded = 0;
+            for (let j = 0; j < files.length; j++) {
+                const file = files[j];
+                if (file.type && file.type.startsWith('image/')) {
+                    const reader = new FileReader();
+                    reader.onload = function () {
+                        if (reader.result) pendingImages.push(String(reader.result));
+                        loaded++;
+                        if (loaded >= toLoad) renderPendingImagesPreview();
+                    };
+                    reader.readAsDataURL(file);
+                } else {
+                    pendingFiles.push({ name: file.name, type: file.type, size: file.size });
+                }
+            }
+            renderPendingFilesPreview();
+            this.value = '';
         });
     }
 
@@ -4854,19 +4945,38 @@ function initStudyChat(containerId, options = {}) {
 
     // Función para enviar mensaje
     function sendMessage() {
-        if (!input || !input.value.trim()) return;
-
+        if (!input) return;
         const message = input.value.trim();
+        const hasAttachments = pendingImages.length > 0 || pendingFiles.length > 0;
+        if (!message && !hasAttachments) return;
 
-        // Agregar mensaje del usuario
-        addMessage('user', message);
+        hideWelcomeBlock();
+        pushCurrentChatMessage('user', message || '[Adjuntos]');
+        notifyModoEstudioIaActionsVisibility();
+        const body = document.getElementById('ubits-ia-chat-thread-body');
+        if (body) {
+            const userHtml = createMessageHTML(
+                'user',
+                message || 'Adjuntos',
+                formatTime(),
+                false,
+                false,
+                (message ? '<p class="ubits-ia-chat-thread__message-text">' + escapeHtml(message) + '</p>' : '') + buildAttachmentsHtml(pendingImages, pendingFiles)
+            );
+            body.insertAdjacentHTML('beforeend', userHtml);
+            body.scrollTop = body.scrollHeight;
+        }
 
         // Limpiar input
         input.value = '';
         input.style.height = 'auto';
+        pendingImages = [];
+        pendingFiles = [];
+        renderPendingImagesPreview();
+        renderPendingFilesPreview();
 
         // Generar respuesta predefinida
-        const responseData = generateResponse(message);
+        const responseData = generateResponse(message || 'Adjuntos');
         const response = typeof responseData === 'object' ? responseData.text : responseData;
         const regenerateFunction = typeof responseData === 'object' ? responseData.regenerateFunction : null;
         const materialChoice = typeof responseData === 'object' ? responseData.materialChoice : null;

@@ -148,6 +148,9 @@
                 title: 'AI Assistant',
                 placeholder: 'Escribe tu solicitud...',
                 welcomeSubtitle: 'Pide ayuda para crear o mejorar contenidos.',
+                dockDesktop: true,
+                dockContainerSelector: '.dashboard-container',
+                dockBreakpoint: 1024,
                 onSend: function (text) {
                     var removeTyping = showAIPanelTyping();
                     setTimeout(function () {

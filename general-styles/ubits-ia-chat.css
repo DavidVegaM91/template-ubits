@@ -914,6 +914,61 @@
     color: var(--ubits-fg-1-medium);
 }
 
+.ubits-ia-chat-thread__pending-images-strip,
+.ubits-ia-chat-thread__pending-files-strip {
+    display: none;
+    flex-wrap: wrap;
+    gap: var(--gap-xs);
+}
+
+.ubits-ia-chat-thread__pending-img-wrap {
+    position: relative;
+    width: 44px;
+    height: 44px;
+    border-radius: var(--border-radius-sm);
+    overflow: hidden;
+    border: 1px solid var(--ubits-border-1);
+}
+
+.ubits-ia-chat-thread__pending-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.ubits-ia-chat-thread__pending-img-remove {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    width: 18px;
+    height: 18px;
+    border: none;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.6);
+    color: #fff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.ubits-ia-chat-thread__msg-attachments-images,
+.ubits-ia-chat-thread__msg-attachments-files {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--gap-xs);
+    margin-top: var(--gap-sm);
+}
+
+.ubits-ia-chat-thread__msg-attachment-img {
+    width: 72px;
+    height: 72px;
+    border-radius: var(--border-radius-sm);
+    object-fit: cover;
+    border: 1px solid var(--ubits-border-1);
+}
+
 /* Iconos a los lados del campo de texto */
 .ubits-ia-chat-thread__input-attach,
 .ubits-ia-chat-thread__input-send {

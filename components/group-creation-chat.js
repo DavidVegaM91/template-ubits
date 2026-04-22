@@ -15,7 +15,7 @@ function escapeHtml(str) {
 /**
  * Genera el HTML de un mensaje (misma estructura que el hilo de chat IA para reutilizar CSS).
  */
-function createGroupChatMessageHTML(type, text) {
+function createGroupChatMessageHTML(type, text, attachmentsHtml) {
     var messageClass = type === 'ai' ? 'ubits-ia-chat-thread__message--ai' : 'ubits-ia-chat-thread__message--user';
     var globeClass = type === 'ai' ? 'ubits-ia-chat-thread__text-globe--ai' : 'ubits-ia-chat-thread__text-globe--user';
     var safeText = escapeHtml(text).replace(/\n/g, '<br>');
@@ -23,8 +23,9 @@ function createGroupChatMessageHTML(type, text) {
     var textHTML = lines.length ? lines.map(function (line) {
         return '<p class="ubits-ia-chat-thread__message-text">' + escapeHtml(line) + '</p>';
     }).join('') : '<p class="ubits-ia-chat-thread__message-text">' + safeText + '</p>';
+    var extraHtml = attachmentsHtml ? attachmentsHtml : '';
     return '<div class="ubits-ia-chat-thread__message ' + messageClass + '">' +
-        '<div class="ubits-ia-chat-thread__text-globe ' + globeClass + '">' + textHTML + '</div></div>';
+        '<div class="ubits-ia-chat-thread__text-globe ' + globeClass + '">' + textHTML + extraHtml + '</div></div>';
 }
 
 /**
@@ -67,7 +68,10 @@ function createGroupCreationChatHTML(options) {
         headerBar +
         welcomeTopBar +
         '<div class="ubits-ia-chat-thread__body" id="group-creation-chat-body">' + welcomeBlock + '</div>' +
+        '<input type="file" id="group-creation-chat-files" accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.txt,.csv,.ppt,.pptx" multiple hidden />' +
         '<div class="ubits-ia-chat-thread__input-area">' +
+        '<div class="ubits-ia-chat-thread__pending-images-strip" id="group-creation-chat-pending-images"></div>' +
+        '<div class="ubits-ia-chat-thread__pending-files-strip" id="group-creation-chat-pending-files"></div>' +
         '<div class="ubits-ia-chat-thread__input-container">' +
         '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only ubits-ia-chat-thread__input-attach" id="group-creation-chat-attach-btn" data-tooltip="Adjuntar" aria-label="Adjuntar"><i class="far fa-plus"></i></button>' +
         '<div class="ubits-ia-chat-thread__input-wrapper">' +
@@ -161,7 +165,11 @@ function initGroupCreationChat(containerId, options) {
     var headerEl = document.getElementById('group-creation-chat-header');
     var input = document.getElementById('group-creation-chat-input');
     var sendBtn = document.getElementById('group-creation-chat-send-btn');
+    var fileInput = document.getElementById('group-creation-chat-files');
+    var attachBtn = document.getElementById('group-creation-chat-attach-btn');
     var suggestionsEl = document.getElementById('group-creation-chat-suggestions');
+    var pendingImages = [];
+    var pendingFiles = [];
 
     var wrapper = root && (root.closest('.ubits-ia-chat__main') || root.closest('.ubits-ia-chat__main--welcome') || root.parentElement);
 
@@ -390,9 +398,72 @@ function initGroupCreationChat(containerId, options) {
         renderGroupCreationHistorialList();
     }
 
-    function appendMessage(type, text) {
+    function buildAttachmentsHtml(images, files) {
+        var imagesHtml = (images || []).map(function (src) {
+            return '<img src="' + escapeHtml(src) + '" alt="Imagen adjunta" class="ubits-ia-chat-thread__msg-attachment-img" />';
+        }).join('');
+        var filesHtml = (files || []).map(function (f) {
+            return '<span class="ubits-chip ubits-chip--sm ubits-chip--icon-left ubits-ia-chat-thread__msg-file-chip"><i class="far fa-file-lines"></i><span class="ubits-chip__text">' + escapeHtml(f.name || 'Archivo') + '</span></span>';
+        }).join('');
+        var out = '';
+        if (imagesHtml) out += '<div class="ubits-ia-chat-thread__msg-attachments-images">' + imagesHtml + '</div>';
+        if (filesHtml) out += '<div class="ubits-ia-chat-thread__msg-attachments-files">' + filesHtml + '</div>';
+        return out;
+    }
+
+    function renderPendingImagesPreview() {
+        var strip = document.getElementById('group-creation-chat-pending-images');
+        if (!strip) return;
+        if (!pendingImages.length) {
+            strip.innerHTML = '';
+            strip.style.display = 'none';
+            return;
+        }
+        strip.style.display = 'flex';
+        strip.innerHTML = pendingImages.map(function (src, idx) {
+            return '<div class="ubits-ia-chat-thread__pending-img-wrap">' +
+                '<img src="' + escapeHtml(src) + '" alt="Imagen adjunta" class="ubits-ia-chat-thread__pending-img" />' +
+                '<button type="button" class="ubits-ia-chat-thread__pending-img-remove" data-idx="' + idx + '" aria-label="Eliminar imagen"><i class="far fa-times"></i></button>' +
+                '</div>';
+        }).join('');
+        strip.querySelectorAll('.ubits-ia-chat-thread__pending-img-remove').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                var idx = Number(btn.getAttribute('data-idx'));
+                if (isNaN(idx)) return;
+                pendingImages.splice(idx, 1);
+                renderPendingImagesPreview();
+            });
+        });
+    }
+
+    function renderPendingFilesPreview() {
+        var strip = document.getElementById('group-creation-chat-pending-files');
+        if (!strip) return;
+        if (!pendingFiles.length) {
+            strip.innerHTML = '';
+            strip.style.display = 'none';
+            return;
+        }
+        strip.style.display = 'flex';
+        strip.innerHTML = pendingFiles.map(function (f, idx) {
+            return '<span class="ubits-chip ubits-chip--sm ubits-chip--icon-left ubits-chip--close ubits-ia-chat-thread__pending-file-chip">' +
+                '<i class="far fa-file-lines"></i><span class="ubits-chip__text">' + escapeHtml(f.name || 'Archivo') + '</span>' +
+                '<button type="button" class="ubits-chip__close ubits-ia-chat-thread__pending-file-remove" data-idx="' + idx + '" aria-label="Quitar archivo"><i class="far fa-times"></i></button>' +
+                '</span>';
+        }).join('');
+        strip.querySelectorAll('.ubits-ia-chat-thread__pending-file-remove').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                var idx = Number(btn.getAttribute('data-idx'));
+                if (isNaN(idx)) return;
+                pendingFiles.splice(idx, 1);
+                renderPendingFilesPreview();
+            });
+        });
+    }
+
+    function appendMessage(type, text, attachments) {
         pushCurrentMessage(type, text);
-        var html = createGroupChatMessageHTML(type, text);
+        var html = createGroupChatMessageHTML(type, text, attachments ? buildAttachmentsHtml(attachments.images, attachments.files) : '');
         if (body) {
             var div = document.createElement('div');
             div.innerHTML = html;
@@ -403,12 +474,16 @@ function initGroupCreationChat(containerId, options) {
 
     function sendMessage() {
         var text = (input && input.value) ? input.value.trim() : '';
-        if (!text) return;
+        if (!text && pendingImages.length === 0 && pendingFiles.length === 0) return;
         hideWelcome();
-        appendMessage('user', text);
+        appendMessage('user', text || 'Adjuntos', { images: pendingImages.slice(), files: pendingFiles.slice() });
         if (input) input.value = '';
         if (input && input.style) input.style.height = 'auto';
-        appendMessage('ai', getMockResponse(null, text));
+        pendingImages = [];
+        pendingFiles = [];
+        renderPendingImagesPreview();
+        renderPendingFilesPreview();
+        appendMessage('ai', text ? getMockResponse(null, text) : 'Adjuntos recibidos. ¿Qué quieres que haga con estos archivos?');
     }
 
     function appendSubOptionsBlock(subOptions) {
@@ -467,6 +542,36 @@ function initGroupCreationChat(containerId, options) {
         });
     }
     if (sendBtn) sendBtn.addEventListener('click', sendMessage);
+    if (attachBtn && fileInput) {
+        attachBtn.addEventListener('click', function () { fileInput.click(); });
+        fileInput.addEventListener('change', function () {
+            var files = this.files;
+            if (!files || !files.length) return;
+            var toLoad = 0;
+            for (var i = 0; i < files.length; i++) {
+                if (files[i].type && files[i].type.indexOf('image/') === 0) toLoad++;
+            }
+            var loaded = 0;
+            for (var j = 0; j < files.length; j++) {
+                var file = files[j];
+                if (file.type && file.type.indexOf('image/') === 0) {
+                    (function (f) {
+                        var reader = new FileReader();
+                        reader.onload = function () {
+                            if (reader.result) pendingImages.push(String(reader.result));
+                            loaded++;
+                            if (loaded >= toLoad) renderPendingImagesPreview();
+                        };
+                        reader.readAsDataURL(f);
+                    })(file);
+                } else {
+                    pendingFiles.push({ name: file.name, type: file.type, size: file.size });
+                }
+            }
+            renderPendingFilesPreview();
+            this.value = '';
+        });
+    }
 
     var suggestionBtns = suggestionsEl ? suggestionsEl.querySelectorAll('.ubits-button[data-suggestion]') : [];
     suggestionBtns.forEach(function (btn) {

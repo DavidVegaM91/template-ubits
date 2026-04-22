@@ -18,7 +18,8 @@
    -----------------------
    title, agentLabel, placeholder, disclaimer,
    welcomeTitle, welcomeSubtitle,
-   onSend(text), onAttach(), onClose()
+  onSend(text), onAttach(), onClose(), onRegenerate(lastUserText),
+  dockDesktop, dockContainerSelector, dockBreakpoint
    ======================================== */
 
 // ---------------------------------------------------------------------------
@@ -84,6 +85,12 @@ let _aiPanel = {
     open:    false,
     options: {},
     width:   null,   // ancho actual (px)
+    lastUserMessage: '',
+    pendingImages: [],
+    pendingFiles: [],
+    rootEl: null,
+    resizeHandler: null,
+    originalParent: null,
 };
 
 // ---------------------------------------------------------------------------
@@ -100,6 +107,24 @@ function _aiEscape(str) {
 }
 
 function _aiEl(id) { return document.getElementById(id); }
+
+function _aiCopyText(text) {
+    if (!text) return;
+    if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
+        navigator.clipboard.writeText(text).catch(function() {});
+        return;
+    }
+    var ta = document.createElement('textarea');
+    ta.value = text;
+    ta.setAttribute('readonly', 'readonly');
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    ta.style.pointerEvents = 'none';
+    document.body.appendChild(ta);
+    ta.select();
+    try { document.execCommand('copy'); } catch (e) {}
+    document.body.removeChild(ta);
+}
 
 // ---------------------------------------------------------------------------
 // HTML del panel
@@ -154,6 +179,9 @@ function _buildAIPanelHTML(o) {
             <!-- Input — dentro del contenedor, sin línea separadora -->
             <div class="ai-panel__footer">
                 <div class="ai-panel__input-box" id="ai-panel-input-box">
+                    <input type="file" id="ai-panel-files" accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.txt,.csv,.ppt,.pptx" multiple hidden />
+                    <div class="ai-panel__pending-images-strip" id="ai-panel-pending-images"></div>
+                    <div class="ai-panel__pending-files-strip" id="ai-panel-pending-files"></div>
                     <textarea
                         class="ai-panel__input"
                         id="ai-panel-input"
@@ -192,6 +220,10 @@ function initAIPanel(options) {
         disclaimer: 'Agentes AI puede cometer errores, verifica las respuestas.',
         welcomeTitle: '', welcomeSubtitle: '',
         onSend: null, onAttach: null, onClose: null,
+        onRegenerate: null,
+        dockDesktop: false,
+        dockContainerSelector: '.dashboard-container',
+        dockBreakpoint: 1024,
     }, options);
 
     // Inyectar en el DOM
@@ -199,9 +231,37 @@ function initAIPanel(options) {
     root.id = 'ai-panel-root';
     root.innerHTML = _buildAIPanelHTML(_aiPanel.options);
     document.body.appendChild(root);
+    _aiPanel.rootEl = root;
+    _aiPanel.originalParent = document.body;
 
     _aiPanelBindEvents();
     _aiPanelBindResize();
+    _aiPanelSyncDockMode();
+    _aiPanel.resizeHandler = _aiPanelSyncDockMode;
+    window.addEventListener('resize', _aiPanel.resizeHandler);
+}
+
+function _aiPanelSyncDockMode() {
+    var panel = _aiEl('ai-panel');
+    var root = _aiPanel.rootEl;
+    if (!panel || !root) return;
+
+    var shouldDock = !!_aiPanel.options.dockDesktop &&
+        window.matchMedia('(min-width: ' + (_aiPanel.options.dockBreakpoint || 1024) + 'px)').matches;
+
+    if (shouldDock) {
+        var host = document.querySelector(_aiPanel.options.dockContainerSelector || '.dashboard-container');
+        if (host && root.parentNode !== host) host.appendChild(root);
+        root.classList.add('ai-panel-root--docked');
+        panel.classList.add('ai-panel--docked-desktop');
+        return;
+    }
+
+    if (root.parentNode !== _aiPanel.originalParent && _aiPanel.originalParent) {
+        _aiPanel.originalParent.appendChild(root);
+    }
+    root.classList.remove('ai-panel-root--docked');
+    panel.classList.remove('ai-panel--docked-desktop');
 }
 
 // ---------------------------------------------------------------------------
@@ -219,8 +279,45 @@ function _aiPanelBindEvents() {
     // Adjuntar
     var attachBtn = _aiEl('ai-panel-attach');
     if (attachBtn) attachBtn.addEventListener('click', function() {
+        var fileInput = _aiEl('ai-panel-files');
+        if (fileInput) {
+            fileInput.click();
+            return;
+        }
         if (typeof _aiPanel.options.onAttach === 'function') _aiPanel.options.onAttach();
     });
+
+    var fileInput = _aiEl('ai-panel-files');
+    if (fileInput) {
+        fileInput.addEventListener('change', function() {
+            var files = this.files;
+            if (!files || !files.length) return;
+            var toLoad = 0;
+            for (var i = 0; i < files.length; i++) {
+                if (files[i].type && files[i].type.indexOf('image/') === 0) toLoad++;
+            }
+            var loaded = 0;
+            for (var j = 0; j < files.length; j++) {
+                var file = files[j];
+                if (file.type && file.type.indexOf('image/') === 0) {
+                    (function (f) {
+                        var reader = new FileReader();
+                        reader.onload = function() {
+                            if (reader.result) _aiPanel.pendingImages.push(String(reader.result));
+                            loaded++;
+                            if (loaded >= toLoad) _renderAIPanelPendingImages();
+                        };
+                        reader.readAsDataURL(f);
+                    })(file);
+                } else {
+                    _aiPanel.pendingFiles.push({ name: file.name, type: file.type, size: file.size });
+                }
+            }
+            _renderAIPanelPendingFiles();
+            this.value = '';
+            if (typeof _aiPanel.options.onAttach === 'function') _aiPanel.options.onAttach();
+        });
+    }
 
     // Textarea: Enter envía, Shift+Enter nueva línea; auto-resize
     var input = _aiEl('ai-panel-input');
@@ -238,17 +335,115 @@ function _aiPanelBindEvents() {
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape' && _aiPanel.open) closeAIPanel();
     });
+
+    // Acciones en mensajes IA (delegación)
+    var messages = _aiEl('ai-panel-messages');
+    if (messages) {
+        messages.addEventListener('click', function(e) {
+            var actionBtn = e.target.closest('[data-ai-panel-action]');
+            if (!actionBtn) return;
+            var action = actionBtn.getAttribute('data-ai-panel-action');
+            var msgRoot = actionBtn.closest('.ai-panel__msg');
+            var msgText = msgRoot ? (msgRoot.getAttribute('data-ai-text') || '') : '';
+
+            if (action === 'copy') {
+                _aiCopyText(msgText);
+                return;
+            }
+
+            if (action === 'regenerate') {
+                if (typeof _aiPanel.options.onRegenerate === 'function') {
+                    _aiPanel.options.onRegenerate(_aiPanel.lastUserMessage);
+                    return;
+                }
+                if (typeof _aiPanel.options.onSend === 'function' && _aiPanel.lastUserMessage) {
+                    _aiPanel.options.onSend(_aiPanel.lastUserMessage);
+                }
+            }
+        });
+    }
+}
+
+function _buildAIPanelAttachmentsHtml(images, files) {
+    var imagesHtml = (images || []).map(function(src) {
+        return '<img src="' + _aiEscape(src) + '" alt="Imagen adjunta" class="ai-panel__msg-attachment-img" />';
+    }).join('');
+    var filesHtml = (files || []).map(function(f) {
+        return '<span class="ubits-chip ubits-chip--sm ubits-chip--icon-left ai-panel__msg-file-chip"><i class="far fa-file-lines"></i><span class="ubits-chip__text">' + _aiEscape((f && f.name) ? f.name : 'Archivo') + '</span></span>';
+    }).join('');
+    var out = '';
+    if (imagesHtml) out += '<div class="ai-panel__msg-attachments-images">' + imagesHtml + '</div>';
+    if (filesHtml) out += '<div class="ai-panel__msg-attachments-files">' + filesHtml + '</div>';
+    return out;
+}
+
+function _renderAIPanelPendingImages() {
+    var strip = _aiEl('ai-panel-pending-images');
+    if (!strip) return;
+    if (!_aiPanel.pendingImages.length) {
+        strip.innerHTML = '';
+        strip.style.display = 'none';
+        return;
+    }
+    strip.style.display = 'flex';
+    strip.innerHTML = _aiPanel.pendingImages.map(function(src, idx) {
+        return '<div class="ai-panel__pending-img-wrap">' +
+            '<img src="' + _aiEscape(src) + '" alt="Imagen adjunta" class="ai-panel__pending-img" />' +
+            '<button type="button" class="ai-panel__pending-img-remove" data-idx="' + idx + '" aria-label="Eliminar imagen"><i class="far fa-times"></i></button>' +
+            '</div>';
+    }).join('');
+    strip.querySelectorAll('.ai-panel__pending-img-remove').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            var idx = Number(btn.getAttribute('data-idx'));
+            if (isNaN(idx)) return;
+            _aiPanel.pendingImages.splice(idx, 1);
+            _renderAIPanelPendingImages();
+        });
+    });
+}
+
+function _renderAIPanelPendingFiles() {
+    var strip = _aiEl('ai-panel-pending-files');
+    if (!strip) return;
+    if (!_aiPanel.pendingFiles.length) {
+        strip.innerHTML = '';
+        strip.style.display = 'none';
+        return;
+    }
+    strip.style.display = 'flex';
+    strip.innerHTML = _aiPanel.pendingFiles.map(function(f, idx) {
+        return '<span class="ubits-chip ubits-chip--sm ubits-chip--icon-left ubits-chip--close ai-panel__pending-file-chip">' +
+            '<i class="far fa-file-lines"></i><span class="ubits-chip__text">' + _aiEscape((f && f.name) ? f.name : 'Archivo') + '</span>' +
+            '<button type="button" class="ubits-chip__close ai-panel__pending-file-remove" data-idx="' + idx + '" aria-label="Quitar archivo"><i class="far fa-times"></i></button>' +
+            '</span>';
+    }).join('');
+    strip.querySelectorAll('.ai-panel__pending-file-remove').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            var idx = Number(btn.getAttribute('data-idx'));
+            if (isNaN(idx)) return;
+            _aiPanel.pendingFiles.splice(idx, 1);
+            _renderAIPanelPendingFiles();
+        });
+    });
 }
 
 function _aiPanelSend() {
     var input = _aiEl('ai-panel-input');
     if (!input) return;
     var text = input.value.trim();
-    if (!text) return;
-    addAIPanelMessage(text, 'user');
+    var hasAttachments = _aiPanel.pendingImages.length > 0 || _aiPanel.pendingFiles.length > 0;
+    if (!text && !hasAttachments) return;
+    addAIPanelMessage(text || 'Adjuntos', 'user', {
+        images: _aiPanel.pendingImages.slice(),
+        files: _aiPanel.pendingFiles.slice()
+    });
     input.value = '';
     input.style.height = 'auto';
-    if (typeof _aiPanel.options.onSend === 'function') _aiPanel.options.onSend(text);
+    _aiPanel.pendingImages = [];
+    _aiPanel.pendingFiles = [];
+    _renderAIPanelPendingImages();
+    _renderAIPanelPendingFiles();
+    if (typeof _aiPanel.options.onSend === 'function') _aiPanel.options.onSend(text || 'Adjuntos');
 }
 
 // ---------------------------------------------------------------------------
@@ -316,6 +511,9 @@ function openAIPanel() {
     var panel = _aiEl('ai-panel');
     if (panel) panel.classList.add('active');
     _aiPanel.open = true;
+    if (panel && panel.classList.contains('ai-panel--docked-desktop')) {
+        panel.style.width = (_aiPanel.width && _aiPanel.width > 0 ? _aiPanel.width : (parseInt(getComputedStyle(panel).getPropertyValue('--ai-panel-width-default')) || 340)) + 'px';
+    }
     setTimeout(function() {
         var input = _aiEl('ai-panel-input');
         if (input) input.focus();
@@ -325,11 +523,14 @@ function openAIPanel() {
 function closeAIPanel() {
     var panel = _aiEl('ai-panel');
     if (panel) panel.classList.remove('active');
+    if (panel && panel.classList.contains('ai-panel--docked-desktop')) {
+        panel.style.width = '0px';
+    }
     _aiPanel.open = false;
     if (typeof _aiPanel.options.onClose === 'function') _aiPanel.options.onClose();
 }
 
-function addAIPanelMessage(text, type) {
+function addAIPanelMessage(text, type, attachments) {
     var welcome  = _aiEl('ai-panel-welcome');
     var messages = _aiEl('ai-panel-messages');
     if (!messages) return;
@@ -340,8 +541,27 @@ function addAIPanelMessage(text, type) {
     var msgType = (type === 'user') ? 'user' : 'ai';
     var el = document.createElement('div');
     el.className = 'ai-panel__msg ai-panel__msg--' + msgType;
+    if (msgType === 'user') {
+        _aiPanel.lastUserMessage = String(text || '');
+    }
+
+    var actionsHtml = '';
+    if (msgType === 'ai') {
+        actionsHtml =
+            '<div class="ai-panel__msg-actions">' +
+                '<button type="button" class="ubits-button ubits-button--secondary ubits-button--xs ubits-button--icon-only" data-ai-panel-action="copy" aria-label="Copiar">' +
+                    '<i class="far fa-copy"></i>' +
+                '</button>' +
+                '<button type="button" class="ubits-button ubits-button--secondary ubits-button--xs ubits-button--icon-only" data-ai-panel-action="regenerate" aria-label="Regenerar">' +
+                    '<i class="far fa-arrows-rotate"></i>' +
+                '</button>' +
+            '</div>';
+    }
+
+    el.setAttribute('data-ai-text', String(text || ''));
     el.innerHTML =
-        '<div class="ai-panel__msg-bubble">' + _aiEscape(text) + '</div>';
+        '<div class="ai-panel__msg-bubble">' + _aiEscape(text) + (_buildAIPanelAttachmentsHtml(attachments && attachments.images, attachments && attachments.files) || '') + '</div>' +
+        actionsHtml;
     messages.appendChild(el);
 
     var scroll = _aiEl('ai-panel-scroll');
@@ -390,9 +610,18 @@ function setAIPanelTitle(title) {
 
 function destroyAIPanel() {
     var root = _aiEl('ai-panel-root');
+    if (_aiPanel.resizeHandler) {
+        window.removeEventListener('resize', _aiPanel.resizeHandler);
+    }
     if (root) root.remove();
     _aiPanel.inited = false;
     _aiPanel.open   = false;
     _aiPanel.options = {};
     _aiPanel.width   = null;
+    _aiPanel.lastUserMessage = '';
+    _aiPanel.pendingImages = [];
+    _aiPanel.pendingFiles = [];
+    _aiPanel.rootEl = null;
+    _aiPanel.resizeHandler = null;
+    _aiPanel.originalParent = null;
 }
