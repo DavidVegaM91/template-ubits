@@ -2300,6 +2300,10 @@
                 maxSizeMb:   2,
                 formats:     FORMATS_TABULAR,
                 downloadButtons: [{
+                    label:   'Descargar colaboradores',
+                    icon:    'file-arrow-down',
+                    onClick: eval360DescargarColaboradores
+                }, {
                     label:   'Descargar plantilla',
                     icon:    'file-arrow-down',
                     onClick: _modoImport === 'organigrama' ? eval360DescargarPlantillaOrg : eval360DescargarPlantillaLibre
@@ -2424,6 +2428,43 @@
     /* Filas válidas del último archivo cargado */
     var _eval360ImportFilas = null;
     var _eval360ImportOmitidasTipo = 0;
+
+    function eval360CsvEscape(val) {
+        var s = (val == null ? '' : String(val)).trim();
+        if (/[,\r\n"]/.test(s)) return '"' + s.replace(/"/g, '""') + '"';
+        return s;
+    }
+
+    function eval360DescargarCsv(nombreArchivo, filas) {
+        var contenido = '\uFEFF' + (filas || []).join('\r\n');
+        var blob = new Blob([contenido], { type: 'text/csv;charset=utf-8;' });
+        var url = URL.createObjectURL(blob);
+        var a = document.createElement('a');
+        a.href = url;
+        a.download = nombreArchivo;
+        document.body.appendChild(a);
+        a.click();
+        setTimeout(function () {
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }, 300);
+    }
+
+    /* ── CSV maestro de colaboradores (username,nombre,correo,area,lider) ── */
+    function eval360DescargarColaboradores() {
+        var colaboradores = (typeof BD_MASTER_COLABORADORES !== 'undefined' && BD_MASTER_COLABORADORES.colaboradores) || [];
+        var filas = [['username', 'nombre', 'correo', 'area', 'lider'].map(eval360CsvEscape).join(',')];
+        colaboradores.forEach(function (c) {
+            filas.push([
+                c && c.username ? c.username : '',
+                c && (c.nombre || c.nombreCompleto) ? (c.nombre || c.nombreCompleto) : '',
+                c && (c.correo || c.correoElectronico || c.username) ? (c.correo || c.correoElectronico || c.username) : '',
+                c && c.area ? c.area : '',
+                c && (c.lider || c.jefe) ? (c.lider || c.jefe) : ''
+            ].map(eval360CsvEscape).join(','));
+        });
+        eval360DescargarCsv('lista-colaboradores.csv', filas);
+    }
 
     /* ── Plantilla: Basado en organigrama ── */
     function eval360DescargarPlantillaOrg() {
