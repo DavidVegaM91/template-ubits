@@ -1735,8 +1735,21 @@
 
         var tiposSel = existing && Array.isArray(existing.tiposEvaluacion) ? existing.tiposEvaluacion.map(String) : [];
 
+        var allChecked = existing && tiposActivos.length > 0 && tiposActivos.every(function (t) {
+            return tiposSel.indexOf(String(t.id)) >= 0;
+        });
+
+        var switchTodasHtml =
+            '<label class="comp360-enum-tipo-row">' +
+                '<label class="ubits-switch ubits-switch--md">' +
+                    '<input type="checkbox" class="ubits-switch__input comp360-enum-tipo-switch-all" ' + (allChecked ? 'checked' : '') + '>' +
+                    '<span class="ubits-switch__track"><span class="ubits-switch__thumb"></span></span>' +
+                '</label>' +
+                '<span class="ubits-body-md-regular">Todas</span>' +
+            '</label>';
+
         var switchesHtml = tiposActivos.map(function (t) {
-            var checked = existing ? tiposSel.indexOf(String(t.id)) >= 0 : true;
+            var checked = existing ? tiposSel.indexOf(String(t.id)) >= 0 : false;
             return '<label class="comp360-enum-tipo-row">' +
                 '<label class="ubits-switch ubits-switch--md">' +
                     '<input type="checkbox" class="ubits-switch__input comp360-enum-tipo-switch" data-tipo-id="' + t.id + '" ' + (checked ? 'checked' : '') + '>' +
@@ -1758,7 +1771,7 @@
             (tiposActivos.length > 0
                 ? '<div class="comp360-enum-tipos-section">' +
                   '<p class="ubits-body-sm-regular comp360-enum-tipos-label">' + tiposLabel + '</p>' +
-                  '<div class="comp360-enum-tipos-grid">' + switchesHtml + '</div>' +
+                  '<div class="comp360-enum-tipos-grid">' + switchTodasHtml + switchesHtml + '</div>' +
                   '</div>'
                 : '');
 
@@ -1807,6 +1820,20 @@
 
             renderComp360EnunciadoSubOpciones(_comp360EnunciadoTipoValue, subPrefs);
 
+            var switchTodas = document.querySelector('#comp360ModalEnunciado .comp360-enum-tipo-switch-all');
+            var switchesTipo = Array.prototype.slice.call(document.querySelectorAll('#comp360ModalEnunciado .comp360-enum-tipo-switch'));
+            if (switchTodas && switchesTipo.length) {
+                switchTodas.addEventListener('change', function () {
+                    switchesTipo.forEach(function (sw) { sw.checked = switchTodas.checked; });
+                });
+                switchesTipo.forEach(function (sw) {
+                    sw.addEventListener('change', function () {
+                        var allSelected = switchesTipo.every(function (item) { return item.checked; });
+                        switchTodas.checked = allSelected;
+                    });
+                });
+            }
+
             var cancelBtn = document.getElementById('comp360EnunciadoCancelarBtn');
             var anadirBtn = document.getElementById('comp360EnunciadoAnadirBtn');
 
@@ -1835,7 +1862,7 @@
                     enunciado.obligatoria = obligEl ? obligEl.checked : false;
                 }
 
-                document.querySelectorAll('.comp360-enum-tipo-switch:checked').forEach(function (sw) {
+                document.querySelectorAll('.comp360-enum-tipo-switch[data-tipo-id]:checked').forEach(function (sw) {
                     enunciado.tiposEvaluacion.push(sw.dataset.tipoId);
                 });
 
