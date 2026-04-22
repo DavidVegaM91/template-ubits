@@ -668,7 +668,7 @@
 /* Botones de acción en mensajes de IA */
 .ubits-ia-chat-thread__message-actions {
     display: flex;
-    gap: var(--gap-none);
+    gap: var(--gap-sm);
     align-items: center;
     margin-top: 4px;
 }
@@ -1808,6 +1808,9 @@ body.ia-chat-mobile-drawer-scroll-lock {
         padding-left: 0 !important;
         padding-right: 0 !important;
         padding-top: 0 !important;
+        /* Tab bar fija z-index 1000 > .main-content (5): reservar altura explícita + safe-area para que el
+           compositor del hilo no quede bajo la barra (clics “muertos” y foco que no llega al textarea). */
+        padding-bottom: calc(60px + env(safe-area-inset-bottom, 0px)) !important;
         gap: 0 !important;
         min-height: 100dvh;
         min-height: 100vh;

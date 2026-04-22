@@ -2423,6 +2423,7 @@ function renderChatMessages() {
         w.classList.add('ubits-ia-chat-thread__word--visible');
     });
     body.scrollTop = body.scrollHeight;
+    wireIaThreadMessageActions(body);
 }
 
 /**
@@ -2853,12 +2854,12 @@ function createMessageHTML(type, text, timestamp, showActions = false, isTyping 
         }
     }
 
-    const actionsHTML = (type === 'ai' && showActions && !isTyping) ? `
+    const actionsHTML = (type === 'ai' && !isTyping) ? `
         <div class="ubits-ia-chat-thread__message-actions">
-            <button class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" data-tooltip="Copiar">
+            <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" data-tooltip="Copiar">
                 <i class="far fa-copy"></i>
             </button>
-            <button class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" data-tooltip="Regenerar">
+            <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" data-tooltip="Regenerar">
                 <i class="far fa-arrows-rotate"></i>
             </button>
         </div>
@@ -3241,6 +3242,8 @@ function runPendingCardsRender(messageElement) {
 
 function attachAIMessageActions(messageElement, text, regenerateFunction) {
     if (!messageElement) return;
+    if (messageElement.dataset.iaActionsBound === '1') return;
+    messageElement.dataset.iaActionsBound = '1';
     const copyBtn = messageElement.querySelector('button[data-tooltip="Copiar"]');
     const regenerateBtn = messageElement.querySelector('button[data-tooltip="Regenerar"]');
     const plainText = (() => {
@@ -3264,9 +3267,25 @@ function attachAIMessageActions(messageElement, text, regenerateFunction) {
             });
         });
     }
-    if (regenerateBtn && regenerateFunction) {
-        regenerateBtn.addEventListener('click', () => regenerateFunction());
+    if (regenerateBtn) {
+        regenerateBtn.disabled = !regenerateFunction;
+        if (regenerateFunction) {
+            regenerateBtn.addEventListener('click', () => regenerateFunction());
+        }
     }
+}
+
+/** Enlaza copiar/regenerar en mensajes IA ya insertados en el DOM (p. ej. restauración de historial). */
+function wireIaThreadMessageActions(root) {
+    if (!root) return;
+    root.querySelectorAll('.ubits-ia-chat-thread__message--ai').forEach(function (messageEl) {
+        var globe = messageEl.querySelector('.ubits-ia-chat-thread__text-globe');
+        if (!globe) return;
+        var tmp = document.createElement('div');
+        tmp.innerHTML = globe.innerHTML;
+        var plainText = (tmp.textContent || tmp.innerText || '').trim();
+        attachAIMessageActions(messageEl, plainText || '', null);
+    });
 }
 
 function hideWelcomeBlock() {
@@ -3288,6 +3307,9 @@ function hideWelcomeBlock() {
     var headerTitle = document.getElementById('ubits-ia-chat-thread-header-title');
     if (header && headerTitle) {
         header.style.display = '';
+        headerTitle.readOnly = false;
+        headerTitle.removeAttribute('tabindex');
+        headerTitle.removeAttribute('aria-disabled');
         headerTitle.value = (chatState.currentChat && chatState.currentChat.title) ? chatState.currentChat.title : '';
     }
     ensureThreadInputInteractive();
@@ -3315,6 +3337,15 @@ function showWelcomeBlock() {
     if (header) header.style.display = '';
     if (headerTitle) {
         headerTitle.value = (chatState.currentChat && chatState.currentChat.title) ? chatState.currentChat.title : '';
+        if (chatState.welcomeLayout) {
+            headerTitle.readOnly = true;
+            headerTitle.setAttribute('tabindex', '-1');
+            headerTitle.setAttribute('aria-disabled', 'true');
+        } else {
+            headerTitle.readOnly = false;
+            headerTitle.removeAttribute('tabindex');
+            headerTitle.removeAttribute('aria-disabled');
+        }
     }
     var welcomeTop = document.getElementById('ubits-ia-chat-thread-welcome-top');
     if (welcomeTop) welcomeTop.style.display = hasAnyConversations() ? '' : 'none';
@@ -3338,7 +3369,8 @@ function disableCompetencyPathButtons(containerEl) {
 
 /** Asegura que el textarea del hilo sea editable (por si quedó bloqueado por estado del DOM o atributos). */
 function ensureThreadInputInteractive() {
-    var ta = document.getElementById('ubits-ia-chat-thread-input');
+    var wrap = document.getElementById('ubits-ia-chat-thread-container');
+    var ta = wrap ? wrap.querySelector('#ubits-ia-chat-thread-input') : document.getElementById('ubits-ia-chat-thread-input');
     if (!ta) return;
     ta.disabled = false;
     ta.removeAttribute('readonly');
@@ -3708,6 +3740,7 @@ function addMessageWithMaterialChoiceButtons(label, topic) {
         animateWordsInMessage(messageEl, function () {
             messageEl.classList.remove('ubits-ia-chat-thread__message--typing');
             messageEl.classList.add('ubits-ia-chat-thread__message--typing-done');
+            wireIaThreadMessageActions(body);
         });
     }
     wrapperEl.classList.add('ubits-ia-chat-thread__message-with-choices--reveal');
@@ -3791,12 +3824,14 @@ function insertCompetencyIntroMessage(competencyKey, label, definition, opts) {
         animateWordsInMessage(messageEl, function () {
             messageEl.classList.remove('ubits-ia-chat-thread__message--typing');
             messageEl.classList.add('ubits-ia-chat-thread__message--typing-done');
+            wireIaThreadMessageActions(body);
         });
     } else if (messageEl && opts.noAnimate) {
         messageEl.classList.add('ubits-ia-chat-thread__message--typing-done');
         messageEl.querySelectorAll('.ubits-ia-chat-thread__word').forEach(function (w) {
             w.classList.add('ubits-ia-chat-thread__word--visible');
         });
+        wireIaThreadMessageActions(body);
     }
     wrapperEl.classList.add('ubits-ia-chat-thread__message-with-choices--reveal');
     setTimeout(function () { wrapperEl.classList.remove('ubits-ia-chat-thread__message-with-choices--reveal'); }, 520);
@@ -4200,7 +4235,13 @@ function initStudyChat(containerId, options = {}) {
         var headerInit = document.getElementById('ubits-ia-chat-thread-header');
         var headerTitleInit = document.getElementById('ubits-ia-chat-thread-header-title');
         if (headerInit) headerInit.style.display = '';
-        if (headerTitleInit) headerTitleInit.value = '';
+        /* En bienvenida el input del título se confunde con el composer: no editable hasta el 1er mensaje. */
+        if (headerTitleInit) {
+            headerTitleInit.value = '';
+            headerTitleInit.readOnly = true;
+            headerTitleInit.setAttribute('tabindex', '-1');
+            headerTitleInit.setAttribute('aria-disabled', 'true');
+        }
     }
 
     var headerTitleInput = document.getElementById('ubits-ia-chat-thread-header-title');
@@ -4233,21 +4274,22 @@ function initStudyChat(containerId, options = {}) {
         addMessage('ai', '¡Hola! ¿En qué puedo ayudarte?', true);
     }
 
-    const input = document.getElementById('ubits-ia-chat-thread-input');
-    const sendBtn = document.getElementById('ubits-ia-chat-thread-send-btn');
-    const attachBtn = document.getElementById('ubits-ia-chat-thread-attach-btn');
-    const fileInput = document.getElementById('ubits-ia-chat-thread-files');
-    const suggestionBtns = document.querySelectorAll('.ubits-ia-chat-thread__suggestions .ubits-button');
-    const competencyChips = document.querySelectorAll('.ubits-ia-chat-thread__competency-chip');
+    const threadInput = container.querySelector('#ubits-ia-chat-thread-input')
+        || container.querySelector('textarea.ubits-ia-chat-thread__input');
+    const sendBtn = container.querySelector('#ubits-ia-chat-thread-send-btn');
+    const attachBtn = container.querySelector('#ubits-ia-chat-thread-attach-btn');
+    const fileInput = container.querySelector('#ubits-ia-chat-thread-files');
+    const suggestionBtns = container.querySelectorAll('.ubits-ia-chat-thread__suggestions .ubits-button');
+    const competencyChips = container.querySelectorAll('.ubits-ia-chat-thread__competency-chip');
     let pendingImages = [];
     let pendingFiles = [];
 
     function buildAttachmentsHtml(images, files) {
         const imagesHtml = (images || []).map(src =>
-            '<img src="' + escapeHtml(src) + '" alt="Imagen adjunta" class="ubits-ia-chat-thread__msg-attachment-img" />'
+            '<img src="' + escapeHTML(src) + '" alt="Imagen adjunta" class="ubits-ia-chat-thread__msg-attachment-img" />'
         ).join('');
         const filesHtml = (files || []).map(f =>
-            '<span class="ubits-chip ubits-chip--sm ubits-chip--icon-left ubits-ia-chat-thread__msg-file-chip"><i class="far fa-file-lines"></i><span class="ubits-chip__text">' + escapeHtml((f && f.name) ? f.name : 'Archivo') + '</span></span>'
+            '<span class="ubits-chip ubits-chip--sm ubits-chip--icon-left ubits-ia-chat-thread__msg-file-chip"><i class="far fa-file-lines"></i><span class="ubits-chip__text">' + escapeHTML((f && f.name) ? f.name : 'Archivo') + '</span></span>'
         ).join('');
         let out = '';
         if (imagesHtml) out += '<div class="ubits-ia-chat-thread__msg-attachments-images">' + imagesHtml + '</div>';
@@ -4266,7 +4308,7 @@ function initStudyChat(containerId, options = {}) {
         strip.style.display = 'flex';
         strip.innerHTML = pendingImages.map((src, idx) =>
             '<div class="ubits-ia-chat-thread__pending-img-wrap">' +
-                '<img src="' + escapeHtml(src) + '" alt="Imagen adjunta" class="ubits-ia-chat-thread__pending-img" />' +
+                '<img src="' + escapeHTML(src) + '" alt="Imagen adjunta" class="ubits-ia-chat-thread__pending-img" />' +
                 '<button type="button" class="ubits-ia-chat-thread__pending-img-remove" data-idx="' + idx + '" aria-label="Eliminar imagen"><i class="far fa-times"></i></button>' +
             '</div>'
         ).join('');
@@ -4291,7 +4333,7 @@ function initStudyChat(containerId, options = {}) {
         strip.style.display = 'flex';
         strip.innerHTML = pendingFiles.map((f, idx) =>
             '<span class="ubits-chip ubits-chip--sm ubits-chip--icon-left ubits-chip--close ubits-ia-chat-thread__pending-file-chip">' +
-                '<i class="far fa-file-lines"></i><span class="ubits-chip__text">' + escapeHtml((f && f.name) ? f.name : 'Archivo') + '</span>' +
+                '<i class="far fa-file-lines"></i><span class="ubits-chip__text">' + escapeHTML((f && f.name) ? f.name : 'Archivo') + '</span>' +
                 '<button type="button" class="ubits-chip__close ubits-ia-chat-thread__pending-file-remove" data-idx="' + idx + '" aria-label="Quitar archivo"><i class="far fa-times"></i></button>' +
             '</span>'
         ).join('');
@@ -4307,45 +4349,61 @@ function initStudyChat(containerId, options = {}) {
 
     // Auto-resize del textarea (máx 5 líneas = 144px; luego scroll interno)
     var MAX_INPUT_HEIGHT = 144;
-    if (input) {
-        input.addEventListener('input', function () {
+    if (threadInput) {
+        threadInput.addEventListener('input', function () {
             this.style.height = 'auto';
             this.style.height = Math.min(this.scrollHeight, MAX_INPUT_HEIGHT) + 'px';
         });
 
         // Enviar con Enter (sin Shift)
-        input.addEventListener('keydown', function (e) {
-            if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                sendMessage();
-            }
+        threadInput.addEventListener('keydown', function (e) {
+            if (e.key !== 'Enter' || e.shiftKey) return;
+            e.preventDefault();
+            sendMessage();
         });
         ensureThreadInputInteractive();
+        if (chatState.welcomeLayout) {
+            setTimeout(function () {
+                var taWelcome = container.querySelector('#ubits-ia-chat-thread-input')
+                    || container.querySelector('textarea.ubits-ia-chat-thread__input');
+                if (!taWelcome) return;
+                ensureThreadInputInteractive();
+                try {
+                    taWelcome.focus({ preventScroll: true });
+                } catch (errWelcome) {
+                    taWelcome.focus();
+                }
+            }, 50);
+        }
     }
 
     /* Clic en el contenedor del input (no en botones): asegurar foco en el textarea.
        Mitiga capas de pintado que en algunos navegadores interceptan el hit-test. */
-    var inputContainer = document.querySelector('.ubits-ia-chat-thread__input-container');
-    if (inputContainer && input) {
+    var inputContainer = container.querySelector('.ubits-ia-chat-thread__input-container');
+    if (inputContainer && threadInput) {
         inputContainer.addEventListener('mousedown', function (e) {
             if (e.button !== 0) return;
             if (e.target.closest('button')) return;
-            if (e.target === input) return;
+            if (e.target === threadInput) return;
             requestAnimationFrame(function () {
-                if (!input || input.disabled) return;
+                var ta = container.querySelector('#ubits-ia-chat-thread-input');
+                if (!ta || ta.disabled) return;
                 ensureThreadInputInteractive();
                 try {
-                    input.focus({ preventScroll: true });
+                    ta.focus({ preventScroll: true });
                 } catch (err) {
-                    input.focus();
+                    ta.focus();
                 }
             });
         });
     }
 
-    // Botón enviar
+    // Botón enviar (delegación en el contenedor del widget: mismo handler que Enter)
     if (sendBtn) {
-        sendBtn.addEventListener('click', sendMessage);
+        sendBtn.addEventListener('click', function (e) {
+            e.preventDefault();
+            sendMessage();
+        });
     }
 
     if (attachBtn && fileInput) {
@@ -4945,8 +5003,10 @@ function initStudyChat(containerId, options = {}) {
 
     // Función para enviar mensaje
     function sendMessage() {
-        if (!input) return;
-        const message = input.value.trim();
+        var ta = container.querySelector('#ubits-ia-chat-thread-input')
+            || container.querySelector('textarea.ubits-ia-chat-thread__input');
+        if (!ta) return;
+        const message = ta.value.trim();
         const hasAttachments = pendingImages.length > 0 || pendingFiles.length > 0;
         if (!message && !hasAttachments) return;
 
@@ -4961,15 +5021,15 @@ function initStudyChat(containerId, options = {}) {
                 formatTime(),
                 false,
                 false,
-                (message ? '<p class="ubits-ia-chat-thread__message-text">' + escapeHtml(message) + '</p>' : '') + buildAttachmentsHtml(pendingImages, pendingFiles)
+                (message ? '<p class="ubits-ia-chat-thread__message-text">' + escapeHTML(message) + '</p>' : '') + buildAttachmentsHtml(pendingImages, pendingFiles)
             );
             body.insertAdjacentHTML('beforeend', userHtml);
             body.scrollTop = body.scrollHeight;
         }
 
         // Limpiar input
-        input.value = '';
-        input.style.height = 'auto';
+        ta.value = '';
+        ta.style.height = 'auto';
         pendingImages = [];
         pendingFiles = [];
         renderPendingImagesPreview();

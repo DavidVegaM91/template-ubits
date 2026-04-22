@@ -267,6 +267,16 @@ function _aiPanelSyncDockMode() {
 // ---------------------------------------------------------------------------
 // Eventos de interacción
 // ---------------------------------------------------------------------------
+function _aiPanelEnsureInputInteractive() {
+    var input = _aiEl('ai-panel-input');
+    if (!input) return;
+    input.disabled = false;
+    input.removeAttribute('readonly');
+    input.removeAttribute('aria-disabled');
+    input.style.pointerEvents = '';
+    input.style.opacity = '';
+}
+
 function _aiPanelBindEvents() {
     // Cerrar
     var closeBtn = _aiEl('ai-panel-close-btn');
@@ -328,6 +338,24 @@ function _aiPanelBindEvents() {
         input.addEventListener('input', function() {
             this.style.height = 'auto';
             this.style.height = Math.min(this.scrollHeight, 140) + 'px';
+        });
+        _aiPanelEnsureInputInteractive();
+    }
+
+    var inputBox = _aiEl('ai-panel-input-box');
+    if (inputBox && input) {
+        inputBox.addEventListener('mousedown', function (e) {
+            if (e.button !== 0) return;
+            if (e.target.closest('button')) return;
+            if (e.target === input) return;
+            requestAnimationFrame(function () {
+                _aiPanelEnsureInputInteractive();
+                try {
+                    input.focus({ preventScroll: true });
+                } catch (err) {
+                    input.focus();
+                }
+            });
         });
     }
 
@@ -516,6 +544,7 @@ function openAIPanel() {
     }
     setTimeout(function() {
         var input = _aiEl('ai-panel-input');
+        _aiPanelEnsureInputInteractive();
         if (input) input.focus();
     }, 300);
 }
@@ -549,10 +578,10 @@ function addAIPanelMessage(text, type, attachments) {
     if (msgType === 'ai') {
         actionsHtml =
             '<div class="ai-panel__msg-actions">' +
-                '<button type="button" class="ubits-button ubits-button--secondary ubits-button--xs ubits-button--icon-only" data-ai-panel-action="copy" aria-label="Copiar">' +
+                '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" data-tooltip="Copiar" data-ai-panel-action="copy" aria-label="Copiar">' +
                     '<i class="far fa-copy"></i>' +
                 '</button>' +
-                '<button type="button" class="ubits-button ubits-button--secondary ubits-button--xs ubits-button--icon-only" data-ai-panel-action="regenerate" aria-label="Regenerar">' +
+                '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" data-tooltip="Regenerar" data-ai-panel-action="regenerate" aria-label="Regenerar">' +
                     '<i class="far fa-arrows-rotate"></i>' +
                 '</button>' +
             '</div>';
@@ -563,6 +592,10 @@ function addAIPanelMessage(text, type, attachments) {
         '<div class="ai-panel__msg-bubble">' + _aiEscape(text) + (_buildAIPanelAttachmentsHtml(attachments && attachments.images, attachments && attachments.files) || '') + '</div>' +
         actionsHtml;
     messages.appendChild(el);
+
+    if (msgType === 'ai' && typeof window.initTooltip === 'function') {
+        setTimeout(function () { window.initTooltip('#ai-panel [data-tooltip]'); }, 0);
+    }
 
     var scroll = _aiEl('ai-panel-scroll');
     if (scroll) scroll.scrollTop = scroll.scrollHeight;

@@ -24,8 +24,14 @@ function createGroupChatMessageHTML(type, text, attachmentsHtml) {
         return '<p class="ubits-ia-chat-thread__message-text">' + escapeHtml(line) + '</p>';
     }).join('') : '<p class="ubits-ia-chat-thread__message-text">' + safeText + '</p>';
     var extraHtml = attachmentsHtml ? attachmentsHtml : '';
+    var actionsRow = type === 'ai'
+        ? '<div class="ubits-ia-chat-thread__message-actions">' +
+            '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" data-tooltip="Copiar"><i class="far fa-copy"></i></button>' +
+            '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" data-tooltip="Regenerar"><i class="far fa-arrows-rotate"></i></button>' +
+            '</div>'
+        : '';
     return '<div class="ubits-ia-chat-thread__message ' + messageClass + '">' +
-        '<div class="ubits-ia-chat-thread__text-globe ' + globeClass + '">' + textHTML + extraHtml + '</div></div>';
+        '<div class="ubits-ia-chat-thread__text-globe ' + globeClass + '">' + textHTML + extraHtml + '</div>' + actionsRow + '</div>';
 }
 
 /**
@@ -267,6 +273,9 @@ function initGroupCreationChat(containerId, options) {
             while (div.firstChild) body.appendChild(div.firstChild);
         });
         body.scrollTop = body.scrollHeight;
+        if (typeof window.initTooltip === 'function') {
+            window.initTooltip('#group-creation-chat-body [data-tooltip]');
+        }
     }
 
     function renderGroupCreationHistorialList() {
@@ -470,6 +479,9 @@ function initGroupCreationChat(containerId, options) {
             while (div.firstChild) body.appendChild(div.firstChild);
             body.scrollTop = body.scrollHeight;
         }
+        if (typeof window.initTooltip === 'function') {
+            window.initTooltip('#group-creation-chat-body [data-tooltip]');
+        }
     }
 
     function sendMessage() {
@@ -528,6 +540,59 @@ function initGroupCreationChat(containerId, options) {
         }
     }
 
+    if (body) {
+        body.addEventListener('click', function (e) {
+            var regenBtn = e.target.closest('.ubits-ia-chat-thread__message-actions button[data-tooltip="Regenerar"]');
+            if (regenBtn && !regenBtn.disabled) {
+                e.preventDefault();
+                var msgEl = regenBtn.closest('.ubits-ia-chat-thread__message');
+                if (!msgEl || !msgEl.classList.contains('ubits-ia-chat-thread__message--ai')) return;
+                var msgs = groupCreationState.currentChat && groupCreationState.currentChat.messages;
+                if (!msgs || msgs.length === 0 || msgs[msgs.length - 1].type !== 'ai') return;
+                msgs.pop();
+                msgEl.remove();
+                var lastUserText = '';
+                for (var i = msgs.length - 1; i >= 0; i--) {
+                    if (msgs[i].type === 'user') {
+                        lastUserText = msgs[i].text || '';
+                        break;
+                    }
+                }
+                appendMessage('ai', getMockResponse(null, lastUserText || ' '));
+                return;
+            }
+            var copyBtn = e.target.closest('.ubits-ia-chat-thread__message-actions button[data-tooltip="Copiar"]');
+            if (copyBtn) {
+                e.preventDefault();
+                var msgRoot = copyBtn.closest('.ubits-ia-chat-thread__message');
+                var globe = msgRoot && msgRoot.querySelector('.ubits-ia-chat-thread__text-globe');
+                var plain = '';
+                if (globe) {
+                    var tmp = document.createElement('div');
+                    tmp.innerHTML = globe.innerHTML;
+                    plain = (tmp.textContent || tmp.innerText || '').trim();
+                }
+                if (!plain) return;
+                if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
+                    navigator.clipboard.writeText(plain).then(function () {
+                        if (typeof showToast === 'function') {
+                            showToast('success', 'Texto copiado', { containerId: 'ubits-toast-container', duration: 3500 });
+                        }
+                    }).catch(function () {
+                        var ta = document.createElement('textarea');
+                        ta.value = plain;
+                        ta.style.position = 'fixed';
+                        ta.style.left = '-9999px';
+                        document.body.appendChild(ta);
+                        ta.select();
+                        try { document.execCommand('copy'); } catch (err) { }
+                        document.body.removeChild(ta);
+                    });
+                }
+            }
+        });
+    }
+
     var MAX_INPUT_HEIGHT = 144;
     if (input) {
         input.addEventListener('input', function () {
@@ -539,6 +604,27 @@ function initGroupCreationChat(containerId, options) {
                 e.preventDefault();
                 sendMessage();
             }
+        });
+    }
+    var inputContainer = root ? root.querySelector('.ubits-ia-chat-thread__input-container') : null;
+    if (inputContainer && input) {
+        inputContainer.addEventListener('mousedown', function (e) {
+            if (e.button !== 0) return;
+            if (e.target.closest('button')) return;
+            if (e.target === input) return;
+            requestAnimationFrame(function () {
+                if (!input || input.disabled) return;
+                input.disabled = false;
+                input.removeAttribute('readonly');
+                input.removeAttribute('aria-disabled');
+                input.style.pointerEvents = '';
+                input.style.opacity = '';
+                try {
+                    input.focus({ preventScroll: true });
+                } catch (err) {
+                    input.focus();
+                }
+            });
         });
     }
     if (sendBtn) sendBtn.addEventListener('click', sendMessage);

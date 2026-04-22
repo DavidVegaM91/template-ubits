@@ -374,7 +374,7 @@ body.ai-panel-resizing .ai-panel {
     font-size: var(--font-size-md);
     line-height: 24px;
     padding: var(--padding-md) var(--padding-lg);
-    border-radius: var(--border-radius-sm) !important;
+    border-radius: var(--border-radius-lg) !important;
     word-wrap: break-word;
     white-space: pre-wrap;
     position: relative;
@@ -424,7 +424,7 @@ body.ai-panel-resizing .ai-panel {
 /* Acciones del mensaje IA (copiar / regenerar) */
 .ai-panel__msg-actions {
     display: flex;
-    gap: var(--gap-none);
+    gap: var(--gap-sm);
     align-items: center;
     margin-top: 4px;
 }
