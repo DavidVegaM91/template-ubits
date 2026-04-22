@@ -1,7 +1,8 @@
 /* =============================================================================
    ia-chat-streaming.js — Comportamiento transversal de chats IA (UBITS)
    Pensando + espera, revelado palabra a palabra por párrafo.
-   Cargar ANTES de study-chat.js, group-creation-chat.js o ai-panel.js
+   Cargar ANTES de study-chat.js, group-creation-chat.js o ai-panel.js.
+   Expone UbitsIaChatTime.formatMessageTimeLabel (fechas en pie de mensaje IA).
    - afterMinDelay(ms, fn): espera ms y luego ejecuta fn (orden pensando → respuesta).
    - withMinDelay(ms, fn): ejecuta fn al inicio y alarga hasta ms si acabó antes (p. ej. fetch).
    ============================================================================= */
@@ -175,6 +176,35 @@
         });
     }
 
+    /** Misma lógica relativa que comentarios en task-detail; >2 días: "22 abr, 02:50 p.m." */
+    function pad2(n) {
+        return String(n).padStart(2, '0');
+    }
+    function formatMessageTimeAbsoluteShort(d) {
+        var meses = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
+        var dia = d.getDate();
+        var mes = meses[d.getMonth()];
+        var h = d.getHours();
+        var m = d.getMinutes();
+        var am = h < 12;
+        if (h === 0) h = 12;
+        else if (h > 12) h -= 12;
+        return dia + ' ' + mes + ', ' + pad2(h) + ':' + pad2(m) + ' ' + (am ? 'a.m.' : 'p.m.');
+    }
+    function formatMessageTimeLabel(d) {
+        if (!(d instanceof Date) || isNaN(d.getTime())) return '';
+        var now = new Date();
+        var diffMs = now - d;
+        if (diffMs < 0) return formatMessageTimeAbsoluteShort(d);
+        var diffMins = Math.floor(diffMs / 60000);
+        var diffHours = Math.floor(diffMs / 3600000);
+        var diffDays = Math.floor(diffMs / 86400000);
+        if (diffMins < 60) return 'Hace ' + (diffMins <= 1 ? 'un momento' : diffMins + ' min');
+        if (diffHours < 24) return 'Hace ' + (diffHours === 1 ? '1 h' : diffHours + ' h');
+        if (diffDays <= 2) return 'Hace ' + (diffDays === 1 ? '1 día' : diffDays + ' días');
+        return formatMessageTimeAbsoluteShort(d);
+    }
+
     global.UbitsIaChatStreaming = {
         MIN_THINKING_MS: MIN_THINKING_MS,
         WORD_DELAY_MS: WORD_DELAY_MS,
@@ -188,5 +218,15 @@
         finishAiMessageStreamReveal: finishAiMessageStreamReveal,
         withMinDelay: withMinDelay,
         afterMinDelay: afterMinDelay
+    };
+
+    global.UbitsIaChatTime = {
+        formatMessageTimeLabel: formatMessageTimeLabel
+    };
+
+    /** Texto legal transversal bajo el input en todos los chats IA (panel, modo estudio, grupos…). */
+    var DEFAULT_IA_DISCLAIMER_TEXT = 'El agente puede cometer errores; verifica la información.';
+    global.UbitsIaChatDisclaimer = {
+        DEFAULT_TEXT: DEFAULT_IA_DISCLAIMER_TEXT
     };
 })(typeof window !== 'undefined' ? window : this);

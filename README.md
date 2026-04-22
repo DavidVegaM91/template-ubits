@@ -455,6 +455,7 @@ Todos los componentes UBITS requieren imports obligatorios:
 - **`documentacion/componentes/tab-bar.html`** - Documentación del componente TabBar
 - **`documentacion/componentes/button.html`** - Documentación del componente Button
 - **`documentacion/componentes/ia-button.html`** - Documentación del componente IA-Button
+- **`documentacion/componentes/ai-panel.html`** - Documentación del componente AI panel (panel lateral de chat IA)
 - **`documentacion/componentes/header-product.html`** - Documentación del componente Header Product
 - **`documentacion/componentes/alert.html`** - Documentación del componente Alert
 - **`documentacion/componentes/attention-badge.html`** - Documentación del componente Attention badge
@@ -978,6 +979,7 @@ loadCardContentCompact('mi-contenedor-compact', [
 - **`documentacion/componentes.html`** - Página principal con todos los componentes disponibles
 - **`documentacion/componentes/button.html`** - Documentación del componente Button
 - **`documentacion/componentes/ia-button.html`** - Documentación del componente IA-Button
+- **`documentacion/componentes/ai-panel.html`** - Documentación del componente AI panel (panel lateral de chat IA)
 - **`documentacion/componentes/header-product.html`** - Documentación del componente Header Product
 - **`documentacion/componentes/alert.html`** - Documentación del componente Alert
 - **`documentacion/componentes/attention-badge.html`** - Documentación del componente Attention badge

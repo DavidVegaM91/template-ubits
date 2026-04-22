@@ -529,8 +529,10 @@
 }
 
 /* Estado TYPING: ocultar bloques posteriores al texto (acciones al final) */
+.ubits-ia-chat-thread__message--typing .ubits-ia-chat-thread__message-footer,
 .ubits-ia-chat-thread__message--typing .ubits-ia-chat-thread__message-actions,
 .ubits-ia-chat-thread__message--typing .ai-panel__msg-actions,
+.ubits-ia-chat-thread__message--typing .ai-panel__msg-footer,
 .ubits-ia-chat-thread__message--typing .ubits-ia-chat-thread__material-choices,
 .ubits-ia-chat-thread__message--typing+.ubits-ia-chat-thread__material-choices,
 .ubits-ia-chat-thread__message--typing .ubits-ia-chat-thread__courses-section,
@@ -548,7 +550,7 @@
 
 /*
  * Estado DONE: orden de revelado — primero bloques dentro del globo (choices, cursos, sub-opciones, adjuntos panel),
- * luego timestamp, y al final copiar/regenerar.
+ * luego pie (marca de tiempo + copiar).
  */
 .ubits-ia-chat-thread__message--typing-done .ubits-ia-chat-thread__material-choices,
 .ubits-ia-chat-thread__message--typing-done+.ubits-ia-chat-thread__material-choices,
@@ -563,15 +565,10 @@
     animation: ubits-ia-chat-thread-reveal-down 0.28s ease-out 0s forwards;
 }
 
-.ubits-ia-chat-thread__message--typing-done .ubits-ia-chat-thread__timestamp {
+.ubits-ia-chat-thread__message--typing-done .ubits-ia-chat-thread__message-footer,
+.ubits-ia-chat-thread__message--typing-done .ai-panel__msg-footer {
     opacity: 0;
-    animation: ubits-ia-chat-thread-reveal-down 0.28s ease-out 0.12s forwards;
-}
-
-.ubits-ia-chat-thread__message--typing-done .ubits-ia-chat-thread__message-actions,
-.ubits-ia-chat-thread__message--typing-done .ai-panel__msg-actions {
-    opacity: 0;
-    animation: ubits-ia-chat-thread-reveal-down 0.32s ease-out 0.28s forwards;
+    animation: ubits-ia-chat-thread-reveal-down 0.32s ease-out 0.2s forwards;
 }
 
 .ubits-ia-chat-thread__message-with-choices--reveal .ubits-ia-chat-thread__timestamp {
@@ -753,15 +750,38 @@
     color: var(--ubits-btn-tertiary-fg);
 }
 
-/* Botones de acción en mensajes de IA */
+/* Pie de mensaje: hora y copiar pegados (misma fila, sin empujar el botón al otro extremo) */
+.ubits-ia-chat-thread__message-footer {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    gap: var(--gap-xs);
+    margin-top: 4px;
+    width: 100%;
+    min-width: 0;
+}
+
+.ubits-ia-chat-thread__message-footer .ubits-ia-chat-thread__timestamp {
+    flex: 0 1 auto;
+    min-width: 0;
+}
+
+.ubits-ia-chat-thread__message--user .ubits-ia-chat-thread__message-footer {
+    justify-content: flex-end;
+}
+
+/* Botones de acción en mensajes de IA (dentro del pie) */
 .ubits-ia-chat-thread__message-actions {
     display: flex;
     gap: var(--gap-sm);
     align-items: center;
-    margin-top: 4px;
+    margin-top: 0;
+    flex-shrink: 0;
 }
 
-/* Mensaje de IA en streaming: ocultar acciones hasta que termine de escribir */
+/* Mensaje de IA en streaming: ocultar pie hasta que termine de escribir */
+.ubits-ia-chat-thread__message--streaming .ubits-ia-chat-thread__message-footer,
 .ubits-ia-chat-thread__message--streaming .ubits-ia-chat-thread__message-actions {
     visibility: hidden;
     pointer-events: none;
@@ -918,6 +938,10 @@
     position: relative;
     z-index: 3;
     pointer-events: auto;
+    text-align: left;
+    align-self: stretch;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 /* Botones de sugerencias - usar componente UBITS button */

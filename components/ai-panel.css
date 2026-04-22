@@ -70,7 +70,7 @@
 @media (min-width: 1024px) {
     /*
      * Dock: altura acotada al viewport + sticky para que el panel no crezca
-     * con el scroll del main; así header, scroll interno y footer+disclaimer
+     * con el scroll del main; así header, scroll, input-area y disclaimer (como el hilo)
      * se reparten dentro de la columna del panel.
      */
     .ai-panel-root--docked {
@@ -283,7 +283,8 @@ body.ai-panel-resizing .ai-panel {
     min-height: 0;
     display: flex;
     flex-direction: column;
-    padding: 2px 8px 0;
+    /* Sin padding horizontal extra: el hilo ya aplica --padding-xl en input-area y disclaimer */
+    padding: 2px 0 0;
     background: transparent;
     position: relative;
     z-index: 1;
@@ -297,6 +298,10 @@ body.ai-panel-resizing .ai-panel {
     min-height: 0;
     display: flex;
     flex-direction: column;
+    /* Mismo eje que .ubits-ia-chat-thread (gap entre cuerpo del hilo y bloque inferior) */
+    gap: var(--gap-2xl);
+    /* Aire inferior como .ubits-ia-chat__main (padding-bottom: var(--padding-md)) */
+    padding-bottom: var(--padding-md);
     border-radius: 12px;
     border: none;
     overflow: hidden;
@@ -438,12 +443,22 @@ body.ai-panel-resizing .ai-panel {
     color: var(--ubits-btn-tertiary-fg) !important;
 }
 
-/* Acciones del mensaje IA (copiar / regenerar) */
+.ai-panel__msg-footer {
+    width: 100%;
+    min-width: 0;
+}
+
+.ai-panel__msg--user .ai-panel__msg-footer {
+    justify-content: flex-end;
+}
+
+/* Acciones del mensaje IA (copiar) — dentro del pie */
 .ai-panel__msg-actions {
     display: flex;
     gap: var(--gap-sm);
     align-items: center;
-    margin-top: 4px;
+    margin-top: 0;
+    flex-shrink: 0;
 }
 
 .ai-panel__msg-attachments-images,
@@ -492,27 +507,24 @@ body.ai-panel-resizing .ai-panel {
     40%            { transform: scale(1);   opacity: 1; }
 }
 
-/* ---------------------------------------------------------------------------
-   Footer — dentro del chat-container, sin línea separadora
-   --------------------------------------------------------------------------- */
-.ai-panel__footer {
+/* Área de input: mismas clases/tokens que el hilo (.ubits-ia-chat-thread__input-area en ubits-ia-chat.css) */
+.ai-panel .ubits-ia-chat-thread__input-area {
     flex-shrink: 0;
-    padding: 8px 10px 10px;
-    display: flex;
-    flex-direction: column;
-    gap: 0;
-    background: transparent;
+    min-width: 0;
+    max-width: 100%;
 }
 
-/* Input container */
+/* Caja del input (layout en columna propio del panel); radios y padding como .ubits-ia-chat-thread__input-container en chat iniciado */
 .ai-panel__input-box {
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: var(--gap-sm);
     background: var(--ubits-bg-1);
     border: 1px solid var(--ubits-border-1);
-    border-radius: 10px;
-    padding: 8px 10px;
+    border-radius: var(--border-radius-lg);
+    padding: var(--padding-sm) var(--padding-md);
+    width: 100%;
+    box-sizing: border-box;
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
@@ -614,18 +626,17 @@ body.ai-panel-resizing .ai-panel {
     align-self: center !important;
 }
 
-/* Disclaimer — fuera del chat-container, debajo del body */
-.ai-panel__disclaimer {
-    font-family: 'Noto Sans', sans-serif;
-    font-size: 11px;
-    color: var(--ubits-fg-1-medium);
-    text-align: center;
-    margin: 0;
-    padding: 8px 12px;
-    line-height: 1.4;
-    flex-shrink: 0;
-    position: relative;
-    z-index: 1;
+/* Móvil: igual que hilo sin welcome — sin padding lateral en input-area ni disclaimer */
+@media (max-width: 768px) {
+    .ai-panel .ubits-ia-chat-thread__input-area {
+        padding-left: 0;
+        padding-right: 0;
+    }
+
+    .ai-panel .ubits-ia-chat-thread__disclaimer {
+        padding-left: 0;
+        padding-right: 0;
+    }
 }
 
 /* ---------------------------------------------------------------------------

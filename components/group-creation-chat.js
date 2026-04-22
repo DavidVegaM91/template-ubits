@@ -31,14 +31,22 @@ function createGroupChatMessageHTML(type, text, attachmentsHtml) {
         }).join('') : '<p class="ubits-ia-chat-thread__message-text">' + safeText + '</p>';
         extraHtml = attachmentsHtml ? attachmentsHtml : '';
     }
-    var actionsRow = type === 'ai'
-        ? '<div class="ubits-ia-chat-thread__message-actions">' +
-            '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" data-tooltip="Copiar"><i class="far fa-copy"></i></button>' +
-            '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" data-tooltip="Regenerar"><i class="far fa-arrows-rotate"></i></button>' +
-            '</div>'
-        : '';
+    var timeLabel = '';
+    if (window.UbitsIaChatTime && typeof window.UbitsIaChatTime.formatMessageTimeLabel === 'function') {
+        timeLabel = escapeHtml(window.UbitsIaChatTime.formatMessageTimeLabel(new Date()));
+    } else {
+        timeLabel = escapeHtml(new Date().toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit', hour12: true }));
+    }
+    var footerRow = type === 'ai'
+        ? '<div class="ubits-ia-chat-thread__message-footer">' +
+            '<span class="ubits-ia-chat-thread__timestamp">' + timeLabel + '</span>' +
+            '<div class="ubits-ia-chat-thread__message-actions">' +
+            '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--xs ubits-button--icon-only" data-tooltip="Copiar" data-tooltip-delay="1000" aria-label="Copiar"><i class="far fa-copy"></i></button>' +
+            '</div></div>'
+        : '<div class="ubits-ia-chat-thread__message-footer">' +
+            '<span class="ubits-ia-chat-thread__timestamp">' + timeLabel + '</span></div>';
     return '<div class="ubits-ia-chat-thread__message ' + messageClass + '">' +
-        '<div class="ubits-ia-chat-thread__text-globe ' + globeClass + '">' + textHTML + extraHtml + '</div>' + actionsRow + '</div>';
+        '<div class="ubits-ia-chat-thread__text-globe ' + globeClass + '">' + textHTML + extraHtml + '</div>' + footerRow + '</div>';
 }
 
 /**
@@ -47,6 +55,8 @@ function createGroupChatMessageHTML(type, text, attachmentsHtml) {
  */
 function createGroupCreationChatHTML(options) {
     options = options || {};
+    var iaDisclaimerText = (typeof window !== 'undefined' && window.UbitsIaChatDisclaimer && window.UbitsIaChatDisclaimer.DEFAULT_TEXT)
+        || 'El agente puede cometer errores; verifica la información.';
     var headerStyle = (options.welcomeLayout !== false) ? '' : 'display: none;';
     var inputPh = (options.welcomeLayout !== false) ? '¿Cuéntame cómo te puedo ayudar?' : 'Escribir mensaje...';
     var userFirstName = escapeHtml(options.userFirstName || 'María Alejandra');
@@ -94,7 +104,7 @@ function createGroupCreationChatHTML(options) {
         '</div>' +
         '<div class="ubits-ia-chat-thread__suggestions" id="group-creation-chat-suggestions">' + suggestionButtons + '</div>' +
         '</div>' +
-        '<p class="ubits-ia-chat-thread__disclaimer ubits-body-xs-regular">El chat puede cometer errores; verifica la información.</p>' +
+        '<p class="ubits-ia-chat-thread__disclaimer ubits-body-xs-regular">' + escapeHtml(iaDisclaimerText) + '</p>' +
         '</div>';
 }
 
@@ -577,25 +587,6 @@ function initGroupCreationChat(containerId, options) {
 
     if (body) {
         body.addEventListener('click', function (e) {
-            var regenBtn = e.target.closest('.ubits-ia-chat-thread__message-actions button[data-tooltip="Regenerar"]');
-            if (regenBtn && !regenBtn.disabled) {
-                e.preventDefault();
-                var msgEl = regenBtn.closest('.ubits-ia-chat-thread__message');
-                if (!msgEl || !msgEl.classList.contains('ubits-ia-chat-thread__message--ai')) return;
-                var msgs = groupCreationState.currentChat && groupCreationState.currentChat.messages;
-                if (!msgs || msgs.length === 0 || msgs[msgs.length - 1].type !== 'ai') return;
-                msgs.pop();
-                msgEl.remove();
-                var lastUserText = '';
-                for (var i = msgs.length - 1; i >= 0; i--) {
-                    if (msgs[i].type === 'user') {
-                        lastUserText = msgs[i].text || '';
-                        break;
-                    }
-                }
-                appendMessage('ai', getMockResponse(null, lastUserText || ' '));
-                return;
-            }
             var copyBtn = e.target.closest('.ubits-ia-chat-thread__message-actions button[data-tooltip="Copiar"]');
             if (copyBtn) {
                 e.preventDefault();

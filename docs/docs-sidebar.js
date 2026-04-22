@@ -23,6 +23,7 @@ const DOCS_SIDEBAR_SECTIONS = [
     { id: 'sidebar-contenidos-lms', title: 'Sidebar contenidos LMS', group: 'aprendizaje' },
     // UI general en orden alfabético
     { id: 'accordion', title: 'Accordion', group: 'ui' },
+    { id: 'ai-panel', title: 'AI panel', group: 'ui' },
     { id: 'alert', title: 'Alert', group: 'ui' },
     { id: 'attention-badge', title: 'Attention badge', group: 'ui' },
     { id: 'save-indicator', title: 'Save Indicator', group: 'ui' },
@@ -272,6 +273,7 @@ function initDocsSidebar(activeSection) {
             'sub-nav': 'subnav.html',
             'tab-bar': 'tab-bar.html',
             'accordion': 'accordion.html',
+            'ai-panel': 'ai-panel.html',
             'button': 'button.html',
             'ia-button': 'ia-button.html',
             'loader': 'loader.html',

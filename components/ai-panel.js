@@ -18,7 +18,8 @@
    -----------------------
    title, agentLabel, placeholder, disclaimer,
    welcomeTitle, welcomeSubtitle,
-  onSend(text), onAttach(), onClose(), onRegenerate(lastUserText),
+  onSend(text) — tras insertar el mensaje del usuario (y el «Pensando» si hay ia-chat-streaming); solo respuesta / backend, no duplicar 'user',
+  onAttach(), onClose(),
   dockDesktop, dockContainerSelector, dockBreakpoint
 
    CSS recomendado (misma pila que Modo estudio / Chat IA grupos):
@@ -114,6 +115,13 @@ function _aiTime() {
     return new Date().toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit', hour12: true });
 }
 
+function _aiFormatMsgTimeLabel(d) {
+    if (window.UbitsIaChatTime && typeof window.UbitsIaChatTime.formatMessageTimeLabel === 'function') {
+        return window.UbitsIaChatTime.formatMessageTimeLabel(d);
+    }
+    return _aiTime();
+}
+
 function _aiEscape(str) {
     return String(str)
         .replace(/&/g, '&amp;').replace(/</g, '&lt;')
@@ -121,6 +129,11 @@ function _aiEscape(str) {
 }
 
 function _aiEl(id) { return document.getElementById(id); }
+
+function _defaultIaDisclaimerText() {
+    return (typeof window !== 'undefined' && window.UbitsIaChatDisclaimer && window.UbitsIaChatDisclaimer.DEFAULT_TEXT)
+        || 'El agente puede cometer errores; verifica la información.';
+}
 
 function _aiCopyText(text) {
     if (!text) return;
@@ -147,7 +160,7 @@ function _buildAIPanelHTML(o) {
     const title       = o.title       || 'IA';
     const agentLabel  = o.agentLabel  || '';
     const placeholder = o.placeholder || '¿Cómo puedo ayudarte hoy?';
-    const disclaimer  = o.disclaimer  || 'Agentes AI puede cometer errores, verifica las respuestas.';
+    const disclaimer  = o.disclaimer  || _defaultIaDisclaimerText();
     const wTitle      = o.welcomeTitle    || title;
     const wSubtitle   = o.welcomeSubtitle || '¿En qué puedo ayudarte hoy?';
 
@@ -190,8 +203,8 @@ function _buildAIPanelHTML(o) {
 
             </div>
 
-            <!-- Input — dentro del contenedor, sin línea separadora -->
-            <div class="ai-panel__footer">
+            <!-- Misma estructura que .ubits-ia-chat-thread: input-area + disclaimer (hermanos) -->
+            <div class="ubits-ia-chat-thread__input-area" id="ai-panel-input-area">
                 <div class="ai-panel__input-box" id="ai-panel-input-box">
                     <input type="file" id="ai-panel-files" accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.txt,.csv,.ppt,.pptx" multiple hidden />
                     <div class="ai-panel__pending-images-strip" id="ai-panel-pending-images"></div>
@@ -214,12 +227,11 @@ function _buildAIPanelHTML(o) {
                     </div>
                 </div>
             </div>
+            <p class="ubits-ia-chat-thread__disclaimer ubits-body-xs-regular">${_aiEscape(disclaimer)}</p>
 
         </div>
     </div>
 
-    <!-- Disclaimer — fuera del contenedor -->
-    <p class="ai-panel__disclaimer">${_aiEscape(disclaimer)}</p>
 </div>`;
 }
 
@@ -231,7 +243,7 @@ function initAIPanel(options) {
     _aiPanel.inited  = true;
     _aiPanel.options = Object.assign({
         title: 'IA', agentLabel: '', placeholder: '¿Cómo puedo ayudarte hoy?',
-        disclaimer: 'Agentes AI puede cometer errores, verifica las respuestas.',
+        disclaimer: _defaultIaDisclaimerText(),
         welcomeTitle: '', welcomeSubtitle: '',
         onSend: null, onAttach: null, onClose: null,
         onRegenerate: null,
@@ -393,15 +405,6 @@ function _aiPanelBindEvents() {
                 return;
             }
 
-            if (action === 'regenerate') {
-                if (typeof _aiPanel.options.onRegenerate === 'function') {
-                    _aiPanel.options.onRegenerate(_aiPanel.lastUserMessage);
-                    return;
-                }
-                if (typeof _aiPanel.options.onSend === 'function' && _aiPanel.lastUserMessage) {
-                    _aiPanel.options.onSend(_aiPanel.lastUserMessage);
-                }
-            }
         });
     }
 }
@@ -625,18 +628,20 @@ function addAIPanelMessage(text, type, attachments) {
         _aiPanel.lastUserMessage = String(text || '');
     }
 
-    var actionsClass = 'ai-panel__msg-actions';
-    var actionsInner =
-        '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" data-tooltip="Copiar" data-ai-panel-action="copy" aria-label="Copiar">' +
+    var sentAt = new Date();
+    el.setAttribute('data-msg-at', sentAt.toISOString());
+    var timeLabel = _aiEscape(_aiFormatMsgTimeLabel(sentAt));
+    var copyBtn =
+        '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--xs ubits-button--icon-only" data-tooltip="Copiar" data-tooltip-delay="1000" data-ai-panel-action="copy" aria-label="Copiar">' +
             '<i class="far fa-copy"></i>' +
-        '</button>' +
-        '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" data-tooltip="Regenerar" data-ai-panel-action="regenerate" aria-label="Regenerar">' +
-            '<i class="far fa-arrows-rotate"></i>' +
         '</button>';
-    var actionsHtml = '';
-    if (msgType === 'ai') {
-        actionsHtml = '<div class="' + actionsClass + ' ubits-ia-chat-thread__message-actions">' + actionsInner + '</div>';
-    }
+    var footerHtml =
+        '<div class="ai-panel__msg-footer ubits-ia-chat-thread__message-footer">' +
+        '<span class="ai-panel__msg-time ubits-ia-chat-thread__timestamp">' + timeLabel + '</span>' +
+        (msgType === 'ai'
+            ? '<div class="ai-panel__msg-actions ubits-ia-chat-thread__message-actions">' + copyBtn + '</div>'
+            : '') +
+        '</div>';
 
     el.setAttribute('data-ai-text', String(text || ''));
     var attHtml = _buildAIPanelAttachmentsHtml(attachments && attachments.images, attachments && attachments.files) || '';
@@ -646,12 +651,11 @@ function addAIPanelMessage(text, type, attachments) {
         var innerGlobe = window.UbitsIaChatStreaming.buildAiGlobeInnerHtmlFromPlainText(text) + attHtml;
         el.innerHTML =
             '<div class="ai-panel__msg-bubble ubits-ia-chat-thread__text-globe ubits-ia-chat-thread__text-globe--ai">' + innerGlobe + '</div>' +
-            actionsHtml;
+            footerHtml;
     } else {
-        var actionsFallback = msgType === 'ai' ? '<div class="' + actionsClass + '">' + actionsInner + '</div>' : '';
         el.innerHTML =
             '<div class="ai-panel__msg-bubble">' + _aiEscape(text) + attHtml + '</div>' +
-            actionsFallback;
+            footerHtml;
     }
     messages.appendChild(el);
 
@@ -663,7 +667,7 @@ function addAIPanelMessage(text, type, attachments) {
         });
     }
 
-    if (msgType === 'ai' && typeof window.initTooltip === 'function') {
+    if (typeof window.initTooltip === 'function') {
         setTimeout(function () { window.initTooltip('#ai-panel [data-tooltip]'); }, 0);
     }
 

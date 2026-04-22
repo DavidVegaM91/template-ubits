@@ -791,11 +791,11 @@
     flex-wrap: wrap;
 }
 
-/* Globo: texto + imágenes; superior izquierdo recto, resto redondeado 8px (token) */
+/* Globo: texto + imágenes; superior izquierdo recto, resto 16px */
 .task-detail-comment-bubble {
     background: var(--ubits-bg-2);
     padding: var(--padding-sm) var(--padding-md);
-    border-radius: 0 var(--border-radius-sm) var(--border-radius-sm) var(--border-radius-sm);
+    border-radius: 0 16px 16px 16px;
     display: inline-block;
     max-width: 100%;
 }

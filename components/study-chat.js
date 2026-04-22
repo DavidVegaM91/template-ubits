@@ -2721,6 +2721,8 @@ function createStudyChatHTML(options = {}) {
                     <button class="ubits-button ubits-button--secondary ubits-button--sm" data-suggestion="contenidos"><span>Sugerencias de contenidos</span></button>
                     <button class="ubits-button ubits-button--secondary ubits-button--sm" data-suggestion="plan"><span>Crear plan de formación</span></button>
                     <button class="ubits-button ubits-button--secondary ubits-button--sm" data-suggestion="tutor"><span>Sé mi tutor</span></button>`;
+    const iaDisclaimerText = (typeof window !== 'undefined' && window.UbitsIaChatDisclaimer && window.UbitsIaChatDisclaimer.DEFAULT_TEXT)
+        || 'El agente puede cometer errores; verifica la información.';
     const welcomeBlock = isTutorMode ? `
             <div class="ubits-ia-chat-thread__welcome-wrapper" id="ubits-ia-chat-thread-welcome">
                 <div class="ubits-ia-chat-thread__welcome">
@@ -2758,23 +2760,25 @@ function createStudyChatHTML(options = {}) {
                 </div>
                 <div class="ubits-ia-chat-thread__suggestions" id="ubits-ia-chat-thread-suggestions">${suggestionButtons}</div>
             </div>
-            <p class="ubits-ia-chat-thread__disclaimer ubits-body-xs-regular">El chat de modo estudio IA puede cometer errores; verifica sus respuestas.</p>
+            <p class="ubits-ia-chat-thread__disclaimer ubits-body-xs-regular">${escapeHTML(iaDisclaimerText)}</p>
         </div>
     `;
 }
 
 /**
- * Formatea la hora actual
- * @returns {string} Hora formateada (ej: "10:06 am")
+ * Etiqueta de tiempo del mensaje (misma lógica relativa que comentarios en task-detail; si no, fecha corta).
  */
 function formatTime() {
     const now = new Date();
+    if (window.UbitsIaChatTime && typeof window.UbitsIaChatTime.formatMessageTimeLabel === 'function') {
+        return window.UbitsIaChatTime.formatMessageTimeLabel(now);
+    }
     const hours = now.getHours();
     const minutes = now.getMinutes();
     const ampm = hours >= 12 ? 'pm' : 'am';
     const displayHours = hours % 12 || 12;
     const displayMinutes = minutes.toString().padStart(2, '0');
-    return `${displayHours}:${displayMinutes} ${ampm}`;
+    return displayHours + ':' + displayMinutes + ' ' + ampm;
 }
 
 /**
@@ -2857,16 +2861,24 @@ function createMessageHTML(type, text, timestamp, showActions = false, isTyping 
         }
     }
 
-    const actionsHTML = (type === 'ai' && !isTyping) ? `
-        <div class="ubits-ia-chat-thread__message-actions">
-            <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" data-tooltip="Copiar">
-                <i class="far fa-copy"></i>
-            </button>
-            <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" data-tooltip="Regenerar">
-                <i class="far fa-arrows-rotate"></i>
-            </button>
+    let timeLabel = (timestamp != null && String(timestamp).trim()) ? String(timestamp).trim() : '';
+    if (!isTyping && !timeLabel) {
+        timeLabel = formatTime();
+    }
+    const footerHTML = !isTyping && timeLabel ? (type === 'ai' ? `
+        <div class="ubits-ia-chat-thread__message-footer">
+            <span class="ubits-ia-chat-thread__timestamp">${timeLabel}</span>
+            <div class="ubits-ia-chat-thread__message-actions">
+                <button type="button" class="ubits-button ubits-button--tertiary ubits-button--xs ubits-button--icon-only" data-tooltip="Copiar" aria-label="Copiar">
+                    <i class="far fa-copy"></i>
+                </button>
+            </div>
         </div>
-    ` : '';
+    ` : `
+        <div class="ubits-ia-chat-thread__message-footer">
+            <span class="ubits-ia-chat-thread__timestamp">${timeLabel}</span>
+        </div>
+    `) : '';
 
     const globeSuffix = (innerGlobeSuffixHTML && typeof innerGlobeSuffixHTML === 'string' && innerGlobeSuffixHTML.trim()) ? innerGlobeSuffixHTML : '';
     return `
@@ -2875,7 +2887,7 @@ function createMessageHTML(type, text, timestamp, showActions = false, isTyping 
                 ${textHTML}
                 ${globeSuffix}
             </div>
-            ${actionsHTML}
+            ${footerHTML}
         </div>
     `;
 }
@@ -3260,7 +3272,6 @@ function attachAIMessageActions(messageElement, text, regenerateFunction) {
     if (messageElement.dataset.iaActionsBound === '1') return;
     messageElement.dataset.iaActionsBound = '1';
     const copyBtn = messageElement.querySelector('button[data-tooltip="Copiar"]');
-    const regenerateBtn = messageElement.querySelector('button[data-tooltip="Regenerar"]');
     const plainText = (() => {
         const div = document.createElement('div');
         div.innerHTML = text;
@@ -3281,12 +3292,6 @@ function attachAIMessageActions(messageElement, text, regenerateFunction) {
                 document.body.removeChild(ta);
             });
         });
-    }
-    if (regenerateBtn) {
-        regenerateBtn.disabled = !regenerateFunction;
-        if (regenerateFunction) {
-            regenerateBtn.addEventListener('click', () => regenerateFunction());
-        }
     }
 }
 
