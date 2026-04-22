@@ -1547,6 +1547,12 @@ body[data-theme="dark"] .ubits-ia-chat__main::before {
     padding: 8px 10px !important;
     min-height: auto !important;
     overflow: visible !important;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.ubits-ia-chat .ubits-ia-chat-thread__input-container:focus-within {
+    border-color: rgba(136, 35, 234, 0.35) !important;
+    box-shadow: 0 0 0 3px rgba(136, 35, 234, 0.06);
 }
 
 .ubits-ia-chat .ubits-ia-chat-thread__input-wrapper {
