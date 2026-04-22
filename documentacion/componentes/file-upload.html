@@ -85,6 +85,9 @@
                                 <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" onclick="setPreviewState('uploading')">
                                     <span>Cargando archivo</span>
                                 </button>
+                                <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" onclick="setPreviewState('loaded')">
+                                    <span>Archivo cargado</span>
+                                </button>
                                 <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" onclick="setPreviewState('error-type')">
                                     <span>Error: tipo</span>
                                 </button>
@@ -545,6 +548,13 @@ fileUploadClearProgress('mi-file-upload');      // vuelve al estado normal</code
                 nameEl.textContent    = 'usuarios_carga_masiva.csv';
                 sizeEl.textContent    = '128,4 KB';
             },
+            /* Archivo cargado: card con nombre y peso, sin barra de progreso. */
+            loaded: function (el) {
+                if (_uploadingTimer) { clearInterval(_uploadingTimer); _uploadingTimer = null; }
+                fileUploadClearProgress(el);
+                fileUploadClearProcessing(el);
+                previewStates.file(el);
+            },
             'error-type': function (el) {
                 previewStates.empty(el);
                 fileUploadSetError(el, 'El archivo no es compatible. Solo se aceptan: .csv, text/csv.');
@@ -570,6 +580,7 @@ fileUploadClearProgress('mi-file-upload');      // vuelve al estado normal</code
                     if (pct >= 100) {
                         clearInterval(_uploadingTimer);
                         _uploadingTimer = null;
+                        setPreviewState('loaded');
                     }
                 }, 30);
             },
