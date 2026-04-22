@@ -554,6 +554,14 @@
     gap: var(--gap-xs);
 }
 
+#comp360ModalBancoSearchWrap {
+    margin-bottom: var(--gap-md);
+}
+
+#comp360ModalBancoEmptyState {
+    margin-top: var(--gap-md);
+}
+
 .comp360-banco-item {
     display: flex;
     align-items: center;
@@ -563,6 +571,12 @@
 
 .comp360-banco-item .ubits-checkbox {
     flex: 1;
+}
+
+.comp360-banco-item--select-all {
+    padding-bottom: var(--padding-xs);
+    border-bottom: 1px solid var(--ubits-border-1);
+    margin-bottom: var(--gap-xs);
 }
 
 .comp360-banco-item--added {

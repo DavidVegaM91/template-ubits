@@ -10,6 +10,9 @@
  *   fileUploadSetProgress(idOrEl, percent)      — activa estado "cargando": oculta botón eliminar,
  *                                                 muestra barra de progreso (azul 0-99 %, verde 100 %)
  *   fileUploadClearProgress(idOrEl)             — vuelve al estado normal (con botón eliminar)
+ *   fileUploadSetProcessing(idOrEl, percent)    — activa variante "Procesando" (barra debajo del card)
+ *   fileUploadClearProcessing(idOrEl)           — limpia variante "Procesando"
+ *   fileUploadAnimateProcessing(idOrEl, ms, cb) — anima 0→100 (default 5s) y ejecuta cb al terminar
  *
  * Opciones de createFileUpload():
  *   containerId       {string}   ID del contenedor donde inyectar el HTML (requerido)
@@ -121,6 +124,13 @@
                     '<i class="far fa-trash-alt"></i>' +
                   '</button>' +
                 '</div>' +
+                '<div class="ubits-file-upload__processing" data-file-upload-processing style="display:none" aria-live="polite">' +
+                  '<span class="ubits-body-sm-regular ubits-file-upload__processing-label">Procesando</span>' +
+                  '<div class="ubits-file-upload__processing-bar">' +
+                    '<div class="ubits-file-upload__processing-fill" data-file-upload-processing-fill></div>' +
+                  '</div>' +
+                  '<span class="ubits-body-sm-regular ubits-file-upload__processing-pct" data-file-upload-processing-pct>0%</span>' +
+                '</div>' +
                 '<input type="file" class="ubits-file-upload__input" data-file-upload-input' +
                   (accept ? ' accept="' + accept + '"' : '') + ' style="display:none">' +
               '</div>' +
@@ -177,9 +187,12 @@
         function clearFile() {
             if (emptyEl) emptyEl.style.display = '';
             if (cardEl)  cardEl.style.display  = 'none';
+            el.classList.remove('ubits-file-upload--processing');
             if (dropzone) dropzone.classList.remove('ubits-file-upload__dropzone--has-file', 'ubits-file-upload__dropzone--invalid');
             if (inputEl)  inputEl.value = '';
             clearError();
+            fileUploadClearProgress(el);
+            fileUploadClearProcessing(el);
             if (onChange) onChange(null);
             el.dispatchEvent(new CustomEvent('ubits-file-upload-change', { bubbles: true, detail: { file: null } }));
         }
@@ -410,6 +423,65 @@
         if (pctEl) pctEl.textContent = '0%';
     }
 
+    /**
+     * Activa la variante "Procesando":
+     * - Conserva el file-card visible
+     * - Muestra barra de progreso debajo del card con label "Procesando"
+     * - Bloquea interacción del dropzone durante el procesamiento
+     */
+    function fileUploadSetProcessing(idOrEl, percent) {
+        var el = typeof idOrEl === 'string' ? document.getElementById(idOrEl) : idOrEl;
+        if (!el) return;
+        var pct = Math.max(0, Math.min(100, percent));
+        var dropzone = el.querySelector('[data-file-upload-dropzone]');
+        var fill = el.querySelector('[data-file-upload-processing-fill]');
+        var pctEl = el.querySelector('[data-file-upload-processing-pct]');
+        el.classList.add('ubits-file-upload--processing');
+        if (dropzone) dropzone.classList.add('ubits-file-upload__dropzone--processing');
+        if (fill) {
+            fill.style.width = pct + '%';
+            if (pct >= 100) {
+                fill.classList.add('ubits-file-upload__processing-fill--complete');
+            } else {
+                fill.classList.remove('ubits-file-upload__processing-fill--complete');
+            }
+        }
+        if (pctEl) pctEl.textContent = pct + '%';
+    }
+
+    function fileUploadClearProcessing(idOrEl) {
+        var el = typeof idOrEl === 'string' ? document.getElementById(idOrEl) : idOrEl;
+        if (!el) return;
+        var dropzone = el.querySelector('[data-file-upload-dropzone]');
+        var fill = el.querySelector('[data-file-upload-processing-fill]');
+        var pctEl = el.querySelector('[data-file-upload-processing-pct]');
+        el.classList.remove('ubits-file-upload--processing');
+        if (dropzone) dropzone.classList.remove('ubits-file-upload__dropzone--processing');
+        if (fill) {
+            fill.style.width = '0%';
+            fill.classList.remove('ubits-file-upload__processing-fill--complete');
+        }
+        if (pctEl) pctEl.textContent = '0%';
+    }
+
+    function fileUploadAnimateProcessing(idOrEl, durationMs, onDone) {
+        var el = typeof idOrEl === 'string' ? document.getElementById(idOrEl) : idOrEl;
+        if (!el) return null;
+        var totalMs = (typeof durationMs === 'number' && durationMs > 0) ? durationMs : 5000;
+        var start = Date.now();
+        fileUploadSetProcessing(el, 0);
+        var timer = setInterval(function () {
+            var elapsed = Date.now() - start;
+            var pct = Math.min(100, Math.round((elapsed / totalMs) * 100));
+            fileUploadSetProcessing(el, pct);
+            if (pct >= 100) {
+                clearInterval(timer);
+                if (typeof onDone === 'function') onDone();
+            }
+        }, 50);
+        return timer;
+    }
+
     /* ─── exposición global ──────────────────────────── */
 
     window.createFileUpload          = createFileUpload;
@@ -419,6 +491,9 @@
     window.fileUploadClearError      = fileUploadClearError;
     window.fileUploadSetProgress     = fileUploadSetProgress;
     window.fileUploadClearProgress   = fileUploadClearProgress;
+    window.fileUploadSetProcessing   = fileUploadSetProcessing;
+    window.fileUploadClearProcessing = fileUploadClearProcessing;
+    window.fileUploadAnimateProcessing = fileUploadAnimateProcessing;
 
     /* Auto-init sobre HTML estático */
     if (document.readyState === 'loading') {

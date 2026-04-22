@@ -82,8 +82,8 @@
                                 <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn active" onclick="setPreviewState('empty')">
                                     <span>Vacío</span>
                                 </button>
-                                <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" onclick="setPreviewState('file')">
-                                    <span>Con archivo</span>
+                                <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" onclick="setPreviewState('uploading')">
+                                    <span>Cargando archivo</span>
                                 </button>
                                 <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" onclick="setPreviewState('error-type')">
                                     <span>Error: tipo</span>
@@ -91,11 +91,8 @@
                                 <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" onclick="setPreviewState('error-size')">
                                     <span>Error: peso</span>
                                 </button>
-                                <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" onclick="setPreviewState('report')">
-                                    <span>Informe de errores</span>
-                                </button>
-                                <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" onclick="setPreviewState('uploading')">
-                                    <span>Con archivo cargando</span>
+                                <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" onclick="setPreviewState('processing')">
+                                    <span>Procesando</span>
                                 </button>
                             </div>
                         </div>
@@ -522,6 +519,7 @@ fileUploadClearProgress('mi-file-upload');      // vuelve al estado normal</code
                 /* Cancelar animación de carga si estaba en curso */
                 if (_uploadingTimer) { clearInterval(_uploadingTimer); _uploadingTimer = null; }
                 fileUploadClearProgress(el);
+                fileUploadClearProcessing(el);
                 var dropzone = el.querySelector('[data-file-upload-dropzone]');
                 var emptyEl  = el.querySelector('[data-file-upload-empty]');
                 var cardEl   = el.querySelector('[data-file-upload-card]');
@@ -574,6 +572,16 @@ fileUploadClearProgress('mi-file-upload');      // vuelve al estado normal</code
                         _uploadingTimer = null;
                     }
                 }, 30);
+            },
+            processing: function (el) {
+                previewStates.file(el);
+                if (_uploadingTimer) { clearInterval(_uploadingTimer); _uploadingTimer = null; }
+                _uploadingTimer = fileUploadAnimateProcessing(el, 5000, function () {
+                    if (_uploadingTimer) {
+                        clearInterval(_uploadingTimer);
+                        _uploadingTimer = null;
+                    }
+                });
             }
         };
 

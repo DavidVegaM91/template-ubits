@@ -1214,15 +1214,17 @@
             title: 'Añadir competencia',
             bodyHtml:
                 '<div class="comp360-modal-tabs-wrap">' +
-                    '<button type="button" class="ubits-tab ubits-tab--sm ubits-tab--active" data-modal-tab="crear">Crear competencia</button>' +
-                    '<button type="button" class="ubits-tab ubits-tab--sm" data-modal-tab="banco">Banco de competencias</button>' +
+                    '<button type="button" class="ubits-tab ubits-tab--sm ubits-tab--active" data-modal-tab="banco">Banco de competencias</button>' +
+                    '<button type="button" class="ubits-tab ubits-tab--sm" data-modal-tab="crear">Crear nueva</button>' +
                 '</div>' +
-                '<div id="comp360-modal-panel-crear">' +
+                '<div id="comp360-modal-panel-banco">' +
+                    '<div id="comp360ModalBancoSearchWrap"></div>' +
+                    '<div id="comp360ModalBancoList" class="comp360-banco-list"></div>' +
+                    '<div id="comp360ModalBancoEmptyState" style="display:none;"></div>' +
+                '</div>' +
+                '<div id="comp360-modal-panel-crear" style="display:none">' +
                     '<div id="comp360ModalNombreWrap"></div>' +
                     '<div id="comp360ModalDescWrap" style="margin-top:var(--gap-lg)"></div>' +
-                '</div>' +
-                '<div id="comp360-modal-panel-banco" style="display:none">' +
-                    '<div id="comp360ModalBancoList" class="comp360-banco-list"></div>' +
                 '</div>',
             footerHtml:
                 '<button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="comp360ModalCancelarBtn"><span>Cancelar</span></button>' +
@@ -1252,27 +1254,138 @@
 
             /* ── Tab 2: Banco de competencias ── */
             var bancoList = document.getElementById('comp360ModalBancoList');
+            var bancoSearchWrap = document.getElementById('comp360ModalBancoSearchWrap');
+            var bancoEmptyState = document.getElementById('comp360ModalBancoEmptyState');
             if (bancoList) {
                 var yaEnEval = {};
                 _competencias.forEach(function (c) { yaEnEval[c.nombre.trim().toLowerCase()] = true; });
+                if (bancoSearchWrap) {
+                    createInput({
+                        containerId: 'comp360ModalBancoSearchWrap',
+                        label: 'Buscar',
+                        placeholder: 'Buscar por nombre...',
+                        type: 'search',
+                        size: 'md',
+                        showLabel: false
+                    });
+                }
 
-                bancoList.innerHTML = BANCO_COMPETENCIAS_360.map(function (item) {
-                    var nombre = item.nombre || '';
-                    var yaAdded = !!yaEnEval[nombre.trim().toLowerCase()];
-                    var nombreAttr = String(nombre).replace(/"/g, '&quot;');
-                    return '<div class="comp360-banco-item' + (yaAdded ? ' comp360-banco-item--added' : '') + '">' +
+                function renderBancoList() {
+                    var searchEl = document.querySelector('#comp360ModalBancoSearchWrap .ubits-input');
+                    var query = eval360Norm(searchEl ? searchEl.value : '');
+                    var visibles = BANCO_COMPETENCIAS_360.filter(function (item) {
+                        var nom = item && item.nombre ? String(item.nombre) : '';
+                        return !query || eval360Norm(nom).indexOf(query) >= 0;
+                    });
+
+                    var html = '';
+                    html += '<div class="comp360-banco-item comp360-banco-item--select-all">' +
                         '<label class="ubits-checkbox ubits-checkbox--sm">' +
-                            '<input type="checkbox" class="ubits-checkbox__input" data-nombre="' + nombreAttr + '" ' + (yaAdded ? 'checked disabled' : '') + '>' +
+                            '<input type="checkbox" class="ubits-checkbox__input" id="comp360BancoSelectAll">' +
                             '<span class="ubits-checkbox__box"><i class="far fa-check"></i></span>' +
-                            '<span class="ubits-checkbox__label ubits-body-sm-regular">' + hubEscHtml(nombre) + '</span>' +
+                            '<span class="ubits-checkbox__label ubits-body-sm-semibold">Seleccionar todos</span>' +
                         '</label>' +
-                        (yaAdded ? '<span class="comp360-banco-tag">Ya añadida</span>' : '') +
                     '</div>';
-                }).join('');
 
-                bancoList.querySelectorAll('input[type="checkbox"]').forEach(function (cb) {
-                    cb.addEventListener('change', validateComp360Modal);
-                });
+                    html += visibles.map(function (item) {
+                        var nombre = item.nombre || '';
+                        var key = nombre.trim().toLowerCase();
+                        var yaAdded = !!yaEnEval[key];
+                        var nombreAttr = String(nombre).replace(/"/g, '&quot;');
+                        return '<div class="comp360-banco-item' + (yaAdded ? ' comp360-banco-item--added' : '') + '">' +
+                            '<label class="ubits-checkbox ubits-checkbox--sm">' +
+                                '<input type="checkbox" class="ubits-checkbox__input comp360-banco-item-cb" data-nombre="' + nombreAttr + '" ' + (yaAdded ? 'checked disabled' : '') + '>' +
+                                '<span class="ubits-checkbox__box"><i class="far fa-check"></i></span>' +
+                                '<span class="ubits-checkbox__label ubits-body-sm-regular">' + hubEscHtml(nombre) + '</span>' +
+                            '</label>' +
+                            (yaAdded ? '<span class="comp360-banco-tag">Ya añadida</span>' : '') +
+                        '</div>';
+                    }).join('');
+                    bancoList.innerHTML = html;
+
+                    var listChecks = bancoList.querySelectorAll('.comp360-banco-item-cb');
+                    function syncSelectAllState() {
+                        var selectAll = document.getElementById('comp360BancoSelectAll');
+                        if (!selectAll) return;
+                        var elegibles = Array.prototype.filter.call(listChecks, function (cb) { return !cb.disabled; });
+                        var checked = elegibles.filter(function (cb) { return cb.checked; });
+                        if (!elegibles.length) {
+                            selectAll.checked = false;
+                            selectAll.indeterminate = false;
+                            selectAll.disabled = true;
+                            return;
+                        }
+                        selectAll.disabled = false;
+                        selectAll.checked = checked.length === elegibles.length;
+                        /* UX pedida: nunca mostrar estado intermedio (cuadro azul) */
+                        selectAll.indeterminate = false;
+                    }
+
+                    var selectAllCb = document.getElementById('comp360BancoSelectAll');
+                    if (selectAllCb) {
+                        selectAllCb.addEventListener('change', function () {
+                            Array.prototype.forEach.call(listChecks, function (cb) {
+                                if (!cb.disabled) cb.checked = !!selectAllCb.checked;
+                            });
+                            syncSelectAllState();
+                            validateComp360Modal();
+                        });
+                    }
+
+                    Array.prototype.forEach.call(listChecks, function (cb) {
+                        cb.addEventListener('change', function () {
+                            syncSelectAllState();
+                            validateComp360Modal();
+                        });
+                    });
+                    syncSelectAllState();
+
+                    var hasRealItems = visibles.length > 0;
+                    if (bancoEmptyState) {
+                        bancoEmptyState.style.display = hasRealItems ? 'none' : 'flex';
+                        if (!hasRealItems) {
+                            if (typeof loadEmptyState === 'function') {
+                                loadEmptyState('comp360ModalBancoEmptyState', {
+                                    icon: 'fa-search',
+                                    iconSize: 'lg',
+                                    title: 'No se encontraron resultados',
+                                    description: 'Intenta ajustar tu búsqueda.',
+                                    buttons: {
+                                        secondary: {
+                                            text: 'Limpiar búsqueda',
+                                            icon: 'fa-times',
+                                            onClick: function () {}
+                                        }
+                                    }
+                                });
+                                setTimeout(function () {
+                                    var clearBtn = bancoEmptyState.querySelector('.ubits-button--secondary');
+                                    if (!clearBtn) return;
+                                    clearBtn.onclick = function (e) {
+                                        e.preventDefault();
+                                        e.stopPropagation();
+                                        var sEl = document.querySelector('#comp360ModalBancoSearchWrap .ubits-input');
+                                        if (sEl) {
+                                            sEl.value = '';
+                                            renderBancoList();
+                                            sEl.focus();
+                                        }
+                                    };
+                                }, 40);
+                            }
+                        } else {
+                            bancoEmptyState.innerHTML = '';
+                        }
+                    }
+                    bancoList.style.display = hasRealItems ? '' : 'none';
+                }
+
+                renderBancoList();
+                var bancoSearchInput = document.querySelector('#comp360ModalBancoSearchWrap .ubits-input');
+                if (bancoSearchInput) {
+                    bancoSearchInput.addEventListener('input', renderBancoList);
+                    bancoSearchInput.addEventListener('keyup', renderBancoList);
+                }
             }
 
             /* ── Cambio de tab ── */
@@ -1313,7 +1426,7 @@
                 /* Añadir competencias del banco seleccionadas que no estén ya en la evaluación */
                 var yaExistentes = {};
                 _competencias.forEach(function (c) { yaExistentes[c.nombre.trim().toLowerCase()] = true; });
-                document.querySelectorAll('#comp360ModalBancoList input[type="checkbox"]').forEach(function (cb) {
+                document.querySelectorAll('#comp360ModalBancoList .comp360-banco-item-cb').forEach(function (cb) {
                     if (cb.checked && !cb.disabled) {
                         var nombreBanco = cb.dataset.nombre;
                         if (nombreBanco && !yaExistentes[nombreBanco.trim().toLowerCase()]) {
@@ -1571,9 +1684,18 @@
                             overlayId:  'comp360EnumImportErrorModal',
                             title:      'Errores en el archivo (' + _importErrores.length + ')',
                             bodyHtml:   buildImportErrorTableHtml(_importErrores),
-                            footerHtml: '<button class="ubits-button ubits-button--primary ubits-button--md" onclick="closeModal(\'comp360EnumImportErrorModal\')"><span>Entendido</span></button>',
+                            footerHtml:
+                                '<button class="ubits-button ubits-button--secondary ubits-button--md" id="comp360ImportErrDownloadBtn"><i class="far fa-file-arrow-down"></i><span>Descargar informe</span></button>' +
+                                '<button class="ubits-button ubits-button--primary ubits-button--md" onclick="closeModal(\'comp360EnumImportErrorModal\')"><span>Entendido</span></button>',
                             size:       'md'
                         });
+                        setTimeout(function () {
+                            var dlBtn = document.getElementById('comp360ImportErrDownloadBtn');
+                            if (!dlBtn) return;
+                            dlBtn.addEventListener('click', function () {
+                                downloadImportErrorReportCsv('informe-errores-enunciados.csv', _importErrores || []);
+                            });
+                        }, 30);
                     });
                 }
             }
@@ -1820,7 +1942,7 @@
             var tab1Valid = !!(nombreEl && nombreEl.value.trim() && descEl && descEl.value.trim());
 
             var tab2Valid = Array.prototype.some.call(
-                document.querySelectorAll('#comp360ModalBancoList input[type="checkbox"]'),
+                document.querySelectorAll('#comp360ModalBancoList .comp360-banco-item-cb'),
                 function (cb) { return cb.checked && !cb.disabled; }
             );
 
@@ -2382,30 +2504,31 @@
                         eval360AplicarImport('organigrama', _eval360ImportFilas);
                         closeDrawer('eval360DrawerImport');
                     } else {
-                        /* Flujo libre: simular progreso de carga antes de cerrar */
+                        /* Flujo libre: estado "Procesando" antes de cerrar */
                         var omitidasSnap = _eval360ImportOmitidasTipo;
                         importarBtn.disabled = true;
                         var cancelBtn2 = document.getElementById('eval360ImportCancelarBtn');
                         if (cancelBtn2) cancelBtn2.disabled = true;
                         var fuEl = document.getElementById('eval360ImportFu');
-                        var pct = 0;
-                        var STEP_MS = 30;
-                        var STEP_PCT = 3;
-                        var progresoId = setInterval(function () {
-                            pct = Math.min(100, pct + STEP_PCT);
-                            if (fuEl) fileUploadSetProgress(fuEl, pct);
-                            if (pct >= 100) {
-                                clearInterval(progresoId);
-                                setTimeout(function () {
-                                    eval360AplicarImport('libre', _eval360ImportFilas);
-                                    closeDrawer('eval360DrawerImport');
-                                    showView('evaluados-asignados');
-                                    if (omitidasSnap > 0 && typeof showToast === 'function') {
-                                        showToast('info', 'Se omitieron ' + omitidasSnap + ' fila(s) cuyo tipo no está activo en «Tipo de evaluación»; el resto se importó.');
-                                    }
-                                }, 400);
-                            }
-                        }, STEP_MS);
+                        if (fuEl && typeof fileUploadAnimateProcessing === 'function') {
+                            fileUploadAnimateProcessing(fuEl, 5000, function () {
+                                eval360AplicarImport('libre', _eval360ImportFilas);
+                                closeDrawer('eval360DrawerImport');
+                                showView('evaluados-asignados');
+                                if (omitidasSnap > 0 && typeof showToast === 'function') {
+                                    showToast('info', 'Se omitieron ' + omitidasSnap + ' fila(s) cuyo tipo no está activo en «Tipo de evaluación»; el resto se importó.');
+                                }
+                            });
+                        } else {
+                            setTimeout(function () {
+                                eval360AplicarImport('libre', _eval360ImportFilas);
+                                closeDrawer('eval360DrawerImport');
+                                showView('evaluados-asignados');
+                                if (omitidasSnap > 0 && typeof showToast === 'function') {
+                                    showToast('info', 'Se omitieron ' + omitidasSnap + ' fila(s) cuyo tipo no está activo en «Tipo de evaluación»; el resto se importó.');
+                                }
+                            }, 5000);
+                        }
                     }
                 });
             }
@@ -2690,18 +2813,13 @@
         var MAX = 50;
         var visible = errores.slice(0, MAX);
         var rows = visible.map(function (e) {
-            /* Extrae "Fila N" del inicio del mensaje — formato: "Fila 3: texto..." */
-            var colonIdx = e.indexOf(': ');
-            var prefijo  = colonIdx > 0 ? e.substring(0, colonIdx).trim() : '';
-            var filaMatch = /^Fila\s+(\d+)$/i.exec(prefijo);
-            var fila     = filaMatch ? filaMatch[1] : '—';
-            var problema = filaMatch ? e.substring(colonIdx + 2) : e;
+            var parsed = parseImportErrorRow(e);
             return '<tr>' +
                 '<td style="padding:10px 16px;border-bottom:1px solid var(--ubits-border-1);white-space:nowrap;width:56px;vertical-align:top">' +
-                    '<span class="ubits-body-sm-regular">' + fila + '</span>' +
+                    '<span class="ubits-body-sm-regular">' + parsed.fila + '</span>' +
                 '</td>' +
                 '<td style="padding:10px 16px;border-bottom:1px solid var(--ubits-border-1);white-space:normal;word-break:break-word;vertical-align:top">' +
-                    '<span class="ubits-body-sm-regular">' + problema + '</span>' +
+                    '<span class="ubits-body-sm-regular">' + parsed.problema + '</span>' +
                 '</td>' +
             '</tr>';
         }).join('');
@@ -2721,15 +2839,46 @@
         '</div>' + nota;
     }
 
+    function parseImportErrorRow(errorMsg) {
+        var e = String(errorMsg || '');
+        var colonIdx = e.indexOf(': ');
+        var prefijo  = colonIdx > 0 ? e.substring(0, colonIdx).trim() : '';
+        var filaMatch = /^Fila\s+(\d+)$/i.exec(prefijo);
+        var fila     = filaMatch ? filaMatch[1] : '—';
+        var problema = filaMatch ? e.substring(colonIdx + 2) : e;
+        return { fila: fila, problema: problema };
+    }
+
+    function downloadImportErrorReportCsv(filename, errores) {
+        var rows = ['fila,problema'];
+        (errores || []).forEach(function (e) {
+            var p = parseImportErrorRow(e);
+            rows.push([
+                eval360CsvEscape(p.fila),
+                eval360CsvEscape(p.problema)
+            ].join(','));
+        });
+        eval360DescargarCsv(filename, rows);
+    }
+
     /* ── Mostrar errores de importación en modal ── */
     function eval360MostrarErroresImport(errores) {
         openModal({
             overlayId:  'eval360ImportErrorModal',
             title:      'Errores en el archivo (' + errores.length + ')',
             bodyHtml:   buildImportErrorTableHtml(errores),
-            footerHtml: '<button class="ubits-button ubits-button--primary ubits-button--md" onclick="closeModal(\'eval360ImportErrorModal\')"><span>Entendido</span></button>',
+            footerHtml:
+                '<button class="ubits-button ubits-button--secondary ubits-button--md" id="eval360ImportErrDownloadBtn"><i class="far fa-file-arrow-down"></i><span>Descargar informe</span></button>' +
+                '<button class="ubits-button ubits-button--primary ubits-button--md" onclick="closeModal(\'eval360ImportErrorModal\')"><span>Entendido</span></button>',
             size:       'md'
         });
+        setTimeout(function () {
+            var dlBtn = document.getElementById('eval360ImportErrDownloadBtn');
+            if (!dlBtn) return;
+            dlBtn.addEventListener('click', function () {
+                downloadImportErrorReportCsv('informe-errores-importacion.csv', errores || []);
+            });
+        }, 30);
     }
 
     /* ── Aplicar importación al draft y refrescar tabla ── */

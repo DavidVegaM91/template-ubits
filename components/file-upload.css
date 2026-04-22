@@ -286,6 +286,57 @@
     pointer-events: none;
 }
 
+/* ── Variante: Procesando (barra debajo del card) ── */
+.ubits-file-upload__processing {
+    display: none;
+    align-items: center;
+    gap: var(--gap-sm);
+    width: min(100%, 400px);
+    max-width: 400px;
+    margin: var(--gap-sm) auto 0;
+}
+
+.ubits-file-upload--processing .ubits-file-upload__processing {
+    display: flex !important;
+}
+
+.ubits-file-upload__processing-label {
+    color: var(--ubits-fg-1-medium);
+    flex-shrink: 0;
+}
+
+.ubits-file-upload__processing-bar {
+    flex: 1;
+    height: 6px;
+    border-radius: var(--border-radius-full);
+    background: var(--ubits-bg-3);
+    overflow: hidden;
+}
+
+.ubits-file-upload__processing-fill {
+    height: 100%;
+    width: 0%;
+    border-radius: var(--border-radius-full);
+    background: var(--ubits-accent-brand);
+    transition: width 0.12s linear;
+}
+
+.ubits-file-upload__processing-fill--complete {
+    background: var(--ubits-feedback-accent-success);
+}
+
+.ubits-file-upload__processing-pct {
+    color: var(--ubits-fg-1-medium);
+    min-width: 36px;
+    text-align: right;
+    flex-shrink: 0;
+}
+
+.ubits-file-upload__dropzone--processing {
+    cursor: default !important;
+    pointer-events: none;
+}
+
 /* ── Helper text (error inline) ─────────── */
 .ubits-file-upload__helper {
     margin: 0;
