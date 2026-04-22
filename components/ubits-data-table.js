@@ -40,8 +40,8 @@
  * 1) Lo que YA da este componente (activar con features y options):
  *    - Checkboxes, búsqueda, filtros por columna, orden, botón Columnas, barra de acciones,
  *      Ver seleccionados (texto i18n + (N) si hay selección sin modo solo seleccionados; "Dejar de ver seleccionados (N)" en modo activo),
- *      contador X/Y de resultados, empty "sin datos" y empty "sin resultados" con Limpiar búsqueda.
- *    - Ejemplo de uso: documentacion/ejemplos/tabla-data-table-ejemplo.html
+ *      contador X/Y de resultados, empty "sin datos" y empty "sin resultados" con Limpiar búsqueda (descripción corta si solo hay buscador; larga si hay filtros por columna en UI).
+ *    - Ejemplo de uso: documentacion/componentes/ubits-data-table.html (preview en la doc del componente)
  *
  * 2) Lo que hay que AÑADIR en la página (fuera del componente):
  *    - Tabs (ej. Tareas | Planes): dos instancias de createUbitsDataTable o una con getData/columns que cambien por tab.
@@ -57,6 +57,15 @@
  */
 (function () {
     'use strict';
+
+    /** Empty por búsqueda/filtros: copy según si la tabla expone filtros por columna. */
+    var EMPTY_SEARCH_DESC_SEARCH_ONLY = 'Intenta ajustar tu búsqueda.';
+    var EMPTY_SEARCH_DESC_WITH_COLUMN_FILTERS = 'Intenta ajustar tu búsqueda o filtros para encontrar lo que buscas.';
+
+    function dataTableHasColumnFiltersUI(features, columns) {
+        if (!features || !features.filters) return false;
+        return (columns || []).some(function (c) { return c.filterable; });
+    }
 
     var defaultI18n = {
         selectAll: 'Seleccionar todo',
@@ -127,7 +136,7 @@
      * @param {function(Object): string} options.buildRowHtml - devuelve HTML de celdas (sin checkbox); si checkboxes, el componente añade la columna
      * @param {Object} [options.features] - { checkboxes, search, filters, verSeleccionados, actionBar, resultsCount, columnsToggle }
      * @param {Object} [options.emptyState] - { message, icon }
-     * @param {Object} [options.emptySearchState] - { message, description, buttonText } (empty de búsqueda; por defecto igual que seguimiento: título "No se encontraron resultados", botón "Limpiar búsqueda")
+     * @param {Object} [options.emptySearchState] - { message, description?, buttonText }. Si omites `description`, el componente elige el copy según si hay filtros por columna en UI (`features.filters` y alguna columna `filterable`): solo búsqueda → "Intenta ajustar tu búsqueda."; con filtros → "Intenta ajustar tu búsqueda o filtros para encontrar lo que buscas."
      * @param {Array} [options.actionBarButtons] - [{ id, label, icon, onClick(selectedIds) }]
      * @param {Object} [options.primaryButton] - { text: string, icon?: string, variant?: 'secondary', onClick: function() } botón en el header (slot «primary»; por defecto estilo primario; `variant: 'secondary'` para secundario)
      * @param {Object} [options.i18n]
@@ -145,11 +154,17 @@
         var buildRowHtml = typeof options.buildRowHtml === 'function' ? options.buildRowHtml : function () { return ''; };
         var features = options.features || {};
         var emptyState = options.emptyState || { message: 'No hay elementos.', icon: 'far fa-folder-open' };
-        var emptySearchState = options.emptySearchState || {
+        var defaultEmptySearchDescription = dataTableHasColumnFiltersUI(features, columns)
+            ? EMPTY_SEARCH_DESC_WITH_COLUMN_FILTERS
+            : EMPTY_SEARCH_DESC_SEARCH_ONLY;
+        var emptySearchState = Object.assign({
             message: 'No se encontraron resultados',
-            description: 'Intenta ajustar tu búsqueda o filtros para encontrar lo que buscas.',
+            description: defaultEmptySearchDescription,
             buttonText: 'Limpiar búsqueda'
-        };
+        }, options.emptySearchState || {});
+        if (emptySearchState.description == null || String(emptySearchState.description).trim() === '') {
+            emptySearchState.description = defaultEmptySearchDescription;
+        }
         var actionBarButtons = options.actionBarButtons || [];
         var primaryButton = options.primaryButton || null;
         var i18n = Object.assign({}, defaultI18n, options.i18n || {});
@@ -541,7 +556,7 @@
                         icon: 'fa-search',
                         iconSize: 'lg',
                         title: emptySearchState.message || 'No se encontraron resultados',
-                        description: emptySearchState.description || 'Intenta ajustar tu búsqueda o filtros para encontrar lo que buscas.',
+                        description: emptySearchState.description || defaultEmptySearchDescription,
                         buttons: {
                             secondary: {
                                 text: emptySearchState.buttonText || 'Limpiar búsqueda',
@@ -585,21 +600,6 @@
             var chipsCont = container.querySelector('#' + instanceId + '-filtros-chips');
             if (!wrap || !chipsCont) return;
             var chips = [];
-            if (features.search && searchQuery.trim()) {
-                chips.push({
-                    type: 'search',
-                    label: 'Búsqueda',
-                    value: searchQuery,
-                    remove: function () {
-                        searchQuery = '';
-                        var searchCont = document.getElementById(searchContainerId);
-                        if (searchCont) { searchCont.innerHTML = ''; searchCont.style.display = 'none'; }
-                        var toggle = container.querySelector('.ubits-dt-search-toggle');
-                        if (toggle) toggle.style.display = 'flex';
-                        refresh();
-                    }
-                });
-            }
             columns.forEach(function (c) {
                 if (!c.filterable) return;
                 (filters[c.id] || []).forEach(function (val, idx) {

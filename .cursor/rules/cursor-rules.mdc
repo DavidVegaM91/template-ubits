@@ -60,6 +60,15 @@ This is a UBITS template for creating interfaces quickly with Cursor AI. The val
 
 **Referencia de producto:** `ubits-colaborador/lms-creator/contenidos.html` + `contenidos.css`.
 
+### **🛠 AL usar `createUbitsDataTable` (`components/ubits-data-table.js` + `ubits-data-table.css`):**
+1. **Import obligatorio:** `components/ubits-data-table.css` + `components/ubits-data-table.js`; si hay empty state de “sin datos” o “sin resultados de búsqueda”, también **`components/empty-state.css`** y **`components/empty-state.js`** (el data table llama a `loadEmptyState`).
+2. **`emptySearchState` (cuando `features.search` es true):** `message` y `buttonText` canónicos: `No se encontraron resultados` y `Limpiar búsqueda`. Para **`description`**: puedes **omitirla** y el componente elige según la UI de filtros:
+   - **Solo buscador** (sin filtros por columna: `features.filters` falso **o** ninguna columna `filterable`): `Intenta ajustar tu búsqueda.`
+   - **Con filtros por columna** (`features.filters` verdadero y al menos una columna `filterable`): `Intenta ajustar tu búsqueda o filtros para encontrar lo que buscas.`
+   Si pasas `description` explícita, debe coincidir con una de esas dos según corresponda (no mezclar “filtros” en la copia si la tabla no ofrece filtros por columna).
+3. **No confundir vacío inicial con vacío por búsqueda:** `emptyState` = sin filas en la fuente de datos; `emptySearchState` = hay datos pero la búsqueda/filtros dejan 0 filas visibles.
+4. **Búsqueda ≠ chip de “Filtros aplicados”:** el componente no debe tratar el texto de búsqueda como un filtro aplicado en la barra de chips; los chips de esa barra son solo para **filtros por columna** (`filterable`).
+
 ### **🚨 WHEN CHANGING AN OFFICIAL COMPONENT (modal, input, button, etc.):**
 **Los componentes UBITS se usan con HTML hardcodeado en varias páginas. Si cambias la estructura o clases de un componente oficial (en `components/*.css`, `components/*.js` o su documentación), DEBES:**
 

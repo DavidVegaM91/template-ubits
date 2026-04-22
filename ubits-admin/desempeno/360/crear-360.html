@@ -2317,7 +2317,6 @@
             initialSelectedIds: savedIds,
             primaryButton:    { text: 'Cargar desde archivo', icon: 'fa-file-arrow-up', variant: 'secondary', onClick: openEval360ImportDrawer },
             emptyState:       { message: 'No hay colaboradores', icon: 'far fa-user' },
-            emptySearchState: { message: 'No se encontraron resultados', description: 'Intenta ajustar tu búsqueda.', buttonText: 'Limpiar búsqueda' },
             i18n:             { selectAll: 'Seleccionar todo', deselectAll: 'Deseleccionar todo', verSeleccionados: 'Ver seleccionados', buscar: 'Buscar' }
         });
         function syncEvaluadosAssignBtn() {
@@ -3277,7 +3276,6 @@
             primaryButton:    { text: 'Cargar desde archivo', icon: 'fa-file-arrow-up', variant: 'secondary', onClick: openEval360ImportDrawer },
             searchColumnIds:  ['evaluado'],
             initialSort:      { column: 'evaluado', direction: 'asc' },
-            emptySearchState: { message: 'No se encontraron resultados', description: 'Intenta ajustar tu búsqueda.', buttonText: 'Limpiar búsqueda' },
             i18n:             { buscarPlaceholder: 'Buscar evaluado...', buscar: 'Buscar' }
         });
 
@@ -3467,7 +3465,6 @@
             initialSort:      { column: 'evaluador', direction: 'asc' },
             primaryButton:    { text: 'Añadir evaluador', icon: 'fa-plus', variant: 'secondary', onClick: function () { openAnadirEvaluadorModal(_eval360EditandoIdx); } },
             emptyState:       { message: 'Sin evaluadores asignados', icon: 'far fa-user', description: ' ' },
-            emptySearchState: { message: 'No se encontraron resultados', description: 'Intenta ajustar tu búsqueda.', buttonText: 'Limpiar búsqueda' },
             i18n:             { buscarPlaceholder: 'Buscar evaluador...', buscar: 'Buscar' }
         });
 

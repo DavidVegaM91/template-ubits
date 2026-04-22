@@ -748,7 +748,6 @@
                         } }
                     ],
                     emptyState: { message: 'Aún no hay asignaciones', icon: 'far fa-user-check', description: 'Agrega asignaciones para definir quiénes tendrán acceso a este plan.' },
-                    emptySearchState: { message: 'No se encontraron resultados', description: 'Intenta ajustar tu búsqueda o filtros para encontrar lo que buscas.', buttonText: 'Limpiar búsqueda' },
                     i18n: { selectAll: 'Seleccionar todo', deselectAll: 'Deseleccionar todo', verSeleccionados: 'Ver seleccionados', buscar: 'Buscar' }
                 });
             }
@@ -1234,7 +1233,6 @@
                         buildRowHtml: buildDrawerColabRowHtml,
                         features: { checkboxes: true, search: true, filters: true, verSeleccionados: true, resultsCount: true },
                         emptyState: { message: 'No hay colaboradores', icon: 'far fa-user' },
-                        emptySearchState: { message: 'No se encontraron resultados', description: 'Intenta ajustar tu búsqueda o filtros para encontrar lo que buscas.', buttonText: 'Limpiar búsqueda' },
                         i18n: { selectAll: 'Seleccionar todo', deselectAll: 'Deseleccionar todo', verSeleccionados: 'Ver seleccionados', buscar: 'Buscar' }
                     });
                     drawerColabContainer.addEventListener('change', function(e) {
@@ -1263,7 +1261,6 @@
                         buildRowHtml: buildDrawerGruposRowHtml,
                         features: { checkboxes: true, search: true, verSeleccionados: true, resultsCount: true },
                         emptyState: { message: 'No hay grupos', icon: 'far fa-users' },
-                        emptySearchState: { message: 'No se encontraron resultados', description: 'Intenta ajustar tu búsqueda o filtros para encontrar lo que buscas.', buttonText: 'Limpiar búsqueda' },
                         i18n: { selectAll: 'Seleccionar todo', deselectAll: 'Deseleccionar todo', verSeleccionados: 'Ver seleccionados', buscar: 'Buscar' }
                     });
                     drawerGruposContainer.addEventListener('change', function(e) {

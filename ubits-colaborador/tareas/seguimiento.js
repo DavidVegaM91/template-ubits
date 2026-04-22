@@ -1056,12 +1056,12 @@
                         }
                     }, 50);
                 } else {
-                    // 3) No se encontraron resultados por búsqueda/filtros de columna
+                    // 3) Hay datos en el tab pero 0 filas visibles por búsqueda / filtros / «ver seleccionados»
                     loadEmptyState('seguimiento-empty-state', {
                         icon: 'fa-search',
                         iconSize: 'lg',
                         title: 'No se encontraron resultados',
-                        description: 'Intenta ajustar tu búsqueda o filtros para encontrar lo que buscas.',
+                        description: seguimientoEmptySearchDescription(),
                         buttons: {
                             secondary: {
                                 text: 'Limpiar búsqueda',
@@ -1322,7 +1322,40 @@
         }
     }
 
-    // Renderizar chips de filtros aplicados
+    /**
+     * Filtros del modal / columnas / fechas aplicados (no incluye la búsqueda general).
+     * Alineado al data table oficial: la búsqueda no se muestra como chip en «Filtros aplicados».
+     */
+    function seguimientoHasAppliedFiltersExcludingSearch() {
+        const f = currentFilters;
+        if (!f) return false;
+        if (f.plan && f.plan.length > 0) return true;
+        if (f.persona && f.persona.length > 0) return true;
+        if (f.username && f.username.length > 0) return true;
+        if (f.areaAsignado && f.areaAsignado.length > 0) return true;
+        if (f.areaCreador && f.areaCreador.length > 0) return true;
+        if (f.lider && f.lider.length > 0) return true;
+        if (f.nombre && f.nombre.length > 0) return true;
+        if (f.creador && f.creador.length > 0) return true;
+        if (f.estado && f.estado.length > 0) return true;
+        if (activeTab === 'tareas' && f.prioridad && f.prioridad.length > 0) return true;
+        if (f.fechaCreacionDesde || f.fechaCreacionHasta) return true;
+        if (f.fechaVencimientoDesde || f.fechaVencimientoHasta) return true;
+        return false;
+    }
+
+    /** Copy del empty state «sin resultados» (README / data table): corto si solo afecta la búsqueda o «ver seleccionados»; largo si hay filtros aplicados. */
+    function seguimientoEmptySearchDescription() {
+        if (seguimientoHasAppliedFiltersExcludingSearch()) {
+            return 'Intenta ajustar tu búsqueda o filtros para encontrar lo que buscas.';
+        }
+        if (viewOnlySelected) {
+            return 'Intenta ajustar tu búsqueda o filtros para encontrar lo que buscas.';
+        }
+        return 'Intenta ajustar tu búsqueda.';
+    }
+
+    // Renderizar chips de filtros aplicados (sin chip de búsqueda; igual que createUbitsDataTable)
     function renderFiltrosAplicados() {
         const container = document.getElementById('filtros-chips-container');
         const widget = document.getElementById('seguimiento-filtros-aplicados');
@@ -1330,36 +1363,6 @@
 
         const chips = [];
         let hasFilters = false;
-
-        // Búsqueda
-        if (searchQuery && searchQuery.trim()) {
-            hasFilters = true;
-            chips.push({
-                type: 'search',
-                label: 'Búsqueda',
-                value: searchQuery,
-                remove: () => {
-                    searchQuery = '';
-                    const searchContainer = document.getElementById('seguimiento-search-container');
-                    if (searchContainer) {
-                        searchContainer.innerHTML = '';
-                        searchContainer.style.display = 'none';
-                    }
-                    const searchToggle = document.getElementById('seguimiento-search-toggle');
-                    if (searchToggle) {
-                        searchToggle.style.display = 'flex';
-                    }
-                    isSearchMode = false; // para que la lupa vuelva a abrir el buscador
-                    displayLimit = SEGUIMIENTO_LOAD_MORE_SIZE;
-                    applyFiltersAndSearch(); // Asegurar que los filtros se apliquen antes de renderizar
-                    applySorting();
-                    renderTable();
-                    updateResultsCount();
-                    updateIndicadores();
-                    initLoadMore();
-                }
-            });
-        }
 
         // Plan o actividad - un chip por cada valor
         if (currentFilters.plan.length > 0) {
@@ -2135,6 +2138,9 @@
         }
         isSearchMode = false; // para que la lupa vuelva a abrir el buscador al hacer clic
 
+        // Salir de «ver solo seleccionados» para que el vacío no quede atrapado sin filas visibles
+        viewOnlySelected = false;
+
         // Limpiar filtros
         clearFilters();
 
@@ -2149,6 +2155,7 @@
         updateResultsCount();
         updateIndicadores();
         initLoadMore();
+        toggleActionBar();
         renderFiltrosAplicados();
         updateSeguimientoUrl();
 
@@ -2317,6 +2324,7 @@
                                 updateResultsCount();
                                 updateIndicadores();
                                 initLoadMore();
+                                renderFiltrosAplicados();
                             });
                             container.appendChild(closeBtn);
                             const inp = wrap.querySelector('input');
@@ -2336,6 +2344,7 @@
                 container.style.display = 'none';
                 toggle.style.display = 'flex';
                 isSearchMode = false;
+                renderFiltrosAplicados();
             }
         });
     }

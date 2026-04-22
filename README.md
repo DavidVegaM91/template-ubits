@@ -52,21 +52,28 @@ En pantallas donde **solo hay un botón de filtros** en la barra (icono `fa-filt
 
 ## Patrón: empty state cuando no hay resultados (búsqueda y/o filtros)
 
-Cuando una lista, tabla o cuadrícula tiene **datos de fondo** pero la combinación de **búsqueda** y/o **filtros** deja **cero filas visibles**, el empty state debe ser **siempre el mismo** (copy fijo del producto):
+Cuando una lista, tabla o cuadrícula tiene **datos de fondo** pero la combinación de **búsqueda** y/o **filtros** deja **cero filas visibles**, el empty state sigue el **copy fijo del producto** (icono, título y botón iguales; la **descripción** depende del contexto, ver abajo).
 
 | Campo | Texto obligatorio |
 |--------|-------------------|
 | **Icono** | `fa-search` (tamaño `lg` en `loadEmptyState`) |
 | **Título** | `No se encontraron resultados` |
-| **Descripción** | `Intenta ajustar tu búsqueda o filtros para encontrar lo que buscas.` |
+| **Descripción** | Ver variante según pantalla (siguiente párrafo). |
 | **Botón secundario** | Texto `Limpiar búsqueda`, icono `fa-times`, variante **secondary** del Button UBITS |
+
+**Descripción (texto de cuerpo):**
+
+- **`createUbitsDataTable`:** si no pasas `emptySearchState.description`, el componente elige automáticamente:
+  - **Solo buscador** (sin filtros por columna en UI: `features.filters` en falso **o** ninguna columna `filterable`): `Intenta ajustar tu búsqueda.`
+  - **Con filtros por columna** (`features.filters` en verdadero y al menos una columna `filterable`): `Intenta ajustar tu búsqueda o filtros para encontrar lo que buscas.`
+- **Listas a mano** (p. ej. `contenidos.html`, `u-corporativa.html`, `seguimiento.js`): usa en `loadEmptyState` la descripción que corresponda a lo que el usuario pueda ajustar en esa pantalla (solo búsqueda → primera frase; búsqueda y filtros → segunda).
 
 **Implementación:**
 
-- **`createUbitsDataTable`** (`components/ubits-data-table.js`): el estado vacío por búsqueda/filtros usa `options.emptySearchState` con claves `message`, `description` y `buttonText` alineadas a la tabla anterior. Si no pasas `emptySearchState`, el componente ya trae estos valores por defecto.
-- **Listas a mano** (p. ej. `contenidos.html`, `u-corporativa.html`, `seguimiento.js`): llamar a `loadEmptyState` con el mismo `title`, `description` y `buttons.secondary` que la tabla. El `onClick` del botón debe **quitar búsqueda y filtros** según aplique en esa pantalla (p. ej. en Creator contenidos se limpian ambos).
+- **`createUbitsDataTable`** (`components/ubits-data-table.js`): `emptySearchState` admite `message`, `description` y `buttonText`; si omites el objeto entero o solo `description`, aplican los valores por defecto anteriores.
+- **Listas a mano**: llamar a `loadEmptyState` con el mismo `title`, `description` y `buttons.secondary` que la tabla. El `onClick` del botón debe **quitar búsqueda y filtros** según aplique en esa pantalla (p. ej. en Creator contenidos se limpian ambos).
 
-**No uses** otro título tipo “Sin resultados” ni otro texto de cuerpo para este caso; mantén el copy único para que PM, diseño y usuarios vean la misma franquicia en todo el playground.
+**No uses** otro título tipo “Sin resultados” para este caso; el texto de descripción debe ser exactamente una de las dos frases anteriores (salvo override explícito acordado con producto).
 
 ## Toolbar panel (`ubits-toolbar-panel`)
 
@@ -88,7 +95,7 @@ Bloque reutilizable para la **barra** de una lista o catálogo (título + meta a
 | Select (`createInput` type `select`) | **`dropdown-menu.css`**, **`dropdown-menu.js` antes de `input.js`** | Sin dropdown el desplegable del Input se ve mal. |
 | Modal de filtros | `modal.css`, `modal.js` | `openModal` / `closeModal`. |
 | Chips «Filtros aplicados» | `chip.css` | Opcional pero alineado con Contenidos / tareas. |
-| Empty state sin resultados | `empty-state.css` | Mismo copy que la sección [Patrón: empty state cuando no hay resultados](#patrón-empty-state-cuando-no-hay-resultados-búsqueda-yo-filtros) de este README. |
+| Empty state sin resultados | `empty-state.css` | Título, botón y descripción según [Patrón: empty state cuando no hay resultados](#patrón-empty-state-cuando-no-hay-resultados-búsqueda-yo-filtros); en `createUbitsDataTable` la descripción por defecto depende de si la tabla tiene filtros por columna. |
 | Tabla UBITS bajo «Tabla» | `table.css` | Misma fuente de datos que la cuadrícula. |
 | Un solo botón Filtrar con varios criterios | Badge vía `button.css` | Clase **`ubits-button--active`**, attention badge con **número de criterios**, `aria-label` con conteo — ver [Patrón: un solo botón «Filtrar» con varios criterios](#patrón-un-solo-botón-filtrar-con-varios-criterios). |
 | Contador en `__meta` | Tipografía + tu JS | Debe reflejar **ítems visibles / total** (o el criterio que defina producto). |
@@ -247,7 +254,7 @@ Patrón documentado para reutilizarlo en otros flujos o listas similares.
 - **Stepper** - Indicador de pasos de un flujo (horizontal, compacto, título bajo el círculo, combinación compacta, vertical colapsable clásico o **vertical rail creator** alineado al Sidebar contenidos LMS) - **RENDERIZADO: HTML directo**; demo con clic opcional vía `initStepper()`; colapso vertical con `wireStepperVerticalCollapse()` en **stepper.js**. **CSS:** `stepper.css`. **Vertical clásico:** `button.css`, `tooltip.css`, `tooltip.js`. **Rail creator:** `styles.css` (`.nav-button`) + tooltip.
 - **Badge Tag** - Badge tipo pill con punto de color o icono (outlined/filled; success, info, warning, error; sm, md, lg; normalmente punto, opcionalmente icono FontAwesome) - **RENDERIZADO: HTML directo**
 - **Tab** - Tabs de navegación (estados: active, inactive; tamaños: xs, sm, md, lg; variantes: con texto, icon-only; iconos opcionales) - **RENDERIZADO: HTML directo**
-- **Empty State** - Estados vacíos (icono, título, descripción, botones opcionales; tamaños de icono: sm, md, lg; casos de uso: contenido vacío, estados iniciales; **búsqueda/filtros sin resultados:** copy fijo en la sección *Patrón: empty state cuando no hay resultados* más arriba) - **RENDERIZADO: loadEmptyState()**
+- **Empty State** - Estados vacíos (icono, título, descripción, botones opcionales; tamaños de icono: sm, md, lg; casos de uso: contenido vacío, estados iniciales; **búsqueda/filtros sin resultados:** copy en *Patrón: empty state cuando no hay resultados*; en data table la descripción por defecto depende de si hay filtros por columna) - **RENDERIZADO: loadEmptyState()**
 - **Paginator** - Paginación de resultados (navegación por páginas, items por página, callbacks de cambio) - **RENDERIZADO: loadPaginator()**
 - **Popover** - Panel flotante contextual (título, cuerpo, acciones; colita opcional como Tooltip; lado + alineación: 12 combinaciones; `noArrow` o sin ancla = sin flecha; cierre con Escape y clic fuera) - **RENDERIZADO: openPopover() / closePopover()**
 - **Submenu** - Panel flotante tipo submenú/flyout (sin colita): posicionamiento (top/bottom/left/right) + alineación (inicio/centro/fin), clamp al viewport, cierre con clic fuera o Escape; título opcional; variantes dark (default) y light - **RENDERIZADO: openSubmenu() / closeSubmenu()**
