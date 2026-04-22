@@ -1,0 +1,538 @@
+/* ========================================
+   AI PANEL COMPONENT
+   Sidebar anclado a la derecha, redimensionable.
+   Inspirado en el panel lateral de Claude (Chrome).
+   ======================================== */
+
+/* ---------------------------------------------------------------------------
+   Variables
+   --------------------------------------------------------------------------- */
+:root {
+    --ai-panel-width-default: 340px;
+    --ai-panel-width-min:     260px;
+    --ai-panel-width-max:     600px;
+    --ai-panel-resize-handle: 5px;
+    --ai-panel-header-h:      48px;
+}
+
+/* ---------------------------------------------------------------------------
+   Panel principal — sidebar anclado, full height
+   --------------------------------------------------------------------------- */
+.ai-panel {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: var(--ai-panel-width-default);
+    min-width: var(--ai-panel-width-min);
+    max-width: var(--ai-panel-width-max);
+
+    background: var(--ubits-bg-1);
+    border-left: 1px solid var(--ubits-border-1);
+    z-index: 9999;
+    isolation: isolate;
+
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+
+    /* Entra desde la derecha */
+    transform: translateX(100%);
+    transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1),
+                box-shadow 0.28s ease;
+}
+
+.ai-panel::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background:
+        radial-gradient(ellipse 100% 80% at 10% calc(-5% - 70px), rgba(26, 107, 255, 0.2) 0%, transparent 50%),
+        radial-gradient(ellipse 95% 78% at 50% calc(-8% - 25px), rgba(76, 230, 255, 0.2) 0%, transparent 48%),
+        radial-gradient(ellipse 95% 75% at 90% calc(-5% - 70px), rgba(255, 84, 22, 0.2) 0%, transparent 50%);
+}
+
+.ai-panel.active {
+    transform: translateX(0);
+    box-shadow: -4px 0 24px rgba(0, 0, 0, 0.08);
+}
+
+/* ---------------------------------------------------------------------------
+   Handle de redimensionado (borde izquierdo del panel)
+   --------------------------------------------------------------------------- */
+.ai-panel__resize-handle {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: var(--ai-panel-resize-handle);
+    height: 100%;
+    cursor: ew-resize;
+    z-index: 10;
+    user-select: none;
+    /* Zona de agarre visual sutil */
+}
+
+.ai-panel__resize-handle::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 1px;
+    transform: translateY(-50%);
+    width: 3px;
+    height: 32px;
+    border-radius: 4px;
+    background: var(--ubits-border-1);
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.ai-panel__resize-handle:hover::after,
+.ai-panel.resizing .ai-panel__resize-handle::after {
+    opacity: 1;
+}
+
+/* Cursor global mientras arrastra */
+body.ai-panel-resizing {
+    cursor: ew-resize !important;
+    user-select: none !important;
+}
+
+body.ai-panel-resizing * {
+    pointer-events: none !important;
+}
+
+body.ai-panel-resizing .ai-panel {
+    pointer-events: auto !important;
+}
+
+/* ---------------------------------------------------------------------------
+   Header
+   --------------------------------------------------------------------------- */
+.ai-panel__header {
+    height: var(--ai-panel-header-h);
+    min-height: var(--ai-panel-header-h);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0 12px 0 16px;
+    border-bottom: 1px solid var(--ubits-border-1);
+    flex-shrink: 0;
+    position: relative;
+    z-index: 1;
+}
+
+/* Ícono del agente */
+.ai-panel__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 26px;
+    height: 26px;
+}
+
+.ai-panel__icon svg {
+    width: 26px;
+    height: 26px;
+    display: block;
+}
+
+/* Título + subtítulo (modelo/agente) */
+.ai-panel__header-text {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    overflow: hidden;
+}
+
+.ai-panel__title {
+    font-family: 'Noto Sans', sans-serif;
+    font-weight: var(--font-weight-semibold);
+    font-size: var(--font-size-md);
+    line-height: 1;
+    color: var(--ubits-fg-1-high);
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Selector de modelo/agente (opcional) */
+.ai-panel__model-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: transparent;
+    border: none;
+    padding: 2px 4px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: 'Noto Sans', sans-serif;
+    font-size: var(--font-size-xs);
+    color: var(--ubits-fg-1-medium);
+    transition: background 0.15s ease;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.ai-panel__model-btn:hover {
+    background: var(--ubits-bg-2);
+}
+
+.ai-panel__model-btn i {
+    font-size: 10px;
+    color: var(--ubits-fg-1-medium);
+}
+
+/* Acciones del header (derecha) */
+.ai-panel__header-actions {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    flex-shrink: 0;
+}
+
+.ai-panel__hdr-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    background: transparent;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.15s ease;
+    color: var(--ubits-fg-1-medium);
+}
+
+.ai-panel__hdr-btn:hover {
+    background: var(--ubits-bg-2);
+}
+
+.ai-panel__hdr-btn i {
+    font-size: 14px;
+    color: var(--ubits-fg-1-medium);
+}
+
+/* ---------------------------------------------------------------------------
+   Cuerpo — zona exterior (sin gradiente, solo padding para la card)
+   --------------------------------------------------------------------------- */
+.ai-panel__body {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    padding: 2px 8px 0;
+    background: transparent;
+    position: relative;
+    z-index: 1;
+}
+
+/* ---------------------------------------------------------------------------
+   Contenedor de chat — card interna con gradiente y border-radius
+   --------------------------------------------------------------------------- */
+.ai-panel__chat-container {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    border-radius: 12px;
+    border: none;
+    overflow: hidden;
+    box-shadow: none;
+    background: transparent;
+}
+
+/* Zona scrollable dentro del contenedor */
+.ai-panel__chat-scroll {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Lista de mensajes */
+.ai-panel__messages {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-2xl);
+    padding: var(--padding-xl);
+}
+
+/* ---------------------------------------------------------------------------
+   Estado de bienvenida
+   --------------------------------------------------------------------------- */
+.ai-panel__welcome {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 32px 20px;
+    gap: 12px;
+    text-align: center;
+}
+
+.ai-panel__welcome-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 75px;
+    height: 78px;
+    margin-bottom: 4px;
+}
+
+.ai-panel__welcome-icon svg {
+    width: 75px;
+    height: 78px;
+}
+
+.ai-panel__welcome-title {
+    font-family: 'Noto Sans', sans-serif;
+    font-weight: var(--font-weight-semibold);
+    font-size: var(--font-size-md);
+    color: var(--ubits-fg-1-high);
+    margin: 0;
+}
+
+.ai-panel__welcome-subtitle {
+    font-family: 'Noto Sans', sans-serif;
+    font-weight: var(--font-weight-regular);
+    font-size: var(--font-size-sm);
+    color: var(--ubits-fg-1-medium);
+    margin: 0;
+    line-height: 20px;
+    max-width: 240px;
+}
+
+/* ---------------------------------------------------------------------------
+   Mensajes individuales
+   --------------------------------------------------------------------------- */
+.ai-panel__msg {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-none);
+    width: 100%;
+}
+
+.ai-panel__msg--user {
+    align-items: flex-end;
+}
+
+.ai-panel__msg--ai {
+    align-items: flex-start;
+}
+
+.ai-panel__msg-bubble {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    font-family: var(--ubits-font-family-sans);
+    font-weight: var(--font-weight-regular);
+    font-size: var(--font-size-md);
+    line-height: 24px;
+    padding: var(--padding-md) var(--padding-lg);
+    border-radius: var(--border-radius-sm) !important;
+    word-wrap: break-word;
+    white-space: pre-wrap;
+    position: relative;
+}
+
+.ai-panel__msg--user .ai-panel__msg-bubble {
+    background: linear-gradient(
+        135deg,
+        var(--modo-ia-gradient-a, rgb(255, 84, 22)) 0%,
+        var(--modo-ia-gradient-b, rgb(234, 6, 111)) 35.59%,
+        var(--modo-ia-gradient-c, rgb(136, 35, 234)) 67.19%,
+        var(--modo-ia-gradient-d, rgb(12, 91, 239)) 100%
+    ) !important;
+    color: var(--ubits-btn-primary-fg) !important;
+    border-bottom-right-radius: 0 !important;
+    width: auto;
+    max-width: 85%;
+}
+
+.ai-panel__msg--ai .ai-panel__msg-bubble {
+    background: transparent !important;
+    color: var(--ubits-fg-1-high) !important;
+    border-bottom-left-radius: 0 !important;
+    padding: var(--padding-none) !important;
+    width: 100%;
+    max-width: 85%;
+}
+
+.ai-panel__msg-time {
+    font-family: var(--ubits-font-family-sans);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-regular);
+    line-height: 19.5px;
+    color: var(--ubits-btn-tertiary-fg) !important;
+    margin: 0;
+}
+
+.ai-panel__msg--ai .ai-panel__msg-time {
+    text-align: left;
+}
+
+.ai-panel__msg--user .ai-panel__msg-time {
+    text-align: right;
+    color: var(--ubits-btn-primary-fg) !important;
+}
+
+/* ---------------------------------------------------------------------------
+   Typing indicator
+   --------------------------------------------------------------------------- */
+.ai-panel__typing {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 10px 12px;
+    background: var(--ubits-bg-2);
+    border-radius: 12px;
+    border-bottom-left-radius: 3px;
+    width: fit-content;
+}
+
+.ai-panel__typing-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--ubits-fg-1-medium);
+    animation: ai-panel-bounce 1.2s infinite ease-in-out;
+}
+
+.ai-panel__typing-dot:nth-child(2) { animation-delay: 0.2s; }
+.ai-panel__typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes ai-panel-bounce {
+    0%, 80%, 100% { transform: scale(0.7); opacity: 0.4; }
+    40%            { transform: scale(1);   opacity: 1; }
+}
+
+/* ---------------------------------------------------------------------------
+   Footer — dentro del chat-container, sin línea separadora
+   --------------------------------------------------------------------------- */
+.ai-panel__footer {
+    flex-shrink: 0;
+    padding: 8px 10px 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    background: transparent;
+}
+
+/* Input container */
+.ai-panel__input-box {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    background: var(--ubits-bg-1);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: 10px;
+    padding: 8px 10px;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.ai-panel__input-box:focus-within {
+    border-color: rgba(136, 35, 234, 0.35);
+    box-shadow: 0 0 0 3px rgba(136, 35, 234, 0.06);
+}
+
+/* Textarea */
+.ai-panel__input {
+    width: 100%;
+    background: transparent;
+    border: none;
+    outline: none;
+    font-family: 'Noto Sans', sans-serif;
+    font-size: var(--font-size-sm);
+    line-height: 20px;
+    color: var(--ubits-fg-1-high);
+    resize: none;
+    min-height: 20px;
+    max-height: 140px;
+    overflow-y: auto;
+    box-sizing: border-box;
+}
+
+.ai-panel__input::placeholder {
+    color: var(--ubits-fg-1-medium);
+}
+
+/* Fila de acciones del input */
+.ai-panel__input-actions {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    min-height: 32px;
+}
+
+/* Espaciador entre botones del input */
+.ai-panel__input-spacer {
+    flex: 1;
+}
+
+/* Override: el attach usa ubits-button--secondary → forzar círculo */
+.ai-panel__attach-btn.ubits-button {
+    border-radius: 50% !important;
+    flex-shrink: 0;
+}
+
+/* Override send button con ID (máxima especificidad) — círculo perfecto */
+#ai-panel-send {
+    width: 32px !important;
+    height: 32px !important;
+    min-width: 32px !important;
+    min-height: 32px !important;
+    max-width: 32px !important;
+    max-height: 32px !important;
+    border-radius: 50% !important;
+    padding: 0 !important;
+    flex-shrink: 0 !important;
+    align-self: center !important;
+}
+
+/* Disclaimer — fuera del chat-container, debajo del body */
+.ai-panel__disclaimer {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 11px;
+    color: var(--ubits-fg-1-medium);
+    text-align: center;
+    margin: 0;
+    padding: 8px 12px;
+    line-height: 1.4;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 1;
+}
+
+/* ---------------------------------------------------------------------------
+   Responsive: en móvil ocupa todo el ancho
+   --------------------------------------------------------------------------- */
+@media (max-width: 520px) {
+    .ai-panel {
+        width: 100% !important;
+        min-width: 100%;
+    }
+
+    .ai-panel__resize-handle {
+        display: none;
+    }
+}
+
+/* ---------------------------------------------------------------------------
+   Dark mode
+   --------------------------------------------------------------------------- */
+[data-theme="dark"] .ai-panel::before {
+    background:
+        radial-gradient(ellipse 100% 80% at 10% calc(-5% - 70px), rgba(26, 107, 255, 0.14) 0%, transparent 50%),
+        radial-gradient(ellipse 95% 78% at 50% calc(-8% - 25px), rgba(76, 230, 255, 0.12) 0%, transparent 48%),
+        radial-gradient(ellipse 95% 75% at 90% calc(-5% - 70px), rgba(255, 84, 22, 0.1) 0%, transparent 50%);
+}

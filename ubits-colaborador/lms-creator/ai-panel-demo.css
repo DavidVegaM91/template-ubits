@@ -1,0 +1,26 @@
+/* ========================================
+   Estilos especificos para ai-panel-demo
+   ======================================== */
+
+.contenidos-demo-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--gap-md);
+    margin-top: var(--space-16);
+}
+
+.contenidos-demo-card {
+    background: var(--ubits-bg-1);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: var(--border-radius-md);
+    padding: var(--padding-md);
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-xs);
+}
+
+@media (max-width: 1024px) {
+    .contenidos-demo-grid {
+        grid-template-columns: 1fr;
+    }
+}
