@@ -2,6 +2,12 @@
    AI PANEL COMPONENT
    Sidebar anclado a la derecha, redimensionable.
    Inspirado en el panel lateral de Claude (Chrome).
+
+   Coherencia con Modo estudio IA / Chat IA grupos:
+   - Cargar aprendizaje-ia-gradientes.css (orbes --modo-ia-glow-orb-rgb-*).
+   - Cargar general-styles/ubits-ia-chat.css para difuminado superior al
+     scroll (.ai-panel__chat-scroll--conversation), scrollbar del hilo y
+     burbujas alineadas si amplías selectores allí.
    ======================================== */
 
 /* ---------------------------------------------------------------------------
@@ -23,6 +29,7 @@
     top: 0;
     right: 0;
     bottom: 0;
+    min-height: 0;
     width: var(--ai-panel-width-default);
     min-width: var(--ai-panel-width-min);
     max-width: var(--ai-panel-width-max);
@@ -42,6 +49,7 @@
                 box-shadow 0.28s ease;
 }
 
+/* Orbes: mismas variables que .ubits-ia-chat__main::before (aprendizaje-ia-gradientes.css) */
 .ai-panel::before {
     content: '';
     position: absolute;
@@ -49,9 +57,9 @@
     z-index: 0;
     pointer-events: none;
     background:
-        radial-gradient(ellipse 100% 80% at 10% calc(-5% - 70px), rgba(26, 107, 255, 0.2) 0%, transparent 50%),
-        radial-gradient(ellipse 95% 78% at 50% calc(-8% - 25px), rgba(76, 230, 255, 0.2) 0%, transparent 48%),
-        radial-gradient(ellipse 95% 75% at 90% calc(-5% - 70px), rgba(255, 84, 22, 0.2) 0%, transparent 50%);
+        radial-gradient(ellipse 100% 80% at 10% calc(-5% - 70px), rgba(var(--modo-ia-glow-orb-rgb-1), 0.2) 0%, transparent 50%),
+        radial-gradient(ellipse 95% 78% at 50% calc(-8% - 25px), rgba(var(--modo-ia-glow-orb-rgb-2), 0.2) 0%, transparent 48%),
+        radial-gradient(ellipse 95% 75% at 90% calc(-5% - 70px), rgba(var(--modo-ia-glow-orb-rgb-3), 0.2) 0%, transparent 50%);
 }
 
 .ai-panel.active {
@@ -60,12 +68,23 @@
 }
 
 @media (min-width: 1024px) {
+    /*
+     * Dock: altura acotada al viewport + sticky para que el panel no crezca
+     * con el scroll del main; así header, scroll interno y footer+disclaimer
+     * se reparten dentro de la columna del panel.
+     */
     .ai-panel-root--docked {
-        position: relative;
+        position: sticky;
+        top: 0;
+        align-self: flex-start;
         z-index: 6;
         flex: 0 0 auto;
         display: flex;
-        min-height: 100vh;
+        flex-direction: column;
+        height: 100vh;
+        height: 100dvh;
+        max-height: 100dvh;
+        min-height: 0;
     }
 
     .ai-panel.ai-panel--docked-desktop {
@@ -77,7 +96,9 @@
         width: 0;
         min-width: 0;
         max-width: none;
-        height: auto;
+        flex: 1 1 auto;
+        min-height: 0;
+        height: 100%;
         border-left: none;
         box-shadow: none;
         transition: width 0.28s cubic-bezier(0.4, 0, 0.2, 1),
@@ -295,6 +316,7 @@ body.ai-panel-resizing .ai-panel {
 /* Lista de mensajes */
 .ai-panel__messages {
     flex: 1;
+    min-height: 0;
     display: flex;
     flex-direction: column;
     gap: var(--gap-2xl);
@@ -306,6 +328,7 @@ body.ai-panel-resizing .ai-panel {
    --------------------------------------------------------------------------- */
 .ai-panel__welcome {
     flex: 1;
+    min-height: 0;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -371,8 +394,8 @@ body.ai-panel-resizing .ai-panel {
     align-items: flex-start;
     font-family: var(--ubits-font-family-sans);
     font-weight: var(--font-weight-regular);
-    font-size: var(--font-size-md);
-    line-height: 24px;
+    font-size: var(--font-size-sm);
+    line-height: 19.5px;
     padding: var(--padding-md) var(--padding-lg);
     border-radius: var(--border-radius-lg) !important;
     word-wrap: break-word;
@@ -381,14 +404,8 @@ body.ai-panel-resizing .ai-panel {
 }
 
 .ai-panel__msg--user .ai-panel__msg-bubble {
-    background: linear-gradient(
-        135deg,
-        var(--modo-ia-gradient-a, rgb(255, 84, 22)) 0%,
-        var(--modo-ia-gradient-b, rgb(234, 6, 111)) 35.59%,
-        var(--modo-ia-gradient-c, rgb(136, 35, 234)) 67.19%,
-        var(--modo-ia-gradient-d, rgb(12, 91, 239)) 100%
-    ) !important;
-    color: var(--ubits-btn-primary-fg) !important;
+    background: var(--ubits-bg-active) !important;
+    color: var(--ubits-fg-1-high) !important;
     border-bottom-right-radius: 0 !important;
     width: auto;
     max-width: 85%;
@@ -418,7 +435,7 @@ body.ai-panel-resizing .ai-panel {
 
 .ai-panel__msg--user .ai-panel__msg-time {
     text-align: right;
-    color: var(--ubits-btn-primary-fg) !important;
+    color: var(--ubits-btn-tertiary-fg) !important;
 }
 
 /* Acciones del mensaje IA (copiar / regenerar) */
@@ -630,7 +647,7 @@ body.ai-panel-resizing .ai-panel {
    --------------------------------------------------------------------------- */
 [data-theme="dark"] .ai-panel::before {
     background:
-        radial-gradient(ellipse 100% 80% at 10% calc(-5% - 70px), rgba(26, 107, 255, 0.14) 0%, transparent 50%),
-        radial-gradient(ellipse 95% 78% at 50% calc(-8% - 25px), rgba(76, 230, 255, 0.12) 0%, transparent 48%),
-        radial-gradient(ellipse 95% 75% at 90% calc(-5% - 70px), rgba(255, 84, 22, 0.1) 0%, transparent 50%);
+        radial-gradient(ellipse 100% 80% at 10% calc(-5% - 70px), rgba(var(--modo-ia-glow-orb-rgb-1), 0.2) 0%, transparent 50%),
+        radial-gradient(ellipse 95% 78% at 50% calc(-8% - 25px), rgba(var(--modo-ia-glow-orb-rgb-2), 0.2) 0%, transparent 48%),
+        radial-gradient(ellipse 95% 75% at 90% calc(-5% - 70px), rgba(var(--modo-ia-glow-orb-rgb-3), 0.2) 0%, transparent 50%);
 }

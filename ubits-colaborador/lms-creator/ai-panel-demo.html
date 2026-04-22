@@ -25,8 +25,9 @@
     <link rel="stylesheet" href="../../components/empty-state.css">
     <link rel="stylesheet" href="../../components/toast.css">
     <link rel="stylesheet" href="../../components/tooltip.css">
-    <link rel="stylesheet" href="../../components/ai-panel.css">
     <link rel="stylesheet" href="../aprendizaje/aprendizaje-ia-gradientes.css">
+    <link rel="stylesheet" href="../../general-styles/ubits-ia-chat.css">
+    <link rel="stylesheet" href="../../components/ai-panel.css">
     <link rel="stylesheet" href="./lms-creator.css">
     <link rel="stylesheet" href="./contenidos.css">
     <link rel="stylesheet" href="./ai-panel-demo.css">
@@ -98,6 +99,7 @@
     <script src="../../components/profile-menu.js"></script>
     <script src="../../components/header-product.js"></script>
     <script src="../../components/toast.js"></script>
+    <script src="../../components/ia-chat-streaming.js"></script>
     <script src="../../components/ai-panel.js"></script>
     <script src="../../script.js"></script>
 
@@ -152,11 +154,7 @@
                 dockContainerSelector: '.dashboard-container',
                 dockBreakpoint: 1024,
                 onSend: function (text) {
-                    var removeTyping = showAIPanelTyping();
-                    setTimeout(function () {
-                        removeTyping();
-                        addAIPanelMessage('Recibi: "' + text + '". Esta respuesta es de demostracion.', 'ai');
-                    }, 900);
+                    addAIPanelMessage('Recibi: "' + text + '". Esta respuesta es de demostracion.', 'ai');
                 },
                 onAttach: function () {
                     if (typeof showToast === 'function') {

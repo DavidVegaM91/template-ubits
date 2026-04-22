@@ -2782,6 +2782,9 @@ function formatTime() {
  * Respeta HTML existente (ej. <strong>...</strong> se trata como una palabra).
  */
 function wrapWordsInSpans(html) {
+    if (window.UbitsIaChatStreaming && typeof window.UbitsIaChatStreaming.wrapWordsInSpans === 'function') {
+        return window.UbitsIaChatStreaming.wrapWordsInSpans(html);
+    }
     if (!html || !html.trim()) return html;
     var tokens = html.split(/\s+/).filter(function (t) { return t.length > 0; });
     return tokens.map(function (t) { return '<span class="ubits-ia-chat-thread__word">' + t + '</span>'; }).join(' ');
@@ -3141,16 +3144,28 @@ function getMessageLinesAsHTML(text) {
     });
 }
 
-/** Delay por palabra (ms) para animación palabra por palabra en mensajes de IA */
+/** Delay por palabra (ms) — alineado con ia-chat-streaming.js (cargar ese script antes de study-chat). */
 var AI_WORD_REVEAL_DELAY_MS = 35;
 
 /**
- * Anima la aparición palabra por palabra en un mensaje de IA (text-globe--ai).
+ * Anima la aparición palabra por palabra por párrafo (transversal: ia-chat-streaming.js).
  * @param {HTMLElement} messageEl - Elemento .ubits-ia-chat-thread__message
  */
 function animateWordsInMessage(messageEl, onComplete) {
     if (!messageEl) {
         if (onComplete) onComplete();
+        return;
+    }
+    if (window.UbitsIaChatStreaming && typeof window.UbitsIaChatStreaming.animateWordsParagraphByParagraph === 'function') {
+        window.UbitsIaChatStreaming.animateWordsParagraphByParagraph(messageEl, function () {
+            if (window.UbitsIaChatStreaming.finishAiMessageStreamReveal) {
+                window.UbitsIaChatStreaming.finishAiMessageStreamReveal(messageEl);
+            } else {
+                messageEl.classList.remove('ubits-ia-chat-thread__message--typing');
+                messageEl.classList.add('ubits-ia-chat-thread__message--typing-done');
+            }
+            if (onComplete) onComplete();
+        });
         return;
     }
     var words = messageEl.querySelectorAll('.ubits-ia-chat-thread__text-globe--ai .ubits-ia-chat-thread__word');
@@ -3738,8 +3753,6 @@ function addMessageWithMaterialChoiceButtons(label, topic) {
     if (messageEl) {
         messageEl.classList.add('ubits-ia-chat-thread__message--typing');
         animateWordsInMessage(messageEl, function () {
-            messageEl.classList.remove('ubits-ia-chat-thread__message--typing');
-            messageEl.classList.add('ubits-ia-chat-thread__message--typing-done');
             wireIaThreadMessageActions(body);
         });
     }
@@ -3822,8 +3835,6 @@ function insertCompetencyIntroMessage(competencyKey, label, definition, opts) {
     if (messageEl && !opts.noAnimate) {
         messageEl.classList.add('ubits-ia-chat-thread__message--typing');
         animateWordsInMessage(messageEl, function () {
-            messageEl.classList.remove('ubits-ia-chat-thread__message--typing');
-            messageEl.classList.add('ubits-ia-chat-thread__message--typing-done');
             wireIaThreadMessageActions(body);
         });
     } else if (messageEl && opts.noAnimate) {
@@ -3968,10 +3979,7 @@ function addMessageWithTopicChoiceButtons(resourceType, text) {
     var messageEl = wrapperEl.querySelector('.ubits-ia-chat-thread__message');
     if (messageEl) {
         messageEl.classList.add('ubits-ia-chat-thread__message--typing');
-        animateWordsInMessage(messageEl, function () {
-            messageEl.classList.remove('ubits-ia-chat-thread__message--typing');
-            messageEl.classList.add('ubits-ia-chat-thread__message--typing-done');
-        });
+        animateWordsInMessage(messageEl);
     }
     wrapperEl.classList.add('ubits-ia-chat-thread__message-with-choices--reveal');
     setTimeout(function () { wrapperEl.classList.remove('ubits-ia-chat-thread__message-with-choices--reveal'); }, 520);
@@ -4046,10 +4054,7 @@ function addMessageWithResourceTypeButtons(text) {
     var messageEl = wrapperEl.querySelector('.ubits-ia-chat-thread__message');
     if (messageEl) {
         messageEl.classList.add('ubits-ia-chat-thread__message--typing');
-        animateWordsInMessage(messageEl, function () {
-            messageEl.classList.remove('ubits-ia-chat-thread__message--typing');
-            messageEl.classList.add('ubits-ia-chat-thread__message--typing-done');
-        });
+        animateWordsInMessage(messageEl);
     }
     wrapperEl.classList.add('ubits-ia-chat-thread__message-with-choices--reveal');
     setTimeout(function () { wrapperEl.classList.remove('ubits-ia-chat-thread__message-with-choices--reveal'); }, 520);
@@ -4130,10 +4135,7 @@ function addMessage(type, text, showActions = false, regenerateFunction = null) 
             setTimeout(function () { messageEl.classList.remove('ubits-ia-chat-thread__message--reveal'); }, 520);
 
             messageEl.classList.add('ubits-ia-chat-thread__message--typing');
-            animateWordsInMessage(messageEl, function () {
-                messageEl.classList.remove('ubits-ia-chat-thread__message--typing');
-                messageEl.classList.add('ubits-ia-chat-thread__message--typing-done');
-            });
+            animateWordsInMessage(messageEl);
 
             attachAIMessageActions(messageEl, text, regenerateFunction);
         }
@@ -4187,15 +4189,18 @@ function showThinkingIndicator() {
     const body = document.getElementById('ubits-ia-chat-thread-body');
     if (!body) return null;
 
-    // Usamos el globo de texto normal pero le inyectamos la clase y contenido especial
-    const messageHTML = `
-        <div class="ubits-ia-chat-thread__message ubits-ia-chat-thread__message--ai">
-            <div class="ubits-ia-chat-thread__text-globe ubits-ia-chat-thread__text-globe--ai">
-                <span class="ubits-ia-chat-thread__thinking">Pensando</span>
-            </div>
-        </div>
-    `;
-    body.insertAdjacentHTML('beforeend', messageHTML);
+    if (window.UbitsIaChatStreaming && typeof window.UbitsIaChatStreaming.thinkingIndicatorHtml === 'function') {
+        body.insertAdjacentHTML('beforeend', window.UbitsIaChatStreaming.thinkingIndicatorHtml('Pensando'));
+    } else {
+        body.insertAdjacentHTML('beforeend',
+            '<div class="ubits-ia-chat-thread__message ubits-ia-chat-thread__message--ai" data-ia-chat-thinking="1" role="status">' +
+            '<div class="ubits-ia-chat-thread__text-globe ubits-ia-chat-thread__text-globe--ai ubits-ia-chat-thread__text-globe--thinking-indicator">' +
+            '<span class="ubits-ia-chat-thread__thinking-line">' +
+            '<span class="ubits-ia-chat-thread__thinking-label">Pensando</span>' +
+            '<span class="ubits-ia-chat-thread__thinking-dots" aria-hidden="true"></span>' +
+            '<span class="ubits-ia-chat-thread__thinking-shimmer" aria-hidden="true"></span>' +
+            '</span></div></div>');
+    }
     body.scrollTop = body.scrollHeight;
 
     return body.lastElementChild;
@@ -5045,19 +5050,36 @@ function initStudyChat(containerId, options = {}) {
         const topicChoice = typeof responseData === 'object' ? responseData.topicChoice : null;
         const resourcesMenu = typeof responseData === 'object' ? responseData.resourcesMenu : null;
 
-        // Mostrar respuesta de IA de inmediato (sin delay artificial)
-        if (resourcesMenu) {
-            addMessageWithResourceTypeButtons(response || 'Estos son los recursos que tienes disponibles:');
-        } else if (materialChoice) {
-            addMessageWithMaterialChoiceButtons(materialChoice.label, materialChoice.topic);
-        } else if (subtopicChoice) {
-            addMessageWithDefinitionAndSubtopics(subtopicChoice.topic, subtopicChoice.label, subtopicChoice.definition, subtopicChoice.subtopics || []);
-        } else if (topicChoice && topicChoice.resourceType) {
-            addMessageWithTopicChoiceButtons(topicChoice.resourceType, response);
-        } else if (resourceMessage) {
-            addResourceMessage(resourceMessage.type, resourceMessage.topic, false);
+        if (body && window.UbitsIaChatStreaming && typeof window.UbitsIaChatStreaming.thinkingIndicatorHtml === 'function') {
+            body.insertAdjacentHTML('beforeend', window.UbitsIaChatStreaming.thinkingIndicatorHtml('Pensando'));
+            body.scrollTop = body.scrollHeight;
+        }
+
+        function applyStudyChatAiResponse() {
+            if (body && window.UbitsIaChatStreaming && typeof window.UbitsIaChatStreaming.removeThinkingRows === 'function') {
+                window.UbitsIaChatStreaming.removeThinkingRows(body);
+            }
+            if (resourcesMenu) {
+                addMessageWithResourceTypeButtons(response || 'Estos son los recursos que tienes disponibles:');
+            } else if (materialChoice) {
+                addMessageWithMaterialChoiceButtons(materialChoice.label, materialChoice.topic);
+            } else if (subtopicChoice) {
+                addMessageWithDefinitionAndSubtopics(subtopicChoice.topic, subtopicChoice.label, subtopicChoice.definition, subtopicChoice.subtopics || []);
+            } else if (topicChoice && topicChoice.resourceType) {
+                addMessageWithTopicChoiceButtons(topicChoice.resourceType, response);
+            } else if (resourceMessage) {
+                addResourceMessage(resourceMessage.type, resourceMessage.topic, false);
+            } else {
+                addMessage('ai', response, true, regenerateFunction);
+            }
+        }
+
+        if (window.UbitsIaChatStreaming && typeof window.UbitsIaChatStreaming.afterMinDelay === 'function') {
+            window.UbitsIaChatStreaming.afterMinDelay(window.UbitsIaChatStreaming.MIN_THINKING_MS, applyStudyChatAiResponse);
+        } else if (window.UbitsIaChatStreaming && typeof window.UbitsIaChatStreaming.withMinDelay === 'function') {
+            window.UbitsIaChatStreaming.withMinDelay(window.UbitsIaChatStreaming.MIN_THINKING_MS, function () { return null; }).then(applyStudyChatAiResponse);
         } else {
-            addMessage('ai', response, true, regenerateFunction);
+            applyStudyChatAiResponse();
         }
     }
 

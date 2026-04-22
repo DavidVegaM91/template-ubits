@@ -9,7 +9,7 @@
    openAIPanel()                 — Abre el panel
    closeAIPanel()                — Cierra el panel
    addAIPanelMessage(text, type) — Agrega mensaje ('user' | 'ai')
-   showAIPanelTyping()           — Muestra typing dots → retorna removeTyping()
+   showAIPanelTyping()           — Muestra “Pensando” (con ia-chat-streaming.js) → retorna removeTyping()
    clearAIPanelMessages()        — Limpia mensajes, restaura bienvenida
    setAIPanelTitle(title)        — Cambia título en tiempo real
    destroyAIPanel()              — Desmonta el panel del DOM
@@ -20,6 +20,10 @@
    welcomeTitle, welcomeSubtitle,
   onSend(text), onAttach(), onClose(), onRegenerate(lastUserText),
   dockDesktop, dockContainerSelector, dockBreakpoint
+
+   CSS recomendado (misma pila que Modo estudio / Chat IA grupos):
+   aprendizaje-ia-gradientes.css → ubits-ia-chat.css → ai-panel.css
+   (difuminado superior al scroll, scrollbar y orbes alineados al hilo).
    ======================================== */
 
 // ---------------------------------------------------------------------------
@@ -92,6 +96,16 @@ let _aiPanel = {
     resizeHandler: null,
     originalParent: null,
 };
+
+/** Alinea el scroll del panel con ubits-ia-chat (máscara superior solo en conversación). */
+function _aiPanelSyncScrollFade() {
+    var scroll = _aiEl('ai-panel-scroll');
+    var messages = _aiEl('ai-panel-messages');
+    if (!scroll || !messages) return;
+    var visible = window.getComputedStyle(messages).display !== 'none';
+    if (visible) scroll.classList.add('ai-panel__chat-scroll--conversation');
+    else scroll.classList.remove('ai-panel__chat-scroll--conversation');
+}
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -471,7 +485,44 @@ function _aiPanelSend() {
     _aiPanel.pendingFiles = [];
     _renderAIPanelPendingImages();
     _renderAIPanelPendingFiles();
-    if (typeof _aiPanel.options.onSend === 'function') _aiPanel.options.onSend(text || 'Adjuntos');
+    if (typeof _aiPanel.options.onSend !== 'function') return;
+
+    var messages = _aiEl('ai-panel-messages');
+    if (window.UbitsIaChatStreaming && typeof window.UbitsIaChatStreaming.afterMinDelay === 'function' && messages) {
+        messages.insertAdjacentHTML('beforeend', window.UbitsIaChatStreaming.thinkingIndicatorHtml('Pensando'));
+        var thinkRow = messages.lastElementChild;
+        if (thinkRow) thinkRow.id = 'ai-panel-typing';
+        var scroll = _aiEl('ai-panel-scroll');
+        if (scroll) scroll.scrollTop = scroll.scrollHeight;
+        _aiPanelSyncScrollFade();
+        var runAfterThink = function () {
+            if (thinkRow && thinkRow.parentNode) thinkRow.remove();
+            if (messages && window.UbitsIaChatStreaming.removeThinkingRows) {
+                window.UbitsIaChatStreaming.removeThinkingRows(messages);
+            }
+            _aiPanelSyncScrollFade();
+            try {
+                var r = _aiPanel.options.onSend(text || 'Adjuntos');
+                return r && typeof r.then === 'function' ? r : Promise.resolve(r);
+            } catch (err) {
+                return Promise.resolve();
+            }
+        };
+        if (typeof window.UbitsIaChatStreaming.afterMinDelay === 'function') {
+            window.UbitsIaChatStreaming.afterMinDelay(window.UbitsIaChatStreaming.MIN_THINKING_MS, runAfterThink).finally(function () {
+                _aiPanelSyncScrollFade();
+            });
+        } else {
+            setTimeout(function () {
+                Promise.resolve(runAfterThink()).finally(function () {
+                    _aiPanelSyncScrollFade();
+                });
+            }, window.UbitsIaChatStreaming.MIN_THINKING_MS || 1000);
+        }
+        return;
+    }
+
+    _aiPanel.options.onSend(text || 'Adjuntos');
 }
 
 // ---------------------------------------------------------------------------
@@ -574,24 +625,43 @@ function addAIPanelMessage(text, type, attachments) {
         _aiPanel.lastUserMessage = String(text || '');
     }
 
+    var actionsClass = 'ai-panel__msg-actions';
+    var actionsInner =
+        '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" data-tooltip="Copiar" data-ai-panel-action="copy" aria-label="Copiar">' +
+            '<i class="far fa-copy"></i>' +
+        '</button>' +
+        '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" data-tooltip="Regenerar" data-ai-panel-action="regenerate" aria-label="Regenerar">' +
+            '<i class="far fa-arrows-rotate"></i>' +
+        '</button>';
     var actionsHtml = '';
     if (msgType === 'ai') {
-        actionsHtml =
-            '<div class="ai-panel__msg-actions">' +
-                '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" data-tooltip="Copiar" data-ai-panel-action="copy" aria-label="Copiar">' +
-                    '<i class="far fa-copy"></i>' +
-                '</button>' +
-                '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" data-tooltip="Regenerar" data-ai-panel-action="regenerate" aria-label="Regenerar">' +
-                    '<i class="far fa-arrows-rotate"></i>' +
-                '</button>' +
-            '</div>';
+        actionsHtml = '<div class="' + actionsClass + ' ubits-ia-chat-thread__message-actions">' + actionsInner + '</div>';
     }
 
     el.setAttribute('data-ai-text', String(text || ''));
-    el.innerHTML =
-        '<div class="ai-panel__msg-bubble">' + _aiEscape(text) + (_buildAIPanelAttachmentsHtml(attachments && attachments.images, attachments && attachments.files) || '') + '</div>' +
-        actionsHtml;
+    var attHtml = _buildAIPanelAttachmentsHtml(attachments && attachments.images, attachments && attachments.files) || '';
+    var useStream = msgType === 'ai' && window.UbitsIaChatStreaming && typeof window.UbitsIaChatStreaming.buildAiGlobeInnerHtmlFromPlainText === 'function';
+    if (useStream) {
+        el.classList.add('ubits-ia-chat-thread__message', 'ubits-ia-chat-thread__message--ai', 'ubits-ia-chat-thread__message--typing');
+        var innerGlobe = window.UbitsIaChatStreaming.buildAiGlobeInnerHtmlFromPlainText(text) + attHtml;
+        el.innerHTML =
+            '<div class="ai-panel__msg-bubble ubits-ia-chat-thread__text-globe ubits-ia-chat-thread__text-globe--ai">' + innerGlobe + '</div>' +
+            actionsHtml;
+    } else {
+        var actionsFallback = msgType === 'ai' ? '<div class="' + actionsClass + '">' + actionsInner + '</div>' : '';
+        el.innerHTML =
+            '<div class="ai-panel__msg-bubble">' + _aiEscape(text) + attHtml + '</div>' +
+            actionsFallback;
+    }
     messages.appendChild(el);
+
+    if (useStream) {
+        window.UbitsIaChatStreaming.animateWordsParagraphByParagraph(el, function () {
+            if (window.UbitsIaChatStreaming.finishAiMessageStreamReveal) {
+                window.UbitsIaChatStreaming.finishAiMessageStreamReveal(el);
+            }
+        });
+    }
 
     if (msgType === 'ai' && typeof window.initTooltip === 'function') {
         setTimeout(function () { window.initTooltip('#ai-panel [data-tooltip]'); }, 0);
@@ -599,33 +669,44 @@ function addAIPanelMessage(text, type, attachments) {
 
     var scroll = _aiEl('ai-panel-scroll');
     if (scroll) scroll.scrollTop = scroll.scrollHeight;
+    _aiPanelSyncScrollFade();
 }
 
 function showAIPanelTyping() {
     var welcome  = _aiEl('ai-panel-welcome');
     var messages = _aiEl('ai-panel-messages');
-    var body     = _aiEl('ai-panel-body');
     if (!messages) return function() {};
 
     if (welcome)  welcome.style.display  = 'none';
     messages.style.display = 'flex';
 
-    var el = document.createElement('div');
-    el.className = 'ai-panel__msg ai-panel__msg--ai';
-    el.id = 'ai-panel-typing';
-    el.innerHTML =
-        '<div class="ai-panel__typing">' +
-        '<span class="ai-panel__typing-dot"></span>' +
-        '<span class="ai-panel__typing-dot"></span>' +
-        '<span class="ai-panel__typing-dot"></span>' +
-        '</div>';
-    messages.appendChild(el);
+    if (window.UbitsIaChatStreaming && typeof window.UbitsIaChatStreaming.thinkingIndicatorHtml === 'function') {
+        messages.insertAdjacentHTML('beforeend', window.UbitsIaChatStreaming.thinkingIndicatorHtml('Pensando'));
+        var row = messages.lastElementChild;
+        if (row) row.id = 'ai-panel-typing';
+    } else {
+        var el = document.createElement('div');
+        el.className = 'ai-panel__msg ai-panel__msg--ai';
+        el.id = 'ai-panel-typing';
+        el.innerHTML =
+            '<div class="ai-panel__typing">' +
+            '<span class="ai-panel__typing-dot"></span>' +
+            '<span class="ai-panel__typing-dot"></span>' +
+            '<span class="ai-panel__typing-dot"></span>' +
+            '</div>';
+        messages.appendChild(el);
+    }
     var scroll = _aiEl('ai-panel-scroll');
     if (scroll) scroll.scrollTop = scroll.scrollHeight;
+    _aiPanelSyncScrollFade();
 
     return function() {
         var t = _aiEl('ai-panel-typing');
         if (t) t.remove();
+        if (window.UbitsIaChatStreaming && window.UbitsIaChatStreaming.removeThinkingRows) {
+            window.UbitsIaChatStreaming.removeThinkingRows(messages);
+        }
+        _aiPanelSyncScrollFade();
     };
 }
 
@@ -634,6 +715,7 @@ function clearAIPanelMessages() {
     var messages = _aiEl('ai-panel-messages');
     if (messages) { messages.innerHTML = ''; messages.style.display = 'none'; }
     if (welcome)  welcome.style.display = 'flex';
+    _aiPanelSyncScrollFade();
 }
 
 function setAIPanelTitle(title) {

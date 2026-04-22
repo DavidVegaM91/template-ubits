@@ -21,6 +21,10 @@
    - ubits-colaborador/aprendizaje/aprendizaje-ia-gradientes.css
      (variables --modo-ia-gradient-*, --modo-ia-glow-orb-rgb-*; nombre histórico del token)
    - Opcional: components/study-chat.css solo reexporta este archivo (compatibilidad con imports antiguos).
+   - components/ai-panel.css: enlaza este archivo después de aprendizaje-ia-gradientes.css
+     para reutilizar máscara de scroll superior, scrollbar del hilo y tokens de orbes.
+   - components/ia-chat-streaming.js: pensando + animación por párrafo (cargar antes de study-chat /
+     group-creation-chat / flujo onSend del ai-panel).
 
    CÓMO ADOPTARLO (cuando integres en páginas)
    -------------------------------------------
@@ -166,27 +170,38 @@
     z-index: 0;
 }
 
-/* Scrollbar personalizado */
-.ubits-ia-chat-thread__body::-webkit-scrollbar {
+/* Scrollbar del hilo (misma pista que panel lateral AI: un solo ajuste transversal) */
+.ubits-ia-chat-thread__body::-webkit-scrollbar,
+.ai-panel__chat-scroll::-webkit-scrollbar {
     width: 4px;
 }
 
-.ubits-ia-chat-thread__body::-webkit-scrollbar-track {
+.ubits-ia-chat-thread__body::-webkit-scrollbar-track,
+.ai-panel__chat-scroll::-webkit-scrollbar-track {
     background: transparent;
 }
 
-.ubits-ia-chat-thread__body::-webkit-scrollbar-thumb {
+.ubits-ia-chat-thread__body::-webkit-scrollbar-thumb,
+.ai-panel__chat-scroll::-webkit-scrollbar-thumb {
     background: var(--ubits-scroll-bar-color-bg-default);
     border-radius: var(--border-radius-xs);
 }
 
-.ubits-ia-chat-thread__body::-webkit-scrollbar-thumb:hover {
+.ubits-ia-chat-thread__body::-webkit-scrollbar-thumb:hover,
+.ai-panel__chat-scroll::-webkit-scrollbar-thumb:hover {
     background: var(--ubits-scroll-bar-color-bg-default);
 }
 
-/* Hilo con mensajes: borde superior “suave” al hacer scroll (estilo ChatGPT).
-   Solo sin bienvenida: en welcome el body no es lista de mensajes larga. */
-.ubits-ia-chat-thread:not(.ubits-ia-chat-thread--welcome) .ubits-ia-chat-thread__body {
+.ubits-ia-chat-thread__body,
+.ai-panel__chat-scroll {
+    scrollbar-width: thin;
+    scrollbar-color: var(--ubits-scroll-bar-color-bg-default) transparent;
+}
+
+/* Hilo con mensajes: borde superior suave al hacer scroll (compartido con
+   components/ai-panel: la clase .ai-panel__chat-scroll--conversation la pone el JS). */
+.ubits-ia-chat-thread:not(.ubits-ia-chat-thread--welcome) .ubits-ia-chat-thread__body,
+.ai-panel__chat-scroll.ai-panel__chat-scroll--conversation {
     -webkit-mask-image: linear-gradient(
         to bottom,
         transparent 0,
@@ -454,21 +469,22 @@
     /* Sin radius en esquina inferior izquierda */
 }
 
-/* Mensaje de usuario: misma gradación que el icono de bienvenida del chat (sparkles) */
+/* Mensaje de usuario: fondo activo de marca; texto alineado al globo IA (--ubits-fg-1-high) */
 .ubits-ia-chat-thread__text-globe--user {
-    background: linear-gradient(135deg, rgb(0, 215, 255) 0%, rgb(0, 152, 253) 50%, rgb(0, 89, 250) 100%);
-    color: var(--ubits-btn-primary-fg);
+    background: var(--ubits-bg-active);
+    color: var(--ubits-fg-1-high);
     border-radius: var(--border-radius-sm);
     border-bottom-right-radius: 0;
     width: auto;
     max-width: 85%;
 }
 
-/* Texto del mensaje */
+/* Texto del mensaje (usuario e IA): misma escala que .ubits-body-sm-regular */
 .ubits-ia-chat-thread__message-text {
     font-family: var(--ubits-font-family-sans);
-    font-size: var(--font-size-md);
-    line-height: 24px;
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-regular);
+    line-height: 19.5px;
     margin: 0 0 8px 0;
     white-space: pre-wrap;
 }
@@ -488,12 +504,14 @@
 }
 
 /* Animación palabra por palabra en mensajes de IA (efecto typewriter rápido) */
-.ubits-ia-chat-thread__text-globe--ai .ubits-ia-chat-thread__word {
+.ubits-ia-chat-thread__text-globe--ai .ubits-ia-chat-thread__word,
+.ai-panel__msg-bubble.ubits-ia-chat-thread__text-globe--ai .ubits-ia-chat-thread__word {
     opacity: 0;
     transition: opacity 0.06s ease-out;
 }
 
-.ubits-ia-chat-thread__text-globe--ai .ubits-ia-chat-thread__word--visible {
+.ubits-ia-chat-thread__text-globe--ai .ubits-ia-chat-thread__word--visible,
+.ai-panel__msg-bubble.ubits-ia-chat-thread__text-globe--ai .ubits-ia-chat-thread__word--visible {
     opacity: 1;
 }
 
@@ -510,51 +528,50 @@
     }
 }
 
-/* Estado TYPING: ocultar todo excepto el texto */
+/* Estado TYPING: ocultar bloques posteriores al texto (acciones al final) */
 .ubits-ia-chat-thread__message--typing .ubits-ia-chat-thread__message-actions,
+.ubits-ia-chat-thread__message--typing .ai-panel__msg-actions,
 .ubits-ia-chat-thread__message--typing .ubits-ia-chat-thread__material-choices,
 .ubits-ia-chat-thread__message--typing+.ubits-ia-chat-thread__material-choices,
 .ubits-ia-chat-thread__message--typing .ubits-ia-chat-thread__courses-section,
 .ubits-ia-chat-thread__message--typing .ubits-ia-chat-thread__plan-section,
 .ubits-ia-chat-thread__message--typing .ubits-ia-chat-thread__resource-card,
 .ubits-ia-chat-thread__message--typing .ubits-ia-chat-thread__resource-msg,
-.ubits-ia-chat-thread__message--typing .ubits-ia-chat-thread__timestamp {
+.ubits-ia-chat-thread__message--typing .ubits-ia-chat-thread__timestamp,
+.ubits-ia-chat-thread__message--typing .ai-panel__msg-attachments-images,
+.ubits-ia-chat-thread__message--typing .ai-panel__msg-attachments-files,
+.ubits-ia-chat-thread__message--typing .ubits-ia-chat-thread__sub-options-wrap {
     opacity: 0 !important;
     transform: translateY(6px);
     pointer-events: none;
 }
 
-/* Estado DONE: revelar elementos en cascada */
-.ubits-ia-chat-thread__message--typing-done .ubits-ia-chat-thread__message-actions {
+/*
+ * Estado DONE: orden de revelado — primero bloques dentro del globo (choices, cursos, sub-opciones, adjuntos panel),
+ * luego timestamp, y al final copiar/regenerar.
+ */
+.ubits-ia-chat-thread__message--typing-done .ubits-ia-chat-thread__material-choices,
+.ubits-ia-chat-thread__message--typing-done+.ubits-ia-chat-thread__material-choices,
+.ubits-ia-chat-thread__message--typing-done .ubits-ia-chat-thread__courses-section,
+.ubits-ia-chat-thread__message--typing-done .ubits-ia-chat-thread__plan-section,
+.ubits-ia-chat-thread__message--typing-done .ubits-ia-chat-thread__resource-card,
+.ubits-ia-chat-thread__message--typing-done .ubits-ia-chat-thread__resource-msg,
+.ubits-ia-chat-thread__message--typing-done .ubits-ia-chat-thread__sub-options-wrap,
+.ubits-ia-chat-thread__message--typing-done .ai-panel__msg-attachments-images,
+.ubits-ia-chat-thread__message--typing-done .ai-panel__msg-attachments-files {
     opacity: 0;
-    animation: ubits-ia-chat-thread-reveal-down 0.3s ease-out 0s forwards;
+    animation: ubits-ia-chat-thread-reveal-down 0.28s ease-out 0s forwards;
 }
 
 .ubits-ia-chat-thread__message--typing-done .ubits-ia-chat-thread__timestamp {
     opacity: 0;
-    animation: ubits-ia-chat-thread-reveal-down 0.3s ease-out 0s forwards;
+    animation: ubits-ia-chat-thread-reveal-down 0.28s ease-out 0.12s forwards;
 }
 
-.ubits-ia-chat-thread__message--typing-done .ubits-ia-chat-thread__material-choices,
-.ubits-ia-chat-thread__message--typing-done+.ubits-ia-chat-thread__material-choices {
+.ubits-ia-chat-thread__message--typing-done .ubits-ia-chat-thread__message-actions,
+.ubits-ia-chat-thread__message--typing-done .ai-panel__msg-actions {
     opacity: 0;
-    animation: ubits-ia-chat-thread-reveal-down 0.3s ease-out 0.1s forwards;
-}
-
-.ubits-ia-chat-thread__message--typing-done .ubits-ia-chat-thread__courses-section {
-    opacity: 0;
-    animation: ubits-ia-chat-thread-reveal-down 0.3s ease-out 0.2s forwards;
-}
-
-.ubits-ia-chat-thread__message--typing-done .ubits-ia-chat-thread__plan-section {
-    opacity: 0;
-    animation: ubits-ia-chat-thread-reveal-down 0.3s ease-out 0.2s forwards;
-}
-
-.ubits-ia-chat-thread__message--typing-done .ubits-ia-chat-thread__resource-card,
-.ubits-ia-chat-thread__message--typing-done .ubits-ia-chat-thread__resource-msg {
-    opacity: 0;
-    animation: ubits-ia-chat-thread-reveal-down 0.3s ease-out 0.2s forwards;
+    animation: ubits-ia-chat-thread-reveal-down 0.32s ease-out 0.28s forwards;
 }
 
 .ubits-ia-chat-thread__message-with-choices--reveal .ubits-ia-chat-thread__timestamp {
@@ -580,51 +597,122 @@
     transition: opacity 0.2s ease;
 }
 
-/* Indicador "Pensando..." */
-.ubits-ia-chat-thread__thinking {
-    font-size: 14px;
-    font-style: normal;
-    color: var(--ubits-neutral-500);
-    margin-bottom: 4px;
-    display: inline-block;
-    animation: ubits-shimmer 1.5s infinite ease-in-out;
+/*
+ * Indicador "Pensando…" — shimmer gradient sobre el texto (background-clip: text).
+ * El gradiente barre de izquierda a derecha sobre el label con colores de marca,
+ * generando un efecto shimmer premium y bien visible en cualquier fondo.
+ */
+.ubits-ia-chat-thread__text-globe--ai.ubits-ia-chat-thread__text-globe--thinking-indicator {
+    background: transparent !important;
+    box-shadow: none !important;
+    border: none !important;
+    width: fit-content !important;
+    max-width: 100% !important;
+    min-height: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border-radius: 0 !important;
 }
 
-.ubits-ia-chat-thread__thinking::after {
-    content: '';
-    display: inline-block;
-    width: 12px;
-    text-align: left;
-    animation: ubits-ellipsis 1.5s infinite steps(4, end);
+.ubits-ia-chat-thread__thinking-line {
+    position: relative;
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.15em;
+    padding: 2px 2px 2px 0;
+    vertical-align: middle;
 }
 
-@keyframes ubits-shimmer {
-
-    0%,
-    100% {
-        opacity: 0.6;
-    }
-
-    50% {
-        opacity: 1;
-    }
+/* El shimmer span ya no es necesario con la técnica background-clip: text */
+.ubits-ia-chat-thread__thinking-shimmer {
+    display: none;
 }
 
-@keyframes ubits-ellipsis {
+@keyframes ubits-ia-chat-thinking-shimmer-slide {
     0% {
-        content: '';
+        background-position: 200% center;
     }
-
-    25% {
-        content: '.';
+    100% {
+        background-position: -200% center;
     }
+}
 
-    50% {
-        content: '..';
-    }
+.ubits-ia-chat-thread__thinking-label {
+    position: relative;
+    z-index: 2;
+    font-family: var(--ubits-font-family-sans);
+    font-size: var(--font-size-sm);
+    font-style: normal;
+    font-weight: var(--font-weight-regular);
+    line-height: 1.35;
+    margin: 0;
+    /* Shimmer neutro: banda blanca que barre el texto (estilo skeleton) */
+    background: linear-gradient(
+        90deg,
+        var(--ubits-fg-1-medium) 0%,
+        var(--ubits-fg-1-medium) 30%,
+        var(--ubits-fg-1-high) 48%,
+        #ffffff 50%,
+        var(--ubits-fg-1-high) 52%,
+        var(--ubits-fg-1-medium) 70%,
+        var(--ubits-fg-1-medium) 100%
+    );
+    background-size: 300% auto;
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+    animation: ubits-ia-chat-thinking-shimmer-slide 1.6s linear infinite;
+    will-change: background-position;
+}
 
-    75% {
-        content: '...';
+.ubits-ia-chat-thread__thinking-dots {
+    position: relative;
+    z-index: 2;
+    display: inline-block;
+    font-family: var(--ubits-font-family-sans);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-regular);
+    vertical-align: baseline;
+    min-width: 0.9em;
+    /* Mismo shimmer neutro, sincronizado con el label */
+    background: linear-gradient(
+        90deg,
+        var(--ubits-fg-1-medium) 0%,
+        var(--ubits-fg-1-medium) 30%,
+        var(--ubits-fg-1-high) 48%,
+        #ffffff 50%,
+        var(--ubits-fg-1-high) 52%,
+        var(--ubits-fg-1-medium) 70%,
+        var(--ubits-fg-1-medium) 100%
+    );
+    background-size: 300% auto;
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+    animation: ubits-ia-chat-thinking-shimmer-slide 1.6s linear infinite;
+    will-change: background-position;
+}
+
+.ubits-ia-chat-thread__thinking-dots::before {
+    content: '...';
+}
+
+@keyframes ubits-ia-chat-thinking-dots-opacity {
+    0%, 100% { opacity: 0.5; }
+    50% { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .ubits-ia-chat-thread__thinking-label,
+    .ubits-ia-chat-thread__thinking-dots {
+        animation: none !important;
+        background: none !important;
+        background-clip: unset !important;
+        -webkit-background-clip: unset !important;
+        -webkit-text-fill-color: unset !important;
+        color: var(--ubits-fg-1-medium) !important;
     }
 }
 
@@ -643,7 +731,7 @@
 
 .ubits-ia-chat-thread__text-globe--user .ubits-ia-chat-thread__message-text {
     font-weight: var(--font-weight-regular);
-    color: var(--ubits-btn-primary-fg);
+    color: var(--ubits-fg-1-high);
 }
 
 /* Timestamp */
@@ -662,7 +750,7 @@
 
 .ubits-ia-chat-thread__message--user .ubits-ia-chat-thread__timestamp {
     text-align: right;
-    color: var(--ubits-btn-primary-fg);
+    color: var(--ubits-btn-tertiary-fg);
 }
 
 /* Botones de acción en mensajes de IA */
@@ -1337,7 +1425,8 @@ body[data-theme="dark"] .ubits-ia-chat__main::before {
    Burbujas y mensajes (dentro de .ubits-ia-chat)
    --------------------------------------------------------------------------- */
 .ubits-ia-chat .ubits-ia-chat-thread__text-globe--user {
-    background: linear-gradient(135deg, var(--modo-ia-gradient-a) 0%, var(--modo-ia-gradient-b) 35.59%, var(--modo-ia-gradient-c) 67.19%, var(--modo-ia-gradient-d) 100%);
+    background: var(--ubits-bg-active);
+    color: var(--ubits-fg-1-high);
 }
 
 .ubits-ia-chat .ubits-ia-chat-thread__text-globe--ai {

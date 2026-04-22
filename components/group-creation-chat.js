@@ -19,11 +19,18 @@ function createGroupChatMessageHTML(type, text, attachmentsHtml) {
     var messageClass = type === 'ai' ? 'ubits-ia-chat-thread__message--ai' : 'ubits-ia-chat-thread__message--user';
     var globeClass = type === 'ai' ? 'ubits-ia-chat-thread__text-globe--ai' : 'ubits-ia-chat-thread__text-globe--user';
     var safeText = escapeHtml(text).replace(/\n/g, '<br>');
-    var lines = text.split('\n').filter(function (l) { return l.trim(); });
-    var textHTML = lines.length ? lines.map(function (line) {
-        return '<p class="ubits-ia-chat-thread__message-text">' + escapeHtml(line) + '</p>';
-    }).join('') : '<p class="ubits-ia-chat-thread__message-text">' + safeText + '</p>';
-    var extraHtml = attachmentsHtml ? attachmentsHtml : '';
+    var textHTML;
+    var extraHtml = '';
+    if (type === 'ai' && window.UbitsIaChatStreaming && typeof window.UbitsIaChatStreaming.buildAiGlobeInnerHtmlFromPlainText === 'function') {
+        textHTML = window.UbitsIaChatStreaming.buildAiGlobeInnerHtmlFromPlainText(text);
+        extraHtml = attachmentsHtml || '';
+    } else {
+        var lines = text.split('\n').filter(function (l) { return l.trim(); });
+        textHTML = lines.length ? lines.map(function (line) {
+            return '<p class="ubits-ia-chat-thread__message-text">' + escapeHtml(line) + '</p>';
+        }).join('') : '<p class="ubits-ia-chat-thread__message-text">' + safeText + '</p>';
+        extraHtml = attachmentsHtml ? attachmentsHtml : '';
+    }
     var actionsRow = type === 'ai'
         ? '<div class="ubits-ia-chat-thread__message-actions">' +
             '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" data-tooltip="Copiar"><i class="far fa-copy"></i></button>' +
@@ -477,6 +484,17 @@ function initGroupCreationChat(containerId, options) {
             var div = document.createElement('div');
             div.innerHTML = html;
             while (div.firstChild) body.appendChild(div.firstChild);
+            if (type === 'ai' && window.UbitsIaChatStreaming && typeof window.UbitsIaChatStreaming.animateWordsParagraphByParagraph === 'function') {
+                var lastMsg = body.lastElementChild;
+                if (lastMsg && lastMsg.classList.contains('ubits-ia-chat-thread__message--ai')) {
+                    lastMsg.classList.add('ubits-ia-chat-thread__message--typing');
+                    window.UbitsIaChatStreaming.animateWordsParagraphByParagraph(lastMsg, function () {
+                        if (window.UbitsIaChatStreaming.finishAiMessageStreamReveal) {
+                            window.UbitsIaChatStreaming.finishAiMessageStreamReveal(lastMsg);
+                        }
+                    });
+                }
+            }
             body.scrollTop = body.scrollHeight;
         }
         if (typeof window.initTooltip === 'function') {
@@ -495,7 +513,24 @@ function initGroupCreationChat(containerId, options) {
         pendingFiles = [];
         renderPendingImagesPreview();
         renderPendingFilesPreview();
-        appendMessage('ai', text ? getMockResponse(null, text) : 'Adjuntos recibidos. ¿Qué quieres que haga con estos archivos?');
+
+        var replyText = text ? getMockResponse(null, text) : 'Adjuntos recibidos. ¿Qué quieres que haga con estos archivos?';
+
+        if (body && window.UbitsIaChatStreaming && typeof window.UbitsIaChatStreaming.thinkingIndicatorHtml === 'function') {
+            body.insertAdjacentHTML('beforeend', window.UbitsIaChatStreaming.thinkingIndicatorHtml('Pensando'));
+            body.scrollTop = body.scrollHeight;
+            var flushReply = function () {
+                if (window.UbitsIaChatStreaming.removeThinkingRows) window.UbitsIaChatStreaming.removeThinkingRows(body);
+                appendMessage('ai', replyText);
+            };
+            if (typeof window.UbitsIaChatStreaming.afterMinDelay === 'function') {
+                window.UbitsIaChatStreaming.afterMinDelay(window.UbitsIaChatStreaming.MIN_THINKING_MS, flushReply);
+            } else {
+                setTimeout(flushReply, window.UbitsIaChatStreaming.MIN_THINKING_MS || 1000);
+            }
+            return;
+        }
+        appendMessage('ai', replyText);
     }
 
     function appendSubOptionsBlock(subOptions) {
