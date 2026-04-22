@@ -7,8 +7,21 @@
  * @param {string} variant - 'default' | 'admin' | 'creator' (primer tab + menú flotante alineados con README)
  * @returns {string} HTML del tab-bar
  */
+function getTabBarBasePath() {
+    if (typeof getBasePath === 'function') {
+        return getBasePath();
+    }
+    const path = window.location.pathname;
+    if (path.includes('/ubits-admin/desempeno/360/')) return '../../../';
+    if (path.includes('/ubits-colaborador/') || path.includes('/ubits-admin/')) return '../../';
+    if (path.includes('/documentacion/') && path.split('/documentacion/')[1].includes('/')) return '../../';
+    if (path.includes('/documentacion/')) return '../';
+    return '';
+}
+
 function getTabBarHTML(variant) {
     variant = variant || 'default';
+    const basePath = getTabBarBasePath();
     let firstLabel = 'Módulos';
     let firstIconClass = 'far fa-grid-2 tab-bar-icon';
     if (variant === 'admin') {
@@ -26,7 +39,7 @@ function getTabBarHTML(variant) {
                     <span class="tab-bar-text">${firstLabel}</span>
                 </div>
                 <div class="tab-bar-item" data-tab="perfil" onclick="navigateToTab('perfil')">
-                    <img src="../../images/Profile-image.jpg" alt="Mi perfil" class="tab-bar-avatar">
+                    <img src="${basePath}images/Profile-image.jpg" alt="Mi perfil" class="tab-bar-avatar">
                     <span class="tab-bar-text">Mi perfil</span>
                 </div>
                 <div class="tab-bar-item" data-tab="modo-oscuro" onclick="navigateToTab('modo-oscuro')">
