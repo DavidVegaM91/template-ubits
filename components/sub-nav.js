@@ -4,29 +4,17 @@
 
 // Función para calcular la ruta base según la profundidad de la página
 function getSubNavBasePath() {
-    const path = window.location.pathname;
-    
-    // Detectar la profundidad basándose en patrones de carpetas del proyecto
-    // Páginas 3 niveles de profundidad (ubits-admin/desempeno/360/, etc.)
-    if (path.includes('/ubits-admin/desempeno/360/')) {
-        return '../../../';
+    const path = (window.location.pathname || '').replace(/\\/g, '/');
+    const markers = ['/ubits-colaborador/', '/ubits-admin/', '/documentacion/'];
+
+    for (const marker of markers) {
+        if (!path.includes(marker)) continue;
+        const afterMarker = path.split(marker)[1] || '';
+        const parts = afterMarker.split('/').filter(Boolean);
+        const depth = Math.max(1, parts.length);
+        return '../'.repeat(depth);
     }
-    // Páginas en subcarpetas de segundo nivel (ubits-colaborador/*, ubits-admin/*)
-    if (path.includes('/ubits-colaborador/') || path.includes('/ubits-admin/')) {
-        return '../../';
-    }
-    
-    // Páginas en subcarpetas de documentacion (documentacion/componentes/, documentacion/guias/, etc.)
-    if (path.includes('/documentacion/') && path.split('/documentacion/')[1].includes('/')) {
-        return '../../';
-    }
-    
-    // Páginas en primer nivel de carpeta (documentacion/*.html)
-    if (path.includes('/documentacion/')) {
-        return '../';
-    }
-    
-    // Página en la raíz (index.html) o cualquier otra ubicación
+
     return '';
 }
 
@@ -97,22 +85,22 @@ const TOP_NAV_VARIANTS = {
     'creator-planes': {
         name: 'Planes de formación',
         tabs: [
-            { id: 'planes', label: 'Planes de formación', icon: 'far fa-clipboard-list', url: '../../ubits-colaborador/lms-creator/planes-formacion.html' },
-            { id: 'grupos', label: 'Grupos', icon: 'far fa-users', url: '../../ubits-colaborador/lms-creator/grupos.html' }
+            { id: 'planes', label: 'Planes de formación', icon: 'far fa-clipboard-list', url: '../../ubits-colaborador/lms-creator/planes-formacion/planes-formacion.html' },
+            { id: 'grupos', label: 'Grupos', icon: 'far fa-users', url: '../../ubits-colaborador/lms-creator/planes-formacion/grupos.html' }
         ]
     },
     'creator-certificados': {
         name: 'Certificados',
         tabs: [
-            { id: 'descarga', label: 'Descarga', icon: 'far fa-download', url: '../../ubits-colaborador/lms-creator/certificados.html' },
-            { id: 'configuracion', label: 'Configuración', icon: 'far fa-sliders', url: '../../ubits-colaborador/lms-creator/certificados-configuracion.html' }
+            { id: 'descarga', label: 'Descarga', icon: 'far fa-download', url: '../../ubits-colaborador/lms-creator/certificados/certificados.html' },
+            { id: 'configuracion', label: 'Configuración', icon: 'far fa-sliders', url: '../../ubits-colaborador/lms-creator/certificados/certificados-configuracion.html' }
         ]
     },
     'creator-personalizacion': {
         name: 'Personalización',
         tabs: [
-            { id: 'universidad-corporativa', label: 'Universidad corporativa', icon: 'far fa-building-columns', url: '../../ubits-colaborador/lms-creator/personalizacion-u-corporativa.html' },
-            { id: 'seguimiento', label: 'Seguimiento', icon: 'far fa-chart-line', url: '../../ubits-colaborador/lms-creator/personalizacion-seguimiento.html' }
+            { id: 'universidad-corporativa', label: 'Universidad corporativa', icon: 'far fa-building-columns', url: '../../ubits-colaborador/lms-creator/personalizacion/personalizacion-u-corporativa.html' },
+            { id: 'seguimiento', label: 'Seguimiento', icon: 'far fa-chart-line', url: '../../ubits-colaborador/lms-creator/personalizacion/personalizacion-seguimiento.html' }
         ]
     },
     empresa: {
@@ -361,6 +349,7 @@ const PAGE_TO_TAB = {
     'modo-estudio-ia.html': 'modo-estudio-ia',
     'u-corporativa.html': 'corporate',
     'lms-creator/personalizacion-u-corporativa.html': 'universidad-corporativa',
+    'lms-creator/personalizacion/personalizacion-u-corporativa.html': 'universidad-corporativa',
     'zona-estudio.html': 'study-zone',
     // Desempeño
     'evaluaciones-360.html': 'evaluations',
@@ -440,19 +429,33 @@ const PAGE_TO_TAB = {
     'lms-creator/crear-contenido.html': 'contenidos',
     'lms-creator/categorias.html': 'categorias',
     'lms-creator/planes-formacion.html': 'planes',
+    'lms-creator/planes-formacion/planes-formacion.html': 'planes',
     'lms-creator/grupos.html': 'grupos',
+    'lms-creator/planes-formacion/grupos.html': 'grupos',
     'lms-creator/crear-grupo.html': 'grupos',
+    'lms-creator/planes-formacion/crear-grupo.html': 'grupos',
     'lms-creator/detalle-grupo.html': 'grupos',
+    'lms-creator/planes-formacion/detalle-grupo.html': 'grupos',
     'lms-creator/chat-ia-grupos.html': 'grupos',
+    'lms-creator/planes-formacion/chat-ia-grupos.html': 'grupos',
     'lms-creator/crear-plan-contenidos.html': 'planes',
+    'lms-creator/planes-formacion/crear-plan-contenidos.html': 'planes',
     'lms-creator/crear-plan-competencias.html': 'planes',
+    'lms-creator/planes-formacion/crear-plan-competencias.html': 'planes',
     'lms-creator/editar-plan-contenidos.html': 'planes',
+    'lms-creator/planes-formacion/editar-plan-contenidos.html': 'planes',
     'lms-creator/editar-plan-competencias.html': 'planes',
+    'lms-creator/planes-formacion/editar-plan-competencias.html': 'planes',
     'lms-creator/detalle-plan.html': 'planes',
+    'lms-creator/planes-formacion/detalle-plan.html': 'planes',
     'lms-creator/detalle-plan-competencias.html': 'planes',
+    'lms-creator/planes-formacion/detalle-plan-competencias.html': 'planes',
     'lms-creator/certificados.html': 'descarga',
+    'lms-creator/certificados/certificados.html': 'descarga',
     'lms-creator/certificados-configuracion.html': 'configuracion',
+    'lms-creator/certificados/certificados-configuracion.html': 'configuracion',
     'lms-creator/personalizacion-seguimiento.html': 'seguimiento',
+    'lms-creator/personalizacion/personalizacion-seguimiento.html': 'seguimiento',
     // Admin empresa
     'gestion-de-usuarios.html': 'gestion-usuarios',
     'organigrama.html': 'organigrama',
@@ -802,8 +805,9 @@ function activateSelector(container, variant, customTabs = []) {
     
     const selectorItemsHTML = tabs.map(tab => {
         const isActive = tab.id === activeTabId;
+        const targetUrl = getCorrectTabUrl(tab, variant) || '#';
         return `
-            <a href="${tab.url || '#'}" class="module-selector-item ${isActive ? 'active' : ''}" data-tab="${tab.id}">
+            <a href="${targetUrl}" class="module-selector-item ${isActive ? 'active' : ''}" data-tab="${tab.id}">
                 <i class="fa ${tab.icon}"></i>
                 <span>${tab.label}</span>
             </a>
@@ -854,11 +858,16 @@ function activateSelector(container, variant, customTabs = []) {
     // Manejar clicks en los items del selector
     selectorItems.forEach(item => {
         item.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
             const tabId = this.getAttribute('data-tab');
             const tabConfig = tabs.find(t => t.id === tabId);
             
             if (tabConfig && tabConfig.url) {
-                window.location.href = tabConfig.url;
+                const targetUrl = getCorrectTabUrl(tabConfig, variant);
+                if (targetUrl) {
+                    window.location.href = targetUrl;
+                }
             } else {
                 // Disparar evento personalizado
                 const event = new CustomEvent('topNavTabClick', {

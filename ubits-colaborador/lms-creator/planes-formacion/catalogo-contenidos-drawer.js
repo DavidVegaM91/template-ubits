@@ -15,7 +15,7 @@
  * DEPENDENCIAS (orden recomendado antes de este script)
  * Maestros: bd-master-niveles-contenido, bd-master-aliados, bd-master-competencias,
  * bd-master-habilidades, bd-master-categorias-fiqsha; luego bd-contenidos-ubits.js y
- * bd-contenidos-fiqsha.js (rutas ../../bd-master/... desde lms-creator/).
+ * bd-contenidos-fiqsha.js (rutas ../../../bd-master/... desde lms-creator/).
  *
  * EXPONE EN window
  * CATALOGO_CURSOS_DRAWER — array de ítems listos para el drawer
@@ -37,14 +37,14 @@
         if (logoRel && String(logoRel).indexOf('images/') === 0) {
             return '../../' + logoRel;
         }
-        return '../../images/Favicons/UBITS.jpg';
+        return '../../../images/Favicons/UBITS.jpg';
     }
 
     function resolveAliadoPorId(aliadoId) {
         var byId = getAliadosByIdMap();
         var a = byId[aliadoId];
         if (!a) {
-            return { nombre: 'UBITS', logo: '../../images/Favicons/UBITS.jpg', id: aliadoId };
+            return { nombre: 'UBITS', logo: '../../../images/Favicons/UBITS.jpg', id: aliadoId };
         }
         return { id: a.id, nombre: a.nombre, logo: logoMaestroAliadoAPagina(a.logo) };
     }
@@ -64,7 +64,7 @@
                         return resolveAliadoPorId(arr[j].id);
                     }
                 }
-                return { nombre: nombre, logo: '../../images/Favicons/UBITS.jpg', id: null };
+                return { nombre: nombre, logo: '../../../images/Favicons/UBITS.jpg', id: null };
             });
         }
         return [resolveAliadoPorId(item.aliadoId || 'aly-001')];
@@ -100,9 +100,9 @@
             return '../../' + item.imagen;
         }
         if (item.imagePath) {
-            return '../../images/' + item.imagePath;
+            return '../../../images/' + item.imagePath;
         }
-        return '../../images/cards-learn/default.jpg';
+        return '../../../images/cards-learn/default.jpg';
     }
 
     function getCompetenciasByIdMap() {
@@ -151,7 +151,7 @@
             var competency = nombreCompetenciaCatalogoUbits(item, idx);
             var provs = resolveProveedoresCatalogoUbits(item);
             var providerPrim = provs[0] ? provs[0].nombre : 'UBITS';
-            var providerPrimLogo = provs[0] ? provs[0].logo : '../../images/Favicons/UBITS.jpg';
+            var providerPrimLogo = provs[0] ? provs[0].logo : '../../../images/Favicons/UBITS.jpg';
             var providersMulti = null;
             if (tipo === 'Ruta de aprendizaje' && provs.length > 1) {
                 providersMulti = provs.map(function (p) {

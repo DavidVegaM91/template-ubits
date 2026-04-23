@@ -169,3 +169,10 @@ body[data-planes-vacios="true"] .widget-planes-formacion #planes-empty-state,
 .page-planes-formacion .ubits-dropdown-menu__option-text {
     white-space: nowrap;
 }
+
+/* Status tag de estado: ancho mínimo para que no se corte "Procesando X%" */
+.page-planes-formacion .ubits-table tbody td[data-col="estado"] .ubits-status-tag {
+    min-width: 110px;
+    width: auto;
+    box-sizing: border-box;
+}

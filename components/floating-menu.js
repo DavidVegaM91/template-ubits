@@ -23,12 +23,12 @@ const FLOATING_MENU_SECTIONS_DEFAULT = [
         subitems: [
             { id: 'contenidos', title: 'Contenidos', icon: 'far fa-folder-open', url: '../../ubits-colaborador/lms-creator/contenidos.html' },
             { id: 'categorias', title: 'Categorías', icon: 'far fa-tags', url: '../../ubits-colaborador/lms-creator/categorias.html' },
-            { id: 'planes-formacion', title: 'Planes de formación', icon: 'far fa-clipboard-list', url: '../../ubits-colaborador/lms-creator/planes-formacion.html' },
-            { id: 'grupos', title: 'Grupos', icon: 'far fa-users', url: '../../ubits-colaborador/lms-creator/grupos.html' },
-            { id: 'certificados-descarga', title: 'Certificados (descarga)', icon: 'far fa-download', url: '../../ubits-colaborador/lms-creator/certificados.html' },
-            { id: 'certificados-config', title: 'Certificados (configuración)', icon: 'far fa-sliders', url: '../../ubits-colaborador/lms-creator/certificados-configuracion.html' },
-            { id: 'personalizacion-u-corporativa', title: 'Universidad corporativa', icon: 'far fa-building-columns', url: '../../ubits-colaborador/lms-creator/personalizacion-u-corporativa.html' },
-            { id: 'personalizacion-seguimiento', title: 'Seguimiento (UC)', icon: 'far fa-chart-line', url: '../../ubits-colaborador/lms-creator/personalizacion-seguimiento.html' }
+            { id: 'planes-formacion', title: 'Planes de formación', icon: 'far fa-clipboard-list', url: '../../ubits-colaborador/lms-creator/planes-formacion/planes-formacion.html' },
+            { id: 'grupos', title: 'Grupos', icon: 'far fa-users', url: '../../ubits-colaborador/lms-creator/planes-formacion/grupos.html' },
+            { id: 'certificados-descarga', title: 'Certificados (descarga)', icon: 'far fa-download', url: '../../ubits-colaborador/lms-creator/certificados/certificados.html' },
+            { id: 'certificados-config', title: 'Certificados (configuración)', icon: 'far fa-sliders', url: '../../ubits-colaborador/lms-creator/certificados/certificados-configuracion.html' },
+            { id: 'personalizacion-u-corporativa', title: 'Universidad corporativa', icon: 'far fa-building-columns', url: '../../ubits-colaborador/lms-creator/personalizacion/personalizacion-u-corporativa.html' },
+            { id: 'personalizacion-seguimiento', title: 'Seguimiento (UC)', icon: 'far fa-chart-line', url: '../../ubits-colaborador/lms-creator/personalizacion/personalizacion-seguimiento.html' }
         ]
     },
     {
@@ -174,8 +174,8 @@ const FLOATING_MENU_SECTIONS_CREATOR = [
         title: 'Planes de formación',
         icon: 'far fa-clipboard-list',
         subitems: [
-            { id: 'planes-formacion', title: 'Planes de formación', icon: 'far fa-clipboard-list', url: '../../ubits-colaborador/lms-creator/planes-formacion.html' },
-            { id: 'grupos', title: 'Grupos', icon: 'far fa-users', url: '../../ubits-colaborador/lms-creator/grupos.html' }
+            { id: 'planes-formacion', title: 'Planes de formación', icon: 'far fa-clipboard-list', url: '../../ubits-colaborador/lms-creator/planes-formacion/planes-formacion.html' },
+            { id: 'grupos', title: 'Grupos', icon: 'far fa-users', url: '../../ubits-colaborador/lms-creator/planes-formacion/grupos.html' }
         ]
     },
     {
@@ -183,8 +183,8 @@ const FLOATING_MENU_SECTIONS_CREATOR = [
         title: 'Certificados',
         icon: 'far fa-award',
         subitems: [
-            { id: 'certificados-descarga', title: 'Descarga', icon: 'far fa-download', url: '../../ubits-colaborador/lms-creator/certificados.html' },
-            { id: 'certificados-config', title: 'Configuración', icon: 'far fa-sliders', url: '../../ubits-colaborador/lms-creator/certificados-configuracion.html' }
+            { id: 'certificados-descarga', title: 'Descarga', icon: 'far fa-download', url: '../../ubits-colaborador/lms-creator/certificados/certificados.html' },
+            { id: 'certificados-config', title: 'Configuración', icon: 'far fa-sliders', url: '../../ubits-colaborador/lms-creator/certificados/certificados-configuracion.html' }
         ]
     },
     {
@@ -192,11 +192,37 @@ const FLOATING_MENU_SECTIONS_CREATOR = [
         title: 'Personalización',
         icon: 'far fa-palette',
         subitems: [
-            { id: 'personalizacion-u-corporativa', title: 'Universidad corporativa', icon: 'far fa-building-columns', url: '../../ubits-colaborador/lms-creator/personalizacion-u-corporativa.html' },
-            { id: 'personalizacion-seguimiento', title: 'Seguimiento', icon: 'far fa-chart-line', url: '../../ubits-colaborador/lms-creator/personalizacion-seguimiento.html' }
+            { id: 'personalizacion-u-corporativa', title: 'Universidad corporativa', icon: 'far fa-building-columns', url: '../../ubits-colaborador/lms-creator/personalizacion/personalizacion-u-corporativa.html' },
+            { id: 'personalizacion-seguimiento', title: 'Seguimiento', icon: 'far fa-chart-line', url: '../../ubits-colaborador/lms-creator/personalizacion/personalizacion-seguimiento.html' }
         ]
     }
 ];
+
+function getFloatingMenuBasePath() {
+    if (typeof getBasePath === 'function') {
+        return getBasePath();
+    }
+    const path = (window.location.pathname || '').replace(/\\/g, '/');
+    const markers = ['/ubits-colaborador/', '/ubits-admin/', '/documentacion/'];
+    for (const marker of markers) {
+        if (!path.includes(marker)) continue;
+        const afterMarker = path.split(marker)[1] || '';
+        const parts = afterMarker.split('/').filter(Boolean);
+        const depth = Math.max(1, parts.length);
+        return '../'.repeat(depth);
+    }
+    return '';
+}
+
+function resolveFloatingUrl(url) {
+    if (!url) return url;
+    const stdPrefix = '../../';
+    const basePath = getFloatingMenuBasePath();
+    if (url.startsWith(stdPrefix) && basePath !== stdPrefix) {
+        return basePath + url.slice(stdPrefix.length);
+    }
+    return url;
+}
 
 function getSectionsForVariant(variant) {
     if (variant === 'admin') return FLOATING_MENU_SECTIONS_ADMIN;
@@ -219,13 +245,13 @@ function getCurrentFloatingMenuSections() {
  */
 function getFloatingProfileMenuHTML(variant) {
     variant = variant || 'default';
-    const base = '../../';
+    const base = getFloatingMenuBasePath();
     const parts = [];
 
     function rowLink(id, title, iconClass, href, anchorExtra) {
         anchorExtra = anchorExtra || '';
         return (
-            '<a href="' + href + '" class="accordion-link direct-link" id="link-' + id + '"' + anchorExtra + '>' +
+            '<a href="' + resolveFloatingUrl(href) + '" class="accordion-link direct-link" id="link-' + id + '"' + anchorExtra + '>' +
             '<div class="accordion-icon-circle" id="circle-' + id + '">' +
             '<i class="' + iconClass + '" id="icon-' + id + '"></i>' +
             '</div>' +
@@ -314,7 +340,7 @@ function getFloatingMenuHTML(variant) {
         if (section.isLink) {
             if (section.clickable) {
                 return `
-                    <a href="${section.url}" class="accordion-link direct-link" id="link-${section.id}">
+                    <a href="${resolveFloatingUrl(section.url)}" class="accordion-link direct-link" id="link-${section.id}">
                         <div class="accordion-icon-circle" id="circle-${section.id}">
                             <i class="${section.icon}" id="icon-${section.id}"></i>
                         </div>
@@ -324,7 +350,7 @@ function getFloatingMenuHTML(variant) {
                 `;
             } else {
                 return `
-                <a href="${section.url}" class="accordion-link direct-link" id="link-${section.id}">
+                <a href="${resolveFloatingUrl(section.url)}" class="accordion-link direct-link" id="link-${section.id}">
                     <div class="accordion-icon-circle" id="circle-${section.id}">
                         <i class="${section.icon}" id="icon-${section.id}"></i>
                     </div>
@@ -337,7 +363,7 @@ function getFloatingMenuHTML(variant) {
         
         // Si es acordeón normal
         const subitemsHTML = section.subitems.map(subitem => `
-            <a href="${subitem.url}" class="accordion-link" id="link-${subitem.id}">
+            <a href="${resolveFloatingUrl(subitem.url)}" class="accordion-link" id="link-${subitem.id}">
                 <div class="accordion-icon-circle" id="circle-${subitem.id}">
                     <i class="${subitem.icon}" id="icon-${subitem.id}"></i>
                 </div>
@@ -536,9 +562,22 @@ function setActiveItemByCurrentPage() {
         'editar-plan-contenidos.html': 'planes-formacion',
         'editar-plan-competencias.html': 'planes-formacion',
         'detalle-plan-competencias.html': 'planes-formacion',
+        'planes-formacion/planes-formacion.html': 'planes-formacion',
+        'planes-formacion/grupos.html': 'grupos',
+        'planes-formacion/crear-grupo.html': 'grupos',
+        'planes-formacion/detalle-grupo.html': 'grupos',
+        'planes-formacion/chat-ia-grupos.html': 'grupos',
+        'planes-formacion/detalle-plan.html': 'planes-formacion',
+        'planes-formacion/crear-plan-contenidos.html': 'planes-formacion',
+        'planes-formacion/crear-plan-competencias.html': 'planes-formacion',
+        'planes-formacion/editar-plan-contenidos.html': 'planes-formacion',
+        'planes-formacion/editar-plan-competencias.html': 'planes-formacion',
+        'planes-formacion/detalle-plan-competencias.html': 'planes-formacion',
         'certificados-configuracion.html': 'certificados-config',
         'personalizacion-seguimiento.html': 'personalizacion-seguimiento',
-        'personalizacion-u-corporativa.html': 'personalizacion-u-corporativa'
+        'personalizacion-u-corporativa.html': 'personalizacion-u-corporativa',
+        'lms-creator/personalizacion/personalizacion-seguimiento.html': 'personalizacion-seguimiento',
+        'lms-creator/personalizacion/personalizacion-u-corporativa.html': 'personalizacion-u-corporativa'
     };
 
     const pageToElementMapAdmin = {
@@ -580,7 +619,9 @@ function setActiveItemByCurrentPage() {
         'certificados.html': 'certificados-descarga',
         'certificados-configuracion.html': 'certificados-config',
         'personalizacion-u-corporativa.html': 'personalizacion-u-corporativa',
-        'personalizacion-seguimiento.html': 'personalizacion-seguimiento'
+        'personalizacion-seguimiento.html': 'personalizacion-seguimiento',
+        'personalizacion/personalizacion-u-corporativa.html': 'personalizacion-u-corporativa',
+        'personalizacion/personalizacion-seguimiento.html': 'personalizacion-seguimiento'
     };
 
     let pageToElementMap = pageToElementMapDefault;

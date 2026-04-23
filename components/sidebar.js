@@ -1,28 +1,16 @@
 // Función para calcular la ruta base según la profundidad de la página
 function getBasePath() {
-    const path = window.location.pathname;
-    
-    // Detectar la profundidad basándose en patrones de carpetas del proyecto
-    // Páginas 3 niveles de profundidad (ubits-admin/desempeno/360/, etc.)
-    if (path.includes('/ubits-admin/desempeno/360/')) {
-        return '../../../';
+    const path = (window.location.pathname || '').replace(/\\/g, '/');
+    const markers = ['/ubits-colaborador/', '/ubits-admin/', '/documentacion/'];
+
+    for (const marker of markers) {
+        if (!path.includes(marker)) continue;
+        const afterMarker = path.split(marker)[1] || '';
+        const parts = afterMarker.split('/').filter(Boolean);
+        const depth = Math.max(1, parts.length);
+        return '../'.repeat(depth);
     }
-    // Páginas en subcarpetas de segundo nivel (ubits-colaborador/*, ubits-admin/*)
-    if (path.includes('/ubits-colaborador/') || path.includes('/ubits-admin/')) {
-        return '../../';
-    }
-    
-    // Páginas en subcarpetas de documentacion (documentacion/componentes/, documentacion/guias/, etc.)
-    if (path.includes('/documentacion/') && path.split('/documentacion/')[1].includes('/')) {
-        return '../../';
-    }
-    
-    // Páginas en primer nivel de carpeta (documentacion/*.html)
-    if (path.includes('/documentacion/')) {
-        return '../';
-    }
-    
-    // Página en la raíz (index.html) o cualquier otra ubicación
+
     return '';
 }
 
@@ -557,13 +545,13 @@ function loadSidebar(variantOrActiveButton = 'default', activeButton = null) {
                     <button class="nav-button" data-section="lms-creator" onclick="window.location.href='${basePath}ubits-colaborador/lms-creator/contenidos.html'" style="cursor: pointer;">
                         <i class="far fa-bolt"></i>
                     </button>
-                    <button class="nav-button" data-section="planes-formacion" onclick="window.location.href='${basePath}ubits-colaborador/lms-creator/planes-formacion.html'" style="cursor: pointer;">
+                    <button class="nav-button" data-section="planes-formacion" onclick="window.location.href='${basePath}ubits-colaborador/lms-creator/planes-formacion/planes-formacion.html'" style="cursor: pointer;">
                         <i class="far fa-clipboard-list"></i>
                     </button>
-                    <button class="nav-button" data-section="certificados" onclick="window.location.href='${basePath}ubits-colaborador/lms-creator/certificados.html'" style="cursor: pointer;">
+                    <button class="nav-button" data-section="certificados" onclick="window.location.href='${basePath}ubits-colaborador/lms-creator/certificados/certificados.html'" style="cursor: pointer;">
                         <i class="far fa-award"></i>
                     </button>
-                    <button class="nav-button" data-section="personalizacion" onclick="window.location.href='${basePath}ubits-colaborador/lms-creator/personalizacion-u-corporativa.html'" style="cursor: pointer;">
+                    <button class="nav-button" data-section="personalizacion" onclick="window.location.href='${basePath}ubits-colaborador/lms-creator/personalizacion/personalizacion-u-corporativa.html'" style="cursor: pointer;">
                         <i class="far fa-palette"></i>
                     </button>
                 </div>

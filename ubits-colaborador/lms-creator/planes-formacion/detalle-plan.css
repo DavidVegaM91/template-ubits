@@ -514,3 +514,11 @@
         min-height: 200px;
     }
 }
+
+/* Status tag de estado: ancho mínimo para que no se corte "Procesando X%" */
+.page-detalle-plan .ubits-table tbody td[data-col="estado"] .ubits-status-tag,
+.page-detalle-plan #plan-estado-container .ubits-status-tag {
+    min-width: 110px;
+    width: auto;
+    box-sizing: border-box;
+}

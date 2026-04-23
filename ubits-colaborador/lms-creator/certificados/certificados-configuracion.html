@@ -3,24 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/svg+xml" href="../../images/Ubits-logo-dark.svg">
-    <title>UBITS Playground - LMS Creator - Seguimiento</title>
+    <link rel="icon" type="image/svg+xml" href="../../../images/Ubits-logo-dark.svg">
+    <title>UBITS Playground - LMS Creator - Configuración</title>
 
-    <link rel="stylesheet" href="../../general-styles/ubits-colors.css">
-    <link rel="stylesheet" href="../../general-styles/styles.css">
-    <link rel="stylesheet" href="../../general-styles/fontawesome-icons.css">
-    <link rel="stylesheet" href="../../general-styles/ubits-typography.css">
-    <link rel="stylesheet" href="../../components/sub-nav.css">
-    <link rel="stylesheet" href="../../components/sidebar.css">
-    <link rel="stylesheet" href="../../components/tab-bar.css">
-    <link rel="stylesheet" href="../../components/floating-menu.css">
-    <link rel="stylesheet" href="../../components/profile-menu.css">
-    <link rel="stylesheet" href="../../components/button.css">
-    <link rel="stylesheet" href="../../components/ia-button.css">
-    <link rel="stylesheet" href="../../components/header-product.css">
-    <link rel="stylesheet" href="../../components/tooltip.css">
-    <link rel="stylesheet" href="./lms-creator.css">
-    <link rel="stylesheet" href="./personalizacion-seguimiento.css">
+    <link rel="stylesheet" href="../../../general-styles/ubits-colors.css">
+    <link rel="stylesheet" href="../../../general-styles/styles.css">
+    <link rel="stylesheet" href="../../../general-styles/fontawesome-icons.css">
+    <link rel="stylesheet" href="../../../general-styles/ubits-typography.css">
+    <link rel="stylesheet" href="../../../components/sub-nav.css">
+    <link rel="stylesheet" href="../../../components/sidebar.css">
+    <link rel="stylesheet" href="../../../components/tab-bar.css">
+    <link rel="stylesheet" href="../../../components/floating-menu.css">
+    <link rel="stylesheet" href="../../../components/profile-menu.css">
+    <link rel="stylesheet" href="../../../components/button.css">
+    <link rel="stylesheet" href="../../../components/ia-button.css">
+    <link rel="stylesheet" href="../../../components/header-product.css">
+    <link rel="stylesheet" href="../../../components/tooltip.css">
+    <link rel="stylesheet" href="../lms-creator.css">
+    <link rel="stylesheet" href="./certificados-configuracion.css">
 </head>
 <body data-theme="light">
     <div class="dashboard-container">
@@ -37,7 +37,7 @@
                     </div>
                     <div class="section-single">
                         <div class="widget-contenido-lms">
-                            <p class="ubits-body-md-regular">Seguimiento</p>
+                            <p class="ubits-body-md-regular">Configuración</p>
                             <br><br><br><br><br><br><br><br><br><br><br>
                         </div>
                     </div>
@@ -50,25 +50,25 @@
     <div id="floating-menu-container"></div>
     <div id="profile-menu-container"></div>
 
-    <script src="../../components/tooltip.js"></script>
-    <script src="../../components/sidebar.js"></script>
-    <script src="../../components/sub-nav.js"></script>
-    <script src="../../components/tab-bar.js"></script>
-    <script src="../../components/floating-menu.js"></script>
-    <script src="../../components/profile-menu.js"></script>
-    <script src="../../components/header-product.js"></script>
-    <script src="../../script.js"></script>
+    <script src="../../../components/tooltip.js"></script>
+    <script src="../../../components/sidebar.js"></script>
+    <script src="../../../components/sub-nav.js"></script>
+    <script src="../../../components/tab-bar.js"></script>
+    <script src="../../../components/floating-menu.js"></script>
+    <script src="../../../components/profile-menu.js"></script>
+    <script src="../../../components/header-product.js"></script>
+    <script src="../../../script.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            loadSidebar('creator', 'personalizacion');
-            loadSubNav('top-nav-container', 'creator-personalizacion');
+            loadSidebar('creator', 'certificados');
+            loadSubNav('top-nav-container', 'creator-certificados');
             loadTabBar('tab-bar-container', 'creator');
             loadFloatingMenu('floating-menu-container', 'creator');
             loadProfileMenu('profile-menu-container');
 
             if (typeof loadHeaderProduct === 'function') {
                 loadHeaderProduct('header-product-container', {
-                    productName: 'Seguimiento',
+                    productName: 'Configuración',
                     breadcrumbItems: [],
                     aiButton: { text: 'AI button', onClick: function() { console.log('AI button clicked'); } },
                     secondaryButtons: [
@@ -80,12 +80,12 @@
             }
 
             setTimeout(function() {
-                var segTab = document.querySelector('.nav-tab[data-tab="seguimiento"]');
-                if (segTab) {
+                var configTab = document.querySelector('.nav-tab[data-tab="configuracion"]');
+                if (configTab) {
                     document.querySelectorAll('.nav-tab, .hamburger-item').forEach(function(item) { item.classList.remove('active'); });
-                    segTab.classList.add('active');
+                    configTab.classList.add('active');
                 }
-                var sidebarBtn = document.querySelector('.nav-button[data-section="personalizacion"]');
+                var sidebarBtn = document.querySelector('.nav-button[data-section="certificados"]');
                 if (sidebarBtn) {
                     document.querySelectorAll('.nav-button').forEach(function(btn) { btn.classList.remove('active'); });
                     sidebarBtn.classList.add('active');
@@ -96,7 +96,7 @@
                     modulosTab.classList.add('active');
                 }
                 if (typeof setActiveAccordionLink === 'function') {
-                    setActiveAccordionLink('personalizacion-seguimiento');
+                    setActiveAccordionLink('certificados-config');
                 }
             }, 200);
         });

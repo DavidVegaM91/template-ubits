@@ -11,11 +11,15 @@ function getTabBarBasePath() {
     if (typeof getBasePath === 'function') {
         return getBasePath();
     }
-    const path = window.location.pathname;
-    if (path.includes('/ubits-admin/desempeno/360/')) return '../../../';
-    if (path.includes('/ubits-colaborador/') || path.includes('/ubits-admin/')) return '../../';
-    if (path.includes('/documentacion/') && path.split('/documentacion/')[1].includes('/')) return '../../';
-    if (path.includes('/documentacion/')) return '../';
+    const path = (window.location.pathname || '').replace(/\\/g, '/');
+    const markers = ['/ubits-colaborador/', '/ubits-admin/', '/documentacion/'];
+    for (const marker of markers) {
+        if (!path.includes(marker)) continue;
+        const afterMarker = path.split(marker)[1] || '';
+        const parts = afterMarker.split('/').filter(Boolean);
+        const depth = Math.max(1, parts.length);
+        return '../'.repeat(depth);
+    }
     return '';
 }
 

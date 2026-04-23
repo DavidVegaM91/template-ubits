@@ -173,8 +173,8 @@ En el **rail del sidebar default** no hay icono dedicado al Creator (solo las ru
 |--------------------------|------------------------------|
 | `lms-creator` | `contenidos.html` |
 | `planes-formacion` | `planes-formacion.html` |
-| `certificados` | `certificados.html` |
-| `personalizacion` | `personalizacion-u-corporativa.html` |
+| `certificados` | `certificados/certificados.html` |
+| `personalizacion` | `personalizacion/personalizacion-u-corporativa.html` |
 
 El logo UBITS en el header del sidebar es solo marca (sin enlace ni hover de interacción) en todas las variantes. El menú de perfil del Creator incluye **Modo Colaborador** (enlace a `ubits-colaborador/perfil/profile.html`) y **Modo Administrador**, además de documentación y sesión (ver `components/sidebar.js`).
 
@@ -185,20 +185,20 @@ Cada bloque de pestañas tiene su propia clave en **`components/sub-nav.js`**:
 | Variante `loadSubNav(..., '…')` | Pestañas (IDs `data-tab`) | HTML de entrada típico |
 |---------------------------------|---------------------------|-------------------------|
 | `creator-lms` | Contenidos (`contenidos`), Categorías (`categorias`) | `contenidos.html`, `categorias.html` |
-| `creator-planes` | Planes de formación (`planes`), Grupos (`grupos`) | `planes-formacion.html`, `grupos.html` y flujos hijos (crear/editar/detalle plan o grupo, chat IA grupos) — el mapeo de archivo → tab activo está en `sub-nav.js` (`PAGE_TO_TAB` con prefijo `lms-creator/`). |
-| `creator-certificados` | Descarga (`descarga`), Configuración (`configuracion`) | `certificados.html`, `certificados-configuracion.html` |
-| `creator-personalizacion` | Universidad corporativa (`universidad-corporativa`), Seguimiento (`seguimiento`) | `personalizacion-u-corporativa.html`, `personalizacion-seguimiento.html` |
+| `creator-planes` | Planes de formación (`planes`), Grupos (`grupos`) | `planes-formacion/planes-formacion.html`, `planes-formacion/grupos.html` y flujos hijos (crear/editar/detalle plan o grupo, chat IA grupos) — el mapeo de archivo → tab activo está en `sub-nav.js` (`PAGE_TO_TAB` con prefijo `lms-creator/planes-formacion/`). |
+| `creator-certificados` | Descarga (`descarga`), Configuración (`configuracion`) | `certificados/certificados.html`, `certificados/certificados-configuracion.html` |
+| `creator-personalizacion` | Universidad corporativa (`universidad-corporativa`), Seguimiento (`seguimiento`) | `personalizacion/personalizacion-u-corporativa.html`, `personalizacion/personalizacion-seguimiento.html` |
 
 Las páginas del Creator suelen cargar **`lms-creator.css`** más el **CSS homónimo** de la página (`contenidos.css`, `planes-formacion.css`, etc.).
 
 #### **Inventario de HTML en `lms-creator/`**
 
 - **LMS + Categorías:** `contenidos.html`, `categorias.html`, `crear-contenido.html` (creación de contenido en **página dedicada**, **layout inmersivo** `layout-immersive.css`; desde **`contenidos.html`** el botón **«Crear contenido»** abre `crear-contenido.html`; hashes legacy en la lista redirigen a la misma página)
-- **Planes y grupos:** `planes-formacion.html`, `grupos.html`, `crear-plan-contenidos.html`, `crear-plan-competencias.html`, `editar-plan-contenidos.html`, `editar-plan-competencias.html`, `detalle-plan.html`, `detalle-plan-competencias.html`, `crear-grupo.html`, `detalle-grupo.html`, `chat-ia-grupos.html`
-- **Certificados:** `certificados.html`, `certificados-configuracion.html` (stubs alineados a la plantilla vacía tipo categorías + `header-product`)
-- **Personalización UC:** `personalizacion-u-corporativa.html`, `personalizacion-seguimiento.html` (mismo patrón stub donde aplica)
+- **Planes y grupos:** `planes-formacion/planes-formacion.html`, `planes-formacion/grupos.html`, `planes-formacion/crear-plan-contenidos.html`, `planes-formacion/crear-plan-competencias.html`, `planes-formacion/editar-plan-contenidos.html`, `planes-formacion/editar-plan-competencias.html`, `planes-formacion/detalle-plan.html`, `planes-formacion/detalle-plan-competencias.html`, `planes-formacion/crear-grupo.html`, `planes-formacion/detalle-grupo.html`, `planes-formacion/chat-ia-grupos.html`
+- **Certificados:** `certificados/certificados.html`, `certificados/certificados-configuracion.html` (stubs alineados a la plantilla vacía tipo categorías + `header-product`)
+- **Personalización UC:** `personalizacion/personalizacion-u-corporativa.html`, `personalizacion/personalizacion-seguimiento.html` (mismo patrón stub donde aplica)
 
-**Vista colaborador** de universidad corporativa (catálogo consumo): sigue en **`aprendizaje/u-corporativa.html`**; la personalización en Creator es la pareja **`personalizacion-u-corporativa.html`**.
+**Vista colaborador** de universidad corporativa (catálogo consumo): sigue en **`aprendizaje/u-corporativa.html`**; la personalización en Creator es la pareja **`personalizacion/personalizacion-u-corporativa.html`**.
 
 **Universidad corporativa y LMS Creator (contenidos publicados):** la lista de **`ubits-colaborador/aprendizaje/u-corporativa.html`** debe mostrar **los mismos contenidos publicados** que expone el catálogo **`contents`** en `bd-master/bd-contenidos-fiqsha.js` (lo que en producto equivaldría a lo creado y dejado en estado publicado por la empresa en **LMS Creator → Contenidos**, `ubits-colaborador/lms-creator/contenidos.html`). Los **filtros** de la vista colaborador (tipo, categoría Fiqsha, nivel, idioma) están alineados con el **modal Filtros** de esa página Creator para que PM, diseño y datos mock sigan una sola verdad.
 

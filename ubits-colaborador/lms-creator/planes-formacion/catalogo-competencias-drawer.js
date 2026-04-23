@@ -12,8 +12,8 @@
  * - ubits-colaborador/aprendizaje/catalogo.html
  *
  * DEPENDENCIAS (orden obligatorio antes de este script)
- * - ../../bd-master/bd-master-competencias.js
- * - ../../bd-master/bd-master-habilidades.js
+ * - ../../../bd-master/bd-master-competencias.js
+ * - ../../../bd-master/bd-master-habilidades.js
  * (desde lms-creator/; desde aprendizaje/ la ruta a bd-master ya está en esas páginas)
  *
  * EXPONE EN window
