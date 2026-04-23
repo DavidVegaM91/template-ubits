@@ -1,0 +1,22 @@
+# Redirects por reorganización de carpetas en lms-creator (abril 2026)
+
+# Planes de formación y grupos
+/ubits-colaborador/lms-creator/planes-formacion.html        /ubits-colaborador/lms-creator/planes-formacion/planes-formacion.html        301
+/ubits-colaborador/lms-creator/grupos.html                  /ubits-colaborador/lms-creator/planes-formacion/grupos.html                   301
+/ubits-colaborador/lms-creator/detalle-plan.html            /ubits-colaborador/lms-creator/planes-formacion/detalle-plan.html             301
+/ubits-colaborador/lms-creator/crear-plan-contenidos.html   /ubits-colaborador/lms-creator/planes-formacion/crear-plan-contenidos.html    301
+/ubits-colaborador/lms-creator/crear-plan-competencias.html /ubits-colaborador/lms-creator/planes-formacion/crear-plan-competencias.html  301
+/ubits-colaborador/lms-creator/editar-plan-contenidos.html  /ubits-colaborador/lms-creator/planes-formacion/editar-plan-contenidos.html   301
+/ubits-colaborador/lms-creator/editar-plan-competencias.html /ubits-colaborador/lms-creator/planes-formacion/editar-plan-competencias.html 301
+/ubits-colaborador/lms-creator/detalle-plan-competencias.html /ubits-colaborador/lms-creator/planes-formacion/detalle-plan-competencias.html 301
+/ubits-colaborador/lms-creator/crear-grupo.html             /ubits-colaborador/lms-creator/planes-formacion/crear-grupo.html              301
+/ubits-colaborador/lms-creator/detalle-grupo.html           /ubits-colaborador/lms-creator/planes-formacion/detalle-grupo.html            301
+/ubits-colaborador/lms-creator/chat-ia-grupos.html          /ubits-colaborador/lms-creator/planes-formacion/chat-ia-grupos.html           301
+
+# Certificados
+/ubits-colaborador/lms-creator/certificados.html                  /ubits-colaborador/lms-creator/certificados/certificados.html                  301
+/ubits-colaborador/lms-creator/certificados-configuracion.html    /ubits-colaborador/lms-creator/certificados/certificados-configuracion.html    301
+
+# Personalización
+/ubits-colaborador/lms-creator/personalizacion-u-corporativa.html /ubits-colaborador/lms-creator/personalizacion/personalizacion-u-corporativa.html 301
+/ubits-colaborador/lms-creator/personalizacion-seguimiento.html   /ubits-colaborador/lms-creator/personalizacion/personalizacion-seguimiento.html   301
