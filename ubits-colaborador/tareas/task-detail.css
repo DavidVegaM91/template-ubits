@@ -300,6 +300,7 @@
 .task-detail-title-row .ubits-inline-edit {
     flex: 1;
     min-width: 0;
+    color: var(--ubits-fg-1-high);
 }
 
 .task-detail-title-actions {
