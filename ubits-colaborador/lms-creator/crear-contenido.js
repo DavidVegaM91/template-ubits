@@ -869,6 +869,11 @@
             titleSec.removeAttribute('hidden');
             rb.hidden = false;
             rb.removeAttribute('hidden');
+            
+            var inp = document.getElementById('crear-contenido-recursos-page-title');
+            if (inp && typeof window.autoResizeInlineEdit === 'function') {
+                window.autoResizeInlineEdit(inp);
+            }
         } else {
             prev.classList.remove('crear-contenido-recursos__preview--editor');
             if (emptyHost) emptyHost.style.display = '';
@@ -884,7 +889,12 @@
             '#crear-contenido-recursos-indice-mount .ubits-paginas-creator__item.is-active .ubits-paginas-creator__label'
         );
         var inp = document.getElementById('crear-contenido-recursos-page-title');
-        if (inp && activeLabel) inp.value = (activeLabel.textContent || '').trim();
+        if (inp && activeLabel) {
+            inp.value = (activeLabel.textContent || '').trim();
+            if (typeof window.autoResizeInlineEdit === 'function') {
+                window.autoResizeInlineEdit(inp);
+            }
+        }
     }
 
     function syncRecursosActiveLabelFromPageTitleInput() {
