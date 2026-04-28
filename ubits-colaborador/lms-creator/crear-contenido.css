@@ -442,24 +442,7 @@ body.crear-contenido-app-open .ubits-dropdown-menu__content {
     box-sizing: border-box;
 }
 
-.contenidos-creator-titulo-input {
-    width: 100%;
-    margin: 0;
-    padding: var(--padding-none);
-    border: none;
-    background: transparent;
-    color: var(--ubits-fg-1-high);
-    outline: none;
-    box-sizing: border-box;
-}
-
-.contenidos-creator-titulo-input::placeholder {
-    color: var(--ubits-fg-1-low);
-}
-
-.contenidos-creator-titulo-input:focus {
-    box-shadow: none;
-}
+/* Estilos base de los títulos ahora son manejados por inline-edit.css (.ubits-inline-edit) */
 
 .contenidos-creator-titulo-hint {
     margin: 0;
