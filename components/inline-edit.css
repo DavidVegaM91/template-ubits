@@ -138,13 +138,12 @@ textarea.ubits-inline-edit {
 
 /* heading/h1 y h2: line-height: 1 ya está en la clase tipográfica.
    Al ser textarea, forzamos line-height explícita para que scrollHeight
-   se calcule bien en el auto-resize del JS. */
-.ubits-inline-edit.ubits-heading-h1 {
-    line-height: 1.25;
-}
-
+   se calcule bien en el auto-resize del JS y añadimos padding para evitar
+   que se corten los descenders (p, g, q, y) por el overflow: hidden. */
+.ubits-inline-edit.ubits-heading-h1,
 .ubits-inline-edit.ubits-heading-h2 {
-    line-height: 1.25;
+    line-height: 1.4;
+    padding-bottom: 2px;
 }
 
 /* body/md */

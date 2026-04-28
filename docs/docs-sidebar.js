@@ -58,6 +58,7 @@ const DOCS_SIDEBAR_SECTIONS = [
     { id: 'toast', title: 'Toast', group: 'ui' },
     { id: 'toolbar-panel', title: 'Toolbar panel', group: 'ui' },
     { id: 'tooltip', title: 'Tooltip', group: 'ui' },
+    { id: 'video-player', title: 'Video player', group: 'ui' },
     // Operations (alfabético por title)
     { id: 'task-strip', title: 'Task strip', group: 'operations' }
 ];
@@ -315,6 +316,7 @@ function initDocsSidebar(activeSection) {
             'modal': 'modal.html',
             'table': 'table.html',
             'tooltip': 'tooltip.html',
+            'video-player': 'video-player.html',
             'calendar': 'calendar.html',
             'submenu': 'submenu.html',
             'task-strip': 'task-strip.html'

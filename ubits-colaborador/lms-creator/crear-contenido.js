@@ -1106,15 +1106,39 @@
                 var fieldInline = cargarBtn.closest('.ubits-resources-block__field-inline');
                 var inputSlot = fieldInline ? fieldInline.querySelector('[data-rb-slot="video-url"] input') : null;
                 if (inputSlot) {
-                    var val = inputSlot.value.trim().toLowerCase();
-                    var isValid = val.indexOf('vimeo.com') !== -1 ||
-                                  val.indexOf('youtube.com') !== -1 ||
-                                  val.indexOf('youtu.be') !== -1 ||
-                                  val.indexOf('drive.google.com') !== -1 ||
-                                  val.indexOf('onedrive.live.com') !== -1;
+                    var val = inputSlot.value.trim();
+                    var lowerVal = val.toLowerCase();
+                    var isValid = lowerVal.indexOf('vimeo.com') !== -1 ||
+                                  lowerVal.indexOf('youtube.com') !== -1 ||
+                                  lowerVal.indexOf('youtu.be') !== -1 ||
+                                  lowerVal.indexOf('drive.google.com') !== -1 ||
+                                  lowerVal.indexOf('onedrive.live.com') !== -1;
                     
                     if (isValid) {
-                        // A. Camino feliz - pendiente
+                        // A. Camino feliz
+                        var pType = 'html5';
+                        var pSrc = val;
+                        
+                        if (val.indexOf('vimeo.com') !== -1) {
+                            pType = 'vimeo';
+                            var mV = val.match(/vimeo\.com\/(\d+)/);
+                            if (mV) pSrc = 'https://player.vimeo.com/video/' + mV[1];
+                        } else if (val.indexOf('youtube.com') !== -1 || val.indexOf('youtu.be') !== -1) {
+                            pType = 'youtube';
+                            var mY = val.match(/(?:v=|youtu\.be\/)([^&\?]+)/);
+                            if (mY) pSrc = 'https://www.youtube.com/embed/' + mY[1];
+                        } else if (val.indexOf('drive.google.com') !== -1) {
+                            pType = 'google-drive';
+                            pSrc = val.replace('/view', '/preview'); // Heurística simple para Drive
+                        } else if (val.indexOf('onedrive.live.com') !== -1) {
+                            pType = 'onedrive';
+                            pSrc = val.replace('view.aspx', 'embed'); // Heurística simple para OneDrive
+                        }
+
+                        // Reemplazar el workspace del recurso por el reproductor, forzando 16/9
+                        if (typeof window.videoPlayerHtml === 'function') {
+                            mount.innerHTML = window.videoPlayerHtml({ type: pType, src: pSrc, className: 'is-forced-16-9' });
+                        }
                     } else {
                         // B. Enlace inválido -> variante error
                         mount.innerHTML = window.resourcesBlockHtml({ variant: 'video-error', value: val });

@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="../../images/Ubits-logo-dark.svg">
+    <title>Video player | UBITS Playground</title>
+    <link rel="stylesheet" href="../../general-styles/ubits-colors.css">
+    <link rel="stylesheet" href="../../general-styles/styles.css">
+    <link rel="stylesheet" href="../../general-styles/fontawesome-icons.css">
+    <link rel="stylesheet" href="../../general-styles/ubits-typography.css">
+    <link rel="stylesheet" href="../../components/sub-nav.css">
+    <link rel="stylesheet" href="../../components/sidebar.css">
+    <link rel="stylesheet" href="../../components/button.css">
+    <link rel="stylesheet" href="../../components/toast.css">
+    <link rel="stylesheet" href="../../components/dropdown-menu.css">
+    <link rel="stylesheet" href="../../components/input.css">
+    <link rel="stylesheet" href="../../components/video-player.css">
+    <link rel="stylesheet" href="../../docs/docs-sidebar.css">
+    <link rel="stylesheet" href="../../docs/docstyles.css">
+</head>
+<body class="componentes-page" data-theme="light">
+    <div class="dashboard-container">
+        <div class="tooltip" id="tooltip"></div>
+        <main class="main-content">
+            <div id="top-nav-container"></div>
+            <div style="display: flex;">
+                <div id="docs-dropdown-container"></div>
+                <div id="docs-sidebar-container"></div>
+                <div class="components-content">
+                    <div class="content-area" style="display: block; width: 100%;">
+                        <div style="text-align: center; margin-bottom: 60px;">
+                            <h1 class="ubits-display-d2-bold" style="margin-bottom: 24px; color: var(--ubits-accent-brand);">
+                                Video player
+                            </h1>
+                            <p class="ubits-body-md-regular" style="max-width: 800px; margin: 0 auto 32px; line-height: 1.6;">
+                                Envoltorio estandarizado para reproductores de video (YouTube, Vimeo, Drive, OneDrive y HTML5 nativo). Aplica un <code class="ubits-body-sm-regular">border-radius</code> oficial de 16px (token lg) sin bordes adicionales, delegando los controles a la fuente del video.
+                            </p>
+                        </div>
+
+                        <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: var(--border-radius-lg); margin-bottom: 40px;">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-eye" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Preview del componente
+                            </h2>
+                            <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6;">
+                                Selecciona la fuente del video para ver cómo se aplica el recorte y se muestran los controles nativos.
+                            </p>
+                            <div style="margin-bottom: 20px; max-width: 420px;">
+                                <div id="vp-doc-variant-input"></div>
+                            </div>
+                            <div style="background: var(--ubits-bg-4); padding: 24px; border-radius: var(--border-radius-md); width: 100%; max-width: 900px; box-sizing: border-box; overflow-x: auto;">
+                                <div id="vp-preview-mount" style="max-width: 640px; margin: 0 auto;"></div>
+                            </div>
+                        </div>
+
+                        <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: var(--border-radius-lg); margin-bottom: 40px;">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-info-circle" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Características generales
+                            </h2>
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--gap-lg);">
+                                <div style="text-align: center; padding: var(--padding-md); background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: var(--gap-sm);"><i class="far fa-border-none"></i></div>
+                                    <div class="ubits-body-sm-bold">Sin bordes feos</div>
+                                    <div class="ubits-body-sm-regular">Elimina bordes por defecto del iframe (<code>border: none</code>).</div>
+                                </div>
+                                <div style="text-align: center; padding: var(--padding-md); background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: var(--gap-sm);"><i class="far fa-circle"></i></div>
+                                    <div class="ubits-body-sm-bold">Curvas oficiales</div>
+                                    <div class="ubits-body-sm-regular">Aplica <code>var(--border-radius-lg)</code> para un recorte perfecto a 16px.</div>
+                                </div>
+                                <div style="text-align: center; padding: var(--padding-md); background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: var(--gap-sm);"><i class="far fa-play-circle"></i></div>
+                                    <div class="ubits-body-sm-bold">Controles nativos</div>
+                                    <div class="ubits-body-sm-regular">Usa los controles propios de Vimeo, YouTube o del navegador (HTML5).</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="background: var(--ubits-bg-1); border-radius: var(--border-radius-lg); margin-bottom: 40px; overflow: hidden;">
+                            <div style="padding: 32px; text-align: center; border-bottom: 1px solid var(--ubits-border-1);">
+                                <h2 class="ubits-heading-h2" style="margin-bottom: 0; color: var(--ubits-fg-1-high);">
+                                    <i class="far fa-code" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                    Documentación técnica
+                                </h2>
+                            </div>
+                            <div style="background: var(--ubits-bg-2); padding: 20px; text-align: center; cursor: pointer;" onclick="toggleTechnicalDocs()">
+                                <span class="ubits-body-md-regular" style="color: var(--ubits-accent-brand); display: flex; align-items: center; justify-content: center; gap: 8px;">
+                                    <i class="far fa-chevron-down"></i> Mostrar
+                                </span>
+                            </div>
+                            <div id="technical-docs-content" style="display: none; padding: 0;">
+                                <div style="padding: 32px; border-bottom: 1px solid var(--ubits-border-1);">
+                                    <div style="display: flex; justify-content: space-between; margin-bottom: 24px;">
+                                        <h2 class="ubits-heading-h2" style="margin: 0;">Implementación</h2>
+                                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('vp-tech-req')"><i class="far fa-copy"></i><span>Copiar</span></button>
+                                    </div>
+                                    <pre style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm); overflow-x: auto;"><code id="vp-tech-req" class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">CSS: ubits-colors, styles, video-player
+JS: video-player.js
+
+videoPlayerHtml({ type, src, className? })
+  type: 'youtube' | 'vimeo' | 'google-drive' | 'onedrive' | 'html5'
+  src: URL de origen para el src del iframe o video</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <div id="ubits-toast-container"></div>
+    <script src="../../components/sidebar.js"></script>
+    <script src="../../components/sub-nav.js"></script>
+    <script src="../../components/toast.js"></script>
+    <script src="../../components/dropdown-menu.js"></script>
+    <script src="../../components/input.js"></script>
+    <script src="../../components/video-player.js"></script>
+    <script src="../../docs/docs-sidebar.js"></script>
+    <script>
+        var VP_DEMO_URLS = {
+            'youtube': 'https://www.youtube.com/embed/dQw4w9WgXcQ',
+            'vimeo': 'https://player.vimeo.com/video/76979871?h=8272103f6e',
+            'html5': 'https://www.w3schools.com/html/mov_bbb.mp4'
+        };
+
+        var VP_OPTIONS = [
+            { value: 'vimeo', text: 'Vimeo' },
+            { value: 'youtube', text: 'YouTube' },
+            { value: 'html5', text: 'Video de tu computador (MP4)' }
+        ];
+
+        function vpRender(type) {
+            var mount = document.getElementById('vp-preview-mount');
+            if (!mount || typeof videoPlayerHtml !== 'function') return;
+            var src = VP_DEMO_URLS[type] || '';
+            mount.innerHTML = videoPlayerHtml({ type: type, src: src });
+        }
+
+        function vpInitPicker() {
+            if (typeof createInput !== 'function') return;
+            createInput({
+                containerId: 'vp-doc-variant-input',
+                type: 'select',
+                size: 'sm',
+                label: 'Fuente del video',
+                showLabel: true,
+                placeholder: 'Selecciona variante…',
+                selectOptions: VP_OPTIONS,
+                value: 'vimeo',
+                showHelper: false,
+                onChange: function (val) {
+                    vpRender(val);
+                }
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            if (typeof loadSubNav === 'function') loadSubNav('top-nav-container', 'documentacion');
+            if (typeof loadSidebar === 'function') loadSidebar('ninguno');
+            if (typeof loadDocsSidebar === 'function') loadDocsSidebar('video-player');
+            vpInitPicker();
+            vpRender('vimeo');
+        });
+
+        function toggleTechnicalDocs() {
+            var content = document.getElementById('technical-docs-content');
+            var open = content.style.display === 'none' || !content.style.display;
+            content.style.display = open ? 'block' : 'none';
+            var trigger = content.previousElementSibling;
+            if (trigger && trigger.querySelector('span')) {
+                trigger.querySelector('span').innerHTML = open
+                    ? '<i class="far fa-chevron-up"></i> Ocultar'
+                    : '<i class="far fa-chevron-down"></i> Mostrar';
+            }
+        }
+
+        function copyCode(id) {
+            var t = document.getElementById(id);
+            if (t) navigator.clipboard.writeText(t.textContent).then(function () {
+                if (typeof showToast === 'function') showToast('success', 'Copiado', { containerId: 'ubits-toast-container' });
+            });
+        }
+    </script>
+</body>
+</html>

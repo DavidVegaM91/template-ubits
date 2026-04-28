@@ -1,0 +1,33 @@
+.ubits-video-player {
+    display: block;
+    width: 100%;
+    border: none;
+    border-radius: var(--border-radius-lg); /* 16px según ubits-spacing-tokens.css */
+    overflow: hidden;
+    background-color: var(--ubits-bg-2); /* Fondo base mientras carga */
+    box-sizing: border-box;
+    /* Propiedad para forzar el recorte del borde en algunos navegadores al renderizar video */
+    -webkit-mask-image: -webkit-radial-gradient(white, black);
+    isolation: isolate;
+}
+
+/* Los iframes (YouTube, Vimeo) NO tienen aspect-ratio intrínseco y colapsan a 150px de alto sin esta regla.
+   Se asigna 16/9 por defecto, pero se puede sobreescribir con style="--video-aspect: 9/16" */
+iframe.ubits-video-player {
+    aspect-ratio: var(--video-aspect, 16 / 9);
+}
+
+/* Los videos nativos (MP4) SÍ conocen su tamaño real. 'auto' deja que el navegador use la proporción original del archivo. */
+video.ubits-video-player {
+    aspect-ratio: auto;
+}
+
+/* Modificador opcional para forzar 16:9 explícitamente cuando sea necesario */
+.ubits-video-player.is-forced-16-9 {
+    aspect-ratio: 16 / 9 !important;
+}
+
+.ubits-video-player:focus {
+    outline: 2px solid var(--ubits-accent-brand);
+    outline-offset: 2px;
+}

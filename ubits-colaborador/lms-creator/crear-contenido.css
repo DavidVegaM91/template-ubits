@@ -198,9 +198,9 @@ body.crear-contenido-app-open .ubits-dropdown-menu__content {
 }
 
 .crear-contenido-recursos__indice {
-    flex: 0 0 min(320px, 38vw);
+    flex: 0 0 400px;
     max-width: 400px;
-    min-width: 0;
+    min-width: 400px;
     align-self: flex-start;
 }
 
@@ -724,6 +724,7 @@ body.crear-contenido-app-open .ubits-dropdown-menu__content {
         flex: 0 0 auto;
         max-width: 100%;
         width: 100%;
+        min-width: 0;
     }
 
     /* Título+miniatura y descripción+ficha: apilados (la base del componente redefine grid a dos columnas). */
