@@ -95,14 +95,17 @@
     }
 
     /** Hueco para createInput text sm (initResourcesBlockFields) */
-    function videoUrlSlot(mode) {
+    function videoUrlSlot(mode, val) {
         var id = nextRbFieldId();
+        var valAttr = val != null ? ' data-rb-video-value="' + escapeAttr(val) + '"' : '';
         return (
             '<div id="' +
             id +
             '" class="ubits-resources-block__input-mount" data-rb-slot="video-url" data-rb-video-mode="' +
             escapeAttr(mode) +
-            '"></div>'
+            '"' +
+            valAttr +
+            '></div>'
         );
     }
 
@@ -122,7 +125,7 @@
             '">' +
             '<div class="ubits-resources-block__field-inline">' +
             '<div class="ubits-resources-block__input-cell">' +
-            videoUrlSlot(mode) +
+            videoUrlSlot(mode, opts.value) +
             '</div>' +
             btn +
             '</div></div>'
@@ -299,13 +302,14 @@
                         helperText: VIDEO_HELPER_TEXT
                     });
                 } else {
+                    var finalValError = el.getAttribute('data-rb-video-value') != null ? el.getAttribute('data-rb-video-value') : 'https://vimeodromo.com/402202999';
                     global.createInput({
                         containerId: id,
                         type: 'text',
                         size: 'sm',
                         showLabel: false,
                         placeholder: '',
-                        value: 'https://vimeodromo.com/402202999',
+                        value: finalValError,
                         state: 'invalid',
                         showHelper: true,
                         helperText: 'Este no es un enlace válido'
@@ -373,9 +377,9 @@
             return buildDefault(extra, v);
         }
 
-        if (v === 'video-empty') return buildStackPlain(videoRow({ state: 'empty' }), extra, v);
-        if (v === 'video-filled') return buildStackPlain(videoRow({ state: 'filled' }), extra, v);
-        if (v === 'video-error') return buildStackPlain(videoRow({ state: 'error' }), extra, v);
+        if (v === 'video-empty') return buildStackPlain(videoRow({ state: 'empty', value: opts.value }), extra, v);
+        if (v === 'video-filled') return buildStackPlain(videoRow({ state: 'filled', value: opts.value }), extra, v);
+        if (v === 'video-error') return buildStackPlain(videoRow({ state: 'error', value: opts.value }), extra, v);
 
         if (v === 'pdf-empty') return buildStackPlain(uploadPdfMp4('pdf', false), extra, v);
         if (v === 'pdf-error') return buildStackPlain(uploadPdfMp4('pdf', true), extra, v);

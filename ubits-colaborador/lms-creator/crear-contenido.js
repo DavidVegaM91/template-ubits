@@ -1117,7 +1117,7 @@
                         // A. Camino feliz - pendiente
                     } else {
                         // B. Enlace inválido -> variante error
-                        mount.innerHTML = window.resourcesBlockHtml({ variant: 'video-error' });
+                        mount.innerHTML = window.resourcesBlockHtml({ variant: 'video-error', value: val });
                         if (typeof window.initResourcesBlockFields === 'function') {
                             window.initResourcesBlockFields(mount);
                         }
