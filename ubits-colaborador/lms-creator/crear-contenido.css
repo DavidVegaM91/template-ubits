@@ -5,6 +5,113 @@
    ======================================== */
 
 /*
+ * ============================================================
+ * DOCUMENTACIÓN TÉCNICA: RAIL STICKY EN LAYOUT INMERSIVO
+ * ============================================================
+ *
+ * PROBLEMA ORIGINAL
+ * -----------------
+ * El .crear-contenido-editor__rail (columna izquierda con el stepper de pasos)
+ * quedaba tapado por el .ubits-layout-immersive__footer cuando el contenido de la
+ * derecha (.crear-contenido-editor__main) era suficientemente largo para scrollear.
+ *
+ * Causas identificadas:
+ *   1. El scroll estaba en #crear-contenido-main (__main), así que al scrollear
+ *      el rail desaparecía hacia arriba junto con el contenido.
+ *   2. Intentos con overflow:hidden en el workspace creaban un "masking" duro que
+ *      cortaba visualmente el contenido de la derecha (ficha técnica, secciones, etc.).
+ *   3. overflow:clip y gradiente fade eran workarounds visuales, no soluciones reales.
+ *
+ *
+ * SOLUCIÓN IMPLEMENTADA
+ * ---------------------
+ * Patrón "sticky sidebar": el __main scrollea normalmente (comportamiento original
+ * de layout-immersive.css, NO se modifica), y el rail usa position:sticky para
+ * mantenerse visible mientras el contenido de la derecha scrollea libremente.
+ *
+ * El rail necesita una height explícita (no "auto") porque:
+ *   - Con align-self:flex-start el rail solo tendría el alto de su contenido (4 pasos).
+ *   - Sin height explícita no llena la columna visualmente de header a footer.
+ *
+ *
+ * LAS 3 PIEZAS QUE TRABAJAN JUNTAS (tocar una sin las otras rompe el fix)
+ * -------------------------------------------------------------------------
+ *
+ * PIEZA 1 — CSS: el rail (este mismo bloque, líneas siguientes)
+ *   position: sticky; top: 0; align-self: flex-start;
+ *   height: calc(var(--cc-main-h, calc(100dvh - 120px)) - 40px);
+ *
+ *   - sticky + top:0  → el rail se "pega" al tope del scrollport (#crear-contenido-main)
+ *                       y nunca desaparece aunque el usuario scrollee.
+ *   - align-self:flex-start → permite que el elemento tenga height explícito dentro
+ *                              de un contenedor flex sin depender del alto del workspace.
+ *   - height: --cc-main-h - 40px → el alto exacto del __main menos 20px arriba y 20px
+ *                                    abajo (los padding-top/bottom del workspace).
+ *                                    El fallback calc(100dvh - 120px) cubre el caso en
+ *                                    que JS aún no haya corrido (estimado: header≈57px +
+ *                                    footer≈63px = 120px).
+ *
+ * PIEZA 2 — JS: syncRailHeight() en crear-contenido.js
+ *   Lee main.clientHeight en tiempo real y lo guarda en --cc-main-h en :root.
+ *   Se llama en initCrearContenidoPage() y en window resize.
+ *
+ *   ¿Por qué JS y no solo CSS?
+ *   No existe forma CSS pura de obtener el alto del __main (flex:1 1 0 entre header
+ *   y footer de alturas variables) sin hardcodear píxeles. clientHeight lo da exacto.
+ *
+ *   Si en el futuro el header o footer cambian de alto, NO hay que tocar el CSS:
+ *   syncRailHeight() lo recalcula automáticamente porque lee el __main real.
+ *
+ * PIEZA 3 — CSS: min-height en el workspace
+ *   .crear-contenido-editor-workspace { min-height: var(--cc-main-h, ...); }
+ *
+ *   Garantiza que el workspace sea SIEMPRE al menos tan alto como el rail.
+ *   Sin esto, cuando el contenido es corto el workspace mide menos que --cc-main-h
+ *   y el rail (con height:--cc-main-h - 40px) sobresale fuera del workspace,
+ *   metiéndose visualmente en el área del footer.
+ *
+ *
+ * MOBILE (≤1023px) — VER BLOQUE @media (max-width: 1023px) AL FINAL DEL ARCHIVO
+ * -------------------------------------------------------------------------------
+ * En mobile el workspace es flex-direction:column (rail arriba, contenido abajo).
+ * El rail NO necesita ser sticky porque el stepper horizontal reemplaza al vertical.
+ * Overrides aplicados dentro del media query con ambos selectores
+ * (.page-crear-contenido y #crear-contenido-main > ... ) para ganar especificidad:
+ *
+ *   position: static;   ← anula sticky
+ *   height: auto;       ← anula la height calculada
+ *   top: auto;          ← limpieza
+ *   min-height: 0;      ← el workspace tampoco necesita el min-height de desktop
+ *
+ *
+ * QUÉ VERIFICAR SI SE MODIFICA layout-immersive.css EN EL FUTURO
+ * ---------------------------------------------------------------
+ *   1. Si cambia el padding de .ubits-layout-immersive__main o su display/flex,
+ *      verificar que #crear-contenido-main siga siendo el scrollport (overflow-y:auto).
+ *      Si deja de serlo, sticky deja de funcionar.
+ *
+ *   2. Si cambia la altura del header o footer (padding, contenido, border),
+ *      NO hay que tocar el CSS aquí: syncRailHeight() lo adapta solo.
+ *      Si se elimina syncRailHeight(), el fallback calc(100dvh - 120px) entrará en
+ *      efecto y puede no ser exacto — revisarlo.
+ *
+ *   3. Si el workspace (.ubits-layout-immersive__stage) cambia de flex:1 0 auto
+ *      a algo que lo restrinja por debajo de --cc-main-h, el rail volvería a
+ *      sobresalir al footer. Verificar que min-height en el workspace siga activo.
+ *
+ *   4. Si se agrega overflow:hidden a cualquier ancestro del rail (body, __main,
+ *      workspace), sticky deja de funcionar porque ese ancestor se convierte en el
+ *      nuevo scrollport. Cualquier overflow distinto de visible/clip en un ancestro
+ *      rompe el sticky.
+ *
+ *   5. Si se cambia el padding del workspace (actualmente padding-top/bottom: 20px
+ *      para esta página), actualizar el "- 40px" en el height del rail al nuevo
+ *      total (padding-top + padding-bottom).
+ *
+ * ============================================================
+ */
+
+/*
  * Rail: sticky + height = __main - 20px arriba - 20px abajo.
  * El workspace tiene padding-top/bottom: 20px (ver regla .page-crear-contenido abajo),
  * que es el gap visual entre el rail y el header/footer.
