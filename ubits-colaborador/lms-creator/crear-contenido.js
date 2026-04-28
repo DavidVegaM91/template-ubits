@@ -1298,6 +1298,17 @@
         }, 500);
     }
 
+    /**
+     * Calcula el alto disponible del __main (entre header y footer)
+     * y lo expone como --cc-main-h en :root para que el rail sticky
+     * pueda usarlo como height sin pixels hardcodeados.
+     */
+    function syncRailHeight() {
+        var main = document.getElementById('crear-contenido-main');
+        if (!main) return;
+        document.documentElement.style.setProperty('--cc-main-h', main.clientHeight + 'px');
+    }
+
     function initCrearContenidoPage() {
         if (typeof renderSaveIndicator === 'function') {
             renderSaveIndicator('crear-contenido-save-indicator', {
@@ -1330,6 +1341,9 @@
         wireCrearContenidoPageStepperStepClicks();
         applyCrearContenidoPageHash();
         window.addEventListener('hashchange', applyCrearContenidoPageHash);
+        /* Rail height: leer el alto real del __main y exponerlo como CSS var */
+        syncRailHeight();
+        window.addEventListener('resize', syncRailHeight);
     }
 
     /** Portada `#portada`, Recursos `#recursos`. Alias legacy en applyCrearContenidoPageHash. */

@@ -4,13 +4,20 @@
    .contenidos-creator-*, breakpoints) vive aquí — no enlazar contenidos.css.
    ======================================== */
 
-/* Rail + stepper: columna flex dentro del stage; el marco vertical usa flex:1 en stepper.css. */
+/*
+ * Rail: sticky + height = __main - 20px arriba - 20px abajo.
+ * El workspace tiene padding-top/bottom: 20px (ver regla .page-crear-contenido abajo),
+ * que es el gap visual entre el rail y el header/footer.
+ */
 #crear-contenido-main > .crear-contenido-editor-workspace > .crear-contenido-editor__rail {
-    align-self: stretch;
-    min-height: 0;
+    position: sticky;
+    top: 0;
+    align-self: flex-start;
+    height: calc(var(--cc-main-h, calc(100dvh - 120px)) - 40px);
     display: flex;
     flex-direction: column;
     background: var(--ubits-bg-2);
+    box-sizing: border-box;
 }
 
 #crear-contenido-main > .crear-contenido-editor-workspace > .crear-contenido-editor__rail > .ubits-stepper__vertical-frame--creator-rail {
@@ -266,13 +273,20 @@ body.crear-contenido-app-open .ubits-dropdown-menu__content {
 
 /* Workspace editor (rail stepper + columna principal) */
 
+/*
+ * Workspace: contenedor flex del rail + contenido.
+ * min-height: var(--cc-main-h) garantiza que el workspace es SIEMPRE al menos
+ * tan alto como el rail (height: var(--cc-main-h)), evitando que el rail sobresalga
+ * hacia el footer cuando el contenido es corto.
+ * Sin overflow constraints: el __main scrollea naturalmente cuando el contenido crece.
+ */
 .crear-contenido-editor-workspace {
     display: flex;
     flex-direction: row;
-    align-items: stretch;
-    flex: 1 1 0;
-    min-height: 0;
+    align-items: flex-start;
+    flex: 1 0 auto;
     min-width: 0;
+    min-height: var(--cc-main-h, calc(100dvh - 120px));
     background: var(--ubits-bg-2);
     gap: var(--gap-lg);
     padding: var(--padding-lg);
@@ -291,19 +305,19 @@ body.crear-contenido-app-open .ubits-dropdown-menu__content {
     display: flex;
     flex-direction: column;
     gap: var(--gap-xl);
-    /* Scroll en #crear-contenido-main (layout-immersive.css); aquí evita scroll anidado y recortes. */
+    /* Overflow visible: el contenido fluye sin enmascarar.
+       El scroll lo maneja #crear-contenido-main (layout-immersive.css). */
     overflow: visible;
-    min-height: 0;
+    padding-bottom: var(--padding-2xl);
 }
 
-/* Workspace: llenar ancho y acotar scroll a la columna principal */
+/* Workspace: llenar ancho del stage; padding vertical = 20px = gap exacto al header y footer */
 .page-crear-contenido .crear-contenido-editor-workspace {
-    flex: 1 1 auto;
-    min-height: 0;
     width: 100%;
     max-width: 100%;
-    overflow-x: hidden;
     box-sizing: border-box;
+    padding-top: 20px;
+    padding-bottom: 20px;
 }
 
 /* Stepper horizontal oficial: solo se muestra en ≤1023px (ver bloque responsive abajo). */
@@ -562,14 +576,24 @@ body.crear-contenido-app-open .ubits-dropdown-menu__content {
     .page-crear-contenido .crear-contenido-editor-workspace {
         flex-direction: column;
         align-items: stretch;
+        /* Mobile: sin min-height fijo, el workspace crece con el contenido */
+        min-height: 0;
+        padding-top: var(--padding-lg);
+        padding-bottom: var(--padding-lg);
     }
 
-    .page-crear-contenido .crear-contenido-editor__rail {
+    .page-crear-contenido .crear-contenido-editor__rail,
+    #crear-contenido-main > .crear-contenido-editor-workspace > .crear-contenido-editor__rail {
         flex: 0 0 auto;
         width: 100%;
         max-width: 100%;
         min-width: 0;
         align-self: stretch;
+        /* Mobile: el rail NO es sticky ni tiene height fijo;
+           fluye con su contenido naturalmente. */
+        position: static;
+        height: auto;
+        top: auto;
     }
 
     .page-crear-contenido .crear-contenido-editor__main {
