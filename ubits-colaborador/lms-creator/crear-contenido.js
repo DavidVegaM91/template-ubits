@@ -1071,6 +1071,89 @@
         persistRecursosRightTitleToActiveItem();
     }
 
+    var recursosBlockInteractionsBound = false;
+    function bindRecursosBlockInteractions() {
+        if (recursosBlockInteractionsBound) return;
+        recursosBlockInteractionsBound = true;
+
+        document.addEventListener('click', function (ev) {
+            var mount = document.getElementById('crear-contenido-recursos-resources-mount');
+            if (!mount || !mount.contains(ev.target)) return;
+
+            // 1. Click en tarjeta de Video
+            var videoCard = ev.target.closest('[data-resources-card-type="video"]');
+            if (videoCard && !videoCard.disabled) {
+                mount.innerHTML = window.resourcesBlockHtml({ variant: 'video-empty' });
+                if (typeof window.initResourcesBlockFields === 'function') {
+                    window.initResourcesBlockFields(mount);
+                }
+                return;
+            }
+
+            // 2. Click en botón Cancelar
+            var cancelBtn = ev.target.closest('.ubits-resources-block__footer .ubits-button--error-secondary');
+            if (cancelBtn) {
+                mount.innerHTML = window.resourcesBlockHtml({ variant: 'default' });
+                if (typeof window.initResourcesBlockFields === 'function') {
+                    window.initResourcesBlockFields(mount);
+                }
+                return;
+            }
+
+            // 4. Click en botón Cargar
+            var cargarBtn = ev.target.closest('.ubits-resources-block__field-inline .ubits-button--primary');
+            if (cargarBtn && !cargarBtn.disabled) {
+                var fieldInline = cargarBtn.closest('.ubits-resources-block__field-inline');
+                var inputSlot = fieldInline ? fieldInline.querySelector('[data-rb-slot="video-url"] input') : null;
+                if (inputSlot) {
+                    var val = inputSlot.value.trim().toLowerCase();
+                    var isValid = val.indexOf('vimeo.com') !== -1 ||
+                                  val.indexOf('youtube.com') !== -1 ||
+                                  val.indexOf('youtu.be') !== -1 ||
+                                  val.indexOf('drive.google.com') !== -1 ||
+                                  val.indexOf('onedrive.live.com') !== -1;
+                    
+                    if (isValid) {
+                        // A. Camino feliz - pendiente
+                    } else {
+                        // B. Enlace inválido -> variante error
+                        mount.innerHTML = window.resourcesBlockHtml({ variant: 'video-error' });
+                        if (typeof window.initResourcesBlockFields === 'function') {
+                            window.initResourcesBlockFields(mount);
+                        }
+                    }
+                }
+                return;
+            }
+        });
+
+        // 3. Escribir en el input enciende el botón Cargar
+        document.addEventListener('input', function (ev) {
+            var mount = document.getElementById('crear-contenido-recursos-resources-mount');
+            if (!mount || !mount.contains(ev.target)) return;
+
+            var inputSlotContainer = ev.target.closest('[data-rb-slot="video-url"]');
+            if (inputSlotContainer) {
+                var fieldInline = ev.target.closest('.ubits-resources-block__field-inline');
+                if (fieldInline) {
+                    var cargarBtn = fieldInline.querySelector('button');
+                    if (cargarBtn) {
+                        var val = ev.target.value.trim();
+                        if (val !== '') {
+                            cargarBtn.classList.remove('ubits-button--secondary');
+                            cargarBtn.classList.add('ubits-button--primary');
+                            cargarBtn.disabled = false;
+                        } else {
+                            cargarBtn.classList.remove('ubits-button--primary');
+                            cargarBtn.classList.add('ubits-button--secondary');
+                            cargarBtn.disabled = true;
+                        }
+                    }
+                }
+            }
+        });
+    }
+
     function bindRecursosEventsOnce() {
         if (recursosEventsBound) return;
         recursosEventsBound = true;
@@ -1096,6 +1179,8 @@
             var inp = document.getElementById('crear-contenido-recursos-page-title');
             if (inp) inp.value = d.value != null ? String(d.value) : '';
         });
+        
+        bindRecursosBlockInteractions();
     }
 
     function initCrearContenidoPageRecursosStepOnce() {
