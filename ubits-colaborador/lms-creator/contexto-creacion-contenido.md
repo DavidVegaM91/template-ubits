@@ -281,19 +281,20 @@ Al configurar una página, el usuario puede añadir uno de estos tipos (presenta
 ### Estados del panel derecho
 
 1. **Configuración inicial**  
-   - Input para **pegar el enlace** del video.  
-   - Botón **“Cargar”** al lado: **deshabilitado** hasta que el usuario introduzca un enlace no vacío (validación mínima según producto).  
-   - Botón **“Eliminar”** debajo del bloque:  
-     - En esta **primera etapa** (aún sin video cargado/válido), **Eliminar** descarta el recurso y **vuelve** al **selector general de recursos** de la página (no borra la página, solo este intento de recurso).
+   - Input para **pegar el enlace** del video (solo se admiten URLs válidas de Vimeo, YouTube, Google Drive o OneDrive).  
+   - Botón **“Cargar”** al lado: **habilitado** en cuanto el usuario escribe algo en el input.
+   - Si el enlace ingresado **no es válido**, al hacer clic en Cargar el bloque pasa al estado de error (`resourcesBlockHtml({ variant: 'video-error' })`), manteniendo la URL ingresada y mostrando el mensaje de ayuda en rojo.
+   - Botón **“Cancelar”** (secundario-error) debajo del bloque: descarta el recurso y **vuelve** al **selector general de recursos** de la página (`resourcesBlockHtml({ variant: 'default' })`).
 
-2. **Tras añadir/cargar el video con éxito**  
-   - Se muestra el **preview del video** embebido.  
-   - Debajo del preview: botón **Eliminar** (quita este recurso de la página y vuelve al flujo coherente; definir con producto si hace falta confirmación).  
-   - Debajo de Eliminar: bloque **“Contenido complementario”** (nombre orientativo): invita a añadir material extra con **dos** opciones en formato **cards**:  
-     - **Texto**  
-     - **Archivo descargable**  
-
-Este patrón de **contenido complementario** (Texto / Archivo descargable) aparece en **varios** tipos de recurso, no solo en Video; el detalle de cada caso se documentará en mensajes siguientes.
+2. **Tras añadir/cargar el video con éxito (Camino feliz)**  
+   - Se procesa la URL insertada para convertirla a un enlace embebible adecuado según el proveedor (extracción de ID para Vimeo/YouTube, ajuste de parámetros para Drive/OneDrive).
+   - El panel derecho reemplaza la caja de inserción por el **Componente Video Player** (`videoPlayerHtml`), el cual inyecta el `<iframe>` con controles nativos, `border-radius: 16px` y un `aspect-ratio` forzado de `16/9` (usando la clase `.is-forced-16-9`).
+   - El player se envuelve en un bloque oficial (`.ubits-resources-block.ubits-resources-block--stack`) para asegurar el espaciado correcto (`gap: var(--gap-sm)`) con el pie del componente.
+   - **Sincronización del Índice:** Al completarse la carga, el ícono de la página activa en el panel izquierdo (lista de **Páginas creator**) se actualiza automáticamente al ícono de video (`fa-video`).
+   - **Botón Eliminar:** Se ubica debajo del video, alineado a la derecha (`.ubits-button--error-secondary`). Al presionarlo:
+     1. Se destruye el player y se repinta el **selector general de recursos** (`variant: 'default'`).
+     2. El ícono de la página activa en el índice regresa a su estado inicial de página en blanco (`fa-file` / `blank-page`).
+   - *Próximamente:* Debajo de Eliminar aparecerá un bloque de **“Contenido complementario”** invitando a añadir material extra en formato de **cards** (Texto / Archivo descargable).
 
 ---
 

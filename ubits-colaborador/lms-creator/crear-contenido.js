@@ -15,6 +15,51 @@
     var PORTADA_INVALID_CLASS = 'crear-contenido-portada-field--invalid';
     var CATEGORIA_SELECT_PLACEHOLDER_TEXT = 'Selecciona una opción';
 
+    // ----- FAKE SAVE INDICATOR -----
+    var saveIndicatorTimeout;
+    function triggerFakeSaveCreator() {
+        if (typeof renderSaveIndicator !== 'function') return;
+        clearTimeout(saveIndicatorTimeout);
+        renderSaveIndicator('crear-contenido-save-indicator', { state: 'saving', size: 'xs', idleVariant: 'plain' });
+        saveIndicatorTimeout = setTimeout(function () {
+            renderSaveIndicator('crear-contenido-save-indicator', { state: 'saved', size: 'xs', idleVariant: 'plain' });
+            setTimeout(function () {
+                renderSaveIndicator('crear-contenido-save-indicator', { state: 'idle', size: 'xs', idleVariant: 'plain' });
+            }, 2500);
+        }, 800);
+    }
+    
+    function wireAutoSave() {
+        var debouncedSave;
+        function handleInteraction(ev) {
+            if (!ev.target || !ev.target.closest) return;
+            var isInsideMain = ev.target.closest('#crear-contenido-main') || ev.target.closest('.ubits-modal') || ev.target.closest('.ubits-dropdown-menu');
+            if (!isInsideMain) return;
+            
+            clearTimeout(debouncedSave);
+            debouncedSave = setTimeout(triggerFakeSaveCreator, 600);
+        }
+        
+        document.addEventListener('input', handleInteraction);
+        document.addEventListener('change', handleInteraction);
+        
+        // Clics específicos que cambian el estado
+        document.addEventListener('click', function(ev) {
+            if (!ev.target || !ev.target.closest) return;
+            var btn = ev.target.closest('.ubits-button');
+            var isCard = ev.target.closest('.ubits-resources-card');
+            var isMenuItem = ev.target.closest('.ubits-dropdown-menu__option');
+            if (btn || isCard || isMenuItem) {
+                handleInteraction(ev);
+            }
+        });
+        
+        // Eventos personalizados
+        document.addEventListener('ubits-paginas-creator-action', handleInteraction);
+        document.addEventListener('ubits-seccion-creator-add-page', handleInteraction);
+    }
+    // -------------------------------
+
     function escAttr(s) {
         return String(s || '')
             .replace(/&/g, '&amp;')
@@ -1090,6 +1135,25 @@
                 return;
             }
 
+            // 5. Click en botón Eliminar recurso cargado (evaluar antes de Cancelar)
+            var eliminarBtn = ev.target.closest('#cc-eliminar-recurso');
+            if (eliminarBtn) {
+                mount.innerHTML = window.resourcesBlockHtml({ variant: 'default' });
+                if (typeof window.initResourcesBlockFields === 'function') {
+                    window.initResourcesBlockFields(mount);
+                }
+                
+                // Restaurar icono en el índice a "blank-page"
+                var activeItemDel = document.querySelector('#crear-contenido-recursos-indice-mount .ubits-paginas-creator__item.is-active');
+                if (activeItemDel) {
+                    var iconElDel = activeItemDel.querySelector('.ubits-paginas-creator__drag-handle i');
+                    if (iconElDel && typeof window.paginasCreatorIconClass === 'function') {
+                        iconElDel.className = window.paginasCreatorIconClass('blank-page');
+                    }
+                }
+                return;
+            }
+
             // 2. Click en botón Cancelar
             var cancelBtn = ev.target.closest('.ubits-resources-block__footer .ubits-button--error-secondary');
             if (cancelBtn) {
@@ -1137,8 +1201,29 @@
 
                         // Reemplazar el workspace del recurso por el reproductor, forzando 16/9
                         if (typeof window.videoPlayerHtml === 'function') {
-                            mount.innerHTML = window.videoPlayerHtml({ type: pType, src: pSrc, className: 'is-forced-16-9' });
+                            var playerHtml = window.videoPlayerHtml({ type: pType, src: pSrc, className: 'is-forced-16-9' });
+                            mount.innerHTML = 
+                                '<div class="ubits-resources-block ubits-resources-block--stack">' +
+                                    '<div class="ubits-resources-block__surface" style="padding: 0;">' +
+                                        playerHtml +
+                                    '</div>' +
+                                    '<div class="ubits-resources-block__footer">' +
+                                        '<button type="button" class="ubits-button ubits-button--error-secondary ubits-button--sm" id="cc-eliminar-recurso">' +
+                                            '<i class="far fa-trash-alt"></i><span>Eliminar</span>' +
+                                        '</button>' +
+                                    '</div>' +
+                                '</div>';
                         }
+                        
+                        // Actualizar icono en el índice a "video"
+                        var activeItem = document.querySelector('#crear-contenido-recursos-indice-mount .ubits-paginas-creator__item.is-active');
+                        if (activeItem) {
+                            var iconEl = activeItem.querySelector('.ubits-paginas-creator__drag-handle i');
+                            if (iconEl && typeof window.paginasCreatorIconClass === 'function') {
+                                iconEl.className = window.paginasCreatorIconClass('video');
+                            }
+                        }
+
                     } else {
                         // B. Enlace inválido -> variante error
                         mount.innerHTML = window.resourcesBlockHtml({ variant: 'video-error', value: val });
@@ -1436,6 +1521,7 @@
                 size: 'xs'
             });
         }
+        wireAutoSave();
         if (typeof initTooltip === 'function') {
             initTooltip('#crear-contenido-root [data-tooltip]');
         }
