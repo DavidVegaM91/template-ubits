@@ -362,7 +362,7 @@
                 loaderView.style.display = 'none';
                 imgEl.src = AI_IMAGES[portadaiAImagesIndex];
                 resultView.style.display = 'flex';
-            }, 5000);
+            }, 4000);
         }
 
         sendBtn.addEventListener('click', generate);
@@ -374,8 +374,15 @@
         });
 
         regenBtn.addEventListener('click', function() {
-            portadaiAImagesIndex = (portadaiAImagesIndex + 1) % AI_IMAGES.length;
-            imgEl.src = AI_IMAGES[portadaiAImagesIndex];
+            resultView.style.display = 'none';
+            loaderView.style.display = 'flex';
+            
+            setTimeout(function() {
+                portadaiAImagesIndex = (portadaiAImagesIndex + 1) % AI_IMAGES.length;
+                imgEl.src = AI_IMAGES[portadaiAImagesIndex];
+                loaderView.style.display = 'none';
+                resultView.style.display = 'flex';
+            }, 2000);
         });
 
         useBtn.addEventListener('click', function() {
