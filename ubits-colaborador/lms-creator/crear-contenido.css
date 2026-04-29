@@ -718,6 +718,8 @@ body.crear-contenido-app-open .ubits-dropdown-menu__content {
 
     .page-crear-contenido .crear-contenido-recursos__workspace {
         flex-direction: column;
+        /* En columna, flex-start hace que el preview no estire y se vea angosto. */
+        align-items: stretch;
     }
 
     .page-crear-contenido .crear-contenido-recursos__indice {
@@ -725,6 +727,11 @@ body.crear-contenido-app-open .ubits-dropdown-menu__content {
         max-width: 100%;
         width: 100%;
         min-width: 0;
+    }
+
+    .page-crear-contenido .crear-contenido-recursos__preview {
+        width: 100%;
+        max-width: 100%;
     }
 
     /* Título+miniatura y descripción+ficha: apilados (la base del componente redefine grid a dos columnas). */

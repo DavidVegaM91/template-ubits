@@ -203,3 +203,22 @@
     width: 100%;
     color: var(--ubits-fg-1-medium);
 }
+
+/* Mobile: el bloque debe respirar como padding-md en todas las variantes. */
+@media (max-width: 1023px) {
+    .ubits-resources-block--default {
+        /* Mantener padding vertical como desktop; horizontal compacto para mobile. */
+        padding: var(--padding-6xl) var(--padding-md);
+    }
+
+    .ubits-resources-block__surface {
+        /* Mantener padding vertical como desktop; horizontal compacto para mobile. */
+        padding: var(--padding-6xl) var(--padding-md);
+        min-height: auto;
+    }
+
+    .ubits-resources-block__blocked {
+        /* Mantener padding vertical como desktop (xl) */
+        padding: var(--padding-xl);
+    }
+}
