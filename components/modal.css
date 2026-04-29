@@ -20,7 +20,7 @@
 
 .ubits-modal-content {
     background: var(--ubits-bg-1);
-    border-radius: var(--border-radius-sm);
+    border-radius: var(--border-radius-lg);
     border: 1px solid var(--ubits-border-1);
     width: 100%;
     max-width: min(560px, calc(100vw - 32px));
