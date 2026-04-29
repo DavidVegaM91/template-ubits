@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="../../components/alert.css">
     <link rel="stylesheet" href="../../components/sidebar.css">
     <link rel="stylesheet" href="../../components/button.css">
+    <link rel="stylesheet" href="../../components/chip.css">
     <link rel="stylesheet" href="../../components/ia-button.css">
     <link rel="stylesheet" href="../../ubits-colaborador/aprendizaje/aprendizaje-ia-gradientes.css">
     <link rel="stylesheet" href="../../components/badge-tag.css">
@@ -43,7 +44,7 @@
                                 AI panel
                             </h1>
                             <p class="ubits-body-md-regular" style="max-width: 800px; margin: 0 auto 32px; line-height: 1.6;">
-                                Panel lateral de asistente IA anclado a la derecha: cabecera con título, badge de tokens IA junto al cierre (como en modales de flujos IA), zona de bienvenida o hilo de mensajes, entrada con envío y adjuntos, y disclaimer. Es redimensionable con el ratón y opcionalmente se acopla dentro del layout en escritorio (<code style="font-family: monospace;">dockDesktop</code>). El marcado lo genera <code style="font-family: monospace;">ai-panel.js</code>; no copies HTML a mano salvo casos muy puntuales.
+                                Ventana lateral para chatear con el asistente de IA: escribir, adjuntar archivos y ver tu saldo de tokens sin salir de la pantalla donde estás trabajando.
                             </p>
                         </div>
 
@@ -53,7 +54,7 @@
                                 Preview del componente
                             </h2>
                             <p class="ubits-body-md-regular" style="margin-bottom: var(--gap-md); line-height: 1.6;">
-                                Aquí se inicializa el panel real con <code style="font-family: monospace;">initAIPanel</code>. Al enviar desde el input, el propio <code style="font-family: monospace;">ai-panel.js</code> inserta el mensaje del usuario y, si cargas <code style="font-family: monospace;">ia-chat-streaming.js</code> antes de <code style="font-family: monospace;">ai-panel.js</code>, el indicador «Pensando» y la llamada a <code style="font-family: monospace;">onSend(text)</code> (solo debes pintar la respuesta de la IA, como en la demo). El botón «Probar…» usa <code style="font-family: monospace;">showAIPanelTyping</code> a mano para ese flujo aislado. Demo completa: <code style="font-family: monospace;">ubits-colaborador/lms-creator/ai-panel-demo.html</code>.
+                                Abre el panel con el botón de abajo, escribe o adjunta un archivo, y prueba el flujo de “Pensando” y respuesta. El segundo botón simula la respuesta de la IA para ver el comportamiento del hilo. Para ver el panel integrado en una lista real, abre la demo de Contenidos en el LMS Creator.
                             </p>
                             <div style="display: flex; flex-wrap: wrap; gap: var(--gap-md); align-items: center; margin-bottom: var(--gap-lg);">
                                 <button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="ai-panel-doc-btn-open">
@@ -66,7 +67,7 @@
                             </div>
                             <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-md);">
                                 <p class="ubits-body-sm-regular" style="margin: 0; color: var(--ubits-fg-1-medium); line-height: 1.6;">
-                                    Cierra el panel con la X para seguir leyendo. En producto suele abrirse desde un botón en toolbar o desde el <code style="font-family: monospace;">header-product</code> (propiedad <code style="font-family: monospace;">aiButton</code>).
+                                    Puedes cerrar el panel con la X y seguir leyendo esta página. En producto suele abrirse desde un botón en la barra de acciones o junto al título de la pantalla.
                                 </p>
                             </div>
                         </div>
@@ -79,28 +80,28 @@
                             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--gap-lg);">
                                 <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
                                     <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-columns"></i></div>
-                                    <div class="ubits-body-sm-bold">API por funciones</div>
-                                    <div class="ubits-body-sm-regular"><code style="font-family: monospace;">initAIPanel</code>, abrir/cerrar, mensajes, título y destrucción; una sola instancia por página</div>
+                                    <div class="ubits-body-sm-bold">Un panel por pantalla</div>
+                                    <div class="ubits-body-sm-regular">Abre, cierra, envía mensajes y cambia el título desde tu flujo; en cada página va una sola instancia.</div>
                                 </div>
                                 <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
                                     <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-grip-lines-vertical"></i></div>
-                                    <div class="ubits-body-sm-bold">Ancho ajustable</div>
-                                    <div class="ubits-body-sm-regular">Arrastre en el borde izquierdo del panel; el estado se conserva en la sesión</div>
+                                    <div class="ubits-body-sm-bold">Ancho a tu gusto</div>
+                                    <div class="ubits-body-sm-regular">Arrastra el borde izquierdo para hacer el panel más ancho o más estrecho; el ancho se recuerda mientras navegas en la misma sesión.</div>
                                 </div>
                                 <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
                                     <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-desktop"></i></div>
-                                    <div class="ubits-body-sm-bold">Modo dock opcional</div>
-                                    <div class="ubits-body-sm-regular">En viewport ancho el panel puede vivir dentro de un contenedor (p. ej. <code style="font-family: monospace;">.dashboard-container</code>) en lugar de capa flotante</div>
+                                    <div class="ubits-body-sm-bold">Acoplado o flotante</div>
+                                    <div class="ubits-body-sm-regular">En pantallas grandes puedes mostrar el panel fijo dentro del layout en lugar de una capa que flota encima.</div>
                                 </div>
                                 <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
                                     <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-palette"></i></div>
-                                    <div class="ubits-body-sm-bold">Pila visual IA</div>
-                                    <div class="ubits-body-sm-regular">Gradientes, chat IA y <code style="font-family: monospace;">ai-panel.css</code> alinean máscara de scroll, scrollbar y orbes con Modo estudio / Chat IA grupos</div>
+                                    <div class="ubits-body-sm-bold">Misma experiencia visual</div>
+                                    <div class="ubits-body-sm-regular">Colores, conversación y detalles de interfaz alineados con el resto de pantallas de IA de UBITS.</div>
                                 </div>
                                 <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
                                     <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-coin-vertical"></i></div>
-                                    <div class="ubits-body-sm-bold">Tokens en cabecera</div>
-                                    <div class="ubits-body-sm-regular">Badge IA con saldo de tokens y tooltip; importa <code style="font-family: monospace;">badge-tag.css</code> y <code style="font-family: monospace;">tooltip</code> o desactívalo con <code style="font-family: monospace;">tokensBadge: false</code> en <code style="font-family: monospace;">initAIPanel</code></div>
+                                    <div class="ubits-body-sm-bold">Saldo de tokens visible</div>
+                                    <div class="ubits-body-sm-regular">En la cabecera puedes mostrar cuántos tokens de IA quedan, con una breve explicación al pasar el cursor.</div>
                                 </div>
                             </div>
                         </div>
@@ -111,7 +112,7 @@
                                 Prompts útiles
                             </h2>
                             <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6; color: var(--ubits-fg-1-medium);">
-                                Copia el prompt y sustituye lo que va entre corchetes. Despliega la <strong>documentación técnica</strong> para el orden exacto de CSS y JS (incluido streaming).
+                                Copia el texto que necesites y cambia lo que va entre corchetes. Los detalles de archivos y código están en la <strong>documentación técnica</strong> más abajo.
                             </p>
                             <div id="ai-panel-warning-alert" style="margin-bottom: 32px;"></div>
                             <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
@@ -123,7 +124,7 @@
                                     </button>
                                 </div>
                                 <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm);">
-                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="ai-panel-prompt-0">En [pantalla o módulo], integra el AI panel UBITS: enlaza en este orden aprendizaje-ia-gradientes.css, badge-tag.css, tooltip.css, ubits-ia-chat.css, ai-panel.css, además de button.css e ia-button.css; antes de ai-panel.js incluye ia-chat-streaming.js y tooltip.js. Llama initAIPanel({ title, placeholder, welcomeSubtitle, tokensBadge opcional, onSend, onAttach, onClose, dockDesktop, dockContainerSelector, dockBreakpoint }) una sola vez y abre el panel desde [botón o acción]. Sigue documentacion/componentes/ai-panel.html y el comentario de API al inicio de components/ai-panel.js.</code></pre>
+                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="ai-panel-prompt-0">En [pantalla o módulo], integra el AI panel UBITS: enlaza en este orden aprendizaje-ia-gradientes.css, badge-tag.css, tooltip.css, ubits-ia-chat.css, ai-panel.css, además de button.css, chip.css (obligatorio para que los archivos adjuntos se vean como Chip UBITS) e ia-button.css; antes de ai-panel.js incluye ia-chat-streaming.js y tooltip.js. Llama initAIPanel({ title, placeholder, welcomeSubtitle, tokensBadge opcional, onSend, onAttach, onClose, dockDesktop, dockContainerSelector, dockBreakpoint }) una sola vez y abre el panel desde [botón o acción]. Sigue documentacion/componentes/ai-panel.html y el comentario de API al inicio de components/ai-panel.js.</code></pre>
                                 </div>
                             </div>
                             <div style="padding-bottom: 24px;">
@@ -189,6 +190,7 @@ dockDesktop, dockContainerSelector, dockBreakpoint</code></pre>
 &lt;link rel="stylesheet" href="[ruta]/general-styles/fontawesome-icons.css"&gt;
 &lt;link rel="stylesheet" href="[ruta]/general-styles/ubits-typography.css"&gt;
 &lt;link rel="stylesheet" href="[ruta]/components/button.css"&gt;
+&lt;link rel="stylesheet" href="[ruta]/components/chip.css"&gt;
 &lt;link rel="stylesheet" href="[ruta]/components/ia-button.css"&gt;
 &lt;link rel="stylesheet" href="[ruta]/ubits-colaborador/aprendizaje/aprendizaje-ia-gradientes.css"&gt;
 &lt;link rel="stylesheet" href="[ruta]/components/badge-tag.css"&gt;
@@ -203,7 +205,7 @@ dockDesktop, dockContainerSelector, dockBreakpoint</code></pre>
                                 <div style="padding: 32px;">
                                     <h3 class="ubits-body-md-bold" style="margin-bottom: 16px; color: var(--ubits-fg-1-high);">Checklist</h3>
                                     <ol class="ubits-body-md-regular" style="margin: 0; padding-left: 1.25rem; color: var(--ubits-fg-1-medium); line-height: 1.75;">
-                                        <li>Base (colores, styles, fontawesome, tipografía) + <code style="font-family: monospace;">button.css</code> + <code style="font-family: monospace;">ia-button.css</code>.</li>
+                                        <li>Base (colores, styles, fontawesome, tipografía) + <code style="font-family: monospace;">button.css</code> + <code style="font-family: monospace;">chip.css</code> (adjuntos en input y mensajes; obligatorio si usas clip) + <code style="font-family: monospace;">ia-button.css</code>.</li>
                                         <li>Pila IA: <code style="font-family: monospace;">aprendizaje-ia-gradientes.css</code> → <code style="font-family: monospace;">badge-tag.css</code> + <code style="font-family: monospace;">tooltip.css</code> (badge de tokens en cabecera) → <code style="font-family: monospace;">ubits-ia-chat.css</code> → <code style="font-family: monospace;">ai-panel.css</code>.</li>
                                         <li><code style="font-family: monospace;">ia-chat-streaming.js</code> y <code style="font-family: monospace;">tooltip.js</code> antes de <code style="font-family: monospace;">ai-panel.js</code> (streaming / tooltips del badge).</li>
                                         <li>Modo dock: contenedor existente (p. ej. <code style="font-family: monospace;">.dashboard-container</code>) y <code style="font-family: monospace;">dockBreakpoint</code> acorde al diseño.</li>

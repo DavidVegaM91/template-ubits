@@ -28,7 +28,8 @@
   dockDesktop, dockContainerSelector, dockBreakpoint
 
    CSS recomendado (misma pila que Modo estudio / Chat IA grupos):
-   aprendizaje-ia-gradientes.css → badge-tag.css → tooltip.css → ubits-ia-chat.css → ai-panel.css
+   button.css → chip.css (adjuntos: chips en preview y en mensajes; sin chip.css se ven sin estilo)
+   → aprendizaje-ia-gradientes.css → badge-tag.css → tooltip.css → ubits-ia-chat.css → ai-panel.css
    (+ tooltip.js antes de ai-panel.js si usas el badge de tokens en cabecera).
    ======================================== */
 

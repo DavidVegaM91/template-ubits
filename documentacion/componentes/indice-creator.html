@@ -44,7 +44,7 @@
                                 Índice Creator
                             </h1>
                             <p class="ubits-body-md-regular" style="max-width: 800px; margin: 0 auto 32px; line-height: 1.6;">
-                                Panel izquierdo del <strong>paso Recursos</strong> en la creación de contenidos: interruptor para usar <strong>secciones</strong> (módulos), listado de secciones y páginas, y <strong>«Añadir sección»</strong> al pie cuando las secciones están activas. Si las secciones están desactivadas, todas las páginas se muestran en <strong>un solo bloque</strong> <strong>sin cabecera de sección</strong>. Referencia Figma: <a href="https://www.figma.com/design/ZWcvS9Z7YQaz59GZIrnWM6/Learn-Components?node-id=242-5621&amp;m=dev" class="ubits-body-md-regular" style="color: var(--ubits-accent-brand); text-decoration: underline;">Learn-Components · Índice (242:5621)</a>. Contexto de producto: <a href="../../ubits-colaborador/lms-creator/contexto-creacion-contenido.md" class="ubits-body-md-regular" style="color: var(--ubits-accent-brand); text-decoration: underline;">contexto-creacion-contenido.md</a>.
+                                Sirve para ordenar el contenido por partes: puedes agrupar páginas en secciones o ver todas en una sola lista. Lo usarás en el paso Recursos cuando armes un curso en el creador.
                             </p>
                         </div>
 
@@ -54,7 +54,7 @@
                                 Preview del componente
                             </h2>
                             <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6;">
-                                Datos de ejemplo alineados con Figma (242:5621): curso de ejemplo sobre <strong>gestión de conflictos</strong>. El interruptor solo cambia la demo entre <strong>lista única</strong> (sin cabeceras de sección) y <strong>varias secciones</strong> + «Añadir sección». <strong>Clic en una página:</strong> queda activa solo esa fila y su sección (borde de marca); el resto de secciones y páginas se desactivan. En producto conviene persistir el estado al cambiar el interruptor interno.
+                                Usamos un curso de ejemplo sobre <strong>gestión de conflictos</strong>. Activa o desactiva el interruptor para ver la lista en un solo bloque o repartida en varias secciones; abajo aparece «Añadir sección» cuando corresponde. Al hacer <strong>clic en una página</strong>, esa fila queda seleccionada y el resto se atenúa. En una pantalla real conviene guardar la preferencia del interruptor si el usuario la cambia.
                             </p>
                             <div style="margin-bottom: 20px; display: flex; flex-wrap: wrap; align-items: center; gap: var(--gap-md);">
                                 <span class="ubits-body-sm-bold" style="color: var(--ubits-fg-1-high);">Previsualizar multiples secciones</span>
@@ -105,7 +105,7 @@
                                 Prompts útiles
                             </h2>
                             <p class="ubits-body-md-regular" style="margin-bottom: 24px; color: var(--ubits-fg-1-medium);">
-                                Copia y personaliza. Pide importar <code>switch.css</code>, <code>paginas-creator.css</code>, <code>seccion-creator.css</code>, <code>indice-creator.css</code>, <code>button.css</code>, <code>dropdown-menu.css</code> y los JS en orden: <code>dropdown-menu.js</code>, <code>tooltip.js</code>, <code>paginas-creator.js</code>, <code>seccion-creator.js</code>, <code>indice-creator.js</code>.
+                                Copia el texto y sustituye lo que va entre corchetes. El orden de estilos y scripts está en la <strong>documentación técnica</strong> al final de la página.
                             </p>
                             <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
                                 <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
@@ -164,6 +164,9 @@ Eventos:
                                     </div>
                                     <pre style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm); overflow-x: auto;"><code id="ic-req" class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">CSS: switch.css, button.css, dropdown-menu.css, paginas-creator.css, seccion-creator.css, indice-creator.css (+ colores, tipografía, fontawesome)
 JS (orden): dropdown-menu.js → tooltip.js → paginas-creator.js → seccion-creator.js → indice-creator.js</code></pre>
+                                    <p class="ubits-body-sm-regular" style="margin-top: var(--gap-lg); color: var(--ubits-fg-1-medium); line-height: 1.6;">
+                                        Referencia visual para diseño: biblioteca Learn-Components en Figma (pantalla Índice Creator).
+                                    </p>
                                 </div>
                             </div>
                         </div>
