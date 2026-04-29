@@ -420,8 +420,14 @@
                     '<button type="button" id="portada-ai-modal-regenerate" class="ubits-button ubits-button--secondary ubits-button--md" style="flex:1;">' +
                         '<i class="far fa-rotate-right"></i><span>Regenerar</span>' +
                     '</button>' +
-                    '<button type="button" id="portada-ai-modal-use" class="ubits-button ubits-button--primary ubits-button--md" style="flex:1;">' +
-                        '<i class="far fa-check"></i><span>Usar como portada</span>' +
+                    '<button type="button" id="portada-ai-modal-use" class="ubits-button ubits-button--primary ubits-button--md ubits-button--with-token-cost" style="flex:1;">' +
+                        '<span class="ubits-button__token-cost" aria-hidden="true">' +
+                        '<span class="ubits-button__token-number">' +
+                        String(PORTADA_AI_COVER_TOKEN_COST) +
+                        '</span>' +
+                        '<i class="far fa-coin-vertical"></i>' +
+                        '</span>' +
+                        '<span>Usar como portada</span>' +
                     '</button>' +
                 '</div>' +
             '</div>' +
