@@ -479,6 +479,18 @@ body.ai-panel-resizing .ai-panel {
     margin-top: var(--gap-sm);
 }
 
+/* Documentos adjuntos en el mensaje (mismo patrón que task-detail: chip + nombre truncado) */
+.ai-panel__msg-attachments-files .ubits-chip {
+    max-width: 220px;
+}
+
+.ai-panel__msg-file-chip .ubits-chip__text {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
 .ai-panel__msg-attachment-img {
     width: 72px;
     height: 72px;
@@ -538,11 +550,32 @@ body.ai-panel-resizing .ai-panel {
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-.ai-panel__pending-images-strip,
-.ai-panel__pending-files-strip {
+.ai-panel__pending-images-strip {
     display: none;
+    flex-direction: row;
     flex-wrap: wrap;
     gap: var(--gap-xs);
+}
+
+/* Strip de documentos antes de enviar (Chip oficial + quitar, como task-detail) */
+.ai-panel__pending-files-strip {
+    display: none;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: var(--gap-xs);
+    padding: var(--padding-xs) 0;
+}
+
+.ai-panel__pending-file-chip.ubits-chip {
+    max-width: 200px;
+}
+
+.ai-panel__pending-file-chip .ubits-chip__text {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .ai-panel__pending-img-wrap {

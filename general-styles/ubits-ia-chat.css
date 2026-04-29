@@ -1026,11 +1026,32 @@
     color: var(--ubits-fg-1-medium);
 }
 
-.ubits-ia-chat-thread__pending-images-strip,
-.ubits-ia-chat-thread__pending-files-strip {
+.ubits-ia-chat-thread__pending-images-strip {
     display: none;
+    flex-direction: row;
     flex-wrap: wrap;
     gap: var(--gap-xs);
+}
+
+/* Documentos pendientes (mismo patrón que task-detail / ai-panel) */
+.ubits-ia-chat-thread__pending-files-strip {
+    display: none;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: var(--gap-xs);
+    padding: var(--padding-xs) 0;
+}
+
+.ubits-ia-chat-thread__pending-file-chip.ubits-chip {
+    max-width: 200px;
+}
+
+.ubits-ia-chat-thread__pending-file-chip .ubits-chip__text {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .ubits-ia-chat-thread__pending-img-wrap {
@@ -1071,6 +1092,17 @@
     flex-wrap: wrap;
     gap: var(--gap-xs);
     margin-top: var(--gap-sm);
+}
+
+.ubits-ia-chat-thread__msg-attachments-files .ubits-chip {
+    max-width: 220px;
+}
+
+.ubits-ia-chat-thread__msg-file-chip .ubits-chip__text {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .ubits-ia-chat-thread__msg-attachment-img {
