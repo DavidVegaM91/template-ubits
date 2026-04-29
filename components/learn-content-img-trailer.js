@@ -205,7 +205,7 @@
         }
         return (
             '<div class="ubits-learn-img-trailer__empty">' +
-            '<button type="button" class="ubits-button ubits-button--secondary ubits-button--md ubits-learn-img-trailer__cta"' +
+            '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-learn-img-trailer__cta"' +
             ctaIdAttr +
             '><i class="' +
             escapeHtml(icon) +
@@ -213,16 +213,16 @@
             escapeHtml(cta) +
             '</span></button>' +
             '<div class="ubits-learn-img-trailer__ai-row" role="group" aria-label="Acciones de IA">' +
-            '<button type="button" class="ubits-ia-button ubits-ia-button--secondary ubits-ia-button--md"' +
+            '<button type="button" class="ubits-ia-button ubits-ia-button--secondary ubits-ia-button--sm"' +
             aiModalIdAttr +
             '><i class="far fa-sparkles"></i><span>' +
             escapeHtml(aiCtaModal) +
-            '</span><span class="ubits-ia-button__badge" aria-hidden="true"></span></button>' +
-            '<button type="button" class="ubits-ia-button ubits-ia-button--secondary ubits-ia-button--md"' +
+            '</span></button>' +
+            '<button type="button" class="ubits-ia-button ubits-ia-button--secondary ubits-ia-button--sm"' +
             aiPanelIdAttr +
             '><i class="far fa-sparkles"></i><span>' +
             escapeHtml(aiCtaPanel) +
-            '</span><span class="ubits-ia-button__badge" aria-hidden="true"></span></button>' +
+            '</span></button>' +
             '</div>' +
             '<p class="ubits-learn-img-trailer__hint ubits-body-sm-regular">' +
             escapeHtml(hint) +

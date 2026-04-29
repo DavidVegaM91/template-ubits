@@ -127,15 +127,49 @@
         refreshCrearContenidoPageSiguienteState();
     }
 
+    function applyPortadaImagenEliminada(trailerUrl) {
+        var block = document.getElementById('crear-contenido-img-trailer');
+        if (!block) return;
+
+        crearContenidoPortadaTrailerUrl = trailerUrl != null ? String(trailerUrl).trim() : '';
+
+        block.classList.remove('ubits-learn-img-trailer--image');
+        block.classList.remove('ubits-learn-img-trailer--trailer');
+        block.classList.remove('ubits-learn-img-trailer--playing');
+        block.removeAttribute('data-trailer-url');
+        block.removeAttribute('data-img-trailer-init');
+        block.removeAttribute('data-learn-img-trailer-init');
+
+        if (typeof window.getLearnContentImgTrailerEmptyHtml === 'function') {
+            block.innerHTML = window.getLearnContentImgTrailerEmptyHtml({
+                ctaId: 'crear-contenido-portada-cta',
+                aiCtaModalId: 'crear-contenido-portada-ai-modal',
+                aiCtaPanelId: 'crear-contenido-portada-ai-panel'
+            });
+        } else {
+            block.innerHTML = '';
+        }
+
+        // Re-wire: los nodos cambiaron
+        wirePortadaCta();
+        wirePortadaAiPanelButton();
+        wirePortadaAiModalButton();
+
+        if (typeof window.initLearnContentImgTrailer === 'function') {
+            window.initLearnContentImgTrailer(block, {});
+        }
+        refreshCrearContenidoPageSiguienteState();
+    }
+
     function openPortadaModalPage() {
         if (typeof window.openPortadaTrailerModal !== 'function') return;
         window.openPortadaTrailerModal({
             dataUrl: getPortadaDataUrl(),
             trailerUrl: crearContenidoPortadaTrailerUrl,
             onConfirm: function (payload) {
-                if (payload && payload.dataUrl) {
-                    applyPortadaImagenCargada(payload.dataUrl, payload.trailerUrl);
-                }
+                if (!payload) return;
+                if (payload.dataUrl) applyPortadaImagenCargada(payload.dataUrl, payload.trailerUrl);
+                else applyPortadaImagenEliminada(payload.trailerUrl);
             }
         });
     }
@@ -170,6 +204,12 @@
             }
         });
     }
+
+    // Hooks globales para abrir IA desde otros modales (p. ej. portada-media-modal.js)
+    window.openCrearContenidoPortadaAiPanel = function () {
+        initPortadaAiPanel();
+        if (typeof openAIPanel === 'function') openAIPanel();
+    };
 
     function wirePortadaAiPanelButton() {
         var btn = document.getElementById('crear-contenido-portada-ai-panel');
@@ -360,6 +400,10 @@
             initPortadaAiModal();
         });
     }
+
+    window.openCrearContenidoPortadaAiModal = function () {
+        initPortadaAiModal();
+    };
 
     function buildSelectOptionsFromMaster() {
         var g = typeof window !== 'undefined' ? window : {};
