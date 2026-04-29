@@ -184,44 +184,14 @@
         }
     }
 
-    function initPortadaAiPanel() {
-        if (typeof initAIPanel !== 'function') return;
-        initAIPanel({
-            title: 'Asistente IA',
-            placeholder: 'Escribe tu solicitud…',
-            welcomeSubtitle: '¿Qué quieres generar o ajustar?',
-            onSend: function (text) {
-                if (!text) return;
-                var removeTyping = typeof showAIPanelTyping === 'function' ? showAIPanelTyping() : null;
-                window.setTimeout(function () {
-                    try {
-                        if (typeof removeTyping === 'function') removeTyping();
-                        if (typeof addAIPanelMessage === 'function') {
-                            addAIPanelMessage('Demo: recibí “' + String(text).trim() + '”.', 'ai');
-                        }
-                    } catch (e) {}
-                }, 650);
-            }
-        });
-    }
-
-    // Hooks globales para abrir IA desde otros modales (p. ej. portada-media-modal.js)
-    window.openCrearContenidoPortadaAiPanel = function () {
-        initPortadaAiPanel();
-        if (typeof openAIPanel === 'function') openAIPanel();
-    };
-
-    function wirePortadaAiPanelButton() {
-        var btn = document.getElementById('crear-contenido-portada-ai-panel');
-        if (!btn) return;
-        btn.addEventListener('click', function (e) {
-            e.preventDefault();
-            initPortadaAiPanel();
-            if (typeof openAIPanel === 'function') openAIPanel();
-        });
-    }
-
     var portadaiAImagesIndex = 0;
+    var ccPortadaAiPanelResultSeq = 0;
+    var portadaAiPanelCoverActionsWired = false;
+    /** Coste en tokens al confirmar portada generada por IA (panel o modal). */
+    var PORTADA_AI_COVER_TOKEN_COST = 2;
+    /** Saldo demo; al usar portada se descuenta PORTADA_AI_COVER_TOKEN_COST. */
+    var portadaAiTokensRemaining = 50;
+
     var AI_IMAGES = [
         'https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80',
         'https://images.unsplash.com/photo-1517048676732-d65bc937f952?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80',
@@ -234,6 +204,191 @@
         'https://images.unsplash.com/photo-1600880292203-757bb62b4baf?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80',
         'https://images.unsplash.com/photo-1557804506-669a67965ba0?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80'
     ];
+
+    /** Skeleton 16:9 + loader centrado encima (misma huella que la imagen). */
+    function getPortadaAiGeneratingInnerHtml() {
+        return (
+            '<div class="cc-portada-ai-generating__stage">' +
+            '<div class="cc-portada-ai-generating__frame">' +
+            '<span class="ubits-skeleton ubits-skeleton--rect cc-portada-ai-generating__skel" aria-hidden="true"></span>' +
+            '</div>' +
+            '<div class="ubits-loader-wrap cc-portada-ai-generating__loader">' +
+            '<div class="ubits-loader"></div>' +
+            '<p class="ubits-loader-text ubits-body-md-regular">Generando portada…</p>' +
+            '</div>' +
+            '</div>'
+        );
+    }
+
+    /**
+     * Bloque de carga doble: Loader oficial + skeleton 16:9 (misma anchura/proporción que la imagen).
+     * opts.id — opcional, para retirar el mensaje del panel al terminar la espera.
+     */
+    function getPortadaAiGeneratingHtml(opts) {
+        opts = opts || {};
+        var idAttr = opts.id ? ' id="' + escAttr(opts.id) + '"' : '';
+        return (
+            '<div' +
+            idAttr +
+            ' class="cc-portada-ai-generating"' +
+            ' aria-busy="true">' +
+            getPortadaAiGeneratingInnerHtml() +
+            '</div>'
+        );
+    }
+
+    function buildPortadaAiPanelResultInnerHtml(seqId, imageUrl) {
+        var sid = String(seqId);
+        var canAfford = portadaAiTokensRemaining >= PORTADA_AI_COVER_TOKEN_COST;
+        var useDisabled = canAfford ? '' : ' disabled';
+        var useTitle = canAfford
+            ? ''
+            : ' title="' + escAttr('No tienes suficientes tokens (' + PORTADA_AI_COVER_TOKEN_COST + ' requeridos).') + '"';
+        return (
+            '<img class="cc-portada-ai-panel-result__img" src="' +
+            escAttr(imageUrl) +
+            '" alt="Portada generada" />' +
+            '<div class="cc-portada-ai-panel-result__actions">' +
+            '<button type="button" class="ubits-button ubits-button--primary ubits-button--sm ubits-button--with-token-cost" data-cc-portada-ai-panel-use="' +
+            sid +
+            '"' +
+            useDisabled +
+            useTitle +
+            '>' +
+            '<span class="ubits-button__token-cost" aria-hidden="true"><i class="far fa-coin-vertical"></i><span class="ubits-button__token-number">2</span></span>' +
+            '<span>Usar como portada</span></button>' +
+            '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" data-cc-portada-ai-panel-regen="' +
+            sid +
+            '">' +
+            '<i class="far fa-rotate-right"></i><span>Regenerar</span></button>' +
+            '</div>'
+        );
+    }
+
+    function buildPortadaAiPanelResultHtml(seqId, imageUrl) {
+        return (
+            '<div class="cc-portada-ai-panel-result" data-cc-portada-ai-panel-result="' +
+            String(seqId) +
+            '" data-current-src="' +
+            escAttr(imageUrl) +
+            '">' +
+            buildPortadaAiPanelResultInnerHtml(seqId, imageUrl) +
+            '</div>'
+        );
+    }
+
+    function tryConsumePortadaCoverTokens() {
+        if (portadaAiTokensRemaining < PORTADA_AI_COVER_TOKEN_COST) {
+            if (typeof showToast === 'function') {
+                showToast('warning', 'No tienes suficientes tokens para aplicar esta portada.', {
+                    containerId: 'ubits-toast-container'
+                });
+            }
+            return false;
+        }
+        portadaAiTokensRemaining -= PORTADA_AI_COVER_TOKEN_COST;
+        if (typeof setAIPanelTokensBadgeValue === 'function') {
+            setAIPanelTokensBadgeValue(portadaAiTokensRemaining);
+        }
+        return true;
+    }
+
+    function wirePortadaAiPanelCoverActions() {
+        if (portadaAiPanelCoverActionsWired) return;
+        portadaAiPanelCoverActionsWired = true;
+        document.addEventListener('click', function (e) {
+            var useBtn = e.target.closest('[data-cc-portada-ai-panel-use]');
+            var regenBtn = e.target.closest('[data-cc-portada-ai-panel-regen]');
+            if (!useBtn && !regenBtn) return;
+            var root = (useBtn || regenBtn).closest('[data-cc-portada-ai-panel-result]');
+            if (!root || !root.closest('#ai-panel')) return;
+
+            if (useBtn) {
+                e.preventDefault();
+                if (!tryConsumePortadaCoverTokens()) return;
+                var srcUse = root.getAttribute('data-current-src');
+                if (srcUse) {
+                    applyPortadaImagenCargada(srcUse, '');
+                    if (typeof triggerFakeSaveCreator === 'function') triggerFakeSaveCreator();
+                    if (typeof clearPortadaInvalidMarks === 'function') clearPortadaInvalidMarks();
+                }
+                if (typeof closeAIPanel === 'function') closeAIPanel();
+                return;
+            }
+
+            if (regenBtn) {
+                e.preventDefault();
+                portadaiAImagesIndex = (portadaiAImagesIndex + 1) % AI_IMAGES.length;
+                var nextUrl = AI_IMAGES[portadaiAImagesIndex];
+                root.innerHTML = getPortadaAiGeneratingHtml({});
+                window.setTimeout(function () {
+                    var seq = root.getAttribute('data-cc-portada-ai-panel-result');
+                    root.setAttribute('data-current-src', nextUrl);
+                    root.innerHTML = buildPortadaAiPanelResultInnerHtml(seq, nextUrl);
+                }, 2000);
+            }
+        });
+    }
+
+    function initPortadaAiPanel() {
+        if (typeof initAIPanel !== 'function') return;
+        wirePortadaAiPanelCoverActions();
+        initAIPanel({
+            title: 'Generar portada',
+            placeholder: 'Describe la portada que te imaginas',
+            welcomeSubtitle: 'Escribe una idea y generaremos una imagen de ejemplo para tu portada.',
+            tokensBadge: { value: portadaAiTokensRemaining },
+            onSend: function () {
+                var loadingHtml = getPortadaAiGeneratingHtml({ id: 'cc-portada-ai-panel-loading-root' });
+                if (typeof addAIPanelMessage === 'function') {
+                    addAIPanelMessage('', 'ai', null, {
+                        richHtml: loadingHtml,
+                        hideAiCopy: true
+                    });
+                }
+                window.setTimeout(function () {
+                    try {
+                        var loadingRoot = document.getElementById('cc-portada-ai-panel-loading-root');
+                        var loadingMsg = loadingRoot && loadingRoot.closest('.ai-panel__msg');
+                        if (loadingMsg && loadingMsg.parentNode) {
+                            loadingMsg.parentNode.removeChild(loadingMsg);
+                        }
+                        var imageUrl = AI_IMAGES[portadaiAImagesIndex];
+                        var seq = ++ccPortadaAiPanelResultSeq;
+                        var html = buildPortadaAiPanelResultHtml(seq, imageUrl);
+                        if (typeof addAIPanelMessage === 'function') {
+                            addAIPanelMessage('Portada generada', 'ai', null, {
+                                richHtml: html,
+                                hideAiCopy: true
+                            });
+                        }
+                    } catch (err) {}
+                }, 3500);
+            }
+        });
+    }
+
+    // Hooks globales para abrir IA desde otros modales (p. ej. portada-media-modal.js)
+    window.openCrearContenidoPortadaAiPanel = function () {
+        initPortadaAiPanel();
+        if (typeof openAIPanel === 'function') openAIPanel();
+        if (typeof setAIPanelTokensBadgeValue === 'function') {
+            setAIPanelTokensBadgeValue(portadaAiTokensRemaining);
+        }
+    };
+
+    function wirePortadaAiPanelButton() {
+        var btn = document.getElementById('crear-contenido-portada-ai-panel');
+        if (!btn) return;
+        btn.addEventListener('click', function (e) {
+            e.preventDefault();
+            initPortadaAiPanel();
+            if (typeof openAIPanel === 'function') openAIPanel();
+            if (typeof setAIPanelTokensBadgeValue === 'function') {
+                setAIPanelTokensBadgeValue(portadaAiTokensRemaining);
+            }
+        });
+    }
 
     function initPortadaAiModal() {
         if (typeof openModal !== 'function') return;
@@ -256,9 +411,8 @@
                     '</div>' +
                 '</div>' +
             '</div>' +
-            '<div id="ai-modal-loader-view" class="ubits-loader-wrap" style="display:none; z-index:1; padding: 40px 0;">' +
-                '<div class="ubits-loader"></div>' +
-                '<p class="ubits-loader-text ubits-body-md-regular">Generando portada…</p>' +
+            '<div id="ai-modal-loader-view" class="cc-portada-ai-generating" style="display:none; z-index:1; padding: 40px 0;" aria-busy="true">' +
+                getPortadaAiGeneratingInnerHtml() +
             '</div>' +
             '<div id="ai-modal-result-view" style="display:none; width:100%; text-align:center; flex-direction:column; align-items:center; z-index:1; padding: 0;">' +
                 '<img id="portada-ai-modal-img" src="" alt="Portada generada" style="width:100%; max-width:600px; aspect-ratio:16/9; object-fit:cover; border-radius:12px; margin-bottom:24px; border: 1px solid var(--border-subtle);" />' +
@@ -301,11 +455,13 @@
             tokensBadge.setAttribute('tabindex', '0');
             tokensBadge.setAttribute('data-tooltip', 'Número de tokens restantes.');
             tokensBadge.setAttribute('data-tooltip-delay', '1000');
-            tokensBadge.setAttribute('aria-label', '50 tokens restantes');
+            tokensBadge.setAttribute('aria-label', portadaAiTokensRemaining + ' tokens restantes');
             tokensBadge.innerHTML =
                 '<span class="ubits-badge-tag__token-cost" aria-hidden="true">' +
                 '<i class="far fa-coin-vertical"></i>' +
-                '<span class="ubits-badge-tag__token-number">50</span>' +
+                '<span class="ubits-badge-tag__token-number">' +
+                String(portadaAiTokensRemaining) +
+                '</span>' +
                 '</span>';
 
             actionsWrap.appendChild(tokensBadge);
@@ -385,7 +541,17 @@
             }, 2000);
         });
 
-        useBtn.addEventListener('click', function() {
+        if (portadaAiTokensRemaining < PORTADA_AI_COVER_TOKEN_COST) {
+            useBtn.disabled = true;
+            useBtn.setAttribute('aria-disabled', 'true');
+            useBtn.setAttribute(
+                'title',
+                'No tienes suficientes tokens (' + PORTADA_AI_COVER_TOKEN_COST + ' requeridos).'
+            );
+        }
+
+        useBtn.addEventListener('click', function () {
+            if (!tryConsumePortadaCoverTokens()) return;
             if (typeof applyPortadaImagenCargada === 'function') {
                 applyPortadaImagenCargada(imgEl.src, '');
                 if (typeof triggerFakeSaveCreator === 'function') triggerFakeSaveCreator();

@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="../../images/Ubits-logo-dark.svg">
+    <title>Skeleton | UBITS Playground</title>
+    <link rel="stylesheet" href="../../general-styles/ubits-colors.css">
+    <link rel="stylesheet" href="../../general-styles/styles.css">
+    <link rel="stylesheet" href="../../general-styles/fontawesome-icons.css">
+    <link rel="stylesheet" href="../../general-styles/ubits-typography.css">
+    <link rel="stylesheet" href="../../components/sub-nav.css">
+    <link rel="stylesheet" href="../../components/alert.css">
+    <link rel="stylesheet" href="../../components/sidebar.css">
+    <link rel="stylesheet" href="../../docs/docs-sidebar.css">
+    <link rel="stylesheet" href="../../docs/docstyles.css">
+    <link rel="stylesheet" href="../../components/button.css">
+    <link rel="stylesheet" href="../../components/toast.css">
+    <link rel="stylesheet" href="../../components/skeleton.css">
+</head>
+<body class="componentes-page" data-theme="light">
+    <div class="dashboard-container">
+        <div class="tooltip" id="tooltip"></div>
+        <div id="ubits-toast-container"></div>
+
+        <main class="main-content">
+            <div id="top-nav-container"></div>
+            <div style="display: flex;">
+                <div id="docs-dropdown-container"></div>
+                <div id="docs-sidebar-container"></div>
+
+                <div class="components-content">
+                    <div class="content-area" style="display: block; width: 100%;">
+                        <div style="text-align: center; margin-bottom: 60px;">
+                            <h1 class="ubits-display-d2-bold" style="margin-bottom: 24px; color: var(--ubits-accent-brand);">
+                                Skeleton
+                            </h1>
+                            <p class="ubits-body-md-regular" style="max-width: 800px; margin: 0 auto 32px; line-height: 1.6;">
+                                Bloques grises que imitan la forma del contenido que va a cargar (líneas, avatar, tarjeta). Sirve para listas, tablas y vistas donde ya conoces el layout; complementa al Loader para acciones puntuales.
+                            </p>
+                        </div>
+
+                        <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: var(--border-radius-lg); margin-bottom: 40px;">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-eye" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Preview del componente
+                            </h2>
+                            <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6;">
+                                Líneas sueltas, fila tipo lista y tarjeta con proporción 16:9.
+                            </p>
+                            <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: var(--border-radius-md);">
+                                <div style="display: grid; gap: var(--gap-xl); max-width: 560px;">
+                                    <div>
+                                        <p class="ubits-body-sm-regular" style="margin: 0 0 var(--gap-sm); color: var(--ubits-fg-1-medium);">Líneas</p>
+                                        <div class="ubits-skeleton-stack">
+                                            <span class="ubits-skeleton ubits-skeleton--line ubits-skeleton--md ubits-skeleton--w-full" aria-hidden="true"></span>
+                                            <span class="ubits-skeleton ubits-skeleton--line ubits-skeleton--md ubits-skeleton--w-11-12" aria-hidden="true"></span>
+                                            <span class="ubits-skeleton ubits-skeleton--line ubits-skeleton--md ubits-skeleton--w-2-3" aria-hidden="true"></span>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <p class="ubits-body-sm-regular" style="margin: 0 0 var(--gap-sm); color: var(--ubits-fg-1-medium);">Lista</p>
+                                        <div class="ubits-skeleton-row">
+                                            <span class="ubits-skeleton ubits-skeleton--circle ubits-skeleton--avatar-md" aria-hidden="true"></span>
+                                            <div class="ubits-skeleton-row__main">
+                                                <div class="ubits-skeleton-stack">
+                                                    <span class="ubits-skeleton ubits-skeleton--line ubits-skeleton--md ubits-skeleton--w-full" aria-hidden="true"></span>
+                                                    <span class="ubits-skeleton ubits-skeleton--line ubits-skeleton--sm ubits-skeleton--w-2-3" aria-hidden="true"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="ubits-skeleton-card" aria-busy="true">
+                                        <span class="ubits-skeleton ubits-skeleton--rect ubits-skeleton-card__media" aria-hidden="true"></span>
+                                        <div class="ubits-skeleton-stack">
+                                            <span class="ubits-skeleton ubits-skeleton--line ubits-skeleton--lg ubits-skeleton--w-3-4" aria-hidden="true"></span>
+                                            <span class="ubits-skeleton ubits-skeleton--line ubits-skeleton--md ubits-skeleton--w-full" aria-hidden="true"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: var(--border-radius-lg); margin-bottom: 40px;">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-info-circle" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Características generales
+                            </h2>
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: var(--gap-lg);">
+                                <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-layer-group"></i></div>
+                                    <div class="ubits-body-sm-bold">Transversal</div>
+                                    <div class="ubits-body-sm-regular">Mismo aspecto en cualquier pantalla: importas skeleton.css y compones con clases</div>
+                                </div>
+                                <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-universal-access"></i></div>
+                                    <div class="ubits-body-sm-bold">Reduced motion</div>
+                                    <div class="ubits-body-sm-regular">Sin animación de brillo si el usuario pide menos movimiento</div>
+                                </div>
+                                <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-puzzle-piece"></i></div>
+                                    <div class="ubits-body-sm-bold">Helpers JS opcionales</div>
+                                    <div class="ubits-body-sm-regular">ubitsSkeletonTextBlockHtml y ubitsSkeletonRowHtml si maquetas por código</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: var(--border-radius-lg); margin-bottom: 40px;">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-comments" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Prompts útiles
+                            </h2>
+                            <div id="skeleton-warning-alert" style="margin-bottom: 24px;"></div>
+                            <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
+                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                                    <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Skeleton en una vista</h3>
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('sk-prompt-1')">
+                                        <i class="far fa-copy"></i>
+                                        <span>Copiar</span>
+                                    </button>
+                                </div>
+                                <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm);">
+                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="sk-prompt-1">En [página o contenedor], mientras cargan [datos o lista], muestra el Skeleton UBITS con la misma forma que tendrá el contenido real; importa skeleton.css y ubits-colors.css. Al terminar la carga, quita el skeleton y pinta los datos.</code></pre>
+                                </div>
+                            </div>
+                            <div>
+                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                                    <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Patrón lista con avatar</h3>
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('sk-prompt-2')">
+                                        <i class="far fa-copy"></i>
+                                        <span>Copiar</span>
+                                    </button>
+                                </div>
+                                <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm);">
+                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="sk-prompt-2">En [lista o tabla], usa el patrón ubits-skeleton-row del componente Skeleton UBITS (documentacion/componentes/skeleton.html) para cada fila de carga; importa skeleton.css.</code></pre>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="background: var(--ubits-bg-1); border-radius: var(--border-radius-lg); margin-bottom: 40px; overflow: hidden;">
+                            <div style="padding: 32px; text-align: center; border-bottom: 1px solid var(--ubits-border-1);">
+                                <h2 class="ubits-heading-h2" style="margin-bottom: 0; color: var(--ubits-fg-1-high);">
+                                    <i class="far fa-code" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                    Documentación técnica
+                                </h2>
+                                <p class="ubits-body-md-regular" style="margin-top: 16px; color: var(--ubits-fg-1-medium);">
+                                    Clases, layout y helpers opcionales en skeleton.js.
+                                </p>
+                            </div>
+                            <div style="background: var(--ubits-bg-2); padding: 20px; text-align: center; cursor: pointer;" onclick="toggleTechnicalDocs()">
+                                <span class="ubits-body-md-regular" style="color: var(--ubits-accent-brand); display: flex; align-items: center; justify-content: center; gap: 8px;">
+                                    <i class="far fa-chevron-down" id="tech-docs-chevron" style="transition: transform 0.3s ease;"></i>
+                                    Mostrar
+                                </span>
+                            </div>
+                            <div id="technical-docs-content" style="display: none; padding: 0;">
+                                <div style="padding: 32px; border-bottom: 1px solid var(--ubits-border-1);">
+                                    <div style="display: flex; justify-content: flex-end; margin-bottom: 12px;">
+                                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('sk-classes')">
+                                            <i class="far fa-copy"></i>
+                                            <span>Copiar</span>
+                                        </button>
+                                    </div>
+                                    <pre style="margin: 0; font-family: monospace; font-size: var(--font-size-sm); line-height: 1.6; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code id="sk-classes">Base: .ubits-skeleton (+ ::after shimmer)
+Línea: .ubits-skeleton--line + .ubits-skeleton--sm | --md | --lg
+Formas: .ubits-skeleton--rect | --rounded | --circle
+Avatar: .ubits-skeleton--avatar-sm | --avatar-md | --avatar-lg
+Anchos línea: .ubits-skeleton--w-full | --w-11-12 | --w-3-4 | --w-2-3 | --w-1-2
+Layout: .ubits-skeleton-stack | .ubits-skeleton-row | .ubits-skeleton-row__main
+Tarjeta: .ubits-skeleton-card | .ubits-skeleton-card__media (16:9)
+Accesibilidad: aria-hidden="true" en piezas decorativas; aria-busy="true" en el contenedor que espera datos.</code></pre>
+                                </div>
+                                <div style="padding: 32px;">
+                                    <h3 class="ubits-body-md-bold" style="margin-bottom: 12px; color: var(--ubits-fg-1-high);">Requisitos</h3>
+                                    <p class="ubits-body-md-regular" style="color: var(--ubits-fg-1-medium); line-height: 1.6;">
+                                        CSS: <code>general-styles/ubits-colors.css</code>, <code>components/skeleton.css</code>. Opcional: <code>components/skeleton.js</code> para <code>ubitsSkeletonLineHtml</code>, <code>ubitsSkeletonTextBlockHtml</code>, <code>ubitsSkeletonRowHtml</code>.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="../../components/sidebar.js"></script>
+    <script src="../../components/sub-nav.js"></script>
+    <script src="../../components/alert.js"></script>
+    <script src="../../components/toast.js"></script>
+    <script src="../../docs/docs-sidebar.js"></script>
+    <script src="../../script.js"></script>
+    <script>
+        function toggleTechnicalDocs() {
+            var content = document.getElementById('technical-docs-content');
+            var isHidden = content.style.display === 'none' || !content.style.display;
+            content.style.display = isHidden ? 'block' : 'none';
+            var trigger = content.previousElementSibling;
+            if (trigger) {
+                var span = trigger.querySelector('span');
+                if (span) {
+                    span.innerHTML = isHidden
+                        ? '<i class="far fa-chevron-up" id="tech-docs-chevron" style="transition: transform 0.3s ease;"></i>Ocultar'
+                        : '<i class="far fa-chevron-down" id="tech-docs-chevron" style="transition: transform 0.3s ease;"></i>Mostrar';
+                }
+            }
+        }
+        function copyPrompt(id) {
+            var el = document.getElementById(id);
+            if (!el) return;
+            navigator.clipboard.writeText(el.textContent).then(function () {
+                if (typeof showToast === 'function') showToast('success', '¡Copiado!', { containerId: 'ubits-toast-container', duration: 2500 });
+            });
+        }
+        function copyCode(id) {
+            var el = document.getElementById(id);
+            if (!el) return;
+            navigator.clipboard.writeText(el.textContent).then(function () {
+                if (typeof showToast === 'function') showToast('success', '¡Copiado!', { containerId: 'ubits-toast-container', duration: 2500 });
+            });
+        }
+        document.addEventListener('DOMContentLoaded', function () {
+            loadSidebar('ninguno');
+            loadSubNav('top-nav-container', 'documentacion');
+            loadDocsSidebar('skeleton');
+            if (typeof showAlert === 'function') {
+                showAlert('warning', 'Antes de enviar estos prompts a Cursor, reemplaza los textos entre [corchetes] con la información de tu pantalla.', {
+                    containerId: 'skeleton-warning-alert',
+                    noClose: true
+                });
+            }
+        });
+    </script>
+</body>
+</html>

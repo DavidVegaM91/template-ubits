@@ -246,9 +246,13 @@ body.ai-panel-resizing .ai-panel {
 
 /* Acciones del header (derecha) */
 .ai-panel__header-actions {
-    display: flex;
+    display: inline-flex;
     align-items: center;
-    gap: 2px;
+    gap: var(--gap-sm);
+    flex-shrink: 0;
+}
+
+.ai-panel__tokens-badge {
     flex-shrink: 0;
 }
 
@@ -423,6 +427,12 @@ body.ai-panel-resizing .ai-panel {
     padding: var(--padding-none) !important;
     width: 100%;
     max-width: 85%;
+}
+
+/* HTML personalizado (p. ej. imagen + acciones) — sin forzar pre-wrap en hijos */
+.ai-panel__msg-bubble--rich {
+    white-space: normal;
+    max-width: 100%;
 }
 
 .ai-panel__msg-time {

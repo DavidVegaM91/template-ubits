@@ -1,0 +1,159 @@
+/* ========================================
+   UBITS SKELETON
+   Placeholders de carga (forma del contenido que llegará).
+   Tokens: --ubits-bg-1, --ubits-bg-2; respeta prefers-reduced-motion.
+   ======================================== */
+
+.ubits-skeleton {
+    box-sizing: border-box;
+    display: block;
+    position: relative;
+    overflow: hidden;
+    flex-shrink: 0;
+    background-color: var(--ubits-bg-2);
+    border-radius: var(--border-radius-sm);
+}
+
+/* Brillo que cruza el bloque (shimmer ligero) */
+.ubits-skeleton::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(
+        90deg,
+        transparent 0%,
+        var(--ubits-bg-1) 50%,
+        transparent 100%
+    );
+    opacity: 0.45;
+    transform: translateX(-100%);
+    animation: ubits-skeleton-shimmer 1.25s ease-in-out infinite;
+}
+
+@keyframes ubits-skeleton-shimmer {
+    0% {
+        transform: translateX(-100%);
+    }
+    100% {
+        transform: translateX(100%);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .ubits-skeleton::after {
+        animation: none;
+        opacity: 0;
+    }
+}
+
+/* ----- Formas ----- */
+
+.ubits-skeleton--line {
+    height: var(--space-2, 8px);
+    border-radius: var(--border-radius-full);
+}
+
+.ubits-skeleton--line.ubits-skeleton--sm {
+    height: var(--space-2, 8px);
+}
+
+.ubits-skeleton--line.ubits-skeleton--md {
+    height: var(--space-3, 12px);
+}
+
+.ubits-skeleton--line.ubits-skeleton--lg {
+    height: var(--space-4, 16px);
+}
+
+.ubits-skeleton--rect {
+    border-radius: var(--border-radius-md);
+}
+
+.ubits-skeleton--rounded {
+    border-radius: var(--border-radius-lg);
+}
+
+.ubits-skeleton--circle {
+    border-radius: var(--border-radius-full);
+    aspect-ratio: 1;
+}
+
+/* Tamaños típicos avatar / thumb */
+.ubits-skeleton--avatar-sm {
+    width: var(--size-4xl, 32px);
+    height: var(--size-4xl, 32px);
+}
+
+.ubits-skeleton--avatar-md {
+    width: var(--size-5xl, 40px);
+    height: var(--size-5xl, 40px);
+}
+
+.ubits-skeleton--avatar-lg {
+    width: var(--size-6xl, 48px);
+    height: var(--size-6xl, 48px);
+}
+
+/* Anchos de línea (sin inline styles en página) */
+.ubits-skeleton--w-full {
+    width: 100%;
+}
+
+.ubits-skeleton--w-11-12 {
+    width: 91.666%;
+}
+
+.ubits-skeleton--w-3-4 {
+    width: 75%;
+}
+
+.ubits-skeleton--w-2-3 {
+    width: 66.666%;
+}
+
+.ubits-skeleton--w-1-2 {
+    width: 50%;
+}
+
+/* Contenedor vertical de líneas / bloques */
+.ubits-skeleton-stack {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-sm);
+    width: 100%;
+    min-width: 0;
+}
+
+/* Fila: avatar + texto (patrón lista / card) */
+.ubits-skeleton-row {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    gap: var(--gap-md);
+    width: 100%;
+    min-width: 0;
+}
+
+.ubits-skeleton-row__main {
+    flex: 1;
+    min-width: 0;
+}
+
+/* Tarjeta compacta (preview doc / lista) */
+.ubits-skeleton-card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-md);
+    padding: var(--padding-md);
+    border-radius: var(--border-radius-lg);
+    border: 1px solid var(--ubits-border-1);
+    background: var(--ubits-bg-1);
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.ubits-skeleton-card__media {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+}

@@ -766,6 +766,63 @@ body.crear-contenido-app-open .ubits-dropdown-menu__content {
     }
 }
 
+/* Loader superpuesto al skeleton 16:9 (misma huella que la imagen final) — modal y panel IA */
+.cc-portada-ai-generating {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+    box-sizing: border-box;
+}
+
+.cc-portada-ai-generating__stage {
+    position: relative;
+    width: 100%;
+    max-width: 600px;
+    box-sizing: border-box;
+}
+
+.cc-portada-ai-generating__loader.ubits-loader-wrap {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--gap-lg);
+    padding: var(--padding-md);
+    box-sizing: border-box;
+    /* Ligero velo para que spinner y texto lean bien sobre el shimmer */
+    background: color-mix(in srgb, var(--ubits-bg-1) 52%, transparent);
+    border-radius: var(--border-radius-md);
+}
+
+.cc-portada-ai-generating__frame {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    border-radius: var(--border-radius-md);
+    overflow: hidden;
+}
+
+.cc-portada-ai-generating__skel {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border-radius: inherit;
+}
+
+.ai-panel__msg-bubble--rich .cc-portada-ai-generating {
+    max-width: 100%;
+}
+
+.ai-panel__msg-bubble--rich .cc-portada-ai-generating__stage {
+    max-width: 100%;
+}
+
 .portada-ia-modal-actions {
     display: flex;
     justify-content: center;
@@ -785,4 +842,36 @@ body.crear-contenido-app-open .ubits-dropdown-menu__content {
     .portada-ia-modal-actions > button:nth-child(2) {
         order: 1;
     }
+}
+
+/* AI Panel — resultado “Generar portada” (imagen + acciones, mismo patrón que el modal) */
+#ai-panel .cc-portada-ai-panel-result {
+    width: 100%;
+}
+
+#ai-panel .cc-portada-ai-panel-result__img {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    border-radius: var(--border-radius-md);
+    border: 1px solid var(--ubits-border-1);
+}
+
+#ai-panel .cc-portada-ai-panel-result__actions {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--gap-sm);
+    margin-top: var(--gap-md);
+    width: 100%;
+}
+
+#ai-panel .cc-portada-ai-panel-result__actions .ubits-button {
+    width: 100%;
+}
+
+#ai-panel .cc-portada-ai-panel-result__loader {
+    padding: var(--padding-xl) 0;
 }

@@ -8,23 +8,28 @@
    initAIPanel(options)          — Inicializa e inyecta el panel (una sola vez)
    openAIPanel()                 — Abre el panel
    closeAIPanel()                — Cierra el panel
-   addAIPanelMessage(text, type) — Agrega mensaje ('user' | 'ai')
+   addAIPanelMessage(text, type, attachments?, opts?) — Agrega mensaje ('user' | 'ai').
+     opts (solo type ai): { richHtml: string, hideAiCopy?: boolean } — HTML del globo (sin streaming).
    showAIPanelTyping()           — Muestra “Pensando” (con ia-chat-streaming.js) → retorna removeTyping()
    clearAIPanelMessages()        — Limpia mensajes, restaura bienvenida
    setAIPanelTitle(title)        — Cambia título en tiempo real
+   setAIPanelTokensBadgeValue(n) — Actualiza el número del badge de tokens en cabecera (si existe)
    destroyAIPanel()              — Desmonta el panel del DOM
 
    OPCIONES (initAIPanel):
    -----------------------
    title, agentLabel, placeholder, disclaimer,
    welcomeTitle, welcomeSubtitle,
+   tokensBadge — true (por defecto): badge IA de tokens junto al cierre; false lo oculta;
+     u objeto { value, tooltip, ariaLabel } para personalizar (p. ej. value: 50).
+   Requiere CSS: badge-tag.css + aprendizaje-ia-gradientes.css; tooltip.js + tooltip.css para el hover.
   onSend(text) — tras insertar el mensaje del usuario (y el «Pensando» si hay ia-chat-streaming); solo respuesta / backend, no duplicar 'user',
   onAttach(), onClose(),
   dockDesktop, dockContainerSelector, dockBreakpoint
 
    CSS recomendado (misma pila que Modo estudio / Chat IA grupos):
-   aprendizaje-ia-gradientes.css → ubits-ia-chat.css → ai-panel.css
-   (difuminado superior al scroll, scrollbar y orbes alineados al hilo).
+   aprendizaje-ia-gradientes.css → badge-tag.css → tooltip.css → ubits-ia-chat.css → ai-panel.css
+   (+ tooltip.js antes de ai-panel.js si usas el badge de tokens en cabecera).
    ======================================== */
 
 // ---------------------------------------------------------------------------
@@ -154,6 +159,49 @@ function _aiCopyText(text) {
 }
 
 // ---------------------------------------------------------------------------
+// Badge de tokens (cabecera, a la izquierda del cierre) — mismo patrón que modal IA portada
+// ---------------------------------------------------------------------------
+function _aiPanelTokensBadgeHtml(o) {
+    var cfg = o.tokensBadge;
+    if (cfg === false) return '';
+    var defaults = { value: 50, tooltip: 'Número de tokens restantes.', ariaLabel: '' };
+    var merged = defaults;
+    if (cfg && typeof cfg === 'object') {
+        merged = Object.assign({}, defaults, cfg);
+    }
+    var num = merged.value != null ? merged.value : 50;
+    var tip = merged.tooltip != null ? merged.tooltip : defaults.tooltip;
+    var aria =
+        merged.ariaLabel != null && merged.ariaLabel !== ''
+            ? merged.ariaLabel
+            : String(num) + ' tokens restantes';
+    return (
+        '<span class="ubits-badge-tag ubits-badge-tag--outlined ubits-badge-tag--ia ubits-badge-tag--xs ai-panel__tokens-badge" id="ai-panel-tokens-badge" tabindex="0" ' +
+        'data-tooltip="' +
+        _aiEscape(tip) +
+        '" data-tooltip-delay="1000" aria-label="' +
+        _aiEscape(aria) +
+        '">' +
+        '<span class="ubits-badge-tag__token-cost" aria-hidden="true">' +
+        '<i class="far fa-coin-vertical"></i>' +
+        '<span class="ubits-badge-tag__token-number">' +
+        _aiEscape(String(num)) +
+        '</span>' +
+        '</span></span>'
+    );
+}
+
+function _aiPanelInitTokensBadgeTooltip() {
+    var cfg = _aiPanel.options.tokensBadge;
+    if (cfg === false) return;
+    if (typeof window.initTooltip !== 'function') return;
+    window.setTimeout(function () {
+        var el = _aiEl('ai-panel-tokens-badge');
+        if (el) window.initTooltip('#ai-panel-tokens-badge');
+    }, 0);
+}
+
+// ---------------------------------------------------------------------------
 // HTML del panel
 // ---------------------------------------------------------------------------
 function _buildAIPanelHTML(o) {
@@ -177,6 +225,7 @@ function _buildAIPanelHTML(o) {
             <h2 class="ai-panel__title" id="ai-panel-title">${_aiEscape(title)}</h2>
         </div>
         <div class="ai-panel__header-actions">
+            ${_aiPanelTokensBadgeHtml(o)}
             <button class="ai-panel__hdr-btn" id="ai-panel-close-btn" type="button" title="Cerrar panel" aria-label="Cerrar">
                 <i class="far fa-xmark"></i>
             </button>
@@ -245,6 +294,7 @@ function initAIPanel(options) {
         title: 'IA', agentLabel: '', placeholder: '¿Cómo puedo ayudarte hoy?',
         disclaimer: _defaultIaDisclaimerText(),
         welcomeTitle: '', welcomeSubtitle: '',
+        tokensBadge: true,
         onSend: null, onAttach: null, onClose: null,
         onRegenerate: null,
         dockDesktop: false,
@@ -265,6 +315,7 @@ function initAIPanel(options) {
     _aiPanelSyncDockMode();
     _aiPanel.resizeHandler = _aiPanelSyncDockMode;
     window.addEventListener('resize', _aiPanel.resizeHandler);
+    _aiPanelInitTokensBadgeTooltip();
 }
 
 function _aiPanelSyncDockMode() {
@@ -613,7 +664,8 @@ function closeAIPanel() {
     if (typeof _aiPanel.options.onClose === 'function') _aiPanel.options.onClose();
 }
 
-function addAIPanelMessage(text, type, attachments) {
+function addAIPanelMessage(text, type, attachments, opts) {
+    opts = opts || {};
     var welcome  = _aiEl('ai-panel-welcome');
     var messages = _aiEl('ai-panel-messages');
     if (!messages) return;
@@ -635,18 +687,24 @@ function addAIPanelMessage(text, type, attachments) {
         '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--xs ubits-button--icon-only" data-tooltip="Copiar" data-tooltip-delay="1000" data-ai-panel-action="copy" aria-label="Copiar">' +
             '<i class="far fa-copy"></i>' +
         '</button>';
+    var showAiCopy = msgType === 'ai' && !opts.hideAiCopy;
     var footerHtml =
         '<div class="ai-panel__msg-footer ubits-ia-chat-thread__message-footer">' +
         '<span class="ai-panel__msg-time ubits-ia-chat-thread__timestamp">' + timeLabel + '</span>' +
-        (msgType === 'ai'
+        (showAiCopy
             ? '<div class="ai-panel__msg-actions ubits-ia-chat-thread__message-actions">' + copyBtn + '</div>'
             : '') +
         '</div>';
 
     el.setAttribute('data-ai-text', String(text || ''));
     var attHtml = _buildAIPanelAttachmentsHtml(attachments && attachments.images, attachments && attachments.files) || '';
-    var useStream = msgType === 'ai' && window.UbitsIaChatStreaming && typeof window.UbitsIaChatStreaming.buildAiGlobeInnerHtmlFromPlainText === 'function';
-    if (useStream) {
+    var useRichAi = msgType === 'ai' && opts.richHtml;
+    var useStream = !useRichAi && msgType === 'ai' && window.UbitsIaChatStreaming && typeof window.UbitsIaChatStreaming.buildAiGlobeInnerHtmlFromPlainText === 'function';
+    if (useRichAi) {
+        el.innerHTML =
+            '<div class="ai-panel__msg-bubble ai-panel__msg-bubble--rich">' + opts.richHtml + '</div>' +
+            footerHtml;
+    } else if (useStream) {
         el.classList.add('ubits-ia-chat-thread__message', 'ubits-ia-chat-thread__message--ai', 'ubits-ia-chat-thread__message--typing');
         var innerGlobe = window.UbitsIaChatStreaming.buildAiGlobeInnerHtmlFromPlainText(text) + attHtml;
         el.innerHTML =
@@ -725,6 +783,22 @@ function clearAIPanelMessages() {
 function setAIPanelTitle(title) {
     var el = _aiEl('ai-panel-title');
     if (el) el.textContent = title;
+}
+
+/** Actualiza el valor mostrado del badge de tokens (cabecera). No-op si `tokensBadge: false` o el nodo no existe. */
+function setAIPanelTokensBadgeValue(value) {
+    var n = parseInt(value, 10);
+    if (isNaN(n) || n < 0) n = 0;
+    var el = _aiEl('ai-panel-tokens-badge');
+    if (!el) return;
+    var numEl = el.querySelector('.ubits-badge-tag__token-number');
+    if (numEl) numEl.textContent = String(n);
+    el.setAttribute('aria-label', String(n) + ' tokens restantes');
+    if (_aiPanel.options && _aiPanel.options.tokensBadge !== false) {
+        if (_aiPanel.options.tokensBadge && typeof _aiPanel.options.tokensBadge === 'object') {
+            _aiPanel.options.tokensBadge.value = n;
+        }
+    }
 }
 
 function destroyAIPanel() {
