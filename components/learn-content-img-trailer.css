@@ -3,7 +3,7 @@
    Bloque único (Figma Learn-Components · Img y trailer content).
    Estados: vacío, hover, error, imagen cargada, tráiler (preview con play).
    Textos por defecto (CTA, hint, Editar, aria): learn-content-img-trailer.js → LEARN_CONTENT_IMG_TRAILER_DEFAULTS.
-   Requiere: ubits-colors.css, ubits-typography.css, button.css, fontawesome-icons.css.
+  Requiere: ubits-colors.css, ubits-typography.css, fontawesome-icons.css, button.css, ia-button.css.
    ======================================== */
 
 .ubits-learn-img-trailer {
@@ -59,6 +59,16 @@
 
 .ubits-learn-img-trailer__cta.ubits-button span {
     text-align: center;
+}
+
+.ubits-learn-img-trailer__ai-row {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: var(--gap-sm);
+    width: 100%;
 }
 
 .ubits-learn-img-trailer__hint {
