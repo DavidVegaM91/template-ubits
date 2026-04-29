@@ -58,6 +58,7 @@
                                 <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn lcb-state-btn" data-lcb-state="hover"><span>Hover forzado</span></button>
                                 <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn lcb-state-btn" data-lcb-state="error"><span>Error</span></button>
                                 <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn lcb-state-btn" data-lcb-state="image"><span>Imagen</span></button>
+                                <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn lcb-state-btn" data-lcb-state="image-delete"><span>Imagen (eliminar)</span></button>
                                 <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn lcb-state-btn" data-lcb-state="trailer"><span>Tráiler</span></button>
                             </div>
                             <!-- Bloque (no flex centrado): si el padre es flex sin ancho, hijos solo absolute → ancho 0 y colapsa el 16:9 -->
@@ -165,6 +166,7 @@ JS: components/learn-content-img-trailer.js (+ toast.js si usas toasts)
      Copys: LEARN_CONTENT_IMG_TRAILER_DEFAULTS (cta, hint, editButton, playAriaLabel, …)
      HTML vacío: getLearnContentImgTrailerEmptyHtml({ ctaId?, aiCtaModalId?, aiCtaPanelId?, iconClass?, includeErrorPlaceholder? })
      Botón Editar: getLearnContentImgTrailerEditHtml({ editButtonId? })
+     Botón Eliminar (variante imagen): getLearnContentImgTrailerDeleteHtml({ deleteButtonId? })
      initLearnContentImgTrailer('#id', {}) — data-trailer-url en la raíz;
        YouTube/Vimeo/Drive → iframe en el mismo bloque (clase --playing); sin embed → nueva pestaña.
      Opcional: onPlay() sustituye ese comportamiento.
@@ -192,7 +194,7 @@ JS: components/learn-content-img-trailer.js (+ toast.js si usas toasts)
             var c = ['ubits-learn-img-trailer'];
             if (state === 'error') c.push('ubits-learn-img-trailer--error');
             if (state === 'hover') c.push('ubits-learn-img-trailer--state-hover');
-            if (state === 'image' || state === 'trailer') c.push('ubits-learn-img-trailer--image');
+            if (state === 'image' || state === 'image-delete' || state === 'trailer') c.push('ubits-learn-img-trailer--image');
             if (state === 'trailer') c.push('ubits-learn-img-trailer--trailer');
 
             var def = typeof LEARN_CONTENT_IMG_TRAILER_DEFAULTS !== 'undefined' ? LEARN_CONTENT_IMG_TRAILER_DEFAULTS : {};
@@ -206,7 +208,7 @@ JS: components/learn-content-img-trailer.js (+ toast.js si usas toasts)
                     : '';
 
             var media = '';
-            if (state === 'image' || state === 'trailer') {
+            if (state === 'image' || state === 'image-delete' || state === 'trailer') {
                 media =
                     '<figure class="ubits-learn-img-trailer__media">' +
                     '<img class="ubits-learn-img-trailer__img" src="' +
@@ -223,6 +225,8 @@ JS: components/learn-content-img-trailer.js (+ toast.js si usas toasts)
             var edit = '';
             if (state === 'image' || state === 'trailer') {
                 edit = typeof getLearnContentImgTrailerEditHtml === 'function' ? getLearnContentImgTrailerEditHtml({}) : '';
+            } else if (state === 'image-delete') {
+                edit = typeof getLearnContentImgTrailerDeleteHtml === 'function' ? getLearnContentImgTrailerDeleteHtml({}) : '';
             }
 
             var trailerAttr =

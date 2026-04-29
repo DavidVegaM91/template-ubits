@@ -436,6 +436,39 @@
     line-height: 1;
 }
 
+/* ========================================
+   TOKEN COST (X + coin-vertical) — opcional
+   Estructura:
+   <button class="ubits-button ... ubits-button--with-token-cost">
+     <span class="ubits-button__token-cost" aria-hidden="true">
+       <span class="ubits-button__token-number">2</span>
+       <i class="far fa-coin-vertical"></i>
+     </span>
+     <span>Label</span>
+   </button>
+   ======================================== */
+
+.ubits-button--with-token-cost {
+    gap: var(--gap-xs);
+}
+
+.ubits-button__token-cost {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--gap-2xs, 4px);
+}
+
+.ubits-button__token-number {
+    /* El botón fuerza semibold a todos los <span>; aquí lo bajamos solo para el número */
+    font-weight: var(--font-weight-regular) !important;
+}
+
+.ubits-button__token-cost i {
+    font-size: 1em;
+    line-height: 1;
+}
+
 /* PROTECCIÓN ESPECÍFICA PARA BOTONES PRIMARIOS */
 .ubits-button--primary {
     color: var(--ubits-btn-primary-fg) !important;

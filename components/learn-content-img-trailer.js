@@ -104,11 +104,16 @@
         var editWrap = root.querySelector('.ubits-learn-img-trailer__edit');
         var btn = editWrap && editWrap.querySelector('button');
         if (!btn) return;
+        var btnLabel = '';
+        try {
+            btnLabel = (btn.textContent || '').trim();
+        } catch (e) {}
+        if (!btnLabel) btnLabel = LEARN_CONTENT_IMG_TRAILER_DEFAULTS.editButton;
         var layer = document.createElement('button');
         layer.type = 'button';
         layer.className = EDIT_HITLAYER_CLASS;
-        layer.setAttribute('aria-label', LEARN_CONTENT_IMG_TRAILER_DEFAULTS.editButton);
-        layer.setAttribute('title', LEARN_CONTENT_IMG_TRAILER_DEFAULTS.editButton);
+        layer.setAttribute('aria-label', btnLabel);
+        layer.setAttribute('title', btnLabel);
         layer.addEventListener('click', function (e) {
             e.preventDefault();
             e.stopPropagation();
@@ -245,6 +250,25 @@
         );
     }
 
+    /**
+     * Botón flotante «Eliminar» (variante de estado imagen / tráiler).
+     * Mismo slot que Editar, pero con botón error-secondary.
+     * @param {{ deleteLabel?: string, deleteButtonId?: string }} [opts]
+     */
+    function getLearnContentImgTrailerDeleteHtml(opts) {
+        opts = opts || {};
+        var label = opts.deleteLabel != null ? opts.deleteLabel : 'Eliminar';
+        var btnId = opts.deleteButtonId ? ' id="' + escapeHtml(opts.deleteButtonId) + '"' : '';
+        return (
+            '<div class="ubits-learn-img-trailer__edit">' +
+            '<button type="button" class="ubits-button ubits-button--error-secondary ubits-button--sm"' +
+            btnId +
+            '><i class="far fa-trash-alt"></i><span>' +
+            escapeHtml(label) +
+            '</span></button></div>'
+        );
+    }
+
     function queryRoot(rootSelector) {
         if (!rootSelector) return null;
         if (typeof rootSelector === 'string') return document.querySelector(rootSelector);
@@ -316,6 +340,7 @@
     window.LEARN_CONTENT_IMG_TRAILER_DEFAULTS = LEARN_CONTENT_IMG_TRAILER_DEFAULTS;
     window.getLearnContentImgTrailerEmptyHtml = getLearnContentImgTrailerEmptyHtml;
     window.getLearnContentImgTrailerEditHtml = getLearnContentImgTrailerEditHtml;
+    window.getLearnContentImgTrailerDeleteHtml = getLearnContentImgTrailerDeleteHtml;
     window.initLearnContentImgTrailer = initLearnContentImgTrailer;
     window.initAllLearnContentImgTrailers = initAllLearnContentImgTrailers;
     window.getTrailerEmbedUrl = getTrailerEmbedUrl;

@@ -582,6 +582,10 @@
                 containerId: 'button-warning-alert',
                 noClose: true
             });
+
+            // Render inicial del preview: asegura que se vean las variantes nuevas (p. ej. costo en tokens)
+            // sin necesidad de cambiar de tab y regresar.
+            updatePreview(currentPreviewOption);
         });
 
         // Variable global para guardar la opción actual del preview
@@ -640,11 +644,15 @@
         
         // Función auxiliar para generar HTML de botón con/sin badge y con/sin iconos
         // badgeValue: null = sin badge, '' = puntito, '3' = número dentro del badge
-        function generateButtonHTML(variant, size, text, icon, isIconOnly = false, showIcons = true, isDisabled = false, badgeValue = null) {
+        function generateButtonHTML(variant, size, text, icon, isIconOnly = false, showIcons = true, isDisabled = false, badgeValue = null, tokenCost = null) {
             const iconHTML = showIcons ? `<i class="far fa-${icon}"></i>` : '';
             const disabledAttr = isDisabled ? ' disabled' : '';
             const iconOnlyClass = isIconOnly ? ` ubits-button--icon-only` : '';
             const textHTML = isIconOnly ? '' : `<span>${text}</span>`;
+            const tokenClass = tokenCost !== null && !isIconOnly ? ` ubits-button--with-token-cost` : '';
+            const tokenHTML = tokenCost !== null && !isIconOnly
+                ? `<span class="ubits-button__token-cost" aria-hidden="true"><span class="ubits-button__token-number">${String(tokenCost)}</span><i class="far fa-coin-vertical"></i></span>`
+                : '';
             const attnBase = 'ubits-attention-badge ubits-attention-badge--sm ubits-attention-badge--error';
             let badgeHTML = '';
             if (badgeValue !== null) {
@@ -656,8 +664,9 @@
                     badgeHTML = `<span class="${attnBase}${circleClass}">${s}</span>`;
                 }
             }
-            return `<button class="ubits-button ubits-button--${variant} ubits-button--${size}${iconOnlyClass}"${disabledAttr}>
+            return `<button class="ubits-button ubits-button--${variant} ubits-button--${size}${iconOnlyClass}${tokenClass}"${disabledAttr}>
                 ${iconHTML}
+                ${tokenHTML}
                 ${textHTML}
                 ${badgeHTML}
             </button>`;
@@ -709,6 +718,10 @@
                                 <span class="ubits-body-sm-bold" style="color: var(--ubits-fg-1-medium);">Large (lg)</span>
                                 ${generateButtonHTML('primary', 'lg', 'Botón primario', 'check', isIconOnly, showIcons, false, badgeParam)}
                             </div>
+                            <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 8px;">
+                                <span class="ubits-body-sm-bold" style="color: var(--ubits-fg-1-medium);">Con costo en tokens</span>
+                                ${generateButtonHTML('primary', 'md', 'Usar como portada', 'check', false, false, false, null, 2)}
+                            </div>
                         </div>
                     `;
                     break;
@@ -730,6 +743,10 @@
                             <div style="display: flex; flex-direction: column; gap: 8px;">
                                 <span class="ubits-body-sm-bold" style="color: var(--ubits-fg-1-medium);">Large (lg)</span>
                                 ${generateButtonHTML('secondary', 'lg', 'Botón secundario', 'times', isIconOnly, showIcons, false, badgeParam)}
+                            </div>
+                            <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 8px;">
+                                <span class="ubits-body-sm-bold" style="color: var(--ubits-fg-1-medium);">Con costo en tokens</span>
+                                ${generateButtonHTML('secondary', 'md', 'Usar como portada', 'times', false, false, false, null, 2)}
                             </div>
                         </div>
                     `;
@@ -753,6 +770,10 @@
                                 <span class="ubits-body-sm-bold" style="color: var(--ubits-fg-1-medium);">Large (lg)</span>
                                 ${generateButtonHTML('tertiary', 'lg', 'Botón terciario', 'plus', isIconOnly, showIcons, false, badgeParam)}
                             </div>
+                            <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 8px;">
+                                <span class="ubits-body-sm-bold" style="color: var(--ubits-fg-1-medium);">Con costo en tokens</span>
+                                ${generateButtonHTML('tertiary', 'md', 'Usar como portada', 'plus', false, false, false, null, 2)}
+                            </div>
                         </div>
                     `;
                     break;
@@ -774,6 +795,10 @@
                             <div style="display: flex; flex-direction: column; gap: 8px;">
                                 <span class="ubits-body-sm-bold" style="color: var(--ubits-fg-1-medium);">Large (lg)</span>
                                 ${generateButtonHTML('tertiary', 'lg', 'Botón deshabilitado', 'plus', isIconOnly, showIcons, true, badgeParam)}
+                            </div>
+                            <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 8px;">
+                                <span class="ubits-body-sm-bold" style="color: var(--ubits-fg-1-medium);">Con costo en tokens</span>
+                                ${generateButtonHTML('primary', 'md', 'Usar como portada', 'check', false, false, true, null, 2)}
                             </div>
                         </div>
                     `;
@@ -797,6 +822,10 @@
                             <div style="display: flex; flex-direction: column; gap: 8px;">
                                 <span class="ubits-body-sm-bold" style="color: var(--ubits-fg-1-medium);">Large (lg)</span>
                                 ${generateButtonHTML(errorVariant, 'lg', 'Eliminar', 'trash-alt', isIconOnly, showIcons, false, badgeParam)}
+                            </div>
+                            <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 8px;">
+                                <span class="ubits-body-sm-bold" style="color: var(--ubits-fg-1-medium);">Con costo en tokens</span>
+                                ${generateButtonHTML(errorVariant, 'md', 'Usar como portada', 'trash-alt', false, false, false, null, 2)}
                             </div>
                         </div>
                     `;

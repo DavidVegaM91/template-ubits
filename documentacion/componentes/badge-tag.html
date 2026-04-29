@@ -21,6 +21,7 @@
     <link rel="stylesheet" href="../../components/switch.css">
     <link rel="stylesheet" href="../../components/toast.css">
     <link rel="stylesheet" href="../../components/badge-tag.css">
+    <link rel="stylesheet" href="../../ubits-colaborador/aprendizaje/aprendizaje-ia-gradientes.css">
     <style>
         .badge-tag-preview-controls {
             display: flex;
@@ -88,6 +89,17 @@
                                 <div class="badge-tag-preview-controls__row">
                                     <p class="badge-tag-preview-controls__label ubits-body-sm-bold" style="color: var(--ubits-fg-1-medium);">Color</p>
                                     <div class="badge-tag-preview-controls__field" id="badge-preview-select-color"></div>
+                                </div>
+                                <div class="badge-tag-preview-controls__row" id="badge-preview-tokens-row" style="align-items: center; gap: var(--gap-md); display: none;">
+                                    <label class="ubits-switch ubits-switch--md" style="align-items: center; gap: var(--gap-sm); flex-wrap: wrap;">
+                                        <input type="checkbox" class="ubits-switch__input" id="badge-preview-show-tokens" role="switch" aria-checked="false" aria-label="Mostrar costo en tokens">
+                                        <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
+                                        <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); display: inline-flex; align-items: center; gap: var(--gap-2xs, 4px);">
+                                            <i class="far fa-coin-vertical"></i>
+                                            <span>2</span>
+                                            <span>Tokens</span>
+                                        </span>
+                                    </label>
                                 </div>
                                 <div class="badge-tag-preview-controls__row">
                                     <p class="badge-tag-preview-controls__label ubits-body-sm-bold" style="color: var(--ubits-fg-1-medium);">Tamaño</p>
@@ -276,6 +288,7 @@
 .ubits-badge-tag--info      /* Azul */
 .ubits-badge-tag--warning   /* Amarillo/Naranja */
 .ubits-badge-tag--error     /* Rojo */
+.ubits-badge-tag--ia        /* IA (gradación) */
 
 /* Tamaño */
 .ubits-badge-tag--xs        /* 20px alto (misma métrica que status-tag--xs) */
@@ -308,6 +321,7 @@
                                             <strong>CSS Requerido:</strong><br>
                                             • <code>components/badge-tag.css</code> - Estilos del componente<br>
                                             • <code>general-styles/ubits-colors.css</code> - Tokens UBITS<br>
+                                            • <code>ubits-colaborador/aprendizaje/aprendizaje-ia-gradientes.css</code> - Solo si usas el color IA<br>
                                             • <code>general-styles/fontawesome-icons.css</code> - Solo si usas icono<br><br>
                                             <strong>JavaScript:</strong> NO requerido - Componente puramente CSS<br><br>
                                             <strong>Renderizado:</strong> HTML directo con clases UBITS. Con icono: usar solo clases FontAwesome en el <code>&lt;i&gt;</code> (ej. <code>far fa-check-circle</code>), sin clases propias.
@@ -382,21 +396,24 @@
             tagSize: 'sm',
             useIcon: false,
             iconOnly: false,
-            textOnly: false
+            textOnly: false,
+            showTokens: false
         };
 
         var badgePreviewLabels = {
             success: 'Completado',
             info: 'En proceso',
             warning: 'Pendiente',
-            error: 'Error'
+            error: 'Error',
+            ia: 'IA'
         };
 
         var badgePreviewIcons = {
             success: 'check-circle',
             info: 'clock',
             warning: 'exclamation-triangle',
-            error: 'times-circle'
+            error: 'times-circle',
+            ia: 'sparkles'
         };
 
         function renderBadgeTagPreview() {
@@ -416,15 +433,42 @@
                 if (s.iconOnly) classes.push('ubits-badge-tag--icon-only');
             }
             var inner = '';
+            var shouldShowTokens = s.color === 'ia' && s.showTokens && !s.iconOnly && !s.textOnly;
             if (s.textOnly) {
                 // solo texto: ni indicador ni icono
+            } else if (shouldShowTokens) {
+                // En modo tokens, el "icono" es la monedita: no mostrar punto ni icono semántico
+                inner = '<span class="ubits-badge-tag__token-cost" aria-hidden="true"><i class="far fa-coin-vertical"></i><span class="ubits-badge-tag__token-number">2</span></span>';
             } else if (s.useIcon) {
                 inner = '<i class="far fa-' + badgePreviewIcons[s.color] + '"></i>';
             } else {
                 inner = '<span class="ubits-badge-tag__indicator" aria-hidden="true"></span>';
             }
-            inner += '<span class="ubits-badge-tag__text">' + badgePreviewLabels[s.color] + '</span>';
+            if (!shouldShowTokens) {
+                inner += '<span class="ubits-badge-tag__text">' + badgePreviewLabels[s.color] + '</span>';
+            }
             mount.innerHTML = '<span class="' + classes.join(' ') + '">' + inner + '</span>';
+        }
+
+        function syncBadgePreviewTokenSwitch() {
+            var row = document.getElementById('badge-preview-tokens-row');
+            var sw = document.getElementById('badge-preview-show-tokens');
+            if (!row || !sw) return;
+
+            var isIa = badgePreviewState.color === 'ia';
+            row.style.display = isIa ? 'flex' : 'none';
+
+            var disabled = !isIa || badgePreviewState.textOnly || badgePreviewState.iconOnly;
+            sw.disabled = disabled;
+
+            if (!isIa || disabled) {
+                badgePreviewState.showTokens = false;
+                sw.checked = false;
+                sw.setAttribute('aria-checked', 'false');
+            } else {
+                sw.checked = badgePreviewState.showTokens;
+                sw.setAttribute('aria-checked', badgePreviewState.showTokens ? 'true' : 'false');
+            }
         }
 
         function syncBadgePreviewIconSwitches() {
@@ -434,13 +478,19 @@
             if (swIcon) {
                 swIcon.checked = badgePreviewState.useIcon;
                 swIcon.setAttribute('aria-checked', badgePreviewState.useIcon ? 'true' : 'false');
-                swIcon.disabled = badgePreviewState.textOnly;
+                // Si está en modo tokens, no tiene sentido icono/punto: se usa la monedita
+                swIcon.disabled = badgePreviewState.textOnly || badgePreviewState.showTokens;
+                if (badgePreviewState.showTokens) {
+                    badgePreviewState.useIcon = false;
+                    swIcon.checked = false;
+                    swIcon.setAttribute('aria-checked', 'false');
+                }
             }
             if (swOnly) {
                 swOnly.checked = badgePreviewState.iconOnly;
                 swOnly.setAttribute('aria-checked', badgePreviewState.iconOnly ? 'true' : 'false');
-                swOnly.disabled = !badgePreviewState.useIcon || badgePreviewState.textOnly;
-                if (!badgePreviewState.useIcon || badgePreviewState.textOnly) {
+                swOnly.disabled = !badgePreviewState.useIcon || badgePreviewState.textOnly || badgePreviewState.showTokens;
+                if (!badgePreviewState.useIcon || badgePreviewState.textOnly || badgePreviewState.showTokens) {
                     badgePreviewState.iconOnly = false;
                     swOnly.checked = false;
                     swOnly.setAttribute('aria-checked', 'false');
@@ -450,6 +500,7 @@
                 swText.checked = badgePreviewState.textOnly;
                 swText.setAttribute('aria-checked', badgePreviewState.textOnly ? 'true' : 'false');
             }
+            syncBadgePreviewTokenSwitch();
         }
 
         function onBadgePreviewUseIconChange() {
@@ -475,6 +526,21 @@
                 badgePreviewState.useIcon = false;
                 badgePreviewState.iconOnly = false;
             }
+            syncBadgePreviewIconSwitches();
+            renderBadgeTagPreview();
+        }
+
+        function onBadgePreviewShowTokensChange() {
+            var sw = document.getElementById('badge-preview-show-tokens');
+            badgePreviewState.showTokens = !!(sw && sw.checked);
+            if (sw) sw.setAttribute('aria-checked', sw.checked ? 'true' : 'false');
+            if (badgePreviewState.showTokens) {
+                // Tokens usa la monedita como icono: apagar icono/punto alterno
+                badgePreviewState.useIcon = false;
+                badgePreviewState.iconOnly = false;
+                badgePreviewState.textOnly = false;
+            }
+            syncBadgePreviewTokenSwitch();
             syncBadgePreviewIconSwitches();
             renderBadgeTagPreview();
         }
@@ -514,11 +580,13 @@
                     { value: 'success', text: 'Success' },
                     { value: 'info', text: 'Info' },
                     { value: 'warning', text: 'Warning' },
-                    { value: 'error', text: 'Error' }
+                    { value: 'error', text: 'Error' },
+                    { value: 'ia', text: 'IA' }
                 ],
                 value: badgePreviewState.color,
                 onChange: function (val) {
                     badgePreviewState.color = val || 'success';
+                    syncBadgePreviewTokenSwitch();
                     renderBadgeTagPreview();
                 }
             });
@@ -548,6 +616,7 @@
             var swIcon = document.getElementById('badge-preview-use-icon');
             var swOnly = document.getElementById('badge-preview-icon-only');
             var swText = document.getElementById('badge-preview-text-only');
+            var swTokens = document.getElementById('badge-preview-show-tokens');
             if (swIcon) {
                 swIcon.addEventListener('change', onBadgePreviewUseIconChange);
             }
@@ -556,6 +625,9 @@
             }
             if (swText) {
                 swText.addEventListener('change', onBadgePreviewTextOnlyChange);
+            }
+            if (swTokens) {
+                swTokens.addEventListener('change', onBadgePreviewShowTokensChange);
             }
             syncBadgePreviewIconSwitches();
             renderBadgeTagPreview();

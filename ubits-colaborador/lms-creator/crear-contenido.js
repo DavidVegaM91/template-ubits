@@ -245,6 +245,39 @@
         if (titleSpan) {
             titleSpan.innerHTML = '<div style="display:flex; align-items:center;">' + svgIcon + 'Generar portada</div>';
         }
+
+        // Badge de tokens restantes (IA) a la izquierda del botón Cerrar + tooltip oficial
+        var modalHeaderEl = overlay.querySelector('.ubits-modal-header');
+        var closeBtnEl = overlay.querySelector('.ubits-modal-close');
+        if (modalHeaderEl && closeBtnEl) {
+            var actionsWrap = document.createElement('div');
+            actionsWrap.style.display = 'inline-flex';
+            actionsWrap.style.alignItems = 'center';
+            actionsWrap.style.gap = 'var(--gap-sm)';
+
+            var tokensBadge = document.createElement('span');
+            tokensBadge.id = 'portada-ai-modal-tokens-badge';
+            tokensBadge.className = 'ubits-badge-tag ubits-badge-tag--outlined ubits-badge-tag--ia ubits-badge-tag--xs';
+            tokensBadge.setAttribute('tabindex', '0');
+            tokensBadge.setAttribute('data-tooltip', 'Número de tokens restantes.');
+            tokensBadge.setAttribute('data-tooltip-delay', '1000');
+            tokensBadge.setAttribute('aria-label', '50 tokens restantes');
+            tokensBadge.innerHTML =
+                '<span class="ubits-badge-tag__token-cost" aria-hidden="true">' +
+                '<i class="far fa-coin-vertical"></i>' +
+                '<span class="ubits-badge-tag__token-number">50</span>' +
+                '</span>';
+
+            actionsWrap.appendChild(tokensBadge);
+            actionsWrap.appendChild(closeBtnEl);
+
+            // Reemplazar el botón cerrar por el wrapper (badge + cerrar)
+            modalHeaderEl.appendChild(actionsWrap);
+
+            if (typeof initTooltip === 'function') {
+                initTooltip('#' + tokensBadge.id);
+            }
+        }
         
         var modalContent = overlay.querySelector('.ubits-modal-content');
         if (modalContent) {

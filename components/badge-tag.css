@@ -50,6 +50,36 @@
 }
 
 /* ========================================
+   TOKEN COST (X + coin-vertical) — opcional
+   Útil para UI de IA (ej. costo en tokens).
+   Estructura:
+   <span class="ubits-badge-tag ...">
+     ...
+     <span class="ubits-badge-tag__token-cost" aria-hidden="true">
+       <span class="ubits-badge-tag__token-number">2</span>
+       <i class="far fa-coin-vertical"></i>
+     </span>
+     <span class="ubits-badge-tag__text">Texto</span>
+   </span>
+   ======================================== */
+
+.ubits-badge-tag__token-cost {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--gap-2xs, 4px);
+}
+
+.ubits-badge-tag__token-number {
+    font-weight: var(--font-weight-regular);
+}
+
+.ubits-badge-tag__token-cost i {
+    font-size: inherit;
+    line-height: 1;
+}
+
+/* ========================================
    ESTILO: OUTLINED (fondo blanco, borde, texto oscuro, punto/icono de color)
    ======================================== */
 
@@ -96,6 +126,42 @@
     background: var(--ubits-feedback-accent-error);
 }
 
+/* IA (gradación) — usa variables compartidas de aprendizaje-ia-gradientes.css.
+   Replica el patrón de ubits-ia-button--secondary:
+   - Fondo sólido en padding-box
+   - Borde con gradiente en border-box
+   Incluye fallbacks por si el archivo de gradientes no está importado. */
+.ubits-badge-tag--outlined.ubits-badge-tag--ia {
+    --ubits-badge-tag-ia-gradient: linear-gradient(
+        90deg,
+        var(--modo-ia-gradient-a, rgb(255, 84, 22)),
+        var(--modo-ia-gradient-b, rgb(234, 6, 111)),
+        var(--modo-ia-gradient-c, rgb(136, 35, 234)),
+        var(--modo-ia-gradient-d, rgb(12, 91, 239)),
+        var(--modo-ia-gradient-a, rgb(255, 84, 22))
+    );
+
+    background:
+        linear-gradient(var(--ubits-bg-1), var(--ubits-bg-1)) padding-box,
+        var(--ubits-badge-tag-ia-gradient) border-box;
+    background-origin: padding-box, border-box;
+    background-clip: padding-box, border-box;
+    border: 1px solid transparent;
+}
+
+.ubits-badge-tag--outlined.ubits-badge-tag--ia .ubits-badge-tag__indicator {
+    background: var(--ubits-badge-tag-ia-gradient);
+}
+
+/* IA + token cost: moneda en gradiente (clip de texto) como ia-button secundario */
+.ubits-badge-tag--outlined.ubits-badge-tag--ia .ubits-badge-tag__token-cost i {
+    background: var(--ubits-badge-tag-ia-gradient);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+}
+
 /* Outlined con icono: color del icono por variante */
 .ubits-badge-tag--outlined.ubits-badge-tag--with-icon.ubits-badge-tag--success i {
     color: var(--ubits-feedback-accent-success);
@@ -111,6 +177,15 @@
 
 .ubits-badge-tag--outlined.ubits-badge-tag--with-icon.ubits-badge-tag--error i {
     color: var(--ubits-feedback-accent-error);
+}
+
+/* Outlined IA con icono: ícono con gradiente (clip de texto) como ubits-ia-button--secondary */
+.ubits-badge-tag--outlined.ubits-badge-tag--with-icon.ubits-badge-tag--ia i {
+    background: var(--ubits-badge-tag-ia-gradient);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
 }
 
 /* ========================================
@@ -152,6 +227,25 @@
 
 .ubits-badge-tag--filled.ubits-badge-tag--error .ubits-badge-tag__indicator {
     background: var(--ubits-feedback-accent-error-inverted);
+}
+
+/* Filled IA: fondo en gradación; indicador e icono en blanco para contraste */
+.ubits-badge-tag--filled.ubits-badge-tag--ia {
+    background: linear-gradient(
+        90deg,
+        var(--modo-ia-gradient-a, rgb(255, 84, 22)),
+        var(--modo-ia-gradient-b, rgb(234, 6, 111)),
+        var(--modo-ia-gradient-c, rgb(136, 35, 234)),
+        var(--modo-ia-gradient-d, rgb(12, 91, 239))
+    );
+}
+
+.ubits-badge-tag--filled.ubits-badge-tag--ia .ubits-badge-tag__indicator {
+    background: rgba(255, 255, 255, 0.92);
+}
+
+.ubits-badge-tag--filled.ubits-badge-tag--with-icon.ubits-badge-tag--ia i {
+    color: rgba(255, 255, 255, 0.92);
 }
 
 /* Filled con icono: mismo acento que el indicador (color semántico, no blanco plano) */
