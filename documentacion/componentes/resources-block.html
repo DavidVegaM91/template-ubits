@@ -43,8 +43,7 @@
                                 Resources block
                             </h1>
                             <p class="ubits-body-md-regular" style="max-width: 800px; margin: 0 auto 32px; line-height: 1.6;">
-                                Panel del paso Recursos del LMS Creator: selector de ocho tipos o formularios (video, archivos, SCORM, embebido) con acción Cancelar. Referencia Figma Learn-Components:
-                                <a href="https://www.figma.com/design/ZWcvS9Z7YQaz59GZIrnWM6/Learn-Components?node-id=248-6265&amp;m=dev" class="ubits-body-md-regular" style="color: var(--ubits-accent-brand); text-decoration: underline;">Resources block (248:6265)</a>.
+                                Es el panel donde eliges qué tipo de recurso lleva cada página y completas los datos (vídeo, archivos, SCORM, contenido embebido y más). Lo usarás en el paso Recursos al armar un contenido en el LMS Creator.
                             </p>
                         </div>
 
@@ -54,7 +53,7 @@
                                 Preview del componente
                             </h2>
                             <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6;">
-                                Elige la variante con el <strong class="ubits-body-md-semibold">Input select</strong> oficial (<code class="ubits-body-sm-regular">createInput</code>). Incluye <code class="ubits-body-sm-regular">resources-card.js</code> antes de <code class="ubits-body-sm-regular">resources-block.js</code>; tras pintar el preview, <code class="ubits-body-sm-regular">initResourcesBlockFields</code> monta los campos <code class="ubits-body-sm-regular">sm</code> alineados con los botones <code class="ubits-body-sm-regular">sm</code>.
+                                Cambia la variante en el desplegable para ver cada tipo de formulario. El bloque de abajo reproduce el aspecto en el creador (fondo oscuro). Los detalles de scripts y campos están en la documentación técnica.
                             </p>
                             <div style="margin-bottom: 20px; max-width: 420px;">
                                 <div id="rb-doc-variant-input"></div>
@@ -73,17 +72,17 @@
                                 <div style="text-align: center; padding: var(--padding-md); background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
                                     <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: var(--gap-sm);"><i class="far fa-layer-group"></i></div>
                                     <div class="ubits-body-sm-bold">Un bloque, muchas vistas</div>
-                                    <div class="ubits-body-sm-regular">Quince variantes alineadas al lienzo Figma: selector, video, PDF, mp4, SCORM, embebido y bloqueo.</div>
+                                    <div class="ubits-body-sm-regular">Varias pantallas según lo que elijas: selector inicial, formularios por tipo de recurso y estados de bloqueo o vacío.</div>
                                 </div>
                                 <div style="text-align: center; padding: var(--padding-md); background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
                                     <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: var(--gap-sm);"><i class="far fa-exclamation-circle"></i></div>
                                     <div class="ubits-body-sm-bold">Página sin recurso</div>
-                                    <div class="ubits-body-sm-regular">La variante <code class="ubits-body-sm-regular">default-error</code> es el mismo selector que <code class="ubits-body-sm-regular">default</code> con borde rojo: al avanzar dejando la página sin recurso, al abrirla se muestra así.</div>
+                                    <div class="ubits-body-sm-regular">Si una página queda sin recurso obligatorio, el selector puede mostrarse con aviso en rojo al volver a abrirla.</div>
                                 </div>
                                 <div style="text-align: center; padding: var(--padding-md); background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
                                     <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: var(--gap-sm);"><i class="far fa-palette"></i></div>
                                     <div class="ubits-body-sm-bold">Tokens y botones UBITS</div>
-                                    <div class="ubits-body-sm-regular">Superficie <code class="ubits-body-sm-regular">bg-1</code>, cancelar con botón error secundario oficial.</div>
+                                    <div class="ubits-body-sm-regular">Fondo claro acorde al creador y botón para cancelar sin salir del estilo UBITS.</div>
                                 </div>
                                 <div style="text-align: center; padding: var(--padding-md); background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
                                     <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: var(--gap-sm);"><i class="far fa-puzzle-piece"></i></div>
@@ -99,7 +98,7 @@
                                 Prompts útiles
                             </h2>
                             <p class="ubits-body-md-regular" style="margin-bottom: 24px; color: var(--ubits-fg-1-medium);">
-                                Copia y personaliza. Indica importar <code>dropdown-menu.css</code>, <code>input.css</code>, <code>button.css</code>, <code>resources-card.css</code>, <code>resources-block.css</code>, <code>dropdown-menu.js</code> e <code>input.js</code> (antes de <code>resources-block.js</code>), más <code>resources-card.js</code>.
+                                Copia el texto y adapta lo que va entre corchetes. El orden de CSS y JS está en la <strong>documentación técnica</strong> al final de la página.
                             </p>
                             <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px;">
                                 <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">

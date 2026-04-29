@@ -43,7 +43,7 @@
                                 Sección Creator
                             </h1>
                             <p class="ubits-body-md-regular" style="max-width: 800px; margin: 0 auto 32px; line-height: 1.6;">
-                                <strong>Una sección</strong> agrupa páginas bajo un título (body/md/bold y fg/1/high siempre — Figma 283:5631; hasta dos líneas): al pasar el mouse por la sección (y cuando está activa) aparece el menú ⋮ en el título; si está activa, además tiene borde de marca y el botón <strong>«Añadir página»</strong> <strong>dentro</strong> del mismo recuadro, bajo la lista. Lista <strong>Páginas creator</strong> con tokens de espaciado y color. El <strong>índice</strong> (varias secciones) usa <code>seccionCreatorIndexHtml</code>; «Añadir página» solo en la sección activa. Referencias: <a href="https://www.figma.com/design/ZWcvS9Z7YQaz59GZIrnWM6/Learn-Components?node-id=264-5594&amp;m=dev" class="ubits-body-md-regular" style="color: var(--ubits-accent-brand); text-decoration: underline;">Sección activa (264:5594)</a>, <a href="https://www.figma.com/design/ZWcvS9Z7YQaz59GZIrnWM6/Learn-Components?node-id=283-5631&amp;m=dev" class="ubits-body-md-regular" style="color: var(--ubits-accent-brand); text-decoration: underline;">Título sección (283:5631)</a>, <a href="https://www.figma.com/design/ZWcvS9Z7YQaz59GZIrnWM6/Learn-Components?node-id=242-5368&amp;m=dev" class="ubits-body-md-regular" style="color: var(--ubits-accent-brand); text-decoration: underline;">Índice (242:5368)</a>.
+                                Agrupa las páginas de tu curso bajo un título. Cuando la sección está seleccionada puedes añadir más páginas en ese bloque y abrir acciones desde el menú junto al título.
                             </p>
                         </div>
 
@@ -53,7 +53,7 @@
                                 Preview del componente
                             </h2>
                             <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6;">
-                                Vista de <strong>una sola sección</strong>. Con la sección inactiva desaparecen el borde de marca, el ⋮ del título y el bloque «Añadir página» (solo van si está activa). El interruptor del título largo fuerza dos líneas.
+                                Activa o desactiva la sección con el interruptor: verás cuándo aparece el borde, el menú del título y el botón para añadir página. Otro interruptor alarga el título en dos líneas para la demo.
                             </p>
                             <div style="margin-bottom: 16px; display: flex; flex-wrap: wrap; align-items: center; gap: var(--gap-md);">
                                 <span class="ubits-body-sm-bold" style="color: var(--ubits-fg-1-high);">Sección activa (borde + ⋮ en título)</span>
@@ -87,12 +87,12 @@
                                 <div style="text-align: center; padding: var(--padding-md); background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
                                     <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: var(--gap-sm);"><i class="far fa-bars"></i></div>
                                     <div class="ubits-body-sm-bold">Lista de páginas</div>
-                                    <div class="ubits-body-sm-regular">Incluye el listado Páginas creator con sus filas y menús.</div>
+                                    <div class="ubits-body-sm-regular">Muestra las páginas de esa parte del curso con la misma lista que en el resto del creador.</div>
                                 </div>
                                 <div style="text-align: center; padding: var(--padding-md); background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
                                     <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: var(--gap-sm);"><i class="far fa-heading"></i></div>
                                     <div class="ubits-body-sm-bold">Título hasta 2 líneas</div>
-                                    <div class="ubits-body-sm-regular">Encabezado body/md bold + fg alto; a la derecha, menú ⋮ visible al hover de la sección (y si está activa).</div>
+                                    <div class="ubits-body-sm-regular">El nombre de la sección puede ocupar hasta dos líneas; el menú de acciones aparece al pasar el cursor o cuando la sección está seleccionada.</div>
                                 </div>
                                 <div style="text-align: center; padding: var(--padding-md); background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
                                     <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: var(--gap-sm);"><i class="far fa-square"></i></div>
@@ -102,7 +102,7 @@
                                 <div style="text-align: center; padding: var(--padding-md); background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
                                     <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: var(--gap-sm);"><i class="far fa-plus"></i></div>
                                     <div class="ubits-body-sm-bold">Añadir página</div>
-                                    <div class="ubits-body-sm-regular">Terciario centrado dentro del borde, bajo las páginas (solo si la sección está activa).</div>
+                                    <div class="ubits-body-sm-regular">Botón para sumar una página más dentro del mismo bloque cuando esa sección es la que estás editando.</div>
                                 </div>
                             </div>
                         </div>
@@ -113,7 +113,7 @@
                                 Prompts útiles
                             </h2>
                             <p class="ubits-body-md-regular" style="margin-bottom: 24px; color: var(--ubits-fg-1-medium);">
-                                Copia y personaliza. Pide importar los CSS de Páginas creator, dropdown, botón y <code>seccion-creator.css</code>, y los JS en orden: <code>dropdown-menu.js</code>, <code>paginas-creator.js</code>, <code>seccion-creator.js</code>.
+                                Copia el texto y adapta lo que va entre corchetes. El orden de CSS y JS está en la <strong>documentación técnica</strong> al final de la página.
                             </p>
                             <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
                                 <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
