@@ -753,3 +753,36 @@ body.crear-contenido-app-open .ubits-dropdown-menu__content {
         order: 1;
     }
 }
+
+/* Modal IA Estilos Responsivos */
+@media (min-width: 1024px) {
+    .portada-ia-modal-content {
+        min-height: 508px !important;
+    }
+}
+@media (max-width: 1023px) {
+    .portada-ia-modal-content {
+        min-height: 250px;
+    }
+}
+
+.portada-ia-modal-actions {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    width: 100%;
+    max-width: 600px;
+}
+
+@media (max-width: 1023px) {
+    .portada-ia-modal-actions {
+        flex-direction: column;
+        gap: 12px;
+    }
+    .portada-ia-modal-actions > button:nth-child(1) {
+        order: 2;
+    }
+    .portada-ia-modal-actions > button:nth-child(2) {
+        order: 1;
+    }
+}

@@ -150,6 +150,184 @@
         }
     }
 
+    function initPortadaAiPanel() {
+        if (typeof initAIPanel !== 'function') return;
+        initAIPanel({
+            title: 'Asistente IA',
+            placeholder: 'Escribe tu solicitud…',
+            welcomeSubtitle: '¿Qué quieres generar o ajustar?',
+            onSend: function (text) {
+                if (!text) return;
+                var removeTyping = typeof showAIPanelTyping === 'function' ? showAIPanelTyping() : null;
+                window.setTimeout(function () {
+                    try {
+                        if (typeof removeTyping === 'function') removeTyping();
+                        if (typeof addAIPanelMessage === 'function') {
+                            addAIPanelMessage('Demo: recibí “' + String(text).trim() + '”.', 'ai');
+                        }
+                    } catch (e) {}
+                }, 650);
+            }
+        });
+    }
+
+    function wirePortadaAiPanelButton() {
+        var btn = document.getElementById('crear-contenido-portada-ai-panel');
+        if (!btn) return;
+        btn.addEventListener('click', function (e) {
+            e.preventDefault();
+            initPortadaAiPanel();
+            if (typeof openAIPanel === 'function') openAIPanel();
+        });
+    }
+
+    var portadaiAImagesIndex = 0;
+    var AI_IMAGES = [
+        'https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80',
+        'https://images.unsplash.com/photo-1517048676732-d65bc937f952?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80',
+        'https://images.unsplash.com/photo-1521737604893-d14cc237f11d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80',
+        'https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80',
+        'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80',
+        'https://images.unsplash.com/photo-1515169067868-5387ec356754?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80',
+        'https://images.unsplash.com/photo-1531482615713-2afd69097998?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80',
+        'https://images.unsplash.com/photo-1556761175-4b46a572b786?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80',
+        'https://images.unsplash.com/photo-1600880292203-757bb62b4baf?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80',
+        'https://images.unsplash.com/photo-1557804506-669a67965ba0?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80'
+    ];
+
+    function initPortadaAiModal() {
+        if (typeof openModal !== 'function') return;
+        var svgIcon = '<svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-right:8px;"><path fill-rule="evenodd" clip-rule="evenodd" d="M10.4932 0.613375C12.0444 -0.204461 13.9557 -0.204455 15.5068 0.613375L23.4932 4.82431C25.0444 5.64213 26 7.15351 26 8.78916V17.211C25.9999 18.8466 25.0444 20.3581 23.4932 21.1759L15.5068 25.3868C13.9557 26.2046 12.0444 26.2046 10.4932 25.3868L2.50684 21.1759C0.955703 20.3581 6.05295e-05 18.8466 0 17.211V8.78916C4.65813e-05 7.15351 0.955692 5.64213 2.50684 4.82431L10.4932 0.613375ZM10.2285 9.45322C9.78152 9.45322 9.38147 9.70709 9.22656 10.0899L9.08301 10.4454C8.64869 11.5189 7.72346 12.3649 6.55078 12.7618L6.16211 12.8927C5.74356 13.0343 5.46604 13.3991 5.46582 13.8067C5.46582 14.2144 5.74338 14.5801 6.16211 14.7218L6.55078 14.8526C7.7235 15.2495 8.6487 16.0956 9.08301 17.169L9.22656 17.5245C9.38147 17.9073 9.78152 18.1612 10.2285 18.1612C10.6752 18.1611 11.0746 17.9072 11.2295 17.5245L11.373 17.169C11.8073 16.0957 12.7327 15.2496 13.9053 14.8526L14.2939 14.7218C14.7126 14.5801 14.9912 14.2145 14.9912 13.8067C14.991 13.3991 14.7125 13.0343 14.2939 12.8927L13.9053 12.7618C12.7327 12.365 11.8073 11.5187 11.373 10.4454L11.373 10.4454L11.2295 10.0899C11.0745 9.7072 10.6752 9.45332 10.2285 9.45322ZM10.2285 12.5733C10.6087 13.0436 11.0643 13.4592 11.5791 13.8067C11.0643 14.1543 10.6087 14.5707 10.2285 15.0411C9.84818 14.5706 9.39278 14.1543 8.87793 13.8067C9.39262 13.4592 9.84827 13.0436 10.2285 12.5733ZM17.7881 7.83798C17.3182 7.83817 16.9032 8.11882 16.7666 8.52939C16.6257 8.95299 16.2636 9.28369 15.8018 9.4122C15.3527 9.53734 15.046 9.91603 15.0459 10.3448C15.0459 10.7736 15.3527 11.1523 15.8018 11.2774C16.2634 11.4058 16.6256 11.7369 16.7666 12.1602C16.9032 12.5708 17.3182 12.8515 17.7881 12.8517C18.2581 12.8517 18.6739 12.5709 18.8105 12.1602C18.9516 11.7369 19.3137 11.4058 19.7754 11.2774C20.2244 11.1523 20.5312 10.7736 20.5312 10.3448C20.5311 9.91605 20.2244 9.53736 19.7754 9.4122C19.3136 9.28369 18.9515 8.95299 18.8105 8.52939C18.6739 8.11868 18.2581 7.83798 17.7881 7.83798Z" fill="url(#ai-modal-icon-grad)"/><defs><linearGradient id="ai-modal-icon-grad" x1="24.8936" y1="20.8" x2="-0.0945594" y2="17.5486" gradientUnits="userSpaceOnUse"><stop stop-color="#FF5416"/><stop offset="0.341346" stop-color="#EA066F"/><stop offset="0.706731" stop-color="#8823EA"/><stop offset="1" stop-color="#0C5BEF"/></linearGradient></defs></svg>';
+        
+        var bodyHtml = '<div class="ai-modal-wrapper" style="display:flex; flex-direction:column; align-items:center; justify-content:center; padding: 0; flex:1; width:100%;">' +
+            '<div id="ai-modal-input-view" style="width:100%; max-width:600px; transition: opacity 0.3s; z-index:1; padding: 0;">' +
+                '<div style="display:flex; flex-direction:column; align-items:center; gap:16px; margin-bottom:32px;">' +
+                    '<div style="font-size:32px; animation: ubits-ia-chat-sparkles-float 2.5s ease-in-out infinite;">' +
+                        '<i class="far fa-sparkles" style="background: linear-gradient(135deg, var(--modo-ia-gradient-a) 0%, var(--modo-ia-gradient-b) 35.59%, var(--modo-ia-gradient-c) 67.19%, var(--modo-ia-gradient-d) 100%); -webkit-background-clip: text; color: transparent;"></i>' +
+                    '</div>' +
+                    '<p style="text-align:center; margin:0; font-size:1.5rem; color:var(--text-primary);">Tú lo imaginas, nosotros <span style="font-weight:600; background: linear-gradient(90deg, var(--modo-ia-gradient-a), var(--modo-ia-gradient-b), var(--modo-ia-gradient-c), var(--modo-ia-gradient-d)); -webkit-background-clip: text; color: transparent;">lo generamos</span></p>' +
+                '</div>' +
+                '<div class="ai-panel__input-box">' +
+                    '<textarea class="ai-panel__input" id="portada-ai-modal-input" placeholder="Describe la portada que imaginas..." rows="1" style="flex:1; width:100%; min-height:24px; line-height:24px; resize:none; padding:8px 0; outline:none; border:none; background:transparent; font-family:inherit;"></textarea>' +
+                    '<div class="ai-panel__input-actions" style="display:flex; align-items:center; justify-content:flex-end; width:100%; gap:8px;">' +
+                        '<button type="button" class="ubits-ia-button ubits-ia-button--primary ubits-ia-button--sm ubits-ia-button--icon-only" id="portada-ai-modal-send" aria-label="Enviar">' +
+                            '<i class="far fa-arrow-right"></i>' +
+                        '</button>' +
+                    '</div>' +
+                '</div>' +
+            '</div>' +
+            '<div id="ai-modal-loader-view" class="ubits-loader-wrap" style="display:none; z-index:1; padding: 40px 0;">' +
+                '<div class="ubits-loader"></div>' +
+                '<p class="ubits-loader-text ubits-body-md-regular">Generando portada…</p>' +
+            '</div>' +
+            '<div id="ai-modal-result-view" style="display:none; width:100%; text-align:center; flex-direction:column; align-items:center; z-index:1; padding: 0;">' +
+                '<img id="portada-ai-modal-img" src="" alt="Portada generada" style="width:100%; max-width:600px; aspect-ratio:16/9; object-fit:cover; border-radius:12px; margin-bottom:24px; border: 1px solid var(--border-subtle);" />' +
+                '<div class="portada-ia-modal-actions">' +
+                    '<button type="button" id="portada-ai-modal-regenerate" class="ubits-button ubits-button--secondary ubits-button--md" style="flex:1;">' +
+                        '<i class="far fa-rotate-right"></i><span>Regenerar</span>' +
+                    '</button>' +
+                    '<button type="button" id="portada-ai-modal-use" class="ubits-button ubits-button--primary ubits-button--md" style="flex:1;">' +
+                        '<i class="far fa-check"></i><span>Usar como portada</span>' +
+                    '</button>' +
+                '</div>' +
+            '</div>' +
+        '</div>';
+
+        var overlay = openModal({
+            overlayId: 'portada-ai-modal',
+            title: 'Generar portada',
+            bodyHtml: bodyHtml,
+            size: 'md'
+        });
+
+        // Customizar header y orbes
+        var titleSpan = overlay.querySelector('.ubits-modal-title');
+        if (titleSpan) {
+            titleSpan.innerHTML = '<div style="display:flex; align-items:center;">' + svgIcon + 'Generar portada</div>';
+        }
+        
+        var modalContent = overlay.querySelector('.ubits-modal-content');
+        if (modalContent) {
+            modalContent.classList.add('portada-ia-modal-content');
+            modalContent.style.backgroundColor = 'var(--surface-default, #FFFFFF)';
+            modalContent.style.backgroundImage = 'radial-gradient(ellipse 100% 80% at 10% 0%, rgba(var(--modo-ia-glow-orb-rgb-1, 26, 107, 255), 0.15) 0%, transparent 50%),' +
+            'radial-gradient(ellipse 95% 78% at 50% 0%, rgba(var(--modo-ia-glow-orb-rgb-2, 76, 230, 255), 0.15) 0%, transparent 48%),' +
+            'radial-gradient(ellipse 95% 75% at 90% 0%, rgba(var(--modo-ia-glow-orb-rgb-3, 255, 84, 22), 0.15) 0%, transparent 50%)';
+            
+            var modalHeader = overlay.querySelector('.ubits-modal-header');
+            if (modalHeader) {
+                modalHeader.style.background = 'transparent';
+                // Restored default border bottom
+                modalHeader.style.borderBottom = '';
+            }
+            
+            var modalBody = overlay.querySelector('.ubits-modal-body');
+            if (modalBody) {
+                modalBody.style.padding = 'var(--padding-xl, 32px)';
+                modalBody.style.overflow = 'visible';
+                modalBody.style.display = 'flex';
+                modalBody.style.flexDirection = 'column';
+            }
+        }
+
+        var inputView = overlay.querySelector('#ai-modal-input-view');
+        var loaderView = overlay.querySelector('#ai-modal-loader-view');
+        var resultView = overlay.querySelector('#ai-modal-result-view');
+        var inputEl = overlay.querySelector('#portada-ai-modal-input');
+        var sendBtn = overlay.querySelector('#portada-ai-modal-send');
+        var imgEl = overlay.querySelector('#portada-ai-modal-img');
+        var regenBtn = overlay.querySelector('#portada-ai-modal-regenerate');
+        var useBtn = overlay.querySelector('#portada-ai-modal-use');
+
+        function generate() {
+            var val = inputEl.value.trim();
+            if (!val) return;
+            inputView.style.display = 'none';
+            loaderView.style.display = 'flex';
+            
+            setTimeout(function() {
+                loaderView.style.display = 'none';
+                imgEl.src = AI_IMAGES[portadaiAImagesIndex];
+                resultView.style.display = 'flex';
+            }, 5000);
+        }
+
+        sendBtn.addEventListener('click', generate);
+        inputEl.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                generate();
+            }
+        });
+
+        regenBtn.addEventListener('click', function() {
+            portadaiAImagesIndex = (portadaiAImagesIndex + 1) % AI_IMAGES.length;
+            imgEl.src = AI_IMAGES[portadaiAImagesIndex];
+        });
+
+        useBtn.addEventListener('click', function() {
+            if (typeof applyPortadaImagenCargada === 'function') {
+                applyPortadaImagenCargada(imgEl.src, '');
+                if (typeof triggerFakeSaveCreator === 'function') triggerFakeSaveCreator();
+                if (typeof clearPortadaInvalidMarks === 'function') clearPortadaInvalidMarks();
+            }
+            if (typeof closeModal === 'function') closeModal('portada-ai-modal');
+        });
+        
+        setTimeout(function() {
+            if (inputEl) inputEl.focus();
+        }, 100);
+    }
+
+    function wirePortadaAiModalButton() {
+        var btn = document.getElementById('crear-contenido-portada-ai-modal');
+        if (!btn) return;
+        btn.addEventListener('click', function (e) {
+            e.preventDefault();
+            initPortadaAiModal();
+        });
+    }
+
     function buildSelectOptionsFromMaster() {
         var g = typeof window !== 'undefined' ? window : {};
         var tipos =
@@ -1540,6 +1718,8 @@
         }
         initFichaInputs();
         wirePortadaCta();
+        wirePortadaAiPanelButton();
+        wirePortadaAiModalButton();
         setTimeout(function () {
             wireCrearContenidoPageInteractionsDeferred();
         }, 0);
