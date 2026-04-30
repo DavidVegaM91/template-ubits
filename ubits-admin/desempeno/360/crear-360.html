@@ -1161,8 +1161,9 @@
             /* ── MODO EMPTY STATE ── */
             document.getElementById('comp360EmptyState').style.display = '';
             document.getElementById('comp360DescSection').style.display = 'none';
+            /* Mantener footer visible para evitar colapso visual del sticky footer */
             var subFoot = document.getElementById('crear360-footer-sub');
-            if (subFoot) subFoot.style.display = 'none';
+            if (subFoot) subFoot.style.display = '';
 
             loadEmptyState('comp360EmptyState', {
                 icon: 'fa-clipboard-list',
