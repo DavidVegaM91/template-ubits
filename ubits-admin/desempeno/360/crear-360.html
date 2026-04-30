@@ -4117,9 +4117,14 @@
         });
 
         /* Vista inicial según URL hash */
+        var _initialHash = window.location.hash || '';
         var initialView = viewFromHash();
         if (initialView !== 'hub') seedDemoDraft(initialView);
         showView(initialView, { pushHistory: false });
+        /* Si entramos por edge-demo, preservar el hash (showView lo convierte a #evaluados) */
+        if (_initialHash === '#evaluados-error-edge') {
+            history.replaceState({ view: 'evaluados' }, '', '#evaluados-error-edge');
+        }
 
         /* ───────────────────────────────────────────────
            Edge demo (solo para QA / doc interna)
@@ -4130,7 +4135,7 @@
            - Botón "Informe de errores" abre modal con 5 errores del sistema
            ─────────────────────────────────────────────── */
         (function initEvaluadosErrorEdgeDemo() {
-            if (window.location.hash !== '#evaluados-error-edge') return;
+            if (_initialHash !== '#evaluados-error-edge') return;
 
             /* Asegurar vista evaluados (sin tocar el hash del edge) */
             showView('evaluados', { pushHistory: false });
