@@ -2035,3 +2035,494 @@ body.ia-chat-mobile-drawer-scroll-lock {
         z-index: 1102 !important;
     }
 }
+
+/* ===========================================================================
+   TIPOS DE INTERACCIÓN EN CHAT IA
+   Transversales: sirven en ai-panel, modo-estudio-ia y cualquier chat IA.
+
+   Uso: añadir .ubits-ia-chat-interaction después del mensaje de la IA.
+   =========================================================================== */
+
+/* Contenedor base de interacción — se coloca fuera del globo, debajo del mensaje */
+.ubits-ia-chat-interaction {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-sm);
+    width: 100%;
+    max-width: 480px;
+    animation: ubits-ia-chat-interaction-fadein 0.25s ease both;
+}
+
+@keyframes ubits-ia-chat-interaction-fadein {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Interacción consumida (opacidad baja, pointer-events off) */
+.ubits-ia-chat-interaction--consumed {
+    pointer-events: none;
+    opacity: 0.55;
+}
+
+/* ---------------------------------------------------------------------------
+   1. QUICK REPLY BUTTONS
+   Fila de botones debajo del mensaje IA. Al hacer clic se envía como reply.
+   HTML: <div class="ubits-ia-chat-interaction ubits-ia-chat-interaction--quick-reply">
+           <button class="ubits-ia-chat-quick-reply-btn">Python</button>
+         </div>
+   --------------------------------------------------------------------------- */
+.ubits-ia-chat-interaction--quick-reply {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: var(--gap-sm);
+}
+
+.ubits-ia-chat-quick-reply-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--gap-xs);
+    height: 32px;
+    padding: 0 var(--padding-md);
+    border: 1px solid var(--ubits-border-2);
+    border-radius: var(--border-radius-full);
+    background: var(--ubits-bg-1);
+    color: var(--ubits-fg-1-high);
+    font-family: var(--ubits-font-family-sans);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-regular);
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s, color 0.15s;
+    white-space: nowrap;
+}
+
+.ubits-ia-chat-quick-reply-btn:hover {
+    background: var(--ubits-bg-2);
+    border-color: var(--ubits-accent-brand);
+    color: var(--ubits-accent-brand);
+}
+
+.ubits-ia-chat-quick-reply-btn:active {
+    background: var(--ubits-accent-brand);
+    border-color: var(--ubits-accent-brand);
+    color: #fff;
+}
+
+/* Estado seleccionado (tras elegir una opción) */
+.ubits-ia-chat-quick-reply-btn--selected {
+    background: var(--ubits-accent-brand);
+    border-color: var(--ubits-accent-brand);
+    color: #fff;
+    font-weight: var(--font-weight-semibold);
+}
+
+/* ---------------------------------------------------------------------------
+   2. MULTISELECT CHIPS
+   Chips oficiales UBITS seleccionables (varios a la vez) + botón «Listo».
+   HTML: <div class="ubits-ia-chat-interaction ubits-ia-chat-interaction--multiselect">
+           <p class="ubits-ia-chat-interaction__hint">Puedes elegir varias</p>
+           <div class="ubits-ia-chat-interaction__chips"></div>
+           <div class="ubits-ia-chat-interaction__multiselect-footer">
+             <button class="ubits-ia-chat-multiselect-confirm ubits-button …">Listo →</button>
+           </div>
+         </div>
+   --------------------------------------------------------------------------- */
+.ubits-ia-chat-interaction--multiselect {
+    gap: var(--gap-sm);
+}
+
+.ubits-ia-chat-interaction__hint {
+    font-family: var(--ubits-font-family-sans);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-regular);
+    color: var(--ubits-fg-1-medium);
+    margin: 0;
+}
+
+.ubits-ia-chat-interaction__chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--gap-xs);
+}
+
+/* Chip seleccionable — el chip oficial ya tiene --active, lo reutilizamos */
+.ubits-ia-chat-interaction__chips .ubits-chip {
+    cursor: pointer;
+    user-select: none;
+}
+
+.ubits-ia-chat-interaction__multiselect-footer {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: var(--gap-xs);
+}
+
+/* ---------------------------------------------------------------------------
+   3. CARD-BASED SELECTION
+   Tarjetas con emoji + título + descripción. Selección única → se envía.
+   HTML: <div class="ubits-ia-chat-interaction ubits-ia-chat-interaction--cards">
+           <div class="ubits-ia-chat-card" data-value="…">
+             <span class="ubits-ia-chat-card__emoji">🎒</span>
+             <div class="ubits-ia-chat-card__body">
+               <p class="ubits-ia-chat-card__title">Conseguir trabajo</p>
+               <p class="ubits-ia-chat-card__desc">Quiero entrar al mundo laboral</p>
+             </div>
+           </div>
+         </div>
+   --------------------------------------------------------------------------- */
+.ubits-ia-chat-interaction--cards {
+    gap: var(--gap-sm);
+}
+
+.ubits-ia-chat-card {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--gap-md);
+    padding: var(--padding-md) var(--padding-lg);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: var(--border-radius-md);
+    background: var(--ubits-bg-1);
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;
+}
+
+.ubits-ia-chat-card:hover {
+    border-color: var(--ubits-accent-brand);
+    background: var(--ubits-bg-2);
+}
+
+.ubits-ia-chat-card:active,
+.ubits-ia-chat-card--selected {
+    border-color: var(--ubits-accent-brand);
+    background: var(--ubits-bg-2);
+    box-shadow: 0 0 0 2px var(--ubits-accent-brand-alpha, rgba(12, 91, 239, 0.15));
+}
+
+.ubits-ia-chat-card__emoji {
+    font-size: 20px;
+    line-height: 1;
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.ubits-ia-chat-card__body {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+
+.ubits-ia-chat-card__title {
+    font-family: var(--ubits-font-family-sans);
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-semibold);
+    color: var(--ubits-fg-1-high);
+    margin: 0;
+}
+
+.ubits-ia-chat-card__desc {
+    font-family: var(--ubits-font-family-sans);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-regular);
+    color: var(--ubits-fg-1-medium);
+    margin: 0;
+}
+
+/* ---------------------------------------------------------------------------
+   4. BOTTOM SHEET FORM (Conversational form / Ask user input)
+   Hoja superpuesta desde abajo sobre el área de input del chat.
+   Contiene: header (pregunta + paginación + X), lista de opciones, footer
+   (contador + Omitir + enviar).
+
+   Se coloca como hermano del .ubits-ia-chat-thread__input-area o del
+   .ai-panel__input-box, con position: absolute bottom: 0.
+
+   HTML (se inyecta via JS):
+   <div class="ubits-ia-chat-bottom-sheet" id="…">
+     <div class="ubits-ia-chat-bottom-sheet__header">
+       <p class="ubits-ia-chat-bottom-sheet__question">¿Cuál es tu color favorito?</p>
+       <div class="ubits-ia-chat-bottom-sheet__nav">
+         <button class="ubits-ia-chat-bottom-sheet__nav-btn" data-dir="-1">‹</button>
+         <span class="ubits-ia-chat-bottom-sheet__nav-label">1 de 2</span>
+         <button class="ubits-ia-chat-bottom-sheet__nav-btn" data-dir="1">›</button>
+         <button class="ubits-ia-chat-bottom-sheet__close"><i class="far fa-xmark"></i></button>
+       </div>
+     </div>
+     <div class="ubits-ia-chat-bottom-sheet__options">
+       <!-- single-select: .ubits-ia-chat-bs-option -->
+       <!-- multi-select: .ubits-ia-chat-bs-option.ubits-ia-chat-bs-option--check -->
+     </div>
+     <div class="ubits-ia-chat-bottom-sheet__free-text">
+       <i class="far fa-pencil"></i>
+       <input type="text" placeholder="Algo más" />
+     </div>
+     <div class="ubits-ia-chat-bottom-sheet__footer">
+       <span class="ubits-ia-chat-bottom-sheet__counter"></span>
+       <button class="ubits-ia-chat-bottom-sheet__skip">Omitir</button>
+       <button class="ubits-ia-chat-bottom-sheet__submit ubits-ia-button ubits-ia-button--primary ubits-ia-button--icon-only--sm">
+         <i class="far fa-arrow-up"></i>
+       </button>
+     </div>
+   </div>
+   --------------------------------------------------------------------------- */
+
+/* Overlay de fondo (opcional, para bloquear el chat detrás) */
+.ubits-ia-chat-bottom-sheet-backdrop {
+    position: absolute;
+    inset: 0;
+    background: transparent;
+    z-index: 9;
+}
+
+/* La hoja en sí */
+.ubits-ia-chat-bottom-sheet {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 10;
+    background: var(--ubits-bg-1);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: var(--border-radius-lg) var(--border-radius-lg) var(--border-radius-md) var(--border-radius-md);
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.10);
+    display: flex;
+    flex-direction: column;
+    max-height: 420px;
+    animation: ubits-ia-chat-bs-slidein 0.22s cubic-bezier(0.16, 1, 0.3, 1) both;
+    overflow: hidden;
+}
+
+@keyframes ubits-ia-chat-bs-slidein {
+    from { transform: translateY(100%); opacity: 0; }
+    to   { transform: translateY(0);    opacity: 1; }
+}
+
+.ubits-ia-chat-bottom-sheet__header {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--gap-md);
+    padding: var(--padding-md) var(--padding-lg);
+    border-bottom: 1px solid var(--ubits-border-1);
+    flex-shrink: 0;
+}
+
+.ubits-ia-chat-bottom-sheet__question {
+    flex: 1;
+    font-family: var(--ubits-font-family-sans);
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-semibold);
+    color: var(--ubits-fg-1-high);
+    margin: 0;
+    line-height: 1.4;
+}
+
+.ubits-ia-chat-bottom-sheet__nav {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-xs);
+    flex-shrink: 0;
+}
+
+.ubits-ia-chat-bottom-sheet__nav-label {
+    font-family: var(--ubits-font-family-sans);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-regular);
+    color: var(--ubits-fg-1-medium);
+    white-space: nowrap;
+}
+
+.ubits-ia-chat-bottom-sheet__nav-btn,
+.ubits-ia-chat-bottom-sheet__close {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border: none;
+    background: transparent;
+    color: var(--ubits-fg-1-medium);
+    cursor: pointer;
+    border-radius: var(--border-radius-xs);
+    font-size: 14px;
+    padding: 0;
+    transition: background 0.12s, color 0.12s;
+    font-family: inherit;
+}
+
+.ubits-ia-chat-bottom-sheet__nav-btn:hover,
+.ubits-ia-chat-bottom-sheet__close:hover {
+    background: var(--ubits-bg-2);
+    color: var(--ubits-fg-1-high);
+}
+
+.ubits-ia-chat-bottom-sheet__nav-btn:disabled {
+    opacity: 0.35;
+    cursor: default;
+}
+
+/* Lista de opciones */
+.ubits-ia-chat-bottom-sheet__options {
+    flex: 1;
+    overflow-y: auto;
+    padding: var(--padding-xs) 0;
+}
+
+/* Opción single-select */
+.ubits-ia-chat-bs-option {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-md);
+    padding: var(--padding-md) var(--padding-lg);
+    cursor: pointer;
+    border-bottom: 1px solid var(--ubits-border-1);
+    transition: background 0.12s;
+}
+
+.ubits-ia-chat-bs-option:last-of-type {
+    border-bottom: none;
+}
+
+.ubits-ia-chat-bs-option:hover {
+    background: var(--ubits-bg-2);
+}
+
+/* Número de opción (single-select) */
+.ubits-ia-chat-bs-option__num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: var(--border-radius-full);
+    background: var(--ubits-bg-2);
+    color: var(--ubits-fg-1-high);
+    font-family: var(--ubits-font-family-sans);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    flex-shrink: 0;
+}
+
+.ubits-ia-chat-bs-option__label {
+    flex: 1;
+    font-family: var(--ubits-font-family-sans);
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-regular);
+    color: var(--ubits-fg-1-high);
+}
+
+/* Flecha (single-select) */
+.ubits-ia-chat-bs-option__arrow {
+    color: var(--ubits-fg-1-medium);
+    font-size: 12px;
+    opacity: 0;
+    transition: opacity 0.12s;
+}
+
+.ubits-ia-chat-bs-option:hover .ubits-ia-chat-bs-option__arrow {
+    opacity: 1;
+}
+
+/* Opción multi-select (con checkbox) */
+.ubits-ia-chat-bs-option--check {
+    gap: var(--gap-md);
+}
+
+.ubits-ia-chat-bs-option--check.ubits-ia-chat-bs-option--checked {
+    background: var(--ubits-bg-2);
+}
+
+/* Checkbox visual */
+.ubits-ia-chat-bs-option__checkbox {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    border: 1.5px solid var(--ubits-border-2);
+    border-radius: var(--border-radius-xs);
+    background: var(--ubits-bg-1);
+    flex-shrink: 0;
+    transition: background 0.12s, border-color 0.12s;
+    color: transparent;
+    font-size: 11px;
+}
+
+.ubits-ia-chat-bs-option--checked .ubits-ia-chat-bs-option__checkbox {
+    background: var(--ubits-accent-brand);
+    border-color: var(--ubits-accent-brand);
+    color: #fff;
+}
+
+/* Campo de texto libre */
+.ubits-ia-chat-bottom-sheet__free-text {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-sm);
+    padding: var(--padding-sm) var(--padding-lg);
+    border-top: 1px solid var(--ubits-border-1);
+    flex-shrink: 0;
+    color: var(--ubits-fg-1-medium);
+}
+
+.ubits-ia-chat-bottom-sheet__free-text i {
+    font-size: 14px;
+    flex-shrink: 0;
+}
+
+.ubits-ia-chat-bottom-sheet__free-text input {
+    flex: 1;
+    border: none;
+    outline: none;
+    background: transparent;
+    font-family: var(--ubits-font-family-sans);
+    font-size: var(--font-size-md);
+    color: var(--ubits-fg-1-high);
+    min-width: 0;
+}
+
+.ubits-ia-chat-bottom-sheet__free-text input::placeholder {
+    color: var(--ubits-fg-1-medium);
+}
+
+/* Footer: contador + omitir + enviar */
+.ubits-ia-chat-bottom-sheet__footer {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-sm);
+    padding: var(--padding-sm) var(--padding-lg) var(--padding-md);
+    border-top: 1px solid var(--ubits-border-1);
+    flex-shrink: 0;
+}
+
+.ubits-ia-chat-bottom-sheet__counter {
+    flex: 1;
+    font-family: var(--ubits-font-family-sans);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-regular);
+    color: var(--ubits-fg-1-medium);
+}
+
+.ubits-ia-chat-bottom-sheet__skip {
+    display: inline-flex;
+    align-items: center;
+    height: 36px;
+    padding: 0 var(--padding-md);
+    border: 1px solid var(--ubits-border-2);
+    border-radius: var(--border-radius-sm);
+    background: var(--ubits-bg-1);
+    font-family: var(--ubits-font-family-sans);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-regular);
+    color: var(--ubits-fg-1-high);
+    cursor: pointer;
+    transition: background 0.12s;
+    white-space: nowrap;
+}
+
+.ubits-ia-chat-bottom-sheet__skip:hover {
+    background: var(--ubits-bg-2);
+}
+
+.ubits-ia-chat-bottom-sheet__submit {
+    /* usa las clases ubits-ia-button--primary ubits-ia-button--icon-only--sm */
+    flex-shrink: 0;
+}

@@ -72,6 +72,170 @@
                             </div>
                         </div>
 
+                        <!-- Tipos de interacción conversacional -->
+                        <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: var(--border-radius-lg); margin-bottom: 40px;">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 8px; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-message-dots" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Tipos de interacción conversacional
+                            </h2>
+                            <p class="ubits-body-md-regular" style="margin-bottom: var(--gap-lg); color: var(--ubits-fg-1-medium); line-height: 1.6;">
+                                Bloques interactivos que la IA puede insertar en el hilo de conversación. Funcionan en el AI panel, en modo estudio y en cualquier chat IA. El estilo vive en <code style="font-family: monospace;">general-styles/ubits-ia-chat.css</code>.
+                            </p>
+
+                            <!-- Quick Reply Buttons -->
+                            <div style="border: 1px solid var(--ubits-border-1); border-radius: var(--border-radius-md); margin-bottom: var(--gap-lg); overflow: hidden;">
+                                <div style="padding: var(--padding-md) var(--padding-lg); background: var(--ubits-bg-2); border-bottom: 1px solid var(--ubits-border-1); display: flex; align-items: center; gap: var(--gap-md);">
+                                    <span class="ubits-body-md-bold" style="color: var(--ubits-fg-1-high);">Quick Reply Buttons</span>
+                                    <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Selección única · se envía como mensaje del usuario</span>
+                                </div>
+                                <div style="padding: var(--padding-lg);">
+                                    <p class="ubits-body-sm-regular" style="margin: 0 0 var(--gap-md); color: var(--ubits-fg-1-medium);">Botones de respuesta rápida bajo un mensaje IA. El usuario elige uno y se envía automáticamente como reply.</p>
+                                    <!-- Preview estático -->
+                                    <div style="background: var(--ubits-bg-2); padding: var(--padding-lg); border-radius: var(--border-radius-sm); margin-bottom: var(--gap-md);">
+                                        <div class="ubits-ia-chat-interaction ubits-ia-chat-interaction--quick-reply" style="pointer-events: none;">
+                                            <button class="ubits-ia-chat-quick-reply-btn">Python</button>
+                                            <button class="ubits-ia-chat-quick-reply-btn">JavaScript</button>
+                                            <button class="ubits-ia-chat-quick-reply-btn ubits-ia-chat-quick-reply-btn--selected">Swift</button>
+                                        </div>
+                                    </div>
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="ai-panel-doc-btn-qr">
+                                        <i class="far fa-play"></i>
+                                        <span>Probar en el panel</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Multiselect Chips -->
+                            <div style="border: 1px solid var(--ubits-border-1); border-radius: var(--border-radius-md); margin-bottom: var(--gap-lg); overflow: hidden;">
+                                <div style="padding: var(--padding-md) var(--padding-lg); background: var(--ubits-bg-2); border-bottom: 1px solid var(--ubits-border-1); display: flex; align-items: center; gap: var(--gap-md);">
+                                    <span class="ubits-body-md-bold" style="color: var(--ubits-fg-1-high);">Multiselect Chips</span>
+                                    <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Selección múltiple · confirmar con «Listo»</span>
+                                </div>
+                                <div style="padding: var(--padding-lg);">
+                                    <p class="ubits-body-sm-regular" style="margin: 0 0 var(--gap-md); color: var(--ubits-fg-1-medium);">Usa el componente oficial <code style="font-family: monospace;">ubits-chip</code>. El usuario puede seleccionar varios y confirmar con el botón.</p>
+                                    <!-- Preview estático -->
+                                    <div style="background: var(--ubits-bg-2); padding: var(--padding-lg); border-radius: var(--border-radius-sm); margin-bottom: var(--gap-md);">
+                                        <div class="ubits-ia-chat-interaction ubits-ia-chat-interaction--multiselect" style="pointer-events: none;">
+                                            <p class="ubits-ia-chat-interaction__hint">Puedes elegir varias</p>
+                                            <div class="ubits-ia-chat-interaction__chips">
+                                                <button class="ubits-chip ubits-chip--sm ubits-chip--active"><span class="ubits-chip__text">Figma</span></button>
+                                                <button class="ubits-chip ubits-chip--sm"><span class="ubits-chip__text">Sketch</span></button>
+                                                <button class="ubits-chip ubits-chip--sm"><span class="ubits-chip__text">Adobe XD</span></button>
+                                                <button class="ubits-chip ubits-chip--sm ubits-chip--active"><span class="ubits-chip__text">Canva</span></button>
+                                                <button class="ubits-chip ubits-chip--sm"><span class="ubits-chip__text">Framer</span></button>
+                                            </div>
+                                            <div class="ubits-ia-chat-interaction__multiselect-footer">
+                                                <button class="ubits-button ubits-button--secondary ubits-button--sm"><span>Listo →</span></button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="ai-panel-doc-btn-multi">
+                                        <i class="far fa-play"></i>
+                                        <span>Probar en el panel</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Card-based -->
+                            <div style="border: 1px solid var(--ubits-border-1); border-radius: var(--border-radius-md); margin-bottom: var(--gap-lg); overflow: hidden;">
+                                <div style="padding: var(--padding-md) var(--padding-lg); background: var(--ubits-bg-2); border-bottom: 1px solid var(--ubits-border-1); display: flex; align-items: center; gap: var(--gap-md);">
+                                    <span class="ubits-body-md-bold" style="color: var(--ubits-fg-1-high);">Card-based selection</span>
+                                    <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Tarjeta con emoji · selección única · se envía al elegir</span>
+                                </div>
+                                <div style="padding: var(--padding-lg);">
+                                    <p class="ubits-body-sm-regular" style="margin: 0 0 var(--gap-md); color: var(--ubits-fg-1-medium);">Tarjetas con emoji, título y descripción. El usuario elige una y se envía de inmediato.</p>
+                                    <!-- Preview estático -->
+                                    <div style="background: var(--ubits-bg-2); padding: var(--padding-lg); border-radius: var(--border-radius-sm); margin-bottom: var(--gap-md);">
+                                        <div class="ubits-ia-chat-interaction ubits-ia-chat-interaction--cards" style="pointer-events: none;">
+                                            <div class="ubits-ia-chat-card ubits-ia-chat-card--selected">
+                                                <span class="ubits-ia-chat-card__emoji">🎒</span>
+                                                <div class="ubits-ia-chat-card__body">
+                                                    <p class="ubits-ia-chat-card__title">Conseguir trabajo</p>
+                                                    <p class="ubits-ia-chat-card__desc">Quiero entrar al mundo laboral como diseñador</p>
+                                                </div>
+                                            </div>
+                                            <div class="ubits-ia-chat-card">
+                                                <span class="ubits-ia-chat-card__emoji">🚀</span>
+                                                <div class="ubits-ia-chat-card__body">
+                                                    <p class="ubits-ia-chat-card__title">Proyectos personales</p>
+                                                    <p class="ubits-ia-chat-card__desc">Tengo ideas y quiero darles mejor forma visual</p>
+                                                </div>
+                                            </div>
+                                            <div class="ubits-ia-chat-card">
+                                                <span class="ubits-ia-chat-card__emoji">🤝</span>
+                                                <div class="ubits-ia-chat-card__body">
+                                                    <p class="ubits-ia-chat-card__title">Colaborar con diseñadores</p>
+                                                    <p class="ubits-ia-chat-card__desc">Soy dev o PM y quiero entender el proceso</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="ai-panel-doc-btn-cards">
+                                        <i class="far fa-play"></i>
+                                        <span>Probar en el panel</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Bottom Sheet Form -->
+                            <div style="border: 1px solid var(--ubits-border-1); border-radius: var(--border-radius-md); overflow: hidden;">
+                                <div style="padding: var(--padding-md) var(--padding-lg); background: var(--ubits-bg-2); border-bottom: 1px solid var(--ubits-border-1); display: flex; align-items: center; gap: var(--gap-md);">
+                                    <span class="ubits-body-md-bold" style="color: var(--ubits-fg-1-high);">Bottom Sheet Form</span>
+                                    <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Formulario paginado · single select o multi select · texto libre</span>
+                                </div>
+                                <div style="padding: var(--padding-lg);">
+                                    <p class="ubits-body-sm-regular" style="margin: 0 0 var(--gap-md); color: var(--ubits-fg-1-medium);">Hoja que se superpone desde abajo sobre el input del chat. Soporta paginación ("1 de 2"), selección simple o múltiple, campo de texto libre, botón «Omitir» y cierre con X sin responder.</p>
+                                    <!-- Preview estático del bottom sheet -->
+                                    <div style="position: relative; background: var(--ubits-bg-2); padding: var(--padding-lg); border-radius: var(--border-radius-sm); min-height: 240px; overflow: hidden; margin-bottom: var(--gap-md);">
+                                        <p class="ubits-body-sm-regular" style="margin: 0 0 var(--gap-sm); color: var(--ubits-fg-1-medium);">Vista de ejemplo: single select (paso 1 de 2)</p>
+                                        <div class="ubits-ia-chat-bottom-sheet" style="position: relative; animation: none; max-height: none;">
+                                            <div class="ubits-ia-chat-bottom-sheet__header">
+                                                <p class="ubits-ia-chat-bottom-sheet__question">¿Cuál es tu color favorito?</p>
+                                                <div class="ubits-ia-chat-bottom-sheet__nav">
+                                                    <button class="ubits-ia-chat-bottom-sheet__nav-btn" disabled><i class="far fa-chevron-left"></i></button>
+                                                    <span class="ubits-ia-chat-bottom-sheet__nav-label">1 de 2</span>
+                                                    <button class="ubits-ia-chat-bottom-sheet__nav-btn"><i class="far fa-chevron-right"></i></button>
+                                                    <button class="ubits-ia-chat-bottom-sheet__close"><i class="far fa-xmark"></i></button>
+                                                </div>
+                                            </div>
+                                            <div class="ubits-ia-chat-bottom-sheet__options" style="max-height: 200px; overflow-y: auto;">
+                                                <div class="ubits-ia-chat-bs-option" style="background: var(--ubits-bg-2);">
+                                                    <span class="ubits-ia-chat-bs-option__num">1</span>
+                                                    <span class="ubits-ia-chat-bs-option__label">Azul</span>
+                                                    <span class="ubits-ia-chat-bs-option__arrow"><i class="far fa-arrow-right"></i></span>
+                                                </div>
+                                                <div class="ubits-ia-chat-bs-option">
+                                                    <span class="ubits-ia-chat-bs-option__num">2</span>
+                                                    <span class="ubits-ia-chat-bs-option__label">Rojo</span>
+                                                    <span class="ubits-ia-chat-bs-option__arrow"><i class="far fa-arrow-right"></i></span>
+                                                </div>
+                                                <div class="ubits-ia-chat-bs-option">
+                                                    <span class="ubits-ia-chat-bs-option__num">3</span>
+                                                    <span class="ubits-ia-chat-bs-option__label">Verde</span>
+                                                    <span class="ubits-ia-chat-bs-option__arrow"><i class="far fa-arrow-right"></i></span>
+                                                </div>
+                                            </div>
+                                            <div class="ubits-ia-chat-bottom-sheet__free-text">
+                                                <i class="far fa-pencil"></i>
+                                                <input type="text" placeholder="Algo más" style="pointer-events: none;">
+                                            </div>
+                                            <div class="ubits-ia-chat-bottom-sheet__footer">
+                                                <span class="ubits-ia-chat-bottom-sheet__counter"></span>
+                                                <button class="ubits-ia-chat-bottom-sheet__skip">Omitir</button>
+                                                <button class="ubits-ia-button ubits-ia-button--primary ubits-ia-button--icon-only--sm ubits-ia-chat-bottom-sheet__submit">
+                                                    <i class="far fa-arrow-up"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="ai-panel-doc-btn-bs">
+                                        <i class="far fa-play"></i>
+                                        <span>Probar en el panel (2 pasos)</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
                         <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: var(--border-radius-lg); margin-bottom: 40px;">
                             <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
                                 <i class="far fa-info-circle" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
@@ -164,6 +328,7 @@
                                         <li><code style="font-family: monospace;">initAIPanel(options)</code> — inicializa e inyecta el panel (una sola vez).</li>
                                         <li><code style="font-family: monospace;">openAIPanel()</code> / <code style="font-family: monospace;">closeAIPanel()</code></li>
                                         <li><code style="font-family: monospace;">addAIPanelMessage(text, type[, attachments])</code> — <code style="font-family: monospace;">type</code>: <code style="font-family: monospace;">'user'</code> | <code style="font-family: monospace;">'ai'</code>. Tras enviar desde el input, el panel ya inserta el mensaje del usuario; en <code style="font-family: monospace;">onSend(text)</code> no hace falta (ni conviene) volver a añadirlo salvo un flujo muy custom.</li>
+                                        <li><code style="font-family: monospace;">addAIPanelInteraction(type, options)</code> — inserta un bloque de interacción conversacional. <code style="font-family: monospace;">type</code>: <code style="font-family: monospace;">'quick-reply'</code> | <code style="font-family: monospace;">'multiselect'</code> | <code style="font-family: monospace;">'cards'</code> | <code style="font-family: monospace;">'bottom-sheet'</code>. El estilo vive en <code style="font-family: monospace;">general-styles/ubits-ia-chat.css</code> (transversal a todos los chats IA).</li>
                                         <li><code style="font-family: monospace;">showAIPanelTyping()</code> — devuelve <code style="font-family: monospace;">removeTyping</code> (usa <code style="font-family: monospace;">ia-chat-streaming.js</code>).</li>
                                         <li><code style="font-family: monospace;">clearAIPanelMessages()</code>, <code style="font-family: monospace;">setAIPanelTitle(title)</code>, <code style="font-family: monospace;">setAIPanelTokensBadgeValue(n)</code>, <code style="font-family: monospace;">destroyAIPanel()</code></li>
                                     </ul>
@@ -303,6 +468,116 @@ dockDesktop, dockContainerSelector, dockBreakpoint</code></pre>
                             addAIPanelMessage('Aquí terminaría el HTML de la respuesta (por ejemplo vía streamIaChatHtml).', 'ai');
                         }
                     }, 900);
+                });
+            }
+
+            // ---- Demos de tipos de interacción ----
+            var btnQR = document.getElementById('ai-panel-doc-btn-qr');
+            if (btnQR) {
+                btnQR.addEventListener('click', function () {
+                    ensureAIPanelDocDemo();
+                    if (typeof openAIPanel === 'function') openAIPanel();
+                    if (typeof addAIPanelMessage === 'function') {
+                        addAIPanelMessage('¿Cuál es tu lenguaje favorito?', 'ai');
+                    }
+                    if (typeof addAIPanelInteraction === 'function') {
+                        addAIPanelInteraction('quick-reply', {
+                            items: ['Python', 'JavaScript', 'Swift', 'TypeScript', 'Go'],
+                            onReply: function (value) {
+                                setTimeout(function () {
+                                    addAIPanelMessage('Excelente elección. ' + value + ' es muy popular en la industria.', 'ai');
+                                }, 400);
+                            }
+                        });
+                    }
+                });
+            }
+
+            var btnMulti = document.getElementById('ai-panel-doc-btn-multi');
+            if (btnMulti) {
+                btnMulti.addEventListener('click', function () {
+                    ensureAIPanelDocDemo();
+                    if (typeof openAIPanel === 'function') openAIPanel();
+                    if (typeof addAIPanelMessage === 'function') {
+                        addAIPanelMessage('¿Qué herramientas usas para diseñar?', 'ai');
+                    }
+                    if (typeof addAIPanelInteraction === 'function') {
+                        addAIPanelInteraction('multiselect', {
+                            hint: 'Puedes elegir varias',
+                            items: ['Figma', 'Sketch', 'Adobe XD', 'Framer', 'Webflow', 'Canva', 'Illustrator', 'Otro'],
+                            confirmLabel: 'Listo →',
+                            onReply: function (value, label) {
+                                setTimeout(function () {
+                                    addAIPanelMessage('Gracias, usas: ' + label + '. Tengo recursos para todas esas herramientas.', 'ai');
+                                }, 400);
+                            }
+                        });
+                    }
+                });
+            }
+
+            var btnCards = document.getElementById('ai-panel-doc-btn-cards');
+            if (btnCards) {
+                btnCards.addEventListener('click', function () {
+                    ensureAIPanelDocDemo();
+                    if (typeof openAIPanel === 'function') openAIPanel();
+                    if (typeof addAIPanelMessage === 'function') {
+                        addAIPanelMessage('¿Para qué quieres aprender diseño UI?', 'ai');
+                    }
+                    if (typeof addAIPanelInteraction === 'function') {
+                        addAIPanelInteraction('cards', {
+                            items: [
+                                { emoji: '🎒', title: 'Conseguir trabajo', description: 'Quiero entrar al mundo laboral como diseñador', value: 'trabajo' },
+                                { emoji: '🚀', title: 'Proyectos personales', description: 'Tengo ideas y quiero darles mejor forma visual', value: 'personal' },
+                                { emoji: '🤝', title: 'Colaborar con diseñadores', description: 'Soy dev o PM y quiero entender el proceso', value: 'colaborar' },
+                                { emoji: '✨', title: 'Solo curiosidad', description: 'Quiero explorar sin un objetivo fijo', value: 'curiosidad' }
+                            ],
+                            onReply: function (value, label) {
+                                setTimeout(function () {
+                                    addAIPanelMessage('Entendido. Te voy a recomendar contenidos orientados a «' + label + '».', 'ai');
+                                }, 400);
+                            }
+                        });
+                    }
+                });
+            }
+
+            var btnBS = document.getElementById('ai-panel-doc-btn-bs');
+            if (btnBS) {
+                btnBS.addEventListener('click', function () {
+                    ensureAIPanelDocDemo();
+                    if (typeof openAIPanel === 'function') openAIPanel();
+                    if (typeof addAIPanelMessage === 'function') {
+                        addAIPanelMessage('Tengo un par de preguntas rápidas para personalizar tu experiencia.', 'ai');
+                    }
+                    if (typeof addAIPanelInteraction === 'function') {
+                        addAIPanelInteraction('bottom-sheet', {
+                            steps: [
+                                {
+                                    question: '¿Cuál es tu color favorito?',
+                                    type: 'single',
+                                    options: ['Azul', 'Rojo', 'Verde', 'Otro'],
+                                    freeText: 'Algo más'
+                                },
+                                {
+                                    question: '¿Qué actividades disfrutas en tu tiempo libre?',
+                                    type: 'multi',
+                                    options: ['Videojuegos', 'Leer', 'Deportes', 'Ver series/películas', 'Caminar'],
+                                    freeText: 'Algo más'
+                                }
+                            ],
+                            onReply: function (stepIndex, value, label) {
+                                if (stepIndex === 1) {
+                                    setTimeout(function () {
+                                        addAIPanelMessage('¡Perfecto! Ya tengo tu perfil. Empecemos.', 'ai');
+                                    }, 500);
+                                }
+                            },
+                            onClose: function () {
+                                addAIPanelMessage('(formulario cerrado sin responder)', 'ai');
+                            }
+                        });
+                    }
                 });
             }
         });

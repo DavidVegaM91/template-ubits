@@ -802,6 +802,476 @@ function setAIPanelTokensBadgeValue(value) {
     }
 }
 
+// ---------------------------------------------------------------------------
+// Tipos de interacción conversacional
+// API pública: addAIPanelInteraction(type, options)
+//
+// Tipos disponibles:
+//   'quick-reply'  — botones de respuesta rápida bajo el último mensaje IA
+//   'multiselect'  — chips seleccionables múltiples + botón «Listo»
+//   'cards'        — tarjetas con emoji, título y descripción (selección única)
+//   'bottom-sheet' — formulario conversacional que se superpone sobre el input
+//
+// options comunes:
+//   onReply(value, label) — callback al enviar la respuesta
+//
+// options por tipo:
+//   quick-reply:  { items: ['Python', 'JavaScript', 'Swift'] }
+//   multiselect:  { hint: '...', items: ['Figma', 'Sketch'], confirmLabel: 'Listo →' }
+//   cards:        { items: [{ emoji, title, description, value }] }
+//   bottom-sheet: { steps: [{ question, type: 'single'|'multi', options: [...], freeText? }] }
+// ---------------------------------------------------------------------------
+
+function addAIPanelInteraction(type, options) {
+    options = options || {};
+    var messages = _aiEl('ai-panel-messages');
+    var welcome  = _aiEl('ai-panel-welcome');
+    if (!messages) return;
+    if (welcome) welcome.style.display = 'none';
+    messages.style.display = 'flex';
+
+    if (type === 'quick-reply') {
+        _aiPanelInteractionQuickReply(options);
+    } else if (type === 'multiselect') {
+        _aiPanelInteractionMultiselect(options);
+    } else if (type === 'cards') {
+        _aiPanelInteractionCards(options);
+    } else if (type === 'bottom-sheet') {
+        _aiPanelInteractionBottomSheet(options);
+    }
+
+    var scroll = _aiEl('ai-panel-scroll');
+    if (scroll) scroll.scrollTop = scroll.scrollHeight;
+    _aiPanelSyncScrollFade();
+}
+
+/* ---- helpers internos ---- */
+
+function _aiPanelConsumeInteraction(wrap) {
+    wrap.classList.add('ubits-ia-chat-interaction--consumed');
+}
+
+function _aiPanelSendInteractionReply(text, onReply, label) {
+    addAIPanelMessage(label || text, 'user');
+    if (typeof onReply === 'function') onReply(text, label || text);
+    var scroll = _aiEl('ai-panel-scroll');
+    if (scroll) scroll.scrollTop = scroll.scrollHeight;
+}
+
+/* ---- 1. Quick Reply ---- */
+function _aiPanelInteractionQuickReply(opts) {
+    var items = opts.items || [];
+    if (!items.length) return;
+    var messages = _aiEl('ai-panel-messages');
+
+    var wrap = document.createElement('div');
+    wrap.className = 'ubits-ia-chat-interaction ubits-ia-chat-interaction--quick-reply';
+
+    items.forEach(function(item) {
+        var label = typeof item === 'string' ? item : (item.label || item.value || '');
+        var value = typeof item === 'string' ? item : (item.value || item.label || '');
+        var btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'ubits-ia-chat-quick-reply-btn';
+        btn.textContent = label;
+        btn.addEventListener('click', function() {
+            if (wrap.classList.contains('ubits-ia-chat-interaction--consumed')) return;
+            // Marcar el botón seleccionado y deshabilitar el resto
+            btn.classList.add('ubits-ia-chat-quick-reply-btn--selected');
+            _aiPanelConsumeInteraction(wrap);
+            _aiPanelSendInteractionReply(value, opts.onReply, label);
+        });
+        wrap.appendChild(btn);
+    });
+
+    messages.appendChild(wrap);
+}
+
+/* ---- 2. Multiselect chips ---- */
+function _aiPanelInteractionMultiselect(opts) {
+    var items = opts.items || [];
+    if (!items.length) return;
+    var messages = _aiEl('ai-panel-messages');
+    var confirmLabel = opts.confirmLabel || 'Listo →';
+    var hint = opts.hint || 'Puedes elegir varias';
+
+    var selected = [];
+
+    var wrap = document.createElement('div');
+    wrap.className = 'ubits-ia-chat-interaction ubits-ia-chat-interaction--multiselect';
+
+    if (hint) {
+        var hintEl = document.createElement('p');
+        hintEl.className = 'ubits-ia-chat-interaction__hint';
+        hintEl.textContent = hint;
+        wrap.appendChild(hintEl);
+    }
+
+    var chipsWrap = document.createElement('div');
+    chipsWrap.className = 'ubits-ia-chat-interaction__chips';
+
+    items.forEach(function(item) {
+        var label = typeof item === 'string' ? item : (item.label || item.value || '');
+        var value = typeof item === 'string' ? item : (item.value || item.label || '');
+
+        var chip = document.createElement('button');
+        chip.type = 'button';
+        chip.className = 'ubits-chip ubits-chip--sm';
+        chip.setAttribute('role', 'checkbox');
+        chip.setAttribute('aria-checked', 'false');
+        chip.innerHTML = '<span class="ubits-chip__text">' + _aiEscape(label) + '</span>';
+
+        chip.addEventListener('click', function() {
+            if (wrap.classList.contains('ubits-ia-chat-interaction--consumed')) return;
+            var idx = selected.indexOf(value);
+            if (idx === -1) {
+                selected.push(value);
+                chip.classList.add('ubits-chip--active');
+                chip.setAttribute('aria-checked', 'true');
+            } else {
+                selected.splice(idx, 1);
+                chip.classList.remove('ubits-chip--active');
+                chip.setAttribute('aria-checked', 'false');
+            }
+        });
+
+        chipsWrap.appendChild(chip);
+    });
+
+    wrap.appendChild(chipsWrap);
+
+    var footer = document.createElement('div');
+    footer.className = 'ubits-ia-chat-interaction__multiselect-footer';
+
+    var confirmBtn = document.createElement('button');
+    confirmBtn.type = 'button';
+    confirmBtn.className = 'ubits-button ubits-button--secondary ubits-button--sm';
+    confirmBtn.innerHTML = '<span>' + _aiEscape(confirmLabel) + '</span>';
+    confirmBtn.addEventListener('click', function() {
+        if (wrap.classList.contains('ubits-ia-chat-interaction--consumed')) return;
+        if (!selected.length) return;
+        _aiPanelConsumeInteraction(wrap);
+        var label = selected.join(', ');
+        _aiPanelSendInteractionReply(selected.join(','), opts.onReply, label);
+    });
+
+    footer.appendChild(confirmBtn);
+    wrap.appendChild(footer);
+    messages.appendChild(wrap);
+}
+
+/* ---- 3. Card-based ---- */
+function _aiPanelInteractionCards(opts) {
+    var items = opts.items || [];
+    if (!items.length) return;
+    var messages = _aiEl('ai-panel-messages');
+
+    var wrap = document.createElement('div');
+    wrap.className = 'ubits-ia-chat-interaction ubits-ia-chat-interaction--cards';
+
+    items.forEach(function(item) {
+        var emoji = item.emoji || '';
+        var title = item.title || '';
+        var desc  = item.description || item.desc || '';
+        var value = item.value || title;
+
+        var card = document.createElement('div');
+        card.className = 'ubits-ia-chat-card';
+        card.setAttribute('role', 'button');
+        card.setAttribute('tabindex', '0');
+        card.innerHTML =
+            (emoji ? '<span class="ubits-ia-chat-card__emoji" aria-hidden="true">' + _aiEscape(emoji) + '</span>' : '') +
+            '<div class="ubits-ia-chat-card__body">' +
+            '<p class="ubits-ia-chat-card__title">' + _aiEscape(title) + '</p>' +
+            (desc ? '<p class="ubits-ia-chat-card__desc">' + _aiEscape(desc) + '</p>' : '') +
+            '</div>';
+
+        var select = function() {
+            if (wrap.classList.contains('ubits-ia-chat-interaction--consumed')) return;
+            card.classList.add('ubits-ia-chat-card--selected');
+            _aiPanelConsumeInteraction(wrap);
+            _aiPanelSendInteractionReply(value, opts.onReply, title);
+        };
+        card.addEventListener('click', select);
+        card.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); select(); }
+        });
+
+        wrap.appendChild(card);
+    });
+
+    messages.appendChild(wrap);
+}
+
+/* ---- 4. Bottom Sheet Form ---- */
+function _aiPanelInteractionBottomSheet(opts) {
+    var steps = opts.steps || [];
+    if (!steps.length) return;
+
+    // La hoja se superpone sobre el cuerpo del panel (ai-panel-body tiene position: relative)
+    var inputArea = _aiEl('ai-panel-input-area');
+    var scroll    = _aiEl('ai-panel-scroll');
+    var chatCont  = _aiEl('ai-panel-body'); // position: relative, sin overflow: hidden
+    if (!chatCont) chatCont = inputArea && inputArea.parentElement;
+    if (!chatCont) return;
+
+    // Deshabilitar input mientras la hoja está abierta
+    var inputEl = _aiEl('ai-panel-input');
+    var sendBtn = _aiEl('ai-panel-send');
+    if (inputEl) inputEl.disabled = true;
+    if (sendBtn) sendBtn.disabled = true;
+
+    var currentStep = 0;
+    var answers = steps.map(function() { return { selected: [], freeText: '' }; });
+
+    // Contenedor principal de la hoja
+    var sheet = document.createElement('div');
+    sheet.className = 'ubits-ia-chat-bottom-sheet';
+    sheet.id = 'ai-panel-bottom-sheet';
+
+    function closeSheet() {
+        sheet.remove();
+        if (inputEl) inputEl.disabled = false;
+        if (sendBtn) sendBtn.disabled = false;
+        if (typeof opts.onClose === 'function') opts.onClose();
+    }
+
+    function submitStep() {
+        var step = steps[currentStep];
+        var ans  = answers[currentStep];
+        var value, label;
+        if (step.type === 'multi') {
+            value = ans.selected.join(',') || ans.freeText;
+            label = ans.selected.join(', ') || ans.freeText;
+        } else {
+            value = ans.selected[0] || ans.freeText;
+            label = ans.selected[0] || ans.freeText;
+        }
+        if (!value) return;
+
+        // Enviar como mensaje del usuario
+        addAIPanelMessage(label, 'user');
+        if (typeof opts.onReply === 'function') opts.onReply(currentStep, value, label, step);
+
+        // Ir al siguiente paso o cerrar
+        if (currentStep < steps.length - 1) {
+            currentStep++;
+            answers[currentStep] = { selected: [], freeText: '' };
+            renderSheet();
+        } else {
+            closeSheet();
+        }
+
+        if (scroll) scroll.scrollTop = scroll.scrollHeight;
+    }
+
+    function skipStep() {
+        if (typeof opts.onSkip === 'function') opts.onSkip(currentStep, steps[currentStep]);
+        if (currentStep < steps.length - 1) {
+            currentStep++;
+            answers[currentStep] = { selected: [], freeText: '' };
+            renderSheet();
+        } else {
+            closeSheet();
+        }
+    }
+
+    function renderSheet() {
+        var step = steps[currentStep];
+        var ans  = answers[currentStep];
+        var total = steps.length;
+        var isMulti = step.type === 'multi';
+
+        sheet.innerHTML = '';
+
+        // Header
+        var header = document.createElement('div');
+        header.className = 'ubits-ia-chat-bottom-sheet__header';
+
+        var qEl = document.createElement('p');
+        qEl.className = 'ubits-ia-chat-bottom-sheet__question';
+        qEl.textContent = step.question || '';
+        header.appendChild(qEl);
+
+        var nav = document.createElement('div');
+        nav.className = 'ubits-ia-chat-bottom-sheet__nav';
+
+        if (total > 1) {
+            var prevBtn = document.createElement('button');
+            prevBtn.type = 'button';
+            prevBtn.className = 'ubits-ia-chat-bottom-sheet__nav-btn';
+            prevBtn.innerHTML = '<i class="far fa-chevron-left"></i>';
+            prevBtn.disabled = (currentStep === 0);
+            prevBtn.setAttribute('aria-label', 'Anterior');
+            prevBtn.addEventListener('click', function() {
+                if (currentStep > 0) { currentStep--; renderSheet(); }
+            });
+            nav.appendChild(prevBtn);
+
+            var navLabel = document.createElement('span');
+            navLabel.className = 'ubits-ia-chat-bottom-sheet__nav-label';
+            navLabel.textContent = (currentStep + 1) + ' de ' + total;
+            nav.appendChild(navLabel);
+
+            var nextBtn = document.createElement('button');
+            nextBtn.type = 'button';
+            nextBtn.className = 'ubits-ia-chat-bottom-sheet__nav-btn';
+            nextBtn.innerHTML = '<i class="far fa-chevron-right"></i>';
+            nextBtn.disabled = (currentStep === total - 1);
+            nextBtn.setAttribute('aria-label', 'Siguiente');
+            nextBtn.addEventListener('click', function() {
+                if (currentStep < total - 1) { currentStep++; renderSheet(); }
+            });
+            nav.appendChild(nextBtn);
+        }
+
+        var closeBtn = document.createElement('button');
+        closeBtn.type = 'button';
+        closeBtn.className = 'ubits-ia-chat-bottom-sheet__close';
+        closeBtn.innerHTML = '<i class="far fa-xmark"></i>';
+        closeBtn.setAttribute('aria-label', 'Cerrar');
+        closeBtn.addEventListener('click', closeSheet);
+        nav.appendChild(closeBtn);
+
+        header.appendChild(nav);
+        sheet.appendChild(header);
+
+        // Opciones
+        var optionsEl = document.createElement('div');
+        optionsEl.className = 'ubits-ia-chat-bottom-sheet__options';
+
+        var optList = step.options || [];
+        var countsEl; // referencia al contador en el footer (para multi)
+
+        optList.forEach(function(opt, idx) {
+            var label = typeof opt === 'string' ? opt : (opt.label || opt);
+            var value = typeof opt === 'string' ? opt : (opt.value || opt.label || opt);
+            var row = document.createElement('div');
+
+            if (isMulti) {
+                row.className = 'ubits-ia-chat-bs-option ubits-ia-chat-bs-option--check';
+                if (ans.selected.indexOf(value) !== -1) row.classList.add('ubits-ia-chat-bs-option--checked');
+
+                var chk = document.createElement('span');
+                chk.className = 'ubits-ia-chat-bs-option__checkbox';
+                if (ans.selected.indexOf(value) !== -1) chk.innerHTML = '<i class="far fa-check"></i>';
+
+                var lblEl = document.createElement('span');
+                lblEl.className = 'ubits-ia-chat-bs-option__label';
+                lblEl.textContent = label;
+
+                row.appendChild(chk);
+                row.appendChild(lblEl);
+
+                row.addEventListener('click', function() {
+                    var selIdx = ans.selected.indexOf(value);
+                    if (selIdx === -1) {
+                        ans.selected.push(value);
+                        row.classList.add('ubits-ia-chat-bs-option--checked');
+                        chk.innerHTML = '<i class="far fa-check"></i>';
+                    } else {
+                        ans.selected.splice(selIdx, 1);
+                        row.classList.remove('ubits-ia-chat-bs-option--checked');
+                        chk.innerHTML = '';
+                    }
+                    if (countsEl) {
+                        countsEl.textContent = ans.selected.length
+                            ? ans.selected.length + ' seleccionado' + (ans.selected.length !== 1 ? 's' : '')
+                            : '';
+                    }
+                });
+            } else {
+                row.className = 'ubits-ia-chat-bs-option';
+
+                var numEl = document.createElement('span');
+                numEl.className = 'ubits-ia-chat-bs-option__num';
+                numEl.textContent = String(idx + 1);
+
+                var lblEl = document.createElement('span');
+                lblEl.className = 'ubits-ia-chat-bs-option__label';
+                lblEl.textContent = label;
+
+                var arrow = document.createElement('span');
+                arrow.className = 'ubits-ia-chat-bs-option__arrow';
+                arrow.innerHTML = '<i class="far fa-arrow-right"></i>';
+
+                row.appendChild(numEl);
+                row.appendChild(lblEl);
+                row.appendChild(arrow);
+
+                row.addEventListener('click', function() {
+                    ans.selected = [value];
+                    submitStep();
+                });
+            }
+
+            optionsEl.appendChild(row);
+        });
+
+        sheet.appendChild(optionsEl);
+
+        // Campo de texto libre (opcional)
+        if (step.freeText !== false) {
+            var ftWrap = document.createElement('div');
+            ftWrap.className = 'ubits-ia-chat-bottom-sheet__free-text';
+            ftWrap.innerHTML = '<i class="far fa-pencil"></i>';
+
+            var ftInput = document.createElement('input');
+            ftInput.type = 'text';
+            ftInput.placeholder = (typeof step.freeText === 'string' && step.freeText) ? step.freeText : 'Algo más';
+            ftInput.value = ans.freeText;
+            ftInput.addEventListener('input', function() { ans.freeText = ftInput.value; });
+            ftInput.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') { e.preventDefault(); submitStep(); }
+            });
+            ftWrap.appendChild(ftInput);
+            sheet.appendChild(ftWrap);
+        }
+
+        // Footer
+        var footer = document.createElement('div');
+        footer.className = 'ubits-ia-chat-bottom-sheet__footer';
+
+        countsEl = document.createElement('span');
+        countsEl.className = 'ubits-ia-chat-bottom-sheet__counter';
+        if (isMulti && ans.selected.length) {
+            countsEl.textContent = ans.selected.length + ' seleccionado' + (ans.selected.length !== 1 ? 's' : '');
+        }
+        footer.appendChild(countsEl);
+
+        var skipBtn = document.createElement('button');
+        skipBtn.type = 'button';
+        skipBtn.className = 'ubits-ia-chat-bottom-sheet__skip';
+        skipBtn.textContent = 'Omitir';
+        skipBtn.addEventListener('click', skipStep);
+        footer.appendChild(skipBtn);
+
+        var submitBtn = document.createElement('button');
+        submitBtn.type = 'button';
+        submitBtn.className = 'ubits-ia-button ubits-ia-button--primary ubits-ia-button--icon-only--sm ubits-ia-chat-bottom-sheet__submit';
+        submitBtn.setAttribute('aria-label', 'Enviar');
+        submitBtn.innerHTML = '<i class="far fa-arrow-up"></i>';
+        submitBtn.addEventListener('click', function() {
+            // Para single con texto libre que no haya sido enviado aún
+            if (ans.freeText && !ans.selected.length) ans.selected = [ans.freeText];
+            submitStep();
+        });
+        footer.appendChild(submitBtn);
+
+        sheet.appendChild(footer);
+
+        // Foco en el input de texto libre si existe
+        if (step.freeText !== false) {
+            var ft = sheet.querySelector('.ubits-ia-chat-bottom-sheet__free-text input');
+            if (ft) setTimeout(function() { /* no auto-focus en panel */ }, 0);
+        }
+    }
+
+    renderSheet();
+    chatCont.appendChild(sheet);
+    if (getComputedStyle(chatCont).position === 'static') chatCont.style.position = 'relative';
+}
+
 function destroyAIPanel() {
     var root = _aiEl('ai-panel-root');
     if (_aiPanel.resizeHandler) {
