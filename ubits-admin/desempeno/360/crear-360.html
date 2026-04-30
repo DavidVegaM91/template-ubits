@@ -443,10 +443,7 @@
         _currentView = viewId;
 
         /* URL hash */
-        var lockedHash = window.__crear360HashLock || '';
-        var hash = lockedHash
-            ? lockedHash
-            : (hashOverride ? (hashOverride.startsWith('#') ? hashOverride : ('#' + hashOverride)) : ('#' + viewId));
+        var hash = hashOverride ? (hashOverride.startsWith('#') ? hashOverride : ('#' + hashOverride)) : ('#' + viewId);
         if (pushHistory) {
             history.pushState({ view: viewId }, '', hash);
         } else {
@@ -4155,12 +4152,6 @@
         if (_initialHash === '#evaluados-error-edge' || _initialHash === '#error-edge') {
             ensureEdgeDemoDraft();
             initialView = 'evaluados';
-        }
-        /* Lock del hash para el edge demo (evita que el router lo reescriba a #evaluados) */
-        if (_initialHash === '#evaluados-error-edge' || _initialHash === '#error-edge') {
-            window.__crear360HashLock = '#error-edge';
-        } else {
-            window.__crear360HashLock = '';
         }
         showView(initialView, {
             pushHistory: false,
