@@ -20,6 +20,7 @@
 /* —— Default: título + rejilla de 8 tarjetas (mismo paso que Resources card) —— */
 .ubits-resources-block--default {
     background: var(--ubits-bg-1);
+    border: 1px solid var(--ubits-border-1);
     border-radius: var(--border-radius-lg);
     padding: var(--padding-6xl) var(--padding-md);
     display: flex;
@@ -71,6 +72,7 @@
     min-height: 308px;
     padding: var(--padding-6xl);
     background: var(--ubits-bg-1);
+    border: 1px solid var(--ubits-border-1);
     border-radius: var(--border-radius-lg);
     display: flex;
     flex-direction: column;

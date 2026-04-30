@@ -460,7 +460,7 @@ body.crear-contenido-app-open .ubits-dropdown-menu__content {
     box-sizing: border-box;
     padding: var(--padding-lg) var(--padding-xl);
     background: var(--ubits-bg-1);
-    border: none;
+    border: 1px solid var(--ubits-border-1);
     border-radius: var(--border-radius-md);
 }
 
@@ -596,6 +596,7 @@ body.crear-contenido-app-open .ubits-dropdown-menu__content {
     padding: var(--padding-lg);
     border-radius: var(--border-radius-md);
     background: var(--ubits-bg-1);
+    border: 1px solid var(--ubits-border-1);
     box-sizing: border-box;
     width: 100%;
     min-width: 0;
