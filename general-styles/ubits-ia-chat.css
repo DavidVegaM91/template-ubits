@@ -258,9 +258,14 @@
 
 /* Gradación en el icono (como botón IA), no en el círculo */
 .ubits-ia-chat-thread__welcome-icon i {
-    background: linear-gradient(135deg, rgb(0, 215, 255) 0%, rgb(0, 152, 253) 50%, rgb(0, 89, 250) 100%);
+    background: linear-gradient(135deg,
+        var(--modo-ia-gradient-a) 0%,
+        var(--modo-ia-gradient-b) 35.59%,
+        var(--modo-ia-gradient-c) 67.19%,
+        var(--modo-ia-gradient-d) 100%);
     -webkit-background-clip: text;
     background-clip: text;
+    -webkit-text-fill-color: transparent;
     color: transparent;
 }
 
@@ -2264,8 +2269,8 @@ body.ia-chat-mobile-drawer-scroll-lock {
      <div class="ubits-ia-chat-bottom-sheet__footer">
        <span class="ubits-ia-chat-bottom-sheet__counter"></span>
        <button class="ubits-ia-chat-bottom-sheet__skip">Omitir</button>
-       <button class="ubits-ia-chat-bottom-sheet__submit ubits-ia-button ubits-ia-button--primary ubits-ia-button--icon-only--sm">
-         <i class="far fa-arrow-up"></i>
+       <button class="ubits-ia-button ubits-ia-button--primary ubits-ia-button--icon-only--sm">
+         <i class="far fa-arrow-right"></i>
        </button>
      </div>
    </div>
@@ -2528,15 +2533,8 @@ body.ia-chat-mobile-drawer-scroll-lock {
     background: var(--ubits-bg-2);
 }
 
-.ubits-ia-chat-bottom-sheet__submit {
+/* El botón de submit del bottom sheet usa directamente ubits-ia-button--icon-only--sm.
+   Solo forzamos flex-shrink: 0 para que el footer flex no lo aplaste. */
+.ubits-ia-chat-bottom-sheet__footer .ubits-ia-button {
     flex-shrink: 0;
-    /* Mismo aspecto que el botón de enviar del input: 32×32px, perfectamente redondo */
-    width: 32px !important;
-    height: 32px !important;
-    min-width: 32px !important;
-    min-height: 32px !important;
-    border-radius: 50% !important;
-    aspect-ratio: 1 / 1 !important;
-    padding: 0 !important;
-    line-height: 0 !important;
 }

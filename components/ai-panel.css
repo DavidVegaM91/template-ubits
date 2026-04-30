@@ -189,10 +189,17 @@ body.ai-panel-resizing .ai-panel {
     height: 26px;
 }
 
-.ai-panel__icon svg {
-    width: 26px;
-    height: 26px;
-    display: block;
+.ai-panel__icon i {
+    font-size: 18px;
+    background: linear-gradient(135deg,
+        var(--modo-ia-gradient-a) 0%,
+        var(--modo-ia-gradient-b) 35.59%,
+        var(--modo-ia-gradient-c) 67.19%,
+        var(--modo-ia-gradient-d) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
 }
 
 /* Título + subtítulo (modelo/agente) */
@@ -351,14 +358,22 @@ body.ai-panel-resizing .ai-panel {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 75px;
-    height: 78px;
+    width: 64px;
+    height: 64px;
     margin-bottom: 4px;
 }
 
-.ai-panel__welcome-icon svg {
-    width: 75px;
-    height: 78px;
+.ai-panel__welcome-icon i {
+    font-size: 48px;
+    background: linear-gradient(135deg,
+        var(--modo-ia-gradient-a) 0%,
+        var(--modo-ia-gradient-b) 35.59%,
+        var(--modo-ia-gradient-c) 67.19%,
+        var(--modo-ia-gradient-d) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
 }
 
 .ai-panel__welcome-title {
