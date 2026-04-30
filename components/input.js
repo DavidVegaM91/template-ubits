@@ -1466,6 +1466,13 @@ function createInput(options = {}) {
             autocompleteLazyPageSize = 10
         } = options;
 
+    // Si el input está en invalid, el helper debe existir y ser rojo, con texto por defecto.
+    const isInvalidInit = String(state) === 'invalid';
+    const effectiveShowHelper = isInvalidInit ? true : !!showHelper;
+    const effectiveHelperText = isInvalidInit
+        ? (String(helperText || '').trim() || 'Campo requerido')
+        : String(helperText || '');
+
     // Validar parámetros requeridos
     if (!containerId) {
         console.error('UBITS Input: containerId es requerido');
@@ -1508,7 +1515,8 @@ function createInput(options = {}) {
     const leftIconClass = hasLeftIcon && leftIcon.startsWith('fa-') ? `far ${leftIcon}` : leftIcon;
     const rightIconClass = hasRightIcon && rightIcon.startsWith('fa-') ? `far ${rightIcon}` : rightIcon;
 
-    inputHTML += `<div class="ubits-input-wrapper" style="position: relative; display: inline-block; width: 100%;">`;
+    const wrapperInvalidClass = isInvalidInit ? ' ubits-input-wrapper--invalid' : '';
+    inputHTML += `<div class="ubits-input-wrapper${wrapperInvalidClass}" style="position: relative; display: inline-block; width: 100%;">`;
     
     // Icono izquierdo con posicionamiento absoluto
     if (hasLeftIcon) {
@@ -1662,11 +1670,11 @@ function createInput(options = {}) {
     inputHTML += '</div>';
 
     // Helper text y character counter (independientes)
-    if (showHelper || showCounter) {
+    if (effectiveShowHelper || showCounter) {
         inputHTML += '<div class="ubits-input-helper">';
         
-        if (showHelper && helperText) {
-            inputHTML += `<span class="ubits-input-helper-text">${helperText}</span>`;
+        if (effectiveShowHelper && effectiveHelperText) {
+            inputHTML += `<span class="ubits-input-helper-text">${effectiveHelperText}</span>`;
         }
         
         if (showCounter) {
@@ -1684,6 +1692,8 @@ function createInput(options = {}) {
 
     // Obtener elementos del DOM
     const inputElement = container.querySelector('.ubits-input');
+    const wrapperElement = container.querySelector('.ubits-input-wrapper');
+    const helperElement = container.querySelector('.ubits-input-helper');
     const counterElement = container.querySelector('.ubits-input-counter');
     
     // Determinar si es input, select o search
@@ -1936,20 +1946,47 @@ function createInput(options = {}) {
             inputElement.classList.remove('ubits-input--disabled');
         },
         setState: (newState) => {
+            const next = String(newState || 'default');
+
             // Remover estado anterior
             const stateClasses = ['ubits-input--hover', 'ubits-input--focus', 'ubits-input--active', 'ubits-input--invalid', 'ubits-input--disabled'];
             stateClasses.forEach(cls => inputElement.classList.remove(cls));
 
             // Agregar nuevo estado
-            if (newState !== 'default') {
-                inputElement.classList.add(`ubits-input--${newState}`);
+            if (next !== 'default') {
+                inputElement.classList.add(`ubits-input--${next}`);
             }
 
             // Manejar disabled
-            if (newState === 'disabled') {
+            if (next === 'disabled') {
                 inputElement.disabled = true;
             } else {
                 inputElement.disabled = false;
+            }
+
+            // Helper por defecto en invalid
+            if (wrapperElement) wrapperElement.classList.toggle('ubits-input-wrapper--invalid', next === 'invalid');
+            if (next === 'invalid') {
+                // Si no existe helper, crearlo (debajo del wrapper)
+                let helper = container.querySelector('.ubits-input-helper');
+                if (!helper) {
+                    helper = document.createElement('div');
+                    helper.className = 'ubits-input-helper';
+                    if (wrapperElement && wrapperElement.parentNode) {
+                        wrapperElement.parentNode.insertBefore(helper, wrapperElement.nextSibling);
+                    } else {
+                        container.appendChild(helper);
+                    }
+                }
+                let helperTextEl = helper.querySelector('.ubits-input-helper-text');
+                if (!helperTextEl) {
+                    helperTextEl = document.createElement('span');
+                    helperTextEl.className = 'ubits-input-helper-text';
+                    helper.insertBefore(helperTextEl, helper.firstChild);
+                }
+                if (!String(helperTextEl.textContent || '').trim()) {
+                    helperTextEl.textContent = 'Campo requerido';
+                }
             }
         }
     };

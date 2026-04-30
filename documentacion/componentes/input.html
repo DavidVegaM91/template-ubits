@@ -76,21 +76,8 @@
             }
         }
 
-        /* Input Styles for Controls */
-        .ubits-input {
-            padding: 8px 12px;
-           
-            border-radius: 6px;
-            background: var(--ubits-bg-1);
-            color: var(--ubits-fg-1-high);
-            font-size: var(--font-size-sm);
-            transition: border-color 0.2s ease;
-        }
-
-        .ubits-input:focus {
-            outline: none;
-            border-color: var(--ubits-accent-brand);
-        }
+        /* Nota: no sobreescribir `.ubits-input` aquí.
+           Este preview debe reflejar fielmente `components/input.css`. */
     </style>
 </head>
 <body class="componentes-page" data-theme="light">
@@ -1403,39 +1390,20 @@ input.refreshAutocompleteMarked()  // Solo type autocomplete: actualiza marcas s
         }
 
 
-        // Función para actualizar el preview del input
+        // Función para actualizar el preview del input (sin hacks: debe reflejar input.js + input.css)
         function updateInput() {
-            console.log('updateInput() called');
-            
-            // Verificar que los elementos existan antes de usarlos
             const labelToggle = document.getElementById('label-toggle');
             const mandatoryToggle = document.getElementById('mandatory-toggle');
             const helperToggle = document.getElementById('helper-toggle');
             const counterToggle = document.getElementById('counter-toggle');
             const leftIconToggle = document.getElementById('left-icon-toggle');
             const rightIconToggle = document.getElementById('right-icon-toggle');
+            if (!labelToggle || !mandatoryToggle || !helperToggle || !counterToggle || !leftIconToggle || !rightIconToggle) return;
 
-            console.log('Elementos encontrados:', {
-                labelToggle: !!labelToggle,
-                mandatoryToggle: !!mandatoryToggle,
-                helperToggle: !!helperToggle,
-                counterToggle: !!counterToggle,
-                leftIconToggle: !!leftIconToggle,
-                rightIconToggle: !!rightIconToggle
-            });
-
-            // Si no existen los elementos, salir
-            if (!labelToggle || !mandatoryToggle || !helperToggle || !counterToggle ||
-                !leftIconToggle || !rightIconToggle) {
-                console.log('Algunos elementos de control no existen aún');
-                return;
-            }
-
-            // Obtener valores de los controles createInput
             const showLabel = labelToggle.checked;
             const labelContentValue = document.querySelector('#label-content-control input')?.value || 'Label';
             const showMandatory = mandatoryToggle.checked;
-            const mandatoryTypeValue = document.querySelector('#mandatory-type-control input')?.value || 'optional';
+            const mandatoryTypeValue = document.querySelector('#mandatory-type-control input')?.value || 'opcional';
             const showHelper = helperToggle.checked;
             const helperContentValue = document.querySelector('#helper-content-control input')?.value || 'Helper text';
             const showCounter = counterToggle.checked;
@@ -1444,139 +1412,30 @@ input.refreshAutocompleteMarked()  // Solo type autocomplete: actualiza marcas s
             const leftIconContentValue = document.querySelector('#left-icon-content-control input')?.value || 'fa-user';
             const showRightIcon = rightIconToggle.checked;
             const rightIconContentValue = document.querySelector('#right-icon-content-control input')?.value || 'fa-check';
-            
-            // Para los selects usar el valor real guardado en onChange (el input muestra el texto, no el value)
+            const placeholderContentValue = document.querySelector('#placeholder-content-control input')?.value || 'Placeholder text';
+
             const size = previewSelectedSize || 'md';
             const state = previewSelectedState || 'default';
-            
-            const placeholderContentValue = document.querySelector('#placeholder-content-control input')?.value || 'Placeholder text';
-            
-            console.log('Valores obtenidos:', {
-                size: size,
-                state: state,
-                mandatoryType: mandatoryTypeValue
-            });
-            
 
-            // Crear el input con las opciones seleccionadas
-            const options = {
+            const previewContainer = document.getElementById('input-preview-container');
+            if (!previewContainer) return;
+            previewContainer.innerHTML = '';
+
+            createInput({
                 containerId: 'input-preview-container',
                 label: showLabel ? labelContentValue : '',
                 placeholder: placeholderContentValue,
                 mandatory: showMandatory,
-                mandatoryType: mandatoryTypeValue === 'Mandatory' ? 'obligatorio' : 'opcional',
+                mandatoryType: String(mandatoryTypeValue).toLowerCase().includes('oblig') ? 'obligatorio' : 'opcional',
                 helperText: showHelper ? helperContentValue : '',
                 showHelper: showHelper,
-                maxLength: showCounter ? parseInt(maxLengthValue) : null,
+                maxLength: showCounter ? parseInt(maxLengthValue, 10) : 50,
                 showCounter: showCounter,
-                leftIcon: showLeftIcon ? leftIconContentValue : null,
-                rightIcon: showRightIcon ? rightIconContentValue : null,
+                leftIcon: showLeftIcon ? leftIconContentValue : '',
+                rightIcon: showRightIcon ? rightIconContentValue : '',
                 size: size,
                 state: state
-            };
-
-            console.log('Opciones para createInput:', options);
-
-            // Verificar que el contenedor existe
-            const previewContainer = document.getElementById('input-preview-container');
-            if (!previewContainer) {
-                console.log('ERROR: No se encontró el contenedor input-preview-container');
-                return;
-            }
-
-            // Limpiar el contenedor
-            previewContainer.innerHTML = '';
-            console.log('Contenedor limpiado');
-
-            // Crear el input
-            console.log('Llamando a createInput...');
-            createInput(options);
-            console.log('createInput completado');
-
-            // Aplicar estados especiales después de crear el input
-            setTimeout(() => {
-                console.log('Buscando elementos en el preview...');
-                console.log('Contenido del contenedor:', document.getElementById('input-preview-container').innerHTML);
-                
-                const inputElement = document.querySelector('#input-preview-container input');
-                const wrapperElement = document.querySelector('#input-preview-container .ubits-input-wrapper');
-                const allElements = document.querySelectorAll('#input-preview-container *');
-                
-                console.log('Todos los elementos encontrados:', allElements);
-                console.log('Input encontrado:', inputElement);
-                console.log('Wrapper encontrado:', wrapperElement);
-                
-                if (inputElement) {
-                    console.log('Aplicando estado:', state);
-                    console.log('Aplicando tamaño:', size);
-                    // El tamaño ya viene aplicado por createInput (ubits-input--xs, --sm, --md, --lg)
-                    
-                    // Remover todas las clases de estado primero del input
-                    inputElement.classList.remove('ubits-input--hover', 'ubits-input--focus', 'ubits-input--invalid', 'ubits-input--disabled');
-                    
-                    // Remover todas las clases de estado primero del wrapper si existe
-                    if (wrapperElement) {
-                        wrapperElement.classList.remove('ubits-input--hover', 'ubits-input--focus', 'ubits-input--invalid', 'ubits-input--disabled');
-                    }
-                    
-                    // Resetear estilos inline para que rijan los del componente (input.css)
-                    inputElement.style.borderColor = '';
-                    inputElement.style.borderWidth = '';
-                    inputElement.style.boxShadow = '';
-                    inputElement.style.backgroundColor = '';
-                    inputElement.style.color = '';
-                    inputElement.style.cursor = '';
-                    inputElement.disabled = false;
-                    
-                    // Aplicar el estado usando las clases oficiales del componente (input.css)
-                    if (state === 'Hover') {
-                        inputElement.classList.add('ubits-input--hover');
-                    } else if (state === 'Focus') {
-                        inputElement.classList.add('ubits-input--focus');
-                    } else if (state === 'Invalid') {
-                        inputElement.classList.add('ubits-input--invalid');
-                    } else if (state === 'Disabled') {
-                        inputElement.classList.add('ubits-input--disabled');
-                        inputElement.disabled = true;
-                    }
-                    
-                    // Aplicar el mandatory seleccionado
-                    const labelElement = document.querySelector('#input-preview-container .ubits-input-label');
-                    const mandatorySpan = document.querySelector('#input-preview-container .ubits-input-mandatory');
-                    
-                    console.log('Aplicando mandatory type:', mandatoryType);
-                    console.log('Label encontrado:', labelElement);
-                    console.log('Mandatory span encontrado:', mandatorySpan);
-                    
-                    if (labelElement) {
-                        if (mandatoryType === 'Mandatory') {
-                            if (!mandatorySpan) {
-                                const newMandatorySpan = document.createElement('span');
-                                newMandatorySpan.className = 'ubits-input-mandatory';
-                                newMandatorySpan.textContent = ' (obligatorio)';
-                                labelElement.appendChild(newMandatorySpan);
-                                console.log('Agregado mandatory (obligatorio)');
-                            } else {
-                                console.log('Mandatory span ya existe, no se agrega');
-                            }
-                        } else if (mandatoryType === 'Optional') {
-                            if (mandatorySpan) {
-                                mandatorySpan.remove();
-                                console.log('Removido mandatory (obligatorio)');
-                            } else {
-                                console.log('No hay mandatory span para remover');
-                            }
-                        }
-                    } else {
-                        console.log('No se encontró el label para aplicar mandatory');
-                    }
-                    
-                    console.log('Clases finales del input:', inputElement.className);
-                    if (wrapperElement) console.log('Clases finales del wrapper:', wrapperElement.className);
-                } else {
-                    console.log('ERROR: No se encontró el input en el preview');
-                }
-            }, 100);
+            });
         }
 
         // Funciones para el preview del componente
@@ -1707,31 +1566,10 @@ input.refreshAutocompleteMarked()  // Solo type autocomplete: actualiza marcas s
                 type: 'email',
                 placeholder: 'correo@ejemplo.com',
                 value: 'email-invalido',
-                size: 'sm'
+                size: 'sm',
+                state: 'invalid',
+                helperText: 'Email inválido'
             });
-            // Validación súper simple
-            setTimeout(() => {
-                const input = document.querySelector('#email-input-demo input');
-                if (input) {
-                    // Forzar borde rojo directamente
-                    input.style.borderColor = 'red';
-                    input.style.borderWidth = '2px';
-                    
-                    input.addEventListener('input', function() {
-                        const value = this.value;
-                        if (value.includes('@') && value.includes('.')) {
-                            this.style.borderColor = 'var(--ubits-border-1)';
-                            this.style.borderWidth = '1px';
-                        } else if (value.length > 0) {
-                            this.style.borderColor = 'red';
-                            this.style.borderWidth = '2px';
-                        } else {
-                            this.style.borderColor = 'var(--ubits-border-1)';
-                            this.style.borderWidth = '1px';
-                        }
-                    });
-                }
-            }, 500);
 
             // Password Input
             createInput({
@@ -1755,31 +1593,10 @@ input.refreshAutocompleteMarked()  // Solo type autocomplete: actualiza marcas s
                 type: 'tel',
                 placeholder: '+57 300 123 4567',
                 value: '123',
-                size: 'sm'
+                size: 'sm',
+                state: 'invalid',
+                helperText: 'Debe tener al menos 10 dígitos'
             });
-            // Validación súper simple
-            setTimeout(() => {
-                const input = document.querySelector('#tel-input-demo input');
-                if (input) {
-                    // Forzar borde rojo directamente
-                    input.style.borderColor = 'red';
-                    input.style.borderWidth = '2px';
-                    
-                    input.addEventListener('input', function() {
-                        const value = this.value;
-                        if (value.length >= 10) {
-                            this.style.borderColor = 'var(--ubits-border-1)';
-                            this.style.borderWidth = '1px';
-                        } else if (value.length > 0) {
-                            this.style.borderColor = 'red';
-                            this.style.borderWidth = '2px';
-                        } else {
-                            this.style.borderColor = 'var(--ubits-border-1)';
-                            this.style.borderWidth = '1px';
-                        }
-                    });
-                }
-            }, 500);
 
             // URL Input
             createInput({
@@ -1787,31 +1604,10 @@ input.refreshAutocompleteMarked()  // Solo type autocomplete: actualiza marcas s
                 type: 'url',
                 placeholder: 'https://ejemplo.com',
                 value: 'url-invalida',
-                size: 'sm'
+                size: 'sm',
+                state: 'invalid',
+                helperText: 'URL inválida. Debe iniciar con https://'
             });
-            // Validación súper simple
-            setTimeout(() => {
-                const input = document.querySelector('#url-input-demo input');
-                if (input) {
-                    // Forzar borde rojo directamente
-                    input.style.borderColor = 'red';
-                    input.style.borderWidth = '2px';
-                    
-                    input.addEventListener('input', function() {
-                        const value = this.value;
-                        if (value.startsWith('http://') || value.startsWith('https://')) {
-                            this.style.borderColor = 'var(--ubits-border-1)';
-                            this.style.borderWidth = '1px';
-                        } else if (value.length > 0) {
-                            this.style.borderColor = 'red';
-                            this.style.borderWidth = '2px';
-                        } else {
-                            this.style.borderColor = 'var(--ubits-border-1)';
-                            this.style.borderWidth = '1px';
-                        }
-                    });
-                }
-            }, 500);
 
             // Textarea Input
             createInput({

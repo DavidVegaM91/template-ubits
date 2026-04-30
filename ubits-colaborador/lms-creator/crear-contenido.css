@@ -202,10 +202,40 @@ body.crear-contenido-app-open .ubits-dropdown-menu__content {
     max-width: 400px;
     min-width: 400px;
     align-self: flex-start;
+    position: sticky;
+    top: 0;
+    height: calc(var(--cc-main-h, calc(100dvh - 120px)) - 40px);
+    min-height: 0;
 }
 
 .crear-contenido-recursos__indice-mount {
     min-width: 0;
+    height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    scrollbar-width: thin; /* Firefox */
+    scrollbar-color: var(--ubits-border-1) transparent; /* Firefox */
+}
+
+/* Scrollbar del índice (WebKit: Chrome/Safari) */
+.crear-contenido-recursos__indice-mount::-webkit-scrollbar {
+    width: 8px;
+}
+
+.crear-contenido-recursos__indice-mount::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.crear-contenido-recursos__indice-mount::-webkit-scrollbar-thumb {
+    background: var(--ubits-border-1);
+    border-radius: var(--border-radius-full);
+    border: 2px solid transparent;
+    background-clip: content-box;
+}
+
+.crear-contenido-recursos__indice-mount::-webkit-scrollbar-thumb:hover {
+    background: var(--ubits-fg-1-low);
+    background-clip: content-box;
 }
 
 .crear-contenido-recursos__preview {

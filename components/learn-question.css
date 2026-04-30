@@ -1,0 +1,416 @@
+/* ========================================
+   Learn Question (learn-question)
+   Componente de pregunta reutilizable para flujos de aprendizaje/evaluación.
+   Variantes:
+   - Edición (borde azul)
+   - Lectura (borde gris)
+   - Lectura error (borde rojo + helper "Campos sin diligenciar")
+   - Edición error (edición + borde rojo + inputs invalid)
+   - Colaborador (responder sin feedback)
+   - Colaborador con feedback inmediato (modo estudio IA)
+   ======================================== */
+
+.learn-question {
+  background: var(--ubits-bg-1);
+  border: 1px solid var(--ubits-border-1);
+  border-radius: var(--border-radius-lg);
+  padding: var(--padding-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-md);
+  cursor: default;
+}
+
+.learn-question--editing {
+  border-color: var(--ubits-accent-brand);
+  box-shadow: 0 0 0 2px var(--ubits-focus);
+}
+
+.learn-question--readonly {
+  border-color: var(--ubits-border-1);
+}
+
+.learn-question--error {
+  border-color: var(--ubits-feedback-accent-error);
+}
+
+.learn-question__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--gap-sm);
+}
+
+.learn-question__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--gap-sm);
+  color: var(--ubits-fg-1-high);
+}
+
+.learn-question__type-icon {
+  color: var(--ubits-accent-brand);
+  font-size: 14px;
+}
+
+.learn-question--error .learn-question__badge,
+.learn-question--error .learn-question__type-icon {
+  color: var(--ubits-feedback-accent-error);
+}
+
+.learn-question__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-md);
+}
+
+.learn-question__mode-mount {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-md);
+  min-width: 0;
+}
+
+.learn-question__mode-mount > div {
+  min-width: 0;
+}
+
+.learn-question__readonly-text {
+  color: var(--ubits-fg-1-high);
+  line-height: 1.5;
+  white-space: pre-wrap;
+}
+
+.learn-question__readonly-meta {
+  color: var(--ubits-fg-1-medium);
+}
+
+.learn-question__hint {
+  margin: 0;
+  color: var(--ubits-fg-1-medium);
+  display: inline-flex;
+  align-items: flex-start;
+  gap: var(--gap-xs);
+}
+
+.learn-question__hint i {
+  color: var(--ubits-fg-1-medium);
+  margin-top: 2px;
+}
+
+.learn-question__hint--error {
+  color: var(--ubits-feedback-accent-error);
+}
+
+.learn-question__hint--error i {
+  color: var(--ubits-feedback-accent-error);
+}
+
+.learn-question__error-row {
+  display: none;
+  align-items: center;
+  gap: var(--gap-xs);
+  color: var(--ubits-feedback-accent-error);
+}
+
+.learn-question__error-row i {
+  color: var(--ubits-feedback-accent-error);
+}
+
+.learn-question--error .learn-question__error-row {
+  display: inline-flex;
+}
+
+.learn-question__options {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-sm);
+}
+
+.learn-question__opt-row {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-sm);
+}
+
+/* UBITS radio/checkbox: el input interno es position:absolute. Encerrarlo localmente evita bugs. */
+.learn-question__opt-correct.ubits-radio,
+.learn-question__opt-correct.ubits-checkbox {
+  position: relative;
+}
+
+.learn-question__opt-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.learn-question__footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--gap-sm);
+  padding-top: var(--padding-sm);
+  border-top: 1px solid var(--ubits-border-1);
+}
+
+.learn-question--readonly .learn-question__footer {
+  display: none;
+}
+
+.learn-question__readonly-opts {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.learn-question__readonly-opt {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--gap-sm);
+}
+
+.learn-question__readonly-opt-marker {
+  flex: 0 0 auto;
+  width: 18px;
+  height: 18px;
+  border: 1px solid var(--ubits-border-1);
+  border-radius: 50%;
+  margin-top: 2px;
+}
+
+.learn-question__readonly-opt-marker--selected {
+  border-color: var(--ubits-accent-brand);
+  background: var(--ubits-feedback-bg-info-subtle);
+  position: relative;
+}
+
+.learn-question__readonly-opt-marker--selected::after {
+  content: '';
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--ubits-accent-brand);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.learn-question__readonly-opt-text {
+  color: var(--ubits-fg-1-high);
+  line-height: 1.4;
+}
+
+.learn-question__feedback {
+  display: none;
+  align-items: center;
+  gap: var(--gap-xs);
+  padding: 8px 10px;
+  border-radius: var(--border-radius-sm);
+}
+
+.learn-question__feedback--correct {
+  background: var(--ubits-feedback-bg-success-subtle);
+  color: var(--ubits-feedback-accent-success);
+}
+
+.learn-question__feedback--incorrect {
+  background: var(--ubits-feedback-bg-error-subtle);
+  color: var(--ubits-feedback-accent-error);
+}
+
+.learn-question__feedback i {
+  color: currentColor;
+}
+
+.learn-question--feedback .learn-question__feedback {
+  display: inline-flex;
+}
+
+/* Helper de error (visual alineado al File Upload): va fuera del card */
+.learn-question__helper {
+  margin: 0;
+  display: none;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--gap-md);
+  color: var(--ubits-feedback-accent-error);
+  margin-top: var(--gap-sm);
+}
+
+.learn-question__helper-msg {
+  display: inline-flex;
+  align-items: flex-start;
+  gap: var(--gap-xs);
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.learn-question__helper-msg i {
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+/* ─────────────────────────────────────────────
+   Bloques internos (solo para el componente)
+   ───────────────────────────────────────────── */
+
+.learn-question__instruction {
+  border: 1px solid var(--ubits-border-1);
+  border-radius: var(--border-radius-sm);
+  overflow: hidden;
+}
+
+.learn-question__instruction-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 6px 8px;
+  background: var(--ubits-bg-2);
+  border-bottom: 1px solid var(--ubits-border-1);
+}
+
+.learn-question__rt-btn {
+  background: none;
+  border: none;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  cursor: pointer;
+  color: var(--ubits-fg-1-medium);
+}
+
+.learn-question__rt-btn:hover {
+  background: var(--ubits-bg-3);
+}
+
+.learn-question__rt-sep {
+  width: 1px;
+  height: 18px;
+  background: var(--ubits-border-1);
+  margin: 0 4px;
+}
+
+.learn-question__instruction-editor {
+  min-height: 100px;
+  padding: 10px 12px;
+  color: var(--ubits-fg-1-high);
+  outline: none;
+  line-height: 1.6;
+}
+
+.learn-question__instruction-editor:empty::before {
+  content: attr(data-placeholder);
+  color: var(--ubits-fg-1-low);
+}
+
+.learn-question__sa-accuracy {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-sm);
+  padding: var(--padding-md);
+  background: var(--ubits-bg-2);
+  border: 1px solid var(--ubits-border-1);
+  border-radius: var(--border-radius-sm);
+}
+
+.learn-question__sa-accuracy-title {
+  margin: 0;
+  color: var(--ubits-fg-1-high);
+}
+
+.learn-question__sa-accuracy-opt {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-sm);
+  cursor: pointer;
+}
+
+.learn-question__essay-hint {
+  margin: 0;
+  color: var(--ubits-fg-1-medium);
+}
+
+.learn-question__match-pair {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-sm);
+  padding: var(--padding-md);
+  background: var(--ubits-bg-2);
+  border: 1px solid var(--ubits-border-1);
+  border-radius: var(--border-radius-sm);
+}
+
+.learn-question__match-pair-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--gap-sm);
+}
+
+.learn-question__fb-opt-row {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-sm);
+}
+
+.learn-question__fb-badge {
+  flex-shrink: 0;
+  background: var(--ubits-bg-2);
+  border: 1px solid var(--ubits-border-1);
+  border-radius: 4px;
+  padding: 2px 6px;
+  color: var(--ubits-fg-1-medium);
+  white-space: nowrap;
+}
+
+.learn-question__fb-opt-input {
+  flex: 1;
+  min-width: 0;
+}
+
+.learn-question__opt-feedback {
+  margin-top: 6px;
+  padding: 8px 10px;
+  border-radius: var(--border-radius-sm);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--gap-xs);
+}
+
+.learn-question__opt-feedback i {
+  color: currentColor;
+}
+
+.learn-question__opt-feedback--correct {
+  background: var(--ubits-feedback-bg-success-subtle);
+  color: var(--ubits-feedback-accent-success);
+}
+
+.learn-question__opt-feedback--incorrect {
+  background: var(--ubits-feedback-bg-error-subtle);
+  color: var(--ubits-feedback-accent-error);
+}
+
+.learn-question__rating-config {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-sm);
+  padding: var(--padding-md);
+  background: var(--ubits-bg-2);
+  border: 1px solid var(--ubits-border-1);
+  border-radius: var(--border-radius-sm);
+}
+
+.learn-question__rating-row {
+  display: flex;
+  gap: var(--gap-md);
+}
+
+.learn-question__rating-row > div {
+  flex: 1;
+}
+

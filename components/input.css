@@ -283,6 +283,15 @@ textarea.ubits-input:disabled {
     line-height: 19.5px;
 }
 
+.ubits-input-wrapper--invalid + .ubits-input-helper {
+    color: var(--ubits-feedback-accent-error);
+}
+
+.ubits-input-wrapper--invalid + .ubits-input-helper .ubits-input-counter-label,
+.ubits-input-wrapper--invalid + .ubits-input-helper .ubits-input-counter {
+    color: var(--ubits-feedback-accent-error);
+}
+
 .ubits-input-helper-row {
     display: flex;
     justify-content: space-between;

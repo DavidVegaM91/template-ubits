@@ -1,0 +1,194 @@
+/* ========================================
+   LMS Creator — Componente: Pregunta de evaluación
+   Variantes: edición, lectura, lectura error, edición error, colaborador (con/sin feedback)
+   ======================================== */
+
+.cc-eval-q {
+  background: var(--ubits-bg-1);
+  border: 1px solid var(--ubits-border-1);
+  border-radius: var(--border-radius-lg);
+  padding: var(--padding-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-md);
+  cursor: default;
+}
+
+.cc-eval-q.is-editing {
+  border-color: var(--ubits-accent-brand);
+  box-shadow: 0 0 0 2px var(--ubits-focus);
+}
+
+.cc-eval-q.is-readonly {
+  border-color: var(--ubits-border-1);
+}
+
+.cc-eval-q.is-error {
+  border-color: var(--ubits-feedback-accent-error);
+}
+
+.cc-eval-q__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--gap-sm);
+}
+
+.cc-eval-q__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--gap-sm);
+  color: var(--ubits-fg-1-high);
+}
+
+.cc-eval-q__type-icon {
+  color: var(--ubits-accent-brand);
+  font-size: 14px;
+}
+
+.cc-eval-q.is-error .cc-eval-q__badge,
+.cc-eval-q.is-error .cc-eval-q__type-icon {
+  color: var(--ubits-feedback-accent-error);
+}
+
+.cc-eval-q__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-md);
+}
+
+.cc-eval-q__readonly-text {
+  color: var(--ubits-fg-1-high);
+  line-height: 1.5;
+  white-space: pre-wrap;
+}
+
+.cc-eval-q__readonly-meta {
+  color: var(--ubits-fg-1-medium);
+}
+
+.cc-eval-q__hint {
+  margin: 0;
+  color: var(--ubits-fg-1-medium);
+  display: inline-flex;
+  align-items: flex-start;
+  gap: var(--gap-xs);
+}
+
+.cc-eval-q__hint i {
+  color: var(--ubits-fg-1-medium);
+  margin-top: 2px;
+}
+
+.cc-eval-q__hint.is-error {
+  color: var(--ubits-feedback-accent-error);
+}
+
+.cc-eval-q__hint.is-error i {
+  color: var(--ubits-feedback-accent-error);
+}
+
+.cc-eval-q__error-row {
+  display: none;
+  align-items: center;
+  gap: var(--gap-xs);
+  color: var(--ubits-feedback-accent-error);
+}
+
+.cc-eval-q__error-row i {
+  color: var(--ubits-feedback-accent-error);
+}
+
+.cc-eval-q.is-error .cc-eval-q__error-row {
+  display: inline-flex;
+}
+
+.cc-eval-q__options {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-sm);
+}
+
+.cc-eval-q__opt-row {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-sm);
+}
+
+/* UBITS radio/checkbox: el input interno es position:absolute.
+   Encerrarlo localmente evita bugs de layout/scroll sin tocar componentes oficiales. */
+.cc-eval-q__opt-correct.ubits-radio,
+.cc-eval-q__opt-correct.ubits-checkbox {
+  position: relative;
+}
+
+.cc-eval-q__opt-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.cc-eval-q__footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--gap-sm);
+  padding-top: var(--padding-sm);
+  border-top: 1px solid var(--ubits-border-1);
+}
+
+.cc-eval-q.is-readonly .cc-eval-q__footer {
+  display: none;
+}
+
+.cc-eval-q__readonly-opts {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.cc-eval-q__readonly-opt {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--gap-sm);
+}
+
+.cc-eval-q__readonly-opt-marker {
+  flex: 0 0 auto;
+  width: 18px;
+  height: 18px;
+  border: 1px solid var(--ubits-border-1);
+  border-radius: 50%;
+  margin-top: 2px;
+}
+
+.cc-eval-q__readonly-opt-text {
+  color: var(--ubits-fg-1-high);
+  line-height: 1.4;
+}
+
+.cc-eval-q__feedback {
+  display: none;
+  align-items: center;
+  gap: var(--gap-xs);
+  padding: 8px 10px;
+  border-radius: var(--border-radius-sm);
+}
+
+.cc-eval-q__feedback.is-correct {
+  background: var(--ubits-feedback-bg-success-subtle);
+  color: var(--ubits-feedback-accent-success);
+}
+
+.cc-eval-q__feedback.is-incorrect {
+  background: var(--ubits-feedback-bg-error-subtle);
+  color: var(--ubits-feedback-accent-error);
+}
+
+.cc-eval-q__feedback i {
+  color: currentColor;
+}
+
+.cc-eval-q.is-feedback .cc-eval-q__feedback {
+  display: inline-flex;
+}
+

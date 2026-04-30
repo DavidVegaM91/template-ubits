@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="../../images/Ubits-logo-dark.svg">
+    <title>Learn question | Preguntas para aprendizaje y evaluaciones | UBITS Playground</title>
+
+    <!-- Estilos locales -->
+    <link rel="stylesheet" href="../../general-styles/ubits-colors.css">
+    <link rel="stylesheet" href="../../general-styles/styles.css">
+    <link rel="stylesheet" href="../../general-styles/fontawesome-icons.css">
+    <link rel="stylesheet" href="../../general-styles/ubits-typography.css">
+    <link rel="stylesheet" href="../../components/sub-nav.css">
+    <link rel="stylesheet" href="../../components/alert.css">
+    <link rel="stylesheet" href="../../components/sidebar.css">
+    <link rel="stylesheet" href="../../docs/docs-sidebar.css">
+    <link rel="stylesheet" href="../../docs/docstyles.css">
+    <link rel="stylesheet" href="../../components/button.css">
+    <link rel="stylesheet" href="../../components/toast.css">
+    <link rel="stylesheet" href="../../components/input.css">
+    <link rel="stylesheet" href="../../components/dropdown-menu.css">
+    <link rel="stylesheet" href="../../components/radio-button.css">
+    <link rel="stylesheet" href="../../components/checkbox.css">
+    <link rel="stylesheet" href="../../components/tooltip.css">
+    <link rel="stylesheet" href="../../components/learn-question.css">
+    <style>
+        .preview-control-btn.active {
+            background: var(--ubits-accent-brand) !important;
+            color: white !important;
+            border-color: var(--ubits-accent-brand) !important;
+        }
+        .preview-control-btn.active span {
+            color: white !important;
+        }
+        .component-preview {
+            background: var(--ubits-bg-2);
+            padding: 24px;
+            border-radius: var(--border-radius-md);
+        }
+        .lq-preview-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--gap-lg);
+        }
+        @media (max-width: 1023px) {
+            .lq-preview-grid { grid-template-columns: 1fr; }
+        }
+        .lq-preview-panel {
+            background: var(--ubits-bg-1);
+            border: 1px solid var(--ubits-border-1);
+            border-radius: var(--border-radius-lg);
+            padding: var(--padding-lg);
+            display: flex;
+            flex-direction: column;
+            gap: var(--gap-md);
+        }
+    </style>
+</head>
+<body class="componentes-page" data-theme="light">
+    <div class="dashboard-container">
+        <div class="tooltip" id="tooltip"></div>
+
+        <main class="main-content">
+            <div id="top-nav-container"></div>
+
+            <div style="display: flex;">
+                <div id="docs-dropdown-container"></div>
+                <div id="docs-sidebar-container"></div>
+
+                <div class="components-content">
+                    <div class="content-area" style="display:block; width:100%;">
+
+                        <!-- Hero -->
+                        <div style="text-align:center; margin-bottom:60px;">
+                            <h1 class="ubits-display-d2-bold" style="margin-bottom:24px; color: var(--ubits-accent-brand);">
+                                Learn question
+                            </h1>
+                            <p class="ubits-body-md-regular" style="max-width: 880px; margin: 0 auto 32px; line-height: 1.6;">
+                                Bloque para crear y mostrar preguntas en flujos de aprendizaje y evaluaciones, con estados de edición, lectura y validación.
+                            </p>
+                        </div>
+
+                        <!-- Preview -->
+                        <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: var(--border-radius-lg); margin-bottom: 40px;">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-eye" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Preview del componente
+                            </h2>
+                            <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6;">
+                                Usa los controles para cambiar el tipo de pregunta y el modo (edición/lectura/error/colaborador).
+                            </p>
+
+                            <div class="component-preview">
+                                <div class="lq-preview-grid">
+                                    <div class="lq-preview-panel">
+                                        <p class="ubits-body-sm-bold" style="margin:0; color: var(--ubits-fg-1-high);">Controles</p>
+                                        <div id="lq-type-input"></div>
+                                        <div style="display:flex; flex-wrap:wrap; gap: var(--gap-sm);">
+                                            <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn active" onclick="setLqMode('edit')"><span>Edición</span></button>
+                                            <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" onclick="setLqMode('read')"><span>Lectura</span></button>
+                                            <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" onclick="setLqMode('read_error')"><span>Lectura error</span></button>
+                                            <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" onclick="setLqMode('edit_error')"><span>Edición error</span></button>
+                                            <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" onclick="setLqMode('collab')"><span>Colaborador</span></button>
+                                            <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" onclick="setLqMode('collab_feedback')"><span>Colaborador (feedback)</span></button>
+                                        </div>
+                                        <div id="lq-feedback-demo-controls" style="display:none; flex-wrap:wrap; gap: var(--gap-sm);">
+                                            <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="demoFeedbackCorrect()"><span>Ver correcto</span></button>
+                                            <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="demoFeedbackIncorrect()"><span>Ver incorrecto</span></button>
+                                        </div>
+                                        <div class="ubits-alert ubits-alert--warning ubits-alert--no-close" style="margin:0;">
+                                            <div class="ubits-alert__icon"><i class="far fa-triangle-exclamation"></i></div>
+                                            <div class="ubits-alert__content">
+                                                <div class="ubits-alert__text">El preview usa datos demo. En producción, el modelo viene del flujo (Creator/Modo estudio IA).</div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="lq-preview-panel">
+                                        <p class="ubits-body-sm-bold" style="margin:0; color: var(--ubits-fg-1-high);">Componente</p>
+                                        <div id="lq-preview-mount"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Características -->
+                        <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: var(--border-radius-lg); margin-bottom: 40px;">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-info-circle" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Características generales
+                            </h2>
+                            <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: var(--gap-lg);">
+                                <div style="text-align:center; padding:16px; background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom:8px;"><i class="far fa-pen-to-square"></i></div>
+                                    <div class="ubits-body-sm-bold">Edición y lectura</div>
+                                    <div class="ubits-body-sm-regular">Una pregunta puede estar activa (edición) o en lectura mientras editas otra.</div>
+                                </div>
+                                <div style="text-align:center; padding:16px; background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom:8px;"><i class="far fa-circle-exclamation"></i></div>
+                                    <div class="ubits-body-sm-bold">Estados de error</div>
+                                    <div class="ubits-body-sm-regular">Soporta lectura error y edición error para guiar al usuario a completar campos requeridos.</div>
+                                </div>
+                                <div style="text-align:center; padding:16px; background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom:8px;"><i class="far fa-user-graduate"></i></div>
+                                    <div class="ubits-body-sm-bold">Modo colaborador</div>
+                                    <div class="ubits-body-sm-regular">Permite responder sin mostrar cuáles eran correctas. Incluye una variante con feedback inmediato.</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Prompts útiles -->
+                        <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: var(--border-radius-lg); margin-bottom: 40px;">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-comments" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Prompts útiles
+                            </h2>
+                            <div id="component-warning-alert" style="margin-bottom: 32px;"></div>
+
+                            <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
+                                <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:16px;">
+                                    <h3 class="ubits-body-md-bold" style="margin:0; color: var(--ubits-fg-1-high);">Insertar una pregunta (edición)</h3>
+                                    <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('lq-prompt-1')"><i class="far fa-copy"></i><span>Copiar</span></button>
+                                </div>
+                                <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm);">
+                                    <pre style="margin:0; font-family:'Monaco','Menlo','Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height:1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="lq-prompt-1">Inserta el componente Learn question en [ubicación] en modo Edición para una pregunta de tipo [tipo]. Importa `../../components/learn-question.css`, `../../components/learn-question.js`, `../../components/input.css`, `../../components/input.js`, `../../components/radio-button.css` y `../../components/checkbox.css`.</code></pre>
+                                </div>
+                            </div>
+
+                            <div>
+                                <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:16px;">
+                                    <h3 class="ubits-body-md-bold" style="margin:0; color: var(--ubits-fg-1-high);">Mostrar preguntas al colaborador</h3>
+                                    <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('lq-prompt-2')"><i class="far fa-copy"></i><span>Copiar</span></button>
+                                </div>
+                                <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm);">
+                                    <pre style="margin:0; font-family:'Monaco','Menlo','Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height:1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="lq-prompt-2">En [pantalla], renderiza las preguntas usando el componente Learn question en modo Colaborador. No muestres cuáles eran las respuestas correctas. Importa `../../components/learn-question.css` y `../../components/learn-question.js` (y `input.css/input.js` si hay respuesta de texto).</code></pre>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Documentación técnica -->
+                        <div style="background: var(--ubits-bg-1); border-radius: var(--border-radius-lg); margin-bottom: 40px; overflow:hidden;">
+                            <div style="padding: 32px; text-align:center; border-bottom: 1px solid var(--ubits-border-1);">
+                                <h2 class="ubits-heading-h2" style="margin-bottom:0; color: var(--ubits-fg-1-high);">
+                                    <i class="far fa-code" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                    Documentación técnica
+                                </h2>
+                                <p class="ubits-body-md-regular" style="margin-top:16px; color: var(--ubits-fg-1-medium);">
+                                    Implementación, estructura y API del componente.
+                                </p>
+                            </div>
+
+                            <div style="background: var(--ubits-bg-2); padding: 20px; text-align: center; cursor:pointer;" onclick="toggleTechnicalDocs()">
+                                <span class="ubits-body-md-regular" style="color: var(--ubits-accent-brand); display:flex; align-items:center; justify-content:center; gap: var(--gap-sm);">
+                                    <i class="far fa-chevron-down" id="tech-docs-chevron" style="transition: transform 0.3s ease;"></i>
+                                    Mostrar
+                                </span>
+                            </div>
+
+                            <div id="technical-docs-content" style="display:none; padding:0;">
+                                <div style="padding: 32px; border-bottom: 1px solid var(--ubits-border-1);">
+                                    <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:24px;">
+                                        <h2 class="ubits-heading-h2" style="margin:0; color: var(--ubits-fg-1-high);">
+                                            <i class="far fa-sitemap" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                            Estructura del componente
+                                        </h2>
+                                        <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('lq-structure-code')"><i class="far fa-copy"></i><span>Copiar</span></button>
+                                    </div>
+                                    <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: var(--border-radius-md);">
+                                        <pre style="margin:0; font-family:'Monaco','Menlo','Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); overflow-x:auto;"><code id="lq-structure-code">&lt;!-- Mount --&gt;
+&lt;div id="my-question"&gt;&lt;/div&gt;
+
+&lt;!-- CSS --&gt;
+&lt;link rel="stylesheet" href="../../components/learn-question.css"&gt;
+
+&lt;!-- Requisitos según tipo --&gt;
+&lt;link rel="stylesheet" href="../../components/input.css"&gt;
+&lt;link rel="stylesheet" href="../../components/dropdown-menu.css"&gt;
+&lt;link rel="stylesheet" href="../../components/radio-button.css"&gt;
+&lt;link rel="stylesheet" href="../../components/checkbox.css"&gt;
+
+&lt;!-- JS (orden obligatorio para SELECT) --&gt;
+&lt;script src="../../components/dropdown-menu.js"&gt;&lt;/script&gt;
+&lt;script src="../../components/input.js"&gt;&lt;/script&gt;
+&lt;script src="../../components/learn-question.js"&gt;&lt;/script&gt;</code></pre>
+                                    </div>
+                                </div>
+
+                                <div style="padding: 32px; border-bottom: 1px solid var(--ubits-border-1);">
+                                    <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:24px;">
+                                        <h2 class="ubits-heading-h2" style="margin:0; color: var(--ubits-fg-1-high);">
+                                            <i class="far fa-code" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                            Cómo implementar
+                                        </h2>
+                                        <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('lq-implement-code')"><i class="far fa-copy"></i><span>Copiar</span></button>
+                                    </div>
+                                    <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm);">
+                                        <pre style="margin:0; font-family:'Monaco','Menlo','Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="lq-implement-code">&lt;div id="my-question"&gt;&lt;/div&gt;
+&lt;script&gt;
+  const api = createLearnQuestion({
+    containerId: 'my-question',
+    qId: 1,
+    mode: 'edit', // 'read' | 'read_error' | 'edit_error' | 'collab' | 'collab_feedback'
+    model: {
+      type: 'multiple_choice_single',
+      statement: '¿Cuál es la respuesta correcta?',
+      options: [
+        { text: 'Opción A', correct: false },
+        { text: 'Opción B', correct: true }
+      ]
+    },
+    onDelete: (qid) =&gt; console.log('delete', qid),
+    onRequestFocus: (qid) =&gt; console.log('focus', qid)
+  });
+&lt;/script&gt;</code></pre>
+                                    </div>
+                                </div>
+
+                                <div style="padding: 32px;">
+                                    <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                                        <i class="far fa-cogs" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                        API y funciones
+                                    </h2>
+                                    <div style="background: var(--ubits-bg-2); padding: 12px; border-radius: var(--border-radius-sm); border-left: 4px solid var(--ubits-accent-brand);">
+                                        <div class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">
+                                            <strong>createLearnQuestion(options)</strong>: monta una pregunta y devuelve un API.<br>
+                                            <strong>api.setMode(mode)</strong>: cambia variante/estado de la pregunta.<br>
+                                            <strong>api.getModel()</strong>: devuelve el modelo actual (serializable).<br>
+                                            <strong>api.validate()</strong>: valida y retorna { ok, missing }.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div id="ubits-toast-container"></div>
+
+    <script src="../../components/sidebar.js"></script>
+    <script src="../../components/sub-nav.js"></script>
+    <script src="../../components/alert.js"></script>
+    <script src="../../components/toast.js"></script>
+    <script src="../../components/tooltip.js"></script>
+    <script src="../../components/dropdown-menu.js"></script>
+    <script src="../../components/input.js"></script>
+    <script src="../../docs/docs-sidebar.js"></script>
+    <script src="../../script.js"></script>
+    <script src="../../components/learn-question.js"></script>
+
+    <script>
+        let lqApi = null;
+        let lqMode = 'edit';
+        let lqType = 'multiple_choice_single';
+
+        const demoModelsByType = {
+            multiple_choice_single: {
+                type: 'multiple_choice_single',
+                statement: '¿Cuál de estas opciones describe mejor el concepto?',
+                options: [
+                    { text: 'Opción A', correct: false },
+                    { text: 'Opción B', correct: false },
+                    { text: 'Opción C', correct: false }
+                ]
+            },
+            multiple_choice_multiple: {
+                type: 'multiple_choice_multiple',
+                statement: 'Selecciona todas las opciones correctas.',
+                options: [
+                    { text: 'Opción A', correct: false },
+                    { text: 'Opción B', correct: false },
+                    { text: 'Opción C', correct: false }
+                ]
+            },
+            true_false: {
+                type: 'true_false',
+                statement: 'La práctica constante mejora el aprendizaje.',
+                trueFalseCorrect: ''
+            },
+            short_answer: {
+                type: 'short_answer',
+                statement: 'Escribe la respuesta correcta.',
+                shortAnswer: { answer: '', accuracy: 'exact' }
+            },
+            essay: {
+                type: 'essay',
+                statement: 'Explica el concepto con tus palabras.',
+                essay: { minWords: '' }
+            },
+            matching: {
+                type: 'matching',
+                statement: 'Empareja cada concepto con su definición.',
+                pairs: [
+                    { a: '', b: '' },
+                    { a: '', b: '' }
+                ]
+            },
+            fill_blank: {
+                type: 'fill_blank',
+                statement: 'La capital de Colombia es {{1}} y la de México es {{2}}.',
+                fillBlank: { options: ['', ''] }
+            },
+            instruction: {
+                type: 'instruction',
+                instructionHtml: ''
+            },
+            rating_scale: {
+                type: 'rating_scale',
+                statement: 'Califica tu nivel de acuerdo.',
+                rating: { min: '1', max: '5', minLabel: '', maxLabel: '' }
+            }
+        };
+
+        // Modelos EXTREMOS para modos error (todo vacío / sin diligenciar)
+        const demoModelsEmptyByType = {
+            multiple_choice_single: { type: 'multiple_choice_single', statement: '', options: [{ text: '', correct: false }, { text: '', correct: false }, { text: '', correct: false }] },
+            multiple_choice_multiple: { type: 'multiple_choice_multiple', statement: '', options: [{ text: '', correct: false }, { text: '', correct: false }, { text: '', correct: false }] },
+            true_false: { type: 'true_false', statement: '', trueFalseCorrect: '' },
+            short_answer: { type: 'short_answer', statement: '', shortAnswer: { answer: '', accuracy: 'exact' } },
+            essay: { type: 'essay', statement: '', essay: { minWords: '' } },
+            matching: { type: 'matching', statement: '', pairs: [{ a: '', b: '' }, { a: '', b: '' }] },
+            fill_blank: { type: 'fill_blank', statement: '', fillBlank: { options: ['', ''] } },
+            instruction: { type: 'instruction', instructionHtml: '' },
+            rating_scale: { type: 'rating_scale', statement: '', rating: { min: '', max: '', minLabel: '', maxLabel: '' } }
+        };
+
+        const demoModelsWithCorrect = {
+            multiple_choice_single: {
+                type: 'multiple_choice_single',
+                statement: '¿Cuál de estas opciones es correcta?',
+                options: [
+                    { text: 'Opción A', correct: false },
+                    { text: 'Opción B', correct: true },
+                    { text: 'Opción C', correct: false }
+                ]
+            },
+            true_false: {
+                type: 'true_false',
+                statement: 'La práctica constante mejora el aprendizaje.',
+                trueFalseCorrect: 'true'
+            },
+            multiple_choice_multiple: {
+                type: 'multiple_choice_multiple',
+                statement: 'Selecciona todas las correctas.',
+                options: [
+                    { text: 'Opción A', correct: true },
+                    { text: 'Opción B', correct: false },
+                    { text: 'Opción C', correct: true }
+                ]
+            }
+        };
+
+        function mountPreview() {
+            const mountId = 'lq-preview-mount';
+            const mount = document.getElementById(mountId);
+            if (!mount) return;
+            mount.innerHTML = '<div id="lq-preview-inner"></div>';
+            const isFeedback = lqMode === 'collab_feedback';
+            const isErrorMode = (lqMode === 'read_error' || lqMode === 'edit_error');
+            const baseModel = isErrorMode ? (demoModelsEmptyByType[lqType] || demoModelsByType[lqType]) : demoModelsByType[lqType];
+            const model = isFeedback ? (demoModelsWithCorrect[lqType] || baseModel) : baseModel;
+            lqApi = createLearnQuestion({
+                containerId: 'lq-preview-inner',
+                qId: 1,
+                mode: lqMode,
+                model: model,
+                onDelete: function () { showToast('info', 'Eliminar (demo).'); },
+                onRequestFocus: function () {}
+            });
+
+            const demoCtl = document.getElementById('lq-feedback-demo-controls');
+            if (demoCtl) demoCtl.style.display = isFeedback ? 'flex' : 'none';
+        }
+
+        function setLqMode(mode) {
+            lqMode = mode;
+            document.querySelectorAll('.preview-control-btn').forEach(btn => btn.classList.remove('active'));
+            const activeBtn = document.querySelector(`[onclick="setLqMode('${mode}')"]`);
+            if (activeBtn) activeBtn.classList.add('active');
+            mountPreview();
+        }
+
+        function _selectInput(selector) {
+            const el = document.querySelector(selector);
+            if (!el) return;
+            el.checked = true;
+            el.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+
+        function demoFeedbackCorrect() {
+            if (lqType === 'true_false') {
+                _selectInput('#lq-preview-inner input[name="collab-q-1"][value="true"]');
+                return;
+            }
+            _selectInput('#lq-preview-inner input[name="collab-q-1"][value="2"]');
+        }
+
+        function demoFeedbackIncorrect() {
+            if (lqType === 'true_false') {
+                _selectInput('#lq-preview-inner input[name="collab-q-1"][value="false"]');
+                return;
+            }
+            _selectInput('#lq-preview-inner input[name="collab-q-1"][value="1"]');
+        }
+
+        function toggleTechnicalDocs() {
+            const content = document.getElementById('technical-docs-content');
+            const toggleRow = document.querySelector('[onclick="toggleTechnicalDocs()"]');
+            if (!content || !toggleRow) return;
+            const isOpen = !(content.style.display === 'none' || content.style.display === '');
+            content.style.display = isOpen ? 'none' : 'block';
+            toggleRow.innerHTML = isOpen
+                ? '<span class="ubits-body-md-regular" style="color: var(--ubits-accent-brand); display:flex; align-items:center; justify-content:center; gap: var(--gap-sm);"><i class="far fa-chevron-down" id="tech-docs-chevron"></i>Mostrar</span>'
+                : '<span class="ubits-body-md-regular" style="color: var(--ubits-accent-brand); display:flex; align-items:center; justify-content:center; gap: var(--gap-sm);"><i class="far fa-chevron-up" id="tech-docs-chevron"></i>Ocultar</span>';
+        }
+
+        function copyPrompt(id) {
+            const el = document.getElementById(id);
+            if (!el) return;
+            navigator.clipboard.writeText(el.textContent).then(function() {
+                showToast('success', '¡Prompt copiado!', { containerId: 'ubits-toast-container', duration: 3500 });
+            });
+        }
+
+        function copyCode(id) {
+            const el = document.getElementById(id);
+            if (!el) return;
+            navigator.clipboard.writeText(el.textContent).then(function() {
+                showToast('success', '¡Código copiado!', { containerId: 'ubits-toast-container', duration: 3500 });
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            loadSubNav('top-nav-container', 'documentacion');
+
+            setTimeout(() => {
+                document.querySelectorAll('.nav-tab.active, .hamburger-item.active').forEach(item => item.classList.remove('active'));
+                const navTab = document.querySelector('.nav-tab[data-tab="section3"]');
+                const hamburgerItem = document.querySelector('.hamburger-item[data-tab="section3"]');
+                if (navTab) navTab.classList.add('active');
+                if (hamburgerItem) hamburgerItem.classList.add('active');
+            }, 200);
+
+            loadDocsSidebar('learn-question');
+
+            showAlert('warning', 'Importante: Antes de enviar estos prompts a Cursor, reemplaza todos los textos entre [corchetes] con la información específica de tu proyecto.', {
+                containerId: 'component-warning-alert',
+                noClose: true
+            });
+
+            if (typeof createInput === 'function') {
+                createInput({
+                    containerId: 'lq-type-input',
+                    type: 'select',
+                    size: 'md',
+                    label: 'Tipo de pregunta',
+                    showLabel: true,
+                    value: lqType,
+                    selectOptions: [
+                        { value: 'multiple_choice_single', text: 'Opción múltiple, única respuesta' },
+                        { value: 'multiple_choice_multiple', text: 'Opción múltiple, múltiple respuesta' },
+                        { value: 'true_false', text: 'Verdadero / Falso' },
+                        { value: 'instruction', text: 'Instrucción' },
+                        { value: 'short_answer', text: 'Pregunta corta' },
+                        { value: 'essay', text: 'Ensayo' },
+                        { value: 'matching', text: 'Emparejamiento' },
+                        { value: 'fill_blank', text: 'Palabra faltante' },
+                        { value: 'rating_scale', text: 'Escala de valoración' }
+                    ],
+                    onChange: function (v) {
+                        lqType = String(v || 'multiple_choice_single');
+                        mountPreview();
+                    }
+                });
+            }
+
+            mountPreview();
+            if (typeof initTooltip === 'function') initTooltip('[data-tooltip]');
+        });
+    </script>
+</body>
+</html>
+

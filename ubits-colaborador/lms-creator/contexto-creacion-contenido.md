@@ -308,6 +308,60 @@ Al configurar una página, el usuario puede añadir uno de estos tipos (presenta
 
 ---
 
+## Recurso: Evaluación final — builder de preguntas (LMS Creator)
+
+### Componente oficial usado
+
+- **`learn-question`** (`components/learn-question.js` + `components/learn-question.css`)
+- En LMS Creator **solo se usan** estos modos del componente:
+  - **`edit`**: la pregunta activa (única editable)
+  - **`read`**: preguntas no activas, sin inputs visibles como inputs y sin acciones
+  - **`read_error`**: pregunta no activa con faltantes (borde/estados de error + helper “Campos sin diligenciar”)
+  - **`edit_error`**: pregunta activa con faltantes (inputs `invalid` + helper por campo “Campo requerido” + helper general)
+
+> **Importante:** aquí **no** se documenta nada del panel de IA para crear evaluaciones (pendiente de refinamiento).
+
+### Regla de UX: foco único
+
+- En el builder de evaluación **solo puede existir una pregunta en edición a la vez**.
+- Al interactuar con otra tarjeta de pregunta, el foco cambia: la anterior deja de estar activa y la nueva se vuelve activa.
+
+### Cuándo se registra el error (regla clave)
+
+- Una pregunta **NO** nace “en error” por estar vacía.
+- El estado de error **solo se registra cuando la pregunta pierde foco**.
+  - Ejemplo: estás editando la Pregunta 1, la dejas incompleta y haces clic en la Pregunta 2 → la Pregunta 1 pasa a `read_error`.
+
+### Transiciones de estado (edit/read ↔ error)
+
+Se define un estado de “error” por pregunta (persistente por página) que controla el modo:
+
+| Evento | Pregunta que pierde foco | Pregunta que gana foco |
+|--------|--------------------------|------------------------|
+| Click / Enter / Space en otra pregunta | Se valida. Si falla → `read_error`. Si pasa → `read`. | Si tenía error → `edit_error`. Si no → `edit`. |
+| Click en “Añadir pregunta” | Se considera pérdida de foco de la activa: se valida y pasa a `read_error`/`read`. | La nueva pregunta se crea y entra en `edit` (sin error). |
+
+### Auto-recuperación (solo para salir de `edit_error`)
+
+- Mientras la pregunta activa está en `edit_error`, el sistema revalida al editar.
+- **Cuando ya queda válida**, se “recupera” automáticamente a `edit`.
+- **No** se fuerza a `edit_error` mientras el usuario está en `edit` normal (la marca de error se decide al perder foco).
+
+### Persistencia por página (índice de Recursos)
+
+- El builder mantiene estado **por página del índice de Recursos** (para no mezclar preguntas entre páginas).
+- Por cada página se guarda:
+  - **`questions`**: lista de modelos normalizados de `learn-question`
+  - **`activeQId`**: id (1-indexed) de la pregunta activa
+  - **`questionErrors[]`**: arreglo paralelo (1-indexed a nivel conceptual) indicando si cada pregunta tiene error registrado
+
+### Implementación de referencia (playground)
+
+- Orquestación del recurso (montaje y wiring): `ubits-colaborador/lms-creator/evaluaciones-recurso.js`
+- Shell del flujo: `ubits-colaborador/lms-creator/crear-contenido.html` (imports del componente `learn-question`)
+
+---
+
 ## Pendiente de documentar (próximos mensajes)
 
 - Detalle de **contenido complementario** en todos los recursos donde aplique.  

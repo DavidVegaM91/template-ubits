@@ -380,6 +380,7 @@ const PAGE_TO_TAB = {
     'calendar.html': 'section3',
     'card-content.html': 'section3',
     'card-content-compact.html': 'section3',
+    'learn-question.html': 'section3',
     'learn-content-img-trailer.html': 'section3',
     'paginas-creator.html': 'section3',
     'seccion-creator.html': 'section3',

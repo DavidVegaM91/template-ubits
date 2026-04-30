@@ -1,0 +1,493 @@
+/* ========================================
+   LMS Creator — Recurso: Evaluación final
+   Usado dentro de crear-contenido.html (paso Recursos)
+   ======================================== */
+
+/* ─────────────────────────────────────────────
+   Layout general del recurso
+   ───────────────────────────────────────────── */
+
+.cc-eval-root {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-lg);
+}
+
+.cc-eval-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--gap-lg);
+}
+
+.cc-eval-head__title {
+    margin: 0;
+    color: var(--ubits-fg-1-high);
+}
+
+.cc-eval-head__hint {
+    margin: 4px 0 0;
+    color: var(--ubits-fg-1-medium);
+}
+
+.cc-eval-config-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--gap-sm);
+}
+
+.cc-eval-config-title {
+    margin: 0;
+    color: var(--ubits-fg-1-high);
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+/* Empty state del recurso: borde + radio */
+#ccEvalEmptyHost.ubits-empty-state {
+    border: 1px solid var(--ubits-border-1);
+    border-radius: var(--border-radius-lg);
+    background: var(--ubits-bg-1);
+}
+
+.cc-eval-q-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-lg);
+}
+
+.cc-eval-add-q {
+    align-self: flex-start;
+}
+
+@media (max-width: 767px) {
+    .cc-eval-head {
+        flex-direction: column;
+        align-items: stretch;
+    }
+}
+
+/* ─────────────────────────────────────────────
+   Card de pregunta (port desde rc-exam-*)
+   ───────────────────────────────────────────── */
+
+.cc-exam-q-card {
+    background: var(--ubits-bg-1);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: var(--border-radius-lg);
+    padding: var(--padding-lg);
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-md);
+}
+
+.cc-exam-q-card__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--gap-sm);
+}
+
+.cc-exam-q-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--gap-sm);
+    color: var(--ubits-fg-1-high);
+}
+
+.cc-exam-q-type-icon {
+    color: var(--ubits-accent-brand);
+    font-size: 14px;
+}
+
+.cc-exam-q-type-section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-xs);
+}
+
+.cc-exam-q-type-label {
+    color: var(--ubits-fg-1-medium);
+    margin: 0;
+}
+
+.cc-exam-q-type-select {
+    width: 100%;
+    height: 36px;
+    padding: 0 10px;
+    border: 1px solid var(--ubits-border-1);
+    border-radius: var(--border-radius-sm);
+    background: var(--ubits-bg-2);
+    color: var(--ubits-fg-1-high);
+    outline: none;
+}
+
+.cc-exam-q-type-select:focus {
+    border-color: var(--ubits-accent-brand);
+    box-shadow: 0 0 0 2px var(--ubits-focus);
+}
+
+.cc-exam-q-hint {
+    margin: 0;
+    color: var(--ubits-fg-1-medium);
+}
+
+.cc-exam-q-options {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-sm);
+}
+
+.cc-exam-opt-row {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-sm);
+}
+
+.cc-exam-opt-row--static {
+    padding: 4px 0;
+}
+
+.cc-exam-opt-static-text {
+    color: var(--ubits-fg-1-high);
+}
+
+.cc-exam-opt-correct {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+    cursor: pointer;
+}
+
+/* UBITS radio/checkbox: el input interno es position:absolute.
+   Si el wrapper no es positioned, el input puede anclarse al viewport/documento y generar comportamientos raros de scroll.
+   Lo encerramos localmente (sin tocar componentes oficiales). */
+.cc-exam-opt-correct.ubits-radio,
+.cc-exam-opt-correct.ubits-checkbox {
+    position: relative;
+}
+
+/* En opciones: ocultar texto "Correcta" (solo control visual) */
+.cc-exam-opt-label-hidden {
+    display: none;
+}
+
+.cc-exam-opt-text {
+    flex: 1;
+    min-width: 0;
+}
+
+.cc-exam-q-footer-addopt,
+.cc-exam-q-footer-addpair {
+    margin-top: calc(-1 * var(--gap-xs));
+}
+
+.cc-exam-add-opt-link {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    color: var(--ubits-accent-brand);
+    font-family: var(--ubits-font-family-sans);
+    font-size: 13px;
+    text-decoration: none;
+}
+
+.cc-exam-add-opt-link:hover {
+    text-decoration: underline;
+}
+
+.cc-exam-q-card__footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--gap-sm);
+    padding-top: var(--padding-sm);
+    border-top: 1px solid var(--ubits-border-1);
+}
+
+.cc-exam-q-card__footer-actions {
+    display: flex;
+    gap: var(--gap-sm);
+}
+
+.cc-exam-q-pts {
+    width: 120px;
+    flex-shrink: 0;
+}
+
+/* ─────────────────────────────────────────────
+   Bloques avanzados
+   ───────────────────────────────────────────── */
+
+.cc-exam-instruction-block {
+    border: 1px solid var(--ubits-border-1);
+    border-radius: var(--border-radius-sm);
+    overflow: hidden;
+}
+
+.cc-exam-instruction-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    padding: 6px 8px;
+    background: var(--ubits-bg-2);
+    border-bottom: 1px solid var(--ubits-border-1);
+}
+
+.cc-exam-rt-btn {
+    background: none;
+    border: none;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    cursor: pointer;
+    color: var(--ubits-fg-1-medium);
+}
+
+.cc-exam-rt-btn:hover {
+    background: var(--ubits-bg-3);
+}
+
+.cc-exam-rt-sep {
+    width: 1px;
+    height: 18px;
+    background: var(--ubits-border-1);
+    margin: 0 4px;
+}
+
+.cc-exam-instruction-editor {
+    min-height: 100px;
+    padding: 10px 12px;
+    color: var(--ubits-fg-1-high);
+    outline: none;
+    line-height: 1.6;
+}
+
+.cc-exam-instruction-editor:empty::before {
+    content: attr(data-placeholder);
+    color: var(--ubits-fg-1-low);
+}
+
+.cc-exam-sa-accuracy {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-sm);
+    padding: var(--padding-md);
+    background: var(--ubits-bg-2);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: var(--border-radius-sm);
+}
+
+.cc-exam-sa-accuracy__title {
+    margin: 0;
+    color: var(--ubits-fg-1-high);
+}
+
+.cc-exam-sa-accuracy__opt {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-sm);
+    cursor: pointer;
+}
+
+.cc-exam-essay-hint {
+    margin: 0;
+    color: var(--ubits-fg-1-medium);
+}
+
+.cc-exam-match-pair {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-sm);
+    padding: var(--padding-md);
+    background: var(--ubits-bg-2);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: var(--border-radius-sm);
+}
+
+.cc-exam-match-pair__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--gap-sm);
+}
+
+.cc-exam-fb-opt-row {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-sm);
+}
+
+.cc-exam-fb-badge {
+    flex-shrink: 0;
+    background: var(--ubits-bg-2);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: 4px;
+    padding: 2px 6px;
+    color: var(--ubits-fg-1-medium);
+    white-space: nowrap;
+}
+
+.cc-exam-fb-opt-input {
+    flex: 1;
+    min-width: 0;
+}
+
+.cc-exam-rating-config {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-sm);
+    padding: var(--padding-md);
+    background: var(--ubits-bg-2);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: var(--border-radius-sm);
+}
+
+.cc-exam-rating-config__row {
+    display: flex;
+    gap: var(--gap-md);
+}
+
+.cc-exam-rating-config__row > div {
+    flex: 1;
+}
+
+/* ─────────────────────────────────────────────
+   Modal configuración (contenido)
+   ───────────────────────────────────────────── */
+
+.cc-eval-cfg-body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-lg);
+}
+
+.cc-eval-toggle-list {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--ubits-border-1);
+    border-radius: var(--border-radius-lg);
+    overflow: hidden;
+}
+
+.cc-eval-toggle-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--gap-md);
+    padding: var(--padding-md);
+    background: var(--ubits-bg-1);
+    border-bottom: 1px solid var(--ubits-border-1);
+}
+
+.cc-eval-toggle-row:last-child {
+    border-bottom: none;
+}
+
+.cc-eval-toggle-sub {
+    padding: var(--padding-md);
+    background: var(--ubits-bg-2);
+    border-bottom: 1px solid var(--ubits-border-1);
+}
+
+/* ─────────────────────────────────────────────
+   Agente de evaluaciones — quick replies / undo banner
+   ───────────────────────────────────────────── */
+
+.cc-eval-qr-wrap {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 6px 12px 10px;
+}
+
+.cc-eval-qr-chip {
+    background: var(--ubits-bg-1);
+    border: 1px solid var(--ubits-border-1);
+    color: var(--ubits-accent-brand);
+    border-radius: var(--border-radius-full);
+    padding: 6px 14px;
+    font-family: var(--ubits-font-family-sans);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+
+.cc-eval-qr-chip:hover {
+    background: var(--ubits-feedback-bg-info-subtle);
+    border-color: var(--ubits-accent-brand);
+}
+
+.cc-eval-qr-chip--on {
+    background: var(--ubits-accent-brand);
+    border-color: var(--ubits-accent-brand);
+    color: var(--ubits-fg-2-low);
+}
+
+.cc-eval-qr-chip--confirm {
+    background: var(--ubits-accent-brand);
+    border-color: var(--ubits-accent-brand);
+    color: var(--ubits-fg-2-low);
+}
+
+@keyframes cc-eval-qr-shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-4px); }
+    75% { transform: translateX(4px); }
+}
+
+.cc-eval-qr-chip--shake {
+    animation: cc-eval-qr-shake 0.3s ease;
+    border-color: var(--ubits-feedback-accent-error);
+    color: var(--ubits-feedback-accent-error);
+    background: var(--ubits-bg-1);
+}
+
+.cc-eval-undo-banner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--gap-md);
+    padding: var(--padding-md);
+    background: var(--ubits-feedback-bg-info-subtle);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: var(--border-radius-lg);
+}
+
+.cc-eval-undo-banner__msg {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--gap-sm);
+    color: var(--ubits-fg-1-high);
+}
+
+.cc-eval-undo-banner__actions {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--gap-sm);
+    flex-shrink: 0;
+}
+
+.cc-eval-undo-btn {
+    background: none;
+    border: 1px solid var(--ubits-accent-brand);
+    color: var(--ubits-accent-brand);
+    border-radius: var(--border-radius-sm);
+    padding: 4px 12px;
+    font-family: var(--ubits-font-family-sans);
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.cc-eval-undo-btn:hover {
+    background: var(--ubits-feedback-bg-info-subtle);
+}
+

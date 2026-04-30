@@ -1559,6 +1559,30 @@
             var mount = document.getElementById('crear-contenido-recursos-resources-mount');
             if (!mount || !mount.contains(ev.target)) return;
 
+            // 0. Click en tarjeta Evaluación final → flujo de evaluación + panel IA
+            var evalCard = ev.target.closest('[data-resources-card-type="evaluacion-final"]');
+            if (evalCard && !evalCard.disabled) {
+                if (typeof window.rcMountEvalForm === 'function') {
+                    window.rcMountEvalForm(mount);
+                    // Actualizar icono en el índice a "evaluacion" (sin pasos intermedios)
+                    var activeItemEval = document.querySelector('#crear-contenido-recursos-indice-mount .ubits-paginas-creator__item.is-active');
+                    if (activeItemEval) {
+                        var iconElEval = activeItemEval.querySelector('.ubits-paginas-creator__drag-handle i');
+                        if (iconElEval && typeof window.paginasCreatorIconClass === 'function') {
+                            iconElEval.className = window.paginasCreatorIconClass('evaluacion');
+                        }
+                    }
+                } else {
+                    mount.innerHTML =
+                        '<div class="ubits-empty-state">' +
+                        '<div class="ubits-empty-state__icon"><i class="far fa-triangle-exclamation"></i></div>' +
+                        '<p class="ubits-empty-state__title ubits-body-md-bold">No se pudo cargar la evaluación</p>' +
+                        '<p class="ubits-empty-state__description ubits-body-md-regular">Vuelve a intentarlo.</p>' +
+                        '</div>';
+                }
+                return;
+            }
+
             // 1. Click en tarjeta de Video
             var videoCard = ev.target.closest('[data-resources-card-type="video"]');
             if (videoCard && !videoCard.disabled) {
