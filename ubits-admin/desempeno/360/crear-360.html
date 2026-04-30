@@ -1682,7 +1682,7 @@
                         if (!_importErrores.length) return;
                         openModal({
                             overlayId:  'comp360EnumImportErrorModal',
-                            title:      'Errores en el archivo (' + _importErrores.length + ')',
+                            title:      'Informe de errores',
                             bodyHtml:   buildImportErrorTableHtml(_importErrores),
                             footerHtml:
                                 '<button class="ubits-button ubits-button--secondary ubits-button--md" id="comp360ImportErrDownloadBtn"><i class="far fa-file-arrow-down"></i><span>Descargar informe</span></button>' +
@@ -2841,10 +2841,10 @@
         var rows = visible.map(function (e) {
             var parsed = parseImportErrorRow(e);
             return '<tr>' +
-                '<td style="padding:10px 16px;border-bottom:1px solid var(--ubits-border-1);white-space:nowrap;width:56px;vertical-align:top">' +
+                '<td style="padding:10px 16px;border-bottom:1px solid var(--ubits-border-1);white-space:nowrap;width:56px;vertical-align:top;height:auto">' +
                     '<span class="ubits-body-sm-regular">' + parsed.fila + '</span>' +
                 '</td>' +
-                '<td style="padding:10px 16px;border-bottom:1px solid var(--ubits-border-1);white-space:normal;word-break:break-word;vertical-align:top">' +
+                '<td style="padding:10px 16px;border-bottom:1px solid var(--ubits-border-1);white-space:normal;word-break:break-word;vertical-align:top;height:auto">' +
                     '<span class="ubits-body-sm-regular">' + parsed.problema + '</span>' +
                 '</td>' +
             '</tr>';
@@ -2853,11 +2853,11 @@
             ? '<p class="ubits-body-sm-regular" style="margin-top:var(--gap-sm);color:var(--ubits-fg-1-low)">…y ' + (errores.length - MAX) + ' error(es) más no mostrados.</p>'
             : '';
         return '<div class="ubits-table-wrapper">' +
-            '<table class="ubits-table">' +
+            '<table class="ubits-table ubits-table--wrap">' +
                 '<thead>' +
                     '<tr>' +
-                        '<th style="text-align:left;padding:0 16px;height:40px;white-space:nowrap;width:56px">Fila</th>' +
-                        '<th style="text-align:left;padding:0 16px;height:40px">Problema</th>' +
+                        '<th style="text-align:left;padding:0 16px;white-space:nowrap;width:56px">Fila</th>' +
+                        '<th style="text-align:left;padding:0 16px;">Problema</th>' +
                     '</tr>' +
                 '</thead>' +
                 '<tbody>' + rows + '</tbody>' +
@@ -2891,7 +2891,7 @@
     function eval360MostrarErroresImport(errores) {
         openModal({
             overlayId:  'eval360ImportErrorModal',
-            title:      'Errores en el archivo (' + errores.length + ')',
+            title:      'Informe de errores',
             bodyHtml:   buildImportErrorTableHtml(errores),
             footerHtml:
                 '<button class="ubits-button ubits-button--secondary ubits-button--md" id="eval360ImportErrDownloadBtn"><i class="far fa-file-arrow-down"></i><span>Descargar informe</span></button>' +

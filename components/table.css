@@ -80,6 +80,27 @@
     background: var(--ubits-bg-2);
 }
 
+/* ─────────────────────────────────────────────
+   Modificador opt-in: filas auto-altura + wrap
+   Útil para tablas de "informe de errores" u
+   otras celdas con contenido multilínea.
+   (No afecta tablas existentes si no se usa.)
+   ─────────────────────────────────────────────
+   Nota: NO toca el header (thead) para mantener
+   el look estándar de todas las tablas.
+   ───────────────────────────────────────────── */
+.ubits-table.ubits-table--wrap tbody td {
+    height: auto;
+    white-space: normal;
+    overflow: visible;
+    text-overflow: unset;
+    vertical-align: top;
+    padding-top: var(--padding-sm);
+    padding-bottom: var(--padding-sm);
+    line-height: 20px;
+    max-width: none;
+}
+
 /* Columna checkbox (cabecera y celdas) */
 .ubits-table .ubits-table__th--checkbox,
 .ubits-table .ubits-table__td--checkbox {
