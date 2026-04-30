@@ -386,6 +386,8 @@
 
     /* ── Vista activa ── */
     var _currentView = 'hub';
+    /* Si el usuario aterriza por hash directo (deep link), el botón Volver debe ir a #hub */
+    var _cameFromDeepLink = false;
 
     /* ── Vista: evaluados ── */
     var _eval360ColabTablaRef  = null;
@@ -533,7 +535,11 @@
                 counter;
 
             document.getElementById('crear360-btn-back').addEventListener('click', function () {
-                history.back();
+                if (_cameFromDeepLink) {
+                    showView('hub');
+                } else {
+                    history.back();
+                }
             });
         }
     }
@@ -4147,6 +4153,7 @@
 
         /* Vista inicial según URL hash */
         var _initialHash = window.location.hash || '';
+        _cameFromDeepLink = !!(_initialHash && _initialHash !== '#hub');
         var initialView = viewFromHash();
         if (initialView !== 'hub') seedDemoDraft(initialView);
         if (_initialHash === '#evaluados-error-edge' || _initialHash === '#error-edge') {
