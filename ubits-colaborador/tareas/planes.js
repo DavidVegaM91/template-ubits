@@ -2270,11 +2270,20 @@ function resetTaskCreateCsvFile() {
         var cardEl  = fuEl.querySelector('[data-file-upload-card]');
         var dz      = fuEl.querySelector('[data-file-upload-dropzone]');
         var helper  = fuEl.querySelector('[data-file-upload-helper]');
+        var helperMsg = fuEl.querySelector('[data-file-upload-helper-msg]');
+        var errBtnTop = fuEl.querySelector('[data-file-upload-error-report]');
+        var errBtnInline = fuEl.querySelector('[data-file-upload-error-report-inline]');
         var inp     = fuEl.querySelector('[data-file-upload-input]');
         if (emptyEl) emptyEl.style.display = '';
         if (cardEl)  cardEl.style.display  = 'none';
         if (dz)      dz.className = 'ubits-file-upload__dropzone';
-        if (helper)  { helper.style.display = 'none'; helper.textContent = ''; }
+        if (helper)  {
+            helper.style.display = 'none';
+            helper.classList.remove('ubits-file-upload__helper--success');
+        }
+        if (helperMsg) helperMsg.innerHTML = '';
+        if (errBtnTop) errBtnTop.style.display = 'none';
+        if (errBtnInline) errBtnInline.style.display = 'none';
         if (inp)     inp.value = '';
     }
 }

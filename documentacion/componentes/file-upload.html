@@ -88,6 +88,12 @@
                                 <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" onclick="setPreviewState('loaded')">
                                     <span>Archivo cargado</span>
                                 </button>
+                                <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" onclick="setPreviewState('file-errors')">
+                                    <span>Errores en el archivo</span>
+                                </button>
+                                <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" onclick="setPreviewState('processing-error')">
+                                    <span>Error: procesado</span>
+                                </button>
                                 <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" onclick="setPreviewState('error-type')">
                                     <span>Error: tipo</span>
                                 </button>
@@ -345,7 +351,12 @@ Importa components/file-upload.css y components/file-upload.js.</code></pre>
   &lt;/div&gt;
 
   &lt;!-- Helper text de error (oculto por defecto) --&gt;
-  &lt;p class="ubits-body-sm-regular ubits-file-upload__helper" data-file-upload-helper style="display:none"&gt;&lt;/p&gt;
+  &lt;div class="ubits-body-sm-regular ubits-file-upload__helper" data-file-upload-helper style="display:none"&gt;
+    &lt;span class="ubits-file-upload__helper-msg" data-file-upload-helper-msg&gt;&lt;/span&gt;
+    &lt;button type="button" class="ubits-button ubits-button--error-secondary ubits-button--sm ubits-file-upload__error-report-btn-inline" data-file-upload-error-report-inline style="display:none"&gt;
+      &lt;i class="far fa-circle-exclamation"&gt;&lt;/i&gt;&lt;span&gt;Informe de errores&lt;/span&gt;
+    &lt;/button&gt;
+  &lt;/div&gt;
 
 &lt;/div&gt;</code></pre>
                                     </div>
@@ -527,13 +538,17 @@ fileUploadClearProgress('mi-file-upload');      // vuelve al estado normal</code
                 var emptyEl  = el.querySelector('[data-file-upload-empty]');
                 var cardEl   = el.querySelector('[data-file-upload-card]');
                 var helperEl = el.querySelector('[data-file-upload-helper]');
+                var helperMsgEl = el.querySelector('[data-file-upload-helper-msg]');
                 var errorBtn = el.querySelector('[data-file-upload-error-report]');
+                var errorBtnInline = el.querySelector('[data-file-upload-error-report-inline]');
                 dropzone.className = 'ubits-file-upload__dropzone';
                 emptyEl.style.display  = '';
                 cardEl.style.display   = 'none';
                 helperEl.style.display = 'none';
-                helperEl.textContent   = '';
+                if (helperMsgEl) helperMsgEl.innerHTML = '';
+                helperEl.classList.remove('ubits-file-upload__helper--success');
                 if (errorBtn) errorBtn.style.display = 'none';
+                if (errorBtnInline) errorBtnInline.style.display = 'none';
             },
             file: function (el) {
                 previewStates.empty(el);
@@ -554,6 +569,29 @@ fileUploadClearProgress('mi-file-upload');      // vuelve al estado normal</code
                 fileUploadClearProgress(el);
                 fileUploadClearProcessing(el);
                 previewStates.file(el);
+                if (typeof fileUploadSetSuccess === 'function') {
+                    fileUploadSetSuccess(el, 'Archivo validado. Puedes continuar.');
+                }
+            },
+            'file-errors': function (el) {
+                previewStates.file(el);
+                fileUploadSetError(el, '3 error(es) encontrado(s). Revisa el informe para ver el detalle.');
+                fileUploadShowErrorReport(el, true, { placement: 'header' });
+            },
+            'processing-error': function (el) {
+                previewStates.file(el);
+                if (typeof fileUploadSetProcessingError === 'function') {
+                    fileUploadSetProcessingError(el, { processedOk: 120, failed: 5 });
+                } else {
+                    fileUploadSetError(el, 'Se procesaron 120 fila(s). 5 no se pudieron procesar.');
+                    fileUploadShowErrorReport(el, true, { placement: 'inline' });
+                }
+                var inlineBtn = el.querySelector('[data-file-upload-error-report-inline]');
+                if (inlineBtn) {
+                    inlineBtn.onclick = function () {
+                        showToast('info', 'Abrir informe de errores (demo)', { duration: 3500 });
+                    };
+                }
             },
             'error-type': function (el) {
                 previewStates.empty(el);
@@ -565,7 +603,7 @@ fileUploadClearProgress('mi-file-upload');      // vuelve al estado normal</code
             },
             report: function (el) {
                 previewStates.file(el);
-                fileUploadShowErrorReport(el, true);
+                fileUploadShowErrorReport(el, true, { placement: 'header' });
             },
             uploading: function (el) {
                 /* Mostrar el archivo y arrancar la animación de 0 → 100 % en 3 s */

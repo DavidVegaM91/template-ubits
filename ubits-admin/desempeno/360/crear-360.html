@@ -1616,6 +1616,7 @@
                 _importFilasOk = null;
                 _importErrores = [];
                 if (typeof fileUploadClearError === 'function') fileUploadClearError(FU_ID);
+                if (typeof fileUploadClearSuccess === 'function') fileUploadClearSuccess(FU_ID);
                 if (typeof fileUploadShowErrorReport === 'function') fileUploadShowErrorReport(FU_ID, false);
                 if (importarBtn) importarBtn.disabled = true;
                 if (!file) return;
@@ -1642,6 +1643,9 @@
                     if (typeof fileUploadClearError === 'function') fileUploadClearError(FU_ID);
                     _importFilasOk = result.filasOk;
                     if (importarBtn) importarBtn.disabled = false;
+                    if (typeof fileUploadSetSuccess === 'function') {
+                        fileUploadSetSuccess(FU_ID, 'Archivo validado. Puedes continuar.');
+                    }
                 });
             }
 
@@ -1682,7 +1686,7 @@
                         if (!_importErrores.length) return;
                         openModal({
                             overlayId:  'comp360EnumImportErrorModal',
-                            title:      'Informe de errores',
+                            title:      'Errores en el archivo (' + _importErrores.length + ')',
                             bodyHtml:   buildImportErrorTableHtml(_importErrores),
                             footerHtml:
                                 '<button class="ubits-button ubits-button--secondary ubits-button--md" id="comp360ImportErrDownloadBtn"><i class="far fa-file-arrow-down"></i><span>Descargar informe</span></button>' +
@@ -2462,7 +2466,11 @@
                     _erroresActuales = [];
                     if (importarBtn) importarBtn.disabled = true;
                     var fuEl = document.getElementById('eval360ImportFu');
-                    if (fuEl) { fileUploadClearError(fuEl); fileUploadShowErrorReport(fuEl, false); }
+                    if (fuEl) {
+                        fileUploadClearError(fuEl);
+                        if (typeof fileUploadClearSuccess === 'function') fileUploadClearSuccess(fuEl);
+                        fileUploadShowErrorReport(fuEl, false);
+                    }
                     if (!file) return;
 
                     leerArchivoComoFilas(file, function (err, filas) {
@@ -2492,7 +2500,13 @@
                             _eval360ImportFilas = resultado.filas;
                             _eval360ImportOmitidasTipo = (typeof resultado.omitidasPorTipo === 'number') ? resultado.omitidasPorTipo : 0;
                             if (importarBtn) importarBtn.disabled = false;
-                            if (fuEl2) { fileUploadClearError(fuEl2); fileUploadShowErrorReport(fuEl2, false); }
+                            if (fuEl2) {
+                                fileUploadClearError(fuEl2);
+                                fileUploadShowErrorReport(fuEl2, false);
+                                if (typeof fileUploadSetSuccess === 'function') {
+                                    fileUploadSetSuccess(fuEl2, 'Archivo validado. Puedes continuar.');
+                                }
+                            }
                         }
                     });
                 },
@@ -2500,7 +2514,11 @@
                     _currentFile = null; _fileReady = false; _erroresActuales = [];
                     if (importarBtn) importarBtn.disabled = true;
                     var fuEl = document.getElementById('eval360ImportFu');
-                    if (fuEl) { fileUploadClearError(fuEl); fileUploadShowErrorReport(fuEl, false); }
+                    if (fuEl) {
+                        fileUploadClearError(fuEl);
+                        if (typeof fileUploadClearSuccess === 'function') fileUploadClearSuccess(fuEl);
+                        fileUploadShowErrorReport(fuEl, false);
+                    }
                 }
             });
         }
@@ -2891,7 +2909,7 @@
     function eval360MostrarErroresImport(errores) {
         openModal({
             overlayId:  'eval360ImportErrorModal',
-            title:      'Informe de errores',
+            title:      'Errores en el archivo (' + errores.length + ')',
             bodyHtml:   buildImportErrorTableHtml(errores),
             footerHtml:
                 '<button class="ubits-button ubits-button--secondary ubits-button--md" id="eval360ImportErrDownloadBtn"><i class="far fa-file-arrow-down"></i><span>Descargar informe</span></button>' +

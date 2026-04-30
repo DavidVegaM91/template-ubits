@@ -337,8 +337,37 @@
     pointer-events: none;
 }
 
-/* ── Helper text (error inline) ─────────── */
+/* ── Helper text (inline) ─────────── */
 .ubits-file-upload__helper {
     margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--gap-md);
     color: var(--ubits-feedback-accent-error);
+}
+
+.ubits-file-upload__helper-msg {
+    display: inline-flex;
+    align-items: flex-start;
+    gap: var(--gap-xs);
+    min-width: 0;
+    flex: 1 1 auto;
+}
+
+.ubits-file-upload__helper-msg > span {
+    min-width: 0;
+}
+
+.ubits-file-upload__error-report-btn-inline {
+    flex-shrink: 0;
+}
+
+.ubits-file-upload__helper--success {
+    color: var(--ubits-feedback-accent-success);
+}
+
+.ubits-file-upload__helper-msg i {
+    flex-shrink: 0;
+    margin-top: 2px;
 }

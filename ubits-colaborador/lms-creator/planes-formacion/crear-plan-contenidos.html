@@ -1090,11 +1090,20 @@
                         var cardEl  = fuEl.querySelector('[data-file-upload-card]');
                         var dz      = fuEl.querySelector('[data-file-upload-dropzone]');
                         var helper  = fuEl.querySelector('[data-file-upload-helper]');
+                        var helperMsg = fuEl.querySelector('[data-file-upload-helper-msg]');
+                        var errBtnTop = fuEl.querySelector('[data-file-upload-error-report]');
+                        var errBtnInline = fuEl.querySelector('[data-file-upload-error-report-inline]');
                         var inp     = fuEl.querySelector('[data-file-upload-input]');
                         if (emptyEl) emptyEl.style.display = '';
                         if (cardEl)  cardEl.style.display  = 'none';
                         if (dz)      dz.className = 'ubits-file-upload__dropzone';
-                        if (helper)  { helper.style.display = 'none'; helper.textContent = ''; }
+                        if (helper)  {
+                            helper.style.display = 'none';
+                            helper.classList.remove('ubits-file-upload__helper--success');
+                        }
+                        if (helperMsg) helperMsg.innerHTML = '';
+                        if (errBtnTop) errBtnTop.style.display = 'none';
+                        if (errBtnInline) errBtnInline.style.display = 'none';
                         if (inp)     inp.value = '';
                     }
                 }
@@ -1401,73 +1410,214 @@
                     return String(h || '').replace(/\s+/g, ' ').trim().toLowerCase();
                 }
 
-                function aplicarImportacionDesdeArchivo() {
-                    var file = overlay._archivoImportFile;
-                    if (!file) {
-                        if (typeof showToast === 'function') showToast('warning', 'Selecciona un archivo CSV.');
-                        return;
+                function normHeaderKey(h) {
+                    return normHeaderCell(String(h || '').replace(/^\uFEFF/, '')).replace(/[\s_]+/g, '');
+                }
+
+                function buildImportErrorTableHtml(errores) {
+                    var MAX = 50;
+                    var visible = (errores || []).slice(0, MAX);
+                    var rows = visible.map(function (e, i) {
+                        return '<tr>' +
+                            '<td style="padding:10px 16px;border-bottom:1px solid var(--ubits-border-1);white-space:nowrap;width:56px;vertical-align:top;height:auto">' +
+                                '<span class="ubits-body-sm-regular">' + (i + 1) + '</span>' +
+                            '</td>' +
+                            '<td style="padding:10px 16px;border-bottom:1px solid var(--ubits-border-1);white-space:normal;word-break:break-word;vertical-align:top;height:auto">' +
+                                '<span class="ubits-body-sm-regular">' + String(e || '') + '</span>' +
+                            '</td>' +
+                        '</tr>';
+                    }).join('');
+                    var nota = (errores || []).length > MAX
+                        ? '<p class="ubits-body-sm-regular" style="margin-top:var(--gap-sm);color:var(--ubits-fg-1-low)">…y ' + ((errores || []).length - MAX) + ' error(es) más no mostrados.</p>'
+                        : '';
+                    return '<div class="ubits-table-wrapper">' +
+                        '<table class="ubits-table ubits-table--wrap">' +
+                            '<thead><tr>' +
+                                '<th style="text-align:left;padding:0 16px;white-space:nowrap;width:56px">#</th>' +
+                                '<th style="text-align:left;padding:0 16px;">Error</th>' +
+                            '</tr></thead>' +
+                            '<tbody>' + rows + '</tbody>' +
+                        '</table>' +
+                    '</div>' + nota;
+                }
+
+                function openCsvErrorModal(errores) {
+                    if (typeof openModal !== 'function') return;
+                    var list = Array.isArray(errores) ? errores : [];
+                    openModal({
+                        overlayId: 'planContenidosCsvErrorModal',
+                        title: 'Errores en el archivo (' + list.length + ')',
+                        bodyHtml: buildImportErrorTableHtml(list),
+                        footerHtml:
+                            '<button class="ubits-button ubits-button--primary ubits-button--md" onclick="closeModal(\\'planContenidosCsvErrorModal\\')"><span>Entendido</span></button>',
+                        size: 'md'
+                    });
+                }
+
+                function validateCsvAsignacionesContenidos(text) {
+                    var errores = [];
+                    var raw = String(text || '');
+                    var lines = raw.split(/\r?\n/).filter(function (l) { return l.trim().length > 0; });
+
+                    if (lines.length < 2) {
+                        errores.push('El CSV debe incluir encabezados y al menos una fila de datos.');
+                        return { errores: errores, filasOk: [] };
                     }
-                    var ext = (file.name.split('.').pop() || '').toLowerCase();
-                    if (ext !== 'csv') {
-                        if (typeof showToast === 'function') showToast('error', 'Usa un archivo en formato CSV.');
-                        return;
+
+                    var headersRaw = parseCsvLine(lines[0]);
+                    var headerKeys = headersRaw.map(normHeaderKey);
+
+                    if (headerKeys.length !== 2) {
+                        errores.push('El archivo debe tener exactamente 2 columnas: username e IDContenidos.');
+                        return { errores: errores, filasOk: [] };
                     }
+
+                    var hasUser = headerKeys.indexOf('username') >= 0 || headerKeys.indexOf('usuario') >= 0;
+                    var hasIds  = headerKeys.indexOf('idcontenidos') >= 0 || headerKeys.indexOf('idcontenido') >= 0;
+                    if (!hasUser || !hasIds) {
+                        errores.push('El archivo debe incluir exactamente los encabezados username e IDContenidos (sin columnas extra).');
+                        return { errores: errores, filasOk: [] };
+                    }
+
+                    /* Resolver índices por clave normalizada (sin permitir extra) */
+                    var ixUser = headerKeys.indexOf('username') >= 0 ? headerKeys.indexOf('username') : headerKeys.indexOf('usuario');
+                    var ixIds  = headerKeys.indexOf('idcontenidos') >= 0 ? headerKeys.indexOf('idcontenidos') : headerKeys.indexOf('idcontenido');
+
+                    var empByUsername = {};
+                    (empleadosDrawer || []).forEach(function (e) {
+                        var u = String(e && e.username ? e.username : '').trim().toLowerCase();
+                        if (u) empByUsername[u] = e;
+                    });
+
+                    var contentById = {};
+                    (catalogoCursos || []).forEach(function (c) {
+                        if (!c || c.id == null) return;
+                        contentById[String(c.id)] = c;
+                    });
+
+                    var filasOk = [];
+
+                    for (var r = 1; r < lines.length; r++) {
+                        var cells = parseCsvLine(lines[r]);
+                        var nFila = r + 1;
+
+                        if (cells.length !== headerKeys.length) {
+                            errores.push('Fila ' + nFila + ': número de columnas inválido (esperadas ' + headerKeys.length + ').');
+                            continue;
+                        }
+
+                        var u = (cells[ixUser] != null ? String(cells[ixUser]) : '').trim().toLowerCase();
+                        var idsRaw = (cells[ixIds] != null ? String(cells[ixIds]) : '').trim();
+
+                        if (!u) {
+                            errores.push('Fila ' + nFila + ': la celda username está vacía.');
+                            continue;
+                        }
+                        if (!idsRaw) {
+                            errores.push('Fila ' + nFila + ': la celda IDContenidos está vacía.');
+                            continue;
+                        }
+
+                        var empRow = empByUsername[u];
+                        if (!empRow) {
+                            errores.push('Fila ' + nFila + ': el usuario ' + u + ' no existe.');
+                            continue;
+                        }
+
+                        var idTokens = idsRaw.split(/[,;]/).map(function (x) { return x.trim(); });
+                        if (idTokens.some(function (t) { return t === ''; })) {
+                            errores.push('Fila ' + nFila + ': IDContenidos tiene valores vacíos (revisa comas o separadores).');
+                            continue;
+                        }
+                        idTokens = idTokens.filter(Boolean);
+                        if (idTokens.length === 0) {
+                            errores.push('Fila ' + nFila + ': IDContenidos está vacío.');
+                            continue;
+                        }
+
+                        var contenidos = [];
+                        var missing = [];
+                        idTokens.forEach(function (cid) {
+                            var c = contentById[String(cid)];
+                            if (c) contenidos.push(c);
+                            else missing.push(cid);
+                        });
+
+                        if (missing.length) {
+                            errores.push('Fila ' + nFila + ': estos contenidos no existen: ' + missing.join(', ') + '.');
+                            continue;
+                        }
+
+                        filasOk.push({ username: u, empleado: empRow, contenidos: contenidos });
+                    }
+
+                    if (filasOk.length === 0 && errores.length === 0) {
+                        errores.push('No quedó ninguna fila válida para importar.');
+                    }
+
+                    return { errores: errores, filasOk: filasOk };
+                }
+
+                function validateArchivoCsvFile(file, cb) {
                     var reader = new FileReader();
-                    reader.onload = function() {
-                        var text = String(reader.result || '');
-                        var lines = text.split(/\r?\n/).filter(function(l) { return l.trim().length > 0; });
-                        if (lines.length < 2) {
-                            if (typeof showToast === 'function') showToast('error', 'El CSV debe incluir encabezados y al menos una fila de datos.');
-                            return;
+                    reader.onload = function () {
+                        try {
+                            cb(null, validateCsvAsignacionesContenidos(String(reader.result || '')));
+                        } catch (e) {
+                            cb('No se pudo leer el archivo.', null);
                         }
-                        var headers = parseCsvLine(lines[0]).map(normHeaderCell);
-                        var ixUser = -1;
-                        var ixIds = -1;
-                        for (var h = 0; h < headers.length; h++) {
-                            if (headers[h] === 'username' || headers[h] === 'usuario') ixUser = h;
-                            if (headers[h] === 'id contenidos' || headers[h] === 'idcontenidos' || headers[h] === 'id_contenidos') ixIds = h;
-                        }
-                        if (ixUser < 0 || ixIds < 0) {
-                            if (typeof showToast === 'function') showToast('error', 'El CSV debe incluir las columnas username e IDContenidos.');
-                            return;
-                        }
-                        var creadas = 0;
-                        for (var r = 1; r < lines.length; r++) {
-                            var cells = parseCsvLine(lines[r]);
-                            var u = (cells[ixUser] != null ? String(cells[ixUser]) : '').trim().toLowerCase();
-                            var idsRaw = cells[ixIds] != null ? String(cells[ixIds]) : '';
-                            if (!u) continue;
-                            var empRow = empleadosDrawer.find(function(e) { return String(e.username || '').trim().toLowerCase() === u; });
-                            if (!empRow) continue;
-                            var idTokens = idsRaw.split(/[,;]/).map(function(x) { return x.trim(); }).filter(Boolean);
-                            var contenidos = [];
-                            idTokens.forEach(function(cid) {
-                                var c = catalogoCursos.find(function(x) { return String(x.id) === String(cid); });
-                                if (c) contenidos.push(c);
-                            });
-                            var empleadosRaw = (typeof TAREAS_PLANES_DB !== 'undefined' && typeof TAREAS_PLANES_DB.getEmpleadosEjemplo === 'function') ? TAREAS_PLANES_DB.getEmpleadosEjemplo() : [];
-                            var nombre = (empRow.nombre || '').trim() || empRow.username;
-                            var emp = empleadosRaw.find(function(e) { return ((e.nombre || '').trim()) === nombre; });
-                            var idAsig = 'asignacion-' + (++asignacionIdCounter);
-                            asignacionesData.push({
-                                id: idAsig,
-                                asignadosLabel: nombre,
-                                asignadosTipo: 'por-colaborador',
-                                importadoDesdeCsv: true,
-                                asignadosPersonas: [{ nombre: nombre, avatar: emp ? emp.avatar : null }],
-                                asignadosGrupos: [],
-                                contenidosCount: contenidos.length,
-                                contenidos: contenidos
-                            });
-                            creadas++;
-                        }
+                    };
+                    reader.onerror = function () {
+                        cb('No se pudo leer el archivo.', null);
+                    };
+                    reader.readAsText(file, 'UTF-8');
+                }
+
+                function resetArchivoValidationUi() {
+                    overlay._archivoErrores = [];
+                    overlay._archivoFilasOk = [];
+                    overlay._archivoFileReady = false;
+                    if (typeof fileUploadClearError === 'function') fileUploadClearError('drawer-archivo-fu');
+                    if (typeof fileUploadClearSuccess === 'function') fileUploadClearSuccess('drawer-archivo-fu');
+                    if (typeof fileUploadShowErrorReport === 'function') fileUploadShowErrorReport('drawer-archivo-fu', false);
+                    var fuEl = document.getElementById('drawer-archivo-fu');
+                    if (fuEl) {
+                        var reportBtn = fuEl.querySelector('[data-file-upload-error-report]');
+                        if (reportBtn) reportBtn.onclick = null;
+                    }
+                }
+
+                function aplicarImportacionDesdeArchivo() {
+                    if (!overlay._archivoFileReady || !Array.isArray(overlay._archivoFilasOk) || overlay._archivoFilasOk.length === 0) {
+                        if (typeof showToast === 'function') showToast('error', 'Corrige los errores del archivo antes de importar.');
+                        return;
+                    }
+                    var filasOk = overlay._archivoFilasOk.slice();
+                    var creadas = 0;
+                    filasOk.forEach(function (row) {
+                        var empRow = row.empleado;
+                        var contenidos = row.contenidos || [];
+                        var empleadosRaw = (typeof TAREAS_PLANES_DB !== 'undefined' && typeof TAREAS_PLANES_DB.getEmpleadosEjemplo === 'function') ? TAREAS_PLANES_DB.getEmpleadosEjemplo() : [];
+                        var nombre = (empRow && empRow.nombre ? String(empRow.nombre).trim() : '') || (empRow && empRow.username ? String(empRow.username) : '');
+                        var emp = empleadosRaw.find(function(e) { return ((e.nombre || '').trim()) === nombre; });
+                        var idAsig = 'asignacion-' + (++asignacionIdCounter);
+                        asignacionesData.push({
+                            id: idAsig,
+                            asignadosLabel: nombre,
+                            asignadosTipo: 'por-colaborador',
+                            importadoDesdeCsv: true,
+                            asignadosPersonas: [{ nombre: nombre, avatar: emp ? emp.avatar : null }],
+                            asignadosGrupos: [],
+                            contenidosCount: contenidos.length,
+                            contenidos: contenidos
+                        });
+                        creadas++;
+                    });
                         if (asignacionesTablaRef && typeof asignacionesTablaRef.refresh === 'function') asignacionesTablaRef.refresh();
                         bindAsignacionesRowsAfterRefresh();
                         if (typeof updateGuardarButtonState === 'function') updateGuardarButtonState();
                         if (typeof closeDrawer === 'function') closeDrawer('drawer-agregar-usuarios');
                         if (typeof showToast === 'function') showToast('success', creadas ? (creadas + ' asignación(es) importada(s)') : 'No se importó ninguna fila válida.');
-                    };
-                    reader.readAsText(file, 'UTF-8');
                 }
 
                 if (btnCancel) {
@@ -1620,10 +1770,50 @@
                     title: 'Importar archivo',
                     accept: '.csv,text/csv',
                     maxSizeMb: 5,
+                    successMessage: false,
                     onChange: function(file) {
+                        resetArchivoValidationUi();
                         overlay._archivoImportFile = file || null;
-                        overlay._archivoFileReady = !!file;
+                        if (!file) { syncWizardPrimary(); return; }
+
+                        overlay._archivoFileReady = false;
                         syncWizardPrimary();
+
+                        validateArchivoCsvFile(file, function (err, res) {
+                            if (err) {
+                                overlay._archivoErrores = [String(err)];
+                                overlay._archivoFilasOk = [];
+                                overlay._archivoFileReady = false;
+                                if (typeof fileUploadSetError === 'function') fileUploadSetError('drawer-archivo-fu', String(err));
+                                syncWizardPrimary();
+                                return;
+                            }
+
+                            var errores = (res && res.errores) || [];
+                            var filasOk = (res && res.filasOk) || [];
+
+                            overlay._archivoErrores = errores;
+                            overlay._archivoFilasOk = filasOk;
+
+                            if (errores.length) {
+                                overlay._archivoFileReady = false;
+                                if (typeof fileUploadSetError === 'function') {
+                                    fileUploadSetError('drawer-archivo-fu', errores.length + ' error(es) encontrado(s). Revisa el informe para ver el detalle.');
+                                }
+                                if (typeof fileUploadShowErrorReport === 'function') fileUploadShowErrorReport('drawer-archivo-fu', true);
+                                var fuEl = document.getElementById('drawer-archivo-fu');
+                                if (fuEl) {
+                                    var reportBtn = fuEl.querySelector('[data-file-upload-error-report]');
+                                    if (reportBtn) reportBtn.onclick = function () { openCsvErrorModal(overlay._archivoErrores || []); };
+                                }
+                            } else {
+                                overlay._archivoFileReady = true;
+                                if (typeof fileUploadClearError === 'function') fileUploadClearError('drawer-archivo-fu');
+                                if (typeof fileUploadShowErrorReport === 'function') fileUploadShowErrorReport('drawer-archivo-fu', false);
+                                if (typeof fileUploadSetSuccess === 'function') fileUploadSetSuccess('drawer-archivo-fu', 'Archivo validado. Puedes continuar.');
+                            }
+                            syncWizardPrimary();
+                        });
                     },
                     downloadButtons: [
                         {

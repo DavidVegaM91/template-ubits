@@ -134,7 +134,12 @@
                 '<input type="file" class="ubits-file-upload__input" data-file-upload-input' +
                   (accept ? ' accept="' + accept + '"' : '') + ' style="display:none">' +
               '</div>' +
-              '<p class="ubits-body-sm-regular ubits-file-upload__helper" data-file-upload-helper style="display:none"></p>' +
+              '<div class="ubits-body-sm-regular ubits-file-upload__helper" data-file-upload-helper style="display:none">' +
+                '<span class="ubits-file-upload__helper-msg" data-file-upload-helper-msg></span>' +
+                '<button type="button" class="ubits-button ubits-button--error-secondary ubits-button--sm ubits-file-upload__error-report-btn-inline" ' +
+                  'data-file-upload-error-report-inline style="display:none" aria-live="polite">' +
+                  '<i class="far fa-circle-exclamation"></i><span>Informe de errores</span></button>' +
+              '</div>' +
             '</div>'
         );
     }
@@ -149,6 +154,7 @@
         var maxMb    = opts.maxSizeMb || 5;
         var onChange = opts.onChange  || null;
         var onError  = opts.onError   || null;
+        var successMessage = (Object.prototype.hasOwnProperty.call(opts, 'successMessage') ? opts.successMessage : 'Archivo validado. Puedes continuar.');
 
         var dropzone  = el.querySelector('[data-file-upload-dropzone]');
         var emptyEl   = el.querySelector('[data-file-upload-empty]');
@@ -162,14 +168,44 @@
 
         /* ── helpers de estado ── */
 
+        function setHelper(type, msg) {
+            if (!helperEl) return;
+            var msgEl = helperEl.querySelector('[data-file-upload-helper-msg]');
+            if (!msgEl) return;
+            var message = String(msg || '').trim();
+            if (!message) {
+                helperEl.style.display = 'none';
+                msgEl.innerHTML = '';
+                helperEl.classList.remove('ubits-file-upload__helper--success');
+                fileUploadShowErrorReport(el, false, { placement: 'inline' });
+                return;
+            }
+
+            helperEl.classList.toggle('ubits-file-upload__helper--success', type === 'success');
+
+            var iconHtml = type === 'success'
+                ? '<i class="far fa-check-circle" aria-hidden="true"></i>'
+                : '<i class="far fa-circle-exclamation" aria-hidden="true"></i>';
+
+            msgEl.innerHTML = iconHtml + '<span></span>';
+            var span = msgEl.querySelector('span');
+            if (span) span.textContent = message;
+            helperEl.style.display = '';
+        }
+
         function showError(msg) {
             if (dropzone) dropzone.classList.add('ubits-file-upload__dropzone--invalid');
-            if (helperEl) { helperEl.textContent = msg; helperEl.style.display = ''; }
+            setHelper('error', msg);
         }
 
         function clearError() {
             if (dropzone) dropzone.classList.remove('ubits-file-upload__dropzone--invalid');
-            if (helperEl) { helperEl.style.display = 'none'; helperEl.textContent = ''; }
+            setHelper('', '');
+        }
+
+        function showSuccess(msg) {
+            if (dropzone) dropzone.classList.remove('ubits-file-upload__dropzone--invalid');
+            setHelper('success', msg);
         }
 
         function showFile(file) {
@@ -191,6 +227,8 @@
             if (dropzone) dropzone.classList.remove('ubits-file-upload__dropzone--has-file', 'ubits-file-upload__dropzone--invalid');
             if (inputEl)  inputEl.value = '';
             clearError();
+            fileUploadShowErrorReport(el, false, { placement: 'header' });
+            fileUploadShowErrorReport(el, false, { placement: 'inline' });
             fileUploadClearProgress(el);
             fileUploadClearProcessing(el);
             if (onChange) onChange(null);
@@ -218,6 +256,7 @@
                 return;
             }
             showFile(file);
+            if (successMessage !== false) showSuccess(successMessage);
             if (onChange) onChange(file);
             el.dispatchEvent(new CustomEvent('ubits-file-upload-change', { bubbles: true, detail: { file: file } }));
         }
@@ -335,11 +374,15 @@
      * Muestra u oculta el botón "Informe de errores" dentro del componente.
      * Llamar cuando el servidor devuelve errores en el contenido del archivo.
      */
-    function fileUploadShowErrorReport(idOrEl, visible) {
+    function fileUploadShowErrorReport(idOrEl, visible, opts) {
         var el = typeof idOrEl === 'string' ? document.getElementById(idOrEl) : idOrEl;
         if (!el) return;
-        var btn = el.querySelector('[data-file-upload-error-report]');
-        if (btn) btn.style.display = visible ? '' : 'none';
+        var placement = (opts && opts.placement === 'inline') ? 'inline' : 'header';
+        var headerBtn = el.querySelector('[data-file-upload-error-report]');
+        var inlineBtn = el.querySelector('[data-file-upload-error-report-inline]');
+
+        if (headerBtn) headerBtn.style.display = (visible && placement === 'header') ? '' : 'none';
+        if (inlineBtn) inlineBtn.style.display = (visible && placement === 'inline') ? '' : 'none';
     }
 
     /**
@@ -351,8 +394,17 @@
         if (!el) return;
         var dropzone = el.querySelector('[data-file-upload-dropzone]');
         var helperEl = el.querySelector('[data-file-upload-helper]');
+        var msgEl = helperEl ? helperEl.querySelector('[data-file-upload-helper-msg]') : null;
         if (dropzone) dropzone.classList.add('ubits-file-upload__dropzone--invalid');
-        if (helperEl) { helperEl.textContent = message; helperEl.style.display = ''; }
+        if (helperEl) {
+            helperEl.classList.remove('ubits-file-upload__helper--success');
+            if (msgEl) {
+                msgEl.innerHTML = '<i class="far fa-circle-exclamation" aria-hidden="true"></i><span></span>';
+                var span = msgEl.querySelector('span');
+                if (span) span.textContent = String(message || '');
+            }
+            helperEl.style.display = '';
+        }
     }
 
     /**
@@ -363,8 +415,79 @@
         if (!el) return;
         var dropzone = el.querySelector('[data-file-upload-dropzone]');
         var helperEl = el.querySelector('[data-file-upload-helper]');
+        var msgEl = helperEl ? helperEl.querySelector('[data-file-upload-helper-msg]') : null;
         if (dropzone) dropzone.classList.remove('ubits-file-upload__dropzone--invalid');
-        if (helperEl) { helperEl.style.display = 'none'; helperEl.textContent = ''; }
+        if (helperEl) {
+            helperEl.style.display = 'none';
+            if (msgEl) msgEl.innerHTML = '';
+            helperEl.classList.remove('ubits-file-upload__helper--success');
+            fileUploadShowErrorReport(el, false, { placement: 'inline' });
+        }
+    }
+
+    /**
+     * Muestra un mensaje de éxito debajo del dropzone (p. ej. validación ok).
+     */
+    function fileUploadSetSuccess(idOrEl, message) {
+        var el = typeof idOrEl === 'string' ? document.getElementById(idOrEl) : idOrEl;
+        if (!el) return;
+        var dropzone = el.querySelector('[data-file-upload-dropzone]');
+        var helperEl = el.querySelector('[data-file-upload-helper]');
+        var msgEl = helperEl ? helperEl.querySelector('[data-file-upload-helper-msg]') : null;
+        if (dropzone) dropzone.classList.remove('ubits-file-upload__dropzone--invalid');
+        if (helperEl) {
+            var msg = String(message || '').trim();
+            if (!msg) return;
+            helperEl.classList.add('ubits-file-upload__helper--success');
+            if (msgEl) {
+                msgEl.innerHTML = '<i class="far fa-check-circle" aria-hidden="true"></i><span></span>';
+                var span = msgEl.querySelector('span');
+                if (span) span.textContent = msg;
+            }
+            helperEl.style.display = '';
+        }
+    }
+
+    function fileUploadClearSuccess(idOrEl) {
+        var el = typeof idOrEl === 'string' ? document.getElementById(idOrEl) : idOrEl;
+        if (!el) return;
+        var helperEl = el.querySelector('[data-file-upload-helper]');
+        var msgEl = helperEl ? helperEl.querySelector('[data-file-upload-helper-msg]') : null;
+        if (helperEl && helperEl.classList.contains('ubits-file-upload__helper--success')) {
+            helperEl.style.display = 'none';
+            if (msgEl) msgEl.innerHTML = '';
+            helperEl.classList.remove('ubits-file-upload__helper--success');
+            fileUploadShowErrorReport(el, false, { placement: 'inline' });
+        }
+    }
+
+    /**
+     * Variante "Error: procesado" (archivo pasó validación inicial pero falló el procesamiento).
+     * Muestra mensaje con conteo y deja el botón "Informe de errores" al lado del mensaje.
+     *
+     * opts:
+     *  - processedOk {number} filas procesadas correctamente
+     *  - failed      {number} filas no procesadas / con error
+     *  - message?    {string} override del texto base
+     */
+    function fileUploadSetProcessingError(idOrEl, opts) {
+        var el = typeof idOrEl === 'string' ? document.getElementById(idOrEl) : idOrEl;
+        if (!el) return;
+        var ok = opts && typeof opts.processedOk === 'number' ? opts.processedOk : 0;
+        var failed = opts && typeof opts.failed === 'number' ? opts.failed : 0;
+        var baseMsg = 'Se procesaron ' + ok + ' fila(s). ' + failed + ' no se pudieron procesar.';
+        var msg = (opts && typeof opts.message === 'string' && opts.message.trim() !== '') ? opts.message.trim() : baseMsg;
+
+        fileUploadSetError(el, msg);
+        /* Forzar botón inline (estado "procesado"): debe ir al lado del helper */
+        fileUploadShowErrorReport(el, true, { placement: 'inline' });
+        fileUploadShowErrorReport(el, false, { placement: 'header' });
+
+        /* Asegurar visibilidad incluso si el layout del helper fue reseteado externamente */
+        var helperEl = el.querySelector('[data-file-upload-helper]');
+        var inlineBtn = el.querySelector('[data-file-upload-error-report-inline]');
+        if (helperEl) helperEl.style.display = '';
+        if (inlineBtn) inlineBtn.style.display = '';
     }
 
     /**
@@ -489,6 +612,9 @@
     window.fileUploadShowErrorReport = fileUploadShowErrorReport;
     window.fileUploadSetError        = fileUploadSetError;
     window.fileUploadClearError      = fileUploadClearError;
+    window.fileUploadSetSuccess      = fileUploadSetSuccess;
+    window.fileUploadClearSuccess    = fileUploadClearSuccess;
+    window.fileUploadSetProcessingError = fileUploadSetProcessingError;
     window.fileUploadSetProgress     = fileUploadSetProgress;
     window.fileUploadClearProgress   = fileUploadClearProgress;
     window.fileUploadSetProcessing   = fileUploadSetProcessing;
