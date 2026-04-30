@@ -545,6 +545,8 @@
 
     function viewFromHash() {
         var hash = (window.location.hash || '').replace('#', '');
+        /* Deep-link demo edge case: mantener URL pero enrutar a la vista */
+        if (hash === 'evaluados-error-edge') return 'evaluados';
         return VALID_VIEWS.indexOf(hash) >= 0 ? hash : 'hub';
     }
 
@@ -4050,6 +4052,63 @@
         });
         document.getElementById('crear360-btn-sub-save').addEventListener('click', saveCurrentSubView);
 
+        /* ───────────────────────────────────────────────
+           Seed demo para deep-links (hash de sub-vista)
+           Objetivo: poder abrir #tipo / #competencias / #evaluados / #resultados sin pasar por HUB
+           - Solo aplica si el draft está "vacío"
+           - NO aplica al entrar a #hub (flujo real, vacío)
+           ─────────────────────────────────────────────── */
+        function pad2(n) { return String(n).padStart(2, '0'); }
+        function toYmd(d) { return d.getFullYear() + '-' + pad2(d.getMonth() + 1) + '-' + pad2(d.getDate()); }
+        function addMonths(date, months) {
+            var d = new Date(date.getTime());
+            var day = d.getDate();
+            d.setDate(1);
+            d.setMonth(d.getMonth() + months);
+            var lastDay = new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate();
+            d.setDate(Math.min(day, lastDay));
+            return d;
+        }
+        function isDraftEmptyForDemo() {
+            if (draft.guardado) return false;
+            var hasBasics = (draft.nombre && String(draft.nombre).trim()) || draft.fechaInicio || draft.fechaFin;
+            var hasTipo   = Array.isArray(draft.tipo) && draft.tipo.length > 0;
+            var hasOther  = (Array.isArray(draft.competencias) && draft.competencias.length > 0) || (draft.evaluados && Object.keys(draft.evaluados).length > 0);
+            return !hasBasics && !hasTipo && !hasOther;
+        }
+        function seedDemoDraft(targetView) {
+            if (!isDraftEmptyForDemo()) return;
+
+            /* Básicos */
+            var now = new Date();
+            var start = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1); /* mañana */
+            var end = addMonths(start, 1);
+            draft.nombre = 'Evaluación demo';
+            draft.fechaInicio = toYmd(start);
+            draft.fechaFin = toYmd(end);
+            draft.guardado = true;
+
+            /* Tipos activos: todos los del BD (pesos repartidos a 100 %) */
+            var bases = (typeof BD_EVALUACIONES_360 !== 'undefined' && BD_EVALUACIONES_360.tiposEvaluacion) || [];
+            var n = bases.length || 1;
+            var basePeso = Math.floor(100 / n);
+            var rem = 100 - (basePeso * n);
+            _tipos = bases.map(function (t, idx) {
+                return {
+                    id: t.id,
+                    nombre: t.nombre,
+                    activo: true,
+                    peso: basePeso + (idx < rem ? 1 : 0)
+                };
+            });
+            draft.tipo = JSON.parse(JSON.stringify(_tipos));
+
+            /* Checks mínimos: para entrar a vistas distintas de "tipo" */
+            if (targetView !== 'tipo') {
+                draft.checks.tipo = true;
+            }
+        }
+
         /* Manejo del botón atrás del navegador */
         window.addEventListener('popstate', function (e) {
             var viewId = (e.state && e.state.view) || viewFromHash();
@@ -4058,6 +4117,7 @@
 
         /* Vista inicial según URL hash */
         var initialView = viewFromHash();
+        if (initialView !== 'hub') seedDemoDraft(initialView);
         showView(initialView, { pushHistory: false });
 
         /* ───────────────────────────────────────────────
@@ -4073,6 +4133,8 @@
 
             /* Asegurar vista evaluados (sin tocar el hash del edge) */
             showView('evaluados', { pushHistory: false });
+            /* Restaurar el hash edge (showView lo reemplaza por #evaluados) */
+            history.replaceState({ view: 'evaluados' }, '', '#evaluados-error-edge');
 
             /* Abrir drawer */
             setTimeout(function () {
