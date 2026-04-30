@@ -2043,13 +2043,13 @@ body.ia-chat-mobile-drawer-scroll-lock {
    Uso: añadir .ubits-ia-chat-interaction después del mensaje de la IA.
    =========================================================================== */
 
-/* Contenedor base de interacción — se coloca fuera del globo, debajo del mensaje */
+/* Contenedor base de interacción — se inyecta dentro del mensaje IA, antes del footer */
 .ubits-ia-chat-interaction {
     display: flex;
     flex-direction: column;
     gap: var(--gap-sm);
     width: 100%;
-    max-width: 480px;
+    /* max-width se cancela cuando está dentro de un mensaje IA (hereda el ancho del mensaje) */
     animation: ubits-ia-chat-interaction-fadein 0.25s ease both;
 }
 
@@ -2062,6 +2062,12 @@ body.ia-chat-mobile-drawer-scroll-lock {
 .ubits-ia-chat-interaction--consumed {
     pointer-events: none;
     opacity: 0.55;
+}
+
+/* Dentro de un mensaje IA del ai-panel: heredar el ancho del mensaje */
+.ai-panel__msg--ai .ubits-ia-chat-interaction {
+    max-width: 85%;
+    margin-top: var(--gap-sm);
 }
 
 /* ---------------------------------------------------------------------------
@@ -2523,6 +2529,14 @@ body.ia-chat-mobile-drawer-scroll-lock {
 }
 
 .ubits-ia-chat-bottom-sheet__submit {
-    /* usa las clases ubits-ia-button--primary ubits-ia-button--icon-only--sm */
     flex-shrink: 0;
+    /* Mismo aspecto que el botón de enviar del input: 32×32px, perfectamente redondo */
+    width: 32px !important;
+    height: 32px !important;
+    min-width: 32px !important;
+    min-height: 32px !important;
+    border-radius: 50% !important;
+    aspect-ratio: 1 / 1 !important;
+    padding: 0 !important;
+    line-height: 0 !important;
 }

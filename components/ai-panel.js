@@ -851,6 +851,25 @@ function _aiPanelConsumeInteraction(wrap) {
     wrap.classList.add('ubits-ia-chat-interaction--consumed');
 }
 
+// Inyecta un bloque de interacción DENTRO del último mensaje IA (antes del footer),
+// para que el timestamp quede debajo de la interacción.
+function _aiPanelInjectInLastAiMsg(el) {
+    var messages = _aiEl('ai-panel-messages');
+    if (!messages) return;
+    var msgs = messages.querySelectorAll('.ai-panel__msg--ai');
+    var lastMsg = msgs.length ? msgs[msgs.length - 1] : null;
+    if (lastMsg) {
+        var footer = lastMsg.querySelector('.ai-panel__msg-footer');
+        if (footer) {
+            lastMsg.insertBefore(el, footer);
+        } else {
+            lastMsg.appendChild(el);
+        }
+    } else {
+        messages.appendChild(el);
+    }
+}
+
 function _aiPanelSendInteractionReply(text, onReply, label) {
     addAIPanelMessage(label || text, 'user');
     if (typeof onReply === 'function') onReply(text, label || text);
@@ -858,11 +877,10 @@ function _aiPanelSendInteractionReply(text, onReply, label) {
     if (scroll) scroll.scrollTop = scroll.scrollHeight;
 }
 
-/* ---- 1. Quick Reply ---- */
+/* ---- 1. Quick Reply — botones UBITS oficiales dentro del último mensaje IA ---- */
 function _aiPanelInteractionQuickReply(opts) {
     var items = opts.items || [];
     if (!items.length) return;
-    var messages = _aiEl('ai-panel-messages');
 
     var wrap = document.createElement('div');
     wrap.className = 'ubits-ia-chat-interaction ubits-ia-chat-interaction--quick-reply';
@@ -870,28 +888,29 @@ function _aiPanelInteractionQuickReply(opts) {
     items.forEach(function(item) {
         var label = typeof item === 'string' ? item : (item.label || item.value || '');
         var value = typeof item === 'string' ? item : (item.value || item.label || '');
+
+        // Usar botón oficial UBITS tertiary
         var btn = document.createElement('button');
         btn.type = 'button';
-        btn.className = 'ubits-ia-chat-quick-reply-btn';
-        btn.textContent = label;
+        btn.className = 'ubits-button ubits-button--tertiary ubits-button--sm';
+        btn.innerHTML = '<span>' + _aiEscape(label) + '</span>';
+
         btn.addEventListener('click', function() {
             if (wrap.classList.contains('ubits-ia-chat-interaction--consumed')) return;
-            // Marcar el botón seleccionado y deshabilitar el resto
-            btn.classList.add('ubits-ia-chat-quick-reply-btn--selected');
+            btn.classList.add('ubits-button--active');
             _aiPanelConsumeInteraction(wrap);
             _aiPanelSendInteractionReply(value, opts.onReply, label);
         });
         wrap.appendChild(btn);
     });
 
-    messages.appendChild(wrap);
+    _aiPanelInjectInLastAiMsg(wrap);
 }
 
-/* ---- 2. Multiselect chips ---- */
+/* ---- 2. Multiselect chips — dentro del último mensaje IA ---- */
 function _aiPanelInteractionMultiselect(opts) {
     var items = opts.items || [];
     if (!items.length) return;
-    var messages = _aiEl('ai-panel-messages');
     var confirmLabel = opts.confirmLabel || 'Listo →';
     var hint = opts.hint || 'Puedes elegir varias';
 
@@ -957,14 +976,13 @@ function _aiPanelInteractionMultiselect(opts) {
 
     footer.appendChild(confirmBtn);
     wrap.appendChild(footer);
-    messages.appendChild(wrap);
+    _aiPanelInjectInLastAiMsg(wrap);
 }
 
-/* ---- 3. Card-based ---- */
+/* ---- 3. Card-based — dentro del último mensaje IA ---- */
 function _aiPanelInteractionCards(opts) {
     var items = opts.items || [];
     if (!items.length) return;
-    var messages = _aiEl('ai-panel-messages');
 
     var wrap = document.createElement('div');
     wrap.className = 'ubits-ia-chat-interaction ubits-ia-chat-interaction--cards';
@@ -1000,7 +1018,7 @@ function _aiPanelInteractionCards(opts) {
         wrap.appendChild(card);
     });
 
-    messages.appendChild(wrap);
+    _aiPanelInjectInLastAiMsg(wrap);
 }
 
 /* ---- 4. Bottom Sheet Form ---- */
@@ -1036,43 +1054,71 @@ function _aiPanelInteractionBottomSheet(opts) {
         if (typeof opts.onClose === 'function') opts.onClose();
     }
 
-    function submitStep() {
-        var step = steps[currentStep];
-        var ans  = answers[currentStep];
-        var value, label;
-        if (step.type === 'multi') {
-            value = ans.selected.join(',') || ans.freeText;
-            label = ans.selected.join(', ') || ans.freeText;
-        } else {
-            value = ans.selected[0] || ans.freeText;
-            label = ans.selected[0] || ans.freeText;
-        }
-        if (!value) return;
+    // Construye y envía UN único mensaje con todas las respuestas acumuladas
+    function sendAllAnswers() {
+        var lines = [];
+        steps.forEach(function(step, idx) {
+            var ans = answers[idx];
+            if (!ans) return;
+            var label;
+            if (step.type === 'multi') {
+                label = ans.selected.join(', ') || ans.freeText;
+            } else {
+                label = ans.selected[0] || ans.freeText;
+            }
+            if (!label) return; // paso omitido, no lo incluimos
+            if (steps.length > 1) {
+                lines.push('P: ' + (step.question || '') + '\nR: ' + label);
+            } else {
+                lines.push(label);
+            }
+        });
+        if (!lines.length) return;
 
-        // Enviar como mensaje del usuario
-        addAIPanelMessage(label, 'user');
-        if (typeof opts.onReply === 'function') opts.onReply(currentStep, value, label, step);
-
-        // Ir al siguiente paso o cerrar
-        if (currentStep < steps.length - 1) {
-            currentStep++;
-            answers[currentStep] = { selected: [], freeText: '' };
-            renderSheet();
-        } else {
-            closeSheet();
-        }
-
+        var combinedLabel = lines.join('\n\n');
+        addAIPanelMessage(combinedLabel, 'user');
+        if (typeof opts.onReply === 'function') opts.onReply(answers, steps);
         if (scroll) scroll.scrollTop = scroll.scrollHeight;
     }
 
+    function submitStep() {
+        var step = steps[currentStep];
+        var ans  = answers[currentStep];
+
+        // Validar que haya algo seleccionado o escrito
+        var hasAnswer = step.type === 'multi'
+            ? (ans.selected.length > 0 || ans.freeText.trim() !== '')
+            : (ans.selected.length > 0 || ans.freeText.trim() !== '');
+        if (!hasAnswer) return;
+
+        // Sincronizar texto libre como selección si no hay opción marcada (single select)
+        if (step.type !== 'multi' && !ans.selected.length && ans.freeText.trim()) {
+            ans.selected = [ans.freeText.trim()];
+        }
+
+        // Ir al siguiente paso o enviar todo al final
+        if (currentStep < steps.length - 1) {
+            currentStep++;
+            if (!answers[currentStep]) answers[currentStep] = { selected: [], freeText: '' };
+            renderSheet();
+        } else {
+            // Último paso: cerrar y enviar TODO como un único mensaje
+            closeSheet();
+            sendAllAnswers();
+        }
+    }
+
     function skipStep() {
+        // Marcar respuesta vacía para este paso (se omite en el mensaje final)
+        answers[currentStep] = { selected: [], freeText: '' };
         if (typeof opts.onSkip === 'function') opts.onSkip(currentStep, steps[currentStep]);
         if (currentStep < steps.length - 1) {
             currentStep++;
-            answers[currentStep] = { selected: [], freeText: '' };
+            if (!answers[currentStep]) answers[currentStep] = { selected: [], freeText: '' };
             renderSheet();
         } else {
             closeSheet();
+            sendAllAnswers();
         }
     }
 
@@ -1248,12 +1294,14 @@ function _aiPanelInteractionBottomSheet(opts) {
 
         var submitBtn = document.createElement('button');
         submitBtn.type = 'button';
+        // Mismo estilo que el botón de enviar del input del chat
         submitBtn.className = 'ubits-ia-button ubits-ia-button--primary ubits-ia-button--icon-only--sm ubits-ia-chat-bottom-sheet__submit';
-        submitBtn.setAttribute('aria-label', 'Enviar');
-        submitBtn.innerHTML = '<i class="far fa-arrow-up"></i>';
+        submitBtn.setAttribute('aria-label', currentStep === steps.length - 1 ? 'Enviar todo' : 'Siguiente');
+        submitBtn.innerHTML = '<i class="far fa-arrow-right"></i>';
         submitBtn.addEventListener('click', function() {
-            // Para single con texto libre que no haya sido enviado aún
-            if (ans.freeText && !ans.selected.length) ans.selected = [ans.freeText];
+            if (step.type !== 'multi' && !ans.selected.length && ans.freeText.trim()) {
+                ans.selected = [ans.freeText.trim()];
+            }
             submitStep();
         });
         footer.appendChild(submitBtn);
