@@ -4059,6 +4059,81 @@
         /* Vista inicial según URL hash */
         var initialView = viewFromHash();
         showView(initialView, { pushHistory: false });
+
+        /* ───────────────────────────────────────────────
+           Edge demo (solo para QA / doc interna)
+           URL: crear-360.html#evaluados-error-edge
+           - Abre drawer "Cargar desde archivo"
+           - Selecciona modo Libre
+           - Muestra variante file-upload "Error: procesado"
+           - Botón "Informe de errores" abre modal con 5 errores del sistema
+           ─────────────────────────────────────────────── */
+        (function initEvaluadosErrorEdgeDemo() {
+            if (window.location.hash !== '#evaluados-error-edge') return;
+
+            /* Asegurar vista evaluados (sin tocar el hash del edge) */
+            showView('evaluados', { pushHistory: false });
+
+            /* Abrir drawer */
+            setTimeout(function () {
+                if (typeof openEval360ImportDrawer !== 'function') return;
+                openEval360ImportDrawer();
+
+                /* Esperar a que el drawer monte radios + uploader inicial */
+                setTimeout(function () {
+                    /* Seleccionar "Libre" */
+                    var libreRadio = document.querySelector('input[name="eval360ImportMode"][value="libre"]');
+                    if (libreRadio && !libreRadio.checked) {
+                        libreRadio.checked = true;
+                        libreRadio.dispatchEvent(new Event('change', { bubbles: true }));
+                    }
+
+                    /* Esperar remount del uploader en modo libre */
+                    setTimeout(function () {
+                        var fuEl = document.getElementById('eval360ImportFu');
+                        if (!fuEl) return;
+
+                        /* Simular archivo cargado (solo visual) */
+                        var dropzone = fuEl.querySelector('[data-file-upload-dropzone]');
+                        var emptyEl  = fuEl.querySelector('[data-file-upload-empty]');
+                        var cardEl   = fuEl.querySelector('[data-file-upload-card]');
+                        var nameEl   = fuEl.querySelector('[data-file-upload-name]');
+                        var sizeEl   = fuEl.querySelector('[data-file-upload-size]');
+                        if (dropzone) dropzone.classList.add('ubits-file-upload__dropzone--has-file');
+                        if (emptyEl) emptyEl.style.display = 'none';
+                        if (cardEl)  cardEl.style.display  = '';
+                        if (nameEl)  nameEl.textContent = 'evaluados_libre.csv';
+                        if (sizeEl)  sizeEl.textContent = '48,2 KB';
+
+                        /* Estado: Error procesado + botón inline */
+                        if (typeof fileUploadSetProcessingError === 'function') {
+                            fileUploadSetProcessingError(fuEl, { processedOk: 120, failed: 5 });
+                        } else if (typeof fileUploadSetError === 'function') {
+                            fileUploadSetError(fuEl, 'Se procesaron 120 fila(s). 5 no se pudieron procesar.');
+                            if (typeof fileUploadShowErrorReport === 'function') {
+                                fileUploadShowErrorReport(fuEl, true, { placement: 'inline' });
+                            }
+                        }
+
+                        /* Modal con 5 errores del sistema (con filas) */
+                        var systemErrors = [
+                            'Fila 12: Error del servidor al crear la relación evaluador/evaluado (código 500).',
+                            'Fila 27: Timeout al guardar en base de datos. Intenta de nuevo.',
+                            'Fila 44: Conflicto de duplicidad al insertar asignación (código 409).',
+                            'Fila 58: No se pudo calcular el tipo por inconsistencia temporal (reintento agotado).',
+                            'Fila 103: Error inesperado al validar dependencias internas (código 520).'
+                        ];
+
+                        var inlineBtn = fuEl.querySelector('[data-file-upload-error-report-inline]');
+                        if (inlineBtn) {
+                            inlineBtn.onclick = function () {
+                                eval360MostrarErroresImport(systemErrors);
+                            };
+                        }
+                    }, 220);
+                }, 220);
+            }, 120);
+        })();
     });
 
 }());
