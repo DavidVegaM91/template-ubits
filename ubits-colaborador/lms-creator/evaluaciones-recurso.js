@@ -1257,6 +1257,8 @@
                             state.config.questionCount = 10;
                             state.config.difficulty = 'intermediate';
                             state.config.questionTypes = ['multiple_choice_single_answer', 'binary'];
+                            // Reflejar configuración en el pageState para que el modal la muestre
+                            if (rootEl._ccEvalPageState) Object.assign(rootEl._ccEvalPageState.config, state.config);
                             setTimeout(function () {
                                 _evalMsg('¡Perfecto! Cuéntame sobre el tema de la evaluación. Escribe el contenido directamente o adjunta un archivo (doc, pdf, txt).');
                             }, 200);
@@ -1278,11 +1280,23 @@
         }
         text = String(text || '').trim();
 
-        if (state.step === 'path_select') {
-            // El usuario escribió algo antes de elegir la card — ignorar o redirigir
+        // Ignorar texto antes de elegir la card de path
+        if (state.step === 'path_select') return;
+
+        // Ruta larga — paso: nombre de la evaluación por chat
+        if (state.step === 'long_await_name') {
+            if (!text) {
+                _evalMsg('Necesito un nombre para continuar. ¿Cómo se llamará la evaluación?');
+                return;
+            }
+            state.config.title = text;
+            evalAgentUpdatePageTitle(rootEl, text);
+            state.step = 'long_await_bsf';
+            setTimeout(function () { evalAgentShowConfigBSF(rootEl); }, 300);
             return;
         }
 
+        // Ambas rutas — material base
         if (state.step === 'fast_await_material' || state.step === 'long_await_material') {
             if (!text) return;
             state.content = text;
@@ -1290,136 +1304,133 @@
             _evalTyping(function () {
                 state.step = 'pre_confirm';
                 if (state._longPath) {
-                    // Preguntar cantidad, dificultad y tipos antes de confirmar
-                    evalAgentAskCount(rootEl);
+                    evalAgentAskTypes(rootEl);
                 } else {
                     evalAgentShowConfirmation(rootEl);
                 }
             }, 1800);
             return;
         }
+    }
 
-        if (state.step === 'long_count') {
-            var n = parseInt(text, 10);
-            if (isNaN(n) || n < 1) { _evalMsg('Ingresa un número mayor a 0.'); return; }
-            state.config.questionCount = Math.min(n, 20);
-            evalAgentAskDifficulty(rootEl);
-            return;
-        }
+    /** Actualiza el label de la página activa en el Índice Creator */
+    function evalAgentUpdatePageTitle(rootEl, newTitle) {
+        var activeItem = document.querySelector('#crear-contenido-recursos-indice-mount .ubits-paginas-creator__item.is-active');
+        if (!activeItem) return;
+        var labelEl = activeItem.querySelector('.ubits-paginas-creator__label');
+        if (labelEl) labelEl.textContent = newTitle;
+        // Persistir via evento del componente
+        var pageKey = rootEl._ccEvalCurrentPageKey || getActivePageKeyFromCrearContenido();
+        document.dispatchEvent(new CustomEvent('ubits-paginas-creator-label-save', {
+            bubbles: true,
+            detail: { pageKey: pageKey, newLabel: newTitle }
+        }));
     }
 
     // ---------------------------
-    // RUTA LARGA: Bottom Sheet Form de configuración
+    // RUTA LARGA: flujo por pasos
     // ---------------------------
 
     function evalAgentStartLongConfig(rootEl) {
-        _evalMsg('Empecemos configurando la evaluación. Te haré unas preguntas rápidas.');
-        setTimeout(function () {
-            if (typeof global.addAIPanelInteraction === 'function') {
-                global.addAIPanelInteraction('bottom-sheet', {
-                    steps: [
-                        {
-                            question: '¿Cómo se llamará la evaluación?',
-                            type: 'single',
-                            options: [],
-                            freeText: true
-                        },
-                        {
-                            question: '¿Puntaje mínimo de aprobación?',
-                            type: 'single',
-                            options: [
-                                { label: '60% — Aprobación básica', value: '60' },
-                                { label: '70% — Estándar recomendado', value: '70' },
-                                { label: '80% — Nivel intermedio', value: '80' },
-                                { label: '90% — Alto desempeño', value: '90' }
-                            ]
-                        },
-                        {
-                            question: '¿Límite de tiempo para la evaluación?',
-                            type: 'single',
-                            options: [
-                                { label: 'Sin límite de tiempo', value: 'none' },
-                                { label: '30 minutos', value: '30' },
-                                { label: '45 minutos', value: '45' },
-                                { label: '60 minutos', value: '60' },
-                                { label: '90 minutos', value: '90' }
-                            ]
-                        }
-                    ],
-                    onReply: function (answers) {
-                        var state = rootEl._ccEvalState;
-                        if (!state) return;
-                        // answers[idx] = { selected: [], freeText: '' }
-                        var titleAns = answers[0] || {};
-                        var title = String(titleAns.freeText || (titleAns.selected && titleAns.selected[0]) || '').trim() || 'Evaluación';
-                        var scoreAns = answers[1] || {};
-                        var scoreRaw = String((scoreAns.selected && scoreAns.selected[0]) || scoreAns.freeText || '70').replace('%', '');
-                        var scoreVal = parseInt(scoreRaw, 10);
-                        var timeAns = answers[2] || {};
-                        var timeVal = String((timeAns.selected && timeAns.selected[0]) || timeAns.freeText || 'none');
-                        state.config.title = title;
-                        state.config.minScore = isNaN(scoreVal) ? 70 : scoreVal;
-                        state.config.timeLimit = timeVal !== 'none';
-                        state.config.timeLimitValue = timeVal !== 'none' ? parseInt(timeVal, 10) : null;
-                        state.config.limitAttempts = false;
-                        state.config.questionsRandom = true;
-                        state.config.answersRandom = true;
-                        state._longPath = true;
-                        state.step = 'long_await_material';
-                        var summary = '✓ "' + title + '" · ' + (isNaN(scoreVal) ? 70 : scoreVal) + '% mínimo' +
-                            (timeVal !== 'none' ? ' · ' + timeVal + ' min' : ' · sin límite de tiempo');
-                        _evalMsg(summary);
-                        setTimeout(function () {
-                            _evalMsg('Ahora cuéntame sobre el tema de la evaluación. Puedes escribir el contenido o adjuntar un archivo.');
-                        }, 400);
-                    }
-                });
-            }
-        }, 600);
+        var state = rootEl._ccEvalState;
+        state.step = 'long_await_name';
+        _evalMsg('¿Cómo se llamará la evaluación?');
     }
 
-    function evalAgentAskCount(rootEl) {
-        var state = rootEl._ccEvalState;
-        state.step = 'long_count';
+    /** Bottom Sheet Form: puntaje mínimo + tiempo + cantidad + dificultad */
+    function evalAgentShowConfigBSF(rootEl) {
+        _evalMsg('Perfecto. Ahora configura los ajustes de la evaluación.');
         setTimeout(function () {
-            _evalMsg('¿Cuántas preguntas quieres generar?');
-            if (typeof global.addAIPanelInteraction === 'function') {
-                global.addAIPanelInteraction('quick-reply', {
-                    items: [
-                        { label: '5', value: '5' },
-                        { label: '10', value: '10' },
-                        { label: '15', value: '15' },
-                        { label: '20', value: '20' }
-                    ],
-                    onReply: function (val) {
-                        var n = parseInt(val, 10);
-                        state.config.questionCount = isNaN(n) ? 10 : Math.min(n, 20);
-                        evalAgentAskDifficulty(rootEl);
+            if (typeof global.addAIPanelInteraction !== 'function') return;
+            global.addAIPanelInteraction('bottom-sheet', {
+                steps: [
+                    {
+                        question: '¿Puntaje mínimo de aprobación?',
+                        type: 'single',
+                        options: [
+                            { label: '60% — Aprobación básica', value: '60' },
+                            { label: '70% — Estándar recomendado', value: '70' },
+                            { label: '80% — Nivel intermedio', value: '80' },
+                            { label: '90% — Alto desempeño', value: '90' }
+                        ]
+                    },
+                    {
+                        question: '¿Límite de tiempo?',
+                        type: 'single',
+                        options: [
+                            { label: 'Sin límite de tiempo', value: 'none' },
+                            { label: '30 minutos', value: '30' },
+                            { label: '45 minutos', value: '45' },
+                            { label: '60 minutos', value: '60' },
+                            { label: '90 minutos', value: '90' }
+                        ]
+                    },
+                    {
+                        question: '¿Cuántas preguntas quieres generar?',
+                        type: 'single',
+                        options: [
+                            { label: '5 preguntas', value: '5' },
+                            { label: '10 preguntas', value: '10' },
+                            { label: '15 preguntas', value: '15' },
+                            { label: '20 preguntas', value: '20' }
+                        ],
+                        freeText: true
+                    },
+                    {
+                        question: '¿Nivel de dificultad?',
+                        type: 'single',
+                        options: [
+                            { label: 'Básico', value: 'basic' },
+                            { label: 'Intermedio', value: 'intermediate' },
+                            { label: 'Avanzado', value: 'advanced' }
+                        ]
                     }
-                });
-            }
-        }, 300);
-    }
+                ],
+                onReply: function (answers) {
+                    var state = rootEl._ccEvalState;
+                    if (!state) return;
+                    // answers[idx] = { selected: [], freeText: '' }
+                    var scoreAns = answers[0] || {};
+                    var scoreRaw = String((scoreAns.selected && scoreAns.selected[0]) || scoreAns.freeText || '70').replace('%', '');
+                    var scoreVal = parseInt(scoreRaw, 10);
 
-    function evalAgentAskDifficulty(rootEl) {
-        var state = rootEl._ccEvalState;
-        state.step = 'long_difficulty';
-        setTimeout(function () {
-            _evalMsg('¿Qué nivel de dificultad?');
-            if (typeof global.addAIPanelInteraction === 'function') {
-                global.addAIPanelInteraction('quick-reply', {
-                    items: [
-                        { label: 'Básico', value: 'basic' },
-                        { label: 'Intermedio', value: 'intermediate' },
-                        { label: 'Avanzado', value: 'advanced' }
-                    ],
-                    onReply: function (val) {
-                        state.config.difficulty = val;
-                        evalAgentAskTypes(rootEl);
+                    var timeAns = answers[1] || {};
+                    var timeVal = String((timeAns.selected && timeAns.selected[0]) || timeAns.freeText || 'none');
+
+                    var countAns = answers[2] || {};
+                    var countRaw = String((countAns.selected && countAns.selected[0]) || countAns.freeText || '10');
+                    var countVal = parseInt(countRaw, 10);
+
+                    var diffAns = answers[3] || {};
+                    var diffVal = String((diffAns.selected && diffAns.selected[0]) || diffAns.freeText || 'intermediate');
+
+                    state.config.minScore = isNaN(scoreVal) ? 70 : scoreVal;
+                    state.config.timeLimit = timeVal !== 'none';
+                    state.config.timeLimitValue = timeVal !== 'none' ? parseInt(timeVal, 10) : null;
+                    state.config.questionCount = isNaN(countVal) || countVal < 1 ? 10 : Math.min(countVal, 20);
+                    state.config.difficulty = diffVal;
+                    state.config.limitAttempts = false;
+                    state.config.questionsRandom = true;
+                    state.config.answersRandom = true;
+                    state._longPath = true;
+                    state.step = 'long_await_material';
+
+                    // Aplicar config al pageState para que el modal la refleje
+                    if (rootEl._ccEvalPageState) {
+                        Object.assign(rootEl._ccEvalPageState.config, state.config);
                     }
-                });
-            }
-        }, 300);
+
+                    var summary = '✓ ' + (isNaN(scoreVal) ? 70 : scoreVal) + '% mínimo' +
+                        (timeVal !== 'none' ? ' · ' + timeVal + ' min' : '') +
+                        ' · ' + state.config.questionCount + ' preguntas' +
+                        ' · ' + ({ basic: 'Básico', intermediate: 'Intermedio', advanced: 'Avanzado' }[diffVal] || diffVal);
+                    _evalMsg(summary);
+                    setTimeout(function () {
+                        _evalMsg('Ahora cuéntame sobre el tema de la evaluación. Escribe el contenido o adjunta un archivo.');
+                    }, 400);
+                }
+            });
+        }, 500);
     }
 
     function evalAgentAskTypes(rootEl) {

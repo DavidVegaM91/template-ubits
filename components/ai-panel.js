@@ -839,10 +839,9 @@ function _aiPanelInteractionQuickReply(opts) {
         var label = typeof item === 'string' ? item : (item.label || item.value || '');
         var value = typeof item === 'string' ? item : (item.value || item.label || '');
 
-        // Usar botón oficial UBITS tertiary
         var btn = document.createElement('button');
         btn.type = 'button';
-        btn.className = 'ubits-button ubits-button--tertiary ubits-button--sm';
+        btn.className = 'ubits-button ubits-button--secondary ubits-button--sm';
         btn.innerHTML = '<span>' + _aiEscape(label) + '</span>';
 
         btn.addEventListener('click', function() {
@@ -902,6 +901,8 @@ function _aiPanelInteractionMultiselect(opts) {
                 chip.classList.remove('ubits-chip--active');
                 chip.setAttribute('aria-checked', 'false');
             }
+            // Activar/desactivar el botón Listo según haya selección
+            if (confirmBtn) confirmBtn.disabled = (selected.length === 0);
         });
 
         chipsWrap.appendChild(chip);
@@ -914,7 +915,8 @@ function _aiPanelInteractionMultiselect(opts) {
 
     var confirmBtn = document.createElement('button');
     confirmBtn.type = 'button';
-    confirmBtn.className = 'ubits-button ubits-button--secondary ubits-button--sm';
+    confirmBtn.className = 'ubits-button ubits-button--primary ubits-button--sm';
+    confirmBtn.disabled = true;
     confirmBtn.innerHTML = '<span>' + _aiEscape(confirmLabel) + '</span>';
     confirmBtn.addEventListener('click', function() {
         if (wrap.classList.contains('ubits-ia-chat-interaction--consumed')) return;
