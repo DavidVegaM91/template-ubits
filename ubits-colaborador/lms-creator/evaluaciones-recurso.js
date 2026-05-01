@@ -1089,15 +1089,9 @@
         return window._ubitsAiTokenPool;
     }
 
-    function _evalTokenBadgeHtml(cost) {
-        return '<span class="ubits-button__token-cost" aria-hidden="true">' +
-               '<span class="ubits-button__token-number">' + cost + '</span>' +
-               '<i class="far fa-coin-vertical"></i>' +
-               '</span>';
-    }
-
     // ---------------------------
     // Confirmación final + botón "Generar evaluación" con costo en tokens
+    // (misma estructura que el botón de portada en el panel IA)
     // ---------------------------
 
     function evalAgentShowConfirmation(rootEl) {
@@ -1108,15 +1102,15 @@
         var remaining = _evalGetTokens();
         var canAfford = remaining >= cost;
 
-        var btnAttr = canAfford ? '' : ' disabled title="No tienes suficientes tokens (' + cost + ' requeridos)."';
+        var btnDisabled = canAfford ? '' : ' disabled';
+        var btnTitle = canAfford ? '' : ' title="No tienes suficientes tokens (' + cost + ' requeridos)."';
         var richHtml =
             '<p class="ubits-body-md-regular" style="margin:0 0 12px;">Voy a generar <strong>' + count +
             ' preguntas</strong> sobre el tema <strong>"' + topic + '"</strong>.</p>' +
-            '<button type="button" id="cc-eval-gen-confirm-btn"' + btnAttr +
-            ' class="ubits-button ubits-button--primary ubits-button--md ubits-button--with-token-cost">' +
-            '<i class="far fa-sparkles"></i>' +
+            '<button type="button" id="cc-eval-gen-confirm-btn"' + btnDisabled + btnTitle +
+            ' class="ubits-button ubits-button--primary ubits-button--sm ubits-button--with-token-cost">' +
+            '<span class="ubits-button__token-cost" aria-hidden="true"><i class="far fa-coin-vertical"></i><span class="ubits-button__token-number">' + cost + '</span></span>' +
             '<span>Generar evaluación</span>' +
-            _evalTokenBadgeHtml(cost) +
             '</button>';
 
         _evalMsg('', { richHtml: richHtml, hideAiCopy: true });
