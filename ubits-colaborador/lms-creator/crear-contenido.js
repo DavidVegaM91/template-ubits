@@ -189,8 +189,12 @@
     var portadaAiPanelCoverActionsWired = false;
     /** Coste en tokens al confirmar portada generada por IA (panel o modal). */
     var PORTADA_AI_COVER_TOKEN_COST = 2;
-    /** Saldo demo; al usar portada se descuenta PORTADA_AI_COVER_TOKEN_COST. */
-    var portadaAiTokensRemaining = 50;
+    /**
+     * Pool de tokens compartido con el panel de evaluaciones.
+     * Se inicializa una sola vez en window para que ambos paneles lean el mismo saldo.
+     */
+    if (window._ubitsAiTokenPool == null) window._ubitsAiTokenPool = 50;
+    var portadaAiTokensRemaining = window._ubitsAiTokenPool;
 
     var AI_IMAGES = [
         'https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80',
@@ -287,6 +291,7 @@
             return false;
         }
         portadaAiTokensRemaining -= PORTADA_AI_COVER_TOKEN_COST;
+        window._ubitsAiTokenPool = portadaAiTokensRemaining;
         if (typeof setAIPanelTokensBadgeValue === 'function') {
             setAIPanelTokensBadgeValue(portadaAiTokensRemaining);
         }
@@ -337,7 +342,7 @@
             title: 'Generar portada',
             placeholder: 'Describe la portada que te imaginas',
             welcomeSubtitle: 'Escribe una idea y generaremos una imagen de ejemplo para tu portada.',
-            tokensBadge: { value: portadaAiTokensRemaining },
+            tokensBadge: { value: window._ubitsAiTokenPool != null ? window._ubitsAiTokenPool : portadaAiTokensRemaining },
             onSend: function () {
                 var loadingHtml = getPortadaAiGeneratingHtml({ id: 'cc-portada-ai-panel-loading-root' });
                 if (typeof addAIPanelMessage === 'function') {

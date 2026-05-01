@@ -947,25 +947,274 @@
     }
 
     // ---------------------------
-    // Agente conversacional (AI Panel) — port de Mafe
+    // Agente conversacional (AI Panel) — flujo rediseñado v2
+    // Ruta A (rápida):  selección por defecto → material → confirmación con token button
+    // Ruta B (larga):   Bottom Sheet Form config → material → count/difficulty/types → confirmación
+    // ---------------------------
+
+    var EVAL_AI_TOKEN_COST = 2;
+    var EVAL_AI_TOPIC_DEFAULT = 'Resolución efectiva de conflictos en equipos de trabajo';
+
+    // ---------------------------
+    // Banco de 100 preguntas (tema: Resolución de conflictos en equipos)
+    // ---------------------------
+    var EVAL_QUESTION_BANK = {
+        basic: [
+            { stmt: '¿Qué es un conflicto en el contexto de un equipo de trabajo?', opts: ['Una discusión sin solución', 'Una situación de tensión entre personas con intereses distintos', 'Un problema técnico del proyecto', 'Una falta de recursos'], correct: 1, agentType: 'multiple_choice_single_answer' },
+            { stmt: 'El primer paso para resolver un conflicto en un equipo es:', opts: ['Ignorar la situación', 'Identificar y reconocer la existencia del conflicto', 'Escalar al director', 'Sancionar al responsable'], correct: 1, agentType: 'multiple_choice_single_answer' },
+            { stmt: '¿Verdadero o falso? La escucha activa es clave para resolver conflictos.', opts: ['Verdadero', 'Falso'], correct: 0, agentType: 'binary' },
+            { stmt: '¿Qué habilidad es fundamental para resolver conflictos efectivamente?', opts: ['Autoridad jerárquica', 'Empatía y comunicación asertiva', 'Rapidez en la decisión', 'Evitar la confrontación'], correct: 1, agentType: 'multiple_choice_single_answer' },
+            { stmt: '¿Qué significa "resolución colaborativa" de un conflicto?', opts: ['Que una parte gana y la otra cede', 'Que ambas partes buscan una solución que beneficie a todos', 'Que el líder decide sin consultar', 'Que se evita el tema'], correct: 1, agentType: 'multiple_choice_single_answer' },
+            { stmt: '¿Verdadero o falso? Los conflictos siempre tienen un impacto negativo en los equipos.', opts: ['Verdadero', 'Falso'], correct: 1, agentType: 'binary' },
+            { stmt: '¿Cuál de las siguientes es una señal temprana de conflicto en un equipo?', opts: ['Aumento de la productividad', 'Tensión en comunicaciones y reuniones', 'Mayor creatividad grupal', 'Reducción de errores'], correct: 1, agentType: 'multiple_choice_single_answer' },
+            { stmt: 'La mediación en un conflicto implica:', opts: ['Imponer una solución externa', 'Ignorar las emociones', 'Facilitar el diálogo entre las partes con ayuda de un tercero neutral', 'Separar físicamente a los involucrados'], correct: 2, agentType: 'multiple_choice_single_answer' },
+            { stmt: '¿Verdadero o falso? Evitar un conflicto es siempre la mejor estrategia.', opts: ['Verdadero', 'Falso'], correct: 1, agentType: 'binary' },
+            { stmt: '¿Qué tipo de comunicación contribuye más a prevenir conflictos?', opts: ['Pasiva', 'Agresiva', 'Asertiva', 'Evasiva'], correct: 2, agentType: 'multiple_choice_single_answer' },
+            { stmt: '¿Cuál es el objetivo principal de resolver un conflicto en un equipo?', opts: ['Determinar quién tiene razón', 'Restaurar la colaboración y el enfoque en metas comunes', 'Sancionar a los involucrados', 'Eliminar las diferencias de opinión'], correct: 1, agentType: 'multiple_choice_single_answer' },
+            { stmt: '¿Verdadero o falso? La falta de claridad en roles puede generar conflictos.', opts: ['Verdadero', 'Falso'], correct: 0, agentType: 'binary' },
+            { stmt: 'Una causa común de conflictos en equipos es:', opts: ['El exceso de recursos', 'La ambigüedad en responsabilidades y expectativas', 'La alta motivación del equipo', 'La comunicación clara'], correct: 1, agentType: 'multiple_choice_single_answer' },
+            { stmt: '¿Qué significa "win-win" en resolución de conflictos?', opts: ['Que solo una parte gana', 'Que ambas partes obtienen beneficios', 'Que el conflicto se pospone', 'Que el conflicto se intensifica'], correct: 1, agentType: 'multiple_choice_single_answer' },
+            { stmt: '¿Verdadero o falso? La empatía ayuda a desescalar conflictos.', opts: ['Verdadero', 'Falso'], correct: 0, agentType: 'binary' },
+            { stmt: '¿Cuál es la actitud más adecuada al dar retroalimentación en un conflicto?', opts: ['Crítica generalizada', 'Descripción específica del comportamiento sin juicios de valor', 'Silencio total', 'Tono agresivo para enfatizar el punto'], correct: 1, agentType: 'multiple_choice_single_answer' },
+            { stmt: 'Un ambiente psicológicamente seguro en el equipo:', opts: ['Impide que surjan conflictos', 'Facilita que los conflictos se expresen y resuelvan de forma constructiva', 'Aumenta la competencia interna', 'No tiene relación con los conflictos'], correct: 1, agentType: 'multiple_choice_single_answer' },
+            { stmt: '¿Verdadero o falso? Escuchar sin interrumpir es una técnica de resolución de conflictos.', opts: ['Verdadero', 'Falso'], correct: 0, agentType: 'binary' },
+            { stmt: '¿Cuál de estos no es un estilo de manejo de conflictos?', opts: ['Colaboración', 'Evasión', 'Competencia', 'Delegación técnica'], correct: 3, agentType: 'multiple_choice_single_answer' },
+            { stmt: '¿Qué debe hacer un líder al detectar un conflicto incipiente?', opts: ['Esperar a que escale', 'Intervenir oportunamente para facilitar el diálogo', 'Ignorarlo si no afecta resultados', 'Transferir a los involucrados a otros equipos'], correct: 1, agentType: 'multiple_choice_single_answer' },
+            { stmt: '¿Verdadero o falso? La negociación es una herramienta útil en la resolución de conflictos.', opts: ['Verdadero', 'Falso'], correct: 0, agentType: 'binary' },
+            { stmt: 'El estilo "acomodarse" en gestión de conflictos implica:', opts: ['Imponer la solución propia', 'Ceder a las demandas del otro para mantener la armonía', 'Buscar solución conjunta', 'Ignorar el conflicto'], correct: 1, agentType: 'multiple_choice_single_answer' },
+            { stmt: '¿Cuál de estas prácticas reduce los conflictos por malentendidos?', opts: ['Usar lenguaje técnico complejo', 'Confirmar comprensión al final de cada conversación', 'Evitar reuniones del equipo', 'Comunicar solo por email'], correct: 1, agentType: 'multiple_choice_single_answer' },
+            { stmt: '¿Verdadero o falso? Un conflicto no resuelto puede afectar la moral del equipo.', opts: ['Verdadero', 'Falso'], correct: 0, agentType: 'binary' },
+            { stmt: '¿Qué es la inteligencia emocional en el contexto del conflicto?', opts: ['Ignorar las emociones propias', 'La capacidad de reconocer y gestionar emociones propias y ajenas', 'Actuar solo con lógica', 'Suprimir reacciones emocionales'], correct: 1, agentType: 'multiple_choice_single_answer' }
+        ],
+        intermediate: [
+            { stmt: '¿Cuál es la diferencia entre un conflicto de tarea y uno de relación en un equipo?', opts: ['Son exactamente lo mismo', 'El de tarea se refiere a desacuerdos sobre el trabajo; el de relación involucra tensiones interpersonales', 'El de relación es más productivo', 'El de tarea siempre escala más'], correct: 1, agentType: 'multiple_choice_single_answer' },
+            { stmt: 'El modelo de Thomas-Kilmann identifica cuántos estilos de manejo de conflictos:', opts: ['3', '4', '5', '6'], correct: 2, agentType: 'multiple_choice_single_answer' },
+            { stmt: '¿Qué estrategia es más efectiva cuando el conflicto involucra valores fundamentales diferentes?', opts: ['Competencia directa', 'Evasión temporal mientras se establece confianza', 'Compromiso inmediato', 'Mediación con un facilitador externo'], correct: 3, agentType: 'multiple_choice_single_answer' },
+            { stmt: '¿Verdadero o falso? Los conflictos de proceso (cómo se realiza el trabajo) pueden ser beneficiosos si se gestionan bien.', opts: ['Verdadero', 'Falso'], correct: 0, agentType: 'binary' },
+            { stmt: 'Al aplicar escucha activa en un conflicto, ¿qué elementos son esenciales?', opts: ['Interrupción frecuente y reformulación agresiva', 'Contacto visual, parafraseo y preguntas abiertas', 'Hablar más que el interlocutor', 'Tomar notas sin confirmar comprensión'], correct: 1, agentType: 'multiple_choice_single_answer' },
+            { stmt: '¿Cuál de estas acciones puede escalar un conflicto en vez de resolverlo?', opts: ['Usar "yo" en lugar de "tú"', 'Establecer un acuerdo de normas de diálogo', 'Generalizar con frases como "siempre" o "nunca"', 'Buscar intereses comunes'], correct: 2, agentType: 'multiple_choice_single_answer' },
+            { stmt: '¿Cuándo es más apropiado usar el estilo "compromiso" en conflictos?', opts: ['Cuando el tiempo es crítico y la relación no importa', 'Cuando ambas partes tienen poder similar y una solución parcial es aceptable', 'Cuando una parte tiene toda la razón', 'Cuando el conflicto es de valores fundamentales'], correct: 1, agentType: 'multiple_choice_single_answer' },
+            { stmt: '¿Verdadero o falso? La retroalimentación basada en hechos es más efectiva que la basada en interpretaciones.', opts: ['Verdadero', 'Falso'], correct: 0, agentType: 'binary' },
+            { stmt: 'En un equipo con alta diversidad cultural, los conflictos suelen originarse más frecuentemente por:', opts: ['Diferencias salariales', 'Normas de comunicación y valores culturales diferentes', 'Exceso de creatividad', 'Alto desempeño individual'], correct: 1, agentType: 'multiple_choice_single_answer' },
+            { stmt: '¿Cuál es la función del BATNA (Mejor alternativa a un acuerdo negociado) en un conflicto?', opts: ['Imponer la solución preferida', 'Conocer la opción mínima aceptable para mantener poder en la negociación', 'Evadir el conflicto indefinidamente', 'Escalar a la gerencia'], correct: 1, agentType: 'multiple_choice_single_answer' },
+            { stmt: '¿Qué técnica ayuda a separar personas del problema en la resolución de conflictos?', opts: ['Negociación posicional', 'Negociación basada en intereses (Fisher y Ury)', 'Arbitraje unilateral', 'Evasión sistemática'], correct: 1, agentType: 'multiple_choice_single_answer' },
+            { stmt: '¿Verdadero o falso? Los conflictos mal gestionados pueden convertirse en oportunidades de innovación.', opts: ['Verdadero', 'Falso'], correct: 0, agentType: 'binary' },
+            { stmt: '¿Cuál es el rol del facilitador en una sesión de resolución de conflictos?', opts: ['Decidir quién tiene razón', 'Guiar el proceso de diálogo de forma neutral sin imponer soluciones', 'Reemplazar al líder del equipo', 'Documentar sanciones'], correct: 1, agentType: 'multiple_choice_single_answer' },
+            { stmt: 'La comunicación no violenta (CNV) en conflictos incluye:', opts: ['Observación, sentimiento, necesidad, petición', 'Acusación, demanda, sanción, archivo', 'Juicio, evaluación, corrección, archivo', 'Amenaza, negación, imposición, cierre'], correct: 0, agentType: 'multiple_choice_single_answer' },
+            { stmt: '¿Qué distingue a un mediador de un árbitro en la resolución de conflictos?', opts: ['El mediador decide; el árbitro facilita', 'El árbitro decide; el mediador facilita sin imponer', 'Ambos tienen el mismo rol', 'El árbitro es siempre externo; el mediador siempre interno'], correct: 1, agentType: 'multiple_choice_single_answer' },
+            { stmt: '¿Verdadero o falso? La confianza previa entre integrantes del equipo facilita la resolución de conflictos.', opts: ['Verdadero', 'Falso'], correct: 0, agentType: 'binary' },
+            { stmt: '¿Cuál es un síntoma de que un conflicto ha escalado al nivel de crisis?', opts: ['Reuniones más frecuentes', 'Parálisis en la toma de decisiones y ruptura de la comunicación', 'Mayor claridad en los roles', 'Incremento en la productividad'], correct: 1, agentType: 'multiple_choice_single_answer' },
+            { stmt: '¿Cuándo es adecuado usar el estilo "competencia" para resolver un conflicto?', opts: ['Cuando el tiempo no importa', 'En situaciones de emergencia donde se requiere decisión rápida', 'Cuando hay tiempo para construir consenso', 'En conflictos de valores'], correct: 1, agentType: 'multiple_choice_single_answer' },
+            { stmt: 'El "efecto halagador" en percepciones puede distorsionar la resolución de conflictos porque:', opts: ['Hace que se sobrevalore la posición del más querido', 'Facilita el acuerdo entre partes', 'Elimina sesgos cognitivos', 'Reduce la complejidad del conflicto'], correct: 0, agentType: 'multiple_choice_single_answer' },
+            { stmt: '¿Verdadero o falso? Documentar los acuerdos alcanzados tras un conflicto reduce la probabilidad de recaída.', opts: ['Verdadero', 'Falso'], correct: 0, agentType: 'binary' },
+            { stmt: 'La técnica "reencuadre" en conflictos consiste en:', opts: ['Cambiar de opinión por presión', 'Reformular la situación desde una perspectiva diferente para facilitar nuevas soluciones', 'Ignorar las emociones del otro', 'Escalar el conflicto a la dirección'], correct: 1, agentType: 'multiple_choice_single_answer' },
+            { stmt: '¿Cuál de los siguientes factores organizacionales contribuye más a la frecuencia de conflictos?', opts: ['Claridad en la visión', 'Ambigüedad de roles y recursos escasos', 'Retroalimentación continua', 'Autonomía del equipo'], correct: 1, agentType: 'multiple_choice_single_answer' },
+            { stmt: '¿Verdadero o falso? El estilo "colaboración" siempre requiere más tiempo que otros estilos de gestión de conflictos.', opts: ['Verdadero', 'Falso'], correct: 0, agentType: 'binary' },
+            { stmt: '¿Qué papel juegan los acuerdos de equipo en la prevención de conflictos?', opts: ['Ninguno relevante', 'Establecen expectativas claras que reducen malentendidos futuros', 'Aumentan la burocracia', 'Solo sirven en equipos nuevos'], correct: 1, agentType: 'multiple_choice_single_answer' },
+            { stmt: '¿Cuál de estos tipos de conflicto es generalmente más beneficioso para el equipo si se gestiona bien?', opts: ['Conflicto de relación', 'Conflicto de proceso', 'Conflicto de tarea', 'Conflicto de valores'], correct: 2, agentType: 'multiple_choice_single_answer' }
+        ],
+        advanced: [
+            { stmt: '¿Cómo influye el sesgo de atribución en la escalada de conflictos interpersonales en equipos?', opts: ['No influye en conflictos laborales', 'Lleva a atribuir causas negativas al comportamiento ajeno mientras se justifica el propio, intensificando el conflicto', 'Siempre reduce la intensidad del conflicto', 'Solo afecta conflictos entre pares de distinto nivel jerárquico'], correct: 1, agentType: 'multiple_choice_single_answer' },
+            { stmt: 'En equipos de alto rendimiento, ¿cuál es la relación óptima entre conflicto de tarea y conflicto de relación?', opts: ['Ambos en niveles altos para maximizar creatividad', 'Conflicto de tarea moderado y conflicto de relación mínimo', 'Ambos minimizados para mantener armonía', 'Conflicto de relación elevado para generar debate'], correct: 1, agentType: 'multiple_choice_single_answer' },
+            { stmt: '¿Verdadero o falso? La dinámica de pensamiento grupal puede generar conflictos encubiertos que afectan el desempeño a largo plazo.', opts: ['Verdadero', 'Falso'], correct: 0, agentType: 'binary' },
+            { stmt: 'Al aplicar el modelo de negociación de Harvard en un conflicto organizacional, ¿qué principio es central?', opts: ['Mantener posiciones rígidas hasta llegar a un acuerdo', 'Separar a las personas del problema y centrarse en intereses, no posiciones', 'Evitar la comunicación directa entre las partes', 'Priorizar la ganancia unilateral'], correct: 1, agentType: 'multiple_choice_single_answer' },
+            { stmt: '¿Cuál de los siguientes enfoques sistémicos es más efectivo para transformar culturas organizacionales con conflictos crónicos?', opts: ['Sanciones individuales frecuentes', 'Rediseño de estructuras de incentivos, roles y procesos de comunicación', 'Mayor vigilancia del comportamiento', 'Aislamiento de los generadores de conflicto'], correct: 1, agentType: 'multiple_choice_single_answer' },
+            { stmt: '¿Qué impacto tiene el conflicto de proceso no gestionado en la eficiencia de un equipo?', opts: ['Genera innovación sostenida', 'Genera redundancias, ambigüedad y pérdida de tiempo en coordinación', 'Mejora la distribución de roles', 'Reduce la burocracia interna'], correct: 1, agentType: 'multiple_choice_single_answer' },
+            { stmt: '¿Verdadero o falso? La seguridad psicológica del equipo (Edmondson) es un predictor del manejo constructivo de conflictos.', opts: ['Verdadero', 'Falso'], correct: 0, agentType: 'binary' },
+            { stmt: 'En conflictos interculturales dentro de equipos globales, ¿qué dimensión de Hofstede es más relevante para predecir la tolerancia al conflicto abierto?', opts: ['Orientación al largo plazo', 'Individualismo vs. colectivismo', 'Distancia al poder', 'Indulgencia vs. restricción'], correct: 2, agentType: 'multiple_choice_single_answer' },
+            { stmt: '¿Cuál es la limitación más significativa del arbitraje como método de resolución de conflictos en equipos?', opts: ['Es demasiado lento', 'La solución impuesta puede generar resentimiento y reducir la apropiación del acuerdo', 'Solo funciona en contextos legales', 'No puede aplicarse en conflictos de relación'], correct: 1, agentType: 'multiple_choice_single_answer' },
+            { stmt: '¿Cómo afecta la identidad de grupo (in-group/out-group) a la resolución de conflictos entre subgrupos dentro de un mismo equipo?', opts: ['La refuerza positivamente siempre', 'Puede generar sesgos que favorecen al propio subgrupo y dificultan soluciones imparciales', 'No tiene impacto medible', 'Simplifica la mediación al establecer grupos claros'], correct: 1, agentType: 'multiple_choice_single_answer' },
+            { stmt: '¿Verdadero o falso? El conflicto constructivo en equipos puede ser diseñado intencionalmente mediante técnicas como el "abogado del diablo".', opts: ['Verdadero', 'Falso'], correct: 0, agentType: 'binary' },
+            { stmt: 'Al diseñar una intervención para resolver un conflicto organizacional, ¿qué debe priorizarse en el diagnóstico inicial?', opts: ['Identificar al responsable del conflicto', 'Comprender las causas raíz, los intereses de cada parte y el contexto sistémico', 'Determinar la sanción más apropiada', 'Consultar solo al líder formal del equipo'], correct: 1, agentType: 'multiple_choice_single_answer' },
+            { stmt: '¿Qué diferencia a la negociación integrativa de la distributiva en el contexto de conflictos laborales?', opts: ['La integrativa busca repartir un recurso fijo; la distributiva amplía el valor disponible', 'La integrativa amplía el valor conjunto; la distributiva asume que los recursos son fijos y uno gana lo que pierde el otro', 'Ambas son equivalentes en resultados', 'La distributiva siempre produce mejores resultados a largo plazo'], correct: 1, agentType: 'multiple_choice_single_answer' },
+            { stmt: '¿Verdadero o falso? Los conflictos de valores requieren estrategias de resolución diferentes a los conflictos de tarea.', opts: ['Verdadero', 'Falso'], correct: 0, agentType: 'binary' },
+            { stmt: '¿Cuál es el riesgo de aplicar la estrategia de "evasión" de forma reiterada ante un conflicto recurrente?', opts: ['Mejora la cohesión del equipo a largo plazo', 'El conflicto subyacente se intensifica y puede explotar de manera descontrolada', 'Reduce la frecuencia total de conflictos', 'Establece un patrón saludable de autonomía'], correct: 1, agentType: 'multiple_choice_single_answer' },
+            { stmt: 'En la práctica de la mediación transformativa, ¿cuál es el objetivo central en contraste con la mediación evaluativa?', opts: ['Alcanzar un acuerdo económico rápido', 'Transformar la calidad de la interacción entre las partes, no solo llegar a un acuerdo', 'Determinar la culpabilidad de cada parte', 'Documentar el conflicto para futuros litigios'], correct: 1, agentType: 'multiple_choice_single_answer' },
+            { stmt: '¿Cómo puede el líder de un equipo diseñar estructuras preventivas ante conflictos recurrentes?', opts: ['Eliminando la diversidad de perfiles', 'Creando foros de retroalimentación periódica, roles claros y normas explícitas de comunicación', 'Reduciendo las interdependencias entre miembros', 'Aumentando la supervisión directa'], correct: 1, agentType: 'multiple_choice_single_answer' },
+            { stmt: '¿Verdadero o falso? La conciencia de los propios sesgos cognitivos mejora la calidad de las decisiones durante un conflicto.', opts: ['Verdadero', 'Falso'], correct: 0, agentType: 'binary' },
+            { stmt: 'En una negociación multipartes dentro de un equipo, ¿cuál es el mayor desafío estructural?', opts: ['Definir el lugar físico de la negociación', 'Manejar coaliciones cambiantes y alinear intereses divergentes sin excluir voces', 'Documentar los acuerdos en tiempo real', 'Seleccionar al facilitador adecuado'], correct: 1, agentType: 'multiple_choice_single_answer' },
+            { stmt: '¿Cuál es la evidencia de que una cultura organizacional promueve la gestión constructiva de conflictos?', opts: ['Los conflictos son infrecuentes e invisibles', 'Los miembros pueden expresar desacuerdos sin miedo a repercusiones y existen canales formales para resolverlos', 'Las decisiones se toman sin debate', 'Solo los líderes tienen autoridad para señalar problemas'], correct: 1, agentType: 'multiple_choice_single_answer' },
+            { stmt: '¿Qué relación existe entre la interdependencia de tareas y la frecuencia de conflictos en equipos?', opts: ['Mayor interdependencia, menos conflictos', 'Mayor interdependencia, mayor probabilidad de conflictos si no hay coordinación efectiva', 'No existe relación demostrable', 'La interdependencia elimina el conflicto de relación'], correct: 1, agentType: 'multiple_choice_single_answer' },
+            { stmt: '¿Verdadero o falso? El feedback de 360° puede ser una herramienta preventiva ante conflictos de relación en equipos.', opts: ['Verdadero', 'Falso'], correct: 0, agentType: 'binary' },
+            { stmt: '¿Cuál de estos enfoques teóricos explica mejor por qué los conflictos persistentes deterioran el capital social del equipo?', opts: ['Teoría de la motivación de Maslow', 'Teoría del intercambio social y el capital de confianza acumulado', 'Modelo DISC de comportamiento', 'Teoría X e Y de McGregor'], correct: 1, agentType: 'multiple_choice_single_answer' },
+            { stmt: 'Cuando un conflicto involucra a integrantes de distintos niveles jerárquicos, ¿qué riesgo adicional debe gestionarse?', opts: ['Mayor creatividad en la solución', 'Desequilibrio de poder que puede inhibir la expresión libre del miembro de menor rango', 'Agilidad en la resolución por claridad de autoridad', 'Reducción del conflicto por respeto a la jerarquía'], correct: 1, agentType: 'multiple_choice_single_answer' },
+            { stmt: '¿Qué mide el "Índice de apertura al conflicto" en un equipo y por qué es relevante?', opts: ['La frecuencia de disputas formales', 'La disposición del equipo a expresar y gestionar desacuerdos de forma productiva, predictor de innovación y adaptabilidad', 'El número de sanciones aplicadas', 'El porcentaje de conflictos escalados a recursos humanos'], correct: 1, agentType: 'multiple_choice_single_answer' }
+        ]
+    };
+
+    function genMockQuestions(topic, difficulty, count, questionTypes) {
+        var pool = EVAL_QUESTION_BANK[difficulty] || EVAL_QUESTION_BANK.intermediate;
+        var types = (questionTypes && questionTypes.length) ? questionTypes : ['multiple_choice_single_answer'];
+        // Mezclar el pool (Fisher-Yates) para variedad
+        var shuffled = pool.slice();
+        for (var i = shuffled.length - 1; i > 0; i--) {
+            var j = Math.floor(Math.random() * (i + 1));
+            var tmp = shuffled[i]; shuffled[i] = shuffled[j]; shuffled[j] = tmp;
+        }
+        // Filtrar por tipos si se especificaron
+        var filtered = types.length
+            ? shuffled.filter(function (q) { return types.indexOf(q.agentType) !== -1; })
+            : shuffled;
+        if (!filtered.length) filtered = shuffled; // fallback si el tipo no existe en el pool
+        var wanted = Math.min(count, filtered.length, shuffled.length);
+        return filtered.slice(0, wanted).map(function (q, i) {
+            return Object.assign({}, q, { agentType: types[i % types.length] });
+        });
+    }
+
+    // ---------------------------
+    // Helpers de UI del agente
+    // ---------------------------
+
+    function _evalMsg(text, opts) {
+        if (typeof global.addAIPanelMessage === 'function') global.addAIPanelMessage(text, 'ai', null, opts);
+    }
+
+    function _evalUserMsg(text) {
+        if (typeof global.addAIPanelMessage === 'function') global.addAIPanelMessage(text, 'user');
+    }
+
+    function _evalTyping(cb, delay) {
+        var rm = typeof global.showAIPanelTyping === 'function' ? global.showAIPanelTyping() : null;
+        setTimeout(function () { rm && rm(); cb(); }, delay || 1200);
+    }
+
+    function _evalGetTokens() {
+        return window._ubitsAiTokenPool != null ? window._ubitsAiTokenPool : 50;
+    }
+
+    function _evalSpendTokens(n) {
+        var cur = _evalGetTokens();
+        window._ubitsAiTokenPool = Math.max(0, cur - n);
+        return window._ubitsAiTokenPool;
+    }
+
+    function _evalTokenBadgeHtml(cost) {
+        return '<span class="ubits-button__token-cost" aria-hidden="true">' +
+               '<span class="ubits-button__token-number">' + cost + '</span>' +
+               '<i class="far fa-coin-vertical"></i>' +
+               '</span>';
+    }
+
+    // ---------------------------
+    // Confirmación final + botón "Generar evaluación" con costo en tokens
+    // ---------------------------
+
+    function evalAgentShowConfirmation(rootEl) {
+        var state = rootEl._ccEvalState;
+        var count = (state && state.config && state.config.questionCount) ? state.config.questionCount : 10;
+        var topic = EVAL_AI_TOPIC_DEFAULT;
+        var cost = EVAL_AI_TOKEN_COST;
+        var remaining = _evalGetTokens();
+        var canAfford = remaining >= cost;
+
+        var btnAttr = canAfford ? '' : ' disabled title="No tienes suficientes tokens (' + cost + ' requeridos)."';
+        var richHtml =
+            '<p class="ubits-body-md-regular" style="margin:0 0 12px;">Voy a generar <strong>' + count +
+            ' preguntas</strong> sobre el tema <strong>"' + topic + '"</strong>.</p>' +
+            '<button type="button" id="cc-eval-gen-confirm-btn"' + btnAttr +
+            ' class="ubits-button ubits-button--primary ubits-button--md ubits-button--with-token-cost">' +
+            '<i class="far fa-sparkles"></i>' +
+            '<span>Generar evaluación</span>' +
+            _evalTokenBadgeHtml(cost) +
+            '</button>';
+
+        _evalMsg('', { richHtml: richHtml, hideAiCopy: true });
+
+        setTimeout(function () {
+            var btn = document.getElementById('cc-eval-gen-confirm-btn');
+            if (!btn) return;
+            btn.addEventListener('click', function () {
+                if (!canAfford) return;
+                btn.disabled = true;
+                var spent = _evalSpendTokens(cost);
+                if (typeof global.setAIPanelTokensBadgeValue === 'function') {
+                    global.setAIPanelTokensBadgeValue(spent);
+                }
+                state.step = 'generating';
+                if (typeof global.closeAIPanel === 'function') global.closeAIPanel();
+                setTimeout(function () { evalAgentRunGeneration(rootEl); }, 150);
+            });
+        }, 100);
+    }
+
+    // ---------------------------
+    // Generación con skeleton overlay
+    // ---------------------------
+
+    function evalAgentShowSkeleton(rootEl) {
+        var existing = document.getElementById('cc-eval-ai-gen-overlay');
+        if (existing) existing.remove();
+        var qList = rootEl.querySelector('#cc-eval-q-list');
+        if (!qList) return;
+        var overlay = document.createElement('div');
+        overlay.id = 'cc-eval-ai-gen-overlay';
+        overlay.className = 'cc-eval-ai-gen-overlay';
+        overlay.setAttribute('aria-busy', 'true');
+        overlay.innerHTML =
+            '<div class="ubits-loader-wrap cc-eval-ai-gen-overlay__loader">' +
+            '<div class="ubits-loader"></div>' +
+            '<p class="ubits-loader-text ubits-body-md-regular">Generando preguntas…</p>' +
+            '</div>' +
+            '<div class="cc-eval-ai-gen-overlay__skeletons">' +
+            '<span class="ubits-skeleton ubits-skeleton--rect cc-eval-ai-gen-overlay__skel" aria-hidden="true"></span>' +
+            '<span class="ubits-skeleton ubits-skeleton--rect cc-eval-ai-gen-overlay__skel" aria-hidden="true"></span>' +
+            '<span class="ubits-skeleton ubits-skeleton--rect cc-eval-ai-gen-overlay__skel cc-eval-ai-gen-overlay__skel--sm" aria-hidden="true"></span>' +
+            '</div>';
+        // Insertar encima de la lista de preguntas (relativo al contenedor padre)
+        var parent = qList.parentNode;
+        if (parent) {
+            parent.style.position = 'relative';
+            parent.insertBefore(overlay, qList);
+        }
+    }
+
+    function evalAgentRemoveSkeleton() {
+        var overlay = document.getElementById('cc-eval-ai-gen-overlay');
+        if (overlay) overlay.remove();
+    }
+
+    function evalAgentRunGeneration(rootEl) {
+        var state = rootEl._ccEvalState;
+        evalAgentShowSkeleton(rootEl);
+        setTimeout(function () {
+            evalAgentRemoveSkeleton();
+            var questions = genMockQuestions(
+                EVAL_AI_TOPIC_DEFAULT,
+                (state && state.config && state.config.difficulty) || 'intermediate',
+                (state && state.config && state.config.questionCount) || 10,
+                (state && state.config && state.config.questionTypes) || ['multiple_choice_single_answer', 'binary']
+            );
+            applyAIQuestions(rootEl, questions);
+            if (rootEl._ccEvalPageState) {
+                rootEl._ccEvalPageState.config = Object.assign({}, (state && state.config) || {});
+            }
+            if (state) state.step = 'done';
+        }, 4000);
+    }
+
+    // ---------------------------
+    // INIT del agente
     // ---------------------------
 
     function evalAgentInit(rootEl, pageState) {
         if (typeof global.destroyAIPanel === 'function') global.destroyAIPanel();
         if (typeof global.initAIPanel !== 'function') return;
 
-        // Guardamos referencias en el root para usar en router
         rootEl._ccEvalPageState = pageState;
         rootEl._ccEvalGenToken = null;
         rootEl._ccEvalState = null;
+
+        var currentTokens = _evalGetTokens();
 
         global.initAIPanel({
             title: 'Agente de evaluaciones',
             agentLabel: 'Studio IA',
             welcomeTitle: 'Agente creador de evaluaciones',
-            welcomeSubtitle: 'Te guiaré paso a paso para crear una evaluación alineada con tu contenido.',
+            welcomeSubtitle: 'Crea una evaluación con IA en segundos.',
             placeholder: 'Escribe aquí…',
             disclaimer: 'El agente puede cometer errores. Revisa las preguntas antes de publicar.',
+            tokensBadge: { value: currentTokens },
             onSend: function (msg) {
                 evalAgentHandleUserMsg(rootEl, String(msg || ''));
             },
@@ -973,88 +1222,58 @@
         });
     }
 
-    function evalAgentAddQuickReplies(choices, onPick) {
-        var msgs = document.getElementById('ai-panel-messages');
-        if (!msgs) return;
-        var wrap = document.createElement('div');
-        wrap.className = 'cc-eval-qr-wrap';
-        choices.forEach(function (c) {
-            var btn = document.createElement('button');
-            btn.type = 'button';
-            btn.className = 'cc-eval-qr-chip';
-            btn.textContent = c.label;
-            btn.addEventListener('click', function () {
-                document.querySelectorAll('.cc-eval-qr-wrap').forEach(function (w) { w.remove(); });
-                if (typeof global.addAIPanelMessage === 'function') global.addAIPanelMessage(c.label, 'user');
-                onPick(c.value);
-            });
-            wrap.appendChild(btn);
-        });
-        msgs.appendChild(wrap);
-        var scroll = document.getElementById('ai-panel-scroll');
-        if (scroll) scroll.scrollTop = scroll.scrollHeight;
-    }
-
-    function evalAgentAddMultiSelectChips(choices, preselected, onConfirm) {
-        var msgs = document.getElementById('ai-panel-messages');
-        if (!msgs) return;
-        var wrap = document.createElement('div');
-        wrap.className = 'cc-eval-qr-wrap cc-eval-qr-wrap--multi';
-        var selected = {};
-        (preselected || []).forEach(function (v) { selected[v] = true; });
-
-        choices.forEach(function (c) {
-            var btn = document.createElement('button');
-            btn.type = 'button';
-            btn.className = 'cc-eval-qr-chip' + (selected[c.value] ? ' cc-eval-qr-chip--on' : '');
-            btn.textContent = c.label;
-            btn.addEventListener('click', function () {
-                if (selected[c.value]) {
-                    delete selected[c.value];
-                    btn.classList.remove('cc-eval-qr-chip--on');
-                } else {
-                    selected[c.value] = true;
-                    btn.classList.add('cc-eval-qr-chip--on');
-                }
-            });
-            wrap.appendChild(btn);
-        });
-
-        var confirmBtn = document.createElement('button');
-        confirmBtn.type = 'button';
-        confirmBtn.className = 'cc-eval-qr-chip cc-eval-qr-chip--confirm';
-        confirmBtn.textContent = 'Generar evaluación →';
-        confirmBtn.addEventListener('click', function () {
-            var vals = Object.keys(selected);
-            if (!vals.length) {
-                confirmBtn.classList.add('cc-eval-qr-chip--shake');
-                setTimeout(function () { confirmBtn.classList.remove('cc-eval-qr-chip--shake'); }, 400);
-                return;
-            }
-            wrap.remove();
-            var labels = choices.filter(function (c) { return selected[c.value]; }).map(function (c) { return c.label; });
-            if (typeof global.addAIPanelMessage === 'function') global.addAIPanelMessage(labels.join(', '), 'user');
-            onConfirm(vals);
-        });
-        wrap.appendChild(confirmBtn);
-
-        msgs.appendChild(wrap);
-        var scroll = document.getElementById('ai-panel-scroll');
-        if (scroll) scroll.scrollTop = scroll.scrollHeight;
-    }
-
     function evalAgentStart(rootEl) {
         rootEl._ccEvalGenToken = null;
         rootEl._ccEvalState = {
-            step: 'step1',
-            _subStep: 'title',
-            config: Object.assign({}, rootEl._ccEvalPageState.config),
+            step: 'path_select',
+            config: Object.assign({}, (rootEl._ccEvalPageState && rootEl._ccEvalPageState.config) || {}),
             content: '',
-            _maxQuestions: 10
+            questionCount: 10
         };
-        if (typeof global.addAIPanelMessage === 'function') {
-            global.addAIPanelMessage('¿Cómo se llamará la evaluación?', 'ai');
-        }
+
+        // Mostrar card-based selection dentro del mensaje IA
+        _evalMsg('¿Cómo quieres crear la evaluación?');
+        setTimeout(function () {
+            if (typeof global.addAIPanelInteraction === 'function') {
+                global.addAIPanelInteraction('cards', {
+                    items: [
+                        {
+                            value: 'fast',
+                            emoji: '⚡',
+                            title: 'Configuración por defecto',
+                            description: 'Usa ajustes estándar (70% aprobación, sin límite de tiempo) y solo necesitas el material base.'
+                        },
+                        {
+                            value: 'long',
+                            emoji: '⚙️',
+                            title: 'Configurar desde cero',
+                            description: 'Personaliza nombre, puntaje mínimo, tiempo, número de preguntas y tipos.'
+                        }
+                    ],
+                    onReply: function (value) {
+                        var state = rootEl._ccEvalState;
+                        if (!state) return;
+                        if (value === 'fast') {
+                            state.step = 'fast_await_material';
+                            state.config.minScore = 70;
+                            state.config.timeLimit = false;
+                            state.config.limitAttempts = false;
+                            state.config.questionsRandom = true;
+                            state.config.answersRandom = true;
+                            state.config.questionCount = 10;
+                            state.config.difficulty = 'intermediate';
+                            state.config.questionTypes = ['multiple_choice_single_answer', 'binary'];
+                            setTimeout(function () {
+                                _evalMsg('¡Perfecto! Cuéntame sobre el tema de la evaluación. Escribe el contenido directamente o adjunta un archivo (doc, pdf, txt).');
+                            }, 200);
+                        } else {
+                            state.step = 'long_config';
+                            setTimeout(function () { evalAgentStartLongConfig(rootEl); }, 200);
+                        }
+                    }
+                });
+            }
+        }, 300);
     }
 
     function evalAgentHandleUserMsg(rootEl, text) {
@@ -1064,225 +1283,177 @@
             return;
         }
         text = String(text || '').trim();
-        document.querySelectorAll('.cc-eval-qr-wrap').forEach(function (w) { w.remove(); });
 
-        if (state.step === 'step1') {
-            evalAgentHandleStep1(rootEl, text);
+        if (state.step === 'path_select') {
+            // El usuario escribió algo antes de elegir la card — ignorar o redirigir
             return;
         }
-        if (state.step === 'step2') {
+
+        if (state.step === 'fast_await_material' || state.step === 'long_await_material') {
+            if (!text) return;
             state.content = text;
             state.step = 'analyzing';
-            if (typeof global.addAIPanelMessage === 'function') global.addAIPanelMessage('Contenido recibido. Analizando…', 'ai');
-            evalAgentAnalyze(rootEl, text);
-            return;
-        }
-        if (state.step === 'step3') {
-            evalAgentHandleStep3(rootEl, text);
-        }
-    }
-
-    function evalAgentHandleStep1(rootEl, text) {
-        var state = rootEl._ccEvalState;
-        var cfg = state.config;
-        var sub = state._subStep;
-
-        if (sub === 'title') {
-            if (!text) {
-                if (typeof global.addAIPanelMessage === 'function') global.addAIPanelMessage('Necesito un nombre para continuar. ¿Cómo se llamará la evaluación?', 'ai');
-                return;
-            }
-            cfg.title = text;
-            state._subStep = 'minscore';
-            if (typeof global.addAIPanelMessage === 'function') global.addAIPanelMessage('¿Cuál será el porcentaje mínimo de aprobación?', 'ai');
-            evalAgentAddQuickReplies(
-                [{ label: '60%', value: '60' }, { label: '70%', value: '70' }, { label: '80%', value: '80' }, { label: '90%', value: '90' }],
-                function (v) { evalAgentHandleStep1(rootEl, v); }
-            );
-            return;
-        }
-
-        if (sub === 'minscore') {
-            var score = parseInt(text.replace('%', ''), 10);
-            if (isNaN(score) || score < 0 || score > 100) {
-                if (typeof global.addAIPanelMessage === 'function') global.addAIPanelMessage('Ingresa un número entre 0 y 100.', 'ai');
-                return;
-            }
-            cfg.minScore = score;
-            state._subStep = 'timelimit';
-            if (typeof global.addAIPanelMessage === 'function') global.addAIPanelMessage('¿Quieres establecer un límite de tiempo para completar la evaluación?', 'ai');
-            evalAgentAddQuickReplies([{ label: 'Sí', value: 'si' }, { label: 'No', value: 'no' }], function (v) { evalAgentHandleStep1(rootEl, v); });
-            return;
-        }
-
-        if (sub === 'timelimit') {
-            var yes = ['si', 'sí', 's', 'yes'].indexOf(text.toLowerCase()) !== -1;
-            cfg.timeLimit = yes;
-            if (yes) {
-                state._subStep = 'timelimit_val';
-                if (typeof global.addAIPanelMessage === 'function') global.addAIPanelMessage('¿Cuántos minutos tendrán los usuarios?', 'ai');
-            } else {
-                state._subStep = 'attempts';
-                if (typeof global.addAIPanelMessage === 'function') global.addAIPanelMessage('¿Quieres limitar el número de intentos?', 'ai');
-                evalAgentAddQuickReplies([{ label: 'Sí', value: 'si' }, { label: 'No', value: 'no' }], function (v) { evalAgentHandleStep1(rootEl, v); });
-            }
-            return;
-        }
-
-        if (sub === 'timelimit_val') {
-            var mins = parseInt(text, 10);
-            if (isNaN(mins) || mins < 1) {
-                if (typeof global.addAIPanelMessage === 'function') global.addAIPanelMessage('Ingresa un número de minutos mayor a 0.', 'ai');
-                return;
-            }
-            cfg.timeLimitValue = mins;
-            state._subStep = 'attempts';
-            if (typeof global.addAIPanelMessage === 'function') global.addAIPanelMessage('¿Quieres limitar el número de intentos?', 'ai');
-            evalAgentAddQuickReplies([{ label: 'Sí', value: 'si' }, { label: 'No', value: 'no' }], function (v) { evalAgentHandleStep1(rootEl, v); });
-            return;
-        }
-
-        if (sub === 'attempts') {
-            var yesA = ['si', 'sí', 's', 'yes'].indexOf(text.toLowerCase()) !== -1;
-            cfg.limitAttempts = yesA;
-            if (yesA) {
-                state._subStep = 'attempts_val';
-                if (typeof global.addAIPanelMessage === 'function') global.addAIPanelMessage('¿Cuántos intentos permitirás?', 'ai');
-            } else {
-                state._subStep = 'ordering';
-                if (typeof global.addAIPanelMessage === 'function') global.addAIPanelMessage('¿Quieres mostrar las preguntas en orden aleatorio?', 'ai');
-                evalAgentAddQuickReplies([{ label: 'Sí', value: 'si' }, { label: 'No', value: 'no' }], function (v) { evalAgentHandleStep1(rootEl, v); });
-            }
-            return;
-        }
-
-        if (sub === 'attempts_val') {
-            var att = parseInt(text, 10);
-            if (isNaN(att) || att < 1) {
-                if (typeof global.addAIPanelMessage === 'function') global.addAIPanelMessage('Ingresa un número de intentos mayor a 0.', 'ai');
-                return;
-            }
-            cfg.attemptsValue = att;
-            state._subStep = 'ordering';
-            if (typeof global.addAIPanelMessage === 'function') global.addAIPanelMessage('¿Quieres mostrar las preguntas en orden aleatorio?', 'ai');
-            evalAgentAddQuickReplies([{ label: 'Sí', value: 'si' }, { label: 'No', value: 'no' }], function (v) { evalAgentHandleStep1(rootEl, v); });
-            return;
-        }
-
-        if (sub === 'ordering') {
-            cfg.questionsRandom = ['si', 'sí', 's', 'yes'].indexOf(text.toLowerCase()) !== -1;
-            state._subStep = 'aordering';
-            if (typeof global.addAIPanelMessage === 'function') global.addAIPanelMessage('¿También mostrar las opciones de respuesta en orden aleatorio?', 'ai');
-            evalAgentAddQuickReplies([{ label: 'Sí', value: 'si' }, { label: 'No', value: 'no' }], function (v) { evalAgentHandleStep1(rootEl, v); });
-            return;
-        }
-
-        if (sub === 'aordering') {
-            cfg.answersRandom = ['si', 'sí', 's', 'yes'].indexOf(text.toLowerCase()) !== -1;
-            state.step = 'step2';
-            state._subStep = null;
-            var summary = '✓ Configuración lista: "' + cfg.title + '" · ' + cfg.minScore + '% mínimo' +
-                (cfg.timeLimit ? ' · ' + cfg.timeLimitValue + ' min' : '') +
-                (cfg.limitAttempts ? ' · ' + cfg.attemptsValue + ' intentos' : '');
-            if (typeof global.addAIPanelMessage === 'function') global.addAIPanelMessage(summary, 'ai');
-            setTimeout(function () {
-                if (typeof global.addAIPanelMessage === 'function') global.addAIPanelMessage('Pega aquí el texto del contenido para generar preguntas.', 'ai');
-            }, 300);
-        }
-    }
-
-    function evalAgentAnalyze(rootEl, content) {
-        var state = rootEl._ccEvalState;
-        var words = String(content || '').split(/\s+/).filter(Boolean).length;
-        var maxQ = Math.min(Math.max(Math.floor(words / 70), 3), 20);
-        var sugQ = state.config.timeLimit
-            ? Math.max(3, Math.min(Math.floor(state.config.timeLimitValue / 3.5), maxQ))
-            : Math.min(5, maxQ);
-        state.config.questionCount = sugQ;
-        state._maxQuestions = maxQ;
-
-        setTimeout(function () {
-            state.step = 'step3';
-            state._subStep3 = 'count';
-            if (typeof global.addAIPanelMessage === 'function') {
-                global.addAIPanelMessage('✓ Contenido analizado. Capacidad estimada: hasta ' + maxQ + ' preguntas.', 'ai');
-                global.addAIPanelMessage('¿Cuántas preguntas quieres generar? (máx. ' + maxQ + ')', 'ai');
-            }
-        }, 900);
-    }
-
-    function evalAgentHandleStep3(rootEl, text) {
-        var state = rootEl._ccEvalState;
-        var cfg = state.config;
-        var sub = state._subStep3;
-
-        if (sub === 'count') {
-            var n = parseInt(text, 10);
-            var max = state._maxQuestions || 20;
-            if (isNaN(n) || n < 1) {
-                if (typeof global.addAIPanelMessage === 'function') global.addAIPanelMessage('Ingresa un número mayor a 0.', 'ai');
-                return;
-            }
-            cfg.questionCount = Math.min(n, max);
-            state._subStep3 = 'difficulty';
-            if (typeof global.addAIPanelMessage === 'function') global.addAIPanelMessage('¿Qué nivel de dificultad?', 'ai');
-            evalAgentAddQuickReplies(
-                [{ label: 'Básico', value: 'basic' }, { label: 'Intermedio', value: 'intermediate' }, { label: 'Avanzado', value: 'advanced' }],
-                function (v) { evalAgentHandleStep3(rootEl, v); }
-            );
-            return;
-        }
-
-        if (sub === 'difficulty') {
-            var diffMap = { basico: 'basic', básico: 'basic', basic: 'basic', intermedio: 'intermediate', intermediate: 'intermediate', avanzado: 'advanced', advanced: 'advanced' };
-            cfg.difficulty = diffMap[text.toLowerCase()] || 'intermediate';
-            state._subStep3 = 'types';
-            if (typeof global.addAIPanelMessage === 'function') global.addAIPanelMessage('¿Qué tipos de pregunta quieres incluir? Selecciona uno o varios.', 'ai');
-            evalAgentAddMultiSelectChips(
-                [
-                    { value: 'multiple_choice_single_answer', label: 'Opción múltiple, una respuesta' },
-                    { value: 'multiple_choice_multiple_answers', label: 'Opción múltiple, varias correctas' },
-                    { value: 'binary', label: 'Verdadero / Falso' },
-                    { value: 'closed_text', label: 'Texto cerrado' },
-                    { value: 'essay', label: 'Ensayo' },
-                    { value: 'matching', label: 'Emparejamiento' }
-                ],
-                ['multiple_choice_single_answer', 'binary'],
-                function (vals) {
-                    cfg.questionTypes = vals;
-                    state.step = 'generating';
-                    state._subStep3 = null;
-                    evalAgentGenerate(rootEl);
+            _evalTyping(function () {
+                state.step = 'pre_confirm';
+                if (state._longPath) {
+                    // Preguntar cantidad, dificultad y tipos antes de confirmar
+                    evalAgentAskCount(rootEl);
+                } else {
+                    evalAgentShowConfirmation(rootEl);
                 }
-            );
+            }, 1800);
+            return;
+        }
+
+        if (state.step === 'long_count') {
+            var n = parseInt(text, 10);
+            if (isNaN(n) || n < 1) { _evalMsg('Ingresa un número mayor a 0.'); return; }
+            state.config.questionCount = Math.min(n, 20);
+            evalAgentAskDifficulty(rootEl);
+            return;
         }
     }
 
-    function genMockQuestions(topic, difficulty, count, questionTypes) {
-        var T = topic || 'el tema';
-        var pool = {
-            basic: [
-                { stmt: '¿Cuál es el principal objetivo de ' + T + '?', opts: ['Opción A', 'Opción B', 'Opción C', 'Opción D'], correct: 1 },
-                { stmt: '¿Qué define el concepto de ' + T + '?', opts: ['Opción A', 'Opción B', 'Opción C', 'Opción D'], correct: 2 },
-                { stmt: '¿Cuál es una característica clave de ' + T + '?', opts: ['Opción A', 'Opción B', 'Opción C', 'Opción D'], correct: 2 }
-            ],
-            intermediate: [
-                { stmt: '¿Cómo contribuye ' + T + ' al desempeño organizacional?', opts: ['Opción A', 'Opción B', 'Opción C', 'Opción D'], correct: 1 },
-                { stmt: '¿Cuál es el primer paso para implementar ' + T + ' en un equipo?', opts: ['Opción A', 'Opción B', 'Opción C', 'Opción D'], correct: 2 },
-                { stmt: '¿Qué indicador permite medir el impacto de ' + T + '?', opts: ['Opción A', 'Opción B', 'Opción C', 'Opción D'], correct: 3 }
-            ],
-            advanced: [
-                { stmt: '¿Cuál es el mayor riesgo al implementar ' + T + ' sin estrategia clara?', opts: ['Opción A', 'Opción B', 'Opción C', 'Opción D'], correct: 3 },
-                { stmt: 'Si ' + T + ' no genera resultados esperados, ¿cuál es la acción más adecuada?', opts: ['Opción A', 'Opción B', 'Opción C', 'Opción D'], correct: 2 },
-                { stmt: '¿Qué criterio priorizar al escalar ' + T + ' en la organización?', opts: ['Opción A', 'Opción B', 'Opción C', 'Opción D'], correct: 3 }
-            ]
-        };
-        var pool2 = pool[difficulty] || pool.intermediate;
-        var types = (questionTypes && questionTypes.length) ? questionTypes : ['multiple_choice_single_answer'];
-        var slice = pool2.slice(0, Math.min(count, pool2.length));
-        return slice.map(function (q, i) {
-            return Object.assign({}, q, { agentType: types[i % types.length] });
-        });
+    // ---------------------------
+    // RUTA LARGA: Bottom Sheet Form de configuración
+    // ---------------------------
+
+    function evalAgentStartLongConfig(rootEl) {
+        _evalMsg('Empecemos configurando la evaluación. Te haré unas preguntas rápidas.');
+        setTimeout(function () {
+            if (typeof global.addAIPanelInteraction === 'function') {
+                global.addAIPanelInteraction('bottom-sheet', {
+                    steps: [
+                        {
+                            question: '¿Cómo se llamará la evaluación?',
+                            type: 'single',
+                            options: [],
+                            freeText: true
+                        },
+                        {
+                            question: '¿Puntaje mínimo de aprobación?',
+                            type: 'single',
+                            options: [
+                                { label: '60% — Aprobación básica', value: '60' },
+                                { label: '70% — Estándar recomendado', value: '70' },
+                                { label: '80% — Nivel intermedio', value: '80' },
+                                { label: '90% — Alto desempeño', value: '90' }
+                            ]
+                        },
+                        {
+                            question: '¿Límite de tiempo para la evaluación?',
+                            type: 'single',
+                            options: [
+                                { label: 'Sin límite de tiempo', value: 'none' },
+                                { label: '30 minutos', value: '30' },
+                                { label: '45 minutos', value: '45' },
+                                { label: '60 minutos', value: '60' },
+                                { label: '90 minutos', value: '90' }
+                            ]
+                        }
+                    ],
+                    onReply: function (answers) {
+                        var state = rootEl._ccEvalState;
+                        if (!state) return;
+                        // answers[idx] = { selected: [], freeText: '' }
+                        var titleAns = answers[0] || {};
+                        var title = String(titleAns.freeText || (titleAns.selected && titleAns.selected[0]) || '').trim() || 'Evaluación';
+                        var scoreAns = answers[1] || {};
+                        var scoreRaw = String((scoreAns.selected && scoreAns.selected[0]) || scoreAns.freeText || '70').replace('%', '');
+                        var scoreVal = parseInt(scoreRaw, 10);
+                        var timeAns = answers[2] || {};
+                        var timeVal = String((timeAns.selected && timeAns.selected[0]) || timeAns.freeText || 'none');
+                        state.config.title = title;
+                        state.config.minScore = isNaN(scoreVal) ? 70 : scoreVal;
+                        state.config.timeLimit = timeVal !== 'none';
+                        state.config.timeLimitValue = timeVal !== 'none' ? parseInt(timeVal, 10) : null;
+                        state.config.limitAttempts = false;
+                        state.config.questionsRandom = true;
+                        state.config.answersRandom = true;
+                        state._longPath = true;
+                        state.step = 'long_await_material';
+                        var summary = '✓ "' + title + '" · ' + (isNaN(scoreVal) ? 70 : scoreVal) + '% mínimo' +
+                            (timeVal !== 'none' ? ' · ' + timeVal + ' min' : ' · sin límite de tiempo');
+                        _evalMsg(summary);
+                        setTimeout(function () {
+                            _evalMsg('Ahora cuéntame sobre el tema de la evaluación. Puedes escribir el contenido o adjuntar un archivo.');
+                        }, 400);
+                    }
+                });
+            }
+        }, 600);
+    }
+
+    function evalAgentAskCount(rootEl) {
+        var state = rootEl._ccEvalState;
+        state.step = 'long_count';
+        setTimeout(function () {
+            _evalMsg('¿Cuántas preguntas quieres generar?');
+            if (typeof global.addAIPanelInteraction === 'function') {
+                global.addAIPanelInteraction('quick-reply', {
+                    items: [
+                        { label: '5', value: '5' },
+                        { label: '10', value: '10' },
+                        { label: '15', value: '15' },
+                        { label: '20', value: '20' }
+                    ],
+                    onReply: function (val) {
+                        var n = parseInt(val, 10);
+                        state.config.questionCount = isNaN(n) ? 10 : Math.min(n, 20);
+                        evalAgentAskDifficulty(rootEl);
+                    }
+                });
+            }
+        }, 300);
+    }
+
+    function evalAgentAskDifficulty(rootEl) {
+        var state = rootEl._ccEvalState;
+        state.step = 'long_difficulty';
+        setTimeout(function () {
+            _evalMsg('¿Qué nivel de dificultad?');
+            if (typeof global.addAIPanelInteraction === 'function') {
+                global.addAIPanelInteraction('quick-reply', {
+                    items: [
+                        { label: 'Básico', value: 'basic' },
+                        { label: 'Intermedio', value: 'intermediate' },
+                        { label: 'Avanzado', value: 'advanced' }
+                    ],
+                    onReply: function (val) {
+                        state.config.difficulty = val;
+                        evalAgentAskTypes(rootEl);
+                    }
+                });
+            }
+        }, 300);
+    }
+
+    function evalAgentAskTypes(rootEl) {
+        var state = rootEl._ccEvalState;
+        state.step = 'long_types';
+        setTimeout(function () {
+            _evalMsg('¿Qué tipos de pregunta quieres incluir? Elige uno o varios.');
+            if (typeof global.addAIPanelInteraction === 'function') {
+                global.addAIPanelInteraction('multiselect', {
+                    items: [
+                        { value: 'multiple_choice_single_answer', label: 'Opción múltiple' },
+                        { value: 'binary', label: 'Verdadero / Falso' },
+                        { value: 'multiple_choice_multiple_answers', label: 'Múltiple, varias correctas' },
+                        { value: 'closed_text', label: 'Texto cerrado' },
+                        { value: 'essay', label: 'Ensayo' },
+                        { value: 'matching', label: 'Emparejamiento' }
+                    ],
+                    confirmLabel: 'Listo →',
+                    onReply: function (valsCsv) {
+                        // valsCsv = 'val1,val2,...'
+                        var vals = valsCsv ? valsCsv.split(',') : ['multiple_choice_single_answer'];
+                        state.config.questionTypes = vals;
+                        state.step = 'pre_confirm';
+                        setTimeout(function () { evalAgentShowConfirmation(rootEl); }, 300);
+                    }
+                });
+            }
+        }, 300);
     }
 
     function showUndoBanner(rootEl, count, onUndo) {
@@ -1644,37 +1815,6 @@
         });
     }
 
-    function evalAgentGenerate(rootEl) {
-        var state = rootEl._ccEvalState;
-        var token = Date.now();
-        rootEl._ccEvalGenToken = token;
-        function valid() { return rootEl._ccEvalGenToken === token; }
-
-        var diffs = { basic: 'Básico', intermediate: 'Intermedio', advanced: 'Avanzado' };
-        var dlbl = diffs[state.config.difficulty] || state.config.difficulty;
-
-        var rm1 = typeof global.showAIPanelTyping === 'function' ? global.showAIPanelTyping() : null;
-        setTimeout(function () {
-            if (!valid()) { rm1 && rm1(); return; }
-            rm1 && rm1();
-            if (typeof global.addAIPanelMessage === 'function') global.addAIPanelMessage('Generando ' + state.config.questionCount + ' preguntas de nivel ' + dlbl + '…', 'ai');
-            var rm2 = typeof global.showAIPanelTyping === 'function' ? global.showAIPanelTyping() : null;
-            setTimeout(function () {
-                if (!valid()) { rm2 && rm2(); return; }
-                rm2 && rm2();
-                var questions = genMockQuestions(state.config.title || 'Evaluación', state.config.difficulty, state.config.questionCount, state.config.questionTypes);
-                applyAIQuestions(rootEl, questions);
-                // aplicar config al modal si existe abierto más tarde (guardamos en pageState)
-                rootEl._ccEvalPageState.config = Object.assign({}, state.config);
-                state.step = 'done';
-                if (typeof global.addAIPanelMessage === 'function') {
-                    global.addAIPanelMessage('✓ Evaluación "' + (state.config.title || 'Evaluación') + '" creada con ' + questions.length + ' preguntas. Puedes editarlas antes de publicar.', 'ai');
-                }
-                if (typeof global.closeAIPanel === 'function') setTimeout(global.closeAIPanel, 900);
-            }, 1200);
-        }, 900);
-    }
-
     // ---------------------------
     // Wiring principal
     // ---------------------------
@@ -1728,7 +1868,7 @@
                 if (typeof global.openAIPanel === 'function') global.openAIPanel();
                 setTimeout(function () {
                     if (typeof global.addAIPanelMessage === 'function') {
-                        global.addAIPanelMessage('¡Hola! Soy el Agente de evaluaciones. Te guiaré paso a paso para crear una evaluación alineada con tu contenido.', 'ai');
+                        global.addAIPanelMessage('¡Hola! Soy el Agente de evaluaciones. Voy a ayudarte a crear preguntas sobre el tema de tu contenido.', 'ai');
                     }
                     setTimeout(function () { evalAgentStart(rootEl); }, 400);
                 }, 250);
