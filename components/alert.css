@@ -164,6 +164,67 @@
 }
 
 /* ========================================
+   ALERT — VARIANTE IA
+   Fondo degradado sutil con los colores
+   oficiales del modo IA (naranja-fuchsia-
+   morado-azul). Icono con gradiente IA.
+   ======================================== */
+
+.ubits-alert--ia {
+    background: linear-gradient(
+        135deg,
+        rgba(255, 84, 22, 0.07) 0%,
+        rgba(234, 6, 111, 0.07) 30%,
+        rgba(136, 35, 234, 0.07) 65%,
+        rgba(12, 91, 239, 0.07) 100%
+    );
+    color: var(--ubits-fg-1-medium);
+}
+
+.ubits-alert--ia::before {
+    border-color: rgba(136, 35, 234, 0.35);
+}
+
+.ubits-alert--ia .ubits-alert__icon i {
+    background: linear-gradient(
+        135deg,
+        var(--modo-ia-gradient-a, rgb(255, 84, 22)) 0%,
+        var(--modo-ia-gradient-b, rgb(234, 6, 111)) 35%,
+        var(--modo-ia-gradient-c, rgb(136, 35, 234)) 65%,
+        var(--modo-ia-gradient-d, rgb(12, 91, 239)) 100%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.ubits-alert--ia .ubits-alert__close {
+    color: var(--ubits-fg-1-medium);
+}
+
+/* ========================================
+   ALERT — MODIFICADOR WITH-ACTION
+   Permite incluir un botón inline junto al
+   texto (p. ej. xs secundario "Deshacer").
+   Clase ubits-alert__action para el botón.
+   ======================================== */
+
+.ubits-alert--with-action .ubits-alert__content {
+    flex-wrap: wrap;
+    gap: var(--gap-xs) var(--gap-sm);
+    align-items: center;
+}
+
+.ubits-alert--with-action .ubits-alert__text {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.ubits-alert__action {
+    flex-shrink: 0;
+}
+
+/* ========================================
    RESPONSIVE DESIGN
    ======================================== */
 

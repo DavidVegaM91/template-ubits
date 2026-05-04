@@ -397,92 +397,30 @@
 }
 
 /* ─────────────────────────────────────────────
-   Agente de evaluaciones — undo banner
+   Agente de evaluaciones — undo banner (ubits-alert)
+   El banner usa la variante ubits-alert--ia; solo
+   necesitamos ajustar el espaciado de contenedor.
    ───────────────────────────────────────────── */
 
-.cc-eval-undo-banner {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: var(--gap-md);
-    padding: var(--padding-md);
-    background: var(--ubits-feedback-bg-info-subtle);
-    border: 1px solid var(--ubits-border-1);
-    border-radius: var(--border-radius-lg);
-}
-
-.cc-eval-undo-banner__msg {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--gap-sm);
-    color: var(--ubits-fg-1-high);
-}
-
-.cc-eval-undo-banner__actions {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--gap-sm);
-    flex-shrink: 0;
-}
-
-.cc-eval-undo-btn {
-    background: none;
-    border: 1px solid var(--ubits-accent-brand);
-    color: var(--ubits-accent-brand);
-    border-radius: var(--border-radius-sm);
-    padding: 4px 12px;
-    font-family: var(--ubits-font-family-sans);
-    font-size: 12px;
-    font-weight: 600;
-    cursor: pointer;
-}
-
-.cc-eval-undo-btn:hover {
-    background: var(--ubits-feedback-bg-info-subtle);
+#cc-eval-undo-banner {
+    width: 100%;
+    box-sizing: border-box;
 }
 
 /* ─────────────────────────────────────────────
-   Overlay de generación IA (skeleton + loader)
+   Overlay de generación IA — estilo portada
+   Reutiliza clases cc-portada-ai-generating de
+   crear-contenido.css; solo override aspect-ratio
+   para que el frame sea más cuadrado.
    ───────────────────────────────────────────── */
 
 .cc-eval-ai-gen-overlay {
-    position: absolute;
-    inset: 0;
-    z-index: 10;
-    background: var(--ubits-bg-1);
-    border-radius: var(--border-radius-md);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: var(--gap-2xl);
-    padding: var(--padding-4xl) var(--padding-2xl);
-    min-height: 240px;
-}
-
-.cc-eval-ai-gen-overlay__loader {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: var(--gap-md);
-}
-
-.cc-eval-ai-gen-overlay__skeletons {
     width: 100%;
-    max-width: 480px;
-    display: flex;
-    flex-direction: column;
-    gap: var(--gap-md);
+    margin-bottom: var(--gap-lg);
 }
 
-.cc-eval-ai-gen-overlay__skel {
-    width: 100%;
-    height: 72px;
-    border-radius: var(--border-radius-sm);
-}
-
-.cc-eval-ai-gen-overlay__skel--sm {
-    height: 48px;
-    width: 60%;
+.cc-eval-ai-gen-overlay__frame {
+    aspect-ratio: 4 / 3 !important;
+    min-height: 200px;
 }
 

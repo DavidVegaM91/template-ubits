@@ -1141,25 +1141,41 @@
         if (existing) existing.remove();
         var qList = rootEl.querySelector('#cc-eval-q-list');
         if (!qList) return;
+
+        var hasQuestions = qList.querySelectorAll('[data-learn-question]').length > 0;
+
+        // Ocultar empty state y botón Añadir durante la generación
+        var emptyHost = rootEl.querySelector('#ccEvalEmptyHost');
+        if (emptyHost) emptyHost.style.display = 'none';
+        var addBtn = rootEl.querySelector('#cc-eval-add-q');
+        if (addBtn) addBtn.style.display = 'none';
+
+        // Mismo patrón visual que la generación de portada: cuadrado con skeleton + loader superpuesto
         var overlay = document.createElement('div');
         overlay.id = 'cc-eval-ai-gen-overlay';
-        overlay.className = 'cc-eval-ai-gen-overlay';
+        overlay.className = 'cc-portada-ai-generating cc-eval-ai-gen-overlay';
         overlay.setAttribute('aria-busy', 'true');
         overlay.innerHTML =
-            '<div class="ubits-loader-wrap cc-eval-ai-gen-overlay__loader">' +
-            '<div class="ubits-loader"></div>' +
-            '<p class="ubits-loader-text ubits-body-md-regular">Generando preguntas…</p>' +
+            '<div class="cc-portada-ai-generating__stage">' +
+            '<div class="cc-portada-ai-generating__frame cc-eval-ai-gen-overlay__frame">' +
+            '<span class="ubits-skeleton ubits-skeleton--rect cc-portada-ai-generating__skel" aria-hidden="true"></span>' +
             '</div>' +
-            '<div class="cc-eval-ai-gen-overlay__skeletons">' +
-            '<span class="ubits-skeleton ubits-skeleton--rect cc-eval-ai-gen-overlay__skel" aria-hidden="true"></span>' +
-            '<span class="ubits-skeleton ubits-skeleton--rect cc-eval-ai-gen-overlay__skel" aria-hidden="true"></span>' +
-            '<span class="ubits-skeleton ubits-skeleton--rect cc-eval-ai-gen-overlay__skel cc-eval-ai-gen-overlay__skel--sm" aria-hidden="true"></span>' +
+            '<div class="ubits-loader-wrap cc-portada-ai-generating__loader">' +
+            '<div class="ubits-loader"></div>' +
+            '<p class="ubits-loader-text ubits-body-md-regular">Generando preguntas\u2026</p>' +
+            '</div>' +
             '</div>';
-        // Insertar encima de la lista de preguntas (relativo al contenedor padre)
+
         var parent = qList.parentNode;
         if (parent) {
-            parent.style.position = 'relative';
-            parent.insertBefore(overlay, qList);
+            if (!hasQuestions) {
+                // Sin preguntas: el skeleton reemplaza visualmente el empty state
+                // (va antes de qList, donde estaba el empty state)
+                parent.insertBefore(overlay, qList);
+            } else {
+                // Con preguntas: el skeleton aparece ANTES de la lista de preguntas
+                parent.insertBefore(overlay, qList);
+            }
         }
     }
 
@@ -1319,6 +1335,14 @@
         if (!activeItem) return;
         var labelEl = activeItem.querySelector('.ubits-paginas-creator__label');
         if (labelEl) labelEl.textContent = newTitle;
+        // Sincronizar el input "Escribe el título de la página" en el panel derecho
+        var titleInp = document.getElementById('crear-contenido-recursos-page-title');
+        if (titleInp) {
+            titleInp.value = newTitle;
+            if (typeof window.autoResizeInlineEdit === 'function') {
+                window.autoResizeInlineEdit(titleInp);
+            }
+        }
         // Persistir via evento del componente
         var pageKey = rootEl._ccEvalCurrentPageKey || getActivePageKeyFromCrearContenido();
         document.dispatchEvent(new CustomEvent('ubits-paginas-creator-label-save', {
@@ -1441,9 +1465,9 @@
             if (typeof global.addAIPanelInteraction === 'function') {
                 global.addAIPanelInteraction('multiselect', {
                     items: [
-                        { value: 'multiple_choice_single_answer', label: 'Opción múltiple' },
-                        { value: 'binary', label: 'Verdadero / Falso' },
+                        { value: 'multiple_choice_single_answer', label: 'Múltiple, una correcta' },
                         { value: 'multiple_choice_multiple_answers', label: 'Múltiple, varias correctas' },
+                        { value: 'binary', label: 'Verdadero / Falso' },
                         { value: 'closed_text', label: 'Texto cerrado' },
                         { value: 'essay', label: 'Ensayo' },
                         { value: 'matching', label: 'Emparejamiento' }
@@ -1466,16 +1490,22 @@
         if (existing) existing.remove();
         var bar = rootEl.querySelector('.cc-eval-config-bar');
         if (!bar || !bar.parentNode) return;
+        // Usar el componente oficial ubits-alert con variante IA y con-acción
         var banner = document.createElement('div');
         banner.id = 'cc-eval-undo-banner';
-        banner.className = 'cc-eval-undo-banner';
+        banner.className = 'ubits-alert ubits-alert--ia ubits-alert--with-action';
+        banner.setAttribute('role', 'status');
         banner.innerHTML =
-            '<span class="cc-eval-undo-banner__msg ubits-body-sm-semibold"><i class="far fa-sparkles"></i> ' + count + ' preguntas generadas por IA</span>' +
-            '<div class="cc-eval-undo-banner__actions">' +
-            '<button type="button" class="cc-eval-undo-btn">Deshacer</button>' +
-            '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only cc-eval-undo-close" aria-label="Cerrar"><i class="far fa-times"></i></button>' +
-            '</div>';
-        // Insertar justo debajo de la barra superior (solo existe cuando hay banner)
+            '<div class="ubits-alert__icon"><i class="far fa-sparkles"></i></div>' +
+            '<div class="ubits-alert__content">' +
+            '<span class="ubits-alert__text ubits-body-sm-semibold">' + count + ' preguntas generadas por IA</span>' +
+            '<button type="button" class="ubits-button ubits-button--secondary ubits-button--xs ubits-alert__action cc-eval-undo-btn">' +
+            '<span>Deshacer</span>' +
+            '</button>' +
+            '</div>' +
+            '<button type="button" class="ubits-alert__close cc-eval-undo-close" aria-label="Cerrar">' +
+            '<i class="far fa-times"></i>' +
+            '</button>';
         bar.parentNode.insertBefore(banner, bar.nextSibling);
         banner.querySelector('.cc-eval-undo-btn').addEventListener('click', function () {
             onUndo();
@@ -1777,7 +1807,7 @@
             matching: 'matching'
         };
 
-        var nextModels = (questions || []).map(function (q) {
+        var aiModels = (questions || []).map(function (q) {
             var t = typeMap[q && q.agentType] || 'multiple_choice_single';
             var m = { type: t, statement: String((q && q.stmt) || '').trim() };
             if (t === 'multiple_choice_single' || t === 'multiple_choice_multiple') {
@@ -1806,17 +1836,22 @@
             return m;
         });
 
+        // Las preguntas IA se AGREGAN después de las preguntas manuales existentes
+        var nextModels = prevModels.concat(aiModels);
+
         pageState.questions = nextModels;
-        pageState.activeQId = nextModels.length ? 1 : 1;
+        pageState.activeQId = prevModels.length ? prevActive : 1;
         renderQuestions(rootEl, pageState);
         applyFocusModes(rootEl);
 
         showUndoBanner(rootEl, questions.length, function () {
+            // Deshacer: restaurar solo las preguntas manuales anteriores
             pageState.questions = prevModels;
             pageState.activeQId = prevActive;
             rootEl._ccEvalActiveQId = prevActive;
             renderQuestions(rootEl, pageState);
             applyFocusModes(rootEl);
+            renderEmptyStateIfNeeded(rootEl, function () { addQuestionAndFocus(rootEl, pageState); });
         });
     }
 
@@ -1824,25 +1859,32 @@
     // Wiring principal
     // ---------------------------
 
+    // Registro global: qué pageKeys tienen recurso de evaluación activo
+    if (!global._ccEvalPageKeys) global._ccEvalPageKeys = {};
+
     function mountEvalIn(mountEl) {
         var pageKey = getActivePageKeyFromCrearContenido();
         var pageState = ensurePageState(pageKey);
+
+        // Marcar esta página como página de evaluación
+        global._ccEvalPageKeys[String(pageKey)] = true;
+
         mountEl.innerHTML = buildExamFormHtml();
 
         var rootEl = mountEl.querySelector('[data-cc-eval-root]') || mountEl;
         rootEl._ccEvalPageState = pageState;
         rootEl._ccEvalCurrentPageKey = String(pageKey || 'default');
+        // Persistir también en mountEl (sobrevive a re-renders de rootEl)
+        mountEl._ccEvalCurrentPageKey = String(pageKey || 'default');
 
         var qSeq = 0;
         rootEl._ccEvalQSeq = 0;
 
-        // Acción única de “Añadir pregunta” para evitar estados inconsistentes.
         rootEl._ccEvalAddQuestion = function () {
             addQuestionAndFocus(rootEl, pageState);
             qSeq = rootEl._ccEvalQSeq || 0;
         };
 
-        // Render inicial desde estado (aunque esté vacío)
         var restored = hydrateExamStateIntoDom(rootEl, pageState);
         qSeq = restored.qSeq;
         rootEl._ccEvalQSeq = qSeq;
@@ -1880,28 +1922,49 @@
             });
         }
 
-        // Persistencia por página: al activar otra página en el índice
-        if (!rootEl._ccEvalBoundPageActivate) {
-            rootEl._ccEvalBoundPageActivate = true;
-            rootEl._ccEvalOnPageActivate = function (ev) {
-                if (!ev || !ev.detail) return;
-                // Solo si seguimos montados en el DOM (si volvimos a recursos, ignorar)
-                if (!document.body.contains(rootEl)) return;
-                var nextKey = ev.detail.pageKey != null ? String(ev.detail.pageKey) : '';
-                if (!nextKey) return;
-                var curKey = rootEl._ccEvalCurrentPageKey || getActivePageKeyFromCrearContenido();
-                if (String(nextKey) === String(curKey)) return;
-
-                // Guardar estado actual en su página
-                persistCurrentPage(rootEl);
-
-                // Cambiar a la nueva página y rehidratar
-                switchToPage(rootEl, nextKey);
-                qSeq = rootEl._ccEvalQSeq || 0;
-                rootEl._ccEvalPageState = ensurePageState(nextKey);
-            };
-            document.addEventListener('ubits-paginas-creator-activate', rootEl._ccEvalOnPageActivate);
+        // Persistencia por página: usamos mountEl como ancla estable del listener.
+        // Removemos cualquier listener anterior para evitar duplicados al re-montar.
+        if (mountEl._ccEvalActivateHandler) {
+            document.removeEventListener('ubits-paginas-creator-activate', mountEl._ccEvalActivateHandler);
+            mountEl._ccEvalActivateHandler = null;
         }
+
+        mountEl._ccEvalActivateHandler = function (ev) {
+            if (!ev || !ev.detail) return;
+            if (!document.body.contains(mountEl)) return;
+            var nextKey = ev.detail.pageKey != null ? String(ev.detail.pageKey) : '';
+            if (!nextKey) return;
+
+            // curKey: preferir mountEl (más estable que rootEl que puede cambiar)
+            var curKey = mountEl._ccEvalCurrentPageKey
+                || (mountEl.querySelector('[data-cc-eval-root]') || {})._ccEvalCurrentPageKey
+                || getActivePageKeyFromCrearContenido();
+            if (String(nextKey) === String(curKey)) return;
+
+            // Cerrar panel IA (exclusivo de la página de evaluación)
+            if (typeof global.closeAIPanel === 'function') global.closeAIPanel();
+
+            // Persistir estado de la página actual usando el rootEl vigente
+            var curRoot = mountEl.querySelector('[data-cc-eval-root]') || mountEl;
+            if (curRoot._ccEvalCurrentPageKey) {
+                persistCurrentPage(curRoot);
+            }
+
+            // Actualizar pageKey trackeado en mountEl
+            mountEl._ccEvalCurrentPageKey = nextKey;
+
+            // Si la siguiente página es de evaluación, re-montar después de que
+            // crear-contenido.js muestre el resources-block (setTimeout(0) lo espera).
+            if (global._ccEvalPageKeys && global._ccEvalPageKeys[nextKey]) {
+                setTimeout(function () {
+                    if (!document.body.contains(mountEl)) return;
+                    mountEvalIn(mountEl);
+                }, 0);
+            }
+            // Si no es página de evaluación, crear-contenido.js gestiona el resources-block.
+        };
+
+        document.addEventListener('ubits-paginas-creator-activate', mountEl._ccEvalActivateHandler);
     }
 
     // API pública
