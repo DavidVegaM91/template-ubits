@@ -825,6 +825,39 @@
     var CC_MODAL_DISABLE_SEC = 'cc-modal-deshabilitar-secciones';
     var CC_MODAL_EDIT_SEC = 'cc-modal-editar-seccion';
 
+    /**
+     * Persistencia de recursos por página.
+     * pageKey -> { html: string } con el innerHTML del resources-mount.
+     * Las páginas de evaluación quedan excluidas (las gestiona evaluaciones-recurso.js).
+     */
+    var CC_RECURSOS_PAGE_STATE = {};
+    /** Clave de la página actualmente visible en el resources-mount. */
+    var CC_RECURSOS_CURRENT_PAGE_KEY = null;
+
+    function isEvalPageKey(pageKey) {
+        return !!(window._ccEvalPageKeys && pageKey && window._ccEvalPageKeys[String(pageKey)]);
+    }
+
+    function snapshotCurrentRecursosPage() {
+        var pk = CC_RECURSOS_CURRENT_PAGE_KEY;
+        if (!pk || isEvalPageKey(pk)) return;
+        var rb = document.getElementById('crear-contenido-recursos-resources-mount');
+        if (!rb) return;
+        CC_RECURSOS_PAGE_STATE[pk] = { html: rb.innerHTML };
+    }
+
+    function restoreRecursosPage(pageKey) {
+        var rb = document.getElementById('crear-contenido-recursos-resources-mount');
+        if (!rb) return false;
+        var saved = CC_RECURSOS_PAGE_STATE[pageKey];
+        if (!saved) return false;
+        rb.innerHTML = saved.html;
+        if (typeof window.initResourcesBlockFields === 'function') {
+            window.initResourcesBlockFields(rb);
+        }
+        return true;
+    }
+
     function getRecursosIndiceMount() {
         return document.getElementById('crear-contenido-recursos-indice-mount');
     }
@@ -1502,8 +1535,27 @@
         var item = ev.detail && ev.detail.item;
         var mount = getRecursosIndiceMount();
         if (!item || !mount || !mount.contains(item)) return;
+
+        var nextPageKey = ev.detail && ev.detail.pageKey != null ? String(ev.detail.pageKey) : null;
+
+        // Guardar estado del resources-mount de la página que se va (si no es evaluación)
+        snapshotCurrentRecursosPage();
+
+        // Actualizar la clave activa
+        CC_RECURSOS_CURRENT_PAGE_KEY = nextPageKey;
+
         syncRecursosRightTitleFromActive();
-        renderRecursosResourcesBlock();
+
+        // Restaurar estado guardado de la nueva página, o mostrar el selector por defecto.
+        // Las páginas de evaluación las gestiona evaluaciones-recurso.js (no tocar aquí).
+        if (!isEvalPageKey(nextPageKey)) {
+            if (!restoreRecursosPage(nextPageKey)) {
+                renderRecursosResourcesBlock();
+            }
+        }
+        // Si es eval, evaluaciones-recurso.js remonta el formulario vía setTimeout(0);
+        // llamar renderRecursosResourcesBlock() produciría un flash innecesario.
+
         refreshCrearContenidoPageSiguienteState();
     }
 
@@ -1531,6 +1583,12 @@
             return;
         }
         if (d.action !== 'eliminar') return;
+        // Limpiar estado del recursos guardado para la página eliminada
+        var deletedKey = item.getAttribute('data-paginas-creator-key');
+        if (deletedKey) {
+            delete CC_RECURSOS_PAGE_STATE[deletedKey];
+            if (CC_RECURSOS_CURRENT_PAGE_KEY === deletedKey) CC_RECURSOS_CURRENT_PAGE_KEY = null;
+        }
         item.remove();
 
         var list = getRecursosPaginasList();
@@ -1545,7 +1603,8 @@
             window.setPaginasCreatorActiveItem(first);
         }
         syncRecursosRightTitleFromActive();
-        renderRecursosResourcesBlock();
+        // La nueva página activa se restaura/renderiza vía onRecursosPaginasActivate
+        // que dispara setPaginasCreatorActiveItem → no es necesario llamar renderRecursosResourcesBlock aquí.
         refreshCrearContenidoPageSiguienteState();
     }
 
@@ -1601,6 +1660,10 @@
             // 5. Click en botón Eliminar recurso cargado (evaluar antes de Cancelar)
             var eliminarBtn = ev.target.closest('#cc-eliminar-recurso');
             if (eliminarBtn) {
+                // Limpiar estado guardado para que al regresar no se restaure el recurso eliminado
+                if (CC_RECURSOS_CURRENT_PAGE_KEY) {
+                    delete CC_RECURSOS_PAGE_STATE[CC_RECURSOS_CURRENT_PAGE_KEY];
+                }
                 mount.innerHTML = window.resourcesBlockHtml({ variant: 'default' });
                 if (typeof window.initResourcesBlockFields === 'function') {
                     window.initResourcesBlockFields(mount);
@@ -1617,9 +1680,12 @@
                 return;
             }
 
-            // 2. Click en botón Cancelar
+            // 2. Click en botón Cancelar (vuelve al selector sin recurso asignado)
             var cancelBtn = ev.target.closest('.ubits-resources-block__footer .ubits-button--error-secondary');
-            if (cancelBtn) {
+            if (cancelBtn && !ev.target.closest('#cc-eliminar-recurso')) {
+                if (CC_RECURSOS_CURRENT_PAGE_KEY) {
+                    delete CC_RECURSOS_PAGE_STATE[CC_RECURSOS_CURRENT_PAGE_KEY];
+                }
                 mount.innerHTML = window.resourcesBlockHtml({ variant: 'default' });
                 if (typeof window.initResourcesBlockFields === 'function') {
                     window.initResourcesBlockFields(mount);
