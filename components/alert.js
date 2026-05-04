@@ -255,7 +255,8 @@ function showAlert(type, message, options = {}) {
         'success': 'fa-check-circle',
         'info': 'fa-info-circle', 
         'warning': 'fa-exclamation-triangle',
-        'error': 'fa-times-circle'
+        'error': 'fa-times-circle',
+        'ia': 'fa-sparkles'
     };
     
     const iconClass = iconMap[type] || 'fa-info-circle';

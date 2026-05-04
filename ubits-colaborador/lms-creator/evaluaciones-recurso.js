@@ -1876,6 +1876,8 @@
         rootEl._ccEvalCurrentPageKey = String(pageKey || 'default');
         // Persistir también en mountEl (sobrevive a re-renders de rootEl)
         mountEl._ccEvalCurrentPageKey = String(pageKey || 'default');
+        // Referencia directa al rootEl actual (no usar querySelector que falla tras innerHTML replace)
+        mountEl._ccEvalRootEl = rootEl;
 
         var qSeq = 0;
         rootEl._ccEvalQSeq = 0;
@@ -1944,8 +1946,10 @@
             // Cerrar panel IA (exclusivo de la página de evaluación)
             if (typeof global.closeAIPanel === 'function') global.closeAIPanel();
 
-            // Persistir estado de la página actual usando el rootEl vigente
-            var curRoot = mountEl.querySelector('[data-cc-eval-root]') || mountEl;
+            // Persistir estado de la página actual usando el rootEl vigente.
+            // mountEl._ccEvalRootEl apunta siempre al rootEl del último montaje y sobrevive
+            // al innerHTML replace que crear-contenido.js hace al cambiar de página.
+            var curRoot = mountEl._ccEvalRootEl || mountEl.querySelector('[data-cc-eval-root]') || mountEl;
             if (curRoot._ccEvalCurrentPageKey) {
                 persistCurrentPage(curRoot);
             }

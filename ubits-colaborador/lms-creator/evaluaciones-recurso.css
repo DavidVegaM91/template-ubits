@@ -416,11 +416,17 @@
 
 .cc-eval-ai-gen-overlay {
     width: 100%;
+    max-width: none;
     margin-bottom: var(--gap-lg);
 }
 
+/* El stage también hereda max-width: 600px de crear-contenido.css — anularlo */
+.cc-eval-ai-gen-overlay .cc-portada-ai-generating__stage {
+    max-width: none;
+}
+
 .cc-eval-ai-gen-overlay__frame {
-    aspect-ratio: 4 / 3 !important;
-    min-height: 200px;
+    aspect-ratio: unset !important;
+    min-height: 160px;
 }
 

@@ -119,6 +119,10 @@
                             <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" onclick="setPreviewType('error')">
                                 <span>Error</span>
                             </button>
+                            <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" onclick="setPreviewType('ia')">
+                                <i class="far fa-sparkles"></i>
+                                <span>IA</span>
+                            </button>
                         </div>
                     </div>
 
@@ -132,7 +136,7 @@
                             <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
                                 <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-palette"></i></div>
                                 <div class="ubits-body-sm-bold">Tipos</div>
-                                <div class="ubits-body-sm-regular">Success, Info, Warning, Error</div>
+                                <div class="ubits-body-sm-regular">Success, Info, Warning, Error, IA</div>
                             </div>
                             <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
                                 <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-times-circle"></i></div>
@@ -372,7 +376,7 @@ showAlert('success', 'Tu mensaje aquí', {
                                     <div style="background: var(--ubits-bg-2); padding: 12px; border-radius: 6px; border-left: 4px solid var(--ubits-accent-brand);">
                                         <div class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">
                                             <strong>Parámetros:</strong><br>
-                                            • type: 'success', 'info', 'warning', 'error'<br>
+                                            • type: 'success', 'info', 'warning', 'error', 'ia'<br>
                                             • message: Texto del alert (puede incluir HTML básico)<br>
                                             • options: { containerId: 'id', noClose: true/false }<br><br>
                                             <strong>Ejemplo básico:</strong><br>
@@ -421,6 +425,12 @@ showAlert('success', 'Tu mensaje aquí', {
   background-color: var(--ubits-bg-error);
   border-color: var(--ubits-border-error);
   color: var(--ubits-fg-error);
+}
+
+/* Variante IA — fondo degradado naranja-fuchsia-morado-azul */
+.ubits-alert--ia {
+  /* Sin variables de token: el degradado y el borde están hardcodeados
+     con los colores oficiales del modo IA en alert.css */
 }</code></pre>
                             </div>
                             </div>
@@ -559,6 +569,12 @@ showAlert('success', 'Tu mensaje aquí', {
                     icon: 'far fa-times-circle',
                     title: 'Error',
                     message: 'Ha ocurrido un error al procesar la solicitud.'
+                },
+                ia: {
+                    class: 'ubits-alert--ia',
+                    icon: 'far fa-sparkles',
+                    title: 'IA',
+                    message: 'El agente IA ha procesado tu solicitud. Revisa el resultado antes de continuar.'
                 }
             };
             
