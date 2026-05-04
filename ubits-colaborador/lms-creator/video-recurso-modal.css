@@ -1,0 +1,542 @@
+/* ========================================
+   LMS Creator — Modal «Agregar video» + Widget flotante de generación
+   Depende de: modal.css, tab.css, stepper.css, button.css, file-upload.css
+   ======================================== */
+
+/* Misma prioridad de apilamiento que el modal portada/tráiler */
+#cc-video-recurso-modal.ubits-modal-overlay {
+    z-index: 1200;
+}
+
+/*
+ * Misma clase que portada IA (crear-contenido.css fuerza min-height 508px en desktop).
+ * Aquí lo anulamos: el modal de video debe ceñirse al contenido y no verse «enorme».
+ */
+#cc-video-recurso-modal .ubits-modal-content.cc-video-ia-modal-content.portada-ia-modal-content {
+    min-height: 0 !important;
+    max-height: 90vh;
+}
+
+/* Paneles: compactos, sin líneas divisoras extra */
+#cc-video-recurso-modal .cc-vmodal-panel {
+    padding: var(--padding-lg);
+}
+
+/* ─────────────────────────────────────────
+   TABS OFICIALES (grupo sobre bg-2, doc tab.html)
+   ───────────────────────────────────────── */
+.cc-vmodal {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+}
+
+.cc-vmodal-tabbar {
+    flex-shrink: 0;
+    padding: 0 0 var(--padding-md);
+}
+
+.cc-vmodal-tabbar__group {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: var(--gap-xs);
+    padding: var(--padding-xs);
+    background: var(--ubits-bg-2);
+    border-radius: var(--border-radius-md);
+}
+
+/* ─────────────────────────────────────────
+   PANELES DE PESTAÑA
+   ───────────────────────────────────────── */
+.cc-vmodal-panel {
+    padding: var(--padding-xl);
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-lg);
+    min-height: 0;
+    flex: 1;
+}
+
+.cc-vmodal-panel--hidden {
+    display: none !important;
+}
+
+/* Fila de acciones (enlace / subir): sin borde superior */
+.cc-vmodal-actions-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--gap-md);
+    margin-top: var(--gap-md);
+}
+
+/* ─────────────────────────────────────────
+   STEPPER HORIZONTAL DEL MODAL
+   ───────────────────────────────────────── */
+.cc-vmodal-stepper-wrap {
+    flex-shrink: 0;
+    padding-bottom: var(--padding-sm);
+}
+
+/* En paso 2, el paso 1 completado actúa como «volver» */
+.cc-via-stepper--step2-active .ubits-stepper__step--done {
+    cursor: pointer;
+}
+
+.cc-via-stepper--step2-active .ubits-stepper__step--done:focus-visible {
+    outline: 2px solid var(--ubits-accent-brand);
+    outline-offset: 2px;
+    border-radius: var(--border-radius-sm);
+}
+
+/* ─────────────────────────────────────────
+   TAB: VIDEO IA — PASO 1 (AVATARES)
+   ───────────────────────────────────────── */
+.cc-via-step {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-lg);
+    flex: 1;
+    min-height: 0;
+}
+
+.cc-via-step--hidden {
+    display: none !important;
+}
+
+.cc-via-avatar-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: var(--gap-lg);
+    flex: 1;
+    min-height: 0;
+    max-height: 380px;
+}
+
+@media (max-width: 700px) {
+    .cc-via-avatar-layout {
+        grid-template-columns: 1fr;
+        max-height: none;
+    }
+
+    .cc-via-avatar-right {
+        max-width: 100%;
+        justify-self: stretch;
+    }
+}
+
+/* Columna izquierda: buscador + grid de avatares */
+.cc-via-avatar-left {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-md);
+    min-height: 0;
+}
+
+.cc-via-search-wrap {
+    flex-shrink: 0;
+}
+
+.cc-via-avatar-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--gap-sm);
+    overflow-y: auto;
+    flex: 1;
+    min-height: 0;
+    padding-right: var(--padding-xs);
+    align-content: start;
+}
+
+/* Scrollbar sutil */
+.cc-via-avatar-grid::-webkit-scrollbar { width: 4px; }
+.cc-via-avatar-grid::-webkit-scrollbar-track { background: transparent; }
+.cc-via-avatar-grid::-webkit-scrollbar-thumb { background: var(--ubits-border-1); border-radius: 2px; }
+
+/* Tarjeta de avatar */
+.cc-via-avatar-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--gap-xs);
+    padding: var(--padding-sm) var(--padding-xs);
+    border: 2px solid transparent;
+    border-radius: var(--border-radius-md);
+    background: var(--ubits-bg-2);
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s;
+    text-align: center;
+    font-family: var(--ubits-font-family-sans);
+}
+
+.cc-via-avatar-card:hover {
+    border-color: var(--ubits-accent-brand);
+    background: var(--ubits-bg-1);
+}
+
+.cc-via-avatar-card--selected {
+    border-color: var(--ubits-accent-brand);
+    background: var(--ubits-bg-1);
+}
+
+.cc-via-avatar-photo {
+    width: 48px;
+    height: 48px;
+    border-radius: var(--border-radius-full);
+    overflow: hidden;
+    flex-shrink: 0;
+    background: var(--ubits-border-1);
+}
+
+.cc-via-avatar-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.cc-via-avatar-name {
+    color: var(--ubits-fg-1-medium);
+    font-size: 11px;
+    line-height: 1.3;
+    text-align: center;
+    word-break: break-word;
+}
+
+.cc-via-avatar-card--selected .cc-via-avatar-name {
+    color: var(--ubits-fg-1-high);
+    font-weight: 600;
+}
+
+/* Columna derecha: preview compacta 16:9 + siguiente */
+.cc-via-avatar-right {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    justify-self: stretch;
+}
+
+.cc-via-preview-column {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-sm);
+    width: 100%;
+    min-width: 0;
+}
+
+.cc-via-preview-frame {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    border-radius: var(--border-radius-md);
+    overflow: hidden;
+    background: var(--ubits-bg-4);
+    flex-shrink: 0;
+}
+
+.cc-via-preview-frame iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    display: block;
+}
+
+.cc-via-preview-hint {
+    color: var(--ubits-fg-1-low);
+    font-size: 11px;
+    flex-shrink: 0;
+}
+
+/* ─────────────────────────────────────────
+   TAB: VIDEO IA — PASO 2 (GUION)
+   ───────────────────────────────────────── */
+.cc-via-guion-layout {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-md);
+    flex: 1;
+    min-height: 0;
+}
+
+.cc-via-guion-ia-row {
+    display: flex;
+    gap: var(--gap-md);
+    align-items: flex-end;
+    flex-shrink: 0;
+}
+
+.cc-via-tema-wrap {
+    flex: 1;
+    min-width: 0;
+}
+
+.cc-via-guion-editor-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-xs);
+    flex: 1;
+    min-height: 0;
+}
+
+.cc-via-guion-textarea {
+    flex: 1;
+    min-height: 160px;
+    max-height: 320px;
+    width: 100%;
+    box-sizing: border-box;
+    resize: vertical;
+    padding: var(--padding-md);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: var(--border-radius-md);
+    background: var(--ubits-bg-1);
+    color: var(--ubits-fg-1-medium);
+    font-family: var(--ubits-font-family-sans);
+    font-size: 14px;
+    line-height: 1.6;
+    transition: border-color 0.15s;
+    outline: none;
+    overflow-y: auto;
+}
+
+.cc-via-guion-textarea:focus {
+    border-color: var(--ubits-accent-brand);
+    border-width: 1px;
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--ubits-accent-brand) 15%, transparent);
+}
+
+.cc-via-guion-textarea:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.cc-via-guion-counter {
+    display: flex;
+    justify-content: flex-end;
+    color: var(--ubits-fg-1-low);
+    font-family: var(--ubits-font-family-sans);
+    font-size: 12px;
+}
+
+.cc-via-guion-counter span {
+    color: var(--ubits-fg-1-medium);
+    font-weight: 600;
+}
+
+.cc-via-guion-generar-wrap {
+    display: flex;
+    justify-content: flex-end;
+    flex-shrink: 0;
+    padding-top: var(--padding-sm);
+}
+
+/* ─────────────────────────────────────────
+   TAB: ENLACE DE VIDEO
+   ───────────────────────────────────────── */
+.cc-vmodal-enlace-layout {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-lg);
+    flex: 1;
+}
+
+.cc-vmodal-enlace-info {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--gap-sm);
+    padding: var(--padding-md);
+    background: var(--ubits-bg-2);
+    border-radius: var(--border-radius-md);
+    color: var(--ubits-fg-1-medium);
+}
+
+.cc-vmodal-enlace-info i {
+    color: var(--ubits-accent-brand);
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+/* ─────────────────────────────────────────
+   TAB: SUBIR VIDEO
+   ───────────────────────────────────────── */
+.cc-vmodal-subir-layout {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.cc-vmodal-subir-layout .ubits-file-upload {
+    border-radius: var(--border-radius-md);
+}
+
+/* ─────────────────────────────────────────
+   WIDGET FLOTANTE DE GENERACIÓN DE VIDEO
+   ───────────────────────────────────────── */
+#cc-video-gen-widget {
+    position: fixed;
+    bottom: 24px;
+    left: 24px;
+    right: auto;
+    width: 320px;
+    background: var(--ubits-bg-1);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: var(--border-radius-lg);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.14);
+    z-index: 1200;
+    overflow: hidden;
+    transition: box-shadow 0.2s;
+}
+
+.cc-vgw-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--padding-sm) var(--padding-sm) var(--padding-sm) var(--padding-md);
+    background: var(--ubits-bg-2);
+    border-bottom: 1px solid var(--ubits-border-1);
+    gap: var(--gap-sm);
+    flex-shrink: 0;
+}
+
+.cc-vgw-header-title {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-sm);
+    color: var(--ubits-fg-1-high);
+    flex: 1;
+    min-width: 0;
+}
+
+.cc-vgw-header-sparkles {
+    font-size: 14px;
+    flex-shrink: 0;
+    background: linear-gradient(
+        135deg,
+        var(--modo-ia-gradient-a) 0%,
+        var(--modo-ia-gradient-b) 35.59%,
+        var(--modo-ia-gradient-c) 67.19%,
+        var(--modo-ia-gradient-d) 100%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.cc-vgw-header-actions {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--gap-xs);
+    flex-shrink: 0;
+}
+
+.cc-vgw-body {
+    display: flex;
+    flex-direction: column;
+    padding: var(--padding-sm);
+    gap: var(--gap-xs);
+    transition: max-height 0.25s ease;
+    max-height: 200px;
+    overflow: hidden;
+}
+
+/* Estado minimizado */
+#cc-video-gen-widget.cc-vgw--minimized .cc-vgw-body {
+    max-height: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+#cc-video-gen-widget.cc-vgw--minimized .cc-vgw-minimize-btn i {
+    transform: rotate(180deg);
+}
+
+.cc-vgw-item {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-md);
+    padding: var(--padding-sm) var(--padding-md);
+    border-radius: var(--border-radius-sm);
+    background: var(--ubits-bg-2);
+    cursor: pointer;
+    transition: background 0.15s;
+}
+
+.cc-vgw-item:hover {
+    background: var(--ubits-bg-3);
+}
+
+.cc-vgw-item-icon {
+    font-size: 20px;
+    color: var(--ubits-accent-brand);
+    flex-shrink: 0;
+}
+
+.cc-vgw-item-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.cc-vgw-item-name {
+    color: var(--ubits-fg-1-medium);
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 13px;
+}
+
+.cc-vgw-item-sublabel {
+    color: var(--ubits-fg-1-low);
+    font-size: 11px;
+    display: block;
+    margin-top: 2px;
+}
+
+/* Loader de generación */
+.cc-vgw-loader {
+    width: 18px;
+    height: 18px;
+    border: 2px solid var(--ubits-border-1);
+    border-top-color: var(--ubits-accent-brand);
+    border-radius: var(--border-radius-full);
+    animation: cc-vgw-spin 0.8s linear infinite;
+    flex-shrink: 0;
+}
+
+@keyframes cc-vgw-spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Check de completado */
+.cc-vgw-done-check {
+    width: 20px;
+    height: 20px;
+    border-radius: var(--border-radius-full);
+    background: var(--ubits-feedback-accent-success);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.cc-vgw-done-check i {
+    color: #fff;
+    font-size: 10px;
+}
+
+/* Cuerpo: scroll interno, mismo padding que portada IA (applyAiModalChrome también lo pone por JS) */
+#cc-video-recurso-modal .ubits-modal-body {
+    overflow: auto;
+    display: flex;
+    flex-direction: column;
+    padding: var(--padding-xl);
+    flex: 1;
+    min-height: 0;
+    max-height: calc(90vh - 72px);
+}
+
+#cc-video-recurso-modal .cc-vmodal-panel {
+    overflow-y: auto;
+}

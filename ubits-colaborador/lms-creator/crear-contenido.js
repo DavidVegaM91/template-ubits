@@ -834,6 +834,20 @@
     /** Clave de la página actualmente visible en el resources-mount. */
     var CC_RECURSOS_CURRENT_PAGE_KEY = null;
 
+    /**
+     * API pública para que video-recurso-modal.js guarde el HTML del video
+     * generado por IA en el estado de la página correspondiente.
+     */
+    window.ccRecursosSetPageHtml = function (pageKey, html) {
+        if (!pageKey) return;
+        CC_RECURSOS_PAGE_STATE[String(pageKey)] = { html: html };
+        /* Si la página activa en el mount es la misma, actualizar el DOM */
+        if (CC_RECURSOS_CURRENT_PAGE_KEY === String(pageKey)) {
+            var rb = document.getElementById('crear-contenido-recursos-resources-mount');
+            if (rb) rb.innerHTML = html;
+        }
+    };
+
     function isEvalPageKey(pageKey) {
         return !!(window._ccEvalPageKeys && pageKey && window._ccEvalPageKeys[String(pageKey)]);
     }
@@ -1647,12 +1661,34 @@
                 return;
             }
 
-            // 1. Click en tarjeta de Video
+            // 1. Click en tarjeta de Video → abrir modal de video
             var videoCard = ev.target.closest('[data-resources-card-type="video"]');
             if (videoCard && !videoCard.disabled) {
-                mount.innerHTML = window.resourcesBlockHtml({ variant: 'video-empty' });
-                if (typeof window.initResourcesBlockFields === 'function') {
-                    window.initResourcesBlockFields(mount);
+                if (typeof window.openVideoRecursoModal === 'function') {
+                    window.openVideoRecursoModal({
+                        pageKey:      CC_RECURSOS_CURRENT_PAGE_KEY,
+                        onVideoReady: function (html) {
+                            /* Guardar en el estado de la página y renderizar */
+                            if (CC_RECURSOS_CURRENT_PAGE_KEY) {
+                                CC_RECURSOS_PAGE_STATE[CC_RECURSOS_CURRENT_PAGE_KEY] = { html: html };
+                            }
+                            mount.innerHTML = html;
+                            /* Actualizar icono en el índice a "video" */
+                            var activeItem = document.querySelector('#crear-contenido-recursos-indice-mount .ubits-paginas-creator__item.is-active');
+                            if (activeItem) {
+                                var iconEl = activeItem.querySelector('.ubits-paginas-creator__drag-handle i');
+                                if (iconEl && typeof window.paginasCreatorIconClass === 'function') {
+                                    iconEl.className = window.paginasCreatorIconClass('video');
+                                }
+                            }
+                        }
+                    });
+                } else {
+                    /* Fallback si el modal no está disponible */
+                    mount.innerHTML = window.resourcesBlockHtml({ variant: 'video-empty' });
+                    if (typeof window.initResourcesBlockFields === 'function') {
+                        window.initResourcesBlockFields(mount);
+                    }
                 }
                 return;
             }
