@@ -148,12 +148,12 @@
         { id: 50, name: 'Héctor',     g: 'men',   n: 25 },
     ];
 
-    /* YouTube IDs para preview (cycling) — videos de estilo "alguien hablando" */
+    /* YouTube IDs para preview (cycling) — embeds estables; algunos TED viejos dejan de permitir embed */
     var PREVIEW_IDS = [
-        'k_Hd-3oX1oE',   // Ken Robinson
+        'UF8uR6Z6KLc',   // Stanford — Steve Jobs (embed estable)
         'iG9CE55wbtY',   // Simon Sinek
         '8S0FDjFBj8o',   // Brené Brown
-        'Cpc-t-Uwv1I',   // Hans Rosling
+        'nnR0fzM8BiA',   // Susan Cain — TED (embed estable)
         '_mG-hhWL_ug',   // Amy Cuddy
         'UyyjU8fzEYU',   // Shawn Achor
         'H14bBuluwB8',   // Malcolm Gladwell
@@ -162,10 +162,30 @@
         'lmyZMtPVodo',   // Kelly McGonigal
     ];
 
+    /**
+     * Previews que fallaban con el ciclo por índice (IDs rotos o embed deshabilitado).
+     * Andrea, Miguel, Camila, Felipe, Laura, Tomás, Luciana, Cristian, Patricia, Guillermo.
+     */
+    var PREVIEW_ID_OVERRIDE_BY_AVATAR_ID = {
+        1:  'UF8uR6Z6KLc',  // Andrea — Stanford / Jobs
+        4:  'nnR0fzM8BiA',  // Miguel — Susan Cain TED
+        11: 'aqz-KE-bpKQ',  // Camila — Big Buck Bunny (Blender, embed fiable)
+        14: 'eRsGyueVLvQ',  // Felipe — Sintel (Blender)
+        21: 'RnrKZnT56iY',  // Laura — Tears of Steel (Blender)
+        24: 'jNQXAC9IVRw',  // Tomás — primer video YouTube (siempre embeddable)
+        31: 'ScMzIvxwBn8',  // Luciana — clip de prueba habitual embed
+        34: 'y8Yv4pnO7qc',  // Cristian — TED-Ed típico embeddable
+        41: 'I7g1m-eDgCE',  // Patricia — charla pública estable
+        44: 'dGCctGr0Hu8',  // Guillermo — TED corto embeddable
+    };
+
     function avatarImg(av) {
         return 'https://randomuser.me/api/portraits/' + av.g + '/' + av.n + '.jpg';
     }
     function avatarVideoId(av) {
+        if (av && PREVIEW_ID_OVERRIDE_BY_AVATAR_ID[av.id]) {
+            return PREVIEW_ID_OVERRIDE_BY_AVATAR_ID[av.id];
+        }
         return PREVIEW_IDS[(av.id - 1) % PREVIEW_IDS.length];
     }
     function avatarPreviewSrc(av) {
