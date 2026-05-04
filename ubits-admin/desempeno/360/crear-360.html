@@ -4236,6 +4236,31 @@
                                 eval360MostrarErroresImport(systemErrors);
                             };
                         }
+
+                        /* Cambiar "Importar" → "Terminar" (habilitado).
+                           Al hacer clic navega a la vista de éxito simulando
+                           un import libre parcialmente exitoso. */
+                        var importarBtn = document.getElementById('eval360ImportarBtn');
+                        if (importarBtn) {
+                            importarBtn.querySelector('span').textContent = 'Terminar';
+                            importarBtn.disabled = false;
+                            importarBtn.onclick = function () {
+                                /* Generar asignaciones demo usando los colaboradores del BD */
+                                var colaboradores = (typeof BD_MASTER_COLABORADORES !== 'undefined' && BD_MASTER_COLABORADORES.colaboradores) || [];
+                                var ids = colaboradores.slice(0, Math.min(10, colaboradores.length)).map(function (c) { return c.id; });
+                                if (typeof eval360GenerarAsignacionesOrganigrama === 'function' && ids.length) {
+                                    _eval360AsignacionesData = eval360GenerarAsignacionesOrganigrama(ids);
+                                    draft.evaluados = {
+                                        tipo:         'libre-asignaciones',
+                                        asignaciones: _eval360AsignacionesData,
+                                        personas:     ids.slice()
+                                    };
+                                    draft.checks.evaluados = ids.length > 0;
+                                }
+                                closeDrawer('eval360DrawerImport');
+                                showView('evaluados-asignados');
+                            };
+                        }
                     }, 220);
                 }, 220);
             }, 120);

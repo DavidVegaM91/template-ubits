@@ -136,7 +136,7 @@
                                 <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
                                     <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-file-lines"></i></div>
                                     <div class="ubits-body-sm-bold">Card de archivo</div>
-                                    <div class="ubits-body-sm-regular">Muestra nombre y tamaño del archivo cargado con botón para eliminarlo y volver al estado inicial.</div>
+                                    <div class="ubits-body-sm-regular">Muestra nombre y tamaño del archivo cargado con botón para eliminarlo y volver al estado inicial. En estado "Error: procesado" el botón eliminar se oculta porque ya se procesaron registros parcialmente.</div>
                                 </div>
                                 <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
                                     <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-moon"></i></div>
@@ -549,6 +549,9 @@ fileUploadClearProgress('mi-file-upload');      // vuelve al estado normal</code
                 helperEl.classList.remove('ubits-file-upload__helper--success');
                 if (errorBtn) errorBtn.style.display = 'none';
                 if (errorBtnInline) errorBtnInline.style.display = 'none';
+                /* Restaurar botón eliminar (puede estar oculto si venimos de processing-error) */
+                var removeBtn = el.querySelector('[data-file-upload-remove]');
+                if (removeBtn) removeBtn.style.display = '';
             },
             file: function (el) {
                 previewStates.empty(el);

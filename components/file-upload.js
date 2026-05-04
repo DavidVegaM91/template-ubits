@@ -488,6 +488,11 @@
         var inlineBtn = el.querySelector('[data-file-upload-error-report-inline]');
         if (helperEl) helperEl.style.display = '';
         if (inlineBtn) inlineBtn.style.display = '';
+
+        /* En "Error: procesado" ya se procesaron registros parcialmente → no se puede
+           eliminar el archivo; ocultar el botón de quitar para no confundir al usuario. */
+        var removeBtn = el.querySelector('[data-file-upload-remove]');
+        if (removeBtn) removeBtn.style.display = 'none';
     }
 
     /**
