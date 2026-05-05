@@ -3934,9 +3934,21 @@ function insertCompetencyIntroMessage(competencyKey, label, definition, opts) {
                     setTimeout(function () {
                         if (thinkingSkills) thinkingSkills.remove();
                         var topicNameSk = TOPIC_LABELS[competencyKey] || label;
-                        addMessage('ai', 'Aquí tienes temas recomendados para ' + topicNameSk + '. Elige uno o escribe en el chat lo que necesites.');
-                        if (skillsWrap) skillsWrap.style.display = 'block';
-                        body.scrollTop = body.scrollHeight;
+                        var skillsMsg =
+                            'Aquí tienes temas recomendados para ' + topicNameSk + '. Elige uno o escribe en el chat lo que necesites.';
+                        addMessage('ai', skillsMsg);
+                        /* skillsWrap vive en el intro anterior (display:none); debe mostrarse dentro del NUEVO mensaje IA */
+                        if (skillsWrap) {
+                            var newAiMsg = body.lastElementChild;
+                            var globe = newAiMsg && newAiMsg.querySelector('.ubits-ia-chat-thread__text-globe--ai');
+                            if (globe) {
+                                skillsWrap.style.display = 'block';
+                                globe.appendChild(skillsWrap);
+                            } else {
+                                skillsWrap.style.display = 'block';
+                            }
+                            body.scrollTop = body.scrollHeight;
+                        }
                         ensureThreadInputInteractive();
                     }, 450);
                 }
