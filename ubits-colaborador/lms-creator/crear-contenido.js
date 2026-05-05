@@ -193,7 +193,7 @@
      * Pool de tokens compartido con el panel de evaluaciones.
      * Se inicializa una sola vez en window para que ambos paneles lean el mismo saldo.
      */
-    if (window._ubitsAiTokenPool == null) window._ubitsAiTokenPool = 50;
+    if (window._ubitsAiTokenPool == null) window._ubitsAiTokenPool = 200;
     var portadaAiTokensRemaining = window._ubitsAiTokenPool;
 
     var AI_IMAGES = [
