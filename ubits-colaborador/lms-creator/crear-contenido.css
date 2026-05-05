@@ -402,10 +402,6 @@ body.crear-contenido-app-open .ubits-dropdown-menu__content {
     .crear-contenido-portada__cabecera {
         padding: var(--padding-md);
     }
-
-    .crear-contenido-portada__cuerpo-desc .ubits-rich-text-editor__editor-shell {
-        max-height: min(280px, 42vh);
-    }
 }
 
 /* Workspace editor (rail stepper + columna principal) */
@@ -568,7 +564,7 @@ body.crear-contenido-app-open .ubits-dropdown-menu__content {
     display: grid;
     grid-template-columns: minmax(0, 6fr) minmax(0, 4fr);
     gap: var(--gap-xl);
-    align-items: start;
+    align-items: stretch;
     width: 100%;
     min-width: 0;
 }
@@ -576,37 +572,55 @@ body.crear-contenido-app-open .ubits-dropdown-menu__content {
 .crear-contenido-portada__cuerpo-desc,
 .crear-contenido-portada__cuerpo-ficha {
     min-width: 0;
-}
-
-.crear-contenido-portada__cuerpo-desc .contenidos-creator-card--descripcion {
-    flex: 0 1 auto;
+    display: flex;
+    flex-direction: column;
+    align-self: stretch;
     min-height: 0;
 }
 
-/* Editor con altura cómoda; scroll interno si el texto crece. */
+/* Misma altura visual que la columna de ficha (grid stretch); la tarjeta llena la celda. */
+.crear-contenido-portada__cuerpo-ficha > .contenidos-creator-card {
+    flex: 1 1 auto;
+    height: 100%;
+    min-height: 0;
+    box-sizing: border-box;
+}
+
+.crear-contenido-portada__cuerpo-desc .contenidos-creator-card--descripcion {
+    flex: 1 1 0;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+/* El RTE ocupa el espacio bajo etiqueta + toolbar; el scroll va en la caja del editor. */
+.crear-contenido-portada__cuerpo-desc .contenidos-creator-card--descripcion .ubits-rich-text-editor {
+    flex: 1 1 0;
+    min-height: 0;
+}
+
+.crear-contenido-portada__cuerpo-desc .contenidos-creator-card--descripcion .ubits-rich-text-editor__label-row,
+.crear-contenido-portada__cuerpo-desc .contenidos-creator-card--descripcion .ubits-rich-text-editor__toolbar {
+    flex-shrink: 0;
+}
+
+/*
+ * Misma altura de fila que la ficha (la columna descripción no «empuja» la fila por el texto largo).
+ * flex-basis 0 + min-height 0 permite que overflow-y del shell recorte y muestre scroll.
+ */
 .crear-contenido-portada__cuerpo-desc .ubits-rich-text-editor__editor-shell {
-    max-height: min(360px, 52vh);
+    flex: 1 1 0;
+    min-height: 0;
+    max-height: none;
+    resize: none;
     overflow-y: auto;
 }
 
-/* Ficha en columna estrecha: por defecto una columna (salvo fila tiempo+unidad). */
+/*
+ * Ficha en columna estrecha del grid portada: en desktop nivel|idioma y tiempo|unidad van en dos columnas.
+ */
 .crear-contenido-portada__cuerpo-ficha .contenidos-creator-ficha-row {
-    grid-template-columns: 1fr;
-}
-
-/* Tiempo aproximado y unidad de tiempo siempre en la misma fila. */
-.crear-contenido-portada__cuerpo-ficha .contenidos-creator-ficha-row--tiempo-unidad {
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-}
-
-@media (max-width: 1023px) {
-    .crear-contenido-portada__cuerpo-ficha .contenidos-creator-ficha-row {
-        grid-template-columns: 1fr 1fr;
-    }
-
-    .crear-contenido-portada__cuerpo-ficha .contenidos-creator-ficha-row--tiempo-unidad {
-        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    }
 }
 
 @media (max-width: 639px) {
