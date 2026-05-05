@@ -446,6 +446,9 @@
         if (saveBtn) {
             saveBtn.addEventListener('click', function () {
                 if (typeof global.showToast === 'function') global.showToast('success', 'Cambios guardados.');
+                try {
+                    document.dispatchEvent(new CustomEvent('ubits-recursos-changed', { detail: { type: 'evaluacion', action: 'save-question' } }));
+                } catch (e) { /* noop */ }
             });
         }
 

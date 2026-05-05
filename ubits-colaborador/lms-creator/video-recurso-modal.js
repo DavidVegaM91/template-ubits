@@ -53,6 +53,12 @@
         return true;
     }
 
+    function emitRecursosChanged(detail) {
+        try {
+            document.dispatchEvent(new CustomEvent('ubits-recursos-changed', { detail: detail || {} }));
+        } catch (e) { /* noop */ }
+    }
+
     function refreshStep2TokenButtons() {
         var g = getVideoAiTokens();
         var genGuion = document.getElementById('cc-via-btn-gen-guion');
@@ -769,6 +775,7 @@
             var html = buildRenderedBlock(type, src, false);
             closeModal(OVERLAY_ID);
             if (_onVideoReady) _onVideoReady(html);
+            emitRecursosChanged({ type: 'video', pageKey: _currentPageKey, source: 'link' });
         });
     }
 
@@ -781,6 +788,7 @@
             var html = buildRenderedBlock('local', _fileBlobUrl, true);
             closeModal(OVERLAY_ID);
             if (_onVideoReady) _onVideoReady(html);
+            emitRecursosChanged({ type: 'video', pageKey: _currentPageKey, source: 'upload' });
         });
     }
 
@@ -1038,6 +1046,7 @@
             /* Actualizar icono en el índice */
             updateIndexIcon(_widgetJob.pageKey);
             renderWidget();
+            emitRecursosChanged({ type: 'video', pageKey: _widgetJob.pageKey, source: 'ai' });
         }, 8000);
     }
 

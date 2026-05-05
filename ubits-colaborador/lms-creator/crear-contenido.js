@@ -12,6 +12,11 @@
     var pageCurrentStep = 0;
     var portadaValidationFlash = false;
     var recursosTitlesValidationFlash = false;
+    // Validación progresiva de títulos de páginas (paso Recursos):
+    // - No marcamos error al crear una página.
+    // - Marcamos error cuando el usuario "deja" una página (cambia a otra) y el título sigue inválido.
+    // - También marcamos todas al intentar avanzar al siguiente paso (recursosTitlesValidationFlash).
+    var recursosPageTitleTouched = {}; // pageKey -> true (se validó al perder foco / cambio de página)
     var PORTADA_INVALID_CLASS = 'crear-contenido-portada-field--invalid';
     var CATEGORIA_SELECT_PLACEHOLDER_TEXT = 'Selecciona una opción';
 
@@ -57,6 +62,11 @@
         // Eventos personalizados
         document.addEventListener('ubits-paginas-creator-action', handleInteraction);
         document.addEventListener('ubits-seccion-creator-add-page', handleInteraction);
+        // Recursos inyectados / guardados desde paneles o modales (video, evaluación, etc.)
+        document.addEventListener('ubits-recursos-changed', function () {
+            clearTimeout(debouncedSave);
+            debouncedSave = setTimeout(triggerFakeSaveCreator, 0);
+        });
     }
     // -------------------------------
 
@@ -1357,23 +1367,38 @@
 
     function syncRecursosTitleValidationVisuals() {
         clearRecursosTitleValidationVisuals();
-        if (!recursosTitlesValidationFlash) return;
-        var st = collectRecursosPageTitleValidation();
-        st.invalidItems.forEach(function (item) {
-            item.classList.add('ubits-paginas-creator__item--error');
-        });
+        var mount = getRecursosIndiceMount();
+        if (!mount) return;
+
+        var items = mount.querySelectorAll('.ubits-paginas-creator__item');
+        var invalidItems = [];
+
+        // 1) Modo "flash": al intentar avanzar, marcamos todas las inválidas.
+        if (recursosTitlesValidationFlash) {
+            invalidItems = collectRecursosPageTitleValidation().invalidItems;
+        } else {
+            // 2) Modo progresivo: solo marcamos las páginas ya "tocadas" (perdieron foco).
+            items.forEach(function (item) {
+                var key = item.getAttribute('data-paginas-creator-key') || '';
+                if (!recursosPageTitleTouched[key]) return;
+                if (!isValidRecursosPageTitle(getRecursosPaginasItemTitleForValidation(item))) {
+                    invalidItems.push(item);
+                }
+            });
+        }
+
+        invalidItems.forEach(function (item) { item.classList.add('ubits-paginas-creator__item--error'); });
         var active = document.querySelector(
             '#crear-contenido-recursos-indice-mount .ubits-paginas-creator__item.is-active'
         );
-        if (active && st.invalidItems.indexOf(active) !== -1) {
+        if (active && invalidItems.indexOf(active) !== -1) {
             var wrap = document.querySelector(
                 '#crear-contenido-recursos-page-title-section .crear-contenido-recursos__page-title-wrap'
             );
             if (wrap) wrap.classList.add(PORTADA_INVALID_CLASS);
         }
-        if (st.allValid) {
-            recursosTitlesValidationFlash = false;
-        }
+        // Si estábamos en flash y ya no hay inválidas, apagamos el flash.
+        if (recursosTitlesValidationFlash && invalidItems.length === 0) recursosTitlesValidationFlash = false;
     }
 
     function clickRecursosSeccionAddPage() {
@@ -1446,6 +1471,22 @@
         );
         if (!inp || !activeLabel) return;
         activeLabel.textContent = (inp.value || '').trim();
+    }
+
+    function persistRecursosRightTitleToItemKey(pageKey) {
+        var key = pageKey != null ? String(pageKey) : '';
+        if (!key) return;
+        var inp = document.getElementById('crear-contenido-recursos-page-title');
+        if (!inp) return;
+        var label = document.querySelector(
+            '#crear-contenido-recursos-indice-mount .ubits-paginas-creator__item[data-paginas-creator-key="' +
+                key +
+                '"] .ubits-paginas-creator__label'
+        );
+        if (!label) return;
+        var wrap = label.closest('.ubits-paginas-creator__label-wrap');
+        if (wrap && wrap.classList.contains('ubits-paginas-creator__label-edit-wrap')) return;
+        label.textContent = (inp.value || '').trim();
     }
 
     function renderRecursosResourcesBlock() {
@@ -1552,6 +1593,16 @@
 
         var nextPageKey = ev.detail && ev.detail.pageKey != null ? String(ev.detail.pageKey) : null;
 
+        // Antes de salir de la página actual, persistir su título (si estaba editándose)
+        // y hacer validación progresiva al perder foco.
+        var prevKey = CC_RECURSOS_CURRENT_PAGE_KEY != null ? String(CC_RECURSOS_CURRENT_PAGE_KEY) : null;
+        if (prevKey) {
+            // Ojo: el evento ubits-paginas-creator-activate se emite DESPUÉS de cambiar el .is-active,
+            // así que NO podemos persistir al "active" actual (sería la página nueva). Persistimos por key.
+            persistRecursosRightTitleToItemKey(prevKey);
+            recursosPageTitleTouched[prevKey] = true;
+        }
+
         // Guardar estado del resources-mount de la página que se va (si no es evaluación)
         snapshotCurrentRecursosPage();
 
@@ -1571,6 +1622,8 @@
         // llamar renderRecursosResourcesBlock() produciría un flash innecesario.
 
         refreshCrearContenidoPageSiguienteState();
+        // Refrescar bordes rojos (quita si ya quedó válido; marca si la anterior quedó inválida).
+        syncRecursosTitleValidationVisuals();
     }
 
     function onRecursosPaginasLabelSave(ev) {
@@ -1582,6 +1635,7 @@
         var inp = document.getElementById('crear-contenido-recursos-page-title');
         if (inp) inp.value = d.newLabel != null ? String(d.newLabel) : '';
         refreshCrearContenidoPageSiguienteState();
+        syncRecursosTitleValidationVisuals();
     }
 
     function onRecursosPaginasAction(ev) {
@@ -1626,6 +1680,10 @@
         if (!ev.target || ev.target.id !== 'crear-contenido-recursos-page-title') return;
         if (!document.getElementById('crear-contenido-root')) return;
         persistRecursosRightTitleToActiveItem();
+        // El usuario "salió" del campo: marcar página activa como tocada y actualizar visuales.
+        var key = CC_RECURSOS_CURRENT_PAGE_KEY != null ? String(CC_RECURSOS_CURRENT_PAGE_KEY) : '';
+        if (key) recursosPageTitleTouched[key] = true;
+        syncRecursosTitleValidationVisuals();
     }
 
     var recursosBlockInteractionsBound = false;
@@ -1842,6 +1900,9 @@
         document.addEventListener('input', function (ev) {
             if (!ev.target || ev.target.id !== 'crear-contenido-recursos-page-title') return;
             syncRecursosActiveLabelFromPageTitleInput();
+            // Si el usuario corrige el título, quitar el borde rojo en tiempo real
+            // (solo aplica si ya hubo validación flash o si la página ya fue tocada).
+            syncRecursosTitleValidationVisuals();
         });
         document.addEventListener('ubits-paginas-creator-label-input', function (ev) {
             var d = ev.detail || {};
