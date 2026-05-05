@@ -24,6 +24,25 @@
 (function (global) {
     'use strict';
 
+    function getImagesPrefix() {
+        try {
+            var path = (global.location && global.location.pathname) ? String(global.location.pathname) : '';
+            // Este archivo se usa desde pantallas en `lms-creator/` y desde `lms-creator/planes-formacion/`.
+            // Las rutas relativas deben resolverse desde el HTML actual.
+            if (path.indexOf('/lms-creator/planes-formacion/') !== -1) return '../../../';
+        } catch (e) { /* noop */ }
+        return '../../';
+    }
+
+    function imagesPath(relFromRootImages) {
+        var prefix = getImagesPrefix();
+        // relFromRootImages esperado: 'images/...'
+        if (relFromRootImages && String(relFromRootImages).indexOf('images/') === 0) {
+            return prefix + relFromRootImages;
+        }
+        return prefix + 'images/Favicons/UBITS.jpg';
+    }
+
     function getAliadosByIdMap() {
         var out = {};
         var arr = (global.BD_MASTER_ALIADOS && global.BD_MASTER_ALIADOS.aliados) || [];
@@ -34,17 +53,14 @@
     }
 
     function logoMaestroAliadoAPagina(logoRel) {
-        if (logoRel && String(logoRel).indexOf('images/') === 0) {
-            return '../../' + logoRel;
-        }
-        return '../../../images/Favicons/UBITS.jpg';
+        return imagesPath(logoRel);
     }
 
     function resolveAliadoPorId(aliadoId) {
         var byId = getAliadosByIdMap();
         var a = byId[aliadoId];
         if (!a) {
-            return { nombre: 'UBITS', logo: '../../../images/Favicons/UBITS.jpg', id: aliadoId };
+            return { nombre: 'UBITS', logo: imagesPath('images/Favicons/UBITS.jpg'), id: aliadoId };
         }
         return { id: a.id, nombre: a.nombre, logo: logoMaestroAliadoAPagina(a.logo) };
     }
@@ -64,7 +80,7 @@
                         return resolveAliadoPorId(arr[j].id);
                     }
                 }
-                return { nombre: nombre, logo: '../../../images/Favicons/UBITS.jpg', id: null };
+                return { nombre: nombre, logo: imagesPath('images/Favicons/UBITS.jpg'), id: null };
             });
         }
         return [resolveAliadoPorId(item.aliadoId || 'aly-001')];
@@ -97,12 +113,12 @@
 
     function imagenPlaygroundAHtml(item) {
         if (item.imagen && String(item.imagen).indexOf('images/') === 0) {
-            return '../../' + item.imagen;
+            return imagesPath(item.imagen);
         }
         if (item.imagePath) {
-            return '../../../images/' + item.imagePath;
+            return imagesPath('images/' + item.imagePath);
         }
-        return '../../../images/cards-learn/default.jpg';
+        return imagesPath('images/cards-learn/default.jpg');
     }
 
     function getCompetenciasByIdMap() {
@@ -151,7 +167,7 @@
             var competency = nombreCompetenciaCatalogoUbits(item, idx);
             var provs = resolveProveedoresCatalogoUbits(item);
             var providerPrim = provs[0] ? provs[0].nombre : 'UBITS';
-            var providerPrimLogo = provs[0] ? provs[0].logo : '../../../images/Favicons/UBITS.jpg';
+            var providerPrimLogo = provs[0] ? provs[0].logo : imagesPath('images/Favicons/UBITS.jpg');
             var providersMulti = null;
             if (tipo === 'Ruta de aprendizaje' && provs.length > 1) {
                 providersMulti = provs.map(function (p) {
