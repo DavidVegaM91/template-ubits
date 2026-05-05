@@ -1250,8 +1250,8 @@
                         {
                             value: 'fast',
                             emoji: '⚡',
-                            title: 'Configuración por defecto',
-                            description: 'Usa ajustes estándar (70% aprobación, sin límite de tiempo) y solo necesitas el material base.'
+                            title: 'Configuración estándar',
+                            description: '70% para aprobar, sin límite de tiempo ni de intentos.'
                         },
                         {
                             value: 'long',
