@@ -1406,6 +1406,7 @@
                     {
                         question: '¿Nivel de dificultad?',
                         type: 'single',
+                        freeText: false,
                         options: [
                             { label: 'Básico', value: 'basic' },
                             { label: 'Intermedio', value: 'intermediate' },

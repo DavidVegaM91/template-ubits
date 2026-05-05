@@ -1131,6 +1131,29 @@ function _aiPanelInteractionBottomSheet(opts) {
     var currentStep = 0;
     var answers = steps.map(function() { return { selected: [], freeText: '' }; });
 
+    /** Devuelve el texto visible en chat para una respuesta (usa label si existe; evita mostrar value técnico en inglés). */
+    function formatBottomSheetAnswerForChat(step, ans) {
+        if (!step || !ans) return '';
+        var optList = step.options || [];
+        var map = {};
+        optList.forEach(function(opt) {
+            var lbl = typeof opt === 'string' ? opt : (opt.label || opt);
+            var val = typeof opt === 'string' ? opt : (opt.value || opt.label || opt);
+            map[String(val)] = lbl;
+        });
+        if (step.type === 'multi') {
+            var parts = (ans.selected || []).map(function(v) {
+                var key = String(v);
+                return map[key] != null ? map[key] : v;
+            }).filter(Boolean);
+            return parts.length ? parts.join(', ') : String(ans.freeText || '').trim();
+        }
+        var raw = (ans.selected && ans.selected[0]) || String(ans.freeText || '').trim();
+        if (!raw) return '';
+        var key = String(raw);
+        return map[key] != null ? map[key] : raw;
+    }
+
     // Contenedor principal de la hoja
     var sheet = document.createElement('div');
     sheet.className = 'ubits-ia-chat-bottom-sheet';
@@ -1149,12 +1172,7 @@ function _aiPanelInteractionBottomSheet(opts) {
         steps.forEach(function(step, idx) {
             var ans = answers[idx];
             if (!ans) return;
-            var label;
-            if (step.type === 'multi') {
-                label = ans.selected.join(', ') || ans.freeText;
-            } else {
-                label = ans.selected[0] || ans.freeText;
-            }
+            var label = formatBottomSheetAnswerForChat(step, ans);
             if (!label) return; // paso omitido, no lo incluimos
             if (steps.length > 1) {
                 lines.push('P: ' + (step.question || '') + '\nR: ' + label);
