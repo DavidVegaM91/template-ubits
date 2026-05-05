@@ -311,6 +311,22 @@
     margin-top: var(--gap-md);
 }
 
+/* Quick Reply oficial dentro del globo IA (Modo estudio / hilo; mismo patrón que ai-panel) */
+.ubits-ia-chat-thread__text-globe--ai .ubits-ia-chat-interaction--quick-reply {
+    margin-top: var(--gap-md);
+    align-self: stretch;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+.ubits-ia-chat-thread__text-globe--ai .ubits-ia-chat-interaction--artifacts {
+    align-self: stretch;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
 .ubits-ia-chat-thread__material-choice-btn {
     flex-shrink: 0;
 }
@@ -585,6 +601,7 @@
 .ubits-ia-chat-thread__message--typing .ai-panel__msg-footer,
 .ubits-ia-chat-thread__message--typing .ubits-ia-chat-thread__material-choices,
 .ubits-ia-chat-thread__message--typing+.ubits-ia-chat-thread__material-choices,
+.ubits-ia-chat-thread__message--typing .ubits-ia-chat-interaction--quick-reply,
 .ubits-ia-chat-thread__message--typing .ubits-ia-chat-thread__courses-section,
 .ubits-ia-chat-thread__message--typing .ubits-ia-chat-thread__plan-section,
 .ubits-ia-chat-thread__message--typing .ubits-ia-chat-thread__resource-card,
@@ -604,6 +621,7 @@
  */
 .ubits-ia-chat-thread__message--typing-done .ubits-ia-chat-thread__material-choices,
 .ubits-ia-chat-thread__message--typing-done+.ubits-ia-chat-thread__material-choices,
+.ubits-ia-chat-thread__message--typing-done .ubits-ia-chat-interaction--quick-reply,
 .ubits-ia-chat-thread__message--typing-done .ubits-ia-chat-thread__courses-section,
 .ubits-ia-chat-thread__message--typing-done .ubits-ia-chat-thread__plan-section,
 .ubits-ia-chat-thread__message--typing-done .ubits-ia-chat-thread__resource-card,
@@ -626,7 +644,8 @@
     animation: ubits-ia-chat-thread-reveal-down 0.22s ease-out 120ms forwards;
 }
 
-.ubits-ia-chat-thread__message-with-choices--reveal .ubits-ia-chat-thread__material-choices {
+.ubits-ia-chat-thread__message-with-choices--reveal .ubits-ia-chat-thread__material-choices,
+.ubits-ia-chat-thread__message-with-choices--reveal .ubits-ia-chat-interaction--quick-reply {
     opacity: 0;
     animation: ubits-ia-chat-thread-reveal-down 0.22s ease-out 220ms forwards;
 }
@@ -2090,7 +2109,9 @@ body.ia-chat-mobile-drawer-scroll-lock {
    TIPOS DE INTERACCIÓN EN CHAT IA
    Transversales: sirven en ai-panel, modo-estudio-ia y cualquier chat IA.
 
-   Uso: añadir .ubits-ia-chat-interaction después del mensaje de la IA.
+   Tipos: quick-reply, multiselect, cards, artifacts (tarjetas generadas),
+   bottom-sheet. Uso: añadir .ubits-ia-chat-interaction (o el modificador
+   correspondiente) en el hilo, antes del pie del mensaje IA cuando aplique.
    =========================================================================== */
 
 /* Contenedor base de interacción — se inyecta dentro del mensaje IA, antes del footer */
@@ -2288,6 +2309,49 @@ body.ia-chat-mobile-drawer-scroll-lock {
     font-weight: var(--font-weight-regular);
     color: var(--ubits-fg-1-medium);
     margin: 0;
+}
+
+/* ---------------------------------------------------------------------------
+   3b. ARTIFACT CARDS (salidas generadas: quiz, flashcards, plan, etc.)
+   Nombre alineado a la industria («artifact»); en producto Modo estudio IA
+   hoy se renderiza vía getResourceMessageHTML (clases .resource-card…).
+   Interacción transversa: contenedor + filas con la misma lógica Abrir que
+   .resource-msg: .open-btn-visible en la fila muestra el botón; al abrir
+   el panel lateral, hideOpenButtonsInChat() también actúa sobre .artifact-row.
+
+   HTML de referencia:
+   <div class="ubits-ia-chat-interaction ubits-ia-chat-interaction--artifacts">
+     <div class="ubits-ia-chat-artifact-row open-btn-visible" data-artifact-id="…">
+       <div class="ubits-ia-chat-thread__resource-card"> … icono, título, meta …
+         <div class="ubits-ia-chat-thread__resource-card-action ubits-ia-chat-thread__resource-open-wrap">
+           <button type="button" class="ubits-button … ubits-ia-chat-thread__resource-open-btn">…</button>
+         </div>
+       </div>
+     </div>
+   </div>
+   API addAIPanelInteraction('artifacts', …) — pendiente de homologar en panel;
+   revisar documentación en documentacion/componentes/ai-panel.html.
+   --------------------------------------------------------------------------- */
+.ubits-ia-chat-interaction--artifacts {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-md);
+    width: 100%;
+    margin-top: var(--gap-md);
+    box-sizing: border-box;
+}
+
+.ubits-ia-chat-interaction--artifacts .ubits-ia-chat-artifact-row {
+    width: 100%;
+}
+
+.ubits-ia-chat-artifact-row .ubits-ia-chat-thread__resource-open-wrap {
+    display: none;
+}
+
+.ubits-ia-chat-artifact-row.open-btn-visible .ubits-ia-chat-thread__resource-open-wrap {
+    display: flex;
+    flex-shrink: 0;
 }
 
 /* ---------------------------------------------------------------------------

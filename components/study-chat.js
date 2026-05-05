@@ -2195,6 +2195,20 @@ function startNewChat() {
 }
 
 /**
+ * Quick Reply oficial (transversal con ai-panel y ubits-ia-chat.css):
+ * contenedor .ubits-ia-chat-interaction--quick-reply + botones ubits-button--secondary (sm o xs en chips).
+ * @param {string} id - id del contenedor (opcional; cadena vacía omite el atributo)
+ * @param {string} innerButtonsHtml - HTML de los botones ya armado
+ * @param {string} [extraWrapClass] - clases extra en el contenedor (ej. intro competencia)
+ * @returns {string}
+ */
+function buildQuickReplyInteractionHtml(id, innerButtonsHtml, extraWrapClass) {
+    var cls = 'ubits-ia-chat-interaction ubits-ia-chat-interaction--quick-reply' + (extraWrapClass ? ' ' + extraWrapClass : '');
+    var idAttr = id && String(id).length ? ' id="' + id + '"' : '';
+    return '<div class="' + cls + '"' + idAttr + '>' + innerButtonsHtml + '</div>';
+}
+
+/**
  * Re-renderiza los mensajes del chat actual en el DOM (para cargar un chat desde el historial).
  * Soporta mensajes simples, recursos (quiz/flashcards/plan/podcast) y mensajes con botones (material/tema).
  */
@@ -2266,20 +2280,20 @@ function renderChatMessages() {
         }
         if (msg.quickReplies === 'material' && msg.topic) {
             var showPlan = STUDY_PLAN_TOPICS.indexOf(msg.topic) >= 0;
-            var planBtnHtml = showPlan ? '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-ia-chat-thread__material-choice-btn" data-choice="studyPlan"><span>Plan de estudio</span></button>' : '';
+            var planBtnHtml = showPlan ? '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" data-choice="studyPlan"><span>Plan de estudio</span></button>' : '';
             var choicesId = 'material-choices-restore-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
-            var choicesDivHtml = '<div class="ubits-ia-chat-thread__material-choices" id="' + choicesId + '">' +
-                '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-ia-chat-thread__material-choice-btn" data-choice="quiz"><span>Quiz</span></button>' +
+            var choicesInner =
+                '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" data-choice="quiz"><span>Quiz</span></button>' +
                 planBtnHtml +
-                '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-ia-chat-thread__material-choice-btn" data-choice="flashcards"><span>Flashcards</span></button>' +
-                '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-ia-chat-thread__material-choice-btn" data-choice="podcast"><span>Podcast</span></button>' +
-                '</div>';
+                '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" data-choice="flashcards"><span>Flashcards</span></button>' +
+                '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" data-choice="podcast"><span>Podcast</span></button>';
+            var choicesDivHtml = buildQuickReplyInteractionHtml(choicesId, choicesInner);
             var messageHTML = createMessageHTML('ai', msg.text, '', false, false, undefined, choicesDivHtml);
             var choicesHTML = '<div class="ubits-ia-chat-thread__message-with-choices">' + messageHTML + '</div>';
             body.insertAdjacentHTML('beforeend', choicesHTML);
             var choicesEl = document.getElementById(choicesId);
             if (choicesEl) {
-                choicesEl.querySelectorAll('.ubits-ia-chat-thread__material-choice-btn').forEach(function (btn) {
+                choicesEl.querySelectorAll('button[data-choice]').forEach(function (btn) {
                     btn.addEventListener('click', function () {
                         var choice = this.getAttribute('data-choice');
                         if (!choice) return;
@@ -2320,10 +2334,10 @@ function renderChatMessages() {
             }
             var subBtns = subs.slice(0, 6).map(function (s, i) {
                 var esc = s.replace(/"/g, '&quot;').replace(/</g, '&lt;');
-                return '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-ia-chat-thread__material-choice-btn" data-subtopic="' + esc + '" data-subtopic-index="' + i + '"><span>' + s + '</span></button>';
+                return '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" data-subtopic="' + esc + '" data-subtopic-index="' + i + '"><span>' + s + '</span></button>';
             }).join('');
-            subBtns += '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-ia-chat-thread__material-choice-btn" data-choice="general"><span>Ver recursos en general</span></button>';
-            var subChoicesDivHtml = '<div class="ubits-ia-chat-thread__material-choices" id="' + subChoicesId + '">' + subBtns + '</div>';
+            subBtns += '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" data-choice="general"><span>Ver recursos en general</span></button>';
+            var subChoicesDivHtml = buildQuickReplyInteractionHtml(subChoicesId, subBtns);
             var subMsgHTML = createMessageHTML('ai', restoreText, '', false, false, subContentHTML, subChoicesDivHtml);
             var subChoicesHTML = '<div class="ubits-ia-chat-thread__message-with-choices">' + subMsgHTML + '</div>';
             body.insertAdjacentHTML('beforeend', subChoicesHTML);
@@ -2342,7 +2356,7 @@ function renderChatMessages() {
             });
             var subChoicesEl = document.getElementById(subChoicesId);
             if (subChoicesEl) {
-                subChoicesEl.querySelectorAll('.ubits-ia-chat-thread__material-choice-btn').forEach(function (btn) {
+                subChoicesEl.querySelectorAll('button[data-subtopic], button[data-choice="general"]').forEach(function (btn) {
                     btn.addEventListener('click', function () {
                         var isGeneral = btn.getAttribute('data-choice') === 'general';
                         if (isGeneral) {
@@ -2366,15 +2380,15 @@ function renderChatMessages() {
             var topicText = msg.text || '';
             var topicChoicesId = 'topic-choices-restore-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
             var topicButtonsHTML = SUGGESTED_TOPIC_BUTTONS.map(function (t) {
-                return '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-ia-chat-thread__material-choice-btn" data-topic-key="' + (t.key.replace(/"/g, '&quot;')) + '" data-topic-label="' + (t.label.replace(/"/g, '&quot;')) + '"><span>' + t.label + '</span></button>';
+                return '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" data-topic-key="' + (t.key.replace(/"/g, '&quot;')) + '" data-topic-label="' + (t.label.replace(/"/g, '&quot;')) + '"><span>' + t.label + '</span></button>';
             }).join('');
-            var topicChoicesDivHtml = '<div class="ubits-ia-chat-thread__material-choices" id="' + topicChoicesId + '">' + topicButtonsHTML + '</div>';
+            var topicChoicesDivHtml = buildQuickReplyInteractionHtml(topicChoicesId, topicButtonsHTML);
             var topicMessageHTML = createMessageHTML('ai', topicText, '', false, false, undefined, topicChoicesDivHtml);
             var topicChoicesHTML = '<div class="ubits-ia-chat-thread__message-with-choices">' + topicMessageHTML + '</div>';
             body.insertAdjacentHTML('beforeend', topicChoicesHTML);
             var topicChoicesEl = document.getElementById(topicChoicesId);
             if (topicChoicesEl) {
-                topicChoicesEl.querySelectorAll('.ubits-ia-chat-thread__material-choice-btn').forEach(function (btn) {
+                topicChoicesEl.querySelectorAll('button[data-topic-key]').forEach(function (btn) {
                     btn.addEventListener('click', function () {
                         var topicKey = this.getAttribute('data-topic-key');
                         var topicLabel = this.getAttribute('data-topic-label');
@@ -3634,10 +3648,12 @@ function getResourceCount(type, topicKey) {
 
 function hideOpenButtonsInChat() {
     document.querySelectorAll('.ubits-ia-chat-thread__resource-msg').forEach(function (el) { el.classList.remove('open-btn-visible'); });
+    document.querySelectorAll('.ubits-ia-chat-artifact-row').forEach(function (el) { el.classList.remove('open-btn-visible'); });
 }
 
 function showOpenButtonsInChat() {
     document.querySelectorAll('.ubits-ia-chat-thread__resource-msg').forEach(function (el) { el.classList.add('open-btn-visible'); });
+    document.querySelectorAll('.ubits-ia-chat-artifact-row').forEach(function (el) { el.classList.add('open-btn-visible'); });
 }
 
 /**
@@ -3743,13 +3759,13 @@ function addMessageWithMaterialChoiceButtons(label, topic) {
     }
     const timestamp = formatTime();
     const choicesId = 'material-choices-' + Date.now();
-    const planBtnHtml = showPlan ? '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-ia-chat-thread__material-choice-btn" data-choice="studyPlan"><span>Plan de estudio</span></button>' : '';
-    const choicesDivHtml = '<div class="ubits-ia-chat-thread__material-choices" id="' + choicesId + '">' +
-        '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-ia-chat-thread__material-choice-btn" data-choice="quiz"><span>Quiz</span></button>' +
+    const planBtnHtml = showPlan ? '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" data-choice="studyPlan"><span>Plan de estudio</span></button>' : '';
+    const choicesInner =
+        '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" data-choice="quiz"><span>Quiz</span></button>' +
         planBtnHtml +
-        '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-ia-chat-thread__material-choice-btn" data-choice="flashcards"><span>Flashcards</span></button>' +
-        '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-ia-chat-thread__material-choice-btn" data-choice="podcast"><span>Podcast</span></button>' +
-        '</div>';
+        '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" data-choice="flashcards"><span>Flashcards</span></button>' +
+        '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" data-choice="podcast"><span>Podcast</span></button>';
+    const choicesDivHtml = buildQuickReplyInteractionHtml(choicesId, choicesInner);
     const messageHTML = createMessageHTML('ai', text, timestamp, false, false, undefined, choicesDivHtml);
     const choicesHTML = '<div class="ubits-ia-chat-thread__message-with-choices">' + messageHTML + '</div>';
     body.insertAdjacentHTML('beforeend', choicesHTML);
@@ -3771,7 +3787,7 @@ function addMessageWithMaterialChoiceButtons(label, topic) {
 
     const choicesEl = document.getElementById(choicesId);
     if (!choicesEl) return;
-    choicesEl.querySelectorAll('.ubits-ia-chat-thread__material-choice-btn').forEach(function (btn) {
+    choicesEl.querySelectorAll('button[data-choice]').forEach(function (btn) {
         btn.addEventListener('click', function () {
             const choice = this.getAttribute('data-choice');
             if (!choice) return;
@@ -3817,19 +3833,19 @@ function insertCompetencyIntroMessage(competencyKey, label, definition, opts) {
 
     var choicesId = 'competency-intro-main-' + Date.now();
     var skillsWrapId = 'competency-intro-skills-' + Date.now();
-    var mainRow = '<div class="ubits-ia-chat-thread__material-choices ubits-ia-chat-thread__competency-intro-actions" id="' + choicesId + '">' +
+    var introActionsInner =
         '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" data-path="tutor"><span>Entrenar con tutor IA</span></button>' +
         (competencyKey !== 'japones' ? '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" data-path="content"><span>Sugerir contenidos</span></button>' : '') +
-        '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" data-path="skills"><span>Recomendar temas</span></button>' +
-        '</div>';
+        '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" data-path="skills"><span>Recomendar temas</span></button>';
+    var mainRow = buildQuickReplyInteractionHtml(choicesId, introActionsInner, 'ubits-ia-chat-thread__competency-intro-actions');
 
     var skillsChips = skillsList.map(function (s, i) {
         var esc = String(s).replace(/"/g, '&quot;').replace(/</g, '&lt;');
-        return '<button type="button" class="ubits-button ubits-button--secondary ubits-button--xs ubits-ia-chat-thread__material-choice-btn" data-subtopic="' + esc + '" data-subtopic-index="' + i + '"><span>' + escapeHTML(String(s)) + '</span></button>';
+        return '<button type="button" class="ubits-button ubits-button--secondary ubits-button--xs" data-subtopic="' + esc + '" data-subtopic-index="' + i + '"><span>' + escapeHTML(String(s)) + '</span></button>';
     }).join('');
 
     var skillsBlock = '<div class="ubits-ia-chat-thread__competency-skill-wrap" id="' + skillsWrapId + '" style="display:none" role="region" aria-label="Temas recomendados">' +
-        '<div class="ubits-ia-chat-thread__material-choices ubits-ia-chat-thread__competency-skill-chips">' + skillsChips + '</div></div>';
+        buildQuickReplyInteractionHtml('', skillsChips, 'ubits-ia-chat-thread__competency-skill-chips') + '</div>';
 
     var timestamp = formatTime();
     var messageHTML = createMessageHTML('ai', '', timestamp, false, false, fullContentHTML, mainRow + skillsBlock);
@@ -3928,7 +3944,7 @@ function insertCompetencyIntroMessage(competencyKey, label, definition, opts) {
         });
     }
     if (skillsWrap) {
-        skillsWrap.querySelectorAll('.ubits-ia-chat-thread__material-choice-btn').forEach(function (btn) {
+        skillsWrap.querySelectorAll('button[data-subtopic]').forEach(function (btn) {
             btn.addEventListener('click', function () {
                 var idx = parseInt(btn.getAttribute('data-subtopic-index'), 10);
                 if (!isNaN(idx)) {
@@ -3974,9 +3990,9 @@ function addMessageWithTopicChoiceButtons(resourceType, text) {
     var timestamp = formatTime();
     var choicesId = 'topic-choices-' + Date.now();
     var buttonsHTML = SUGGESTED_TOPIC_BUTTONS.map(function (t) {
-        return '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-ia-chat-thread__material-choice-btn" data-topic-key="' + (t.key.replace(/"/g, '&quot;')) + '" data-topic-label="' + (t.label.replace(/"/g, '&quot;')) + '"><span>' + t.label + '</span></button>';
+        return '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" data-topic-key="' + (t.key.replace(/"/g, '&quot;')) + '" data-topic-label="' + (t.label.replace(/"/g, '&quot;')) + '"><span>' + t.label + '</span></button>';
     }).join('');
-    var choicesDivHtml = '<div class="ubits-ia-chat-thread__material-choices" id="' + choicesId + '">' + buttonsHTML + '</div>';
+    var choicesDivHtml = buildQuickReplyInteractionHtml(choicesId, buttonsHTML);
     var messageHTML = createMessageHTML('ai', text, timestamp, false, false, undefined, choicesDivHtml);
     var choicesHTML = '<div class="ubits-ia-chat-thread__message-with-choices">' + messageHTML + '</div>';
     body.insertAdjacentHTML('beforeend', choicesHTML);
@@ -3993,7 +4009,7 @@ function addMessageWithTopicChoiceButtons(resourceType, text) {
 
     var choicesEl = document.getElementById(choicesId);
     if (!choicesEl) return;
-    choicesEl.querySelectorAll('.ubits-ia-chat-thread__material-choice-btn').forEach(function (btn) {
+    choicesEl.querySelectorAll('button[data-topic-key]').forEach(function (btn) {
         btn.addEventListener('click', function () {
             var topicKey = this.getAttribute('data-topic-key');
             var topicLabel = this.getAttribute('data-topic-label');
@@ -4049,9 +4065,9 @@ function addMessageWithResourceTypeButtons(text) {
         { type: 'podcast', label: 'Podcast', icon: 'fa-podcast' }
     ];
     var buttonsHTML = resourceButtons.map(function (r) {
-        return '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-ia-chat-thread__material-choice-btn" data-resource-type="' + (r.type.replace(/"/g, '&quot;')) + '"><span>' + r.label + '</span></button>';
+        return '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" data-resource-type="' + (r.type.replace(/"/g, '&quot;')) + '"><span>' + r.label + '</span></button>';
     }).join('');
-    var choicesDivHtml = '<div class="ubits-ia-chat-thread__material-choices" id="' + choicesId + '">' + buttonsHTML + '</div>';
+    var choicesDivHtml = buildQuickReplyInteractionHtml(choicesId, buttonsHTML);
     var messageHTML = createMessageHTML('ai', text, timestamp, false, false, undefined, choicesDivHtml);
     var choicesHTML = '<div class="ubits-ia-chat-thread__message-with-choices">' + messageHTML + '</div>';
     body.insertAdjacentHTML('beforeend', choicesHTML);
@@ -4068,7 +4084,7 @@ function addMessageWithResourceTypeButtons(text) {
 
     var choicesEl = document.getElementById(choicesId);
     if (!choicesEl) return;
-    choicesEl.querySelectorAll('.ubits-ia-chat-thread__material-choice-btn').forEach(function (btn) {
+    choicesEl.querySelectorAll('button[data-resource-type]').forEach(function (btn) {
         btn.addEventListener('click', function () {
             var resourceType = this.getAttribute('data-resource-type');
             if (!resourceType) return;

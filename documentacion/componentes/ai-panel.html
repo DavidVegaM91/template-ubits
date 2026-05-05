@@ -79,7 +79,7 @@
                                 Tipos de interacción conversacional
                             </h2>
                             <p class="ubits-body-md-regular" style="margin-bottom: var(--gap-lg); color: var(--ubits-fg-1-medium); line-height: 1.6;">
-                                Bloques interactivos que la IA puede insertar en el hilo de conversación. Funcionan en el AI panel, en modo estudio y en cualquier chat IA. El estilo vive en <code style="font-family: monospace;">general-styles/ubits-ia-chat.css</code>.
+                                Bloques interactivos que la IA puede insertar en el hilo de conversación. Funcionan en el AI panel, en modo estudio y en cualquier chat IA. El estilo vive en <code style="font-family: monospace;">general-styles/ubits-ia-chat.css</code>. Modo estudio IA usa ya Quick Reply oficial en el hilo; las tarjetas tipo recurso se documentan como <strong>Artifact cards</strong> para unificar nombre y API futura.
                             </p>
 
                             <!-- Quick Reply Buttons -->
@@ -93,9 +93,9 @@
                                     <!-- Preview estático -->
                                     <div style="background: var(--ubits-bg-2); padding: var(--padding-lg); border-radius: var(--border-radius-sm); margin-bottom: var(--gap-md);">
                                         <div class="ubits-ia-chat-interaction ubits-ia-chat-interaction--quick-reply" style="pointer-events: none;">
-                                            <button class="ubits-button ubits-button--tertiary ubits-button--sm"><span>Python</span></button>
-                                            <button class="ubits-button ubits-button--tertiary ubits-button--sm"><span>JavaScript</span></button>
-                                            <button class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--active"><span>Swift</span></button>
+                                            <button class="ubits-button ubits-button--secondary ubits-button--sm"><span>Python</span></button>
+                                            <button class="ubits-button ubits-button--secondary ubits-button--sm"><span>JavaScript</span></button>
+                                            <button class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--active"><span>Swift</span></button>
                                         </div>
                                     </div>
                                     <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="ai-panel-doc-btn-qr">
@@ -174,6 +174,52 @@
                                         <i class="far fa-play"></i>
                                         <span>Probar en el panel</span>
                                     </button>
+                                </div>
+                            </div>
+
+                            <!-- Artifact cards (salidas generadas) -->
+                            <div style="border: 1px solid var(--ubits-border-1); border-radius: var(--border-radius-md); margin-bottom: var(--gap-lg); overflow: hidden;">
+                                <div style="padding: var(--padding-md) var(--padding-lg); background: var(--ubits-bg-2); border-bottom: 1px solid var(--ubits-border-1); display: flex; flex-direction: column; gap: var(--gap-xs);">
+                                    <span class="ubits-body-md-bold" style="color: var(--ubits-fg-1-high);">Artifact cards</span>
+                                    <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Tarjeta generada (quiz, plan, etc.) · «Abrir» solo si el detalle está cerrado</span>
+                                </div>
+                                <div style="padding: var(--padding-lg);">
+                                    <p class="ubits-body-sm-regular" style="margin: 0 0 var(--gap-md); color: var(--ubits-fg-1-medium);">
+                                        Patrón transversal con nombre de industria «artifact»: una o más filas con el mismo cromo que la tarjeta de recurso del hilo en Modo estudio IA. La clase <code style="font-family: monospace;">open-btn-visible</code> en la fila (<code style="font-family: monospace;">.ubits-ia-chat-artifact-row</code>) muestra el botón <strong>Abrir</strong>; al abrir el panel lateral de detalle, el producto debe quitar esa clase (igual que con <code style="font-family: monospace;">.ubits-ia-chat-thread__resource-msg</code>). La API <code style="font-family: monospace;">addAIPanelInteraction('artifacts', …)</code> está pendiente de tu revisión antes de homologar el markup en todas las experiencias.
+                                    </p>
+                                    <div style="background: var(--ubits-bg-2); padding: var(--padding-lg); border-radius: var(--border-radius-sm); margin-bottom: var(--gap-md);">
+                                        <div class="ubits-ia-chat-interaction ubits-ia-chat-interaction--artifacts" style="pointer-events: none;">
+                                            <div class="ubits-ia-chat-artifact-row open-btn-visible">
+                                                <div class="ubits-ia-chat-thread__resource-card">
+                                                    <div class="ubits-ia-chat-thread__resource-card-main">
+                                                        <span class="ubits-ia-chat-thread__resource-card-icon"><i class="far fa-circle-question"></i></span>
+                                                        <div class="ubits-ia-chat-thread__resource-card-content">
+                                                            <span class="ubits-ia-chat-thread__resource-card-title ubits-body-sm-bold">Quiz · Liderazgo</span>
+                                                            <span class="ubits-ia-chat-thread__resource-card-meta ubits-body-xs-regular">10 preguntas</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="ubits-ia-chat-thread__resource-card-action ubits-ia-chat-thread__resource-open-wrap">
+                                                        <button type="button" class="ubits-button ubits-button--primary ubits-button--sm ubits-ia-chat-thread__resource-open-btn"><span>Abrir</span></button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="ubits-ia-chat-artifact-row">
+                                                <div class="ubits-ia-chat-thread__resource-card">
+                                                    <div class="ubits-ia-chat-thread__resource-card-main">
+                                                        <span class="ubits-ia-chat-thread__resource-card-icon"><i class="far fa-bring-forward"></i></span>
+                                                        <div class="ubits-ia-chat-thread__resource-card-content">
+                                                            <span class="ubits-ia-chat-thread__resource-card-title ubits-body-sm-bold">Flashcards · Comunicación</span>
+                                                            <span class="ubits-ia-chat-thread__resource-card-meta ubits-body-xs-regular">24 tarjetas</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="ubits-ia-chat-thread__resource-card-action ubits-ia-chat-thread__resource-open-wrap">
+                                                        <button type="button" class="ubits-button ubits-button--primary ubits-button--sm ubits-ia-chat-thread__resource-open-btn"><span>Abrir</span></button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <p class="ubits-body-sm-regular" style="margin: 0; color: var(--ubits-fg-1-medium);">La segunda fila del ejemplo no lleva <code style="font-family: monospace;">open-btn-visible</code> (simula panel ya abierto: sin botón Abrir visible).</p>
                                 </div>
                             </div>
 
@@ -328,7 +374,7 @@
                                         <li><code style="font-family: monospace;">initAIPanel(options)</code> — inicializa e inyecta el panel (una sola vez).</li>
                                         <li><code style="font-family: monospace;">openAIPanel()</code> / <code style="font-family: monospace;">closeAIPanel()</code></li>
                                         <li><code style="font-family: monospace;">addAIPanelMessage(text, type[, attachments])</code> — <code style="font-family: monospace;">type</code>: <code style="font-family: monospace;">'user'</code> | <code style="font-family: monospace;">'ai'</code>. Tras enviar desde el input, el panel ya inserta el mensaje del usuario; en <code style="font-family: monospace;">onSend(text)</code> no hace falta (ni conviene) volver a añadirlo salvo un flujo muy custom.</li>
-                                        <li><code style="font-family: monospace;">addAIPanelInteraction(type, options)</code> — inserta un bloque de interacción conversacional. <code style="font-family: monospace;">type</code>: <code style="font-family: monospace;">'quick-reply'</code> | <code style="font-family: monospace;">'multiselect'</code> | <code style="font-family: monospace;">'cards'</code> | <code style="font-family: monospace;">'bottom-sheet'</code>. El estilo vive en <code style="font-family: monospace;">general-styles/ubits-ia-chat.css</code> (transversal a todos los chats IA).</li>
+                                        <li><code style="font-family: monospace;">addAIPanelInteraction(type, options)</code> — inserta un bloque de interacción conversacional. <code style="font-family: monospace;">type</code>: <code style="font-family: monospace;">'quick-reply'</code> | <code style="font-family: monospace;">'multiselect'</code> | <code style="font-family: monospace;">'cards'</code> | <code style="font-family: monospace;">'bottom-sheet'</code>. <code style="font-family: monospace;">'artifacts'</code> (tarjetas generadas con botón Abrir) está especificado en la misma hoja de estilos y en el preview de esta página; la implementación JS en el panel se añadirá tras validación de producto.</li>
                                         <li><code style="font-family: monospace;">showAIPanelTyping()</code> — devuelve <code style="font-family: monospace;">removeTyping</code> (usa <code style="font-family: monospace;">ia-chat-streaming.js</code>).</li>
                                         <li><code style="font-family: monospace;">clearAIPanelMessages()</code>, <code style="font-family: monospace;">setAIPanelTitle(title)</code>, <code style="font-family: monospace;">setAIPanelTokensBadgeValue(n)</code>, <code style="font-family: monospace;">destroyAIPanel()</code></li>
                                     </ul>

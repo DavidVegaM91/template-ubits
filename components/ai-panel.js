@@ -760,6 +760,7 @@ function setAIPanelTokensBadgeValue(value) {
 //   'quick-reply'  — botones de respuesta rápida bajo el último mensaje IA
 //   'multiselect'  — chips seleccionables múltiples + botón «Listo»
 //   'cards'        — tarjetas con emoji, título y descripción (selección única)
+//   'artifacts'    — tarjetas tipo recurso generado (doc + CSS en ubits-ia-chat.css); API JS pendiente
 //   'bottom-sheet' — formulario conversacional que se superpone sobre el input
 //
 // options comunes:
