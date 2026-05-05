@@ -80,6 +80,28 @@
 (function (global) {
     'use strict';
 
+    function getImagesPrefixForCurrentPage() {
+        try {
+            var path = (global.location && global.location.pathname) ? String(global.location.pathname) : '';
+            if (path.indexOf('/ubits-colaborador/lms-creator/planes-formacion/') !== -1) return '../../../';
+            if (path.indexOf('/ubits-colaborador/lms-creator/') !== -1) return '../../';
+            if (path.indexOf('/ubits-colaborador/') !== -1) return '../../';
+            if (path.indexOf('/ubits-admin/') !== -1) return '../../';
+        } catch (e) { /* noop */ }
+        return '';
+    }
+
+    function normalizeAvatarUrl(avatar) {
+        var a = String(avatar || '').trim();
+        if (!a) return a;
+        if (a.indexOf('http://') === 0 || a.indexOf('https://') === 0 || a.indexOf('data:') === 0) return a;
+        // Permitir que la BD use formas como "../../images/..." o "images/..."
+        // y normalizarlo al nivel correcto según el HTML actual (file:// incluido).
+        a = a.replace(/^(\.\.\/)+/, ''); // quita ../../, ../../../, etc.
+        if (a.indexOf('images/') === 0) return getImagesPrefixForCurrentPage() + a;
+        return a;
+    }
+
     const pad = (n) => String(n).padStart(2, '0');
     function getTodayString() {
         const d = new Date();
@@ -136,7 +158,7 @@
         cargo: 'Jefe de Logística',
         area: 'Logística',
         username: 'masanchez@fiqsha.demo',
-        avatar: '../../images/Profile-image.jpg',
+        avatar: normalizeAvatarUrl('../../images/Profile-image.jpg'),
         esJefe: true
     };
 
@@ -155,7 +177,11 @@
     const _colaboradoresMaster = (global.BD_MASTER_COLABORADORES && Array.isArray(global.BD_MASTER_COLABORADORES.colaboradores))
         ? global.BD_MASTER_COLABORADORES.colaboradores
         : [];
-    const EMPLEADOS_EJEMPLO = _colaboradoresMaster.map(function (c) { return Object.assign({}, c); });
+    const EMPLEADOS_EJEMPLO = _colaboradoresMaster.map(function (c) {
+        var copy = Object.assign({}, c);
+        if (copy && copy.avatar) copy.avatar = normalizeAvatarUrl(copy.avatar);
+        return copy;
+    });
     const GERENTE_EJEMPLO = EMPLEADOS_EJEMPLO.find(function (e) { return e.esGerenteGeneral; }) || EMPLEADOS_EJEMPLO[0];
     const JEFES_EJEMPLO = EMPLEADOS_EJEMPLO.filter(function (e) { return e.esJefe && !e.esGerenteGeneral; });
     if (EMPLEADOS_EJEMPLO.length === 0) {

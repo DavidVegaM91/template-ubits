@@ -701,7 +701,15 @@
                 var searchInput = searchContainer ? searchContainer.querySelector('input') : null;
                 var cardsContainer = overlay.querySelector('#' + I('competencias-cards-container'));
                 var emptySearchContainer = overlay.querySelector('#' + I('competencias-empty-search'));
-                var imageBase = '../../images/imagenes competencias/';
+                var imageBase = (function () {
+                    try {
+                        return (String(window.location.pathname || '').indexOf('/lms-creator/planes-formacion/') !== -1)
+                            ? '../../../images/imagenes competencias/'
+                            : '../../images/imagenes competencias/';
+                    } catch (e) {
+                        return '../../images/imagenes competencias/';
+                    }
+                })();
 
                 function getFiltradosDrawerCompetencias() {
                     var q = (searchInput && searchInput.value) ? searchInput.value.trim().toLowerCase() : '';
