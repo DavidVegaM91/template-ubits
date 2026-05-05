@@ -36,6 +36,14 @@
     justify-content: space-between;
     align-items: center;
     gap: var(--gap-sm);
+    flex-wrap: wrap;
+}
+
+.cc-eval-ia-actions {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--gap-sm);
+    flex-shrink: 0;
 }
 
 .cc-eval-config-title {
@@ -428,5 +436,165 @@
 .cc-eval-ai-gen-overlay__frame {
     aspect-ratio: unset !important;
     min-height: 160px;
+}
+
+/* ─────────────────────────────────────────────
+   Modal IA «Generar evaluación» (chrome compartido con portada/video)
+   ───────────────────────────────────────────── */
+
+#cc-eval-ia-modal.ubits-modal-overlay {
+    z-index: 1200;
+}
+
+#cc-eval-ia-modal .ubits-modal-content.cc-eval-ia-modal-content.portada-ia-modal-content {
+    min-height: 0 !important;
+    max-height: 92vh;
+    display: flex;
+    flex-direction: column;
+}
+
+#cc-eval-ia-modal .ubits-modal-body {
+    flex: 0 1 auto;
+    max-height: min(85vh, calc(92vh - 56px));
+    overflow-x: hidden;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    padding: var(--padding-xl);
+    min-height: 0;
+}
+
+/* Modal KISS: parámetros + compositor IA (tipo panel) + CTA */
+.cc-eval-ia-modal-simple {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-md);
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.cc-eval-ia-modal-simple__params {
+    width: 100%;
+    margin-top: 0;
+}
+
+.cc-eval-ia-modal-simple__params-title {
+    margin: 0 0 var(--gap-md);
+    color: var(--ubits-fg-1-high);
+    text-align: left;
+}
+
+.cc-eval-ia-modal-simple__params-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--gap-md);
+}
+
+@media (min-width: 640px) {
+    #cc-eval-ia-modal .cc-eval-ia-modal-simple__params-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: var(--gap-lg);
+    }
+}
+
+.cc-eval-ia-modal-simple__param-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-md);
+    padding: var(--padding-lg);
+    /* Franja superior (::before) posición absoluta + aire hasta la cabecera */
+    padding-top: calc(3px + var(--padding-lg));
+    border-radius: var(--border-radius-lg);
+    border: 1px solid var(--ubits-border-1);
+    background: var(--ubits-bg-1);
+    box-sizing: border-box;
+    min-width: 0;
+    /* Enmascara la franja de gradiente a las esquinas del card */
+    overflow: hidden;
+}
+
+.cc-eval-ia-modal-simple__param-head {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: var(--gap-md);
+    min-width: 0;
+}
+
+.cc-eval-ia-modal-simple__param-label {
+    flex: 1;
+    min-width: 0;
+    color: var(--ubits-fg-1-high);
+    text-align: left;
+}
+
+.cc-eval-ia-modal-simple__param-card::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 3px;
+    border-radius: var(--border-radius-lg) var(--border-radius-lg) var(--border-radius-none)
+        var(--border-radius-none);
+    background: linear-gradient(
+        90deg,
+        var(--modo-ia-gradient-a),
+        var(--modo-ia-gradient-c)
+    );
+    opacity: 0.95;
+}
+
+.cc-eval-ia-modal-simple__param-accent {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--size-5xl);
+    height: var(--size-5xl);
+    margin: 0;
+    flex-shrink: 0;
+    border-radius: var(--border-radius-full);
+    background: var(--ubits-bg-2);
+    color: var(--ubits-accent-brand);
+    font-size: 14px;
+}
+
+.cc-eval-ia-modal-simple__param-accent i {
+    line-height: 1;
+}
+
+.cc-eval-ia-modal-simple__input-mount {
+    width: 100%;
+    min-width: 0;
+}
+
+.cc-eval-ia-modal-simple__param-card .ubits-input-wrapper {
+    width: 100%;
+    max-width: 100%;
+}
+
+.cc-eval-ia-modal-simple__label {
+    margin: var(--gap-lg) 0 0;
+    color: var(--ubits-fg-1-high);
+}
+
+.cc-eval-ia-modal-simple__composer-area {
+    width: 100%;
+    margin-top: 0;
+}
+
+/* Sin padding lateral del thread de IA en este modal (evita compositor desplazado). */
+#cc-eval-ia-modal .cc-eval-ia-modal-simple__composer-area.ubits-ia-chat-thread__input-area {
+    padding: 0 !important;
+    align-self: stretch;
+}
+
+.cc-eval-ia-modal-simple__composer {
+    width: 100%;
+}
+
+.cc-eval-ia-modal-simple__cta {
+    align-self: stretch;
 }
 

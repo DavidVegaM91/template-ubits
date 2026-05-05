@@ -8,7 +8,7 @@
  * Nota: Esta implementación es standalone (HTML + CSS + JS vanilla) y usa componentes UBITS existentes:
  * - Buttons / IA button
  * - createInput (inputs)
- * - ai-panel (initAIPanel/openAIPanel/addAIPanelMessage/showAIPanelTyping)
+ * - ai-panel (Panel = agente conversacional). Modal «Generar evaluación» = flujo KISS sin chat (un CTA).
  */
 (function (global) {
     'use strict';
@@ -95,9 +95,14 @@
             '    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="cc-eval-cfg-btn">' +
             '      <i class="far fa-gear"></i><span>Configuración</span>' +
             '    </button>' +
-            '    <button type="button" class="ubits-ia-button ubits-ia-button--secondary ubits-ia-button--sm" id="cc-eval-ia-btn">' +
-            '      <i class="far fa-sparkles"></i><span>Crear con IA</span>' +
+            '    <span class="cc-eval-ia-actions">' +
+            '    <button type="button" class="ubits-ia-button ubits-ia-button--secondary ubits-ia-button--sm" id="cc-eval-ia-modal-btn">' +
+            '      <i class="far fa-sparkles"></i><span>Modal</span>' +
             '    </button>' +
+            '    <button type="button" class="ubits-ia-button ubits-ia-button--secondary ubits-ia-button--sm" id="cc-eval-ia-btn">' +
+            '      <i class="far fa-sparkles"></i><span>Panel</span>' +
+            '    </button>' +
+            '    </span>' +
             '  </div>' +
             '  <div id="cc-eval-q-list" class="cc-eval-q-list"></div>' +
             '  <button type="button" class="ubits-button ubits-button--secondary ubits-button--md cc-eval-add-q" id="cc-eval-add-q">' +
@@ -776,6 +781,7 @@
     // ---------------------------
 
     var CC_EVAL_CFG_MODAL_ID = 'cc-eval-config-modal';
+    var CC_EVAL_IA_MODAL_ID = 'cc-eval-ia-modal';
 
     function openEvalConfigModal(pageState) {
         if (typeof global.openModal !== 'function') return;
@@ -1069,6 +1075,493 @@
     // Helpers de UI del agente
     // ---------------------------
 
+    function _evalSyncTokensBadges(remaining) {
+        var n = parseInt(remaining, 10);
+        if (isNaN(n) || n < 0) n = 0;
+        if (typeof global.setAIPanelTokensBadgeValue === 'function') {
+            global.setAIPanelTokensBadgeValue(n);
+        }
+        var mb = document.getElementById('cc-eval-ia-modal-tokens-badge');
+        if (mb) {
+            var numEl = mb.querySelector('.ubits-badge-tag__token-number');
+            if (numEl) numEl.textContent = String(n);
+            mb.setAttribute('aria-label', String(n) + ' tokens restantes');
+        }
+    }
+
+    function cleanupEvalIaModalAlternate(rootEl) {
+        if (typeof global.setAIPanelAlternateMount === 'function') global.setAIPanelAlternateMount(null);
+        if (rootEl) rootEl._ccEvalIaUiMode = null;
+    }
+
+    function evalAgentCloseUiForGeneration(rootEl) {
+        if (rootEl && rootEl._ccEvalIaUiMode === 'modal') {
+            if (typeof global.closeModal === 'function') global.closeModal(CC_EVAL_IA_MODAL_ID);
+            rootEl._ccEvalIaUiMode = null;
+            return;
+        }
+        if (typeof global.closeAIPanel === 'function') global.closeAIPanel();
+    }
+
+    /** Lee valores de los Inputs del modal y devuelve un objeto config listo para generar. */
+    function _evalReadModalFieldConfig(fieldApis, baseCfg) {
+        var next = Object.assign({}, baseCfg || {});
+        if (!fieldApis || !fieldApis.qCount || !fieldApis.difficulty || !fieldApis.minScore) return next;
+        var q = parseInt(fieldApis.qCount.getValue(), 10);
+        next.questionCount = isNaN(q) ? 10 : Math.min(20, Math.max(1, q));
+        var d = String(fieldApis.difficulty.getValue() || '').trim();
+        next.difficulty = ['basic', 'intermediate', 'advanced'].indexOf(d) !== -1 ? d : 'intermediate';
+        var m = parseInt(fieldApis.minScore.getValue(), 10);
+        if (isNaN(m)) next.minScore = 70;
+        else next.minScore = Math.min(100, Math.max(0, m));
+        return next;
+    }
+
+    /** Compositor estilo panel IA (textarea + adjuntos) dentro del modal de evaluación. */
+    function _evalWireIaModalComposer(overlay) {
+        var pendingImg = [];
+        var pendingFiles = [];
+        overlay._ccEvalModalPendingImages = pendingImg;
+        overlay._ccEvalModalPendingFiles = pendingFiles;
+
+        var fileIn = overlay.querySelector('#cc-eval-ia-modal-files');
+        var attachBtn = overlay.querySelector('#cc-eval-ia-modal-attach');
+        var ta = overlay.querySelector('#cc-eval-ia-modal-context-input');
+
+        function escAttr(s) {
+            return String(s == null ? '' : s)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;');
+        }
+
+        function renderImgs() {
+            var strip = overlay.querySelector('#cc-eval-ia-modal-pending-images');
+            if (!strip) return;
+            if (!pendingImg.length) {
+                strip.innerHTML = '';
+                strip.style.display = 'none';
+                return;
+            }
+            strip.style.display = 'flex';
+            strip.innerHTML = pendingImg
+                .map(function (src, idx) {
+                    return (
+                        '<div class="ai-panel__pending-img-wrap">' +
+                        '<img src="' +
+                        escAttr(src) +
+                        '" alt="Imagen adjunta" class="ai-panel__pending-img" />' +
+                        '<button type="button" class="ai-panel__pending-img-remove" data-cc-eval-pidx="' +
+                        idx +
+                        '" aria-label="Eliminar imagen">' +
+                        '<i class="far fa-times"></i></button>' +
+                        '</div>'
+                    );
+                })
+                .join('');
+            strip.querySelectorAll('[data-cc-eval-pidx]').forEach(function (btn) {
+                btn.addEventListener('click', function () {
+                    var idx = Number(btn.getAttribute('data-cc-eval-pidx'));
+                    if (isNaN(idx)) return;
+                    pendingImg.splice(idx, 1);
+                    renderImgs();
+                });
+            });
+        }
+
+        function renderFiles() {
+            var strip = overlay.querySelector('#cc-eval-ia-modal-pending-files');
+            if (!strip) return;
+            if (!pendingFiles.length) {
+                strip.innerHTML = '';
+                strip.style.display = 'none';
+                return;
+            }
+            strip.style.display = 'flex';
+            strip.innerHTML = pendingFiles
+                .map(function (f, idx) {
+                    return (
+                        '<span class="ubits-chip ubits-chip--sm ubits-chip--icon-left ubits-chip--close ai-panel__pending-file-chip">' +
+                        '<i class="far fa-file-lines"></i><span class="ubits-chip__text">' +
+                        escAttr((f && f.name) ? f.name : 'Archivo') +
+                        '</span>' +
+                        '<button type="button" class="ubits-chip__close ai-panel__pending-file-remove" data-cc-eval-fidx="' +
+                        idx +
+                        '" aria-label="Quitar archivo"><i class="far fa-times"></i></button>' +
+                        '</span>'
+                    );
+                })
+                .join('');
+            strip.querySelectorAll('[data-cc-eval-fidx]').forEach(function (btn) {
+                btn.addEventListener('click', function () {
+                    var idx = Number(btn.getAttribute('data-cc-eval-fidx'));
+                    if (isNaN(idx)) return;
+                    pendingFiles.splice(idx, 1);
+                    renderFiles();
+                });
+            });
+        }
+
+        if (attachBtn && fileIn) {
+            attachBtn.addEventListener('click', function () {
+                fileIn.click();
+            });
+            fileIn.addEventListener('change', function () {
+                var files = this.files;
+                if (!files || !files.length) return;
+                var toLoad = 0;
+                var i;
+                for (i = 0; i < files.length; i++) {
+                    if (files[i].type && files[i].type.indexOf('image/') === 0) toLoad++;
+                }
+                var loaded = 0;
+                for (var j = 0; j < files.length; j++) {
+                    var file = files[j];
+                    if (file.type && file.type.indexOf('image/') === 0) {
+                        (function (f) {
+                            var reader = new FileReader();
+                            reader.onload = function () {
+                                if (reader.result) pendingImg.push(String(reader.result));
+                                loaded++;
+                                if (loaded >= toLoad) renderImgs();
+                            };
+                            reader.readAsDataURL(f);
+                        })(file);
+                    } else {
+                        pendingFiles.push({ name: file.name, type: file.type, size: file.size });
+                    }
+                }
+                renderFiles();
+                if (toLoad === 0) renderImgs();
+                this.value = '';
+            });
+        }
+
+        if (ta) {
+            ta.addEventListener('input', function () {
+                this.style.height = 'auto';
+                this.style.height = Math.min(this.scrollHeight, 140) + 'px';
+            });
+            var box = overlay.querySelector('.cc-eval-ia-modal-simple__composer');
+            if (box) {
+                box.addEventListener('mousedown', function (e) {
+                    if (e.button !== 0) return;
+                    if (e.target.closest('button')) return;
+                    if (e.target === ta) return;
+                    requestAnimationFrame(function () {
+                        try {
+                            ta.focus({ preventScroll: true });
+                        } catch (err) {
+                            ta.focus();
+                        }
+                    });
+                });
+            }
+        }
+    }
+
+    function _evalModalHasContext(overlay) {
+        var ta = overlay.querySelector('#cc-eval-ia-modal-context-input');
+        var text = ta ? String(ta.value || '').trim() : '';
+        var imgs = overlay._ccEvalModalPendingImages || [];
+        var fds = overlay._ccEvalModalPendingFiles || [];
+        return !!(text || imgs.length || fds.length);
+    }
+
+    function _evalBuildModalContextContent(overlay) {
+        var ta = overlay.querySelector('#cc-eval-ia-modal-context-input');
+        var text = ta ? String(ta.value || '').trim() : '';
+        var imgs = overlay._ccEvalModalPendingImages || [];
+        var fds = overlay._ccEvalModalPendingFiles || [];
+        var parts = [];
+        if (text) parts.push(text);
+        fds.forEach(function (f) {
+            parts.push('[Adjunto: ' + String((f && f.name) ? f.name : 'archivo') + ']');
+        });
+        if (imgs.length) parts.push('[' + imgs.length + ' imagen(es) adjunta(s)]');
+        return parts.join('\n');
+    }
+
+    /** Monta los tres Inputs UBITS dentro del modal (tras insertarse en el DOM). */
+    function _evalMountIaModalInputs(cfg, qCount, minSc, difficultyKey) {
+        if (typeof global.createInput !== 'function') return null;
+        var q = Math.min(20, Math.max(1, qCount));
+        var diff = difficultyKey || 'intermediate';
+        if (['basic', 'intermediate', 'advanced'].indexOf(diff) === -1) diff = 'intermediate';
+
+        var apis = {};
+        apis.qCount = global.createInput({
+            containerId: 'cc-eval-ia-modal-wrap-qcount',
+            type: 'number',
+            label: 'Número de preguntas',
+            showLabel: false,
+            size: 'md',
+            value: String(q),
+            min: 1,
+            max: 20,
+            placeholder: '10'
+        });
+        apis.difficulty = global.createInput({
+            containerId: 'cc-eval-ia-modal-wrap-difficulty',
+            type: 'select',
+            label: 'Nivel',
+            showLabel: false,
+            size: 'md',
+            placeholder: 'Selecciona…',
+            value: diff,
+            selectOptions: [
+                { value: 'basic', text: 'Básico' },
+                { value: 'intermediate', text: 'Intermedio' },
+                { value: 'advanced', text: 'Avanzado' }
+            ]
+        });
+        var msVal = Number(minSc);
+        if (isNaN(msVal)) msVal = 70;
+        msVal = Math.min(100, Math.max(0, msVal));
+        apis.minScore = global.createInput({
+            containerId: 'cc-eval-ia-modal-wrap-minscore',
+            type: 'number',
+            label: 'Nota mínima para aprobar',
+            showLabel: false,
+            size: 'md',
+            value: String(msVal),
+            min: 0,
+            max: 100,
+            placeholder: '70',
+            rightIcon: 'fa-percent'
+        });
+        return apis;
+    }
+
+    /** Asocia cada Input del modal al título visible (cabecera de tarjeta) para lectores de pantalla. */
+    function _evalWireIaModalParamAria(overlay) {
+        if (!overlay || !overlay.querySelector) return;
+        var pairs = [
+            ['cc-eval-ia-modal-wrap-qcount', 'cc-eval-ia-modal-title-qcount'],
+            ['cc-eval-ia-modal-wrap-difficulty', 'cc-eval-ia-modal-title-difficulty'],
+            ['cc-eval-ia-modal-wrap-minscore', 'cc-eval-ia-modal-title-minscore']
+        ];
+        for (var i = 0; i < pairs.length; i++) {
+            var wrapId = pairs[i][0];
+            var titleId = pairs[i][1];
+            var wrap = overlay.querySelector('#' + wrapId);
+            if (!wrap) continue;
+            var input = wrap.querySelector('.ubits-input');
+            if (input && overlay.querySelector('#' + titleId)) {
+                input.setAttribute('aria-labelledby', titleId);
+            }
+        }
+    }
+
+    /**
+     * Modal KISS: sin chat. Parámetros editables (preguntas, nivel, nota), contexto opcional y un CTA.
+     * El panel conserva el agente conversacional completo.
+     */
+    function openEvalIaModal(rootEl) {
+        if (typeof global.openModal !== 'function') return;
+        var cfg =
+            rootEl._ccEvalPageState && rootEl._ccEvalPageState.config
+                ? rootEl._ccEvalPageState.config
+                : {};
+        var qCount = cfg.questionCount != null ? Number(cfg.questionCount) : 10;
+        if (isNaN(qCount) || qCount < 1) qCount = 10;
+        var minSc = cfg.minScore != null ? Number(cfg.minScore) : 70;
+        if (isNaN(minSc)) minSc = 70;
+
+        var cost = EVAL_AI_TOKEN_COST;
+        var currentTokens = _evalGetTokens();
+        var canAfford = currentTokens >= cost;
+        var genDisabled = canAfford ? '' : ' disabled aria-disabled="true"';
+        var genTitle = canAfford ? '' : ' title="No tienes suficientes tokens (' + cost + ' requeridos)."';
+
+        var contextPh =
+            'Adjunta un archivo o escribe detalladamente el tema del asunto de la evaluación';
+
+        var bodyHtml =
+            '<div class="cc-eval-ia-modal-simple">' +
+            '<div class="cc-eval-ia-modal-simple__params">' +
+            '<p class="ubits-body-sm-semibold cc-eval-ia-modal-simple__params-title">' +
+            drEsc('Parámetros de la generación') +
+            '</p>' +
+            '<div class="cc-eval-ia-modal-simple__params-grid">' +
+            '<div class="cc-eval-ia-modal-simple__param-card">' +
+            '<div class="cc-eval-ia-modal-simple__param-head">' +
+            '<div class="cc-eval-ia-modal-simple__param-accent" aria-hidden="true"><i class="far fa-list-ol"></i></div>' +
+            '<span id="cc-eval-ia-modal-title-qcount" class="cc-eval-ia-modal-simple__param-label ubits-body-sm-bold">' +
+            drEsc('Número de preguntas') +
+            '</span></div>' +
+            '<div id="cc-eval-ia-modal-wrap-qcount" class="cc-eval-ia-modal-simple__input-mount"></div>' +
+            '</div>' +
+            '<div class="cc-eval-ia-modal-simple__param-card">' +
+            '<div class="cc-eval-ia-modal-simple__param-head">' +
+            '<div class="cc-eval-ia-modal-simple__param-accent" aria-hidden="true"><i class="far fa-gauge"></i></div>' +
+            '<span id="cc-eval-ia-modal-title-difficulty" class="cc-eval-ia-modal-simple__param-label ubits-body-sm-bold">' +
+            drEsc('Nivel') +
+            '</span></div>' +
+            '<div id="cc-eval-ia-modal-wrap-difficulty" class="cc-eval-ia-modal-simple__input-mount"></div>' +
+            '</div>' +
+            '<div class="cc-eval-ia-modal-simple__param-card">' +
+            '<div class="cc-eval-ia-modal-simple__param-head">' +
+            '<div class="cc-eval-ia-modal-simple__param-accent" aria-hidden="true"><i class="far fa-bullseye"></i></div>' +
+            '<span id="cc-eval-ia-modal-title-minscore" class="cc-eval-ia-modal-simple__param-label ubits-body-sm-bold">' +
+            drEsc('Nota mínima para aprobar') +
+            '</span></div>' +
+            '<div id="cc-eval-ia-modal-wrap-minscore" class="cc-eval-ia-modal-simple__input-mount"></div>' +
+            '</div>' +
+            '</div></div>' +
+            '<label class="ubits-body-sm-semibold cc-eval-ia-modal-simple__label" for="cc-eval-ia-modal-context-input">' +
+            drEsc('Contexto para la IA') +
+            '</label>' +
+            '<div class="ubits-ia-chat-thread__input-area cc-eval-ia-modal-simple__composer-area">' +
+            '<div class="ai-panel__input-box cc-eval-ia-modal-simple__composer">' +
+            '<input type="file" id="cc-eval-ia-modal-files" accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.txt,.csv,.ppt,.pptx" multiple hidden />' +
+            '<div class="ai-panel__pending-images-strip" id="cc-eval-ia-modal-pending-images" style="display:none;"></div>' +
+            '<div class="ai-panel__pending-files-strip" id="cc-eval-ia-modal-pending-files" style="display:none;"></div>' +
+            '<textarea id="cc-eval-ia-modal-context-input" class="ai-panel__input ubits-body-md-regular" rows="2" placeholder="' +
+            drEsc(contextPh) +
+            '" aria-required="true"></textarea>' +
+            '<div class="ai-panel__input-actions">' +
+            '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only ai-panel__attach-btn" id="cc-eval-ia-modal-attach" aria-label="Adjuntar">' +
+            '<i class="far fa-plus"></i>' +
+            '</button>' +
+            '<div class="ai-panel__input-spacer"></div>' +
+            '</div>' +
+            '</div>' +
+            '</div>' +
+            '<button type="button" id="cc-eval-ia-modal-generate"' +
+            genDisabled +
+            genTitle +
+            ' class="ubits-button ubits-button--primary ubits-button--md ubits-button--with-token-cost cc-eval-ia-modal-simple__cta">' +
+            '<span class="ubits-button__token-cost" aria-hidden="true">' +
+            '<i class="far fa-coin-vertical"></i>' +
+            '<span class="ubits-button__token-number">' +
+            String(cost) +
+            '</span></span>' +
+            '<span>Generar evaluación</span>' +
+            '</button>' +
+            '</div>';
+
+        var overlay = global.openModal({
+            overlayId: CC_EVAL_IA_MODAL_ID,
+            title: 'Generar evaluación',
+            bodyHtml: bodyHtml,
+            size: 'md',
+            onClose: function () {
+                cleanupEvalIaModalAlternate(rootEl);
+            }
+        });
+
+        overlay._ccEvalIaFieldApis = _evalMountIaModalInputs(cfg, qCount, minSc, cfg.difficulty || 'intermediate');
+        _evalWireIaModalParamAria(overlay);
+        _evalWireIaModalComposer(overlay);
+
+        var svgIcon =
+            '<i class="far fa-sparkles" style="font-size:16px;margin-right:8px;flex-shrink:0;background:linear-gradient(135deg,var(--modo-ia-gradient-a) 0%,var(--modo-ia-gradient-b) 35.59%,var(--modo-ia-gradient-c) 67.19%,var(--modo-ia-gradient-d) 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;"></i>';
+
+        var titleSpan = overlay.querySelector('.ubits-modal-title');
+        if (titleSpan) {
+            titleSpan.innerHTML =
+                '<div style="display:flex; align-items:center;">' + svgIcon + 'Generar evaluación</div>';
+        }
+
+        var modalHeaderEl = overlay.querySelector('.ubits-modal-header');
+        var closeBtnEl = overlay.querySelector('.ubits-modal-close');
+        if (modalHeaderEl && closeBtnEl) {
+            var actionsWrap = document.createElement('div');
+            actionsWrap.style.display = 'inline-flex';
+            actionsWrap.style.alignItems = 'center';
+            actionsWrap.style.gap = 'var(--gap-sm)';
+
+            var tokensBadge = document.createElement('span');
+            tokensBadge.id = 'cc-eval-ia-modal-tokens-badge';
+            tokensBadge.className = 'ubits-badge-tag ubits-badge-tag--outlined ubits-badge-tag--ia ubits-badge-tag--xs';
+            tokensBadge.setAttribute('tabindex', '0');
+            tokensBadge.setAttribute('data-tooltip', 'Número de tokens restantes.');
+            tokensBadge.setAttribute('data-tooltip-delay', '1000');
+            tokensBadge.setAttribute('aria-label', currentTokens + ' tokens restantes');
+            tokensBadge.innerHTML =
+                '<span class="ubits-badge-tag__token-cost" aria-hidden="true">' +
+                '<i class="far fa-coin-vertical"></i>' +
+                '<span class="ubits-badge-tag__token-number">' +
+                String(currentTokens) +
+                '</span>' +
+                '</span>';
+
+            actionsWrap.appendChild(tokensBadge);
+            actionsWrap.appendChild(closeBtnEl);
+            modalHeaderEl.appendChild(actionsWrap);
+
+            if (typeof global.initTooltip === 'function') {
+                global.initTooltip('#cc-eval-ia-modal-tokens-badge');
+            }
+        }
+
+        var modalContent = overlay.querySelector('.ubits-modal-content');
+        if (modalContent) {
+            modalContent.classList.add('portada-ia-modal-content', 'cc-eval-ia-modal-content');
+            modalContent.style.backgroundColor = 'var(--ubits-bg-1)';
+            modalContent.style.backgroundImage =
+                'radial-gradient(ellipse 100% 80% at 10% 0%, rgba(var(--modo-ia-glow-orb-rgb-1, 26, 107, 255), 0.15) 0%, transparent 50%),' +
+                'radial-gradient(ellipse 95% 78% at 50% 0%, rgba(var(--modo-ia-glow-orb-rgb-2, 76, 230, 255), 0.15) 0%, transparent 48%),' +
+                'radial-gradient(ellipse 95% 75% at 90% 0%, rgba(var(--modo-ia-glow-orb-rgb-3, 255, 84, 22), 0.15) 0%, transparent 50%)';
+            var modalHeader = overlay.querySelector('.ubits-modal-header');
+            if (modalHeader) {
+                modalHeader.style.background = 'transparent';
+                modalHeader.style.borderBottom = '';
+            }
+            var modalBody = overlay.querySelector('.ubits-modal-body');
+            if (modalBody) {
+                modalBody.style.padding = 'var(--padding-xl, 32px)';
+                modalBody.style.overflow = 'auto';
+                modalBody.style.display = 'flex';
+                modalBody.style.flexDirection = 'column';
+                modalBody.style.minHeight = '0';
+            }
+        }
+
+        var genBtn = overlay.querySelector('#cc-eval-ia-modal-generate');
+        var contextTa = overlay.querySelector('#cc-eval-ia-modal-context-input');
+        if (genBtn && canAfford) {
+            genBtn.addEventListener('click', function () {
+                if (!_evalModalHasContext(overlay)) {
+                    if (typeof global.showToast === 'function') {
+                        global.showToast(
+                            'warning',
+                            'Describe el tema o adjunta material para continuar.'
+                        );
+                    }
+                    if (contextTa) contextTa.focus();
+                    return;
+                }
+                genBtn.disabled = true;
+                var spent = _evalSpendTokens(cost);
+                _evalSyncTokensBadges(spent);
+                var nextCfg = _evalReadModalFieldConfig(overlay._ccEvalIaFieldApis, cfg);
+                if (rootEl._ccEvalPageState && rootEl._ccEvalPageState.config) {
+                    Object.assign(rootEl._ccEvalPageState.config, nextCfg);
+                }
+                rootEl._ccEvalState = {
+                    step: 'generating',
+                    config: Object.assign({}, nextCfg),
+                    content: _evalBuildModalContextContent(overlay)
+                };
+                rootEl._ccEvalIaUiMode = null;
+                overlay._ccEvalIaFieldApis = null;
+                overlay._ccEvalModalPendingImages = null;
+                overlay._ccEvalModalPendingFiles = null;
+                if (typeof global.closeModal === 'function') global.closeModal(CC_EVAL_IA_MODAL_ID);
+                setTimeout(function () {
+                    evalAgentRunGeneration(rootEl);
+                }, 150);
+            });
+        }
+
+        setTimeout(function () {
+            if (contextTa) contextTa.focus();
+        }, 120);
+    }
+
     function _evalMsg(text, opts) {
         if (typeof global.addAIPanelMessage === 'function') global.addAIPanelMessage(text, 'ai', null, opts);
     }
@@ -1125,11 +1618,9 @@
                 if (!canAfford) return;
                 btn.disabled = true;
                 var spent = _evalSpendTokens(cost);
-                if (typeof global.setAIPanelTokensBadgeValue === 'function') {
-                    global.setAIPanelTokensBadgeValue(spent);
-                }
+                _evalSyncTokensBadges(spent);
                 state.step = 'generating';
-                if (typeof global.closeAIPanel === 'function') global.closeAIPanel();
+                evalAgentCloseUiForGeneration(rootEl);
                 setTimeout(function () { evalAgentRunGeneration(rootEl); }, 150);
             });
         }, 100);
@@ -1914,9 +2405,20 @@
             });
         }
 
+        var iaModalBtn = rootEl.querySelector('#cc-eval-ia-modal-btn');
+        if (iaModalBtn) {
+            iaModalBtn.addEventListener('click', function () {
+                if (typeof global.closeAIPanel === 'function') global.closeAIPanel();
+                rootEl._ccEvalIaUiMode = 'modal';
+                openEvalIaModal(rootEl);
+            });
+        }
+
         var iaBtn = rootEl.querySelector('#cc-eval-ia-btn');
         if (iaBtn) {
             iaBtn.addEventListener('click', function () {
+                if (typeof global.closeModal === 'function') global.closeModal(CC_EVAL_IA_MODAL_ID);
+                rootEl._ccEvalIaUiMode = 'panel';
                 evalAgentInit(rootEl, pageState);
                 if (typeof global.openAIPanel === 'function') global.openAIPanel();
                 setTimeout(function () {
@@ -1947,8 +2449,10 @@
                 || getActivePageKeyFromCrearContenido();
             if (String(nextKey) === String(curKey)) return;
 
-            // Cerrar panel IA (exclusivo de la página de evaluación)
+            // Cerrar panel IA y modal de evaluación (exclusivo de la página de evaluación)
             if (typeof global.closeAIPanel === 'function') global.closeAIPanel();
+            if (typeof global.closeModal === 'function') global.closeModal(CC_EVAL_IA_MODAL_ID);
+            if (typeof global.setAIPanelAlternateMount === 'function') global.setAIPanelAlternateMount(null);
 
             // Persistir estado de la página actual usando el rootEl vigente.
             // mountEl._ccEvalRootEl apunta siempre al rootEl del último montaje y sobrevive

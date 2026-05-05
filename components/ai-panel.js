@@ -14,6 +14,7 @@
    clearAIPanelMessages()        — Limpia mensajes, restaura bienvenida
    setAIPanelTitle(title)        — Cambia título en tiempo real
    setAIPanelTokensBadgeValue(n) — Actualiza el número del badge de tokens en cabecera (si existe)
+   setAIPanelAlternateMount(mount|null) — Mensajes / typing / bottom-sheet / envío usan nodos alternativos (p. ej. chat dentro de un modal). mount: { messages, scroll?, welcome?, chatBody?, inputArea?, inputEl?, sendBtn?, typingId?, tooltipRoot? }
    openAIPanelArtifactView(html, opts?) — Superpone el detalle de un artifact (opts.title en cabecera; oculta tokens/cierre; muestra «Atrás»).
    closeAIPanelArtifactView()    — Vuelve al chat del panel (restaura cabecera).
    destroyAIPanel()              — Desmonta el panel del DOM
@@ -56,12 +57,14 @@ let _aiPanel = {
     originalParent: null,
     artifactOpen: false,
     titleBeforeArtifact: '',
+    alternateMount: null,
 };
 
 /** Alinea el scroll del panel con ubits-ia-chat (máscara superior solo en conversación). */
 function _aiPanelSyncScrollFade() {
-    var scroll = _aiEl('ai-panel-scroll');
-    var messages = _aiEl('ai-panel-messages');
+    var mount = _aiPanelResolveMount({});
+    var scroll = mount.scroll;
+    var messages = mount.messages;
     if (!scroll || !messages) return;
     var visible = window.getComputedStyle(messages).display !== 'none';
     if (visible) scroll.classList.add('ai-panel__chat-scroll--conversation');
@@ -89,6 +92,46 @@ function _aiEscape(str) {
 }
 
 function _aiEl(id) { return document.getElementById(id); }
+
+/** Normaliza el objeto mount para mensajes/input/bottom-sheet fuera del panel (p. ej. modal). */
+function _normalizeAiPanelMount(m) {
+    if (!m || !m.messages) return null;
+    return {
+        welcome: m.welcome || null,
+        messages: m.messages,
+        scroll: m.scroll || null,
+        chatBody: m.chatBody || null,
+        inputArea: m.inputArea || null,
+        inputEl: m.inputEl || null,
+        sendBtn: m.sendBtn || null,
+        typingId: m.typingId || 'ai-panel-typing',
+        tooltipRoot: m.tooltipRoot || '#ai-panel',
+    };
+}
+
+/** Prioridad: opts.mount → alternateMount global → DOM del panel por defecto */
+function _aiPanelResolveMount(opts) {
+    opts = opts || {};
+    var raw = opts.mount || _aiPanel.alternateMount || null;
+    var m = _normalizeAiPanelMount(raw);
+    if (m) return m;
+    return {
+        welcome: _aiEl('ai-panel-welcome'),
+        messages: _aiEl('ai-panel-messages'),
+        scroll: _aiEl('ai-panel-scroll'),
+        chatBody: _aiEl('ai-panel-body'),
+        inputArea: _aiEl('ai-panel-input-area'),
+        inputEl: _aiEl('ai-panel-input'),
+        sendBtn: _aiEl('ai-panel-send'),
+        typingId: 'ai-panel-typing',
+        tooltipRoot: '#ai-panel',
+    };
+}
+
+/** Enlace opcional del chat IA a contenedores fuera del panel (cerrar modal → pasar null). */
+function setAIPanelAlternateMount(mount) {
+    _aiPanel.alternateMount = mount && mount.messages ? mount : null;
+}
 
 function _defaultIaDisclaimerText() {
     return (typeof window !== 'undefined' && window.UbitsIaChatDisclaimer && window.UbitsIaChatDisclaimer.DEFAULT_TEXT)
@@ -314,7 +357,8 @@ function _aiPanelSyncDockMode() {
 // Eventos de interacción
 // ---------------------------------------------------------------------------
 function _aiPanelEnsureInputInteractive() {
-    var input = _aiEl('ai-panel-input');
+    var mount = _aiPanelResolveMount({});
+    var input = mount.inputEl || _aiEl('ai-panel-input');
     if (!input) return;
     input.disabled = false;
     input.removeAttribute('readonly');
@@ -504,7 +548,8 @@ function _renderAIPanelPendingFiles() {
 }
 
 function _aiPanelSend() {
-    var input = _aiEl('ai-panel-input');
+    var mount = _aiPanelResolveMount({});
+    var input = mount.inputEl || _aiEl('ai-panel-input');
     if (!input) return;
     var text = input.value.trim();
     var hasAttachments = _aiPanel.pendingImages.length > 0 || _aiPanel.pendingFiles.length > 0;
@@ -521,12 +566,12 @@ function _aiPanelSend() {
     _renderAIPanelPendingFiles();
     if (typeof _aiPanel.options.onSend !== 'function') return;
 
-    var messages = _aiEl('ai-panel-messages');
+    var messages = mount.messages;
     if (window.UbitsIaChatStreaming && typeof window.UbitsIaChatStreaming.afterMinDelay === 'function' && messages) {
         messages.insertAdjacentHTML('beforeend', window.UbitsIaChatStreaming.thinkingIndicatorHtml('Pensando'));
         var thinkRow = messages.lastElementChild;
-        if (thinkRow) thinkRow.id = 'ai-panel-typing';
-        var scroll = _aiEl('ai-panel-scroll');
+        if (thinkRow) thinkRow.id = mount.typingId;
+        var scroll = mount.scroll;
         if (scroll) scroll.scrollTop = scroll.scrollHeight;
         _aiPanelSyncScrollFade();
         var runAfterThink = function () {
@@ -707,8 +752,9 @@ function closeAIPanelArtifactView() {
 
 function addAIPanelMessage(text, type, attachments, opts) {
     opts = opts || {};
-    var welcome  = _aiEl('ai-panel-welcome');
-    var messages = _aiEl('ai-panel-messages');
+    var mount = _aiPanelResolveMount(opts);
+    var welcome = mount.welcome;
+    var messages = mount.messages;
     if (!messages) return;
 
     if (welcome)  welcome.style.display  = 'none';
@@ -767,30 +813,32 @@ function addAIPanelMessage(text, type, attachments, opts) {
     }
 
     if (typeof window.initTooltip === 'function') {
-        setTimeout(function () { window.initTooltip('#ai-panel [data-tooltip]'); }, 0);
+        var tipSel = mount.tooltipRoot ? mount.tooltipRoot + ' [data-tooltip]' : '#ai-panel [data-tooltip]';
+        setTimeout(function () { window.initTooltip(tipSel); }, 0);
     }
 
-    var scroll = _aiEl('ai-panel-scroll');
+    var scroll = mount.scroll;
     if (scroll) scroll.scrollTop = scroll.scrollHeight;
     _aiPanelSyncScrollFade();
 }
 
 function showAIPanelTyping() {
-    var welcome  = _aiEl('ai-panel-welcome');
-    var messages = _aiEl('ai-panel-messages');
+    var mount = _aiPanelResolveMount({});
+    var welcome = mount.welcome;
+    var messages = mount.messages;
     if (!messages) return function() {};
 
-    if (welcome)  welcome.style.display  = 'none';
+    if (welcome) welcome.style.display = 'none';
     messages.style.display = 'flex';
 
     if (window.UbitsIaChatStreaming && typeof window.UbitsIaChatStreaming.thinkingIndicatorHtml === 'function') {
         messages.insertAdjacentHTML('beforeend', window.UbitsIaChatStreaming.thinkingIndicatorHtml('Pensando'));
         var row = messages.lastElementChild;
-        if (row) row.id = 'ai-panel-typing';
+        if (row) row.id = mount.typingId;
     } else {
         var el = document.createElement('div');
         el.className = 'ai-panel__msg ai-panel__msg--ai';
-        el.id = 'ai-panel-typing';
+        el.id = mount.typingId;
         el.innerHTML =
             '<div class="ai-panel__typing">' +
             '<span class="ai-panel__typing-dot"></span>' +
@@ -799,12 +847,13 @@ function showAIPanelTyping() {
             '</div>';
         messages.appendChild(el);
     }
-    var scroll = _aiEl('ai-panel-scroll');
+    var scroll = mount.scroll;
     if (scroll) scroll.scrollTop = scroll.scrollHeight;
     _aiPanelSyncScrollFade();
 
+    var typingId = mount.typingId;
     return function() {
-        var t = _aiEl('ai-panel-typing');
+        var t = document.getElementById(typingId);
         if (t) t.remove();
         if (window.UbitsIaChatStreaming && window.UbitsIaChatStreaming.removeThinkingRows) {
             window.UbitsIaChatStreaming.removeThinkingRows(messages);
@@ -814,10 +863,11 @@ function showAIPanelTyping() {
 }
 
 function clearAIPanelMessages() {
-    var welcome  = _aiEl('ai-panel-welcome');
-    var messages = _aiEl('ai-panel-messages');
+    var mount = _aiPanelResolveMount({});
+    var welcome = mount.welcome;
+    var messages = mount.messages;
     if (messages) { messages.innerHTML = ''; messages.style.display = 'none'; }
-    if (welcome)  welcome.style.display = 'flex';
+    if (welcome) welcome.style.display = 'flex';
     _aiPanelSyncScrollFade();
 }
 
@@ -866,8 +916,9 @@ function setAIPanelTokensBadgeValue(value) {
 
 function addAIPanelInteraction(type, options) {
     options = options || {};
-    var messages = _aiEl('ai-panel-messages');
-    var welcome  = _aiEl('ai-panel-welcome');
+    var mount = _aiPanelResolveMount(options);
+    var messages = mount.messages;
+    var welcome = mount.welcome;
     if (!messages) return;
     if (welcome) welcome.style.display = 'none';
     messages.style.display = 'flex';
@@ -884,7 +935,7 @@ function addAIPanelInteraction(type, options) {
         _aiPanelInteractionArtifacts(options);
     }
 
-    var scroll = _aiEl('ai-panel-scroll');
+    var scroll = mount.scroll;
     if (scroll) scroll.scrollTop = scroll.scrollHeight;
     _aiPanelSyncScrollFade();
 }
@@ -898,7 +949,8 @@ function _aiPanelConsumeInteraction(wrap) {
 // Inyecta un bloque de interacción DENTRO del último mensaje IA (antes del footer),
 // para que el timestamp quede debajo de la interacción.
 function _aiPanelInjectInLastAiMsg(el) {
-    var messages = _aiEl('ai-panel-messages');
+    var mount = _aiPanelResolveMount({});
+    var messages = mount.messages;
     if (!messages) return;
     var msgs = messages.querySelectorAll('.ai-panel__msg--ai');
     var lastMsg = msgs.length ? msgs[msgs.length - 1] : null;
@@ -917,7 +969,8 @@ function _aiPanelInjectInLastAiMsg(el) {
 function _aiPanelSendInteractionReply(text, onReply, label) {
     addAIPanelMessage(label || text, 'user');
     if (typeof onReply === 'function') onReply(text, label || text);
-    var scroll = _aiEl('ai-panel-scroll');
+    var mount = _aiPanelResolveMount({});
+    var scroll = mount.scroll;
     if (scroll) scroll.scrollTop = scroll.scrollHeight;
 }
 
@@ -1115,16 +1168,17 @@ function _aiPanelInteractionBottomSheet(opts) {
     var steps = opts.steps || [];
     if (!steps.length) return;
 
-    // La hoja se superpone sobre el cuerpo del panel (ai-panel-body tiene position: relative)
-    var inputArea = _aiEl('ai-panel-input-area');
-    var scroll    = _aiEl('ai-panel-scroll');
-    var chatCont  = _aiEl('ai-panel-body'); // position: relative, sin overflow: hidden
+    var mount = _aiPanelResolveMount(opts || {});
+    // La hoja se superpone sobre el cuerpo del chat (panel-body o contenedor del modal)
+    var inputArea = mount.inputArea || _aiEl('ai-panel-input-area');
+    var scroll = mount.scroll || _aiEl('ai-panel-scroll');
+    var chatCont = mount.chatBody || _aiEl('ai-panel-body');
     if (!chatCont) chatCont = inputArea && inputArea.parentElement;
     if (!chatCont) return;
 
     // Deshabilitar input mientras la hoja está abierta
-    var inputEl = _aiEl('ai-panel-input');
-    var sendBtn = _aiEl('ai-panel-send');
+    var inputEl = mount.inputEl || _aiEl('ai-panel-input');
+    var sendBtn = mount.sendBtn || _aiEl('ai-panel-send');
     if (inputEl) inputEl.disabled = true;
     if (sendBtn) sendBtn.disabled = true;
 
@@ -1446,4 +1500,11 @@ function destroyAIPanel() {
     _aiPanel.originalParent = null;
     _aiPanel.artifactOpen = false;
     _aiPanel.titleBeforeArtifact = '';
+    _aiPanel.alternateMount = null;
+}
+
+// Referencia explícita para páginas que cargan el panel en IIFE strict (p. ej. evaluaciones-recurso.js).
+if (typeof window !== 'undefined') {
+    window._aiPanelSend = _aiPanelSend;
+    window.setAIPanelAlternateMount = setAIPanelAlternateMount;
 }
