@@ -2196,7 +2196,7 @@ function startNewChat() {
 
 /**
  * Quick Reply oficial (transversal con ai-panel y ubits-ia-chat.css):
- * contenedor .ubits-ia-chat-interaction--quick-reply + botones ubits-button--secondary (sm o xs en chips).
+ * contenedor .ubits-ia-chat-interaction--quick-reply + botones ubits-button--secondary ubits-button--sm (homologado).
  * @param {string} id - id del contenedor (opcional; cadena vacía omite el atributo)
  * @param {string} innerButtonsHtml - HTML de los botones ya armado
  * @param {string} [extraWrapClass] - clases extra en el contenedor (ej. intro competencia)
@@ -2730,7 +2730,7 @@ function createStudyChatHTML(options = {}) {
         ? '¿Cuéntame cómo te puedo ayudar?'
         : 'Escribir mensaje...';
     const suggestionButtons = isTutorMode
-        ? `<span class="ubits-ia-chat-thread__suggestions-label ubits-body-xs-regular">Recomendado para ti:</span>` + competencies.map(c => `<button class="ubits-button ubits-button--secondary ubits-button--xs ubits-ia-chat-thread__competency-chip" data-competency="${COMPETENCY_TO_TOPIC[c] || c.toLowerCase().replace(/\s/g, '')}" data-label="${c}"><span>${c}</span></button>`).join('\n')
+        ? `<span class="ubits-ia-chat-thread__suggestions-label ubits-body-xs-regular">Recomendado para ti:</span>` + competencies.map(c => `<button class="ubits-button ubits-button--secondary ubits-button--sm ubits-ia-chat-thread__competency-chip" data-competency="${COMPETENCY_TO_TOPIC[c] || c.toLowerCase().replace(/\s/g, '')}" data-label="${c}"><span>${c}</span></button>`).join('\n')
         : `
                     <button class="ubits-button ubits-button--secondary ubits-button--sm" data-suggestion="contenidos"><span>Sugerencias de contenidos</span></button>
                     <button class="ubits-button ubits-button--secondary ubits-button--sm" data-suggestion="plan"><span>Crear plan de formación</span></button>
@@ -3841,7 +3841,7 @@ function insertCompetencyIntroMessage(competencyKey, label, definition, opts) {
 
     var skillsChips = skillsList.map(function (s, i) {
         var esc = String(s).replace(/"/g, '&quot;').replace(/</g, '&lt;');
-        return '<button type="button" class="ubits-button ubits-button--secondary ubits-button--xs" data-subtopic="' + esc + '" data-subtopic-index="' + i + '"><span>' + escapeHTML(String(s)) + '</span></button>';
+        return '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" data-subtopic="' + esc + '" data-subtopic-index="' + i + '"><span>' + escapeHTML(String(s)) + '</span></button>';
     }).join('');
 
     var skillsBlock = '<div class="ubits-ia-chat-thread__competency-skill-wrap" id="' + skillsWrapId + '" style="display:none" role="region" aria-label="Temas recomendados">' +

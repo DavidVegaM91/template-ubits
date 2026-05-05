@@ -79,7 +79,7 @@
                                 Tipos de interacción conversacional
                             </h2>
                             <p class="ubits-body-md-regular" style="margin-bottom: var(--gap-lg); color: var(--ubits-fg-1-medium); line-height: 1.6;">
-                                Bloques interactivos que la IA puede insertar en el hilo de conversación. Funcionan en el AI panel, en modo estudio y en cualquier chat IA. El estilo vive en <code style="font-family: monospace;">general-styles/ubits-ia-chat.css</code>. Modo estudio IA usa ya Quick Reply oficial en el hilo; las tarjetas tipo recurso se documentan como <strong>Artifact cards</strong> para unificar nombre y API futura.
+                                Bloques interactivos que la IA puede insertar en el hilo de conversación. Funcionan en el AI panel, en modo estudio y en cualquier chat IA. El estilo vive en <code style="font-family: monospace;">general-styles/ubits-ia-chat.css</code>. <strong>Quick Reply</strong> está homologado: fila horizontal (con salto de línea solo si no caben), botones <code style="font-family: monospace;">ubits-button--secondary ubits-button--sm</code> al ancho del texto. Modo estudio IA usa el mismo patrón en el hilo; las tarjetas tipo recurso se documentan como <strong>Artifact cards</strong> para unificar nombre y API futura.
                             </p>
 
                             <!-- Quick Reply Buttons -->
@@ -89,13 +89,13 @@
                                     <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Selección única · se envía como mensaje del usuario</span>
                                 </div>
                                 <div style="padding: var(--padding-lg);">
-                                    <p class="ubits-body-sm-regular" style="margin: 0 0 var(--gap-md); color: var(--ubits-fg-1-medium);">Botones de respuesta rápida bajo un mensaje IA. El usuario elige uno y se envía automáticamente como reply.</p>
+                                    <p class="ubits-body-sm-regular" style="margin: 0 0 var(--gap-md); color: var(--ubits-fg-1-medium);">Botones de respuesta rápida bajo un mensaje IA (secundarios, tamaño sm, en fila). El usuario elige uno y se envía automáticamente como reply.</p>
                                     <!-- Preview estático -->
                                     <div style="background: var(--ubits-bg-2); padding: var(--padding-lg); border-radius: var(--border-radius-sm); margin-bottom: var(--gap-md);">
                                         <div class="ubits-ia-chat-interaction ubits-ia-chat-interaction--quick-reply" style="pointer-events: none;">
-                                            <button class="ubits-button ubits-button--secondary ubits-button--sm"><span>Python</span></button>
-                                            <button class="ubits-button ubits-button--secondary ubits-button--sm"><span>JavaScript</span></button>
-                                            <button class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--active"><span>Swift</span></button>
+                                            <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm"><span>Python</span></button>
+                                            <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm"><span>JavaScript</span></button>
+                                            <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--active"><span>Swift</span></button>
                                         </div>
                                     </div>
                                     <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="ai-panel-doc-btn-qr">

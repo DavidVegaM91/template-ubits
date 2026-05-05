@@ -495,13 +495,17 @@
         align-self: stretch;
     }
 
+    /* Quick reply: misma fila + wrap que en escritorio (botones abrazan texto; no columna ancho completo) */
     .ubits-ia-chat-thread__message--ai .ubits-ia-chat-interaction--quick-reply {
-        flex-direction: column;
-        align-items: stretch;
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: flex-start;
     }
 
     .ubits-ia-chat-thread__message--ai .ubits-ia-chat-interaction--quick-reply > .ubits-button {
-        width: 100%;
+        width: auto;
+        flex: 0 0 auto;
         justify-content: center;
     }
 
@@ -1013,12 +1017,21 @@
     box-sizing: border-box;
 }
 
-/* Botones de sugerencias - usar componente UBITS button */
+/* Botones de sugerencias (input area): misma lógica que quick-reply — fila, wrap, botón al contenido */
 .ubits-ia-chat-thread__suggestions {
     display: flex;
+    flex-direction: row;
     flex-wrap: wrap;
-    gap: var(--gap-md);
+    gap: var(--gap-sm);
     align-items: center;
+    justify-content: flex-start;
+}
+
+.ubits-ia-chat-thread__suggestions .ubits-button {
+    flex: 0 0 auto;
+    width: auto;
+    max-width: 100%;
+    box-sizing: border-box;
 }
 
 /* Ocultar sugerencias cuando el chat ha iniciado (primer mensaje o interacción) */
@@ -2135,10 +2148,16 @@ body.ia-chat-mobile-drawer-scroll-lock {
     opacity: 0.55;
 }
 
-/* Dentro de un mensaje IA del ai-panel: misma acotación que la burbuja (ver @container en ai-panel.css) */
+/* Dentro de un mensaje IA del ai-panel: la burbuja ya acota ancho; no repetir 85% en la interacción */
 .ai-panel__msg--ai .ubits-ia-chat-interaction {
     max-width: 85%;
     margin-top: var(--gap-sm);
+}
+
+.ai-panel__msg--ai .ai-panel__msg-bubble .ubits-ia-chat-interaction {
+    max-width: 100%;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 /* Hilo estudio / chat: misma acotación en columnas anchas */
@@ -2147,17 +2166,37 @@ body.ia-chat-mobile-drawer-scroll-lock {
     margin-top: var(--gap-sm);
 }
 
+/* El globo IA (.text-globe--ai) ya acota el ancho al hilo. Un segundo max-width:85%
+   sobre .ubits-ia-chat-interaction sería el 85% del globo → quick reply más estrecho
+   que el texto y saltos de línea aunque quede hueco a la derecha en la burbuja. */
+.ubits-ia-chat-thread__text-globe--ai .ubits-ia-chat-interaction {
+    max-width: 100%;
+    width: 100%;
+    box-sizing: border-box;
+}
+
 /* ---------------------------------------------------------------------------
    1. QUICK REPLY BUTTONS
-   Fila de botones debajo del mensaje IA. Al hacer clic se envía como reply.
+   Fila horizontal (wrap solo si no caben); botones UBITS secondary sm, ancho al contenido.
    HTML: <div class="ubits-ia-chat-interaction ubits-ia-chat-interaction--quick-reply">
-           <button class="ubits-ia-chat-quick-reply-btn">Python</button>
+           <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm"><span>…</span></button>
          </div>
+   (La clase .ubits-ia-chat-quick-reply-btn es legado / doc; preferir ubits-button.)
    --------------------------------------------------------------------------- */
 .ubits-ia-chat-interaction--quick-reply {
     flex-direction: row;
     flex-wrap: wrap;
-    gap: var(--gap-sm);
+    align-items: center;
+    justify-content: flex-start;
+    /* Mismo hueco horizontal que la fila de chips del multiselect (.ubits-ia-chat-interaction__chips) */
+    gap: var(--gap-xs);
+}
+
+.ubits-ia-chat-interaction--quick-reply > .ubits-button {
+    flex: 0 0 auto;
+    width: auto;
+    max-width: 100%;
+    box-sizing: border-box;
 }
 
 .ubits-ia-chat-quick-reply-btn {

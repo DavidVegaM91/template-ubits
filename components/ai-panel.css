@@ -461,14 +461,17 @@ body.ai-panel-resizing .ai-panel {
         align-self: stretch;
     }
 
-    /* Quick reply: una columna a ancho completo (evita filas muy angostas) */
+    /* Quick reply: fila + wrap homologado con hilo modo estudio (botones al contenido) */
     .ai-panel__msg--ai .ubits-ia-chat-interaction--quick-reply {
-        flex-direction: column;
-        align-items: stretch;
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: flex-start;
     }
 
     .ai-panel__msg--ai .ubits-ia-chat-interaction--quick-reply > .ubits-button {
-        width: 100%;
+        width: auto;
+        flex: 0 0 auto;
         justify-content: center;
     }
 
