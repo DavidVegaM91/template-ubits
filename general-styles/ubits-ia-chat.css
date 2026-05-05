@@ -2297,7 +2297,7 @@ body.ia-chat-mobile-drawer-scroll-lock {
 
 .ubits-ia-chat-card {
     display: flex;
-    align-items: flex-start;
+    align-items: center;
     gap: var(--gap-md);
     padding: var(--padding-md) var(--padding-lg);
     border: 1px solid var(--ubits-border-1);
@@ -2323,7 +2323,6 @@ body.ia-chat-mobile-drawer-scroll-lock {
     font-size: 20px;
     line-height: 1;
     flex-shrink: 0;
-    margin-top: 2px;
 }
 
 .ubits-ia-chat-card__body {

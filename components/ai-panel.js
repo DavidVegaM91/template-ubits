@@ -14,6 +14,8 @@
    clearAIPanelMessages()        — Limpia mensajes, restaura bienvenida
    setAIPanelTitle(title)        — Cambia título en tiempo real
    setAIPanelTokensBadgeValue(n) — Actualiza el número del badge de tokens en cabecera (si existe)
+   openAIPanelArtifactView(html, opts?) — Superpone el detalle de un artifact (opts.title en cabecera; oculta tokens/cierre; muestra «Atrás»).
+   closeAIPanelArtifactView()    — Vuelve al chat del panel (restaura cabecera).
    destroyAIPanel()              — Desmonta el panel del DOM
 
    OPCIONES (initAIPanel):
@@ -52,6 +54,8 @@ let _aiPanel = {
     rootEl: null,
     resizeHandler: null,
     originalParent: null,
+    artifactOpen: false,
+    titleBeforeArtifact: '',
 };
 
 /** Alinea el scroll del panel con ubits-ia-chat (máscara superior solo en conversación). */
@@ -171,13 +175,18 @@ function _buildAIPanelHTML(o) {
 
     <!-- Header -->
     <header class="ai-panel__header">
-        <div class="ai-panel__icon" aria-hidden="true"><i class="far fa-sparkles"></i></div>
+        <div class="ai-panel__hdr-leading">
+            <div class="ai-panel__icon ai-panel__hdr-brand" id="ai-panel-hdr-brand" aria-hidden="true"><i class="far fa-sparkles"></i></div>
+            <button type="button" class="ubits-button ubits-button--tertiary ubits-button--xs ubits-button--icon-only ai-panel__hdr-back" id="ai-panel-hdr-back" aria-label="Volver al chat">
+                <i class="far fa-chevron-left"></i>
+            </button>
+        </div>
         <div class="ai-panel__header-text">
             <h2 class="ai-panel__title" id="ai-panel-title">${_aiEscape(title)}</h2>
         </div>
-        <div class="ai-panel__header-actions">
+        <div class="ai-panel__header-actions" id="ai-panel-header-actions">
             ${_aiPanelTokensBadgeHtml(o)}
-            <button class="ai-panel__hdr-btn" id="ai-panel-close-btn" type="button" title="Cerrar panel" aria-label="Cerrar">
+            <button type="button" class="ubits-button ubits-button--tertiary ubits-button--xs ubits-button--icon-only" id="ai-panel-close-btn" title="Cerrar panel" aria-label="Cerrar">
                 <i class="far fa-xmark"></i>
             </button>
         </div>
@@ -186,6 +195,9 @@ function _buildAIPanelHTML(o) {
     <!-- Body -->
     <div class="ai-panel__body" id="ai-panel-body">
 
+        <div class="ai-panel__main-stack" id="ai-panel-main-stack">
+        <!-- Chat: capa inferior; el artifact se superpone visualmente -->
+        <div class="ai-panel__chat-shell" id="ai-panel-chat-shell">
         <!-- Contenedor con gradiente y border-radius (la "card" del chat) -->
         <div class="ai-panel__chat-container">
 
@@ -229,6 +241,12 @@ function _buildAIPanelHTML(o) {
             </div>
             <p class="ubits-ia-chat-thread__disclaimer ubits-body-xs-regular">${_aiEscape(disclaimer)}</p>
 
+        </div>
+        </div>
+
+        <div class="ai-panel__artifact-layer" id="ai-panel-artifact-layer" aria-hidden="true">
+            <div class="ai-panel__artifact-scroll" id="ai-panel-artifact-scroll"></div>
+        </div>
         </div>
     </div>
 
@@ -310,6 +328,11 @@ function _aiPanelBindEvents() {
     var closeBtn = _aiEl('ai-panel-close-btn');
     if (closeBtn) closeBtn.addEventListener('click', closeAIPanel);
 
+    var backBtn = _aiEl('ai-panel-hdr-back');
+    if (backBtn) backBtn.addEventListener('click', function () {
+        if (_aiPanel.artifactOpen) closeAIPanelArtifactView();
+    });
+
     // Enviar con botón
     var sendBtn = _aiEl('ai-panel-send');
     if (sendBtn) sendBtn.addEventListener('click', _aiPanelSend);
@@ -387,9 +410,15 @@ function _aiPanelBindEvents() {
         });
     }
 
-    // Escape cierra
+    // Escape: primero cierra la vista artifact; si no, cierra el panel
     document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape' && _aiPanel.open) closeAIPanel();
+        if (e.key !== 'Escape' || !_aiPanel.open) return;
+        if (_aiPanel.artifactOpen) {
+            e.preventDefault();
+            closeAIPanelArtifactView();
+            return;
+        }
+        closeAIPanel();
     });
 
     // Acciones en mensajes IA (delegación)
@@ -606,6 +635,7 @@ function openAIPanel() {
 }
 
 function closeAIPanel() {
+    if (_aiPanel.artifactOpen) closeAIPanelArtifactView();
     var panel = _aiEl('ai-panel');
     if (panel) panel.classList.remove('active');
     if (panel && panel.classList.contains('ai-panel--docked-desktop')) {
@@ -613,6 +643,66 @@ function closeAIPanel() {
     }
     _aiPanel.open = false;
     if (typeof _aiPanel.options.onClose === 'function') _aiPanel.options.onClose();
+}
+
+/**
+ * Superpone el contenido de un artifact (HTML del tutor / detalle) sobre el chat.
+ * @param {string} html - Markup a insertar en #ai-panel-artifact-scroll (p. ej. bloque .ubits-ia-chat-side__content).
+ * @param {Object} [opts]
+ * @param {string} [opts.title] - Título mostrado en la cabecera del panel mientras el artifact está abierto.
+ */
+function openAIPanelArtifactView(html, opts) {
+    if (!_aiPanel.inited) { console.warn('[AIPanel] Llama initAIPanel() primero.'); return; }
+    opts = opts || {};
+    var panel = _aiEl('ai-panel');
+    var layer = _aiEl('ai-panel-artifact-layer');
+    var scroll = _aiEl('ai-panel-artifact-scroll');
+    var titleEl = _aiEl('ai-panel-title');
+    if (!panel || !layer || !scroll) return;
+
+    if (!_aiPanel.artifactOpen && titleEl) {
+        _aiPanel.titleBeforeArtifact = titleEl.textContent || '';
+    }
+    scroll.innerHTML = html || '';
+    if (titleEl && opts.title != null && String(opts.title).length) {
+        titleEl.textContent = opts.title;
+    }
+    panel.classList.add('ai-panel--artifact-open');
+    layer.setAttribute('aria-hidden', 'false');
+    var chatShell = _aiEl('ai-panel-chat-shell');
+    if (chatShell) chatShell.setAttribute('aria-hidden', 'true');
+    _aiPanel.artifactOpen = true;
+    if (typeof opts.onAfterMount === 'function') {
+        try { opts.onAfterMount(scroll); } catch (e) {}
+    }
+}
+
+function _aiPanelRestoreArtifactOpenButtons() {
+    var messages = _aiEl('ai-panel-messages');
+    if (!messages) return;
+    var rows = messages.querySelectorAll('.ubits-ia-chat-artifact-row[data-artifact-shows-open="1"]');
+    for (var i = 0; i < rows.length; i++) {
+        rows[i].classList.add('open-btn-visible');
+    }
+}
+
+function closeAIPanelArtifactView() {
+    var panel = _aiEl('ai-panel');
+    var layer = _aiEl('ai-panel-artifact-layer');
+    var scroll = _aiEl('ai-panel-artifact-scroll');
+    var titleEl = _aiEl('ai-panel-title');
+    if (!panel) return;
+    panel.classList.remove('ai-panel--artifact-open');
+    if (layer) layer.setAttribute('aria-hidden', 'true');
+    var chatShell = _aiEl('ai-panel-chat-shell');
+    if (chatShell) chatShell.removeAttribute('aria-hidden');
+    if (scroll) scroll.innerHTML = '';
+    if (titleEl && _aiPanel.titleBeforeArtifact != null) {
+        titleEl.textContent = _aiPanel.titleBeforeArtifact;
+    }
+    _aiPanel.artifactOpen = false;
+    _aiPanel.titleBeforeArtifact = '';
+    _aiPanelRestoreArtifactOpenButtons();
 }
 
 function addAIPanelMessage(text, type, attachments, opts) {
@@ -760,7 +850,7 @@ function setAIPanelTokensBadgeValue(value) {
 //   'quick-reply'  — botones de respuesta rápida bajo el último mensaje IA
 //   'multiselect'  — chips seleccionables múltiples + botón «Listo»
 //   'cards'        — tarjetas con emoji, título y descripción (selección única)
-//   'artifacts'    — tarjetas tipo recurso generado (doc + CSS en ubits-ia-chat.css); API JS pendiente
+//   'artifacts'    — filas tipo recurso generado + Abrir; options.rows: [{ title, meta, iconClass, openButtonVisible, onOpen }]
 //   'bottom-sheet' — formulario conversacional que se superpone sobre el input
 //
 // options comunes:
@@ -771,6 +861,7 @@ function setAIPanelTokensBadgeValue(value) {
 //   multiselect:  { hint: '...', items: ['Figma', 'Sketch'], confirmLabel: 'Listo →' }
 //   cards:        { items: [{ emoji, title, description, value }] }
 //   bottom-sheet: { steps: [{ question, type: 'single'|'multi', options: [...], freeText? }] }
+//   artifacts:    { rows: [{ title, meta?, iconClass?, openButtonVisible?, onOpen(row, rowEl) }] }
 // ---------------------------------------------------------------------------
 
 function addAIPanelInteraction(type, options) {
@@ -789,6 +880,8 @@ function addAIPanelInteraction(type, options) {
         _aiPanelInteractionCards(options);
     } else if (type === 'bottom-sheet') {
         _aiPanelInteractionBottomSheet(options);
+    } else if (type === 'artifacts') {
+        _aiPanelInteractionArtifacts(options);
     }
 
     var scroll = _aiEl('ai-panel-scroll');
@@ -969,6 +1062,49 @@ function _aiPanelInteractionCards(opts) {
         });
 
         wrap.appendChild(card);
+    });
+
+    _aiPanelInjectInLastAiMsg(wrap);
+}
+
+/* ---- 3b. Artifact cards (recursos generados con Abrir) ---- */
+function _aiPanelInteractionArtifacts(opts) {
+    var rows = opts.rows || [];
+    if (!rows.length) return;
+
+    var wrap = document.createElement('div');
+    wrap.className = 'ubits-ia-chat-interaction ubits-ia-chat-interaction--artifacts';
+
+    rows.forEach(function (row) {
+        var openVisible = row.openButtonVisible !== false;
+        var rowEl = document.createElement('div');
+        rowEl.className = 'ubits-ia-chat-artifact-row' + (openVisible ? ' open-btn-visible' : '');
+        rowEl.setAttribute('data-artifact-shows-open', openVisible ? '1' : '0');
+
+        var iconClass = row.iconClass || row.icon || 'far fa-file-lines';
+        var title = row.title || 'Artifact';
+        var meta = row.meta || '';
+
+        rowEl.innerHTML =
+            '<div class="ubits-ia-chat-thread__resource-card">' +
+            '<div class="ubits-ia-chat-thread__resource-card-main">' +
+            '<span class="ubits-ia-chat-thread__resource-card-icon"><i class="' + _aiEscape(iconClass) + '"></i></span>' +
+            '<div class="ubits-ia-chat-thread__resource-card-content">' +
+            '<span class="ubits-ia-chat-thread__resource-card-title ubits-body-sm-bold">' + _aiEscape(title) + '</span>' +
+            (meta ? '<span class="ubits-ia-chat-thread__resource-card-meta ubits-body-xs-regular">' + _aiEscape(meta) + '</span>' : '') +
+            '</div></div>' +
+            '<div class="ubits-ia-chat-thread__resource-card-action ubits-ia-chat-thread__resource-open-wrap">' +
+            '<button type="button" class="ubits-button ubits-button--primary ubits-button--sm ubits-ia-chat-thread__resource-open-btn"><span>Abrir</span></button>' +
+            '</div></div>';
+
+        var openBtn = rowEl.querySelector('.ubits-ia-chat-thread__resource-open-btn');
+        if (openBtn) {
+            openBtn.addEventListener('click', function () {
+                if (typeof row.onOpen === 'function') row.onOpen(row, rowEl);
+                rowEl.classList.remove('open-btn-visible');
+            });
+        }
+        wrap.appendChild(rowEl);
     });
 
     _aiPanelInjectInLastAiMsg(wrap);
@@ -1290,4 +1426,6 @@ function destroyAIPanel() {
     _aiPanel.rootEl = null;
     _aiPanel.resizeHandler = null;
     _aiPanel.originalParent = null;
+    _aiPanel.artifactOpen = false;
+    _aiPanel.titleBeforeArtifact = '';
 }

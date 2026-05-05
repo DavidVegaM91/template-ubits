@@ -179,6 +179,33 @@ body.ai-panel-resizing .ai-panel {
     z-index: 1;
 }
 
+/* Sparkles + botón Atrás (vista artifact) */
+.ai-panel__hdr-leading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    position: relative;
+}
+
+.ai-panel__hdr-back {
+    display: none;
+}
+
+.ai-panel--artifact-open .ai-panel__hdr-brand {
+    display: none;
+}
+
+.ai-panel--artifact-open .ai-panel__hdr-back {
+    display: inline-flex;
+}
+
+.ai-panel--artifact-open .ai-panel__header-actions {
+    display: none;
+}
+
 /* Ícono del agente */
 .ai-panel__icon {
     display: flex;
@@ -263,29 +290,6 @@ body.ai-panel-resizing .ai-panel {
     flex-shrink: 0;
 }
 
-.ai-panel__hdr-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 32px;
-    height: 32px;
-    background: transparent;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: background 0.15s ease;
-    color: var(--ubits-fg-1-medium);
-}
-
-.ai-panel__hdr-btn:hover {
-    background: var(--ubits-bg-2);
-}
-
-.ai-panel__hdr-btn i {
-    font-size: 14px;
-    color: var(--ubits-fg-1-medium);
-}
-
 /* ---------------------------------------------------------------------------
    Cuerpo — zona exterior (sin gradiente, solo padding para la card)
    --------------------------------------------------------------------------- */
@@ -304,6 +308,79 @@ body.ai-panel-resizing .ai-panel {
     /* Incluye hilo + bottom sheet (hermano del chat-container) para @container al mismo ancho útil */
     container-type: inline-size;
     container-name: ai-panel-chat;
+}
+
+/* Pila chat + capa superpuesta de detalle (artifact) */
+.ai-panel__main-stack {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    width: 100%;
+}
+
+.ai-panel__chat-shell {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.ai-panel__artifact-layer {
+    display: none;
+    flex-direction: column;
+    position: absolute;
+    inset: 0;
+    z-index: 5;
+    background: transparent;
+    min-height: 0;
+    border-radius: var(--border-radius-lg);
+}
+
+.ai-panel--artifact-open .ai-panel__artifact-layer {
+    display: flex;
+}
+
+/* Sin poner fondo opaco sobre el quiz: el hilo e input dejan de pintarse/interactuarse mientras el artifact está abierto */
+.ai-panel--artifact-open .ai-panel__chat-shell {
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.ai-panel__artifact-scroll {
+    flex: 1 1 0;
+    min-height: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    display: flex;
+    flex-direction: column;
+}
+
+.ai-panel__artifact-scroll > .ubits-ia-chat-side__content {
+    flex: 1 1 0;
+    min-height: 0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Quiz / flashcards en el panel: sin lienzo bg-1 (se ve la card del chat debajo) */
+.ai-panel__artifact-scroll .ai-panel-artifact-tutor.ubits-ia-chat-side__content,
+.ai-panel__artifact-scroll .ai-panel-artifact-tutor .ubits-ia-chat-side__body,
+.ai-panel__artifact-scroll .ai-panel-artifact-tutor .ubits-ia-chat-side__footer {
+    background: transparent !important;
+}
+
+.ai-panel__artifact-scroll .ai-panel-artifact-tutor .ubits-ia-chat-side__fc-back {
+    background: var(--ubits-bg-2) !important;
+}
+
+.ubits-ia-chat-side__artifact-back-hint {
+    margin-top: var(--gap-md);
+    color: var(--ubits-fg-1-medium);
 }
 
 /* ---------------------------------------------------------------------------

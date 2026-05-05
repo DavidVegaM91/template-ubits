@@ -19,6 +19,8 @@
     <link rel="stylesheet" href="../../components/badge-tag.css">
     <link rel="stylesheet" href="../../components/tooltip.css">
     <link rel="stylesheet" href="../../general-styles/ubits-ia-chat.css">
+    <link rel="stylesheet" href="../../ubits-colaborador/aprendizaje/modo-estudio-ia-tutor-panel.css">
+    <link rel="stylesheet" href="../../components/radio-button.css">
     <link rel="stylesheet" href="../../components/ai-panel.css">
     <link rel="stylesheet" href="../../docs/docs-sidebar.css">
     <link rel="stylesheet" href="../../docs/docstyles.css">
@@ -185,7 +187,7 @@
                                 </div>
                                 <div style="padding: var(--padding-lg);">
                                     <p class="ubits-body-sm-regular" style="margin: 0 0 var(--gap-md); color: var(--ubits-fg-1-medium);">
-                                        Patrón transversal con nombre de industria «artifact»: una o más filas con el mismo cromo que la tarjeta de recurso del hilo en Modo estudio IA. La clase <code style="font-family: monospace;">open-btn-visible</code> en la fila (<code style="font-family: monospace;">.ubits-ia-chat-artifact-row</code>) muestra el botón <strong>Abrir</strong>; al abrir el panel lateral de detalle, el producto debe quitar esa clase (igual que con <code style="font-family: monospace;">.ubits-ia-chat-thread__resource-msg</code>). La API <code style="font-family: monospace;">addAIPanelInteraction('artifacts', …)</code> está pendiente de tu revisión antes de homologar el markup en todas las experiencias.
+                                        Patrón transversal con nombre de industria «artifact»: una o más filas con el mismo cromo que la tarjeta de recurso del hilo en Modo estudio IA. La clase <code style="font-family: monospace;">open-btn-visible</code> en la fila (<code style="font-family: monospace;">.ubits-ia-chat-artifact-row</code>) muestra el botón <strong>Abrir</strong>; al abrir el detalle en el propio AI panel, quita esa clase en la fila. El contenido del detalle se muestra con <code style="font-family: monospace;">openAIPanelArtifactView(html, { title, onAfterMount })</code>: la cabecera del panel pasa a botón <strong>Atrás</strong> (terciario) y oculta tokens y cierre; <strong>Atrás</strong> o Escape vuelven al chat. Para quiz/flashcards de demo (datos alineados con Modo estudio IA) usa <code style="font-family: monospace;">components/ai-panel-artifact-content.js</code> y los estilos del tutor (<code style="font-family: monospace;">modo-estudio-ia-tutor-panel.css</code> + <code style="font-family: monospace;">radio-button.css</code>).
                                     </p>
                                     <div style="background: var(--ubits-bg-2); padding: var(--padding-lg); border-radius: var(--border-radius-sm); margin-bottom: var(--gap-md);">
                                         <div class="ubits-ia-chat-interaction ubits-ia-chat-interaction--artifacts" style="pointer-events: none;">
@@ -219,7 +221,11 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <p class="ubits-body-sm-regular" style="margin: 0; color: var(--ubits-fg-1-medium);">La segunda fila del ejemplo no lleva <code style="font-family: monospace;">open-btn-visible</code> (simula panel ya abierto: sin botón Abrir visible).</p>
+                                    <p class="ubits-body-sm-regular" style="margin: 0 0 var(--gap-md); color: var(--ubits-fg-1-medium);">La segunda fila del ejemplo no lleva <code style="font-family: monospace;">open-btn-visible</code> (simula detalle ya abierto: sin botón Abrir visible).</p>
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="ai-panel-doc-btn-artifacts">
+                                        <i class="far fa-play"></i>
+                                        <span>Probar en el panel</span>
+                                    </button>
                                 </div>
                             </div>
 
@@ -374,7 +380,8 @@
                                         <li><code style="font-family: monospace;">initAIPanel(options)</code> — inicializa e inyecta el panel (una sola vez).</li>
                                         <li><code style="font-family: monospace;">openAIPanel()</code> / <code style="font-family: monospace;">closeAIPanel()</code></li>
                                         <li><code style="font-family: monospace;">addAIPanelMessage(text, type[, attachments])</code> — <code style="font-family: monospace;">type</code>: <code style="font-family: monospace;">'user'</code> | <code style="font-family: monospace;">'ai'</code>. Tras enviar desde el input, el panel ya inserta el mensaje del usuario; en <code style="font-family: monospace;">onSend(text)</code> no hace falta (ni conviene) volver a añadirlo salvo un flujo muy custom.</li>
-                                        <li><code style="font-family: monospace;">addAIPanelInteraction(type, options)</code> — inserta un bloque de interacción conversacional. <code style="font-family: monospace;">type</code>: <code style="font-family: monospace;">'quick-reply'</code> | <code style="font-family: monospace;">'multiselect'</code> | <code style="font-family: monospace;">'cards'</code> | <code style="font-family: monospace;">'bottom-sheet'</code>. <code style="font-family: monospace;">'artifacts'</code> (tarjetas generadas con botón Abrir) está especificado en la misma hoja de estilos y en el preview de esta página; la implementación JS en el panel se añadirá tras validación de producto.</li>
+                                        <li><code style="font-family: monospace;">addAIPanelInteraction(type, options)</code> — inserta un bloque de interacción conversacional. <code style="font-family: monospace;">type</code>: <code style="font-family: monospace;">'quick-reply'</code> | <code style="font-family: monospace;">'multiselect'</code> | <code style="font-family: monospace;">'cards'</code> | <code style="font-family: monospace;">'bottom-sheet'</code> | <code style="font-family: monospace;">'artifacts'</code>. Para artifacts: <code style="font-family: monospace;">options.rows</code> es un array de <code style="font-family: monospace;">{ title, meta?, iconClass?, openButtonVisible?, onOpen(row, rowEl) }</code>; al pulsar Abrir se llama <code style="font-family: monospace;">onOpen</code> (p. ej. montar HTML y <code style="font-family: monospace;">openAIPanelArtifactView</code>).</li>
+                                        <li><code style="font-family: monospace;">openAIPanelArtifactView(html, opts?)</code> / <code style="font-family: monospace;">closeAIPanelArtifactView()</code> — vista de detalle superpuesta; <code style="font-family: monospace;">opts.title</code>, <code style="font-family: monospace;">opts.onAfterMount(scrollEl)</code>.</li>
                                         <li><code style="font-family: monospace;">showAIPanelTyping()</code> — devuelve <code style="font-family: monospace;">removeTyping</code> (usa <code style="font-family: monospace;">ia-chat-streaming.js</code>).</li>
                                         <li><code style="font-family: monospace;">clearAIPanelMessages()</code>, <code style="font-family: monospace;">setAIPanelTitle(title)</code>, <code style="font-family: monospace;">setAIPanelTokensBadgeValue(n)</code>, <code style="font-family: monospace;">destroyAIPanel()</code></li>
                                     </ul>
@@ -407,10 +414,15 @@ dockDesktop, dockContainerSelector, dockBreakpoint</code></pre>
 &lt;link rel="stylesheet" href="[ruta]/components/badge-tag.css"&gt;
 &lt;link rel="stylesheet" href="[ruta]/components/tooltip.css"&gt;
 &lt;link rel="stylesheet" href="[ruta]/general-styles/ubits-ia-chat.css"&gt;
+&lt;!-- Si el artifact usa quiz/flashcards del tutor: --&gt;
+&lt;link rel="stylesheet" href="[ruta]/ubits-colaborador/aprendizaje/modo-estudio-ia-tutor-panel.css"&gt;
+&lt;link rel="stylesheet" href="[ruta]/components/radio-button.css"&gt;
 &lt;link rel="stylesheet" href="[ruta]/components/ai-panel.css"&gt;
 &lt;script src="[ruta]/components/ia-chat-streaming.js"&gt;&lt;/script&gt;
 &lt;script src="[ruta]/components/tooltip.js"&gt;&lt;/script&gt;
-&lt;script src="[ruta]/components/ai-panel.js"&gt;&lt;/script&gt;</code></pre>
+&lt;script src="[ruta]/components/ai-panel.js"&gt;&lt;/script&gt;
+&lt;!-- Opcional: HTML/bind demo quiz y flashcards (Modo estudio IA) --&gt;
+&lt;script src="[ruta]/components/ai-panel-artifact-content.js"&gt;&lt;/script&gt;</code></pre>
                                     </div>
                                 </div>
                                 <div style="padding: 32px;">
@@ -438,6 +450,7 @@ dockDesktop, dockContainerSelector, dockBreakpoint</code></pre>
     <script src="../../components/ia-chat-streaming.js"></script>
     <script src="../../components/tooltip.js"></script>
     <script src="../../components/ai-panel.js"></script>
+    <script src="../../components/ai-panel-artifact-content.js"></script>
     <script src="../../docs/docs-sidebar.js"></script>
     <script>
         function toggleTechnicalDocs() {
@@ -583,6 +596,46 @@ dockDesktop, dockContainerSelector, dockBreakpoint</code></pre>
                                     addAIPanelMessage('Entendido. Te voy a recomendar contenidos orientados a «' + label + '».', 'ai');
                                 }, 400);
                             }
+                        });
+                    }
+                });
+            }
+
+            var btnArtifacts = document.getElementById('ai-panel-doc-btn-artifacts');
+            if (btnArtifacts) {
+                btnArtifacts.addEventListener('click', function () {
+                    ensureAIPanelDocDemo();
+                    if (typeof openAIPanel === 'function') openAIPanel();
+                    if (typeof clearAIPanelMessages === 'function') clearAIPanelMessages();
+                    if (typeof addAIPanelMessage === 'function') {
+                        addAIPanelMessage('Aquí tienes un quiz y unas flashcards generadas (misma base que en Modo estudio IA). Abre cada artifact con el botón correspondiente.', 'ai');
+                    }
+                    if (typeof addAIPanelInteraction === 'function') {
+                        addAIPanelInteraction('artifacts', {
+                            rows: [
+                                {
+                                    title: 'Quiz · Liderazgo',
+                                    meta: '5 preguntas',
+                                    iconClass: 'far fa-circle-question',
+                                    openButtonVisible: true,
+                                    onOpen: function () {
+                                        if (window.UbitsAIPanelArtifactContent && typeof window.UbitsAIPanelArtifactContent.openQuizDemo === 'function') {
+                                            window.UbitsAIPanelArtifactContent.openQuizDemo();
+                                        }
+                                    }
+                                },
+                                {
+                                    title: 'Flashcards · Comunicación',
+                                    meta: '5 tarjetas',
+                                    iconClass: 'far fa-bring-forward',
+                                    openButtonVisible: true,
+                                    onOpen: function () {
+                                        if (window.UbitsAIPanelArtifactContent && typeof window.UbitsAIPanelArtifactContent.openFlashcardsDemo === 'function') {
+                                            window.UbitsAIPanelArtifactContent.openFlashcardsDemo();
+                                        }
+                                    }
+                                }
+                            ]
                         });
                     }
                 });
