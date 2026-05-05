@@ -292,6 +292,8 @@ body.ai-panel-resizing .ai-panel {
 .ai-panel__body {
     flex: 1;
     min-height: 0;
+    min-width: 0;
+    width: 100%;
     display: flex;
     flex-direction: column;
     /* Sin padding horizontal extra: el hilo ya aplica --padding-xl en input-area y disclaimer */
@@ -299,6 +301,9 @@ body.ai-panel-resizing .ai-panel {
     background: transparent;
     position: relative;
     z-index: 1;
+    /* Incluye hilo + bottom sheet (hermano del chat-container) para @container al mismo ancho útil */
+    container-type: inline-size;
+    container-name: ai-panel-chat;
 }
 
 /* ---------------------------------------------------------------------------
@@ -442,6 +447,55 @@ body.ai-panel-resizing .ai-panel {
     padding: var(--padding-none) !important;
     width: 100%;
     max-width: 85%;
+}
+
+/* Panel ≤640px de ancho útil: burbuja IA, interacciones (quick reply, chips, cards) y bottom sheet */
+@container ai-panel-chat (max-width: 640px) {
+    .ai-panel__msg--ai .ai-panel__msg-bubble {
+        max-width: 100%;
+    }
+
+    .ai-panel__msg--ai .ubits-ia-chat-interaction {
+        max-width: 100%;
+        width: 100%;
+        align-self: stretch;
+    }
+
+    /* Quick reply: una columna a ancho completo (evita filas muy angostas) */
+    .ai-panel__msg--ai .ubits-ia-chat-interaction--quick-reply {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .ai-panel__msg--ai .ubits-ia-chat-interaction--quick-reply > .ubits-button {
+        width: 100%;
+        justify-content: center;
+    }
+
+    /* Cards: cada tarjeta ocupa el ancho útil */
+    .ai-panel__msg--ai .ubits-ia-chat-interaction--cards .ubits-ia-chat-card {
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+    }
+
+    /* Bottom sheet: mismo ancho que el cuerpo del panel; cabecera puede envolver */
+    .ai-panel__body > .ubits-ia-chat-bottom-sheet {
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+        left: 0;
+        right: 0;
+    }
+
+    .ai-panel__body .ubits-ia-chat-bottom-sheet__header {
+        flex-wrap: wrap;
+        row-gap: var(--gap-sm);
+    }
+
+    .ai-panel__body .ubits-ia-chat-bottom-sheet__question {
+        min-width: 0;
+    }
 }
 
 /* HTML personalizado (p. ej. imagen + acciones) — sin forzar pre-wrap en hijos */

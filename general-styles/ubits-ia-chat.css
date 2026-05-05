@@ -95,6 +95,9 @@
     /* Permitir que flexbox funcione correctamente */
     flex: 1 1 0;
     /* Ocupar todo el espacio disponible */
+    /* Ancho del hilo para @container: burbujas IA al 100% cuando la columna es estrecha */
+    container-type: inline-size;
+    container-name: ubits-ia-chat-thread;
 }
 
 /* Encabezado del chat: igual que historial y canvas (texto izquierda, botones derecha).
@@ -453,25 +456,67 @@
     position: relative;
 }
 
-/* Mensaje de IA - ancho máximo */
+/* Mensaje de IA — ancho acotado en columnas amplias; en hilo estrecho / móvil ver @container abajo */
 .ubits-ia-chat-thread__text-globe--ai {
     max-width: 85%;
     width: 100%;
+    background: var(--ubits-bg-2);
+    color: var(--ubits-fg-1-high);
+    border-radius: var(--border-radius-sm);
+    border-bottom-left-radius: 0;
+    /* Sin radius en esquina inferior izquierda */
+}
+
+/* Columna de chat ≤640px: burbuja IA, interacciones y bottom sheet al ancho útil */
+@container ubits-ia-chat-thread (max-width: 640px) {
+    .ubits-ia-chat-thread__text-globe--ai {
+        max-width: 100%;
+    }
+
+    .ubits-ia-chat-thread__message--ai .ubits-ia-chat-interaction {
+        max-width: 100%;
+        width: 100%;
+        align-self: stretch;
+    }
+
+    .ubits-ia-chat-thread__message--ai .ubits-ia-chat-interaction--quick-reply {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .ubits-ia-chat-thread__message--ai .ubits-ia-chat-interaction--quick-reply > .ubits-button {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .ubits-ia-chat-thread__message--ai .ubits-ia-chat-interaction--cards .ubits-ia-chat-card {
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+    }
+
+    .ubits-ia-chat-thread .ubits-ia-chat-bottom-sheet {
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+        left: 0;
+        right: 0;
+    }
+
+    .ubits-ia-chat-thread .ubits-ia-chat-bottom-sheet__header {
+        flex-wrap: wrap;
+        row-gap: var(--gap-sm);
+    }
+
+    .ubits-ia-chat-thread .ubits-ia-chat-bottom-sheet__question {
+        min-width: 0;
+    }
 }
 
 /* Mensaje de usuario - abrazar contenido */
 .ubits-ia-chat-thread__text-globe--user {
     max-width: 85%;
     width: auto;
-}
-
-/* Mensaje de IA */
-.ubits-ia-chat-thread__text-globe--ai {
-    background: var(--ubits-bg-2);
-    color: var(--ubits-fg-1-high);
-    border-radius: var(--border-radius-sm);
-    border-bottom-left-radius: 0;
-    /* Sin radius en esquina inferior izquierda */
 }
 
 /* Mensaje de usuario: fondo activo de marca; texto alineado al globo IA (--ubits-fg-1-high) */
@@ -2069,8 +2114,14 @@ body.ia-chat-mobile-drawer-scroll-lock {
     opacity: 0.55;
 }
 
-/* Dentro de un mensaje IA del ai-panel: heredar el ancho del mensaje */
+/* Dentro de un mensaje IA del ai-panel: misma acotación que la burbuja (ver @container en ai-panel.css) */
 .ai-panel__msg--ai .ubits-ia-chat-interaction {
+    max-width: 85%;
+    margin-top: var(--gap-sm);
+}
+
+/* Hilo estudio / chat: misma acotación en columnas anchas */
+.ubits-ia-chat-thread__message--ai .ubits-ia-chat-interaction {
     max-width: 85%;
     margin-top: var(--gap-sm);
 }
@@ -2224,8 +2275,9 @@ body.ia-chat-mobile-drawer-scroll-lock {
 
 .ubits-ia-chat-card__title {
     font-family: var(--ubits-font-family-sans);
-    font-size: var(--font-size-md);
+    font-size: var(--font-size-sm);
     font-weight: var(--font-weight-semibold);
+    line-height: 19.5px;
     color: var(--ubits-fg-1-high);
     margin: 0;
 }
