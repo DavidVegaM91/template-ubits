@@ -385,7 +385,7 @@
                                     ' title="Vista previa de ' + esc(av.name) + '">' +
                                 '</iframe>' +
                             '</div>' +
-                            '<p class="ubits-body-xs-regular cc-via-preview-hint">Vista previa representativa. El video final usará tu guion y la voz del avatar.</p>' +
+                            '<p class="ubits-body-xs-regular cc-via-preview-hint">Vista previa representativa. El video final usará tu guion</p>' +
                             '<button type="button" class="ubits-button ubits-button--primary ubits-button--md" id="cc-via-btn-siguiente">' +
                                 '<span>Siguiente</span>' +
                             '</button>' +
@@ -904,7 +904,9 @@
             modalBody.style.overflow = 'auto';
             modalBody.style.display = 'flex';
             modalBody.style.flexDirection = 'column';
-            modalBody.style.maxHeight = 'calc(90vh - 72px)';
+            /* max-height y flex: en video-recurso-modal.css (evita modal estirado casi a 90vh por flex:1) */
+            modalBody.style.maxHeight = '';
+            modalBody.style.flex = '';
         }
 
         /* Badge de tokens a la izquierda del botón cerrar */

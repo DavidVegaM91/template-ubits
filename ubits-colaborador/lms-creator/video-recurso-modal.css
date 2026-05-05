@@ -9,17 +9,152 @@
 }
 
 /*
- * Misma clase que portada IA (crear-contenido.css fuerza min-height 508px en desktop).
- * Aquí lo anulamos: el modal de video debe ceñirse al contenido y no verse «enorme».
+ * Comparte chrome IA con portada (.portada-ia-modal-content → 508px min en desktop en crear-contenido.css).
+ * Aquí anulamos ese min-height en todas las resoluciones: el modal de video debe ceñirse al contenido
+ * (max 90vh); forzar 508px lo dejaba visualmente muy alto para pestañas Enlace / Subir y pasos IA.
  */
 #cc-video-recurso-modal .ubits-modal-content.cc-video-ia-modal-content.portada-ia-modal-content {
     min-height: 0 !important;
-    max-height: 90vh;
+    max-height: 92vh;
+    height: auto;
+    align-self: center;
 }
 
-/* Paneles: compactos, sin líneas divisoras extra */
+/*
+ * El modal UBITS pone flex:1 en .ubits-modal-body: aquí limitamos alto y evitamos scroll en el
+ * cuerpo completo; el paso 2 (guion) y la rejilla de avatares llevan scroll propio.
+ */
+#cc-video-recurso-modal .ubits-modal-body {
+    flex: 0 1 auto !important;
+    max-height: min(82vh, calc(92vh - 56px));
+    overflow-x: hidden;
+    overflow-y: hidden;
+    display: flex;
+    flex-direction: column;
+    padding: var(--padding-xl);
+    min-height: 0;
+}
+
+#cc-video-recurso-modal .cc-vmodal {
+    flex: 0 1 auto;
+    overflow: hidden;
+    min-height: 0;
+    max-height: 100%;
+}
+
 #cc-video-recurso-modal .cc-vmodal-panel {
-    padding: var(--padding-lg);
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Paso 1: sin scroll en el step; solo la rejilla de avatares */
+#cc-video-recurso-modal #cc-via-step1 {
+    flex: 0 1 auto;
+    min-height: 0;
+    overflow: hidden;
+}
+
+/* Paso 2: si no cabe, scroll aquí (no en .ubits-modal-body) */
+#cc-video-recurso-modal #cc-via-step2 {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+#cc-video-recurso-modal .cc-via-step {
+    flex: 0 1 auto;
+}
+
+#cc-video-recurso-modal .cc-vmodal-enlace-layout,
+#cc-video-recurso-modal .cc-vmodal-subir-layout {
+    flex: 0 1 auto;
+}
+
+#cc-video-recurso-modal .cc-via-guion-layout {
+    flex: 1 1 auto;
+    min-height: 0;
+}
+
+#cc-video-recurso-modal .cc-via-guion-textarea {
+    min-height: 120px;
+    max-height: 240px;
+}
+
+/*
+ * Desktop: dos columnas misma altura; scroll solo en .cc-via-avatar-grid (columna izquierda).
+ */
+@media (min-width: 701px) {
+    #cc-video-recurso-modal .cc-via-avatar-layout {
+        /* Iframe 16:9 + hint + botón primario; ~320px recortaba el CTA */
+        height: min(440px, 54vh);
+        max-height: min(440px, 54vh);
+        min-height: 0;
+        overflow: hidden;
+        align-items: stretch;
+    }
+
+    #cc-video-recurso-modal .cc-via-avatar-left,
+    #cc-video-recurso-modal .cc-via-avatar-right {
+        min-height: 0;
+        height: 100%;
+        max-height: 100%;
+        overflow: hidden;
+        align-self: stretch;
+    }
+
+    #cc-video-recurso-modal .cc-via-avatar-left {
+        display: flex;
+        flex-direction: column;
+    }
+
+    #cc-video-recurso-modal .cc-via-preview-column {
+        flex: 1;
+        min-height: 0;
+        max-height: 100%;
+        overflow-x: hidden;
+        overflow-y: auto;
+        justify-content: flex-start;
+    }
+
+    /* Que no compriman el hint ni el CTA si el embed pide más alto */
+    #cc-video-recurso-modal .cc-via-preview-hint,
+    #cc-video-recurso-modal .cc-via-preview-column > .ubits-button {
+        flex-shrink: 0;
+    }
+
+    #cc-video-recurso-modal .cc-via-avatar-grid {
+        flex: 1 1 0;
+        min-height: 0;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+}
+
+@media (max-width: 700px) {
+    #cc-video-recurso-modal .cc-via-avatar-layout {
+        height: auto;
+        max-height: none;
+        overflow: visible;
+        align-items: stretch;
+    }
+
+    #cc-video-recurso-modal .cc-via-avatar-left {
+        display: flex;
+        flex-direction: column;
+        min-height: 0;
+        max-height: min(320px, 55vh);
+        overflow: hidden;
+    }
+
+    #cc-video-recurso-modal .cc-via-avatar-grid {
+        flex: 1 1 auto;
+        min-height: 0;
+        overflow-y: auto;
+    }
 }
 
 /* ─────────────────────────────────────────
@@ -52,7 +187,7 @@
    PANELES DE PESTAÑA
    ───────────────────────────────────────── */
 .cc-vmodal-panel {
-    padding: var(--padding-xl);
+    padding: 0;
     display: flex;
     flex-direction: column;
     gap: var(--gap-lg);
@@ -526,17 +661,3 @@
     font-size: 10px;
 }
 
-/* Cuerpo: scroll interno, mismo padding que portada IA (applyAiModalChrome también lo pone por JS) */
-#cc-video-recurso-modal .ubits-modal-body {
-    overflow: auto;
-    display: flex;
-    flex-direction: column;
-    padding: var(--padding-xl);
-    flex: 1;
-    min-height: 0;
-    max-height: calc(90vh - 72px);
-}
-
-#cc-video-recurso-modal .cc-vmodal-panel {
-    overflow-y: auto;
-}
