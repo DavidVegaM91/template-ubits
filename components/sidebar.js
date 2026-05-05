@@ -734,10 +734,10 @@ function buildSidebarAvatarSubmenuOptions(variant, basePath) {
     });
 
     if (variant === 'admin') {
-        options.push({ text: 'Modo Colaborador', value: basePath + 'ubits-colaborador/perfil/profile.html', leftIcon: 'user-gear' });
+        options.push({ text: 'Modo Colaborador', value: basePath + 'ubits-colaborador/aprendizaje/home-learn.html', leftIcon: 'user-gear' });
         options.push({ text: 'Modo LMS Creator', value: basePath + 'ubits-colaborador/lms-creator/contenidos.html', leftIcon: 'bolt' });
     } else if (variant === 'creator') {
-        options.push({ text: 'Modo Colaborador', value: basePath + 'ubits-colaborador/perfil/profile.html', leftIcon: 'user-gear' });
+        options.push({ text: 'Modo Colaborador', value: basePath + 'ubits-colaborador/aprendizaje/home-learn.html', leftIcon: 'user-gear' });
         options.push({ text: 'Modo Administrador', value: basePath + 'ubits-admin/inicio/admin.html', leftIcon: 'laptop' });
     } else {
         options.push({ text: 'Modo Administrador', value: basePath + 'ubits-admin/inicio/admin.html', leftIcon: 'laptop' });

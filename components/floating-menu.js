@@ -264,10 +264,10 @@ function getFloatingProfileMenuHTML(variant) {
     parts.push(rowLink('fp-ver-perfil', 'Ver mi perfil', 'far fa-user', base + 'ubits-colaborador/perfil/profile.html', ''));
 
     if (variant === 'admin') {
-        parts.push(rowLink('fp-modo-colab', 'Modo Colaborador', 'far fa-user-gear', base + 'ubits-colaborador/perfil/profile.html', ''));
+        parts.push(rowLink('fp-modo-colab', 'Modo Colaborador', 'far fa-user-gear', base + 'ubits-colaborador/aprendizaje/home-learn.html', ''));
         parts.push(rowLink('fp-modo-creator', 'Modo LMS Creator', 'far fa-bolt', base + 'ubits-colaborador/lms-creator/contenidos.html', ''));
     } else if (variant === 'creator') {
-        parts.push(rowLink('fp-modo-colab', 'Modo Colaborador', 'far fa-user-gear', base + 'ubits-colaborador/perfil/profile.html', ''));
+        parts.push(rowLink('fp-modo-colab', 'Modo Colaborador', 'far fa-user-gear', base + 'ubits-colaborador/aprendizaje/home-learn.html', ''));
         parts.push(rowLink('fp-modo-admin', 'Modo Administrador', 'far fa-laptop', base + 'ubits-admin/inicio/admin.html', ''));
     } else {
         parts.push(rowLink('fp-modo-admin', 'Modo Administrador', 'far fa-laptop', base + 'ubits-admin/inicio/admin.html', ''));
