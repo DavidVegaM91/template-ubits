@@ -943,6 +943,7 @@ window.SCENARIOS = [
         employeeText: "De acuerdo. Mañana mismo hablo con RRHH y presento mi renuncia. Espero que encuentre a alguien que encaje con su estilo.",
         options: [],
         isEnd: true,
+        isRenuncia: true,
       },
       "2_evit": { employeeText: "Voy bien, un poco estresado. Si no hay nada urgente, vuelvo a mi mesa.", options: [{ text: "Es urgente hablar de los reportes. Hablemos ahora.", nextNodeId: "2", assertiveness: 9, cooperation: 6 }, { text: "Vale, ánimo.", nextNodeId: "4", assertiveness: 0, cooperation: 5 }] },
       "3_comp": { employeeText: "Dudo que la velocidad arregle el diseño, pero usted es el jefe.", options: [{ text: "Exacto, confío en tu criterio pero con rapidez.", nextNodeId: "4", assertiveness: 8, cooperation: 5 }] },
@@ -1004,6 +1005,7 @@ window.SCENARIOS = [
         employeeText: "Creía que lo habíamos resuelto... pero si así me ves después de cuatro años aquí, quizás sea mejor que busque otro equipo.",
         options: [],
         isEnd: true,
+        isRenuncia: true,
       },
       "2_def": {
         employeeText: "Genial, ahora soy el monstruo porque me importa la calidad.",
@@ -1091,6 +1093,7 @@ window.SCENARIOS = [
         employeeText: "De acuerdo. Pediré la baja indefinida hoy mismo. O puede despedirme directamente, como prefiera.",
         options: [],
         isEnd: true,
+        isRenuncia: true,
       },
       "4": { id: "4", employeeText: "Gracias por entenderlo. Haré lo posible por no defraudar al equipo.", options: [], isEnd: true },
     },
@@ -1247,8 +1250,9 @@ class SimulatorApp {
     if (nextNode) {
       this.state.history.push({ sender: 'employee', text: nextNode.employeeText });
       this.state.currentNodeId = option.nextNodeId;
+      if (nextNode.isRenuncia) this.state.endedInRenuncia = true;
     }
-    
+
     this.updateSimulatorUI();
   }
 
@@ -1303,7 +1307,12 @@ class SimulatorApp {
     const maxPoints = scores.turns * 10;
     const nAssert = (scores.assertiveness / maxPoints) * 100;
     const nCoop = (scores.cooperation / maxPoints) * 100;
-    const globalScore = Math.round((nAssert + nCoop) / 2);
+
+    // Cooperación pesa 70%, asertividad 30% — ser solo agresivo no compensa
+    let globalScore = Math.round(nAssert * 0.3 + nCoop * 0.7);
+
+    // Penalización dura si el colaborador renunció
+    if (this.state.endedInRenuncia) globalScore = Math.min(globalScore, 25);
 
     let style = "Compromiso";
     if (nAssert >= 75 && nCoop >= 75) style = "Colaborador";
@@ -1311,12 +1320,20 @@ class SimulatorApp {
     else if (nAssert < 50 && nCoop >= 75) style = "Acomodador";
     else if (nAssert < 50 && nCoop < 50) style = "Evitativo";
 
+    const renunciaActive = this.state.endedInRenuncia;
+
     return {
       score: globalScore,
-      style: style,
-      strengths: nAssert > 70 ? ["Manejo de asertividad", "Claridad de objetivos"] : ["Empatía básica"],
-      improvements: nCoop < 70 ? ["Escucha activa insuficiente", "Enfoque punitivo"] : ["Firmeza directiva"],
-      summary: `Resolución final con éxito. Tu estilo es ${style}.`
+      style: renunciaActive ? "Destructivo" : style,
+      strengths: renunciaActive
+        ? ["Claridad en tus expectativas"]
+        : (nAssert > 70 ? ["Manejo de asertividad", "Claridad de objetivos"] : ["Empatía básica"]),
+      improvements: renunciaActive
+        ? ["La conversación terminó en renuncia", "Falta de escucha activa", "Tono que generó conflicto sin retorno"]
+        : (nCoop < 70 ? ["Escucha activa insuficiente", "Enfoque punitivo"] : ["Firmeza directiva"]),
+      summary: renunciaActive
+        ? `Tu estilo ${style} escaló el conflicto hasta perder al colaborador. Una conversación difícil bien manejada nunca debería terminar así.`
+        : `Resolución con éxito. Tu estilo es ${style}.`
     };
   }
 }
