@@ -1114,7 +1114,8 @@ class SimulatorApp {
       selectedScenario: null,
       currentNodeId: '1',
       scores: { assertiveness: 0, cooperation: 0, turns: 0 },
-      history: []
+      history: [],
+      endedInRenuncia: false
     };
 
     this.init();
@@ -1182,6 +1183,7 @@ class SimulatorApp {
     this.state.selectedScenario = scenario;
     this.state.currentNodeId = scenario.initialNodeId;
     this.state.scores = { assertiveness: 0, cooperation: 0, turns: 0 };
+    this.state.endedInRenuncia = false;
     this.state.history = [{ sender: 'employee', text: scenario.nodes[scenario.initialNodeId].employeeText }];
     
     // Header update for scenario
