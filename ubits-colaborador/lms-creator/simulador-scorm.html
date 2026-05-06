@@ -393,8 +393,8 @@ header h1 span {
   text-transform: uppercase;
   font-size: 10px;
   letter-spacing: 0.1em;
-  display: block;
-  margin-bottom: 6px;
+  display: inline;
+  margin-bottom: 0;
   font-style: normal;
 }
 
@@ -734,7 +734,6 @@ header h1 span {
     </header>
     <main id="intro-view" class="view active">
       <div class="welcome-header">
-        <div class="welcome-eyebrow">Entrenamiento de Liderazgo</div>
         <h2>Conversaciones <em>difíciles</em></h2>
         <p>Practica cómo manejar situaciones complejas con tu equipo y potencia tu comunicación directiva.</p>
       </div>
@@ -926,7 +925,25 @@ window.SCENARIOS = [
           },
         ],
       },
-      "2_comp": { employeeText: "¡Me cansa que solo vean los números y no el esfuerzo! Estoy haciendo lo que puedo.", options: [{ text: "Lamento que te sientas así, busquemos una solución juntos.", nextNodeId: "3", assertiveness: 7, cooperation: 8 }, { text: "No quiero excusas.", nextNodeId: "2_comp", assertiveness: 10, cooperation: 0 }] },
+      "2_comp": {
+        employeeText: "¡Me cansa que solo vean los números y no el esfuerzo! Estoy haciendo lo que puedo.",
+        options: [
+          { text: "Lamento que te sientas así. Cuéntame cómo podemos resolver esto juntos.", nextNodeId: "3", assertiveness: 7, cooperation: 8 },
+          { text: "No quiero excusas. Solo quiero los reportes a tiempo.", nextNodeId: "2_comp_esc", assertiveness: 10, cooperation: 0 },
+        ]
+      },
+      "2_comp_esc": {
+        employeeText: "¿Sabe qué? Llevo años aquí dando lo mejor y esto es lo que recibo. No voy a seguir aguantando este trato.",
+        options: [
+          { text: "Tienes razón, me he expresado mal. Valoro tu trabajo. ¿Podemos hablar con calma?", nextNodeId: "3", assertiveness: 7, cooperation: 8 },
+          { text: "Pues si no te gusta, ya sabes dónde está la puerta.", nextNodeId: "renuncia", assertiveness: 10, cooperation: 0 },
+        ]
+      },
+      "renuncia": {
+        employeeText: "De acuerdo. Mañana mismo hablo con RRHH y presento mi renuncia. Espero que encuentre a alguien que encaje con su estilo.",
+        options: [],
+        isEnd: true,
+      },
       "2_evit": { employeeText: "Voy bien, un poco estresado. Si no hay nada urgente, vuelvo a mi mesa.", options: [{ text: "Es urgente hablar de los reportes. Hablemos ahora.", nextNodeId: "2", assertiveness: 9, cooperation: 6 }, { text: "Vale, ánimo.", nextNodeId: "4", assertiveness: 0, cooperation: 5 }] },
       "3_comp": { employeeText: "Dudo que la velocidad arregle el diseño, pero usted es el jefe.", options: [{ text: "Exacto, confío en tu criterio pero con rapidez.", nextNodeId: "4", assertiveness: 8, cooperation: 5 }] },
       "3_acom": { employeeText: "Gracias, valoro que no me meta presión. Le avisaré.", options: [{ text: "De nada.", nextNodeId: "4", assertiveness: 2, cooperation: 9 }] },
@@ -950,10 +967,22 @@ window.SCENARIOS = [
         id: "1",
         employeeText: "¿Pasa algo? Tengo una migración pendiente y los juniors no paran de preguntarme tonterías.",
         options: [
-          { id: "1a", text: "Quería hablar sobre el tono de tus comentarios en Code Reviews. Buscamos ser constructivos.", nextNodeId: "2", assertiveness: 9, cooperation: 7 },
+          { id: "1a", text: "Quería hablar sobre el tono de tus comentarios en Code Reviews. Buscamos ser más constructivos.", nextNodeId: "2", assertiveness: 9, cooperation: 7 },
           { id: "1b", text: "Sofía, siempre eres igual de cortante. Los chicos te tienen miedo.", nextNodeId: "2_def", assertiveness: 8, cooperation: 2 },
-          { id: "1c", text: "Solo quería saber cómo van los juniors con tu ayuda.", nextNodeId: "1", assertiveness: 3, cooperation: 9 },
+          { id: "1c", text: "Solo quería saber cómo van los juniors. Si estás ocupada, lo dejamos.", nextNodeId: "1_evit", assertiveness: 2, cooperation: 7 },
         ],
+      },
+      "1_evit": {
+        employeeText: "Bien, si no es urgente prefiero seguir con la migración.",
+        options: [
+          { text: "En realidad sí es urgente. Necesito hablar del impacto de tus Code Reviews en el equipo.", nextNodeId: "2", assertiveness: 9, cooperation: 6 },
+          { text: "Claro, no te interrumpo más.", nextNodeId: "4_evit", assertiveness: 0, cooperation: 5 },
+        ]
+      },
+      "4_evit": {
+        employeeText: "Gracias. ...(El problema sigue sin resolverse y los juniors siguen afectados.)",
+        options: [],
+        isEnd: true,
       },
       "2": {
         id: "2",
@@ -967,10 +996,34 @@ window.SCENARIOS = [
         id: "3",
         employeeText: "Supongo que puedo limitarme a sugerencias técnicas en Slack.",
         options: [
-          { id: "3a", text: "Excelente. Si necesitas apoyo para gestionar tu tiempo con ellos, dímelo.", nextNodeId: "4", assertiveness: 9, cooperation: 10 },
+          { id: "3a", text: "Perfecto. Si en algún momento necesitas apoyo con los juniors, aquí estoy.", nextNodeId: "4", assertiveness: 9, cooperation: 10 },
+          { id: "3b", text: "Me alegra que lo entiendas. Porque ya llevaba tiempo siendo difícil trabajar contigo.", nextNodeId: "3_sal", assertiveness: 8, cooperation: 1 },
         ],
       },
-      "2_def": { employeeText: "Genial, ahora soy el monstruo porque me importa la calidad.", options: [{ text: "No eres un monstruo, valoramos tu rigor pero el respeto es norma.", nextNodeId: "3", assertiveness: 9, cooperation: 6 }] },
+      "3_sal": {
+        employeeText: "Creía que lo habíamos resuelto... pero si así me ves después de cuatro años aquí, quizás sea mejor que busque otro equipo.",
+        options: [],
+        isEnd: true,
+      },
+      "2_def": {
+        employeeText: "Genial, ahora soy el monstruo porque me importa la calidad.",
+        options: [
+          { text: "No eres un monstruo. Valoramos tu rigor, pero el respeto es innegociable en este equipo.", nextNodeId: "3", assertiveness: 9, cooperation: 6 },
+          { text: "Pues si tú lo dices. Ajusta tu actitud o habrá consecuencias formales.", nextNodeId: "2_def_esc", assertiveness: 10, cooperation: 0 },
+        ]
+      },
+      "2_def_esc": {
+        employeeText: "¿Consecuencias? Llevo cuatro años construyendo la arquitectura de este sistema. Puedo trabajar donde me traten como profesional.",
+        options: [
+          { text: "Eso no fue lo que quise decir. Tu conocimiento es clave. ¿Podemos hablar sin tensiones?", nextNodeId: "3", assertiveness: 7, cooperation: 8 },
+          { text: "Eso mismo espero de ti, que lo hagas.", nextNodeId: "renuncia", assertiveness: 10, cooperation: 0 },
+        ]
+      },
+      "renuncia": {
+        employeeText: "Perfecto. Mañana entrego mis accesos y hablo con RRHH. Que le vaya bien.",
+        options: [],
+        isEnd: true,
+      },
       "4": { id: "4", employeeText: "Entendido. Volveré al trabajo.", options: [], isEnd: true },
     },
   },
@@ -987,23 +1040,57 @@ window.SCENARIOS = [
         employeeText: "Hola... perdón si estoy un poco lento. No he dormido bien.",
         options: [
           { id: "1a", text: "He notado que tu rendimiento ha bajado. Me preocupa, ¿hay algo en lo que pueda apoyarte?", nextNodeId: "2", assertiveness: 8, cooperation: 10 },
-          { id: "1b", text: "Marcos, los datos del último dashboard están mal. Necesito que te centres.", nextNodeId: "1", assertiveness: 10, cooperation: 2 },
+          { id: "1b", text: "Marcos, los datos del último dashboard están mal. Necesito que te centres.", nextNodeId: "1_prec", assertiveness: 10, cooperation: 2 },
         ],
+      },
+      "1_prec": {
+        employeeText: "Sí... lo sé. Estoy intentando. Solo dame un poco más de tiempo.",
+        options: [
+          { text: "¿Hay algo que te esté afectando? Cuéntame, puedo ayudarte.", nextNodeId: "2", assertiveness: 7, cooperation: 10 },
+          { text: "El tiempo no es gratis. O te centras esta semana o tenemos un problema mayor.", nextNodeId: "1_prec_esc", assertiveness: 10, cooperation: 1 },
+        ]
+      },
+      "1_prec_esc": {
+        employeeText: "Estoy pasando por un divorcio. No puedo con esto ahora mismo y encima con esta presión... no sé si puedo seguir.",
+        options: [
+          { text: "Dios mío, no lo sabía. Lo siento. Hablemos de cómo puedo ayudarte.", nextNodeId: "2", assertiveness: 7, cooperation: 10 },
+          { text: "Lo entiendo, pero aquí necesito que seas profesional independientemente de lo personal.", nextNodeId: "renuncia", assertiveness: 10, cooperation: 0 },
+        ]
       },
       "2": {
         id: "2",
-        employeeText: "Es un tema personal. Me está costando mucho concentrarme.",
+        employeeText: "Es un tema personal muy serio. Me está costando mucho concentrarme.",
         options: [
           { id: "2a", text: "Es comprensible. ¿Te parece si ajustamos tus tareas críticas estas dos semanas?", nextNodeId: "3", assertiveness: 9, cooperation: 10 },
-          { id: "2b", text: "Bueno, todos tenemos problemas. Necesitamos resultados.", nextNodeId: "2", assertiveness: 9, cooperation: 2 },
+          { id: "2b", text: "Todos tenemos problemas personales. Aquí necesitamos resultados.", nextNodeId: "2_frio", assertiveness: 9, cooperation: 1 },
         ],
+      },
+      "2_frio": {
+        employeeText: "Ya veo. Con todo lo que llevo encima, encima me presionas más. No puedo más con esto.",
+        options: [
+          { text: "Tienes razón, no debí decir eso. ¿Qué está pasando realmente?", nextNodeId: "3", assertiveness: 7, cooperation: 9 },
+          { text: "Las emociones se quedan fuera de la oficina, Marcos.", nextNodeId: "renuncia", assertiveness: 10, cooperation: 0 },
+        ]
       },
       "3": {
         id: "3",
         employeeText: "Eso significaría mucho. Me da vergüenza estar así.",
         options: [
           { id: "3a", text: "No hay de qué avergonzarse. Hagamos un seguimiento semanal breve para apoyarte.", nextNodeId: "4", assertiveness: 9, cooperation: 10 },
+          { id: "3b", text: "No tienes por qué avergonzarte, pero necesito saber si puedes cumplir con lo mínimo.", nextNodeId: "3_prec", assertiveness: 9, cooperation: 4 },
         ],
+      },
+      "3_prec": {
+        employeeText: "No sé si puedo prometerte eso ahora mismo. Quizás lo mejor es que pida una baja temporal.",
+        options: [
+          { text: "Si eso te ayuda a recuperarte, lo gestionamos juntos. Tu bienestar es lo primero.", nextNodeId: "4", assertiveness: 8, cooperation: 10 },
+          { text: "Si tú lo ves así, quizás sea lo más sensato para todos.", nextNodeId: "renuncia", assertiveness: 8, cooperation: 2 },
+        ]
+      },
+      "renuncia": {
+        employeeText: "De acuerdo. Pediré la baja indefinida hoy mismo. O puede despedirme directamente, como prefiera.",
+        options: [],
+        isEnd: true,
       },
       "4": { id: "4", employeeText: "Gracias por entenderlo. Haré lo posible por no defraudar al equipo.", options: [], isEnd: true },
     },
@@ -1112,7 +1199,7 @@ class SimulatorApp {
     const historyContainer = document.getElementById('chat-history');
     historyContainer.innerHTML = `
       <div class="message message-context">
-        <strong>Contexto del Escenario:</strong><br>
+        <strong>Contexto del Escenario:</strong>
         ${scenario.context}
       </div>
     `;
