@@ -265,7 +265,7 @@ Patrón documentado para reutilizarlo en otros flujos o listas similares.
 - **Drawer** - Panel lateral deslizante - **RENDERIZADO: JS del componente**
 - **Dropdown Menu** - Menú desplegable (usado por Input select, Paginator, etc.) - **RENDERIZADO: getDropdownMenuHtml() + openDropdownMenu() / closeDropdownMenu()**
 - **Loader** - Indicador de carga (spinner) - **RENDERIZADO: HTML directo**
-- **IA Loader** - Indicador de carga para flujos IA (marco con borde y `bg-1`; `__stage` 16:9 con animación y mensaje en pie dentro de la misma tarjeta; claro = 34 neón + sparkles gradiente; oscuro = 01 nebulosa + chispas claras) - **RENDERIZADO: HTML directo o `getIaLoaderHTML()`**
+- **IA Loader** - Indicador de carga para flujos IA (`__stage` 16:9 con gradiente modo IA, banda luminosa animada, sparkles SVG y mensaje con puntos; ícono y texto en `--ubits-fg-2-high-static-inverted` en claro y oscuro) - **RENDERIZADO: HTML directo o `getIaLoaderHTML()`**
 - **Modal** - Diálogo modal - **RENDERIZADO: JS del componente**
 - **Table** - Tablas de datos - **RENDERIZADO: HTML directo**
 - **Tooltip** - Tooltips - **RENDERIZADO: HTML/JS del componente**

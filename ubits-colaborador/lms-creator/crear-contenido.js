@@ -219,24 +219,32 @@
         'https://images.unsplash.com/photo-1557804506-669a67965ba0?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80'
     ];
 
-    /** Skeleton 16:9 + loader centrado encima (misma huella que la imagen). */
-    function getPortadaAiGeneratingInnerHtml() {
+    /** IA Loader UBITS (16:9 oficial); el host respeta max-width del contenedor (.cc-portada-ai-generating). */
+    function getPortadaAiGeneratingInnerHtml(opts) {
+        opts = opts || {};
+        var label =
+            opts.label != null && String(opts.label).trim() !== ''
+                ? String(opts.label).trim()
+                : 'Generando portada';
+        var loaderHtml =
+            typeof getIaLoaderHTML === 'function'
+                ? getIaLoaderHTML({ label: label })
+                : '<p class="ubits-body-md-regular" role="status" aria-live="polite">' +
+                  escAttr(label) +
+                  '…</p>';
         return (
             '<div class="cc-portada-ai-generating__stage">' +
-            '<div class="cc-portada-ai-generating__frame">' +
-            '<span class="ubits-skeleton ubits-skeleton--rect cc-portada-ai-generating__skel" aria-hidden="true"></span>' +
-            '</div>' +
-            '<div class="ubits-loader-wrap cc-portada-ai-generating__loader">' +
-            '<div class="ubits-loader"></div>' +
-            '<p class="ubits-loader-text ubits-body-md-regular">Generando portada…</p>' +
+            '<div class="cc-portada-ai-generating__ia-host">' +
+            loaderHtml +
             '</div>' +
             '</div>'
         );
     }
 
     /**
-     * Bloque de carga doble: Loader oficial + skeleton 16:9 (misma anchura/proporción que la imagen).
+     * Bloque de carga IA (misma huella que la imagen final: ancho hasta 600px, proporción 16:9).
      * opts.id — opcional, para retirar el mensaje del panel al terminar la espera.
+     * opts.label — opcional; por defecto «Generando portada» (+ puntos en el componente).
      */
     function getPortadaAiGeneratingHtml(opts) {
         opts = opts || {};
@@ -246,7 +254,7 @@
             idAttr +
             ' class="cc-portada-ai-generating"' +
             ' aria-busy="true">' +
-            getPortadaAiGeneratingInnerHtml() +
+            getPortadaAiGeneratingInnerHtml(opts) +
             '</div>'
         );
     }
@@ -427,7 +435,7 @@
                 '</div>' +
             '</div>' +
             '<div id="ai-modal-loader-view" class="cc-portada-ai-generating" style="display:none; z-index:1; padding: 40px 0;" aria-busy="true">' +
-                getPortadaAiGeneratingInnerHtml() +
+                getPortadaAiGeneratingInnerHtml({}) +
             '</div>' +
             '<div id="ai-modal-result-view" style="display:none; width:100%; text-align:center; flex-direction:column; align-items:center; z-index:1; padding: 0;">' +
                 '<img id="portada-ai-modal-img" src="" alt="Portada generada" style="width:100%; max-width:600px; aspect-ratio:16/9; object-fit:cover; border-radius:12px; margin-bottom:24px; border: 1px solid var(--border-subtle);" />' +

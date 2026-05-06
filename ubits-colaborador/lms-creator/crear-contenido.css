@@ -811,7 +811,7 @@ body.crear-contenido-app-open .ubits-dropdown-menu__content {
     }
 }
 
-/* Loader superpuesto al skeleton 16:9 (misma huella que la imagen final) — modal y panel IA */
+/* IA Loader dentro del hueco de portada/modal (misma huella que la imagen: hasta 600px × 16:9 oficial del componente) */
 .cc-portada-ai-generating {
     display: flex;
     flex-direction: column;
@@ -830,34 +830,18 @@ body.crear-contenido-app-open .ubits-dropdown-menu__content {
     box-sizing: border-box;
 }
 
-.cc-portada-ai-generating__loader.ubits-loader-wrap {
-    position: absolute;
-    inset: 0;
-    z-index: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: var(--gap-lg);
-    padding: var(--padding-md);
+/* Rompe min/max fijos del componente (.ubits-ia-loader usa 22rem / 320px) para llenar este contenedor */
+.cc-portada-ai-generating__ia-host {
+    width: 100%;
     box-sizing: border-box;
-    /* Ligero velo para que spinner y texto lean bien sobre el shimmer */
-    background: color-mix(in srgb, var(--ubits-bg-1) 52%, transparent);
-    border-radius: var(--border-radius-md);
 }
 
-.cc-portada-ai-generating__frame {
+.cc-portada-ai-generating__ia-host .ubits-ia-loader,
+.cc-portada-ai-generating__ia-host .ubits-ia-loader__frame {
     width: 100%;
-    aspect-ratio: 16 / 9;
-    border-radius: var(--border-radius-md);
-    overflow: hidden;
-}
-
-.cc-portada-ai-generating__skel {
-    display: block;
-    width: 100%;
-    height: 100%;
-    border-radius: inherit;
+    max-width: none;
+    min-width: 0;
+    margin-inline: 0;
 }
 
 .ai-panel__msg-bubble--rich .cc-portada-ai-generating {
@@ -915,8 +899,4 @@ body.crear-contenido-app-open .ubits-dropdown-menu__content {
 
 #ai-panel .cc-portada-ai-panel-result__actions .ubits-button {
     width: 100%;
-}
-
-#ai-panel .cc-portada-ai-panel-result__loader {
-    padding: var(--padding-xl) 0;
 }

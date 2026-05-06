@@ -1627,7 +1627,7 @@
     }
 
     // ---------------------------
-    // Generación con skeleton overlay
+    // Generación — IA Loader (16:9, mismo componente que portada)
     // ---------------------------
 
     function evalAgentShowSkeleton(rootEl) {
@@ -1636,40 +1636,31 @@
         var qList = rootEl.querySelector('#cc-eval-q-list');
         if (!qList) return;
 
-        var hasQuestions = qList.querySelectorAll('[data-learn-question]').length > 0;
-
         // Ocultar empty state y botón Añadir durante la generación
         var emptyHost = rootEl.querySelector('#ccEvalEmptyHost');
         if (emptyHost) emptyHost.style.display = 'none';
         var addBtn = rootEl.querySelector('#cc-eval-add-q');
         if (addBtn) addBtn.style.display = 'none';
 
-        // Mismo patrón visual que la generación de portada: cuadrado con skeleton + loader superpuesto
+        var loaderHtml =
+            typeof getIaLoaderHTML === 'function'
+                ? getIaLoaderHTML({ label: 'Generando preguntas' })
+                : '<p class="ubits-body-md-regular" role="status" aria-live="polite">Generando preguntas\u2026</p>';
+
         var overlay = document.createElement('div');
         overlay.id = 'cc-eval-ai-gen-overlay';
         overlay.className = 'cc-portada-ai-generating cc-eval-ai-gen-overlay';
         overlay.setAttribute('aria-busy', 'true');
         overlay.innerHTML =
             '<div class="cc-portada-ai-generating__stage">' +
-            '<div class="cc-portada-ai-generating__frame cc-eval-ai-gen-overlay__frame">' +
-            '<span class="ubits-skeleton ubits-skeleton--rect cc-portada-ai-generating__skel" aria-hidden="true"></span>' +
-            '</div>' +
-            '<div class="ubits-loader-wrap cc-portada-ai-generating__loader">' +
-            '<div class="ubits-loader"></div>' +
-            '<p class="ubits-loader-text ubits-body-md-regular">Generando preguntas\u2026</p>' +
+            '<div class="cc-portada-ai-generating__ia-host">' +
+            loaderHtml +
             '</div>' +
             '</div>';
 
         var parent = qList.parentNode;
         if (parent) {
-            if (!hasQuestions) {
-                // Sin preguntas: el skeleton reemplaza visualmente el empty state
-                // (va antes de qList, donde estaba el empty state)
-                parent.insertBefore(overlay, qList);
-            } else {
-                // Con preguntas: el skeleton aparece ANTES de la lista de preguntas
-                parent.insertBefore(overlay, qList);
-            }
+            parent.insertBefore(overlay, qList);
         }
     }
 

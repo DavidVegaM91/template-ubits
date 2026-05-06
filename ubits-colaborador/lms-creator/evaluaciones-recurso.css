@@ -416,10 +416,7 @@
 }
 
 /* ─────────────────────────────────────────────
-   Overlay de generación IA — estilo portada
-   Reutiliza clases cc-portada-ai-generating de
-   crear-contenido.css; solo override aspect-ratio
-   para que el frame sea más cuadrado.
+   Overlay de generación IA — mismo IA Loader 16:9 que portada (ancho 100% del panel recurso).
    ───────────────────────────────────────────── */
 
 .cc-eval-ai-gen-overlay {
@@ -428,14 +425,8 @@
     margin-bottom: var(--gap-lg);
 }
 
-/* El stage también hereda max-width: 600px de crear-contenido.css — anularlo */
 .cc-eval-ai-gen-overlay .cc-portada-ai-generating__stage {
     max-width: none;
-}
-
-.cc-eval-ai-gen-overlay__frame {
-    aspect-ratio: unset !important;
-    min-height: 160px;
 }
 
 /* ─────────────────────────────────────────────
