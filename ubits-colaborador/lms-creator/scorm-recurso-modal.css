@@ -1,0 +1,350 @@
+/* ========================================
+   LMS Creator — Modal «Agregar SCORM» + Modal edición + Color Picker
+   ======================================== */
+
+/* ── Modal principal: altura completa ── */
+#cc-scorm-recurso-modal.ubits-modal-overlay { z-index: 1200; }
+
+#cc-scorm-recurso-modal .ubits-modal-content.cc-scorm-ia-modal-content.portada-ia-modal-content {
+    min-height: 0 !important;
+    height: 90vh;
+    max-height: 90vh;
+    align-self: center;
+    display: flex;
+    flex-direction: column;
+}
+
+#cc-scorm-recurso-modal .ubits-modal-body {
+    flex: 1 1 auto !important;
+    min-height: 0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    padding: var(--padding-xl);
+}
+
+/* ── Panel IA en tab SCORM con IA ── */
+#cc-scorm-recurso-modal .cc-smodal-panel {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-md);
+}
+#cc-scorm-recurso-modal .cc-smodal-panel--hidden { display: none !important; }
+
+/* ── Contenedor general del modal ── */
+.cc-smodal {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+    gap: 0;
+}
+
+/* ── Tab bar ── */
+.cc-sm-tabbar-wrap {
+    flex-shrink: 0;
+    padding-bottom: var(--padding-md);
+}
+
+/* ── Info badge "solo presentaciones" ── */
+.cc-sm-info-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--gap-sm);
+    padding: var(--padding-xs) var(--padding-md);
+    border-radius: var(--border-radius-md);
+    background: color-mix(in srgb, var(--ubits-accent-brand) 10%, transparent);
+    color: var(--ubits-accent-brand);
+    font-size: 12px;
+    font-family: var(--ubits-font-family-sans);
+    font-weight: 500;
+    flex-shrink: 0;
+}
+.cc-sm-info-badge i { font-size: 13px; flex-shrink: 0; }
+
+/* ── Layout dos columnas ── */
+.cc-sm-main-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: var(--gap-lg);
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+}
+@media (max-width: 700px) {
+    .cc-sm-main-layout { grid-template-columns: 1fr; }
+    .cc-sm-right-col { display: none; }
+}
+
+/* Columna izquierda: scroll interno */
+.cc-sm-left-col {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-md);
+    overflow-y: auto;
+    overflow-x: hidden;
+    min-height: 0;
+    padding-right: var(--padding-xs);
+}
+.cc-sm-left-col::-webkit-scrollbar { width: 4px; }
+.cc-sm-left-col::-webkit-scrollbar-track { background: transparent; }
+.cc-sm-left-col::-webkit-scrollbar-thumb { background: var(--ubits-border-1); border-radius: 2px; }
+
+/* Columna derecha */
+.cc-sm-right-col {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-sm);
+    min-height: 0;
+    overflow: hidden;
+}
+
+
+/* ── Color picker trigger ── */
+.cc-sm-color-row {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-md);
+    flex-shrink: 0;
+}
+.cc-sm-cp-swatch {
+    width: 40px; height: 24px;
+    border-radius: var(--border-radius-sm);
+    border: 2px solid rgba(0,0,0,0.15);
+    cursor: pointer; flex-shrink: 0;
+    transition: transform 0.15s, box-shadow 0.15s;
+    background: #0C5BEF;
+}
+.cc-sm-cp-swatch:hover { transform: scale(1.08); box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
+
+/* ── Context composer (igual que evaluaciones) ── */
+.cc-sm-context-label {
+    font-size: 13px; font-weight: 600;
+    color: var(--ubits-fg-1-medium);
+    font-family: var(--ubits-font-family-sans);
+    flex-shrink: 0;
+    display: block;
+    margin-bottom: 6px;
+}
+
+/* ── Color Picker Panel flotante ── */
+.cc-cp-panel {
+    position: fixed;
+    z-index: 2000;
+    background: #2b2b2b;
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    overflow: hidden;
+    width: 228px;
+    user-select: none;
+}
+
+.cc-cp-canvas-wrap {
+    position: relative;
+    width: 228px; height: 148px;
+    cursor: crosshair; flex-shrink: 0;
+}
+.cc-cp-canvas-wrap canvas { display: block; width: 100%; height: 100%; }
+
+.cc-cp-sv-cursor {
+    position: absolute;
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    border: 2px solid #fff;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.5);
+    pointer-events: none;
+    transform: translate(-50%, -50%);
+}
+
+.cc-cp-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px 6px;
+}
+.cc-cp-left { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+
+.cc-cp-eyedropper {
+    width: 26px; height: 26px;
+    border: none; background: transparent;
+    cursor: pointer; color: #999; font-size: 14px;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 4px; transition: color 0.15s;
+}
+.cc-cp-eyedropper:hover { color: #ddd; }
+
+.cc-cp-preview-circle {
+    width: 30px; height: 30px;
+    border-radius: 50%;
+    border: 2px solid rgba(255,255,255,0.15);
+    flex-shrink: 0;
+}
+
+.cc-cp-hue-wrap { flex: 1; min-width: 0; }
+.cc-cp-hue-track { position: relative; width: 100%; height: 14px; border-radius: 7px; overflow: visible; }
+.cc-cp-hue-canvas { width: 100%; height: 14px; border-radius: 7px; cursor: pointer; display: block; }
+.cc-cp-hue-thumb {
+    position: absolute; top: 50%; left: 0%;
+    transform: translate(-50%, -50%);
+    width: 16px; height: 16px;
+    border-radius: 50%;
+    border: 2px solid #fff;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.5);
+    pointer-events: none;
+}
+
+/* ── Hex input (sin RGB) ── */
+.cc-cp-hex-area {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 12px 12px;
+}
+.cc-cp-hex-input {
+    flex: 1;
+    background: #3d3d3d;
+    border: 1px solid #555;
+    border-radius: 4px;
+    color: #eee;
+    font-size: 12px;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    padding: 5px 8px;
+    outline: none;
+    text-transform: uppercase;
+    min-width: 0;
+}
+.cc-cp-hex-input:focus { border-color: #888; }
+.cc-cp-hex-label {
+    color: #888; font-size: 10px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    text-transform: uppercase; letter-spacing: 0.04em;
+    flex-shrink: 0;
+}
+
+/* ── Preview derecha ── */
+.cc-sm-preview-wrap {
+    flex: 1; min-height: 0;
+    border-radius: var(--border-radius-md);
+    overflow: hidden;
+    background: var(--ubits-bg-3);
+    display: flex;
+    flex-direction: column;
+}
+.cc-sm-preview-iframe {
+    width: 100%; flex: 1; border: none; display: block; min-height: 0;
+}
+
+/* ── Override padding lateral del input-area en contexto del modal ── */
+#cc-scorm-recurso-modal .ubits-ia-chat-thread__input-area {
+    padding-left: 0;
+    padding-right: 0;
+}
+
+/* ── Validación del contexto (requerido, azul) ── */
+.ai-panel__input-box--context-error {
+    border-color: var(--ubits-accent-brand) !important;
+    box-shadow: 0 0 0 2px rgba(12, 91, 239, 0.1) !important;
+}
+
+/* ── Tab subir ── */
+.cc-sm-subir-layout { flex: 1; display: flex; flex-direction: column; }
+.cc-sm-subir-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: var(--gap-sm);
+    margin-top: var(--gap-md);
+    flex-shrink: 0;
+}
+
+/* ── SCORM Block (resultado) ── */
+.cc-scorm-block-wrap {
+    border-radius: var(--border-radius-lg);
+    overflow: hidden;
+    transform: translateZ(0); /* fuerza stacking context para clip correcto */
+}
+
+.cc-scorm-iframe-container {
+    width: 100%;
+    height: 480px;
+    position: relative;
+    background: #f0f0f8;
+    border-radius: var(--border-radius-lg);
+    overflow: hidden;
+    transform: translateZ(0);
+}
+.cc-scorm-iframe-container iframe {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+    display: block;
+    border-radius: var(--border-radius-lg);
+}
+
+/* Footer del bloque SCORM */
+.cc-scorm-block-footer {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-sm);
+    padding: var(--padding-sm) var(--padding-md);
+}
+
+/* ── Modal de edición ── */
+#cc-scorm-edit-modal.ubits-modal-overlay { z-index: 1300; }
+
+#cc-scorm-edit-modal .ubits-modal-content {
+    height: 88vh;
+    max-height: 88vh;
+    align-self: center;
+    display: flex;
+    flex-direction: column;
+}
+
+#cc-scorm-edit-modal .ubits-modal-body {
+    padding: 0 !important;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    min-height: 0;
+}
+
+.cc-scorm-edit-iframe-wrap {
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.cc-scorm-edit-iframe {
+    width: 100%;
+    flex: 1;
+    border: none;
+    display: block;
+    min-height: 0;
+}
+
+/* ── IA Loader de generación (ocupa todo el ancho del mount) ── */
+.cc-scorm-ia-loader-host {
+    width: 100%;
+    box-sizing: border-box;
+    height: 480px;
+    display: flex;
+    align-items: stretch;
+}
+.cc-scorm-ia-loader-host .ubits-ia-loader,
+.cc-scorm-ia-loader-host .ubits-ia-loader__frame {
+    width: 100%;
+    max-width: none;
+    min-width: 0;
+    margin-inline: 0;
+    flex: 1;
+}
+

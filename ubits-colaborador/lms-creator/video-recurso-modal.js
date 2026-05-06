@@ -975,80 +975,27 @@
     }
 
     /* ══════════════════════════════════════
-       WIDGET FLOTANTE DE GENERACIÓN
+       GENERACIÓN + WIDGET UNIFICADO
     ══════════════════════════════════════ */
-    var _widgetJob       = null;  /* { pageKey, avatarName, src, status } */
-    var _widgetMinimized = false;
-
-    function getWidget() { return document.getElementById('cc-video-gen-widget'); }
-
-    function renderWidget() {
-        var widget = getWidget();
-        if (!widget) return;
-        if (!_widgetJob) { widget.style.display = 'none'; return; }
-        widget.style.display = '';
-        widget.classList.toggle('cc-vgw--minimized', _widgetMinimized);
-
-        /* Nombre */
-        var nameEl = widget.querySelector('.cc-vgw-item-name');
-        if (nameEl) nameEl.textContent = 'Video de ' + _widgetJob.avatarName;
-
-        /* Sub-label */
-        var subEl = widget.querySelector('.cc-vgw-item-sublabel');
-        if (subEl) subEl.textContent = _widgetJob.status === 'generating' ? 'Generando...' : 'Listo · Haz clic para ver';
-
-        /* Icono de estado */
-        var statusEl = widget.querySelector('.cc-vgw-item-status');
-        if (statusEl) {
-            statusEl.innerHTML = _widgetJob.status === 'generating'
-                ? '<div class="cc-vgw-loader" aria-label="Generando"></div>'
-                : '<div class="cc-vgw-done-check" aria-label="Completado"><i class="far fa-check"></i></div>';
-        }
-
-        /* Chevron del botón minimizar */
-        var chevron = widget.querySelector('.cc-vgw-minimize-btn i');
-        if (chevron) {
-            chevron.style.transform = _widgetMinimized ? 'rotate(180deg)' : '';
-        }
-    }
-
-    function dismissVideoGenWidget() {
-        if (_widgetJob && _widgetJob.timer) {
-            clearTimeout(_widgetJob.timer);
-        }
-        _widgetJob = null;
-        _widgetMinimized = false;
-        renderWidget();
-    }
-
     function startWidgetJob(job) {
-        if (_widgetJob && _widgetJob.timer) clearTimeout(_widgetJob.timer);
+        var jobId = (job.pageKey || 'video') + '-video';
+        var label = 'Video de ' + job.avatarName;
 
-        _widgetJob = {
-            pageKey:    job.pageKey,
-            avatarName: job.avatarName,
-            src:        job.src,
-            status:     'generating',
-            timer:      null,
-        };
-        _widgetMinimized = false;
-        renderWidget();
+        if (typeof global.ccGenWidget !== 'undefined') {
+            global.ccGenWidget.addJob(jobId, { type: 'video', label: label, pageKey: job.pageKey });
+        }
 
-        /* Simulación: 8 segundos de "generación" */
-        _widgetJob.timer = setTimeout(function () {
-            if (!_widgetJob) return;
-            _widgetJob.status = 'done';
-            _widgetJob.timer  = null;
+        var innerLoader = typeof global.getIaLoaderHTML === 'function'
+            ? global.getIaLoaderHTML({ label: 'Generando video' })
+            : '<p role="status" aria-live="polite">Generando video…</p>';
+        if (_onVideoReady) _onVideoReady('<div class="cc-video-ia-loader-host">' + innerLoader + '</div>');
 
-            /* Guardar el HTML del video en el estado de la página */
-            var html = buildRenderedBlock('youtube', _widgetJob.src, false);
-            if (typeof global.ccRecursosSetPageHtml === 'function') {
-                global.ccRecursosSetPageHtml(_widgetJob.pageKey, html);
-            }
-            /* Actualizar icono en el índice */
-            updateIndexIcon(_widgetJob.pageKey);
-            renderWidget();
-            emitRecursosChanged({ type: 'video', pageKey: _widgetJob.pageKey, source: 'ai' });
+        setTimeout(function () {
+            var html = buildRenderedBlock('youtube', job.src, false);
+            if (_onVideoReady) { _onVideoReady(html); _onVideoReady = null; }
+            if (typeof global.ccGenWidget !== 'undefined') global.ccGenWidget.finishJob(jobId);
+            updateIndexIcon(job.pageKey);
+            emitRecursosChanged({ type: 'video', pageKey: job.pageKey, source: 'ai' });
         }, 8000);
     }
 
@@ -1060,51 +1007,6 @@
         if (iconEl && typeof global.paginasCreatorIconClass === 'function') {
             iconEl.className = global.paginasCreatorIconClass('video');
         }
-    }
-
-    function wireWidget() {
-        var widget = getWidget();
-        if (!widget || widget._ccWired) return;
-        widget._ccWired = true;
-
-        /* Minimizar */
-        var minBtn = widget.querySelector('.cc-vgw-minimize-btn');
-        if (minBtn) {
-            minBtn.addEventListener('click', function (e) {
-                e.stopPropagation();
-                _widgetMinimized = !_widgetMinimized;
-                renderWidget();
-            });
-        }
-
-        var closeBtn = widget.querySelector('.cc-vgw-close-btn');
-        if (closeBtn) {
-            closeBtn.addEventListener('click', function (e) {
-                e.stopPropagation();
-                dismissVideoGenWidget();
-            });
-        }
-
-        /* Clic en ítem → navegar a la página si está listo */
-        var body = widget.querySelector('.cc-vgw-body');
-        if (body) {
-            body.addEventListener('click', function () {
-                if (!_widgetJob || _widgetJob.status !== 'done') return;
-                var pageKey = _widgetJob.pageKey;
-                if (!pageKey) return;
-                var item = document.querySelector('[data-paginas-creator-key="' + pageKey + '"]');
-                if (item && typeof global.setPaginasCreatorActiveItem === 'function') {
-                    global.setPaginasCreatorActiveItem(item);
-                }
-            });
-        }
-    }
-
-    /* Inicializar widget al cargar la página */
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', wireWidget);
-    } else {
-        wireWidget();
     }
 
     /* ══════════════════════════════════════

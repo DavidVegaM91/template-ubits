@@ -565,6 +565,12 @@
     max-width: 100%;
 }
 
+/* Number stepper sin label propio: la tarjeta ya muestra «Número de preguntas». */
+.cc-eval-ia-modal-simple__param-card .cc-eval-ia-modal-simple__input-mount .ubits-number-stepper-field {
+    width: fit-content;
+    max-width: 100%;
+}
+
 .cc-eval-ia-modal-simple__label {
     margin: var(--gap-lg) 0 0;
     color: var(--ubits-fg-1-high);

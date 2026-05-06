@@ -1759,6 +1759,39 @@
                 return;
             }
 
+            // 2b. Click en tarjeta de SCORM → abrir modal de SCORM
+            var scormCard = ev.target.closest('[data-resources-card-type="scorm"]');
+            if (scormCard && !scormCard.disabled) {
+                if (typeof window.openScormRecursoModal === 'function') {
+                    window.openScormRecursoModal({
+                        pageKey:      CC_RECURSOS_CURRENT_PAGE_KEY,
+                        onScormReady: function (html) {
+                            if (CC_RECURSOS_CURRENT_PAGE_KEY) {
+                                CC_RECURSOS_PAGE_STATE[CC_RECURSOS_CURRENT_PAGE_KEY] = { html: html };
+                            }
+                            mount.innerHTML = html;
+                            var activeItem = document.querySelector('#crear-contenido-recursos-indice-mount .ubits-paginas-creator__item.is-active');
+                            if (activeItem) {
+                                var iconEl = activeItem.querySelector('.ubits-paginas-creator__drag-handle i');
+                                if (iconEl && typeof window.paginasCreatorIconClass === 'function') {
+                                    iconEl.className = window.paginasCreatorIconClass('scorm');
+                                }
+                            }
+                        }
+                    });
+                }
+                return;
+            }
+
+            // 2c. Click en botón «Editar SCORM» del bloque ya generado
+            var editScormBtn = ev.target.closest('#cc-editar-scorm-recurso');
+            if (editScormBtn) {
+                if (typeof window.openScormEditModal === 'function') {
+                    window.openScormEditModal(CC_RECURSOS_CURRENT_PAGE_KEY);
+                }
+                return;
+            }
+
             // 5. Click en botón Eliminar recurso cargado (evaluar antes de Cancelar)
             var eliminarBtn = ev.target.closest('#cc-eliminar-recurso');
             if (eliminarBtn) {

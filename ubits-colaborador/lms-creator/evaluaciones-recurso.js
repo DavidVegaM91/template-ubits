@@ -7,7 +7,7 @@
  *
  * Nota: Esta implementación es standalone (HTML + CSS + JS vanilla) y usa componentes UBITS existentes:
  * - Buttons / IA button
- * - createInput (inputs)
+ * - createInput (inputs), createNumberStepper (número de preguntas en modal Generar evaluación)
  * - ai-panel (Panel = agente conversacional). Modal «Generar evaluación» = flujo KISS sin chat (un CTA).
  */
 (function (global) {
@@ -1283,24 +1283,22 @@
         return parts.join('\n');
     }
 
-    /** Monta los tres Inputs UBITS dentro del modal (tras insertarse en el DOM). */
+    /** Monta stepper de preguntas + Inputs UBITS (nivel, nota) dentro del modal (tras insertarse en el DOM). */
     function _evalMountIaModalInputs(cfg, qCount, minSc, difficultyKey) {
         if (typeof global.createInput !== 'function') return null;
+        if (typeof global.createNumberStepper !== 'function') return null;
         var q = Math.min(20, Math.max(1, qCount));
         var diff = difficultyKey || 'intermediate';
         if (['basic', 'intermediate', 'advanced'].indexOf(diff) === -1) diff = 'intermediate';
 
         var apis = {};
-        apis.qCount = global.createInput({
+        apis.qCount = global.createNumberStepper({
             containerId: 'cc-eval-ia-modal-wrap-qcount',
-            type: 'number',
-            label: 'Número de preguntas',
-            showLabel: false,
-            size: 'md',
-            value: String(q),
+            value: q,
             min: 1,
             max: 20,
-            placeholder: '10'
+            step: 1,
+            size: 'md'
         });
         apis.difficulty = global.createInput({
             containerId: 'cc-eval-ia-modal-wrap-difficulty',
@@ -1334,11 +1332,17 @@
         return apis;
     }
 
-    /** Asocia cada Input del modal al título visible (cabecera de tarjeta) para lectores de pantalla. */
+    /** Asocia cada control del modal al título visible (cabecera de tarjeta) para lectores de pantalla. */
     function _evalWireIaModalParamAria(overlay) {
         if (!overlay || !overlay.querySelector) return;
+        var wrapQ = overlay.querySelector('#cc-eval-ia-modal-wrap-qcount');
+        if (wrapQ && overlay.querySelector('#cc-eval-ia-modal-title-qcount')) {
+            var stepperGrp = wrapQ.querySelector('.ubits-number-stepper[role="group"]');
+            if (stepperGrp) {
+                stepperGrp.setAttribute('aria-labelledby', 'cc-eval-ia-modal-title-qcount');
+            }
+        }
         var pairs = [
-            ['cc-eval-ia-modal-wrap-qcount', 'cc-eval-ia-modal-title-qcount'],
             ['cc-eval-ia-modal-wrap-difficulty', 'cc-eval-ia-modal-title-difficulty'],
             ['cc-eval-ia-modal-wrap-minscore', 'cc-eval-ia-modal-title-minscore']
         ];

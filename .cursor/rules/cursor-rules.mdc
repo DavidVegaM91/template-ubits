@@ -302,6 +302,7 @@ openModal({
   - Types: `text`, `email`, `password`, `number`, `tel`, `url`, `select`, `textarea`, `search`, `autocomplete`, `calendar`
   - Sizes: `sm` (32px), `md` (40px), `lg` (48px)
   - Features: icons, counter, helper text, mandatory text, scroll infinito automático
+- **Number stepper** (entero con botones − / +; etiqueta opcional; min, max, step; tamaños xs–lg) → `components/number-stepper.css` + `components/number-stepper.js` (`createNumberStepper`). Doc: `documentacion/componentes/number-stepper.html`
 - **Card Content** (Learning cards) → `components/card-content.css` + `components/card-content.js`
 - **Learn content imagen y tráiler** (bloque creación contenido aprendizaje) → `components/learn-content-img-trailer.css` + opcional `learn-content-img-trailer.js` (`initLearnContentImgTrailer`). Doc: `documentacion/componentes/learn-content-img-trailer.html`
 - **Paginas creator** (lista: activar / editar título inline / menú ⋮) → `paginas-creator.css` + `dropdown-menu.css` + `tooltip.js` + `dropdown-menu.js` + `paginas-creator.js` (`initPaginasCreator`, eventos `ubits-paginas-creator-action`, `ubits-paginas-creator-activate`, `ubits-paginas-creator-label-save`). Doc: `documentacion/componentes/paginas-creator.html`
@@ -389,6 +390,8 @@ openModal({
 
 **6. Sidebar y SubNav.** Siempre añadir el componente en `docs/docs-sidebar.js` (`group`: `main` | `navegacion` | `ui` | `aprendizaje` | `operations`; en el sidebar: Navegación → UI general → Aprendizaje → Operations; dentro de cada grupo, orden alfabético por `title`) y en el mapeo sectionToFile. En `components/sub-nav.js`, añadir cada `nombre-componente.html` a `PAGE_TO_TAB` con valor `'section3'` para que el SubNav muestre activo "Componentes", no Inicio.
 
+**7. Modo oscuro (obligatorio, no olvidar).** En **cada** `documentacion/componentes/*.html`, después de `<script src="../../docs/docs-sidebar.js"></script>`, incluir `<script src="../../script.js"></script>`. `script.js` ejecuta `loadSavedTheme()` al cargar y sincroniza `document.body` con `localStorage.getItem('theme')` (claro/oscuro). Sin este script, la página queda anclada a `data-theme="light"` del HTML aunque el usuario ya activó modo oscuro en el resto del playground.
+
 ### **🚫 EN PÁGINAS DE DOCUMENTACIÓN NO DEBE HABER:**
 
 En las páginas de **documentación de componentes** (`documentacion/componentes/*.html`) **NUNCA** incluir:
@@ -397,7 +400,7 @@ En las páginas de **documentación de componentes** (`documentacion/componentes
 - **Floating Menu** – No contenedor `floating-menu-container`, no `floating-menu.js`, no `loadFloatingMenu()`.
 - **Profile Menu** – No contenedor `profile-menu-container`, no `profile-menu.js`, no `loadProfileMenu()`.
 
-Si se incluyen, su HTML se inyecta en la página y se ve como “código basura” en pantalla. En documentación solo deben cargarse: **SubNav** (variante `documentacion`), **Docs Sidebar**, **Sidebar** con `loadSidebar('ninguno')`, **Toast** (para mensajes “Copiado”) y los scripts/estilos del componente documentado.
+Si se incluyen, su HTML se inyecta en la página y se ve como “código basura” en pantalla. En documentación solo deben cargarse: **SubNav** (variante `documentacion`), **Docs Sidebar**, **Sidebar** con `loadSidebar('ninguno')`, **`script.js`** (tema claro/oscuro persistente), **Toast** (para mensajes “Copiado”) y los scripts/estilos del componente documentado.
 
 ### **✅ ESTRUCTURA OBLIGATORIA (seguir como en button.html):**
 
@@ -1853,7 +1856,7 @@ Before finishing any task, verify:
 - [ ] **NO SERVER REQUIRED:** Files work by double-clicking (no npm, yarn, or server needed)
 - [ ] **TITLE ALIGNMENT:** Product interfaces have left-aligned titles (NOT centered)
 - [ ] **COMPONENTS:** Using existing UBITS components (NOT custom buttons/alerts)
-- [ ] **DOC PAGES (documentacion/componentes/):** No tab bar, floating menu, nor profile menu; use `component-doc-template.html` as base and `button.html` as structure reference
+- [ ] **DOC PAGES (documentacion/componentes/):** No tab bar, floating menu, nor profile menu; use `component-doc-template.html` as base and `button.html` as structure reference; include **`../../script.js`** after `docs-sidebar.js` so dark mode matches `localStorage`
 - [ ] **COMPONENTS:** Checked `componentes.html` before creating any UI element
 - [ ] **COMPONENTS:** NO custom buttons created (UBITS Button component exists)
 - [ ] **COMPONENTS:** NO custom alerts created (UBITS Alert component exists)
@@ -1925,6 +1928,11 @@ Before finishing any task, verify:
 <!-- Desde subcarpetas: <link rel="stylesheet" href="../../components/modal.css"> -->
 <!-- Desde la raíz: <link rel="stylesheet" href="components/modal.css"> -->
 <!-- Required when using: openModal() or ubits-modal classes -->
+
+<!-- Number stepper -->
+<!-- Desde subcarpetas: <link rel="stylesheet" href="../../components/number-stepper.css"> -->
+<!-- Desde la raíz: <link rel="stylesheet" href="components/number-stepper.css"> -->
+<!-- Required when using: createNumberStepper(); también fontawesome-icons.css por los iconos en los botones -->
 
 <!-- SubNav component -->
 <!-- Desde subcarpetas: <link rel="stylesheet" href="../../components/sub-nav.css"> -->

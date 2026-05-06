@@ -31,7 +31,9 @@ Elige **una** familia por pantalla. Mezclar patrones (por ejemplo SubNav dentro 
 | **1** | **Estándar (producto)** | [`index.html`](index.html) | `dashboard-container` → Sidebar + `main.main-content` → `#top-nav-container` + SubNav (`loadSubNav`) + `content-area` + `content-sections` / widgets. Móvil: TabBar, Floating menu, Profile menu. | Base (`ubits-colors`, `styles`, tipografía, FontAwesome) + CSS de navegación + **`script.js`**. CSS de página al final (p. ej. `index.css`). **Sin** `no-subnav` salvo que apliques el layout 2 en la misma URL. |
 | **2** | **Sin SubNav** | [`ubits-colaborador/ia-para-hr/ia-para-hr.html`](ubits-colaborador/ia-para-hr/ia-para-hr.html) | Mismo esqueleto que el estándar (Sidebar + `main.main-content` + secciones) pero **sin** barra superior: no `#top-nav-container` ni `loadSubNav()`. **`class="no-subnav"`** en `<body>`: en `general-styles/styles.css` se corrige el padding de `.main-content` (sin hueco “fantasma” del SubNav en desktop; aire controlado en móvil). | Base + Sidebar / TabBar / … + CSS de página. |
 | **3** | **Inmersivo** | [`ubits-colaborador/lms-creator/crear-contenido.html`](ubits-colaborador/lms-creator/crear-contenido.html) | Sin Sidebar ni SubNav: raíz **`.ubits-layout-immersive`**, cabecera **`.ubits-layout-immersive__header`** (banda full-bleed + **`.ubits-layout-immersive__header-inner`** acotado), **`main.ubits-layout-immersive__main`** (scroll único entre header y pie), pie **`.ubits-layout-immersive__footer`**. Contenido acotado: hijo directo del `main` con **`.ubits-layout-immersive__stage`** (max-width por **`--ubits-layout-immersive-max-width`**, por defecto 1440px). Dentro, secciones o flujos propios del producto. | **`body.page-layout-immersive`** (y **`no-subnav`**). Importar **`general-styles/layout-immersive.css`**. **`script.js`** para tema en `localStorage`. Lógica y estilos del producto en el CSS de la página (p. ej. `crear-contenido.css`). |
-| **4** | **Documentación** | [`documentacion/componentes.html`](documentacion/componentes.html) | SubNav variante **`documentacion`**, Docs Sidebar, `main-content` y área de contenido de documentación. En páginas **`documentacion/componentes/*.html`**: sin TabBar, Floating menu ni Profile menu (ver reglas del template). | `docs-sidebar` + `docstyles` + `sub-nav` + base. |
+| **4** | **Documentación** | [`documentacion/componentes.html`](documentacion/componentes.html) | SubNav variante **`documentacion`**, Docs Sidebar, `main-content` y área de contenido de documentación. En páginas **`documentacion/componentes/*.html`**: sin TabBar, Floating menu ni Profile menu (ver reglas del template). | `docs-sidebar` + `docstyles` + `sub-nav` + base + **`script.js`** (tema; ver regla siguiente). |
+
+**Modo oscuro en documentación de componentes (`documentacion/componentes/*.html`):** Cada página **debe** incluir `<script src="../../script.js"></script>` justo **después** de `docs-sidebar.js` (mismo patrón que `documentacion/componentes/button.html` y `component-doc-template.html`). Ese script registra `loadSavedTheme()` en `DOMContentLoaded` y aplica en `<body>` la preferencia guardada en `localStorage` (`theme`). Sin `script.js`, el atributo fijo `data-theme="light"` del HTML deja la doc siempre en claro aunque el usuario haya puesto toda la plataforma en modo oscuro.
 
 **Mantenimiento:** ajustes a la cáscara inmersiva → **`general-styles/layout-immersive.css`**. Ajustes al hueco “sin SubNav” → **`general-styles/styles.css`**. Evita copiar reglas de layout en un CSS de página salvo overrides muy localizados.
 
@@ -233,6 +235,7 @@ Patrón documentado para reutilizarlo en otros flujos o listas similares.
 - **Accordion** - Bloques expandibles/colapsables (tamaños: xs, sm, md, lg; título obligatorio; numeración y descripción opcionales) - **RENDERIZADO: HTML directo o createAccordion()**
 - **Toast** - Notificaciones flotantes (tipos: success, info, warning, error; auto-cierre, pausa en hover) - **RENDERIZADO: showToast()**
 - **Input** - Campos de entrada (11 tipos: text, email, password, number, tel, url, select, textarea, search, autocomplete, calendar; tamaños: sm, md, lg; estados: default, hover, focus, invalid, disabled; con iconos, contador, helper text, mandatory/optional, validación manual, scroll infinito automático) - **RENDERIZADO: createInput()**
+- **Number stepper** - Entero con botones menos y más, etiqueta opcional, min, max y paso (tamaños xs, sm, md, lg) - **RENDERIZADO: createNumberStepper()** — `number-stepper.css` + `number-stepper.js`; doc: `documentacion/componentes/number-stepper.html` (uso en LMS Creator: modal SCORM, `scorm-recurso-modal.js`).
 - **Radio Button** - Opción circular para elegir una entre varias (tamaños: sm, md; sin JS; agrupar con mismo `name`) - **RENDERIZADO: HTML directo.** Requiere importar `radio-button.css` en la página o los radios se ven como nativos.
 - **Checkbox** - Casilla de verificación (tamaños: sm, md, lg; variantes: round/cuadrado; sin JS; agrupar con mismo `name` para múltiple selección) - **RENDERIZADO: HTML directo.** Requiere importar `checkbox.css` en la página.
 - **Chip** - Elemento compacto para filtros, selecciones o ítems removibles (tamaño xs; icono opcional; botón quitar opcional; estados: default, hover, pressed, active, focus, disabled) - **RENDERIZADO: HTML directo.** Requiere importar `chip.css`.
@@ -311,6 +314,7 @@ Todos los componentes UBITS requieren imports obligatorios:
 <link rel="stylesheet" href="../../components/loader.css">
 <link rel="stylesheet" href="../../components/ia-loader.css">
 <link rel="stylesheet" href="../../components/modal.css">
+<link rel="stylesheet" href="../../components/number-stepper.css">
 <link rel="stylesheet" href="../../components/table.css">
 <link rel="stylesheet" href="../../components/tooltip.css">
 
@@ -337,6 +341,7 @@ Todos los componentes UBITS requieren imports obligatorios:
 <script src="../../components/dropdown-menu.js"></script>
 <script src="../../components/drawer.js"></script>
 <script src="../../components/modal.js"></script>
+<script src="../../components/number-stepper.js"></script>
 <script src="../../components/stepper.js"></script>
 <script src="../../components/tooltip.js"></script>
 
@@ -491,6 +496,7 @@ Todos los componentes UBITS requieren imports obligatorios:
 - **`documentacion/componentes/ia-loader.html`** - Documentación del componente IA Loader
 - **`documentacion/componentes/loader.html`** - Documentación del componente Loader
 - **`documentacion/componentes/modal.html`** - Documentación del componente Modal
+- **`documentacion/componentes/number-stepper.html`** - Documentación del componente Number stepper
 - **`documentacion/componentes/popover.html`** - Documentación del componente Popover
 - **`documentacion/componentes/submenu.html`** - Documentación del componente Submenu
 - **`documentacion/componentes/coachmark.html`** - Documentación del componente Coachmark (product tour)
@@ -564,6 +570,7 @@ Todos los componentes UBITS requieren imports obligatorios:
 │   ├── loader.css + loader.js
 │   ├── ia-loader.css + ia-loader.js
 │   ├── modal.css + modal.js
+│   ├── number-stepper.css + number-stepper.js
 │   ├── table.css
 │   ├── tooltip.css + tooltip.js
 ├── 📁 ubits-admin/           # Módulo de administración
@@ -1023,6 +1030,7 @@ loadCardContentCompact('mi-contenedor-compact', [
 - **`documentacion/componentes/ia-loader.html`** - Documentación del componente IA Loader
 - **`documentacion/componentes/loader.html`** - Documentación del componente Loader
 - **`documentacion/componentes/modal.html`** - Documentación del componente Modal
+- **`documentacion/componentes/number-stepper.html`** - Documentación del componente Number stepper
 - **`documentacion/componentes/popover.html`** - Documentación del componente Popover
 - **`documentacion/componentes/submenu.html`** - Documentación del componente Submenu
 - **`documentacion/componentes/coachmark.html`** - Documentación del componente Coachmark (product tour)

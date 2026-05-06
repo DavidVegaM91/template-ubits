@@ -401,6 +401,7 @@ const PAGE_TO_TAB = {
     'input.html': 'section3',
     'loader.html': 'section3',
     'modal.html': 'section3',
+    'number-stepper.html': 'section3',
     'popover.html': 'section3',
     'submenu.html': 'section3',
     'paginator.html': 'section3',

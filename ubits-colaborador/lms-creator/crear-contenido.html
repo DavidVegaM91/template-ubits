@@ -49,6 +49,9 @@
     <link rel="stylesheet" href="./crear-contenido.css">
     <link rel="stylesheet" href="./evaluaciones-recurso.css">
     <link rel="stylesheet" href="./video-recurso-modal.css">
+    <link rel="stylesheet" href="./scorm-recurso-modal.css">
+    <link rel="stylesheet" href="../../components/number-stepper.css">
+    <link rel="stylesheet" href="./gen-widget.css">
 </head>
 <body data-theme="light" class="no-subnav page-layout-immersive page-crear-contenido crear-contenido-app-open">
     <div class="tooltip" id="tooltip"></div>
@@ -95,32 +98,23 @@
         </footer>
     </div>
 
-    <!-- Widget flotante de generación de video (estilo Google Drive) -->
-    <div id="cc-video-gen-widget" style="display:none" role="status" aria-live="polite">
-        <div class="cc-vgw-header">
-            <span class="cc-vgw-header-title ubits-body-sm-semibold">
-                <i class="far fa-sparkles cc-vgw-header-sparkles" aria-hidden="true"></i>
-                Generación de video
+    <!-- Widget unificado de generación IA -->
+    <div id="cc-gen-widget" style="display:none" role="status" aria-live="polite">
+        <div class="cc-gw-header">
+            <span class="cc-gw-header-title ubits-body-sm-semibold">
+                <i class="far fa-sparkles cc-gw-sparkles" aria-hidden="true"></i>
+                <span class="cc-gw-title-text">Generando recursos</span>
             </span>
-            <div class="cc-vgw-header-actions">
-                <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only cc-vgw-minimize-btn" aria-label="Minimizar">
+            <div class="cc-gw-header-actions">
+                <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only cc-gw-minimize-btn" aria-label="Minimizar">
                     <i class="far fa-chevron-down"></i>
                 </button>
-                <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only cc-vgw-close-btn" aria-label="Cerrar">
+                <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only cc-gw-close-btn" aria-label="Cerrar">
                     <i class="far fa-times"></i>
                 </button>
             </div>
         </div>
-        <div class="cc-vgw-body">
-            <div class="cc-vgw-item">
-                <i class="far fa-video cc-vgw-item-icon" aria-hidden="true"></i>
-                <div class="cc-vgw-item-info">
-                    <span class="cc-vgw-item-name ubits-body-sm-regular">Video IA</span>
-                    <span class="cc-vgw-item-sublabel">Generando...</span>
-                </div>
-                <div class="cc-vgw-item-status"></div>
-            </div>
-        </div>
+        <div class="cc-gw-body"></div>
     </div>
 
     <script src="../../script.js"></script>
@@ -151,8 +145,11 @@
     <script src="../../components/video-player.js"></script>
     <script src="../../components/learn-question.js"></script>
     <script src="../../components/ia-loader.js"></script>
+    <script src="../../components/number-stepper.js"></script>
     <script src="./evaluaciones-recurso.js"></script>
+    <script src="./gen-widget.js"></script>
     <script src="./video-recurso-modal.js"></script>
+    <script src="./scorm-recurso-modal.js"></script>
     <script src="./crear-contenido.js"></script>
 </body>
 </html>
