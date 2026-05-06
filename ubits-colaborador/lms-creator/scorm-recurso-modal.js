@@ -1013,10 +1013,16 @@
     }
 
     function confirmZipLoad() {
-        var srcdoc = (typeof global.SIMULADOR_SCORM_SRCDOC === 'string')
-            ? global.SIMULADOR_SCORM_SRCDOC
-            : '<p style="padding:24px;font-family:sans-serif;">SCORM cargado</p>';
-        var html = buildRenderedBlock(srcdoc, null);
+        var html = '<div class="ubits-resources-block ubits-resources-block--stack">' +
+            '<div class="ubits-resources-block__surface" style="padding:0;">' +
+                '<div class="cc-scorm-iframe-container">' +
+                    '<iframe src="simulador-scorm.html" allowfullscreen></iframe>' +
+                '</div>' +
+            '</div>' +
+            '<div class="ubits-resources-block__footer" style="display:flex;align-items:center;gap:var(--gap-sm);">' +
+                '<button type="button" class="ubits-button ubits-button--error-secondary ubits-button--sm" id="cc-eliminar-recurso"><i class="far fa-trash-alt"></i><span>Eliminar</span></button>' +
+            '</div>' +
+        '</div>';
         closeModal(OVERLAY_ID);
         if (_onScormReady) _onScormReady(html);
         emitChanged({type:'scorm',pageKey:_currentPageKey,source:'upload'});
