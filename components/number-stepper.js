@@ -1,7 +1,7 @@
 /**
  * Number Stepper Component
  *
- * createNumberStepper({ containerId, label, value, min, max, step, size, onChange })
+ * createNumberStepper({ containerId, label, value, min, max, step, size, fullWidth, onChange })
  * Returns: { getValue, setValue, setDisabled } o null si no existe el contenedor.
  *
  * Bugs / notas al implementar en producto:
@@ -40,6 +40,9 @@
 
         var fieldEl = document.createElement('div');
         fieldEl.className = 'ubits-number-stepper-field';
+        if (opts.fullWidth) {
+            fieldEl.classList.add('ubits-number-stepper-field--full-width');
+        }
 
         if (opts.label) {
             var labelEl = document.createElement('label');

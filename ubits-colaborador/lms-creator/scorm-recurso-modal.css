@@ -270,7 +270,7 @@
 
 .cc-scorm-iframe-container {
     width: 100%;
-    height: 480px;
+    height: 600px;
     position: relative;
     background: #f0f0f8;
     border-radius: var(--border-radius-lg);
@@ -335,7 +335,7 @@
 .cc-scorm-ia-loader-host {
     width: 100%;
     box-sizing: border-box;
-    height: 480px;
+    height: 600px;
     display: flex;
     align-items: stretch;
 }

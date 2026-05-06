@@ -220,6 +220,7 @@
                                     </div>
                                     <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
                                         <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code id="classes-code">.ubits-number-stepper-field     /* columna: label + control */
+.ubits-number-stepper-field--full-width  /* opcional: ancho 100% del contenedor */
 .ubits-number-stepper-label     /* etiqueta opcional */
 .ubits-number-stepper           /* grupo: borde, foco, tamaño */
 .ubits-number-stepper--xs
@@ -230,7 +231,7 @@
 .ubits-number-stepper__btn--minus
 .ubits-number-stepper__btn--plus
 .ubits-number-stepper__divider  /* separador vertical */
-.ubits-number-stepper__val       /* valor numérico visible */</code></pre>
+.ubits-number-stepper__val       /* valor visible; crece en el eje horizontal si el grupo tiene ancho extra */</code></pre>
                                     </div>
                                 </div>
                                 <div style="padding: 32px;">
@@ -253,7 +254,7 @@
                                     <div style="background: var(--ubits-bg-2); padding: 16px; border-radius: 8px; margin-bottom: 16px;">
                                         <h3 class="ubits-body-md-bold" style="margin-bottom: 12px; color: var(--ubits-fg-1-high);">Referencia en producto</h3>
                                         <p class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); line-height: 1.5; margin: 0;">
-                                            LMS Creator, modal de recurso SCORM (pestaña de generación asistida): <code>ubits-colaborador/lms-creator/scorm-recurso-modal.js</code> (<code>initStepperInput</code>), contenedor <code>cc-sm-num-stepper-wrap</code>; la página <code>crear-contenido.html</code> ya enlaza <code>number-stepper.css</code> y <code>number-stepper.js</code>.
+                                            LMS Creator: modal SCORM (<code>scorm-recurso-modal.js</code>, contenedor <code>cc-sm-num-stepper-wrap</code>) y modal «Generar evaluación» (<code>evaluaciones-recurso.js</code>, <code>fullWidth: true</code> en número de preguntas). La página <code>crear-contenido.html</code> enlaza <code>number-stepper.css</code> y <code>number-stepper.js</code>.
                                         </p>
                                     </div>
                                     <div style="background: var(--ubits-bg-2); padding: 16px; border-radius: 8px; margin-bottom: 16px;">
@@ -264,6 +265,7 @@
                                             <li><strong>value</strong>: valor inicial (número o string parseable).</li>
                                             <li><strong>min</strong>, <strong>max</strong>, <strong>step</strong>: límites y incremento (por defecto min 0, max 99, step 1).</li>
                                             <li><strong>size</strong>: <code>xs</code>, <code>sm</code>, <code>md</code> o <code>lg</code> (por defecto <code>md</code>).</li>
+                                            <li><strong>fullWidth</strong> (booleano opcional): si es verdadero, el campo y la cápsula ocupan el 100% del ancho disponible; solo la zona central del número se expande (valor centrado).</li>
                                             <li><strong>onChange</strong> (función opcional): recibe el nuevo número tras cada clic válido.</li>
                                         </ul>
                                         <p class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); margin-top: 12px; margin-bottom: 0;">
@@ -274,6 +276,7 @@
                                         <h3 class="ubits-body-md-bold" style="margin-bottom: 8px; color: var(--ubits-fg-1-high);">Notas y límites conocidos</h3>
                                         <ul class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); line-height: 1.6; margin: 0; padding-left: 20px;">
                                             <li>El valor se muestra como texto; no hay edición directa por teclado en el número central.</li>
+                                            <li>Si la cápsula tiene más ancho (p. ej. con <code>fullWidth</code>), solo crece la franja central; los botones − y + conservan su tamaño.</li>
                                             <li>Los botones internos no usan la clase <code>ubits-button</code>; son estilo propio del stepper para encajar en la cápsula.</li>
                                         </ul>
                                     </div>

@@ -1298,7 +1298,8 @@
             min: 1,
             max: 20,
             step: 1,
-            size: 'md'
+            size: 'md',
+            fullWidth: true
         });
         apis.difficulty = global.createInput({
             containerId: 'cc-eval-ia-modal-wrap-difficulty',

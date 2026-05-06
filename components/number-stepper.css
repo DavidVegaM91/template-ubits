@@ -32,10 +32,17 @@
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-/* Evita que un ítem flex crezca y deje hueco (p. ej. tras el + en xs/sm) */
-.ubits-number-stepper > * {
-    flex-grow: 0;
-    flex-shrink: 0;
+/**
+ * Ancho completo: el bloque crece con el contenedor; solo la zona central
+ * (.ubits-number-stepper__val) absorbe el espacio extra (valor centrado).
+ */
+.ubits-number-stepper-field--full-width {
+    width: 100%;
+    max-width: 100%;
+}
+
+.ubits-number-stepper-field--full-width .ubits-number-stepper {
+    width: 100%;
 }
 
 .ubits-number-stepper:focus-within {
@@ -130,36 +137,25 @@
     font-weight: var(--font-weight-semibold);
     color: var(--ubits-fg-1-high);
     user-select: none;
-    flex-shrink: 0;
-    box-sizing: border-box;
+    flex: 1 1 auto;
     min-width: 0;
+    box-sizing: border-box;
+    font-variant-numeric: tabular-nums;
 }
 
 .ubits-number-stepper--xs .ubits-number-stepper__val {
-    flex: 0 0 28px;
-    width: 28px;
     min-width: 28px;
-    max-width: 28px;
     font-size: var(--font-size-xs);
 }
 .ubits-number-stepper--sm .ubits-number-stepper__val {
-    flex: 0 0 32px;
-    width: 32px;
     min-width: 32px;
-    max-width: 32px;
     font-size: var(--font-size-sm);
 }
 .ubits-number-stepper--md .ubits-number-stepper__val {
-    flex: 0 0 38px;
-    width: 38px;
     min-width: 38px;
-    max-width: 38px;
     font-size: 1rem;
 }
 .ubits-number-stepper--lg .ubits-number-stepper__val {
-    flex: 0 0 44px;
-    width: 44px;
     min-width: 44px;
-    max-width: 44px;
     font-size: 1.125rem;
 }
