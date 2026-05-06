@@ -82,6 +82,8 @@
   --ubits-fg-2-medium: #5a5e6a;
   --ubits-fg-2-medium-inverted: #d0d2d5;
   --ubits-fg-2-high-static: #2a303f;
+  /* Primer plano claro fijo (p. ej. icono sobre gradiente/marca); mismo valor en ambos temas — alineado con modo oscuro. */
+  --ubits-fg-2-high-static-inverted: #ffffff;
   --ubits-fg-2-medium-static: #5a5e6a;
   --ubits-fg-2-medium-static-inverted: #d0d2d5;
   

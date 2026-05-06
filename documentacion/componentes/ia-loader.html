@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="../../images/Ubits-logo-dark.svg">
+    <title>IA Loader | UBITS Playground</title>
+    <link rel="stylesheet" href="../../general-styles/ubits-colors.css">
+    <link rel="stylesheet" href="../../general-styles/styles.css">
+    <link rel="stylesheet" href="../../general-styles/fontawesome-icons.css">
+    <link rel="stylesheet" href="../../general-styles/ubits-typography.css">
+    <link rel="stylesheet" href="../../ubits-colaborador/aprendizaje/aprendizaje-ia-gradientes.css">
+    <link rel="stylesheet" href="../../components/sub-nav.css">
+    <link rel="stylesheet" href="../../components/sidebar.css">
+    <link rel="stylesheet" href="../../docs/docs-sidebar.css">
+    <link rel="stylesheet" href="../../docs/docstyles.css">
+    <link rel="stylesheet" href="../../components/button.css">
+    <link rel="stylesheet" href="../../components/alert.css">
+    <link rel="stylesheet" href="../../components/toast.css">
+    <link rel="stylesheet" href="../../components/ia-loader.css">
+    <style>
+        .ia-loader-doc-theme-row {
+            display: flex;
+            justify-content: center;
+            margin-bottom: var(--gap-lg);
+        }
+        .ia-loader-doc-preview-single {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: var(--gap-sm);
+            box-sizing: border-box;
+            width: 100%;
+            min-width: 320px;
+            max-width: 400px;
+            margin-inline: auto;
+        }
+        .ia-loader-doc-host {
+            box-sizing: border-box;
+            width: 100%;
+            min-width: 320px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+        .ia-loader-doc-host .ubits-ia-loader,
+        .ia-loader-doc-host .ubits-ia-loader__frame {
+            width: 100%;
+            max-width: none;
+        }
+    </style>
+</head>
+<body class="componentes-page" data-theme="light">
+    <div class="dashboard-container">
+        <div class="tooltip" id="tooltip"></div>
+        <main class="main-content">
+            <div id="top-nav-container"></div>
+            <div style="display: flex;">
+                <div id="docs-dropdown-container"></div>
+                <div id="docs-sidebar-container"></div>
+                <div class="components-content">
+                    <div class="content-area" style="display: block; width: 100%;">
+                        <div style="text-align: center; margin-bottom: 60px;">
+                            <h1 class="ubits-display-d2-bold" style="margin-bottom: 24px; color: var(--ubits-accent-brand);">
+                                IA Loader
+                            </h1>
+                            <p class="ubits-body-md-regular" style="max-width: 800px; margin: 0 auto 32px; line-height: 1.6;">
+                                Indicador de carga para experiencias con IA: orbes suaves de fondo, halo conic, prototipo y sparkles que cambian según el tema — en <span class="ubits-body-md-semibold">modo claro</span> aura neón y sparkles con gradiente modo IA; en <span class="ubits-body-md-semibold">modo oscuro</span> nebulosa doble y sparkles claros. Mensaje «Generando recurso» con puntos animados.
+                            </p>
+                        </div>
+
+                        <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: var(--border-radius-lg); margin-bottom: 40px;">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-eye" style="margin-right: 8px; color: var(--ubits-accent-brand);" aria-hidden="true"></i>
+                                Preview del componente
+                            </h2>
+                            <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: var(--border-radius-md); position: relative;">
+                                <div class="ia-loader-doc-theme-row">
+                                    <button
+                                        type="button"
+                                        id="ia-loader-doc-theme-toggle"
+                                        class="ubits-button ubits-button--secondary ubits-button--md"
+                                        aria-pressed="false"
+                                        aria-label="Alternar entre modo claro y modo oscuro"
+                                    >
+                                        <i class="far fa-moon" id="ia-loader-doc-theme-icon" aria-hidden="true"></i>
+                                        <span id="ia-loader-doc-theme-label">Modo oscuro</span>
+                                    </button>
+                                </div>
+                                <div class="ia-loader-doc-preview-single">
+                                    <div class="ia-loader-doc-host">
+                                        <div id="ia-loader-doc-preview"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <p id="ia-loader-doc-theme-hint" class="ubits-body-md-regular" style="margin-top: 24px; margin-bottom: 0; line-height: 1.6; color: var(--ubits-fg-1-medium);"></p>
+                        </div>
+
+                        <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: var(--border-radius-lg); margin-bottom: 40px;">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-th-large" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Características generales
+                            </h2>
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: var(--gap-lg);">
+                                <div style="text-align: center; padding: var(--padding-lg); background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: var(--gap-sm);"><i class="far fa-square"></i></div>
+                                    <div class="ubits-body-sm-bold">Una sola presentación</div>
+                                    <div class="ubits-body-sm-regular">Marco con borde y bg-1; escenario 16:9 con animación y texto en la misma tarjeta (sin bloque aparte bajo el ratio).</div>
+                                </div>
+                                <div style="text-align: center; padding: var(--padding-lg); background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: var(--gap-sm);"><i class="far fa-circle"></i></div>
+                                    <div class="ubits-body-sm-bold">Dos lecturas por tema</div>
+                                    <div class="ubits-body-sm-regular">Claro: disco con aura neón (sombras en cuatro direcciones). Oscuro: nebulosa doble con conic blur y giro.</div>
+                                </div>
+                                <div style="text-align: center; padding: var(--padding-lg); background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: var(--gap-sm);"><i class="far fa-sparkles"></i></div>
+                                    <div class="ubits-body-sm-bold">Sparkles SVG</div>
+                                    <div class="ubits-body-sm-regular">Tres grupos animados; gradiente modo IA en claro y chispas claras en oscuro.</div>
+                                </div>
+                                <div style="text-align: center; padding: var(--padding-lg); background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: var(--gap-sm);"><i class="far fa-ellipsis-h"></i></div>
+                                    <div class="ubits-body-sm-bold">Texto vivo</div>
+                                    <div class="ubits-body-sm-regular">Mensaje fijo con puntos que pulsan para reforzar que el proceso sigue activo.</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: var(--border-radius-lg); margin-bottom: 40px;">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-comments" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Prompts útiles
+                            </h2>
+                            <p class="ubits-body-md-regular" style="margin-bottom: 24px; color: var(--ubits-fg-1-medium);">
+                                Copia el prompt y personaliza lo que va entre corchetes. Indica importar <code class="ubits-body-sm-regular">ia-loader.css</code> y, para el aspecto completo en modo claro, el CSS de gradientes IA del proyecto.
+                            </p>
+                            <div id="ia-loader-warning-alert" style="margin-bottom: 24px;"></div>
+                            <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
+                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                                    <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Insertar IA Loader en un contenedor</h3>
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('ia-loader-prompt-1')">
+                                        <i class="far fa-copy"></i>
+                                        <span>Copiar</span>
+                                    </button>
+                                </div>
+                                <pre style="margin: 0; background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm);"><code id="ia-loader-prompt-1" class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); white-space: pre-wrap;">En [página o modal], mientras [acción IA], muestra el componente IA Loader UBITS centrado en [ubicación]. Importa ia-loader.css, fontawesome-icons.css y ubits-colors.css; para sparkles y orbes en modo claro con gradiente modo IA, importa también el CSS de gradientes IA del playground.</code></pre>
+                            </div>
+                            <div>
+                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                                    <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Mensaje personalizado</h3>
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('ia-loader-prompt-2')">
+                                        <i class="far fa-copy"></i>
+                                        <span>Copiar</span>
+                                    </button>
+                                </div>
+                                <pre style="margin: 0; background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm);"><code id="ia-loader-prompt-2" class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); white-space: pre-wrap;">Mantén el IA Loader pero cambia el texto visible a [tu mensaje] usando la API de getIaLoaderHTML descrita en la documentación técnica.</code></pre>
+                            </div>
+                        </div>
+
+                        <div style="background: var(--ubits-bg-1); border-radius: var(--border-radius-lg); margin-bottom: 40px; overflow: hidden;">
+                            <div style="padding: 32px; text-align: center; border-bottom: 1px solid var(--ubits-border-1);">
+                                <h2 class="ubits-heading-h2" style="margin: 0; color: var(--ubits-fg-1-high);">
+                                    <i class="far fa-code" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                    Documentación técnica
+                                </h2>
+                                <p class="ubits-body-md-regular" style="margin-top: 16px; color: var(--ubits-fg-1-medium);">
+                                    Estructura HTML, requisitos y API de <code class="ubits-body-sm-regular">getIaLoaderHTML</code>.
+                                </p>
+                            </div>
+                            <div style="background: var(--ubits-bg-2); padding: 20px; text-align: center; cursor: pointer;" onclick="toggleTechnicalDocs()" role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleTechnicalDocs();}">
+                                <span class="ubits-body-md-regular" style="color: var(--ubits-accent-brand); display: inline-flex; align-items: center; gap: var(--gap-sm);">
+                                    <i class="far fa-chevron-down" id="tech-docs-chevron" style="transition: transform 0.2s ease;" aria-hidden="true"></i>
+                                    <span id="tech-docs-toggle-label">Mostrar</span>
+                                </span>
+                            </div>
+                            <div id="technical-docs-content" style="display: none;">
+                                <div style="padding: 32px; border-bottom: 1px solid var(--ubits-border-1);">
+                                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;">
+                                        <h2 class="ubits-heading-h2" style="margin: 0; color: var(--ubits-fg-1-high);">Estructura del componente</h2>
+                                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('ia-loader-structure', event)">
+                                            <i class="far fa-copy"></i>
+                                            <span>Copiar</span>
+                                        </button>
+                                    </div>
+                                    <pre style="margin: 0; background: var(--ubits-bg-2); padding: 24px; border-radius: var(--border-radius-md); overflow-x: auto;"><code id="ia-loader-structure" class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">&lt;!-- Tema: data-theme en body (claro = neón+gradiente; oscuro = nebulosa+chispas claras). --&gt;
+&lt;div class="ubits-ia-loader" role="status" aria-live="polite" aria-busy="true"&gt;
+  &lt;div class="ubits-ia-loader__frame"&gt;
+    &lt;div class="ubits-ia-loader__stage"&gt;
+      &lt;div class="ubits-ia-loader__ambient"&gt;… 3 orbes …&lt;/div&gt;
+      &lt;div class="ubits-ia-loader__cluster"&gt;
+        &lt;div class="ubits-ia-loader__center"&gt;
+          &lt;span class="ubits-ia-loader__halo"&gt;&lt;/span&gt;
+          &lt;div class="ubits-ia-loader__proto--neon"&gt;&lt;/div&gt;
+          &lt;div class="ubits-ia-loader__proto--nebula"&gt;&lt;span&gt;&lt;/span&gt;&lt;span&gt;&lt;/span&gt;&lt;/div&gt;
+          &lt;span class="ubits-ia-loader__sparkles-wrap ubits-ia-loader__sparkles-wrap--light"&gt;… SVG …&lt;/span&gt;
+          &lt;span class="ubits-ia-loader__sparkles-wrap ubits-ia-loader__sparkles-wrap--dark"&gt;… SVG …&lt;/span&gt;
+        &lt;/div&gt;
+        &lt;p class="ubits-ia-loader__label ubits-body-sm-regular"&gt;…&lt;/p&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+                                </div>
+                                <div style="padding: 32px; border-bottom: 1px solid var(--ubits-border-1);">
+                                    <h3 class="ubits-body-md-bold" style="margin-bottom: 12px; color: var(--ubits-fg-1-high);">Requisitos</h3>
+                                    <ul class="ubits-body-md-regular" style="color: var(--ubits-fg-1-medium); line-height: 1.6;">
+                                        <li><code>general-styles/ubits-colors.css</code></li>
+                                        <li><code>general-styles/fontawesome-icons.css</code></li>
+                                        <li><code>components/ia-loader.css</code></li>
+                                        <li>Recomendado en modo claro: CSS que defina <code>--modo-ia-gradient-a</code> … <code>--modo-ia-gradient-d</code> (p. ej. <code>ubits-colaborador/aprendizaje/aprendizaje-ia-gradientes.css</code>) para orbes y sparkles con gradiente.</li>
+                                        <li>JS opcional: <code>components/ia-loader.js</code> (<code>getIaLoaderHTML</code>).</li>
+                                    </ul>
+                                </div>
+                                <div style="padding: 32px;">
+                                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;">
+                                        <h2 class="ubits-heading-h2" style="margin: 0; color: var(--ubits-fg-1-high);">Implementación</h2>
+                                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('ia-loader-impl', event)">
+                                            <i class="far fa-copy"></i>
+                                            <span>Copiar</span>
+                                        </button>
+                                    </div>
+                                    <pre style="margin: 0; background: var(--ubits-bg-2); padding: 24px; border-radius: var(--border-radius-md); overflow-x: auto;"><code id="ia-loader-impl" class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">&lt;link rel="stylesheet" href="../../general-styles/ubits-colors.css"&gt;
+&lt;link rel="stylesheet" href="../../general-styles/fontawesome-icons.css"&gt;
+&lt;link rel="stylesheet" href="../../ubits-colaborador/aprendizaje/aprendizaje-ia-gradientes.css"&gt;
+&lt;link rel="stylesheet" href="../../components/ia-loader.css"&gt;
+&lt;script src="../../components/ia-loader.js"&gt;&lt;/script&gt;
+
+&lt;div id="mi-host"&gt;&lt;/div&gt;
+&lt;script&gt;
+document.getElementById('mi-host').innerHTML = getIaLoaderHTML();
+&lt;/script&gt;</code></pre>
+                                    <h3 class="ubits-body-md-bold" style="margin-top: 24px; color: var(--ubits-fg-1-high);">getIaLoaderHTML(options)</h3>
+                                    <p class="ubits-body-md-regular" style="color: var(--ubits-fg-1-medium); line-height: 1.6;">
+                                        <code>label</code> (string, opcional): texto antes de los tres puntos animados; por defecto «Generando recurso».<br>
+                                        <code>idSuffix</code> (string, opcional): sufijo seguro para el <code>id</code> del gradiente SVG en sparkles (claro); evita colisiones si hay varios loaders en la misma página. Si se omite, se genera uno aleatorio.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <div id="ubits-toast-container"></div>
+    <script src="../../components/sidebar.js"></script>
+    <script src="../../components/sub-nav.js"></script>
+    <script src="../../components/alert.js"></script>
+    <script src="../../components/toast.js"></script>
+    <script src="../../components/ia-loader.js"></script>
+    <script src="../../docs/docs-sidebar.js"></script>
+    <script src="../../script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            loadSubNav('top-nav-container', 'documentacion');
+            setTimeout(function () {
+                document.querySelectorAll('.nav-tab.active, .hamburger-item.active').forEach(function (el) {
+                    el.classList.remove('active');
+                });
+                var navTab = document.querySelector('.nav-tab[data-tab="section3"]');
+                var hamburgerItem = document.querySelector('.hamburger-item[data-tab="section3"]');
+                if (navTab) navTab.classList.add('active');
+                if (hamburgerItem) hamburgerItem.classList.add('active');
+            }, 200);
+            loadDocsSidebar('ia-loader');
+            if (typeof showAlert === 'function') {
+                showAlert(
+                    'warning',
+                    'Importante: antes de enviar los prompts a Cursor, reemplaza los textos entre corchetes con datos reales de tu pantalla.',
+                    { containerId: 'ia-loader-warning-alert', noClose: true }
+                );
+            }
+            var previewHost = document.getElementById('ia-loader-doc-preview');
+            if (previewHost && typeof getIaLoaderHTML === 'function') {
+                previewHost.innerHTML = getIaLoaderHTML({ idSuffix: 'doc' });
+            }
+            function syncIaLoaderDocThemeToggle() {
+                var theme = document.body.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+                var icon = document.getElementById('ia-loader-doc-theme-icon');
+                var label = document.getElementById('ia-loader-doc-theme-label');
+                var btn = document.getElementById('ia-loader-doc-theme-toggle');
+                var hint = document.getElementById('ia-loader-doc-theme-hint');
+                if (!icon || !label || !btn) return;
+                if (theme === 'dark') {
+                    icon.className = 'far fa-sun';
+                    label.textContent = 'Modo claro';
+                    btn.setAttribute('aria-pressed', 'true');
+                    if (hint) {
+                        hint.textContent =
+                            'Tema oscuro: animación tipo 01 Nebulosa y chispas claras. Pulsa «Modo claro» para ver el 34 Aura neón.';
+                    }
+                } else {
+                    icon.className = 'far fa-moon';
+                    label.textContent = 'Modo oscuro';
+                    btn.setAttribute('aria-pressed', 'false');
+                    if (hint) {
+                        hint.textContent =
+                            'Tema claro: animación tipo 34 Aura neón y sparkles con gradiente. Pulsa «Modo oscuro» para ver el 01 Nebulosa.';
+                    }
+                }
+            }
+            var iaLoaderThemeBtn = document.getElementById('ia-loader-doc-theme-toggle');
+            if (iaLoaderThemeBtn && typeof toggleDarkMode === 'function') {
+                iaLoaderThemeBtn.addEventListener('click', function () {
+                    toggleDarkMode();
+                    syncIaLoaderDocThemeToggle();
+                });
+            }
+            syncIaLoaderDocThemeToggle();
+        });
+        function toggleTechnicalDocs() {
+            var content = document.getElementById('technical-docs-content');
+            var chevron = document.getElementById('tech-docs-chevron');
+            var label = document.getElementById('tech-docs-toggle-label');
+            if (!content) return;
+            var opening = content.style.display === 'none' || content.style.display === '';
+            content.style.display = opening ? 'block' : 'none';
+            if (chevron) {
+                chevron.className = opening ? 'far fa-chevron-up' : 'far fa-chevron-down';
+            }
+            if (label) {
+                label.textContent = opening ? 'Ocultar' : 'Mostrar';
+            }
+        }
+        function copyPrompt(id) {
+            var el = document.getElementById(id);
+            if (!el) return;
+            var text = el.textContent;
+            navigator.clipboard.writeText(text).then(function () {
+                if (typeof showToast === 'function') {
+                    showToast('success', 'Prompt copiado', { containerId: 'ubits-toast-container', duration: 2500 });
+                }
+            });
+        }
+        function copyCode(codeId, evt) {
+            var codeElement = document.getElementById(codeId);
+            if (!codeElement) return;
+            navigator.clipboard.writeText(codeElement.textContent).then(function () {
+                var button = evt && evt.target ? evt.target.closest('button') : null;
+                if (button && typeof showToast === 'function') {
+                    showToast('success', 'Código copiado', { containerId: 'ubits-toast-container', duration: 2500 });
+                }
+            });
+        }
+    </script>
+</body>
+</html>

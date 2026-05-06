@@ -40,6 +40,7 @@ const DOCS_SIDEBAR_SECTIONS = [
     { id: 'empty-state', title: 'Empty State', group: 'ui' },
     { id: 'header-product', title: 'Header Product', group: 'ui' },
     { id: 'ia-button', title: 'IA-Button', group: 'ui' },
+    { id: 'ia-loader', title: 'IA Loader', group: 'ui' },
     { id: 'file-upload', title: 'File Upload', group: 'ui' },
     { id: 'inline-edit', title: 'Inline Edit', group: 'ui' },
     { id: 'input', title: 'Input', group: 'ui' },
@@ -257,9 +258,6 @@ function initDocsSidebar(activeSection) {
     
     // Función para manejar navegación
     function handleDocsNavigation(section) {
-        // Debug: verificar que la función se está llamando
-        console.log('handleDocsNavigation called with section:', section);
-        
         // Cerrar dropdown
         if (dropdownTrigger && dropdownMenu) {
             dropdownTrigger.classList.remove('active');
@@ -279,6 +277,7 @@ function initDocsSidebar(activeSection) {
             'ai-panel': 'ai-panel.html',
             'button': 'button.html',
             'ia-button': 'ia-button.html',
+            'ia-loader': 'ia-loader.html',
             'loader': 'loader.html',
             'alert': 'alert.html',
             'attention-badge': 'attention-badge.html',
@@ -328,13 +327,14 @@ function initDocsSidebar(activeSection) {
         
         let targetFile = sectionToFile[section];
         if (!targetFile) {
-            console.log('Unknown section:', section);
             return;
         }
         
-        // Verificar si ya estamos en la página destino
-        const isCurrentPage = currentPath.includes(targetFile);
-        
+        // Verificar si ya estamos en la página destino (nombre de archivo exacto: includes('loader.html') sería true en ia-loader.html)
+        const pathNorm = currentPath.replace(/\\/g, '/');
+        const currentFile = pathNorm.split('/').filter(Boolean).pop() || '';
+        const isCurrentPage = currentFile === targetFile;
+
         // Caso especial para button vs ia-button
         if (section === 'button' && currentPath.includes('ia-button.html')) {
             // No estamos en button.html, estamos en ia-button.html
@@ -361,7 +361,6 @@ function initDocsSidebar(activeSection) {
             e.stopPropagation();
             e.stopImmediatePropagation(); // CRITICAL: Prevenir que otros listeners capturen este evento
             const section = this.getAttribute('data-section');
-            console.log('Sidebar item clicked, section:', section);
             if (section) {
                 handleDocsNavigation(section);
             }
@@ -383,7 +382,6 @@ function initDocsSidebar(activeSection) {
             e.stopPropagation();
             e.stopImmediatePropagation(); // CRITICAL: Prevenir que otros listeners capturen este evento
             const section = this.getAttribute('data-section');
-            console.log('Dropdown item clicked, section:', section);
             if (section) {
                 handleDocsNavigation(section);
             }

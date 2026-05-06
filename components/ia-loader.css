@@ -1,0 +1,451 @@
+/* ========================================
+   UBITS IA-LOADER
+   Escenario 16:9 en __stage. __cluster agrupa animación + texto centrados con gap pequeño.
+
+   Tema (`body[data-theme]`):
+   - Claro (proto 34): aura neón + sparkles con gradiente modo IA.
+   - Oscuro (proto 01): nebulosa doble + sparkles claros (static-inverted).
+
+   Presentación única: __frame con borde y bg-1.
+
+   Requisitos: ubits-colors.css + fontawesome-icons.css. Tokens --modo-ia-gradient-* para orbes/sparkles en claro.
+   ======================================== */
+
+.ubits-ia-loader {
+    display: block;
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 22rem;
+    /* Mínimo fijo: con % dentro de min() el padre shrink-to-fit (p. ej. flex + align-items: center) dejaba el ancho en ~0 */
+    min-width: 320px;
+    margin-inline: auto;
+}
+
+/* --- Marco: tarjeta; el ratio vive solo en __stage --- */
+.ubits-ia-loader__frame {
+    display: block;
+    width: 100%;
+    max-width: 22rem;
+    min-width: 320px;
+    box-sizing: border-box;
+    overflow: hidden;
+    border-radius: var(--border-radius-md);
+    border: 1px solid var(--ubits-border-1);
+    background: var(--ubits-bg-1);
+}
+
+/* Ratio 16:9; contenido en columna: animación + texto en la misma tarjeta */
+.ubits-ia-loader__stage {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
+.ubits-ia-loader__ambient {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+    pointer-events: none;
+    isolation: isolate;
+}
+
+.ubits-ia-loader__cluster {
+    position: relative;
+    z-index: 1;
+    flex: 1 1 auto;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--gap-xs);
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.ubits-ia-loader__orb {
+    position: absolute;
+    border-radius: var(--border-radius-full);
+    filter: blur(40px);
+    opacity: 0.8;
+    will-change: transform;
+}
+
+.ubits-ia-loader__orb--1 {
+    width: clamp(9rem, 42vw, 13rem);
+    height: clamp(9rem, 42vw, 13rem);
+    left: -24%;
+    top: -28%;
+    background: radial-gradient(
+        circle at 38% 32%,
+        color-mix(in srgb, var(--modo-ia-gradient-a, var(--ubits-accent-brand)) 15%, var(--ubits-bg-1) 85%) 0%,
+        color-mix(in srgb, var(--ubits-accent-brand) 3%, transparent) 66%,
+        transparent 78%
+    );
+    animation: ubits-ia-loader-orb-1 18s ease-in-out infinite;
+}
+
+.ubits-ia-loader__orb--2 {
+    width: clamp(7rem, 36vw, 11rem);
+    height: clamp(7rem, 36vw, 11rem);
+    right: -22%;
+    top: -6%;
+    background: radial-gradient(
+        circle at 28% 40%,
+        color-mix(in srgb, var(--modo-ia-gradient-c, var(--ubits-accent-brand)) 12%, var(--ubits-bg-1) 88%) 0%,
+        color-mix(in srgb, var(--ubits-accent-brand) 3%, transparent) 64%,
+        transparent 76%
+    );
+    animation: ubits-ia-loader-orb-2 22s ease-in-out infinite;
+    animation-delay: -3.5s;
+}
+
+.ubits-ia-loader__orb--3 {
+    width: clamp(8rem, 40vw, 12rem);
+    height: clamp(8rem, 40vw, 12rem);
+    left: -12%;
+    bottom: -42%;
+    background: radial-gradient(
+        circle at 45% 38%,
+        color-mix(in srgb, var(--modo-ia-gradient-b, var(--ubits-accent-brand)) 12%, var(--ubits-bg-1) 88%) 0%,
+        color-mix(in srgb, var(--ubits-accent-brand) 3%, transparent) 64%,
+        transparent 76%
+    );
+    animation: ubits-ia-loader-orb-3 15s ease-in-out infinite;
+    animation-delay: -6s;
+}
+
+@keyframes ubits-ia-loader-orb-1 {
+    0%,
+    100% {
+        transform: translate(0, 0) scale(1);
+    }
+
+    25% {
+        transform: translate(10%, -12%) scale(1.08);
+    }
+
+    50% {
+        transform: translate(-8%, 8%) scale(0.95);
+    }
+
+    75% {
+        transform: translate(6%, 2%) scale(1.04);
+    }
+}
+
+@keyframes ubits-ia-loader-orb-2 {
+    0%,
+    100% {
+        transform: translate(0, 0) scale(1);
+    }
+
+    33% {
+        transform: translate(8%, -14%) scale(1.06);
+    }
+
+    66% {
+        transform: translate(12%, 10%) scale(0.94);
+    }
+}
+
+@keyframes ubits-ia-loader-orb-3 {
+    0%,
+    100% {
+        transform: translate(0, 0) scale(1);
+    }
+
+    25% {
+        transform: translate(28%, 4%) scale(1.05);
+    }
+
+    50% {
+        transform: translate(14%, -4%) scale(1.07);
+    }
+
+    75% {
+        transform: translate(-6%, 6%) scale(0.96);
+    }
+}
+
+.ubits-ia-loader__center {
+    position: relative;
+    z-index: 1;
+    flex: 0 0 auto;
+    display: grid;
+    grid-template-columns: auto;
+    grid-template-rows: auto;
+    place-items: center;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.ubits-ia-loader__halo {
+    grid-area: 1 / 1;
+    width: 5.25rem;
+    height: 5.25rem;
+    margin: auto;
+    border-radius: var(--border-radius-full);
+    background: conic-gradient(
+        from 0deg,
+        color-mix(in srgb, var(--modo-ia-gradient-a, var(--ubits-accent-brand)) 28%, transparent),
+        transparent 25%,
+        color-mix(in srgb, var(--modo-ia-gradient-c, var(--ubits-accent-brand)) 24%, transparent) 55%,
+        transparent 78%,
+        color-mix(in srgb, var(--modo-ia-gradient-b, var(--ubits-accent-brand)) 22%, transparent)
+    );
+    opacity: 0.5;
+    filter: blur(7px);
+    animation: ubits-ia-loader-halo-spin 6s linear infinite;
+    pointer-events: none;
+    z-index: 0;
+}
+
+@keyframes ubits-ia-loader-halo-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Proto 34 — solo tema claro */
+.ubits-ia-loader__proto--neon {
+    grid-area: 1 / 1;
+    z-index: 1;
+    width: 60px;
+    height: 60px;
+    border-radius: var(--border-radius-full);
+    box-sizing: border-box;
+    box-shadow:
+        0 16px 32px color-mix(in srgb, var(--modo-ia-gradient-a, var(--ubits-accent-brand)) 42%, transparent),
+        0 -16px 32px color-mix(in srgb, var(--modo-ia-gradient-b, var(--ubits-accent-brand)) 42%, transparent),
+        16px 0 32px color-mix(in srgb, var(--modo-ia-gradient-c, var(--ubits-accent-brand)) 42%, transparent),
+        -16px 0 32px color-mix(in srgb, var(--modo-ia-gradient-d, var(--ubits-accent-brand)) 42%, transparent);
+    animation: ubits-ia-loader-neon-spin 1s linear infinite;
+}
+
+[data-theme='dark'] .ubits-ia-loader__proto--neon {
+    display: none;
+}
+
+@keyframes ubits-ia-loader-neon-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Proto 01 — solo tema oscuro */
+.ubits-ia-loader__proto--nebula {
+    grid-area: 1 / 1;
+    z-index: 1;
+    position: relative;
+    width: 64px;
+    height: 64px;
+    box-sizing: border-box;
+}
+
+body:not([data-theme='dark']) .ubits-ia-loader__proto--nebula {
+    display: none;
+}
+
+.ubits-ia-loader__proto--nebula span {
+    position: absolute;
+    inset: 0;
+    border-radius: var(--border-radius-full);
+    background: conic-gradient(
+        from 0deg,
+        var(--modo-ia-gradient-a, var(--ubits-accent-brand)),
+        var(--modo-ia-gradient-b, var(--ubits-accent-brand)),
+        var(--modo-ia-gradient-c, var(--ubits-accent-brand)),
+        var(--modo-ia-gradient-d, var(--ubits-accent-brand)),
+        var(--modo-ia-gradient-a, var(--ubits-accent-brand))
+    );
+    filter: blur(7px);
+    opacity: 0.55;
+    animation: ubits-ia-loader-nebula-spin 2.8s linear infinite;
+}
+
+.ubits-ia-loader__proto--nebula span:nth-child(2) {
+    inset: 11px;
+    filter: blur(4px);
+    opacity: 0.75;
+    animation-duration: 1.9s;
+    animation-direction: reverse;
+}
+
+@keyframes ubits-ia-loader-nebula-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Sparkles: pila y tamaño compactos */
+.ubits-ia-loader__sparkles-wrap {
+    grid-area: 1 / 1;
+    z-index: 5;
+    position: relative;
+    display: inline-flex;
+    align-self: center;
+    justify-self: center;
+    width: 1.4rem;
+    height: 1.4rem;
+    pointer-events: none;
+    box-sizing: border-box;
+}
+
+[data-theme='dark'] .ubits-ia-loader__sparkles-wrap--light {
+    display: none;
+}
+
+body:not([data-theme='dark']) .ubits-ia-loader__sparkles-wrap--dark {
+    display: none;
+}
+
+/* Tema claro — tarjeta 34 lab */
+.ubits-ia-loader__sparkles-wrap--light {
+    color: var(--ubits-accent-brand);
+    filter: drop-shadow(0 3px 10px color-mix(in srgb, var(--ubits-accent-brand) 35%, transparent));
+}
+
+/* Tema oscuro — tarjeta 01 lab */
+.ubits-ia-loader__sparkles-wrap--dark {
+    color: var(--ubits-fg-2-high-static-inverted);
+    filter: drop-shadow(0 0 2px color-mix(in srgb, var(--ubits-fg-1-high) 25%, transparent))
+        drop-shadow(0 0 10px color-mix(in srgb, var(--ubits-accent-brand) 45%, transparent));
+}
+
+.ubits-ia-loader__sparkles-svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+    overflow: visible;
+}
+
+.ubits-ia-loader__sparkles-svg .ubits-ia-loader__spark-g1,
+.ubits-ia-loader__sparkles-svg .ubits-ia-loader__spark-g2,
+.ubits-ia-loader__sparkles-svg .ubits-ia-loader__spark-g3 {
+    transform-box: fill-box;
+    transform-origin: center;
+}
+
+.ubits-ia-loader__spark-g1 {
+    animation: ubits-ia-loader-spark-s1 1.9s ease-in-out infinite;
+}
+
+.ubits-ia-loader__spark-g2 {
+    animation: ubits-ia-loader-spark-s2 1.2s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite;
+    animation-delay: -0.22s;
+}
+
+.ubits-ia-loader__spark-g3 {
+    animation: ubits-ia-loader-spark-s3 1.55s cubic-bezier(0.33, 0, 0.2, 1) infinite;
+    animation-delay: -0.62s;
+}
+
+@keyframes ubits-ia-loader-spark-s1 {
+    0%,
+    100% {
+        transform: scale(1);
+        opacity: 0.9;
+    }
+
+    50% {
+        transform: scale(1.14);
+        opacity: 1;
+    }
+}
+
+@keyframes ubits-ia-loader-spark-s2 {
+    0%,
+    100% {
+        transform: scale(0.92);
+        opacity: 0.68;
+    }
+
+    50% {
+        transform: scale(1.2);
+        opacity: 1;
+    }
+}
+
+@keyframes ubits-ia-loader-spark-s3 {
+    0%,
+    100% {
+        transform: scale(0.94);
+        opacity: 0.72;
+    }
+
+    35% {
+        transform: scale(1.12);
+        opacity: 1;
+    }
+
+    70% {
+        transform: scale(0.98);
+        opacity: 0.85;
+    }
+}
+
+/* --- Texto + puntos (pie dentro del stage, sobre el fondo) --- */
+.ubits-ia-loader__label {
+    position: relative;
+    z-index: 2;
+    flex: 0 0 auto;
+    margin: 0;
+    padding: 0 var(--padding-sm) var(--padding-sm);
+    max-width: none;
+    text-align: center;
+    color: var(--ubits-fg-1-medium);
+    box-sizing: border-box;
+}
+
+.ubits-ia-loader__dots span {
+    display: inline-block;
+    width: 0.22em;
+    text-align: center;
+    opacity: 0.4;
+    animation: ubits-ia-loader-dot 1.35s ease-in-out infinite;
+}
+
+.ubits-ia-loader__dots span:nth-child(2) {
+    animation-delay: 0.22s;
+}
+
+.ubits-ia-loader__dots span:nth-child(3) {
+    animation-delay: 0.44s;
+}
+
+@keyframes ubits-ia-loader-dot {
+    0%,
+    100% {
+        opacity: 0.28;
+        transform: translateY(0);
+    }
+
+    50% {
+        opacity: 0.88;
+        transform: translateY(-1px);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .ubits-ia-loader__orb,
+    .ubits-ia-loader__halo,
+    .ubits-ia-loader__proto--neon,
+    .ubits-ia-loader__proto--nebula span,
+    .ubits-ia-loader__spark-g1,
+    .ubits-ia-loader__spark-g2,
+    .ubits-ia-loader__spark-g3,
+    .ubits-ia-loader__dots span {
+        animation: none !important;
+    }
+
+    .ubits-ia-loader__halo {
+        opacity: 0.45;
+        transform: none;
+    }
+}

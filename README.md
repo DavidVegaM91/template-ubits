@@ -265,6 +265,7 @@ Patrón documentado para reutilizarlo en otros flujos o listas similares.
 - **Drawer** - Panel lateral deslizante - **RENDERIZADO: JS del componente**
 - **Dropdown Menu** - Menú desplegable (usado por Input select, Paginator, etc.) - **RENDERIZADO: getDropdownMenuHtml() + openDropdownMenu() / closeDropdownMenu()**
 - **Loader** - Indicador de carga (spinner) - **RENDERIZADO: HTML directo**
+- **IA Loader** - Indicador de carga para flujos IA (marco con borde y `bg-1`; `__stage` 16:9 con animación y mensaje en pie dentro de la misma tarjeta; claro = 34 neón + sparkles gradiente; oscuro = 01 nebulosa + chispas claras) - **RENDERIZADO: HTML directo o `getIaLoaderHTML()`**
 - **Modal** - Diálogo modal - **RENDERIZADO: JS del componente**
 - **Table** - Tablas de datos - **RENDERIZADO: HTML directo**
 - **Tooltip** - Tooltips - **RENDERIZADO: HTML/JS del componente**
@@ -308,6 +309,7 @@ Todos los componentes UBITS requieren imports obligatorios:
 <link rel="stylesheet" href="../../components/drawer.css">
 <link rel="stylesheet" href="../../components/dropdown-menu.css">
 <link rel="stylesheet" href="../../components/loader.css">
+<link rel="stylesheet" href="../../components/ia-loader.css">
 <link rel="stylesheet" href="../../components/modal.css">
 <link rel="stylesheet" href="../../components/table.css">
 <link rel="stylesheet" href="../../components/tooltip.css">
@@ -486,6 +488,7 @@ Todos los componentes UBITS requieren imports obligatorios:
 - **`documentacion/componentes/calendar.html`** - Documentación del componente Calendar
 - **`documentacion/componentes/drawer.html`** - Documentación del componente Drawer
 - **`documentacion/componentes/dropdown-menu.html`** - Documentación del componente Dropdown Menu
+- **`documentacion/componentes/ia-loader.html`** - Documentación del componente IA Loader
 - **`documentacion/componentes/loader.html`** - Documentación del componente Loader
 - **`documentacion/componentes/modal.html`** - Documentación del componente Modal
 - **`documentacion/componentes/popover.html`** - Documentación del componente Popover
@@ -559,6 +562,7 @@ Todos los componentes UBITS requieren imports obligatorios:
 │   ├── drawer.css + drawer.js
 │   ├── dropdown-menu.css + dropdown-menu.js
 │   ├── loader.css + loader.js
+│   ├── ia-loader.css + ia-loader.js
 │   ├── modal.css + modal.js
 │   ├── table.css
 │   ├── tooltip.css + tooltip.js
@@ -1016,6 +1020,7 @@ loadCardContentCompact('mi-contenedor-compact', [
 - **`documentacion/componentes/calendar.html`** - Documentación del componente Calendar
 - **`documentacion/componentes/drawer.html`** - Documentación del componente Drawer
 - **`documentacion/componentes/dropdown-menu.html`** - Documentación del componente Dropdown Menu
+- **`documentacion/componentes/ia-loader.html`** - Documentación del componente IA Loader
 - **`documentacion/componentes/loader.html`** - Documentación del componente Loader
 - **`documentacion/componentes/modal.html`** - Documentación del componente Modal
 - **`documentacion/componentes/popover.html`** - Documentación del componente Popover
