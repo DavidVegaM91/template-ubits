@@ -326,12 +326,12 @@
     }
 
     /**
-     * Badge «Generado con IA» (variante outlined + IA, sm, icono sparkles).
+     * Badge «Generado con IA» (variante outlined + IA, xs, icono sparkles).
      * Requiere: badge-tag.css, aprendizaje-ia-gradientes.css (o fallbacks en badge-tag), fontawesome-icons.css
      */
     function getGeneradoConIaBadgeHtml() {
         return (
-            '<span class="ubits-badge-tag ubits-badge-tag--outlined ubits-badge-tag--ia ubits-badge-tag--sm ubits-badge-tag--with-icon ubits-generado-ia-badge" role="status">' +
+            '<span class="ubits-badge-tag ubits-badge-tag--outlined ubits-badge-tag--ia ubits-badge-tag--xs ubits-badge-tag--with-icon ubits-generado-ia-badge" role="status">' +
             '<i class="far fa-sparkles"></i>' +
             '<span class="ubits-badge-tag__text">Generado con IA</span>' +
             '</span>'

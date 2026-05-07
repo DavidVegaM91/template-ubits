@@ -47,9 +47,7 @@
 
   function generadoConIaBadgeMarkup() {
     if (typeof global.getGeneradoConIaBadgeHtml === 'function') {
-      return global
-        .getGeneradoConIaBadgeHtml()
-        .replace('ubits-badge-tag--sm', 'ubits-badge-tag--xs');
+      return global.getGeneradoConIaBadgeHtml();
     }
     return (
       '<span class="ubits-badge-tag ubits-badge-tag--outlined ubits-badge-tag--ia ubits-badge-tag--xs ubits-badge-tag--with-icon learn-question__ia-badge" role="status">' +
