@@ -164,7 +164,7 @@ Hijos:
      general-styles/fontawesome-icons.css, general-styles/ubits-typography.css, components/learn-content-img-trailer.css
 JS: components/learn-content-img-trailer.js (+ toast.js si usas toasts)
      Copys: LEARN_CONTENT_IMG_TRAILER_DEFAULTS (cta, hint, editButton, playAriaLabel, …)
-     HTML vacío: getLearnContentImgTrailerEmptyHtml({ ctaId?, aiCtaModalId?, aiCtaPanelId?, iconClass?, includeErrorPlaceholder? })
+     HTML vacío: getLearnContentImgTrailerEmptyHtml({ ctaId?, aiCtaModalId?, aiCtaPanelId? solo data-* en root; iconClass?, includeErrorPlaceholder? }) — un solo botón IA («Generar portada con IA» por defecto).
      Botón Editar: getLearnContentImgTrailerEditHtml({ editButtonId? })
      Botón Eliminar (variante imagen): getLearnContentImgTrailerDeleteHtml({ deleteButtonId? })
      initLearnContentImgTrailer('#id', {}) — data-trailer-url en la raíz;

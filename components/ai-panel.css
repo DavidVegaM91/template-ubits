@@ -179,7 +179,7 @@ body.ai-panel-resizing .ai-panel {
     z-index: 1;
 }
 
-/* Sparkles + botón Atrás (vista artifact) */
+/* Hueco leading + botón Atrás (vista artifact) */
 .ai-panel__hdr-leading {
     display: flex;
     align-items: center;
@@ -191,10 +191,6 @@ body.ai-panel-resizing .ai-panel {
 }
 
 .ai-panel__hdr-back {
-    display: none;
-}
-
-.ai-panel--artifact-open .ai-panel__hdr-brand {
     display: none;
 }
 
@@ -782,7 +778,7 @@ body.ai-panel-resizing .ai-panel {
 }
 
 .ai-panel__input::placeholder {
-    color: var(--ubits-fg-1-medium);
+    color: var(--ubits-input-text-default);
 }
 
 /* Fila de acciones del input */

@@ -47,6 +47,7 @@
  * - 12 posiciones posibles para la colita
  * - Auto-detección de mejor posición si no cabe
  * - Soporte para hover, focus
+ * - data-tooltip-tap-toggle: sin hover primario (hover:none) o puntero táctil grueso (pointer:coarse), el clic alterna el tooltip y el tap fuera lo cierra (útil para badges de tokens en IA).
  * - Ocultar al mousedown/clic (por defecto): el tooltip se cierra al hacer clic en el elemento para no quedar visible al abrir menús o activar acciones. Desactivar con data-tooltip-hide-on-click="false".
  * - Modo claro y oscuro automático
  */
@@ -271,6 +272,7 @@
         }
 
         container.appendChild(tooltip);
+        tooltip._tooltipAnchorEl = el;
 
         // Calcular posición: si forcePosition, usar siempre la indicada; si no, elegir la que quepa
         const position = config.forcePosition
@@ -347,6 +349,9 @@
         return document.body && document.body.classList.contains('ubits-paginas-creator-dragging');
     }
 
+    /** Cierra tooltip por tap fuera (modo data-tooltip-tap-toggle). */
+    let _tooltipTapOutsideHandler = null;
+
     function hideTooltip() {
         const container = ensureContainer();
         const tooltips = container.querySelectorAll('.ubits-tooltip');
@@ -359,6 +364,25 @@
             }
             tooltip.remove();
         });
+        if (_tooltipTapOutsideHandler) {
+            document.removeEventListener('click', _tooltipTapOutsideHandler, true);
+            _tooltipTapOutsideHandler = null;
+        }
+    }
+
+    function shouldTooltipTapToggleMode() {
+        try {
+            if (window.matchMedia('(hover: none)').matches) return true;
+            if (window.matchMedia('(pointer: coarse)').matches) return true;
+        } catch (e) {}
+        return false;
+    }
+
+    function parseTooltipDelayMs(element, fallback) {
+        const raw = element.getAttribute('data-tooltip-delay');
+        if (raw === null || raw === '') return fallback;
+        const n = parseInt(raw, 10);
+        return Number.isFinite(n) ? n : fallback;
     }
 
     /**
@@ -367,7 +391,8 @@
      *
      * Atributos data opcionales:
      * - data-tooltip: texto del tooltip (puede cambiarse en DOM para texto dinámico)
-     * - data-tooltip-delay: ms antes de mostrar (default 200)
+     * - data-tooltip-delay: ms antes de mostrar (default 200). Usar "0" para inmediato (antes fallaba por bug de parseo).
+     * - data-tooltip-tap-toggle: sin hover primario (hover:none) o puntero táctil grueso (pointer:coarse), el clic alterna el tooltip; tap fuera cierra.
      * - data-tooltip-position, data-tooltip-align: posición y alineación
      * - data-tooltip-hide-on-click: "true" (default) oculta el tooltip al hacer mousedown en el elemento; "false" no lo oculta (útil si el clic no abre menús/acciones)
      */
@@ -384,15 +409,22 @@
                     element.removeEventListener('focus', element._tooltipFocusHandler);
                     element.removeEventListener('blur', element._tooltipBlurHandler);
                 }
+                if (element._tooltipTapClickHandler) {
+                    element.removeEventListener('click', element._tooltipTapClickHandler);
+                    element._tooltipTapClickHandler = null;
+                }
             }
 
             const position = element.getAttribute('data-tooltip-position') || 'top';
             const align = element.getAttribute('data-tooltip-align') || 'center';
-            const delay = parseInt(element.getAttribute('data-tooltip-delay')) || 200;
-            const duration = parseInt(element.getAttribute('data-tooltip-duration')) || 0;
+            const delay = parseTooltipDelayMs(element, 200);
+            const duration = parseInt(element.getAttribute('data-tooltip-duration'), 10) || 0;
             const noArrow = element.hasAttribute('data-tooltip-no-arrow');
             const normal = element.hasAttribute('data-tooltip-normal');
-            const hideOnClick = element.getAttribute('data-tooltip-hide-on-click') !== 'false';
+            const tapToggle = element.hasAttribute('data-tooltip-tap-toggle');
+            const tapMode = tapToggle && shouldTooltipTapToggleMode();
+            let hideOnClick = element.getAttribute('data-tooltip-hide-on-click') !== 'false';
+            if (tapMode) hideOnClick = false;
 
             let tooltipTimeout;
             let currentTooltip = null;
@@ -410,6 +442,7 @@
 
             // Mostrar en hover (texto actual por si data-tooltip cambia dinámicamente)
             const mouseEnterHandler = function () {
+                if (tapMode) return;
                 if (isTooltipGloballySuppressed()) return;
                 tooltipTimeout = setTimeout(() => {
                     if (isTooltipGloballySuppressed()) return;
@@ -420,6 +453,7 @@
 
             // Ocultar al salir
             const mouseLeaveHandler = function () {
+                if (tapMode) return;
                 if (tooltipTimeout) clearTimeout(tooltipTimeout);
                 hideTooltip();
                 currentTooltip = null;
@@ -435,6 +469,7 @@
 
             // Mostrar en focus (accesibilidad)
             const focusHandler = function () {
+                if (tapMode) return;
                 if (isTooltipGloballySuppressed()) return;
                 var text = element.getAttribute('data-tooltip');
                 if (!text) return;
@@ -446,9 +481,37 @@
 
             // Ocultar al perder focus
             const blurHandler = function () {
+                if (tapMode) return;
                 if (tooltipTimeout) clearTimeout(tooltipTimeout);
                 hideTooltip();
                 currentTooltip = null;
+            };
+
+            const tapClickHandler = function (ev) {
+                if (!tapMode) return;
+                ev.preventDefault();
+                ev.stopPropagation();
+                var text = element.getAttribute('data-tooltip');
+                if (!text) return;
+                var container = ensureContainer();
+                var visibleTip = container.querySelector('.ubits-tooltip.ubits-tooltip--visible');
+                if (visibleTip && visibleTip._tooltipAnchorEl === element) {
+                    hideTooltip();
+                    currentTooltip = null;
+                    return;
+                }
+                hideTooltip();
+                currentTooltip = showTooltip(element, text, getOptions());
+                setTimeout(function () {
+                    _tooltipTapOutsideHandler = function (docEv) {
+                        if (element.contains(docEv.target)) return;
+                        hideTooltip();
+                        currentTooltip = null;
+                        document.removeEventListener('click', _tooltipTapOutsideHandler, true);
+                        _tooltipTapOutsideHandler = null;
+                    };
+                    document.addEventListener('click', _tooltipTapOutsideHandler, true);
+                }, 0);
             };
 
             // Agregar listeners
@@ -457,6 +520,10 @@
             if (hideOnClick) element.addEventListener('mousedown', mouseDownHandler);
             element.addEventListener('focus', focusHandler);
             element.addEventListener('blur', blurHandler);
+            if (tapMode) {
+                element.addEventListener('click', tapClickHandler);
+                element._tooltipTapClickHandler = tapClickHandler;
+            }
 
             // Guardar referencias para poder limpiarlas después
             element._tooltipMouseEnterHandler = mouseEnterHandler;

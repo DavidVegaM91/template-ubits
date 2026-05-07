@@ -177,7 +177,7 @@ function _aiPanelTokensBadgeHtml(o) {
         '<span class="ubits-badge-tag ubits-badge-tag--outlined ubits-badge-tag--ia ubits-badge-tag--xs ai-panel__tokens-badge" id="ai-panel-tokens-badge" tabindex="0" ' +
         'data-tooltip="' +
         _aiEscape(tip) +
-        '" data-tooltip-delay="1000" aria-label="' +
+        '" data-tooltip-delay="0" data-tooltip-tap-toggle aria-label="' +
         _aiEscape(aria) +
         '">' +
         '<span class="ubits-badge-tag__token-cost" aria-hidden="true">' +
@@ -219,7 +219,6 @@ function _buildAIPanelHTML(o) {
     <!-- Header -->
     <header class="ai-panel__header">
         <div class="ai-panel__hdr-leading">
-            <div class="ai-panel__icon ai-panel__hdr-brand" id="ai-panel-hdr-brand" aria-hidden="true"><i class="far fa-sparkles"></i></div>
             <button type="button" class="ubits-button ubits-button--tertiary ubits-button--xs ubits-button--icon-only ai-panel__hdr-back" id="ai-panel-hdr-back" aria-label="Volver al chat">
                 <i class="far fa-chevron-left"></i>
             </button>

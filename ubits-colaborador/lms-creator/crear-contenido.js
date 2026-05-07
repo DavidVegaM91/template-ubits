@@ -415,18 +415,14 @@
 
     function initPortadaAiModal() {
         if (typeof openModal !== 'function') return;
-        var svgIcon = '<i class="far fa-sparkles" style="font-size:16px;margin-right:8px;flex-shrink:0;background:linear-gradient(135deg,var(--modo-ia-gradient-a) 0%,var(--modo-ia-gradient-b) 35.59%,var(--modo-ia-gradient-c) 67.19%,var(--modo-ia-gradient-d) 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;"></i>';
-        
+
         var bodyHtml = '<div class="ai-modal-wrapper" style="display:flex; flex-direction:column; align-items:center; justify-content:center; padding: 0; flex:1; width:100%;">' +
             '<div id="ai-modal-input-view" style="width:100%; max-width:600px; transition: opacity 0.3s; z-index:1; padding: 0;">' +
                 '<div style="display:flex; flex-direction:column; align-items:center; gap:16px; margin-bottom:32px;">' +
-                    '<div style="font-size:32px; animation: ubits-ia-chat-sparkles-float 2.5s ease-in-out infinite;">' +
-                        '<i class="far fa-sparkles" style="background:linear-gradient(135deg,var(--modo-ia-gradient-a) 0%,var(--modo-ia-gradient-b) 35.59%,var(--modo-ia-gradient-c) 67.19%,var(--modo-ia-gradient-d) 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;"></i>' +
-                    '</div>' +
                     '<p style="text-align:center; margin:0; font-size:1.5rem; color:var(--ubits-fg-1-high);">Tú lo imaginas, nosotros <span style="font-weight:600;background:linear-gradient(90deg,var(--modo-ia-gradient-a),var(--modo-ia-gradient-b),var(--modo-ia-gradient-c),var(--modo-ia-gradient-d));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;">lo generamos</span></p>' +
                 '</div>' +
                 '<div class="ai-panel__input-box">' +
-                    '<textarea class="ai-panel__input" id="portada-ai-modal-input" placeholder="Describe la portada que imaginas..." rows="1" style="flex:1; width:100%; min-height:24px; line-height:24px; resize:none; padding:8px 0; outline:none; border:none; background:transparent; font-family:inherit;"></textarea>' +
+                    '<textarea class="ai-panel__input" id="portada-ai-modal-input" placeholder="Describe la portada que imaginas..." rows="1" style="flex:1; width:100%; min-height:24px; line-height:24px; resize:none; padding:8px 0; outline:none; border:none; background:transparent; font-family:inherit; color:var(--ubits-fg-1-high);"></textarea>' +
                     '<div class="ai-panel__input-actions" style="display:flex; align-items:center; justify-content:flex-end; width:100%; gap:8px;">' +
                         '<button type="button" class="ubits-ia-button ubits-ia-button--primary ubits-ia-button--sm ubits-ia-button--icon-only" id="portada-ai-modal-send" aria-label="Enviar">' +
                             '<i class="far fa-arrow-right"></i>' +
@@ -458,16 +454,10 @@
 
         var overlay = openModal({
             overlayId: 'portada-ai-modal',
-            title: 'Generar portada',
+            title: 'Generar portada con IA',
             bodyHtml: bodyHtml,
             size: 'md'
         });
-
-        // Customizar header y orbes
-        var titleSpan = overlay.querySelector('.ubits-modal-title');
-        if (titleSpan) {
-            titleSpan.innerHTML = '<div style="display:flex; align-items:center;">' + svgIcon + 'Generar portada</div>';
-        }
 
         // Badge de tokens restantes (IA) a la izquierda del botón Cerrar + tooltip oficial
         var modalHeaderEl = overlay.querySelector('.ubits-modal-header');
@@ -483,7 +473,8 @@
             tokensBadge.className = 'ubits-badge-tag ubits-badge-tag--outlined ubits-badge-tag--ia ubits-badge-tag--xs';
             tokensBadge.setAttribute('tabindex', '0');
             tokensBadge.setAttribute('data-tooltip', 'Número de tokens restantes.');
-            tokensBadge.setAttribute('data-tooltip-delay', '1000');
+            tokensBadge.setAttribute('data-tooltip-delay', '0');
+            tokensBadge.setAttribute('data-tooltip-tap-toggle', '');
             tokensBadge.setAttribute('aria-label', portadaAiTokensRemaining + ' tokens restantes');
             tokensBadge.innerHTML =
                 '<span class="ubits-badge-tag__token-cost" aria-hidden="true">' +

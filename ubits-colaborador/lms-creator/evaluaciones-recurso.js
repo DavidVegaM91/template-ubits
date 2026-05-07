@@ -1461,13 +1461,9 @@
         _evalWireIaModalParamAria(overlay);
         _evalWireIaModalComposer(overlay);
 
-        var svgIcon =
-            '<i class="far fa-sparkles" style="font-size:16px;margin-right:8px;flex-shrink:0;background:linear-gradient(135deg,var(--modo-ia-gradient-a) 0%,var(--modo-ia-gradient-b) 35.59%,var(--modo-ia-gradient-c) 67.19%,var(--modo-ia-gradient-d) 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;"></i>';
-
         var titleSpan = overlay.querySelector('.ubits-modal-title');
         if (titleSpan) {
-            titleSpan.innerHTML =
-                '<div style="display:flex; align-items:center;">' + svgIcon + 'Generar evaluación</div>';
+            titleSpan.textContent = 'Generar evaluación';
         }
 
         var modalHeaderEl = overlay.querySelector('.ubits-modal-header');
@@ -1483,7 +1479,8 @@
             tokensBadge.className = 'ubits-badge-tag ubits-badge-tag--outlined ubits-badge-tag--ia ubits-badge-tag--xs';
             tokensBadge.setAttribute('tabindex', '0');
             tokensBadge.setAttribute('data-tooltip', 'Número de tokens restantes.');
-            tokensBadge.setAttribute('data-tooltip-delay', '1000');
+            tokensBadge.setAttribute('data-tooltip-delay', '0');
+            tokensBadge.setAttribute('data-tooltip-tap-toggle', '');
             tokensBadge.setAttribute('aria-label', currentTokens + ' tokens restantes');
             tokensBadge.innerHTML =
                 '<span class="ubits-badge-tag__token-cost" aria-hidden="true">' +

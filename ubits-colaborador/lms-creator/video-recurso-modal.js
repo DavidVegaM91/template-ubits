@@ -863,22 +863,14 @@
     /* ══════════════════════════════════════
        Chrome IA del modal (orbes + header + badge, como «Generar portada»)
     ══════════════════════════════════════ */
-    var IA_SPARKLES_ICON =
-        '<i class="far fa-sparkles" style="font-size:16px;margin-right:8px;flex-shrink:0;' +
-        'background:linear-gradient(135deg,var(--modo-ia-gradient-a) 0%,var(--modo-ia-gradient-b) 35.59%,' +
-        'var(--modo-ia-gradient-c) 67.19%,var(--modo-ia-gradient-d) 100%);' +
-        '-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;"></i>';
-
     /**
      * Chrome IA del modal: mismos orbes + header transparente + body que «Generar portada»
      * (crear-contenido.js initPortadaAiModal).
      */
     function applyAiModalChrome(overlay) {
-        /* Título con sparkles degradado */
         var titleSpan = overlay.querySelector('.ubits-modal-title');
         if (titleSpan) {
-            titleSpan.innerHTML =
-                '<div style="display:flex;align-items:center;">' + IA_SPARKLES_ICON + 'Agregar video</div>';
+            titleSpan.textContent = 'Agregar video';
         }
 
         /* Fondo con orbes (mismas capas radiales que portada IA) */
@@ -923,7 +915,8 @@
             badge.className = 'ubits-badge-tag ubits-badge-tag--outlined ubits-badge-tag--ia ubits-badge-tag--xs';
             badge.setAttribute('tabindex', '0');
             badge.setAttribute('data-tooltip', 'Número de tokens restantes.');
-            badge.setAttribute('data-tooltip-delay', '1000');
+            badge.setAttribute('data-tooltip-delay', '0');
+            badge.setAttribute('data-tooltip-tap-toggle', '');
             badge.setAttribute('aria-label', tokensLeft + ' tokens restantes');
             badge.innerHTML =
                 '<span class="ubits-badge-tag__token-cost" aria-hidden="true">' +
