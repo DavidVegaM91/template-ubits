@@ -98,32 +98,85 @@
         return d.innerHTML;
     }
 
-    /* Calcula el estado real a partir de las fechas (ignora el campo estado guardado) */
-    function calcEstado(fechaInicio, fechaFin) {
+    /**
+     * Estado en listado: requiere `row.activada === true` para salir de borrador.
+     * - Sin activar: siempre borrador (aunque tenga fechas; si llega el inicio sin activar, sigue borrador).
+     * - Activada: finalizada si estado guardado es finalizada o ya pasó fecha fin;
+     *   por iniciar si inicio futuro; en progreso si ya empezó el período.
+     */
+    function calcEstado(row) {
+        if (!row) return 'borrador';
+        var activada = row.activada === true;
         var hoy = new Date();
         hoy.setHours(0, 0, 0, 0);
-        var fin    = fechaFin    ? new Date(fechaFin)    : null;
-        var inicio = fechaInicio ? new Date(fechaInicio) : null;
-        if (fin    && fin    < hoy)  return 'finalizada';
-        if (inicio && inicio <= hoy) return 'activa';
+        var fin    = row.fechaFin    ? new Date(row.fechaFin)    : null;
+        var inicio = row.fechaInicio ? new Date(row.fechaInicio) : null;
+
+        if (!activada) {
+            return 'borrador';
+        }
+        if (row.estado === 'finalizada' || (fin && fin < hoy)) {
+            return 'finalizada';
+        }
+        if (inicio && inicio > hoy) {
+            return 'por_iniciar';
+        }
+        if (inicio && inicio <= hoy) {
+            return 'activa';
+        }
         return 'borrador';
     }
 
     function getEstadoTagType(estado) {
-        if (estado === 'activa')     return 'success';
-        if (estado === 'finalizada') return 'neutral';
+        if (estado === 'activa')       return 'success';
+        if (estado === 'finalizada')   return 'neutral';
+        if (estado === 'por_iniciar') return 'warning';
         return 'info'; /* borrador */
     }
 
     function getEstadoLabel(estado) {
-        var labels = { borrador: 'Borrador', activa: 'Activa', finalizada: 'Finalizada' };
+        var labels = {
+            borrador: 'Borrador',
+            activa: 'En progreso',
+            por_iniciar: 'Por iniciar',
+            finalizada: 'Finalizada'
+        };
         return labels[estado] || estado;
     }
 
+    /** Solo visible si hay ≥2 seleccionadas y todas están «En progreso» (calcEstado === activa). */
+    function syncA360DescargarButton(selectedIds) {
+        var btn = document.getElementById('a360-btn-descargar');
+        if (!btn) return;
+        var ids = Array.isArray(selectedIds) ? selectedIds : [];
+        var ok = ids.length >= 2 && ids.every(function (id) {
+            var ev = BD_EVALUACIONES_360.getEvaluacionById(id != null ? String(id) : '');
+            return !!ev && calcEstado(ev) === 'activa';
+        });
+        /* inline-flex gana a [hidden] con .ubits-button en algunos navegadores */
+        btn.style.display = ok ? 'inline-flex' : 'none';
+        btn.hidden = !ok;
+        btn.setAttribute('aria-hidden', ok ? 'false' : 'true');
+        btn.disabled = !ok;
+    }
+
+    function selectionAllowsDescargaProgreso(selectedIds) {
+        var ids = Array.isArray(selectedIds) ? selectedIds : [];
+        return ids.length >= 2 && ids.every(function (id) {
+            var ev = BD_EVALUACIONES_360.getEvaluacionById(id != null ? String(id) : '');
+            return !!ev && calcEstado(ev) === 'activa';
+        });
+    }
+
+    /** Misma lectura natural que planes-formacion (p. ej. «15 mar 2026»). */
     function formatDate(d) {
         if (!d) return '—';
-        var parts = d.split('-');
-        if (parts.length !== 3) return d;
+        if (typeof window.formatDateDDMmmAAAA === 'function') {
+            var natural = window.formatDateDDMmmAAAA(d);
+            return (natural && String(natural).trim()) ? natural : '—';
+        }
+        var parts = String(d).split('-');
+        if (parts.length !== 3) return String(d);
         return parts[2] + '/' + parts[1] + '/' + parts[0];
     }
 
@@ -175,7 +228,7 @@
 
     /* ── row HTML para ubits-data-table ── */
     function buildRowHtml(row) {
-        var estadoCalc = calcEstado(row.fechaInicio, row.fechaFin);
+        var estadoCalc = calcEstado(row);
         var tipo  = getEstadoTagType(estadoCalc);
         var label = getEstadoLabel(estadoCalc);
         var tagHtml = '<span class="ubits-status-tag ubits-status-tag--' + tipo + ' ubits-status-tag--sm"><span class="ubits-status-tag__text">' + escapeHtml(label) + '</span></span>';
@@ -195,6 +248,11 @@
         if (typeof getDropdownMenuHtml !== 'function' || typeof openDropdownMenu !== 'function') return;
         var ACCIONES_POR_ESTADO = {
             borrador:   [{ text: 'Editar',             value: 'editar',       leftIcon: 'pen'              },
+                         { text: 'Duplicar',            value: 'duplicar',     leftIcon: 'copy'             },
+                         { text: 'Eliminar',            value: 'eliminar',     leftIcon: 'trash', danger: true }],
+            por_iniciar: [{ text: 'Editar',             value: 'editar',       leftIcon: 'pen'              },
+                         { text: 'Finalizar',           value: 'finalizar',    leftIcon: 'flag-checkered'   },
+                         { text: 'Enviar recordatorio', value: 'recordatorio', leftIcon: 'bell'             },
                          { text: 'Duplicar',            value: 'duplicar',     leftIcon: 'copy'             },
                          { text: 'Eliminar',            value: 'eliminar',     leftIcon: 'trash', danger: true }],
             activa:     [{ text: 'Editar',             value: 'editar',       leftIcon: 'pen'              },
@@ -231,13 +289,14 @@
     /* ── acciones ── */
     function handleAccion(id, accion) {
         if (accion === 'editar' || accion === 'ver') {
-            window.location.href = 'crear-360.html?id=' + id;
+            window.location.href = 'editar-360.html?id=' + id;
         } else if (accion === 'duplicar') {
             var orig = BD_EVALUACIONES_360.getEvaluacionById(id);
             if (orig) {
                 var clone = JSON.parse(JSON.stringify(orig));
                 clone.nombre = 'Copia de ' + orig.nombre;
                 clone.estado = 'borrador';
+                clone.activada = false;
                 clone.checks = { tipo: false, competencias: false, evaluados: false, resultados: false };
                 BD_EVALUACIONES_360.addEvaluacion(clone);
                 if (tablaRef && typeof tablaRef.refresh === 'function') tablaRef.refresh();
@@ -350,13 +409,22 @@
                 getData: function () {
                     var items = BD_EVALUACIONES_360.getEvaluaciones().slice();
                     items.sort(function (a, b) {
+                        var sa = calcEstado(a);
+                        var sb = calcEstado(b);
+                        var aBorrador = sa === 'borrador';
+                        var bBorrador = sb === 'borrador';
+                        if (aBorrador && !bBorrador) return -1;
+                        if (!aBorrador && bBorrador) return 1;
                         return (b.fechaInicio || '').localeCompare(a.fechaInicio || '');
                     });
                     return items;
                 },
                 rowIdField: 'id',
                 buildRowHtml: buildRowHtml,
-                features: { checkboxes: true, search: true, filters: true, verSeleccionados: false, actionBar: true, resultsCount: true },
+                features: { checkboxes: true, search: true, filters: true, verSeleccionados: true, actionBar: true, resultsCount: true },
+                onSelectionChange: function (selectedIds) {
+                    syncA360DescargarButton(selectedIds);
+                },
                 actionBarButtons: [
                     {
                         id: 'eliminar',
@@ -380,6 +448,7 @@
                 i18n: {
                     selectAll: 'Seleccionar todo',
                     deselectAll: 'Deseleccionar todo',
+                    verSeleccionados: 'Ver seleccionados',
                     clearFilters: 'Limpiar filtros',
                     filtrosAplicados: 'Filtros aplicados',
                     buscar: 'Buscar'
@@ -387,6 +456,27 @@
             });
 
             setTimeout(function () {
+                /* Descargar progreso: 2+ seleccionadas, todas «En progreso»; a la izquierda de Eliminar */
+                var actionBtnsWrap = document.querySelector('#a360-data-table-container .ubits-dt-action-buttons');
+                if (actionBtnsWrap && !document.getElementById('a360-btn-descargar')) {
+                    var dlBtn = document.createElement('button');
+                    dlBtn.type = 'button';
+                    dlBtn.id = 'a360-btn-descargar';
+                    dlBtn.className = 'ubits-button ubits-button--secondary ubits-button--sm';
+                    dlBtn.hidden = true;
+                    dlBtn.style.display = 'none';
+                    dlBtn.disabled = true;
+                    dlBtn.setAttribute('aria-label', 'Descargar progreso de evaluaciones seleccionadas');
+                    dlBtn.innerHTML = '<i class="far fa-download"></i><span>Descargar progreso</span>';
+                    dlBtn.addEventListener('click', function () {
+                        var ids = tablaRef && typeof tablaRef.getSelectedIds === 'function' ? tablaRef.getSelectedIds() : [];
+                        if (!selectionAllowsDescargaProgreso(ids)) return;
+                        showToast('success', 'Descarga iniciada para ' + ids.length + ' evaluación(es)');
+                    });
+                    actionBtnsWrap.insertBefore(dlBtn, actionBtnsWrap.firstChild);
+                }
+                syncA360DescargarButton(tablaRef && typeof tablaRef.getSelectedIds === 'function' ? tablaRef.getSelectedIds() : []);
+
                 /* Inyectar botón "Resultados generales" al lado derecho del buscador */
                 var headerRight = document.querySelector('#a360-data-table-container .ubits-dt-header-right');
                 if (headerRight) {
@@ -422,7 +512,7 @@
                 var row = e.target.closest('tbody tr[data-id]');
                 if (!row || e.target.closest('.ubits-checkbox') || e.target.closest('input[type="checkbox"]') || e.target.closest('.js-a360-row-acciones-btn')) return;
                 var id = row.getAttribute('data-id');
-                if (id) window.location.href = 'crear-360.html?id=' + id;
+                if (id) window.location.href = 'editar-360.html?id=' + id;
             });
         }
 
@@ -449,6 +539,10 @@
         var params = new URLSearchParams(window.location.search);
         if (params.get('toast') === 'created') {
             setTimeout(function () { showToast('success', 'Evaluación creada exitosamente'); }, 300);
+            history.replaceState(null, '', window.location.pathname);
+        }
+        if (params.get('toast') === 'activated') {
+            setTimeout(function () { showToast('success', 'Evaluación activada correctamente'); }, 300);
             history.replaceState(null, '', window.location.pathname);
         }
     });

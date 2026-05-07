@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/svg+xml" href="../../../images/Ubits-logo-dark.svg">
-    <title>Crear evaluación 360 | UBITS</title>
+    <title>Editar evaluación 360 | UBITS</title>
 
     <link rel="stylesheet" href="../../../general-styles/ubits-colors.css">
     <link rel="stylesheet" href="../../../general-styles/styles.css">
@@ -33,11 +33,11 @@
     <link rel="stylesheet" href="../../../components/drawer.css">
     <link rel="stylesheet" href="../../../components/tab.css">
     <link rel="stylesheet" href="../../../components/header-product.css">
-    <link rel="stylesheet" href="./crear-360.css">
+    <link rel="stylesheet" href="./editar-360.css">
     <!-- SheetJS: lectura de archivos Excel (.xlsx / .xls) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 </head>
-<body data-theme="light" class="no-subnav page-layout-immersive page-crear-360">
+<body data-theme="light" class="no-subnav page-layout-immersive page-editar-360">
 
 <div class="ubits-layout-immersive">
 
@@ -302,6 +302,12 @@
                             <i class="far fa-bolt"></i>
                             <span>Activar evaluación</span>
                         </button>
+                        <button type="button"
+                            class="ubits-button ubits-button--primary ubits-button--md"
+                            id="crear360-btn-save-exit"
+                            style="display:none;">
+                            <span>Guardar y salir</span>
+                        </button>
                     </div>
 
                     <!-- Footer: sub-vistas -->
@@ -369,6 +375,10 @@
         tipo: [], competencias: [], evaluados: {}, resultados: null
     };
 
+    var IS_EDIT_MODE = true;
+    var EDIT_EVAL_ID = null;
+    var _editEvalRecord = null;
+
     /* ── Estado por sub-vista ── */
     var _tipos         = [];
     var _competencias  = [];  /* array de competencias creadas por el usuario */
@@ -409,6 +419,8 @@
     function hubSubVistaPermitida(viewId) {
         if (viewId === 'hub') return true;
         if (!draft.guardado) return false;
+        /* Edición: la evaluación ya existe; no hay cascada tipo → resto */
+        if (IS_EDIT_MODE) return true;
         if (viewId === 'tipo') return true;
         if (['competencias', 'evaluados', 'evaluados-asignados', 'editar-asignacion', 'resultados'].indexOf(viewId) >= 0) {
             return !!draft.checks.tipo;
@@ -497,18 +509,21 @@
         if (!inner) return;
 
         if (viewId === 'hub') {
+            var estHub = _editEvalRecord ? editCalcEstado(_editEvalRecord) : 'borrador';
+            var tagCls = editEstadoTagType(estHub);
+            var tagTxt = editEstadoLabel(estHub);
             inner.innerHTML =
                 '<div class="ubits-layout-immersive__leading">' +
                     '<div class="ubits-layout-immersive__title-row">' +
-                        '<span class="ubits-layout-immersive__title ubits-body-md-bold">Crear evaluación 360</span>' +
-                        '<span class="ubits-status-tag ubits-status-tag--sm ubits-status-tag--info">' +
-                            '<span class="ubits-status-tag__text">Borrador</span>' +
+                        '<span class="ubits-layout-immersive__title ubits-body-md-bold">Editar evaluación 360</span>' +
+                        '<span class="ubits-status-tag ubits-status-tag--sm ubits-status-tag--' + tagCls + '">' +
+                            '<span class="ubits-status-tag__text">' + hubEscHtml(tagTxt) + '</span>' +
                         '</span>' +
                     '</div>' +
                 '</div>' +
                 '<a href="javascript:void(0)" id="crear360-btn-close" ' +
                     'class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" ' +
-                    'data-tooltip="Salir del proceso" data-tooltip-delay="1000" aria-label="Salir">' +
+                    'data-tooltip="Volver al listado" data-tooltip-delay="1000" aria-label="Cerrar">' +
                     '<i class="far fa-times"></i>' +
                 '</a>';
 
@@ -594,6 +609,8 @@
 
     function renderHubView() {
         var saved = draft.guardado;
+        var allowBasicsEdit = IS_EDIT_MODE && _editEvalRecord && _editEvalRecord.activada === true;
+        var basicsDisabled = saved && !allowBasicsEdit;
 
         /* Limpiar containers antes de re-crear inputs */
         ['crear360-input-nombre', 'crear360-input-inicio', 'crear360-input-fin'].forEach(function (id) {
@@ -608,7 +625,7 @@
             type: 'text',
             size: 'md',
             value: draft.nombre || '',
-            disabled: saved,
+            disabled: basicsDisabled,
             onChange: function (val) {
                 draft.nombre = val;
                 clearInputError(_inputNombreApi, 'crear360-input-nombre');
@@ -623,7 +640,7 @@
             type: 'calendar',
             size: 'md',
             value: draft.fechaInicio || '',
-            disabled: saved,
+            disabled: basicsDisabled,
             onChange: function (val) {
                 draft.fechaInicio = val;
                 clearInputError(_inputInicioApi, 'crear360-input-inicio');
@@ -638,7 +655,7 @@
             type: 'calendar',
             size: 'md',
             value: draft.fechaFin || '',
-            disabled: saved,
+            disabled: basicsDisabled,
             onChange: function (val) {
                 draft.fechaFin = val;
                 clearInputError(_inputFinApi, 'crear360-input-fin');
@@ -647,10 +664,24 @@
         });
 
         var inlineWrap = document.getElementById('crear360-save-inline-wrap');
-        if (inlineWrap) inlineWrap.style.display = saved ? 'none' : '';
+        if (inlineWrap) {
+            if (allowBasicsEdit) inlineWrap.style.display = 'none';
+            else inlineWrap.style.display = saved ? 'none' : '';
+        }
 
         var saveChangesBtn = document.getElementById('crear360-btn-save-changes');
         if (saveChangesBtn) saveChangesBtn.style.display = (saved && _formModified) ? '' : 'none';
+
+        var leadP = document.querySelector('.crear360-description .ubits-body-sm-regular');
+        if (leadP && IS_EDIT_MODE && _editEvalRecord) {
+            if (!_editEvalRecord.activada) {
+                leadP.textContent = 'Completa todas las secciones para poder activar esta evaluación.';
+            } else if (editCalcEstado(_editEvalRecord) === 'finalizada') {
+                leadP.textContent = 'Esta evaluación está finalizada; puedes revisar la configuración.';
+            } else {
+                leadP.textContent = 'Edita la configuración; los cambios se guardan con Guardar en cada sección o con Guardar cambios en los datos generales.';
+            }
+        }
 
         updateHubChecksUI();
     }
@@ -814,6 +845,26 @@
         return '';
     }
 
+    /** Modo edición: hay contenido guardado aunque checks[k] aún no coincida */
+    function editHubCardTieneResumen(k) {
+        if (k === 'tipo') {
+            return (draft.tipo || []).some(function (t) { return t.activo; }) || (draft.tipo || []).length > 0;
+        }
+        if (k === 'competencias') {
+            return _competencias.length > 0 || (draft.competencias || []).length > 0;
+        }
+        if (k === 'evaluados') {
+            var ev = draft.evaluados || {};
+            return (Array.isArray(ev.personas) && ev.personas.length > 0) ||
+                (Array.isArray(ev.asignaciones) && ev.asignaciones.length > 0);
+        }
+        if (k === 'resultados') {
+            var r = draft.resultados;
+            return !!(r && Array.isArray(r.params) && r.params.length > 0);
+        }
+        return false;
+    }
+
     function refreshHubCardDescriptions() {
         ['tipo', 'competencias', 'evaluados', 'resultados'].forEach(function (k) {
             var card = document.getElementById('crear360-card-' + k);
@@ -823,14 +874,22 @@
                 if (hubCompetenciasCompleto() || hubCompetenciasIncompletaHub()) {
                     p.innerHTML = buildHubCardSummaryHtml(k);
                     p.classList.add('crear360-hub-card-desc--summary');
+                } else if (IS_EDIT_MODE && draft.guardado && editHubCardTieneResumen('competencias')) {
+                    p.innerHTML = buildHubCardSummaryHtml(k);
+                    p.classList.add('crear360-hub-card-desc--summary');
                 } else {
                     p.textContent = HUB_CARD_DESC_DEFAULT[k] || '';
                     p.classList.remove('crear360-hub-card-desc--summary');
                 }
                 return;
             }
-            if (draft.checks[k]) {
-                p.textContent = buildHubCardSummaryHtml(k);
+            var mostrarResumen = draft.checks[k] || (IS_EDIT_MODE && draft.guardado && editHubCardTieneResumen(k));
+            if (mostrarResumen) {
+                if (k === 'competencias') {
+                    p.innerHTML = buildHubCardSummaryHtml(k);
+                } else {
+                    p.textContent = buildHubCardSummaryHtml(k);
+                }
                 p.classList.add('crear360-hub-card-desc--summary');
             } else {
                 p.textContent = HUB_CARD_DESC_DEFAULT[k] || '';
@@ -862,16 +921,29 @@
                     if (check) check.style.display = '';
                 } else if (hubCompetenciasIncompletaHub()) {
                     if (card) card.classList.add('crear360-option-card--incomplete');
+                } else if (IS_EDIT_MODE && draft.guardado && editHubCardTieneResumen('competencias')) {
+                    if (card) card.classList.add('crear360-option-card--incomplete');
                 }
             } else if (checks[k]) {
                 if (card) card.classList.add('crear360-option-card--done');
                 if (check) check.style.display = '';
+            } else if (IS_EDIT_MODE && draft.guardado && k === 'tipo' && editHubCardTieneResumen('tipo')) {
+                /* Tipos cargados pero pesos ≠ 100 % (p. ej. borrador) */
+                var tpeso = (draft.tipo || []).reduce(function (acc, t) {
+                    return acc + (t.activo ? (parseInt(t.peso, 10) || 0) : 0);
+                }, 0);
+                var tact = (draft.tipo || []).some(function (t) { return t.activo; });
+                if (tact && tpeso !== 100 && card) card.classList.add('crear360-option-card--incomplete');
+            } else if (IS_EDIT_MODE && draft.guardado && editHubCardTieneResumen(k) && (k === 'evaluados' || k === 'resultados')) {
+                if (card) card.classList.add('crear360-option-card--incomplete');
             }
 
             if (card) {
-                /* Tras «Confirmar» solo se desbloquea Tipo hasta guardar esa sección; luego Competencias, Evaluados y Resultados. */
+                /* Crear: cascada. Editar: todas desbloqueadas si hay evaluación cargada. */
                 var cardUnlocked = false;
-                if (!saved) {
+                if (IS_EDIT_MODE && draft.guardado) {
+                    cardUnlocked = true;
+                } else if (!saved) {
                     cardUnlocked = false;
                 } else if (k === 'tipo') {
                     cardUnlocked = true;
@@ -889,7 +961,18 @@
         });
 
         var activateBtn = document.getElementById('crear360-btn-activate');
-        if (activateBtn) activateBtn.disabled = !allDone;
+        var saveExitBtn = document.getElementById('crear360-btn-save-exit');
+        var estActHub = _editEvalRecord ? editCalcEstado(_editEvalRecord) : 'borrador';
+        var evalYaActivadaOcerrada = IS_EDIT_MODE && _editEvalRecord && (
+            _editEvalRecord.activada === true || estActHub === 'finalizada'
+        );
+        if (activateBtn) {
+            activateBtn.disabled = !allDone;
+            activateBtn.style.display = evalYaActivadaOcerrada ? 'none' : '';
+        }
+        if (saveExitBtn) {
+            saveExitBtn.style.display = evalYaActivadaOcerrada ? '' : 'none';
+        }
 
         refreshHubCardDescriptions();
     }
@@ -925,6 +1008,140 @@
         _formModified  = false;
         if (typeof window.__onEval360DraftPersist === 'function') window.__onEval360DraftPersist();
         return true;
+    }
+
+    function editCalcEstado(row) {
+        if (!row) return 'borrador';
+        var activada = row.activada === true;
+        var hoy = new Date();
+        hoy.setHours(0, 0, 0, 0);
+        var fin    = row.fechaFin    ? new Date(row.fechaFin)    : null;
+        var inicio = row.fechaInicio ? new Date(row.fechaInicio) : null;
+        if (!activada) return 'borrador';
+        if (row.estado === 'finalizada' || (fin && fin < hoy)) return 'finalizada';
+        if (inicio && inicio > hoy) return 'por_iniciar';
+        if (inicio && inicio <= hoy) return 'activa';
+        return 'borrador';
+    }
+
+    function editEstadoTagType(estado) {
+        if (estado === 'activa') return 'success';
+        if (estado === 'finalizada') return 'neutral';
+        if (estado === 'por_iniciar') return 'warning';
+        return 'info';
+    }
+
+    function editEstadoLabel(estado) {
+        var labels = { borrador: 'Borrador', activa: 'En progreso', por_iniciar: 'Por iniciar', finalizada: 'Finalizada' };
+        return labels[estado] || estado;
+    }
+
+    function buildContenidoSnapshot() {
+        var comps = _competencias.length
+            ? JSON.parse(JSON.stringify(_competencias.map(function (c) {
+                return {
+                    id: c.id,
+                    nombre: c.nombre,
+                    descripcion: c.descripcion || '',
+                    enunciados: Array.isArray(c.enunciados) ? JSON.parse(JSON.stringify(c.enunciados)) : []
+                };
+            })))
+            : (Array.isArray(draft.competencias) ? JSON.parse(JSON.stringify(draft.competencias)) : []);
+        return {
+            guardado: draft.guardado,
+            checks: Object.assign({}, draft.checks),
+            tipo: JSON.parse(JSON.stringify(draft.tipo || [])),
+            competencias: comps,
+            evaluados: JSON.parse(JSON.stringify(draft.evaluados || {})),
+            resultados: draft.resultados ? JSON.parse(JSON.stringify(draft.resultados)) : null
+        };
+    }
+
+    function persistEvaluacionFromDraft() {
+        if (!EDIT_EVAL_ID || typeof BD_EVALUACIONES_360 === 'undefined' || typeof BD_EVALUACIONES_360.updateEvaluacion !== 'function') return;
+        var snap = buildContenidoSnapshot();
+        BD_EVALUACIONES_360.updateEvaluacion(EDIT_EVAL_ID, {
+            nombre: draft.nombre,
+            fechaInicio: draft.fechaInicio,
+            fechaFin: draft.fechaFin,
+            checks: Object.assign({}, draft.checks),
+            contenido360: snap
+        });
+        if (_editEvalRecord) {
+            _editEvalRecord.nombre = draft.nombre;
+            _editEvalRecord.fechaInicio = draft.fechaInicio;
+            _editEvalRecord.fechaFin = draft.fechaFin;
+            _editEvalRecord.checks = Object.assign({}, draft.checks);
+            _editEvalRecord.contenido360 = snap;
+        }
+    }
+
+    function applyEvalRecordToDraft(ev) {
+        if (!ev) return;
+        EDIT_EVAL_ID = ev.id;
+        _editEvalRecord = ev;
+        draft.nombre = ev.nombre || '';
+        draft.fechaInicio = ev.fechaInicio || '';
+        draft.fechaFin = ev.fechaFin || '';
+        draft.checks = Object.assign({ tipo: false, competencias: false, evaluados: false, resultados: false }, ev.checks || {});
+        draft.guardado = true;
+        draft.tipo = [];
+        draft.competencias = [];
+        draft.evaluados = {};
+        draft.resultados = null;
+        var c = ev.contenido360;
+        if (!c && typeof BD_EVALUACIONES_360.cloneContenido360EjemploCompleto === 'function') {
+            var ch = ev.checks || {};
+            /* Tabla admin: checks completos pero sin snapshot (AXS001, AXS004, AXS005…) */
+            if (ch.tipo && ch.competencias && ch.evaluados && ch.resultados) {
+                c = BD_EVALUACIONES_360.cloneContenido360EjemploCompleto();
+            }
+        }
+        if (c) {
+            if (Array.isArray(c.tipo)) draft.tipo = JSON.parse(JSON.stringify(c.tipo));
+            if (Array.isArray(c.competencias)) draft.competencias = JSON.parse(JSON.stringify(c.competencias));
+            if (c.evaluados && typeof c.evaluados === 'object') draft.evaluados = JSON.parse(JSON.stringify(c.evaluados));
+            if (c.resultados) draft.resultados = JSON.parse(JSON.stringify(c.resultados));
+        }
+        _tipos = [];
+        _competencias = Array.isArray(draft.competencias) ? draft.competencias.map(function (x) {
+            var ens = Array.isArray(x.enunciados) ? JSON.parse(JSON.stringify(x.enunciados)) : [];
+            return {
+                id: x.id,
+                nombre: x.nombre,
+                descripcion: x.descripcion || '',
+                /* Ver lista de enunciados al abrir edición (antes quedaban colapsados con display:none) */
+                expandida: ens.length > 0,
+                enunciados: ens
+            };
+        }) : [];
+        if (draft.evaluados && Array.isArray(draft.evaluados.asignaciones)) {
+            _eval360AsignacionesData = JSON.parse(JSON.stringify(draft.evaluados.asignaciones));
+        } else {
+            _eval360AsignacionesData = [];
+        }
+        syncEditDraftChecksFromContenido();
+        _formModified = false;
+    }
+
+    /** Reconcilia flags del hub con lo ya guardado en contenido360 (la tabla admin puede tener checks desfasados). */
+    function syncEditDraftChecksFromContenido() {
+        if (!IS_EDIT_MODE) return;
+        var tiposArr = draft.tipo || [];
+        var tieneTipoActivo = tiposArr.some(function (t) { return t.activo; });
+        var pesoTipo = tiposArr.reduce(function (acc, t) {
+            return acc + (t.activo ? (parseInt(t.peso, 10) || 0) : 0);
+        }, 0);
+        draft.checks.tipo = tieneTipoActivo && pesoTipo === 100;
+
+        var ev = draft.evaluados || {};
+        draft.checks.evaluados = !!(
+            (Array.isArray(ev.personas) && ev.personas.length > 0) ||
+            (Array.isArray(ev.asignaciones) && ev.asignaciones.length > 0)
+        );
+
+        var r = draft.resultados;
+        draft.checks.resultados = !!(r && Array.isArray(r.params) && r.params.length > 0);
     }
 
     function confirmarSalir() {
@@ -4049,6 +4266,14 @@
         });
         document.getElementById('crear360-btn-activate').addEventListener('click', activarEvaluacion);
 
+        var saveExitBtnEl = document.getElementById('crear360-btn-save-exit');
+        if (saveExitBtnEl) {
+            saveExitBtnEl.addEventListener('click', function () {
+                persistEvaluacionFromDraft();
+                window.location.href = 'admin-360.html';
+            });
+        }
+
         /* Cards del hub → navegar a sub-vista (click + Enter/Space para accesibilidad) */
         ['tipo', 'competencias', 'evaluados', 'resultados'].forEach(function (k) {
             var card = document.getElementById('crear360-card-' + k);
@@ -4166,6 +4391,40 @@
             draft.checks.tipo = true;
         }
 
+        (function initEditarDesdeBd() {
+            var params = new URLSearchParams(window.location.search);
+            var qid = params.get('id');
+            var targetId = qid || 'AXS006';
+            var ev = BD_EVALUACIONES_360.getEvaluacionById(targetId);
+            if (!ev) {
+                window.location.replace('admin-360.html');
+                return;
+            }
+            applyEvalRecordToDraft(ev);
+        })();
+
+        window.__onEval360DraftPersist = function () {
+            persistEvaluacionFromDraft();
+        };
+
+        window.__eval360ActivarHandler = function () {
+            if (!EDIT_EVAL_ID) return;
+            draft.checks = Object.assign({}, draft.checks, { tipo: true, competencias: true, evaluados: true, resultados: true });
+            persistEvaluacionFromDraft();
+            BD_EVALUACIONES_360.updateEvaluacion(EDIT_EVAL_ID, {
+                activada: true,
+                estado: 'activa',
+                checks: Object.assign({}, draft.checks)
+            });
+            if (_editEvalRecord) {
+                _editEvalRecord.activada = true;
+                _editEvalRecord.estado = 'activa';
+                _editEvalRecord.checks = Object.assign({}, draft.checks);
+            }
+            closeModal('crear360-activate-modal');
+            window.location.href = 'admin-360.html?toast=activated';
+        };
+
         /* Manejo del botón atrás del navegador */
         window.addEventListener('popstate', function (e) {
             var viewId = (e.state && e.state.view) || viewFromHash();
@@ -4174,10 +4433,15 @@
 
         /* Vista inicial según URL hash */
         var _initialHash = window.location.hash || '';
-        _cameFromDeepLink = !!(_initialHash && _initialHash !== '#hub');
-        var initialView = viewFromHash();
-        if (initialView !== 'hub') seedDemoDraft(initialView);
-        if (_initialHash === '#evaluados-error-edge' || _initialHash === '#error-edge') {
+        /* Editar: siempre aterrizar en hub (hash residual tipo #tipo ocultaba el footer con Activar). */
+        var initialView = IS_EDIT_MODE ? 'hub' : viewFromHash();
+        _cameFromDeepLink = IS_EDIT_MODE ? false : !!(_initialHash && _initialHash !== '#hub');
+        if (IS_EDIT_MODE && window.history.replaceState) {
+            var urlHub = window.location.pathname + window.location.search + '#hub';
+            window.history.replaceState({ view: 'hub' }, '', urlHub);
+        }
+        if (initialView !== 'hub' && !IS_EDIT_MODE) seedDemoDraft(initialView);
+        if (!IS_EDIT_MODE && (_initialHash === '#evaluados-error-edge' || _initialHash === '#error-edge')) {
             ensureEdgeDemoDraft();
             initialView = 'evaluados';
         }
@@ -4195,6 +4459,7 @@
            - Botón "Informe de errores" abre modal con 5 errores del sistema
            ─────────────────────────────────────────────── */
         (function initEvaluadosErrorEdgeDemo() {
+            if (IS_EDIT_MODE) return;
             if (!(_initialHash === '#evaluados-error-edge' || _initialHash === '#error-edge')) return;
 
             /* Asegurar vista evaluados (sin tocar el hash del edge) */

@@ -28,6 +28,7 @@
  * Uso: createUbitsDataTable({ containerId, tableId, columns, getData, rowIdField, buildRowHtml, features, ... })
  * Opciones útiles: searchColumnIds (búsqueda solo en esas columnas), initialSort ({ column, direction }).
  * API: table.getSelectedIds(), table.getVisibleRows(), table.setFilter(), table.refresh()
+ * Opcional: onSelectionChange(selectedIds) — se invoca tras cada cambio de selección (ids actuales como array de strings).
  *
  * Pantallas que son solo tabla de datos: usar siempre este componente (ver README «Tabla solo de datos»).
  *
@@ -166,6 +167,7 @@
             emptySearchState.description = defaultEmptySearchDescription;
         }
         var actionBarButtons = options.actionBarButtons || [];
+        var onSelectionChange = typeof options.onSelectionChange === 'function' ? options.onSelectionChange : null;
         var primaryButton = options.primaryButton || null;
         var i18n = Object.assign({}, defaultI18n, options.i18n || {});
         var title = options.title || '';
@@ -496,6 +498,9 @@
             if (!bar) return;
             var n = selectedIds.size;
             bar.classList.toggle('is-visible', n > 0);
+            if (onSelectionChange) {
+                onSelectionChange(Array.from(selectedIds));
+            }
         }
 
         function updateVerSeleccionadosBtn() {

@@ -1022,3 +1022,24 @@
     gap: var(--gap-lg);
     margin-top: var(--gap-sm);
 }
+
+/* ════════════════════════════════════════
+   Layout inmersivo + tab bar (360)
+   Estas páginas no usan .main-content; sin padding inferior el footer queda
+   bajo la tab-bar fija (60px). Además, .crear360-footer-slot usa display:contents:
+   si todos los botones del hub están display:none, la fila puede colapsar.
+   ════════════════════════════════════════ */
+
+@media (max-width: 1023px) {
+    body.page-crear-360 .ubits-layout-immersive,
+    body.page-editar-360 .ubits-layout-immersive {
+        padding-bottom: 60px;
+        box-sizing: border-box;
+    }
+}
+
+body.page-crear-360 .ubits-layout-immersive__footer-nav,
+body.page-editar-360 .ubits-layout-immersive__footer-nav {
+    align-items: center;
+    min-height: var(--size-6xl);
+}
