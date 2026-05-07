@@ -87,7 +87,8 @@
     'use strict';
 
     var tablaRef = null;
-    var pendingDeleteId = null;
+    /** IDs pendientes de eliminar (un ítem o varios en lote). */
+    var pendingDeleteIds = [];
     var pendingFinishId = null;
 
     /* ── helpers ── */
@@ -180,25 +181,159 @@
         return parts[2] + '/' + parts[1] + '/' + parts[0];
     }
 
-    /* ── modal eliminar ── */
-    function buildDeleteModal() {
-        if (typeof getModalHtml !== 'function') return;
-        var body = '<p class="ubits-body-md-regular">¿Estás seguro de que deseas eliminar esta evaluación? Esta acción no se puede deshacer.</p>';
-        var footer = '<button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="a360-delete-cancel"><span>Cancelar</span></button>' +
-            '<button type="button" class="ubits-button ubits-button--error ubits-button--md" id="a360-delete-confirm"><span>Eliminar</span></button>';
-        document.getElementById('a360-modals-container').innerHTML =
-            getModalHtml({ overlayId: 'a360-delete-overlay', title: 'Eliminar evaluación', bodyHtml: body, footerHtml: footer, size: 'sm', closeButtonId: 'a360-delete-close' });
+    function clearPendingDeleteIds() {
+        pendingDeleteIds = [];
     }
 
-    function openDeleteModal(id) {
-        pendingDeleteId = id;
-        var overlay = document.getElementById('a360-delete-overlay');
-        if (overlay) { overlay.style.display = 'flex'; overlay.removeAttribute('aria-hidden'); }
+    /** Bloque «escriba eliminar» (mismo criterio que seguimiento.html). */
+    function a360TypeConfirmHtml(inputId) {
+        return (
+            '<div class="a360-delete-type-wrap" style="margin-top: var(--gap-lg);">' +
+            '<label class="ubits-body-sm-regular" for="' + inputId + '">Escriba <strong>eliminar</strong> para habilitar el botón:</label>' +
+            '<input type="text" id="' + inputId + '" class="ubits-input a360-delete-type-input" placeholder="Escriba la palabra de confirmación" autocomplete="off" ' +
+            'style="margin-top: var(--gap-sm); width: 100%; padding: var(--padding-sm) var(--padding-md); border: 1px solid var(--ubits-border-1); border-radius: var(--border-radius-sm); ' +
+            'font-size: var(--font-size-sm); color: var(--ubits-fg-1-high); box-sizing: border-box;">' +
+            '</div>'
+        );
     }
-    function closeDeleteModal() {
-        pendingDeleteId = null;
-        var overlay = document.getElementById('a360-delete-overlay');
-        if (overlay) { overlay.style.display = 'none'; overlay.setAttribute('aria-hidden', 'true'); }
+
+    function wireSingleDeleteModal(esSimple) {
+        var cancel = document.getElementById('a360-single-del-cancel');
+        var confirmBtn = document.getElementById('a360-single-del-confirm');
+        var input = document.getElementById('a360-single-del-type-input');
+        function cerrar() {
+            clearPendingDeleteIds();
+            if (typeof closeModal === 'function') closeModal('a360-delete-modal');
+        }
+        if (cancel) {
+            cancel.addEventListener('click', function () { cerrar(); });
+        }
+        if (!esSimple && input && confirmBtn) {
+            confirmBtn.disabled = true;
+            input.addEventListener('input', function () {
+                confirmBtn.disabled = input.value.trim().toLowerCase() !== 'eliminar';
+            });
+            setTimeout(function () { try { input.focus(); } catch (e) {} }, 50);
+        }
+        if (confirmBtn) {
+            confirmBtn.addEventListener('click', function () {
+                if (!esSimple && confirmBtn.disabled) return;
+                if (!pendingDeleteIds.length) return;
+                pendingDeleteIds.forEach(function (pid) {
+                    BD_EVALUACIONES_360.deleteEvaluacion(pid);
+                });
+                if (tablaRef && typeof tablaRef.refresh === 'function') tablaRef.refresh();
+                if (typeof showToast === 'function') showToast('success', 'Evaluación eliminada');
+                cerrar();
+            });
+        }
+    }
+
+    /**
+     * Eliminación desde menú de fila.
+     * Borrador / Por iniciar: solo confirmación.
+     * En progreso / Finalizada: texto de riesgo + escribir «eliminar».
+     */
+    function openSingleDeleteModal(id) {
+        if (typeof openModal !== 'function') return;
+        var ev = BD_EVALUACIONES_360.getEvaluacionById(id);
+        var st = calcEstado(ev);
+        var esSimple = st === 'borrador' || st === 'por_iniciar';
+        pendingDeleteIds = [String(id)];
+
+        var body;
+        var footer =
+            '<button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="a360-single-del-cancel"><span>Cancelar</span></button>' +
+            '<button type="button" class="ubits-button ubits-button--error ubits-button--md" id="a360-single-del-confirm"' +
+            (esSimple ? '' : ' disabled') +
+            '><span>Eliminar</span></button>';
+
+        if (esSimple) {
+            body =
+                '<p class="ubits-body-md-regular">¿Estás seguro de que deseas eliminar esta evaluación? Esta acción no se puede deshacer.</p>';
+        } else {
+            body =
+                '<p class="ubits-body-md-regular">¿Estás seguro de que deseas eliminar esta evaluación? Ten en cuenta que puede tener respuestas de los evaluados, al eliminarla no podrás consultarla nuevamente.</p>' +
+                a360TypeConfirmHtml('a360-single-del-type-input');
+        }
+
+        openModal({
+            overlayId: 'a360-delete-modal',
+            title: 'Confirmar eliminación',
+            bodyHtml: body,
+            footerHtml: footer,
+            size: 'sm',
+            closeOnOverlayClick: true,
+            onClose: clearPendingDeleteIds
+        });
+        setTimeout(function () {
+            wireSingleDeleteModal(esSimple);
+        }, 0);
+    }
+
+    function wireBulkDeleteModal() {
+        var cancel = document.getElementById('a360-bulk-del-cancel');
+        var confirmBtn = document.getElementById('a360-bulk-del-confirm');
+        var input = document.getElementById('a360-bulk-del-type-input');
+        function cerrar() {
+            clearPendingDeleteIds();
+            if (typeof closeModal === 'function') closeModal('a360-bulk-delete-modal');
+        }
+        if (cancel) cancel.addEventListener('click', function () { cerrar(); });
+        if (input && confirmBtn) {
+            confirmBtn.disabled = true;
+            input.addEventListener('input', function () {
+                confirmBtn.disabled = input.value.trim().toLowerCase() !== 'eliminar';
+            });
+            setTimeout(function () { try { input.focus(); } catch (e) {} }, 50);
+        }
+        if (confirmBtn) {
+            confirmBtn.addEventListener('click', function () {
+                if (confirmBtn.disabled) return;
+                var n = pendingDeleteIds.length;
+                pendingDeleteIds.forEach(function (pid) {
+                    BD_EVALUACIONES_360.deleteEvaluacion(pid);
+                });
+                if (tablaRef && typeof tablaRef.refresh === 'function') tablaRef.refresh();
+                if (typeof showToast === 'function') {
+                    showToast('success', n + ' evaluación(es) eliminada(s)');
+                }
+                cerrar();
+            });
+        }
+    }
+
+    /** Eliminación desde barra (selección múltiple en tabla). Igual patrón que seguimiento.html. */
+    function openBulkDeleteModal(selectedIds) {
+        if (typeof openModal !== 'function' || !selectedIds || selectedIds.length === 0) return;
+        pendingDeleteIds = selectedIds.map(function (id) {
+            return String(id);
+        });
+        var n = pendingDeleteIds.length;
+
+        var body =
+            '<p class="ubits-body-md-regular">¿Estás seguro de que deseas eliminar <strong>' +
+            n +
+            '</strong> elemento(s) seleccionado(s)?</p>' +
+            '<p class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); margin-top: var(--gap-sm);">Esta acción no se puede deshacer.</p>' +
+            a360TypeConfirmHtml('a360-bulk-del-type-input');
+
+        var footer =
+            '<button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="a360-bulk-del-cancel"><span>Cancelar</span></button>' +
+            '<button type="button" class="ubits-button ubits-button--error ubits-button--md" id="a360-bulk-del-confirm" disabled><span>Eliminar</span></button>';
+
+        openModal({
+            overlayId: 'a360-bulk-delete-modal',
+            title: 'Confirmar eliminación',
+            bodyHtml: body,
+            footerHtml: footer,
+            size: 'sm',
+            closeOnOverlayClick: true,
+            onClose: clearPendingDeleteIds
+        });
+        setTimeout(function () {
+            wireBulkDeleteModal();
+        }, 0);
     }
 
     /* ── modal finalizar ── */
@@ -309,7 +444,7 @@
                 showToast('success', 'Evaluación duplicada');
             }
         } else if (accion === 'eliminar') {
-            openDeleteModal(id);
+            openSingleDeleteModal(id);
         } else if (accion === 'finalizar') {
             openFinishModal(id);
         } else if (accion === 'recordatorio') {
@@ -396,9 +531,6 @@
             });
         }
 
-        /* modal de eliminar */
-        buildDeleteModal();
-
         /* ubits-data-table */
         if (typeof createUbitsDataTable === 'function') {
             tablaRef = createUbitsDataTable({
@@ -439,10 +571,7 @@
                         variant: 'error-secondary',
                         onClick: function (selectedIds) {
                             if (!selectedIds || selectedIds.length === 0) return;
-                            /* borrar en lote */
-                            selectedIds.forEach(function (id) { BD_EVALUACIONES_360.deleteEvaluacion(id); });
-                            if (tablaRef && typeof tablaRef.refresh === 'function') tablaRef.refresh();
-                            showToast('success', selectedIds.length + ' evaluación(es) eliminada(s)');
+                            openBulkDeleteModal(selectedIds);
                         }
                     }
                 ],
@@ -527,25 +656,6 @@
                 window.location.href = 'editar-360.html?id=' + encodeURIComponent(String(id));
             });
         }
-
-        /* modal eliminar — listeners */
-        var deleteClose   = document.getElementById('a360-delete-close');
-        var deleteCancel  = document.getElementById('a360-delete-cancel');
-        var deleteConfirm = document.getElementById('a360-delete-confirm');
-        var deleteOverlay = document.getElementById('a360-delete-overlay');
-
-        function closeDel() { closeDeleteModal(); }
-        if (deleteClose)   deleteClose.addEventListener('click', closeDel);
-        if (deleteCancel)  deleteCancel.addEventListener('click', closeDel);
-        if (deleteOverlay) deleteOverlay.addEventListener('click', function (e) { if (e.target === deleteOverlay) closeDel(); });
-        if (deleteConfirm) deleteConfirm.addEventListener('click', function () {
-            if (pendingDeleteId) {
-                BD_EVALUACIONES_360.deleteEvaluacion(pendingDeleteId);
-                if (tablaRef && typeof tablaRef.refresh === 'function') tablaRef.refresh();
-                showToast('success', 'Evaluación eliminada');
-            }
-            closeDel();
-        });
 
         /* toast desde crear-360 */
         var params = new URLSearchParams(window.location.search);
