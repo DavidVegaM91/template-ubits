@@ -73,7 +73,7 @@
     var _stepperApi     = null;
 
     /* Edición por pageKey */
-    var _scormDataStore = {};   /* pageKey → { slides, color, titulo, scormHtml } */
+    var _scormDataStore = {};   /* pageKey → { slides, color, titulo, scormHtml, generatedByAi? } */
 
     /* Color picker state */
     var _cpH=246, _cpS=0.73, _cpV=0.90;
@@ -675,15 +675,27 @@
     /* ══════════════════════════════════════
        BLOQUE RENDERIZADO
     ══════════════════════════════════════ */
-    function buildRenderedBlock(scormHtml, pageKey) {
+    function buildRenderedBlock(scormHtml, pageKey, blockOpts) {
+        blockOpts = blockOpts || {};
+        var aiGenerated = blockOpts.aiGenerated;
+        if (aiGenerated === undefined && pageKey && _scormDataStore[pageKey]) {
+            aiGenerated = !!_scormDataStore[pageKey].generatedByAi;
+        }
+        var aiHost =
+            aiGenerated && typeof global.getGeneradoConIaBadgeHtml === 'function'
+                ? '<div class="cc-scorm-resource__generado-ia-host">' + global.getGeneradoConIaBadgeHtml() + '</div>'
+                : '';
         var editBtn = pageKey
             ? '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="cc-editar-scorm-recurso"><i class="far fa-pencil"></i><span>Editar SCORM</span></button>'
             : '';
         var escaped = scormHtml.replace(/"/g, '&quot;');
         return '<div class="ubits-resources-block ubits-resources-block--stack">' +
             '<div class="ubits-resources-block__surface" style="padding:0;">' +
-                '<div class="cc-scorm-iframe-container">' +
-                    '<iframe srcdoc="'+escaped+'" allowfullscreen></iframe>' +
+                '<div class="cc-scorm-resource__embed-wrap">' +
+                    aiHost +
+                    '<div class="cc-scorm-iframe-container">' +
+                        '<iframe srcdoc="' + escaped + '" allowfullscreen></iframe>' +
+                    '</div>' +
                 '</div>' +
             '</div>' +
             '<div class="ubits-resources-block__footer" style="display:flex;align-items:center;gap:var(--gap-sm);">' +
@@ -995,7 +1007,15 @@
                 var slides=generateSlides(_numSlides);
                 var pageKey=_currentPageKey;
                 var scormHtml=generateScormHtml(_titulo,slides,_color,false);
-                if (pageKey) _scormDataStore[pageKey]={slides:slides, color:_color, titulo:_titulo, scormHtml:scormHtml};
+                if (pageKey) {
+                    _scormDataStore[pageKey] = {
+                        slides: slides,
+                        color: _color,
+                        titulo: _titulo,
+                        scormHtml: scormHtml,
+                        generatedByAi: true
+                    };
+                }
                 closeModal(OVERLAY_ID);
                 startScormWidget({pageKey:pageKey, titulo:_titulo, slides:slides, color:_color, scormHtml:scormHtml});
             });
@@ -1112,9 +1132,15 @@
 
         /* Regenerar */
         var newHtml=generateScormHtml(stored.titulo, newSlides, newColor, false);
-        _scormDataStore[pageKey]={slides:newSlides, color:newColor, titulo:stored.titulo, scormHtml:newHtml};
+        _scormDataStore[pageKey] = {
+            slides: newSlides,
+            color: newColor,
+            titulo: stored.titulo,
+            scormHtml: newHtml,
+            generatedByAi: !!stored.generatedByAi
+        };
 
-        var blockHtml=buildRenderedBlock(newHtml, pageKey);
+        var blockHtml = buildRenderedBlock(newHtml, pageKey);
         if (_onScormReady) _onScormReady(blockHtml);
         else {
             var mount=document.getElementById('crear-contenido-recursos-resources-mount');
@@ -1178,7 +1204,7 @@
         if (_onScormReady) _onScormReady('<div class="cc-scorm-ia-loader-host">' + innerLoader + '</div>');
 
         setTimeout(function () {
-            var blockHtml = buildRenderedBlock(job.scormHtml, job.pageKey);
+            var blockHtml = buildRenderedBlock(job.scormHtml, job.pageKey, { aiGenerated: true });
             if (_onScormReady) { _onScormReady(blockHtml); _onScormReady = null; }
             if (typeof global.ccGenWidget !== 'undefined') global.ccGenWidget.finishJob(jobId);
             updateScormIndexIcon(job.pageKey);

@@ -47,10 +47,12 @@
 
   function generadoConIaBadgeMarkup() {
     if (typeof global.getGeneradoConIaBadgeHtml === 'function') {
-      return global.getGeneradoConIaBadgeHtml();
+      return global
+        .getGeneradoConIaBadgeHtml()
+        .replace('ubits-badge-tag--sm', 'ubits-badge-tag--xs');
     }
     return (
-      '<span class="ubits-badge-tag ubits-badge-tag--outlined ubits-badge-tag--ia ubits-badge-tag--sm ubits-badge-tag--with-icon learn-question__ia-badge" role="status">' +
+      '<span class="ubits-badge-tag ubits-badge-tag--outlined ubits-badge-tag--ia ubits-badge-tag--xs ubits-badge-tag--with-icon learn-question__ia-badge" role="status">' +
       '<i class="far fa-sparkles"></i>' +
       '<span class="ubits-badge-tag__text">Generado con IA</span></span>'
     );
