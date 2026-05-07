@@ -288,9 +288,15 @@
 
     /* ── acciones ── */
     function handleAccion(id, accion) {
-        if (accion === 'editar' || accion === 'ver') {
-            window.location.href = 'editar-360.html?id=' + id;
-        } else if (accion === 'duplicar') {
+        if (accion === 'ver') {
+            showToast('info', 'Esta vista aún no está disponible en el Playground.');
+            return;
+        }
+        if (accion === 'editar') {
+            window.location.href = 'editar-360.html?id=' + encodeURIComponent(String(id));
+            return;
+        }
+        if (accion === 'duplicar') {
             var orig = BD_EVALUACIONES_360.getEvaluacionById(id);
             if (orig) {
                 var clone = JSON.parse(JSON.stringify(orig));
@@ -508,11 +514,17 @@
                     openRowMenu(accionBtn, accionBtn.dataset.id, accionBtn.dataset.estado);
                     return;
                 }
-                /* clic en fila → editar si borrador/activa */
+                /* clic en fila → edición salvo evaluaciones finalizadas (vista detalle pendiente) */
                 var row = e.target.closest('tbody tr[data-id]');
                 if (!row || e.target.closest('.ubits-checkbox') || e.target.closest('input[type="checkbox"]') || e.target.closest('.js-a360-row-acciones-btn')) return;
                 var id = row.getAttribute('data-id');
-                if (id) window.location.href = 'editar-360.html?id=' + id;
+                if (!id) return;
+                var evRow = BD_EVALUACIONES_360.getEvaluacionById(id);
+                if (evRow && calcEstado(evRow) === 'finalizada') {
+                    showToast('info', 'Esta vista aún no está disponible en el Playground.');
+                    return;
+                }
+                window.location.href = 'editar-360.html?id=' + encodeURIComponent(String(id));
             });
         }
 
