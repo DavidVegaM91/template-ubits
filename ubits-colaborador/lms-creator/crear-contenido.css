@@ -877,6 +877,8 @@ body.crear-contenido-app-open .ubits-dropdown-menu__content {
     top: var(--gap-sm);
     right: var(--gap-sm);
     z-index: 2;
+    max-width: calc(100% - var(--gap-md) - var(--gap-md));
+    box-sizing: border-box;
 }
 
 .portada-ia-modal-actions {

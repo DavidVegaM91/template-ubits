@@ -199,6 +199,8 @@
     var portadaAiPanelCoverActionsWired = false;
     /** Coste en tokens al confirmar portada generada por IA (panel o modal). */
     var PORTADA_AI_COVER_TOKEN_COST = 2;
+    /** Coste en tokens al regenerar imagen en el modal de portada IA. */
+    var PORTADA_AI_REGEN_TOKEN_COST = 2;
     /**
      * Pool de tokens compartido con el panel de evaluaciones.
      * Se inicializa una sola vez en window para que ambos paneles lean el mismo saldo.
@@ -299,6 +301,14 @@
         );
     }
 
+    function syncPortadaAiModalHeaderBadge() {
+        var badge = document.getElementById('portada-ai-modal-tokens-badge');
+        if (!badge) return;
+        var numEl = badge.querySelector('.ubits-badge-tag__token-number');
+        if (numEl) numEl.textContent = String(portadaAiTokensRemaining);
+        badge.setAttribute('aria-label', portadaAiTokensRemaining + ' tokens restantes');
+    }
+
     function tryConsumePortadaCoverTokens() {
         if (portadaAiTokensRemaining < PORTADA_AI_COVER_TOKEN_COST) {
             if (typeof showToast === 'function') {
@@ -313,7 +323,57 @@
         if (typeof setAIPanelTokensBadgeValue === 'function') {
             setAIPanelTokensBadgeValue(portadaAiTokensRemaining);
         }
+        syncPortadaAiModalHeaderBadge();
         return true;
+    }
+
+    function tryConsumePortadaRegenTokens() {
+        if (portadaAiTokensRemaining < PORTADA_AI_REGEN_TOKEN_COST) {
+            if (typeof showToast === 'function') {
+                showToast('warning', 'No tienes suficientes tokens para regenerar la imagen.', {
+                    containerId: 'ubits-toast-container'
+                });
+            }
+            return false;
+        }
+        portadaAiTokensRemaining -= PORTADA_AI_REGEN_TOKEN_COST;
+        window._ubitsAiTokenPool = portadaAiTokensRemaining;
+        if (typeof setAIPanelTokensBadgeValue === 'function') {
+            setAIPanelTokensBadgeValue(portadaAiTokensRemaining);
+        }
+        syncPortadaAiModalHeaderBadge();
+        return true;
+    }
+
+    function updatePortadaAiModalTokenButtons(overlayRoot) {
+        if (!overlayRoot) return;
+        var useBtn = overlayRoot.querySelector('#portada-ai-modal-use');
+        var regenBtn = overlayRoot.querySelector('#portada-ai-modal-regenerate');
+        if (!useBtn || !regenBtn) return;
+        var canUse = portadaAiTokensRemaining >= PORTADA_AI_COVER_TOKEN_COST;
+        var canRegen = portadaAiTokensRemaining >= PORTADA_AI_REGEN_TOKEN_COST;
+        useBtn.disabled = !canUse;
+        regenBtn.disabled = !canRegen;
+        if (!canUse) {
+            useBtn.setAttribute('aria-disabled', 'true');
+            useBtn.setAttribute(
+                'title',
+                'No tienes suficientes tokens (' + PORTADA_AI_COVER_TOKEN_COST + ' requeridos).'
+            );
+        } else {
+            useBtn.removeAttribute('aria-disabled');
+            useBtn.removeAttribute('title');
+        }
+        if (!canRegen) {
+            regenBtn.setAttribute('aria-disabled', 'true');
+            regenBtn.setAttribute(
+                'title',
+                'No tienes suficientes tokens (' + PORTADA_AI_REGEN_TOKEN_COST + ' requeridos).'
+            );
+        } else {
+            regenBtn.removeAttribute('aria-disabled');
+            regenBtn.removeAttribute('title');
+        }
     }
 
     function wirePortadaAiPanelCoverActions() {
@@ -436,8 +496,14 @@
             '<div id="ai-modal-result-view" style="display:none; width:100%; text-align:center; flex-direction:column; align-items:center; z-index:1; padding: 0;">' +
                 '<div class="portada-ia-modal-result__figure">' +
                     '<img id="portada-ai-modal-img" class="portada-ia-modal-result__img" src="" alt="Portada generada" />' +
-                    '<button type="button" id="portada-ai-modal-regenerate" class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only portada-ia-modal-result__regen" data-tooltip="Regenerar imagen" aria-label="Regenerar imagen">' +
-                        '<i class="far fa-rotate-right"></i>' +
+                    '<button type="button" id="portada-ai-modal-regenerate" class="ubits-button ubits-button--secondary ubits-button--xs ubits-button--with-token-cost portada-ia-modal-result__regen">' +
+                        '<span class="ubits-button__token-cost" aria-hidden="true">' +
+                        '<span class="ubits-button__token-number">' +
+                        String(PORTADA_AI_REGEN_TOKEN_COST) +
+                        '</span>' +
+                        '<i class="far fa-coin-vertical"></i>' +
+                        '</span>' +
+                        '<span>Regenerar</span>' +
                     '</button>' +
                 '</div>' +
                 '<div class="portada-ia-modal-actions">' +
@@ -521,10 +587,6 @@
             }
         }
 
-        if (typeof initTooltip === 'function') {
-            initTooltip('#portada-ai-modal-regenerate');
-        }
-
         var inputView = overlay.querySelector('#ai-modal-input-view');
         var loaderView = overlay.querySelector('#ai-modal-loader-view');
         var resultView = overlay.querySelector('#ai-modal-result-view');
@@ -544,6 +606,7 @@
                 loaderView.style.display = 'none';
                 imgEl.src = AI_IMAGES[portadaiAImagesIndex];
                 resultView.style.display = 'flex';
+                updatePortadaAiModalTokenButtons(overlay);
             }, 4000);
         }
 
@@ -556,25 +619,21 @@
         });
 
         regenBtn.addEventListener('click', function() {
+            if (!tryConsumePortadaRegenTokens()) return;
+            updatePortadaAiModalTokenButtons(overlay);
             resultView.style.display = 'none';
             loaderView.style.display = 'flex';
-            
+
             setTimeout(function() {
                 portadaiAImagesIndex = (portadaiAImagesIndex + 1) % AI_IMAGES.length;
                 imgEl.src = AI_IMAGES[portadaiAImagesIndex];
                 loaderView.style.display = 'none';
                 resultView.style.display = 'flex';
+                updatePortadaAiModalTokenButtons(overlay);
             }, 2000);
         });
 
-        if (portadaAiTokensRemaining < PORTADA_AI_COVER_TOKEN_COST) {
-            useBtn.disabled = true;
-            useBtn.setAttribute('aria-disabled', 'true');
-            useBtn.setAttribute(
-                'title',
-                'No tienes suficientes tokens (' + PORTADA_AI_COVER_TOKEN_COST + ' requeridos).'
-            );
-        }
+        updatePortadaAiModalTokenButtons(overlay);
 
         useBtn.addEventListener('click', function () {
             if (!tryConsumePortadaCoverTokens()) return;
