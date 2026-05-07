@@ -95,14 +95,16 @@
     background: transparent;
 }
 
-.ubits-rich-text-editor__field {
+/* Texto escrito: mismo contraste que .ubits-input (--ubits-fg-1-high).
+   Gana a clases tipográficas companion (p. ej. ubits-body-* → fg-1-medium). */
+.ubits-rich-text-editor .ubits-rich-text-editor__field {
     position: relative;
     box-sizing: border-box;
     min-height: 104px;
     padding: var(--padding-md);
     margin: 0;
     outline: none;
-    color: var(--ubits-fg-1-medium);
+    color: var(--ubits-fg-1-high);
     font-family: var(--ubits-font-family-sans);
     font-size: var(--font-size-md);
     line-height: 1.5;
@@ -118,13 +120,14 @@
     box-shadow: none;
 }
 
+/* Placeholder vía ::before + data-placeholder (mismo token que Input / inline-edit) */
 .ubits-rich-text-editor__field.is-empty::before {
     content: attr(data-placeholder);
     position: absolute;
     left: var(--padding-md);
     top: var(--padding-md);
     right: var(--padding-md);
-    color: var(--ubits-fg-1-medium);
+    color: var(--ubits-fg-disabled);
     pointer-events: none;
     font-family: var(--ubits-font-family-sans);
     font-size: var(--font-size-md);
@@ -132,7 +135,7 @@
 }
 
 .ubits-rich-text-editor__field.is-empty:focus::before {
-    opacity: 0.45;
+    opacity: 0.85;
 }
 
 /* Contenido generado por el navegador dentro del editor */

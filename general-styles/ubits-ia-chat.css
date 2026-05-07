@@ -133,7 +133,7 @@
 }
 
 .ubits-ia-chat-thread__header-title::placeholder {
-    color: var(--ubits-fg-1-low);
+    color: var(--ubits-fg-disabled);
 }
 
 .ubits-ia-chat-thread__header-title:hover {
@@ -1079,7 +1079,7 @@
     font-size: var(--font-size-md);
     font-weight: var(--font-weight-regular);
     line-height: 28.8px;
-    color: var(--ubits-input-text-default);
+    color: var(--ubits-fg-disabled);
     cursor: text;
 }
 
@@ -1105,7 +1105,7 @@
 }
 
 .ubits-ia-chat-thread__input::placeholder {
-    color: var(--ubits-input-text-default);
+    color: var(--ubits-fg-disabled);
 }
 
 .ubits-ia-chat-thread__pending-images-strip {
@@ -2645,7 +2645,7 @@ body.ia-chat-mobile-drawer-scroll-lock {
 }
 
 .ubits-ia-chat-bottom-sheet__free-text input::placeholder {
-    color: var(--ubits-input-text-default);
+    color: var(--ubits-fg-disabled);
 }
 
 /* Footer: contador + omitir + enviar */

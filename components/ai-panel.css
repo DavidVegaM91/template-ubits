@@ -759,7 +759,7 @@ body.ai-panel-resizing .ai-panel {
 }
 
 .ai-panel__input::placeholder {
-    color: var(--ubits-input-text-default);
+    color: var(--ubits-fg-disabled);
 }
 
 /* Fila de acciones del input */

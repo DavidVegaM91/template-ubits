@@ -434,11 +434,13 @@
                 getPortadaAiGeneratingInnerHtml({}) +
             '</div>' +
             '<div id="ai-modal-result-view" style="display:none; width:100%; text-align:center; flex-direction:column; align-items:center; z-index:1; padding: 0;">' +
-                '<img id="portada-ai-modal-img" src="" alt="Portada generada" style="width:100%; max-width:600px; aspect-ratio:16/9; object-fit:cover; border-radius:12px; margin-bottom:24px; border: 1px solid var(--border-subtle);" />' +
-                '<div class="portada-ia-modal-actions">' +
-                    '<button type="button" id="portada-ai-modal-regenerate" class="ubits-button ubits-button--secondary ubits-button--md" style="flex:1;">' +
-                        '<i class="far fa-rotate-right"></i><span>Regenerar</span>' +
+                '<div class="portada-ia-modal-result__figure">' +
+                    '<img id="portada-ai-modal-img" class="portada-ia-modal-result__img" src="" alt="Portada generada" />' +
+                    '<button type="button" id="portada-ai-modal-regenerate" class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only portada-ia-modal-result__regen" data-tooltip="Regenerar imagen" aria-label="Regenerar imagen">' +
+                        '<i class="far fa-rotate-right"></i>' +
                     '</button>' +
+                '</div>' +
+                '<div class="portada-ia-modal-actions">' +
                     '<button type="button" id="portada-ai-modal-use" class="ubits-button ubits-button--primary ubits-button--md ubits-button--with-token-cost" style="flex:1;">' +
                         '<span class="ubits-button__token-cost" aria-hidden="true">' +
                         '<span class="ubits-button__token-number">' +
@@ -517,6 +519,10 @@
                 modalBody.style.display = 'flex';
                 modalBody.style.flexDirection = 'column';
             }
+        }
+
+        if (typeof initTooltip === 'function') {
+            initTooltip('#portada-ai-modal-regenerate');
         }
 
         var inputView = overlay.querySelector('#ai-modal-input-view');

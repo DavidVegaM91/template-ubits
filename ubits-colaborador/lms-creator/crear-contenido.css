@@ -852,10 +852,37 @@ body.crear-contenido-app-open .ubits-dropdown-menu__content {
     max-width: 100%;
 }
 
+/* Vista resultado modal «Generar portada»: imagen + regenerar encima (esquina superior derecha) */
+.portada-ia-modal-result__figure {
+    position: relative;
+    width: 100%;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: var(--gap-lg);
+}
+
+.portada-ia-modal-result__img {
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    border-radius: var(--border-radius-md);
+    border: 1px solid var(--ubits-border-1);
+    box-sizing: border-box;
+}
+
+.portada-ia-modal-result__regen {
+    position: absolute;
+    top: var(--gap-sm);
+    right: var(--gap-sm);
+    z-index: 2;
+}
+
 .portada-ia-modal-actions {
     display: flex;
     justify-content: center;
-    gap: 16px;
+    gap: var(--gap-lg);
     width: 100%;
     max-width: 600px;
 }
@@ -863,13 +890,7 @@ body.crear-contenido-app-open .ubits-dropdown-menu__content {
 @media (max-width: 1023px) {
     .portada-ia-modal-actions {
         flex-direction: column;
-        gap: 12px;
-    }
-    .portada-ia-modal-actions > button:nth-child(1) {
-        order: 2;
-    }
-    .portada-ia-modal-actions > button:nth-child(2) {
-        order: 1;
+        gap: var(--gap-md);
     }
 }
 

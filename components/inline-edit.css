@@ -12,8 +12,8 @@
                placeholder="Añade una descripción..."></textarea>
 
    El color del texto lo fija la clase tipográfica (fg-1-high para
-   display/heading, fg-1-medium para body). El placeholder siempre
-   usa --ubits-input-text-default, igual que el componente Input.
+   display/heading, fg-1-medium para body). El placeholder usa
+   --ubits-fg-disabled, igual que .ubits-input::placeholder (Input UBITS).
 
    Para textarea: importar inline-edit.js y llamar initInlineEdit()
    para el auto-resize automático al escribir.
@@ -46,10 +46,20 @@ textarea.ubits-inline-edit {
 }
 
 /* ──────────────── Placeholder ──────────────── */
-/* Mismo color que .ubits-input::placeholder (Input UBITS) */
+/* Mismo token que .ubits-input::placeholder (Input UBITS): --ubits-fg-disabled */
 .ubits-inline-edit::placeholder {
-    color: var(--ubits-input-text-default);
+    color: var(--ubits-fg-disabled);
     opacity: 1; /* Normaliza en Firefox */
+}
+
+.ubits-inline-edit::-webkit-input-placeholder {
+    color: var(--ubits-fg-disabled);
+    opacity: 1;
+}
+
+.ubits-inline-edit::-moz-placeholder {
+    color: var(--ubits-fg-disabled);
+    opacity: 1;
 }
 
 /* ──────────────── Estados interactivos ──────────────── */
