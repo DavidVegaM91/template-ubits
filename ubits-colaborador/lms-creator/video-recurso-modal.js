@@ -258,11 +258,19 @@
         );
     }
 
-    function buildRenderedBlock(type, src, isLocal) {
+    function buildRenderedBlock(type, src, isLocal, blockOpts) {
+        blockOpts = blockOpts || {};
+        var aiHost =
+            blockOpts.aiGenerated && typeof global.getGeneradoConIaBadgeHtml === 'function'
+                ? '<div class="cc-video-resource__generado-ia-host">' + global.getGeneradoConIaBadgeHtml() + '</div>'
+                : '';
         return (
             '<div class="ubits-resources-block ubits-resources-block--stack">' +
-                '<div class="ubits-resources-block__surface" style="padding:0;">' +
+                '<div class="ubits-resources-block__surface cc-video-resource__surface" style="padding:0;">' +
+                    '<div class="cc-video-resource__player-wrap">' +
+                    aiHost +
                     buildPlayerHtml(type, src, isLocal) +
+                    '</div>' +
                 '</div>' +
                 '<div class="ubits-resources-block__footer">' +
                     '<button type="button" class="ubits-button ubits-button--error-secondary ubits-button--sm" id="cc-eliminar-recurso">' +
@@ -984,7 +992,7 @@
         if (_onVideoReady) _onVideoReady('<div class="cc-video-ia-loader-host">' + innerLoader + '</div>');
 
         setTimeout(function () {
-            var html = buildRenderedBlock('youtube', job.src, false);
+            var html = buildRenderedBlock('youtube', job.src, false, { aiGenerated: true });
             if (_onVideoReady) { _onVideoReady(html); _onVideoReady = null; }
             if (typeof global.ccGenWidget !== 'undefined') global.ccGenWidget.finishJob(jobId);
             updateIndexIcon(job.pageKey);

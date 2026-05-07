@@ -45,12 +45,24 @@
     return nums.filter(function (n) { return !isNaN(n) && n > 0; });
   }
 
+  function generadoConIaBadgeMarkup() {
+    if (typeof global.getGeneradoConIaBadgeHtml === 'function') {
+      return global.getGeneradoConIaBadgeHtml();
+    }
+    return (
+      '<span class="ubits-badge-tag ubits-badge-tag--outlined ubits-badge-tag--ia ubits-badge-tag--sm ubits-badge-tag--with-icon learn-question__ia-badge" role="status">' +
+      '<i class="far fa-sparkles"></i>' +
+      '<span class="ubits-badge-tag__text">Generado con IA</span></span>'
+    );
+  }
+
   function normalizeModel(model, qId) {
     var m = model && typeof model === 'object' ? model : {};
     var type = String(m.type || 'multiple_choice_single');
     var out = {
       id: qId,
       type: type,
+      generatedByAi: !!(m.generatedByAi),
       statement: String(m.statement || ''),
       instructionHtml: String(m.instructionHtml || ''),
       options: Array.isArray(m.options) ? m.options.map(function (o) {
@@ -181,7 +193,10 @@
       '<div class="learn-question__header">' +
       '  <span class="learn-question__badge">' +
       '    <i class="far ' + qTypeIcon(model.type) + ' learn-question__type-icon" aria-hidden="true"></i>' +
-      '    <span class="ubits-body-sm-semibold learn-question__num">Pregunta ' + qId + '</span>' +
+      '    <span class="learn-question__title-cluster">' +
+      '      <span class="ubits-body-sm-semibold learn-question__num">Pregunta ' + qId + '</span>' +
+      (model.generatedByAi ? generadoConIaBadgeMarkup() : '') +
+      '    </span>' +
       '  </span>' +
       '  <button type="button" class="ubits-button ubits-button--error-tertiary ubits-button--sm ubits-button--icon-only learn-question__delete" aria-label="Eliminar pregunta" data-tooltip="Eliminar pregunta" data-tooltip-delay="1000">' +
       '    <i class="far fa-trash"></i>' +

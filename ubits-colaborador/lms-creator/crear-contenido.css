@@ -896,9 +896,25 @@ body.crear-contenido-app-open .ubits-dropdown-menu__content {
     }
 }
 
-/* AI Panel — resultado “Generar portada” (imagen + acciones, mismo patrón que el modal) */
+/* AI Panel — resultado «Generar portada» (imagen + acciones, mismo patrón que el modal) */
 #ai-panel .cc-portada-ai-panel-result {
     width: 100%;
+}
+
+#ai-panel .cc-portada-ai-panel-result__figure {
+    position: relative;
+    width: 100%;
+    max-width: 100%;
+}
+
+#ai-panel .cc-portada-ai-panel-result__generado-ia-host {
+    position: absolute;
+    top: var(--gap-sm);
+    left: var(--gap-sm);
+    z-index: 2;
+    pointer-events: none;
+    max-width: calc(100% - var(--padding-md));
+    box-sizing: border-box;
 }
 
 #ai-panel .cc-portada-ai-panel-result__img {

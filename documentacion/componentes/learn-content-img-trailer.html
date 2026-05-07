@@ -15,6 +15,8 @@
     <link rel="stylesheet" href="../../components/ia-button.css">
     <link rel="stylesheet" href="../../components/toast.css">
     <link rel="stylesheet" href="../../components/learn-content-img-trailer.css">
+    <link rel="stylesheet" href="../../components/badge-tag.css">
+    <link rel="stylesheet" href="../../ubits-colaborador/aprendizaje/aprendizaje-ia-gradientes.css">
     <link rel="stylesheet" href="../../docs/docs-sidebar.css">
     <link rel="stylesheet" href="../../docs/docstyles.css">
     <style>
@@ -58,6 +60,7 @@
                                 <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn lcb-state-btn" data-lcb-state="hover"><span>Hover forzado</span></button>
                                 <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn lcb-state-btn" data-lcb-state="error"><span>Error</span></button>
                                 <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn lcb-state-btn" data-lcb-state="image"><span>Imagen</span></button>
+                                <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn lcb-state-btn" data-lcb-state="image-ai"><span>Imagen + IA</span></button>
                                 <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn lcb-state-btn" data-lcb-state="image-delete"><span>Imagen (eliminar)</span></button>
                                 <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn lcb-state-btn" data-lcb-state="trailer"><span>Tráiler</span></button>
                             </div>
@@ -93,6 +96,11 @@
                                     <div class="ubits-body-sm-bold">Error</div>
                                     <div class="ubits-body-sm-regular">Borde y mensaje de error con el mismo estilo de aviso que el resto del producto.</div>
                                 </div>
+                                <div style="text-align: center; padding: var(--padding-md); background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: var(--gap-sm);"><i class="far fa-sparkles"></i></div>
+                                    <div class="ubits-body-sm-bold">Generado con IA</div>
+                                    <div class="ubits-body-sm-regular">Con portada generada por IA, el tag «Generado con IA» aparece arriba a la izquierda sobre la imagen.</div>
+                                </div>
                             </div>
                         </div>
 
@@ -110,7 +118,7 @@
                                     <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('lcb-p1')"><i class="far fa-copy"></i><span>Copiar</span></button>
                                 </div>
                                 <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm);">
-                                    <pre style="margin: 0; font-size: var(--font-size-sm); white-space: pre-wrap;"><code id="lcb-p1" class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">En la pantalla [nombre] de aprendizaje, en [ubicación], coloca el bloque UBITS «Learn content imagen y tráiler» como en la documentación: botón «Subir imagen de portada», texto de ayuda debajo (JPG o PNG y tráiler opcional), y estados error, imagen llena y tráiler con play. Usa tokens UBITS y el CSS del componente.</code></pre>
+                                    <pre style="margin: 0; font-size: var(--font-size-sm); white-space: pre-wrap;"><code id="lcb-p1" class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">En la pantalla [nombre] de aprendizaje, en [ubicación], coloca el bloque UBITS «Learn content imagen y tráiler» como en la documentación: primero el botón IA «Generar portada con IA», luego «Cargar imagen», texto de ayuda debajo (JPG o PNG y tráiler opcional), y estados error, imagen llena y tráiler con play. Usa tokens UBITS y el CSS del componente.</code></pre>
                                 </div>
                             </div>
                         </div>
@@ -141,6 +149,7 @@ Estados en la raíz:
   .ubits-learn-img-trailer--trailer        → además overlay + play (requiere --image)
   .ubits-learn-img-trailer--playing        → iframe de vídeo en la misma caja (tras play)
   .ubits-learn-img-trailer--state-hover    → borde marca (solo demo / foco forzado)
+  .ubits-learn-img-trailer--ai-generated   → muestra el tag «Generado con IA» (requiere hijo __generado-ia-host dentro del figure)
 
 Hijos:
   .ubits-learn-img-trailer__empty
@@ -153,6 +162,7 @@ Hijos:
   .ubits-learn-img-trailer__trailer-scrim-bg
   .ubits-learn-img-trailer__play
   .ubits-learn-img-trailer__embed-host    → contenedor del iframe (inyectado al reproducir)
+  .ubits-learn-img-trailer__generado-ia-host → contenedor del badge-tag (tag IA sobre la imagen)
   .ubits-learn-img-trailer__edit</code></pre>
                                 </div>
                                 <div style="padding: 32px;">
@@ -161,12 +171,14 @@ Hijos:
                                         <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('lcb-tech-req')"><i class="far fa-copy"></i><span>Copiar</span></button>
                                     </div>
                                     <pre style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm);"><code id="lcb-tech-req" class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">CSS: general-styles/ubits-colors.css, components/button.css, components/ia-button.css,
-     general-styles/fontawesome-icons.css, general-styles/ubits-typography.css, components/learn-content-img-trailer.css
+     general-styles/fontawesome-icons.css, general-styles/ubits-typography.css, components/learn-content-img-trailer.css,
+     components/badge-tag.css, ubits-colaborador/aprendizaje/aprendizaje-ia-gradientes.css (tag «Generado con IA» sobre la imagen)
 JS: components/learn-content-img-trailer.js (+ toast.js si usas toasts)
      Copys: LEARN_CONTENT_IMG_TRAILER_DEFAULTS (cta, hint, editButton, playAriaLabel, …)
-     HTML vacío: getLearnContentImgTrailerEmptyHtml({ ctaId?, aiCtaModalId?, aiCtaPanelId? solo data-* en root; iconClass?, includeErrorPlaceholder? }) — un solo botón IA («Generar portada con IA» por defecto).
+     HTML vacío: getLearnContentImgTrailerEmptyHtml({ ctaId?, aiCtaModalId?, aiCtaPanelId? solo data-* en root; iconClass?, includeErrorPlaceholder? }) — columna apilada: arriba IA («Generar portada con IA»), abajo «Cargar imagen» (cta por defecto).
      Botón Editar: getLearnContentImgTrailerEditHtml({ editButtonId? })
      Botón Eliminar (variante imagen): getLearnContentImgTrailerDeleteHtml({ deleteButtonId? })
+     Tag IA: getGeneradoConIaBadgeHtml() — dentro de figure (__generado-ia-host); activar .ubits-learn-img-trailer--ai-generated en la raíz.
      initLearnContentImgTrailer('#id', {}) — data-trailer-url en la raíz;
        YouTube/Vimeo/Drive → iframe en el mismo bloque (clase --playing); sin embed → nueva pestaña.
      Opcional: onPlay() sustituye ese comportamiento.
@@ -195,8 +207,9 @@ JS: components/learn-content-img-trailer.js (+ toast.js si usas toasts)
             var c = ['ubits-learn-img-trailer'];
             if (state === 'error') c.push('ubits-learn-img-trailer--error');
             if (state === 'hover') c.push('ubits-learn-img-trailer--state-hover');
-            if (state === 'image' || state === 'image-delete' || state === 'trailer') c.push('ubits-learn-img-trailer--image');
+            if (state === 'image' || state === 'image-delete' || state === 'trailer' || state === 'image-ai') c.push('ubits-learn-img-trailer--image');
             if (state === 'trailer') c.push('ubits-learn-img-trailer--trailer');
+            if (state === 'image-ai') c.push('ubits-learn-img-trailer--ai-generated');
 
             var def = typeof LEARN_CONTENT_IMG_TRAILER_DEFAULTS !== 'undefined' ? LEARN_CONTENT_IMG_TRAILER_DEFAULTS : {};
             var empty =
@@ -209,9 +222,14 @@ JS: components/learn-content-img-trailer.js (+ toast.js si usas toasts)
                     : '';
 
             var media = '';
-            if (state === 'image' || state === 'image-delete' || state === 'trailer') {
+            if (state === 'image' || state === 'image-delete' || state === 'trailer' || state === 'image-ai') {
+                var iaBadge =
+                    state === 'image-ai' && typeof getGeneradoConIaBadgeHtml === 'function'
+                        ? '<div class="ubits-learn-img-trailer__generado-ia-host">' + getGeneradoConIaBadgeHtml() + '</div>'
+                        : '';
                 media =
                     '<figure class="ubits-learn-img-trailer__media">' +
+                    iaBadge +
                     '<img class="ubits-learn-img-trailer__img" src="' +
                     LCB_DEMO_IMG +
                     '" alt="">' +
@@ -224,7 +242,7 @@ JS: components/learn-content-img-trailer.js (+ toast.js si usas toasts)
             }
 
             var edit = '';
-            if (state === 'image' || state === 'trailer') {
+            if (state === 'image' || state === 'trailer' || state === 'image-ai') {
                 edit = typeof getLearnContentImgTrailerEditHtml === 'function' ? getLearnContentImgTrailerEditHtml({}) : '';
             } else if (state === 'image-delete') {
                 edit = typeof getLearnContentImgTrailerDeleteHtml === 'function' ? getLearnContentImgTrailerDeleteHtml({}) : '';

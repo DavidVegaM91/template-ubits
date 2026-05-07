@@ -13,7 +13,7 @@
 
     /** Copys oficiales del componente (única fuente de verdad). */
     var LEARN_CONTENT_IMG_TRAILER_DEFAULTS = {
-        cta: 'Subir imagen de portada',
+        cta: 'Cargar imagen',
         aiCtaModal: 'Generar portada con IA',
         hint: 'Imagen en JPG o PNG. Además, tienes la opción de agregar un tráiler de video',
         editButton: 'Editar',
@@ -202,18 +202,18 @@
         }
         return (
             '<div class="ubits-learn-img-trailer__empty">' +
+            '<div class="ubits-learn-img-trailer__ai-row" role="group" aria-label="Opciones de portada">' +
+            '<button type="button" class="ubits-ia-button ubits-ia-button--secondary ubits-ia-button--sm"' +
+            aiModalIdAttr +
+            '><i class="far fa-sparkles"></i><span>' +
+            escapeHtml(aiCtaModal) +
+            '</span></button>' +
             '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-learn-img-trailer__cta"' +
             ctaIdAttr +
             '><i class="' +
             escapeHtml(icon) +
             '"></i><span>' +
             escapeHtml(cta) +
-            '</span></button>' +
-            '<div class="ubits-learn-img-trailer__ai-row" role="group" aria-label="Acciones de IA">' +
-            '<button type="button" class="ubits-ia-button ubits-ia-button--secondary ubits-ia-button--sm"' +
-            aiModalIdAttr +
-            '><i class="far fa-sparkles"></i><span>' +
-            escapeHtml(aiCtaModal) +
             '</span></button>' +
             '</div>' +
             '<p class="ubits-learn-img-trailer__hint ubits-body-sm-regular">' +
@@ -325,6 +325,19 @@
         });
     }
 
+    /**
+     * Badge «Generado con IA» (variante outlined + IA, sm, icono sparkles).
+     * Requiere: badge-tag.css, aprendizaje-ia-gradientes.css (o fallbacks en badge-tag), fontawesome-icons.css
+     */
+    function getGeneradoConIaBadgeHtml() {
+        return (
+            '<span class="ubits-badge-tag ubits-badge-tag--outlined ubits-badge-tag--ia ubits-badge-tag--sm ubits-badge-tag--with-icon ubits-generado-ia-badge" role="status">' +
+            '<i class="far fa-sparkles"></i>' +
+            '<span class="ubits-badge-tag__text">Generado con IA</span>' +
+            '</span>'
+        );
+    }
+
     window.LEARN_CONTENT_IMG_TRAILER_DEFAULTS = LEARN_CONTENT_IMG_TRAILER_DEFAULTS;
     window.getLearnContentImgTrailerEmptyHtml = getLearnContentImgTrailerEmptyHtml;
     window.getLearnContentImgTrailerEditHtml = getLearnContentImgTrailerEditHtml;
@@ -334,4 +347,5 @@
     window.getTrailerEmbedUrl = getTrailerEmbedUrl;
     window.playLearnContentTrailerInline = playTrailerInline;
     window.playLearnContentTrailer = playTrailerVideo;
+    window.getGeneradoConIaBadgeHtml = getGeneradoConIaBadgeHtml;
 })();

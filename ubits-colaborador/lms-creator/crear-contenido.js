@@ -84,7 +84,8 @@
         return img.getAttribute('src');
     }
 
-    function buildPortadaFigureHtml(hasTrailer) {
+    function buildPortadaFigureHtml(hasTrailer, figureOpts) {
+        figureOpts = figureOpts || {};
         var playLabel =
             window.LEARN_CONTENT_IMG_TRAILER_DEFAULTS && window.LEARN_CONTENT_IMG_TRAILER_DEFAULTS.playAriaLabel
                 ? window.LEARN_CONTENT_IMG_TRAILER_DEFAULTS.playAriaLabel
@@ -96,15 +97,25 @@
             escAttr(playLabel) +
             '">' +
             '<i class="fas fa-play"></i></button></div>';
+        var generadoHost = '';
+        if (figureOpts.aiGenerated && typeof window.getGeneradoConIaBadgeHtml === 'function') {
+            generadoHost =
+                '<div class="ubits-learn-img-trailer__generado-ia-host">' +
+                window.getGeneradoConIaBadgeHtml() +
+                '</div>';
+        }
         return (
             '<figure class="ubits-learn-img-trailer__media">' +
+            generadoHost +
             '<img class="ubits-learn-img-trailer__img" alt="">' +
             (hasTrailer ? scrim : '') +
             '</figure>'
         );
     }
 
-    function applyPortadaImagenCargada(dataUrl, trailerUrl) {
+    function applyPortadaImagenCargada(dataUrl, trailerUrl, loadOpts) {
+        loadOpts = loadOpts || {};
+        var fromAi = !!loadOpts.fromAi;
         var block = document.getElementById('crear-contenido-img-trailer');
         if (!block || !dataUrl) return;
         crearContenidoPortadaTrailerUrl = trailerUrl != null ? String(trailerUrl).trim() : '';
@@ -113,12 +124,13 @@
         if (hasTrailer) block.classList.add('ubits-learn-img-trailer--trailer');
         else block.classList.remove('ubits-learn-img-trailer--trailer');
         block.classList.remove('ubits-learn-img-trailer--playing');
+        block.classList.toggle('ubits-learn-img-trailer--ai-generated', fromAi);
         block.removeAttribute('data-img-trailer-init');
         block.removeAttribute('data-learn-img-trailer-init');
         if (typeof window.getLearnContentImgTrailerEmptyHtml !== 'function' || typeof window.getLearnContentImgTrailerEditHtml !== 'function') return;
         block.innerHTML =
             window.getLearnContentImgTrailerEmptyHtml({}) +
-            buildPortadaFigureHtml(hasTrailer) +
+            buildPortadaFigureHtml(hasTrailer, { aiGenerated: fromAi }) +
             window.getLearnContentImgTrailerEditHtml({ editButtonId: 'crear-contenido-portada-cambiar' });
         var img = block.querySelector('.ubits-learn-img-trailer__img');
         if (img) img.src = dataUrl;
@@ -146,6 +158,7 @@
         block.classList.remove('ubits-learn-img-trailer--image');
         block.classList.remove('ubits-learn-img-trailer--trailer');
         block.classList.remove('ubits-learn-img-trailer--playing');
+        block.classList.remove('ubits-learn-img-trailer--ai-generated');
         block.removeAttribute('data-trailer-url');
         block.removeAttribute('data-img-trailer-init');
         block.removeAttribute('data-learn-img-trailer-init');
@@ -268,10 +281,19 @@
         var useTitle = canAfford
             ? ''
             : ' title="' + escAttr('No tienes suficientes tokens (' + PORTADA_AI_COVER_TOKEN_COST + ' requeridos).') + '"';
+        var generadoTag =
+            typeof window.getGeneradoConIaBadgeHtml === 'function'
+                ? '<div class="cc-portada-ai-panel-result__generado-ia-host">' +
+                  window.getGeneradoConIaBadgeHtml() +
+                  '</div>'
+                : '';
         return (
+            '<div class="cc-portada-ai-panel-result__figure">' +
+            generadoTag +
             '<img class="cc-portada-ai-panel-result__img" src="' +
             escAttr(imageUrl) +
             '" alt="Portada generada" />' +
+            '</div>' +
             '<div class="cc-portada-ai-panel-result__actions">' +
             '<button type="button" class="ubits-button ubits-button--primary ubits-button--sm ubits-button--with-token-cost" data-cc-portada-ai-panel-use="' +
             sid +
@@ -391,7 +413,7 @@
                 if (!tryConsumePortadaCoverTokens()) return;
                 var srcUse = root.getAttribute('data-current-src');
                 if (srcUse) {
-                    applyPortadaImagenCargada(srcUse, '');
+                    applyPortadaImagenCargada(srcUse, '', { fromAi: true });
                     if (typeof triggerFakeSaveCreator === 'function') triggerFakeSaveCreator();
                     if (typeof clearPortadaInvalidMarks === 'function') clearPortadaInvalidMarks();
                 }
@@ -638,7 +660,7 @@
         useBtn.addEventListener('click', function () {
             if (!tryConsumePortadaCoverTokens()) return;
             if (typeof applyPortadaImagenCargada === 'function') {
-                applyPortadaImagenCargada(imgEl.src, '');
+                applyPortadaImagenCargada(imgEl.src, '', { fromAi: true });
                 if (typeof triggerFakeSaveCreator === 'function') triggerFakeSaveCreator();
                 if (typeof clearPortadaInvalidMarks === 'function') clearPortadaInvalidMarks();
             }

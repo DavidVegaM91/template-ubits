@@ -2355,7 +2355,7 @@
 
         var aiModels = (questions || []).map(function (q) {
             var t = typeMap[q && q.agentType] || 'multiple_choice_single';
-            var m = { type: t, statement: String((q && q.stmt) || '').trim() };
+            var m = { type: t, statement: String((q && q.stmt) || '').trim(), generatedByAi: true };
             if (t === 'multiple_choice_single' || t === 'multiple_choice_multiple') {
                 var opts = Array.isArray(q && q.opts) ? q.opts : [];
                 if (opts.length < 2) opts = ['',''];

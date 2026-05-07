@@ -48,6 +48,18 @@
   color: var(--ubits-fg-1-high);
 }
 
+.learn-question__title-cluster {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--gap-sm);
+  min-width: 0;
+}
+
+.learn-question__ia-badge {
+  flex-shrink: 0;
+}
+
 .learn-question__type-icon {
   color: var(--ubits-accent-brand);
   font-size: 14px;

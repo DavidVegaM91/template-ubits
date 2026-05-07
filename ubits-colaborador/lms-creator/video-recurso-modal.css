@@ -526,4 +526,20 @@
     flex: 1;
 }
 
+/* Recurso video incrustado: tag «Generado con IA» sobre el reproductor (flujo Video IA) */
+.cc-video-resource__player-wrap {
+    position: relative;
+    width: 100%;
+}
+
+.cc-video-resource__generado-ia-host {
+    position: absolute;
+    top: var(--gap-sm);
+    left: var(--gap-sm);
+    z-index: 2;
+    pointer-events: none;
+    max-width: calc(100% - var(--gap-md));
+    box-sizing: border-box;
+}
+
 
