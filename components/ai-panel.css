@@ -179,15 +179,19 @@ body.ai-panel-resizing .ai-panel {
     z-index: 1;
 }
 
-/* Hueco leading + botón Atrás (vista artifact) */
+/* Leading: solo ocupa espacio en vista artifact (botón Atrás). Si está siempre visible queda un hueco de 32px. */
 .ai-panel__hdr-leading {
-    display: flex;
+    display: none;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
     width: 32px;
     height: 32px;
     position: relative;
+}
+
+.ai-panel--artifact-open .ai-panel__hdr-leading {
+    display: flex;
 }
 
 .ai-panel__hdr-back {
@@ -200,29 +204,6 @@ body.ai-panel-resizing .ai-panel {
 
 .ai-panel--artifact-open .ai-panel__header-actions {
     display: none;
-}
-
-/* Ícono del agente */
-.ai-panel__icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    width: 26px;
-    height: 26px;
-}
-
-.ai-panel__icon i {
-    font-size: 18px;
-    background: linear-gradient(135deg,
-        var(--modo-ia-gradient-a) 0%,
-        var(--modo-ia-gradient-b) 35.59%,
-        var(--modo-ia-gradient-c) 67.19%,
-        var(--modo-ia-gradient-d) 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    color: transparent;
 }
 
 /* Título + subtítulo (modelo/agente) */

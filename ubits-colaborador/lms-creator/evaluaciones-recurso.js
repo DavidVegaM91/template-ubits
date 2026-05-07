@@ -993,7 +993,13 @@
             { stmt: 'El estilo "acomodarse" en gestión de conflictos implica:', opts: ['Imponer la solución propia', 'Ceder a las demandas del otro para mantener la armonía', 'Buscar solución conjunta', 'Ignorar el conflicto'], correct: 1, agentType: 'multiple_choice_single_answer' },
             { stmt: '¿Cuál de estas prácticas reduce los conflictos por malentendidos?', opts: ['Usar lenguaje técnico complejo', 'Confirmar comprensión al final de cada conversación', 'Evitar reuniones del equipo', 'Comunicar solo por email'], correct: 1, agentType: 'multiple_choice_single_answer' },
             { stmt: '¿Verdadero o falso? Un conflicto no resuelto puede afectar la moral del equipo.', opts: ['Verdadero', 'Falso'], correct: 0, agentType: 'binary' },
-            { stmt: '¿Qué es la inteligencia emocional en el contexto del conflicto?', opts: ['Ignorar las emociones propias', 'La capacidad de reconocer y gestionar emociones propias y ajenas', 'Actuar solo con lógica', 'Suprimir reacciones emocionales'], correct: 1, agentType: 'multiple_choice_single_answer' }
+            { stmt: '¿Qué es la inteligencia emocional en el contexto del conflicto?', opts: ['Ignorar las emociones propias', 'La capacidad de reconocer y gestionar emociones propias y ajenas', 'Actuar solo con lógica', 'Suprimir reacciones emocionales'], correct: 1, agentType: 'multiple_choice_single_answer' },
+            { stmt: 'Selecciona todas las afirmaciones que describen correctamente el estilo evitativo:', opts: ['No cuida ni el resultado ni la relación.', 'Aplaza el problema y, aunque a veces sirve para enfriar, suele empeorarlo.', 'Prioriza el resultado sobre la relación y puede generar resistencia.', 'Ayuda a mantener la armonía, pero si se usa siempre genera frustración.'], correct: [0, 1], agentType: 'multiple_choice_multiple_answers' },
+            { stmt: 'Selecciona todas las conductas que suelen favorecer una escucha activa en un conflicto:', opts: ['Parafrasear lo escuchado para confirmar comprensión.', 'Planificar la réplica mientras el otro habla.', 'Hacer preguntas abiertas antes de juzgar.', 'Interrumpir para corregir hechos al instante.'], correct: [0, 2], agentType: 'multiple_choice_multiple_answers' },
+            { stmt: 'Completa: el modelo de Thomas-Kilmann identifica __ estilos de manejo de conflictos.', opts: [], answer: '5', agentType: 'closed_text' },
+            { stmt: 'Escribe la sigla en inglés que significa “mejor alternativa si no hay acuerdo” en una negociación.', opts: [], answer: 'BATNA', agentType: 'closed_text' },
+            { stmt: 'Relaciona cada estilo con su descripción principal:', pairs: [{ a: 'Competitivo', b: 'Prioriza el resultado sobre la relación y puede generar resistencia.' }, { a: 'Acomodador', b: 'Prioriza la relación sobre el resultado y ayuda a mantener la armonía.' }], agentType: 'matching' },
+            { stmt: 'Relaciona el concepto con su definición breve:', pairs: [{ a: 'Empatía', b: 'Reconocer y validar las emociones del otro sin necesidad de estar de acuerdo.' }, { a: 'Escucha activa', b: 'Atención plena, reformulación y clarificación sin interrumpir.' }], agentType: 'matching' }
         ],
         intermediate: [
             { stmt: '¿Cuál es la diferencia entre un conflicto de tarea y uno de relación en un equipo?', opts: ['Son exactamente lo mismo', 'El de tarea se refiere a desacuerdos sobre el trabajo; el de relación involucra tensiones interpersonales', 'El de relación es más productivo', 'El de tarea siempre escala más'], correct: 1, agentType: 'multiple_choice_single_answer' },
@@ -1020,7 +1026,16 @@
             { stmt: '¿Cuál de los siguientes factores organizacionales contribuye más a la frecuencia de conflictos?', opts: ['Claridad en la visión', 'Ambigüedad de roles y recursos escasos', 'Retroalimentación continua', 'Autonomía del equipo'], correct: 1, agentType: 'multiple_choice_single_answer' },
             { stmt: '¿Verdadero o falso? El estilo "colaboración" siempre requiere más tiempo que otros estilos de gestión de conflictos.', opts: ['Verdadero', 'Falso'], correct: 0, agentType: 'binary' },
             { stmt: '¿Qué papel juegan los acuerdos de equipo en la prevención de conflictos?', opts: ['Ninguno relevante', 'Establecen expectativas claras que reducen malentendidos futuros', 'Aumentan la burocracia', 'Solo sirven en equipos nuevos'], correct: 1, agentType: 'multiple_choice_single_answer' },
-            { stmt: '¿Cuál de estos tipos de conflicto es generalmente más beneficioso para el equipo si se gestiona bien?', opts: ['Conflicto de relación', 'Conflicto de proceso', 'Conflicto de tarea', 'Conflicto de valores'], correct: 2, agentType: 'multiple_choice_single_answer' }
+            { stmt: '¿Cuál de estos tipos de conflicto es generalmente más beneficioso para el equipo si se gestiona bien?', opts: ['Conflicto de relación', 'Conflicto de proceso', 'Conflicto de tarea', 'Conflicto de valores'], correct: 2, agentType: 'multiple_choice_single_answer' },
+            { stmt: 'Selecciona todas las que son beneficios potenciales del conflicto de tarea bien gestionado:', opts: ['Mayor creatividad y calidad de decisiones.', 'Siempre elimina el conflicto de relación.', 'Mejor detección temprana de errores en el trabajo.', 'Reduce por completo las tensiones interpersonales.'], correct: [0, 2], agentType: 'multiple_choice_multiple_answers' },
+            { stmt: 'Selecciona todas las afirmaciones verdaderas sobre el estilo colaborativo (Thomas-Kilmann):', opts: ['Busca soluciones que satisfagan las necesidades de ambas partes.', 'Es siempre la opción más rápida cuando hay urgencia.', 'Requiere confianza y tiempo para explorar intereses.', 'Consiste en imponer la solución más racional.'], correct: [0, 2], agentType: 'multiple_choice_multiple_answers' },
+            { stmt: 'Selecciona todas las que describen con mayor precisión una mediación efectiva:', opts: ['El mediador facilita el diálogo sin imponer la solución.', 'El mediador decide quién tiene razón.', 'Busca que las partes mantengan autonomía sobre el acuerdo.', 'Sustituye por completo la negociación bilateral.'], correct: [0, 2], agentType: 'multiple_choice_multiple_answers' },
+            { stmt: 'Selecciona todas las señales de que un conflicto está escalando de forma riesgosa:', opts: ['Interrupciones constantes y tono personalizado.', 'Aumento explícito del interés por datos y acuerdos de normas de conversación.', 'Generalizaciones (“siempre”, “nunca”).', 'Mayor curiosidad genuina por la perspectiva del otro.'], correct: [0, 2], agentType: 'multiple_choice_multiple_answers' },
+            { stmt: 'Relaciona cada estilo de Thomas-Kilmann con su postura típica respecto al resultado y la relación:', pairs: [{ a: 'Evitativo', b: 'Ni alto interés en resultado ni en relación en el corto plazo; aplaza el enfrentamiento.' }, { a: 'Colaborativo', b: 'Alto interés en resultado y en relación; busca integración de intereses.' }], agentType: 'matching' },
+            { stmt: 'Relaciona practica con efecto esperado en equipos:', pairs: [{ a: 'Normas explícitas de feedback', b: 'Reduce malentendidos y tensiones latentes.' }, { a: 'Roles y expectativas claras', b: 'Menos fricción por ambigüedad en responsabilidades.' }], agentType: 'matching' },
+            { stmt: 'Nombre del modelo de cinco estilos de manejo de conflictos (apellidos de los autores, sin tilde).', opts: [], answer: 'Thomas-Kilmann', agentType: 'closed_text' },
+            { stmt: '¿Cuántos estilos distingue el modelo Thomas-Kilmann? (solo el número)', opts: [], answer: '5', agentType: 'closed_text' },
+            { stmt: 'Siglas en inglés del inventario de estilos de conflicto usado junto al modelo de Thomas-Kilmann.', opts: [], answer: 'TKI', agentType: 'closed_text' }
         ],
         advanced: [
             { stmt: '¿Cómo influye el sesgo de atribución en la escalada de conflictos interpersonales en equipos?', opts: ['No influye en conflictos laborales', 'Lleva a atribuir causas negativas al comportamiento ajeno mientras se justifica el propio, intensificando el conflicto', 'Siempre reduce la intensidad del conflicto', 'Solo afecta conflictos entre pares de distinto nivel jerárquico'], correct: 1, agentType: 'multiple_choice_single_answer' },
@@ -1047,28 +1062,71 @@
             { stmt: '¿Verdadero o falso? El feedback de 360° puede ser una herramienta preventiva ante conflictos de relación en equipos.', opts: ['Verdadero', 'Falso'], correct: 0, agentType: 'binary' },
             { stmt: '¿Cuál de estos enfoques teóricos explica mejor por qué los conflictos persistentes deterioran el capital social del equipo?', opts: ['Teoría de la motivación de Maslow', 'Teoría del intercambio social y el capital de confianza acumulado', 'Modelo DISC de comportamiento', 'Teoría X e Y de McGregor'], correct: 1, agentType: 'multiple_choice_single_answer' },
             { stmt: 'Cuando un conflicto involucra a integrantes de distintos niveles jerárquicos, ¿qué riesgo adicional debe gestionarse?', opts: ['Mayor creatividad en la solución', 'Desequilibrio de poder que puede inhibir la expresión libre del miembro de menor rango', 'Agilidad en la resolución por claridad de autoridad', 'Reducción del conflicto por respeto a la jerarquía'], correct: 1, agentType: 'multiple_choice_single_answer' },
-            { stmt: '¿Qué mide el "Índice de apertura al conflicto" en un equipo y por qué es relevante?', opts: ['La frecuencia de disputas formales', 'La disposición del equipo a expresar y gestionar desacuerdos de forma productiva, predictor de innovación y adaptabilidad', 'El número de sanciones aplicadas', 'El porcentaje de conflictos escalados a recursos humanos'], correct: 1, agentType: 'multiple_choice_single_answer' }
+            { stmt: '¿Qué mide el "Índice de apertura al conflicto" en un equipo y por qué es relevante?', opts: ['La frecuencia de disputas formales', 'La disposición del equipo a expresar y gestionar desacuerdos de forma productiva, predictor de innovación y adaptabilidad', 'El número de sanciones aplicadas', 'El porcentaje de conflictos escalados a recursos humanos'], correct: 1, agentType: 'multiple_choice_single_answer' },
+            { stmt: 'Selecciona todas las afirmaciones correctas sobre conflictos de valores en equipos:', opts: ['Suelen ser más difíciles de “resolver” que los conflictos de tarea.', 'Se resuelven mejor ignorando las diferencias hasta que desaparecen.', 'A menudo requieren marcos de diálogo y facilitación más que una decisión unilateral.', 'Siempre tienen una única respuesta objetivamente correcta.'], correct: [0, 2], agentType: 'multiple_choice_multiple_answers' },
+            { stmt: 'Selecciona todas las prácticas alineadas con una cultura de seguridad psicológica frente al conflicto:', opts: ['Normalizar el desacuerdo productivo en reuniones.', 'Castigar en público las opiniones impopulares.', 'Establecer acuerdos sobre cómo confrontar ideas sin atacar personas.', 'Evitar hablar de errores para no generar tensión.'], correct: [0, 2], agentType: 'multiple_choice_multiple_answers' },
+            { stmt: 'Selecciona todos los enfoques que suelen caracterizar la mediación transformadora frente a la evaluativa:', opts: ['Priorizar la transformación de la calidad de la interacción entre las partes.', 'Centrar el proceso solo en cerrar un acuerdo económico rápido.', 'Fortalecer la capacidad empoderada de las partes para gestionar futuros conflictos.', 'Determinar de forma autoritativa quién tiene razón.'], correct: [0, 2], agentType: 'multiple_choice_multiple_answers' },
+            { stmt: 'Relaciona cada concepto avanzado con su idea central:', pairs: [{ a: 'Capital social del equipo', b: 'Red de confianza y reciprocidad que puede deteriorarse con conflictos persistentes mal gestionados.' }, { a: 'Negociación integrativa', b: 'Buscar ampliar el valor conjunto frente a repartir un recurso percibido como fijo.' }], agentType: 'matching' },
+            { stmt: 'Relaciona fenómeno con descripción:', pairs: [{ a: 'Sesgo de atribución hostil', b: 'Atribuir la conducta ajena a defectos de carácter y la propia a causas externas.' }, { a: 'Coaliciones cambiantes', b: 'En negociaciones multipartes, alianzas que se reorganizan según intereses.' }], agentType: 'matching' },
+            { stmt: 'Autores del libro “Getting to Yes” (apellidos separados por guion, sin tilde).', opts: [], answer: 'Fisher-Ury', agentType: 'closed_text' },
+            { stmt: 'Apellido de la investigadora asociada de forma habitual al constructo de seguridad psicológica en equipos.', opts: [], answer: 'Edmondson', agentType: 'closed_text' }
         ]
     };
+
+    function evalShuffleBankArray(arr) {
+        var a = (arr || []).slice();
+        for (var i = a.length - 1; i > 0; i--) {
+            var j = Math.floor(Math.random() * (i + 1));
+            var tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+        }
+        return a;
+    }
 
     function genMockQuestions(topic, difficulty, count, questionTypes) {
         var pool = EVAL_QUESTION_BANK[difficulty] || EVAL_QUESTION_BANK.intermediate;
         var types = (questionTypes && questionTypes.length) ? questionTypes : ['multiple_choice_single_answer'];
-        // Mezclar el pool (Fisher-Yates) para variedad
-        var shuffled = pool.slice();
-        for (var i = shuffled.length - 1; i > 0; i--) {
-            var j = Math.floor(Math.random() * (i + 1));
-            var tmp = shuffled[i]; shuffled[i] = shuffled[j]; shuffled[j] = tmp;
+        var filtered = pool.filter(function (q) { return types.indexOf(q.agentType) !== -1; });
+        if (!filtered.length) filtered = pool.slice();
+        var wanted = Math.min(Math.max(1, count), filtered.length);
+
+        if (types.length <= 1) {
+            return evalShuffleBankArray(filtered).slice(0, wanted).map(function (q) {
+                return Object.assign({}, q);
+            });
         }
-        // Filtrar por tipos si se especificaron
-        var filtered = types.length
-            ? shuffled.filter(function (q) { return types.indexOf(q.agentType) !== -1; })
-            : shuffled;
-        if (!filtered.length) filtered = shuffled; // fallback si el tipo no existe en el pool
-        var wanted = Math.min(count, filtered.length, shuffled.length);
-        return filtered.slice(0, wanted).map(function (q, i) {
-            return Object.assign({}, q, { agentType: types[i % types.length] });
+
+        var pools = {};
+        types.forEach(function (t) {
+            pools[t] = evalShuffleBankArray(filtered.filter(function (q) { return q.agentType === t; }));
         });
+
+        var out = [];
+        var idx = 0;
+        var guard = 0;
+        while (out.length < wanted && guard < wanted * (types.length + 8)) {
+            guard++;
+            var progressed = false;
+            for (var k = 0; k < types.length && out.length < wanted; k++) {
+                var tt = types[(idx + k) % types.length];
+                if (pools[tt] && pools[tt].length) {
+                    out.push(Object.assign({}, pools[tt].shift()));
+                    progressed = true;
+                }
+            }
+            idx++;
+            if (!progressed) break;
+        }
+
+        if (out.length < wanted) {
+            var used = {};
+            out.forEach(function (q) { if (q && q.stmt) used[String(q.stmt)] = true; });
+            var rest = evalShuffleBankArray(filtered.filter(function (q) { return q && q.stmt && !used[String(q.stmt)]; }));
+            for (var r = 0; r < rest.length && out.length < wanted; r++) {
+                out.push(Object.assign({}, rest[r]));
+            }
+        }
+
+        return out.slice(0, wanted);
     }
 
     // ---------------------------
@@ -2303,23 +2361,45 @@
                 if (opts.length < 2) opts = ['',''];
                 m.options = opts.map(function (txt, idx) {
                     var isCorrect = false;
+                    var cor = q && q.correct;
                     if (t === 'multiple_choice_single') {
-                        isCorrect = (typeof q.correct === 'number') ? (idx === (q.correct + 1) - 1) : false;
+                        isCorrect = typeof cor === 'number' && !isNaN(cor) ? idx === cor : false;
+                    } else {
+                        if (Array.isArray(cor)) {
+                            isCorrect = cor.some(function (x) { return Number(x) === idx; });
+                        } else if (typeof cor === 'number' && !isNaN(cor)) {
+                            isCorrect = idx === cor;
+                        }
                     }
                     return { text: String(txt || ''), correct: isCorrect };
                 });
             }
             if (t === 'true_false') {
-                m.trueFalseCorrect = '';
+                var ctf = q && q.correct;
+                if (ctf === true || ctf === 'true') m.trueFalseCorrect = 'true';
+                else if (ctf === false || ctf === 'false') m.trueFalseCorrect = 'false';
+                else if (ctf === 0 || ctf === '0') m.trueFalseCorrect = 'true';
+                else if (ctf === 1 || ctf === '1') m.trueFalseCorrect = 'false';
+                else m.trueFalseCorrect = '';
             }
             if (t === 'short_answer') {
-                m.shortAnswer = { answer: '', accuracy: 'exact' };
+                var ansRaw = q && (q.answer != null ? q.answer : q.expectedAnswer);
+                var ansStr = ansRaw != null ? String(ansRaw).trim() : '';
+                if (!ansStr && Array.isArray(q && q.opts) && q.opts.length) ansStr = String(q.opts[0] || '').trim();
+                var acc = q && q.accuracy ? String(q.accuracy) : 'exact';
+                m.shortAnswer = { answer: ansStr, accuracy: acc };
             }
             if (t === 'essay') {
                 m.essay = { minWords: '' };
             }
             if (t === 'matching') {
-                m.pairs = [{ a: '', b: '' }, { a: '', b: '' }];
+                if (Array.isArray(q && q.pairs) && q.pairs.length >= 2) {
+                    m.pairs = q.pairs.map(function (p) {
+                        return { a: String((p && p.a) || ''), b: String((p && p.b) || '') };
+                    });
+                } else {
+                    m.pairs = [{ a: '', b: '' }, { a: '', b: '' }];
+                }
             }
             return m;
         });

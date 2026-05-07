@@ -757,18 +757,18 @@
       if (t === 'multiple_choice_single' || t === 'multiple_choice_multiple') {
         html += '<div class="learn-question__readonly-opts">';
         (model.options || []).forEach(function (o, idx) {
-          var shouldPreselect = (mode === 'read');
+          var markCorrect = !!(o && o.correct);
           var txtOpt = String((o && o.text) || '').trim();
           var fallback = mode === 'read_error' ? 'Opción de respuesta' : '—';
           if (t === 'multiple_choice_multiple') {
             html += '<label class="ubits-checkbox ubits-checkbox--sm learn-question__readonly-opt">' +
-              '<input type="checkbox" class="ubits-checkbox__input" disabled ' + (shouldPreselect && idx === 0 ? 'checked' : '') + '>' +
+              '<input type="checkbox" class="ubits-checkbox__input" disabled ' + (markCorrect ? 'checked' : '') + '>' +
               '<span class="ubits-checkbox__box" aria-hidden="true"><i class="fas fa-check"></i><i class="fas fa-minus"></i></span>' +
               '<span class="ubits-checkbox__label ubits-body-sm-regular">' + esc(txtOpt || fallback) + '</span>' +
               '</label>';
           } else {
             html += '<label class="ubits-radio ubits-radio--sm learn-question__readonly-opt">' +
-              '<input type="radio" class="ubits-radio__input" disabled ' + (shouldPreselect && idx === 0 ? 'checked' : '') + '>' +
+              '<input type="radio" class="ubits-radio__input" disabled ' + (markCorrect ? 'checked' : '') + '>' +
               '<span class="ubits-radio__circle" aria-hidden="true"></span>' +
               '<span class="ubits-radio__label ubits-body-sm-regular">' + esc(txtOpt || fallback) + '</span>' +
               '</label>';
@@ -778,15 +778,24 @@
       }
       if (t === 'true_false') {
         html += '<div class="learn-question__readonly-opts">';
+        var tfVal = String(model.trueFalseCorrect || '');
         ['Verdadero', 'Falso'].forEach(function (lbl, idx2) {
-          var shouldPreselect2 = (mode === 'read');
+          var val = idx2 === 0 ? 'true' : 'false';
+          var markTf = tfVal === val;
           html += '<label class="ubits-radio ubits-radio--sm learn-question__readonly-opt">' +
-            '<input type="radio" class="ubits-radio__input" disabled ' + (shouldPreselect2 && idx2 === 0 ? 'checked' : '') + '>' +
+            '<input type="radio" class="ubits-radio__input" disabled ' + (markTf ? 'checked' : '') + '>' +
             '<span class="ubits-radio__circle" aria-hidden="true"></span>' +
             '<span class="ubits-radio__label ubits-body-sm-regular">' + esc(lbl) + '</span>' +
             '</label>';
         });
         html += '</div>';
+      }
+      if (t === 'short_answer') {
+        var sa = String(model.shortAnswer && model.shortAnswer.answer || '').trim();
+        html += '<p class="ubits-body-sm-regular learn-question__readonly-short">' +
+          '<span class="ubits-body-sm-semibold">Respuesta correcta: </span>' +
+          esc(sa || '—') +
+          '</p>';
       }
       modeMount.innerHTML = html;
       setHint('', false, false);

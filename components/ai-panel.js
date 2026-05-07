@@ -973,6 +973,34 @@ function _aiPanelSendInteractionReply(text, onReply, label) {
     if (scroll) scroll.scrollTop = scroll.scrollHeight;
 }
 
+/** Texto legible para el chat a partir de los values seleccionados en multiselect (items: string | { value, label }). */
+function _aiPanelMultiselectLabelsForChat(items, selectedValues) {
+    var parts = [];
+    (selectedValues || []).forEach(function(val) {
+        var strVal = String(val);
+        var human = strVal;
+        var i;
+        var it;
+        for (i = 0; i < items.length; i++) {
+            it = items[i];
+            if (typeof it === 'string') {
+                if (it === strVal) {
+                    human = it;
+                    break;
+                }
+            } else {
+                var v = String(it.value != null ? it.value : '');
+                if (v === strVal) {
+                    human = String(it.label || it.value || strVal);
+                    break;
+                }
+            }
+        }
+        parts.push(human);
+    });
+    return parts.join(', ');
+}
+
 /* ---- 1. Quick Reply — botones UBITS oficiales dentro del último mensaje IA ---- */
 function _aiPanelInteractionQuickReply(opts) {
     var items = opts.items || [];
@@ -1068,7 +1096,7 @@ function _aiPanelInteractionMultiselect(opts) {
         if (wrap.classList.contains('ubits-ia-chat-interaction--consumed')) return;
         if (!selected.length) return;
         _aiPanelConsumeInteraction(wrap);
-        var label = selected.join(', ');
+        var label = _aiPanelMultiselectLabelsForChat(items, selected);
         _aiPanelSendInteractionReply(selected.join(','), opts.onReply, label);
     });
 
