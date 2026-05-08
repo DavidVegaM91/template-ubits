@@ -57,6 +57,7 @@
                             </p>
                             <div style="margin-bottom: 20px; display: flex; flex-wrap: wrap; gap: var(--gap-sm); align-items: center;">
                                 <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn lcb-state-btn active" data-lcb-state="empty"><span>Vacío</span></button>
+                                <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn lcb-state-btn" data-lcb-state="empty-ia"><span>Vacío con IA</span></button>
                                 <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn lcb-state-btn" data-lcb-state="hover"><span>Hover forzado</span></button>
                                 <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn lcb-state-btn" data-lcb-state="error"><span>Error</span></button>
                                 <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn lcb-state-btn" data-lcb-state="image"><span>Imagen</span></button>
@@ -100,6 +101,11 @@
                                     <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: var(--gap-sm);"><i class="far fa-sparkles"></i></div>
                                     <div class="ubits-body-sm-bold">Generado con IA</div>
                                     <div class="ubits-body-sm-regular">Con portada generada por IA, el tag «Generado con IA» aparece arriba a la izquierda sobre la imagen.</div>
+                                </div>
+                                <div style="text-align: center; padding: var(--padding-md); background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: var(--gap-sm);"><i class="far fa-photo-film"></i></div>
+                                    <div class="ubits-body-sm-bold">Vacío con IA</div>
+                                    <div class="ubits-body-sm-regular">Variante de bloque vacío con icono, título, texto de ayuda y un solo botón IA secundario «Añadir portada» (sin segundo botón en el hueco).</div>
                                 </div>
                             </div>
                         </div>
@@ -153,7 +159,9 @@ Estados en la raíz:
 
 Hijos:
   .ubits-learn-img-trailer__empty
-  .ubits-learn-img-trailer__cta            → botón secundario UBITS
+  .ubits-learn-img-trailer__empty--ia       → variante «vacío con IA»
+  .ubits-learn-img-trailer__empty-ia-stack, __empty-ia-icon-wrap, __empty-ia-icon, __empty-ia-title, __empty-ia-desc
+  .ubits-learn-img-trailer__cta            → en variante default: botón secundario UBITS «Cargar imagen»; en vacío con IA: ubits-ia-button secundario sm «Añadir portada»
   .ubits-learn-img-trailer__hint
   .ubits-learn-img-trailer__error-msg
   .ubits-learn-img-trailer__media         → figure
@@ -172,10 +180,13 @@ Hijos:
                                     </div>
                                     <pre style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm);"><code id="lcb-tech-req" class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">CSS: general-styles/ubits-colors.css, components/button.css, components/ia-button.css,
      general-styles/fontawesome-icons.css, general-styles/ubits-typography.css, components/learn-content-img-trailer.css,
-     components/badge-tag.css, ubits-colaborador/aprendizaje/aprendizaje-ia-gradientes.css (tag «Generado con IA» sobre la imagen)
+     components/badge-tag.css, ubits-colaborador/aprendizaje/aprendizaje-ia-gradientes.css (ia-button secundario / tag «Generado con IA» sobre imagen)
 JS: components/learn-content-img-trailer.js (+ toast.js si usas toasts)
      Copys: LEARN_CONTENT_IMG_TRAILER_DEFAULTS (cta, hint, editButton, playAriaLabel, …)
-     HTML vacío: getLearnContentImgTrailerEmptyHtml({ ctaId?, aiCtaModalId?, aiCtaPanelId? solo data-* en root; iconClass?, includeErrorPlaceholder? }) — columna apilada: arriba IA («Generar portada con IA»), abajo «Cargar imagen» (cta por defecto).
+     HTML vacío: getLearnContentImgTrailerEmptyHtml({ … emptyVariant?: 'ia' | 'vacio-con-ia'; ctaId?, aiCtaModalId?, aiCtaPanelId? })
+       Variante default: columna IA + «Cargar imagen» + hint.
+       Variante ia: icono photo-film, «Añade una portada», descripción tráiler, CTA ia-button secundario «Añadir portada» — getLearnContentImgTrailerEmptyIaHtml({…}) o data-learn-img-trailer-empty-variant="ia" en la raíz.
+     Copys variante IA: LEARN_CONTENT_IMG_TRAILER_EMPTY_IA_DEFAULTS
      Botón Editar: getLearnContentImgTrailerEditHtml({ editButtonId? })
      Botón Eliminar (variante imagen): getLearnContentImgTrailerDeleteHtml({ deleteButtonId? })
      Tag IA: getGeneradoConIaBadgeHtml() — dentro de figure (__generado-ia-host); activar .ubits-learn-img-trailer--ai-generated en la raíz.
@@ -184,7 +195,8 @@ JS: components/learn-content-img-trailer.js (+ toast.js si usas toasts)
      Opcional: onPlay() sustituye ese comportamiento.
      API: playLearnContentTrailerInline(root, url), getTrailerEmbedUrl(url)
      Auto-render vacío: data-learn-img-trailer-init en la raíz (sin hijos) + initAllLearnContentImgTrailers()
-       (opcional) IDs: data-learn-img-trailer-cta-id / data-learn-img-trailer-ai-modal-id / data-learn-img-trailer-ai-panel-id</code></pre>
+       (opcional) IDs: data-learn-img-trailer-cta-id / data-learn-img-trailer-ai-modal-id / data-learn-img-trailer-ai-panel-id
+       Vacío con IA: data-learn-img-trailer-empty-variant="ia"</code></pre>
                                 </div>
                             </div>
                         </div>
@@ -212,13 +224,16 @@ JS: components/learn-content-img-trailer.js (+ toast.js si usas toasts)
             if (state === 'image-ai') c.push('ubits-learn-img-trailer--ai-generated');
 
             var def = typeof LEARN_CONTENT_IMG_TRAILER_DEFAULTS !== 'undefined' ? LEARN_CONTENT_IMG_TRAILER_DEFAULTS : {};
+            var emptyOpts = {
+                includeErrorPlaceholder: state === 'error',
+                errorPlaceholder: 'Mensaje de error'
+            };
+            if (state === 'empty-ia') {
+                emptyOpts.emptyVariant = 'ia';
+            }
             var empty =
                 typeof getLearnContentImgTrailerEmptyHtml === 'function'
-                    ? getLearnContentImgTrailerEmptyHtml({
-                          includeErrorPlaceholder: true,
-                          iconClass: 'fas fa-photo-film',
-                          errorPlaceholder: 'Mensaje de error'
-                      })
+                    ? getLearnContentImgTrailerEmptyHtml(emptyOpts)
                     : '';
 
             var media = '';
@@ -252,11 +267,16 @@ JS: components/learn-content-img-trailer.js (+ toast.js si usas toasts)
                 state === 'trailer'
                     ? ' data-trailer-url="https://www.youtube.com/watch?v=dQw4w9WgXcQ"'
                     : '';
+            /* initLearnContentImgTrailer vuelve a pintar el vacío desde data-learn-img-trailer-empty-variant;
+               sin esto el preview «Vacío con IA» se sobrescribe con la variante clásica. */
+            var emptyVariantRootAttr =
+                state === 'empty-ia' ? ' data-learn-img-trailer-empty-variant="ia"' : '';
             return (
                 '<div id="lcb-preview-root" class="' +
                 c.join(' ') +
                 '"' +
                 trailerAttr +
+                emptyVariantRootAttr +
                 ' role="region" aria-label="' +
                 (def.regionAriaLabel || 'Imagen o tráiler del contenido') +
                 '" data-learn-img-trailer-init>' +

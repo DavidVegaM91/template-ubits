@@ -20,6 +20,20 @@
     var PORTADA_INVALID_CLASS = 'crear-contenido-portada-field--invalid';
     var CATEGORIA_SELECT_PLACEHOLDER_TEXT = 'Selecciona una opción';
 
+    /**
+     * Experimento UI portada: variante «vacío con IA» del bloque learn-content-img-trailer (solo CTA ia-button «Añadir portada»).
+     * Rollback a la experiencia clásica (Generar portada con IA + Cargar imagen en el hueco): quitar en HTML
+     * `data-learn-img-trailer-empty-variant="ia"` del #crear-contenido-img-trailer; wirePortadaCta / modal vuelven a enlazarse solos.
+     * El modal `portada-ai-modal` y `openCrearContenidoPortadaAiModal` no se eliminan; el hueco ya no muestra el botón que lo abría.
+     * CTA «Añadir portada» abre `openPortadaImagenModal` (portada-imagen-modal.js): «Agregar imagen» con pestañas IA / subir / tráiler.
+     */
+    function portadaImgTrailerUsesEmptyIaVariant() {
+        var block = document.getElementById('crear-contenido-img-trailer');
+        if (!block) return false;
+        var v = (block.getAttribute('data-learn-img-trailer-empty-variant') || '').trim().toLowerCase();
+        return v === 'ia' || v === 'vacio-con-ia' || v === 'vacío-con-ia' || v === 'empty-ia';
+    }
+
     // ----- FAKE SAVE INDICATOR -----
     var saveIndicatorTimeout;
     function triggerFakeSaveCreator() {
@@ -129,7 +143,9 @@
         block.removeAttribute('data-learn-img-trailer-init');
         if (typeof window.getLearnContentImgTrailerEmptyHtml !== 'function' || typeof window.getLearnContentImgTrailerEditHtml !== 'function') return;
         block.innerHTML =
-            window.getLearnContentImgTrailerEmptyHtml({}) +
+            window.getLearnContentImgTrailerEmptyHtml({
+                emptyVariant: block.getAttribute('data-learn-img-trailer-empty-variant') || undefined
+            }) +
             buildPortadaFigureHtml(hasTrailer, { aiGenerated: fromAi }) +
             window.getLearnContentImgTrailerEditHtml({ editButtonId: 'crear-contenido-portada-cambiar' });
         var img = block.querySelector('.ubits-learn-img-trailer__img');
@@ -167,7 +183,8 @@
             block.innerHTML = window.getLearnContentImgTrailerEmptyHtml({
                 ctaId: 'crear-contenido-portada-cta',
                 aiCtaModalId: 'crear-contenido-portada-ai-modal',
-                aiCtaPanelId: 'crear-contenido-portada-ai-panel'
+                aiCtaPanelId: 'crear-contenido-portada-ai-panel',
+                emptyVariant: block.getAttribute('data-learn-img-trailer-empty-variant') || undefined
             });
         } else {
             block.innerHTML = '';
@@ -199,12 +216,36 @@
 
     function wirePortadaCta() {
         var cta = document.getElementById('crear-contenido-portada-cta');
-        if (cta) {
-            cta.addEventListener('click', function (e) {
-                e.preventDefault();
-                openPortadaModalPage();
-            });
-        }
+        if (!cta || cta._ccPortadaCtaWired) return;
+        cta._ccPortadaCtaWired = true;
+        cta.addEventListener('click', function (e) {
+            e.preventDefault();
+            if (portadaImgTrailerUsesEmptyIaVariant()) {
+                if (typeof window.openPortadaImagenModal !== 'function') return;
+                window.openPortadaImagenModal({
+                    initialTrailerUrl: crearContenidoPortadaTrailerUrl,
+                    onTrailerSaved: function (url) {
+                        crearContenidoPortadaTrailerUrl = url != null ? String(url).trim() : '';
+                        var d = getPortadaDataUrl();
+                        if (d) {
+                            applyPortadaImagenCargada(d, crearContenidoPortadaTrailerUrl, { fromAi: false });
+                        }
+                    },
+                    onApply: function (payload) {
+                        if (!payload || !payload.dataUrl) return;
+                        var tv =
+                            payload.trailerUrl != null && String(payload.trailerUrl).trim() !== ''
+                                ? String(payload.trailerUrl).trim()
+                                : crearContenidoPortadaTrailerUrl;
+                        applyPortadaImagenCargada(payload.dataUrl, tv, { fromAi: !!payload.fromAi });
+                        triggerFakeSaveCreator();
+                        clearPortadaInvalidMarks();
+                    }
+                });
+                return;
+            }
+            openPortadaModalPage();
+        });
     }
 
     var portadaiAImagesIndex = 0;

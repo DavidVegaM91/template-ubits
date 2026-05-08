@@ -1,9 +1,10 @@
 /* ========================================
    UBITS — Learn content: imagen y tráiler
    Bloque único (Figma Learn-Components · Img y trailer content).
-   Estados: vacío, hover, error, imagen cargada, tráiler (preview con play).
+   Estados: vacío, vacío con IA (.ubits-learn-img-trailer__empty--ia), hover, error, imagen cargada, tráiler (preview con play).
    Textos por defecto (CTA, hint, Editar, aria): learn-content-img-trailer.js → LEARN_CONTENT_IMG_TRAILER_DEFAULTS.
-  Requiere: ubits-colors.css, ubits-typography.css, fontawesome-icons.css, button.css, ia-button.css.
+   Requiere: ubits-colors.css, ubits-typography.css, fontawesome-icons.css, button.css, ia-button.css.
+   Vacío con IA — CTA con ia-button.css (+ aprendizaje-ia-gradientes.css recomendado).
    ======================================== */
 
 .ubits-learn-img-trailer {
@@ -57,7 +58,8 @@
     box-sizing: border-box;
 }
 
-.ubits-learn-img-trailer__cta.ubits-button span {
+.ubits-learn-img-trailer__cta.ubits-button span,
+.ubits-learn-img-trailer__cta.ubits-ia-button span {
     text-align: center;
 }
 
@@ -76,6 +78,65 @@
     max-width: 42ch;
     text-align: center;
     color: var(--ubits-fg-1-medium);
+}
+
+/* Vacío con IA — inspiración empty-state (sin usar ese componente): icono en caja bg-2, título, descripción, CTA ia-button secundario */
+.ubits-learn-img-trailer__empty--ia {
+    gap: var(--gap-md);
+}
+
+.ubits-learn-img-trailer__empty-ia-stack {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    width: 100%;
+    max-width: min(42ch, 100%);
+    margin-inline: auto;
+    gap: var(--gap-md);
+}
+
+.ubits-learn-img-trailer__empty-ia-icon-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.ubits-learn-img-trailer__empty-ia-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--size-5xl);
+    height: var(--size-5xl);
+    padding: var(--padding-sm);
+    box-sizing: border-box;
+    background: var(--ubits-bg-2);
+    border-radius: var(--border-radius-sm);
+    color: var(--ubits-fg-1-high);
+}
+
+.ubits-learn-img-trailer__empty-ia-icon i {
+    font-size: var(--font-size-h2);
+    line-height: 1;
+}
+
+.ubits-learn-img-trailer__empty-ia-title {
+    margin: 0;
+    width: 100%;
+    color: var(--ubits-fg-1-high);
+}
+
+.ubits-learn-img-trailer__empty-ia-desc {
+    margin: 0;
+    width: 100%;
+    color: var(--ubits-fg-1-medium);
+    line-height: 1.5;
+}
+
+.ubits-learn-img-trailer__empty--ia .ubits-learn-img-trailer__cta {
+    flex-shrink: 0;
 }
 
 .ubits-learn-img-trailer__error-msg {

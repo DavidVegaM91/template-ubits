@@ -346,10 +346,10 @@
     overflow-y: auto;
 }
 
-/* Contexto tema: textarea nativa `.ai-panel__input` (igual que SCORM); el borde es el `ai-panel__input-box`. */
+/* Contexto tema: textarea nativa `.ai-panel__input` (igual que SCORM); alto lo ajusta JS (autosize). */
 #cc-video-recurso-modal #cc-vm-context-input.ai-panel__input {
     min-height: 40px;
-    max-height: 120px;
+    max-height: none;
 }
 
 /* Marca el box si falta tema (misma pauta que scorm-recurso-modal / evaluaciones). */

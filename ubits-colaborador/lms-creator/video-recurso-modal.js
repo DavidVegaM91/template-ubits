@@ -815,6 +815,20 @@
         return document.getElementById('cc-vm-context-input');
     }
 
+    /** Alto según contenido (tope para no desbordar el modal). */
+    var VM_CONTEXT_TEXTAREA_AUTOSIZE_MAX_PX = 360;
+
+    function autosizeContextTemaTextarea() {
+        var ta = getContextTemaTextarea();
+        if (!ta) return;
+        ta.style.height = 'auto';
+        var sh = ta.scrollHeight;
+        var cap = VM_CONTEXT_TEXTAREA_AUTOSIZE_MAX_PX;
+        var next = Math.min(sh, cap);
+        ta.style.height = Math.max(40, next) + 'px';
+        ta.style.overflowY = sh > cap ? 'auto' : 'hidden';
+    }
+
     function contextTemaValue() {
         var ta = getContextTemaTextarea();
         return ta ? String(ta.value || '').trim() : '';
@@ -832,7 +846,9 @@
         ta._ccVmCtxWired = true;
         ta.addEventListener('input', function () {
             clearContextTemaError();
+            autosizeContextTemaTextarea();
         });
+        setTimeout(autosizeContextTemaTextarea, 0);
     }
 
     function initGuionCreateInput() {
@@ -919,6 +935,7 @@
         _pendingFiles = [];
         renderPendingFilesStrip();
         clearContextTemaError();
+        autosizeContextTemaTextarea();
     }
 
     function setGuionLoading(isLoading) {
