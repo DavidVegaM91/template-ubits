@@ -964,6 +964,7 @@ body.crear-contenido-app-open .ubits-dropdown-menu__content {
     width: 100%;
 }
 
-#ai-panel .cc-portada-ai-panel-result__actions .ubits-button {
+#ai-panel .cc-portada-ai-panel-result__actions .ubits-button,
+#ai-panel .cc-portada-ai-panel-result__actions .ubits-ia-button {
     width: 100%;
 }

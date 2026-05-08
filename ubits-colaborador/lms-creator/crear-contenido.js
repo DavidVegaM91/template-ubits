@@ -354,13 +354,16 @@
             '" alt="Portada generada" />' +
             '</div>' +
             '<div class="cc-portada-ai-panel-result__actions">' +
-            '<button type="button" class="ubits-button ubits-button--primary ubits-button--sm ubits-button--with-token-cost" data-cc-portada-ai-panel-use="' +
+            '<button type="button" class="ubits-ia-button ubits-ia-button--secondary ubits-ia-button--sm ubits-ia-button--with-token-cost" data-cc-portada-ai-panel-use="' +
             sid +
             '"' +
             useDisabled +
             useTitle +
             '>' +
-            '<span class="ubits-button__token-cost" aria-hidden="true"><i class="far fa-coin-vertical"></i><span class="ubits-button__token-number">2</span></span>' +
+            '<span class="ubits-ia-button__token-cost" aria-hidden="true">' +
+            '<span class="ubits-ia-button__token-number">' +
+            String(PORTADA_AI_COVER_TOKEN_COST) +
+            '</span><i class="far fa-coin-vertical"></i></span>' +
             '<span>Usar como portada</span></button>' +
             '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" data-cc-portada-ai-panel-regen="' +
             sid +
@@ -589,9 +592,9 @@
                     '</button>' +
                 '</div>' +
                 '<div class="portada-ia-modal-actions">' +
-                    '<button type="button" id="portada-ai-modal-use" class="ubits-button ubits-button--primary ubits-button--md ubits-button--with-token-cost" style="flex:1;">' +
-                        '<span class="ubits-button__token-cost" aria-hidden="true">' +
-                        '<span class="ubits-button__token-number">' +
+                    '<button type="button" id="portada-ai-modal-use" class="ubits-ia-button ubits-ia-button--secondary ubits-ia-button--md ubits-ia-button--with-token-cost" style="flex:1;">' +
+                        '<span class="ubits-ia-button__token-cost" aria-hidden="true">' +
+                        '<span class="ubits-ia-button__token-number">' +
                         String(PORTADA_AI_COVER_TOKEN_COST) +
                         '</span>' +
                         '<i class="far fa-coin-vertical"></i>' +

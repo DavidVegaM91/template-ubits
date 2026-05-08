@@ -53,6 +53,15 @@
  *   <i class="far fa-sparkles"></i>
  *   <span class="ubits-ia-button__badge"></span>
  * </button>
+ *
+ * <!-- IA-Button Primary con coste en tokens (como ubits-button--with-token-cost: solo bloque token + etiqueta; el único icono es fa-coin-vertical) -->
+ * <button class="ubits-ia-button ubits-ia-button--primary ubits-ia-button--sm ubits-ia-button--with-token-cost">
+ *   <span class="ubits-ia-button__token-cost" aria-hidden="true">
+ *     <span class="ubits-ia-button__token-number">2</span>
+ *     <i class="far fa-coin-vertical"></i>
+ *   </span>
+ *   <span>Generar con IA</span>
+ * </button>
  * ```
  * 
  * VARIANTES DISPONIBLES:
@@ -73,6 +82,7 @@
  * - Disabled: fondo gris deshabilitado, cursor not-allowed
  * 
  * CARACTERÍSTICAS ESPECIALES:
+ * - Modificador ubits-ia-button--with-token-cost + __token-cost / __token-number (sin icono sparkles extra: solo moneda en el bloque)
  * - Border radius completo (pill shape - 1000px)
  * - Badge opcional (punto rojo en esquina superior derecha)
  * - Iconos opcionales a izquierda y derecha del texto

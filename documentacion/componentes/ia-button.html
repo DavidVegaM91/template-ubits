@@ -156,6 +156,15 @@
                                 </label>
                             </div>
                             
+                            <!-- Switch coste en tokens (no aplica con icon-only; mismo patrón que Button) -->
+                            <div style="display: flex; align-items: center; gap: 8px; margin-left: 16px;">
+                                <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Coste en tokens:</span>
+                                <label class="ubits-switch ubits-switch--md">
+                                    <input type="checkbox" class="ubits-switch__input" id="token-cost-toggle" role="switch" aria-label="Mostrar coste en tokens en el preview">
+                                    <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
+                                </label>
+                            </div>
+                            
                             <!-- Selector de estado -->
                             <div style="display: flex; align-items: center; gap: 8px; margin-left: 16px;">
                                 <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Estado:</span>
@@ -185,6 +194,11 @@
                                 <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-magic"></i></div>
                                 <div class="ubits-body-sm-bold">Gradiente</div>
                                 <div class="ubits-body-sm-regular">Radial en variante Primary</div>
+                            </div>
+                            <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
+                                <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-coin-vertical"></i></div>
+                                <div class="ubits-body-sm-bold">Coste en tokens</div>
+                                <div class="ubits-body-sm-regular">Número e icono de moneda únicamente; sin sparkles ni otro icono, como el botón estándar con tokens</div>
                             </div>
                         </div>
                     </div>
@@ -219,6 +233,7 @@
 - Variante: [primary/secondary]
 - Tamaño: [sm/md/lg]
 - Icono: [especifica icono FontAwesome, preferiblemente fa-sparkles para IA]
+- Coste en tokens: [sí o no; si sí, indica la cifra; no añadas otro icono: solo el de moneda del bloque de tokens, como en el botón normal]
 - Ubicación: [describe en que parte del layout debe estar el botón]
 
 NOTA: El badge es opcional, agrégalo solo cuando sea necesario.</code></pre>
@@ -276,6 +291,15 @@ NOTA: El badge es opcional, agrégalo solo cuando sea necesario.</code></pre>
   &lt;i class="far fa-sparkles"&gt;&lt;/i&gt;
   &lt;span&gt;Button text&lt;/span&gt;
   &lt;span class="ubits-ia-button__badge"&gt;&lt;/span&gt;
+&lt;/button&gt;
+
+&lt;!-- Con coste en tokens: solo moneda en __token-cost + etiqueta (sin icono sparkles; igual que ubits-button con tokens) --&gt;
+&lt;button class="ubits-ia-button ubits-ia-button--primary ubits-ia-button--md ubits-ia-button--with-token-cost"&gt;
+  &lt;span class="ubits-ia-button__token-cost" aria-hidden="true"&gt;
+    &lt;span class="ubits-ia-button__token-number"&gt;2&lt;/span&gt;
+    &lt;i class="far fa-coin-vertical"&gt;&lt;/i&gt;
+  &lt;/span&gt;
+  &lt;span&gt;Generar con IA&lt;/span&gt;
 &lt;/button&gt;</code></pre>
                                 </div>
                             </div>
@@ -302,6 +326,9 @@ NOTA: El badge es opcional, agrégalo solo cuando sea necesario.</code></pre>
 .ubits-ia-button--lg        /* Large */
 
 /* Modificadores */
+.ubits-ia-button--with-token-cost  /* Coste en tokens: bloque número+moneda + etiqueta; sin icono sparkles extra */
+.ubits-ia-button__token-cost       /* Contenedor inline del coste */
+.ubits-ia-button__token-number     /* Cifra (peso regular) */
 .ubits-ia-button--icon-only        /* Solo icono */
 .ubits-ia-button--icon-only--sm
 .ubits-ia-button--icon-only--md
@@ -363,6 +390,15 @@ NOTA: El badge es opcional, agrégalo solo cuando sea necesario.</code></pre>
 &lt;button class="ubits-ia-button ubits-ia-button--primary ubits-ia-button--md" disabled&gt;
   &lt;i class="far fa-sparkles"&gt;&lt;/i&gt;
   &lt;span&gt;Button text&lt;/span&gt;
+&lt;/button&gt;
+
+&lt;!-- IA-Button con coste en tokens (único icono: fa-coin-vertical dentro del bloque token) --&gt;
+&lt;button class="ubits-ia-button ubits-ia-button--primary ubits-ia-button--md ubits-ia-button--with-token-cost"&gt;
+  &lt;span class="ubits-ia-button__token-cost" aria-hidden="true"&gt;
+    &lt;span class="ubits-ia-button__token-number"&gt;2&lt;/span&gt;
+    &lt;i class="far fa-coin-vertical"&gt;&lt;/i&gt;
+  &lt;/span&gt;
+  &lt;span&gt;Generar con IA&lt;/span&gt;
 &lt;/button&gt;</code></pre>
                                 </div>
                             </div>
@@ -450,6 +486,17 @@ NOTA: El badge es opcional, agrégalo solo cuando sea necesario.</code></pre>
                 });
             }
             
+            const tokenCostToggle = document.getElementById('token-cost-toggle');
+            if (tokenCostToggle) {
+                tokenCostToggle.addEventListener('change', function() {
+                    window.withTokenCost = tokenCostToggle.checked;
+                    window.updatePreview();
+                });
+            }
+            
+            window.syncTokenCostToggleDisabled();
+            window.updatePreview();
+            
             // Crear selector de estado usando componente oficial de Input
             setTimeout(() => {
                 // Verificar que el contenedor exista
@@ -492,14 +539,32 @@ NOTA: El badge es opcional, agrégalo solo cuando sea necesario.</code></pre>
         window.currentState = 'default';
         window.isIconOnly = false;
         window.showBadge = false;
+        window.withTokenCost = false;
+
+        window.syncTokenCostToggleDisabled = function() {
+            const tokenEl = document.getElementById('token-cost-toggle');
+            if (!tokenEl) return;
+            const disabled = window.isIconOnly;
+            tokenEl.disabled = disabled;
+            if (disabled) {
+                tokenEl.checked = false;
+                window.withTokenCost = false;
+            }
+        };
 
         // Función para generar HTML del IA-Button
-        function generateIAButtonHTML(variant, size, text, icon, state, iconOnly, badge = false) {
+        function generateIAButtonHTML(variant, size, text, icon, state, iconOnly, badge = false, tokenCost = null) {
             const badgeHTML = badge ? '<span class="ubits-ia-button__badge"></span>' : '';
-            const leftIconHTML = iconOnly ? '' : `<i class="far fa-${icon}"></i>`;
+            const useToken = tokenCost !== null && tokenCost !== undefined && !iconOnly;
+            /* Con tokens: igual que Button — solo icono de moneda dentro de __token-cost, sin sparkles u otro icono lateral */
+            const leftIconHTML = iconOnly || useToken ? '' : `<i class="far fa-${icon}"></i>`;
             const textHTML = iconOnly ? '' : `<span>${text}</span>`;
+            const tokenClass = useToken ? ' ubits-ia-button--with-token-cost' : '';
+            const tokenHTML = useToken
+                ? `<span class="ubits-ia-button__token-cost" aria-hidden="true"><span class="ubits-ia-button__token-number">${String(tokenCost)}</span><i class="far fa-coin-vertical"></i></span>`
+                : '';
             
-            let classes = `ubits-ia-button ubits-ia-button--${variant} ubits-ia-button--${size}`;
+            let classes = `ubits-ia-button ubits-ia-button--${variant} ubits-ia-button--${size}${tokenClass}`;
             if (iconOnly) {
                 classes += ` ubits-ia-button--icon-only ubits-ia-button--icon-only--${size}`;
                 // Para icon-only, el icono va solo
@@ -528,6 +593,7 @@ NOTA: El badge es opcional, agrégalo solo cuando sea necesario.</code></pre>
             
             return `<button class="${classes}"${disabledAttr}>
                 ${leftIconHTML}
+                ${tokenHTML}
                 ${textHTML}
                 ${badgeHTML}
             </button>`;
@@ -538,24 +604,25 @@ NOTA: El badge es opcional, agrégalo solo cuando sea necesario.</code></pre>
             const preview = document.getElementById('ia-button-preview');
             const icon = 'sparkles';
             const text = 'Button text';
+            const tokenParam = window.withTokenCost && !window.isIconOnly ? '2' : null;
             
             preview.innerHTML = `
                 <div style="display: flex; flex-direction: column; gap: 16px; align-items: flex-start;">
                     <div style="display: flex; flex-direction: column; gap: 8px;">
                         <span class="ubits-body-sm-bold" style="color: var(--ubits-fg-1-medium);">Extra Small (xs)</span>
-                        ${generateIAButtonHTML(window.currentVariant, 'xs', text, icon, window.currentState, window.isIconOnly, window.showBadge)}
+                        ${generateIAButtonHTML(window.currentVariant, 'xs', text, icon, window.currentState, window.isIconOnly, window.showBadge, tokenParam)}
                     </div>
                     <div style="display: flex; flex-direction: column; gap: 8px;">
                         <span class="ubits-body-sm-bold" style="color: var(--ubits-fg-1-medium);">Small (sm)</span>
-                        ${generateIAButtonHTML(window.currentVariant, 'sm', text, icon, window.currentState, window.isIconOnly, window.showBadge)}
+                        ${generateIAButtonHTML(window.currentVariant, 'sm', text, icon, window.currentState, window.isIconOnly, window.showBadge, tokenParam)}
                     </div>
                     <div style="display: flex; flex-direction: column; gap: 8px;">
                         <span class="ubits-body-sm-bold" style="color: var(--ubits-fg-1-medium);">Medium (md)</span>
-                        ${generateIAButtonHTML(window.currentVariant, 'md', text, icon, window.currentState, window.isIconOnly, window.showBadge)}
+                        ${generateIAButtonHTML(window.currentVariant, 'md', text, icon, window.currentState, window.isIconOnly, window.showBadge, tokenParam)}
                     </div>
                     <div style="display: flex; flex-direction: column; gap: 8px;">
                         <span class="ubits-body-sm-bold" style="color: var(--ubits-fg-1-medium);">Large (lg)</span>
-                        ${generateIAButtonHTML(window.currentVariant, 'lg', text, icon, window.currentState, window.isIconOnly, window.showBadge)}
+                        ${generateIAButtonHTML(window.currentVariant, 'lg', text, icon, window.currentState, window.isIconOnly, window.showBadge, tokenParam)}
                     </div>
                 </div>
             `;
@@ -594,6 +661,7 @@ NOTA: El badge es opcional, agrégalo solo cuando sea necesario.</code></pre>
         window.toggleIconOnly = function() {
             const toggle = document.getElementById('icon-only-toggle');
             window.isIconOnly = toggle ? toggle.checked : false;
+            window.syncTokenCostToggleDisabled();
             window.updatePreview();
         };
 
@@ -685,7 +753,6 @@ NOTA: El badge es opcional, agrégalo solo cuando sea necesario.</code></pre>
             });
         }
     </script>
-    <script>
 </body>
 </html>
 

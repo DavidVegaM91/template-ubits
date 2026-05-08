@@ -775,9 +775,9 @@
     }
 
     function buildModalFooterHtml() {
-        return '<button type="button" class="ubits-button ubits-button--primary ubits-button--md ubits-button--with-token-cost" id="cc-sm-footer-generate">' +
-                '<span class="ubits-button__token-cost" aria-hidden="true">' +
-                    '<span class="ubits-button__token-number">'+SCORM_GEN_TOKEN_COST+'</span>' +
+        return '<button type="button" class="ubits-ia-button ubits-ia-button--secondary ubits-ia-button--md ubits-ia-button--with-token-cost" id="cc-sm-footer-generate">' +
+                '<span class="ubits-ia-button__token-cost" aria-hidden="true">' +
+                    '<span class="ubits-ia-button__token-number">'+SCORM_GEN_TOKEN_COST+'</span>' +
                     '<i class="far fa-coin-vertical"></i>' +
                 '</span>' +
                 '<span>Generar presentación</span>' +

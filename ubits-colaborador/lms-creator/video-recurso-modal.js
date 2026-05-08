@@ -457,9 +457,9 @@
                                         '<i class="far fa-plus"></i>' +
                                     '</button>' +
                                     '<div class="ai-panel__input-spacer" aria-hidden="true"></div>' +
-                                    '<button type="button" class="ubits-button ubits-button--primary ubits-button--sm ubits-button--with-token-cost" id="cc-vm-btn-gen-guion">' +
-                                        '<span class="ubits-button__token-cost" aria-hidden="true">' +
-                                            '<span class="ubits-button__token-number">' + VIDEO_GUION_IA_TOKEN_COST + '</span>' +
+                                    '<button type="button" class="ubits-ia-button ubits-ia-button--secondary ubits-ia-button--sm ubits-ia-button--with-token-cost" id="cc-vm-btn-gen-guion">' +
+                                        '<span class="ubits-ia-button__token-cost" aria-hidden="true">' +
+                                            '<span class="ubits-ia-button__token-number">' + VIDEO_GUION_IA_TOKEN_COST + '</span>' +
                                             '<i class="far fa-coin-vertical"></i>' +
                                         '</span>' +
                                         '<span id="cc-vm-gen-guion-label">Generar guión</span>' +
@@ -1328,9 +1328,9 @@
             '<button type="button" class="ubits-button ubits-button--primary ubits-button--md" id="cc-vsubir-btn-confirmar" disabled style="display:none">' +
                 '<span>Cargar video</span>' +
             '</button>' +
-            '<button type="button" class="ubits-button ubits-button--primary ubits-button--md ubits-button--with-token-cost" id="cc-vm-btn-generar">' +
-                '<span class="ubits-button__token-cost" aria-hidden="true">' +
-                    '<span class="ubits-button__token-number">' + VIDEO_GEN_TOKEN_COST + '</span>' +
+            '<button type="button" class="ubits-ia-button ubits-ia-button--secondary ubits-ia-button--md ubits-ia-button--with-token-cost" id="cc-vm-btn-generar">' +
+                '<span class="ubits-ia-button__token-cost" aria-hidden="true">' +
+                    '<span class="ubits-ia-button__token-number">' + VIDEO_GEN_TOKEN_COST + '</span>' +
                     '<i class="far fa-coin-vertical"></i>' +
                 '</span>' +
                 '<span>Generar video</span>' +

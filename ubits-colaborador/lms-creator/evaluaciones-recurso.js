@@ -1492,12 +1492,11 @@
             '<button type="button" id="cc-eval-ia-modal-generate"' +
             genDisabled +
             genTitle +
-            ' class="ubits-button ubits-button--primary ubits-button--md ubits-button--with-token-cost cc-eval-ia-modal-simple__cta">' +
-            '<span class="ubits-button__token-cost" aria-hidden="true">' +
-            '<i class="far fa-coin-vertical"></i>' +
-            '<span class="ubits-button__token-number">' +
+            ' class="ubits-ia-button ubits-ia-button--secondary ubits-ia-button--md ubits-ia-button--with-token-cost cc-eval-ia-modal-simple__cta">' +
+            '<span class="ubits-ia-button__token-cost" aria-hidden="true">' +
+            '<span class="ubits-ia-button__token-number">' +
             String(cost) +
-            '</span></span>' +
+            '</span><i class="far fa-coin-vertical"></i></span>' +
             '<span>Generar evaluación</span>' +
             '</button>' +
             '</div>';
@@ -1661,8 +1660,8 @@
             '<p class="ubits-body-md-regular" style="margin:0 0 12px;">Voy a generar <strong>' + count +
             ' preguntas</strong> sobre el tema <strong>"' + topic + '"</strong>.</p>' +
             '<button type="button" id="cc-eval-gen-confirm-btn"' + btnDisabled + btnTitle +
-            ' class="ubits-button ubits-button--primary ubits-button--sm ubits-button--with-token-cost">' +
-            '<span class="ubits-button__token-cost" aria-hidden="true"><i class="far fa-coin-vertical"></i><span class="ubits-button__token-number">' + cost + '</span></span>' +
+            ' class="ubits-ia-button ubits-ia-button--secondary ubits-ia-button--sm ubits-ia-button--with-token-cost">' +
+            '<span class="ubits-ia-button__token-cost" aria-hidden="true"><span class="ubits-ia-button__token-number">' + cost + '</span><i class="far fa-coin-vertical"></i></span>' +
             '<span>Generar evaluación</span>' +
             '</button>';
 

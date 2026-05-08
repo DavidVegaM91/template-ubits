@@ -479,6 +479,92 @@
 }
 
 /* ========================================
+   TOKEN COST (número + moneda) — alineado a ubits-button--with-token-cost
+   Estructura: solo bloque token + etiqueta (sin icono sparkles u otro lateral; único icono = fa-coin-vertical).
+   <button class="ubits-ia-button ... ubits-ia-button--primary ubits-ia-button--sm ubits-ia-button--with-token-cost">
+     <span class="ubits-ia-button__token-cost" aria-hidden="true">
+       <span class="ubits-ia-button__token-number">2</span>
+       <i class="far fa-coin-vertical"></i>
+     </span>
+     <span>Generar con IA</span>
+   </button>
+   ======================================== */
+
+.ubits-ia-button--with-token-cost {
+    gap: var(--gap-xs);
+}
+
+.ubits-ia-button__token-cost {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--gap-2xs, 4px);
+}
+
+.ubits-ia-button__token-number {
+    font-weight: var(--font-weight-regular) !important;
+}
+
+.ubits-ia-button__token-cost i {
+    font-size: 1em;
+    line-height: 1;
+}
+
+.ubits-ia-button--primary .ubits-ia-button__token-cost,
+.ubits-ia-button--primary .ubits-ia-button__token-number {
+    color: rgb(255, 255, 255);
+}
+
+.ubits-ia-button--primary .ubits-ia-button__token-cost i {
+    color: rgb(255, 255, 255);
+}
+
+/* Secundario: mismo tono que el texto del botón */
+.ubits-ia-button--secondary .ubits-ia-button__token-cost,
+.ubits-ia-button--secondary .ubits-ia-button__token-number {
+    color: var(--ubits-fg-1-high);
+}
+
+.ubits-ia-button--secondary .ubits-ia-button__token-cost i {
+    background: var(--ubits-ia-button-gradient);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+}
+
+.ubits-ia-button--secondary:disabled .ubits-ia-button__token-cost i,
+.ubits-ia-button--secondary.ubits-ia-button--disabled .ubits-ia-button__token-cost i {
+    background: none !important;
+    -webkit-background-clip: border-box !important;
+    background-clip: border-box !important;
+    color: var(--ubits-fg-on-disabled-button) !important;
+    -webkit-text-fill-color: var(--ubits-fg-on-disabled-button) !important;
+}
+
+[data-theme="dark"] .ubits-ia-button--secondary .ubits-ia-button__token-cost,
+[data-theme="dark"] .ubits-ia-button--secondary .ubits-ia-button__token-number {
+    color: var(--ubits-fg-1-high-inverted);
+}
+
+[data-theme="dark"] .ubits-ia-button--secondary .ubits-ia-button__token-cost i {
+    background: var(--ubits-ia-button-gradient);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+}
+
+[data-theme="dark"] .ubits-ia-button--secondary:disabled .ubits-ia-button__token-cost i,
+[data-theme="dark"] .ubits-ia-button--secondary.ubits-ia-button--disabled .ubits-ia-button__token-cost i {
+    background: none !important;
+    -webkit-background-clip: border-box !important;
+    background-clip: border-box !important;
+    color: var(--ubits-fg-on-disabled-button) !important;
+    -webkit-text-fill-color: var(--ubits-fg-on-disabled-button) !important;
+}
+
+/* ========================================
    IA-BUTTON BADGE (opcional)
    ======================================== */
 

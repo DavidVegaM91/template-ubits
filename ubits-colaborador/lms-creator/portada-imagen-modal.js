@@ -201,9 +201,9 @@
             '<textarea id="cc-pim-idea-input" class="ai-panel__input ubits-body-md-regular" rows="2" placeholder="Describe la portada que imaginas"></textarea>' +
             '<div class="ai-panel__input-actions">' +
             '<div class="ai-panel__input-spacer" aria-hidden="true"></div>' +
-            '<button type="button" class="ubits-button ubits-button--primary ubits-button--sm ubits-button--with-token-cost" id="cc-pim-btn-generar">' +
-            '<span class="ubits-button__token-cost" aria-hidden="true">' +
-            '<span class="ubits-button__token-number">' +
+            '<button type="button" class="ubits-ia-button ubits-ia-button--secondary ubits-ia-button--sm ubits-ia-button--with-token-cost" id="cc-pim-btn-generar">' +
+            '<span class="ubits-ia-button__token-cost" aria-hidden="true">' +
+            '<span class="ubits-ia-button__token-number">' +
             TOKEN_GENERATE +
             '</span><i class="far fa-coin-vertical"></i></span>' +
             '<span>Generar portada</span></button>' +
