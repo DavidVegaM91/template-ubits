@@ -229,20 +229,6 @@
         return { id: c.id, label: c.label, count: _avatarCatCounts[c.id] || 0 };
     }).concat([{ id: 'all', label: 'Todos', count: AVATARS.length }]);
 
-    /* YouTube IDs para preview (cycling) — usados en avatarVideoId / startWidgetJob */
-    var PREVIEW_IDS = [
-        'UF8uR6Z6KLc',
-        'iG9CE55wbtY',
-        '8S0FDjFBj8o',
-        'nnR0fzM8BiA',
-        '_mG-hhWL_ug',
-        'UyyjU8fzEYU',
-        'H14bBuluwB8',
-        'eIho2S0ZahI',
-        'RcGyVTAoXEU',
-        'lmyZMtPVodo',
-    ];
-
     /* ══════════════════════════════════════
        AVATAR HELPERS
     ══════════════════════════════════════ */
@@ -261,6 +247,8 @@
     ];
 
     var AVATAR_VIDEO_BASE = '../../videos/avatars/';
+    /** MP4 local que simula el resultado de «Generar video» con IA (prototipo Playground). */
+    var AI_GENERATED_RESULT_MP4 = AVATAR_VIDEO_BASE + 'preview-video-generado.mp4';
 
     function avatarImg(av) {
         return AVATAR_IMG_BASE + av.file;
@@ -277,10 +265,6 @@
     function avatarPreviewMp4Src(av) {
         if (!avatarHasPreviewMp4(av)) return null;
         return AVATAR_VIDEO_BASE + avatarFileBasename(av) + '.mp4';
-    }
-
-    function avatarVideoId(av) {
-        return PREVIEW_IDS[(av.id - 1) % PREVIEW_IDS.length];
     }
 
     /* ══════════════════════════════════════
@@ -505,7 +489,6 @@
                         '<div class="cc-vm-preview-unavailable" id="cc-vm-preview-unavailable" role="status" style="display:' + (hasVid ? 'none' : 'flex') + '">' +
                             '<span class="ubits-body-md-regular cc-vm-preview-unavailable__text">Vista previa de video no disponible aún</span>' +
                         '</div>' +
-                        '<div class="cc-vm-preview-gradient"></div>' +
                         '<div class="cc-vm-logo-overlay" id="cc-vm-logo-overlay" style="display:none;">' +
                             '<img id="cc-vm-logo-preview-img" src="" alt="Logo">' +
                         '</div>' +
@@ -1049,15 +1032,12 @@
                 return;
             }
             if (!trySpendVideoAiTokens(VIDEO_GEN_TOKEN_COST)) return;
-            var av = _selectedAvatar || AVATARS[0];
-            var videoId = avatarVideoId(av);
-            var generatedSrc = 'https://www.youtube.com/embed/' + videoId + '?rel=0&modestbranding=1';
+            var generatedSrc = AI_GENERATED_RESULT_MP4;
             var pageKey = _currentPageKey;
             var logoSnapshot = _logoDataUrl;
             closeModal(OVERLAY_ID);
             startWidgetJob({
                 pageKey: pageKey,
-                avatarName: av.label,
                 src: generatedSrc,
                 logoDataUrl: logoSnapshot
             });
@@ -1334,7 +1314,7 @@
     ══════════════════════════════════════ */
     function startWidgetJob(job) {
         var jobId = (job.pageKey || 'video') + '-video';
-        var label = 'Video de ' + job.avatarName;
+        var label = 'Video de avatar IA';
 
         if (typeof global.ccGenWidget !== 'undefined') {
             global.ccGenWidget.addJob(jobId, { type: 'video', label: label, pageKey: job.pageKey });
@@ -1346,7 +1326,7 @@
         if (_onVideoReady) _onVideoReady('<div class="cc-video-ia-loader-host">' + innerLoader + '</div>');
 
         setTimeout(function () {
-            var html = buildRenderedBlock('youtube', job.src, false, {
+            var html = buildRenderedBlock('local', job.src, true, {
                 aiGenerated: true,
                 logoSrc: job.logoDataUrl || ''
             });
