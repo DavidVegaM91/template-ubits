@@ -609,67 +609,15 @@
             overlayId: 'portada-ai-modal',
             title: 'Generar portada con IA',
             bodyHtml: bodyHtml,
-            size: 'md'
+            size: 'md',
+            variant: 'ia',
+            iaTokensRemaining: portadaAiTokensRemaining,
+            iaTokensBadgeId: 'portada-ai-modal-tokens-badge'
         });
 
-        // Badge de tokens restantes (IA) a la izquierda del botón Cerrar + tooltip oficial
-        var modalHeaderEl = overlay.querySelector('.ubits-modal-header');
-        var closeBtnEl = overlay.querySelector('.ubits-modal-close');
-        if (modalHeaderEl && closeBtnEl) {
-            var actionsWrap = document.createElement('div');
-            actionsWrap.style.display = 'inline-flex';
-            actionsWrap.style.alignItems = 'center';
-            actionsWrap.style.gap = 'var(--gap-sm)';
-
-            var tokensBadge = document.createElement('span');
-            tokensBadge.id = 'portada-ai-modal-tokens-badge';
-            tokensBadge.className = 'ubits-badge-tag ubits-badge-tag--outlined ubits-badge-tag--ia ubits-badge-tag--xs';
-            tokensBadge.setAttribute('tabindex', '0');
-            tokensBadge.setAttribute('data-tooltip', 'Número de tokens restantes.');
-            tokensBadge.setAttribute('data-tooltip-delay', '0');
-            tokensBadge.setAttribute('data-tooltip-tap-toggle', '');
-            tokensBadge.setAttribute('aria-label', portadaAiTokensRemaining + ' tokens restantes');
-            tokensBadge.innerHTML =
-                '<span class="ubits-badge-tag__token-cost" aria-hidden="true">' +
-                '<i class="far fa-coin-vertical"></i>' +
-                '<span class="ubits-badge-tag__token-number">' +
-                String(portadaAiTokensRemaining) +
-                '</span>' +
-                '</span>';
-
-            actionsWrap.appendChild(tokensBadge);
-            actionsWrap.appendChild(closeBtnEl);
-
-            // Reemplazar el botón cerrar por el wrapper (badge + cerrar)
-            modalHeaderEl.appendChild(actionsWrap);
-
-            if (typeof initTooltip === 'function') {
-                initTooltip('#' + tokensBadge.id);
-            }
-        }
-        
         var modalContent = overlay.querySelector('.ubits-modal-content');
-        var modalBody = overlay.querySelector('.ubits-modal-body');
         if (modalContent) {
             modalContent.classList.add('portada-ia-modal-content');
-            modalContent.style.backgroundColor = 'var(--surface-default, #FFFFFF)';
-            modalContent.style.backgroundImage = 'radial-gradient(ellipse 100% 80% at 10% 0%, rgba(var(--modo-ia-glow-orb-rgb-1, 26, 107, 255), 0.15) 0%, transparent 50%),' +
-            'radial-gradient(ellipse 95% 78% at 50% 0%, rgba(var(--modo-ia-glow-orb-rgb-2, 76, 230, 255), 0.15) 0%, transparent 48%),' +
-            'radial-gradient(ellipse 95% 75% at 90% 0%, rgba(var(--modo-ia-glow-orb-rgb-3, 255, 84, 22), 0.15) 0%, transparent 50%)';
-            
-            var modalHeader = overlay.querySelector('.ubits-modal-header');
-            if (modalHeader) {
-                modalHeader.style.background = 'transparent';
-                // Restored default border bottom
-                modalHeader.style.borderBottom = '';
-            }
-            
-            if (modalBody) {
-                modalBody.style.padding = 'var(--padding-xl, 32px)';
-                modalBody.style.overflow = 'visible';
-                modalBody.style.display = 'flex';
-                modalBody.style.flexDirection = 'column';
-            }
         }
 
         var inputView = overlay.querySelector('#ai-modal-input-view');

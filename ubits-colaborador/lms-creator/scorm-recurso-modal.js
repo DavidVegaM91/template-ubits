@@ -96,9 +96,17 @@
         var next=Math.max(0,cur-cost);
         global._ubitsAiTokenPool=next;
         if (typeof global.setAIPanelTokensBadgeValue==='function') global.setAIPanelTokensBadgeValue(next);
-        var badge=document.getElementById('cc-scorm-modal-tokens-badge');
-        if (badge) { var num=badge.querySelector('.ubits-badge-tag__token-number'); if(num) num.textContent=String(next); }
+        syncScormTokensBadge();
         return true;
+    }
+
+    function syncScormTokensBadge() {
+        var n=getTokens();
+        var el=document.getElementById('cc-scorm-modal-tokens-badge');
+        if (!el) return;
+        var num=el.querySelector('.ubits-badge-tag__token-number');
+        if (num) num.textContent=String(n);
+        el.setAttribute('aria-label',n+' tokens restantes');
     }
 
     function emitChanged(detail) { try { document.dispatchEvent(new CustomEvent('ubits-recursos-changed',{detail:detail||{}})); } catch(e){} }
@@ -786,40 +794,11 @@
     }
 
     function applyAiModalChrome(overlay) {
-        var titleSpan=overlay.querySelector('.ubits-modal-title');
-        if (titleSpan) titleSpan.textContent = 'Agregar SCORM';
-
         var mc=overlay.querySelector('.ubits-modal-content');
-        if (mc) {
-            mc.classList.add('portada-ia-modal-content','cc-scorm-ia-modal-content');
-            mc.style.backgroundColor='var(--surface-default,#FFFFFF)';
-            mc.style.backgroundImage=
-                'radial-gradient(ellipse 100% 80% at 10% 0%,rgba(var(--modo-ia-glow-orb-rgb-1,26,107,255),0.15) 0%,transparent 50%),'+
-                'radial-gradient(ellipse 95% 78% at 50% 0%,rgba(var(--modo-ia-glow-orb-rgb-2,76,230,255),0.15) 0%,transparent 48%),'+
-                'radial-gradient(ellipse 95% 75% at 90% 0%,rgba(var(--modo-ia-glow-orb-rgb-3,255,84,22),0.15) 0%,transparent 50%)';
-        }
-        var mh=overlay.querySelector('.ubits-modal-header');
-        if (mh) { mh.style.background='transparent'; mh.style.borderBottom=''; }
+        if (mc) mc.classList.add('portada-ia-modal-content','cc-scorm-ia-modal-content');
         var mb=overlay.querySelector('.ubits-modal-body');
         if (mb) { mb.style.padding='var(--padding-xl)'; mb.style.overflow='hidden'; mb.style.display='flex'; mb.style.flexDirection='column'; mb.style.maxHeight=''; mb.style.flex=''; }
-
-        var closeBtn=overlay.querySelector('.ubits-modal-close');
-        var tok=getTokens();
-        if (mh && closeBtn) {
-            var wrap=document.createElement('div');
-            wrap.style.cssText='display:inline-flex;align-items:center;gap:var(--gap-sm)';
-            var badge=document.createElement('span');
-            badge.id='cc-scorm-modal-tokens-badge';
-            badge.className='ubits-badge-tag ubits-badge-tag--outlined ubits-badge-tag--ia ubits-badge-tag--xs';
-            badge.setAttribute('tabindex','0');
-            badge.setAttribute('data-tooltip','Tokens restantes');
-            badge.setAttribute('data-tooltip-delay','0');
-            badge.setAttribute('data-tooltip-tap-toggle','');
-            badge.setAttribute('aria-label',tok+' tokens restantes');
-            badge.innerHTML='<span class="ubits-badge-tag__token-cost" aria-hidden="true"><i class="far fa-coin-vertical"></i><span class="ubits-badge-tag__token-number">'+tok+'</span></span>';
-            wrap.appendChild(badge); wrap.appendChild(closeBtn); mh.appendChild(wrap);
-            if (typeof global.initTooltip==='function') global.initTooltip('#cc-scorm-modal-tokens-badge');
-        }
+        syncScormTokensBadge();
     }
 
     /* ══════════════════════════════════════
@@ -1182,7 +1161,11 @@
             bodyHtml:            buildModalBody(),
             footerHtml:          buildModalFooterHtml(),
             size:                'lg',
-            closeOnOverlayClick: false
+            closeOnOverlayClick: false,
+            variant:             'ia',
+            iaTokensRemaining:   getTokens(),
+            iaTokensBadgeId:     'cc-scorm-modal-tokens-badge',
+            iaTokensTooltip:     'Tokens restantes'
         });
         if (overlay) applyAiModalChrome(overlay);
 

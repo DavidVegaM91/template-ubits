@@ -109,24 +109,11 @@
         _iaImageIndex = next;
     }
 
+    /** Clases y body específicos del modal portada (chrome IA base: openModal variant + modal.css). */
     function applyAiChrome(overlay) {
-        var titleSpan = overlay.querySelector('.ubits-modal-title');
-        if (titleSpan) titleSpan.textContent = 'Agregar imagen';
-
         var modalContent = overlay.querySelector('.ubits-modal-content');
         if (modalContent) {
             modalContent.classList.add('portada-ia-modal-content', 'cc-pim-modal-content');
-            modalContent.style.backgroundColor = 'var(--surface-default, #FFFFFF)';
-            modalContent.style.backgroundImage =
-                'radial-gradient(ellipse 100% 80% at 10% 0%, rgba(var(--modo-ia-glow-orb-rgb-1, 26, 107, 255), 0.15) 0%, transparent 50%),' +
-                'radial-gradient(ellipse 95% 78% at 50% 0%, rgba(var(--modo-ia-glow-orb-rgb-2, 76, 230, 255), 0.15) 0%, transparent 48%),' +
-                'radial-gradient(ellipse 95% 75% at 90% 0%, rgba(var(--modo-ia-glow-orb-rgb-3, 255, 84, 22), 0.15) 0%, transparent 50%)';
-        }
-
-        var modalHeader = overlay.querySelector('.ubits-modal-header');
-        if (modalHeader) {
-            modalHeader.style.background = 'transparent';
-            modalHeader.style.borderBottom = '';
         }
 
         var modalBody = overlay.querySelector('.ubits-modal-body');
@@ -137,38 +124,7 @@
             modalBody.style.flexDirection = 'column';
         }
 
-        var closeBtn = overlay.querySelector('.ubits-modal-close');
-        if (modalHeader && closeBtn) {
-            var wrap = document.createElement('div');
-            wrap.style.display = 'inline-flex';
-            wrap.style.alignItems = 'center';
-            wrap.style.gap = 'var(--gap-sm)';
-
-            var badge = document.createElement('span');
-            badge.id = 'cc-pim-modal-tokens-badge';
-            badge.className = 'ubits-badge-tag ubits-badge-tag--outlined ubits-badge-tag--ia ubits-badge-tag--xs';
-            badge.setAttribute('tabindex', '0');
-            badge.setAttribute('data-tooltip', 'Número de tokens restantes.');
-            badge.setAttribute('data-tooltip-delay', '0');
-            badge.setAttribute('data-tooltip-tap-toggle', '');
-            badge.setAttribute('aria-label', getTokens() + ' tokens restantes');
-            badge.innerHTML =
-                '<span class="ubits-badge-tag__token-cost" aria-hidden="true">' +
-                '<i class="far fa-coin-vertical"></i>' +
-                '<span class="ubits-badge-tag__token-number">' +
-                String(getTokens()) +
-                '</span>' +
-                '</span>';
-
-            wrap.appendChild(badge);
-            wrap.appendChild(closeBtn);
-            modalHeader.appendChild(wrap);
-
-            if (typeof global.initTooltip === 'function') {
-                global.initTooltip('#' + badge.id);
-            }
-            syncPimTokensBadge();
-        }
+        syncPimTokensBadge();
     }
 
     function buildTabBar() {
@@ -623,6 +579,9 @@
             size: 'lg',
             closeOnOverlayClick: false,
             footerHtml: buildFooter(),
+            variant: 'ia',
+            iaTokensRemaining: getTokens(),
+            iaTokensBadgeId: 'cc-pim-modal-tokens-badge',
             onClose: function () {
                 _onApply = null;
                 _onTrailerSaved = null;

@@ -17,6 +17,17 @@
  *     closeOnOverlayClick: true,
  *     onClose: function() { }
  *   });
+ *
+ * Variante IA (tokens + fondo con orbes):
+ *   openModal({
+ *     overlayId: 'mi-modal-ia',
+ *     title: 'Generar con IA',
+ *     bodyHtml: '...',
+ *     variant: 'ia',
+ *     iaTokensRemaining: 42,
+ *     iaTokensBadgeId: 'mi-modal-ia-tokens-badge',  // opcional; por defecto overlayId + '-tokens-badge'
+ *     iaTokensTooltip: 'Número de tokens restantes.'  // opcional
+ *   });
  *   closeModal('mi-modal');
  */
 
@@ -33,6 +44,66 @@
     }
 
     /**
+     * Markup del badge de tokens en header (variante IA). Orden: número + icono moneda.
+     * Requiere badge-tag.css y fontawesome-icons.css en la página.
+     */
+    function buildIaTokensBadgeHtml(overlayId, tokensValue, badgeIdOpt, tooltipText) {
+        var id = badgeIdOpt || (overlayId + '-tokens-badge');
+        var tip = tooltipText != null ? String(tooltipText) : 'Número de tokens restantes.';
+        var n = tokensValue != null && tokensValue !== '' ? String(tokensValue) : '0';
+        var aria = n + ' tokens restantes';
+        return '<span id="' + id + '" class="ubits-badge-tag ubits-badge-tag--outlined ubits-badge-tag--ia ubits-badge-tag--xs" tabindex="0" ' +
+            'data-tooltip="' + escapeHtml(tip) + '" data-tooltip-delay="0" data-tooltip-tap-toggle="" ' +
+            'aria-label="' + escapeHtml(aria) + '">' +
+            '<span class="ubits-badge-tag__token-cost" aria-hidden="true">' +
+            '<span class="ubits-badge-tag__token-number">' + escapeHtml(n) + '</span>' +
+            '<i class="far fa-coin-vertical"></i></span></span>';
+    }
+
+    function buildModalHeaderHtml(overlayId, title, options) {
+        var isIa = options && options.variant === 'ia';
+        if (!isIa) {
+            return (
+                '  <div class="ubits-modal-header">' +
+                '    <span id="' + overlayId + '-title" class="ubits-modal-title ubits-body-md-bold">' + escapeHtml(title) + '</span>' +
+                '    <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only ubits-modal-close" aria-label="Cerrar">' +
+                '      <i class="far fa-times"></i>' +
+                '    </button>' +
+                '  </div>'
+            );
+        }
+        var badge = '';
+        if (options.iaTokensRemaining != null && options.iaTokensRemaining !== '') {
+            badge = buildIaTokensBadgeHtml(
+                overlayId,
+                options.iaTokensRemaining,
+                options.iaTokensBadgeId,
+                options.iaTokensTooltip
+            );
+        }
+        return (
+            '  <div class="ubits-modal-header ubits-modal-header--ia">' +
+            '    <span id="' + overlayId + '-title" class="ubits-modal-title ubits-body-md-bold">' + escapeHtml(title) + '</span>' +
+            '    <div class="ubits-modal-header__actions">' +
+            badge +
+            '      <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only ubits-modal-close" aria-label="Cerrar">' +
+            '        <i class="far fa-times"></i>' +
+            '      </button>' +
+            '    </div>' +
+            '  </div>'
+        );
+    }
+
+    function maybeInitIaTokensTooltip(overlayId, options) {
+        if (!options || options.variant !== 'ia') return;
+        var bid = options.iaTokensBadgeId || (overlayId + '-tokens-badge');
+        if (!document.getElementById(bid)) return;
+        if (typeof window.initTooltip === 'function') {
+            window.initTooltip('#' + bid);
+        }
+    }
+
+    /**
      * Abre un modal con la estructura oficial UBITS.
      * @param {Object} options
      * @param {string} [options.overlayId] - ID del overlay. Si no se pasa, se genera uno.
@@ -43,6 +114,10 @@
      * @param {string} [options.size] - 'xs' | 'sm' | 'md' | 'lg'. Ancho del contenido.
      * @param {boolean} [options.closeOnOverlayClick=true] - Cerrar al clic fuera del contenido.
      * @param {function} [options.onClose] - Callback al cerrar el modal.
+     * @param {string} [options.variant] - 'ia' para modal con fondo orbes + header con badge de tokens opcional.
+     * @param {number|string} [options.iaTokensRemaining] - Valor mostrado en el badge (omitir para no mostrar badge).
+     * @param {string} [options.iaTokensBadgeId] - ID del span badge (sync desde tu página).
+     * @param {string} [options.iaTokensTooltip] - Texto data-tooltip del badge.
      */
     function openModal(options) {
         options = options || {};
@@ -59,6 +134,8 @@
             ? ' ubits-modal-content--' + size
             : '';
 
+        var contentIaClass = options.variant === 'ia' ? ' ubits-modal-content--ia' : '';
+
         var overlay = document.getElementById(overlayId);
         if (overlay) {
             overlay.remove();
@@ -73,13 +150,8 @@
         overlay.setAttribute('aria-labelledby', overlayId + '-title');
 
         overlay.innerHTML =
-            '<div class="ubits-modal-content' + sizeClass + '" onclick="event.stopPropagation();">' +
-            '  <div class="ubits-modal-header">' +
-            '    <span id="' + overlayId + '-title" class="ubits-modal-title ubits-body-md-bold">' + escapeHtml(title) + '</span>' +
-            '    <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only ubits-modal-close" aria-label="Cerrar">' +
-            '      <i class="far fa-times"></i>' +
-            '    </button>' +
-            '  </div>' +
+            '<div class="ubits-modal-content' + sizeClass + contentIaClass + '" onclick="event.stopPropagation();">' +
+            buildModalHeaderHtml(overlayId, title, options) +
             '  <div class="ubits-modal-body">' + bodyHtml + '</div>' +
             (footerHtml ? ('  <div class="ubits-modal-footer">' +
                 '<div class="ubits-modal-footer__left">' +
@@ -110,6 +182,7 @@
 
         overlay.style.display = 'flex';
         document.body.appendChild(overlay);
+        maybeInitIaTokensTooltip(overlayId, options);
         return overlay;
     }
 
@@ -166,6 +239,10 @@
      * @param {string} [options.headerClass] - Clases extra para el header (ej. date-picker-modal-header).
      * @param {string} [options.bodyClass] - Clases extra para el body (ej. date-picker-modal-body).
      * @param {string} [options.footerClass] - Clases extra para el footer (ej. date-picker-modal-footer).
+     * @param {string} [options.variant] - 'ia' para variante IA (mismas opciones iaTokens* que openModal).
+     * @param {number|string} [options.iaTokensRemaining]
+     * @param {string} [options.iaTokensBadgeId]
+     * @param {string} [options.iaTokensTooltip]
      * @returns {string} HTML del overlay completo (display:none; aria-hidden="true").
      */
     function getModalHtml(options) {
@@ -189,8 +266,11 @@
             ? ' ubits-modal-content--' + size
             : '';
 
+        var contentIaClass = options.variant === 'ia' ? ' ubits-modal-content--ia' : '';
+
         var contentIdAttr = contentId ? (' id="' + contentId + '"') : '';
-        var titleIdAttr = titleId ? (' id="' + titleId + '"') : '';
+        var titleSpanId = titleId || (options.variant === 'ia' && overlayId ? overlayId + '-title' : '');
+        var titleIdAttr = titleSpanId ? (' id="' + titleSpanId + '"') : '';
         var closeIdAttr = closeButtonId ? (' id="' + closeButtonId + '"') : '';
         var overlayClassAttr = overlayClass ? (' ' + overlayClass) : '';
         var contentClassAttr = contentClass ? (' ' + contentClass) : '';
@@ -198,14 +278,38 @@
         var bodyClassAttr = bodyClass ? (' ' + bodyClass) : '';
         var footerClassAttr = footerClass ? (' ' + footerClass) : '';
 
+        var headerInner;
+        if (options.variant === 'ia') {
+            var badge = '';
+            if (options.iaTokensRemaining != null && options.iaTokensRemaining !== '') {
+                badge = buildIaTokensBadgeHtml(
+                    overlayId,
+                    options.iaTokensRemaining,
+                    options.iaTokensBadgeId,
+                    options.iaTokensTooltip
+                );
+            }
+            headerInner =
+                '<div class="ubits-modal-header ubits-modal-header--ia' + headerClassAttr + '">' +
+                '<span class="ubits-modal-title ubits-body-md-bold"' + titleIdAttr + '>' + escapeHtml(title) + '</span>' +
+                '<div class="ubits-modal-header__actions">' +
+                badge +
+                '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only ubits-modal-close"' + closeIdAttr + ' aria-label="Cerrar">' +
+                '<i class="far fa-times"></i></button>' +
+                '</div></div>';
+        } else {
+            headerInner =
+                '<div class="ubits-modal-header' + headerClassAttr + '">' +
+                '<span class="ubits-modal-title ubits-body-md-bold"' + titleIdAttr + '>' + escapeHtml(title) + '</span>' +
+                '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only ubits-modal-close"' + closeIdAttr + ' aria-label="Cerrar">' +
+                '<i class="far fa-times"></i>' +
+                '</button>' +
+                '</div>';
+        }
+
         return '<div class="ubits-modal-overlay' + overlayClassAttr + '" id="' + overlayId + '" style="display: none;" aria-hidden="true">' +
-            '<div class="ubits-modal-content' + sizeClass + contentClassAttr + '"' + contentIdAttr + ' onclick="event.stopPropagation();">' +
-            '<div class="ubits-modal-header' + headerClassAttr + '">' +
-            '<span class="ubits-modal-title ubits-body-md-bold"' + titleIdAttr + '>' + escapeHtml(title) + '</span>' +
-            '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only"' + closeIdAttr + ' aria-label="Cerrar">' +
-            '<i class="far fa-times"></i>' +
-            '</button>' +
-            '</div>' +
+            '<div class="ubits-modal-content' + sizeClass + contentIaClass + contentClassAttr + '"' + contentIdAttr + ' onclick="event.stopPropagation();">' +
+            headerInner +
             '<div class="ubits-modal-body' + bodyClassAttr + '">' + bodyHtml + '</div>' +
             (footerHtml ? ('<div class="ubits-modal-footer' + footerClassAttr + '">' +
             '<div class="ubits-modal-footer__left">' +

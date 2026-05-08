@@ -17,7 +17,10 @@
     <link rel="stylesheet" href="../../components/alert.css">
     <link rel="stylesheet" href="../../components/toast.css">
     <link rel="stylesheet" href="../../components/modal.css">
+    <link rel="stylesheet" href="../../components/badge-tag.css">
+    <link rel="stylesheet" href="../../components/tooltip.css">
     <script src="../../components/modal.js"></script>
+    <script src="../../components/tooltip.js"></script>
 </head>
 <body class="componentes-page" data-theme="light">
     <div class="dashboard-container">
@@ -33,7 +36,7 @@
                         <div style="text-align: center; margin-bottom: 60px;">
                             <h1 class="ubits-display-d2-bold" style="margin-bottom: 24px; color: var(--ubits-accent-brand);">Modal</h1>
                             <p class="ubits-body-md-regular" style="max-width: 800px; margin: 0 auto 32px; line-height: 1.6;">
-                                Ventana que se abre encima de la página para confirmar algo, rellenar un formulario o elegir una fecha. Se cierra con la X, los botones o tocando fuera.
+                                Ventana que se abre encima de la página para confirmar algo, rellenar un formulario o elegir una fecha. Se cierra con la X, los botones o tocando fuera. Para flujos de generación con IA hay una variante con número de tokens en la cabecera y fondo con orbes de color.
                             </p>
                         </div>
 
@@ -64,6 +67,10 @@
                                         <i class="far fa-window-maximize"></i>
                                         <span>Abrir modal LG</span>
                                     </button>
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--md modal-demo-ia-btn">
+                                        <i class="far fa-wand-magic-sparkles"></i>
+                                        <span>Abrir modal variante IA</span>
+                                    </button>
                                 </div>
                             </div>
 
@@ -93,6 +100,11 @@
                                     <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-ruler"></i></div>
                                     <div class="ubits-body-sm-bold">Tamaños</div>
                                     <div class="ubits-body-sm-regular">Varios anchos del modal: pequeño, mediano y grande</div>
+                                </div>
+                                <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-wand-magic-sparkles"></i></div>
+                                    <div class="ubits-body-sm-bold">Variante IA</div>
+                                    <div class="ubits-body-sm-regular">Cabecera con tokens restantes y fondo con orbes; misma API con <code>openModal</code></div>
                                 </div>
                             </div>
                         </div>
@@ -257,7 +269,10 @@
 .ubits-modal-header    /* Header: padding, border-bottom, título + botón cerrar */
 .ubits-modal-title     /* Título del header: usar con ubits-body-md-bold (no h2) */
 .ubits-modal-body      /* Body: padding, overflow-y auto, flex 1 */
-.ubits-modal-footer    /* Footer: padding, border-top, flex end, gap 12px */</code></pre>
+.ubits-modal-footer    /* Footer: padding, border-top, flex end, gap 12px */
+.ubits-modal-content--ia   /* Variante IA: fondo con orbes (--modo-ia-glow-orb-rgb-*) */
+.ubits-modal-header--ia    /* Cabecera IA: fondo transparente; mismo borde inferior que el header estándar */
+.ubits-modal-header__actions  /* Agrupa badge de tokens + botón cerrar */</code></pre>
                                     </div>
                                 </div>
                                 <div style="padding: 32px;">
@@ -274,7 +289,7 @@
                                     <div style="background: var(--ubits-bg-2); padding: 16px; border-radius: 8px; margin-bottom: 16px;">
                                         <h3 class="ubits-body-md-bold" style="margin-bottom: 12px; color: var(--ubits-fg-1-high);">🔧 REQUISITOS OBLIGATORIOS:</h3>
                                         <div class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); line-height: 1.5;">
-                                            <strong>CSS:</strong> <code>components/modal.css</code>, <code>ubits-colors.css</code>, <code>ubits-typography.css</code>, <code>fontawesome-icons.css</code> (botón cerrar), <code>components/button.css</code> (botones del header/footer).<br>
+                                            <strong>CSS:</strong> <code>components/modal.css</code>, <code>ubits-colors.css</code>, <code>ubits-typography.css</code>, <code>fontawesome-icons.css</code> (botón cerrar), <code>components/button.css</code> (botones del header/footer). Para la variante IA, además <code>components/badge-tag.css</code> (badge de tokens) y, si usas tooltip en el badge, <code>components/tooltip.css</code> + <code>components/tooltip.js</code> (o inicializas el tooltip tú tras abrir). Los orbes usan variables <code>--modo-ia-glow-orb-rgb-1/2/3</code> (p. ej. <code>aprendizaje-ia-gradientes.css</code> en el playground).<br>
                                             <strong>JavaScript:</strong> <code>components/modal.js</code> (recomendado). Proporciona <code>openModal()</code>, <code>closeModal()</code>, <code>showModal()</code>, <code>hideModal()</code>. Si no usas JS, mostrar/ocultar y lógica a cargo de tu página.<br>
                                             <strong>Renderizado:</strong> Recomendado: <code>openModal({ overlayId, title, bodyHtml, footerHtml?, size?, closeOnOverlayClick?, onClose? })</code> para estructura siempre correcta. Alternativa: HTML directo con las mismas clases (ver ejemplos abajo).
                                         </div>
@@ -292,6 +307,22 @@
   onClose: function() { }
 });
 closeModal('mi-modal');</code></pre>
+                                    </div>
+                                    <div style="background: var(--ubits-bg-2); padding: 16px; border-radius: 8px; margin-bottom: 16px;">
+                                        <h3 class="ubits-body-md-bold" style="margin-bottom: 8px; color: var(--ubits-fg-1-high);">Variante IA (<code>variant: 'ia'</code>)</h3>
+                                        <p class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); margin-bottom: 12px;">Añade clase <code>ubits-modal-content--ia</code>, cabecera <code>ubits-modal-header--ia</code> y, si pasas <code>iaTokensRemaining</code>, el badge de tokens junto al cerrar. Opcional: <code>iaTokensBadgeId</code> (para sincronizar el número desde tu JS), <code>iaTokensTooltip</code> (texto del <code>data-tooltip</code>).</p>
+                                        <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code>openModal({
+  overlayId: 'mi-modal-ia',
+  title: 'Generar con IA',
+  bodyHtml: '&lt;p class="ubits-body-md-regular"&gt;Contenido.&lt;/p&gt;',
+  footerHtml: '&lt;button type="button" class="ubits-button ubits-button--secondary ubits-button--md" onclick="closeModal(\'mi-modal-ia\')"&gt;&lt;span&gt;Cancelar&lt;/span&gt;&lt;/button&gt;&lt;button type="button" class="ubits-button ubits-button--primary ubits-button--md" onclick="closeModal(\'mi-modal-ia\')"&gt;&lt;span&gt;Generar&lt;/span&gt;&lt;/button&gt;',
+  size: 'md',
+  variant: 'ia',
+  iaTokensRemaining: 42,
+  iaTokensBadgeId: 'mi-modal-ia-tokens-badge',
+  iaTokensTooltip: 'Número de tokens restantes.',
+  closeOnOverlayClick: true
+});</code></pre>
                                     </div>
                                     <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
                                         <h3 class="ubits-body-md-bold" style="margin-bottom: 8px; color: var(--ubits-fg-1-high);">HTML directo</h3>
@@ -372,6 +403,24 @@ closeModal('mi-modal');</code></pre>
                         });
                     });
                 }
+            });
+            var modalIaDemoId = 'modal-demo-ia-overlay';
+            var modalIaFooterHtml = '<button type="button" class="ubits-button ubits-button--secondary ubits-button--md" onclick="closeModal(\'' + modalIaDemoId + '\')"><span>Cancelar</span></button><button type="button" class="ubits-button ubits-button--primary ubits-button--md" onclick="closeModal(\'' + modalIaDemoId + '\')"><span>Generar</span></button>';
+            document.querySelectorAll('.modal-demo-ia-btn').forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    if (typeof openModal !== 'function') return;
+                    openModal({
+                        overlayId: modalIaDemoId,
+                        title: 'Generar con IA',
+                        bodyHtml: '<p class="ubits-body-md-regular" style="color: var(--ubits-fg-1-medium);">Ejemplo de variante IA: badge de tokens en la cabecera y fondo con orbes.</p>',
+                        footerHtml: modalIaFooterHtml,
+                        size: 'md',
+                        variant: 'ia',
+                        iaTokensRemaining: 42,
+                        iaTokensBadgeId: 'modal-doc-ia-tokens-badge',
+                        closeOnOverlayClick: true
+                    });
+                });
             });
         });
         function toggleTechnicalDocs() {

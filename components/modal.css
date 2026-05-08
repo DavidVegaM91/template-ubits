@@ -87,6 +87,46 @@
     margin-left: auto;
 }
 
+/* ========================================
+   Variante IA (LMS Creator, generación con IA)
+   Fondo con orbes radiales (tokens --modo-ia-glow-orb-rgb-* con fallback)
+   y cabecera con badge de tokens + cerrar (requiere badge-tag.css + tooltip para el badge).
+   ======================================== */
+
+.ubits-modal-content--ia {
+    background-color: var(--ubits-bg-1);
+    background-image:
+        radial-gradient(ellipse 100% 80% at 10% 0%, rgba(var(--modo-ia-glow-orb-rgb-1, 26, 107, 255), 0.15) 0%, transparent 50%),
+        radial-gradient(ellipse 95% 78% at 50% 0%, rgba(var(--modo-ia-glow-orb-rgb-2, 76, 230, 255), 0.15) 0%, transparent 48%),
+        radial-gradient(ellipse 95% 75% at 90% 0%, rgba(var(--modo-ia-glow-orb-rgb-3, 255, 84, 22), 0.15) 0%, transparent 50%);
+}
+
+.ubits-modal-header--ia {
+    background: transparent;
+    /* Mismo separador que .ubits-modal-header (título + badge vs cuerpo) */
+    border-bottom: 1px solid var(--ubits-border-1);
+}
+
+.ubits-modal-header__actions {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--gap-sm);
+    flex-shrink: 0;
+}
+
+.ubits-modal-header--ia .ubits-modal-title {
+    flex: 1;
+    min-width: 0;
+}
+
+.ubits-modal-content--ia .ubits-modal-body {
+    padding: var(--padding-xl);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+
 @media (max-width: 768px) {
     .ubits-modal-content {
         max-height: 95vh;

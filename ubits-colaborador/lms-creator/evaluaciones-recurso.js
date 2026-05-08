@@ -1506,6 +1506,9 @@
             title: 'Generar evaluación',
             bodyHtml: bodyHtml,
             size: 'md',
+            variant: 'ia',
+            iaTokensRemaining: currentTokens,
+            iaTokensBadgeId: 'cc-eval-ia-modal-tokens-badge',
             onClose: function () {
                 cleanupEvalIaModalAlternate(rootEl);
             }
@@ -1515,65 +1518,9 @@
         _evalWireIaModalParamAria(overlay);
         _evalWireIaModalComposer(overlay);
 
-        var titleSpan = overlay.querySelector('.ubits-modal-title');
-        if (titleSpan) {
-            titleSpan.textContent = 'Generar evaluación';
-        }
-
-        var modalHeaderEl = overlay.querySelector('.ubits-modal-header');
-        var closeBtnEl = overlay.querySelector('.ubits-modal-close');
-        if (modalHeaderEl && closeBtnEl) {
-            var actionsWrap = document.createElement('div');
-            actionsWrap.style.display = 'inline-flex';
-            actionsWrap.style.alignItems = 'center';
-            actionsWrap.style.gap = 'var(--gap-sm)';
-
-            var tokensBadge = document.createElement('span');
-            tokensBadge.id = 'cc-eval-ia-modal-tokens-badge';
-            tokensBadge.className = 'ubits-badge-tag ubits-badge-tag--outlined ubits-badge-tag--ia ubits-badge-tag--xs';
-            tokensBadge.setAttribute('tabindex', '0');
-            tokensBadge.setAttribute('data-tooltip', 'Número de tokens restantes.');
-            tokensBadge.setAttribute('data-tooltip-delay', '0');
-            tokensBadge.setAttribute('data-tooltip-tap-toggle', '');
-            tokensBadge.setAttribute('aria-label', currentTokens + ' tokens restantes');
-            tokensBadge.innerHTML =
-                '<span class="ubits-badge-tag__token-cost" aria-hidden="true">' +
-                '<i class="far fa-coin-vertical"></i>' +
-                '<span class="ubits-badge-tag__token-number">' +
-                String(currentTokens) +
-                '</span>' +
-                '</span>';
-
-            actionsWrap.appendChild(tokensBadge);
-            actionsWrap.appendChild(closeBtnEl);
-            modalHeaderEl.appendChild(actionsWrap);
-
-            if (typeof global.initTooltip === 'function') {
-                global.initTooltip('#cc-eval-ia-modal-tokens-badge');
-            }
-        }
-
         var modalContent = overlay.querySelector('.ubits-modal-content');
         if (modalContent) {
             modalContent.classList.add('portada-ia-modal-content', 'cc-eval-ia-modal-content');
-            modalContent.style.backgroundColor = 'var(--ubits-bg-1)';
-            modalContent.style.backgroundImage =
-                'radial-gradient(ellipse 100% 80% at 10% 0%, rgba(var(--modo-ia-glow-orb-rgb-1, 26, 107, 255), 0.15) 0%, transparent 50%),' +
-                'radial-gradient(ellipse 95% 78% at 50% 0%, rgba(var(--modo-ia-glow-orb-rgb-2, 76, 230, 255), 0.15) 0%, transparent 48%),' +
-                'radial-gradient(ellipse 95% 75% at 90% 0%, rgba(var(--modo-ia-glow-orb-rgb-3, 255, 84, 22), 0.15) 0%, transparent 50%)';
-            var modalHeader = overlay.querySelector('.ubits-modal-header');
-            if (modalHeader) {
-                modalHeader.style.background = 'transparent';
-                modalHeader.style.borderBottom = '';
-            }
-            var modalBody = overlay.querySelector('.ubits-modal-body');
-            if (modalBody) {
-                modalBody.style.padding = 'var(--padding-xl, 32px)';
-                modalBody.style.overflow = 'auto';
-                modalBody.style.display = 'flex';
-                modalBody.style.flexDirection = 'column';
-                modalBody.style.minHeight = '0';
-            }
         }
 
         var genBtn = overlay.querySelector('#cc-eval-ia-modal-generate');
