@@ -711,7 +711,7 @@
     function buildTabBar() {
         return '<div class="cc-sm-tabbar-wrap">' +
             '<div class="cc-vmodal-tabbar" id="cc-sm-tabbar" role="tablist">' +
-                '<div class="cc-vmodal-tabbar__group">' +
+                '<div class="ubits-tabs-on-bg">' +
                     '<button type="button" class="ubits-tab ubits-tab--sm ubits-tab--active" role="tab" aria-selected="true" data-cc-stab="ia"><span>SCORM con IA</span></button>' +
                     '<button type="button" class="ubits-tab ubits-tab--sm" role="tab" aria-selected="false" data-cc-stab="subir"><span>Subir .zip</span></button>' +
                 '</div>' +

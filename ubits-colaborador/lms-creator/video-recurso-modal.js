@@ -524,9 +524,9 @@
     function buildTabBar() {
         return (
             '<div id="cc-vmodal-tabbar" class="cc-vmodal-tabbar" role="tablist">' +
-                '<div class="cc-vmodal-tabbar__group">' +
+                '<div class="ubits-tabs-on-bg">' +
                     '<button type="button" class="ubits-tab ubits-tab--sm ubits-tab--active" role="tab" aria-selected="true" data-cc-vtab="ia">' +
-                        '<span>Video IA</span>' +
+                        '<span>Video Avatar IA</span>' +
                     '</button>' +
                     '<button type="button" class="ubits-tab ubits-tab--sm" role="tab" aria-selected="false" data-cc-vtab="enlace">' +
                         '<span>Enlace de video</span>' +

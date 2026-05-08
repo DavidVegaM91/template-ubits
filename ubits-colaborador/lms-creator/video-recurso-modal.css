@@ -53,14 +53,7 @@
     padding: 0 0 var(--padding-md);
 }
 
-.cc-vmodal-tabbar__group {
-    display: inline-flex;
-    flex-wrap: wrap;
-    gap: var(--gap-xs);
-    padding: var(--padding-xs);
-    background: var(--ubits-bg-2);
-    border-radius: var(--border-radius-md);
-}
+/* Grupo de pestañas: usar `ubits-tabs-on-bg` del componente Tab (tab.css), igual que tab.html. */
 
 /* ── Paneles de pestaña ── */
 .cc-vmodal-panel {
