@@ -690,7 +690,7 @@
             : '';
         var escaped = scormHtml.replace(/"/g, '&quot;');
         return '<div class="ubits-resources-block ubits-resources-block--stack">' +
-            '<div class="ubits-resources-block__surface" style="padding:0;">' +
+            '<div class="ubits-resources-block__surface cc-scorm-resource__surface" style="padding:0;">' +
                 '<div class="cc-scorm-resource__embed-wrap">' +
                     aiHost +
                     '<div class="cc-scorm-iframe-container">' +
@@ -827,6 +827,8 @@
     ══════════════════════════════════════ */
     function switchToTab(tab) {
         _currentTab=tab;
+        var overlay=document.getElementById(OVERLAY_ID);
+        if (overlay) overlay.classList.toggle('cc-sm--compact', tab !== 'ia');
         var bar=document.getElementById('cc-sm-tabbar');
         if (bar) bar.querySelectorAll('[data-cc-stab]').forEach(function(b){
             var on=b.getAttribute('data-cc-stab')===tab;
@@ -1034,9 +1036,11 @@
 
     function confirmZipLoad() {
         var html = '<div class="ubits-resources-block ubits-resources-block--stack">' +
-            '<div class="ubits-resources-block__surface" style="padding:0;">' +
-                '<div class="cc-scorm-iframe-container">' +
-                    '<iframe src="simulador-scorm.html" allowfullscreen></iframe>' +
+            '<div class="ubits-resources-block__surface cc-scorm-resource__surface" style="padding:0;">' +
+                '<div class="cc-scorm-resource__embed-wrap">' +
+                    '<div class="cc-scorm-iframe-container">' +
+                        '<iframe src="simulador-scorm.html" allowfullscreen></iframe>' +
+                    '</div>' +
                 '</div>' +
             '</div>' +
             '<div class="ubits-resources-block__footer" style="display:flex;align-items:center;gap:var(--gap-sm);">' +
@@ -1177,7 +1181,7 @@
             title:               'Agregar SCORM',
             bodyHtml:            buildModalBody(),
             footerHtml:          buildModalFooterHtml(),
-            size:                'md',
+            size:                'lg',
             closeOnOverlayClick: false
         });
         if (overlay) applyAiModalChrome(overlay);
@@ -1189,6 +1193,8 @@
             wireIaPanel();
             wireFooter();
             refreshPreview();
+            /* Estado inicial: SCORM con IA = modal ancho lg; Subir .zip = compacto (cc-sm--compact). */
+            switchToTab(_currentTab || 'ia');
         },0);
     }
 

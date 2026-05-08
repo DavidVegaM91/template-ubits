@@ -849,6 +849,8 @@
                     ht.textContent = '';
                     ht.style.display = 'none';
                 }
+                var cl = w && w.querySelector('.ubits-input-counter-label');
+                if (cl) cl.style.display = '';
                 autosizeGuionTextarea();
                 refreshIaButtons();
             }
@@ -943,6 +945,10 @@
             ht.style.display = '';
             ht.textContent = message || 'Campo requerido';
         }
+        // La etiqueta fija «Máximo de caracteres» del Input no aplica a errores de mínimo / vacío;
+        // si no se oculta, aparece una segunda línea roja confusa junto al mensaje real.
+        var counterLabel = wrap && wrap.querySelector('.ubits-input-counter-label');
+        if (counterLabel) counterLabel.style.display = 'none';
     }
 
     function focusGuionFieldAfterError() {

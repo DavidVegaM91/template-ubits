@@ -12,6 +12,12 @@
     align-self: center;
     display: flex;
     flex-direction: column;
+    transition: max-width 240ms ease, width 240ms ease;
+}
+
+/* Ancho «Video IA»: lg completo; pestaña Subir .zip más compacta (misma lógica que #cc-video-recurso-modal.cc-vm--compact). */
+#cc-scorm-recurso-modal.cc-sm--compact .ubits-modal-content.cc-scorm-ia-modal-content.portada-ia-modal-content {
+    max-width: min(800px, calc(100vw - 32px));
 }
 
 #cc-scorm-recurso-modal .ubits-modal-body {
@@ -215,17 +221,23 @@
     flex-shrink: 0;
 }
 
-/* ── Preview derecha ── */
+/* ── Preview derecha (16:9 como modal de video / cc-vm-preview-stage) ── */
 .cc-sm-preview-wrap {
-    flex: 1; min-height: 0;
-    border-radius: var(--border-radius-md);
+    width: 100%;
+    flex: 0 0 auto;
+    aspect-ratio: 16 / 9;
+    position: relative;
+    border-radius: var(--border-radius-lg);
     overflow: hidden;
     background: var(--ubits-bg-3);
-    display: flex;
-    flex-direction: column;
 }
 .cc-sm-preview-iframe {
-    width: 100%; flex: 1; border: none; display: block; min-height: 0;
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+    display: block;
 }
 
 /* ── Override padding lateral del input-area en contexto del modal ── */
@@ -264,9 +276,19 @@
 }
 
 /* Recurso SCORM incrustado: tag «Generado con IA» sobre el iframe (flujo SCORM con IA) */
-.cc-scorm-resource__embed-wrap {
+/* Marco 16:9 en página (misma idea que .cc-video-resource__surface) */
+.cc-scorm-resource__surface.ubits-resources-block__surface {
     position: relative;
-    width: 100%;
+    min-height: 0 !important;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+}
+
+.cc-scorm-resource__embed-wrap {
+    position: absolute;
+    inset: 0;
+    width: auto;
+    height: auto;
 }
 
 .cc-scorm-resource__generado-ia-host {
@@ -280,10 +302,11 @@
 }
 
 .cc-scorm-iframe-container {
-    width: 100%;
-    height: 600px;
-    position: relative;
-    background: #f0f0f8;
+    position: absolute;
+    inset: 0;
+    width: auto;
+    height: auto;
+    background: var(--ubits-bg-2);
     border-radius: var(--border-radius-lg);
     overflow: hidden;
     transform: translateZ(0);
@@ -346,7 +369,7 @@
 .cc-scorm-ia-loader-host {
     width: 100%;
     box-sizing: border-box;
-    height: 600px;
+    aspect-ratio: 16 / 9;
     display: flex;
     align-items: stretch;
 }
