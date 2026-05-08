@@ -365,6 +365,11 @@
     flex-wrap: wrap;
 }
 
+/* Logo: en esta pantalla no mostramos el header/título del File Upload. */
+#cc-video-recurso-modal #cc-vm-logo-fu-wrap .ubits-file-upload__header {
+    display: none;
+}
+
 /* Evita que el ítem del botón se estire en alto como label+bloque en flex (aspecto “gigante”) */
 #cc-video-recurso-modal #cc-vm-logo-drop-zone {
     flex: 0 0 auto;

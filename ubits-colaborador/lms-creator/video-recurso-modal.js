@@ -459,14 +459,7 @@
                     // Section 3: Logo
                     '<div class="cc-vm-section">' +
                         '<p class="cc-vm-section-label">Logo de empresa <span class="cc-vm-optional">(opcional)</span></p>' +
-                        '<div class="cc-vm-logo-row">' +
-                            '<input type="file" accept="image/png,.png" id="cc-vm-logo-file" tabindex="-1" aria-hidden="true" style="display:none">' +
-                            '<button type="button" class="ubits-button ubits-button--secondary" id="cc-vm-logo-drop-zone">' +
-                                '<i class="far fa-image" aria-hidden="true"></i>' +
-                                '<span>Subir logo PNG</span>' +
-                            '</button>' +
-                            '<div id="cc-vm-logo-chip-wrap"></div>' +
-                        '</div>' +
+                        '<div id="cc-vm-logo-fu-wrap"></div>' +
                     '</div>' +
 
                 '</div>' +
@@ -958,52 +951,46 @@
 
     /* ── Logo upload ── */
     function initLogoUpload() {
-        var input = document.getElementById('cc-vm-logo-file');
-        var trigger = document.getElementById('cc-vm-logo-drop-zone');
-        if (!input || input._ccWired) return;
-        input._ccWired = true;
-        if (trigger && !trigger._ccLogoTriggerWired) {
-            trigger._ccLogoTriggerWired = true;
-            trigger.addEventListener('click', function () {
-                input.click();
-            });
-        }
-        input.addEventListener('change', function () {
-            var file = input.files && input.files[0];
-            if (!file) return;
-            var reader = new FileReader();
-            reader.onload = function (e) {
-                _logoDataUrl = e.target.result;
-                // Show in preview overlay
-                var previewImg = document.getElementById('cc-vm-logo-preview-img');
-                if (previewImg) previewImg.src = _logoDataUrl;
-                var overlay = document.getElementById('cc-vm-logo-overlay');
-                if (overlay) overlay.style.display = '';
-                // Hide upload button, show chip in its place
-                var dropZone = document.getElementById('cc-vm-logo-drop-zone');
-                if (dropZone) dropZone.style.display = 'none';
-                var chipWrap = document.getElementById('cc-vm-logo-chip-wrap');
-                if (chipWrap) {
-                    chipWrap.innerHTML =
-                        '<div class="cc-vm-insumo-chip">' +
-                            '<i class="far fa-image" aria-hidden="true"></i>' +
-                            '<span>' + esc(file.name) + '</span>' +
-                            '<button type="button" id="cc-vm-logo-remove" aria-label="Quitar logo"><i class="far fa-times"></i></button>' +
-                        '</div>';
-                    var removeBtn = document.getElementById('cc-vm-logo-remove');
-                    if (removeBtn) {
-                        removeBtn.addEventListener('click', function () {
-                            _logoDataUrl = null;
-                            input.value = '';
-                            chipWrap.innerHTML = '';
-                            var ov = document.getElementById('cc-vm-logo-overlay');
-                            if (ov) ov.style.display = 'none';
-                            if (dropZone) dropZone.style.display = '';
-                        });
-                    }
+        var wrap = document.getElementById('cc-vm-logo-fu-wrap');
+        if (!wrap || wrap._ccVmLogoFuWired) return;
+        wrap._ccVmLogoFuWired = true;
+        if (typeof global.createFileUpload !== 'function') return;
+
+        global.createFileUpload({
+            containerId: 'cc-vm-logo-fu-wrap',
+            id: 'cc-vm-logo-fu',
+            title: 'Logo PNG',
+            accept: 'image/png,.png',
+            maxSizeMb: 2,
+            maxLabel: '2 MB',
+            formats: 'PNG · Hasta 2 MB',
+            successMessage: 'Logo cargado. Se verá en el video.',
+            onChange: function (file) {
+                if (!file) {
+                    _logoDataUrl = null;
+                    var ov = document.getElementById('cc-vm-logo-overlay');
+                    if (ov) ov.style.display = 'none';
+                    return;
                 }
-            };
-            reader.readAsDataURL(file);
+
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    _logoDataUrl = e && e.target ? e.target.result : null;
+                    var previewImg = document.getElementById('cc-vm-logo-preview-img');
+                    if (previewImg && _logoDataUrl) previewImg.src = _logoDataUrl;
+                    var overlay = document.getElementById('cc-vm-logo-overlay');
+                    if (overlay && _logoDataUrl) overlay.style.display = '';
+                };
+                reader.readAsDataURL(file);
+            },
+            onError: function (err) {
+                _logoDataUrl = null;
+                var ov = document.getElementById('cc-vm-logo-overlay');
+                if (ov) ov.style.display = 'none';
+                if (typeof global.showToast === 'function' && err && err.message) {
+                    global.showToast('warning', err.message, { containerId: 'ubits-toast-container' });
+                }
+            }
         });
     }
 
