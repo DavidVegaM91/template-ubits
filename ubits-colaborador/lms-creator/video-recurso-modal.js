@@ -20,7 +20,7 @@
     var VIDEO_GEN_TOKEN_COST      = 20;
     /** Guión para «Generar video»: longitud mínima/máxima (coincide con contador createInput). */
     var VIDEO_GUION_MIN_CHARS = 500;
-    var VIDEO_GUION_MAX_CHARS = 1200;
+    var VIDEO_GUION_MAX_CHARS = 1700;
 
     /* ══════════════════════════════════════
        TOKEN HELPERS
