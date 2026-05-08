@@ -438,6 +438,7 @@
                                     '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only ai-panel__attach-btn" id="cc-vm-attach" aria-label="Adjuntar">' +
                                         '<i class="far fa-plus"></i>' +
                                     '</button>' +
+                                    '<div class="ai-panel__input-spacer" aria-hidden="true"></div>' +
                                     '<button type="button" class="ubits-button ubits-button--primary ubits-button--sm ubits-button--with-token-cost" id="cc-vm-btn-gen-guion">' +
                                         '<span class="ubits-button__token-cost" aria-hidden="true">' +
                                             '<span class="ubits-button__token-number">' + VIDEO_GUION_IA_TOKEN_COST + '</span>' +
