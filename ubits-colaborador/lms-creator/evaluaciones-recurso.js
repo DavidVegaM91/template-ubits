@@ -96,11 +96,8 @@
             '      <i class="far fa-gear"></i><span>Configuración</span>' +
             '    </button>' +
             '    <span class="cc-eval-ia-actions">' +
-            '    <button type="button" class="ubits-ia-button ubits-ia-button--secondary ubits-ia-button--sm" id="cc-eval-ia-modal-btn">' +
-            '      <i class="far fa-sparkles"></i><span>Modal</span>' +
-            '    </button>' +
             '    <button type="button" class="ubits-ia-button ubits-ia-button--secondary ubits-ia-button--sm" id="cc-eval-ia-btn">' +
-            '      <i class="far fa-sparkles"></i><span>Panel</span>' +
+            '      <i class="far fa-sparkles"></i><span>Generar con IA</span>' +
             '    </button>' +
             '    </span>' +
             '  </div>' +
@@ -2475,15 +2472,6 @@
         if (cfgBtn) {
             cfgBtn.addEventListener('click', function () {
                 openEvalConfigModal(pageState);
-            });
-        }
-
-        var iaModalBtn = rootEl.querySelector('#cc-eval-ia-modal-btn');
-        if (iaModalBtn) {
-            iaModalBtn.addEventListener('click', function () {
-                if (typeof global.closeAIPanel === 'function') global.closeAIPanel();
-                rootEl._ccEvalIaUiMode = 'modal';
-                openEvalIaModal(rootEl);
             });
         }
 
