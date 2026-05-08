@@ -581,9 +581,9 @@
             '<div id="ai-modal-result-view" style="display:none; width:100%; text-align:center; flex-direction:column; align-items:center; z-index:1; padding: 0;">' +
                 '<div class="portada-ia-modal-result__figure">' +
                     '<img id="portada-ai-modal-img" class="portada-ia-modal-result__img" src="" alt="Portada generada" />' +
-                    '<button type="button" id="portada-ai-modal-regenerate" class="ubits-button ubits-button--secondary ubits-button--xs ubits-button--with-token-cost portada-ia-modal-result__regen">' +
-                        '<span class="ubits-button__token-cost" aria-hidden="true">' +
-                        '<span class="ubits-button__token-number">' +
+                    '<button type="button" id="portada-ai-modal-regenerate" class="ubits-ia-button ubits-ia-button--secondary ubits-ia-button--xs ubits-ia-button--with-token-cost portada-ia-modal-result__regen">' +
+                        '<span class="ubits-ia-button__token-cost" aria-hidden="true">' +
+                        '<span class="ubits-ia-button__token-number">' +
                         String(PORTADA_AI_REGEN_TOKEN_COST) +
                         '</span>' +
                         '<i class="far fa-coin-vertical"></i>' +

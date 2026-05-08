@@ -283,9 +283,9 @@
             '<img id="cc-pim-result-img" class="cc-pim-result-img" src="' +
             esc(src) +
             '" alt="Portada generada">' +
-            '<button type="button" class="ubits-button ubits-button--secondary ubits-button--xs ubits-button--with-token-cost cc-pim-result-regen" id="cc-pim-btn-regen">' +
-            '<span class="ubits-button__token-cost" aria-hidden="true">' +
-            '<span class="ubits-button__token-number">' +
+            '<button type="button" class="ubits-ia-button ubits-ia-button--secondary ubits-ia-button--xs ubits-ia-button--with-token-cost cc-pim-result-regen" id="cc-pim-btn-regen">' +
+            '<span class="ubits-ia-button__token-cost" aria-hidden="true">' +
+            '<span class="ubits-ia-button__token-number">' +
             TOKEN_REGEN +
             '</span><i class="far fa-coin-vertical"></i></span>' +
             '<span>Regenerar</span></button></div>';
