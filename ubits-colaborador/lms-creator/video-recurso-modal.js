@@ -362,23 +362,19 @@
        GENERADOR DE GUIÓN (simulado)
     ══════════════════════════════════════ */
     function generateGuion() {
-        var nom = 'el presentador';
-        var t = 'Comunicación para desescalar conflictos en el trabajo';
-        var txt = (
-            'Hola, soy ' + nom + ' y hoy hablaremos de ' + t + '.\n\n' +
-            'Cuando una conversación sube de tono, lo primero es bajar la intensidad sin “ganar” la discusión. ' +
-            'Tu objetivo es recuperar claridad y respeto para poder resolver, no reaccionar.\n\n' +
-            '1) Pausa y regula. Respira, baja el ritmo y evita responder al mismo volumen. Una frase útil es: ' +
-            '“Dame un segundo para entenderte bien”.\n\n' +
-            '2) Nombra lo que ves sin acusar. Usa observaciones neutrales: “Siento tensión en esta conversación” ' +
-            'en lugar de “Tú siempre…”.\n\n' +
-            '3) Valida la emoción, no el ataque. “Entiendo que esto te frustra” abre la puerta. Validar no es ceder.\n\n' +
-            '4) Haz preguntas que desescalen. “¿Qué es lo más importante para ti ahora?” “¿Qué resultado te gustaría?”\n\n' +
-            '5) Reformula y alinea. Resume en una frase y confirma: “Entonces, tu preocupación principal es… ¿es correcto?”.\n\n' +
-            '6) Propón un siguiente paso pequeño. “Hagamos dos opciones y elegimos una” o “Acordemos un experimento esta semana”.\n\n' +
-            'Cierra con un compromiso claro: quién hace qué y para cuándo. Con práctica, estas micro-habilidades convierten ' +
-            'momentos tensos en conversaciones productivas.'
-        );
+        var txt =
+            'La forma en que hablas durante un conflicto puede empeorar la situación o ayudarte a resolverla. Hoy veremos cómo desescalar tensiones en el trabajo.\n\n' +
+            'Cuando una conversación se pone tensa, el objetivo no es ganar la discusión. El objetivo es recuperar claridad y mantener el respeto.\n\n' +
+            'El primer paso es regular tu tono. Respira, baja la velocidad y evita responder con la misma intensidad emocional de la otra persona.\n\n' +
+            'En lugar de reaccionar de inmediato, puedes usar una frase simple como: Dame un segundo para entenderte bien antes de responder.\n\n' +
+            'También ayuda describir la situación sin atacar. Habla sobre lo que percibes, no sobre las intenciones o defectos de la otra persona.\n\n' +
+            'Por ejemplo, funciona mejor decir siento tensión en esta conversación, que lanzar acusaciones o usar frases absolutas como tú siempre haces esto.\n\n' +
+            'Otra técnica útil es validar la emoción sin validar el conflicto. Puedes reconocer frustración sin aceptar agresiones o malos tratos.\n\n' +
+            'Una frase sencilla puede cambiar completamente el tono de la conversación. Por ejemplo: entiendo que esto te está frustrando en este momento.\n\n' +
+            'Las preguntas abiertas también ayudan a bajar la tensión porque cambian el enfoque del problema hacia una posible solución compartida.\n\n' +
+            'Puedes preguntar qué es lo más importante para ti ahora, o qué resultado te gustaría lograr con esta conversación.\n\n' +
+            'Finalmente, resume lo que entendiste y propone un siguiente paso pequeño, claro y fácil de ejecutar para ambas personas.\n\n' +
+            'Las conversaciones difíciles no se resuelven con más presión. Se resuelven con claridad, regulación emocional y escucha activa.';
         return txt.length > VIDEO_GUION_MAX_CHARS ? txt.slice(0, VIDEO_GUION_MAX_CHARS - 3) + '...' : txt;
     }
 
@@ -1352,6 +1348,25 @@
             document.dispatchEvent(new CustomEvent('ubits-recursos-changed', { detail: detail || {} }));
         } catch (e) { /* noop */ }
     }
+
+    /* Tras llegar al final (autoplay o reproducción manual), volver a 0:00 para no quedar en el último frame (gris). */
+    document.addEventListener(
+        'ended',
+        function (ev) {
+            var v = ev.target;
+            if (!v || v.tagName !== 'VIDEO') return;
+            var cn = typeof v.className === 'string' ? v.className : '';
+            var matchPreview = v.id === 'cc-vm-av-preview-video';
+            var matchLocal =
+                cn.indexOf('cc-video-local-player') !== -1 || cn.indexOf('ubits-video-player') !== -1;
+            if (!matchPreview && !matchLocal) return;
+            try {
+                v.pause();
+                v.currentTime = 0;
+            } catch (err) { /* noop */ }
+        },
+        true
+    );
 
     /* ══════════════════════════════════════
        API PÚBLICA
