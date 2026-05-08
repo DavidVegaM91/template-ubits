@@ -7,7 +7,9 @@
  *   input.js  (createInput)
  *   file-upload.js (createFileUpload, fileUploadSetProgress, fileUploadClearProgress, fileUploadSetSuccess)
  *   video-player.js (videoPlayerHtml) — opcional, usa fallback si no está
- *   tab.css, file-upload.css, video-recurso-modal.css
+ *   tab.css, file-upload.css, checkbox.css, video-recurso-modal.css
+ *   Avatares: ../../images/avatars/* · previews opcionales: ../../videos/avatars/{mismo-base-que-foto}.mp4
+ *   Contexto tema del guión: textarea nativa `.ai-panel__input` dentro de `ai-panel__input-box` (como SCORM). Guión: createInput textarea.
  */
 (function (global) {
     'use strict';
@@ -16,12 +18,17 @@
 
     var VIDEO_GUION_IA_TOKEN_COST = 2;
     var VIDEO_GEN_TOKEN_COST      = 20;
+    /** Guión para «Generar video»: longitud mínima/máxima (coincide con contador createInput). */
+    var VIDEO_GUION_MIN_CHARS = 500;
+    var VIDEO_GUION_MAX_CHARS = 1200;
 
+    /* ══════════════════════════════════════
+       TOKEN HELPERS
+    ══════════════════════════════════════ */
     function getVideoAiTokens() {
         return global._ubitsAiTokenPool != null ? global._ubitsAiTokenPool : 50;
     }
 
-    /** Sincroniza el badge de tokens del header del modal de video (además del pool global). */
     function syncVideoModalTokensBadge() {
         var n = getVideoAiTokens();
         var el = document.getElementById('cc-video-modal-tokens-badge');
@@ -31,9 +38,6 @@
         el.setAttribute('aria-label', String(n) + ' tokens restantes');
     }
 
-    /**
-     * Descuenta tokens como evaluaciones / portada: pool global + badge del panel IA + badge del modal video.
-     */
     function trySpendVideoAiTokens(cost) {
         var cur = getVideoAiTokens();
         if (cur < cost) {
@@ -53,153 +57,234 @@
         return true;
     }
 
-    function emitRecursosChanged(detail) {
-        try {
-            document.dispatchEvent(new CustomEvent('ubits-recursos-changed', { detail: detail || {} }));
-        } catch (e) { /* noop */ }
-    }
-
-    function refreshStep2TokenButtons() {
-        var g = getVideoAiTokens();
-        var genGuion = document.getElementById('cc-via-btn-gen-guion');
-        var genVid = document.getElementById('cc-via-btn-generar');
-        var ta = document.getElementById('cc-via-guion-ta');
-        var scriptOk = ta && String(ta.value || '').trim().length > 0;
-        if (genGuion) {
-            genGuion.disabled = g < VIDEO_GUION_IA_TOKEN_COST;
-            if (g < VIDEO_GUION_IA_TOKEN_COST) {
-                genGuion.setAttribute(
-                    'title',
-                    'No tienes suficientes tokens (' + VIDEO_GUION_IA_TOKEN_COST + ' requeridos).'
-                );
-            } else {
-                genGuion.removeAttribute('title');
-            }
-        }
-        if (genVid) {
-            genVid.disabled = !scriptOk || g < VIDEO_GEN_TOKEN_COST;
-            if (scriptOk && g < VIDEO_GEN_TOKEN_COST) {
-                genVid.setAttribute('title', 'No tienes suficientes tokens (' + VIDEO_GEN_TOKEN_COST + ' requeridos).');
-            } else {
-                genVid.removeAttribute('title');
-            }
-        }
-    }
-
-    /* ── Estado del modal ── */
-    var _onVideoReady   = null;   // callback(html) → html del bloque renderizado
+    /* ══════════════════════════════════════
+       ESTADO DEL MODAL
+    ══════════════════════════════════════ */
+    var _onVideoReady   = null;
     var _currentPageKey = null;
     var _currentTab     = 'ia';
-    var _iaStep         = 1;
     var _selectedAvatar = null;
     var _guionText      = '';
     var _enlaceValue    = '';
     var _enlaceValid    = false;
     var _fileBlob       = null;
     var _fileBlobUrl    = null;
+    var _logoDataUrl    = null;
+    var _pendingFiles   = [];
+    var _currentCat     = 'staff';
+    /** API createInput (textarea guión); contexto tema = textarea nativa .ai-panel__input como SCORM. */
+    var _guionInputApi   = null;
 
     /* ══════════════════════════════════════
-       DATOS: 50 AVATARES
+       DATOS: AVATARES (images/avatars) + CATEGORÍAS
+       Prefijos en nombre de archivo → categoría del selector:
+       agro, serv, cons, ener, gob, ind, prop, ret, sal, fin, tech, log, sec, host, staff, urb
+       Patrón: {prefijo}_{f|m}{edad}_{nombre}[.jpg]  (f/m y edad solo para catálogo; la imagen es la fuente de verdad)
     ══════════════════════════════════════ */
-    var AVATARS = [
-        { id:  1, name: 'Andrea',     g: 'women', n: 1  },
-        { id:  2, name: 'Carlos',     g: 'men',   n: 1  },
-        { id:  3, name: 'Sofía',      g: 'women', n: 2  },
-        { id:  4, name: 'Miguel',     g: 'men',   n: 2  },
-        { id:  5, name: 'Emily',      g: 'women', n: 3  },
-        { id:  6, name: 'Rodrigo',    g: 'men',   n: 3  },
-        { id:  7, name: 'Valentina',  g: 'women', n: 4  },
-        { id:  8, name: 'Diego',      g: 'men',   n: 4  },
-        { id:  9, name: 'María',      g: 'women', n: 5  },
-        { id: 10, name: 'Sebastián',  g: 'men',   n: 5  },
-        { id: 11, name: 'Camila',     g: 'women', n: 6  },
-        { id: 12, name: 'Andrés',     g: 'men',   n: 6  },
-        { id: 13, name: 'Isabella',   g: 'women', n: 7  },
-        { id: 14, name: 'Felipe',     g: 'men',   n: 7  },
-        { id: 15, name: 'Natalia',    g: 'women', n: 8  },
-        { id: 16, name: 'Mateo',      g: 'men',   n: 8  },
-        { id: 17, name: 'Daniela',    g: 'women', n: 9  },
-        { id: 18, name: 'Alejandro',  g: 'men',   n: 9  },
-        { id: 19, name: 'Paula',      g: 'women', n: 10 },
-        { id: 20, name: 'Julián',     g: 'men',   n: 10 },
-        { id: 21, name: 'Laura',      g: 'women', n: 11 },
-        { id: 22, name: 'Santiago',   g: 'men',   n: 11 },
-        { id: 23, name: 'Gabriela',   g: 'women', n: 12 },
-        { id: 24, name: 'Tomás',      g: 'men',   n: 12 },
-        { id: 25, name: 'Sara',       g: 'women', n: 13 },
-        { id: 26, name: 'Nicolás',    g: 'men',   n: 13 },
-        { id: 27, name: 'Mariana',    g: 'women', n: 14 },
-        { id: 28, name: 'Samuel',     g: 'men',   n: 14 },
-        { id: 29, name: 'Fernanda',   g: 'women', n: 15 },
-        { id: 30, name: 'Roberto',    g: 'men',   n: 15 },
-        { id: 31, name: 'Luciana',    g: 'women', n: 16 },
-        { id: 32, name: 'Esteban',    g: 'men',   n: 16 },
-        { id: 33, name: 'Renata',     g: 'women', n: 17 },
-        { id: 34, name: 'Cristian',   g: 'men',   n: 17 },
-        { id: 35, name: 'Ana',        g: 'women', n: 18 },
-        { id: 36, name: 'Manuel',     g: 'men',   n: 18 },
-        { id: 37, name: 'Stephanie',  g: 'women', n: 19 },
-        { id: 38, name: 'Rafael',     g: 'men',   n: 19 },
-        { id: 39, name: 'Claudia',    g: 'women', n: 20 },
-        { id: 40, name: 'Javier',     g: 'men',   n: 20 },
-        { id: 41, name: 'Patricia',   g: 'women', n: 21 },
-        { id: 42, name: 'Leonardo',   g: 'men',   n: 21 },
-        { id: 43, name: 'Marcela',    g: 'women', n: 22 },
-        { id: 44, name: 'Guillermo',  g: 'men',   n: 22 },
-        { id: 45, name: 'Verónica',   g: 'women', n: 23 },
-        { id: 46, name: 'Fernando',   g: 'men',   n: 23 },
-        { id: 47, name: 'Lorena',     g: 'women', n: 24 },
-        { id: 48, name: 'Álvaro',     g: 'men',   n: 24 },
-        { id: 49, name: 'Ana María',  g: 'women', n: 25 },
-        { id: 50, name: 'Héctor',     g: 'men',   n: 25 },
-    ];
-
-    /* YouTube IDs para preview (cycling) — embeds estables; algunos TED viejos dejan de permitir embed */
-    var PREVIEW_IDS = [
-        'UF8uR6Z6KLc',   // Stanford — Steve Jobs (embed estable)
-        'iG9CE55wbtY',   // Simon Sinek
-        '8S0FDjFBj8o',   // Brené Brown
-        'nnR0fzM8BiA',   // Susan Cain — TED (embed estable)
-        '_mG-hhWL_ug',   // Amy Cuddy
-        'UyyjU8fzEYU',   // Shawn Achor
-        'H14bBuluwB8',   // Malcolm Gladwell
-        'eIho2S0ZahI',   // Tim Urban
-        'RcGyVTAoXEU',   // Carol Dweck
-        'lmyZMtPVodo',   // Kelly McGonigal
-    ];
-
-    /**
-     * Previews que fallaban con el ciclo por índice (IDs rotos o embed deshabilitado).
-     * Andrea, Miguel, Camila, Felipe, Laura, Tomás, Luciana, Cristian, Patricia, Guillermo.
-     */
-    var PREVIEW_ID_OVERRIDE_BY_AVATAR_ID = {
-        1:  'UF8uR6Z6KLc',  // Andrea — Stanford / Jobs
-        4:  'nnR0fzM8BiA',  // Miguel — Susan Cain TED
-        11: 'aqz-KE-bpKQ',  // Camila — Big Buck Bunny (Blender, embed fiable)
-        14: 'eRsGyueVLvQ',  // Felipe — Sintel (Blender)
-        21: 'RnrKZnT56iY',  // Laura — Tears of Steel (Blender)
-        24: 'jNQXAC9IVRw',  // Tomás — primer video YouTube (siempre embeddable)
-        31: 'ScMzIvxwBn8',  // Luciana — clip de prueba habitual embed
-        34: 'y8Yv4pnO7qc',  // Cristian — TED-Ed típico embeddable
-        41: 'I7g1m-eDgCE',  // Patricia — charla pública estable
-        44: 'dGCctGr0Hu8',  // Guillermo — TED corto embeddable
+    var PREFIX_TO_CAT = {
+        agro: 'agro',
+        serv: 'servicios',
+        cons: 'consumo',
+        ener: 'energia',
+        gob: 'gobierno',
+        ind: 'industria',
+        prop: 'propiedad',
+        ret: 'retail',
+        sal: 'salud',
+        fin: 'seguros',
+        tech: 'tech',
+        log: 'transporte',
+        sec: 'seguridad',
+        host: 'hosteleria',
+        staff: 'staff',
+        urb: 'creatividad'
     };
 
+    /** Archivos en images/avatars (orden alfabético; coincide con `ls | sort`). */
+    var AVATAR_FILES_SORTED = [
+        'agro_f27_helena.jpg',
+        'agro_f45_marta.jpg',
+        'agro_m27_juan.jpg',
+        'agro_m45_roberto.jpg',
+        'cons_f27_sofia.jpg',
+        'cons_f45_lucia.jpg',
+        'cons_m27_luis.jpg',
+        'cons_m45_fernando.jpg',
+        'ener_f27_valentina.jpg',
+        'ener_f45_gabriela.jpg',
+        'ener_m27_diego.jpg',
+        'ener_m45_javier.jpg',
+        'fin_f27_andrea.jpg',
+        'fin_f45_beatriz.jpg',
+        'fin_m27_lucas.jpg',
+        'fin_m45_joaquin.jpg',
+        'gob_f27_isabella.jpg',
+        'gob_f45_carmen.jpg',
+        'gob_m27_mateo.jpg',
+        'gob_m45_francisco.jpg',
+        'host_f27_blanca.jpg',
+        'host_m27_raul.jpg',
+        'ind_f27_camila.jpg',
+        'ind_f45_victoria.jpg',
+        'ind_m27_alejandro.jpg',
+        'ind_m45_eduardo.jpg',
+        'log_f27_julieta.jpg',
+        'log_f45_silvia.jpg',
+        'log_m27_rodrigo.jpg',
+        'log_m45_manuel.jpg',
+        'prop_f27_mariana.jpg',
+        'prop_f45_paula.jpg',
+        'prop_m27_santiago.jpg',
+        'prop_m45_hugo.jpg',
+        'ret_f27_martina.jpg',
+        'ret_f45_daniela.jpg',
+        'ret_m27_leonardo.jpg',
+        'ret_m45_miguel.jpg',
+        'sal_f27_natalia.jpg',
+        'sal_f45_claudia.jpg',
+        'sal_m27_gabriel.jpg',
+        'sal_m45_arturo.jpg',
+        'sec_f35_rosa.jpg',
+        'sec_m35_alberto.jpg',
+        'serv_f27_ana.jpg',
+        'serv_f45_patricia.jpg',
+        'serv_m27_carlos.jpg',
+        'serv_m45_ricardo.jpg',
+        'staff_f23_antonia.jpg',
+        'staff_f30_alicia.jpg',
+        'staff_f30_monica.jpg',
+        'staff_f32_maria.jpg',
+        'staff_f35_graciela.jpg',
+        'staff_m23_benjamin.jpg',
+        'staff_m30_esteban.jpg',
+        'staff_m30_rafael.jpg',
+        'staff_m32_jorge.jpg',
+        'staff_m35_david.jpg',
+        'tech_f27_sara.jpg',
+        'tech_f45_fernanda.jpg',
+        'tech_m27_felipe.jpg',
+        'tech_m45_gonzalo.jpg',
+        'urb_f27_lorena.jpg',
+        'urb_m27_oscar.jpg',
+        'urb_m30_enrique.jpg',
+        'urb_m30_julian.jpg'
+    ];
+
+    function buildAvatarsCatalog() {
+        return AVATAR_FILES_SORTED.map(function (file, i) {
+            var base = file.replace(/\.(jpe?g|png|webp)$/i, '');
+            var m = /^([a-z]+)_([fm])(\d+)_(.+)$/.exec(base);
+            if (!m) {
+                throw new Error('[video-recurso-modal] Nombre de avatar inválido: ' + file);
+            }
+            var prefix = m[1];
+            var cat = PREFIX_TO_CAT[prefix];
+            if (!cat) {
+                throw new Error('[video-recurso-modal] Prefijo de categoría desconocido: ' + prefix + ' (' + file + ')');
+            }
+            var rawName = m[4];
+            var label = rawName.charAt(0).toUpperCase() + rawName.slice(1);
+            return {
+                id: i + 1,
+                cat: cat,
+                file: file,
+                label: label,
+                gender: m[2],
+                age: parseInt(m[3], 10)
+            };
+        });
+    }
+
+    var AVATARS = buildAvatarsCatalog();
+
+    var CATEGORY_ORDER = [
+        { id: 'staff', label: 'Staff & Oficina' },
+        { id: 'agro', label: 'Agroindustria' },
+        { id: 'servicios', label: 'Compañía de Servicios' },
+        { id: 'consumo', label: 'Consumo Masivo' },
+        { id: 'creatividad', label: 'Creatividad' },
+        { id: 'energia', label: 'Energía & Minería' },
+        { id: 'gobierno', label: 'Gobierno' },
+        { id: 'hosteleria', label: 'Hostelería' },
+        { id: 'industria', label: 'Industria & Manufactura' },
+        { id: 'propiedad', label: 'Propiedad & Construcción' },
+        { id: 'retail', label: 'Retail' },
+        { id: 'salud', label: 'Salud & Farmacéuticos' },
+        { id: 'seguridad', label: 'Seguridad' },
+        { id: 'seguros', label: 'Seguros & Finanzas' },
+        { id: 'tech', label: 'Tecnología' },
+        { id: 'transporte', label: 'Transporte & Logística' }
+    ];
+
+    function countAvatarsByCategory() {
+        var counts = {};
+        AVATARS.forEach(function (a) {
+            counts[a.cat] = (counts[a.cat] || 0) + 1;
+        });
+        return counts;
+    }
+
+    var _avatarCatCounts = countAvatarsByCategory();
+    var CATEGORIES = CATEGORY_ORDER.map(function (c) {
+        return { id: c.id, label: c.label, count: _avatarCatCounts[c.id] || 0 };
+    }).concat([{ id: 'all', label: 'Todos', count: AVATARS.length }]);
+
+    /* YouTube IDs para preview (cycling) — usados en avatarVideoId / startWidgetJob */
+    var PREVIEW_IDS = [
+        'UF8uR6Z6KLc',
+        'iG9CE55wbtY',
+        '8S0FDjFBj8o',
+        'nnR0fzM8BiA',
+        '_mG-hhWL_ug',
+        'UyyjU8fzEYU',
+        'H14bBuluwB8',
+        'eIho2S0ZahI',
+        'RcGyVTAoXEU',
+        'lmyZMtPVodo',
+    ];
+
+    /* ══════════════════════════════════════
+       AVATAR HELPERS
+    ══════════════════════════════════════ */
+    var AVATAR_IMG_BASE = '../../images/avatars/';
+    /** Base name (sin extensión) de avatar con archivo en ../../videos/avatars/{base}.mp4 — ampliar al subir nuevos previews. */
+    var AVATAR_PREVIEW_VIDEO_BASES = [
+        'staff_f23_antonia',
+        'staff_f32_maria',
+        'staff_f30_monica',
+        'staff_f35_graciela',
+        'staff_m23_benjamin',
+        'staff_m30_rafael',
+        'staff_m30_esteban',
+        'staff_m32_jorge',
+        'staff_m35_david'
+    ];
+
+    var AVATAR_VIDEO_BASE = '../../videos/avatars/';
+
     function avatarImg(av) {
-        return 'https://randomuser.me/api/portraits/' + av.g + '/' + av.n + '.jpg';
+        return AVATAR_IMG_BASE + av.file;
     }
+
+    function avatarFileBasename(av) {
+        return String(av.file || '').replace(/\.(jpe?g|png|webp)$/i, '');
+    }
+
+    function avatarHasPreviewMp4(av) {
+        return AVATAR_PREVIEW_VIDEO_BASES.indexOf(avatarFileBasename(av)) !== -1;
+    }
+
+    function avatarPreviewMp4Src(av) {
+        if (!avatarHasPreviewMp4(av)) return null;
+        return AVATAR_VIDEO_BASE + avatarFileBasename(av) + '.mp4';
+    }
+
     function avatarVideoId(av) {
-        if (av && PREVIEW_ID_OVERRIDE_BY_AVATAR_ID[av.id]) {
-            return PREVIEW_ID_OVERRIDE_BY_AVATAR_ID[av.id];
-        }
         return PREVIEW_IDS[(av.id - 1) % PREVIEW_IDS.length];
-    }
-    function avatarPreviewSrc(av) {
-        return 'https://www.youtube.com/embed/' + avatarVideoId(av) + '?rel=0&modestbranding=1';
     }
 
     /* ══════════════════════════════════════
-       HELPERS
+       HELPERS GENÉRICOS
     ══════════════════════════════════════ */
     function esc(s) {
         if (s == null) return '';
@@ -211,11 +296,11 @@
     function isValidVideoUrl(url) {
         var v = String(url || '').trim();
         if (!v) return false;
-        return v.indexOf('vimeo.com')           !== -1 ||
-               v.indexOf('youtube.com')         !== -1 ||
-               v.indexOf('youtu.be')            !== -1 ||
-               v.indexOf('drive.google.com')    !== -1 ||
-               v.indexOf('onedrive.live.com')   !== -1;
+        return v.indexOf('vimeo.com')          !== -1 ||
+               v.indexOf('youtube.com')        !== -1 ||
+               v.indexOf('youtu.be')           !== -1 ||
+               v.indexOf('drive.google.com')   !== -1 ||
+               v.indexOf('onedrive.live.com')  !== -1;
     }
 
     function buildEmbedSrc(url) {
@@ -235,10 +320,10 @@
 
     function embedType(url) {
         var v = String(url || '');
-        if (v.indexOf('vimeo.com')        !== -1) return 'vimeo';
-        if (v.indexOf('youtube.com')      !== -1 || v.indexOf('youtu.be') !== -1) return 'youtube';
-        if (v.indexOf('drive.google.com') !== -1) return 'google-drive';
-        if (v.indexOf('onedrive.live.com')!== -1) return 'onedrive';
+        if (v.indexOf('vimeo.com')         !== -1) return 'vimeo';
+        if (v.indexOf('youtube.com')       !== -1 || v.indexOf('youtu.be') !== -1) return 'youtube';
+        if (v.indexOf('drive.google.com')  !== -1) return 'google-drive';
+        if (v.indexOf('onedrive.live.com') !== -1) return 'onedrive';
         return 'html5';
     }
 
@@ -264,12 +349,20 @@
             blockOpts.aiGenerated && typeof global.getGeneradoConIaBadgeHtml === 'function'
                 ? '<div class="cc-video-resource__generado-ia-host">' + global.getGeneradoConIaBadgeHtml() + '</div>'
                 : '';
+        var logoSrc = blockOpts.logoSrc || blockOpts.logoDataUrl || '';
+        var logoOverlay =
+            logoSrc
+                ? '<div class="cc-video-resource__logo-overlay" aria-hidden="true">' +
+                    '<img src="' + esc(logoSrc) + '" alt="">' +
+                    '</div>'
+                : '';
         return (
             '<div class="ubits-resources-block ubits-resources-block--stack">' +
                 '<div class="ubits-resources-block__surface cc-video-resource__surface" style="padding:0;">' +
                     '<div class="cc-video-resource__player-wrap">' +
                     aiHost +
                     buildPlayerHtml(type, src, isLocal) +
+                    logoOverlay +
                     '</div>' +
                 '</div>' +
                 '<div class="ubits-resources-block__footer">' +
@@ -282,172 +375,145 @@
     }
 
     /* ══════════════════════════════════════
-       GENERADOR DE GUION (simulado)
+       GENERADOR DE GUIÓN (simulado)
     ══════════════════════════════════════ */
-    function generateGuion(tema) {
-        var t   = String(tema  || 'este tema').trim();
-        var nom = _selectedAvatar ? _selectedAvatar.name : 'el presentador';
+    function generateGuion() {
+        var nom = 'el presentador';
+        var t = 'Comunicación para desescalar conflictos en el trabajo';
         var txt = (
-            'Hola, soy ' + nom + ' y hoy te hablaré sobre ' + t + '.\n\n' +
-            'En el entorno actual, ' + t + ' ha tomado un papel protagónico tanto en el ámbito ' +
-            'profesional como en el personal. Las organizaciones líderes reconocen su valor y están ' +
-            'invirtiendo para incorporarlo de manera estratégica en sus procesos.\n\n' +
-            'Para entender el impacto de ' + t + ', analicemos tres dimensiones clave:\n\n' +
-            '1. Contexto actual: las tendencias globales están redefiniendo la forma en que trabajamos, ' +
-            'aprendemos y nos relacionamos. ' + t + ' es parte central de esta transformación.\n\n' +
-            '2. Impacto humano: las personas que desarrollan competencias en ' + t + ' reportan mayor ' +
-            'confianza, mejores resultados y más oportunidades de crecimiento. No se trata solo de ' +
-            'conocimiento técnico, sino de una mentalidad que se cultiva con práctica y reflexión.\n\n' +
-            '3. Dimensión estratégica: las organizaciones que integran ' + t + ' en su cultura ven ' +
-            'mejoras medibles en compromiso, retención de talento y desempeño. Los datos son claros.\n\n' +
-            'Mi invitación es que reflexiones: ¿cómo puedes aplicar hoy lo que aprendiste sobre ' + t + '? ' +
-            'El cambio comienza con un primer paso. ¡Muchas gracias y hasta la próxima!'
+            'Hola, soy ' + nom + ' y hoy hablaremos de ' + t + '.\n\n' +
+            'Cuando una conversación sube de tono, lo primero es bajar la intensidad sin “ganar” la discusión. ' +
+            'Tu objetivo es recuperar claridad y respeto para poder resolver, no reaccionar.\n\n' +
+            '1) Pausa y regula. Respira, baja el ritmo y evita responder al mismo volumen. Una frase útil es: ' +
+            '“Dame un segundo para entenderte bien”.\n\n' +
+            '2) Nombra lo que ves sin acusar. Usa observaciones neutrales: “Siento tensión en esta conversación” ' +
+            'en lugar de “Tú siempre…”.\n\n' +
+            '3) Valida la emoción, no el ataque. “Entiendo que esto te frustra” abre la puerta. Validar no es ceder.\n\n' +
+            '4) Haz preguntas que desescalen. “¿Qué es lo más importante para ti ahora?” “¿Qué resultado te gustaría?”\n\n' +
+            '5) Reformula y alinea. Resume en una frase y confirma: “Entonces, tu preocupación principal es… ¿es correcto?”.\n\n' +
+            '6) Propón un siguiente paso pequeño. “Hagamos dos opciones y elegimos una” o “Acordemos un experimento esta semana”.\n\n' +
+            'Cierra con un compromiso claro: quién hace qué y para cuándo. Con práctica, estas micro-habilidades convierten ' +
+            'momentos tensos en conversaciones productivas.'
         );
-        return txt.length > 1700 ? txt.slice(0, 1697) + '...' : txt;
+        return txt.length > VIDEO_GUION_MAX_CHARS ? txt.slice(0, VIDEO_GUION_MAX_CHARS - 3) + '...' : txt;
     }
 
     /* ══════════════════════════════════════
-       CONSTRUIR HTML DEL MODAL
+       CONSTRUIR HTML — PANEL IA
     ══════════════════════════════════════ */
-    function buildTabBar() {
-        return (
-            '<div id="cc-vmodal-tabbar" class="cc-vmodal-tabbar" role="tablist">' +
-                '<div class="cc-vmodal-tabbar__group">' +
-                    '<button type="button" class="ubits-tab ubits-tab--sm ubits-tab--active" role="tab" aria-selected="true" data-cc-vtab="ia">' +
-                        '<span>Video IA</span>' +
-                    '</button>' +
-                    '<button type="button" class="ubits-tab ubits-tab--sm" role="tab" aria-selected="false" data-cc-vtab="enlace">' +
-                        '<span>Enlace de video</span>' +
-                    '</button>' +
-                    '<button type="button" class="ubits-tab ubits-tab--sm" role="tab" aria-selected="false" data-cc-vtab="subir">' +
-                        '<span>Subir video</span>' +
-                    '</button>' +
-                '</div>' +
-            '</div>'
-        );
-    }
-
-    function buildStepperHtml(active) {
-        /* Siempre número en el círculo (componente stepper: --done muestra número, no check en <i>). */
-        function step(num, label, state) {
-            var markClass = 'ubits-stepper__mark';
-            var stepClass = 'ubits-stepper__step ubits-stepper__step--' + state;
-            var a11y =
-                num === 1 && state === 'done'
-                    ? ' tabindex="0" role="button" aria-label="Volver a seleccionar avatar"'
-                    : '';
-            return (
-                '<li class="' + stepClass + '"' + a11y + '>' +
-                    '<div class="' + markClass + '">' +
-                        '<span class="ubits-stepper__mark-num">' + num + '</span>' +
-                    '</div>' +
-                    '<span class="ubits-stepper__label ubits-body-sm-regular">' + label + '</span>' +
-                '</li>'
-            );
-        }
-        return (
-            '<div class="cc-vmodal-stepper-wrap' + (active === 2 ? ' cc-via-stepper--step2-active' : '') + '">' +
-                '<ol class="ubits-stepper ubits-stepper--horizontal ubits-stepper--horizontal-compact">' +
-                    step(1, 'Seleccionar avatar', active === 1 ? 'active' : 'done') +
-                    '<li class="ubits-stepper__rail" aria-hidden="true"></li>' +
-                    step(2, 'Definir guion', active === 2 ? 'active' : 'pending') +
-                '</ol>' +
-            '</div>'
-        );
-    }
-
-    function buildAvatarGridHtml() {
-        return AVATARS.map(function (av) {
+    function buildAvatarGridItemsHtml(cat) {
+        var list = (!cat || cat === 'all') ? AVATARS : AVATARS.filter(function (av) { return av.cat === cat; });
+        return list.map(function (av) {
             var sel = _selectedAvatar && _selectedAvatar.id === av.id;
-            return (
-                '<button type="button" class="cc-via-avatar-card' + (sel ? ' cc-via-avatar-card--selected' : '') + '"' +
-                    ' data-avatar-id="' + av.id + '" aria-pressed="' + (sel ? 'true' : 'false') + '">' +
-                    '<div class="cc-via-avatar-photo">' +
-                        '<img src="' + avatarImg(av) + '" alt="' + esc(av.name) + '" loading="lazy" width="48" height="48">' +
-                    '</div>' +
-                    '<span class="cc-via-avatar-name">' + esc(av.name) + '</span>' +
-                '</button>'
-            );
+            return '<div role="button" tabindex="0" class="cc-vm-avatar-card' + (sel ? ' cc-vm-avatar-card--selected' : '') + '" ' +
+                'data-avatar-id="' + av.id + '" aria-pressed="' + (sel ? 'true' : 'false') + '" ' +
+                'aria-label="' + esc(av.label) + '">' +
+                '<span class="cc-vm-avatar-card__checkbox" aria-hidden="true">' +
+                    '<span class="ubits-checkbox ubits-checkbox--sm">' +
+                        '<input type="checkbox" class="ubits-checkbox__input" tabindex="-1" ' + (sel ? 'checked ' : '') + '>' +
+                        '<span class="ubits-checkbox__box"><i class="far fa-check"></i></span>' +
+                    '</span>' +
+                '</span>' +
+                '<img src="' + avatarImg(av) + '" alt="' + esc(av.label) + '" loading="lazy">' +
+            '</div>';
         }).join('');
     }
 
-    function buildStep1Html() {
-        var av  = _selectedAvatar || AVATARS[0];
-        return (
-            '<div class="cc-via-step" id="cc-via-step1">' +
-                '<div class="cc-via-avatar-layout">' +
-                    '<div class="cc-via-avatar-left">' +
-                        '<div id="cc-via-search-wrap" class="cc-via-search-wrap"></div>' +
-                        '<div class="cc-via-avatar-grid" id="cc-via-grid">' +
-                            buildAvatarGridHtml() +
-                        '</div>' +
-                    '</div>' +
-                    '<div class="cc-via-avatar-right">' +
-                        '<div class="cc-via-preview-column">' +
-                            '<div class="cc-via-preview-frame">' +
-                                '<iframe id="cc-via-preview-iframe"' +
-                                    ' src="' + avatarPreviewSrc(av) + '"' +
-                                    ' frameborder="0"' +
-                                    ' allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture"' +
-                                    ' allowfullscreen' +
-                                    ' title="Vista previa de ' + esc(av.name) + '">' +
-                                '</iframe>' +
-                            '</div>' +
-                            '<p class="ubits-body-xs-regular cc-via-preview-hint">Vista previa representativa. El video final usará tu guion</p>' +
-                            '<button type="button" class="ubits-button ubits-button--primary ubits-button--md" id="cc-via-btn-siguiente">' +
-                                '<span>Siguiente</span>' +
-                            '</button>' +
-                        '</div>' +
-                    '</div>' +
-                '</div>' +
-            '</div>'
-        );
-    }
-
-    function buildStep2Html() {
-        var n = _guionText.length;
-        return (
-            '<div class="cc-via-step cc-via-step--hidden" id="cc-via-step2">' +
-                '<div class="cc-via-guion-layout">' +
-                    '<div class="cc-via-guion-ia-row">' +
-                        '<div id="cc-via-tema-wrap" class="cc-via-tema-wrap"></div>' +
-                        '<button type="button" class="ubits-button ubits-button--secondary ubits-button--md ubits-button--with-token-cost" id="cc-via-btn-gen-guion">' +
-                            '<span class="ubits-button__token-cost" aria-hidden="true">' +
-                                '<span class="ubits-button__token-number">' + String(VIDEO_GUION_IA_TOKEN_COST) + '</span>' +
-                                '<i class="far fa-coin-vertical"></i>' +
-                            '</span>' +
-                            '<span class="cc-via-btn-label">Generar guion con IA</span>' +
-                        '</button>' +
-                    '</div>' +
-                    '<div class="cc-via-guion-editor-wrap">' +
-                        '<textarea class="cc-via-guion-textarea" id="cc-via-guion-ta" maxlength="1700"' +
-                            ' placeholder="Escribe el guion que dirá el avatar. Máximo 1 700 caracteres."' +
-                            ' aria-label="Guion del avatar">' + esc(_guionText) + '</textarea>' +
-                        '<div class="cc-via-guion-counter"><span id="cc-via-char-count">' + n + '</span> / 1 700</div>' +
-                    '</div>' +
-                    '<div class="cc-via-guion-generar-wrap">' +
-                        '<button type="button" class="ubits-button ubits-button--primary ubits-button--md ubits-button--with-token-cost" id="cc-via-btn-generar"' +
-                            (n > 0 ? '' : ' disabled') + '>' +
-                            '<span class="ubits-button__token-cost" aria-hidden="true">' +
-                                '<span class="ubits-button__token-number">' + String(VIDEO_GEN_TOKEN_COST) + '</span>' +
-                                '<i class="far fa-coin-vertical"></i>' +
-                            '</span>' +
-                            '<span class="cc-via-btn-label">Generar video</span>' +
-                        '</button>' +
-                    '</div>' +
-                '</div>' +
-            '</div>'
-        );
-    }
-
     function buildIaPanel() {
-        return (
-            '<div class="cc-vmodal-panel" id="cc-vtab-ia">' +
-                buildStepperHtml(1) +
-                buildStep1Html() +
-                buildStep2Html() +
-            '</div>'
-        );
+        var av = _selectedAvatar || AVATARS[0];
+        var avSrc = avatarImg(av);
+        var mp4 = avatarPreviewMp4Src(av);
+        var hasVid = !!mp4;
+        var stageClass = 'cc-vm-preview-stage' + (hasVid ? '' : ' cc-vm-preview-stage--placeholder');
+
+        return '<div class="cc-vmodal-panel" id="cc-vtab-ia">' +
+            '<div class="cc-vm-ia-layout">' +
+
+                // ── Left column ──
+                '<div class="cc-vm-left-col">' +
+
+                    // Section 1: Avatar
+                    '<div class="cc-vm-section">' +
+                        '<div class="cc-vm-avatar-header">' +
+                            '<span class="cc-vm-avatar-header-label ubits-body-sm-semibold" style="color:var(--ubits-fg-1-medium);">Avatar</span>' +
+                            '<div id="cc-vm-cat-select-wrap" style="width:200px;"></div>' +
+                        '</div>' +
+                        '<div class="cc-vm-avatar-grid" id="cc-vm-grid">' +
+                            buildAvatarGridItemsHtml(_currentCat) +
+                        '</div>' +
+                    '</div>' +
+
+                    '<div class="cc-vm-section-divider"></div>' +
+
+                    // Section 2: Guión
+                    '<div class="cc-vm-section">' +
+                        '<p class="cc-vm-section-label">Guión</p>' +
+                        // IA input-box (always visible, no mini-tabs)
+                        '<div class="ubits-ia-chat-thread__input-area">' +
+                            '<div class="ai-panel__input-box" id="cc-vm-ia-input-box">' +
+                                '<input type="file" id="cc-vm-files" accept=".txt,.pdf,.doc,.docx,text/plain,application/pdf" multiple hidden>' +
+                                '<div class="ai-panel__pending-files-strip" id="cc-vm-pending-files" style="display:none;"></div>' +
+                                '<textarea id="cc-vm-context-input" class="ai-panel__input ubits-body-md-regular" rows="2" placeholder="Adjunta un archivo o describe el tema del guión"></textarea>' +
+                                '<div class="ai-panel__input-actions">' +
+                                    '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only ai-panel__attach-btn" id="cc-vm-attach" aria-label="Adjuntar">' +
+                                        '<i class="far fa-plus"></i>' +
+                                    '</button>' +
+                                    '<button type="button" class="ubits-button ubits-button--primary ubits-button--sm ubits-button--with-token-cost" id="cc-vm-btn-gen-guion">' +
+                                        '<span class="ubits-button__token-cost" aria-hidden="true">' +
+                                            '<span class="ubits-button__token-number">' + VIDEO_GUION_IA_TOKEN_COST + '</span>' +
+                                            '<i class="far fa-coin-vertical"></i>' +
+                                        '</span>' +
+                                        '<span id="cc-vm-gen-guion-label">Generar guión</span>' +
+                                    '</button>' +
+                                '</div>' +
+                            '</div>' +
+                        '</div>' +
+                        // Guión: Input UBITS textarea + contador (createInput)
+                        '<div class="cc-vm-guion-editor-wrap">' +
+                            '<div id="cc-vm-guion-create-input-wrap" class="cc-vm-guion-input-mount"></div>' +
+                        '</div>' +
+                    '</div>' +
+
+                    '<div class="cc-vm-section-divider"></div>' +
+
+                    // Section 3: Logo
+                    '<div class="cc-vm-section">' +
+                        '<p class="cc-vm-section-label">Logo de empresa <span class="cc-vm-optional">(opcional)</span></p>' +
+                        '<div class="cc-vm-logo-row">' +
+                            '<input type="file" accept="image/png,.png" id="cc-vm-logo-file" tabindex="-1" aria-hidden="true" style="display:none">' +
+                            '<button type="button" class="ubits-button ubits-button--secondary" id="cc-vm-logo-drop-zone">' +
+                                '<i class="far fa-image" aria-hidden="true"></i>' +
+                                '<span>Subir logo PNG</span>' +
+                            '</button>' +
+                            '<div id="cc-vm-logo-chip-wrap"></div>' +
+                        '</div>' +
+                    '</div>' +
+
+                '</div>' +
+
+                // ── Right column: avatar preview stage ──
+                '<div class="cc-vm-right-col">' +
+                    '<p class="cc-via-preview-hint">Vista previa orientativa. El video final usará tu guión y avatar seleccionado.</p>' +
+                    '<div class="' + stageClass + '" id="cc-vm-preview-stage">' +
+                        '<img id="cc-vm-av-bg" class="cc-vm-av-bg" src="' + avSrc + '" alt="">' +
+                        '<video id="cc-vm-av-preview-video" class="cc-vm-av-preview-video" playsinline controls preload="metadata" ' +
+                            'poster="' + esc(avSrc) + '" ' +
+                            (hasVid ? 'src="' + esc(mp4) + '" ' : '') +
+                            'style="display:' + (hasVid ? 'block' : 'none') + '"></video>' +
+                        '<img id="cc-vm-av-portrait" class="cc-vm-av-portrait" src="' + avSrc + '" alt=""' +
+                            (hasVid ? ' style="display:none"' : '') + '>' +
+                        '<div class="cc-vm-preview-unavailable" id="cc-vm-preview-unavailable" role="status" style="display:' + (hasVid ? 'none' : 'flex') + '">' +
+                            '<span class="ubits-body-md-regular cc-vm-preview-unavailable__text">Vista previa de video no disponible aún</span>' +
+                        '</div>' +
+                        '<div class="cc-vm-preview-gradient"></div>' +
+                        '<div class="cc-vm-logo-overlay" id="cc-vm-logo-overlay" style="display:none;">' +
+                            '<img id="cc-vm-logo-preview-img" src="" alt="Logo">' +
+                        '</div>' +
+                    '</div>' +
+                '</div>' +
+
+            '</div>' +
+        '</div>';
     }
 
     function buildEnlacePanel() {
@@ -484,6 +550,24 @@
                     '</button>' +
                     '<button type="button" class="ubits-button ubits-button--primary ubits-button--md" id="cc-vsubir-btn-confirmar" disabled>' +
                         '<i class="far fa-check"></i><span>Usar video</span>' +
+                    '</button>' +
+                '</div>' +
+            '</div>'
+        );
+    }
+
+    function buildTabBar() {
+        return (
+            '<div id="cc-vmodal-tabbar" class="cc-vmodal-tabbar" role="tablist">' +
+                '<div class="cc-vmodal-tabbar__group">' +
+                    '<button type="button" class="ubits-tab ubits-tab--sm ubits-tab--active" role="tab" aria-selected="true" data-cc-vtab="ia">' +
+                        '<span>Video IA</span>' +
+                    '</button>' +
+                    '<button type="button" class="ubits-tab ubits-tab--sm" role="tab" aria-selected="false" data-cc-vtab="enlace">' +
+                        '<span>Enlace de video</span>' +
+                    '</button>' +
+                    '<button type="button" class="ubits-tab ubits-tab--sm" role="tab" aria-selected="false" data-cc-vtab="subir">' +
+                        '<span>Subir video</span>' +
                     '</button>' +
                 '</div>' +
             '</div>'
@@ -529,85 +613,458 @@
         }
     }
 
-    /* ── Paso IA ── */
-    function switchToStep(step) {
-        _iaStep = step;
-        var s1 = document.getElementById('cc-via-step1');
-        var s2 = document.getElementById('cc-via-step2');
-        if (s1) s1.classList.toggle('cc-via-step--hidden', step !== 1);
-        if (s2) s2.classList.toggle('cc-via-step--hidden', step !== 2);
-
-        /* Actualizar stepper */
-        var wrap = document.querySelector('#cc-vtab-ia .cc-vmodal-stepper-wrap');
-        if (wrap) {
-            var tmp = document.createElement('div');
-            tmp.innerHTML = buildStepperHtml(step);
-            var newWrap = tmp.firstElementChild;
-            if (newWrap) wrap.parentNode.replaceChild(newWrap, wrap);
-        }
-        if (step === 2) {
-            initTemaInput();
-            wireStep2Inputs();
-            refreshStep2TokenButtons();
-        }
+    /* ── Botones IA ── */
+    function refreshIaButtons() {
+        var g = getVideoAiTokens();
+        var genGuion = document.getElementById('cc-vm-btn-gen-guion');
+        var genVid   = document.getElementById('cc-vm-btn-generar');
+        if (genGuion) genGuion.disabled = g < VIDEO_GUION_IA_TOKEN_COST;
+        if (genVid)   genVid.disabled   = g < VIDEO_GEN_TOKEN_COST;
     }
 
     /* ── Avatar ── */
-    function selectAvatar(id) {
-        var av = AVATARS.find(function (a) { return a.id === id; });
+    function updatePreviewStage(av) {
         if (!av) return;
-        _selectedAvatar = av;
-        var grid = document.getElementById('cc-via-grid');
-        if (grid) {
-            grid.querySelectorAll('.cc-via-avatar-card').forEach(function (card) {
-                var sel = parseInt(card.getAttribute('data-avatar-id')) === id;
-                card.classList.toggle('cc-via-avatar-card--selected', sel);
-                card.setAttribute('aria-pressed', sel ? 'true' : 'false');
-            });
-        }
-        var iframe = document.getElementById('cc-via-preview-iframe');
-        if (iframe) {
-            iframe.src = avatarPreviewSrc(av);
-            iframe.setAttribute('title', 'Vista previa de ' + av.name);
+        var src = avatarImg(av);
+        var mp4 = avatarPreviewMp4Src(av);
+        var stage = document.getElementById('cc-vm-preview-stage');
+        var bg = document.getElementById('cc-vm-av-bg');
+        var portrait = document.getElementById('cc-vm-av-portrait');
+        var videoEl = document.getElementById('cc-vm-av-preview-video');
+        var unavail = document.getElementById('cc-vm-preview-unavailable');
+
+        if (bg) bg.src = src;
+        if (portrait) portrait.src = src;
+        if (videoEl) videoEl.setAttribute('poster', src);
+
+        if (mp4 && videoEl && stage) {
+            stage.classList.remove('cc-vm-preview-stage--placeholder');
+            if (unavail) unavail.style.display = 'none';
+            if (portrait) portrait.style.display = 'none';
+            videoEl.style.display = 'block';
+            if (videoEl.getAttribute('src') !== mp4) {
+                videoEl.setAttribute('src', mp4);
+            }
+            videoEl.muted = false;
+            videoEl.loop = false;
+            videoEl.load();
+            var p = videoEl.play();
+            if (p && typeof p.catch === 'function') {
+                p.catch(function () { /* autoplay puede bloquearse; el usuario usa controls */ });
+            }
+        } else {
+            if (stage) stage.classList.add('cc-vm-preview-stage--placeholder');
+            if (videoEl) {
+                videoEl.pause();
+                videoEl.removeAttribute('src');
+                videoEl.load();
+                videoEl.style.display = 'none';
+            }
+            if (portrait) portrait.style.display = '';
+            if (unavail) unavail.style.display = '';
         }
     }
 
-    /* ── Filtro de avatares ── */
-    function filterAvatars(q) {
-        var grid = document.getElementById('cc-via-grid');
-        if (!grid) return;
-        grid.querySelectorAll('.cc-via-avatar-card').forEach(function (card) {
-            var nm = (card.querySelector('.cc-via-avatar-name') || {}).textContent || '';
-            card.style.display = (!q || nm.toLowerCase().indexOf(q) !== -1) ? '' : 'none';
+    function selectAvatar(id) {
+        var av = AVATARS.filter(function (a) { return a.id === id; })[0];
+        if (!av) return;
+        _selectedAvatar = av;
+        var grid = document.getElementById('cc-vm-grid');
+        if (grid) {
+            grid.querySelectorAll('.cc-vm-avatar-card').forEach(function (card) {
+                var sel = parseInt(card.getAttribute('data-avatar-id'), 10) === id;
+                card.classList.toggle('cc-vm-avatar-card--selected', sel);
+                card.setAttribute('aria-pressed', sel ? 'true' : 'false');
+                var inp = card.querySelector('.ubits-checkbox__input');
+                if (inp) inp.checked = sel;
+            });
+        }
+        updatePreviewStage(av);
+    }
+
+    function filterAvatarsByCategory(cat) {
+        _currentCat = cat || 'staff';
+        var grid = document.getElementById('cc-vm-grid');
+        if (grid) {
+            grid._ccWired = false;
+            grid.innerHTML = buildAvatarGridItemsHtml(_currentCat);
+        }
+        wireAvatarGrid();
+    }
+
+    function wireAvatarGrid() {
+        var grid = document.getElementById('cc-vm-grid');
+        if (!grid || grid._ccWired) return;
+        grid._ccWired = true;
+        grid.addEventListener('click', function (e) {
+            var card = e.target.closest('.cc-vm-avatar-card');
+            if (card) selectAvatar(parseInt(card.getAttribute('data-avatar-id'), 10));
+        });
+        grid.addEventListener('keydown', function (e) {
+            if (e.key !== 'Enter' && e.key !== ' ') return;
+            var card = e.target.closest('.cc-vm-avatar-card');
+            if (!card || !grid.contains(card)) return;
+            e.preventDefault();
+            selectAvatar(parseInt(card.getAttribute('data-avatar-id'), 10));
         });
     }
 
-    /* ── Init de inputs ── */
-    function initSearchInput() {
-        var wrap = document.getElementById('cc-via-search-wrap');
-        if (!wrap || typeof global.createInput !== 'function') return;
+    /* ── Category select (via createInput) ── */
+    function initCategorySelect() {
+        var wrap = document.getElementById('cc-vm-cat-select-wrap');
+        if (!wrap || wrap._ccWired || typeof global.createInput !== 'function') return;
+        wrap._ccWired = true;
+
+        var selectOptions = CATEGORIES.map(function (c) {
+            /* createInput select usa `text`, no `label` (ver input.js / setupSelectWithDropdownMenu). */
+            return { value: c.id, text: c.label + ' (' + c.count + ')' };
+        });
+
         global.createInput({
-            containerId: 'cc-via-search-wrap',
-            type: 'search',
-            placeholder: 'Buscar avatar...',
-            size: 'sm',
+            containerId:   'cc-vm-cat-select-wrap',
+            type:          'select',
+            size:          'sm',
+            value:         'staff',
+            selectOptions: selectOptions,
             onChange: function (val) {
-                filterAvatars(String(val || '').trim().toLowerCase());
+                filterAvatarsByCategory(val);
             }
         });
     }
 
-    function initTemaInput() {
-        var wrap = document.getElementById('cc-via-tema-wrap');
-        if (!wrap || wrap.querySelector('input') || typeof global.createInput !== 'function') return;
-        global.createInput({
-            containerId: 'cc-via-tema-wrap',
-            type:        'text',
-            placeholder: 'Escribe el tema del guion...',
-            size:        'md',
+    /* ── Attach files (pending files strip pattern) ── */
+    function renderPendingFilesStrip() {
+        var strip = document.getElementById('cc-vm-pending-files');
+        if (!strip) return;
+        if (_pendingFiles.length === 0) {
+            strip.style.display = 'none';
+            strip.innerHTML = '';
+            return;
+        }
+        strip.style.display = 'flex';
+        strip.innerHTML = _pendingFiles.map(function (f, idx) {
+            return '<span class="ubits-chip ubits-chip--sm ubits-chip--icon-left ubits-chip--close ai-panel__pending-file-chip">' +
+                '<i class="far fa-file-lines ubits-chip__icon" aria-hidden="true"></i>' +
+                '<span class="ubits-chip__text">' + esc(f.name) + '</span>' +
+                '<button type="button" class="ubits-chip__close" data-rm-file="' + idx + '" aria-label="Quitar archivo">' +
+                    '<i class="far fa-times"></i>' +
+                '</button>' +
+            '</span>';
+        }).join('');
+        // Wire remove buttons
+        strip.querySelectorAll('[data-rm-file]').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                var i = parseInt(btn.getAttribute('data-rm-file'));
+                _pendingFiles.splice(i, 1);
+                renderPendingFilesStrip();
+            });
+        });
+        if (_pendingFiles.length > 0) {
+            clearContextTemaError();
+        }
+    }
+
+    function initInsumoAttach() {
+        var attachBtn = document.getElementById('cc-vm-attach');
+        var filesInput = document.getElementById('cc-vm-files');
+        if (!attachBtn || !filesInput || attachBtn._ccWired) return;
+        attachBtn._ccWired = true;
+
+        attachBtn.addEventListener('click', function () {
+            filesInput.click();
+        });
+
+        filesInput.addEventListener('change', function () {
+            var files = filesInput.files;
+            if (!files || !files.length) return;
+            for (var i = 0; i < files.length; i++) {
+                _pendingFiles.push(files[i]);
+            }
+            filesInput.value = '';
+            renderPendingFilesStrip();
         });
     }
 
+    function getContextTemaBox() {
+        return document.getElementById('cc-vm-ia-input-box');
+    }
+
+    function getContextTemaTextarea() {
+        return document.getElementById('cc-vm-context-input');
+    }
+
+    function contextTemaValue() {
+        var ta = getContextTemaTextarea();
+        return ta ? String(ta.value || '').trim() : '';
+    }
+
+    function clearContextTemaError() {
+        var box = getContextTemaBox();
+        if (box) box.classList.remove('ai-panel__input-box--context-error');
+    }
+
+    /** Mismo patrón que SCORM: textarea `.ai-panel__input` (sin borde propio; el borde es el `ai-panel__input-box`). */
+    function initContextTemaField() {
+        var ta = getContextTemaTextarea();
+        if (!ta || ta._ccVmCtxWired) return;
+        ta._ccVmCtxWired = true;
+        ta.addEventListener('input', function () {
+            clearContextTemaError();
+        });
+    }
+
+    function initGuionCreateInput() {
+        var wrap = document.getElementById('cc-vm-guion-create-input-wrap');
+        if (!wrap || wrap._ccVmGuionWired || typeof global.createInput !== 'function') return;
+        wrap._ccVmGuionWired = true;
+        _guionInputApi = global.createInput({
+            containerId: 'cc-vm-guion-create-input-wrap',
+            type: 'textarea',
+            showLabel: false,
+            label: '',
+            placeholder: 'El guión aparecerá aquí, o puedes escribirlo directamente',
+            size: 'md',
+            maxLength: VIDEO_GUION_MAX_CHARS,
+            showCounter: true,
+            value: _guionText || '',
+            onChange: function (val) {
+                _guionText = String(val != null ? val : '');
+                if (_guionInputApi && typeof _guionInputApi.setState === 'function') {
+                    _guionInputApi.setState('default');
+                }
+                var w = document.getElementById('cc-vm-guion-create-input-wrap');
+                var ht = w && w.querySelector('.ubits-input-helper-text');
+                if (ht) {
+                    ht.textContent = '';
+                    ht.style.display = 'none';
+                }
+                autosizeGuionTextarea();
+                refreshIaButtons();
+            }
+        });
+        // Ajustar alto inicial según contenido + asegurar contador inicial.
+        setTimeout(function () {
+            autosizeGuionTextarea();
+            // Fuerza actualizar contador sin requerir focus/click.
+            syncGuionTextareaAfterProgrammaticValue();
+        }, 0);
+    }
+
+    function getGuionTextareaEl() {
+        var w = document.getElementById('cc-vm-guion-create-input-wrap');
+        return w ? w.querySelector('textarea.ubits-input') : null;
+    }
+
+    function autosizeGuionTextarea() {
+        var ta = getGuionTextareaEl();
+        if (!ta) return;
+        var maxPx = 500;
+        ta.style.height = 'auto';
+        var next = Math.min(ta.scrollHeight, maxPx);
+        ta.style.height = next + 'px';
+        ta.style.overflowY = ta.scrollHeight > maxPx ? 'auto' : 'hidden';
+    }
+
+    function syncGuionTextareaAfterProgrammaticValue() {
+        // createInput actualiza contador en setValue(), pero esto asegura reflow + autoheight.
+        var ta = getGuionTextareaEl();
+        if (!ta) return;
+        try {
+            ta.dispatchEvent(new Event('input', { bubbles: true }));
+        } catch (e) {}
+        autosizeGuionTextarea();
+    }
+
+    function setGuionValueProgrammatically(nextValue) {
+        var ta = getGuionTextareaEl();
+        if (!ta) return;
+        var v = String(nextValue != null ? nextValue : '');
+        _guionText = v;
+        // Evitar usar _guionInputApi.setValue(): en `components/input.js` el contador tiene
+        // un bug de scope con `updateCounter` y puede no actualizarse hasta interacción del usuario.
+        ta.value = v;
+        syncGuionTextareaAfterProgrammaticValue();
+        refreshIaButtons();
+    }
+
+    function resetContextTemaAfterGuionGeneration() {
+        var ta = getContextTemaTextarea();
+        if (ta) ta.value = '';
+        var filesInput = document.getElementById('cc-vm-files');
+        if (filesInput) filesInput.value = '';
+        _pendingFiles = [];
+        renderPendingFilesStrip();
+        clearContextTemaError();
+    }
+
+    function setGuionLoading(isLoading) {
+        var mount = document.getElementById('cc-vm-guion-create-input-wrap');
+        if (!mount) return;
+        var hostId = 'cc-vm-guion-loader-host';
+        var host = document.getElementById(hostId);
+
+        if (isLoading) {
+            if (mount) mount.style.display = 'none';
+            if (!host) {
+                host = document.createElement('div');
+                host.id = hostId;
+                host.className = 'cc-vm-guion-loader-host';
+                mount.parentNode.insertBefore(host, mount);
+            }
+            host.style.display = '';
+            host.innerHTML = typeof global.getIaLoaderHTML === 'function'
+                ? global.getIaLoaderHTML({ label: 'Generando guión' })
+                : '<p class="ubits-body-sm-regular" role="status" aria-live="polite">Generando guión...</p>';
+            return;
+        }
+
+        if (host) host.style.display = 'none';
+        if (mount) mount.style.display = '';
+    }
+
+    /** Mensaje de error bajo el textarea del guión (createInput invalid + helper oficial). */
+    function setGuionValidationInvalid(message) {
+        if (!_guionInputApi || typeof _guionInputApi.setState !== 'function') return;
+        _guionInputApi.setState('invalid');
+        var wrap = document.getElementById('cc-vm-guion-create-input-wrap');
+        var ht = wrap && wrap.querySelector('.ubits-input-helper-text');
+        if (ht) {
+            ht.style.display = '';
+            ht.textContent = message || 'Campo requerido';
+        }
+    }
+
+    function focusGuionFieldAfterError() {
+        var mount = document.getElementById('cc-vm-guion-create-input-wrap');
+        if (mount) mount.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        if (_guionInputApi && typeof _guionInputApi.focus === 'function') {
+            setTimeout(function () { _guionInputApi.focus(); }, 300);
+        }
+    }
+
+    /* ── Generate guión button ── */
+    function initGenGuionButton() {
+        var btn = document.getElementById('cc-vm-btn-gen-guion');
+        if (!btn || btn._ccWired) return;
+        btn._ccWired = true;
+        btn.addEventListener('click', function () {
+            var tema = contextTemaValue();
+            if (!tema && _pendingFiles.length > 0) {
+                tema = _pendingFiles.map(function (f) { return f.name; }).join(', ');
+            }
+            if (!tema) {
+                var boxCtx = getContextTemaBox();
+                if (boxCtx) boxCtx.classList.add('ai-panel__input-box--context-error');
+                var taCtx = getContextTemaTextarea();
+                if (taCtx) taCtx.focus();
+                return;
+            }
+            if (!trySpendVideoAiTokens(VIDEO_GUION_IA_TOKEN_COST)) return;
+            clearContextTemaError();
+            var labelEl = document.getElementById('cc-vm-gen-guion-label');
+            btn.disabled = true;
+            if (labelEl) labelEl.textContent = 'Generando...';
+            setGuionLoading(true);
+            setTimeout(function () {
+                var guion = generateGuion();
+                setGuionLoading(false);
+                setGuionValueProgrammatically(guion);
+                resetContextTemaAfterGuionGeneration();
+                btn.disabled = false;
+                if (labelEl) labelEl.textContent = 'Generar guión';
+                refreshIaButtons();
+            }, 3000);
+        });
+    }
+
+    /* ── Logo upload ── */
+    function initLogoUpload() {
+        var input = document.getElementById('cc-vm-logo-file');
+        var trigger = document.getElementById('cc-vm-logo-drop-zone');
+        if (!input || input._ccWired) return;
+        input._ccWired = true;
+        if (trigger && !trigger._ccLogoTriggerWired) {
+            trigger._ccLogoTriggerWired = true;
+            trigger.addEventListener('click', function () {
+                input.click();
+            });
+        }
+        input.addEventListener('change', function () {
+            var file = input.files && input.files[0];
+            if (!file) return;
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                _logoDataUrl = e.target.result;
+                // Show in preview overlay
+                var previewImg = document.getElementById('cc-vm-logo-preview-img');
+                if (previewImg) previewImg.src = _logoDataUrl;
+                var overlay = document.getElementById('cc-vm-logo-overlay');
+                if (overlay) overlay.style.display = '';
+                // Hide upload button, show chip in its place
+                var dropZone = document.getElementById('cc-vm-logo-drop-zone');
+                if (dropZone) dropZone.style.display = 'none';
+                var chipWrap = document.getElementById('cc-vm-logo-chip-wrap');
+                if (chipWrap) {
+                    chipWrap.innerHTML =
+                        '<div class="cc-vm-insumo-chip">' +
+                            '<i class="far fa-image" aria-hidden="true"></i>' +
+                            '<span>' + esc(file.name) + '</span>' +
+                            '<button type="button" id="cc-vm-logo-remove" aria-label="Quitar logo"><i class="far fa-times"></i></button>' +
+                        '</div>';
+                    var removeBtn = document.getElementById('cc-vm-logo-remove');
+                    if (removeBtn) {
+                        removeBtn.addEventListener('click', function () {
+                            _logoDataUrl = null;
+                            input.value = '';
+                            chipWrap.innerHTML = '';
+                            var ov = document.getElementById('cc-vm-logo-overlay');
+                            if (ov) ov.style.display = 'none';
+                            if (dropZone) dropZone.style.display = '';
+                        });
+                    }
+                }
+            };
+            reader.readAsDataURL(file);
+        });
+    }
+
+    /* ── Generate video button ── */
+    function initGenVideoButton() {
+        var btn = document.getElementById('cc-vm-btn-generar');
+        if (!btn || btn._ccWired) return;
+        btn._ccWired = true;
+        btn.addEventListener('click', function () {
+            _guionText = _guionInputApi && typeof _guionInputApi.getValue === 'function'
+                ? String(_guionInputApi.getValue() || '')
+                : _guionText;
+            var trimmedGuion = _guionText.trim();
+            if (!trimmedGuion.length) {
+                setGuionValidationInvalid('Campo requerido');
+                focusGuionFieldAfterError();
+                return;
+            }
+            if (trimmedGuion.length < VIDEO_GUION_MIN_CHARS) {
+                setGuionValidationInvalid('Escribe al menos 500 caracteres');
+                focusGuionFieldAfterError();
+                return;
+            }
+            if (!trySpendVideoAiTokens(VIDEO_GEN_TOKEN_COST)) return;
+            var av = _selectedAvatar || AVATARS[0];
+            var videoId = avatarVideoId(av);
+            var generatedSrc = 'https://www.youtube.com/embed/' + videoId + '?rel=0&modestbranding=1';
+            var pageKey = _currentPageKey;
+            var logoSnapshot = _logoDataUrl;
+            closeModal(OVERLAY_ID);
+            startWidgetJob({
+                pageKey: pageKey,
+                avatarName: av.label,
+                src: generatedSrc,
+                logoDataUrl: logoSnapshot
+            });
+        });
+    }
+
+    /* ── Enlace input ── */
     function initEnlaceInput() {
         var wrap = document.getElementById('cc-venlace-input-wrap');
         if (!wrap || typeof global.createInput !== 'function') return;
@@ -643,6 +1100,7 @@
         wireEnlaceCargar();
     }
 
+    /* ── Subir file upload ── */
     function initSubirFileUpload() {
         var wrap = document.getElementById('cc-vsubir-fu-wrap');
         if (!wrap || typeof global.createFileUpload !== 'function') return;
@@ -663,7 +1121,6 @@
                     return;
                 }
                 _fileBlobUrl = URL.createObjectURL(file);
-                /* Simular progreso de carga: 0→100% en ~2 s */
                 var fuEl = document.getElementById('cc-vsubir-fu');
                 if (fuEl && typeof global.fileUploadSetProgress === 'function') {
                     var pct      = 0;
@@ -688,90 +1145,6 @@
     }
 
     /* ── Wiring de eventos ── */
-    function wireStep1() {
-        var grid   = document.getElementById('cc-via-grid');
-        var sigBtn = document.getElementById('cc-via-btn-siguiente');
-        if (grid) {
-            grid.addEventListener('click', function (e) {
-                var card = e.target.closest('.cc-via-avatar-card');
-                if (card) selectAvatar(parseInt(card.getAttribute('data-avatar-id')));
-            });
-        }
-        if (sigBtn) {
-            sigBtn.addEventListener('click', function () {
-                if (!_selectedAvatar) _selectedAvatar = AVATARS[0];
-                switchToStep(2);
-            });
-        }
-    }
-
-    function wireStep2Inputs() {
-        var ta        = document.getElementById('cc-via-guion-ta');
-        var counter   = document.getElementById('cc-via-char-count');
-        var genBtn    = document.getElementById('cc-via-btn-generar');
-        var genGuion  = document.getElementById('cc-via-btn-gen-guion');
-
-        if (ta && !ta._ccWired) {
-            ta._ccWired = true;
-            if (_guionText) ta.value = _guionText;
-            ta.addEventListener('input', function () {
-                _guionText = ta.value;
-                if (counter) counter.textContent = _guionText.length;
-                refreshStep2TokenButtons();
-            });
-        }
-
-        if (genBtn && !genBtn._ccWired) {
-            genBtn._ccWired = true;
-            genBtn.addEventListener('click', function () {
-                _guionText = ta ? ta.value : _guionText;
-                onGenerarVideo();
-            });
-        }
-
-        if (genGuion && !genGuion._ccWired) {
-            genGuion._ccWired = true;
-            genGuion.addEventListener('click', function () {
-                var temaWrap  = document.getElementById('cc-via-tema-wrap');
-                var temaInput = temaWrap ? temaWrap.querySelector('input') : null;
-                var tema      = temaInput ? temaInput.value.trim() : '';
-                if (!tema) {
-                    if (temaInput) {
-                        temaInput.style.borderColor = 'var(--ubits-feedback-accent-error)';
-                        temaInput.style.borderWidth = '2px';
-                    }
-                    return;
-                }
-                if (!trySpendVideoAiTokens(VIDEO_GUION_IA_TOKEN_COST)) return;
-
-                if (temaInput) {
-                    temaInput.style.borderColor = 'var(--ubits-border-1)';
-                    temaInput.style.borderWidth = '1px';
-                }
-                var labelEl = genGuion.querySelector('.cc-via-btn-label');
-                genGuion.disabled = true;
-                if (labelEl) labelEl.textContent = 'Generando...';
-                if (ta) { ta.disabled = true; ta.style.opacity = '0.5'; }
-
-                setTimeout(function () {
-                    var guion = generateGuion(tema);
-                    _guionText = guion;
-                    if (ta) {
-                        ta.value    = guion;
-                        ta.disabled = false;
-                        ta.style.opacity = '';
-                        ta.dispatchEvent(new Event('input'));
-                    }
-                    genGuion.disabled = false;
-                    if (labelEl) labelEl.textContent = 'Generar guion con IA';
-                    refreshStep2TokenButtons();
-                }, 1800);
-            });
-        }
-
-        refreshStep2TokenButtons();
-    }
-
     function wireEnlaceCargar() {
         var cargarBtn = document.getElementById('cc-venlace-btn-cargar');
         if (!cargarBtn || cargarBtn._ccWired) return;
@@ -780,7 +1153,7 @@
             if (!_enlaceValid || !_enlaceValue) return;
             var src  = buildEmbedSrc(_enlaceValue);
             var type = embedType(_enlaceValue);
-            var html = buildRenderedBlock(type, src, false);
+            var html = buildRenderedBlock(type, src, false, { logoSrc: _logoDataUrl });
             closeModal(OVERLAY_ID);
             if (_onVideoReady) _onVideoReady(html);
             emitRecursosChanged({ type: 'video', pageKey: _currentPageKey, source: 'link' });
@@ -793,58 +1166,11 @@
         btn._ccWired = true;
         btn.addEventListener('click', function () {
             if (!_fileBlobUrl) return;
-            var html = buildRenderedBlock('local', _fileBlobUrl, true);
+            var html = buildRenderedBlock('local', _fileBlobUrl, true, { logoSrc: _logoDataUrl });
             closeModal(OVERLAY_ID);
             if (_onVideoReady) _onVideoReady(html);
             emitRecursosChanged({ type: 'video', pageKey: _currentPageKey, source: 'upload' });
         });
-    }
-
-    function onGenerarVideo() {
-        if (!trySpendVideoAiTokens(VIDEO_GEN_TOKEN_COST)) return;
-
-        var avatarName = _selectedAvatar ? _selectedAvatar.name : 'Avatar';
-        var videoId    = _selectedAvatar ? avatarVideoId(_selectedAvatar) : PREVIEW_IDS[0];
-        var generatedSrc = 'https://www.youtube.com/embed/' + videoId + '?rel=0&modestbranding=1';
-        var pageKey    = _currentPageKey;
-
-        closeModal(OVERLAY_ID);
-        startWidgetJob({ pageKey: pageKey, avatarName: avatarName, src: generatedSrc });
-    }
-
-    function wireTabBar() {
-        var bar = document.getElementById('cc-vmodal-tabbar');
-        if (!bar || bar._ccTabBarWired) return;
-        bar._ccTabBarWired = true;
-        bar.addEventListener('click', function (e) {
-            var b = e.target.closest('[data-cc-vtab]');
-            if (!b || !bar.contains(b)) return;
-            switchToTab(b.getAttribute('data-cc-vtab'));
-        });
-    }
-
-    /** Paso 1 del stepper: volver desde el paso 2 haciendo clic en el paso completado */
-    function wireStepperBackOnIaPanel() {
-        var panel = document.getElementById('cc-vtab-ia');
-        if (!panel || panel._ccStepperBackWired) return;
-        panel._ccStepperBackWired = true;
-        function goBackIfStep1(e) {
-            if (_iaStep !== 2) return;
-            var wrap = e.target.closest('.cc-vmodal-stepper-wrap');
-            if (!wrap) return;
-            var clicked = e.target.closest('.ubits-stepper__step');
-            if (!clicked) return;
-            var steps = wrap.querySelectorAll('.ubits-stepper__step');
-            if (steps[0] === clicked) {
-                if (e.type === 'keydown') {
-                    if (e.key !== 'Enter' && e.key !== ' ') return;
-                    e.preventDefault();
-                }
-                switchToStep(1);
-            }
-        }
-        panel.addEventListener('click', goBackIfStep1);
-        panel.addEventListener('keydown', goBackIfStep1);
     }
 
     function wireVolverIaButtons() {
@@ -860,28 +1186,41 @@
         }
     }
 
+    function wireTabBar() {
+        var bar = document.getElementById('cc-vmodal-tabbar');
+        if (!bar || bar._ccTabBarWired) return;
+        bar._ccTabBarWired = true;
+        bar.addEventListener('click', function (e) {
+            var b = e.target.closest('[data-cc-vtab]');
+            if (!b || !bar.contains(b)) return;
+            switchToTab(b.getAttribute('data-cc-vtab'));
+        });
+    }
+
     function initModalInteractions() {
         wireTabBar();
-        wireStepperBackOnIaPanel();
         wireVolverIaButtons();
-        initSearchInput();
-        wireStep1();
+        initCategorySelect();
+        wireAvatarGrid();
+        initInsumoAttach();
+        initContextTemaField();
+        initGuionCreateInput();
+        initGenGuionButton();
+        initGenVideoButton();
+        initLogoUpload();
+        refreshIaButtons();
+        updatePreviewStage(_selectedAvatar || AVATARS[0]);
     }
 
     /* ══════════════════════════════════════
-       Chrome IA del modal (orbes + header + badge, como «Generar portada»)
+       Chrome IA del modal
     ══════════════════════════════════════ */
-    /**
-     * Chrome IA del modal: mismos orbes + header transparente + body que «Generar portada»
-     * (crear-contenido.js initPortadaAiModal).
-     */
     function applyAiModalChrome(overlay) {
         var titleSpan = overlay.querySelector('.ubits-modal-title');
         if (titleSpan) {
             titleSpan.textContent = 'Agregar video';
         }
 
-        /* Fondo con orbes (mismas capas radiales que portada IA) */
         var modalContent = overlay.querySelector('.ubits-modal-content');
         if (modalContent) {
             modalContent.classList.add('portada-ia-modal-content', 'cc-video-ia-modal-content');
@@ -901,15 +1240,13 @@
         var modalBody = overlay.querySelector('.ubits-modal-body');
         if (modalBody) {
             modalBody.style.padding = 'var(--padding-xl, 32px)';
-            modalBody.style.overflow = 'auto';
+            modalBody.style.overflow = 'hidden';
             modalBody.style.display = 'flex';
             modalBody.style.flexDirection = 'column';
-            /* max-height y flex: en video-recurso-modal.css (evita modal estirado casi a 90vh por flex:1) */
             modalBody.style.maxHeight = '';
             modalBody.style.flex = '';
         }
 
-        /* Badge de tokens a la izquierda del botón cerrar */
         var closeBtn = overlay.querySelector('.ubits-modal-close');
         var tokensLeft = getVideoAiTokens();
         if (modalHeader && closeBtn) {
@@ -944,30 +1281,47 @@
     }
 
     /* ══════════════════════════════════════
+       FOOTER DEL MODAL
+    ══════════════════════════════════════ */
+    function buildVideoFooterHtml() {
+        return '<div class="ubits-modal-footer__right">' +
+            '<button type="button" class="ubits-button ubits-button--primary ubits-button--md ubits-button--with-token-cost" id="cc-vm-btn-generar">' +
+                '<span class="ubits-button__token-cost" aria-hidden="true">' +
+                    '<span class="ubits-button__token-number">' + VIDEO_GEN_TOKEN_COST + '</span>' +
+                    '<i class="far fa-coin-vertical"></i>' +
+                '</span>' +
+                '<span>Generar video</span>' +
+            '</button>' +
+        '</div>';
+    }
+
+    /* ══════════════════════════════════════
        ABRIR MODAL
     ══════════════════════════════════════ */
     function openVideoRecursoModal(opts) {
         _onVideoReady   = (opts && opts.onVideoReady) || null;
         _currentPageKey = (opts && opts.pageKey)      || null;
         _currentTab     = 'ia';
-        _iaStep         = 1;
-        _selectedAvatar = AVATARS[0];
-        _guionText      = '';
+        _currentCat     = 'staff';
+        _selectedAvatar = AVATARS.filter(function (a) { return a.cat === 'staff'; })[0] || AVATARS[0];
+        _guionText        = '';
+        _guionInputApi    = null;
         _enlaceValue    = '';
         _enlaceValid    = false;
         _fileBlob       = null;
+        _logoDataUrl    = null;
+        _pendingFiles   = [];
         if (_fileBlobUrl) { URL.revokeObjectURL(_fileBlobUrl); _fileBlobUrl = null; }
 
-        /* Sin footer del modal (igual que openModal de «Generar portada»: no se pasa footerHtml). */
         var overlay = openModal({
             overlayId:           OVERLAY_ID,
             title:               'Agregar video',
             bodyHtml:            buildModalBody(),
-            size:                'md',
+            size:                'lg',
             closeOnOverlayClick: false,
+            footerHtml:          buildVideoFooterHtml(),
         });
 
-        /* Orbes + header IA + badge (mismo patrón que «Generar portada») */
         if (overlay) applyAiModalChrome(overlay);
 
         setTimeout(function () {
@@ -992,7 +1346,10 @@
         if (_onVideoReady) _onVideoReady('<div class="cc-video-ia-loader-host">' + innerLoader + '</div>');
 
         setTimeout(function () {
-            var html = buildRenderedBlock('youtube', job.src, false, { aiGenerated: true });
+            var html = buildRenderedBlock('youtube', job.src, false, {
+                aiGenerated: true,
+                logoSrc: job.logoDataUrl || ''
+            });
             if (_onVideoReady) { _onVideoReady(html); _onVideoReady = null; }
             if (typeof global.ccGenWidget !== 'undefined') global.ccGenWidget.finishJob(jobId);
             updateIndexIcon(job.pageKey);
@@ -1008,6 +1365,12 @@
         if (iconEl && typeof global.paginasCreatorIconClass === 'function') {
             iconEl.className = global.paginasCreatorIconClass('video');
         }
+    }
+
+    function emitRecursosChanged(detail) {
+        try {
+            document.dispatchEvent(new CustomEvent('ubits-recursos-changed', { detail: detail || {} }));
+        } catch (e) { /* noop */ }
     }
 
     /* ══════════════════════════════════════

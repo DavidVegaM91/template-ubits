@@ -751,10 +751,10 @@
                 '</div>' +
                 /* Columna derecha: preview */
                 '<div class="cc-sm-right-col">' +
+                    '<p class="ubits-body-xs-regular cc-via-preview-hint">Vista previa orientativa. Las slides finales usarán tu contenido</p>' +
                     '<div class="cc-sm-preview-wrap">' +
                         '<iframe id="cc-sm-preview-frame" class="cc-sm-preview-iframe" srcdoc="" title="Vista previa SCORM"></iframe>' +
                     '</div>' +
-                    '<p class="ubits-body-xs-regular cc-via-preview-hint">Vista previa orientativa. Las slides finales usarán tu contenido</p>' +
                 '</div>' +
             '</div>' +
         '</div>';
