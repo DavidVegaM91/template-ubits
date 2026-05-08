@@ -1157,15 +1157,6 @@
     gap: var(--gap-md, 12px);
 }
 
-/* Contenedor de tabs oficiales sobre fondo blanco (Individuales / Grupales) */
-.ubits-tabs-on-bg {
-    background: var(--ubits-bg-2);
-    padding: var(--padding-xs);
-    border-radius: var(--border-radius-sm);
-    display: inline-flex;
-    gap: var(--gap-xs);
-}
-
 /* Estado activo del chip de filtro (legacy; ya no se usa en planes, reemplazado por ubits-tab) */
 .plan-filter-chip--active {
     background: var(--ubits-feedback-bg-info-subtle);

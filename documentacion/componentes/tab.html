@@ -640,10 +640,8 @@ function setActiveTab(clickedTab) {
                 container.style.background = 'var(--ubits-bg-2)';
             }
             
-            // Crear contenedor interno si está sobre fondo blanco
-            const wrapperStyle = whiteBackground 
-                ? 'background: var(--ubits-bg-2); padding: 4px; border-radius: 8px; display: inline-flex; gap: 4px;'
-                : 'display: flex; gap: 4px;';
+            // Wrapper: usar clase oficial del componente (sin estilos inline)
+            const wrapperClass = whiteBackground ? 'ubits-tabs-on-bg' : 'ubits-tabs-row';
             
             const tabs = [
                 { label: 'Inicio', icon: 'home', active: true },
@@ -664,7 +662,7 @@ function setActiveTab(clickedTab) {
                 `;
             });
             
-            groupPreview.innerHTML = `<div style="${wrapperStyle}">${tabsHTML}</div>`;
+            groupPreview.innerHTML = `<div class="${wrapperClass}">${tabsHTML}</div>`;
         }
         
         // Función para manejar clics en tabs del grupo

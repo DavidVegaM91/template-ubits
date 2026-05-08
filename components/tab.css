@@ -29,7 +29,6 @@
     /* Default state (Inactive) */
     background: var(--ubits-bg-2);
     color: var(--ubits-fg-1-medium);
-    border: 1px solid transparent;
 }
 
 /* ========================================
@@ -275,6 +274,32 @@
 .ubits-tab--icon-only .ubits-tab__badge {
     top: -2px;
     right: -2px;
+}
+
+/* ========================================
+   TAB GROUP WRAPPERS
+   ======================================== */
+
+/* Contenedor de grupo de tabs sobre fondo (ej. Individuales / Grupales). */
+.ubits-tabs-on-bg {
+    display: inline-flex;
+    gap: var(--gap-xs);
+    padding: var(--padding-xs);
+    background: var(--ubits-bg-2);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: var(--border-radius-sm);
+    box-sizing: border-box;
+}
+
+/* Grupo simple sin fondo (solo layout). */
+.ubits-tabs-row {
+    display: inline-flex;
+    gap: var(--gap-xs);
+    padding: 0;
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    box-sizing: border-box;
 }
 
 /* ========================================
