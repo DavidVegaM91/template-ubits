@@ -13,6 +13,9 @@
     <link rel="stylesheet" href="../../components/sidebar.css">
     <link rel="stylesheet" href="../../components/button.css">
     <link rel="stylesheet" href="../../components/toast.css">
+    <link rel="stylesheet" href="../../components/badge-tag.css">
+    <link rel="stylesheet" href="../../ubits-colaborador/aprendizaje/aprendizaje-ia-gradientes.css">
+    <link rel="stylesheet" href="../../components/tooltip.css">
     <link rel="stylesheet" href="../../components/resources-card.css">
     <link rel="stylesheet" href="../../docs/docs-sidebar.css">
     <link rel="stylesheet" href="../../docs/docstyles.css">
@@ -51,7 +54,7 @@
                                 Preview del componente
                             </h2>
                             <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6;">
-                                Prueba estados y tipos con los botones. «Hover forzado» muestra el mismo aspecto que al pasar el ratón sin moverlo. «Deshabilitado» deja la tarjeta no disponible.
+                                Prueba estados y tipos con los botones. «Hover forzado» muestra el mismo aspecto que al pasar el ratón sin moverlo. «Deshabilitado» deja la tarjeta no disponible. Video, SCORM y Evaluación muestran un distintivo IA (badge outlined, solo icono); al pasar el cursor sobre él aparece la explicación.
                             </p>
                             <div style="margin-bottom: 16px;">
                                 <p class="ubits-body-sm-bold" style="margin: 0 0 var(--gap-sm) 0; color: var(--ubits-fg-1-high);">Estado</p>
@@ -179,11 +182,13 @@ Grid doc: .ubits-resources-card-grid</code></pre>
                                         <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('rc-tech-req')"><i class="far fa-copy"></i><span>Copiar</span></button>
                                     </div>
                                     <pre style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm); overflow-x: auto;"><code id="rc-tech-req" class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">CSS: ubits-colors.css, ubits-typography.css, fontawesome-icons.css, resources-card.css
+  Si hay distintivo IA en la tarjeta: badge-tag.css, aprendizaje-ia-gradientes.css (borde IA), tooltip.css + tooltip.js + initTooltip en .ubits-resources-card__ia-assist
 JS: resources-card.js
   resourcesCardHtml({ type, disabled?, className?, hoverClass?, ariaLabel? })
   RESOURCES_CARD_TYPES_ORDER — orden de columnas Figma
-  RESOURCES_CARD_META — icono (clase FA sin prefijo) y etiqueta por type
-Tipos type: video, video-desktop, pdf, texto, embebido, scorm, evaluacion-final,
+  RESOURCES_CARD_META — icono (clase FA sin prefijo), etiqueta y aiAssist opcional por type
+  RESOURCES_CARD_IA_ASSIST_TOOLTIP — texto del tooltip del distintivo (global, opcional)
+Tipos type: video, pdf, texto, embebido, scorm, evaluacion-final,
   encuesta-libre, encuesta, archivo-descargable, certificado, imagen</code></pre>
                                 </div>
                             </div>
@@ -197,6 +202,7 @@ Tipos type: video, video-desktop, pdf, texto, embebido, scorm, evaluacion-final,
     <script src="../../components/sidebar.js"></script>
     <script src="../../components/sub-nav.js"></script>
     <script src="../../components/toast.js"></script>
+    <script src="../../components/tooltip.js"></script>
     <script src="../../components/resources-card.js"></script>
     <script src="../../docs/docs-sidebar.js"></script>
     <script src="../../script.js"></script>
@@ -241,6 +247,9 @@ Tipos type: video, video-desktop, pdf, texto, embebido, scorm, evaluacion-final,
                 disabled: dis,
                 hoverClass: hv && !dis
             });
+            if (typeof initTooltip === 'function') {
+                initTooltip('.components-content .ubits-resources-card__ia-assist[data-tooltip]');
+            }
             document.querySelectorAll('.rc-state-btn').forEach(function (b) {
                 b.classList.toggle('active', b.getAttribute('data-rc-state') === rcPreview.state);
             });
@@ -264,6 +273,9 @@ Tipos type: video, video-desktop, pdf, texto, embebido, scorm, evaluacion-final,
                     });
                 }).join('');
             });
+            if (typeof initTooltip === 'function') {
+                initTooltip('.components-content .ubits-resources-card__ia-assist[data-tooltip]');
+            }
         }
 
         document.addEventListener('DOMContentLoaded', function () {

@@ -368,7 +368,8 @@
     width: 28px;
     min-height: 28px;
     height: 28px;
-    border-radius: var(--border-radius-sm, 8px);
+    /* Misma lógica que la base (.ubits-badge-tag): pill → caja cuadrada se ve circular (no radius sm). */
+    border-radius: 1000px;
 }
 
 .ubits-badge-tag--icon-only .ubits-badge-tag__text {

@@ -3,6 +3,7 @@
  * Estados: default (borde 1px), hover / focus-visible (borde 1px color marca), disabled (fondo disabled).
  * Dimensiones Figma: ancho 153.75px, alto fijo 86px, padding (vertical sm + horizontal md para encajar), radio lg, etiqueta 12px/18px máx. 2 líneas + ellipsis.
  * Requiere: ubits-colors.css, ubits-typography.css (tokens), fontawesome-icons.css.
+ * Distintivo IA (Video, SCORM, Evaluación): badge-tag.css (+ aprendizaje-ia-gradientes.css para borde IA fiel), tooltip.css/js para data-tooltip en .ubits-resources-card__ia-assist.
  */
 
 .ubits-resources-card {
@@ -29,14 +30,26 @@
     font-family: var(--ubits-font-family-sans);
     text-align: center;
     cursor: pointer;
+    position: relative;
     overflow: hidden;
     /* No animar border-width: con padding compensado en :hover, interpolar el borde
        deja fotogramas con ancho de contenido distinto y -webkit-line-clamp parpadea
-       (sobre todo etiquetas largas en flex, p. ej. «Video desde el computador»). */
+       (sobre todo etiquetas largas en flex, p. ej. «Encuesta de satisfacción»). */
     transition:
         background-color 0.15s ease,
         border-color 0.15s ease,
         box-shadow 0.15s ease;
+}
+
+/* Distintivo IA (Badge Tag): esquina superior derecha; no activa la tarjeta al pulsar (stopPropagation en resources-block). */
+.ubits-resources-card__ia-assist {
+    position: absolute;
+    top: var(--gap-xs);
+    right: var(--gap-xs);
+    z-index: 2;
+    flex-shrink: 0;
+    cursor: help;
+    pointer-events: auto;
 }
 
 .ubits-resources-card__inner {

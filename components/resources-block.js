@@ -7,6 +7,7 @@
  *   para montar createInput (sm) en [data-rb-slot].
  *
  * Depende de: resourcesCardHtml, createInput (input.js), button.css, input.css, dropdown-menu.css.
+ * Tarjetas con IA: badge-tag.css (+ gradientes IA opcionales). Tooltips del distintivo: tooltip.js (initTooltip); initResourcesBlockFields cablea listeners.
  *
  * @see documentacion/componentes/resources-block.html
  */
@@ -15,7 +16,6 @@
 
     var RESOURCES_BLOCK_SELECTOR_TYPES = [
         'video',
-        'video-desktop',
         'pdf',
         'texto',
         'embebido',
@@ -45,6 +45,31 @@
     var EMBED_URL_HELPER_TEXT = 'La URL debe ser embebible y visible para los estudiantes';
 
     var _rbFieldSeq = 0;
+    var _rbIaAssistWireSeq = 0;
+
+    function wireResourcesCardIaAssist(root) {
+        if (!root || !root.querySelector || !root.querySelector('.ubits-resources-card__ia-assist')) return;
+
+        root.querySelectorAll('.ubits-resources-card__ia-assist').forEach(function (badge) {
+            if (badge._ubitsRcIaWired) return;
+            badge._ubitsRcIaWired = true;
+            function stopEv(ev) {
+                ev.stopPropagation();
+            }
+            badge.addEventListener('mousedown', stopEv);
+            badge.addEventListener('click', stopEv);
+        });
+
+        if (typeof global.initTooltip !== 'function') return;
+        if (!root.querySelector('.ubits-resources-card__ia-assist[data-tooltip]')) return;
+        var scopeId = root.id;
+        if (!scopeId) {
+            _rbIaAssistWireSeq += 1;
+            scopeId = 'ubits-resources-block-mount-' + _rbIaAssistWireSeq;
+            root.id = scopeId;
+        }
+        global.initTooltip('#' + scopeId + ' .ubits-resources-card__ia-assist[data-tooltip]');
+    }
 
     function nextRbFieldId() {
         _rbFieldSeq += 1;
@@ -362,6 +387,8 @@
                 }
             }
         });
+
+        wireResourcesCardIaAssist(root);
     }
 
     /**
