@@ -14,6 +14,12 @@
     align-self: center;
     display: flex;
     flex-direction: column;
+    transition: max-width 240ms ease, width 240ms ease;
+}
+
+/* Tabs compactos: reducir el ancho del modal con transición. */
+#cc-video-recurso-modal.cc-vm--compact .ubits-modal-content.cc-video-ia-modal-content.portada-ia-modal-content {
+    max-width: min(800px, calc(100vw - 32px));
 }
 
 #cc-video-recurso-modal .ubits-modal-body {
@@ -69,16 +75,6 @@
     display: none !important;
 }
 
-/* ── Fila de acciones (enlace / subir) ── */
-.cc-vmodal-actions-row {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-between;
-    gap: var(--gap-md);
-    margin-top: var(--gap-md);
-}
-
 /* ── Tab: Enlace de video ── */
 .cc-vmodal-enlace-layout {
     display: flex;
@@ -87,20 +83,34 @@
     flex: 1;
 }
 
-.cc-vmodal-enlace-info {
+.cc-vmodal-enlace-centered {
+    width: 100%;
+    max-width: 600px;
+    margin: auto;
     display: flex;
-    align-items: flex-start;
-    gap: var(--gap-sm);
-    padding: var(--padding-md);
-    background: var(--ubits-bg-2);
-    border-radius: var(--border-radius-md);
-    color: var(--ubits-fg-1-medium);
+    flex-direction: column;
+    align-items: center;
+    gap: var(--gap-lg);
 }
 
-.cc-vmodal-enlace-info i {
+.cc-vmodal-enlace-title {
+    margin: 0;
+    text-align: center;
+    color: var(--ubits-fg-1-high);
+    /* Igual al texto de referencia en “Generar portada con IA” (crear-contenido.js): 1.5rem, sin resaltado. */
+    font-size: 1.5rem;
+    line-height: 1.25;
+    font-weight: 400;
+    font-family: var(--ubits-font-family-sans);
+}
+
+.cc-vmodal-enlace-title-em {
+    font-weight: 600;
     color: var(--ubits-accent-brand);
-    flex-shrink: 0;
-    margin-top: 2px;
+}
+
+.cc-vmodal-enlace-centered #cc-venlace-input-wrap {
+    width: 100%;
 }
 
 /* ── Tab: Subir video ── */
@@ -108,6 +118,12 @@
     flex: 1;
     display: flex;
     flex-direction: column;
+}
+
+.cc-vmodal-subir-centered {
+    width: 100%;
+    max-width: 600px;
+    margin: auto;
 }
 
 .cc-vmodal-subir-layout .ubits-file-upload {
@@ -170,12 +186,9 @@
 }
 
 .cc-vm-section-label {
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--ubits-fg-1-medium);
-    font-family: var(--ubits-font-family-sans);
     display: block;
     margin-bottom: 2px;
+    color: var(--ubits-fg-1-high);
 }
 
 .cc-vm-optional {
@@ -200,10 +213,7 @@
 }
 
 .cc-vm-avatar-header-label {
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--ubits-fg-1-medium);
-    font-family: var(--ubits-font-family-sans);
+    color: var(--ubits-fg-1-high);
 }
 
 /* ── Avatar grid (5 cols) ── */
@@ -363,11 +373,6 @@
     gap: var(--gap-sm);
     flex-shrink: 0;
     flex-wrap: wrap;
-}
-
-/* Logo: en esta pantalla no mostramos el header/título del File Upload. */
-#cc-video-recurso-modal #cc-vm-logo-fu-wrap .ubits-file-upload__header {
-    display: none;
 }
 
 /* Evita que el ítem del botón se estire en alto como label+bloque en flex (aspecto “gigante”) */

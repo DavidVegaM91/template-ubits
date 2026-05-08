@@ -727,7 +727,7 @@
                     '<div id="cc-sm-titulo-wrap"></div>' +
                     /* Contexto IA (igual que evaluaciones) */
                     '<div>' +
-                        '<span class="cc-sm-context-label">Contexto para la IA</span>' +
+                        '<span class="ubits-input-label">Contexto para la IA</span>' +
                         '<div class="ubits-ia-chat-thread__input-area">' +
                             '<div class="ai-panel__input-box">' +
                                 '<input type="file" id="cc-sm-files" accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.txt,.csv,.ppt,.pptx" multiple hidden>' +
@@ -745,7 +745,7 @@
                     '<div id="cc-sm-num-stepper-wrap"></div>' +
                     /* Color */
                     '<div class="cc-sm-color-row">' +
-                        '<span class="cc-sm-row-label" style="margin-bottom:0">Color principal</span>' +
+                        '<span class="ubits-input-label" style="margin-bottom:0">Color principal</span>' +
                         '<button type="button" class="cc-sm-cp-swatch" id="cc-sm-cp-swatch" style="background:'+_color+';" aria-label="Seleccionar color principal"></button>' +
                     '</div>' +
                 '</div>' +
@@ -762,7 +762,11 @@
 
     function buildSubirPanel() {
         return '<div class="cc-smodal-panel cc-smodal-panel--hidden" id="cc-stab-subir">' +
-            '<div class="cc-sm-subir-layout"><div id="cc-sm-zip-fu-wrap"></div></div>' +
+            '<div class="cc-sm-subir-layout">' +
+                '<div class="cc-sm-subir-centered">' +
+                    '<div id="cc-sm-zip-fu-wrap"></div>' +
+                '</div>' +
+            '</div>' +
         '</div>';
     }
 

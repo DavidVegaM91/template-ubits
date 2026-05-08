@@ -121,16 +121,6 @@
 }
 .cc-sm-cp-swatch:hover { transform: scale(1.08); box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
 
-/* ── Context composer (igual que evaluaciones) ── */
-.cc-sm-context-label {
-    font-size: 13px; font-weight: 600;
-    color: var(--ubits-fg-1-medium);
-    font-family: var(--ubits-font-family-sans);
-    flex-shrink: 0;
-    display: block;
-    margin-bottom: 6px;
-}
-
 /* ── Color Picker Panel flotante ── */
 .cc-cp-panel {
     position: fixed;
@@ -252,6 +242,11 @@
 
 /* ── Tab subir ── */
 .cc-sm-subir-layout { flex: 1; display: flex; flex-direction: column; }
+.cc-sm-subir-centered {
+    width: 100%;
+    max-width: 600px;
+    margin: auto;
+}
 .cc-sm-subir-actions {
     display: flex;
     align-items: center;

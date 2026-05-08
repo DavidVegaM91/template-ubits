@@ -422,7 +422,7 @@
                     // Section 1: Avatar
                     '<div class="cc-vm-section">' +
                         '<div class="cc-vm-avatar-header">' +
-                            '<span class="cc-vm-avatar-header-label ubits-body-sm-semibold" style="color:var(--ubits-fg-1-medium);">Avatar</span>' +
+                            '<span class="cc-vm-avatar-header-label ubits-body-md-bold">Avatar</span>' +
                             '<div id="cc-vm-cat-select-wrap" style="width:200px;"></div>' +
                         '</div>' +
                         '<div class="cc-vm-avatar-grid" id="cc-vm-grid">' +
@@ -434,7 +434,7 @@
 
                     // Section 2: Guión
                     '<div class="cc-vm-section">' +
-                        '<p class="cc-vm-section-label">Guión</p>' +
+                        '<p class="cc-vm-section-label ubits-body-md-bold">Guión</p>' +
                         // IA input-box (always visible, no mini-tabs)
                         '<div class="ubits-ia-chat-thread__input-area">' +
                             '<div class="ai-panel__input-box" id="cc-vm-ia-input-box">' +
@@ -466,7 +466,6 @@
 
                     // Section 3: Logo
                     '<div class="cc-vm-section">' +
-                        '<p class="cc-vm-section-label">Logo de empresa <span class="cc-vm-optional">(opcional)</span></p>' +
                         '<div id="cc-vm-logo-fu-wrap"></div>' +
                     '</div>' +
 
@@ -501,19 +500,10 @@
         return (
             '<div class="cc-vmodal-panel cc-vmodal-panel--hidden" id="cc-vtab-enlace">' +
                 '<div class="cc-vmodal-enlace-layout">' +
-                    '<div id="cc-venlace-input-wrap"></div>' +
-                    '<div class="cc-vmodal-enlace-info">' +
-                        '<i class="far fa-circle-info" aria-hidden="true"></i>' +
-                        '<span class="ubits-body-sm-regular">Se admiten enlaces de YouTube, Vimeo, Google Drive y OneDrive.</span>' +
+                    '<div class="cc-vmodal-enlace-centered">' +
+                        '<p class="cc-vmodal-enlace-title">Pega el <span class="cc-vmodal-enlace-title-em">enlace del video</span> que quieres cargar</p>' +
+                        '<div id="cc-venlace-input-wrap"></div>' +
                     '</div>' +
-                '</div>' +
-                '<div class="cc-vmodal-actions-row">' +
-                    '<button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="cc-venlace-volver-ia">' +
-                        '<span>Volver</span>' +
-                    '</button>' +
-                    '<button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="cc-venlace-btn-cargar" disabled>' +
-                        '<i class="far fa-link"></i><span>Cargar video</span>' +
-                    '</button>' +
                 '</div>' +
             '</div>'
         );
@@ -523,15 +513,9 @@
         return (
             '<div class="cc-vmodal-panel cc-vmodal-panel--hidden" id="cc-vtab-subir">' +
                 '<div class="cc-vmodal-subir-layout">' +
-                    '<div id="cc-vsubir-fu-wrap"></div>' +
-                '</div>' +
-                '<div class="cc-vmodal-actions-row">' +
-                    '<button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="cc-subir-volver-ia">' +
-                        '<span>Volver</span>' +
-                    '</button>' +
-                    '<button type="button" class="ubits-button ubits-button--primary ubits-button--md" id="cc-vsubir-btn-confirmar" disabled>' +
-                        '<i class="far fa-check"></i><span>Usar video</span>' +
-                    '</button>' +
+                    '<div class="cc-vmodal-subir-centered">' +
+                        '<div id="cc-vsubir-fu-wrap"></div>' +
+                    '</div>' +
                 '</div>' +
             '</div>'
         );
@@ -573,6 +557,10 @@
     /* ── Tab switching ── */
     function switchToTab(tab) {
         _currentTab = tab;
+        // Si sales de Video IA, detener el preview para que no siga sonando en background.
+        if (tab !== 'ia') stopAvatarPreviewPlayback();
+        var overlay = document.getElementById(OVERLAY_ID);
+        if (overlay) overlay.classList.toggle('cc-vm--compact', tab !== 'ia');
         var bar = document.getElementById('cc-vmodal-tabbar');
         if (bar) {
             bar.querySelectorAll('[data-cc-vtab]').forEach(function (btn) {
@@ -592,6 +580,26 @@
         if (tab === 'subir' && !document.getElementById('cc-vsubir-fu')) {
             initSubirFileUpload();
         }
+        syncFooterCta();
+    }
+
+    function stopAvatarPreviewPlayback() {
+        var v = document.getElementById('cc-vm-av-preview-video');
+        if (!v) return;
+        try {
+            v.pause();
+            v.currentTime = 0;
+        } catch (e) { /* noop */ }
+    }
+
+    function syncFooterCta() {
+        var gen  = document.getElementById('cc-vm-btn-generar');
+        var link = document.getElementById('cc-venlace-btn-cargar');
+        var up   = document.getElementById('cc-vsubir-btn-confirmar');
+
+        if (gen)  gen.style.display  = _currentTab === 'ia' ? '' : 'none';
+        if (link) link.style.display = _currentTab === 'enlace' ? '' : 'none';
+        if (up)   up.style.display   = _currentTab === 'subir' ? '' : 'none';
     }
 
     /* ── Botones IA ── */
@@ -990,7 +998,7 @@
         global.createFileUpload({
             containerId: 'cc-vm-logo-fu-wrap',
             id: 'cc-vm-logo-fu',
-            title: 'Logo PNG',
+            title: 'Logo de la empresa (opcional)',
             accept: 'image/png,.png',
             maxSizeMb: 2,
             maxLabel: '2 MB',
@@ -1065,9 +1073,10 @@
         global.createInput({
             containerId: 'cc-venlace-input-wrap',
             type:        'text',
-            label:       'Enlace de video',
+            showLabel:   false,
+            label:       '',
             placeholder: 'https://www.youtube.com/watch?v=...',
-            size:        'md',
+            size:        'lg',
             helperText:  'Solo se admiten enlaces de YouTube, Vimeo, Google Drive y OneDrive.',
             showHelper:  true,
             onChange: function (val) {
@@ -1167,19 +1176,6 @@
         });
     }
 
-    function wireVolverIaButtons() {
-        var a = document.getElementById('cc-venlace-volver-ia');
-        if (a && !a._ccWired) {
-            a._ccWired = true;
-            a.addEventListener('click', function () { switchToTab('ia'); });
-        }
-        var b = document.getElementById('cc-subir-volver-ia');
-        if (b && !b._ccWired) {
-            b._ccWired = true;
-            b.addEventListener('click', function () { switchToTab('ia'); });
-        }
-    }
-
     function wireTabBar() {
         var bar = document.getElementById('cc-vmodal-tabbar');
         if (!bar || bar._ccTabBarWired) return;
@@ -1193,7 +1189,6 @@
 
     function initModalInteractions() {
         wireTabBar();
-        wireVolverIaButtons();
         initCategorySelect();
         wireAvatarGrid();
         initInsumoAttach();
@@ -1204,6 +1199,7 @@
         initLogoUpload();
         refreshIaButtons();
         updatePreviewStage(_selectedAvatar || AVATARS[0]);
+        syncFooterCta();
     }
 
     /* ══════════════════════════════════════
@@ -1279,6 +1275,12 @@
     ══════════════════════════════════════ */
     function buildVideoFooterHtml() {
         return '<div class="ubits-modal-footer__right">' +
+            '<button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="cc-venlace-btn-cargar" disabled style="display:none">' +
+                '<span>Cargar video</span>' +
+            '</button>' +
+            '<button type="button" class="ubits-button ubits-button--primary ubits-button--md" id="cc-vsubir-btn-confirmar" disabled style="display:none">' +
+                '<span>Cargar video</span>' +
+            '</button>' +
             '<button type="button" class="ubits-button ubits-button--primary ubits-button--md ubits-button--with-token-cost" id="cc-vm-btn-generar">' +
                 '<span class="ubits-button__token-cost" aria-hidden="true">' +
                     '<span class="ubits-button__token-number">' + VIDEO_GEN_TOKEN_COST + '</span>' +
@@ -1314,12 +1316,17 @@
             size:                'lg',
             closeOnOverlayClick: false,
             footerHtml:          buildVideoFooterHtml(),
+            onClose: function () {
+                stopAvatarPreviewPlayback();
+            }
         });
 
         if (overlay) applyAiModalChrome(overlay);
 
         setTimeout(function () {
             initModalInteractions();
+            // Estado inicial: IA = ancho grande, otros = compacto.
+            switchToTab(_currentTab || 'ia');
         }, 0);
     }
 
