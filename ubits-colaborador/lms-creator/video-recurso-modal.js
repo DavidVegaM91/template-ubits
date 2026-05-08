@@ -418,6 +418,17 @@
 
                 // ── Left column ──
                 '<div class="cc-vm-left-col">' +
+                    '<div class="cc-vm-ia-duration-alert ubits-alert ubits-alert--info">' +
+                        '<div class="ubits-alert__icon">' +
+                            '<i class="far fa-info-circle"></i>' +
+                        '</div>' +
+                        '<div class="ubits-alert__content">' +
+                            '<div class="ubits-alert__text">Los videos generados tienen máximo 2 minutos de duración.</div>' +
+                        '</div>' +
+                        '<button type="button" class="ubits-alert__close" aria-label="Cerrar alerta">' +
+                            '<i class="far fa-times"></i>' +
+                        '</button>' +
+                    '</div>' +
 
                     // Section 1: Avatar
                     '<div class="cc-vm-section">' +
@@ -1193,8 +1204,21 @@
         });
     }
 
+    function wireDurationInfoAlertClose() {
+        var panel = document.getElementById('cc-vtab-ia');
+        if (!panel || panel._ccDurationAlertCloseWired) return;
+        panel._ccDurationAlertCloseWired = true;
+        panel.addEventListener('click', function (e) {
+            var btn = e.target.closest('.cc-vm-ia-duration-alert .ubits-alert__close');
+            if (!btn || !panel.contains(btn)) return;
+            var alertEl = btn.closest('.cc-vm-ia-duration-alert');
+            if (alertEl) alertEl.remove();
+        });
+    }
+
     function initModalInteractions() {
         wireTabBar();
+        wireDurationInfoAlertClose();
         initCategorySelect();
         wireAvatarGrid();
         initInsumoAttach();
