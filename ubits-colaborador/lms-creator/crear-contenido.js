@@ -232,6 +232,26 @@
         '../../images/cards-learn/portadas-ia/07-personas-en-oficina.jpg'
     ];
 
+    /**
+     * Cada nueva solicitud «generar» elige al azar otra portada del pool (distinta del índice actual si hay >1),
+     * para que al borrar la imagen y volver al flujo no se repita siempre la misma primera opción.
+     */
+    function randomizePortadaAiImageIndexForNewGeneration() {
+        var n = AI_IMAGES.length;
+        if (n <= 1) return;
+        var prev = portadaiAImagesIndex;
+        var next = Math.floor(Math.random() * n);
+        var tries = 0;
+        while (next === prev && tries < 16) {
+            next = Math.floor(Math.random() * n);
+            tries += 1;
+        }
+        if (next === prev) {
+            next = (prev + 1) % n;
+        }
+        portadaiAImagesIndex = next;
+    }
+
     /** IA Loader UBITS (16:9 oficial); el host respeta max-width del contenedor (.cc-portada-ai-generating). */
     function getPortadaAiGeneratingInnerHtml(opts) {
         opts = opts || {};
@@ -442,6 +462,7 @@
             welcomeSubtitle: 'Escribe una idea y generaremos una imagen de ejemplo para tu portada.',
             tokensBadge: { value: window._ubitsAiTokenPool != null ? window._ubitsAiTokenPool : portadaAiTokensRemaining },
             onSend: function () {
+                randomizePortadaAiImageIndexForNewGeneration();
                 var loadingHtml = getPortadaAiGeneratingHtml({ id: 'cc-portada-ai-panel-loading-root' });
                 if (typeof addAIPanelMessage === 'function') {
                     addAIPanelMessage('', 'ai', null, {
@@ -496,7 +517,7 @@
     function initPortadaAiModal() {
         if (typeof openModal !== 'function') return;
 
-        var bodyHtml = '<div class="ai-modal-wrapper" style="display:flex; flex-direction:column; align-items:center; justify-content:center; padding: 0; flex:1; width:100%;">' +
+        var bodyHtml = '<div class="ai-modal-wrapper">' +
             '<div id="ai-modal-input-view" style="width:100%; max-width:600px; transition: opacity 0.3s; z-index:1; padding: 0;">' +
                 '<div style="display:flex; flex-direction:column; align-items:center; gap:16px; margin-bottom:32px;">' +
                     '<p style="text-align:center; margin:0; font-size:1.5rem; color:var(--ubits-fg-1-high);">Tú lo imaginas, nosotros <span style="font-weight:600;background:linear-gradient(90deg,var(--modo-ia-gradient-a),var(--modo-ia-gradient-b),var(--modo-ia-gradient-c),var(--modo-ia-gradient-d));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;">lo generamos</span></p>' +
@@ -510,7 +531,7 @@
                     '</div>' +
                 '</div>' +
             '</div>' +
-            '<div id="ai-modal-loader-view" class="cc-portada-ai-generating" style="display:none; z-index:1; padding: 40px 0;" aria-busy="true">' +
+            '<div id="ai-modal-loader-view" class="cc-portada-ai-generating portada-ia-modal__loader-phase" style="display:none; z-index:1;" aria-busy="true">' +
                 getPortadaAiGeneratingInnerHtml({}) +
             '</div>' +
             '<div id="ai-modal-result-view" style="display:none; width:100%; text-align:center; flex-direction:column; align-items:center; z-index:1; padding: 0;">' +
@@ -584,6 +605,7 @@
         }
         
         var modalContent = overlay.querySelector('.ubits-modal-content');
+        var modalBody = overlay.querySelector('.ubits-modal-body');
         if (modalContent) {
             modalContent.classList.add('portada-ia-modal-content');
             modalContent.style.backgroundColor = 'var(--surface-default, #FFFFFF)';
@@ -598,7 +620,6 @@
                 modalHeader.style.borderBottom = '';
             }
             
-            var modalBody = overlay.querySelector('.ubits-modal-body');
             if (modalBody) {
                 modalBody.style.padding = 'var(--padding-xl, 32px)';
                 modalBody.style.overflow = 'visible';
@@ -619,6 +640,7 @@
         function generate() {
             var val = inputEl.value.trim();
             if (!val) return;
+            randomizePortadaAiImageIndexForNewGeneration();
             inputView.style.display = 'none';
             loaderView.style.display = 'flex';
             

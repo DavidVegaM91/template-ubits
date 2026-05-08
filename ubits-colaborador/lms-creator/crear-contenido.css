@@ -811,6 +811,34 @@ body.crear-contenido-app-open .ubits-dropdown-menu__content {
     }
 }
 
+/*
+ * Modal «Generar portada con IA» (#portada-ai-modal): mismo cuerpo centrado en vertical
+ * para bienvenida, loader y resultado (sin encoger el modal en la fase de carga).
+ */
+#portada-ai-modal .portada-ia-modal-content .ubits-modal-body {
+    flex: 1 1 auto;
+    min-height: 0;
+    justify-content: center;
+}
+
+#portada-ai-modal .ai-modal-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    width: 100%;
+    flex: 0 1 auto;
+    min-height: 0;
+    padding: 0;
+}
+
+/* Loader: aire vertical acorde al resto del modal (antes 40px inline; sin achicar la caja del modal). */
+#portada-ai-modal .portada-ia-modal__loader-phase.cc-portada-ai-generating {
+    padding-block: var(--padding-xl);
+    padding-inline: 0;
+}
+
 /* IA Loader dentro del hueco de portada/modal (misma huella que la imagen: hasta 600px × 16:9 oficial del componente) */
 .cc-portada-ai-generating {
     display: flex;
