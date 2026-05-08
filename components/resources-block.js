@@ -21,7 +21,8 @@
         'embebido',
         'scorm',
         'evaluacion-final',
-        'encuesta-libre'
+        'encuesta-libre',
+        'encuesta'
     ];
 
     var RESOURCES_BLOCK_VARIANTS_ORDER = [

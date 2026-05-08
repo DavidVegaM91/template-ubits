@@ -17,7 +17,7 @@
     box-sizing: border-box;
 }
 
-/* —— Default: título + rejilla de 8 tarjetas (mismo paso que Resources card) —— */
+/* —— Default: título + rejilla del selector de tipo de recurso (resources-card) —— */
 .ubits-resources-block--default {
     background: var(--ubits-bg-1);
     border: 1px solid var(--ubits-border-1);
