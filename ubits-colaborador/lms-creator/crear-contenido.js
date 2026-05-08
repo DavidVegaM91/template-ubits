@@ -221,17 +221,15 @@
     if (window._ubitsAiTokenPool == null) window._ubitsAiTokenPool = 200;
     var portadaAiTokensRemaining = window._ubitsAiTokenPool;
 
+    /** Simulación «portada generada por IA»: rotación local (images/cards-learn/portadas-ia). */
     var AI_IMAGES = [
-        'https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80',
-        'https://images.unsplash.com/photo-1517048676732-d65bc937f952?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80',
-        'https://images.unsplash.com/photo-1521737604893-d14cc237f11d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80',
-        'https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80',
-        'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80',
-        'https://images.unsplash.com/photo-1515169067868-5387ec356754?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80',
-        'https://images.unsplash.com/photo-1531482615713-2afd69097998?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80',
-        'https://images.unsplash.com/photo-1556761175-4b46a572b786?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80',
-        'https://images.unsplash.com/photo-1600880292203-757bb62b4baf?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80',
-        'https://images.unsplash.com/photo-1557804506-669a67965ba0?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80'
+        '../../images/cards-learn/portadas-ia/01-personas-en-oficina.jpg',
+        '../../images/cards-learn/portadas-ia/02-personas-en-oficina.jpg',
+        '../../images/cards-learn/portadas-ia/03-personas-en-oficina.jpg',
+        '../../images/cards-learn/portadas-ia/04-personas-en-oficina.jpg',
+        '../../images/cards-learn/portadas-ia/05-personas-en-oficina.jpg',
+        '../../images/cards-learn/portadas-ia/06-personas-en-oficina.jpg',
+        '../../images/cards-learn/portadas-ia/07-personas-en-oficina.jpg'
     ];
 
     /** IA Loader UBITS (16:9 oficial); el host respeta max-width del contenedor (.cc-portada-ai-generating). */
