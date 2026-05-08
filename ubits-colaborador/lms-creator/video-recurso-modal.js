@@ -322,14 +322,14 @@
         if (isLocal) {
             return (
                 '<video class="cc-video-local-player" src="' + esc(src) + '" controls playsinline ' +
-                'style="width:100%;aspect-ratio:16/9;background:#000;display:block;border-radius:var(--border-radius-md)"></video>'
+                'style="width:100%;height:100%;display:block;object-fit:contain;background-color:var(--ubits-bg-2)"></video>'
             );
         }
         if (typeof global.videoPlayerHtml === 'function') {
             return global.videoPlayerHtml({ type: type, src: src, className: 'is-forced-16-9' });
         }
         return (
-            '<iframe src="' + esc(src) + '" frameborder="0" style="width:100%;aspect-ratio:16/9;display:block" ' +
+            '<iframe src="' + esc(src) + '" frameborder="0" style="width:100%;height:100%;display:block;border:none" ' +
             'allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture" allowfullscreen></iframe>'
         );
     }

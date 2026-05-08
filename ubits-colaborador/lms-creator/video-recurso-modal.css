@@ -568,10 +568,47 @@
     flex: 1;
 }
 
+/* ── Recurso video incrustado: marco 16:9 estable ──
+   El surface base (.ubits-resources-block__surface) usa min-height: 308px en desktop,
+   lo que deforma el contenedor cuando el ancho “medio” del preview implica menos alto
+   que 16:9 (o sobra banda vacía). Aspect-ratio en el surface + reproductor a altura completa. */
+.cc-video-resource__surface.ubits-resources-block__surface {
+    position: relative;
+    min-height: 0 !important;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+}
+
 /* ── Recurso video incrustado: tag «Generado con IA» sobre el reproductor ── */
 .cc-video-resource__player-wrap {
-    position: relative;
+    position: absolute;
+    inset: 0;
+    width: auto;
+    height: auto;
+}
+
+.cc-video-resource__player-wrap iframe,
+.cc-video-resource__player-wrap video {
     width: 100%;
+    height: 100%;
+    aspect-ratio: unset !important;
+    display: block;
+    border-radius: var(--border-radius-lg);
+    box-sizing: border-box;
+}
+
+/* Por encima de iframe.ubits-video-player y .is-forced-16-9 (!important en video-player.css). */
+.cc-video-resource__player-wrap iframe.ubits-video-player,
+.cc-video-resource__player-wrap video.ubits-video-player {
+    width: 100%;
+    height: 100%;
+    aspect-ratio: unset !important;
+    border-radius: var(--border-radius-lg);
+}
+
+.cc-video-resource__player-wrap video {
+    object-fit: contain;
+    background-color: var(--ubits-bg-2);
 }
 
 .cc-video-resource__generado-ia-host {
