@@ -130,8 +130,9 @@ function renderPlanCard(plan) {
 }
 
 function renderPlansInterface() {
-    const container = document.getElementById('plans-content');
-    if (!container) return;
+    const mountEnCurso = document.getElementById('plans-section-en-curso');
+    const mountFinalizado = document.getElementById('plans-section-finalizado');
+    if (!mountEnCurso || !mountFinalizado) return;
 
     // SIEMPRE usar BD unificada para los plan-cards. Sin fallback a datos quemados.
     var db = typeof window !== 'undefined' ? window.TAREAS_PLANES_DB : (typeof TAREAS_PLANES_DB !== 'undefined' ? TAREAS_PLANES_DB : null);
@@ -170,12 +171,13 @@ function renderPlansInterface() {
     const pageFinishedData = finished.slice(sliceStartFinished, sliceEndFinished);
 
     if (estadoPlanes.loading) {
-        container.innerHTML = '<div class="plans-loading">Cargando planes...</div>';
+        mountEnCurso.innerHTML = '<div class="plans-loading">Cargando planes...</div>';
+        mountFinalizado.innerHTML = '';
         return;
     }
 
     if (inProgress.length === 0 && finished.length === 0) {
-        container.innerHTML = `
+        mountEnCurso.innerHTML = `
             <div class="plans-empty">
                 <div class="plans-empty__content">
                     <div class="plans-empty__visual">
@@ -191,14 +193,13 @@ function renderPlansInterface() {
                 </div>
             </div>
         `;
+        mountFinalizado.innerHTML = '';
         const btn = document.getElementById('plans-empty-create');
         if (btn) btn.addEventListener('click', openPlanDrawer);
         return;
     }
 
-    container.innerHTML = `
-        <div class="plans-sections">
-            <!-- En curso -->
+    mountEnCurso.innerHTML = `
             <div class="plan-section">
                 <div class="plan-section__header">
                     <div class="plan-section__top">
@@ -242,8 +243,9 @@ function renderPlansInterface() {
                     </div>
                 `}
             </div>
+    `;
 
-            <!-- Finalizado -->
+    mountFinalizado.innerHTML = `
             <div class="plan-section">
                 <div class="plan-section__header">
                     <div class="plan-section__top">
@@ -286,25 +288,26 @@ function renderPlansInterface() {
                     </div>
                 `}
             </div>
-        </div>
     `;
 
-    // Event listeners
-    container.querySelectorAll('.plan-card').forEach(card => {
-        card.addEventListener('click', () => {
-            const id = card.dataset.planId;
-            if (id) handlePlanClick(id);
-        });
-        card.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault();
+    // Event listeners (ambos montajes)
+    [mountEnCurso, mountFinalizado].forEach(function (root) {
+        root.querySelectorAll('.plan-card').forEach(function (card) {
+            card.addEventListener('click', function () {
                 const id = card.dataset.planId;
                 if (id) handlePlanClick(id);
-            }
+            });
+            card.addEventListener('keydown', function (e) {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    const id = card.dataset.planId;
+                    if (id) handlePlanClick(id);
+                }
+            });
         });
     });
 
-    container.querySelectorAll('[data-filter]').forEach(btn => {
+    mountEnCurso.querySelectorAll('[data-filter]').forEach(btn => {
         btn.addEventListener('click', () => {
             estadoPlanes.filterInProgress = btn.dataset.filter;
             estadoPlanes.pageInProgress = 1;
@@ -312,7 +315,7 @@ function renderPlansInterface() {
         });
     });
 
-    container.querySelectorAll('[data-filter-finished]').forEach(btn => {
+    mountFinalizado.querySelectorAll('[data-filter-finished]').forEach(btn => {
         btn.addEventListener('click', () => {
             estadoPlanes.filterFinished = btn.dataset.filterFinished;
             estadoPlanes.pageFinished = 1;

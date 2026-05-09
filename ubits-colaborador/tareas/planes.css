@@ -1026,23 +1026,7 @@
     min-width: 140px;
 }
 
-/* Secciones En curso / Finalizado - alineado con .task-group-home (gap 24px, margin-top en tablet) */
-.plans-sections {
-    display: flex;
-    flex-direction: column;
-    gap: var(--gap-2xl, 24px);
-    padding: 0;
-    width: 100%;
-    max-width: 100%;
-    min-width: 0;
-    box-sizing: border-box;
-}
-
-@media (max-width: 1024px) {
-    .plans-sections {
-        margin-top: var(--padding-lg, 16px);
-    }
-}
+/* En curso / Finalizado: cada bloque vive en su propia .section-single; el gap vertical lo da .content-sections */
 
 /* Card list container - alineado con .task-group-card-list (padding 16px, border-radius-md, color-bg-1) */
 .plan-section {
