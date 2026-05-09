@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="../../images/Ubits-logo-dark.svg">
+    <title>Color picker | UBITS Playground</title>
+
+    <link rel="stylesheet" href="../../general-styles/ubits-colors.css">
+    <link rel="stylesheet" href="../../general-styles/styles.css">
+    <link rel="stylesheet" href="../../general-styles/fontawesome-icons.css">
+    <link rel="stylesheet" href="../../general-styles/ubits-typography.css">
+    <link rel="stylesheet" href="../../components/sub-nav.css">
+    <link rel="stylesheet" href="../../components/alert.css">
+    <link rel="stylesheet" href="../../components/sidebar.css">
+    <link rel="stylesheet" href="../../docs/docs-sidebar.css">
+    <link rel="stylesheet" href="../../docs/docstyles.css">
+    <link rel="stylesheet" href="../../components/button.css">
+    <link rel="stylesheet" href="../../components/toast.css">
+    <link rel="stylesheet" href="../../components/input.css">
+    <link rel="stylesheet" href="../../components/color-picker.css">
+    <style>
+        .cp-doc-swatch {
+            width: var(--size-4xl);
+            height: var(--size-4xl);
+            border-radius: var(--border-radius-sm);
+            border: 2px solid var(--ubits-border-1);
+            box-sizing: border-box;
+            padding: 0;
+            margin: 0;
+            appearance: none;
+            -webkit-appearance: none;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+        .cp-doc-swatch:focus {
+            outline: 2px solid var(--ubits-accent-brand);
+            outline-offset: 2px;
+        }
+    </style>
+</head>
+<body class="componentes-page" data-theme="light">
+    <div class="dashboard-container">
+        <main class="main-content">
+            <div id="top-nav-container"></div>
+            <div style="display: flex;">
+                <div id="docs-dropdown-container"></div>
+                <div id="docs-sidebar-container"></div>
+
+                <div class="components-content">
+                    <div class="content-area" style="display: block; width: 100%;">
+                        <div style="text-align: center; margin-bottom: 60px;">
+                            <h1 class="ubits-display-d2-bold" style="margin-bottom: 24px; color: var(--ubits-accent-brand);">
+                                Color picker
+                            </h1>
+                            <p class="ubits-body-md-regular" style="max-width: 800px; margin: 0 auto 32px; line-height: 1.6;">
+                                Selector de color en panel flotante para elegir un color con precisión sin salir del contexto. Sirve junto a un disparador cuadrado (como en el modal SCORM del LMS Creator): el usuario ajusta saturación y brillo, el matiz y el código hexadecimal, y el color se aplica al elemento anclado al cerrar o mientras arrastra.
+                            </p>
+                        </div>
+
+                        <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; margin-bottom: 40px;">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-eye" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Preview del componente
+                            </h2>
+                            <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6;">
+                                Pulsa el cuadrado de color para abrir el panel. Puedes fijar un color de partida con los botones de muestra antes de abrir. Escape o clic fuera cierran el panel.
+                            </p>
+
+                            <div style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin-bottom: 20px;">
+                                <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Color inicial:</span>
+                                <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn active" data-cp-preset="#0C5BEF" onclick="cpSetPreset(this, '#0C5BEF')">
+                                    <span>Marca</span>
+                                </button>
+                                <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-cp-preset="#1B5E20" onclick="cpSetPreset(this, '#1B5E20')">
+                                    <span>Verde</span>
+                                </button>
+                                <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-cp-preset="#B71C1C" onclick="cpSetPreset(this, '#B71C1C')">
+                                    <span>Rojo</span>
+                                </button>
+                            </div>
+
+                            <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: 12px; display: flex; flex-wrap: wrap; align-items: center; gap: var(--gap-lg);">
+                                <button type="button" class="cp-doc-swatch" id="cp-demo-anchor" title="Abrir selector de color" aria-label="Abrir selector de color"></button>
+                            </div>
+                        </div>
+
+                        <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; margin-bottom: 40px;">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-info-circle" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Características generales
+                            </h2>
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
+                                <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-crosshairs"></i></div>
+                                    <div class="ubits-body-sm-bold">Área saturación / brillo</div>
+                                    <div class="ubits-body-sm-regular">Lona interactiva con cursor circular para afinar el color sobre el matiz elegido.</div>
+                                </div>
+                                <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-palette"></i></div>
+                                    <div class="ubits-body-sm-bold">Franja de matiz</div>
+                                    <div class="ubits-body-sm-regular">Recorre el arco iris de tonos y actualiza la vista previa y el valor hexadecimal.</div>
+                                </div>
+                                <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-hashtag"></i></div>
+                                    <div class="ubits-body-sm-bold">Entrada HEX</div>
+                                    <div class="ubits-body-sm-regular">Campo de texto oficial UBITS (createInput): código con almohadilla y seis hexadecimales para fijar el color.</div>
+                                </div>
+                                <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-anchor"></i></div>
+                                    <div class="ubits-body-sm-bold">Anclaje flotante</div>
+                                    <div class="ubits-body-sm-regular">El panel se posiciona junto al disparador y puede pintar su fondo al elegir color, como un muestrario.</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; margin-bottom: 40px;">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-comments" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Prompts útiles
+                            </h2>
+                            <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6; color: var(--ubits-fg-1-medium);">
+                                Copia el prompt, reemplaza lo que va entre [corchetes] y pide a Cursor que lo aplique. Enlaza input.css y color-picker.css; input.js antes de color-picker.js. Cuentagotas (EyeDropper): button.css y fontawesome-icons.css.
+                            </p>
+                            <div id="cp-warning-alert" style="margin-bottom: 32px;"></div>
+
+                            <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
+                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                                    <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Abrir color picker junto a un disparador</h3>
+                                    <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('cp-prompt-1')">
+                                        <i class="far fa-copy"></i>
+                                        <span>Copiar</span>
+                                    </button>
+                                </div>
+                                <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
+                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="cp-prompt-1">En [ubicación de la pantalla], al hacer clic en [elemento disparador], abre el Color picker UBITS anclado a ese elemento con color inicial [código HEX]. Importa input.css y color-picker.css; input.js antes de color-picker.js; para cuentagotas (EyeDropper) button.css y fontawesome-icons.css. Mientras el usuario elige color, actualiza [texto o vista que debe reflejar el HEX]. Al cerrar el panel, [describe persistencia o validación].</code></pre>
+                                </div>
+                            </div>
+
+                            <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
+                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                                    <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Sincronizar con un campo existente</h3>
+                                    <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('cp-prompt-2')">
+                                        <i class="far fa-copy"></i>
+                                        <span>Copiar</span>
+                                    </button>
+                                </div>
+                                <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
+                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="cp-prompt-2">Cuando el usuario abra el selector desde [disparador], usa openColorPickerPopover con initialHex leído de [origen del valor]. En onChange escribe el HEX en [variable o input oculto] y refresca [preview]. Si hace falta forzar un color por código, usa el objeto devuelto: setHex con un string tipo almohadilla y seis caracteres hexadecimales.</code></pre>
+                                </div>
+                            </div>
+
+                            <div>
+                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                                    <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Cerrar desde la página</h3>
+                                    <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('cp-prompt-3')">
+                                        <i class="far fa-copy"></i>
+                                        <span>Copiar</span>
+                                    </button>
+                                </div>
+                                <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
+                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="cp-prompt-3">Si [condición, p. ej. cerrar modal padre], llama a closeColorPickerPopover para asegurarte de que no quede el panel flotante encima. Opcionalmente en onClose de openColorPickerPopover limpia [referencias o listeners] de la pantalla.</code></pre>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="background: var(--ubits-bg-1); border-radius: 16px; margin-bottom: 40px; overflow: hidden;">
+                            <div style="padding: 32px; text-align: center; border-bottom: 1px solid var(--ubits-border-1);">
+                                <h2 class="ubits-heading-h2" style="margin-bottom: 0; color: var(--ubits-fg-1-high);">
+                                    <i class="far fa-code" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                    Documentación técnica
+                                </h2>
+                                <p class="ubits-body-md-regular" style="margin-top: 16px; color: var(--ubits-fg-1-medium);">
+                                    API global, estructura generada por el script y requisitos de estilos.
+                                </p>
+                            </div>
+                            <div style="background: var(--ubits-bg-2); padding: 20px; text-align: center; cursor: pointer;" onclick="toggleTechnicalDocs()">
+                                <span class="ubits-body-md-regular" style="color: var(--ubits-accent-brand); display: flex; align-items: center; justify-content: center; gap: 8px;">
+                                    <i class="far fa-chevron-down" style="transition: transform 0.3s ease;"></i>
+                                    Mostrar
+                                </span>
+                            </div>
+                            <div id="technical-docs-content" style="display: none; padding: 0;">
+                                <div style="padding: 32px; border-bottom: 1px solid var(--ubits-border-1);">
+                                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;">
+                                        <h2 class="ubits-heading-h2" style="margin: 0; color: var(--ubits-fg-1-high);">
+                                            <i class="far fa-sitemap" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                            Estructura del componente
+                                        </h2>
+                                        <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('cp-structure-code')">
+                                            <i class="far fa-copy"></i>
+                                            <span>Copiar</span>
+                                        </button>
+                                    </div>
+                                    <p class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); margin-bottom: 16px;">
+                                        El script crea un único nodo raíz fijo en el body. Equivalente HTML interno (simplificado):
+                                    </p>
+                                    <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
+                                        <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code id="cp-structure-code">&lt;div class="ubits-color-picker" role="dialog" aria-label="Selector de color"&gt;
+  &lt;div class="ubits-color-picker__sv-wrap"&gt;
+    &lt;canvas class="ubits-color-picker__sv-canvas" width="228" height="148"&gt;&lt;/canvas&gt;
+    &lt;div class="ubits-color-picker__sv-cursor"&gt;&lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class="ubits-color-picker__controls"&gt;
+    &lt;div class="ubits-color-picker__controls-left"&gt;
+      &lt;!-- Solo si window.EyeDropper existe --&gt;
+      &lt;button type="button" class="ubits-color-picker__eyedropper ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only"&gt;&lt;i class="far fa-eye-dropper"&gt;&lt;/i&gt;&lt;/button&gt;
+      &lt;div class="ubits-color-picker__preview"&gt;&lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class="ubits-color-picker__hue-wrap"&gt;
+      &lt;div class="ubits-color-picker__hue-track"&gt;
+        &lt;canvas class="ubits-color-picker__hue-canvas" width="156" height="14"&gt;&lt;/canvas&gt;
+        &lt;div class="ubits-color-picker__hue-thumb"&gt;&lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class="ubits-color-picker__hex"&gt;
+    &lt;div id="ubits-cp-hex-N" class="ubits-color-picker__hex-mount"&gt;&lt;/div&gt;
+    &lt;!-- createInput monta label + .ubits-input aquí --&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+                                    </div>
+                                </div>
+                                <div style="padding: 32px; border-bottom: 1px solid var(--ubits-border-1);">
+                                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;">
+                                        <h2 class="ubits-heading-h2" style="margin: 0; color: var(--ubits-fg-1-high);">
+                                            <i class="far fa-tags" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                            Clases disponibles
+                                        </h2>
+                                        <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('cp-classes-code')">
+                                            <i class="far fa-copy"></i>
+                                            <span>Copiar</span>
+                                        </button>
+                                    </div>
+                                    <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
+                                        <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code id="cp-classes-code">.ubits-color-picker              /* panel fijo; z-index por defecto 2000 */
+.ubits-color-picker__sv-wrap    /* contenedor relativo del lienzo SV */
+.ubits-color-picker__sv-canvas
+.ubits-color-picker__sv-cursor  /* indicador en el lienzo SV; pointer-events none */
+.ubits-color-picker__controls
+.ubits-color-picker__controls-left
+.ubits-color-picker__eyedropper  /* opcional; botón secondary icon-only si EyeDropper */
+.ubits-color-picker__preview     /* círculo de vista previa */
+.ubits-color-picker__hue-wrap
+.ubits-color-picker__hue-track
+.ubits-color-picker__hue-canvas
+.ubits-color-picker__hue-thumb
+.ubits-color-picker__hex
+.ubits-color-picker__hex-mount   /* contenedor id para createInput */
+/* Dentro: .ubits-input-label, .ubits-input-wrapper, .ubits-input (oficial) */
+</code></pre>
+                                    </div>
+                                </div>
+                                <div style="padding: 32px;">
+                                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;">
+                                        <h2 class="ubits-heading-h2" style="margin: 0; color: var(--ubits-fg-1-high);">
+                                            <i class="far fa-code-branch" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                            Cómo implementar
+                                        </h2>
+                                        <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('cp-implementation-code')">
+                                            <i class="far fa-copy"></i>
+                                            <span>Copiar</span>
+                                        </button>
+                                    </div>
+                                    <div style="background: var(--ubits-feedback-bg-warning-subtle); border: 1px solid var(--ubits-feedback-accent-warning); padding: 16px; border-radius: 8px; margin-bottom: 16px;">
+                                        <h3 class="ubits-body-md-bold" style="margin-bottom: 8px; color: var(--ubits-fg-1-high);">Obligatorio: CSS y JS</h3>
+                                        <p class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); line-height: 1.5; margin: 0;">
+                                            Obligatorio: <code>color-picker.css</code>, <code>input.css</code> y <code>input.js</code> (antes de <code>color-picker.js</code>) para el campo HEX vía <code>createInput</code>. Cuentagotas si <code>EyeDropper</code>: <code>button.css</code> y <code>fontawesome-icons.css</code>. Solo un panel activo a la vez.
+                                        </p>
+                                    </div>
+                                    <div style="background: var(--ubits-bg-2); padding: 16px; border-radius: 8px; margin-bottom: 16px;">
+                                        <h3 class="ubits-body-md-bold" style="margin-bottom: 12px; color: var(--ubits-fg-1-high);">Referencia en producto</h3>
+                                        <p class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); line-height: 1.5; margin: 0;">
+                                            LMS Creator: modal recurso SCORM (<code>scorm-recurso-modal.js</code>, fila de color del embebido). La página <code>crear-contenido.html</code> ya enlaza <code>input.css</code>, <code>input.js</code>, <code>color-picker.css</code> y <code>color-picker.js</code> (orden correcto respecto al modal).
+                                        </p>
+                                    </div>
+                                    <div style="background: var(--ubits-bg-2); padding: 16px; border-radius: 8px; margin-bottom: 16px;">
+                                        <h3 class="ubits-body-md-bold" style="margin-bottom: 8px; color: var(--ubits-fg-1-high);">Parámetros de openColorPickerPopover</h3>
+                                        <ul class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); line-height: 1.6; margin: 0; padding-left: 20px;">
+                                            <li><strong>anchorEl</strong> (HTMLElement): elemento de referencia para posicionar y para pintar <code>background</code> con el HEX en vivo.</li>
+                                            <li><strong>initialHex</strong> (string, opcional): formato <code>#RRGGBB</code>; si no es válido se usa azul marca por defecto.</li>
+                                            <li><strong>onChange</strong> (función opcional): recibe el HEX en mayúsculas cada vez que cambia el color.</li>
+                                            <li><strong>onClose</strong> (función opcional): al cerrar por Escape, clic fuera o <code>close()</code>.</li>
+                                            <li><strong>zIndex</strong> (número opcional): por defecto el CSS del panel aplica 2000; puedes subirlo si queda bajo otros overlays.</li>
+                                        </ul>
+                                        <p class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); margin-top: 12px; margin-bottom: 0;">
+                                            Retorno: <code>null</code> si falta ancla; si no, <code>{ close, getHex, setHex }</code>. <code>closeColorPickerPopover()</code> cierra el singleton sin ancla.
+                                        </p>
+                                    </div>
+                                    <div style="background: var(--ubits-bg-2); padding: 16px; border-radius: 8px; margin-bottom: 16px;">
+                                        <h3 class="ubits-body-md-bold" style="margin-bottom: 8px; color: var(--ubits-fg-1-high);">Notas</h3>
+                                        <ul class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); line-height: 1.6; margin: 0; padding-left: 20px;">
+                                            <li>Los gradientes del lienzo SV y del matiz usan RGB estándar del modelo HSV, no tokens de marca.</li>
+                                            <li>Cuentagotas: solo si <code>typeof EyeDropper === "function"</code> (Chrome, Edge, Safari reciente). Al muestrear se quita temporalmente el cierre por clic fuera para no cerrar el panel antes de elegir el píxel. Firefox u otros sin API no muestran el botón.</li>
+                                            <li>Clic fuera no cierra si el objetivo es el propio <code>anchorEl</code> (evita cierre inmediato en algunos flujos).</li>
+                                            <li>El HEX se monta con <code>createInput</code> (<code>labelPosition: 'left'</code>, tamaño <code>sm</code>).</li>
+                                        </ul>
+                                    </div>
+                                    <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
+                                        <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code id="cp-implementation-code">&lt;link rel="stylesheet" href="../../general-styles/ubits-colors.css"&gt;
+&lt;link rel="stylesheet" href="../../general-styles/fontawesome-icons.css"&gt;
+&lt;link rel="stylesheet" href="../../components/input.css"&gt;
+&lt;link rel="stylesheet" href="../../components/button.css"&gt;
+&lt;link rel="stylesheet" href="../../components/color-picker.css"&gt;
+&lt;button type="button" id="mi-swatch" class="mi-swatch" aria-label="Elegir color"&gt;&lt;/button&gt;
+&lt;script src="../../components/input.js"&gt;&lt;/script&gt;
+&lt;script src="../../components/color-picker.js"&gt;&lt;/script&gt;
+&lt;script&gt;
+  var sw = document.getElementById('mi-swatch');
+  var colorHex = '#0C5BEF';
+  sw.style.width = 'var(--size-4xl)';
+  sw.style.height = 'var(--size-4xl)';
+  sw.style.borderRadius = 'var(--border-radius-sm)';
+  sw.style.background = colorHex;
+  sw.addEventListener('click', function () {
+    openColorPickerPopover({
+      anchorEl: sw,
+      initialHex: colorHex,
+      onChange: function (hex) {
+        colorHex = hex;
+        var out = document.getElementById('hex-out');
+        if (out) out.textContent = hex;
+      }
+    });
+  });
+&lt;/script&gt;</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div id="ubits-toast-container"></div>
+
+    <script src="../../components/sidebar.js"></script>
+    <script src="../../components/sub-nav.js"></script>
+    <script src="../../components/alert.js"></script>
+    <script src="../../components/toast.js"></script>
+    <script src="../../components/input.js"></script>
+    <script src="../../components/color-picker.js"></script>
+    <script src="../../docs/docs-sidebar.js"></script>
+    <script src="../../script.js"></script>
+    <script>
+        var cpDemoHex = '#0C5BEF';
+
+        function cpApplySwatch() {
+            var a = document.getElementById('cp-demo-anchor');
+            if (a) a.style.background = cpDemoHex;
+        }
+
+        function cpSetPreset(btn, hex) {
+            cpDemoHex = hex;
+            cpApplySwatch();
+            document.querySelectorAll('.preview-control-btn[data-cp-preset]').forEach(function (b) {
+                b.classList.toggle('active', b === btn);
+            });
+        }
+
+        function cpOpenFromAnchor() {
+            var anchor = document.getElementById('cp-demo-anchor');
+            if (!anchor || typeof openColorPickerPopover !== 'function') return;
+            openColorPickerPopover({
+                anchorEl: anchor,
+                initialHex: cpDemoHex,
+                onChange: function (hex) {
+                    cpDemoHex = hex;
+                },
+                onClose: function () {
+                    cpApplySwatch();
+                }
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            if (typeof loadSubNav === 'function') loadSubNav('top-nav-container', 'documentacion');
+            if (typeof loadSidebar === 'function') loadSidebar('ninguno');
+            if (typeof loadDocsSidebar === 'function') loadDocsSidebar('color-picker');
+            if (typeof showAlert === 'function') {
+                showAlert('warning', 'Antes de enviar estos prompts a Cursor, reemplaza todos los textos entre [corchetes] con la información específica de tu proyecto.', {
+                    containerId: 'cp-warning-alert',
+                    noClose: true
+                });
+            }
+            var anchor = document.getElementById('cp-demo-anchor');
+            if (anchor) {
+                cpApplySwatch();
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    cpOpenFromAnchor();
+                });
+            }
+        });
+
+        function toggleTechnicalDocs() {
+            var content = document.getElementById('technical-docs-content');
+            var isHidden = content.style.display === 'none' || !content.style.display;
+            content.style.display = isHidden ? 'block' : 'none';
+            var trigger = content.previousElementSibling;
+            if (trigger) {
+                var span = trigger.querySelector('span');
+                if (span) {
+                    span.innerHTML = isHidden
+                        ? '<i class="far fa-chevron-up" style="transition: transform 0.3s ease;"></i>Ocultar'
+                        : '<i class="far fa-chevron-down" style="transition: transform 0.3s ease;"></i>Mostrar';
+                }
+            }
+        }
+
+        function copyPrompt(promptId) {
+            var el = document.getElementById(promptId);
+            var text = el.textContent;
+            navigator.clipboard.writeText(text).then(function () {
+                var btn = document.querySelector('[onclick="copyPrompt(\'' + promptId + '\')"]');
+                var icon = btn.querySelector('i');
+                var span = btn.querySelector('span');
+                icon.className = 'far fa-check';
+                span.textContent = 'Copiado';
+                if (typeof showToast === 'function') showToast('success', '¡Prompt copiado!', { containerId: 'ubits-toast-container', duration: 3500 });
+                setTimeout(function () { icon.className = 'far fa-copy'; span.textContent = 'Copiar'; }, 2000);
+            }).catch(function () {
+                if (typeof showToast === 'function') showToast('error', 'Error al copiar', { containerId: 'ubits-toast-container', duration: 3500 });
+            });
+        }
+
+        function copyCode(elementId) {
+            var el = document.getElementById(elementId);
+            var text = el.textContent;
+            navigator.clipboard.writeText(text).then(function () {
+                var btn = event.target.closest('button');
+                var icon = btn.querySelector('i');
+                var span = btn.querySelector('span');
+                var origIcon = icon.className;
+                var origText = span.textContent;
+                icon.className = 'far fa-check';
+                span.textContent = 'Copiado!';
+                if (typeof showToast === 'function') showToast('success', 'Código copiado al portapapeles', { containerId: 'ubits-toast-container', duration: 3500 });
+                setTimeout(function () { icon.className = origIcon; span.textContent = origText; }, 2000);
+            }).catch(function () {
+                if (typeof showToast === 'function') showToast('error', 'Error al copiar', { containerId: 'ubits-toast-container', duration: 3500 });
+            });
+        }
+    </script>
+</body>
+</html>

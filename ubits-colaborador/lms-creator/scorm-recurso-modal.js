@@ -1,7 +1,7 @@
 /**
  * LMS Creator — Modal «Agregar SCORM» + Modal edición inline + Color Picker HSV
  * Genera presentaciones Thomas-Kilmann sobre conversaciones difíciles.
- * Depende: modal.js, input.js, file-upload.js
+ * Depende: modal.js, input.js, file-upload.js, color-picker.js (popover)
  */
 (function (global) {
     'use strict';
@@ -75,13 +75,6 @@
     /* Edición por pageKey */
     var _scormDataStore = {};   /* pageKey → { slides, color, titulo, scormHtml, generatedByAi? } */
 
-    /* Color picker state */
-    var _cpH=246, _cpS=0.73, _cpV=0.90;
-    var _cpPickerEl  = null;
-    var _cpSwatchEl  = null;
-    var _cpOnChange  = null;  /* callback(hex) */
-    var _cpDragSV=false, _cpDragH=false;
-
     /* ══════════════════════════════════════
        TOKENS
     ══════════════════════════════════════ */
@@ -112,153 +105,30 @@
     function emitChanged(detail) { try { document.dispatchEvent(new CustomEvent('ubits-recursos-changed',{detail:detail||{}})); } catch(e){} }
 
     /* ══════════════════════════════════════
-       COLOR PICKER
+       COLOR PICKER (componente UBITS color-picker.js)
     ══════════════════════════════════════ */
-    function cpSyncFromHex(hex) {
-        var rgb=hexToRgb(hex), hsv=rgbToHsv(rgb.r,rgb.g,rgb.b);
-        _cpH=hsv.h; _cpS=hsv.s; _cpV=hsv.v;
-    }
-
-    function cpHex() { var rgb=hsvToRgb(_cpH,_cpS,_cpV); return rgbToHex(rgb.r,rgb.g,rgb.b); }
-
-    function cpDrawSV(canvas, hue) {
-        var ctx=canvas.getContext('2d'), w=canvas.width, h=canvas.height;
-        var base=hsvToRgb(hue,1,1);
-        var gH=ctx.createLinearGradient(0,0,w,0);
-        gH.addColorStop(0,'#fff');
-        gH.addColorStop(1,'rgb('+base.r+','+base.g+','+base.b+')');
-        ctx.fillStyle=gH; ctx.fillRect(0,0,w,h);
-        var gV=ctx.createLinearGradient(0,0,0,h);
-        gV.addColorStop(0,'rgba(0,0,0,0)'); gV.addColorStop(1,'rgba(0,0,0,1)');
-        ctx.fillStyle=gV; ctx.fillRect(0,0,w,h);
-    }
-
-    function cpDrawHue(canvas) {
-        var ctx=canvas.getContext('2d'), w=canvas.width, h=canvas.height;
-        var g=ctx.createLinearGradient(0,0,w,0);
-        for (var i=0;i<=360;i+=30) { var c=hsvToRgb(i,1,1); g.addColorStop(i/360,'rgb('+c.r+','+c.g+','+c.b+')'); }
-        ctx.fillStyle=g; ctx.fillRect(0,0,w,h);
-    }
-
-    function cpUpdateUI() {
-        if (!_cpPickerEl) return;
-        var hex=cpHex();
-        var svCanvas=_cpPickerEl.querySelector('.cc-cp-sv-canvas');
-        if (svCanvas) cpDrawSV(svCanvas, _cpH);
-        var cur=_cpPickerEl.querySelector('.cc-cp-sv-cursor');
-        if (cur) { cur.style.left=(_cpS*100)+'%'; cur.style.top=((1-_cpV)*100)+'%'; }
-        var thumb=_cpPickerEl.querySelector('.cc-cp-hue-thumb');
-        if (thumb) thumb.style.left=(_cpH/360*100)+'%';
-        var prev=_cpPickerEl.querySelector('.cc-cp-preview-circle');
-        if (prev) prev.style.background=hex;
-        var hexIn=_cpPickerEl.querySelector('.cc-cp-hex-input');
-        if (hexIn && document.activeElement!==hexIn) hexIn.value=hex.toUpperCase();
-        if (_cpSwatchEl) _cpSwatchEl.style.background=hex;
-        _color=hex;
-        if (_cpOnChange) _cpOnChange(hex);
-        refreshPreview();
-    }
-
-    function buildCpPanel() {
-        var el=document.createElement('div');
-        el.className='cc-cp-panel'; el.id='cc-cp-panel-scorm';
-        el.innerHTML=
-            '<div class="cc-cp-canvas-wrap">'+
-                '<canvas class="cc-cp-sv-canvas" width="228" height="148"></canvas>'+
-                '<div class="cc-cp-sv-cursor"></div>'+
-            '</div>'+
-            '<div class="cc-cp-controls">'+
-                '<div class="cc-cp-left">'+
-                    '<button type="button" class="cc-cp-eyedropper" title="Cuentagotas (decorativo)"><i class="far fa-eye-dropper"></i></button>'+
-                    '<div class="cc-cp-preview-circle"></div>'+
-                '</div>'+
-                '<div class="cc-cp-hue-wrap">'+
-                    '<div class="cc-cp-hue-track">'+
-                        '<canvas class="cc-cp-hue-canvas" width="156" height="14"></canvas>'+
-                        '<div class="cc-cp-hue-thumb"></div>'+
-                    '</div>'+
-                '</div>'+
-            '</div>'+
-            '<div class="cc-cp-hex-area">'+
-                '<span class="cc-cp-hex-label">HEX</span>'+
-                '<input type="text" class="cc-cp-hex-input" maxlength="7" placeholder="#4F46E5">'+
-            '</div>';
-        return el;
-    }
-
-    function positionCp(trigger) {
-        if (!_cpPickerEl) return;
-        var rect=trigger.getBoundingClientRect(), pH=260, pW=228;
-        var spaceBelow=window.innerHeight-rect.bottom;
-        var top=spaceBelow>pH ? rect.bottom+6 : rect.top-pH-6;
-        var left=Math.max(8, Math.min(rect.left, window.innerWidth-pW-8));
-        _cpPickerEl.style.top=top+'px'; _cpPickerEl.style.left=left+'px';
+    function closeCpPanel() {
+        if (typeof global.closeColorPickerPopover === 'function') global.closeColorPickerPopover();
     }
 
     function openCpPanel(swatchEl, onChangeCb) {
+        if (typeof global.openColorPickerPopover !== 'function') return;
         closeCpPanel();
-        _cpSwatchEl=swatchEl;
-        _cpOnChange=onChangeCb||null;
-        cpSyncFromHex(_color);
-        _cpPickerEl=buildCpPanel();
-        document.body.appendChild(_cpPickerEl);
-        var svCanvas=_cpPickerEl.querySelector('.cc-cp-sv-canvas');
-        var hueCanvas=_cpPickerEl.querySelector('.cc-cp-hue-canvas');
-        if (hueCanvas) cpDrawHue(hueCanvas);
-        positionCp(swatchEl);
-        cpUpdateUI();
-        wireCpEvents(svCanvas);
-        setTimeout(function(){ document.addEventListener('mousedown',cpOutside,true); document.addEventListener('keydown',cpKey,true); },0);
-    }
-
-    function closeCpPanel() {
-        if (_cpPickerEl) { _cpPickerEl.remove(); _cpPickerEl=null; }
-        document.removeEventListener('mousedown',cpOutside,true);
-        document.removeEventListener('keydown',cpKey,true);
-        _cpOnChange=null;
-    }
-
-    function cpOutside(e) { if (_cpPickerEl && !_cpPickerEl.contains(e.target) && e.target!==_cpSwatchEl) closeCpPanel(); }
-    function cpKey(e) { if (e.key==='Escape') closeCpPanel(); }
-
-    function wireCpEvents(svCanvas) {
-        if (!_cpPickerEl) return;
-        var svWrap=_cpPickerEl.querySelector('.cc-cp-canvas-wrap');
-        var hueTrack=_cpPickerEl.querySelector('.cc-cp-hue-track');
-
-        svWrap.addEventListener('mousedown', function(e){ _cpDragSV=true; moveSV(e,svCanvas); });
-        hueTrack.addEventListener('mousedown', function(e){ _cpDragH=true; moveHue(e); });
-
-        document.addEventListener('mousemove', function(e){
-            if (_cpDragSV) moveSV(e,svCanvas);
-            if (_cpDragH)  moveHue(e);
-        });
-        document.addEventListener('mouseup', function(){ _cpDragSV=false; _cpDragH=false; });
-
-        var hexIn=_cpPickerEl.querySelector('.cc-cp-hex-input');
-        if (hexIn) hexIn.addEventListener('input', function(){
-            var v=hexIn.value.trim();
-            if (/^#[0-9a-fA-F]{6}$/.test(v)) { cpSyncFromHex(v); cpUpdateUI(); }
+        global.openColorPickerPopover({
+            anchorEl: swatchEl,
+            initialHex: _color,
+            onChange: function (hex) {
+                _color = hex;
+                var sw = document.getElementById('cc-sm-cp-swatch');
+                if (sw) sw.style.background = hex;
+                if (onChangeCb) onChangeCb(hex);
+                refreshPreview();
+            },
+            zIndex: 2000
         });
     }
 
-    function moveSV(e, canvas) {
-        var rect=canvas.getBoundingClientRect();
-        _cpS=Math.max(0,Math.min(1,(e.clientX-rect.left)/rect.width));
-        _cpV=Math.max(0,Math.min(1,1-(e.clientY-rect.top)/rect.height));
-        cpUpdateUI();
-    }
-
-    function moveHue(e) {
-        var canvas=_cpPickerEl.querySelector('.cc-cp-hue-canvas');
-        if (!canvas) return;
-        var rect=canvas.getBoundingClientRect();
-        _cpH=Math.max(0,Math.min(360,((e.clientX-rect.left)/rect.width)*360));
-        cpUpdateUI();
-    }
-
-    /* Función global para que el iframe de edición abra el picker */
-    global.ccScormOpenColorPicker = function(swatchEl, onChangeCb) { openCpPanel(swatchEl, onChangeCb); };
+    global.ccScormOpenColorPicker = openCpPanel;
 
     /* ══════════════════════════════════════
        THOMAS-KILMANN CONTENT (5–15 slides)
@@ -1153,7 +1023,6 @@
         _numSlides      = 6;
         _tituloInputApi = null;
         _stepperApi     = null;
-        cpSyncFromHex(_color);
 
         var overlay=openModal({
             overlayId:           OVERLAY_ID,

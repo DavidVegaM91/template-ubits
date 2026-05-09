@@ -1320,6 +1320,15 @@ createInput({
     placeholder: 'Escribe tu nombre'
 });
 
+// Etiqueta a la izquierda del campo (grid): labelPosition: 'left'
+createInput({
+    containerId: 'mi-input-container',
+    label: 'Código',
+    labelPosition: 'left',
+    type: 'text',
+    size: 'sm'
+});
+
 // Input with icons and helper text
 createInput({
     containerId: 'mi-input-container',

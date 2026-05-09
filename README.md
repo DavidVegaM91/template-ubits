@@ -234,8 +234,9 @@ Patrón documentado para reutilizarlo en otros flujos o listas similares.
 - **Attention badge** - Conteos compactos y punto de aviso (variantes: neutral; error = rojo intenso tipo badge de botón; warning = acento warning sólido con texto claro; info; tamaños sm/md; número, dígito en círculo o solo punto) - **RENDERIZADO: HTML directo** — `attention-badge.css`
 - **Accordion** - Bloques expandibles/colapsables (tamaños: xs, sm, md, lg; título obligatorio; numeración y descripción opcionales) - **RENDERIZADO: HTML directo o createAccordion()**
 - **Toast** - Notificaciones flotantes (tipos: success, info, warning, error; auto-cierre, pausa en hover) - **RENDERIZADO: showToast()**
-- **Input** - Campos de entrada (11 tipos: text, email, password, number, tel, url, select, textarea, search, autocomplete, calendar; tamaños: sm, md, lg; estados: default, hover, focus, invalid, disabled; con iconos, contador, helper text, mandatory/optional, validación manual, scroll infinito automático) - **RENDERIZADO: createInput()**
+- **Input** - Campos de entrada (11 tipos: text, email, password, number, tel, url, select, textarea, search, autocomplete, calendar; tamaños: sm, md, lg; estados: default, hover, focus, invalid, disabled; etiqueta arriba o a la izquierda con `labelPosition: 'left'`; con iconos, contador, helper text, mandatory/optional, validación manual, scroll infinito automático) - **RENDERIZADO: createInput()**
 - **Number stepper** - Entero con botones menos y más, etiqueta opcional, min, max y paso (tamaños xs, sm, md, lg) - **RENDERIZADO: createNumberStepper()** — `number-stepper.css` + `number-stepper.js`; doc: `documentacion/componentes/number-stepper.html` (uso en LMS Creator: modal SCORM, `scorm-recurso-modal.js`).
+- **Color picker** - Selector HSV en panel flotante anclado a un disparador (lona saturación/brillo, franja de matiz, campo HEX vía `createInput`; cuentagotas secondary icon-only con API `EyeDropper` si el navegador la ofrece) - **RENDERIZADO: openColorPickerPopover() / closeColorPickerPopover()** — `input.css` + `color-picker.css` + `input.js` (antes de `color-picker.js`); cuentagotas: `button.css` + `fontawesome-icons.css`; doc: `documentacion/componentes/color-picker.html` (uso en LMS Creator: modal SCORM, `scorm-recurso-modal.js`).
 - **Radio Button** - Opción circular para elegir una entre varias (tamaños: sm, md; sin JS; agrupar con mismo `name`) - **RENDERIZADO: HTML directo.** Requiere importar `radio-button.css` en la página o los radios se ven como nativos.
 - **Checkbox** - Casilla de verificación (tamaños: sm, md, lg; variantes: round/cuadrado; sin JS; agrupar con mismo `name` para múltiple selección) - **RENDERIZADO: HTML directo.** Requiere importar `checkbox.css` en la página.
 - **Chip** - Elemento compacto para filtros, selecciones o ítems removibles (tamaño xs; icono opcional; botón quitar opcional; estados: default, hover, pressed, active, focus, disabled) - **RENDERIZADO: HTML directo.** Requiere importar `chip.css`.
@@ -315,6 +316,7 @@ Todos los componentes UBITS requieren imports obligatorios:
 <link rel="stylesheet" href="../../components/ia-loader.css">
 <link rel="stylesheet" href="../../components/modal.css">
 <link rel="stylesheet" href="../../components/number-stepper.css">
+<link rel="stylesheet" href="../../components/color-picker.css">
 <link rel="stylesheet" href="../../components/table.css">
 <link rel="stylesheet" href="../../components/tooltip.css">
 
@@ -342,6 +344,7 @@ Todos los componentes UBITS requieren imports obligatorios:
 <script src="../../components/drawer.js"></script>
 <script src="../../components/modal.js"></script>
 <script src="../../components/number-stepper.js"></script>
+<script src="../../components/color-picker.js"></script>
 <script src="../../components/stepper.js"></script>
 <script src="../../components/tooltip.js"></script>
 
@@ -491,6 +494,7 @@ Todos los componentes UBITS requieren imports obligatorios:
 - **`documentacion/componentes/paginator.html`** - Documentación del componente Paginator
 - **`documentacion/componentes/avatar.html`** - Documentación del componente Avatar
 - **`documentacion/componentes/calendar.html`** - Documentación del componente Calendar
+- **`documentacion/componentes/date-picker-modal.html`** - Documentación del componente Date picker modal (modal + rango o fecha única + createCalendar)
 - **`documentacion/componentes/drawer.html`** - Documentación del componente Drawer
 - **`documentacion/componentes/dropdown-menu.html`** - Documentación del componente Dropdown Menu
 - **`documentacion/componentes/ia-loader.html`** - Documentación del componente IA Loader
@@ -1025,6 +1029,7 @@ loadCardContentCompact('mi-contenedor-compact', [
 - **`documentacion/componentes/tab-bar.html`** - Documentación del componente TabBar
 - **`documentacion/componentes/avatar.html`** - Documentación del componente Avatar
 - **`documentacion/componentes/calendar.html`** - Documentación del componente Calendar
+- **`documentacion/componentes/date-picker-modal.html`** - Documentación del componente Date picker modal (modal + rango o fecha única + createCalendar)
 - **`documentacion/componentes/drawer.html`** - Documentación del componente Drawer
 - **`documentacion/componentes/dropdown-menu.html`** - Documentación del componente Dropdown Menu
 - **`documentacion/componentes/ia-loader.html`** - Documentación del componente IA Loader

@@ -542,10 +542,8 @@
     -webkit-text-fill-color: var(--ubits-fg-on-disabled-button) !important;
 }
 
-[data-theme="dark"] .ubits-ia-button--secondary .ubits-ia-button__token-cost,
-[data-theme="dark"] .ubits-ia-button--secondary .ubits-ia-button__token-number {
-    color: var(--ubits-fg-1-high-inverted);
-}
+/* Token número/coste: mismas reglas que arriba (--ubits-fg-1-high). No usar --fg-1-high-inverted en oscuro:
+   en [data-theme="dark"] ese token es texto oscuro (#303a47) y pierde contraste sobre el fondo del botón. */
 
 [data-theme="dark"] .ubits-ia-button--secondary .ubits-ia-button__token-cost i {
     background: var(--ubits-ia-button-gradient);
@@ -663,7 +661,7 @@
     background-origin: padding-box, border-box;
     background-clip: padding-box, border-box;
     animation: ubits-ia-button-gradient-shift-border 5s ease-in-out infinite;
-    color: var(--ubits-fg-1-high-inverted);
+    color: var(--ubits-fg-1-high);
     border: 1px solid transparent;
 }
 

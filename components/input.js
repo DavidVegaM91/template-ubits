@@ -1463,7 +1463,9 @@ function createInput(options = {}) {
             calendarMinDate = undefined,
             getAutocompleteMarkedValues = null,
             /** Tamaño de cada página al hacer scroll en autocomplete (modo simple, sin checkboxes). Default 10. */
-            autocompleteLazyPageSize = 10
+            autocompleteLazyPageSize = 10,
+            /** Etiqueta encima del campo (`top`, default) o a la izquierda (`left`). Solo aplica si hay `label` y `showLabel`. */
+            labelPosition = 'top'
         } = options;
 
     // Si el input está en invalid, el helper debe existir y ser rojo, con texto por defecto.
@@ -1498,13 +1500,26 @@ function createInput(options = {}) {
     var safeValue = escapeAttr(value);
     var safePlaceholder = escapeAttr(placeholder);
 
+    const labelPosNorm = String(labelPosition || 'top').toLowerCase();
+    const useLabelLeft =
+        labelPosNorm === 'left' && showLabel && String(label || '').trim() !== '';
+
     // Crear estructura HTML
     let inputHTML = '';
 
-    // Label
+    if (useLabelLeft) {
+        const fieldTextareaMod = type === 'textarea' ? ' ubits-input-field--has-textarea' : '';
+        inputHTML += `<div class="ubits-input-field ubits-input-field--label-left${fieldTextareaMod}">`;
+    }
+
     if (showLabel && label) {
         const mandatoryText = mandatory ? ` <span class="ubits-input-mandatory">(${mandatoryType})</span>` : '';
-        inputHTML += `<label class="ubits-input-label">${label}${mandatoryText}</label>`;
+        const labelClass = useLabelLeft ? 'ubits-input-label ubits-input-label--left' : 'ubits-input-label';
+        inputHTML += `<label class="${labelClass}">${label}${mandatoryText}</label>`;
+    }
+
+    if (useLabelLeft) {
+        inputHTML += '<div class="ubits-input-field__body">';
     }
 
     // Input wrapper con iconos - IMPLEMENTACIÓN REAL
@@ -1685,6 +1700,10 @@ function createInput(options = {}) {
         }
         
         inputHTML += '</div>';
+    }
+
+    if (useLabelLeft) {
+        inputHTML += '</div></div>';
     }
 
     // Renderizar HTML
@@ -2036,5 +2055,6 @@ window.createInput = createInput;
  * TIPOS DISPONIBLES: text, email, password, number, tel, url, select, textarea, search, autocomplete, calendar
  * TAMAÑOS: sm (32px), md (40px), lg (48px)
  * ESTADOS: default, hover, focus, invalid, disabled
+ * LABEL: labelPosition 'top' (default) | 'left' — etiqueta encima o a la izquierda (requiere label + showLabel)
  * FEATURES: iconos, contador, helper text, validación manual, scroll infinito (SELECT)
  */

@@ -1,0 +1,119 @@
+/* ========================================
+   UBITS Color Picker (popover HSV + matiz + HEX)
+   Panel flotante anclado a un disparador (p. ej. swatch en modal SCORM LMS Creator).
+   Requiere: ubits-colors.css (tokens), fontawesome-icons.css (icono cuentagotas decorativo).
+   ======================================== */
+
+.ubits-color-picker {
+    position: fixed;
+    z-index: 2000;
+    width: 228px;
+    box-sizing: border-box;
+    user-select: none;
+    background: var(--ubits-bg-3);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: var(--border-radius-lg);
+    box-shadow: 0 var(--gap-sm) var(--gap-2xl) rgba(0, 0, 0, 0.24);
+    overflow: hidden;
+}
+
+.ubits-color-picker__sv-wrap {
+    position: relative;
+    width: 228px;
+    height: 148px;
+    cursor: crosshair;
+    flex-shrink: 0;
+}
+
+.ubits-color-picker__sv-wrap canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+.ubits-color-picker__sv-cursor {
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 2px solid var(--ubits-bg-1);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.35);
+    pointer-events: none;
+    transform: translate(-50%, -50%);
+}
+
+.ubits-color-picker__controls {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-sm);
+    padding: var(--padding-md) var(--padding-md) var(--padding-sm);
+}
+
+.ubits-color-picker__controls-left {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-sm);
+    flex-shrink: 0;
+}
+
+.ubits-color-picker__preview {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 2px solid var(--ubits-border-1);
+    flex-shrink: 0;
+    box-sizing: border-box;
+}
+
+.ubits-color-picker__hue-wrap {
+    flex: 1;
+    min-width: 0;
+}
+
+.ubits-color-picker__hue-track {
+    position: relative;
+    width: 100%;
+    height: 14px;
+    border-radius: var(--border-radius-full);
+    overflow: visible;
+}
+
+.ubits-color-picker__hue-canvas {
+    width: 100%;
+    height: 14px;
+    border-radius: var(--border-radius-full);
+    cursor: pointer;
+    display: block;
+}
+
+.ubits-color-picker__hue-thumb {
+    position: absolute;
+    top: 50%;
+    left: 0%;
+    transform: translate(-50%, -50%);
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    border: 2px solid var(--ubits-bg-1);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.35);
+    pointer-events: none;
+}
+
+.ubits-color-picker__hex {
+    padding: var(--padding-xs) var(--padding-md) var(--padding-md);
+    min-width: 0;
+}
+
+.ubits-color-picker__hex-mount {
+    width: 100%;
+    min-width: 0;
+}
+
+/* Label HEX a la izquierda: tipografía compacta en el panel (labelPosition: left) */
+.ubits-color-picker__hex-mount .ubits-input-label--left {
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+    color: var(--ubits-fg-2-medium);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}

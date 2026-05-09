@@ -164,6 +164,18 @@
                                     <div id="label-content-control"></div>
                                 </div>
 
+                                <!-- Label position (arriba / izquierda) -->
+                                <div style="margin-bottom: 16px;">
+                                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+                                        <label class="ubits-body-sm-bold" style="color: var(--ubits-fg-1-high);">Etiqueta a la izquierda</label>
+                                        <label class="ubits-switch ubits-switch--md">
+                                            <input type="checkbox" class="ubits-switch__input" id="label-position-left-toggle" role="switch" onchange="updateInput()">
+                                            <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
+                                        </label>
+                                    </div>
+                                    <p class="ubits-body-xs-regular" style="margin: 0; color: var(--ubits-fg-1-medium);">Apagado: etiqueta arriba (por defecto). Encendido: <code>labelPosition: 'left'</code>.</p>
+                                </div>
+
                                 <!-- Mandatory Control -->
                                 <div style="margin-bottom: 16px;">
                                     <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
@@ -1161,6 +1173,8 @@ createInput(options)
     showCounter: boolean,             // Mostrar contador de caracteres
     mandatory: boolean,               // Mostrar texto mandatory
     mandatoryType: 'obligatorio' | 'opcional',  // Tipo de mandatory
+    labelPosition: 'top' | 'left',    // Etiqueta arriba (default) o a la izquierda del campo
+    showLabel: boolean,               // Mostrar u ocultar etiqueta (default true)
     selectOptions: Array,             // Opciones para SELECT
     autocompleteOptions: Array,       // Opciones para AUTOCOMPLETE
     getAutocompleteMarkedValues: function, // Devuelve array de value ya elegidos (p. ej. chips); muestra estado "Seleccionado" en el listado
@@ -1421,9 +1435,13 @@ input.refreshAutocompleteMarked()  // Solo type autocomplete: actualiza marcas s
             if (!previewContainer) return;
             previewContainer.innerHTML = '';
 
+            const labelPosLeftEl = document.getElementById('label-position-left-toggle');
+
             createInput({
                 containerId: 'input-preview-container',
                 label: showLabel ? labelContentValue : '',
+                showLabel: showLabel,
+                labelPosition: labelPosLeftEl && labelPosLeftEl.checked ? 'left' : 'top',
                 placeholder: placeholderContentValue,
                 mandatory: showMandatory,
                 mandatoryType: String(mandatoryTypeValue).toLowerCase().includes('oblig') ? 'obligatorio' : 'opcional',

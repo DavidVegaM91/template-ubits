@@ -266,6 +266,43 @@ textarea.ubits-input:disabled {
     line-height: 16.5px;
 }
 
+/* Etiqueta a la izquierda del control (createInput: labelPosition: 'left') */
+.ubits-input-field {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.ubits-input-field--label-left {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    column-gap: var(--gap-md);
+    align-items: start;
+}
+
+.ubits-input-field--label-left > .ubits-input-label--left {
+    margin-bottom: 0;
+    align-self: center;
+    max-width: min(42vw, 200px);
+    overflow-wrap: break-word;
+    hyphens: auto;
+}
+
+.ubits-input-field--label-left.ubits-input-field--has-textarea > .ubits-input-label--left {
+    align-self: flex-start;
+    padding-top: var(--padding-sm);
+}
+
+.ubits-input-field--label-left > .ubits-input-field__body {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-xs);
+}
+
+.ubits-input-field__body .ubits-input-helper {
+    margin-top: 0;
+}
+
 /* ========================================
    INPUT HELPER TEXT
    ======================================== */
