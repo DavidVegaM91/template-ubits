@@ -13,6 +13,7 @@
  *   fileUploadSetProcessing(idOrEl, percent)    — activa variante "Procesando" (barra debajo del card)
  *   fileUploadClearProcessing(idOrEl)           — limpia variante "Procesando"
  *   fileUploadAnimateProcessing(idOrEl, ms, cb) — anima 0→100 (default 5s) y ejecuta cb al terminar
+ *   fileUploadSetHeaderVisible(idOrEl, visible) — muestra u oculta .ubits-file-upload__header (visible false = oculto)
  *
  * Opciones de createFileUpload():
  *   containerId       {string}   ID del contenedor donde inyectar el HTML (requerido)
@@ -20,9 +21,10 @@
  *   title             {string}   Texto del encabezado (default: 'Importar archivo')
  *   accept            {string}   Atributo accept del <input type="file"> (p. ej. '.csv,text/csv')
  *   maxSizeMb         {number}   Tamaño máximo en MB (default: 5)
- *   maxLabel          {string}   Texto para mostrar el límite (default: '{maxSizeMb}mb')
+ *   maxLabel          {string}   Texto para mostrar el límite (default: '{maxSizeMb} MB')
  *   formats           {string}   Texto libre de formatos (default: derivado de accept + maxLabel)
  *   downloadButtons   {Array}    Hasta 3 objetos { label, icon?, onClick }; icon = clase FA sin 'fa-'
+ *   hideHeader        {boolean}  true = oculta la fila .ubits-file-upload__header (título + acciones)
  *   onChange          {Function} Callback (file | null) al seleccionar o quitar el archivo
  *   onError           {Function} Callback ({ type: 'type'|'size', message }) al fallar validación
  *
@@ -76,9 +78,11 @@
         var title   = opts.title || 'Importar archivo';
         var accept  = opts.accept || '';
         var maxMb   = opts.maxSizeMb || 5;
-        var maxLbl  = opts.maxLabel  || (maxMb + 'mb');
+        var maxLbl  = opts.maxLabel  || (maxMb + ' MB');
         var formats = opts.formats   || (acceptLabel(accept) + ' \u2022 Hasta ' + maxLbl);
         var btns    = (opts.downloadButtons || []).slice(0, 3);
+        var hideHeader = opts.hideHeader === true;
+        var rootExtraClass = hideHeader ? ' ubits-file-upload--hide-header' : '';
 
         var actionBtnsHtml = btns.map(function (b) {
             return '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-file-upload__download-btn" data-file-upload-download>' +
@@ -92,7 +96,7 @@
             '<i class="far fa-circle-exclamation"></i><span>Informe de errores</span></button>';
 
         return (
-            '<div class="ubits-file-upload" id="' + id + '" data-file-upload>' +
+            '<div class="ubits-file-upload' + rootExtraClass + '" id="' + id + '" data-file-upload>' +
               '<div class="ubits-file-upload__header">' +
                 '<h2 class="ubits-body-md-bold ubits-file-upload__title">' + title + '</h2>' +
                 '<div class="ubits-file-upload__actions">' + actionBtnsHtml + '</div>' +
@@ -367,7 +371,24 @@
 
         targets.forEach(function (el) {
             bindFileUpload(el, opts || {});
+            var o = opts || {};
+            if (o.hideHeader === true) {
+                el.classList.add('ubits-file-upload--hide-header');
+            } else if (o.hideHeader === false) {
+                el.classList.remove('ubits-file-upload--hide-header');
+            }
         });
+    }
+
+    /**
+     * Muestra u oculta la cabecera (título + acciones) del componente.
+     * @param {string|HTMLElement} idOrEl — ID del .ubits-file-upload o el elemento raíz
+     * @param {boolean} visible — false oculta el header
+     */
+    function fileUploadSetHeaderVisible(idOrEl, visible) {
+        var el = typeof idOrEl === 'string' ? document.getElementById(idOrEl) : idOrEl;
+        if (!el || !el.hasAttribute || !el.hasAttribute('data-file-upload')) return;
+        el.classList.toggle('ubits-file-upload--hide-header', visible === false);
     }
 
     /**
@@ -625,6 +646,7 @@
     window.fileUploadSetProcessing   = fileUploadSetProcessing;
     window.fileUploadClearProcessing = fileUploadClearProcessing;
     window.fileUploadAnimateProcessing = fileUploadAnimateProcessing;
+    window.fileUploadSetHeaderVisible  = fileUploadSetHeaderVisible;
 
     /* Auto-init sobre HTML estático */
     if (document.readyState === 'loading') {

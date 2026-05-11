@@ -4,9 +4,12 @@
  * API: resourcesBlockHtml({ variant?, className? })
  *   variant incluye default, default-error (mismo selector que default + borde error, página sin recurso),
  *   video/pdf/mp4/scorm/embed… Tras insertar el HTML, llama initResourcesBlockFields(contenedorRaíz)
- *   para montar createInput (sm) en [data-rb-slot].
+ *   para montar createInput (sm) en [data-rb-slot] y createFileUpload (file-upload.js) en
+ *   [data-rb-slot="pdf-upload"] (pdf-empty / pdf-error).
+ *   Evento al elegir PDF: «ubits-resources-block-pdf-change» (bubbles), detail: { file, containerId }.
  *
- * Depende de: resourcesCardHtml, createInput (input.js), button.css, input.css, dropdown-menu.css.
+ * Depende de: resourcesCardHtml, createInput (input.js), createFileUpload (file-upload.js),
+ * button.css, input.css, file-upload.css, dropdown-menu.css.
  * Tarjetas con IA: badge-tag.css (+ gradientes IA opcionales). Tooltips del distintivo: tooltip.js (initTooltip); initResourcesBlockFields cablea listeners.
  *
  * @see documentacion/componentes/resources-block.html
@@ -166,10 +169,20 @@
     }
 
     function uploadPdfMp4(kind, err) {
-        var lines =
-            kind === 'mp4'
-                ? 'Selecciona o arrastra aquí un archivo .mp4'
-                : 'Selecciona o arrastra aquí un archivo PDF';
+        if (kind === 'pdf') {
+            var pdfMountId = nextRbFieldId();
+            var errAttr = err ? ' data-rb-pdf-error="1"' : '';
+            return (
+                '<div class="ubits-resources-block__upload ubits-resources-block__upload--pdf">' +
+                '<div id="' +
+                pdfMountId +
+                '" class="ubits-resources-block__pdf-upload-mount" data-rb-slot="pdf-upload"' +
+                errAttr +
+                '></div>' +
+                '</div>'
+            );
+        }
+        var lines = 'Selecciona o arrastra aquí un archivo .mp4';
         var hint =
             '<p class="ubits-resources-block__hint ubits-body-xs-regular">' +
             lines +
@@ -291,16 +304,48 @@
     }
 
     /**
-     * Monta createInput (sm, sin etiqueta en fila video/url embebido) en los nodos data-rb-slot.
+     * Monta createInput (sm) y createFileUpload (PDF) en los nodos data-rb-slot.
      * @param {HTMLElement} root — contenedor donde se insertó resourcesBlockHtml (p. ej. #rb-preview-mount)
      */
     function initResourcesBlockFields(root) {
-        if (!root || typeof global.createInput !== 'function') return;
+        if (!root) return;
 
         root.querySelectorAll('[data-rb-slot]').forEach(function (el) {
             var id = el.id;
             if (!id) return;
             var slot = el.getAttribute('data-rb-slot');
+
+            if (slot === 'pdf-upload') {
+                if (typeof global.createFileUpload !== 'function') return;
+                if (el.getAttribute('data-rb-pdf-upload-init') === '1') return;
+                el.setAttribute('data-rb-pdf-upload-init', '1');
+                var errPdf = el.getAttribute('data-rb-pdf-error') === '1';
+                var fuRoot = global.createFileUpload({
+                    containerId: id,
+                    title: 'Subir PDF',
+                    hideHeader: true,
+                    accept: 'application/pdf,.pdf',
+                    maxSizeMb: 250,
+                    formats: 'PDF · Hasta 250 MB',
+                    successMessage: false,
+                    onChange: function (file) {
+                        if (!file) return;
+                        el.dispatchEvent(
+                            new CustomEvent('ubits-resources-block-pdf-change', {
+                                bubbles: true,
+                                detail: { file: file, containerId: id }
+                            })
+                        );
+                    }
+                });
+                if (errPdf && fuRoot && typeof global.fileUploadSetError === 'function') {
+                    global.fileUploadSetError(fuRoot, 'Mensaje de error');
+                }
+                return;
+            }
+
+            if (typeof global.createInput !== 'function') return;
+
             if (slot === 'video-url') {
                 var mode = el.getAttribute('data-rb-video-mode') || 'empty';
                 if (mode === 'empty') {
@@ -442,4 +487,6 @@
     global.RESOURCES_BLOCK_VARIANTS_ORDER = RESOURCES_BLOCK_VARIANTS_ORDER;
     global.resourcesBlockHtml = resourcesBlockHtml;
     global.initResourcesBlockFields = initResourcesBlockFields;
+    /** Nombre del evento que emite el slot PDF al validarse un archivo (detail: { file, containerId }). */
+    global.UBITS_RESOURCES_BLOCK_PDF_CHANGE_EVENT = 'ubits-resources-block-pdf-change';
 })(typeof window !== 'undefined' ? window : this);

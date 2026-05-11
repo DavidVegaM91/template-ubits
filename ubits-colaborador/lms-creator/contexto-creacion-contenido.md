@@ -1,35 +1,35 @@
 # Contexto: creación de contenido (LMS Creator)
 
-Documento de referencia para implementar el flujo de **creación de contenido** en el módulo LMS Creator. Aquí **“contenido”** designa los **formatos de aprendizaje** (curso, short, artículo, etc.), no un archivo suelto.
+Documento de referencia sobre el flujo de **creación de contenido** en el módulo LMS Creator. Aquí **“contenido”** son los **formatos de aprendizaje** (curso, short, artículo, etc.), no un archivo suelto.
 
-**Objetivo de este archivo:** que, al leerlo, no queden dudas sobre el proceso de negocio y de pantalla al construir cada vista. Se irá ampliando con mensajes posteriores.
+**Para quién es este documento:** personas de **producto, diseño, negocio** y cualquier lector que necesite entender **qué hace** el flujo y **cómo lo vive el usuario**, sin depender de nombres de código o archivos.
+
+**Cómo está escrito:** lenguaje **conceptual** (pantallas, reglas, opciones, mensajes).  
+**Excepción acordada:** dentro de **Recurso: PDF**, la subsección **«Implementación técnica del visor»** conserva el detalle técnico del renderizado para quien lo necesite en desarrollo.
+
+**Objetivo:** que no queden dudas sobre el proceso de negocio y la experiencia en pantalla. Se irá ampliando con mensajes posteriores.
 
 ---
 
 ## Referencias de diseño
 
-Los bocetos en herramienta de diseño fueron **exploratorios**; la fuente de verdad para implementación es **este documento**, la **documentación UBITS** de cada componente y lo acordado con **producto**. No se enlazan archivos externos de diseño para evitar roturas cuando se publique un diseño consolidado.
+Los bocetos en herramienta de diseño fueron **exploratorios**. La referencia para alinear esfuerzos es **este documento**, la **documentación de componentes UBITS** y lo acordado con **producto**. No se enlazan archivos externos de diseño para evitar roturas cuando exista un diseño consolidado.
 
-- **Creator v3 (prototipo):** flujo del asistente (portada, paso Recursos) en **página dedicada** `crear-contenido.html`.  
-- **Paso 2 Recursos (vacío):** índice + empty state del panel derecho cuando aún no hay páginas.  
-- **Paso 2 — página recién añadida:** panel derecho con **título editable** arriba y **Resources block** debajo.  
-- **Índice Creator:** panel izquierdo del paso Recursos (interruptor de secciones, listado, «Añadir sección»). Implementación: `components/indice-creator.css` + `indice-creator.js`, doc `documentacion/componentes/indice-creator.html`.  
-- **Resources card** (selector de tipo de recurso): `components/resources-card.css` + `resources-card.js`, doc `documentacion/componentes/resources-card.html`.  
-- **Resources block** (panel del recurso): `resources-block.css` + `resources-block.js` (requiere `resources-card`, `button`, `input`, `dropdown-menu`; tras `innerHTML` con `resourcesBlockHtml` llamar `initResourcesBlockFields(contenedor)`). Variante `default-error`: mismo selector que `default` con borde de error cuando la página quedó sin recurso al avanzar de paso. Doc `documentacion/componentes/resources-block.html`.  
-- **Páginas creator** (orden de páginas en el índice): `paginas-creator.css` + `paginas-creator.js`; doc `documentacion/componentes/paginas-creator.html`. Reordenar: menú ⋮ **Mover arriba/abajo** y **arrastrar y soltar** desde el icono (detalle técnico en `README.md`, tabla *Referencia: drag & drop para reordenar*).  
-- **Criterio:** layout, estados y jerarquía alineados al sistema UBITS y a las reglas aquí descritas; en discrepancia puntual, prioriza **negocio + producto** y la doc del componente.
+- **Creator (prototipo):** asistente por pasos (portada y recursos, entre otros) en una **pantalla dedicada** de creación.  
+- **Paso Recursos (vacío):** panel izquierdo con índice + en el derecho un estado vacío que invita a crear la primera página.  
+- **Paso Recursos (con página nueva):** a la derecha, **título editable** de la página y debajo el **bloque para elegir y configurar el tipo de recurso**.  
+- **Índice:** interruptor de secciones (si aplica), listado de páginas, **Añadir página** / **Añadir sección**.  
+- **Tarjetas de tipo de recurso** y **bloque de recurso:** el usuario elige entre tipos (video, PDF, texto, etc.) y completa el formulario que corresponda; si intenta avanzar sin haber completado una página, esa página puede mostrarse en **error** según las reglas del paso.  
+- **Orden de páginas:** desde el menú de cada fila (**Mover arriba / abajo**) o **arrastrando** la página por el icono.  
+- **Criterio:** misma identidad visual y patrones UBITS que el resto del producto; si hay duda puntual, ganan **negocio + producto** y la documentación del componente.
 
 ---
 
-## Fuentes de datos maestros (BD playground)
+## Datos de la ficha técnica (origen)
 
-| Campo en la ficha técnica | Archivo en `bd-master/` |
-|---------------------------|-------------------------|
-| Tipo de contenido | `bd-master-tipos-contenido.js` |
-| Nivel | `bd-master-niveles-contenido.js` |
-| Categoría | `bd-master-categorias-fiqsha.js` |
+En el prototipo, **tipo de contenido**, **nivel** y **categoría** salen de **listas maestras** definidas en el proyecto (en un entorno real equivaldrían a los catálogos o API de la empresa).
 
-Los selects del paso Portada deben alimentarse de estos catálogos (o de la API equivalente en un entorno real).
+Los desplegables del paso Portada deben reflejar esos valores de forma coherente.
 
 ---
 
@@ -40,50 +40,22 @@ El asistente de creación tiene **4 pasos**, en este orden:
 | Paso | Nombre | Estado en esta documentación |
 |------|--------|------------------------------|
 | 1 | Portada | Descrito en detalle |
-| 2 | Recursos | Descrito en detalle (parcial: complementarios ampliados en mensajes futuros) |
+| 2 | Recursos | Descrito en detalle (parcial: **contenido complementario** por recurso en mensajes futuros) |
 | 3 | Certificado | Solo nombre de paso; detalle pendiente |
 | 4 | Publicación | Solo nombre de paso; detalle pendiente |
 
-### Lista de contenidos (`contenidos.html`) y cierre del corte
+### Desde la lista de contenidos
 
-- El flujo de **crear contenido** está **solo** en la **página dedicada** `crear-contenido.html` (shell propio a pantalla completa). No existe variante embebida en lista ni drawer de creación en `contenidos.html`.
-- Desde **`contenidos.html`**, el botón **«Crear contenido»** del header navega a **`crear-contenido.html`** (misma pestaña).
-- **Enlaces antiguos** con hash en la lista (`#crear-contenido`, `#crear-contenido-recursos`, `#crear-contenido-step-recursos`) se **redirigen** automáticamente a `crear-contenido.html` con hash canónico (`#portada` o `#recursos`).
+- El **asistente de creación** vive en una **pantalla propia** a casi pantalla completa, separada de la lista. No hay un “mini creador” embebido en la tabla de contenidos.
+- Desde la lista, el usuario entra con **«Crear contenido»** y llega a esa pantalla.
+- Si alguien usa **enlaces antiguos** guardados (marcadores con rutas o anclas viejas), el sistema los lleva al mismo flujo moderno (paso portada o paso recursos según corresponda).
 
-### Página dedicada (`crear-contenido.html`) — fuente de verdad del flujo
+### Experiencia de la pantalla de creación
 
-**Archivos del flujo:** `crear-contenido.html`, `crear-contenido.css`, `crear-contenido.js`. Toda la lógica vive en **`crear-contenido.js`**.
-
-**Layout (footer siempre visible):** en `general-styles/styles.css`, `body` lleva `overflow-y: auto !important`, lo que hace que **todo el documento** haga scroll y el **footer** quede **al final del contenido**. Esta pantalla usa la **cáscara inmersiva transversal** `general-styles/layout-immersive.css`: clase raíz **`.ubits-layout-immersive`**, `body.page-layout-immersive` (alto viewport + `overflow: hidden !important`) y **scroll en** `#crear-contenido-main` (clase **`.ubits-layout-immersive__main`**). El escenario acotado a 1440px va en **`.ubits-layout-immersive__stage`** (aquí comparte nodo con `.crear-contenido-editor-workspace`). Ajustes propios del flujo Creator (rail, stepper, z-index dropdowns) siguen en **`crear-contenido.css`**.
-
-**Footer — paso 1 (Portada):** no debe mostrarse el botón **Anterior** (no aplica “paso previo”). Botón `#crear-contenido-btn-anterior` con **`display: none`** y **`aria-hidden="true"`** mientras se está en Portada; **`#crear-contenido-btn-siguiente`** para **Siguiente**. En paso Recursos, **Anterior** habilitado (lógica en `crear-contenido.js`).
-
-**Enlaces directos al paso 2 (Recursos):**
-
-| Entorno | URL (ruta relativa desde `lms-creator/`) |
-|---------|------------------------------------------|
-| Lista (legacy; redirige) | `contenidos.html#crear-contenido-recursos` / `#crear-contenido-step-recursos` → **`crear-contenido.html#recursos`** |
-| Página dedicada | **`crear-contenido.html#recursos`** (canónico). Alias largos normalizados en `crear-contenido.js`. |
-
-**Paso 1 (Portada) en la página dedicada:** `crear-contenido.html#portada` o sin hash. El hash antiguo `#crear-contenido` se reconoce y se normaliza a `#portada`. El cableado vive en `crear-contenido.js` (sin overlay).
-
-### Implementación en página dedicada (assets, QA y z-index)
-
-Documentación técnica del **corte** a página dedicada (único flujo soportado en el playground).
-
-| Qué | Detalle |
-|-----|---------|
-| **HTML** | `ubits-colaborador/lms-creator/crear-contenido.html` |
-| **CSS de página** | `ubits-colaborador/lms-creator/crear-contenido.css` (flujo completo; **no** depende de `contenidos.css` de la lista) |
-| **JS de página** | `ubits-colaborador/lms-creator/crear-contenido.js` |
-| **Modal portada (imagen / tráiler)** | `portada-media-modal.js`, `portada-media-modal.css` |
-| **Maestros** | `bd-master/bd-master-*.js` (tipos, niveles, categorías), enlazados en el HTML de la página |
-
-- **Abrir para QA:** doble clic en el archivo o `file:///…/crear-contenido.html`; rutas relativas desde la carpeta `lms-creator/`: `crear-contenido.html`, `crear-contenido.html#recursos`, `crear-contenido.html#portada`.
-- **Body:** `no-subnav`, **`page-layout-immersive`**, **`page-crear-contenido`** (hook en **`crear-contenido.css`** para workspace, pasos, rail, recursos, validaciones).
-- **`crear-contenido-app-open`:** clase **exclusiva** de esta página. Sube el z-index de los menús **dropdown** del índice (⋮ en Páginas creator, montados en `body`) por encima del shell.
-- **Responsive:** breakpoints del flujo en **`crear-contenido.css`** (prefijo **`body.page-crear-contenido`** donde aplica); el header del shell reduce padding en **639px** en el mismo archivo.
-- **Modo oscuro / tokens:** colores y tipografía UBITS vía hojas globales; para probar tema oscuro, usar `data-theme="dark"` en `<html>` o `<body>` como en el resto del template.
+- **Barra superior:** título del flujo, estado tipo borrador y acción para **salir** y volver a la lista.
+- **Columna lateral (rail):** lista de **pasos** del asistente (Portada, Recursos, etc.) en formato vertical; en móvil puede verse como pasos compactos en horizontal.
+- **Zona central:** el contenido del paso activo (portada con título y miniatura, o recursos con índice + panel derecho).
+- **Pie de página:** **Siguiente** y, cuando aplica, **Anterior**. En el primer paso **no** tiene sentido “paso anterior”; el botón correspondiente **no se muestra**.
 
 ---
 
@@ -95,67 +67,49 @@ Capturar la **identidad visual y la metadata** del contenido antes de construir 
 
 ### Campos y comportamiento
 
-1. **Imagen de portada**  
-   - Carga de imagen (obligatoria para avanzar).
+1. **Imagen de portada y tráiler (miniatura)** — Ver subsección siguiente; la imagen es **obligatoria** para avanzar; el **tráiler es opcional**.
 
-2. **Trailer del contenido (opcional)**  
-   - El usuario puede pegar un **enlace** al trailer.  
-   - Si **no** hay trailer: el preview muestra solo la imagen de portada.  
-   - Si **hay** trailer: el preview muestra la imagen de portada con un **botón de reproducción (play)** encima (o el patrón que defina producto / diseño final).  
-   - Al hacer clic en play, el trailer se reproduce **en ese mismo espacio**, usando los **controles nativos del reproductor embebido** según el origen del video.  
-   - Orígenes soportados (el enlace debe tener **visibilidad pública**):  
-     - Vimeo  
-     - YouTube  
-     - Google Drive  
-     - OneDrive  
-
-3. **Descripción**  
+2. **Descripción**  
    - Texto descriptivo del contenido (obligatorio para avanzar).
 
-4. **Ficha técnica** (todos obligatorios para avanzar, salvo que se indique lo contrario en ampliaciones futuras)  
-   - **Tipo de contenido:** selector alimentado por `bd-master-tipos-contenido.js`.  
-   - **Nivel:** selector alimentado por `bd-master-niveles-contenido.js`.  
-   - **Idioma:** selector con opciones fijas: **español**, **inglés**, **portugués**.  
-   - **Tiempo aproximado:** campo numérico.  
-   - **Unidad de tiempo:** selector **minutos** u **horas** (acompaña al tiempo aproximado).  
-   - **Categoría:** selector alimentado por `bd-master-categorias-fiqsha.js`.
+3. **Ficha técnica** (todos obligatorios para avanzar, salvo que se indique lo contrario más adelante)  
+   - **Tipo de contenido**, **nivel**, **idioma** (español / inglés / portugués), **tiempo aproximado** con **unidad** (minutos u horas), **categoría** — según listas de negocio descritas arriba.
+
+### Imagen de portada y tráiler: modal «Añadir portada» (experiencia actual)
+
+Hoy el prototipo **no** reparte la configuración en varios botones sueltos dentro del hueco de la miniatura. Cuando **aún no hay imagen**, lo habitual es ver **un solo botón principal** del estilo **«Añadir portada»**. Al pulsarlo se abre un **modal grande** titulado **«Añadir portada»**, con el mismo **look & feel** que otros asistentes con IA del Creator (cabecera con gradiente, saldo de **tokens de IA** visible, pestañas claras).
+
+**Tres formas de trabajar la portada (pestañas):**
+
+1. **Portada con IA** — Mensaje inspirador (*tú lo imaginas…*) y un campo para **describir con palabras** la portada. El usuario pulsa **Generar portada**; cada generación **consume tokens**. La primera vez que genera, el modal **se ensancha** y aparece a un lado una **zona de vista previa**: primero un estado vacío amable, luego una **animación de “generando”**, después la **imagen resultante** (en el prototipo es una simulación con imagen de ejemplo y una espera corta). Puede **regenerar** otra imagen (de nuevo con coste en tokens) o pulsar **Usar esta imagen** para aplicarla a la portada.
+
+2. **Subir portada** — El usuario **elige un archivo** de imagen desde su equipo. Los formatos y el **tamaño máximo** se comunican en la propia zona de carga. Confirma con **Usar esta imagen**.
+
+3. **Tráiler (opcional)** — Campo para **pegar el enlace público** del video de promoción. Solo se admiten enlaces de ciertos proveedores (**YouTube, Vimeo, Google Drive, OneDrive**). El usuario puede **guardar el tráiler**; si ya tenía una imagen de portada, la miniatura se actualiza para poder **reproducir** el video sin tener que cerrar todo el flujo del modal principal.
+
+**Después de confirmar una imagen** (generada o subida): la cabecera muestra la **foto de portada**. Si la imagen vino de IA, puede mostrarse una **etiqueta** tipo **«Generado con IA»**.
+
+**Cuando ya hay imagen y solo quiere ajustar:** un control del tipo **«Cambiar»** abre un **segundo modal**, más **pequeño y directo**: en una sola pantalla puede sustituir **imagen** y/o **enlace del tráiler**, con **Confirmar** o **Cancelar**. Es el camino rápido para “retocar” sin pasar otra vez por las tres pestañas del modal grande; los límites de peso del archivo pueden **mostrarse distintos** a los del modal grande — lo relevante para negocio es que **cambiar** sea simple y en un solo paso.
+
+**Vista previa en la cabecera:** si **no** hay tráiler, solo se ve la imagen; si **hay** tráiler, aparece un **botón de play** sobre la imagen y el video se reproduce **en el mismo espacio**, con los controles habituales del reproductor embebido según el origen del enlace.
 
 ### Regla para pasar al siguiente paso
 
 - Debe estar **completo** todo lo obligatorio.  
 - Lo **único opcional** en este paso es el **trailer** (y, por tanto, el comportamiento play/embebido asociado).
 
-### Validación en pantalla y resaltado en rojo (playground)
+### Validación y ayuda cuando falta algo
 
-Cuando el usuario intenta avanzar sin tener la portada completa, la interfaz **indica qué falta** con **toast** y **borde rojo** en los obligatorios incompletos (mismo criterio visual que inputs en error: token **`--ubits-feedback-accent-error`**, borde **2px**).
+Si la persona intenta **ir a Recursos** (por el paso lateral o por **Siguiente**) sin tener la portada completa:
 
-**Disparadores (comportamiento en `crear-contenido.js` / página dedicada):**
+- Aparece un **mensaje breve** (toast) explicando que debe completar la portada.
+- Los campos obligatorios que falten se marcan con **borde rojo** para guiar la mirada.
 
-1. **Stepper — clic en el paso 2 «Recursos»** estando aún en Portada sin cumplir la regla de completitud → toast de aviso (*«Completa la portada para ir a Recursos.»*) y se activa el modo de **resaltado** hasta que todo quede válido.  
-2. **Botón «Siguiente»** con el CTA **deshabilitado** (misma portada incompleta) → toast (*«Completa todos los campos obligatorios de la portada.»*) y el mismo resaltado.
+**Qué puede quedar marcado:** título del contenido, **bloque de la miniatura** si no hay imagen aún, **descripción**, y cada campo de la **ficha técnica** que esté incompleto.
 
-**Qué se marca en rojo (según lo que falte):**
+**Comportamiento:** en cuanto el usuario corrige un campo, **deja de marcarse** ese campo. Cuando todo está bien, desaparece el modo de aviso. Si sale del flujo y vuelve a entrar, el estado de aviso se reinicia según corresponda.
 
-| Área | Qué se resalta |
-|------|----------------|
-| Título | Input del título |
-| Imagen de portada | Borde del bloque **Learn content imagen y tráiler** (`.ubits-learn-img-trailer`); la clase de aviso de validación vive en el contenedor `.crear-contenido-portada__cabecera-media` para no interferir con la lógica interna del componente |
-| Descripción | Contenedor del **rich text editor** (shell del editor) |
-| Ficha técnica | Cada campo **createInput** afectado (tipo, nivel, idioma, tiempo, unidad, categoría) |
-
-**Comportamiento del resaltado:**
-
-- Los bordes se **actualizan** conforme el usuario corrige cada campo (desaparece el rojo en lo ya válido).  
-- Al **completar** todo lo obligatorio, se limpia el resaltado y el toast deja de aplicarse para ese intento.  
-- Al **salir de la página** de creación (p. ej. volver a Contenidos) o **abrir de nuevo** el flujo desde cero, se resetea el estado de aviso/resaltado.
-
-**Valores por defecto en el prototipo** (para que cuenten como «rellenos» sin tocar el control, salvo que el usuario los cambie):
-
-- **Tiempo aproximado:** `30`.  
-- **Categoría:** primera categoría del maestro si existe **id** no vacío; no cuenta como elegida la opción solo visual *«Selecciona una opción»*.  
-- **Tipo, nivel, idioma, unidad:** primera opción / valor fijo según ya definía el prototipo en la página dedicada.
-
-**Implementación de referencia:** `ubits-colaborador/lms-creator/crear-contenido.js` (completitud, flags, stepper, «Siguiente»), estilos en `ubits-colaborador/lms-creator/contenidos.css` (clase `crear-contenido-portada-field--invalid`). Estado de error del componente de miniatura: `components/learn-content-img-trailer.css` (`.ubits-learn-img-trailer--error` alineado al rojo intenso de validación).
+**Nota de prototipo:** algunos valores de la ficha pueden iniciar ya rellenados para facilitar pruebas (por ejemplo tiempo sugerido); la **categoría** no cuenta como “elegida” si solo está el texto genérico del desplegable sin una opción real.
 
 ---
 
@@ -170,13 +124,13 @@ Definir la **estructura del contenido** (secciones opcionales, páginas/leccione
 | Panel | Ubicación | Rol |
 |-------|-----------|-----|
 | **Izquierda** | Configuración de la estructura | Secciones (opcional), lista **Páginas creator** (selección, menú ⋮, **reordenar arrastrando** el icono de tipo), acciones “Añadir página” / “Añadir sección”. |
-| **Derecha** | Previsualizador de recursos | Empty state sin páginas; con página activa: **título editable** + **Resources block** (`default`); luego formularios / previews según tipo. |
+| **Derecha** | Previsualizador de recursos | Estado vacío si no hay páginas; con una página activa: **título editable** y debajo el **selector y configuración del recurso** (formulario o vista previa según el tipo). |
 
 Los dos paneles trabajan acoplados: la selección de página en la izquierda determina qué se edita/previsualiza a la derecha.
 
-### Secciones (`sections-toggle`)
+### Secciones
 
-**Ámbito:** el interruptor y el índice viven en el componente **Índice Creator**, **solo** en el **paso 2 (Recursos)** de la página dedicada **`crear-contenido.html#recursos`**. La pieza ya está montada en el playground; falta **cablear el switch** para cumplir las reglas de esta subsección.
+**Ámbito:** el interruptor y el índice de páginas viven en el **paso Recursos**, solo ahí.
 
 - Control tipo **interruptor** para **activar o desactivar** el uso de **secciones**.  
 - **Secciones** = subdivisores de alto nivel del contenido (equivalente a lo que muchas veces se llama **módulos** en un curso).  
@@ -188,10 +142,9 @@ Los dos paneles trabajan acoplados: la selección de página en la izquierda det
 
 **Cómo editar título y descripción de una sección**  
 - **Doble clic** en el nombre de la sección en el índice, **o** menú **⋮** → **«Editar sección»**.  
-- Se abre un **modal UBITS** oficial (`openModal` / estructura del componente **Modal**).  
-- **Campos:**  
-  - **Título de la sección** — input, **obligatorio**.  
-  - **Descripción** — **opcional**, con el componente **rich text editor** (`initRichTextEditor` / doc del componente).  
+- Se abre un **modal** con campos claros:  
+  - **Título de la sección** — **obligatorio**.  
+  - **Descripción** — **opcional**, editor de texto enriquecido.  
 - **Footer del modal:**  
   - Botón **primario «Guardar»**: **deshabilitado** hasta que se detecte **algún cambio** en cualquiera de los campos respecto al valor al abrir el modal.  
   - Botón **«Cancelar»**: cierra el modal sin guardar.  
@@ -200,7 +153,7 @@ Si el usuario **activa** secciones:
 - Cada sección muestra **siempre** su nombre en la cabecera del bloque **Sección creator** (no ocultar el título con el modo secciones encendido).  
 - En la **parte inferior** del panel izquierdo aparece el botón **«Añadir sección»**.  
 
-Si el usuario **desactiva** secciones (o nunca las activa): **todas las páginas** quedan en **una única sección lógica** **sin** cabecera de nombre visible; solo se agrupan las filas de **Páginas creator** y el botón **«Añadir página»** al pie. El comportamiento visual con el switch **apagado** está definido en el **preview** de **`documentacion/componentes/indice-creator.html`** (misma variante que debe replicar el playground).
+Si el usuario **desactiva** secciones (o nunca las activa): **todas las páginas** quedan en **una única sección lógica** **sin** cabecera de nombre visible; solo se listan las páginas y el botón **«Añadir página»** al pie. El detalle visual debe coincidir con la documentación del **Índice creator** en el design system.
 
 **Modal al deshabilitar secciones** (cuando ya hay **varias secciones con páginas repartidas**):  
 - **Título:** «Deshabilitar secciones»  
@@ -209,19 +162,17 @@ Si el usuario **desactiva** secciones (o nunca las activa): **todas las páginas
 
 **Excepción sin modal:** si hay **varias secciones** pero **solo la primera** tiene páginas y el resto está vacío, se puede **activar y desactivar** el uso de secciones **sin** modal.
 
-**Componente UBITS:** **Índice Creator** (`indiceCreatorHtml` / `initIndiceCreator`) compone el interruptor, las **Sección creator** cuando aplica y **«Añadir sección»**. Doc: `documentacion/componentes/indice-creator.html`.
-
 ### Páginas
 
 - Las **páginas** son las unidades que componen el contenido en el sentido de **lecciones** o pantallas de consumo.  
-- **Icono en el índice (Páginas creator) hasta elegir recurso:** mientras la página **no tenga aún un recurso principal** asignado, la fila en el índice debe **seguir mostrando el icono de página en blanco** (`blank-page` / `far fa-file` en `paginas-creator.js`), el mismo que al crear la página. **Al seleccionar un tipo de recurso** (y completar el flujo que defina producto), el icono de la fila debe **actualizarse** al que corresponda al tipo (video, PDF, embebido, etc.). *Esta sincronización índice ↔ recurso aún no está implementada en el playground;* la UI actual añade páginas en blanco y el panel derecho con **Resources block** en variante `default`; cuando exista estado de recurso por página, enlazarlo con `tipo` en `paginasCreatorItemHtml` / datos del índice.  
-- **Selección:** al hacer **clic en una página**, esa fila queda activa y su **sección padre** pasa a ser la única sección activa (p. ej. borde de acento); el resto de páginas y secciones dejan de estar activas. Solo puede haber **una página activa y una sección activa** a la vez en el índice (comportamiento en `paginas-creator.js` + `seccion-creator.js`).  
+- **Icono en el índice:** mientras la página **no tiene aún un recurso principal**, la fila muestra el icono de **página en blanco**. Cuando el usuario **elige y confirma un tipo de recurso**, el icono debe **cambiar** al que corresponda (por ejemplo video o PDF). En el prototipo actual eso ya ocurre al menos para **Video** (vía modal) y **PDF**; el resto de tipos deberían seguir la misma lógica cuando existan.  
+- **Selección:** al hacer **clic en una página**, esa fila queda activa y su **sección** queda resaltada frente al resto. Solo hay **una página activa** (y una sección activa) a la vez.  
 - **Añadir una página** (equivalente en resultado; dos entradas):  
   1. **Empty state del panel derecho** (CTA cuando no hay páginas), **o**  
   2. Botón **«Añadir página»** en la parte inferior de **cada sección** (solo en la sección activa cuando hay secciones; en modo sin secciones, el botón del bloque único).  
-- **Orden — menú (⋮) y arrastrar y soltar:** cada fila de página puede **reordenarse** de dos maneras (complementarias; el menú sigue siendo la alternativa **sin arrastrar**, p. ej. accesibilidad **WCAG 2.5.7**):  
-  1. **Arrastrar y soltar:** el **icono de tipo** de la fila actúa como **asa de arrastre** (HTML5 DnD en **Páginas creator**). El usuario **arrastra** la fila y **suelta** en la posición deseada; durante el arrastre no se muestran tooltips sobre elementos con `data-tooltip`. Al soltar se emite el evento documento **`ubits-paginas-creator-action`** con `detail.action === 'reordenar'`. Implementación: `components/paginas-creator.js` + `components/paginas-creator.css`; integración en la página dedicada: `crear-contenido.js`. Tabla técnica y mapeo para futuros listados: **`README.md`** → sección *Referencia: drag & drop para reordenar (Paginas creator)*.  
-  2. **Menú de opciones (⋮):** acciones **«Mover arriba»** / **«Mover abajo»** (misma regla de orden global que el arrastre).  
+- **Orden — menú (⋮) y arrastrar y soltar:** cada fila puede **reordenarse** de dos formas:  
+  1. **Arrastrar y soltar** usando el **icono de tipo** como asa: el usuario arrastra la fila y la suelta donde quiera (alternativa importante para accesibilidad frente al solo arrastre libre).  
+  2. **Menú ⋮ — «Mover arriba» / «Mover abajo»** con las mismas reglas de orden global.  
   - Si la página es la **primera del contenido completo** (primera fila del índice global), **no** se ofrece **«Mover arriba»**.  
   - Si la página es la **última del contenido completo**, **no** se ofrece **«Mover abajo»**.  
   - **Entre secciones:** una página que es la **primera de la sección 2** puede subir con **«Mover arriba»** (o arrastrando) hasta ser la **última de la sección 1** (y así sucesivamente); solo deja de poder **subir** al llegar a ser la primera del contenido. Simétricamente para **bajar** hasta ser la última del contenido.
@@ -229,7 +180,7 @@ Si el usuario **desactiva** secciones (o nunca las activa): **todas las páginas
 ### Panel derecho: empty state sin páginas
 
 - Se muestra **solo cuando no existe ninguna página** en el contenido (lista vacía en el índice).  
-- **Copy (`crear-contenido.html`):** título *«Añade tu primera página»*, descripción sobre añadir páginas y recursos (video, texto, PDF) y CTA **primario** «Añadir página». Es la **fuente de verdad** de copy para este flujo en el playground.  
+- **Textos en pantalla:** título del estilo *«Añade tu primera página»*, texto que explica que podrá añadir recursos (video, texto, PDF, etc.) y un botón principal **«Añadir página»**. Los textos exactos son los que muestre la pantalla de creación en el prototipo.  
 - **En cuanto se añade la primera página**, el panel derecho deja ese empty y pasa al flujo de **selector de tipo de recurso** (u otra vista según el tipo de recurso); **no** debe volver a mostrarse este empty salvo que el usuario **elimine todas las páginas** y vuelva a quedar el índice en cero páginas.  
 - **Disparadores equivalentes** para crear la primera (y siguientes) páginas: CTA del empty state **o** **«Añadir página»** en el panel izquierdo (según sección activa).  
 - Efecto esperado al añadir: en el **panel izquierdo** aparece la **fila de página** (Páginas creator) y queda **activa/seleccionada**; en el **derecho** se muestra el **selector general de recursos** para esa página.
@@ -238,8 +189,7 @@ Si el usuario **desactiva** secciones (o nunca las activa): **todas las páginas
 
 - **Orden vertical:**  
   1. **Título de la página**, **editable inline** en el panel derecho (mismo criterio que el nombre en la fila del índice: al guardar o al perder foco debe mantenerse alineado con la etiqueta de la página activa en Páginas creator).  
-  2. Debajo, el componente **Resources block** en variante **`default`** (selector de ocho tipos de recurso), con las dependencias UBITS ya definidas para ese bloque.  
-- **Implementación de referencia en el playground:** `crear-contenido.js` (montaje del índice, eventos `ubits-seccion-creator-add-page`, **`ubits-paginas-creator-action`** incl. `reordenar`, `ubits-paginas-creator-activate`, título `#crear-contenido-recursos-page-title`, contenedor `#crear-contenido-recursos-resources-mount`) y estilos en `contenidos.css` (prefijo `crear-contenido-recursos__page-editor`, `__preview--editor`).
+  2. Debajo, el **bloque para elegir el tipo de recurso** (tarjetas de video, PDF, texto, etc.) según el diseño UBITS.
 
 ### Paso 3 — Certificado (validación al salir del paso 2)
 
@@ -248,53 +198,202 @@ Antes de permitir avanzar al **paso 3**, debe cumplirse:
 1. **Ninguna página vacía:** toda página debe tener **al menos un recurso** asignado (definición de “vacía” = sin recursos).  
 2. **Ninguna sección vacía** (solo aplica si **uso de secciones** está activo): toda sección debe tener **al menos una página**.
 
-Si no se cumple, la UI debe **bloquear el avance** y marcar en **rojo** los elementos incumplidos:
+Si no se cumple, la interfaz debe **bloquear el avance** al siguiente paso y **marcar en rojo** lo que incumple la regla:
 
-| Caso | Componente / clase (CSS en `components/`) |
-|------|---------------------------------------------|
-| Página sin recursos | **Páginas creator** — añadir clase **`ubits-paginas-creator__item--error`** en la fila (`.ubits-paginas-creator__item`). Borde: **2px** sólido, color **`var(--ubits-feedback-accent-error)`** (mismo criterio que portada incompleta en el paso 1). |
-| Sección sin páginas | **Sección creator** — añadir clase **`ubits-seccion-creator__section--error`** en el bloque (`.ubits-seccion-creator__section`). Mismo token y grosor. |
+| Caso | Qué debe verse marcado |
+|------|-------------------------|
+| **Página sin recurso** | La **fila de esa página** en el índice (borde de error visible). |
+| **Sección sin ninguna página** (solo si las secciones están activas) | El **bloque de esa sección** en el índice (borde de error visible). |
 
-La lógica que añade o quita estas clases vivirá en la pantalla que orqueste el flujo (p. ej. `crear-contenido.js` cuando exista el paso 3); los componentes solo exponen el **estado visual** documentado aquí.
+Los componentes visuales del índice ya contemplan ese estado de error; la pantalla debe activarlo cuando corresponda.
 
 ### Tipos de recurso (selector general)
 
-**Componentes UBITS:** tarjetas del selector — `resources-card.css` / `resources-card.js` (`documentacion/componentes/resources-card.html`). Panel completo (selector, formularios por tipo, cancelar) — `resources-block.css` / `resources-block.js` + `input`/`dropdown-menu` y `initResourcesBlockFields` (`documentacion/componentes/resources-block.html`).
+El usuario elige el tipo mediante **tarjetas** y completa el **panel** que corresponda (formulario o vista previa). La documentación de **Resources card** y **Resources block** en el design system describe las variantes y estados.
+
+### Distintivo IA en las tarjetas del bloque de recursos
+
+- En la **cuadrícula de tarjetas** del selector, los tipos que incluyen **asistencia con IA** en el Creator llevan un **badge pequeño de IA**: variante **outlined** del sistema de insignias, **solo icono** (el mismo lenguaje visual que otros puntos de IA del producto), situado en la tarjeta para **destacar** ese tipo frente al resto.
+- El distintivo tiene un **tooltip** al pasar el cursor (con un **retardo breve** para no molestar en movimientos rápidos): el texto informa de forma explícita que ese tipo **incluye asistencia con IA** (en el prototipo el mensaje por defecto es del estilo *«Incluye asistencia con IA.»*; producto puede afinar la redacción manteniendo el criterio).
+- Los tipos **sin** flujo asistido por IA **no** muestran ese badge.
+- En la versión actual del playground, el distintivo aplica a **Video**, **SCORM** y **Evaluación**: son los que ya exponen generación o agente asistido; si en el futuro otro tipo incorpora IA, puede adoptarse la misma convención.
 
 Al configurar una página, el usuario puede añadir uno de estos tipos (presentados como cards en el Resources block o el patrón que defina producto):
 
-1. Video (por enlace)  
-2. Video desde el computador  
-3. PDF  
-4. Texto  
-5. Embebido  
-6. Scorm  
-7. Evaluación final  
-8. Encuesta libre  
+1. Video — un **modal** reúne las opciones **Video IA**, **enlace** y **subir archivo** (ver sección **Recurso: Video**).  
+2. PDF  
+3. Texto  
+4. Embebido  
+5. Scorm — modal **«Agregar SCORM»** con pestañas **SCORM con IA** y **Subir .zip** (ver **Recurso: SCORM**).  
+6. Evaluación final — **panel de recurso** + **panel lateral de IA** para generar preguntas (ver **Recurso: Evaluación final**).  
+7. Encuesta libre  
 
-*(Los detalles de cada tipo se irán documentando; abajo: Video y Texto según lo acordado hasta ahora.)*
+*(Detalle de **Video**, **PDF**, **SCORM**, **Texto** y **Evaluación final** más abajo; el resto de tipos se irá ampliando.)*
 
 ---
 
-## Recurso: Video (por enlace)
+## Recurso: Video
 
-### Estados del panel derecho
+### Cómo se entra al flujo
 
-1. **Configuración inicial**  
-   - Input para **pegar el enlace** del video (solo se admiten URLs válidas de Vimeo, YouTube, Google Drive o OneDrive).  
-   - Botón **“Cargar”** al lado: **habilitado** en cuanto el usuario escribe algo en el input.
-   - Si el enlace ingresado **no es válido**, al hacer clic en Cargar el bloque pasa al estado de error (`resourcesBlockHtml({ variant: 'video-error' })`), manteniendo la URL ingresada y mostrando el mensaje de ayuda en rojo.
-   - Botón **“Cancelar”** (secundario-error) debajo del bloque: descarta el recurso y **vuelve** al **selector general de recursos** de la página (`resourcesBlockHtml({ variant: 'default' })`).
+- En el **selector de tipo de recurso** de la página, la persona elige la tarjeta **Video**.
+- **No** aparece primero un formulario fijo en el panel derecho: se abre un **modal** titulado **«Agregar video»**, con el mismo **criterio visual que otros flujos con IA** del Creator (cabecera con gradiente, **saldo de tokens** visible, modal ancho).
+- Ese modal concentra **todas** las formas de aportar un video a la página: generación asistida por IA, enlace externo o archivo subido.
 
-2. **Tras añadir/cargar el video con éxito (Camino feliz)**  
-   - Se procesa la URL insertada para convertirla a un enlace embebible adecuado según el proveedor (extracción de ID para Vimeo/YouTube, ajuste de parámetros para Drive/OneDrive).
-   - El panel derecho reemplaza la caja de inserción por el **Componente Video Player** (`videoPlayerHtml`), el cual inyecta el `<iframe>` con controles nativos, `border-radius: 16px` y un `aspect-ratio` forzado de `16/9` (usando la clase `.is-forced-16-9`).
-   - El player se envuelve en un bloque oficial (`.ubits-resources-block.ubits-resources-block--stack`) para asegurar el espaciado correcto (`gap: var(--gap-sm)`) con el pie del componente.
-   - **Sincronización del Índice:** Al completarse la carga, el ícono de la página activa en el panel izquierdo (lista de **Páginas creator**) se actualiza automáticamente al ícono de video (`fa-video`).
-   - **Botón Eliminar:** Se ubica debajo del video, alineado a la derecha (`.ubits-button--error-secondary`). Al presionarlo:
-     1. Se destruye el player y se repinta el **selector general de recursos** (`variant: 'default'`).
-     2. El ícono de la página activa en el índice regresa a su estado inicial de página en blanco (`fa-file` / `blank-page`).
-   - *Próximamente:* Debajo de Eliminar aparecerá un bloque de **“Contenido complementario”** invitando a añadir material extra en formato de **cards** (Texto / Archivo descargable).
+### Tres pestañas dentro del modal
+
+El usuario puede cambiar en cualquier momento entre:
+
+| Pestaña | Qué permite |
+|---------|-------------|
+| **Video IA** | Configurar un video **presentado por un avatar** y un **guión**, con ayuda de IA (tokens). |
+| **Enlace de video** | Pegar la **URL** de un video ya publicado en internet. |
+| **Subir video** | Elegir un **archivo de video** desde el equipo. |
+
+El pie del modal muestra el botón que corresponde a la pestaña activa (por ejemplo **Generar video** en IA, **Cargar video** en enlace o subida).
+
+### Pestaña «Video IA» (experiencia)
+
+- **Presentador / avatar:** el usuario elige un **sector o categoría** (lista desplegable) y luego un **personaje** entre avatares disponibles; al seleccionar, ve una **vista previa** grande (imagen o clip de ejemplo según lo disponible en el prototipo).
+- **Contexto del tema:** área de texto libre para describir **de qué debe hablar** el video (tema, tono, público). Opcionalmente puede **adjuntar archivos de referencia** (aparecen como chips que puede quitar).
+- **Guión:** campo de texto amplio para el **guión del video**, con **límite de caracteres** mínimo y máximo indicados en pantalla. Puede escribirlo a mano o usar **Generar guión**, que **consume tokens de IA** y rellena o refina el texto según el contexto y el avatar elegidos.
+- **Duración / expectations:** el prototipo puede mostrar un **aviso informativo** sobre duración u orientación del formato (se puede cerrar).
+- **Generar video:** botón principal con **coste alto en tokens** respecto al guión. Al iniciarlo:
+  - El modal puede **cerrarse** y el usuario ve un **indicador de progreso flotante** (estilo “trabajo en segundo plano”) mientras el sistema simula la generación.
+  - En el panel de la página, el espacio del recurso muestra **estado de carga** y, al terminar, un **reproductor** con el resultado. Si el video es **generado por IA**, puede mostrarse la **etiqueta «Generado con IA»** y, si aplica en el flujo, **logo o marca** opcional que el usuario haya podido asociar en el modal.
+- En el **playground**, la generación es **simulada** (tiempo de espera y video de ejemplo), pero la experiencia debe leerse como **producto real**: tokens, preview y widget de progreso.
+
+### Pestaña «Enlace de video»
+
+- Campo para **pegar la URL** del video.
+- Solo se aceptan enlaces de **proveedores compatibles** (los mismos que el producto defina para embed público, p. ej. YouTube, Vimeo, Google Drive, OneDrive).
+- Validación en línea: si el enlace **no es válido**, el campo se marca en **error** y no se habilita **Cargar video** hasta corregirlo.
+- **Cargar video** cierra el modal e inserta el **reproductor embebido** en el panel del recurso (formato panorámico **16:9**, esquinas redondeadas, controles del servicio).
+
+### Pestaña «Subir video»
+
+- Zona de **carga de archivo** con reglas de **formato y peso** máximo comunicadas en la propia UI.
+- **Cargar video** confirma y cierra el modal; el panel muestra el **reproductor** con el archivo local.
+
+### Después de confirmar (cualquier pestaña)
+
+- El **panel derecho** deja de mostrar el selector de tipos y pasa a mostrar el **video** con el patrón de bloque apilado del Creator (**superficie** + pie con **Eliminar**).
+- En el **índice de páginas**, el icono de la fila activa pasa a **video**.
+- **Eliminar** quita el recurso y devuelve al **selector de tipos** de esa página.
+
+### Si el modal no estuviera disponible (caso excepcional)
+
+- El prototipo puede **degradarse** a un formulario **solo por enlace** embebido en el panel; es un respaldo, no el camino principal.
+
+### Próximos pasos de producto
+
+- **Contenido complementario** debajo del video (p. ej. tarjetas para añadir texto o archivo descargable), cuando producto lo defina.
+
+---
+
+## Recurso: SCORM
+
+### Cómo se entra al flujo
+
+- En el selector de tipo de recurso, la persona elige **SCORM**.
+- Se abre un **modal** titulado **«Agregar SCORM»**, con el mismo **criterio visual que otros flujos con IA** del Creator (cabecera con gradiente, **saldo de tokens**, modal ancho).
+- No hay formulario intermedio en el panel: **todo pasa por este modal** (o por la variante de subida de paquete en la segunda pestaña).
+
+### Dos pestañas dentro del modal
+
+| Pestaña | Qué permite |
+|---------|-------------|
+| **SCORM con IA** | Definir título, contexto para la IA, número de diapositivas, color corporativo y **generar** una presentación interactiva (consume tokens). |
+| **Subir .zip** | Adjuntar un **paquete SCORM** ya existente (.zip) desde el equipo. |
+
+El pie del modal muestra **Generar presentación** en la pestaña IA o **Cargar SCORM** en la pestaña de subida.
+
+### Pestaña «SCORM con IA»
+
+- **Título de la presentación** — obligatorio; en el prototipo, al generar, ese texto también puede **alinear el título de la página** en el índice con el mismo nombre.
+- **Contexto para la IA** — área de texto obligatoria: la persona describe **equipo, industria o matiz** que debe considerar la generación. Puede **adjuntar archivos** (imágenes u otros documentos habituales); los adjuntos aparecen como **vistas previas** o **chips** que puede quitar.
+- **Número de slides** — control tipo “pasos” con un **mínimo y máximo** permitidos en pantalla (el prototipo trabaja en un rango acotado, p. ej. entre **5 y 15** diapositivas).
+- **Color principal** — selector visual (**muestra de color**); al pulsarlo se abre el **selector de color** del sistema de diseño para acentuar la presentación.
+- **Vista previa orientativa** — a la derecha, un **iframe** muestra cómo podría verse la navegación (barra de progreso, paso anterior/siguiente). El texto aclara que es **orientativa**: el contenido final usará el contexto y la estructura definidos al generar.
+
+**Generar presentación** — botón con **coste en tokens**. Si falta título o contexto, los campos se marcan para corrección. Al confirmar:
+
+1. El modal se **cierra**.
+2. Aparece un **indicador de progreso flotante** (misma familia que video IA) mientras el sistema procesa.
+3. En el panel del recurso se muestra primero una **fase de carga** y, al terminar, el **SCORM embebido** (presentación a pantalla con navegación entre diapositivas).
+4. En el prototipo, la generación es **simulada** en tiempo; el contenido base sigue una **plantilla pedagógica interna** (en el demo: narrativa tipo presentación sobre **conversaciones y estilos de afrontamiento al conflicto**, inspirada en el modelo **Thomas-Kilmann**). Producto puede sustituir o ampliar esa plantilla en una implementación real.
+
+Si la generación es por IA, puede mostrarse la **etiqueta «Generado con IA»** sobre el embed.
+
+### Pestaña «Subir .zip»
+
+- Zona para elegir un archivo **.zip** con límites de **tamaño** indicados en la UI (en el prototipo se admite un volumen grande tipo paquete corporativo).
+- Tras la lectura del archivo, el usuario pulsa **Cargar SCORM** y el modal cierra; el panel muestra el paquete **embebido**. En el playground la vista puede apuntar a un **simulador** de ejemplo mientras no exista backend real.
+
+### Una vez creado el recurso en el panel
+
+- El bloque muestra el **SCORM a pantalla** y, si la ruta fue **generada con IA**, también el botón secundario **«Editar presentación»**.
+- **Editar presentación** abre un **segundo modal** a pantalla completa con la misma experiencia dentro de un **iframe**: la persona puede **cambiar textos** en las diapositivas y el **color principal** desde controles integrados; **Guardar** vuelve al panel con los cambios; **Cancelar** descarta.
+- **Eliminar** quita el SCORM y devuelve al **selector de tipos**.
+- En el **índice**, el icono de la página pasa a **SCORM**.
+
+### Nota de producto
+
+- La experiencia actual une **IA + plantilla de contenido + edición inline** para demos; una versión enterprise podría **importar ZIP reales**, validar manifiestos o enlazar con un **empaquetador SCORM** externo sin cambiar la narrativa de este documento.
+
+---
+
+## Recurso: PDF
+
+### Experiencia de usuario
+
+- El usuario **sube un PDF** desde el panel de recurso; ve una **barra de progreso** mientras se procesa y luego una **vista previa** donde las **páginas aparecen una debajo de otra** (lectura vertical), **sin** el panel lateral de miniaturas del visor nativo del navegador.
+- Puede **eliminar** el recurso y volver al selector de tipos.
+- Si cambia de **página** en el índice del contenido y vuelve, la vista previa del PDF se **restaura** de forma coherente.
+
+### Implementación técnica del visor (playground)
+
+> Esta subsección es la **única parte técnica** de este documento: describe **cómo** se implementó la vista previa para desarrollo y mantenimiento.
+
+#### Renderizador
+
+- **PDF.js** (Mozilla **pdf.js**), no el visor PDF nativo del navegador ni un `<iframe src="blob:…">` sobre el archivo.
+- Motivos: control total de la UI (sin panel lateral de miniaturas ni chrome propio del navegador), páginas **apiladas en vertical** y aplicación de **tokens UBITS** en fondos y bordes.
+
+**Binarios en el repo:**
+
+| Archivo | Rol |
+|---------|-----|
+| `vendor/pdfjs/pdf.min.js` | Biblioteca principal (expone `pdfjsLib` en `globalThis`). |
+| `vendor/pdfjs/pdf.worker.min.js` | Worker; la ruta se resuelve en runtime (`GlobalWorkerOptions.workerSrc`) respecto a la página. |
+
+**Orden de scripts en `crear-contenido.html`:** `pdf.min.js` → `crear-contenido-pdf-viewer.js` → `crear-contenido.js`.
+
+#### Creación y montaje (playground)
+
+1. **Resources block** — variante PDF + **file upload**; al elegir archivo se emite `ubits-resources-block-pdf-change` → el listener en `crear-contenido.js` llama a `finishCrearContenidoPdfRender` tras la barra de progreso simulada (`runCrearContenidoPdfUploadProgressAndRender`).
+2. **`finishCrearContenidoPdfRender`** crea un `blob:` con `URL.createObjectURL`, pinta el **shell** HTML (`buildCrearContenidoPdfViewerShellHtml`) en `#crear-contenido-recursos-resources-mount` y guarda estado en `CC_RECURSOS_PAGE_STATE` para la página activa: `{ html: shell, pdfBlobUrl }`. Revoca el blob anterior si el usuario sube **otro PDF** en la misma página.
+3. **`mountCrearContenidoPdfViewer(viewerRoot, blobUrl)`** (`crear-contenido-pdf-viewer.js`) ejecuta `pdfjsLib.getDocument({ url: blobUrl })` y renderiza **página a página en serie** cada `getPage(n)` en un `<canvas>` dentro de `.cc-pdf-resource__pdfjs-pages`, con escala según el ancho del contenedor (tope de escala para legibilidad).
+
+#### Persistencia al cambiar de página del índice
+
+- El HTML guardado es siempre el **shell** (loading + contenedor vacío de páginas), no el DOM con canvases ya rasterizados.
+- Al hacer **snapshot** al salir de una página con PDF, si el mount contiene `[data-cc-pdf-js-viewer]`, se normaliza el HTML al shell y se conserva `pdfBlobUrl`.
+- **`restoreRecursosPage`** vuelve a inyectar el HTML guardado, `initResourcesBlockFields` y **`mountCrearContenidoPdfViewer`** con el `blob:` almacenado.
+- Antes de sustituir el mount por otro recurso, **`beforeReplaceRecursosMountIfPdfShowing`** revoca el `blob:` del estado de la página actual si había visor PDF (Eliminar / cambio de tipo).
+
+#### Personalización visual UBITS (`crear-contenido.css`)
+
+| Elemento | Tratamiento |
+|----------|----------------|
+| Área scroll del visor (`.cc-pdf-resource__viewer-wrap--pdfjs`) | Fondo **`var(--ubits-bg-3)`** para superficie de lectura coherente con el sistema. |
+| Cada **canvas** (hoja renderizada) | Fondo **`var(--ubits-bg-3)`** para zonas transparentes del PDF; borde **`1px solid var(--ubits-border-1)`**; **`border-radius: var(--border-radius-lg)`** (16px en la escala de tokens). |
+| Texto de carga / error | Tipografía y color de error UBITS en el shell. |
+| Pie | Botón **Eliminar** alineado al mismo patrón que otros recursos apilados (video). |
+
+#### Sincronización con el índice (técnico)
+
+- Tras cargar el PDF, el título de la página puede alinearse con el **nombre del archivo**; el icono del índice pasa a **PDF**.
 
 ---
 
@@ -308,75 +407,79 @@ Al configurar una página, el usuario puede añadir uno de estos tipos (presenta
 
 ---
 
-## Recurso: Evaluación final — builder de preguntas (LMS Creator)
+## Recurso: Evaluación final
 
-### Componente oficial usado
+### Cómo se entra al flujo
 
-- **`learn-question`** (`components/learn-question.js` + `components/learn-question.css`)
-- En LMS Creator **solo se usan** estos modos del componente:
-  - **`edit`**: la pregunta activa (única editable)
-  - **`read`**: preguntas no activas, sin inputs visibles como inputs y sin acciones
-  - **`read_error`**: pregunta no activa con faltantes (borde/estados de error + helper “Campos sin diligenciar”)
-  - **`edit_error`**: pregunta activa con faltantes (inputs `invalid` + helper por campo “Campo requerido” + helper general)
+- En el **selector de tipo de recurso**, la persona elige **Evaluación final**.
+- **No** se abre antes un modal de datos: el **panel derecho** pasa directamente al **constructor de evaluación** de esa página (barra superior + lista de preguntas o estado vacío).
+- En el **índice de páginas**, el icono de la fila activa pasa a **evaluación** en cuanto se confirma el tipo de recurso.
 
-> **Importante:** aquí **no** se documenta nada del panel de IA para crear evaluaciones (pendiente de refinamiento).
+### Barra superior del recurso
 
-### Regla de UX: foco único
+- Título de bloque: **Contenido de la evaluación**.
+- **Eliminar** — quita el recurso de evaluación de esa página y vuelve al selector de tipos (coherente con otros recursos).
+- **Configuración** — abre un **modal** con los **ajustes de la evaluación**: porcentaje mínimo para aprobar, orden aleatorio de preguntas y de opciones, límites de intentos, tiempo máximo y número de preguntas por intento (cada uno con su interruptor y campos asociados cuando aplica). **Guardar** aplica los cambios y cierra; **Cancelar** descarta.
+- **Generar con IA** — no genera dentro del panel central: abre el **panel lateral de IA** (misma familia visual que otros agentes del Creator: saldo de **tokens**, hilo de mensajes, campo de envío). Ahí arranca el **agente de evaluaciones** guiado por mensajes y controles interactivos.
 
-- En el builder de evaluación **solo puede existir una pregunta en edición a la vez**.
-- Al interactuar con otra tarjeta de pregunta, el foco cambia: la anterior deja de estar activa y la nueva se vuelve activa.
+### Experiencia dentro del panel de IA
 
-### Cuándo se registra el error (regla clave)
+Al abrirse, el agente se presenta con un mensaje de bienvenida y pregunta **cómo** quiere crearse la evaluación. La persona elige entre dos caminos mediante **tarjetas**:
 
-- Una pregunta **NO** nace “en error” por estar vacía.
-- El estado de error **solo se registra cuando la pregunta pierde foco**.
-  - Ejemplo: estás editando la Pregunta 1, la dejas incompleta y haces clic en la Pregunta 2 → la Pregunta 1 pasa a `read_error`.
+| Camino | Qué implica |
+|--------|-------------|
+| **Configuración estándar** | Valores por defecto del producto (p. ej. nota mínima habitual, sin límite de tiempo ni de intentos, cantidad y nivel predefinidos, orden aleatorio activado). A continuación el agente pide el **tema o material** (texto en el chat). |
+| **Configurar desde cero** | Primero pide el **nombre de la evaluación**; ese nombre puede **sincronizarse** con el **título de la página** en el índice y con el campo de título del panel. Luego aparece un **asistente por pasos** (tipo “hoja inferior” con preguntas encadenadas) para **nota mínima**, **límite de tiempo** (o sin límite), **número de preguntas** y **nivel de dificultad**. Después el agente pide el **tema o material** como en el otro camino. |
 
-### Transiciones de estado (edit/read ↔ error)
+En la ruta larga, cuando ya hay material, el agente puede pedir **qué tipos de pregunta** incluir (varias opciones a la vez: opción múltiple con una o varias correctas, verdadero/falso, texto cerrado, ensayo, emparejamiento, etc.).
 
-Se define un estado de “error” por pregunta (persistente por página) que controla el modo:
+Tras recoger tema y reglas, el flujo llega a un **paso de confirmación** en el hilo: resumen de lo que se va a generar y un botón de acción con **coste en tokens** (**Generar evaluación**). Si no hay tokens suficientes, el botón queda deshabilitado con el mensaje correspondiente.
 
-| Evento | Pregunta que pierde foco | Pregunta que gana foco |
-|--------|--------------------------|------------------------|
-| Click / Enter / Space en otra pregunta | Se valida. Si falla → `read_error`. Si pasa → `read`. | Si tenía error → `edit_error`. Si no → `edit`. |
-| Click en “Añadir pregunta” | Se considera pérdida de foco de la activa: se valida y pasa a `read_error`/`read`. | La nueva pregunta se crea y entra en `edit` (sin error). |
+### Qué ocurre al generar
 
-### Auto-recuperación (solo para salir de `edit_error`)
+- Se **cierra** el panel de IA (y cualquier modal auxiliar de ese flujo).
+- En el área de preguntas aparece un **estado de carga** (misma línea visual que otros generadores con IA del Creator, p. ej. portada).
+- Tras un tiempo de proceso (en el prototipo es **simulado**), el sistema **rellena la lista de preguntas** a partir de un **banco interno** de ítems alineados con un tema de negocio de referencia (en el demo: **resolución de conflictos y trabajo en equipo**), filtrados por **dificultad** y **tipos** elegidos. Las nuevas preguntas se **añaden después** de las que el usuario ya hubiera escrito a mano.
+- Aparece un **aviso reversible** (banner) del estilo “preguntas generadas por IA” con acción **Deshacer**, que restaura solo el estado **previo** a esa generación.
 
-- Mientras la pregunta activa está en `edit_error`, el sistema revalida al editar.
-- **Cuando ya queda válida**, se “recupera” automáticamente a `edit`.
-- **No** se fuerza a `edit_error` mientras el usuario está en `edit` normal (la marca de error se decide al perder foco).
+### Edición manual del builder
 
-### Persistencia por página (índice de Recursos)
+- El panel permite **añadir** preguntas con **Añadir pregunta** y **ordenar** según el diseño del componente de preguntas.
+- **Solo una pregunta está “abierta” para editar** a la vez; el resto se muestra de forma más compacta hasta que el usuario la selecciona.
 
-- El builder mantiene estado **por página del índice de Recursos** (para no mezclar preguntas entre páginas).
-- Por cada página se guarda:
-  - **`questions`**: lista de modelos normalizados de `learn-question`
-  - **`activeQId`**: id (1-indexed) de la pregunta activa
-  - **`questionErrors[]`**: arreglo paralelo (1-indexed a nivel conceptual) indicando si cada pregunta tiene error registrado
+### Cuándo se marca una pregunta como incompleta
 
-### Implementación de referencia (playground)
+- Una pregunta **no** aparece en error solo por estar vacía al crearla.
+- La aplicación **valida cuando la persona deja de editar esa pregunta** (por ejemplo al pasar a otra pregunta o al añadir una nueva). Si faltan datos obligatorios, la tarjeta muestra **mensajes de error** y bordes de aviso según el diseño del componente de preguntas.
+- Mientras la persona **corrige** la pregunta activa que estaba en error, el sistema puede **quitar el error** en cuanto los datos son válidos.
 
-- Orquestación del recurso (montaje y wiring): `ubits-colaborador/lms-creator/evaluaciones-recurso.js`
-- Shell del flujo: `ubits-colaborador/lms-creator/crear-contenido.html` (imports del componente `learn-question`)
+### Persistencia y cambio de página
+
+- Cada **página del índice** tiene **su propia evaluación**: preguntas y configuración **no se mezclan** entre páginas.
+- Al **cambiar de página** en el índice, si se abandona una página de evaluación, el prototipo **cierra el panel de IA** y el modal de configuración de evaluación si estaban abiertos, y **guarda** el estado de la página que se deja. Si se vuelve a una página que ya era de evaluación, se **reconstruye** el formulario con lo guardado.
+
+### Nota de producto
+
+- El prototipo combina **agente conversacional**, **formularios embebidos en el hilo** y **coste en tokens** compartido con el resto del Creator; una implementación con backend real sustituiría la simulación y el banco fijo por generación o catálogo remotos **sin cambiar** la narrativa de pantalla descrita.
 
 ---
 
 ## Pendiente de documentar (próximos mensajes)
 
 - Detalle de **contenido complementario** en todos los recursos donde aplique.  
-- Flujos de: Video desde computador, PDF, Embebido, Scorm, Evaluación final, Encuesta libre.  
+- Flujos de: **Embebido**, **Encuesta libre**. (**Video**, **PDF**, **SCORM** y **Evaluación final** documentados arriba.)  
 - Paso **3 — Certificado** (contenido de pantalla más allá de la regla de bloqueo desde paso 2).  
 - Paso **4 — Publicación**.  
 - Reglas de validación global (publicar, borradores, etc.) si aplica.
 
 ---
 
-## Notas para implementación
+## Notas para quien implemente
 
-- Reutilizar componentes UBITS del template (`documentacion/componentes.html`) para botones, inputs, alerts, toasts, etc.  
-- **Navegación lateral de pasos**: **Sidebar contenidos LMS** — misma pieza que el Sidebar global (`aside.sidebar`, `sidebar-body`, `nav-button` + `data-tooltip`), con modificador `sidebar--contenidos-lms` para fondo claro (`bg-1`). **Variante Publicado LMS Creator** (por defecto): cinco pasos de Resultados a Visibilidad. **Variante Publicado Antiguo LMS** (`options.variant: 'publicado-antiguo-lms'`): sin Resultados; el paso con `data-step="recursos"` se etiqueta **Módulos** (mismo icono). Archivos: `components/sidebar-contenidos-lms.css`, `components/sidebar-contenidos-lms.js` (requiere `styles.css` por `.nav-button`). Doc: `documentacion/componentes/sidebar-contenidos-lms.html`.  
-- Mantener tokens y tipografía UBITS; CSS de página en archivo dedicado junto al HTML del Creator cuando corresponda.  
-- Cualquier cambio a este documento debe reflejar acuerdos de producto y, cuando aplique, la documentación UBITS del componente tocado.
+Este documento **no** sustituye la **documentación de componentes UBITS** ni las reglas del repositorio para desarrollo. Quien construya pantallas debe partir del catálogo oficial de componentes y de los patrones del Creator ya definidos en código.
 
-*Última actualización: flujo **solo** en `crear-contenido.html` (ruta oficial); redirección de hashes legacy desde `contenidos.html`. Reordenación de páginas por DnD (icono) + evento `reordenar`; README con tabla de referencia técnica.*
+- Cualquier cambio en **producto o UX** debe reflejarse aquí para que PM, diseño y negocio sigan alineados.
+
+---
+
+*Última revisión: documento pasado a tono **conceptual** (sin rutas de archivo ni código, salvo la subsección técnica acordada). Detalle de implementación **solo** en **Recurso: PDF → Implementación técnica del visor**. Secciones **SCORM** y **Evaluación final** ampliadas: la evaluación entra por tarjeta al panel del recurso y la **IA** se opera desde el **panel lateral** (agente, rutas estándar / avanzada, tokens y generación simulada desde banco temático). Añadido **distintivo IA + tooltip** en el selector de tipos de recurso (Video, SCORM, Evaluación).*

@@ -147,6 +147,13 @@
     text-align: center;
 }
 
+/* PDF: createFileUpload anidado (initResourcesBlockFields); ancho completo de la superficie */
+.ubits-resources-block__pdf-upload-mount[data-rb-slot='pdf-upload'] {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
 .ubits-resources-block__upload > .ubits-resources-block__hint {
     width: 100%;
     text-align: center;

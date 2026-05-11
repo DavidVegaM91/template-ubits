@@ -70,6 +70,15 @@
                                 Aquí puedes ver el componente File Upload en acción. Usa los controles para explorar los distintos estados.
                             </p>
 
+                            <div style="margin-bottom: 20px; display: flex; align-items: center; gap: var(--gap-md); flex-wrap: wrap;">
+                                <label class="ubits-switch ubits-switch--md">
+                                    <input type="checkbox" class="ubits-switch__input" role="switch" id="fu-preview-show-header" checked aria-checked="true" aria-label="Mostrar encabezado del bloque">
+                                    <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
+                                    <span class="ubits-switch__label">Mostrar encabezado</span>
+                                </label>
+                                <span class="ubits-body-xs-regular" style="color: var(--ubits-fg-1-medium);">Título y acciones (plantilla, informe). Desactiva para vista solo dropzone.</span>
+                            </div>
+
                             <!-- Preview Container -->
                             <div style="background: var(--ubits-bg-2); padding: 32px; border-radius: 12px; display: flex; justify-content: center;">
                                 <div class="file-upload-preview-wrap">
@@ -322,7 +331,7 @@ Importa components/file-upload.css y components/file-upload.js.</code></pre>
           &lt;i class="far fa-file-arrow-up"&gt;&lt;/i&gt;
         &lt;/div&gt;
         &lt;p class="ubits-body-md-semibold ubits-file-upload__dropzone-title"&gt;Subir archivos&lt;/p&gt;
-        &lt;p class="ubits-body-sm-regular ubits-file-upload__dropzone-formats"&gt;CSV &amp;bull; Hasta 5mb&lt;/p&gt;
+        &lt;p class="ubits-body-sm-regular ubits-file-upload__dropzone-formats"&gt;CSV &amp;bull; Hasta 5 MB&lt;/p&gt;
         &lt;button type="button" class="ubits-button ubits-button--secondary ubits-button--sm"
                 data-file-upload-select&gt;
           &lt;i class="far fa-arrow-up-from-bracket"&gt;&lt;/i&gt;
@@ -379,9 +388,10 @@ Importa components/file-upload.css y components/file-upload.js.</code></pre>
   containerId: 'mi-contenedor',   // ID del div donde se inyecta (requerido)
   id: 'mi-file-upload',           // ID del elemento raíz generado (opcional)
   title: 'Importar archivo',      // Título del encabezado
+  hideHeader: false,             // true = oculta título y acciones (.ubits-file-upload__header)
   accept: '.csv,text/csv',        // Tipos aceptados (atributo accept)
   maxSizeMb: 5,                   // Límite de peso en MB
-  formats: 'CSV \u2022 Hasta 5mb',    // Texto de formatos (opcional; derivado de accept si se omite)
+  formats: 'CSV \u2022 Hasta 5 MB',    // Texto de formatos (opcional; derivado de accept si se omite)
   downloadButtons: [              // Hasta 3 botones de descarga
     {
       label: 'Descargar plantilla',
@@ -409,7 +419,10 @@ fileUploadShowErrorReport('mi-file-upload', true);
 fileUploadSetError('mi-file-upload', 'Se encontraron 3 usuarios que no existen.');
 
 // Limpiar error inline
-fileUploadClearError('mi-file-upload');</code></pre>
+fileUploadClearError('mi-file-upload');
+
+// Ocultar o mostrar cabecera (título + botones de plantilla / informe)
+fileUploadSetHeaderVisible('mi-file-upload', false);</code></pre>
                                     </div>
                                 </div>
 
@@ -434,7 +447,10 @@ fileUploadClearError('mi-file-upload');</code></pre>
 /* Barra de progreso */
 .ubits-file-upload__progress-bar         /* Contenedor de la barra (gris) */
 .ubits-file-upload__progress-fill        /* Relleno azul 0-99 % */
-.ubits-file-upload__progress-fill--complete  /* Relleno verde al llegar a 100 % */</code></pre>
+.ubits-file-upload__progress-fill--complete  /* Relleno verde al llegar a 100 % */
+
+/* Raíz del componente */
+.ubits-file-upload--hide-header          /* Oculta __header (createFileUpload hideHeader o fileUploadSetHeaderVisible) */</code></pre>
                                     </div>
                                 </div>
 
@@ -524,6 +540,25 @@ fileUploadClearProgress('mi-file-upload');      // vuelve al estado normal</code
                     if (file) showToast('success', 'Archivo seleccionado: ' + file.name, { duration: 3500 });
                 }
             });
+
+            function syncPreviewFileUploadHeader() {
+                var root = document.getElementById('preview-file-upload');
+                var sw = document.getElementById('fu-preview-show-header');
+                if (!root || !sw) return;
+                var show = !!sw.checked;
+                sw.setAttribute('aria-checked', show ? 'true' : 'false');
+                if (typeof fileUploadSetHeaderVisible === 'function') {
+                    fileUploadSetHeaderVisible(root, show);
+                } else {
+                    root.classList.toggle('ubits-file-upload--hide-header', !show);
+                }
+            }
+
+            var headerSwitch = document.getElementById('fu-preview-show-header');
+            if (headerSwitch) {
+                headerSwitch.addEventListener('change', syncPreviewFileUploadHeader);
+            }
+            syncPreviewFileUploadHeader();
         });
 
         /* ── Estado del preview ─────────────────── */

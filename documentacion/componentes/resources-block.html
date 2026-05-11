@@ -15,6 +15,7 @@
     <link rel="stylesheet" href="../../components/toast.css">
     <link rel="stylesheet" href="../../components/dropdown-menu.css">
     <link rel="stylesheet" href="../../components/input.css">
+    <link rel="stylesheet" href="../../components/file-upload.css">
     <link rel="stylesheet" href="../../components/badge-tag.css">
     <link rel="stylesheet" href="../../ubits-colaborador/aprendizaje/aprendizaje-ia-gradientes.css">
     <link rel="stylesheet" href="../../components/tooltip.css">
@@ -133,11 +134,11 @@
                                         <h2 class="ubits-heading-h2" style="margin: 0;">Requisitos</h2>
                                         <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('rb-tech-req')"><i class="far fa-copy"></i><span>Copiar</span></button>
                                     </div>
-                                    <pre style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm); overflow-x: auto;"><code id="rb-tech-req" class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">CSS: ubits-colors, styles, fontawesome-icons, ubits-typography, button, toast, dropdown-menu, input, badge-tag, aprendizaje-ia-gradientes (distintivo IA), tooltip, resources-card, resources-block
-JS (orden): dropdown-menu.js → input.js → tooltip.js → resources-card.js → resources-block.js
+                                    <pre style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm); overflow-x: auto;"><code id="rb-tech-req" class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">CSS: ubits-colors, styles, fontawesome-icons, ubits-typography, button, toast, dropdown-menu, input, file-upload, badge-tag, aprendizaje-ia-gradientes (distintivo IA), tooltip, resources-card, resources-block
+JS (orden): dropdown-menu.js → input.js → file-upload.js → tooltip.js → resources-card.js → resources-block.js
 
 resourcesBlockHtml({ variant?, className? })
-initResourcesBlockFields(contenedorRaíz) — tras innerHTML del bloque (monta createInput sm en data-rb-slot; cablea tooltip/stopPropagation en distintivos IA de las tarjetas)
+initResourcesBlockFields(contenedorRaíz) — tras innerHTML del bloque (monta createInput sm en data-rb-slot; createFileUpload en data-rb-slot pdf-upload; cablea tooltip/stopPropagation en distintivos IA). PDF: evento ubits-resources-block-pdf-change (detail: file, containerId).
 
 variant: default | default-error | video-empty | video-filled | video-error |
   pdf-empty | pdf-error | mp4-empty | mp4-error |
@@ -178,6 +179,7 @@ Campos: createInput size sm; helper con clases ubits-input-helper; botones sm al
     <script src="../../components/tooltip.js"></script>
     <script src="../../components/dropdown-menu.js"></script>
     <script src="../../components/input.js"></script>
+    <script src="../../components/file-upload.js"></script>
     <script src="../../components/resources-card.js"></script>
     <script src="../../components/resources-block.js"></script>
     <script src="../../docs/docs-sidebar.js"></script>

@@ -10,6 +10,7 @@
 
    Estructura BEM:
      .ubits-file-upload
+       --hide-header       — modificador en la raíz; oculta __header (createFileUpload hideHeader)
        __header            — título + acciones
        __title             — h2 del bloque
        __actions           — grupo de botones
@@ -23,7 +24,7 @@
        __dropzone-inner    — contenido centrado dentro del estado vacío
        __icon-wrap         — círculo con icono de upload
        __dropzone-title    — texto "Subir archivos"
-       __dropzone-formats  — texto "CSV · Hasta 5mb"
+       __dropzone-formats  — texto "CSV · Hasta 5 MB"
        __select-btn        — botón "Seleccionar archivos"
        __file-card         — card con el archivo cargado
        __file-icon-wrap    — icono tipo de archivo
@@ -40,6 +41,15 @@
     flex-direction: column;
     gap: var(--gap-lg);
     width: 100%;
+}
+
+/* Raíz: sin cabecera (título + acciones); solo dropzone + helper */
+.ubits-file-upload--hide-header .ubits-file-upload__header {
+    display: none !important;
+}
+
+.ubits-file-upload--hide-header {
+    gap: var(--gap-md);
 }
 
 /* ── Header ─────────────────────────────── */

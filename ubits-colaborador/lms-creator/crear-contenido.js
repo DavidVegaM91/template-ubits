@@ -935,12 +935,160 @@
 
     /**
      * Persistencia de recursos por página.
-     * pageKey -> { html: string } con el innerHTML del resources-mount.
+     * pageKey -> { html: string, pdfBlobUrl?: string } con el innerHTML del resources-mount
+     * y opcionalmente la object URL del PDF local (sesión del navegador).
      * Las páginas de evaluación quedan excluidas (las gestiona evaluaciones-recurso.js).
      */
     var CC_RECURSOS_PAGE_STATE = {};
     /** Clave de la página actualmente visible en el resources-mount. */
     var CC_RECURSOS_CURRENT_PAGE_KEY = null;
+
+    function revokeRecursosPdfBlobFromState(pageKey) {
+        var pk = pageKey != null ? String(pageKey) : '';
+        if (!pk) return;
+        var st = CC_RECURSOS_PAGE_STATE[pk];
+        if (st && st.pdfBlobUrl) {
+            try {
+                URL.revokeObjectURL(st.pdfBlobUrl);
+            } catch (e) {
+                /* noop */
+            }
+        }
+    }
+
+    /** Antes de sustituir el mount: liberar blob PDF si el usuario estaba viendo un PDF incrustado. */
+    function beforeReplaceRecursosMountIfPdfShowing(mount) {
+        if (!mount || !mount.querySelector('[data-cc-pdf-js-viewer]')) return;
+        if (CC_RECURSOS_CURRENT_PAGE_KEY != null) {
+            revokeRecursosPdfBlobFromState(CC_RECURSOS_CURRENT_PAGE_KEY);
+        }
+    }
+
+    function pdfFileBaseName(fileName) {
+        var s = String(fileName || '').trim();
+        var dot = s.lastIndexOf('.');
+        if (dot <= 0) return s || 'Documento';
+        var base = s.slice(0, dot).trim();
+        return base || 'Documento';
+    }
+
+    /** Shell estable para persistencia (sin canvases): PDF.js pinta en .cc-pdf-resource__pdfjs-pages. */
+    function buildCrearContenidoPdfViewerShellHtml() {
+        return (
+            '<div class="ubits-resources-block ubits-resources-block--stack">' +
+            '<div class="ubits-resources-block__surface cc-pdf-resource__surface" style="padding:0;">' +
+            '<div class="cc-pdf-resource__viewer-wrap cc-pdf-resource__viewer-wrap--pdfjs" data-cc-pdf-js-viewer="1" role="region" aria-label="Vista previa del PDF">' +
+            '<p class="cc-pdf-resource__pdfjs-loading ubits-body-sm-regular" aria-live="polite">Cargando vista previa…</p>' +
+            '<div class="cc-pdf-resource__pdfjs-pages"></div>' +
+            '</div></div>' +
+            '<div class="ubits-resources-block__footer">' +
+            '<button type="button" class="ubits-button ubits-button--error-secondary ubits-button--sm" id="cc-eliminar-recurso">' +
+            '<i class="far fa-trash-alt"></i><span>Eliminar</span>' +
+            '</button>' +
+            '</div></div>'
+        );
+    }
+
+    function syncRecursosPdfPageTitle(newTitle) {
+        var activeItem = document.querySelector(
+            '#crear-contenido-recursos-indice-mount .ubits-paginas-creator__item.is-active'
+        );
+        if (!activeItem) return;
+        var labelEl = activeItem.querySelector('.ubits-paginas-creator__label');
+        if (labelEl) labelEl.textContent = newTitle;
+        var titleInp = document.getElementById('crear-contenido-recursos-page-title');
+        if (titleInp) {
+            titleInp.value = newTitle;
+            if (typeof window.autoResizeInlineEdit === 'function') {
+                window.autoResizeInlineEdit(titleInp);
+            }
+        }
+        var pk = CC_RECURSOS_CURRENT_PAGE_KEY != null ? String(CC_RECURSOS_CURRENT_PAGE_KEY) : '';
+        document.dispatchEvent(
+            new CustomEvent('ubits-paginas-creator-label-save', {
+                bubbles: true,
+                detail: { pageKey: pk, newLabel: newTitle }
+            })
+        );
+    }
+
+    function finishCrearContenidoPdfRender(file, mainMount) {
+        if (CC_RECURSOS_CURRENT_PAGE_KEY) {
+            revokeRecursosPdfBlobFromState(CC_RECURSOS_CURRENT_PAGE_KEY);
+        }
+        var url = URL.createObjectURL(file);
+        var html = buildCrearContenidoPdfViewerShellHtml();
+        mainMount.innerHTML = html;
+        if (CC_RECURSOS_CURRENT_PAGE_KEY) {
+            CC_RECURSOS_PAGE_STATE[String(CC_RECURSOS_CURRENT_PAGE_KEY)] = {
+                html: html,
+                pdfBlobUrl: url
+            };
+        }
+        var viewerRoot = mainMount.querySelector('[data-cc-pdf-js-viewer]');
+        if (viewerRoot) {
+            viewerRoot.setAttribute('aria-label', 'Vista previa: ' + String(file.name || 'PDF'));
+        }
+        if (viewerRoot && typeof window.mountCrearContenidoPdfViewer === 'function') {
+            window.mountCrearContenidoPdfViewer(viewerRoot, url);
+        } else if (viewerRoot) {
+            var le = viewerRoot.querySelector('.cc-pdf-resource__pdfjs-loading');
+            if (le) {
+                le.textContent = 'No se pudo cargar el visor PDF.';
+                le.classList.add('cc-pdf-resource__pdfjs-loading--error');
+            }
+        }
+        syncRecursosPdfPageTitle(pdfFileBaseName(file.name));
+        var activeItem = document.querySelector(
+            '#crear-contenido-recursos-indice-mount .ubits-paginas-creator__item.is-active'
+        );
+        if (activeItem) {
+            var iconEl = activeItem.querySelector('.ubits-paginas-creator__drag-handle i');
+            if (iconEl && typeof window.paginasCreatorIconClass === 'function') {
+                iconEl.className = window.paginasCreatorIconClass('pdf');
+            }
+        }
+    }
+
+    function runCrearContenidoPdfUploadProgressAndRender(fuRoot, file, mainMount) {
+        if (typeof window.fileUploadSetProgress !== 'function') {
+            finishCrearContenidoPdfRender(file, mainMount);
+            return;
+        }
+        window.fileUploadSetProgress(fuRoot, 0);
+        var pct = 0;
+        var timer = setInterval(function () {
+            pct += 14;
+            if (pct > 100) pct = 100;
+            if (typeof window.fileUploadSetProgress === 'function') {
+                window.fileUploadSetProgress(fuRoot, pct);
+            }
+            if (pct >= 100) {
+                clearInterval(timer);
+                setTimeout(function () {
+                    finishCrearContenidoPdfRender(file, mainMount);
+                }, 160);
+            }
+        }, 65);
+    }
+
+    var crearContenidoPdfChangeBound = false;
+    function bindCrearContenidoResourcesBlockPdfChangeOnce() {
+        if (crearContenidoPdfChangeBound) return;
+        crearContenidoPdfChangeBound = true;
+        document.addEventListener('ubits-resources-block-pdf-change', function (ev) {
+            var mainMount = document.getElementById('crear-contenido-recursos-resources-mount');
+            if (!mainMount || !ev.target || !mainMount.contains(ev.target)) return;
+            var d = ev.detail || {};
+            var file = d.file;
+            if (!file) return;
+            var cid = d.containerId;
+            var fuRoot = cid ? document.getElementById('ubits-fu-' + cid) : null;
+            if (!fuRoot) fuRoot = mainMount.querySelector('[data-file-upload]');
+            if (!fuRoot) return;
+            runCrearContenidoPdfUploadProgressAndRender(fuRoot, file, mainMount);
+        });
+    }
 
     /**
      * API pública para que video-recurso-modal.js guarde el HTML del video
@@ -948,9 +1096,11 @@
      */
     window.ccRecursosSetPageHtml = function (pageKey, html) {
         if (!pageKey) return;
-        CC_RECURSOS_PAGE_STATE[String(pageKey)] = { html: html };
+        var key = String(pageKey);
+        revokeRecursosPdfBlobFromState(key);
+        CC_RECURSOS_PAGE_STATE[key] = { html: html };
         /* Si la página activa en el mount es la misma, actualizar el DOM */
-        if (CC_RECURSOS_CURRENT_PAGE_KEY === String(pageKey)) {
+        if (CC_RECURSOS_CURRENT_PAGE_KEY === key) {
             var rb = document.getElementById('crear-contenido-recursos-resources-mount');
             if (rb) rb.innerHTML = html;
         }
@@ -965,7 +1115,13 @@
         if (!pk || isEvalPageKey(pk)) return;
         var rb = document.getElementById('crear-contenido-recursos-resources-mount');
         if (!rb) return;
-        CC_RECURSOS_PAGE_STATE[pk] = { html: rb.innerHTML };
+        var prev = CC_RECURSOS_PAGE_STATE[pk] || {};
+        var html = rb.innerHTML;
+        var pdfBlobUrl = prev.pdfBlobUrl;
+        if (pdfBlobUrl && html.indexOf('data-cc-pdf-js-viewer') !== -1) {
+            html = buildCrearContenidoPdfViewerShellHtml();
+        }
+        CC_RECURSOS_PAGE_STATE[pk] = { html: html, pdfBlobUrl: pdfBlobUrl };
     }
 
     function restoreRecursosPage(pageKey) {
@@ -976,6 +1132,10 @@
         rb.innerHTML = saved.html;
         if (typeof window.initResourcesBlockFields === 'function') {
             window.initResourcesBlockFields(rb);
+        }
+        var vr = rb.querySelector('[data-cc-pdf-js-viewer]');
+        if (vr && saved.pdfBlobUrl && typeof window.mountCrearContenidoPdfViewer === 'function') {
+            window.mountCrearContenidoPdfViewer(vr, saved.pdfBlobUrl);
         }
         return true;
     }
@@ -1796,6 +1956,7 @@
             // 0. Click en tarjeta Evaluación final → flujo de evaluación + panel IA
             var evalCard = ev.target.closest('[data-resources-card-type="evaluacion-final"]');
             if (evalCard && !evalCard.disabled) {
+                beforeReplaceRecursosMountIfPdfShowing(mount);
                 if (typeof window.rcMountEvalForm === 'function') {
                     window.rcMountEvalForm(mount);
                     // Actualizar icono en el índice a "evaluacion" (sin pasos intermedios)
@@ -1807,6 +1968,7 @@
                         }
                     }
                 } else {
+                    beforeReplaceRecursosMountIfPdfShowing(mount);
                     mount.innerHTML =
                         '<div class="ubits-empty-state">' +
                         '<div class="ubits-empty-state__icon"><i class="far fa-triangle-exclamation"></i></div>' +
@@ -1824,6 +1986,7 @@
                     window.openVideoRecursoModal({
                         pageKey:      CC_RECURSOS_CURRENT_PAGE_KEY,
                         onVideoReady: function (html) {
+                            beforeReplaceRecursosMountIfPdfShowing(mount);
                             /* Guardar en el estado de la página y renderizar */
                             if (CC_RECURSOS_CURRENT_PAGE_KEY) {
                                 CC_RECURSOS_PAGE_STATE[CC_RECURSOS_CURRENT_PAGE_KEY] = { html: html };
@@ -1841,9 +2004,33 @@
                     });
                 } else {
                     /* Fallback si el modal no está disponible */
+                    beforeReplaceRecursosMountIfPdfShowing(mount);
                     mount.innerHTML = window.resourcesBlockHtml({ variant: 'video-empty' });
                     if (typeof window.initResourcesBlockFields === 'function') {
                         window.initResourcesBlockFields(mount);
+                    }
+                }
+                return;
+            }
+
+            // 1b. Tarjeta PDF → subida local + vista previa (sin IA ni modales)
+            var pdfCard = ev.target.closest('[data-resources-card-type="pdf"]');
+            if (pdfCard && !pdfCard.disabled) {
+                beforeReplaceRecursosMountIfPdfShowing(mount);
+                mount.innerHTML = window.resourcesBlockHtml({ variant: 'pdf-empty' });
+                if (typeof window.initResourcesBlockFields === 'function') {
+                    window.initResourcesBlockFields(mount);
+                }
+                if (CC_RECURSOS_CURRENT_PAGE_KEY) {
+                    CC_RECURSOS_PAGE_STATE[String(CC_RECURSOS_CURRENT_PAGE_KEY)] = { html: mount.innerHTML };
+                }
+                var activePdfItem = document.querySelector(
+                    '#crear-contenido-recursos-indice-mount .ubits-paginas-creator__item.is-active'
+                );
+                if (activePdfItem) {
+                    var iconPdf = activePdfItem.querySelector('.ubits-paginas-creator__drag-handle i');
+                    if (iconPdf && typeof window.paginasCreatorIconClass === 'function') {
+                        iconPdf.className = window.paginasCreatorIconClass('pdf');
                     }
                 }
                 return;
@@ -1856,6 +2043,7 @@
                     window.openScormRecursoModal({
                         pageKey:      CC_RECURSOS_CURRENT_PAGE_KEY,
                         onScormReady: function (html) {
+                            beforeReplaceRecursosMountIfPdfShowing(mount);
                             if (CC_RECURSOS_CURRENT_PAGE_KEY) {
                                 CC_RECURSOS_PAGE_STATE[CC_RECURSOS_CURRENT_PAGE_KEY] = { html: html };
                             }
@@ -1885,6 +2073,7 @@
             // 5. Click en botón Eliminar recurso cargado (evaluar antes de Cancelar)
             var eliminarBtn = ev.target.closest('#cc-eliminar-recurso');
             if (eliminarBtn) {
+                beforeReplaceRecursosMountIfPdfShowing(mount);
                 // Limpiar estado guardado para que al regresar no se restaure el recurso eliminado
                 if (CC_RECURSOS_CURRENT_PAGE_KEY) {
                     delete CC_RECURSOS_PAGE_STATE[CC_RECURSOS_CURRENT_PAGE_KEY];
@@ -1908,6 +2097,7 @@
             // 2. Click en botón Cancelar (vuelve al selector sin recurso asignado)
             var cancelBtn = ev.target.closest('.ubits-resources-block__footer .ubits-button--error-secondary');
             if (cancelBtn && !ev.target.closest('#cc-eliminar-recurso')) {
+                beforeReplaceRecursosMountIfPdfShowing(mount);
                 if (CC_RECURSOS_CURRENT_PAGE_KEY) {
                     delete CC_RECURSOS_PAGE_STATE[CC_RECURSOS_CURRENT_PAGE_KEY];
                 }
@@ -1956,6 +2146,7 @@
                         // Reemplazar el workspace del recurso por el reproductor, forzando 16/9
                         if (typeof window.videoPlayerHtml === 'function') {
                             var playerHtml = window.videoPlayerHtml({ type: pType, src: pSrc, className: 'is-forced-16-9' });
+                            beforeReplaceRecursosMountIfPdfShowing(mount);
                             mount.innerHTML = 
                                 '<div class="ubits-resources-block ubits-resources-block--stack">' +
                                     '<div class="ubits-resources-block__surface" style="padding: 0;">' +
@@ -1980,6 +2171,7 @@
 
                     } else {
                         // B. Enlace inválido -> variante error
+                        beforeReplaceRecursosMountIfPdfShowing(mount);
                         mount.innerHTML = window.resourcesBlockHtml({ variant: 'video-error', value: val });
                         if (typeof window.initResourcesBlockFields === 'function') {
                             window.initResourcesBlockFields(mount);
@@ -2047,6 +2239,7 @@
         });
         
         bindRecursosBlockInteractions();
+        bindCrearContenidoResourcesBlockPdfChangeOnce();
     }
 
     function initCrearContenidoPageRecursosStepOnce() {

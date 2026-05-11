@@ -344,6 +344,65 @@ body.crear-contenido-app-open .ubits-dropdown-menu__content {
     justify-self: stretch;
 }
 
+/* PDF local (paso Recursos): PDF.js, páginas apiladas + pie Eliminar (mismo gap stack que video) */
+.page-crear-contenido .cc-pdf-resource__surface.ubits-resources-block__surface {
+    min-height: 0 !important;
+    padding: 0 !important;
+    justify-content: stretch;
+}
+
+.page-crear-contenido .cc-pdf-resource__viewer-wrap--pdfjs {
+    width: 100%;
+    min-height: min(70vh, 640px);
+    max-height: min(85vh, 800px);
+    /* Fondo del visor (PDF.js); bg-3 para que no se perciba “transparente” junto al lienzo */
+    background: var(--ubits-bg-3);
+    border-radius: var(--border-radius-lg);
+    overflow-x: hidden;
+    overflow-y: auto;
+    box-sizing: border-box;
+}
+
+.page-crear-contenido .cc-pdf-resource__pdfjs-loading {
+    margin: 0;
+    padding: var(--padding-lg);
+    text-align: center;
+    color: var(--ubits-fg-1-medium);
+    box-sizing: border-box;
+}
+
+.page-crear-contenido .cc-pdf-resource__pdfjs-loading--error {
+    color: var(--ubits-feedback-accent-error);
+}
+
+.page-crear-contenido .cc-pdf-resource__pdfjs-pages {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--gap-md);
+    width: 100%;
+    padding: var(--padding-md);
+    box-sizing: border-box;
+}
+
+.page-crear-contenido .cc-pdf-resource__pdfjs-page {
+    width: 100%;
+    max-width: 100%;
+    display: flex;
+    justify-content: center;
+    box-sizing: border-box;
+}
+
+.page-crear-contenido .cc-pdf-resource__pdfjs-page canvas {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    border-radius: var(--border-radius-lg);
+    border: 1px solid var(--ubits-border-1);
+    /* Tras la rasterización, las zonas transparentes del PDF muestran este token */
+    background: var(--ubits-bg-3);
+}
+
 .page-crear-contenido #crear-contenido-recursos-page-title {
     text-align: left;
     width: 100%;
