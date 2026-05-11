@@ -1,5 +1,5 @@
 /**
- * LMS Creator — Modal «Agregar imagen» (Portada con IA · Subir portada · Enlace de tráiler opcional).
+ * LMS Creator — Modal «Añadir portada» (Portada con IA · Subir portada · Enlace de tráiler opcional).
  * Estilo y tabs alineados a video-recurso-modal.js.
  * Portada con IA: al abrir, mismo ancho/alto que Subir/Tráiler y solo bloque «Describe tu idea»; al pulsar «Generar portada» se expande
  * (transición max-width) y aparece la columna de vista previa con loader y resultado.
@@ -574,7 +574,7 @@
 
         var overlay = global.openModal({
             overlayId: OVERLAY_ID,
-            title: 'Agregar imagen',
+            title: 'Añadir portada',
             bodyHtml: buildBody(),
             size: 'lg',
             closeOnOverlayClick: false,

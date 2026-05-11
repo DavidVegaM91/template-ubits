@@ -25,7 +25,7 @@
      * Rollback a la experiencia clásica (Generar portada con IA + Cargar imagen en el hueco): quitar en HTML
      * `data-learn-img-trailer-empty-variant="ia"` del #crear-contenido-img-trailer; wirePortadaCta / modal vuelven a enlazarse solos.
      * El modal `portada-ai-modal` y `openCrearContenidoPortadaAiModal` no se eliminan; el hueco ya no muestra el botón que lo abría.
-     * CTA «Añadir portada» abre `openPortadaImagenModal` (portada-imagen-modal.js): «Agregar imagen» con pestañas IA / subir / tráiler.
+     * CTA «Añadir portada» abre `openPortadaImagenModal` (portada-imagen-modal.js): modal «Añadir portada» con pestañas IA / subir / tráiler.
      */
     function portadaImgTrailerUsesEmptyIaVariant() {
         var block = document.getElementById('crear-contenido-img-trailer');
