@@ -8,9 +8,22 @@
 
     var STORAGE_KEY = 'ubits-start-lms-creator-tour';
 
+    /** Misma regla que el layout: sidebar oculto por debajo de 1024px; el tour ancla al rail y no debe mostrarse en móvil. */
+    function isDesktopSidebarViewport() {
+        try {
+            return window.matchMedia('(min-width: 1024px)').matches;
+        } catch (e) {
+            return typeof window.innerWidth === 'number' && window.innerWidth >= 1024;
+        }
+    }
+
     window.initUbitsLmsCreatorAdminMigrationTour = function (delayMs) {
         var d = typeof delayMs === 'number' ? delayMs : 450;
         setTimeout(function () {
+            if (!isDesktopSidebarViewport()) {
+                return;
+            }
+
             var runTour = false;
             try {
                 if (sessionStorage.getItem(STORAGE_KEY) === '1') {

@@ -217,8 +217,14 @@ function getFloatingMenuBasePath() {
 
 function resolveFloatingUrl(url) {
     if (!url) return url;
-    const stdPrefix = '../../';
     const basePath = getFloatingMenuBasePath();
+    /* Enlaces ya resueltos con getFloatingMenuBasePath() (p. ej. perfil tab-bar: base + ubits-colaborador/...).
+       Si volvemos a aplicar el reemplazo de ../../, en rutas profundas (certificados/, planes-formacion/*)
+       se duplican ../ y el href queda roto (../../../../...). */
+    if (basePath && url.startsWith(basePath)) {
+        return url;
+    }
+    const stdPrefix = '../../';
     if (url.startsWith(stdPrefix) && basePath !== stdPrefix) {
         return basePath + url.slice(stdPrefix.length);
     }
