@@ -435,7 +435,7 @@ window.openAdminLmsMigrateConfirm = function (basePathOpt, destinationFullUrl) {
         clearAdminLmsMigrateModalHandlers();
 
         if (typeof window.openModal !== 'function') {
-            if (window.confirm('Conoce el espacio donde se centralizará todo el aprendizaje de tu empresa en un solo lugar. ¿Deseas continuar?')) {
+            if (window.confirm('Conoce LMS Creator, el espacio donde se centralizará todo el aprendizaje de tu empresa en un solo lugar. ¿Deseas continuar?')) {
                 try {
                     sessionStorage.setItem('ubits-start-lms-creator-tour', '1');
                 } catch (e) { /* ignore */ }
@@ -463,13 +463,13 @@ window.openAdminLmsMigrateConfirm = function (basePathOpt, destinationFullUrl) {
 
         var footerHtml =
             '<button type="button" class="ubits-button ubits-button--secondary ubits-button--md" onclick="if(window._ubitsAdminLmsMigrateCancel)window._ubitsAdminLmsMigrateCancel();"><span>Cancelar</span></button>' +
-            '<button type="button" class="ubits-button ubits-button--primary ubits-button--md" onclick="if(window._ubitsAdminLmsMigrateAccept)window._ubitsAdminLmsMigrateAccept();"><span>Aceptar</span></button>';
+            '<button type="button" class="ubits-button ubits-button--primary ubits-button--md" onclick="if(window._ubitsAdminLmsMigrateAccept)window._ubitsAdminLmsMigrateAccept();"><span>Continuar</span></button>';
 
         window.openModal({
             overlayId: UBITS_ADMIN_LMS_MIGRATE_OVERLAY_ID,
             title: 'Nueva experiencia, todo en uno',
             bodyHtml:
-                '<p class="ubits-body-md-regular">Conoce el espacio donde se centralizará todo el aprendizaje de tu empresa en un solo lugar.</p>',
+                '<p class="ubits-body-md-regular">Conoce <span class="ubits-body-md-bold">LMS Creator</span>, el espacio donde se centralizará todo el aprendizaje de tu empresa en un solo lugar.</p>',
             footerHtml: footerHtml,
             size: 'sm',
             closeOnOverlayClick: true,
