@@ -9,7 +9,7 @@
  *   video-player.js (videoPlayerHtml) — opcional, usa fallback si no está
  *   tab.css, file-upload.css, checkbox.css, video-recurso-modal.css
  *   Avatares: ../../images/avatars/* · previews opcionales: ../../videos/avatars/{mismo-base-que-foto}.mp4
- *   Contexto tema del guión: textarea nativa `.ai-panel__input` dentro de `ai-panel__input-box` (como SCORM). Guión: createInput textarea.
+ *   Guión: selector tipo selection-card (Generar con IA | Escribir manualmente). IA: solo contexto hasta «Generar guión»; luego textarea editable. Manual: un solo textarea.
  */
 (function (global) {
     'use strict';
@@ -64,7 +64,10 @@
     var _currentPageKey = null;
     var _currentTab     = 'ia';
     var _selectedAvatar = null;
-    var _guionText      = '';
+    /** Guión solo del flujo IA (bloque editable bajo «Generar guión»). */
+    var _guionTextIa     = '';
+    /** Guión solo del modo manual; nunca se rellena desde la IA. */
+    var _guionTextManual = '';
     var _enlaceValue    = '';
     var _enlaceValid    = false;
     var _fileBlob       = null;
@@ -74,6 +77,10 @@
     var _currentCat     = 'staff';
     /** API createInput (textarea guión); contexto tema = textarea nativa .ai-panel__input como SCORM. */
     var _guionInputApi   = null;
+    /** 'ia' | 'manual' — fuente del guión para «Generar video» (solo el modo activo cuenta). */
+    var _guionMode       = 'ia';
+    /** En modo IA: si ya hubo generación (o se importó texto desde manual), se muestra el editor bajo el contexto. */
+    var _guionIaEditorVisible = false;
 
     /* ══════════════════════════════════════
        DATOS: AVATARES (images/avatars) + CATEGORÍAS
@@ -443,33 +450,63 @@
 
                     '<div class="cc-vm-section-divider"></div>' +
 
-                    // Section 2: Guión
+                    // Section 2: Guión (selector + panel IA o manual)
                     '<div class="cc-vm-section">' +
                         '<p class="cc-vm-section-label ubits-body-md-bold">Guión</p>' +
-                        // IA input-box (always visible, no mini-tabs)
-                        '<div class="ubits-ia-chat-thread__input-area">' +
-                            '<div class="ai-panel__input-box" id="cc-vm-ia-input-box">' +
-                                '<input type="file" id="cc-vm-files" accept=".txt,.pdf,.doc,.docx,text/plain,application/pdf" multiple hidden>' +
-                                '<div class="ai-panel__pending-files-strip" id="cc-vm-pending-files" style="display:none;"></div>' +
-                                '<textarea id="cc-vm-context-input" class="ai-panel__input ubits-body-md-regular" rows="2" placeholder="Adjunta un archivo o describe el tema del guión"></textarea>' +
-                                '<div class="ai-panel__input-actions">' +
-                                    '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only ai-panel__attach-btn" id="cc-vm-attach" aria-label="Adjuntar">' +
-                                        '<i class="far fa-plus"></i>' +
-                                    '</button>' +
-                                    '<div class="ai-panel__input-spacer" aria-hidden="true"></div>' +
-                                    '<button type="button" class="ubits-ia-button ubits-ia-button--secondary ubits-ia-button--sm ubits-ia-button--with-token-cost" id="cc-vm-btn-gen-guion">' +
-                                        '<span class="ubits-ia-button__token-cost" aria-hidden="true">' +
-                                            '<span class="ubits-ia-button__token-number">' + VIDEO_GUION_IA_TOKEN_COST + '</span>' +
-                                            '<i class="far fa-coin-vertical"></i>' +
-                                        '</span>' +
-                                        '<span id="cc-vm-gen-guion-label">Generar guión</span>' +
-                                    '</button>' +
+                        '<div class="ubits-selection-card-group ubits-selection-card-group--2 cc-vm-guion-mode-select" role="radiogroup" aria-label="Cómo quieres definir el guión">' +
+                            '<label class="ubits-selection-card ubits-radio ubits-radio--sm">' +
+                                '<input type="radio" name="cc-vm-guion-mode" class="ubits-radio__input" value="ia" checked>' +
+                                '<span class="ubits-radio__circle"></span>' +
+                                '<div class="ubits-selection-card__body">' +
+                                    '<div class="ubits-selection-card__header">' +
+                                        '<span class="ubits-selection-card__icon"><i class="far fa-sparkles"></i></span>' +
+                                        '<span class="ubits-body-sm-semibold ubits-selection-card__title">Generar con IA</span>' +
+                                    '</div>' +
+                                '</div>' +
+                            '</label>' +
+                            '<label class="ubits-selection-card ubits-radio ubits-radio--sm">' +
+                                '<input type="radio" name="cc-vm-guion-mode" class="ubits-radio__input" value="manual">' +
+                                '<span class="ubits-radio__circle"></span>' +
+                                '<div class="ubits-selection-card__body">' +
+                                    '<div class="ubits-selection-card__header">' +
+                                        '<span class="ubits-selection-card__icon"><i class="far fa-pen"></i></span>' +
+                                        '<span class="ubits-body-sm-semibold ubits-selection-card__title">Escribir manualmente</span>' +
+                                    '</div>' +
+                                '</div>' +
+                            '</label>' +
+                        '</div>' +
+
+                        '<div id="cc-vm-guion-panel-ia" class="cc-vm-guion-panel">' +
+                            '<div class="cc-vm-guion-ia-context">' +
+                                '<div class="ubits-ia-chat-thread__input-area">' +
+                                    '<div class="ai-panel__input-box" id="cc-vm-ia-input-box">' +
+                                        '<input type="file" id="cc-vm-files" accept=".txt,.pdf,.doc,.docx,text/plain,application/pdf" multiple hidden>' +
+                                        '<div class="ai-panel__pending-files-strip" id="cc-vm-pending-files" style="display:none;"></div>' +
+                                        '<textarea id="cc-vm-context-input" class="ai-panel__input ubits-body-md-regular" rows="2" placeholder="Adjunta un archivo o describe el tema del guión"></textarea>' +
+                                        '<div class="ai-panel__input-actions">' +
+                                            '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only ai-panel__attach-btn" id="cc-vm-attach" aria-label="Adjuntar">' +
+                                                '<i class="far fa-plus"></i>' +
+                                            '</button>' +
+                                            '<div class="ai-panel__input-spacer" aria-hidden="true"></div>' +
+                                            '<button type="button" class="ubits-ia-button ubits-ia-button--secondary ubits-ia-button--sm ubits-ia-button--with-token-cost" id="cc-vm-btn-gen-guion">' +
+                                                '<span class="ubits-ia-button__token-cost" aria-hidden="true">' +
+                                                    '<span class="ubits-ia-button__token-number">' + VIDEO_GUION_IA_TOKEN_COST + '</span>' +
+                                                    '<i class="far fa-coin-vertical"></i>' +
+                                                '</span>' +
+                                                '<span id="cc-vm-gen-guion-label">Generar guión</span>' +
+                                            '</button>' +
+                                        '</div>' +
+                                    '</div>' +
                                 '</div>' +
                             '</div>' +
+                            '<div id="cc-vm-guion-ia-editor-block" class="cc-vm-guion-ia-editor-block" style="display:none">' +
+                                '<p class="ubits-body-sm-semibold cc-vm-guion-ia-editor-heading">Guión del video</p>' +
+                                '<div id="cc-vm-guion-ia-editor-wrap" class="cc-vm-guion-input-mount"></div>' +
+                            '</div>' +
                         '</div>' +
-                        // Guión: Input UBITS textarea + contador (createInput)
-                        '<div class="cc-vm-guion-editor-wrap">' +
-                            '<div id="cc-vm-guion-create-input-wrap" class="cc-vm-guion-input-mount"></div>' +
+
+                        '<div id="cc-vm-guion-panel-manual" class="cc-vm-guion-panel" style="display:none">' +
+                            '<div id="cc-vm-guion-manual-wrap" class="cc-vm-guion-input-mount"></div>' +
                         '</div>' +
                     '</div>' +
 
@@ -851,26 +888,106 @@
         setTimeout(autosizeContextTemaTextarea, 0);
     }
 
-    function initGuionCreateInput() {
-        var wrap = document.getElementById('cc-vm-guion-create-input-wrap');
+    function getActiveGuionContainerId() {
+        if (_guionMode === 'manual') return 'cc-vm-guion-manual-wrap';
+        if (_guionMode === 'ia' && _guionIaEditorVisible) return 'cc-vm-guion-ia-editor-wrap';
+        return null;
+    }
+
+    function getGuionWrapEl() {
+        var id = getActiveGuionContainerId();
+        return id ? document.getElementById(id) : null;
+    }
+
+    function persistGuionFromMountedInput() {
+        if (!_guionInputApi || typeof _guionInputApi.getValue !== 'function') return;
+        var v = String(_guionInputApi.getValue() || '');
+        var mw = document.getElementById('cc-vm-guion-manual-wrap');
+        var iw = document.getElementById('cc-vm-guion-ia-editor-wrap');
+        if (mw && mw._ccVmGuionWired) _guionTextManual = v;
+        else if (iw && iw._ccVmGuionWired) _guionTextIa = v;
+    }
+
+    function destroyGuionInput() {
+        persistGuionFromMountedInput();
+        ['cc-vm-guion-ia-editor-wrap', 'cc-vm-guion-manual-wrap'].forEach(function (id) {
+            var w = document.getElementById(id);
+            if (w) {
+                w.innerHTML = '';
+                delete w._ccVmGuionWired;
+            }
+        });
+        var host = document.getElementById('cc-vm-guion-loader-host');
+        if (host && host.parentNode) {
+            host.parentNode.removeChild(host);
+        }
+        _guionInputApi = null;
+    }
+
+    function applyGuionModeUi() {
+        var panelIa = document.getElementById('cc-vm-guion-panel-ia');
+        var panelMan = document.getElementById('cc-vm-guion-panel-manual');
+        var iaEditorBlock = document.getElementById('cc-vm-guion-ia-editor-block');
+        document.querySelectorAll('#cc-vtab-ia input[name="cc-vm-guion-mode"]').forEach(function (r) {
+            var v = r.getAttribute('value');
+            r.checked = (v === 'ia' && _guionMode === 'ia') || (v === 'manual' && _guionMode === 'manual');
+        });
+        if (panelIa) panelIa.style.display = _guionMode === 'ia' ? '' : 'none';
+        if (panelMan) panelMan.style.display = _guionMode === 'manual' ? '' : 'none';
+        destroyGuionInput();
+        if (_guionMode === 'manual') {
+            if (iaEditorBlock) iaEditorBlock.style.display = 'none';
+            initGuionCreateInput('cc-vm-guion-manual-wrap');
+        } else {
+            if (iaEditorBlock) iaEditorBlock.style.display = _guionIaEditorVisible ? '' : 'none';
+            if (_guionIaEditorVisible) {
+                initGuionCreateInput('cc-vm-guion-ia-editor-wrap');
+            }
+        }
+    }
+
+    function wireGuionModeRadios() {
+        var panel = document.getElementById('cc-vtab-ia');
+        if (!panel || panel._ccGuionModeWired) return;
+        panel._ccGuionModeWired = true;
+        panel.addEventListener('change', function (e) {
+            var t = e.target;
+            if (!t || t.name !== 'cc-vm-guion-mode') return;
+            var next = String(t.value || 'ia') === 'manual' ? 'manual' : 'ia';
+            if (next === _guionMode) return;
+            persistGuionFromMountedInput();
+            _guionMode = next;
+            applyGuionModeUi();
+            refreshIaButtons();
+        });
+    }
+
+    function initGuionCreateInput(containerId) {
+        var wrap = document.getElementById(containerId);
         if (!wrap || wrap._ccVmGuionWired || typeof global.createInput !== 'function') return;
         wrap._ccVmGuionWired = true;
+        var placeholder =
+            containerId === 'cc-vm-guion-manual-wrap'
+                ? 'Escribe el guión completo del video'
+                : 'Revisa y edita el guión antes de generar el video';
         _guionInputApi = global.createInput({
-            containerId: 'cc-vm-guion-create-input-wrap',
+            containerId: containerId,
             type: 'textarea',
             showLabel: false,
             label: '',
-            placeholder: 'El guión aparecerá aquí, o puedes escribirlo directamente',
+            placeholder: placeholder,
             size: 'md',
             maxLength: VIDEO_GUION_MAX_CHARS,
             showCounter: true,
-            value: _guionText || '',
+            value: (containerId === 'cc-vm-guion-manual-wrap' ? _guionTextManual : _guionTextIa) || '',
             onChange: function (val) {
-                _guionText = String(val != null ? val : '');
+                var s = String(val != null ? val : '');
+                if (containerId === 'cc-vm-guion-manual-wrap') _guionTextManual = s;
+                else _guionTextIa = s;
                 if (_guionInputApi && typeof _guionInputApi.setState === 'function') {
                     _guionInputApi.setState('default');
                 }
-                var w = document.getElementById('cc-vm-guion-create-input-wrap');
+                var w = document.getElementById(containerId);
                 var ht = w && w.querySelector('.ubits-input-helper-text');
                 if (ht) {
                     ht.textContent = '';
@@ -882,16 +999,14 @@
                 refreshIaButtons();
             }
         });
-        // Ajustar alto inicial según contenido + asegurar contador inicial.
         setTimeout(function () {
             autosizeGuionTextarea();
-            // Fuerza actualizar contador sin requerir focus/click.
             syncGuionTextareaAfterProgrammaticValue();
         }, 0);
     }
 
     function getGuionTextareaEl() {
-        var w = document.getElementById('cc-vm-guion-create-input-wrap');
+        var w = getGuionWrapEl();
         return w ? w.querySelector('textarea.ubits-input') : null;
     }
 
@@ -919,7 +1034,7 @@
         var ta = getGuionTextareaEl();
         if (!ta) return;
         var v = String(nextValue != null ? nextValue : '');
-        _guionText = v;
+        _guionTextIa = v;
         // Evitar usar _guionInputApi.setValue(): en `components/input.js` el contador tiene
         // un bug de scope con `updateCounter` y puede no actualizarse hasta interacción del usuario.
         ta.value = v;
@@ -939,35 +1054,42 @@
     }
 
     function setGuionLoading(isLoading) {
-        var mount = document.getElementById('cc-vm-guion-create-input-wrap');
-        if (!mount) return;
+        var mount = document.getElementById('cc-vm-guion-ia-editor-wrap');
+        var block = document.getElementById('cc-vm-guion-ia-editor-block');
+        if (!mount || !block) return;
         var hostId = 'cc-vm-guion-loader-host';
         var host = document.getElementById(hostId);
 
         if (isLoading) {
-            if (mount) mount.style.display = 'none';
+            mount.style.display = 'none';
             if (!host) {
                 host = document.createElement('div');
                 host.id = hostId;
                 host.className = 'cc-vm-guion-loader-host';
-                mount.parentNode.insertBefore(host, mount);
+                block.insertBefore(host, mount);
+            } else if (host.parentNode !== block) {
+                block.insertBefore(host, mount);
             }
             host.style.display = '';
-            host.innerHTML = typeof global.getIaLoaderHTML === 'function'
-                ? global.getIaLoaderHTML({ label: 'Generando guión' })
-                : '<p class="ubits-body-sm-regular" role="status" aria-live="polite">Generando guión...</p>';
+            host.innerHTML =
+                typeof global.getIaLoaderHTML === 'function'
+                    ? global.getIaLoaderHTML({ label: 'Generando guión' })
+                    : '<p class="ubits-body-sm-regular" role="status" aria-live="polite">Generando guión...</p>';
             return;
         }
 
-        if (host) host.style.display = 'none';
-        if (mount) mount.style.display = '';
+        if (host) {
+            host.style.display = 'none';
+            host.innerHTML = '';
+        }
+        mount.style.display = '';
     }
 
     /** Mensaje de error bajo el textarea del guión (createInput invalid + helper oficial). */
     function setGuionValidationInvalid(message) {
         if (!_guionInputApi || typeof _guionInputApi.setState !== 'function') return;
         _guionInputApi.setState('invalid');
-        var wrap = document.getElementById('cc-vm-guion-create-input-wrap');
+        var wrap = getGuionWrapEl();
         var ht = wrap && wrap.querySelector('.ubits-input-helper-text');
         if (ht) {
             ht.style.display = '';
@@ -980,7 +1102,7 @@
     }
 
     function focusGuionFieldAfterError() {
-        var mount = document.getElementById('cc-vm-guion-create-input-wrap');
+        var mount = getGuionWrapEl();
         if (mount) mount.scrollIntoView({ behavior: 'smooth', block: 'center' });
         if (_guionInputApi && typeof _guionInputApi.focus === 'function') {
             setTimeout(function () { _guionInputApi.focus(); }, 300);
@@ -1006,6 +1128,9 @@
             }
             if (!trySpendVideoAiTokens(VIDEO_GUION_IA_TOKEN_COST)) return;
             clearContextTemaError();
+            _guionIaEditorVisible = true;
+            var edBlockPre = document.getElementById('cc-vm-guion-ia-editor-block');
+            if (edBlockPre) edBlockPre.style.display = '';
             var labelEl = document.getElementById('cc-vm-gen-guion-label');
             btn.disabled = true;
             if (labelEl) labelEl.textContent = 'Generando...';
@@ -1013,6 +1138,8 @@
             setTimeout(function () {
                 var guion = generateGuion();
                 setGuionLoading(false);
+                destroyGuionInput();
+                initGuionCreateInput('cc-vm-guion-ia-editor-wrap');
                 setGuionValueProgrammatically(guion);
                 resetContextTemaAfterGuionGeneration();
                 btn.disabled = false;
@@ -1073,13 +1200,26 @@
         if (!btn || btn._ccWired) return;
         btn._ccWired = true;
         btn.addEventListener('click', function () {
-            _guionText = _guionInputApi && typeof _guionInputApi.getValue === 'function'
-                ? String(_guionInputApi.getValue() || '')
-                : _guionText;
-            var trimmedGuion = _guionText.trim();
+            persistGuionFromMountedInput();
+            var trimmedGuion =
+                _guionMode === 'manual' ? _guionTextManual.trim() : _guionTextIa.trim();
             if (!trimmedGuion.length) {
-                setGuionValidationInvalid('Campo requerido');
-                focusGuionFieldAfterError();
+                if (_guionMode === 'ia' && !_guionIaEditorVisible) {
+                    if (typeof global.showToast === 'function') {
+                        global.showToast(
+                            'warning',
+                            'Genera el guión con IA o cambia a «Escribir manualmente».',
+                            { containerId: 'ubits-toast-container' }
+                        );
+                    }
+                    var boxCtx = getContextTemaBox();
+                    if (boxCtx) boxCtx.classList.add('ai-panel__input-box--context-error');
+                    var taCtx = getContextTemaTextarea();
+                    if (taCtx) taCtx.focus();
+                } else {
+                    setGuionValidationInvalid('Campo requerido');
+                    focusGuionFieldAfterError();
+                }
                 return;
             }
             if (trimmedGuion.length < VIDEO_GUION_MIN_CHARS) {
@@ -1240,7 +1380,8 @@
         wireAvatarGrid();
         initInsumoAttach();
         initContextTemaField();
-        initGuionCreateInput();
+        wireGuionModeRadios();
+        applyGuionModeUi();
         initGenGuionButton();
         initGenVideoButton();
         initLogoUpload();
@@ -1301,8 +1442,11 @@
         _currentTab     = 'ia';
         _currentCat     = 'staff';
         _selectedAvatar = AVATARS.filter(function (a) { return a.cat === 'staff'; })[0] || AVATARS[0];
-        _guionText        = '';
-        _guionInputApi    = null;
+        _guionTextIa           = '';
+        _guionTextManual       = '';
+        _guionInputApi         = null;
+        _guionMode             = 'ia';
+        _guionIaEditorVisible  = false;
         _enlaceValue    = '';
         _enlaceValid    = false;
         _fileBlob       = null;

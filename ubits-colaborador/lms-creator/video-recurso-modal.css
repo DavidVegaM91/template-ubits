@@ -337,8 +337,31 @@
     margin-inline: 0;
 }
 
+/* Selector de modo guión (selection-card + radio) */
+.cc-vm-guion-mode-select {
+    margin-bottom: var(--gap-md);
+}
+
+/* Títulos de las minicards un poco más compactos que el default del selection-card */
+#cc-video-recurso-modal .cc-vm-guion-mode-select .ubits-selection-card__title {
+    font-size: var(--font-size-sm);
+    line-height: 1.25;
+}
+
+.cc-vm-guion-ia-editor-block {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-xs);
+    margin-top: var(--gap-md);
+}
+
+.cc-vm-guion-ia-editor-heading {
+    margin: 0;
+    color: var(--ubits-fg-1-high);
+}
+
 /* Misma escala que `.ai-panel__input` (13px / 20px interlineado). */
-#cc-video-recurso-modal #cc-vm-guion-create-input-wrap textarea.ubits-input {
+#cc-video-recurso-modal .cc-vm-guion-input-mount textarea.ubits-input {
     font-size: var(--font-size-sm);
     line-height: 20px;
     min-height: 120px;
