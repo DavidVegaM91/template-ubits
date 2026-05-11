@@ -117,10 +117,11 @@ const TOP_NAV_VARIANTS = {
     'admin-aprendizaje': {
         name: 'Aprendizaje',
         tabs: [
-            { id: 'planes-formacion', label: 'Planes de formación', icon: 'far fa-clipboard-list-check', url: '../../ubits-admin/aprendizaje/planes-formacion.html' },
-            { id: 'u-corporativa', label: 'Universidad corporativa', icon: 'far fa-building-columns', url: '../../ubits-admin/aprendizaje/admin-u-corporativa.html' },
-            { id: 'certificados', label: 'Certificados', icon: 'far fa-file-certificate', url: '../../ubits-admin/aprendizaje/admin-certificados.html' },
-            { id: 'seguimiento', label: 'Seguimiento', icon: 'far fa-chart-line', url: '../../ubits-admin/aprendizaje/seguimiento.html' }
+            { id: 'lms-creator', label: 'LMS Creator', icon: 'far fa-bolt', url: '../../ubits-colaborador/lms-creator/contenidos-sin-migrar.html' },
+            { id: 'planes-formacion', label: 'Planes de formación', icon: 'far fa-clipboard-list-check', url: '../../ubits-colaborador/lms-creator/planes-formacion/planes-formacion.html' },
+            { id: 'u-corporativa', label: 'Universidad corporativa', icon: 'far fa-building-columns', url: '../../ubits-colaborador/lms-creator/personalizacion/personalizacion-u-corporativa.html' },
+            { id: 'certificados', label: 'Certificados', icon: 'far fa-file-certificate', url: '../../ubits-colaborador/lms-creator/certificados/certificados.html' },
+            { id: 'seguimiento', label: 'Seguimiento', icon: 'far fa-chart-line', url: '../../ubits-colaborador/lms-creator/personalizacion/personalizacion-seguimiento.html' }
         ]
     },
     'admin-desempeño': {
@@ -324,13 +325,12 @@ function getCurrentPageFilenameForSubNav() {
 }
 
 /**
- * Clave compuesta para desambiguar el mismo nombre de archivo (p. ej. planes-formacion.html en admin vs LMS Creator).
+ * Clave compuesta para páginas bajo lms-creator/ (prefijo lms-creator/ + archivo).
  */
 function getPageKeyForSubNav() {
     const path = (window.location.pathname || '').replace(/\\/g, '/').toLowerCase();
     const file = getCurrentPageFilenameForSubNav();
     if (path.includes('/lms-creator/')) return 'lms-creator/' + file;
-    if (path.includes('/ubits-admin/') && path.includes('/aprendizaje/')) return 'admin-aprendizaje/' + file;
     return file;
 }
 
@@ -341,7 +341,7 @@ function resolveTabIdFromPage() {
     return PAGE_TO_TAB[file];
 }
 
-// Mapeo: página -> tab ID (claves en minúsculas). Rutas lms-creator/* y admin-aprendizaje/* usan prefijo vía getPageKeyForSubNav.
+// Mapeo: página -> tab ID (claves en minúsculas). Rutas bajo lms-creator/ usan prefijo vía getPageKeyForSubNav.
 const PAGE_TO_TAB = {
     // Aprendizaje
     'home-learn.html': 'home',
@@ -432,6 +432,7 @@ const PAGE_TO_TAB = {
     'reclutamiento.html': 'reclutamiento',
     // LMS Creator (rutas con prefijo lms-creator/ vía getPageKeyForSubNav)
     'lms-creator/contenidos.html': 'contenidos',
+    'lms-creator/contenidos-sin-migrar.html': 'contenidos',
     'lms-creator/crear-contenido.html': 'contenidos',
     'lms-creator/categorias.html': 'categorias',
     'lms-creator/planes-formacion.html': 'planes',
@@ -469,11 +470,6 @@ const PAGE_TO_TAB = {
     'personalizacion.html': 'personalizacion',
     'roles-y-permisos.html': 'roles-permisos',
     'comunicaciones.html': 'comunicaciones',
-    // Admin aprendizaje (misma carpeta; prefijo admin-aprendizaje/)
-    'admin-aprendizaje/planes-formacion.html': 'planes-formacion',
-    'admin-aprendizaje/admin-u-corporativa.html': 'u-corporativa',
-    'admin-aprendizaje/admin-certificados.html': 'certificados',
-    'admin-aprendizaje/seguimiento.html': 'seguimiento',
     // Admin desempeño
     'admin-360.html': 'evaluations',
     'admin-objetivos.html': 'objectives',

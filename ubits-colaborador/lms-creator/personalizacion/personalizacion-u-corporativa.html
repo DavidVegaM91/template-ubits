@@ -19,6 +19,8 @@
     <link rel="stylesheet" href="../../../components/ia-button.css">
     <link rel="stylesheet" href="../../../components/header-product.css">
     <link rel="stylesheet" href="../../../components/tooltip.css">
+    <link rel="stylesheet" href="../../../components/popover.css">
+    <link rel="stylesheet" href="../../../components/coachmark.css">
     <link rel="stylesheet" href="../lms-creator.css">
     <link rel="stylesheet" href="./personalizacion-u-corporativa.css">
 </head>
@@ -51,6 +53,9 @@
     <div id="profile-menu-container"></div>
 
     <script src="../../../components/tooltip.js"></script>
+    <script src="../../../components/popover.js"></script>
+    <script src="../../../components/coachmark.js"></script>
+    <script src="../lms-creator-admin-migration-tour.js"></script>
     <script src="../../../components/sidebar.js"></script>
     <script src="../../../components/sub-nav.js"></script>
     <script src="../../../components/tab-bar.js"></script>
@@ -103,6 +108,10 @@
                     setActiveAccordionLink('personalizacion-u-corporativa');
                 }
             }, 200);
+
+            if (typeof initUbitsLmsCreatorAdminMigrationTour === 'function') {
+                initUbitsLmsCreatorAdminMigrationTour(450);
+            }
         });
     </script>
 </body>

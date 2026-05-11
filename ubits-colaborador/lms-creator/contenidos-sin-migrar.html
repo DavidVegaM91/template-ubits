@@ -16,6 +16,9 @@
     <link rel="stylesheet" href="../../components/profile-menu.css">
     <link rel="stylesheet" href="../../components/tooltip.css">
     <link rel="stylesheet" href="../../components/toast.css">
+    <link rel="stylesheet" href="../../components/button.css">
+    <link rel="stylesheet" href="../../components/popover.css">
+    <link rel="stylesheet" href="../../components/coachmark.css">
     <link rel="stylesheet" href="./lms-creator.css">
     <link rel="stylesheet" href="./contenidos-sin-migrar.css">
 </head>
@@ -60,6 +63,9 @@
     <div id="ubits-toast-container"></div>
 
     <script src="../../components/tooltip.js"></script>
+    <script src="../../components/popover.js"></script>
+    <script src="../../components/coachmark.js"></script>
+    <script src="./lms-creator-admin-migration-tour.js"></script>
     <script src="../../components/sidebar.js"></script>
     <script src="../../components/tab-bar.js"></script>
     <script src="../../components/floating-menu.js"></script>
@@ -92,6 +98,10 @@
                     setActiveAccordionLink('contenidos');
                 }
             }, 200);
+
+            if (typeof initUbitsLmsCreatorAdminMigrationTour === 'function') {
+                initUbitsLmsCreatorAdminMigrationTour(450);
+            }
         });
     </script>
 </body>

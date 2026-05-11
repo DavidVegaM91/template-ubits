@@ -110,11 +110,14 @@ function sidebarBuildModuleSubmenu(dataSection, variant, basePath) {
     }
     const title = cfg.name || labelFallback;
     const options = [];
+    const adminAprendizajeMigrate = variant === 'admin' && dataSection === 'aprendizaje';
     (cfg.tabs || []).forEach(function (tab) {
         if (!tab) return;
         options.push({
             text: tab.label,
-            value: sidebarResolveTabUrl(tab.url, basePath),
+            value: adminAprendizajeMigrate
+                ? ('action:lms-admin-migrate|' + String(tab.url || '').replace(/^\.\.\/\.\.\//, ''))
+                : sidebarResolveTabUrl(tab.url, basePath),
             leftIcon: sidebarTabIconToLeftIcon(tab.icon)
         });
     });
@@ -345,6 +348,15 @@ function bindSidebarSubmenuSelectOnce() {
         const v = d.value;
         if (v == null || v === '' || v === '#') return;
 
+        if (typeof v === 'string' && v.indexOf('action:lms-admin-migrate|') === 0) {
+            const rel = v.slice('action:lms-admin-migrate|'.length);
+            const basePath = getBasePath();
+            if (typeof window.openAdminLmsMigrateConfirm === 'function') {
+                window.openAdminLmsMigrateConfirm(basePath, basePath + rel);
+            }
+            return;
+        }
+
         if (typeof v === 'string' && v.indexOf('action:') === 0) {
             const action = v.replace(/^action:/, '');
             if (action === 'documentacion') {
@@ -367,6 +379,106 @@ function bindSidebarSubmenuSelectOnce() {
         window.location.href = v;
     });
 }
+
+var UBITS_ADMIN_LMS_MIGRATE_OVERLAY_ID = 'ubits-admin-lms-migrate-modal';
+
+function ensureAdminLmsMigrateModalAssets(basePath, callback) {
+    function linkOnce(href) {
+        if (document.querySelector('link[href="' + href + '"]')) return;
+        var l = document.createElement('link');
+        l.rel = 'stylesheet';
+        l.href = href;
+        document.head.appendChild(l);
+    }
+    linkOnce(basePath + 'components/modal.css');
+    linkOnce(basePath + 'components/button.css');
+    if (typeof window.openModal === 'function') {
+        callback();
+        return;
+    }
+    var existing = document.querySelector('script[src*="components/modal.js"]');
+    if (existing) {
+        var tries = 0;
+        var tryCb = function () {
+            if (typeof window.openModal === 'function') {
+                callback();
+                return;
+            }
+            tries += 1;
+            if (tries < 80) setTimeout(tryCb, 50);
+            else callback();
+        };
+        existing.addEventListener('load', tryCb);
+        tryCb();
+        return;
+    }
+    var s = document.createElement('script');
+    s.src = basePath + 'components/modal.js';
+    s.onload = function () { callback(); };
+    s.onerror = function () { callback(); };
+    document.head.appendChild(s);
+}
+
+function clearAdminLmsMigrateModalHandlers() {
+    window._ubitsAdminLmsMigrateCancel = null;
+    window._ubitsAdminLmsMigrateAccept = null;
+}
+
+window.openAdminLmsMigrateConfirm = function (basePathOpt, destinationFullUrl) {
+    var bp = basePathOpt != null && basePathOpt !== '' ? basePathOpt : getBasePath();
+    var targetUrl =
+        destinationFullUrl != null && typeof destinationFullUrl === 'string' && destinationFullUrl !== ''
+            ? destinationFullUrl
+            : bp + 'ubits-colaborador/lms-creator/contenidos-sin-migrar.html';
+
+    ensureAdminLmsMigrateModalAssets(bp, function () {
+        clearAdminLmsMigrateModalHandlers();
+
+        if (typeof window.openModal !== 'function') {
+            if (window.confirm('Conoce el espacio donde se centralizará todo el aprendizaje de tu empresa en un solo lugar. ¿Deseas continuar?')) {
+                try {
+                    sessionStorage.setItem('ubits-start-lms-creator-tour', '1');
+                } catch (e) { /* ignore */ }
+                window.location.href = targetUrl;
+            }
+            return;
+        }
+
+        window._ubitsAdminLmsMigrateCancel = function () {
+            clearAdminLmsMigrateModalHandlers();
+            if (typeof window.closeModal === 'function') {
+                window.closeModal(UBITS_ADMIN_LMS_MIGRATE_OVERLAY_ID);
+            }
+        };
+        window._ubitsAdminLmsMigrateAccept = function () {
+            clearAdminLmsMigrateModalHandlers();
+            try {
+                sessionStorage.setItem('ubits-start-lms-creator-tour', '1');
+            } catch (e) { /* ignore */ }
+            if (typeof window.closeModal === 'function') {
+                window.closeModal(UBITS_ADMIN_LMS_MIGRATE_OVERLAY_ID);
+            }
+            window.location.href = targetUrl;
+        };
+
+        var footerHtml =
+            '<button type="button" class="ubits-button ubits-button--secondary ubits-button--md" onclick="if(window._ubitsAdminLmsMigrateCancel)window._ubitsAdminLmsMigrateCancel();"><span>Cancelar</span></button>' +
+            '<button type="button" class="ubits-button ubits-button--primary ubits-button--md" onclick="if(window._ubitsAdminLmsMigrateAccept)window._ubitsAdminLmsMigrateAccept();"><span>Aceptar</span></button>';
+
+        window.openModal({
+            overlayId: UBITS_ADMIN_LMS_MIGRATE_OVERLAY_ID,
+            title: 'Nueva experiencia, todo en uno',
+            bodyHtml:
+                '<p class="ubits-body-md-regular">Conoce el espacio donde se centralizará todo el aprendizaje de tu empresa en un solo lugar.</p>',
+            footerHtml: footerHtml,
+            size: 'sm',
+            closeOnOverlayClick: true,
+            onClose: function () {
+                clearAdminLmsMigrateModalHandlers();
+            }
+        });
+    });
+};
 
 // ========================================
 //   SIDEBAR COMPONENT - DOCUMENTACIÓN
@@ -496,7 +608,7 @@ function loadSidebar(variantOrActiveButton = 'default', activeButton = null) {
                     <button class="nav-button" data-section="empresa" onclick="window.location.href='${basePath}ubits-admin/empresa/gestion-de-usuarios.html'" style="cursor: pointer;">
                         <i class="far fa-building"></i>
                     </button>
-                    <button class="nav-button" data-section="aprendizaje" onclick="window.location.href='${basePath}ubits-admin/aprendizaje/planes-formacion.html'" style="cursor: pointer;">
+                    <button type="button" class="nav-button" data-section="aprendizaje" style="cursor: pointer;">
                         <i class="far fa-graduation-cap"></i>
                     </button>
                     <button class="nav-button" data-section="diagnóstico" onclick="window.location.href='${basePath}ubits-admin/diagnostico/admin-diagnostico.html'" style="cursor: pointer;">

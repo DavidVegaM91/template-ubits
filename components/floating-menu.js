@@ -115,10 +115,11 @@ const FLOATING_MENU_SECTIONS_ADMIN = [
         title: 'Aprendizaje',
         icon: 'far fa-graduation-cap',
         subitems: [
-            { id: 'admin-planes-formacion', title: 'Planes de formación', icon: 'far fa-clipboard-list-check', url: '../../ubits-admin/aprendizaje/planes-formacion.html' },
-            { id: 'admin-u-corporativa', title: 'Universidad corporativa', icon: 'far fa-building-columns', url: '../../ubits-admin/aprendizaje/admin-u-corporativa.html' },
-            { id: 'admin-certificados', title: 'Certificados', icon: 'far fa-file-certificate', url: '../../ubits-admin/aprendizaje/admin-certificados.html' },
-            { id: 'admin-seguimiento-aprendizaje', title: 'Seguimiento', icon: 'far fa-chart-line', url: '../../ubits-admin/aprendizaje/seguimiento.html' }
+            { id: 'admin-lms-creator', title: 'LMS Creator', icon: 'far fa-bolt', adminLmsMigrate: true, adminMigrateRel: 'ubits-colaborador/lms-creator/contenidos-sin-migrar.html' },
+            { id: 'admin-planes-formacion', title: 'Planes de formación', icon: 'far fa-clipboard-list-check', adminLmsMigrate: true, adminMigrateRel: 'ubits-colaborador/lms-creator/planes-formacion/planes-formacion.html' },
+            { id: 'admin-u-corporativa', title: 'Universidad corporativa', icon: 'far fa-building-columns', adminLmsMigrate: true, adminMigrateRel: 'ubits-colaborador/lms-creator/personalizacion/personalizacion-u-corporativa.html' },
+            { id: 'admin-certificados', title: 'Certificados', icon: 'far fa-file-certificate', adminLmsMigrate: true, adminMigrateRel: 'ubits-colaborador/lms-creator/certificados/certificados.html' },
+            { id: 'admin-seguimiento-aprendizaje', title: 'Seguimiento', icon: 'far fa-chart-line', adminLmsMigrate: true, adminMigrateRel: 'ubits-colaborador/lms-creator/personalizacion/personalizacion-seguimiento.html' }
         ]
     },
     {
@@ -324,6 +325,25 @@ function handleProfileFloatingLogout(event) {
     }
 }
 
+function handleAdminLmsMigrateFloatingClick(event) {
+    if (event) event.preventDefault();
+    if (typeof hideFloatingMenu === 'function') {
+        hideFloatingMenu();
+    }
+    var bp = typeof getFloatingMenuBasePath === 'function' ? getFloatingMenuBasePath() : '';
+    var anchor = event && event.currentTarget;
+    var rel = anchor && anchor.getAttribute('data-admin-migrate-rel');
+    var targetUrl =
+        rel && typeof rel === 'string'
+            ? bp + rel
+            : bp + 'ubits-colaborador/lms-creator/contenidos-sin-migrar.html';
+    if (typeof window.openAdminLmsMigrateConfirm === 'function') {
+        window.openAdminLmsMigrateConfirm(bp, targetUrl);
+    }
+}
+
+window.handleAdminLmsMigrateFloatingClick = handleAdminLmsMigrateFloatingClick;
+
 function syncFloatingMenusBodyOverflow() {
     const fm = document.getElementById('floating-menu');
     const fp = document.getElementById('floating-menu-profile');
@@ -362,14 +382,26 @@ function getFloatingMenuHTML(variant) {
         }
         
         // Si es acordeón normal
-        const subitemsHTML = section.subitems.map(subitem => `
-            <a href="${resolveFloatingUrl(subitem.url)}" class="accordion-link" id="link-${subitem.id}">
-                <div class="accordion-icon-circle" id="circle-${subitem.id}">
-                    <i class="${subitem.icon}" id="icon-${subitem.id}"></i>
-                </div>
-                <span class="ubits-body-sm-regular">${subitem.title}</span>
-            </a>
-        `).join('');
+        const subitemsHTML = section.subitems.map(subitem => {
+            if (subitem.adminLmsMigrate && subitem.adminMigrateRel) {
+                return (
+                    '<a href="#" class="accordion-link" id="link-' + subitem.id + '" data-admin-migrate-rel="' + subitem.adminMigrateRel + '" onclick="handleAdminLmsMigrateFloatingClick(event); return false;">' +
+                    '<div class="accordion-icon-circle" id="circle-' + subitem.id + '">' +
+                    '<i class="' + subitem.icon + '" id="icon-' + subitem.id + '"></i>' +
+                    '</div>' +
+                    '<span class="ubits-body-sm-regular">' + subitem.title + '</span>' +
+                    '</a>'
+                );
+            }
+            return (
+                '<a href="' + resolveFloatingUrl(subitem.url) + '" class="accordion-link" id="link-' + subitem.id + '">' +
+                '<div class="accordion-icon-circle" id="circle-' + subitem.id + '">' +
+                '<i class="' + subitem.icon + '" id="icon-' + subitem.id + '"></i>' +
+                '</div>' +
+                '<span class="ubits-body-sm-regular">' + subitem.title + '</span>' +
+                '</a>'
+            );
+        }).join('');
 
         return `
             <div class="accordion-item">
@@ -588,10 +620,6 @@ function setActiveItemByCurrentPage() {
         'personalizacion.html': 'personalizacion-empresa',
         'roles-y-permisos.html': 'roles-permisos',
         'comunicaciones.html': 'comunicaciones',
-        'planes-formacion.html': 'admin-planes-formacion',
-        'admin-u-corporativa.html': 'admin-u-corporativa',
-        'admin-certificados.html': 'admin-certificados',
-        'seguimiento.html': 'admin-seguimiento-aprendizaje',
         'admin-diagnostico.html': 'admin-diagnostico',
         'admin-360.html': 'admin-eval-360',
         'admin-objetivos.html': 'admin-objetivos',
