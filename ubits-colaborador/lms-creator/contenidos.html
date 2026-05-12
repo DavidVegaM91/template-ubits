@@ -188,6 +188,16 @@
                 );
                 return;
             }
+            /* Recarga de Contenidos: permite ver de nuevo el promo al entrar a Crear contenido en la misma pestaña */
+            try {
+                var _navEntry =
+                    typeof performance !== 'undefined' && performance.getEntriesByType
+                        ? performance.getEntriesByType('navigation')[0]
+                        : null;
+                if (_navEntry && _navEntry.type === 'reload') {
+                    sessionStorage.removeItem('ubits-cc-promo-agentes-shown-session');
+                }
+            } catch (_ePromoNav) {}
             if (typeof initTooltip === 'function') {
                 initTooltip('.widget-contenidos-creator [data-tooltip]');
             }
@@ -868,6 +878,9 @@
                         text: 'Crear contenido',
                         icon: 'fa-plus',
                         onClick: function () {
+                            try {
+                                sessionStorage.setItem('ubits-cc-promo-agentes-pending', '1');
+                            } catch (_ePromoPending) {}
                             window.location.href = 'crear-contenido.html';
                         }
                     }

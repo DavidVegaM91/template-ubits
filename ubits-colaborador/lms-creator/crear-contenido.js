@@ -2496,8 +2496,16 @@
             wireCrearContenidoPageInteractionsDeferred();
         }, 0);
         wireCrearContenidoPageStepperStepClicks();
+        var initialHashForPromo = location.hash || '';
         applyCrearContenidoPageHash();
-        window.addEventListener('hashchange', applyCrearContenidoPageHash);
+        setTimeout(function () {
+            tryOfferCrearContenidoPromoAgentesModal(initialHashForPromo);
+        }, 0);
+        window.addEventListener('hashchange', function onCrearContenidoHashChange() {
+            var hc = location.hash || '';
+            applyCrearContenidoPageHash();
+            tryOfferCrearContenidoPromoAgentesModal(hc);
+        });
         /* Rail height: leer el alto real del __main y exponerlo como CSS var */
         syncRailHeight();
         window.addEventListener('resize', syncRailHeight);
@@ -2509,6 +2517,12 @@
     var HASH_PAGE_PORTADA_LEGACY = '#crear-contenido';
     var HASH_DRAWER_RECURSOS = '#crear-contenido-recursos';
     var HASH_DRAWER_RECURSOS_ALIAS = '#crear-contenido-step-recursos';
+    /** Deep link demo / instrucciones: abre modal promo y normaliza la URL a #portada */
+    var HASH_PROMO_MODAL = '#promo-modal';
+    var PROMO_AGENTES_IA_OVERLAY_ID = 'crear-contenido-promo-agentes-ia';
+    /** sessionStorage: pending = clic en «Crear contenido» en contenidos.html; shown = ya se mostró el promo en esta pestaña */
+    var SS_PROMO_PENDING_KEY = 'ubits-cc-promo-agentes-pending';
+    var SS_PROMO_SHOWN_KEY = 'ubits-cc-promo-agentes-shown-session';
 
     function isRecursosUrlHash(h) {
         return (
@@ -2579,8 +2593,104 @@
         }
     }
 
+    function markCrearContenidoPromoAgentesModalShownThisSession() {
+        try {
+            sessionStorage.setItem(SS_PROMO_SHOWN_KEY, '1');
+        } catch (e) {}
+    }
+
+    /**
+     * Modal promo (variante `promo` en modal.js): imagen + copy + CTA.
+     */
+    function openCrearContenidoPromoAgentesModal() {
+        if (typeof window.openModal !== 'function' || typeof window.closeModal !== 'function') return;
+        var tit = 'Presentamos agentes AI para Creator';
+        var desc =
+            'Diseña imágenes, crea videos con avatar, configura y redacta evaluaciones y genera presentaciones SCORM. ' +
+            'Solo describe lo que necesitas y nuestra plataforma se encarga del resto.';
+        var imgSrc = '../../images/promo/modal-ia-lms.jpg';
+        var bodyHtml =
+            '<div class="ubits-modal-promo-media">' +
+            '<img src="' +
+            imgSrc +
+            '" alt="Imágenes, videos con avatar, evaluaciones y presentaciones SCORM con IA en Creator." />' +
+            '</div>' +
+            '<div class="ubits-modal-promo-copy">' +
+            '<p class="ubits-body-lg-semibold ubits-modal-promo-title" id="' +
+            PROMO_AGENTES_IA_OVERLAY_ID +
+            '-heading">' +
+            tit +
+            '</p>' +
+            '<p class="ubits-body-sm-regular">' +
+            desc +
+            '</p>' +
+            '<button type="button" class="ubits-button ubits-button--primary ubits-button--md" id="crear-contenido-promo-agentes-cta"><span>Descúbrelos ahora</span></button>' +
+            '</div>';
+        var overlay = window.openModal({
+            overlayId: PROMO_AGENTES_IA_OVERLAY_ID,
+            variant: 'promo',
+            size: 'sm',
+            title: tit,
+            promoAriaLabel: tit,
+            bodyHtml: bodyHtml,
+            closeOnOverlayClick: true
+        });
+        var cta = overlay.querySelector('#crear-contenido-promo-agentes-cta');
+        if (cta) {
+            cta.addEventListener('click', function () {
+                window.closeModal(PROMO_AGENTES_IA_OVERLAY_ID);
+            });
+        }
+    }
+
+    /**
+     * Promo Agentes IA: una vez por pestaña si llegas desde el botón Crear contenido en contenidos.html;
+     * o al usar #promo-modal (demo). Tras recargar contenidos.html se puede volver a ver una vez.
+     * @param {string} hashAtNavigation — hash capturado antes de applyCrearContenidoPageHash o location.hash en hashchange
+     */
+    function tryOfferCrearContenidoPromoAgentesModal(hashAtNavigation) {
+        var h = hashAtNavigation != null ? String(hashAtNavigation) : '';
+        var fromHashDemo = h === HASH_PROMO_MODAL;
+        var pending = false;
+        var alreadyShown = false;
+        try {
+            pending = sessionStorage.getItem(SS_PROMO_PENDING_KEY) === '1';
+        } catch (e1) {}
+        try {
+            alreadyShown = sessionStorage.getItem(SS_PROMO_SHOWN_KEY) === '1';
+        } catch (e2) {}
+
+        if (fromHashDemo) {
+            goToCrearContenidoPageStep(0, { skipUrl: true });
+            openCrearContenidoPromoAgentesModal();
+            markCrearContenidoPromoAgentesModalShownThisSession();
+            try {
+                sessionStorage.removeItem(SS_PROMO_PENDING_KEY);
+            } catch (e3) {}
+            return;
+        }
+
+        if (pending) {
+            try {
+                sessionStorage.removeItem(SS_PROMO_PENDING_KEY);
+            } catch (e4) {}
+            if (!alreadyShown) {
+                openCrearContenidoPromoAgentesModal();
+                markCrearContenidoPromoAgentesModalShownThisSession();
+            }
+        }
+    }
+
     function applyCrearContenidoPageHash() {
         var h = location.hash || '';
+        if (h === HASH_PROMO_MODAL) {
+            goToCrearContenidoPageStep(0, { skipUrl: true });
+            var pathPromo = location.pathname + location.search;
+            if (typeof history.replaceState === 'function') {
+                history.replaceState(null, '', pathPromo + HASH_PAGE_PORTADA);
+            }
+            return;
+        }
         if (isRecursosUrlHash(h)) {
             goToCrearContenidoPageStep(1, { skipUrl: true });
             if (h === HASH_DRAWER_RECURSOS || h === HASH_DRAWER_RECURSOS_ALIAS) {

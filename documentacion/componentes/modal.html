@@ -36,7 +36,7 @@
                         <div style="text-align: center; margin-bottom: 60px;">
                             <h1 class="ubits-display-d2-bold" style="margin-bottom: 24px; color: var(--ubits-accent-brand);">Modal</h1>
                             <p class="ubits-body-md-regular" style="max-width: 800px; margin: 0 auto 32px; line-height: 1.6;">
-                                Ventana que se abre encima de la página para confirmar algo, rellenar un formulario o elegir una fecha. Se cierra con la X, los botones o tocando fuera. Para flujos de generación con IA hay una variante con número de tokens en la cabecera y fondo con orbes de color. La variante <strong>promo</strong> sirve para anunciar novedades: sin cabecera ni pie, imagen a ancho completo y texto con botón con padding (tamaños solo XS y SM).
+                                Ventana que se abre encima de la página para confirmar algo, rellenar un formulario o elegir una fecha. Se cierra con la X, los botones o tocando fuera. Para flujos de generación con IA hay una variante con número de tokens en la cabecera y fondo con orbes de color. La variante <strong>promo</strong> sirve para anunciar novedades: sin cabecera ni pie ni botón X, imagen y texto con botón con padding (tamaños solo XS y SM); se cierra con Escape, tocando fuera o el CTA del cuerpo.
                             </p>
                         </div>
 
@@ -220,7 +220,7 @@
                                     </button>
                                 </div>
                                 <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
-                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="modal-prompt-6">Abre un modal promo con openModal en [ubicación]: variant promo, tamaño [xs o sm], imagen a ancho completo y debajo el texto [título] y [descripción] con un botón primario [texto del CTA]. Sin pie de modal. Importa modal.css y button.css. Usa promoAriaLabel con un texto corto para accesibilidad.</code></pre>
+                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="modal-prompt-6">Abre un modal promo con openModal en [ubicación]: variant promo, tamaño [xs o sm], imagen y debajo el texto [título] y [descripción] con un botón primario [texto del CTA]. Sin pie de modal ni botón X (cierre: Escape, fuera o CTA). Importa modal.css y button.css. Usa promoAriaLabel con un texto corto para accesibilidad.</code></pre>
                                 </div>
                             </div>
                         </div>
@@ -299,12 +299,12 @@
 .ubits-modal-content--ia   /* Variante IA: fondo con orbes (--modo-ia-glow-orb-rgb-*) */
 .ubits-modal-header--ia    /* Cabecera IA: fondo transparente; mismo borde inferior que el header estándar */
 .ubits-modal-header__actions  /* Agrupa badge de tokens + botón cerrar */
-.ubits-modal-content--promo   /* Promo: sin header/footer; combinar solo con --xs o --sm */
-.ubits-modal-promo            /* Contenedor interno + posición del cerrar flotante */
-.ubits-modal-promo__close     /* Botón cerrar absoluto sobre la imagen */
+.ubits-modal-content--promo   /* Promo: sin header/footer ni X; combinar solo con --xs o --sm */
+.ubits-modal-promo            /* Contenedor interno del cuerpo promo */
 .ubits-modal-body--promo      /* Body sin padding (el padding va en .ubits-modal-promo-copy) */
-.ubits-modal-promo-media      /* Wrapper imagen 100% ancho */
-.ubits-modal-promo-copy       /* Texto y CTA con padding */</code></pre>
+.ubits-modal-promo-media      /* Wrapper: padding xs arriba y lados; img con radius md (12px) */
+.ubits-modal-promo-copy       /* Texto y CTA con padding */
+.ubits-modal-promo-title      /* Color fg-1 high del título promo; combinar con .ubits-body-lg-semibold */</code></pre>
                                     </div>
                                 </div>
                                 <div style="padding: 32px;">
@@ -358,7 +358,7 @@ closeModal('mi-modal');</code></pre>
                                     </div>
                                     <div style="background: var(--ubits-bg-2); padding: 16px; border-radius: 8px; margin-bottom: 16px;">
                                         <h3 class="ubits-body-md-bold" style="margin-bottom: 8px; color: var(--ubits-fg-1-high);">Variante promo (<code>variant: 'promo'</code>)</h3>
-                                        <p class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); margin-bottom: 12px;">Sin cabecera ni pie. <code>footerHtml</code> se ignora. <code>size</code> solo admite <code>xs</code> o <code>sm</code> (cualquier otro equivale a <code>sm</code>). Usa <code>promoAriaLabel</code> o <code>title</code> (no visible) para el <code>aria-label</code> del diálogo. En <code>bodyHtml</code>: <code>.ubits-modal-promo-media</code> (imagen) + <code>.ubits-modal-promo-copy</code> (texto y botón).</p>
+                                        <p class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); margin-bottom: 12px;">Sin cabecera ni pie ni botón X. <code>footerHtml</code> se ignora. <code>size</code> solo admite <code>xs</code> o <code>sm</code> (cualquier otro equivale a <code>sm</code>). Cierre: tecla Escape, clic fuera si <code>closeOnOverlayClick</code> es verdadero, o botones en <code>bodyHtml</code>. Usa <code>promoAriaLabel</code> o <code>title</code> (no visible) para el <code>aria-label</code> del diálogo. En <code>bodyHtml</code>: <code>.ubits-modal-promo-media</code> (imagen) + <code>.ubits-modal-promo-copy</code> (texto y botón).</p>
                                         <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code>openModal({
   overlayId: 'promo-novedades',
   variant: 'promo',
@@ -368,7 +368,7 @@ closeModal('mi-modal');</code></pre>
   bodyHtml:
     '&lt;div class="ubits-modal-promo-media"&gt;&lt;img src="ruta/imagen.jpg" alt="" /&gt;&lt;/div&gt;' +
     '&lt;div class="ubits-modal-promo-copy"&gt;' +
-    '&lt;p class="ubits-body-md-bold"&gt;Título&lt;/p&gt;' +
+    '&lt;p class="ubits-body-lg-semibold ubits-modal-promo-title" id="promo-novedades-heading"&gt;Título&lt;/p&gt;' +
     '&lt;p class="ubits-body-sm-regular"&gt;Descripción breve.&lt;/p&gt;' +
     '&lt;button type="button" class="ubits-button ubits-button--primary ubits-button--md" onclick="closeModal(\'promo-novedades\')"&gt;&lt;span&gt;Explorar&lt;/span&gt;&lt;/button&gt;' +
     '&lt;/div&gt;',
@@ -477,7 +477,7 @@ closeModal('mi-modal');</code></pre>
             var modalPromoBody =
                 '<div class="ubits-modal-promo-media"><img src="../../images/cards-learn/portadas-ia/01-personas-en-oficina.jpg" alt="" /></div>' +
                 '<div class="ubits-modal-promo-copy">' +
-                '<p class="ubits-body-md-bold">Nuevas funciones con IA</p>' +
+                '<p class="ubits-body-lg-semibold ubits-modal-promo-title">Nuevas funciones con IA</p>' +
                 '<p class="ubits-body-sm-regular">Descubre herramientas para crear contenido más rápido en UBITS.</p>' +
                 '<button type="button" class="ubits-button ubits-button--primary ubits-button--md" onclick="closeModal(\'' + modalPromoDemoId + '\')"><span>Explorar ahora</span></button>' +
                 '</div>';

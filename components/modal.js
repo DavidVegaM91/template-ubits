@@ -30,7 +30,8 @@
  *   });
  *   closeModal('mi-modal');
  *
- * Variante promo (anuncios / nuevas funcionalidades, sin cabecera ni pie):
+ * Variante promo (anuncios / nuevas funcionalidades, sin cabecera ni pie ni botón X):
+ *   Cierre: clic fuera (closeOnOverlayClick), Escape, o botones en bodyHtml.
  *   openModal({
  *     overlayId: 'promo-novedades',
  *     variant: 'promo',
@@ -40,7 +41,7 @@
  *     bodyHtml:
  *       '<div class="ubits-modal-promo-media"><img src="..." alt="" /></div>' +
  *       '<div class="ubits-modal-promo-copy">' +
- *       '<p class="ubits-body-md-bold" id="promo-novedades-heading">Título</p>' +
+ *       '<p class="ubits-body-lg-semibold ubits-modal-promo-title" id="promo-novedades-heading">Título</p>' +
  *       '<p class="ubits-body-sm-regular">Descripción.</p>' +
  *       '<button class="ubits-button ubits-button--primary ubits-button--md" type="button"><span>CTA</span></button>' +
  *       '</div>',
@@ -78,14 +79,12 @@
     }
 
     /**
-     * Promo: sin barra de título; solo cerrar flotante + cuerpo (imagen full bleed + bloque con padding vía clases utilitarias).
+     * Promo: sin barra de título ni botón cerrar; solo cuerpo (imagen + bloque con padding vía clases utilitarias).
+     * Cierre: clic fuera (si closeOnOverlayClick), tecla Escape, o botones en bodyHtml.
      */
     function buildPromoModalInnerHtml(overlayId, bodyHtml) {
         return (
             '<div class="ubits-modal-promo">' +
-            '  <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only ubits-modal-close ubits-modal-promo__close" aria-label="Cerrar">' +
-            '    <i class="far fa-times"></i>' +
-            '  </button>' +
             '  <div class="ubits-modal-body ubits-modal-body--promo">' + (bodyHtml != null ? bodyHtml : '') + '</div>' +
             '</div>'
         );
@@ -148,7 +147,7 @@
      * @param {string} [options.size] - 'xs' | 'sm' | 'md' | 'lg'. Ancho del contenido.
      * @param {boolean} [options.closeOnOverlayClick=true] - Cerrar al clic fuera del contenido.
      * @param {function} [options.onClose] - Callback al cerrar el modal.
-     * @param {string} [options.variant] - 'ia' para modal con fondo orbes + header con badge de tokens opcional. 'promo' para modal sin cabecera ni pie (solo cuerpo + cerrar flotante); tamaños solo xs | sm.
+     * @param {string} [options.variant] - 'ia' para modal con fondo orbes + header con badge de tokens opcional. 'promo' para modal sin cabecera ni pie ni botón X (cierre: overlay, Escape, CTA en body); tamaños solo xs | sm.
      * @param {number|string} [options.iaTokensRemaining] - Valor mostrado en el badge (omitir para no mostrar badge).
      * @param {string} [options.iaTokensBadgeId] - ID del span badge (sync desde tu página).
      * @param {string} [options.iaTokensTooltip] - Texto data-tooltip del badge.
@@ -178,8 +177,12 @@
         var contentIaClass = options.variant === 'ia' ? ' ubits-modal-content--ia' : '';
         var contentPromoClass = isPromo ? ' ubits-modal-content--promo' : '';
 
-        var overlay = document.getElementById(overlayId);
+        var         overlay = document.getElementById(overlayId);
         if (overlay) {
+            if (overlay._ubitsModalPromoEscape) {
+                document.removeEventListener('keydown', overlay._ubitsModalPromoEscape);
+                overlay._ubitsModalPromoEscape = null;
+            }
             overlay.remove();
         }
 
@@ -223,12 +226,28 @@
         overlay.innerHTML = innerContent;
 
         function close() {
+            if (overlay._ubitsModalPromoEscape) {
+                document.removeEventListener('keydown', overlay._ubitsModalPromoEscape);
+                overlay._ubitsModalPromoEscape = null;
+            }
             overlay.style.display = 'none';
             overlay.setAttribute('aria-hidden', 'true');
             if (typeof onClose === 'function') onClose();
         }
 
-        overlay.querySelector('.ubits-modal-close').addEventListener('click', close);
+        var closeBtn = overlay.querySelector('.ubits-modal-close');
+        if (closeBtn) {
+            closeBtn.addEventListener('click', close);
+        }
+
+        if (isPromo) {
+            overlay._ubitsModalPromoEscape = function (e) {
+                if (e.key !== 'Escape') return;
+                e.preventDefault();
+                close();
+            };
+            document.addEventListener('keydown', overlay._ubitsModalPromoEscape);
+        }
 
         if (!isPromo && footerTertiary && footerTertiary.onClick && typeof footerTertiary.onClick === 'function') {
             var tertiaryBtn = overlay.querySelector('#' + overlayId + '-footer-tertiary');
@@ -256,6 +275,10 @@
             ? document.getElementById(overlayIdOrElement)
             : overlayIdOrElement;
         if (overlay && overlay.classList.contains('ubits-modal-overlay')) {
+            if (overlay._ubitsModalPromoEscape) {
+                document.removeEventListener('keydown', overlay._ubitsModalPromoEscape);
+                overlay._ubitsModalPromoEscape = null;
+            }
             overlay.style.display = 'none';
             overlay.setAttribute('aria-hidden', 'true');
         }
@@ -300,7 +323,7 @@
      * @param {string} [options.headerClass] - Clases extra para el header (ej. date-picker-modal-header).
      * @param {string} [options.bodyClass] - Clases extra para el body (ej. date-picker-modal-body).
      * @param {string} [options.footerClass] - Clases extra para el footer (ej. date-picker-modal-footer).
-     * @param {string} [options.variant] - 'ia' | 'promo' (promo: sin header/footer; size solo xs|sm).
+     * @param {string} [options.variant] - 'ia' | 'promo' (promo: sin header/footer ni X; size solo xs|sm; cierre vía overlay/Escape/CTA).
      * @param {number|string} [options.iaTokensRemaining]
      * @param {string} [options.iaTokensBadgeId]
      * @param {string} [options.iaTokensTooltip]

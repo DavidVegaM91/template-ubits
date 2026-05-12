@@ -129,11 +129,12 @@
 
 /* ========================================
    Variante promo (anuncios / novedades)
-   Sin cabecera ni pie: solo cuerpo + cerrar flotante.
+   Sin cabecera ni pie ni botón cerrar: solo cuerpo (imagen + texto + CTA).
    Tamaños de ancho: solo .ubits-modal-content--xs | --sm (forzados desde JS).
    Estructura recomendada en bodyHtml:
-   - .ubits-modal-promo-media (imagen 100% ancho del card)
-   - .ubits-modal-promo-copy (texto + CTA con padding)
+   - .ubits-modal-promo-media (contenedor con padding xs arriba y lados; img 100% del área útil + radius md 12px)
+   - .ubits-modal-promo-copy (padding lateral/abajo xl; arriba gap-md entre imagen y título; título→desc gap-sm; desc→CTA gap-lg)
+   - Título: .ubits-body-lg-semibold.ubits-modal-promo-title (20px vía --font-size-h2 + fg-1 high)
    ======================================== */
 
 .ubits-modal-content--promo {
@@ -152,16 +153,6 @@
     min-height: 0;
 }
 
-.ubits-modal-promo__close {
-    position: absolute;
-    top: var(--padding-sm);
-    right: var(--padding-sm);
-    z-index: 2;
-    box-shadow: 0 1px 4px color-mix(in srgb, var(--ubits-fg-1-high) 12%, transparent);
-    background: color-mix(in srgb, var(--ubits-bg-1) 92%, transparent);
-    border-radius: var(--border-radius-sm);
-}
-
 .ubits-modal-body--promo {
     padding: 0;
     overflow-x: hidden;
@@ -172,12 +163,14 @@
     flex-direction: column;
 }
 
-/* Imagen a ancho completo del modal (sin padding lateral) */
+/* Imagen promo: aire 4px arriba y a los lados (token); sin padding abajo */
 .ubits-modal-promo-media {
     width: 100%;
     flex-shrink: 0;
     overflow: hidden;
     line-height: 0;
+    padding: var(--padding-xs) var(--padding-xs) 0 var(--padding-xs);
+    box-sizing: border-box;
 }
 
 .ubits-modal-promo-media img {
@@ -185,14 +178,15 @@
     width: 100%;
     height: auto;
     object-fit: cover;
+    border-radius: var(--border-radius-md);
 }
 
-/* Bloque de copy + acciones (con padding) */
+/* Bloque de copy + acciones: menos aire arriba (imagen → título); separación título/desc/botón con tokens */
 .ubits-modal-promo-copy {
-    padding: var(--padding-xl);
+    padding: var(--gap-md) var(--padding-xl) var(--padding-xl) var(--padding-xl);
     display: flex;
     flex-direction: column;
-    gap: var(--gap-md);
+    gap: 0;
     align-items: stretch;
 }
 
@@ -200,8 +194,24 @@
     margin: 0;
 }
 
+/* Título del bloque promo: `ubits-body-lg-semibold` (20px vía --font-size-h2) + color fg-1 high; margen bajo título > especificidad que `> p { margin:0 }` */
+.ubits-modal-promo-copy > .ubits-modal-promo-title {
+    color: var(--ubits-fg-1-high);
+    margin-bottom: var(--gap-sm);
+}
+
+/* Descripción (p justo después del título): más aire antes del CTA */
+.ubits-modal-promo-copy > .ubits-modal-promo-title + p {
+    margin-bottom: var(--gap-lg);
+}
+
+/* Botones del bloque copy: ancho completo del modal promo (no afecta modales con header/footer) */
 .ubits-modal-promo-copy .ubits-button {
-    align-self: flex-start;
+    align-self: stretch;
+    width: 100%;
+    box-sizing: border-box;
+    justify-content: center;
+    white-space: normal;
 }
 
 @media (max-width: 768px) {
@@ -209,11 +219,8 @@
         max-height: 95vh;
     }
 
-    .ubits-modal-body {
-        padding: var(--padding-lg);
-    }
-
-    .ubits-modal-promo-copy {
+    /* No aplicar al cuerpo promo (lleva padding 0; el aire va en .ubits-modal-promo-media y .ubits-modal-promo-copy) */
+    .ubits-modal-body:not(.ubits-modal-body--promo) {
         padding: var(--padding-lg);
     }
 }
