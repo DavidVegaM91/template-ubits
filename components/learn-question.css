@@ -181,6 +181,12 @@
   gap: var(--gap-sm);
 }
 
+/* Radio/checkbox deshabilitados traen cursor not-allowed del DS; en lectura el bloque entero invita a clic para editar. */
+.learn-question--readonly label.learn-question__readonly-opt.ubits-radio:has(.ubits-radio__input:disabled),
+.learn-question--readonly label.learn-question__readonly-opt.ubits-checkbox:has(.ubits-checkbox__input:disabled) {
+  cursor: pointer;
+}
+
 .learn-question__readonly-opt-marker {
   flex: 0 0 auto;
   width: 18px;

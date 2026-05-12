@@ -958,16 +958,21 @@
     // Eventos externos
     root.addEventListener('click', function (e) {
       var t = e && e.target;
+      if (!t || !t.closest) return;
+      // Lectura: opciones con radio/checkbox deshabilitados; el clic debe abrir edición (onRequestFocus), no quedar bloqueado por el guard de .ubits-radio/.ubits-checkbox.
+      if (t.closest('.learn-question__readonly-opt')) {
+        if (typeof options.onRequestFocus === 'function') options.onRequestFocus(qId);
+        e.preventDefault();
+        return;
+      }
       // No pedir foco si el usuario interactúa con controles internos (radio/checkbox, inputs, botones, etc.)
-      if (t && t.closest && (
-        t.closest('button') ||
+      if (t.closest('button') ||
         t.closest('input') ||
         t.closest('textarea') ||
         t.closest('.ubits-radio') ||
         t.closest('.ubits-checkbox') ||
         t.closest('.ubits-switch') ||
-        t.closest('.ubits-dropdown-menu__content')
-      )) return;
+        t.closest('.ubits-dropdown-menu__content')) return;
       if (typeof options.onRequestFocus === 'function') options.onRequestFocus(qId);
     });
     root.addEventListener('keydown', function (e) {
