@@ -2,16 +2,17 @@
    LMS Creator — Modal «Agregar SCORM» + Modal edición + Color Picker
    ======================================== */
 
-/* ── Modal principal: altura completa ── */
+/* ── Modal principal: altura según contenido; tope 90vh y scroll en la caja ── */
 #cc-scorm-recurso-modal.ubits-modal-overlay { z-index: 1200; }
 
 #cc-scorm-recurso-modal .ubits-modal-content.cc-scorm-ia-modal-content.portada-ia-modal-content {
     min-height: 0 !important;
-    height: 90vh;
+    height: auto;
     max-height: 90vh;
     align-self: center;
     display: flex;
     flex-direction: column;
+    overflow-y: auto;
     transition: max-width 240ms ease, width 240ms ease;
 }
 
@@ -21,9 +22,9 @@
 }
 
 #cc-scorm-recurso-modal .ubits-modal-body {
-    flex: 1 1 auto !important;
+    flex: 0 1 auto !important;
     min-height: 0;
-    overflow: hidden;
+    overflow: visible;
     display: flex;
     flex-direction: column;
     padding: var(--padding-xl);
@@ -31,9 +32,9 @@
 
 /* ── Panel IA en tab SCORM con IA ── */
 #cc-scorm-recurso-modal .cc-smodal-panel {
-    flex: 1 1 auto;
+    flex: 0 1 auto;
     min-height: 0;
-    overflow: hidden;
+    overflow: visible;
     display: flex;
     flex-direction: column;
     gap: var(--gap-md);
@@ -44,16 +45,29 @@
 .cc-smodal {
     display: flex;
     flex-direction: column;
-    flex: 1;
+    flex: 0 1 auto;
     min-height: 0;
-    overflow: hidden;
+    overflow: visible;
     gap: 0;
 }
 
 /* ── Tab bar ── */
 .cc-sm-tabbar-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: fit-content;
+    max-width: 100%;
+    box-sizing: border-box;
     flex-shrink: 0;
     padding-bottom: var(--padding-md);
+}
+
+@media (max-width: 767px) {
+    .cc-sm-tabbar-wrap {
+        width: 100%;
+        align-items: stretch;
+    }
 }
 
 /* ── Info badge "solo presentaciones" ── */
@@ -77,9 +91,9 @@
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     gap: var(--gap-lg);
-    flex: 1;
+    flex: 0 1 auto;
     min-height: 0;
-    overflow: hidden;
+    overflow: visible;
 }
 @media (max-width: 700px) {
     .cc-sm-main-layout { grid-template-columns: 1fr; }
@@ -168,7 +182,7 @@
 }
 
 /* ── Tab subir ── */
-.cc-sm-subir-layout { flex: 1; display: flex; flex-direction: column; }
+.cc-sm-subir-layout { flex: 0 1 auto; display: flex; flex-direction: column; }
 .cc-sm-subir-centered {
     width: 100%;
     max-width: 600px;

@@ -6,14 +6,15 @@
 /* ── Modal principal: z-index ── */
 #cc-video-recurso-modal.ubits-modal-overlay { z-index: 1200; }
 
-/* ── Modal: altura completa 90vh (igual que SCORM modal) ── */
+/* ── Modal IA: altura según contenido; tope 90vh y scroll en la caja (no forzar alto de pantalla) ── */
 #cc-video-recurso-modal .ubits-modal-content.cc-video-ia-modal-content.portada-ia-modal-content {
     min-height: 0 !important;
-    height: 90vh;
+    height: auto;
     max-height: 90vh;
     align-self: center;
     display: flex;
     flex-direction: column;
+    overflow-y: auto;
     transition: max-width 240ms ease, width 240ms ease;
 }
 
@@ -23,9 +24,9 @@
 }
 
 #cc-video-recurso-modal .ubits-modal-body {
-    flex: 1 1 auto !important;
+    flex: 0 1 auto !important;
     min-height: 0;
-    overflow: hidden;
+    overflow: visible;
     display: flex;
     flex-direction: column;
     padding: var(--padding-xl);
@@ -35,33 +36,65 @@
 .cc-vmodal {
     display: flex;
     flex-direction: column;
-    flex: 1;
+    flex: 0 1 auto;
     min-height: 0;
-    overflow: hidden;
+    overflow: visible;
     gap: 0;
 }
 
 /* ── Tab bar ── */
 .cc-vmodal-tabbar-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: fit-content;
+    max-width: 100%;
+    box-sizing: border-box;
     flex-shrink: 0;
     padding-bottom: var(--padding-md);
 }
 
-/* Estilos del tabbar existente (compatibilidad) */
+@media (max-width: 767px) {
+    .cc-vmodal-tabbar-wrap {
+        width: 100%;
+        align-items: stretch;
+    }
+}
+
+/* ── Tab bar: no ocupar todo el ancho del modal; el grupo .ubits-tabs-on-bg abraza las pestañas. */
 .cc-vmodal-tabbar {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: fit-content;
+    max-width: 100%;
+    box-sizing: border-box;
     flex-shrink: 0;
     padding: 0 0 var(--padding-md);
+}
+
+@media (max-width: 767px) {
+    .cc-vmodal-tabbar-wrap {
+        width: 100%;
+        align-items: stretch;
+    }
+
+    .cc-vmodal-tabbar {
+        width: 100%;
+        align-items: stretch;
+    }
 }
 
 /* Grupo de pestañas: usar `ubits-tabs-on-bg` del componente Tab (tab.css), igual que tab.html. */
 
 /* ── Paneles de pestaña ── */
 .cc-vmodal-panel {
-    flex: 1;
-    min-height: 0;
-    overflow: hidden;
+    flex: 0 1 auto;
+    min-height: 300px;
+    overflow: visible;
     display: flex;
     flex-direction: column;
+    justify-content: center;
 }
 
 .cc-vmodal-panel--hidden {
@@ -73,7 +106,7 @@
     display: flex;
     flex-direction: column;
     gap: var(--gap-lg);
-    flex: 1;
+    flex: 0 1 auto;
 }
 
 .cc-vmodal-enlace-centered {
@@ -108,7 +141,7 @@
 
 /* ── Tab: Subir video ── */
 .cc-vmodal-subir-layout {
-    flex: 1;
+    flex: 0 1 auto;
     display: flex;
     flex-direction: column;
 }
@@ -132,9 +165,9 @@
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr);
     gap: var(--gap-lg);
-    flex: 1;
+    flex: 0 1 auto;
     min-height: 0;
-    overflow: hidden;
+    overflow: visible;
 }
 
 @media (max-width: 700px) {

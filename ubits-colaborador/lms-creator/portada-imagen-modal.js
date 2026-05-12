@@ -1,7 +1,7 @@
 /**
- * LMS Creator — Modal «Añadir portada» (Portada con IA · Subir portada · Enlace de tráiler opcional).
+ * LMS Creator — Modal «Agregar portada» (Portada con IA · Subir portada · Enlace de tráiler opcional).
  * Estilo y tabs alineados a video-recurso-modal.js.
- * Portada con IA: al abrir, mismo ancho/alto que Subir/Tráiler y solo bloque «Describe tu idea»; al pulsar «Generar portada» se expande
+ * Portada con IA: al abrir, mismo ancho que Subir/Tráiler y solo bloque «Describe tu idea»; al pulsar «Generar portada» se expande
  * (transición max-width) y aparece la columna de vista previa con loader y resultado.
  *
  * Depende: modal.js, input.js (+ dropdown-menu.js antes de input) para pestaña tráiler, file-upload.js, ia-loader.js,
@@ -119,7 +119,8 @@
         var modalBody = overlay.querySelector('.ubits-modal-body');
         if (modalBody) {
             modalBody.style.padding = 'var(--padding-xl, 32px)';
-            modalBody.style.overflow = 'hidden';
+            /* overflow: lo controla portada-imagen-modal.css (scroll en cuerpo si el contenido supera 90vh). */
+            modalBody.style.overflow = '';
             modalBody.style.display = 'flex';
             modalBody.style.flexDirection = 'column';
         }
@@ -574,7 +575,7 @@
 
         var overlay = global.openModal({
             overlayId: OVERLAY_ID,
-            title: 'Añadir portada',
+            title: 'Agregar portada',
             bodyHtml: buildBody(),
             size: 'lg',
             closeOnOverlayClick: false,

@@ -280,13 +280,15 @@
    TAB GROUP WRAPPERS
    ======================================== */
 
-/* Contenedor exterior: sin scroll; degradados fijos en el borde (el scroll va en .ubits-tabs-scroll-strip). */
+/* Contenedor exterior: sin scroll; degradados fijos en el borde (el scroll va en .ubits-tabs-scroll-strip).
+   inline-flex + align-items flex-start: el grupo abraza el ancho de las pestañas (no estira al 100% del padre bloque). */
 .ubits-tabs-on-bg {
     --ubits-tabs-scroll-fade: var(--ubits-bg-2);
     position: relative;
     isolation: isolate;
-    display: flex;
+    display: inline-flex;
     flex-direction: column;
+    align-items: flex-start;
     padding: var(--padding-xs);
     background: var(--ubits-bg-2);
     border: 1px solid var(--ubits-border-1);
@@ -325,8 +327,9 @@
     align-items: center;
     gap: var(--gap-xs);
     min-width: 0;
-    flex: 1 1 auto;
-    width: 100%;
+    flex: 0 1 auto;
+    width: auto;
+    max-width: 100%;
     box-sizing: border-box;
     overflow-x: auto;
     overflow-y: hidden;
@@ -361,8 +364,9 @@
     --ubits-tabs-scroll-fade: var(--ubits-bg-1);
     position: relative;
     isolation: isolate;
-    display: flex;
+    display: inline-flex;
     flex-direction: column;
+    align-items: flex-start;
     padding: 0;
     background: transparent;
     border: none;
@@ -395,9 +399,26 @@
 }
 
 .ubits-tabs-row > .ubits-tabs-scroll-strip {
-    flex: 1 1 auto;
-    width: 100%;
+    flex: 0 1 auto;
+    width: auto;
+    max-width: 100%;
     min-width: 0;
+}
+
+/* Móvil: grupo a ancho útil del viewport + strip scrollable a todo el ancho (degradados). */
+@media (max-width: 767px) {
+    .ubits-tabs-on-bg,
+    .ubits-tabs-row {
+        display: flex;
+        width: 100%;
+        align-items: stretch;
+    }
+
+    .ubits-tabs-scroll-strip,
+    .ubits-tabs-row > .ubits-tabs-scroll-strip {
+        flex: 1 1 auto;
+        width: 100%;
+    }
 }
 
 /* Degradados en el shell (no hacen scroll); inset al padding en on-bg. */
@@ -518,6 +539,26 @@
 .ubits-tabs-on-bg.ubits-tabs-scroll--right-fade::after,
 .ubits-tabs-row.ubits-tabs-scroll--right-fade::after {
     opacity: 1;
+}
+
+/*
+ * Móvil: (1) Las reglas de border-radius en ::before/::after están más arriba en el archivo y
+ * sobrescribían el bloque anterior del mismo breakpoint. (2) El border-radius del shell
+ * .ubits-tabs-on-bg recorta el degradado en las esquinas (máscara sobre la tab activa).
+ */
+@media (max-width: 767px) {
+    .ubits-tabs-on-bg {
+        border-radius: var(--border-radius-none);
+    }
+
+    .ubits-tabs-on-bg::before,
+    .ubits-tabs-on-bg::after {
+        border-radius: var(--border-radius-none);
+        border-top-left-radius: 0;
+        border-top-right-radius: 0;
+        border-bottom-left-radius: 0;
+        border-bottom-right-radius: 0;
+    }
 }
 
 /* ========================================

@@ -336,3 +336,23 @@
 .ubits-learn-img-trailer--playing .ubits-learn-img-trailer__edit {
     z-index: 5;
 }
+
+/* Móvil/tablet: vacío (sin imagen ni tráiler) sin caja 16:9; el bloque crece con el contenido.
+   Cubre vacío default, vacío con IA, hover y error. Con imagen o tráiler se mantiene 16:9. */
+@media (max-width: 1023px) {
+    .ubits-learn-img-trailer:not(.ubits-learn-img-trailer--image):not(.ubits-learn-img-trailer--trailer) {
+        aspect-ratio: auto;
+        height: auto;
+    }
+
+    .ubits-learn-img-trailer:not(.ubits-learn-img-trailer--image):not(.ubits-learn-img-trailer--trailer)
+        .ubits-learn-img-trailer__empty {
+        position: relative;
+        inset: auto;
+        width: 100%;
+        flex: 0 1 auto;
+        justify-content: flex-start;
+        padding-block: var(--padding-lg);
+        padding-inline: var(--padding-lg);
+    }
+}
