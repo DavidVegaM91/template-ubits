@@ -49,7 +49,7 @@
                     {
                         target: '.sidebar .nav-button[data-section="planes-formacion"]',
                         title: 'Planes de formación',
-                        body: 'Crea planes para tus colaboradores: por competencias o por contenidos concretos, según lo que necesites impulsar.',
+                        body: 'Crea planes para tus colaboradores por competencias o por contenidos concretos, según lo que necesites impulsar.',
                         placement: 'right',
                         align: 'center'
                     },
