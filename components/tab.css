@@ -280,26 +280,244 @@
    TAB GROUP WRAPPERS
    ======================================== */
 
-/* Contenedor de grupo de tabs sobre fondo (ej. Individuales / Grupales). */
+/* Contenedor exterior: sin scroll; degradados fijos en el borde (el scroll va en .ubits-tabs-scroll-strip). */
 .ubits-tabs-on-bg {
-    display: inline-flex;
-    gap: var(--gap-xs);
+    --ubits-tabs-scroll-fade: var(--ubits-bg-2);
+    position: relative;
+    isolation: isolate;
+    display: flex;
+    flex-direction: column;
     padding: var(--padding-xs);
     background: var(--ubits-bg-2);
     border: 1px solid var(--ubits-border-1);
     border-radius: var(--border-radius-sm);
     box-sizing: border-box;
+    max-width: 100%;
+    min-width: 0;
+}
+
+/* Sin strip (antes de tab.js): mismo layout que antes */
+@supports selector(:has(.ubits-tabs-scroll-strip)) {
+    .ubits-tabs-on-bg:not(:has(> .ubits-tabs-scroll-strip)) {
+        flex-direction: row;
+        flex-wrap: nowrap;
+        align-items: center;
+        gap: var(--gap-xs);
+        overflow-x: auto;
+        overflow-y: hidden;
+        scroll-behavior: smooth;
+        scroll-snap-type: x proximity;
+        scroll-padding-inline: var(--padding-xs);
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: thin;
+        scrollbar-color: var(--ubits-border-1) transparent;
+    }
+
+    .ubits-tabs-on-bg:not(:has(> .ubits-tabs-scroll-strip)) > .ubits-tab {
+        flex-shrink: 0;
+        scroll-snap-align: start;
+    }
+}
+
+.ubits-tabs-scroll-strip {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    gap: var(--gap-xs);
+    min-width: 0;
+    flex: 1 1 auto;
+    width: 100%;
+    box-sizing: border-box;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-behavior: smooth;
+    scroll-snap-type: x proximity;
+    scroll-padding-inline: var(--padding-xs);
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    scrollbar-color: var(--ubits-border-1) transparent;
+}
+
+.ubits-tabs-scroll-strip::-webkit-scrollbar {
+    height: 6px;
+}
+
+.ubits-tabs-scroll-strip::-webkit-scrollbar-thumb {
+    background: var(--ubits-border-1);
+    border-radius: var(--border-radius-full);
+}
+
+.ubits-tabs-scroll-strip::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.ubits-tabs-scroll-strip > .ubits-tab {
+    flex-shrink: 0;
+    scroll-snap-align: start;
 }
 
 /* Grupo simple sin fondo (solo layout). */
 .ubits-tabs-row {
-    display: inline-flex;
-    gap: var(--gap-xs);
+    --ubits-tabs-scroll-fade: var(--ubits-bg-1);
+    position: relative;
+    isolation: isolate;
+    display: flex;
+    flex-direction: column;
     padding: 0;
     background: transparent;
     border: none;
     border-radius: 0;
     box-sizing: border-box;
+    max-width: 100%;
+    min-width: 0;
+}
+
+@supports selector(:has(.ubits-tabs-scroll-strip)) {
+    .ubits-tabs-row:not(:has(> .ubits-tabs-scroll-strip)) {
+        flex-direction: row;
+        flex-wrap: nowrap;
+        align-items: center;
+        gap: var(--gap-xs);
+        overflow-x: auto;
+        overflow-y: hidden;
+        scroll-behavior: smooth;
+        scroll-snap-type: x proximity;
+        scroll-padding-inline: var(--padding-xs);
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: thin;
+        scrollbar-color: var(--ubits-border-1) transparent;
+    }
+
+    .ubits-tabs-row:not(:has(> .ubits-tabs-scroll-strip)) > .ubits-tab {
+        flex-shrink: 0;
+        scroll-snap-align: start;
+    }
+}
+
+.ubits-tabs-row > .ubits-tabs-scroll-strip {
+    flex: 1 1 auto;
+    width: 100%;
+    min-width: 0;
+}
+
+/* Degradados en el shell (no hacen scroll); inset al padding en on-bg. */
+.ubits-tabs-on-bg::before,
+.ubits-tabs-on-bg::after {
+    content: '';
+    position: absolute;
+    top: var(--padding-xs);
+    bottom: var(--padding-xs);
+    width: clamp(2rem, 12vw, 2.5rem);
+    max-width: 40px;
+    z-index: 3;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.ubits-tabs-row::before,
+.ubits-tabs-row::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: clamp(2rem, 12vw, 2.5rem);
+    max-width: 40px;
+    z-index: 3;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.ubits-tabs-on-bg::before {
+    left: var(--padding-xs);
+    border-top-left-radius: var(--border-radius-sm);
+    border-bottom-left-radius: var(--border-radius-sm);
+    background: linear-gradient(
+        to right,
+        var(--ubits-tabs-scroll-fade) 0%,
+        var(--ubits-tabs-scroll-fade) 8%,
+        transparent 100%
+    );
+}
+
+.ubits-tabs-on-bg::after {
+    right: var(--padding-xs);
+    border-top-right-radius: var(--border-radius-sm);
+    border-bottom-right-radius: var(--border-radius-sm);
+    background: linear-gradient(
+        to left,
+        var(--ubits-tabs-scroll-fade) 0%,
+        var(--ubits-tabs-scroll-fade) 8%,
+        transparent 100%
+    );
+}
+
+.ubits-tabs-row::before {
+    left: 0;
+    border-top-left-radius: var(--border-radius-sm);
+    border-bottom-left-radius: var(--border-radius-sm);
+    background: linear-gradient(
+        to right,
+        var(--ubits-tabs-scroll-fade) 0%,
+        var(--ubits-tabs-scroll-fade) 8%,
+        transparent 100%
+    );
+}
+
+.ubits-tabs-row::after {
+    right: 0;
+    border-top-right-radius: var(--border-radius-sm);
+    border-bottom-right-radius: var(--border-radius-sm);
+    background: linear-gradient(
+        to left,
+        var(--ubits-tabs-scroll-fade) 0%,
+        var(--ubits-tabs-scroll-fade) 8%,
+        transparent 100%
+    );
+}
+
+@supports (color: color-mix(in srgb, white, black)) {
+    .ubits-tabs-on-bg::before,
+    .ubits-tabs-row::before {
+        background: linear-gradient(
+            to right,
+            var(--ubits-tabs-scroll-fade) 0%,
+            color-mix(in srgb, var(--ubits-tabs-scroll-fade) 88%, transparent) 20%,
+            color-mix(in srgb, var(--ubits-tabs-scroll-fade) 55%, transparent) 45%,
+            color-mix(in srgb, var(--ubits-tabs-scroll-fade) 28%, transparent) 70%,
+            color-mix(in srgb, var(--ubits-tabs-scroll-fade) 12%, transparent) 88%,
+            transparent 100%
+        );
+    }
+
+    .ubits-tabs-on-bg::after,
+    .ubits-tabs-row::after {
+        background: linear-gradient(
+            to left,
+            var(--ubits-tabs-scroll-fade) 0%,
+            color-mix(in srgb, var(--ubits-tabs-scroll-fade) 88%, transparent) 20%,
+            color-mix(in srgb, var(--ubits-tabs-scroll-fade) 55%, transparent) 45%,
+            color-mix(in srgb, var(--ubits-tabs-scroll-fade) 28%, transparent) 70%,
+            color-mix(in srgb, var(--ubits-tabs-scroll-fade) 12%, transparent) 88%,
+            transparent 100%
+        );
+    }
+}
+
+.ubits-tabs-row::before,
+.ubits-tabs-row::after {
+    border-radius: 0;
+}
+
+.ubits-tabs-on-bg.ubits-tabs-scroll--left-fade::before,
+.ubits-tabs-row.ubits-tabs-scroll--left-fade::before {
+    opacity: 1;
+}
+
+.ubits-tabs-on-bg.ubits-tabs-scroll--right-fade::after,
+.ubits-tabs-row.ubits-tabs-scroll--right-fade::after {
+    opacity: 1;
 }
 
 /* ========================================

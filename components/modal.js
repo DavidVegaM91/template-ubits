@@ -29,6 +29,23 @@
  *     iaTokensTooltip: 'Número de tokens restantes.'  // opcional
  *   });
  *   closeModal('mi-modal');
+ *
+ * Variante promo (anuncios / nuevas funcionalidades, sin cabecera ni pie):
+ *   openModal({
+ *     overlayId: 'promo-novedades',
+ *     variant: 'promo',
+ *     size: 'sm',   // solo 'xs' | 'sm' (cualquier otro se trata como 'sm')
+ *     title: 'Nuevas funciones con IA',  // no se muestra; sirve de aria-label si no pasas promoAriaLabel
+ *     promoAriaLabel: 'Nuevas funciones con IA',  // opcional; aria-label del diálogo
+ *     bodyHtml:
+ *       '<div class="ubits-modal-promo-media"><img src="..." alt="" /></div>' +
+ *       '<div class="ubits-modal-promo-copy">' +
+ *       '<p class="ubits-body-md-bold" id="promo-novedades-heading">Título</p>' +
+ *       '<p class="ubits-body-sm-regular">Descripción.</p>' +
+ *       '<button class="ubits-button ubits-button--primary ubits-button--md" type="button"><span>CTA</span></button>' +
+ *       '</div>',
+ *     closeOnOverlayClick: true
+ *   });
  */
 
 (function () {
@@ -60,7 +77,24 @@
             '<i class="far fa-coin-vertical"></i></span></span>';
     }
 
+    /**
+     * Promo: sin barra de título; solo cerrar flotante + cuerpo (imagen full bleed + bloque con padding vía clases utilitarias).
+     */
+    function buildPromoModalInnerHtml(overlayId, bodyHtml) {
+        return (
+            '<div class="ubits-modal-promo">' +
+            '  <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only ubits-modal-close ubits-modal-promo__close" aria-label="Cerrar">' +
+            '    <i class="far fa-times"></i>' +
+            '  </button>' +
+            '  <div class="ubits-modal-body ubits-modal-body--promo">' + (bodyHtml != null ? bodyHtml : '') + '</div>' +
+            '</div>'
+        );
+    }
+
     function buildModalHeaderHtml(overlayId, title, options) {
+        if (options && options.variant === 'promo') {
+            return '';
+        }
         var isIa = options && options.variant === 'ia';
         if (!isIa) {
             return (
@@ -114,10 +148,11 @@
      * @param {string} [options.size] - 'xs' | 'sm' | 'md' | 'lg'. Ancho del contenido.
      * @param {boolean} [options.closeOnOverlayClick=true] - Cerrar al clic fuera del contenido.
      * @param {function} [options.onClose] - Callback al cerrar el modal.
-     * @param {string} [options.variant] - 'ia' para modal con fondo orbes + header con badge de tokens opcional.
+     * @param {string} [options.variant] - 'ia' para modal con fondo orbes + header con badge de tokens opcional. 'promo' para modal sin cabecera ni pie (solo cuerpo + cerrar flotante); tamaños solo xs | sm.
      * @param {number|string} [options.iaTokensRemaining] - Valor mostrado en el badge (omitir para no mostrar badge).
      * @param {string} [options.iaTokensBadgeId] - ID del span badge (sync desde tu página).
      * @param {string} [options.iaTokensTooltip] - Texto data-tooltip del badge.
+     * @param {string} [options.promoAriaLabel] - Con variant 'promo': aria-label del diálogo (si falta, se usa title).
      */
     function openModal(options) {
         options = options || {};
@@ -130,11 +165,18 @@
         var closeOnOverlayClick = options.closeOnOverlayClick !== false;
         var onClose = options.onClose || null;
 
-        var sizeClass = size && ['xs', 'sm', 'md', 'lg'].indexOf(size) >= 0
-            ? ' ubits-modal-content--' + size
-            : '';
+        var isPromo = options.variant === 'promo';
+        var promoSize = isPromo && (size === 'xs' || size === 'sm') ? size : (isPromo ? 'sm' : null);
+
+        var sizeClass = '';
+        if (isPromo) {
+            sizeClass = ' ubits-modal-content--' + promoSize;
+        } else if (size && ['xs', 'sm', 'md', 'lg'].indexOf(size) >= 0) {
+            sizeClass = ' ubits-modal-content--' + size;
+        }
 
         var contentIaClass = options.variant === 'ia' ? ' ubits-modal-content--ia' : '';
+        var contentPromoClass = isPromo ? ' ubits-modal-content--promo' : '';
 
         var overlay = document.getElementById(overlayId);
         if (overlay) {
@@ -147,19 +189,38 @@
         overlay.setAttribute('aria-hidden', 'false');
         overlay.setAttribute('role', 'dialog');
         overlay.setAttribute('aria-modal', 'true');
-        overlay.setAttribute('aria-labelledby', overlayId + '-title');
 
-        overlay.innerHTML =
-            '<div class="ubits-modal-content' + sizeClass + contentIaClass + '" onclick="event.stopPropagation();">' +
-            buildModalHeaderHtml(overlayId, title, options) +
-            '  <div class="ubits-modal-body">' + bodyHtml + '</div>' +
-            (footerHtml ? ('  <div class="ubits-modal-footer">' +
-                '<div class="ubits-modal-footer__left">' +
-                (footerTertiary ? ('<button type="button" class="ubits-button ubits-button--tertiary ubits-button--md" id="' + overlayId + '-footer-tertiary"><span>' + escapeHtml(footerTertiary.text || '') + '</span></button>') : '') +
-                '</div>' +
-                '<div class="ubits-modal-footer__right">' + footerHtml + '</div>' +
-                '</div>') : '') +
-            '</div>';
+        if (isPromo) {
+            var promoLabel = options.promoAriaLabel != null && String(options.promoAriaLabel).trim()
+                ? String(options.promoAriaLabel).trim()
+                : (title ? title.trim() : '');
+            if (!promoLabel) promoLabel = 'Anuncio';
+            overlay.setAttribute('aria-label', promoLabel);
+        } else {
+            overlay.setAttribute('aria-labelledby', overlayId + '-title');
+        }
+
+        var innerContent;
+        if (isPromo) {
+            innerContent =
+                '<div class="ubits-modal-content' + sizeClass + contentPromoClass + '" onclick="event.stopPropagation();">' +
+                buildPromoModalInnerHtml(overlayId, bodyHtml) +
+                '</div>';
+        } else {
+            innerContent =
+                '<div class="ubits-modal-content' + sizeClass + contentIaClass + '" onclick="event.stopPropagation();">' +
+                buildModalHeaderHtml(overlayId, title, options) +
+                '  <div class="ubits-modal-body">' + bodyHtml + '</div>' +
+                (footerHtml ? ('  <div class="ubits-modal-footer">' +
+                    '<div class="ubits-modal-footer__left">' +
+                    (footerTertiary ? ('<button type="button" class="ubits-button ubits-button--tertiary ubits-button--md" id="' + overlayId + '-footer-tertiary"><span>' + escapeHtml(footerTertiary.text || '') + '</span></button>') : '') +
+                    '</div>' +
+                    '<div class="ubits-modal-footer__right">' + footerHtml + '</div>' +
+                    '</div>') : '') +
+                '</div>';
+        }
+
+        overlay.innerHTML = innerContent;
 
         function close() {
             overlay.style.display = 'none';
@@ -169,7 +230,7 @@
 
         overlay.querySelector('.ubits-modal-close').addEventListener('click', close);
 
-        if (footerTertiary && footerTertiary.onClick && typeof footerTertiary.onClick === 'function') {
+        if (!isPromo && footerTertiary && footerTertiary.onClick && typeof footerTertiary.onClick === 'function') {
             var tertiaryBtn = overlay.querySelector('#' + overlayId + '-footer-tertiary');
             if (tertiaryBtn) tertiaryBtn.addEventListener('click', footerTertiary.onClick);
         }
@@ -239,10 +300,11 @@
      * @param {string} [options.headerClass] - Clases extra para el header (ej. date-picker-modal-header).
      * @param {string} [options.bodyClass] - Clases extra para el body (ej. date-picker-modal-body).
      * @param {string} [options.footerClass] - Clases extra para el footer (ej. date-picker-modal-footer).
-     * @param {string} [options.variant] - 'ia' para variante IA (mismas opciones iaTokens* que openModal).
+     * @param {string} [options.variant] - 'ia' | 'promo' (promo: sin header/footer; size solo xs|sm).
      * @param {number|string} [options.iaTokensRemaining]
      * @param {string} [options.iaTokensBadgeId]
      * @param {string} [options.iaTokensTooltip]
+     * @param {string} [options.promoAriaLabel]
      * @returns {string} HTML del overlay completo (display:none; aria-hidden="true").
      */
     function getModalHtml(options) {
@@ -262,18 +324,32 @@
         var bodyClass = options.bodyClass || '';
         var footerClass = options.footerClass || '';
 
+        var overlayClassAttr = overlayClass ? (' ' + overlayClass) : '';
+        var contentClassAttr = options.contentClass ? (' ' + options.contentClass) : '';
+        var contentIdAttr = contentId ? (' id="' + contentId + '"') : '';
+
+        if (options.variant === 'promo') {
+            var pSize = size === 'xs' || size === 'sm' ? size : 'sm';
+            var pLabel = options.promoAriaLabel != null && String(options.promoAriaLabel).trim()
+                ? String(options.promoAriaLabel).trim()
+                : (title ? title.trim() : '');
+            if (!pLabel) pLabel = 'Anuncio';
+            return '<div class="ubits-modal-overlay' + overlayClassAttr + '" id="' + overlayId + '" style="display: none;" aria-hidden="true" role="dialog" aria-modal="true" aria-label="' + escapeHtml(pLabel) + '">' +
+                '<div class="ubits-modal-content ubits-modal-content--' + pSize + ' ubits-modal-content--promo' + contentClassAttr + '"' + contentIdAttr + ' onclick="event.stopPropagation();">' +
+                buildPromoModalInnerHtml(overlayId, bodyHtml) +
+                '</div></div>';
+        }
+
         var sizeClass = size && ['xs', 'sm', 'md', 'lg'].indexOf(size) >= 0
             ? ' ubits-modal-content--' + size
             : '';
 
         var contentIaClass = options.variant === 'ia' ? ' ubits-modal-content--ia' : '';
 
-        var contentIdAttr = contentId ? (' id="' + contentId + '"') : '';
         var titleSpanId = titleId || (options.variant === 'ia' && overlayId ? overlayId + '-title' : '');
         var titleIdAttr = titleSpanId ? (' id="' + titleSpanId + '"') : '';
         var closeIdAttr = closeButtonId ? (' id="' + closeButtonId + '"') : '';
-        var overlayClassAttr = overlayClass ? (' ' + overlayClass) : '';
-        var contentClassAttr = contentClass ? (' ' + contentClass) : '';
+        contentClassAttr = contentClass ? (' ' + contentClass) : '';
         var headerClassAttr = headerClass ? (' ' + headerClass) : '';
         var bodyClassAttr = bodyClass ? (' ' + bodyClass) : '';
         var footerClassAttr = footerClass ? (' ' + footerClass) : '';

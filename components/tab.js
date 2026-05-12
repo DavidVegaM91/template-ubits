@@ -5,14 +5,16 @@
 /**
  * UBITS TAB COMPONENT
  * 
- * IMPORTANTE: Este componente NO requiere JavaScript para renderizar.
- * Es puramente CSS y se renderiza usando HTML directo.
+ * IMPORTANTE: Las pestañas (`.ubits-tab`) se renderizan con HTML + CSS.
+ * Los contenedores de grupo (`.ubits-tabs-on-bg`, `.ubits-tabs-row`) añaden scroll horizontal,
+ * scroll-snap y degradados de borde vía `tab.js` (auto-init + `initUbitsTabsScroll`).
  * 
  * REQUISITOS OBLIGATORIOS:
  * 1. CSS: <link rel="stylesheet" href="components/tab.css">
  * 2. FontAwesome: <link rel="stylesheet" href="fontawesome-icons.css">
  * 3. UBITS Base: <link rel="stylesheet" href="ubits-colors.css">
  * 4. UBITS Typography: <link rel="stylesheet" href="ubits-typography.css">
+ * 5. Grupos con scroll/degradados: <script src="components/tab.js"></script>
  * 
  * IMPLEMENTACIÓN BÁSICA:
  * ```html
@@ -143,3 +145,152 @@
  * - El primer tab del grupo suele estar activo por defecto
  */
 
+/**
+ * Scroll horizontal en `.ubits-tabs-scroll-strip` (hijo inyectado); degradados en el
+ * shell `.ubits-tabs-on-bg` / `.ubits-tabs-row` (fijos al borde visible). Auto-init +
+ * MutationObserver; opcional: `initUbitsTabsScroll(modalRoot)`.
+ */
+(function (global) {
+    'use strict';
+
+    var GROUP_SELECTOR = '.ubits-tabs-on-bg, .ubits-tabs-row';
+    var EDGE_EPS = 4;
+    var MO_DEBOUNCE_MS = 60;
+    var moTimer = null;
+
+    function getScrollStrip(shell) {
+        return shell && shell.querySelector ? shell.querySelector(':scope > .ubits-tabs-scroll-strip') : null;
+    }
+
+    /**
+     * El scroll vive en .ubits-tabs-scroll-strip; el degradado en el shell (no se mueve con el scroll).
+     */
+    function ensureScrollStrip(shell) {
+        if (!shell || shell.nodeType !== 1) return;
+        if (getScrollStrip(shell)) return;
+        var tabs = Array.prototype.filter.call(shell.children || [], function (n) {
+            return n.nodeType === 1 && n.classList && n.classList.contains('ubits-tab');
+        });
+        if (!tabs.length) return;
+        var strip = document.createElement('div');
+        strip.className = 'ubits-tabs-scroll-strip';
+        var role = shell.getAttribute('role');
+        if (role) {
+            strip.setAttribute('role', role);
+            shell.removeAttribute('role');
+        }
+        tabs.forEach(function (t) {
+            strip.appendChild(t);
+        });
+        shell.appendChild(strip);
+    }
+
+    function updateScrollFades(shell) {
+        var scrollEl = getScrollStrip(shell) || shell;
+        var sw = scrollEl.scrollWidth;
+        var cw = scrollEl.clientWidth;
+        var overflow = sw > cw + 1;
+        shell.classList.toggle('ubits-tabs-scroll--overflow', overflow);
+        if (!overflow) {
+            shell.classList.remove('ubits-tabs-scroll--left-fade');
+            shell.classList.remove('ubits-tabs-scroll--right-fade');
+            return;
+        }
+        var sl = scrollEl.scrollLeft;
+        var atStart = sl <= EDGE_EPS;
+        var atEnd = sl + cw >= sw - EDGE_EPS;
+        shell.classList.toggle('ubits-tabs-scroll--left-fade', !atStart);
+        shell.classList.toggle('ubits-tabs-scroll--right-fade', !atEnd);
+    }
+
+    function wireGroup(shell) {
+        if (!shell || shell.nodeType !== 1) return;
+        if (shell._ubitsTabsScrollCleanup) {
+            shell._ubitsTabsScrollCleanup();
+            shell._ubitsTabsScrollCleanup = null;
+        }
+        ensureScrollStrip(shell);
+        var scrollEl = getScrollStrip(shell) || shell;
+        var onScrollOrResize = function () {
+            updateScrollFades(shell);
+        };
+        scrollEl.addEventListener('scroll', onScrollOrResize, { passive: true });
+        global.addEventListener('resize', onScrollOrResize, { passive: true });
+        var ro = typeof ResizeObserver !== 'undefined' ? new ResizeObserver(onScrollOrResize) : null;
+        if (ro) ro.observe(scrollEl);
+        updateScrollFades(shell);
+        shell._ubitsTabsScrollCleanup = function () {
+            scrollEl.removeEventListener('scroll', onScrollOrResize);
+            global.removeEventListener('resize', onScrollOrResize);
+            if (ro) ro.disconnect();
+            shell.classList.remove(
+                'ubits-tabs-scroll--overflow',
+                'ubits-tabs-scroll--left-fade',
+                'ubits-tabs-scroll--right-fade'
+            );
+            shell._ubitsTabsScrollCleanup = null;
+        };
+    }
+
+    function collectGroupRoots(root) {
+        var out = [];
+        var seen = Object.create(null);
+        function push(el) {
+            if (!el || seen[el]) return;
+            seen[el] = true;
+            out.push(el);
+        }
+        if (!root || root === document || root === document.documentElement) {
+            Array.prototype.forEach.call(document.querySelectorAll(GROUP_SELECTOR), push);
+            return out;
+        }
+        if (root.nodeType === 1) {
+            if (root.matches && root.matches(GROUP_SELECTOR)) push(root);
+            Array.prototype.forEach.call(root.querySelectorAll(GROUP_SELECTOR), push);
+        }
+        return out;
+    }
+
+    function initUbitsTabsScroll(root) {
+        collectGroupRoots(root || document).forEach(wireGroup);
+    }
+
+    function scheduleInitFromMutations() {
+        if (moTimer) clearTimeout(moTimer);
+        moTimer = setTimeout(function () {
+            moTimer = null;
+            initUbitsTabsScroll(document.documentElement);
+        }, MO_DEBOUNCE_MS);
+    }
+
+    function mutationMayAddGroups(mutations) {
+        for (var i = 0; i < mutations.length; i++) {
+            var m = mutations[i];
+            if (!m.addedNodes || !m.addedNodes.length) continue;
+            for (var j = 0; j < m.addedNodes.length; j++) {
+                var n = m.addedNodes[j];
+                if (n.nodeType !== 1) continue;
+                if (n.matches && n.matches(GROUP_SELECTOR)) return true;
+                if (n.querySelector && n.querySelector(GROUP_SELECTOR)) return true;
+            }
+        }
+        return false;
+    }
+
+    global.initUbitsTabsScroll = initUbitsTabsScroll;
+
+    function boot() {
+        initUbitsTabsScroll(document.documentElement);
+        if (typeof MutationObserver === 'undefined' || !document.body) return;
+        var mo = new MutationObserver(function (mutations) {
+            if (mutationMayAddGroups(mutations)) scheduleInitFromMutations();
+        });
+        mo.observe(document.body, { childList: true, subtree: true });
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', boot);
+    } else {
+        boot();
+    }
+})(typeof window !== 'undefined' ? window : this);

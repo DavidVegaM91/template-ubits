@@ -126,32 +126,74 @@
     transition: gap 320ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Móvil: el modal video oculta .cc-vm-right-col; en portada IA expandida sí mostramos preview */
+/* Móvil: una columna — filas al inicio (sin estirar hueco entre input y preview), preview a ancho completo */
 @media (max-width: 700px) {
     #cc-portada-imagen-modal:not(.cc-pim--ia-intro) #cc-pim-tab-ia .cc-vm-ia-layout {
         grid-template-columns: 1fr;
+        align-content: start;
+        align-items: stretch;
+        gap: var(--gap-md);
     }
 
     #cc-portada-imagen-modal:not(.cc-pim--ia-intro) #cc-pim-tab-ia .cc-vm-right-col {
         display: flex !important;
+        container-type: normal;
+    }
+
+    #cc-portada-imagen-modal:not(.cc-pim--ia-intro) #cc-pim-tab-ia.cc-vmodal-panel {
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    #cc-portada-imagen-modal:not(.cc-pim--ia-intro) #cc-pim-tab-ia .cc-vm-left-col {
+        padding-right: 0;
+    }
+
+    #cc-portada-imagen-modal:not(.cc-pim--ia-intro) .cc-pim-preview-stage {
+        width: 100%;
+        max-width: none;
+        margin-inline: 0;
+    }
+
+    #cc-portada-imagen-modal .ubits-modal-body {
+        padding: var(--padding-md);
     }
 }
 
-.cc-pim-preview-stage {
+/*
+ * Preview 16:9 fijo: no usar flex:1 en el stage (estiraba la caja y rompía la relación de aspecto).
+ * container-type + min(100cqw, 100cqh * 16/9) encaja el rectángulo en la columna aunque sea baja o estrecha.
+ */
+#cc-portada-imagen-modal .cc-vm-right-col {
+    container-type: size;
+    container-name: cc-pim-preview;
+    justify-content: flex-start;
+}
+
+#cc-portada-imagen-modal .cc-pim-preview-stage {
     position: relative;
-    flex: 1;
+    flex: 0 0 auto;
     min-height: 0;
     width: 100%;
     max-width: 100%;
+    height: auto;
     aspect-ratio: 16 / 9;
     border-radius: var(--border-radius-md);
     border: none;
     background: transparent;
     box-sizing: border-box;
     display: flex;
-    align-items: center;
-    justify-content: center;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
     overflow: hidden;
+    margin-inline: auto;
+}
+
+@supports (width: 1cqw) {
+    #cc-portada-imagen-modal .cc-pim-preview-stage {
+        width: min(100cqw, calc(100cqh * 16 / 9));
+    }
 }
 
 #cc-portada-imagen-modal #cc-pim-preview-empty-host {
@@ -171,7 +213,7 @@
     min-height: 0;
     box-sizing: border-box;
     padding: var(--padding-md);
-    justify-content: center;
+    justify-content: flex-start;
 }
 
 #cc-portada-imagen-modal #cc-pim-preview-empty-host .ubits-empty-state__header {
@@ -185,8 +227,9 @@
     height: 100%;
     min-height: 0;
     display: flex;
-    align-items: center;
-    justify-content: center;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
     padding: 0;
     box-sizing: border-box;
 }

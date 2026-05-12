@@ -431,7 +431,7 @@
                                         • <code>fontawesome-icons.css</code> - Iconos FontAwesome<br>
                                         • <code>ubits-colors.css</code> - Tokens de color UBITS<br>
                                         • <code>ubits-typography.css</code> - Tipografía UBITS<br><br>
-                                        <strong>JavaScript:</strong> NO requerido - Componente puramente CSS<br><br>
+                                        <strong>JavaScript:</strong> Opcional para botones <code>.ubits-tab</code> solos. Para grupos <code>.ubits-tabs-on-bg</code> / <code>.ubits-tabs-row</code> (scroll horizontal, snap y degradados): incluir <code>components/tab.js</code> (auto-init; tras DOM dinámico usar <code>initUbitsTabsScroll(contenedor)</code>).<br><br>
                                         <strong>Renderizado:</strong> HTML directo con clases UBITS
                                     </div>
                                 </div>
@@ -526,6 +526,7 @@ function setActiveTab(clickedTab) {
     <script src="../../components/profile-menu.js"></script>
     <script src="../../components/alert.js"></script>
     <script src="../../components/toast.js"></script>
+    <script src="../../components/tab.js"></script>
     <script src="../../docs/docs-sidebar.js"></script>
     <script src="../../script.js"></script>
     <script>

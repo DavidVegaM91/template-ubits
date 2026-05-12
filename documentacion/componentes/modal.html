@@ -36,7 +36,7 @@
                         <div style="text-align: center; margin-bottom: 60px;">
                             <h1 class="ubits-display-d2-bold" style="margin-bottom: 24px; color: var(--ubits-accent-brand);">Modal</h1>
                             <p class="ubits-body-md-regular" style="max-width: 800px; margin: 0 auto 32px; line-height: 1.6;">
-                                Ventana que se abre encima de la página para confirmar algo, rellenar un formulario o elegir una fecha. Se cierra con la X, los botones o tocando fuera. Para flujos de generación con IA hay una variante con número de tokens en la cabecera y fondo con orbes de color.
+                                Ventana que se abre encima de la página para confirmar algo, rellenar un formulario o elegir una fecha. Se cierra con la X, los botones o tocando fuera. Para flujos de generación con IA hay una variante con número de tokens en la cabecera y fondo con orbes de color. La variante <strong>promo</strong> sirve para anunciar novedades: sin cabecera ni pie, imagen a ancho completo y texto con botón con padding (tamaños solo XS y SM).
                             </p>
                         </div>
 
@@ -70,6 +70,14 @@
                                     <button type="button" class="ubits-button ubits-button--secondary ubits-button--md modal-demo-ia-btn">
                                         <i class="far fa-wand-magic-sparkles"></i>
                                         <span>Abrir modal variante IA</span>
+                                    </button>
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--md modal-demo-promo-btn" data-promo-size="xs">
+                                        <i class="far fa-bullhorn"></i>
+                                        <span>Modal promo XS</span>
+                                    </button>
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--md modal-demo-promo-btn" data-promo-size="sm">
+                                        <i class="far fa-bullhorn"></i>
+                                        <span>Modal promo SM</span>
                                     </button>
                                 </div>
                             </div>
@@ -105,6 +113,11 @@
                                     <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-wand-magic-sparkles"></i></div>
                                     <div class="ubits-body-sm-bold">Variante IA</div>
                                     <div class="ubits-body-sm-regular">Cabecera con tokens restantes y fondo con orbes; misma API con <code>openModal</code></div>
+                                </div>
+                                <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-bullhorn"></i></div>
+                                    <div class="ubits-body-sm-bold">Variante promo</div>
+                                    <div class="ubits-body-sm-regular">Sin barra de título ni pie; imagen full bleed y bloque con texto y CTA. Solo tamaños XS y SM.</div>
                                 </div>
                             </div>
                         </div>
@@ -185,7 +198,7 @@
                                 </div>
                             </div>
 
-                            <div>
+                            <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
                                 <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
                                     <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Modal de eliminación con botón rojo (error)</h3>
                                     <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('modal-prompt-5')">
@@ -195,6 +208,19 @@
                                 </div>
                                 <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
                                     <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="modal-prompt-5">Usa el componente modal UBITS para el modal de confirmación de eliminación [id del overlay]. Título: "Confirmar eliminación". Body: mensaje de advertencia. Footer: botón Cancelar (ubits-button--secondary) y botón Eliminar (ubits-button--error ubits-button--md). El contenedor del modal debe usar ubits-modal-content ubits-modal-content--xs (320px). Clases: ubits-modal-overlay, ubits-modal-header, ubits-modal-body, ubits-modal-footer. El botón rojo está documentado en documentacion/componentes/button.html como variante "error".</code></pre>
+                                </div>
+                            </div>
+
+                            <div>
+                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                                    <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Modal promo (anuncio sin cabecera)</h3>
+                                    <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('modal-prompt-6')">
+                                        <i class="far fa-copy"></i>
+                                        <span>Copiar</span>
+                                    </button>
+                                </div>
+                                <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
+                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="modal-prompt-6">Abre un modal promo con openModal en [ubicación]: variant promo, tamaño [xs o sm], imagen a ancho completo y debajo el texto [título] y [descripción] con un botón primario [texto del CTA]. Sin pie de modal. Importa modal.css y button.css. Usa promoAriaLabel con un texto corto para accesibilidad.</code></pre>
                                 </div>
                             </div>
                         </div>
@@ -272,7 +298,13 @@
 .ubits-modal-footer    /* Footer: padding, border-top, flex end, gap 12px */
 .ubits-modal-content--ia   /* Variante IA: fondo con orbes (--modo-ia-glow-orb-rgb-*) */
 .ubits-modal-header--ia    /* Cabecera IA: fondo transparente; mismo borde inferior que el header estándar */
-.ubits-modal-header__actions  /* Agrupa badge de tokens + botón cerrar */</code></pre>
+.ubits-modal-header__actions  /* Agrupa badge de tokens + botón cerrar */
+.ubits-modal-content--promo   /* Promo: sin header/footer; combinar solo con --xs o --sm */
+.ubits-modal-promo            /* Contenedor interno + posición del cerrar flotante */
+.ubits-modal-promo__close     /* Botón cerrar absoluto sobre la imagen */
+.ubits-modal-body--promo      /* Body sin padding (el padding va en .ubits-modal-promo-copy) */
+.ubits-modal-promo-media      /* Wrapper imagen 100% ancho */
+.ubits-modal-promo-copy       /* Texto y CTA con padding */</code></pre>
                                     </div>
                                 </div>
                                 <div style="padding: 32px;">
@@ -321,6 +353,25 @@ closeModal('mi-modal');</code></pre>
   iaTokensRemaining: 42,
   iaTokensBadgeId: 'mi-modal-ia-tokens-badge',
   iaTokensTooltip: 'Número de tokens restantes.',
+  closeOnOverlayClick: true
+});</code></pre>
+                                    </div>
+                                    <div style="background: var(--ubits-bg-2); padding: 16px; border-radius: 8px; margin-bottom: 16px;">
+                                        <h3 class="ubits-body-md-bold" style="margin-bottom: 8px; color: var(--ubits-fg-1-high);">Variante promo (<code>variant: 'promo'</code>)</h3>
+                                        <p class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); margin-bottom: 12px;">Sin cabecera ni pie. <code>footerHtml</code> se ignora. <code>size</code> solo admite <code>xs</code> o <code>sm</code> (cualquier otro equivale a <code>sm</code>). Usa <code>promoAriaLabel</code> o <code>title</code> (no visible) para el <code>aria-label</code> del diálogo. En <code>bodyHtml</code>: <code>.ubits-modal-promo-media</code> (imagen) + <code>.ubits-modal-promo-copy</code> (texto y botón).</p>
+                                        <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code>openModal({
+  overlayId: 'promo-novedades',
+  variant: 'promo',
+  size: 'sm',
+  title: 'Nuevas funciones con IA',
+  promoAriaLabel: 'Nuevas funciones con IA',
+  bodyHtml:
+    '&lt;div class="ubits-modal-promo-media"&gt;&lt;img src="ruta/imagen.jpg" alt="" /&gt;&lt;/div&gt;' +
+    '&lt;div class="ubits-modal-promo-copy"&gt;' +
+    '&lt;p class="ubits-body-md-bold"&gt;Título&lt;/p&gt;' +
+    '&lt;p class="ubits-body-sm-regular"&gt;Descripción breve.&lt;/p&gt;' +
+    '&lt;button type="button" class="ubits-button ubits-button--primary ubits-button--md" onclick="closeModal(\'promo-novedades\')"&gt;&lt;span&gt;Explorar&lt;/span&gt;&lt;/button&gt;' +
+    '&lt;/div&gt;',
   closeOnOverlayClick: true
 });</code></pre>
                                     </div>
@@ -418,6 +469,29 @@ closeModal('mi-modal');</code></pre>
                         variant: 'ia',
                         iaTokensRemaining: 42,
                         iaTokensBadgeId: 'modal-doc-ia-tokens-badge',
+                        closeOnOverlayClick: true
+                    });
+                });
+            });
+            var modalPromoDemoId = 'modal-demo-promo-overlay';
+            var modalPromoBody =
+                '<div class="ubits-modal-promo-media"><img src="../../images/cards-learn/portadas-ia/01-personas-en-oficina.jpg" alt="" /></div>' +
+                '<div class="ubits-modal-promo-copy">' +
+                '<p class="ubits-body-md-bold">Nuevas funciones con IA</p>' +
+                '<p class="ubits-body-sm-regular">Descubre herramientas para crear contenido más rápido en UBITS.</p>' +
+                '<button type="button" class="ubits-button ubits-button--primary ubits-button--md" onclick="closeModal(\'' + modalPromoDemoId + '\')"><span>Explorar ahora</span></button>' +
+                '</div>';
+            document.querySelectorAll('.modal-demo-promo-btn').forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    if (typeof openModal !== 'function') return;
+                    var psz = btn.getAttribute('data-promo-size') === 'xs' ? 'xs' : 'sm';
+                    openModal({
+                        overlayId: modalPromoDemoId,
+                        variant: 'promo',
+                        size: psz,
+                        title: 'Nuevas funciones con IA',
+                        promoAriaLabel: 'Nuevas funciones con IA',
+                        bodyHtml: modalPromoBody,
                         closeOnOverlayClick: true
                     });
                 });
