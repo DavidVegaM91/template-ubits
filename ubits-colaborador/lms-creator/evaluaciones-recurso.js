@@ -779,6 +779,7 @@
 
     var CC_EVAL_CFG_MODAL_ID = 'cc-eval-config-modal';
     var CC_EVAL_IA_MODAL_ID = 'cc-eval-ia-modal';
+    var CC_EVAL_UNDO_IA_CONFIRM_MODAL_ID = 'cc-eval-undo-ia-confirm-modal';
 
     function openEvalConfigModal(pageState) {
         if (typeof global.openModal !== 'function') return;
@@ -1974,6 +1975,55 @@
         }, 300);
     }
 
+    /**
+     * Confirmación estándar tipo eliminar (modal sm + Cancelar + error «Sí, eliminar»).
+     * @param {number} count - Número de preguntas generadas por IA que se perderían.
+     * @param {function} onConfirm - Tras confirmar y cerrar el modal.
+     */
+    function openUndoAiGeneratedQuestionsConfirmModal(count, onConfirm) {
+        var n = Math.max(0, parseInt(count, 10) || 0);
+        function runConfirm() {
+            if (typeof global.closeModal === 'function') {
+                global.closeModal(CC_EVAL_UNDO_IA_CONFIRM_MODAL_ID);
+            }
+            if (typeof onConfirm === 'function') onConfirm();
+        }
+        if (typeof global.openModal !== 'function') {
+            runConfirm();
+            return;
+        }
+        var bodyLead =
+            n === 1
+                ? '¿Seguro que deseas eliminar la pregunta que acabas de generar con IA? Perderás ese contenido.'
+                : '¿Seguro que deseas eliminar las <strong>' + drEsc(String(n)) + '</strong> preguntas que acabas de generar con IA? Perderás ese contenido.';
+        global.openModal({
+            overlayId: CC_EVAL_UNDO_IA_CONFIRM_MODAL_ID,
+            title: 'Confirmar eliminación',
+            bodyHtml:
+                '<p class="ubits-body-md-regular" style="margin:0;">' + bodyLead + '</p>',
+            footerHtml:
+                '<button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="cc-eval-undo-ia-cancel"><span>Cancelar</span></button>' +
+                '<button type="button" class="ubits-button ubits-button--error ubits-button--md" id="cc-eval-undo-ia-confirm"><span>Sí, eliminar</span></button>',
+            size: 'sm',
+            closeOnOverlayClick: true
+        });
+        var ov = document.getElementById(CC_EVAL_UNDO_IA_CONFIRM_MODAL_ID);
+        if (!ov) return;
+        function closeOnly() {
+            if (typeof global.closeModal === 'function') {
+                global.closeModal(CC_EVAL_UNDO_IA_CONFIRM_MODAL_ID);
+            }
+        }
+        var cancelBtn = ov.querySelector('#cc-eval-undo-ia-cancel');
+        var confirmBtn = ov.querySelector('#cc-eval-undo-ia-confirm');
+        if (cancelBtn) {
+            cancelBtn.addEventListener('click', closeOnly);
+        }
+        if (confirmBtn) {
+            confirmBtn.addEventListener('click', runConfirm);
+        }
+    }
+
     function showUndoBanner(rootEl, count, onUndo) {
         var existing = rootEl.querySelector('#cc-eval-undo-banner');
         if (existing) existing.remove();
@@ -1997,9 +2047,11 @@
             '</button>';
         bar.parentNode.insertBefore(banner, bar.nextSibling);
         banner.querySelector('.cc-eval-undo-btn').addEventListener('click', function () {
-            onUndo();
-            banner.remove();
-            if (typeof global.showToast === 'function') global.showToast('info', 'Se deshizo la generación de preguntas.');
+            openUndoAiGeneratedQuestionsConfirmModal(count, function () {
+                onUndo();
+                banner.remove();
+                if (typeof global.showToast === 'function') global.showToast('info', 'Se deshizo la generación de preguntas.');
+            });
         });
         banner.querySelector('.cc-eval-undo-close').addEventListener('click', function () { banner.remove(); });
     }
