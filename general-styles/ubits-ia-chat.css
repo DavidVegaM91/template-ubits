@@ -2406,9 +2406,7 @@ body.ia-chat-mobile-drawer-scroll-lock {
      <div class="ubits-ia-chat-bottom-sheet__header">
        <p class="ubits-ia-chat-bottom-sheet__question">¿Cuál es tu color favorito?</p>
        <div class="ubits-ia-chat-bottom-sheet__nav">
-         <button class="ubits-ia-chat-bottom-sheet__nav-btn" data-dir="-1">‹</button>
          <span class="ubits-ia-chat-bottom-sheet__nav-label">1 de 2</span>
-         <button class="ubits-ia-chat-bottom-sheet__nav-btn" data-dir="1">›</button>
          <button class="ubits-ia-chat-bottom-sheet__close"><i class="far fa-xmark"></i></button>
        </div>
      </div>
@@ -2422,10 +2420,10 @@ body.ia-chat-mobile-drawer-scroll-lock {
      </div>
      <div class="ubits-ia-chat-bottom-sheet__footer">
        <span class="ubits-ia-chat-bottom-sheet__counter"></span>
-       <button class="ubits-ia-chat-bottom-sheet__skip">Omitir</button>
-       <button class="ubits-ia-button ubits-ia-button--primary ubits-ia-button--icon-only--sm">
-         <i class="far fa-arrow-right"></i>
-       </button>
+       <div class="ubits-ia-chat-bottom-sheet__footer-actions">
+         <button class="ubits-ia-button ubits-ia-button--secondary ubits-ia-button--sm"><span>Anterior</span></button>
+         <button class="ubits-ia-button ubits-ia-button--primary ubits-ia-button--sm"><span>Siguiente</span></button>
+       </div>
      </div>
    </div>
    --------------------------------------------------------------------------- */
@@ -2550,6 +2548,19 @@ body.ia-chat-mobile-drawer-scroll-lock {
     background: var(--ubits-bg-2);
 }
 
+.ubits-ia-chat-bs-option--selected {
+    background: var(--ubits-bg-2);
+}
+
+.ubits-ia-chat-bs-option--selected .ubits-ia-chat-bs-option__num {
+    background: var(--ubits-accent-brand);
+    color: var(--ubits-btn-primary-fg);
+}
+
+.ubits-ia-chat-bs-option--selected .ubits-ia-chat-bs-option__arrow {
+    opacity: 1;
+}
+
 /* Número de opción (single-select) */
 .ubits-ia-chat-bs-option__num {
     display: inline-flex;
@@ -2648,13 +2659,21 @@ body.ia-chat-mobile-drawer-scroll-lock {
     color: var(--ubits-fg-disabled);
 }
 
-/* Footer: contador + omitir + enviar */
+/* Footer: contador + Anterior / Siguiente | Enviar (requiere ia-button.css para .ubits-ia-button) */
 .ubits-ia-chat-bottom-sheet__footer {
     display: flex;
     align-items: center;
-    gap: var(--gap-sm);
+    gap: var(--gap-md);
     padding: var(--padding-sm) var(--padding-lg) var(--padding-md);
     border-top: 1px solid var(--ubits-border-1);
+    flex-shrink: 0;
+}
+
+.ubits-ia-chat-bottom-sheet__footer-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-sm);
+    margin-left: auto;
     flex-shrink: 0;
 }
 
@@ -2664,31 +2683,9 @@ body.ia-chat-mobile-drawer-scroll-lock {
     font-size: var(--font-size-sm);
     font-weight: var(--font-weight-regular);
     color: var(--ubits-fg-1-medium);
+    min-width: 0;
 }
 
-.ubits-ia-chat-bottom-sheet__skip {
-    display: inline-flex;
-    align-items: center;
-    height: 36px;
-    padding: 0 var(--padding-md);
-    border: 1px solid var(--ubits-border-2);
-    border-radius: var(--border-radius-sm);
-    background: var(--ubits-bg-1);
-    font-family: var(--ubits-font-family-sans);
-    font-size: var(--font-size-sm);
-    font-weight: var(--font-weight-regular);
-    color: var(--ubits-fg-1-high);
-    cursor: pointer;
-    transition: background 0.12s;
-    white-space: nowrap;
-}
-
-.ubits-ia-chat-bottom-sheet__skip:hover {
-    background: var(--ubits-bg-2);
-}
-
-/* El botón de submit del bottom sheet usa directamente ubits-ia-button--icon-only--sm.
-   Solo forzamos flex-shrink: 0 para que el footer flex no lo aplaste. */
 .ubits-ia-chat-bottom-sheet__footer .ubits-ia-button {
     flex-shrink: 0;
 }

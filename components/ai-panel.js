@@ -909,7 +909,8 @@ function setAIPanelTokensBadgeValue(value) {
 //   quick-reply:  { items: ['Python', 'JavaScript', 'Swift'] }
 //   multiselect:  { hint: '...', items: ['Figma', 'Sketch'], confirmLabel: 'Listo →' }
 //   cards:        { items: [{ emoji, title, description, value }] }
-//   bottom-sheet: { steps: [{ question, type: 'single'|'multi', options: [...], freeText? }] }
+//   bottom-sheet: { steps: [{ question, type: 'single'|'multi', options: [...], freeText? }], onReply, onClose }
+//   Navegación: cabecera solo indicador «N de M» (si hay varios pasos) + cerrar; pie con Anterior (desde paso 2), Siguiente / Enviar (último paso).
 //   artifacts:    { rows: [{ title, meta?, iconClass?, openButtonVisible?, onOpen(row, rowEl) }] }
 // ---------------------------------------------------------------------------
 
@@ -1296,20 +1297,6 @@ function _aiPanelInteractionBottomSheet(opts) {
         }
     }
 
-    function skipStep() {
-        // Marcar respuesta vacía para este paso (se omite en el mensaje final)
-        answers[currentStep] = { selected: [], freeText: '' };
-        if (typeof opts.onSkip === 'function') opts.onSkip(currentStep, steps[currentStep]);
-        if (currentStep < steps.length - 1) {
-            currentStep++;
-            if (!answers[currentStep]) answers[currentStep] = { selected: [], freeText: '' };
-            renderSheet();
-        } else {
-            closeSheet();
-            sendAllAnswers();
-        }
-    }
-
     function renderSheet() {
         var step = steps[currentStep];
         var ans  = answers[currentStep];
@@ -1331,32 +1318,10 @@ function _aiPanelInteractionBottomSheet(opts) {
         nav.className = 'ubits-ia-chat-bottom-sheet__nav';
 
         if (total > 1) {
-            var prevBtn = document.createElement('button');
-            prevBtn.type = 'button';
-            prevBtn.className = 'ubits-ia-chat-bottom-sheet__nav-btn';
-            prevBtn.innerHTML = '<i class="far fa-chevron-left"></i>';
-            prevBtn.disabled = (currentStep === 0);
-            prevBtn.setAttribute('aria-label', 'Anterior');
-            prevBtn.addEventListener('click', function() {
-                if (currentStep > 0) { currentStep--; renderSheet(); }
-            });
-            nav.appendChild(prevBtn);
-
             var navLabel = document.createElement('span');
             navLabel.className = 'ubits-ia-chat-bottom-sheet__nav-label';
             navLabel.textContent = (currentStep + 1) + ' de ' + total;
             nav.appendChild(navLabel);
-
-            var nextBtn = document.createElement('button');
-            nextBtn.type = 'button';
-            nextBtn.className = 'ubits-ia-chat-bottom-sheet__nav-btn';
-            nextBtn.innerHTML = '<i class="far fa-chevron-right"></i>';
-            nextBtn.disabled = (currentStep === total - 1);
-            nextBtn.setAttribute('aria-label', 'Siguiente');
-            nextBtn.addEventListener('click', function() {
-                if (currentStep < total - 1) { currentStep++; renderSheet(); }
-            });
-            nav.appendChild(nextBtn);
         }
 
         var closeBtn = document.createElement('button');
@@ -1376,6 +1341,13 @@ function _aiPanelInteractionBottomSheet(opts) {
 
         var optList = step.options || [];
         var countsEl; // referencia al contador en el footer (para multi)
+        var nextFooterBtn = null;
+        var syncNextFooter = function () {
+            if (!nextFooterBtn) return;
+            var ft = ans.freeText != null ? String(ans.freeText).trim() : '';
+            var has = ans.selected.length > 0 || ft !== '';
+            nextFooterBtn.disabled = !has;
+        };
 
         optList.forEach(function(opt, idx) {
             var label = typeof opt === 'string' ? opt : (opt.label || opt);
@@ -1413,9 +1385,13 @@ function _aiPanelInteractionBottomSheet(opts) {
                             ? ans.selected.length + ' seleccionado' + (ans.selected.length !== 1 ? 's' : '')
                             : '';
                     }
+                    syncNextFooter();
                 });
             } else {
                 row.className = 'ubits-ia-chat-bs-option';
+                if (ans.selected.length && String(ans.selected[0]) === String(value)) {
+                    row.classList.add('ubits-ia-chat-bs-option--selected');
+                }
 
                 var numEl = document.createElement('span');
                 numEl.className = 'ubits-ia-chat-bs-option__num';
@@ -1435,7 +1411,11 @@ function _aiPanelInteractionBottomSheet(opts) {
 
                 row.addEventListener('click', function() {
                     ans.selected = [value];
-                    submitStep();
+                    optionsEl.querySelectorAll('.ubits-ia-chat-bs-option').forEach(function(r) {
+                        r.classList.remove('ubits-ia-chat-bs-option--selected');
+                    });
+                    row.classList.add('ubits-ia-chat-bs-option--selected');
+                    syncNextFooter();
                 });
             }
 
@@ -1454,7 +1434,10 @@ function _aiPanelInteractionBottomSheet(opts) {
             ftInput.type = 'text';
             ftInput.placeholder = (typeof step.freeText === 'string' && step.freeText) ? step.freeText : 'Otro';
             ftInput.value = ans.freeText;
-            ftInput.addEventListener('input', function() { ans.freeText = ftInput.value; });
+            ftInput.addEventListener('input', function() {
+                ans.freeText = ftInput.value;
+                syncNextFooter();
+            });
             ftInput.addEventListener('keydown', function(e) {
                 if (e.key === 'Enter') { e.preventDefault(); submitStep(); }
             });
@@ -1473,27 +1456,43 @@ function _aiPanelInteractionBottomSheet(opts) {
         }
         footer.appendChild(countsEl);
 
-        var skipBtn = document.createElement('button');
-        skipBtn.type = 'button';
-        skipBtn.className = 'ubits-ia-chat-bottom-sheet__skip';
-        skipBtn.textContent = 'Omitir';
-        skipBtn.addEventListener('click', skipStep);
-        footer.appendChild(skipBtn);
+        var footerActions = document.createElement('div');
+        footerActions.className = 'ubits-ia-chat-bottom-sheet__footer-actions';
 
-        var submitBtn = document.createElement('button');
-        submitBtn.type = 'button';
-        submitBtn.className = 'ubits-ia-button ubits-ia-button--primary ubits-ia-button--icon-only--sm';
-        // Forzar forma circular con inline style — independiente del contexto flex del footer
-        submitBtn.style.cssText = 'width:32px!important;height:32px!important;min-width:32px!important;min-height:32px!important;max-width:32px!important;max-height:32px!important;border-radius:50%!important;aspect-ratio:1/1!important;flex-shrink:0;padding:0!important;';
-        submitBtn.setAttribute('aria-label', currentStep === steps.length - 1 ? 'Enviar todo' : 'Siguiente');
-        submitBtn.innerHTML = '<i class="far fa-arrow-right"></i>';
-        submitBtn.addEventListener('click', function() {
+        var prevFooterBtn = document.createElement('button');
+        prevFooterBtn.type = 'button';
+        prevFooterBtn.className = 'ubits-ia-button ubits-ia-button--secondary ubits-ia-button--sm';
+        prevFooterBtn.innerHTML = '<span>Anterior</span>';
+        prevFooterBtn.setAttribute('aria-label', 'Paso anterior');
+        if (total <= 1 || currentStep === 0) {
+            prevFooterBtn.style.display = 'none';
+        }
+        prevFooterBtn.addEventListener('click', function() {
+            if (currentStep > 0) {
+                currentStep--;
+                renderSheet();
+            }
+        });
+        footerActions.appendChild(prevFooterBtn);
+
+        nextFooterBtn = document.createElement('button');
+        nextFooterBtn.type = 'button';
+        nextFooterBtn.className = 'ubits-ia-button ubits-ia-button--primary ubits-ia-button--sm';
+        var isLastStep = currentStep >= total - 1;
+        nextFooterBtn.innerHTML = '<span>' + (isLastStep ? 'Enviar' : 'Siguiente') + '</span>';
+        nextFooterBtn.setAttribute('aria-label', isLastStep ? 'Enviar respuestas' : 'Ir al siguiente paso');
+        nextFooterBtn.addEventListener('click', function() {
+            if (nextFooterBtn.disabled) return;
             if (step.type !== 'multi' && !ans.selected.length && ans.freeText.trim()) {
                 ans.selected = [ans.freeText.trim()];
             }
             submitStep();
         });
-        footer.appendChild(submitBtn);
+        footerActions.appendChild(nextFooterBtn);
+
+        footer.appendChild(footerActions);
+
+        syncNextFooter();
 
         sheet.appendChild(footer);
 
