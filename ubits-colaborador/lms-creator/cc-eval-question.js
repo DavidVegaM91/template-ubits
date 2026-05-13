@@ -45,6 +45,14 @@
     return nums.filter(function (n) { return !isNaN(n) && n > 0; });
   }
 
+  function isCcEvalEditableKeyTarget(el) {
+    if (!el || typeof el.closest !== 'function') return false;
+    if (el.closest('[contenteditable="true"]')) return true;
+    if (el.closest('input, textarea, select, button')) return true;
+    if (el.closest('.ubits-dropdown-menu__content')) return true;
+    return false;
+  }
+
   function normalizeModel(model, qId) {
     var m = model && typeof model === 'object' ? model : {};
     var type = String(m.type || 'multiple_choice_single');
@@ -855,14 +863,15 @@
     // Wiring: focus request
     root.addEventListener('click', function (e) {
       var t = e && e.target;
-      // Evitar que botones internos disparen focus request redundante
-      if (t && t.closest && (t.closest('button') || t.closest('input') || t.closest('textarea'))) return;
+      if (!t || !t.closest) return;
+      if (t.closest('button') || t.closest('input') || t.closest('textarea') || t.closest('[contenteditable="true"]') ||
+        t.closest('.ubits-radio') || t.closest('.ubits-checkbox') || t.closest('.ubits-dropdown-menu__content')) return;
       if (typeof options.onRequestFocus === 'function') options.onRequestFocus(qId);
     });
     root.addEventListener('keydown', function (e) {
-      if (e.key === 'Enter' || e.key === ' ') {
-        if (typeof options.onRequestFocus === 'function') options.onRequestFocus(qId);
-      }
+      if (e.key !== 'Enter' && e.key !== ' ') return;
+      if (isCcEvalEditableKeyTarget(e.target)) return;
+      if (typeof options.onRequestFocus === 'function') options.onRequestFocus(qId);
     });
 
     if (deleteBtn) {

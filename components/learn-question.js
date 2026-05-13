@@ -21,6 +21,15 @@
     return d.innerHTML;
   }
 
+  /** Evita que Enter/Espacio en inputs o contenteditable disparen onRequestFocus (scroll / pérdida de foco). */
+  function isLearnQuestionEditableKeyTarget(el) {
+    if (!el || typeof el.closest !== 'function') return false;
+    if (el.closest('[contenteditable="true"]')) return true;
+    if (el.closest('input, textarea, select, button')) return true;
+    if (el.closest('.ubits-dropdown-menu__content')) return true;
+    return false;
+  }
+
   function qTypeIcon(type) {
     var icons = {
       multiple_choice_single: 'fa-circle-dot',
@@ -230,6 +239,16 @@
 
     var inputApis = {};
 
+    function clearGeneratedByAiOnUserEdit() {
+      if (!model.generatedByAi) return;
+      model.generatedByAi = false;
+      var cluster = root.querySelector('.learn-question__title-cluster');
+      var badge = cluster
+        ? cluster.querySelector('.ubits-badge-tag--ia')
+        : root.querySelector('.learn-question__ia-badge, .ubits-generado-ia-badge');
+      if (badge && badge.parentNode) badge.parentNode.removeChild(badge);
+    }
+
     function teardown() {
       if (!modeMount) return;
       modeMount.innerHTML = '';
@@ -391,6 +410,7 @@
           ],
           onChange: function (v) {
             model.type = String(v || model.type);
+            clearGeneratedByAiOnUserEdit();
             if (iconEl) iconEl.className = 'far ' + qTypeIcon(model.type) + ' learn-question__type-icon';
             render();
           }
@@ -407,6 +427,7 @@
           showHelper: mode === 'edit_error',
           onChange: function (v) {
             model.statement = String(v || '');
+            clearGeneratedByAiOnUserEdit();
             refreshHintCorrectness();
           }
         });
@@ -448,6 +469,7 @@
           editor.innerHTML = model.instructionHtml || '';
           editor.addEventListener('input', function () {
             model.instructionHtml = String(editor.innerHTML || '');
+            clearGeneratedByAiOnUserEdit();
           });
         }
         optMount.querySelectorAll('.learn-question__rt-btn').forEach(function (btn) {
@@ -485,6 +507,7 @@
         optMount.querySelectorAll('input[name="q-' + qId + '-correct"]').forEach(function (inp) {
           inp.addEventListener('change', function () {
             model.trueFalseCorrect = inp.checked ? String(inp.value || '') : '';
+            clearGeneratedByAiOnUserEdit();
             refreshHintCorrectness();
           });
         });
@@ -530,7 +553,10 @@
               value: o.text,
               helperText: mode === 'edit_error' ? 'Campo requerido' : '',
               showHelper: mode === 'edit_error',
-              onChange: function (v) { model.options[idx].text = String(v || ''); }
+              onChange: function (v) {
+                model.options[idx].text = String(v || '');
+                clearGeneratedByAiOnUserEdit();
+              }
             });
           }
 
@@ -548,6 +574,7 @@
               } else {
                 model.options[idx].correct = chk.checked;
               }
+              clearGeneratedByAiOnUserEdit();
               refreshHintCorrectness();
             });
           }
@@ -559,6 +586,7 @@
                 if (typeof global.showToast === 'function') global.showToast('warning', 'Mínimo 2 opciones por pregunta.');
                 return;
               }
+              clearGeneratedByAiOnUserEdit();
               model.options.splice(idx, 1);
               render();
             });
@@ -575,6 +603,7 @@
               if (typeof global.showToast === 'function') global.showToast('warning', 'Máximo 6 opciones por pregunta.');
               return;
             }
+            clearGeneratedByAiOnUserEdit();
             model.options.push({ text: '', correct: false });
             render();
           });
@@ -605,14 +634,22 @@
             value: model.shortAnswer.answer,
             helperText: mode === 'edit_error' ? 'Campo requerido' : '',
             showHelper: mode === 'edit_error',
-            onChange: function (v) { model.shortAnswer.answer = String(v || ''); }
+            onChange: function (v) {
+              model.shortAnswer.answer = String(v || '');
+              clearGeneratedByAiOnUserEdit();
+            }
           });
         }
         var acc = model.shortAnswer.accuracy || 'exact';
         var accEl = optMount.querySelector('input[name="q-' + qId + '-accuracy"][value="' + esc(acc) + '"]');
         if (accEl) accEl.checked = true;
         optMount.querySelectorAll('input[name="q-' + qId + '-accuracy"]').forEach(function (r) {
-          r.addEventListener('change', function () { if (r.checked) model.shortAnswer.accuracy = String(r.value || 'exact'); });
+          r.addEventListener('change', function () {
+            if (r.checked) {
+              model.shortAnswer.accuracy = String(r.value || 'exact');
+              clearGeneratedByAiOnUserEdit();
+            }
+          });
         });
         return;
       }
@@ -633,7 +670,10 @@
             value: model.essay.minWords,
             helperText: mode === 'edit_error' ? 'Campo requerido' : '',
             showHelper: mode === 'edit_error',
-            onChange: function (v) { model.essay.minWords = String(v || ''); }
+            onChange: function (v) {
+              model.essay.minWords = String(v || '');
+              clearGeneratedByAiOnUserEdit();
+            }
           });
         }
         return;
@@ -659,13 +699,14 @@
                 if (typeof global.showToast === 'function') global.showToast('warning', 'Mínimo 2 parejas.');
                 return;
               }
+              clearGeneratedByAiOnUserEdit();
               model.pairs.splice(idx, 1);
               render();
             });
           }
           if (typeof global.createInput === 'function') {
-            inputApis['pairA_' + pairNum] = global.createInput({ containerId: 'learn-match-' + qId + '-' + pairNum + '-a', type: 'text', label: '', size: 'sm', showLabel: false, placeholder: 'Escribe una opción', value: pair.a, helperText: mode === 'edit_error' ? 'Campo requerido' : '', showHelper: mode === 'edit_error', onChange: function (v) { model.pairs[idx].a = String(v || ''); } });
-            inputApis['pairB_' + pairNum] = global.createInput({ containerId: 'learn-match-' + qId + '-' + pairNum + '-b', type: 'text', label: '', size: 'sm', showLabel: false, placeholder: 'Escribe su par', value: pair.b, helperText: mode === 'edit_error' ? 'Campo requerido' : '', showHelper: mode === 'edit_error', onChange: function (v) { model.pairs[idx].b = String(v || ''); } });
+            inputApis['pairA_' + pairNum] = global.createInput({ containerId: 'learn-match-' + qId + '-' + pairNum + '-a', type: 'text', label: '', size: 'sm', showLabel: false, placeholder: 'Escribe una opción', value: pair.a, helperText: mode === 'edit_error' ? 'Campo requerido' : '', showHelper: mode === 'edit_error', onChange: function (v) { model.pairs[idx].a = String(v || ''); clearGeneratedByAiOnUserEdit(); } });
+            inputApis['pairB_' + pairNum] = global.createInput({ containerId: 'learn-match-' + qId + '-' + pairNum + '-b', type: 'text', label: '', size: 'sm', showLabel: false, placeholder: 'Escribe su par', value: pair.b, helperText: mode === 'edit_error' ? 'Campo requerido' : '', showHelper: mode === 'edit_error', onChange: function (v) { model.pairs[idx].b = String(v || ''); clearGeneratedByAiOnUserEdit(); } });
           }
         });
         if (actionMount) {
@@ -673,7 +714,7 @@
           addPair.type = 'button';
           addPair.className = 'ubits-button ubits-button--secondary ubits-button--xs';
           addPair.innerHTML = '<i class="far fa-plus"></i><span>Añadir pareja</span>';
-          addPair.addEventListener('click', function () { model.pairs.push({ a: '', b: '' }); render(); });
+          addPair.addEventListener('click', function () { clearGeneratedByAiOnUserEdit(); model.pairs.push({ a: '', b: '' }); render(); });
           actionMount.appendChild(addPair);
         }
         return;
@@ -697,6 +738,7 @@
                 if (typeof global.showToast === 'function') global.showToast('warning', 'Mínimo 2 opciones.');
                 return;
               }
+              clearGeneratedByAiOnUserEdit();
               model.fillBlank.options.splice(idx, 1);
               render();
             });
@@ -712,7 +754,10 @@
               value: txt,
               helperText: mode === 'edit_error' ? 'Campo requerido' : '',
               showHelper: mode === 'edit_error',
-              onChange: function (v) { model.fillBlank.options[idx] = String(v || ''); }
+              onChange: function (v) {
+                model.fillBlank.options[idx] = String(v || '');
+                clearGeneratedByAiOnUserEdit();
+              }
             });
           }
         });
@@ -721,7 +766,7 @@
           addFb.type = 'button';
           addFb.className = 'ubits-button ubits-button--secondary ubits-button--xs';
           addFb.innerHTML = '<i class="far fa-plus"></i><span>Añadir opción de respuesta</span>';
-          addFb.addEventListener('click', function () { model.fillBlank.options.push(''); render(); });
+          addFb.addEventListener('click', function () { clearGeneratedByAiOnUserEdit(); model.fillBlank.options.push(''); render(); });
           actionMount.appendChild(addFb);
         }
         // hint siempre visible para fill_blank
@@ -748,10 +793,10 @@
           '  </div>' +
           '</div>';
         if (typeof global.createInput === 'function') {
-          inputApis.ratingMin = global.createInput({ containerId: minId, type: 'number', label: 'Valor mínimo', size: 'sm', value: model.rating.min, min: 0, onChange: function (v) { model.rating.min = String(v || ''); } });
-          inputApis.ratingMax = global.createInput({ containerId: maxId, type: 'number', label: 'Valor máximo', size: 'sm', value: model.rating.max, min: 2, onChange: function (v) { model.rating.max = String(v || ''); } });
-          global.createInput({ containerId: minLblId, type: 'text', label: 'Etiqueta mínimo', size: 'sm', value: model.rating.minLabel, placeholder: 'Ej: Muy malo', onChange: function (v) { model.rating.minLabel = String(v || ''); } });
-          global.createInput({ containerId: maxLblId, type: 'text', label: 'Etiqueta máximo', size: 'sm', value: model.rating.maxLabel, placeholder: 'Ej: Excelente', onChange: function (v) { model.rating.maxLabel = String(v || ''); } });
+          inputApis.ratingMin = global.createInput({ containerId: minId, type: 'number', label: 'Valor mínimo', size: 'sm', value: model.rating.min, min: 0, onChange: function (v) { model.rating.min = String(v || ''); clearGeneratedByAiOnUserEdit(); } });
+          inputApis.ratingMax = global.createInput({ containerId: maxId, type: 'number', label: 'Valor máximo', size: 'sm', value: model.rating.max, min: 2, onChange: function (v) { model.rating.max = String(v || ''); clearGeneratedByAiOnUserEdit(); } });
+          global.createInput({ containerId: minLblId, type: 'text', label: 'Etiqueta mínimo', size: 'sm', value: model.rating.minLabel, placeholder: 'Ej: Muy malo', onChange: function (v) { model.rating.minLabel = String(v || ''); clearGeneratedByAiOnUserEdit(); } });
+          global.createInput({ containerId: maxLblId, type: 'text', label: 'Etiqueta máximo', size: 'sm', value: model.rating.maxLabel, placeholder: 'Ej: Excelente', onChange: function (v) { model.rating.maxLabel = String(v || ''); clearGeneratedByAiOnUserEdit(); } });
         }
         return;
       }
@@ -969,6 +1014,7 @@
       if (t.closest('button') ||
         t.closest('input') ||
         t.closest('textarea') ||
+        t.closest('[contenteditable="true"]') ||
         t.closest('.ubits-radio') ||
         t.closest('.ubits-checkbox') ||
         t.closest('.ubits-switch') ||
@@ -976,9 +1022,9 @@
       if (typeof options.onRequestFocus === 'function') options.onRequestFocus(qId);
     });
     root.addEventListener('keydown', function (e) {
-      if (e.key === 'Enter' || e.key === ' ') {
-        if (typeof options.onRequestFocus === 'function') options.onRequestFocus(qId);
-      }
+      if (e.key !== 'Enter' && e.key !== ' ') return;
+      if (isLearnQuestionEditableKeyTarget(e.target)) return;
+      if (typeof options.onRequestFocus === 'function') options.onRequestFocus(qId);
     });
 
     if (deleteBtn) deleteBtn.addEventListener('click', function () { if (typeof options.onDelete === 'function') options.onDelete(qId); });
