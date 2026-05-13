@@ -7,6 +7,11 @@
  * Depende: modal.js, input.js (+ dropdown-menu.js antes de input) para pestaña tráiler, file-upload.js, ia-loader.js,
  * empty-state.js, ai-panel.css (+ general-styles/ubits-ia-chat.css para .ubits-ia-chat-thread__input-area), tab.css,
  * portada-imagen-modal.css.
+ *
+ * openPortadaImagenModal(opts) — opts opcionales al reabrir con portada ya aplicada en la página:
+ *   editStartTab: 'ia' | 'subir'
+ *   editIaPrompt + editIaPreviewSrc: pestaña IA con prompt y vista previa (misma imagen).
+ *   editSubirDataUrl: pestaña Subir con file upload mostrando la imagen actual (data URL o http).
  */
 (function (global) {
     'use strict';
@@ -295,6 +300,50 @@
         return ta ? String(ta.value || '').trim() : '';
     }
 
+    function formatPimApproxBytes(bytes) {
+        var n = typeof bytes === 'number' && !isNaN(bytes) ? Math.max(0, bytes) : 0;
+        if (n < 1024) return n + ' B';
+        if (n < 1048576) return (n / 1024).toFixed(1) + ' KB';
+        return (n / 1048576).toFixed(1) + ' MB';
+    }
+
+    /**
+     * Tras createFileUpload en la pestaña Subir: muestra la tarjeta de archivo con la portada actual (data URL)
+     * sin File nativo, para que «Usar esta imagen» siga el mismo flujo (_uploadDataUrl).
+     */
+    function hydrateSubirTabFromDataUrl(dataUrl) {
+        if (!dataUrl || typeof dataUrl !== 'string') return;
+        _uploadDataUrl = dataUrl;
+        var root = document.getElementById('cc-pim-subir-fu');
+        if (!root) return;
+        var emptyEl = root.querySelector('[data-file-upload-empty]');
+        var cardEl = root.querySelector('[data-file-upload-card]');
+        var nameEl = root.querySelector('[data-file-upload-name]');
+        var sizeEl = root.querySelector('[data-file-upload-size]');
+        var dropzone = root.querySelector('[data-file-upload-dropzone]');
+        if (nameEl) nameEl.textContent = 'Imagen de portada actual';
+        if (sizeEl) {
+            var approx = Math.floor((dataUrl.length * 3) / 4);
+            sizeEl.textContent = formatPimApproxBytes(approx);
+        }
+        if (emptyEl) emptyEl.style.display = 'none';
+        if (cardEl) cardEl.style.display = '';
+        if (dropzone) {
+            dropzone.classList.add('ubits-file-upload__dropzone--has-file');
+            dropzone.classList.remove('ubits-file-upload__dropzone--dragover', 'ubits-file-upload__dropzone--invalid');
+        }
+        if (typeof global.fileUploadClearError === 'function') {
+            global.fileUploadClearError(root);
+        }
+        if (typeof global.fileUploadSetSuccess === 'function') {
+            global.fileUploadSetSuccess(
+                root,
+                'Portada actual. Puedes sustituir el archivo o pulsar Usar esta imagen.'
+            );
+        }
+        syncFooter();
+    }
+
     var PIM_IDEA_TEXTAREA_AUTOSIZE_MAX_PX = 360;
 
     function autosizePimIdeaTextarea() {
@@ -495,7 +544,12 @@
         if (useIa) {
             useIa.onclick = function () {
                 if (!_iaResultSrc || !_onApply) return;
-                _onApply({ dataUrl: _iaResultSrc, trailerUrl: _modalTrailerUrl, fromAi: true });
+                _onApply({
+                    dataUrl: _iaResultSrc,
+                    trailerUrl: _modalTrailerUrl,
+                    fromAi: true,
+                    iaPrompt: getPimIdeaText()
+                });
                 if (typeof global.closeModal === 'function') global.closeModal(OVERLAY_ID);
             };
         }
@@ -600,9 +654,46 @@
             initIdeaInput();
             initGenerarPortada();
             wireFooterActions();
-            setPreviewState('placeholder');
-            initPimPreviewEmptyState();
-            switchToTab('ia');
+
+            var isIaReopen = !!(opts.editIaPreviewSrc && opts.editIaPrompt);
+            var subirData = opts.editSubirDataUrl;
+
+            if (isIaReopen) {
+                _iaResultSrc = opts.editIaPreviewSrc;
+                _pimIaLayoutExpanded = true;
+            }
+
+            if (!isIaReopen) {
+                setPreviewState('placeholder');
+                initPimPreviewEmptyState();
+            }
+
+            if (opts.editIaPrompt) {
+                var ta0 = document.getElementById('cc-pim-idea-input');
+                if (ta0) {
+                    ta0.value = String(opts.editIaPrompt);
+                    autosizePimIdeaTextarea();
+                }
+            }
+
+            if (isIaReopen) {
+                setPreviewState('result');
+                renderIaResult(_iaResultSrc);
+            }
+
+            var startTab = opts.editStartTab || 'ia';
+            if (subirData && !isIaReopen) {
+                startTab = 'subir';
+            }
+
+            switchToTab(startTab);
+
+            if (startTab === 'subir' && subirData) {
+                setTimeout(function () {
+                    hydrateSubirTabFromDataUrl(subirData);
+                }, 0);
+            }
+
             refreshGenButtons();
             syncFooter();
             if (typeof global.initTooltip === 'function') {

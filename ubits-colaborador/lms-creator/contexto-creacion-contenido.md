@@ -77,7 +77,7 @@ Capturar la **identidad visual y la metadata** del contenido antes de construir 
 
 ### Imagen de portada y tráiler: modal «Añadir portada» (experiencia actual)
 
-Hoy el prototipo **no** reparte la configuración en varios botones sueltos dentro del hueco de la miniatura. Cuando **aún no hay imagen**, lo habitual es ver **un solo botón principal** del estilo **«Añadir portada»**. Al pulsarlo se abre un **modal grande** titulado **«Añadir portada»**, con el mismo **look & feel** que otros asistentes con IA del Creator (cabecera con gradiente, saldo de **tokens de IA** visible, pestañas claras).
+Hoy el prototipo **no** reparte la configuración en varios botones sueltos dentro del hueco de la miniatura. Cuando **aún no hay imagen**, lo habitual es ver **un solo botón principal** del estilo **«Añadir portada»**. Al pulsarlo se abre un **modal grande** titulado **«Añadir portada»**, con el mismo **look & feel** que otros asistentes con IA del Creator (cabecera con gradiente, saldo de **tokens de IA** visible junto a un **icono de información** que explica el saldo al pasar el cursor o al pulsar en táctil, pestañas claras).
 
 **Tres formas de trabajar la portada (pestañas):**
 
@@ -89,14 +89,18 @@ Hoy el prototipo **no** reparte la configuración en varios botones sueltos dent
 
 **Después de confirmar una imagen** (generada o subida): la cabecera muestra la **foto de portada**. Si la imagen vino de IA, puede mostrarse una **etiqueta** tipo **«Generado con IA»**.
 
-**Cuando ya hay imagen y solo quiere ajustar:** un control del tipo **«Cambiar»** abre un **segundo modal**, más **pequeño y directo**: en una sola pantalla puede sustituir **imagen** y/o **enlace del tráiler**, con **Confirmar** o **Cancelar**. Es el camino rápido para “retocar” sin pasar otra vez por las tres pestañas del modal grande; los límites de peso del archivo pueden **mostrarse distintos** a los del modal grande — lo relevante para negocio es que **cambiar** sea simple y en un solo paso.
+**Cuando ya hay imagen y la persona quiere retocar («Cambiar» / editar):** se vuelve a abrir **el mismo modal «Añadir portada»**, no un segundo modal distinto. El sistema **recuerda el contexto** para que el retoque sea coherente:
+- Si la portada actual se obtuvo **con IA** y hay **prompt guardado**, al abrir se muestra la pestaña **Portada con IA** con el **texto que usó** y la **vista previa** ya mostrando la imagen actual; puede afinar el texto, regenerar o confirmar de nuevo.
+- Si la portada se **subió a mano** (o no hay prompt de IA guardado), al abrir se va directamente a la pestaña **Subir portada**, con la **zona de carga** mostrando la **imagen actual** como archivo ya listo (puede sustituir el archivo o volver a **Usar esta imagen**).
+
+Los **atajos** del hueco vacío (p. ej. abrir solo el **panel de IA** o el **modal rápido de generación** sin pasar por las pestañas) pueden seguir existiendo para quien quiera ir directo a generar; el flujo principal de “portada completa” sigue siendo el modal con tres pestañas.
 
 **Vista previa en la cabecera:** si **no** hay tráiler, solo se ve la imagen; si **hay** tráiler, aparece un **botón de play** sobre la imagen y el video se reproduce **en el mismo espacio**, con los controles habituales del reproductor embebido según el origen del enlace.
 
 ### Regla para pasar al siguiente paso
 
 - Debe estar **completo** todo lo obligatorio.  
-- Lo **único opcional** en este paso es el **trailer** (y, por tanto, el comportamiento play/embebido asociado).
+- Lo **único opcional** en este paso es el **tráiler** (y, por tanto, el comportamiento play/embebido asociado).
 
 ### Validación y ayuda cuando falta algo
 
@@ -237,7 +241,7 @@ Al configurar una página, el usuario puede añadir uno de estos tipos (presenta
 ### Cómo se entra al flujo
 
 - En el **selector de tipo de recurso** de la página, la persona elige la tarjeta **Video**.
-- **No** aparece primero un formulario fijo en el panel derecho: se abre un **modal** titulado **«Agregar video»**, con el mismo **criterio visual que otros flujos con IA** del Creator (cabecera con gradiente, **saldo de tokens** visible, modal ancho).
+- **No** aparece primero un formulario fijo en el panel derecho: se abre un **modal** titulado **«Agregar video»**, con el mismo **criterio visual que otros flujos con IA** del Creator (cabecera con gradiente, **saldo de tokens** con icono de información, modal ancho).
 - Ese modal concentra **todas** las formas de aportar un video a la página: generación asistida por IA, enlace externo o archivo subido.
 
 ### Tres pestañas dentro del modal
@@ -299,7 +303,7 @@ El pie del modal muestra el botón que corresponde a la pestaña activa (por eje
 ### Cómo se entra al flujo
 
 - En el selector de tipo de recurso, la persona elige **SCORM**.
-- Se abre un **modal** titulado **«Agregar SCORM»**, con el mismo **criterio visual que otros flujos con IA** del Creator (cabecera con gradiente, **saldo de tokens**, modal ancho).
+- Se abre un **modal** titulado **«Agregar SCORM»**, con el mismo **criterio visual que otros flujos con IA** del Creator (cabecera con gradiente, **saldo de tokens** con icono de información, modal ancho).
 - No hay formulario intermedio en el panel: **todo pasa por este modal** (o por la variante de subida de paquete en la segunda pestaña).
 
 ### Dos pestañas dentro del modal
@@ -417,13 +421,14 @@ Si la generación es por IA, puede mostrarse la **etiqueta «Generado con IA»**
 - En el **selector de tipo de recurso**, la persona elige **Evaluación final**.
 - **No** se abre antes un modal de datos: el **panel derecho** pasa directamente al **constructor de evaluación** de esa página (barra superior + lista de preguntas o estado vacío).
 - En el **índice de páginas**, el icono de la fila activa pasa a **evaluación** en cuanto se confirma el tipo de recurso.
+- El **panel lateral de IA** muestra el saldo de **tokens** con el mismo patrón que otros flujos Creator: **icono de información** asociado a la ayuda del saldo.
 
 ### Barra superior del recurso
 
 - Título de bloque: **Contenido de la evaluación**.
 - **Eliminar** — quita el recurso de evaluación de esa página y vuelve al selector de tipos (coherente con otros recursos).
 - **Configuración** — abre un **modal** con los **ajustes de la evaluación**: porcentaje mínimo para aprobar, orden aleatorio de preguntas y de opciones, límites de intentos, tiempo máximo y número de preguntas por intento (cada uno con su interruptor y campos asociados cuando aplica). **Guardar** aplica los cambios y cierra; **Cancelar** descarta.
-- **Generar con IA** — no genera dentro del panel central: abre el **panel lateral de IA** (misma familia visual que otros agentes del Creator: saldo de **tokens**, hilo de mensajes, campo de envío). Ahí arranca el **agente de evaluaciones** guiado por mensajes y controles interactivos.
+- **Generar con IA** — no genera dentro del panel central: abre el **panel lateral de IA** (misma familia visual que otros agentes del Creator: saldo de **tokens** con icono de información, hilo de mensajes, campo de envío). Ahí arranca el **agente de evaluaciones** guiado por mensajes y controles interactivos.
 
 ### Experiencia dentro del panel de IA
 
@@ -435,6 +440,8 @@ Al abrirse, el agente se presenta con un mensaje de bienvenida y pregunta **cóm
 | **Configurar desde cero** | Primero pide el **nombre de la evaluación**; ese nombre puede **sincronizarse** con el **título de la página** en el índice y con el campo de título del panel. Luego aparece un **asistente por pasos** (tipo “hoja inferior” con preguntas encadenadas) para **nota mínima**, **límite de tiempo** (o sin límite), **número de preguntas** y **nivel de dificultad**. Después el agente pide el **tema o material** como en el otro camino. |
 
 En la ruta larga, cuando ya hay material, el agente puede pedir **qué tipos de pregunta** incluir (varias opciones a la vez: opción múltiple con una o varias correctas, verdadero/falso, texto cerrado, ensayo, emparejamiento, etc.).
+
+Cuando el usuario termina el **asistente por pasos** de configuración (nota mínima, tiempo, cantidad de preguntas, nivel), el agente muestra en el hilo un mensaje que empieza por **«Configuración seleccionada:»** y debajo un **resumen en una línea** (porcentaje mínimo, tiempo si aplica, número de preguntas y nivel), antes de pedir el tema o material.
 
 Tras recoger tema y reglas, el flujo llega a un **paso de confirmación** en el hilo: resumen de lo que se va a generar y un botón de acción con **coste en tokens** (**Generar evaluación**). Si no hay tokens suficientes, el botón queda deshabilitado con el mensaje correspondiente.
 
@@ -485,4 +492,4 @@ Este documento **no** sustituye la **documentación de componentes UBITS** ni la
 
 ---
 
-*Última revisión: documento pasado a tono **conceptual** (sin rutas de archivo ni código, salvo la subsección técnica acordada). Detalle de implementación **solo** en **Recurso: PDF → Implementación técnica del visor**. Secciones **SCORM** y **Evaluación final** ampliadas: la evaluación entra por tarjeta al panel del recurso y la **IA** se opera desde el **panel lateral** (agente, rutas estándar / avanzada, tokens y generación simulada desde banco temático). Añadido **distintivo IA + tooltip** en el selector de tipos de recurso (Video, SCORM, Evaluación).*
+*Última revisión: portada — un solo modal «Añadir portada» también para **Cambiar**; reapertura contextual (IA con prompt y vista previa, o pestaña Subir con imagen actual en la carga). Eliminada la narrativa del segundo modal pequeño «Subir imagen de portada y tráiler». Saldo de tokens con **icono de información** en cabeceras IA (portada, video, SCORM, panel/modal). Evaluación — mensaje **«Configuración seleccionada:»** antes del resumen tras el asistente por pasos.*

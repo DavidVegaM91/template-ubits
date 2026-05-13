@@ -7,6 +7,10 @@
     'use strict';
 
     var crearContenidoPortadaTrailerUrl = '';
+    /** Último prompt de portada con IA (para reabrir modal en edición). */
+    var crearContenidoPortadaLastIaPrompt = '';
+    /** 'ai' | 'upload' | null — cómo se aplicó la portada actual (reapertura modal). */
+    var crearContenidoPortadaLastSource = null;
     var crearContenidoInputApis = {};
     /** 0 = Portada, 1 = Recursos */
     var pageCurrentStep = 0;
@@ -119,6 +123,16 @@
     function applyPortadaImagenCargada(dataUrl, trailerUrl, loadOpts) {
         loadOpts = loadOpts || {};
         var fromAi = !!loadOpts.fromAi;
+        var promptIn = loadOpts.iaPrompt != null ? String(loadOpts.iaPrompt).trim() : '';
+        if (!loadOpts.skipMetaUpdate) {
+            if (fromAi) {
+                crearContenidoPortadaLastSource = 'ai';
+                if (promptIn) crearContenidoPortadaLastIaPrompt = promptIn;
+            } else {
+                crearContenidoPortadaLastIaPrompt = '';
+                crearContenidoPortadaLastSource = 'upload';
+            }
+        }
         var block = document.getElementById('crear-contenido-img-trailer');
         if (!block || !dataUrl) return;
         crearContenidoPortadaTrailerUrl = trailerUrl != null ? String(trailerUrl).trim() : '';
@@ -159,6 +173,8 @@
         if (!block) return;
 
         crearContenidoPortadaTrailerUrl = trailerUrl != null ? String(trailerUrl).trim() : '';
+        crearContenidoPortadaLastIaPrompt = '';
+        crearContenidoPortadaLastSource = null;
 
         block.classList.remove('ubits-learn-img-trailer--image');
         block.classList.remove('ubits-learn-img-trailer--trailer');
@@ -193,13 +209,29 @@
     /** Modal único de portada (IA · Subir · Tráiler), mismo para hueco vacío y para «Editar». */
     function openCrearContenidoPortadaImagenModal() {
         if (typeof window.openPortadaImagenModal !== 'function') return;
+        var d = getPortadaDataUrl();
+        var reopen = {};
+        if (d) {
+            if (crearContenidoPortadaLastSource === 'ai' && crearContenidoPortadaLastIaPrompt) {
+                reopen.editStartTab = 'ia';
+                reopen.editIaPrompt = crearContenidoPortadaLastIaPrompt;
+                reopen.editIaPreviewSrc = d;
+            } else {
+                reopen.editStartTab = 'subir';
+                reopen.editSubirDataUrl = d;
+            }
+        }
         window.openPortadaImagenModal({
             initialTrailerUrl: crearContenidoPortadaTrailerUrl,
             onTrailerSaved: function (url) {
                 crearContenidoPortadaTrailerUrl = url != null ? String(url).trim() : '';
-                var d = getPortadaDataUrl();
-                if (d) {
-                    applyPortadaImagenCargada(d, crearContenidoPortadaTrailerUrl, { fromAi: false });
+                var d2 = getPortadaDataUrl();
+                if (d2) {
+                    applyPortadaImagenCargada(d2, crearContenidoPortadaTrailerUrl, {
+                        fromAi: crearContenidoPortadaLastSource === 'ai',
+                        iaPrompt: crearContenidoPortadaLastIaPrompt,
+                        skipMetaUpdate: true
+                    });
                 }
             },
             onApply: function (payload) {
@@ -208,10 +240,17 @@
                     payload.trailerUrl != null && String(payload.trailerUrl).trim() !== ''
                         ? String(payload.trailerUrl).trim()
                         : crearContenidoPortadaTrailerUrl;
-                applyPortadaImagenCargada(payload.dataUrl, tv, { fromAi: !!payload.fromAi });
+                applyPortadaImagenCargada(payload.dataUrl, tv, {
+                    fromAi: !!payload.fromAi,
+                    iaPrompt: payload.iaPrompt
+                });
                 triggerFakeSaveCreator();
                 clearPortadaInvalidMarks();
-            }
+            },
+            editStartTab: reopen.editStartTab,
+            editIaPrompt: reopen.editIaPrompt,
+            editIaPreviewSrc: reopen.editIaPreviewSrc,
+            editSubirDataUrl: reopen.editSubirDataUrl
         });
     }
 
@@ -452,7 +491,10 @@
                 if (!tryConsumePortadaCoverTokens()) return;
                 var srcUse = root.getAttribute('data-current-src');
                 if (srcUse) {
-                    applyPortadaImagenCargada(srcUse, '', { fromAi: true });
+                    applyPortadaImagenCargada(srcUse, '', {
+                        fromAi: true,
+                        iaPrompt: crearContenidoPortadaLastIaPrompt
+                    });
                     if (typeof triggerFakeSaveCreator === 'function') triggerFakeSaveCreator();
                     if (typeof clearPortadaInvalidMarks === 'function') clearPortadaInvalidMarks();
                 }
@@ -482,7 +524,12 @@
             placeholder: 'Describe la portada que te imaginas',
             welcomeSubtitle: 'Escribe una idea y generaremos una imagen de ejemplo para tu portada.',
             tokensBadge: { value: window._ubitsAiTokenPool != null ? window._ubitsAiTokenPool : portadaAiTokensRemaining },
-            onSend: function () {
+            onSend: function (text) {
+                var p = String(text || '').trim();
+                if (p && p !== 'Adjuntos') {
+                    crearContenidoPortadaLastIaPrompt = p;
+                    crearContenidoPortadaLastSource = 'ai';
+                }
                 randomizePortadaAiImageIndexForNewGeneration();
                 var loadingHtml = getPortadaAiGeneratingHtml({ id: 'cc-portada-ai-panel-loading-root' });
                 if (typeof addAIPanelMessage === 'function') {
@@ -609,6 +656,8 @@
         function generate() {
             var val = inputEl.value.trim();
             if (!val) return;
+            crearContenidoPortadaLastIaPrompt = val;
+            crearContenidoPortadaLastSource = 'ai';
             randomizePortadaAiImageIndexForNewGeneration();
             inputView.style.display = 'none';
             loaderView.style.display = 'flex';
@@ -649,7 +698,8 @@
         useBtn.addEventListener('click', function () {
             if (!tryConsumePortadaCoverTokens()) return;
             if (typeof applyPortadaImagenCargada === 'function') {
-                applyPortadaImagenCargada(imgEl.src, '', { fromAi: true });
+                var promptUse = inputEl ? String(inputEl.value || '').trim() : '';
+                applyPortadaImagenCargada(imgEl.src, '', { fromAi: true, iaPrompt: promptUse });
                 if (typeof triggerFakeSaveCreator === 'function') triggerFakeSaveCreator();
                 if (typeof clearPortadaInvalidMarks === 'function') clearPortadaInvalidMarks();
             }
