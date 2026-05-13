@@ -20,20 +20,9 @@
     var PORTADA_INVALID_CLASS = 'crear-contenido-portada-field--invalid';
     var CATEGORIA_SELECT_PLACEHOLDER_TEXT = 'Selecciona una opción';
 
-    /**
-     * Experimento UI portada: variante «vacío con IA» del bloque learn-content-img-trailer (solo CTA ia-button «Añadir portada»).
-     * Rollback a la experiencia clásica (Generar portada con IA + Cargar imagen en el hueco): quitar en HTML
-     * `data-learn-img-trailer-empty-variant="ia"` del #crear-contenido-img-trailer; wirePortadaCta / modal vuelven a enlazarse solos.
-     * El modal `portada-ai-modal` y `openCrearContenidoPortadaAiModal` no se eliminan; el hueco ya no muestra el botón que lo abría.
-     * CTA «Añadir portada» abre `openPortadaImagenModal` (portada-imagen-modal.js): modal «Agregar portada» con pestañas IA / subir / tráiler.
-     */
-    function portadaImgTrailerUsesEmptyIaVariant() {
-        var block = document.getElementById('crear-contenido-img-trailer');
-        if (!block) return false;
-        var v = (block.getAttribute('data-learn-img-trailer-empty-variant') || '').trim().toLowerCase();
-        return v === 'ia' || v === 'vacio-con-ia' || v === 'vacío-con-ia' || v === 'empty-ia';
-    }
-
+    // Portada: CTA «Añadir portada» y «Editar» abren `openPortadaImagenModal` (IA · Subir · Tráiler).
+    // HTML puede usar `data-learn-img-trailer-empty-variant="ia"` en el bloque miniatura.
+    // El modal `portada-ai-modal` / panel IA siguen para otros atajos.
     // ----- FAKE SAVE INDICATOR -----
     var saveIndicatorTimeout;
     function triggerFakeSaveCreator() {
@@ -156,7 +145,7 @@
         if (cambiar) {
             cambiar.addEventListener('click', function (e) {
                 e.preventDefault();
-                openPortadaModalPage();
+                openCrearContenidoPortadaImagenModal();
             });
         }
         if (typeof window.initLearnContentImgTrailer === 'function') {
@@ -201,15 +190,27 @@
         refreshCrearContenidoPageSiguienteState();
     }
 
-    function openPortadaModalPage() {
-        if (typeof window.openPortadaTrailerModal !== 'function') return;
-        window.openPortadaTrailerModal({
-            dataUrl: getPortadaDataUrl(),
-            trailerUrl: crearContenidoPortadaTrailerUrl,
-            onConfirm: function (payload) {
-                if (!payload) return;
-                if (payload.dataUrl) applyPortadaImagenCargada(payload.dataUrl, payload.trailerUrl);
-                else applyPortadaImagenEliminada(payload.trailerUrl);
+    /** Modal único de portada (IA · Subir · Tráiler), mismo para hueco vacío y para «Editar». */
+    function openCrearContenidoPortadaImagenModal() {
+        if (typeof window.openPortadaImagenModal !== 'function') return;
+        window.openPortadaImagenModal({
+            initialTrailerUrl: crearContenidoPortadaTrailerUrl,
+            onTrailerSaved: function (url) {
+                crearContenidoPortadaTrailerUrl = url != null ? String(url).trim() : '';
+                var d = getPortadaDataUrl();
+                if (d) {
+                    applyPortadaImagenCargada(d, crearContenidoPortadaTrailerUrl, { fromAi: false });
+                }
+            },
+            onApply: function (payload) {
+                if (!payload || !payload.dataUrl) return;
+                var tv =
+                    payload.trailerUrl != null && String(payload.trailerUrl).trim() !== ''
+                        ? String(payload.trailerUrl).trim()
+                        : crearContenidoPortadaTrailerUrl;
+                applyPortadaImagenCargada(payload.dataUrl, tv, { fromAi: !!payload.fromAi });
+                triggerFakeSaveCreator();
+                clearPortadaInvalidMarks();
             }
         });
     }
@@ -220,31 +221,7 @@
         cta._ccPortadaCtaWired = true;
         cta.addEventListener('click', function (e) {
             e.preventDefault();
-            if (portadaImgTrailerUsesEmptyIaVariant()) {
-                if (typeof window.openPortadaImagenModal !== 'function') return;
-                window.openPortadaImagenModal({
-                    initialTrailerUrl: crearContenidoPortadaTrailerUrl,
-                    onTrailerSaved: function (url) {
-                        crearContenidoPortadaTrailerUrl = url != null ? String(url).trim() : '';
-                        var d = getPortadaDataUrl();
-                        if (d) {
-                            applyPortadaImagenCargada(d, crearContenidoPortadaTrailerUrl, { fromAi: false });
-                        }
-                    },
-                    onApply: function (payload) {
-                        if (!payload || !payload.dataUrl) return;
-                        var tv =
-                            payload.trailerUrl != null && String(payload.trailerUrl).trim() !== ''
-                                ? String(payload.trailerUrl).trim()
-                                : crearContenidoPortadaTrailerUrl;
-                        applyPortadaImagenCargada(payload.dataUrl, tv, { fromAi: !!payload.fromAi });
-                        triggerFakeSaveCreator();
-                        clearPortadaInvalidMarks();
-                    }
-                });
-                return;
-            }
-            openPortadaModalPage();
+            openCrearContenidoPortadaImagenModal();
         });
     }
 
@@ -536,7 +513,7 @@
         });
     }
 
-    // Hooks globales para abrir IA desde otros modales (p. ej. portada-media-modal.js)
+    // Hooks globales para abrir IA desde otros flujos (p. ej. modales de recursos).
     window.openCrearContenidoPortadaAiPanel = function () {
         initPortadaAiPanel();
         if (typeof openAIPanel === 'function') openAIPanel();
