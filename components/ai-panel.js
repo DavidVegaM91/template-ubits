@@ -1452,7 +1452,7 @@ function _aiPanelInteractionBottomSheet(opts) {
 
             var ftInput = document.createElement('input');
             ftInput.type = 'text';
-            ftInput.placeholder = (typeof step.freeText === 'string' && step.freeText) ? step.freeText : 'Algo más';
+            ftInput.placeholder = (typeof step.freeText === 'string' && step.freeText) ? step.freeText : 'Otro';
             ftInput.value = ans.freeText;
             ftInput.addEventListener('input', function() { ans.freeText = ftInput.value; });
             ftInput.addEventListener('keydown', function(e) {

@@ -48,6 +48,9 @@
         var num = el.querySelector('.ubits-badge-tag__token-number');
         if (num) num.textContent = String(n);
         el.setAttribute('aria-label', String(n) + ' tokens restantes');
+        var show = _currentTab === 'ia';
+        el.style.display = show ? '' : 'none';
+        el.setAttribute('aria-hidden', show ? 'false' : 'true');
     }
 
     function trySpendTokens(cost) {
@@ -542,6 +545,7 @@
             initSubirFileUpload();
         }
         syncFooter();
+        syncPimTokensBadge();
     }
 
     function wireTabBar() {

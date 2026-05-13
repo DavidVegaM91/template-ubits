@@ -100,6 +100,9 @@
         var num=el.querySelector('.ubits-badge-tag__token-number');
         if (num) num.textContent=String(n);
         el.setAttribute('aria-label',n+' tokens restantes');
+        var show=_currentTab==='ia';
+        el.style.display=show?'':'none';
+        el.setAttribute('aria-hidden',show?'false':'true');
     }
 
     function emitChanged(detail) { try { document.dispatchEvent(new CustomEvent('ubits-recursos-changed',{detail:detail||{}})); } catch(e){} }
@@ -705,6 +708,7 @@
             if (cargarBtn) cargarBtn.style.display='';
             initZipUpload();
         }
+        syncScormTokensBadge();
     }
 
     function initTituloInput() {
