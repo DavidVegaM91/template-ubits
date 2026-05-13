@@ -909,7 +909,7 @@ function setAIPanelTokensBadgeValue(value) {
 //   quick-reply:  { items: ['Python', 'JavaScript', 'Swift'] }
 //   multiselect:  { hint: '...', items: ['Figma', 'Sketch'], confirmLabel: 'Listo →' }
 //   cards:        { items: [{ emoji, title, description, value }] }
-//   bottom-sheet: { steps: [{ question, type: 'single'|'multi', options: [...], freeText? }], onReply, onClose }
+//   bottom-sheet: { steps: [...], onReply(answers, steps), onClose } — onClose solo si el usuario cierra la hoja (X) sin completar el envío; al enviar el último paso no se llama onClose.
 //   Navegación: cabecera solo indicador «N de M» (si hay varios pasos) + cerrar; pie con Anterior (desde paso 2), Siguiente / Enviar (último paso).
 //   artifacts:    { rows: [{ title, meta?, iconClass?, openButtonVisible?, onOpen(row, rowEl) }] }
 // ---------------------------------------------------------------------------
@@ -1241,11 +1241,11 @@ function _aiPanelInteractionBottomSheet(opts) {
     sheet.className = 'ubits-ia-chat-bottom-sheet';
     sheet.id = 'ai-panel-bottom-sheet';
 
-    function closeSheet() {
+    function closeSheet(skipOnClose) {
         sheet.remove();
         if (inputEl) inputEl.disabled = false;
         if (sendBtn) sendBtn.disabled = false;
-        if (typeof opts.onClose === 'function') opts.onClose();
+        if (!skipOnClose && typeof opts.onClose === 'function') opts.onClose();
     }
 
     // Construye y envía UN único mensaje con todas las respuestas acumuladas
@@ -1291,9 +1291,9 @@ function _aiPanelInteractionBottomSheet(opts) {
             if (!answers[currentStep]) answers[currentStep] = { selected: [], freeText: '' };
             renderSheet();
         } else {
-            // Último paso: cerrar y enviar TODO como un único mensaje
-            closeSheet();
+            // Último paso: enviar respuestas al chat y cerrar sin onClose (onClose = solo abandono / cerrar sin enviar)
             sendAllAnswers();
+            closeSheet(true);
         }
     }
 
@@ -1533,4 +1533,5 @@ function destroyAIPanel() {
 if (typeof window !== 'undefined') {
     window._aiPanelSend = _aiPanelSend;
     window.setAIPanelAlternateMount = setAIPanelAlternateMount;
+    window.showAIPanelTyping = showAIPanelTyping;
 }

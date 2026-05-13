@@ -1574,9 +1574,28 @@
         if (typeof global.addAIPanelMessage === 'function') global.addAIPanelMessage(text, 'user');
     }
 
+    /** Misma base que ia-chat-streaming.js / envío del panel (MIN_THINKING_MS). */
+    function _evalDefaultThinkMs() {
+        var m = global.UbitsIaChatStreaming && global.UbitsIaChatStreaming.MIN_THINKING_MS;
+        if (m != null && !isNaN(Number(m))) return Math.max(0, Number(m));
+        return 1000;
+    }
+
+    /**
+     * Muestra «Pensando…» (showAIPanelTyping + UbitsIaChatStreaming) y luego ejecuta cb.
+     * @param {function} cb
+     * @param {number} [delay] — ms; si se omite, usa MIN_THINKING_MS del streaming (como modo estudio IA).
+     */
     function _evalTyping(cb, delay) {
-        var rm = typeof global.showAIPanelTyping === 'function' ? global.showAIPanelTyping() : null;
-        setTimeout(function () { rm && rm(); cb(); }, delay || 1200);
+        var ms = typeof delay === 'number' && !isNaN(delay) ? delay : _evalDefaultThinkMs();
+        var rm =
+            typeof global.showAIPanelTyping === 'function'
+                ? global.showAIPanelTyping()
+                : null;
+        setTimeout(function () {
+            if (rm) rm();
+            if (typeof cb === 'function') cb();
+        }, ms);
     }
 
     function _evalGetTokens() {
@@ -1764,12 +1783,14 @@
                             state.config.questionTypes = ['multiple_choice_single_answer', 'binary'];
                             // Reflejar configuración en el pageState para que el modal la muestre
                             if (rootEl._ccEvalPageState) Object.assign(rootEl._ccEvalPageState.config, state.config);
-                            setTimeout(function () {
+                            _evalTyping(function () {
                                 _evalMsg('¡Perfecto! Cuéntame sobre el tema de la evaluación. Escribe el contenido directamente o adjunta un archivo (doc, pdf, txt).');
-                            }, 200);
+                            });
                         } else {
                             state.step = 'long_config';
-                            setTimeout(function () { evalAgentStartLongConfig(rootEl); }, 200);
+                            _evalTyping(function () {
+                                evalAgentStartLongConfig(rootEl);
+                            });
                         }
                     }
                 });
@@ -1797,7 +1818,10 @@
             state.config.title = text;
             evalAgentUpdatePageTitle(rootEl, text);
             state.step = 'long_await_bsf';
-            setTimeout(function () { evalAgentShowConfigBSF(rootEl); }, 300);
+            /* Panel ya mostró «Pensando» antes de onSend; aquí solo un respiro antes del BSF. */
+            _evalTyping(function () {
+                evalAgentShowConfigBSF(rootEl);
+            }, 500);
             return;
         }
 
@@ -1850,12 +1874,10 @@
         _evalMsg('¿Cómo se llamará la evaluación?');
     }
 
-    /** Bottom Sheet Form: puntaje mínimo + tiempo + cantidad + dificultad */
+    /** Bottom Sheet Form: puntaje mínimo + tiempo + cantidad + dificultad (sin mensaje previo en el hilo). */
     function evalAgentShowConfigBSF(rootEl) {
-        _evalMsg('Perfecto. Ahora configura los ajustes de la evaluación.');
-        setTimeout(function () {
-            if (typeof global.addAIPanelInteraction !== 'function') return;
-            global.addAIPanelInteraction('bottom-sheet', {
+        if (typeof global.addAIPanelInteraction !== 'function') return;
+        global.addAIPanelInteraction('bottom-sheet', {
                 steps: [
                     {
                         question: '¿Puntaje mínimo de aprobación?',
@@ -1938,19 +1960,20 @@
                         (timeVal !== 'none' ? ' · ' + timeVal + ' min' : '') +
                         ' · ' + state.config.questionCount + ' preguntas' +
                         ' · ' + ({ basic: 'Básico', intermediate: 'Intermedio', advanced: 'Avanzado' }[diffVal] || diffVal);
-                    _evalMsg(summary);
-                    setTimeout(function () {
-                        _evalMsg('Ahora cuéntame sobre el tema de la evaluación. Escribe el contenido o adjunta un archivo.');
-                    }, 400);
+                    _evalTyping(function () {
+                        _evalMsg(summary);
+                        setTimeout(function () {
+                            _evalMsg('Ahora cuéntame sobre el tema de la evaluación. Escribe el contenido o adjunta un archivo.');
+                        }, 400);
+                    });
                 }
             });
-        }, 500);
     }
 
     function evalAgentAskTypes(rootEl) {
         var state = rootEl._ccEvalState;
         state.step = 'long_types';
-        setTimeout(function () {
+        _evalTyping(function () {
             _evalMsg('¿Qué tipos de pregunta quieres incluir? Elige uno o varios.');
             if (typeof global.addAIPanelInteraction === 'function') {
                 global.addAIPanelInteraction('multiselect', {
@@ -1968,11 +1991,13 @@
                         var vals = valsCsv ? valsCsv.split(',') : ['multiple_choice_single_answer'];
                         state.config.questionTypes = vals;
                         state.step = 'pre_confirm';
-                        setTimeout(function () { evalAgentShowConfirmation(rootEl); }, 300);
+                        _evalTyping(function () {
+                            evalAgentShowConfirmation(rootEl);
+                        });
                     }
                 });
             }
-        }, 300);
+        });
     }
 
     /**

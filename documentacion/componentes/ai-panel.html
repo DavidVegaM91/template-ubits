@@ -379,6 +379,7 @@
                                         <li><code style="font-family: monospace;">openAIPanel()</code> / <code style="font-family: monospace;">closeAIPanel()</code></li>
                                         <li><code style="font-family: monospace;">addAIPanelMessage(text, type[, attachments])</code> — <code style="font-family: monospace;">type</code>: <code style="font-family: monospace;">'user'</code> | <code style="font-family: monospace;">'ai'</code>. Tras enviar desde el input, el panel ya inserta el mensaje del usuario; en <code style="font-family: monospace;">onSend(text)</code> no hace falta (ni conviene) volver a añadirlo salvo un flujo muy custom.</li>
                                         <li><code style="font-family: monospace;">addAIPanelInteraction(type, options)</code> — inserta un bloque de interacción conversacional. <code style="font-family: monospace;">type</code>: <code style="font-family: monospace;">'quick-reply'</code> | <code style="font-family: monospace;">'multiselect'</code> | <code style="font-family: monospace;">'cards'</code> | <code style="font-family: monospace;">'bottom-sheet'</code> | <code style="font-family: monospace;">'artifacts'</code>. Para artifacts: <code style="font-family: monospace;">options.rows</code> es un array de <code style="font-family: monospace;">{ title, meta?, iconClass?, openButtonVisible?, onOpen(row, rowEl) }</code>; al pulsar Abrir se llama <code style="font-family: monospace;">onOpen</code> (p. ej. montar HTML y <code style="font-family: monospace;">openAIPanelArtifactView</code>).</li>
+                                        <li><strong>Bottom sheet</strong> (<code style="font-family: monospace;">'bottom-sheet'</code>): <code style="font-family: monospace;">onReply(answers, steps)</code> se ejecuta tras enviar el último paso (después de insertar en el chat el mensaje de usuario con todas las respuestas). <code style="font-family: monospace;">onClose</code> solo se llama si el usuario cierra la hoja con la X sin completar el envío.</li>
                                         <li><code style="font-family: monospace;">openAIPanelArtifactView(html, opts?)</code> / <code style="font-family: monospace;">closeAIPanelArtifactView()</code> — vista de detalle superpuesta; <code style="font-family: monospace;">opts.title</code>, <code style="font-family: monospace;">opts.onAfterMount(scrollEl)</code>.</li>
                                         <li><code style="font-family: monospace;">showAIPanelTyping()</code> — devuelve <code style="font-family: monospace;">removeTyping</code> (usa <code style="font-family: monospace;">ia-chat-streaming.js</code>).</li>
                                         <li><code style="font-family: monospace;">clearAIPanelMessages()</code>, <code style="font-family: monospace;">setAIPanelTitle(title)</code>, <code style="font-family: monospace;">setAIPanelTokensBadgeValue(n)</code>, <code style="font-family: monospace;">destroyAIPanel()</code></li>
@@ -664,15 +665,13 @@ dockDesktop, dockContainerSelector, dockBreakpoint</code></pre>
                                     freeText: 'Otro'
                                 }
                             ],
-                            onReply: function (stepIndex, value, label) {
-                                if (stepIndex === 1) {
-                                    setTimeout(function () {
-                                        addAIPanelMessage('¡Perfecto! Ya tengo tu perfil. Empecemos.', 'ai');
-                                    }, 500);
-                                }
+                            onReply: function (answers, steps) {
+                                setTimeout(function () {
+                                    addAIPanelMessage('Gracias por tus respuestas.', 'ai');
+                                }, 400);
                             },
                             onClose: function () {
-                                addAIPanelMessage('(formulario cerrado sin responder)', 'ai');
+                                addAIPanelMessage('Cerraste el formulario sin enviar las respuestas.', 'ai');
                             }
                         });
                     }
