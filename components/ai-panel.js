@@ -1229,7 +1229,12 @@ function _aiPanelInteractionBottomSheet(opts) {
                 var key = String(v);
                 return map[key] != null ? map[key] : v;
             }).filter(Boolean);
-            return parts.length ? parts.join(', ') : String(ans.freeText || '').trim();
+            var ftMulti = String(ans.freeText || '').trim();
+            if (parts.length && ftMulti) {
+                return parts.join(', ') + ' (+ otro: ' + ftMulti + ')';
+            }
+            if (parts.length) return parts.join(', ');
+            return ftMulti;
         }
         var raw = (ans.selected && ans.selected[0]) || String(ans.freeText || '').trim();
         if (!raw) return '';
@@ -1343,6 +1348,8 @@ function _aiPanelInteractionBottomSheet(opts) {
         var optList = step.options || [];
         var countsEl; // referencia al contador en el footer (para multi)
         var nextFooterBtn = null;
+        /** Input «Otro» (se asigna más abajo); permite limpiarlo al elegir opción en single. */
+        var freeTextInputRef = null;
         var syncNextFooter = function () {
             if (!nextFooterBtn) return;
             var ft = ans.freeText != null ? String(ans.freeText).trim() : '';
@@ -1410,13 +1417,22 @@ function _aiPanelInteractionBottomSheet(opts) {
                 row.appendChild(lblEl);
                 row.appendChild(arrow);
 
-                row.addEventListener('click', function() {
+                function applySingleSelect() {
                     ans.selected = [value];
+                    ans.freeText = '';
+                    if (freeTextInputRef) freeTextInputRef.value = '';
                     optionsEl.querySelectorAll('.ubits-ia-chat-bs-option').forEach(function(r) {
                         r.classList.remove('ubits-ia-chat-bs-option--selected');
                     });
                     row.classList.add('ubits-ia-chat-bs-option--selected');
                     syncNextFooter();
+                }
+                row.addEventListener('click', applySingleSelect);
+                /* Doble clic: avanza de inmediato (el clic simple solo marca; «Otro» sigue requiriendo Siguiente). */
+                row.addEventListener('dblclick', function(e) {
+                    e.preventDefault();
+                    applySingleSelect();
+                    submitStep();
                 });
             }
 
@@ -1435,8 +1451,15 @@ function _aiPanelInteractionBottomSheet(opts) {
             ftInput.type = 'text';
             ftInput.placeholder = (typeof step.freeText === 'string' && step.freeText) ? step.freeText : 'Otro';
             ftInput.value = ans.freeText;
+            freeTextInputRef = ftInput;
             ftInput.addEventListener('input', function() {
                 ans.freeText = ftInput.value;
+                if (!isMulti && String(ftInput.value).trim()) {
+                    ans.selected = [];
+                    optionsEl.querySelectorAll('.ubits-ia-chat-bs-option').forEach(function(r) {
+                        r.classList.remove('ubits-ia-chat-bs-option--selected');
+                    });
+                }
                 syncNextFooter();
             });
             ftInput.addEventListener('keydown', function(e) {

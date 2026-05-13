@@ -741,6 +741,20 @@
         });
     }
 
+    function clearScormContextFieldError() {
+        var ctxTa = document.getElementById('cc-sm-context-input');
+        var box = ctxTa ? ctxTa.closest('.ai-panel__input-box') : null;
+        if (box) box.classList.remove('ai-panel__input-box--context-error');
+    }
+
+    /** Contexto IA: texto en el área o al menos un adjunto (imagen u otro archivo). */
+    function scormIaHasContextMaterial() {
+        var ctxTa = document.getElementById('cc-sm-context-input');
+        var ctx = ctxTa ? String(ctxTa.value || '').trim() : '';
+        if (ctx.length) return true;
+        return _pendingImgs.length > 0 || _pendingFiles.length > 0;
+    }
+
     function wireIaPanel() {
         var panel=document.getElementById('cc-stab-ia');
         if (!panel || panel._ccWired) return;
@@ -757,8 +771,7 @@
         /* Limpiar error de contexto al escribir */
         var ctxTa=document.getElementById('cc-sm-context-input');
         if (ctxTa) ctxTa.addEventListener('input', function(){
-            var box=ctxTa.closest('.ai-panel__input-box');
-            if (box) box.classList.remove('ai-panel__input-box--context-error');
+            clearScormContextFieldError();
         });
 
         /* File attach */
@@ -796,6 +809,7 @@
         strip.querySelectorAll('[data-sm-rm-img]').forEach(function(btn){
             btn.addEventListener('click',function(){ _pendingImgs.splice(parseInt(btn.getAttribute('data-sm-rm-img')),1); renderPendingImgs(); });
         });
+        if (_pendingImgs.length) clearScormContextFieldError();
     }
 
     function renderPendingFiles() {
@@ -812,6 +826,7 @@
         strip.querySelectorAll('[data-sm-rm-file]').forEach(function(btn){
             btn.addEventListener('click',function(){ _pendingFiles.splice(parseInt(btn.getAttribute('data-sm-rm-file')),1); renderPendingFiles(); });
         });
+        if (_pendingFiles.length) clearScormContextFieldError();
     }
 
     function wireTabBar() {
@@ -849,7 +864,6 @@
                 var titInp=titWrap ? titWrap.querySelector('input') : null;
                 var tit=(titInp ? titInp.value.trim() : _titulo);
                 var ctxTa=document.getElementById('cc-sm-context-input');
-                var ctx=ctxTa ? ctxTa.value.trim() : '';
                 var valid=true;
 
                 if (!tit) {
@@ -857,7 +871,7 @@
                     else if (titInp) titInp.focus();
                     valid=false;
                 }
-                if (!ctx) {
+                if (!scormIaHasContextMaterial()) {
                     var box=ctxTa ? ctxTa.closest('.ai-panel__input-box') : null;
                     if (box) box.classList.add('ai-panel__input-box--context-error');
                     if (!tit && ctxTa) ctxTa.focus();

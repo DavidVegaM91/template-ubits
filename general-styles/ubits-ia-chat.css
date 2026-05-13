@@ -2557,10 +2557,6 @@ body.ia-chat-mobile-drawer-scroll-lock {
     color: var(--ubits-btn-primary-fg);
 }
 
-.ubits-ia-chat-bs-option--selected .ubits-ia-chat-bs-option__arrow {
-    opacity: 1;
-}
-
 /* Número de opción (single-select) */
 .ubits-ia-chat-bs-option__num {
     display: inline-flex;
@@ -2585,16 +2581,9 @@ body.ia-chat-mobile-drawer-scroll-lock {
     color: var(--ubits-fg-1-high);
 }
 
-/* Flecha (single-select) */
+/* Reservado por markup; sin flecha visible en single-select (ni hover ni seleccionado). */
 .ubits-ia-chat-bs-option__arrow {
-    color: var(--ubits-fg-1-medium);
-    font-size: 12px;
-    opacity: 0;
-    transition: opacity 0.12s;
-}
-
-.ubits-ia-chat-bs-option:hover .ubits-ia-chat-bs-option__arrow {
-    opacity: 1;
+    display: none;
 }
 
 /* Opción multi-select (con checkbox) */
