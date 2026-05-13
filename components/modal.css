@@ -114,6 +114,19 @@
     flex-shrink: 0;
 }
 
+/* Icono info tras el contador (mismo orden que panel IA: moneda → número → info) */
+.ubits-modal-header--ia .ubits-ia-tokens-badge-info {
+    display: inline-flex;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.ubits-modal-header--ia .ubits-ia-tokens-badge-info i {
+    font-size: 0.85em;
+    line-height: 1;
+    opacity: 0.88;
+}
+
 .ubits-modal-header--ia .ubits-modal-title {
     flex: 1;
     min-width: 0;

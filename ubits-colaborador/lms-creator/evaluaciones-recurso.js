@@ -1956,10 +1956,16 @@
                         Object.assign(rootEl._ccEvalPageState.config, state.config);
                     }
 
-                    var summary = '✓ ' + (isNaN(scoreVal) ? 70 : scoreVal) + '% mínimo' +
+                    var summary =
+                        'Configuración seleccionada:\n✓ ' +
+                        (isNaN(scoreVal) ? 70 : scoreVal) +
+                        '% mínimo' +
                         (timeVal !== 'none' ? ' · ' + timeVal + ' min' : '') +
-                        ' · ' + state.config.questionCount + ' preguntas' +
-                        ' · ' + ({ basic: 'Básico', intermediate: 'Intermedio', advanced: 'Avanzado' }[diffVal] || diffVal);
+                        ' · ' +
+                        state.config.questionCount +
+                        ' preguntas' +
+                        ' · ' +
+                        ({ basic: 'Básico', intermediate: 'Intermedio', advanced: 'Avanzado' }[diffVal] || diffVal);
                     _evalTyping(function () {
                         _evalMsg(summary);
                         setTimeout(function () {

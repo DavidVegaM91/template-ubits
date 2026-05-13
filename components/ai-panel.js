@@ -185,6 +185,7 @@ function _aiPanelTokensBadgeHtml(o) {
         '<span class="ubits-badge-tag__token-number">' +
         _aiEscape(String(num)) +
         '</span>' +
+        '<span class="ubits-ia-tokens-badge-info" aria-hidden="true"><i class="far fa-info-circle"></i></span>' +
         '</span></span>'
     );
 }
