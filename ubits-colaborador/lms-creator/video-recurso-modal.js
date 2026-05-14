@@ -1427,7 +1427,7 @@
             '<button type="button" class="ubits-button ubits-button--primary ubits-button--md" id="cc-vsubir-btn-confirmar" disabled style="display:none">' +
                 '<span>Cargar video</span>' +
             '</button>' +
-            '<button type="button" class="ubits-ia-button ubits-ia-button--secondary ubits-ia-button--md ubits-ia-button--with-token-cost" id="cc-vm-btn-generar">' +
+            '<button type="button" class="ubits-ia-button ubits-ia-button--primary ubits-ia-button--md ubits-ia-button--with-token-cost" id="cc-vm-btn-generar">' +
                 '<span class="ubits-ia-button__token-cost" aria-hidden="true">' +
                     '<span class="ubits-ia-button__token-number">' + VIDEO_GEN_TOKEN_COST + '</span>' +
                     '<i class="far fa-coin-vertical"></i>' +

@@ -96,7 +96,7 @@
             '      <i class="far fa-gear"></i><span>Configuración</span>' +
             '    </button>' +
             '    <span class="cc-eval-ia-actions">' +
-            '    <button type="button" class="ubits-ia-button ubits-ia-button--secondary ubits-ia-button--sm" id="cc-eval-ia-btn">' +
+            '    <button type="button" class="ubits-ia-button ubits-ia-button--primary ubits-ia-button--sm" id="cc-eval-ia-btn">' +
             '      <i class="far fa-sparkles"></i><span>Generar con IA</span>' +
             '    </button>' +
             '    </span>' +
