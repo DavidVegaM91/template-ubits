@@ -9,7 +9,7 @@
  *   getIaLoaderHTML({ label: 'Texto' })
  *
  * Requiere: ia-loader.css, ubits-colors.css; gradientes IA: --modo-ia-gradient-a…d, orbes rgb-1…3
- * (p. ej. aprendizaje-ia-gradientes.css).
+ * (p. ej. general-styles/ubits-ia-appearance.css).
  */
 
 /** Figma 571:8065 — cuatro subtrazos (M…Z); cada <g> anima a destiempo (como el loader previo). */

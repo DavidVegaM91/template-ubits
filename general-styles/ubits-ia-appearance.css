@@ -1,8 +1,9 @@
 /* ========================================
-   Variables de gradiente IA - compartidas por Modo estudio IA, Chat IA grupos, Resultados búsqueda y Catálogo
+   Modo IA — apariencia transversal (tokens compartidos)
+   Gradientes de marca, RGB de orbes, borde IA 1.5px y keyframes de borde animado.
+   Lo usan: modales IA, chat IA, AI panel, LMS Creator, resultados búsqueda, ia-button, badge IA, etc.
    Paleta alineada con ia-button Figma AI-Capabilities (565:5110; mismos RGB que components/ia-button.css).
    Para cambiar la paleta: edita solo las variables en :root abajo.
-   (gradientes, orbes y --ubits-ia-gradient-border-width para borde 1.5px IA).
 
    CÓMO VOLVER A LAS GRADACIONES AZULES (paleta anterior):
    1. En este archivo, en el bloque :root, poner:
@@ -12,7 +13,7 @@
       (quitar o ignorar --modo-ia-gradient-d si no existe en tu copia antigua)
       y orbes: 26,107,255 / 76,230,255 / 255,84,22
    2. Guardar. No hace falta cambiar ningún otro archivo.
-   (Pasos detallados: Changelog-Estudio-IA.md, sección "Cómo volver a las gradaciones azules")
+   (Pasos detallados: ubits-colaborador/aprendizaje/Changelog-Estudio-IA.md, sección "Cómo volver a las gradaciones azules")
    ======================================== */
 
 :root {
@@ -30,6 +31,15 @@
     --modo-ia-glow-orb-rgb-1: 26, 107, 255; /* #1A6BFF izq */
     --modo-ia-glow-orb-rgb-2: 76, 230, 255; /* #4CE6FF centro */
     --modo-ia-glow-orb-rgb-3: 255, 84, 22; /* #FF5416 der */
+
+    /*
+     * Desplazamiento vertical de los focos de los orbes (radial-gradient at … Y).
+     * Negativo = más arriba. Suman modal IA, chat, AI panel, ia-para-hr (vía var en sus background-image).
+     */
+    --ubits-ia-glow-orb-anchor-offset-y: -70px;
+
+    /* Solo orbe central (cyan #4CE6FF); positivo = baja respecto a izquierda/derecha. */
+    --ubits-ia-glow-orb-center-extra-y: 10px;
 
     /*
      * Grosor del borde con gradiente IA (botón secundario ia-button, badge outlined IA).
@@ -52,11 +62,11 @@
     );
 }
 
-@keyframes aprendizaje-ia-gradient-border {
+@keyframes ubits-ia-appearance-gradient-border {
     0%, 100% { background-position: 0 0, 0% 50%; }
     50% { background-position: 0 0, 100% 50%; }
 }
-@keyframes aprendizaje-ia-gradient-border-4 {
+@keyframes ubits-ia-appearance-gradient-border-4 {
     0%, 100% { background-position: 0 0, 0 0, 0 0, 0% 50%; }
     50% { background-position: 0 0, 0 0, 0 0, 100% 50%; }
 }

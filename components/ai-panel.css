@@ -4,7 +4,7 @@
    Inspirado en el panel lateral de Claude (Chrome).
 
    Coherencia con Modo estudio IA / Chat IA grupos:
-   - Cargar aprendizaje-ia-gradientes.css (orbes --modo-ia-glow-orb-rgb-*).
+   - Cargar general-styles/ubits-ia-appearance.css (orbes --modo-ia-glow-orb-rgb-*).
    - Cargar general-styles/ubits-ia-chat.css para difuminado superior al
      scroll (.ai-panel__chat-scroll--conversation), scrollbar del hilo y
      burbujas alineadas si amplías selectores allí.
@@ -49,7 +49,7 @@
                 box-shadow 0.28s ease;
 }
 
-/* Orbes: mismas variables que .ubits-ia-chat__main::before (aprendizaje-ia-gradientes.css) */
+/* Orbes: mismas variables que .ubits-ia-chat__main::before (general-styles/ubits-ia-appearance.css) */
 .ai-panel::before {
     content: '';
     position: absolute;
@@ -57,9 +57,9 @@
     z-index: 0;
     pointer-events: none;
     background:
-        radial-gradient(ellipse 100% 80% at 10% calc(-5% - 70px), rgba(var(--modo-ia-glow-orb-rgb-1), 0.2) 0%, transparent 50%),
-        radial-gradient(ellipse 95% 78% at 50% calc(-8% - 25px), rgba(var(--modo-ia-glow-orb-rgb-2), 0.2) 0%, transparent 48%),
-        radial-gradient(ellipse 95% 75% at 90% calc(-5% - 70px), rgba(var(--modo-ia-glow-orb-rgb-3), 0.2) 0%, transparent 50%);
+        radial-gradient(ellipse 100% 80% at 10% calc(-5% - 70px + var(--ubits-ia-glow-orb-anchor-offset-y, 0px)), rgba(var(--modo-ia-glow-orb-rgb-1), 0.2) 0%, transparent 50%),
+        radial-gradient(ellipse 95% 78% at 50% calc(-8% - 25px + var(--ubits-ia-glow-orb-anchor-offset-y, 0px) + var(--ubits-ia-glow-orb-center-extra-y, 0px)), rgba(var(--modo-ia-glow-orb-rgb-2), 0.2) 0%, transparent 48%),
+        radial-gradient(ellipse 95% 75% at 90% calc(-5% - 70px + var(--ubits-ia-glow-orb-anchor-offset-y, 0px)), rgba(var(--modo-ia-glow-orb-rgb-3), 0.2) 0%, transparent 50%);
 }
 
 .ai-panel.active {
@@ -840,7 +840,7 @@ body.ai-panel-resizing .ai-panel {
    --------------------------------------------------------------------------- */
 [data-theme="dark"] .ai-panel::before {
     background:
-        radial-gradient(ellipse 100% 80% at 10% calc(-5% - 70px), rgba(var(--modo-ia-glow-orb-rgb-1), 0.2) 0%, transparent 50%),
-        radial-gradient(ellipse 95% 78% at 50% calc(-8% - 25px), rgba(var(--modo-ia-glow-orb-rgb-2), 0.2) 0%, transparent 48%),
-        radial-gradient(ellipse 95% 75% at 90% calc(-5% - 70px), rgba(var(--modo-ia-glow-orb-rgb-3), 0.2) 0%, transparent 50%);
+        radial-gradient(ellipse 100% 80% at 10% calc(-5% - 70px + var(--ubits-ia-glow-orb-anchor-offset-y, 0px)), rgba(var(--modo-ia-glow-orb-rgb-1), 0.2) 0%, transparent 50%),
+        radial-gradient(ellipse 95% 78% at 50% calc(-8% - 25px + var(--ubits-ia-glow-orb-anchor-offset-y, 0px) + var(--ubits-ia-glow-orb-center-extra-y, 0px)), rgba(var(--modo-ia-glow-orb-rgb-2), 0.2) 0%, transparent 48%),
+        radial-gradient(ellipse 95% 75% at 90% calc(-5% - 70px + var(--ubits-ia-glow-orb-anchor-offset-y, 0px)), rgba(var(--modo-ia-glow-orb-rgb-3), 0.2) 0%, transparent 50%);
 }

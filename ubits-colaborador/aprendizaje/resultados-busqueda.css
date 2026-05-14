@@ -60,7 +60,7 @@
     background-position: 0 0, 0% 50%;
     background-origin: padding-box, border-box;
     background-clip: padding-box, border-box;
-    animation: aprendizaje-ia-gradient-border 5s ease-in-out infinite;
+    animation: ubits-ia-appearance-gradient-border 5s ease-in-out infinite;
 }
 .resultados-buscador-input-wrap--top .ubits-input:focus,
 .resultados-buscador-input-wrap--top .ubits-input.ubits-input--focus {

@@ -4,7 +4,7 @@
    Estados: vacío, vacío con IA (.ubits-learn-img-trailer__empty--ia), hover, error, imagen cargada, tráiler (preview con play).
    Textos por defecto (CTA, hint, Editar, aria): learn-content-img-trailer.js → LEARN_CONTENT_IMG_TRAILER_DEFAULTS.
    Requiere: ubits-colors.css, ubits-typography.css, fontawesome-icons.css, button.css, ia-button.css.
-   Vacío con IA — CTA ia-button primario; tarjeta Figma AI-Capabilities (565:5097 / 565:5124). Clase raíz .ubits-learn-img-trailer--empty-ia (+ aprendizaje-ia-gradientes.css recomendado).
+   Vacío con IA — CTA ia-button primario; tarjeta Figma AI-Capabilities (565:5097 / 565:5124). Clase raíz .ubits-learn-img-trailer--empty-ia (+ general-styles/ubits-ia-appearance.css recomendado).
    ======================================== */
 
 .ubits-learn-img-trailer {

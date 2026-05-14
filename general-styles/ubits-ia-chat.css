@@ -18,10 +18,9 @@
    --------------------------------------------------------
    - general-styles/ubits-colors.css
    - general-styles/styles.css (o al menos el layout base del dashboard)
-   - ubits-colaborador/aprendizaje/aprendizaje-ia-gradientes.css
-     (variables --modo-ia-gradient-*, --modo-ia-glow-orb-rgb-*; nombre histórico del token)
+   - general-styles/ubits-ia-appearance.css (tokens --modo-ia-gradient-*, --modo-ia-glow-orb-rgb-*).
    - Opcional: components/study-chat.css solo reexporta este archivo (compatibilidad con imports antiguos).
-   - components/ai-panel.css: enlaza este archivo después de aprendizaje-ia-gradientes.css
+   - components/ai-panel.css: enlaza este archivo después de ubits-ia-appearance.css
      para reutilizar máscara de scroll superior, scrollbar del hilo y tokens de orbes.
    - components/ia-chat-streaming.js: pensando + animación por párrafo (cargar antes de study-chat /
      group-creation-chat / flujo onSend del ai-panel).
@@ -1493,7 +1492,7 @@
     overflow: hidden;
 }
 
-/* Orbes: usar siempre variables --modo-ia-glow-orb-rgb-* (aprendizaje-ia-gradientes.css) */
+/* Orbes: usar siempre variables --modo-ia-glow-orb-rgb-* (general-styles/ubits-ia-appearance.css) */
 .ubits-ia-chat__main::before {
     content: '';
     position: absolute;
@@ -1502,16 +1501,16 @@
     pointer-events: none;
     border-radius: inherit;
     background:
-        radial-gradient(ellipse 100% 80% at 10% calc(-5% - 70px), rgba(var(--modo-ia-glow-orb-rgb-1), 0.2) 0%, transparent 50%),
-        radial-gradient(ellipse 95% 78% at 50% calc(-8% - 25px), rgba(var(--modo-ia-glow-orb-rgb-2), 0.2) 0%, transparent 48%),
-        radial-gradient(ellipse 95% 75% at 90% calc(-5% - 70px), rgba(var(--modo-ia-glow-orb-rgb-3), 0.2) 0%, transparent 50%);
+        radial-gradient(ellipse 100% 80% at 10% calc(-5% - 70px + var(--ubits-ia-glow-orb-anchor-offset-y, 0px)), rgba(var(--modo-ia-glow-orb-rgb-1), 0.2) 0%, transparent 50%),
+        radial-gradient(ellipse 95% 78% at 50% calc(-8% - 25px + var(--ubits-ia-glow-orb-anchor-offset-y, 0px) + var(--ubits-ia-glow-orb-center-extra-y, 0px)), rgba(var(--modo-ia-glow-orb-rgb-2), 0.2) 0%, transparent 48%),
+        radial-gradient(ellipse 95% 75% at 90% calc(-5% - 70px + var(--ubits-ia-glow-orb-anchor-offset-y, 0px)), rgba(var(--modo-ia-glow-orb-rgb-3), 0.2) 0%, transparent 50%);
 }
 
 body[data-theme="dark"] .ubits-ia-chat__main::before {
     background:
-        radial-gradient(ellipse 100% 80% at 10% calc(-5% - 70px), rgba(var(--modo-ia-glow-orb-rgb-1), 0.2) 0%, transparent 50%),
-        radial-gradient(ellipse 95% 78% at 50% calc(-8% - 25px), rgba(var(--modo-ia-glow-orb-rgb-2), 0.2) 0%, transparent 48%),
-        radial-gradient(ellipse 95% 75% at 90% calc(-5% - 70px), rgba(var(--modo-ia-glow-orb-rgb-3), 0.2) 0%, transparent 50%);
+        radial-gradient(ellipse 100% 80% at 10% calc(-5% - 70px + var(--ubits-ia-glow-orb-anchor-offset-y, 0px)), rgba(var(--modo-ia-glow-orb-rgb-1), 0.2) 0%, transparent 50%),
+        radial-gradient(ellipse 95% 78% at 50% calc(-8% - 25px + var(--ubits-ia-glow-orb-anchor-offset-y, 0px) + var(--ubits-ia-glow-orb-center-extra-y, 0px)), rgba(var(--modo-ia-glow-orb-rgb-2), 0.2) 0%, transparent 48%),
+        radial-gradient(ellipse 95% 75% at 90% calc(-5% - 70px + var(--ubits-ia-glow-orb-anchor-offset-y, 0px)), rgba(var(--modo-ia-glow-orb-rgb-3), 0.2) 0%, transparent 50%);
 }
 
 /* Shell con bienvenida: recorte de esquinas coherente */

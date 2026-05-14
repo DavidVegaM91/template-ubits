@@ -80,7 +80,7 @@ Lista de cambios sugeridos en reuniones. Los **realizados** se solicitaron el **
 
 Si en algún momento se cambian los colores del gradiente IA (cyan/azul) y se quiere **restaurar la paleta azul original** en **Modo estudio IA**, **Resultados de búsqueda** y **Catálogo**, seguir estos pasos:
 
-1. **Abrir** el archivo `ubits-colaborador/aprendizaje/aprendizaje-ia-gradientes.css`.
+1. **Abrir** el archivo `general-styles/ubits-ia-appearance.css`.
 2. **Localizar** el bloque `:root` (al inicio del archivo) donde se definen las tres variables:
    - `--modo-ia-gradient-a`
    - `--modo-ia-gradient-b`
@@ -91,7 +91,7 @@ Si en algún momento se cambian los colores del gradiente IA (cyan/azul) y se qu
    - `--modo-ia-gradient-c: rgb(0, 89, 250);`
 4. **Guardar** el archivo. No hace falta tocar ningún otro CSS ni HTML: esos tres valores son la única fuente de verdad para todos los elementos con gradiente (bordes animados, botón enviar, "Aprender hoy", botón IA primary/secondary, burbujas de usuario, icono "Resultado generado con IA", etc.).
 
-**Nota:** No modificar los componentes en `components/` (p. ej. `ia-button.css`, `study-chat.css`); las overrides y variables están en `aprendizaje-ia-gradientes.css` y en los CSS de cada página.
+**Nota:** No modificar los componentes en `components/` (p. ej. `ia-button.css`, `study-chat.css`); las overrides y variables están en `general-styles/ubits-ia-appearance.css` y en los CSS de cada página.
 
 ---
 

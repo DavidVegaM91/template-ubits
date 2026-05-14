@@ -81,7 +81,7 @@
 }
 
 /* Secondary Variant (outlined): fondo sólido bg-1; borde animado con paleta Creator v3
-   (grosor: --ubits-ia-gradient-border-width en aprendizaje-ia-gradientes.css, fallback 1.5px) */
+   (grosor: --ubits-ia-gradient-border-width en ubits-ia-appearance.css, fallback 1.5px) */
 .ubits-ia-button--secondary {
     background:
         linear-gradient(var(--ubits-bg-1), var(--ubits-bg-1)) padding-box,

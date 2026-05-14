@@ -126,7 +126,7 @@
     background: var(--ubits-feedback-accent-error);
 }
 
-/* IA (gradación) — usa variables compartidas de aprendizaje-ia-gradientes.css
+/* IA (gradación) — usa variables compartidas de general-styles/ubits-ia-appearance.css
    (--ubits-ia-badge-border-gradient, --ubits-ia-gradient-border-width).
    Borde horizontal: azul (izq) → violeta → magenta → naranja (der), Figma AI-Capabilities badge.
    - Fondo sólido en padding-box

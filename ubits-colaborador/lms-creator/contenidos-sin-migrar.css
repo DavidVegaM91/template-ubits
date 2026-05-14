@@ -12,7 +12,7 @@
     width: 100%;
 }
 
-/* Misma caja que .ia-hr-shell (padding, borde, fondo), sin ::before de orbes ni aprendizaje-ia-gradientes */
+/* Misma caja que .ia-hr-shell (padding, borde, fondo), sin ::before de orbes ni ubits-ia-appearance.css */
 .page-contenidos-sin-migrar .section-single > .contenidos-sin-migrar-shell {
     flex: 1;
     width: 100%;

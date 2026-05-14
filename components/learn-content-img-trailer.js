@@ -4,7 +4,7 @@
  * Marcado vacío: getLearnContentImgTrailerEmptyHtml({ ... , emptyVariant?: 'ia' })
  *   Variante «vacío con IA» (layout tipo empty-state): data-learn-img-trailer-empty-variant="ia" en la raíz
  *   u opción emptyVariant / vacío-con-ia en la API. Sin distintivo badge; CTA «Agregar portada» con ubits-ia-button--primary--sm (Figma AI-Capabilities 565:5110).
- *   Requiere ia-button.css + ia-button.js antes de este script (+ aprendizaje-ia-gradientes.css recomendado para borde secundario IA).
+ *   Requiere ia-button.css + ia-button.js antes de este script (+ general-styles/ubits-ia-appearance.css recomendado para borde secundario IA).
  * Reproducir tráiler: data-trailer-url en la raíz + clic en play carga el iframe en el mismo bloque
  * (YouTube, Vimeo, Drive). Sin embed: nueva pestaña. Opcional onPlay() sustituye el comportamiento.
  *
@@ -414,7 +414,7 @@
 
     /**
      * Badge «Generado con IA» (variante outlined + IA, xs, icono sparkles).
-     * Requiere: badge-tag.css, aprendizaje-ia-gradientes.css (o fallbacks en badge-tag), fontawesome-icons.css
+     * Requiere: badge-tag.css, ubits-ia-appearance.css (o fallbacks en badge-tag), fontawesome-icons.css
      */
     function getGeneradoConIaBadgeHtml() {
         return (

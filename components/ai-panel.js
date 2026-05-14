@@ -25,14 +25,14 @@
    welcomeTitle, welcomeSubtitle,
    tokensBadge — true (por defecto): badge IA de tokens junto al cierre; false lo oculta;
      u objeto { value, tooltip, ariaLabel } para personalizar (p. ej. value: 50).
-   Requiere CSS: badge-tag.css + aprendizaje-ia-gradientes.css; tooltip.js + tooltip.css para el hover.
+   Requiere CSS: badge-tag.css + general-styles/ubits-ia-appearance.css; tooltip.js + tooltip.css para el hover.
   onSend(text) — tras insertar el mensaje del usuario (y el «Pensando» si hay ia-chat-streaming); solo respuesta / backend, no duplicar 'user',
   onAttach(), onClose(),
   dockDesktop, dockContainerSelector, dockBreakpoint
 
    CSS recomendado (misma pila que Modo estudio / Chat IA grupos):
    button.css → chip.css (adjuntos: chips en preview y en mensajes; sin chip.css se ven sin estilo)
-   → aprendizaje-ia-gradientes.css → badge-tag.css → tooltip.css → ubits-ia-chat.css → ai-panel.css
+   → ubits-ia-appearance.css → badge-tag.css → tooltip.css → ubits-ia-chat.css → ai-panel.css
    (+ tooltip.js antes de ai-panel.js si usas el badge de tokens en cabecera).
    ======================================== */
 
