@@ -2,14 +2,13 @@
    UBITS — Learn content: imagen y tráiler
    Bloque único (Figma Learn-Components · Img y trailer content).
    Estados: vacío, vacío con IA (.ubits-learn-img-trailer__empty--ia), hover, error, imagen cargada, tráiler (preview con play).
+   Radio del bloque 16:9, capa media e iframe: token global --border-radius-xl.
    Textos por defecto (CTA, hint, Editar, aria): learn-content-img-trailer.js → LEARN_CONTENT_IMG_TRAILER_DEFAULTS.
    Requiere: ubits-colors.css, ubits-typography.css, fontawesome-icons.css, button.css, ia-button.css.
    Vacío con IA — CTA ia-button primario; tarjeta Figma AI-Capabilities (565:5097 / 565:5124). Clase raíz .ubits-learn-img-trailer--empty-ia (+ general-styles/ubits-ia-appearance.css recomendado).
    ======================================== */
 
 .ubits-learn-img-trailer {
-    --learn-img-trailer-radius: var(--border-radius-lg);
-    --learn-img-trailer-inner-radius: var(--border-radius-lg);
     display: block;
     position: relative;
     width: 100%;
@@ -17,7 +16,7 @@
     /* Siempre 16:9 (Figma); la altura sale del ancho. Requiere contenedor con ancho definido (evitar flex item con solo hijos absolute). */
     aspect-ratio: 16 / 9;
     box-sizing: border-box;
-    border-radius: var(--learn-img-trailer-radius);
+    border-radius: var(--border-radius-xl);
     border: 1px solid var(--ubits-border-1);
     background: var(--ubits-bg-1);
     overflow: hidden;
@@ -107,8 +106,6 @@
 /* Vacío con IA — Figma AI-Capabilities: Cover 565:5097, Cover-Hover 565:5124
    Hover: borde = gradiente IA (anillo multicolor), no solo azul plano; sombras duales como Figma. */
 .ubits-learn-img-trailer.ubits-learn-img-trailer--empty-ia:not(.ubits-learn-img-trailer--image):not(.ubits-learn-img-trailer--trailer):not(.ubits-learn-img-trailer--error) {
-    --learn-img-trailer-radius: var(--border-radius-xl);
-    --learn-img-trailer-inner-radius: var(--border-radius-xl);
     --learn-img-trailer-ia-ring: linear-gradient(
         -61.13deg,
         rgb(255, 84, 22) 6.07%,
@@ -127,8 +124,6 @@
 
 .ubits-learn-img-trailer.ubits-learn-img-trailer--empty-ia:not(.ubits-learn-img-trailer--image):not(.ubits-learn-img-trailer--trailer):not(.ubits-learn-img-trailer--error):hover,
 .ubits-learn-img-trailer.ubits-learn-img-trailer--empty-ia:not(.ubits-learn-img-trailer--image):not(.ubits-learn-img-trailer--trailer):not(.ubits-learn-img-trailer--error).ubits-learn-img-trailer--state-hover {
-    --learn-img-trailer-radius: var(--border-radius-lg);
-    --learn-img-trailer-inner-radius: var(--border-radius-lg);
     border: 2px solid transparent;
     background:
         linear-gradient(var(--ubits-bg-1), var(--ubits-bg-1)) padding-box,
@@ -201,7 +196,7 @@
     position: absolute;
     inset: 0;
     z-index: 0;
-    border-radius: var(--learn-img-trailer-inner-radius);
+    border-radius: var(--border-radius-xl);
     margin: 0;
     padding: 0;
     overflow: hidden;
@@ -261,7 +256,7 @@
     height: 55px;
     padding: 0;
     border: none;
-    border-radius: var(--border-radius-xs);
+    border-radius: var(--border-radius-xl);
     /* Misma intención que Figma rgba(0,0,0,0.7); token de velo oscuro. */
     background: var(--ubits-bg-dim);
     color: var(--ubits-fg-bold);
@@ -322,7 +317,7 @@
     position: absolute;
     inset: 0;
     z-index: 2;
-    border-radius: var(--learn-img-trailer-inner-radius);
+    border-radius: var(--border-radius-xl);
     overflow: hidden;
     background: var(--ubits-bg-3);
 }
@@ -358,7 +353,7 @@
     margin: 0;
     padding: 0;
     border: none;
-    border-radius: var(--border-radius-sm);
+    border-radius: var(--border-radius-xl);
     background: transparent;
     cursor: pointer;
     -webkit-appearance: none;

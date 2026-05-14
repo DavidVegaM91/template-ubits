@@ -38,8 +38,12 @@
      */
     --ubits-ia-glow-orb-anchor-offset-y: -70px;
 
-    /* Solo orbe central (cyan #4CE6FF); positivo = baja respecto a izquierda/derecha. */
-    --ubits-ia-glow-orb-center-extra-y: 10px;
+    /* Solo orbe central (cyan #4CE6FF); positivo Y = baja; positivo X = a la derecha (vs izq/der). */
+    --ubits-ia-glow-orb-center-extra-y: 70px;
+    --ubits-ia-glow-orb-center-extra-x: 50px;
+
+    /* Solo orbe derecho (rgb-3); positivo Y = baja. */
+    --ubits-ia-glow-orb-right-extra-y: 20px;
 
     /*
      * Grosor del borde con gradiente IA (botón secundario ia-button, badge outlined IA).

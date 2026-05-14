@@ -53,15 +53,15 @@
     border-radius: inherit;
     background:
         radial-gradient(ellipse 100% 80% at 10% calc(-5% - 70px + var(--ubits-ia-glow-orb-anchor-offset-y, 0px)), rgba(var(--modo-ia-glow-orb-rgb-1), 0.2) 0%, transparent 50%),
-        radial-gradient(ellipse 95% 78% at 50% calc(-8% - 25px + var(--ubits-ia-glow-orb-anchor-offset-y, 0px) + var(--ubits-ia-glow-orb-center-extra-y, 0px)), rgba(var(--modo-ia-glow-orb-rgb-2), 0.2) 0%, transparent 48%),
-        radial-gradient(ellipse 95% 75% at 90% calc(-5% - 70px + var(--ubits-ia-glow-orb-anchor-offset-y, 0px)), rgba(var(--modo-ia-glow-orb-rgb-3), 0.2) 0%, transparent 50%);
+        radial-gradient(ellipse 95% 78% at calc(50% + var(--ubits-ia-glow-orb-center-extra-x, 0px)) calc(-8% - 25px + var(--ubits-ia-glow-orb-anchor-offset-y, 0px) + var(--ubits-ia-glow-orb-center-extra-y, 0px)), rgba(var(--modo-ia-glow-orb-rgb-2), 0.2) 0%, transparent 48%),
+        radial-gradient(ellipse 95% 75% at 90% calc(-5% - 70px + var(--ubits-ia-glow-orb-anchor-offset-y, 0px) + var(--ubits-ia-glow-orb-right-extra-y, 0px)), rgba(var(--modo-ia-glow-orb-rgb-3), 0.2) 0%, transparent 50%);
 }
 
 body[data-theme="dark"] .ia-hr-shell::before {
     background:
         radial-gradient(ellipse 100% 80% at 10% calc(-5% - 70px + var(--ubits-ia-glow-orb-anchor-offset-y, 0px)), rgba(var(--modo-ia-glow-orb-rgb-1), 0.2) 0%, transparent 50%),
-        radial-gradient(ellipse 95% 78% at 50% calc(-8% - 25px + var(--ubits-ia-glow-orb-anchor-offset-y, 0px) + var(--ubits-ia-glow-orb-center-extra-y, 0px)), rgba(var(--modo-ia-glow-orb-rgb-2), 0.2) 0%, transparent 48%),
-        radial-gradient(ellipse 95% 75% at 90% calc(-5% - 70px + var(--ubits-ia-glow-orb-anchor-offset-y, 0px)), rgba(var(--modo-ia-glow-orb-rgb-3), 0.2) 0%, transparent 50%);
+        radial-gradient(ellipse 95% 78% at calc(50% + var(--ubits-ia-glow-orb-center-extra-x, 0px)) calc(-8% - 25px + var(--ubits-ia-glow-orb-anchor-offset-y, 0px) + var(--ubits-ia-glow-orb-center-extra-y, 0px)), rgba(var(--modo-ia-glow-orb-rgb-2), 0.2) 0%, transparent 48%),
+        radial-gradient(ellipse 95% 75% at 90% calc(-5% - 70px + var(--ubits-ia-glow-orb-anchor-offset-y, 0px) + var(--ubits-ia-glow-orb-right-extra-y, 0px)), rgba(var(--modo-ia-glow-orb-rgb-3), 0.2) 0%, transparent 50%);
 }
 
 .ia-hr-shell__intro {
