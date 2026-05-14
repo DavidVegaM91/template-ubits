@@ -657,7 +657,7 @@ function loadSidebar(variantOrActiveButton = 'default', activeButton = null) {
                     <button class="nav-button" data-section="lms-creator" onclick="window.location.href='${basePath}ubits-colaborador/lms-creator/contenidos.html'" style="cursor: pointer;">
                         <i class="far fa-bolt"></i>
                     </button>
-                    <button class="nav-button" data-section="planes-formacion" onclick="window.location.href='${basePath}ubits-colaborador/lms-creator/planes-formacion/planes-formacion.html'" style="cursor: pointer;">
+                    <button class="nav-button" data-section="planes-formacion" onclick="window.location.href='${basePath}ubits-colaborador/lms-creator/planes-formacion/planes-contenidos.html'" style="cursor: pointer;">
                         <i class="far fa-clipboard-list"></i>
                     </button>
                     <button class="nav-button" data-section="certificados" onclick="window.location.href='${basePath}ubits-colaborador/lms-creator/certificados/certificados.html'" style="cursor: pointer;">

@@ -562,7 +562,7 @@
  *
  * PÁGINAS DE REFERENCIA:
  * - tareas/planes.html + tareas/planes.js (4 opciones: plan, tarea, plantilla, IA)
- * - lms-creator/planes-formacion.html (2 opciones: plan contenidos, plan competencias)
+ * - lms-creator/planes-formacion: listas con botón Crear plan (navegación directa a crear-plan-contenidos / crear-plan-competencias)
  *
  * ========================================
  * NOTAS IMPORTANTES

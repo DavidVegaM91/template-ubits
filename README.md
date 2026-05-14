@@ -174,7 +174,7 @@ En el **rail del sidebar default** no hay icono dedicado al Creator (solo las ru
 | `data-section` (2.º arg) | Destino principal del ícono |
 |--------------------------|------------------------------|
 | `lms-creator` | `contenidos.html` |
-| `planes-formacion` | `planes-formacion.html` |
+| `planes-formacion` | `planes-formacion/planes-contenidos.html` |
 | `certificados` | `certificados/certificados.html` |
 | `personalizacion` | `personalizacion/personalizacion-u-corporativa.html` |
 
@@ -187,7 +187,7 @@ Cada bloque de pestañas tiene su propia clave en **`components/sub-nav.js`**:
 | Variante `loadSubNav(..., '…')` | Pestañas (IDs `data-tab`) | HTML de entrada típico |
 |---------------------------------|---------------------------|-------------------------|
 | `creator-lms` | Contenidos (`contenidos`), Categorías (`categorias`) | `contenidos.html`, `categorias.html` |
-| `creator-planes` | Planes de formación (`planes`), Grupos (`grupos`) | `planes-formacion/planes-formacion.html`, `planes-formacion/grupos.html` y flujos hijos (crear/editar/detalle plan o grupo, chat IA grupos) — el mapeo de archivo → tab activo está en `sub-nav.js` (`PAGE_TO_TAB` con prefijo `lms-creator/planes-formacion/`). |
+| `creator-planes` | Planes de contenidos (`planes-contenidos`), Planes de competencias (`planes-competencias`), Grupos (`grupos`) | `planes-formacion/planes-contenidos.html`, `planes-formacion/planes-competencias.html`, `planes-formacion/grupos.html` y flujos hijos (crear/editar/detalle plan o grupo, chat IA grupos) — el mapeo de archivo → tab activo está en `sub-nav.js` (`PAGE_TO_TAB` con prefijo `lms-creator/planes-formacion/`). |
 | `creator-certificados` | Descarga (`descarga`), Configuración (`configuracion`) | `certificados/certificados.html`, `certificados/certificados-configuracion.html` |
 | `creator-personalizacion` | Universidad corporativa (`universidad-corporativa`), Seguimiento (`seguimiento`) | `personalizacion/personalizacion-u-corporativa.html`, `personalizacion/personalizacion-seguimiento.html` |
 
@@ -196,7 +196,7 @@ Las páginas del Creator suelen cargar **`lms-creator.css`** más el **CSS homó
 #### **Inventario de HTML en `lms-creator/`**
 
 - **LMS + Categorías:** `contenidos.html`, `categorias.html`, `crear-contenido.html` (creación de contenido en **página dedicada**, **layout inmersivo** `layout-immersive.css`; desde **`contenidos.html`** el botón **«Crear contenido»** abre `crear-contenido.html`; hashes legacy en la lista redirigen a la misma página)
-- **Planes y grupos:** `planes-formacion/planes-formacion.html`, `planes-formacion/grupos.html`, `planes-formacion/crear-plan-contenidos.html`, `planes-formacion/crear-plan-competencias.html`, `planes-formacion/editar-plan-contenidos.html`, `planes-formacion/editar-plan-competencias.html`, `planes-formacion/detalle-plan.html`, `planes-formacion/detalle-plan-competencias.html`, `planes-formacion/crear-grupo.html`, `planes-formacion/detalle-grupo.html`, `planes-formacion/chat-ia-grupos.html`
+- **Planes y grupos:** `planes-formacion/planes-contenidos.html`, `planes-formacion/planes-competencias.html`, `planes-formacion/grupos.html`, `planes-formacion/crear-plan-contenidos.html`, `planes-formacion/crear-plan-competencias.html`, `planes-formacion/editar-plan-contenidos.html`, `planes-formacion/editar-plan-competencias.html`, `planes-formacion/detalle-plan.html`, `planes-formacion/detalle-plan-competencias.html`, `planes-formacion/crear-grupo.html`, `planes-formacion/detalle-grupo.html`, `planes-formacion/chat-ia-grupos.html`
 - **Certificados:** `certificados/certificados.html`, `certificados/certificados-configuracion.html` (stubs alineados a la plantilla vacía tipo categorías + `header-product`)
 - **Personalización UC:** `personalizacion/personalizacion-u-corporativa.html`, `personalizacion/personalizacion-seguimiento.html` (mismo patrón stub donde aplica)
 
@@ -686,7 +686,7 @@ Scripts **reutilizables** que no son componentes UBITS ni datos de demo. Cualqui
 
 | Archivo | Rol |
 |--------|-----|
-| **`humanizador-fechas.js`** | Expone en `window` funciones como `formatDateHumanized`, `formatDateDDMmmAAAA`, `getEstadoFromFechas`, `getEstadoAlTerminarProcesando`, `humanizeTableDates` (fechas tipo “Hace 2 h”, “15 ene 2025”, y estado Planeado/Vigente/No vigente según fechas). Usado por vistas LMS Creator (`detalle-plan*.html`, `planes-formacion.html`, etc.). |
+| **`humanizador-fechas.js`** | Expone en `window` funciones como `formatDateHumanized`, `formatDateDDMmmAAAA`, `getEstadoFromFechas`, `getEstadoAlTerminarProcesando`, `humanizeTableDates` (fechas tipo “Hace 2 h”, “15 ene 2025”, y estado Planeado/Vigente/No vigente según fechas). Usado por vistas LMS Creator (`detalle-plan*.html`, `planes-contenidos.html`, `planes-competencias.html`, etc.). |
 
 **Ruta típica desde `ubits-colaborador/*/*/`:** `../../general-utils/humanizador-fechas.js`.
 

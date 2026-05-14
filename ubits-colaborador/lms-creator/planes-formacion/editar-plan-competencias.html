@@ -121,6 +121,7 @@
     <script src="../../../bd-master/bd-tareas-y-planes.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            try { sessionStorage.setItem('ubits-planes-formacion-list-page', 'competencias'); } catch (e) {}
             var params = new URLSearchParams(window.location.search);
             var planTipo = params.get('tipo') || 'competencias';
             var planId = params.get('id') || '';
@@ -256,7 +257,7 @@
                 try {
                     sessionStorage.setItem('ubits-toast-pending', JSON.stringify({ type: 'success', message: 'Plan eliminado correctamente.' }));
                 } catch (err) {}
-                window.location.href = typeof getPlanesFormacionBackUrl === 'function' ? getPlanesFormacionBackUrl() : 'planes-formacion.html';
+                window.location.href = typeof getPlanesFormacionBackUrl === 'function' ? getPlanesFormacionBackUrl() : 'planes-competencias.html';
             }
 
             function openDeletePlanModal(estadoVisual) {
@@ -357,7 +358,7 @@
                 if (typeof initTooltip === 'function') setTimeout(function() { initTooltip('#plan-actions-btn'); }, 50);
             }
 
-            /** Mismo patrón que planes-formacion.html / editar-plan-contenidos: texto «Procesando N%» dentro del status tag en 4 s. */
+            /** Mismo patrón que planes-contenidos.html / editar-plan-contenidos: texto «Procesando N%» dentro del status tag en 4 s. */
             function iniciarAnimacionEstadoProcesandoAsignacion() {
                 if (planEstadoPctInterval) {
                     clearInterval(planEstadoPctInterval);
@@ -410,7 +411,7 @@
                     breadcrumbItems: [],
                     backButton: {
                         onClick: function() {
-                            window.location.href = typeof getPlanesFormacionBackUrl === 'function' ? getPlanesFormacionBackUrl() : 'planes-formacion.html';
+                            window.location.href = typeof getPlanesFormacionBackUrl === 'function' ? getPlanesFormacionBackUrl() : 'planes-competencias.html';
                         }
                     },
                     secondaryButtons: [
@@ -423,7 +424,7 @@
                                     showToast('error', 'Todas las asignaciones deben tener al menos una competencia. Agrega competencias a las que faltan antes de guardar.');
                                     return;
                                 }
-                                window.location.href = typeof getPlanesFormacionBackUrl === 'function' ? getPlanesFormacionBackUrl() : 'planes-formacion.html';
+                                window.location.href = typeof getPlanesFormacionBackUrl === 'function' ? getPlanesFormacionBackUrl() : 'planes-competencias.html';
                             }
                         }
                     ]
@@ -431,7 +432,7 @@
             }
             
             setTimeout(() => {
-                const tab = document.querySelector('.nav-tab[data-tab="planes"]');
+                const tab = document.querySelector('.nav-tab[data-tab="planes-competencias"]');
                 if (tab) {
                     document.querySelectorAll('.nav-tab, .hamburger-item').forEach(item => item.classList.remove('active'));
                     tab.classList.add('active');
@@ -447,7 +448,7 @@
                     modulosTab.classList.add('active');
                 }
                 if (typeof setActiveAccordionLink === 'function') {
-                    setActiveAccordionLink('planes-formacion');
+                    setActiveAccordionLink('planes-competencias');
                 }
                 if (typeof updateGuardarButtonState === 'function') updateGuardarButtonState();
             }, 200);

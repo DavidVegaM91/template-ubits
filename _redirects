@@ -1,7 +1,14 @@
 # Redirects por reorganización de carpetas en lms-creator (abril 2026)
 
 # Planes de formación y grupos
-/ubits-colaborador/lms-creator/planes-formacion.html        /ubits-colaborador/lms-creator/planes-formacion/planes-formacion.html        301
+# Lista contenidos: renombre planes-formacion.html → planes-contenidos.html (legacy y ruta antigua anidada)
+/ubits-colaborador/lms-creator/planes-formacion.html        /ubits-colaborador/lms-creator/planes-formacion/planes-contenidos.html        301
+/ubits-colaborador/lms-creator/planes-formacion/planes-formacion.html        /ubits-colaborador/lms-creator/planes-formacion/planes-contenidos.html        301
+# Mismo renombre si el sitio se sirve bajo el prefijo /template-ubits/ (p. ej. algunos despliegues del playground).
+/template-ubits/ubits-colaborador/lms-creator/planes-formacion.html        /template-ubits/ubits-colaborador/lms-creator/planes-formacion/planes-contenidos.html        301
+/template-ubits/ubits-colaborador/lms-creator/planes-formacion/planes-formacion.html        /template-ubits/ubits-colaborador/lms-creator/planes-formacion/planes-contenidos.html        301
+# En _redirects el carácter # inicia comentario: no existe regla con fragmento #competencias en el origen.
+# Equivalente a .../planes-formacion.html#competencias → planes-competencias: al cargar planes-contenidos.html el script comprueba hash o ?tab=competencias y hace replace a planes-competencias (y si la ruta incluye /template-ubits/, usa esa base).
 /ubits-colaborador/lms-creator/grupos.html                  /ubits-colaborador/lms-creator/planes-formacion/grupos.html                   301
 /ubits-colaborador/lms-creator/detalle-plan.html            /ubits-colaborador/lms-creator/planes-formacion/detalle-plan.html             301
 /ubits-colaborador/lms-creator/crear-plan-contenidos.html   /ubits-colaborador/lms-creator/planes-formacion/crear-plan-contenidos.html    301

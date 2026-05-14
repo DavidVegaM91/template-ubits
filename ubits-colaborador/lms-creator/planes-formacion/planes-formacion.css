@@ -2,7 +2,17 @@
    ESTILOS ESPECÍFICOS PARA PLANES DE FORMACIÓN (lista)
    ======================================== */
 
-/* Header: variante tabs-with-actions (tabs Contenidos | Competencias + acciones en el header) */
+/*
+ * Nota (mayo 2026): este archivo NO corresponde solo a un HTML concreto.
+ * Lo enlazan **planes-contenidos.html** y **planes-competencias.html**: misma
+ * tabla UBITS (`#planes-data-table-container`), barra de lista, búsqueda, menú ⋮
+ * por fila, etc. El nombre `planes-formacion.css` se mantiene por el módulo/carpeta
+ * `planes-formacion/` y para no duplicar reglas entre las dos listas.
+ * Si hace falta CSS solo en competencias, usar selectores con **.page-planes-competencias**
+ * en este mismo archivo (no crear hoja vacía homónima).
+ */
+
+/* Lista planes de contenidos (header-product variante default: título + IA + Crear plan) */
 
 /* Filas de tabla clickeables para ir al detalle (componente oficial ubits-data-table) */
 #planes-data-table-container.planes-formacion-tabla tbody tr[data-id] {
@@ -148,30 +158,25 @@ body[data-planes-vacios="true"] .widget-planes-formacion #planes-empty-state,
 }
 
 /* Menú ⋮ por fila (Editar / Eliminar): por encima de la tabla */
-.page-planes-formacion #planes-formacion-row-options-overlay.ubits-dropdown-menu__overlay {
+.page-planes-contenidos #planes-formacion-row-options-overlay.ubits-dropdown-menu__overlay,
+.page-planes-competencias #planes-formacion-row-options-overlay.ubits-dropdown-menu__overlay {
     z-index: 10100;
 }
 
-.page-planes-formacion #planes-formacion-row-options-overlay .ubits-dropdown-menu__content {
+.page-planes-contenidos #planes-formacion-row-options-overlay .ubits-dropdown-menu__content,
+.page-planes-competencias #planes-formacion-row-options-overlay .ubits-dropdown-menu__content {
     z-index: 10101;
 }
 
-/* Menú "Crear plan": por encima del FAB del header-product y tab bar (móvil). */
-.page-planes-formacion #planes-formacion-crear-menu-overlay.ubits-dropdown-menu__overlay {
-    z-index: 1102;
-}
-
-.page-planes-formacion #planes-formacion-crear-menu-overlay .ubits-dropdown-menu__content {
-    z-index: 1103;
-}
-
 /* Dropdown items: nunca partir texto a 2 líneas */
-.page-planes-formacion .ubits-dropdown-menu__option-text {
+.page-planes-contenidos .ubits-dropdown-menu__option-text,
+.page-planes-competencias .ubits-dropdown-menu__option-text {
     white-space: nowrap;
 }
 
 /* Status tag de estado: ancho mínimo para que no se corte "Procesando X%" */
-.page-planes-formacion .ubits-table tbody td[data-col="estado"] .ubits-status-tag {
+.page-planes-contenidos .ubits-table tbody td[data-col="estado"] .ubits-status-tag,
+.page-planes-competencias .ubits-table tbody td[data-col="estado"] .ubits-status-tag {
     min-width: 110px;
     width: auto;
     box-sizing: border-box;

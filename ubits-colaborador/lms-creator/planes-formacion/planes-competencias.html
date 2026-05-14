@@ -4,9 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/svg+xml" href="../../../images/Ubits-logo-dark.svg">
-    <title>UBITS Playground - LMS Creator - Planes de formación</title>
-    
-    <!-- Estilos locales -->
+    <title>UBITS Playground - LMS Creator - Planes de competencias</title>
+
     <link rel="stylesheet" href="../../../general-styles/ubits-colors.css">
     <link rel="stylesheet" href="../../../general-styles/styles.css">
     <link rel="stylesheet" href="../lms-creator.css">
@@ -24,7 +23,6 @@
     <link rel="stylesheet" href="../../../components/table.css">
     <link rel="stylesheet" href="../../../components/status-tag.css">
     <link rel="stylesheet" href="../../../components/checkbox.css">
-    <link rel="stylesheet" href="../../../components/tab.css">
     <link rel="stylesheet" href="../../../components/dropdown-menu.css">
     <link rel="stylesheet" href="../../../components/input.css">
     <link rel="stylesheet" href="../../../components/toast.css">
@@ -36,10 +34,10 @@
     <link rel="stylesheet" href="../../../components/coachmark.css">
     <link rel="stylesheet" href="./planes-formacion.css">
 </head>
-<body data-theme="light" class="page-planes-formacion">
+<body data-theme="light" class="page-planes-competencias">
     <div class="dashboard-container">
         <div class="tooltip" id="tooltip"></div>
-        
+
         <div id="sidebar-container"></div>
 
         <main class="main-content">
@@ -49,7 +47,6 @@
                     <div class="section-single">
                         <div class="widget-header-product" id="header-product-container"></div>
                     </div>
-                    <!-- Tabla de planes: componente oficial UBITS Data Table -->
                     <div class="section-single section-single--test-tabla">
                         <div class="widget-planes-formacion">
                             <div id="planes-data-table-container" class="planes-formacion-tabla"></div>
@@ -79,75 +76,11 @@
     <script src="../../../components/dropdown-menu.js"></script>
     <script src="../../../components/input.js"></script>
     <script src="../../../components/toast.js"></script>
-    <script src="../../../components/tab.js"></script>
     <script src="../../../components/modal.js"></script>
     <script src="../../../components/empty-state.js"></script>
     <script src="../../../components/ubits-data-table.js"></script>
     <script src="../../../script.js"></script>
     <script src="../../../general-utils/humanizador-fechas.js"></script>
-    <script>
-    /* Menú "Crear plan" – patrón idéntico a tareas/planes.js (openDropdownMenu + alignRight) */
-    (function () {
-        'use strict';
-        var CREAR_MENU_OVERLAY_ID = 'planes-formacion-crear-menu-overlay';
-        var crearMenuOptions = [
-            { text: 'Plan de contenidos', value: 'contenidos', leftIcon: 'layer-group' },
-            { text: 'Plan de competencias', value: 'competencias', leftIcon: 'bullseye' }
-        ];
-        function ensureCrearMenuOverlay() {
-            if (document.getElementById(CREAR_MENU_OVERLAY_ID)) return;
-            if (typeof window.getDropdownMenuHtml !== 'function') return;
-            var html = window.getDropdownMenuHtml({ overlayId: CREAR_MENU_OVERLAY_ID, options: crearMenuOptions });
-            document.body.insertAdjacentHTML('beforeend', html);
-            var overlay = document.getElementById(CREAR_MENU_OVERLAY_ID);
-            if (!overlay) return;
-            var content = overlay.querySelector('.ubits-dropdown-menu__content');
-            if (content) {
-                content.addEventListener('click', function (e) {
-                    var opt = e.target.closest('.ubits-dropdown-menu__option');
-                    if (!opt) return;
-                    var val = opt.getAttribute('data-value');
-                    if (val === null || val === '') return;
-                    if (typeof window.closeDropdownMenu === 'function') window.closeDropdownMenu(CREAR_MENU_OVERLAY_ID);
-                    if (val === 'contenidos') {
-                        try { sessionStorage.removeItem('ubits-planes-formacion-return-hash'); } catch (e2) {}
-                        window.location.href = 'crear-plan-contenidos.html';
-                    }
-                    if (val === 'competencias') {
-                        try { sessionStorage.setItem('ubits-planes-formacion-return-hash', '#competencias'); } catch (e2) {}
-                        window.location.href = 'crear-plan-competencias.html';
-                    }
-                });
-            }
-            overlay.addEventListener('click', function (e) {
-                if (e.target === overlay && typeof window.closeDropdownMenu === 'function') {
-                    window.closeDropdownMenu(CREAR_MENU_OVERLAY_ID);
-                }
-            });
-        }
-        function openCrearMenu(anchorElement) {
-            if (!anchorElement || !anchorElement.getBoundingClientRect) return;
-            if (typeof window.openDropdownMenu !== 'function' || typeof window.closeDropdownMenu !== 'function') return;
-            var overlay = document.getElementById(CREAR_MENU_OVERLAY_ID);
-            if (overlay && overlay.style.display === 'block') {
-                window.closeDropdownMenu(CREAR_MENU_OVERLAY_ID);
-                return;
-            }
-            ensureCrearMenuOverlay();
-            window.openDropdownMenu(CREAR_MENU_OVERLAY_ID, anchorElement, { alignRight: true });
-            /* Móvil: forzar el dropdown ARRIBA del FAB (igual que tareas/planes) */
-            if (window.matchMedia('(max-width: 767px)').matches) {
-                var ov = document.getElementById(CREAR_MENU_OVERLAY_ID);
-                if (!ov) return;
-                var ct = ov.querySelector('.ubits-dropdown-menu__content');
-                if (!ct) return;
-                var rect = anchorElement.getBoundingClientRect();
-                ct.style.top = (rect.top - ct.offsetHeight - 4) + 'px';
-            }
-        }
-        window.openCrearMenu = openCrearMenu;
-    })();
-    </script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             loadSidebar('creator', 'planes-formacion');
@@ -156,67 +89,12 @@
             loadFloatingMenu('floating-menu-container', 'creator');
             loadProfileMenu('profile-menu-container');
 
-            var tabActivo = 'contenidos';
+            try { sessionStorage.setItem('ubits-planes-formacion-list-page', 'competencias'); } catch (e) {}
+
             var planesTablaRef = null;
             var pendingDeleteIds = [];
 
-            /**
-             * Tab visible según URL: hash #contenidos | #competencias o query ?tab=contenidos|competencias (recarga conserva la pestaña).
-             * Igual criterio que seguimiento (#planes / ?tab=).
-             */
-            function parsePlanesFormacionTabFromUrl() {
-                var h = (window.location.hash || '').replace(/^#/, '').toLowerCase();
-                if (h === 'contenidos' || h === 'competencias') return h;
-                try {
-                    var p = (new URLSearchParams(window.location.search).get('tab') || '').toLowerCase();
-                    if (p === 'contenidos' || p === 'competencias') return p;
-                } catch (e) {}
-                return null;
-            }
-
-            var tabFromUrl = parsePlanesFormacionTabFromUrl();
-            if (tabFromUrl) tabActivo = tabFromUrl;
-
-            function updatePlanesFormacionUrl() {
-                var tab = tabActivo;
-                try {
-                    var u = new URL(window.location.href);
-                    u.hash = '';
-                    u.searchParams.delete('tab');
-                    var clean = u.pathname + u.search;
-                    if (tab === 'competencias') {
-                        history.replaceState(null, '', clean + '#competencias');
-                        try { sessionStorage.setItem('ubits-planes-formacion-return-hash', '#competencias'); } catch (err) {}
-                    } else {
-                        history.replaceState(null, '', clean);
-                        try { sessionStorage.removeItem('ubits-planes-formacion-return-hash'); } catch (err) {}
-                    }
-                } catch (e) {}
-            }
-
-            function syncHeaderTabsFromPlanesTab() {
-                document.querySelectorAll('#header-product-container .ubits-header-product__tabs .ubits-tab[data-tab]').forEach(function(btn) {
-                    var isActive = btn.getAttribute('data-tab') === tabActivo;
-                    btn.classList.toggle('ubits-tab--active', isActive);
-                    btn.setAttribute('aria-selected', isActive ? 'true' : 'false');
-                });
-            }
-
-            function applyPlanesTabFromUrl(tabId) {
-                if (tabId !== 'contenidos' && tabId !== 'competencias') return;
-                if (tabActivo === tabId) return;
-                tabActivo = tabId;
-                if (planesTablaRef && typeof planesTablaRef.refresh === 'function') planesTablaRef.refresh();
-                syncHeaderTabsFromPlanesTab();
-                updatePlanesFormacionUrl();
-                setTimeout(function() { if (typeof initTooltip === 'function') initTooltip('#planes-data-table-container [data-tooltip]'); }, 50);
-            }
-
             var planesFormacionData = [
-                { id: '2', nombre: 'Competencias de liderazgo', fechaInicio: '01/04/2026', fechaFin: '30/06/2026', estado: 'Procesando 0%', progreso: 0, tipo: 'contenidos' },
-                { id: '1', nombre: 'Plan de onboarding Q3 2026', fechaInicio: '01/07/2026', fechaFin: '30/09/2026', estado: 'Planeado', progreso: 0, tipo: 'contenidos' },
-                { id: '3', nombre: 'Cursos de cumplimiento Q1', fechaInicio: '01/01/2026', fechaFin: '31/03/2026', estado: 'Vigente', progreso: 65, tipo: 'contenidos' },
-                { id: '4', nombre: 'Evaluación técnica 2025', fechaInicio: '01/09/2025', fechaFin: '15/12/2025', estado: 'No vigente', progreso: 85, tipo: 'contenidos' },
                 { id: 'c1', nombre: 'Plan de competencias de liderazgo', fechaInicio: '01/07/2026', fechaFin: '30/09/2026', estado: 'Planeado', progreso: 0, tipo: 'competencias' },
                 { id: 'c2', nombre: 'Desarrollo de competencias Q1', fechaInicio: '01/01/2026', fechaFin: '31/03/2026', estado: 'Vigente', progreso: 65, tipo: 'competencias' },
                 { id: 'c3', nombre: 'Evaluación por competencias 2025', fechaInicio: '01/09/2025', fechaFin: '15/12/2025', estado: 'No vigente', progreso: 85, tipo: 'competencias' }
@@ -282,7 +160,7 @@
             if (typeof createUbitsDataTable === 'function') {
                 planesTablaRef = createUbitsDataTable({
                     containerId: 'planes-data-table-container',
-                    tableId: 'planes-table',
+                    tableId: 'planes-competencias-table',
                     title: 'Lista de planes',
                     columns: [
                         { id: 'nombre', label: 'Nombre del plan', sortable: true },
@@ -293,7 +171,7 @@
                         { id: 'acciones', label: 'Acciones' }
                     ],
                     getData: function() {
-                        return planesFormacionData.filter(function(p) { return p.tipo === tabActivo; });
+                        return planesFormacionData;
                     },
                     rowIdField: 'id',
                     buildRowHtml: buildPlanesRowHtml,
@@ -303,46 +181,15 @@
                             openPlanesDeleteModal(selectedIds);
                         } }
                     ],
-                    emptyState: { message: 'Aún no hay planes.', icon: 'far fa-layer-group', description: 'Crea tu primer plan de contenidos o competencias usando el botón de arriba.' },
+                    emptyState: { message: 'Aún no hay planes.', icon: 'far fa-bullseye', description: 'Crea tu primer plan de competencias con el botón Crear plan.' },
                     i18n: { selectAll: 'Seleccionar todo', deselectAll: 'Deseleccionar todo', verSeleccionados: 'Ver seleccionados', clearFilters: 'Limpiar filtros', filtrosAplicados: 'Filtros aplicados', buscar: 'Buscar' }
                 });
                 setTimeout(function() { if (typeof initTooltip === 'function') initTooltip('#planes-data-table-container [data-tooltip]'); }, 50);
-
-                // Animación solo en el status tag (Procesando 0% … 100%); la barra de progreso de la columna se mantiene en 0%
-                var planProcesando = planesFormacionData.filter(function(p) { return String(p.estado).indexOf('Procesando') === 0; })[0];
-                if (planProcesando && planesTablaRef && typeof planesTablaRef.refresh === 'function') {
-                    var step = 2;
-                    var intervalMs = 40;
-                    var procPct = 0;
-                    var animId = setInterval(function() {
-                        procPct = Math.min(100, procPct + step);
-                        planProcesando.estado = 'Procesando ' + procPct + '%';
-                        planesTablaRef.refresh();
-                        if (procPct >= 100) {
-                            clearInterval(animId);
-                            planProcesando.progreso = 0;
-                            planProcesando.estado = (typeof getEstadoAlTerminarProcesando === 'function' ? getEstadoAlTerminarProcesando(planProcesando.fechaInicio, planProcesando.fechaFin) : 'Planeado');
-                            planesTablaRef.refresh();
-                            setTimeout(function() { if (typeof initTooltip === 'function') initTooltip('#planes-data-table-container [data-tooltip]'); }, 50);
-                        }
-                    }, intervalMs);
-                }
             }
 
             if (typeof loadHeaderProduct === 'function') {
                 loadHeaderProduct('header-product-container', {
-                    variant: 'tabs-with-actions',
-                    tabs: [
-                        { id: 'contenidos', label: 'Planes de contenidos' },
-                        { id: 'competencias', label: 'Planes de competencias' }
-                    ],
-                    activeTabId: tabActivo,
-                    onTabChange: function(tabId) {
-                        tabActivo = tabId;
-                        if (planesTablaRef && typeof planesTablaRef.refresh === 'function') planesTablaRef.refresh();
-                        updatePlanesFormacionUrl();
-                        setTimeout(function() { if (typeof initTooltip === 'function') initTooltip('#planes-data-table-container [data-tooltip]'); }, 50);
-                    },
+                    productName: 'Planes de competencias',
                     aiButton: {
                         text: 'Crear con IA',
                         onClick: function() {
@@ -352,23 +199,10 @@
                     primaryButton: {
                         text: 'Crear plan',
                         icon: 'fa-plus',
-                        onClick: function(e) {
-                            e.preventDefault();
-                            e.stopPropagation();
-                            if (typeof window.openCrearMenu === 'function') window.openCrearMenu(e.currentTarget);
+                        onClick: function() {
+                            window.location.href = 'crear-plan-competencias.html';
                         }
                     }
-                });
-                try {
-                    updatePlanesFormacionUrl();
-                } catch (e) {}
-                window.addEventListener('hashchange', function() {
-                    var t = parsePlanesFormacionTabFromUrl();
-                    if (t === null) {
-                        var h = (window.location.hash || '').replace(/^#/, '').toLowerCase();
-                        if (h === '') t = 'contenidos';
-                    }
-                    if (t && t !== tabActivo) applyPlanesTabFromUrl(t);
                 });
             }
 
@@ -409,7 +243,6 @@
             var planesContainer = document.getElementById('planes-data-table-container');
             if (planesContainer) {
                 planesContainer.addEventListener('click', function(e) {
-                    /* Menú ⋮: Ver progreso (Vigente/No vigente), Editar (Planeado/Procesando/Vigente, no No vigente), Eliminar */
                     if (e.target.closest('.js-planes-row-acciones-btn')) {
                         e.preventDefault();
                         e.stopPropagation();
@@ -442,20 +275,12 @@
                                 if (overlayEl.parentNode) overlayEl.remove();
                                 if (val === 'ver-progreso') {
                                     var pid = accBtn.getAttribute('data-plan-id');
-                                    if (tabActivo === 'competencias') {
-                                        window.location.href = 'detalle-plan-competencias.html?id=' + encodeURIComponent(pid);
-                                    } else {
-                                        window.location.href = 'detalle-plan.html?id=' + encodeURIComponent(pid);
-                                    }
+                                    window.location.href = 'detalle-plan-competencias.html?id=' + encodeURIComponent(pid);
                                     return;
                                 }
                                 if (val === 'editar') {
                                     var pidEd = accBtn.getAttribute('data-plan-id');
-                                    if (tabActivo === 'competencias') {
-                                        window.location.href = 'editar-plan-competencias.html?id=' + encodeURIComponent(pidEd);
-                                    } else {
-                                        window.location.href = 'editar-plan-contenidos.html?id=' + encodeURIComponent(pidEd);
-                                    }
+                                    window.location.href = 'editar-plan-competencias.html?id=' + encodeURIComponent(pidEd);
                                     return;
                                 }
                                 if (val === 'eliminar') {
@@ -479,47 +304,37 @@
                     var planId = row.getAttribute('data-id');
                     if (!planId) return;
                     var planRow = planesFormacionData.find(function(p) { return String(p.id) === String(planId); });
-                    if (tabActivo === 'competencias') {
-                        var esProcComp = planRow && String(planRow.estado).indexOf('Procesando') === 0;
-                        var esPlaneadoComp = planRow && planRow.estado === 'Planeado';
-                        /* Procesando y Planeado → editar (sin progreso aún no tiene sentido el detalle solo consulta) */
-                        window.location.href = (esProcComp || esPlaneadoComp)
-                            ? 'editar-plan-competencias.html?id=' + encodeURIComponent(planId)
-                            : 'detalle-plan-competencias.html?id=' + encodeURIComponent(planId);
-                        return;
-                    }
-                    var esProcesando = planRow && String(planRow.estado).indexOf('Procesando') === 0;
-                    var esPlaneadoCont = planRow && planRow.estado === 'Planeado';
-                    window.location.href = (esProcesando || esPlaneadoCont)
-                        ? 'editar-plan-contenidos.html?id=' + encodeURIComponent(planId)
-                        : 'detalle-plan.html?id=' + encodeURIComponent(planId);
+                    var esProcComp = planRow && String(planRow.estado).indexOf('Procesando') === 0;
+                    var esPlaneadoComp = planRow && planRow.estado === 'Planeado';
+                    window.location.href = (esProcComp || esPlaneadoComp)
+                        ? 'editar-plan-competencias.html?id=' + encodeURIComponent(planId)
+                        : 'detalle-plan-competencias.html?id=' + encodeURIComponent(planId);
                 });
             }
-            setTimeout(() => {
-                const tab = document.querySelector('.nav-tab[data-tab="planes"]');
+            setTimeout(function() {
+                var tab = document.querySelector('.nav-tab[data-tab="planes-competencias"]');
                 if (tab) {
-                    document.querySelectorAll('.nav-tab, .hamburger-item').forEach(item => item.classList.remove('active'));
+                    document.querySelectorAll('.nav-tab, .hamburger-item').forEach(function(item) { item.classList.remove('active'); });
                     tab.classList.add('active');
                 }
-                const sidebarBtn = document.querySelector('.nav-button[data-section="planes-formacion"]');
+                var sidebarBtn = document.querySelector('.nav-button[data-section="planes-formacion"]');
                 if (sidebarBtn) {
-                    document.querySelectorAll('.nav-button').forEach(btn => btn.classList.remove('active'));
+                    document.querySelectorAll('.nav-button').forEach(function(btn) { btn.classList.remove('active'); });
                     sidebarBtn.classList.add('active');
                 }
-                const modulosTab = document.querySelector('.tab-bar-item[data-tab="modulos"]');
+                var modulosTab = document.querySelector('.tab-bar-item[data-tab="modulos"]');
                 if (modulosTab) {
-                    document.querySelectorAll('.tab-bar-item').forEach(item => item.classList.remove('active'));
+                    document.querySelectorAll('.tab-bar-item').forEach(function(item) { item.classList.remove('active'); });
                     modulosTab.classList.add('active');
                 }
                 if (typeof setActiveAccordionLink === 'function') {
-                    setActiveAccordionLink('planes-formacion');
+                    setActiveAccordionLink('planes-competencias');
                 }
             }, 200);
 
             if (typeof initUbitsLmsCreatorAdminMigrationTour === 'function') {
                 initUbitsLmsCreatorAdminMigrationTour(450);
             }
-
         });
     </script>
 </body>

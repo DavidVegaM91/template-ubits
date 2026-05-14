@@ -127,6 +127,8 @@
             loadFloatingMenu('floating-menu-container', 'creator');
             loadProfileMenu('profile-menu-container');
 
+            try { sessionStorage.setItem('ubits-planes-formacion-list-page', 'contenidos'); } catch (e) {}
+
             var params = new URLSearchParams(window.location.search);
             var planId = params.get('id') || '1';
             var planes = {
@@ -199,7 +201,7 @@
                 try {
                     sessionStorage.setItem('ubits-toast-pending', JSON.stringify({ type: 'success', message: 'Plan eliminado correctamente.' }));
                 } catch (err) {}
-                window.location.href = 'planes-formacion.html';
+                window.location.href = 'planes-contenidos.html';
             }
 
             function openDeletePlanModal(estado) {
@@ -346,7 +348,7 @@
                     productName: 'Detalle del plan de contenidos',
                     breadcrumbItems: [],
                     backButton: {
-                        onClick: function() { window.location.href = 'planes-formacion.html'; }
+                        onClick: function() { window.location.href = 'planes-contenidos.html'; }
                     }
                 };
                 loadHeaderProduct('header-product-container', headerOpts);
@@ -1162,7 +1164,7 @@
             }
 
             setTimeout(function() {
-                var tab = document.querySelector('.nav-tab[data-tab="planes"]');
+                var tab = document.querySelector('.nav-tab[data-tab="planes-contenidos"]');
                 if (tab) {
                     document.querySelectorAll('.nav-tab, .hamburger-item').forEach(function(item) { item.classList.remove('active'); });
                     tab.classList.add('active');
@@ -1178,7 +1180,7 @@
                     modulosTab.classList.add('active');
                 }
                 if (typeof setActiveAccordionLink === 'function') {
-                    setActiveAccordionLink('planes-formacion');
+                    setActiveAccordionLink('planes-contenidos');
                 }
             }, 200);
         });

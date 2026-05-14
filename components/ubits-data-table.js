@@ -22,7 +22,7 @@
  *   - tooltip.js (tooltips en botones de búsqueda, columnas, etc.)
  *   - button.css, fontawesome-icons.css (botones y iconos)
  *
- * Ejemplo de página que importa todo: crear-plan-contenidos.html, grupos.html, planes-formacion.html.
+ * Ejemplo de página que importa todo: crear-plan-contenidos.html, grupos.html, planes-contenidos.html.
  * -----------------------------------------------------------------------------
  *
  * Uso: createUbitsDataTable({ containerId, tableId, columns, getData, rowIdField, buildRowHtml, features, ... })

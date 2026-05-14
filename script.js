@@ -137,19 +137,24 @@ function loadSavedTheme() {
     }
 }
 
-// ===== LMS CREATOR — PLANES DE FORMACIÓN (vuelta con pestaña #competencias) =====
+// ===== LMS CREATOR — PLANES DE FORMACIÓN (lista contenidos vs competencias) =====
 
 /**
- * URL para volver a planes-formacion.html respetando la última pestaña activa.
- * planes-formacion.html guarda en sessionStorage al cambiar de tab o al cargar con hash.
- * @returns {string} p. ej. "planes-formacion.html" o "planes-formacion.html#competencias"
+ * URL para volver a la lista correcta (páginas separadas).
+ * Las pantallas de planes establecen `ubits-planes-formacion-list-page` en sessionStorage (`contenidos` | `competencias`).
+ * Compatibilidad: valor antiguo `ubits-planes-formacion-return-hash` === '#competencias'.
+ * @returns {string} "planes-contenidos.html" | "planes-competencias.html"
  */
 function getPlanesFormacionBackUrl() {
     try {
+        var listPage = sessionStorage.getItem('ubits-planes-formacion-list-page');
+        if (listPage === 'competencias') return 'planes-competencias.html';
+    } catch (e) { /* ignore */ }
+    try {
         var h = sessionStorage.getItem('ubits-planes-formacion-return-hash');
-        if (h === '#competencias') return 'planes-formacion.html#competencias';
-    } catch (e) { /* sessionStorage no disponible */ }
-    return 'planes-formacion.html';
+        if (h === '#competencias') return 'planes-competencias.html';
+    } catch (e2) { /* ignore */ }
+    return 'planes-contenidos.html';
 }
 
 // ===== INICIALIZACIÓN =====

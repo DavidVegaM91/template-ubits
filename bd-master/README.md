@@ -34,7 +34,7 @@ Ruta relativa típica desde HTML: `../../bd-master/nombre-archivo.js` (desde `ub
 | `crear-plan-competencias.html` | Drawer **Agregar competencias** | `bd-master-competencias.js`, `bd-master-habilidades.js` (antes del helper en `lms-creator/`) | Catálogo de competencias y habilidades. El helper `catalogo-competencias-drawer.js` arma `CATALOGO_COMPETENCIAS_DRAWER` en `window` (no es BD). |
 | `detalle-plan-competencias.html` | Igual | Igual | Igual. |
 | `crear-plan-contenidos.html`, `editar-plan-contenidos.html`, `detalle-plan.html` | Planes por contenidos | `bd-master-niveles-contenido.js`, `bd-master-aliados.js`, `bd-master-competencias.js`, `bd-master-habilidades.js`, `bd-master-categorias-fiqsha.js`, `bd-contenidos-ubits.js`, `bd-contenidos-fiqsha.js`; listas: `bd-master-colaboradores.js`, `bd-tareas-y-planes.js` | Maestros y catálogos de contenidos para el drawer y asignaciones (sin detallar helpers fuera de esta carpeta). |
-| `planes-formacion.html` | Lista de planes | *(mock local en página; sin `bd-master` en el listado)* | Datos de ejemplo de planes LMS Creator. |
+| `planes-contenidos.html` / `planes-competencias.html` | Listas de planes (contenidos / competencias) | *(mock local en página; sin `bd-master` en el listado)* | Datos de ejemplo de planes LMS Creator. |
 | `contenidos.html` | Lista contenidos LMS Creator | `bd-contenidos-fiqsha.js` (+ maestros ya enlazados en la página) | Cuadrícula y tabla: primero `contentsCreatorOnly`, luego `contents`. El resto del playground que use Fiqsha debe leer **solo** `contents`. |
 | `categorias.html`, `chat-ia-grupos.html` | Placeholder | — | Sin BD aún. |
 
