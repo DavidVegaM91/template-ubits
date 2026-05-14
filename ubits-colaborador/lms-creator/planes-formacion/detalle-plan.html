@@ -55,7 +55,8 @@
                                 <h1 class="ubits-heading-h1 detalle-plan-title-display" id="plan-nombre"></h1>
                                 <div class="detalle-plan-header-actions">
                                     <span id="plan-estado-container"></span>
-                                    <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" id="plan-actions-btn" aria-label="Opciones" data-tooltip="Opciones" data-tooltip-delay="1000">
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm detalle-plan-actions-btn" id="plan-actions-btn" aria-label="Acciones" data-tooltip="Acciones" data-tooltip-delay="1000">
+                                        <span class="detalle-plan-actions-btn__label">Acciones</span>
                                         <i class="far fa-ellipsis-vertical"></i>
                                     </button>
                                 </div>
@@ -747,7 +748,8 @@
                 if (asignacionesDetalleTablaRef && typeof asignacionesDetalleTablaRef.refresh === 'function') asignacionesDetalleTablaRef.refresh();
             }
 
-            var imagenBaseContenido = '../../images/cards-learn/descubre-las-bases-del-design-thinking.jpeg';
+            /* Desde planes-formacion/ hace falta ../../../ para llegar a /images (../../ cae en ubits-colaborador/). */
+            var imagenBaseContenido = '../../../images/cards-learn/administracion-efectiva-del-tiempo.jpg';
             function initPanelContenidos(rowId, contenidosActuales) {
                 var overlay = document.getElementById('drawer-contenidos-estudiante');
                 if (!overlay) return;
@@ -757,20 +759,25 @@
 
                 if (compactContainer && typeof loadCardContentCompact === 'function') {
                     var sinProgreso = planSinProgreso();
+                    var logoFallback = '../../../images/Favicons/UBITS.jpg';
                     var cardsData = list.map(function(c) {
-                        return {
-                            type: 'Curso',
+                        var row = {
+                            type: c.type || 'Curso',
                             title: c.title || '',
                             duration: c.duration || '',
                             progress: sinProgreso ? 0 : (c.progress != null ? c.progress : 0),
                             status: sinProgreso ? 'default' : (c.status || 'default'),
-                            provider: 'UBITS',
-                            providerLogo: '../../images/Favicons/UBITS.jpg',
-                            level: 'Intermedio',
-                            competency: 'Liderazgo',
-                            language: 'Español',
+                            provider: c.provider || 'UBITS',
+                            providerLogo: c.providerLogo || logoFallback,
+                            level: c.level || 'Intermedio',
+                            competency: c.competency || 'Liderazgo',
+                            language: c.language || 'Español',
                             image: c.image || imagenBaseContenido
                         };
+                        if (Array.isArray(c.providers) && c.providers.length > 1) {
+                            row.providers = c.providers;
+                        }
+                        return row;
                     });
                     loadCardContentCompact('detalle-plan-compact-cards', cardsData);
                 }

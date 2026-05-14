@@ -44,6 +44,29 @@
     flex-shrink: 0;
 }
 
+/* Acciones del plan: icono + texto en desktop; solo icono (32×32 sm) en móvil — alineado con .ubits-button--sm.ubits-button--icon-only */
+@media (max-width: 1023px) {
+    .detalle-plan-header-actions .detalle-plan-actions-btn .detalle-plan-actions-btn__label {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+    }
+
+    .detalle-plan-header-actions .detalle-plan-actions-btn {
+        width: 32px;
+        min-width: 32px;
+        height: 32px;
+        padding: 9.5px 8px;
+        gap: 0;
+    }
+}
+
 .detalle-plan-progress-card__fechas {
     display: flex;
     justify-content: space-between;
