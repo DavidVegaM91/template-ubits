@@ -3246,7 +3246,7 @@
         var overlayEl2 = document.getElementById(overlayId);
         if (!overlayEl2) return;
         overlayEl2.style.zIndex = '10100';
-        /* Cierre al clic en el fondo transparente (mismo patrón que planes-formacion.html) */
+        /* Cierre al clic en el fondo transparente (mismo patrón que planes-contenidos.html) */
         overlayEl2.addEventListener('click', function (ev) {
             if (ev.target === overlayEl2) {
                 if (typeof window.closeDropdownMenu === 'function') window.closeDropdownMenu(overlayId);
