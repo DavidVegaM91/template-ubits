@@ -1,141 +1,88 @@
-/* ========================================
-   UBITS IA-BUTTON COMPONENT - DOCUMENTACIÓN
-   ======================================== */
-
 /**
- * UBITS IA-BUTTON COMPONENT
- * 
- * IMPORTANTE: Este componente NO requiere JavaScript para renderizar.
- * Es puramente CSS y se renderiza usando HTML directo.
- * 
- * REQUISITOS OBLIGATORIOS:
- * 1. CSS: <link rel="stylesheet" href="components/ia-button.css">
- * 2. FontAwesome: <link rel="stylesheet" href="fontawesome-icons.css">
- * 3. UBITS Base: <link rel="stylesheet" href="ubits-colors.css">
- * 4. UBITS Typography: <link rel="stylesheet" href="ubits-typography.css">
- * 
- * IMPLEMENTACIÓN BÁSICA:
- * ```html
- * <!-- IA-Button Primary con texto e iconos -->
- * <button class="ubits-ia-button ubits-ia-button--primary ubits-ia-button--md">
- *   <i class="far fa-sparkles"></i>
- *   <span>Button text</span>
- *   <i class="far fa-sparkles"></i>
- *   <span class="ubits-ia-button__badge"></span>
- * </button>
- * 
- * <!-- IA-Button Secondary con texto e iconos -->
- * <button class="ubits-ia-button ubits-ia-button--secondary ubits-ia-button--md">
- *   <i class="far fa-sparkles"></i>
- *   <span>Button text</span>
- *   <i class="far fa-sparkles"></i>
- *   <span class="ubits-ia-button__badge"></span>
- * </button>
- * 
- * <!-- IA-Button Primary icon-only -->
- * <button class="ubits-ia-button ubits-ia-button--primary ubits-ia-button--icon-only ubits-ia-button--md">
- *   <i class="far fa-sparkles"></i>
- *   <span class="ubits-ia-button__badge"></span>
- * </button>
- * 
- * <!-- IA-Button con estado Active -->
- * <button class="ubits-ia-button ubits-ia-button--primary ubits-ia-button--md ubits-ia-button--active">
- *   <i class="far fa-sparkles"></i>
- *   <span>Button text</span>
- *   <i class="far fa-sparkles"></i>
- *   <span class="ubits-ia-button__badge"></span>
- * </button>
- * 
- * <!-- IA-Button Disabled -->
- * <button class="ubits-ia-button ubits-ia-button--primary ubits-ia-button--md" disabled>
- *   <i class="far fa-sparkles"></i>
- *   <span>Button text</span>
- *   <i class="far fa-sparkles"></i>
- *   <span class="ubits-ia-button__badge"></span>
- * </button>
+ * UBITS IA-BUTTON — icono sparkles Figma (571:8065): cuatro subtrazos, animación a destiempo en hover + init opcional.
+ * El gradiente del botón primario es solo CSS (estático); este script reemplaza
+ * <i class="far fa-sparkles"> (y fas) dentro de .ubits-ia-button--primary por el SVG.
  *
- * <!-- IA-Button Primary con coste en tokens (como ubits-button--with-token-cost: solo bloque token + etiqueta; el único icono es fa-coin-vertical) -->
- * <button class="ubits-ia-button ubits-ia-button--primary ubits-ia-button--sm ubits-ia-button--with-token-cost">
- *   <span class="ubits-ia-button__token-cost" aria-hidden="true">
- *     <span class="ubits-ia-button__token-number">2</span>
- *     <i class="far fa-coin-vertical"></i>
- *   </span>
- *   <span>Generar con IA</span>
- * </button>
- * ```
- * 
- * VARIANTES DISPONIBLES:
- * - ubits-ia-button--primary (gradiente lineal multicolor Creator v3)
- * - ubits-ia-button--secondary (outlined: borde e icono con paleta Creator v3, fondo sólido)
- * 
- * TAMAÑOS DISPONIBLES:
- * - ubits-ia-button--sm (pequeño - padding 8px 12px)
- * - ubits-ia-button--md (mediano - padding 12px 16px) - POR DEFECTO
- * - ubits-ia-button--lg (grande - padding 16px 20px)
- * 
- * ESTADOS DISPONIBLES:
- * - Default: estado normal
- * - Hover: cambio sutil en opacidad (primary) o fondo (secondary)
- * - Pressed/Active: opacidad reducida y ligero desplazamiento
- * - Focused: box-shadow azul de 4px
- * - Active (programático): fondo rgba(12,91,239,0.15) y texto azul
- * - Disabled: fondo gris deshabilitado, cursor not-allowed
- * 
- * CARACTERÍSTICAS ESPECIALES:
- * - Modificador ubits-ia-button--with-token-cost + __token-cost / __token-number (sin icono sparkles extra: solo moneda en el bloque)
- * - Border radius completo (pill shape - 1000px)
- * - Badge opcional (punto rojo en esquina superior derecha)
- * - Iconos opcionales a izquierda y derecha del texto
- * - Gradiente lineal en variante Primary (Figma Creator v3)
- * - Diseñado específicamente para casos de uso de IA
- * 
- * EJEMPLOS DE USO:
- * 
- * ```html
- * <!-- IA-Button Primary completo -->
- * <button class="ubits-ia-button ubits-ia-button--primary ubits-ia-button--md">
- *   <i class="far fa-sparkles"></i>
- *   <span>Generar con IA</span>
- *   <i class="far fa-sparkles"></i>
- *   <span class="ubits-ia-button__badge"></span>
- * </button>
- * 
- * <!-- IA-Button Secondary -->
- * <button class="ubits-ia-button ubits-ia-button--secondary ubits-ia-button--md">
- *   <i class="far fa-sparkles"></i>
- *   <span>Otra acción</span>
- *   <i class="far fa-sparkles"></i>
- *   <span class="ubits-ia-button__badge"></span>
- * </button>
- * 
- * <!-- IA-Button solo con icono izquierdo -->
- * <button class="ubits-ia-button ubits-ia-button--primary ubits-ia-button--md">
- *   <i class="far fa-sparkles"></i>
- *   <span>Button text</span>
- *   <span class="ubits-ia-button__badge"></span>
- * </button>
- * 
- * <!-- IA-Button icon-only pequeño -->
- * <button class="ubits-ia-button ubits-ia-button--primary ubits-ia-button--icon-only ubits-ia-button--sm">
- *   <i class="far fa-sparkles"></i>
- *   <span class="ubits-ia-button__badge"></span>
- * </button>
- * ```
- * 
- * NOTAS IMPORTANTES:
- * - El badge es opcional (no siempre debe estar presente)
- * - Los iconos son opcionales pero recomendados para mantener consistencia visual
- * - El gradiente primario se define en ia-button.css (--ubits-ia-button-gradient)
- * - El border radius completo (pill shape) es característico de este componente
- * - Usar preferiblemente el icono "fa-sparkles" para casos de IA
- * - Todos los colores usan tokens UBITS cuando es posible
- * - El componente soporta modo oscuro automáticamente
- * 
- * DIFERENCIAS CON UBITS-BUTTON:
- * - Border radius completo (pill shape) vs 8px
- * - Gradiente lineal multicolor en Primary vs color sólido
- * - Badge siempre presente vs opcional
- * - Diseñado específicamente para casos de IA
- * - Estados Active con fondo rgba(12,91,239,0.15) y texto azul
+ * Requiere: ia-button.css (keyframes y tamaños del wrap están ahí).
+ * Orden recomendado: ia-button.js antes de learn-content-img-trailer.js si usas vacío con IA.
  */
+(function () {
+    'use strict';
 
+    /** Cuatro subtrazos Figma 571:8065 (alineados con `ia-loader.js`). */
+    var UBITS_IA_SPARKLE_P1 = 'M8.07739 2.72314L9.34375 2.23438L9.8103 0.990234C9.83252 0.87915 9.9436 0.8125 10.0547 0.8125C10.1436 0.8125 10.2546 0.87915 10.2769 0.990234L10.7656 2.23438L12.0098 2.72314C12.1208 2.74536 12.1875 2.85645 12.1875 2.94531C12.1875 3.0564 12.1208 3.16748 12.0098 3.1897L10.7656 3.65625L10.2769 4.92261C10.2546 5.01147 10.1436 5.07812 10.0547 5.07812C9.9436 5.07812 9.83252 5.01147 9.8103 4.92261L9.34375 3.65625L8.07739 3.1897C7.98853 3.16748 7.92188 3.0564 7.92188 2.94531C7.92188 2.85645 7.98853 2.74536 8.07739 2.72314Z';
+    var UBITS_IA_SPARKLE_P2 = 'M1.01245 6.14453L1.39014 5.98901L1.56787 5.90015H1.59009L3.54517 4.98926L4.45605 3.01196L4.54492 2.83423L4.72266 2.45654C4.76709 2.32324 4.90039 2.23438 5.03369 2.23438C5.16699 2.23438 5.30029 2.32324 5.36694 2.45654L5.54468 2.83423L5.61133 3.01196L5.63354 3.03418L6.52222 4.98926L8.49951 5.90015L8.67725 5.98901L9.05493 6.16675C9.18823 6.21118 9.2771 6.34448 9.2771 6.47778C9.2771 6.61108 9.18823 6.74438 9.05493 6.81104L8.67725 6.96655L8.49951 7.05542L6.52222 7.96631L5.61133 9.92139V9.9436L5.52246 10.1213L5.36694 10.499C5.30029 10.6323 5.16699 10.7212 5.03369 10.7212C4.90039 10.7212 4.76709 10.6323 4.72266 10.499L4.54492 10.1213L4.45605 9.9436V9.92139L3.54517 7.96631L1.59009 7.05542H1.56787L1.39014 6.96655L1.01245 6.81104C0.87915 6.74438 0.8125 6.61108 0.8125 6.47778C0.8125 6.34448 0.87915 6.21118 1.01245 6.14453Z';
+    var UBITS_IA_SPARKLE_P3 = 'M2.85645 6.47778L3.9895 7.01099C4.21167 7.09985 4.41162 7.2998 4.52271 7.52197L5.03369 8.65503L5.56689 7.52197C5.67798 7.2998 5.85571 7.09985 6.07788 7.01099L7.21094 6.47778L6.07788 5.94458C5.85571 5.85571 5.67798 5.65576 5.56689 5.43359L5.03369 4.30054L4.52271 5.43359C4.41162 5.65576 4.21167 5.85571 3.9895 5.94458L2.85645 6.47778Z';
+    var UBITS_IA_SPARKLE_P4 = 'M9.34375 9.34375L9.8103 8.09961C9.83252 7.98853 9.9436 7.92188 10.0547 7.92188C10.1436 7.92188 10.2546 7.98853 10.2769 8.09961L10.7656 9.34375L12.0098 9.83252C12.1208 9.85474 12.1875 9.96582 12.1875 10.0547C12.1875 10.1658 12.1208 10.2769 12.0098 10.2991L10.7656 10.7656L10.2769 12.032C10.2546 12.1208 10.1436 12.1875 10.0547 12.1875C9.9436 12.1875 9.83252 12.1208 9.8103 12.032L9.34375 10.7656L8.07739 10.2991C7.98853 10.2769 7.92188 10.1658 7.92188 10.0547C7.92188 9.96582 7.98853 9.85474 8.07739 9.83252L9.34375 9.34375Z';
+
+    function getIaButtonSparklesSvgInner() {
+        return (
+            '<svg class="ubits-ia-button__sparkles-svg" viewBox="0 0 13 13" focusable="false" xmlns="http://www.w3.org/2000/svg">' +
+            '<g class="ubits-ia-button__spark-g1"><path fill="currentColor" d="' +
+            UBITS_IA_SPARKLE_P1 +
+            '"/></g>' +
+            '<g class="ubits-ia-button__spark-g2"><path fill="currentColor" d="' +
+            UBITS_IA_SPARKLE_P2 +
+            '"/></g>' +
+            '<g class="ubits-ia-button__spark-g3"><path fill="currentColor" d="' +
+            UBITS_IA_SPARKLE_P3 +
+            '"/></g>' +
+            '<g class="ubits-ia-button__spark-g4"><path fill="currentColor" d="' +
+            UBITS_IA_SPARKLE_P4 +
+            '"/></g>' +
+            '</svg>'
+        );
+    }
+
+    /**
+     * Markup del icono sparkles (Figma 571:8065; cuatro piezas animadas a destiempo en hover en primario).
+     */
+    function getIaButtonSparklesMarkup() {
+        return '<span class="ubits-ia-button__sparkles" aria-hidden="true">' + getIaButtonSparklesSvgInner() + '</span>';
+    }
+
+    function isSparklesIcon(el) {
+        if (!el || el.tagName !== 'I') return false;
+        var c = (el.getAttribute('class') || '') + ' ' + (el.className || '');
+        if (c.indexOf('fa-sparkles') === -1) return false;
+        if (el.closest('.ubits-ia-button__token-cost')) return false;
+        return true;
+    }
+
+    /**
+     * Sustituye iconos sparkles FontAwesome por el SVG animado en botones IA primarios.
+     * @param {ParentNode} [root]
+     */
+    function initIaButtonSparkles(root) {
+        root = root || document;
+        var buttons = root.querySelectorAll('.ubits-ia-button--primary');
+        for (var b = 0; b < buttons.length; b++) {
+            var btn = buttons[b];
+            var icons = btn.querySelectorAll('i');
+            for (var i = 0; i < icons.length; i++) {
+                var ic = icons[i];
+                if (!isSparklesIcon(ic)) continue;
+                var wrap = document.createElement('span');
+                wrap.className = 'ubits-ia-button__sparkles';
+                wrap.setAttribute('aria-hidden', 'true');
+                wrap.innerHTML = getIaButtonSparklesSvgInner();
+                ic.parentNode.replaceChild(wrap, ic);
+            }
+        }
+    }
+
+    if (typeof window !== 'undefined') {
+        window.getIaButtonSparklesMarkup = getIaButtonSparklesMarkup;
+        window.initIaButtonSparkles = initIaButtonSparkles;
+        function runInit() {
+            try {
+                initIaButtonSparkles(document);
+            } catch (e) {}
+        }
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', runInit);
+        } else {
+            runInit();
+        }
+    }
+})();

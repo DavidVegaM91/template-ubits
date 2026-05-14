@@ -53,7 +53,7 @@
                                 Preview del componente
                             </h2>
                             <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6;">
-                                Cambia el estado con los botones. En vacío, el borde azul también aparece al pasar el ratón por el bloque. El estado «Hover (forzado)» simula ese borde sin depender del puntero.
+                                Cambia el estado con los botones. En <strong>vacío</strong> clásico, el borde de marca aparece al pasar el ratón. En <strong>vacío con IA</strong>, al pasar el ratón el borde es un <strong>anillo con gradiente IA</strong> (misma paleta que el botón) más sombras suaves; «Hover forzado» solo aplica al vacío clásico (no combina con vacío con IA).
                             </p>
                             <div style="margin-bottom: 20px; display: flex; flex-wrap: wrap; gap: var(--gap-sm); align-items: center;">
                                 <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn lcb-state-btn active" data-lcb-state="empty"><span>Vacío</span></button>
@@ -105,7 +105,7 @@
                                 <div style="text-align: center; padding: var(--padding-md); background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
                                     <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: var(--gap-sm);"><i class="far fa-photo-film"></i></div>
                                     <div class="ubits-body-sm-bold">Vacío con IA</div>
-                                    <div class="ubits-body-sm-regular">Variante de bloque vacío con icono, título, texto de ayuda y un solo botón IA secundario «Añadir portada» (sin segundo botón en el hueco).</div>
+                                    <div class="ubits-body-sm-regular">Variante de bloque vacío con icono, título, texto de ayuda y un solo botón IA primario «Agregar portada» (Figma AI-Capabilities; sin segundo botón en el hueco).</div>
                                 </div>
                             </div>
                         </div>
@@ -155,13 +155,13 @@ Estados en la raíz:
   .ubits-learn-img-trailer--trailer        → además overlay + play (requiere --image)
   .ubits-learn-img-trailer--playing        → iframe de vídeo en la misma caja (tras play)
   .ubits-learn-img-trailer--state-hover    → borde marca (solo demo / foco forzado)
+  .ubits-learn-img-trailer--empty-ia       → variante «vacío con IA» en raíz (borde/sombra Figma; init la añade si hay .__empty--ia)
   .ubits-learn-img-trailer--ai-generated   → muestra el tag «Generado con IA» (requiere hijo __generado-ia-host dentro del figure)
 
 Hijos:
   .ubits-learn-img-trailer__empty
-  .ubits-learn-img-trailer__empty--ia       → variante «vacío con IA»
-  .ubits-learn-img-trailer__empty-ia-stack, __empty-ia-icon-wrap, __empty-ia-icon, __empty-ia-title, __empty-ia-desc
-  .ubits-learn-img-trailer__cta            → en variante default: botón secundario UBITS «Cargar imagen»; en vacío con IA: ubits-ia-button secundario sm «Añadir portada»
+  .ubits-learn-img-trailer__empty--ia       → variante «vacío con IA» (contenido vacío)
+  .ubits-learn-img-trailer__cta            → en variante default: botón secundario UBITS «Cargar imagen»; en vacío con IA: ubits-ia-button primario sm «Agregar portada»
   .ubits-learn-img-trailer__hint
   .ubits-learn-img-trailer__error-msg
   .ubits-learn-img-trailer__media         → figure
@@ -181,11 +181,11 @@ Hijos:
                                     <pre style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm);"><code id="lcb-tech-req" class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">CSS: general-styles/ubits-colors.css, components/button.css, components/ia-button.css,
      general-styles/fontawesome-icons.css, general-styles/ubits-typography.css, components/learn-content-img-trailer.css,
      components/badge-tag.css, ubits-colaborador/aprendizaje/aprendizaje-ia-gradientes.css (ia-button secundario / tag «Generado con IA» sobre imagen)
-JS: components/learn-content-img-trailer.js (+ toast.js si usas toasts)
+JS: components/ia-button.js (antes de learn-content-img-trailer.js si usas vacío-IA con CTA primario), components/learn-content-img-trailer.js (+ toast.js si usas toasts)
      Copys: LEARN_CONTENT_IMG_TRAILER_DEFAULTS (cta, hint, editButton, playAriaLabel, …)
      HTML vacío: getLearnContentImgTrailerEmptyHtml({ … emptyVariant?: 'ia' | 'vacio-con-ia'; ctaId?, aiCtaModalId?, aiCtaPanelId? })
        Variante default: columna IA + «Cargar imagen» + hint.
-       Variante ia: icono photo-film, «Añade una portada», descripción tráiler, CTA ia-button secundario «Añadir portada» — getLearnContentImgTrailerEmptyIaHtml({…}) o data-learn-img-trailer-empty-variant="ia" en la raíz.
+       Variante ia: icono imagen en círculo bg-2, «Agrega una portada», descripción tráiler, CTA ia-button primario «Agregar portada» — getLearnContentImgTrailerEmptyIaHtml({…}) o data-learn-img-trailer-empty-variant="ia". Raíz .ubits-learn-img-trailer--empty-ia: borde neutro por defecto; hover = anillo con gradiente IA (doble background padding-box/border-box, misma inclinación que ai-button) + sombras Figma.
      Copys variante IA: LEARN_CONTENT_IMG_TRAILER_EMPTY_IA_DEFAULTS
      Botón Editar: getLearnContentImgTrailerEditHtml({ editButtonId? })
      Botón Eliminar (variante imagen): getLearnContentImgTrailerDeleteHtml({ deleteButtonId? })
@@ -209,6 +209,7 @@ JS: components/learn-content-img-trailer.js (+ toast.js si usas toasts)
     <script src="../../components/sidebar.js"></script>
     <script src="../../components/sub-nav.js"></script>
     <script src="../../components/toast.js"></script>
+    <script src="../../components/ia-button.js"></script>
     <script src="../../components/learn-content-img-trailer.js"></script>
     <script src="../../docs/docs-sidebar.js"></script>
     <script src="../../script.js"></script>

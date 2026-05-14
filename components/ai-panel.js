@@ -328,6 +328,9 @@ function initAIPanel(options) {
     _aiPanel.resizeHandler = _aiPanelSyncDockMode;
     window.addEventListener('resize', _aiPanel.resizeHandler);
     _aiPanelInitTokensBadgeTooltip();
+    if (typeof window.initIaButtonSparkles === 'function') {
+        window.initIaButtonSparkles(root);
+    }
 }
 
 function _aiPanelSyncDockMode() {

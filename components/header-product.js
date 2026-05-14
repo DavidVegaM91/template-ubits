@@ -865,6 +865,10 @@ function loadHeaderProduct(containerId, options = {}) {
     const html = createHeaderProductHTML({ ...options, _containerId: containerId });
     container.innerHTML = html;
 
+    if (typeof window.initIaButtonSparkles === 'function') {
+        window.initIaButtonSparkles(container);
+    }
+
     // Agregar event listeners si se proporcionaron funciones
     if (options.backButton && options.backButton.onClick && typeof options.backButton.onClick === 'function') {
         const backBtn = container.querySelector('.ubits-header-product__product-info .ubits-button');

@@ -824,6 +824,8 @@ body.crear-contenido-app-open .ubits-dropdown-menu__content {
         flex-direction: column;
         /* En columna, flex-start hace que el preview no estire y se vea angosto. */
         align-items: stretch;
+        flex: 1 1 auto;
+        min-height: 0;
     }
 
     .page-crear-contenido .crear-contenido-recursos__indice {
@@ -831,11 +833,46 @@ body.crear-contenido-app-open .ubits-dropdown-menu__content {
         max-width: 100%;
         width: 100%;
         min-width: 0;
+        height: auto;
+        max-height: min(48vh, 420px);
+        position: static;
+        top: auto;
     }
 
     .page-crear-contenido .crear-contenido-recursos__preview {
+        order: 2;
         width: 100%;
         max-width: 100%;
+        min-height: min(320px, 55vh);
+        flex: 1 1 auto;
+    }
+
+    /* Con SCORM/PDF montado: el mount debe ocupar alto real (evita solo «línea gris» en móvil). */
+    .page-crear-contenido
+        #crear-contenido-recursos-preview.crear-contenido-recursos__preview--editor {
+        display: flex;
+        flex-direction: column;
+        min-height: min(52vh, 480px);
+        flex: 1 1 auto;
+    }
+
+    .page-crear-contenido
+        #crear-contenido-recursos-preview.crear-contenido-recursos__preview--editor
+        .crear-contenido-recursos__resources-mount:not([hidden]) {
+        flex: 1 1 auto;
+        min-height: min(44vh, 400px);
+        display: flex;
+        flex-direction: column;
+    }
+
+    .page-crear-contenido
+        #crear-contenido-recursos-preview.crear-contenido-recursos__preview--editor
+        .crear-contenido-recursos__resources-mount
+        .ubits-resources-block--stack {
+        flex: 1 1 auto;
+        min-height: 0;
+        display: flex;
+        flex-direction: column;
     }
 
     /* Título+miniatura y descripción+ficha: apilados (la base del componente redefine grid a dos columnas). */

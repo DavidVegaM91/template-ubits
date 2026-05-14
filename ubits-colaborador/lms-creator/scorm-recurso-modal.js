@@ -1,13 +1,13 @@
 /**
  * LMS Creator — Modal «Agregar SCORM» + Modal edición inline + Color Picker HSV
- * Genera presentaciones Thomas-Kilmann sobre conversaciones difíciles.
+ * Pool fijo de 15 tipos de diapositiva (una por tipo); generateSlides(n) toma las primeras n (5–15).
  * Depende: modal.js, input.js, file-upload.js, color-picker.js (popover)
  */
 (function (global) {
     'use strict';
 
     var OVERLAY_ID      = 'cc-scorm-recurso-modal';
-    var EDIT_OVERLAY_ID = 'cc-scorm-edit-modal';
+    var EDIT_LIGHTBOX_ID = 'cc-scorm-edit-lightbox';
     var SCORM_GEN_TOKEN_COST = 15;
 
     /* ══════════════════════════════════════
@@ -57,6 +57,12 @@
         return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
     }
 
+    var SCORM_INTRO_COVER_URL =
+        'https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=900&q=85';
+
+    /** Imagen de ejemplo local (rutas relativas desde páginas LMS Creator). */
+    var SCORM_DEMO_IMG = '../../images/cards-learn/portadas-ia/01-personas-en-oficina.jpg';
+
     /* ══════════════════════════════════════
        ESTADO
     ══════════════════════════════════════ */
@@ -64,7 +70,7 @@
     var _currentPageKey = null;
     var _currentTab     = 'ia';
     var _titulo         = '';
-    var _numSlides      = 6;
+    var _numSlides      = 15;
     var _color          = '#0C5BEF';
     var _pendingFiles   = [];
     var _pendingImgs    = [];
@@ -134,105 +140,127 @@
     global.ccScormOpenColorPicker = openCpPanel;
 
     /* ══════════════════════════════════════
-       THOMAS-KILMANN CONTENT (5–15 slides)
+       Contenido SCORM: 15 tipos de diapositiva (una entrada por tipo, orden fijo)
+       generateSlides(n) devuelve las primeras n (5–15); con n=15 el render usa los 15 tipos.
     ══════════════════════════════════════ */
 
-    /* Pool completo de 15 slides (índice 0-14) */
     function buildPool() {
         return [
-            /* 0 — Intro */
-            { type:'intro', icon:'fa-comments', title:'Conversaciones difíciles según Thomas-Kilmann', body:'Aprende a elegir el modo de respuesta correcto ante el conflicto' },
-
-            /* 1 — ¿Por qué evitamos? (quote) */
-            { type:'quote', title:'¿Por qué evitamos?',
-              body:'El silencio parece protector, pero solo pospone lo inevitable — y transforma conflictos pequeños en grandes con el tiempo.',
-              author:'Hallazgo central del modelo Thomas-Kilmann' },
-
-            /* 2 — El modelo */
+            { type:'intro', icon:'fa-comments', title:'Conversaciones difíciles según Thomas-Kilmann', subtitle:'Presentación interactiva · Thomas-Kilmann', body:'Aprende a elegir el modo de respuesta correcto ante el conflicto', image: SCORM_INTRO_COVER_URL },
             { type:'content', icon:'fa-compass', title:'El modelo Thomas-Kilmann: 5 modos de respuesta',
               body:'Dos dimensiones definen cómo respondemos al conflicto:',
               bullets:['Asertividad: cuánto priorizas tus propias necesidades', 'Cooperación: cuánto priorizas las necesidades del otro', 'Tu punto en ese mapa define tu modo natural de respuesta'] },
-
-            /* 3 — Competidor */
-            { type:'content', icon:'fa-chess-king', title:'Modo Competidor: "Yo gano, tú pierdes"',
-              bullets:['Alta asertividad, baja cooperación', 'Útil en decisiones urgentes o cuando proteges valores no negociables', 'Riesgo: deja a la otra parte sin agencia y puede generar resentimiento', 'Consejo: úsalo con consciencia, no como hábito por defecto'] },
-
-            /* 4 — Colaborador */
-            { type:'content', icon:'fa-handshake', title:'Modo Colaborador: "Ganamos juntos"',
-              bullets:['Alta asertividad, alta cooperación', 'El modo ideal cuando la relación y el resultado importan por igual', 'Requiere tiempo, disposición y confianza mutua para funcionar', 'Consejo: invita a explorar intereses reales, no posiciones iniciales'] },
-
-            /* 5 — Comprometido */
-            { type:'content', icon:'fa-scale-balanced', title:'Modo Comprometido: el arte de ceder a medias',
-              bullets:['Asertividad y cooperación moderadas', 'Adecuado cuando ambas partes tienen algo válido que ceder', 'La solución satisface parcialmente a todos, no plenamente a ninguno', 'Consejo: úsalo cuando el tiempo apremia y la relación es estable'] },
-
-            /* 6 — Evasivo */
-            { type:'content', icon:'fa-eye-slash', title:'Modo Evasivo: elegir no pelear (por ahora)',
-              bullets:['Baja asertividad, baja cooperación', 'Estratégico cuando el momento no es el adecuado para la conversación', 'Peligroso si se usa de forma crónica: los temas no resueltos acumulan presión', 'Consejo: distingue si evitas por táctica o por miedo'] },
-
-            /* 7 — Complaciente */
-            { type:'content', icon:'fa-hand-holding-heart', title:'Modo Complaciente: ceder con intención',
-              bullets:['Baja asertividad, alta cooperación', 'Valioso cuando preservar la relación supera el beneficio de "ganar"', 'Riesgo: si es un patrón, erosiona tu credibilidad y bienestar', 'Consejo: comprueba que cedes por elección, no por presión externa'] },
-
-            /* 8 — Keypoint stat */
-            { type:'keypoint', icon:'fa-chart-line', stat:'85%', statement:'de los equipos han vivido un conflicto que se agravó por no abordarlo a tiempo', desc:'Fuente: estudios de clima organizacional en LATAM, 2022–2024' },
-
-            /* 9 — Antes de la conversación (steps) */
             { type:'steps', icon:'fa-clipboard-check', title:'Antes de la conversación: prepárate', tagLabel:'Preparación',
               bullets:['Define tu objetivo: ¿qué resultado realmente necesitas?', 'Identifica tu modo natural y evalúa si es el más adecuado', 'Anticipa las emociones de la otra persona y prepara tu respuesta', 'Elige el momento y espacio adecuados para reducir la tensión'] },
-
-            /* 10 — Durante la conversación (steps) */
-            { type:'steps', icon:'fa-ear-listen', title:'Durante la conversación: habilidades clave', tagLabel:'En práctica',
-              bullets:['Escucha activa: entiende antes de responder', 'Usa "yo" en lugar de "tú": "Me preocupa" en vez de "Siempre haces"', 'Mantén el foco en el problema, no en la persona', 'Confirma lo que escuchaste: parafrasea y verifica antes de continuar'] },
-
-            /* 11 — Cómo elegir el modo */
-            { type:'content', icon:'fa-map-pin', title:'Cómo elegir tu modo Thomas-Kilmann',
-              bullets:['¿La relación importa más que el resultado inmediato? → Colabora o Complace', '¿Es urgente sin tiempo para negociar? → Compite con transparencia', '¿Necesitas tiempo para pensar y calmarte? → Evade con fecha de retorno', '¿Ambos tienen algo que ganar cediendo? → Comprométete'] },
-
-            /* 12 — Errores comunes */
-            { type:'content', icon:'fa-circle-xmark', title:'Errores comunes y cómo evitarlos',
-              bullets:['Escalar el tono: provoca que la otra parte entre en modo defensivo', 'Mezclar varios temas en una sola conversación (limpiar el cajón)', 'Buscar validación en lugar de solución real al problema', 'Esperar el momento perfecto… que nunca llega'] },
-
-            /* 13 — Keypoint stat 2 */
-            { type:'keypoint', icon:'fa-stopwatch', stat:'3 seg', statement:'es todo el tiempo que tiene el cerebro antes de activar el modo de amenaza en una conversación tensa', desc:'Por eso prepararse previamente cambia el resultado de cualquier conversación difícil' },
-
-            /* 14 — Summary */
+            { type:'quote', title:'¿Por qué evitamos?',
+              body:'El silencio parece protector, pero solo pospone lo inevitable — y transforma conflictos pequeños en grandes con el tiempo.',
+              author:'Hallazgo central del modelo Thomas-Kilmann' },
+            { type:'keypoint', icon:'fa-chart-line', stat:'85%', statement:'de los equipos han vivido un conflicto que se agravó por no abordarlo a tiempo', desc:'Fuente: estudios de clima organizacional en LATAM, 2022–2024' },
+            { type:'split', icon:'fa-columns', title:'Texto e imagen en paralelo', body:'En escritorio se muestran en dos columnas; en móvil se apilan para lectura cómoda.', image: SCORM_INTRO_COVER_URL },
+            { type:'media', image: SCORM_DEMO_IMG, hotspots:[
+                { x: 26, y: 44, title: 'Diálogo', body: 'Señala acuerdos implícitos antes de exigir entregables.' },
+                { x: 74, y: 52, title: 'Documento', body: 'Por escrito se reduce la ambigüedad post-reunión.' },
+                { x: 48, y: 24, title: 'Contexto', body: 'Sustituye estos textos al editar la diapositiva.' }
+            ]},
+            { type:'accordion', title:'Profundiza por temas', items:[
+                { title:'Preparación', body:'Anticipa objeciones y define el resultado que necesitas de la reunión.' },
+                { title:'Durante el diálogo', body:'Escucha primero; valida emociones antes de proponer soluciones.' },
+                { title:'Después', body:'Documenta acuerdos y fechas de seguimiento para evitar malentendidos.' }
+            ]},
+            { type:'tabs', title:'Vistas rápidas', tabs:[
+                { label:'Idea clave', body:'El conflicto no es bueno ni malo: es señal de que hay intereses que alinear.' },
+                { label:'Herramienta', body:'Usa el mapa TK para nombrar el modo que estás usando y si te sirve cambiar.' },
+                { label:'Siguiente paso', body:'Practica un modo distinto al tuyo en conversaciones de bajo riesgo.' }
+            ]},
+            { type:'flashcards', title:'Repaso rápido', cards:[
+                { front:'Competidor', back:'Alta asertividad, baja cooperación: útil con urgencia y límites claros.' },
+                { front:'Colaborador', back:'Alta asertividad y cooperación: ideal cuando importan relación y resultado.' },
+                { front:'Evadir', back:'Baja en ambas: pausa táctica si no es el momento; peligroso si es hábito.' }
+            ]},
+            { type:'timeline', title:'Flujo sugerido', items:[
+                { label:'Día 0', title:'Detectar', body:'Identifica el modo por defecto del equipo ante la tensión.' },
+                { label:'Día 1–2', title:'Preparar', body:'Agenda, objetivo y criterios de éxito por escrito.' },
+                { label:'Día 3+', title:'Cerrar', body:'Acuerdos medibles y revisión en 7–14 días.' }
+            ]},
+            { type:'compare', title:'Relacional frente a transaccional', leftTag:'Relacional', rightTag:'Transaccional', leftTitle:'Enfoque relacional', leftBody:'Prioriza confianza y tiempo de escucha antes de negociar números o plazos.', rightTitle:'Enfoque transaccional', rightBody:'Prioriza acuerdos explícitos y entregables; útil con plazos ajustados.', rows:[
+                { left:'Confianza y alineación emocional primero', right:'Plazos y alcance definidos cuanto antes' },
+                { left:'Funciona muy bien en conflictos sensibles o largos', right:'Funciona muy bien con urgencia o poca historia compartida' },
+                { left:'Riesgo: todo tarda más si no cierras acuerdos', right:'Riesgo: sensación de frialdad si no cuidas el tono' }
+            ]},
+            { type:'quiz_mc', title:'Quiz', questions:[
+                { question:'¿Cuándo conviene priorizar el modo colaborador?', options:['Siempre, sin excepciones','Cuando la relación y el resultado importan por igual','Solo si la otra parte cede primero'], correctIndex:1 },
+                { question:'¿Qué describe mejor al “evadir”?', options:['Ganar a toda costa','Posponer o eludir la tensión','Integrar todas las partes'], correctIndex:1 },
+                { question:'El mapa TK sirve principalmente para…', options:['Eliminar el conflicto','Nombrar el estilo de respuesta y elegir con intención','Medir IQ del equipo'], correctIndex:1 },
+                { question:'¿Cuál suele ser el efecto del modo “competir” en relaciones ya tensas?', options:['Siempre genera confianza','Puede escalar el conflicto si la otra parte se defiende','Elimina la necesidad de acuerdos'], correctIndex:1 },
+                { question:'El modo “acomodar” implica sobre todo…', options:['Ignorar el problema indefinidamente','Priorizar la relación cediendo en el contenido del desacuerdo','Imponer tu criterio sin escuchar'], correctIndex:1 }
+            ] },
+            { type:'match', title:'Relaciona cada modo con su descripción', left:['Competidor','Colaborador','Evadir'], right:['Ganar ya, sin negociar','Buscar solución integradora','Posponer la conversación'], pairs:[[0,0],[1,1],[2,2]] },
             { type:'summary', title:'Lo que aprendiste', bullets:['El modelo Thomas-Kilmann ofrece 5 modos de respuesta al conflicto', 'No hay un modo ideal universal: el contexto define la elección correcta', 'Prepararse antes cambia el resultado de cualquier conversación difícil', 'Puedes desarrollar flexibilidad para moverte entre modos según la situación'] }
         ];
     }
 
-    /* Qué índices usar según número de slides (5–15) */
-    var SLIDE_PICKS = {
-        5:  [0, 2, 4, 5, 14],
-        6:  [0, 2, 3, 4, 5, 14],
-        7:  [0, 2, 3, 4, 5, 8, 14],
-        8:  [0, 1, 2, 4, 5, 8, 9, 14],
-        9:  [0, 1, 2, 3, 4, 5, 8, 11, 14],
-        10: [0, 1, 2, 3, 4, 5, 6, 8, 11, 14],
-        11: [0, 1, 2, 3, 4, 5, 6, 7, 8, 11, 14],
-        12: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 11, 14],
-        13: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 14],
-        14: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 14],
-        15: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]
-    };
-
     function generateSlides(n) {
         var pool = buildPool();
-        var picks = SLIDE_PICKS[Math.max(5, Math.min(15, n))] || SLIDE_PICKS[6];
-        return picks.map(function(i){ return pool[i]; });
+        var count = Math.max(5, Math.min(15, n));
+        return pool.slice(0, count).map(function (s) { return JSON.parse(JSON.stringify(s)); });
     }
 
     /* ══════════════════════════════════════
        SCORM HTML (vista previa y bloque)
     ══════════════════════════════════════ */
+    function buildIxInstructionText(slideType) {
+        var map = {
+            media: 'Pulsa los puntos sobre la imagen para leer una nota breve.',
+            accordion: 'Pulsa cada encabezado para expandir o colapsar el contenido.',
+            tabs: 'Usa las pestañas superiores para cambiar de vista.',
+            flashcards: 'Toca cada tarjeta para voltearla y ver la respuesta.',
+            timeline: 'Sigue la línea para ver el orden sugerido.',
+            compare: 'Revisa las dos columnas y la tabla comparativa.',
+            quiz_mc: 'Elige la opción correcta en cada pregunta.',
+            match: 'Selecciona un concepto a la izquierda y luego su pareja a la derecha.'
+        };
+        return map[slideType] || '';
+    }
+
+    function buildIxInteractiveHeader(tagInnerHtml, slideType, editMode, idx) {
+        var instr = buildIxInstructionText(slideType);
+        if (editMode || !instr) {
+            return '<div class="sp-slide-tag">' + tagInnerHtml + '</div>';
+        }
+        return '<div class="sp-slide-meta-row">' +
+            '<div class="sp-slide-tag">' + tagInnerHtml + '</div>' +
+            '<div class="sp-ix-wrap">' +
+            '<button type="button" class="sp-ix-hint" data-sp-ix-tip="' + esc(instr) + '" aria-expanded="false" aria-controls="sp-ix-tip-' + idx + '" aria-label="Instrucciones del slide interactivo">' +
+            '<i class="fas fa-circle-info" aria-hidden="true"></i><span>Slide interactivo</span></button>' +
+            '<div class="sp-ix-tooltip" id="sp-ix-tip-' + idx + '" role="tooltip" hidden></div>' +
+            '</div></div>';
+    }
+
     function buildSlideHtml(slide, idx, editMode) {
         var base = '<div class="sp-slide sp-slide--'+slide.type+'" data-idx="'+idx+'">';
 
         if (slide.type==='intro') {
+            var coverSrc = slide.image || SCORM_INTRO_COVER_URL;
+            var introImgRep = editMode
+                ? '<div class="sp-split-img-replace" aria-hidden="true"><button type="button" class="sp-split-img-replace-btn" data-sp-img-rep="' + idx + '" aria-label="Cambiar imagen"><i class="far fa-image"></i></button></div><input type="file" accept="image/*" class="sp-split-img-input" hidden data-sp-img-input="' + idx + '">'
+                : '';
             return base +
-                '<div class="sp-slide-icon"><i class="fas '+(slide.icon||'fa-comments')+'"></i></div>' +
-                '<h1'+(editMode?' data-sp-key="slide-'+idx+'-title" contenteditable="true"':'')+'>'+esc(slide.title)+'</h1>' +
-                '<p'+(editMode?' data-sp-key="slide-'+idx+'-body" contenteditable="true"':'')+'>'+esc(slide.body||'')+'</p>' +
-                '<div class="sp-start-hint"><i class="fas fa-arrow-right"></i><span>Navega con los botones de abajo</span></div>' +
+                '<div class="sp-intro-page sp-intro-page--ticket">' +
+                    '<div class="sp-intro-ticket">' +
+                        '<div class="sp-intro-ticket-media">' +
+                            '<div class="sp-intro-ticket-media-inner' + (editMode ? ' sp-split-img-frame--editable' : '') + '">' +
+                            '<img src="'+esc(coverSrc)+'" alt="" class="sp-intro-ticket-img"'+(editMode?' data-sp-key="slide-'+idx+'-image"':'')+'>' +
+                            introImgRep +
+                            '</div>' +
+                        '</div>' +
+                        '<div class="sp-intro-ticket-body">' +
+                            '<span class="sp-intro-chip"'+(editMode?' data-sp-key="slide-'+idx+'-subtitle" contenteditable="true"':'')+'>'+esc(slide.subtitle||'Presentación interactiva')+'</span>' +
+                            '<h1'+(editMode?' data-sp-key="slide-'+idx+'-title" contenteditable="true"':'')+'>'+esc(slide.title)+'</h1>' +
+                            '<p class="sp-intro-lead"'+(editMode?' data-sp-key="slide-'+idx+'-body" contenteditable="true"':'')+'>'+esc(slide.body||'')+'</p>' +
+                            '<div class="sp-start-hint sp-start-hint--ticket"><i class="fas fa-arrow-right"></i><span>Usa «Siguiente» para recorrer el módulo</span></div>' +
+                        '</div>' +
+                    '</div>' +
+                '</div>' +
             '</div>';
 
         } else if (slide.type==='content') {
@@ -290,6 +318,259 @@
                 (sItems ? '<ul class="sp-sum-list">'+sItems+'</ul>' : '') +
                 '</div>' +
             '</div>';
+
+        } else if (slide.type==='split') {
+            var imgRepSplit = editMode
+                ? '<div class="sp-split-img-replace" aria-hidden="true"><button type="button" class="sp-split-img-replace-btn" data-sp-img-rep="' + idx + '" aria-label="Cambiar imagen"><i class="far fa-image"></i></button></div><input type="file" accept="image/*" class="sp-split-img-input" hidden data-sp-img-input="' + idx + '">'
+                : '';
+            var imgCol = slide.image
+                ? '<div class="sp-split-media-col">' +
+                    '<div class="sp-split-img-frame' + (editMode ? ' sp-split-img-frame--editable' : '') + '">' +
+                    '<img src="' + esc(slide.image) + '" alt="" class="sp-split-side-img"' + (editMode ? ' data-sp-key="slide-' + idx + '-image"' : '') + '>' +
+                    imgRepSplit +
+                    '</div></div>'
+                : '<div class="sp-split-media-col"><div class="sp-split-img-placeholder ubits-body-sm-regular">Sin imagen</div></div>';
+            return base +
+                '<div class="sp-slide-card sp-split-card sp-split-card--5050">' +
+                    '<div class="sp-slide-tag"><i class="fas ' + (slide.icon || 'fa-columns') + '"></i>Texto + imagen</div>' +
+                    '<div class="sp-split-5050">' +
+                        '<div class="sp-split-text-col">' +
+                            '<h2' + (editMode ? ' data-sp-key="slide-' + idx + '-title" contenteditable="true"' : '') + '>' + esc(slide.title) + '</h2>' +
+                            '<p class="sp-split-desc sp-body-intro"' + (editMode ? ' data-sp-key="slide-' + idx + '-body" contenteditable="true"' : '') + '>' + esc(slide.body || '') + '</p>' +
+                        '</div>' +
+                        imgCol +
+                    '</div>' +
+                '</div>' +
+            '</div>';
+
+        } else if (slide.type==='media') {
+            var hots = slide.hotspots;
+            if ((!hots || !hots.length) && slide.caption) {
+                hots = [{ x: 50, y: 82, title: 'Descripción', body: slide.caption }];
+            }
+            if (!hots || !hots.length) {
+                hots = [{ x: 50, y: 50, title: 'Nota', body: 'Añade puntos interactivos editando esta diapositiva.' }];
+            }
+            var pinsHtml = hots.map(function (h, hi) {
+                var hx = Math.max(5, Math.min(95, Number(h.x) || 50));
+                var hy = Math.max(5, Math.min(95, Number(h.y) || 50));
+                return '<button type="button" class="sp-hotspot-pin" data-sp-hs-i="'+hi+'" style="left:'+hx+'%;top:'+hy+'%;" aria-label="'+esc(h.title || ('Punto '+(hi+1)))+'"><span class="sp-hotspot-pin-ring" aria-hidden="true"></span></button>';
+            }).join('');
+            var panelsHtml = hots.map(function (h, hi) {
+                return '<div class="sp-hotspot-panel" id="sp-hsp-'+idx+'-'+hi+'" hidden data-sp-hs-panel="'+hi+'">' +
+                    '<button type="button" class="sp-hotspot-close" aria-label="Cerrar"><i class="fas fa-times"></i></button>' +
+                    '<div class="sp-hotspot-panel-title"'+(editMode?' data-sp-key="slide-'+idx+'-hs-'+hi+'-title" contenteditable="true"':'')+'>'+esc(h.title||'')+'</div>' +
+                    '<div class="sp-hotspot-panel-body"'+(editMode?' data-sp-key="slide-'+idx+'-hs-'+hi+'-body" contenteditable="true"':'')+'>'+esc(h.body||'')+'</div>' +
+                    '</div>';
+            }).join('');
+            var mediaImgRep = editMode
+                ? '<div class="sp-split-img-replace" aria-hidden="true"><button type="button" class="sp-split-img-replace-btn" data-sp-img-rep="' + idx + '" aria-label="Cambiar imagen"><i class="far fa-image"></i></button></div><input type="file" accept="image/*" class="sp-split-img-input" hidden data-sp-img-input="' + idx + '">'
+                : '';
+            return base +
+                '<div class="sp-slide-card sp-media-card">' +
+                    buildIxInteractiveHeader('<i class="fas fa-image"></i>Multimedia', 'media', editMode, idx) +
+                    '<h2'+(editMode?' data-sp-key="slide-'+idx+'-title" contenteditable="true"':'')+'>'+esc(slide.title||'Comunicación visual')+'</h2>' +
+                    '<div class="sp-hotspot-root" data-sp-hs-root="'+idx+'">' +
+                        '<div class="sp-media-hotspot-figure">' +
+                            '<div class="sp-media-img-wrap'+(editMode?' sp-split-img-frame--editable':'')+'">' +
+                                '<img src="'+esc(slide.image||'')+'" alt="" class="sp-media-img"'+(editMode?' data-sp-key="slide-'+idx+'-image"':'')+'>' +
+                                '<div class="sp-hotspot-layer">'+pinsHtml+'</div>' +
+                                '<div class="sp-hotspot-backdrop" hidden></div>' +
+                                '<div class="sp-hotspot-stack">'+panelsHtml+'</div>' +
+                                mediaImgRep +
+                            '</div>' +
+                        '</div>' +
+                    '</div>' +
+                '</div>' +
+            '</div>';
+
+        } else if (slide.type==='accordion') {
+            var accItems=(slide.items||[]).map(function(it,ai){
+                return '<details class="sp-acc-item">' +
+                    '<summary><span class="sp-acc-title"'+(editMode?' data-sp-key="slide-'+idx+'-item-'+ai+'-title" contenteditable="true"':'')+'>'+esc(it.title||'')+'</span>' +
+                    '<span class="sp-acc-chev" aria-hidden="true"><i class="fas fa-chevron-down"></i></span></summary>' +
+                    '<div class="sp-acc-body"'+(editMode?' data-sp-key="slide-'+idx+'-item-'+ai+'-body" contenteditable="true"':'')+'>'+esc(it.body||'')+'</div>' +
+                '</details>';
+            }).join('');
+            return base +
+                '<div class="sp-slide-card">' +
+                    buildIxInteractiveHeader('<i class="fas fa-bars-staggered"></i>Acordeón', 'accordion', editMode, idx) +
+                    '<h2'+(editMode?' data-sp-key="slide-'+idx+'-title" contenteditable="true"':'')+'>'+esc(slide.title)+'</h2>' +
+                    '<div class="sp-acc-list">'+accItems+'</div>' +
+                '</div>' +
+            '</div>';
+
+        } else if (slide.type==='tabs') {
+            var tabLabels=(slide.tabs||[]).map(function(t,ti){
+                return '<button type="button" role="tab" class="sp-tab-btn'+(ti===0?' sp-tab-btn--active':'')+'" data-sp-tab="'+ti+'" aria-selected="'+(ti===0?'true':'false')+'">' +
+                    '<span'+(editMode?' data-sp-key="slide-'+idx+'-tab-'+ti+'-label" contenteditable="true"':'')+'>'+esc(t.label||('Pestaña '+(ti+1)))+'</span></button>';
+            }).join('');
+            var tabPanels=(slide.tabs||[]).map(function(t,ti){
+                return '<div class="sp-tab-panel'+(ti===0?' sp-tab-panel--active':'')+'" data-sp-panel="'+ti+'" role="tabpanel"'+(ti===0?'':' hidden')+'>' +
+                    '<div class="sp-tab-body"'+(editMode?' data-sp-key="slide-'+idx+'-tab-'+ti+'-body" contenteditable="true"':'')+'>'+esc(t.body||'')+'</div></div>';
+            }).join('');
+            return base +
+                '<div class="sp-slide-card sp-tabs-card">' +
+                    buildIxInteractiveHeader('<i class="fas fa-folder-open"></i>Pestañas', 'tabs', editMode, idx) +
+                    '<h2'+(editMode?' data-sp-key="slide-'+idx+'-title" contenteditable="true"':'')+'>'+esc(slide.title)+'</h2>' +
+                    '<div class="sp-tabs-shell">' +
+                        '<div class="sp-tab-bar" role="tablist">'+tabLabels+'</div>' +
+                        '<div class="sp-tab-panels">'+tabPanels+'</div>' +
+                    '</div>' +
+                '</div>' +
+            '</div>';
+
+        } else if (slide.type==='flashcards') {
+            var cards=(slide.cards||[]).map(function(c,ci){
+                return '<div class="sp-fc" data-sp-fc="'+ci+'">' +
+                    '<div class="sp-fc-inner">' +
+                        '<div class="sp-fc-face sp-fc-front"><span'+(editMode?' data-sp-key="slide-'+idx+'-card-'+ci+'-front" contenteditable="true"':'')+'>'+esc(c.front||'')+'</span>'+(!editMode?'<span class="sp-fc-hint">Pulsa para ver la respuesta</span>':'')+'</div>' +
+                        '<div class="sp-fc-face sp-fc-back"><span'+(editMode?' data-sp-key="slide-'+idx+'-card-'+ci+'-back" contenteditable="true"':'')+'>'+esc(c.back||'')+'</span></div>' +
+                    '</div>' +
+                '</div>';
+            }).join('');
+            return base +
+                '<div class="sp-slide-card sp-fc-wrap">' +
+                    buildIxInteractiveHeader('<i class="fas fa-clone"></i>Tarjetas', 'flashcards', editMode, idx) +
+                    '<h2'+(editMode?' data-sp-key="slide-'+idx+'-title" contenteditable="true"':'')+'>'+esc(slide.title)+'</h2>' +
+                    '<div class="sp-fc-grid">'+cards+'</div>' +
+                    (editMode ? '<div class="sp-editor-bar"><button type="button" class="sp-btn sp-btn-p sp-fc-add" data-sp-fc-slide="'+idx+'"><i class="fas fa-plus"></i><span>Tarjeta</span></button><button type="button" class="sp-btn sp-btn-p sp-fc-del" data-sp-fc-slide="'+idx+'"><i class="fas fa-minus"></i><span>Tarjeta</span></button></div>' : '') +
+                '</div>' +
+            '</div>';
+
+        } else if (slide.type==='timeline') {
+            var lines=(slide.items||[]).map(function(it,li){
+                var isLast = li === (slide.items||[]).length - 1;
+                return '<div class="sp-tl-item">' +
+                    '<div class="sp-tl-rail">' +
+                        '<span class="sp-tl-dot" aria-hidden="true"></span>' +
+                        (!isLast ? '<span class="sp-tl-line" aria-hidden="true"></span>' : '') +
+                    '</div>' +
+                    '<div class="sp-tl-panel">' +
+                        '<div class="sp-tl-label"'+(editMode?' data-sp-key="slide-'+idx+'-tl-'+li+'-label" contenteditable="true"':'')+'>'+esc(it.label||'')+'</div>' +
+                        '<div class="sp-tl-title"'+(editMode?' data-sp-key="slide-'+idx+'-tl-'+li+'-title" contenteditable="true"':'')+'>'+esc(it.title||'')+'</div>' +
+                        '<div class="sp-tl-body"'+(editMode?' data-sp-key="slide-'+idx+'-tl-'+li+'-body" contenteditable="true"':'')+'>'+esc(it.body||'')+'</div>' +
+                    '</div>' +
+                '</div>';
+            }).join('');
+            return base +
+                '<div class="sp-slide-card sp-tl-card">' +
+                    buildIxInteractiveHeader('<i class="fas fa-route"></i>Cronología', 'timeline', editMode, idx) +
+                    '<h2'+(editMode?' data-sp-key="slide-'+idx+'-title" contenteditable="true"':'')+'>'+esc(slide.title)+'</h2>' +
+                    '<div class="sp-tl-track">'+lines+'</div>' +
+                    (editMode ? '<div class="sp-editor-bar"><button type="button" class="sp-btn sp-btn-p sp-tl-add" data-sp-tl-slide="'+idx+'"><i class="fas fa-plus"></i><span>Paso</span></button><button type="button" class="sp-btn sp-btn-p sp-tl-del" data-sp-tl-slide="'+idx+'"><i class="fas fa-minus"></i><span>Paso</span></button></div>' : '') +
+                '</div>' +
+            '</div>';
+
+        } else if (slide.type==='compare') {
+            var rows = slide.rows || [];
+            var rowHtml = rows.map(function(row, ri){
+                return '<div class="sp-compare-row">' +
+                    '<div class="sp-compare-cell sp-compare-cell--left"'+(editMode?' data-sp-key="slide-'+idx+'-crow-'+ri+'-left" contenteditable="true"':'')+'>'+esc(row.left||'')+'</div>' +
+                    '<div class="sp-compare-cell sp-compare-cell--right"'+(editMode?' data-sp-key="slide-'+idx+'-crow-'+ri+'-right" contenteditable="true"':'')+'>'+esc(row.right||'')+'</div>' +
+                '</div>';
+            }).join('');
+            return base +
+                '<div class="sp-slide-card sp-compare-card">' +
+                    buildIxInteractiveHeader('<i class="fas fa-scale-balanced"></i>Comparar enfoques', 'compare', editMode, idx) +
+                    '<h2'+(editMode?' data-sp-key="slide-'+idx+'-title" contenteditable="true"':'')+'>'+esc(slide.title)+'</h2>' +
+                    '<p class="sp-compare-lead">Misma situación, dos formas de abordarla. Lee cada columna y la tabla inferior.</p>' +
+                    '<div class="sp-compare-board">' +
+                        '<div class="sp-compare-pillar sp-compare-pillar--left">' +
+                            '<span class="sp-compare-badge"'+(editMode?' data-sp-key="slide-'+idx+'-leftTag" contenteditable="true"':'')+'>'+esc(slide.leftTag||'Opción A')+'</span>' +
+                            '<h3'+(editMode?' data-sp-key="slide-'+idx+'-leftTitle" contenteditable="true"':'')+'>'+esc(slide.leftTitle||'')+'</h3>' +
+                            '<p'+(editMode?' data-sp-key="slide-'+idx+'-leftBody" contenteditable="true"':'')+'>'+esc(slide.leftBody||'')+'</p>' +
+                        '</div>' +
+                        '<div class="sp-compare-vs" aria-hidden="true"><span>VS</span></div>' +
+                        '<div class="sp-compare-pillar sp-compare-pillar--right">' +
+                            '<span class="sp-compare-badge sp-compare-badge--alt"'+(editMode?' data-sp-key="slide-'+idx+'-rightTag" contenteditable="true"':'')+'>'+esc(slide.rightTag||'Opción B')+'</span>' +
+                            '<h3'+(editMode?' data-sp-key="slide-'+idx+'-rightTitle" contenteditable="true"':'')+'>'+esc(slide.rightTitle||'')+'</h3>' +
+                            '<p'+(editMode?' data-sp-key="slide-'+idx+'-rightBody" contenteditable="true"':'')+'>'+esc(slide.rightBody||'')+'</p>' +
+                        '</div>' +
+                    '</div>' +
+                    (rowHtml ? '<div class="sp-compare-matrix"><div class="sp-compare-matrix-head"><span>'+esc(slide.leftTag||'Columna A')+'</span><span>'+esc(slide.rightTag||'Columna B')+'</span></div>'+rowHtml+'</div>' : '') +
+                '</div>' +
+            '</div>';
+
+        } else if (slide.type==='quiz_mc') {
+            var qList = slide.questions;
+            if (!qList || !qList.length) {
+                qList = slide.question ? [{ question: slide.question, options: slide.options || [], correctIndex: slide.correctIndex != null ? slide.correctIndex : 0 }] : [];
+            }
+            var stepsHtml = qList.map(function (q, qi) {
+                var opts = (q.options || []).map(function (op, oi) {
+                    var isCor = (q.correctIndex === oi);
+                    if (editMode) {
+                        var nm = 'sp-q-cor-' + idx + '-' + qi;
+                        return '<label class="sp-quiz-opt-row">' +
+                            '<input type="radio" class="sp-quiz-opt-radio" name="' + nm + '" value="' + oi + '"' + (isCor ? ' checked' : '') + '>' +
+                            '<span class="sp-quiz-opt-text" data-sp-key="slide-' + idx + '-q-' + qi + '-opt-' + oi + '" contenteditable="true">' + esc(op) + '</span>' +
+                            '</label>';
+                    }
+                    return '<div class="sp-quiz-opt" role="button" tabindex="0" data-sp-quiz="' + oi + '" data-correct="' + (isCor ? '1' : '0') + '">' + esc(op) + '</div>';
+                }).join('');
+                var hiddenAttr = editMode ? '' : (qi === 0 ? '' : ' hidden');
+                var activeCls = editMode ? ' sp-quiz-step--edit' : (qi === 0 ? ' sp-quiz-step--active' : '');
+                return '<section class="sp-quiz-step' + activeCls + '" data-sp-quiz-step="' + qi + '"' + hiddenAttr + '>' +
+                    '<p class="sp-quiz-meta">Pregunta ' + (qi + 1) + ' de ' + qList.length + '</p>' +
+                    '<p class="sp-quiz-q"' + (editMode ? ' data-sp-key="slide-' + idx + '-q-' + qi + '-question" contenteditable="true"' : '') + '>' + esc(q.question || '') + '</p>' +
+                    '<div class="sp-quiz-opts">' + opts + '</div>' +
+                '</section>';
+            }).join('');
+            return base +
+                '<div class="sp-slide-card sp-quiz-card" data-sp-quiz-total="' + qList.length + '">' +
+                    buildIxInteractiveHeader('<i class="fas fa-list-check"></i>Quiz', 'quiz_mc', editMode, idx) +
+                    (editMode ? '<div class="sp-quiz-head"><h2 data-sp-key="slide-' + idx + '-title" contenteditable="true">' + esc(slide.title || 'Quiz') + '</h2></div>' : '') +
+                    '<div class="sp-quiz-steps">' + stepsHtml + '</div>' +
+                    '<div class="sp-quiz-done" id="sp-quiz-done-' + idx + '" hidden>' +
+                    '<p class="sp-quiz-done-text">Esperamos que hayas afianzado tus conocimientos.</p>' +
+                    '<p class="sp-quiz-done-big">¡Has finalizado!</p>' +
+                    '<p class="sp-quiz-done-sub">Si lo deseas, puedes reiniciar el quiz o continuar con el siguiente slide usando el botón «Siguiente».</p>' +
+                    '<button type="button" class="sp-quiz-restart sp-btn sp-btn-p" id="sp-quiz-restart-' + idx + '"><i class="fas fa-rotate-right"></i><span>Reiniciar quiz</span></button>' +
+                    '</div>' +
+                '</div>' +
+            '</div>';
+
+        } else if (slide.type==='match') {
+            var leftCells=(slide.left||[]).map(function(txt,li){
+                return '<div role="button" tabindex="0" class="sp-match-cell sp-match-left" data-sp-match-side="L" data-sp-match-i="'+li+'"'+(editMode?' data-sp-key="slide-'+idx+'-left-'+li+'" contenteditable="true"':'')+'>'+esc(txt)+'</div>';
+            }).join('');
+            var rightCells=(slide.right||[]).map(function(txt,ri){
+                return '<div role="button" tabindex="0" class="sp-match-cell sp-match-right" data-sp-match-side="R" data-sp-match-i="'+ri+'"'+(editMode?' data-sp-key="slide-'+idx+'-right-'+ri+'" contenteditable="true"':'')+'>'+esc(txt)+'</div>';
+            }).join('');
+            var pairsAttr=esc(JSON.stringify(slide.pairs||[]));
+            var pairEditHtml = '';
+            if (editMode) {
+                var Lm = slide.left || [];
+                var Rm = slide.right || [];
+                var pairsA = (slide.pairs && slide.pairs.length >= 2) ? slide.pairs.slice() : [[0, 0], [1, 1]];
+                pairEditHtml = '<div class="sp-match-edit-panel"><p class="sp-match-edit-caption">Pares correctos (mínimo 2)</p><div class="sp-match-pair-list" data-sp-match-pairlist="' + idx + '">';
+                pairEditHtml += pairsA.map(function (pr, pi) {
+                    var optL = Lm.map(function (txt, li) {
+                        return '<option value="' + li + '"' + (pr[0] === li ? ' selected' : '') + '>[' + li + '] ' + esc(String(txt).slice(0, 32)) + '</option>';
+                    }).join('');
+                    var optR = Rm.map(function (txt, ri) {
+                        return '<option value="' + ri + '"' + (pr[1] === ri ? ' selected' : '') + '>[' + ri + '] ' + esc(String(txt).slice(0, 32)) + '</option>';
+                    }).join('');
+                    var delBtn = pairsA.length > 2
+                        ? '<button type="button" class="sp-match-pair-del" data-sp-match-pdel="' + idx + '" data-sp-pi="' + pi + '" aria-label="Quitar pareja"><i class="fas fa-times"></i></button>'
+                        : '<span class="sp-match-pair-del-ph"></span>';
+                    return '<div class="sp-match-pair-row" data-sp-pi="' + pi + '"><select class="sp-match-sel-l" data-sp-pidx="' + idx + '" data-sp-pi="' + pi + '">' + optL + '</select><span class="sp-match-pair-mid">→</span><select class="sp-match-sel-r" data-sp-pidx="' + idx + '" data-sp-pi="' + pi + '">' + optR + '</select>' + delBtn + '</div>';
+                }).join('');
+                pairEditHtml += '</div><button type="button" class="sp-btn sp-btn-p sp-match-add-pair" data-sp-match-add="' + idx + '">+ Pareja</button></div>';
+            }
+            return base +
+                '<div class="sp-slide-card sp-match-card" data-sp-match-pairs="'+pairsAttr+'" data-sp-match-idx="'+idx+'">' +
+                    buildIxInteractiveHeader('<i class="fas fa-link"></i>Relacionar', 'match', editMode, idx) +
+                    '<h2'+(editMode?' data-sp-key="slide-'+idx+'-title" contenteditable="true"':'')+'>'+esc(slide.title)+'</h2>' +
+                    '<p class="sp-match-hint">Toca primero un concepto en la columna izquierda y después su pareja en la derecha.</p>' +
+                    '<div class="sp-match-grid">' +
+                        '<div class="sp-match-col">'+leftCells+'</div>' +
+                        '<div class="sp-match-col">'+rightCells+'</div>' +
+                    '</div>' +
+                    pairEditHtml +
+                '</div>' +
+            '</div>';
         }
 
         return base + '</div>';
@@ -304,27 +585,49 @@
         '.sp-pb{height:3px;background:rgba(var(--ar),var(--ag),var(--ab),.15);}' +
         '.sp-pf{height:100%;background:var(--accent);transition:width .5s cubic-bezier(.4,0,.2,1);}' +
         '.sp-hi{display:flex;align-items:center;justify-content:space-between;padding:10px 20px;}' +
+        '.sp-hi--viewer{justify-content:flex-end;}' +
         '.sp-title{font-size:13px;font-weight:700;color:var(--tp);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:60%;}' +
         '.sp-ct{font-size:12px;color:var(--tm);font-weight:500;}' +
+        '.sp-ct--solo{font-size:13px;font-weight:700;color:var(--tp);}' +
         '.sp-color-trigger{display:inline-flex;align-items:center;gap:6px;cursor:pointer;font-size:11px;color:var(--tm);font-weight:500;padding:3px 8px;border-radius:6px;border:1px solid rgba(0,0,0,.1);background:rgba(0,0,0,.03);transition:background .15s;}' +
         '.sp-color-trigger:hover{background:rgba(0,0,0,.07);}' +
         '.sp-color-swatch{width:14px;height:14px;border-radius:3px;background:var(--accent);border:1px solid rgba(0,0,0,.15);}' +
         '.sp-stage{flex:1;overflow:hidden;position:relative;min-height:0;}' +
         '.sp-slides{position:absolute;inset:0;}' +
         /* Slide base */
-        '.sp-slide{position:absolute;inset:0;opacity:0;transform:translateX(32px);transition:opacity .35s ease,transform .35s ease;pointer-events:none;display:flex;align-items:center;justify-content:center;padding:28px 36px;gap:16px;}' +
+        '.sp-slide{position:absolute;inset:0;opacity:0;transform:translateX(32px);transition:opacity .35s ease,transform .35s ease;pointer-events:none;display:flex;align-items:flex-start;justify-content:flex-start;padding:clamp(16px,3vw,28px) clamp(14px,3vw,32px);gap:16px;overflow-y:auto;overflow-x:hidden;scroll-padding-top:8px;scroll-padding-bottom:12px;-webkit-overflow-scrolling:touch;}' +
         '.sp-slide.active{opacity:1;transform:translateX(0);pointer-events:auto;}' +
         '.sp-slide.exit-left{opacity:0;transform:translateX(-32px);}' +
-        /* Intro */
-        '.sp-slide--intro{background:linear-gradient(145deg,var(--accent) 0%,var(--dark) 100%);flex-direction:column;align-items:center;text-align:center;gap:18px;}' +
-        '.sp-slide-icon{width:76px;height:76px;min-width:76px;min-height:76px;aspect-ratio:1;flex-shrink:0;border-radius:50%;background:rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;font-size:30px;color:#fff;backdrop-filter:blur(8px);}' +
-        '.sp-slide--intro h1{font-size:clamp(20px,4vw,32px);font-weight:800;color:#fff;line-height:1.25;max-width:520px;}' +
-        '.sp-slide--intro p{font-size:14px;color:rgba(255,255,255,.8);max-width:420px;line-height:1.65;}' +
-        '.sp-start-hint{display:flex;align-items:center;gap:8px;color:rgba(255,255,255,.5);font-size:12px;margin-top:2px;}' +
+        /* center + overflow-y en el mismo flex hacía que, con contenido más alto que el viewport,
+           el scroll no alcanzara el borde superior real (título/etiquetas cortados). Arriba alineado. */
+        '.sp-slide--content,.sp-slide--split,.sp-slide--steps,.sp-slide--media,.sp-slide--accordion,.sp-slide--tabs,.sp-slide--flashcards,.sp-slide--timeline,.sp-slide--compare,.sp-slide--quiz_mc,.sp-slide--match{align-items:flex-start;justify-content:flex-start;}' +
+        /* Centrado: portada va aparte (full layout) */
+        '.sp-slide--quote,.sp-slide--keypoint,.sp-slide--summary{align-items:center;justify-content:center;}' +
+        /* Portada: gradiente horizontal, texto 2/3, imagen 1/3 a la derecha */
+        '.sp-slide--intro{align-items:center;justify-content:center;padding:clamp(14px,3vw,28px);background:radial-gradient(120% 80% at 50% 0%,color-mix(in srgb,var(--accent) 18%,var(--bg)) 0%,var(--bg) 55%);}' +
+        '.sp-intro-page--ticket{width:100%;max-width:min(100%,720px);margin:0 auto;}' +
+        '.sp-intro-ticket{background:var(--white);border-radius:16px;overflow:hidden;box-shadow:0 18px 48px rgba(0,0,0,.1);border:1px solid rgba(0,0,0,.06);display:flex;flex-direction:column;}' +
+        '.sp-intro-ticket-media{position:relative;width:100%;aspect-ratio:16/9;max-height:min(38vh,280px);background:color-mix(in srgb,var(--dark) 82%,var(--accent) 18%);}' +
+        '.sp-intro-ticket-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;}' +
+        '.sp-intro-ticket-body{display:flex;flex-direction:column;align-items:flex-start;gap:10px;padding:clamp(18px,3vw,26px) clamp(18px,3vw,28px) clamp(22px,3vw,30px);}' +
+        '.sp-intro-chip{font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;padding:5px 11px;border-radius:100px;background:rgba(var(--ar),var(--ag),var(--ab),.12);color:var(--accent);}' +
+        '.sp-slide--intro h1{font-size:clamp(22px,4vw,32px);font-weight:800;color:var(--tp);line-height:1.15;margin:0;max-width:20ch;}' +
+        '.sp-intro-ticket-body .sp-intro-lead{font-size:14px;color:var(--ts);line-height:1.6;margin:0;max-width:52ch;}' +
+        '.sp-start-hint--ticket{display:flex;align-items:center;gap:8px;color:var(--tm);font-size:12px;margin-top:4px;}' +
         /* Content + Steps: stage con fondo tintado, card centrada interior */
         '.sp-slide--content,.sp-slide--steps{background:color-mix(in srgb,var(--accent) 5%,#f2f5fb);padding:28px 36px;}' +
-        '.sp-slide-card{display:flex;flex-direction:column;gap:14px;background:var(--white);border-radius:14px;box-shadow:0 6px 32px rgba(0,0,0,.09);padding:32px;border-left:4px solid var(--accent);max-width:660px;width:100%;overflow-y:auto;}' +
-        '.sp-slide-tag{display:inline-flex;align-items:center;gap:7px;padding:3px 11px;border-radius:100px;background:rgba(var(--ar),var(--ag),var(--ab),.1);color:var(--accent);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;}' +
+        '.sp-slide-card{display:flex;flex-direction:column;gap:14px;background:var(--white);border-radius:14px;box-shadow:0 6px 32px rgba(0,0,0,.09);padding:28px;border-left:4px solid var(--accent);max-width:min(100%,720px);width:100%;margin-left:auto;margin-right:auto;overflow:visible;flex-shrink:0;}' +
+        '.sp-slide-tag{display:inline-flex;align-items:center;gap:6px;padding:2px 9px;border-radius:100px;background:rgba(var(--ar),var(--ag),var(--ab),.1);color:var(--accent);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;width:fit-content;max-width:100%;flex-wrap:wrap;word-break:break-word;}' +
+        '.sp-slide-meta-row{display:flex;flex-direction:row;align-items:center;justify-content:space-between;gap:10px;width:100%;flex-wrap:wrap;}' +
+        '.sp-slide-meta-row .sp-slide-tag{flex:0 1 auto;min-width:0;}' +
+        '.sp-ix-wrap{position:relative;margin-left:auto;flex:0 0 auto;}' +
+        '.sp-ix-hint{display:inline-flex;align-items:center;gap:6px;max-width:min(100%,240px);padding:6px 10px;border-radius:10px;font-size:10px;line-height:1.35;font-weight:700;color:var(--accent);background:rgba(var(--ar),var(--ag),var(--ab),.1);border:1px solid rgba(var(--ar),var(--ag),var(--ab),.38);text-transform:none;letter-spacing:0;font-family:inherit;cursor:pointer;}' +
+        '.sp-ix-hint:hover{background:rgba(var(--ar),var(--ag),var(--ab),.16);}' +
+        '@keyframes sp-ix-shimmer{0%,100%{opacity:.88;filter:brightness(1);}50%{opacity:1;filter:brightness(1.08);}}' +
+        '.sp-ix-hint{animation:sp-ix-shimmer 2.4s ease-in-out infinite;}' +
+        '.sp-ix-hint i{font-size:12px;flex-shrink:0;}' +
+        '.sp-ix-tooltip{position:absolute;top:calc(100% + 8px);right:0;z-index:40;min-width:200px;max-width:min(92vw,300px);padding:10px 12px;border-radius:10px;font-size:12px;line-height:1.45;font-weight:500;color:var(--white);background:var(--tp);box-shadow:0 12px 32px rgba(0,0,0,.22);text-align:left;}' +
+        '.sp-ix-tooltip[hidden]{display:none !important;}' +
         '.sp-slide-card h2{font-size:clamp(17px,3vw,24px);font-weight:800;color:var(--tp);line-height:1.3;}' +
         '.sp-body-intro{font-size:14px;color:var(--ts);line-height:1.6;}' +
         'ul{list-style:none;display:flex;flex-direction:column;gap:8px;}' +
@@ -349,18 +652,166 @@
         '.sp-kp-desc{font-size:12px;color:var(--tm);max-width:420px;line-height:1.6;}' +
         /* Summary: mismo ancho útil que .sp-slide-card (660px); icono compacto para dejar aire al texto */
         '.sp-slide--summary{background:linear-gradient(145deg,var(--accent) 0%,var(--dark) 100%);flex-direction:column;align-items:center;justify-content:center;padding:clamp(16px,4vw,28px) clamp(12px,3vw,36px);gap:0;}' +
-        '.sp-sum-panel{max-width:660px;width:100%;display:flex;flex-direction:column;align-items:center;text-align:center;gap:clamp(10px,2.5vw,14px);padding:clamp(18px,3.5vw,28px) clamp(16px,3vw,32px);background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:14px;box-sizing:border-box;overflow-y:auto;max-height:calc(100vh - 120px);}' +
+        '.sp-sum-panel{max-width:min(100%,720px);width:100%;display:flex;flex-direction:column;align-items:center;text-align:center;gap:clamp(10px,2.5vw,14px);padding:clamp(18px,3.5vw,28px) clamp(16px,3vw,32px);background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:14px;box-sizing:border-box;overflow-y:auto;max-height:calc(100vh - 120px);}' +
         '.sp-sum-check{width:36px;height:36px;min-width:36px;min-height:36px;aspect-ratio:1;flex-shrink:0;border-radius:50%;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:14px;color:#fff;}' +
         '.sp-slide--summary h2{font-size:clamp(17px,3.2vw,26px);font-weight:800;color:#fff;line-height:1.25;max-width:100%;padding:0 4px;}' +
         '.sp-sum-list{list-style:none;display:flex;flex-direction:column;gap:10px;text-align:left;width:100%;max-width:100%;margin:0;padding:0;}' +
         '.sp-sum-list li{display:flex;align-items:flex-start;gap:10px;color:rgba(255,255,255,.92);font-size:clamp(12px,2.4vw,14px);line-height:1.55;}' +
         '.sp-sum-list li i{color:rgba(255,255,255,.65);flex-shrink:0;margin-top:2px;}' +
         '.sp-sum-list li span{flex:1;}' +
+        /* Tipos enriquecidos: fondo de etapa */
+        '.sp-slide--split,.sp-slide--media,.sp-slide--accordion,.sp-slide--tabs,.sp-slide--flashcards,.sp-slide--timeline,.sp-slide--compare,.sp-slide--quiz_mc,.sp-slide--match{background:color-mix(in srgb,var(--accent) 5%,#f2f5fb);padding:clamp(14px,3vw,28px) clamp(12px,3vw,32px);}' +
+        '.sp-split-card--5050{gap:16px;}' +
+        '.sp-split-5050{display:grid;grid-template-columns:1fr 1fr;gap:clamp(16px,3vw,28px);align-items:start;width:100%;}' +
+        '@media (max-width:700px){.sp-split-5050{grid-template-columns:1fr;}.sp-split-text-col{order:1;}.sp-split-media-col{order:2;}}' +
+        '.sp-split-text-col{display:flex;flex-direction:column;gap:10px;min-width:0;}' +
+        '.sp-split-text-col h2{margin:0;font-size:clamp(17px,3vw,24px);font-weight:800;color:var(--tp);line-height:1.3;}' +
+        '.sp-split-desc{margin:0;}' +
+        '.sp-split-media-col{min-width:0;}' +
+        '.sp-split-img-placeholder{padding:24px;border-radius:12px;background:rgba(0,0,0,.06);color:var(--tm);text-align:center;}' +
+        '.sp-split-img-frame{position:relative;border-radius:12px;overflow:hidden;background:rgba(0,0,0,.06);}' +
+        '.sp-split-side-img{width:100%;height:auto;display:block;vertical-align:middle;object-fit:cover;max-height:min(52vh,420px);}' +
+        '.sp-intro-ticket-media-inner{position:relative;width:100%;height:100%;}' +
+        '.sp-split-img-frame--editable .sp-split-img-replace{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .2s;background:color-mix(in srgb,var(--tp) 55%,transparent);pointer-events:none;}' +
+        '.sp-split-img-frame--editable:hover .sp-split-img-replace{opacity:1;}' +
+        '.sp-split-img-replace-btn{width:52px;height:52px;border-radius:50%;border:none;background:#fff;color:var(--tp);cursor:pointer;pointer-events:auto;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 24px rgba(0,0,0,.25);font-size:20px;}' +
+        '.sp-split-img-replace-btn:hover{filter:brightness(1.05);}' +
+        /* Imagen con hotspots */
+        '.sp-slide--media{align-items:center;justify-content:flex-start;}' +
+        '.sp-media-card .sp-media-hotspot-figure{width:100%;max-width:min(100%,720px);margin:0 auto;border-radius:16px;overflow:hidden;box-shadow:0 18px 48px rgba(0,0,0,.14);background:color-mix(in srgb,var(--dark) 78%,var(--accent) 22%);}' +
+        '.sp-media-card .sp-media-img-wrap{position:relative;width:100%;aspect-ratio:16/10;max-height:min(52vh,440px);background:color-mix(in srgb,var(--dark) 88%,var(--accent) 12%);}' +
+        '.sp-media-card .sp-media-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;}' +
+        '.sp-hotspot-layer{position:absolute;inset:0;pointer-events:none;z-index:2;}' +
+        '.sp-hotspot-pin{position:absolute;transform:translate(-50%,-50%);width:22px;height:22px;border:none;padding:0;border-radius:50%;cursor:pointer;pointer-events:auto;background:transparent;display:flex;align-items:center;justify-content:center;}' +
+        '.sp-hotspot-pin-ring{width:14px;height:14px;border-radius:50%;background:var(--accent);border:2px solid #fff;box-shadow:0 0 0 2px rgba(var(--ar),var(--ag),var(--ab),.45),0 4px 14px rgba(0,0,0,.35);animation:sp-hotspot-breathe 2.2s ease-in-out infinite;}' +
+        '@keyframes sp-hotspot-breathe{0%,100%{transform:scale(1);}50%{transform:scale(1.08);}}' +
+        '.sp-hotspot-pin:hover .sp-hotspot-pin-ring{transform:scale(1.12);}' +
+        '.sp-hotspot-backdrop{position:absolute;inset:0;background:rgba(15,23,42,.42);z-index:3;}' +
+        '.sp-hotspot-stack{position:absolute;left:0;right:0;bottom:0;z-index:4;display:flex;justify-content:center;pointer-events:none;padding:10px 12px 14px;}' +
+        '.sp-hotspot-panel{pointer-events:auto;position:relative;width:100%;max-width:min(100%,380px);padding:12px 36px 12px 14px;border-radius:12px;background:var(--white);border:2px solid var(--accent);box-shadow:0 14px 40px rgba(0,0,0,.2);text-align:left;}' +
+        '.sp-hotspot-close{position:absolute;top:6px;right:6px;width:28px;height:28px;border:none;border-radius:8px;background:rgba(0,0,0,.06);cursor:pointer;color:var(--tm);display:flex;align-items:center;justify-content:center;}' +
+        '.sp-hotspot-close:hover{background:rgba(0,0,0,.1);}' +
+        '.sp-hotspot-panel-title{font-size:13px;font-weight:800;color:var(--tp);margin:0 0 6px;line-height:1.3;}' +
+        '.sp-hotspot-panel-body{font-size:12px;color:var(--ts);line-height:1.5;margin:0;}' +
+        /* Acordeón: cabecera clara, cuerpo oscuro, separado */
+        '.sp-acc-list{display:flex;flex-direction:column;gap:12px;border:none;background:transparent;}' +
+        '.sp-acc-item{border:1px solid rgba(0,0,0,.12);border-radius:12px;background:#fff;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.06);}' +
+        '.sp-acc-item summary{display:flex;align-items:center;justify-content:space-between;gap:12px;cursor:pointer;padding:14px 16px;list-style:none;font-size:14px;font-weight:700;color:#0f172a;background:#ffffff;border:none;}' +
+        '.sp-acc-item summary::-webkit-details-marker{display:none;}' +
+        '.sp-acc-title{flex:1;text-align:left;color:#0f172a;}' +
+        '.sp-acc-chev{color:var(--accent);font-size:11px;transition:transform .22s ease;flex-shrink:0;width:22px;height:22px;display:flex;align-items:center;justify-content:center;border-radius:8px;background:rgba(var(--ar),var(--ag),var(--ab),.12);}' +
+        '.sp-acc-item[open] .sp-acc-chev{transform:rotate(180deg);}' +
+        '.sp-acc-body{padding:14px 16px 16px;font-size:13px;color:var(--ts);line-height:1.65;background:color-mix(in srgb,var(--accent) 4%,#fafbff);border-top:1px solid rgba(0,0,0,.08);}' +
+        /* Pestañas estilo “folder tabs” */
+        '.sp-tabs-shell{background:var(--white);border:1px solid rgba(0,0,0,.1);border-radius:12px;overflow:hidden;}' +
+        '.sp-tab-bar{display:flex;flex-wrap:nowrap;gap:0;border-bottom:2px solid rgba(0,0,0,.07);}' +
+        '.sp-tab-btn{flex:1;min-width:0;padding:12px 8px;border:none;background:transparent;font-size:12px;font-weight:600;color:var(--tm);cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px;font-family:inherit;transition:color .15s,border-color .15s,background .15s;}' +
+        '.sp-tab-btn:hover{color:var(--tp);background:rgba(0,0,0,.03);}' +
+        '.sp-tab-btn--active{color:var(--accent);border-bottom-color:var(--accent);font-weight:800;background:rgba(var(--ar),var(--ag),var(--ab),.06);}' +
+        '.sp-tab-panel{display:none;padding:16px 18px;background:color-mix(in srgb,var(--accent) 4%,#fafbff);}' +
+        '.sp-tab-panel[hidden]{display:none !important;}' +
+        '.sp-tab-panel--active{display:block !important;}' +
+        '.sp-tab-body{font-size:13px;color:var(--ts);line-height:1.6;}' +
+        /* Tarjetas flip: más ancho */
+        '.sp-slide-card.sp-fc-wrap{max-width:min(100%,720px);}' +
+        '.sp-fc-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(12px,2vw,22px);width:100%;}' +
+        '@media (max-width:800px){.sp-fc-grid{grid-template-columns:1fr;}}' +
+        '.sp-fc{perspective:900px;cursor:pointer;min-height:clamp(150px,22vh,210px);}' +
+        '.sp-fc-inner{position:relative;width:100%;min-height:clamp(150px,22vh,210px);transition:transform .45s;transform-style:preserve-3d;}' +
+        '.sp-fc--flipped .sp-fc-inner{transform:rotateY(180deg);}' +
+        '.sp-fc-face{position:absolute;inset:0;backface-visibility:hidden;border-radius:12px;padding:16px 18px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;font-size:14px;line-height:1.45;border:1px solid rgba(0,0,0,.08);}' +
+        '.sp-fc-front{background:var(--white);color:var(--tp);font-weight:700;}' +
+        '.sp-fc-back{background:color-mix(in srgb,var(--accent) 14%,#fff);color:var(--ts);transform:rotateY(180deg);}' +
+        '.sp-fc-hint{margin-top:10px;font-size:11px;font-weight:500;color:var(--tm);}' +
+        /* Línea de tiempo vertical */
+        '.sp-tl-track{display:flex;flex-direction:column;}' +
+        '.sp-tl-item{display:flex;align-items:stretch;gap:0;}' +
+        '.sp-tl-rail{width:30px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;}' +
+        '.sp-tl-dot{width:14px;height:14px;border-radius:50%;background:var(--accent);border:3px solid color-mix(in srgb,var(--accent) 30%,#fff);box-shadow:0 0 0 4px rgba(var(--ar),var(--ag),var(--ab),.15);margin-top:8px;z-index:1;}' +
+        '.sp-tl-line{flex:1;width:3px;min-height:20px;margin-top:2px;background:linear-gradient(180deg,var(--accent),rgba(var(--ar),var(--ag),var(--ab),.2));border-radius:3px;}' +
+        '.sp-tl-panel{flex:1;padding:4px 0 22px 14px;}' +
+        '.sp-tl-panel .sp-tl-label{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);}' +
+        '.sp-tl-panel .sp-tl-title{font-weight:800;font-size:clamp(15px,2.5vw,18px);color:var(--tp);margin:6px 0 6px;line-height:1.25;}' +
+        '.sp-tl-panel .sp-tl-body{font-size:13px;color:var(--ts);line-height:1.55;}' +
+        /* Comparación con VS + matriz */
+        '.sp-compare-lead{font-size:13px;color:var(--ts);line-height:1.5;margin:0 0 4px;}' +
+        '.sp-compare-board{display:grid;grid-template-columns:1fr auto 1fr;gap:12px;align-items:stretch;margin-top:10px;}' +
+        '@media (max-width:700px){.sp-compare-board{grid-template-columns:1fr;}.sp-compare-pillar--left{order:1;}.sp-compare-vs{order:2;padding:8px 0;}.sp-compare-pillar--right{order:3;}}' +
+        '.sp-compare-pillar{padding:16px;border-radius:12px;background:var(--white);border:1px solid rgba(0,0,0,.08);}' +
+        '.sp-compare-pillar--left{border-top:4px solid var(--accent);}' +
+        '.sp-compare-pillar--right{border-top:4px solid #64748b;}' +
+        '.sp-compare-badge{display:inline-block;font-size:10px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;padding:4px 9px;border-radius:6px;background:rgba(var(--ar),var(--ag),var(--ab),.14);color:var(--accent);margin-bottom:8px;}' +
+        '.sp-compare-badge--alt{background:rgba(100,116,139,.18);color:#475569;}' +
+        '.sp-compare-pillar h3{font-size:15px;font-weight:800;color:var(--tp);margin:0 0 8px;line-height:1.25;}' +
+        '.sp-compare-pillar p{font-size:13px;color:var(--ts);line-height:1.55;margin:0;}' +
+        '.sp-compare-vs{display:flex;align-items:center;justify-content:center;}' +
+        '.sp-compare-vs span{display:inline-flex;align-items:center;justify-content:center;padding:10px 11px;border-radius:999px;border:2px solid rgba(0,0,0,.08);background:var(--white);font-size:10px;font-weight:900;letter-spacing:.12em;color:var(--accent);}' +
+        '.sp-compare-matrix{margin-top:18px;border-radius:12px;overflow:hidden;border:1px solid rgba(0,0,0,.1);background:var(--white);}' +
+        '.sp-compare-matrix-head{display:grid;grid-template-columns:1fr 1fr;background:rgba(var(--ar),var(--ag),var(--ab),.1);font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--accent);}' +
+        '.sp-compare-matrix-head span{padding:10px 12px;}' +
+        '.sp-compare-row{display:grid;grid-template-columns:1fr 1fr;border-top:1px solid rgba(0,0,0,.07);}' +
+        '.sp-compare-cell{padding:11px 12px;font-size:12px;line-height:1.45;color:var(--ts);}' +
+        '.sp-compare-cell--left{border-right:1px solid rgba(0,0,0,.06);}' +
+        /* Evaluación multi-pregunta */
+        '.sp-quiz-head{margin:0;padding:0;}' +
+        '.sp-quiz-head h2{margin:0 0 4px;}' +
+        '.sp-quiz-steps{min-height:0;}' +
+        '.sp-quiz-step[hidden]{display:none !important;}' +
+        '.sp-quiz-step--active{display:block !important;}' +
+        '.sp-quiz-meta{font-size:12px;font-weight:700;color:var(--accent);margin:0 0 8px;letter-spacing:.02em;}' +
+        '.sp-quiz-q{font-size:clamp(15px,2.8vw,18px);font-weight:700;color:var(--tp);margin:0 0 12px;line-height:1.4;}' +
+        '.sp-quiz-opts{display:flex;flex-direction:column;gap:8px;}' +
+        '.sp-quiz-opt{padding:12px 14px;border-radius:10px;border:1px solid rgba(0,0,0,.1);background:var(--white);cursor:pointer;font-size:13px;text-align:left;color:var(--ts);transition:background .15s,border-color .15s;}' +
+        '.sp-quiz-opt:hover{border-color:var(--accent);}' +
+        '.sp-quiz-opt--pick{border-color:#16a34a;background:rgba(22,163,74,.1);}' +
+        '.sp-quiz-opt--bad{border-color:#dc2626;background:rgba(220,38,38,.08);}' +
+        '.sp-quiz-opt-row{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;border-radius:10px;border:1px solid rgba(0,0,0,.1);background:var(--white);}' +
+        '.sp-quiz-opt-radio{flex-shrink:0;margin-top:3px;width:16px;height:16px;accent-color:var(--accent);cursor:pointer;}' +
+        '.sp-quiz-opt-text{flex:1;font-size:13px;color:var(--ts);line-height:1.45;min-width:0;text-align:left;}' +
+        '.sp-quiz-done[hidden]{display:none !important;}' +
+        '.sp-quiz-done:not([hidden]){display:flex;flex-direction:column;align-items:center;text-align:center;padding:12px 8px 8px;margin-top:8px;gap:8px;max-width:420px;margin-left:auto;margin-right:auto;}' +
+        '.sp-quiz-done-text{font-size:14px;color:var(--ts);line-height:1.5;margin:0;}' +
+        '.sp-quiz-done-big{font-size:clamp(18px,3.5vw,24px);font-weight:900;color:var(--accent);margin:0;line-height:1.2;}' +
+        '.sp-quiz-done-sub{font-size:13px;color:var(--tm);line-height:1.45;margin:0;}' +
+        '.sp-quiz-restart{margin-top:4px;}' +
+        '.sp-confetti-canvas{position:fixed;inset:0;pointer-events:none;z-index:9999;}' +
+        /* Relacionar: error en rojo temporal */
+        '.sp-match-hint{font-size:12px;color:var(--ts);margin-bottom:10px;line-height:1.45;}' +
+        '.sp-match-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;align-items:start;}' +
+        '@media (max-width:520px){.sp-match-grid{grid-template-columns:1fr 1fr;gap:8px;}.sp-match-cell{padding:10px;font-size:12px;line-height:1.35;}.sp-match-hint{font-size:11px;}}' +
+        '.sp-match-col{display:flex;flex-direction:column;gap:8px;min-width:0;}' +
+        '.sp-match-cell{padding:12px;border-radius:10px;border:1px solid rgba(0,0,0,.1);background:var(--white);font-size:13px;color:var(--ts);cursor:pointer;text-align:left;line-height:1.4;transition:border-color .2s,background .2s,box-shadow .2s;word-break:break-word;}' +
+        '.sp-match-cell:hover{border-color:var(--accent);}' +
+        '.sp-match--sel{outline:2px solid var(--accent);background:rgba(var(--ar),var(--ag),var(--ab),.1);}' +
+        '.sp-match--ok{border-color:#16a34a;background:rgba(22,163,74,.12);cursor:default;}' +
+        '.sp-match--wrong{border-color:#dc2626 !important;background:rgba(220,38,38,.14) !important;box-shadow:0 0 0 1px rgba(220,38,38,.3);}' +
+        '.sp-match-edit-panel{margin-top:14px;padding-top:12px;border-top:1px solid rgba(0,0,0,.1);width:100%;}' +
+        '.sp-match-edit-caption{font-size:12px;font-weight:700;color:var(--tp);margin:0 0 8px;}' +
+        '.sp-match-pair-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px;}' +
+        '.sp-match-sel-l,.sp-match-sel-r{flex:1;min-width:120px;padding:8px;border-radius:8px;border:1px solid rgba(0,0,0,.12);font-size:12px;background:var(--white);}' +
+        '.sp-match-pair-mid{font-weight:800;color:var(--accent);}' +
+        '.sp-match-pair-del{width:32px;height:32px;border:none;border-radius:8px;background:rgba(220,38,38,.1);color:#b91c1c;cursor:pointer;}' +
+        '.sp-match-pair-del-ph{width:32px;height:32px;flex-shrink:0;}' +
+        '.sp-editor-bar{display:flex;align-items:center;gap:8px;margin-top:12px;flex-wrap:wrap;}' +
+        '.sp--editing .sp-quiz-card{display:flex;flex-direction:column;min-height:0;max-height:calc(100vh - 140px);}' +
+        '.sp--editing .sp-quiz-steps{overflow-y:auto;flex:1;min-height:0;max-height:min(56vh,420px);padding-right:4px;}' +
+        '.sp--editing .sp-quiz-step{display:block !important;border-top:1px solid rgba(0,0,0,.08);padding-top:12px;margin-top:12px;}' +
+        '.sp--editing .sp-quiz-step:first-child{border-top:none;padding-top:0;margin-top:0;}' +
+        '.sp--editing .sp-quiz-step[hidden]{display:block !important;}' +
+        '.sp--editing .sp-quiz-done{display:none !important;}' +
+        '.sp--editing .sp-match-cell{cursor:text;}' +
+        '.sp--editing .sp-fc{cursor:default;}' +
+        '.sp--editing .sp-hotspot-pin.sp-hotspot-pin--drag{cursor:grab;}' +
+        '.sp--editing .sp-hotspot-pin.sp-hotspot-pin--drag:active{cursor:grabbing;}' +
         /* Edit mode */
         '[contenteditable]:hover{outline:2px dashed rgba(var(--ar),var(--ag),var(--ab),.45);border-radius:4px;cursor:text;}' +
         '[contenteditable]:focus{outline:2px solid var(--accent);background:rgba(255,255,255,.12);border-radius:4px;}' +
         /* Footer */
-        '.sp-footer{display:flex;align-items:center;justify-content:space-between;padding:11px 18px;background:var(--white);border-top:1px solid rgba(0,0,0,.06);flex-shrink:0;}' +
+        '.sp-footer{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:12px;padding:11px 18px;background:var(--white);border-top:1px solid rgba(0,0,0,.06);flex-shrink:0;}' +
+        '#sp-prev{justify-self:start;}' +
+        '#sp-dots{justify-self:center;}' +
+        '#sp-next{justify-self:end;}' +
+        '#sp-next[hidden]{display:none !important;}' +
         '.sp-btn{display:inline-flex;align-items:center;gap:7px;padding:8px 16px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s;font-family:inherit;border:none;}' +
         '.sp-btn-p{background:#f0f0f8;color:var(--ts);}' +
         '.sp-btn-p:hover:not(:disabled){background:#e4e4f0;}' +
@@ -369,11 +820,26 @@
         '.sp-btn:disabled{opacity:.4;cursor:not-allowed;}' +
         '.sp-dots{display:flex;align-items:center;gap:5px;}' +
         '.sp-dot{width:6px;height:6px;border-radius:50%;background:#d0d0e0;transition:all .3s;cursor:pointer;border:none;padding:0;}' +
-        '.sp-dot.active{background:var(--accent);width:16px;border-radius:3px;}';
+        '.sp-dot.active{background:var(--accent);width:16px;border-radius:3px;}'+
+        '@media (max-width:640px){.sp-slide{padding:14px 12px;}}';
     }
 
     function buildScormScript(n, editMode) {
-        return 'var cur=0,tot='+n+';' +
+        return 'var cur=0,tot='+n+',__spIxT=null;' +
+        'function hideAllIxTips_(){clearTimeout(__spIxT);__spIxT=null;document.querySelectorAll(".sp-ix-tooltip").forEach(function(t){t.setAttribute("hidden","hidden");});document.querySelectorAll(".sp-ix-hint").forEach(function(b){b.setAttribute("aria-expanded","false");});}' +
+        'function showIxTipForSlide_(si){if(document.body.classList.contains("sp--editing"))return;hideAllIxTips_();var ss=document.querySelectorAll(".sp-slide");if(!ss[si])return;var wrap=ss[si].querySelector(".sp-ix-wrap");if(!wrap)return;var btn=wrap.querySelector(".sp-ix-hint");var tip=wrap.querySelector(".sp-ix-tooltip");if(!btn||!tip)return;var tx=btn.getAttribute("data-sp-ix-tip");if(!tx)return;tip.textContent=tx;tip.removeAttribute("hidden");btn.setAttribute("aria-expanded","true");__spIxT=setTimeout(function(){tip.setAttribute("hidden","hidden");btn.setAttribute("aria-expanded","false");__spIxT=null;},3000);}' +
+        'function wireSpEditingExtras(){' +
+        'document.querySelectorAll("[data-sp-img-rep]").forEach(function(btn){' +
+        'btn.addEventListener("click",function(e){e.preventDefault();e.stopPropagation();var idx=btn.getAttribute("data-sp-img-rep");var inp=document.querySelector(".sp-split-img-input[data-sp-img-input=\\""+idx+"\\"]");if(inp)inp.click();});});' +
+        'document.querySelectorAll(".sp-split-img-input").forEach(function(inp){' +
+        'inp.addEventListener("change",function(){var f=inp.files&&inp.files[0];if(!f||!f.type||f.type.indexOf("image")!==0)return;var r=new FileReader();r.onload=function(){var si=inp.getAttribute("data-sp-img-input");var img=document.querySelector("img[data-sp-key=\\"slide-"+si+"-image\\"]");if(img)img.src=r.result;};r.readAsDataURL(f);inp.value="";});});' +
+        'document.querySelectorAll(".sp-tl-add").forEach(function(b){b.addEventListener("click",function(){var slide=b.closest(".sp-slide");var tr=slide&&slide.querySelector(".sp-tl-track");if(!tr)return;var n=tr.querySelectorAll(".sp-tl-item").length;if(n>=12)return;var last=tr.querySelector(".sp-tl-item:last-child");if(!last)return;var nw=last.cloneNode(true);nw.querySelectorAll("[data-sp-key]").forEach(function(el){el.removeAttribute("data-sp-key");});tr.appendChild(nw);});});' +
+        'document.querySelectorAll(".sp-tl-del").forEach(function(b){b.addEventListener("click",function(){var slide=b.closest(".sp-slide");var tr=slide&&slide.querySelector(".sp-tl-track");if(!tr)return;var items=tr.querySelectorAll(".sp-tl-item");if(items.length<=2)return;items[items.length-1].remove();});});' +
+        'document.querySelectorAll(".sp-fc-add").forEach(function(b){b.addEventListener("click",function(){var slide=b.closest(".sp-slide");var g=slide&&slide.querySelector(".sp-fc-grid");if(!g)return;var n=g.querySelectorAll(".sp-fc").length;if(n>=8)return;var last=g.querySelector(".sp-fc:last-child");if(!last)return;var nw=last.cloneNode(true);nw.classList.remove("sp-fc--flipped");nw.querySelectorAll("[data-sp-key]").forEach(function(el){el.removeAttribute("data-sp-key");});g.appendChild(nw);});});' +
+        'document.querySelectorAll(".sp-fc-del").forEach(function(b){b.addEventListener("click",function(){var slide=b.closest(".sp-slide");var g=slide&&slide.querySelector(".sp-fc-grid");if(!g)return;var items=g.querySelectorAll(".sp-fc");if(items.length<=2)return;items[items.length-1].remove();});});' +
+        'document.querySelectorAll("[data-sp-match-add]").forEach(function(b){b.addEventListener("click",function(){var sid=b.getAttribute("data-sp-match-add");var list=document.querySelector("[data-sp-match-pairlist=\\""+sid+"\\"]");if(!list)return;var rows=list.querySelectorAll(".sp-match-pair-row");if(rows.length>=12)return;var last=rows[rows.length-1];if(!last)return;var nw=last.cloneNode(true);nw.querySelectorAll("select").forEach(function(s){s.selectedIndex=0;});list.appendChild(nw);});});' +
+        'document.querySelectorAll("[data-sp-match-pairlist]").forEach(function(list){list.addEventListener("click",function(ev){var del=ev.target.closest(".sp-match-pair-del");if(!del||!list.contains(del))return;var rows=list.querySelectorAll(".sp-match-pair-row");if(rows.length<=2)return;var row=del.closest(".sp-match-pair-row");if(row)row.remove();});});' +
+        '}' +
         'function nav(d){' +
         '  if((d<0&&cur===0)||(d>0&&cur===tot-1))return;' +
         '  var ss=document.querySelectorAll(".sp-slide"),prev=cur;' +
@@ -392,14 +858,101 @@
         '  var pf=document.getElementById("sp-pf");if(pf)pf.style.width=((cur+1)/tot*100)+"%";' +
         '  var ct=document.getElementById("sp-ct-num");if(ct)ct.textContent=(cur+1)+" / "+tot;' +
         '  document.getElementById("sp-prev").disabled=cur===0;' +
-        '  document.getElementById("sp-next").disabled=cur===tot-1;' +
-        '  document.querySelectorAll(".sp-dot").forEach(function(d,i){d.classList.toggle("active",i===cur);});}' +
+        '  var nx=document.getElementById("sp-next");if(nx){if(cur===tot-1)nx.setAttribute("hidden","hidden");else nx.removeAttribute("hidden");}' +
+        '  document.querySelectorAll(".sp-dot").forEach(function(d,i){d.classList.toggle("active",i===cur);});' +
+        '  try{showIxTipForSlide_(cur);}catch(eIx){}}' +
         (editMode ? 'function openColorPicker(el){try{parent.ccScormOpenColorPicker(el,function(hex){document.documentElement.style.setProperty("--accent",hex);var sw=document.getElementById("sp-cpsw");if(sw)sw.style.background=hex;});}catch(e){}}' : '') +
+        'function wireScormIx(){' +
+        'document.querySelectorAll(".sp-ix-hint").forEach(function(btn){' +
+        'btn.addEventListener("click",function(e){' +
+        'e.stopPropagation();' +
+        'if(document.body.classList.contains("sp--editing"))return;' +
+        'var wrap=btn.closest(".sp-ix-wrap");if(!wrap)return;var tip=wrap.querySelector(".sp-ix-tooltip");if(!tip)return;' +
+        'clearTimeout(__spIxT);__spIxT=null;' +
+        'var wasOpen=!tip.hasAttribute("hidden");' +
+        'document.querySelectorAll(".sp-ix-tooltip").forEach(function(t){t.setAttribute("hidden","hidden");});' +
+        'document.querySelectorAll(".sp-ix-hint").forEach(function(b){b.setAttribute("aria-expanded","false");});' +
+        'if(wasOpen)return;' +
+        'var tx=btn.getAttribute("data-sp-ix-tip");if(!tx)return;tip.textContent=tx;tip.removeAttribute("hidden");btn.setAttribute("aria-expanded","true");' +
+        '});});' +
+        'if(!window.__spIxDocBound){window.__spIxDocBound=1;document.addEventListener("click",function(){hideAllIxTips_();});}' +
+        'document.querySelectorAll(".sp-tabs-card").forEach(function(root){' +
+        'root.querySelectorAll(".sp-tab-btn").forEach(function(btn){' +
+        'btn.addEventListener("click",function(e){' +
+        'if(e.target.closest("[contenteditable]"))return;' +
+        'var i=btn.getAttribute("data-sp-tab");' +
+        'root.querySelectorAll(".sp-tab-btn").forEach(function(b){var on=b===btn;b.classList.toggle("sp-tab-btn--active",on);b.setAttribute("aria-selected",on?"true":"false");});' +
+        'root.querySelectorAll(".sp-tab-panel").forEach(function(p){var m=p.getAttribute("data-sp-panel")===i;p.classList.toggle("sp-tab-panel--active",m);if(m)p.removeAttribute("hidden");else p.setAttribute("hidden","hidden");});' +
+        '});});});' +
+        'document.querySelectorAll("[data-sp-hs-root]").forEach(function(root){' +
+        'var bd=root.querySelector(".sp-hotspot-backdrop");' +
+        'var panels=root.querySelectorAll("[data-sp-hs-panel]");' +
+        'function hsClose(){if(bd)bd.setAttribute("hidden","hidden");panels.forEach(function(p){p.setAttribute("hidden","hidden");});}' +
+        'root.querySelectorAll(".sp-hotspot-pin").forEach(function(pin){' +
+        'if(document.body.classList.contains("sp--editing")){' +
+        'pin.classList.add("sp-hotspot-pin--drag");' +
+        'pin.addEventListener("mousedown",function(ev){' +
+        'ev.preventDefault();ev.stopPropagation();' +
+        'var wrap=root.querySelector(".sp-media-img-wrap");if(!wrap)return;var r=wrap.getBoundingClientRect();' +
+        'function move(ev2){var x=((ev2.clientX-r.left)/r.width)*100;var y=((ev2.clientY-r.top)/r.height)*100;' +
+        'pin.style.left=Math.max(5,Math.min(95,x))+"%";pin.style.top=Math.max(5,Math.min(95,y))+"%";}' +
+        'function up(){document.removeEventListener("mousemove",move);document.removeEventListener("mouseup",up);}' +
+        'document.addEventListener("mousemove",move);document.addEventListener("mouseup",up);});' +
+        '}else{' +
+        'pin.addEventListener("click",function(ev){' +
+        'if(ev.target.closest("[contenteditable]"))return;' +
+        'var i=pin.getAttribute("data-sp-hs-i");var p=root.querySelector("[data-sp-hs-panel=\\""+i+"\\"]");' +
+        'hsClose();if(p&&bd){p.removeAttribute("hidden");bd.removeAttribute("hidden");}});}' +
+        '});' +
+        'if(bd)bd.addEventListener("click",hsClose);' +
+        'root.querySelectorAll(".sp-hotspot-close").forEach(function(cb){cb.addEventListener("click",hsClose);});' +
+        '});' +
+        'if(document.body.classList.contains("sp--editing")){try{wireSpEditingExtras();}catch(eEd){}}' +
+        'document.querySelectorAll(".sp-fc").forEach(function(c){' +
+        'c.addEventListener("click",function(ev){' +
+        'if(document.body.classList.contains("sp--editing")&&ev.target.closest("[contenteditable]"))return;' +
+        'c.classList.toggle("sp-fc--flipped");});});' +
+        'function spConfetti_(){var w=window.innerWidth,h=window.innerHeight;var c=document.createElement("canvas");c.className="sp-confetti-canvas";c.width=w;c.height=h;var ctx=c.getContext("2d");document.body.appendChild(c);var parts=[];for(var i=0;i<90;i++){parts.push({x:Math.random()*w,y:-20-Math.random()*h*0.4,vx:(Math.random()-.5)*5,vy:Math.random()*3+2,s:Math.random()*5+3,hue:Math.floor(Math.random()*360),r:Math.random()*6});}var t0=Date.now();function frame(){var t=Date.now()-t0;if(t>2400){if(c.parentNode)c.parentNode.removeChild(c);return;}ctx.clearRect(0,0,w,h);parts.forEach(function(p){p.x+=p.vx;p.y+=p.vy;p.vy+=0.12;p.r+=0.15;ctx.fillStyle="hsla("+p.hue+",80%,58%,0.92)";ctx.beginPath();ctx.arc(p.x,p.y,p.s+Math.sin(p.r)*0.5,0,6.28);ctx.fill();});requestAnimationFrame(frame);}requestAnimationFrame(frame);}' +
+        'document.querySelectorAll(".sp-quiz-card").forEach(function(card){' +
+        'var steps=card.querySelectorAll(".sp-quiz-step"),total=steps.length,curQ=0,doneEl=card.querySelector(".sp-quiz-done"),rst=card.querySelector(".sp-quiz-restart");' +
+        'function showQ(qi){steps.forEach(function(s,j){s.classList.toggle("sp-quiz-step--active",j===qi);if(j===qi)s.removeAttribute("hidden");else s.setAttribute("hidden","hidden");});}' +
+        'function resetQuiz(){curQ=0;if(doneEl)doneEl.setAttribute("hidden","hidden");steps.forEach(function(s){s.querySelectorAll(".sp-quiz-opt").forEach(function(o){o.classList.remove("sp-quiz-opt--pick","sp-quiz-opt--bad");});});if(total)showQ(0);}' +
+        'function finish(){steps.forEach(function(s){s.setAttribute("hidden","hidden");s.classList.remove("sp-quiz-step--active");});if(doneEl)doneEl.removeAttribute("hidden");try{spConfetti_();}catch(eC){}}' +
+        'if(rst)rst.addEventListener("click",function(e){e.preventDefault();resetQuiz();});' +
+        'steps.forEach(function(step){' +
+        'step.querySelectorAll(".sp-quiz-opt").forEach(function(opt){' +
+        'opt.addEventListener("click",function(){' +
+        'var ok=opt.getAttribute("data-correct")==="1";' +
+        'step.querySelectorAll(".sp-quiz-opt").forEach(function(o){o.classList.remove("sp-quiz-opt--pick","sp-quiz-opt--bad");});' +
+        'if(!ok){opt.classList.add("sp-quiz-opt--bad");return;}' +
+        'opt.classList.add("sp-quiz-opt--pick");' +
+        'setTimeout(function(){curQ++;if(curQ<total)showQ(curQ);else finish();},1000);' +
+        '});});});' +
+        'if(total)showQ(0);' +
+        '});' +
+        'document.querySelectorAll(".sp-match-card").forEach(function(card){' +
+        'var pairs,raw=card.getAttribute("data-sp-match-pairs");try{pairs=JSON.parse(raw||"[]");}catch(e){pairs=[];}' +
+        'var selL=null;' +
+        'function clr(){selL=null;card.querySelectorAll(".sp-match-cell").forEach(function(x){x.classList.remove("sp-match--sel");});}' +
+        'card.querySelectorAll(".sp-match-cell").forEach(function(cell){' +
+        'cell.addEventListener("click",function(){' +
+        'if(document.body.classList.contains("sp--editing"))return;' +
+        'var side=cell.getAttribute("data-sp-match-side");var idx=parseInt(cell.getAttribute("data-sp-match-i"),10);' +
+        'if(side==="L"){clr();selL=idx;cell.classList.add("sp-match--sel");return;}' +
+        'if(side==="R"&&selL!==null){' +
+        'var ok=pairs.some(function(pr){return pr[0]===selL&&pr[1]===idx;});' +
+        'var Lc=card.querySelector(".sp-match-left[data-sp-match-i=\'"+selL+"\']");' +
+        'if(ok){cell.classList.add("sp-match--ok");if(Lc)Lc.classList.add("sp-match--ok");}' +
+        'else{if(Lc)Lc.classList.add("sp-match--wrong");cell.classList.add("sp-match--wrong");setTimeout(function(){if(Lc)Lc.classList.remove("sp-match--wrong");cell.classList.remove("sp-match--wrong");},1200);}' +
+        'clr();}' +
+        '});});});' +
+        '}' +
         'document.addEventListener("DOMContentLoaded",function(){' +
+        'try{var pu=window.parent&&window.parent.location&&window.parent.location.href;var u=new URL(pu);u.hash="";u.search="";var p=u.pathname.split("/");p.pop();u.pathname=p.join("/")+"/";var be=document.createElement("base");be.href=u.href;document.head.insertBefore(be,document.head.firstChild);}catch(e1){}' +
         '  var ss=document.querySelectorAll(".sp-slide");if(ss[0])ss[0].classList.add("active");' +
         '  var dc=document.getElementById("sp-dots");' +
         '  for(var i=0;i<tot;i++){(function(idx){var d=document.createElement("button");d.className="sp-dot"+(idx===0?" active":"");d.addEventListener("click",function(){gotoSlide(idx);});dc.appendChild(d);})(i);}' +
-        '  upd();});';
+        '  upd();wireScormIx();});';
     }
 
     function generateScormHtml(titulo, slides, color, editMode) {
@@ -411,16 +964,18 @@
         var colorTrigger = editMode
             ? '<button class="sp-color-trigger" onclick="openColorPicker(this)" aria-label="Cambiar color"><div class="sp-color-swatch" id="sp-cpsw"></div><span>Color principal</span></button>'
             : '';
+        var headerInner = editMode
+            ? colorTrigger + '<span class="sp-title">'+esc(titulo)+'</span><span class="sp-ct" id="sp-ct-num">1 / '+n+'</span>'
+            : '<span class="sp-ct sp-ct--solo" id="sp-ct-num">1 / '+n+'</span>';
+        var headerRowClass = editMode ? 'sp-hi' : 'sp-hi sp-hi--viewer';
 
         return '<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">'+
             '<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">'+
-            '<style>'+css+'</style></head><body>'+
+            '<style>'+css+'</style></head><body'+(editMode?' class="sp--editing"':'')+'>'+
             '<div class="sp-header">'+
                 '<div class="sp-pb"><div class="sp-pf" id="sp-pf"></div></div>'+
-                '<div class="sp-hi">'+
-                    colorTrigger+
-                    '<span class="sp-title">'+esc(titulo)+'</span>'+
-                    '<span class="sp-ct" id="sp-ct-num">1 / '+n+'</span>'+
+                '<div class="'+headerRowClass+'">'+
+                    headerInner+
                 '</div>'+
             '</div>'+
             '<div class="sp-stage"><div class="sp-slides">'+slidesHtml+'</div></div>'+
@@ -432,131 +987,68 @@
             '<script>'+script+'<\/script></body></html>';
     }
 
-    /* ══════════════════════════════════════
-       PREVIEW PASO 1 (columna derecha)
-    ══════════════════════════════════════ */
-    function buildPreviewHtml() {
-        var col=_color, dark=darkenHex(col,0.2), ct=contrastColor(col);
-        var tit=esc(_titulo||'Título del módulo');
-        var n=_numSlides;
-        var slides=[
-            /* 0 — Intro (icono genérico: en el SCORM real va el icono elegido) */
-            '<div class="pv-slide pv-intro">'+
-                '<div class="pv-icon" title="Aquí irá el icono de portada"><i class="fas fa-icons" aria-hidden="true"></i></div>'+
-                '<div class="pv-title">'+tit+'</div>'+
-                '<div class="pv-badge"><i class="fas fa-layer-group"></i>'+n+' slides · Presentación</div>'+
-            '</div>',
-            /* 1 — Content card */
-            '<div class="pv-slide pv-content">'+
-                '<div class="pv-card">'+
-                    '<div class="pv-tag"><i class="fas fa-book-open"></i>Contenido</div>'+
-                    '<div class="pv-card-title">Punto clave del módulo</div>'+
-                    '<ul class="pv-list">'+
-                        '<li>Bullet con contenido de tu contexto</li>'+
-                        '<li>Otro punto relevante del tema</li>'+
-                        '<li>Idea adicional generada por la IA</li>'+
-                    '</ul>'+
-                '</div>'+
-            '</div>',
-            /* 2 — Summary (mismo patrón que SCORM: panel ancho + trofeo compacto) */
-            '<div class="pv-slide pv-summary">'+
-                '<div class="pv-sum-panel">'+
-                '<div class="pv-trophy" title="Aquí irá el icono de cierre"><i class="fas fa-icons" aria-hidden="true"></i></div>'+
-                '<div class="pv-sum-title">Lo que aprendiste</div>'+
-                '<ul class="pv-sum-list">'+
-                    '<li><i class="fas fa-check"></i><span>Conclusión clave del módulo</span></li>'+
-                    '<li><i class="fas fa-check"></i><span>Otro aprendizaje de tu tema</span></li>'+
-                '</ul>'+
-                '</div>'+
-            '</div>'
-        ];
-        var tot=slides.length;
-        return '<!DOCTYPE html><html><head><meta charset="UTF-8">'+
-        '<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">'+
-        '<style>*{box-sizing:border-box;margin:0;padding:0;}body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#f8f9fc;height:100vh;display:flex;flex-direction:column;overflow:hidden;}'+
-        '.ph{background:#fff;border-bottom:1px solid #eee;flex-shrink:0;}'+
-        '.ph-pb{height:3px;background:rgba(0,0,0,.07);}'+
-        '.ph-pf{height:100%;background:'+col+';width:33%;transition:width .4s;}'+
-        '.ph-hi{display:flex;align-items:center;justify-content:space-between;padding:7px 14px;gap:8px;}'+
-        '.ph-title{font-size:11px;font-weight:700;color:#333;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1;min-width:0;}'+
-        '.ph-ctr{font-size:11px;color:#aaa;flex-shrink:0;}'+
-        '.pm{flex:1;overflow:hidden;position:relative;}'+
-        '.pv-slide{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;gap:12px;text-align:center;opacity:0;transform:translateX(24px);transition:opacity .3s,transform .3s;pointer-events:none;}'+
-        '.pv-slide.active{opacity:1;transform:translateX(0);pointer-events:auto;}'+
-        '.pv-slide.exit{opacity:0;transform:translateX(-24px);}'+
-        /* Intro */
-        '.pv-intro{background:linear-gradient(145deg,'+col+' 0%,'+dark+' 100%);}'+
-        '.pv-icon{width:52px;height:52px;min-width:52px;min-height:52px;aspect-ratio:1;flex-shrink:0;border-radius:50%;background:rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;font-size:20px;color:#fff;}'+
-        '.pv-title{font-size:14px;font-weight:800;color:#fff;max-width:220px;line-height:1.3;}'+
-        '.pv-badge{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:100px;background:rgba(255,255,255,.18);color:rgba(255,255,255,.9);font-size:10px;font-weight:600;}'+
-        /* Content */
-        '.pv-content{background:color-mix(in srgb,'+col+' 5%,#f2f5fb);}'+
-        '.pv-card{background:#fff;border-radius:10px;box-shadow:0 4px 20px rgba(0,0,0,.08);padding:18px;border-left:3px solid '+col+';width:100%;max-width:260px;text-align:left;display:flex;flex-direction:column;gap:10px;}'+
-        '.pv-tag{display:inline-flex;align-items:center;gap:5px;padding:2px 8px;border-radius:100px;background:rgba(0,0,0,.06);color:'+col+';font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;}'+
-        '.pv-card-title{font-size:12px;font-weight:800;color:#1a1a2e;line-height:1.35;}'+
-        '.pv-list{list-style:none;display:flex;flex-direction:column;gap:5px;}'+
-        '.pv-list li{font-size:10px;color:#4a4a6a;display:flex;align-items:flex-start;gap:6px;line-height:1.5;}'+
-        '.pv-list li::before{content:"";width:5px;height:5px;border-radius:50%;background:'+col+';flex-shrink:0;margin-top:4px;}'+
-        /* Summary */
-        '.pv-summary{background:linear-gradient(145deg,'+col+' 0%,'+dark+' 100%);}'+
-        '.pv-sum-panel{width:100%;max-width:260px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:8px;padding:12px 14px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:10px;box-sizing:border-box;}'+
-        '.pv-trophy{width:24px;height:24px;min-width:24px;min-height:24px;aspect-ratio:1;flex-shrink:0;border-radius:50%;background:rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;font-size:10px;color:#fff;}'+
-        '.pv-sum-title{font-size:14px;font-weight:800;color:#fff;}'+
-        '.pv-sum-list{list-style:none;display:flex;flex-direction:column;gap:6px;text-align:left;width:100%;max-width:100%;margin:0;padding:0;}'+
-        '.pv-sum-list li{display:flex;align-items:flex-start;gap:7px;color:rgba(255,255,255,.9);font-size:10px;line-height:1.5;}'+
-        '.pv-sum-list li i{color:rgba(255,255,255,.65);font-size:9px;margin-top:2px;flex-shrink:0;}'+
-        /* Footer */
-        '.pf{background:#fff;border-top:1px solid #eee;display:flex;align-items:center;justify-content:space-between;padding:7px 12px;flex-shrink:0;}'+
-        '.pf-btn{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:7px;font-size:10px;font-weight:700;cursor:pointer;border:none;font-family:inherit;transition:opacity .15s;}'+
-        '.pf-btn:disabled{opacity:.35;cursor:not-allowed;}'+
-        '.pf-btn-p{background:#f0f0f8;color:#888;}'+
-        '.pf-btn-n{background:'+col+';color:'+ct+';}'+
-        '.pf-dots{display:flex;align-items:center;gap:4px;}'+
-        '.pf-dot{width:5px;height:5px;border-radius:50%;background:#d0d0e0;border:none;padding:0;cursor:pointer;}'+
-        '.pf-dot.a{background:'+col+';width:12px;border-radius:3px;}'+
-        '</style></head><body>'+
-        '<div class="ph">'+
-            '<div class="ph-pb"><div class="ph-pf" id="pf-bar"></div></div>'+
-            '<div class="ph-hi"><span class="ph-title">'+tit+'</span><span class="ph-ctr" id="pf-ctr">1 / '+n+'</span></div>'+
-        '</div>'+
-        '<div class="pm">'+slides.join('')+'</div>'+
-        '<div class="pf">'+
-            '<button class="pf-btn pf-btn-p" id="pf-prev" onclick="nav(-1)" disabled><i class="fas fa-arrow-left"></i><span>Anterior</span></button>'+
-            '<div class="pf-dots" id="pf-dots"></div>'+
-            '<button class="pf-btn pf-btn-n" id="pf-next" onclick="nav(1)"><span>Siguiente</span><i class="fas fa-arrow-right"></i></button>'+
-        '</div>'+
-        '<script>'+
-        'var cur=0,tot='+tot+',realTot='+n+';'+
-        'function nav(d){'+
-        '  if((d<0&&cur===0)||(d>0&&cur===tot-1))return;'+
-        '  var ss=document.querySelectorAll(".pv-slide"),prev=cur;'+
-        '  cur=Math.max(0,Math.min(tot-1,cur+d));'+
-        '  if(d>0){ss[prev].classList.add("exit");}'+
-        '  ss[prev].classList.remove("active");'+
-        '  if(d<0){ss[cur].style.transition="none";ss[cur].style.transform="translateX(-24px)";ss[cur].style.opacity="0";ss[cur].offsetHeight;ss[cur].style.transition="";ss[cur].style.transform="";ss[cur].style.opacity="";}'+
-        '  ss[cur].classList.add("active");'+
-        '  setTimeout(function(){if(d>0)ss[prev].classList.remove("exit");},350);'+
-        '  upd();}'+
-        'function upd(){'+
-        '  var realCur=Math.round(cur/(tot-1)*(realTot-1))+1;'+
-        '  var bar=document.getElementById("pf-bar");if(bar)bar.style.width=(realCur/realTot*100)+"%";'+
-        '  var ctr=document.getElementById("pf-ctr");if(ctr)ctr.textContent=realCur+" / "+realTot;'+
-        '  document.getElementById("pf-prev").disabled=cur===0;'+
-        '  document.getElementById("pf-next").disabled=cur===tot-1;'+
-        '  document.querySelectorAll(".pf-dot").forEach(function(d,i){d.classList.toggle("a",i===cur);});}'+
-        'document.addEventListener("DOMContentLoaded",function(){'+
-        '  var ss=document.querySelectorAll(".pv-slide");if(ss[0])ss[0].classList.add("active");'+
-        '  var dc=document.getElementById("pf-dots");'+
-        '  for(var i=0;i<tot;i++){(function(idx){var d=document.createElement("button");d.className="pf-dot"+(idx===0?" a":"");d.onclick=function(){gotoSlide(idx);};dc.appendChild(d);})(i);}'+
-        '  upd();});'+
-        'function gotoSlide(i){var ss=document.querySelectorAll(".pv-slide");ss[cur].classList.remove("active");cur=i;ss[cur].classList.add("active");upd();}'+
-        '<\/script></body></html>';
+    function applyPlaceholderSlidesForPreview(slides) {
+        var t = 'Título de la diapositiva';
+        var b = 'Párrafo descriptivo sobre el tema que explica detalladamente el tema a tratar de una forma amena para los estudiantes de la plataforma.';
+        var bl = 'Bullet informativo sobre el tema a tratar';
+        return slides.map(function (s) {
+            var x = JSON.parse(JSON.stringify(s));
+            if (x.title != null) x.title = t;
+            if (x.subtitle != null) x.subtitle = 'Subtítulo de ejemplo';
+            if (x.body != null && x.body !== '') x.body = b;
+            if (x.author != null) x.author = 'Autor de ejemplo';
+            if (x.statement != null) x.statement = b;
+            if (x.desc != null) x.desc = 'Descripción breve de apoyo.';
+            if (x.stat != null) x.stat = '00%';
+            if (x.bullets && x.bullets.length) x.bullets = x.bullets.map(function () { return bl; });
+            if (x.items && x.items.length) {
+                x.items = x.items.map(function () {
+                    return { label: 'Etiqueta', title: t, body: b };
+                });
+            }
+            if (x.tabs && x.tabs.length) {
+                x.tabs = x.tabs.map(function () {
+                    return { label: 'Pestaña', body: b };
+                });
+            }
+            if (x.cards && x.cards.length) {
+                x.cards = x.cards.map(function () {
+                    return { front: t, back: b };
+                });
+            }
+            if (x.rows && x.rows.length) {
+                x.rows = x.rows.map(function () {
+                    return { left: bl, right: bl };
+                });
+            }
+            if (x.leftTag) x.leftTag = 'Opción A';
+            if (x.rightTag) x.rightTag = 'Opción B';
+            if (x.leftTitle) x.leftTitle = t;
+            if (x.rightTitle) x.rightTitle = t;
+            if (x.leftBody) x.leftBody = b;
+            if (x.rightBody) x.rightBody = b;
+            if (x.questions && x.questions.length) {
+                x.questions = x.questions.map(function () {
+                    return { question: t, options: ['Opción A', 'Opción B', 'Opción C'], correctIndex: 0 };
+                });
+            }
+            if (x.left && x.left.length) x.left = x.left.map(function () { return bl; });
+            if (x.right && x.right.length) x.right = x.right.map(function () { return bl; });
+            if (x.hotspots && x.hotspots.length) {
+                x.hotspots = x.hotspots.map(function () {
+                    return { x: 50, y: 50, title: t, body: b };
+                });
+            }
+            return x;
+        });
     }
 
     function refreshPreview() {
-        var frame=document.getElementById('cc-sm-preview-frame');
+        var frame = document.getElementById('cc-sm-preview-frame');
         if (!frame) return;
-        frame.srcdoc=buildPreviewHtml();
+        var slides = applyPlaceholderSlidesForPreview(generateSlides(_numSlides));
+        var tit = (_titulo && String(_titulo).trim()) ? String(_titulo).trim() : 'Título del módulo';
+        frame.srcdoc = generateScormHtml(tit, slides, _color, false);
     }
 
     /* ══════════════════════════════════════
@@ -585,7 +1077,7 @@
                     '</div>' +
                 '</div>' +
             '</div>' +
-            '<div class="ubits-resources-block__footer" style="display:flex;align-items:center;gap:var(--gap-sm);">' +
+            '<div class="ubits-resources-block__footer" style="display:flex;align-items:center;gap:var(--gap-sm);flex-wrap:wrap;">' +
                 editBtn +
                 '<button type="button" class="ubits-button ubits-button--error-secondary ubits-button--sm" id="cc-eliminar-recurso"><i class="far fa-trash-alt"></i><span>Eliminar</span></button>' +
             '</div>' +
@@ -676,7 +1168,7 @@
         var mc=overlay.querySelector('.ubits-modal-content');
         if (mc) mc.classList.add('portada-ia-modal-content','cc-scorm-ia-modal-content');
         var mb=overlay.querySelector('.ubits-modal-body');
-        if (mb) { mb.style.padding='var(--padding-xl)'; mb.style.overflow='hidden'; mb.style.display='flex'; mb.style.flexDirection='column'; mb.style.maxHeight=''; mb.style.flex=''; }
+        if (mb) { mb.style.padding='var(--padding-xl)'; mb.style.overflowY='auto'; mb.style.overflowX='hidden'; mb.style.display='flex'; mb.style.flexDirection='column'; mb.style.maxHeight=''; mb.style.flex=''; }
         syncScormTokensBadge();
     }
 
@@ -916,7 +1408,7 @@
                     '</div>' +
                 '</div>' +
             '</div>' +
-            '<div class="ubits-resources-block__footer" style="display:flex;align-items:center;gap:var(--gap-sm);">' +
+            '<div class="ubits-resources-block__footer" style="display:flex;align-items:center;gap:var(--gap-sm);flex-wrap:wrap;">' +
                 '<button type="button" class="ubits-button ubits-button--error-secondary ubits-button--sm" id="cc-eliminar-recurso"><i class="far fa-trash-alt"></i><span>Eliminar</span></button>' +
             '</div>' +
         '</div>';
@@ -953,34 +1445,202 @@
     }
 
     /* ══════════════════════════════════════
-       MODAL DE EDICIÓN INLINE
+       EDICIÓN — lightbox (mismo patrón que pantalla completa SCORM)
     ══════════════════════════════════════ */
+    function closeScormEditLightbox() {
+        var lb = document.getElementById(EDIT_LIGHTBOX_ID);
+        if (lb && lb.parentNode) lb.parentNode.removeChild(lb);
+        if (window._ccScormEditLightboxKeydown) {
+            document.removeEventListener('keydown', window._ccScormEditLightboxKeydown);
+            window._ccScormEditLightboxKeydown = null;
+        }
+    }
+
     function openScormEditModal(pageKey) {
-        var stored=_scormDataStore[pageKey];
+        var stored = _scormDataStore[pageKey];
         if (!stored) return;
 
-        var editHtml=generateScormHtml(stored.titulo, stored.slides, stored.color, true);
-        var escaped=editHtml.replace(/"/g,'&quot;');
+        closeScormEditLightbox();
 
-        var overlay=openModal({
-            overlayId:       EDIT_OVERLAY_ID,
-            title:           'Editar presentación',
-            size:            'lg',
-            bodyHtml:        '<div class="cc-scorm-edit-iframe-wrap"><iframe id="cc-scorm-edit-iframe" class="cc-scorm-edit-iframe" srcdoc="'+escaped+'" allowfullscreen></iframe></div>',
-            footerHtml:      '<button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="cc-scorm-edit-cancel"><span>Cancelar</span></button>'+
-                             '<button type="button" class="ubits-button ubits-button--primary ubits-button--md" id="cc-scorm-edit-save"><span>Guardar</span></button>',
-            closeOnOverlayClick: false
-        });
-        if (!overlay) return;
+        var editHtml = generateScormHtml(stored.titulo, stored.slides, stored.color, true);
 
-        var cancelBtn=overlay.querySelector('#cc-scorm-edit-cancel');
-        if (cancelBtn) cancelBtn.addEventListener('click',function(){ closeCpPanel(); closeModal(EDIT_OVERLAY_ID); });
+        var overlay = document.createElement('div');
+        overlay.id = EDIT_LIGHTBOX_ID;
+        overlay.className = 'cc-scorm-fs-overlay cc-scorm-fs-overlay--lightbox';
+        overlay.setAttribute('role', 'dialog');
+        overlay.setAttribute('aria-modal', 'true');
+        overlay.setAttribute('aria-label', 'Editar presentación');
 
-        var saveBtn=overlay.querySelector('#cc-scorm-edit-save');
-        if (saveBtn) saveBtn.addEventListener('click',function(){
-            collectEditedSlides(pageKey, stored);
+        var panel = document.createElement('div');
+        panel.className = 'cc-scorm-fs-panel cc-scorm-fs-panel--edit-scorm';
+
+        var head = document.createElement('div');
+        head.className = 'cc-scorm-fs-head';
+        var titleEl = document.createElement('p');
+        titleEl.className = 'cc-scorm-fs-title';
+        titleEl.textContent = 'Editar presentación';
+        var closeBtn = document.createElement('button');
+        closeBtn.type = 'button';
+        closeBtn.className = 'cc-scorm-fs-close ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only';
+        closeBtn.setAttribute('aria-label', 'Cerrar');
+        closeBtn.innerHTML = '<i class="far fa-times"></i>';
+        head.appendChild(titleEl);
+        head.appendChild(closeBtn);
+
+        var body = document.createElement('div');
+        body.className = 'cc-scorm-fs-body';
+        var wrap = document.createElement('div');
+        wrap.className = 'cc-scorm-edit-iframe-wrap';
+        var iframe = document.createElement('iframe');
+        iframe.id = 'cc-scorm-edit-iframe';
+        iframe.className = 'cc-scorm-edit-iframe';
+        iframe.setAttribute('allowfullscreen', 'allowfullscreen');
+        iframe.srcdoc = editHtml;
+        wrap.appendChild(iframe);
+        body.appendChild(wrap);
+
+        var foot = document.createElement('div');
+        foot.className = 'cc-scorm-edit-lightbox__footer';
+        foot.innerHTML =
+            '<button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="cc-scorm-edit-cancel"><span>Cancelar</span></button>' +
+            '<button type="button" class="ubits-button ubits-button--primary ubits-button--md" id="cc-scorm-edit-save"><span>Guardar</span></button>';
+
+        panel.appendChild(head);
+        panel.appendChild(body);
+        panel.appendChild(foot);
+        overlay.appendChild(panel);
+        document.body.appendChild(overlay);
+
+        function onKey(e) {
+            if (e.key === 'Escape') {
+                closeCpPanel();
+                closeScormEditLightbox();
+            }
+        }
+        window._ccScormEditLightboxKeydown = onKey;
+        document.addEventListener('keydown', onKey);
+
+        closeBtn.addEventListener('click', function () {
             closeCpPanel();
-            closeModal(EDIT_OVERLAY_ID);
+            closeScormEditLightbox();
+        });
+        overlay.addEventListener('click', function (e) {
+            if (e.target === overlay) {
+                closeCpPanel();
+                closeScormEditLightbox();
+            }
+        });
+
+        var cancelBtn = foot.querySelector('#cc-scorm-edit-cancel');
+        if (cancelBtn) {
+            cancelBtn.addEventListener('click', function () {
+                closeCpPanel();
+                closeScormEditLightbox();
+            });
+        }
+        var saveBtn = foot.querySelector('#cc-scorm-edit-save');
+        if (saveBtn) {
+            saveBtn.addEventListener('click', function () {
+                collectEditedSlides(pageKey, stored);
+                closeCpPanel();
+                closeScormEditLightbox();
+            });
+        }
+    }
+
+    function rebuildStructuralFromDom(doc, newSlides) {
+        doc.querySelectorAll('.sp-slide[data-idx]').forEach(function (el) {
+            var idx = parseInt(el.getAttribute('data-idx'), 10);
+            if (isNaN(idx) || !newSlides[idx]) return;
+            var st = newSlides[idx].type;
+
+            var imgEl = el.querySelector('img[data-sp-key$="-image"]');
+            if (imgEl) {
+                var src = imgEl.getAttribute('src');
+                if (src) newSlides[idx].image = src;
+            }
+
+            if (st === 'timeline') {
+                var items = [];
+                el.querySelectorAll('.sp-tl-item').forEach(function (row) {
+                    var lab = row.querySelector('.sp-tl-label');
+                    var tit = row.querySelector('.sp-tl-title');
+                    var bod = row.querySelector('.sp-tl-body');
+                    items.push({
+                        label: ((lab && lab.textContent) || '').trim(),
+                        title: ((tit && tit.textContent) || '').trim(),
+                        body: ((bod && bod.textContent) || '').trim()
+                    });
+                });
+                if (items.length >= 2) newSlides[idx].items = items;
+            }
+
+            if (st === 'flashcards') {
+                var cards = [];
+                el.querySelectorAll('.sp-fc').forEach(function (fc) {
+                    var f = fc.querySelector('.sp-fc-front span') || fc.querySelector('.sp-fc-front');
+                    var b_ = fc.querySelector('.sp-fc-back span') || fc.querySelector('.sp-fc-back');
+                    cards.push({
+                        front: ((f && f.textContent) || '').trim(),
+                        back: ((b_ && b_.textContent) || '').trim()
+                    });
+                });
+                if (cards.length >= 2) newSlides[idx].cards = cards;
+            }
+
+            if (st === 'quiz_mc') {
+                var qList = [];
+                el.querySelectorAll('.sp-quiz-step').forEach(function (step) {
+                    var qtext = step.querySelector('.sp-quiz-q');
+                    var opts = [];
+                    var correctIndex = 0;
+                    var rows = step.querySelectorAll('.sp-quiz-opt-row');
+                    if (rows.length) {
+                        rows.forEach(function (row, oi) {
+                            var inp = row.querySelector('input[type="radio"]');
+                            var span = row.querySelector('.sp-quiz-opt-text');
+                            opts.push(((span && span.textContent) || '').trim());
+                            if (inp && inp.checked) correctIndex = oi;
+                        });
+                    } else {
+                        step.querySelectorAll('.sp-quiz-opt').forEach(function (opt, oi) {
+                            opts.push((opt.textContent || '').trim());
+                            if (opt.getAttribute('data-correct') === '1') correctIndex = oi;
+                        });
+                    }
+                    qList.push({
+                        question: ((qtext && qtext.textContent) || '').trim(),
+                        options: opts,
+                        correctIndex: correctIndex
+                    });
+                });
+                if (qList.length) newSlides[idx].questions = qList;
+            }
+
+            if (st === 'match') {
+                var list = el.querySelector('.sp-match-pair-list');
+                var pairs = [];
+                if (list) {
+                    list.querySelectorAll('.sp-match-pair-row').forEach(function (row) {
+                        var sl = row.querySelector('.sp-match-sel-l');
+                        var sr = row.querySelector('.sp-match-sel-r');
+                        if (!sl || !sr) return;
+                        pairs.push([parseInt(sl.value, 10) || 0, parseInt(sr.value, 10) || 0]);
+                    });
+                }
+                if (pairs.length >= 2) newSlides[idx].pairs = pairs;
+            }
+
+            if (st === 'media' && newSlides[idx].hotspots && newSlides[idx].hotspots.length) {
+                el.querySelectorAll('.sp-hotspot-pin').forEach(function (pin, hi) {
+                    if (!newSlides[idx].hotspots[hi]) newSlides[idx].hotspots[hi] = { x: 50, y: 50, title: '', body: '' };
+                    var stl = pin.getAttribute('style') || '';
+                    var mx = stl.match(/left:([\d.]+)%/);
+                    var my = stl.match(/top:([\d.]+)%/);
+                    if (mx) newSlides[idx].hotspots[hi].x = parseFloat(mx[1]);
+                    if (my) newSlides[idx].hotspots[hi].y = parseFloat(my[1]);
+                });
+            }
         });
     }
 
@@ -992,21 +1652,112 @@
         /* Leer campos editados */
         var newSlides=JSON.parse(JSON.stringify(stored.slides));
         doc.querySelectorAll('[data-sp-key]').forEach(function(el){
-            var key=el.getAttribute('data-sp-key'); // "slide-0-title"
+            var key=el.getAttribute('data-sp-key');
             var parts=key.split('-');
             if (parts.length<3||parts[0]!=='slide') return;
-            var idx=parseInt(parts[1]);
+            var idx=parseInt(parts[1],10);
             var field=parts.slice(2).join('-');
-            if (isNaN(idx)||!newSlides[idx]) return;
-            var text=(el.textContent||el.innerText||'').trim();
+            if (el.tagName === 'IMG') return;
+
             if (field.indexOf('bullet-')===0) {
-                var bi=parseInt(field.replace('bullet-',''));
+                var bi=parseInt(field.replace('bullet-',''),10);
                 if (!newSlides[idx].bullets) newSlides[idx].bullets=[];
                 newSlides[idx].bullets[bi]=text;
-            } else {
-                newSlides[idx][field]=text;
+                return;
             }
+
+            var mItem = field.match(/^item-(\d+)-(title|body)$/);
+            if (mItem) {
+                var ii = parseInt(mItem[1],10);
+                if (!newSlides[idx].items) newSlides[idx].items = [];
+                if (!newSlides[idx].items[ii]) newSlides[idx].items[ii] = {};
+                newSlides[idx].items[ii][mItem[2]] = text;
+                return;
+            }
+
+            var mTab = field.match(/^tab-(\d+)-(label|body)$/);
+            if (mTab) {
+                var ti = parseInt(mTab[1],10);
+                if (!newSlides[idx].tabs) newSlides[idx].tabs = [];
+                if (!newSlides[idx].tabs[ti]) newSlides[idx].tabs[ti] = {};
+                if (mTab[2] === 'label') newSlides[idx].tabs[ti].label = text;
+                else newSlides[idx].tabs[ti].body = text;
+                return;
+            }
+
+            var mCard = field.match(/^card-(\d+)-(front|back)$/);
+            if (mCard) {
+                var ci = parseInt(mCard[1],10);
+                if (!newSlides[idx].cards) newSlides[idx].cards = [];
+                if (!newSlides[idx].cards[ci]) newSlides[idx].cards[ci] = {};
+                newSlides[idx].cards[ci][mCard[2]] = text;
+                return;
+            }
+
+            var mHs = field.match(/^hs-(\d+)-(title|body)$/);
+            if (mHs) {
+                var hsi = parseInt(mHs[1], 10);
+                if (!newSlides[idx].hotspots) newSlides[idx].hotspots = [];
+                if (!newSlides[idx].hotspots[hsi]) newSlides[idx].hotspots[hsi] = { x: 50, y: 50, title: '', body: '' };
+                newSlides[idx].hotspots[hsi][mHs[2]] = text;
+                return;
+            }
+
+            var mTl = field.match(/^tl-(\d+)-(label|title|body)$/);
+            if (mTl) {
+                var li = parseInt(mTl[1],10);
+                if (!newSlides[idx].items) newSlides[idx].items = [];
+                if (!newSlides[idx].items[li]) newSlides[idx].items[li] = {};
+                newSlides[idx].items[li][mTl[2]] = text;
+                return;
+            }
+
+            var mLeft = field.match(/^left-(\d+)$/);
+            if (mLeft && newSlides[idx].left) {
+                newSlides[idx].left[parseInt(mLeft[1],10)] = text;
+                return;
+            }
+            var mRight = field.match(/^right-(\d+)$/);
+            if (mRight && newSlides[idx].right) {
+                newSlides[idx].right[parseInt(mRight[1],10)] = text;
+                return;
+            }
+
+            var mCrow = field.match(/^crow-(\d+)-(left|right)$/);
+            if (mCrow && newSlides[idx].rows) {
+                var cri = parseInt(mCrow[1], 10);
+                if (!newSlides[idx].rows[cri]) newSlides[idx].rows[cri] = {};
+                newSlides[idx].rows[cri][mCrow[2]] = text;
+                return;
+            }
+
+            var mQq = field.match(/^q-(\d+)-question$/);
+            if (mQq && newSlides[idx].questions) {
+                var qqi = parseInt(mQq[1], 10);
+                if (!newSlides[idx].questions[qqi]) newSlides[idx].questions[qqi] = {};
+                newSlides[idx].questions[qqi].question = text;
+                return;
+            }
+            var mQopt = field.match(/^q-(\d+)-opt-(\d+)$/);
+            if (mQopt && newSlides[idx].questions) {
+                var qqi2 = parseInt(mQopt[1], 10);
+                var ooi = parseInt(mQopt[2], 10);
+                if (!newSlides[idx].questions[qqi2]) newSlides[idx].questions[qqi2] = {};
+                if (!newSlides[idx].questions[qqi2].options) newSlides[idx].questions[qqi2].options = [];
+                newSlides[idx].questions[qqi2].options[ooi] = text;
+                return;
+            }
+
+            var mOpt = field.match(/^opt-(\d+)$/);
+            if (mOpt && newSlides[idx].options) {
+                newSlides[idx].options[parseInt(mOpt[1],10)] = text;
+                return;
+            }
+
+            newSlides[idx][field]=text;
         });
+
+        rebuildStructuralFromDom(doc, newSlides);
 
         /* Leer color actual del iframe */
         var newColor=doc.documentElement.style.getPropertyValue('--accent').trim()||stored.color;
@@ -1044,7 +1795,7 @@
         var stored=_currentPageKey?_scormDataStore[_currentPageKey]:null;
         _color          = stored ? stored.color : '#0C5BEF';
         _titulo         = stored ? stored.titulo : '';
-        _numSlides      = 6;
+        _numSlides      = 15;
         _tituloInputApi = null;
         _stepperApi     = null;
 

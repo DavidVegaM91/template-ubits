@@ -4,7 +4,7 @@
    Estados: vacío, vacío con IA (.ubits-learn-img-trailer__empty--ia), hover, error, imagen cargada, tráiler (preview con play).
    Textos por defecto (CTA, hint, Editar, aria): learn-content-img-trailer.js → LEARN_CONTENT_IMG_TRAILER_DEFAULTS.
    Requiere: ubits-colors.css, ubits-typography.css, fontawesome-icons.css, button.css, ia-button.css.
-   Vacío con IA — CTA con ia-button.css (+ aprendizaje-ia-gradientes.css recomendado).
+   Vacío con IA — CTA ia-button primario; tarjeta Figma AI-Capabilities (565:5097 / 565:5124). Clase raíz .ubits-learn-img-trailer--empty-ia (+ aprendizaje-ia-gradientes.css recomendado).
    ======================================== */
 
 .ubits-learn-img-trailer {
@@ -21,11 +21,11 @@
     border: 1px solid var(--ubits-border-1);
     background: var(--ubits-bg-1);
     overflow: hidden;
-    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease, background 0.2s ease;
 }
 
-.ubits-learn-img-trailer:hover:not(.ubits-learn-img-trailer--image):not(.ubits-learn-img-trailer--trailer):not(.ubits-learn-img-trailer--error),
-.ubits-learn-img-trailer--state-hover {
+.ubits-learn-img-trailer:hover:not(.ubits-learn-img-trailer--image):not(.ubits-learn-img-trailer--trailer):not(.ubits-learn-img-trailer--error):not(.ubits-learn-img-trailer--empty-ia),
+.ubits-learn-img-trailer--state-hover:not(.ubits-learn-img-trailer--empty-ia) {
     border-color: var(--ubits-accent-brand);
     box-shadow: 0 0 0 1px var(--ubits-accent-brand);
 }
@@ -94,7 +94,7 @@
     width: 100%;
     max-width: min(42ch, 100%);
     margin-inline: auto;
-    gap: var(--gap-md);
+    gap: var(--gap-lg);
 }
 
 .ubits-learn-img-trailer__empty-ia-icon-wrap {
@@ -104,21 +104,57 @@
     flex-shrink: 0;
 }
 
+/* Vacío con IA — Figma AI-Capabilities: Cover 565:5097, Cover-Hover 565:5124
+   Hover: borde = gradiente IA (anillo multicolor), no solo azul plano; sombras duales como Figma. */
+.ubits-learn-img-trailer.ubits-learn-img-trailer--empty-ia:not(.ubits-learn-img-trailer--image):not(.ubits-learn-img-trailer--trailer):not(.ubits-learn-img-trailer--error) {
+    --learn-img-trailer-radius: var(--border-radius-xl);
+    --learn-img-trailer-inner-radius: var(--border-radius-xl);
+    --learn-img-trailer-ia-ring: linear-gradient(
+        -61.13deg,
+        rgb(255, 84, 22) 6.07%,
+        rgb(234, 6, 111) 35.59%,
+        rgb(136, 35, 234) 67.19%,
+        rgb(12, 91, 239) 92.55%
+    );
+    border-width: 1px;
+    border-style: solid;
+    border-color: var(--ubits-border-1);
+    background: var(--ubits-bg-1);
+    box-shadow: none;
+    /* Sombras del hover se pintan fuera del borde; overflow hidden las recorta. */
+    overflow: visible;
+}
+
+.ubits-learn-img-trailer.ubits-learn-img-trailer--empty-ia:not(.ubits-learn-img-trailer--image):not(.ubits-learn-img-trailer--trailer):not(.ubits-learn-img-trailer--error):hover,
+.ubits-learn-img-trailer.ubits-learn-img-trailer--empty-ia:not(.ubits-learn-img-trailer--image):not(.ubits-learn-img-trailer--trailer):not(.ubits-learn-img-trailer--error).ubits-learn-img-trailer--state-hover {
+    --learn-img-trailer-radius: var(--border-radius-lg);
+    --learn-img-trailer-inner-radius: var(--border-radius-lg);
+    border: 2px solid transparent;
+    background:
+        linear-gradient(var(--ubits-bg-1), var(--ubits-bg-1)) padding-box,
+        var(--learn-img-trailer-ia-ring) border-box;
+    background-origin: padding-box, border-box;
+    background-clip: padding-box, border-box;
+    box-shadow:
+        0 -4px 14px 0 rgba(12, 91, 239, 0.2),
+        0 4px 14px 0 rgba(255, 84, 22, 0.2);
+}
+
 .ubits-learn-img-trailer__empty-ia-icon {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: var(--size-5xl);
-    height: var(--size-5xl);
-    padding: var(--padding-sm);
+    width: 44px;
+    height: 44px;
+    padding: var(--padding-md);
     box-sizing: border-box;
     background: var(--ubits-bg-2);
-    border-radius: var(--border-radius-sm);
+    border-radius: var(--border-radius-full);
     color: var(--ubits-fg-1-high);
 }
 
 .ubits-learn-img-trailer__empty-ia-icon i {
-    font-size: var(--font-size-h2);
+    font-size: 20px;
     line-height: 1;
 }
 

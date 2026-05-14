@@ -3,8 +3,8 @@
  * Textos por defecto: LEARN_CONTENT_IMG_TRAILER_DEFAULTS
  * Marcado vacío: getLearnContentImgTrailerEmptyHtml({ ... , emptyVariant?: 'ia' })
  *   Variante «vacío con IA» (layout tipo empty-state): data-learn-img-trailer-empty-variant="ia" en la raíz
- *   u opción emptyVariant / vacío-con-ia en la API. Sin distintivo badge; CTA «Añadir portada» con ubits-ia-button--secondary--sm.
- *   Requiere ia-button.css (+ aprendizaje-ia-gradientes.css recomendado para borde secundario IA).
+ *   u opción emptyVariant / vacío-con-ia en la API. Sin distintivo badge; CTA «Agregar portada» con ubits-ia-button--primary--sm (Figma AI-Capabilities 565:5110).
+ *   Requiere ia-button.css + ia-button.js antes de este script (+ aprendizaje-ia-gradientes.css recomendado para borde secundario IA).
  * Reproducir tráiler: data-trailer-url en la raíz + clic en play carga el iframe en el mismo bloque
  * (YouTube, Vimeo, Drive). Sin embed: nueva pestaña. Opcional onPlay() sustituye el comportamiento.
  *
@@ -28,10 +28,10 @@
 
     /** Vacío con IA — layout compacto (icono + título + descripción + un CTA). */
     var LEARN_CONTENT_IMG_TRAILER_EMPTY_IA_DEFAULTS = {
-        emptyIaHeroIconClass: 'far fa-photo-film',
-        emptyIaTitle: 'Añade una portada',
+        emptyIaHeroIconClass: 'far fa-image',
+        emptyIaTitle: 'Agrega una portada',
         emptyIaDescription: 'Además, tienes la opción de agregar un tráiler de video',
-        emptyIaCta: 'Añadir portada',
+        emptyIaCta: 'Agregar portada',
         emptyIaCtaIconClass: 'far fa-sparkles'
     };
 
@@ -213,6 +213,10 @@
         var heroIcon = opts.emptyIaHeroIconClass != null ? opts.emptyIaHeroIconClass : defs.emptyIaHeroIconClass;
         var ctaIcon = opts.emptyIaCtaIconClass != null ? opts.emptyIaCtaIconClass : defs.emptyIaCtaIconClass;
         var ctaIdAttr = opts.ctaId ? ' id="' + escapeHtml(opts.ctaId) + '"' : '';
+        var ctaLeading =
+            typeof window.getIaButtonSparklesMarkup === 'function'
+                ? window.getIaButtonSparklesMarkup()
+                : '<i class="' + escapeHtml(ctaIcon) + '"></i>';
         var errLine = '';
         if (opts.includeErrorPlaceholder) {
             var em = opts.errorPlaceholder != null ? opts.errorPlaceholder : 'Mensaje de error';
@@ -234,11 +238,11 @@
             '<p class="ubits-learn-img-trailer__empty-ia-desc ubits-body-sm-regular">' +
             escapeHtml(desc) +
             '</p>' +
-            '<button type="button" class="ubits-ia-button ubits-ia-button--secondary ubits-ia-button--sm ubits-learn-img-trailer__cta"' +
+            '<button type="button" class="ubits-ia-button ubits-ia-button--primary ubits-ia-button--sm ubits-learn-img-trailer__cta"' +
             ctaIdAttr +
-            '><i class="' +
-            escapeHtml(ctaIcon) +
-            '"></i><span>' +
+            '>' +
+            ctaLeading +
+            '<span>' +
             escapeHtml(cta) +
             '</span></button>' +
             '</div>' +
@@ -376,6 +380,15 @@
                 aiCtaPanelId: aiCtaPanelId || undefined,
                 emptyVariant: emptyVariantAttr || undefined
             });
+        }
+        if (root.querySelector('.ubits-learn-img-trailer__empty--ia')) {
+            root.classList.add('ubits-learn-img-trailer--empty-ia');
+        } else {
+            root.classList.remove('ubits-learn-img-trailer--empty-ia');
+        }
+
+        if (typeof window.initIaButtonSparkles === 'function') {
+            window.initIaButtonSparkles(root);
         }
 
         var playBtn = root.querySelector('.ubits-learn-img-trailer__play');

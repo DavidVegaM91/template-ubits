@@ -218,6 +218,10 @@
     &lt;div id="ubits-cp-hex-N" class="ubits-color-picker__hex-mount"&gt;&lt;/div&gt;
     &lt;!-- createInput monta label + .ubits-input aquí --&gt;
   &lt;/div&gt;
+  &lt;div class="ubits-color-picker__footer"&gt;
+    &lt;button type="button" class="ubits-color-picker__btn-cancel ubits-button ubits-button--secondary ubits-button--sm"&gt;&lt;span&gt;Cancelar&lt;/span&gt;&lt;/button&gt;
+    &lt;button type="button" class="ubits-color-picker__btn-save ubits-button ubits-button--primary ubits-button--sm"&gt;&lt;span&gt;Guardar&lt;/span&gt;&lt;/button&gt;
+  &lt;/div&gt;
 &lt;/div&gt;</code></pre>
                                     </div>
                                 </div>
@@ -247,6 +251,9 @@
 .ubits-color-picker__hue-thumb
 .ubits-color-picker__hex
 .ubits-color-picker__hex-mount   /* contenedor id para createInput */
+.ubits-color-picker__footer       /* fila Cancelar + Guardar */
+.ubits-color-picker__btn-cancel
+.ubits-color-picker__btn-save
 /* Dentro: .ubits-input-label, .ubits-input-wrapper, .ubits-input (oficial) */
 </code></pre>
                                     </div>
@@ -279,8 +286,9 @@
                                         <ul class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); line-height: 1.6; margin: 0; padding-left: 20px;">
                                             <li><strong>anchorEl</strong> (HTMLElement): elemento de referencia para posicionar y para pintar <code>background</code> con el HEX en vivo.</li>
                                             <li><strong>initialHex</strong> (string, opcional): formato <code>#RRGGBB</code>; si no es válido se usa azul marca por defecto.</li>
-                                            <li><strong>onChange</strong> (función opcional): recibe el HEX en mayúsculas cada vez que cambia el color.</li>
-                                            <li><strong>onClose</strong> (función opcional): al cerrar por Escape, clic fuera o <code>close()</code>.</li>
+                                            <li><strong>onChange</strong> (función opcional): recibe el HEX en mayúsculas en vivo (vista previa mientras se mueve el selector).</li>
+                                            <li><strong>onConfirm</strong> (función opcional): solo al pulsar «Guardar»; recibe el HEX final. Si no se pasa, basta con <code>onChange</code> en vivo.</li>
+                                            <li><strong>onClose</strong> (función opcional): siempre al cerrar el panel (tras Guardar, Cancelar, Escape o clic fuera; en cancelación primero se revierte con <code>onChange</code> al HEX de apertura).</li>
                                             <li><strong>zIndex</strong> (número opcional): por defecto el CSS del panel aplica 2000; puedes subirlo si queda bajo otros overlays.</li>
                                         </ul>
                                         <p class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); margin-top: 12px; margin-bottom: 0;">
@@ -292,7 +300,7 @@
                                         <ul class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); line-height: 1.6; margin: 0; padding-left: 20px;">
                                             <li>Los gradientes del lienzo SV y del matiz usan RGB estándar del modelo HSV, no tokens de marca.</li>
                                             <li>Cuentagotas: solo si <code>typeof EyeDropper === "function"</code> (Chrome, Edge, Safari reciente). Al muestrear se quita temporalmente el cierre por clic fuera para no cerrar el panel antes de elegir el píxel. Firefox u otros sin API no muestran el botón.</li>
-                                            <li>Clic fuera no cierra si el objetivo es el propio <code>anchorEl</code> (evita cierre inmediato en algunos flujos).</li>
+                                            <li>Clic fuera del panel equivale a «Cancelar» (revertir y cerrar), salvo que el clic sea en el <code>anchorEl</code>.</li>
                                             <li>El HEX se monta con <code>createInput</code> (<code>labelPosition: 'left'</code>, tamaño <code>sm</code>).</li>
                                         </ul>
                                     </div>

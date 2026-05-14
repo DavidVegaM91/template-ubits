@@ -179,20 +179,19 @@
     justify-content: flex-start;
 }
 
-/* Botón "Probar Modo IA": gradación azul oficial (variables en aprendizaje-ia-gradientes.css) */
+/* Botón "Probar Modo IA": gradiente aprendizaje estático, sin borde ni animación de borde */
 .resultados-overview-panel-cta.ubits-ia-button--primary,
 #resultados-probar-modo-ia-btn.ubits-ia-button--primary {
-    border: 1px solid transparent;
+    border: none;
+    animation: none;
     background-image:
         radial-gradient(40% 50% at 50% 100%, var(--modo-ia-gradient-a), rgba(0, 0, 0, 0)),
         radial-gradient(80% 100% at 50% 120%, var(--modo-ia-gradient-b), rgba(0, 0, 0, 0)),
-        radial-gradient(76.58% 94.29% at 47.57% 132.86%, var(--modo-ia-gradient-a) 0%, var(--modo-ia-gradient-c) 100%),
-        linear-gradient(90deg, var(--modo-ia-gradient-a), var(--modo-ia-gradient-b), var(--modo-ia-gradient-c), var(--modo-ia-gradient-a));
-    background-size: 100% 100%, 100% 100%, 100% 100%, 300% 100%;
-    background-position: 0 0, 0 0, 0 0, 0% 50%;
-    background-origin: padding-box, padding-box, padding-box, border-box;
-    background-clip: padding-box, padding-box, padding-box, border-box;
-    animation: resultados-ia-cta-border 5s ease-in-out infinite;
+        radial-gradient(76.58% 94.29% at 47.57% 132.86%, var(--modo-ia-gradient-a) 0%, var(--modo-ia-gradient-c) 100%);
+    background-size: 100% 100%, 100% 100%, 100% 100%;
+    background-position: 0 0, 0 0, 0 0;
+    background-origin: padding-box;
+    background-clip: padding-box;
 }
 .resultados-overview-panel-cta.ubits-ia-button--primary:hover:not(:disabled),
 .resultados-overview-panel-cta.ubits-ia-button--primary:active:not(:disabled),
@@ -200,23 +199,17 @@
 #resultados-probar-modo-ia-btn.ubits-ia-button--primary:hover:not(:disabled),
 #resultados-probar-modo-ia-btn.ubits-ia-button--primary:active:not(:disabled),
 #resultados-probar-modo-ia-btn.ubits-ia-button--primary:focus-visible {
-    border: 1px solid transparent;
+    border: none;
+    animation: none;
     background-image:
         radial-gradient(40% 50% at 50% 100%, var(--modo-ia-gradient-a), rgba(0, 0, 0, 0)),
         radial-gradient(80% 100% at 50% 120%, var(--modo-ia-gradient-b), rgba(0, 0, 0, 0)),
-        radial-gradient(76.58% 94.29% at 47.57% 132.86%, var(--modo-ia-gradient-a) 0%, var(--modo-ia-gradient-c) 100%),
-        linear-gradient(90deg, var(--modo-ia-gradient-a), var(--modo-ia-gradient-b), var(--modo-ia-gradient-c), var(--modo-ia-gradient-a));
-    background-size: 100% 100%, 100% 100%, 100% 100%, 300% 100%;
-    background-position: 0 0, 0 0, 0 0, 0% 50%;
-    background-origin: padding-box, padding-box, padding-box, border-box;
-    background-clip: padding-box, padding-box, padding-box, border-box;
+        radial-gradient(76.58% 94.29% at 47.57% 132.86%, var(--modo-ia-gradient-a) 0%, var(--modo-ia-gradient-c) 100%);
+    background-size: 100% 100%, 100% 100%, 100% 100%;
+    background-position: 0 0, 0 0, 0 0;
+    background-origin: padding-box;
+    background-clip: padding-box;
 }
-@keyframes resultados-ia-cta-border {
-    0%, 100% { background-position: 0 0, 0 0, 0 0, 0% 50%; }
-    50% { background-position: 0 0, 0 0, 0 0, 100% 50%; }
-}
-
-.resultados-recurso-cards {
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     gap: var(--gap-md);

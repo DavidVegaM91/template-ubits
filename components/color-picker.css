@@ -117,3 +117,21 @@
     text-transform: uppercase;
     letter-spacing: 0.04em;
 }
+
+/* Pie: confirmar o descartar (revertir al HEX de apertura si cancela / Escape / clic fuera) */
+.ubits-color-picker__footer {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: var(--gap-sm);
+    padding: var(--padding-sm) var(--padding-md) var(--padding-md);
+    border-top: 1px solid var(--ubits-border-1);
+    flex-shrink: 0;
+    box-sizing: border-box;
+}
+
+.ubits-color-picker__footer .ubits-button {
+    min-width: 0;
+}

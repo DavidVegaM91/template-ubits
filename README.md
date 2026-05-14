@@ -200,6 +200,19 @@ Las páginas del Creator suelen cargar **`lms-creator.css`** más el **CSS homó
 - **Certificados:** `certificados/certificados.html`, `certificados/certificados-configuracion.html` (stubs alineados a la plantilla vacía tipo categorías + `header-product`)
 - **Personalización UC:** `personalizacion/personalizacion-u-corporativa.html`, `personalizacion/personalizacion-seguimiento.html` (mismo patrón stub donde aplica)
 
+#### **Patrón: salir sin guardar (edición de planes en LMS Creator)**
+
+- **Guardar:** botón **primary** en `loadHeaderProduct` → `primaryButton`. Va **deshabilitado** hasta que la vista detecta **cambios** frente al estado inicial (serialización de nombre, fechas, horas por competencia si aplica, filas de asignaciones y contenidos o competencias — en competencias también orden y checks de habilidades por ítem). Tras un guardado válido se vuelve a fijar la línea base, el botón se deshabilita otra vez y se muestra un **toast** de éxito (`Cambios guardados exitosamente`); la página **no** redirige a la lista de planes.
+- **Atrás:** el `backButton` del header comprueba si hay cambios; si sí, abre un **modal UBITS** (`openModal` / `closeModal`) con título **«Salir sin guardar»**, cuerpo de advertencia y pie **Quedarse** / **Salir sin guardar** (navegación a la lista de planes).
+- **Cerrar pestaña o recargar:** con cambios pendientes se usa `beforeunload` para el aviso nativo del navegador (no sustituye al modal en navegación interna).
+
+**Referentes:**
+
+| Caso | Dónde |
+|------|--------|
+| Editar plan de contenidos / competencias | `ubits-colaborador/lms-creator/planes-formacion/editar-plan-contenidos.html`, `editar-plan-competencias.html` (`tryNavigateBackEditarPlan*`, `openSalirSinGuardarModal*`, `serializePlanEdit*`, `capturePlanEdit*Baseline`) |
+| Mismo enfoque modal (otro producto) | `ubits-admin/desempeno/360/editar-360.html` — función `confirmarSalir()` con título «Salir sin guardar» y flag de borrador (`draft.guardado`) |
+
 **Vista colaborador** de universidad corporativa (catálogo consumo): sigue en **`aprendizaje/u-corporativa.html`**; la personalización en Creator es la pareja **`personalizacion/personalizacion-u-corporativa.html`**.
 
 **Universidad corporativa y LMS Creator (contenidos publicados):** la lista de **`ubits-colaborador/aprendizaje/u-corporativa.html`** debe mostrar **los mismos contenidos publicados** que expone el catálogo **`contents`** en `bd-master/bd-contenidos-fiqsha.js` (lo que en producto equivaldría a lo creado y dejado en estado publicado por la empresa en **LMS Creator → Contenidos**, `ubits-colaborador/lms-creator/contenidos.html`). Los **filtros** de la vista colaborador (tipo, categoría Fiqsha, nivel, idioma) están alineados con el **modal Filtros** de esa página Creator para que PM, diseño y datos mock sigan una sola verdad.
@@ -236,7 +249,7 @@ Patrón documentado para reutilizarlo en otros flujos o listas similares.
 - **Toast** - Notificaciones flotantes (tipos: success, info, warning, error; auto-cierre, pausa en hover) - **RENDERIZADO: showToast()**
 - **Input** - Campos de entrada (11 tipos: text, email, password, number, tel, url, select, textarea, search, autocomplete, calendar; tamaños: sm, md, lg; estados: default, hover, focus, invalid, disabled; etiqueta arriba o a la izquierda con `labelPosition: 'left'`; con iconos, contador, helper text, mandatory/optional, validación manual, scroll infinito automático) - **RENDERIZADO: createInput()**
 - **Number stepper** - Entero con botones menos y más, etiqueta opcional, min, max y paso (tamaños xs, sm, md, lg) - **RENDERIZADO: createNumberStepper()** — `number-stepper.css` + `number-stepper.js`; doc: `documentacion/componentes/number-stepper.html` (uso en LMS Creator: modal SCORM, `scorm-recurso-modal.js`).
-- **Color picker** - Selector HSV en panel flotante anclado a un disparador (lona saturación/brillo, franja de matiz, campo HEX vía `createInput`; cuentagotas secondary icon-only con API `EyeDropper` si el navegador la ofrece) - **RENDERIZADO: openColorPickerPopover() / closeColorPickerPopover()** — `input.css` + `color-picker.css` + `input.js` (antes de `color-picker.js`); cuentagotas: `button.css` + `fontawesome-icons.css`; doc: `documentacion/componentes/color-picker.html` (uso en LMS Creator: modal SCORM, `scorm-recurso-modal.js`).
+- **Color picker** - Selector HSV en panel flotante anclado a un disparador (lona saturación/brillo, franja de matiz, campo HEX vía `createInput`; pie **Cancelar / Guardar**; vista previa en vivo con `onChange`; cancelación revierte al HEX de apertura; cuentagotas secondary icon-only con API `EyeDropper` si el navegador la ofrece) - **RENDERIZADO: openColorPickerPopover() / closeColorPickerPopover()** — `input.css` + `color-picker.css` + `input.js` (antes de `color-picker.js`); `button.css` + `fontawesome-icons.css`; doc: `documentacion/componentes/color-picker.html` (uso en LMS Creator: modal SCORM, `scorm-recurso-modal.js`).
 - **Radio Button** - Opción circular para elegir una entre varias (tamaños: sm, md; sin JS; agrupar con mismo `name`) - **RENDERIZADO: HTML directo.** Requiere importar `radio-button.css` en la página o los radios se ven como nativos.
 - **Checkbox** - Casilla de verificación (tamaños: sm, md, lg; variantes: round/cuadrado; sin JS; agrupar con mismo `name` para múltiple selección) - **RENDERIZADO: HTML directo.** Requiere importar `checkbox.css` en la página.
 - **Chip** - Elemento compacto para filtros, selecciones o ítems removibles (tamaño xs; icono opcional; botón quitar opcional; estados: default, hover, pressed, active, focus, disabled) - **RENDERIZADO: HTML directo.** Requiere importar `chip.css`.
@@ -1403,6 +1416,7 @@ Encabezado de producto con breadcrumb, nombre del producto y botones de acción 
 <link rel="stylesheet" href="components/button.css">
 <link rel="stylesheet" href="components/ia-button.css">
 <link rel="stylesheet" href="components/header-product.css">
+<script src="components/ia-button.js"></script>
 <script src="components/header-product.js"></script>
 ```
 

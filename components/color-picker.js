@@ -6,8 +6,9 @@
  *   openColorPickerPopover({
  *     anchorEl: HTMLElement,     // elemento respecto al que se posiciona el panel
  *     initialHex: '#0C5BEF',     // opcional
- *     onChange: function (hex) {}, // opcional; en vivo al arrastrar o al validar HEX
- *     onClose: function () {},   // opcional; al cerrar (Escape, clic fuera, close())
+ *     onChange: function (hex) {}, // opcional; en vivo al arrastrar o al validar HEX (vista previa)
+ *     onConfirm: function (hex) {}, // opcional; solo al pulsar «Guardar» (hex final #RRGGBB)
+ *     onClose: function () {},   // opcional; siempre al cerrar el panel (tras Guardar, Cancelar o close())
  *     zIndex: 2000               // opcional
  *   })
  *   → { close: fn, getHex: fn, setHex: fn }
@@ -18,7 +19,9 @@
  *   Cuentagotas (EyeDropper): button.css + fontawesome-icons.css cuando el navegador expone la API.
  *
  * Notas:
- * - Solo un popover activo a la vez; abrir otro cierra el anterior.
+ * - Solo un popover activo a la vez; abrir otro cierra el anterior (sin revertir el cierre intermedio).
+ * - Pie con «Cancelar» y «Guardar»: Escape y clic fuera equivalen a Cancelar (revierten al HEX de apertura vía onChange).
+ * - «Guardar» cierra sin revertir; onConfirm(hex) opcional se llama solo al guardar.
  * - Los gradientes del lienzo SV usan blanco/negro estándar (modelo HSV), no tokens de marca.
  * - Sin API EyeDropper (p. ej. Firefox) no se renderiza el botón de cuentagotas.
  */
@@ -34,7 +37,10 @@
     var sVal = 0;
     var vVal = 0;
     var onChangeCb = null;
+    var onConfirmCb = null;
     var onCloseCb = null;
+    /** HEX al abrir el panel actual (para revertir en Cancelar / Escape / clic fuera). */
+    var sessionOriginalHex = '#0C5BEF';
     var moveHandler = null;
     var upHandler = null;
     var outsideHandler = null;
@@ -176,11 +182,11 @@
 
     function positionPanel(panel, anchor) {
         var rect = anchor.getBoundingClientRect();
-        var pH = 260;
         var pW = 228;
         var gap = 2;
+        var pH = Math.max(panel.offsetHeight || 0, 280);
         var spaceBelow = window.innerHeight - rect.bottom;
-        var top = spaceBelow > pH ? rect.bottom + gap : rect.top - pH - gap;
+        var top = spaceBelow > pH ? rect.bottom + gap : Math.max(8, rect.top - pH - gap);
         var left = Math.max(8, Math.min(rect.left, window.innerWidth - pW - 8));
         panel.style.top = top + 'px';
         panel.style.left = left + 'px';
@@ -208,6 +214,7 @@
         activePanel = null;
         activeAnchor = null;
         onChangeCb = null;
+        onConfirmCb = null;
         var cb = onCloseCb;
         onCloseCb = null;
         activeApi = null;
@@ -304,11 +311,19 @@
             '<div id="' +
             hexMountId +
             '" class="ubits-color-picker__hex-mount"></div>' +
+            '</div>' +
+            '<div class="ubits-color-picker__footer">' +
+            '<button type="button" class="ubits-color-picker__btn-cancel ubits-button ubits-button--secondary ubits-button--sm"><span>Cancelar</span></button>' +
+            '<button type="button" class="ubits-color-picker__btn-save ubits-button ubits-button--primary ubits-button--sm"><span>Guardar</span></button>' +
             '</div>';
         return el;
     }
 
-    function closeColorPickerPopover() {
+    function closeColorPickerPopover(skipRevert) {
+        if (activePanel && skipRevert !== true && typeof onChangeCb === 'function') {
+            syncFromHex(sessionOriginalHex);
+            updateUI();
+        }
         teardown();
     }
 
@@ -319,14 +334,16 @@
             return null;
         }
 
-        closeColorPickerPopover();
+        closeColorPickerPopover(true);
 
         var initial = opts.initialHex != null ? String(opts.initialHex) : '#0C5BEF';
         if (!/^#[0-9a-fA-F]{6}$/.test(initial)) {
             initial = '#0C5BEF';
         }
+        sessionOriginalHex = initial.toUpperCase();
         syncFromHex(initial);
         onChangeCb = typeof opts.onChange === 'function' ? opts.onChange : null;
+        onConfirmCb = typeof opts.onConfirm === 'function' ? opts.onConfirm : null;
         onCloseCb = typeof opts.onClose === 'function' ? opts.onClose : null;
         activeAnchor = anchor;
 
@@ -371,8 +388,38 @@
         if (hueCanvas) {
             drawHue(hueCanvas);
         }
-        positionPanel(activePanel, anchor);
         updateUI();
+        positionPanel(activePanel, anchor);
+
+        var btnCancel = activePanel.querySelector('.ubits-color-picker__btn-cancel');
+        var btnSave = activePanel.querySelector('.ubits-color-picker__btn-save');
+        function revertAndClose() {
+            closeColorPickerPopover();
+        }
+        function commitAndClose() {
+            if (!activePanel) return;
+            var finalHex = currentHex();
+            if (onConfirmCb) {
+                try {
+                    onConfirmCb(finalHex);
+                } catch (eConf) {}
+            }
+            closeColorPickerPopover(true);
+        }
+        if (btnCancel) {
+            btnCancel.addEventListener('click', function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                revertAndClose();
+            });
+        }
+        if (btnSave) {
+            btnSave.addEventListener('click', function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                commitAndClose();
+            });
+        }
 
         var svWrap = activePanel.querySelector('.ubits-color-picker__sv-wrap');
         var hueTrack = activePanel.querySelector('.ubits-color-picker__hue-track');
@@ -403,7 +450,7 @@
 
         outsideHandler = function (e) {
             if (activePanel && !activePanel.contains(e.target) && e.target !== activeAnchor) {
-                closeColorPickerPopover();
+                revertAndClose();
             }
         };
 
@@ -433,7 +480,7 @@
 
         keyHandler = function (e) {
             if (e.key === 'Escape') {
-                closeColorPickerPopover();
+                revertAndClose();
             }
         };
         setTimeout(function () {

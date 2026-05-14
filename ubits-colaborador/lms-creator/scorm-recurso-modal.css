@@ -96,8 +96,17 @@
     overflow: visible;
 }
 @media (max-width: 700px) {
-    .cc-sm-main-layout { grid-template-columns: 1fr; }
-    .cc-sm-right-col { display: none; }
+    .cc-sm-main-layout {
+        grid-template-columns: 1fr;
+        grid-auto-flow: row;
+    }
+    /* Vista previa SCORM: visible también en móvil (debajo del formulario) */
+    .cc-sm-right-col {
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+        width: 100%;
+    }
 }
 
 /* Columna izquierda: scroll interno */
@@ -114,13 +123,13 @@
 .cc-sm-left-col::-webkit-scrollbar-track { background: transparent; }
 .cc-sm-left-col::-webkit-scrollbar-thumb { background: var(--ubits-border-1); border-radius: 2px; }
 
-/* Columna derecha */
+/* Columna derecha: sin recorte del preview (iframe completo visible con scroll en modal si hace falta) */
 .cc-sm-right-col {
     display: flex;
     flex-direction: column;
     gap: var(--gap-sm);
     min-height: 0;
-    overflow: hidden;
+    overflow: visible;
 }
 
 
@@ -150,15 +159,23 @@
 
 /* Panel del color picker: components/color-picker.css (clases .ubits-color-picker) */
 
-/* ── Preview derecha (16:9 como modal de video / cc-vm-preview-stage) ── */
+/* Preview: sin overflow:hidden para no cortar la parte inferior del iframe */
 .cc-sm-preview-wrap {
     width: 100%;
-    flex: 0 0 auto;
-    aspect-ratio: 16 / 9;
+    flex: 1 1 auto;
+    min-height: min(520px, 52vh);
+    max-height: min(860px, 82vh);
     position: relative;
     border-radius: var(--border-radius-lg);
-    overflow: hidden;
+    overflow: visible;
     background: var(--ubits-bg-3);
+}
+
+@media (max-width: 1023px) {
+    #cc-scorm-recurso-modal .cc-sm-preview-wrap {
+        min-height: min(420px, 48vh);
+        max-height: min(720px, 78vh);
+    }
 }
 .cc-sm-preview-iframe {
     position: absolute;
@@ -205,12 +222,24 @@
 }
 
 /* Recurso SCORM incrustado: tag «Generado con IA» sobre el iframe (flujo SCORM con IA) */
-/* Marco 16:9 en página (misma idea que .cc-video-resource__surface) */
+/* Marco 3:2 en página; .cc-scorm-iframe-container rellena este hueco */
+/* min-height: sin !important: en móvil aspect-ratio se quita y los hijos son absolute;
+   un min-height:0 !important aquí impedía que el breakpoint móvil aplicara alto visible
+   (colapsaba el marco del iframe a ~0px). */
 .cc-scorm-resource__surface.ubits-resources-block__surface {
     position: relative;
-    min-height: 0 !important;
-    aspect-ratio: 16 / 9;
+    min-height: 0;
+    aspect-ratio: 3 / 2;
     overflow: hidden;
+}
+
+@media (max-width: 1023px) {
+    .cc-scorm-resource__surface.ubits-resources-block__surface {
+        aspect-ratio: unset;
+        /* Gana sobre min-height:auto del resources-block en móvil y fija alto real del iframe */
+        min-height: min(72vh, 520px) !important;
+        max-height: none;
+    }
 }
 
 .cc-scorm-resource__embed-wrap {
@@ -230,11 +259,12 @@
     box-sizing: border-box;
 }
 
+/* Rellena el marco 4:3 del surface (la proporción la fija el padre, no el iframe suelto) */
 .cc-scorm-iframe-container {
     position: absolute;
     inset: 0;
-    width: auto;
-    height: auto;
+    width: 100%;
+    height: 100%;
     background: var(--ubits-bg-2);
     border-radius: var(--border-radius-lg);
     overflow: hidden;
@@ -258,26 +288,27 @@
     padding: var(--padding-sm) var(--padding-md);
 }
 
-/* ── Modal de edición ── */
-#cc-scorm-edit-modal.ubits-modal-overlay { z-index: 1300; }
-
-#cc-scorm-edit-modal .ubits-modal-content {
-    height: 88vh;
-    max-height: 88vh;
-    align-self: center;
-    display: flex;
-    flex-direction: column;
+/* ── Edición: lightbox (mismo patrón visual que pantalla completa SCORM) ── */
+#cc-scorm-edit-lightbox.cc-scorm-fs-overlay {
+    z-index: 1300;
 }
 
-#cc-scorm-edit-modal .ubits-modal-body {
-    padding: 0 !important;
-    overflow: hidden;
+.cc-scorm-edit-lightbox__footer {
+    flex-shrink: 0;
     display: flex;
-    flex-direction: column;
-    flex: 1 1 auto;
-    min-height: 0;
+    align-items: center;
+    justify-content: flex-end;
+    gap: var(--gap-sm);
+    padding: var(--padding-md) var(--padding-lg);
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.55) 0%, rgba(0, 0, 0, 0) 100%);
 }
 
+.cc-scorm-fs-overlay--lightbox .cc-scorm-fs-panel.cc-scorm-fs-panel--edit-scorm .cc-scorm-fs-body {
+    padding-bottom: 0;
+}
+
+/* Sin position:relative: si no, el iframe position:absolute del lightbox toma este wrap como
+   bloque contenedor y el wrap queda a altura 0 → iframe 0×0 y solo se ve el fondo #000 del body. */
 .cc-scorm-edit-iframe-wrap {
     flex: 1;
     min-height: 0;
@@ -298,9 +329,89 @@
 .cc-scorm-ia-loader-host {
     width: 100%;
     box-sizing: border-box;
-    aspect-ratio: 16 / 9;
+    aspect-ratio: 3 / 2;
     display: flex;
     align-items: stretch;
+}
+
+/* Lightbox «Pantalla completa» — overlay oscuro tipo galería (no caja modal) */
+.cc-scorm-fs-overlay.cc-scorm-fs-overlay--lightbox {
+    position: fixed;
+    inset: 0;
+    z-index: 1400;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: stretch;
+    padding: 0;
+    box-sizing: border-box;
+    background: rgba(0, 0, 0, 0.88);
+}
+.cc-scorm-fs-overlay--lightbox .cc-scorm-fs-panel {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+    overflow: hidden;
+}
+.cc-scorm-fs-overlay--lightbox .cc-scorm-fs-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--gap-md);
+    flex-shrink: 0;
+    padding: var(--padding-md) var(--padding-lg);
+    border-bottom: none;
+    background: linear-gradient(
+        to bottom,
+        rgba(0, 0, 0, 0.55) 0%,
+        rgba(0, 0, 0, 0) 100%
+    );
+}
+.cc-scorm-fs-overlay--lightbox .cc-scorm-fs-title {
+    margin: 0;
+    font-family: var(--ubits-font-family-sans);
+    font-size: 13px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.92);
+    line-height: 1.35;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    letter-spacing: 0.01em;
+}
+.cc-scorm-fs-overlay--lightbox .cc-scorm-fs-close {
+    flex-shrink: 0;
+    color: rgba(255, 255, 255, 0.92) !important;
+    border-color: rgba(255, 255, 255, 0.35) !important;
+    background: rgba(255, 255, 255, 0.08) !important;
+}
+.cc-scorm-fs-overlay--lightbox .cc-scorm-fs-close:hover {
+    background: rgba(255, 255, 255, 0.16) !important;
+    border-color: rgba(255, 255, 255, 0.5) !important;
+}
+.cc-scorm-fs-overlay--lightbox .cc-scorm-fs-body {
+    flex: 1;
+    min-height: 0;
+    position: relative;
+    background: #000;
+    padding: 0 var(--padding-md) var(--padding-md);
+    box-sizing: border-box;
+}
+.cc-scorm-fs-overlay--lightbox .cc-scorm-fs-body iframe {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+    display: block;
+    border-radius: var(--border-radius-md);
+    overflow: hidden;
 }
 .cc-scorm-ia-loader-host .ubits-ia-loader,
 .cc-scorm-ia-loader-host .ubits-ia-loader__frame {
