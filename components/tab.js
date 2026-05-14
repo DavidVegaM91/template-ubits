@@ -112,7 +112,7 @@
  * </div>
  * 
  * <!-- Grupo de tabs sobre fondo blanco (dentro de secciones) -->
- * <div style="background: var(--ubits-bg-2); padding: 4px; border-radius: 8px; display: inline-flex; gap: 4px;">
+ * <div style="background: var(--ubits-bg-2); padding: var(--padding-xs); border-radius: var(--border-radius-full); display: inline-flex; gap: var(--gap-xs);">
  *   <button class="ubits-tab ubits-tab--active" onclick="setActiveTab(this)">
  *     <i class="far fa-home"></i>
  *     <span>Inicio</span>

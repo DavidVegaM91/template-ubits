@@ -15,7 +15,7 @@
     gap: var(--gap-xs);
     padding: var(--padding-md);
     border: none;
-    border-radius: var(--border-radius-sm);
+    border-radius: var(--border-radius-full);
     font-family: var(--ubits-font-family-sans);
     font-weight: var(--font-weight-semibold);
     line-height: 1;
@@ -292,7 +292,8 @@
     padding: var(--padding-xs);
     background: var(--ubits-bg-2);
     border: 1px solid var(--ubits-border-1);
-    border-radius: var(--border-radius-sm);
+    border-radius: var(--border-radius-full);
+    overflow: hidden;
     box-sizing: border-box;
     max-width: 100%;
     min-width: 0;
@@ -452,8 +453,8 @@
 
 .ubits-tabs-on-bg::before {
     left: var(--padding-xs);
-    border-top-left-radius: var(--border-radius-sm);
-    border-bottom-left-radius: var(--border-radius-sm);
+    border-top-left-radius: var(--border-radius-full);
+    border-bottom-left-radius: var(--border-radius-full);
     background: linear-gradient(
         to right,
         var(--ubits-tabs-scroll-fade) 0%,
@@ -464,8 +465,8 @@
 
 .ubits-tabs-on-bg::after {
     right: var(--padding-xs);
-    border-top-right-radius: var(--border-radius-sm);
-    border-bottom-right-radius: var(--border-radius-sm);
+    border-top-right-radius: var(--border-radius-full);
+    border-bottom-right-radius: var(--border-radius-full);
     background: linear-gradient(
         to left,
         var(--ubits-tabs-scroll-fade) 0%,
@@ -476,8 +477,8 @@
 
 .ubits-tabs-row::before {
     left: 0;
-    border-top-left-radius: var(--border-radius-sm);
-    border-bottom-left-radius: var(--border-radius-sm);
+    border-top-left-radius: var(--border-radius-full);
+    border-bottom-left-radius: var(--border-radius-full);
     background: linear-gradient(
         to right,
         var(--ubits-tabs-scroll-fade) 0%,
@@ -488,8 +489,8 @@
 
 .ubits-tabs-row::after {
     right: 0;
-    border-top-right-radius: var(--border-radius-sm);
-    border-bottom-right-radius: var(--border-radius-sm);
+    border-top-right-radius: var(--border-radius-full);
+    border-bottom-right-radius: var(--border-radius-full);
     background: linear-gradient(
         to left,
         var(--ubits-tabs-scroll-fade) 0%,
@@ -526,11 +527,6 @@
     }
 }
 
-.ubits-tabs-row::before,
-.ubits-tabs-row::after {
-    border-radius: 0;
-}
-
 .ubits-tabs-on-bg.ubits-tabs-scroll--left-fade::before,
 .ubits-tabs-row.ubits-tabs-scroll--left-fade::before {
     opacity: 1;
@@ -539,26 +535,6 @@
 .ubits-tabs-on-bg.ubits-tabs-scroll--right-fade::after,
 .ubits-tabs-row.ubits-tabs-scroll--right-fade::after {
     opacity: 1;
-}
-
-/*
- * Móvil: (1) Las reglas de border-radius en ::before/::after están más arriba en el archivo y
- * sobrescribían el bloque anterior del mismo breakpoint. (2) El border-radius del shell
- * .ubits-tabs-on-bg recorta el degradado en las esquinas (máscara sobre la tab activa).
- */
-@media (max-width: 767px) {
-    .ubits-tabs-on-bg {
-        border-radius: var(--border-radius-none);
-    }
-
-    .ubits-tabs-on-bg::before,
-    .ubits-tabs-on-bg::after {
-        border-radius: var(--border-radius-none);
-        border-top-left-radius: 0;
-        border-top-right-radius: 0;
-        border-bottom-left-radius: 0;
-        border-bottom-right-radius: 0;
-    }
 }
 
 /* ========================================

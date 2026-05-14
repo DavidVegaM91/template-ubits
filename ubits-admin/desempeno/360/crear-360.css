@@ -538,7 +538,7 @@
     gap: 4px;
     background: var(--ubits-bg-2);
     padding: 4px;
-    border-radius: var(--border-radius-sm);
+    border-radius: var(--border-radius-full);
     margin-bottom: var(--gap-xl);
 }
 

@@ -222,8 +222,8 @@
     display: flex;
     gap: var(--gap-xs);
     background: var(--ubits-bg-2);
-    border-radius: var(--border-radius-sm);
-    padding: var(--padding-none);
+    border-radius: var(--border-radius-full);
+    padding: var(--padding-xs);
     width: fit-content;
 }
 

@@ -80,7 +80,8 @@
     box-shadow: none;
 }
 
-/* Secondary Variant (outlined): fondo sólido bg-1; borde animado con paleta Creator v3 */
+/* Secondary Variant (outlined): fondo sólido bg-1; borde animado con paleta Creator v3
+   (grosor: --ubits-ia-gradient-border-width en aprendizaje-ia-gradientes.css, fallback 1.5px) */
 .ubits-ia-button--secondary {
     background:
         linear-gradient(var(--ubits-bg-1), var(--ubits-bg-1)) padding-box,
@@ -91,7 +92,7 @@
     background-clip: padding-box, border-box;
     animation: ubits-ia-button-gradient-shift-border 5s ease-in-out infinite;
     color: var(--ubits-fg-1-high);
-    border: 1px solid transparent;
+    border: var(--ubits-ia-gradient-border-width, 1.5px) solid transparent;
     box-shadow: none;
 }
 
@@ -123,7 +124,7 @@
     background-origin: padding-box, border-box;
     background-clip: padding-box, border-box;
     animation: ubits-ia-button-gradient-shift-border 5s ease-in-out infinite;
-    border: 1px solid transparent;
+    border: var(--ubits-ia-gradient-border-width, 1.5px) solid transparent;
     box-shadow: 
         var(--ubits-ia-button-glow-outer) 0px 0px 7px 0px,
         rgba(255, 255, 255, 0.35) 0px 0.8px 0px 0px inset,
@@ -151,7 +152,7 @@
     background-origin: padding-box, border-box;
     background-clip: padding-box, border-box;
     animation: ubits-ia-button-gradient-shift-border 5s ease-in-out infinite;
-    border: 1px solid transparent;
+    border: var(--ubits-ia-gradient-border-width, 1.5px) solid transparent;
     transform: translateY(1px);
 }
 
@@ -181,7 +182,7 @@
     background-origin: padding-box, border-box;
     background-clip: padding-box, border-box;
     animation: ubits-ia-button-gradient-shift-border 5s ease-in-out infinite;
-    border: 1px solid transparent;
+    border: var(--ubits-ia-gradient-border-width, 1.5px) solid transparent;
     box-shadow: 0px 0px 0px 4px var(--ubits-button-focus-ring);
 }
 
@@ -812,7 +813,7 @@
     background-clip: padding-box, border-box;
     animation: ubits-ia-button-gradient-shift-border 5s ease-in-out infinite;
     color: var(--ubits-fg-1-high);
-    border: 1px solid transparent;
+    border: var(--ubits-ia-gradient-border-width, 1.5px) solid transparent;
 }
 
 [data-theme="dark"] .ubits-ia-button--secondary i {

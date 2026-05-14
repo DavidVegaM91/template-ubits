@@ -126,36 +126,55 @@
     background: var(--ubits-feedback-accent-error);
 }
 
-/* IA (gradación) — usa variables compartidas de aprendizaje-ia-gradientes.css.
-   Replica el patrón de ubits-ia-button--secondary:
+/* IA (gradación) — usa variables compartidas de aprendizaje-ia-gradientes.css
+   (--ubits-ia-badge-border-gradient, --ubits-ia-gradient-border-width).
+   Borde horizontal: azul (izq) → violeta → magenta → naranja (der), Figma AI-Capabilities badge.
    - Fondo sólido en padding-box
    - Borde con gradiente en border-box
    Incluye fallbacks por si el archivo de gradientes no está importado. */
 .ubits-badge-tag--outlined.ubits-badge-tag--ia {
-    --ubits-badge-tag-ia-gradient: linear-gradient(
-        90deg,
-        var(--modo-ia-gradient-a, rgb(255, 84, 22)),
-        var(--modo-ia-gradient-b, rgb(234, 6, 111)),
-        var(--modo-ia-gradient-c, rgb(136, 35, 234)),
-        var(--modo-ia-gradient-d, rgb(12, 91, 239)),
-        var(--modo-ia-gradient-a, rgb(255, 84, 22))
-    );
-
     background:
         linear-gradient(var(--ubits-bg-1), var(--ubits-bg-1)) padding-box,
-        var(--ubits-badge-tag-ia-gradient) border-box;
+        var(
+            --ubits-ia-badge-border-gradient,
+            linear-gradient(
+                90deg,
+                rgb(12, 91, 239) 0%,
+                rgb(136, 35, 234) 35.59%,
+                rgb(234, 6, 111) 67.19%,
+                rgb(255, 84, 22) 100%
+            )
+        ) border-box;
     background-origin: padding-box, border-box;
     background-clip: padding-box, border-box;
-    border: 1px solid transparent;
+    border: var(--ubits-ia-gradient-border-width, 1.5px) solid transparent;
 }
 
 .ubits-badge-tag--outlined.ubits-badge-tag--ia .ubits-badge-tag__indicator {
-    background: var(--ubits-badge-tag-ia-gradient);
+    background: var(
+        --ubits-ia-badge-border-gradient,
+        linear-gradient(
+            90deg,
+            rgb(12, 91, 239) 0%,
+            rgb(136, 35, 234) 35.59%,
+            rgb(234, 6, 111) 67.19%,
+            rgb(255, 84, 22) 100%
+        )
+    );
 }
 
 /* IA + token cost: moneda en gradiente (clip de texto) como ia-button secundario */
 .ubits-badge-tag--outlined.ubits-badge-tag--ia .ubits-badge-tag__token-cost i {
-    background: var(--ubits-badge-tag-ia-gradient);
+    background: var(
+        --ubits-ia-badge-border-gradient,
+        linear-gradient(
+            90deg,
+            rgb(12, 91, 239) 0%,
+            rgb(136, 35, 234) 35.59%,
+            rgb(234, 6, 111) 67.19%,
+            rgb(255, 84, 22) 100%
+        )
+    );
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
@@ -179,9 +198,18 @@
     color: var(--ubits-feedback-accent-error);
 }
 
-/* Outlined IA con icono: ícono con gradiente (clip de texto) como ubits-ia-button--secondary */
+/* Outlined IA con icono: ícono con gradiente (mismo sentido que borde badge: azul → naranja) */
 .ubits-badge-tag--outlined.ubits-badge-tag--with-icon.ubits-badge-tag--ia i {
-    background: var(--ubits-badge-tag-ia-gradient);
+    background: var(
+        --ubits-ia-badge-border-gradient,
+        linear-gradient(
+            90deg,
+            rgb(12, 91, 239) 0%,
+            rgb(136, 35, 234) 35.59%,
+            rgb(234, 6, 111) 67.19%,
+            rgb(255, 84, 22) 100%
+        )
+    );
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
