@@ -2,8 +2,7 @@
  * LMS Creator — Modal «Agregar portada» (Portada con IA · Subir portada · Enlace de tráiler opcional).
  * Estilo y tabs alineados a video-recurso-modal.js.
  * Portada con IA: al abrir, mismo ancho que Subir/Tráiler y solo bloque «Describe tu idea»; al pulsar «Generar portada» se expande
- * (transición max-width) y aparece la columna de vista previa con loader y resultado.
- *
+ * (transición max-width) y aparece la columna de vista previa 16:9 a la derecha (layout dos columnas como modal de video). Modal tamaño lg.
  * Depende: modal.js, input.js (+ dropdown-menu.js antes de input) para pestaña tráiler, file-upload.js, ia-loader.js,
  * empty-state.js, ai-panel.css (+ general-styles/ubits-ia-chat.css para .ubits-ia-chat-thread__input-area), tab.css,
  * portada-imagen-modal.css.

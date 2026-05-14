@@ -291,7 +291,7 @@
     align-items: flex-start;
     padding: var(--padding-xs);
     background: var(--ubits-bg-2);
-    border: 1px solid var(--ubits-border-1);
+    border: none;
     border-radius: var(--border-radius-full);
     overflow: hidden;
     box-sizing: border-box;

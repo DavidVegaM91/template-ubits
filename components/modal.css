@@ -140,6 +140,18 @@
     min-height: 0;
 }
 
+/* Grupos de pestañas (cc-vmodal-tabbar / ubits-tabs-on-bg) centrados en el cuerpo del modal IA */
+.ubits-modal-content--ia .cc-vmodal-tabbar-wrap,
+.ubits-modal-content--ia .cc-sm-tabbar-wrap {
+    align-self: center;
+    align-items: center;
+}
+
+.ubits-modal-content--ia .cc-vmodal-tabbar {
+    align-self: center;
+    align-items: center;
+}
+
 /* ========================================
    Variante promo (anuncios / novedades)
    Sin cabecera ni pie ni botón cerrar: solo cuerpo (imagen + texto + CTA).
