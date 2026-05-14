@@ -100,6 +100,10 @@
                 { id: 'c3', nombre: 'Evaluación por competencias 2025', fechaInicio: '01/09/2025', fechaFin: '15/12/2025', estado: 'No vigente', progreso: 85, tipo: 'competencias' }
             ];
 
+            function irCrearPlanCompetencias() {
+                window.location.href = 'crear-plan-competencias.html';
+            }
+
             if (typeof getModalHtml === 'function') {
                 var deleteBody = '<p class="ubits-body-md-regular">¿Estás seguro de que deseas eliminar <strong id="planes-delete-count">0</strong> plan(es) seleccionado(s)?</p><p class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Esta acción no se puede deshacer.</p><div class="delete-confirm-group" style="margin-top: var(--gap-lg);"><label class="ubits-body-sm-regular" for="planes-delete-type-input">Escriba <strong>eliminar</strong> para habilitar el botón:</label><input type="text" id="planes-delete-type-input" class="ubits-input" placeholder="Escriba la palabra de confirmación" autocomplete="off" style="margin-top: var(--gap-sm); width: 100%; padding: var(--padding-sm) var(--padding-md); border: 1px solid var(--ubits-border-1); border-radius: var(--border-radius-sm); font-size: var(--font-size-sm); color: var(--ubits-fg-1-high); box-sizing: border-box;"></div>';
                 var deleteFooter = '<button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="planes-delete-cancel"><span>Cancelar</span></button><button type="button" class="ubits-button ubits-button--error ubits-button--md" id="planes-delete-confirm" disabled><span>Eliminar</span></button>';
@@ -181,7 +185,18 @@
                             openPlanesDeleteModal(selectedIds);
                         } }
                     ],
-                    emptyState: { message: 'Aún no hay planes.', icon: 'far fa-bullseye', description: 'Crea tu primer plan de competencias con el botón Crear plan.' },
+                    emptyState: {
+                        message: 'Aún no tienes planes de competencias',
+                        icon: 'far fa-bullseye',
+                        description: 'En estos planes puedes asignar las competencias y habilidades que quieres desarrollar en tus colaboradores en un tiempo determinado.',
+                        buttons: {
+                            secondary: {
+                                text: 'Crear plan',
+                                icon: 'fa-plus',
+                                onClick: irCrearPlanCompetencias
+                            }
+                        }
+                    },
                     i18n: { selectAll: 'Seleccionar todo', deselectAll: 'Deseleccionar todo', verSeleccionados: 'Ver seleccionados', clearFilters: 'Limpiar filtros', filtrosAplicados: 'Filtros aplicados', buscar: 'Buscar' }
                 });
                 setTimeout(function() { if (typeof initTooltip === 'function') initTooltip('#planes-data-table-container [data-tooltip]'); }, 50);
@@ -199,9 +214,7 @@
                     primaryButton: {
                         text: 'Crear plan',
                         icon: 'fa-plus',
-                        onClick: function() {
-                            window.location.href = 'crear-plan-competencias.html';
-                        }
+                        onClick: irCrearPlanCompetencias
                     }
                 });
             }

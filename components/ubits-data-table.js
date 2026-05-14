@@ -136,7 +136,7 @@
      * @param {string} options.rowIdField - clave del row para el id (ej. 'id')
      * @param {function(Object): string} options.buildRowHtml - devuelve HTML de celdas (sin checkbox); si checkboxes, el componente añade la columna
      * @param {Object} [options.features] - { checkboxes, search, filters, verSeleccionados, actionBar, resultsCount, columnsToggle }
-     * @param {Object} [options.emptyState] - { message, icon }
+     * @param {Object} [options.emptyState] - { message, icon, description?, buttons? }. `buttons` mismo contrato que `loadEmptyState` (secondary|primary con text, icon?, onClick).
      * @param {Object} [options.emptySearchState] - { message, description?, buttonText }. Si omites `description`, el componente elige el copy según si hay filtros por columna en UI (`features.filters` y alguna columna `filterable`): solo búsqueda → "Intenta ajustar tu búsqueda."; con filtros → "Intenta ajustar tu búsqueda o filtros para encontrar lo que buscas."
      * @param {Array} [options.actionBarButtons] - [{ id, label, icon, onClick(selectedIds) }]
      * @param {Object} [options.primaryButton] - { text: string, icon?: string, variant?: 'secondary', onClick: function() } botón en el header (slot «primary»; por defecto estilo primario; `variant: 'secondary'` para secundario)
@@ -544,12 +544,16 @@
                 if (tableWrap) tableWrap.style.display = 'none';
                 emptyEl.style.display = 'flex';
                 if (typeof loadEmptyState === 'function') {
-                    loadEmptyState(emptyStateId, {
+                    var emptyLoadOpts = {
                         icon: (emptyState.icon || 'fa-folder-open').replace(/^far\s+/, ''),
                         iconSize: 'lg',
                         title: emptyState.message || 'No hay elementos.',
-                        description: emptyState.description || ' '
-                    });
+                        description: (emptyState.description != null && String(emptyState.description).trim() !== '') ? emptyState.description : ' '
+                    };
+                    if (emptyState.buttons && (emptyState.buttons.secondary || emptyState.buttons.primary)) {
+                        emptyLoadOpts.buttons = emptyState.buttons;
+                    }
+                    loadEmptyState(emptyStateId, emptyLoadOpts);
                 } else {
                     emptyEl.innerHTML = '<p class="ubits-body-md-regular">' + escapeHtml(emptyState.message) + '</p>';
                 }

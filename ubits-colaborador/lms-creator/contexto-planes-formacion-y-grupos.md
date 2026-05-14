@@ -61,7 +61,7 @@ En **planes de competencias**, al hacer **clic en una fila** de **`planes-compet
 | **Planeado** | `editar-plan-competencias.html?id=<id>` |
 | **Vigente**, **No vigente** | `detalle-plan-competencias.html?id=<id>` |
 
-- En el prototipo, la tabla **Planes de competencias** en **`planes-competencias.html`** solo incluye **tres filas de ejemplo** (**`c1`** Planeado, **`c2`** Vigente, **`c3`** No vigente); no hay plan en **Procesando** en esa lista. Si existiera un plan en Procesando (datos reales), el criterio de fila sería el de la tabla: **edición**; **Planeado** → **edición**; **Vigente** / **No vigente** → **detalle**.
+- En el prototipo, la tabla **Planes de competencias** en **`planes-competencias.html`** incluye **tres filas de ejemplo** (**`c1`** Planeado, **`c2`** Vigente, **`c3`** No vigente); no hay plan en **Procesando** en esa lista. Si existiera un plan en Procesando (datos reales), el criterio de fila sería el de la tabla: **edición**; **Planeado** → **edición**; **Vigente** / **No vigente** → **detalle**.
 
 ### 2.2 Progreso: estudio, no carga
 

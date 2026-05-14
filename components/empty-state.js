@@ -277,6 +277,7 @@ function loadEmptyState(containerId, options = {}) {
         
         // Footer con botones (si están configurados)
         if (config.buttons && (config.buttons.secondary || config.buttons.primary)) {
+            const escIdForAttr = String(containerId).replace(/\\/g, '\\\\').replace(/'/g, '\\\'');
             html += `
                 <div class="ubits-empty-state__footer">
             `;
@@ -287,7 +288,7 @@ function loadEmptyState(containerId, options = {}) {
                 const secondaryIconClass = secondaryIcon ? (secondaryIcon.startsWith('fa-') ? `far ${secondaryIcon}` : `far fa-${secondaryIcon}`) : '';
                 
                 html += `
-                    <button class="ubits-button ubits-button--secondary ubits-button--md" onclick="window.ubitsEmptyStateSecondary_${containerId}()">
+                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--md" onclick="window['ubitsEmptyStateSecondary_${escIdForAttr}']()">
                         ${secondaryIconClass ? `<i class="${secondaryIconClass}"></i>` : ''}
                         <span>${config.buttons.secondary.text}</span>
                     </button>
@@ -300,7 +301,7 @@ function loadEmptyState(containerId, options = {}) {
                 const primaryIconClass = primaryIcon ? (primaryIcon.startsWith('fa-') ? `far ${primaryIcon}` : `far fa-${primaryIcon}`) : '';
                 
                 html += `
-                    <button class="ubits-button ubits-button--primary ubits-button--md" onclick="window.ubitsEmptyStatePrimary_${containerId}()">
+                    <button type="button" class="ubits-button ubits-button--primary ubits-button--md" onclick="window['ubitsEmptyStatePrimary_${escIdForAttr}']()">
                         ${primaryIconClass ? `<i class="${primaryIconClass}"></i>` : ''}
                         <span>${config.buttons.primary.text}</span>
                     </button>
