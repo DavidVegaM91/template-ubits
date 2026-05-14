@@ -905,6 +905,7 @@ window.TOP_NAV_VARIANTS = TOP_NAV_VARIANTS;
 window.getTopNavHTML = getTopNavHTML;
 window.loadSubNav = loadSubNav;
 window.getTopNavVariant = getTopNavVariant;
+window.getCorrectTabUrl = getCorrectTabUrl;
 window.getAllTopNavVariants = getAllTopNavVariants;
 window.addTopNavEventListeners = addTopNavEventListeners;
 window.activateCurrentPageTab = activateCurrentPageTab;

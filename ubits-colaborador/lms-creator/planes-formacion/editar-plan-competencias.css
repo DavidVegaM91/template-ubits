@@ -28,3 +28,9 @@
     gap: var(--gap-sm);
     flex-shrink: 0;
 }
+
+/* Guardar (primary): deshabilitado hasta que haya cambios sin guardar */
+#header-product-container .ubits-header-product__primary-action:disabled {
+    cursor: not-allowed;
+    opacity: 0.55;
+}

@@ -405,31 +405,237 @@
             initPlanActions();
             document.title = 'UBITS Playground - LMS Creator - Detalle del plan de competencias — ' + (planEditar && planEditar.nombre ? planEditar.nombre : '');
 
+            var asignacionesData = [];
+            var pendingCursosRow = null;
+            var catalogoCompetencias = window.CATALOGO_COMPETENCIAS_DRAWER || [];
+            var competenciaImageMap = window.COMPETENCIA_IMAGE_MAP || {};
+            var habilidadIconMap = window.HABILIDAD_ICON_MAP || {};
+            var planEditCompetenciasBaseline = null;
+
+            function planesFormacionBackUrlCompetencias() {
+                return typeof getPlanesFormacionBackUrl === 'function' ? getPlanesFormacionBackUrl() : 'planes-competencias.html';
+            }
+            function serializePlanEditCompetencias() {
+                var nombreEl = document.getElementById('asignacion-nombre');
+                var nombre = nombreEl ? String(nombreEl.value || '').trim() : '';
+                var inicioInput = document.querySelector('#fecha-inicio-container input');
+                var finInput = document.querySelector('#fecha-fin-container input');
+                var horasInput = document.querySelector('#horas-por-competencia-container input');
+                var inicio = inicioInput ? String(inicioInput.value || '').trim() : '';
+                var fin = finInput ? String(finInput.value || '').trim() : '';
+                var horas = horasInput ? String(horasInput.value || '').trim() : '';
+                var rows = asignacionesData.map(function(a) {
+                    var competencias = (a.contenidos || []).map(function(c) {
+                        return {
+                            id: String(c.id),
+                            habilidades: (c.habilidades || []).slice(),
+                            habilidadesDesactivadas: (c.habilidadesDesactivadas || []).slice().sort()
+                        };
+                    });
+                    return { id: String(a.id), colaboradorId: String(a.colaboradorId), competencias: competencias };
+                }).sort(function(x, y) { return x.id.localeCompare(y.id); });
+                return JSON.stringify({ nombre: nombre, inicio: inicio, fin: fin, horas: horas, rows: rows });
+            }
+            function isPlanEditCompetenciasDirty() {
+                if (planEditCompetenciasBaseline === null) return false;
+                return serializePlanEditCompetencias() !== planEditCompetenciasBaseline;
+            }
+            function capturePlanEditCompetenciasBaseline() {
+                planEditCompetenciasBaseline = serializePlanEditCompetencias();
+                if (typeof updateGuardarButtonState === 'function') updateGuardarButtonState();
+            }
+            function confirmLeaveEditarPlanCompetencias(dest) {
+                var def = planesFormacionBackUrlCompetencias();
+                var url = (dest != null && String(dest).trim() !== '') ? String(dest).trim() : def;
+                window.location.href = url;
+            }
+            function navigateBackEditarPlanCompetencias() {
+                confirmLeaveEditarPlanCompetencias(null);
+            }
+            function openSalirSinGuardarModalEditarCompetencias(navigateToUrl) {
+                if (typeof openModal !== 'function') {
+                    confirmLeaveEditarPlanCompetencias(navigateToUrl);
+                    return;
+                }
+                var dest = navigateToUrl;
+                openModal({
+                    overlayId: 'editar-plan-competencias-unsaved-modal',
+                    title: 'Salir sin guardar',
+                    bodyHtml: '<p class="ubits-body-md-regular">Tienes cambios sin guardar. Si sales ahora, se perderán. ¿Deseas salir de todas formas?</p>',
+                    footerHtml: '<button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="editar-plan-competencias-unsaved-stay"><span>Quedarse</span></button>' +
+                        '<button type="button" class="ubits-button ubits-button--primary ubits-button--md" id="editar-plan-competencias-unsaved-confirm"><span>Salir sin guardar</span></button>',
+                    size: 'sm',
+                    closeOnOverlayClick: true,
+                    onClose: function() {}
+                });
+                setTimeout(function() {
+                    var stay = document.getElementById('editar-plan-competencias-unsaved-stay');
+                    var go = document.getElementById('editar-plan-competencias-unsaved-confirm');
+                    if (stay) stay.addEventListener('click', function() {
+                        if (typeof closeModal === 'function') closeModal('editar-plan-competencias-unsaved-modal');
+                    });
+                    if (go) go.addEventListener('click', function() {
+                        if (typeof closeModal === 'function') closeModal('editar-plan-competencias-unsaved-modal');
+                        confirmLeaveEditarPlanCompetencias(dest);
+                    });
+                }, 50);
+            }
+            function planEditCompetenciasIsFullDocumentNavigation(absUrl) {
+                try {
+                    var u = new URL(absUrl, window.location.href);
+                    var c = new URL(window.location.href);
+                    if (u.origin !== c.origin) return true;
+                    if (u.pathname !== c.pathname) return true;
+                    if (u.search !== c.search) return true;
+                    return false;
+                } catch (err) {
+                    return true;
+                }
+            }
+            function resolvePendingNavigationUrlPlanEditCompetencias(target) {
+                if (!target || !target.closest) return null;
+                if (target.closest('.ubits-modal-overlay')) return null;
+                if (target.closest('.ubits-drawer-overlay')) return null;
+                if (target.closest('#header-product-container')) return null;
+                var a = target.closest('a[href]');
+                if (a) {
+                    var h = (a.getAttribute('href') || '').trim();
+                    if (!h || h === '#' || /^javascript:/i.test(h)) return null;
+                    if (a.getAttribute('target') === '_blank') return null;
+                    var absA;
+                    try { absA = new URL(a.href, window.location.href).href; } catch (e1) { return null; }
+                    if (!planEditCompetenciasIsFullDocumentNavigation(absA)) return null;
+                    return absA;
+                }
+                var subOpt = target.closest('.ubits-submenu__option');
+                if (subOpt) {
+                    var rawV = (subOpt.getAttribute('data-value') || '').trim();
+                    if (!rawV || rawV === '#') return null;
+                    if (/^action:/i.test(rawV)) return null;
+                    var absSub;
+                    try { absSub = new URL(rawV, window.location.href).href; } catch (eSub) { return null; }
+                    if (!planEditCompetenciasIsFullDocumentNavigation(absSub)) return null;
+                    return absSub;
+                }
+                var sideBtn = target.closest('#sidebar .nav-button');
+                if (sideBtn && sideBtn.id !== 'darkmode-toggle') {
+                    var oc = sideBtn.getAttribute('onclick') || '';
+                    var m = oc.match(/location\.href\s*=\s*['"]([^'"]+)['"]/);
+                    if (m) {
+                        try {
+                            var absB = new URL(m[1], window.location.href).href;
+                            if (!planEditCompetenciasIsFullDocumentNavigation(absB)) return null;
+                            return absB;
+                        } catch (e2) {
+                            return m[1];
+                        }
+                    }
+                }
+                var navHit = target.closest('#top-nav-container .nav-tab, #top-nav-container .hamburger-item, #top-nav-container .module-selector-item');
+                if (navHit && typeof getTopNavVariant === 'function' && typeof getCorrectTabUrl === 'function') {
+                    var subNav = navHit.closest('.sub-nav');
+                    var variant = (subNav && subNav.getAttribute('data-variant')) || 'template';
+                    var tabId = navHit.getAttribute('data-tab');
+                    if (!tabId) return null;
+                    var cfg = getTopNavVariant(variant);
+                    if (!cfg || !cfg.tabs) return null;
+                    var tabCfg = null;
+                    for (var i = 0; i < cfg.tabs.length; i++) {
+                        if (cfg.tabs[i].id === tabId) { tabCfg = cfg.tabs[i]; break; }
+                    }
+                    if (!tabCfg) return null;
+                    var tUrl = getCorrectTabUrl(tabCfg, variant);
+                    if (!tUrl) return null;
+                    try {
+                        var absC = new URL(tUrl, window.location.href).href;
+                        if (!planEditCompetenciasIsFullDocumentNavigation(absC)) return null;
+                        return absC;
+                    } catch (e3) {
+                        return tUrl;
+                    }
+                }
+                var navOnclick = target.closest('.sub-nav [onclick*="navigateToTab"], #top-nav-container [onclick*="navigateToTab"]');
+                if (navOnclick && typeof getTopNavVariant === 'function' && typeof getCorrectTabUrl === 'function') {
+                    var ocNav = navOnclick.getAttribute('onclick') || '';
+                    var mNav = ocNav.match(/navigateToTab\s*\(\s*['"]([^'"]+)['"]\s*,\s*['"]([^'"]+)['"]\s*\)/);
+                    if (mNav) {
+                        var tabId2 = mNav[1];
+                        var variant2 = mNav[2];
+                        var cfg2 = getTopNavVariant(variant2);
+                        if (cfg2 && cfg2.tabs) {
+                            var tabCfg2 = null;
+                            for (var j = 0; j < cfg2.tabs.length; j++) {
+                                if (cfg2.tabs[j].id === tabId2) { tabCfg2 = cfg2.tabs[j]; break; }
+                            }
+                            if (tabCfg2) {
+                                var tUrl2 = getCorrectTabUrl(tabCfg2, variant2);
+                                if (tUrl2) {
+                                    try {
+                                        var absD = new URL(tUrl2, window.location.href).href;
+                                        if (!planEditCompetenciasIsFullDocumentNavigation(absD)) return null;
+                                        return absD;
+                                    } catch (e4) {
+                                        return tUrl2;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                return null;
+            }
+            function tryNavigateBackEditarPlanCompetencias() {
+                if (isPlanEditCompetenciasDirty()) openSalirSinGuardarModalEditarCompetencias();
+                else navigateBackEditarPlanCompetencias();
+            }
+            function performGuardarEditarPlanCompetencias() {
+                var sinCompetencias = asignacionesData.filter(function(a) { return !a.contenidos || a.contenidos.length === 0; });
+                if (sinCompetencias.length > 0 && typeof showToast === 'function') {
+                    showToast('error', 'Todas las asignaciones deben tener al menos una competencia. Agrega competencias a las que faltan antes de guardar.');
+                    return;
+                }
+                capturePlanEditCompetenciasBaseline();
+                if (typeof showToast === 'function') showToast('success', 'Cambios guardados exitosamente');
+            }
+            function updateGuardarButtonState() {
+                var btn = document.getElementById('btn-guardar-plan') || document.querySelector('#header-product-container .ubits-header-product__primary-action');
+                if (btn) {
+                    if (!btn.id) btn.id = 'btn-guardar-plan';
+                    btn.disabled = !isPlanEditCompetenciasDirty();
+                }
+            }
+
             if (typeof loadHeaderProduct === 'function') {
                 loadHeaderProduct('header-product-container', {
                     productName: 'Detalle del plan de competencias',
                     breadcrumbItems: [],
                     backButton: {
                         onClick: function() {
-                            window.location.href = typeof getPlanesFormacionBackUrl === 'function' ? getPlanesFormacionBackUrl() : 'planes-competencias.html';
+                            tryNavigateBackEditarPlanCompetencias();
                         }
                     },
-                    secondaryButtons: [
-                        {
-                            text: 'Guardar',
-                            icon: 'fa-floppy-disk',
-                            onClick: function() {
-                                var sinCompetencias = asignacionesData.filter(function(a) { return !a.contenidos || a.contenidos.length === 0; });
-                                if (sinCompetencias.length > 0 && typeof showToast === 'function') {
-                                    showToast('error', 'Todas las asignaciones deben tener al menos una competencia. Agrega competencias a las que faltan antes de guardar.');
-                                    return;
-                                }
-                                window.location.href = typeof getPlanesFormacionBackUrl === 'function' ? getPlanesFormacionBackUrl() : 'planes-competencias.html';
-                            }
+                    primaryButton: {
+                        text: 'Guardar',
+                        icon: 'fa-floppy-disk',
+                        onClick: function() {
+                            performGuardarEditarPlanCompetencias();
                         }
-                    ]
+                    }
                 });
             }
+
+            document.addEventListener('click', function(e) {
+                if (!isPlanEditCompetenciasDirty()) return;
+                if (e.defaultPrevented) return;
+                if (e.button !== 0) return;
+                if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+                var pending = resolvePendingNavigationUrlPlanEditCompetencias(e.target);
+                if (!pending) return;
+                e.preventDefault();
+                e.stopPropagation();
+                e.stopImmediatePropagation();
+                openSalirSinGuardarModalEditarCompetencias(pending);
+            }, true);
             
             setTimeout(() => {
                 const tab = document.querySelector('.nav-tab[data-tab="planes-competencias"]');
@@ -460,6 +666,7 @@
                     nombreTa.addEventListener('input', function() {
                         this.style.height = 'auto';
                         this.style.height = Math.min(this.scrollHeight, 80) + 'px';
+                        if (typeof updateGuardarButtonState === 'function') updateGuardarButtonState();
                     });
                 }
             }, 0);
@@ -525,33 +732,6 @@
                     });
                 }
             }, 500);
-
-            // Asignaciones: datos y refs de tabla
-            var asignacionesData = [];
-            var pendingCursosRow = null;
-            var catalogoCompetencias = window.CATALOGO_COMPETENCIAS_DRAWER || [];
-            var competenciaImageMap = window.COMPETENCIA_IMAGE_MAP || {};
-            var habilidadIconMap = window.HABILIDAD_ICON_MAP || {};
-
-
-            function canGuardar() {
-                var inicioInput = document.querySelector('#fecha-inicio-container input');
-                var finInput = document.querySelector('#fecha-fin-container input');
-                var horasInput = document.querySelector('#horas-por-competencia-container input');
-                var hasInicio = inicioInput && inicioInput.value && String(inicioInput.value).trim() !== '';
-                var hasFin = finInput && finInput.value && String(finInput.value).trim() !== '';
-                var horasVal = horasInput && horasInput.value !== '' ? parseFloat(horasInput.value, 10) : NaN;
-                var hasHorasValidas = !isNaN(horasVal) && horasVal >= 1;
-                var hasAsignacionConContenido = asignacionesData.some(function(a) { return a.contenidos && a.contenidos.length > 0; });
-                return hasInicio && hasFin && hasHorasValidas && hasAsignacionConContenido;
-            }
-            function updateGuardarButtonState() {
-                var btn = document.getElementById('btn-guardar-plan') || document.querySelector('#header-product-container .ubits-header-product__actions .ubits-button--secondary');
-                if (btn) {
-                    if (!btn.id) btn.id = 'btn-guardar-plan';
-                    btn.disabled = !canGuardar();
-                }
-            }
 
             if (typeof getModalHtml === 'function') {
                 var deleteBody = '<p class="ubits-body-md-regular">¿Estás seguro de que deseas eliminar <strong id="asignaciones-delete-count">0</strong> asignación(es) seleccionada(s)?</p><p class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Esta acción no se puede deshacer.</p><div style="margin-top: var(--gap-lg);"><label class="ubits-body-sm-regular" for="asignaciones-delete-type-input">Escriba <strong>eliminar</strong> para habilitar el botón:</label><input type="text" id="asignaciones-delete-type-input" class="ubits-input" placeholder="Escriba la palabra de confirmación" autocomplete="off" style="margin-top: var(--gap-sm); width: 100%; padding: var(--padding-sm) var(--padding-md); border: 1px solid var(--ubits-border-1); border-radius: var(--border-radius-sm); font-size: var(--font-size-sm); color: var(--ubits-fg-1-high); box-sizing: border-box;"></div>';
@@ -666,7 +846,7 @@
                     asignacionesIniciales.forEach(function(a) { asignacionesData.push(a); });
                     if (asignacionesTablaRef && typeof asignacionesTablaRef.refresh === 'function') asignacionesTablaRef.refresh();
                     if (typeof bindAsignacionesRowsAfterRefresh === 'function') bindAsignacionesRowsAfterRefresh();
-                    if (typeof updateGuardarButtonState === 'function') updateGuardarButtonState();
+                    if (typeof capturePlanEditCompetenciasBaseline === 'function') capturePlanEditCompetenciasBaseline();
                 })();
             }
 

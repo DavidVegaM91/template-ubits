@@ -397,6 +397,8 @@
 
     /* ── Vista activa ── */
     var _currentView = 'hub';
+    /* Serialización de la sub-vista al entrar (para detectar cambios sin guardar) */
+    var _snapshot360SubView = null;
     /* Si el usuario aterriza por hash directo (deep link), el botón Volver debe ir a #hub */
     var _cameFromDeepLink = false;
 
@@ -429,11 +431,122 @@
         return true;
     }
 
+    /* ══════════════════════════════════════════════════════════
+       Salir de una sub-vista con cambios sin guardar
+       ══════════════════════════════════════════════════════════ */
+    function serialize360EvaluadosIds() {
+        var ids = (_eval360ColabTablaRef && typeof _eval360ColabTablaRef.getSelectedIds === 'function')
+            ? _eval360ColabTablaRef.getSelectedIds() : [];
+        return ids.slice().sort(function (a, b) {
+            return String(a).localeCompare(String(b), 'es', { numeric: true });
+        }).join(',');
+    }
+
+    function serialize360SubViewState(viewId) {
+        if (!viewId || viewId === 'hub') return '';
+        if (viewId === 'tipo') {
+            return JSON.stringify(_tipos.map(function (t) {
+                return { id: t.id, activo: !!t.activo, peso: parseInt(t.peso, 10) || 0 };
+            }));
+        }
+        if (viewId === 'competencias') {
+            return JSON.stringify(_competencias.map(function (c) {
+                return {
+                    id: c.id,
+                    nombre: c.nombre,
+                    descripcion: c.descripcion || '',
+                    enunciados: Array.isArray(c.enunciados) ? JSON.parse(JSON.stringify(c.enunciados)) : []
+                };
+            }));
+        }
+        if (viewId === 'evaluados') {
+            return serialize360EvaluadosIds();
+        }
+        if (viewId === 'evaluados-asignados') {
+            return JSON.stringify(_eval360AsignacionesData);
+        }
+        if (viewId === 'editar-asignacion') {
+            var row = _eval360AsignacionesData[_eval360EditandoIdx];
+            return row ? JSON.stringify(row) : '';
+        }
+        if (viewId === 'resultados') {
+            var toggleLideres   = document.getElementById('res360-toggle-lideres');
+            var toggleNoSabe    = document.getElementById('res360-toggle-nosabe');
+            var toggleAnonimato = document.getElementById('res360-toggle-anonimato');
+            return JSON.stringify({
+                escala: String(_resEscala || '5'),
+                cantidad: _resCantidad,
+                params: JSON.parse(JSON.stringify(_resParams || [])),
+                permitirLideres:   toggleLideres   ? !!toggleLideres.checked   : false,
+                permitirNoSabe:    toggleNoSabe    ? !!toggleNoSabe.checked    : false,
+                asegurarAnonimato: toggleAnonimato ? !!toggleAnonimato.checked : false
+            });
+        }
+        return '';
+    }
+
+    function is360SubViewDirtyFor(viewId) {
+        if (!viewId || viewId === 'hub') return false;
+        if (_snapshot360SubView === null) return false;
+        return serialize360SubViewState(viewId) !== _snapshot360SubView;
+    }
+
+    function refresh360SubViewSnapshotNow() {
+        if (_currentView === 'hub') {
+            _snapshot360SubView = null;
+            return;
+        }
+        _snapshot360SubView = serialize360SubViewState(_currentView);
+    }
+
+    function capture360SubViewSnapshot() {
+        if (_currentView === 'hub') {
+            _snapshot360SubView = null;
+            return;
+        }
+        _snapshot360SubView = serialize360SubViewState(_currentView);
+    }
+
+    function open360SubviewUnsavedModal(leavingViewId, targetViewId, targetOpts) {
+        targetOpts = targetOpts || {};
+        openModal({
+            overlayId: 'crear360-subview-unsaved-modal',
+            title: 'Salir sin guardar',
+            bodyHtml: '<p class="ubits-body-md-regular">Hay cambios sin guardar en esta sección. Si sales ahora, se perderán.</p>',
+            footerHtml:
+                '<button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="crear360-subview-unsaved-cancel"><span>Seguir editando</span></button>' +
+                '<button type="button" class="ubits-button ubits-button--primary ubits-button--md" id="crear360-subview-unsaved-go"><span>Salir de la sección</span></button>',
+            size: 'sm',
+            closeOnOverlayClick: true
+        });
+        setTimeout(function () {
+            var cancelBtn = document.getElementById('crear360-subview-unsaved-cancel');
+            var goBtn = document.getElementById('crear360-subview-unsaved-go');
+            if (cancelBtn) {
+                cancelBtn.addEventListener('click', function () {
+                    closeModal('crear360-subview-unsaved-modal');
+                    var curHash = (window.location.hash || '').replace(/^#/, '');
+                    if (leavingViewId && leavingViewId !== 'hub' && curHash !== leavingViewId) {
+                        history.replaceState({ view: leavingViewId }, '', window.location.pathname + window.location.search + '#' + leavingViewId);
+                    }
+                });
+            }
+            if (goBtn) {
+                goBtn.addEventListener('click', function () {
+                    closeModal('crear360-subview-unsaved-modal');
+                    var merged = Object.assign({}, targetOpts, { skipSubviewLeaveGuard: true });
+                    showView(targetViewId, merged);
+                });
+            }
+        }, 50);
+    }
+
     /* Muestra una vista y actualiza la URL hash.
        pushHistory=true (por defecto) añade entrada al historial;
        pushHistory=false la reemplaza (usado al manejar popstate). */
     function showView(viewId, opts) {
         opts = opts || {};
+        var prevView = _currentView;
         var pushHistory = opts.pushHistory !== false;
         var hashOverride = (typeof opts.hashOverride === 'string' && opts.hashOverride.trim()) ? opts.hashOverride.trim() : '';
 
@@ -445,6 +558,11 @@
             }
             viewId = 'hub';
             pushHistory = false;
+        }
+
+        if (!opts.skipSubviewLeaveGuard && prevView !== 'hub' && viewId !== prevView && is360SubViewDirtyFor(prevView)) {
+            open360SubviewUnsavedModal(prevView, viewId, opts);
+            return;
         }
 
         /* Limpiar calendar pickers antes de cambiar vista (evita acumulación) */
@@ -500,6 +618,7 @@
         else if (viewId === 'resultados')           renderResultadosView();
 
         if (typeof initTooltip === 'function') initTooltip('[data-tooltip]');
+        setTimeout(function () { capture360SubViewSnapshot(); }, 0);
     }
 
     /* ══════════════════════════════════════════════════════════
@@ -1347,6 +1466,7 @@
             }
         }
         showToast('success', 'Configuración guardada');
+        refresh360SubViewSnapshotNow();
         showView('hub');
         if (typeof window.__onEval360DraftPersist === 'function') window.__onEval360DraftPersist();
     }
@@ -2534,6 +2654,7 @@
         } else {
             showToast('warning', 'Añade al menos un enunciado por cada tipo de evaluación activo para marcar la sección como completa.');
         }
+        refresh360SubViewSnapshotNow();
         showView('hub');
         if (typeof window.__onEval360DraftPersist === 'function') window.__onEval360DraftPersist();
     }
@@ -2795,7 +2916,7 @@
                             fileUploadAnimateProcessing(fuEl, 5000, function () {
                                 eval360AplicarImport('libre', _eval360ImportFilas);
                                 closeDrawer('eval360DrawerImport');
-                                showView('evaluados-asignados');
+                                showView('evaluados-asignados', { skipSubviewLeaveGuard: true });
                                 if (omitidasSnap > 0 && typeof showToast === 'function') {
                                     showToast('info', 'Se omitieron ' + omitidasSnap + ' fila(s) cuyo tipo no está activo en «Tipo de evaluación»; el resto se importó.');
                                 }
@@ -2804,7 +2925,7 @@
                             setTimeout(function () {
                                 eval360AplicarImport('libre', _eval360ImportFilas);
                                 closeDrawer('eval360DrawerImport');
-                                showView('evaluados-asignados');
+                                showView('evaluados-asignados', { skipSubviewLeaveGuard: true });
                                 if (omitidasSnap > 0 && typeof showToast === 'function') {
                                     showToast('info', 'Se omitieron ' + omitidasSnap + ' fila(s) cuyo tipo no está activo en «Tipo de evaluación»; el resto se importó.');
                                 }
@@ -3182,7 +3303,7 @@
             draft.checks.evaluados = false;
 
             /* Ir al hub y mostrar el card en estado "procesando" */
-            showView('hub');
+            showView('hub', { skipSubviewLeaveGuard: true });
             showToast('info', 'Recibimos tu archivo. El sistema está asignando evaluadores según el organigrama y te notificará por correo cuando termine.');
 
             /* Mostrar status-tag de procesando */
@@ -3397,6 +3518,7 @@
         };
         draft.checks.evaluados = ids.length > 0;
         showToast('success', 'Evaluadores asignados según el organigrama y los tipos de evaluación activos.');
+        refresh360SubViewSnapshotNow();
         showView('evaluados-asignados');
         if (typeof window.__onEval360DraftPersist === 'function') window.__onEval360DraftPersist();
     }
@@ -3611,6 +3733,7 @@
             draft.evaluados.personas = _eval360AsignacionesData.map(function (a) { return a.evaluadoId; });
         }
         showToast('success', 'Asignaciones guardadas');
+        refresh360SubViewSnapshotNow();
         showView('hub');
         if (typeof window.__onEval360DraftPersist === 'function') window.__onEval360DraftPersist();
     }
@@ -4205,6 +4328,7 @@
         };
         draft.checks.resultados = true;
         showToast('success', 'Configuración de resultados guardada');
+        refresh360SubViewSnapshotNow();
         showView('hub');
         if (typeof window.__onEval360DraftPersist === 'function') window.__onEval360DraftPersist();
     }
@@ -4227,6 +4351,7 @@
             draft.evaluados.personas = _eval360AsignacionesData.map(function (a) { return a.evaluadoId; });
         }
         showToast('success', 'Cambios guardados');
+        refresh360SubViewSnapshotNow();
         showView('evaluados-asignados');
         if (typeof window.__onEval360DraftPersist === 'function') window.__onEval360DraftPersist();
     }
@@ -4545,7 +4670,7 @@
                                     draft.checks.evaluados = ids.length > 0;
                                 }
                                 closeDrawer('eval360DrawerImport');
-                                showView('evaluados-asignados');
+                                showView('evaluados-asignados', { skipSubviewLeaveGuard: true });
                             };
                         }
                     }, 220);

@@ -409,32 +409,224 @@
             renderPlanEstadoTagEditar();
             initPlanActions();
             document.title = 'UBITS Playground - LMS Creator - Detalle del plan de contenidos — ' + (planEditar && planEditar.nombre ? planEditar.nombre : '');
-            
+
+            var asignacionesData = [];
+            var pendingCursosRow = null;
+            var catalogoCursos = (window.CATALOGO_CURSOS_DRAWER || []).slice();
+            var planEditContenidosBaseline = null;
+
+            function serializePlanEditContenidos() {
+                var nombreEl = document.getElementById('asignacion-nombre');
+                var nombre = nombreEl ? String(nombreEl.value || '').trim() : '';
+                var inicioInput = document.querySelector('#fecha-inicio-container input');
+                var finInput = document.querySelector('#fecha-fin-container input');
+                var inicio = inicioInput ? String(inicioInput.value || '').trim() : '';
+                var fin = finInput ? String(finInput.value || '').trim() : '';
+                var rows = asignacionesData.map(function(a) {
+                    var ids = (a.contenidos || []).map(function(c) { return String(c.id); }).sort();
+                    return { id: String(a.id), colaboradorId: String(a.colaboradorId), cursoIds: ids };
+                }).sort(function(x, y) { return x.id.localeCompare(y.id); });
+                return JSON.stringify({ nombre: nombre, inicio: inicio, fin: fin, rows: rows });
+            }
+            function isPlanEditContenidosDirty() {
+                if (planEditContenidosBaseline === null) return false;
+                return serializePlanEditContenidos() !== planEditContenidosBaseline;
+            }
+            function capturePlanEditContenidosBaseline() {
+                planEditContenidosBaseline = serializePlanEditContenidos();
+                if (typeof updateGuardarButtonState === 'function') updateGuardarButtonState();
+            }
+            function confirmLeaveEditarPlanContenidos(dest) {
+                var url = (dest != null && String(dest).trim() !== '') ? String(dest).trim() : 'planes-contenidos.html';
+                window.location.href = url;
+            }
+            function navigateBackEditarPlanContenidos() {
+                confirmLeaveEditarPlanContenidos(null);
+            }
+            function openSalirSinGuardarModalEditarContenidos(navigateToUrl) {
+                if (typeof openModal !== 'function') {
+                    confirmLeaveEditarPlanContenidos(navigateToUrl);
+                    return;
+                }
+                var dest = navigateToUrl;
+                openModal({
+                    overlayId: 'editar-plan-contenidos-unsaved-modal',
+                    title: 'Salir sin guardar',
+                    bodyHtml: '<p class="ubits-body-md-regular">Tienes cambios sin guardar. Si sales ahora, se perderán. ¿Deseas salir de todas formas?</p>',
+                    footerHtml: '<button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="editar-plan-contenidos-unsaved-stay"><span>Quedarse</span></button>' +
+                        '<button type="button" class="ubits-button ubits-button--primary ubits-button--md" id="editar-plan-contenidos-unsaved-confirm"><span>Salir sin guardar</span></button>',
+                    size: 'sm',
+                    closeOnOverlayClick: true,
+                    onClose: function() {}
+                });
+                setTimeout(function() {
+                    var stay = document.getElementById('editar-plan-contenidos-unsaved-stay');
+                    var go = document.getElementById('editar-plan-contenidos-unsaved-confirm');
+                    if (stay) stay.addEventListener('click', function() {
+                        if (typeof closeModal === 'function') closeModal('editar-plan-contenidos-unsaved-modal');
+                    });
+                    if (go) go.addEventListener('click', function() {
+                        if (typeof closeModal === 'function') closeModal('editar-plan-contenidos-unsaved-modal');
+                        confirmLeaveEditarPlanContenidos(dest);
+                    });
+                }, 50);
+            }
+            function planEditContenidosIsFullDocumentNavigation(absUrl) {
+                try {
+                    var u = new URL(absUrl, window.location.href);
+                    var c = new URL(window.location.href);
+                    if (u.origin !== c.origin) return true;
+                    if (u.pathname !== c.pathname) return true;
+                    if (u.search !== c.search) return true;
+                    return false;
+                } catch (err) {
+                    return true;
+                }
+            }
+            function resolvePendingNavigationUrlPlanEditContenidos(target) {
+                if (!target || !target.closest) return null;
+                if (target.closest('.ubits-modal-overlay')) return null;
+                if (target.closest('.ubits-drawer-overlay')) return null;
+                if (target.closest('#header-product-container')) return null;
+                var a = target.closest('a[href]');
+                if (a) {
+                    var h = (a.getAttribute('href') || '').trim();
+                    if (!h || h === '#' || /^javascript:/i.test(h)) return null;
+                    if (a.getAttribute('target') === '_blank') return null;
+                    var absA;
+                    try { absA = new URL(a.href, window.location.href).href; } catch (e1) { return null; }
+                    if (!planEditContenidosIsFullDocumentNavigation(absA)) return null;
+                    return absA;
+                }
+                var subOpt = target.closest('.ubits-submenu__option');
+                if (subOpt) {
+                    var rawV = (subOpt.getAttribute('data-value') || '').trim();
+                    if (!rawV || rawV === '#') return null;
+                    if (/^action:/i.test(rawV)) return null;
+                    var absSub;
+                    try { absSub = new URL(rawV, window.location.href).href; } catch (eSub) { return null; }
+                    if (!planEditContenidosIsFullDocumentNavigation(absSub)) return null;
+                    return absSub;
+                }
+                var sideBtn = target.closest('#sidebar .nav-button');
+                if (sideBtn && sideBtn.id !== 'darkmode-toggle') {
+                    var oc = sideBtn.getAttribute('onclick') || '';
+                    var m = oc.match(/location\.href\s*=\s*['"]([^'"]+)['"]/);
+                    if (m) {
+                        try {
+                            var absB = new URL(m[1], window.location.href).href;
+                            if (!planEditContenidosIsFullDocumentNavigation(absB)) return null;
+                            return absB;
+                        } catch (e2) {
+                            return m[1];
+                        }
+                    }
+                }
+                var navHit = target.closest('#top-nav-container .nav-tab, #top-nav-container .hamburger-item, #top-nav-container .module-selector-item');
+                if (navHit && typeof getTopNavVariant === 'function' && typeof getCorrectTabUrl === 'function') {
+                    var subNav = navHit.closest('.sub-nav');
+                    var variant = (subNav && subNav.getAttribute('data-variant')) || 'template';
+                    var tabId = navHit.getAttribute('data-tab');
+                    if (!tabId) return null;
+                    var cfg = getTopNavVariant(variant);
+                    if (!cfg || !cfg.tabs) return null;
+                    var tabCfg = null;
+                    for (var i = 0; i < cfg.tabs.length; i++) {
+                        if (cfg.tabs[i].id === tabId) { tabCfg = cfg.tabs[i]; break; }
+                    }
+                    if (!tabCfg) return null;
+                    var tUrl = getCorrectTabUrl(tabCfg, variant);
+                    if (!tUrl) return null;
+                    try {
+                        var absC = new URL(tUrl, window.location.href).href;
+                        if (!planEditContenidosIsFullDocumentNavigation(absC)) return null;
+                        return absC;
+                    } catch (e3) {
+                        return tUrl;
+                    }
+                }
+                var navOnclick = target.closest('.sub-nav [onclick*="navigateToTab"], #top-nav-container [onclick*="navigateToTab"]');
+                if (navOnclick && typeof getTopNavVariant === 'function' && typeof getCorrectTabUrl === 'function') {
+                    var ocNav = navOnclick.getAttribute('onclick') || '';
+                    var mNav = ocNav.match(/navigateToTab\s*\(\s*['"]([^'"]+)['"]\s*,\s*['"]([^'"]+)['"]\s*\)/);
+                    if (mNav) {
+                        var tabId2 = mNav[1];
+                        var variant2 = mNav[2];
+                        var cfg2 = getTopNavVariant(variant2);
+                        if (cfg2 && cfg2.tabs) {
+                            var tabCfg2 = null;
+                            for (var j = 0; j < cfg2.tabs.length; j++) {
+                                if (cfg2.tabs[j].id === tabId2) { tabCfg2 = cfg2.tabs[j]; break; }
+                            }
+                            if (tabCfg2) {
+                                var tUrl2 = getCorrectTabUrl(tabCfg2, variant2);
+                                if (tUrl2) {
+                                    try {
+                                        var absD = new URL(tUrl2, window.location.href).href;
+                                        if (!planEditContenidosIsFullDocumentNavigation(absD)) return null;
+                                        return absD;
+                                    } catch (e4) {
+                                        return tUrl2;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                return null;
+            }
+            function tryNavigateBackEditarPlanContenidos() {
+                if (isPlanEditContenidosDirty()) openSalirSinGuardarModalEditarContenidos();
+                else navigateBackEditarPlanContenidos();
+            }
+            function performGuardarEditarPlanContenidos() {
+                var sinContenidos = asignacionesData.filter(function(a) { return !a.contenidos || a.contenidos.length === 0; });
+                if (sinContenidos.length > 0 && typeof showToast === 'function') {
+                    showToast('error', 'Todas las asignaciones deben tener al menos un contenido. Agrega contenidos a las que faltan antes de guardar.');
+                    return;
+                }
+                capturePlanEditContenidosBaseline();
+                if (typeof showToast === 'function') showToast('success', 'Cambios guardados exitosamente');
+            }
+            function updateGuardarButtonState() {
+                var btn = document.getElementById('btn-guardar-plan') || document.querySelector('#header-product-container .ubits-header-product__primary-action');
+                if (btn) {
+                    if (!btn.id) btn.id = 'btn-guardar-plan';
+                    btn.disabled = !isPlanEditContenidosDirty();
+                }
+            }
+
             if (typeof loadHeaderProduct === 'function') {
                 loadHeaderProduct('header-product-container', {
                     productName: 'Detalle del plan de contenidos',
                     breadcrumbItems: [],
                     backButton: {
                         onClick: function() {
-                            window.location.href = 'planes-contenidos.html';
+                            tryNavigateBackEditarPlanContenidos();
                         }
                     },
-                    secondaryButtons: [
-                        {
-                            text: 'Guardar',
-                            icon: 'fa-floppy-disk',
-                            onClick: function() {
-                                var sinContenidos = asignacionesData.filter(function(a) { return !a.contenidos || a.contenidos.length === 0; });
-                                if (sinContenidos.length > 0 && typeof showToast === 'function') {
-                                    showToast('error', 'Todas las asignaciones deben tener al menos un contenido. Agrega contenidos a las que faltan antes de guardar.');
-                                    return;
-                                }
-                                window.location.href = 'planes-contenidos.html';
-                            }
+                    primaryButton: {
+                        text: 'Guardar',
+                        icon: 'fa-floppy-disk',
+                        onClick: function() {
+                            performGuardarEditarPlanContenidos();
                         }
-                    ]
+                    }
                 });
             }
+
+            document.addEventListener('click', function(e) {
+                if (!isPlanEditContenidosDirty()) return;
+                if (e.defaultPrevented) return;
+                if (e.button !== 0) return;
+                if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+                var pending = resolvePendingNavigationUrlPlanEditContenidos(e.target);
+                if (!pending) return;
+                e.preventDefault();
+                e.stopPropagation();
+                e.stopImmediatePropagation();
+                openSalirSinGuardarModalEditarContenidos(pending);
+            }, true);
             
             setTimeout(() => {
                 const tab = document.querySelector('.nav-tab[data-tab="planes-contenidos"]');
@@ -465,6 +657,7 @@
                     nombreTa.addEventListener('input', function() {
                         this.style.height = 'auto';
                         this.style.height = Math.min(this.scrollHeight, 80) + 'px';
+                        if (typeof updateGuardarButtonState === 'function') updateGuardarButtonState();
                     });
                 }
             }, 0);
@@ -491,29 +684,6 @@
                     size: 'sm',
                     onChange: function() { if (typeof updateGuardarButtonState === 'function') updateGuardarButtonState(); }
                 });
-            }
-
-            // Asignaciones: datos y refs de tabla
-            var asignacionesData = [];
-            var pendingCursosRow = null;
-            // Catálogo: catalogo-contenidos-drawer.js
-            var catalogoCursos = (window.CATALOGO_CURSOS_DRAWER || []).slice();
-
-
-            function canGuardar() {
-                var inicioInput = document.querySelector('#fecha-inicio-container input');
-                var finInput = document.querySelector('#fecha-fin-container input');
-                var hasInicio = inicioInput && inicioInput.value && String(inicioInput.value).trim() !== '';
-                var hasFin = finInput && finInput.value && String(finInput.value).trim() !== '';
-                var hasAsignacionConContenido = asignacionesData.some(function(a) { return a.contenidos && a.contenidos.length > 0; });
-                return hasInicio && hasFin && hasAsignacionConContenido;
-            }
-            function updateGuardarButtonState() {
-                var btn = document.getElementById('btn-guardar-plan') || document.querySelector('#header-product-container .ubits-header-product__actions .ubits-button--secondary');
-                if (btn) {
-                    if (!btn.id) btn.id = 'btn-guardar-plan';
-                    btn.disabled = !canGuardar();
-                }
             }
 
             if (typeof getModalHtml === 'function') {
@@ -631,7 +801,7 @@
                     asignacionesIniciales.forEach(function(a) { asignacionesData.push(a); });
                     if (asignacionesTablaRef && typeof asignacionesTablaRef.refresh === 'function') asignacionesTablaRef.refresh();
                     if (typeof bindAsignacionesRowsAfterRefresh === 'function') bindAsignacionesRowsAfterRefresh();
-                    if (typeof updateGuardarButtonState === 'function') updateGuardarButtonState();
+                    if (typeof capturePlanEditContenidosBaseline === 'function') capturePlanEditContenidosBaseline();
                 })();
             }
 
