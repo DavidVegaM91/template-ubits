@@ -89,17 +89,18 @@
     /* ══════════════════════════════════════
        DATOS: AVATARES (images/avatars) + CATEGORÍAS
        Prefijos en nombre de archivo → categoría del selector:
-       agro, serv, cons, ener, gob, ind, prop, ret, sal, fin, tech, log, sec, host, staff, urb
+       agro, serv, cmas, crea, ener, gob, ind, cons, ret, sal, fin, tech, log, sec, host, staff
+       (cmas = consumo masivo; cons = construcción / propiedad en UI; crea = creatividad)
        Patrón: {prefijo}_{f|m}{edad}_{nombre}[.jpg]  (f/m y edad solo para catálogo; la imagen es la fuente de verdad)
     ══════════════════════════════════════ */
     var PREFIX_TO_CAT = {
         agro: 'agro',
         serv: 'servicios',
-        cons: 'consumo',
+        cmas: 'consumo',
         ener: 'energia',
         gob: 'gobierno',
         ind: 'industria',
-        prop: 'propiedad',
+        cons: 'propiedad',
         ret: 'retail',
         sal: 'salud',
         fin: 'seguros',
@@ -108,7 +109,7 @@
         sec: 'seguridad',
         host: 'hosteleria',
         staff: 'staff',
-        urb: 'creatividad'
+        crea: 'creatividad'
     };
 
     /** Archivos en images/avatars (orden alfabético; coincide con `ls | sort`). */
@@ -117,10 +118,19 @@
         'agro_f45_marta.jpg',
         'agro_m27_juan.jpg',
         'agro_m45_roberto.jpg',
-        'cons_f27_sofia.jpg',
-        'cons_f45_lucia.jpg',
-        'cons_m27_luis.jpg',
-        'cons_m45_fernando.jpg',
+        'cmas_f27_sofia.jpg',
+        'cmas_f45_lucia.jpg',
+        'cmas_m27_luis.jpg',
+        'cmas_m45_fernando.jpg',
+        'cons_f27_mariana.jpg',
+        'cons_f45_patricia.jpg',
+        'cons_f45_paula.jpg',
+        'cons_m27_santiago.jpg',
+        'cons_m45_hugo.jpg',
+        'crea_f27_lorena.jpg',
+        'crea_m27_oscar.jpg',
+        'crea_m30_enrique.jpg',
+        'crea_m30_julian.jpg',
         'ener_f27_valentina.jpg',
         'ener_f45_gabriela.jpg',
         'ener_m27_diego.jpg',
@@ -143,10 +153,6 @@
         'log_f45_silvia.jpg',
         'log_m27_rodrigo.jpg',
         'log_m45_manuel.jpg',
-        'prop_f27_mariana.jpg',
-        'prop_f45_paula.jpg',
-        'prop_m27_santiago.jpg',
-        'prop_m45_hugo.jpg',
         'ret_f27_martina.jpg',
         'ret_f45_daniela.jpg',
         'ret_m27_leonardo.jpg',
@@ -158,7 +164,6 @@
         'sec_f35_rosa.jpg',
         'sec_m35_alberto.jpg',
         'serv_f27_ana.jpg',
-        'serv_f45_patricia.jpg',
         'serv_m27_carlos.jpg',
         'serv_m45_ricardo.jpg',
         'staff_f23_antonia.jpg',
@@ -174,11 +179,7 @@
         'tech_f27_sara.jpg',
         'tech_f45_fernanda.jpg',
         'tech_m27_felipe.jpg',
-        'tech_m45_gonzalo.jpg',
-        'urb_f27_lorena.jpg',
-        'urb_m27_oscar.jpg',
-        'urb_m30_enrique.jpg',
-        'urb_m30_julian.jpg'
+        'tech_m45_gonzalo.jpg'
     ];
 
     function buildAvatarsCatalog() {
@@ -211,18 +212,18 @@
     var CATEGORY_ORDER = [
         { id: 'staff', label: 'Staff & Oficina' },
         { id: 'agro', label: 'Agroindustria' },
-        { id: 'servicios', label: 'Compañía de Servicios' },
+        { id: 'propiedad', label: 'Construcción' },
         { id: 'consumo', label: 'Consumo Masivo' },
         { id: 'creatividad', label: 'Creatividad' },
         { id: 'energia', label: 'Energía & Minería' },
         { id: 'gobierno', label: 'Gobierno' },
         { id: 'hosteleria', label: 'Hostelería' },
         { id: 'industria', label: 'Industria & Manufactura' },
-        { id: 'propiedad', label: 'Propiedad & Construcción' },
         { id: 'retail', label: 'Retail' },
         { id: 'salud', label: 'Salud & Farmacéuticos' },
         { id: 'seguridad', label: 'Seguridad' },
         { id: 'seguros', label: 'Seguros & Finanzas' },
+        { id: 'servicios', label: 'Servicios' },
         { id: 'tech', label: 'Tecnología' },
         { id: 'transporte', label: 'Transporte & Logística' }
     ];
