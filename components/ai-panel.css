@@ -14,9 +14,10 @@
    Variables
    --------------------------------------------------------------------------- */
 :root {
-    --ai-panel-width-default: 340px;
-    --ai-panel-width-min:     260px;
-    --ai-panel-width-max:     600px;
+    /* Mismo ancho que .ubits-drawer-content--sm (components/drawer.css → 440px) */
+    --ai-panel-width-default: 440px;
+    --ai-panel-width-min:     320px;
+    --ai-panel-width-max:     440px;
     --ai-panel-resize-handle: 5px;
     --ai-panel-header-h:      48px;
 }

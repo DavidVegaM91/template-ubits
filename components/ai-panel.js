@@ -621,8 +621,8 @@ function _aiPanelBindResize() {
     function onMouseMove(e) {
         var dx = startX - e.clientX;            // cuánto se movió hacia la izquierda
         var newW = Math.min(
-            Math.max(startW + dx, parseInt(getComputedStyle(document.documentElement).getPropertyValue('--ai-panel-width-min')) || 260),
-            parseInt(getComputedStyle(document.documentElement).getPropertyValue('--ai-panel-width-max')) || 600
+            Math.max(startW + dx, parseInt(getComputedStyle(document.documentElement).getPropertyValue('--ai-panel-width-min'), 10) || 320),
+            parseInt(getComputedStyle(document.documentElement).getPropertyValue('--ai-panel-width-max'), 10) || 440
         );
         panel.style.width = newW + 'px';
         _aiPanel.width = newW;
@@ -654,7 +654,9 @@ function _aiPanelBindResize() {
 
     handle.addEventListener('touchmove', function(e) {
         var dx = startX - e.touches[0].clientX;
-        var newW = Math.min(Math.max(startW + dx, 260), 600);
+        var minW = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--ai-panel-width-min'), 10) || 320;
+        var maxW = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--ai-panel-width-max'), 10) || 440;
+        var newW = Math.min(Math.max(startW + dx, minW), maxW);
         panel.style.width = newW + 'px';
         _aiPanel.width = newW;
     }, { passive: true });
@@ -673,7 +675,7 @@ function openAIPanel() {
     if (panel) panel.classList.add('active');
     _aiPanel.open = true;
     if (panel && panel.classList.contains('ai-panel--docked-desktop')) {
-        panel.style.width = (_aiPanel.width && _aiPanel.width > 0 ? _aiPanel.width : (parseInt(getComputedStyle(panel).getPropertyValue('--ai-panel-width-default')) || 340)) + 'px';
+        panel.style.width = (_aiPanel.width && _aiPanel.width > 0 ? _aiPanel.width : (parseInt(getComputedStyle(panel).getPropertyValue('--ai-panel-width-default'), 10) || 440)) + 'px';
     }
     setTimeout(function() {
         var input = _aiEl('ai-panel-input');
