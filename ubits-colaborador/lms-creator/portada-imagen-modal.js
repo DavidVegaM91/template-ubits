@@ -1,8 +1,9 @@
 /**
  * LMS Creator — Modal «Agregar portada» (Portada con IA · Subir portada · Enlace de tráiler opcional).
  * Estilo y tabs alineados a video-recurso-modal.js.
- * Portada con IA: al abrir, mismo ancho que Subir/Tráiler (modal sm) y bloque de copy + textarea; al pulsar «Generar portada»
- * aparece la vista previa 16:9 arriba y el formulario debajo (columna única). Las tres pestañas usan el mismo tamaño de modal (sm).
+ * Portada con IA: al abrir, ancho `sm` o `md` si el viewport es >1440px; bloque de copy + textarea; al pulsar «Generar portada»
+ * aparece la vista previa 16:9 arriba y el formulario debajo (columna única). Las tres pestañas comparten el mismo tamaño de modal.
+ * El ancho sm/md (>1440px) se mantiene al redimensionar la ventana mientras el modal está abierto.
  * Depende: modal.js, button.css, chip.css, input.js (+ dropdown-menu.js antes de input) para pestaña tráiler,
  * file-upload.js, ia-loader.js, empty-state.js, ai-panel.css (+ general-styles/ubits-ia-chat.css), tab.css,
  * portada-imagen-modal.css.
@@ -18,6 +19,8 @@
     var OVERLAY_ID = 'cc-portada-imagen-modal';
     var TOKEN_GENERATE = 2;
     var MAX_IMAGE_MB = 5;
+    /** Si innerWidth es estrictamente mayor a este valor, `openModal` usa tamaño `md`; si no, `sm`. */
+    var PIM_MODAL_WIDE_MIN_PX = 1440;
     var AI_IMAGES = [
         '../../images/cards-learn/portadas-ia/01-personas-en-oficina.jpg',
         '../../images/cards-learn/portadas-ia/02-personas-en-oficina.jpg',
@@ -42,6 +45,8 @@
     /** Referencias adjuntas en pestaña Portada con IA (mismo patrón que guión video / SCORM). */
     var _pimPendingImgs = [];
     var _pimPendingFiles = [];
+    var _pimOnWindowResize = null;
+    var _pimResizeRaf = null;
 
     function getTokens() {
         return global._ubitsAiTokenPool != null ? global._ubitsAiTokenPool : 200;
@@ -756,27 +761,91 @@
         _pimPendingFiles = [];
     }
 
+    function getPimModalSizeForViewport() {
+        var w = 0;
+        try {
+            w =
+                global.innerWidth ||
+                (global.document && global.document.documentElement
+                    ? global.document.documentElement.clientWidth
+                    : 0) ||
+                0;
+        } catch (e) {
+            w = 0;
+        }
+        return w > PIM_MODAL_WIDE_MIN_PX ? 'md' : 'sm';
+    }
+
+    function teardownPimModalResize() {
+        if (_pimOnWindowResize) {
+            global.removeEventListener('resize', _pimOnWindowResize);
+            global.removeEventListener('orientationchange', _pimOnWindowResize);
+            _pimOnWindowResize = null;
+        }
+        if (_pimResizeRaf != null) {
+            global.cancelAnimationFrame(_pimResizeRaf);
+            _pimResizeRaf = null;
+        }
+    }
+
+    function syncPimModalContentSize() {
+        var overlay = document.getElementById(OVERLAY_ID);
+        if (!overlay) return;
+        try {
+            if (global.getComputedStyle(overlay).display === 'none') return;
+        } catch (e) {
+            return;
+        }
+        var content = overlay.querySelector('.ubits-modal-content');
+        if (!content) return;
+        var size = getPimModalSizeForViewport();
+        ['xs', 'sm', 'md', 'lg'].forEach(function (s) {
+            content.classList.remove('ubits-modal-content--' + s);
+        });
+        content.classList.add('ubits-modal-content--' + size);
+    }
+
+    function schedulePimModalResizeSync() {
+        if (_pimResizeRaf != null) return;
+        _pimResizeRaf = global.requestAnimationFrame(function () {
+            _pimResizeRaf = null;
+            syncPimModalContentSize();
+        });
+    }
+
+    function wirePimModalResize() {
+        if (_pimOnWindowResize) return;
+        _pimOnWindowResize = function () {
+            schedulePimModalResizeSync();
+        };
+        global.addEventListener('resize', _pimOnWindowResize, { passive: true });
+        global.addEventListener('orientationchange', _pimOnWindowResize);
+    }
+
     function openPortadaImagenModal(opts) {
         if (typeof global.openModal !== 'function') return;
+        teardownPimModalResize();
         resetState(opts);
 
         var overlay = global.openModal({
             overlayId: OVERLAY_ID,
             title: 'Agregar portada',
             bodyHtml: buildBody(),
-            size: 'sm',
+            size: getPimModalSizeForViewport(),
             closeOnOverlayClick: false,
             footerHtml: buildFooter(),
             variant: 'ia',
             iaTokensRemaining: getTokens(),
             iaTokensBadgeId: 'cc-pim-modal-tokens-badge',
             onClose: function () {
+                teardownPimModalResize();
                 _onApply = null;
                 _onTrailerSaved = null;
             }
         });
 
         if (overlay) applyAiChrome(overlay);
+        wirePimModalResize();
 
         setTimeout(function () {
             wireTabBar();
