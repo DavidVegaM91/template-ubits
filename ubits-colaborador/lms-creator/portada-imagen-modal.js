@@ -3,8 +3,8 @@
  * Estilo y tabs alineados a video-recurso-modal.js.
  * Portada con IA: al abrir, mismo ancho que Subir/Tráiler (modal sm) y bloque de copy + textarea; al pulsar «Generar portada»
  * aparece la vista previa 16:9 arriba y el formulario debajo (columna única). Las tres pestañas usan el mismo tamaño de modal (sm).
- * Depende: modal.js, input.js (+ dropdown-menu.js antes de input) para pestaña tráiler, file-upload.js, ia-loader.js,
- * empty-state.js, ai-panel.css (+ general-styles/ubits-ia-chat.css para .ubits-ia-chat-thread__input-area), tab.css,
+ * Depende: modal.js, button.css, chip.css, input.js (+ dropdown-menu.js antes de input) para pestaña tráiler,
+ * file-upload.js, ia-loader.js, empty-state.js, ai-panel.css (+ general-styles/ubits-ia-chat.css), tab.css,
  * portada-imagen-modal.css.
  *
  * openPortadaImagenModal(opts) — opts opcionales al reabrir con portada ya aplicada en la página:
@@ -17,7 +17,6 @@
 
     var OVERLAY_ID = 'cc-portada-imagen-modal';
     var TOKEN_GENERATE = 2;
-    var TOKEN_REGEN = 2;
     var MAX_IMAGE_MB = 5;
     var AI_IMAGES = [
         '../../images/cards-learn/portadas-ia/01-personas-en-oficina.jpg',
@@ -40,6 +39,9 @@
     var _subirFuInited = false;
     /** Primera vez en la pestaña IA: modal pequeño, solo input; tras «Generar portada» se expande con preview. */
     var _pimIaLayoutExpanded = false;
+    /** Referencias adjuntas en pestaña Portada con IA (mismo patrón que guión video / SCORM). */
+    var _pimPendingImgs = [];
+    var _pimPendingFiles = [];
 
     function getTokens() {
         return global._ubitsAiTokenPool != null ? global._ubitsAiTokenPool : 200;
@@ -161,8 +163,13 @@
             '</div>' +
             '<div class="ubits-ia-chat-thread__input-area">' +
             '<div class="ai-panel__input-box" id="cc-pim-idea-input-box">' +
-            '<textarea id="cc-pim-idea-input" class="ai-panel__input ubits-body-md-regular" rows="2" placeholder="Describe la portada que imaginas"></textarea>' +
+            '<input type="file" id="cc-pim-ref-files" accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.txt,.csv,.ppt,.pptx" multiple hidden>' +
+            '<div class="ai-panel__pending-images-strip" id="cc-pim-pending-imgs" style="display:none;"></div>' +
+            '<div class="ai-panel__pending-files-strip" id="cc-pim-pending-files" style="display:none;"></div>' +
+            '<textarea id="cc-pim-idea-input" class="ai-panel__input ubits-body-md-regular" rows="2" placeholder="Adjunta imágenes o documentos de referencia, o describe la portada que imaginas"></textarea>' +
             '<div class="ai-panel__input-actions">' +
+            '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only ai-panel__attach-btn" id="cc-pim-attach" aria-label="Adjuntar referencia">' +
+            '<i class="far fa-plus"></i></button>' +
             '<div class="ai-panel__input-spacer" aria-hidden="true"></div>' +
             '<button type="button" class="ubits-ia-button ubits-ia-button--primary ubits-ia-button--sm ubits-ia-button--with-token-cost" id="cc-pim-btn-generar">' +
             '<span class="ubits-ia-button__token-cost" aria-hidden="true">' +
@@ -248,56 +255,165 @@
             '<img id="cc-pim-result-img" class="cc-pim-result-img" src="' +
             esc(src) +
             '" alt="Portada generada">' +
-            '<button type="button" class="ubits-ia-button ubits-ia-button--secondary ubits-ia-button--xs ubits-ia-button--with-token-cost cc-pim-result-regen" id="cc-pim-btn-regen">' +
-            '<span class="ubits-ia-button__token-cost" aria-hidden="true">' +
-            '<span class="ubits-ia-button__token-number">' +
-            TOKEN_REGEN +
-            '</span><i class="far fa-coin-vertical"></i></span>' +
-            '<span>Regenerar</span></button></div>';
-        wireRegen();
+            '<button type="button" class="ubits-button ubits-button--secondary ubits-button--xs cc-pim-result-download" id="cc-pim-btn-download">' +
+            '<i class="far fa-download"></i>' +
+            '<span>Descargar</span></button></div>';
+        wireDownload();
         refreshGenButtons();
     }
 
     function refreshGenButtons() {
         var g = getTokens();
         var gen = document.getElementById('cc-pim-btn-generar');
-        var reg = document.getElementById('cc-pim-btn-regen');
         if (gen) gen.disabled = g < TOKEN_GENERATE;
-        if (reg) reg.disabled = g < TOKEN_REGEN;
     }
 
-    function wireRegen() {
-        var reg = document.getElementById('cc-pim-btn-regen');
-        if (!reg) return;
-        reg.onclick = function () {
-            if (!trySpendTokens(TOKEN_REGEN)) return;
-            reg.disabled = true;
-            _iaResultSrc = '';
-            syncFooter();
-            randomizeIaImageIndex();
-            setPreviewState('loader');
-            var ld = document.getElementById('cc-pim-preview-loader');
-            if (ld) {
-                ld.innerHTML =
-                    typeof global.getIaLoaderHTML === 'function'
-                        ? global.getIaLoaderHTML({ label: 'Regenerando portada' })
-                        : '<p class="ubits-body-sm-regular" role="status">Regenerando…</p>';
+    function pimDownloadFilename(src) {
+        var s = String(src || '');
+        var m = s.match(/\.(jpe?g|png|webp|gif)(\?|$)/i);
+        if (m) return 'portada-generada.' + m[1].toLowerCase().replace('jpeg', 'jpg');
+        return 'portada-generada.jpg';
+    }
+
+    function wireDownload() {
+        var btn = document.getElementById('cc-pim-btn-download');
+        if (!btn) return;
+        btn.onclick = function () {
+            var src = _iaResultSrc;
+            var img = document.getElementById('cc-pim-result-img');
+            if (!src && img) src = img.getAttribute('src') || '';
+            if (!src) return;
+            var a = document.createElement('a');
+            a.href = src;
+            a.download = pimDownloadFilename(src);
+            a.rel = 'noopener';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            if (typeof global.showToast === 'function') {
+                global.showToast('success', 'Descarga iniciada.', { containerId: 'ubits-toast-container' });
             }
-            setTimeout(function () {
-                _iaResultSrc = AI_IMAGES[_iaImageIndex];
-                renderIaResult(_iaResultSrc);
-                setPreviewState('result');
-                var reg2 = document.getElementById('cc-pim-btn-regen');
-                if (reg2) reg2.disabled = false;
-                refreshGenButtons();
-                syncFooter();
-            }, 3000);
         };
     }
 
     function getPimIdeaText() {
         var ta = document.getElementById('cc-pim-idea-input');
         return ta ? String(ta.value || '').trim() : '';
+    }
+
+    function getPimIdeaInputBox() {
+        return document.getElementById('cc-pim-idea-input-box');
+    }
+
+    function clearPimIdeaError() {
+        var box = getPimIdeaInputBox();
+        if (box) box.classList.remove('ai-panel__input-box--context-error');
+    }
+
+    /** Texto en el área o al menos un adjunto (imagen o documento). */
+    function pimHasIdeaMaterial() {
+        if (getPimIdeaText().length) return true;
+        return _pimPendingImgs.length > 0 || _pimPendingFiles.length > 0;
+    }
+
+    function renderPimPendingImgs() {
+        var strip = document.getElementById('cc-pim-pending-imgs');
+        if (!strip) return;
+        if (!_pimPendingImgs.length) {
+            strip.style.display = 'none';
+            strip.innerHTML = '';
+            return;
+        }
+        strip.style.display = 'flex';
+        strip.innerHTML = _pimPendingImgs
+            .map(function (img, i) {
+                return (
+                    '<div class="ai-panel__pending-img-wrap">' +
+                    '<img src="' +
+                    img.src +
+                    '" alt="' +
+                    esc(img.name) +
+                    '">' +
+                    '<button type="button" class="ai-panel__pending-img-remove" data-pim-rm-img="' +
+                    i +
+                    '" aria-label="Quitar imagen"><i class="far fa-times"></i></button>' +
+                    '</div>'
+                );
+            })
+            .join('');
+        strip.querySelectorAll('[data-pim-rm-img]').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                _pimPendingImgs.splice(parseInt(btn.getAttribute('data-pim-rm-img'), 10), 1);
+                renderPimPendingImgs();
+            });
+        });
+        if (_pimPendingImgs.length) clearPimIdeaError();
+    }
+
+    function renderPimPendingFiles() {
+        var strip = document.getElementById('cc-pim-pending-files');
+        if (!strip) return;
+        if (!_pimPendingFiles.length) {
+            strip.style.display = 'none';
+            strip.innerHTML = '';
+            return;
+        }
+        strip.style.display = 'flex';
+        strip.innerHTML = _pimPendingFiles
+            .map(function (f, i) {
+                return (
+                    '<span class="ubits-chip ubits-chip--sm ubits-chip--icon-left ubits-chip--close ai-panel__pending-file-chip">' +
+                    '<i class="far fa-file-lines ubits-chip__icon" aria-hidden="true"></i>' +
+                    '<span class="ubits-chip__text">' +
+                    esc(f.name) +
+                    '</span>' +
+                    '<button type="button" class="ubits-chip__close" data-pim-rm-file="' +
+                    i +
+                    '" aria-label="Quitar archivo">' +
+                    '<i class="far fa-times"></i></button>' +
+                    '</span>'
+                );
+            })
+            .join('');
+        strip.querySelectorAll('[data-pim-rm-file]').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                _pimPendingFiles.splice(parseInt(btn.getAttribute('data-pim-rm-file'), 10), 1);
+                renderPimPendingFiles();
+            });
+        });
+        if (_pimPendingFiles.length) clearPimIdeaError();
+    }
+
+    function initPimAttach() {
+        var attachBtn = document.getElementById('cc-pim-attach');
+        var fileIn = document.getElementById('cc-pim-ref-files');
+        if (!attachBtn || !fileIn || attachBtn._ccPimAttachWired) return;
+        attachBtn._ccPimAttachWired = true;
+
+        attachBtn.addEventListener('click', function () {
+            fileIn.click();
+        });
+
+        fileIn.addEventListener('change', function () {
+            if (!fileIn.files || !fileIn.files.length) return;
+            Array.prototype.forEach.call(fileIn.files, function (f) {
+                if (f.type && f.type.indexOf('image/') === 0) {
+                    var reader = new FileReader();
+                    reader.onload = function (ev) {
+                        _pimPendingImgs.push({
+                            name: f.name,
+                            src: ev && ev.target ? ev.target.result : ''
+                        });
+                        renderPimPendingImgs();
+                    };
+                    reader.readAsDataURL(f);
+                } else {
+                    _pimPendingFiles.push({ name: f.name, type: f.type, size: f.size });
+                    renderPimPendingFiles();
+                }
+            });
+            fileIn.value = '';
+        });
     }
 
     function formatPimApproxBytes(bytes) {
@@ -362,6 +478,7 @@
         if (!ta || ta._ccPimIdeaWired) return;
         ta._ccPimIdeaWired = true;
         ta.addEventListener('input', function () {
+            clearPimIdeaError();
             refreshGenButtons();
             autosizePimIdeaTextarea();
         });
@@ -373,15 +490,21 @@
         if (!btn || btn._ccPimWired) return;
         btn._ccPimWired = true;
         btn.addEventListener('click', function () {
-            var text = getPimIdeaText();
-            if (!text.length) {
+            if (!pimHasIdeaMaterial()) {
+                var box = getPimIdeaInputBox();
+                if (box) box.classList.add('ai-panel__input-box--context-error');
+                var taErr = document.getElementById('cc-pim-idea-input');
+                if (taErr) taErr.focus();
                 if (typeof global.showToast === 'function') {
-                    global.showToast('warning', 'Escribe una descripción para generar la portada.', {
-                        containerId: 'ubits-toast-container'
-                    });
+                    global.showToast(
+                        'warning',
+                        'Adjunta referencias o escribe una descripción para generar la portada.',
+                        { containerId: 'ubits-toast-container' }
+                    );
                 }
                 return;
             }
+            clearPimIdeaError();
             if (!trySpendTokens(TOKEN_GENERATE)) return;
             btn.disabled = true;
             _iaResultSrc = '';
@@ -629,6 +752,8 @@
         _trailerInputInited = false;
         _subirFuInited = false;
         _pimIaLayoutExpanded = false;
+        _pimPendingImgs = [];
+        _pimPendingFiles = [];
     }
 
     function openPortadaImagenModal(opts) {
@@ -656,6 +781,7 @@
         setTimeout(function () {
             wireTabBar();
             initIdeaInput();
+            initPimAttach();
             initGenerarPortada();
             wireFooterActions();
 

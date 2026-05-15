@@ -276,7 +276,7 @@
     border-radius: var(--border-radius-xl);
 }
 
-#cc-portada-imagen-modal .cc-pim-result-regen {
+#cc-portada-imagen-modal .cc-pim-result-download {
     position: absolute;
     top: var(--gap-sm);
     right: var(--gap-sm);
@@ -295,6 +295,12 @@
 #cc-portada-imagen-modal #cc-pim-idea-input.ai-panel__input {
     min-height: 40px;
     max-height: none;
+}
+
+/* Validación: falta descripción y adjuntos (misma pauta que guión video / SCORM). */
+#cc-portada-imagen-modal .ai-panel__input-box--context-error {
+    border-color: var(--ubits-accent-brand) !important;
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--ubits-accent-brand) 12%, transparent) !important;
 }
 
 /* Pestaña tráiler: mismo ancho que el input de enlace del modal Agregar video (.cc-vmodal-enlace-centered + #cc-venlace-input-wrap) */
