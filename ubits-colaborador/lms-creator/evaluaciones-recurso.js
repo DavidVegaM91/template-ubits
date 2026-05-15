@@ -842,7 +842,7 @@
             footerHtml:
                 '<button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="cc-eval-cfg-cancel"><span>Cancelar</span></button>' +
                 '<button type="button" class="ubits-button ubits-button--primary ubits-button--md" id="cc-eval-cfg-save"><span>Guardar</span></button>',
-            size: 'md',
+            size: 'sm',
             closeOnOverlayClick: true
         });
 
