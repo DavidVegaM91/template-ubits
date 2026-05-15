@@ -7,8 +7,8 @@
  *
  * Nota: Esta implementación es standalone (HTML + CSS + JS vanilla) y usa componentes UBITS existentes:
  * - Buttons / IA button
- * - createInput (inputs), createNumberStepper (número de preguntas en modal Generar evaluación)
- * - ai-panel (Panel = agente conversacional). Modal «Generar evaluación» = flujo KISS sin chat (un CTA).
+ * - createInput (inputs en modal de configuración)
+ * - ai-panel (Panel = agente conversacional para generar evaluación)
  */
 (function (global) {
     'use strict';
@@ -778,7 +778,6 @@
     // ---------------------------
 
     var CC_EVAL_CFG_MODAL_ID = 'cc-eval-config-modal';
-    var CC_EVAL_IA_MODAL_ID = 'cc-eval-ia-modal';
     var CC_EVAL_UNDO_IA_CONFIRM_MODAL_ID = 'cc-eval-undo-ia-confirm-modal';
 
     function openEvalConfigModal(pageState) {
@@ -1137,433 +1136,10 @@
         if (typeof global.setAIPanelTokensBadgeValue === 'function') {
             global.setAIPanelTokensBadgeValue(n);
         }
-        var mb = document.getElementById('cc-eval-ia-modal-tokens-badge');
-        if (mb) {
-            var numEl = mb.querySelector('.ubits-badge-tag__token-number');
-            if (numEl) numEl.textContent = String(n);
-            mb.setAttribute('aria-label', String(n) + ' tokens restantes');
-        }
     }
 
-    function cleanupEvalIaModalAlternate(rootEl) {
-        if (typeof global.setAIPanelAlternateMount === 'function') global.setAIPanelAlternateMount(null);
-        if (rootEl) rootEl._ccEvalIaUiMode = null;
-    }
-
-    function evalAgentCloseUiForGeneration(rootEl) {
-        if (rootEl && rootEl._ccEvalIaUiMode === 'modal') {
-            if (typeof global.closeModal === 'function') global.closeModal(CC_EVAL_IA_MODAL_ID);
-            rootEl._ccEvalIaUiMode = null;
-            return;
-        }
+    function evalAgentCloseUiForGeneration() {
         if (typeof global.closeAIPanel === 'function') global.closeAIPanel();
-    }
-
-    /** Lee valores de los Inputs del modal y devuelve un objeto config listo para generar. */
-    function _evalReadModalFieldConfig(fieldApis, baseCfg) {
-        var next = Object.assign({}, baseCfg || {});
-        if (!fieldApis || !fieldApis.qCount || !fieldApis.difficulty || !fieldApis.minScore) return next;
-        var q = parseInt(fieldApis.qCount.getValue(), 10);
-        next.questionCount = isNaN(q) ? 10 : Math.min(20, Math.max(1, q));
-        var d = String(fieldApis.difficulty.getValue() || '').trim();
-        next.difficulty = ['basic', 'intermediate', 'advanced'].indexOf(d) !== -1 ? d : 'intermediate';
-        var m = parseInt(fieldApis.minScore.getValue(), 10);
-        if (isNaN(m)) next.minScore = 70;
-        else next.minScore = Math.min(100, Math.max(0, m));
-        return next;
-    }
-
-    /** Compositor estilo panel IA (textarea + adjuntos) dentro del modal de evaluación. */
-    function _evalWireIaModalComposer(overlay) {
-        var pendingImg = [];
-        var pendingFiles = [];
-        overlay._ccEvalModalPendingImages = pendingImg;
-        overlay._ccEvalModalPendingFiles = pendingFiles;
-
-        var fileIn = overlay.querySelector('#cc-eval-ia-modal-files');
-        var attachBtn = overlay.querySelector('#cc-eval-ia-modal-attach');
-        var ta = overlay.querySelector('#cc-eval-ia-modal-context-input');
-
-        function escAttr(s) {
-            return String(s == null ? '' : s)
-                .replace(/&/g, '&amp;')
-                .replace(/</g, '&lt;')
-                .replace(/>/g, '&gt;')
-                .replace(/"/g, '&quot;');
-        }
-
-        function renderImgs() {
-            var strip = overlay.querySelector('#cc-eval-ia-modal-pending-images');
-            if (!strip) return;
-            if (!pendingImg.length) {
-                strip.innerHTML = '';
-                strip.style.display = 'none';
-                return;
-            }
-            strip.style.display = 'flex';
-            strip.innerHTML = pendingImg
-                .map(function (src, idx) {
-                    return (
-                        '<div class="ai-panel__pending-img-wrap">' +
-                        '<img src="' +
-                        escAttr(src) +
-                        '" alt="Imagen adjunta" class="ai-panel__pending-img" />' +
-                        '<button type="button" class="ai-panel__pending-img-remove" data-cc-eval-pidx="' +
-                        idx +
-                        '" aria-label="Eliminar imagen">' +
-                        '<i class="far fa-times"></i></button>' +
-                        '</div>'
-                    );
-                })
-                .join('');
-            strip.querySelectorAll('[data-cc-eval-pidx]').forEach(function (btn) {
-                btn.addEventListener('click', function () {
-                    var idx = Number(btn.getAttribute('data-cc-eval-pidx'));
-                    if (isNaN(idx)) return;
-                    pendingImg.splice(idx, 1);
-                    renderImgs();
-                });
-            });
-        }
-
-        function renderFiles() {
-            var strip = overlay.querySelector('#cc-eval-ia-modal-pending-files');
-            if (!strip) return;
-            if (!pendingFiles.length) {
-                strip.innerHTML = '';
-                strip.style.display = 'none';
-                return;
-            }
-            strip.style.display = 'flex';
-            strip.innerHTML = pendingFiles
-                .map(function (f, idx) {
-                    return (
-                        '<span class="ubits-chip ubits-chip--sm ubits-chip--icon-left ubits-chip--close ai-panel__pending-file-chip">' +
-                        '<i class="far fa-file-lines"></i><span class="ubits-chip__text">' +
-                        escAttr((f && f.name) ? f.name : 'Archivo') +
-                        '</span>' +
-                        '<button type="button" class="ubits-chip__close ai-panel__pending-file-remove" data-cc-eval-fidx="' +
-                        idx +
-                        '" aria-label="Quitar archivo"><i class="far fa-times"></i></button>' +
-                        '</span>'
-                    );
-                })
-                .join('');
-            strip.querySelectorAll('[data-cc-eval-fidx]').forEach(function (btn) {
-                btn.addEventListener('click', function () {
-                    var idx = Number(btn.getAttribute('data-cc-eval-fidx'));
-                    if (isNaN(idx)) return;
-                    pendingFiles.splice(idx, 1);
-                    renderFiles();
-                });
-            });
-        }
-
-        if (attachBtn && fileIn) {
-            attachBtn.addEventListener('click', function () {
-                fileIn.click();
-            });
-            fileIn.addEventListener('change', function () {
-                var files = this.files;
-                if (!files || !files.length) return;
-                var toLoad = 0;
-                var i;
-                for (i = 0; i < files.length; i++) {
-                    if (files[i].type && files[i].type.indexOf('image/') === 0) toLoad++;
-                }
-                var loaded = 0;
-                for (var j = 0; j < files.length; j++) {
-                    var file = files[j];
-                    if (file.type && file.type.indexOf('image/') === 0) {
-                        (function (f) {
-                            var reader = new FileReader();
-                            reader.onload = function () {
-                                if (reader.result) pendingImg.push(String(reader.result));
-                                loaded++;
-                                if (loaded >= toLoad) renderImgs();
-                            };
-                            reader.readAsDataURL(f);
-                        })(file);
-                    } else {
-                        pendingFiles.push({ name: file.name, type: file.type, size: file.size });
-                    }
-                }
-                renderFiles();
-                if (toLoad === 0) renderImgs();
-                this.value = '';
-            });
-        }
-
-        if (ta) {
-            ta.addEventListener('input', function () {
-                this.style.height = 'auto';
-                this.style.height = Math.min(this.scrollHeight, 140) + 'px';
-            });
-            var box = overlay.querySelector('.cc-eval-ia-modal-simple__composer');
-            if (box) {
-                box.addEventListener('mousedown', function (e) {
-                    if (e.button !== 0) return;
-                    if (e.target.closest('button')) return;
-                    if (e.target === ta) return;
-                    requestAnimationFrame(function () {
-                        try {
-                            ta.focus({ preventScroll: true });
-                        } catch (err) {
-                            ta.focus();
-                        }
-                    });
-                });
-            }
-        }
-    }
-
-    function _evalModalHasContext(overlay) {
-        var ta = overlay.querySelector('#cc-eval-ia-modal-context-input');
-        var text = ta ? String(ta.value || '').trim() : '';
-        var imgs = overlay._ccEvalModalPendingImages || [];
-        var fds = overlay._ccEvalModalPendingFiles || [];
-        return !!(text || imgs.length || fds.length);
-    }
-
-    function _evalBuildModalContextContent(overlay) {
-        var ta = overlay.querySelector('#cc-eval-ia-modal-context-input');
-        var text = ta ? String(ta.value || '').trim() : '';
-        var imgs = overlay._ccEvalModalPendingImages || [];
-        var fds = overlay._ccEvalModalPendingFiles || [];
-        var parts = [];
-        if (text) parts.push(text);
-        fds.forEach(function (f) {
-            parts.push('[Adjunto: ' + String((f && f.name) ? f.name : 'archivo') + ']');
-        });
-        if (imgs.length) parts.push('[' + imgs.length + ' imagen(es) adjunta(s)]');
-        return parts.join('\n');
-    }
-
-    /** Monta stepper de preguntas + Inputs UBITS (nivel, nota) dentro del modal (tras insertarse en el DOM). */
-    function _evalMountIaModalInputs(cfg, qCount, minSc, difficultyKey) {
-        if (typeof global.createInput !== 'function') return null;
-        if (typeof global.createNumberStepper !== 'function') return null;
-        var q = Math.min(20, Math.max(1, qCount));
-        var diff = difficultyKey || 'intermediate';
-        if (['basic', 'intermediate', 'advanced'].indexOf(diff) === -1) diff = 'intermediate';
-
-        var apis = {};
-        apis.qCount = global.createNumberStepper({
-            containerId: 'cc-eval-ia-modal-wrap-qcount',
-            value: q,
-            min: 1,
-            max: 20,
-            step: 1,
-            size: 'md',
-            fullWidth: true
-        });
-        apis.difficulty = global.createInput({
-            containerId: 'cc-eval-ia-modal-wrap-difficulty',
-            type: 'select',
-            label: 'Nivel',
-            showLabel: false,
-            size: 'md',
-            placeholder: 'Selecciona…',
-            value: diff,
-            selectOptions: [
-                { value: 'basic', text: 'Básico' },
-                { value: 'intermediate', text: 'Intermedio' },
-                { value: 'advanced', text: 'Avanzado' }
-            ]
-        });
-        var msVal = Number(minSc);
-        if (isNaN(msVal)) msVal = 70;
-        msVal = Math.min(100, Math.max(0, msVal));
-        apis.minScore = global.createInput({
-            containerId: 'cc-eval-ia-modal-wrap-minscore',
-            type: 'number',
-            label: 'Nota mínima para aprobar',
-            showLabel: false,
-            size: 'md',
-            value: String(msVal),
-            min: 0,
-            max: 100,
-            placeholder: '70',
-            rightIcon: 'fa-percent'
-        });
-        return apis;
-    }
-
-    /** Asocia cada control del modal al título visible (cabecera de tarjeta) para lectores de pantalla. */
-    function _evalWireIaModalParamAria(overlay) {
-        if (!overlay || !overlay.querySelector) return;
-        var wrapQ = overlay.querySelector('#cc-eval-ia-modal-wrap-qcount');
-        if (wrapQ && overlay.querySelector('#cc-eval-ia-modal-title-qcount')) {
-            var stepperGrp = wrapQ.querySelector('.ubits-number-stepper[role="group"]');
-            if (stepperGrp) {
-                stepperGrp.setAttribute('aria-labelledby', 'cc-eval-ia-modal-title-qcount');
-            }
-        }
-        var pairs = [
-            ['cc-eval-ia-modal-wrap-difficulty', 'cc-eval-ia-modal-title-difficulty'],
-            ['cc-eval-ia-modal-wrap-minscore', 'cc-eval-ia-modal-title-minscore']
-        ];
-        for (var i = 0; i < pairs.length; i++) {
-            var wrapId = pairs[i][0];
-            var titleId = pairs[i][1];
-            var wrap = overlay.querySelector('#' + wrapId);
-            if (!wrap) continue;
-            var input = wrap.querySelector('.ubits-input');
-            if (input && overlay.querySelector('#' + titleId)) {
-                input.setAttribute('aria-labelledby', titleId);
-            }
-        }
-    }
-
-    /**
-     * Modal KISS: sin chat. Parámetros editables (preguntas, nivel, nota), contexto opcional y un CTA.
-     * El panel conserva el agente conversacional completo.
-     */
-    function openEvalIaModal(rootEl) {
-        if (typeof global.openModal !== 'function') return;
-        var cfg =
-            rootEl._ccEvalPageState && rootEl._ccEvalPageState.config
-                ? rootEl._ccEvalPageState.config
-                : {};
-        var qCount = cfg.questionCount != null ? Number(cfg.questionCount) : 10;
-        if (isNaN(qCount) || qCount < 1) qCount = 10;
-        var minSc = cfg.minScore != null ? Number(cfg.minScore) : 70;
-        if (isNaN(minSc)) minSc = 70;
-
-        var cost = EVAL_AI_TOKEN_COST;
-        var currentTokens = _evalGetTokens();
-        var canAfford = currentTokens >= cost;
-        var genDisabled = canAfford ? '' : ' disabled aria-disabled="true"';
-        var genTitle = canAfford ? '' : ' title="No tienes suficientes tokens (' + cost + ' requeridos)."';
-
-        var contextPh =
-            'Adjunta un archivo o escribe detalladamente el tema del asunto de la evaluación';
-
-        var bodyHtml =
-            '<div class="cc-eval-ia-modal-simple">' +
-            '<div class="cc-eval-ia-modal-simple__params">' +
-            '<p class="ubits-body-sm-semibold cc-eval-ia-modal-simple__params-title">' +
-            drEsc('Parámetros de la generación') +
-            '</p>' +
-            '<div class="cc-eval-ia-modal-simple__params-grid">' +
-            '<div class="cc-eval-ia-modal-simple__param-card">' +
-            '<div class="cc-eval-ia-modal-simple__param-head">' +
-            '<div class="cc-eval-ia-modal-simple__param-accent" aria-hidden="true"><i class="far fa-list-ol"></i></div>' +
-            '<span id="cc-eval-ia-modal-title-qcount" class="cc-eval-ia-modal-simple__param-label ubits-body-sm-bold">' +
-            drEsc('Número de preguntas') +
-            '</span></div>' +
-            '<div id="cc-eval-ia-modal-wrap-qcount" class="cc-eval-ia-modal-simple__input-mount"></div>' +
-            '</div>' +
-            '<div class="cc-eval-ia-modal-simple__param-card">' +
-            '<div class="cc-eval-ia-modal-simple__param-head">' +
-            '<div class="cc-eval-ia-modal-simple__param-accent" aria-hidden="true"><i class="far fa-gauge"></i></div>' +
-            '<span id="cc-eval-ia-modal-title-difficulty" class="cc-eval-ia-modal-simple__param-label ubits-body-sm-bold">' +
-            drEsc('Nivel') +
-            '</span></div>' +
-            '<div id="cc-eval-ia-modal-wrap-difficulty" class="cc-eval-ia-modal-simple__input-mount"></div>' +
-            '</div>' +
-            '<div class="cc-eval-ia-modal-simple__param-card">' +
-            '<div class="cc-eval-ia-modal-simple__param-head">' +
-            '<div class="cc-eval-ia-modal-simple__param-accent" aria-hidden="true"><i class="far fa-bullseye"></i></div>' +
-            '<span id="cc-eval-ia-modal-title-minscore" class="cc-eval-ia-modal-simple__param-label ubits-body-sm-bold">' +
-            drEsc('Nota mínima para aprobar') +
-            '</span></div>' +
-            '<div id="cc-eval-ia-modal-wrap-minscore" class="cc-eval-ia-modal-simple__input-mount"></div>' +
-            '</div>' +
-            '</div></div>' +
-            '<label class="ubits-body-sm-semibold cc-eval-ia-modal-simple__label" for="cc-eval-ia-modal-context-input">' +
-            drEsc('Contexto para la IA') +
-            '</label>' +
-            '<div class="ubits-ia-chat-thread__input-area cc-eval-ia-modal-simple__composer-area">' +
-            '<div class="ai-panel__input-box cc-eval-ia-modal-simple__composer">' +
-            '<input type="file" id="cc-eval-ia-modal-files" accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.txt,.csv,.ppt,.pptx" multiple hidden />' +
-            '<div class="ai-panel__pending-images-strip" id="cc-eval-ia-modal-pending-images" style="display:none;"></div>' +
-            '<div class="ai-panel__pending-files-strip" id="cc-eval-ia-modal-pending-files" style="display:none;"></div>' +
-            '<textarea id="cc-eval-ia-modal-context-input" class="ai-panel__input ubits-body-md-regular" rows="2" placeholder="' +
-            drEsc(contextPh) +
-            '" aria-required="true"></textarea>' +
-            '<div class="ai-panel__input-actions">' +
-            '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only ai-panel__attach-btn" id="cc-eval-ia-modal-attach" aria-label="Adjuntar">' +
-            '<i class="far fa-plus"></i>' +
-            '</button>' +
-            '<div class="ai-panel__input-spacer"></div>' +
-            '</div>' +
-            '</div>' +
-            '</div>' +
-            '<button type="button" id="cc-eval-ia-modal-generate"' +
-            genDisabled +
-            genTitle +
-            ' class="ubits-ia-button ubits-ia-button--secondary ubits-ia-button--md ubits-ia-button--with-token-cost cc-eval-ia-modal-simple__cta">' +
-            '<span class="ubits-ia-button__token-cost" aria-hidden="true">' +
-            '<span class="ubits-ia-button__token-number">' +
-            String(cost) +
-            '</span><i class="far fa-coin-vertical"></i></span>' +
-            '<span>Generar evaluación</span>' +
-            '</button>' +
-            '</div>';
-
-        var overlay = global.openModal({
-            overlayId: CC_EVAL_IA_MODAL_ID,
-            title: 'Generar evaluación',
-            bodyHtml: bodyHtml,
-            size: 'md',
-            variant: 'ia',
-            iaTokensRemaining: currentTokens,
-            iaTokensBadgeId: 'cc-eval-ia-modal-tokens-badge',
-            onClose: function () {
-                cleanupEvalIaModalAlternate(rootEl);
-            }
-        });
-
-        overlay._ccEvalIaFieldApis = _evalMountIaModalInputs(cfg, qCount, minSc, cfg.difficulty || 'intermediate');
-        _evalWireIaModalParamAria(overlay);
-        _evalWireIaModalComposer(overlay);
-
-        var modalContent = overlay.querySelector('.ubits-modal-content');
-        if (modalContent) {
-            modalContent.classList.add('portada-ia-modal-content', 'cc-eval-ia-modal-content');
-        }
-
-        var genBtn = overlay.querySelector('#cc-eval-ia-modal-generate');
-        var contextTa = overlay.querySelector('#cc-eval-ia-modal-context-input');
-        if (genBtn && canAfford) {
-            genBtn.addEventListener('click', function () {
-                if (!_evalModalHasContext(overlay)) {
-                    if (typeof global.showToast === 'function') {
-                        global.showToast(
-                            'warning',
-                            'Describe el tema o adjunta material para continuar.'
-                        );
-                    }
-                    if (contextTa) contextTa.focus();
-                    return;
-                }
-                genBtn.disabled = true;
-                var spent = _evalSpendTokens(cost);
-                _evalSyncTokensBadges(spent);
-                var nextCfg = _evalReadModalFieldConfig(overlay._ccEvalIaFieldApis, cfg);
-                if (rootEl._ccEvalPageState && rootEl._ccEvalPageState.config) {
-                    Object.assign(rootEl._ccEvalPageState.config, nextCfg);
-                }
-                rootEl._ccEvalState = {
-                    step: 'generating',
-                    config: Object.assign({}, nextCfg),
-                    content: _evalBuildModalContextContent(overlay)
-                };
-                rootEl._ccEvalIaUiMode = null;
-                overlay._ccEvalIaFieldApis = null;
-                overlay._ccEvalModalPendingImages = null;
-                overlay._ccEvalModalPendingFiles = null;
-                if (typeof global.closeModal === 'function') global.closeModal(CC_EVAL_IA_MODAL_ID);
-                setTimeout(function () {
-                    evalAgentRunGeneration(rootEl);
-                }, 150);
-            });
-        }
-
-        setTimeout(function () {
-            if (contextTa) contextTa.focus();
-        }, 120);
     }
 
     function _evalMsg(text, opts) {
@@ -1608,6 +1184,27 @@
         return window._ubitsAiTokenPool;
     }
 
+    /** Misma copia que al fallar el CTA «Generar evaluación»; unifica avisos de saldo. */
+    function _evalToastInsufficientTokens(cost) {
+        var c = cost != null ? cost : EVAL_AI_TOKEN_COST;
+        if (typeof global.showToast !== 'function') return;
+        global.showToast('warning', 'No tienes suficientes tokens (' + c + ' requeridos).', {
+            containerId: 'ubits-toast-container'
+        });
+    }
+
+    /** Si no hay saldo, toast y false; si hay, descuenta y sincroniza badges. */
+    function _evalTrySpendTokens(cost) {
+        var cur = _evalGetTokens();
+        if (cur < cost) {
+            _evalToastInsufficientTokens(cost);
+            return false;
+        }
+        var spent = _evalSpendTokens(cost);
+        _evalSyncTokensBadges(spent);
+        return true;
+    }
+
     // ---------------------------
     // Confirmación final + botón "Generar evaluación" con costo en tokens
     // (misma estructura que el botón de portada en el panel IA)
@@ -1618,15 +1215,10 @@
         var count = (state && state.config && state.config.questionCount) ? state.config.questionCount : 10;
         var topic = EVAL_AI_TOPIC_DEFAULT;
         var cost = EVAL_AI_TOKEN_COST;
-        var remaining = _evalGetTokens();
-        var canAfford = remaining >= cost;
-
-        var btnDisabled = canAfford ? '' : ' disabled';
-        var btnTitle = canAfford ? '' : ' title="No tienes suficientes tokens (' + cost + ' requeridos)."';
         var richHtml =
             '<p class="ubits-body-md-regular" style="margin:0 0 12px;">Voy a generar <strong>' + count +
             ' preguntas</strong> sobre el tema <strong>"' + topic + '"</strong>.</p>' +
-            '<button type="button" id="cc-eval-gen-confirm-btn"' + btnDisabled + btnTitle +
+            '<button type="button" id="cc-eval-gen-confirm-btn"' +
             ' class="ubits-ia-button ubits-ia-button--secondary ubits-ia-button--sm ubits-ia-button--with-token-cost">' +
             '<span class="ubits-ia-button__token-cost" aria-hidden="true"><span class="ubits-ia-button__token-number">' + cost + '</span><i class="far fa-coin-vertical"></i></span>' +
             '<span>Generar evaluación</span>' +
@@ -1638,12 +1230,10 @@
             var btn = document.getElementById('cc-eval-gen-confirm-btn');
             if (!btn) return;
             btn.addEventListener('click', function () {
-                if (!canAfford) return;
+                if (!_evalTrySpendTokens(cost)) return;
                 btn.disabled = true;
-                var spent = _evalSpendTokens(cost);
-                _evalSyncTokensBadges(spent);
                 state.step = 'generating';
-                evalAgentCloseUiForGeneration(rootEl);
+                evalAgentCloseUiForGeneration();
                 setTimeout(function () { evalAgentRunGeneration(rootEl); }, 150);
             });
         }, 100);
@@ -1742,13 +1332,32 @@
 
     function evalAgentStart(rootEl) {
         rootEl._ccEvalGenToken = null;
+        var cost = EVAL_AI_TOKEN_COST;
+        var baseCfg = Object.assign({}, (rootEl._ccEvalPageState && rootEl._ccEvalPageState.config) || {});
+
+        if (_evalGetTokens() < cost) {
+            rootEl._ccEvalState = {
+                step: 'no_tokens',
+                config: baseCfg,
+                content: '',
+                questionCount: 10
+            };
+            _evalToastInsufficientTokens(cost);
+            _evalMsg(
+                'Se agotaron tus tokens para generar la evaluación con IA. ' +
+                    'Necesitas al menos ' +
+                    cost +
+                    ' tokens para continuar. Recarga saldo cuando esté disponible o vuelve a intentarlo más tarde.'
+            );
+            return;
+        }
+
         rootEl._ccEvalState = {
             step: 'path_select',
-            config: Object.assign({}, (rootEl._ccEvalPageState && rootEl._ccEvalPageState.config) || {}),
+            config: baseCfg,
             content: '',
             questionCount: 10
         };
-
         // Mostrar card-based selection dentro del mensaje IA
         _evalMsg('¿Cómo quieres crear la evaluación?');
         setTimeout(function () {
@@ -1781,7 +1390,7 @@
                             state.config.questionCount = 10;
                             state.config.difficulty = 'intermediate';
                             state.config.questionTypes = ['multiple_choice_single_answer', 'binary'];
-                            // Reflejar configuración en el pageState para que el modal la muestre
+                            // Reflejar configuración en el pageState
                             if (rootEl._ccEvalPageState) Object.assign(rootEl._ccEvalPageState.config, state.config);
                             _evalTyping(function () {
                                 _evalMsg('¡Perfecto! Cuéntame sobre el tema de la evaluación. Escribe el contenido directamente o adjunta un archivo (doc, pdf, txt).');
@@ -1805,6 +1414,16 @@
             return;
         }
         text = String(text || '').trim();
+
+        if (state.step === 'no_tokens') {
+            if (text) {
+                _evalMsg(
+                    'Sigo sin poder generar la evaluación: el saldo es insuficiente. ' +
+                        'Cuando tengas tokens, cierra y vuelve a abrir el agente para empezar de nuevo.'
+                );
+            }
+            return;
+        }
 
         // Ignorar texto antes de elegir la card de path
         if (state.step === 'path_select') return;
@@ -1951,7 +1570,7 @@
                     state._longPath = true;
                     state.step = 'long_await_material';
 
-                    // Aplicar config al pageState para que el modal la refleje
+                    // Aplicar config al pageState
                     if (rootEl._ccEvalPageState) {
                         Object.assign(rootEl._ccEvalPageState.config, state.config);
                     }
@@ -2507,15 +2126,19 @@
         var iaBtn = rootEl.querySelector('#cc-eval-ia-btn');
         if (iaBtn) {
             iaBtn.addEventListener('click', function () {
-                if (typeof global.closeModal === 'function') global.closeModal(CC_EVAL_IA_MODAL_ID);
-                rootEl._ccEvalIaUiMode = 'panel';
                 evalAgentInit(rootEl, pageState);
                 if (typeof global.openAIPanel === 'function') global.openAIPanel();
                 setTimeout(function () {
-                    if (typeof global.addAIPanelMessage === 'function') {
-                        global.addAIPanelMessage('¡Hola! Soy el Agente de evaluaciones. Voy a ayudarte a crear preguntas sobre el tema de tu contenido.', 'ai');
+                    var cost = EVAL_AI_TOKEN_COST;
+                    if (_evalGetTokens() >= cost && typeof global.addAIPanelMessage === 'function') {
+                        global.addAIPanelMessage(
+                            '¡Hola! Soy el Agente de evaluaciones. Voy a ayudarte a crear preguntas sobre el tema de tu contenido.',
+                            'ai'
+                        );
                     }
-                    setTimeout(function () { evalAgentStart(rootEl); }, 400);
+                    setTimeout(function () {
+                        evalAgentStart(rootEl);
+                    }, 400);
                 }, 250);
             });
         }
@@ -2539,9 +2162,8 @@
                 || getActivePageKeyFromCrearContenido();
             if (String(nextKey) === String(curKey)) return;
 
-            // Cerrar panel IA y modal de evaluación (exclusivo de la página de evaluación)
+            // Cerrar panel IA (exclusivo de la página de evaluación)
             if (typeof global.closeAIPanel === 'function') global.closeAIPanel();
-            if (typeof global.closeModal === 'function') global.closeModal(CC_EVAL_IA_MODAL_ID);
             if (typeof global.setAIPanelAlternateMount === 'function') global.setAIPanelAlternateMount(null);
 
             // Persistir estado de la página actual usando el rootEl vigente.

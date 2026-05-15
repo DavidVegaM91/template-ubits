@@ -659,11 +659,8 @@
 
     /* ── Botones IA ── */
     function refreshIaButtons() {
-        var g = getVideoAiTokens();
-        var genGuion = document.getElementById('cc-vm-btn-gen-guion');
-        var genVid   = document.getElementById('cc-vm-btn-generar');
-        if (genGuion) genGuion.disabled = g < VIDEO_GUION_IA_TOKEN_COST;
-        if (genVid)   genVid.disabled   = g < VIDEO_GEN_TOKEN_COST;
+        /* No deshabilitar por tokens insuficientes: al clic, trySpendVideoAiTokens muestra toast (mismo patrón que SCORM). */
+        syncVideoModalTokensBadge();
     }
 
     /* ── Avatar ── */

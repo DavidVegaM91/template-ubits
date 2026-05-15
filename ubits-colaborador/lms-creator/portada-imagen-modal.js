@@ -268,9 +268,8 @@
     }
 
     function refreshGenButtons() {
-        var g = getTokens();
-        var gen = document.getElementById('cc-pim-btn-generar');
-        if (gen) gen.disabled = g < TOKEN_GENERATE;
+        /* Sin bloqueo por tokens: trySpendTokens muestra toast al clic si no alcanza (como SCORM). */
+        syncPimTokensBadge();
     }
 
     function pimDownloadFilename(src) {

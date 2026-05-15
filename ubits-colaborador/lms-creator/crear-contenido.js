@@ -351,11 +351,6 @@
 
     function buildPortadaAiPanelResultInnerHtml(seqId, imageUrl) {
         var sid = String(seqId);
-        var canAfford = portadaAiTokensRemaining >= PORTADA_AI_COVER_TOKEN_COST;
-        var useDisabled = canAfford ? '' : ' disabled';
-        var useTitle = canAfford
-            ? ''
-            : ' title="' + escAttr('No tienes suficientes tokens (' + PORTADA_AI_COVER_TOKEN_COST + ' requeridos).') + '"';
         var generadoTag =
             typeof window.getGeneradoConIaBadgeHtml === 'function'
                 ? '<div class="cc-portada-ai-panel-result__generado-ia-host">' +
@@ -372,10 +367,7 @@
             '<div class="cc-portada-ai-panel-result__actions">' +
             '<button type="button" class="ubits-ia-button ubits-ia-button--secondary ubits-ia-button--sm ubits-ia-button--with-token-cost" data-cc-portada-ai-panel-use="' +
             sid +
-            '"' +
-            useDisabled +
-            useTitle +
-            '>' +
+            '">' +
             '<span class="ubits-ia-button__token-cost" aria-hidden="true">' +
             '<span class="ubits-ia-button__token-number">' +
             String(PORTADA_AI_COVER_TOKEN_COST) +
@@ -412,9 +404,11 @@
     function tryConsumePortadaCoverTokens() {
         if (portadaAiTokensRemaining < PORTADA_AI_COVER_TOKEN_COST) {
             if (typeof showToast === 'function') {
-                showToast('warning', 'No tienes suficientes tokens para aplicar esta portada.', {
-                    containerId: 'ubits-toast-container'
-                });
+                showToast(
+                    'warning',
+                    'No tienes suficientes tokens (' + PORTADA_AI_COVER_TOKEN_COST + ' requeridos).',
+                    { containerId: 'ubits-toast-container' }
+                );
             }
             return false;
         }
@@ -430,9 +424,11 @@
     function tryConsumePortadaRegenTokens() {
         if (portadaAiTokensRemaining < PORTADA_AI_REGEN_TOKEN_COST) {
             if (typeof showToast === 'function') {
-                showToast('warning', 'No tienes suficientes tokens para regenerar la imagen.', {
-                    containerId: 'ubits-toast-container'
-                });
+                showToast(
+                    'warning',
+                    'No tienes suficientes tokens (' + PORTADA_AI_REGEN_TOKEN_COST + ' requeridos).',
+                    { containerId: 'ubits-toast-container' }
+                );
             }
             return false;
         }
@@ -449,31 +445,17 @@
         if (!overlayRoot) return;
         var useBtn = overlayRoot.querySelector('#portada-ai-modal-use');
         var regenBtn = overlayRoot.querySelector('#portada-ai-modal-regenerate');
-        if (!useBtn || !regenBtn) return;
-        var canUse = portadaAiTokensRemaining >= PORTADA_AI_COVER_TOKEN_COST;
-        var canRegen = portadaAiTokensRemaining >= PORTADA_AI_REGEN_TOKEN_COST;
-        useBtn.disabled = !canUse;
-        regenBtn.disabled = !canRegen;
-        if (!canUse) {
-            useBtn.setAttribute('aria-disabled', 'true');
-            useBtn.setAttribute(
-                'title',
-                'No tienes suficientes tokens (' + PORTADA_AI_COVER_TOKEN_COST + ' requeridos).'
-            );
-        } else {
+        if (useBtn) {
+            useBtn.disabled = false;
             useBtn.removeAttribute('aria-disabled');
             useBtn.removeAttribute('title');
         }
-        if (!canRegen) {
-            regenBtn.setAttribute('aria-disabled', 'true');
-            regenBtn.setAttribute(
-                'title',
-                'No tienes suficientes tokens (' + PORTADA_AI_REGEN_TOKEN_COST + ' requeridos).'
-            );
-        } else {
+        if (regenBtn) {
+            regenBtn.disabled = false;
             regenBtn.removeAttribute('aria-disabled');
             regenBtn.removeAttribute('title');
         }
+        syncPortadaAiModalHeaderBadge();
     }
 
     function wirePortadaAiPanelCoverActions() {
@@ -504,6 +486,7 @@
 
             if (regenBtn) {
                 e.preventDefault();
+                if (!tryConsumePortadaRegenTokens()) return;
                 portadaiAImagesIndex = (portadaiAImagesIndex + 1) % AI_IMAGES.length;
                 var nextUrl = AI_IMAGES[portadaiAImagesIndex];
                 root.innerHTML = getPortadaAiGeneratingHtml({});
