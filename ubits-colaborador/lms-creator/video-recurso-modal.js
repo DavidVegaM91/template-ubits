@@ -8,7 +8,8 @@
  *   file-upload.js (createFileUpload, fileUploadSetProgress, fileUploadClearProgress, fileUploadSetSuccess)
  *   video-player.js (videoPlayerHtml) — opcional, usa fallback si no está
  *   tab.css, file-upload.css, checkbox.css, video-recurso-modal.css
- *   Avatares: ../../images/avatars/* · previews opcionales: ../../videos/avatars/{mismo-base-que-foto}.mp4
+ *   Avatares (grid): ../../images/avatars/* · preview 16:9: ../../images/avatar-temp-thumbs/thumb_*.jpg
+ *   · videos opcionales: ../../videos/avatars/{mismo-base}.mp4
  *   Guión: selector tipo selection-card (Generar con IA | Escribir manualmente). IA: solo contexto hasta «Generar guión»; luego textarea editable. Manual: un solo textarea.
  */
 (function (global) {
@@ -278,7 +279,7 @@
         return AVATAR_VIDEO_BASE + avatarFileBasename(av) + '.mp4';
     }
 
-    /* Thumb temporal cuando no existe preview mp4 (images/avatar-temp-thumbs). */
+    /** Miniatura 16:9 del preview (images/avatar-temp-thumbs); no usar images/avatars en el stage. */
     var AVATAR_TEMP_THUMB_BASE = '../../images/avatar-temp-thumbs/';
     function avatarTempThumbSrc(av) {
         return AVATAR_TEMP_THUMB_BASE + 'thumb_' + avatarFileBasename(av) + '.jpg';
@@ -418,10 +419,12 @@
 
     function buildIaPanel() {
         var av = _selectedAvatar || AVATARS[0];
-        var avSrc = avatarImg(av);
+        var thumbSrc = avatarTempThumbSrc(av);
         var mp4 = avatarPreviewMp4Src(av);
         var hasVid = !!mp4;
-        var stageClass = 'cc-vm-preview-stage' + (hasVid ? '' : ' cc-vm-preview-stage--placeholder');
+        var stageClass =
+            'cc-vm-preview-stage' +
+            (hasVid ? ' cc-vm-preview-stage--has-thumb' : ' cc-vm-preview-stage--placeholder');
 
         return '<div class="cc-vmodal-panel" id="cc-vtab-ia">' +
             '<div class="cc-vm-ia-layout">' +
@@ -526,14 +529,13 @@
                 '<div class="cc-vm-right-col">' +
                     '<p class="cc-via-preview-hint">Vista previa orientativa. El video final usará tu guión y avatar seleccionado.</p>' +
                     '<div class="' + stageClass + '" id="cc-vm-preview-stage">' +
-                        '<img id="cc-vm-av-bg" class="cc-vm-av-bg" src="' + avSrc + '" alt="">' +
+                        '<img id="cc-vm-av-bg" class="cc-vm-av-bg" src="' + thumbSrc + '" alt="">' +
                         '<video id="cc-vm-av-preview-video" class="cc-vm-av-preview-video" playsinline controls preload="metadata" ' +
-                            'poster="' + esc(avSrc) + '" ' +
+                            'poster="' + esc(thumbSrc) + '" ' +
                             (hasVid ? 'src="' + esc(mp4) + '" ' : '') +
                             'style="display:' + (hasVid ? 'block' : 'none') + '"></video>' +
-                        '<img id="cc-vm-av-thumb" class="cc-vm-av-thumb" src="" alt="" style="display:none">' +
-                        '<img id="cc-vm-av-portrait" class="cc-vm-av-portrait" src="' + avSrc + '" alt=""' +
-                            (hasVid ? ' style="display:none"' : '') + '>' +
+                        '<img id="cc-vm-av-thumb" class="cc-vm-av-thumb" src="' + thumbSrc + '" alt="Vista previa del avatar" style="display:' + (hasVid ? 'block' : 'none') + '">' +
+                        '<img id="cc-vm-av-portrait" class="cc-vm-av-portrait" src="" alt="" style="display:none" aria-hidden="true">' +
                         '<div class="cc-vm-preview-unavailable" id="cc-vm-preview-unavailable" role="status" style="display:' + (hasVid ? 'none' : 'flex') + '">' +
                             '<span class="ubits-body-md-regular cc-vm-preview-unavailable__text">Vista previa de video no disponible aún</span>' +
                         '</div>' +
@@ -666,7 +668,7 @@
     /* ── Avatar ── */
     function updatePreviewStage(av) {
         if (!av) return;
-        var src = avatarImg(av);
+        var thumbSrc = avatarTempThumbSrc(av);
         var mp4 = avatarPreviewMp4Src(av);
         var stage = document.getElementById('cc-vm-preview-stage');
         var bg = document.getElementById('cc-vm-av-bg');
@@ -675,55 +677,82 @@
         var videoEl = document.getElementById('cc-vm-av-preview-video');
         var unavail = document.getElementById('cc-vm-preview-unavailable');
 
-        if (bg) bg.src = src;
-        if (portrait) portrait.src = src;
-        if (videoEl) videoEl.setAttribute('poster', src);
+        /* Preview 16:9: solo avatar-temp-thumbs; las fotos cuadradas van en el grid. */
+        if (bg) bg.src = thumbSrc;
+        if (portrait) {
+            portrait.style.display = 'none';
+            portrait.removeAttribute('src');
+        }
+        if (thumb) {
+            thumb.alt = av.label ? 'Vista previa de ' + av.label : 'Vista previa del avatar';
+        }
+
+        function showThumbLayer() {
+            if (!thumb || !stage) return;
+            if (thumb.getAttribute('src') !== thumbSrc) thumb.setAttribute('src', thumbSrc);
+            thumb.style.display = 'block';
+            stage.classList.add('cc-vm-preview-stage--has-thumb');
+        }
+
+        function hideThumbLayer() {
+            if (!thumb || !stage) return;
+            thumb.style.display = 'none';
+            stage.classList.remove('cc-vm-preview-stage--has-thumb');
+        }
 
         if (mp4 && videoEl && stage) {
             stage.classList.remove('cc-vm-preview-stage--placeholder');
-            stage.classList.remove('cc-vm-preview-stage--has-thumb');
             if (unavail) unavail.style.display = 'none';
-            if (thumb) thumb.style.display = 'none';
-            if (portrait) portrait.style.display = 'none';
+            videoEl.setAttribute('poster', thumbSrc);
+            showThumbLayer();
             videoEl.style.display = 'block';
-            if (videoEl.getAttribute('src') !== mp4) {
-                videoEl.setAttribute('src', mp4);
-            }
+
+            videoEl.onloadeddata = function () {
+                hideThumbLayer();
+            };
+            videoEl.onerror = function () {
+                hideThumbLayer();
+                stage.classList.add('cc-vm-preview-stage--placeholder');
+                if (unavail) unavail.style.display = '';
+            };
+
+            var sameMp4 = videoEl.getAttribute('src') === mp4;
+            videoEl.setAttribute('src', mp4);
             videoEl.muted = false;
             videoEl.loop = false;
-            videoEl.load();
+            if (!sameMp4) {
+                videoEl.load();
+            }
             var p = videoEl.play();
             if (p && typeof p.catch === 'function') {
                 p.catch(function () { /* autoplay puede bloquearse; el usuario usa controls */ });
             }
+            if (videoEl.readyState >= 2) {
+                hideThumbLayer();
+            }
         } else {
             if (stage) stage.classList.add('cc-vm-preview-stage--placeholder');
             if (videoEl) {
+                videoEl.onloadeddata = null;
+                videoEl.onerror = null;
                 videoEl.pause();
                 videoEl.removeAttribute('src');
                 videoEl.load();
                 videoEl.style.display = 'none';
             }
-            // Intentar thumb temporal (si existe) antes de caer al placeholder blur.
             if (thumb && stage) {
-                var thumbSrc = avatarTempThumbSrc(av);
                 thumb.onload = function () {
-                    stage.classList.add('cc-vm-preview-stage--has-thumb');
-                    thumb.style.display = 'block';
-                    // Mantener mensaje informativo: no hay preview mp4 aún
+                    showThumbLayer();
                     if (unavail) unavail.style.display = '';
-                    if (portrait) portrait.style.display = 'none';
                 };
                 thumb.onerror = function () {
-                    stage.classList.remove('cc-vm-preview-stage--has-thumb');
-                    thumb.style.display = 'none';
-                    if (portrait) portrait.style.display = '';
+                    hideThumbLayer();
                     if (unavail) unavail.style.display = '';
                 };
                 if (thumb.getAttribute('src') !== thumbSrc) thumb.setAttribute('src', thumbSrc);
-            } else {
-                if (portrait) portrait.style.display = '';
-                if (unavail) unavail.style.display = '';
+                else if (thumb.complete && thumb.naturalWidth > 0) showThumbLayer();
+            } else if (unavail) {
+                unavail.style.display = '';
             }
         }
     }
