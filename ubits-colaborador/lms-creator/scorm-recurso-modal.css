@@ -299,7 +299,7 @@
     align-items: center;
     justify-content: flex-end;
     gap: var(--gap-sm);
-    padding: var(--padding-md) var(--padding-lg);
+    padding: var(--padding-md) 0;
     background: linear-gradient(to top, rgba(0, 0, 0, 0.55) 0%, rgba(0, 0, 0, 0) 100%);
 }
 
@@ -334,7 +334,7 @@
     align-items: stretch;
 }
 
-/* Lightbox «Pantalla completa» — overlay oscuro tipo galería (no caja modal) */
+/* Lightbox — overlay a todo el viewport; panel centrado con ancho máx. 1440px (header / body / footer). */
 .cc-scorm-fs-overlay.cc-scorm-fs-overlay--lightbox {
     position: fixed;
     inset: 0;
@@ -343,11 +343,14 @@
     flex-direction: column;
     align-items: stretch;
     justify-content: stretch;
-    padding: 0;
+    padding: 0 var(--padding-lg);
     box-sizing: border-box;
     background: rgba(0, 0, 0, 0.88);
 }
 .cc-scorm-fs-overlay--lightbox .cc-scorm-fs-panel {
+    align-self: center;
+    width: 100%;
+    max-width: 1440px;
     flex: 1;
     min-height: 0;
     display: flex;
@@ -364,7 +367,7 @@
     justify-content: space-between;
     gap: var(--gap-md);
     flex-shrink: 0;
-    padding: var(--padding-md) var(--padding-lg);
+    padding: var(--padding-md) 0;
     border-bottom: none;
     background: linear-gradient(
         to bottom,
@@ -400,7 +403,7 @@
     min-height: 0;
     position: relative;
     background: #000;
-    padding: 0 var(--padding-md) var(--padding-md);
+    padding: 0 var(--padding-xl) var(--padding-md);
     box-sizing: border-box;
 }
 .cc-scorm-fs-overlay--lightbox .cc-scorm-fs-body iframe {

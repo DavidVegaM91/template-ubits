@@ -1,7 +1,7 @@
 /* ========================================
    LMS Creator — Modal «Agregar portada» (portada + tráiler opcional)
    Estilo alineado a video-recurso-modal / portada-ia-modal (gradiente; alto según contenido, max 90vh).
-   Pestaña IA expandida: layout dos columnas (formulario izquierda, vista previa 16:9 derecha, como modal de video). Modal tamaño lg.
+   Modal tamaño sm en todas las pestañas. IA expandida: vista previa 16:9 arriba, formulario debajo (columna única).
    Depende: modal.css, tab.css, button.css, file-upload.css, input.css, ia-loader.css, empty-state.css,
    ai-panel.css, general-styles/ubits-ia-chat.css (área de input del hilo / modal video)
    ======================================== */
@@ -23,15 +23,6 @@
     transition:
         max-width 360ms cubic-bezier(0.4, 0, 0.2, 1),
         width 360ms cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-#cc-portada-imagen-modal.cc-pim--compact .ubits-modal-content.cc-pim-modal-content.portada-ia-modal-content {
-    max-width: min(800px, calc(100vw - 32px));
-}
-
-#cc-portada-imagen-modal.cc-pim--ia-intro:not(.cc-pim--compact) .ubits-modal-content.cc-pim-modal-content.portada-ia-modal-content {
-    width: 100%;
-    max-width: min(800px, calc(100vw - 32px));
 }
 
 /* Bloque de idea centrado en el cuerpo (debajo de tabs); al quitar ia-intro queda arriba con flex:1 del layout */
@@ -101,18 +92,8 @@
     display: block;
 }
 
-#cc-portada-imagen-modal.cc-pim--ia-intro #cc-pim-tab-ia .cc-pim-idea-label-after {
-    display: none;
-}
-
 #cc-portada-imagen-modal:not(.cc-pim--ia-intro) #cc-pim-tab-ia .cc-pim-idea-headline-intro {
     display: none;
-}
-
-#cc-portada-imagen-modal:not(.cc-pim--ia-intro) #cc-pim-tab-ia .cc-pim-idea-label-after {
-    display: block;
-    margin-top: 0;
-    margin-block-start: 0;
 }
 
 /* Scroll en el cuerpo del modal (entre cabecera y pie); sin overflow:hidden inline del JS. */
@@ -137,18 +118,37 @@
     transition: gap 320ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* IA expandida (dos columnas): 50/50 (el modal de video sigue en 1fr / 1.3fr vía video-recurso-modal.css). */
+/* IA expandida: una columna; preview arriba (orden visual) y formulario abajo (video-recurso-modal.css sigue en 2 cols). */
 #cc-portada-imagen-modal:not(.cc-pim--ia-intro) #cc-pim-tab-ia .cc-vm-ia-layout {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-columns: 1fr;
+    align-content: start;
+    align-items: stretch;
+    gap: var(--gap-md);
     width: 100%;
     min-width: 0;
     box-sizing: border-box;
+}
+
+#cc-portada-imagen-modal:not(.cc-pim--ia-intro) #cc-pim-tab-ia .cc-vm-right-col {
+    order: -1;
+    display: flex !important;
+    min-height: min-content;
+}
+
+#cc-portada-imagen-modal:not(.cc-pim--ia-intro) #cc-pim-tab-ia.cc-vmodal-panel {
+    overflow: visible;
+    min-height: 0;
+    justify-content: flex-start;
 }
 
 #cc-portada-imagen-modal:not(.cc-pim--ia-intro) #cc-pim-tab-ia .cc-vm-left-col,
 #cc-portada-imagen-modal:not(.cc-pim--ia-intro) #cc-pim-tab-ia .cc-vm-right-col {
     min-width: 0;
     max-width: none;
+}
+
+#cc-portada-imagen-modal:not(.cc-pim--ia-intro) #cc-pim-tab-ia .cc-vm-left-col {
+    padding-right: 0;
 }
 
 #cc-portada-imagen-modal:not(.cc-pim--ia-intro) #cc-pim-tab-ia .ubits-ia-chat-thread__input-area,
@@ -158,36 +158,14 @@
     box-sizing: border-box;
 }
 
+#cc-portada-imagen-modal:not(.cc-pim--ia-intro) .cc-pim-preview-stage {
+    width: 100%;
+    max-width: none;
+    margin-inline: 0;
+    flex-shrink: 0;
+}
+
 @media (max-width: 700px) {
-    #cc-portada-imagen-modal:not(.cc-pim--ia-intro) #cc-pim-tab-ia .cc-vm-ia-layout {
-        grid-template-columns: 1fr;
-        align-content: start;
-        align-items: stretch;
-        gap: var(--gap-md);
-    }
-
-    #cc-portada-imagen-modal:not(.cc-pim--ia-intro) #cc-pim-tab-ia .cc-vm-right-col {
-        display: flex !important;
-        min-height: min-content;
-    }
-
-    #cc-portada-imagen-modal:not(.cc-pim--ia-intro) #cc-pim-tab-ia.cc-vmodal-panel {
-        overflow: visible;
-        min-height: 0;
-        justify-content: flex-start;
-    }
-
-    #cc-portada-imagen-modal:not(.cc-pim--ia-intro) #cc-pim-tab-ia .cc-vm-left-col {
-        padding-right: 0;
-    }
-
-    #cc-portada-imagen-modal:not(.cc-pim--ia-intro) .cc-pim-preview-stage {
-        width: 100%;
-        max-width: none;
-        margin-inline: 0;
-        flex-shrink: 0;
-    }
-
     #cc-portada-imagen-modal .ubits-modal-body {
         padding: var(--padding-md);
     }

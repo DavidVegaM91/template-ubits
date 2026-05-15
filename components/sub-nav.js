@@ -390,6 +390,7 @@ const PAGE_TO_TAB = {
     'checkbox.html': 'section3',
     'chip.html': 'section3',
     'coachmark.html': 'section3',
+    'carousel-indicators.html': 'section3',
     'color-picker.html': 'section3',
     'dropdown-menu.html': 'section3',
     'date-picker-modal.html': 'section3',

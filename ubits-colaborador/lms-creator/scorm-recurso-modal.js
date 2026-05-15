@@ -120,12 +120,23 @@
         if (typeof global.closeColorPickerPopover === 'function') global.closeColorPickerPopover();
     }
 
+    /** HEX actual del acento (iframe en edición o estado modal). */
+    function getPickerInitialHex(anchorEl) {
+        try {
+            if (anchorEl && anchorEl.ownerDocument && anchorEl.ownerDocument !== document) {
+                var inline = anchorEl.ownerDocument.documentElement.style.getPropertyValue('--accent');
+                if (inline && String(inline).trim()) return String(inline).trim();
+            }
+        } catch (e) {}
+        return _color;
+    }
+
     function openCpPanel(swatchEl, onChangeCb) {
         if (typeof global.openColorPickerPopover !== 'function') return;
         closeCpPanel();
         global.openColorPickerPopover({
             anchorEl: swatchEl,
-            initialHex: _color,
+            initialHex: getPickerInitialHex(swatchEl),
             onChange: function (hex) {
                 _color = hex;
                 var sw = document.getElementById('cc-sm-cp-swatch');
@@ -578,7 +589,9 @@
 
     function buildScormCss(color) {
         var rgb=hexToRgb(color), dark=darkenHex(color,0.25), ct=contrastColor(color);
-        return ':root{--accent:'+color+';--ar:'+rgb.r+';--ag:'+rgb.g+';--ab:'+rgb.b+';--dark:'+dark+';--ct:'+ct+';--bg:#f8f9fc;--white:#fff;--tp:#1a1a2e;--ts:#4a4a6a;--tm:#8a8aaa;}' +
+        return ':root{--accent:'+color+';--ar:'+rgb.r+';--ag:'+rgb.g+';--ab:'+rgb.b+';--dark:'+dark+';--ct:'+ct+';--bg:#f8f9fc;--white:#fff;--tp:#1a1a2e;--ts:#4a4a6a;--tm:#8a8aaa;'+
+        '--gap-sm:8px;--gap-xs:4px;--padding-xl:20px;--padding-xs:4px;--border-radius-full:1000px;--border-radius-sm:4px;'+
+        '--ubits-border-1:#d0d0e0;--ubits-accent-brand:var(--accent);--ubits-fg-1-low:#b0b0c8;}' +
         '*{box-sizing:border-box;margin:0;padding:0;}' +
         'body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--bg);color:var(--tp);height:100vh;overflow:hidden;display:flex;flex-direction:column;}' +
         '.sp-header{background:var(--white);border-bottom:1px solid rgba(0,0,0,.07);flex-shrink:0;}' +
@@ -589,9 +602,11 @@
         '.sp-title{font-size:13px;font-weight:700;color:var(--tp);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:60%;}' +
         '.sp-ct{font-size:12px;color:var(--tm);font-weight:500;}' +
         '.sp-ct--solo{font-size:13px;font-weight:700;color:var(--tp);}' +
-        '.sp-color-trigger{display:inline-flex;align-items:center;gap:6px;cursor:pointer;font-size:11px;color:var(--tm);font-weight:500;padding:3px 8px;border-radius:6px;border:1px solid rgba(0,0,0,.1);background:rgba(0,0,0,.03);transition:background .15s;}' +
-        '.sp-color-trigger:hover{background:rgba(0,0,0,.07);}' +
-        '.sp-color-swatch{width:14px;height:14px;border-radius:3px;background:var(--accent);border:1px solid rgba(0,0,0,.15);}' +
+        '.sp-color-field{display:flex;align-items:center;gap:12px;flex-shrink:0;min-width:0;}' +
+        '.sp-color-label{font-size:13px;font-weight:600;color:var(--tp);line-height:1.2;white-space:nowrap;}' +
+        '.sp-color-swatch-btn{box-sizing:border-box;width:32px;height:32px;min-width:32px;padding:0;margin:0;border:2px solid rgba(0,0,0,.12);border-radius:8px;cursor:pointer;flex-shrink:0;appearance:none;-webkit-appearance:none;background:transparent;display:inline-flex;align-items:center;justify-content:center;transition:transform .15s,box-shadow .15s;}' +
+        '.sp-color-swatch-btn:hover{transform:scale(1.04);box-shadow:0 4px 12px rgba(0,0,0,.2);}' +
+        '.sp-color-swatch{display:block;width:100%;height:100%;border-radius:6px;background:var(--accent);pointer-events:none;}' +
         '.sp-stage{flex:1;overflow:hidden;position:relative;min-height:0;}' +
         '.sp-slides{position:absolute;inset:0;}' +
         /* Slide base */
@@ -818,14 +833,11 @@
         '.sp-btn-n{background:var(--accent);color:var(--ct);}' +
         '.sp-btn-n:hover:not(:disabled){filter:brightness(1.08);}' +
         '.sp-btn:disabled{opacity:.4;cursor:not-allowed;}' +
-        '.sp-dots{display:flex;align-items:center;gap:5px;}' +
-        '.sp-dot{width:6px;height:6px;border-radius:50%;background:#d0d0e0;transition:all .3s;cursor:pointer;border:none;padding:0;}' +
-        '.sp-dot.active{background:var(--accent);width:16px;border-radius:3px;}'+
         '@media (max-width:640px){.sp-slide{padding:14px 12px;}}';
     }
 
     function buildScormScript(n, editMode) {
-        return 'var cur=0,tot='+n+',__spIxT=null;' +
+        return 'var cur=0,tot='+n+',__spIxT=null,__ci=null;' +
         'function hideAllIxTips_(){clearTimeout(__spIxT);__spIxT=null;document.querySelectorAll(".sp-ix-tooltip").forEach(function(t){t.setAttribute("hidden","hidden");});document.querySelectorAll(".sp-ix-hint").forEach(function(b){b.setAttribute("aria-expanded","false");});}' +
         'function showIxTipForSlide_(si){if(document.body.classList.contains("sp--editing"))return;hideAllIxTips_();var ss=document.querySelectorAll(".sp-slide");if(!ss[si])return;var wrap=ss[si].querySelector(".sp-ix-wrap");if(!wrap)return;var btn=wrap.querySelector(".sp-ix-hint");var tip=wrap.querySelector(".sp-ix-tooltip");if(!btn||!tip)return;var tx=btn.getAttribute("data-sp-ix-tip");if(!tx)return;tip.textContent=tx;tip.removeAttribute("hidden");btn.setAttribute("aria-expanded","true");__spIxT=setTimeout(function(){tip.setAttribute("hidden","hidden");btn.setAttribute("aria-expanded","false");__spIxT=null;},3000);}' +
         'function wireSpEditingExtras(){' +
@@ -859,7 +871,7 @@
         '  var ct=document.getElementById("sp-ct-num");if(ct)ct.textContent=(cur+1)+" / "+tot;' +
         '  document.getElementById("sp-prev").disabled=cur===0;' +
         '  var nx=document.getElementById("sp-next");if(nx){if(cur===tot-1)nx.setAttribute("hidden","hidden");else nx.removeAttribute("hidden");}' +
-        '  document.querySelectorAll(".sp-dot").forEach(function(d,i){d.classList.toggle("active",i===cur);});' +
+        '  if(__ci&&__ci.setActive)__ci.setActive(cur);' +
         '  try{showIxTipForSlide_(cur);}catch(eIx){}}' +
         (editMode ? 'function openColorPicker(el){try{parent.ccScormOpenColorPicker(el,function(hex){document.documentElement.style.setProperty("--accent",hex);var sw=document.getElementById("sp-cpsw");if(sw)sw.style.background=hex;});}catch(e){}}' : '') +
         'function wireScormIx(){' +
@@ -948,10 +960,9 @@
         '});});});' +
         '}' +
         'document.addEventListener("DOMContentLoaded",function(){' +
-        'try{var pu=window.parent&&window.parent.location&&window.parent.location.href;var u=new URL(pu);u.hash="";u.search="";var p=u.pathname.split("/");p.pop();u.pathname=p.join("/")+"/";var be=document.createElement("base");be.href=u.href;document.head.insertBefore(be,document.head.firstChild);}catch(e1){}' +
+        'try{if(!document.querySelector("base")){var pu=window.parent&&window.parent.location&&window.parent.location.href;var u=new URL(pu);u.hash="";u.search="";var p=u.pathname.split("/");p.pop();u.pathname=p.join("/")+"/";var be=document.createElement("base");be.href=u.href;document.head.insertBefore(be,document.head.firstChild);}}catch(e1){}' +
         '  var ss=document.querySelectorAll(".sp-slide");if(ss[0])ss[0].classList.add("active");' +
-        '  var dc=document.getElementById("sp-dots");' +
-        '  for(var i=0;i<tot;i++){(function(idx){var d=document.createElement("button");d.className="sp-dot"+(idx===0?" active":"");d.addEventListener("click",function(){gotoSlide(idx);});dc.appendChild(d);})(i);}' +
+        '  if(typeof initCarouselIndicators==="function"){__ci=initCarouselIndicators({containerId:"sp-dots",count:tot,activeIndex:cur,maxVisible:6,dynamicFrom:11,ariaLabel:"Indicadores de diapositiva",onSelect:function(i){gotoSlide(i);}});}' +
         '  upd();wireScormIx();});';
     }
 
@@ -962,7 +973,9 @@
         var script=buildScormScript(n, editMode||false);
 
         var colorTrigger = editMode
-            ? '<button class="sp-color-trigger" onclick="openColorPicker(this)" aria-label="Cambiar color"><div class="sp-color-swatch" id="sp-cpsw"></div><span>Color principal</span></button>'
+            ? '<div class="sp-color-field"><span class="sp-color-label">Color principal</span>' +
+              '<button type="button" class="sp-color-swatch-btn" onclick="openColorPicker(this)" aria-label="Seleccionar color principal">' +
+              '<span class="sp-color-swatch" id="sp-cpsw"></span></button></div>'
             : '';
         var headerInner = editMode
             ? colorTrigger + '<span class="sp-title">'+esc(titulo)+'</span><span class="sp-ct" id="sp-ct-num">1 / '+n+'</span>'
@@ -970,7 +983,9 @@
         var headerRowClass = editMode ? 'sp-hi' : 'sp-hi sp-hi--viewer';
 
         return '<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">'+
+            '<script>(function(){try{var pu=window.parent&&window.parent.location&&window.parent.location.href;var u=new URL(pu);u.hash="";u.search="";var p=u.pathname.split("/");p.pop();u.pathname=p.join("/")+"/";var be=document.createElement("base");be.href=u.href;document.head.appendChild(be);}catch(e1){}})();<\/script>'+
             '<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">'+
+            '<link rel="stylesheet" href="../../components/carousel-indicators.css">'+
             '<style>'+css+'</style></head><body'+(editMode?' class="sp--editing"':'')+'>'+
             '<div class="sp-header">'+
                 '<div class="sp-pb"><div class="sp-pf" id="sp-pf"></div></div>'+
@@ -981,9 +996,10 @@
             '<div class="sp-stage"><div class="sp-slides">'+slidesHtml+'</div></div>'+
             '<div class="sp-footer">'+
                 '<button class="sp-btn sp-btn-p" id="sp-prev" onclick="nav(-1)"><i class="fas fa-arrow-left"></i><span>Anterior</span></button>'+
-                '<div class="sp-dots" id="sp-dots"></div>'+
+                '<div id="sp-dots"></div>'+
                 '<button class="sp-btn sp-btn-n" id="sp-next" onclick="nav(1)"><span>Siguiente</span><i class="fas fa-arrow-right"></i></button>'+
             '</div>'+
+            '<script src="../../components/carousel-indicators.js"><\/script>'+
             '<script>'+script+'<\/script></body></html>';
     }
 
@@ -1480,9 +1496,13 @@
         titleEl.className = 'cc-scorm-fs-title';
         titleEl.textContent = 'Editar presentación';
         var closeBtn = document.createElement('button');
+        closeBtn.id = 'cc-scorm-edit-close';
         closeBtn.type = 'button';
-        closeBtn.className = 'cc-scorm-fs-close ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only';
+        closeBtn.className =
+            'cc-scorm-fs-close ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only';
         closeBtn.setAttribute('aria-label', 'Cerrar');
+        closeBtn.setAttribute('data-tooltip', 'Cerrar');
+        closeBtn.setAttribute('data-tooltip-delay', '1000');
         closeBtn.innerHTML = '<i class="far fa-times"></i>';
         head.appendChild(titleEl);
         head.appendChild(closeBtn);
@@ -1510,6 +1530,10 @@
         panel.appendChild(foot);
         overlay.appendChild(panel);
         document.body.appendChild(overlay);
+
+        if (typeof initTooltip === 'function') {
+            initTooltip('#cc-scorm-edit-close');
+        }
 
         function onKey(e) {
             if (e.key === 'Escape') {

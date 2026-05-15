@@ -1,8 +1,8 @@
 /**
  * LMS Creator — Modal «Agregar portada» (Portada con IA · Subir portada · Enlace de tráiler opcional).
  * Estilo y tabs alineados a video-recurso-modal.js.
- * Portada con IA: al abrir, mismo ancho que Subir/Tráiler y solo bloque «Describe tu idea»; al pulsar «Generar portada» se expande
- * (transición max-width) y aparece la columna de vista previa 16:9 a la derecha (layout dos columnas como modal de video). Modal tamaño lg.
+ * Portada con IA: al abrir, mismo ancho que Subir/Tráiler (modal sm) y bloque de copy + textarea; al pulsar «Generar portada»
+ * aparece la vista previa 16:9 arriba y el formulario debajo (columna única). Las tres pestañas usan el mismo tamaño de modal (sm).
  * Depende: modal.js, input.js (+ dropdown-menu.js antes de input) para pestaña tráiler, file-upload.js, ia-loader.js,
  * empty-state.js, ai-panel.css (+ general-styles/ubits-ia-chat.css para .ubits-ia-chat-thread__input-area), tab.css,
  * portada-imagen-modal.css.
@@ -159,7 +159,6 @@
             '<p class="cc-pim-idea-headline-intro__text">Tú lo imaginas, nosotros ' +
             '<span class="cc-pim-idea-headline-intro__gradient">lo generamos</span></p>' +
             '</div>' +
-            '<p class="cc-vm-section-label ubits-body-md-bold cc-pim-idea-label-after">Describe tu idea</p>' +
             '<div class="ubits-ia-chat-thread__input-area">' +
             '<div class="ai-panel__input-box" id="cc-pim-idea-input-box">' +
             '<textarea id="cc-pim-idea-input" class="ai-panel__input ubits-body-md-regular" rows="2" placeholder="Describe la portada que imaginas"></textarea>' +
@@ -207,11 +206,13 @@
     function buildFooter() {
         return (
             '<div class="ubits-modal-footer__right">' +
-            '<button type="button" class="ubits-button ubits-button--primary ubits-button--md" id="cc-pim-footer-use-ia" style="display:none">' +
+            '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="cc-pim-footer-cancel">' +
+            '<span>Cancelar</span></button>' +
+            '<button type="button" class="ubits-button ubits-button--primary ubits-button--sm" id="cc-pim-footer-use-ia" style="display:none">' +
             '<span>Usar esta imagen</span></button>' +
-            '<button type="button" class="ubits-button ubits-button--primary ubits-button--md" id="cc-pim-footer-use-upload" style="display:none">' +
+            '<button type="button" class="ubits-button ubits-button--primary ubits-button--sm" id="cc-pim-footer-use-upload" style="display:none">' +
             '<span>Usar esta imagen</span></button>' +
-            '<button type="button" class="ubits-button ubits-button--primary ubits-button--md" id="cc-pim-footer-save-trailer" style="display:none">' +
+            '<button type="button" class="ubits-button ubits-button--primary ubits-button--sm" id="cc-pim-footer-save-trailer" style="display:none">' +
             '<span>Guardar tráiler</span></button>' +
             '</div>'
         );
@@ -519,8 +520,6 @@
     function syncPimOverlayLayout() {
         var overlay = document.getElementById(OVERLAY_ID);
         if (!overlay) return;
-        var compactTab = _currentTab !== 'ia';
-        overlay.classList.toggle('cc-pim--compact', compactTab);
         overlay.classList.toggle('cc-pim--ia-intro', _currentTab === 'ia' && !_pimIaLayoutExpanded);
 
         var mc = overlay.querySelector('.cc-pim-modal-content');
@@ -539,6 +538,12 @@
     }
 
     function wireFooterActions() {
+        var cancel = document.getElementById('cc-pim-footer-cancel');
+        if (cancel) {
+            cancel.onclick = function () {
+                if (typeof global.closeModal === 'function') global.closeModal(OVERLAY_ID);
+            };
+        }
         var useIa = document.getElementById('cc-pim-footer-use-ia');
         if (useIa) {
             useIa.onclick = function () {
@@ -634,7 +639,7 @@
             overlayId: OVERLAY_ID,
             title: 'Agregar portada',
             bodyHtml: buildBody(),
-            size: 'lg',
+            size: 'sm',
             closeOnOverlayClick: false,
             footerHtml: buildFooter(),
             variant: 'ia',

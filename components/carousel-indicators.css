@@ -1,0 +1,100 @@
+/* ========================================
+   UBITS Carousel indicators — Estilo Fancybox/Swiper "Dynamic Dots"
+   ======================================== */
+
+.ubits-carousel-indicators {
+    --ci-dot-size: 8px;
+    --ci-dot-gap: 8px;
+    --ci-active-width: 24px;
+    --ci-visible-count: 5; /* Número de puntos "grandes/medianos" visibles */
+    
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    padding: 12px 0;
+    /* Ancho máximo para contener el número deseado de puntos */
+    width: fit-content;
+    margin: 0 auto;
+    mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
+}
+
+.ubits-carousel-indicators__strip {
+    display: flex;
+    align-items: center;
+    gap: var(--ci-dot-gap);
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    will-change: transform;
+    padding: 0 40px; /* Margen para permitir que los puntos de los extremos se vean al salir */
+}
+
+.ubits-carousel-indicators__dot {
+    display: block;
+    padding: 0;
+    margin: 0;
+    border: none;
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    background: var(--ubits-fg-1-medium);
+    border-radius: var(--border-radius-full);
+    
+    /* Dimensiones base (punto pequeño) */
+    width: var(--ci-dot-size);
+    height: var(--ci-dot-size);
+    min-width: var(--ci-dot-size);
+    
+    opacity: 0.4;
+    transform: scale(0.6);
+    transition: 
+        transform 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+        width 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+        background 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+        opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Punto activo (Píldora) */
+.ubits-carousel-indicators__dot--active {
+    width: var(--ci-active-width);
+    background: var(--ubits-accent-brand);
+    opacity: 1;
+    transform: scale(1);
+    cursor: default;
+    box-shadow: 0 0 12px color-mix(in srgb, var(--ubits-accent-brand) 40%, transparent);
+}
+
+/* Puntos cercanos al activo (Escalado fluido) */
+.ubits-carousel-indicators__dot--small {
+    transform: scale(0.85);
+    opacity: 0.7;
+}
+
+.ubits-carousel-indicators__dot--tiny {
+    transform: scale(0.5);
+    opacity: 0.3;
+}
+
+.ubits-carousel-indicators__dot--hidden {
+    transform: scale(0);
+    opacity: 0;
+    width: 0;
+    margin-right: calc(var(--ci-dot-gap) * -1);
+    pointer-events: none;
+}
+
+.ubits-carousel-indicators__dot:hover:not(.ubits-carousel-indicators__dot--active) {
+    opacity: 0.9;
+    transform: scale(1);
+}
+
+.ubits-carousel-indicators__dot:focus-visible {
+    outline: 2px solid var(--ubits-accent-brand);
+    outline-offset: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .ubits-carousel-indicators__strip,
+    .ubits-carousel-indicators__dot {
+        transition: none;
+    }
+}
