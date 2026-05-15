@@ -166,7 +166,7 @@
             '<input type="file" id="cc-pim-ref-files" accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.txt,.csv,.ppt,.pptx" multiple hidden>' +
             '<div class="ai-panel__pending-images-strip" id="cc-pim-pending-imgs" style="display:none;"></div>' +
             '<div class="ai-panel__pending-files-strip" id="cc-pim-pending-files" style="display:none;"></div>' +
-            '<textarea id="cc-pim-idea-input" class="ai-panel__input ubits-body-md-regular" rows="2" placeholder="Adjunta imágenes o documentos de referencia, o describe la portada que imaginas"></textarea>' +
+            '<textarea id="cc-pim-idea-input" class="ai-panel__input ubits-body-md-regular" rows="2" placeholder="Describe la portada que imaginas y comparte referencias si cuentas con ellas."></textarea>' +
             '<div class="ai-panel__input-actions">' +
             '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only ai-panel__attach-btn" id="cc-pim-attach" aria-label="Adjuntar referencia">' +
             '<i class="far fa-plus"></i></button>' +
