@@ -4,19 +4,19 @@
 
 .ubits-carousel-indicators {
     --ci-dot-size: 8px;
-    --ci-dot-gap: 8px;
-    --ci-active-width: 24px;
+    --ci-dot-gap: 10px;
+    --ci-active-size: 10px;
     --ci-visible-count: 5; /* Número de puntos "grandes/medianos" visibles */
     
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     overflow: hidden;
-    padding: 12px 0;
-    /* Ancho máximo para contener el número deseado de puntos */
-    width: fit-content;
+    padding: var(--padding-md) 0;
+    width: 120px; /* Ancho fijo para estabilidad (valor fuera de escala de spacing) */
     margin: 0 auto;
-    mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
+    position: relative;
+    /* Sin mask con negro literal: el validador UBITS y los tokens. El overflow ya recorta bordes. */
 }
 
 .ubits-carousel-indicators__strip {
@@ -25,7 +25,7 @@
     gap: var(--ci-dot-gap);
     transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     will-change: transform;
-    padding: 0 40px; /* Margen para permitir que los puntos de los extremos se vean al salir */
+    padding: 0 var(--padding-6xl); /* Margen para que los puntos de los extremos entren al deslizar */
 }
 
 .ubits-carousel-indicators__dot {
@@ -53,33 +53,33 @@
         opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Punto activo (Píldora) */
+/* Punto activo (Circular) */
 .ubits-carousel-indicators__dot--active {
-    width: var(--ci-active-width);
+    width: var(--ci-active-size);
+    height: var(--ci-active-size);
     background: var(--ubits-accent-brand);
     opacity: 1;
-    transform: scale(1);
+    transform: scale(1.2); /* Un poco más grande para destacar */
     cursor: default;
-    box-shadow: 0 0 12px color-mix(in srgb, var(--ubits-accent-brand) 40%, transparent);
+    box-shadow: 0 0 var(--gap-md) color-mix(in srgb, var(--ubits-accent-brand) 40%, transparent);
 }
 
 /* Puntos cercanos al activo (Escalado fluido) */
 .ubits-carousel-indicators__dot--small {
-    transform: scale(0.85);
-    opacity: 0.7;
+    transform: scale(0.7);
+    opacity: 0.6;
 }
 
 .ubits-carousel-indicators__dot--tiny {
-    transform: scale(0.5);
+    transform: scale(0.4);
     opacity: 0.3;
 }
 
 .ubits-carousel-indicators__dot--hidden {
     transform: scale(0);
     opacity: 0;
-    width: 0;
-    margin-right: calc(var(--ci-dot-gap) * -1);
     pointer-events: none;
+    visibility: hidden;
 }
 
 .ubits-carousel-indicators__dot:hover:not(.ubits-carousel-indicators__dot--active) {
@@ -89,7 +89,7 @@
 
 .ubits-carousel-indicators__dot:focus-visible {
     outline: 2px solid var(--ubits-accent-brand);
-    outline-offset: 4px;
+    outline-offset: var(--padding-xs);
 }
 
 @media (prefers-reduced-motion: reduce) {

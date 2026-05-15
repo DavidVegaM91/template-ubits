@@ -1,8 +1,6 @@
 /**
  * UBITS Carousel indicators — "Dynamic Dots"
- * Implementación inspirada en Fancybox v5 y Swiper Dynamic Bullets.
- * El strip se desplaza para mantener el punto activo centrado, y los puntos
- * se escalan según su distancia al activo.
+ * Ventana de 5 puntos con strip deslizante. Colores y espaciado vía tokens UBITS en CSS.
  *
  * API: initCarouselIndicators({ containerId | container, count, activeIndex, ariaLabel, onSelect })
  * → { setActive, setCount, getState, destroy }
@@ -15,16 +13,31 @@
     }
 
     /**
-     * Calcula las clases de estado para cada punto basado en la distancia al activo.
+     * Calcula las clases de estado para mantener siempre una ventana de 5 puntos visibles.
      */
-    function getDotClass(idx, activeIndex) {
-        var diff = Math.abs(idx - activeIndex);
+    function getDotClass(idx, activeIndex, count) {
         var base = 'ubits-carousel-indicators__dot';
         
-        if (diff === 0) return base + ' ubits-carousel-indicators__dot--active';
-        if (diff === 1) return base + ' ubits-carousel-indicators__dot--small';
-        if (diff === 2) return base + ' ubits-carousel-indicators__dot--tiny';
-        return base + ' ubits-carousel-indicators__dot--hidden';
+        if (count <= 5) {
+            if (idx === activeIndex) return base + ' ubits-carousel-indicators__dot--active';
+            return base + ' ubits-carousel-indicators__dot--small';
+        }
+
+        // Ventana deslizante de 5 puntos
+        var windowStart = clamp(activeIndex - 2, 0, count - 5);
+        var windowEnd = windowStart + 4;
+
+        if (idx < windowStart || idx > windowEnd) {
+            return base + ' ubits-carousel-indicators__dot--hidden';
+        }
+
+        if (idx === activeIndex) return base + ' ubits-carousel-indicators__dot--active';
+        
+        // Puntos en los extremos exactos de la ventana son diminutos
+        if (idx === windowStart || idx === windowEnd) return base + ' ubits-carousel-indicators__dot--tiny';
+        
+        // El resto dentro de la ventana son pequeños
+        return base + ' ubits-carousel-indicators__dot--small';
     }
 
     function initCarouselIndicators(opts) {
@@ -63,8 +76,7 @@
                 btn.type = 'button';
                 btn.setAttribute('data-index', i);
                 btn.setAttribute('aria-label', 'Ir a diapositiva ' + (i + 1));
-                btn.className = getDotClass(i, state.activeIndex);
-                if (i === state.activeIndex) btn.setAttribute('aria-current', 'true');
+                // Nota: La clase se asignará en updateVisuals
                 
                 btn.addEventListener('click', function (e) {
                     var idx = parseInt(this.getAttribute('data-index'), 10);
@@ -80,6 +92,8 @@
             state._root = root;
             state._strip = strip;
             
+            // Forzamos un reflow antes de calcular posiciones
+            void strip.offsetWidth;
             updateVisuals(true);
         }
 
@@ -88,11 +102,12 @@
             
             var dots = state._strip.children;
             var activeIdx = clamp(state.activeIndex, 0, state.count - 1);
+            var count = state.count;
 
             // 1. Actualizar clases y atributos
             for (var i = 0; i < dots.length; i++) {
                 var dot = dots[i];
-                dot.className = getDotClass(i, activeIdx);
+                dot.className = getDotClass(i, activeIdx, count);
                 if (i === activeIdx) {
                     dot.setAttribute('aria-current', 'true');
                 } else {
@@ -100,47 +115,36 @@
                 }
             }
 
-            // 2. Calcular desplazamiento (Translate)
-            // Queremos que el punto activo esté en el centro visual del contenedor.
-            // Asumiendo valores de CSS: dot=8px, gap=8px, active=24px.
-            var dotSize = 8;
-            var gap = 8;
-            var activeWidth = 24;
-            
-            // Distancia desde el inicio del strip hasta el centro del punto activo:
-            // (puntos antes * (size + gap)) + (mitad del ancho del activo)
-            var distanceToActiveCenter = (activeIdx * (dotSize + gap)) + (activeWidth / 2);
-            
-            // El centro del contenedor es donde queremos que caiga el activeCenter.
-            // Como el strip tiene un padding-left de 40px en el CSS, hay que compensarlo
-            // o simplemente calcular el offset relativo.
-            var stripPadding = 40; 
-            
-            // Visualmente, el "centro" del strip (sin contar el padding) es 0 si no hay translate.
-            // Para centrar el punto 'i', necesitamos mover el strip hacia la izquierda:
-            // transform = - (distanciaAlCentroDeI)
-            // Pero el contenedor tiene un width variable (fit-content).
-            // Lo más sencillo es usar la posición relativa del dot.
-            
-            var activeDot = dots[activeIdx];
-            if (activeDot) {
-                var offsetLeft = activeDot.offsetLeft;
-                var offsetWidth = activeDot.offsetWidth;
-                var containerWidth = state._root.offsetWidth;
-                
-                // Si el contenedor aún no tiene width (ej. oculto), usamos un fallback
-                if (containerWidth === 0) containerWidth = 120; 
-
-                var tx = (containerWidth / 2) - (offsetLeft + offsetWidth / 2);
-                
-                if (immediate) {
-                    state._strip.style.transition = 'none';
-                } else {
-                    state._strip.style.transition = '';
-                }
-                
-                state._strip.style.transform = 'translateX(' + tx + 'px)';
+            // 2. Desplazamiento: leer --ci-* y padding del strip desde CSS (tokens), sin números mágicos sueltos.
+            var rootEl = state._root;
+            var stripEl = state._strip;
+            var dotBase = 8;
+            var gap = 10;
+            var activeVis = 12;
+            var containerWidth = 120;
+            var stripPad = 0;
+            if (rootEl && typeof global.getComputedStyle === 'function') {
+                var rcs = getComputedStyle(rootEl);
+                dotBase = parseFloat(rcs.getPropertyValue('--ci-dot-size')) || dotBase;
+                gap = parseFloat(rcs.getPropertyValue('--ci-dot-gap')) || gap;
+                var activeW = parseFloat(rcs.getPropertyValue('--ci-active-size')) || 10;
+                activeVis = activeW * 1.2;
+                containerWidth = parseFloat(rcs.width) || containerWidth;
             }
+            if (stripEl && typeof global.getComputedStyle === 'function') {
+                stripPad = parseFloat(getComputedStyle(stripEl).paddingLeft) || 0;
+            }
+
+            var centerOfActive = activeIdx * (dotBase + gap) + activeVis / 2;
+            var tx = containerWidth / 2 - centerOfActive - stripPad;
+
+            if (immediate) {
+                state._strip.style.transition = 'none';
+            } else {
+                state._strip.style.transition = '';
+            }
+            
+            state._strip.style.transform = 'translateX(' + tx + 'px)';
         }
 
         render();
