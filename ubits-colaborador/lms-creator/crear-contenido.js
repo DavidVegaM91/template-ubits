@@ -942,6 +942,7 @@
     var recursosSectionMeta = {};
     var CC_MODAL_DISABLE_SEC = 'cc-modal-deshabilitar-secciones';
     var CC_MODAL_EDIT_SEC = 'cc-modal-editar-seccion';
+    var CC_MODAL_DELETE_SEC = 'cc-modal-eliminar-seccion';
 
     /**
      * Persistencia de recursos por página.
@@ -1386,6 +1387,134 @@
         }
     }
 
+    function openCrearContenidoDeleteSectionModal(sectionKey) {
+        var sk = String(sectionKey || '');
+        function runDelete() {
+            recursosApplyDeleteSection(sk);
+        }
+        if (typeof window.openModal !== 'function' || typeof window.closeModal !== 'function') {
+            runDelete();
+            return;
+        }
+        window.openModal({
+            overlayId: CC_MODAL_DELETE_SEC,
+            title: 'Eliminar sección',
+            bodyHtml:
+                '<p class="ubits-body-md-regular" style="margin:0;color:var(--ubits-fg-1-medium);">' +
+                'Estás a punto de eliminar esta sección, <strong class="ubits-body-md-bold">al hacerlo también eliminarás todas las páginas que esta contenga</strong>, esta acción no se puede deshacer, ¿estás seguro de eliminarla?' +
+                '</p>',
+            footerHtml:
+                '<button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="cc-mod-delete-sec-cancel"><span>Cancelar</span></button>' +
+                '<button type="button" class="ubits-button ubits-button--error ubits-button--md" id="cc-mod-delete-sec-confirm"><span>Sí, eliminar</span></button>',
+            size: 'sm',
+            closeOnOverlayClick: true
+        });
+        var ov = document.getElementById(CC_MODAL_DELETE_SEC);
+        if (!ov) return;
+        var cancel = ov.querySelector('#cc-mod-delete-sec-cancel');
+        var ok = ov.querySelector('#cc-mod-delete-sec-confirm');
+        function close() {
+            window.closeModal(CC_MODAL_DELETE_SEC);
+        }
+        if (cancel) {
+            cancel.addEventListener('click', close);
+        }
+        if (ok) {
+            ok.addEventListener('click', function () {
+                close();
+                runDelete();
+            });
+        }
+    }
+
+    function recursosApplyDeleteSection(sectionKey) {
+        var sk = String(sectionKey || '');
+        var model = recursosSerializeSectionsFromDom();
+        if (model.length <= 1) return;
+
+        var removed = null;
+        model = model.filter(function (s) {
+            if (s.key === sk) {
+                removed = s;
+                return false;
+            }
+            return true;
+        });
+        if (!removed) return;
+
+        snapshotCurrentRecursosPage();
+
+        (removed.pages || []).forEach(function (p) {
+            var pk = p.pageKey;
+            if (!pk) return;
+            delete CC_RECURSOS_PAGE_STATE[pk];
+            delete recursosPageTitleTouched[pk];
+            if (CC_RECURSOS_CURRENT_PAGE_KEY === pk) {
+                CC_RECURSOS_CURRENT_PAGE_KEY = null;
+            }
+        });
+        delete recursosSectionMeta[sk];
+
+        var deletedWasActiveSection = !!removed.active;
+        var hasActiveSection = model.some(function (s) {
+            return s.active;
+        });
+        if (deletedWasActiveSection || !hasActiveSection) {
+            model.forEach(function (s) {
+                s.active = false;
+            });
+            if (model.length) model[0].active = true;
+        }
+
+        var activePageKey = '';
+        model.forEach(function (s) {
+            (s.pages || []).forEach(function (p) {
+                if (p.active) activePageKey = p.pageKey;
+            });
+        });
+
+        var activePageInRemaining = false;
+        if (activePageKey) {
+            model.forEach(function (s) {
+                (s.pages || []).forEach(function (p) {
+                    if (p.pageKey === activePageKey) activePageInRemaining = true;
+                });
+            });
+        }
+
+        if (!activePageInRemaining) {
+            model.forEach(function (s) {
+                (s.pages || []).forEach(function (p) {
+                    p.active = false;
+                });
+            });
+            var activeSec =
+                model.find(function (s) {
+                    return s.active;
+                }) || model[0];
+            if (activeSec && activeSec.pages && activeSec.pages.length) {
+                activeSec.pages[0].active = true;
+                activePageKey = activeSec.pages[0].pageKey;
+            } else {
+                activePageKey = '';
+            }
+        }
+
+        recursosMountHtmlAndInit(recursosBuildIndiceMultiHtml(model));
+
+        if (activePageKey) {
+            recursosRestoreActivePagePreferred(activePageKey);
+            setRecursosEditorVisible(true);
+        } else {
+            CC_RECURSOS_CURRENT_PAGE_KEY = null;
+            setRecursosEditorVisible(false);
+            loadRecursosEmptyPanel();
+        }
+
+        refreshCrearContenidoPageSiguienteState();
+        syncRecursosTitleValidationVisuals();
+    }
+
     function getRteModalBodyFragment() {
         return (
             '<div class="cc-sec-modal-rte-host ubits-rich-text-editor" id="cc-sec-modal-rte-root" data-rich-text-editor>' +
@@ -1573,6 +1702,34 @@
         var sk = d.sectionKey != null ? String(d.sectionKey) : '';
         var meta = recursosSectionMeta[sk] || {};
         openCrearContenidoEditSectionModal(sk, d.title != null ? d.title : '', meta.descriptionHtml || '');
+    }
+
+    function onRecursosSeccionCreatorSectionAction(ev) {
+        var d = ev.detail || {};
+        var action = d.action != null ? String(d.action) : '';
+        var mount = getRecursosIndiceMount();
+        if (!d.section || !mount || !mount.contains(d.section)) return;
+        if (!recursosSectionsEnabled) return;
+
+        if (action === 'seccion-mover-arriba' || action === 'seccion-mover-abajo') {
+            if (typeof initTooltip === 'function') {
+                initTooltip('#crear-contenido-recursos-indice-mount [data-tooltip]');
+            }
+            return;
+        }
+
+        if (action !== 'seccion-eliminar') return;
+
+        var model = recursosSerializeSectionsFromDom();
+        if (model.length <= 1) {
+            if (typeof showToast === 'function') {
+                showToast('warning', 'Debe haber al menos una sección.');
+            }
+            return;
+        }
+
+        var sk = d.sectionKey != null ? String(d.sectionKey) : '';
+        openCrearContenidoDeleteSectionModal(sk);
     }
 
     function getRecursosPaginasList() {
@@ -2226,6 +2383,7 @@
         document.addEventListener('ubits-indice-creator-sections-toggle', onRecursosIndiceSectionsToggle);
         document.addEventListener('ubits-indice-creator-add-section', onRecursosIndiceAddSection);
         document.addEventListener('ubits-seccion-creator-edit-section', onRecursosSeccionCreatorEditSection);
+        document.addEventListener('ubits-seccion-creator-section-action', onRecursosSeccionCreatorSectionAction);
         document.addEventListener('ubits-paginas-creator-activate', onRecursosPaginasActivate);
         document.addEventListener('ubits-paginas-creator-action', onRecursosPaginasAction);
         document.addEventListener('ubits-paginas-creator-label-save', onRecursosPaginasLabelSave);

@@ -161,6 +161,36 @@
         root.style.setProperty('--ab', String(rgb.b));
         root.style.setProperty('--dark', darkenHex(hex, 0.25));
         root.style.setProperty('--ct', contrastColor(hex));
+        try {
+            var parentTheme =
+                document.body && document.body.getAttribute('data-theme')
+                    ? document.body.getAttribute('data-theme')
+                    : '';
+            if (parentTheme && doc.body) {
+                doc.documentElement.setAttribute('data-theme', parentTheme);
+                doc.body.setAttribute('data-theme', parentTheme);
+            }
+        } catch (eTheme) {}
+    }
+
+    /** Cabecera/pie del visor: tokens, tipografía y botones UBITS (solo embed en Creator). */
+    function getScormChromeCssLinks() {
+        return (
+            '<link rel="stylesheet" href="../../general-styles/ubits-colors.css">' +
+            '<link rel="stylesheet" href="../../general-styles/ubits-spacing-tokens.css">' +
+            '<link rel="stylesheet" href="../../general-styles/ubits-typography.css">' +
+            '<link rel="stylesheet" href="../../general-styles/fontawesome-icons.css">' +
+            '<link rel="stylesheet" href="../../components/button.css">'
+        );
+    }
+
+    function getScormChromeThemeSyncScript() {
+        return (
+            '<script>(function(){try{var p=window.parent;if(!p||!p.document||!p.document.body)return;' +
+            'var t=p.document.body.getAttribute("data-theme");if(!t)return;' +
+            'document.documentElement.setAttribute("data-theme",t);' +
+            'if(document.body)document.body.setAttribute("data-theme",t);}catch(e){}})();<\/script>'
+        );
     }
 
     global.ccScormApplyTheme = applyScormThemeVars;
@@ -652,29 +682,28 @@
 
     function buildScormCss(color) {
         var rgb=hexToRgb(color), dark=darkenHex(color,0.25), ct=contrastColor(color);
-        return ':root{--accent:'+color+';--ar:'+rgb.r+';--ag:'+rgb.g+';--ab:'+rgb.b+';--dark:'+dark+';--ct:'+ct+';--bg:#f8f9fc;--white:#fff;--tp:#1a1a2e;--ts:#4a4a6a;--tm:#8a8aaa;'+
+        return ':root{--accent:'+color+';--ar:'+rgb.r+';--ag:'+rgb.g+';--ab:'+rgb.b+';--dark:'+dark+';--ct:'+ct+';'+
         '--gap-sm:8px;--gap-xs:4px;--gap-md:12px;--padding-xl:20px;--padding-xs:4px;--padding-md:12px;--padding-6xl:40px;'+
-        '--border-radius-full:1000px;--border-radius-sm:4px;'+
-        '--ubits-border-1:#d0d0e0;--ubits-accent-brand:var(--accent);--ubits-fg-1-low:#b0b0c8;--ubits-fg-1-medium:var(--ts);}' +
+        '--border-radius-full:1000px;--border-radius-sm:4px;}' +
         '#sp-dots{min-height:40px;display:flex;align-items:center;justify-content:center;min-width:120px;}' +
-        '*{box-sizing:border-box;margin:0;padding:0;}' +
-        'body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--bg);color:var(--tp);height:100vh;overflow:hidden;display:flex;flex-direction:column;}' +
-        '.sp-header{background:var(--white);border-bottom:1px solid rgba(0,0,0,.07);flex-shrink:0;}' +
+        '*{box-sizing:border-box;margin:0;}' +
+        'ul,ol{padding:0;}' +
+        'body{height:100vh;overflow:hidden;display:flex;flex-direction:column;background:var(--ubits-bg-2);font-family:var(--ubits-font-family-sans);}' +
+        '.sp-header{background:var(--ubits-bg-1);border-bottom:1px solid var(--ubits-border-1);flex-shrink:0;}' +
         '.sp-pb{height:3px;background:rgba(var(--ar),var(--ag),var(--ab),.15);}' +
         '.sp-pf{height:100%;background:var(--accent);transition:width .5s cubic-bezier(.4,0,.2,1);}' +
         '.sp-hi{display:flex;align-items:center;justify-content:space-between;padding:10px 20px;}' +
         '.sp-hi--viewer{justify-content:flex-end;}' +
         '.sp-hi--viewer--modal-preview{justify-content:space-between;}' +
-        '.sp-preview-rep{font-size:13px;font-weight:700;color:var(--tp);line-height:1.2;}' +
-        '.sp-title{font-size:13px;font-weight:700;color:var(--tp);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:60%;}' +
-        '.sp-ct{font-size:12px;color:var(--tm);font-weight:500;}' +
-        '.sp-ct--solo{font-size:13px;font-weight:700;color:var(--tp);}' +
+        '.sp-preview-rep,.sp-title,.sp-ct{color:var(--ubits-fg-1-high);}' +
+        '.sp-title{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:60%;}' +
+        '.sp-ct{white-space:nowrap;flex-shrink:0;}' +
         '.sp-color-field{display:flex;align-items:center;gap:12px;flex-shrink:0;min-width:0;}' +
-        '.sp-color-label{font-size:13px;font-weight:600;color:var(--tp);line-height:1.2;white-space:nowrap;}' +
+        '.sp-color-label{line-height:1.2;white-space:nowrap;color:var(--ubits-fg-1-high);}' +
         '.sp-color-swatch-btn{box-sizing:border-box;width:32px;height:32px;min-width:32px;padding:0;margin:0;border:2px solid rgba(0,0,0,.12);border-radius:8px;cursor:pointer;flex-shrink:0;appearance:none;-webkit-appearance:none;background:transparent;display:inline-flex;align-items:center;justify-content:center;transition:transform .15s,box-shadow .15s;}' +
         '.sp-color-swatch-btn:hover{transform:scale(1.04);box-shadow:0 4px 12px rgba(0,0,0,.2);}' +
         '.sp-color-swatch{display:block;width:100%;height:100%;border-radius:6px;background:var(--accent);pointer-events:none;}' +
-        '.sp-stage{flex:1;overflow:hidden;position:relative;min-height:0;}' +
+        '.sp-stage{--bg:#F3F3F4;--white:#ffffff;--tp:#303a47;--ts:#5c646f;--tm:#8a8aaa;flex:1;overflow:hidden;position:relative;min-height:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;color:var(--tp);background:var(--bg);}' +
         '.sp-slides{position:absolute;inset:0;}' +
         /* Slide base */
         '.sp-slide{position:absolute;inset:0;opacity:0;transform:translateX(32px);transition:opacity .35s ease,transform .35s ease;pointer-events:none;display:flex;align-items:flex-start;justify-content:flex-start;padding:clamp(16px,3vw,28px) clamp(14px,3vw,32px);gap:16px;overflow-y:auto;overflow-x:hidden;scroll-padding-top:8px;scroll-padding-bottom:12px;-webkit-overflow-scrolling:touch;z-index:1;}' +
@@ -906,20 +935,21 @@
         '.sp--editing .sp-hotspot-pin.sp-hotspot-pin--drag{cursor:grab;}' +
         '.sp--editing .sp-hotspot-pin.sp-hotspot-pin--drag:active{cursor:grabbing;}' +
         /* Edit mode */
-        '[contenteditable]:hover{outline:2px dashed rgba(var(--ar),var(--ag),var(--ab),.45);border-radius:4px;cursor:text;}' +
-        '[contenteditable]:focus{outline:2px solid var(--accent);background:rgba(255,255,255,.12);border-radius:4px;}' +
+        '.sp-stage [contenteditable]:hover{outline:2px dashed rgba(var(--ar),var(--ag),var(--ab),.45);border-radius:4px;cursor:text;}' +
+        '.sp-stage [contenteditable]:focus{outline:2px solid var(--accent);background:rgba(255,255,255,.12);border-radius:4px;}' +
         /* Footer */
-        '.sp-footer{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:12px;padding:11px 18px;background:var(--white);border-top:1px solid rgba(0,0,0,.06);flex-shrink:0;}' +
+        '.sp-footer{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:12px;padding:11px 18px;background:var(--ubits-bg-1);border-top:1px solid var(--ubits-border-1);flex-shrink:0;}' +
         '#sp-prev{justify-self:start;}' +
         '#sp-dots{justify-self:center;}' +
         '#sp-next{justify-self:end;}' +
         '#sp-next[hidden]{display:none !important;}' +
-        '.sp-btn{display:inline-flex;align-items:center;gap:7px;padding:8px 16px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s;font-family:inherit;border:none;}' +
-        '.sp-btn-p{background:#f0f0f8;color:var(--ts);}' +
-        '.sp-btn-p:hover:not(:disabled){background:#e4e4f0;}' +
-        '.sp-btn-n{background:var(--accent);color:var(--ct);}' +
-        '.sp-btn-n:hover:not(:disabled){filter:brightness(1.08);}' +
-        '.sp-btn:disabled{opacity:.4;cursor:not-allowed;}' +
+        '.sp-footer .ubits-button.ubits-button--md{padding:var(--padding-md) var(--padding-lg);min-height:40px;}' +
+        '#sp-next.ubits-button--primary{background:var(--accent);color:var(--ct);border-color:var(--accent);}' +
+        '#sp-next.ubits-button--primary:hover:not(:disabled){background:var(--accent);border-color:var(--accent);filter:brightness(1.08);}' +
+        '.sp-stage .sp-btn{display:inline-flex;align-items:center;gap:7px;padding:8px 16px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;border:none;font-family:inherit;}' +
+        '.sp-stage .sp-btn-p{background:#ffffff;color:#303a47;border:1px solid #d0d2d5;}' +
+        '.sp-stage .sp-btn-p:hover:not(:disabled){background:#f3f3f4;}' +
+        '.sp-stage .sp-btn:disabled{opacity:.4;cursor:not-allowed;}' +
         '@media (max-width:640px){.sp-slide{padding:14px 12px;}}';
     }
 
@@ -1096,22 +1126,26 @@
         var script=buildScormScript(n, editMode||false);
 
         var colorTrigger = editMode
-            ? '<div class="sp-color-field"><span class="sp-color-label">Color principal</span>' +
+            ? '<div class="sp-color-field"><span class="sp-color-label ubits-body-sm-semibold">Color principal</span>' +
               '<button type="button" class="sp-color-swatch-btn" onclick="openColorPicker(this)" aria-label="Seleccionar color principal">' +
               '<span class="sp-color-swatch" id="sp-cpsw"></span></button></div>'
             : '';
         var headerInner = editMode
-            ? colorTrigger + '<span class="sp-title">'+esc(titulo)+'</span><span class="sp-ct" id="sp-ct-num">1 / '+n+'</span>'
+            ? colorTrigger +
+              '<span class="sp-title ubits-body-sm-bold">'+esc(titulo)+'</span>' +
+              '<span class="sp-ct ubits-body-sm-semibold" id="sp-ct-num">1 / '+n+'</span>'
             : isModalPreview
-                ? '<span class="sp-preview-rep">Vista previa representativa</span><span class="sp-ct sp-ct--solo" id="sp-ct-num">1 / '+n+'</span>'
-                : '<span class="sp-ct sp-ct--solo" id="sp-ct-num">1 / '+n+'</span>';
+                ? '<span class="sp-preview-rep ubits-body-sm-semibold">Vista previa representativa</span>' +
+                  '<span class="sp-ct ubits-body-sm-semibold" id="sp-ct-num">1 / '+n+'</span>'
+                : '<span class="sp-ct ubits-body-sm-semibold" id="sp-ct-num">1 / '+n+'</span>';
         var headerRowClass = editMode
             ? 'sp-hi'
             : 'sp-hi sp-hi--viewer' + (isModalPreview ? ' sp-hi--viewer--modal-preview' : '');
 
         return '<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">'+
             '<script>(function(){try{var pu=window.parent&&window.parent.location&&window.parent.location.href;var u=new URL(pu);u.hash="";u.search="";var p=u.pathname.split("/");p.pop();u.pathname=p.join("/")+"/";var be=document.createElement("base");be.href=u.href;document.head.appendChild(be);}catch(e1){}})();<\/script>'+
-            '<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">'+
+            getScormChromeCssLinks() +
+            getScormChromeThemeSyncScript() +
             '<link rel="stylesheet" href="../../components/carousel-indicators.css">'+
             '<style>'+css+'</style></head><body'+(editMode?' class="sp--editing"':'')+'>'+
             '<div class="sp-header">'+
@@ -1122,9 +1156,9 @@
             '</div>'+
             '<div class="sp-stage"><div class="sp-slides">'+slidesHtml+'</div></div>'+
             '<div class="sp-footer">'+
-                '<button class="sp-btn sp-btn-p" id="sp-prev" onclick="nav(-1)"><i class="fas fa-arrow-left"></i><span>Anterior</span></button>'+
+                '<button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="sp-prev" onclick="nav(-1)"><i class="far fa-arrow-left"></i><span>Anterior</span></button>'+
                 '<div id="sp-dots"></div>'+
-                '<button class="sp-btn sp-btn-n" id="sp-next" onclick="nav(1)"><span>Siguiente</span><i class="fas fa-arrow-right"></i></button>'+
+                '<button type="button" class="ubits-button ubits-button--primary ubits-button--md" id="sp-next" onclick="nav(1)"><span>Siguiente</span><i class="far fa-arrow-right"></i></button>'+
             '</div>'+
             '<script src="../../components/carousel-indicators.js"><\/script>'+
             '<script>'+script+'<\/script></body></html>';
