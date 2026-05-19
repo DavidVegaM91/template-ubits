@@ -7,7 +7,7 @@
  *   input.js  (createInput)
  *   file-upload.js (createFileUpload, fileUploadSetProgress, fileUploadClearProgress, fileUploadSetSuccess)
  *   video-player.js (videoPlayerHtml) — opcional, usa fallback si no está
- *   tab.css, file-upload.css, checkbox.css, video-recurso-modal.css
+ *   tab.css, file-upload.css, checkbox.css, chip.css, ai-panel.css, video-recurso-modal.css
  *   Avatares (grid): ../../images/avatars/* · preview 16:9: ../../images/avatar-temp-thumbs/thumb_*.jpg
  *   · videos opcionales: ../../videos/avatars/{mismo-base}.mp4
  *   Guión: selector tipo selection-card (Generar con IA | Escribir manualmente). IA: solo contexto hasta «Generar guión»; luego textarea editable. Manual: un solo textarea.
@@ -834,7 +834,7 @@
         strip.style.display = 'flex';
         strip.innerHTML = _pendingFiles.map(function (f, idx) {
             return '<span class="ubits-chip ubits-chip--sm ubits-chip--icon-left ubits-chip--close ai-panel__pending-file-chip">' +
-                '<i class="far fa-file-lines ubits-chip__icon" aria-hidden="true"></i>' +
+                '<i class="far fa-file-lines" aria-hidden="true"></i>' +
                 '<span class="ubits-chip__text">' + esc(f.name) + '</span>' +
                 '<button type="button" class="ubits-chip__close" data-rm-file="' + idx + '" aria-label="Quitar archivo">' +
                     '<i class="far fa-times"></i>' +

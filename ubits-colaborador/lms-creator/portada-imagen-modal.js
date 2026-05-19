@@ -367,7 +367,7 @@
             .map(function (f, i) {
                 return (
                     '<span class="ubits-chip ubits-chip--sm ubits-chip--icon-left ubits-chip--close ai-panel__pending-file-chip">' +
-                    '<i class="far fa-file-lines ubits-chip__icon" aria-hidden="true"></i>' +
+                    '<i class="far fa-file-lines" aria-hidden="true"></i>' +
                     '<span class="ubits-chip__text">' +
                     esc(f.name) +
                     '</span>' +
