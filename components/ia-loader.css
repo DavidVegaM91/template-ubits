@@ -29,7 +29,7 @@
     background: transparent;
 }
 
-/* Ratio 16:9; gradiente base + ::before shimmer */
+/* Ratio 16:9; ::after degradado (opacity 0.7) + ::before shimmer */
 .ubits-ia-loader__stage {
     display: flex;
     flex-direction: column;
@@ -39,6 +39,16 @@
     aspect-ratio: 16 / 9;
     overflow: hidden;
     box-sizing: border-box;
+    background: transparent;
+}
+
+.ubits-ia-loader__stage::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.7;
     background: linear-gradient(
         -61.13deg,
         var(--modo-ia-gradient-a, rgb(255, 84, 22)) 6.07%,
@@ -54,6 +64,7 @@
     inset: 0;
     z-index: 0;
     pointer-events: none;
+    opacity: 0.7;
     background: linear-gradient(
         105deg,
         transparent 10%,
@@ -241,6 +252,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+    .ubits-ia-loader__stage::after,
     .ubits-ia-loader__stage::before,
     .ubits-ia-loader__spark-g1,
     .ubits-ia-loader__spark-g2,
