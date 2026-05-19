@@ -174,15 +174,41 @@
     }
 
     /** Cabecera/pie del visor: tokens, tipografía y botones UBITS (solo embed en Creator). */
-    function getScormChromeCssLinks() {
-        return (
+    function getScormChromeCssLinks(editMode) {
+        var links =
             '<link rel="stylesheet" href="../../general-styles/ubits-colors.css">' +
             '<link rel="stylesheet" href="../../general-styles/ubits-spacing-tokens.css">' +
             '<link rel="stylesheet" href="../../general-styles/ubits-typography.css">' +
             '<link rel="stylesheet" href="../../general-styles/fontawesome-icons.css">' +
-            '<link rel="stylesheet" href="../../components/button.css">'
-        );
+            '<link rel="stylesheet" href="../../components/button.css">';
+        if (editMode) {
+            links += '<link rel="stylesheet" href="../../components/tooltip.css">';
+        }
+        return links;
     }
+
+    function ccScormDeleteSlideAt(pageKey, index) {
+        var stored = _scormDataStore[pageKey];
+        if (!stored || !stored.slides || stored.slides.length <= 1) return false;
+        var i = Math.max(0, Math.min(index, stored.slides.length - 1));
+        stored.slides.splice(i, 1);
+        var newCur = Math.min(i, stored.slides.length - 1);
+        var iframe = document.getElementById('cc-scorm-edit-iframe');
+        if (!iframe) return false;
+        var editHtml = generateScormHtml(stored.titulo, stored.slides, stored.color, true, false, pageKey);
+        iframe.srcdoc = editHtml;
+        iframe.onload = function () {
+            closeCpPanel();
+            try {
+                var w = iframe.contentWindow;
+                if (w && typeof w.gotoSlide === 'function') w.gotoSlide(newCur);
+            } catch (eGo) {}
+            iframe.onload = null;
+        };
+        return true;
+    }
+
+    global.ccScormDeleteSlideAt = ccScormDeleteSlideAt;
 
     function getScormChromeThemeSyncScript() {
         return (
@@ -300,7 +326,7 @@
         if (slide.type==='intro') {
             var coverSrc = slide.image || SCORM_INTRO_COVER_URL;
             var introImgRep = editMode
-                ? '<div class="sp-split-img-replace" aria-hidden="true"><button type="button" class="sp-split-img-replace-btn" data-sp-img-rep="' + idx + '" aria-label="Cambiar imagen"><i class="far fa-image"></i></button></div><input type="file" accept="image/*" class="sp-split-img-input" hidden data-sp-img-input="' + idx + '">'
+                ? '<div class="sp-split-img-replace" aria-hidden="true"><button type="button" class="sp-split-img-replace-btn" data-sp-img-rep="' + idx + '" aria-label="Cambiar imagen" data-tooltip="Cambiar imagen" data-tooltip-delay="1000"><i class="far fa-image"></i></button></div><input type="file" accept="image/*" class="sp-split-img-input" hidden data-sp-img-input="' + idx + '">'
                 : '';
             return base +
                 '<div class="sp-intro-page sp-intro-page--ticket">' +
@@ -399,7 +425,7 @@
 
         } else if (slide.type==='split') {
             var imgRepSplit = editMode
-                ? '<div class="sp-split-img-replace" aria-hidden="true"><button type="button" class="sp-split-img-replace-btn" data-sp-img-rep="' + idx + '" aria-label="Cambiar imagen"><i class="far fa-image"></i></button></div><input type="file" accept="image/*" class="sp-split-img-input" hidden data-sp-img-input="' + idx + '">'
+                ? '<div class="sp-split-img-replace" aria-hidden="true"><button type="button" class="sp-split-img-replace-btn" data-sp-img-rep="' + idx + '" aria-label="Cambiar imagen" data-tooltip="Cambiar imagen" data-tooltip-delay="1000"><i class="far fa-image"></i></button></div><input type="file" accept="image/*" class="sp-split-img-input" hidden data-sp-img-input="' + idx + '">'
                 : '';
             var imgCol = slide.image
                 ? '<div class="sp-split-media-col">' +
@@ -436,13 +462,13 @@
             }).join('');
             var panelsHtml = hots.map(function (h, hi) {
                 return '<div class="sp-hotspot-panel" id="sp-hsp-'+idx+'-'+hi+'" hidden data-sp-hs-panel="'+hi+'">' +
-                    '<button type="button" class="sp-hotspot-close" aria-label="Cerrar"><i class="fas fa-times"></i></button>' +
+                    '<button type="button" class="sp-hotspot-close" aria-label="Cerrar" data-tooltip="Cerrar" data-tooltip-delay="1000"><i class="fas fa-times"></i></button>' +
                     '<div class="sp-hotspot-panel-title"'+(editMode?' data-sp-key="slide-'+idx+'-hs-'+hi+'-title" contenteditable="true"':'')+'>'+esc(h.title||'')+'</div>' +
                     '<div class="sp-hotspot-panel-body"'+(editMode?' data-sp-key="slide-'+idx+'-hs-'+hi+'-body" contenteditable="true"':'')+'>'+esc(h.body||'')+'</div>' +
                     '</div>';
             }).join('');
             var mediaImgRep = editMode
-                ? '<div class="sp-split-img-replace" aria-hidden="true"><button type="button" class="sp-split-img-replace-btn" data-sp-img-rep="' + idx + '" aria-label="Cambiar imagen"><i class="far fa-image"></i></button></div><input type="file" accept="image/*" class="sp-split-img-input" hidden data-sp-img-input="' + idx + '">'
+                ? '<div class="sp-split-img-replace" aria-hidden="true"><button type="button" class="sp-split-img-replace-btn" data-sp-img-rep="' + idx + '" aria-label="Cambiar imagen" data-tooltip="Cambiar imagen" data-tooltip-delay="1000"><i class="far fa-image"></i></button></div><input type="file" accept="image/*" class="sp-split-img-input" hidden data-sp-img-input="' + idx + '">'
                 : '';
             return base +
                 '<div class="sp-slide-card sp-media-card">' +
@@ -610,7 +636,7 @@
                     ? '<div class="sp-quiz-step-hd">' +
                         '<p class="sp-quiz-meta">Pregunta ' + (qi + 1) + ' de ' + qList.length + '</p>' +
                         (qList.length > 1
-                            ? '<button type="button" class="sp-quiz-step-del" aria-label="Eliminar pregunta"><i class="far fa-trash-alt"></i></button>'
+                            ? '<button type="button" class="sp-quiz-step-del" aria-label="Eliminar pregunta" data-tooltip="Eliminar pregunta" data-tooltip-delay="1000"><i class="far fa-trash-alt"></i></button>'
                             : '<span class="sp-quiz-step-del-ph" aria-hidden="true"></span>') +
                         '</div>'
                     : '<p class="sp-quiz-meta">Pregunta ' + (qi + 1) + ' de ' + qList.length + '</p>';
@@ -661,7 +687,7 @@
                     var ltxt = String(Lm[pr[0]] != null ? Lm[pr[0]] : '');
                     var rtxt = String(Rm[pr[1]] != null ? Rm[pr[1]] : '');
                     var delBtn = pairsA.length > 2
-                        ? '<button type="button" class="sp-match-pair-del" data-sp-match-pdel="' + idx + '" data-sp-pi="' + pi + '" aria-label="Quitar pareja"><i class="far fa-trash-alt"></i></button>'
+                        ? '<button type="button" class="sp-match-pair-del" data-sp-match-pdel="' + idx + '" data-sp-pi="' + pi + '" aria-label="Quitar pareja" data-tooltip="Quitar pareja" data-tooltip-delay="1000"><i class="far fa-trash-alt"></i></button>'
                         : '<span class="sp-match-pair-del-ph"></span>';
                     return '<div class="sp-match-pair-row" data-sp-pi="' + pi + '"><input type="text" class="sp-match-inp-l" value="' + esc(ltxt) + '" placeholder="Concepto…" aria-label="Concepto"><span class="sp-match-pair-mid">→</span><input type="text" class="sp-match-inp-r" value="' + esc(rtxt) + '" placeholder="Pareja…" aria-label="Pareja">' + delBtn + '</div>';
                 }).join('');
@@ -683,8 +709,7 @@
     function buildScormCss(color) {
         var rgb=hexToRgb(color), dark=darkenHex(color,0.25), ct=contrastColor(color);
         return ':root{--accent:'+color+';--ar:'+rgb.r+';--ag:'+rgb.g+';--ab:'+rgb.b+';--dark:'+dark+';--ct:'+ct+';'+
-        '--gap-sm:8px;--gap-xs:4px;--gap-md:12px;--padding-xl:20px;--padding-xs:4px;--padding-md:12px;--padding-6xl:40px;'+
-        '--border-radius-full:1000px;--border-radius-sm:4px;}' +
+        '--gap-sm:8px;--gap-xs:4px;--gap-md:12px;--padding-xl:20px;--padding-xs:4px;--padding-md:12px;--padding-6xl:40px;}' +
         '#sp-dots{min-height:40px;display:flex;align-items:center;justify-content:center;min-width:120px;}' +
         '*{box-sizing:border-box;margin:0;}' +
         'ul,ol{padding:0;}' +
@@ -693,6 +718,9 @@
         '.sp-pb{height:3px;background:rgba(var(--ar),var(--ag),var(--ab),.15);}' +
         '.sp-pf{height:100%;background:var(--accent);transition:width .5s cubic-bezier(.4,0,.2,1);}' +
         '.sp-hi{display:flex;align-items:center;justify-content:space-between;padding:10px 20px;}' +
+        '.sp-hi--edit{justify-content:flex-start;gap:var(--gap-md);}' +
+        '.sp-hi--edit .sp-hi__left{display:flex;align-items:center;gap:var(--gap-md);flex:1;min-width:0;}' +
+        '.sp-hi--edit .sp-hi__actions{display:flex;align-items:center;gap:var(--gap-sm);flex-shrink:0;margin-left:auto;}' +
         '.sp-hi--viewer{justify-content:flex-end;}' +
         '.sp-hi--viewer--modal-preview{justify-content:space-between;}' +
         '.sp-preview-rep,.sp-title,.sp-ct{color:var(--ubits-fg-1-high);}' +
@@ -943,8 +971,9 @@
         '#sp-dots{justify-self:center;}' +
         '#sp-next{justify-self:end;}' +
         '#sp-next[hidden]{display:none !important;}' +
-        '.sp-footer .ubits-button.ubits-button--md{padding:var(--padding-md) var(--padding-lg);min-height:40px;}' +
-        '#sp-next.ubits-button--primary{background:var(--accent);color:var(--ct);border-color:var(--accent);}' +
+        '.sp-footer .ubits-button.ubits-button--md{padding:var(--padding-md) var(--padding-lg);min-height:40px;border-radius:var(--border-radius-sm);}' +
+        '.sp-footer .ubits-button.ubits-button--md::before{border-radius:var(--border-radius-sm);}' +
+        '#sp-next.ubits-button--primary{background:var(--accent);color:var(--ct);border-color:var(--accent);border-radius:var(--border-radius-sm);}' +
         '#sp-next.ubits-button--primary:hover:not(:disabled){background:var(--accent);border-color:var(--accent);filter:brightness(1.08);}' +
         '.sp-stage .sp-btn{display:inline-flex;align-items:center;gap:7px;padding:8px 16px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;border:none;font-family:inherit;}' +
         '.sp-stage .sp-btn-p{background:#ffffff;color:#303a47;border:1px solid #d0d2d5;}' +
@@ -993,14 +1022,16 @@
         'document.querySelectorAll(".sp-tab-del").forEach(function(b){b.addEventListener("click",function(){var slide=b.closest(".sp-slide");var shell=slide&&slide.querySelector(".sp-tabs-shell");if(!shell||b.disabled)return;var btns=shell.querySelectorAll(".sp-tab-btn");var pns=shell.querySelectorAll(".sp-tab-panel");if(btns.length<=2||pns.length<=2)return;var sidx=slide.getAttribute("data-idx");if(sidx==null)return;var lastB=btns[btns.length-1];var lastP=pns[pns.length-1];var act=lastB&&lastB.classList.contains("sp-tab-btn--active");if(lastB)lastB.remove();if(lastP)lastP.remove();spTabRenum_(shell,sidx);spTabSyncBtns_(slide);if(act){var b0=shell.querySelector(".sp-tab-btn");var i0=b0?b0.getAttribute("data-sp-tab"):"0";shell.querySelectorAll(".sp-tab-btn").forEach(function(x){var on=x===b0;x.classList.toggle("sp-tab-btn--active",on);x.setAttribute("aria-selected",on?"true":"false");});shell.querySelectorAll(".sp-tab-panel").forEach(function(p){var m=p.getAttribute("data-sp-panel")===i0;p.classList.toggle("sp-tab-panel--active",m);if(m)p.removeAttribute("hidden");else p.setAttribute("hidden","hidden");});}});});' +
         'document.querySelectorAll(".sp-slide--tabs").forEach(function(sl){spTabSyncBtns_(sl);});' +
         'function spMatchSyncAddBtn_(list){if(!list)return;var slide=list.closest(".sp-slide");var add=slide&&slide.querySelector("[data-sp-match-add]");if(!add)return;var n=list.querySelectorAll(".sp-match-pair-row").length;add.disabled=n>=5;}' +
-        'function spMatchSyncDelPh_(list){var rows=list.querySelectorAll(".sp-match-pair-row");var n=rows.length;rows.forEach(function(row){var del=row.querySelector(".sp-match-pair-del");var ph=row.querySelector(".sp-match-pair-del-ph");if(n<=2){if(del){var s=document.createElement("span");s.className="sp-match-pair-del-ph";del.replaceWith(s);}}else{if(ph){var btn=document.createElement("button");btn.type="button";btn.className="sp-match-pair-del";btn.setAttribute("aria-label","Quitar pareja");btn.innerHTML="<i class=\\"far fa-trash-alt\\"></i>";ph.replaceWith(btn);}}});}' +
+        'function spIconTip_(el,txt){if(!el)return;el.setAttribute("data-tooltip",txt);el.setAttribute("data-tooltip-delay","1000");}' +
+        'function spMatchSyncDelPh_(list){var rows=list.querySelectorAll(".sp-match-pair-row");var n=rows.length;rows.forEach(function(row){var del=row.querySelector(".sp-match-pair-del");var ph=row.querySelector(".sp-match-pair-del-ph");if(n<=2){if(del){var s=document.createElement("span");s.className="sp-match-pair-del-ph";del.replaceWith(s);}}else{if(ph){var btn=document.createElement("button");btn.type="button";btn.className="sp-match-pair-del";btn.setAttribute("aria-label","Quitar pareja");btn.innerHTML="<i class=\\"far fa-trash-alt\\"></i>";spIconTip_(btn,"Quitar pareja");ph.replaceWith(btn);}}});}' +
         'document.querySelectorAll("[data-sp-match-add]").forEach(function(b){b.addEventListener("click",function(){var sid=b.getAttribute("data-sp-match-add");var list=document.querySelector("[data-sp-match-pairlist=\\""+sid+"\\"]");if(!list)return;var rows=list.querySelectorAll(".sp-match-pair-row");if(rows.length>=5)return;var last=rows[rows.length-1];if(last){var il=last.querySelector(".sp-match-inp-l");var ir=last.querySelector(".sp-match-inp-r");if(il&&ir&&(!String(il.value||"").trim()||!String(ir.value||"").trim())){alert("Completa ambos textos de la pareja actual antes de añadir otra.");return;}}var row=document.createElement("div");row.className="sp-match-pair-row";row.innerHTML="<input type=\\"text\\" class=\\"sp-match-inp-l\\" value=\\"Concepto nuevo\\" placeholder=\\"Concepto…\\" aria-label=\\"Concepto\\"><span class=\\"sp-match-pair-mid\\">→</span><input type=\\"text\\" class=\\"sp-match-inp-r\\" value=\\"Pareja del concepto\\" placeholder=\\"Pareja…\\" aria-label=\\"Pareja\\"><span class=\\"sp-match-pair-del-ph\\"></span>";list.appendChild(row);spMatchSyncDelPh_(list);spMatchSyncAddBtn_(list);});});' +
         'document.querySelectorAll("[data-sp-match-pairlist]").forEach(function(list){spMatchSyncAddBtn_(list);list.addEventListener("click",function(ev){var del=ev.target.closest(".sp-match-pair-del");if(!del||!list.contains(del))return;var rows=list.querySelectorAll(".sp-match-pair-row");if(rows.length<=2)return;var row=del.closest(".sp-match-pair-row");if(row)row.remove();spMatchSyncDelPh_(list);spMatchSyncAddBtn_(list);});});' +
-        'function spQuizRenum_(card){if(!card)return;var slide=card.closest(".sp-slide");if(!slide)return;var sidx=slide.getAttribute("data-idx")||"0";var steps=card.querySelectorAll(".sp-quiz-step");var n=steps.length;steps.forEach(function(step,qi){step.setAttribute("data-sp-quiz-step",String(qi));var meta=step.querySelector(".sp-quiz-meta");if(meta)meta.textContent="Pregunta "+(qi+1)+" de "+n;var nm="sp-q-cor-"+sidx+"-"+qi;var cor=0;step.querySelectorAll(".sp-quiz-opt-row").forEach(function(row,oi){var inp=row.querySelector("input[type=radio]");if(inp&&inp.checked)cor=oi;});step.querySelectorAll(".sp-quiz-opt-row").forEach(function(row,oi){var inp=row.querySelector("input[type=radio]");if(inp){inp.name=nm;inp.value=String(oi);inp.checked=oi===cor;}var span=row.querySelector(".sp-quiz-opt-text");if(span)span.setAttribute("data-sp-key","slide-"+sidx+"-q-"+qi+"-opt-"+oi);});var qq=step.querySelector(".sp-quiz-q");if(qq)qq.setAttribute("data-sp-key","slide-"+sidx+"-q-"+qi+"-question");var qdel=step.querySelector(".sp-quiz-step-del");var qph=step.querySelector(".sp-quiz-step-del-ph");if(n<=1){if(qdel){var sp=document.createElement("span");sp.className="sp-quiz-step-del-ph";sp.setAttribute("aria-hidden","true");qdel.replaceWith(sp);}}else{if(qph){var bt=document.createElement("button");bt.type="button";bt.className="sp-quiz-step-del";bt.setAttribute("aria-label","Eliminar pregunta");bt.innerHTML="<i class=\\"far fa-trash-alt\\"></i>";qph.replaceWith(bt);}}});card.setAttribute("data-sp-quiz-total",String(n));}' +
+        'function spQuizRenum_(card){if(!card)return;var slide=card.closest(".sp-slide");if(!slide)return;var sidx=slide.getAttribute("data-idx")||"0";var steps=card.querySelectorAll(".sp-quiz-step");var n=steps.length;steps.forEach(function(step,qi){step.setAttribute("data-sp-quiz-step",String(qi));var meta=step.querySelector(".sp-quiz-meta");if(meta)meta.textContent="Pregunta "+(qi+1)+" de "+n;var nm="sp-q-cor-"+sidx+"-"+qi;var cor=0;step.querySelectorAll(".sp-quiz-opt-row").forEach(function(row,oi){var inp=row.querySelector("input[type=radio]");if(inp&&inp.checked)cor=oi;});step.querySelectorAll(".sp-quiz-opt-row").forEach(function(row,oi){var inp=row.querySelector("input[type=radio]");if(inp){inp.name=nm;inp.value=String(oi);inp.checked=oi===cor;}var span=row.querySelector(".sp-quiz-opt-text");if(span)span.setAttribute("data-sp-key","slide-"+sidx+"-q-"+qi+"-opt-"+oi);});var qq=step.querySelector(".sp-quiz-q");if(qq)qq.setAttribute("data-sp-key","slide-"+sidx+"-q-"+qi+"-question");var qdel=step.querySelector(".sp-quiz-step-del");var qph=step.querySelector(".sp-quiz-step-del-ph");if(n<=1){if(qdel){var sp=document.createElement("span");sp.className="sp-quiz-step-del-ph";sp.setAttribute("aria-hidden","true");qdel.replaceWith(sp);}}else{if(qph){var bt=document.createElement("button");bt.type="button";bt.className="sp-quiz-step-del";bt.setAttribute("aria-label","Eliminar pregunta");bt.innerHTML="<i class=\\"far fa-trash-alt\\"></i>";spIconTip_(bt,"Eliminar pregunta");qph.replaceWith(bt);}}});card.setAttribute("data-sp-quiz-total",String(n));}' +
         'document.querySelectorAll(".sp-quiz-add-q").forEach(function(b){b.addEventListener("click",function(){var card=b.closest(".sp-quiz-card");if(!card)return;var wrap=card.querySelector(".sp-quiz-steps");if(!wrap)return;var steps=wrap.querySelectorAll(".sp-quiz-step");if(steps.length>=20)return;var last=steps[steps.length-1];if(!last)return;var nw=last.cloneNode(true);var qq=nw.querySelector(".sp-quiz-q");if(qq)qq.textContent="¿Escribe tu pregunta aquí?";var optLabs=["Opción A","Opción B","Opción C","Opción D"];nw.querySelectorAll(".sp-quiz-opt-text").forEach(function(sp,i){sp.textContent=optLabs[i]||("Opción "+(i+1));});var tmpNm="sp-q-new-"+Date.now();nw.querySelectorAll("input[type=radio]").forEach(function(r,i){r.name=tmpNm;r.checked=i===0;});wrap.appendChild(nw);spQuizRenum_(card);});});' +
         'document.querySelectorAll(".sp-quiz-steps").forEach(function(wrap){wrap.addEventListener("click",function(ev){var del=ev.target.closest(".sp-quiz-step-del");if(!del||!wrap.contains(del))return;var steps=wrap.querySelectorAll(".sp-quiz-step");if(steps.length<=1)return;var row=del.closest(".sp-quiz-step");if(row)row.remove();var card=wrap.closest(".sp-quiz-card");if(card)spQuizRenum_(card);});});' +
         'function spSyncSlideEditorBtns_(slide){if(!slide)return;spCbSyncBtns_(slide);spSmSyncBtns_(slide);spTabSyncBtns_(slide);spStSyncBtns_(slide);spAccSyncBtns_(slide);spTlSyncBtns_(slide);var g=slide.querySelector(".sp-fc-grid");if(g)spFcSyncBtns_(g);var ml=slide.querySelector("[data-sp-match-pairlist]");if(ml)spMatchSyncAddBtn_(ml);}' +
         'document.querySelectorAll(".sp-slide").forEach(function(sl){spSyncSlideEditorBtns_(sl);});' +
+        'try{if(typeof wireSpTooltips_==="function")wireSpTooltips_();}catch(eWt){}' +
         '}' +
         'function nav(d){' +
         '  if((d<0&&cur===0)||(d>0&&cur===tot-1))return;' +
@@ -1021,9 +1052,12 @@
         '  var ct=document.getElementById("sp-ct-num");if(ct)ct.textContent=(cur+1)+" / "+tot;' +
         '  document.getElementById("sp-prev").disabled=cur===0;' +
         '  var nx=document.getElementById("sp-next");if(nx){if(cur===tot-1)nx.setAttribute("hidden","hidden");else nx.removeAttribute("hidden");}' +
+        '  var delSlide=document.getElementById("sp-delete-slide");if(delSlide){delSlide.disabled=tot<=1;delSlide.setAttribute("aria-disabled",tot<=1?"true":"false");}' +
         '  if(__ci&&__ci.setActive)__ci.setActive(cur);' +
         '  try{showIxTipForSlide_(cur);}catch(eIx){}  if(document.body.classList.contains("sp--editing")){var ss2=document.querySelectorAll(".sp-slide");if(ss2[cur])try{spSyncSlideEditorBtns_(ss2[cur]);}catch(eSb){}}}' +
-        (editMode ? 'function openColorPicker(el){try{parent.ccScormOpenColorPicker(el,function(hex){if(parent.ccScormApplyTheme)parent.ccScormApplyTheme(document,hex);else document.documentElement.style.setProperty("--accent",hex);var sw=document.getElementById("sp-cpsw");if(sw)sw.style.background=hex;});}catch(e){}}' : '') +
+        (editMode ? 'function openColorPicker(el){try{parent.ccScormOpenColorPicker(el,function(hex){if(parent.ccScormApplyTheme)parent.ccScormApplyTheme(document,hex);else document.documentElement.style.setProperty("--accent",hex);var sw=document.getElementById("sp-cpsw");if(sw)sw.style.background=hex;});}catch(e){}}' +
+        'function wireSpTooltips_(){if(typeof initTooltip!=="function")return;try{initTooltip("[data-tooltip]");}catch(eT){}}' +
+        'function deleteCurrentSlide(){if(tot<=1){alert("Debes conservar al menos una diapositiva.");return;}if(!confirm("¿Eliminar esta diapositiva?"))return;try{if(parent.ccScormDeleteSlideAt&&typeof __spEditPageKey!=="undefined")parent.ccScormDeleteSlideAt(__spEditPageKey,cur);}catch(eDel){}}' : '') +
         'function wireScormIx(){' +
         'document.querySelectorAll(".sp-ix-hint").forEach(function(btn){' +
         'btn.addEventListener("click",function(e){' +
@@ -1074,7 +1108,7 @@
         'if(bd)bd.addEventListener("click",hsClose);' +
         'root.querySelectorAll(".sp-hotspot-close").forEach(function(cb){cb.addEventListener("click",hsClose);});' +
         '});' +
-        'if(document.body.classList.contains("sp--editing")){try{wireSpEditingExtras();}catch(eEd){}document.querySelectorAll(".sp-quiz-opt-text").forEach(function(sp){sp.addEventListener("mousedown",function(ev){ev.stopPropagation();});sp.addEventListener("click",function(ev){ev.stopPropagation();});});}' +
+        'if(document.body.classList.contains("sp--editing")){try{wireSpEditingExtras();}catch(eEd){}try{wireSpTooltips_();}catch(eTt){}var delBtn=document.getElementById("sp-delete-slide");if(delBtn)delBtn.addEventListener("click",deleteCurrentSlide);document.querySelectorAll(".sp-quiz-opt-text").forEach(function(sp){sp.addEventListener("mousedown",function(ev){ev.stopPropagation();});sp.addEventListener("click",function(ev){ev.stopPropagation();});});}' +
         'if(!window.__spFcGridBound){window.__spFcGridBound=1;var spFcFlipClick_=function(ev){var fc=ev.target.closest(".sp-fc");if(!fc)return;var g=fc.closest(".sp-fc-grid");if(!g)return;if(document.body.classList.contains("sp--editing")&&ev.target.closest("[contenteditable]"))return;fc.classList.toggle("sp-fc--flipped");};document.addEventListener("click",spFcFlipClick_);document.addEventListener("dblclick",function(ev){if(!document.body.classList.contains("sp--editing"))return;var fc=ev.target.closest(".sp-fc");if(!fc||!fc.closest(".sp-fc-grid"))return;ev.preventDefault();fc.classList.toggle("sp-fc--flipped");});}' +
         'function spConfetti_(){var w=window.innerWidth,h=window.innerHeight;var c=document.createElement("canvas");c.className="sp-confetti-canvas";c.width=w;c.height=h;var ctx=c.getContext("2d");document.body.appendChild(c);var parts=[];for(var i=0;i<90;i++){parts.push({x:Math.random()*w,y:-20-Math.random()*h*0.4,vx:(Math.random()-.5)*5,vy:Math.random()*3+2,s:Math.random()*5+3,hue:Math.floor(Math.random()*360),r:Math.random()*6});}var t0=Date.now();function frame(){var t=Date.now()-t0;if(t>2400){if(c.parentNode)c.parentNode.removeChild(c);return;}ctx.clearRect(0,0,w,h);parts.forEach(function(p){p.x+=p.vx;p.y+=p.vy;p.vy+=0.12;p.r+=0.15;ctx.fillStyle="hsla("+p.hue+",80%,58%,0.92)";ctx.beginPath();ctx.arc(p.x,p.y,p.s+Math.sin(p.r)*0.5,0,6.28);ctx.fill();});requestAnimationFrame(frame);}requestAnimationFrame(frame);}' +
         'document.querySelectorAll(".sp-quiz-card").forEach(function(card){' +
@@ -1116,35 +1150,38 @@
         'try{if(!document.querySelector("base")){var pu=window.parent&&window.parent.location&&window.parent.location.href;var u=new URL(pu);u.hash="";u.search="";var p=u.pathname.split("/");p.pop();u.pathname=p.join("/")+"/";var be=document.createElement("base");be.href=u.href;document.head.insertBefore(be,document.head.firstChild);}}catch(e1){}' +
         '  var ss=document.querySelectorAll(".sp-slide");if(ss[0])ss[0].classList.add("active");' +
         '  if(typeof initCarouselIndicators==="function"){__ci=initCarouselIndicators({containerId:"sp-dots",count:tot,activeIndex:cur,maxVisible:6,dynamicFrom:11,ariaLabel:"Indicadores de diapositiva",onSelect:function(i){gotoSlide(i);}});}' +
-        '  upd();wireScormIx();});';
+        '  upd();wireScormIx();if(document.body.classList.contains("sp--editing")){try{wireSpTooltips_();}catch(eTt2){}}});';
     }
 
-    function generateScormHtml(titulo, slides, color, editMode, isModalPreview) {
+    function generateScormHtml(titulo, slides, color, editMode, isModalPreview, pageKey) {
         var n=slides.length;
         var slidesHtml=slides.map(function(s,i){return buildSlideHtml(s,i,editMode||false);}).join('\n');
         var css=buildScormCss(color);
-        var script=buildScormScript(n, editMode||false);
+        var script=(editMode && pageKey ? 'var __spEditPageKey="'+esc(pageKey)+'";' : '') + buildScormScript(n, editMode||false);
 
         var colorTrigger = editMode
             ? '<div class="sp-color-field"><span class="sp-color-label ubits-body-sm-semibold">Color principal</span>' +
-              '<button type="button" class="sp-color-swatch-btn" onclick="openColorPicker(this)" aria-label="Seleccionar color principal">' +
+              '<button type="button" class="sp-color-swatch-btn" onclick="openColorPicker(this)" aria-label="Seleccionar color principal" data-tooltip="Seleccionar color principal" data-tooltip-delay="1000">' +
               '<span class="sp-color-swatch" id="sp-cpsw"></span></button></div>'
             : '';
         var headerInner = editMode
-            ? colorTrigger +
-              '<span class="sp-title ubits-body-sm-bold">'+esc(titulo)+'</span>' +
-              '<span class="sp-ct ubits-body-sm-semibold" id="sp-ct-num">1 / '+n+'</span>'
+            ? '<div class="sp-hi__left">' + colorTrigger +
+              '<span class="sp-title ubits-body-sm-bold">'+esc(titulo)+'</span></div>' +
+              '<div class="sp-hi__actions">' +
+              '<span class="sp-ct ubits-body-sm-semibold" id="sp-ct-num">1 / '+n+'</span>' +
+              '<button type="button" class="ubits-button ubits-button--error-tertiary ubits-button--sm ubits-button--icon-only" id="sp-delete-slide" aria-label="Eliminar slide" data-tooltip="Eliminar slide" data-tooltip-delay="1000">' +
+              '<i class="far fa-trash-alt"></i></button></div>'
             : isModalPreview
                 ? '<span class="sp-preview-rep ubits-body-sm-semibold">Vista previa representativa</span>' +
                   '<span class="sp-ct ubits-body-sm-semibold" id="sp-ct-num">1 / '+n+'</span>'
                 : '<span class="sp-ct ubits-body-sm-semibold" id="sp-ct-num">1 / '+n+'</span>';
         var headerRowClass = editMode
-            ? 'sp-hi'
+            ? 'sp-hi sp-hi--edit'
             : 'sp-hi sp-hi--viewer' + (isModalPreview ? ' sp-hi--viewer--modal-preview' : '');
 
         return '<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">'+
             '<script>(function(){try{var pu=window.parent&&window.parent.location&&window.parent.location.href;var u=new URL(pu);u.hash="";u.search="";var p=u.pathname.split("/");p.pop();u.pathname=p.join("/")+"/";var be=document.createElement("base");be.href=u.href;document.head.appendChild(be);}catch(e1){}})();<\/script>'+
-            getScormChromeCssLinks() +
+            getScormChromeCssLinks(!!editMode) +
             getScormChromeThemeSyncScript() +
             '<link rel="stylesheet" href="../../components/carousel-indicators.css">'+
             '<style>'+css+'</style></head><body'+(editMode?' class="sp--editing"':'')+'>'+
@@ -1161,6 +1198,7 @@
                 '<button type="button" class="ubits-button ubits-button--primary ubits-button--md" id="sp-next" onclick="nav(1)"><span>Siguiente</span><i class="far fa-arrow-right"></i></button>'+
             '</div>'+
             '<script src="../../components/carousel-indicators.js"><\/script>'+
+            (editMode ? '<script src="../../components/tooltip.js"><\/script>' : '') +
             '<script>'+script+'<\/script></body></html>';
     }
 
@@ -1715,7 +1753,7 @@
 
         closeScormEditLightbox();
 
-        var editHtml = generateScormHtml(stored.titulo, stored.slides, stored.color, true);
+        var editHtml = generateScormHtml(stored.titulo, stored.slides, stored.color, true, false, pageKey);
 
         var overlay = document.createElement('div');
         overlay.id = EDIT_LIGHTBOX_ID;
