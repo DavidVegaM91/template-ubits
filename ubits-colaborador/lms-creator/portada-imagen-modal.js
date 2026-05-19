@@ -260,9 +260,8 @@
             '<img id="cc-pim-result-img" class="cc-pim-result-img" src="' +
             esc(src) +
             '" alt="Portada generada">' +
-            '<button type="button" class="ubits-button ubits-button--secondary ubits-button--xs cc-pim-result-download" id="cc-pim-btn-download">' +
-            '<i class="far fa-download"></i>' +
-            '<span>Descargar</span></button></div>';
+            '<button type="button" class="ubits-button ubits-button--secondary ubits-button--xs ubits-button--icon-only cc-pim-result-download" id="cc-pim-btn-download" aria-label="Descargar portada">' +
+            '<i class="far fa-download"></i></button></div>';
         wireDownload();
         refreshGenButtons();
     }

@@ -62,8 +62,7 @@
     }
 
     /**
-     * Markup del badge de tokens en header (variante IA). Mismo orden que el panel IA:
-     * icono moneda → número → icono info.
+     * Markup del badge de tokens en header (variante IA): icono moneda → número.
      * Requiere badge-tag.css y fontawesome-icons.css en la página.
      */
     function buildIaTokensBadgeHtml(overlayId, tokensValue, badgeIdOpt, tooltipText) {
@@ -77,7 +76,6 @@
             '<span class="ubits-badge-tag__token-cost" aria-hidden="true">' +
             '<i class="far fa-coin-vertical"></i>' +
             '<span class="ubits-badge-tag__token-number">' + escapeHtml(n) + '</span>' +
-            '<span class="ubits-ia-tokens-badge-info" aria-hidden="true"><i class="far fa-info-circle"></i></span>' +
             '</span></span>';
     }
 
