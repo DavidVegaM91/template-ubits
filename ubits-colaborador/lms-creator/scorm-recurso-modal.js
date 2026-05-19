@@ -167,21 +167,23 @@
               body:'El silencio parece protector, pero solo pospone lo inevitable — y transforma conflictos pequeños en grandes con el tiempo.',
               author:'Hallazgo central del modelo Thomas-Kilmann' },
             { type:'keypoint', icon:'fa-chart-line', stat:'85%', statement:'de los equipos han vivido un conflicto que se agravó por no abordarlo a tiempo', desc:'Fuente: estudios de clima organizacional en LATAM, 2022–2024' },
-            { type:'split', icon:'fa-columns', title:'Texto e imagen en paralelo', body:'En escritorio se muestran en dos columnas; en móvil se apilan para lectura cómoda.', image: SCORM_INTRO_COVER_URL },
+            { type:'split', icon:'fa-users', title:'Conflictos en equipo: más que una discusión',
+              body:'En el trabajo, la tensión a menudo aparece antes en señales tenues: correos más fríos, reuniones donde nadie objeta, plazos que se resbalan o comentarios en pasillos. Detectar ese momento permite actuar antes de que el bloqueo o el desgaste se instalen. Aquí verás cómo dar nombre a lo que pasa y preparar conversaciones difíciles con criterio, apoyándote en el marco Thomas-Kilmann sin esperar a la “gran pelea”.',
+              image: SCORM_INTRO_COVER_URL },
             { type:'media', image: SCORM_DEMO_IMG, hotspots:[
-                { x: 26, y: 44, title: 'Diálogo', body: 'Señala acuerdos implícitos antes de exigir entregables.' },
-                { x: 74, y: 52, title: 'Documento', body: 'Por escrito se reduce la ambigüedad post-reunión.' },
-                { x: 48, y: 24, title: 'Contexto', body: 'Sustituye estos textos al editar la diapositiva.' }
+                { x: 26, y: 44, title: 'Poner el tema sobre la mesa', body: 'Un espacio donde cada quien diga qué observa —hechos y necesidades, no etiquetas— suele bajar la defensa colectiva. Sirve para aclarar supuestos sobre prioridades, plazos o expectativas que, si quedan ocultos, terminan leídos como conflictos personales.' },
+                { x: 74, y: 52, title: 'Acuerdos que el equipo puede ver', body: 'Volcar decisiones en algo visible —quién hace qué, hasta cuándo y con qué criterio de “listo”— reduce la ambigüedad que alimenta rencores. Los equipos que cierran así recuperan ritmo más rápido después de un choque y evitan reabrir la misma discusión en cada stand-up.' },
+                { x: 48, y: 24, title: 'Lo que el contexto presiona', body: 'Objetivos agresivos, cambios de jefatura, recorte de recursos o silos entre áreas explican parte del estrés que cada persona lleva a la sala. Reconocer esas presiones ayuda a elegir un modo de respuesta más útil que el automático y a no confundir síntoma organizacional con “falta de actitud” de alguien del equipo.' }
             ]},
             { type:'accordion', title:'Profundiza por temas', items:[
                 { title:'Preparación', body:'Anticipa objeciones y define el resultado que necesitas de la reunión.' },
                 { title:'Durante el diálogo', body:'Escucha primero; valida emociones antes de proponer soluciones.' },
                 { title:'Después', body:'Documenta acuerdos y fechas de seguimiento para evitar malentendidos.' }
             ]},
-            { type:'tabs', title:'Vistas rápidas', tabs:[
-                { label:'Idea clave', body:'El conflicto no es bueno ni malo: es señal de que hay intereses que alinear.' },
-                { label:'Herramienta', body:'Usa el mapa TK para nombrar el modo que estás usando y si te sirve cambiar.' },
-                { label:'Siguiente paso', body:'Practica un modo distinto al tuyo en conversaciones de bajo riesgo.' }
+            { type:'tabs', title:'Tres lecturas para tu equipo', tabs:[
+                { label:'Conflicto con sentido', body:'En equipos de trabajo, el desacuerdo no es siempre un problema de convivencia: muchas veces señala que hay información, prioridades o criterios desalineados. Cuando todo se silencia por educación, puede parecer que “no hay conflicto”, pero la fricción sigue operando en entregas retrasadas o en comentarios al margen. Expresar el choque con foco en el asunto —qué está en juego para el proyecto y para las personas— permite mejorar decisiones y compromisos. El desafío es mantener un tono que permita discrepar sin romper la confianza que necesitarán mañana.' },
+                { label:'TK en la rutina laboral', body:'Thomas-Kilmann describe formas de responder al conflicto, no “tipos de persona”: competir, colaborar, evitar, acomodar o comprometer. En una reunión real puedes preguntarte qué modo estás usando y si encaja con el tiempo, la relación y el resultado que el equipo necesita. Nombrarlo en voz alta, con cuidado (“noto que estamos posponiendo el tema de las dependencias”), reduce tensión y abre la posibilidad de elegir otro estilo más deliberado. El mapa es una brújula, no una sentencia: la práctica está en ajustar el modo según la fase del proyecto y el costo de forzar o ceder.' },
+                { label:'Entrenar antes del choque fuerte', body:'Los cambios duraderos suelen empezar en situaciones de menor riesgo: repartir tareas ambiguas, corregir un supuesto en un chat o pedir una aclaración sin acusar. Prueba un modo distinto al que usas por defecto, observa cómo reacciona el equipo y ajusta. Después de cada intento, una reflexión breve —¿acercamos el resultado?, ¿alguno quedó excluido?— convierte el modelo en hábito. Así, cuando llegue un conflicto con más carga emocional o jerárquica, ya habrás ensayado el vocabulario y el ritmo que hacen falta.' }
             ]},
             { type:'flashcards', title:'Repaso rápido', cards:[
                 { front:'Competidor', back:'Alta asertividad, baja cooperación: útil con urgencia y límites claros.' },
@@ -278,12 +280,19 @@
             var bullets=(slide.bullets||[]).map(function(b,bi){
                 return '<li'+(editMode?' data-sp-key="slide-'+idx+'-bullet-'+bi+'" contenteditable="true"':'')+'>'+esc(b)+'</li>';
             }).join('');
+            var contentListBar = editMode && bullets
+                ? '<div class="sp-editor-bar">' +
+                    '<button type="button" class="sp-btn sp-btn-p sp-cb-add"><i class="fas fa-plus"></i><span>Ítem</span></button>' +
+                    '<button type="button" class="sp-btn sp-btn-p sp-cb-del"><i class="far fa-trash-alt"></i><span>Ítem</span></button>' +
+                '</div>'
+                : '';
             return base +
                 '<div class="sp-slide-card">' +
                     '<div class="sp-slide-tag"><i class="fas '+(slide.icon||'fa-book-open')+'"></i>Contenido</div>' +
                     '<h2'+(editMode?' data-sp-key="slide-'+idx+'-title" contenteditable="true"':'')+'>'+esc(slide.title)+'</h2>' +
                     (slide.body ? '<p class="sp-body-intro"'+(editMode?' data-sp-key="slide-'+idx+'-body" contenteditable="true"':'')+'>'+esc(slide.body)+'</p>' : '') +
-                    (bullets ? '<ul>'+bullets+'</ul>' : '') +
+                    (bullets ? '<ul class="sp-ed-ul">'+bullets+'</ul>' : '') +
+                    contentListBar +
                 '</div>' +
             '</div>';
 
@@ -294,11 +303,18 @@
                     '<div class="sp-step-text"'+(editMode?' data-sp-key="slide-'+idx+'-bullet-'+bi+'" contenteditable="true"':'')+'>'+esc(b)+'</div>' +
                 '</div>';
             }).join('');
+            var stepsBar = editMode
+                ? '<div class="sp-editor-bar">' +
+                    '<button type="button" class="sp-btn sp-btn-p sp-st-add"><i class="fas fa-plus"></i><span>Paso</span></button>' +
+                    '<button type="button" class="sp-btn sp-btn-p sp-st-del"><i class="far fa-trash-alt"></i><span>Paso</span></button>' +
+                '</div>'
+                : '';
             return base +
                 '<div class="sp-slide-card">' +
                     '<div class="sp-slide-tag"><i class="fas '+(slide.icon||'fa-list-ol')+'"></i>'+(slide.tagLabel||'Paso a paso')+'</div>' +
                     '<h2'+(editMode?' data-sp-key="slide-'+idx+'-title" contenteditable="true"':'')+'>'+esc(slide.title)+'</h2>' +
                     '<div class="sp-steps-list">'+stepItems+'</div>' +
+                    stepsBar +
                 '</div>' +
             '</div>';
 
@@ -319,14 +335,20 @@
 
         } else if (slide.type==='summary') {
             var sItems=(slide.bullets||[]).map(function(b,bi){
-                return '<li'+(editMode?' data-sp-key="slide-'+idx+'-bullet-'+bi+'" contenteditable="true"':'')+'>'+
-                    '<i class="fas fa-check"></i><span>'+esc(b)+'</span></li>';
+                return '<li><i class="fas fa-check"></i><span'+(editMode?' data-sp-key="slide-'+idx+'-bullet-'+bi+'" contenteditable="true"':'')+'>'+esc(b)+'</span></li>';
             }).join('');
+            var sumBar = editMode && sItems
+                ? '<div class="sp-editor-bar">' +
+                    '<button type="button" class="sp-btn sp-btn-p sp-sm-add"><i class="fas fa-plus"></i><span>Ítem</span></button>' +
+                    '<button type="button" class="sp-btn sp-btn-p sp-sm-del"><i class="far fa-trash-alt"></i><span>Ítem</span></button>' +
+                '</div>'
+                : '';
             return base +
                 '<div class="sp-sum-panel">' +
                 '<div class="sp-sum-check"><i class="fas fa-trophy"></i></div>' +
                 '<h2'+(editMode?' data-sp-key="slide-'+idx+'-title" contenteditable="true"':'')+'>'+esc(slide.title)+'</h2>' +
                 (sItems ? '<ul class="sp-sum-list">'+sItems+'</ul>' : '') +
+                sumBar +
                 '</div>' +
             '</div>';
 
@@ -381,6 +403,7 @@
                 '<div class="sp-slide-card sp-media-card">' +
                     buildIxInteractiveHeader('<i class="fas fa-image"></i>Multimedia', 'media', editMode, idx) +
                     '<h2'+(editMode?' data-sp-key="slide-'+idx+'-title" contenteditable="true"':'')+'>'+esc(slide.title||'Comunicación visual')+'</h2>' +
+                    (editMode ? '<p class="sp-hotspot-edit-hint">Arrastra el punto para moverlo. Haz clic sin arrastrar para abrir el panel y editar título y texto.</p>' : '') +
                     '<div class="sp-hotspot-root" data-sp-hs-root="'+idx+'">' +
                         '<div class="sp-media-hotspot-figure">' +
                             '<div class="sp-media-img-wrap'+(editMode?' sp-split-img-frame--editable':'')+'">' +
@@ -403,11 +426,18 @@
                     '<div class="sp-acc-body"'+(editMode?' data-sp-key="slide-'+idx+'-item-'+ai+'-body" contenteditable="true"':'')+'>'+esc(it.body||'')+'</div>' +
                 '</details>';
             }).join('');
+            var accBar = editMode
+                ? '<div class="sp-editor-bar">' +
+                    '<button type="button" class="sp-btn sp-btn-p sp-acc-add"><i class="fas fa-plus"></i><span>Sección</span></button>' +
+                    '<button type="button" class="sp-btn sp-btn-p sp-acc-del"><i class="far fa-trash-alt"></i><span>Sección</span></button>' +
+                '</div>'
+                : '';
             return base +
                 '<div class="sp-slide-card">' +
                     buildIxInteractiveHeader('<i class="fas fa-bars-staggered"></i>Acordeón', 'accordion', editMode, idx) +
                     '<h2'+(editMode?' data-sp-key="slide-'+idx+'-title" contenteditable="true"':'')+'>'+esc(slide.title)+'</h2>' +
                     '<div class="sp-acc-list">'+accItems+'</div>' +
+                    accBar +
                 '</div>' +
             '</div>';
 
@@ -420,6 +450,12 @@
                 return '<div class="sp-tab-panel'+(ti===0?' sp-tab-panel--active':'')+'" data-sp-panel="'+ti+'" role="tabpanel"'+(ti===0?'':' hidden')+'>' +
                     '<div class="sp-tab-body"'+(editMode?' data-sp-key="slide-'+idx+'-tab-'+ti+'-body" contenteditable="true"':'')+'>'+esc(t.body||'')+'</div></div>';
             }).join('');
+            var tabsBar = editMode
+                ? '<div class="sp-editor-bar">' +
+                    '<button type="button" class="sp-btn sp-btn-p sp-tab-add"><i class="fas fa-plus"></i><span>Pestaña</span></button>' +
+                    '<button type="button" class="sp-btn sp-btn-p sp-tab-del"><i class="far fa-trash-alt"></i><span>Pestaña</span></button>' +
+                '</div>'
+                : '';
             return base +
                 '<div class="sp-slide-card sp-tabs-card">' +
                     buildIxInteractiveHeader('<i class="fas fa-folder-open"></i>Pestañas', 'tabs', editMode, idx) +
@@ -428,6 +464,7 @@
                         '<div class="sp-tab-bar" role="tablist">'+tabLabels+'</div>' +
                         '<div class="sp-tab-panels">'+tabPanels+'</div>' +
                     '</div>' +
+                    tabsBar +
                 '</div>' +
             '</div>';
 
@@ -445,7 +482,7 @@
                     buildIxInteractiveHeader('<i class="fas fa-clone"></i>Tarjetas', 'flashcards', editMode, idx) +
                     '<h2'+(editMode?' data-sp-key="slide-'+idx+'-title" contenteditable="true"':'')+'>'+esc(slide.title)+'</h2>' +
                     '<div class="sp-fc-grid">'+cards+'</div>' +
-                    (editMode ? '<div class="sp-editor-bar"><button type="button" class="sp-btn sp-btn-p sp-fc-add" data-sp-fc-slide="'+idx+'"><i class="fas fa-plus"></i><span>Tarjeta</span></button><button type="button" class="sp-btn sp-btn-p sp-fc-del" data-sp-fc-slide="'+idx+'"><i class="fas fa-minus"></i><span>Tarjeta</span></button></div>' : '') +
+                    (editMode ? '<div class="sp-editor-bar"><button type="button" class="sp-btn sp-btn-p sp-fc-add" data-sp-fc-slide="'+idx+'"><i class="fas fa-plus"></i><span>Tarjeta</span></button><button type="button" class="sp-btn sp-btn-p sp-fc-del" data-sp-fc-slide="'+idx+'"><i class="far fa-trash-alt"></i><span>Tarjeta</span></button></div>' : '') +
                 '</div>' +
             '</div>';
 
@@ -469,7 +506,7 @@
                     buildIxInteractiveHeader('<i class="fas fa-route"></i>Cronología', 'timeline', editMode, idx) +
                     '<h2'+(editMode?' data-sp-key="slide-'+idx+'-title" contenteditable="true"':'')+'>'+esc(slide.title)+'</h2>' +
                     '<div class="sp-tl-track">'+lines+'</div>' +
-                    (editMode ? '<div class="sp-editor-bar"><button type="button" class="sp-btn sp-btn-p sp-tl-add" data-sp-tl-slide="'+idx+'"><i class="fas fa-plus"></i><span>Paso</span></button><button type="button" class="sp-btn sp-btn-p sp-tl-del" data-sp-tl-slide="'+idx+'"><i class="fas fa-minus"></i><span>Paso</span></button></div>' : '') +
+                    (editMode ? '<div class="sp-editor-bar"><button type="button" class="sp-btn sp-btn-p sp-tl-add" data-sp-tl-slide="'+idx+'"><i class="fas fa-plus"></i><span>Paso</span></button><button type="button" class="sp-btn sp-btn-p sp-tl-del" data-sp-tl-slide="'+idx+'"><i class="far fa-trash-alt"></i><span>Paso</span></button></div>' : '') +
                 '</div>' +
             '</div>';
 
@@ -506,7 +543,9 @@
         } else if (slide.type==='quiz_mc') {
             var qList = slide.questions;
             if (!qList || !qList.length) {
-                qList = slide.question ? [{ question: slide.question, options: slide.options || [], correctIndex: slide.correctIndex != null ? slide.correctIndex : 0 }] : [];
+                qList = slide.question
+                    ? [{ question: slide.question, options: slide.options || [], correctIndex: slide.correctIndex != null ? slide.correctIndex : 0 }]
+                    : [{ question: '', options: ['', '', '', ''], correctIndex: 0 }];
             }
             var stepsHtml = qList.map(function (q, qi) {
                 var opts = (q.options || []).map(function (op, oi) {
@@ -518,12 +557,20 @@
                             '<span class="sp-quiz-opt-text" data-sp-key="slide-' + idx + '-q-' + qi + '-opt-' + oi + '" contenteditable="true">' + esc(op) + '</span>' +
                             '</label>';
                     }
-                    return '<div class="sp-quiz-opt" role="button" tabindex="0" data-sp-quiz="' + oi + '" data-correct="' + (isCor ? '1' : '0') + '">' + esc(op) + '</div>';
+                    return '<div class="sp-quiz-opt" role="button" tabindex="0" data-sp-quiz="' + oi + '" data-correct="' + (isCor ? '1' : '0') + '"><span class="sp-quiz-opt-label">' + esc(op) + '</span></div>';
                 }).join('');
                 var hiddenAttr = editMode ? '' : (qi === 0 ? '' : ' hidden');
                 var activeCls = editMode ? ' sp-quiz-step--edit' : (qi === 0 ? ' sp-quiz-step--active' : '');
+                var stepHead = editMode
+                    ? '<div class="sp-quiz-step-hd">' +
+                        '<p class="sp-quiz-meta">Pregunta ' + (qi + 1) + ' de ' + qList.length + '</p>' +
+                        (qList.length > 1
+                            ? '<button type="button" class="sp-quiz-step-del" aria-label="Eliminar pregunta"><i class="far fa-trash-alt"></i></button>'
+                            : '<span class="sp-quiz-step-del-ph" aria-hidden="true"></span>') +
+                        '</div>'
+                    : '<p class="sp-quiz-meta">Pregunta ' + (qi + 1) + ' de ' + qList.length + '</p>';
                 return '<section class="sp-quiz-step' + activeCls + '" data-sp-quiz-step="' + qi + '"' + hiddenAttr + '>' +
-                    '<p class="sp-quiz-meta">Pregunta ' + (qi + 1) + ' de ' + qList.length + '</p>' +
+                    stepHead +
                     '<p class="sp-quiz-q"' + (editMode ? ' data-sp-key="slide-' + idx + '-q-' + qi + '-question" contenteditable="true"' : '') + '>' + esc(q.question || '') + '</p>' +
                     '<div class="sp-quiz-opts">' + opts + '</div>' +
                 '</section>';
@@ -533,9 +580,10 @@
                     buildIxInteractiveHeader('<i class="fas fa-list-check"></i>Quiz', 'quiz_mc', editMode, idx) +
                     (editMode ? '<div class="sp-quiz-head"><h2 data-sp-key="slide-' + idx + '-title" contenteditable="true">' + esc(slide.title || 'Quiz') + '</h2></div>' : '') +
                     '<div class="sp-quiz-steps">' + stepsHtml + '</div>' +
+                    (editMode ? '<div class="sp-quiz-editor-actions"><button type="button" class="sp-btn sp-btn-p sp-quiz-add-q"><i class="fas fa-plus"></i><span>Nueva pregunta</span></button></div>' : '') +
                     '<div class="sp-quiz-done" id="sp-quiz-done-' + idx + '" hidden>' +
-                    '<p class="sp-quiz-done-text">Esperamos que hayas afianzado tus conocimientos.</p>' +
-                    '<p class="sp-quiz-done-big">¡Has finalizado!</p>' +
+                    '<p class="sp-quiz-done-text">Puntuación</p>' +
+                    '<p class="sp-quiz-done-big"></p>' +
                     '<p class="sp-quiz-done-sub">Si lo deseas, puedes reiniciar el quiz o continuar con el siguiente slide usando el botón «Siguiente».</p>' +
                     '<button type="button" class="sp-quiz-restart sp-btn sp-btn-p" id="sp-quiz-restart-' + idx + '"><i class="fas fa-rotate-right"></i><span>Reiniciar quiz</span></button>' +
                     '</div>' +
@@ -543,30 +591,34 @@
             '</div>';
 
         } else if (slide.type==='match') {
-            var leftCells=(slide.left||[]).map(function(txt,li){
-                return '<div role="button" tabindex="0" class="sp-match-cell sp-match-left" data-sp-match-side="L" data-sp-match-i="'+li+'"'+(editMode?' data-sp-key="slide-'+idx+'-left-'+li+'" contenteditable="true"':'')+'>'+esc(txt)+'</div>';
-            }).join('');
-            var rightCells=(slide.right||[]).map(function(txt,ri){
-                return '<div role="button" tabindex="0" class="sp-match-cell sp-match-right" data-sp-match-side="R" data-sp-match-i="'+ri+'"'+(editMode?' data-sp-key="slide-'+idx+'-right-'+ri+'" contenteditable="true"':'')+'>'+esc(txt)+'</div>';
-            }).join('');
             var pairsAttr=esc(JSON.stringify(slide.pairs||[]));
+            var previewBlock = '';
             var pairEditHtml = '';
-            if (editMode) {
+            if (!editMode) {
+                var leftCells=(slide.left||[]).map(function(txt,li){
+                    return '<div role="button" tabindex="0" class="sp-match-cell sp-match-left" data-sp-match-side="L" data-sp-match-i="'+li+'">'+esc(txt)+'</div>';
+                }).join('');
+                var rightCells=(slide.right||[]).map(function(txt,ri){
+                    return '<div role="button" tabindex="0" class="sp-match-cell sp-match-right" data-sp-match-side="R" data-sp-match-i="'+ri+'">'+esc(txt)+'</div>';
+                }).join('');
+                previewBlock =
+                    '<p class="sp-match-hint">Toca primero un concepto en la columna izquierda y después su pareja en la derecha.</p>' +
+                    '<div class="sp-match-grid">' +
+                        '<div class="sp-match-col">' + leftCells + '</div>' +
+                        '<div class="sp-match-col">' + rightCells + '</div>' +
+                    '</div>';
+            } else {
                 var Lm = slide.left || [];
                 var Rm = slide.right || [];
                 var pairsA = (slide.pairs && slide.pairs.length >= 2) ? slide.pairs.slice() : [[0, 0], [1, 1]];
-                pairEditHtml = '<div class="sp-match-edit-panel"><p class="sp-match-edit-caption">Pares correctos (mínimo 2)</p><div class="sp-match-pair-list" data-sp-match-pairlist="' + idx + '">';
+                pairEditHtml = '<div class="sp-match-edit-panel"><p class="sp-match-edit-caption">Escribe cada pareja (concepto → pareja). Mínimo dos filas completas. Para añadir otra, completa antes la fila actual.</p><div class="sp-match-pair-list" data-sp-match-pairlist="' + idx + '">';
                 pairEditHtml += pairsA.map(function (pr, pi) {
-                    var optL = Lm.map(function (txt, li) {
-                        return '<option value="' + li + '"' + (pr[0] === li ? ' selected' : '') + '>[' + li + '] ' + esc(String(txt).slice(0, 32)) + '</option>';
-                    }).join('');
-                    var optR = Rm.map(function (txt, ri) {
-                        return '<option value="' + ri + '"' + (pr[1] === ri ? ' selected' : '') + '>[' + ri + '] ' + esc(String(txt).slice(0, 32)) + '</option>';
-                    }).join('');
+                    var ltxt = String(Lm[pr[0]] != null ? Lm[pr[0]] : '');
+                    var rtxt = String(Rm[pr[1]] != null ? Rm[pr[1]] : '');
                     var delBtn = pairsA.length > 2
-                        ? '<button type="button" class="sp-match-pair-del" data-sp-match-pdel="' + idx + '" data-sp-pi="' + pi + '" aria-label="Quitar pareja"><i class="fas fa-times"></i></button>'
+                        ? '<button type="button" class="sp-match-pair-del" data-sp-match-pdel="' + idx + '" data-sp-pi="' + pi + '" aria-label="Quitar pareja"><i class="far fa-trash-alt"></i></button>'
                         : '<span class="sp-match-pair-del-ph"></span>';
-                    return '<div class="sp-match-pair-row" data-sp-pi="' + pi + '"><select class="sp-match-sel-l" data-sp-pidx="' + idx + '" data-sp-pi="' + pi + '">' + optL + '</select><span class="sp-match-pair-mid">→</span><select class="sp-match-sel-r" data-sp-pidx="' + idx + '" data-sp-pi="' + pi + '">' + optR + '</select>' + delBtn + '</div>';
+                    return '<div class="sp-match-pair-row" data-sp-pi="' + pi + '"><input type="text" class="sp-match-inp-l" value="' + esc(ltxt) + '" placeholder="Concepto…" aria-label="Concepto"><span class="sp-match-pair-mid">→</span><input type="text" class="sp-match-inp-r" value="' + esc(rtxt) + '" placeholder="Pareja…" aria-label="Pareja">' + delBtn + '</div>';
                 }).join('');
                 pairEditHtml += '</div><button type="button" class="sp-btn sp-btn-p sp-match-add-pair" data-sp-match-add="' + idx + '">+ Pareja</button></div>';
             }
@@ -574,11 +626,7 @@
                 '<div class="sp-slide-card sp-match-card" data-sp-match-pairs="'+pairsAttr+'" data-sp-match-idx="'+idx+'">' +
                     buildIxInteractiveHeader('<i class="fas fa-link"></i>Relacionar', 'match', editMode, idx) +
                     '<h2'+(editMode?' data-sp-key="slide-'+idx+'-title" contenteditable="true"':'')+'>'+esc(slide.title)+'</h2>' +
-                    '<p class="sp-match-hint">Toca primero un concepto en la columna izquierda y después su pareja en la derecha.</p>' +
-                    '<div class="sp-match-grid">' +
-                        '<div class="sp-match-col">'+leftCells+'</div>' +
-                        '<div class="sp-match-col">'+rightCells+'</div>' +
-                    '</div>' +
+                    previewBlock +
                     pairEditHtml +
                 '</div>' +
             '</div>';
@@ -601,6 +649,8 @@
         '.sp-pf{height:100%;background:var(--accent);transition:width .5s cubic-bezier(.4,0,.2,1);}' +
         '.sp-hi{display:flex;align-items:center;justify-content:space-between;padding:10px 20px;}' +
         '.sp-hi--viewer{justify-content:flex-end;}' +
+        '.sp-hi--viewer--modal-preview{justify-content:space-between;}' +
+        '.sp-preview-rep{font-size:13px;font-weight:700;color:var(--tp);line-height:1.2;}' +
         '.sp-title{font-size:13px;font-weight:700;color:var(--tp);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:60%;}' +
         '.sp-ct{font-size:12px;color:var(--tm);font-weight:500;}' +
         '.sp-ct--solo{font-size:13px;font-weight:700;color:var(--tp);}' +
@@ -700,9 +750,11 @@
         '.sp-media-card .sp-media-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;}' +
         '.sp-hotspot-layer{position:absolute;inset:0;pointer-events:none;z-index:2;}' +
         '.sp-hotspot-pin{position:absolute;transform:translate(-50%,-50%);width:22px;height:22px;border:none;padding:0;border-radius:50%;cursor:pointer;pointer-events:auto;background:transparent;display:flex;align-items:center;justify-content:center;}' +
-        '.sp-hotspot-pin-ring{width:14px;height:14px;border-radius:50%;background:var(--accent);border:2px solid #fff;box-shadow:0 0 0 2px rgba(var(--ar),var(--ag),var(--ab),.45),0 4px 14px rgba(0,0,0,.35);animation:sp-hotspot-breathe 2.2s ease-in-out infinite;}' +
-        '@keyframes sp-hotspot-breathe{0%,100%{transform:scale(1);}50%{transform:scale(1.08);}}' +
-        '.sp-hotspot-pin:hover .sp-hotspot-pin-ring{transform:scale(1.12);}' +
+        '.sp-hotspot-pin-ring{width:14px;height:14px;border-radius:50%;background:var(--accent);border:2px solid #fff;box-shadow:0 0 0 2px rgba(var(--ar),var(--ag),var(--ab),.45),0 4px 14px rgba(0,0,0,.35);animation:sp-hotspot-breathe 1.55s ease-in-out infinite;}' +
+        '@keyframes sp-hotspot-breathe{0%,100%{transform:scale(1);}50%{transform:scale(1.26);}}' +
+        '.sp-hotspot-pin:hover .sp-hotspot-pin-ring{transform:scale(1.2);}' +
+        '.sp-hotspot-edit-hint{font-size:12px;font-weight:600;color:var(--tm);margin:-4px 0 10px;line-height:1.45;}' +
+        '.sp-fc-del[hidden]{display:none !important;}' +
         '.sp-hotspot-backdrop{position:absolute;inset:0;background:rgba(15,23,42,.42);z-index:3;}' +
         '.sp-hotspot-stack{position:absolute;left:0;right:0;bottom:0;z-index:4;display:flex;justify-content:center;pointer-events:none;padding:10px 12px 14px;}' +
         '.sp-hotspot-panel{pointer-events:auto;position:relative;width:100%;max-width:min(100%,380px);padding:12px 36px 12px 14px;border-radius:12px;background:var(--white);border:2px solid var(--accent);box-shadow:0 14px 40px rgba(0,0,0,.2);text-align:left;}' +
@@ -776,9 +828,20 @@
         '.sp-quiz-step[hidden]{display:none !important;}' +
         '.sp-quiz-step--active{display:block !important;}' +
         '.sp-quiz-meta{font-size:12px;font-weight:700;color:var(--accent);margin:0 0 8px;letter-spacing:.02em;}' +
+        '.sp-quiz-step-hd{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:0 0 8px;flex-wrap:wrap;}' +
+        '.sp-quiz-step-hd .sp-quiz-meta{margin:0;}' +
+        '.sp-quiz-step-del{width:32px;height:32px;border:none;border-radius:8px;background:rgba(220,38,38,.1);color:#b91c1c;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;}' +
+        '.sp-quiz-step-del:hover{filter:brightness(1.06);}' +
+        '.sp-quiz-step-del-ph{width:32px;height:32px;flex-shrink:0;}' +
+        '.sp-quiz-editor-actions{margin-top:4px;padding-top:12px;border-top:1px solid rgba(0,0,0,.08);}' +
         '.sp-quiz-q{font-size:clamp(15px,2.8vw,18px);font-weight:700;color:var(--tp);margin:0 0 12px;line-height:1.4;}' +
         '.sp-quiz-opts{display:flex;flex-direction:column;gap:8px;}' +
-        '.sp-quiz-opt{padding:12px 14px;border-radius:10px;border:1px solid rgba(0,0,0,.1);background:var(--white);cursor:pointer;font-size:13px;text-align:left;color:var(--ts);transition:background .15s,border-color .15s;}' +
+        '.sp-quiz-opt{display:flex;flex-direction:column;align-items:stretch;gap:8px;padding:12px 14px;border-radius:10px;border:1px solid rgba(0,0,0,.1);background:var(--white);cursor:pointer;font-size:13px;text-align:left;color:var(--ts);transition:background .15s,border-color .15s;}' +
+        '.sp-quiz-opt-label{display:block;width:100%;}' +
+        '.sp-quiz-opt-feedback{margin:0;font-size:12px;font-weight:700;line-height:1.35;}' +
+        '.sp-quiz-opt-feedback--correct{color:#15803d;}' +
+        '.sp-quiz-opt-feedback--wrong{color:#b91c1c;}' +
+        '.sp-quiz-step--answered .sp-quiz-opt{cursor:default;pointer-events:none;}' +
         '.sp-quiz-opt:hover{border-color:var(--accent);}' +
         '.sp-quiz-opt--pick{border-color:#16a34a;background:rgba(22,163,74,.1);}' +
         '.sp-quiz-opt--bad{border-color:#dc2626;background:rgba(220,38,38,.08);}' +
@@ -803,9 +866,12 @@
         '.sp-match--ok{border-color:#16a34a;background:rgba(22,163,74,.12);cursor:default;}' +
         '.sp-match--wrong{border-color:#dc2626 !important;background:rgba(220,38,38,.14) !important;box-shadow:0 0 0 1px rgba(220,38,38,.3);}' +
         '.sp-match-edit-panel{margin-top:14px;padding-top:12px;border-top:1px solid rgba(0,0,0,.1);width:100%;}' +
-        '.sp-match-edit-caption{font-size:12px;font-weight:700;color:var(--tp);margin:0 0 8px;}' +
+        '.sp--editing .sp-match-edit-panel{margin-top:0;padding-top:0;border-top:none;}' +
+        '.sp-match-edit-caption{font-size:12px;font-weight:700;color:var(--tp);margin:0 0 8px;line-height:1.45;}' +
         '.sp-match-pair-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px;}' +
-        '.sp-match-sel-l,.sp-match-sel-r{flex:1;min-width:120px;padding:8px;border-radius:8px;border:1px solid rgba(0,0,0,.12);font-size:12px;background:var(--white);}' +
+        '.sp-match-inp-l,.sp-match-inp-r{flex:1;min-width:120px;padding:8px 10px;border-radius:8px;border:1px solid rgba(0,0,0,.12);font-size:13px;background:var(--white);color:var(--tp);font-family:inherit;}' +
+        '.sp-match-inp-l:focus,.sp-match-inp-r:focus{outline:2px solid var(--accent);outline-offset:0;border-color:var(--accent);}' +
+        '.sp--editing .sp-match-hint,.sp--editing .sp-match-grid{display:none !important;}' +
         '.sp-match-pair-mid{font-weight:800;color:var(--accent);}' +
         '.sp-match-pair-del{width:32px;height:32px;border:none;border-radius:8px;background:rgba(220,38,38,.1);color:#b91c1c;cursor:pointer;}' +
         '.sp-match-pair-del-ph{width:32px;height:32px;flex-shrink:0;}' +
@@ -849,10 +915,31 @@
         'inp.addEventListener("change",function(){var f=inp.files&&inp.files[0];if(!f||!f.type||f.type.indexOf("image")!==0)return;var r=new FileReader();r.onload=function(){var si=inp.getAttribute("data-sp-img-input");var img=document.querySelector("img[data-sp-key=\\"slide-"+si+"-image\\"]");if(img)img.src=r.result;};r.readAsDataURL(f);inp.value="";});});' +
         'document.querySelectorAll(".sp-tl-add").forEach(function(b){b.addEventListener("click",function(){var slide=b.closest(".sp-slide");var tr=slide&&slide.querySelector(".sp-tl-track");if(!tr)return;var n=tr.querySelectorAll(".sp-tl-item").length;if(n>=12)return;var last=tr.querySelector(".sp-tl-item:last-child");if(!last)return;var nw=last.cloneNode(true);nw.querySelectorAll("[data-sp-key]").forEach(function(el){el.removeAttribute("data-sp-key");});tr.appendChild(nw);});});' +
         'document.querySelectorAll(".sp-tl-del").forEach(function(b){b.addEventListener("click",function(){var slide=b.closest(".sp-slide");var tr=slide&&slide.querySelector(".sp-tl-track");if(!tr)return;var items=tr.querySelectorAll(".sp-tl-item");if(items.length<=2)return;items[items.length-1].remove();});});' +
-        'document.querySelectorAll(".sp-fc-add").forEach(function(b){b.addEventListener("click",function(){var slide=b.closest(".sp-slide");var g=slide&&slide.querySelector(".sp-fc-grid");if(!g)return;var n=g.querySelectorAll(".sp-fc").length;if(n>=8)return;var last=g.querySelector(".sp-fc:last-child");if(!last)return;var nw=last.cloneNode(true);nw.classList.remove("sp-fc--flipped");nw.querySelectorAll("[data-sp-key]").forEach(function(el){el.removeAttribute("data-sp-key");});g.appendChild(nw);});});' +
-        'document.querySelectorAll(".sp-fc-del").forEach(function(b){b.addEventListener("click",function(){var slide=b.closest(".sp-slide");var g=slide&&slide.querySelector(".sp-fc-grid");if(!g)return;var items=g.querySelectorAll(".sp-fc");if(items.length<=2)return;items[items.length-1].remove();});});' +
-        'document.querySelectorAll("[data-sp-match-add]").forEach(function(b){b.addEventListener("click",function(){var sid=b.getAttribute("data-sp-match-add");var list=document.querySelector("[data-sp-match-pairlist=\\""+sid+"\\"]");if(!list)return;var rows=list.querySelectorAll(".sp-match-pair-row");if(rows.length>=12)return;var last=rows[rows.length-1];if(!last)return;var nw=last.cloneNode(true);nw.querySelectorAll("select").forEach(function(s){s.selectedIndex=0;});list.appendChild(nw);});});' +
-        'document.querySelectorAll("[data-sp-match-pairlist]").forEach(function(list){list.addEventListener("click",function(ev){var del=ev.target.closest(".sp-match-pair-del");if(!del||!list.contains(del))return;var rows=list.querySelectorAll(".sp-match-pair-row");if(rows.length<=2)return;var row=del.closest(".sp-match-pair-row");if(row)row.remove();});});' +
+        'function spRenumberKeysLi_(ul,sidx){if(!ul)return;ul.querySelectorAll(":scope > li").forEach(function(li,i){li.setAttribute("data-sp-key","slide-"+sidx+"-bullet-"+i);});}' +
+        'function spRenumberSteps_(list,sidx){if(!list)return;list.querySelectorAll(".sp-step-item").forEach(function(row,i){var num=row.querySelector(".sp-step-num");if(num)num.textContent=String(i+1);var tx=row.querySelector(".sp-step-text");if(tx)tx.setAttribute("data-sp-key","slide-"+sidx+"-bullet-"+i);});}' +
+        'function spRenumberSummary_(ul,sidx){if(!ul)return;ul.querySelectorAll(":scope > li").forEach(function(li,i){var sp=li.querySelector("span");if(sp)sp.setAttribute("data-sp-key","slide-"+sidx+"-bullet-"+i);});}' +
+        'function spRenumberAcc_(list,sidx){if(!list)return;list.querySelectorAll(".sp-acc-item").forEach(function(det,i){var tit=det.querySelector(".sp-acc-title");var bod=det.querySelector(".sp-acc-body");if(tit)tit.setAttribute("data-sp-key","slide-"+sidx+"-item-"+i+"-title");if(bod)bod.setAttribute("data-sp-key","slide-"+sidx+"-item-"+i+"-body");});}' +
+        'function spTabRenum_(shell,sidx){if(!shell)return;var btns=shell.querySelectorAll(".sp-tab-btn");var pns=shell.querySelectorAll(".sp-tab-panel");btns.forEach(function(btn,i){btn.setAttribute("data-sp-tab",String(i));var lab=btn.querySelector("span");if(lab)lab.setAttribute("data-sp-key","slide-"+sidx+"-tab-"+i+"-label");});pns.forEach(function(p,i){p.setAttribute("data-sp-panel",String(i));var bod=p.querySelector(".sp-tab-body");if(bod)bod.setAttribute("data-sp-key","slide-"+sidx+"-tab-"+i+"-body");});}' +
+        'function spFcSyncDel_(g){if(!g)return;var bar=g.closest(".sp-fc-wrap");var del=bar&&bar.querySelector(".sp-fc-del");if(!del)return;var n=g.querySelectorAll(".sp-fc").length;if(n<=2){del.setAttribute("hidden","hidden");}else{del.removeAttribute("hidden");}}' +
+        'document.querySelectorAll(".sp-fc-add").forEach(function(b){b.addEventListener("click",function(){var slide=b.closest(".sp-slide");var g=slide&&slide.querySelector(".sp-fc-grid");if(!g)return;var n=g.querySelectorAll(".sp-fc").length;if(n>=8)return;var last=g.querySelector(".sp-fc:last-child");if(!last)return;var nw=last.cloneNode(true);nw.classList.remove("sp-fc--flipped");nw.querySelectorAll("[data-sp-key]").forEach(function(el){el.removeAttribute("data-sp-key");});g.appendChild(nw);spFcSyncDel_(g);});});' +
+        'document.querySelectorAll(".sp-fc-del").forEach(function(b){b.addEventListener("click",function(){var slide=b.closest(".sp-slide");var g=slide&&slide.querySelector(".sp-fc-grid");if(!g)return;var items=g.querySelectorAll(".sp-fc");if(items.length<=2)return;items[items.length-1].remove();spFcSyncDel_(g);});});' +
+        'document.querySelectorAll(".sp-fc-grid").forEach(function(g){spFcSyncDel_(g);});' +
+        'document.querySelectorAll(".sp-cb-add").forEach(function(b){b.addEventListener("click",function(){var slide=b.closest(".sp-slide");var ul=slide&&slide.querySelector("ul.sp-ed-ul");if(!ul)return;var lis=ul.querySelectorAll(":scope > li");if(lis.length>=24)return;var sidx=slide.getAttribute("data-idx");if(sidx==null)return;var nw=lis[lis.length-1].cloneNode(true);nw.textContent="";ul.appendChild(nw);spRenumberKeysLi_(ul,sidx);});});' +
+        'document.querySelectorAll(".sp-cb-del").forEach(function(b){b.addEventListener("click",function(){var slide=b.closest(".sp-slide");var ul=slide&&slide.querySelector("ul.sp-ed-ul");if(!ul)return;var lis=ul.querySelectorAll(":scope > li");if(lis.length<=2)return;lis[lis.length-1].remove();var sidx=slide.getAttribute("data-idx");if(sidx!=null)spRenumberKeysLi_(ul,sidx);});});' +
+        'document.querySelectorAll(".sp-st-add").forEach(function(b){b.addEventListener("click",function(){var slide=b.closest(".sp-slide");var list=slide&&slide.querySelector(".sp-steps-list");if(!list)return;var rows=list.querySelectorAll(".sp-step-item");if(rows.length>=24)return;var sidx=slide.getAttribute("data-idx");if(sidx==null)return;var nw=rows[rows.length-1].cloneNode(true);var tx=nw.querySelector(".sp-step-text");if(tx)tx.textContent="Paso nuevo";list.appendChild(nw);spRenumberSteps_(list,sidx);});});' +
+        'document.querySelectorAll(".sp-st-del").forEach(function(b){b.addEventListener("click",function(){var slide=b.closest(".sp-slide");var list=slide&&slide.querySelector(".sp-steps-list");if(!list)return;var rows=list.querySelectorAll(".sp-step-item");if(rows.length<=2)return;rows[rows.length-1].remove();var sidx=slide.getAttribute("data-idx");if(sidx!=null)spRenumberSteps_(list,sidx);});});' +
+        'document.querySelectorAll(".sp-sm-add").forEach(function(b){b.addEventListener("click",function(){var slide=b.closest(".sp-slide");var ul=slide&&slide.querySelector("ul.sp-sum-list");if(!ul)return;var lis=ul.querySelectorAll(":scope > li");if(lis.length>=24)return;var sidx=slide.getAttribute("data-idx");if(sidx==null)return;var nw=lis[lis.length-1].cloneNode(true);var sp=nw.querySelector("span");if(sp)sp.textContent="Nuevo ítem";ul.appendChild(nw);spRenumberSummary_(ul,sidx);});});' +
+        'document.querySelectorAll(".sp-sm-del").forEach(function(b){b.addEventListener("click",function(){var slide=b.closest(".sp-slide");var ul=slide&&slide.querySelector("ul.sp-sum-list");if(!ul)return;var lis=ul.querySelectorAll(":scope > li");if(lis.length<=2)return;lis[lis.length-1].remove();var sidx=slide.getAttribute("data-idx");if(sidx!=null)spRenumberSummary_(ul,sidx);});});' +
+        'document.querySelectorAll(".sp-acc-add").forEach(function(b){b.addEventListener("click",function(){var slide=b.closest(".sp-slide");var list=slide&&slide.querySelector(".sp-acc-list");if(!list)return;var dets=list.querySelectorAll(".sp-acc-item");if(dets.length>=12)return;var sidx=slide.getAttribute("data-idx");if(sidx==null)return;var nw=dets[dets.length-1].cloneNode(true);nw.removeAttribute("open");var tit=nw.querySelector(".sp-acc-title");var bod=nw.querySelector(".sp-acc-body");if(tit)tit.textContent="Nueva sección";if(bod)bod.textContent="";list.appendChild(nw);spRenumberAcc_(list,sidx);});});' +
+        'document.querySelectorAll(".sp-acc-del").forEach(function(b){b.addEventListener("click",function(){var slide=b.closest(".sp-slide");var list=slide&&slide.querySelector(".sp-acc-list");if(!list)return;var dets=list.querySelectorAll(".sp-acc-item");if(dets.length<=2)return;dets[dets.length-1].remove();var sidx=slide.getAttribute("data-idx");if(sidx!=null)spRenumberAcc_(list,sidx);});});' +
+        'document.querySelectorAll(".sp-tab-add").forEach(function(b){b.addEventListener("click",function(){var slide=b.closest(".sp-slide");var shell=slide&&slide.querySelector(".sp-tabs-shell");if(!shell)return;var btns=shell.querySelectorAll(".sp-tab-btn");if(btns.length>=3)return;var sidx=slide.getAttribute("data-idx");if(sidx==null)return;var bar=shell.querySelector(".sp-tab-bar");var panWrap=shell.querySelector(".sp-tab-panels");var lastB=btns[btns.length-1];var lastP=panWrap&&panWrap.querySelector(".sp-tab-panel:last-child");if(!lastB||!lastP||!bar||!panWrap)return;var nb=lastB.cloneNode(true);nb.classList.remove("sp-tab-btn--active");nb.setAttribute("aria-selected","false");var ns=nb.querySelector("span");if(ns)ns.textContent="Pestaña";var np=lastP.cloneNode(true);np.classList.remove("sp-tab-panel--active");np.setAttribute("hidden","hidden");var tb=np.querySelector(".sp-tab-body");if(tb)tb.textContent="";bar.appendChild(nb);panWrap.appendChild(np);spTabRenum_(shell,sidx);});});' +
+        'document.querySelectorAll(".sp-tab-del").forEach(function(b){b.addEventListener("click",function(){var slide=b.closest(".sp-slide");var shell=slide&&slide.querySelector(".sp-tabs-shell");if(!shell)return;var btns=shell.querySelectorAll(".sp-tab-btn");var pns=shell.querySelectorAll(".sp-tab-panel");if(btns.length<=2||pns.length<=2)return;var sidx=slide.getAttribute("data-idx");if(sidx==null)return;var lastB=btns[btns.length-1];var lastP=pns[pns.length-1];var act=lastB&&lastB.classList.contains("sp-tab-btn--active");if(lastB)lastB.remove();if(lastP)lastP.remove();spTabRenum_(shell,sidx);if(act){var b0=shell.querySelector(".sp-tab-btn");var i0=b0?b0.getAttribute("data-sp-tab"):"0";shell.querySelectorAll(".sp-tab-btn").forEach(function(x){var on=x===b0;x.classList.toggle("sp-tab-btn--active",on);x.setAttribute("aria-selected",on?"true":"false");});shell.querySelectorAll(".sp-tab-panel").forEach(function(p){var m=p.getAttribute("data-sp-panel")===i0;p.classList.toggle("sp-tab-panel--active",m);if(m)p.removeAttribute("hidden");else p.setAttribute("hidden","hidden");});}});});' +
+        'function spMatchSyncDelPh_(list){var rows=list.querySelectorAll(".sp-match-pair-row");var n=rows.length;rows.forEach(function(row){var del=row.querySelector(".sp-match-pair-del");var ph=row.querySelector(".sp-match-pair-del-ph");if(n<=2){if(del){var s=document.createElement("span");s.className="sp-match-pair-del-ph";del.replaceWith(s);}}else{if(ph){var btn=document.createElement("button");btn.type="button";btn.className="sp-match-pair-del";btn.setAttribute("aria-label","Quitar pareja");btn.innerHTML="<i class=\\"far fa-trash-alt\\"></i>";ph.replaceWith(btn);}}});}' +
+        'document.querySelectorAll("[data-sp-match-add]").forEach(function(b){b.addEventListener("click",function(){var sid=b.getAttribute("data-sp-match-add");var list=document.querySelector("[data-sp-match-pairlist=\\""+sid+"\\"]");if(!list)return;var rows=list.querySelectorAll(".sp-match-pair-row");if(rows.length>=12)return;var last=rows[rows.length-1];if(last){var il=last.querySelector(".sp-match-inp-l");var ir=last.querySelector(".sp-match-inp-r");if(il&&ir&&(!String(il.value||"").trim()||!String(ir.value||"").trim())){alert("Completa ambos textos de la pareja actual antes de añadir otra.");return;}}var row=document.createElement("div");row.className="sp-match-pair-row";row.innerHTML="<input type=\\"text\\" class=\\"sp-match-inp-l\\" placeholder=\\"Concepto…\\" aria-label=\\"Concepto\\"><span class=\\"sp-match-pair-mid\\">→</span><input type=\\"text\\" class=\\"sp-match-inp-r\\" placeholder=\\"Pareja…\\" aria-label=\\"Pareja\\"><span class=\\"sp-match-pair-del-ph\\"></span>";list.appendChild(row);spMatchSyncDelPh_(list);});});' +
+        'document.querySelectorAll("[data-sp-match-pairlist]").forEach(function(list){list.addEventListener("click",function(ev){var del=ev.target.closest(".sp-match-pair-del");if(!del||!list.contains(del))return;var rows=list.querySelectorAll(".sp-match-pair-row");if(rows.length<=2)return;var row=del.closest(".sp-match-pair-row");if(row)row.remove();spMatchSyncDelPh_(list);});});' +
+        'function spQuizRenum_(card){if(!card)return;var slide=card.closest(".sp-slide");if(!slide)return;var sidx=slide.getAttribute("data-idx")||"0";var steps=card.querySelectorAll(".sp-quiz-step");var n=steps.length;steps.forEach(function(step,qi){step.setAttribute("data-sp-quiz-step",String(qi));var meta=step.querySelector(".sp-quiz-meta");if(meta)meta.textContent="Pregunta "+(qi+1)+" de "+n;var nm="sp-q-cor-"+sidx+"-"+qi;step.querySelectorAll(".sp-quiz-opt-row").forEach(function(row,oi){var inp=row.querySelector("input[type=radio]");if(inp){inp.name=nm;inp.value=String(oi);}var span=row.querySelector(".sp-quiz-opt-text");if(span)span.setAttribute("data-sp-key","slide-"+sidx+"-q-"+qi+"-opt-"+oi);});var qq=step.querySelector(".sp-quiz-q");if(qq)qq.setAttribute("data-sp-key","slide-"+sidx+"-q-"+qi+"-question");var qdel=step.querySelector(".sp-quiz-step-del");var qph=step.querySelector(".sp-quiz-step-del-ph");if(n<=1){if(qdel){var sp=document.createElement("span");sp.className="sp-quiz-step-del-ph";sp.setAttribute("aria-hidden","true");qdel.replaceWith(sp);}}else{if(qph){var bt=document.createElement("button");bt.type="button";bt.className="sp-quiz-step-del";bt.setAttribute("aria-label","Eliminar pregunta");bt.innerHTML="<i class=\\"far fa-trash-alt\\"></i>";qph.replaceWith(bt);}}});card.setAttribute("data-sp-quiz-total",String(n));}' +
+        'document.querySelectorAll(".sp-quiz-add-q").forEach(function(b){b.addEventListener("click",function(){var card=b.closest(".sp-quiz-card");if(!card)return;var wrap=card.querySelector(".sp-quiz-steps");if(!wrap)return;var steps=wrap.querySelectorAll(".sp-quiz-step");if(steps.length>=20)return;var last=steps[steps.length-1];if(!last)return;var nw=last.cloneNode(true);var qq=nw.querySelector(".sp-quiz-q");if(qq)qq.textContent="";nw.querySelectorAll(".sp-quiz-opt-text").forEach(function(sp){sp.textContent="";});var rads=nw.querySelectorAll("input[type=radio]");rads.forEach(function(r,i){r.checked=i===0;});wrap.appendChild(nw);spQuizRenum_(card);});});' +
+        'document.querySelectorAll(".sp-quiz-steps").forEach(function(wrap){wrap.addEventListener("click",function(ev){var del=ev.target.closest(".sp-quiz-step-del");if(!del||!wrap.contains(del))return;var steps=wrap.querySelectorAll(".sp-quiz-step");if(steps.length<=1)return;var row=del.closest(".sp-quiz-step");if(row)row.remove();var card=wrap.closest(".sp-quiz-card");if(card)spQuizRenum_(card);});});' +
         '}' +
         'function nav(d){' +
         '  if((d<0&&cur===0)||(d>0&&cur===tot-1))return;' +
@@ -891,13 +978,14 @@
         '});});' +
         'if(!window.__spIxDocBound){window.__spIxDocBound=1;document.addEventListener("click",function(){hideAllIxTips_();});}' +
         'document.querySelectorAll(".sp-tabs-card").forEach(function(root){' +
-        'root.querySelectorAll(".sp-tab-btn").forEach(function(btn){' +
-        'btn.addEventListener("click",function(e){' +
+        'var bar=root.querySelector(".sp-tab-bar");if(!bar)return;' +
+        'bar.addEventListener("click",function(e){' +
+        'var btn=e.target.closest(".sp-tab-btn");if(!btn||!bar.contains(btn))return;' +
         'if(e.target.closest("[contenteditable]"))return;' +
         'var i=btn.getAttribute("data-sp-tab");' +
         'root.querySelectorAll(".sp-tab-btn").forEach(function(b){var on=b===btn;b.classList.toggle("sp-tab-btn--active",on);b.setAttribute("aria-selected",on?"true":"false");});' +
         'root.querySelectorAll(".sp-tab-panel").forEach(function(p){var m=p.getAttribute("data-sp-panel")===i;p.classList.toggle("sp-tab-panel--active",m);if(m)p.removeAttribute("hidden");else p.setAttribute("hidden","hidden");});' +
-        '});});});' +
+        '});});' +
         'document.querySelectorAll("[data-sp-hs-root]").forEach(function(root){' +
         'var bd=root.querySelector(".sp-hotspot-backdrop");' +
         'var panels=root.querySelectorAll("[data-sp-hs-panel]");' +
@@ -906,11 +994,15 @@
         'if(document.body.classList.contains("sp--editing")){' +
         'pin.classList.add("sp-hotspot-pin--drag");' +
         'pin.addEventListener("mousedown",function(ev){' +
-        'ev.preventDefault();ev.stopPropagation();' +
+        'if(ev.button!==0)return;' +
+        'ev.preventDefault();' +
+        'var moved=0;var sx=ev.clientX;var sy=ev.clientY;' +
         'var wrap=root.querySelector(".sp-media-img-wrap");if(!wrap)return;var r=wrap.getBoundingClientRect();' +
-        'function move(ev2){var x=((ev2.clientX-r.left)/r.width)*100;var y=((ev2.clientY-r.top)/r.height)*100;' +
+        'function move(ev2){var dx=ev2.clientX-sx,dy=ev2.clientY-sy;if((dx*dx+dy*dy)>36)moved=1;if(!moved)return;var x=((ev2.clientX-r.left)/r.width)*100;var y=((ev2.clientY-r.top)/r.height)*100;' +
         'pin.style.left=Math.max(5,Math.min(95,x))+"%";pin.style.top=Math.max(5,Math.min(95,y))+"%";}' +
-        'function up(){document.removeEventListener("mousemove",move);document.removeEventListener("mouseup",up);}' +
+        'function up(){document.removeEventListener("mousemove",move);document.removeEventListener("mouseup",up);' +
+        'if(!moved){var i=pin.getAttribute("data-sp-hs-i");var p=root.querySelector("[data-sp-hs-panel=\\""+i+"\\"]");' +
+        'hsClose();if(p&&bd){p.removeAttribute("hidden");bd.removeAttribute("hidden");}}}' +
         'document.addEventListener("mousemove",move);document.addEventListener("mouseup",up);});' +
         '}else{' +
         'pin.addEventListener("click",function(ev){' +
@@ -928,20 +1020,21 @@
         'c.classList.toggle("sp-fc--flipped");});});' +
         'function spConfetti_(){var w=window.innerWidth,h=window.innerHeight;var c=document.createElement("canvas");c.className="sp-confetti-canvas";c.width=w;c.height=h;var ctx=c.getContext("2d");document.body.appendChild(c);var parts=[];for(var i=0;i<90;i++){parts.push({x:Math.random()*w,y:-20-Math.random()*h*0.4,vx:(Math.random()-.5)*5,vy:Math.random()*3+2,s:Math.random()*5+3,hue:Math.floor(Math.random()*360),r:Math.random()*6});}var t0=Date.now();function frame(){var t=Date.now()-t0;if(t>2400){if(c.parentNode)c.parentNode.removeChild(c);return;}ctx.clearRect(0,0,w,h);parts.forEach(function(p){p.x+=p.vx;p.y+=p.vy;p.vy+=0.12;p.r+=0.15;ctx.fillStyle="hsla("+p.hue+",80%,58%,0.92)";ctx.beginPath();ctx.arc(p.x,p.y,p.s+Math.sin(p.r)*0.5,0,6.28);ctx.fill();});requestAnimationFrame(frame);}requestAnimationFrame(frame);}' +
         'document.querySelectorAll(".sp-quiz-card").forEach(function(card){' +
-        'var steps=card.querySelectorAll(".sp-quiz-step"),total=steps.length,curQ=0,doneEl=card.querySelector(".sp-quiz-done"),rst=card.querySelector(".sp-quiz-restart");' +
+        'var steps=card.querySelectorAll(".sp-quiz-step"),total=steps.length,curQ=0,correctCount=0,doneEl=card.querySelector(".sp-quiz-done"),rst=card.querySelector(".sp-quiz-restart"),advanceTimer=null;' +
         'function showQ(qi){steps.forEach(function(s,j){s.classList.toggle("sp-quiz-step--active",j===qi);if(j===qi)s.removeAttribute("hidden");else s.setAttribute("hidden","hidden");});}' +
-        'function resetQuiz(){curQ=0;if(doneEl)doneEl.setAttribute("hidden","hidden");steps.forEach(function(s){s.querySelectorAll(".sp-quiz-opt").forEach(function(o){o.classList.remove("sp-quiz-opt--pick","sp-quiz-opt--bad");});});if(total)showQ(0);}' +
-        'function finish(){steps.forEach(function(s){s.setAttribute("hidden","hidden");s.classList.remove("sp-quiz-step--active");});if(doneEl)doneEl.removeAttribute("hidden");try{spConfetti_();}catch(eC){}}' +
+        'function resetQuiz(){curQ=0;correctCount=0;if(advanceTimer){clearTimeout(advanceTimer);advanceTimer=null;}if(doneEl)doneEl.setAttribute("hidden","hidden");steps.forEach(function(s){s.classList.remove("sp-quiz-step--answered");s.querySelectorAll(".sp-quiz-opt").forEach(function(o){o.classList.remove("sp-quiz-opt--pick","sp-quiz-opt--bad");var fb=o.querySelector(".sp-quiz-opt-feedback");if(fb)fb.remove();});});if(total)showQ(0);}' +
+        'function finish(){steps.forEach(function(s){s.setAttribute("hidden","hidden");s.classList.remove("sp-quiz-step--active");});if(doneEl){doneEl.removeAttribute("hidden");var big=doneEl.querySelector(".sp-quiz-done-big");if(big)big.textContent=correctCount+"/"+total;if(correctCount===total){try{spConfetti_();}catch(eC){}}}}' +
         'if(rst)rst.addEventListener("click",function(e){e.preventDefault();resetQuiz();});' +
         'steps.forEach(function(step){' +
         'step.querySelectorAll(".sp-quiz-opt").forEach(function(opt){' +
-        'opt.addEventListener("click",function(){' +
-        'var ok=opt.getAttribute("data-correct")==="1";' +
-        'step.querySelectorAll(".sp-quiz-opt").forEach(function(o){o.classList.remove("sp-quiz-opt--pick","sp-quiz-opt--bad");});' +
-        'if(!ok){opt.classList.add("sp-quiz-opt--bad");return;}' +
-        'opt.classList.add("sp-quiz-opt--pick");' +
-        'setTimeout(function(){curQ++;if(curQ<total)showQ(curQ);else finish();},1000);' +
-        '});});});' +
+        'function onPick(){if(document.body.classList.contains("sp--editing"))return;if(step.classList.contains("sp-quiz-step--answered"))return;var ok=opt.getAttribute("data-correct")==="1";' +
+        'step.classList.add("sp-quiz-step--answered");step.querySelectorAll(".sp-quiz-opt").forEach(function(o){o.classList.remove("sp-quiz-opt--pick","sp-quiz-opt--bad");});' +
+        'if(ok){opt.classList.add("sp-quiz-opt--pick");correctCount++;}else{opt.classList.add("sp-quiz-opt--bad");}' +
+        'var fb=document.createElement("div");fb.className="sp-quiz-opt-feedback "+(ok?"sp-quiz-opt-feedback--correct":"sp-quiz-opt-feedback--wrong");fb.textContent=ok?"Respuesta correcta":"Respuesta incorrecta";opt.appendChild(fb);' +
+        'advanceTimer=setTimeout(function(){advanceTimer=null;curQ++;if(curQ<total)showQ(curQ);else finish();},3000);}' +
+        'opt.addEventListener("click",function(){onPick();});' +
+        'opt.addEventListener("keydown",function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();onPick();}});' +
+        '});});' +
         'if(total)showQ(0);' +
         '});' +
         'document.querySelectorAll(".sp-match-card").forEach(function(card){' +
@@ -968,7 +1061,7 @@
         '  upd();wireScormIx();});';
     }
 
-    function generateScormHtml(titulo, slides, color, editMode) {
+    function generateScormHtml(titulo, slides, color, editMode, isModalPreview) {
         var n=slides.length;
         var slidesHtml=slides.map(function(s,i){return buildSlideHtml(s,i,editMode||false);}).join('\n');
         var css=buildScormCss(color);
@@ -981,8 +1074,12 @@
             : '';
         var headerInner = editMode
             ? colorTrigger + '<span class="sp-title">'+esc(titulo)+'</span><span class="sp-ct" id="sp-ct-num">1 / '+n+'</span>'
-            : '<span class="sp-ct sp-ct--solo" id="sp-ct-num">1 / '+n+'</span>';
-        var headerRowClass = editMode ? 'sp-hi' : 'sp-hi sp-hi--viewer';
+            : isModalPreview
+                ? '<span class="sp-preview-rep">Vista previa representativa</span><span class="sp-ct sp-ct--solo" id="sp-ct-num">1 / '+n+'</span>'
+                : '<span class="sp-ct sp-ct--solo" id="sp-ct-num">1 / '+n+'</span>';
+        var headerRowClass = editMode
+            ? 'sp-hi'
+            : 'sp-hi sp-hi--viewer' + (isModalPreview ? ' sp-hi--viewer--modal-preview' : '');
 
         return '<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">'+
             '<script>(function(){try{var pu=window.parent&&window.parent.location&&window.parent.location.href;var u=new URL(pu);u.hash="";u.search="";var p=u.pathname.split("/");p.pop();u.pathname=p.join("/")+"/";var be=document.createElement("base");be.href=u.href;document.head.appendChild(be);}catch(e1){}})();<\/script>'+
@@ -1009,7 +1106,7 @@
         var t = 'Título de la diapositiva';
         var b = 'Párrafo descriptivo sobre el tema que explica detalladamente el tema a tratar de una forma amena para los estudiantes de la plataforma.';
         var bl = 'Bullet informativo sobre el tema a tratar';
-        return slides.map(function (s) {
+        return slides.map(function (s, idx) {
             var x = JSON.parse(JSON.stringify(s));
             if (x.title != null) x.title = t;
             if (x.subtitle != null) x.subtitle = 'Subtítulo de ejemplo';
@@ -1057,6 +1154,77 @@
                     return { x: 50, y: 50, title: t, body: b };
                 });
             }
+
+            var n = idx + 1;
+            if (n === 1 && x.body != null && x.body !== '') {
+                x.body = 'Párrafo descriptivo sobre el tema a tratar.';
+            }
+            if (n === 4 && x.type === 'quote' && x.body != null) {
+                x.body = 'Cita o frase relevante sobre el tema a tratar en esta presentación.';
+            }
+            if (n === 5 && x.type === 'keypoint' && x.statement != null) {
+                x.statement =
+                    'Métrica descriptiva sobre el tema que explica detalladamente algun indicador importante sobre el tema a tratar.';
+            }
+            if (n === 7 && x.type === 'media' && x.hotspots && x.hotspots.length) {
+                x.hotspots = x.hotspots.map(function (h) {
+                    return {
+                        x: h.x,
+                        y: h.y,
+                        title: 'Título del hotspot',
+                        body: 'Descripción breve del detalle que quieres resaltar de la imagen.'
+                    };
+                });
+            }
+            if (n === 8 && x.type === 'accordion' && x.items && x.items.length) {
+                x.items = x.items.map(function () {
+                    return {
+                        title: 'Concepto a detallar',
+                        body: 'Detalle explicativo del concepto relevante sobre el tema a tratar en esta presentación.'
+                    };
+                });
+            }
+            if (n === 10 && x.type === 'flashcards' && x.cards && x.cards.length) {
+                x.cards = x.cards.map(function () {
+                    return {
+                        front: 'Título de la tarjeta',
+                        back: 'Detalle explicativo del concepto relevante sobre el tema a tratar en esta presentación.'
+                    };
+                });
+            }
+            if (n === 11 && x.type === 'timeline' && x.items && x.items.length) {
+                x.items = x.items.map(function (it) {
+                    return {
+                        label: it.label,
+                        title: 'Título del paso',
+                        body: 'Descripción explicativa del paso para que el estudiante tenga más contexto de dicha etapa.'
+                    };
+                });
+            }
+            if (n === 12 && x.type === 'compare') {
+                x.leftTitle = 'Título del enfoque A';
+                x.rightTitle = 'Título del enfoque B';
+                x.leftBody = 'Descripción sobre el tema a comparar';
+                x.rightBody = 'Descripción sobre el tema a comparar';
+                if (x.rows && x.rows.length) {
+                    x.rows = x.rows.map(function () {
+                        return {
+                            left: 'Descripción sobre el tema a comparar',
+                            right: 'Descripción sobre el tema a comparar'
+                        };
+                    });
+                }
+            }
+            if (n === 13 && x.type === 'quiz_mc' && x.questions && x.questions.length) {
+                x.questions = x.questions.map(function (q) {
+                    return {
+                        question: 'Pregunta o enunciado sobre el tema a tratar',
+                        options: q.options,
+                        correctIndex: q.correctIndex
+                    };
+                });
+            }
+
             return x;
         });
     }
@@ -1066,7 +1234,7 @@
         if (!frame) return;
         var slides = applyPlaceholderSlidesForPreview(generateSlides(_numSlides));
         var tit = (_titulo && String(_titulo).trim()) ? String(_titulo).trim() : 'Título del módulo';
-        frame.srcdoc = generateScormHtml(tit, slides, _color, false);
+        frame.srcdoc = generateScormHtml(tit, slides, _color, false, true);
     }
 
     /* ══════════════════════════════════════
@@ -1148,9 +1316,14 @@
                 '</div>' +
                 /* Columna derecha: preview */
                 '<div class="cc-sm-right-col">' +
-                    '<p class="ubits-body-xs-regular cc-via-preview-hint">Vista previa orientativa. Las slides finales usarán tu contenido</p>' +
-                    '<div class="cc-sm-preview-wrap">' +
-                        '<iframe id="cc-sm-preview-frame" class="cc-sm-preview-iframe" srcdoc="" title="Vista previa SCORM"></iframe>' +
+                    '<div class="cc-sm-preview-host">' +
+                        '<div class="ubits-resources-block__surface cc-scorm-resource__surface" style="padding:0;">' +
+                            '<div class="cc-scorm-resource__embed-wrap">' +
+                                '<div class="cc-scorm-iframe-container">' +
+                                    '<iframe id="cc-sm-preview-frame" srcdoc="" title="Vista previa SCORM" allowfullscreen></iframe>' +
+                                '</div>' +
+                            '</div>' +
+                        '</div>' +
                     '</div>' +
                 '</div>' +
             '</div>' +
@@ -1489,25 +1662,27 @@
         overlay.setAttribute('aria-modal', 'true');
         overlay.setAttribute('aria-label', 'Editar presentación');
 
-        var panel = document.createElement('div');
-        panel.className = 'cc-scorm-fs-panel cc-scorm-fs-panel--edit-scorm';
-
-        var head = document.createElement('div');
-        head.className = 'cc-scorm-fs-head';
+        var headBand = document.createElement('div');
+        headBand.className = 'cc-scorm-lightbox__band cc-scorm-lightbox__band--head';
+        var headInner = document.createElement('div');
+        headInner.className = 'cc-scorm-lightbox__band-inner';
         var titleEl = document.createElement('p');
         titleEl.className = 'cc-scorm-fs-title';
         titleEl.textContent = 'Editar presentación';
         var closeBtn = document.createElement('button');
         closeBtn.id = 'cc-scorm-edit-close';
         closeBtn.type = 'button';
-        closeBtn.className =
-            'cc-scorm-fs-close ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only';
+        closeBtn.className = 'ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only';
         closeBtn.setAttribute('aria-label', 'Cerrar');
         closeBtn.setAttribute('data-tooltip', 'Cerrar');
         closeBtn.setAttribute('data-tooltip-delay', '1000');
         closeBtn.innerHTML = '<i class="far fa-times"></i>';
-        head.appendChild(titleEl);
-        head.appendChild(closeBtn);
+        headInner.appendChild(titleEl);
+        headInner.appendChild(closeBtn);
+        headBand.appendChild(headInner);
+
+        var main = document.createElement('div');
+        main.className = 'cc-scorm-lightbox__main cc-scorm-fs-panel cc-scorm-fs-panel--edit-scorm';
 
         var body = document.createElement('div');
         body.className = 'cc-scorm-fs-body';
@@ -1520,17 +1695,20 @@
         iframe.srcdoc = editHtml;
         wrap.appendChild(iframe);
         body.appendChild(wrap);
+        main.appendChild(body);
 
-        var foot = document.createElement('div');
-        foot.className = 'cc-scorm-edit-lightbox__footer';
-        foot.innerHTML =
+        var footBand = document.createElement('div');
+        footBand.className = 'cc-scorm-lightbox__band cc-scorm-lightbox__band--foot';
+        var footInner = document.createElement('div');
+        footInner.className = 'cc-scorm-lightbox__band-inner cc-scorm-edit-lightbox__footer';
+        footInner.innerHTML =
             '<button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="cc-scorm-edit-cancel"><span>Cancelar</span></button>' +
             '<button type="button" class="ubits-button ubits-button--primary ubits-button--md" id="cc-scorm-edit-save"><span>Guardar</span></button>';
+        footBand.appendChild(footInner);
 
-        panel.appendChild(head);
-        panel.appendChild(body);
-        panel.appendChild(foot);
-        overlay.appendChild(panel);
+        overlay.appendChild(headBand);
+        overlay.appendChild(main);
+        overlay.appendChild(footBand);
         document.body.appendChild(overlay);
 
         if (typeof initTooltip === 'function') {
@@ -1557,19 +1735,28 @@
             }
         });
 
-        var cancelBtn = foot.querySelector('#cc-scorm-edit-cancel');
+        var cancelBtn = footInner.querySelector('#cc-scorm-edit-cancel');
         if (cancelBtn) {
             cancelBtn.addEventListener('click', function () {
                 closeCpPanel();
                 closeScormEditLightbox();
             });
         }
-        var saveBtn = foot.querySelector('#cc-scorm-edit-save');
+        var saveBtn = footInner.querySelector('#cc-scorm-edit-save');
         if (saveBtn) {
             saveBtn.addEventListener('click', function () {
-                collectEditedSlides(pageKey, stored);
+                var ok = collectEditedSlides(pageKey, stored);
                 closeCpPanel();
+                if (!ok) {
+                    if (typeof showToast === 'function') {
+                        showToast('error', 'No se pudo guardar. Cierra y vuelve a abrir el editor.', { containerId: 'ubits-toast-container' });
+                    }
+                    return;
+                }
                 closeScormEditLightbox();
+                if (typeof showToast === 'function') {
+                    showToast('success', 'Cambios guardados exitosamente', { containerId: 'ubits-toast-container' });
+                }
             });
         }
     }
@@ -1630,7 +1817,8 @@
                         });
                     } else {
                         step.querySelectorAll('.sp-quiz-opt').forEach(function (opt, oi) {
-                            opts.push((opt.textContent || '').trim());
+                            var lbl = opt.querySelector('.sp-quiz-opt-label');
+                            opts.push(((lbl && lbl.textContent) || opt.textContent || '').trim());
                             if (opt.getAttribute('data-correct') === '1') correctIndex = oi;
                         });
                     }
@@ -1645,16 +1833,35 @@
 
             if (st === 'match') {
                 var list = el.querySelector('.sp-match-pair-list');
+                var left = [];
+                var right = [];
                 var pairs = [];
                 if (list) {
                     list.querySelectorAll('.sp-match-pair-row').forEach(function (row) {
-                        var sl = row.querySelector('.sp-match-sel-l');
-                        var sr = row.querySelector('.sp-match-sel-r');
-                        if (!sl || !sr) return;
-                        pairs.push([parseInt(sl.value, 10) || 0, parseInt(sr.value, 10) || 0]);
+                        var il = row.querySelector('.sp-match-inp-l');
+                        var ir = row.querySelector('.sp-match-inp-r');
+                        if (!il || !ir) return;
+                        var a = String(il.value || '').trim();
+                        var b = String(ir.value || '').trim();
+                        if (!a || !b) return;
+                        var li = left.indexOf(a);
+                        if (li < 0) {
+                            left.push(a);
+                            li = left.length - 1;
+                        }
+                        var ri = right.indexOf(b);
+                        if (ri < 0) {
+                            right.push(b);
+                            ri = right.length - 1;
+                        }
+                        pairs.push([li, ri]);
                     });
                 }
-                if (pairs.length >= 2) newSlides[idx].pairs = pairs;
+                if (pairs.length >= 2) {
+                    newSlides[idx].left = left;
+                    newSlides[idx].right = right;
+                    newSlides[idx].pairs = pairs;
+                }
             }
 
             if (st === 'media' && newSlides[idx].hotspots && newSlides[idx].hotspots.length) {
@@ -1667,12 +1874,74 @@
                     if (my) newSlides[idx].hotspots[hi].y = parseFloat(my[1]);
                 });
             }
+
+            if (st === 'content') {
+                var ulc = el.querySelector('.sp-slide-card > ul.sp-ed-ul');
+                if (ulc) {
+                    var bsC = [];
+                    ulc.querySelectorAll(':scope > li').forEach(function (li) {
+                        bsC.push((li.textContent || '').trim());
+                    });
+                    if (bsC.length >= 2) newSlides[idx].bullets = bsC;
+                }
+            }
+
+            if (st === 'steps') {
+                var bsS = [];
+                el.querySelectorAll('.sp-steps-list .sp-step-text').forEach(function (t) {
+                    bsS.push((t.textContent || '').trim());
+                });
+                if (bsS.length >= 2) newSlides[idx].bullets = bsS;
+            }
+
+            if (st === 'summary') {
+                var bsU = [];
+                el.querySelectorAll('.sp-sum-list > li').forEach(function (li) {
+                    var sp = li.querySelector('span');
+                    bsU.push((sp ? sp.textContent : li.textContent || '').trim());
+                });
+                if (bsU.length >= 2) newSlides[idx].bullets = bsU;
+            }
+
+            if (st === 'accordion') {
+                var accCollected = [];
+                el.querySelectorAll('.sp-acc-list > .sp-acc-item').forEach(function (dab) {
+                    var titA = dab.querySelector('.sp-acc-title');
+                    var bodA = dab.querySelector('.sp-acc-body');
+                    accCollected.push({
+                        title: ((titA && titA.textContent) || '').trim(),
+                        body: ((bodA && bodA.textContent) || '').trim()
+                    });
+                });
+                if (accCollected.length >= 2) newSlides[idx].items = accCollected;
+            }
+
+            if (st === 'tabs') {
+                var shellT = el.querySelector('.sp-tabs-shell');
+                if (shellT) {
+                    var tabsCollected = [];
+                    var btnsT = shellT.querySelectorAll('.sp-tab-bar .sp-tab-btn');
+                    var pnsT = shellT.querySelectorAll('.sp-tab-panels .sp-tab-panel');
+                    for (var tj = 0; tj < btnsT.length; tj++) {
+                        var labE = btnsT[tj].querySelector('span');
+                        var pEl = pnsT[tj];
+                        var bEl = pEl ? pEl.querySelector('.sp-tab-body') : null;
+                        tabsCollected.push({
+                            label: ((labE && labE.textContent) || '').trim(),
+                            body: ((bEl && bEl.textContent) || '').trim()
+                        });
+                    }
+                    if (tabsCollected.length >= 2 && tabsCollected.length <= 3) {
+                        newSlides[idx].tabs = tabsCollected;
+                    }
+                }
+            }
         });
     }
 
     function collectEditedSlides(pageKey, stored) {
         var iframe=document.getElementById('cc-scorm-edit-iframe');
-        if (!iframe||!iframe.contentDocument) return;
+        if (!iframe||!iframe.contentDocument) return false;
         var doc=iframe.contentDocument;
 
         /* Leer campos editados */
@@ -1682,8 +1951,19 @@
             var parts=key.split('-');
             if (parts.length<3||parts[0]!=='slide') return;
             var idx=parseInt(parts[1],10);
+            if (isNaN(idx) || !newSlides[idx]) return;
             var field=parts.slice(2).join('-');
             if (el.tagName === 'IMG') return;
+
+            var text = '';
+            if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+                text = String(el.value || '').trim();
+            } else if (el.tagName === 'SELECT') {
+                var so = el.options && el.selectedIndex >= 0 ? el.options[el.selectedIndex] : null;
+                text = so ? String(so.value || so.textContent || '').trim() : '';
+            } else {
+                text = String(el.textContent || '').trim();
+            }
 
             if (field.indexOf('bullet-')===0) {
                 var bi=parseInt(field.replace('bullet-',''),10);
@@ -1805,6 +2085,7 @@
             if (mount) mount.innerHTML=blockHtml;
         }
         emitChanged({type:'scorm',pageKey:pageKey,source:'edit'});
+        return true;
     }
 
     /* ══════════════════════════════════════

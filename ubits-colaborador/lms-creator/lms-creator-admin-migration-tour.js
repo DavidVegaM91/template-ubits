@@ -41,22 +41,22 @@
                 steps: [
                     {
                         target: '.sidebar .nav-button[data-section="lms-creator"]',
-                        title: 'LMS Creator',
-                        body: 'Aquí gestionas los contenidos de formación de tu empresa y sus categorías.',
+                        title: 'LMS',
+                        body: 'Creación y edición de contenidos y rutas de aprendizaje, seguimiento a los contenidos, gestión de categorías y todo lo necesario para administrar el portafolio de tu compañía.',
                         placement: 'right',
                         align: 'center'
                     },
                     {
                         target: '.sidebar .nav-button[data-section="planes-formacion"]',
                         title: 'Planes de formación',
-                        body: 'Crea planes para tus colaboradores por competencias o por contenidos concretos, según lo que necesites impulsar.',
+                        body: 'Establece metas de estudio a tus colaboradores individuales, grupos específicos o toda la empresa a través de planes de formación tanto de contenidos como competencias.',
                         placement: 'right',
                         align: 'center'
                     },
                     {
                         target: '.sidebar .nav-button[data-section="certificados"]',
                         title: 'Certificados',
-                        body: 'Descarga los certificados de estudio de tus colaboradores y ajusta el diseño de los certificados de tu empresa.',
+                        body: 'Configura cómo lucirán los certificados, crea diferentes plantillas o simplemente descarga los certificados de tus colaboradores.',
                         placement: 'right',
                         align: 'center'
                     },
