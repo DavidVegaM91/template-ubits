@@ -1,0 +1,294 @@
+/* ========================================
+   UBITS STATUS PANEL
+   Panel flotante de operaciones en curso (cargas, transferencias, tareas).
+   Tokens UBITS; botones oficiales en cabecera.
+   ======================================== */
+
+.ubits-status-panel {
+    position: fixed;
+    bottom: var(--padding-xl);
+    left: var(--padding-xl);
+    z-index: 1200;
+    width: 320px;
+    max-width: calc(100vw - var(--padding-xl) * 2);
+    background: var(--ubits-bg-1);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: var(--border-radius-lg);
+    box-shadow: 0 var(--gap-sm) var(--gap-2xl) rgba(0, 0, 0, 0.14);
+    /* Recorta cabecera/cuerpo al radio del shell (evita esquinas superiores en punta) */
+    overflow: hidden;
+}
+
+.ubits-status-panel[hidden],
+.ubits-status-panel--hidden {
+    display: none !important;
+}
+
+.ubits-status-panel--bottom-right {
+    left: auto;
+    right: var(--padding-xl);
+}
+
+.ubits-status-panel--bottom-left {
+    left: var(--padding-xl);
+    right: auto;
+}
+
+/* Dentro de un contenedor con position:relative (previews, modales) */
+.ubits-status-panel--embedded {
+    position: absolute;
+    bottom: var(--padding-md);
+    left: var(--padding-md);
+    right: auto;
+    z-index: 2;
+    max-width: calc(100% - var(--padding-md) * 2);
+}
+
+.ubits-status-panel--embedded.ubits-status-panel--bottom-right {
+    left: auto;
+    right: var(--padding-md);
+}
+
+/* ── Cabecera ── */
+.ubits-status-panel__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--gap-sm);
+    padding: var(--padding-sm) var(--padding-sm) var(--padding-sm) var(--padding-md);
+    background: var(--ubits-bg-2);
+    border-bottom: 1px solid var(--ubits-border-1);
+    border-radius: var(--border-radius-lg) var(--border-radius-lg) 0 0;
+}
+
+.ubits-status-panel__title {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-sm);
+    flex: 1;
+    min-width: 0;
+    margin: 0;
+    color: var(--ubits-fg-1-high);
+}
+
+/* Solo FontAwesome en <i>; estilos en el wrapper (ver reglas UBITS iconos) */
+.ubits-status-panel__title-icon-wrap {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 16px;
+    height: 16px;
+}
+
+.ubits-status-panel__title-icon-wrap i {
+    font-size: 14px;
+    color: var(--ubits-accent-brand);
+}
+
+.ubits-status-panel__title-icon-wrap--ia i {
+    background: linear-gradient(
+        135deg,
+        var(--modo-ia-gradient-a) 0%,
+        var(--modo-ia-gradient-b) 35.59%,
+        var(--modo-ia-gradient-c) 67.19%,
+        var(--modo-ia-gradient-d) 100%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+}
+
+.ubits-status-panel__title-text {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.ubits-status-panel__actions {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--gap-xs);
+    flex-shrink: 0;
+}
+
+/* ── Lista ── */
+.ubits-status-panel__body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-xs);
+    padding: var(--padding-sm);
+    max-height: 260px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    transition: max-height 0.25s ease, padding 0.25s ease;
+}
+
+.ubits-status-panel__body::-webkit-scrollbar {
+    width: 4px;
+}
+
+.ubits-status-panel__body::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.ubits-status-panel__body::-webkit-scrollbar-thumb {
+    background: var(--ubits-border-1);
+    border-radius: 2px;
+}
+
+.ubits-status-panel--minimized .ubits-status-panel__body {
+    max-height: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    overflow: hidden;
+}
+
+/* Minimizado: solo cabecera visible → esquinas inferiores también redondeadas */
+.ubits-status-panel--minimized .ubits-status-panel__header {
+    border-radius: var(--border-radius-lg);
+    border-bottom: none;
+}
+
+/* ── Ítem ── */
+.ubits-status-panel__item {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-md);
+    padding: var(--padding-sm) var(--padding-md);
+    border-radius: var(--border-radius-sm);
+    background: var(--ubits-bg-2);
+    transition: background 0.15s ease;
+    border: none;
+    width: 100%;
+    box-sizing: border-box;
+    text-align: left;
+    font: inherit;
+    color: inherit;
+    overflow: visible;
+}
+
+button.ubits-status-panel__item {
+    cursor: default;
+}
+
+.ubits-status-panel__item--interactive {
+    cursor: pointer;
+}
+
+.ubits-status-panel__item--interactive:hover {
+    background: var(--ubits-bg-3);
+}
+
+.ubits-status-panel__item-icon-wrap {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 16px;
+    height: 16px;
+}
+
+.ubits-status-panel__item-icon-wrap i {
+    font-size: 14px;
+    color: var(--ubits-accent-brand);
+}
+
+.ubits-status-panel__item-icon-wrap--neutral i {
+    color: var(--ubits-fg-1-medium);
+}
+
+.ubits-status-panel__item-icon-wrap--success i {
+    color: var(--ubits-feedback-accent-success);
+}
+
+.ubits-status-panel__item-icon-wrap--error i {
+    color: var(--ubits-feedback-accent-error);
+}
+
+.ubits-status-panel__item-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.ubits-status-panel__item-title {
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.ubits-status-panel__item-title.ubits-body-sm-regular {
+    color: var(--ubits-fg-1-high);
+}
+
+.ubits-status-panel__item-subtitle {
+    display: block;
+    margin-top: 2px;
+}
+
+/* Texto secundario sobre bg-2 (fg-1-low no existe en ubits-colors.css) */
+.ubits-status-panel__item-subtitle.ubits-body-xs-regular {
+    color: var(--ubits-fg-2-medium);
+}
+
+.ubits-status-panel__item-status {
+    flex-shrink: 0;
+    width: 22px;
+    min-width: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Spinner (misma lógica visual que loader, tamaño compacto) */
+.ubits-status-panel__spinner {
+    width: 18px;
+    height: 18px;
+    border: 2px solid var(--ubits-border-1);
+    border-top-color: var(--ubits-accent-brand);
+    border-radius: 50%;
+    animation: ubits-status-panel-spin 0.8s linear infinite;
+    flex-shrink: 0;
+}
+
+@keyframes ubits-status-panel-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Indicador éxito */
+.ubits-status-panel__check {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--ubits-feedback-accent-success);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.ubits-status-panel__check i {
+    color: var(--ubits-btn-primary-fg);
+    font-size: 10px;
+}
+
+/* Indicador error */
+.ubits-status-panel__error-mark {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--ubits-feedback-accent-error);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.ubits-status-panel__error-mark i {
+    color: var(--ubits-btn-primary-fg);
+    font-size: 10px;
+}

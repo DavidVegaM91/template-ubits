@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="../../images/Ubits-logo-dark.svg">
+    <title>Status panel - Operaciones en curso | UBITS Playground</title>
+
+    <link rel="stylesheet" href="../../general-styles/ubits-colors.css">
+    <link rel="stylesheet" href="../../general-styles/styles.css">
+    <link rel="stylesheet" href="../../general-styles/fontawesome-icons.css">
+    <link rel="stylesheet" href="../../general-styles/ubits-typography.css">
+    <link rel="stylesheet" href="../../components/sub-nav.css">
+    <link rel="stylesheet" href="../../components/alert.css">
+    <link rel="stylesheet" href="../../components/sidebar.css">
+    <link rel="stylesheet" href="../../docs/docs-sidebar.css">
+    <link rel="stylesheet" href="../../docs/docstyles.css">
+    <link rel="stylesheet" href="../../components/button.css">
+    <link rel="stylesheet" href="../../components/status-panel.css">
+    <link rel="stylesheet" href="../../components/toast.css">
+    <style>
+        .preview-control-btn.active {
+            background: var(--ubits-accent-brand) !important;
+            color: white !important;
+            border-color: var(--ubits-accent-brand) !important;
+        }
+        .preview-control-btn.active span {
+            color: white !important;
+        }
+        #doc-status-panel-zone {
+            position: relative;
+            min-height: 360px;
+            background: var(--ubits-bg-2);
+            border-radius: var(--border-radius-md);
+        }
+    </style>
+</head>
+<body class="componentes-page" data-theme="light">
+    <div class="dashboard-container">
+        <main class="main-content">
+            <div id="top-nav-container"></div>
+            <div style="display: flex;">
+                <div id="docs-dropdown-container"></div>
+                <div id="docs-sidebar-container"></div>
+                <div class="components-content">
+                    <div class="content-area" style="display: block; width: 100%;">
+                        <div style="text-align: center; margin-bottom: 60px;">
+                            <h1 class="ubits-display-d2-bold" style="margin-bottom: 24px; color: var(--ubits-accent-brand);">
+                                Status panel
+                            </h1>
+                            <p class="ubits-body-md-regular" style="max-width: 800px; margin: 0 auto 32px; line-height: 1.6;">
+                                Panel flotante en la esquina inferior para mostrar cargas, transferencias o tareas en curso. El usuario puede minimizarlo, cerrarlo y abrir cada ítem completado.
+                            </p>
+                        </div>
+
+                        <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: var(--border-radius-lg); margin-bottom: 40px;">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-eye" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Preview del componente
+                            </h2>
+                            <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6;">
+                                El panel de ejemplo aparece dentro del recuadro. Usa los botones para añadir, completar o marcar error en las operaciones.
+                            </p>
+                            <div style="display: flex; gap: var(--gap-md); flex-wrap: wrap; margin-bottom: 16px;">
+                                <button type="button" class="ubits-button ubits-button--primary ubits-button--md" id="doc-sp-add-loading">
+                                    <i class="far fa-plus"></i>
+                                    <span>Añadir en curso</span>
+                                </button>
+                                <button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="doc-sp-complete">
+                                    <i class="far fa-check"></i>
+                                    <span>Completar último</span>
+                                </button>
+                                <button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="doc-sp-error">
+                                    <i class="far fa-times-circle"></i>
+                                    <span>Marcar error</span>
+                                </button>
+                                <button type="button" class="ubits-button ubits-button--tertiary ubits-button--md" id="doc-sp-clear">
+                                    <span>Limpiar</span>
+                                </button>
+                            </div>
+                            <div id="doc-status-panel-zone"></div>
+                        </div>
+
+                        <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: var(--border-radius-lg); margin-bottom: 40px;">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-info-circle" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Características generales
+                            </h2>
+                            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: var(--gap-lg);">
+                                <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm);">
+                                    <i class="far fa-layer-group" style="font-size: 24px; color: var(--ubits-accent-brand); margin-bottom: 12px;"></i>
+                                    <p class="ubits-body-md-bold" style="margin-bottom: 8px;">Varias operaciones</p>
+                                    <p class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); margin: 0;">Lista con scroll cuando hay muchos ítems.</p>
+                                </div>
+                                <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm);">
+                                    <i class="far fa-spinner" style="font-size: 24px; color: var(--ubits-accent-brand); margin-bottom: 12px;"></i>
+                                    <p class="ubits-body-md-bold" style="margin-bottom: 8px;">Estados claros</p>
+                                    <p class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); margin: 0;">En curso, completado, error o neutro.</p>
+                                </div>
+                                <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm);">
+                                    <i class="far fa-compress-alt" style="font-size: 24px; color: var(--ubits-accent-brand); margin-bottom: 12px;"></i>
+                                    <p class="ubits-body-md-bold" style="margin-bottom: 8px;">Minimizar y cerrar</p>
+                                    <p class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); margin: 0;">Botones oficiales UBITS en la cabecera.</p>
+                                </div>
+                                <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm);">
+                                    <i class="far fa-hand-pointer" style="font-size: 24px; color: var(--ubits-accent-brand); margin-bottom: 12px;"></i>
+                                    <p class="ubits-body-md-bold" style="margin-bottom: 8px;">Clic en ítem listo</p>
+                                    <p class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); margin: 0;">Callback al completar para navegar o abrir detalle.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: var(--border-radius-lg); margin-bottom: 40px;">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-comment-dots" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Prompts útiles
+                            </h2>
+                            <div id="component-warning-alert"></div>
+                            <div style="padding-bottom: 24px; margin-top: 24px;">
+                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                                    <h3 class="ubits-body-md-bold" style="margin: 0;">Insertar panel de actividad</h3>
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('component-prompt-1')">
+                                        <i class="far fa-copy"></i>
+                                        <span>Copiar</span>
+                                    </button>
+                                </div>
+                                <pre style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm); margin: 0;"><code id="component-prompt-1" class="ubits-body-sm-regular">Inserta el status panel UBITS en [ubicación] de la página. Importa status-panel.css, button.css y status-panel.js. Monta el HTML con renderStatusPanelHtml e initStatusPanel. Título: [texto del título].</code></pre>
+                            </div>
+                            <div style="padding-bottom: 24px;">
+                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                                    <h3 class="ubits-body-md-bold" style="margin: 0;">Añadir operación en curso</h3>
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('component-prompt-2')">
+                                        <i class="far fa-copy"></i>
+                                        <span>Copiar</span>
+                                    </button>
+                                </div>
+                                <pre style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm); margin: 0;"><code id="component-prompt-2" class="ubits-body-sm-regular">Cuando el usuario inicie [acción], llama statusPanelAddItem con id único, título [texto] y estado loading. Al terminar, statusPanelUpdateItem con status success y subtítulo [texto].</code></pre>
+                            </div>
+                        </div>
+
+                        <div style="background: var(--ubits-bg-1); border-radius: var(--border-radius-lg); margin-bottom: 40px; overflow: hidden;">
+                            <div style="padding: 32px; text-align: center; border-bottom: 1px solid var(--ubits-border-1);">
+                                <h2 class="ubits-heading-h2" style="margin-bottom: 0;">
+                                    <i class="far fa-code" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                    Documentación técnica
+                                </h2>
+                            </div>
+                            <div style="background: var(--ubits-bg-2); padding: 20px; text-align: center; cursor: pointer;" onclick="toggleTechnicalDocs()">
+                                <span class="ubits-body-md-regular" style="color: var(--ubits-accent-brand); display: flex; align-items: center; justify-content: center; gap: var(--gap-sm);">
+                                    <i class="far fa-chevron-down" id="tech-docs-chevron"></i>
+                                    Mostrar
+                                </span>
+                            </div>
+                            <div id="technical-docs-content" style="display: none; padding: 32px;">
+                                <h3 class="ubits-body-md-bold" style="margin-bottom: 16px;">Requisitos</h3>
+                                <ul class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); line-height: 1.6;">
+                                    <li><code>general-styles/ubits-colors.css</code>, <code>ubits-typography.css</code>, <code>fontawesome-icons.css</code></li>
+                                    <li><code>components/button.css</code> (acciones de cabecera)</li>
+                                    <li><code>components/status-panel.css</code> + <code>components/status-panel.js</code></li>
+                                    <li>Opcional icono IA: tokens <code>--modo-ia-gradient-*</code> en <code>ubits-colors.css</code> y <code>useIaTitleIcon: true</code></li>
+                                </ul>
+                                <h3 class="ubits-body-md-bold" style="margin: 32px 0 16px;">API</h3>
+                                <pre style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm); overflow-x: auto;"><code class="ubits-body-sm-regular" id="implement-code">renderStatusPanelHtml({ id, title, placement, titleIcon, useIaTitleIcon, hidden })
+initStatusPanel(rootId, { title, autoTitle, titleLoading, titleDone, hidden })
+statusPanelAddItem(root, itemId, { title, subtitle, status, icon, onClick })
+statusPanelUpdateItem(root, itemId, { title, subtitle, status, icon, onClick })
+statusPanelRemoveItem(root, itemId)
+statusPanelClear(root)
+statusPanelSetTitle(root, title)
+statusPanelRefresh(root)
+
+// status: 'loading' | 'success' | 'error' | 'neutral'
+// placement: 'bottom-left' | 'bottom-right'</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div id="ubits-toast-container"></div>
+
+    <script src="../../components/sidebar.js"></script>
+    <script src="../../components/sub-nav.js"></script>
+    <script src="../../components/alert.js"></script>
+    <script src="../../components/toast.js"></script>
+    <script src="../../components/status-panel.js"></script>
+    <script src="../../docs/docs-sidebar.js"></script>
+    <script src="../../script.js"></script>
+    <script>
+        var docSpCounter = 0;
+        var docSpLastId = null;
+
+        document.addEventListener('DOMContentLoaded', function () {
+            loadSubNav('top-nav-container', 'documentacion');
+            setTimeout(function () {
+                document.querySelectorAll('.nav-tab.active, .hamburger-item.active').forEach(function (item) {
+                    item.classList.remove('active');
+                });
+                var navTab = document.querySelector('.nav-tab[data-tab="section3"]');
+                var hamburgerItem = document.querySelector('.hamburger-item[data-tab="section3"]');
+                if (navTab) navTab.classList.add('active');
+                if (hamburgerItem) hamburgerItem.classList.add('active');
+            }, 200);
+            loadDocsSidebar('status-panel');
+            showAlert('warning', 'Importante: Antes de enviar estos prompts a Cursor, reemplaza todos los textos entre [corchetes] con la información específica de tu proyecto.', {
+                containerId: 'component-warning-alert',
+                noClose: true
+            });
+
+            var zone = document.getElementById('doc-status-panel-zone');
+            zone.insertAdjacentHTML('beforeend', renderStatusPanelHtml({
+                id: 'doc-status-panel-demo',
+                title: 'Actividad',
+                placement: 'bottom-left',
+                titleIcon: 'fa-list-check',
+                embedded: true,
+                hidden: false
+            }));
+            initStatusPanel('doc-status-panel-demo', {
+                autoTitle: true,
+                titleLoading: 'Operaciones en curso',
+                titleDone: 'Operaciones completadas',
+                hidden: false
+            });
+
+            statusPanelAddItem('doc-status-panel-demo', 'doc-item-demo-1', {
+                title: 'Subiendo presentación.zip',
+                subtitle: 'En curso…',
+                status: 'loading',
+                icon: 'fa-file-zipper'
+            });
+            statusPanelAddItem('doc-status-panel-demo', 'doc-item-demo-2', {
+                title: 'Video intro.mp4',
+                subtitle: 'Listo · Haz clic para ver',
+                status: 'success',
+                icon: 'fa-video',
+                onClick: function () {
+                    showToast('info', 'Abriste el video de ejemplo.', { duration: 3000 });
+                }
+            });
+            docSpCounter = 2;
+            docSpLastId = 'doc-item-demo-1';
+
+            document.getElementById('doc-sp-add-loading').addEventListener('click', function () {
+                docSpCounter += 1;
+                docSpLastId = 'doc-item-' + docSpCounter;
+                statusPanelAddItem('doc-status-panel-demo', docSpLastId, {
+                    title: 'Subiendo archivo ' + docSpCounter + '.zip',
+                    subtitle: 'En curso…',
+                    status: 'loading',
+                    icon: 'fa-file-zipper'
+                });
+            });
+            document.getElementById('doc-sp-complete').addEventListener('click', function () {
+                if (!docSpLastId) return;
+                statusPanelUpdateItem('doc-status-panel-demo', docSpLastId, {
+                    status: 'success',
+                    subtitle: 'Listo · Haz clic para ver',
+                    onClick: function () {
+                        showToast('info', 'Ítem abierto: ' + docSpLastId, { duration: 3000 });
+                    }
+                });
+            });
+            document.getElementById('doc-sp-error').addEventListener('click', function () {
+                if (!docSpLastId) return;
+                statusPanelUpdateItem('doc-status-panel-demo', docSpLastId, {
+                    status: 'error',
+                    subtitle: 'No se pudo completar'
+                });
+            });
+            document.getElementById('doc-sp-clear').addEventListener('click', function () {
+                statusPanelClear('doc-status-panel-demo');
+                docSpLastId = null;
+            });
+        });
+
+        function toggleTechnicalDocs() {
+            var content = document.getElementById('technical-docs-content');
+            var button = document.querySelector('[onclick="toggleTechnicalDocs()"]');
+            if (content.style.display === 'none' || content.style.display === '') {
+                content.style.display = 'block';
+                button.innerHTML = '<i class="far fa-chevron-up" style="color: var(--ubits-accent-brand);"></i> <span class="ubits-body-md-regular" style="color: var(--ubits-accent-brand);">Ocultar</span>';
+            } else {
+                content.style.display = 'none';
+                button.innerHTML = '<i class="far fa-chevron-down" style="color: var(--ubits-accent-brand);"></i> <span class="ubits-body-md-regular" style="color: var(--ubits-accent-brand);">Mostrar</span>';
+            }
+        }
+
+        function copyPrompt(promptId) {
+            var text = document.getElementById(promptId).textContent;
+            navigator.clipboard.writeText(text).then(function () {
+                showToast('success', '¡Prompt copiado!', { duration: 3500 });
+            });
+        }
+    </script>
+</body>
+</html>
