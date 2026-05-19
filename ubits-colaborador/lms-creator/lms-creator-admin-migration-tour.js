@@ -2,6 +2,7 @@
  * Tour coachmark tras migración desde Admin (submenú Aprendizaje).
  * Requiere: popover.js, coachmark.js, tooltip.js (sidebar creator montado).
  * sessionStorage 'ubits-start-lms-creator-tour' === '1' → arranca el tour y se limpia.
+ * Opción { always: true } → arranca en cada visita (p. ej. contenidos-sin-migrar.html).
  */
 (function () {
     'use strict';
@@ -17,20 +18,24 @@
         }
     }
 
-    window.initUbitsLmsCreatorAdminMigrationTour = function (delayMs) {
+    window.initUbitsLmsCreatorAdminMigrationTour = function (delayMs, options) {
         var d = typeof delayMs === 'number' ? delayMs : 450;
+        var opts = options && typeof options === 'object' ? options : {};
+        var alwaysRun = opts.always === true;
         setTimeout(function () {
             if (!isDesktopSidebarViewport()) {
                 return;
             }
 
-            var runTour = false;
-            try {
-                if (sessionStorage.getItem(STORAGE_KEY) === '1') {
-                    sessionStorage.removeItem(STORAGE_KEY);
-                    runTour = true;
-                }
-            } catch (e) { /* ignore */ }
+            var runTour = alwaysRun;
+            if (!runTour) {
+                try {
+                    if (sessionStorage.getItem(STORAGE_KEY) === '1') {
+                        sessionStorage.removeItem(STORAGE_KEY);
+                        runTour = true;
+                    }
+                } catch (e) { /* ignore */ }
+            }
             if (!runTour) return;
             if (typeof UBITS_COACHMARK === 'undefined' || typeof UBITS_COACHMARK.start !== 'function') return;
             if (typeof window.openPopover !== 'function') return;
