@@ -8,6 +8,7 @@
 
     var OVERLAY_ID      = 'cc-scorm-recurso-modal';
     var EDIT_LIGHTBOX_ID = 'cc-scorm-edit-lightbox';
+    var DELETE_SLIDE_MODAL_ID = 'cc-scorm-delete-slide-modal';
     var SCORM_GEN_TOKEN_COST = 15;
 
     /* ══════════════════════════════════════
@@ -209,6 +210,57 @@
     }
 
     global.ccScormDeleteSlideAt = ccScormDeleteSlideAt;
+
+    function ccScormConfirmDeleteSlide(pageKey, index) {
+        var stored = _scormDataStore[pageKey];
+        if (!stored || !stored.slides || stored.slides.length <= 1) {
+            if (typeof showToast === 'function') {
+                showToast('warning', 'Debes conservar al menos una diapositiva.', { containerId: 'ubits-toast-container' });
+            }
+            return;
+        }
+        var slideNum = Math.max(0, Math.min(index, stored.slides.length - 1)) + 1;
+
+        if (typeof openModal !== 'function' || typeof closeModal !== 'function') {
+            ccScormDeleteSlideAt(pageKey, index);
+            return;
+        }
+
+        openModal({
+            overlayId: DELETE_SLIDE_MODAL_ID,
+            title: 'Eliminar diapositiva',
+            bodyHtml:
+                '<p class="ubits-body-md-regular" style="margin:0;color:var(--ubits-fg-1-medium);">' +
+                '¿Estás seguro de eliminar la diapositiva <strong class="ubits-body-md-bold">' + slideNum + '</strong>? ' +
+                'Esta acción no se puede deshacer.</p>',
+            footerHtml:
+                '<button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="cc-scorm-delete-slide-cancel"><span>Cancelar</span></button>' +
+                '<button type="button" class="ubits-button ubits-button--error ubits-button--md" id="cc-scorm-delete-slide-confirm"><span>Sí, eliminar</span></button>',
+            size: 'sm',
+            closeOnOverlayClick: true
+        });
+
+        var ov = document.getElementById(DELETE_SLIDE_MODAL_ID);
+        if (!ov) return;
+
+        function closeDeleteSlideModal() {
+            closeModal(DELETE_SLIDE_MODAL_ID);
+        }
+
+        var cancelBtn = ov.querySelector('#cc-scorm-delete-slide-cancel');
+        var confirmBtn = ov.querySelector('#cc-scorm-delete-slide-confirm');
+        if (cancelBtn) {
+            cancelBtn.addEventListener('click', closeDeleteSlideModal);
+        }
+        if (confirmBtn) {
+            confirmBtn.addEventListener('click', function () {
+                closeDeleteSlideModal();
+                ccScormDeleteSlideAt(pageKey, index);
+            });
+        }
+    }
+
+    global.ccScormConfirmDeleteSlide = ccScormConfirmDeleteSlide;
 
     function getScormChromeThemeSyncScript() {
         return (
@@ -1057,7 +1109,7 @@
         '  try{showIxTipForSlide_(cur);}catch(eIx){}  if(document.body.classList.contains("sp--editing")){var ss2=document.querySelectorAll(".sp-slide");if(ss2[cur])try{spSyncSlideEditorBtns_(ss2[cur]);}catch(eSb){}}}' +
         (editMode ? 'function openColorPicker(el){try{parent.ccScormOpenColorPicker(el,function(hex){if(parent.ccScormApplyTheme)parent.ccScormApplyTheme(document,hex);else document.documentElement.style.setProperty("--accent",hex);var sw=document.getElementById("sp-cpsw");if(sw)sw.style.background=hex;});}catch(e){}}' +
         'function wireSpTooltips_(){if(typeof initTooltip!=="function")return;try{initTooltip("[data-tooltip]");}catch(eT){}}' +
-        'function deleteCurrentSlide(){if(tot<=1){alert("Debes conservar al menos una diapositiva.");return;}if(!confirm("¿Eliminar esta diapositiva?"))return;try{if(parent.ccScormDeleteSlideAt&&typeof __spEditPageKey!=="undefined")parent.ccScormDeleteSlideAt(__spEditPageKey,cur);}catch(eDel){}}' : '') +
+        'function deleteCurrentSlide(){if(typeof __spEditPageKey==="undefined")return;try{if(parent.ccScormConfirmDeleteSlide)parent.ccScormConfirmDeleteSlide(__spEditPageKey,cur);}catch(eDel){}}' : '') +
         'function wireScormIx(){' +
         'document.querySelectorAll(".sp-ix-hint").forEach(function(btn){' +
         'btn.addEventListener("click",function(e){' +

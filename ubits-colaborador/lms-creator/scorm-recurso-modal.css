@@ -320,6 +320,15 @@
 
 /* Lightbox — overlay a todo el viewport; bandas superior/inferior a ancho completo con gradiente;
    contenido central acotado a 1440px. Mismo scrim que .ubits-modal-overlay. */
+/* Confirmación eliminar slide: por encima del lightbox de edición (1400) */
+#cc-scorm-delete-slide-modal.ubits-modal-overlay {
+    z-index: 1500;
+}
+
+#cc-scorm-delete-slide-modal .ubits-modal-content {
+    z-index: 1501;
+}
+
 .cc-scorm-fs-overlay.cc-scorm-fs-overlay--lightbox {
     position: fixed;
     inset: 0;
