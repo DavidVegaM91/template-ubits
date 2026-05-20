@@ -171,12 +171,57 @@
     min-width: 0;
 }
 
-.cc-sm-controls-row__stepper {
+.cc-sm-controls-row--color-only {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--gap-sm);
+}
+
+.cc-sm-slide-types-hint {
+    margin: var(--gap-xs) 0 var(--gap-sm);
+    color: var(--ubits-fg-1-medium);
+    line-height: 1.45;
+}
+
+.cc-sm-slide-types-hint strong {
+    font-weight: 600;
+    color: var(--ubits-fg-1-high);
+}
+
+/* Mismo orden que el preview: col. izq. = tipos 1–8, col. der. = 9–15 (resumen al final). */
+.cc-sm-slide-types {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: repeat(8, auto);
+    grid-auto-flow: column;
+    gap: var(--gap-xs) var(--gap-md);
+    padding: var(--padding-sm);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: var(--border-radius-sm);
+    background: var(--ubits-bg-1);
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.cc-sm-slide-types--error {
+    border-color: var(--ubits-feedback-accent-error);
+    box-shadow: 0 0 0 1px var(--ubits-feedback-accent-error);
+}
+
+.cc-sm-slide-type-item {
     min-width: 0;
 }
 
-.cc-sm-controls-row__stepper .ubits-number-stepper-field--label-left {
-    width: 100%;
+.cc-sm-slide-type-item .ubits-checkbox__label {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.cc-sm-slide-types-meta {
+    margin: var(--gap-xs) 0 0;
+    color: var(--ubits-fg-2-medium);
 }
 
 .cc-sm-controls-row__color {

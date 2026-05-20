@@ -333,7 +333,7 @@ El pie del modal muestra el botón que corresponde a la pestaña activa (por eje
 
 | Pestaña | Qué permite |
 |---------|-------------|
-| **SCORM con IA** | Definir título, contexto para la IA, número de diapositivas, color corporativo y **generar** una presentación interactiva (consume tokens). |
+| **SCORM con IA** | Definir título, contexto para la IA, **tipos de diapositiva** a incluir, color corporativo y **generar** una presentación interactiva (consume tokens). |
 | **Subir .zip** | Adjuntar un **paquete SCORM** ya existente (.zip) desde el equipo. |
 
 El pie del modal muestra **Generar presentación** en la pestaña IA o **Cargar SCORM** en la pestaña de subida.
@@ -342,7 +342,7 @@ El pie del modal muestra **Generar presentación** en la pestaña IA o **Cargar 
 
 - **Título de la presentación** — obligatorio; en el prototipo, al generar, ese texto también puede **alinear el título de la página** en el índice con el mismo nombre.
 - **Contexto para la IA** — área de texto obligatoria: la persona describe **equipo, industria o matiz** que debe considerar la generación. Puede **adjuntar archivos** (imágenes u otros documentos habituales); los adjuntos aparecen como **vistas previas** o **chips** que puede quitar.
-- **Número de slides** — control numérico con botones **− / +** (**etiqueta a la izquierda** del control, en la misma fila que el selector de **color principal**). Rango permitido en pantalla (en el prototipo, entre **5 y 15** diapositivas).
+- **Tipos de diapositiva** — lista en **dos columnas** (checkbox UBITS), en el **mismo orden** que el preview: **columna izquierda** = los **8 primeros** tipos (portada → … → pestañas); **columna derecha** = los **7 últimos** (tarjetas → … → **resumen** al cierre). Las **15** vienen **marcadas por defecto**; desmarcar = ese tipo no entra. **Portada** siempre incluida. **Una diapositiva por tipo** seleccionado, en ese orden. **Sin mínimo** de tipos (puede quedar solo portada). Los nombres visibles en el modal coinciden con las **etiquetas por defecto** de cada tipo en la presentación (ver siguiente subsección).
 - **Color principal** — **muestra de color** (borde fino visible); al pulsarla se abre el **selector de color** UBITS para acentuar la presentación.
 - **Logo de la empresa (opcional)** — carga de **PNG** (máximo indicado en UI, p. ej. **2 MB**). Tras generar, el logo aparece en la **primera diapositiva (portada)**, anclado a la **esquina superior derecha de la imagen de portada** (posición fija respecto al recorte 16:9, sin “bailar” al cambiar el ancho de pantalla).
 - **Vista previa orientativa** — a la derecha, un **iframe** muestra cómo podría verse la navegación (barra de progreso, paso anterior/siguiente). El texto aclara que es **orientativa**: el contenido final usará el contexto, logo y estructura definidos al generar.
@@ -356,6 +356,37 @@ El pie del modal muestra **Generar presentación** en la pestaña IA o **Cargar 
 
 Si la generación es por IA, puede mostrarse la **etiqueta «Generado con IA»** sobre el embed. El **logo** y el **color** elegidos en el modal se **persisten** al guardar ediciones posteriores.
 
+### Etiquetas (tags) en cada diapositiva
+
+En casi todas las diapositivas (salvo la **portada**, que usa su propia **pastilla** bajo el título — p. ej. *Presentación interactiva · …* — editable aparte) aparece arriba una **pastilla pequeña** con **icono + texto**: es la **etiqueta del slide**.
+
+| Nombre en el modal (checkbox) | Etiqueta por defecto en la diapositiva |
+|-------------------------------|----------------------------------------|
+| Portada | *(chip de portada, no la pastilla estándar)* |
+| Lista viñetas | Lista viñetas |
+| Lista ordenada | Lista ordenada |
+| Cita | Cita |
+| Dato clave | Dato clave |
+| Texto e imagen | Texto e imagen |
+| Imagen interactiva | Imagen interactiva |
+| Acordeón | Acordeón |
+| Pestañas | Pestañas |
+| Tarjetas | Tarjetas |
+| Línea de tiempo | Línea de tiempo |
+| Comparativa | Comparativa |
+| Quiz | Quiz |
+| Emparejamiento | Emparejamiento |
+| Resumen | Resumen |
+
+**Reglas de producto:**
+
+1. **Alineación modal ↔ presentación:** el texto del checkbox en **«Agregar SCORM»** es el mismo criterio que la etiqueta **por defecto** en la diapositiva de ese tipo (antes se usaban nombres distintos en pantalla — p. ej. «Contenido», «Multimedia», «Cronología» — y generaba confusión).
+2. **Etiqueta temática en el contenido generado:** al generar con IA, cada diapositiva puede llevar una etiqueta **adaptada al tema** del demo o del contexto (p. ej. en una presentación sobre conflictos: **«Preparación»** en una slide de lista ordenada, **«Fundamentos»** en lista viñetas, **«Mapa del equipo»** en imagen interactiva). Eso **no** sustituye el tipo de slide: solo hace más legible el hilo narrativo. Si no hay etiqueta temática guardada, se muestra la **etiqueta del tipo** de la tabla.
+3. **Vista consumo:** el alumno ve la etiqueta que quedó guardada (temática o por tipo).
+4. **Edición:** en **«Editar presentación»**, la pastilla es **editable** (clic y escribir). Al **Guardar**, el texto se conserva en la presentación y en futuras ediciones. Si el usuario **borra** todo el texto de la etiqueta y guarda, al volver a mostrarse se **restaura la etiqueta del tipo** (la de la tabla).
+
+En diapositivas **interactivas** (imagen con puntos, acordeón, pestañas, tarjetas, línea de tiempo, comparativa, quiz, emparejamiento), la pastilla comparte fila con el control **«Slide interactivo»** (icono de información con instrucciones de uso).
+
 ### Pestaña «Subir .zip»
 
 - Zona para elegir un archivo **.zip** con límites de **tamaño** indicados en la UI (en el prototipo se admite un volumen grande tipo paquete corporativo).
@@ -364,12 +395,13 @@ Si la generación es por IA, puede mostrarse la **etiqueta «Generado con IA»**
 ### Una vez creado el recurso en el panel
 
 - El bloque muestra el **SCORM a pantalla** y, si la ruta fue **generada con IA**, también el botón secundario **«Editar presentación»**.
-- **Editar presentación** abre un **segundo modal** a pantalla completa con la misma experiencia dentro de un **iframe** en **modo edición**:
-  - **Textos** editables en las diapositivas (según el tipo de slide).
+- **Editar presentación** abre un **lightbox** a pantalla completa con la misma experiencia dentro de un **iframe** en **modo edición**:
+  - **Etiqueta (tag)** de cada diapositiva — **editable** en la pastilla superior (icono + texto); ver **Etiquetas (tags) en cada diapositiva**.
+  - **Textos** editables en las diapositivas (título, cuerpo, ítems, preguntas, hotspots, etc., según el tipo de slide).
   - **Color principal** modificable desde la cabecera del visor (muestra de color + selector UBITS).
   - **Cambiar imagen** en diapositivas que llevan imagen (control sobre la imagen de portada u otras según plantilla).
   - **Eliminar diapositiva:** en cada slide, botón de **papelera** en la esquina superior derecha del contenido (icono con tooltip **«Eliminar diapositiva»**). Al pulsarlo se abre un **modal de confirmación** («¿Estás seguro de eliminar la diapositiva **N**? Esta acción no se puede deshacer.»). **Cancelar** cierra; **Sí, eliminar** quita esa diapositiva y **renumera** el recorrido. Debe quedar **al menos una** diapositiva: si solo queda una, el botón de eliminar diapositiva queda **deshabilitado** (y un aviso breve si se intenta borrar la última).
-  - **Guardar** aplica cambios y vuelve al panel con el SCORM actualizado; **Cancelar** descarta lo editado en esa sesión del modal.
+  - **Guardar** aplica cambios (incluidas etiquetas, textos, color e imágenes) y vuelve al panel con el SCORM actualizado; **Cancelar** descarta lo editado en esa sesión del lightbox.
 - **Eliminar** (pie del bloque en el panel de la página) usa el **modal de confirmación de recurso** (ver sección transversal); no borra el SCORM sin confirmar.
 - En el **índice**, el icono de la página pasa a **SCORM**.
 
@@ -510,7 +542,7 @@ Tras recoger tema y reglas, el flujo llega a un **paso de confirmación** en el 
 - Paso **3 — Certificado** (contenido de pantalla más allá de la regla de bloqueo desde paso 2).  
 - Paso **4 — Publicación**.  
 - Reglas de validación global (publicar, borradores, etc.) si aplica.  
-- Detalle de pantalla del modal **Editar presentación** SCORM (tipos de diapositiva, quizzes, hotspots) más allá de edición, color, imágenes y eliminar slide.
+- Detalle de consumo SCORM por tipo de diapositiva (quizzes, hotspots, emparejamiento) más allá de lo ya descrito en **Recurso: SCORM**.
 
 ---
 
@@ -522,4 +554,4 @@ Este documento **no** sustituye la **documentación de componentes UBITS** ni la
 
 ---
 
-*Última revisión: **Status panel** (generación video/SCORM IA, error «Se eliminó el recurso» en rojo al borrar recurso). **Modal confirmación** al eliminar cualquier recurso ya montado. **SCORM:** logo PNG opcional en portada, número de slides con etiqueta a la izquierda, **eliminar diapositiva** con confirmación (mínimo 1). **Video IA:** logo PNG opcional. Sustituida la narrativa del antiguo “widget flotante” genérico por el **Status panel** oficial.*
+*Última revisión: **SCORM:** etiquetas de diapositiva alineadas al modal (**Lista viñetas**, **Imagen interactiva**, **Emparejamiento**, etc.), etiquetas temáticas en contenido IA, **tag editable** en **Editar presentación**. Selección por tipos de diapositiva (checkbox). **Status panel**, **modal eliminar recurso**, logo portada/video, **eliminar diapositiva**.*

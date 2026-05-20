@@ -1,6 +1,7 @@
 /**
  * LMS Creator — Modal «Agregar SCORM» + Modal edición inline + Color Picker HSV
- * Pool fijo de 15 tipos de diapositiva (una por tipo); generateSlides(n) toma las primeras n (5–15).
+ * Pool fijo de 15 tipos de diapositiva (una por tipo); el usuario elige tipos (checkbox);
+ * se genera una diapositiva de cada tipo seleccionado, en orden pedagógico fijo.
  * Depende: modal.js, input.js, file-upload.js, color-picker.js (popover)
  */
 (function (global) {
@@ -10,6 +11,60 @@
     var EDIT_LIGHTBOX_ID = 'cc-scorm-edit-lightbox';
     var DELETE_SLIDE_MODAL_ID = 'cc-scorm-delete-slide-modal';
     var SCORM_GEN_TOKEN_COST = 15;
+
+    /** Catálogo UI (mismo orden que buildPool / preview): col. izq. 1–8, col. der. 9–15. */
+    var SCORM_SLIDE_TYPE_CATALOG = [
+        { type: 'intro', label: 'Portada', tagDefault: 'Portada', icon: 'fa-comments', locked: true },
+        { type: 'content', label: 'Lista viñetas', tagDefault: 'Lista viñetas', icon: 'fa-book-open' },
+        { type: 'steps', label: 'Lista ordenada', tagDefault: 'Lista ordenada', icon: 'fa-list-ol' },
+        { type: 'quote', label: 'Cita', tagDefault: 'Cita', icon: 'fa-quote-left' },
+        { type: 'keypoint', label: 'Dato clave', tagDefault: 'Dato clave', icon: 'fa-lightbulb' },
+        { type: 'split', label: 'Texto e imagen', tagDefault: 'Texto e imagen', icon: 'fa-columns' },
+        { type: 'media', label: 'Imagen interactiva', tagDefault: 'Imagen interactiva', icon: 'fa-image' },
+        { type: 'accordion', label: 'Acordeón', tagDefault: 'Acordeón', icon: 'fa-bars-staggered' },
+        { type: 'tabs', label: 'Pestañas', tagDefault: 'Pestañas', icon: 'fa-folder-open' },
+        { type: 'flashcards', label: 'Tarjetas', tagDefault: 'Tarjetas', icon: 'fa-clone' },
+        { type: 'timeline', label: 'Línea de tiempo', tagDefault: 'Línea de tiempo', icon: 'fa-route' },
+        { type: 'compare', label: 'Comparativa', tagDefault: 'Comparativa', icon: 'fa-scale-balanced' },
+        { type: 'quiz_mc', label: 'Quiz', tagDefault: 'Quiz', icon: 'fa-list-check' },
+        { type: 'match', label: 'Emparejamiento', tagDefault: 'Emparejamiento', icon: 'fa-link' },
+        { type: 'summary', label: 'Resumen', tagDefault: 'Resumen', icon: 'fa-trophy' }
+    ];
+
+    function getSlideTypeMeta(type) {
+        for (var i = 0; i < SCORM_SLIDE_TYPE_CATALOG.length; i++) {
+            if (SCORM_SLIDE_TYPE_CATALOG[i].type === type) return SCORM_SLIDE_TYPE_CATALOG[i];
+        }
+        return null;
+    }
+
+    function resolveSlideTagLabel(slide) {
+        if (slide && slide.tagLabel != null && String(slide.tagLabel).trim() !== '') {
+            return String(slide.tagLabel).trim();
+        }
+        var meta = slide && slide.type ? getSlideTypeMeta(slide.type) : null;
+        return meta ? meta.tagDefault : '';
+    }
+
+    function buildSlideTagHtml(slide, idx, editMode) {
+        var meta = getSlideTypeMeta(slide.type) || {};
+        var iconClass = slide.icon || meta.icon || 'fa-file';
+        var label = resolveSlideTagLabel(slide);
+        var labelHtml = editMode
+            ? '<span class="sp-slide-tag__label" data-sp-key="slide-' +
+              idx +
+              '-tagLabel" contenteditable="true">' +
+              esc(label) +
+              '</span>'
+            : esc(label);
+        return (
+            '<div class="sp-slide-tag"><i class="far ' +
+            esc(iconClass) +
+            '"></i>' +
+            labelHtml +
+            '</div>'
+        );
+    }
 
     /* ══════════════════════════════════════
        COLOR UTILITIES
@@ -71,13 +126,12 @@
     var _currentPageKey = null;
     var _currentTab     = 'ia';
     var _titulo         = '';
-    var _numSlides      = 15;
+    var _enabledSlideTypes = {};
     var _color          = '#0C5BEF';
     var _pendingFiles   = [];
     var _pendingImgs    = [];
     var _zipFile        = null;
     var _tituloInputApi = null;
-    var _stepperApi     = null;
     var _logoDataUrl    = null;
 
     /* Edición por pageKey */
@@ -276,70 +330,101 @@
 
     /* ══════════════════════════════════════
        Contenido SCORM: 15 tipos de diapositiva (una entrada por tipo, orden fijo)
-       generateSlides(n) devuelve las primeras n (5–15); con n=15 el render usa los 15 tipos.
+       generateSlidesFromEnabled: una slide por cada tipo marcado en el catálogo.
     ══════════════════════════════════════ */
+
+    function createDefaultEnabledSlideTypes() {
+        var map = {};
+        SCORM_SLIDE_TYPE_CATALOG.forEach(function (item) {
+            map[item.type] = true;
+        });
+        return map;
+    }
+
+    function normalizeEnabledSlideTypes(src) {
+        var map = createDefaultEnabledSlideTypes();
+        if (!src || typeof src !== 'object') return map;
+        SCORM_SLIDE_TYPE_CATALOG.forEach(function (item) {
+            if (src[item.type] === false) map[item.type] = false;
+        });
+        map.intro = true;
+        return map;
+    }
+
+    function countEnabledSlideTypes(enabled) {
+        var n = 0;
+        SCORM_SLIDE_TYPE_CATALOG.forEach(function (item) {
+            if (enabled[item.type] !== false) n += 1;
+        });
+        return n;
+    }
+
+    function generateSlidesFromEnabled(enabled) {
+        var pool = buildPool();
+        return pool
+            .filter(function (s) {
+                return enabled[s.type] !== false;
+            })
+            .map(function (s) {
+                return JSON.parse(JSON.stringify(s));
+            });
+    }
 
     function buildPool() {
         return [
-            { type:'intro', icon:'fa-comments', title:'Conversaciones difíciles según Thomas-Kilmann', subtitle:'Presentación interactiva · Thomas-Kilmann', body:'Aprende a elegir el modo de respuesta correcto ante el conflicto', image: SCORM_INTRO_COVER_URL },
-            { type:'content', icon:'fa-compass', title:'El modelo Thomas-Kilmann: 5 modos de respuesta',
+            { type:'intro', icon:'fa-comments', tagLabel:'Presentación', title:'Conversaciones difíciles según Thomas-Kilmann', subtitle:'Presentación interactiva · Thomas-Kilmann', body:'Aprende a elegir el modo de respuesta correcto ante el conflicto', image: SCORM_INTRO_COVER_URL },
+            { type:'content', icon:'fa-compass', tagLabel:'Fundamentos', title:'El modelo Thomas-Kilmann: 5 modos de respuesta',
               body:'Dos dimensiones definen cómo respondemos al conflicto:',
               bullets:['Asertividad: cuánto priorizas tus propias necesidades', 'Cooperación: cuánto priorizas las necesidades del otro', 'Tu punto en ese mapa define tu modo natural de respuesta'] },
             { type:'steps', icon:'fa-clipboard-check', title:'Antes de la conversación: prepárate', tagLabel:'Preparación',
               bullets:['Define tu objetivo: ¿qué resultado realmente necesitas?', 'Identifica tu modo natural y evalúa si es el más adecuado', 'Anticipa las emociones de la otra persona y prepara tu respuesta', 'Elige el momento y espacio adecuados para reducir la tensión'] },
-            { type:'quote', title:'¿Por qué evitamos?',
+            { type:'quote', tagLabel:'Reflexión', title:'¿Por qué evitamos?',
               body:'El silencio parece protector, pero solo pospone lo inevitable — y transforma conflictos pequeños en grandes con el tiempo.',
               author:'Hallazgo central del modelo Thomas-Kilmann' },
-            { type:'keypoint', icon:'fa-chart-line', stat:'85%', statement:'de los equipos han vivido un conflicto que se agravó por no abordarlo a tiempo', desc:'Fuente: estudios de clima organizacional en LATAM, 2022–2024' },
-            { type:'split', icon:'fa-users', title:'Conflictos en equipo: más que una discusión',
+            { type:'keypoint', icon:'fa-chart-line', tagLabel:'Dato clave', stat:'85%', statement:'de los equipos han vivido un conflicto que se agravó por no abordarlo a tiempo', desc:'Fuente: estudios de clima organizacional en LATAM, 2022–2024' },
+            { type:'split', icon:'fa-users', tagLabel:'En contexto', title:'Conflictos en equipo: más que una discusión',
               body:'En el trabajo, la tensión a menudo aparece antes en señales tenues: correos más fríos, reuniones donde nadie objeta, plazos que se resbalan o comentarios en pasillos. Detectar ese momento permite actuar antes de que el bloqueo o el desgaste se instalen. Aquí verás cómo dar nombre a lo que pasa y preparar conversaciones difíciles con criterio, apoyándote en el marco Thomas-Kilmann sin esperar a la “gran pelea”.',
               image: SCORM_INTRO_COVER_URL },
-            { type:'media', image: SCORM_DEMO_IMG, hotspots:[
+            { type:'media', tagLabel:'Mapa del equipo', image: SCORM_DEMO_IMG, hotspots:[
                 { x: 26, y: 44, title: 'Poner el tema sobre la mesa', body: 'Un espacio donde cada quien diga qué observa —hechos y necesidades, no etiquetas— suele bajar la defensa colectiva. Sirve para aclarar supuestos sobre prioridades, plazos o expectativas que, si quedan ocultos, terminan leídos como conflictos personales.' },
                 { x: 74, y: 52, title: 'Acuerdos que el equipo puede ver', body: 'Volcar decisiones en algo visible —quién hace qué, hasta cuándo y con qué criterio de “listo”— reduce la ambigüedad que alimenta rencores. Los equipos que cierran así recuperan ritmo más rápido después de un choque y evitan reabrir la misma discusión en cada stand-up.' },
                 { x: 48, y: 24, title: 'Lo que el contexto presiona', body: 'Objetivos agresivos, cambios de jefatura, recorte de recursos o silos entre áreas explican parte del estrés que cada persona lleva a la sala. Reconocer esas presiones ayuda a elegir un modo de respuesta más útil que el automático y a no confundir síntoma organizacional con “falta de actitud” de alguien del equipo.' }
             ]},
-            { type:'accordion', title:'Profundiza por temas', items:[
+            { type:'accordion', tagLabel:'Profundiza', title:'Profundiza por temas', items:[
                 { title:'Preparación', body:'Anticipa objeciones y define el resultado que necesitas de la reunión.' },
                 { title:'Durante el diálogo', body:'Escucha primero; valida emociones antes de proponer soluciones.' },
                 { title:'Después', body:'Documenta acuerdos y fechas de seguimiento para evitar malentendidos.' }
             ]},
-            { type:'tabs', title:'Tres lecturas para tu equipo', tabs:[
+            { type:'tabs', tagLabel:'Tres lecturas', title:'Tres lecturas para tu equipo', tabs:[
                 { label:'Conflicto con sentido', body:'En equipos de trabajo, el desacuerdo no es siempre un problema de convivencia: muchas veces señala que hay información, prioridades o criterios desalineados. Cuando todo se silencia por educación, puede parecer que “no hay conflicto”, pero la fricción sigue operando en entregas retrasadas o en comentarios al margen. Expresar el choque con foco en el asunto —qué está en juego para el proyecto y para las personas— permite mejorar decisiones y compromisos. El desafío es mantener un tono que permita discrepar sin romper la confianza que necesitarán mañana.' },
                 { label:'TK en la rutina laboral', body:'Thomas-Kilmann describe formas de responder al conflicto, no “tipos de persona”: competir, colaborar, evitar, acomodar o comprometer. En una reunión real puedes preguntarte qué modo estás usando y si encaja con el tiempo, la relación y el resultado que el equipo necesita. Nombrarlo en voz alta, con cuidado (“noto que estamos posponiendo el tema de las dependencias”), reduce tensión y abre la posibilidad de elegir otro estilo más deliberado. El mapa es una brújula, no una sentencia: la práctica está en ajustar el modo según la fase del proyecto y el costo de forzar o ceder.' },
                 { label:'Entrenar antes del choque fuerte', body:'Los cambios duraderos suelen empezar en situaciones de menor riesgo: repartir tareas ambiguas, corregir un supuesto en un chat o pedir una aclaración sin acusar. Prueba un modo distinto al que usas por defecto, observa cómo reacciona el equipo y ajusta. Después de cada intento, una reflexión breve —¿acercamos el resultado?, ¿alguno quedó excluido?— convierte el modelo en hábito. Así, cuando llegue un conflicto con más carga emocional o jerárquica, ya habrás ensayado el vocabulario y el ritmo que hacen falta.' }
             ]},
-            { type:'flashcards', title:'Repaso rápido', cards:[
+            { type:'flashcards', tagLabel:'Repaso', title:'Repaso rápido', cards:[
                 { front:'Competidor', back:'Alta asertividad, baja cooperación: útil con urgencia y límites claros.' },
                 { front:'Colaborador', back:'Alta asertividad y cooperación: ideal cuando importan relación y resultado.' },
                 { front:'Evadir', back:'Baja en ambas: pausa táctica si no es el momento; peligroso si es hábito.' }
             ]},
-            { type:'timeline', title:'Flujo sugerido', items:[
+            { type:'timeline', tagLabel:'Ruta sugerida', title:'Flujo sugerido', items:[
                 { label:'Día 0', title:'Detectar', body:'Identifica el modo por defecto del equipo ante la tensión.' },
                 { label:'Día 1–2', title:'Preparar', body:'Agenda, objetivo y criterios de éxito por escrito.' },
                 { label:'Día 3+', title:'Cerrar', body:'Acuerdos medibles y revisión en 7–14 días.' }
             ]},
-            { type:'compare', title:'Relacional frente a transaccional', leftTag:'Relacional', rightTag:'Transaccional', leftTitle:'Enfoque relacional', leftBody:'Prioriza confianza y tiempo de escucha antes de negociar números o plazos.', rightTitle:'Enfoque transaccional', rightBody:'Prioriza acuerdos explícitos y entregables; útil con plazos ajustados.', rows:[
+            { type:'compare', tagLabel:'Dos enfoques', title:'Relacional frente a transaccional', leftTag:'Relacional', rightTag:'Transaccional', leftTitle:'Enfoque relacional', leftBody:'Prioriza confianza y tiempo de escucha antes de negociar números o plazos.', rightTitle:'Enfoque transaccional', rightBody:'Prioriza acuerdos explícitos y entregables; útil con plazos ajustados.', rows:[
                 { left:'Confianza y alineación emocional primero', right:'Plazos y alcance definidos cuanto antes' },
                 { left:'Funciona muy bien en conflictos sensibles o largos', right:'Funciona muy bien con urgencia o poca historia compartida' },
                 { left:'Riesgo: todo tarda más si no cierras acuerdos', right:'Riesgo: sensación de frialdad si no cuidas el tono' }
             ]},
-            { type:'quiz_mc', title:'Quiz', questions:[
+            { type:'quiz_mc', tagLabel:'Autoevaluación', title:'Quiz', questions:[
                 { question:'¿Cuándo conviene priorizar el modo colaborador?', options:['Siempre, sin excepciones','Cuando la relación y el resultado importan por igual','Solo si la otra parte cede primero'], correctIndex:1 },
                 { question:'¿Qué describe mejor al “evadir”?', options:['Ganar a toda costa','Posponer o eludir la tensión','Integrar todas las partes'], correctIndex:1 },
                 { question:'El mapa TK sirve principalmente para…', options:['Eliminar el conflicto','Nombrar el estilo de respuesta y elegir con intención','Medir IQ del equipo'], correctIndex:1 },
                 { question:'¿Cuál suele ser el efecto del modo “competir” en relaciones ya tensas?', options:['Siempre genera confianza','Puede escalar el conflicto si la otra parte se defiende','Elimina la necesidad de acuerdos'], correctIndex:1 },
                 { question:'El modo “acomodar” implica sobre todo…', options:['Ignorar el problema indefinidamente','Priorizar la relación cediendo en el contenido del desacuerdo','Imponer tu criterio sin escuchar'], correctIndex:1 }
             ] },
-            { type:'match', title:'Relaciona cada modo con su descripción', left:['Competidor','Colaborador','Evadir'], right:['Ganar ya, sin negociar','Buscar solución integradora','Posponer la conversación'], pairs:[[0,0],[1,1],[2,2]] },
-            { type:'summary', title:'Lo que aprendiste', bullets:['El modelo Thomas-Kilmann ofrece 5 modos de respuesta al conflicto', 'No hay un modo ideal universal: el contexto define la elección correcta', 'Prepararse antes cambia el resultado de cualquier conversación difícil', 'Puedes desarrollar flexibilidad para moverte entre modos según la situación'] }
+            { type:'match', tagLabel:'Modos TK', title:'Relaciona cada modo con su descripción', left:['Competidor','Colaborador','Evadir'], right:['Ganar ya, sin negociar','Buscar solución integradora','Posponer la conversación'], pairs:[[0,0],[1,1],[2,2]] },
+            { type:'summary', tagLabel:'Cierre', title:'Lo que aprendiste', bullets:['El modelo Thomas-Kilmann ofrece 5 modos de respuesta al conflicto', 'No hay un modo ideal universal: el contexto define la elección correcta', 'Prepararse antes cambia el resultado de cualquier conversación difícil', 'Puedes desarrollar flexibilidad para moverte entre modos según la situación'] }
         ];
-    }
-
-    function generateSlides(n) {
-        var pool = buildPool();
-        var count = Math.max(5, Math.min(15, n));
-        return pool.slice(0, count).map(function (s) { return JSON.parse(JSON.stringify(s)); });
     }
 
     /* ══════════════════════════════════════
@@ -359,13 +444,15 @@
         return map[slideType] || '';
     }
 
-    function buildIxInteractiveHeader(tagInnerHtml, slideType, editMode, idx) {
+    function buildIxInteractiveHeader(slide, editMode, idx) {
+        var slideType = slide.type;
         var instr = buildIxInstructionText(slideType);
+        var tagBlock = buildSlideTagHtml(slide, idx, editMode);
         if (editMode || !instr) {
-            return '<div class="sp-slide-tag">' + tagInnerHtml + '</div>';
+            return tagBlock;
         }
         return '<div class="sp-slide-meta-row">' +
-            '<div class="sp-slide-tag">' + tagInnerHtml + '</div>' +
+            tagBlock +
             '<div class="sp-ix-wrap">' +
             '<button type="button" class="sp-ix-hint" data-sp-ix-tip="' + esc(instr) + '" aria-expanded="false" aria-controls="sp-ix-tip-' + idx + '" aria-label="Instrucciones del slide interactivo">' +
             '<i class="fas fa-circle-info" aria-hidden="true"></i><span>Slide interactivo</span></button>' +
@@ -427,7 +514,7 @@
                 : '';
             return base +
                 '<div class="sp-slide-card">' +
-                    '<div class="sp-slide-tag"><i class="fas '+(slide.icon||'fa-book-open')+'"></i>Contenido</div>' +
+                    buildSlideTagHtml(slide, idx, editMode) +
                     '<h2'+(editMode?' data-sp-key="slide-'+idx+'-title" contenteditable="true"':'')+'>'+esc(slide.title)+'</h2>' +
                     (slide.body ? '<p class="sp-body-intro"'+(editMode?' data-sp-key="slide-'+idx+'-body" contenteditable="true"':'')+'>'+esc(slide.body)+'</p>' : '') +
                     (bullets ? '<ul class="sp-ed-ul">'+bullets+'</ul>' : '') +
@@ -450,7 +537,7 @@
                 : '';
             return base +
                 '<div class="sp-slide-card">' +
-                    '<div class="sp-slide-tag"><i class="fas '+(slide.icon||'fa-list-ol')+'"></i>'+(slide.tagLabel||'Paso a paso')+'</div>' +
+                    buildSlideTagHtml(slide, idx, editMode) +
                     '<h2'+(editMode?' data-sp-key="slide-'+idx+'-title" contenteditable="true"':'')+'>'+esc(slide.title)+'</h2>' +
                     '<div class="sp-steps-list">'+stepItems+'</div>' +
                     stepsBar +
@@ -459,17 +546,23 @@
 
         } else if (slide.type==='quote') {
             return base +
+                '<div class="sp-slide-card sp-quote-card">' +
+                buildSlideTagHtml(slide, idx, editMode) +
                 '<i class="fas fa-quote-left sp-quote-icon"></i>' +
                 '<div class="sp-quote-text"'+(editMode?' data-sp-key="slide-'+idx+'-body" contenteditable="true"':'')+'>'+esc(slide.body||slide.title||'')+'</div>' +
                 (slide.author ? '<div class="sp-quote-author"'+(editMode?' data-sp-key="slide-'+idx+'-author" contenteditable="true"':'')+'>— '+esc(slide.author)+'</div>' : '') +
+                '</div>' +
             '</div>';
 
         } else if (slide.type==='keypoint') {
             return base +
+                '<div class="sp-slide-card sp-kp-card">' +
+                buildSlideTagHtml(slide, idx, editMode) +
                 '<div class="sp-kp-icon"><i class="fas '+(slide.icon||'fa-lightbulb')+'"></i></div>' +
                 '<div class="sp-kp-number"'+(editMode?' data-sp-key="slide-'+idx+'-stat" contenteditable="true"':'')+'>'+esc(slide.stat||'')+'</div>' +
                 '<div class="sp-kp-statement"'+(editMode?' data-sp-key="slide-'+idx+'-statement" contenteditable="true"':'')+'>'+esc(slide.statement||'')+'</div>' +
                 (slide.desc ? '<div class="sp-kp-desc"'+(editMode?' data-sp-key="slide-'+idx+'-desc" contenteditable="true"':'')+'>'+esc(slide.desc)+'</div>' : '') +
+                '</div>' +
             '</div>';
 
         } else if (slide.type==='summary') {
@@ -484,6 +577,7 @@
                 : '';
             return base +
                 '<div class="sp-sum-panel">' +
+                buildSlideTagHtml(slide, idx, editMode) +
                 '<div class="sp-sum-check"><i class="fas fa-trophy"></i></div>' +
                 '<h2'+(editMode?' data-sp-key="slide-'+idx+'-title" contenteditable="true"':'')+'>'+esc(slide.title)+'</h2>' +
                 (sItems ? '<ul class="sp-sum-list">'+sItems+'</ul>' : '') +
@@ -504,7 +598,7 @@
                 : '<div class="sp-split-media-col"><div class="sp-split-img-placeholder ubits-body-sm-regular">Sin imagen</div></div>';
             return base +
                 '<div class="sp-slide-card sp-split-card sp-split-card--5050">' +
-                    '<div class="sp-slide-tag"><i class="fas ' + (slide.icon || 'fa-columns') + '"></i>Texto + imagen</div>' +
+                    buildSlideTagHtml(slide, idx, editMode) +
                     '<div class="sp-split-5050">' +
                         '<div class="sp-split-text-col">' +
                             '<h2' + (editMode ? ' data-sp-key="slide-' + idx + '-title" contenteditable="true"' : '') + '>' + esc(slide.title) + '</h2>' +
@@ -540,7 +634,7 @@
                 : '';
             return base +
                 '<div class="sp-slide-card sp-media-card">' +
-                    buildIxInteractiveHeader('<i class="fas fa-image"></i>Multimedia', 'media', editMode, idx) +
+                    buildIxInteractiveHeader(slide, editMode, idx) +
                     '<h2'+(editMode?' data-sp-key="slide-'+idx+'-title" contenteditable="true"':'')+'>'+esc(slide.title||'Comunicación visual')+'</h2>' +
                     (editMode ? '<p class="sp-hotspot-edit-hint">Arrastra el punto para moverlo. Haz clic sin arrastrar para abrir el panel y editar título y texto.</p>' : '') +
                     '<div class="sp-hotspot-root" data-sp-hs-root="'+idx+'">' +
@@ -573,7 +667,7 @@
                 : '';
             return base +
                 '<div class="sp-slide-card">' +
-                    buildIxInteractiveHeader('<i class="fas fa-bars-staggered"></i>Acordeón', 'accordion', editMode, idx) +
+                    buildIxInteractiveHeader(slide, editMode, idx) +
                     '<h2'+(editMode?' data-sp-key="slide-'+idx+'-title" contenteditable="true"':'')+'>'+esc(slide.title)+'</h2>' +
                     '<div class="sp-acc-list">'+accItems+'</div>' +
                     accBar +
@@ -597,7 +691,7 @@
                 : '';
             return base +
                 '<div class="sp-slide-card sp-tabs-card">' +
-                    buildIxInteractiveHeader('<i class="fas fa-folder-open"></i>Pestañas', 'tabs', editMode, idx) +
+                    buildIxInteractiveHeader(slide, editMode, idx) +
                     '<h2'+(editMode?' data-sp-key="slide-'+idx+'-title" contenteditable="true"':'')+'>'+esc(slide.title)+'</h2>' +
                     '<div class="sp-tabs-shell">' +
                         '<div class="sp-tab-bar" role="tablist">'+tabLabels+'</div>' +
@@ -618,7 +712,7 @@
             }).join('');
             return base +
                 '<div class="sp-slide-card sp-fc-wrap">' +
-                    buildIxInteractiveHeader('<i class="fas fa-clone"></i>Tarjetas', 'flashcards', editMode, idx) +
+                    buildIxInteractiveHeader(slide, editMode, idx) +
                     '<h2'+(editMode?' data-sp-key="slide-'+idx+'-title" contenteditable="true"':'')+'>'+esc(slide.title)+'</h2>' +
                     '<div class="sp-fc-grid">'+cards+'</div>' +
                     (editMode ? '<div class="sp-editor-bar"><button type="button" class="sp-btn sp-btn-p sp-fc-add" data-sp-fc-slide="'+idx+'"><i class="fas fa-plus"></i><span>Tarjeta</span></button><button type="button" class="sp-btn sp-btn-p sp-fc-del" data-sp-fc-slide="'+idx+'"><i class="far fa-trash-alt"></i><span>Tarjeta</span></button></div>' : '') +
@@ -642,7 +736,7 @@
             }).join('');
             return base +
                 '<div class="sp-slide-card sp-tl-card">' +
-                    buildIxInteractiveHeader('<i class="fas fa-route"></i>Cronología', 'timeline', editMode, idx) +
+                    buildIxInteractiveHeader(slide, editMode, idx) +
                     '<h2'+(editMode?' data-sp-key="slide-'+idx+'-title" contenteditable="true"':'')+'>'+esc(slide.title)+'</h2>' +
                     '<div class="sp-tl-track">'+lines+'</div>' +
                     (editMode ? '<div class="sp-editor-bar"><button type="button" class="sp-btn sp-btn-p sp-tl-add" data-sp-tl-slide="'+idx+'"><i class="fas fa-plus"></i><span>Paso</span></button><button type="button" class="sp-btn sp-btn-p sp-tl-del" data-sp-tl-slide="'+idx+'"><i class="far fa-trash-alt"></i><span>Paso</span></button></div>' : '') +
@@ -659,7 +753,7 @@
             }).join('');
             return base +
                 '<div class="sp-slide-card sp-compare-card">' +
-                    buildIxInteractiveHeader('<i class="fas fa-scale-balanced"></i>Comparar enfoques', 'compare', editMode, idx) +
+                    buildIxInteractiveHeader(slide, editMode, idx) +
                     '<h2'+(editMode?' data-sp-key="slide-'+idx+'-title" contenteditable="true"':'')+'>'+esc(slide.title)+'</h2>' +
                     '<p class="sp-compare-lead">Misma situación, dos formas de abordarla. Lee cada columna y la tabla inferior.</p>' +
                     '<div class="sp-compare-board">' +
@@ -716,7 +810,7 @@
             }).join('');
             return base +
                 '<div class="sp-slide-card sp-quiz-card" data-sp-quiz-total="' + qList.length + '">' +
-                    buildIxInteractiveHeader('<i class="fas fa-list-check"></i>Quiz', 'quiz_mc', editMode, idx) +
+                    buildIxInteractiveHeader(slide, editMode, idx) +
                     (editMode ? '<div class="sp-quiz-head"><h2 data-sp-key="slide-' + idx + '-title" contenteditable="true">' + esc(slide.title || 'Quiz') + '</h2></div>' : '') +
                     '<div class="sp-quiz-steps">' + stepsHtml + '</div>' +
                     (editMode ? '<div class="sp-quiz-editor-actions"><button type="button" class="sp-btn sp-btn-p sp-quiz-add-q"><i class="fas fa-plus"></i><span>Nueva pregunta</span></button></div>' : '') +
@@ -763,7 +857,7 @@
             }
             return base +
                 '<div class="sp-slide-card sp-match-card" data-sp-match-pairs="'+pairsAttr+'" data-sp-match-idx="'+idx+'">' +
-                    buildIxInteractiveHeader('<i class="fas fa-link"></i>Relacionar', 'match', editMode, idx) +
+                    buildIxInteractiveHeader(slide, editMode, idx) +
                     '<h2'+(editMode?' data-sp-key="slide-'+idx+'-title" contenteditable="true"':'')+'>'+esc(slide.title)+'</h2>' +
                     previewBlock +
                     pairEditHtml +
@@ -829,6 +923,9 @@
         '.sp-slide--content,.sp-slide--steps{background:color-mix(in srgb,var(--accent) 5%,var(--bg));padding:28px 36px;}' +
         '.sp-slide-card{display:flex;flex-direction:column;gap:14px;background:var(--white);border-radius:14px;box-shadow:0 6px 32px rgba(0,0,0,.09);padding:28px;border-left:4px solid var(--accent);max-width:min(100%,720px);width:100%;margin-left:auto;margin-right:auto;overflow:visible;flex-shrink:0;}' +
         '.sp-slide-tag{display:inline-flex;align-items:center;gap:6px;padding:2px 9px;border-radius:100px;background:rgba(var(--ar),var(--ag),var(--ab),.1);color:var(--accent);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;width:fit-content;max-width:100%;flex-wrap:wrap;word-break:break-word;}' +
+        '.sp-slide-tag__label{outline:none;min-width:1ch;}' +
+        '.sp-slide-tag__label:focus{outline:1px dashed var(--accent);outline-offset:2px;}' +
+        '.sp-slide-tag__label:empty::before{content:"Etiqueta";opacity:.45;}' +
         '.sp-slide-meta-row{display:flex;flex-direction:row;align-items:center;justify-content:space-between;gap:10px;width:100%;flex-wrap:wrap;}' +
         '.sp-slide-meta-row .sp-slide-tag{flex:0 1 auto;min-width:0;}' +
         '.sp-ix-wrap{position:relative;margin-left:auto;flex:0 0 auto;}' +
@@ -852,6 +949,7 @@
         '.sp-step-text{flex:1;font-size:13px;color:var(--ts);line-height:1.6;padding-top:5px;}' +
         /* Quote */
         '.sp-slide--quote{background:linear-gradient(160deg,color-mix(in srgb,var(--accent) 9%,#fff) 0%,color-mix(in srgb,var(--accent) 2%,#fff) 100%);flex-direction:column;align-items:center;text-align:center;gap:20px;}' +
+        '.sp-quote-card,.sp-kp-card{display:flex;flex-direction:column;align-items:center;text-align:center;gap:clamp(10px,2vw,16px);width:100%;max-width:min(100%,720px);}' +
         '.sp-quote-icon{font-size:56px;color:var(--accent);opacity:0.22;line-height:1;margin-bottom:-10px;}' +
         '.sp-quote-text{font-size:clamp(17px,3vw,24px);font-weight:700;font-style:italic;color:var(--tp);max-width:560px;line-height:1.55;}' +
         '.sp-quote-author{font-size:13px;color:var(--tm);font-weight:500;letter-spacing:0.03em;}' +
@@ -864,6 +962,7 @@
         /* Summary: mismo ancho útil que .sp-slide-card (660px); icono compacto para dejar aire al texto */
         '.sp-slide--summary{background:linear-gradient(145deg,var(--accent) 0%,var(--dark) 100%);flex-direction:column;align-items:center;justify-content:center;padding:clamp(16px,4vw,28px) clamp(12px,3vw,36px);gap:0;}' +
         '.sp-sum-panel{max-width:min(100%,720px);width:100%;display:flex;flex-direction:column;align-items:center;text-align:center;gap:clamp(10px,2.5vw,14px);padding:clamp(18px,3.5vw,28px) clamp(16px,3vw,32px);background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:14px;box-sizing:border-box;overflow-y:auto;max-height:calc(100vh - 120px);}' +
+        '.sp-sum-panel>.sp-slide-tag{align-self:center;}' +
         '.sp-sum-check{width:36px;height:36px;min-width:36px;min-height:36px;aspect-ratio:1;flex-shrink:0;border-radius:50%;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:14px;color:#fff;}' +
         '.sp-slide--summary h2{font-size:clamp(17px,3.2vw,26px);font-weight:800;color:#fff;line-height:1.25;max-width:100%;padding:0 4px;}' +
         '.sp-sum-list{list-style:none;display:flex;flex-direction:column;gap:10px;text-align:left;width:100%;max-width:100%;margin:0;padding:0;}' +
@@ -1403,7 +1502,7 @@
     function refreshPreview() {
         var frame = document.getElementById('cc-sm-preview-frame');
         if (!frame) return;
-        var slides = applyPlaceholderSlidesForPreview(generateSlides(_numSlides));
+        var slides = applyPlaceholderSlidesForPreview(generateSlidesFromEnabled(_enabledSlideTypes));
         var tit = (_titulo && String(_titulo).trim()) ? String(_titulo).trim() : 'Título del módulo';
         frame.srcdoc = generateScormHtml(tit, slides, _color, false, true, null, _logoDataUrl || '');
     }
@@ -1480,12 +1579,16 @@
                     '</div>' +
                     '<div class="cc-sm-section-divider"></div>' +
                     '<div class="cc-sm-section">' +
-                        '<div class="cc-sm-controls-row">' +
-                            '<div id="cc-sm-num-stepper-wrap" class="cc-sm-controls-row__stepper"></div>' +
-                            '<div class="cc-sm-controls-row__color">' +
-                                '<span class="ubits-input-label cc-sm-controls-row__color-label">Color principal</span>' +
-                                '<button type="button" class="ubits-color-picker-trigger cc-sm-cp-swatch" id="cc-sm-cp-swatch" style="background:'+_color+';" aria-label="Seleccionar color principal"></button>' +
-                            '</div>' +
+                        '<span class="ubits-input-label">Tipos de diapositiva</span>' +
+                        '<p class="cc-sm-slide-types-hint ubits-body-xs-regular">Elige qué tipos incluir. Habrá <strong>una diapositiva de cada tipo</strong> seleccionado. La portada siempre se incluye.</p>' +
+                        '<div class="cc-sm-slide-types" id="cc-sm-slide-types-mount" role="group" aria-label="Tipos de diapositiva"></div>' +
+                        '<p class="cc-sm-slide-types-meta ubits-body-xs-regular" id="cc-sm-slide-types-meta" aria-live="polite"></p>' +
+                    '</div>' +
+                    '<div class="cc-sm-section-divider"></div>' +
+                    '<div class="cc-sm-section">' +
+                        '<div class="cc-sm-controls-row cc-sm-controls-row--color-only">' +
+                            '<span class="ubits-input-label cc-sm-controls-row__color-label">Color principal</span>' +
+                            '<button type="button" class="ubits-color-picker-trigger cc-sm-cp-swatch" id="cc-sm-cp-swatch" style="background:'+_color+';" aria-label="Seleccionar color principal"></button>' +
                         '</div>' +
                     '</div>' +
                     '<div class="cc-sm-section-divider"></div>' +
@@ -1591,17 +1694,54 @@
         if (_titulo) { var inp=wrap.querySelector('input'); if(inp) inp.value=_titulo; }
     }
 
-    function initStepperInput() {
-        if (typeof global.createNumberStepper!=='function') return;
-        var wrap=document.getElementById('cc-sm-num-stepper-wrap');
-        if (!wrap || wrap.querySelector('.ubits-number-stepper')) return;
-        _stepperApi = global.createNumberStepper({
-            containerId: 'cc-sm-num-stepper-wrap',
-            label: 'Número de slides',
-            labelPosition: 'left',
-            value: _numSlides, min: 5, max: 15, step: 1, size: 'md',
-            onChange: function(v){ _numSlides=v; refreshPreview(); }
+    function updateSlideTypesMeta() {
+        var meta = document.getElementById('cc-sm-slide-types-meta');
+        if (!meta) return;
+        var n = countEnabledSlideTypes(_enabledSlideTypes);
+        var suffix = n === 1 ? 'diapositiva' : 'diapositivas';
+        meta.textContent = n + ' ' + suffix + ' en el módulo · una de cada tipo seleccionado';
+    }
+
+    function initSlideTypeSelector() {
+        var mount = document.getElementById('cc-sm-slide-types-mount');
+        if (!mount || mount._ccSlideTypesWired) return;
+        mount._ccSlideTypesWired = true;
+
+        mount.innerHTML = SCORM_SLIDE_TYPE_CATALOG.map(function (item) {
+            var checked = _enabledSlideTypes[item.type] !== false;
+            var disabledAttr = item.locked ? ' disabled' : '';
+            var checkedAttr = checked ? ' checked' : '';
+            return (
+                '<label class="ubits-checkbox ubits-checkbox--sm cc-sm-slide-type-item">' +
+                '<input type="checkbox" class="ubits-checkbox__input" data-cc-slide-type="' +
+                esc(item.type) +
+                '"' +
+                checkedAttr +
+                disabledAttr +
+                '>' +
+                '<span class="ubits-checkbox__box"><i class="fas fa-check"></i></span>' +
+                '<span class="ubits-checkbox__label">' +
+                esc(item.label) +
+                '</span>' +
+                '</label>'
+            );
+        }).join('');
+
+        mount.querySelectorAll('[data-cc-slide-type]').forEach(function (inp) {
+            inp.addEventListener('change', function () {
+                var type = inp.getAttribute('data-cc-slide-type');
+                if (!type || type === 'intro') {
+                    inp.checked = true;
+                    _enabledSlideTypes.intro = true;
+                    return;
+                }
+                _enabledSlideTypes[type] = inp.checked;
+                updateSlideTypesMeta();
+                refreshPreview();
+            });
         });
+
+        updateSlideTypesMeta();
     }
 
     function initScormLogoUpload() {
@@ -1784,7 +1924,7 @@
                 _titulo=tit;
                 if (!trySpendTokens(SCORM_GEN_TOKEN_COST)) return;
                 syncPageTitle(_titulo);
-                var slides=generateSlides(_numSlides);
+                var slides=generateSlidesFromEnabled(_enabledSlideTypes);
                 var pageKey=_currentPageKey;
                 var scormHtml=generateScormHtml(_titulo,slides,_color,false,false,null,_logoDataUrl||'');
                 if (pageKey) {
@@ -1794,6 +1934,7 @@
                         titulo: _titulo,
                         scormHtml: scormHtml,
                         logoDataUrl: _logoDataUrl || null,
+                        enabledSlideTypes: normalizeEnabledSlideTypes(_enabledSlideTypes),
                         generatedByAi: true
                     };
                 }
@@ -2208,6 +2349,11 @@
                 text = String(el.textContent || '').trim();
             }
 
+            if (field === 'tagLabel') {
+                newSlides[idx].tagLabel = text;
+                return;
+            }
+
             if (field.indexOf('bullet-')===0) {
                 var bi=parseInt(field.replace('bullet-',''),10);
                 if (!newSlides[idx].bullets) newSlides[idx].bullets=[];
@@ -2348,9 +2494,22 @@
         _color          = stored ? stored.color : '#0C5BEF';
         _titulo         = stored ? stored.titulo : '';
         _logoDataUrl    = stored && stored.logoDataUrl ? stored.logoDataUrl : null;
-        _numSlides      = 15;
+        if (stored && stored.enabledSlideTypes) {
+            _enabledSlideTypes = normalizeEnabledSlideTypes(stored.enabledSlideTypes);
+        } else if (stored && stored.slides && stored.slides.length) {
+            var inferred = createDefaultEnabledSlideTypes();
+            SCORM_SLIDE_TYPE_CATALOG.forEach(function (item) {
+                inferred[item.type] = false;
+            });
+            stored.slides.forEach(function (sl) {
+                if (sl && sl.type) inferred[sl.type] = true;
+            });
+            inferred.intro = true;
+            _enabledSlideTypes = inferred;
+        } else {
+            _enabledSlideTypes = createDefaultEnabledSlideTypes();
+        }
         _tituloInputApi = null;
-        _stepperApi     = null;
 
         var overlay=openModal({
             overlayId:           OVERLAY_ID,
@@ -2368,7 +2527,7 @@
 
         setTimeout(function(){
             initTituloInput();
-            initStepperInput();
+            initSlideTypeSelector();
             initScormLogoUpload();
             wireTabBar();
             wireIaPanel();
