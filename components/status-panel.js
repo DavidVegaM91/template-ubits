@@ -12,7 +12,7 @@
  *   statusPanelRefresh(root)
  *
  * opts ítem: { title, subtitle?, status?: 'loading'|'success'|'error'|'neutral', icon?, onClick? }
- * status loading → spinner; success → check; error → marca error; neutral → solo icono
+ * status loading → spinner; success → check; error → marca error + subtítulo en rojo; neutral → solo icono
  */
 (function (global) {
     'use strict';
@@ -112,7 +112,8 @@
         var typeAttr = interactive ? ' type="button"' : '';
         var cls =
             'ubits-status-panel__item' +
-            (interactive ? ' ubits-status-panel__item--interactive' : '');
+            (interactive ? ' ubits-status-panel__item--interactive' : '') +
+            (item.status === 'error' ? ' ubits-status-panel__item--error' : '');
         var sub =
             item.subtitle != null && String(item.subtitle) !== ''
                 ? item.subtitle

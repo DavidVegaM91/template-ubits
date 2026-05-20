@@ -79,10 +79,28 @@
         }
     }
 
+    /** Recurso borrado en la página pero el ítem sigue visible en el panel (estado error). */
+    function markJobDeleted(id) {
+        if (typeof global.statusPanelUpdateItem !== 'function') return;
+        initPanel();
+        global.statusPanelUpdateItem(PANEL_ID, id, {
+            status: 'error',
+            subtitle: 'Se eliminó el recurso',
+            onClick: null
+        });
+    }
+
+    function markJobDeletedForPage(pageKey, type) {
+        if (!pageKey || !type) return;
+        markJobDeleted(String(pageKey) + '-' + type);
+    }
+
     global.ccGenWidget = {
         addJob: addJob,
         finishJob: finishJob,
-        removeJob: removeJob
+        removeJob: removeJob,
+        markJobDeleted: markJobDeleted,
+        markJobDeletedForPage: markJobDeletedForPage
     };
 
     if (document.readyState === 'loading') {

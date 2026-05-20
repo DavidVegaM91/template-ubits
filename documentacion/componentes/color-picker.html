@@ -19,25 +19,6 @@
     <link rel="stylesheet" href="../../components/toast.css">
     <link rel="stylesheet" href="../../components/input.css">
     <link rel="stylesheet" href="../../components/color-picker.css">
-    <style>
-        .cp-doc-swatch {
-            width: var(--size-4xl);
-            height: var(--size-4xl);
-            border-radius: var(--border-radius-sm);
-            border: 2px solid var(--ubits-border-1);
-            box-sizing: border-box;
-            padding: 0;
-            margin: 0;
-            appearance: none;
-            -webkit-appearance: none;
-            cursor: pointer;
-            flex-shrink: 0;
-        }
-        .cp-doc-swatch:focus {
-            outline: 2px solid var(--ubits-accent-brand);
-            outline-offset: 2px;
-        }
-    </style>
 </head>
 <body class="componentes-page" data-theme="light">
     <div class="dashboard-container">
@@ -81,7 +62,7 @@
                             </div>
 
                             <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: 12px; display: flex; flex-wrap: wrap; align-items: center; gap: var(--gap-lg);">
-                                <button type="button" class="cp-doc-swatch" id="cp-demo-anchor" title="Abrir selector de color" aria-label="Abrir selector de color"></button>
+                                <button type="button" class="ubits-color-picker-trigger" id="cp-demo-anchor" title="Abrir selector de color" aria-label="Abrir selector de color"></button>
                             </div>
                         </div>
 
@@ -254,6 +235,7 @@
 .ubits-color-picker__footer       /* fila Cancelar + Guardar */
 .ubits-color-picker__btn-cancel
 .ubits-color-picker__btn-save
+.ubits-color-picker-trigger      /* cuadrado disparador; borde 1px; anchorEl del popover */
 /* Dentro: .ubits-input-label, .ubits-input-wrapper, .ubits-input (oficial) */
 </code></pre>
                                     </div>
@@ -310,15 +292,12 @@
 &lt;link rel="stylesheet" href="../../components/input.css"&gt;
 &lt;link rel="stylesheet" href="../../components/button.css"&gt;
 &lt;link rel="stylesheet" href="../../components/color-picker.css"&gt;
-&lt;button type="button" id="mi-swatch" class="mi-swatch" aria-label="Elegir color"&gt;&lt;/button&gt;
+&lt;button type="button" id="mi-swatch" class="ubits-color-picker-trigger" aria-label="Elegir color"&gt;&lt;/button&gt;
 &lt;script src="../../components/input.js"&gt;&lt;/script&gt;
 &lt;script src="../../components/color-picker.js"&gt;&lt;/script&gt;
 &lt;script&gt;
   var sw = document.getElementById('mi-swatch');
   var colorHex = '#0C5BEF';
-  sw.style.width = 'var(--size-4xl)';
-  sw.style.height = 'var(--size-4xl)';
-  sw.style.borderRadius = 'var(--border-radius-sm)';
   sw.style.background = colorHex;
   sw.addEventListener('click', function () {
     openColorPickerPopover({

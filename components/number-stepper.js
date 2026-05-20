@@ -1,7 +1,7 @@
 /**
  * Number Stepper Component
  *
- * createNumberStepper({ containerId, label, value, min, max, step, size, fullWidth, onChange })
+ * createNumberStepper({ containerId, label, labelPosition, value, min, max, step, size, fullWidth, onChange })
  * Returns: { getValue, setValue, setDisabled } o null si no existe el contenedor.
  *
  * Bugs / notas al implementar en producto:
@@ -38,17 +38,31 @@
         var step  = opts.step  || 1;
         var size  = opts.size  || 'md';
 
+        var labelPosNorm = String(opts.labelPosition || 'top').toLowerCase();
+        var useLabelLeft = labelPosNorm === 'left' && opts.label;
+
         var fieldEl = document.createElement('div');
         fieldEl.className = 'ubits-number-stepper-field';
         if (opts.fullWidth) {
             fieldEl.classList.add('ubits-number-stepper-field--full-width');
         }
+        if (useLabelLeft) {
+            fieldEl.classList.add('ubits-number-stepper-field--label-left');
+        }
 
         if (opts.label) {
             var labelEl = document.createElement('label');
-            labelEl.className = 'ubits-number-stepper-label';
+            labelEl.className = 'ubits-number-stepper-label' + (useLabelLeft ? ' ubits-number-stepper-label--left' : '');
             labelEl.textContent = opts.label;
             fieldEl.appendChild(labelEl);
+        }
+
+        var stepperMount = fieldEl;
+        if (useLabelLeft) {
+            var bodyEl = document.createElement('div');
+            bodyEl.className = 'ubits-number-stepper-field__body';
+            fieldEl.appendChild(bodyEl);
+            stepperMount = bodyEl;
         }
 
         var stepperEl = document.createElement('div');
@@ -61,7 +75,7 @@
             '<div class="ubits-number-stepper__divider"></div>' +
             '<button type="button" class="ubits-number-stepper__btn ubits-number-stepper__btn--plus" aria-label="Aumentar"><i class="far fa-plus"></i></button>';
 
-        fieldEl.appendChild(stepperEl);
+        stepperMount.appendChild(stepperEl);
         container.appendChild(fieldEl);
 
         var minusBtn = stepperEl.querySelector('.ubits-number-stepper__btn--minus');

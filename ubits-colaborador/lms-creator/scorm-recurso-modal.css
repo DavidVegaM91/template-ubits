@@ -123,6 +123,21 @@
 .cc-sm-left-col::-webkit-scrollbar-track { background: transparent; }
 .cc-sm-left-col::-webkit-scrollbar-thumb { background: var(--ubits-border-1); border-radius: 2px; }
 
+/* Secciones y separadores (mismo patrón que Video Avatar IA: .cc-vm-section / .cc-vm-section-divider) */
+.cc-sm-section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-sm);
+    flex-shrink: 0;
+}
+
+.cc-sm-section-divider {
+    height: 1px;
+    background: var(--ubits-border-1);
+    flex-shrink: 0;
+    margin: var(--gap-xs) 0;
+}
+
 /* Columna derecha: preview alineado al bloque de página (no estirar a altura del formulario) */
 .cc-sm-right-col {
     display: flex;
@@ -146,6 +161,47 @@
     display: block;
 }
 
+/* ── Fila: número de slides (label izq.) + color principal ── */
+.cc-sm-controls-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: var(--gap-md);
+    align-items: center;
+    width: 100%;
+    min-width: 0;
+}
+
+.cc-sm-controls-row__stepper {
+    min-width: 0;
+}
+
+.cc-sm-controls-row__stepper .ubits-number-stepper-field--label-left {
+    width: 100%;
+}
+
+.cc-sm-controls-row__color {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-sm);
+    flex-shrink: 0;
+}
+
+.cc-sm-controls-row__color-label {
+    margin-bottom: 0;
+    white-space: nowrap;
+}
+
+@media (max-width: 520px) {
+    .cc-sm-controls-row {
+        grid-template-columns: 1fr;
+        align-items: stretch;
+    }
+
+    .cc-sm-controls-row__color {
+        justify-content: flex-start;
+    }
+}
+
 /* ── Color picker trigger ── */
 .cc-sm-color-row {
     display: flex;
@@ -153,22 +209,10 @@
     gap: var(--gap-md);
     flex-shrink: 0;
 }
+/* Disparador: estilos base en components/color-picker.css (.ubits-color-picker-trigger) */
 .cc-sm-cp-swatch {
-    box-sizing: border-box;
-    width: var(--size-4xl);
-    height: var(--size-4xl);
-    padding: 0;
-    margin: 0;
-    border: 2px solid var(--ubits-border-1);
-    border-radius: var(--border-radius-sm);
-    cursor: pointer;
-    flex-shrink: 0;
-    appearance: none;
-    -webkit-appearance: none;
-    transition: transform 0.15s, box-shadow 0.15s;
     background: #0C5BEF;
 }
-.cc-sm-cp-swatch:hover { transform: scale(1.04); box-shadow: 0 var(--gap-sm) var(--gap-lg) rgba(0,0,0,0.2); }
 
 /* Panel del color picker: components/color-picker.css (clases .ubits-color-picker) */
 

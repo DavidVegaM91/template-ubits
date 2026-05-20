@@ -2241,6 +2241,18 @@
             var eliminarBtn = ev.target.closest('#cc-eliminar-recurso');
             if (eliminarBtn) {
                 beforeReplaceRecursosMountIfPdfShowing(mount);
+                if (
+                    CC_RECURSOS_CURRENT_PAGE_KEY &&
+                    typeof window.ccGenWidget !== 'undefined' &&
+                    typeof window.ccGenWidget.markJobDeletedForPage === 'function'
+                ) {
+                    var mountHtml = mount.innerHTML;
+                    if (mountHtml.indexOf('cc-scorm-resource') !== -1) {
+                        window.ccGenWidget.markJobDeletedForPage(CC_RECURSOS_CURRENT_PAGE_KEY, 'scorm');
+                    } else if (mountHtml.indexOf('cc-video-resource') !== -1) {
+                        window.ccGenWidget.markJobDeletedForPage(CC_RECURSOS_CURRENT_PAGE_KEY, 'video');
+                    }
+                }
                 // Limpiar estado guardado para que al regresar no se restaure el recurso eliminado
                 if (CC_RECURSOS_CURRENT_PAGE_KEY) {
                     delete CC_RECURSOS_PAGE_STATE[CC_RECURSOS_CURRENT_PAGE_KEY];

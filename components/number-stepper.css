@@ -36,12 +36,38 @@
  * Ancho completo: el bloque crece con el contenedor; solo la zona central
  * (.ubits-number-stepper__val) absorbe el espacio extra (valor centrado).
  */
+/* Etiqueta a la izquierda del control (createNumberStepper: labelPosition: 'left') */
+.ubits-number-stepper-field--label-left {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    column-gap: var(--gap-md);
+    align-items: center;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+.ubits-number-stepper-field--label-left .ubits-number-stepper-label--left {
+    margin-bottom: 0;
+    max-width: min(42vw, 200px);
+    overflow-wrap: break-word;
+    hyphens: auto;
+}
+
+.ubits-number-stepper-field--label-left .ubits-number-stepper-field__body {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
 .ubits-number-stepper-field--full-width {
     width: 100%;
     max-width: 100%;
 }
 
-.ubits-number-stepper-field--full-width .ubits-number-stepper {
+.ubits-number-stepper-field--full-width .ubits-number-stepper,
+.ubits-number-stepper-field--label-left.ubits-number-stepper-field--full-width .ubits-number-stepper-field__body .ubits-number-stepper {
     width: 100%;
 }
 

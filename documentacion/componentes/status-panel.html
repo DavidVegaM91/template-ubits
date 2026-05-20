@@ -95,7 +95,7 @@
                                 <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm);">
                                     <i class="far fa-spinner" style="font-size: 24px; color: var(--ubits-accent-brand); margin-bottom: 12px;"></i>
                                     <p class="ubits-body-md-bold" style="margin-bottom: 8px;">Estados claros</p>
-                                    <p class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); margin: 0;">En curso, completado, error o neutro.</p>
+                                    <p class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); margin: 0;">En curso, completado, error (subtítulo en rojo) o neutro.</p>
                                 </div>
                                 <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm);">
                                     <i class="far fa-compress-alt" style="font-size: 24px; color: var(--ubits-accent-brand); margin-bottom: 12px;"></i>
@@ -170,6 +170,7 @@ statusPanelSetTitle(root, title)
 statusPanelRefresh(root)
 
 // status: 'loading' | 'success' | 'error' | 'neutral'
+// error: clase ubits-status-panel__item--error; subtítulo con color --ubits-feedback-accent-error
 // placement: 'bottom-left' | 'bottom-right'</code></pre>
                             </div>
                         </div>

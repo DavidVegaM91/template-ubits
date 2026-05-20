@@ -233,6 +233,11 @@ button.ubits-status-panel__item {
     color: var(--ubits-fg-2-medium);
 }
 
+/* Subtítulo bajo el título en ítems con estado error */
+.ubits-status-panel__item--error .ubits-status-panel__item-subtitle {
+    color: var(--ubits-feedback-accent-error);
+}
+
 .ubits-status-panel__item-status {
     flex-shrink: 0;
     width: 22px;
