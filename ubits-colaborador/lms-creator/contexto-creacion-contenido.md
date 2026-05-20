@@ -222,6 +222,28 @@ El usuario elige el tipo mediante **tarjetas** y completa el **panel** que corre
 - Los tipos **sin** flujo asistido por IA **no** muestran ese badge.
 - En la versión actual del playground, el distintivo aplica a **Video**, **SCORM** y **Evaluación**: son los que ya exponen generación o agente asistido; si en el futuro otro tipo incorpora IA, puede adoptarse la misma convención.
 
+### Panel de operaciones en curso (Status panel)
+
+Cuando el usuario **genera con IA** un **video** o un **SCORM** (o tiene varias generaciones seguidas), el Creator muestra un **panel flotante** en la **esquina inferior izquierda** (misma familia que el componente **Status panel** del design system).
+
+| Aspecto | Comportamiento |
+|---------|----------------|
+| **Cabecera** | Título con icono de IA: **«Generando recursos»** mientras hay trabajos en curso; **«Recursos generados»** cuando todos terminaron. Se puede **minimizar** o **cerrar** el panel. |
+| **Cada trabajo** | Una fila con icono del tipo (video / SCORM), **título del recurso** (p. ej. título de la presentación SCORM) y subtítulo **«Generando…»** con spinner. |
+| **Al terminar** | La fila pasa a **completado** (marca verde): subtítulo **«Listo · Haz clic para ver»**. Al pulsar la fila, el sistema **activa la página** correspondiente en el índice para que el usuario vea el resultado. |
+| **Si elimina el recurso** en el panel derecho (ver **Confirmación al eliminar recurso**) **sin cerrar** este panel, la fila **no desaparece**: pasa a estado **error** (marca roja), el subtítulo bajo el título se muestra en **rojo** con el texto **«Se eliminó el recurso»** y ya **no** es clicable para navegar. |
+
+Solo aplica a generaciones **Video IA** y **SCORM con IA** que dispararon ese indicador; otros tipos (PDF subido, evaluación manual, etc.) no añaden filas salvo que producto lo extienda.
+
+### Confirmación al eliminar un recurso ya añadido
+
+**Ámbito:** todo recurso que ya está montado en la página y muestra el botón **Eliminar** en el pie del bloque (video, SCORM, PDF, evaluación, texto, etc.).
+
+- Al pulsar **Eliminar**, **no** se borra al instante: se abre un **modal pequeño** titulado **«Eliminar recurso»**.
+- **Mensaje:** «¿Seguro que deseas eliminar este recurso? La página quedará en blanco.»
+- **Botones:** **Cancelar** (cierra sin cambios) y **Sí, eliminar** (confirma).
+- Tras confirmar: el panel derecho vuelve al **selector de tipos de recurso**, el icono de la página en el índice pasa a **página en blanco** y, si había una fila en el **panel de operaciones** para ese video o SCORM generado por IA, esa fila queda en **error** con **«Se eliminó el recurso»** (ver tabla anterior).
+
 Al configurar una página, el usuario puede añadir uno de estos tipos (presentados como cards en el Resources block o el patrón que defina producto):
 
 1. Video — un **modal** reúne las opciones **Video IA**, **enlace** y **subir archivo** (ver sección **Recurso: Video**).  
@@ -265,10 +287,11 @@ El pie del modal muestra el botón que corresponde a la pestaña activa (por eje
   - **Qué cuenta para «Generar video»:** solo el modo **activo** y su buffer correspondiente (IA vs manual). Si está en manual, el texto del campo manual es el definitivo; si está en IA, el definitivo es el del campo de guión **después** de generar (o tras editarlo). Si intenta generar el video **sin** haber generado antes el guión en modo IA, el sistema lo orienta a **generar el guión** o a **cambiar a manual**.
 - **Contexto del tema** (solo flujo IA): área de texto libre para describir **de qué debe hablar** el video (tema, tono, público). Opcionalmente puede **adjuntar archivos de referencia** (aparecen como chips que puede quitar).
 - **Duración / expectations:** el prototipo puede mostrar un **aviso informativo** sobre duración u orientación del formato (se puede cerrar).
+- **Logo de la empresa (opcional):** en la pestaña **Video IA**, zona de carga para un **PNG** (tamaño máximo comunicado en pantalla, p. ej. **2 MB**). Si se sube, el logo puede verse en la **vista previa** del modal y, tras generar, **superpuesto** en el reproductor del recurso. Quitar el archivo limpia el logo.
 - **Generar video:** botón principal con **coste alto en tokens** respecto al guión. Al iniciarlo:
-  - El modal puede **cerrarse** y el usuario ve un **indicador de progreso flotante** (estilo “trabajo en segundo plano”) mientras el sistema simula la generación.
-  - En el panel de la página, el espacio del recurso muestra **estado de carga** y, al terminar, un **reproductor** con el resultado. Si el video es **generado por IA**, puede mostrarse la **etiqueta «Generado con IA»** y, si aplica en el flujo, **logo o marca** opcional que el usuario haya podido asociar en el modal.
-- En el **playground**, la generación es **simulada** (tiempo de espera y video de ejemplo), pero la experiencia debe leerse como **producto real**: tokens, preview y widget de progreso.
+  - El modal puede **cerrarse** y el usuario ve el **panel de operaciones en curso** (esquina inferior izquierda) mientras el sistema procesa la generación.
+  - En el panel de la página, el espacio del recurso muestra **estado de carga** y, al terminar, un **reproductor** con el resultado. Si el video es **generado por IA**, puede mostrarse la **etiqueta «Generado con IA»** y, si se cargó, el **logo** en el video.
+- En el **playground**, la generación es **simulada** (tiempo de espera y video de ejemplo), pero la experiencia debe leerse como **producto real**: tokens, preview y panel de operaciones.
 
 ### Pestaña «Enlace de video»
 
@@ -286,7 +309,7 @@ El pie del modal muestra el botón que corresponde a la pestaña activa (por eje
 
 - El **panel derecho** deja de mostrar el selector de tipos y pasa a mostrar el **video** con el patrón de bloque apilado del Creator (**superficie** + pie con **Eliminar**).
 - En el **índice de páginas**, el icono de la fila activa pasa a **video**.
-- **Eliminar** quita el recurso y devuelve al **selector de tipos** de esa página.
+- **Eliminar** abre el **modal de confirmación** (ver **Confirmación al eliminar un recurso ya añadido**); solo tras **Sí, eliminar** se quita el recurso y la página vuelve al selector de tipos.
 
 ### Si el modal no estuviera disponible (caso excepcional)
 
@@ -319,18 +342,19 @@ El pie del modal muestra **Generar presentación** en la pestaña IA o **Cargar 
 
 - **Título de la presentación** — obligatorio; en el prototipo, al generar, ese texto también puede **alinear el título de la página** en el índice con el mismo nombre.
 - **Contexto para la IA** — área de texto obligatoria: la persona describe **equipo, industria o matiz** que debe considerar la generación. Puede **adjuntar archivos** (imágenes u otros documentos habituales); los adjuntos aparecen como **vistas previas** o **chips** que puede quitar.
-- **Número de slides** — control tipo “pasos” con un **mínimo y máximo** permitidos en pantalla (el prototipo trabaja en un rango acotado, p. ej. entre **5 y 15** diapositivas).
-- **Color principal** — selector visual (**muestra de color**); al pulsarlo se abre el **selector de color** del sistema de diseño para acentuar la presentación.
-- **Vista previa orientativa** — a la derecha, un **iframe** muestra cómo podría verse la navegación (barra de progreso, paso anterior/siguiente). El texto aclara que es **orientativa**: el contenido final usará el contexto y la estructura definidos al generar.
+- **Número de slides** — control numérico con botones **− / +** (**etiqueta a la izquierda** del control, en la misma fila que el selector de **color principal**). Rango permitido en pantalla (en el prototipo, entre **5 y 15** diapositivas).
+- **Color principal** — **muestra de color** (borde fino visible); al pulsarla se abre el **selector de color** UBITS para acentuar la presentación.
+- **Logo de la empresa (opcional)** — carga de **PNG** (máximo indicado en UI, p. ej. **2 MB**). Tras generar, el logo aparece en la **primera diapositiva (portada)**, anclado a la **esquina superior derecha de la imagen de portada** (posición fija respecto al recorte 16:9, sin “bailar” al cambiar el ancho de pantalla).
+- **Vista previa orientativa** — a la derecha, un **iframe** muestra cómo podría verse la navegación (barra de progreso, paso anterior/siguiente). El texto aclara que es **orientativa**: el contenido final usará el contexto, logo y estructura definidos al generar.
 
 **Generar presentación** — botón con **coste en tokens**. Si falta título o contexto, los campos se marcan para corrección. Al confirmar:
 
 1. El modal se **cierra**.
-2. Aparece un **indicador de progreso flotante** (misma familia que video IA) mientras el sistema procesa.
+2. Aparece el **panel de operaciones en curso** (misma familia que video IA) mientras el sistema procesa.
 3. En el panel del recurso se muestra primero una **fase de carga** y, al terminar, el **SCORM embebido** (presentación a pantalla con navegación entre diapositivas).
 4. En el prototipo, la generación es **simulada** en tiempo; el contenido base sigue una **plantilla pedagógica interna** (en el demo: narrativa tipo presentación sobre **conversaciones y estilos de afrontamiento al conflicto**, inspirada en el modelo **Thomas-Kilmann**). Producto puede sustituir o ampliar esa plantilla en una implementación real.
 
-Si la generación es por IA, puede mostrarse la **etiqueta «Generado con IA»** sobre el embed.
+Si la generación es por IA, puede mostrarse la **etiqueta «Generado con IA»** sobre el embed. El **logo** y el **color** elegidos en el modal se **persisten** al guardar ediciones posteriores.
 
 ### Pestaña «Subir .zip»
 
@@ -340,8 +364,13 @@ Si la generación es por IA, puede mostrarse la **etiqueta «Generado con IA»**
 ### Una vez creado el recurso en el panel
 
 - El bloque muestra el **SCORM a pantalla** y, si la ruta fue **generada con IA**, también el botón secundario **«Editar presentación»**.
-- **Editar presentación** abre un **segundo modal** a pantalla completa con la misma experiencia dentro de un **iframe**: la persona puede **cambiar textos** en las diapositivas y el **color principal** desde controles integrados; **Guardar** vuelve al panel con los cambios; **Cancelar** descarta.
-- **Eliminar** quita el SCORM y devuelve al **selector de tipos**.
+- **Editar presentación** abre un **segundo modal** a pantalla completa con la misma experiencia dentro de un **iframe** en **modo edición**:
+  - **Textos** editables en las diapositivas (según el tipo de slide).
+  - **Color principal** modificable desde la cabecera del visor (muestra de color + selector UBITS).
+  - **Cambiar imagen** en diapositivas que llevan imagen (control sobre la imagen de portada u otras según plantilla).
+  - **Eliminar diapositiva:** en cada slide, botón de **papelera** en la esquina superior derecha del contenido (icono con tooltip **«Eliminar diapositiva»**). Al pulsarlo se abre un **modal de confirmación** («¿Estás seguro de eliminar la diapositiva **N**? Esta acción no se puede deshacer.»). **Cancelar** cierra; **Sí, eliminar** quita esa diapositiva y **renumera** el recorrido. Debe quedar **al menos una** diapositiva: si solo queda una, el botón de eliminar diapositiva queda **deshabilitado** (y un aviso breve si se intenta borrar la última).
+  - **Guardar** aplica cambios y vuelve al panel con el SCORM actualizado; **Cancelar** descarta lo editado en esa sesión del modal.
+- **Eliminar** (pie del bloque en el panel de la página) usa el **modal de confirmación de recurso** (ver sección transversal); no borra el SCORM sin confirmar.
 - En el **índice**, el icono de la página pasa a **SCORM**.
 
 ### Nota de producto
@@ -355,7 +384,7 @@ Si la generación es por IA, puede mostrarse la **etiqueta «Generado con IA»**
 ### Experiencia de usuario
 
 - El usuario **sube un PDF** desde el panel de recurso; ve una **barra de progreso** mientras se procesa y luego una **vista previa** donde las **páginas aparecen una debajo de otra** (lectura vertical), **sin** el panel lateral de miniaturas del visor nativo del navegador.
-- Puede **eliminar** el recurso y volver al selector de tipos.
+- **Eliminar** abre el **modal de confirmación** antes de volver al selector de tipos (la página queda en blanco tras confirmar).
 - Si cambia de **página** en el índice del contenido y vuelve, la vista previa del PDF se **restaura** de forma coherente.
 
 ### Implementación técnica del visor (playground)
@@ -409,7 +438,7 @@ Si la generación es por IA, puede mostrarse la **etiqueta «Generado con IA»**
 ### Comportamiento del panel derecho
 
 - El panel derecho pasa a ser un **editor de texto enriquecido** (rich text).  
-- Debajo del editor: botón **Eliminar** (coherente con el resto de recursos).  
+- Debajo del editor: botón **Eliminar** con **modal de confirmación** (mismo patrón que el resto de recursos).  
 - Debajo: sección de **contenido complementario**; en este recurso **solo** se ofrece **Archivo descargable** (no la card de Texto, para evitar anidaciones no deseadas o según regla de producto ya definida).
 
 ---
@@ -426,7 +455,7 @@ Si la generación es por IA, puede mostrarse la **etiqueta «Generado con IA»**
 ### Barra superior del recurso
 
 - Título de bloque: **Contenido de la evaluación**.
-- **Eliminar** — quita el recurso de evaluación de esa página y vuelve al selector de tipos (coherente con otros recursos).
+- **Eliminar** — abre el **modal de confirmación**; al confirmar, quita la evaluación de esa página y vuelve al selector de tipos.
 - **Configuración** — abre un **modal** con los **ajustes de la evaluación**: porcentaje mínimo para aprobar, orden aleatorio de preguntas y de opciones, límites de intentos, tiempo máximo y número de preguntas por intento (cada uno con su interruptor y campos asociados cuando aplica). **Guardar** aplica los cambios y cierra; **Cancelar** descarta.
 - **Generar con IA** — no genera dentro del panel central: abre el **panel lateral de IA** (misma familia visual que otros agentes del Creator: saldo de **tokens** con icono de información, hilo de mensajes, campo de envío). Ahí arranca el **agente de evaluaciones** guiado por mensajes y controles interactivos.
 
@@ -480,7 +509,8 @@ Tras recoger tema y reglas, el flujo llega a un **paso de confirmación** en el 
 - Flujos de: **Embebido**, **Encuesta libre**. (**Video**, **PDF**, **SCORM** y **Evaluación final** documentados arriba.)  
 - Paso **3 — Certificado** (contenido de pantalla más allá de la regla de bloqueo desde paso 2).  
 - Paso **4 — Publicación**.  
-- Reglas de validación global (publicar, borradores, etc.) si aplica.
+- Reglas de validación global (publicar, borradores, etc.) si aplica.  
+- Detalle de pantalla del modal **Editar presentación** SCORM (tipos de diapositiva, quizzes, hotspots) más allá de edición, color, imágenes y eliminar slide.
 
 ---
 
@@ -492,4 +522,4 @@ Este documento **no** sustituye la **documentación de componentes UBITS** ni la
 
 ---
 
-*Última revisión: portada — un solo modal «Añadir portada» también para **Cambiar**; reapertura contextual (IA con prompt y vista previa, o pestaña Subir con imagen actual en la carga). Eliminada la narrativa del segundo modal pequeño «Subir imagen de portada y tráiler». Saldo de tokens con **icono de información** en cabeceras IA (portada, video, SCORM, panel/modal). Evaluación — mensaje **«Configuración seleccionada:»** antes del resumen tras el asistente por pasos.*
+*Última revisión: **Status panel** (generación video/SCORM IA, error «Se eliminó el recurso» en rojo al borrar recurso). **Modal confirmación** al eliminar cualquier recurso ya montado. **SCORM:** logo PNG opcional en portada, número de slides con etiqueta a la izquierda, **eliminar diapositiva** con confirmación (mínimo 1). **Video IA:** logo PNG opcional. Sustituida la narrativa del antiguo “widget flotante” genérico por el **Status panel** oficial.*

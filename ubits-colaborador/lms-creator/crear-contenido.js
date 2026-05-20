@@ -943,6 +943,7 @@
     var CC_MODAL_DISABLE_SEC = 'cc-modal-deshabilitar-secciones';
     var CC_MODAL_EDIT_SEC = 'cc-modal-editar-seccion';
     var CC_MODAL_DELETE_SEC = 'cc-modal-eliminar-seccion';
+    var CC_MODAL_DELETE_RECURSO = 'cc-modal-eliminar-recurso';
 
     /**
      * Persistencia de recursos por página.
@@ -1415,6 +1416,78 @@
         var ok = ov.querySelector('#cc-mod-delete-sec-confirm');
         function close() {
             window.closeModal(CC_MODAL_DELETE_SEC);
+        }
+        if (cancel) {
+            cancel.addEventListener('click', close);
+        }
+        if (ok) {
+            ok.addEventListener('click', function () {
+                close();
+                runDelete();
+            });
+        }
+    }
+
+    function recursosApplyDeleteCurrentResource(mount) {
+        if (!mount) return;
+        beforeReplaceRecursosMountIfPdfShowing(mount);
+        if (
+            CC_RECURSOS_CURRENT_PAGE_KEY &&
+            typeof window.ccGenWidget !== 'undefined' &&
+            typeof window.ccGenWidget.markJobDeletedForPage === 'function'
+        ) {
+            var mountHtml = mount.innerHTML;
+            if (mountHtml.indexOf('cc-scorm-resource') !== -1) {
+                window.ccGenWidget.markJobDeletedForPage(CC_RECURSOS_CURRENT_PAGE_KEY, 'scorm');
+            } else if (mountHtml.indexOf('cc-video-resource') !== -1) {
+                window.ccGenWidget.markJobDeletedForPage(CC_RECURSOS_CURRENT_PAGE_KEY, 'video');
+            }
+        }
+        if (CC_RECURSOS_CURRENT_PAGE_KEY) {
+            delete CC_RECURSOS_PAGE_STATE[CC_RECURSOS_CURRENT_PAGE_KEY];
+        }
+        mount.innerHTML = window.resourcesBlockHtml({ variant: 'default' });
+        if (typeof window.initResourcesBlockFields === 'function') {
+            window.initResourcesBlockFields(mount);
+        }
+        var activeItemDel = document.querySelector(
+            '#crear-contenido-recursos-indice-mount .ubits-paginas-creator__item.is-active'
+        );
+        if (activeItemDel) {
+            var iconElDel = activeItemDel.querySelector('.ubits-paginas-creator__drag-handle i');
+            if (iconElDel && typeof window.paginasCreatorIconClass === 'function') {
+                iconElDel.className = window.paginasCreatorIconClass('blank-page');
+            }
+        }
+    }
+
+    function openCrearContenidoDeleteResourceModal(mount) {
+        function runDelete() {
+            recursosApplyDeleteCurrentResource(mount);
+        }
+        if (typeof window.openModal !== 'function' || typeof window.closeModal !== 'function') {
+            runDelete();
+            return;
+        }
+        window.openModal({
+            overlayId: CC_MODAL_DELETE_RECURSO,
+            title: 'Eliminar recurso',
+            bodyHtml:
+                '<p class="ubits-body-md-regular" style="margin:0;color:var(--ubits-fg-1-medium);">' +
+                '¿Seguro que deseas eliminar este recurso? La página quedará en blanco.' +
+                '</p>',
+            footerHtml:
+                '<button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="cc-mod-delete-recurso-cancel"><span>Cancelar</span></button>' +
+                '<button type="button" class="ubits-button ubits-button--error ubits-button--md" id="cc-mod-delete-recurso-confirm"><span>Sí, eliminar</span></button>',
+            size: 'sm',
+            closeOnOverlayClick: true
+        });
+        var ov = document.getElementById(CC_MODAL_DELETE_RECURSO);
+        if (!ov) return;
+        var cancel = ov.querySelector('#cc-mod-delete-recurso-cancel');
+        var ok = ov.querySelector('#cc-mod-delete-recurso-confirm');
+        function close() {
+            window.closeModal(CC_MODAL_DELETE_RECURSO);
         }
         if (cancel) {
             cancel.addEventListener('click', close);
@@ -2240,36 +2313,7 @@
             // 5. Click en botón Eliminar recurso cargado (evaluar antes de Cancelar)
             var eliminarBtn = ev.target.closest('#cc-eliminar-recurso');
             if (eliminarBtn) {
-                beforeReplaceRecursosMountIfPdfShowing(mount);
-                if (
-                    CC_RECURSOS_CURRENT_PAGE_KEY &&
-                    typeof window.ccGenWidget !== 'undefined' &&
-                    typeof window.ccGenWidget.markJobDeletedForPage === 'function'
-                ) {
-                    var mountHtml = mount.innerHTML;
-                    if (mountHtml.indexOf('cc-scorm-resource') !== -1) {
-                        window.ccGenWidget.markJobDeletedForPage(CC_RECURSOS_CURRENT_PAGE_KEY, 'scorm');
-                    } else if (mountHtml.indexOf('cc-video-resource') !== -1) {
-                        window.ccGenWidget.markJobDeletedForPage(CC_RECURSOS_CURRENT_PAGE_KEY, 'video');
-                    }
-                }
-                // Limpiar estado guardado para que al regresar no se restaure el recurso eliminado
-                if (CC_RECURSOS_CURRENT_PAGE_KEY) {
-                    delete CC_RECURSOS_PAGE_STATE[CC_RECURSOS_CURRENT_PAGE_KEY];
-                }
-                mount.innerHTML = window.resourcesBlockHtml({ variant: 'default' });
-                if (typeof window.initResourcesBlockFields === 'function') {
-                    window.initResourcesBlockFields(mount);
-                }
-                
-                // Restaurar icono en el índice a "blank-page"
-                var activeItemDel = document.querySelector('#crear-contenido-recursos-indice-mount .ubits-paginas-creator__item.is-active');
-                if (activeItemDel) {
-                    var iconElDel = activeItemDel.querySelector('.ubits-paginas-creator__drag-handle i');
-                    if (iconElDel && typeof window.paginasCreatorIconClass === 'function') {
-                        iconElDel.className = window.paginasCreatorIconClass('blank-page');
-                    }
-                }
+                openCrearContenidoDeleteResourceModal(mount);
                 return;
             }
 
