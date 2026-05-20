@@ -1580,7 +1580,6 @@
                     '<div class="cc-sm-section-divider"></div>' +
                     '<div class="cc-sm-section">' +
                         '<span class="ubits-input-label">Tipos de diapositiva</span>' +
-                        '<p class="cc-sm-slide-types-hint ubits-body-xs-regular">Elige qué tipos incluir. Habrá <strong>una diapositiva de cada tipo</strong> seleccionado. La portada siempre se incluye.</p>' +
                         '<div class="cc-sm-slide-types" id="cc-sm-slide-types-mount" role="group" aria-label="Tipos de diapositiva"></div>' +
                         '<p class="cc-sm-slide-types-meta ubits-body-xs-regular" id="cc-sm-slide-types-meta" aria-live="polite"></p>' +
                     '</div>' +
@@ -1699,7 +1698,8 @@
         if (!meta) return;
         var n = countEnabledSlideTypes(_enabledSlideTypes);
         var suffix = n === 1 ? 'diapositiva' : 'diapositivas';
-        meta.textContent = n + ' ' + suffix + ' en el módulo · una de cada tipo seleccionado';
+        meta.textContent =
+            n + ' ' + suffix + ' en el módulo · una de cada tipo seleccionado · La portada siempre se incluye';
     }
 
     function initSlideTypeSelector() {

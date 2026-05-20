@@ -178,17 +178,6 @@
     gap: var(--gap-sm);
 }
 
-.cc-sm-slide-types-hint {
-    margin: var(--gap-xs) 0 var(--gap-sm);
-    color: var(--ubits-fg-1-medium);
-    line-height: 1.45;
-}
-
-.cc-sm-slide-types-hint strong {
-    font-weight: 600;
-    color: var(--ubits-fg-1-high);
-}
-
 /* Mismo orden que el preview: col. izq. = tipos 1–8, col. der. = 9–15 (resumen al final). */
 .cc-sm-slide-types {
     display: grid;
