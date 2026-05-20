@@ -411,6 +411,31 @@ En diapositivas **interactivas** (imagen con puntos, acordeón, pestañas, tarje
 
 ---
 
+## Recurso: Embebido
+
+### Cómo se entra al flujo
+
+- En el **selector de tipo de recurso**, la persona elige la tarjeta **Embebido**.
+- El **Resources block** pasa a la variante oficial **Embebido · vacío**: campo para pegar un **enlace** o un **código embebible** (p. ej. `<iframe …>` de Google Slides, Genially, Canva, etc.) y botón **Cargar** deshabilitado hasta que haya texto.
+
+### Comportamiento
+
+| Paso | Qué ocurre |
+|------|------------|
+| **Pegar enlace o código** | Al escribir o pegar contenido, **Cargar** se habilita (mismo patrón que Embebido · relleno en el design system). |
+| **Cargar** | Se renderiza el contenido en el panel de la página: si es **URL**, se muestra en un **iframe** a pantalla ancha; si es **código** con `<iframe>` (u objeto embebido), se inserta tal cual (sin scripts). Soporta distintos tamaños y proveedores (presentaciones, interactives, etc.). |
+| **Cancelar** | Vuelve al selector de tipos sin recurso asignado. |
+| **Eliminar** | Modal de confirmación; la página queda en blanco (igual que otros recursos). |
+
+- En el **índice**, el icono de la página pasa a **embebido** al elegir el tipo o tras cargar.
+- El estado del recurso **se guarda por página** al cambiar de lección en el índice (mismo criterio que PDF o video).
+
+### Nota de producto
+
+- No hay lista cerrada de dominios: cualquier URL o snippet **iframe** que el proveedor permita embeber puede mostrarse. Si el enlace no es embebible por políticas del sitio, el usuario verá el fallo del propio proveedor en el recuadro (variante **Embebido · no embebible** reservada para validaciones futuras).
+
+---
+
 ## Recurso: PDF
 
 ### Experiencia de usuario
@@ -538,7 +563,7 @@ Tras recoger tema y reglas, el flujo llega a un **paso de confirmación** en el 
 ## Pendiente de documentar (próximos mensajes)
 
 - Detalle de **contenido complementario** en todos los recursos donde aplique.  
-- Flujos de: **Embebido**, **Encuesta libre**. (**Video**, **PDF**, **SCORM** y **Evaluación final** documentados arriba.)  
+- Flujos de: **Encuesta libre**. (**Video**, **PDF**, **SCORM**, **Embebido** y **Evaluación final** documentados arriba.)  
 - Paso **3 — Certificado** (contenido de pantalla más allá de la regla de bloqueo desde paso 2).  
 - Paso **4 — Publicación**.  
 - Reglas de validación global (publicar, borradores, etc.) si aplica.  

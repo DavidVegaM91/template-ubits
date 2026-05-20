@@ -985,6 +985,121 @@
     }
 
     /** Shell estable para persistencia (sin canvases): PDF.js pinta en .cc-pdf-resource__pdfjs-pages. */
+    function escapeCrearContenidoEmbedAttr(s) {
+        return String(s)
+            .replace(/&/g, '&amp;')
+            .replace(/"/g, '&quot;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;');
+    }
+
+    /** Heurísticas para URLs publicables (Google Slides, Docs, etc.). */
+    function normalizeCrearContenidoEmbedUrl(url) {
+        var u = String(url || '').trim();
+        if (!u) return u;
+        if (u.indexOf('docs.google.com/presentation') !== -1) {
+            u = u.replace(/\/edit(\?[^#]*)?(\#.*)?$/i, '/embed$1$2');
+            if (u.indexOf('/pub') !== -1 && u.indexOf('/embed') === -1) {
+                u = u.replace(/\/pub(\?|#|$)/i, '/embed$1');
+            }
+        } else if (u.indexOf('docs.google.com/document') !== -1) {
+            u = u.replace(/\/edit(\?[^#]*)?(\#.*)?$/i, '/preview$1$2');
+        } else if (u.indexOf('drive.google.com/file') !== -1) {
+            u = u.replace(/\/view(\?[^#]*)?/i, '/preview$1');
+        }
+        return u;
+    }
+
+    function parseCrearContenidoEmbedInput(raw) {
+        var val = String(raw || '').trim();
+        if (!val) return null;
+
+        if (/<iframe[\s>]/i.test(val) || /<(?:object|embed)[\s>]/i.test(val)) {
+            var cleaned = val.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '');
+            return {
+                html:
+                    '<div class="cc-embed-resource__raw">' + cleaned + '</div>'
+            };
+        }
+
+        var url = val;
+        if (!/^https?:\/\//i.test(url)) {
+            if (/^[\w.-]+\.[a-z]{2,}/i.test(url)) {
+                url = 'https://' + url;
+            } else {
+                return null;
+            }
+        }
+        url = normalizeCrearContenidoEmbedUrl(url);
+        return {
+            html:
+                '<iframe class="cc-embed-resource__iframe" src="' +
+                escapeCrearContenidoEmbedAttr(url) +
+                '" title="Contenido embebido" loading="lazy" allow="fullscreen; autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>'
+        };
+    }
+
+    function buildCrearContenidoEmbedResourceHtml(innerHtml) {
+        return (
+            '<div class="ubits-resources-block ubits-resources-block--stack">' +
+            '<div class="ubits-resources-block__surface cc-embed-resource__surface" style="padding:0;">' +
+            '<div class="cc-embed-resource" role="region" aria-label="Contenido embebido">' +
+            '<div class="cc-embed-resource__frame-wrap">' +
+            innerHtml +
+            '</div></div></div>' +
+            '<div class="ubits-resources-block__footer">' +
+            '<button type="button" class="ubits-button ubits-button--error-secondary ubits-button--sm" id="cc-eliminar-recurso">' +
+            '<i class="far fa-trash-alt"></i><span>Eliminar</span>' +
+            '</button>' +
+            '</div></div>'
+        );
+    }
+
+    function syncRecursosEmbedPageIcon() {
+        var activeItem = document.querySelector(
+            '#crear-contenido-recursos-indice-mount .ubits-paginas-creator__item.is-active'
+        );
+        if (!activeItem) return;
+        var iconEl = activeItem.querySelector('.ubits-paginas-creator__drag-handle i');
+        if (iconEl && typeof window.paginasCreatorIconClass === 'function') {
+            iconEl.className = window.paginasCreatorIconClass('embebido');
+        }
+    }
+
+    function finishCrearContenidoEmbedRender(embedInnerHtml, mount) {
+        beforeReplaceRecursosMountIfPdfShowing(mount);
+        var html = buildCrearContenidoEmbedResourceHtml(embedInnerHtml);
+        mount.innerHTML = html;
+        if (CC_RECURSOS_CURRENT_PAGE_KEY) {
+            CC_RECURSOS_PAGE_STATE[String(CC_RECURSOS_CURRENT_PAGE_KEY)] = { html: html };
+        }
+        syncRecursosEmbedPageIcon();
+    }
+
+    function syncRecursosCargarButtonFromField(fieldInline, value) {
+        if (!fieldInline) return;
+        var cargarBtn = fieldInline.querySelector('button');
+        if (!cargarBtn) return;
+        var hasVal = String(value != null ? value : '').trim() !== '';
+        if (hasVal) {
+            cargarBtn.classList.remove('ubits-button--secondary');
+            cargarBtn.classList.add('ubits-button--primary');
+            cargarBtn.disabled = false;
+        } else {
+            cargarBtn.classList.remove('ubits-button--primary');
+            cargarBtn.classList.add('ubits-button--secondary');
+            cargarBtn.disabled = true;
+        }
+    }
+
+    function getRecursosBlockUrlInputValue(fieldInline, slotName) {
+        if (!fieldInline) return '';
+        var slot = fieldInline.querySelector('[data-rb-slot="' + slotName + '"]');
+        if (!slot) return '';
+        var field = slot.querySelector('input, textarea');
+        return field ? String(field.value || '').trim() : '';
+    }
+
     function buildCrearContenidoPdfViewerShellHtml() {
         return (
             '<div class="ubits-resources-block ubits-resources-block--stack">' +
@@ -2276,6 +2391,21 @@
                 return;
             }
 
+            // 1c. Tarjeta Embebido → variante embed-empty (enlace o código iframe)
+            var embebidoCard = ev.target.closest('[data-resources-card-type="embebido"]');
+            if (embebidoCard && !embebidoCard.disabled) {
+                beforeReplaceRecursosMountIfPdfShowing(mount);
+                mount.innerHTML = window.resourcesBlockHtml({ variant: 'embed-empty' });
+                if (typeof window.initResourcesBlockFields === 'function') {
+                    window.initResourcesBlockFields(mount);
+                }
+                if (CC_RECURSOS_CURRENT_PAGE_KEY) {
+                    CC_RECURSOS_PAGE_STATE[String(CC_RECURSOS_CURRENT_PAGE_KEY)] = { html: mount.innerHTML };
+                }
+                syncRecursosEmbedPageIcon();
+                return;
+            }
+
             // 2b. Click en tarjeta de SCORM → abrir modal de SCORM
             var scormCard = ev.target.closest('[data-resources-card-type="scorm"]');
             if (scormCard && !scormCard.disabled) {
@@ -2331,10 +2461,26 @@
                 return;
             }
 
-            // 4. Click en botón Cargar
+            // 4. Click en botón Cargar (video por enlace o embebido)
             var cargarBtn = ev.target.closest('.ubits-resources-block__field-inline .ubits-button--primary');
             if (cargarBtn && !cargarBtn.disabled) {
                 var fieldInline = cargarBtn.closest('.ubits-resources-block__field-inline');
+                var embedSlot = fieldInline ? fieldInline.querySelector('[data-rb-slot="embed-url"]') : null;
+                if (embedSlot) {
+                    var embedVal = getRecursosBlockUrlInputValue(fieldInline, 'embed-url');
+                    var parsedEmbed = parseCrearContenidoEmbedInput(embedVal);
+                    if (parsedEmbed && parsedEmbed.html) {
+                        finishCrearContenidoEmbedRender(parsedEmbed.html, mount);
+                    } else if (embedVal) {
+                        beforeReplaceRecursosMountIfPdfShowing(mount);
+                        mount.innerHTML = window.resourcesBlockHtml({ variant: 'embed-error' });
+                        if (typeof window.initResourcesBlockFields === 'function') {
+                            window.initResourcesBlockFields(mount);
+                        }
+                    }
+                    return;
+                }
+
                 var inputSlot = fieldInline ? fieldInline.querySelector('[data-rb-slot="video-url"] input') : null;
                 if (inputSlot) {
                     var val = inputSlot.value.trim();
@@ -2405,30 +2551,15 @@
             }
         });
 
-        // 3. Escribir en el input enciende el botón Cargar
+        // 3. Escribir en el input enciende el botón Cargar (video o embebido)
         document.addEventListener('input', function (ev) {
             var mount = document.getElementById('crear-contenido-recursos-resources-mount');
             if (!mount || !mount.contains(ev.target)) return;
 
-            var inputSlotContainer = ev.target.closest('[data-rb-slot="video-url"]');
-            if (inputSlotContainer) {
-                var fieldInline = ev.target.closest('.ubits-resources-block__field-inline');
-                if (fieldInline) {
-                    var cargarBtn = fieldInline.querySelector('button');
-                    if (cargarBtn) {
-                        var val = ev.target.value.trim();
-                        if (val !== '') {
-                            cargarBtn.classList.remove('ubits-button--secondary');
-                            cargarBtn.classList.add('ubits-button--primary');
-                            cargarBtn.disabled = false;
-                        } else {
-                            cargarBtn.classList.remove('ubits-button--primary');
-                            cargarBtn.classList.add('ubits-button--secondary');
-                            cargarBtn.disabled = true;
-                        }
-                    }
-                }
-            }
+            var slotEl = ev.target.closest('[data-rb-slot="video-url"], [data-rb-slot="embed-url"]');
+            if (!slotEl) return;
+            var fieldInline = ev.target.closest('.ubits-resources-block__field-inline');
+            syncRecursosCargarButtonFromField(fieldInline, ev.target.value);
         });
     }
 

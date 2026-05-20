@@ -403,6 +403,50 @@ body.crear-contenido-app-open .ubits-dropdown-menu__content {
     background: var(--ubits-bg-3);
 }
 
+/* Embebido (paso Recursos): iframe o snippet pegado; altura flexible según contenido */
+.page-crear-contenido .cc-embed-resource__surface.ubits-resources-block__surface {
+    min-height: 0 !important;
+    padding: 0 !important;
+    justify-content: stretch;
+}
+
+.page-crear-contenido .cc-embed-resource__frame-wrap {
+    width: 100%;
+    min-height: min(60vh, 520px);
+    background: var(--ubits-bg-3);
+    border-radius: var(--border-radius-lg);
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
+.page-crear-contenido .cc-embed-resource__iframe {
+    display: block;
+    width: 100%;
+    min-height: min(60vh, 520px);
+    height: min(75vh, 720px);
+    border: 0;
+    background: var(--ubits-bg-3);
+}
+
+.page-crear-contenido .cc-embed-resource__raw {
+    width: 100%;
+    min-height: min(60vh, 520px);
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    box-sizing: border-box;
+}
+
+.page-crear-contenido .cc-embed-resource__raw iframe,
+.page-crear-contenido .cc-embed-resource__raw object,
+.page-crear-contenido .cc-embed-resource__raw embed {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    min-height: min(60vh, 520px);
+    border: 0;
+}
+
 .page-crear-contenido #crear-contenido-recursos-page-title {
     text-align: left;
     width: 100%;
