@@ -1965,8 +1965,12 @@
        ABRIR MODAL
     ══════════════════════════════════════ */
     function openVideoRecursoModal(opts) {
-        _onVideoReady   = (opts && opts.onVideoReady) || null;
-        _currentPageKey = (opts && opts.pageKey)      || null;
+        opts = opts || {};
+        if (opts.ui === 'legacy' || opts.ui === 'v2') {
+            CC_VIDEO_MODAL_UI = opts.ui;
+        }
+        _onVideoReady   = opts.onVideoReady || null;
+        _currentPageKey = opts.pageKey != null ? opts.pageKey : null;
         _currentTab     = 'ia';
         _currentCat     = 'staff';
         _selectedAvatar = AVATARS.filter(function (a) { return a.cat === 'staff'; })[0] || AVATARS[0];

@@ -25,7 +25,8 @@
         'scorm',
         'evaluacion-final',
         'encuesta-libre',
-        'encuesta'
+        /* DEMO comparación modales Agregar video: sustituye encuesta de satisfacción */
+        'video-demo-v2'
     ];
 
     var RESOURCES_BLOCK_VARIANTS_ORDER = [
