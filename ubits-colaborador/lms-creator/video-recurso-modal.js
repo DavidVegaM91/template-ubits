@@ -570,7 +570,7 @@
         });
         return (
             '<nav class="cc-vm-wizard-stepper" aria-label="Pasos para crear video con IA">' +
-            '<ol class="ubits-stepper ubits-stepper--horizontal ubits-stepper--horizontal-stacked ubits-stepper--horizontal-compact" id="cc-vm-ia-stepper">' +
+            '<ol class="ubits-stepper ubits-stepper--horizontal ubits-stepper--horizontal-stacked" id="cc-vm-ia-stepper">' +
             parts.join('') +
             '</ol></nav>'
         );
@@ -1544,36 +1544,22 @@
         autosizeContextTemaTextarea();
     }
 
-    function setGuionLoading(isLoading) {
-        var mount = document.getElementById('cc-vm-guion-ia-editor-wrap');
+    /** Tras generar el guión IA, desplaza el scroll del modal hasta el bloque editable. */
+    function scrollGuionIaEditorIntoView() {
         var block = document.getElementById('cc-vm-guion-ia-editor-block');
-        if (!mount || !block) return;
-        var hostId = 'cc-vm-guion-loader-host';
-        var host = document.getElementById(hostId);
-
-        if (isLoading) {
-            mount.style.display = 'none';
-            if (!host) {
-                host = document.createElement('div');
-                host.id = hostId;
-                host.className = 'cc-vm-guion-loader-host';
-                block.insertBefore(host, mount);
-            } else if (host.parentNode !== block) {
-                block.insertBefore(host, mount);
-            }
-            host.style.display = '';
-            host.innerHTML =
-                typeof global.getIaLoaderHTML === 'function'
-                    ? global.getIaLoaderHTML({ label: 'Generando guión' })
-                    : '<p class="ubits-body-sm-regular" role="status" aria-live="polite">Generando guión...</p>';
+        if (!block || block.style.display === 'none') return;
+        var overlay = document.getElementById(OVERLAY_ID);
+        var scroller =
+            (overlay && overlay.querySelector('.ubits-modal-body')) ||
+            block.closest('.ubits-modal-body');
+        if (scroller && scroller.scrollHeight > scroller.clientHeight + 1) {
+            var blockRect = block.getBoundingClientRect();
+            var scrollRect = scroller.getBoundingClientRect();
+            var top = blockRect.top - scrollRect.top + scroller.scrollTop - 16;
+            scroller.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
             return;
         }
-
-        if (host) {
-            host.style.display = 'none';
-            host.innerHTML = '';
-        }
-        mount.style.display = '';
+        block.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }
 
     /** Mensaje de error bajo el textarea del guión (createInput invalid + helper oficial). */
@@ -1619,16 +1605,14 @@
             }
             if (!trySpendVideoAiTokens(VIDEO_GUION_IA_TOKEN_COST)) return;
             clearContextTemaError();
-            _guionIaEditorVisible = true;
-            var edBlockPre = document.getElementById('cc-vm-guion-ia-editor-block');
-            if (edBlockPre) edBlockPre.style.display = '';
             if (typeof global.setIaButtonGenerating === 'function') {
                 global.setIaButtonGenerating(btn, true, { label: 'Generando' });
             }
-            setGuionLoading(true);
             setTimeout(function () {
                 var guion = generateGuion();
-                setGuionLoading(false);
+                _guionIaEditorVisible = true;
+                var edBlock = document.getElementById('cc-vm-guion-ia-editor-block');
+                if (edBlock) edBlock.style.display = '';
                 destroyGuionInput();
                 initGuionCreateInput('cc-vm-guion-ia-editor-wrap');
                 setGuionValueProgrammatically(guion);
@@ -1637,6 +1621,7 @@
                     global.setIaButtonGenerating(btn, false);
                 }
                 refreshIaButtons();
+                setTimeout(scrollGuionIaEditorIntoView, 120);
             }, 3000);
         });
     }

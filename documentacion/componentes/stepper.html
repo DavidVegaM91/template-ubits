@@ -74,7 +74,7 @@
                                 Preview del componente
                             </h2>
                             <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6;">
-                                Elige una de las cinco variantes con los botones. En horizontal puedes cambiar de paso haciendo clic en cada uno. En <strong>vertical</strong>, el preview usa una caja de <strong>400px</strong> de alto: el rail <strong>ocupa ese alto</strong> (como un sidebar en su columna). Por defecto la demo viene <strong>contraída</strong> (solo círculos); el pie muestra <strong>Expandir</strong> con tooltip. Comparte esta vista con la URL que incluye <code>#vertical</code> (p. ej. <code>stepper.html#vertical</code>). El rail usa <code>--creator-rail</code> (alineado al sidebar LMS Creator).
+                                Elige una de las cuatro variantes con los botones. En horizontal puedes cambiar de paso haciendo clic en cada uno. En <strong>vertical</strong>, el preview usa una caja de <strong>400px</strong> de alto: el rail <strong>ocupa ese alto</strong> (como un sidebar en su columna). Por defecto la demo viene <strong>contraída</strong> (solo círculos); el pie muestra <strong>Expandir</strong> con tooltip. Comparte esta vista con la URL que incluye <code>#vertical</code> (p. ej. <code>stepper.html#vertical</code>). El rail usa <code>--creator-rail</code> (alineado al sidebar LMS Creator).
                             </p>
 
                             <div style="margin-bottom: 20px; display: flex; flex-wrap: wrap; gap: var(--gap-sm); align-items: center;">
@@ -86,9 +86,6 @@
                                 </button>
                                 <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn stepper-variant-btn" data-variant="h-stacked" onclick="setStepperDocVariant('h-stacked')">
                                     <span>Título debajo del círculo</span>
-                                </button>
-                                <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn stepper-variant-btn" data-variant="h-stacked-compact" onclick="setStepperDocVariant('h-stacked-compact')">
-                                    <span>Compacto + título abajo</span>
                                 </button>
                                 <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn stepper-variant-btn" data-variant="vertical" onclick="setStepperDocVariant('vertical')">
                                     <span>Vertical</span>
@@ -168,7 +165,7 @@
                                 Características generales
                             </h2>
                             <p class="ubits-body-md-regular" style="margin-bottom: 24px; color: var(--ubits-fg-1-medium);">
-                                Cinco formas de mostrar los mismos pasos, según el espacio y la jerarquía visual que necesites.
+                                Cuatro formas de mostrar los mismos pasos, según el espacio y la jerarquía visual que necesites.
                             </p>
                             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
                                 <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
@@ -184,12 +181,7 @@
                                 <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
                                     <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-bars"></i></div>
                                     <div class="ubits-body-sm-bold">Título debajo del círculo</div>
-                                    <div class="ubits-body-sm-regular">El círculo arriba y el nombre del paso centrado debajo; los conectores horizontales llegan al borde del anillo (sin hueco entre línea y punto).</div>
-                                </div>
-                                <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
-                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-object-group"></i></div>
-                                    <div class="ubits-body-sm-bold">Compacto con título abajo</div>
-                                    <div class="ubits-body-sm-regular">Combina lo anterior con ancho contenido y líneas cortas fijas que unen los círculos.</div>
+                                    <div class="ubits-body-sm-regular">Círculo arriba y nombre centrado debajo; reparte el ancho del contenedor (ideal para modales y títulos largos); conectores que unen cada círculo con el siguiente.</div>
                                 </div>
                                 <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
                                     <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-arrows-alt-v"></i></div>
@@ -244,7 +236,7 @@
                                     </button>
                                 </div>
                                 <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
-                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="stepper-prompt-3">En [ubicación] muestra el stepper con el número dentro del círculo arriba y el título del paso centrado debajo del círculo. Importa stepper.css.</code></pre>
+                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="stepper-prompt-3">En [ubicación] muestra el stepper horizontal con título debajo del círculo (clase ubits-stepper--horizontal-stacked en el ol): reparte todo el ancho, títulos centrados que pueden hacer varias líneas. Importa stepper.css y fontawesome-icons.css.</code></pre>
                                 </div>
                             </div>
 
@@ -321,7 +313,7 @@
 &lt;/nav&gt;</code></pre>
                                     </div>
                                     <p class="ubits-body-sm-regular" style="margin-top: 16px; color: var(--ubits-fg-1-medium);">
-                                        Modificadores en el <code>&lt;ol&gt;</code>: <code>ubits-stepper--horizontal-compact</code>, <code>ubits-stepper--horizontal-stacked</code> (combinables). Paso completado: el número permanece visible con estilo de éxito (el icono de check en el mark no se muestra). En horizontal, vista ≤1023px: solo el paso con <code>--active</code> muestra el texto del título.
+                                        Modificadores en el <code>&lt;ol&gt;</code>: <code>ubits-stepper--horizontal-compact</code> (ancho al contenido, raíles visibles) o <code>ubits-stepper--horizontal-stacked</code> (título debajo, ancho completo, conector vía <code>::after</code>; los <code>li.rail</code> siguen en el HTML pero no se muestran). No mezcles compact con stacked: son variantes distintas. Paso completado: el número permanece visible con estilo de éxito. En horizontal clásico/compacto, vista ≤1023px: solo el paso <code>--active</code> muestra el título.
                                     </p>
                                 </div>
                                 <div style="padding: 32px; border-bottom: 1px solid var(--ubits-border-1);">
@@ -420,9 +412,6 @@
                 var classes = ['ubits-stepper', 'ubits-stepper--horizontal', 'js-stepper-doc-demo'];
                 if (key === 'h-compact') classes.push('ubits-stepper--horizontal-compact');
                 else if (key === 'h-stacked') classes.push('ubits-stepper--horizontal-stacked');
-                else if (key === 'h-stacked-compact') {
-                    classes.push('ubits-stepper--horizontal-stacked', 'ubits-stepper--horizontal-compact');
-                }
                 olH.className = classes.join(' ');
             }
             syncStepperDocPreviewUrl(key);

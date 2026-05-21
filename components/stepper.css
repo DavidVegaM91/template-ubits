@@ -160,12 +160,6 @@
     background: var(--ubits-button-primary-bg-default);
 }
 
-.ubits-stepper--horizontal.ubits-stepper--horizontal-stacked.ubits-stepper--horizontal-compact {
-    width: 100%;
-    max-width: 100%;
-    min-width: 0;
-}
-
 /* --- Vertical: círculo + texto; segmento bajo cada círculo --- */
 .ubits-stepper--vertical {
     display: flex;

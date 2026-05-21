@@ -506,7 +506,7 @@
 }
 
 /*
- * Guión IA generado: borde gradiente en el shell del Input (curvatura sm como el componente).
+ * Guión IA generado: borde gradiente 1.5px al 50% de opacidad (solo el borde; el textarea sigue opaco).
  * createInput inyecta resize:vertical en inline style; se anula en JS + !important aquí.
  */
 #cc-video-recurso-modal #cc-vm-guion-ia-editor-wrap .cc-vm-guion-ia-input-shell {
@@ -517,15 +517,12 @@
     border-radius: var(--border-radius-sm);
     background:
         linear-gradient(var(--ubits-bg-1), var(--ubits-bg-1)) padding-box,
-        var(
-            --ubits-ia-badge-border-gradient,
-            linear-gradient(
-                90deg,
-                var(--modo-ia-gradient-d) 0%,
-                var(--modo-ia-gradient-c) 35.59%,
-                var(--modo-ia-gradient-b) 67.19%,
-                var(--modo-ia-gradient-a) 100%
-            )
+        linear-gradient(
+            90deg,
+            color-mix(in srgb, var(--modo-ia-gradient-d) 50%, transparent) 0%,
+            color-mix(in srgb, var(--modo-ia-gradient-c) 50%, transparent) 35.59%,
+            color-mix(in srgb, var(--modo-ia-gradient-b) 50%, transparent) 67.19%,
+            color-mix(in srgb, var(--modo-ia-gradient-a) 50%, transparent) 100%
         ) border-box;
     background-origin: padding-box, border-box;
     background-clip: padding-box, border-box;
@@ -870,6 +867,15 @@
     flex-direction: column;
     overflow: hidden;
     max-height: 90vh;
+}
+
+/* Desktop: alto fijo del modal (scroll en .ubits-modal-body) */
+@media (min-width: 1024px) {
+    #cc-video-recurso-modal.cc-video-modal-ui-v2 .ubits-modal-content.cc-video-ia-modal-content.portada-ia-modal-content {
+        height: min(550px, 90vh);
+        max-height: min(550px, 90vh);
+        min-height: 0;
+    }
 }
 
 /* v2 — pestaña Video Avatar IA: sm (<1366px) / md (≥1366px); tamaño aplicado por JS (applyVideoModalContentSize) */
