@@ -501,9 +501,8 @@
     function buildGuionSectionHtml() {
         return (
             '<div class="cc-vm-section cc-vm-wizard-guion">' +
-            '<span class="ubits-input-label">Guión</span>' +
             '<div class="ubits-selection-card-group ubits-selection-card-group--2 cc-vm-guion-mode-select" role="radiogroup" aria-label="Cómo quieres definir el guión">' +
-            '<label class="ubits-selection-card ubits-radio ubits-radio--sm">' +
+            '<label class="ubits-selection-card ubits-radio ubits-radio--sm cc-vm-guion-mode-card cc-vm-guion-mode-card--ia">' +
             '<input type="radio" name="cc-vm-guion-mode" class="ubits-radio__input" value="ia" checked>' +
             '<span class="ubits-radio__circle"></span>' +
             '<div class="ubits-selection-card__body">' +
@@ -511,7 +510,7 @@
             '<span class="ubits-selection-card__icon"><i class="far fa-sparkles"></i></span>' +
             '<span class="ubits-body-sm-semibold ubits-selection-card__title">Generar con IA</span>' +
             '</div></div></label>' +
-            '<label class="ubits-selection-card ubits-radio ubits-radio--sm">' +
+            '<label class="ubits-selection-card ubits-radio ubits-radio--sm cc-vm-guion-mode-card cc-vm-guion-mode-card--manual">' +
             '<input type="radio" name="cc-vm-guion-mode" class="ubits-radio__input" value="manual">' +
             '<span class="ubits-radio__circle"></span>' +
             '<div class="ubits-selection-card__body">' +
@@ -530,7 +529,7 @@
             '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only ai-panel__attach-btn" id="cc-vm-attach" aria-label="Adjuntar">' +
             '<i class="far fa-plus"></i></button>' +
             '<div class="ai-panel__input-spacer" aria-hidden="true"></div>' +
-            '<button type="button" class="ubits-ia-button ubits-ia-button--secondary ubits-ia-button--sm ubits-ia-button--with-token-cost" id="cc-vm-btn-gen-guion">' +
+            '<button type="button" class="ubits-ia-button ubits-ia-button--primary ubits-ia-button--sm ubits-ia-button--with-token-cost" id="cc-vm-btn-gen-guion">' +
             '<span class="ubits-ia-button__token-cost" aria-hidden="true">' +
             '<span class="ubits-ia-button__token-number">' +
             VIDEO_GUION_IA_TOKEN_COST +
@@ -679,7 +678,7 @@
                                                 '<i class="far fa-plus"></i>' +
                                             '</button>' +
                                             '<div class="ai-panel__input-spacer" aria-hidden="true"></div>' +
-                                            '<button type="button" class="ubits-ia-button ubits-ia-button--secondary ubits-ia-button--sm ubits-ia-button--with-token-cost" id="cc-vm-btn-gen-guion">' +
+                                            '<button type="button" class="ubits-ia-button ubits-ia-button--primary ubits-ia-button--sm ubits-ia-button--with-token-cost" id="cc-vm-btn-gen-guion">' +
                                                 '<span class="ubits-ia-button__token-cost" aria-hidden="true">' +
                                                     '<span class="ubits-ia-button__token-number">' + VIDEO_GUION_IA_TOKEN_COST + '</span>' +
                                                     '<i class="far fa-coin-vertical"></i>' +
@@ -873,11 +872,19 @@
         syncVideoModalTokensBadge();
     }
 
-    function stopAvatarPreviewPlayback() {
+    function pauseAvatarPreviewVideo() {
         var v = document.getElementById('cc-vm-av-preview-video');
         if (!v) return;
         try {
             v.pause();
+        } catch (e) { /* noop */ }
+    }
+
+    function stopAvatarPreviewPlayback() {
+        pauseAvatarPreviewVideo();
+        var v = document.getElementById('cc-vm-av-preview-video');
+        if (!v) return;
+        try {
             v.currentTime = 0;
         } catch (e) { /* noop */ }
     }
@@ -923,6 +930,11 @@
     function setIaWizardStep(step) {
         var max = IA_WIZARD_STEP_LABELS.length - 1;
         _iaWizardStep = Math.max(0, Math.min(max, step));
+
+        /* El preview MP4 vive en el paso 0; al avanzar sigue en el DOM y puede seguir sonando. */
+        if (_iaWizardStep !== 0) {
+            pauseAvatarPreviewVideo();
+        }
 
         for (var i = 0; i <= max; i++) {
             var panel = document.getElementById('cc-vm-wizard-step-' + i);
@@ -1440,6 +1452,18 @@
         });
     }
 
+    function applyGuionIaEditorInputChrome() {
+        var mount = document.getElementById('cc-vm-guion-ia-editor-wrap');
+        if (!mount) return;
+        var shell = mount.querySelector('.ubits-input-wrapper');
+        var ta = mount.querySelector('textarea.ubits-input');
+        if (shell) shell.classList.add('cc-vm-guion-ia-input-shell');
+        if (ta) {
+            ta.style.resize = 'none';
+            ta.style.border = 'none';
+        }
+    }
+
     function initGuionCreateInput(containerId) {
         var wrap = document.getElementById(containerId);
         if (!wrap || wrap._ccVmGuionWired || typeof global.createInput !== 'function') return;
@@ -1477,7 +1501,13 @@
                 refreshIaButtons();
             }
         });
+        if (containerId === 'cc-vm-guion-ia-editor-wrap') {
+            applyGuionIaEditorInputChrome();
+        }
         setTimeout(function () {
+            if (containerId === 'cc-vm-guion-ia-editor-wrap') {
+                applyGuionIaEditorInputChrome();
+            }
             autosizeGuionTextarea();
             syncGuionTextareaAfterProgrammaticValue();
         }, 0);
@@ -1609,9 +1639,13 @@
             _guionIaEditorVisible = true;
             var edBlockPre = document.getElementById('cc-vm-guion-ia-editor-block');
             if (edBlockPre) edBlockPre.style.display = '';
-            var labelEl = document.getElementById('cc-vm-gen-guion-label');
-            btn.disabled = true;
-            if (labelEl) labelEl.textContent = 'Generando...';
+            if (typeof global.setIaButtonGenerating === 'function') {
+                global.setIaButtonGenerating(btn, true, { label: 'Generando' });
+            } else {
+                btn.disabled = true;
+                var labelEl = document.getElementById('cc-vm-gen-guion-label');
+                if (labelEl) labelEl.textContent = 'Generando...';
+            }
             setGuionLoading(true);
             setTimeout(function () {
                 var guion = generateGuion();
@@ -1620,8 +1654,13 @@
                 initGuionCreateInput('cc-vm-guion-ia-editor-wrap');
                 setGuionValueProgrammatically(guion);
                 resetContextTemaAfterGuionGeneration();
-                btn.disabled = false;
-                if (labelEl) labelEl.textContent = 'Generar guión';
+                if (typeof global.setIaButtonGenerating === 'function') {
+                    global.setIaButtonGenerating(btn, false);
+                } else {
+                    btn.disabled = false;
+                    var labelElDone = document.getElementById('cc-vm-gen-guion-label');
+                    if (labelElDone) labelElDone.textContent = 'Generar guión';
+                }
                 refreshIaButtons();
             }, 3000);
         });
@@ -1851,7 +1890,23 @@
         });
     }
 
+    function initIaButtonChromeInModal() {
+        var root = document.getElementById(OVERLAY_ID);
+        if (!root) return;
+        if (typeof global.initIaButtonChrome === 'function') {
+            global.initIaButtonChrome(root);
+        } else {
+            if (typeof global.initIaButtonPrimaryGlowWrap === 'function') {
+                global.initIaButtonPrimaryGlowWrap(root);
+            }
+            if (typeof global.initIaButtonSparkles === 'function') {
+                global.initIaButtonSparkles(root);
+            }
+        }
+    }
+
     function initModalInteractions() {
+        initIaButtonChromeInModal();
         wireTabBar();
         initGenVideoButton();
 

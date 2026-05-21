@@ -375,6 +375,69 @@
     margin-bottom: var(--gap-md);
 }
 
+/* Radio solo en la card activa (sin círculo vacío en la no seleccionada) */
+#cc-video-recurso-modal .cc-vm-guion-mode-select .cc-vm-guion-mode-card:not(:has(.ubits-radio__input:checked)) .ubits-radio__circle {
+    display: none;
+}
+
+/* «Generar con IA» inactivo (p. ej. manual seleccionado): borde gris como el resto de cards */
+#cc-video-recurso-modal .cc-vm-guion-mode-select .cc-vm-guion-mode-card--ia:not(:has(.ubits-radio__input:checked)) {
+    border: 1px solid var(--ubits-border-1);
+    background: var(--ubits-bg-1);
+}
+
+#cc-video-recurso-modal .cc-vm-guion-mode-select .cc-vm-guion-mode-card--ia:not(:has(.ubits-radio__input:checked)):hover {
+    border-color: var(--ubits-border-2);
+}
+
+#cc-video-recurso-modal .cc-vm-guion-mode-select .cc-vm-guion-mode-card--ia:not(:has(.ubits-radio__input:checked)) .ubits-selection-card__icon i {
+    background: none;
+    -webkit-background-clip: border-box;
+    background-clip: border-box;
+    color: var(--ubits-fg-1-medium);
+    -webkit-text-fill-color: currentColor;
+}
+
+/* «Generar con IA» seleccionado: borde gradiente como badge-tag--outlined--ia */
+#cc-video-recurso-modal .cc-vm-guion-mode-select .cc-vm-guion-mode-card--ia:has(.ubits-radio__input:checked) {
+    border: var(--ubits-ia-gradient-border-width, 1.5px) solid transparent;
+    background:
+        linear-gradient(var(--ubits-bg-1), var(--ubits-bg-1)) padding-box,
+        var(
+            --ubits-ia-badge-border-gradient,
+            linear-gradient(
+                90deg,
+                var(--modo-ia-gradient-d) 0%,
+                var(--modo-ia-gradient-c) 35.59%,
+                var(--modo-ia-gradient-b) 67.19%,
+                var(--modo-ia-gradient-a) 100%
+            )
+        ) border-box;
+    background-origin: padding-box, border-box;
+    background-clip: padding-box, border-box;
+}
+
+#cc-video-recurso-modal .cc-vm-guion-mode-select .cc-vm-guion-mode-card--ia:has(.ubits-radio__input:checked):hover {
+    border-color: transparent;
+}
+
+#cc-video-recurso-modal .cc-vm-guion-mode-select .cc-vm-guion-mode-card--ia:has(.ubits-radio__input:checked) .ubits-selection-card__icon i {
+    background: var(
+        --ubits-ia-badge-border-gradient,
+        linear-gradient(
+            90deg,
+            var(--modo-ia-gradient-d) 0%,
+            var(--modo-ia-gradient-c) 35.59%,
+            var(--modo-ia-gradient-b) 67.19%,
+            var(--modo-ia-gradient-a) 100%
+        )
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+}
+
 /* Títulos de las minicards un poco más compactos que el default del selection-card */
 #cc-video-recurso-modal .cc-vm-guion-mode-select .ubits-selection-card__title {
     font-size: var(--font-size-sm);
@@ -394,15 +457,15 @@
 }
 
 /*
- * Guión IA generado: borde gradiente en el wrapper (no en el textarea).
- * El gradiente directo en textarea + resize nativo dejaba artefactos grises en la esquina inferior derecha.
+ * Guión IA generado: borde gradiente en el shell del Input (curvatura sm como el componente).
+ * createInput inyecta resize:vertical en inline style; se anula en JS + !important aquí.
  */
-#cc-video-recurso-modal #cc-vm-guion-ia-editor-wrap .ubits-input-wrapper {
+#cc-video-recurso-modal #cc-vm-guion-ia-editor-wrap .cc-vm-guion-ia-input-shell {
     display: block;
     width: 100%;
     box-sizing: border-box;
     border: var(--ubits-ia-gradient-border-width, 1.5px) solid transparent;
-    border-radius: var(--border-radius-lg);
+    border-radius: var(--border-radius-sm);
     background:
         linear-gradient(var(--ubits-bg-1), var(--ubits-bg-1)) padding-box,
         var(
@@ -417,31 +480,35 @@
         ) border-box;
     background-origin: padding-box, border-box;
     background-clip: padding-box, border-box;
-    overflow: hidden;
 }
 
-#cc-video-recurso-modal #cc-vm-guion-ia-editor-wrap .ubits-input-wrapper:focus-within {
+#cc-video-recurso-modal #cc-vm-guion-ia-editor-wrap .cc-vm-guion-ia-input-shell:focus-within {
     box-shadow: 0 0 0 2px color-mix(in srgb, var(--modo-ia-gradient-c) 22%, transparent);
 }
 
-#cc-video-recurso-modal #cc-vm-guion-ia-editor-wrap .ubits-input-wrapper:has(textarea.ubits-input--invalid) {
+#cc-video-recurso-modal #cc-vm-guion-ia-editor-wrap .cc-vm-guion-ia-input-shell:has(textarea.ubits-input--invalid) {
     box-shadow: 0 0 0 2px color-mix(in srgb, var(--ubits-feedback-accent-error) 35%, transparent);
 }
 
-#cc-video-recurso-modal #cc-vm-guion-ia-editor-wrap textarea.ubits-input {
-    border: none;
-    border-radius: 0;
-    background: var(--ubits-bg-1);
-    resize: none;
-    box-shadow: none;
+#cc-video-recurso-modal #cc-vm-guion-ia-editor-wrap .cc-vm-guion-ia-input-shell textarea.ubits-input {
+    border: none !important;
+    border-radius: max(0px, calc(var(--border-radius-sm) - var(--ubits-ia-gradient-border-width, 1.5px)));
+    background: var(--ubits-bg-1) !important;
+    resize: none !important;
+    box-shadow: none !important;
+    overflow-y: auto;
 }
 
-#cc-video-recurso-modal #cc-vm-guion-ia-editor-wrap textarea.ubits-input:hover,
-#cc-video-recurso-modal #cc-vm-guion-ia-editor-wrap textarea.ubits-input:focus {
+#cc-video-recurso-modal #cc-vm-guion-ia-editor-wrap .cc-vm-guion-ia-input-shell textarea.ubits-input::-webkit-resizer {
+    display: none;
+}
+
+#cc-video-recurso-modal #cc-vm-guion-ia-editor-wrap .cc-vm-guion-ia-input-shell textarea.ubits-input:hover,
+#cc-video-recurso-modal #cc-vm-guion-ia-editor-wrap .cc-vm-guion-ia-input-shell textarea.ubits-input:focus {
     outline: none;
-    border: none;
-    box-shadow: none;
-    background: var(--ubits-bg-1);
+    border: none !important;
+    box-shadow: none !important;
+    background: var(--ubits-bg-1) !important;
 }
 
 /* Misma escala que `.ai-panel__input` (13px / 20px interlineado). */
