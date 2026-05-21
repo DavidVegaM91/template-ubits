@@ -12,8 +12,23 @@
     align-self: center;
     display: flex;
     flex-direction: column;
-    overflow-y: auto;
+    overflow: hidden;
+    box-sizing: border-box;
     transition: max-width 240ms ease, width 240ms ease;
+}
+
+#cc-scorm-recurso-modal .ubits-modal-body {
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch;
+}
+
+#cc-scorm-recurso-modal .ubits-modal-footer {
+    flex-shrink: 0;
+    position: relative;
+    z-index: 2;
 }
 
 /* Ancho «Video IA»: lg completo; pestaña Subir .zip más compacta (misma lógica que #cc-video-recurso-modal.cc-vm--compact). */
@@ -22,9 +37,6 @@
 }
 
 #cc-scorm-recurso-modal .ubits-modal-body {
-    flex: 0 1 auto !important;
-    min-height: 0;
-    overflow: visible;
     display: flex;
     flex-direction: column;
     padding: var(--padding-xl);
@@ -86,7 +98,7 @@
 }
 .cc-sm-info-badge i { font-size: 13px; flex-shrink: 0; }
 
-/* ── Layout dos columnas ── */
+/* ── Layout dos columnas: 50/50 (video legacy usa 1fr / 1.3fr porque el preview 16:9 pide más ancho) ── */
 .cc-sm-main-layout {
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
@@ -95,33 +107,75 @@
     min-height: 0;
     overflow: visible;
 }
-@media (max-width: 700px) {
-    .cc-sm-main-layout {
-        grid-template-columns: 1fr;
-        grid-auto-flow: row;
+
+/* Móvil/tablet: una columna, preview arriba, scroll solo en el body del modal */
+@media (max-width: 1023px) {
+    #cc-scorm-recurso-modal .cc-smodal {
+        flex: 0 0 auto;
     }
-    /* Vista previa SCORM: visible también en móvil (debajo del formulario) */
-    .cc-sm-right-col {
+
+    #cc-scorm-recurso-modal #cc-stab-ia.cc-smodal-panel {
+        justify-content: flex-start;
+        min-height: 0;
+        flex: 0 0 auto;
+        overflow: visible;
+    }
+
+    #cc-scorm-recurso-modal .cc-sm-main-layout {
         display: flex;
         flex-direction: column;
+        gap: var(--gap-lg);
+        overflow: visible;
+        min-height: auto;
+        width: 100%;
         min-width: 0;
+        box-sizing: border-box;
+    }
+
+    #cc-scorm-recurso-modal .cc-sm-right-col {
+        display: flex !important;
+        flex-direction: column;
+        flex: 0 0 auto;
+        order: -1;
+        overflow: visible;
+        min-height: min-content;
+        width: 100%;
+        min-width: 0;
+    }
+
+    #cc-scorm-recurso-modal .cc-sm-left-col {
+        display: flex;
+        flex-direction: column;
+        flex: 0 0 auto;
+        order: 0;
+        overflow: visible !important;
+        overflow-y: visible !important;
+        overflow-x: hidden;
+        min-height: auto;
+        max-height: none !important;
+        padding-right: 0;
+        width: 100%;
+        min-width: 0;
+    }
+
+    #cc-scorm-recurso-modal .cc-sm-preview-host .cc-scorm-resource__surface {
+        aspect-ratio: 4 / 3;
+        min-height: 0 !important;
+        max-height: none;
         width: 100%;
     }
 }
 
-/* Columna izquierda: scroll interno */
+/* Columna izquierda: sin scroll interno (scroll en .ubits-modal-body) */
 .cc-sm-left-col {
     display: flex;
     flex-direction: column;
     gap: var(--gap-md);
-    overflow-y: auto;
+    overflow: visible;
     overflow-x: hidden;
-    min-height: 0;
-    padding-right: var(--padding-xs);
+    min-height: auto;
+    padding-right: 0;
 }
-.cc-sm-left-col::-webkit-scrollbar { width: 4px; }
-.cc-sm-left-col::-webkit-scrollbar-track { background: transparent; }
-.cc-sm-left-col::-webkit-scrollbar-thumb { background: var(--ubits-border-1); border-radius: 2px; }
 
 /* Secciones y separadores (mismo patrón que Video Avatar IA: .cc-vm-section / .cc-vm-section-divider) */
 .cc-sm-section {
@@ -138,14 +192,74 @@
     margin: var(--gap-xs) 0;
 }
 
-/* Columna derecha: preview alineado al bloque de página (no estirar a altura del formulario) */
+/* Columna derecha: preview */
 .cc-sm-right-col {
     display: flex;
     flex-direction: column;
     gap: var(--gap-sm);
-    min-height: 0;
+    min-height: min-content;
     overflow: visible;
     justify-content: flex-start;
+    flex-shrink: 0;
+}
+
+/* Desktop: preview sticky a la derecha al hacer scroll */
+@media (min-width: 1024px) {
+    #cc-scorm-recurso-modal .cc-smodal {
+        flex: 0 0 auto;
+        min-height: 0;
+    }
+
+    #cc-scorm-recurso-modal #cc-stab-ia.cc-smodal-panel {
+        justify-content: flex-start;
+        min-height: 0;
+        flex: 0 0 auto;
+        overflow: visible;
+    }
+
+    #cc-scorm-recurso-modal .cc-sm-main-layout {
+        align-items: start;
+        width: 100%;
+        min-width: 0;
+        box-sizing: border-box;
+    }
+
+    #cc-scorm-recurso-modal .cc-sm-left-col {
+        overflow: visible !important;
+        overflow-y: visible !important;
+        min-height: auto;
+        max-height: none !important;
+        padding-right: 0;
+    }
+
+    #cc-scorm-recurso-modal .cc-sm-right-col {
+        position: sticky;
+        top: 0;
+        z-index: 1;
+        min-width: 0;
+        min-height: 0;
+        height: fit-content;
+        max-height: 100%;
+        overflow: visible;
+        align-self: start;
+        box-sizing: border-box;
+    }
+
+    #cc-scorm-recurso-modal .cc-sm-preview-host {
+        width: 100%;
+        max-width: 100%;
+    }
+
+    #cc-scorm-recurso-modal .cc-sm-preview-host .cc-scorm-resource__surface {
+        width: 100%;
+        max-width: 100%;
+        max-height: min(60vh, 520px);
+        aspect-ratio: 4 / 3;
+        height: auto;
+        min-height: 0 !important;
+        flex-shrink: 0;
+        contain: layout paint;
+    }
 }
 
 /* Mismo contrato visual que el recurso en crear-contenido: marco 3/2 + iframe absoluto (evita “columna estrecha gigante”) */
@@ -286,14 +400,14 @@
 }
 
 /* Recurso SCORM incrustado: tag «Generado con IA» sobre el iframe (flujo SCORM con IA) */
-/* Marco 3:2 en página; .cc-scorm-iframe-container rellena este hueco */
+/* Marco 16:10 en página (un poco menos alto que 3:2); .cc-scorm-iframe-container rellena el hueco */
 /* min-height: sin !important: en móvil aspect-ratio se quita y los hijos son absolute;
    un min-height:0 !important aquí impedía que el breakpoint móvil aplicara alto visible
    (colapsaba el marco del iframe a ~0px). */
 .cc-scorm-resource__surface.ubits-resources-block__surface {
     position: relative;
     min-height: 0;
-    aspect-ratio: 3 / 2;
+    aspect-ratio: 16 / 10;
     overflow: hidden;
 }
 

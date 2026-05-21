@@ -374,8 +374,14 @@
         return [
             { type:'intro', icon:'fa-comments', tagLabel:'Presentación', title:'Conversaciones difíciles según Thomas-Kilmann', subtitle:'Presentación interactiva · Thomas-Kilmann', body:'Aprende a elegir el modo de respuesta correcto ante el conflicto', image: SCORM_INTRO_COVER_URL },
             { type:'content', icon:'fa-compass', tagLabel:'Fundamentos', title:'El modelo Thomas-Kilmann: 5 modos de respuesta',
-              body:'Dos dimensiones definen cómo respondemos al conflicto:',
-              bullets:['Asertividad: cuánto priorizas tus propias necesidades', 'Cooperación: cuánto priorizas las necesidades del otro', 'Tu punto en ese mapa define tu modo natural de respuesta'] },
+              body:'Cada modo combina cuánto priorizas tus objetivos (asertividad) y las necesidades del otro (cooperación). Ninguno es “el correcto” en todo momento: el contexto define cuál conviene.',
+              bullets:[
+                  'Competir — Alta asertividad, poca cooperación: defiendes tu postura con firmeza; encaja con urgencias, límites claros o principios que no cedes.',
+                  'Colaborar — Alta asertividad y cooperación: buscas una solución que satisfaga por completo a ambas partes; ideal si el tema es complejo y importan resultado y relación.',
+                  'Comprometer — Punto medio en ambas dimensiones: cada uno cede algo para cerrar rápido; sirve con poco tiempo o para un acuerdo provisional.',
+                  'Evitar — Poca asertividad y cooperación: pospones o eludes el conflicto; puede bajar la tensión al instante, pero no resuelve si se vuelve hábito.',
+                  'Acomodar — Poca asertividad, mucha cooperación: priorizas al otro para cuidar la relación; tiene sentido cuando el tema le pesa más o el vínculo es la prioridad.'
+              ] },
             { type:'steps', icon:'fa-clipboard-check', title:'Antes de la conversación: prepárate', tagLabel:'Preparación',
               bullets:['Define tu objetivo: ¿qué resultado realmente necesitas?', 'Identifica tu modo natural y evalúa si es el más adecuado', 'Anticipa las emociones de la otra persona y prepara tu respuesta', 'Elige el momento y espacio adecuados para reducir la tensión'] },
             { type:'quote', tagLabel:'Reflexión', title:'¿Por qué evitamos?',
@@ -868,9 +874,9 @@
         return base + '</div>';
     }
 
-    function buildScormCss(color) {
+    function buildScormCss(color, editMode) {
         var rgb=hexToRgb(color), dark=darkenHex(color,0.25), ct=contrastColor(color);
-        return ':root{--accent:'+color+';--ar:'+rgb.r+';--ag:'+rgb.g+';--ab:'+rgb.b+';--dark:'+dark+';--ct:'+ct+';'+
+        var css=':root{--accent:'+color+';--ar:'+rgb.r+';--ag:'+rgb.g+';--ab:'+rgb.b+';--dark:'+dark+';--ct:'+ct+';'+
         '--gap-sm:8px;--gap-xs:4px;--gap-md:12px;--padding-xl:20px;--padding-xs:4px;--padding-md:12px;--padding-6xl:40px;}' +
         '#sp-dots{min-height:40px;display:flex;align-items:center;justify-content:center;min-width:120px;}' +
         '*{box-sizing:border-box;margin:0;}' +
@@ -908,7 +914,7 @@
         /* Centrado: portada va aparte (full layout) */
         '.sp-slide--quote,.sp-slide--keypoint,.sp-slide--summary{align-items:center;justify-content:center;}' +
         /* Portada: gradiente horizontal, texto 2/3, imagen 1/3 a la derecha */
-        '.sp-slide--intro{align-items:center;justify-content:center;padding:clamp(14px,3vw,28px);background:radial-gradient(120% 80% at 50% 0%,color-mix(in srgb,var(--accent) 18%,var(--bg)) 0%,var(--bg) 55%);}' +
+        '.sp-slide--intro{align-items:center;justify-content:center;padding:clamp(14px,3vw,28px);background:color-mix(in srgb,var(--accent) 5%,var(--bg));}' +
         '.sp-intro-page--ticket{width:100%;max-width:min(100%,720px);margin:0 auto;}' +
         '.sp-intro-ticket{background:var(--white);border-radius:16px;overflow:hidden;box-shadow:0 18px 48px rgba(0,0,0,.1);border:1px solid rgba(0,0,0,.06);display:flex;flex-direction:column;}' +
         '.sp-intro-ticket-media{position:relative;width:100%;aspect-ratio:16/9;max-height:min(38vh,280px);overflow:hidden;background:color-mix(in srgb,var(--dark) 82%,var(--accent) 18%);}' +
@@ -1151,10 +1157,40 @@
         '.sp-stage .sp-btn-p:hover:not(:disabled){background:#f3f3f4;}' +
         '.sp-stage .sp-btn:disabled{opacity:.4;cursor:not-allowed;}' +
         '@media (max-width:640px){.sp-slide{padding:14px 12px;}}';
+        if (!editMode) css += buildScormCompactViewportCss();
+        return css;
+    }
+
+    /** Vista previa modal, recurso en página y similares: menos chrome y tipografías para reducir scroll interno. */
+    function buildScormCompactViewportCss() {
+        return 'body.sp--compact-viewport .sp-hi{padding:6px 14px;}' +
+        'body.sp--compact-viewport .sp-footer{padding:8px 14px;gap:8px;}' +
+        'body.sp--compact-viewport .sp-footer .ubits-button.ubits-button--md{min-height:34px;padding:8px 12px;font-size:13px;}' +
+        'body.sp--compact-viewport #sp-dots{min-height:32px;}' +
+        'body.sp--compact-viewport .sp-slide{padding:10px 12px;overflow:hidden;align-items:center !important;justify-content:center !important;}' +
+        'body.sp--compact-viewport .sp-slide--intro,body.sp--compact-viewport .sp-slide--content,body.sp--compact-viewport .sp-slide--steps,body.sp--compact-viewport .sp-slide--split,body.sp--compact-viewport .sp-slide--media,body.sp--compact-viewport .sp-slide--accordion,body.sp--compact-viewport .sp-slide--tabs,body.sp--compact-viewport .sp-slide--flashcards,body.sp--compact-viewport .sp-slide--timeline,body.sp--compact-viewport .sp-slide--compare,body.sp--compact-viewport .sp-slide--quiz_mc,body.sp--compact-viewport .sp-slide--match,body.sp--compact-viewport .sp-slide--quote,body.sp--compact-viewport .sp-slide--keypoint,body.sp--compact-viewport .sp-slide--summary{align-items:center !important;justify-content:center !important;}' +
+        'body.sp--compact-viewport .sp-slide--content,body.sp--compact-viewport .sp-slide--steps{padding:12px 14px;}' +
+        'body.sp--compact-viewport .sp-slide--split,body.sp--compact-viewport .sp-slide--media,body.sp--compact-viewport .sp-slide--accordion,body.sp--compact-viewport .sp-slide--tabs,body.sp--compact-viewport .sp-slide--flashcards,body.sp--compact-viewport .sp-slide--timeline,body.sp--compact-viewport .sp-slide--compare,body.sp--compact-viewport .sp-slide--quiz_mc,body.sp--compact-viewport .sp-slide--match{padding:10px 12px;}' +
+        'body.sp--compact-viewport .sp-slide-card{padding:14px 16px;gap:10px;}' +
+        'body.sp--compact-viewport .sp-slide-card h2{font-size:clamp(15px,2.6vw,20px);}' +
+        'body.sp--compact-viewport .sp-body-intro,body.sp--compact-viewport ul li{font-size:12px;line-height:1.45;}' +
+        'body.sp--compact-viewport .sp-intro-ticket-media{max-height:min(24vh,180px);}' +
+        'body.sp--compact-viewport .sp-split-side-img{max-height:min(32vh,240px);}' +
+        'body.sp--compact-viewport .sp-media-card .sp-media-img-wrap{max-height:min(32vh,240px);}' +
+        'body.sp--compact-viewport .sp-fc{min-height:clamp(110px,14vh,150px);}' +
+        'body.sp--compact-viewport .sp-fc-inner{min-height:clamp(110px,14vh,150px);}' +
+        'body.sp--compact-viewport .sp-sum-panel{max-height:calc(100vh - 96px);padding:14px 16px;}' +
+        'body.sp--compact-viewport.sp--modal-preview .sp-slide{padding:8px 10px;}';
     }
 
     function buildScormScript(n, editMode) {
         return 'var cur=0,tot='+n+',__spIxT=null,__ci=null;' +
+        'function spFitSlideToStage_(){' +
+        'if(document.body.classList.contains("sp--editing"))return;' +
+        'var stage=document.querySelector(".sp-stage");var slide=document.querySelector(".sp-slide.active");' +
+        'if(!stage||!slide)return;slide.style.zoom="";slide.scrollTop=0;' +
+        'var sh=slide.scrollHeight,ch=stage.clientHeight;if(sh<=ch+4)return;' +
+        'var z=Math.max(0.72,Math.min(1,(ch-6)/sh));slide.style.zoom=String(z);}' +
         'function hideAllIxTips_(){clearTimeout(__spIxT);__spIxT=null;document.querySelectorAll(".sp-ix-tooltip").forEach(function(t){t.setAttribute("hidden","hidden");});document.querySelectorAll(".sp-ix-hint").forEach(function(b){b.setAttribute("aria-expanded","false");});}' +
         'function showIxTipForSlide_(si){if(document.body.classList.contains("sp--editing"))return;hideAllIxTips_();var ss=document.querySelectorAll(".sp-slide");if(!ss[si])return;var wrap=ss[si].querySelector(".sp-ix-wrap");if(!wrap)return;var btn=wrap.querySelector(".sp-ix-hint");var tip=wrap.querySelector(".sp-ix-tooltip");if(!btn||!tip)return;var tx=btn.getAttribute("data-sp-ix-tip");if(!tx)return;tip.textContent=tx;tip.removeAttribute("hidden");btn.setAttribute("aria-expanded","true");__spIxT=setTimeout(function(){tip.setAttribute("hidden","hidden");btn.setAttribute("aria-expanded","false");__spIxT=null;},3000);}' +
         'function wireSpEditingExtras(){' +
@@ -1225,7 +1261,7 @@
         '  var nx=document.getElementById("sp-next");if(nx){if(cur===tot-1)nx.setAttribute("hidden","hidden");else nx.removeAttribute("hidden");}' +
         '  document.querySelectorAll(".sp-slide-del").forEach(function(btn){var dis=tot<=1;btn.disabled=dis;btn.setAttribute("aria-disabled",dis?"true":"false");});' +
         '  if(__ci&&__ci.setActive)__ci.setActive(cur);' +
-        '  try{showIxTipForSlide_(cur);}catch(eIx){}  if(document.body.classList.contains("sp--editing")){var ss2=document.querySelectorAll(".sp-slide");if(ss2[cur])try{spSyncSlideEditorBtns_(ss2[cur]);}catch(eSb){}}}' +
+        '  try{showIxTipForSlide_(cur);}catch(eIx){}try{spFitSlideToStage_();}catch(eFit){}if(document.body.classList.contains("sp--editing")){var ss2=document.querySelectorAll(".sp-slide");if(ss2[cur])try{spSyncSlideEditorBtns_(ss2[cur]);}catch(eSb){}}}' +
         (editMode ? 'function openColorPicker(el){try{parent.ccScormOpenColorPicker(el,function(hex){if(parent.ccScormApplyTheme)parent.ccScormApplyTheme(document,hex);else document.documentElement.style.setProperty("--accent",hex);var sw=document.getElementById("sp-cpsw");if(sw)sw.style.background=hex;});}catch(e){}}' +
         'function wireSpTooltips_(){if(typeof initTooltip!=="function")return;try{initTooltip("[data-tooltip]");}catch(eT){}}' +
         'function deleteSlideAt_(slideIdx){if(typeof __spEditPageKey==="undefined")return;try{if(parent.ccScormConfirmDeleteSlide)parent.ccScormConfirmDeleteSlide(__spEditPageKey,slideIdx);}catch(eDel){}}' : '') +
@@ -1321,14 +1357,16 @@
         'try{if(!document.querySelector("base")){var pu=window.parent&&window.parent.location&&window.parent.location.href;var u=new URL(pu);u.hash="";u.search="";var p=u.pathname.split("/");p.pop();u.pathname=p.join("/")+"/";var be=document.createElement("base");be.href=u.href;document.head.insertBefore(be,document.head.firstChild);}}catch(e1){}' +
         '  var ss=document.querySelectorAll(".sp-slide");if(ss[0])ss[0].classList.add("active");' +
         '  if(typeof initCarouselIndicators==="function"){__ci=initCarouselIndicators({containerId:"sp-dots",count:tot,activeIndex:cur,maxVisible:6,dynamicFrom:11,ariaLabel:"Indicadores de diapositiva",onSelect:function(i){gotoSlide(i);}});}' +
-        '  upd();wireScormIx();if(document.body.classList.contains("sp--editing")){try{wireSpTooltips_();}catch(eTt2){}}});';
+        '  upd();wireScormIx();if(document.body.classList.contains("sp--editing")){try{wireSpTooltips_();}catch(eTt2){}}' +
+        '  try{spFitSlideToStage_();}catch(eFit0){}' +
+        '  if(document.body.classList.contains("sp--compact-viewport")){var spRzFit_=function(){try{spFitSlideToStage_();}catch(eF){}};window.addEventListener("resize",spRzFit_,{passive:true});}});';
     }
 
     function generateScormHtml(titulo, slides, color, editMode, isModalPreview, pageKey, logoSrc) {
         var n=slides.length;
         var logo = logoSrc || '';
         var slidesHtml=slides.map(function(s,i){return buildSlideHtml(s,i,editMode||false,logo);}).join('\n');
-        var css=buildScormCss(color);
+        var css=buildScormCss(color, editMode);
         var script=(editMode && pageKey ? 'var __spEditPageKey="'+esc(pageKey)+'";' : '') + buildScormScript(n, editMode||false);
 
         var colorTrigger = editMode
@@ -1354,7 +1392,8 @@
             getScormChromeCssLinks(!!editMode) +
             getScormChromeThemeSyncScript() +
             '<link rel="stylesheet" href="../../components/carousel-indicators.css">'+
-            '<style>'+css+'</style></head><body'+(editMode?' class="sp--editing"':'')+'>'+
+            '<style>'+css+'</style></head><body class="'+
+            (editMode?'sp--editing':('sp--compact-viewport'+(isModalPreview?' sp--modal-preview':'')))+'">'+
             '<div class="sp-header">'+
                 '<div class="sp-pb"><div class="sp-pf" id="sp-pf"></div></div>'+
                 '<div class="'+headerRowClass+'">'+
@@ -1374,10 +1413,11 @@
 
     function applyPlaceholderSlidesForPreview(slides) {
         var t = 'Título de la diapositiva';
-        var b = 'Párrafo descriptivo sobre el tema que explica detalladamente el tema a tratar de una forma amena para los estudiantes de la plataforma.';
+        var b = 'Texto de ejemplo sobre el tema para la vista previa.';
         var bl = 'Bullet informativo sobre el tema a tratar';
         return slides.map(function (s, idx) {
             var x = JSON.parse(JSON.stringify(s));
+            var n = idx + 1;
             if (x.title != null) x.title = t;
             if (x.subtitle != null) x.subtitle = 'Subtítulo de ejemplo';
             if (x.body != null && x.body !== '') x.body = b;
@@ -1425,9 +1465,15 @@
                 });
             }
 
-            var n = idx + 1;
             if (n === 1 && x.body != null && x.body !== '') {
                 x.body = 'Párrafo descriptivo sobre el tema a tratar.';
+            }
+            if (n === 2 && x.type === 'content') {
+                x.bullets = [
+                    'Asertividad: cuánto priorizas tus propias necesidades',
+                    'Cooperación: cuánto priorizas las necesidades del otro',
+                    'Tu punto en ese mapa define tu modo natural de respuesta'
+                ];
             }
             if (n === 4 && x.type === 'quote' && x.body != null) {
                 x.body = 'Cita o frase relevante sobre el tema a tratar en esta presentación.';
@@ -1595,7 +1641,7 @@
                         '<div id="cc-sm-logo-fu-wrap"></div>' +
                     '</div>' +
                 '</div>' +
-                /* Columna derecha: preview */
+                /* Columna derecha: preview (misma pauta que video legacy) */
                 '<div class="cc-sm-right-col">' +
                     '<div class="cc-sm-preview-host">' +
                         '<div class="ubits-resources-block__surface cc-scorm-resource__surface" style="padding:0;">' +
@@ -1637,11 +1683,39 @@
             '<button type="button" class="ubits-button ubits-button--primary ubits-button--md" id="cc-sm-footer-cargar-zip" style="display:none;" disabled><span>Cargar SCORM</span></button>';
     }
 
+    function applyScormModalBodyOverflow(modalBody) {
+        if (!modalBody) return;
+        modalBody.style.padding = 'var(--padding-xl)';
+        modalBody.style.display = 'flex';
+        modalBody.style.flexDirection = 'column';
+        modalBody.style.maxHeight = '';
+        modalBody.style.flex = '1 1 auto';
+        modalBody.style.minHeight = '0';
+        modalBody.style.overflowX = 'hidden';
+        modalBody.style.overflowY = 'auto';
+    }
+
+    function wireScormModalLayout(overlay) {
+        if (!overlay || overlay._ccSmLayoutResize) return;
+        var onResize = function () {
+            if (_currentTab === 'ia') {
+                applyScormModalBodyOverflow(overlay.querySelector('.ubits-modal-body'));
+            }
+        };
+        overlay._ccSmLayoutResize = onResize;
+        global.addEventListener('resize', onResize, { passive: true });
+    }
+
+    function unwireScormModalLayout(overlay) {
+        if (!overlay || !overlay._ccSmLayoutResize) return;
+        global.removeEventListener('resize', overlay._ccSmLayoutResize);
+        overlay._ccSmLayoutResize = null;
+    }
+
     function applyAiModalChrome(overlay) {
-        var mc=overlay.querySelector('.ubits-modal-content');
-        if (mc) mc.classList.add('portada-ia-modal-content','cc-scorm-ia-modal-content');
-        var mb=overlay.querySelector('.ubits-modal-body');
-        if (mb) { mb.style.padding='var(--padding-xl)'; mb.style.overflowY='auto'; mb.style.overflowX='hidden'; mb.style.display='flex'; mb.style.flexDirection='column'; mb.style.maxHeight=''; mb.style.flex=''; }
+        var mc = overlay.querySelector('.ubits-modal-content');
+        if (mc) mc.classList.add('portada-ia-modal-content', 'cc-scorm-ia-modal-content');
+        applyScormModalBodyOverflow(overlay.querySelector('.ubits-modal-body'));
         syncScormTokensBadge();
     }
 
@@ -2522,9 +2596,16 @@
             variant:             'ia',
             iaTokensRemaining:   getTokens(),
             iaTokensBadgeId:     'cc-scorm-modal-tokens-badge',
-            iaTokensTooltip:     'Tokens restantes'
+            iaTokensTooltip:     'Tokens restantes',
+            onClose: function () {
+                var el = document.getElementById(OVERLAY_ID);
+                if (el) unwireScormModalLayout(el);
+            }
         });
-        if (overlay) applyAiModalChrome(overlay);
+        if (overlay) {
+            applyAiModalChrome(overlay);
+            wireScormModalLayout(overlay);
+        }
 
         setTimeout(function(){
             initTituloInput();
