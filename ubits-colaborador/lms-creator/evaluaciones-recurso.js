@@ -1231,7 +1231,11 @@
             if (!btn) return;
             btn.addEventListener('click', function () {
                 if (!_evalTrySpendTokens(cost)) return;
-                btn.disabled = true;
+                if (typeof global.setIaButtonGenerating === 'function') {
+                    global.setIaButtonGenerating(btn, true, { label: 'Generando' });
+                } else {
+                    btn.disabled = true;
+                }
                 state.step = 'generating';
                 evalAgentCloseUiForGeneration();
                 setTimeout(function () { evalAgentRunGeneration(rootEl); }, 150);

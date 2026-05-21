@@ -509,7 +509,11 @@
             }
             clearPimIdeaError();
             if (!trySpendTokens(TOKEN_GENERATE)) return;
-            btn.disabled = true;
+            if (typeof global.setIaButtonGenerating === 'function') {
+                global.setIaButtonGenerating(btn, true, { label: 'Generando' });
+            } else {
+                btn.disabled = true;
+            }
             _iaResultSrc = '';
             var justExpanded = false;
             if (!_pimIaLayoutExpanded) {
@@ -542,7 +546,11 @@
                 _iaResultSrc = AI_IMAGES[_iaImageIndex];
                 renderIaResult(_iaResultSrc);
                 setPreviewState('result');
-                btn.disabled = false;
+                if (typeof global.setIaButtonGenerating === 'function') {
+                    global.setIaButtonGenerating(btn, false);
+                } else {
+                    btn.disabled = false;
+                }
                 syncFooter();
                 refreshGenButtons();
             }, 3000);

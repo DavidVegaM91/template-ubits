@@ -1,7 +1,10 @@
 /* ========================================
    UBITS IA-BUTTON COMPONENT
    Botón especial para casos de IA con gradiente lineal (Figma AI-Capabilities ai-button 565:5110).
+   Estado Generando: requiere loader oficial (doble anillo).
    ======================================== */
+
+@import url('loader.css');
 
 /* Borde animado (solo variante secundaria): misma mecánica que «Recomendados para ti» en modo-estudio-ia. */
 @keyframes ubits-ia-button-gradient-shift-border {
@@ -631,6 +634,153 @@
 }
 
 /* ========================================
+   IA-BUTTON — ESTADO GENERANDO (ubits-loader blanco, no ia-loader)
+   ======================================== */
+
+.ubits-ia-button--generating {
+    cursor: wait;
+    pointer-events: none;
+}
+
+.ubits-ia-button--generating .ubits-ia-button__token-cost {
+    display: none !important;
+}
+
+.ubits-ia-button--primary.ubits-ia-button--generating:disabled,
+.ubits-ia-button--primary.ubits-ia-button--generating.ubits-ia-button--disabled {
+    background: var(--ubits-ia-button-gradient) !important;
+    background-size: 100% 100% !important;
+    background-position: 50% 50% !important;
+    color: rgb(255, 255, 255) !important;
+    border: none !important;
+    box-shadow: none !important;
+    cursor: wait;
+}
+
+.ubits-ia-button--primary.ubits-ia-button--generating:disabled .ubits-ia-button__generating-label,
+.ubits-ia-button--primary.ubits-ia-button--generating.ubits-ia-button--disabled .ubits-ia-button__generating-label {
+    color: rgb(255, 255, 255) !important;
+}
+
+.ubits-ia-button--secondary.ubits-ia-button--generating:disabled,
+.ubits-ia-button--secondary.ubits-ia-button--generating.ubits-ia-button--disabled {
+    background:
+        linear-gradient(var(--ubits-bg-1), var(--ubits-bg-1)) padding-box,
+        var(--ubits-ia-button-gradient-border-shift) border-box !important;
+    background-size: 100% 100%, 300% 100% !important;
+    background-position: 0 0, 0% 50% !important;
+    background-origin: padding-box, border-box !important;
+    background-clip: padding-box, border-box !important;
+    animation: ubits-ia-button-gradient-shift-border 5s ease-in-out infinite !important;
+    border: var(--ubits-ia-gradient-border-width, 1.5px) solid transparent !important;
+    color: var(--ubits-fg-1-high) !important;
+    cursor: wait;
+}
+
+.ubits-ia-button--generating .ubits-ia-button__generating-loader {
+    flex-shrink: 0;
+    --ubits-ia-btn-loader-size: 16px;
+    --ubits-ia-btn-loader-border: 1.5px;
+    width: var(--ubits-ia-btn-loader-size);
+    height: var(--ubits-ia-btn-loader-size);
+    min-width: var(--ubits-ia-btn-loader-size);
+    min-height: var(--ubits-ia-btn-loader-size);
+    border-width: var(--ubits-ia-btn-loader-border);
+    border-color: color-mix(in srgb, rgb(255, 255, 255) 38%, transparent);
+}
+
+.ubits-ia-button--generating .ubits-ia-button__generating-loader::after {
+    width: calc(var(--ubits-ia-btn-loader-size) * 0.8333);
+    height: calc(var(--ubits-ia-btn-loader-size) * 0.8333);
+    border-width: var(--ubits-ia-btn-loader-border);
+    border-color: rgb(255, 255, 255) transparent;
+}
+
+.ubits-ia-button.ubits-ia-button--xs .ubits-ia-button__generating-loader,
+.ubits-ia-button--xs .ubits-ia-button__generating-loader,
+.ubits-ia-button--icon-only--xs .ubits-ia-button__generating-loader,
+.ubits-ia-button--icon-only.ubits-ia-button--xs .ubits-ia-button__generating-loader {
+    --ubits-ia-btn-loader-size: 12px;
+    --ubits-ia-btn-loader-border: 1px;
+}
+
+.ubits-ia-button.ubits-ia-button--sm .ubits-ia-button__generating-loader,
+.ubits-ia-button--sm .ubits-ia-button__generating-loader,
+.ubits-ia-button--icon-only--sm .ubits-ia-button__generating-loader,
+.ubits-ia-button--icon-only.ubits-ia-button--sm .ubits-ia-button__generating-loader {
+    --ubits-ia-btn-loader-size: 14px;
+    --ubits-ia-btn-loader-border: 1.25px;
+}
+
+.ubits-ia-button.ubits-ia-button--md .ubits-ia-button__generating-loader,
+.ubits-ia-button--md .ubits-ia-button__generating-loader,
+.ubits-ia-button--icon-only--md .ubits-ia-button__generating-loader,
+.ubits-ia-button--icon-only.ubits-ia-button--md .ubits-ia-button__generating-loader,
+.ubits-ia-button--icon-only:not([class*='--icon-only--']) .ubits-ia-button__generating-loader,
+.ubits-ia-button:not(.ubits-ia-button--xs):not(.ubits-ia-button--sm):not(.ubits-ia-button--md):not(.ubits-ia-button--lg):not([class*='icon-only'])
+    .ubits-ia-button__generating-loader {
+    --ubits-ia-btn-loader-size: 16px;
+    --ubits-ia-btn-loader-border: 1.5px;
+}
+
+.ubits-ia-button.ubits-ia-button--lg .ubits-ia-button__generating-loader,
+.ubits-ia-button--lg .ubits-ia-button__generating-loader,
+.ubits-ia-button--icon-only--lg .ubits-ia-button__generating-loader,
+.ubits-ia-button--icon-only.ubits-ia-button--lg .ubits-ia-button__generating-loader {
+    --ubits-ia-btn-loader-size: 20px;
+    --ubits-ia-btn-loader-border: 2px;
+}
+
+.ubits-ia-button__generating-label {
+    font-family: inherit;
+    font-size: inherit;
+    font-weight: inherit;
+    line-height: inherit;
+    color: inherit;
+}
+
+.ubits-ia-button--secondary.ubits-ia-button--generating .ubits-ia-button__generating-loader {
+    border-color: color-mix(in srgb, var(--ubits-border-1) 55%, transparent);
+}
+
+.ubits-ia-button--secondary.ubits-ia-button--generating .ubits-ia-button__generating-loader::after {
+    border-color: var(--ubits-accent-brand) transparent;
+}
+
+.ubits-ia-button--secondary.ubits-ia-button--generating .ubits-ia-button__generating-label {
+    color: var(--ubits-fg-1-high);
+}
+
+.ubits-ia-button__generating-dots span {
+    display: inline-block;
+    width: 0.22em;
+    text-align: center;
+    opacity: 0.7;
+    animation: ubits-ia-button-generating-dot 1.35s ease-in-out infinite;
+}
+
+.ubits-ia-button__generating-dots span:nth-child(2) {
+    animation-delay: 0.22s;
+}
+
+.ubits-ia-button__generating-dots span:nth-child(3) {
+    animation-delay: 0.44s;
+}
+
+@keyframes ubits-ia-button-generating-dot {
+    0%,
+    100% {
+        opacity: 0.6;
+        transform: translateY(0);
+    }
+
+    50% {
+        opacity: 0.85;
+        transform: translateY(-1px);
+    }
+}
+
+/* ========================================
    TOKEN COST (número + moneda) — alineado a ubits-button--with-token-cost
    Estructura: solo bloque token + etiqueta (sin icono sparkles u otro lateral; único icono = fa-coin-vertical).
    <button class="ubits-ia-button ... ubits-ia-button--primary ubits-ia-button--sm ubits-ia-button--with-token-cost">
@@ -797,6 +947,14 @@
 .ubits-ia-button:disabled span,
 .ubits-ia-button--disabled span {
     color: var(--ubits-fg-on-disabled-button) !important;
+}
+
+/* Generando: el botón va disabled pero label y puntos deben seguir blancos (no gris disabled) */
+.ubits-ia-button--primary.ubits-ia-button--generating:disabled .ubits-ia-button__generating-label,
+.ubits-ia-button--primary.ubits-ia-button--generating.ubits-ia-button--disabled .ubits-ia-button__generating-label,
+.ubits-ia-button--primary.ubits-ia-button--generating:disabled .ubits-ia-button__generating-dots span,
+.ubits-ia-button--primary.ubits-ia-button--generating.ubits-ia-button--disabled .ubits-ia-button__generating-dots span {
+    color: rgb(255, 255, 255) !important;
 }
 
 /* ========================================

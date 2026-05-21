@@ -642,13 +642,19 @@
             crearContenidoPortadaLastIaPrompt = val;
             crearContenidoPortadaLastSource = 'ai';
             randomizePortadaAiImageIndexForNewGeneration();
+            if (typeof setIaButtonGenerating === 'function' && sendBtn) {
+                setIaButtonGenerating(sendBtn, true, { label: 'Generando' });
+            }
             inputView.style.display = 'none';
             loaderView.style.display = 'flex';
-            
-            setTimeout(function() {
+
+            setTimeout(function () {
                 loaderView.style.display = 'none';
                 imgEl.src = AI_IMAGES[portadaiAImagesIndex];
                 resultView.style.display = 'flex';
+                if (typeof setIaButtonGenerating === 'function' && sendBtn) {
+                    setIaButtonGenerating(sendBtn, false);
+                }
                 updatePortadaAiModalTokenButtons(overlay);
             }, 4000);
         }
@@ -661,17 +667,23 @@
             }
         });
 
-        regenBtn.addEventListener('click', function() {
+        regenBtn.addEventListener('click', function () {
             if (!tryConsumePortadaRegenTokens()) return;
             updatePortadaAiModalTokenButtons(overlay);
+            if (typeof setIaButtonGenerating === 'function' && regenBtn) {
+                setIaButtonGenerating(regenBtn, true, { label: 'Generando' });
+            }
             resultView.style.display = 'none';
             loaderView.style.display = 'flex';
 
-            setTimeout(function() {
+            setTimeout(function () {
                 portadaiAImagesIndex = (portadaiAImagesIndex + 1) % AI_IMAGES.length;
                 imgEl.src = AI_IMAGES[portadaiAImagesIndex];
                 loaderView.style.display = 'none';
                 resultView.style.display = 'flex';
+                if (typeof setIaButtonGenerating === 'function' && regenBtn) {
+                    setIaButtonGenerating(regenBtn, false);
+                }
                 updatePortadaAiModalTokenButtons(overlay);
             }, 2000);
         });

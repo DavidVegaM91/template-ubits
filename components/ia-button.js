@@ -1,5 +1,5 @@
 /**
- * UBITS IA-BUTTON — icono sparkles Figma (571:8065): cuatro subtrazos, animación a destiempo en hover + init opcional.
+ * UBITS IA-BUTTON — icono sparkles Figma (571:8065): animación en hover (primario) + estado Generando (ubits-loader blanco).
  * El gradiente del botón primario es solo CSS (estático); este script reemplaza
  * <i class="far fa-sparkles"> (y fas) dentro de .ubits-ia-button--primary por el SVG.
  *
@@ -58,6 +58,7 @@
         var buttons = root.querySelectorAll('.ubits-ia-button--primary');
         for (var b = 0; b < buttons.length; b++) {
             var btn = buttons[b];
+            if (btn.classList.contains('ubits-ia-button--generating')) continue;
             var icons = btn.querySelectorAll('i');
             for (var i = 0; i < icons.length; i++) {
                 var ic = icons[i];
@@ -71,9 +72,97 @@
         }
     }
 
+    var UBITS_IA_BUTTON_IDLE_HTML = 'data-ubits-ia-button-idle-html';
+    var UBITS_IA_BUTTON_IDLE_DISABLED = 'data-ubits-ia-button-idle-disabled';
+    var UBITS_IA_BUTTON_IDLE_ARIA_BUSY = 'data-ubits-ia-button-idle-aria-busy';
+
+    function getIaButtonGeneratingDotsHtml() {
+        return (
+            '<span class="ubits-ia-button__generating-dots" aria-hidden="true">' +
+            '<span>.</span><span>.</span><span>.</span>' +
+            '</span>'
+        );
+    }
+
+    /**
+     * Contenido del botón en estado Generando (<span class="ubits-loader"> blanco + texto + puntos).
+     * Requiere components/loader.css (importado desde ia-button.css).
+     * @param {string} label Texto antes de los puntos (sin «...»; los añade el markup).
+     * @param {boolean} iconOnly
+     */
+    function getIaButtonGeneratingMarkup(label, iconOnly) {
+        var loader =
+            '<span class="ubits-loader ubits-ia-button__generating-loader" role="presentation" aria-hidden="true"></span>';
+        if (iconOnly) return loader;
+        var text = label != null && String(label).length ? String(label) : 'Generando';
+        return (
+            loader +
+            '<span class="ubits-ia-button__generating-label">' +
+            text +
+            getIaButtonGeneratingDotsHtml() +
+            '</span>'
+        );
+    }
+
+    function isIaButtonIconOnly(btn) {
+        if (!btn || !btn.classList) return false;
+        return (
+            btn.classList.contains('ubits-ia-button--icon-only') ||
+            (btn.className && btn.className.indexOf('ubits-ia-button--icon-only') !== -1)
+        );
+    }
+
+    /**
+     * Activa o desactiva el estado «Generando» (ubits-loader blanco + puntos animados).
+     * @param {HTMLButtonElement} button
+     * @param {boolean} generating
+     * @param {{ label?: string }} [options]
+     */
+    function setIaButtonGenerating(button, generating, options) {
+        if (!button || !button.classList || button.className.indexOf('ubits-ia-button') === -1) return;
+        options = options || {};
+
+        if (generating) {
+            if (button.getAttribute(UBITS_IA_BUTTON_IDLE_HTML)) return;
+            button.setAttribute(UBITS_IA_BUTTON_IDLE_HTML, button.innerHTML);
+            button.setAttribute(UBITS_IA_BUTTON_IDLE_DISABLED, button.disabled ? '1' : '0');
+            button.setAttribute(
+                UBITS_IA_BUTTON_IDLE_ARIA_BUSY,
+                button.getAttribute('aria-busy') != null ? button.getAttribute('aria-busy') : ''
+            );
+            button.innerHTML = getIaButtonGeneratingMarkup(options.label, isIaButtonIconOnly(button));
+            button.classList.add('ubits-ia-button--generating');
+            button.disabled = true;
+            button.setAttribute('aria-busy', 'true');
+            button.setAttribute('aria-disabled', 'true');
+            return;
+        }
+
+        if (!button.getAttribute(UBITS_IA_BUTTON_IDLE_HTML)) {
+            button.classList.remove('ubits-ia-button--generating');
+            button.removeAttribute('aria-busy');
+            button.removeAttribute('aria-disabled');
+            return;
+        }
+
+        button.innerHTML = button.getAttribute(UBITS_IA_BUTTON_IDLE_HTML);
+        button.removeAttribute(UBITS_IA_BUTTON_IDLE_HTML);
+        button.disabled = button.getAttribute(UBITS_IA_BUTTON_IDLE_DISABLED) === '1';
+        button.removeAttribute(UBITS_IA_BUTTON_IDLE_DISABLED);
+        var prevBusy = button.getAttribute(UBITS_IA_BUTTON_IDLE_ARIA_BUSY);
+        button.removeAttribute(UBITS_IA_BUTTON_IDLE_ARIA_BUSY);
+        if (prevBusy) button.setAttribute('aria-busy', prevBusy);
+        else button.removeAttribute('aria-busy');
+        button.removeAttribute('aria-disabled');
+        button.classList.remove('ubits-ia-button--generating');
+        initIaButtonSparkles(button);
+    }
+
     if (typeof window !== 'undefined') {
         window.getIaButtonSparklesMarkup = getIaButtonSparklesMarkup;
+        window.getIaButtonGeneratingMarkup = getIaButtonGeneratingMarkup;
         window.initIaButtonSparkles = initIaButtonSparkles;
+        window.setIaButtonGenerating = setIaButtonGenerating;
         function runInit() {
             try {
                 initIaButtonSparkles(document);

@@ -1641,10 +1641,6 @@
             if (edBlockPre) edBlockPre.style.display = '';
             if (typeof global.setIaButtonGenerating === 'function') {
                 global.setIaButtonGenerating(btn, true, { label: 'Generando' });
-            } else {
-                btn.disabled = true;
-                var labelEl = document.getElementById('cc-vm-gen-guion-label');
-                if (labelEl) labelEl.textContent = 'Generando...';
             }
             setGuionLoading(true);
             setTimeout(function () {
@@ -1656,10 +1652,6 @@
                 resetContextTemaAfterGuionGeneration();
                 if (typeof global.setIaButtonGenerating === 'function') {
                     global.setIaButtonGenerating(btn, false);
-                } else {
-                    btn.disabled = false;
-                    var labelElDone = document.getElementById('cc-vm-gen-guion-label');
-                    if (labelElDone) labelElDone.textContent = 'Generar guión';
                 }
                 refreshIaButtons();
             }, 3000);

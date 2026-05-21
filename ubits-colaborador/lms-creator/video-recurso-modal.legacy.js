@@ -1165,9 +1165,9 @@
             _guionIaEditorVisible = true;
             var edBlockPre = document.getElementById('cc-vm-guion-ia-editor-block');
             if (edBlockPre) edBlockPre.style.display = '';
-            var labelEl = document.getElementById('cc-vm-gen-guion-label');
-            btn.disabled = true;
-            if (labelEl) labelEl.textContent = 'Generando...';
+            if (typeof global.setIaButtonGenerating === 'function') {
+                global.setIaButtonGenerating(btn, true, { label: 'Generando' });
+            }
             setGuionLoading(true);
             setTimeout(function () {
                 var guion = generateGuion();
@@ -1176,8 +1176,9 @@
                 initGuionCreateInput('cc-vm-guion-ia-editor-wrap');
                 setGuionValueProgrammatically(guion);
                 resetContextTemaAfterGuionGeneration();
-                btn.disabled = false;
-                if (labelEl) labelEl.textContent = 'Generar guión';
+                if (typeof global.setIaButtonGenerating === 'function') {
+                    global.setIaButtonGenerating(btn, false);
+                }
                 refreshIaButtons();
             }, 3000);
         });
