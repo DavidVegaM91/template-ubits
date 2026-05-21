@@ -9,7 +9,7 @@
     var MOUNT_ID = 'cc-status-panel-mount';
 
     var TYPE_ICONS = {
-        scorm: 'fa-file-zipper',
+        scorm: 'fa-cube',
         video: 'fa-video'
     };
 
