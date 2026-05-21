@@ -811,6 +811,16 @@
     padding: var(--padding-xs) 0;
 }
 
+/* Staff: 10 avatares en 2 filas × 5 columnas */
+.cc-vmodal-v2 .cc-vm-avatar-pick--staff-5x2 {
+    display: grid;
+    grid-template-columns: repeat(5, var(--cc-vm-avatar-thumb-size));
+    justify-content: center;
+    justify-items: center;
+    gap: var(--gap-md) var(--gap-lg);
+    flex-wrap: unset;
+}
+
 .cc-vmodal-v2 .cc-vm-avatar-pick__item {
     flex: 0 0 var(--cc-vm-avatar-thumb-size);
     width: var(--cc-vm-avatar-thumb-size);

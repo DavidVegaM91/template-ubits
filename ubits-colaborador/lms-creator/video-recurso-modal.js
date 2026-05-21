@@ -589,7 +589,9 @@
             '<p class="ubits-body-xs-regular cc-vm-wizard-duration-copy">Los videos tendrán máximo 2 minutos de duración.</p>' +
             '<div id="cc-vm-cat-select-wrap" class="cc-vm-wizard-cat-select"></div>' +
             '</div>' +
-            '<div class="cc-vm-avatar-pick" id="cc-vm-avatar-pick" role="listbox" aria-label="Seleccionar avatar">' +
+            '<div class="cc-vm-avatar-pick' +
+            (_currentCat === 'staff' ? ' cc-vm-avatar-pick--staff-5x2' : '') +
+            '" id="cc-vm-avatar-pick" role="listbox" aria-label="Seleccionar avatar">' +
             buildAvatarPickItemsHtml(_currentCat) +
             '</div></div>' +
             '<div class="cc-vm-wizard-step cc-vm-wizard-step--hidden" id="cc-vm-wizard-step-1" data-cc-vm-wizard-step="1">' +
@@ -901,10 +903,16 @@
         }
 
         if (_iaWizardStep === 0) {
-            if (sig) sig.style.display = '';
+            if (sig) {
+                sig.style.display = '';
+                sig.disabled = false;
+            }
         } else if (_iaWizardStep === 1) {
             if (ant) ant.style.display = '';
-            if (sig) sig.style.display = '';
+            if (sig) {
+                sig.style.display = '';
+                sig.disabled = !hasValidGuionForWizardNext();
+            }
         } else if (_iaWizardStep === 2) {
             if (ant) ant.style.display = '';
             if (gen) gen.style.display = '';
@@ -937,7 +945,53 @@
             initLogoUpload();
         }
 
+        updateIaWizardStepperNav();
         syncFooterCta();
+    }
+
+    function updateIaWizardStepperNav() {
+        var stepper = document.getElementById('cc-vm-ia-stepper');
+        if (!stepper) return;
+        var steps = stepper.querySelectorAll(':scope > .ubits-stepper__step');
+        steps.forEach(function (stepEl, i) {
+            var canGoBack = i < _iaWizardStep;
+            stepEl.style.cursor = canGoBack ? 'pointer' : '';
+            stepEl.setAttribute('tabindex', canGoBack ? '0' : '-1');
+            if (canGoBack) {
+                stepEl.setAttribute('role', 'button');
+                stepEl.removeAttribute('aria-disabled');
+            } else {
+                stepEl.removeAttribute('role');
+                if (i > _iaWizardStep) {
+                    stepEl.setAttribute('aria-disabled', 'true');
+                } else {
+                    stepEl.removeAttribute('aria-disabled');
+                }
+            }
+        });
+    }
+
+    function wireIaWizardStepper() {
+        var stepper = document.getElementById('cc-vm-ia-stepper');
+        if (!stepper || stepper._ccVmWizardStepperWired) return;
+        stepper._ccVmWizardStepperWired = true;
+
+        var steps = stepper.querySelectorAll(':scope > .ubits-stepper__step');
+        steps.forEach(function (stepEl, i) {
+            function goToStep() {
+                if (i >= _iaWizardStep) return;
+                if (_iaWizardStep === 1) persistGuionFromMountedInput();
+                setIaWizardStep(i);
+            }
+            stepEl.addEventListener('click', goToStep);
+            stepEl.addEventListener('keydown', function (e) {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    goToStep();
+                }
+            });
+        });
+        updateIaWizardStepperNav();
     }
 
     function wireIaWizardFooter() {
@@ -951,6 +1005,7 @@
                     return;
                 }
                 if (_iaWizardStep === 1) {
+                    if (!hasValidGuionForWizardNext()) return;
                     persistGuionFromMountedInput();
                     setIaWizardStep(2);
                 }
@@ -969,6 +1024,12 @@
                 }
             });
         }
+    }
+
+    function syncAvatarPickLayout(cat) {
+        var pick = document.getElementById('cc-vm-avatar-pick');
+        if (!pick) return;
+        pick.classList.toggle('cc-vm-avatar-pick--staff-5x2', cat === 'staff');
     }
 
     function wireAvatarPick() {
@@ -997,10 +1058,23 @@
         if (up)   up.style.display   = _currentTab === 'subir' ? '' : 'none';
     }
 
+    /** Paso guión (wizard índice 1): permite «Siguiente» solo con guión IA generado o texto manual. */
+    function hasValidGuionForWizardNext() {
+        persistGuionFromMountedInput();
+        if (_guionMode === 'manual') {
+            return _guionTextManual.trim().length > 0;
+        }
+        return _guionIaEditorVisible && _guionTextIa.trim().length > 0;
+    }
+
     /* ── Botones IA ── */
     function refreshIaButtons() {
         /* No deshabilitar por tokens insuficientes: al clic, trySpendVideoAiTokens muestra toast (mismo patrón que SCORM). */
         syncVideoModalTokensBadge();
+        if (CC_VIDEO_MODAL_UI === 'v2' && _currentTab === 'ia' && _iaWizardStep === 1) {
+            var sig = document.getElementById('cc-vm-btn-siguiente');
+            if (sig) sig.disabled = !hasValidGuionForWizardNext();
+        }
     }
 
     /* ── Avatar ── */
@@ -1131,6 +1205,7 @@
         var pick = document.getElementById('cc-vm-avatar-pick');
         if (pick) {
             pick.innerHTML = buildAvatarPickItemsHtml(_currentCat);
+            syncAvatarPickLayout(_currentCat);
             pick._ccWired = false;
             wireAvatarPick();
         }
@@ -1329,6 +1404,7 @@
                 initGuionCreateInput('cc-vm-guion-ia-editor-wrap');
             }
         }
+        refreshIaButtons();
     }
 
     function wireGuionModeRadios() {
@@ -1764,6 +1840,7 @@
 
         if (CC_VIDEO_MODAL_UI === 'v2') {
             wireIaWizardFooter();
+            wireIaWizardStepper();
             initCategorySelect();
             wireAvatarPick();
             updatePreviewStage(_selectedAvatar || AVATARS[0]);
