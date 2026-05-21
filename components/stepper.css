@@ -80,71 +80,90 @@
     min-width: var(--gap-xl);
 }
 
-/* Horizontal texto debajo: círculo arriba, título centrado abajo; raíles a altura del anillo */
+/*
+ * Horizontal título debajo (patrón tipo Shadcn/ReUI):
+ * - Cada paso flex-1: reparte el ancho; el título hace wrap en varias líneas.
+ * - Los <li class="rail"> siguen en el HTML (accesibilidad/estados) pero no ocupan flex;
+ * - El conector es ::after en cada paso (salvo el último), absoluto a altura del círculo.
+ */
 .ubits-stepper--horizontal.ubits-stepper--horizontal-stacked {
     align-items: flex-start;
-    /* Sin gap entre paso y raíl; el solape enlaza la línea con el borde del círculo */
+    flex-wrap: nowrap;
+    justify-content: stretch;
     gap: 0;
-    --ubits-stepper-stacked-rail-overlap: calc((5.5rem - var(--ubits-stepper-ring)) / 2);
-}
-
-.ubits-stepper--horizontal.ubits-stepper--horizontal-stacked .ubits-stepper__step {
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
-    gap: var(--gap-sm);
-    text-align: center;
-    min-width: 5.5rem;
-    max-width: 9rem;
-}
-
-.ubits-stepper--horizontal.ubits-stepper--horizontal-stacked .ubits-stepper__label {
-    flex: 0 1 auto;
+    width: 100%;
+    min-width: 0;
     max-width: 100%;
-    text-align: center;
+    box-sizing: border-box;
+    overflow: visible;
 }
 
 .ubits-stepper--horizontal.ubits-stepper--horizontal-stacked .ubits-stepper__rail {
-    align-self: flex-start;
-    margin-top: calc(var(--ubits-stepper-ring) / 2 - 1px);
-    margin-left: calc(-1 * var(--ubits-stepper-stacked-rail-overlap));
-    margin-right: calc(-1 * var(--ubits-stepper-stacked-rail-overlap));
+    display: none;
 }
 
-/* Texto debajo + compacto: ancho intrínseco y raíles fijos (tres modificadores) */
-.ubits-stepper--horizontal.ubits-stepper--horizontal-stacked.ubits-stepper--horizontal-compact {
-    justify-content: flex-start;
-    width: fit-content;
-    max-width: 100%;
-    align-items: flex-start;
-}
-
-.ubits-stepper--horizontal.ubits-stepper--horizontal-stacked.ubits-stepper--horizontal-compact .ubits-stepper__step {
-    flex: 0 0 auto;
+.ubits-stepper--horizontal.ubits-stepper--horizontal-stacked .ubits-stepper__step {
+    position: relative;
+    flex: 1 1 0;
+    min-width: 0;
+    max-width: none;
+    width: auto;
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
     gap: var(--gap-sm);
     text-align: center;
-    min-width: 5.5rem;
-    max-width: 9rem;
+    padding-inline: var(--gap-xs);
+    box-sizing: border-box;
+    overflow: visible;
 }
 
-.ubits-stepper--horizontal.ubits-stepper--horizontal-stacked.ubits-stepper--horizontal-compact .ubits-stepper__label {
-    flex: 0 1 auto;
-    max-width: min(100%, 10rem);
+.ubits-stepper--horizontal.ubits-stepper--horizontal-stacked .ubits-stepper__mark {
+    position: relative;
+    z-index: 1;
+}
+
+.ubits-stepper--horizontal.ubits-stepper--horizontal-stacked .ubits-stepper__label {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
     text-align: center;
+    line-height: 14px;
+    box-sizing: border-box;
+    overflow-wrap: break-word;
+    word-break: break-word;
+    hyphens: auto;
 }
 
-.ubits-stepper--horizontal.ubits-stepper--horizontal-stacked.ubits-stepper--horizontal-compact .ubits-stepper__rail {
-    flex: 0 0 auto;
-    flex-grow: 0;
-    width: calc(var(--gap-2xl) + (5.5rem - var(--ubits-stepper-ring)));
-    min-width: calc(var(--gap-xl) + (5.5rem - var(--ubits-stepper-ring)));
-    align-self: flex-start;
-    margin-top: calc(var(--ubits-stepper-ring) / 2 - 1px);
-    margin-left: calc(-1 * var(--ubits-stepper-stacked-rail-overlap));
-    margin-right: calc(-1 * var(--ubits-stepper-stacked-rail-overlap));
+/*
+ * Conector horizontal (patrón Shadcn StepperSeparator):
+ * sale del borde derecho del círculo y cruza el resto de la celda flex-1
+ * hasta el borde izquierdo del círculo siguiente (overflow visible en el paso).
+ */
+.ubits-stepper--horizontal.ubits-stepper--horizontal-stacked .ubits-stepper__step:not(:last-of-type)::after {
+    content: '';
+    position: absolute;
+    top: calc(var(--ubits-stepper-ring) / 2 - 1px);
+    left: calc(50% + var(--ubits-stepper-ring) / 2);
+    width: calc(100% - var(--ubits-stepper-ring) + 2px);
+    height: 2px;
+    background: var(--ubits-border-1);
+    pointer-events: none;
+    z-index: 0;
+}
+
+.ubits-stepper--horizontal.ubits-stepper--horizontal-stacked .ubits-stepper__step--done:not(:last-of-type)::after {
+    background: var(--ubits-feedback-accent-success);
+}
+
+.ubits-stepper--horizontal.ubits-stepper--horizontal-stacked .ubits-stepper__step--active:not(:last-of-type)::after {
+    background: var(--ubits-button-primary-bg-default);
+}
+
+.ubits-stepper--horizontal.ubits-stepper--horizontal-stacked.ubits-stepper--horizontal-compact {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
 }
 
 /* --- Vertical: círculo + texto; segmento bajo cada círculo --- */
@@ -604,7 +623,7 @@
         padding-block: var(--gap-xs);
     }
 
-    .ubits-stepper--horizontal.ubits-stepper--horizontal-compact {
+    .ubits-stepper--horizontal.ubits-stepper--horizontal-compact:not(.ubits-stepper--horizontal-stacked) {
         width: max-content;
         max-width: 100%;
     }
@@ -644,59 +663,22 @@
         max-width: var(--gap-3xl);
     }
 
-    /*
-     * Título debajo / compacto+título (móvil): solo círculo en pasos inactivos (2.75rem).
-     * Raíles de ancho fijo + solape (misma fórmula que desktop); el activo no debe
-     * flex-grow o los conectores se encogen. Anula min-width 5.5rem del compacto en desktop.
-     */
+    /* Título debajo (móvil): mismo reparto flex-1; solo el activo muestra el título (regla general arriba). */
     .ubits-stepper--horizontal.ubits-stepper--horizontal-stacked {
-        align-items: flex-start;
-        gap: 0;
-        --ubits-stepper-mobile-stacked-step: 2.75rem;
-        --ubits-stepper-stacked-rail-overlap: calc(
-            (var(--ubits-stepper-mobile-stacked-step) - var(--ubits-stepper-ring)) / 2
-        );
+        overflow: visible;
+        padding-block: var(--gap-xs);
     }
 
-    .ubits-stepper--horizontal.ubits-stepper--horizontal-stacked .ubits-stepper__step,
-    .ubits-stepper--horizontal.ubits-stepper--horizontal-stacked.ubits-stepper--horizontal-compact .ubits-stepper__step {
-        flex: 0 0 auto;
-        flex-direction: column;
-        align-items: center;
-        justify-content: flex-start;
-        gap: var(--gap-sm);
-        text-align: center;
-        min-width: var(--ubits-stepper-mobile-stacked-step);
-        max-width: min(100%, 11rem);
-    }
-
-    .ubits-stepper--horizontal.ubits-stepper--horizontal-stacked .ubits-stepper__step:not(.ubits-stepper__step--active) {
-        flex: 0 0 var(--ubits-stepper-mobile-stacked-step);
-        width: var(--ubits-stepper-mobile-stacked-step);
-        min-width: var(--ubits-stepper-mobile-stacked-step);
-        max-width: var(--ubits-stepper-mobile-stacked-step);
+    .ubits-stepper--horizontal.ubits-stepper--horizontal-stacked .ubits-stepper__step {
+        flex: 1 1 0;
+        min-width: 0;
+        max-width: none;
+        padding-inline: var(--gap-xs);
     }
 
     .ubits-stepper--horizontal.ubits-stepper--horizontal-stacked .ubits-stepper__step--active {
-        flex: 0 0 auto;
-        min-width: var(--ubits-stepper-mobile-stacked-step);
-        max-width: min(100%, 11rem);
-    }
-
-    .ubits-stepper--horizontal.ubits-stepper--horizontal-stacked .ubits-stepper__rail,
-    .ubits-stepper--horizontal.ubits-stepper--horizontal-stacked.ubits-stepper--horizontal-compact .ubits-stepper__rail {
-        flex: 0 0 auto;
-        flex-grow: 0;
-        width: calc(
-            var(--gap-2xl) + (var(--ubits-stepper-mobile-stacked-step) - var(--ubits-stepper-ring))
-        );
-        min-width: calc(
-            var(--gap-xl) + (var(--ubits-stepper-mobile-stacked-step) - var(--ubits-stepper-ring))
-        );
+        flex: 1 1 0;
+        min-width: 0;
         max-width: none;
-        align-self: flex-start;
-        margin-top: calc(var(--ubits-stepper-ring) / 2 - 1px);
-        margin-left: calc(-1 * var(--ubits-stepper-stacked-rail-overlap));
-        margin-right: calc(-1 * var(--ubits-stepper-stacked-rail-overlap));
     }
 }

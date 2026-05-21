@@ -782,13 +782,13 @@
 }
 
 /* ========================================
-   TOKEN COST — texto | separador | número + moneda (sin sparkles extra)
+   TOKEN COST — texto | separador | moneda + número (sin sparkles extra)
    <button class="ubits-ia-button ... ubits-ia-button--with-token-cost">
      <span>Generar con IA</span>
      <span class="ubits-ia-button__token-divider" aria-hidden="true"></span>
      <span class="ubits-ia-button__token-cost" aria-hidden="true">
-       <span class="ubits-ia-button__token-number">2</span>
        <i class="far fa-coin-vertical"></i>
+       <span class="ubits-ia-button__token-number">2</span>
      </span>
    </button>
    ======================================== */

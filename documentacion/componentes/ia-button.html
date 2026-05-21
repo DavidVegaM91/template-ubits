@@ -293,13 +293,13 @@ NOTA: El badge es opcional, agrégalo solo cuando sea necesario.</code></pre>
   &lt;span class="ubits-ia-button__badge"&gt;&lt;/span&gt;
 &lt;/button&gt;
 
-&lt;!-- Con coste en tokens: texto | separador | número + moneda (sin sparkles extra) --&gt;
+&lt;!-- Con coste en tokens: texto | separador | moneda + número (sin sparkles extra) --&gt;
 &lt;button class="ubits-ia-button ubits-ia-button--primary ubits-ia-button--md ubits-ia-button--with-token-cost"&gt;
   &lt;span&gt;Generar con IA&lt;/span&gt;
   &lt;span class="ubits-ia-button__token-divider" aria-hidden="true"&gt;&lt;/span&gt;
   &lt;span class="ubits-ia-button__token-cost" aria-hidden="true"&gt;
-    &lt;span class="ubits-ia-button__token-number"&gt;2&lt;/span&gt;
     &lt;i class="far fa-coin-vertical"&gt;&lt;/i&gt;
+    &lt;span class="ubits-ia-button__token-number"&gt;2&lt;/span&gt;
   &lt;/span&gt;
 &lt;/button&gt;</code></pre>
                                 </div>
@@ -327,7 +327,7 @@ NOTA: El badge es opcional, agrégalo solo cuando sea necesario.</code></pre>
 .ubits-ia-button--lg        /* Large */
 
 /* Modificadores */
-.ubits-ia-button--with-token-cost  /* Coste en tokens: etiqueta + separador + número+moneda */
+.ubits-ia-button--with-token-cost  /* Coste en tokens: etiqueta + separador + moneda+número */
 .ubits-ia-button__token-divider    /* Línea vertical entre texto y coste */
 .ubits-ia-button__token-cost       /* Contenedor inline del coste */
 .ubits-ia-button__token-number     /* Cifra (peso regular) */
@@ -396,13 +396,13 @@ NOTA: El badge es opcional, agrégalo solo cuando sea necesario.</code></pre>
   &lt;span&gt;Button text&lt;/span&gt;
 &lt;/button&gt;
 
-&lt;!-- IA-Button con coste en tokens (texto | separador | número + moneda) --&gt;
+&lt;!-- IA-Button con coste en tokens (texto | separador | moneda + número) --&gt;
 &lt;button class="ubits-ia-button ubits-ia-button--primary ubits-ia-button--md ubits-ia-button--with-token-cost"&gt;
   &lt;span&gt;Generar con IA&lt;/span&gt;
   &lt;span class="ubits-ia-button__token-divider" aria-hidden="true"&gt;&lt;/span&gt;
   &lt;span class="ubits-ia-button__token-cost" aria-hidden="true"&gt;
-    &lt;span class="ubits-ia-button__token-number"&gt;2&lt;/span&gt;
     &lt;i class="far fa-coin-vertical"&gt;&lt;/i&gt;
+    &lt;span class="ubits-ia-button__token-number"&gt;2&lt;/span&gt;
   &lt;/span&gt;
 &lt;/button&gt;</code></pre>
                                 </div>
@@ -568,7 +568,7 @@ NOTA: El badge es opcional, agrégalo solo cuando sea necesario.</code></pre>
             const textHTML = iconOnly ? '' : `<span>${text}</span>`;
             const tokenClass = useToken ? ' ubits-ia-button--with-token-cost' : '';
             const tokenHTML = useToken
-                ? `<span class="ubits-ia-button__token-divider" aria-hidden="true"></span><span class="ubits-ia-button__token-cost" aria-hidden="true"><span class="ubits-ia-button__token-number">${String(tokenCost)}</span><i class="far fa-coin-vertical"></i></span>`
+                ? `<span class="ubits-ia-button__token-divider" aria-hidden="true"></span><span class="ubits-ia-button__token-cost" aria-hidden="true"><i class="far fa-coin-vertical"></i><span class="ubits-ia-button__token-number">${String(tokenCost)}</span></span>`
                 : '';
             
             let classes = `ubits-ia-button ubits-ia-button--${variant} ubits-ia-button--${size}${tokenClass}`;

@@ -534,9 +534,10 @@
             '<span id="cc-vm-gen-guion-label">Generar guión</span>' +
             '<span class="ubits-ia-button__token-divider" aria-hidden="true"></span>' +
             '<span class="ubits-ia-button__token-cost" aria-hidden="true">' +
+            '<i class="far fa-coin-vertical"></i>' +
             '<span class="ubits-ia-button__token-number">' +
             VIDEO_GUION_IA_TOKEN_COST +
-            '</span><i class="far fa-coin-vertical"></i></span></button></div></div></div></div>' +
+            '</span></span></button></div></div></div></div>' +
             '<div id="cc-vm-guion-ia-editor-block" class="cc-vm-guion-ia-editor-block" style="display:none">' +
             '<p class="ubits-body-sm-semibold cc-vm-guion-ia-editor-heading">Guión generado</p>' +
             '<div id="cc-vm-guion-ia-editor-wrap" class="cc-vm-guion-input-mount"></div></div></div>' +
@@ -663,8 +664,8 @@
                                                 '<span id="cc-vm-gen-guion-label">Generar guión</span>' +
                                                 '<span class="ubits-ia-button__token-divider" aria-hidden="true"></span>' +
                                                 '<span class="ubits-ia-button__token-cost" aria-hidden="true">' +
-                                                    '<span class="ubits-ia-button__token-number">' + VIDEO_GUION_IA_TOKEN_COST + '</span>' +
                                                     '<i class="far fa-coin-vertical"></i>' +
+                                                    '<span class="ubits-ia-button__token-number">' + VIDEO_GUION_IA_TOKEN_COST + '</span>' +
                                                 '</span>' +
                                             '</button>' +
                                         '</div>' +
@@ -1951,9 +1952,9 @@
                 '<button type="button" class="ubits-ia-button ubits-ia-button--primary ubits-ia-button--md ubits-ia-button--with-token-cost" id="cc-vm-btn-generar">' +
                 '<span>Generar video</span>' +
                 '<span class="ubits-ia-button__token-divider" aria-hidden="true"></span>' +
-                '<span class="ubits-ia-button__token-cost" aria-hidden="true"><span class="ubits-ia-button__token-number">' +
+                '<span class="ubits-ia-button__token-cost" aria-hidden="true"><i class="far fa-coin-vertical"></i><span class="ubits-ia-button__token-number">' +
                 VIDEO_GEN_TOKEN_COST +
-                '</span><i class="far fa-coin-vertical"></i></span></button></div>'
+                '</span></span></button></div>'
             );
         }
         return (
@@ -1965,9 +1966,9 @@
             '<button type="button" class="ubits-ia-button ubits-ia-button--primary ubits-ia-button--md ubits-ia-button--with-token-cost" id="cc-vm-btn-generar" style="display:none">' +
             '<span>Generar video</span>' +
             '<span class="ubits-ia-button__token-divider" aria-hidden="true"></span>' +
-            '<span class="ubits-ia-button__token-cost" aria-hidden="true"><span class="ubits-ia-button__token-number">' +
+            '<span class="ubits-ia-button__token-cost" aria-hidden="true"><i class="far fa-coin-vertical"></i><span class="ubits-ia-button__token-number">' +
             VIDEO_GEN_TOKEN_COST +
-            '</span><i class="far fa-coin-vertical"></i></span></button></div>'
+            '</span></span></button></div>'
         );
     }
 

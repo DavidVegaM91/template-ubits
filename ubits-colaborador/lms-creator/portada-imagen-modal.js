@@ -180,9 +180,10 @@
             '<span>Generar portada</span>' +
             '<span class="ubits-ia-button__token-divider" aria-hidden="true"></span>' +
             '<span class="ubits-ia-button__token-cost" aria-hidden="true">' +
+            '<i class="far fa-coin-vertical"></i>' +
             '<span class="ubits-ia-button__token-number">' +
             TOKEN_GENERATE +
-            '</span><i class="far fa-coin-vertical"></i></span></button>' +
+            '</span></span></button>' +
             '</div></div></div></div></div>' +
             '<div class="cc-vm-right-col">' +
             '<div class="cc-pim-preview-stage" id="cc-pim-preview-stage" aria-live="polite">' +

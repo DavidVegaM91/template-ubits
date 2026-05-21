@@ -371,9 +371,10 @@
             '<span>Usar como portada</span>' +
             '<span class="ubits-ia-button__token-divider" aria-hidden="true"></span>' +
             '<span class="ubits-ia-button__token-cost" aria-hidden="true">' +
+            '<i class="far fa-coin-vertical"></i>' +
             '<span class="ubits-ia-button__token-number">' +
             String(PORTADA_AI_COVER_TOKEN_COST) +
-            '</span><i class="far fa-coin-vertical"></i></span></button>' +
+            '</span></span></button>' +
             '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" data-cc-portada-ai-panel-regen="' +
             sid +
             '">' +
@@ -593,10 +594,10 @@
                         '<span>Regenerar</span>' +
                         '<span class="ubits-ia-button__token-divider" aria-hidden="true"></span>' +
                         '<span class="ubits-ia-button__token-cost" aria-hidden="true">' +
+                        '<i class="far fa-coin-vertical"></i>' +
                         '<span class="ubits-ia-button__token-number">' +
                         String(PORTADA_AI_REGEN_TOKEN_COST) +
                         '</span>' +
-                        '<i class="far fa-coin-vertical"></i>' +
                         '</span>' +
                     '</button>' +
                 '</div>' +
@@ -605,10 +606,10 @@
                         '<span>Usar como portada</span>' +
                         '<span class="ubits-ia-button__token-divider" aria-hidden="true"></span>' +
                         '<span class="ubits-ia-button__token-cost" aria-hidden="true">' +
+                        '<i class="far fa-coin-vertical"></i>' +
                         '<span class="ubits-ia-button__token-number">' +
                         String(PORTADA_AI_COVER_TOKEN_COST) +
                         '</span>' +
-                        '<i class="far fa-coin-vertical"></i>' +
                         '</span>' +
                     '</button>' +
                 '</div>' +

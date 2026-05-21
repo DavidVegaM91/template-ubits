@@ -1222,7 +1222,7 @@
             ' class="ubits-ia-button ubits-ia-button--secondary ubits-ia-button--sm ubits-ia-button--with-token-cost">' +
             '<span>Generar evaluación</span>' +
             '<span class="ubits-ia-button__token-divider" aria-hidden="true"></span>' +
-            '<span class="ubits-ia-button__token-cost" aria-hidden="true"><span class="ubits-ia-button__token-number">' + cost + '</span><i class="far fa-coin-vertical"></i></span>' +
+            '<span class="ubits-ia-button__token-cost" aria-hidden="true"><i class="far fa-coin-vertical"></i><span class="ubits-ia-button__token-number">' + cost + '</span></span>' +
             '</button>';
 
         _evalMsg('', { richHtml: richHtml, hideAiCopy: true });

@@ -893,6 +893,7 @@
 
 .cc-vmodal-v2 {
     --cc-vm-avatar-thumb-size: 64px;
+    --cc-vm-wizard-content-max: 600px;
 }
 
 .cc-vmodal-v2 .cc-vm-wizard {
@@ -905,13 +906,17 @@
 
 .cc-vmodal-v2 .cc-vm-wizard-stepper {
     width: 100%;
-    display: flex;
-    justify-content: center;
+    min-width: 0;
+    max-width: 100%;
+    box-sizing: border-box;
+    overflow: visible;
 }
 
 #cc-video-recurso-modal.cc-video-modal-ui-v2 #cc-vm-ia-stepper {
-    width: fit-content;
+    width: 100%;
     max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
 }
 
 .cc-vmodal-v2 .cc-vm-wizard-body {
@@ -924,18 +929,25 @@
 .cc-vmodal-v2 .cc-vm-wizard-step {
     display: flex;
     flex-direction: column;
+    align-items: center;
     gap: var(--gap-lg);
+    width: 100%;
+}
+
+.cc-vmodal-v2 .cc-vm-wizard-step > * {
+    width: 100%;
+    max-width: var(--cc-vm-wizard-content-max);
+    margin-inline: auto;
+    box-sizing: border-box;
 }
 
 .cc-vmodal-v2 .cc-vm-wizard-step--hidden {
     display: none !important;
 }
 
-/* Paso 1: preview + meta + carrusel */
+/* Paso 1: preview + meta + selector de avatares */
 .cc-vmodal-v2 .cc-vm-wizard-preview-wrap {
     width: 100%;
-    max-width: 485px;
-    margin: 0 auto;
 }
 
 .cc-vmodal-v2 .cc-vm-wizard-preview-wrap .cc-vm-preview-stage {
@@ -950,8 +962,6 @@
     gap: var(--gap-md);
     flex-wrap: wrap;
     width: 100%;
-    max-width: 485px;
-    margin: 0 auto;
 }
 
 .cc-vmodal-v2 .cc-vm-wizard-duration-copy {
@@ -987,7 +997,6 @@
     gap: var(--gap-md) var(--gap-lg);
     flex-wrap: unset;
     width: 100%;
-    max-width: 100%;
     box-sizing: border-box;
 }
 
@@ -1022,11 +1031,9 @@
     border-radius: var(--border-radius-full);
 }
 
-/* Paso 2: guión (ancho contenido; scroll del modal si el guión es largo) */
+/* Paso 2: guión (mismo ancho máximo que el resto del wizard) */
 .cc-vmodal-v2 .cc-vm-wizard-guion {
     width: 100%;
-    max-width: 560px;
-    margin: 0 auto;
 }
 
 #cc-video-recurso-modal.cc-video-modal-ui-v2 .cc-vm-guion-input-mount textarea.ubits-input {
@@ -1034,18 +1041,35 @@
     overflow-y: auto !important;
 }
 
-/* Paso 3: logo */
+/* Paso 3: logo (ancho vía .cc-vm-wizard-step > *) */
 .cc-vmodal-v2 #cc-vm-wizard-step-2 .cc-vm-section {
     width: 100%;
-    max-width: 560px;
-    margin: 0 auto;
 }
 
 #cc-video-recurso-modal.cc-video-modal-ui-v2 .cc-vm-footer-v2 {
     gap: var(--gap-sm);
 }
 
+@media (max-width: 1023px) {
+    #cc-video-recurso-modal.cc-video-modal-ui-v2 .ubits-modal-content--ia .ubits-modal-body,
+    #cc-video-recurso-modal.cc-video-modal-ui-v2 .ubits-modal-body {
+        padding: var(--padding-lg);
+        overflow-x: hidden !important;
+    }
+
+    .cc-vmodal-v2 .cc-vm-wizard-stepper {
+        width: 100%;
+        padding-inline: 0;
+    }
+
+    #cc-video-recurso-modal.cc-video-modal-ui-v2 #cc-vm-ia-stepper {
+        width: 100%;
+        max-width: 100%;
+    }
+}
+
 @media (max-width: 600px) {
+    #cc-video-recurso-modal.cc-video-modal-ui-v2 .ubits-modal-content--ia .ubits-modal-body,
     #cc-video-recurso-modal.cc-video-modal-ui-v2 .ubits-modal-body {
         padding: var(--padding-lg);
     }
