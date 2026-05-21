@@ -1220,8 +1220,9 @@
             ' preguntas</strong> sobre el tema <strong>"' + topic + '"</strong>.</p>' +
             '<button type="button" id="cc-eval-gen-confirm-btn"' +
             ' class="ubits-ia-button ubits-ia-button--secondary ubits-ia-button--sm ubits-ia-button--with-token-cost">' +
-            '<span class="ubits-ia-button__token-cost" aria-hidden="true"><span class="ubits-ia-button__token-number">' + cost + '</span><i class="far fa-coin-vertical"></i></span>' +
             '<span>Generar evaluación</span>' +
+            '<span class="ubits-ia-button__token-divider" aria-hidden="true"></span>' +
+            '<span class="ubits-ia-button__token-cost" aria-hidden="true"><span class="ubits-ia-button__token-number">' + cost + '</span><i class="far fa-coin-vertical"></i></span>' +
             '</button>';
 
         _evalMsg('', { richHtml: richHtml, hideAiCopy: true });

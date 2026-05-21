@@ -499,11 +499,12 @@
                                             '</button>' +
                                             '<div class="ai-panel__input-spacer" aria-hidden="true"></div>' +
                                             '<button type="button" class="ubits-ia-button ubits-ia-button--secondary ubits-ia-button--sm ubits-ia-button--with-token-cost" id="cc-vm-btn-gen-guion">' +
+                                                '<span id="cc-vm-gen-guion-label">Generar guión</span>' +
+                                                '<span class="ubits-ia-button__token-divider" aria-hidden="true"></span>' +
                                                 '<span class="ubits-ia-button__token-cost" aria-hidden="true">' +
                                                     '<span class="ubits-ia-button__token-number">' + VIDEO_GUION_IA_TOKEN_COST + '</span>' +
                                                     '<i class="far fa-coin-vertical"></i>' +
                                                 '</span>' +
-                                                '<span id="cc-vm-gen-guion-label">Generar guión</span>' +
                                             '</button>' +
                                         '</div>' +
                                     '</div>' +
@@ -1459,11 +1460,12 @@
                 '<span>Cargar video</span>' +
             '</button>' +
             '<button type="button" class="ubits-ia-button ubits-ia-button--primary ubits-ia-button--md ubits-ia-button--with-token-cost" id="cc-vm-btn-generar">' +
+                '<span>Generar video</span>' +
+                '<span class="ubits-ia-button__token-divider" aria-hidden="true"></span>' +
                 '<span class="ubits-ia-button__token-cost" aria-hidden="true">' +
                     '<span class="ubits-ia-button__token-number">' + VIDEO_GEN_TOKEN_COST + '</span>' +
                     '<i class="far fa-coin-vertical"></i>' +
                 '</span>' +
-                '<span>Generar video</span>' +
             '</button>' +
         '</div>';
     }

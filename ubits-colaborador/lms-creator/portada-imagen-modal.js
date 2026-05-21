@@ -177,11 +177,12 @@
             '<i class="far fa-plus"></i></button>' +
             '<div class="ai-panel__input-spacer" aria-hidden="true"></div>' +
             '<button type="button" class="ubits-ia-button ubits-ia-button--primary ubits-ia-button--sm ubits-ia-button--with-token-cost" id="cc-pim-btn-generar">' +
+            '<span>Generar portada</span>' +
+            '<span class="ubits-ia-button__token-divider" aria-hidden="true"></span>' +
             '<span class="ubits-ia-button__token-cost" aria-hidden="true">' +
             '<span class="ubits-ia-button__token-number">' +
             TOKEN_GENERATE +
-            '</span><i class="far fa-coin-vertical"></i></span>' +
-            '<span>Generar portada</span></button>' +
+            '</span><i class="far fa-coin-vertical"></i></span></button>' +
             '</div></div></div></div></div>' +
             '<div class="cc-vm-right-col">' +
             '<div class="cc-pim-preview-stage" id="cc-pim-preview-stage" aria-live="polite">' +

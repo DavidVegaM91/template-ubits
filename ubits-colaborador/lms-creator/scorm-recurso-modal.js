@@ -1627,11 +1627,12 @@
 
     function buildModalFooterHtml() {
         return '<button type="button" class="ubits-ia-button ubits-ia-button--primary ubits-ia-button--md ubits-ia-button--with-token-cost" id="cc-sm-footer-generate">' +
+                '<span>Generar presentación</span>' +
+                '<span class="ubits-ia-button__token-divider" aria-hidden="true"></span>' +
                 '<span class="ubits-ia-button__token-cost" aria-hidden="true">' +
                     '<span class="ubits-ia-button__token-number">'+SCORM_GEN_TOKEN_COST+'</span>' +
                     '<i class="far fa-coin-vertical"></i>' +
                 '</span>' +
-                '<span>Generar presentación</span>' +
             '</button>' +
             '<button type="button" class="ubits-button ubits-button--primary ubits-button--md" id="cc-sm-footer-cargar-zip" style="display:none;" disabled><span>Cargar SCORM</span></button>';
     }

@@ -368,11 +368,12 @@
             '<button type="button" class="ubits-ia-button ubits-ia-button--secondary ubits-ia-button--sm ubits-ia-button--with-token-cost" data-cc-portada-ai-panel-use="' +
             sid +
             '">' +
+            '<span>Usar como portada</span>' +
+            '<span class="ubits-ia-button__token-divider" aria-hidden="true"></span>' +
             '<span class="ubits-ia-button__token-cost" aria-hidden="true">' +
             '<span class="ubits-ia-button__token-number">' +
             String(PORTADA_AI_COVER_TOKEN_COST) +
-            '</span><i class="far fa-coin-vertical"></i></span>' +
-            '<span>Usar como portada</span></button>' +
+            '</span><i class="far fa-coin-vertical"></i></span></button>' +
             '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" data-cc-portada-ai-panel-regen="' +
             sid +
             '">' +
@@ -589,24 +590,26 @@
                 '<div class="portada-ia-modal-result__figure">' +
                     '<img id="portada-ai-modal-img" class="portada-ia-modal-result__img" src="" alt="Portada generada" />' +
                     '<button type="button" id="portada-ai-modal-regenerate" class="ubits-ia-button ubits-ia-button--secondary ubits-ia-button--xs ubits-ia-button--with-token-cost portada-ia-modal-result__regen">' +
+                        '<span>Regenerar</span>' +
+                        '<span class="ubits-ia-button__token-divider" aria-hidden="true"></span>' +
                         '<span class="ubits-ia-button__token-cost" aria-hidden="true">' +
                         '<span class="ubits-ia-button__token-number">' +
                         String(PORTADA_AI_REGEN_TOKEN_COST) +
                         '</span>' +
                         '<i class="far fa-coin-vertical"></i>' +
                         '</span>' +
-                        '<span>Regenerar</span>' +
                     '</button>' +
                 '</div>' +
                 '<div class="portada-ia-modal-actions">' +
                     '<button type="button" id="portada-ai-modal-use" class="ubits-ia-button ubits-ia-button--secondary ubits-ia-button--md ubits-ia-button--with-token-cost" style="flex:1;">' +
+                        '<span>Usar como portada</span>' +
+                        '<span class="ubits-ia-button__token-divider" aria-hidden="true"></span>' +
                         '<span class="ubits-ia-button__token-cost" aria-hidden="true">' +
                         '<span class="ubits-ia-button__token-number">' +
                         String(PORTADA_AI_COVER_TOKEN_COST) +
                         '</span>' +
                         '<i class="far fa-coin-vertical"></i>' +
                         '</span>' +
-                        '<span>Usar como portada</span>' +
                     '</button>' +
                 '</div>' +
             '</div>' +

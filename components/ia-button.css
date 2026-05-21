@@ -642,7 +642,8 @@
     pointer-events: none;
 }
 
-.ubits-ia-button--generating .ubits-ia-button__token-cost {
+.ubits-ia-button--generating .ubits-ia-button__token-cost,
+.ubits-ia-button--generating .ubits-ia-button__token-divider {
     display: none !important;
 }
 
@@ -781,19 +782,43 @@
 }
 
 /* ========================================
-   TOKEN COST (número + moneda) — alineado a ubits-button--with-token-cost
-   Estructura: solo bloque token + etiqueta (sin icono sparkles u otro lateral; único icono = fa-coin-vertical).
-   <button class="ubits-ia-button ... ubits-ia-button--primary ubits-ia-button--sm ubits-ia-button--with-token-cost">
+   TOKEN COST — texto | separador | número + moneda (sin sparkles extra)
+   <button class="ubits-ia-button ... ubits-ia-button--with-token-cost">
+     <span>Generar con IA</span>
+     <span class="ubits-ia-button__token-divider" aria-hidden="true"></span>
      <span class="ubits-ia-button__token-cost" aria-hidden="true">
        <span class="ubits-ia-button__token-number">2</span>
        <i class="far fa-coin-vertical"></i>
      </span>
-     <span>Generar con IA</span>
    </button>
    ======================================== */
 
 .ubits-ia-button--with-token-cost {
     gap: var(--gap-xs);
+}
+
+.ubits-ia-button__token-divider {
+    flex-shrink: 0;
+    align-self: stretch;
+    width: 1px;
+    min-height: 1em;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+.ubits-ia-button--primary .ubits-ia-button__token-divider {
+    background: color-mix(in srgb, rgb(255, 255, 255) 38%, transparent);
+}
+
+.ubits-ia-button--secondary .ubits-ia-button__token-divider {
+    background: var(--ubits-border-1);
+}
+
+.ubits-ia-button--primary:disabled .ubits-ia-button__token-divider,
+.ubits-ia-button--primary.ubits-ia-button--disabled .ubits-ia-button__token-divider,
+.ubits-ia-button--secondary:disabled .ubits-ia-button__token-divider,
+.ubits-ia-button--secondary.ubits-ia-button--disabled .ubits-ia-button__token-divider {
+    background: var(--ubits-border-disabled-button);
 }
 
 .ubits-ia-button__token-cost {

@@ -41,6 +41,20 @@
         return '<span class="ubits-ia-button__sparkles" aria-hidden="true">' + getIaButtonSparklesSvgInner() + '</span>';
     }
 
+    /**
+     * Sufijo HTML con tokens: separador vertical + número + moneda (tras el texto del botón).
+     * @param {string|number} tokenNumber
+     */
+    function getIaButtonTokenCostSuffix(tokenNumber) {
+        return (
+            '<span class="ubits-ia-button__token-divider" aria-hidden="true"></span>' +
+            '<span class="ubits-ia-button__token-cost" aria-hidden="true">' +
+            '<span class="ubits-ia-button__token-number">' +
+            String(tokenNumber) +
+            '</span><i class="far fa-coin-vertical"></i></span>'
+        );
+    }
+
     function isSparklesIcon(el) {
         if (!el || el.tagName !== 'I') return false;
         var c = (el.getAttribute('class') || '') + ' ' + (el.className || '');
@@ -160,6 +174,7 @@
 
     if (typeof window !== 'undefined') {
         window.getIaButtonSparklesMarkup = getIaButtonSparklesMarkup;
+        window.getIaButtonTokenCostSuffix = getIaButtonTokenCostSuffix;
         window.getIaButtonGeneratingMarkup = getIaButtonGeneratingMarkup;
         window.initIaButtonSparkles = initIaButtonSparkles;
         window.setIaButtonGenerating = setIaButtonGenerating;
