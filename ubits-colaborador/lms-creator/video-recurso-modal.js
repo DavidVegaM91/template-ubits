@@ -810,8 +810,11 @@
     function wireVideoModalResponsiveSize(overlay) {
         if (!overlay || overlay._ccVmSizeResize) return;
         var onResize = function () {
-            if (_currentTab === 'ia' && CC_VIDEO_MODAL_UI === 'v2') {
+            if (_currentTab !== 'ia') return;
+            if (CC_VIDEO_MODAL_UI === 'v2') {
                 applyVideoModalContentSize();
+            } else if (CC_VIDEO_MODAL_UI === 'legacy') {
+                applyLegacyModalBodyOverflow(overlay.querySelector('.ubits-modal-body'));
             }
         };
         overlay._ccVmSizeResize = onResize;
@@ -1902,6 +1905,14 @@
     /* ══════════════════════════════════════
        Chrome IA del modal
     ══════════════════════════════════════ */
+    function applyLegacyModalBodyOverflow(modalBody) {
+        if (!modalBody || CC_VIDEO_MODAL_UI !== 'legacy') return;
+        modalBody.style.flex = '1 1 auto';
+        modalBody.style.minHeight = '0';
+        modalBody.style.overflowX = 'hidden';
+        modalBody.style.overflowY = 'auto';
+    }
+
     function applyAiModalChrome(overlay) {
         var modalContent = overlay.querySelector('.ubits-modal-content');
         if (modalContent) {
@@ -1920,8 +1931,7 @@
                 modalBody.style.overflowX = 'hidden';
                 modalBody.style.overflowY = 'auto';
             } else {
-                modalBody.style.overflow = 'hidden';
-                modalBody.style.flex = '';
+                applyLegacyModalBodyOverflow(modalBody);
             }
         }
 
