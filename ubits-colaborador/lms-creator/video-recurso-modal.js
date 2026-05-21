@@ -782,10 +782,10 @@
     ══════════════════════════════════════ */
 
     function getVideoModalIaSizeForViewport() {
-        return global.innerWidth < CC_VIDEO_MODAL_IA_BREAKPOINT ? 'sm' : 'md';
+        return global.innerWidth <= CC_VIDEO_MODAL_IA_BREAKPOINT ? 'sm' : 'md';
     }
 
-    /** v2 + pestaña IA: sm (<1366) / md (≥1366). Otras pestañas: md. Legacy IA: lg. */
+    /** v2 + pestaña IA: sm (≤1366) / md (>1366). Otras pestañas: md. Legacy IA: lg. */
     function applyVideoModalContentSize() {
         var overlay = document.getElementById(OVERLAY_ID);
         if (!overlay) return;
@@ -939,6 +939,10 @@
         if (_iaWizardStep === 2) {
             initLogoUpload();
         }
+
+        var overlay = document.getElementById(OVERLAY_ID);
+        var modalBody = overlay && overlay.querySelector('.ubits-modal-body');
+        if (modalBody) modalBody.scrollTop = 0;
 
         updateIaWizardStepperNav();
         syncFooterCta();
