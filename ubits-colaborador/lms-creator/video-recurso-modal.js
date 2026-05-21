@@ -586,7 +586,7 @@
             buildPreviewStageHtml(av) +
             '</div>' +
             '<div class="cc-vm-wizard-meta-row">' +
-            '<p class="ubits-body-xs-regular cc-vm-wizard-duration-copy">Los videos tendrán máximo 2 minutos de duración.</p>' +
+            '<p class="ubits-body-xs-regular cc-vm-wizard-duration-copy">Videos de hasta 2 min.</p>' +
             '<div id="cc-vm-cat-select-wrap" class="cc-vm-wizard-cat-select"></div>' +
             '</div>' +
             '<div class="cc-vm-avatar-pick' +
