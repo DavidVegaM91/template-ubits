@@ -537,7 +537,7 @@
             '</span><i class="far fa-coin-vertical"></i></span>' +
             '<span id="cc-vm-gen-guion-label">Generar guión</span></button></div></div></div></div>' +
             '<div id="cc-vm-guion-ia-editor-block" class="cc-vm-guion-ia-editor-block" style="display:none">' +
-            '<p class="ubits-body-sm-semibold cc-vm-guion-ia-editor-heading">Guión del video</p>' +
+            '<p class="ubits-body-sm-semibold cc-vm-guion-ia-editor-heading">Guión generado</p>' +
             '<div id="cc-vm-guion-ia-editor-wrap" class="cc-vm-guion-input-mount"></div></div></div>' +
             '<div id="cc-vm-guion-panel-manual" class="cc-vm-guion-panel" style="display:none">' +
             '<div id="cc-vm-guion-manual-wrap" class="cc-vm-guion-input-mount"></div></div></div>'
@@ -691,7 +691,7 @@
                                 '</div>' +
                             '</div>' +
                             '<div id="cc-vm-guion-ia-editor-block" class="cc-vm-guion-ia-editor-block" style="display:none">' +
-                                '<p class="ubits-body-sm-semibold cc-vm-guion-ia-editor-heading">Guión del video</p>' +
+                                '<p class="ubits-body-sm-semibold cc-vm-guion-ia-editor-heading">Guión generado</p>' +
                                 '<div id="cc-vm-guion-ia-editor-wrap" class="cc-vm-guion-input-mount"></div>' +
                             '</div>' +
                         '</div>' +
@@ -949,15 +949,28 @@
         syncFooterCta();
     }
 
+    function canAdvanceOneWizardStepFrom(stepIndex) {
+        if (stepIndex === 0) return true;
+        if (stepIndex === 1) return hasValidGuionForWizardNext();
+        return false;
+    }
+
+    function canNavigateToWizardStep(targetIndex) {
+        if (targetIndex === _iaWizardStep) return false;
+        if (targetIndex < _iaWizardStep) return true;
+        if (targetIndex === _iaWizardStep + 1) return canAdvanceOneWizardStepFrom(_iaWizardStep);
+        return false;
+    }
+
     function updateIaWizardStepperNav() {
         var stepper = document.getElementById('cc-vm-ia-stepper');
         if (!stepper) return;
         var steps = stepper.querySelectorAll(':scope > .ubits-stepper__step');
         steps.forEach(function (stepEl, i) {
-            var canGoBack = i < _iaWizardStep;
-            stepEl.style.cursor = canGoBack ? 'pointer' : '';
-            stepEl.setAttribute('tabindex', canGoBack ? '0' : '-1');
-            if (canGoBack) {
+            var canNavigate = canNavigateToWizardStep(i);
+            stepEl.style.cursor = canNavigate ? 'pointer' : '';
+            stepEl.setAttribute('tabindex', canNavigate ? '0' : '-1');
+            if (canNavigate) {
                 stepEl.setAttribute('role', 'button');
                 stepEl.removeAttribute('aria-disabled');
             } else {
@@ -979,8 +992,9 @@
         var steps = stepper.querySelectorAll(':scope > .ubits-stepper__step');
         steps.forEach(function (stepEl, i) {
             function goToStep() {
-                if (i >= _iaWizardStep) return;
-                if (_iaWizardStep === 1) persistGuionFromMountedInput();
+                if (!canNavigateToWizardStep(i)) return;
+                if (i < _iaWizardStep && _iaWizardStep === 1) persistGuionFromMountedInput();
+                if (i > _iaWizardStep && _iaWizardStep === 1) persistGuionFromMountedInput();
                 setIaWizardStep(i);
             }
             stepEl.addEventListener('click', goToStep);
@@ -1071,9 +1085,12 @@
     function refreshIaButtons() {
         /* No deshabilitar por tokens insuficientes: al clic, trySpendVideoAiTokens muestra toast (mismo patrón que SCORM). */
         syncVideoModalTokensBadge();
-        if (CC_VIDEO_MODAL_UI === 'v2' && _currentTab === 'ia' && _iaWizardStep === 1) {
-            var sig = document.getElementById('cc-vm-btn-siguiente');
-            if (sig) sig.disabled = !hasValidGuionForWizardNext();
+        if (CC_VIDEO_MODAL_UI === 'v2' && _currentTab === 'ia') {
+            if (_iaWizardStep === 1) {
+                var sig = document.getElementById('cc-vm-btn-siguiente');
+                if (sig) sig.disabled = !hasValidGuionForWizardNext();
+            }
+            updateIaWizardStepperNav();
         }
     }
 

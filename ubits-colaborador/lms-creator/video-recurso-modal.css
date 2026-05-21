@@ -393,6 +393,57 @@
     color: var(--ubits-fg-1-high);
 }
 
+/*
+ * Guión IA generado: borde gradiente en el wrapper (no en el textarea).
+ * El gradiente directo en textarea + resize nativo dejaba artefactos grises en la esquina inferior derecha.
+ */
+#cc-video-recurso-modal #cc-vm-guion-ia-editor-wrap .ubits-input-wrapper {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    border: var(--ubits-ia-gradient-border-width, 1.5px) solid transparent;
+    border-radius: var(--border-radius-lg);
+    background:
+        linear-gradient(var(--ubits-bg-1), var(--ubits-bg-1)) padding-box,
+        var(
+            --ubits-ia-badge-border-gradient,
+            linear-gradient(
+                90deg,
+                var(--modo-ia-gradient-d) 0%,
+                var(--modo-ia-gradient-c) 35.59%,
+                var(--modo-ia-gradient-b) 67.19%,
+                var(--modo-ia-gradient-a) 100%
+            )
+        ) border-box;
+    background-origin: padding-box, border-box;
+    background-clip: padding-box, border-box;
+    overflow: hidden;
+}
+
+#cc-video-recurso-modal #cc-vm-guion-ia-editor-wrap .ubits-input-wrapper:focus-within {
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--modo-ia-gradient-c) 22%, transparent);
+}
+
+#cc-video-recurso-modal #cc-vm-guion-ia-editor-wrap .ubits-input-wrapper:has(textarea.ubits-input--invalid) {
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--ubits-feedback-accent-error) 35%, transparent);
+}
+
+#cc-video-recurso-modal #cc-vm-guion-ia-editor-wrap textarea.ubits-input {
+    border: none;
+    border-radius: 0;
+    background: var(--ubits-bg-1);
+    resize: none;
+    box-shadow: none;
+}
+
+#cc-video-recurso-modal #cc-vm-guion-ia-editor-wrap textarea.ubits-input:hover,
+#cc-video-recurso-modal #cc-vm-guion-ia-editor-wrap textarea.ubits-input:focus {
+    outline: none;
+    border: none;
+    box-shadow: none;
+    background: var(--ubits-bg-1);
+}
+
 /* Misma escala que `.ai-panel__input` (13px / 20px interlineado). */
 #cc-video-recurso-modal .cc-vm-guion-input-mount textarea.ubits-input {
     font-size: var(--font-size-sm);
@@ -811,7 +862,7 @@
     padding: var(--padding-xs) 0;
 }
 
-/* Staff: 10 avatares — desktop (≥1366): 2 filas × 5; modal estrecho: 3 filas × 4 */
+/* Staff: 10 avatares — 2 filas × 5; en celular (≤600px) 3 filas × 4 */
 .cc-vmodal-v2 .cc-vm-avatar-pick--staff-5x2 {
     display: grid;
     grid-template-columns: repeat(5, var(--cc-vm-avatar-thumb-size));
@@ -822,14 +873,6 @@
     width: 100%;
     max-width: 100%;
     box-sizing: border-box;
-}
-
-@media (max-width: 1365px) {
-    .cc-vmodal-v2 .cc-vm-avatar-pick--staff-5x2 {
-        grid-template-columns: repeat(4, var(--cc-vm-avatar-thumb-size));
-        gap: var(--gap-sm) var(--gap-md);
-        padding: var(--padding-xs) var(--padding-sm);
-    }
 }
 
 .cc-vmodal-v2 .cc-vm-avatar-pick__item {
@@ -903,5 +946,11 @@
     .cc-vmodal-v2 .cc-vm-avatar-pick {
         padding-left: var(--padding-sm);
         padding-right: var(--padding-sm);
+    }
+
+    .cc-vmodal-v2 .cc-vm-avatar-pick--staff-5x2 {
+        grid-template-columns: repeat(4, var(--cc-vm-avatar-thumb-size));
+        gap: var(--gap-sm) var(--gap-md);
+        padding: var(--padding-xs) var(--padding-sm);
     }
 }

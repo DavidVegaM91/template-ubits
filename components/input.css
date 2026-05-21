@@ -532,6 +532,13 @@ textarea.ubits-input:disabled {
         align-items: flex-start;
         gap: var(--gap-xs);
     }
+
+    /* La fila del contador debe ocupar todo el ancho para space-between (X/X a la derecha). */
+    .ubits-input-helper-row {
+        align-self: stretch;
+        width: 100%;
+        box-sizing: border-box;
+    }
 }
 
 /* Contenedor de overlays de select: siempre encima de todo (evita que se tapen en modo-estudio-ia, etc.) */
