@@ -1,9 +1,9 @@
 /**
+ * SNAPSHOT LEGACY — Modal «Agregar video» (no cargar en HTML; solo referencia).
+ * Copia congelada antes del restyling. Activo: video-recurso-modal.js + .css
+ *
  * LMS Creator — Modal «Agregar video» (tres pestañas: Video IA · Enlace · Subir)
  * + Widget flotante de generación de video (estilo Google Drive).
- *
- * Restyling en curso: la UI actual sigue siendo esta. Copia congelada (no cargada en HTML):
- *   video-recurso-modal.legacy.js · video-recurso-modal.legacy.css
  *
  * Depende:
  *   modal.js  (openModal, closeModal)
@@ -19,16 +19,6 @@
     'use strict';
 
     var OVERLAY_ID = 'cc-video-recurso-modal';
-
-    /** 'v2' = wizard con stepper (3 pasos). 'legacy' = UI anterior (ver *.legacy.js). */
-    var CC_VIDEO_MODAL_UI = 'v2';
-
-    /** Pestaña Video Avatar IA (v2): sm por debajo de este ancho, md en pantallas mayores. */
-    var CC_VIDEO_MODAL_IA_BREAKPOINT = 1366;
-
-    var IA_WIZARD_STEP_LABELS = ['Selección avatar', 'Generación de guión', 'Logo compañía'];
-
-    var MODAL_SIZE_CLASSES = ['xs', 'sm', 'md', 'lg'];
 
     var VIDEO_GUION_IA_TOKEN_COST = 2;
     var VIDEO_GEN_TOKEN_COST      = 20;
@@ -98,8 +88,6 @@
     var _guionMode       = 'ia';
     /** En modo IA: si ya hubo generación (o se importó texto desde manual), se muestra el editor bajo el contexto. */
     var _guionIaEditorVisible = false;
-    /** Paso del wizard IA (v2): 0 avatar · 1 guión · 2 logo */
-    var _iaWizardStep = 0;
 
     /* ══════════════════════════════════════
        DATOS: AVATARES (images/avatars) + CATEGORÍAS
@@ -433,174 +421,7 @@
         }).join('');
     }
 
-    function buildAvatarPickItemsHtml(cat) {
-        var list = (!cat || cat === 'all') ? AVATARS : AVATARS.filter(function (av) { return av.cat === cat; });
-        return list
-            .map(function (av) {
-                var sel = _selectedAvatar && _selectedAvatar.id === av.id;
-                return (
-                    '<button type="button" class="cc-vm-avatar-pick__item' +
-                    (sel ? ' cc-vm-avatar-pick__item--selected' : '') +
-                    '" data-avatar-id="' +
-                    av.id +
-                    '" aria-pressed="' +
-                    (sel ? 'true' : 'false') +
-                    '" aria-label="' +
-                    esc(av.label) +
-                    '">' +
-                    '<img src="' +
-                    avatarImg(av) +
-                    '" alt="" loading="lazy" width="64" height="64">' +
-                    '</button>'
-                );
-            })
-            .join('');
-    }
-
-    function buildPreviewStageHtml(av) {
-        var thumbSrc = avatarTempThumbSrc(av);
-        var mp4 = avatarPreviewMp4Src(av);
-        var hasVid = !!mp4;
-        var stageClass =
-            'cc-vm-preview-stage' +
-            (hasVid ? ' cc-vm-preview-stage--has-thumb' : ' cc-vm-preview-stage--placeholder');
-
-        return (
-            '<div class="' +
-            stageClass +
-            '" id="cc-vm-preview-stage">' +
-            '<img id="cc-vm-av-bg" class="cc-vm-av-bg" src="' +
-            thumbSrc +
-            '" alt="">' +
-            '<video id="cc-vm-av-preview-video" class="cc-vm-av-preview-video" playsinline controls preload="metadata" ' +
-            'poster="' +
-            esc(thumbSrc) +
-            '" ' +
-            (hasVid ? 'src="' + esc(mp4) + '" ' : '') +
-            'style="display:' +
-            (hasVid ? 'block' : 'none') +
-            '"></video>' +
-            '<img id="cc-vm-av-thumb" class="cc-vm-av-thumb" src="' +
-            thumbSrc +
-            '" alt="Vista previa del avatar" style="display:' +
-            (hasVid ? 'block' : 'none') +
-            '">' +
-            '<img id="cc-vm-av-portrait" class="cc-vm-av-portrait" src="" alt="" style="display:none" aria-hidden="true">' +
-            '<div class="cc-vm-preview-unavailable" id="cc-vm-preview-unavailable" role="status" style="display:' +
-            (hasVid ? 'none' : 'flex') +
-            '">' +
-            '<span class="ubits-body-md-regular cc-vm-preview-unavailable__text">Vista previa de video no disponible aún</span>' +
-            '</div>' +
-            '<div class="cc-vm-logo-overlay" id="cc-vm-logo-overlay" style="display:none;">' +
-            '<img id="cc-vm-logo-preview-img" src="" alt="Logo">' +
-            '</div>' +
-            '</div>'
-        );
-    }
-
-    function buildGuionSectionHtml() {
-        return (
-            '<div class="cc-vm-section cc-vm-wizard-guion">' +
-            '<span class="ubits-input-label">Guión</span>' +
-            '<div class="ubits-selection-card-group ubits-selection-card-group--2 cc-vm-guion-mode-select" role="radiogroup" aria-label="Cómo quieres definir el guión">' +
-            '<label class="ubits-selection-card ubits-radio ubits-radio--sm">' +
-            '<input type="radio" name="cc-vm-guion-mode" class="ubits-radio__input" value="ia" checked>' +
-            '<span class="ubits-radio__circle"></span>' +
-            '<div class="ubits-selection-card__body">' +
-            '<div class="ubits-selection-card__header">' +
-            '<span class="ubits-selection-card__icon"><i class="far fa-sparkles"></i></span>' +
-            '<span class="ubits-body-sm-semibold ubits-selection-card__title">Generar con IA</span>' +
-            '</div></div></label>' +
-            '<label class="ubits-selection-card ubits-radio ubits-radio--sm">' +
-            '<input type="radio" name="cc-vm-guion-mode" class="ubits-radio__input" value="manual">' +
-            '<span class="ubits-radio__circle"></span>' +
-            '<div class="ubits-selection-card__body">' +
-            '<div class="ubits-selection-card__header">' +
-            '<span class="ubits-selection-card__icon"><i class="far fa-pen"></i></span>' +
-            '<span class="ubits-body-sm-semibold ubits-selection-card__title">Escribir manualmente</span>' +
-            '</div></div></label></div>' +
-            '<div id="cc-vm-guion-panel-ia" class="cc-vm-guion-panel">' +
-            '<div class="cc-vm-guion-ia-context">' +
-            '<div class="ubits-ia-chat-thread__input-area">' +
-            '<div class="ai-panel__input-box" id="cc-vm-ia-input-box">' +
-            '<input type="file" id="cc-vm-files" accept=".txt,.pdf,.doc,.docx,text/plain,application/pdf" multiple hidden>' +
-            '<div class="ai-panel__pending-files-strip" id="cc-vm-pending-files" style="display:none;"></div>' +
-            '<textarea id="cc-vm-context-input" class="ai-panel__input ubits-body-md-regular" rows="2" placeholder="Adjunta un archivo o describe el tema del guión"></textarea>' +
-            '<div class="ai-panel__input-actions">' +
-            '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only ai-panel__attach-btn" id="cc-vm-attach" aria-label="Adjuntar">' +
-            '<i class="far fa-plus"></i></button>' +
-            '<div class="ai-panel__input-spacer" aria-hidden="true"></div>' +
-            '<button type="button" class="ubits-ia-button ubits-ia-button--secondary ubits-ia-button--sm ubits-ia-button--with-token-cost" id="cc-vm-btn-gen-guion">' +
-            '<span class="ubits-ia-button__token-cost" aria-hidden="true">' +
-            '<span class="ubits-ia-button__token-number">' +
-            VIDEO_GUION_IA_TOKEN_COST +
-            '</span><i class="far fa-coin-vertical"></i></span>' +
-            '<span id="cc-vm-gen-guion-label">Generar guión</span></button></div></div></div></div>' +
-            '<div id="cc-vm-guion-ia-editor-block" class="cc-vm-guion-ia-editor-block" style="display:none">' +
-            '<p class="ubits-body-sm-semibold cc-vm-guion-ia-editor-heading">Guión del video</p>' +
-            '<div id="cc-vm-guion-ia-editor-wrap" class="cc-vm-guion-input-mount"></div></div></div>' +
-            '<div id="cc-vm-guion-panel-manual" class="cc-vm-guion-panel" style="display:none">' +
-            '<div id="cc-vm-guion-manual-wrap" class="cc-vm-guion-input-mount"></div></div></div>'
-        );
-    }
-
-    function buildIaWizardStepperHtml() {
-        var steps = IA_WIZARD_STEP_LABELS;
-        var parts = [];
-        steps.forEach(function (label, i) {
-            if (i > 0) parts.push('<li class="ubits-stepper__rail" aria-hidden="true"></li>');
-            parts.push(
-                '<li class="ubits-stepper__step' +
-                (i === 0 ? ' ubits-stepper__step--active' : ' ubits-stepper__step--pending') +
-                '" data-step-label="' +
-                esc(label) +
-                '"' +
-                (i === 0 ? ' aria-current="step"' : '') +
-                '>' +
-                '<span class="ubits-stepper__mark" aria-hidden="true">' +
-                '<span class="ubits-stepper__mark-num">' +
-                (i + 1) +
-                '</span><i class="far fa-check" aria-hidden="true"></i></span>' +
-                '<span class="ubits-stepper__label">' +
-                esc(label) +
-                '</span></li>'
-            );
-        });
-        return (
-            '<nav class="cc-vm-wizard-stepper" aria-label="Pasos para crear video con IA">' +
-            '<ol class="ubits-stepper ubits-stepper--horizontal ubits-stepper--horizontal-stacked ubits-stepper--horizontal-compact" id="cc-vm-ia-stepper">' +
-            parts.join('') +
-            '</ol></nav>'
-        );
-    }
-
-    function buildIaPanelV2() {
-        var av = _selectedAvatar || AVATARS[0];
-        return (
-            '<div class="cc-vmodal-panel" id="cc-vtab-ia">' +
-            '<div class="cc-vm-wizard">' +
-            buildIaWizardStepperHtml() +
-            '<div class="cc-vm-wizard-body">' +
-            '<div class="cc-vm-wizard-step" id="cc-vm-wizard-step-0" data-cc-vm-wizard-step="0">' +
-            '<div class="cc-vm-wizard-preview-wrap">' +
-            buildPreviewStageHtml(av) +
-            '</div>' +
-            '<div class="cc-vm-wizard-meta-row">' +
-            '<p class="ubits-body-xs-regular cc-vm-wizard-duration-copy">Los videos tendrán máximo 2 minutos de duración.</p>' +
-            '<div id="cc-vm-cat-select-wrap" class="cc-vm-wizard-cat-select"></div>' +
-            '</div>' +
-            '<div class="cc-vm-avatar-pick" id="cc-vm-avatar-pick" role="listbox" aria-label="Seleccionar avatar">' +
-            buildAvatarPickItemsHtml(_currentCat) +
-            '</div></div>' +
-            '<div class="cc-vm-wizard-step cc-vm-wizard-step--hidden" id="cc-vm-wizard-step-1" data-cc-vm-wizard-step="1">' +
-            buildGuionSectionHtml() +
-            '</div>' +
-            '<div class="cc-vm-wizard-step cc-vm-wizard-step--hidden" id="cc-vm-wizard-step-2" data-cc-vm-wizard-step="2">' +
-            '<div class="cc-vm-section"><div id="cc-vm-logo-fu-wrap"></div></div></div></div></div></div>'
-        );
-    }
-
-    function buildIaPanelLegacy() {
+    function buildIaPanel() {
         var av = _selectedAvatar || AVATARS[0];
         var thumbSrc = avatarTempThumbSrc(av);
         var mp4 = avatarPreviewMp4Src(av);
@@ -775,20 +596,13 @@
         );
     }
 
-    function buildIaPanel() {
-        return CC_VIDEO_MODAL_UI === 'legacy' ? buildIaPanelLegacy() : buildIaPanelV2();
-    }
-
     function buildModalBody() {
-        var rootCls = CC_VIDEO_MODAL_UI === 'legacy' ? 'cc-vmodal cc-vmodal--legacy' : 'cc-vmodal cc-vmodal-v2';
         return (
-            '<div class="' +
-            rootCls +
-            '">' +
-            buildTabBar() +
-            buildIaPanel() +
-            buildEnlacePanel() +
-            buildSubirPanel() +
+            '<div class="cc-vmodal">' +
+                buildTabBar() +
+                buildIaPanel() +
+                buildEnlacePanel() +
+                buildSubirPanel() +
             '</div>'
         );
     }
@@ -796,49 +610,6 @@
     /* ══════════════════════════════════════
        LÓGICA DE INTERACCIONES
     ══════════════════════════════════════ */
-
-    function getVideoModalIaSizeForViewport() {
-        return global.innerWidth < CC_VIDEO_MODAL_IA_BREAKPOINT ? 'sm' : 'md';
-    }
-
-    /** v2 + pestaña IA: sm (<1366) / md (≥1366). Otras pestañas: md. Legacy IA: lg. */
-    function applyVideoModalContentSize() {
-        var overlay = document.getElementById(OVERLAY_ID);
-        if (!overlay) return;
-        var modalContent = overlay.querySelector('.ubits-modal-content');
-        if (!modalContent) return;
-
-        var size;
-        if (_currentTab !== 'ia') {
-            size = 'md';
-        } else if (CC_VIDEO_MODAL_UI === 'v2') {
-            size = getVideoModalIaSizeForViewport();
-        } else {
-            size = 'lg';
-        }
-
-        MODAL_SIZE_CLASSES.forEach(function (s) {
-            modalContent.classList.remove('ubits-modal-content--' + s);
-        });
-        modalContent.classList.add('ubits-modal-content--' + size);
-    }
-
-    function wireVideoModalResponsiveSize(overlay) {
-        if (!overlay || overlay._ccVmSizeResize) return;
-        var onResize = function () {
-            if (_currentTab === 'ia' && CC_VIDEO_MODAL_UI === 'v2') {
-                applyVideoModalContentSize();
-            }
-        };
-        overlay._ccVmSizeResize = onResize;
-        global.addEventListener('resize', onResize, { passive: true });
-    }
-
-    function unwireVideoModalResponsiveSize(overlay) {
-        if (!overlay || !overlay._ccVmSizeResize) return;
-        global.removeEventListener('resize', overlay._ccVmSizeResize);
-        overlay._ccVmSizeResize = null;
-    }
 
     /* ── Tab switching ── */
     function switchToTab(tab) {
@@ -866,7 +637,6 @@
         if (tab === 'subir' && !document.getElementById('cc-vsubir-fu')) {
             initSubirFileUpload();
         }
-        applyVideoModalContentSize();
         syncFooterCta();
         syncVideoModalTokensBadge();
     }
@@ -880,114 +650,7 @@
         } catch (e) { /* noop */ }
     }
 
-    function syncFooterCtaV2() {
-        var gen = document.getElementById('cc-vm-btn-generar');
-        var sig = document.getElementById('cc-vm-btn-siguiente');
-        var ant = document.getElementById('cc-vm-btn-anterior');
-        var link = document.getElementById('cc-venlace-btn-cargar');
-        var up = document.getElementById('cc-vsubir-btn-confirmar');
-
-        if (link) link.style.display = 'none';
-        if (up) up.style.display = 'none';
-        if (gen) gen.style.display = 'none';
-        if (sig) sig.style.display = 'none';
-        if (ant) ant.style.display = 'none';
-
-        if (_currentTab !== 'ia') {
-            if (link) link.style.display = _currentTab === 'enlace' ? '' : 'none';
-            if (up) up.style.display = _currentTab === 'subir' ? '' : 'none';
-            syncVideoModalTokensBadge();
-            return;
-        }
-
-        if (_iaWizardStep === 0) {
-            if (sig) sig.style.display = '';
-        } else if (_iaWizardStep === 1) {
-            if (ant) ant.style.display = '';
-            if (sig) sig.style.display = '';
-        } else if (_iaWizardStep === 2) {
-            if (ant) ant.style.display = '';
-            if (gen) gen.style.display = '';
-        }
-        syncVideoModalTokensBadge();
-    }
-
-    function setIaWizardStep(step) {
-        var max = IA_WIZARD_STEP_LABELS.length - 1;
-        _iaWizardStep = Math.max(0, Math.min(max, step));
-
-        for (var i = 0; i <= max; i++) {
-            var panel = document.getElementById('cc-vm-wizard-step-' + i);
-            if (panel) panel.classList.toggle('cc-vm-wizard-step--hidden', i !== _iaWizardStep);
-        }
-
-        var stepper = document.getElementById('cc-vm-ia-stepper');
-        if (stepper && typeof global.setStepperStepStates === 'function') {
-            global.setStepperStepStates(stepper, _iaWizardStep);
-        }
-
-        if (_iaWizardStep === 1) {
-            applyGuionModeUi();
-            initContextTemaField();
-            initInsumoAttach();
-            wireGuionModeRadios();
-            initGenGuionButton();
-        }
-        if (_iaWizardStep === 2) {
-            initLogoUpload();
-        }
-
-        syncFooterCta();
-    }
-
-    function wireIaWizardFooter() {
-        var sig = document.getElementById('cc-vm-btn-siguiente');
-        var ant = document.getElementById('cc-vm-btn-anterior');
-        if (sig && !sig._ccVmWizardWired) {
-            sig._ccVmWizardWired = true;
-            sig.addEventListener('click', function () {
-                if (_iaWizardStep === 0) {
-                    setIaWizardStep(1);
-                    return;
-                }
-                if (_iaWizardStep === 1) {
-                    persistGuionFromMountedInput();
-                    setIaWizardStep(2);
-                }
-            });
-        }
-        if (ant && !ant._ccVmWizardWired) {
-            ant._ccVmWizardWired = true;
-            ant.addEventListener('click', function () {
-                if (_iaWizardStep === 1) {
-                    persistGuionFromMountedInput();
-                    setIaWizardStep(0);
-                    return;
-                }
-                if (_iaWizardStep === 2) {
-                    setIaWizardStep(1);
-                }
-            });
-        }
-    }
-
-    function wireAvatarPick() {
-        var root = document.getElementById('cc-vm-avatar-pick');
-        if (!root || root._ccWired) return;
-        root._ccWired = true;
-
-        root.addEventListener('click', function (e) {
-            var item = e.target.closest('.cc-vm-avatar-pick__item');
-            if (!item || !root.contains(item)) return;
-            selectAvatar(parseInt(item.getAttribute('data-avatar-id'), 10));
-        });
-    }
-
     function syncFooterCta() {
-        if (CC_VIDEO_MODAL_UI === 'v2') {
-            syncFooterCtaV2();
-            return;
-        }
         var gen  = document.getElementById('cc-vm-btn-generar');
         var link = document.getElementById('cc-venlace-btn-cargar');
         var up   = document.getElementById('cc-vsubir-btn-confirmar');
@@ -1109,14 +772,6 @@
                 if (inp) inp.checked = sel;
             });
         }
-        var pick = document.getElementById('cc-vm-avatar-pick');
-        if (pick) {
-            pick.querySelectorAll('.cc-vm-avatar-pick__item').forEach(function (item) {
-                var sel = parseInt(item.getAttribute('data-avatar-id'), 10) === id;
-                item.classList.toggle('cc-vm-avatar-pick__item--selected', sel);
-                item.setAttribute('aria-pressed', sel ? 'true' : 'false');
-            });
-        }
         updatePreviewStage(av);
     }
 
@@ -1126,14 +781,8 @@
         if (grid) {
             grid._ccWired = false;
             grid.innerHTML = buildAvatarGridItemsHtml(_currentCat);
-            wireAvatarGrid();
         }
-        var pick = document.getElementById('cc-vm-avatar-pick');
-        if (pick) {
-            pick.innerHTML = buildAvatarPickItemsHtml(_currentCat);
-            pick._ccWired = false;
-            wireAvatarPick();
-        }
+        wireAvatarGrid();
     }
 
     function wireAvatarGrid() {
@@ -1760,18 +1409,6 @@
 
     function initModalInteractions() {
         wireTabBar();
-        initGenVideoButton();
-
-        if (CC_VIDEO_MODAL_UI === 'v2') {
-            wireIaWizardFooter();
-            initCategorySelect();
-            wireAvatarPick();
-            updatePreviewStage(_selectedAvatar || AVATARS[0]);
-            setIaWizardStep(0);
-            refreshIaButtons();
-            return;
-        }
-
         wireDurationInfoAlertClose();
         initCategorySelect();
         wireAvatarGrid();
@@ -1780,6 +1417,7 @@
         wireGuionModeRadios();
         applyGuionModeUi();
         initGenGuionButton();
+        initGenVideoButton();
         initLogoUpload();
         refreshIaButtons();
         updatePreviewStage(_selectedAvatar || AVATARS[0]);
@@ -1798,21 +1436,13 @@
         var modalBody = overlay.querySelector('.ubits-modal-body');
         if (modalBody) {
             modalBody.style.padding = 'var(--padding-xl, 32px)';
+            modalBody.style.overflow = 'hidden';
             modalBody.style.display = 'flex';
             modalBody.style.flexDirection = 'column';
             modalBody.style.maxHeight = '';
-            if (CC_VIDEO_MODAL_UI === 'v2') {
-                modalBody.style.flex = '1 1 auto';
-                modalBody.style.minHeight = '0';
-                modalBody.style.overflowX = 'hidden';
-                modalBody.style.overflowY = 'auto';
-            } else {
-                modalBody.style.overflow = 'hidden';
-                modalBody.style.flex = '';
-            }
+            modalBody.style.flex = '';
         }
 
-        applyVideoModalContentSize();
         syncVideoModalTokensBadge();
     }
 
@@ -1820,28 +1450,21 @@
        FOOTER DEL MODAL
     ══════════════════════════════════════ */
     function buildVideoFooterHtml() {
-        if (CC_VIDEO_MODAL_UI === 'legacy') {
-            return (
-                '<div class="ubits-modal-footer__right">' +
-                '<button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="cc-venlace-btn-cargar" disabled style="display:none"><span>Cargar video</span></button>' +
-                '<button type="button" class="ubits-button ubits-button--primary ubits-button--md" id="cc-vsubir-btn-confirmar" disabled style="display:none"><span>Cargar video</span></button>' +
-                '<button type="button" class="ubits-ia-button ubits-ia-button--primary ubits-ia-button--md ubits-ia-button--with-token-cost" id="cc-vm-btn-generar">' +
-                '<span class="ubits-ia-button__token-cost" aria-hidden="true"><span class="ubits-ia-button__token-number">' +
-                VIDEO_GEN_TOKEN_COST +
-                '</span><i class="far fa-coin-vertical"></i></span><span>Generar video</span></button></div>'
-            );
-        }
-        return (
-            '<div class="ubits-modal-footer__right cc-vm-footer-v2">' +
-            '<button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="cc-venlace-btn-cargar" disabled style="display:none"><span>Cargar video</span></button>' +
-            '<button type="button" class="ubits-button ubits-button--primary ubits-button--md" id="cc-vsubir-btn-confirmar" disabled style="display:none"><span>Cargar video</span></button>' +
-            '<button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="cc-vm-btn-anterior" style="display:none"><span>Anterior</span></button>' +
-            '<button type="button" class="ubits-button ubits-button--primary ubits-button--md" id="cc-vm-btn-siguiente" style="display:none"><span>Siguiente</span></button>' +
-            '<button type="button" class="ubits-ia-button ubits-ia-button--primary ubits-ia-button--md ubits-ia-button--with-token-cost" id="cc-vm-btn-generar" style="display:none">' +
-            '<span class="ubits-ia-button__token-cost" aria-hidden="true"><span class="ubits-ia-button__token-number">' +
-            VIDEO_GEN_TOKEN_COST +
-            '</span><i class="far fa-coin-vertical"></i></span><span>Generar video</span></button></div>'
-        );
+        return '<div class="ubits-modal-footer__right">' +
+            '<button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="cc-venlace-btn-cargar" disabled style="display:none">' +
+                '<span>Cargar video</span>' +
+            '</button>' +
+            '<button type="button" class="ubits-button ubits-button--primary ubits-button--md" id="cc-vsubir-btn-confirmar" disabled style="display:none">' +
+                '<span>Cargar video</span>' +
+            '</button>' +
+            '<button type="button" class="ubits-ia-button ubits-ia-button--primary ubits-ia-button--md ubits-ia-button--with-token-cost" id="cc-vm-btn-generar">' +
+                '<span class="ubits-ia-button__token-cost" aria-hidden="true">' +
+                    '<span class="ubits-ia-button__token-number">' + VIDEO_GEN_TOKEN_COST + '</span>' +
+                    '<i class="far fa-coin-vertical"></i>' +
+                '</span>' +
+                '<span>Generar video</span>' +
+            '</button>' +
+        '</div>';
     }
 
     /* ══════════════════════════════════════
@@ -1858,7 +1481,6 @@
         _guionInputApi         = null;
         _guionMode             = 'ia';
         _guionIaEditorVisible  = false;
-        _iaWizardStep          = 0;
         _enlaceValue    = '';
         _enlaceValid    = false;
         _fileBlob       = null;
@@ -1866,16 +1488,11 @@
         _pendingFiles   = [];
         if (_fileBlobUrl) { URL.revokeObjectURL(_fileBlobUrl); _fileBlobUrl = null; }
 
-        var initialSize = 'lg';
-        if (CC_VIDEO_MODAL_UI === 'v2') {
-            initialSize = getVideoModalIaSizeForViewport();
-        }
-
         var overlay = openModal({
             overlayId:           OVERLAY_ID,
             title:               'Agregar video',
             bodyHtml:            buildModalBody(),
-            size:                initialSize,
+            size:                'lg',
             closeOnOverlayClick: false,
             footerHtml:          buildVideoFooterHtml(),
             variant:             'ia',
@@ -1883,20 +1500,14 @@
             iaTokensBadgeId:     'cc-video-modal-tokens-badge',
             onClose: function () {
                 stopAvatarPreviewPlayback();
-                var el = document.getElementById(OVERLAY_ID);
-                if (el) unwireVideoModalResponsiveSize(el);
             }
         });
 
-        if (overlay) {
-            overlay.classList.toggle('cc-video-modal-ui-v2', CC_VIDEO_MODAL_UI === 'v2');
-            overlay.classList.toggle('cc-video-modal-ui-legacy', CC_VIDEO_MODAL_UI === 'legacy');
-            applyAiModalChrome(overlay);
-            wireVideoModalResponsiveSize(overlay);
-        }
+        if (overlay) applyAiModalChrome(overlay);
 
         setTimeout(function () {
             initModalInteractions();
+            // Estado inicial: IA = ancho grande, otros = compacto.
             switchToTab(_currentTab || 'ia');
         }, 0);
     }
