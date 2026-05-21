@@ -13,7 +13,7 @@
  *   tab.css, file-upload.css, checkbox.css, chip.css, ai-panel.css, video-recurso-modal.css
  *   Avatares (grid): ../../images/avatars/* · preview 16:9: ../../images/avatar-temp-thumbs/thumb_*.jpg
  *   · videos opcionales: ../../videos/avatars/{mismo-base}.mp4
- *   Guión: selector tipo selection-card (Generar con IA | Escribir manualmente). IA: solo contexto hasta «Generar guión»; luego textarea editable. Manual: un solo textarea.
+ *   Guión: selector modo IA/manual (Figma 644:1611 — icono arriba, título abajo). IA: solo contexto hasta «Generar guión»; luego textarea editable. Manual: un solo textarea.
  */
 (function (global) {
     'use strict';
@@ -498,26 +498,27 @@
         );
     }
 
+    /** Selector modo guión (Figma AI-Capabilities 644:1611 — icono arriba, título abajo). */
+    function buildGuionModeSelectHtml() {
+        return (
+            '<div class="cc-vm-guion-mode-select" role="radiogroup" aria-label="Cómo quieres definir el guión">' +
+            '<label class="cc-vm-guion-mode-option ubits-radio cc-vm-guion-mode-option--ia">' +
+            '<input type="radio" name="cc-vm-guion-mode" class="ubits-radio__input" value="ia" checked>' +
+            '<span class="cc-vm-guion-mode-option__box" aria-hidden="true"><img class="cc-vm-guion-mode-option__icon" src="../../images/lms-creator/guion-mode/icon-generar-ia.svg" alt="" width="32" height="32"></span>' +
+            '<span class="cc-vm-guion-mode-option__label ubits-body-sm-semibold">Generar con IA</span>' +
+            '</label>' +
+            '<label class="cc-vm-guion-mode-option ubits-radio cc-vm-guion-mode-option--manual">' +
+            '<input type="radio" name="cc-vm-guion-mode" class="ubits-radio__input" value="manual">' +
+            '<span class="cc-vm-guion-mode-option__box" aria-hidden="true"><img class="cc-vm-guion-mode-option__icon" src="../../images/lms-creator/guion-mode/icon-escribir-manual.svg" alt="" width="32" height="32"></span>' +
+            '<span class="cc-vm-guion-mode-option__label ubits-body-sm-regular">Escribir manualmente</span>' +
+            '</label></div>'
+        );
+    }
+
     function buildGuionSectionHtml() {
         return (
             '<div class="cc-vm-section cc-vm-wizard-guion">' +
-            '<div class="ubits-selection-card-group ubits-selection-card-group--2 cc-vm-guion-mode-select" role="radiogroup" aria-label="Cómo quieres definir el guión">' +
-            '<label class="ubits-selection-card ubits-radio ubits-radio--sm cc-vm-guion-mode-card cc-vm-guion-mode-card--ia">' +
-            '<input type="radio" name="cc-vm-guion-mode" class="ubits-radio__input" value="ia" checked>' +
-            '<span class="ubits-radio__circle"></span>' +
-            '<div class="ubits-selection-card__body">' +
-            '<div class="ubits-selection-card__header">' +
-            '<span class="ubits-selection-card__icon"><i class="far fa-sparkles"></i></span>' +
-            '<span class="ubits-body-sm-semibold ubits-selection-card__title">Generar con IA</span>' +
-            '</div></div></label>' +
-            '<label class="ubits-selection-card ubits-radio ubits-radio--sm cc-vm-guion-mode-card cc-vm-guion-mode-card--manual">' +
-            '<input type="radio" name="cc-vm-guion-mode" class="ubits-radio__input" value="manual">' +
-            '<span class="ubits-radio__circle"></span>' +
-            '<div class="ubits-selection-card__body">' +
-            '<div class="ubits-selection-card__header">' +
-            '<span class="ubits-selection-card__icon"><i class="far fa-pen"></i></span>' +
-            '<span class="ubits-body-sm-semibold ubits-selection-card__title">Escribir manualmente</span>' +
-            '</div></div></label></div>' +
+            buildGuionModeSelectHtml() +
             '<div id="cc-vm-guion-panel-ia" class="cc-vm-guion-panel">' +
             '<div class="cc-vm-guion-ia-context">' +
             '<div class="ubits-ia-chat-thread__input-area">' +
@@ -644,28 +645,7 @@
                     // Section 2: Guión (selector + panel IA o manual)
                     '<div class="cc-vm-section">' +
                         '<p class="cc-vm-section-label ubits-body-md-bold">Guión</p>' +
-                        '<div class="ubits-selection-card-group ubits-selection-card-group--2 cc-vm-guion-mode-select" role="radiogroup" aria-label="Cómo quieres definir el guión">' +
-                            '<label class="ubits-selection-card ubits-radio ubits-radio--sm">' +
-                                '<input type="radio" name="cc-vm-guion-mode" class="ubits-radio__input" value="ia" checked>' +
-                                '<span class="ubits-radio__circle"></span>' +
-                                '<div class="ubits-selection-card__body">' +
-                                    '<div class="ubits-selection-card__header">' +
-                                        '<span class="ubits-selection-card__icon"><i class="far fa-sparkles"></i></span>' +
-                                        '<span class="ubits-body-sm-semibold ubits-selection-card__title">Generar con IA</span>' +
-                                    '</div>' +
-                                '</div>' +
-                            '</label>' +
-                            '<label class="ubits-selection-card ubits-radio ubits-radio--sm">' +
-                                '<input type="radio" name="cc-vm-guion-mode" class="ubits-radio__input" value="manual">' +
-                                '<span class="ubits-radio__circle"></span>' +
-                                '<div class="ubits-selection-card__body">' +
-                                    '<div class="ubits-selection-card__header">' +
-                                        '<span class="ubits-selection-card__icon"><i class="far fa-pen"></i></span>' +
-                                        '<span class="ubits-body-sm-semibold ubits-selection-card__title">Escribir manualmente</span>' +
-                                    '</div>' +
-                                '</div>' +
-                            '</label>' +
-                        '</div>' +
+                        buildGuionModeSelectHtml() +
 
                         '<div id="cc-vm-guion-panel-ia" class="cc-vm-guion-panel">' +
                             '<div class="cc-vm-guion-ia-context">' +

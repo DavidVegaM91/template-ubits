@@ -370,78 +370,127 @@
     margin-inline: 0;
 }
 
-/* Selector de modo guión (selection-card + radio) */
-.cc-vm-guion-mode-select {
-    margin-bottom: var(--gap-md);
+/* Selector modo guión — ancho completo del contenedor (alineado con input de contexto) */
+#cc-video-recurso-modal .cc-vm-guion-mode-select {
+    display: flex;
+    gap: var(--gap-md);
+    align-items: stretch;
+    width: 100%;
+    max-width: none;
+    margin: 0 0 var(--gap-md);
+    box-sizing: border-box;
 }
 
-/* Radio solo en la card activa (sin círculo vacío en la no seleccionada) */
-#cc-video-recurso-modal .cc-vm-guion-mode-select .cc-vm-guion-mode-card:not(:has(.ubits-radio__input:checked)) .ubits-radio__circle {
-    display: none;
+#cc-video-recurso-modal .cc-vm-guion-mode-option {
+    flex: 1 1 0;
+    min-width: 0;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--gap-sm);
+    margin: 0;
+    padding: 0;
+    cursor: pointer;
+    position: relative;
 }
 
-/* «Generar con IA» inactivo (p. ej. manual seleccionado): borde gris como el resto de cards */
-#cc-video-recurso-modal .cc-vm-guion-mode-select .cc-vm-guion-mode-card--ia:not(:has(.ubits-radio__input:checked)) {
-    border: 1px solid var(--ubits-border-1);
+#cc-video-recurso-modal .cc-vm-guion-mode-option .ubits-radio__input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+#cc-video-recurso-modal .cc-vm-guion-mode-option__box {
+    box-sizing: border-box;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--padding-4xl) var(--padding-3xl);
     background: var(--ubits-bg-1);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: var(--border-radius-lg);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-#cc-video-recurso-modal .cc-vm-guion-mode-select .cc-vm-guion-mode-card--ia:not(:has(.ubits-radio__input:checked)):hover {
+#cc-video-recurso-modal .cc-vm-guion-mode-option__icon {
+    display: block;
+    width: 32px;
+    height: 32px;
+    flex-shrink: 0;
+}
+
+#cc-video-recurso-modal .cc-vm-guion-mode-option__label {
+    width: 100%;
+    margin: 0;
+    text-align: center;
+    font-size: var(--font-size-sm);
+    line-height: 14px;
+    transition: color 0.2s ease;
+}
+
+#cc-video-recurso-modal .cc-vm-guion-mode-option:not(:has(.ubits-radio__input:checked)) .cc-vm-guion-mode-option__label {
+    color: var(--ubits-fg-1-medium);
+    font-weight: 500;
+}
+
+#cc-video-recurso-modal .cc-vm-guion-mode-option:has(.ubits-radio__input:checked) .cc-vm-guion-mode-option__label {
+    color: var(--ubits-fg-1-high);
+    font-weight: 600;
+}
+
+#cc-video-recurso-modal .cc-vm-guion-mode-option:not(:has(.ubits-radio__input:checked)):hover .cc-vm-guion-mode-option__box {
     border-color: var(--ubits-border-2);
 }
 
-#cc-video-recurso-modal .cc-vm-guion-mode-select .cc-vm-guion-mode-card--ia:not(:has(.ubits-radio__input:checked)) .ubits-selection-card__icon i {
-    background: none;
-    -webkit-background-clip: border-box;
-    background-clip: border-box;
-    color: var(--ubits-fg-1-medium);
-    -webkit-text-fill-color: currentColor;
+/* Escribir manualmente seleccionado: borde marca, sin sombra */
+#cc-video-recurso-modal .cc-vm-guion-mode-option--manual:has(.ubits-radio__input:checked) .cc-vm-guion-mode-option__box {
+    border: 2px solid var(--ubits-accent-brand);
+    padding: calc(var(--padding-4xl) - 1px) calc(var(--padding-3xl) - 1px);
+    background: var(--ubits-bg-1);
+    box-shadow: none;
 }
 
-/* «Generar con IA» seleccionado: borde gradiente como badge-tag--outlined--ia */
-#cc-video-recurso-modal .cc-vm-guion-mode-select .cc-vm-guion-mode-card--ia:has(.ubits-radio__input:checked) {
-    border: var(--ubits-ia-gradient-border-width, 1.5px) solid transparent;
+/* Generar con IA seleccionado: borde gradiente vertical (naranja abajo → azul arriba) */
+#cc-video-recurso-modal .cc-vm-guion-mode-option--ia:has(.ubits-radio__input:checked) .cc-vm-guion-mode-option__box {
+    border: 2px solid transparent;
+    padding: calc(var(--padding-4xl) - 1px) calc(var(--padding-3xl) - 1px);
     background:
         linear-gradient(var(--ubits-bg-1), var(--ubits-bg-1)) padding-box,
-        var(
-            --ubits-ia-badge-border-gradient,
-            linear-gradient(
-                90deg,
-                var(--modo-ia-gradient-d) 0%,
-                var(--modo-ia-gradient-c) 35.59%,
-                var(--modo-ia-gradient-b) 67.19%,
-                var(--modo-ia-gradient-a) 100%
-            )
+        linear-gradient(
+            to top,
+            var(--modo-ia-gradient-a) 0%,
+            var(--modo-ia-gradient-b) 35.59%,
+            var(--modo-ia-gradient-c) 67.19%,
+            var(--modo-ia-gradient-d) 100%
         ) border-box;
     background-origin: padding-box, border-box;
     background-clip: padding-box, border-box;
+    box-shadow:
+        0 -4px 14px rgba(12, 91, 239, 0.2),
+        0 4px 14px rgba(255, 84, 22, 0.2);
 }
 
-#cc-video-recurso-modal .cc-vm-guion-mode-select .cc-vm-guion-mode-card--ia:has(.ubits-radio__input:checked):hover {
+#cc-video-recurso-modal .cc-vm-guion-mode-option--ia:has(.ubits-radio__input:checked):hover .cc-vm-guion-mode-option__box {
     border-color: transparent;
 }
 
-#cc-video-recurso-modal .cc-vm-guion-mode-select .cc-vm-guion-mode-card--ia:has(.ubits-radio__input:checked) .ubits-selection-card__icon i {
-    background: var(
-        --ubits-ia-badge-border-gradient,
-        linear-gradient(
-            90deg,
-            var(--modo-ia-gradient-d) 0%,
-            var(--modo-ia-gradient-c) 35.59%,
-            var(--modo-ia-gradient-b) 67.19%,
-            var(--modo-ia-gradient-a) 100%
-        )
-    );
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-    -webkit-text-fill-color: transparent;
+#cc-video-recurso-modal .cc-vm-guion-mode-option:has(.ubits-radio__input:focus-visible) .cc-vm-guion-mode-option__box {
+    outline: 2px solid var(--ubits-button-focus-ring);
+    outline-offset: 2px;
 }
 
-/* Títulos de las minicards un poco más compactos que el default del selection-card */
-#cc-video-recurso-modal .cc-vm-guion-mode-select .ubits-selection-card__title {
-    font-size: var(--font-size-sm);
-    line-height: 1.25;
+@media (max-width: 600px) {
+    #cc-video-recurso-modal .cc-vm-guion-mode-select {
+        flex-direction: column;
+    }
 }
 
 .cc-vm-guion-ia-editor-block {
