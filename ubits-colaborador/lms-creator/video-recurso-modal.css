@@ -811,7 +811,7 @@
     padding: var(--padding-xs) 0;
 }
 
-/* Staff: 10 avatares en 2 filas × 5 columnas */
+/* Staff: 10 avatares — desktop (≥1366): 2 filas × 5; modal estrecho: 3 filas × 4 */
 .cc-vmodal-v2 .cc-vm-avatar-pick--staff-5x2 {
     display: grid;
     grid-template-columns: repeat(5, var(--cc-vm-avatar-thumb-size));
@@ -819,6 +819,17 @@
     justify-items: center;
     gap: var(--gap-md) var(--gap-lg);
     flex-wrap: unset;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+@media (max-width: 1365px) {
+    .cc-vmodal-v2 .cc-vm-avatar-pick--staff-5x2 {
+        grid-template-columns: repeat(4, var(--cc-vm-avatar-thumb-size));
+        gap: var(--gap-sm) var(--gap-md);
+        padding: var(--padding-xs) var(--padding-sm);
+    }
 }
 
 .cc-vmodal-v2 .cc-vm-avatar-pick__item {
@@ -887,5 +898,10 @@
 
     .cc-vmodal-v2 .cc-vm-wizard-cat-select {
         width: 100%;
+    }
+
+    .cc-vmodal-v2 .cc-vm-avatar-pick {
+        padding-left: var(--padding-sm);
+        padding-right: var(--padding-sm);
     }
 }
