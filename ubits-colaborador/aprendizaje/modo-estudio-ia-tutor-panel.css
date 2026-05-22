@@ -61,6 +61,10 @@
     flex-shrink: 0;
 }
 
+/*
+ * Panel derecho: gradación IA en todo el lienzo (como .ubits-modal-content--ia / .ai-panel),
+ * no solo en el header. Fondo bg-1 + orbes 0.15; header/body/footer transparentes encima.
+ */
 .ubits-ia-chat > .ubits-ia-chat__side.is-open {
     display: flex !important;
     flex-direction: column !important;
@@ -70,10 +74,16 @@
     padding: var(--padding-none) !important;
     overflow: hidden;
     min-height: 0;
-    background: var(--ubits-bg-1) !important;
+    background-color: var(--ubits-bg-1) !important;
+    background-image:
+        radial-gradient(ellipse 100% 80% at 10% calc(0% + var(--ubits-ia-glow-orb-anchor-offset-y, 0px)), rgba(var(--modo-ia-glow-orb-rgb-1), 0.15) 0%, transparent 50%),
+        radial-gradient(ellipse 95% 78% at calc(50% + var(--ubits-ia-glow-orb-center-extra-x, 0px)) calc(0% + var(--ubits-ia-glow-orb-anchor-offset-y, 0px) + var(--ubits-ia-glow-orb-center-extra-y, 0px)), rgba(var(--modo-ia-glow-orb-rgb-2), 0.15) 0%, transparent 48%),
+        radial-gradient(ellipse 95% 75% at 90% calc(0% + var(--ubits-ia-glow-orb-anchor-offset-y, 0px) + var(--ubits-ia-glow-orb-right-extra-y, 0px)), rgba(var(--modo-ia-glow-orb-rgb-3), 0.15) 0%, transparent 50%);
     border: 1px solid var(--ubits-border-1);
     border-radius: var(--border-radius-lg);
     box-sizing: border-box;
+    position: relative;
+    isolation: isolate;
     animation: ubits-ia-chat-side-panel-open 0.2s ease;
 }
 
@@ -83,29 +93,37 @@
     display: flex;
     flex-direction: column;
     overflow: hidden;
+    position: relative;
+    z-index: 1;
 }
 
 .ubits-ia-chat__side.is-open .ubits-ia-chat-side__body {
     flex: 1;
     overflow-y: auto;
     min-height: 0;
+    position: relative;
+    z-index: 1;
+    background: transparent;
 }
 
 .ubits-ia-chat__side.is-open .ubits-ia-chat-side__footer {
     flex-shrink: 0;
+    position: relative;
+    z-index: 1;
+    background: transparent;
 }
 
 .ubits-ia-chat > .ubits-ia-chat__side.is-open .ubits-ia-chat-side__placeholder {
     display: flex;
+    position: relative;
+    z-index: 1;
+    background: transparent;
+    flex: 1;
+    min-height: 0;
 }
 
 .ubits-ia-chat > .ubits-ia-chat__side.has-content .ubits-ia-chat-side__placeholder {
     display: none;
-}
-
-.ubits-ia-chat__side.is-open .ubits-ia-chat-side__body {
-    z-index: 0;
-    position: relative;
 }
 
 .ubits-ia-chat-side__placeholder {
@@ -157,15 +175,23 @@ body.ia-chat-side-panel-open #tab-bar-container {
     flex-direction: column;
     min-height: 0;
     color: var(--ubits-fg-1-high);
+    background: transparent;
 }
 
-/* Header, body y footer del panel (mismos estilos que componente modal UBITS) */
+/* Header del panel: transparente sobre orbes IA (igual que .ubits-ia-chat-thread__header en el chat central) */
 .ubits-ia-chat-side__header {
+    flex-shrink: 0;
+    box-sizing: border-box;
+    min-height: 48px;
     padding: var(--padding-sm) var(--padding-md);
     border-bottom: 1px solid var(--ubits-border-1);
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: var(--gap-md);
+    background: transparent;
+    position: relative;
+    z-index: 2;
 }
 
 .ubits-ia-chat-side__header .ubits-body-md-bold {
@@ -558,7 +584,7 @@ body.ia-chat-side-panel-open #tab-bar-container {
     min-width: 4px;
     height: 6px;
     border-radius: var(--border-radius-xs);
-    background: var(--ubits-bg-2);
+    background: var(--ubits-bg-3);
     transition: background 0.2s;
 }
 
@@ -577,7 +603,7 @@ body.ia-chat-side-panel-open #tab-bar-container {
     width: 100%;
     height: 8px;
     border-radius: var(--border-radius-xs);
-    background: var(--ubits-bg-2);
+    background: var(--ubits-bg-3);
 }
 
 .ubits-ia-chat-side__quiz-progress-fill {
@@ -637,13 +663,13 @@ body.ia-chat-side-panel-open #tab-bar-container {
 .ubits-ia-chat-side__quiz-progress-wrong {
     color: var(--ubits-feedback-accent-error);
     background: var(--ubits-feedback-bg-error-subtle);
-    border: none;
+    border: 1px solid var(--ubits-feedback-border-error);
 }
 
 .ubits-ia-chat-side__quiz-progress-correct {
     color: var(--ubits-feedback-accent-success);
     background: var(--ubits-feedback-bg-success-subtle);
-    border: none;
+    border: 1px solid var(--ubits-feedback-border-success);
 }
 
 .ubits-ia-chat-side__quiz-actions {

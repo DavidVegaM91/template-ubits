@@ -232,3 +232,18 @@ body.modo-estudio-ia-page .ubits-ia-chat__side.is-open .ubits-ia-chat-side__body
 .modo-estudio-ia-page .ubits-ia-chat-thread__competency-skill-chips {
     flex-wrap: wrap;
 }
+
+/* Chat central: gradación IA como modal / AI panel (orbes 0.15, visibles en header y body) */
+.modo-estudio-ia-page .ubits-ia-chat > .ubits-ia-chat__main::before {
+    background:
+        radial-gradient(ellipse 100% 80% at 10% calc(0% + var(--ubits-ia-glow-orb-anchor-offset-y, 0px)), rgba(var(--modo-ia-glow-orb-rgb-1), 0.15) 0%, transparent 50%),
+        radial-gradient(ellipse 95% 78% at calc(50% + var(--ubits-ia-glow-orb-center-extra-x, 0px)) calc(0% + var(--ubits-ia-glow-orb-anchor-offset-y, 0px) + var(--ubits-ia-glow-orb-center-extra-y, 0px)), rgba(var(--modo-ia-glow-orb-rgb-2), 0.15) 0%, transparent 48%),
+        radial-gradient(ellipse 95% 75% at 90% calc(0% + var(--ubits-ia-glow-orb-anchor-offset-y, 0px) + var(--ubits-ia-glow-orb-right-extra-y, 0px)), rgba(var(--modo-ia-glow-orb-rgb-3), 0.15) 0%, transparent 50%);
+}
+
+body[data-theme="dark"].modo-estudio-ia-page .ubits-ia-chat > .ubits-ia-chat__main::before {
+    background:
+        radial-gradient(ellipse 100% 80% at 10% calc(0% + var(--ubits-ia-glow-orb-anchor-offset-y, 0px)), rgba(var(--modo-ia-glow-orb-rgb-1), 0.15) 0%, transparent 50%),
+        radial-gradient(ellipse 95% 78% at calc(50% + var(--ubits-ia-glow-orb-center-extra-x, 0px)) calc(0% + var(--ubits-ia-glow-orb-anchor-offset-y, 0px) + var(--ubits-ia-glow-orb-center-extra-y, 0px)), rgba(var(--modo-ia-glow-orb-rgb-2), 0.15) 0%, transparent 48%),
+        radial-gradient(ellipse 95% 75% at 90% calc(0% + var(--ubits-ia-glow-orb-anchor-offset-y, 0px) + var(--ubits-ia-glow-orb-right-extra-y, 0px)), rgba(var(--modo-ia-glow-orb-rgb-3), 0.15) 0%, transparent 50%);
+}
