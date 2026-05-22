@@ -24,6 +24,13 @@
         { front: 'Mensaje yo', back: 'Expresar lo que sientes o necesitas sin culpar: "Yo me siento..." en lugar de "Tú siempre..."' }
     ];
 
+    function getQuizScoreTierModifier_(accuracy) {
+        var a = Math.max(0, Math.min(100, Math.round(Number(accuracy) || 0)));
+        if (a >= 80) return 'ubits-ia-chat-side__quiz-score--success';
+        if (a >= 60) return 'ubits-ia-chat-side__quiz-score--warning';
+        return 'ubits-ia-chat-side__quiz-score--error';
+    }
+
     function esc(s) {
         return String(s)
             .replace(/&/g, '&amp;').replace(/</g, '&lt;')
@@ -239,14 +246,15 @@
         function showResultsScreen() {
             var accuracy = total > 0 ? Math.round((correctCount / total) * 100) : 0;
             var skipped = total - correctCount - wrongCount;
+            var scoreTierMod = getQuizScoreTierModifier_(accuracy);
             resultDiv.innerHTML =
                 '<div class="ubits-ia-chat-side__quiz-result-screen">' +
                 '<h2 class="ubits-ia-chat-side__quiz-result-title">Quiz completado</h2>' +
                 '<div class="ubits-ia-chat-side__quiz-result-cards">' +
                 '<div class="ubits-ia-chat-side__quiz-result-card"><span class="ubits-ia-chat-side__quiz-result-card-label">Puntuación</span>' +
-                '<span class="ubits-ia-chat-side__quiz-result-card-value">' + correctCount + '/' + total + '</span></div>' +
+                '<span class="ubits-ia-chat-side__quiz-result-card-value ubits-ia-chat-side__quiz-score ' + scoreTierMod + '">' + correctCount + '/' + total + '</span></div>' +
                 '<div class="ubits-ia-chat-side__quiz-result-card"><span class="ubits-ia-chat-side__quiz-result-card-label">Precisión</span>' +
-                '<span class="ubits-ia-chat-side__quiz-result-card-value">' + accuracy + '%</span></div>' +
+                '<span class="ubits-ia-chat-side__quiz-result-card-value ubits-ia-chat-side__quiz-score ' + scoreTierMod + '">' + accuracy + '%</span></div>' +
                 '<div class="ubits-ia-chat-side__quiz-result-card ubits-ia-chat-side__quiz-result-card--breakdown">' +
                 '<div class="ubits-ia-chat-side__quiz-result-breakdown">' +
                 '<div class="ubits-ia-chat-side__quiz-result-row"><span>Correctas</span><span>' + correctCount + '</span></div>' +

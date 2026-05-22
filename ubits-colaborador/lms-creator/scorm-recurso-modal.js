@@ -1102,10 +1102,13 @@
         '.sp-quiz-done[hidden]{display:none !important;}' +
         '.sp-quiz-done:not([hidden]){display:flex;flex-direction:column;align-items:center;text-align:center;padding:12px 8px 8px;margin-top:8px;gap:8px;max-width:420px;margin-left:auto;margin-right:auto;}' +
         '.sp-quiz-done-text{font-size:14px;color:var(--ts);line-height:1.5;margin:0;}' +
-        '.sp-quiz-done-big{font-size:clamp(18px,3.5vw,24px);font-weight:900;color:var(--accent);margin:0;line-height:1.2;}' +
+        '.sp-quiz-done-big{font-size:clamp(18px,3.5vw,24px);font-weight:900;margin:0;line-height:1.2;}' +
+        '.sp-quiz-done-big.sp-quiz-score--error{color:var(--ubits-feedback-accent-error);}' +
+        '.sp-quiz-done-big.sp-quiz-score--warning{color:var(--ubits-feedback-accent-warning);}' +
+        '.sp-quiz-done-big.sp-quiz-score--success{color:var(--ubits-feedback-accent-success);}' +
         '.sp-quiz-done-sub{font-size:13px;color:var(--tm);line-height:1.45;margin:0;}' +
         '.sp-quiz-restart{margin-top:4px;}' +
-        '.sp-confetti-canvas{position:fixed;inset:0;pointer-events:none;z-index:9999;}' +
+        '.ubits-confetti-canvas{position:fixed;inset:0;pointer-events:none;z-index:9999;}' +
         /* Relacionar: error en rojo temporal */
         '.sp-match-hint{font-size:12px;color:var(--ts);margin-bottom:10px;line-height:1.45;}' +
         '.sp-match-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;align-items:start;}' +
@@ -1323,12 +1326,11 @@
         '});' +
         'if(document.body.classList.contains("sp--editing")){try{wireSpEditingExtras();}catch(eEd){}try{wireSpTooltips_();}catch(eTt){}document.querySelectorAll(".sp-slide-del").forEach(function(btn){btn.addEventListener("click",function(ev){ev.preventDefault();ev.stopPropagation();var slide=btn.closest(".sp-slide");if(!slide||btn.disabled)return;var si=parseInt(slide.getAttribute("data-idx"),10);if(isNaN(si))return;deleteSlideAt_(si);});});document.querySelectorAll(".sp-quiz-opt-text").forEach(function(sp){sp.addEventListener("mousedown",function(ev){ev.stopPropagation();});sp.addEventListener("click",function(ev){ev.stopPropagation();});});}' +
         'if(!window.__spFcGridBound){window.__spFcGridBound=1;var spFcFlipClick_=function(ev){var fc=ev.target.closest(".sp-fc");if(!fc)return;var g=fc.closest(".sp-fc-grid");if(!g)return;if(document.body.classList.contains("sp--editing")&&ev.target.closest("[contenteditable]"))return;fc.classList.toggle("sp-fc--flipped");};document.addEventListener("click",spFcFlipClick_);document.addEventListener("dblclick",function(ev){if(!document.body.classList.contains("sp--editing"))return;var fc=ev.target.closest(".sp-fc");if(!fc||!fc.closest(".sp-fc-grid"))return;ev.preventDefault();fc.classList.toggle("sp-fc--flipped");});}' +
-        'function spConfetti_(){var w=window.innerWidth,h=window.innerHeight;var c=document.createElement("canvas");c.className="sp-confetti-canvas";c.width=w;c.height=h;var ctx=c.getContext("2d");document.body.appendChild(c);var parts=[];for(var i=0;i<90;i++){parts.push({x:Math.random()*w,y:-20-Math.random()*h*0.4,vx:(Math.random()-.5)*5,vy:Math.random()*3+2,s:Math.random()*5+3,hue:Math.floor(Math.random()*360),r:Math.random()*6});}var t0=Date.now();function frame(){var t=Date.now()-t0;if(t>2400){if(c.parentNode)c.parentNode.removeChild(c);return;}ctx.clearRect(0,0,w,h);parts.forEach(function(p){p.x+=p.vx;p.y+=p.vy;p.vy+=0.12;p.r+=0.15;ctx.fillStyle="hsla("+p.hue+",80%,58%,0.92)";ctx.beginPath();ctx.arc(p.x,p.y,p.s+Math.sin(p.r)*0.5,0,6.28);ctx.fill();});requestAnimationFrame(frame);}requestAnimationFrame(frame);}' +
         'document.querySelectorAll(".sp-quiz-card").forEach(function(card){' +
         'var steps=card.querySelectorAll(".sp-quiz-step"),total=steps.length,curQ=0,correctCount=0,doneEl=card.querySelector(".sp-quiz-done"),rst=card.querySelector(".sp-quiz-restart"),advanceTimer=null;' +
         'function showQ(qi){steps.forEach(function(s,j){s.classList.toggle("sp-quiz-step--active",j===qi);if(j===qi)s.removeAttribute("hidden");else s.setAttribute("hidden","hidden");});}' +
         'function resetQuiz(){curQ=0;correctCount=0;if(advanceTimer){clearTimeout(advanceTimer);advanceTimer=null;}if(doneEl)doneEl.setAttribute("hidden","hidden");steps.forEach(function(s){s.classList.remove("sp-quiz-step--answered");s.querySelectorAll(".sp-quiz-opt").forEach(function(o){o.classList.remove("sp-quiz-opt--pick","sp-quiz-opt--bad");var fb=o.querySelector(".sp-quiz-opt-feedback");if(fb)fb.remove();});});if(total)showQ(0);}' +
-        'function finish(){steps.forEach(function(s){s.setAttribute("hidden","hidden");s.classList.remove("sp-quiz-step--active");});if(doneEl){doneEl.removeAttribute("hidden");var big=doneEl.querySelector(".sp-quiz-done-big");if(big)big.textContent=correctCount+"/"+total;if(correctCount===total){try{spConfetti_();}catch(eC){}}}}' +
+        'function finish(){steps.forEach(function(s){s.setAttribute("hidden","hidden");s.classList.remove("sp-quiz-step--active");});if(doneEl){doneEl.removeAttribute("hidden");var big=doneEl.querySelector(".sp-quiz-done-big");if(big){var pct=total>0?Math.round(correctCount*100/total):0;big.textContent=correctCount+"/"+total+" ("+pct+"%)";big.className="sp-quiz-done-big sp-quiz-score "+(pct>=80?"sp-quiz-score--success":pct>=60?"sp-quiz-score--warning":"sp-quiz-score--error");}if(pct>=80){try{if(typeof launchUbitsConfetti==="function")launchUbitsConfetti();}catch(eC){}}}}' +
         'if(rst)rst.addEventListener("click",function(e){e.preventDefault();resetQuiz();});' +
         'steps.forEach(function(step){' +
         'step.querySelectorAll(".sp-quiz-opt").forEach(function(opt){' +
@@ -1336,7 +1338,7 @@
         'step.classList.add("sp-quiz-step--answered");step.querySelectorAll(".sp-quiz-opt").forEach(function(o){o.classList.remove("sp-quiz-opt--pick","sp-quiz-opt--bad");});' +
         'if(ok){opt.classList.add("sp-quiz-opt--pick");correctCount++;}else{opt.classList.add("sp-quiz-opt--bad");}' +
         'var fb=document.createElement("div");fb.className="sp-quiz-opt-feedback "+(ok?"sp-quiz-opt-feedback--correct":"sp-quiz-opt-feedback--wrong");fb.textContent=ok?"Respuesta correcta":"Respuesta incorrecta";opt.appendChild(fb);' +
-        'advanceTimer=setTimeout(function(){advanceTimer=null;curQ++;if(curQ<total)showQ(curQ);else finish();},3000);}' +
+        'advanceTimer=setTimeout(function(){advanceTimer=null;curQ++;if(curQ<total)showQ(curQ);else finish();},1500);}' +
         'opt.addEventListener("click",function(){onPick();});' +
         'opt.addEventListener("keydown",function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();onPick();}});' +
         '});});' +
@@ -1413,6 +1415,7 @@
                 '<button type="button" class="ubits-button ubits-button--primary ubits-button--md" id="sp-next" onclick="nav(1)" aria-label="Siguiente"><span>Siguiente</span><i class="far fa-arrow-right"></i></button>'+
             '</div>'+
             '<script src="../../components/carousel-indicators.js"><\/script>'+
+            '<script src="../../components/ubits-confetti.js"><\/script>'+
             (editMode ? '<script src="../../components/tooltip.js"><\/script>' : '') +
             '<script>'+script+'<\/script></body></html>';
     }

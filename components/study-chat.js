@@ -700,6 +700,21 @@ function setCanvasPanelOpen(open) {
     document.body.classList.toggle('ia-chat-side-panel-open', !!open);
 }
 
+/** Modificador CSS según precisión: 0–59 error, 60–79 warning, 80–100 success. */
+function getQuizScoreTierModifier_(accuracy) {
+    var a = Math.max(0, Math.min(100, Math.round(Number(accuracy) || 0)));
+    if (a >= 80) return 'ubits-ia-chat-side__quiz-score--success';
+    if (a >= 60) return 'ubits-ia-chat-side__quiz-score--warning';
+    return 'ubits-ia-chat-side__quiz-score--error';
+}
+
+/** Confeti quiz perfecto — delega en components/ubits-confetti.js (estilo Pilot Hub). */
+function runStudyChatQuizConfetti_() {
+    if (typeof launchUbitsConfetti === 'function') {
+        launchUbitsConfetti();
+    }
+}
+
 /**
  * @param {string} [title] - Título del header del loader (default: 'Recurso').
  * @param {string} [bodyText] - Texto del cuerpo (default: 'Generando recurso...').
@@ -707,9 +722,12 @@ function setCanvasPanelOpen(open) {
 function getCanvasLoaderHTML(title, bodyText) {
     var headerTitle = (title !== undefined && title !== '') ? title : 'Recurso';
     var text = (bodyText !== undefined && bodyText !== '') ? bodyText : 'Generando recurso...';
-    var loaderBody = (typeof getLoaderHTML === 'function')
-        ? getLoaderHTML({ text: text, wrap: false })
-        : '<span class="ubits-loader"></span><p class="ubits-loader-text ubits-body-md-regular">' + text + '</p>';
+    var label = String(text).replace(/\.+$/,'').trim() || 'Generando recurso';
+    var loaderBody = (typeof getIaLoaderHTML === 'function')
+        ? '<div class="ubits-ia-chat-side__ia-loader-host">' + getIaLoaderHTML({ label: label }) + '</div>'
+        : (typeof getLoaderHTML === 'function')
+            ? getLoaderHTML({ text: text, wrap: false })
+            : '<span class="ubits-loader"></span><p class="ubits-loader-text ubits-body-md-regular">' + text + '</p>';
     return '<div class="ubits-ia-chat-side__content ubits-ia-chat-side__content--generating">' +
         '<div class="ubits-ia-chat-side__header">' +
         '<span class="ubits-body-md-bold">' + headerTitle + '</span>' +
@@ -1679,9 +1697,10 @@ function bindTutorPanelEvents(panel, type, topicKey) {
             var isCorrect = selectedValue === correctIdx;
             if (isCorrect) correctCount++; else wrongCount++;
         }
-        function showResultsScreen() {
+        function showResultsScreen(celebratePerfect) {
             const accuracy = total > 0 ? Math.round((correctCount / total) * 100) : 0;
             const skipped = total - correctCount - wrongCount;
+            const isPassingScore = accuracy >= 80;
             var setIndexUsed = ((chatState.shownQuizIndex[topicKey] || 1) - 1) % 5;
             if (!chatState.quizLastResultByTopic) chatState.quizLastResultByTopic = {};
             chatState.quizLastResultByTopic[topicKey] = {
@@ -1692,17 +1711,18 @@ function bindTutorPanelEvents(panel, type, topicKey) {
                 accuracy: accuracy,
                 userAnswers: answers.slice()
             };
+            var scoreTierMod = getQuizScoreTierModifier_(accuracy);
             resultDiv.innerHTML = `
                 <div class="ubits-ia-chat-side__quiz-result-screen">
                     <h2 class="ubits-ia-chat-side__quiz-result-title">Quiz completado</h2>
                     <div class="ubits-ia-chat-side__quiz-result-cards">
                         <div class="ubits-ia-chat-side__quiz-result-card">
                             <span class="ubits-ia-chat-side__quiz-result-card-label">Puntuación</span>
-                            <span class="ubits-ia-chat-side__quiz-result-card-value">${correctCount}/${total}</span>
+                            <span class="ubits-ia-chat-side__quiz-result-card-value ubits-ia-chat-side__quiz-score ${scoreTierMod}">${correctCount}/${total}</span>
                         </div>
                         <div class="ubits-ia-chat-side__quiz-result-card">
                             <span class="ubits-ia-chat-side__quiz-result-card-label">Precisión</span>
-                            <span class="ubits-ia-chat-side__quiz-result-card-value">${accuracy}%</span>
+                            <span class="ubits-ia-chat-side__quiz-result-card-value ubits-ia-chat-side__quiz-score ${scoreTierMod}">${accuracy}%</span>
                         </div>
                         <div class="ubits-ia-chat-side__quiz-result-card ubits-ia-chat-side__quiz-result-card--breakdown">
                             <div class="ubits-ia-chat-side__quiz-result-breakdown">
@@ -1741,6 +1761,11 @@ function bindTutorPanelEvents(panel, type, topicKey) {
                 '</div></div>';
             actionsDiv.style.display = 'flex';
             resultDiv.style.display = 'block';
+            if (celebratePerfect && isPassingScore) {
+                try {
+                    runStudyChatQuizConfetti_();
+                } catch (eConf) { /* noop */ }
+            }
             panel.querySelector('#ubits-ia-chat-side__quiz-review').addEventListener('click', function () {
                 resultDiv.style.display = 'none';
                 if (progressWrap) progressWrap.style.display = 'flex';
@@ -1876,7 +1901,7 @@ function bindTutorPanelEvents(panel, type, topicKey) {
         });
         if (backBtn) backBtn.addEventListener('click', function () { currentIdx--; updateVisibility(); });
         if (nextBtn) nextBtn.addEventListener('click', function () { currentIdx++; updateVisibility(); });
-        if (submitBtn) submitBtn.addEventListener('click', showResultsScreen);
+        if (submitBtn) submitBtn.addEventListener('click', function () { showResultsScreen(true); });
         updateVisibility();
         var lastResult = chatState.quizLastResultByTopic && chatState.quizLastResultByTopic[topicKey];
         if (lastResult && lastResult.userAnswers && lastResult.userAnswers.length > 0) {
@@ -1897,7 +1922,7 @@ function bindTutorPanelEvents(panel, type, topicKey) {
                 showImmediateFeedback(qEl, sel, correctIdx, explanation);
             });
             updateProgressBar();
-            showResultsScreen();
+            showResultsScreen(false);
         }
     } else if (type === 'flashcards') {
         const deck = panel.querySelector('.ubits-ia-chat-side__fc-deck');

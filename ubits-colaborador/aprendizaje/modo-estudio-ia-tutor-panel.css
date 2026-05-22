@@ -1,3 +1,13 @@
+/* Confeti (components/ubits-confetti.js — estilo Pilot Hub); z-index por encima del panel tutor */
+.ubits-confetti-canvas {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 11000;
+}
+
 /* =============================================================================
    modo-estudio-ia-tutor-panel.css — Panel lateral del tutor (Modo estudio IA)
    =============================================================================
@@ -173,14 +183,44 @@ body.ia-chat-side-panel-open #tab-bar-container {
     min-height: 0;
 }
 
-/* ========== Canvas: pantalla de generación (usa componente ubits-loader) ========== */
-.ubits-ia-chat-side__body--generating {
+/* ========== Canvas: pantalla de generación (componente ia-loader, ancho del panel) ========== */
+.ubits-ia-chat-side__content--generating {
     display: flex;
     flex-direction: column;
-    align-items: center;
+    min-height: 0;
+}
+
+.ubits-ia-chat-side__content--generating .ubits-ia-chat-side__body--generating {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
     justify-content: center;
-    gap: var(--gap-lg);
-    min-height: 200px;
+    flex: 1 1 auto;
+    min-height: min(420px, 55vh);
+    padding: var(--padding-xl);
+    box-sizing: border-box;
+}
+
+.ubits-ia-chat-side__ia-loader-host {
+    width: 100%;
+    max-width: 100%;
+    flex: 0 1 auto;
+    align-self: stretch;
+    box-sizing: border-box;
+}
+
+/* Anula el tope 22rem / min 320px del componente: llena el canvas del tutor */
+.ubits-ia-chat-side__ia-loader-host .ubits-ia-loader,
+.ubits-ia-chat-side__ia-loader-host .ubits-ia-loader__frame {
+    width: 100%;
+    max-width: none;
+    min-width: 0;
+    margin-inline: 0;
+}
+
+.ubits-ia-chat-side__ia-loader-host .ubits-ia-loader__sparkles-wrap {
+    width: clamp(1.4rem, 5vw, 2.5rem);
+    height: clamp(1.4rem, 5vw, 2.5rem);
 }
 
 /* Revelado secuencial del contenido tras el loader: de arriba a abajo, ≤1s total */
@@ -679,6 +719,23 @@ body.ia-chat-side-panel-open #tab-bar-container {
     font-size: var(--font-size-h1);
     font-weight: var(--font-weight-regular);
     color: var(--ubits-fg-1-high);
+}
+
+/* Puntuación y precisión: bold + color por aprobación (alineado con SCORM) */
+.ubits-ia-chat-side__quiz-result-card-value.ubits-ia-chat-side__quiz-score {
+    font-weight: var(--font-weight-bold);
+}
+
+.ubits-ia-chat-side__quiz-score--error {
+    color: var(--ubits-feedback-accent-error);
+}
+
+.ubits-ia-chat-side__quiz-score--warning {
+    color: var(--ubits-feedback-accent-warning);
+}
+
+.ubits-ia-chat-side__quiz-score--success {
+    color: var(--ubits-feedback-accent-success);
 }
 
 .ubits-ia-chat-side__quiz-result-breakdown {
