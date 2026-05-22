@@ -1156,6 +1156,12 @@
         '.sp-stage .sp-btn-p{background:#ffffff;color:#303a47;border:1px solid #d0d2d5;}' +
         '.sp-stage .sp-btn-p:hover:not(:disabled){background:#f3f3f4;}' +
         '.sp-stage .sp-btn:disabled{opacity:.4;cursor:not-allowed;}' +
+        /* Celular estrecho: Anterior/Siguiente icon-only; desde 481px conservan texto */
+        '@media (max-width:480px){' +
+        '.sp-footer #sp-prev span,.sp-footer #sp-next span{display:none !important;}' +
+        '.sp-footer #sp-prev,.sp-footer #sp-next{display:inline-flex !important;align-items:center !important;justify-content:center !important;gap:0 !important;padding:var(--padding-md) !important;min-width:40px !important;width:40px !important;max-width:40px !important;min-height:40px !important;height:40px !important;}' +
+        '.sp-footer #sp-prev i,.sp-footer #sp-next i{margin:0;font-size:16px;line-height:1;}' +
+        '}' +
         '@media (max-width:640px){.sp-slide{padding:14px 12px;}}';
         if (!editMode) css += buildScormCompactViewportCss();
         return css;
@@ -1402,9 +1408,9 @@
             '</div>'+
             '<div class="sp-stage"><div class="sp-slides">'+slidesHtml+'</div></div>'+
             '<div class="sp-footer">'+
-                '<button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="sp-prev" onclick="nav(-1)"><i class="far fa-arrow-left"></i><span>Anterior</span></button>'+
+                '<button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="sp-prev" onclick="nav(-1)" aria-label="Anterior"><i class="far fa-arrow-left"></i><span>Anterior</span></button>'+
                 '<div id="sp-dots"></div>'+
-                '<button type="button" class="ubits-button ubits-button--primary ubits-button--md" id="sp-next" onclick="nav(1)"><span>Siguiente</span><i class="far fa-arrow-right"></i></button>'+
+                '<button type="button" class="ubits-button ubits-button--primary ubits-button--md" id="sp-next" onclick="nav(1)" aria-label="Siguiente"><span>Siguiente</span><i class="far fa-arrow-right"></i></button>'+
             '</div>'+
             '<script src="../../components/carousel-indicators.js"><\/script>'+
             (editMode ? '<script src="../../components/tooltip.js"><\/script>' : '') +
