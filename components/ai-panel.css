@@ -14,10 +14,10 @@
    Variables
    --------------------------------------------------------------------------- */
 :root {
-    /* Mismo ancho que .ubits-drawer-content--sm (components/drawer.css → 440px) */
+    /* Apertura = drawer sm (440px); arrastre del borde izquierdo hasta --ai-panel-width-max */
     --ai-panel-width-default: 440px;
     --ai-panel-width-min:     320px;
-    --ai-panel-width-max:     440px;
+    --ai-panel-width-max:     720px;
     --ai-panel-resize-handle: 5px;
     --ai-panel-header-h:      48px;
 }
@@ -796,16 +796,17 @@ body.ai-panel-resizing .ai-panel {
     align-self: center !important;
 }
 
-/* Móvil: igual que hilo sin welcome — sin padding lateral en input-area ni disclaimer */
+/* Móvil: aire lateral e inferior (el hilo full-page puede ir sin padding; el panel no) */
 @media (max-width: 768px) {
     .ai-panel .ubits-ia-chat-thread__input-area {
-        padding-left: 0;
-        padding-right: 0;
+        padding-left: max(var(--padding-lg), env(safe-area-inset-left, 0px));
+        padding-right: max(var(--padding-lg), env(safe-area-inset-right, 0px));
     }
 
     .ai-panel .ubits-ia-chat-thread__disclaimer {
-        padding-left: 0;
-        padding-right: 0;
+        padding-left: max(var(--padding-lg), env(safe-area-inset-left, 0px));
+        padding-right: max(var(--padding-lg), env(safe-area-inset-right, 0px));
+        padding-bottom: max(var(--padding-md), env(safe-area-inset-bottom, 0px));
     }
 }
 

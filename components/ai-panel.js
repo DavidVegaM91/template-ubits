@@ -609,6 +609,16 @@ function _aiPanelSend() {
 // ---------------------------------------------------------------------------
 // Resize con el mouse (arrastrar borde izquierdo)
 // ---------------------------------------------------------------------------
+function _aiPanelGetWidthMin_() {
+    return parseInt(getComputedStyle(document.documentElement).getPropertyValue('--ai-panel-width-min'), 10) || 320;
+}
+
+/** Máximo del token CSS, acotado al viewport para no desbordar en pantallas estrechas. */
+function _aiPanelGetWidthMax_() {
+    var token = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--ai-panel-width-max'), 10) || 720;
+    return Math.min(token, Math.max(_aiPanelGetWidthMin_(), window.innerWidth - 16));
+}
+
 function _aiPanelBindResize() {
     var handle = _aiEl('ai-panel-resize');
     var panel  = _aiEl('ai-panel');
@@ -620,8 +630,8 @@ function _aiPanelBindResize() {
     function onMouseMove(e) {
         var dx = startX - e.clientX;            // cuánto se movió hacia la izquierda
         var newW = Math.min(
-            Math.max(startW + dx, parseInt(getComputedStyle(document.documentElement).getPropertyValue('--ai-panel-width-min'), 10) || 320),
-            parseInt(getComputedStyle(document.documentElement).getPropertyValue('--ai-panel-width-max'), 10) || 440
+            Math.max(startW + dx, _aiPanelGetWidthMin_()),
+            _aiPanelGetWidthMax_()
         );
         panel.style.width = newW + 'px';
         _aiPanel.width = newW;
@@ -653,9 +663,7 @@ function _aiPanelBindResize() {
 
     handle.addEventListener('touchmove', function(e) {
         var dx = startX - e.touches[0].clientX;
-        var minW = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--ai-panel-width-min'), 10) || 320;
-        var maxW = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--ai-panel-width-max'), 10) || 440;
-        var newW = Math.min(Math.max(startW + dx, minW), maxW);
+        var newW = Math.min(Math.max(startW + dx, _aiPanelGetWidthMin_()), _aiPanelGetWidthMax_());
         panel.style.width = newW + 'px';
         _aiPanel.width = newW;
     }, { passive: true });
