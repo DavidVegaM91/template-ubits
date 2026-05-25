@@ -2409,7 +2409,7 @@
                 return;
             }
 
-            // 1. Click en tarjeta Video → modal original (legacy). DEMO: Video 2 abre v2 (ver video-demo-v2).
+            // 1. Click en tarjeta Video → modal legacy (ganador test A/B).
             var videoCard = ev.target.closest('[data-resources-card-type="video"]');
             if (videoCard && !videoCard.disabled) {
                 if (typeof window.openVideoRecursoModal === 'function') {
@@ -2444,33 +2444,7 @@
                 return;
             }
 
-            // 1a. DEMO: tarjeta «Video 2» (sustituye encuesta en resources-block) → modal nuevo (v2 wizard)
-            var videoDemoV2Card = ev.target.closest('[data-resources-card-type="video-demo-v2"]');
-            if (videoDemoV2Card && !videoDemoV2Card.disabled) {
-                if (typeof window.openVideoRecursoModal === 'function') {
-                    window.openVideoRecursoModal({
-                        ui:           'v2',
-                        pageKey:      CC_RECURSOS_CURRENT_PAGE_KEY,
-                        onVideoReady: function (html) {
-                            beforeReplaceRecursosMountIfPdfShowing(mount);
-                            if (CC_RECURSOS_CURRENT_PAGE_KEY) {
-                                CC_RECURSOS_PAGE_STATE[CC_RECURSOS_CURRENT_PAGE_KEY] = { html: html };
-                            }
-                            mount.innerHTML = html;
-                            var activeItemV2 = document.querySelector(
-                                '#crear-contenido-recursos-indice-mount .ubits-paginas-creator__item.is-active'
-                            );
-                            if (activeItemV2) {
-                                var iconElV2 = activeItemV2.querySelector('.ubits-paginas-creator__drag-handle i');
-                                if (iconElV2 && typeof window.paginasCreatorIconClass === 'function') {
-                                    iconElV2.className = window.paginasCreatorIconClass('video');
-                                }
-                            }
-                        }
-                    });
-                }
-                return;
-            }
+            // Encuesta de satisfacción: sin flujo aún (solo tarjeta visible en el selector).
 
             // 1b. Tarjeta PDF → subida local + vista previa (sin IA ni modales)
             var pdfCard = ev.target.closest('[data-resources-card-type="pdf"]');

@@ -26,7 +26,7 @@
         'evaluacion-final': { icon: 'fa-clipboard-check', label: 'Evaluación', aiAssist: true },
         'encuesta-libre': { icon: 'fa-list', label: 'Encuesta libre' },
         encuesta: { icon: 'fa-star', label: 'Encuesta de satisfacción' },
-        /* DEMO LMS Creator: segunda tarjeta Video para abrir modal v2 (ver crear-contenido.js) */
+        /* Tipo reservado (no en selector por defecto); modal video v2 en video-recurso-modal.js para uso futuro */
         'video-demo-v2': { icon: 'fa-video', label: 'Video 2', aiAssist: true },
         'archivo-descargable': { icon: 'fa-download', label: 'Archivo descargable' },
         certificado: { icon: 'fa-award', label: 'Certificado' },
