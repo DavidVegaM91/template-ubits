@@ -960,6 +960,7 @@
     var CC_MODAL_EDIT_SEC = 'cc-modal-editar-seccion';
     var CC_MODAL_DELETE_SEC = 'cc-modal-eliminar-seccion';
     var CC_MODAL_DELETE_RECURSO = 'cc-modal-eliminar-recurso';
+    var CC_MODAL_DELETE_PAGINA = 'cc-modal-eliminar-pagina';
 
     /**
      * Persistencia de recursos por página.
@@ -1547,6 +1548,86 @@
         var ok = ov.querySelector('#cc-mod-delete-sec-confirm');
         function close() {
             window.closeModal(CC_MODAL_DELETE_SEC);
+        }
+        if (cancel) {
+            cancel.addEventListener('click', close);
+        }
+        if (ok) {
+            ok.addEventListener('click', function () {
+                close();
+                runDelete();
+            });
+        }
+    }
+
+    function recursosApplyDeletePage(item) {
+        if (!item || !item.parentNode) return;
+        var deletedKey = item.getAttribute('data-paginas-creator-key');
+        if (deletedKey) {
+            var pageState = CC_RECURSOS_PAGE_STATE[deletedKey];
+            if (
+                pageState &&
+                pageState.html &&
+                typeof window.ccGenWidget !== 'undefined' &&
+                typeof window.ccGenWidget.markJobDeletedForPage === 'function'
+            ) {
+                if (pageState.html.indexOf('cc-scorm-resource') !== -1) {
+                    window.ccGenWidget.markJobDeletedForPage(deletedKey, 'scorm');
+                } else if (pageState.html.indexOf('cc-video-resource') !== -1) {
+                    window.ccGenWidget.markJobDeletedForPage(deletedKey, 'video');
+                }
+            }
+            delete CC_RECURSOS_PAGE_STATE[deletedKey];
+            delete recursosPageTitleTouched[deletedKey];
+            if (CC_RECURSOS_CURRENT_PAGE_KEY === deletedKey) {
+                CC_RECURSOS_CURRENT_PAGE_KEY = null;
+            }
+        }
+        item.remove();
+
+        var list = getRecursosPaginasList();
+        var items = list ? list.querySelectorAll('.ubits-paginas-creator__item') : null;
+        if (!list || !items || items.length === 0) {
+            setRecursosEditorVisible(false);
+            loadRecursosEmptyPanel();
+            return;
+        }
+        var first = list.querySelector('.ubits-paginas-creator__item');
+        if (first && typeof window.setPaginasCreatorActiveItem === 'function') {
+            window.setPaginasCreatorActiveItem(first);
+        }
+        syncRecursosRightTitleFromActive();
+        refreshCrearContenidoPageSiguienteState();
+        syncRecursosTitleValidationVisuals();
+    }
+
+    function openCrearContenidoDeletePageModal(item) {
+        function runDelete() {
+            recursosApplyDeletePage(item);
+        }
+        if (typeof window.openModal !== 'function' || typeof window.closeModal !== 'function') {
+            runDelete();
+            return;
+        }
+        window.openModal({
+            overlayId: CC_MODAL_DELETE_PAGINA,
+            title: 'Eliminar página',
+            bodyHtml:
+                '<p class="ubits-body-md-regular" style="margin:0;color:var(--ubits-fg-1-medium);">' +
+                '¿Seguro que deseas eliminar esta página? Al hacerlo se perderán todos los recursos que esta contenga.' +
+                '</p>',
+            footerHtml:
+                '<button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="cc-mod-delete-pagina-cancel"><span>Cancelar</span></button>' +
+                '<button type="button" class="ubits-button ubits-button--error ubits-button--md" id="cc-mod-delete-pagina-confirm"><span>Sí, eliminar</span></button>',
+            size: 'sm',
+            closeOnOverlayClick: true
+        });
+        var ov = document.getElementById(CC_MODAL_DELETE_PAGINA);
+        if (!ov) return;
+        var cancel = ov.querySelector('#cc-mod-delete-pagina-cancel');
+        var ok = ov.querySelector('#cc-mod-delete-pagina-confirm');
+        function close() {
+            window.closeModal(CC_MODAL_DELETE_PAGINA);
         }
         if (cancel) {
             cancel.addEventListener('click', close);
@@ -2280,29 +2361,7 @@
             return;
         }
         if (d.action !== 'eliminar') return;
-        // Limpiar estado del recursos guardado para la página eliminada
-        var deletedKey = item.getAttribute('data-paginas-creator-key');
-        if (deletedKey) {
-            delete CC_RECURSOS_PAGE_STATE[deletedKey];
-            if (CC_RECURSOS_CURRENT_PAGE_KEY === deletedKey) CC_RECURSOS_CURRENT_PAGE_KEY = null;
-        }
-        item.remove();
-
-        var list = getRecursosPaginasList();
-        var items = list ? list.querySelectorAll('.ubits-paginas-creator__item') : null;
-        if (!list || !items || items.length === 0) {
-            setRecursosEditorVisible(false);
-            loadRecursosEmptyPanel();
-            return;
-        }
-        var first = list.querySelector('.ubits-paginas-creator__item');
-        if (first && typeof window.setPaginasCreatorActiveItem === 'function') {
-            window.setPaginasCreatorActiveItem(first);
-        }
-        syncRecursosRightTitleFromActive();
-        // La nueva página activa se restaura/renderiza vía onRecursosPaginasActivate
-        // que dispara setPaginasCreatorActiveItem → no es necesario llamar renderRecursosResourcesBlock aquí.
-        refreshCrearContenidoPageSiguienteState();
+        openCrearContenidoDeletePageModal(item);
     }
 
     function onRecursosPageTitleFocusOut(ev) {
