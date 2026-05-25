@@ -162,6 +162,35 @@
         syncToolbarStates(root, editor);
     }
 
+    /**
+     * Toolbar canónica + input de imagen (misma que documentacion/componentes/rich-text-editor.html).
+     * @returns {string}
+     */
+    function richTextEditorToolbarAndFileInputHtml() {
+        return (
+            '<div class="ubits-rich-text-editor__toolbar" role="toolbar" aria-label="Formato de texto">' +
+            '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" data-rich-cmd="bold" aria-label="Negrita"><i class="fas fa-bold"></i></button>' +
+            '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" data-rich-cmd="italic" aria-label="Cursiva"><i class="fas fa-italic"></i></button>' +
+            '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" data-rich-cmd="underline" aria-label="Subrayado"><i class="fas fa-underline"></i></button>' +
+            '<span class="ubits-rich-text-editor__sep" aria-hidden="true"></span>' +
+            '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" data-rich-cmd="insertOrderedList" aria-label="Lista numerada"><i class="fas fa-list-ol"></i></button>' +
+            '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" data-rich-cmd="insertUnorderedList" aria-label="Lista con viñetas"><i class="fas fa-list-ul"></i></button>' +
+            '<span class="ubits-rich-text-editor__sep" aria-hidden="true"></span>' +
+            '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" data-rich-cmd="justifyLeft" aria-label="Alinear a la izquierda"><i class="fas fa-align-left"></i></button>' +
+            '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" data-rich-cmd="justifyCenter" aria-label="Centrar"><i class="fas fa-align-center"></i></button>' +
+            '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" data-rich-cmd="justifyRight" aria-label="Alinear a la derecha"><i class="fas fa-align-right"></i></button>' +
+            '<span class="ubits-rich-text-editor__sep" aria-hidden="true"></span>' +
+            '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" data-rich-cmd="insertImage" aria-label="Insertar imagen"><i class="far fa-image"></i></button>' +
+            '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" data-rich-cmd="insertVideo" aria-label="Insertar video"><i class="fas fa-film"></i></button>' +
+            '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" data-rich-cmd="createLink" aria-label="Insertar enlace"><i class="fas fa-link"></i></button>' +
+            '<span class="ubits-rich-text-editor__sep" aria-hidden="true"></span>' +
+            '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" data-rich-cmd="formatCode" aria-label="Bloque de código"><i class="fas fa-code"></i></button>' +
+            '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" data-rich-cmd="removeFormat" aria-label="Quitar formato"><i class="fas fa-remove-format"></i></button>' +
+            '</div>' +
+            '<input type="file" class="ubits-rich-text-editor__file" accept="image/*" tabindex="-1" aria-hidden="true">'
+        );
+    }
+
     function initAllRichTextEditors() {
         document.querySelectorAll('[data-rich-text-editor]').forEach(function (root) {
             if (root.getAttribute('data-rich-text-initialized') !== 'true') {
@@ -203,4 +232,5 @@
     global.initAllRichTextEditors = initAllRichTextEditors;
     global.getRichTextHtml = getRichTextHtml;
     global.setRichTextHtml = setRichTextHtml;
+    global.richTextEditorToolbarAndFileInputHtml = richTextEditorToolbarAndFileInputHtml;
 })(typeof window !== 'undefined' ? window : this);

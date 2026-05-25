@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="../../images/Ubits-logo-dark.svg">
+    <title>Complementary resources | UBITS Playground</title>
+    <link rel="stylesheet" href="../../general-styles/ubits-colors.css">
+    <link rel="stylesheet" href="../../general-styles/styles.css">
+    <link rel="stylesheet" href="../../general-styles/fontawesome-icons.css">
+    <link rel="stylesheet" href="../../general-styles/ubits-typography.css">
+    <link rel="stylesheet" href="../../components/sub-nav.css">
+    <link rel="stylesheet" href="../../components/sidebar.css">
+    <link rel="stylesheet" href="../../components/button.css">
+    <link rel="stylesheet" href="../../components/toast.css">
+    <link rel="stylesheet" href="../../components/resources-card.css">
+    <link rel="stylesheet" href="../../components/complementary-resources.css">
+    <link rel="stylesheet" href="../../docs/docs-sidebar.css">
+    <link rel="stylesheet" href="../../docs/docstyles.css">
+    <style>
+        .preview-control-btn.active {
+            background: var(--ubits-accent-brand) !important;
+            color: white !important;
+            border-color: var(--ubits-accent-brand) !important;
+        }
+        .preview-control-btn.active span { color: white !important; }
+    </style>
+</head>
+<body class="componentes-page" data-theme="light">
+    <div class="dashboard-container">
+        <div class="tooltip" id="tooltip"></div>
+        <main class="main-content">
+            <div id="top-nav-container"></div>
+            <div style="display: flex;">
+                <div id="docs-dropdown-container"></div>
+                <div id="docs-sidebar-container"></div>
+                <div class="components-content">
+                    <div class="content-area" style="display: block; width: 100%;">
+                        <div style="text-align: center; margin-bottom: 60px;">
+                            <h1 class="ubits-display-d2-bold" style="margin-bottom: 24px; color: var(--ubits-accent-brand);">Complementary resources</h1>
+                            <p class="ubits-body-md-regular" style="max-width: 800px; margin: 0 auto 32px; line-height: 1.6;">
+                                Bloque opcional bajo el recurso principal de una página en LMS Creator. Invita a añadir texto complementario o un archivo descargable; no cambia el icono de la página en el índice.
+                            </p>
+                        </div>
+
+                        <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: var(--border-radius-lg); margin-bottom: 40px;">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-eye" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Preview del componente
+                            </h2>
+                            <p class="ubits-body-md-regular" style="margin-bottom: 20px; line-height: 1.6;">
+                                Variante del bloque de invitación (invite). Los bloques ya añadidos (editor o file upload) se documentan en la sección técnica.
+                            </p>
+                            <div style="display: flex; flex-wrap: wrap; gap: var(--gap-sm); margin-bottom: 20px;">
+                                <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn active" data-cr-variant="both"><span>Ambos</span></button>
+                                <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-cr-variant="download-only"><span>Solo descargable</span></button>
+                                <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-cr-variant="text-only"><span>Solo texto</span></button>
+                            </div>
+                            <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: var(--border-radius-md); max-width: 900px;">
+                                <div id="cr-preview-mount"></div>
+                            </div>
+                        </div>
+
+                        <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: var(--border-radius-lg); margin-bottom: 40px;">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-info-circle" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Características generales
+                            </h2>
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--gap-lg);">
+                                <div style="text-align: center; padding: var(--padding-md); background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: var(--gap-sm);"><i class="far fa-layer-group"></i></div>
+                                    <div class="ubits-body-sm-bold">Tres variantes invite</div>
+                                    <div class="ubits-body-sm-regular">Ambos tipos, solo texto o solo archivo descargable según lo que falte por añadir.</div>
+                                </div>
+                                <div style="text-align: center; padding: var(--padding-md); background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: var(--gap-sm);"><i class="far fa-circle-info"></i></div>
+                                    <div class="ubits-body-sm-bold">Opcional</div>
+                                    <div class="ubits-body-sm-regular">No es obligatorio añadir complementarios. Si hay los dos, el bloque invite desaparece.</div>
+                                </div>
+                                <div style="text-align: center; padding: var(--padding-md); background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: var(--gap-sm);"><i class="far fa-file-lines"></i></div>
+                                    <div class="ubits-body-sm-bold">Excepción texto</div>
+                                    <div class="ubits-body-sm-regular">Si el recurso principal es Texto, solo se ofrece archivo descargable (no más texto).</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: var(--border-radius-lg); margin-bottom: 40px;">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-comments" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Prompts útiles
+                            </h2>
+                            <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px;">
+                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                                    <h3 class="ubits-body-md-bold" style="margin: 0;">Bajo el recurso principal</h3>
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('cr-p1')"><i class="far fa-copy"></i><span>Copiar</span></button>
+                                </div>
+                                <pre style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm);"><code id="cr-p1" class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">En [pantalla] de crear contenido, debajo del recurso principal montado en el panel derecho, añade el bloque Complementary resources (variante [both | download-only | text-only]). Importa button.css, resources-card.css y complementary-resources.css; JS: resources-card.js y complementary-resources.js. Tras innerHTML con complementaryResourcesInviteHtml({ variant }), llama initComplementaryResources(contenedor). Escucha ubits-complementary-resources-invite para montar el editor o la subida de archivo.</code></pre>
+                            </div>
+                        </div>
+
+                        <div style="background: var(--ubits-bg-1); border-radius: var(--border-radius-lg); margin-bottom: 40px; overflow: hidden;">
+                            <div style="padding: 32px; text-align: center; border-bottom: 1px solid var(--ubits-border-1);">
+                                <h2 class="ubits-heading-h2" style="margin-bottom: 0; color: var(--ubits-fg-1-high);">
+                                    <i class="far fa-code" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                    Documentación técnica
+                                </h2>
+                            </div>
+                            <div style="background: var(--ubits-bg-2); padding: 20px; text-align: center; cursor: pointer;" onclick="toggleTechnicalDocs()">
+                                <span class="ubits-body-md-regular" style="color: var(--ubits-accent-brand);"><i class="far fa-chevron-down"></i> Mostrar</span>
+                            </div>
+                            <div id="technical-docs-content" style="display: none; padding: 32px;">
+                                <pre style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm); overflow-x: auto;"><code class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">complementaryResourcesInviteHtml({ variant: 'both' | 'download-only' | 'text-only' })
+resolveComplementaryInviteVariant({ primaryType, hasText, hasDownload }) → variant | null
+complementaryResourcesTextFilledHtml({ editorRootId? })
+complementaryResourcesDownloadFilledHtml({ uploadContainerId? })
+initComplementaryResources(root) — incluye initComplementaryDownloadFileUpload en [data-cc-comp-download-upload]
+initComplementaryDownloadFileUpload(containerId) — file-upload.js; PDF, Office, zip, rar, txt, csv · 256 MB
+
+Evento: ubits-complementary-resources-invite — detail: { type: 'texto' | 'archivo-descargable' }
+
+Clases invite: .ubits-complementary-resources--invite, __title, __grid
+Clases filled: .ubits-complementary-resources--filled-stack, __surface, __footer (Eliminar fuera del fondo blanco)</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <div id="ubits-toast-container"></div>
+    <script src="../../components/sidebar.js"></script>
+    <script src="../../components/sub-nav.js"></script>
+    <script src="../../components/toast.js"></script>
+    <script src="../../components/resources-card.js"></script>
+    <script src="../../components/complementary-resources.js"></script>
+    <script src="../../docs/docs-sidebar.js"></script>
+    <script src="../../script.js"></script>
+    <script>
+        function crRender(variant) {
+            var mount = document.getElementById('cr-preview-mount');
+            if (!mount || typeof complementaryResourcesInviteHtml !== 'function') return;
+            mount.innerHTML = complementaryResourcesInviteHtml({ variant: variant });
+            if (typeof initComplementaryResources === 'function') initComplementaryResources(mount);
+        }
+        document.querySelectorAll('[data-cr-variant]').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                document.querySelectorAll('.preview-control-btn').forEach(function (b) { b.classList.remove('active'); });
+                btn.classList.add('active');
+                crRender(btn.getAttribute('data-cr-variant'));
+            });
+        });
+        function toggleTechnicalDocs() {
+            var el = document.getElementById('technical-docs-content');
+            if (el) el.style.display = el.style.display === 'none' ? 'block' : 'none';
+        }
+        function copyPrompt(id) {
+            var el = document.getElementById(id);
+            if (el && navigator.clipboard) {
+                navigator.clipboard.writeText(el.textContent);
+                if (typeof showToast === 'function') showToast('success', 'Copiado');
+            }
+        }
+        document.addEventListener('DOMContentLoaded', function () {
+            loadSidebar('ninguno');
+            loadSubNav('top-nav-container', 'documentacion');
+            loadDocsSidebar('complementary-resources');
+            crRender('both');
+        });
+    </script>
+</body>
+</html>

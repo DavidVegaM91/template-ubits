@@ -303,6 +303,24 @@ body.crear-contenido-app-open .ubits-dropdown-menu__content {
     display: none !important;
 }
 
+.crear-contenido-recursos__complementary-mount {
+    width: 100%;
+    min-width: 0;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-lg);
+    box-sizing: border-box;
+}
+
+.crear-contenido-recursos__complementary-mount[hidden] {
+    display: none !important;
+}
+
+.page-crear-contenido .crear-contenido-recursos__preview--editor .crear-contenido-recursos__complementary-mount:not([hidden]) {
+    margin-top: var(--gap-lg);
+}
+
 /* Resources block: ancho de columna (sin cap 803px del componente) y rejilla adaptable por breakpoint */
 .page-crear-contenido .crear-contenido-recursos__resources-mount .ubits-resources-block {
     max-width: none;

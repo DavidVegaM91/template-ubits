@@ -2148,6 +2148,10 @@
             });
         }
 
+        if (typeof global.renderCrearContenidoComplementary === 'function') {
+            global.renderCrearContenidoComplementary();
+        }
+
         // Persistencia por página: usamos mountEl como ancla estable del listener.
         // Removemos cualquier listener anterior para evitar duplicados al re-montar.
         if (mountEl._ccEvalActivateHandler) {

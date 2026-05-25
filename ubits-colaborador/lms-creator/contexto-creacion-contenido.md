@@ -19,7 +19,7 @@ Los bocetos en herramienta de diseño fueron **exploratorios**. La referencia pa
 - **Paso Recursos (vacío):** panel izquierdo con índice + en el derecho un estado vacío que invita a crear la primera página.  
 - **Paso Recursos (con página nueva):** a la derecha, **título editable** de la página y debajo el **bloque para elegir y configurar el tipo de recurso**.  
 - **Índice:** interruptor de secciones (si aplica), listado de páginas, **Añadir página** / **Añadir sección**.  
-- **Tarjetas de tipo de recurso** y **bloque de recurso:** el usuario elige entre tipos (video, PDF, texto, etc.) y completa el formulario que corresponda; si intenta avanzar sin haber completado una página, esa página puede mostrarse en **error** según las reglas del paso.  
+- **Tarjetas de tipo de recurso** y **bloque de recurso:** el usuario elige entre **ocho tipos** (video, PDF, texto, etc.) y completa el formulario que corresponda; si intenta avanzar sin **título válido** o sin **recurso** en alguna página, esa página (o sección vacía) puede mostrarse en **error** según las reglas del paso.  
 - **Orden de páginas:** desde el menú de cada fila (**Mover arriba / abajo**) o **arrastrando** la página por el icono.  
 - **Criterio:** misma identidad visual y patrones UBITS que el resto del producto; si hay duda puntual, ganan **negocio + producto** y la documentación del componente.
 
@@ -40,9 +40,11 @@ El asistente de creación tiene **4 pasos**, en este orden:
 | Paso | Nombre | Estado en esta documentación |
 |------|--------|------------------------------|
 | 1 | Portada | Descrito en detalle |
-| 2 | Recursos | Descrito en detalle (parcial: **contenido complementario** por recurso en mensajes futuros) |
-| 3 | Certificado | Solo nombre de paso; detalle pendiente |
+| 2 | Recursos | Descrito en detalle (incl. **recursos complementarios** bajo el principal) |
+| 3 | Certificado | Reglas de **bloqueo** al salir de Recursos documentadas; **pantalla del paso** aún no navegable en el prototipo |
 | 4 | Publicación | Solo nombre de paso; detalle pendiente |
+
+**Navegación real en el playground:** desde **Recursos**, si se cumplen las validaciones de títulos y recursos, **Siguiente** puede mostrar un aviso de que el **siguiente paso estará disponible próximamente** (Certificado y Publicación siguen sin UI completa en el asistente).
 
 ### Desde la lista de contenidos
 
@@ -166,14 +168,21 @@ Si el usuario **desactiva** secciones (o nunca las activa): **todas las páginas
 
 **Excepción sin modal:** si hay **varias secciones** pero **solo la primera** tiene páginas y el resto está vacío, se puede **activar y desactivar** el uso de secciones **sin** modal.
 
+**Eliminar una sección** (menú **⋮** de la cabecera de sección → **«Eliminar sección»**):  
+- Se abre un **modal** titulado **«Eliminar sección»**.  
+- **Cuerpo:** avisa de que se eliminará la sección **y todas las páginas que contenga**, que la acción **no se puede deshacer**, y pregunta confirmación.  
+- **Botones:** **Cancelar** (cierra sin cambios) y **Sí, eliminar** (aplica el borrado).  
+- Tras confirmar: desaparece el bloque de esa sección del índice junto con sus páginas; el panel derecho se alinea con la **primera página** que quede en el contenido (o vuelve al empty state si no queda ninguna).
+
 ### Páginas
 
 - Las **páginas** son las unidades que componen el contenido en el sentido de **lecciones** o pantallas de consumo.  
-- **Icono en el índice:** mientras la página **no tiene aún un recurso principal**, la fila muestra el icono de **página en blanco**. Cuando el usuario **elige y confirma un tipo de recurso**, el icono debe **cambiar** al que corresponda (por ejemplo video o PDF). En el prototipo actual eso ya ocurre al menos para **Video** (vía modal) y **PDF**; el resto de tipos deberían seguir la misma lógica cuando existan.  
+- **Icono en el índice:** mientras la página **no tiene aún un recurso principal**, la fila muestra el icono de **página en blanco**. Cuando el usuario **elige y confirma un tipo de recurso**, el icono pasa al del tipo (**video**, **PDF**, **SCORM**, **embebido**, **evaluación**, etc.) según lo implementado en el prototipo.  
 - **Selección:** al hacer **clic en una página**, esa fila queda activa y su **sección** queda resaltada frente al resto. Solo hay **una página activa** (y una sección activa) a la vez.  
 - **Añadir una página** (equivalente en resultado; dos entradas):  
   1. **Empty state del panel derecho** (CTA cuando no hay páginas), **o**  
   2. Botón **«Añadir página»** en la parte inferior de **cada sección** (solo en la sección activa cuando hay secciones; en modo sin secciones, el botón del bloque único).  
+- **Menú ⋮ de cada página:** **Mover arriba**, **Mover abajo** (con las reglas de orden global) y **Eliminar** (ver **Confirmación al eliminar una página**).  
 - **Orden — menú (⋮) y arrastrar y soltar:** cada fila puede **reordenarse** de dos formas:  
   1. **Arrastrar y soltar** usando el **icono de tipo** como asa: el usuario arrastra la fila y la suelta donde quiera (alternativa importante para accesibilidad frente al solo arrastre libre).  
   2. **Menú ⋮ — «Mover arriba» / «Mover abajo»** con las mismas reglas de orden global.  
@@ -195,18 +204,46 @@ Si el usuario **desactiva** secciones (o nunca las activa): **todas las páginas
   1. **Título de la página**, **editable inline** en el panel derecho (mismo criterio que el nombre en la fila del índice: al guardar o al perder foco debe mantenerse alineado con la etiqueta de la página activa en Páginas creator).  
   2. Debajo, el **bloque para elegir el tipo de recurso** (tarjetas de video, PDF, texto, etc.) según el diseño UBITS.
 
+### Título obligatorio de cada página (validación en paso Recursos)
+
+Para poder **avanzar** desde Recursos (botón **Siguiente** o equivalente), **cada página** del índice debe tener un **título válido**:
+
+- **Válido:** texto con contenido tras quitar espacios en blanco.  
+- **No válido:** campo vacío o el texto genérico **«Sin título»** (sin distinguir mayúsculas/minúsculas).
+
+**Cómo se comunica el error:**
+
+| Momento | Comportamiento |
+|---------|----------------|
+| **Progresivo** | Si el usuario **edita el título** y **sale del campo** (pierde foco) con un valor inválido, la **fila de esa página** en el índice muestra **borde de error**. |
+| **Al intentar avanzar** | Si aún hay páginas inválidas, aparece un **toast** del estilo *«Todas las páginas deben tener un título. Revisa las marcadas en rojo.»* y se marcan **todas** las filas inválidas de una vez (modo “flash”). |
+| **Corrección** | En cuanto el título pasa a ser válido, la fila **deja** el estado de error. |
+
+Esta regla es **independiente** de si la página ya tiene recurso asignado: una página puede tener video montado y aun así bloquear el avance si el título sigue siendo inválido.
+
+### Persistencia del panel derecho al cambiar de página
+
+Cada **página del índice** guarda **su propio estado** del panel derecho (selector de tipos, recurso montado, evaluación, etc.). Al **activar otra fila** en el índice:
+
+1. Se **guarda** lo que había en la página que se abandona.  
+2. Se **restaura** lo correspondiente a la página nueva (o el selector vacío si aún no tiene recurso).
+
+En el prototipo esto aplica, entre otros, a **video**, **PDF** (vista previa con el archivo ya subido), **SCORM**, **embebido** y **evaluación final**. El usuario puede alternar entre lecciones sin perder el trabajo de cada una en la misma sesión de creación.
+
 ### Paso 3 — Certificado (validación al salir del paso 2)
 
 Antes de permitir avanzar al **paso 3**, debe cumplirse:
 
-1. **Ninguna página vacía:** toda página debe tener **al menos un recurso** asignado (definición de “vacía” = sin recursos).  
-2. **Ninguna sección vacía** (solo aplica si **uso de secciones** está activo): toda sección debe tener **al menos una página**.
+1. **Título válido en todas las páginas** (ver **Título obligatorio de cada página**).  
+2. **Ninguna página vacía:** toda página debe tener **al menos un recurso** asignado (definición de “vacía” = sin recursos).  
+3. **Ninguna sección vacía** (solo aplica si **uso de secciones** está activo): toda sección debe tener **al menos una página**.
 
 Si no se cumple, la interfaz debe **bloquear el avance** al siguiente paso y **marcar en rojo** lo que incumple la regla:
 
 | Caso | Qué debe verse marcado |
 |------|-------------------------|
-| **Página sin recurso** | La **fila de esa página** en el índice (borde de error visible). |
+| **Título de página inválido** | La **fila de esa página** en el índice (borde de error). |
+| **Página sin recurso** | La **fila de esa página** en el índice (borde de error). Además, si la página activa está en el **selector de tipos**, el bloque de recursos puede mostrarse con **borde de error** (variante **selector con error** del design system: misma cuadrícula de tarjetas, borde de aviso en el contenedor). |
 | **Sección sin ninguna página** (solo si las secciones están activas) | El **bloque de esa sección** en el índice (borde de error visible). |
 
 Los componentes visuales del índice ya contemplan ese estado de error; la pantalla debe activarlo cuando corresponda.
@@ -244,17 +281,82 @@ Solo aplica a generaciones **Video IA** y **SCORM con IA** que dispararon ese in
 - **Botones:** **Cancelar** (cierra sin cambios) y **Sí, eliminar** (confirma).
 - Tras confirmar: el panel derecho vuelve al **selector de tipos de recurso**, el icono de la página en el índice pasa a **página en blanco** y, si había una fila en el **panel de operaciones** para ese video o SCORM generado por IA, esa fila queda en **error** con **«Se eliminó el recurso»** (ver tabla anterior).
 
-Al configurar una página, el usuario puede añadir uno de estos tipos (presentados como cards en el Resources block o el patrón que defina producto):
+### Confirmación al eliminar una página del índice
 
-1. Video — un **modal** reúne las opciones **Video IA**, **enlace** y **subir archivo** (ver sección **Recurso: Video**).  
-2. PDF  
-3. Texto  
-4. Embebido  
-5. Scorm — modal **«Agregar SCORM»** con pestañas **SCORM con IA** y **Subir .zip** (ver **Recurso: SCORM**).  
-6. Evaluación final — **panel de recurso** + **panel lateral de IA** para generar preguntas (ver **Recurso: Evaluación final**).  
-7. Encuesta libre  
+**Ámbito:** cualquier fila de **Páginas creator** con al menos una página en el contenido.
 
-*(Detalle de **Video**, **PDF**, **SCORM**, **Texto** y **Evaluación final** más abajo; el resto de tipos se irá ampliando.)*
+- Menú **⋮** de la fila → **Eliminar**.  
+- **No** se borra al instante: modal titulado **«Eliminar página»**.  
+- **Mensaje:** confirma que se eliminará la página y que **se perderán todos los recursos** que contenga.  
+- **Botones:** **Cancelar** y **Sí, eliminar**.  
+- Tras confirmar: la fila desaparece del índice; si era la activa, el sistema selecciona otra página (habitualmente la **primera** que quede) o vuelve al **empty state** del panel derecho si no quedan páginas.
+
+### Tipos en el selector (orden y estado en el prototipo)
+
+Al configurar una página, el usuario ve **ocho tarjetas** en este orden (cuadrícula del **Resources block**):
+
+| # | Tipo en pantalla | Entrada al flujo en el prototipo |
+|---|------------------|----------------------------------|
+| 1 | **Video** | Modal **«Agregar video»** con pestañas **Video IA**, **enlace** y **subir** (ver **Recurso: Video**). |
+| 2 | **PDF** | Panel: subida de archivo y vista previa (ver **Recurso: PDF**). |
+| 3 | **Texto** | Tarjeta visible; **clic aún no abre** el editor (flujo **pendiente** — ver **Recurso: Texto**). |
+| 4 | **Embebido** | Panel enlace o código embebible (ver **Recurso: Embebido**). |
+| 5 | **SCORM** | Modal **«Agregar SCORM»** (ver **Recurso: SCORM**). |
+| 6 | **Evaluación final** | Constructor + panel IA (ver **Recurso: Evaluación final**). |
+| 7 | **Encuesta libre** | Tarjeta visible; **clic sin flujo** (pendiente de producto). |
+| 8 | **Encuesta de satisfacción** | Tarjeta visible; **clic sin flujo** (pendiente de producto; ver nota abajo). |
+
+**Nota:** en el catálogo de tarjetas del design system pueden existir **otros tipos** (archivo descargable, certificado, imagen, etc.) que **no** forman parte de esta cuadrícula de ocho en el paso Recursos del prototipo actual.
+
+*(Detalle de flujos implementados más abajo; encuestas y texto principal en estado **pendiente** o parcial.)*
+
+---
+
+## Recursos complementarios (secundarios)
+
+### Relación con el recurso principal
+
+- El **Resources block** (selector y formularios de la cuadrícula de ocho tipos) define el **recurso principal** de la página: al confirmarlo, el **icono de la fila** en el índice pasa al tipo correspondiente (video, PDF, SCORM, etc.).
+- Los **recursos complementarios** son **opcionales** y **no cambian** ese icono: solo enriquecen la lección con material adicional.
+- Tipos complementarios en el prototipo:
+  - **Texto** — **Rich text editor** oficial (misma barra de herramientas que la descripción de portada: negrita, cursiva, subrayado, listas, alineación, imagen, video/enlace, código, quitar formato). **Sin título** encima del editor (ni «Contenido» ni «Texto complementario»).
+  - **Archivo descargable** — **File Upload** oficial (`createFileUpload`, `successMessage: false`): PDF, DOC, DOCX, XLS, XLSX, PPT, PPTX, ZIP, RAR, TXT, CSV; hasta **256 MB**. **Sin título** sobre el uploader.
+
+### Dónde aparece en pantalla
+
+- Solo cuando la página ya tiene un **recurso principal montado** (no en el selector vacío ni en formularios intermedios tipo «PDF vacío» / «Video enlace» sin confirmar).
+- El bloque vive **debajo** del área del recurso principal (`#crear-contenido-recursos-resources-mount`), en **`#crear-contenido-recursos-complementary-mount`**.
+- Orden vertical:
+  1. Recurso principal (video, PDF, SCORM, evaluación, etc.).
+  2. Bloques complementarios **ya añadidos**, en el **orden en que se añadieron** (p. ej. primero descargable y luego texto, o al revés). Cada bloque: superficie blanca (contenido) + botón **Eliminar** **fuera** de esa superficie (mismo patrón que el recurso principal apilado).
+  3. Bloque de invitación **«Añade un recurso complementario (opcional)»** con una o dos tarjetas según lo que aún falte.
+
+### Variantes del bloque de invitación (componente Complementary resources)
+
+| Variante | Cuándo se muestra |
+|----------|-------------------|
+| **Ambos** (`both`) | No hay texto ni descargable complementario; el principal **no** es Texto. |
+| **Solo descargable** (`download-only`) | Ya hay texto complementario y falta el descargable; o el principal es **Texto** (no se ofrece otro texto). |
+| **Solo texto** (`text-only`) | Ya hay descargable y falta el texto; el principal **no** es Texto. |
+| *(ninguna)* | Ya están **ambos** complementarios → desaparece por completo la sección de invitación (solo quedan los bloques montados con su Eliminar). |
+
+### Comportamiento al interactuar
+
+| Acción | Resultado |
+|--------|-----------|
+| Clic en tarjeta **Texto** (invite) | Monta el bloque de texto (RTE completo, sin títulos) + **Eliminar** debajo. El bloque queda en la posición según orden de alta (`complementaryOrder` por página). Debajo sigue el invite si falta el otro tipo. |
+| Clic en tarjeta **Archivo descargable** (invite) | Monta **File Upload** (dropzone, sin mensaje «Archivo validado…») + **Eliminar** debajo. Mismo criterio de orden. Debajo sigue el invite si falta texto. |
+| **Eliminar** en un complementario | Quita solo ese bloque; el invite vuelve a ofrecer ese tipo. |
+| **Eliminar recurso principal** | Vuelve el selector de tipos; **se ocultan** los complementarios de esa página. |
+| Cambiar de página en el índice | Se **guardan** por página qué complementarios había y su **orden**; al volver se **restauran** (`CC_RECURSOS_PAGE_STATE`: `complementaryOrder`, flags derivados). |
+
+### Reglas de producto (resumen)
+
+- Ningún complementario es **obligatorio** para avanzar de paso (solo el **principal** cuenta para «página con recurso»).
+- **Orden de bloques:** el orden visual es el de **alta**, no fijo «texto arriba, descargable abajo».
+- **Sin títulos** en bloques montados (solo contenido + Eliminar externo).
+- **Excepción texto:** si el principal de la página es **Texto**, el invite **nunca** muestra la tarjeta Texto complementario (solo descargable, hasta que se añada o se elimine el principal).
+- Referencia visual: Figma Creator v3 — *Secondary resources block* (node 40008346:29625); componente UBITS **Complementary resources** (`components/complementary-resources.js`, `documentacion/componentes/complementary-resources.html`).
 
 ---
 
@@ -265,6 +367,13 @@ Al configurar una página, el usuario puede añadir uno de estos tipos (presenta
 - En el **selector de tipo de recurso** de la página, la persona elige la tarjeta **Video**.
 - **No** aparece primero un formulario fijo en el panel derecho: se abre un **modal** titulado **«Agregar video»**, con el mismo **criterio visual que otros flujos con IA** del Creator (cabecera con gradiente, **saldo de tokens** con icono de información, modal ancho).
 - Ese modal concentra **todas** las formas de aportar un video a la página: generación asistida por IA, enlace externo o archivo subido.
+
+### Variante de modal en producción (decisión de producto)
+
+Tras un **test A/B** entre dos experiencias de modal de video, el prototipo **cerró** a favor del modal **clásico** descrito en esta sección (**tres pestañas**: Video IA, enlace, subir; guión con modo **Generar con IA** / **Escribir manualmente** en la pestaña IA).
+
+- **En pantalla hoy:** solo la tarjeta **Video** abre esa variante. **No** hay segunda tarjeta «Video 2» ni atajo desde **Encuesta de satisfacción**.  
+- **Reserva:** existe en el repositorio una **variante alternativa** tipo **asistente por pasos** (avatar, guión en wizard, logo en pasos). Queda **sin disparador** en el selector hasta que producto la reactive. No debe documentarse como flujo activo para usuarios finales.
 
 ### Tres pestañas dentro del modal
 
@@ -315,9 +424,9 @@ El pie del modal muestra el botón que corresponde a la pestaña activa (por eje
 
 - El prototipo puede **degradarse** a un formulario **solo por enlace** embebido en el panel; es un respaldo, no el camino principal.
 
-### Próximos pasos de producto
+### Recursos complementarios
 
-- **Contenido complementario** debajo del video (p. ej. tarjetas para añadir texto o archivo descargable), cuando producto lo defina.
+- Tras montar el video, debajo puede mostrarse el bloque **Complementary resources** (ver sección **Recursos complementarios**).
 
 ---
 
@@ -492,11 +601,43 @@ En diapositivas **interactivas** (imagen con puntos, acordeón, pestañas, tarje
 
 ## Recurso: Texto
 
-### Comportamiento del panel derecho
+### Estado en el prototipo
+
+- La tarjeta **Texto** aparece en el **selector de ocho tipos**, pero **pulsarla aún no monta** el flujo en el panel derecho.  
+- Lo siguiente describe el **comportamiento objetivo** cuando el tipo esté cableado (alineado al design system).
+
+### Comportamiento del panel derecho (objetivo)
 
 - El panel derecho pasa a ser un **editor de texto enriquecido** (rich text).  
 - Debajo del editor: botón **Eliminar** con **modal de confirmación** (mismo patrón que el resto de recursos).  
-- Debajo: sección de **contenido complementario**; en este recurso **solo** se ofrece **Archivo descargable** (no la card de Texto, para evitar anidaciones no deseadas o según regla de producto ya definida).
+- Al cablear el flujo principal, el invite complementario usará variante **solo descargable** (no se ofrece otro texto en la misma página).  
+- En el **índice**, el icono de la página pasa a **texto** al confirmar el recurso.
+
+---
+
+## Recurso: Encuesta libre
+
+### Estado en el prototipo
+
+- Tarjeta **Encuesta libre** en el selector (posición 7 de la cuadrícula).  
+- **Clic sin acción:** no abre modal ni panel; flujo **pendiente** de definición de producto.
+
+### Comportamiento objetivo (cuando exista)
+
+- Misma familia que otros recursos: panel o modal según diseño, **Eliminar** con confirmación, icono de encuesta en el índice, estado **persistido por página** al cambiar de lección.
+
+---
+
+## Recurso: Encuesta de satisfacción
+
+### Estado en el prototipo
+
+- Tarjeta **Encuesta de satisfacción** en el selector (posición 8). Vuelve a mostrarse tras cerrar el test A/B de video (ya **no** abre la variante wizard de video).  
+- **Clic sin acción:** flujo **pendiente** (antes se probó enlazarla a otra UI de video; descartado al ganar el modal clásico).
+
+### Comportamiento objetivo (cuando exista)
+
+- Encuesta específica de **satisfacción** (distinta de **Encuesta libre** en reglas y plantilla). Detalle de pantallas y validación por definir con producto.
 
 ---
 
@@ -562,12 +703,12 @@ Tras recoger tema y reglas, el flujo llega a un **paso de confirmación** en el 
 
 ## Pendiente de documentar (próximos mensajes)
 
-- Detalle de **contenido complementario** en todos los recursos donde aplique.  
-- Flujos de: **Encuesta libre**. (**Video**, **PDF**, **SCORM**, **Embebido** y **Evaluación final** documentados arriba.)  
-- Paso **3 — Certificado** (contenido de pantalla más allá de la regla de bloqueo desde paso 2).  
-- Paso **4 — Publicación**.  
+- **Flujos a cablear en prototipo:** **Texto** (editor en panel), **Encuesta libre**, **Encuesta de satisfacción**.  
+- Paso **3 — Certificado:** contenido de pantalla y reglas propias del paso (más allá del bloqueo desde Recursos).  
+- Paso **4 — Publicación** y **navegación completa** del asistente (hoy Certificado/Publicación pueden quedar en aviso «próximamente» tras validar Recursos).  
 - Reglas de validación global (publicar, borradores, etc.) si aplica.  
-- Detalle de consumo SCORM por tipo de diapositiva (quizzes, hotspots, emparejamiento) más allá de lo ya descrito en **Recurso: SCORM**.
+- Detalle de **consumo** SCORM por tipo de diapositiva (quizzes, hotspots, emparejamiento) más allá de lo ya descrito en **Recurso: SCORM**.  
+- Si producto **reactiva** la variante wizard de video: documentar aquí como flujo alternativo o sustituto (hoy **reservada**, no expuesta).
 
 ---
 
@@ -579,4 +720,4 @@ Este documento **no** sustituye la **documentación de componentes UBITS** ni la
 
 ---
 
-*Última revisión: **SCORM:** etiquetas de diapositiva alineadas al modal (**Lista viñetas**, **Imagen interactiva**, **Emparejamiento**, etc.), etiquetas temáticas en contenido IA, **tag editable** en **Editar presentación**. Selección por tipos de diapositiva (checkbox). **Status panel**, **modal eliminar recurso**, logo portada/video, **eliminar diapositiva**.*
+*Última revisión: **Complementary resources** implementado (invite 3 variantes, orden de alta, RTE completo sin títulos, File Upload 256 MB sin toast de validación, Eliminar fuera de superficie). **Recursos:** 8 tipos; persistencia por página. **Video:** modal clásico. **SCORM**, **status panel**, eliminar recurso/página/sección.*

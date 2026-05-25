@@ -14,6 +14,7 @@ const DOCS_SIDEBAR_SECTIONS = [
     // Aprendizaje (alfabético por title)
     { id: 'card-content', title: 'Card content', group: 'aprendizaje' },
     { id: 'card-content-compact', title: 'Card content compact', group: 'aprendizaje' },
+    { id: 'complementary-resources', title: 'Complementary resources', group: 'aprendizaje' },
     { id: 'learn-question', title: 'Learn question', group: 'aprendizaje' },
     { id: 'learn-content-img-trailer', title: 'Learn content imagen y tráiler', group: 'aprendizaje' },
     { id: 'indice-creator', title: 'Indice creator', group: 'aprendizaje' },
@@ -298,6 +299,7 @@ function initDocsSidebar(activeSection) {
             'indice-creator': 'indice-creator.html',
             'paginas-creator': 'paginas-creator.html',
             'resources-card': 'resources-card.html',
+            'complementary-resources': 'complementary-resources.html',
             'resources-block': 'resources-block.html',
             'seccion-creator': 'seccion-creator.html',
             'checkbox': 'checkbox.html',

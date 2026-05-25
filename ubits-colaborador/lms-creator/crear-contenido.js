@@ -972,6 +972,192 @@
     /** Clave de la página actualmente visible en el resources-mount. */
     var CC_RECURSOS_CURRENT_PAGE_KEY = null;
 
+    function getRecursosComplementaryMount() {
+        return document.getElementById('crear-contenido-recursos-complementary-mount');
+    }
+
+    function isRecursosPrimarySelectorVisible(mainMount) {
+        if (!mainMount) return true;
+        if (mainMount.querySelector('.ubits-resources-block--default')) return true;
+        if (mainMount.querySelector('.ubits-resources-block--default-error')) return true;
+        if (mainMount.querySelector('.ubits-resources-block__grid')) return true;
+        /* Formularios intermedios (video/pdf/embebido vacíos) aún no son recurso principal montado */
+        if (mainMount.querySelector('[data-rb-slot]')) return true;
+        return false;
+    }
+
+    function detectRecursosPrimaryType(mainMount, pageKey) {
+        if (!mainMount || isRecursosPrimarySelectorVisible(mainMount)) return null;
+        var pk = pageKey != null ? String(pageKey) : '';
+        if (pk && isEvalPageKey(pk)) return 'evaluacion-final';
+        if (mainMount.querySelector('[data-cc-eval-root], .cc-eval-root')) return 'evaluacion-final';
+        if (mainMount.querySelector('.cc-video-resource')) return 'video';
+        if (mainMount.querySelector('[data-cc-pdf-js-viewer]')) return 'pdf';
+        if (mainMount.querySelector('.cc-scorm-resource')) return 'scorm';
+        if (mainMount.querySelector('.cc-embed-resource')) return 'embebido';
+        if (mainMount.querySelector('[data-cc-text-resource]')) return 'texto';
+        var st = pk ? CC_RECURSOS_PAGE_STATE[pk] : null;
+        if (st && st.primaryType) return st.primaryType;
+        return null;
+    }
+
+    function ensureRecursosPageState(pageKey) {
+        var pk = pageKey != null ? String(pageKey) : '';
+        if (!pk) return null;
+        if (!CC_RECURSOS_PAGE_STATE[pk]) {
+            CC_RECURSOS_PAGE_STATE[pk] = {};
+        }
+        return CC_RECURSOS_PAGE_STATE[pk];
+    }
+
+    function clearRecursosComplementaryState(pageKey) {
+        var st = ensureRecursosPageState(pageKey);
+        if (!st) return;
+        st.hasComplementaryText = false;
+        st.hasComplementaryDownload = false;
+        st.complementaryOrder = [];
+        delete st.complementaryMountHtml;
+    }
+
+    function syncComplementaryFlagsFromOrder(st) {
+        if (!st) return;
+        var order = Array.isArray(st.complementaryOrder) ? st.complementaryOrder : [];
+        st.hasComplementaryText = order.indexOf('texto') !== -1;
+        st.hasComplementaryDownload = order.indexOf('archivo-descargable') !== -1;
+    }
+
+    function pushComplementaryToOrder(st, kind) {
+        if (!st || !kind) return;
+        if (!Array.isArray(st.complementaryOrder)) st.complementaryOrder = [];
+        if (st.complementaryOrder.indexOf(kind) === -1) {
+            st.complementaryOrder.push(kind);
+        }
+        syncComplementaryFlagsFromOrder(st);
+    }
+
+    function removeComplementaryFromOrder(st, kind) {
+        if (!st || !kind) return;
+        if (!Array.isArray(st.complementaryOrder)) st.complementaryOrder = [];
+        st.complementaryOrder = st.complementaryOrder.filter(function (k) {
+            return k !== kind;
+        });
+        syncComplementaryFlagsFromOrder(st);
+    }
+
+    function getComplementaryRenderOrder(st) {
+        if (!st) return [];
+        var order = Array.isArray(st.complementaryOrder) ? st.complementaryOrder.slice() : [];
+        if (!order.length) {
+            if (st.hasComplementaryText) order.push('texto');
+            if (st.hasComplementaryDownload) order.push('archivo-descargable');
+        }
+        return order;
+    }
+
+    function setRecursosPrimaryType(pageKey, type) {
+        var st = ensureRecursosPageState(pageKey);
+        if (st) st.primaryType = type != null ? String(type) : null;
+    }
+
+    function initComplementaryFilledFields(compMount) {
+        if (!compMount) return;
+        if (typeof window.initRichTextEditor === 'function') {
+            compMount.querySelectorAll('[data-rich-text-editor]').forEach(function (rteRoot) {
+                if (rteRoot.id) {
+                    window.initRichTextEditor('#' + rteRoot.id);
+                }
+            });
+        }
+        /* File upload complementario: initComplementaryResources → initComplementaryDownloadFileUpload */
+    }
+
+    function renderCrearContenidoComplementary() {
+        var mainMount = document.getElementById('crear-contenido-recursos-resources-mount');
+        var compMount = getRecursosComplementaryMount();
+        if (!mainMount || !compMount) return;
+
+        if (mainMount.hidden || isRecursosPrimarySelectorVisible(mainMount)) {
+            compMount.hidden = true;
+            compMount.setAttribute('hidden', 'hidden');
+            compMount.innerHTML = '';
+            return;
+        }
+
+        var pk = CC_RECURSOS_CURRENT_PAGE_KEY != null ? String(CC_RECURSOS_CURRENT_PAGE_KEY) : '';
+        if (!pk) {
+            compMount.hidden = true;
+            compMount.setAttribute('hidden', 'hidden');
+            compMount.innerHTML = '';
+            return;
+        }
+
+        var primaryType = detectRecursosPrimaryType(mainMount, pk);
+        if (primaryType) setRecursosPrimaryType(pk, primaryType);
+
+        var st = ensureRecursosPageState(pk) || {};
+        syncComplementaryFlagsFromOrder(st);
+        var hasText = st.hasComplementaryText === true;
+        var hasDownload = st.hasComplementaryDownload === true;
+        var parts = [];
+        var safeKey = pk.replace(/[^a-zA-Z0-9_-]/g, '_');
+        var renderOrder = getComplementaryRenderOrder(st);
+
+        renderOrder.forEach(function (kind) {
+            if (kind === 'texto' && hasText && typeof window.complementaryResourcesTextFilledHtml === 'function') {
+                parts.push(
+                    window.complementaryResourcesTextFilledHtml({ editorRootId: 'cc-comp-text-' + safeKey })
+                );
+            }
+            if (
+                kind === 'archivo-descargable' &&
+                hasDownload &&
+                typeof window.complementaryResourcesDownloadFilledHtml === 'function'
+            ) {
+                parts.push(
+                    window.complementaryResourcesDownloadFilledHtml({
+                        uploadContainerId: 'cc-comp-dl-' + safeKey
+                    })
+                );
+            }
+        });
+
+        var inviteVariant =
+            typeof window.resolveComplementaryInviteVariant === 'function'
+                ? window.resolveComplementaryInviteVariant({
+                      primaryType: primaryType || st.primaryType || '',
+                      hasText: hasText,
+                      hasDownload: hasDownload
+                  })
+                : null;
+
+        if (inviteVariant && typeof window.complementaryResourcesInviteHtml === 'function') {
+            parts.push(window.complementaryResourcesInviteHtml({ variant: inviteVariant }));
+        }
+
+        if (!parts.length) {
+            compMount.hidden = true;
+            compMount.setAttribute('hidden', 'hidden');
+            compMount.innerHTML = '';
+            return;
+        }
+
+        compMount.innerHTML = parts.join('');
+        compMount.hidden = false;
+        compMount.removeAttribute('hidden');
+        if (typeof window.initComplementaryResources === 'function') {
+            window.initComplementaryResources(compMount);
+        }
+        initComplementaryFilledFields(compMount);
+    }
+
+    function hideRecursosComplementaryMount() {
+        var compMount = getRecursosComplementaryMount();
+        if (!compMount) return;
+        compMount.hidden = true;
+        compMount.setAttribute('hidden', 'hidden');
+        compMount.innerHTML = '';
+    }
+
     function revokeRecursosPdfBlobFromState(pageKey) {
         var pk = pageKey != null ? String(pageKey) : '';
         if (!pk) return;
@@ -1088,9 +1274,12 @@
         var html = buildCrearContenidoEmbedResourceHtml(embedInnerHtml);
         mount.innerHTML = html;
         if (CC_RECURSOS_CURRENT_PAGE_KEY) {
-            CC_RECURSOS_PAGE_STATE[String(CC_RECURSOS_CURRENT_PAGE_KEY)] = { html: html };
+            var pkEmb = String(CC_RECURSOS_CURRENT_PAGE_KEY);
+            var prevEmb = CC_RECURSOS_PAGE_STATE[pkEmb] || {};
+            CC_RECURSOS_PAGE_STATE[pkEmb] = Object.assign({}, prevEmb, { html: html, primaryType: 'embebido' });
         }
         syncRecursosEmbedPageIcon();
+        renderCrearContenidoComplementary();
     }
 
     function syncRecursosCargarButtonFromField(fieldInline, value) {
@@ -1164,10 +1353,13 @@
         var html = buildCrearContenidoPdfViewerShellHtml();
         mainMount.innerHTML = html;
         if (CC_RECURSOS_CURRENT_PAGE_KEY) {
-            CC_RECURSOS_PAGE_STATE[String(CC_RECURSOS_CURRENT_PAGE_KEY)] = {
+            var pkPdf = String(CC_RECURSOS_CURRENT_PAGE_KEY);
+            var prevPdf = CC_RECURSOS_PAGE_STATE[pkPdf] || {};
+            CC_RECURSOS_PAGE_STATE[pkPdf] = Object.assign({}, prevPdf, {
                 html: html,
-                pdfBlobUrl: url
-            };
+                pdfBlobUrl: url,
+                primaryType: 'pdf'
+            });
         }
         var viewerRoot = mainMount.querySelector('[data-cc-pdf-js-viewer]');
         if (viewerRoot) {
@@ -1192,6 +1384,7 @@
                 iconEl.className = window.paginasCreatorIconClass('pdf');
             }
         }
+        renderCrearContenidoComplementary();
     }
 
     function runCrearContenidoPdfUploadProgressAndRender(fuRoot, file, mainMount) {
@@ -1242,21 +1435,55 @@
         if (!pageKey) return;
         var key = String(pageKey);
         revokeRecursosPdfBlobFromState(key);
-        CC_RECURSOS_PAGE_STATE[key] = { html: html };
+        var prevSet = CC_RECURSOS_PAGE_STATE[key] || {};
+        var primaryFromHtml = 'video';
+        if (html.indexOf('cc-scorm-resource') !== -1) primaryFromHtml = 'scorm';
+        CC_RECURSOS_PAGE_STATE[key] = Object.assign({}, prevSet, { html: html, primaryType: primaryFromHtml });
         /* Si la página activa en el mount es la misma, actualizar el DOM */
         if (CC_RECURSOS_CURRENT_PAGE_KEY === key) {
             var rb = document.getElementById('crear-contenido-recursos-resources-mount');
             if (rb) rb.innerHTML = html;
+            renderCrearContenidoComplementary();
         }
     };
+
+    window.renderCrearContenidoComplementary = renderCrearContenidoComplementary;
 
     function isEvalPageKey(pageKey) {
         return !!(window._ccEvalPageKeys && pageKey && window._ccEvalPageKeys[String(pageKey)]);
     }
 
+    function readComplementaryOrderFromDom() {
+        var compMount = getRecursosComplementaryMount();
+        if (!compMount || compMount.hidden) return [];
+        var order = [];
+        compMount.querySelectorAll('[data-complementary-filled]').forEach(function (el) {
+            var kind = el.getAttribute('data-complementary-filled');
+            if (kind && order.indexOf(kind) === -1) order.push(kind);
+        });
+        return order;
+    }
+
+    function readComplementaryFlagsFromDom() {
+        var order = readComplementaryOrderFromDom();
+        return {
+            complementaryOrder: order,
+            hasComplementaryText: order.indexOf('texto') !== -1,
+            hasComplementaryDownload: order.indexOf('archivo-descargable') !== -1
+        };
+    }
+
     function snapshotCurrentRecursosPage() {
         var pk = CC_RECURSOS_CURRENT_PAGE_KEY;
-        if (!pk || isEvalPageKey(pk)) return;
+        if (!pk) return;
+        var compFlags = readComplementaryFlagsFromDom();
+        if (isEvalPageKey(pk)) {
+            var prevEval = CC_RECURSOS_PAGE_STATE[pk] || {};
+            CC_RECURSOS_PAGE_STATE[pk] = Object.assign({}, prevEval, compFlags, {
+                primaryType: 'evaluacion-final'
+            });
+            return;
+        }
         var rb = document.getElementById('crear-contenido-recursos-resources-mount');
         if (!rb) return;
         var prev = CC_RECURSOS_PAGE_STATE[pk] || {};
@@ -1265,7 +1492,11 @@
         if (pdfBlobUrl && html.indexOf('data-cc-pdf-js-viewer') !== -1) {
             html = buildCrearContenidoPdfViewerShellHtml();
         }
-        CC_RECURSOS_PAGE_STATE[pk] = { html: html, pdfBlobUrl: pdfBlobUrl };
+        CC_RECURSOS_PAGE_STATE[pk] = Object.assign({}, prev, compFlags, {
+            html: html,
+            pdfBlobUrl: pdfBlobUrl,
+            primaryType: prev.primaryType || detectRecursosPrimaryType(rb, pk)
+        });
     }
 
     function restoreRecursosPage(pageKey) {
@@ -1281,6 +1512,7 @@
         if (vr && saved.pdfBlobUrl && typeof window.mountCrearContenidoPdfViewer === 'function') {
             window.mountCrearContenidoPdfViewer(vr, saved.pdfBlobUrl);
         }
+        renderCrearContenidoComplementary();
         return true;
     }
 
@@ -1662,6 +1894,7 @@
         if (typeof window.initResourcesBlockFields === 'function') {
             window.initResourcesBlockFields(mount);
         }
+        hideRecursosComplementaryMount();
         var activeItemDel = document.querySelector(
             '#crear-contenido-recursos-indice-mount .ubits-paginas-creator__item.is-active'
         );
@@ -2206,6 +2439,7 @@
         if (typeof window.initResourcesBlockFields === 'function') {
             window.initResourcesBlockFields(mount);
         }
+        hideRecursosComplementaryMount();
     }
 
     function loadRecursosEmptyPanel() {
@@ -2223,6 +2457,7 @@
             rb.hidden = true;
             rb.setAttribute('hidden', 'hidden');
         }
+        hideRecursosComplementaryMount();
         var host = document.getElementById(CREAR_CONTENIDO_RECURSOS_EMPTY_HOST_ID);
         if (host) host.style.display = '';
         window.loadEmptyState(CREAR_CONTENIDO_RECURSOS_EMPTY_HOST_ID, {
@@ -2389,6 +2624,9 @@
                 beforeReplaceRecursosMountIfPdfShowing(mount);
                 if (typeof window.rcMountEvalForm === 'function') {
                     window.rcMountEvalForm(mount);
+                    if (CC_RECURSOS_CURRENT_PAGE_KEY) {
+                        setRecursosPrimaryType(CC_RECURSOS_CURRENT_PAGE_KEY, 'evaluacion-final');
+                    }
                     // Actualizar icono en el índice a "evaluacion" (sin pasos intermedios)
                     var activeItemEval = document.querySelector('#crear-contenido-recursos-indice-mount .ubits-paginas-creator__item.is-active');
                     if (activeItemEval) {
@@ -2397,6 +2635,7 @@
                             iconElEval.className = window.paginasCreatorIconClass('evaluacion');
                         }
                     }
+                    renderCrearContenidoComplementary();
                 } else {
                     beforeReplaceRecursosMountIfPdfShowing(mount);
                     mount.innerHTML =
@@ -2420,7 +2659,12 @@
                             beforeReplaceRecursosMountIfPdfShowing(mount);
                             /* Guardar en el estado de la página y renderizar */
                             if (CC_RECURSOS_CURRENT_PAGE_KEY) {
-                                CC_RECURSOS_PAGE_STATE[CC_RECURSOS_CURRENT_PAGE_KEY] = { html: html };
+                                var pkVid = String(CC_RECURSOS_CURRENT_PAGE_KEY);
+                                var prevVid = CC_RECURSOS_PAGE_STATE[pkVid] || {};
+                                CC_RECURSOS_PAGE_STATE[pkVid] = Object.assign({}, prevVid, {
+                                    html: html,
+                                    primaryType: 'video'
+                                });
                             }
                             mount.innerHTML = html;
                             /* Actualizar icono en el índice a "video" */
@@ -2431,6 +2675,7 @@
                                     iconEl.className = window.paginasCreatorIconClass('video');
                                 }
                             }
+                            renderCrearContenidoComplementary();
                         }
                     });
                 } else {
@@ -2536,6 +2781,7 @@
                 if (typeof window.initResourcesBlockFields === 'function') {
                     window.initResourcesBlockFields(mount);
                 }
+                hideRecursosComplementaryMount();
                 return;
             }
 
@@ -2607,6 +2853,14 @@
                                 '</div>';
                         }
                         
+                        if (CC_RECURSOS_CURRENT_PAGE_KEY) {
+                            var pkVl = String(CC_RECURSOS_CURRENT_PAGE_KEY);
+                            var prevVl = CC_RECURSOS_PAGE_STATE[pkVl] || {};
+                            CC_RECURSOS_PAGE_STATE[pkVl] = Object.assign({}, prevVl, {
+                                html: mount.innerHTML,
+                                primaryType: 'video'
+                            });
+                        }
                         // Actualizar icono en el índice a "video"
                         var activeItem = document.querySelector('#crear-contenido-recursos-indice-mount .ubits-paginas-creator__item.is-active');
                         if (activeItem) {
@@ -2615,6 +2869,7 @@
                                 iconEl.className = window.paginasCreatorIconClass('video');
                             }
                         }
+                        renderCrearContenidoComplementary();
 
                     } else {
                         // B. Enlace inválido -> variante error
@@ -2673,6 +2928,42 @@
         
         bindRecursosBlockInteractions();
         bindCrearContenidoResourcesBlockPdfChangeOnce();
+        bindCrearContenidoComplementaryInteractionsOnce();
+    }
+
+    var complementaryInteractionsBound = false;
+    function bindCrearContenidoComplementaryInteractionsOnce() {
+        if (complementaryInteractionsBound) return;
+        complementaryInteractionsBound = true;
+
+        document.addEventListener('ubits-complementary-resources-invite', function (ev) {
+            if (!document.getElementById('crear-contenido-root')) return;
+            var compMount = getRecursosComplementaryMount();
+            if (!compMount || !ev.target || !compMount.contains(ev.target)) return;
+            var d = ev.detail || {};
+            var pk = CC_RECURSOS_CURRENT_PAGE_KEY != null ? String(CC_RECURSOS_CURRENT_PAGE_KEY) : '';
+            if (!pk) return;
+            var st = ensureRecursosPageState(pk);
+            if (!st) return;
+            if (d.type === 'texto' || d.type === 'archivo-descargable') {
+                pushComplementaryToOrder(st, d.type);
+            }
+            renderCrearContenidoComplementary();
+        });
+
+        document.addEventListener('click', function (ev) {
+            var btn = ev.target.closest('[data-cc-eliminar-complementario]');
+            if (!btn || !document.getElementById('crear-contenido-root')) return;
+            var compMount = getRecursosComplementaryMount();
+            if (!compMount || !compMount.contains(btn)) return;
+            var pk = CC_RECURSOS_CURRENT_PAGE_KEY != null ? String(CC_RECURSOS_CURRENT_PAGE_KEY) : '';
+            if (!pk) return;
+            var st = ensureRecursosPageState(pk);
+            if (!st) return;
+            var kind = btn.getAttribute('data-cc-eliminar-complementario');
+            removeComplementaryFromOrder(st, kind);
+            renderCrearContenidoComplementary();
+        });
     }
 
     function initCrearContenidoPageRecursosStepOnce() {

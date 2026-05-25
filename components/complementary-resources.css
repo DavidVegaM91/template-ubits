@@ -1,0 +1,99 @@
+/**
+ * Complementary resources — bloque opcional bajo el recurso principal (LMS Creator).
+ * Figma Creator v3: Secondary resources block (node 40008346:29625).
+ *
+ * Variantes invite: both | download-only | text-only
+ * Requiere: ubits-colors, ubits-typography, fontawesome-icons, button.css, resources-card.css
+ *
+ * @see documentacion/componentes/complementary-resources.html
+ */
+
+.ubits-complementary-resources {
+    box-sizing: border-box;
+    width: 100%;
+    max-width: none;
+    font-family: var(--ubits-font-family-sans);
+}
+
+/* —— Invite (añadir recurso complementario) —— */
+.ubits-complementary-resources--invite {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: var(--padding-xl) var(--padding-2xl);
+    border-radius: var(--border-radius-lg);
+    background: var(--ubits-bg-1);
+    border: none;
+}
+
+.ubits-complementary-resources__title {
+    margin: 0 0 var(--gap-md);
+    width: 100%;
+    text-align: center;
+    color: var(--ubits-fg-1-medium);
+}
+
+.ubits-complementary-resources__grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--gap-lg);
+    width: 100%;
+    align-items: stretch;
+    justify-content: center;
+}
+
+.ubits-complementary-resources__grid .ubits-resources-card {
+    flex: 1 1 120px;
+    max-width: none;
+    min-width: 0;
+    height: 86px;
+    min-height: 86px;
+}
+
+/* —— Bloques ya añadidos (texto / descargable): superficie + Eliminar fuera (como resources-block--stack) —— */
+.ubits-complementary-resources--filled-stack {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: var(--gap-sm);
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.ubits-complementary-resources__surface {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-md);
+    padding: var(--padding-lg);
+    border-radius: var(--border-radius-lg);
+    background: var(--ubits-bg-1);
+    border: 1px solid var(--ubits-border-1);
+    box-sizing: border-box;
+}
+
+.ubits-complementary-resources__footer {
+    flex-shrink: 0;
+}
+
+.ubits-complementary-resources__filled-body {
+    width: 100%;
+    min-width: 0;
+}
+
+.ubits-complementary-resources__filled-body .ubits-rich-text-editor {
+    width: 100%;
+}
+
+.ubits-complementary-resources__upload-mount {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+}
+
+.ubits-complementary-resources__upload-mount .ubits-file-upload {
+    width: 100%;
+    max-width: 100%;
+}
