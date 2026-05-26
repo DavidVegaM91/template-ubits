@@ -1482,11 +1482,11 @@
                 var w = document.getElementById(containerId);
                 var ht = w && w.querySelector('.ubits-input-helper-text');
                 if (ht) {
-                    ht.textContent = '';
-                    ht.style.display = 'none';
+                    ht.textContent = 'Máximo ' + VIDEO_GUION_MAX_CHARS + ' caracteres';
+                    ht.style.display = '';
                 }
-                var cl = w && w.querySelector('.ubits-input-counter-label');
-                if (cl) cl.style.display = '';
+                var counter = w && w.querySelector('.ubits-input-counter');
+                if (counter) counter.style.display = '';
                 autosizeGuionTextarea();
                 refreshIaButtons();
             }
@@ -1579,10 +1579,8 @@
             ht.style.display = '';
             ht.textContent = message || 'Campo requerido';
         }
-        // La etiqueta fija «Máximo de caracteres» del Input no aplica a errores de mínimo / vacío;
-        // si no se oculta, aparece una segunda línea roja confusa junto al mensaje real.
-        var counterLabel = wrap && wrap.querySelector('.ubits-input-counter-label');
-        if (counterLabel) counterLabel.style.display = 'none';
+        var counter = wrap && wrap.querySelector('.ubits-input-counter');
+        if (counter) counter.style.display = 'none';
     }
 
     function focusGuionFieldAfterError() {

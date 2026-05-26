@@ -144,22 +144,37 @@ body.crear-contenido-app-open .ubits-dropdown-menu__content {
     z-index: 1201;
 }
 
-/* Modal «Editar sección»: input de título (look alineado a campo UBITS sin duplicar input.css en el modal) */
-.cc-sec-modal-title-input {
-    box-sizing: border-box;
+/* Modal «Editar sección»: misma tarjeta + RTE que paso Portada (.contenidos-creator-card--descripcion) */
+#cc-modal-editar-seccion #cc-sec-modal-title-mount {
     width: 100%;
-    min-height: 40px;
-    padding: var(--padding-sm) var(--padding-md);
-    border: 1px solid var(--ubits-border-1);
-    border-radius: var(--border-radius-sm);
-    background: var(--ubits-bg-1);
-    color: var(--ubits-fg-1-medium);
+    min-width: 0;
 }
 
-.cc-sec-modal-title-input:focus {
-    outline: none;
-    border-color: var(--ubits-accent-brand);
-    box-shadow: 0 0 0 2px var(--ubits-focus);
+#cc-modal-editar-seccion .contenidos-creator-card--descripcion {
+    flex: 0 1 auto;
+    min-height: 0;
+}
+
+#cc-modal-editar-seccion .contenidos-creator-card--descripcion .ubits-rich-text-editor {
+    width: 100%;
+    min-height: 0;
+}
+
+#cc-modal-editar-seccion .contenidos-creator-card--descripcion .ubits-rich-text-editor__label-row,
+#cc-modal-editar-seccion .contenidos-creator-card--descripcion .ubits-rich-text-editor__toolbar {
+    flex-shrink: 0;
+}
+
+#cc-modal-editar-seccion .contenidos-creator-card--descripcion .ubits-rich-text-editor__editor-shell {
+    flex: 0 1 auto;
+    min-height: 120px;
+    max-height: min(280px, 45vh);
+    resize: vertical;
+    overflow-y: auto;
+    border: none;
+    border-radius: var(--border-radius-none);
+    background: transparent;
+    box-shadow: none;
 }
 
 /* Pasos (Portada vs Recursos) */
@@ -244,7 +259,7 @@ body.crear-contenido-app-open .ubits-dropdown-menu__content {
     min-height: min(360px, 50vh);
     background: var(--ubits-bg-1);
     border: 1px solid var(--ubits-border-1);
-    border-radius: var(--border-radius-md);
+    border-radius: var(--border-radius-lg);
     display: flex;
     align-items: center;
     justify-content: center;

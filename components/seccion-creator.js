@@ -11,6 +11,12 @@
     var _sectionMenuOpenAnchor = null;
     var SEC_ACTIVATE_DELAY_MS = 300;
     var SEC_DOUBLE_TAP_MS = 400;
+    var SEC_TITLE_MAX_LEN = 60;
+    var SEC_TITLE_MIN_LEN = 2;
+
+    function isValidSeccionCreatorTitle(raw) {
+        return String(raw || '').trim().length >= SEC_TITLE_MIN_LEN;
+    }
 
     function escapeHtml(s) {
         return String(s)
@@ -90,6 +96,8 @@
         input.type = 'text';
         input.className = 'ubits-seccion-creator__title-edit-input';
         input.value = current;
+        input.maxLength = SEC_TITLE_MAX_LEN;
+        input.setAttribute('maxlength', String(SEC_TITLE_MAX_LEN));
         input.setAttribute('data-seccion-creator-key', sectionKey != null ? String(sectionKey) : '');
         var finished = false;
 
@@ -102,7 +110,11 @@
             finished = true;
             inner.classList.remove('ubits-seccion-creator__title-edit-wrap');
             var newT = input.value != null ? String(input.value) : '';
-            var display = save ? newT : current;
+            var trimmed = newT.trim();
+            if (save && !isValidSeccionCreatorTitle(trimmed)) {
+                save = false;
+            }
+            var display = save ? trimmed : current;
             var span = document.createElement('span');
             span.className = 'ubits-seccion-creator__title ' + titleTypoClasses();
             span.textContent = display;
@@ -117,7 +129,7 @@
                 ensureRootId(mount);
                 global.initTooltip('#' + mount.id + ' [data-tooltip]');
             }
-            if (save && typeof onSave === 'function') onSave(display.trim());
+            if (save && typeof onSave === 'function') onSave(display);
             if (save) {
                 var doc = global.document || document;
                 doc.dispatchEvent(
@@ -125,13 +137,19 @@
                         bubbles: true,
                         detail: {
                             sectionKey: sectionKey,
-                            newTitle: newT.trim(),
+                            newTitle: display,
                             section: sectionEl
                         }
                     })
                 );
             }
         }
+
+        input.addEventListener('input', function () {
+            if (input.value.length > SEC_TITLE_MAX_LEN) {
+                input.value = input.value.slice(0, SEC_TITLE_MAX_LEN);
+            }
+        });
 
         input.addEventListener('click', function (e) {
             e.stopPropagation();

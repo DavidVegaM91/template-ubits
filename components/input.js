@@ -203,6 +203,7 @@
  * 2. **Iconos no aparecen**: Importar `fontawesome-icons.css`
  * 3. **Estilos incorrectos**: Importar `components/input.css`
  * 4. **Contador no funciona**: Verificar `showCounter: true` y `maxLength`
+ * 5. **Contador (`showCounter: true`)**: Una fila con helper «Máximo X caracteres» + `n/max`. No duplicar con otro `helperText` sobre el máximo. En `invalid`, mensaje de error en el helper y ocultar `n/max` hasta `setState('default')`.
  * 
  * ### Debug:
  * ```javascript
@@ -1684,21 +1685,24 @@ function createInput(options = {}) {
     
     inputHTML += '</div>';
 
-    // Helper text y character counter (independientes)
-    if (effectiveShowHelper || showCounter) {
+    // Helper + contador: con showCounter, una sola fila — helper «Máximo X caracteres» + n/max (sin duplicar etiquetas).
+    if (showCounter) {
+        const maxCharsHelper = `Máximo ${maxLength} caracteres`;
         inputHTML += '<div class="ubits-input-helper">';
-        
-        if (effectiveShowHelper && effectiveHelperText) {
+        if (isInvalidInit) {
             inputHTML += `<span class="ubits-input-helper-text">${effectiveHelperText}</span>`;
-        }
-        
-        if (showCounter) {
+        } else {
             inputHTML += '<div class="ubits-input-helper-row">';
-            inputHTML += '<span class="ubits-input-counter-label">Máximo de caracteres</span>';
+            inputHTML += `<span class="ubits-input-helper-text">${maxCharsHelper}</span>`;
             inputHTML += `<span class="ubits-input-counter">0/${maxLength}</span>`;
             inputHTML += '</div>';
         }
-        
+        inputHTML += '</div>';
+    } else if (effectiveShowHelper || effectiveHelperText) {
+        inputHTML += '<div class="ubits-input-helper">';
+        if (effectiveShowHelper && effectiveHelperText) {
+            inputHTML += `<span class="ubits-input-helper-text">${effectiveHelperText}</span>`;
+        }
         inputHTML += '</div>';
     }
 
@@ -2005,6 +2009,16 @@ function createInput(options = {}) {
                 }
                 if (!String(helperTextEl.textContent || '').trim()) {
                     helperTextEl.textContent = 'Campo requerido';
+                }
+                if (showCounter && counterElement) {
+                    counterElement.style.display = 'none';
+                }
+            } else if (showCounter && counterElement) {
+                counterElement.style.display = '';
+                const helperTextEl = container.querySelector('.ubits-input-helper-text');
+                if (helperTextEl) {
+                    helperTextEl.textContent = `Máximo ${maxLength} caracteres`;
+                    helperTextEl.style.display = '';
                 }
             }
         }

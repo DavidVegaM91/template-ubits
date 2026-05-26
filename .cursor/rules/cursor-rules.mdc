@@ -209,6 +209,11 @@ createInput({
 </script>
 ```
 
+**🚨 CRITICAL — Input con contador (`showCounter: true`)**
+- ✅ El componente renderiza **una fila**: helper **«Máximo X caracteres»** (izquierda) + contador **`n/X`** (derecha). No hace falta `showHelper` ni `helperText` manual sobre el máximo.
+- ❌ **NUNCA** duplicar otro helper con el mismo mensaje ni la etiqueta antigua «Máximo de caracteres».
+- ✅ Error de validación: `setState('invalid')` + texto en `.ubits-input-helper-text` (p. ej. «Mínimo 2 caracteres»); el `n/X` se oculta hasta `setState('default')`.
+
 #### **Card Content Component (loadCardContent() function):**
 ```html
 <!-- CSS Required -->
@@ -1425,7 +1430,7 @@ createInput({
 
 **Features:**
 - Iconos FontAwesome (left/right) con posicionamiento automático
-- Contador de caracteres independiente del helper text
+- Contador de caracteres: con `showCounter: true`, helper fijo **«Máximo X caracteres»** + `n/X` en la misma fila (ver regla crítica arriba)
 - Texto mandatory/optional (obligatorio/opcional)
 - **Scroll infinito automático** en SELECT para listas largas (50+ opciones)
 - **Loading visual** con spinner durante la carga

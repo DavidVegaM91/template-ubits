@@ -958,6 +958,9 @@
     var recursosSectionMeta = {};
     var CC_MODAL_DISABLE_SEC = 'cc-modal-deshabilitar-secciones';
     var CC_MODAL_EDIT_SEC = 'cc-modal-editar-seccion';
+    var CC_SECTION_TITLE_MIN_LEN = 2;
+    var CC_SECTION_TITLE_MAX_LEN = 60;
+    var CC_SECTION_TITLE_HELPER_INVALID = 'Mínimo 2 caracteres';
     var CC_MODAL_DELETE_SEC = 'cc-modal-eliminar-seccion';
     var CC_MODAL_DELETE_RECURSO = 'cc-modal-eliminar-recurso';
     var CC_MODAL_DELETE_PAGINA = 'cc-modal-eliminar-pagina';
@@ -2058,22 +2061,38 @@
     }
 
     function getRteModalBodyFragment() {
+        var toolbarHtml =
+            typeof window.richTextEditorToolbarAndFileInputHtml === 'function'
+                ? window.richTextEditorToolbarAndFileInputHtml()
+                : '';
         return (
-            '<div class="cc-sec-modal-rte-host ubits-rich-text-editor" id="cc-sec-modal-rte-root" data-rich-text-editor>' +
+            '<div class="contenidos-creator-card contenidos-creator-card--descripcion">' +
+            '<div id="cc-sec-modal-rte-root" class="ubits-rich-text-editor" data-rich-text-editor>' +
             '<div class="ubits-rich-text-editor__label-row">' +
             '<p class="ubits-rich-text-editor__label ubits-body-sm-semibold">Descripción</p>' +
             '<p class="ubits-rich-text-editor__hint ubits-body-xs-regular">(Opcional)</p>' +
             '</div>' +
-            '<div class="ubits-rich-text-editor__toolbar" role="toolbar" aria-label="Formato">' +
-            '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" data-rich-cmd="bold" aria-label="Negrita"><i class="fas fa-bold"></i></button>' +
-            '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" data-rich-cmd="italic" aria-label="Cursiva"><i class="fas fa-italic"></i></button>' +
-            '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" data-rich-cmd="underline" aria-label="Subrayado"><i class="fas fa-underline"></i></button>' +
-            '</div>' +
-            '<input type="file" class="ubits-rich-text-editor__file" accept="image/*" tabindex="-1" aria-hidden="true">' +
+            toolbarHtml +
             '<div class="ubits-rich-text-editor__editor-shell">' +
-            '<div class="ubits-rich-text-editor__field ubits-body-md-regular is-empty" contenteditable="true" role="textbox" aria-multiline="true" data-placeholder="Descripción de la sección"></div>' +
-            '</div></div>'
+            '<div class="ubits-rich-text-editor__field ubits-body-md-regular is-empty" contenteditable="true" role="textbox" aria-multiline="true" data-placeholder="Añade una descripción para la sección aquí"></div>' +
+            '</div></div></div>'
         );
+    }
+
+    function isCcSectionTitleValid(raw) {
+        return String(raw || '').trim().length >= CC_SECTION_TITLE_MIN_LEN;
+    }
+
+    function syncCcEditSecTitleInputChrome(overlayEl, valid, titleInputApi) {
+        var mount = overlayEl && overlayEl.querySelector('#cc-sec-modal-title-mount');
+        if (!mount || !titleInputApi || typeof titleInputApi.setState !== 'function') return;
+        if (!valid) {
+            titleInputApi.setState('invalid');
+            var helperTextEl = mount.querySelector('.ubits-input-helper-text');
+            if (helperTextEl) helperTextEl.textContent = CC_SECTION_TITLE_HELPER_INVALID;
+        } else {
+            titleInputApi.setState('default');
+        }
     }
 
     function openCrearContenidoEditSectionModal(sectionKey, titleText, descriptionHtml) {
@@ -2086,10 +2105,7 @@
             title: 'Editar sección',
             bodyHtml:
                 '<div class="cc-sec-modal-fields" style="display:flex;flex-direction:column;gap:var(--gap-lg);">' +
-                '<div>' +
-                '<label class="ubits-body-sm-semibold" for="cc-sec-modal-title" style="display:block;margin-bottom:var(--gap-sm);color:var(--ubits-fg-1-high);">Título de la sección</label>' +
-                '<input type="text" id="cc-sec-modal-title" class="cc-sec-modal-title-input ubits-body-md-regular" maxlength="180" autocomplete="off" aria-required="true" />' +
-                '</div>' +
+                '<div id="cc-sec-modal-title-mount"></div>' +
                 '<div>' +
                 getRteModalBodyFragment() +
                 '</div></div>',
@@ -2101,10 +2117,26 @@
         });
         var ov = document.getElementById(CC_MODAL_EDIT_SEC);
         if (!ov) return;
-        var titleInp = ov.querySelector('#cc-sec-modal-title');
         var saveBtn = ov.querySelector('#cc-sec-modal-save');
         var cancelBtn = ov.querySelector('#cc-sec-modal-cancel');
-        if (titleInp) titleInp.value = initialTitle;
+        var titleInputApi = null;
+        if (typeof window.createInput === 'function') {
+            titleInputApi = window.createInput({
+                containerId: 'cc-sec-modal-title-mount',
+                label: 'Título de la sección',
+                placeholder: 'Escribe el título de la sección',
+                size: 'md',
+                mandatory: true,
+                mandatoryType: 'obligatorio',
+                showHelper: false,
+                showCounter: true,
+                maxLength: CC_SECTION_TITLE_MAX_LEN,
+                value: initialTitle,
+                onChange: function () {
+                    syncCcEditSecModalForm();
+                }
+            });
+        }
         var rteRoot = ov.querySelector('#cc-sec-modal-rte-root');
         if (rteRoot) {
             rteRoot.removeAttribute('data-rich-text-initialized');
@@ -2120,13 +2152,15 @@
                 ? window.getRichTextHtml(rteRoot)
                 : '';
         }
-        function updateSaveEnabled() {
-            var t = titleInp ? String(titleInp.value || '').trim() : '';
+        function syncCcEditSecModalForm() {
+            var t = titleInputApi ? String(titleInputApi.getValue() || '') : '';
+            var trimmed = t.trim();
+            var valid = isCcSectionTitleValid(t);
             var dirty =
-                t !== initialTitle ||
+                trimmed !== initialTitle ||
                 String(currentDescHtml()).trim() !== String(initialDesc || '').trim();
+            syncCcEditSecTitleInputChrome(ov, valid, titleInputApi);
             if (saveBtn) {
-                var valid = t.length > 0;
                 saveBtn.disabled = !dirty || !valid;
                 saveBtn.setAttribute('aria-disabled', saveBtn.disabled ? 'true' : 'false');
             }
@@ -2134,27 +2168,19 @@
         function closeEdit() {
             window.closeModal(CC_MODAL_EDIT_SEC);
         }
-        if (titleInp) {
-            titleInp.addEventListener('input', updateSaveEnabled);
-        }
         if (rteRoot) {
             var ed = rteRoot.querySelector('.ubits-rich-text-editor__field');
             if (ed) {
-                ed.addEventListener('input', updateSaveEnabled);
+                ed.addEventListener('input', syncCcEditSecModalForm);
             }
         }
-        updateSaveEnabled();
+        syncCcEditSecModalForm();
         if (cancelBtn) cancelBtn.addEventListener('click', closeEdit);
         if (saveBtn) {
             saveBtn.addEventListener('click', function () {
-                var t = titleInp ? String(titleInp.value || '').trim() : '';
-                if (!t) {
-                    if (typeof window.showToast === 'function') {
-                        window.showToast('warning', 'El título de la sección es obligatorio.', {
-                            containerId: 'ubits-toast-container',
-                            duration: 3000
-                        });
-                    }
+                var t = titleInputApi ? String(titleInputApi.getValue() || '').trim() : '';
+                if (!isCcSectionTitleValid(t)) {
+                    syncCcEditSecModalForm();
                     return;
                 }
                 var desc = currentDescHtml();
