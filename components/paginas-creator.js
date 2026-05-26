@@ -858,10 +858,10 @@
             '>' +
             '<span class="ubits-paginas-creator__rail" aria-hidden="true"></span>' +
             '<span class="ubits-paginas-creator__icon-wrap ubits-paginas-creator__drag-handle" draggable="true" aria-label="Arrastrar para reordenar" data-tooltip="Arrastrar para reordenar" data-tooltip-delay="1000">' +
-            '<i class="ubits-paginas-creator__type-icon ' +
+            '<span class="ubits-paginas-creator__type-icon" aria-hidden="true"><i class="' +
             paginasCreatorIconClass(tipo) +
-            '" aria-hidden="true"></i>' +
-            '<i class="far fa-grip-vertical ubits-paginas-creator__drag-icon" aria-hidden="true"></i></span>' +
+            '"></i></span>' +
+            '<span class="ubits-paginas-creator__drag-icon" aria-hidden="true"><i class="far fa-grip-vertical"></i></span></span>' +
             '<div class="ubits-paginas-creator__label-wrap">' +
             '<span class="ubits-paginas-creator__label ubits-body-sm-semibold">' +
             escapeHtml(labelTrim) +

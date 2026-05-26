@@ -110,7 +110,15 @@
     cursor: grabbing;
 }
 
-/* Hover en el handle: icono de tipo → grip (pista de reordenar por arrastre) */
+/* Hover en el handle: icono de tipo → grip (pista de reordenar por arrastre).
+   Clases en <span>, no en <i>: FontAwesome solo en el <i> (ver reglas UBITS / paginas-creator.js). */
+.ubits-paginas-creator__type-icon,
+.ubits-paginas-creator__drag-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
 .ubits-paginas-creator__drag-icon {
     display: none;
 }
@@ -122,7 +130,7 @@
 
 .ubits-paginas-creator__drag-handle:hover .ubits-paginas-creator__drag-icon,
 .ubits-paginas-creator__drag-handle:focus-visible .ubits-paginas-creator__drag-icon {
-    display: block;
+    display: inline-flex;
 }
 
 .ubits-paginas-creator__item.is-active .ubits-paginas-creator__drag-handle:hover .ubits-paginas-creator__drag-icon,
