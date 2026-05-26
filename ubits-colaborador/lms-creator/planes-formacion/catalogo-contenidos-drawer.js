@@ -247,8 +247,24 @@
 
     global.CATALOGO_CURSOS_DRAWER = buildMerged();
 
-    global.refreshCatalogoContenidosDrawer = function () {
-        global.CATALOGO_CURSOS_DRAWER = buildMerged();
+  /**
+   * @param {{ excludeRutas?: boolean, excludeTipos?: string[] }} [opts]
+   * excludeRutas: quita «Ruta de aprendizaje» (flujo crear-ruta).
+   */
+    global.refreshCatalogoContenidosDrawer = function (opts) {
+        opts = opts || {};
+        var merged = buildMerged();
+        if (opts.excludeRutas) {
+            merged = merged.filter(function (c) {
+                return c.type !== 'Ruta de aprendizaje';
+            });
+        }
+        if (opts.excludeTipos && opts.excludeTipos.length) {
+            merged = merged.filter(function (c) {
+                return opts.excludeTipos.indexOf(c.type) === -1;
+            });
+        }
+        global.CATALOGO_CURSOS_DRAWER = merged;
         return global.CATALOGO_CURSOS_DRAWER;
     };
 })(typeof window !== 'undefined' ? window : this);

@@ -23,6 +23,23 @@
     var ACTIVATE_DELAY_MS = 300;
     var DOUBLE_TAP_MS = 400;
 
+    /**
+     * El handle lleva draggable="true"; sin esto el navegador solo muestra el icono ⋮⋮ al arrastrar.
+     */
+    function setNativeDragImageFromRow(dataTransfer, rowEl, clientX, clientY) {
+        if (!dataTransfer || !rowEl) return;
+        var rect = rowEl.getBoundingClientRect();
+        var ox = Math.max(0, Math.min(rect.width, clientX - rect.left));
+        var oy = Math.max(0, Math.min(rect.height, clientY - rect.top));
+        try {
+            dataTransfer.setDragImage(rowEl, ox, oy);
+        } catch (_) {
+            try {
+                dataTransfer.setDragImage(rowEl, rect.width / 2, rect.height / 2);
+            } catch (_2) {}
+        }
+    }
+
     var TIPO_ICONS = {
         'blank-page': 'fa-file',
         video: 'fa-video',
@@ -679,7 +696,6 @@
             clearActivateTimeout(root);
             clearDragVisualState();
             root._ubitsPaginasDraggingItem = item;
-            item.classList.add('is-dragging');
             setBodyDraggingSuppressed(true);
             if (typeof global.hideTooltip === 'function') {
                 global.hideTooltip();
@@ -687,9 +703,11 @@
             try {
                 if (e.dataTransfer) {
                     e.dataTransfer.effectAllowed = 'move';
+                    setNativeDragImageFromRow(e.dataTransfer, item, e.clientX, e.clientY);
                     e.dataTransfer.setData('text/plain', item.getAttribute('data-paginas-creator-key') || '');
                 }
             } catch (_) {}
+            item.classList.add('is-dragging');
         });
 
         root.addEventListener('dragover', function (e) {
@@ -840,9 +858,10 @@
             '>' +
             '<span class="ubits-paginas-creator__rail" aria-hidden="true"></span>' +
             '<span class="ubits-paginas-creator__icon-wrap ubits-paginas-creator__drag-handle" draggable="true" aria-label="Arrastrar para reordenar" data-tooltip="Arrastrar para reordenar" data-tooltip-delay="1000">' +
-            '<i class="' +
+            '<i class="ubits-paginas-creator__type-icon ' +
             paginasCreatorIconClass(tipo) +
-            '"></i></span>' +
+            '" aria-hidden="true"></i>' +
+            '<i class="far fa-grip-vertical ubits-paginas-creator__drag-icon" aria-hidden="true"></i></span>' +
             '<div class="ubits-paginas-creator__label-wrap">' +
             '<span class="ubits-paginas-creator__label ubits-body-sm-semibold">' +
             escapeHtml(labelTrim) +

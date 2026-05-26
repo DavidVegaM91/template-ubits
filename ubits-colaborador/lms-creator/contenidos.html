@@ -169,6 +169,7 @@
     <script src="../../bd-master/bd-contenidos-fiqsha.js"></script>
     <script src="../../components/avatar.js"></script>
     <script src="../../components/dropdown-menu.js"></script>
+    <script src="./contenidos-crear-menu.js"></script>
     <script src="../../components/paginas-creator.js"></script>
     <script src="../../components/seccion-creator.js"></script>
     <script src="../../components/indice-creator.js"></script>
@@ -876,12 +877,15 @@
                     breadcrumbItems: [],
                     primaryButton: {
                         text: 'Crear contenido',
-                        icon: 'fa-plus',
-                        onClick: function () {
-                            try {
-                                sessionStorage.setItem('ubits-cc-promo-agentes-pending', '1');
-                            } catch (_ePromoPending) {}
-                            window.location.href = 'crear-contenido.html';
+                        icon: 'fa-angle-down',
+                        iconRight: true,
+                        onClick: function (e) {
+                            if (e && e.preventDefault) e.preventDefault();
+                            if (e && e.stopPropagation) e.stopPropagation();
+                            var btn = e && e.currentTarget ? e.currentTarget : null;
+                            if (typeof window.openContenidosCrearMenu === 'function') {
+                                window.openContenidosCrearMenu(btn);
+                            }
                         }
                     }
                 });

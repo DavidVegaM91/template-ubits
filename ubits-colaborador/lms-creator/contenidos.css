@@ -2,6 +2,19 @@
    LMS Creator — Contenidos (lista / home Creator)
    ======================================== */
 
+/* Menú Crear contenido / Crear ruta (header-product) */
+.page-contenidos-creator #contenidos-crear-menu-overlay.ubits-dropdown-menu__overlay {
+    z-index: 1102;
+}
+
+.page-contenidos-creator #contenidos-crear-menu-overlay .ubits-dropdown-menu__content {
+    z-index: 1103;
+}
+
+.page-contenidos-creator #contenidos-crear-menu-overlay .ubits-dropdown-menu__option-text {
+    white-space: nowrap;
+}
+
 /* Sin tarjeta: el layout LMS añade fondo/padding al hijo de .section-single; aquí se anula. */
 .page-contenidos-creator .section-single--contenidos > .widget-contenidos-creator {
     background: transparent !important;

@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="../../images/Ubits-logo-dark.svg">
+    <title>Crear ruta de aprendizaje - UBITS LMS Creator</title>
+
+    <link rel="stylesheet" href="../../general-styles/ubits-colors.css">
+    <link rel="stylesheet" href="../../general-styles/styles.css">
+    <link rel="stylesheet" href="../../general-styles/fontawesome-icons.css">
+    <link rel="stylesheet" href="../../general-styles/ubits-typography.css">
+    <link rel="stylesheet" href="../../components/button.css">
+    <link rel="stylesheet" href="../../components/chip.css">
+    <link rel="stylesheet" href="../../components/ia-button.css">
+    <link rel="stylesheet" href="../../components/badge-tag.css">
+    <link rel="stylesheet" href="../../components/status-tag.css">
+    <link rel="stylesheet" href="../../components/save-indicator.css">
+    <link rel="stylesheet" href="../../components/tooltip.css">
+    <link rel="stylesheet" href="../../components/modal.css">
+    <link rel="stylesheet" href="../../components/input.css">
+    <link rel="stylesheet" href="../../components/empty-state.css">
+    <link rel="stylesheet" href="../../components/toast.css">
+    <link rel="stylesheet" href="../../components/stepper.css">
+    <link rel="stylesheet" href="../../components/learn-content-img-trailer.css">
+    <link rel="stylesheet" href="../../components/rich-text-editor.css">
+    <link rel="stylesheet" href="../../components/radio-button.css">
+    <link rel="stylesheet" href="../../components/dropdown-menu.css">
+    <link rel="stylesheet" href="../../components/tab.css">
+    <link rel="stylesheet" href="../../components/file-upload.css">
+    <link rel="stylesheet" href="../../components/ia-loader.css">
+    <link rel="stylesheet" href="../../components/ai-panel.css">
+    <link rel="stylesheet" href="../../general-styles/ubits-ia-chat.css">
+    <link rel="stylesheet" href="../../components/drawer.css">
+    <link rel="stylesheet" href="../../components/card-content-compact.css">
+    <link rel="stylesheet" href="../../components/inline-edit.css">
+    <link rel="stylesheet" href="../../general-styles/ubits-ia-appearance.css">
+    <link rel="stylesheet" href="../../general-styles/layout-immersive.css">
+    <link rel="stylesheet" href="./crear-contenido.css">
+    <link rel="stylesheet" href="./video-recurso-modal.css">
+    <link rel="stylesheet" href="./portada-imagen-modal.css">
+    <link rel="stylesheet" href="./crear-ruta.css">
+    <link rel="stylesheet" href="./planes-formacion/crear-plan-contenidos.css">
+</head>
+<body data-theme="light" class="no-subnav page-layout-immersive page-crear-ruta">
+    <div class="tooltip" id="tooltip"></div>
+    <div id="ubits-toast-container"></div>
+
+    <div class="ubits-layout-immersive" id="crear-ruta-root">
+        <header class="ubits-layout-immersive__header" role="banner">
+            <div class="ubits-layout-immersive__header-inner">
+                <div class="ubits-layout-immersive__leading">
+                    <div class="ubits-layout-immersive__title-row">
+                        <span class="ubits-body-md-bold ubits-layout-immersive__title">Crear ruta de aprendizaje</span>
+                        <span class="ubits-status-tag ubits-status-tag--sm ubits-status-tag--info">
+                            <span class="ubits-status-tag__text">Borrador</span>
+                        </span>
+                        <span id="crear-ruta-save-indicator" class="ubits-layout-immersive__save-slot"></span>
+                    </div>
+                </div>
+                <a href="contenidos.html" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" aria-label="Volver a Contenidos" data-tooltip="Salir del proceso" data-tooltip-delay="1000"><i class="far fa-times"></i></a>
+            </div>
+        </header>
+
+        <main class="ubits-layout-immersive__main" id="crear-ruta-main" tabindex="-1">
+            <div class="crear-contenido-editor-workspace ubits-layout-immersive__stage">
+                <div class="crear-contenido-editor__rail">
+                    <div class="ubits-stepper__vertical-frame ubits-stepper__vertical-frame--creator-rail is-collapsed" id="crear-ruta-stepper-frame">
+                        <nav class="ubits-stepper__vertical-nav" aria-label="Pasos de creación">
+                            <ol class="ubits-stepper ubits-stepper--vertical" id="crear-ruta-stepper-ol">
+                                <li class="ubits-stepper__step ubits-stepper__step--active" data-step-label="Portada" aria-current="step">
+                                    <span class="ubits-stepper__mark" aria-hidden="true"><span class="ubits-stepper__mark-num">1</span><i class="far fa-check" aria-hidden="true"></i></span>
+                                    <span class="ubits-stepper__label">Portada</span>
+                                </li>
+                                <li class="ubits-stepper__step ubits-stepper__step--pending" data-step-label="Contenidos">
+                                    <span class="ubits-stepper__mark" aria-hidden="true"><span class="ubits-stepper__mark-num">2</span><i class="far fa-check" aria-hidden="true"></i></span>
+                                    <span class="ubits-stepper__label">Contenidos</span>
+                                </li>
+                                <li class="ubits-stepper__step ubits-stepper__step--pending" data-step-label="Certificado">
+                                    <span class="ubits-stepper__mark" aria-hidden="true"><span class="ubits-stepper__mark-num">3</span><i class="far fa-check" aria-hidden="true"></i></span>
+                                    <span class="ubits-stepper__label">Certificado</span>
+                                </li>
+                                <li class="ubits-stepper__step ubits-stepper__step--pending" data-step-label="Publicación">
+                                    <span class="ubits-stepper__mark" aria-hidden="true"><span class="ubits-stepper__mark-num">4</span><i class="far fa-check" aria-hidden="true"></i></span>
+                                    <span class="ubits-stepper__label">Publicación</span>
+                                </li>
+                            </ol>
+                        </nav>
+                        <div class="ubits-stepper__vertical-footer">
+                            <button type="button" class="nav-button ubits-stepper__vertical-toggle" id="crear-ruta-stepper-toggle" aria-expanded="false" aria-label="Expandir la lista de pasos">
+                                <i class="far fa-angles-right" aria-hidden="true"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <nav class="crear-contenido-stepper-mobile" aria-label="Pasos de creación">
+                        <ol class="ubits-stepper ubits-stepper--horizontal ubits-stepper--horizontal-compact" id="crear-ruta-stepper-ol-mobile">
+                            <li class="ubits-stepper__step ubits-stepper__step--active" data-step-label="Portada" aria-current="step">
+                                <span class="ubits-stepper__mark" aria-hidden="true"><span class="ubits-stepper__mark-num">1</span><i class="far fa-check" aria-hidden="true"></i></span>
+                                <span class="ubits-stepper__label">Portada</span>
+                            </li>
+                            <li class="ubits-stepper__rail" aria-hidden="true"></li>
+                            <li class="ubits-stepper__step ubits-stepper__step--pending" data-step-label="Contenidos">
+                                <span class="ubits-stepper__mark" aria-hidden="true"><span class="ubits-stepper__mark-num">2</span><i class="far fa-check" aria-hidden="true"></i></span>
+                                <span class="ubits-stepper__label">Contenidos</span>
+                            </li>
+                            <li class="ubits-stepper__rail" aria-hidden="true"></li>
+                            <li class="ubits-stepper__step ubits-stepper__step--pending" data-step-label="Certificado">
+                                <span class="ubits-stepper__mark" aria-hidden="true"><span class="ubits-stepper__mark-num">3</span><i class="far fa-check" aria-hidden="true"></i></span>
+                                <span class="ubits-stepper__label">Certificado</span>
+                            </li>
+                            <li class="ubits-stepper__rail" aria-hidden="true"></li>
+                            <li class="ubits-stepper__step ubits-stepper__step--pending" data-step-label="Publicación">
+                                <span class="ubits-stepper__mark" aria-hidden="true"><span class="ubits-stepper__mark-num">4</span><i class="far fa-check" aria-hidden="true"></i></span>
+                                <span class="ubits-stepper__label">Publicación</span>
+                            </li>
+                        </ol>
+                    </nav>
+                </div>
+
+                <div class="crear-contenido-editor__main">
+                    <!-- Paso 1 Portada -->
+                    <div id="crear-ruta-step-portada" class="crear-contenido-step crear-contenido-step--portada crear-contenido-step--visible crear-ruta-step crear-ruta-step--visible" data-crear-step="portada">
+                        <div class="crear-contenido-portada__cabecera">
+                            <div class="crear-contenido-portada__cabecera-titulo">
+                                <label class="contenidos-creator-titulo-wrap">
+                                    <textarea id="crear-ruta-titulo" class="ubits-inline-edit ubits-display-d3-bold contenidos-creator-titulo-input" placeholder="Escribe aquí el título de la ruta" rows="1" maxlength="180" aria-label="Nombre de la ruta"></textarea>
+                                    <span class="contenidos-creator-titulo-hint ubits-body-xs-regular">Máximo 180 caracteres.</span>
+                                </label>
+                            </div>
+                            <div class="crear-contenido-portada__cabecera-media">
+                                <div class="contenidos-creator-card contenidos-creator-card--dentro-cabecera">
+                                    <div id="crear-ruta-img-trailer" class="ubits-learn-img-trailer" data-learn-img-trailer-init data-learn-img-trailer-empty-variant="ia" data-learn-img-trailer-cta-id="crear-ruta-portada-cta" role="region" aria-label="Miniatura de la ruta"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="crear-contenido-portada__cuerpo">
+                            <div class="crear-contenido-portada__cuerpo-desc">
+                                <div class="contenidos-creator-card contenidos-creator-card--descripcion">
+                                    <div id="crear-ruta-rte" class="ubits-rich-text-editor" data-rich-text-editor>
+                                        <div class="ubits-rich-text-editor__label-row">
+                                            <p class="ubits-rich-text-editor__label ubits-body-sm-semibold">Descripción</p>
+                                            <p class="ubits-rich-text-editor__hint ubits-body-xs-regular">(Obligatorio)</p>
+                                        </div>
+                                        <div class="ubits-rich-text-editor__toolbar" role="toolbar" aria-label="Formato">
+                                            <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" data-rich-cmd="bold" aria-label="Negrita"><i class="fas fa-bold"></i></button>
+                                            <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" data-rich-cmd="italic" aria-label="Cursiva"><i class="fas fa-italic"></i></button>
+                                            <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" data-rich-cmd="insertUnorderedList" aria-label="Lista"><i class="fas fa-list-ul"></i></button>
+                                        </div>
+                                        <div class="ubits-rich-text-editor__editor-shell">
+                                            <div class="ubits-rich-text-editor__field ubits-body-md-regular is-empty" contenteditable="true" role="textbox" aria-multiline="true" data-placeholder="Añade una descripción para la ruta aquí" id="crear-ruta-rte-field"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="crear-contenido-portada__cuerpo-ficha">
+                                <div class="contenidos-creator-card">
+                                    <p class="contenidos-creator-field-label ubits-body-sm-semibold">Ficha técnica</p>
+                                    <div class="contenidos-creator-ficha-row">
+                                        <div id="crear-ruta-in-nivel"></div>
+                                        <div id="crear-ruta-in-idioma"></div>
+                                    </div>
+                                    <div id="crear-ruta-in-categoria"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Paso 2 Contenidos -->
+                    <div id="crear-ruta-step-contenidos" class="crear-ruta-step" data-crear-step="contenidos">
+                        <div class="crear-ruta-contenidos">
+                            <div class="crear-ruta-contenidos__toolbar" id="crear-ruta-contenidos-toolbar" hidden>
+                                <div class="crear-ruta-contenidos__toolbar-intro">
+                                    <p class="ubits-body-md-bold crear-ruta-contenidos__toolbar-title">Contenidos de la ruta</p>
+                                    <p class="ubits-body-md-regular crear-ruta-contenidos__toolbar-desc">Agrega y ordena los contenidos de esta ruta de aprendizaje.</p>
+                                </div>
+                                <button type="button" class="ubits-button ubits-button--primary ubits-button--md" id="crear-ruta-btn-anadir-contenidos">
+                                    <i class="far fa-plus"></i>
+                                    <span>Añadir contenidos</span>
+                                </button>
+                            </div>
+                            <div id="crear-ruta-contenidos-empty" class="crear-ruta-contenidos__empty-host"></div>
+                            <div id="crear-ruta-contenidos-lista" class="crear-ruta-contenidos__lista" hidden></div>
+                        </div>
+                    </div>
+
+                    <!-- Paso 3 Certificado -->
+                    <div id="crear-ruta-step-certificado" class="crear-ruta-step" data-crear-step="certificado">
+                        <div class="contenidos-creator-card crear-ruta-step-placeholder">
+                            <p class="ubits-body-md-bold" style="color: var(--ubits-fg-1-high); margin-bottom: var(--gap-md);">Certificado</p>
+                            <p class="ubits-body-md-regular">Configuración del certificado de la ruta (misma lógica de producto que crear contenido).</p>
+                        </div>
+                    </div>
+
+                    <!-- Paso 4 Publicación -->
+                    <div id="crear-ruta-step-publicacion" class="crear-ruta-step" data-crear-step="publicacion">
+                        <div class="contenidos-creator-card crear-ruta-step-placeholder">
+                            <p class="ubits-body-md-bold" style="color: var(--ubits-fg-1-high); margin-bottom: var(--gap-md);">Publicación</p>
+                            <p class="ubits-body-md-regular">Visibilidad y publicación de la ruta (misma lógica de producto que crear contenido).</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer class="ubits-layout-immersive__footer" role="contentinfo">
+            <div class="ubits-layout-immersive__footer-inner">
+                <div class="ubits-layout-immersive__footer-actions">
+                    <span class="ubits-layout-immersive__footer-grow" aria-hidden="true"></span>
+                    <div class="ubits-layout-immersive__footer-nav">
+                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="crear-ruta-btn-anterior" style="display:none" aria-hidden="true" disabled><span>Anterior</span></button>
+                        <button type="button" class="ubits-button ubits-button--primary ubits-button--md" id="crear-ruta-btn-siguiente" disabled aria-disabled="true"><span>Siguiente</span></button>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script src="../../script.js"></script>
+    <script src="../../components/tooltip.js"></script>
+    <script src="../../components/save-indicator.js"></script>
+    <script src="../../components/input.js"></script>
+    <script src="../../components/empty-state.js"></script>
+    <script src="../../components/toast.js"></script>
+    <script src="../../components/modal.js"></script>
+    <script src="../../components/stepper.js"></script>
+    <script src="../../components/ia-button.js"></script>
+    <script src="../../components/learn-content-img-trailer.js"></script>
+    <script src="../../components/rich-text-editor.js"></script>
+    <script src="../../bd-master/bd-master-niveles-contenido.js"></script>
+    <script src="../../bd-master/bd-master-categorias-fiqsha.js"></script>
+    <script src="../../bd-master/bd-contenidos-ubits.js"></script>
+    <script src="../../bd-master/bd-contenidos-fiqsha.js"></script>
+    <script src="../../components/dropdown-menu.js"></script>
+    <script src="../../components/file-upload.js"></script>
+    <script src="../../components/ia-loader.js"></script>
+    <script src="../../components/drawer.js"></script>
+    <script src="../../components/card-content-compact.js"></script>
+    <script src="./planes-formacion/catalogo-contenidos-drawer.js"></script>
+    <script src="./portada-imagen-modal.js"></script>
+    <script src="./crear-ruta-contenidos-drawer.js"></script>
+    <script src="./crear-ruta.js"></script>
+</body>
+</html>

@@ -251,7 +251,7 @@
  * @param {Object} [options.infoButton] - Configuración del botón de información. {onClick: function}.
  * @param {Object} [options.aiButton] - Configuración del botón IA. {text: string, onClick: function}.
  * @param {Array} [options.secondaryButtons] - Botones secundarios. Cada uno: {text, icon?, onClick, iconRight?}. Si iconRight es true, el icono va a la derecha del texto.
- * @param {Object} [options.primaryButton] - Configuración del botón primario. {text: string, icon: string, onClick: function}.
+ * @param {Object} [options.primaryButton] - Configuración del botón primario. {text: string, icon: string, iconRight?: boolean, onClick: function}.
  * @param {Object} [options.menuButton] - Configuración del botón menú. {onClick: function}.
  *
  * ========================================
@@ -634,12 +634,18 @@ function createHeaderProductHTML(options = {}) {
                 ${inner}
             </button>`;
         }).join('');
-        const primaryButtonHTML = primaryButton ? `
-            <button class="ubits-button ubits-button--primary ubits-button--md ubits-header-product__primary-action" ${primaryButton.onClick ? `onclick="${primaryButton.onClick}"` : ''}>
-                ${primaryButton.icon ? `<i class="far ${primaryButton.icon}"></i>` : ''}
-                <span>${primaryButton.text || 'Primary action'}</span>
-            </button>
-        ` : '';
+        const primaryButtonHTML = primaryButton ? (function () {
+            var iconHtml = primaryButton.icon ? '<i class="far ' + primaryButton.icon + '"></i>' : '';
+            var textHtml = '<span>' + (primaryButton.text || 'Primary action') + '</span>';
+            var inner = primaryButton.iconRight && primaryButton.icon ? textHtml + iconHtml : iconHtml + textHtml;
+            return (
+                '<button type="button" class="ubits-button ubits-button--primary ubits-button--md ubits-header-product__primary-action"' +
+                (primaryButton.onClick ? ' onclick="' + primaryButton.onClick + '"' : '') +
+                '>' +
+                inner +
+                '</button>'
+            );
+        })() : '';
         const menuButtonHTML = menuButton ? `
             <button class="ubits-button ubits-button--tertiary ubits-button--md ubits-button--icon-only" ${menuButton.onClick ? `onclick="${menuButton.onClick}"` : ''}>
                 <i class="far fa-ellipsis-v"></i>
@@ -705,13 +711,16 @@ function createHeaderProductHTML(options = {}) {
         </button>`;
     }).join('');
 
-    // Botón primario
-    const primaryButtonHTML = primaryButton ? `
-        <button class="ubits-button ubits-button--primary ubits-button--md ubits-header-product__primary-action" ${primaryButton.onClick ? `onclick="${primaryButton.onClick}"` : ''}>
-            ${primaryButton.icon ? `<i class="far ${primaryButton.icon}"></i>` : ''}
-            <span>${primaryButton.text || 'Primary action'}</span>
-        </button>
-    ` : '';
+    // Botón primario (iconRight: true → texto antes del icono, ej. chevron dropdown)
+    const primaryButtonHTML = primaryButton ? (function () {
+        const iconHtml = primaryButton.icon ? `<i class="far ${primaryButton.icon}"></i>` : '';
+        const textHtml = `<span>${primaryButton.text || 'Primary action'}</span>`;
+        const inner = primaryButton.iconRight && primaryButton.icon ? `${textHtml}${iconHtml}` : `${iconHtml}${textHtml}`;
+        return `
+        <button type="button" class="ubits-button ubits-button--primary ubits-button--md ubits-header-product__primary-action" ${primaryButton.onClick ? `onclick="${primaryButton.onClick}"` : ''}>
+            ${inner}
+        </button>`;
+    })() : '';
 
     // Botón menú
     const menuButtonHTML = menuButton ? `
@@ -826,7 +835,7 @@ function createHeaderProductHTML(options = {}) {
  * @param {Object} [options.infoButton] - Configuración del botón de información. {onClick: function}.
  * @param {Object} [options.aiButton] - Configuración del botón IA. {text: string, onClick: function}.
  * @param {Array} [options.secondaryButtons] - Botones secundarios. Cada uno: {text, icon?, onClick, iconRight?}. Si iconRight es true, el icono va a la derecha del texto.
- * @param {Object} [options.primaryButton] - Configuración del botón primario. {text: string, icon: string, onClick: function}.
+ * @param {Object} [options.primaryButton] - Configuración del botón primario. {text: string, icon: string, iconRight?: boolean, onClick: function}.
  * @param {Object} [options.menuButton] - Configuración del botón menú. {onClick: function}.
  * 
  * @example

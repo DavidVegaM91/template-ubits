@@ -103,10 +103,31 @@
 
 .ubits-paginas-creator__drag-handle {
     cursor: grab;
+    position: relative;
 }
 
 .ubits-paginas-creator__drag-handle:active {
     cursor: grabbing;
+}
+
+/* Hover en el handle: icono de tipo → grip (pista de reordenar por arrastre) */
+.ubits-paginas-creator__drag-icon {
+    display: none;
+}
+
+.ubits-paginas-creator__drag-handle:hover .ubits-paginas-creator__type-icon,
+.ubits-paginas-creator__drag-handle:focus-visible .ubits-paginas-creator__type-icon {
+    display: none;
+}
+
+.ubits-paginas-creator__drag-handle:hover .ubits-paginas-creator__drag-icon,
+.ubits-paginas-creator__drag-handle:focus-visible .ubits-paginas-creator__drag-icon {
+    display: block;
+}
+
+.ubits-paginas-creator__item.is-active .ubits-paginas-creator__drag-handle:hover .ubits-paginas-creator__drag-icon,
+.ubits-paginas-creator__item.is-active .ubits-paginas-creator__drag-handle:focus-visible .ubits-paginas-creator__drag-icon {
+    color: var(--ubits-accent-brand);
 }
 
 .ubits-paginas-creator__item.is-dragging .ubits-paginas-creator__drag-handle {
