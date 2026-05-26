@@ -1629,6 +1629,23 @@
         return { pages: all, activePageKey: activeKey };
     }
 
+    function recursosSectionHasDescription(sectionKey) {
+        var meta = recursosSectionMeta[sectionKey] || {};
+        var html = String(meta.descriptionHtml || '').trim();
+        if (!html) return false;
+        var tmp = document.createElement('div');
+        tmp.innerHTML = html;
+        return String(tmp.textContent || '').trim().length > 0;
+    }
+
+    function recursosRefreshIndiceFromDom() {
+        if (!recursosSectionsEnabled) return;
+        var preferredPageKey = CC_RECURSOS_CURRENT_PAGE_KEY;
+        var model = recursosSerializeSectionsFromDom();
+        recursosMountHtmlAndInit(recursosBuildIndiceMultiHtml(model));
+        recursosRestoreActivePagePreferred(preferredPageKey);
+    }
+
     function recursosBuildIndiceMultiHtml(sectionsModel) {
         var idx = sectionsModel.map(function (s) {
             return {
@@ -1643,7 +1660,8 @@
                     };
                 }),
                 active: !!s.active,
-                hideTitle: false
+                hideTitle: false,
+                hasDescription: recursosSectionHasDescription(s.key)
             };
         });
         return window.indiceCreatorHtml({
@@ -2186,11 +2204,8 @@
                 var desc = currentDescHtml();
                 if (!recursosSectionMeta[sk]) recursosSectionMeta[sk] = {};
                 recursosSectionMeta[sk].descriptionHtml = desc;
-                var mount = getRecursosIndiceMount();
-                var sec = mount && mount.querySelector('.ubits-seccion-creator__section[data-seccion-creator-key="' + sk + '"]');
-                var titleSpan = sec && sec.querySelector('.ubits-seccion-creator__title');
-                if (titleSpan) titleSpan.textContent = t;
                 closeEdit();
+                recursosRefreshIndiceFromDom();
             });
         }
     }
@@ -2268,8 +2283,15 @@
         if (!d.section || !mount || !mount.contains(d.section)) return;
         if (!recursosSectionsEnabled) return;
         var sk = d.sectionKey != null ? String(d.sectionKey) : '';
+        var titleEl = d.section.querySelector('.ubits-seccion-creator__title');
+        var title =
+            d.title != null
+                ? String(d.title)
+                : titleEl
+                  ? String(titleEl.textContent || '').trim()
+                  : '';
         var meta = recursosSectionMeta[sk] || {};
-        openCrearContenidoEditSectionModal(sk, d.title != null ? d.title : '', meta.descriptionHtml || '');
+        openCrearContenidoEditSectionModal(sk, title, meta.descriptionHtml || '');
     }
 
     function onRecursosSeccionCreatorSectionAction(ev) {

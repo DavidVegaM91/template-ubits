@@ -802,7 +802,7 @@
     }
 
     /**
-     * HTML de un ítem (lista). opts: { label, tipo, active, menuAriaLabel, pageKey }
+     * HTML de un ítem (lista). opts: { label, tipo, active, pageKey } — menú ⋮: tooltip «Opciones».
      */
     function paginasCreatorItemHtml(opts) {
         opts = opts || {};
@@ -816,9 +816,6 @@
         var labelTrim = label.trim();
         var tipo = normalizeTipo(opts.tipo);
         var active = !!opts.active;
-        var menuLabel =
-            opts.menuAriaLabel ||
-            (labelTrim ? 'Más acciones para ' + labelTrim : 'Más acciones para esta página');
         var pageKey = opts.pageKey != null ? String(opts.pageKey) : '';
         var dataKeyAttr = pageKey ? ' data-paginas-creator-key="' + escapeAttr(pageKey) + '"' : '';
         var itemClass = 'ubits-paginas-creator__item' + (active ? ' is-active' : '');
@@ -853,9 +850,7 @@
             buildEditNameBtnHtml() +
             '</div>' +
             '</div>' +
-            '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only ubits-paginas-creator__menu" aria-label="' +
-            escapeAttr(menuLabel) +
-            '">' +
+            '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only ubits-paginas-creator__menu" data-tooltip="Opciones" data-tooltip-delay="1000" aria-label="Opciones">' +
             '<i class="far fa-ellipsis-vertical"></i>' +
             '</button>' +
             '</div>'

@@ -1,7 +1,7 @@
 /**
  * Sección Creator — bloque de sección (título editable tipo task-strip, menú si activa, páginas, «Añadir página»).
  * Carga previa: dropdown-menu.js, tooltip.js (tooltips), paginas-creator.js.
- * Eventos: ubits-seccion-creator-add-page, ubits-seccion-creator-section-action, ubits-seccion-creator-edit-section (modal Editar sección),
+ * Eventos: ubits-seccion-creator-add-page, ubits-seccion-creator-section-action, ubits-seccion-creator-edit-section (modal Editar sección; también botón ⓘ si hasDescription),
  *   ubits-seccion-creator-activate, ubits-seccion-creator-title-save
  * Estado validación: clase `ubits-seccion-creator__section--error` en `.ubits-seccion-creator__section` (p. ej. sección sin páginas).
  * @see documentacion/componentes/seccion-creator.html
@@ -45,6 +45,14 @@
         return (
             '<button type="button" class="ubits-button ubits-button--secondary ubits-button--xs ubits-button--icon-only ubits-seccion-creator__title-edit-btn" data-tooltip="Cambiar nombre" data-tooltip-delay="1000" aria-label="Cambiar nombre">' +
             '<i class="far fa-pen-to-square"></i>' +
+            '</button>'
+        );
+    }
+
+    function seccionDescriptionInfoBtnHtml() {
+        return (
+            '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only ubits-seccion-creator__description-btn" data-tooltip="Sección con descripción" data-tooltip-delay="1000" aria-label="Sección con descripción">' +
+            '<i class="far fa-circle-info"></i>' +
             '</button>'
         );
     }
@@ -350,8 +358,9 @@
 
     /**
      * Bloque &lt;section&gt; (título, páginas, «Añadir página» por sección salvo includeAddButton: false).
-     * @param {Object} s - { title, active?, sectionKey?, pages?, includeAddButton?, addButtonId?, addButtonLabel?, sectionMenuAriaLabel?, hideTitle? }
+     * @param {Object} s - { title, active?, sectionKey?, pages?, includeAddButton?, addButtonId?, addButtonLabel?, hideTitle?, hasDescription? }
      *   hideTitle: si true, no se renderiza cabecera (título ⋮); uso en Índice creator sin secciones (una sola lista de páginas).
+     *   hasDescription: si true, botón info (ⓘ) entre lápiz y ⋮; clic → evento ubits-seccion-creator-edit-section.
      */
     function seccionCreatorSectionHtml(s) {
         s = s || {};
@@ -372,10 +381,6 @@
             (hideTitle ? ' ubits-seccion-creator__section--no-header' : '');
         var dataKey = key ? ' data-seccion-creator-key="' + escapeAttr(key) + '"' : '';
         var aria = active ? ' aria-current="true"' : '';
-        var menuLabel =
-            s.sectionMenuAriaLabel != null
-                ? String(s.sectionMenuAriaLabel)
-                : 'Más acciones de la sección';
         var pagesInner = pages
             .map(function (p) {
                 return global.paginasCreatorItemHtml(p);
@@ -417,11 +422,12 @@
                 seccionTitleEditBtnHtml() +
                 '</div>' +
                 '</div>' +
-                '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only ubits-seccion-creator__section-menu" aria-label="' +
-                escapeAttr(menuLabel) +
-                '">' +
+                '<div class="ubits-seccion-creator__header-actions">' +
+                (s.hasDescription ? seccionDescriptionInfoBtnHtml() : '') +
+                '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only ubits-seccion-creator__section-menu" data-tooltip="Opciones" data-tooltip-delay="1000" aria-label="Opciones">' +
                 '<i class="far fa-ellipsis-vertical"></i>' +
                 '</button>' +
+                '</div>' +
                 '</div>';
         }
 
@@ -517,6 +523,33 @@
                 return;
             }
 
+            var descBtn = t.closest('.ubits-seccion-creator__description-btn');
+            if (descBtn && root.contains(descBtn)) {
+                e.preventDefault();
+                e.stopPropagation();
+                clearSecActivateTimeout(root);
+                var sectionDesc = descBtn.closest('.ubits-seccion-creator__section');
+                var skDesc =
+                    sectionDesc && sectionDesc.getAttribute('data-seccion-creator-key') != null
+                        ? sectionDesc.getAttribute('data-seccion-creator-key')
+                        : '';
+                var titleDescEl = sectionDesc && sectionDesc.querySelector('.ubits-seccion-creator__title');
+                var titleDesc = titleDescEl ? String(titleDescEl.textContent || '').trim() : '';
+                var docDesc = global.document || document;
+                docDesc.dispatchEvent(
+                    new CustomEvent('ubits-seccion-creator-edit-section', {
+                        bubbles: true,
+                        detail: {
+                            sectionKey: skDesc,
+                            title: titleDesc,
+                            anchor: descBtn,
+                            section: sectionDesc
+                        }
+                    })
+                );
+                return;
+            }
+
             var secBtn = t.closest('.ubits-seccion-creator__section-menu');
             if (secBtn && root.contains(secBtn)) {
                 e.preventDefault();
@@ -543,7 +576,13 @@
 
             var header = t.closest('.ubits-seccion-creator__header');
             var titleInner = t.closest('.ubits-seccion-creator__title-inner');
-            if (header && titleInner && root.contains(header) && !t.closest('.ubits-seccion-creator__section-menu')) {
+            if (
+                header &&
+                titleInner &&
+                root.contains(header) &&
+                !t.closest('.ubits-seccion-creator__section-menu') &&
+                !t.closest('.ubits-seccion-creator__description-btn')
+            ) {
                 var section = header.closest('.ubits-seccion-creator__section');
                 if (!section || !root.contains(section)) return;
                 if (t.closest('.ubits-seccion-creator__title-edit-wrap')) return;
@@ -575,6 +614,7 @@
             var header = e.target.closest('.ubits-seccion-creator__header');
             if (!header || !root.contains(header)) return;
             if (e.target.closest('.ubits-seccion-creator__section-menu')) return;
+            if (e.target.closest('.ubits-seccion-creator__description-btn')) return;
             e.preventDefault();
             e.stopPropagation();
             clearSecActivateTimeout(root);

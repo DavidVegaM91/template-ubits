@@ -15,6 +15,7 @@
     <link rel="stylesheet" href="../../components/switch.css">
     <link rel="stylesheet" href="../../components/toast.css">
     <link rel="stylesheet" href="../../components/dropdown-menu.css">
+    <link rel="stylesheet" href="../../components/tooltip.css">
     <link rel="stylesheet" href="../../components/paginas-creator.css">
     <link rel="stylesheet" href="../../components/seccion-creator.css">
     <link rel="stylesheet" href="../../docs/docs-sidebar.css">
@@ -68,6 +69,15 @@
                                 <span class="ubits-body-sm-bold" style="color: var(--ubits-fg-1-high);">Título largo (2 líneas)</span>
                                 <label class="ubits-switch ubits-switch--md" id="sc-long-title-wrap">
                                     <input type="checkbox" class="ubits-switch__input" id="sc-long-title" aria-label="Título largo de dos líneas">
+                                    <span class="ubits-switch__track">
+                                        <span class="ubits-switch__thumb"></span>
+                                    </span>
+                                </label>
+                            </div>
+                            <div style="margin-bottom: 20px; display: flex; flex-wrap: wrap; align-items: center; gap: var(--gap-md);">
+                                <span class="ubits-body-sm-bold" style="color: var(--ubits-fg-1-high);">Sección con descripción (botón ⓘ)</span>
+                                <label class="ubits-switch ubits-switch--md">
+                                    <input type="checkbox" class="ubits-switch__input" id="sc-has-description" aria-label="Mostrar botón de sección con descripción">
                                     <span class="ubits-switch__track">
                                         <span class="ubits-switch__thumb"></span>
                                     </span>
@@ -188,7 +198,7 @@ Eventos: ubits-seccion-creator-add-page | ubits-seccion-creator-edit-section (Ed
                                         <h2 class="ubits-heading-h2" style="margin: 0;">Requisitos</h2>
                                         <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('sc-tech-req')"><i class="far fa-copy"></i><span>Copiar</span></button>
                                     </div>
-                                    <pre style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm); overflow-x: auto;"><code id="sc-tech-req" class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">CSS: button.css, dropdown-menu.css, paginas-creator.css, seccion-creator.css (+ tipografía y colores UBITS, fontawesome)
+                                    <pre style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm); overflow-x: auto;"><code id="sc-tech-req" class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">CSS: button.css, dropdown-menu.css, tooltip.css, paginas-creator.css, seccion-creator.css (+ tipografía y colores UBITS, fontawesome)
 JS (orden): dropdown-menu.js → tooltip.js → paginas-creator.js → seccion-creator.js
 initSeccionCreator: Paginas creator (activar/editar/menú), sección (título, ⋮, «Añadir página»)</code></pre>
                                 </div>
@@ -210,7 +220,7 @@ initSeccionCreator: Paginas creator (activar/editar/menú), sección (título, �
     <script src="../../docs/docs-sidebar.js"></script>
     <script src="../../script.js"></script>
     <script>
-        var scPreviewState = { sectionActive: true, longTitle: false };
+        var scPreviewState = { sectionActive: true, longTitle: false, hasDescription: false };
 
         var SC_TITLE_SHORT = 'Fundamentos';
         var SC_TITLE_LONG = 'Fundamentos del aprendizaje y metodología aplicada en dos líneas de ejemplo';
@@ -225,7 +235,8 @@ initSeccionCreator: Paginas creator (activar/editar/menú), sección (título, �
                     { label: 'Bienvenida', tipo: 'blank-page', active: true, pageKey: 'p1' },
                     { label: 'Objetivos', tipo: 'texto', active: false, pageKey: 'p2' }
                 ],
-                addButtonId: 'sc-preview-add-btn'
+                addButtonId: 'sc-preview-add-btn',
+                hasDescription: scPreviewState.hasDescription
             };
         }
 
@@ -237,6 +248,8 @@ initSeccionCreator: Paginas creator (activar/editar/menú), sección (título, �
             if (activeCb) activeCb.checked = scPreviewState.sectionActive;
             var longCb = document.getElementById('sc-long-title');
             if (longCb) longCb.checked = scPreviewState.longTitle;
+            var descCb = document.getElementById('sc-has-description');
+            if (descCb) descCb.checked = scPreviewState.hasDescription;
             if (typeof initTooltip === 'function') {
                 initTooltip('#sc-preview-mount [data-tooltip]');
             }
@@ -261,6 +274,13 @@ initSeccionCreator: Paginas creator (activar/editar/menú), sección (título, �
             if (longCb) {
                 longCb.addEventListener('change', function () {
                     scPreviewState.longTitle = longCb.checked;
+                    scRenderPreview();
+                });
+            }
+            var descCb = document.getElementById('sc-has-description');
+            if (descCb) {
+                descCb.addEventListener('change', function () {
+                    scPreviewState.hasDescription = descCb.checked;
                     scRenderPreview();
                 });
             }
