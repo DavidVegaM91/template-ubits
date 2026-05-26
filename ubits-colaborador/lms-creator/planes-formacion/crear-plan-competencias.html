@@ -674,6 +674,11 @@
                     });
                 }
 
+                var resultadosBgWiz = cardsContainer ? cardsContainer.closest('.drawer-cursos-resultados-bg') : null;
+                if (resultadosBgWiz && typeof observeDrawerResultadosScrollPadding === 'function') {
+                    observeDrawerResultadosScrollPadding(resultadosBgWiz, cardsContainer);
+                }
+
                 filtrarYRenderizarCards();
                 overlay._wizContenidosAttached = true;
             }
@@ -2298,6 +2303,11 @@
                     searchClearBtn.addEventListener('click', function() {
                         setTimeout(function() { filtrarYRenderizarCards(); }, 0);
                     });
+                }
+
+                var resultadosBgDrawer = cardsContainer ? cardsContainer.closest('.drawer-cursos-resultados-bg') : null;
+                if (resultadosBgDrawer && typeof observeDrawerResultadosScrollPadding === 'function') {
+                    observeDrawerResultadosScrollPadding(resultadosBgDrawer, cardsContainer);
                 }
 
                 filtrarYRenderizarCards();

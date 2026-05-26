@@ -751,6 +751,9 @@
 
                 var resultadosBg = overlay.querySelector('#drawer-wizard-step3 .drawer-cursos-resultados-bg');
                 if (resultadosBg) {
+                    if (typeof observeDrawerResultadosScrollPadding === 'function') {
+                        observeDrawerResultadosScrollPadding(resultadosBg, cardsContainer);
+                    }
                     if (overlay._wizContenidosScrollHandler) {
                         resultadosBg.removeEventListener('scroll', overlay._wizContenidosScrollHandler);
                     }
@@ -758,6 +761,7 @@
                         var el = resultadosBg;
                         var threshold = 120;
                         if (el.scrollTop + el.clientHeight >= el.scrollHeight - threshold) maybeLoadMoreDrawerCursos();
+                        if (typeof syncDrawerResultadosScrollPadding === 'function') syncDrawerResultadosScrollPadding(el);
                     };
                     resultadosBg.addEventListener('scroll', overlay._wizContenidosScrollHandler);
                 }
@@ -2223,10 +2227,14 @@
 
                 var resultadosBg = overlay.querySelector('.drawer-cursos-resultados-bg');
                 if (resultadosBg) {
+                    if (typeof observeDrawerResultadosScrollPadding === 'function') {
+                        observeDrawerResultadosScrollPadding(resultadosBg, cardsContainer);
+                    }
                     resultadosBg.addEventListener('scroll', function() {
                         var el = resultadosBg;
                         var threshold = 120;
                         if (el.scrollTop + el.clientHeight >= el.scrollHeight - threshold) maybeLoadMoreDrawerCursos();
+                        if (typeof syncDrawerResultadosScrollPadding === 'function') syncDrawerResultadosScrollPadding(el);
                     });
                 }
 

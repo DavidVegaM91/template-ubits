@@ -161,6 +161,23 @@
     width: 100%;
 }
 
+/* Drawer añadir contenidos: sin stepper; el grid debe llenar el alto entre controles y footer */
+#crear-ruta-drawer-contenidos .ubits-drawer-content {
+    min-height: 0;
+}
+
+#crear-ruta-drawer-contenidos .ubits-drawer-body {
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+
+#crear-ruta-drawer-contenidos .crear-ruta-drawer-body {
+    flex: 1;
+    min-height: 0;
+}
+
 /* Drawer (reutiliza clases de crear-plan-contenidos) */
 .crear-ruta-drawer-body .drawer-cursos-cards-grid .course-card-compact--selected {
     border-color: var(--ubits-accent-brand);
@@ -168,7 +185,9 @@
 }
 
 #crear-ruta-drawer-contenidos .drawer-cursos-resultados-bg.crear-ruta-drawer-resultados {
-    max-height: min(60vh, 520px);
+    flex: 1;
+    min-height: 0;
+    max-height: none;
     overflow-y: auto;
 }
 

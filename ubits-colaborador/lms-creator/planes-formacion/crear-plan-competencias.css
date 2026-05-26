@@ -818,11 +818,15 @@
 /* Contenedor de resultados de búsqueda (columna izquierda): flex 1 para ocupar el espacio y scroll propio */
 .drawer-cursos-resultados-bg {
     background: var(--ubits-bg-2);
-    padding: var(--padding-md);
+    padding: 0;
     border-radius: var(--border-radius-sm);
     flex: 1;
     min-height: 0;
     overflow-y: auto;
+}
+
+.drawer-cursos-resultados-bg.drawer-cursos-resultados-bg--has-scroll {
+    padding-right: var(--padding-md);
 }
 
 .drawer-cursos-resultados-bg--dos-columnas .drawer-cursos-cards-grid {

@@ -267,4 +267,48 @@
         global.CATALOGO_CURSOS_DRAWER = merged;
         return global.CATALOGO_CURSOS_DRAWER;
     };
+
+    /**
+     * Ajusta padding derecho del área con scroll del drawer solo cuando hay overflow vertical.
+     * @param {HTMLElement|null} scrollEl .drawer-cursos-resultados-bg
+     */
+    global.syncDrawerResultadosScrollPadding = function (scrollEl) {
+        if (!scrollEl) return;
+        var hasScroll = scrollEl.scrollHeight > scrollEl.clientHeight + 1;
+        scrollEl.classList.toggle('drawer-cursos-resultados-bg--has-scroll', hasScroll);
+    };
+
+    /**
+     * Observa cambios de tamaño/contenido para mantener la clase --has-scroll al día.
+     * @param {HTMLElement|null} scrollEl
+     * @param {HTMLElement|null} [contentRoot] hijo cuyo DOM cambia (grid de cards)
+     */
+    global.observeDrawerResultadosScrollPadding = function (scrollEl, contentRoot) {
+        if (!scrollEl || scrollEl.__ubitsResultadosPadObs) return;
+        scrollEl.__ubitsResultadosPadObs = true;
+        var run = function () {
+            global.syncDrawerResultadosScrollPadding(scrollEl);
+        };
+        run();
+        if (typeof ResizeObserver !== 'undefined') {
+            var ro = new ResizeObserver(run);
+            ro.observe(scrollEl);
+            if (contentRoot && contentRoot !== scrollEl) ro.observe(contentRoot);
+            scrollEl.__ubitsResultadosPadRO = ro;
+        }
+        if (contentRoot && typeof MutationObserver !== 'undefined') {
+            var mo = new MutationObserver(run);
+            mo.observe(contentRoot, {
+                childList: true,
+                subtree: true,
+                attributes: true,
+                attributeFilter: ['style', 'class']
+            });
+            scrollEl.__ubitsResultadosPadMO = mo;
+        }
+        if (!scrollEl.__ubitsResultadosPadResizeBound) {
+            scrollEl.__ubitsResultadosPadResizeBound = true;
+            global.addEventListener('resize', run);
+        }
+    };
 })(typeof window !== 'undefined' ? window : this);

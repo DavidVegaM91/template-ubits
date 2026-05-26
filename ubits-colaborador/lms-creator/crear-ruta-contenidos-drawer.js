@@ -150,6 +150,10 @@
                 }
                 updateVerSeleccionadosBar();
                 updateFooterBtn();
+                var resultadosPadEmpty = grid.closest('.drawer-cursos-resultados-bg');
+                if (typeof window.syncDrawerResultadosScrollPadding === 'function') {
+                    window.syncDrawerResultadosScrollPadding(resultadosPadEmpty);
+                }
                 return;
             }
             if (emptyHost) {
@@ -172,6 +176,10 @@
             });
             updateVerSeleccionadosBar();
             updateFooterBtn();
+            var resultadosPad = grid.closest('.drawer-cursos-resultados-bg');
+            if (typeof window.syncDrawerResultadosScrollPadding === 'function') {
+                window.syncDrawerResultadosScrollPadding(resultadosPad);
+            }
         }
 
         function alignFilterDropdownToButtonRight(filterOverlayId, filterBtn) {
@@ -262,6 +270,10 @@
 
             var resultados = overlay.querySelector('.crear-ruta-drawer-resultados');
             if (resultados) {
+                var cardsGrid = overlay.querySelector('#crear-ruta-drawer-cards');
+                if (typeof window.observeDrawerResultadosScrollPadding === 'function') {
+                    window.observeDrawerResultadosScrollPadding(resultados, cardsGrid);
+                }
                 resultados.addEventListener('scroll', function () {
                     var el = resultados;
                     if (el.scrollTop + el.clientHeight >= el.scrollHeight - 120) {
@@ -270,6 +282,9 @@
                             visibleCount += PAGE_SIZE;
                             renderCards();
                         }
+                    }
+                    if (typeof window.syncDrawerResultadosScrollPadding === 'function') {
+                        window.syncDrawerResultadosScrollPadding(el);
                     }
                 });
             }
