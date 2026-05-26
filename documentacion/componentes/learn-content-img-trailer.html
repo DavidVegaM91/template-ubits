@@ -103,9 +103,9 @@
                                     <div class="ubits-body-sm-regular">Con portada generada por IA, el tag «Generado con IA» aparece arriba a la izquierda sobre la imagen.</div>
                                 </div>
                                 <div style="text-align: center; padding: var(--padding-md); background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
-                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: var(--gap-sm);"><i class="far fa-photo-film"></i></div>
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: var(--gap-sm);"><img src="../../images/lms-creator/learn-content-img-trailer/icon-empty-ia-hero.svg" alt="" width="20" height="20" style="display:inline-block;vertical-align:middle;"></div>
                                     <div class="ubits-body-sm-bold">Vacío con IA</div>
-                                    <div class="ubits-body-sm-regular">Variante de bloque vacío con icono, título, texto de ayuda y un solo botón IA primario «Agregar portada» (Figma AI-Capabilities; sin segundo botón en el hueco).</div>
+                                    <div class="ubits-body-sm-regular">Variante de bloque vacío con icono Image Iconly Pro (SVG Figma 461:4729), título, texto de ayuda y un solo botón IA primario «Agregar portada» (Figma AI-Capabilities; sin segundo botón en el hueco).</div>
                                 </div>
                             </div>
                         </div>
@@ -185,7 +185,7 @@ JS: components/ia-button.js (antes de learn-content-img-trailer.js si usas vací
      Copys: LEARN_CONTENT_IMG_TRAILER_DEFAULTS (cta, hint, editButton, playAriaLabel, …)
      HTML vacío: getLearnContentImgTrailerEmptyHtml({ … emptyVariant?: 'ia' | 'vacio-con-ia'; ctaId?, aiCtaModalId?, aiCtaPanelId? })
        Variante default: columna IA + «Cargar imagen» + hint.
-       Variante ia: icono imagen en círculo bg-2, «Agrega una portada», descripción tráiler, CTA ia-button primario «Agregar portada» — getLearnContentImgTrailerEmptyIaHtml({…}) o data-learn-img-trailer-empty-variant="ia". Raíz .ubits-learn-img-trailer--empty-ia: borde neutro por defecto; hover = anillo con gradiente IA (doble background padding-box/border-box, misma inclinación que ai-button) + sombras Figma.
+       Variante ia: SVG Image Iconly Pro (Figma 461:4729) en círculo bg-2 vía getLearnContentImgTrailerEmptyIaHeroMarkup(); asset images/lms-creator/learn-content-img-trailer/icon-empty-ia-hero.svg; override: emptyIaHeroIconSrc o emptyIaHeroIconClass. «Agrega una portada», descripción tráiler, CTA ia-button primario «Agregar portada» — getLearnContentImgTrailerEmptyIaHtml({…}) o data-learn-img-trailer-empty-variant="ia". Raíz .ubits-learn-img-trailer--empty-ia: borde neutro por defecto; hover = anillo con gradiente IA (doble background padding-box/border-box, misma inclinación que ai-button) + sombras Figma.
      Copys variante IA: LEARN_CONTENT_IMG_TRAILER_EMPTY_IA_DEFAULTS
      Botón Editar: getLearnContentImgTrailerEditHtml({ editButtonId? })
      Botón Eliminar (variante imagen): getLearnContentImgTrailerDeleteHtml({ deleteButtonId? })

@@ -79,7 +79,7 @@
     color: var(--ubits-fg-1-medium);
 }
 
-/* Vacío con IA — inspiración empty-state (sin usar ese componente): icono en caja bg-2, título, descripción, CTA ia-button secundario */
+/* Vacío con IA — inspiración empty-state (sin usar ese componente): icono SVG Figma 461:4729 en caja bg-2, título, descripción, CTA ia-button primario */
 .ubits-learn-img-trailer__empty--ia {
     gap: var(--gap-md);
 }
@@ -146,6 +146,14 @@
     background: var(--ubits-bg-2);
     border-radius: var(--border-radius-full);
     color: var(--ubits-fg-1-high);
+}
+
+.ubits-learn-img-trailer__empty-ia-icon .ubits-learn-img-trailer__empty-ia-hero-svg,
+.ubits-learn-img-trailer__empty-ia-icon .ubits-learn-img-trailer__empty-ia-hero-icon {
+    display: block;
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
 }
 
 .ubits-learn-img-trailer__empty-ia-icon i {
