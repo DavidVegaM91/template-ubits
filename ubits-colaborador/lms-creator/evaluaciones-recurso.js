@@ -168,6 +168,62 @@
         return apis.map(function (api) { return api && typeof api.getModel === 'function' ? api.getModel() : null; }).filter(Boolean);
     }
 
+    /** Intercambia la pregunta en índice i con el vecino (delta -1 arriba, +1 abajo). Ajusta errores y pregunta activa. */
+    function moveQuestionInPageState(pageState, qId, delta) {
+        if (!pageState || !Array.isArray(pageState.questions)) return false;
+        var i = Number(qId) - 1;
+        var j = i + delta;
+        var qs = pageState.questions;
+        if (i < 0 || j < 0 || i >= qs.length || j >= qs.length) return false;
+
+        var tmpQ = qs[i];
+        qs[i] = qs[j];
+        qs[j] = tmpQ;
+
+        ensureQuestionErrors(pageState, qs.length);
+        if (Array.isArray(pageState.questionErrors)) {
+            var tmpE = pageState.questionErrors[i];
+            pageState.questionErrors[i] = pageState.questionErrors[j];
+            pageState.questionErrors[j] = tmpE;
+        }
+
+        var active = Number(pageState.activeQId) || 1;
+        if (active === i + 1) pageState.activeQId = j + 1;
+        else if (active === j + 1) pageState.activeQId = i + 1;
+        return true;
+    }
+
+    function handleEvalQuestionMenuAction(rootEl, pageState, delId, action) {
+        pageState.questions = snapshotModelsFromApis(rootEl);
+        var iDel = Number(delId) - 1;
+        if (iDel < 0 || iDel >= pageState.questions.length) return;
+
+        if (action === 'mover-arriba') {
+            if (!moveQuestionInPageState(pageState, delId, -1)) return;
+            rootEl._ccEvalActiveQId = pageState.activeQId;
+            renderQuestions(rootEl, pageState);
+            applyFocusModes(rootEl);
+            return;
+        }
+        if (action === 'mover-abajo') {
+            if (!moveQuestionInPageState(pageState, delId, 1)) return;
+            rootEl._ccEvalActiveQId = pageState.activeQId;
+            renderQuestions(rootEl, pageState);
+            applyFocusModes(rootEl);
+            return;
+        }
+        if (action === 'eliminar') {
+            pageState.questions.splice(iDel, 1);
+            ensureQuestionErrors(pageState, pageState.questions.length + 1);
+            if (Array.isArray(pageState.questionErrors)) pageState.questionErrors.splice(iDel, 1);
+            if (!pageState.questions.length) pageState.activeQId = 1;
+            else pageState.activeQId = Math.min(pageState.activeQId, pageState.questions.length);
+            rootEl._ccEvalActiveQId = pageState.activeQId;
+            renderQuestions(rootEl, pageState);
+            renderEmptyStateIfNeeded(rootEl, function () { addQuestionAndFocus(rootEl, pageState); });
+        }
+    }
+
     function ensureQuestionErrors(pageState, count) {
         if (!pageState) return [];
         if (!Array.isArray(pageState.questionErrors)) pageState.questionErrors = [];
@@ -267,18 +323,10 @@
                     qId: qId,
                     mode: qId === active ? (getQuestionError(pageState, qId) ? 'edit_error' : 'edit') : (getQuestionError(pageState, qId) ? 'read_error' : 'read'),
                     model: q,
-                    onDelete: function (delId) {
-                        pageState.questions = snapshotModelsFromApis(rootEl);
-                        var iDel = Number(delId) - 1;
-                        if (iDel >= 0 && iDel < pageState.questions.length) pageState.questions.splice(iDel, 1);
-                        // Ajustar errores al borrar (mismo índice)
-                        ensureQuestionErrors(pageState, pageState.questions.length + 1);
-                        if (Array.isArray(pageState.questionErrors)) pageState.questionErrors.splice(iDel, 1);
-                        if (!pageState.questions.length) pageState.activeQId = 1;
-                        else pageState.activeQId = Math.min(pageState.activeQId, pageState.questions.length);
-                        rootEl._ccEvalActiveQId = pageState.activeQId;
-                        renderQuestions(rootEl, pageState);
-                        renderEmptyStateIfNeeded(rootEl, function () { addQuestionAndFocus(rootEl, pageState); });
+                    canMoveUp: qId > 1,
+                    canMoveDown: qId < questions.length,
+                    onMenuAction: function (delId, action) {
+                        handleEvalQuestionMenuAction(rootEl, pageState, delId, action);
                     },
                     onRequestFocus: function (focusId) {
                         // Antes de cambiar foco: validar la activa y dejarla en read/read_error

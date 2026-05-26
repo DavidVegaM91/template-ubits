@@ -41,6 +41,15 @@
   gap: var(--gap-sm);
 }
 
+.learn-question__menu {
+  flex-shrink: 0;
+}
+
+.learn-question__menu:focus-visible {
+  outline: 2px solid var(--ubits-accent-brand);
+  outline-offset: 2px;
+}
+
 .learn-question__badge {
   display: inline-flex;
   align-items: center;
@@ -54,10 +63,6 @@
   flex-wrap: wrap;
   gap: var(--gap-sm);
   min-width: 0;
-}
-
-.learn-question__ia-badge {
-  flex-shrink: 0;
 }
 
 .learn-question__type-icon {

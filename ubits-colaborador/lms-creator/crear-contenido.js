@@ -1091,6 +1091,12 @@
             return;
         }
 
+        if (isComplementaryDisabledForPage(mainMount, pk)) {
+            clearRecursosComplementaryState(pk);
+            hideRecursosComplementaryMount();
+            return;
+        }
+
         var primaryType = detectRecursosPrimaryType(mainMount, pk);
         if (primaryType) setRecursosPrimaryType(pk, primaryType);
 
@@ -1453,6 +1459,21 @@
         return !!(window._ccEvalPageKeys && pageKey && window._ccEvalPageKeys[String(pageKey)]);
     }
 
+    /** Complementary resources no aplican a páginas con recurso Evaluación final. */
+    function isComplementaryDisabledForPage(mainMount, pageKey) {
+        var pk = pageKey != null ? String(pageKey) : '';
+        if (pk && isEvalPageKey(pk)) return true;
+        if (mainMount && mainMount.querySelector('[data-cc-eval-root], .cc-eval-root')) return true;
+        var detected =
+            mainMount && typeof detectRecursosPrimaryType === 'function'
+                ? detectRecursosPrimaryType(mainMount, pk)
+                : null;
+        if (detected === 'evaluacion-final') return true;
+        var st = pk ? CC_RECURSOS_PAGE_STATE[pk] : null;
+        if (st && String(st.primaryType || '') === 'evaluacion-final') return true;
+        return false;
+    }
+
     function readComplementaryOrderFromDom() {
         var compMount = getRecursosComplementaryMount();
         if (!compMount || compMount.hidden) return [];
@@ -1476,14 +1497,17 @@
     function snapshotCurrentRecursosPage() {
         var pk = CC_RECURSOS_CURRENT_PAGE_KEY;
         if (!pk) return;
-        var compFlags = readComplementaryFlagsFromDom();
         if (isEvalPageKey(pk)) {
             var prevEval = CC_RECURSOS_PAGE_STATE[pk] || {};
-            CC_RECURSOS_PAGE_STATE[pk] = Object.assign({}, prevEval, compFlags, {
-                primaryType: 'evaluacion-final'
+            CC_RECURSOS_PAGE_STATE[pk] = Object.assign({}, prevEval, {
+                primaryType: 'evaluacion-final',
+                hasComplementaryText: false,
+                hasComplementaryDownload: false,
+                complementaryOrder: []
             });
             return;
         }
+        var compFlags = readComplementaryFlagsFromDom();
         var rb = document.getElementById('crear-contenido-recursos-resources-mount');
         if (!rb) return;
         var prev = CC_RECURSOS_PAGE_STATE[pk] || {};
@@ -2943,6 +2967,8 @@
             var d = ev.detail || {};
             var pk = CC_RECURSOS_CURRENT_PAGE_KEY != null ? String(CC_RECURSOS_CURRENT_PAGE_KEY) : '';
             if (!pk) return;
+            var mainMount = document.getElementById('crear-contenido-recursos-resources-mount');
+            if (isComplementaryDisabledForPage(mainMount, pk)) return;
             var st = ensureRecursosPageState(pk);
             if (!st) return;
             if (d.type === 'texto' || d.type === 'archivo-descargable') {

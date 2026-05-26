@@ -356,6 +356,7 @@ Al configurar una página, el usuario ve **ocho tarjetas** en este orden (cuadr�
 - **Orden de bloques:** el orden visual es el de **alta**, no fijo «texto arriba, descargable abajo».
 - **Sin títulos** en bloques montados (solo contenido + Eliminar externo).
 - **Excepción texto:** si el principal de la página es **Texto**, el invite **nunca** muestra la tarjeta Texto complementario (solo descargable, hasta que se añada o se elimine el principal).
+- **Excepción evaluación:** en páginas con recurso principal **Evaluación final** **no** se muestra nunca Complementary resources (ni invite ni bloques montados). El mount `#crear-contenido-recursos-complementary-mount` queda oculto; no se persisten flags complementarios en el estado de esa página.
 - Referencia visual: Figma Creator v3 — *Secondary resources block* (node 40008346:29625); componente UBITS **Complementary resources** (`components/complementary-resources.js`, `documentacion/componentes/complementary-resources.html`).
 
 ---
@@ -649,6 +650,7 @@ En diapositivas **interactivas** (imagen con puntos, acordeón, pestañas, tarje
 - **No** se abre antes un modal de datos: el **panel derecho** pasa directamente al **constructor de evaluación** de esa página (barra superior + lista de preguntas o estado vacío).
 - En el **índice de páginas**, el icono de la fila activa pasa a **evaluación** en cuanto se confirma el tipo de recurso.
 - El **panel lateral de IA** muestra el saldo de **tokens** con el mismo patrón que otros flujos Creator: **icono de información** asociado a la ayuda del saldo.
+- **Sin recursos complementarios:** debajo del constructor **no** aparece el bloque Complementary resources (texto ni archivo descargable). Ver regla en **Recursos complementarios (secundarios)**.
 
 ### Barra superior del recurso
 
@@ -677,11 +679,11 @@ Tras recoger tema y reglas, el flujo llega a un **paso de confirmación** en el 
 - Se **cierra** el panel de IA (y cualquier modal auxiliar de ese flujo).
 - En el área de preguntas aparece un **estado de carga** (misma línea visual que otros generadores con IA del Creator, p. ej. portada).
 - Tras un tiempo de proceso (en el prototipo es **simulado**), el sistema **rellena la lista de preguntas** a partir de un **banco interno** de ítems alineados con un tema de negocio de referencia (en el demo: **resolución de conflictos y trabajo en equipo**), filtrados por **dificultad** y **tipos** elegidos. Las nuevas preguntas se **añaden después** de las que el usuario ya hubiera escrito a mano.
-- Aparece un **aviso reversible** (banner) del estilo “preguntas generadas por IA” con acción **Deshacer**, que restaura solo el estado **previo** a esa generación.
+- Aparece un **aviso reversible** (`ubits-alert--ia`, con acción): texto del tipo «N preguntas generadas por IA» y botón **Deshacer**, que restaura solo el estado **previo** a esa generación. **No** se muestra badge «Generado con IA» en cada tarjeta de pregunta (el alert basta).
 
 ### Edición manual del builder
 
-- El panel permite **añadir** preguntas con **Añadir pregunta** y **ordenar** según el diseño del componente de preguntas.
+- El panel permite **añadir** preguntas con **Añadir pregunta** y **reordenarlas** con el menú **⋮** de cada tarjeta (**Mover arriba**, **Mover abajo**, **Eliminar**), mismo patrón que las páginas del índice creator.
 - **Solo una pregunta está “abierta” para editar** a la vez; el resto se muestra de forma más compacta hasta que el usuario la selecciona.
 
 ### Cuándo se marca una pregunta como incompleta
@@ -720,4 +722,4 @@ Este documento **no** sustituye la **documentación de componentes UBITS** ni la
 
 ---
 
-*Última revisión: **Complementary resources** implementado (invite 3 variantes, orden de alta, RTE completo sin títulos, File Upload 256 MB sin toast de validación, Eliminar fuera de superficie). **Recursos:** 8 tipos; persistencia por página. **Video:** modal clásico. **SCORM**, **status panel**, eliminar recurso/página/sección.*
+*Última revisión: **Complementary resources** (excluido en Evaluación final). **Recursos:** 8 tipos; persistencia por página. **Video:** modal clásico. **SCORM**, **status panel**, eliminar recurso/página/sección.*

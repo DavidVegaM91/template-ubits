@@ -8,12 +8,96 @@
  *  - getModel()
  *  - setMode(mode)
  *  - validate()
+ *  - onMenuAction(qId, action) — 'mover-arriba' | 'mover-abajo' | 'eliminar'
+ *  - canMoveUp / canMoveDown — habilitan opciones del menú ⋮
+ *
+ * Depende de: dropdown-menu.js (getDropdownMenuHtml, openDropdownMenu, closeDropdownMenu)
  *
  * mode:
  *  - 'edit' | 'read' | 'read_error' | 'edit_error' | 'collab' | 'collab_feedback'
  */
 (function (global) {
   'use strict';
+
+  var LEARN_QUESTION_MENU_OVERLAY_ID = 'learn-question-menu-overlay';
+  var _learnQuestionMenuAnchor = null;
+
+  function getLearnQuestionMenuOptions(canMoveUp, canMoveDown) {
+    var opts = [];
+    if (canMoveUp) {
+      opts.push({ text: 'Mover arriba', value: 'mover-arriba', leftIcon: 'arrow-up' });
+    }
+    if (canMoveDown) {
+      opts.push({ text: 'Mover abajo', value: 'mover-abajo', leftIcon: 'arrow-down' });
+    }
+    opts.push({ text: 'Eliminar', value: 'eliminar', leftIcon: 'trash' });
+    return opts;
+  }
+
+  function openLearnQuestionMenu(anchorEl, qId, menuOpts) {
+    menuOpts = menuOpts || {};
+    if (
+      !anchorEl ||
+      typeof global.getDropdownMenuHtml !== 'function' ||
+      typeof global.openDropdownMenu !== 'function' ||
+      typeof global.closeDropdownMenu !== 'function'
+    ) {
+      console.warn('UBITS: carga dropdown-menu.js para el menú de learn-question.');
+      return;
+    }
+
+    if (_learnQuestionMenuAnchor && _learnQuestionMenuAnchor !== anchorEl) {
+      _learnQuestionMenuAnchor.setAttribute('aria-expanded', 'false');
+    }
+    _learnQuestionMenuAnchor = anchorEl;
+
+    var prev = document.getElementById(LEARN_QUESTION_MENU_OVERLAY_ID);
+    if (prev) prev.remove();
+
+    var canMoveUp = menuOpts.canMoveUp === true;
+    var canMoveDown = menuOpts.canMoveDown === true;
+
+    document.body.insertAdjacentHTML(
+      'beforeend',
+      global.getDropdownMenuHtml({
+        overlayId: LEARN_QUESTION_MENU_OVERLAY_ID,
+        options: getLearnQuestionMenuOptions(canMoveUp, canMoveDown)
+      })
+    );
+
+    var overlay = document.getElementById(LEARN_QUESTION_MENU_OVERLAY_ID);
+    if (!overlay) return;
+
+    function tearDown() {
+      global.closeDropdownMenu(LEARN_QUESTION_MENU_OVERLAY_ID);
+      if (_learnQuestionMenuAnchor) {
+        _learnQuestionMenuAnchor.setAttribute('aria-expanded', 'false');
+        _learnQuestionMenuAnchor = null;
+      }
+      overlay.removeEventListener('click', onOverlayClick);
+      if (overlay.parentNode) overlay.parentNode.removeChild(overlay);
+    }
+
+    function onOverlayClick(ev) {
+      if (ev.target === overlay) tearDown();
+    }
+
+    overlay.addEventListener('click', onOverlayClick);
+
+    overlay.querySelectorAll('.ubits-dropdown-menu__option[data-value]').forEach(function (row) {
+      row.addEventListener('click', function (ev) {
+        ev.stopPropagation();
+        var val = row.getAttribute('data-value');
+        tearDown();
+        if (typeof menuOpts.onMenuAction === 'function') {
+          menuOpts.onMenuAction(qId, val);
+        }
+      });
+    });
+
+    anchorEl.setAttribute('aria-expanded', 'true');
+    global.openDropdownMenu(LEARN_QUESTION_MENU_OVERLAY_ID, anchorEl, { alignRight: true });
+  }
 
   function esc(s) {
     var d = document.createElement('div');
@@ -52,17 +136,6 @@
     var nums = [];
     while ((m = re.exec(t))) nums.push(parseInt(m[1], 10));
     return nums.filter(function (n) { return !isNaN(n) && n > 0; });
-  }
-
-  function generadoConIaBadgeMarkup() {
-    if (typeof global.getGeneradoConIaBadgeHtml === 'function') {
-      return global.getGeneradoConIaBadgeHtml();
-    }
-    return (
-      '<span class="ubits-badge-tag ubits-badge-tag--outlined ubits-badge-tag--ia ubits-badge-tag--xs ubits-badge-tag--with-icon learn-question__ia-badge" role="status">' +
-      '<i class="far fa-sparkles"></i>' +
-      '<span class="ubits-badge-tag__text">Generado con IA</span></span>'
-    );
   }
 
   function normalizeModel(model, qId) {
@@ -204,11 +277,10 @@
       '    <i class="far ' + qTypeIcon(model.type) + ' learn-question__type-icon" aria-hidden="true"></i>' +
       '    <span class="learn-question__title-cluster">' +
       '      <span class="ubits-body-sm-semibold learn-question__num">Pregunta ' + qId + '</span>' +
-      (model.generatedByAi ? generadoConIaBadgeMarkup() : '') +
       '    </span>' +
       '  </span>' +
-      '  <button type="button" class="ubits-button ubits-button--error-tertiary ubits-button--sm ubits-button--icon-only learn-question__delete" aria-label="Eliminar pregunta" data-tooltip="Eliminar pregunta" data-tooltip-delay="1000">' +
-      '    <i class="far fa-trash"></i>' +
+      '  <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only learn-question__menu" aria-label="Opciones de la pregunta" aria-haspopup="menu" data-tooltip="Opciones" data-tooltip-delay="1000">' +
+      '    <i class="far fa-ellipsis-vertical"></i>' +
       '  </button>' +
       '</div>' +
       '<div class="learn-question__body">' +
@@ -235,18 +307,12 @@
     var modeMount = root.querySelector('.learn-question__mode-mount');
     var hintEl = root.querySelector('.learn-question__hint');
     var bodyEl = root.querySelector('.learn-question__body');
-    var deleteBtn = root.querySelector('.learn-question__delete');
+    var menuBtn = root.querySelector('.learn-question__menu');
 
     var inputApis = {};
 
     function clearGeneratedByAiOnUserEdit() {
-      if (!model.generatedByAi) return;
-      model.generatedByAi = false;
-      var cluster = root.querySelector('.learn-question__title-cluster');
-      var badge = cluster
-        ? cluster.querySelector('.ubits-badge-tag--ia')
-        : root.querySelector('.learn-question__ia-badge, .ubits-generado-ia-badge');
-      if (badge && badge.parentNode) badge.parentNode.removeChild(badge);
+      if (model.generatedByAi) model.generatedByAi = false;
     }
 
     function teardown() {
@@ -1027,7 +1093,26 @@
       if (typeof options.onRequestFocus === 'function') options.onRequestFocus(qId);
     });
 
-    if (deleteBtn) deleteBtn.addEventListener('click', function () { if (typeof options.onDelete === 'function') options.onDelete(qId); });
+    if (menuBtn) {
+      menuBtn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        e.preventDefault();
+        var onAction =
+          typeof options.onMenuAction === 'function'
+            ? options.onMenuAction
+            : typeof options.onDelete === 'function'
+              ? function (id, action) {
+                  if (action === 'eliminar') options.onDelete(id);
+                }
+              : null;
+        if (!onAction) return;
+        openLearnQuestionMenu(menuBtn, qId, {
+          canMoveUp: options.canMoveUp === true,
+          canMoveDown: options.canMoveDown === true,
+          onMenuAction: onAction
+        });
+      });
+    }
 
     render();
 
