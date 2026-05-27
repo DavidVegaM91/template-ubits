@@ -95,7 +95,7 @@ Para el listado del paso 2:
 - Opciones en `cardData`: `listRow`, `contentId`, `showActionsMenu`, `draggable`.
 - API de inicialización: `initCardContentCompactList(container, options)` — menús, DnD y evento `ubits-card-content-compact-list-action` (`mover-arriba` | `mover-abajo` | `eliminar`).
 
-El drawer de selección sigue usando `loadCardContentCompact` **sin** menú ni asa de arrastre.
+El drawer de selección sigue usando `loadCardContentCompact` **sin** menú ni asa de arrastre (mismo layout compact por defecto). La lista del paso Contenidos usa `listRow` + menú/arrastre y ancho máximo **791px**.
 
 ---
 

@@ -1,6 +1,9 @@
 /* ========================================
    UBITS CARD CONTENT COMPACT COMPONENT - COMPLETO
    Variante horizontal y compacta de content-card
+   Aliado/proveedor: componente Avatar oficial (ubits-avatar--xs, renderProfileList)
+   CSS: card-content-compact.css (@import avatar.css)
+   JS recomendado: avatar.js antes de este archivo
    ======================================== */
 
 /* ========================================
@@ -146,6 +149,61 @@ function escapeHtmlCompact(s) {
         .replace(/"/g, '&quot;');
 }
 
+/** Avatar oficial UBITS (avatar.js + avatar.css). Fallback HTML si no está cargado renderAvatar. */
+function renderProviderAvatarCompact(logoUrl, altText) {
+    var url = logoUrl || PROVIDERS['UBITS'];
+    var alt = altText != null ? String(altText) : 'Proveedor';
+    if (typeof renderAvatar === 'function') {
+        return renderAvatar({ nombre: alt, avatar: url }, { size: 'xs', alt: alt });
+    }
+    return (
+        '<span class="ubits-avatar ubits-avatar--xs"><img src="' +
+        escapeHtmlCompact(url) +
+        '" alt="' +
+        escapeHtmlCompact(alt) +
+        '" class="ubits-avatar__img"></span>'
+    );
+}
+
+/** Profile list oficial (varios aliados en Ruta/Programa). */
+function renderProvidersProfileListCompact(providers) {
+    var list = Array.isArray(providers) ? providers : [];
+    var personas = list.map(function (p) {
+        return {
+            nombre: p.name || p.provider || 'Provider',
+            avatar: p.logo || p.providerLogo || PROVIDERS['UBITS']
+        };
+    });
+    if (typeof renderProfileList === 'function') {
+        return renderProfileList(personas, { size: 'xs', maxVisible: 3 });
+    }
+    var totalCount = list.length;
+    var visibleCount = Math.min(totalCount, 3);
+    var remainingCount = totalCount > 3 ? totalCount - 3 : 0;
+    var items = list.slice(0, visibleCount).map(function (provider, index) {
+        var zIndex = visibleCount - index;
+        var marginRight = index < visibleCount - 1 || remainingCount > 0 ? '-5px' : '0';
+        var url = provider.logo || provider.providerLogo || PROVIDERS['UBITS'];
+        var alt = provider.name || provider.provider || 'Provider';
+        return (
+            '<span class="ubits-profile-list__avatar" style="z-index: ' +
+            zIndex +
+            '; margin-right: ' +
+            marginRight +
+            ';">' +
+            renderProviderAvatarCompact(url, alt) +
+            '</span>'
+        );
+    }).join('');
+    var countHtml =
+        remainingCount > 0
+            ? '<span class="ubits-profile-list__count" style="z-index: 0; margin-right: 0;"><span class="ubits-profile-list__count-text">+' +
+              remainingCount +
+              '</span></span>'
+            : '';
+    return '<div class="ubits-profile-list ubits-profile-list--xs">' + items + countHtml + '</div>';
+}
+
 function validateCardDataCompact(cardData) {
     const errors = [];
     
@@ -186,6 +244,9 @@ function validateCardDataCompact(cardData) {
  * @param {string} cardData.image - Ruta de la imagen
  * @param {string} cardData.competency - Competencia
  * @param {string} cardData.language - Idioma
+ * @param {boolean} [cardData.listRow] - Fila de lista (requerido para drag y menú ⋮ en el lateral)
+ * @param {boolean} [cardData.showActionsMenu] - Muestra botón menú ⋮ (con listRow)
+ * @param {boolean} [cardData.draggable] - Muestra asa de arrastre (con listRow; default true si listRow)
  */
 function renderCardContentCompact(cardData) {
     // Validar datos
@@ -219,48 +280,22 @@ function renderCardContentCompact(cardData) {
     // Renderizar avatares según el tipo
     let providerHTML = '';
     if (hasMultipleProviders) {
-        // Múltiples avatares para Ruta de aprendizaje o Programa
-        const providers = cardData.providers;
-        const totalCount = providers.length;
-        const visibleCount = Math.min(totalCount, 3);
-        const remainingCount = totalCount > 3 ? totalCount - 3 : 0;
-        
-        providerHTML = `
-            <div class="course-provider-compact course-provider-compact--multiple">
-                <div class="provider-avatars-list-compact">
-                    ${providers.slice(0, visibleCount).map((provider, index) => {
-                        const zIndex = visibleCount - index;
-                        const marginRight = (index < visibleCount - 1) || remainingCount > 0 ? '-5px' : '0';
-                        return `
-                            <div class="provider-avatar-compact provider-avatar-compact--stacked" style="z-index: ${zIndex}; margin-right: ${marginRight};">
-                                <img src="${provider.logo || provider.providerLogo || PROVIDERS['UBITS']}" 
-                                     alt="${provider.name || provider.provider || 'Provider'}" 
-                                     class="provider-icon-compact">
-                            </div>
-                        `;
-                    }).join('')}
-                    ${remainingCount > 0 ? `
-                        <div class="provider-avatar-compact provider-avatar-compact--stacked provider-avatar-compact--count" style="z-index: 0; margin-right: 0;">
-                            <span class="provider-count-text-compact">+${remainingCount}</span>
-                        </div>
-                    ` : ''}
-                </div>
-                <span class="provider-name-compact ubits-body-xs-regular">Varios</span>
-            </div>
-        `;
+        providerHTML =
+            '<div class="course-provider-compact course-provider-compact--multiple">' +
+            renderProvidersProfileListCompact(cardData.providers) +
+            '<span class="provider-name-compact ubits-body-xs-regular">Varios</span></div>';
     } else {
-        // Avatar único (comportamiento normal)
         const providerLogo = cardData.providerLogo || PROVIDERS[cardData.provider] || PROVIDERS['UBITS'];
-        providerHTML = `
-            <div class="course-provider-compact">
-                <div class="provider-avatar-compact">
-                    <img src="${providerLogo}" alt="${cardData.provider}" class="provider-icon-compact">
-                </div>
-                <span class="provider-name-compact ubits-body-xs-regular">${cardData.provider}</span>
-                <span class="provider-separator-compact ubits-body-xs-regular">|</span>
-                <span class="course-type-compact ubits-body-xs-regular">${cardData.type}</span>
-            </div>
-        `;
+        providerHTML =
+            '<div class="course-provider-compact">' +
+            renderProviderAvatarCompact(providerLogo, cardData.provider) +
+            '<span class="provider-name-compact ubits-body-xs-regular">' +
+            escapeHtmlCompact(cardData.provider) +
+            '</span>' +
+            '<span class="provider-separator-compact ubits-body-xs-regular">|</span>' +
+            '<span class="course-type-compact ubits-body-xs-regular">' +
+            escapeHtmlCompact(cardData.type) +
+            '</span></div>';
     }
 
     var listRow = cardData.listRow === true;
@@ -269,72 +304,69 @@ function renderCardContentCompact(cardData) {
         '<h3 class="course-title-compact ubits-body-sm-bold" style="color: var(--ubits-fg-1-high);">' +
         escapeHtmlCompact(cardData.title) +
         '</h3>';
-    var titleBlock =
+    var menuBtnHtml =
         listRow && cardData.showActionsMenu
-            ? '<div class="course-title-row-compact">' +
-              titleInner +
-              '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only course-card-compact__menu-btn" data-card-compact-menu="' +
+            ? '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only course-card-compact__menu-btn" data-card-compact-menu="' +
               escapeHtmlCompact(contentId) +
-              '" aria-label="Opciones" data-tooltip="Opciones" data-tooltip-delay="1000"><i class="far fa-ellipsis-v"></i></button></div>'
-            : titleInner;
+              '" aria-label="Opciones" data-tooltip="Opciones" data-tooltip-delay="1000"><i class="far fa-ellipsis-vertical"></i></button>'
+            : '';
     var dragHandleHtml =
         listRow && cardData.draggable !== false
             ? '<span class="course-card-compact__drag-handle" draggable="true" aria-label="Arrastrar para reordenar" data-tooltip="Arrastrar para reordenar" data-tooltip-delay="1000"><i class="far fa-grip-vertical"></i></span>'
             : '';
     var listRowClass = listRow ? ' course-card-compact--list-row' : '';
     var dataContentId = listRow && contentId ? ' data-content-id="' + escapeHtmlCompact(contentId) + '"' : '';
+    var specsHTML =
+        '<div class="course-specs-compact">' +
+        '<div class="spec-item-compact"><div class="spec-icon-compact"><i class="' +
+        levelIcon +
+        '"></i></div><span class="ubits-body-xs-regular">' +
+        escapeHtmlCompact(cardData.level) +
+        '</span></div>' +
+        '<div class="spec-item-compact"><div class="spec-icon-compact"><i class="far fa-clock"></i></div><span class="ubits-body-xs-regular">' +
+        escapeHtmlCompact(cardData.duration) +
+        '</span></div>' +
+        '<div class="spec-item-compact"><div class="spec-icon-compact"><i class="far fa-globe"></i></div><span class="ubits-body-xs-regular">' +
+        escapeHtmlCompact(cardData.language) +
+        '</span></div></div>';
+    var progressHTML =
+        cardData.progress > 0 || cardData.status !== 'default'
+            ? '<div class="course-progress-overlay-compact"><div class="progress-bar"><div class="progress-fill" style="width: ' +
+              (cardData.progress || 0) +
+              '%"></div></div></div>'
+            : '';
+    var thumbHTML =
+        '<div class="course-thumbnail-compact-wrapper"><div class="course-thumbnail-compact"><img src="' +
+        cardData.image +
+        '" alt="' +
+        escapeHtmlCompact(cardData.title) +
+        '" class="course-image-compact"></div></div>';
 
-    // Template de la card compact (estructura según Figma)
-    return `
-        <div class="course-card-compact${listRowClass}"${dataContentId} data-progress="${cardData.progress || 0}" data-status="${cardData.status || 'default'}">
-            ${dragHandleHtml}
-            <div class="course-card-compact-inner">
-                <!-- Parte superior: Imagen y título -->
-                <div class="course-header-compact-wrapper">
-                    <div class="course-thumbnail-compact-wrapper">
-                        <div class="course-thumbnail-compact">
-                            <img src="${cardData.image}" alt="${escapeHtmlCompact(cardData.title)}" class="course-image-compact">
-                        </div>
-                    </div>
-                    <div class="course-title-wrapper-compact">
-                        ${titleBlock}
-                    </div>
-                </div>
-                <!-- Debajo: Avatar y tipo de contenido -->
-                <div class="course-content-compact">
-                    ${providerHTML}
-                </div>
-                <!-- Debajo: Nivel, tiempo e idioma -->
-                <div class="course-specs-compact">
-                    <div class="spec-item-compact">
-                        <div class="spec-icon-compact">
-                            <i class="${levelIcon}"></i>
-                        </div>
-                        <span class="ubits-body-xs-regular">${cardData.level}</span>
-                    </div>
-                    <div class="spec-item-compact">
-                        <div class="spec-icon-compact">
-                            <i class="far fa-clock"></i>
-                        </div>
-                        <span class="ubits-body-xs-regular">${cardData.duration}</span>
-                    </div>
-                    <div class="spec-item-compact">
-                        <div class="spec-icon-compact">
-                            <i class="far fa-globe"></i>
-                        </div>
-                        <span class="ubits-body-xs-regular">${cardData.language}</span>
-                    </div>
-                </div>
-            </div>
-            ${(cardData.progress > 0 || cardData.status !== 'default') ? `
-            <div class="course-progress-overlay-compact">
-                <div class="progress-bar">
-                    <div class="progress-fill" style="width: ${cardData.progress || 0}%"></div>
-                </div>
-            </div>
-            ` : ''}
-        </div>
-    `;
+    return (
+        '<div class="course-card-compact' +
+        listRowClass +
+        '"' +
+        dataContentId +
+        ' data-progress="' +
+        (cardData.progress || 0) +
+        '" data-status="' +
+        (cardData.status || 'default') +
+        '">' +
+        dragHandleHtml +
+        '<div class="course-card-compact-inner">' +
+        '<div class="course-card-compact__main">' +
+        thumbHTML +
+        '<div class="course-card-compact__details">' +
+        titleInner +
+        '<div class="course-content-compact">' +
+        providerHTML +
+        '</div>' +
+        specsHTML +
+        '</div></div></div>' +
+        (listRow && cardData.showActionsMenu ? menuBtnHtml : '') +
+        progressHTML +
+        '</div>'
+    );
 }
 
 /**
@@ -606,8 +638,8 @@ console.log(`
 📋 CARACTERÍSTICAS:
 • Variante horizontal y compacta de content-card
 • Misma funcionalidad que content-card (tipos, competencias, aliados)
-• Layout horizontal siempre: imagen 85x48px arriba izquierda, título alineado verticalmente
-• Estructura: Imagen + Título → Avatar + Tipo → Nivel + Tiempo + Idioma
+• Miniatura 3:2 (75px alto, ancho proporcional) a la izquierda; título, aliado|tipo y specs a la derecha
+• listRow + showActionsMenu / draggable: menú ⋮ y asa de arrastre
 • Barra de progreso en la parte inferior del card completo
 • Efecto zoom en imagen al hacer hover (igual que content-card)
 
@@ -631,7 +663,7 @@ loadCardContentCompact('mi-contenedor', [
 📷 NOTA SOBRE IMÁGENES:
 • Las rutas de imagen pueden ser diferentes en cada proyecto
 • El componente se adapta automáticamente a cualquier imagen
-• Tamaño fijo: 85x48px con zoom elegante en hover
+• Miniatura: 75px alto, ratio 3:2 (~112.5px ancho)
 
 🔍 VER TODAS LAS OPCIONES:
 console.log(window.CARD_CONTENT_COMPACT_OPTIONS);
@@ -645,8 +677,8 @@ console.log(window.CARD_CONTENT_COMPACT_OPTIONS);
  * RENDERIZADO DEL COMPONENTE CARD CONTENT COMPACT
  * 
  * REQUISITOS OBLIGATORIOS:
- * 1. CSS: <link rel="stylesheet" href="components/card-content-compact.css">
- * 2. JS: <script src="components/card-content-compact.js"></script>
+ * 1. CSS: <link rel="stylesheet" href="components/card-content-compact.css"> (incluye avatar.css)
+ * 2. JS: <script src="components/avatar.js"></script> (recomendado) + card-content-compact.js
  * 3. FontAwesome: <link rel="stylesheet" href="fontawesome-icons.css">
  * 4. UBITS Base: <link rel="stylesheet" href="ubits-colors.css">
  * 5. UBITS Typography: <link rel="stylesheet" href="ubits-typography.css">
@@ -683,10 +715,9 @@ console.log(window.CARD_CONTENT_COMPACT_OPTIONS);
  * NIVELES: Básico, Intermedio, Avanzado
  * 
  * ESTRUCTURA DEL COMPONENTE:
- * - Parte superior: Imagen (85x48px) y título (body-sm-bold) alineados horizontalmente
- * - Parte media: Avatar del proveedor (28px) + nombre + "|" + tipo de contenido (body-xs-regular)
- * - Parte inferior: Nivel + Tiempo + Idioma con iconos (body-xs-regular)
- * - Barra de progreso: En la parte inferior del card completo (4px de altura)
+ * - Fila: miniatura 3:2 (75px alto) + bloque de detalle (título, aliado|tipo, nivel/tiempo/idioma)
+ * - listRow opcional: asa de arrastre y menú ⋮ en los laterales
+ * - Barra de progreso opcional en la parte inferior del card (4px)
  * 
  * VARIANTES DE AVATARES PARA RUTA DE APRENDIZAJE Y PROGRAMA:
  * Cuando el tipo de contenido es "Ruta de aprendizaje" o "Programa" y se proporciona un array de `providers` con más de 1 elemento,
@@ -701,10 +732,6 @@ console.log(window.CARD_CONTENT_COMPACT_OPTIONS);
  * ESTADOS: default, progress, completed
  * 
  * DIFERENCIAS CON CARD CONTENT:
- * - Layout siempre horizontal (nunca cambia a vertical)
- * - Imagen fija de 85x48px (no 16:9 responsive)
- * - Título: body-sm-bold en lugar de body-sm-bold (mismo tamaño)
- * - Tipo, aliado, nivel, tiempo, idioma: body-xs-regular (más pequeños)
- * - Barra de progreso en la parte inferior del card completo
- * - Estructura vertical: Imagen+Título → Avatar+Tipo → Specs
+ * - Más compacto: miniatura cuadrada y metadatos en columna a la derecha
+ * - Tipografía: título body-sm-bold; meta body-xs-regular
  */
