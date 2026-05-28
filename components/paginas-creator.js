@@ -55,6 +55,7 @@
     function normalizeTipo(tipo) {
         var t = (tipo || 'blank-page').toString().trim().toLowerCase();
         t = t.replace(/\s+/g, '-');
+        if (t === 'evaluacion-final') t = 'evaluacion';
         return TIPO_ICONS[t] ? t : 'blank-page';
     }
 

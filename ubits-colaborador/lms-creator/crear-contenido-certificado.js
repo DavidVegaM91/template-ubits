@@ -127,9 +127,13 @@
                 : 'Resolución efectiva de conflictos en equipos de trabajo';
         var tiempo = readContainerInputValue('crear-contenido-in-tiempo') || '30';
         var unidad = readContainerInputValue('crear-contenido-in-unidad') || 'min';
-        var categoria =
+        var categoriaRaw =
             readContainerSelectText('crear-contenido-in-categoria') || 'Gestión de conflictos';
-        if (categoria === 'Selecciona una opción') categoria = 'Gestión de conflictos';
+        if (categoriaRaw === 'Selecciona una opción') categoriaRaw = 'Gestión de conflictos';
+        var categoria =
+            typeof window.resolveCategoriaFiqshaLabel === 'function'
+                ? window.resolveCategoriaFiqshaLabel(categoriaRaw)
+                : categoriaRaw;
         return {
             title: title,
             studentName: 'Nombre del estudiante',

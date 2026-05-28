@@ -2670,4 +2670,25 @@
     global.openScormEditModal    = openScormEditModal;
     global.ccScormDataStore      = _scormDataStore;
 
+    /** SCORM generado por IA ya renderizado (demo deep link). */
+    global.ccScormBuildDemoAiRenderedBlock = function (pageKey, titulo) {
+        var tit = titulo && String(titulo).trim() ? String(titulo).trim() : 'Presentación';
+        var enabled = createDefaultEnabledSlideTypes();
+        var slides = generateSlidesFromEnabled(enabled);
+        var scormHtml = generateScormHtml(tit, slides, '#0C5BEF', false, false, null, '');
+        var pk = pageKey != null ? String(pageKey) : '';
+        if (pk) {
+            _scormDataStore[pk] = {
+                slides: slides,
+                color: '#0C5BEF',
+                titulo: tit,
+                scormHtml: scormHtml,
+                logoDataUrl: null,
+                enabledSlideTypes: normalizeEnabledSlideTypes(enabled),
+                generatedByAi: true
+            };
+        }
+        return buildRenderedBlock(scormHtml, pk || null, { aiGenerated: true });
+    };
+
 }(window));

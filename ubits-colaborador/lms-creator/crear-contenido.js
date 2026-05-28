@@ -809,9 +809,9 @@
         });
         var catOpts = [{ value: '', text: 'Selecciona una opción' }].concat(o.categorias);
         var firstRealCat = (o.categorias || []).filter(function (c) {
-            return c && c.id != null && String(c.id).trim() !== '';
+            return c && c.value != null && String(c.value).trim() !== '';
         })[0];
-        var defaultCatId = firstRealCat ? String(firstRealCat.id) : '';
+        var defaultCatId = firstRealCat ? String(firstRealCat.value) : '';
         crearContenidoInputApis.categoria = createInput({
             containerId: 'crear-contenido-in-categoria',
             type: 'select',
@@ -1183,12 +1183,20 @@
         }
     }
 
-    /** Antes de sustituir el mount: liberar blob PDF si el usuario estaba viendo un PDF incrustado. */
+    /** Antes de sustituir el mount: no revocar blob del estado (se reutiliza al volver a la página PDF). */
     function beforeReplaceRecursosMountIfPdfShowing(mount) {
         if (!mount || !mount.querySelector('[data-cc-pdf-js-viewer]')) return;
-        if (CC_RECURSOS_CURRENT_PAGE_KEY != null) {
-            revokeRecursosPdfBlobFromState(CC_RECURSOS_CURRENT_PAGE_KEY);
+    }
+
+    function ensureRecursosPdfBlobUrl(saved) {
+        if (!saved) return '';
+        var existing = saved.pdfBlobUrl != null ? String(saved.pdfBlobUrl).trim() : '';
+        if (existing.indexOf('blob:') === 0) return existing;
+        if (typeof Blob !== 'undefined' && saved.pdfFileBlob instanceof Blob) {
+            saved.pdfBlobUrl = URL.createObjectURL(saved.pdfFileBlob);
+            return saved.pdfBlobUrl;
         }
+        return existing;
     }
 
     function pdfFileBaseName(fileName) {
@@ -1370,6 +1378,7 @@
             CC_RECURSOS_PAGE_STATE[pkPdf] = Object.assign({}, prevPdf, {
                 html: html,
                 pdfBlobUrl: url,
+                pdfFileBlob: file,
                 primaryType: 'pdf'
             });
         }
@@ -1378,7 +1387,7 @@
             viewerRoot.setAttribute('aria-label', 'Vista previa: ' + String(file.name || 'PDF'));
         }
         if (viewerRoot && typeof window.mountCrearContenidoPdfViewer === 'function') {
-            window.mountCrearContenidoPdfViewer(viewerRoot, url);
+            window.mountCrearContenidoPdfViewer(viewerRoot, file, { allowNativeFallback: false });
         } else if (viewerRoot) {
             var le = viewerRoot.querySelector('.cc-pdf-resource__pdfjs-loading');
             if (le) {
@@ -1525,8 +1534,178 @@
         CC_RECURSOS_PAGE_STATE[pk] = Object.assign({}, prev, compFlags, {
             html: html,
             pdfBlobUrl: pdfBlobUrl,
+            pdfFileBlob: prev.pdfFileBlob,
+            pdfArrayBuffer: prev.pdfArrayBuffer,
+            pdfSourcePath: prev.pdfSourcePath,
             primaryType: prev.primaryType || detectRecursosPrimaryType(rb, pk)
         });
+    }
+
+    function resolveRecursosPdfFetchUrl(pathOrBlob) {
+        var s = String(pathOrBlob || '').trim();
+        if (!s || s.indexOf('blob:') === 0) return s;
+        try {
+            return new URL(s, window.location.href).href;
+        } catch (e) {
+            return s;
+        }
+    }
+
+    function getRecursosPdfMountFallbackUrl(saved) {
+        if (saved && saved.pdfSourcePath) return String(saved.pdfSourcePath).trim();
+        return './demo-assets/guia-mapa-conflicto.pdf';
+    }
+
+    function buildRecursosPdfFileFromBuffer(buf, name) {
+        var fileName = name || 'guia-mapa-conflicto.pdf';
+        if (typeof File !== 'undefined') {
+            return new File([buf], fileName, { type: 'application/pdf' });
+        }
+        return new Blob([buf], { type: 'application/pdf' });
+    }
+
+    /** Bytes del PDF demo embebidos en demo-assets/guia-mapa-conflicto.embed.js (sin fetch). */
+    function getCrearContenidoDemoPdfEmbeddedArrayBuffer() {
+        if (typeof window.CC_DEMO_PDF_GET_ARRAY_BUFFER === 'function') {
+            try {
+                return window.CC_DEMO_PDF_GET_ARRAY_BUFFER();
+            } catch (e) {
+                return null;
+            }
+        }
+        return null;
+    }
+
+    function resolveRecursosPdfFileFromSaved(saved) {
+        if (!saved) return null;
+        if (saved.pdfFileBlob && typeof Blob !== 'undefined' && saved.pdfFileBlob instanceof Blob) {
+            return saved.pdfFileBlob;
+        }
+        if (saved.pdfArrayBuffer) {
+            saved.pdfFileBlob = buildRecursosPdfFileFromBuffer(saved.pdfArrayBuffer);
+            return saved.pdfFileBlob;
+        }
+        var embedded = getCrearContenidoDemoPdfEmbeddedArrayBuffer();
+        if (embedded && embedded.byteLength) {
+            saved.pdfArrayBuffer = embedded;
+            saved.pdfFileBlob = buildRecursosPdfFileFromBuffer(embedded);
+            return saved.pdfFileBlob;
+        }
+        return null;
+    }
+
+    function mountRecursosPdfViewerWithFile(rb, file) {
+        if (!rb || !file) return;
+        var vr = rb.querySelector('[data-cc-pdf-js-viewer]');
+        if (!vr || typeof window.mountCrearContenidoPdfViewer !== 'function') return;
+        /* Igual que subida manual: solo PDF.js (canvas); sin visor nativo del navegador */
+        window.mountCrearContenidoPdfViewer(vr, file, { allowNativeFallback: false });
+    }
+
+    function mountRecursosPdfViewerFromState(rb, saved) {
+        if (!rb || !saved) return;
+        var file = resolveRecursosPdfFileFromSaved(saved);
+        if (file) {
+            mountRecursosPdfViewerWithFile(rb, file);
+            return;
+        }
+
+        var pathFallback = getRecursosPdfMountFallbackUrl(saved);
+        var path = saved.pdfSourcePath != null ? String(saved.pdfSourcePath).trim() : pathFallback;
+        var fetchUrl = resolveRecursosPdfFetchUrl(path);
+        fetch(fetchUrl)
+            .then(function (res) {
+                if (!res.ok) throw new Error('pdf-fetch-' + res.status);
+                return res.arrayBuffer();
+            })
+            .then(function (buf) {
+                saved.pdfArrayBuffer = buf;
+                saved.pdfFileBlob = buildRecursosPdfFileFromBuffer(buf);
+                mountRecursosPdfViewerWithFile(rb, saved.pdfFileBlob);
+            })
+            .catch(function () {
+                return loadRecursosPdfBinaryViaXhr(fetchUrl).then(function (buf) {
+                    saved.pdfArrayBuffer = buf;
+                    saved.pdfFileBlob = buildRecursosPdfFileFromBuffer(buf);
+                    mountRecursosPdfViewerWithFile(rb, saved.pdfFileBlob);
+                });
+            })
+            .catch(function () {
+                var embedded = getCrearContenidoDemoPdfEmbeddedArrayBuffer();
+                if (embedded && embedded.byteLength) {
+                    saved.pdfArrayBuffer = embedded;
+                    saved.pdfFileBlob = buildRecursosPdfFileFromBuffer(embedded);
+                    mountRecursosPdfViewerWithFile(rb, saved.pdfFileBlob);
+                    return;
+                }
+                var vr = rb.querySelector('[data-cc-pdf-js-viewer]');
+                var loadingEl = vr && vr.querySelector('.cc-pdf-resource__pdfjs-loading');
+                if (loadingEl) {
+                    loadingEl.style.display = '';
+                    loadingEl.textContent = 'No se pudo mostrar el PDF.';
+                    loadingEl.classList.add('cc-pdf-resource__pdfjs-loading--error');
+                }
+            });
+    }
+
+  /** XHR suele funcionar en file:// cuando fetch() no precarga el PDF del demo. */
+    function loadRecursosPdfBinaryViaXhr(url) {
+        return new Promise(function (resolve, reject) {
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', url, true);
+            xhr.responseType = 'arraybuffer';
+            xhr.onload = function () {
+                var ok = xhr.status === 0 || (xhr.status >= 200 && xhr.status < 300);
+                if (ok && xhr.response) {
+                    resolve(xhr.response);
+                } else {
+                    reject(new Error('xhr-' + xhr.status));
+                }
+            };
+            xhr.onerror = function () {
+                reject(new Error('xhr-error'));
+            };
+            xhr.send();
+        });
+    }
+
+    function scheduleMountRecursosPdfViewerFromState(rb, saved) {
+        var attempts = 0;
+        function tryMount() {
+            var vr = rb && rb.querySelector('[data-cc-pdf-js-viewer]');
+            if (vr && vr.clientWidth < 8 && attempts < 12) {
+                attempts += 1;
+                requestAnimationFrame(tryMount);
+                return;
+            }
+            mountRecursosPdfViewerFromState(rb, saved);
+        }
+        requestAnimationFrame(function () {
+            requestAnimationFrame(tryMount);
+        });
+    }
+
+    function syncRecursosPaginasItemIconForPage(pageKey, tipo) {
+        if (!pageKey) return;
+        var mount = getRecursosIndiceMount();
+        if (!mount) return;
+        var item = mount.querySelector('.ubits-paginas-creator__item[data-paginas-creator-key="' + pageKey + '"]');
+        if (!item || typeof window.paginasCreatorIconClass !== 'function') return;
+        var iconEl = item.querySelector('.ubits-paginas-creator__drag-handle i');
+        if (iconEl) iconEl.className = window.paginasCreatorIconClass(tipo);
+    }
+
+    function mountRecursosEvalPage(pageKey) {
+        if (!isEvalPageKey(pageKey)) return false;
+        var rb = document.getElementById('crear-contenido-recursos-resources-mount');
+        if (!rb) return false;
+        beforeReplaceRecursosMountIfPdfShowing(rb);
+        if (typeof window.rcMountEvalForm === 'function') {
+            window.rcMountEvalForm(rb);
+        }
+        syncRecursosPaginasItemIconForPage(pageKey, 'evaluacion');
+        hideRecursosComplementaryMount();
+        return true;
     }
 
     function restoreRecursosPage(pageKey) {
@@ -1534,14 +1713,15 @@
         if (!rb) return false;
         var saved = CC_RECURSOS_PAGE_STATE[pageKey];
         if (!saved) return false;
+        if (isEvalPageKey(pageKey)) {
+            return mountRecursosEvalPage(pageKey);
+        }
+        if (!saved.html) return false;
         rb.innerHTML = saved.html;
         if (typeof window.initResourcesBlockFields === 'function') {
             window.initResourcesBlockFields(rb);
         }
-        var vr = rb.querySelector('[data-cc-pdf-js-viewer]');
-        if (vr && saved.pdfBlobUrl && typeof window.mountCrearContenidoPdfViewer === 'function') {
-            window.mountCrearContenidoPdfViewer(vr, saved.pdfBlobUrl);
-        }
+        scheduleMountRecursosPdfViewerFromState(rb, saved);
         renderCrearContenidoComplementary();
         return true;
     }
@@ -2521,6 +2701,11 @@
         return false;
     }
 
+    function recursosIndiceHasPages() {
+        var mount = getRecursosIndiceMount();
+        return !!(mount && mount.querySelector('.ubits-paginas-creator__item'));
+    }
+
     function setRecursosEditorVisible(visible) {
         var prev = document.getElementById('crear-contenido-recursos-preview');
         var emptyHost = document.getElementById(CREAR_CONTENIDO_RECURSOS_EMPTY_HOST_ID);
@@ -2788,14 +2973,15 @@
         syncRecursosRightTitleFromActive();
 
         // Restaurar estado guardado de la nueva página, o mostrar el selector por defecto.
-        // Las páginas de evaluación las gestiona evaluaciones-recurso.js (no tocar aquí).
-        if (!isEvalPageKey(nextPageKey)) {
-            if (!restoreRecursosPage(nextPageKey)) {
-                renderRecursosResourcesBlock();
-            }
+        if (isEvalPageKey(nextPageKey)) {
+            mountRecursosEvalPage(nextPageKey);
+        } else if (!restoreRecursosPage(nextPageKey)) {
+            renderRecursosResourcesBlock();
         }
-        // Si es eval, evaluaciones-recurso.js remonta el formulario vía setTimeout(0);
-        // llamar renderRecursosResourcesBlock() produciría un flash innecesario.
+
+        if (nextPageKey) {
+            setRecursosEditorVisible(true);
+        }
 
         refreshCrearContenidoPageSiguienteState();
         // Refrescar bordes rojos (quita si ya quedó válido; marca si la anterior quedó inválida).
@@ -2955,7 +3141,14 @@
                     window.initResourcesBlockFields(mount);
                 }
                 if (CC_RECURSOS_CURRENT_PAGE_KEY) {
-                    CC_RECURSOS_PAGE_STATE[String(CC_RECURSOS_CURRENT_PAGE_KEY)] = { html: mount.innerHTML };
+                    if (typeof window.ccRecursosSetPageHtml === 'function') {
+                        window.ccRecursosSetPageHtml(CC_RECURSOS_CURRENT_PAGE_KEY, mount.innerHTML);
+                    } else {
+                        CC_RECURSOS_PAGE_STATE[String(CC_RECURSOS_CURRENT_PAGE_KEY)] = {
+                            html: mount.innerHTML,
+                            primaryType: 'embebido'
+                        };
+                    }
                 }
                 syncRecursosEmbedPageIcon();
                 return;
@@ -2970,7 +3163,14 @@
                         onScormReady: function (html) {
                             beforeReplaceRecursosMountIfPdfShowing(mount);
                             if (CC_RECURSOS_CURRENT_PAGE_KEY) {
-                                CC_RECURSOS_PAGE_STATE[CC_RECURSOS_CURRENT_PAGE_KEY] = { html: html };
+                                if (typeof window.ccRecursosSetPageHtml === 'function') {
+                                    window.ccRecursosSetPageHtml(CC_RECURSOS_CURRENT_PAGE_KEY, html);
+                                } else {
+                                    CC_RECURSOS_PAGE_STATE[CC_RECURSOS_CURRENT_PAGE_KEY] = {
+                                        html: html,
+                                        primaryType: 'scorm'
+                                    };
+                                }
                             }
                             mount.innerHTML = html;
                             var activeItem = document.querySelector('#crear-contenido-recursos-indice-mount .ubits-paginas-creator__item.is-active');
@@ -3552,10 +3752,22 @@
         }, 0);
         wireCrearContenidoPageStepperStepClicks();
         var initialHashForPromo = location.hash || '';
-        applyCrearContenidoPageHash();
-        setTimeout(function () {
-            tryOfferCrearContenidoPromoAgentesModal(initialHashForPromo);
-        }, 0);
+        var deepDemoSeed =
+            isRecursosUrlHash(initialHashForPromo) || initialHashForPromo === HASH_PAGE_CERTIFICADO;
+        if (deepDemoSeed && isCrearContenidoEmptyForDemo()) {
+            seedCrearContenidoDemo(function () {
+                applyCrearContenidoPageHash();
+                refreshCrearContenidoPageSiguienteState();
+                setTimeout(function () {
+                    tryOfferCrearContenidoPromoAgentesModal(initialHashForPromo);
+                }, 0);
+            });
+        } else {
+            applyCrearContenidoPageHash();
+            setTimeout(function () {
+                tryOfferCrearContenidoPromoAgentesModal(initialHashForPromo);
+            }, 0);
+        }
         window.addEventListener('hashchange', function onCrearContenidoHashChange() {
             var hc = location.hash || '';
             applyCrearContenidoPageHash();
@@ -3653,6 +3865,29 @@
         }
         if (idx === 1) {
             initCrearContenidoPageRecursosStepOnce();
+            if (recursosIndiceHasPages()) {
+                setRecursosEditorVisible(true);
+                var activePk =
+                    CC_RECURSOS_CURRENT_PAGE_KEY != null ? String(CC_RECURSOS_CURRENT_PAGE_KEY) : '';
+                if (!activePk) {
+                    var activeItem = document.querySelector(
+                        '#crear-contenido-recursos-indice-mount .ubits-paginas-creator__item.is-active'
+                    );
+                    if (activeItem) {
+                        activePk = activeItem.getAttribute('data-paginas-creator-key') || '';
+                        if (activePk) CC_RECURSOS_CURRENT_PAGE_KEY = activePk;
+                    }
+                }
+                if (activePk) {
+                    syncRecursosRightTitleFromActive();
+                    if (isEvalPageKey(activePk)) {
+                        mountRecursosEvalPage(activePk);
+                    } else {
+                        restoreRecursosPage(activePk);
+                    }
+                    syncRecursosPageCounter();
+                }
+            }
         }
         if (idx === 2 && typeof window.initCrearContenidoCertificadoStepOnce === 'function') {
             window.initCrearContenidoCertificadoStepOnce();
@@ -3756,6 +3991,313 @@
                 markCrearContenidoPromoAgentesModalShownThisSession();
             }
         }
+    }
+
+    var CC_DEMO_TITLE = 'Resolución efectiva de conflictos en equipos de trabajo';
+    var CC_DEMO_COVER_SRC = '../../images/cards-learn/portadas-ia/02-personas-en-oficina.jpg';
+    /** Rutas candidatas: copia ASCII junto a esta página (fiable) + original en /pdf (NFD/NFC). */
+    var CC_DEMO_PDF_PATH_CANDIDATES = [
+        './demo-assets/guia-mapa-conflicto.pdf',
+        '../../pdf/Gui\u0301a mapa del conflicto.pdf',
+        '../../pdf/Guía mapa del conflicto.pdf'
+    ];
+    var CC_DEMO_PDF_PATH = CC_DEMO_PDF_PATH_CANDIDATES[0];
+    var CC_DEMO_SEC1 = 'cc-demo-sec-1';
+    var CC_DEMO_SEC2 = 'cc-demo-sec-2';
+    var CC_DEMO_PG_VIDEO = 'cc-demo-pg-1';
+    var CC_DEMO_PG_PDF = 'cc-demo-pg-2';
+    var CC_DEMO_PG_SCORM_MANUAL = 'cc-demo-pg-3';
+    var CC_DEMO_PG_SCORM_IA = 'cc-demo-pg-4';
+    var CC_DEMO_PG_EVAL = 'cc-demo-pg-5';
+
+    function isCrearContenidoEmptyForDemo() {
+        if (window._ccDemoSeeded) return false;
+        var titulo = document.getElementById('crear-contenido-titulo');
+        if (titulo && String(titulo.value || '').trim()) return false;
+        var block = document.getElementById('crear-contenido-img-trailer');
+        if (
+            block &&
+            (block.classList.contains('ubits-learn-img-trailer--image') ||
+                block.classList.contains('ubits-learn-img-trailer--trailer'))
+        ) {
+            return false;
+        }
+        if (Object.keys(CC_RECURSOS_PAGE_STATE).length > 0) return false;
+        return true;
+    }
+
+    function findCrearContenidoDemoCategoryId() {
+        var cats =
+            window.BD_MASTER_CATEGORIAS_FIQSHA && window.BD_MASTER_CATEGORIAS_FIQSHA.categorias
+                ? window.BD_MASTER_CATEGORIAS_FIQSHA.categorias
+                : [];
+        for (var i = 0; i < cats.length; i++) {
+            var c = cats[i];
+            if (!c) continue;
+            var nombre = String(c.nombre || '').toLowerCase();
+            if (nombre.indexOf('gestión de conflictos') !== -1 || nombre.indexOf('gestion de conflictos') !== -1) {
+                return String(c.id);
+            }
+        }
+        return 'cfq-006';
+    }
+
+    /** Id cfq-XXX → nombre visible; si ya es nombre, se devuelve tal cual. */
+    function resolveCategoriaFiqshaLabel(valueOrId) {
+        var raw = String(valueOrId || '').trim();
+        if (!raw) return '';
+        var cats =
+            window.BD_MASTER_CATEGORIAS_FIQSHA && window.BD_MASTER_CATEGORIAS_FIQSHA.categorias
+                ? window.BD_MASTER_CATEGORIAS_FIQSHA.categorias
+                : [];
+        for (var i = 0; i < cats.length; i++) {
+            var c = cats[i];
+            if (!c) continue;
+            if (String(c.id) === raw) return String(c.nombre || raw);
+            if (String(c.nombre) === raw) return String(c.nombre);
+        }
+        return raw;
+    }
+
+    window.resolveCategoriaFiqshaLabel = resolveCategoriaFiqshaLabel;
+
+    /** Select UBITS: el input muestra `text`; onChange recibe `value` (id). */
+    function setCrearContenidoSelectDisplayByValue(inputApi, valueId, selectOptions) {
+        if (!inputApi || typeof inputApi.setValue !== 'function') return;
+        var label = resolveCategoriaFiqshaLabel(valueId);
+        (selectOptions || []).forEach(function (opt) {
+            if (opt && String(opt.value) === String(valueId)) {
+                label = String(opt.text || label);
+            }
+        });
+        inputApi.setValue(label);
+    }
+
+    function seedCrearContenidoDemoPortada() {
+        var titulo = document.getElementById('crear-contenido-titulo');
+        if (titulo) titulo.value = CC_DEMO_TITLE;
+        var rteRoot = document.getElementById('crear-contenido-rte');
+        var descHtml =
+            '<p class="ubits-body-md-regular">Aprende a identificar las causas del conflicto en equipos, comunicarte con calma y aplicar herramientas prácticas para transformar tensiones en acuerdos sostenibles.</p>';
+        if (typeof window.setRichTextHtml === 'function' && rteRoot) {
+            window.setRichTextHtml(rteRoot, descHtml);
+        }
+        applyPortadaImagenCargada(CC_DEMO_COVER_SRC, '', { fromAi: true, iaPrompt: CC_DEMO_TITLE, skipMetaUpdate: false });
+        var catId = findCrearContenidoDemoCategoryId();
+        var catOpts = buildSelectOptionsFromMaster().categorias;
+        setCrearContenidoSelectDisplayByValue(crearContenidoInputApis.categoria, catId, catOpts);
+    }
+
+    function buildCrearContenidoDemoScormManualHtml() {
+        return (
+            '<div class="ubits-resources-block ubits-resources-block--stack">' +
+            '<div class="ubits-resources-block__surface cc-scorm-resource__surface" style="padding:0;">' +
+            '<div class="cc-scorm-resource__embed-wrap">' +
+            '<div class="cc-scorm-iframe-container">' +
+            '<iframe src="simulador-scorm.html" allowfullscreen></iframe>' +
+            '</div></div></div>' +
+            '<div class="ubits-resources-block__footer" style="display:flex;align-items:center;gap:var(--gap-sm);flex-wrap:wrap;">' +
+            '<button type="button" class="ubits-button ubits-button--error-secondary ubits-button--sm" id="cc-eliminar-recurso">' +
+            '<i class="far fa-trash-alt"></i><span>Eliminar</span></button></div></div>'
+        );
+    }
+
+    function packCrearContenidoDemoPdfBinary(buf, sourcePath) {
+        var file = buildRecursosPdfFileFromBuffer(buf);
+        return {
+            arrayBuffer: buf,
+            blob: file,
+            sourcePath: sourcePath
+        };
+    }
+
+    /**
+     * Precarga el PDF del demo (fetch; si falla, XHR — útil en file://).
+     * @returns {Promise<{ arrayBuffer: ArrayBuffer, blob: Blob|File, sourcePath: string }>}
+     */
+    function fetchCrearContenidoDemoPdfBinary() {
+        var embedded = getCrearContenidoDemoPdfEmbeddedArrayBuffer();
+        if (embedded && embedded.byteLength) {
+            return Promise.resolve(packCrearContenidoDemoPdfBinary(embedded, CC_DEMO_PDF_PATH));
+        }
+
+        var candidates = CC_DEMO_PDF_PATH_CANDIDATES;
+        var fetchIdx = 0;
+        var xhrIdx = 0;
+
+        function tryFetchNext() {
+            if (fetchIdx >= candidates.length) {
+                return tryXhrNext();
+            }
+            var rel = candidates[fetchIdx++];
+            var url = resolveRecursosPdfFetchUrl(rel);
+            return fetch(url)
+                .then(function (res) {
+                    if (!res.ok) return tryFetchNext();
+                    return res.arrayBuffer().then(function (buf) {
+                        return packCrearContenidoDemoPdfBinary(buf, rel);
+                    });
+                })
+                .catch(function () {
+                    return tryFetchNext();
+                });
+        }
+
+        function tryXhrNext() {
+            if (xhrIdx >= candidates.length) {
+                var emb = getCrearContenidoDemoPdfEmbeddedArrayBuffer();
+                if (emb && emb.byteLength) {
+                    return Promise.resolve(packCrearContenidoDemoPdfBinary(emb, CC_DEMO_PDF_PATH));
+                }
+                return Promise.reject(new Error('demo-pdf-not-found'));
+            }
+            var rel = candidates[xhrIdx++];
+            var url = resolveRecursosPdfFetchUrl(rel);
+            return loadRecursosPdfBinaryViaXhr(url)
+                .then(function (buf) {
+                    return packCrearContenidoDemoPdfBinary(buf, rel);
+                })
+                .catch(function () {
+                    return tryXhrNext();
+                });
+        }
+
+        return tryFetchNext();
+    }
+
+    function seedCrearContenidoDemoRecursosPageStates(pdfBin) {
+        if (!pdfBin || !pdfBin.arrayBuffer) {
+            var embBuf = getCrearContenidoDemoPdfEmbeddedArrayBuffer();
+            if (embBuf && embBuf.byteLength) {
+                pdfBin = packCrearContenidoDemoPdfBinary(embBuf, CC_DEMO_PDF_PATH);
+            }
+        }
+        var videoHtml =
+            typeof window.ccVideoBuildAiRenderedHtml === 'function'
+                ? window.ccVideoBuildAiRenderedHtml()
+                : '';
+        var pdfHtml = buildCrearContenidoPdfViewerShellHtml();
+        var scormManualHtml = buildCrearContenidoDemoScormManualHtml();
+        var scormIaHtml =
+            typeof window.ccScormBuildDemoAiRenderedBlock === 'function'
+                ? window.ccScormBuildDemoAiRenderedBlock(
+                      CC_DEMO_PG_SCORM_IA,
+                      'Conversaciones difíciles según Thomas-Kilmann'
+                  )
+                : '';
+
+        CC_RECURSOS_PAGE_STATE[CC_DEMO_PG_VIDEO] = { html: videoHtml, primaryType: 'video' };
+        var pdfState = {
+            html: pdfHtml,
+            pdfSourcePath: (pdfBin && pdfBin.sourcePath) || CC_DEMO_PDF_PATH,
+            primaryType: 'pdf',
+            pdfBlobUrl: ''
+        };
+        if (pdfBin && pdfBin.arrayBuffer) {
+            pdfState.pdfArrayBuffer = pdfBin.arrayBuffer;
+        }
+        if (pdfBin && pdfBin.blob) {
+            pdfState.pdfFileBlob = pdfBin.blob;
+            try {
+                pdfState.pdfBlobUrl = URL.createObjectURL(pdfBin.blob);
+            } catch (eUrl) {
+                pdfState.pdfBlobUrl = '';
+            }
+        }
+        CC_RECURSOS_PAGE_STATE[CC_DEMO_PG_PDF] = pdfState;
+        CC_RECURSOS_PAGE_STATE[CC_DEMO_PG_SCORM_MANUAL] = { html: scormManualHtml, primaryType: 'scorm' };
+        CC_RECURSOS_PAGE_STATE[CC_DEMO_PG_SCORM_IA] = { html: scormIaHtml, primaryType: 'scorm' };
+        if (typeof window.ccEvalSeedStandardPage === 'function') {
+            window.ccEvalSeedStandardPage(CC_DEMO_PG_EVAL);
+        }
+        CC_RECURSOS_PAGE_STATE[CC_DEMO_PG_EVAL] = {
+            primaryType: 'evaluacion-final',
+            hasComplementaryText: false,
+            hasComplementaryDownload: false,
+            complementaryOrder: []
+        };
+    }
+
+    function seedCrearContenidoDemoRecursosIndice() {
+        recursosUiDone = true;
+        recursosSectionsEnabled = true;
+        recursosSectionIdSeq = 3;
+        recursosPageSeq = 5;
+        recursosSectionMeta[CC_DEMO_SEC1] = { descriptionHtml: '' };
+        recursosSectionMeta[CC_DEMO_SEC2] = {
+            descriptionHtml:
+                '<p class="ubits-body-md-regular">Simulaciones, marcos de referencia y evaluación para aplicar lo aprendido en situaciones reales de conflicto en el trabajo.</p>'
+        };
+        bindRecursosEventsOnce();
+        var sectionsModel = [
+            {
+                key: CC_DEMO_SEC1,
+                title: 'Sección 1: Fundamentos',
+                pages: [
+                    {
+                        label: 'Comunicación para desescalar un conflicto',
+                        pageKey: CC_DEMO_PG_VIDEO,
+                        tipo: 'video',
+                        active: true
+                    },
+                    {
+                        label: 'Guía mapa de conflicto',
+                        pageKey: CC_DEMO_PG_PDF,
+                        tipo: 'pdf',
+                        active: false
+                    }
+                ],
+                active: true
+            },
+            {
+                key: CC_DEMO_SEC2,
+                title: 'Sección 2: Herramientas para resolver conflictos',
+                pages: [
+                    {
+                        label: 'Simulador de conversación difícil',
+                        pageKey: CC_DEMO_PG_SCORM_MANUAL,
+                        tipo: 'scorm',
+                        active: false
+                    },
+                    {
+                        label: 'Conversaciones difíciles según Thomas-Kilmann',
+                        pageKey: CC_DEMO_PG_SCORM_IA,
+                        tipo: 'scorm',
+                        active: false
+                    },
+                    { label: 'Evaluación', pageKey: CC_DEMO_PG_EVAL, tipo: 'evaluacion', active: false }
+                ],
+                active: false
+            }
+        ];
+        recursosMountHtmlAndInit(recursosBuildIndiceMultiHtml(sectionsModel));
+        var tgl = document.getElementById('crear-contenido-recursos-indice-sections-toggle');
+        if (tgl) tgl.checked = true;
+        recursosRestoreActivePagePreferred(CC_DEMO_PG_VIDEO);
+        setRecursosEditorVisible(true);
+        syncRecursosPaginasItemIconForPage(CC_DEMO_PG_EVAL, 'evaluacion');
+        syncRecursosPageCounter();
+        refreshCrearContenidoPageSiguienteState();
+    }
+
+    function seedCrearContenidoDemo(done) {
+        if (!isCrearContenidoEmptyForDemo()) {
+            if (typeof done === 'function') done();
+            return;
+        }
+        window._ccDemoSeeded = true;
+        seedCrearContenidoDemoPortada();
+        fetchCrearContenidoDemoPdfBinary()
+            .then(function (pdfBin) {
+                seedCrearContenidoDemoRecursosPageStates(pdfBin);
+                seedCrearContenidoDemoRecursosIndice();
+                if (typeof done === 'function') done();
+            })
+            .catch(function () {
+                seedCrearContenidoDemoRecursosPageStates(null);
+                seedCrearContenidoDemoRecursosIndice();
+                if (typeof done === 'function') done();
+            });
     }
 
     function applyCrearContenidoPageHash() {

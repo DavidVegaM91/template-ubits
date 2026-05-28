@@ -2035,13 +2035,7 @@
         return true;
     }
 
-    function applyAIQuestions(rootEl, questions) {
-        var pageState = rootEl && rootEl._ccEvalPageState ? rootEl._ccEvalPageState : null;
-        if (!pageState) return;
-
-        var prevModels = snapshotModelsFromApis(rootEl);
-        var prevActive = rootEl && rootEl._ccEvalActiveQId ? Number(rootEl._ccEvalActiveQId) : 1;
-
+    function bankQuestionsToExamModels(questions) {
         var typeMap = {
             multiple_choice_single_answer: 'multiple_choice_single',
             multiple_choice_multiple_answers: 'multiple_choice_multiple',
@@ -2051,7 +2045,7 @@
             matching: 'matching'
         };
 
-        var aiModels = (questions || []).map(function (q) {
+        return (questions || []).map(function (q) {
             var t = typeMap[q && q.agentType] || 'multiple_choice_single';
             var m = { type: t, statement: String((q && q.stmt) || '').trim(), generatedByAi: true };
             if (t === 'multiple_choice_single' || t === 'multiple_choice_multiple') {
@@ -2101,6 +2095,16 @@
             }
             return m;
         });
+    }
+
+    function applyAIQuestions(rootEl, questions) {
+        var pageState = rootEl && rootEl._ccEvalPageState ? rootEl._ccEvalPageState : null;
+        if (!pageState) return;
+
+        var prevModels = snapshotModelsFromApis(rootEl);
+        var prevActive = rootEl && rootEl._ccEvalActiveQId ? Number(rootEl._ccEvalActiveQId) : 1;
+
+        var aiModels = bankQuestionsToExamModels(questions);
 
         // Las preguntas IA se AGREGAN después de las preguntas manuales existentes
         var nextModels = prevModels.concat(aiModels);
@@ -2247,6 +2251,44 @@
 
         document.addEventListener('ubits-paginas-creator-activate', mountEl._ccEvalActivateHandler);
     }
+
+    /** Configuración estándar + 10 preguntas del banco (demo deep link / QA). */
+    function getStandardEvalDemoPackage() {
+        var config = {
+            title: '',
+            minScore: 70,
+            timeLimit: false,
+            timeLimitValue: 30,
+            limitAttempts: false,
+            attemptsValue: 3,
+            limitQPerAttempt: false,
+            qPerAttemptValue: 5,
+            questionsRandom: true,
+            answersRandom: true,
+            questionCount: 10,
+            difficulty: 'intermediate',
+            questionTypes: ['multiple_choice_single_answer', 'binary']
+        };
+        var raw = genMockQuestions(
+            EVAL_AI_TOPIC_DEFAULT,
+            config.difficulty,
+            config.questionCount,
+            config.questionTypes
+        );
+        return { config: config, questions: bankQuestionsToExamModels(raw) };
+    }
+
+    global.ccEvalSeedStandardPage = function (pageKey) {
+        var pk = String(pageKey || '');
+        if (!pk) return null;
+        var pack = getStandardEvalDemoPackage();
+        var pageState = ensurePageState(pk);
+        pageState.config = Object.assign({}, pageState.config, pack.config);
+        pageState.questions = pack.questions.slice();
+        pageState.activeQId = 1;
+        global._ccEvalPageKeys[pk] = true;
+        return pageState;
+    };
 
     // API pública
     global.rcMountEvalForm = function (mountEl) {

@@ -2098,4 +2098,9 @@
     ══════════════════════════════════════ */
     global.openVideoRecursoModal = openVideoRecursoModal;
 
+    /** Bloque de video generado por IA (demo deep link). */
+    global.ccVideoBuildAiRenderedHtml = function () {
+        return buildRenderedBlock('local', AI_GENERATED_RESULT_MP4, true, { aiGenerated: true });
+    };
+
 }(window));
