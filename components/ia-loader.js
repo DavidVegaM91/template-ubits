@@ -7,6 +7,7 @@
  * Uso:
  *   getIaLoaderHTML()
  *   getIaLoaderHTML({ label: 'Texto' })
+ *   initIaLoaderParticles(loaderEl) — tras innerHTML (o MutationObserver automático)
  *
  * Requiere: ia-loader.css, ubits-colors.css; gradientes IA: --modo-ia-gradient-a…d, orbes rgb-1…3
  * (p. ej. general-styles/ubits-ia-appearance.css).
@@ -51,6 +52,7 @@ function getIaLoaderHTML(options) {
     var inner =
         '<div class="ubits-ia-loader__frame">' +
         '<div class="ubits-ia-loader__stage">' +
+        '<canvas class="ubits-ia-loader__particles" aria-hidden="true"></canvas>' +
         '<div class="ubits-ia-loader__cluster">' +
         '<div class="ubits-ia-loader__center">' +
         '<span class="ubits-ia-loader__sparkles-wrap" aria-hidden="true">' +
@@ -72,6 +74,282 @@ function getIaLoaderHTML(options) {
     );
 }
 
+/** Partículas onduladas: puntos finos; movimiento alineado con particle_wave_gradient.html */
+var UBITS_IA_LOADER_PARTICLES_SPACING_CSS = 11;
+var UBITS_IA_LOADER_PARTICLES_RADIUS_CSS_MIN = 0.95;
+var UBITS_IA_LOADER_PARTICLES_RADIUS_CSS_MAX = 1.45;
+var UBITS_IA_LOADER_PARTICLES_ALPHA_MIN = 0.14;
+var UBITS_IA_LOADER_PARTICLES_ALPHA_RANGE = 0.32;
+/** Referente: waveX = wave * 16 * dpr; waveY = cos(...) * 13 * dpr; t += 0.01; spring 0.13 / 0.70 */
+var UBITS_IA_LOADER_PARTICLES_WAVE_AMP_X_CSS = 16;
+var UBITS_IA_LOADER_PARTICLES_WAVE_AMP_Y_CSS = 13;
+var UBITS_IA_LOADER_PARTICLES_MOTION_REF_CSS = 200;
+
+function iaLoaderParticlesGradientColor(nx) {
+    var stops = [
+        [0, [30, 120, 255]],
+        [0.25, [110, 60, 240]],
+        [0.5, [200, 30, 200]],
+        [0.75, [230, 20, 130]],
+        [1, [240, 60, 40]]
+    ];
+    var i;
+    for (i = 0; i < stops.length - 1; i++) {
+        if (nx >= stops[i][0] && nx <= stops[i + 1][0]) {
+            var t = (nx - stops[i][0]) / (stops[i + 1][0] - stops[i][0]);
+            var c0 = stops[i][1];
+            var c1 = stops[i + 1][1];
+            return [
+                Math.round(c0[0] + (c1[0] - c0[0]) * t),
+                Math.round(c0[1] + (c1[1] - c0[1]) * t),
+                Math.round(c0[2] + (c1[2] - c0[2]) * t)
+            ];
+        }
+    }
+    return stops[stops.length - 1][1];
+}
+
+function destroyIaLoaderParticles(loaderEl) {
+    if (!loaderEl || !loaderEl._iaParticlesState) return;
+    var state = loaderEl._iaParticlesState;
+    if (state.rafId) cancelAnimationFrame(state.rafId);
+    if (state.resizeObserver) state.resizeObserver.disconnect();
+    if (state.reducedMotionMq && state.reducedMotionHandler) {
+        state.reducedMotionMq.removeEventListener('change', state.reducedMotionHandler);
+    }
+    loaderEl._iaParticlesState = null;
+    loaderEl.removeAttribute('data-ia-particles-init');
+}
+
+function initIaLoaderParticles(loaderOrRoot) {
+    var loader = loaderOrRoot;
+    if (!loader || typeof document === 'undefined') return;
+    if (loader.nodeType === 1 && !loader.classList.contains('ubits-ia-loader')) {
+        loader = loader.querySelector('.ubits-ia-loader');
+    }
+    if (!loader || loader.getAttribute('data-ia-particles-init') === 'true') return;
+
+    var canvas = loader.querySelector('.ubits-ia-loader__particles');
+    var stage = loader.querySelector('.ubits-ia-loader__stage');
+    if (!canvas || !stage) return;
+
+    destroyIaLoaderParticles(loader);
+    loader.setAttribute('data-ia-particles-init', 'true');
+
+    var ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    var state = {
+        canvas: canvas,
+        ctx: ctx,
+        W: 0,
+        H: 0,
+        particles: [],
+        t: 0,
+        rafId: 0,
+        running: false,
+        resizeObserver: null,
+        reducedMotionMq: null,
+        reducedMotionHandler: null
+    };
+    loader._iaParticlesState = state;
+
+    function particleGridForCanvas(w, h, dpr) {
+        var spacing = UBITS_IA_LOADER_PARTICLES_SPACING_CSS * dpr;
+        var cols = Math.max(14, Math.min(110, Math.round(w / spacing) + 1));
+        var rows = Math.max(10, Math.min(64, Math.round(h / spacing) + 1));
+        return { cols: cols, rows: rows };
+    }
+
+    function buildParticles() {
+        var list = [];
+        var dpr = Math.min(window.devicePixelRatio || 1, 2);
+        var grid = particleGridForCanvas(state.W, state.H, dpr);
+        var cols = grid.cols;
+        var rows = grid.rows;
+        var i;
+        var j;
+        state.cols = cols;
+        state.rows = rows;
+        state.cell =
+            cols > 1 && rows > 1
+                ? Math.min(state.W / (cols - 1), state.H / (rows - 1))
+                : Math.min(state.W, state.H);
+        for (i = 0; i < cols; i++) {
+            for (j = 0; j < rows; j++) {
+                list.push({
+                    ox: cols > 1 ? (i / (cols - 1)) * state.W : state.W * 0.5,
+                    oy: rows > 1 ? (j / (rows - 1)) * state.H : state.H * 0.5,
+                    x: 0,
+                    y: 0,
+                    vx: 0,
+                    vy: 0
+                });
+            }
+        }
+        state.particles = list;
+    }
+
+    function resizeParticles() {
+        var rect = stage.getBoundingClientRect();
+        if (rect.width < 4 || rect.height < 4) return false;
+        var dpr = Math.min(window.devicePixelRatio || 1, 2);
+        state.W = Math.max(1, Math.round(rect.width * dpr));
+        state.H = Math.max(1, Math.round(rect.height * dpr));
+        canvas.width = state.W;
+        canvas.height = state.H;
+        buildParticles();
+        return true;
+    }
+
+    function drawParticlesFrame() {
+        var p;
+        var nx;
+        var ny;
+        var wave;
+        var waveX;
+        var waveY;
+        var tx;
+        var ty;
+        var norm;
+        var rgb;
+        var alpha;
+        var size;
+        var dpr = Math.min(window.devicePixelRatio || 1, 2);
+        var radiusMin = UBITS_IA_LOADER_PARTICLES_RADIUS_CSS_MIN * dpr;
+        var radiusMax = UBITS_IA_LOADER_PARTICLES_RADIUS_CSS_MAX * dpr;
+        var radiusCap = (state.cell || 14) * 0.22;
+        var motionRef = UBITS_IA_LOADER_PARTICLES_MOTION_REF_CSS * dpr;
+        var motionScale = Math.min(state.W, state.H) / motionRef;
+        motionScale = Math.max(0.85, Math.min(motionScale, 1.15));
+        var ampX = UBITS_IA_LOADER_PARTICLES_WAVE_AMP_X_CSS * dpr * motionScale;
+        var ampY = UBITS_IA_LOADER_PARTICLES_WAVE_AMP_Y_CSS * dpr * motionScale;
+
+        if (!state.particles.length) return;
+
+        state.ctx.clearRect(0, 0, state.W, state.H);
+        state.t += 0.01;
+
+        for (var idx = 0; idx < state.particles.length; idx++) {
+            p = state.particles[idx];
+            nx = p.ox / state.W;
+            ny = p.oy / state.H;
+            wave =
+                Math.sin(nx * Math.PI * 4 + state.t) * 0.5 +
+                Math.sin(ny * Math.PI * 3 + state.t * 1.2) * 0.5;
+            waveX = wave * ampX;
+            waveY = Math.cos(nx * Math.PI * 3 + state.t * 0.9) * ampY;
+            tx = p.ox + waveX;
+            ty = p.oy + waveY;
+            p.vx += (tx - p.x) * 0.13;
+            p.vy += (ty - p.y) * 0.13;
+            p.vx *= 0.7;
+            p.vy *= 0.7;
+            p.x += p.vx;
+            p.y += p.vy;
+            norm = (wave + 1) / 2;
+            rgb = iaLoaderParticlesGradientColor(nx);
+            alpha = UBITS_IA_LOADER_PARTICLES_ALPHA_MIN + norm * UBITS_IA_LOADER_PARTICLES_ALPHA_RANGE;
+            size = radiusMin + (radiusMax - radiusMin) * norm;
+            if (radiusCap > 0 && size > radiusCap) size = radiusCap;
+            state.ctx.beginPath();
+            state.ctx.arc(p.x, p.y, size, 0, Math.PI * 2);
+            state.ctx.fillStyle = 'rgba(' + rgb[0] + ',' + rgb[1] + ',' + rgb[2] + ',' + alpha + ')';
+            state.ctx.fill();
+        }
+    }
+
+    function tick() {
+        if (!state.running) return;
+        drawParticlesFrame();
+        state.rafId = requestAnimationFrame(tick);
+    }
+
+    function startParticles() {
+        if (state.running) return;
+        if (!resizeParticles()) {
+            requestAnimationFrame(function () {
+                if (loader.getAttribute('data-ia-particles-init') !== 'true') return;
+                startParticles();
+            });
+            return;
+        }
+        state.running = true;
+        tick();
+    }
+
+    function stopParticles() {
+        state.running = false;
+        if (state.rafId) cancelAnimationFrame(state.rafId);
+        state.rafId = 0;
+        state.ctx.clearRect(0, 0, state.W, state.H);
+    }
+
+    function syncMotionPreference() {
+        var reduced =
+            typeof window.matchMedia === 'function' &&
+            window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (reduced) stopParticles();
+        else startParticles();
+    }
+
+    resizeParticles();
+
+    if (typeof ResizeObserver !== 'undefined') {
+        state.resizeObserver = new ResizeObserver(function () {
+            resizeParticles();
+        });
+        state.resizeObserver.observe(stage);
+    } else {
+        window.addEventListener('resize', resizeParticles);
+    }
+
+    if (typeof window.matchMedia === 'function') {
+        state.reducedMotionMq = window.matchMedia('(prefers-reduced-motion: reduce)');
+        state.reducedMotionHandler = syncMotionPreference;
+        state.reducedMotionMq.addEventListener('change', state.reducedMotionHandler);
+    }
+
+    syncMotionPreference();
+}
+
+function scanAndInitIaLoaderParticles(root) {
+    var scope = root && root.querySelectorAll ? root : document;
+    var nodes = scope.querySelectorAll
+        ? scope.querySelectorAll('.ubits-ia-loader:not([data-ia-particles-init])')
+        : [];
+    var n;
+    for (n = 0; n < nodes.length; n++) {
+        initIaLoaderParticles(nodes[n]);
+    }
+}
+
 if (typeof window !== 'undefined') {
     window.getIaLoaderHTML = getIaLoaderHTML;
+    window.initIaLoaderParticles = initIaLoaderParticles;
+    window.destroyIaLoaderParticles = destroyIaLoaderParticles;
+    window.scanAndInitIaLoaderParticles = scanAndInitIaLoaderParticles;
+
+    document.addEventListener('DOMContentLoaded', function () {
+        scanAndInitIaLoaderParticles(document);
+    });
+
+    if (typeof MutationObserver !== 'undefined' && document.documentElement) {
+        var iaLoaderParticlesObserver = new MutationObserver(function (mutations) {
+            var m;
+            var node;
+            for (m = 0; m < mutations.length; m++) {
+                for (node = 0; node < mutations[m].addedNodes.length; node++) {
+                    var added = mutations[m].addedNodes[node];
+                    if (added.nodeType !== 1) continue;
+                    if (added.classList && added.classList.contains('ubits-ia-loader')) {
+                        initIaLoaderParticles(added);
+                    } else {
+                        scanAndInitIaLoaderParticles(added);
+                    }
+                }
+            }
+        });
+        iaLoaderParticlesObserver.observe(document.documentElement, { childList: true, subtree: true });
+    }
 }
