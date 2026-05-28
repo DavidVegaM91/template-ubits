@@ -41,10 +41,10 @@ El asistente de creación tiene **4 pasos**, en este orden:
 |------|--------|------------------------------|
 | 1 | Portada | Descrito en detalle |
 | 2 | Recursos | Descrito en detalle (incl. **recursos complementarios** bajo el principal) |
-| 3 | Certificado | Reglas de **bloqueo** al salir de Recursos documentadas; **pantalla del paso** aún no navegable en el prototipo |
+| 3 | Certificado | **Implementado** en `crear-contenido.html` (switch, select de plantilla mock Fiqsha, vista previa orientativa) |
 | 4 | Publicación | Solo nombre de paso; detalle pendiente |
 
-**Navegación real en el playground:** desde **Recursos**, si se cumplen las validaciones de títulos y recursos, **Siguiente** puede mostrar un aviso de que el **siguiente paso estará disponible próximamente** (Certificado y Publicación siguen sin UI completa en el asistente).
+**Navegación real en el playground:** desde **Recursos**, con al menos una página y **títulos válidos** en todas, **Siguiente** o el paso **3** del stepper llevan a **Certificado** (`#certificado`). Desde Certificado, **Siguiente** avisa que Publicación llegará pronto. **Anterior** en Certificado vuelve a Recursos.
 
 ### Desde la lista de contenidos
 
@@ -239,23 +239,26 @@ Cada **página del índice** guarda **su propio estado** del panel derecho (sele
 
 En el prototipo esto aplica, entre otros, a **video**, **PDF** (vista previa con el archivo ya subido), **SCORM**, **embebido** y **evaluación final**. El usuario puede alternar entre lecciones sin perder el trabajo de cada una en la misma sesión de creación.
 
-### Paso 3 — Certificado (validación al salir del paso 2)
+### Paso 3 — Certificado
 
-Antes de permitir avanzar al **paso 3**, debe cumplirse:
+**Archivos:** `crear-contenido-certificado.js`, `crear-contenido-certificado.css` (clases `certificado-paso__*`).
 
-1. **Título válido en todas las páginas** (ver **Título obligatorio de cada página**).  
-2. **Ninguna página vacía:** toda página debe tener **al menos un recurso** asignado (definición de “vacía” = sin recursos).  
-3. **Ninguna sección vacía** (solo aplica si **uso de secciones** está activo): toda sección debe tener **al menos una página**.
+**Layout:** dos columnas como Recursos — panel izquierdo fijo (~400px) y columna derecha con vista previa.
 
-Si no se cumple, la interfaz debe **bloquear el avance** al siguiente paso y **marcar en rojo** lo que incumple la regla:
+| Control | Comportamiento |
+|---------|----------------|
+| **Switch** «Habilitar certificado para este contenido» | **Activado por defecto.** Si se apaga, se oculta el select de plantilla y la derecha muestra empty state: «No has habilitado un certificado». |
+| **Select** «Seleccionar plantilla de certificado» | Solo visible con switch ON. Mock **Fiqsha** con 3 plantillas; por defecto la **más reciente** («Cursos empresariales con doble firma»). |
+| **Vista previa orientativa** | Texto de ayuda + certificado de ejemplo con datos de la **portada** (título, categoría, duración) y placeholders de estudiante / firmas. La plantilla mock puede incluir **doble firma** o campos opcionales (tiempo, documento). |
 
-| Caso | Qué debe verse marcado |
-|------|-------------------------|
-| **Título de página inválido** | La **fila de esa página** en el índice (borde de error). |
-| **Página sin recurso** | La **fila de esa página** en el índice (borde de error). Además, si la página activa está en el **selector de tipos**, el bloque de recursos puede mostrarse con **borde de error** (variante **selector con error** del design system: misma cuadrícula de tarjetas, borde de aviso en el contenedor). |
-| **Sección sin ninguna página** (solo si las secciones están activas) | El **bloque de esa sección** en el índice (borde de error visible). |
+**Validación al salir de Recursos (prototipo):**
 
-Los componentes visuales del índice ya contemplan ese estado de error; la pantalla debe activarlo cuando corresponda.
+1. Al menos **una página** en el índice.  
+2. **Título válido en todas las páginas**.  
+3. **Al menos un recurso principal** en cada página (evaluación final cuenta como recurso). Páginas sin recurso: borde rojo en el índice; en la página activa el **resources block** pasa a variante `default-error`.  
+4. Con **secciones activas:** ninguna sección vacía (borde rojo en el bloque de sección).
+
+**Hash URL:** `#certificado`.
 
 ### Tipos de recurso (selector general)
 
@@ -715,8 +718,9 @@ Tras recoger tema y reglas, el flujo llega a un **paso de confirmación** en el 
 ## Pendiente de documentar (próximos mensajes)
 
 - **Flujos a cablear en prototipo:** **Texto** (editor en panel), **Encuesta libre**, **Encuesta de satisfacción**.  
-- Paso **3 — Certificado:** contenido de pantalla y reglas propias del paso (más allá del bloqueo desde Recursos).  
-- Paso **4 — Publicación** y **navegación completa** del asistente (hoy Certificado/Publicación pueden quedar en aviso «próximamente» tras validar Recursos).  
+- Paso **4 — Publicación** (pantalla y reglas).  
+- Validación completa al salir de Recursos (recurso obligatorio por página, secciones vacías).  
+- Integración real con plantillas de **LMS Creator → Certificados** (hoy mock Fiqsha en memoria).  
 - Reglas de validación global (publicar, borradores, etc.) si aplica.  
 - Detalle de **consumo** SCORM por tipo de diapositiva (quizzes, hotspots, emparejamiento) más allá de lo ya descrito en **Recurso: SCORM**.  
 - Si producto **reactiva** la variante wizard de video: documentar aquí como flujo alternativo o sustituto (hoy **reservada**, no expuesta).

@@ -1,0 +1,291 @@
+/* ========================================
+   Paso Certificado — crear contenido (LMS Creator)
+   Bloque BEM: certificado-paso__*
+   ======================================== */
+
+.crear-contenido-step--certificado:not(.crear-contenido-step--visible) {
+    display: none !important;
+}
+
+.crear-contenido-step--certificado.crear-contenido-step--visible {
+    display: flex;
+    flex-direction: column;
+    flex: 1 0 auto;
+    min-width: 0;
+    width: 100%;
+}
+
+.certificado-paso__workspace {
+    display: flex;
+    flex-direction: row;
+    flex: 1 1 auto;
+    min-height: 0;
+    gap: var(--gap-2xl, 24px);
+    align-items: flex-start;
+    width: 100%;
+    min-width: 0;
+}
+
+.certificado-paso__panel {
+    flex: 0 0 400px;
+    max-width: 400px;
+    min-width: 400px;
+    align-self: flex-start;
+    position: sticky;
+    top: 0;
+}
+
+.certificado-paso__panel-card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-xl, 20px);
+    padding: var(--padding-md, 12px);
+}
+
+.certificado-paso__panel-card .ubits-switch {
+    width: 100%;
+    align-items: center;
+}
+
+.certificado-paso__panel-card .ubits-switch__label {
+    flex: 1 0 0;
+    min-width: 0;
+    white-space: normal;
+    line-height: 1.25;
+}
+
+.certificado-paso__template-field[hidden] {
+    display: none !important;
+}
+
+.certificado-paso__preview-col {
+    flex: 1 1 0;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-lg, 16px);
+    align-items: stretch;
+}
+
+.certificado-paso__preview-hint {
+    margin: 0;
+    color: var(--ubits-fg-1-high);
+}
+
+.certificado-paso__preview-host {
+    width: 100%;
+    min-width: 0;
+}
+
+.certificado-paso__preview-host:has(.certificado-paso__preview-frame) {
+    padding: 0;
+    border: none;
+    background: transparent;
+    gap: 0;
+}
+
+.certificado-paso__preview-host .ubits-empty-state {
+    width: 100%;
+}
+
+.certificado-paso__preview-frame {
+    width: 100%;
+    max-width: 100%;
+    border-radius: var(--border-radius-xl, 20px);
+    overflow: hidden;
+    box-shadow: 0 5px 11px rgba(102, 102, 102, 0.3);
+    background: var(--ubits-bg-1);
+}
+
+.certificado-paso__preview-sheet {
+    container-type: inline-size;
+    position: relative;
+    width: 100%;
+    aspect-ratio: 774 / 598;
+    min-height: 280px;
+    background-color: var(--ubits-bg-1-static, #fff);
+    background-image: url('../../images/lms-creator/certificados/fondo.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    overflow: hidden;
+}
+
+.certificado-paso__preview-body {
+    position: absolute;
+    inset: 13.5% 5.9% 22% 32.6%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    color: #000;
+    font-family: var(--ubits-font-family-sans);
+    box-sizing: border-box;
+}
+
+.certificado-paso__preview-logo {
+    width: auto;
+    max-width: 42%;
+    max-height: 9%;
+    object-fit: contain;
+    object-position: left top;
+    margin-bottom: 4%;
+}
+
+.certificado-paso__preview-main {
+    flex: 0 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1.15em;
+    margin-top: 0.35em;
+}
+
+.certificado-paso__preview-date {
+    margin: 0;
+    font-size: clamp(11px, 1.65cqw, 12.71px);
+    font-weight: 400;
+    line-height: 1.33;
+    color: #000;
+}
+
+.certificado-paso__preview-student {
+    margin: 0;
+    font-size: clamp(18px, 3.05cqw, 23.29px);
+    font-weight: 700;
+    line-height: 1.32;
+    color: #000;
+}
+
+.certificado-paso__preview-block {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.28em;
+}
+
+.certificado-paso__preview-lead,
+.certificado-paso__preview-meta {
+    margin: 0;
+    font-size: clamp(11px, 1.65cqw, 12.71px);
+    font-weight: 400;
+    line-height: 1.33;
+    color: #000;
+}
+
+.certificado-paso__preview-course-title {
+    margin: 0;
+    font-size: clamp(13px, 2.05cqw, 15.88px);
+    font-weight: 700;
+    line-height: 1.2;
+    color: #000;
+}
+
+.certificado-paso__preview-category-label {
+    font-weight: 700;
+}
+
+.certificado-paso__preview-signatures {
+    position: absolute;
+    left: 32.6%;
+    right: 5.9%;
+    bottom: 13.5%;
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: flex-end;
+    justify-content: flex-start;
+    gap: clamp(12px, 8cqw, 48px);
+    max-width: none;
+    box-sizing: border-box;
+}
+
+.certificado-paso__preview-signature {
+    flex: 0 1 169px;
+    max-width: 46%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 2px;
+}
+
+.certificado-paso__preview-signature-line {
+    width: 100%;
+    max-width: 131px;
+    height: clamp(24px, 8cqw, 38px);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.35);
+    margin-bottom: 2px;
+    background: linear-gradient(
+        105deg,
+        transparent 8%,
+        rgba(0, 0, 0, 0.12) 35%,
+        transparent 62%
+    );
+}
+
+.certificado-paso__preview-signature-name {
+    margin: 0;
+    font-size: clamp(8px, 1.37cqw, 10.59px);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    line-height: 1.25;
+    color: #000;
+}
+
+.certificado-paso__preview-signature-role {
+    margin: 0;
+    font-size: clamp(8px, 1.37cqw, 10.59px);
+    font-weight: 400;
+    text-transform: uppercase;
+    line-height: 1.2;
+    color: #000;
+}
+
+.certificado-paso__preview-footer {
+    position: absolute;
+    right: 6.2%;
+    bottom: 3.2%;
+    left: 32.6%;
+    max-width: none;
+    text-align: right;
+    color: #000;
+    pointer-events: none;
+}
+
+.certificado-paso__preview-code {
+    margin: 0 0 0.15em;
+    font-size: clamp(8px, 1.23cqw, 9.53px);
+    font-weight: 400;
+    line-height: 1.22;
+}
+
+.certificado-paso__preview-disclaimer {
+    margin: 0;
+    font-size: clamp(7px, 1.1cqw, 8.47px);
+    font-weight: 400;
+    line-height: 1.5;
+}
+
+.certificado-paso__preview-doc {
+    margin: 0.35em 0 0;
+    font-size: clamp(7px, 1.1cqw, 8.47px);
+    font-weight: 400;
+    line-height: 1.5;
+}
+
+.certificado-paso__preview-doc[hidden] {
+    display: none !important;
+}
+
+@media (max-width: 1023px) {
+    .certificado-paso__workspace {
+        flex-direction: column;
+    }
+
+    .certificado-paso__panel {
+        flex: 1 1 auto;
+        max-width: none;
+        min-width: 0;
+        width: 100%;
+        position: static;
+    }
+}

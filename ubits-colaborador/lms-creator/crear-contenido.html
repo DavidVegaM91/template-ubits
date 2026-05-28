@@ -49,6 +49,7 @@
     <link rel="stylesheet" href="../../components/stepper.css">
     <link rel="stylesheet" href="../../components/file-upload.css">
     <link rel="stylesheet" href="./crear-contenido.css">
+    <link rel="stylesheet" href="./crear-contenido-certificado.css">
     <link rel="stylesheet" href="./evaluaciones-recurso.css">
     <link rel="stylesheet" href="./video-recurso-modal.css">
     <link rel="stylesheet" href="./portada-imagen-modal.css">
@@ -89,7 +90,7 @@
               </label>
               <p id="crear-contenido-recursos-page-counter" class="ubits-body-sm-regular crear-contenido-recursos__page-counter" aria-live="polite" hidden></p>
             </div>
-          </div>          <div id="crear-contenido-recursos-resources-mount" class="crear-contenido-recursos__resources-mount" hidden></div>          <div id="crear-contenido-recursos-complementary-mount" class="crear-contenido-recursos__complementary-mount" hidden aria-label="Recursos complementarios"></div>        </div>      </div>    </div>  </div></div>
+          </div>          <div id="crear-contenido-recursos-resources-mount" class="crear-contenido-recursos__resources-mount" hidden></div>          <div id="crear-contenido-recursos-complementary-mount" class="crear-contenido-recursos__complementary-mount" hidden aria-label="Recursos complementarios"></div>        </div>      </div>    </div>    <div id="crear-contenido-step-certificado" class="crear-contenido-step crear-contenido-step--certificado" data-crear-step="certificado">      <div class="certificado-paso__workspace">        <aside class="certificado-paso__panel" aria-label="Configuración de certificado">          <div class="contenidos-creator-card certificado-paso__panel-card">            <label class="ubits-switch ubits-switch--md certificado-paso__toggle" for="certificado-paso-toggle">              <input type="checkbox" class="ubits-switch__input" id="certificado-paso-toggle" role="switch" checked />              <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>              <span class="ubits-switch__label ubits-body-md-regular">Habilitar certificado para este contenido</span>            </label>            <div id="certificado-paso-template-field" class="certificado-paso__template-field">              <div id="certificado-paso-template-mount"></div>            </div>          </div>        </aside>        <div class="certificado-paso__preview-col" role="region" aria-label="Vista previa de certificado">          <p id="certificado-paso-preview-hint" class="certificado-paso__preview-hint ubits-body-sm-regular">Vista previa orientativa.</p>          <div id="certificado-paso-preview-host" class="certificado-paso__preview-host contenidos-creator-card"></div>        </div>      </div>    </div>  </div></div>
         </main>
 
         <footer class="ubits-layout-immersive__footer" role="contentinfo">
@@ -149,6 +150,7 @@
     <script src="./scorm-recurso-modal.js"></script>
     <script src="../../vendor/pdfjs/pdf.min.js"></script>
     <script src="./crear-contenido-pdf-viewer.js"></script>
+    <script src="./crear-contenido-certificado.js"></script>
     <script src="./crear-contenido.js"></script>
 </body>
 </html>

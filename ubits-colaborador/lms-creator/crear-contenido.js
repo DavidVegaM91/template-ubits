@@ -12,7 +12,7 @@
     /** 'ai' | 'upload' | null — cómo se aplicó la portada actual (reapertura modal). */
     var crearContenidoPortadaLastSource = null;
     var crearContenidoInputApis = {};
-    /** 0 = Portada, 1 = Recursos */
+    /** 0 = Portada, 1 = Recursos, 2 = Certificado, 3 = Publicación */
     var pageCurrentStep = 0;
     var portadaValidationFlash = false;
     var recursosTitlesValidationFlash = false;
@@ -21,6 +21,8 @@
     // - Marcamos error cuando el usuario "deja" una página (cambia a otra) y el título sigue inválido.
     // - También marcamos todas al intentar avanzar al siguiente paso (recursosTitlesValidationFlash).
     var recursosPageTitleTouched = {}; // pageKey -> true (se validó al perder foco / cambio de página)
+    var recursosPageResourceTouched = {}; // pageKey -> true (cambio de página con selector sin recurso)
+    var recursosResourcesValidationFlash = false;
     var PORTADA_INVALID_CLASS = 'crear-contenido-portada-field--invalid';
     var CATEGORIA_SELECT_PLACEHOLDER_TEXT = 'Selecciona una opción';
 
@@ -1060,6 +1062,7 @@
     function setRecursosPrimaryType(pageKey, type) {
         var st = ensureRecursosPageState(pageKey);
         if (st) st.primaryType = type != null ? String(type) : null;
+        syncRecursosTitleValidationVisuals();
     }
 
     function initComplementaryFilledFields(compMount) {
@@ -2367,11 +2370,48 @@
         return { allValid: invalidItems.length === 0, invalidItems: invalidItems };
     }
 
+    function recursosPageHasResource(pageKey) {
+        var pk = pageKey != null ? String(pageKey) : '';
+        if (!pk) return false;
+        if (isEvalPageKey(pk)) return true;
+        var st = CC_RECURSOS_PAGE_STATE[pk];
+        if (!st) return false;
+        var pt = st.primaryType;
+        return pt != null && String(pt).trim() !== '';
+    }
+
+    function collectRecursosPageResourceValidation() {
+        var mount = getRecursosIndiceMount();
+        if (!mount) return { allValid: true, invalidItems: [] };
+        var items = mount.querySelectorAll('.ubits-paginas-creator__item');
+        var invalidItems = [];
+        items.forEach(function (item) {
+            var key = item.getAttribute('data-paginas-creator-key') || '';
+            if (!recursosPageHasResource(key)) invalidItems.push(item);
+        });
+        return { allValid: invalidItems.length === 0, invalidItems: invalidItems };
+    }
+
+    function collectRecursosEmptySectionValidation() {
+        if (!recursosSectionsEnabled) return { allValid: true, invalidSections: [] };
+        var mount = getRecursosIndiceMount();
+        if (!mount) return { allValid: true, invalidSections: [] };
+        var invalidSections = [];
+        mount.querySelectorAll('.ubits-seccion-creator__section').forEach(function (sec) {
+            var n = sec.querySelectorAll('.ubits-paginas-creator__item').length;
+            if (n === 0) invalidSections.push(sec);
+        });
+        return { allValid: invalidSections.length === 0, invalidSections: invalidSections };
+    }
+
     function clearRecursosTitleValidationVisuals() {
         var mount = getRecursosIndiceMount();
         if (mount) {
             mount.querySelectorAll('.ubits-paginas-creator__item').forEach(function (el) {
                 el.classList.remove('ubits-paginas-creator__item--error');
+            });
+            mount.querySelectorAll('.ubits-seccion-creator__section').forEach(function (el) {
+                el.classList.remove('ubits-seccion-creator__section--error');
             });
         }
         var wrap = document.querySelector(
@@ -2380,40 +2420,94 @@
         if (wrap) wrap.classList.remove(PORTADA_INVALID_CLASS);
     }
 
+    function shouldShowRecursosResourcesBlockError(pageKey) {
+        var pk = pageKey != null ? String(pageKey) : '';
+        if (!pk || isEvalPageKey(pk) || recursosPageHasResource(pk)) return false;
+        if (recursosResourcesValidationFlash) return true;
+        return !!recursosPageResourceTouched[pk];
+    }
+
+    function syncRecursosActiveResourcesBlockVariant() {
+        var pk = CC_RECURSOS_CURRENT_PAGE_KEY != null ? String(CC_RECURSOS_CURRENT_PAGE_KEY) : '';
+        if (!pk || isEvalPageKey(pk)) return;
+        var mount = document.getElementById('crear-contenido-recursos-resources-mount');
+        if (!mount || mount.hidden) return;
+        if (!isRecursosPrimarySelectorVisible(mount)) return;
+        var needError = shouldShowRecursosResourcesBlockError(pk);
+        var hasError = !!mount.querySelector('.ubits-resources-block--default-error');
+        if (needError && !hasError) {
+            renderRecursosResourcesBlock({ variant: 'default-error' });
+        } else if (!needError && hasError) {
+            renderRecursosResourcesBlock({ variant: 'default' });
+        }
+    }
+
     function syncRecursosTitleValidationVisuals() {
         clearRecursosTitleValidationVisuals();
         var mount = getRecursosIndiceMount();
         if (!mount) return;
 
         var items = mount.querySelectorAll('.ubits-paginas-creator__item');
-        var invalidItems = [];
+        var invalidTitleItems = [];
 
-        // 1) Modo "flash": al intentar avanzar, marcamos todas las inválidas.
         if (recursosTitlesValidationFlash) {
-            invalidItems = collectRecursosPageTitleValidation().invalidItems;
+            invalidTitleItems = collectRecursosPageTitleValidation().invalidItems;
         } else {
-            // 2) Modo progresivo: solo marcamos las páginas ya "tocadas" (perdieron foco).
             items.forEach(function (item) {
                 var key = item.getAttribute('data-paginas-creator-key') || '';
                 if (!recursosPageTitleTouched[key]) return;
                 if (!isValidRecursosPageTitle(getRecursosPaginasItemTitleForValidation(item))) {
-                    invalidItems.push(item);
+                    invalidTitleItems.push(item);
                 }
             });
         }
 
-        invalidItems.forEach(function (item) { item.classList.add('ubits-paginas-creator__item--error'); });
+        var invalidResourceItems = [];
+        if (recursosResourcesValidationFlash) {
+            invalidResourceItems = collectRecursosPageResourceValidation().invalidItems;
+        } else {
+            items.forEach(function (item) {
+                var key = item.getAttribute('data-paginas-creator-key') || '';
+                if (!recursosPageResourceTouched[key]) return;
+                if (!recursosPageHasResource(key)) invalidResourceItems.push(item);
+            });
+        }
+
+        var invalidItems = invalidTitleItems.slice();
+        invalidResourceItems.forEach(function (item) {
+            if (invalidItems.indexOf(item) === -1) invalidItems.push(item);
+        });
+
+        invalidItems.forEach(function (item) {
+            item.classList.add('ubits-paginas-creator__item--error');
+        });
+
+        if (recursosResourcesValidationFlash) {
+            var sectionSt = collectRecursosEmptySectionValidation();
+            sectionSt.invalidSections.forEach(function (sec) {
+                sec.classList.add('ubits-seccion-creator__section--error');
+            });
+        }
+
         var active = document.querySelector(
             '#crear-contenido-recursos-indice-mount .ubits-paginas-creator__item.is-active'
         );
-        if (active && invalidItems.indexOf(active) !== -1) {
+        if (active && invalidTitleItems.indexOf(active) !== -1) {
             var wrap = document.querySelector(
                 '#crear-contenido-recursos-page-title-section .crear-contenido-recursos__page-title-wrap'
             );
             if (wrap) wrap.classList.add(PORTADA_INVALID_CLASS);
         }
-        // Si estábamos en flash y ya no hay inválidas, apagamos el flash.
-        if (recursosTitlesValidationFlash && invalidItems.length === 0) recursosTitlesValidationFlash = false;
+
+        if (recursosTitlesValidationFlash && invalidTitleItems.length === 0) {
+            recursosTitlesValidationFlash = false;
+        }
+        if (recursosResourcesValidationFlash && invalidResourceItems.length === 0) {
+            var emptySec = collectRecursosEmptySectionValidation();
+            if (emptySec.allValid) recursosResourcesValidationFlash = false;
+        }
+
+        syncRecursosActiveResourcesBlockVariant();
     }
 
     function clickRecursosSeccionAddPage() {
@@ -2566,10 +2660,12 @@
         label.textContent = (inp.value || '').trim();
     }
 
-    function renderRecursosResourcesBlock() {
+    function renderRecursosResourcesBlock(opts) {
+        opts = opts || {};
+        var variant = opts.variant === 'default-error' ? 'default-error' : 'default';
         var mount = document.getElementById('crear-contenido-recursos-resources-mount');
         if (!mount || typeof window.resourcesBlockHtml !== 'function') return;
-        mount.innerHTML = window.resourcesBlockHtml({ variant: 'default' });
+        mount.innerHTML = window.resourcesBlockHtml({ variant: variant });
         if (typeof window.initResourcesBlockFields === 'function') {
             window.initResourcesBlockFields(mount);
         }
@@ -2680,6 +2776,7 @@
             // así que NO podemos persistir al "active" actual (sería la página nueva). Persistimos por key.
             persistRecursosRightTitleToItemKey(prevKey);
             recursosPageTitleTouched[prevKey] = true;
+            recursosPageResourceTouched[prevKey] = true;
         }
 
         // Guardar estado del resources-mount de la página que se va (si no es evaluación)
@@ -2917,6 +3014,7 @@
                     window.initResourcesBlockFields(mount);
                 }
                 hideRecursosComplementaryMount();
+                syncRecursosTitleValidationVisuals();
                 return;
             }
 
@@ -3124,16 +3222,105 @@
         bindRecursosEventsOnce();
     }
 
+    function canNavigateFromRecursosToCertificado() {
+        snapshotCurrentRecursosPage();
+        var mount = getRecursosIndiceMount();
+        var n = mount ? mount.querySelectorAll('.ubits-paginas-creator__item').length : 0;
+        if (n === 0) return { ok: false, code: 'no-pages' };
+        var titleSt = collectRecursosPageTitleValidation();
+        if (!titleSt.allValid) return { ok: false, code: 'invalid-titles', validation: titleSt };
+        var resourceSt = collectRecursosPageResourceValidation();
+        if (!resourceSt.allValid) return { ok: false, code: 'missing-resources', validation: resourceSt };
+        var sectionSt = collectRecursosEmptySectionValidation();
+        if (!sectionSt.allValid) return { ok: false, code: 'empty-sections', validation: sectionSt };
+        return { ok: true };
+    }
+
+    function applyRecursosToCertificadoBlockers(showToast) {
+        if (pageCurrentStep < 1) goToCrearContenidoPageStep(1, { skipUrl: true });
+        var nav = canNavigateFromRecursosToCertificado();
+        if (nav.ok) return true;
+        if (nav.code === 'no-pages') {
+            if (showToast && typeof window.showToast === 'function') {
+                window.showToast('warning', 'Añade al menos una página para continuar.', {
+                    containerId: 'ubits-toast-container',
+                    duration: 3500
+                });
+            }
+            return false;
+        }
+        if (nav.code === 'invalid-titles') {
+            recursosTitlesValidationFlash = true;
+            var firstTitle = nav.validation && nav.validation.invalidItems[0];
+            if (firstTitle && typeof window.setPaginasCreatorActiveItem === 'function') {
+                window.setPaginasCreatorActiveItem(firstTitle);
+            }
+            syncRecursosRightTitleFromActive();
+            syncRecursosTitleValidationVisuals();
+            var titInp = document.getElementById('crear-contenido-recursos-page-title');
+            if (titInp) titInp.focus();
+            if (showToast && typeof window.showToast === 'function') {
+                window.showToast(
+                    'warning',
+                    'Todas las páginas deben tener un título. Revisa las marcadas en rojo.',
+                    { containerId: 'ubits-toast-container', duration: 4000 }
+                );
+            }
+            return false;
+        }
+        if (nav.code === 'missing-resources') {
+            recursosResourcesValidationFlash = true;
+            var firstRes = nav.validation && nav.validation.invalidItems[0];
+            if (firstRes && typeof window.setPaginasCreatorActiveItem === 'function') {
+                window.setPaginasCreatorActiveItem(firstRes);
+            }
+            syncRecursosRightTitleFromActive();
+            if (!restoreRecursosPage(CC_RECURSOS_CURRENT_PAGE_KEY)) {
+                renderRecursosResourcesBlock({ variant: 'default-error' });
+            }
+            syncRecursosTitleValidationVisuals();
+            if (showToast && typeof window.showToast === 'function') {
+                window.showToast(
+                    'warning',
+                    'Todas las páginas deben tener al menos un recurso. Revisa las marcadas en rojo.',
+                    { containerId: 'ubits-toast-container', duration: 4000 }
+                );
+            }
+            return false;
+        }
+        if (nav.code === 'empty-sections') {
+            recursosResourcesValidationFlash = true;
+            syncRecursosTitleValidationVisuals();
+            if (showToast && typeof window.showToast === 'function') {
+                window.showToast(
+                    'warning',
+                    'Toda sección debe tener al menos una página. Revisa las secciones marcadas en rojo.',
+                    { containerId: 'ubits-toast-container', duration: 4000 }
+                );
+            }
+            return false;
+        }
+        return false;
+    }
+
     function refreshCrearContenidoPageSiguienteState() {
         var btn = document.getElementById('crear-contenido-btn-siguiente');
         if (!btn) return;
-        var portada = document.getElementById('crear-contenido-step-portada');
-        var onRecursos = portada && !portada.classList.contains('crear-contenido-step--visible');
-        if (onRecursos) {
+        if (pageCurrentStep === 1) {
             var list = getRecursosPaginasList();
             var n = list ? list.querySelectorAll(':scope > .ubits-paginas-creator__item').length : 0;
             btn.disabled = n === 0;
             btn.setAttribute('aria-disabled', n === 0 ? 'true' : 'false');
+            return;
+        }
+        if (pageCurrentStep === 2) {
+            btn.disabled = false;
+            btn.setAttribute('aria-disabled', 'false');
+            return;
+        }
+        if (pageCurrentStep >= 3) {
+            btn.disabled = false;
+            btn.setAttribute('aria-disabled', 'false');
             return;
         }
         var ok = isCrearContenidoPortadaComplete();
@@ -3171,6 +3358,27 @@
                         portadaValidationFlash = false;
                         clearPortadaInvalidMarks();
                         goToCrearContenidoPageStep(1);
+                        return;
+                    }
+                    if (i === 2) {
+                        if (!isCrearContenidoPortadaComplete()) {
+                            portadaValidationFlash = true;
+                            syncPortadaInvalidOutline();
+                            if (typeof window.showToast === 'function') {
+                                window.showToast('warning', 'Completa la portada para continuar.', {
+                                    containerId: 'ubits-toast-container',
+                                    duration: 3500
+                                });
+                            }
+                            return;
+                        }
+                        portadaValidationFlash = false;
+                        clearPortadaInvalidMarks();
+                        if (pageCurrentStep < 1) goToCrearContenidoPageStep(1, { skipUrl: true });
+                        if (!applyRecursosToCertificadoBlockers(true)) return;
+                        recursosTitlesValidationFlash = false;
+                        clearRecursosTitleValidationVisuals();
+                        goToCrearContenidoPageStep(2);
                         return;
                     }
                     if (typeof window.showToast === 'function') {
@@ -3250,33 +3458,15 @@
                         }
                         return;
                     }
-                    var st = collectRecursosPageTitleValidation();
-                    if (!st.allValid) {
-                        recursosTitlesValidationFlash = true;
-                        var first = st.invalidItems[0];
-                        if (first && typeof window.setPaginasCreatorActiveItem === 'function') {
-                            window.setPaginasCreatorActiveItem(first);
-                        }
-                        syncRecursosRightTitleFromActive();
-                        syncRecursosTitleValidationVisuals();
-                        var titInp = document.getElementById('crear-contenido-recursos-page-title');
-                        if (titInp) titInp.focus();
-                        if (typeof window.showToast === 'function') {
-                            window.showToast(
-                                'warning',
-                                'Todas las páginas deben tener un título. Revisa las marcadas en rojo.',
-                                {
-                                    containerId: 'ubits-toast-container',
-                                    duration: 4000
-                                }
-                            );
-                        }
-                        return;
-                    }
+                    if (!applyRecursosToCertificadoBlockers(true)) return;
                     recursosTitlesValidationFlash = false;
                     clearRecursosTitleValidationVisuals();
+                    goToCrearContenidoPageStep(2);
+                    return;
+                }
+                if (pageCurrentStep === 2) {
                     if (typeof window.showToast === 'function') {
-                        window.showToast('info', 'Siguiente paso disponible próximamente.', {
+                        window.showToast('info', 'El paso Publicación estará disponible pronto.', {
                             containerId: 'ubits-toast-container',
                             duration: 2500
                         });
@@ -3303,7 +3493,11 @@
         var ant = document.getElementById('crear-contenido-btn-anterior');
         if (ant) {
             ant.addEventListener('click', function () {
-                if (pageCurrentStep >= 1) {
+                if (pageCurrentStep === 2) {
+                    goToCrearContenidoPageStep(1);
+                    return;
+                }
+                if (pageCurrentStep === 1) {
                     goToCrearContenidoPageStep(0);
                 }
             });
@@ -3375,6 +3569,7 @@
     /** Portada `#portada`, Recursos `#recursos`. Alias legacy en applyCrearContenidoPageHash. */
     var HASH_PAGE_PORTADA = '#portada';
     var HASH_PAGE_RECURSOS = '#recursos';
+    var HASH_PAGE_CERTIFICADO = '#certificado';
     var HASH_PAGE_PORTADA_LEGACY = '#crear-contenido';
     var HASH_DRAWER_RECURSOS = '#crear-contenido-recursos';
     var HASH_DRAWER_RECURSOS_ALIAS = '#crear-contenido-step-recursos';
@@ -3411,26 +3606,44 @@
         refreshCrearContenidoPageSiguienteState();
     }
 
+    function clampCrearContenidoPageStep(stepIndex) {
+        var n = parseInt(stepIndex, 10);
+        if (isNaN(n) || n < 0) return 0;
+        if (n > 3) return 3;
+        return n;
+    }
+
+    function hashForCrearContenidoPageStep(idx) {
+        if (idx === 1) return HASH_PAGE_RECURSOS;
+        if (idx === 2) return HASH_PAGE_CERTIFICADO;
+        return HASH_PAGE_PORTADA;
+    }
+
     /**
-     * @param {number} stepIndex 0 = Portada, 1 = Recursos
+     * @param {number} stepIndex 0 = Portada, 1 = Recursos, 2 = Certificado, 3 = Publicación
      * @param {{ skipUrl?: boolean }} [opts]
      */
     function goToCrearContenidoPageStep(stepIndex, opts) {
         opts = opts || {};
-        var idx = stepIndex >= 1 ? 1 : 0;
+        var idx = clampCrearContenidoPageStep(stepIndex);
         var prevStep = pageCurrentStep;
         pageCurrentStep = idx;
-        if (prevStep !== pageCurrentStep) {
+        if (prevStep !== pageCurrentStep && prevStep === 1 && idx !== 1) {
             recursosTitlesValidationFlash = false;
+            recursosResourcesValidationFlash = false;
             clearRecursosTitleValidationVisuals();
         }
         var portadaEl = document.getElementById('crear-contenido-step-portada');
         var recursosEl = document.getElementById('crear-contenido-step-recursos');
+        var certificadoEl = document.getElementById('crear-contenido-step-certificado');
         if (portadaEl) {
             portadaEl.classList.toggle('crear-contenido-step--visible', idx === 0);
         }
         if (recursosEl) {
             recursosEl.classList.toggle('crear-contenido-step--visible', idx === 1);
+        }
+        if (certificadoEl) {
+            certificadoEl.classList.toggle('crear-contenido-step--visible', idx === 2);
         }
         if (typeof window.setStepperStepStates === 'function') {
             var olDesk = document.getElementById('crear-contenido-stepper-ol');
@@ -3441,13 +3654,16 @@
         if (idx === 1) {
             initCrearContenidoPageRecursosStepOnce();
         }
+        if (idx === 2 && typeof window.initCrearContenidoCertificadoStepOnce === 'function') {
+            window.initCrearContenidoCertificadoStepOnce();
+        }
         updateCrearContenidoPageFooterNav(idx);
         if (typeof window.initTooltip === 'function') {
             window.initTooltip('#crear-contenido-root [data-tooltip]');
         }
         if (!opts.skipUrl) {
             var path = location.pathname + location.search;
-            var target = idx >= 1 ? HASH_PAGE_RECURSOS : HASH_PAGE_PORTADA;
+            var target = hashForCrearContenidoPageStep(idx);
             if (location.hash !== target) {
                 history.replaceState(null, '', path + target);
             }
@@ -3558,6 +3774,8 @@
                 var pathR = location.pathname + location.search;
                 history.replaceState(null, '', pathR + HASH_PAGE_RECURSOS);
             }
+        } else if (h === HASH_PAGE_CERTIFICADO) {
+            goToCrearContenidoPageStep(2, { skipUrl: true });
         } else if (h === HASH_PAGE_PORTADA || h === HASH_PAGE_PORTADA_LEGACY || h === '') {
             goToCrearContenidoPageStep(0, { skipUrl: true });
             if (h === HASH_PAGE_PORTADA_LEGACY) {
