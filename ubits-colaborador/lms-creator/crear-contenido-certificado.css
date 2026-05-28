@@ -91,6 +91,7 @@
 .certificado-paso__preview-frame {
     width: 100%;
     max-width: 100%;
+    min-width: 0;
     border-radius: var(--border-radius-xl, 20px);
     overflow: hidden;
     box-shadow: 0 5px 11px rgba(102, 102, 102, 0.3);
@@ -99,73 +100,115 @@
 
 .certificado-paso__preview-sheet {
     container-type: inline-size;
+    container-name: cert-preview;
     position: relative;
     width: 100%;
+    max-width: 100%;
+    min-width: 0;
     aspect-ratio: 774 / 598;
-    min-height: 280px;
+    min-height: 0;
     background-color: var(--ubits-bg-1-static, #fff);
     background-image: url('../../images/lms-creator/certificados/fondo.jpg');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
     overflow: hidden;
-}
-
-.certificado-paso__preview-body {
-    position: absolute;
-    inset: 13.5% 5.9% 22% 32.6%;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
     color: #000;
     font-family: var(--ubits-font-family-sans);
-    box-sizing: border-box;
+    /* Figma 774×598 — proporciones de posición y espacio (node 40008495:21449) */
+    --cert-zone-left: 32.56%;
+    --cert-zone-right: 5.88%;
+    --cert-footer-right: 6.23%;
+    --cert-logo-top: 14.24%;
+    /* Un poco más arriba que Figma (34.11%) para no cortar categoría */
+    --cert-main-top: 31%;
+    --cert-main-bottom: 39.72%;
+    --cert-sigs-bottom: 11.93%;
+    --cert-footer-bottom: 4.33%;
+    /* Espaciado vertical vía % del ancho del cert. (≈ proporción Figma sobre alto 598) */
+    --cert-gap-sections: calc(100% * 24 / 774);
+    --cert-gap-tight: calc(100% * 3.518 / 774);
+    --cert-gap-sigs-to-footer: 4.63%;
+    --cert-fs-date: 1.64cqw;
+    --cert-fs-body: 1.64cqw;
+    --cert-fs-student: 3.01cqw;
+    --cert-fs-course: 2.05cqw;
+    --cert-fs-sig: 1.37cqw;
+    --cert-fs-foot: 1.09cqw;
+    --cert-fs-code: 1.23cqw;
+    --cert-logo-max-w: 20.8cqw;
+    --cert-logo-max-h: 8.15%;
+    --cert-sig-img-w: 17cqw;
+    --cert-sig-img-h: 11.86%;
+    --cert-sigs-gap: 16.6cqw;
 }
 
 .certificado-paso__preview-logo {
+    position: absolute;
+    top: var(--cert-logo-top);
+    left: var(--cert-zone-left);
     width: auto;
-    max-width: 42%;
-    max-height: 9%;
+    height: auto;
+    max-width: var(--cert-logo-max-w);
+    max-height: var(--cert-logo-max-h);
     object-fit: contain;
     object-position: left top;
-    margin-bottom: 4%;
+    margin: 0;
 }
 
 .certificado-paso__preview-main {
-    flex: 0 0 auto;
+    position: absolute;
+    top: var(--cert-main-top);
+    left: var(--cert-zone-left);
+    right: var(--cert-zone-right);
+    bottom: var(--cert-main-bottom);
+    width: 100%;
+    box-sizing: border-box;
     display: flex;
     flex-direction: column;
-    gap: 1.15em;
-    margin-top: 0.35em;
+    gap: 0;
+    min-height: 0;
+    overflow: hidden;
+}
+
+.certificado-paso__preview-section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--cert-gap-tight);
+    flex-shrink: 0;
+    min-width: 0;
+}
+
+.certificado-paso__preview-section + .certificado-paso__preview-section {
+    margin-top: var(--cert-gap-sections);
 }
 
 .certificado-paso__preview-date {
     margin: 0;
-    font-size: clamp(11px, 1.65cqw, 12.71px);
+    font-size: var(--cert-fs-date);
     font-weight: 400;
     line-height: 1.33;
     color: #000;
+    flex-shrink: 0;
 }
 
 .certificado-paso__preview-student {
     margin: 0;
-    font-size: clamp(18px, 3.05cqw, 23.29px);
+    font-size: var(--cert-fs-student);
     font-weight: 700;
-    line-height: 1.32;
+    line-height: 1.28;
     color: #000;
-}
-
-.certificado-paso__preview-block {
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 0.28em;
+    flex-shrink: 0;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
 }
 
 .certificado-paso__preview-lead,
 .certificado-paso__preview-meta {
     margin: 0;
-    font-size: clamp(11px, 1.65cqw, 12.71px);
+    font-size: var(--cert-fs-body);
     font-weight: 400;
     line-height: 1.33;
     color: #000;
@@ -173,10 +216,14 @@
 
 .certificado-paso__preview-course-title {
     margin: 0;
-    font-size: clamp(13px, 2.05cqw, 15.88px);
+    font-size: var(--cert-fs-course);
     font-weight: 700;
     line-height: 1.2;
     color: #000;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    overflow: hidden;
 }
 
 .certificado-paso__preview-category-label {
@@ -185,34 +232,47 @@
 
 .certificado-paso__preview-signatures {
     position: absolute;
-    left: 32.6%;
-    right: 5.9%;
-    bottom: 13.5%;
+    left: var(--cert-zone-left);
+    right: var(--cert-zone-right);
+    bottom: var(--cert-sigs-bottom);
     display: flex;
     flex-wrap: nowrap;
     align-items: flex-end;
     justify-content: flex-start;
-    gap: clamp(12px, 8cqw, 48px);
-    max-width: none;
+    gap: var(--cert-sigs-gap);
     box-sizing: border-box;
+    min-width: 0;
+    padding-bottom: var(--cert-gap-sigs-to-footer);
+}
+
+.certificado-paso__preview-signatures--single .certificado-paso__preview-signature {
+    flex: 0 1 auto;
+    width: auto;
+    max-width: 100%;
+    min-width: 0;
+}
+
+.certificado-paso__preview-signatures--double .certificado-paso__preview-signature {
+    flex: 1 1 0;
+    width: auto;
+    min-width: 0;
+    max-width: calc(50% - var(--cert-sigs-gap) / 2);
 }
 
 .certificado-paso__preview-signature {
-    flex: 0 1 169px;
-    max-width: 46%;
     display: flex;
     flex-direction: column;
     align-items: center;
     text-align: center;
-    gap: 2px;
+    gap: 0.25cqw;
 }
 
 .certificado-paso__preview-signature-line {
     width: 100%;
-    max-width: 131px;
-    height: clamp(24px, 8cqw, 38px);
+    max-width: var(--cert-sig-img-w);
+    height: var(--cert-sig-img-h);
     border-bottom: 1px solid rgba(0, 0, 0, 0.35);
-    margin-bottom: 2px;
+    margin-bottom: 0.2cqw;
     background: linear-gradient(
         105deg,
         transparent 8%,
@@ -223,63 +283,96 @@
 
 .certificado-paso__preview-signature-img {
     display: block;
-    width: 100%;
-    max-width: 131px;
-    max-height: clamp(28px, 8cqw, 42px);
-    margin: 0 auto 2px;
+    width: auto;
+    height: auto;
+    max-width: var(--cert-sig-img-w);
+    max-height: var(--cert-sig-img-h);
+    margin: 0 auto 0.2cqw;
     object-fit: contain;
     object-position: center bottom;
 }
 
-.certificado-paso__preview-signature-name {
-    margin: 0;
-    font-size: clamp(8px, 1.37cqw, 10.59px);
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.02em;
-    line-height: 1.25;
-    color: #000;
-}
-
+.certificado-paso__preview-signature-name,
 .certificado-paso__preview-signature-role {
     margin: 0;
-    font-size: clamp(8px, 1.37cqw, 10.59px);
-    font-weight: 400;
+    width: auto;
+    max-width: 100%;
+    font-size: var(--cert-fs-sig);
     text-transform: uppercase;
     line-height: 1.2;
     color: #000;
+    white-space: nowrap;
+    overflow-wrap: normal;
+    word-break: keep-all;
+    hyphens: none;
+}
+
+.certificado-paso__preview-signature-name {
+    font-weight: 700;
+    letter-spacing: 0.02em;
+}
+
+.certificado-paso__preview-signature-role {
+    font-weight: 400;
 }
 
 .certificado-paso__preview-footer {
     position: absolute;
-    right: 6.2%;
-    bottom: 3.2%;
-    left: 32.6%;
-    max-width: none;
+    left: var(--cert-zone-left);
+    right: var(--cert-footer-right);
+    bottom: var(--cert-footer-bottom);
     text-align: right;
     color: #000;
     pointer-events: none;
+    box-sizing: border-box;
 }
 
 .certificado-paso__preview-code {
-    margin: 0 0 0.15em;
-    font-size: clamp(8px, 1.23cqw, 9.53px);
+    margin: 0 0 0.35%;
+    font-size: var(--cert-fs-code);
     font-weight: 400;
     line-height: 1.22;
 }
 
-.certificado-paso__preview-disclaimer {
+.certificado-paso__preview-disclaimer,
+.certificado-paso__preview-doc {
     margin: 0;
-    font-size: clamp(7px, 1.1cqw, 8.47px);
+    font-size: var(--cert-fs-foot);
     font-weight: 400;
-    line-height: 1.5;
+    line-height: 1.45;
 }
 
 .certificado-paso__preview-doc {
-    margin: 0.35em 0 0;
-    font-size: clamp(7px, 1.1cqw, 8.47px);
-    font-weight: 400;
-    line-height: 1.5;
+    margin-top: 0.35cqw;
+}
+
+@container cert-preview (max-width: 520px) {
+    .certificado-paso__preview-sheet {
+        --cert-sigs-gap: 8cqw;
+        --cert-sig-img-w: 16cqw;
+        --cert-sig-img-h: 10%;
+        --cert-fs-sig: 1.55cqw;
+    }
+
+    .certificado-paso__preview-signatures--double {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: calc(100% * 12 / 774);
+    }
+
+    .certificado-paso__preview-signatures--double .certificado-paso__preview-signature {
+        flex: 0 0 auto;
+        width: 100%;
+        max-width: 100%;
+        align-items: flex-start;
+        text-align: left;
+    }
+}
+
+@container cert-preview (min-width: 521px) {
+    .certificado-paso__preview-signatures--double .certificado-paso__preview-signature {
+        min-width: 21.9cqw;
+    }
 }
 
 .certificado-paso__preview-doc[hidden] {
@@ -289,6 +382,8 @@
 @media (max-width: 1023px) {
     .certificado-paso__workspace {
         flex-direction: column;
+        width: 100%;
+        max-width: 100%;
     }
 
     .certificado-paso__panel {
@@ -297,5 +392,21 @@
         min-width: 0;
         width: 100%;
         position: static;
+    }
+
+    .certificado-paso__preview-col,
+    .certificado-paso__preview-host,
+    .certificado-paso__preview-frame,
+    .certificado-paso__preview-sheet {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+        box-sizing: border-box;
+    }
+
+    .page-crear-contenido #crear-contenido-step-certificado {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
     }
 }

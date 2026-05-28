@@ -171,8 +171,14 @@
 
     function renderCertificatePreviewHtml(template, snap) {
         var tpl = template || {};
+        var sigMod =
+            tpl.secondSignature && tpl.signatorySecondary
+                ? ' certificado-paso__preview-signatures--double'
+                : ' certificado-paso__preview-signatures--single';
         var signatures =
-            '<div class="certificado-paso__preview-signatures">' +
+            '<div class="certificado-paso__preview-signatures' +
+            sigMod +
+            '">' +
             buildSignatureBlock(tpl.signatoryPrimary || 'patricia');
         if (tpl.secondSignature && tpl.signatorySecondary) {
             signatures += buildSignatureBlock(tpl.signatorySecondary);
@@ -184,33 +190,36 @@
                 ? '<p class="certificado-paso__preview-doc">Documento: ##########</p>'
                 : '';
 
+        var durationHtml =
+            template && template.studyTime !== false
+                ? '<p class="certificado-paso__preview-meta">' + escapeHtml(snap.durationLine) + '</p>'
+                : '';
+
         return (
             '<div class="certificado-paso__preview-frame">' +
             '<article class="certificado-paso__preview-sheet" aria-label="Vista previa del certificado">' +
-            '<div class="certificado-paso__preview-body">' +
-            '<img class="certificado-paso__preview-logo" src="../../images/Client-logo.png" alt="Fiqsha" width="152" height="46" />' +
+            '<img class="certificado-paso__preview-logo" src="../../images/Client-logo.png" alt="Fiqsha" />' +
             '<div class="certificado-paso__preview-main">' +
+            '<div class="certificado-paso__preview-section certificado-paso__preview-section--identity">' +
             '<p class="certificado-paso__preview-date">' +
             escapeHtml(snap.dateLabel) +
             '</p>' +
             '<p class="certificado-paso__preview-student">' +
             escapeHtml(snap.studentName) +
             '</p>' +
-            '<div class="certificado-paso__preview-block">' +
+            '</div>' +
+            '<div class="certificado-paso__preview-section certificado-paso__preview-section--course">' +
             '<p class="certificado-paso__preview-lead">Finalizó satisfactoriamente el contenido:</p>' +
             '<p class="certificado-paso__preview-course-title">' +
             escapeHtml(snap.title) +
             '</p>' +
             '</div>' +
-            '<div class="certificado-paso__preview-block">' +
-            (template && template.studyTime !== false
-                ? '<p class="certificado-paso__preview-meta">' + escapeHtml(snap.durationLine) + '</p>'
-                : '') +
+            '<div class="certificado-paso__preview-section certificado-paso__preview-section--meta">' +
+            durationHtml +
             '<p class="certificado-paso__preview-meta">' +
             '<span class="certificado-paso__preview-category-label">Categoría:</span> ' +
             escapeHtml(snap.categoryLabel) +
             '</p>' +
-            '</div>' +
             '</div>' +
             '</div>' +
             signatures +
