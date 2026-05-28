@@ -221,6 +221,16 @@
     );
 }
 
+.certificado-paso__preview-signature-img {
+    display: block;
+    width: 100%;
+    max-width: 131px;
+    max-height: clamp(28px, 8cqw, 42px);
+    margin: 0 auto 2px;
+    object-fit: contain;
+    object-position: center bottom;
+}
+
 .certificado-paso__preview-signature-name {
     margin: 0;
     font-size: clamp(8px, 1.37cqw, 10.59px);

@@ -10,6 +10,23 @@
     var selectedTemplateId = '';
     var templateSelectApi = null;
 
+    /**
+     * Representantes Fiqsha (bd-master-colaboradores.js).
+     * Imágenes: images/lms-creator/certificados/firma-patricia.webp, firma-carmen.webp
+     */
+    var CERTIFICADO_REPRESENTANTES = {
+        patricia: {
+            name: 'Patricia Elena Bermúdez Ríos',
+            role: 'Gerente General',
+            imageSrc: '../../images/lms-creator/certificados/firma-patricia.webp'
+        },
+        carmenRosa: {
+            name: 'Carmen Rosa Díaz Herrera',
+            role: 'Jefa de Recursos Humanos',
+            imageSrc: '../../images/lms-creator/certificados/firma-carmen.webp'
+        }
+    };
+
     /** Más reciente primero (por defecto la última creada). */
     var FIQSHA_CERTIFICATE_TEMPLATES = [
         {
@@ -17,21 +34,27 @@
             name: 'Cursos empresariales con doble firma',
             secondSignature: true,
             studyTime: true,
-            documentId: false
+            documentId: false,
+            signatoryPrimary: 'patricia',
+            signatorySecondary: 'carmenRosa'
         },
         {
             id: 'tpl-estandar',
             name: 'Certificado estándar Fiqsha',
             secondSignature: false,
             studyTime: true,
-            documentId: true
+            documentId: true,
+            signatoryPrimary: 'patricia',
+            signatorySecondary: null
         },
         {
             id: 'tpl-onboarding',
             name: 'Onboarding colaboradores',
             secondSignature: false,
             studyTime: false,
-            documentId: false
+            documentId: false,
+            signatoryPrimary: 'carmenRosa',
+            signatorySecondary: null
         }
     ];
 
@@ -116,22 +139,43 @@
         };
     }
 
-    function buildSignatureBlock(which) {
+    function getCertificadoRepresentante(key) {
+        var rep = key && CERTIFICADO_REPRESENTANTES[key] ? CERTIFICADO_REPRESENTANTES[key] : null;
+        if (rep) return rep;
+        return {
+            name: 'Nombre del representante',
+            role: 'Cargo del representante',
+            imageSrc: null
+        };
+    }
+
+    function buildSignatureBlock(signatoryKey) {
+        var rep = getCertificadoRepresentante(signatoryKey);
+        var visual = rep.imageSrc
+            ? '<img class="certificado-paso__preview-signature-img" src="' +
+              escapeHtml(rep.imageSrc) +
+              '" alt="" loading="lazy" />'
+            : '<div class="certificado-paso__preview-signature-line" aria-hidden="true"></div>';
         return (
             '<div class="certificado-paso__preview-signature">' +
-            '<div class="certificado-paso__preview-signature-line" aria-hidden="true"></div>' +
-            '<p class="certificado-paso__preview-signature-name">Nombre del representante</p>' +
-            '<p class="certificado-paso__preview-signature-role">Cargo del representante</p>' +
+            visual +
+            '<p class="certificado-paso__preview-signature-name">' +
+            escapeHtml(rep.name) +
+            '</p>' +
+            '<p class="certificado-paso__preview-signature-role">' +
+            escapeHtml(rep.role) +
+            '</p>' +
             '</div>'
         );
     }
 
     function renderCertificatePreviewHtml(template, snap) {
+        var tpl = template || {};
         var signatures =
             '<div class="certificado-paso__preview-signatures">' +
-            buildSignatureBlock('primary');
-        if (template && template.secondSignature) {
-            signatures += buildSignatureBlock('secondary');
+            buildSignatureBlock(tpl.signatoryPrimary || 'patricia');
+        if (tpl.secondSignature && tpl.signatorySecondary) {
+            signatures += buildSignatureBlock(tpl.signatorySecondary);
         }
         signatures += '</div>';
 
