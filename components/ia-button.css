@@ -202,6 +202,10 @@
     color: var(--ubits-accent-brand) !important;
 }
 
+.ubits-ia-button--active .ubits-ia-button__sparkles path {
+    fill: currentColor !important;
+}
+
 /* Disabled State */
 .ubits-ia-button:disabled,
 .ubits-ia-button--disabled {
@@ -219,6 +223,11 @@
 .ubits-ia-button:disabled .ubits-ia-button__sparkles,
 .ubits-ia-button--disabled .ubits-ia-button__sparkles {
     color: var(--ubits-fg-on-disabled-button) !important;
+}
+
+.ubits-ia-button:disabled .ubits-ia-button__sparkles path,
+.ubits-ia-button--disabled .ubits-ia-button__sparkles path {
+    fill: var(--ubits-fg-on-disabled-button) !important;
 }
 
 /* ========================================
@@ -478,7 +487,7 @@
     height: 20px !important;
 }
 
-/* --- Icono sparkles (Figma 571:8065; cuatro piezas, animación a destiempo en hover del primario) --- */
+/* --- Icono sparkles (12×12, mismo arte que ia-loader; animación a destiempo solo en hover) --- */
 .ubits-ia-button__sparkles {
     display: inline-flex;
     align-items: center;
@@ -535,41 +544,45 @@
 
 .ubits-ia-button__sparkles-svg .ubits-ia-button__spark-g1,
 .ubits-ia-button__sparkles-svg .ubits-ia-button__spark-g2,
-.ubits-ia-button__sparkles-svg .ubits-ia-button__spark-g3,
-.ubits-ia-button__sparkles-svg .ubits-ia-button__spark-g4 {
-    transform-box: view-box;
-    transform-origin: 50% 50%;
+.ubits-ia-button__sparkles-svg .ubits-ia-button__spark-g3 {
+    transform-box: fill-box;
+    transform-origin: center;
 }
 
-/* Figma 571:8065 — fill por subtrazo */
 .ubits-ia-button__sparkles-svg path {
-    fill: currentColor;
     stroke: none;
 }
 
-/* Por defecto estático; en hover del primario cada pieza anima a destiempo */
+/* Primario: blanco vía currentColor en el wrap */
+.ubits-ia-button--primary .ubits-ia-button__sparkles-svg path {
+    fill: currentColor;
+}
+
+/* Estrella grande en contorno: P3 solo recorta (evenodd), no se pinta encima */
+.ubits-ia-button__spark-g2 path {
+    fill-rule: evenodd;
+}
+
+/* Por defecto estático; en hover (primario o secundario) cada pieza anima a destiempo */
 .ubits-ia-button__spark-g1,
 .ubits-ia-button__spark-g2,
-.ubits-ia-button__spark-g3,
-.ubits-ia-button__spark-g4 {
+.ubits-ia-button__spark-g3 {
     animation: none;
 }
 
-.ubits-ia-button--primary:hover:not(:disabled) .ubits-ia-button__spark-g1 {
+.ubits-ia-button--primary:hover:not(:disabled) .ubits-ia-button__spark-g1,
+.ubits-ia-button--secondary:hover:not(:disabled) .ubits-ia-button__spark-g1 {
     animation: ubits-ia-button-spark-s1 1.9s ease-in-out infinite;
 }
 
-.ubits-ia-button--primary:hover:not(:disabled) .ubits-ia-button__spark-g2 {
+.ubits-ia-button--primary:hover:not(:disabled) .ubits-ia-button__spark-g2,
+.ubits-ia-button--secondary:hover:not(:disabled) .ubits-ia-button__spark-g2 {
     animation: ubits-ia-button-spark-s2 1.2s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite;
     animation-delay: -0.22s;
 }
 
-.ubits-ia-button--primary:hover:not(:disabled) .ubits-ia-button__spark-g3 {
-    animation: ubits-ia-button-spark-s3 1.55s cubic-bezier(0.33, 0, 0.2, 1) infinite;
-    animation-delay: -0.62s;
-}
-
-.ubits-ia-button--primary:hover:not(:disabled) .ubits-ia-button__spark-g4 {
+.ubits-ia-button--primary:hover:not(:disabled) .ubits-ia-button__spark-g3,
+.ubits-ia-button--secondary:hover:not(:disabled) .ubits-ia-button__spark-g3 {
     animation: ubits-ia-button-spark-s2 1.2s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite;
     animation-delay: -0.92s;
 }
@@ -596,21 +609,6 @@
     }
 }
 
-@keyframes ubits-ia-button-spark-s3 {
-    0%,
-    100% {
-        transform: scale(0.94);
-    }
-
-    35% {
-        transform: scale(1.12);
-    }
-
-    70% {
-        transform: scale(0.98);
-    }
-}
-
 .ubits-ia-button--primary .ubits-ia-button__sparkles {
     color: rgb(255, 255, 255);
     filter: drop-shadow(0 0 1px color-mix(in srgb, rgb(255, 255, 255) 35%, transparent))
@@ -620,17 +618,32 @@
 .ubits-ia-button--primary:disabled .ubits-ia-button__spark-g1,
 .ubits-ia-button--primary:disabled .ubits-ia-button__spark-g2,
 .ubits-ia-button--primary:disabled .ubits-ia-button__spark-g3,
-.ubits-ia-button--primary:disabled .ubits-ia-button__spark-g4,
 .ubits-ia-button--primary.ubits-ia-button--disabled .ubits-ia-button__spark-g1,
 .ubits-ia-button--primary.ubits-ia-button--disabled .ubits-ia-button__spark-g2,
 .ubits-ia-button--primary.ubits-ia-button--disabled .ubits-ia-button__spark-g3,
-.ubits-ia-button--primary.ubits-ia-button--disabled .ubits-ia-button__spark-g4 {
+.ubits-ia-button--secondary:disabled .ubits-ia-button__spark-g1,
+.ubits-ia-button--secondary:disabled .ubits-ia-button__spark-g2,
+.ubits-ia-button--secondary:disabled .ubits-ia-button__spark-g3,
+.ubits-ia-button--secondary.ubits-ia-button--disabled .ubits-ia-button__spark-g1,
+.ubits-ia-button--secondary.ubits-ia-button--disabled .ubits-ia-button__spark-g2,
+.ubits-ia-button--secondary.ubits-ia-button--disabled .ubits-ia-button__spark-g3 {
     animation: none !important;
 }
 
 .ubits-ia-button:disabled .ubits-ia-button__sparkles,
 .ubits-ia-button--disabled .ubits-ia-button__sparkles {
     filter: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .ubits-ia-button--primary:hover:not(:disabled) .ubits-ia-button__spark-g1,
+    .ubits-ia-button--primary:hover:not(:disabled) .ubits-ia-button__spark-g2,
+    .ubits-ia-button--primary:hover:not(:disabled) .ubits-ia-button__spark-g3,
+    .ubits-ia-button--secondary:hover:not(:disabled) .ubits-ia-button__spark-g1,
+    .ubits-ia-button--secondary:hover:not(:disabled) .ubits-ia-button__spark-g2,
+    .ubits-ia-button--secondary:hover:not(:disabled) .ubits-ia-button__spark-g3 {
+        animation: none !important;
+    }
 }
 
 /* ========================================
@@ -934,13 +947,20 @@
     color: var(--ubits-fg-on-disabled-button) !important;
 }
 
-/* Icono: color tomado del mismo gradiente Creator v3 (texto con clip, sin cambiar el fondo del botón) */
+/* Icono FontAwesome secundario: gradiente Creator v3 (el SVG sparkles usa linearGradient en defs) */
 .ubits-ia-button--secondary i {
     background: var(--ubits-ia-button-gradient);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
     -webkit-text-fill-color: transparent;
+}
+
+/* Secundario: sin blanco ni sombra; el relleno del SVG es url(#grad) con la misma paleta */
+.ubits-ia-button--secondary .ubits-ia-button__sparkles--gradient,
+.ubits-ia-button--secondary .ubits-ia-button__sparkles {
+    color: inherit;
+    filter: none;
 }
 
 /* Disabled: quitar clip/gradiente del icono secundario y usar mismo token que el botón */
@@ -1014,6 +1034,10 @@
     background-clip: border-box !important;
     color: var(--ubits-fg-on-disabled-button) !important;
     -webkit-text-fill-color: var(--ubits-fg-on-disabled-button) !important;
+}
+
+[data-theme="dark"] .ubits-ia-button--active .ubits-ia-button__sparkles path {
+    fill: currentColor !important;
 }
 
 [data-theme="dark"] .ubits-ia-button--active {

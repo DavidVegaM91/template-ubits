@@ -148,12 +148,17 @@
     fill: currentColor;
 }
 
-.ubits-ia-loader__sparkles-svg .ubits-ia-loader__spark-g1,
-.ubits-ia-loader__sparkles-svg .ubits-ia-loader__spark-g2,
-.ubits-ia-loader__sparkles-svg .ubits-ia-loader__spark-g3,
-.ubits-ia-loader__sparkles-svg .ubits-ia-loader__spark-g4 {
-    transform-box: view-box;
-    transform-origin: 50% 50%;
+/* Contorno de la estrella grande (mismo truco que el path único 12×12: P2 menos P3) */
+.ubits-ia-loader__spark-g2 path {
+    fill-rule: evenodd;
+}
+
+/* Cada pieza pulsa desde su propio centro (fill-box), no desde el del viewBox */
+.ubits-ia-loader__spark-g1,
+.ubits-ia-loader__spark-g2,
+.ubits-ia-loader__spark-g3 {
+    transform-box: fill-box;
+    transform-origin: center;
 }
 
 .ubits-ia-loader__spark-g1 {
@@ -166,12 +171,6 @@
 }
 
 .ubits-ia-loader__spark-g3 {
-    animation: ubits-ia-loader-spark-s3 1.55s cubic-bezier(0.33, 0, 0.2, 1) infinite;
-    animation-delay: -0.62s;
-}
-
-/* Cuarto subtrazo: misma curva que g2, fase distinta (destiempo respecto a g1–g3) */
-.ubits-ia-loader__spark-g4 {
     animation: ubits-ia-loader-spark-s2 1.2s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite;
     animation-delay: -0.92s;
 }
@@ -281,7 +280,6 @@
     .ubits-ia-loader__spark-g1,
     .ubits-ia-loader__spark-g2,
     .ubits-ia-loader__spark-g3,
-    .ubits-ia-loader__spark-g4,
     .ubits-ia-loader__dots span {
         animation: none !important;
     }
