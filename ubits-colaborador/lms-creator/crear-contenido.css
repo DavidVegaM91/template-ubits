@@ -300,9 +300,34 @@ body.crear-contenido-app-open .ubits-dropdown-menu__content {
     display: none !important;
 }
 
-.crear-contenido-recursos__page-title-wrap {
+.crear-contenido-recursos__page-title-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--gap-sm) var(--gap-md);
     width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+}
+
+.crear-contenido-recursos__page-title-row .crear-contenido-recursos__page-title-wrap {
+    flex: 1 1 12rem;
+    min-width: 0;
     max-width: 100%;
+}
+
+.crear-contenido-recursos__page-counter {
+    flex: 0 0 auto;
+    margin: 0;
+    padding: var(--padding-xs) 0 0;
+    color: var(--ubits-fg-1-medium);
+    text-align: right;
+    white-space: nowrap;
+}
+
+.crear-contenido-recursos__page-counter[hidden] {
+    display: none !important;
 }
 
 .crear-contenido-recursos__resources-mount {

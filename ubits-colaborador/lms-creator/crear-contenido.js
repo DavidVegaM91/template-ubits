@@ -2453,6 +2453,67 @@
             rb.hidden = true;
             rb.setAttribute('hidden', 'hidden');
         }
+        syncRecursosPageCounter();
+    }
+
+    function getRecursosActivePageList() {
+        var mount = getRecursosIndiceMount();
+        if (!mount) return null;
+        var activeItem = mount.querySelector('.ubits-paginas-creator__item.is-active');
+        if (activeItem) {
+            var listFromItem = activeItem.closest('.ubits-paginas-creator');
+            if (listFromItem && mount.contains(listFromItem)) return listFromItem;
+        }
+        if (!recursosSectionsEnabled) {
+            return (
+                mount.querySelector('.ubits-indice-creator__single-wrap .ubits-paginas-creator') ||
+                mount.querySelector('.ubits-paginas-creator')
+            );
+        }
+        var activeSec = mount.querySelector('.ubits-seccion-creator__section.is-active');
+        if (activeSec) {
+            var pl = activeSec.querySelector('.ubits-paginas-creator');
+            if (pl) return pl;
+        }
+        return mount.querySelector('.ubits-paginas-creator');
+    }
+
+    function syncRecursosPageCounter() {
+        var counter = document.getElementById('crear-contenido-recursos-page-counter');
+        var titleSec = document.getElementById('crear-contenido-recursos-page-title-section');
+        if (!counter) return;
+        if (!titleSec || titleSec.hidden) {
+            counter.hidden = true;
+            counter.setAttribute('hidden', 'hidden');
+            counter.textContent = '';
+            return;
+        }
+        var list = getRecursosActivePageList();
+        var activeItem = list ? list.querySelector(':scope > .ubits-paginas-creator__item.is-active') : null;
+        if (!list || !activeItem) {
+            counter.hidden = true;
+            counter.setAttribute('hidden', 'hidden');
+            counter.textContent = '';
+            return;
+        }
+        var items = list.querySelectorAll(':scope > .ubits-paginas-creator__item');
+        var index = 0;
+        var total = items.length;
+        for (var i = 0; i < items.length; i++) {
+            if (items[i] === activeItem) {
+                index = i + 1;
+                break;
+            }
+        }
+        if (!index || !total) {
+            counter.hidden = true;
+            counter.setAttribute('hidden', 'hidden');
+            counter.textContent = '';
+            return;
+        }
+        counter.textContent = 'Página ' + index + ' de ' + total;
+        counter.hidden = false;
+        counter.removeAttribute('hidden');
     }
 
     function syncRecursosRightTitleFromActive() {
@@ -2466,6 +2527,7 @@
                 window.autoResizeInlineEdit(inp);
             }
         }
+        syncRecursosPageCounter();
     }
 
     function syncRecursosActiveLabelFromPageTitleInput() {
@@ -2664,6 +2726,7 @@
             if (typeof initTooltip === 'function') {
                 initTooltip('#crear-contenido-recursos-indice-mount [data-tooltip]');
             }
+            syncRecursosPageCounter();
             refreshCrearContenidoPageSiguienteState();
             return;
         }

@@ -130,7 +130,7 @@ Definir la **estructura del contenido** (secciones opcionales, páginas/leccione
 | Panel | Ubicación | Rol |
 |-------|-----------|-----|
 | **Izquierda** | Configuración de la estructura | Secciones (opcional), lista **Páginas creator** (selección, menú ⋮, **reordenar arrastrando** el icono de tipo), acciones “Añadir página” / “Añadir sección”. |
-| **Derecha** | Previsualizador de recursos | Estado vacío si no hay páginas; con una página activa: **título editable** y debajo el **selector y configuración del recurso** (formulario o vista previa según el tipo). |
+| **Derecha** | Previsualizador de recursos | Estado vacío si no hay páginas; con una página activa: **título editable**, **indicador «Página X de X»** (posición dentro de la sección activa) y debajo el **selector y configuración del recurso** (formulario o vista previa según el tipo). |
 
 Los dos paneles trabajan acoplados: la selección de página en la izquierda determina qué se edita/previsualiza a la derecha.
 
@@ -201,8 +201,17 @@ Si el usuario **desactiva** secciones (o nunca las activa): **todas las páginas
 ### Panel derecho: página recién añadida
 
 - **Orden vertical:**  
-  1. **Título de la página**, **editable inline** en el panel derecho (mismo criterio que el nombre en la fila del índice: al guardar o al perder foco debe mantenerse alineado con la etiqueta de la página activa en Páginas creator).  
+  1. **Fila de título:** a la izquierda, **título de la página** **editable inline** (mismo criterio que el nombre en la fila del índice: al guardar o al perder foco debe mantenerse alineado con la etiqueta de la página activa en Páginas creator). A la **derecha** de esa fila, texto auxiliar en tipografía pequeña: **«Página X de X»** (por ejemplo *Página 1 de 3*).  
   2. Debajo, el **bloque para elegir el tipo de recurso** (tarjetas de video, PDF, texto, etc.) según el diseño UBITS.
+
+**Indicador «Página X de X»**
+
+- Muestra la **posición de la página activa dentro de la sección en la que está**, no el total global del contenido si hay varias secciones.  
+- **Con secciones desactivadas:** todas las páginas cuentan en una sola lista → *Página 2 de 5* si hay cinco páginas y la segunda está seleccionada.  
+- **Con secciones activadas:** solo cuentan las páginas **de la sección a la que pertenece la página activa**. Ejemplo: en la **sección 2** hay tres páginas y el usuario está en la primera → *Página 1 de 3* (aunque en el contenido completo haya más páginas en otras secciones).  
+- El contador **se actualiza** al cambiar de página, al **añadir** o **eliminar** páginas en esa sección, y al **reordenar** (menú ⋮ o arrastre).  
+- **No se muestra** cuando el panel derecho está en empty state (sin páginas).  
+- Copy fijo en español: **«Página»** + número actual + **«de»** + total (numeración desde **1**).
 
 ### Título obligatorio de cada página (validación en paso Recursos)
 
@@ -722,4 +731,4 @@ Este documento **no** sustituye la **documentación de componentes UBITS** ni la
 
 ---
 
-*Última revisión: **Complementary resources** (excluido en Evaluación final). **Recursos:** 8 tipos; persistencia por página. **Video:** modal clásico. **SCORM**, **status panel**, eliminar recurso/página/sección.*
+*Última revisión: indicador **«Página X de X»** en panel derecho del paso Recursos (por sección). **Complementary resources** (excluido en Evaluación final). **Recursos:** 8 tipos; persistencia por página.*
