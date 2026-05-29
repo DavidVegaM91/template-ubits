@@ -3540,7 +3540,14 @@
                 'ubits-toast-pending',
                 JSON.stringify({ type: 'success', message: 'Contenido creado exitosamente' })
             );
-            sessionStorage.setItem('ubits-contenidos-pin-recien-creado', 'f007');
+            var visibilidad =
+                typeof window.getCrearContenidoVisibilidad === 'function'
+                    ? window.getCrearContenidoVisibilidad()
+                    : 'borrador';
+            sessionStorage.setItem(
+                'ubits-contenidos-pin-recien-creado',
+                JSON.stringify({ id: 'f007', visibilidad: visibilidad })
+            );
         } catch (e) {}
         window.location.href = 'contenidos.html';
     }

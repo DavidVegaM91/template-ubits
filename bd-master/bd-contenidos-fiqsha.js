@@ -7,6 +7,7 @@
  *
  * `contents` — catálogo publicado: úsalo en u-corporativa, planes, tareas, drawer de catálogo, etc.
  *   **Universidad corporativa (`aprendizaje/u-corporativa.html`):** debe listar solo este catálogo publicado; es el reflejo en colaborador de lo que la empresa gestiona como **Publicado** en `lms-creator/contenidos.html` (misma BD, mismos criterios de filtro tipo/categoría/nivel/idioma que el modal Filtros del Creator).
+ * `fechaCreacion` — ISO `YYYY-MM-DD`; en `contenidos.html` el listado ordena por esta fecha (más reciente primero).
  * `contentsCreatorOnly` — privado/borrador/oculto/archivado: SOLO `lms-creator/contenidos.html` (no mezclar en otros consumidores de `contents`).
  */
 window.BDS_CONTENIDOS_FIQSHA = {
@@ -29,7 +30,8 @@ window.BDS_CONTENIDOS_FIQSHA = {
       "imagePath": "cards-learn/U-Corporativa/Inducción-a-la-cultura-y-valores-corporativos.jpg",
       "nivelId": "niv-001",
       "proveedorAliadoId": "aly-018",
-      "categoriaFiqshaId": "cfq-001"
+      "categoriaFiqshaId": "cfq-001",
+      "fechaCreacion": "2026-05-02"
     },
     {
       "id": "f002",
@@ -45,7 +47,8 @@ window.BDS_CONTENIDOS_FIQSHA = {
       "imagePath": "cards-learn/U-Corporativa/prevencion-acoso-laboral.jpg",
       "nivelId": "niv-001",
       "proveedorAliadoId": "aly-018",
-      "categoriaFiqshaId": "cfq-002"
+      "categoriaFiqshaId": "cfq-002",
+      "fechaCreacion": "2026-04-24"
     },
     {
       "id": "f003",
@@ -61,7 +64,8 @@ window.BDS_CONTENIDOS_FIQSHA = {
       "imagePath": "cards-learn/U-Corporativa/seguridad-y-salud-en-el-trabajo.jpg",
       "nivelId": "niv-001",
       "proveedorAliadoId": "aly-018",
-      "categoriaFiqshaId": "cfq-003"
+      "categoriaFiqshaId": "cfq-003",
+      "fechaCreacion": "2026-04-16"
     },
     {
       "id": "f004",
@@ -77,7 +81,8 @@ window.BDS_CONTENIDOS_FIQSHA = {
       "imagePath": "cards-learn/U-Corporativa/Cumplimiento-normativo-y-código-de-conducta.jpg",
       "nivelId": "niv-001",
       "proveedorAliadoId": "aly-018",
-      "categoriaFiqshaId": "cfq-002"
+      "categoriaFiqshaId": "cfq-002",
+      "fechaCreacion": "2026-04-08"
     },
     {
       "id": "f005",
@@ -93,7 +98,8 @@ window.BDS_CONTENIDOS_FIQSHA = {
       "imagePath": "cards-learn/U-Corporativa/Comunicación-efectiva-en-el-trabajo.jpg",
       "nivelId": "niv-002",
       "proveedorAliadoId": "aly-018",
-      "categoriaFiqshaId": "cfq-004"
+      "categoriaFiqshaId": "cfq-004",
+      "fechaCreacion": "2026-03-31"
     },
     {
       "id": "f006",
@@ -109,7 +115,8 @@ window.BDS_CONTENIDOS_FIQSHA = {
       "imagePath": "cards-learn/U-Corporativa/gestion-del-tiempo-y-productividad.jpg",
       "nivelId": "niv-001",
       "proveedorAliadoId": "aly-018",
-      "categoriaFiqshaId": "cfq-005"
+      "categoriaFiqshaId": "cfq-005",
+      "fechaCreacion": "2026-03-23"
     },
     {
       "id": "f007",
@@ -125,7 +132,8 @@ window.BDS_CONTENIDOS_FIQSHA = {
       "imagePath": "cards-learn/portadas-ia/02-personas-en-oficina.jpg",
       "nivelId": "niv-001",
       "proveedorAliadoId": "aly-018",
-      "categoriaFiqshaId": "cfq-006"
+      "categoriaFiqshaId": "cfq-006",
+      "fechaCreacion": "2025-12-01"
     },
     {
       "id": "f008",
@@ -141,7 +149,8 @@ window.BDS_CONTENIDOS_FIQSHA = {
       "imagePath": "cards-learn/U-Corporativa/Pensamiento-crítico-y-toma-de-decisiones.jpg",
       "nivelId": "niv-003",
       "proveedorAliadoId": "aly-018",
-      "categoriaFiqshaId": "cfq-007"
+      "categoriaFiqshaId": "cfq-007",
+      "fechaCreacion": "2026-03-15"
     },
     {
       "id": "f009",
@@ -157,7 +166,8 @@ window.BDS_CONTENIDOS_FIQSHA = {
       "imagePath": "cards-learn/U-Corporativa/creatividad-e-innovacion.jpg",
       "nivelId": "niv-002",
       "proveedorAliadoId": "aly-018",
-      "categoriaFiqshaId": "cfq-008"
+      "categoriaFiqshaId": "cfq-008",
+      "fechaCreacion": "2026-03-07"
     },
     {
       "id": "f010",
@@ -173,7 +183,8 @@ window.BDS_CONTENIDOS_FIQSHA = {
       "imagePath": "cards-learn/U-Corporativa/presentaciones-de-alto-impacto.jpg",
       "nivelId": "niv-002",
       "proveedorAliadoId": "aly-018",
-      "categoriaFiqshaId": "cfq-009"
+      "categoriaFiqshaId": "cfq-009",
+      "fechaCreacion": "2026-02-27"
     },
     {
       "id": "f011",
@@ -189,7 +200,8 @@ window.BDS_CONTENIDOS_FIQSHA = {
       "imagePath": "cards-learn/U-Corporativa/manejo-del-estres-laboral.jpg",
       "nivelId": "niv-001",
       "proveedorAliadoId": "aly-018",
-      "categoriaFiqshaId": "cfq-010"
+      "categoriaFiqshaId": "cfq-010",
+      "fechaCreacion": "2026-02-19"
     },
     {
       "id": "f012",
@@ -205,7 +217,8 @@ window.BDS_CONTENIDOS_FIQSHA = {
       "imagePath": "cards-learn/U-Corporativa/trabajo-en-equipo.jpg",
       "nivelId": "niv-001",
       "proveedorAliadoId": "aly-018",
-      "categoriaFiqshaId": "cfq-011"
+      "categoriaFiqshaId": "cfq-011",
+      "fechaCreacion": "2026-02-11"
     },
     {
       "id": "f013",
@@ -221,7 +234,8 @@ window.BDS_CONTENIDOS_FIQSHA = {
       "imagePath": "cards-learn/U-Corporativa/gestion-equipos-remotos.jpg",
       "nivelId": "niv-003",
       "proveedorAliadoId": "aly-018",
-      "categoriaFiqshaId": "cfq-012"
+      "categoriaFiqshaId": "cfq-012",
+      "fechaCreacion": "2026-02-03"
     },
     {
       "id": "f014",
@@ -237,7 +251,8 @@ window.BDS_CONTENIDOS_FIQSHA = {
       "imagePath": "cards-learn/U-Corporativa/delegacion-efectiva.jpg",
       "nivelId": "niv-002",
       "proveedorAliadoId": "aly-018",
-      "categoriaFiqshaId": "cfq-013"
+      "categoriaFiqshaId": "cfq-013",
+      "fechaCreacion": "2026-01-26"
     },
     {
       "id": "f015",
@@ -253,7 +268,8 @@ window.BDS_CONTENIDOS_FIQSHA = {
       "imagePath": "cards-learn/U-Corporativa/dar-y-recibir-feedback.jpg",
       "nivelId": "niv-002",
       "proveedorAliadoId": "aly-018",
-      "categoriaFiqshaId": "cfq-014"
+      "categoriaFiqshaId": "cfq-014",
+      "fechaCreacion": "2026-01-18"
     },
     {
       "id": "f016",
@@ -269,7 +285,8 @@ window.BDS_CONTENIDOS_FIQSHA = {
       "imagePath": "cards-learn/U-Corporativa/Comunicación-asertiva-para-líderes.jpg",
       "nivelId": "niv-003",
       "proveedorAliadoId": "aly-018",
-      "categoriaFiqshaId": "cfq-015"
+      "categoriaFiqshaId": "cfq-015",
+      "fechaCreacion": "2026-01-10"
     },
     {
       "id": "f017",
@@ -285,7 +302,8 @@ window.BDS_CONTENIDOS_FIQSHA = {
       "imagePath": "cards-learn/U-Corporativa/Ciberseguridad-y-protección-de-datos.jpg",
       "nivelId": "niv-003",
       "proveedorAliadoId": "aly-018",
-      "categoriaFiqshaId": "cfq-016"
+      "categoriaFiqshaId": "cfq-016",
+      "fechaCreacion": "2026-01-02"
     },
     {
       "id": "f018",
@@ -301,7 +319,8 @@ window.BDS_CONTENIDOS_FIQSHA = {
       "imagePath": "cards-learn/U-Corporativa/Gestión-de-proyectos-con-metodologías-ágiles.jpg",
       "nivelId": "niv-002",
       "proveedorAliadoId": "aly-018",
-      "categoriaFiqshaId": "cfq-017"
+      "categoriaFiqshaId": "cfq-017",
+      "fechaCreacion": "2025-12-25"
     },
     {
       "id": "f019",
@@ -317,7 +336,8 @@ window.BDS_CONTENIDOS_FIQSHA = {
       "imagePath": "cards-learn/U-Corporativa/Uso-eficiente-del-correo-electrónico-y-calendarios.jpg",
       "nivelId": "niv-001",
       "proveedorAliadoId": "aly-018",
-      "categoriaFiqshaId": "cfq-018"
+      "categoriaFiqshaId": "cfq-018",
+      "fechaCreacion": "2025-12-17"
     },
     {
       "id": "f020",
@@ -333,7 +353,8 @@ window.BDS_CONTENIDOS_FIQSHA = {
       "imagePath": "cards-learn/U-Corporativa/motivacion-y-reconocimiento-del-talento.jpg",
       "nivelId": "niv-001",
       "proveedorAliadoId": "aly-018",
-      "categoriaFiqshaId": "cfq-019"
+      "categoriaFiqshaId": "cfq-019",
+      "fechaCreacion": "2025-12-09"
     }
   ],
   "contentsCreatorOnly": [
@@ -353,6 +374,7 @@ window.BDS_CONTENIDOS_FIQSHA = {
       "nivelId": "niv-001",
       "proveedorAliadoId": "aly-018",
       "categoriaFiqshaId": "cfq-013",
+      "fechaCreacion": "2026-05-28",
       "visibilidadLms": "Privado"
     },
     {
@@ -370,6 +392,7 @@ window.BDS_CONTENIDOS_FIQSHA = {
       "nivelId": "niv-001",
       "proveedorAliadoId": "aly-018",
       "categoriaFiqshaId": "cfq-004",
+      "fechaCreacion": "2026-05-22",
       "visibilidadLms": "Borrador"
     },
     {
@@ -388,6 +411,7 @@ window.BDS_CONTENIDOS_FIQSHA = {
       "nivelId": "niv-001",
       "proveedorAliadoId": "aly-018",
       "categoriaFiqshaId": "cfq-001",
+      "fechaCreacion": "2026-05-18",
       "visibilidadLms": "Oculto"
     },
     {
@@ -405,6 +429,7 @@ window.BDS_CONTENIDOS_FIQSHA = {
       "nivelId": "niv-001",
       "proveedorAliadoId": "aly-018",
       "categoriaFiqshaId": "cfq-002",
+      "fechaCreacion": "2026-05-10",
       "visibilidadLms": "Archivado"
     }
   ]

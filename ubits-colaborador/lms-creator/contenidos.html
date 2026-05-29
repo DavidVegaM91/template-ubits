@@ -211,11 +211,16 @@
                     }
                 }
             } catch (_eToastPending) {}
-            var _contenidosPinRecienCreadoId = null;
+            var _contenidosPinRecienCreado = null;
             try {
-                _contenidosPinRecienCreadoId = sessionStorage.getItem('ubits-contenidos-pin-recien-creado');
-                if (_contenidosPinRecienCreadoId) {
+                var _pinRaw = sessionStorage.getItem('ubits-contenidos-pin-recien-creado');
+                if (_pinRaw) {
                     sessionStorage.removeItem('ubits-contenidos-pin-recien-creado');
+                    try {
+                        _contenidosPinRecienCreado = JSON.parse(_pinRaw);
+                    } catch (_ePinParse) {
+                        _contenidosPinRecienCreado = { id: _pinRaw, visibilidad: null };
+                    }
                 }
             } catch (_ePinRecienCreado) {}
             if (typeof initTooltip === 'function') {
@@ -821,6 +826,97 @@
             }
 
             /* Cards en cuadrícula: loadCardContent + lmsTag (Publicado / Borrador / …) vía card-content.js; requiere status-tag.css */
+            var MESES_CORTOS_CONTENIDOS = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
+
+            function formatFechaCreacionContenidos(iso) {
+                if (!iso) return '—';
+                var parts = String(iso).split('-');
+                if (parts.length !== 3) return String(iso);
+                var d = parseInt(parts[2], 10);
+                var m = parseInt(parts[1], 10) - 1;
+                var y = parts[0];
+                if (isNaN(d) || m < 0 || m > 11) return String(iso);
+                return d + ' ' + MESES_CORTOS_CONTENIDOS[m] + ' ' + y;
+            }
+
+            function getFechaCreacionSortValue(c) {
+                return c && c.fechaCreacion ? String(c.fechaCreacion) : '0000-00-00';
+            }
+
+            /** Etiquetas del paso Visibilidad en crear-contenido → tag LMS en Contenidos. */
+            function visibilidadCrearContenidoToLmsDisplay(visKey) {
+                var map = {
+                    borrador: { label: 'Borrador', modifier: 'info', cardTag: 'Borrador' },
+                    publico: { label: 'Público', modifier: 'success', cardTag: 'Público' },
+                    privado: { label: 'Privado', modifier: 'warning', cardTag: 'Privado' },
+                    oculto: { label: 'Oculto', modifier: 'neutral', cardTag: 'Oculto' }
+                };
+                return map[visKey] || map.borrador;
+            }
+
+            function isContenidoPinRecienCreado(c) {
+                return (
+                    _contenidosPinRecienCreado &&
+                    _contenidosPinRecienCreado.id != null &&
+                    c &&
+                    c.id != null &&
+                    String(c.id) === String(_contenidosPinRecienCreado.id)
+                );
+            }
+
+            function collectContenidosFiqshaItemsSorted() {
+                var items = [];
+                var creatorOnlyIds = {};
+                var bd = window.BDS_CONTENIDOS_FIQSHA;
+                if (!bd) return items;
+                if (Array.isArray(bd.contentsCreatorOnly)) {
+                    bd.contentsCreatorOnly.forEach(function (c) {
+                        if (!c || !c.titulo) return;
+                        items.push({ source: c, fromCreatorOnly: true });
+                        if (c.id != null) creatorOnlyIds[String(c.id)] = true;
+                    });
+                }
+                if (Array.isArray(bd.contents)) {
+                    bd.contents.forEach(function (c) {
+                        if (!c || !c.titulo) return;
+                        if (c.id != null && creatorOnlyIds[String(c.id)]) return;
+                        items.push({ source: c, fromCreatorOnly: false });
+                    });
+                }
+                items.sort(function (a, b) {
+                    var da = getFechaCreacionSortValue(a.source);
+                    var db = getFechaCreacionSortValue(b.source);
+                    if (da !== db) return db.localeCompare(da);
+                    return 0;
+                });
+                return items;
+            }
+
+            function getContenidoVisibilidadForList(c, fromCreatorOnly) {
+                if (isContenidoPinRecienCreado(c) && _contenidosPinRecienCreado.visibilidad) {
+                    return visibilidadCrearContenidoToLmsDisplay(_contenidosPinRecienCreado.visibilidad);
+                }
+                if (fromCreatorOnly) {
+                    var vis = c.visibilidadLms || 'Privado';
+                    return {
+                        label: vis,
+                        modifier: visibilidadLmsToTagModifierList(vis),
+                        cardTag: vis
+                    };
+                }
+                return { label: 'Publicado', modifier: 'success', cardTag: 'Publicado' };
+            }
+
+            function visibilidadLmsToTagModifierList(vis) {
+                var v = String(vis || '');
+                if (v === 'Privado') return 'warning';
+                if (v === 'Borrador') return 'info';
+                if (v === 'Oculto') return 'neutral';
+                if (v === 'Archivado') return 'error';
+                if (v === 'Público' || v === 'Publicado') return 'success';
+                return 'neutral';
+            }
+
             function pinContenidosCardFirst(cards, pinId) {
                 if (!pinId || !Array.isArray(cards) || !cards.length) return cards;
                 var id = String(pinId);
@@ -839,31 +935,17 @@
 
             function buildContenidosCardsPayload() {
                 var cards = [];
-                var creatorOnlyIds = {};
-                var bd = window.BDS_CONTENIDOS_FIQSHA;
-                if (bd && Array.isArray(bd.contentsCreatorOnly)) {
-                    bd.contentsCreatorOnly.forEach(function (c) {
-                        if (!c || !c.titulo) return;
-                        var row = cardDataFromFiqshaContent(c);
-                        row.lmsTag = c.visibilidadLms || 'Privado';
-                        row.lmsCardId = c.id != null ? String(c.id) : '';
-                        row.legacyLms = c.legacyLms === true;
-                        cards.push(row);
-                        if (c.id != null) creatorOnlyIds[String(c.id)] = true;
-                    });
-                }
-                if (bd && bd.contents) {
-                    bd.contents.forEach(function (c) {
-                        if (!c || !c.titulo) return;
-                        if (c.id != null && creatorOnlyIds[String(c.id)]) return;
-                        var row = cardDataFromFiqshaContent(c);
-                        row.lmsTag = 'Publicado';
-                        row.lmsCardId = c.id != null ? String(c.id) : '';
-                        cards.push(row);
-                    });
-                }
-                if (_contenidosPinRecienCreadoId) {
-                    pinContenidosCardFirst(cards, _contenidosPinRecienCreadoId);
+                collectContenidosFiqshaItemsSorted().forEach(function (item) {
+                    var c = item.source;
+                    var vis = getContenidoVisibilidadForList(c, item.fromCreatorOnly);
+                    var row = cardDataFromFiqshaContent(c);
+                    row.lmsTag = vis.cardTag;
+                    row.lmsCardId = c.id != null ? String(c.id) : '';
+                    row.legacyLms = c.legacyLms === true;
+                    cards.push(row);
+                });
+                if (_contenidosPinRecienCreado && _contenidosPinRecienCreado.id) {
+                    pinContenidosCardFirst(cards, _contenidosPinRecienCreado.id);
                 }
                 return { cards: cards };
             }
@@ -944,12 +1026,7 @@
                     });
                 }
                 function visibilidadLmsToTagModifier(vis) {
-                    var v = String(vis || '');
-                    if (v === 'Privado') return 'warning';
-                    if (v === 'Borrador') return 'info';
-                    if (v === 'Oculto') return 'neutral';
-                    if (v === 'Archivado') return 'error';
-                    return 'neutral';
+                    return visibilidadLmsToTagModifierList(vis);
                 }
                 function appendFiqshaRow(tr, c, opts) {
                     opts = opts || {};
@@ -966,7 +1043,7 @@
                     }
                     appendTextCell('nombre', c.titulo);
                     appendTextCell('tipo', tipoTxt);
-                    appendTextCell('creacion', '20 feb 2026');
+                    appendTextCell('creacion', formatFechaCreacionContenidos(c.fechaCreacion));
                     appendTextCell('nivel', nivelNombre);
                     var tdVis = document.createElement('td');
                     tdVis.setAttribute('data-col', 'visibilidad');
@@ -1002,49 +1079,30 @@
                     tdAcc.appendChild(btn);
                     tr.appendChild(tdAcc);
                 }
-                var fragCreator = document.createDocumentFragment();
-                var creatorOnlyIds = {};
-                if (Array.isArray(bd.contentsCreatorOnly)) {
-                    bd.contentsCreatorOnly.forEach(function (c) {
-                        if (!c || !c.titulo) return;
-                        var tr = document.createElement('tr');
-                        tr.setAttribute('data-contenidos-lms-only', 'true');
-                        tr.setAttribute('data-fiqsha-id', c.id || '');
-                        tr.setAttribute('data-legacy-lms', c.legacyLms === true ? 'true' : 'false');
-                        tr.setAttribute('data-tipo', c.tipoContenido || 'Curso');
-                        tr.setAttribute('data-categoria-fiqsha-id', c.categoriaFiqshaId || '');
-                        tr.setAttribute('data-nivel-id', c.nivelId || '');
-                        tr.setAttribute('data-idioma', c.idioma || 'Español');
-                        var vis = c.visibilidadLms || 'Privado';
-                        appendFiqshaRow(tr, c, {
-                            tagModifier: visibilidadLmsToTagModifier(vis),
-                            visibilidadLabel: vis
-                        });
-                        fragCreator.appendChild(tr);
-                        if (c.id != null) creatorOnlyIds[String(c.id)] = true;
-                    });
-                }
-                tbody.appendChild(fragCreator);
                 var frag = document.createDocumentFragment();
-                if (Array.isArray(bd.contents)) {
-                    bd.contents.forEach(function (c) {
-                        if (!c || !c.titulo) return;
-                        if (c.id != null && creatorOnlyIds[String(c.id)]) return;
-                        var tr = document.createElement('tr');
-                        tr.setAttribute('data-fiqsha-id', c.id || '');
-                        tr.setAttribute('data-legacy-lms', c.legacyLms === true ? 'true' : 'false');
-                        tr.setAttribute('data-tipo', c.tipoContenido || 'Curso');
-                        tr.setAttribute('data-categoria-fiqsha-id', c.categoriaFiqshaId || '');
-                        tr.setAttribute('data-nivel-id', c.nivelId || '');
-                        tr.setAttribute('data-idioma', c.idioma || 'Español');
-                        appendFiqshaRow(tr, c, { tagModifier: 'success', visibilidadLabel: 'Publicado' });
-                        frag.appendChild(tr);
+                collectContenidosFiqshaItemsSorted().forEach(function (item) {
+                    var c = item.source;
+                    var vis = getContenidoVisibilidadForList(c, item.fromCreatorOnly);
+                    var tr = document.createElement('tr');
+                    if (item.fromCreatorOnly) {
+                        tr.setAttribute('data-contenidos-lms-only', 'true');
+                    }
+                    tr.setAttribute('data-fiqsha-id', c.id || '');
+                    tr.setAttribute('data-legacy-lms', c.legacyLms === true ? 'true' : 'false');
+                    tr.setAttribute('data-tipo', c.tipoContenido || 'Curso');
+                    tr.setAttribute('data-categoria-fiqsha-id', c.categoriaFiqshaId || '');
+                    tr.setAttribute('data-nivel-id', c.nivelId || '');
+                    tr.setAttribute('data-idioma', c.idioma || 'Español');
+                    appendFiqshaRow(tr, c, {
+                        tagModifier: vis.modifier,
+                        visibilidadLabel: vis.label
                     });
-                }
+                    frag.appendChild(tr);
+                });
                 tbody.appendChild(frag);
-                if (_contenidosPinRecienCreadoId) {
+                if (_contenidosPinRecienCreado && _contenidosPinRecienCreado.id) {
                     var pinTr = tbody.querySelector(
-                        'tr[data-fiqsha-id="' + String(_contenidosPinRecienCreadoId).replace(/"/g, '\\"') + '"]'
+                        'tr[data-fiqsha-id="' + String(_contenidosPinRecienCreado.id).replace(/"/g, '\\"') + '"]'
                     );
                     if (pinTr && pinTr.parentNode === tbody && tbody.firstChild !== pinTr) {
                         tbody.insertBefore(pinTr, tbody.firstChild);

@@ -105,6 +105,7 @@ const LMS_TAG_LABELS = ['Publicado', 'Borrador', 'Privado', 'Oculto', 'Archivado
 
 const LMS_TAG_TO_STATUS_CLASS = {
     'Publicado': 'ubits-status-tag--success',
+    'Público': 'ubits-status-tag--success',
     'Borrador': 'ubits-status-tag--info',
     'Privado': 'ubits-status-tag--warning',
     'Oculto': 'ubits-status-tag--neutral',
