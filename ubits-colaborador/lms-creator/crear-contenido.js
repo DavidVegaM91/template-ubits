@@ -42,6 +42,7 @@
             }, 2500);
         }, 800);
     }
+    window.triggerCrearContenidoFakeSave = triggerFakeSaveCreator;
     
     function wireAutoSave() {
         var debouncedSave;
@@ -3506,6 +3507,10 @@
     function refreshCrearContenidoPageSiguienteState() {
         var btn = document.getElementById('crear-contenido-btn-siguiente');
         if (!btn) return;
+        var labelSpan = btn.querySelector('span');
+        if (labelSpan) {
+            labelSpan.textContent = pageCurrentStep === 3 ? 'Finalizar' : 'Siguiente';
+        }
         if (pageCurrentStep === 1) {
             var list = getRecursosPaginasList();
             var n = list ? list.querySelectorAll(':scope > .ubits-paginas-creator__item').length : 0;
@@ -3527,6 +3532,17 @@
         btn.disabled = !ok;
         btn.setAttribute('aria-disabled', ok ? 'false' : 'true');
         syncPortadaInvalidOutline();
+    }
+
+    function finalizeCrearContenidoFlow() {
+        try {
+            sessionStorage.setItem(
+                'ubits-toast-pending',
+                JSON.stringify({ type: 'success', message: 'Contenido creado exitosamente' })
+            );
+            sessionStorage.setItem('ubits-contenidos-pin-recien-creado', 'f007');
+        } catch (e) {}
+        window.location.href = 'contenidos.html';
     }
 
     function wireCrearContenidoPageStepperStepClicks() {
@@ -3685,6 +3701,7 @@
                     return;
                 }
                 if (pageCurrentStep === 3) {
+                    finalizeCrearContenidoFlow();
                     return;
                 }
                 if (pageCurrentStep !== 0) return;

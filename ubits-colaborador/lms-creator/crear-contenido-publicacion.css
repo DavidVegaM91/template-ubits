@@ -26,6 +26,11 @@
     margin: 0;
 }
 
+.publicacion-paso__cards {
+    width: 100%;
+    max-width: 1047px;
+}
+
 .publicacion-paso__cards .ubits-selection-card__desc {
     color: var(--ubits-fg-1-medium);
 }
@@ -37,6 +42,62 @@
 
 .publicacion-paso__cards .ubits-selection-card__header {
     gap: var(--gap-sm);
+}
+
+.publicacion-paso__privado-header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    gap: var(--gap-md);
+}
+
+.publicacion-paso__privado-colab-btn {
+    flex-shrink: 0;
+}
+
+.publicacion-paso__privado-colab-btn[hidden] {
+    display: none !important;
+}
+
+/* Drawer selección colaboradores (mismo patrón que crear-grupo) */
+.page-crear-contenido .drawer-usuarios-panel {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-md);
+    margin-top: 0;
+    padding-top: 0;
+    border-top: none;
+}
+
+.page-crear-contenido .drawer-usuarios-panel--colaborador {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-md);
+}
+
+.page-crear-contenido .drawer-colab-dt-wrapper {
+    width: 100%;
+    min-width: 0;
+}
+
+.page-crear-contenido .detalle-plan-usuario-cell {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-sm);
+}
+
+.page-crear-contenido .detalle-plan-usuario-cell .ubits-body-sm-regular {
+    color: var(--ubits-fg-1-medium);
+}
+
+body.page-crear-contenido .ubits-dropdown-menu__overlay {
+    z-index: 1200;
+}
+
+body.page-crear-contenido .ubits-dropdown-menu__content {
+    z-index: 1201;
 }
 
 /* Radio a la izquierda (selection-card por defecto lo pone a la derecha) */

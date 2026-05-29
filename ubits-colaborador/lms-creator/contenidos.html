@@ -199,6 +199,25 @@
                     sessionStorage.removeItem('ubits-cc-promo-agentes-shown-session');
                 }
             } catch (_ePromoNav) {}
+            try {
+                var _toastPending = sessionStorage.getItem('ubits-toast-pending');
+                if (_toastPending) {
+                    sessionStorage.removeItem('ubits-toast-pending');
+                    var _toastData = JSON.parse(_toastPending);
+                    if (typeof showToast === 'function' && _toastData && _toastData.message) {
+                        showToast(_toastData.type || 'success', _toastData.message, {
+                            containerId: 'ubits-toast-container'
+                        });
+                    }
+                }
+            } catch (_eToastPending) {}
+            var _contenidosPinRecienCreadoId = null;
+            try {
+                _contenidosPinRecienCreadoId = sessionStorage.getItem('ubits-contenidos-pin-recien-creado');
+                if (_contenidosPinRecienCreadoId) {
+                    sessionStorage.removeItem('ubits-contenidos-pin-recien-creado');
+                }
+            } catch (_ePinRecienCreado) {}
             if (typeof initTooltip === 'function') {
                 initTooltip('.widget-contenidos-creator [data-tooltip]');
             }
@@ -802,8 +821,25 @@
             }
 
             /* Cards en cuadrícula: loadCardContent + lmsTag (Publicado / Borrador / …) vía card-content.js; requiere status-tag.css */
+            function pinContenidosCardFirst(cards, pinId) {
+                if (!pinId || !Array.isArray(cards) || !cards.length) return cards;
+                var id = String(pinId);
+                var idx = -1;
+                for (var i = 0; i < cards.length; i++) {
+                    if (String(cards[i].lmsCardId || '') === id) {
+                        idx = i;
+                        break;
+                    }
+                }
+                if (idx <= 0) return cards;
+                var pinned = cards.splice(idx, 1)[0];
+                cards.unshift(pinned);
+                return cards;
+            }
+
             function buildContenidosCardsPayload() {
                 var cards = [];
+                var creatorOnlyIds = {};
                 var bd = window.BDS_CONTENIDOS_FIQSHA;
                 if (bd && Array.isArray(bd.contentsCreatorOnly)) {
                     bd.contentsCreatorOnly.forEach(function (c) {
@@ -813,16 +849,21 @@
                         row.lmsCardId = c.id != null ? String(c.id) : '';
                         row.legacyLms = c.legacyLms === true;
                         cards.push(row);
+                        if (c.id != null) creatorOnlyIds[String(c.id)] = true;
                     });
                 }
                 if (bd && bd.contents) {
                     bd.contents.forEach(function (c) {
                         if (!c || !c.titulo) return;
+                        if (c.id != null && creatorOnlyIds[String(c.id)]) return;
                         var row = cardDataFromFiqshaContent(c);
                         row.lmsTag = 'Publicado';
                         row.lmsCardId = c.id != null ? String(c.id) : '';
                         cards.push(row);
                     });
+                }
+                if (_contenidosPinRecienCreadoId) {
+                    pinContenidosCardFirst(cards, _contenidosPinRecienCreadoId);
                 }
                 return { cards: cards };
             }
@@ -962,6 +1003,7 @@
                     tr.appendChild(tdAcc);
                 }
                 var fragCreator = document.createDocumentFragment();
+                var creatorOnlyIds = {};
                 if (Array.isArray(bd.contentsCreatorOnly)) {
                     bd.contentsCreatorOnly.forEach(function (c) {
                         if (!c || !c.titulo) return;
@@ -979,6 +1021,7 @@
                             visibilidadLabel: vis
                         });
                         fragCreator.appendChild(tr);
+                        if (c.id != null) creatorOnlyIds[String(c.id)] = true;
                     });
                 }
                 tbody.appendChild(fragCreator);
@@ -986,6 +1029,7 @@
                 if (Array.isArray(bd.contents)) {
                     bd.contents.forEach(function (c) {
                         if (!c || !c.titulo) return;
+                        if (c.id != null && creatorOnlyIds[String(c.id)]) return;
                         var tr = document.createElement('tr');
                         tr.setAttribute('data-fiqsha-id', c.id || '');
                         tr.setAttribute('data-legacy-lms', c.legacyLms === true ? 'true' : 'false');
@@ -998,6 +1042,14 @@
                     });
                 }
                 tbody.appendChild(frag);
+                if (_contenidosPinRecienCreadoId) {
+                    var pinTr = tbody.querySelector(
+                        'tr[data-fiqsha-id="' + String(_contenidosPinRecienCreadoId).replace(/"/g, '\\"') + '"]'
+                    );
+                    if (pinTr && pinTr.parentNode === tbody && tbody.firstChild !== pinTr) {
+                        tbody.insertBefore(pinTr, tbody.firstChild);
+                    }
+                }
             })();
 
             var _tbodyContenidos = document.getElementById('creator-contenidos-tbody');
