@@ -1,0 +1,74 @@
+/* ========================================
+   ESTILOS ESPECÍFICOS — paso Visibilidad (crear contenido)
+   ======================================== */
+
+.crear-contenido-step--publicacion:not(.crear-contenido-step--visible) {
+    display: none !important;
+}
+
+.crear-contenido-step--publicacion.crear-contenido-step--visible {
+    display: flex;
+    flex-direction: column;
+    flex: 1 0 auto;
+    width: 100%;
+    min-width: 0;
+}
+
+.publicacion-paso__body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-xl);
+    width: 100%;
+}
+
+.publicacion-paso__intro {
+    color: var(--ubits-fg-1-medium);
+    margin: 0;
+}
+
+.publicacion-paso__cards .ubits-selection-card__desc {
+    color: var(--ubits-fg-1-medium);
+}
+
+.publicacion-paso__cards .ubits-selection-card__desc strong {
+    color: var(--ubits-fg-1-medium);
+    font-weight: 600;
+}
+
+.publicacion-paso__cards .ubits-selection-card__header {
+    gap: var(--gap-sm);
+}
+
+/* Radio a la izquierda (selection-card por defecto lo pone a la derecha) */
+.publicacion-paso__cards .ubits-selection-card {
+    align-items: flex-start;
+    justify-content: flex-start;
+}
+
+.publicacion-paso__cards .ubits-selection-card .ubits-radio__input {
+    order: -1;
+}
+
+.publicacion-paso__cards .ubits-selection-card .ubits-radio__circle {
+    order: 0;
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.publicacion-paso__cards .ubits-selection-card__body {
+    order: 1;
+}
+
+.publicacion-paso__modal-text {
+    margin: 0;
+    color: var(--ubits-fg-1-medium);
+}
+
+.publicacion-paso__modal-text + .publicacion-paso__modal-text {
+    margin-top: var(--gap-md);
+}
+
+.publicacion-paso__modal-text strong {
+    color: var(--ubits-fg-1-medium);
+    font-weight: 600;
+}

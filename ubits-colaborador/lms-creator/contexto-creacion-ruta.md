@@ -14,7 +14,7 @@ Documento de referencia sobre el flujo **Crear ruta de aprendizaje** en el módu
 | 1    | Portada       | Título, imagen/tráiler, descripción y ficha técnica **reducida** |
 | 2    | Contenidos    | Añadir y ordenar contenidos hijos de la ruta |
 | 3    | Certificado   | Misma lógica de flujo que crear contenido (navegable; detalle UI alineado al asistente general) |
-| 4    | Publicación   | Misma lógica de flujo que crear contenido |
+| 4    | Visibilidad   | Misma lógica de flujo que crear contenido |
 
 **4 pasos** en el stepper lateral (misma estructura inmersiva que `crear-contenido.html`).
 
@@ -82,7 +82,7 @@ Al confirmar **Agregar**: se cierra el drawer y los ítems aparecen en la págin
 
 ---
 
-## Pasos 3 y 4 — Certificado y Publicación
+## Pasos 3 y 4 — Certificado y Visibilidad
 
 Misma **navegación y expectativa de producto** que el asistente de crear contenido: el usuario puede recorrer los cuatro pasos; certificado y publicación siguen el roadmap del flujo general (en el prototipo, mismas reglas de avance y mensajes que en crear contenido cuando el detalle UI aún no está completo).
 

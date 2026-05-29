@@ -1,6 +1,6 @@
 /* ========================================
    UBITS IA-LOADER
-   Escenario 16:9: gradiente IA Creator v3 (cuatro paradas, mismo ángulo que ia-button) + banda luminosa; sparkles SVG + texto en blanco fijo.
+   Escenario 16:9: gradiente IA Creator v3 (cuatro paradas, mismo ángulo que ia-button); sparkles SVG + texto en blanco fijo.
 
    Requiere: ubits-colors.css, fontawesome-icons.css (si hay íconos en página).
    Tokens IA: --modo-ia-gradient-a…d, --modo-ia-glow-orb-rgb-1…3 (general-styles/ubits-ia-appearance.css).
@@ -29,7 +29,7 @@
     background: transparent;
 }
 
-/* Ratio 16:9; ::after degradado (opacity 0.7) + ::before shimmer */
+/* Ratio 16:9; ::after degradado (opacity 0.7) */
 .ubits-ia-loader__stage {
     display: flex;
     flex-direction: column;
@@ -42,7 +42,7 @@
     background: transparent;
 }
 
-/* Capas del fondo: 0 degradado → 1 shimmer → 2 partículas (opacas suaves) → contenido */
+/* Capas del fondo: 0 degradado → 1 partículas (opacas suaves) → contenido */
 .ubits-ia-loader__stage::after {
     content: '';
     position: absolute;
@@ -62,34 +62,12 @@
 .ubits-ia-loader__particles {
     position: absolute;
     inset: 0;
-    z-index: 2;
+    z-index: 1;
     display: block;
     width: 100%;
     height: 100%;
     pointer-events: none;
     opacity: var(--ubits-ia-loader-particles-opacity, 0.8);
-}
-
-.ubits-ia-loader__stage::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    z-index: 1;
-    pointer-events: none;
-    opacity: 0.3;
-    /* Banda luminosa solo en blanco (sin orbes de color); el 0.3 de opacity va en la capa */
-    background: linear-gradient(
-        105deg,
-        transparent 10%,
-        color-mix(in srgb, var(--ubits-fg-2-high-static-inverted) 6%, transparent) 26%,
-        color-mix(in srgb, var(--ubits-fg-2-high-static-inverted) 22%, transparent) 36%,
-        color-mix(in srgb, var(--ubits-fg-2-high-static-inverted) 48%, transparent) 44%,
-        color-mix(in srgb, var(--ubits-fg-2-high-static-inverted) 24%, transparent) 52%,
-        color-mix(in srgb, var(--ubits-fg-2-high-static-inverted) 10%, transparent) 60%,
-        transparent 72%
-    );
-    background-size: 200% 100%;
-    animation: ubits-ia-loader-shimmer 2.6s linear infinite;
 }
 
 .ubits-ia-loader__cluster {
@@ -260,31 +238,16 @@
     }
 }
 
-@keyframes ubits-ia-loader-shimmer {
-    from {
-        background-position: 200% 0;
-    }
-
-    to {
-        background-position: -200% 0;
-    }
-}
-
 @media (prefers-reduced-motion: reduce) {
     .ubits-ia-loader__particles {
         display: none;
     }
 
     .ubits-ia-loader__stage::after,
-    .ubits-ia-loader__stage::before,
     .ubits-ia-loader__spark-g1,
     .ubits-ia-loader__spark-g2,
     .ubits-ia-loader__spark-g3,
     .ubits-ia-loader__dots span {
         animation: none !important;
-    }
-
-    .ubits-ia-loader__stage::before {
-        background-position: 50% 0;
     }
 }

@@ -1,7 +1,7 @@
 /**
  * UBITS IA Loader — indicador de carga para flujos IA.
  *
- * Estructura: __frame → __stage (gradiente IA + shimmer) → __cluster (__center sparkles 3×<g> + __label).
+ * Estructura: __frame → __stage (gradiente IA) → __cluster (__center sparkles 3×<g> + __label).
  * Ícono y texto en `--ubits-fg-2-high-static-inverted` en claro y oscuro.
  *
  * Uso:

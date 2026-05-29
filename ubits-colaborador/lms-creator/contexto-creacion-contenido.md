@@ -41,10 +41,10 @@ El asistente de creación tiene **4 pasos**, en este orden:
 |------|--------|------------------------------|
 | 1 | Portada | Descrito en detalle |
 | 2 | Recursos | Descrito en detalle (incl. **recursos complementarios** bajo el principal) |
-| 3 | Certificado | **Implementado** en `crear-contenido.html` (switch, select de plantilla mock Fiqsha, vista previa orientativa) |
-| 4 | Publicación | Solo nombre de paso; detalle pendiente |
+| 3 | Certificado | Descrito en detalle (switch, plantillas mock Fiqsha, preview orientativa, empty state) |
+| 4 | Visibilidad | Descrito en detalle (4 estados; lógica de cambio y publicación pendiente) |
 
-**Navegación real en el playground:** desde **Recursos**, con al menos una página y **títulos válidos** en todas, **Siguiente** o el paso **3** del stepper llevan a **Certificado** (`#certificado`). Desde Certificado, **Siguiente** avisa que Publicación llegará pronto. **Anterior** en Certificado vuelve a Recursos.
+**Navegación real en el playground:** desde **Recursos**, con al menos una página y **títulos válidos** en todas (y el resto de reglas del paso Recursos), **Siguiente** o el paso **3** del stepper llevan a **Certificado** (`#certificado`). Desde Certificado, **Siguiente** lleva a **Visibilidad** (`#visibilidad`). **Anterior** en Certificado vuelve a Recursos; **Anterior** en Visibilidad vuelve a Certificado. Ver también **Deep link demo** en los pasos Certificado y Visibilidad.
 
 ### Desde la lista de contenidos
 
@@ -243,22 +243,130 @@ En el prototipo esto aplica, entre otros, a **video**, **PDF** (vista previa con
 
 **Archivos:** `crear-contenido-certificado.js`, `crear-contenido-certificado.css` (clases `certificado-paso__*`).
 
-**Layout:** dos columnas como Recursos — panel izquierdo fijo (~400px) y columna derecha con vista previa.
+**Propósito:** permitir **activar o no** un certificado para el contenido, elegir una **plantilla** (mock Fiqsha en el prototipo) y ver una **vista previa orientativa** de cómo se vería el diploma, usando datos ya capturados en la portada.
+
+**Layout:** dos columnas como Recursos — panel izquierdo fijo (~400px) con la configuración y columna derecha con la vista previa. En **móvil/tablet** (≤1023px) las columnas se apilan: primero configuración, después preview.
 
 | Control | Comportamiento |
 |---------|----------------|
-| **Switch** «Habilitar certificado para este contenido» | **Activado por defecto.** Si se apaga, se oculta el select de plantilla y la derecha muestra empty state: «No has habilitado un certificado». |
-| **Select** «Seleccionar plantilla de certificado» | Solo visible con switch ON. Mock **Fiqsha** con 3 plantillas; por defecto la **más reciente** («Cursos empresariales con doble firma»). |
-| **Vista previa orientativa** | Texto de ayuda + certificado de ejemplo con datos de la **portada** (título, categoría, duración) y placeholders de estudiante / firmas. La plantilla mock puede incluir **doble firma** o campos opcionales (tiempo, documento). |
+| **Switch** «Habilitar certificado para este contenido» | **Activado por defecto.** Si se apaga, se ocultan el **select de plantilla** y el texto **«Vista previa orientativa.»**; la columna derecha muestra un **empty state** (ver abajo). Si se vuelve a activar, la vista previa del certificado **se restaura** con la plantilla seleccionada. |
+| **Select** «Seleccionar plantilla de certificado» | Solo visible con switch **ON**. Mock **Fiqsha** con **3 plantillas** (tabla siguiente); por defecto la **más reciente** («Cursos empresariales con doble firma»). Al cambiar plantilla, la preview se actualiza al instante. |
+| **Texto «Vista previa orientativa.»** | Aparece encima del certificado solo con switch **ON**. Aclara que la preview es **referencial**, no el PDF final. |
+| **Vista previa del certificado** | Render orientativo con fondo de plantilla Fiqsha, logo de cliente, textos de ejemplo y firmas según la plantilla elegida. Proporción de diseño **774×598** (referencia Figma Creator). |
 
-**Validación al salir de Recursos (prototipo):**
+#### Empty state (certificado deshabilitado)
+
+Cuando el switch está **OFF**, la columna derecha muestra el componente **Empty state** UBITS:
+
+| Elemento | Contenido |
+|----------|-----------|
+| **Icono** | Medalla / certificado (misma familia visual que certificados en el producto). |
+| **Título** | «No has habilitado un certificado» |
+| **Descripción** | «Si deseas, puedes activar un certificado para este contenido.» |
+
+**Desktop (≥1024px):** el empty state **ocupa todo el alto disponible** en la columna de preview (misma lógica de viewport que el índice del paso Recursos), con el contenido **centrado** dentro del bloque. **Móvil:** altura según contenido, sin forzar pantalla completa.
+
+#### Plantillas mock Fiqsha (prototipo)
+
+Las plantillas viven en memoria en el playground; en producción deberían salir del módulo **LMS Creator → Certificados**.
+
+| Plantilla | Firmas | Duración en preview | Línea «Documento» |
+|-----------|--------|---------------------|-------------------|
+| **Cursos empresariales con doble firma** *(default)* | **Dos:** Patricia Elena Bermúdez Ríos (Gerente General) y Carmen Rosa Díaz Herrera (Jefa de Recursos Humanos), con imagen de firma en la preview | Sí | No |
+| **Certificado estándar Fiqsha** | **Una:** Patricia Elena Bermúdez Ríos | Sí | Sí *(placeholder «Documento: ##########»)* |
+| **Onboarding colaboradores** | **Una:** Carmen Rosa Díaz Herrera | No | No |
+
+#### Contenido de la vista previa orientativa
+
+**Datos que vienen de la portada** (se actualizan **en vivo** mientras el usuario está en el paso Certificado si edita título, tiempo, unidad o categoría en Portada):
+
+- **Título del contenido** (textarea de portada).
+- **Categoría** — se muestra el **nombre legible** de la categoría Fiqsha (p. ej. «Gestión de conflictos»), no el identificador interno.
+- **Duración** — línea del tipo «Con una duración de 30 minutos» (o horas si la unidad es «h»), según tiempo y unidad de la ficha técnica.
+
+**Placeholders fijos en la preview** (no editables en este paso):
+
+- **Fecha** — fecha del día en formato español (p. ej. «29 de mayo de 2026»).
+- **Nombre del estudiante** — texto fijo «Nombre del estudiante».
+- **Código** — «Código No. ##########».
+- **Pie legal** — «UBITS confirma la identidad de la persona y su finalización de este contenido».
+
+**Elementos visuales:** logo Fiqsha en la zona superior del certificado; fondo gráfico de plantilla; bloques de firma con imagen cuando la plantilla lo incluye.
+
+**Preview estrecha:** si el ancho del certificado en pantalla es reducido, las **dos firmas** pueden **apilarse** en columna para mantener legibilidad (comportamiento responsive del bloque de preview).
+
+#### Deep link demo (playground)
+
+Para **demos y pruebas**, si se abre `crear-contenido.html` con hash **`#recursos`**, **`#certificado`** o **`#visibilidad`** (alias legacy **`#publicacion`**) y el borrador está **vacío** (sin título, sin portada cargada, sin páginas en Recursos), el prototipo **precarga** un curso de ejemplo:
+
+- **Portada:** título «Resolución efectiva de conflictos en equipos de trabajo», imagen de portada, descripción, categoría **Gestión de conflictos**.
+- **Recursos:** dos secciones con video IA, PDF, dos SCORM y evaluación estándar (tema conflictos en equipo).
+
+Al ir a **Certificado** (`#certificado` o stepper paso 3), la vista previa del certificado usa esos datos de portada (título, categoría, duración). Sirve para mostrar el flujo completo sin rellenar manualmente.
+
+**Hash URL del paso:** `#certificado`.
+
+#### Requisitos para llegar a Certificado (validación al salir de Recursos)
+
+Desde **Recursos**, **Siguiente** o el paso **3** del stepper solo llevan a Certificado si se cumple:
 
 1. Al menos **una página** en el índice.  
 2. **Título válido en todas las páginas**.  
 3. **Al menos un recurso principal** en cada página (evaluación final cuenta como recurso). Páginas sin recurso: borde rojo en el índice; en la página activa el **resources block** pasa a variante `default-error`.  
 4. Con **secciones activas:** ninguna sección vacía (borde rojo en el bloque de sección).
 
-**Hash URL:** `#certificado`.
+Desde Certificado, **Siguiente** lleva a **Visibilidad**. **Anterior** vuelve a Recursos.
+
+**Pendiente de producto:** integración real con plantillas del módulo **LMS Creator → Certificados** (hoy mock Fiqsha en memoria).
+
+### Paso 4 — Visibilidad
+
+**Archivos:** `crear-contenido-publicacion.js`, `crear-contenido-publicacion.css` (clases `publicacion-paso__*`; nombre técnico legacy del paso).
+
+**Propósito:** configurar la **visibilidad** del contenido (Borrador, Público, Privado, Oculto) antes de publicarlo. Es el paso más sencillo del flujo: **una sola columna** en el cuerpo de la página (sin índice lateral ni panel de configuración extra).
+
+**Layout:** texto introductorio + **cuadrícula 2×2** de tarjetas de selección (`ubits-selection-card` + radio). En **tablet** (≤900px) la cuadrícula pasa a 2 columnas; en **móvil** (≤600px) se apila en **1 columna**.
+
+**Texto introductorio:** «Configura la visibilidad que tendrá el contenido al publicarlo, ten presente que puede haber limitantes de edición dependiendo del estado.»
+
+#### Estados de visibilidad (4 opciones)
+
+Cada tarjeta muestra un **status tag** con el nombre del estado y una **descripción** debajo. El radio queda a la derecha según el patrón UBITS de selection card.
+
+| Estado | Tag (variante) | Descripción (resumen) |
+|--------|----------------|------------------------|
+| **Borrador** *(default)* | info | En construcción; visible **solo para ti y otros creadores**; **todos** los cambios permitidos. |
+| **Público** | success | Visible para **todos los colaboradores** de la empresa; publicado → solo editar títulos de secciones/páginas o **reemplazar recursos**. |
+| **Privado** | warning | Solo colaboradores **seleccionados**; mismas limitaciones post-publicación que Público. |
+| **Oculto** | neutral | **No** en catálogo; visible para quien lo **completó** o tiene **en progreso**; mismas limitaciones post-publicación. |
+
+**Estado inicial:** al crear contenido nuevo, el contenido **nace en Borrador**. La tarjeta **Borrador** viene **preseleccionada** (radio checked). El tag **«Borrador»** del header de la pantalla de creación refleja el mismo estado.
+
+**Comportamiento actual en el prototipo:**
+
+| Estado | Al seleccionar |
+|--------|----------------|
+| **Borrador** | Se aplica de inmediato (sin modal). |
+| **Público** / **Privado** | Modal **«Publicar contenido»** → **Cancelar** mantiene el estado anterior; **Sí, publicar** aplica la selección. |
+| **Oculto** | Modal **«Ocultar contenido»** → **Cancelar** mantiene el estado anterior; **Sí, ocultar** aplica la selección. |
+
+Al confirmar, el **radio** del card queda marcado y el **status tag** del header (`#crear-contenido-visibilidad-header-tag`) se actualiza con la variante y etiqueta del estado (info / success / warning / neutral).
+
+**Pendiente de producto:** selector de colaboradores en **Privado**, flujo de publicación final desde **Siguiente**, reglas de edición post-publicación en backend.
+
+**Hash URL del paso:** `#visibilidad` (alias legacy `#publicacion` redirige al canónico).
+
+#### Requisitos para llegar a Visibilidad
+
+Desde **Certificado**, **Siguiente** lleva a Visibilidad sin validación adicional en este prototipo.
+
+Desde el **stepper** (paso **4**), aplican las mismas reglas que para ir a Certificado: portada completa + Recursos válidos (páginas, títulos, recursos por página, secciones no vacías). Si el usuario aún no pasó por Certificado, el flujo lo lleva por los pasos intermedios antes de mostrar Visibilidad.
+
+**Anterior** en Visibilidad vuelve a Certificado. **Siguiente** en Visibilidad aún **no** ejecuta la publicación final (acción pendiente de producto).
+
+#### Deep link demo (playground)
+
+El hash **`#visibilidad`** participa del mismo **deep link demo** que `#recursos` y `#certificado`: con borrador vacío se precarga el curso de ejemplo y se abre directamente en el paso Visibilidad.
 
 ### Tipos de recurso (selector general)
 
@@ -718,9 +826,8 @@ Tras recoger tema y reglas, el flujo llega a un **paso de confirmación** en el 
 ## Pendiente de documentar (próximos mensajes)
 
 - **Flujos a cablear en prototipo:** **Texto** (editor en panel), **Encuesta libre**, **Encuesta de satisfacción**.  
-- Paso **4 — Publicación** (pantalla y reglas).  
-- Validación completa al salir de Recursos (recurso obligatorio por página, secciones vacías).  
-- Integración real con plantillas de **LMS Creator → Certificados** (hoy mock Fiqsha en memoria).  
+- **Visibilidad (paso 4):** lógica de cambio de estado, selección de colaboradores (Privado), acción **Publicar** y reglas de edición post-publicación.  
+- Integración real con plantillas de **LMS Creator → Certificados** (hoy mock Fiqsha en memoria; el paso Certificado ya está documentado en detalle de producto).  
 - Reglas de validación global (publicar, borradores, etc.) si aplica.  
 - Detalle de **consumo** SCORM por tipo de diapositiva (quizzes, hotspots, emparejamiento) más allá de lo ya descrito en **Recurso: SCORM**.  
 - Si producto **reactiva** la variante wizard de video: documentar aquí como flujo alternativo o sustituto (hoy **reservada**, no expuesta).
@@ -735,4 +842,4 @@ Este documento **no** sustituye la **documentación de componentes UBITS** ni la
 
 ---
 
-*Última revisión: indicador **«Página X de X»** en panel derecho del paso Recursos (por sección). **Complementary resources** (excluido en Evaluación final). **Recursos:** 8 tipos; persistencia por página.*
+*Última revisión: paso **Visibilidad** (4 selection cards, Borrador default). Paso **Certificado** (empty state, plantillas Fiqsha, preview, sync portada, deep link demo). **Complementary resources** (excluido en Evaluación final). **Recursos:** 8 tipos; persistencia por página.*

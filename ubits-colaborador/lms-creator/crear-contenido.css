@@ -178,6 +178,13 @@ body.crear-contenido-app-open .ubits-dropdown-menu__content {
 }
 
 /* Pasos (Portada vs Recursos) */
+.crear-contenido-step__title {
+    margin: 0 0 var(--gap-lg);
+    width: 100%;
+    flex-shrink: 0;
+    color: var(--ubits-fg-1-high);
+}
+
 .crear-contenido-step--portada:not(.crear-contenido-step--visible),
 .crear-contenido-step--recursos:not(.crear-contenido-step--visible) {
     display: none !important;
@@ -221,11 +228,21 @@ body.crear-contenido-app-open .ubits-dropdown-menu__content {
     top: 0;
     height: calc(var(--cc-main-h, calc(100dvh - 120px)) - 40px);
     min-height: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-md);
+}
+
+.crear-contenido-recursos__indice .crear-contenido-step__title {
+    margin: 0;
+    flex-shrink: 0;
 }
 
 .crear-contenido-recursos__indice-mount {
     min-width: 0;
-    height: 100%;
+    flex: 1 1 auto;
+    min-height: 0;
+    height: auto;
     overflow-y: auto;
     overflow-x: hidden;
     scrollbar-width: thin; /* Firefox */
@@ -509,6 +526,7 @@ body.crear-contenido-app-open .ubits-dropdown-menu__content {
     text-align: left;
     width: 100%;
     color: var(--ubits-fg-1-high);
+    line-height: 1.4;
 }
 
 .page-crear-contenido

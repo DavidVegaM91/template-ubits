@@ -12,7 +12,7 @@
     /** 'ai' | 'upload' | null — cómo se aplicó la portada actual (reapertura modal). */
     var crearContenidoPortadaLastSource = null;
     var crearContenidoInputApis = {};
-    /** 0 = Portada, 1 = Recursos, 2 = Certificado, 3 = Publicación */
+    /** 0 = Portada, 1 = Recursos, 2 = Certificado, 3 = Visibilidad */
     var pageCurrentStep = 0;
     var portadaValidationFlash = false;
     var recursosTitlesValidationFlash = false;
@@ -3581,11 +3581,27 @@
                         goToCrearContenidoPageStep(2);
                         return;
                     }
-                    if (typeof window.showToast === 'function') {
-                        window.showToast('info', 'Este paso estará disponible pronto.', {
-                            containerId: 'ubits-toast-container',
-                            duration: 2500
-                        });
+                    if (i === 3) {
+                        if (!isCrearContenidoPortadaComplete()) {
+                            portadaValidationFlash = true;
+                            syncPortadaInvalidOutline();
+                            if (typeof window.showToast === 'function') {
+                                window.showToast('warning', 'Completa la portada para continuar.', {
+                                    containerId: 'ubits-toast-container',
+                                    duration: 3500
+                                });
+                            }
+                            return;
+                        }
+                        portadaValidationFlash = false;
+                        clearPortadaInvalidMarks();
+                        if (pageCurrentStep < 1) goToCrearContenidoPageStep(1, { skipUrl: true });
+                        if (!applyRecursosToCertificadoBlockers(true)) return;
+                        recursosTitlesValidationFlash = false;
+                        clearRecursosTitleValidationVisuals();
+                        if (pageCurrentStep < 2) goToCrearContenidoPageStep(2, { skipUrl: true });
+                        goToCrearContenidoPageStep(3);
+                        return;
                     }
                 }
                 li.addEventListener('click', go);
@@ -3665,12 +3681,10 @@
                     return;
                 }
                 if (pageCurrentStep === 2) {
-                    if (typeof window.showToast === 'function') {
-                        window.showToast('info', 'El paso Publicación estará disponible pronto.', {
-                            containerId: 'ubits-toast-container',
-                            duration: 2500
-                        });
-                    }
+                    goToCrearContenidoPageStep(3);
+                    return;
+                }
+                if (pageCurrentStep === 3) {
                     return;
                 }
                 if (pageCurrentStep !== 0) return;
@@ -3695,6 +3709,10 @@
             ant.addEventListener('click', function () {
                 if (pageCurrentStep === 2) {
                     goToCrearContenidoPageStep(1);
+                    return;
+                }
+                if (pageCurrentStep === 3) {
+                    goToCrearContenidoPageStep(2);
                     return;
                 }
                 if (pageCurrentStep === 1) {
@@ -3753,7 +3771,10 @@
         wireCrearContenidoPageStepperStepClicks();
         var initialHashForPromo = location.hash || '';
         var deepDemoSeed =
-            isRecursosUrlHash(initialHashForPromo) || initialHashForPromo === HASH_PAGE_CERTIFICADO;
+            isRecursosUrlHash(initialHashForPromo) ||
+            initialHashForPromo === HASH_PAGE_CERTIFICADO ||
+            initialHashForPromo === HASH_PAGE_VISIBILIDAD ||
+            initialHashForPromo === HASH_PAGE_PUBLICACION;
         if (deepDemoSeed && isCrearContenidoEmptyForDemo()) {
             seedCrearContenidoDemo(function () {
                 applyCrearContenidoPageHash();
@@ -3782,6 +3803,9 @@
     var HASH_PAGE_PORTADA = '#portada';
     var HASH_PAGE_RECURSOS = '#recursos';
     var HASH_PAGE_CERTIFICADO = '#certificado';
+    var HASH_PAGE_VISIBILIDAD = '#visibilidad';
+    /** Alias legacy del paso 4 */
+    var HASH_PAGE_PUBLICACION = '#publicacion';
     var HASH_PAGE_PORTADA_LEGACY = '#crear-contenido';
     var HASH_DRAWER_RECURSOS = '#crear-contenido-recursos';
     var HASH_DRAWER_RECURSOS_ALIAS = '#crear-contenido-step-recursos';
@@ -3828,11 +3852,12 @@
     function hashForCrearContenidoPageStep(idx) {
         if (idx === 1) return HASH_PAGE_RECURSOS;
         if (idx === 2) return HASH_PAGE_CERTIFICADO;
+        if (idx === 3) return HASH_PAGE_VISIBILIDAD;
         return HASH_PAGE_PORTADA;
     }
 
     /**
-     * @param {number} stepIndex 0 = Portada, 1 = Recursos, 2 = Certificado, 3 = Publicación
+     * @param {number} stepIndex 0 = Portada, 1 = Recursos, 2 = Certificado, 3 = Visibilidad
      * @param {{ skipUrl?: boolean }} [opts]
      */
     function goToCrearContenidoPageStep(stepIndex, opts) {
@@ -3848,6 +3873,7 @@
         var portadaEl = document.getElementById('crear-contenido-step-portada');
         var recursosEl = document.getElementById('crear-contenido-step-recursos');
         var certificadoEl = document.getElementById('crear-contenido-step-certificado');
+        var publicacionEl = document.getElementById('crear-contenido-step-publicacion');
         if (portadaEl) {
             portadaEl.classList.toggle('crear-contenido-step--visible', idx === 0);
         }
@@ -3856,6 +3882,9 @@
         }
         if (certificadoEl) {
             certificadoEl.classList.toggle('crear-contenido-step--visible', idx === 2);
+        }
+        if (publicacionEl) {
+            publicacionEl.classList.toggle('crear-contenido-step--visible', idx === 3);
         }
         if (typeof window.setStepperStepStates === 'function') {
             var olDesk = document.getElementById('crear-contenido-stepper-ol');
@@ -3891,6 +3920,9 @@
         }
         if (idx === 2 && typeof window.initCrearContenidoCertificadoStepOnce === 'function') {
             window.initCrearContenidoCertificadoStepOnce();
+        }
+        if (idx === 3 && typeof window.initCrearContenidoPublicacionStepOnce === 'function') {
+            window.initCrearContenidoPublicacionStepOnce();
         }
         updateCrearContenidoPageFooterNav(idx);
         if (typeof window.initTooltip === 'function') {
@@ -4318,6 +4350,11 @@
             }
         } else if (h === HASH_PAGE_CERTIFICADO) {
             goToCrearContenidoPageStep(2, { skipUrl: true });
+        } else if (h === HASH_PAGE_VISIBILIDAD || h === HASH_PAGE_PUBLICACION) {
+            goToCrearContenidoPageStep(3, { skipUrl: true });
+            if (h === HASH_PAGE_PUBLICACION && typeof history.replaceState === 'function') {
+                history.replaceState(null, '', location.pathname + location.search + HASH_PAGE_VISIBILIDAD);
+            }
         } else if (h === HASH_PAGE_PORTADA || h === HASH_PAGE_PORTADA_LEGACY || h === '') {
             goToCrearContenidoPageStep(0, { skipUrl: true });
             if (h === HASH_PAGE_PORTADA_LEGACY) {
