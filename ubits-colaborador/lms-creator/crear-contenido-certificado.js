@@ -240,10 +240,11 @@
     function renderDisabledEmptyState() {
         var host = document.getElementById('certificado-paso-preview-host');
         if (!host) return;
-        host.innerHTML = '';
+        host.className = 'certificado-paso__preview-host';
+        host.innerHTML = '<div id="certificado-paso-preview-empty"></div>';
         if (typeof window.loadEmptyState === 'function') {
-            window.loadEmptyState('certificado-paso-preview-host', {
-                icon: 'fa-grid-2',
+            window.loadEmptyState('certificado-paso-preview-empty', {
+                icon: 'fa-award',
                 iconSize: 'md',
                 title: 'No has habilitado un certificado',
                 description: 'Si deseas, puedes activar un certificado para este contenido.'
@@ -254,6 +255,7 @@
     function renderEnabledPreview() {
         var host = document.getElementById('certificado-paso-preview-host');
         if (!host) return;
+        host.className = 'certificado-paso__preview-host';
         var tpl = getTemplateById(selectedTemplateId);
         var snap = getContentPreviewSnapshot();
         host.innerHTML = renderCertificatePreviewHtml(tpl, snap);
