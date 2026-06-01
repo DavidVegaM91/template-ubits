@@ -1,437 +1,363 @@
 /* ========================================
-   FLOATING MENU COMPONENT - RESPONSIVE
+   FLOATING MENU — Drawer desde Tab-bar (móvil)
+   Alineado con Ubits-React MobileTabDrawer / ColaboradorLayout
+   Stack: backdrop 1999 → drawer 2000 → tab-bar 2005 (ver tab-bar.css)
    ======================================== */
 
-.floating-menu {
+/* Altura del tab-bar fijo (debe coincidir con .tab-bar { height } en tab-bar.css) */
+:root {
+    --ubits-tab-bar-height: 60px;
+}
+
+.floating-menu-backdrop {
     display: none;
     position: fixed;
-    top: 16px;
+    top: 0;
     left: 0;
     right: 0;
-    bottom: 84px; /* 60px del tab-bar + 12px de margen + 12px extra para asegurar distancia */
-    background: var(--ubits-sidebar-bg);
-    z-index: 2000;
-    overflow-y: auto;
-    padding: var(--padding-lg) 0;
+    /* No cubrir el tab-bar (el overlay solo va sobre el contenido de página) */
+    bottom: var(--ubits-tab-bar-height);
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 1999;
 }
 
-/* Ocultar panel en desktop (≥1024px coincide con sidebar visible) */
-@media (min-width: 1024px) {
-    .floating-menu {
-        display: none !important;
-    }
-}
-
-.floating-menu.show {
+.floating-menu-backdrop.is-visible {
     display: block;
+}
+
+.floating-menu,
+#floating-menu-profile {
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 16px;
+    bottom: var(--ubits-tab-bar-height);
+    background: var(--ubits-sidebar-bg);
+    color: var(--ubits-sidebar-button-fg-default);
+    z-index: 2000;
+    border-top-left-radius: 16px;
+    border-top-right-radius: 16px;
+    box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.25);
+    overflow: hidden;
+    padding: 0;
+    transform: translateY(calc(100% + 80px));
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    pointer-events: none;
+    visibility: hidden;
+}
+
+.floating-menu.show,
+#floating-menu-profile.show {
+    transform: translateY(0);
+    pointer-events: auto;
+    visibility: visible;
+}
+
+@media (min-width: 1024px) {
+    .floating-menu,
+    #floating-menu-profile,
+    .floating-menu-backdrop {
+        display: none !important;
+        visibility: hidden !important;
+        pointer-events: none !important;
+    }
 }
 
 .floating-menu-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0 16px 16px;
-    border-bottom: 1px solid var(--ubits-sidebar-button-fg-default);
-    margin-bottom: 16px;
+    padding: 16px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+    flex-shrink: 0;
 }
 
 .floating-menu-title {
     font-family: var(--ubits-font-family-sans);
-    font-size: var(--font-size-h2);
-    font-weight: var(--font-weight-semibold);
-    color: var(--ubits-sidebar-button-fg-default);
+    font-size: var(--font-size-lg, 18px);
+    font-weight: 600;
+    color: #ffffff;
+    margin: 0;
 }
 
 .floating-menu-close {
     background: none;
     border: none;
-    color: var(--ubits-sidebar-button-fg-default);
-    font-size: var(--font-size-h1);
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 20px;
     cursor: pointer;
-    padding: var(--padding-xs);
-    border-radius: var(--border-radius-xs);
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
     transition: all 0.2s ease;
+    line-height: 1;
 }
 
 .floating-menu-close:hover {
-    color: var(--ubits-sidebar-button-fg-hover);
-    background: var(--ubits-sidebar-button-bg-pressed);
+    color: #ffffff;
+    background-color: rgba(255, 255, 255, 0.1);
 }
 
 .floating-menu-content {
-    padding: 0 16px;
+    flex: 1;
+    padding: 16px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    -webkit-overflow-scrolling: touch;
 }
 
-/* Acordeones */
+.floating-menu-profile-user {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 8px;
+}
+
+.floating-menu-profile-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.floating-menu-profile-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.floating-menu-profile-name {
+    font-size: var(--font-size-md, 14px);
+    font-weight: 700;
+    color: #ffffff;
+}
+
+.floating-menu-profile-role {
+    font-size: var(--font-size-sm, 12px);
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.floating-menu-divider {
+    border: none;
+    border-top: 1px solid rgba(255, 255, 255, 0.15);
+    margin: 8px 0;
+}
+
 .accordion-item {
-    margin-bottom: 8px;
+    display: flex;
+    flex-direction: column;
 }
 
 .accordion-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: var(--padding-md) var(--padding-lg);
+    padding: 12px;
+    border-radius: 8px;
     cursor: pointer;
-    transition: all 0.2s ease;
-    border-radius: var(--border-radius-sm);
-    margin-bottom: 4px;
+    transition: background 0.2s ease;
 }
 
 .accordion-header:hover {
-    background: var(--ubits-sidebar-button-bg-pressed);
+    background-color: rgba(255, 255, 255, 0.08);
+}
+
+.accordion-header.expanded-header {
+    background-color: rgba(255, 255, 255, 0.08);
 }
 
 .accordion-title {
     display: flex;
     align-items: center;
-    font-family: var(--ubits-font-family-sans);
-    font-size: var(--font-size-sm);
-    font-weight: var(--font-weight-semibold);
-    color: var(--ubits-sidebar-button-fg-default);
+    gap: 12px;
 }
 
 .accordion-title span {
-    color: var(--ubits-sidebar-button-fg-default);
-}
-
-.accordion-title.active span {
-    color: var(--ubits-sidebar-button-bg-active) !important;
-    font-weight: var(--font-weight-bold);
-}
-
-.accordion-title i {
-    font-size: var(--font-size-md);
-    margin-right: 12px;
-    color: var(--ubits-sidebar-button-fg-default);
-    width: 20px;
-    text-align: center;
+    color: rgba(255, 255, 255, 0.85);
+    font-weight: 500;
 }
 
 .accordion-chevron {
-    font-size: var(--font-size-sm);
-    color: var(--ubits-sidebar-button-fg-default);
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 12px;
     transition: transform 0.2s ease;
+    flex-shrink: 0;
+}
+
+.accordion-header.expanded-header .accordion-chevron {
+    transform: rotate(180deg);
 }
 
 .accordion-body {
     display: none;
-    padding-left: 32px;
+    padding-left: 20px;
+    margin-top: 4px;
+    flex-direction: column;
+    gap: 4px;
+    border-left: 1px solid rgba(255, 255, 255, 0.1);
+    margin-left: 16px;
 }
 
-.accordion-link {
+.accordion-item.is-open .accordion-body {
+    display: flex;
+}
+
+.accordion-body .accordion-link {
     display: flex;
     align-items: center;
-    padding: var(--padding-sm) var(--padding-lg);
+    gap: 12px;
+    padding: 8px 12px;
+    border-radius: 6px;
     text-decoration: none;
-    color: var(--ubits-sidebar-button-fg-default);
     transition: all 0.2s ease;
-    border-radius: var(--border-radius-sm);
-    margin-bottom: 2px;
 }
 
-.accordion-link:hover {
-    background: var(--ubits-sidebar-button-bg-pressed);
-    color: var(--ubits-sidebar-button-fg-hover);
+.accordion-body .accordion-link:hover {
+    background-color: rgba(255, 255, 255, 0.05);
 }
 
-.accordion-link i {
-    font-size: var(--font-size-sm);
-    margin-right: 10px;
-    color: var(--ubits-sidebar-button-fg-default);
-    width: 16px;
-    text-align: center;
+.accordion-body .accordion-link span {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: var(--font-size-sm, 12px);
 }
 
-.accordion-link span {
-    color: var(--ubits-sidebar-button-fg-default);
+.accordion-body .accordion-link.active {
+    background-color: rgba(255, 255, 255, 0.1);
 }
 
-.accordion-link.active span {
-    color: var(--ubits-sidebar-button-bg-active) !important;
-    font-weight: var(--font-weight-semibold);
+.accordion-body .accordion-link.active span {
+    color: #ffffff;
+    font-weight: 600;
 }
 
-/* Estados activos para DIRECT LINKS */
-.accordion-link.direct-link.active span {
-    color: var(--ubits-sidebar-button-bg-active) !important;
-    font-weight: var(--font-weight-semibold);
+.accordion-body .accordion-link.active .accordion-icon-circle {
+    background-color: #ffffff;
 }
 
-.accordion-link.direct-link.active .accordion-chevron {
-    color: var(--ubits-sidebar-button-bg-active) !important;
+.accordion-body .accordion-link.active .accordion-icon-circle i {
+    color: #202837;
 }
 
-.accordion-link.direct-link.active .accordion-icon-circle {
-    background: var(--ubits-sidebar-button-bg-active) !important;
-}
-
-.accordion-link.direct-link.active .accordion-icon-circle i {
-    color: var(--ubits-sidebar-button-fg-active) !important;
-}
-
-/* Enlaces directos (no acordeón) */
 .accordion-link.direct-link {
+    display: flex;
+    align-items: center;
     justify-content: space-between;
-    padding: var(--padding-md) var(--padding-lg) var(--padding-md) var(--padding-lg);
-    padding-right: 4px;
-    margin-bottom: 4px;
+    padding: 12px;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: background 0.2s ease;
 }
 
-/* Reglas normales para direct-links (sin forzar activo) */
-
-.accordion-link.direct-link .accordion-chevron {
-    font-size: var(--font-size-sm);
-    color: var(--ubits-sidebar-button-fg-default);
-    margin-left: auto;
-    width: 16px;
-    text-align: center;
+.accordion-link.direct-link:hover {
+    background-color: rgba(255, 255, 255, 0.08);
 }
 
-.accordion-link.direct-link.disabled {
-    cursor: not-allowed;
-    opacity: 0.5;
+.accordion-link.direct-link .accordion-title span {
+    color: rgba(255, 255, 255, 0.85);
+    font-weight: 500;
 }
 
-.accordion-link.direct-link.disabled:hover {
-    background: transparent;
-    color: var(--ubits-sidebar-button-fg-default);
+.accordion-link.direct-link > .accordion-chevron,
+.accordion-link.direct-link > i.accordion-chevron {
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 12px;
 }
-
-.accordion-header.disabled {
-    cursor: not-allowed;
-    opacity: 0.5;
-}
-
-.accordion-header.disabled:hover {
-    background: transparent;
-    color: var(--ubits-sidebar-button-fg-default);
-}
-
-.accordion-link.disabled {
-    cursor: not-allowed;
-    opacity: 0.5;
-}
-
-.accordion-link.disabled:hover {
-    background: transparent;
-    color: var(--ubits-sidebar-button-fg-default);
-}
-
-.floating-menu-section {
-    margin-bottom: 8px;
-}
-
-.floating-menu-item {
-    display: flex;
-    align-items: center;
-    padding: var(--padding-md) var(--padding-lg);
-    cursor: pointer;
-    transition: all 0.2s ease;
-    border-radius: var(--border-radius-sm);
-    margin-bottom: 4px;
-}
-
-.floating-menu-item:hover {
-    background: var(--ubits-sidebar-button-bg-pressed);
-}
-
-.floating-menu-item.active {
-    background: transparent;
-}
-
-.floating-menu-item.active .floating-menu-text,
-.floating-menu-item.active .floating-menu-text span {
-    color: var(--ubits-sidebar-button-bg-active) !important;
-    font-weight: var(--font-weight-bold);
-}
-
-.floating-menu-icon {
-    font-size: var(--font-size-h2);
-    color: var(--ubits-sidebar-button-fg-default);
-    margin-right: 12px;
-    width: 24px;
-    text-align: center;
-    transition: color 0.2s ease;
-}
-
-.floating-menu-item:hover .floating-menu-icon {
-    color: var(--ubits-sidebar-button-fg-hover);
-}
-
-.floating-menu-text,
-.floating-menu-text span {
-    color: var(--ubits-sidebar-button-fg-default) !important;
-    flex: 1;
-    transition: color 0.2s ease;
-}
-
-.floating-menu-item:hover .floating-menu-text,
-.floating-menu-item:hover .floating-menu-text span {
-    color: var(--ubits-sidebar-button-fg-hover) !important;
-}
-
-.floating-menu-chevron {
-    font-size: var(--font-size-sm);
-    color: var(--ubits-sidebar-button-fg-default);
-    transition: all 0.3s ease;
-    margin-left: 8px;
-}
-
-.floating-menu-item:hover .floating-menu-chevron {
-    color: var(--ubits-sidebar-button-fg-hover);
-}
-
-.floating-menu-item.expanded .floating-menu-chevron {
-    transform: rotate(90deg);
-}
-
-.floating-menu-submenu {
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.3s ease;
-    margin-left: 36px;
-}
-
-.floating-menu-submenu.expanded {
-    max-height: 500px;
-}
-
-.floating-menu-subitem {
-    display: flex;
-    align-items: center;
-    padding: var(--padding-sm) var(--padding-lg);
-    cursor: pointer;
-    transition: all 0.2s ease;
-    border-radius: var(--border-radius-sm);
-    margin-bottom: 2px;
-}
-
-.floating-menu-subitem:hover {
-    background: var(--ubits-sidebar-button-bg-pressed);
-}
-
-.floating-menu-subitem.active {
-    background: transparent;
-}
-
-.floating-menu-subitem.active .floating-menu-subtext,
-.floating-menu-subitem.active .floating-menu-subtext span {
-    color: var(--ubits-sidebar-button-bg-active) !important;
-    font-weight: var(--font-weight-semibold);
-}
-
-/* Estados activos movidos al final del archivo */
-
-/* Modo oscuro - SIN sobrescribir estados activos */
-[data-theme="dark"] .accordion-title span:not(.active) {
-    color: var(--ubits-sidebar-button-fg-default);
-}
-
-[data-theme="dark"] .accordion-link span:not(.active) {
-    color: var(--ubits-sidebar-button-fg-default);
-}
-
-[data-theme="dark"] .accordion-link:hover span:not(.active) {
-    color: var(--ubits-sidebar-button-fg-hover);
-}
-
-.floating-menu-subicon {
-    font-size: var(--font-size-md);
-    color: var(--ubits-sidebar-button-fg-default);
-    margin-right: 12px;
-    width: 20px;
-    text-align: center;
-    transition: color 0.2s ease;
-}
-
-.floating-menu-subitem:hover .floating-menu-subicon {
-    color: var(--ubits-sidebar-button-fg-hover);
-}
-
-.floating-menu-subtext,
-.floating-menu-subtext span {
-    color: var(--ubits-sidebar-button-fg-default) !important;
-    flex: 1;
-    transition: color 0.2s ease;
-}
-
-.floating-menu-subitem:hover .floating-menu-subtext,
-.floating-menu-subitem:hover .floating-menu-subtext span {
-    color: var(--ubits-sidebar-button-fg-hover) !important;
-}
-
-/* Scroll personalizado */
-.floating-menu::-webkit-scrollbar {
-    width: 6px;
-}
-
-.floating-menu::-webkit-scrollbar-track {
-    background: transparent;
-}
-
-.floating-menu::-webkit-scrollbar-thumb {
-    background: var(--ubits-scroll-bar-color-bg-default);
-    border-radius: var(--border-radius-xs);
-}
-
-.floating-menu::-webkit-scrollbar-thumb:hover {
-    background: var(--ubits-scroll-bar-color-bg-default);
-}
-
-/* Modo oscuro - Los colores ya cambian automáticamente con los tokens */
-[data-theme="dark"] .floating-menu {
-    background: var(--ubits-sidebar-bg);
-}
-
-[data-theme="dark"] .floating-menu-header {
-    border-color: var(--ubits-sidebar-button-fg-default);
-}
-
-[data-theme="dark"] .floating-menu-title {
-    color: var(--ubits-sidebar-button-fg-default);
-}
-
-[data-theme="dark"] .floating-menu-close {
-    color: var(--ubits-sidebar-button-fg-default);
-}
-
-[data-theme="dark"] .floating-menu-close:hover {
-    color: var(--ubits-sidebar-button-fg-hover);
-    background: var(--ubits-sidebar-button-bg-pressed);
-}
-
-/* ========================================
-   CÍRCULOS DE ÍCONOS - ESTADOS ACTIVOS
-   ======================================== */
 
 .accordion-icon-circle {
     width: 32px;
     height: 32px;
+    min-width: 32px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-right: 12px;
+    background-color: rgba(255, 255, 255, 0.1);
     transition: all 0.2s ease;
-    background: transparent;
+    flex-shrink: 0;
 }
 
 .accordion-icon-circle i {
-    font-size: var(--font-size-md);
-    color: var(--ubits-sidebar-button-fg-default);
-    transition: color 0.2s ease;
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.85);
     margin: 0;
-    width: auto;
 }
 
-/* Estado activo - igual que los botones del sidebar */
-.accordion-icon-circle.active {
-    background: var(--ubits-sidebar-button-bg-active);
+.accordion-header.expanded-header .accordion-icon-circle.active-circle,
+.accordion-icon-circle.active-circle {
+    background-color: #ffffff;
 }
 
-.accordion-icon-circle.active i {
-    color: var(--ubits-sidebar-button-fg-active);
+.accordion-header.expanded-header .accordion-icon-circle.active-circle i,
+.accordion-icon-circle.active-circle i {
+    color: #202837;
 }
 
-/* Reglas activas movidas junto a sus reglas base */
+.accordion-icon-circle.icon-error {
+    background-color: rgba(233, 52, 60, 0.1) !important;
+}
+
+.accordion-icon-circle.icon-error i {
+    color: var(--ubits-feedback-accent-error, #e9343c) !important;
+}
+
+#link-fp-logout .ubits-body-md-regular {
+    color: var(--ubits-feedback-accent-error, #e9343c) !important;
+}
+
+.accordion-link.direct-link.disabled,
+.accordion-header.disabled,
+.accordion-link.disabled {
+    cursor: not-allowed;
+    opacity: 0.45;
+    pointer-events: none;
+}
+
+.floating-menu-content::-webkit-scrollbar {
+    width: 6px;
+}
+
+.floating-menu-content::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 4px;
+}
+
+[data-theme="dark"] .floating-menu,
+[data-theme="dark"] #floating-menu-profile {
+    background: var(--ubits-sidebar-bg);
+}
+
+.floating-menu-preview-host {
+    position: relative;
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto 12px;
+    min-height: 520px;
+    border-radius: var(--border-radius-md);
+    overflow: hidden;
+    background: var(--ubits-bg-2);
+}
+
+.floating-menu-preview-host .floating-menu-backdrop {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: var(--ubits-tab-bar-height);
+}
+
+.floating-menu-preview-host .floating-menu,
+.floating-menu-preview-host #floating-menu-profile {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 16px;
+    bottom: var(--ubits-tab-bar-height);
+    z-index: 2000;
+}

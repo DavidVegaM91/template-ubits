@@ -52,46 +52,70 @@
             border: 1px solid var(--ubits-border-1) !important;
         }
         
-        /* Floating Menu en preview: solo UN panel visible (Módulos vs Perfil comparten contenedor; sin .show = oculto) */
-        #floating-menu-container .floating-menu {
+        /* Simulador móvil: drawer + backdrop como en React */
+        #tab-bar-preview-wrap {
+            position: relative;
+            width: 100%;
+            max-width: 400px;
+            margin: 0 auto;
+            min-height: 520px;
+            border-radius: var(--border-radius-md);
+            overflow: hidden;
+            background: var(--ubits-bg-2);
+        }
+
+        #floating-menu-container.floating-menu-preview-host {
+            position: absolute;
+            inset: 0;
+            bottom: var(--ubits-tab-bar-height, 60px);
+            pointer-events: none;
+        }
+
+        #floating-menu-container .floating-menu-backdrop {
+            position: absolute !important;
+            top: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+            bottom: var(--ubits-tab-bar-height, 60px) !important;
+        }
+
+        #floating-menu-container .floating-menu,
+        #floating-menu-container #floating-menu-profile {
+            position: absolute !important;
+            left: 0 !important;
+            right: 0 !important;
+            top: 16px !important;
+            bottom: 0 !important;
+            border-top-left-radius: 16px !important;
+            border-top-right-radius: 16px !important;
+            transform: translateY(calc(100% + 80px)) !important;
+        }
+
+        #floating-menu-container .floating-menu.show,
+        #floating-menu-container #floating-menu-profile.show {
+            transform: translateY(0) !important;
+            pointer-events: auto !important;
+        }
+
+        #floating-menu-container .floating-menu-backdrop.is-visible {
+            pointer-events: auto !important;
+        }
+
+        #tab-bar-preview-container {
+            position: absolute !important;
+            bottom: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+            z-index: 2005 !important;
+        }
+
+        #tab-bar-preview-real {
             position: relative !important;
-            top: auto !important;
+            bottom: auto !important;
             left: auto !important;
             right: auto !important;
-            bottom: auto !important;
-            min-height: 500px !important;
-            max-height: 600px !important;
-            overflow-y: auto !important;
-            margin-bottom: 12px !important;
-            border-radius: var(--border-radius-md) !important;
             width: 100% !important;
-            max-width: 400px !important;
-            margin-left: auto !important;
-            margin-right: auto !important;
-        }
-
-        #floating-menu-container .floating-menu:not(.show) {
-            display: none !important;
-        }
-
-        #floating-menu-container .floating-menu.show {
             display: block !important;
-        }
-        
-        /* Deshabilitar hipervínculos en preview del floating menu */
-        #floating-menu-container .accordion-link {
-            pointer-events: none !important;
-            cursor: default !important;
-        }
-        
-        /* Pero mantener hover effects para demostración */
-        #floating-menu-container .accordion-link:hover {
-            background: var(--ubits-sidebar-button-bg-pressed) !important;
-        }
-        
-        /* Título "Módulos" del floating menu en preview */
-        #floating-menu-container .floating-menu-title {
-            color: var(--ubits-sidebar-button-fg-default) !important;
         }
         
     </style>
@@ -142,12 +166,13 @@
                     <!-- Preview Container -->
                     <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: var(--border-radius-md); position: relative;">
                         
-                        <!-- Floating Menu (Módulos + Perfil: dos paneles; solo uno con .show — igual que en producto) -->
-                        <div id="floating-menu-container"></div>
+                        <div id="tab-bar-preview-wrap">
+                        <!-- Floating Menu (Módulos + Perfil + backdrop) -->
+                        <div id="floating-menu-container" class="floating-menu-preview-host"></div>
                         
                         <!-- Tab-bar Real de UBITS -->
-                        <div id="tab-bar-preview-container" style="display: flex; justify-content: center; align-items: flex-end;">
-                            <div id="tab-bar-preview" style="width: 100%; max-width: 400px;">
+                        <div id="tab-bar-preview-container">
+                            <div id="tab-bar-preview" style="width: 100%;">
                                 <!-- Tab-bar Real de UBITS -->
                                 <div class="tab-bar" id="tab-bar-preview-real">
                                     <div class="tab-bar-content">
@@ -166,6 +191,7 @@
                                     </div>
                                 </div>
                             </div>
+                        </div>
                         </div>
                     </div>
                 </div>
@@ -619,6 +645,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 const floatingMenuProfile = document.getElementById('floating-menu-profile');
                 if (floatingMenu) floatingMenu.classList.add('show');
                 if (floatingMenuProfile) floatingMenuProfile.classList.remove('show');
+                if (typeof syncFloatingMenusBodyOverflow === 'function') {
+                    syncFloatingMenusBodyOverflow();
+                }
             }, 500);
         });
 
@@ -638,17 +667,17 @@ document.addEventListener('DOMContentLoaded', function() {
             const floatingMenuProfile = document.getElementById('floating-menu-profile');
 
             if (option === 'modulos') {
-                if (floatingMenuContainer) floatingMenuContainer.style.display = 'block';
                 if (floatingMenu) floatingMenu.classList.add('show');
                 if (floatingMenuProfile) floatingMenuProfile.classList.remove('show');
             } else if (option === 'perfil') {
-                if (floatingMenuContainer) floatingMenuContainer.style.display = 'block';
                 if (floatingMenu) floatingMenu.classList.remove('show');
                 if (floatingMenuProfile) floatingMenuProfile.classList.add('show');
             } else {
-                if (floatingMenuContainer) floatingMenuContainer.style.display = 'none';
                 if (floatingMenu) floatingMenu.classList.remove('show');
                 if (floatingMenuProfile) floatingMenuProfile.classList.remove('show');
+            }
+            if (typeof syncFloatingMenusBodyOverflow === 'function') {
+                syncFloatingMenusBodyOverflow();
             }
         }
 

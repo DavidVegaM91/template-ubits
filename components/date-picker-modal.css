@@ -1,0 +1,61 @@
+/* ========================================
+   UBITS Date picker modal
+   Modal + calendario (createCalendar) en rango o fecha única
+   ======================================== */
+
+.date-picker-modal-body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-lg);
+}
+
+.date-picker-modal__fields {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--gap-md);
+}
+
+.date-picker-modal__field {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-xs);
+    min-width: 0;
+}
+
+.date-picker-modal__label {
+    color: var(--ubits-fg-1-high);
+}
+
+.date-picker-modal__date-display {
+    min-height: var(--size-4xl);
+    display: flex;
+    align-items: center;
+    padding: var(--padding-sm) var(--padding-md);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: var(--border-radius-sm);
+    background: var(--ubits-bg-2);
+    color: var(--ubits-fg-1-medium);
+    box-sizing: border-box;
+}
+
+.date-picker-modal__date-display:not(:empty) {
+    color: var(--ubits-fg-1-high);
+    background: var(--ubits-bg-1);
+}
+
+.date-picker-modal__calendar-wrap {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+.date-picker-modal-footer .ubits-modal-footer__right {
+    display: flex;
+    gap: var(--gap-sm);
+}
+
+@media (max-width: 479px) {
+    .date-picker-modal__fields {
+        grid-template-columns: 1fr;
+    }
+}

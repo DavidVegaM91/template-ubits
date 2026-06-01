@@ -11,7 +11,8 @@
     height: 60px;
     background: var(--ubits-sidebar-bg);
     border-top: 1px solid var(--ubits-sidebar-button-fg-default);
-    z-index: 1000;
+    /* Por encima del backdrop (1999) y del floating-menu (2000): sin overlay ni slide encima del tab-bar */
+    z-index: 2005;
     padding: var(--padding-sm) 0;
 }
 

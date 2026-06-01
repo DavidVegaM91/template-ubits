@@ -8,6 +8,7 @@ const FLOATING_MENU_SECTIONS_DEFAULT = [
         id: 'aprendizaje',
         title: 'Aprendizaje',
         icon: 'far fa-graduation-cap',
+        accent: '#60a5fa',
         subitems: [
             { id: 'inicio', title: 'Inicio', icon: 'far fa-home', url: '../../ubits-colaborador/aprendizaje/home-learn.html' },
             { id: 'modo-estudio-ia', title: 'Modo estudio IA', icon: 'far fa-sparkles', url: '../../ubits-colaborador/aprendizaje/modo-estudio-ia.html' },
@@ -20,6 +21,7 @@ const FLOATING_MENU_SECTIONS_DEFAULT = [
         id: 'creator',
         title: 'LMS Creator',
         icon: 'far fa-bolt',
+        accent: '#f59e0b',
         subitems: [
             { id: 'contenidos', title: 'Contenidos', icon: 'far fa-folder-open', url: '../../ubits-colaborador/lms-creator/contenidos.html' },
             { id: 'categorias', title: 'Categorías', icon: 'far fa-tags', url: '../../ubits-colaborador/lms-creator/categorias.html' },
@@ -36,6 +38,7 @@ const FLOATING_MENU_SECTIONS_DEFAULT = [
         id: 'diagnostico',
         title: 'Diagnóstico',
         icon: 'far fa-chart-mixed',
+        accent: '#ec4899',
         url: '../../ubits-colaborador/diagnostico/diagnostico.html',
         isLink: true,
         clickable: true
@@ -44,6 +47,7 @@ const FLOATING_MENU_SECTIONS_DEFAULT = [
         id: 'desempeno',
         title: 'Desempeño',
         icon: 'far fa-bars-progress',
+        accent: '#10b981',
         subitems: [
             { id: 'evaluaciones-360', title: 'Evaluaciones 360', icon: 'far fa-chart-pie', url: '../../ubits-colaborador/desempeno/evaluaciones-360.html' },
             { id: 'objetivos', title: 'Objetivos', icon: 'far fa-bullseye', url: '../../ubits-colaborador/desempeno/objetivos.html' },
@@ -55,6 +59,7 @@ const FLOATING_MENU_SECTIONS_DEFAULT = [
                 id: 'encuestas',
                 title: 'Encuestas',
                 icon: 'far fa-clipboard-list-check',
+                accent: '#14b8a6',
                 url: '../../ubits-colaborador/encuestas/encuestas.html',
                 isLink: true,
                 clickable: false
@@ -63,6 +68,7 @@ const FLOATING_MENU_SECTIONS_DEFAULT = [
         id: 'reclutamiento',
         title: 'Reclutamiento',
         icon: 'far fa-users',
+        accent: '#06b6d4',
         url: '../../ubits-colaborador/reclutamiento/reclutamiento.html',
         isLink: true,
         clickable: true
@@ -71,6 +77,7 @@ const FLOATING_MENU_SECTIONS_DEFAULT = [
         id: 'tareas',
         title: 'Tareas',
         icon: 'far fa-layer-group',
+        accent: '#8b5cf6',
         subitems: [
             { id: 'planes', title: 'Planes', icon: 'far fa-calendar', url: '../../ubits-colaborador/tareas/planes.html' },
             { id: 'tareas', title: 'Tareas', icon: 'far fa-tasks', url: '../../ubits-colaborador/tareas/tareas.html' },
@@ -82,11 +89,29 @@ const FLOATING_MENU_SECTIONS_DEFAULT = [
         id: 'ia-para-hr',
         title: 'IA para HR',
         icon: 'far fa-sparkles',
+        accent: 'ia-gradient',
         url: '../../ubits-colaborador/ia-para-hr/ia-para-hr.html',
         isLink: true,
         clickable: true
     }
 ];
+
+function getDrawerIconCircleHTML(id, iconClass, extraClass) {
+    extraClass = extraClass || '';
+    return (
+        '<div class="accordion-icon-circle' +
+        extraClass +
+        '" id="circle-' +
+        id +
+        '">' +
+        '<i class="' +
+        iconClass +
+        '" id="icon-' +
+        id +
+        '"></i>' +
+        '</div>'
+    );
+}
 
 /** Administración — alineado con README / sidebar admin */
 const FLOATING_MENU_SECTIONS_ADMIN = [
@@ -257,62 +282,69 @@ function getFloatingProfileMenuHTML(variant) {
     const base = getFloatingMenuBasePath();
     const parts = [];
 
-    function rowLink(id, title, iconClass, href, anchorExtra) {
+    function rowLink(id, title, iconClass, href, anchorExtra, iconExtraClass) {
         anchorExtra = anchorExtra || '';
         return (
             '<a href="' + resolveFloatingUrl(href) + '" class="accordion-link direct-link" id="link-' + id + '"' + anchorExtra + '>' +
-            '<div class="accordion-icon-circle" id="circle-' + id + '">' +
-            '<i class="' + iconClass + '" id="icon-' + id + '"></i>' +
-            '</div>' +
+            '<div class="accordion-title">' +
+            getDrawerIconCircleHTML(id, iconClass, iconExtraClass) +
             '<span class="ubits-body-md-regular">' + title + '</span>' +
+            '</div>' +
             '<i class="far fa-chevron-right accordion-chevron"></i>' +
             '</a>'
         );
     }
 
-    parts.push(rowLink('fp-ver-perfil', 'Ver mi perfil', 'far fa-user', base + 'ubits-colaborador/perfil/profile.html', ''));
+    parts.push(rowLink('fp-ver-perfil', 'Ver mi perfil', 'far fa-user', base + 'ubits-colaborador/perfil/profile.html'));
 
     if (variant === 'admin') {
-        parts.push(rowLink('fp-modo-colab', 'Modo Colaborador', 'far fa-user-gear', base + 'ubits-colaborador/aprendizaje/home-learn.html', ''));
-        parts.push(rowLink('fp-modo-creator', 'Modo LMS Creator', 'far fa-bolt', base + 'ubits-colaborador/lms-creator/contenidos.html', ''));
+        parts.push(rowLink('fp-modo-colab', 'Modo Colaborador', 'far fa-user-gear', base + 'ubits-colaborador/aprendizaje/home-learn.html'));
+        parts.push(rowLink('fp-modo-creator', 'Modo LMS Creator', 'far fa-bolt', base + 'ubits-colaborador/lms-creator/contenidos.html'));
     } else if (variant === 'creator') {
-        parts.push(rowLink('fp-modo-colab', 'Modo Colaborador', 'far fa-user-gear', base + 'ubits-colaborador/aprendizaje/home-learn.html', ''));
-        parts.push(rowLink('fp-modo-admin', 'Modo Administrador', 'far fa-laptop', base + 'ubits-admin/inicio/admin.html', ''));
+        parts.push(rowLink('fp-modo-colab', 'Modo Colaborador', 'far fa-user-gear', base + 'ubits-colaborador/aprendizaje/home-learn.html'));
+        parts.push(rowLink('fp-modo-admin', 'Modo Administrador', 'far fa-laptop', base + 'ubits-admin/inicio/admin.html'));
     } else {
-        parts.push(rowLink('fp-modo-admin', 'Modo Administrador', 'far fa-laptop', base + 'ubits-admin/inicio/admin.html', ''));
-        parts.push(rowLink('fp-modo-creator', 'Modo LMS Creator', 'far fa-bolt', base + 'ubits-colaborador/lms-creator/contenidos.html', ''));
+        parts.push(rowLink('fp-modo-admin', 'Modo Administrador', 'far fa-laptop', base + 'ubits-admin/inicio/admin.html'));
+        parts.push(rowLink('fp-modo-creator', 'Modo LMS Creator', 'far fa-bolt', base + 'ubits-colaborador/lms-creator/contenidos.html'));
     }
 
     parts.push(rowLink('fp-doc', 'Documentación', 'far fa-book', base + 'documentacion/documentacion.html', ' target="_blank" rel="noopener noreferrer"'));
 
     parts.push(
         '<a href="#" class="accordion-link direct-link" id="link-fp-pwd" onclick="handleProfileFloatingPassword(event); return false;">' +
-        '<div class="accordion-icon-circle" id="circle-fp-pwd">' +
-        '<i class="far fa-key" id="icon-fp-pwd"></i>' +
-        '</div>' +
+        '<div class="accordion-title">' +
+        getDrawerIconCircleHTML('fp-pwd', 'far fa-key') +
         '<span class="ubits-body-md-regular">Cambio de contraseña</span>' +
+        '</div>' +
         '<i class="far fa-chevron-right accordion-chevron"></i>' +
         '</a>'
     );
     parts.push(
         '<a href="#" class="accordion-link direct-link" id="link-fp-logout" onclick="handleProfileFloatingLogout(event); return false;">' +
-        '<div class="accordion-icon-circle" id="circle-fp-logout">' +
-        '<i class="far fa-sign-out-alt" id="icon-fp-logout"></i>' +
-        '</div>' +
+        '<div class="accordion-title">' +
+        getDrawerIconCircleHTML('fp-logout', 'far fa-sign-out-alt', ' icon-error') +
         '<span class="ubits-body-md-regular">Cerrar sesión</span>' +
-        '<i class="far fa-chevron-right accordion-chevron"></i>' +
+        '</div>' +
         '</a>'
     );
 
     return (
         '<div class="floating-menu" id="floating-menu-profile">' +
         '<div class="floating-menu-header">' +
-        '<h2 class="floating-menu-title ubits-heading-h2">Perfil</h2>' +
+        '<h2 class="floating-menu-title">Perfil</h2>' +
         '<button type="button" class="floating-menu-close" onclick="hideFloatingProfileMenu()" aria-label="Cerrar">' +
         '<i class="far fa-times"></i>' +
         '</button>' +
         '</div>' +
         '<div class="floating-menu-content">' +
+        '<div class="floating-menu-profile-user">' +
+        '<img class="floating-menu-profile-avatar" src="' + base + 'images/Profile-image.jpg" alt="María Alejandra" />' +
+        '<div class="floating-menu-profile-info">' +
+        '<span class="floating-menu-profile-name">María Alejandra</span>' +
+        '<span class="floating-menu-profile-role">Colaborador</span>' +
+        '</div>' +
+        '</div>' +
+        '<hr class="floating-menu-divider" />' +
         parts.join('') +
         '</div>' +
         '</div>'
@@ -357,6 +389,7 @@ function syncFloatingMenusBodyOverflow() {
     const fp = document.getElementById('floating-menu-profile');
     const anyOpen = (fm && fm.classList.contains('show')) || (fp && fp.classList.contains('show'));
     document.body.style.overflow = anyOpen ? 'hidden' : '';
+    setFloatingBackdropVisible(anyOpen);
 }
 
 function getFloatingMenuHTML(variant) {
@@ -366,27 +399,16 @@ function getFloatingMenuHTML(variant) {
     const sectionsHTML = sections.map(section => {
         // Si es un enlace directo (no acordeón)
         if (section.isLink) {
-            if (section.clickable) {
-                return `
-                    <a href="${resolveFloatingUrl(section.url)}" class="accordion-link direct-link" id="link-${section.id}">
-                        <div class="accordion-icon-circle" id="circle-${section.id}">
-                            <i class="${section.icon}" id="icon-${section.id}"></i>
-                        </div>
-                        <span class="ubits-body-md-regular">${section.title}</span>
-                        <i class="far fa-chevron-right accordion-chevron"></i>
-                    </a>
-                `;
-            } else {
-                return `
-                <a href="${resolveFloatingUrl(section.url)}" class="accordion-link direct-link" id="link-${section.id}">
-                    <div class="accordion-icon-circle" id="circle-${section.id}">
-                        <i class="${section.icon}" id="icon-${section.id}"></i>
-                    </div>
-                    <span class="ubits-body-md-regular">${section.title}</span>
-                    <i class="far fa-chevron-right accordion-chevron"></i>
-                </a>
-                `;
-            }
+            const disabledClass = section.clickable === false ? ' disabled' : '';
+            return (
+                '<a href="' + resolveFloatingUrl(section.url) + '" class="accordion-link direct-link' + disabledClass + '" id="link-' + section.id + '">' +
+                '<div class="accordion-title">' +
+                getDrawerIconCircleHTML(section.id, section.icon) +
+                '<span class="ubits-body-md-regular">' + section.title + '</span>' +
+                '</div>' +
+                '<i class="far fa-chevron-right accordion-chevron"></i>' +
+                '</a>'
+            );
         }
         
         // Si es acordeón normal
@@ -394,46 +416,40 @@ function getFloatingMenuHTML(variant) {
             if (subitem.adminLmsMigrate && subitem.adminMigrateRel) {
                 return (
                     '<a href="#" class="accordion-link" id="link-' + subitem.id + '" data-admin-migrate-rel="' + subitem.adminMigrateRel + '" onclick="handleAdminLmsMigrateFloatingClick(event); return false;">' +
-                    '<div class="accordion-icon-circle" id="circle-' + subitem.id + '">' +
-                    '<i class="' + subitem.icon + '" id="icon-' + subitem.id + '"></i>' +
-                    '</div>' +
+                    getDrawerIconCircleHTML(subitem.id, subitem.icon) +
                     '<span class="ubits-body-sm-regular">' + subitem.title + '</span>' +
                     '</a>'
                 );
             }
             return (
                 '<a href="' + resolveFloatingUrl(subitem.url) + '" class="accordion-link" id="link-' + subitem.id + '">' +
-                '<div class="accordion-icon-circle" id="circle-' + subitem.id + '">' +
-                '<i class="' + subitem.icon + '" id="icon-' + subitem.id + '"></i>' +
-                '</div>' +
+                getDrawerIconCircleHTML(subitem.id, subitem.icon) +
                 '<span class="ubits-body-sm-regular">' + subitem.title + '</span>' +
                 '</a>'
             );
         }).join('');
 
-        return `
-            <div class="accordion-item">
-                <div class="accordion-header" onclick="toggleAccordion('${section.id}')">
-                    <div class="accordion-title">
-                        <div class="accordion-icon-circle" id="circle-${section.id}">
-                            <i class="${section.icon}" id="icon-${section.id}"></i>
-                        </div>
-                        <span class="ubits-body-md-regular">${section.title}</span>
-                    </div>
-                    <i class="far fa-chevron-down accordion-chevron" id="chevron-${section.id}"></i>
-                </div>
-                <div class="accordion-body" id="body-${section.id}">
-                    ${subitemsHTML}
-                </div>
-            </div>
-        `;
+        return (
+            '<div class="accordion-item" id="accordion-item-' + section.id + '">' +
+            '<div class="accordion-header" id="header-' + section.id + '" onclick="toggleAccordion(\'' + section.id + '\')">' +
+            '<div class="accordion-title">' +
+            getDrawerIconCircleHTML(section.id, section.icon) +
+            '<span class="ubits-body-md-regular">' + section.title + '</span>' +
+            '</div>' +
+            '<i class="far fa-chevron-down accordion-chevron" id="chevron-' + section.id + '"></i>' +
+            '</div>' +
+            '<div class="accordion-body" id="body-' + section.id + '">' +
+            subitemsHTML +
+            '</div>' +
+            '</div>'
+        );
     }).join('');
 
     return `
         <div class="floating-menu" id="floating-menu">
             <div class="floating-menu-header">
-                <h2 class="floating-menu-title ubits-heading-h2">${headerTitle}</h2>
-                <button class="floating-menu-close" onclick="hideFloatingMenu()">
+                <h2 class="floating-menu-title">${headerTitle}</h2>
+                <button type="button" class="floating-menu-close" onclick="hideFloatingMenu()" aria-label="Cerrar">
                     <i class="far fa-times"></i>
                 </button>
             </div>
@@ -454,8 +470,29 @@ function loadFloatingMenu(containerId, variant) {
 
     window.currentFloatingMenuSections = getSectionsForVariant(variant);
     window._floatingMenuVariant = variant;
-    container.innerHTML = getFloatingMenuHTML(variant) + getFloatingProfileMenuHTML(variant);
+    container.innerHTML =
+        '<div id="floating-menu-backdrop" class="floating-menu-backdrop" onclick="hideAllFloatingMenus()" aria-hidden="true"></div>' +
+        getFloatingMenuHTML(variant) +
+        getFloatingProfileMenuHTML(variant);
     addFloatingMenuEventListeners();
+}
+
+function setFloatingBackdropVisible(visible) {
+    const backdrop = document.getElementById('floating-menu-backdrop');
+    if (backdrop) {
+        if (visible) {
+            backdrop.classList.add('is-visible');
+            backdrop.setAttribute('aria-hidden', 'false');
+        } else {
+            backdrop.classList.remove('is-visible');
+            backdrop.setAttribute('aria-hidden', 'true');
+        }
+    }
+}
+
+function hideAllFloatingMenus() {
+    hideFloatingMenu();
+    hideFloatingProfileMenu();
 }
 
 function addFloatingMenuEventListeners() {
@@ -519,50 +556,54 @@ function hideFloatingProfileMenu() {
     syncFloatingMenusBodyOverflow();
 }
 
-function toggleAccordion(sectionId) {
-    const body = document.getElementById(`body-${sectionId}`);
-    const chevron = document.getElementById(`chevron-${sectionId}`);
-    const circle = document.getElementById(`circle-${sectionId}`);
-    const icon = document.getElementById(`icon-${sectionId}`);
-    const title = document.querySelector(`#body-${sectionId}`).previousElementSibling.querySelector('.accordion-title');
-    
-    if (body && chevron && circle && icon && title) {
-        const isCurrentlyOpen = body.style.display === 'block';
-        
-        // Cerrar todos los acordeones primero
-        closeAllAccordions();
-        
-        if (!isCurrentlyOpen) {
-            // Abrir solo este acordeón - estado activo
-            body.style.display = 'block';
-            chevron.style.transform = 'rotate(180deg)';
-            title.classList.add('active');
-            circle.classList.add('active');
-            icon.classList.add('active');
+function findParentSectionIdForLinkId(linkId) {
+    const sections = getCurrentFloatingMenuSections();
+    for (let i = 0; i < sections.length; i++) {
+        const section = sections[i];
+        if (section.subitems && section.subitems.some(function (sub) { return sub.id === linkId; })) {
+            return section.id;
         }
-        // Si ya estaba abierto, se mantiene cerrado después de closeAllAccordions()
+    }
+    return null;
+}
+
+function expandAccordion(sectionId) {
+    const item = document.getElementById('accordion-item-' + sectionId);
+    const header = document.getElementById('header-' + sectionId);
+    const circle = document.getElementById('circle-' + sectionId);
+
+    if (!item) return;
+
+    closeAllAccordions();
+    item.classList.add('is-open');
+    if (header) header.classList.add('expanded-header');
+    if (circle) circle.classList.add('active-circle');
+}
+
+function toggleAccordion(sectionId) {
+    const item = document.getElementById('accordion-item-' + sectionId);
+    const header = document.getElementById('header-' + sectionId);
+    const circle = document.getElementById('circle-' + sectionId);
+
+    if (!item) return;
+
+    const isCurrentlyOpen = item.classList.contains('is-open');
+    closeAllAccordions();
+
+    if (!isCurrentlyOpen) {
+        item.classList.add('is-open');
+        if (header) header.classList.add('expanded-header');
+        if (circle) circle.classList.add('active-circle');
     }
 }
 
-// Función para cerrar todos los acordeones
 function closeAllAccordions() {
-    // Obtener todas las secciones que tienen acordeón (no enlaces directos)
-    const accordionSections = getCurrentFloatingMenuSections().filter(section => !section.isLink);
-    
-    accordionSections.forEach(section => {
-        const body = document.getElementById(`body-${section.id}`);
-        const chevron = document.getElementById(`chevron-${section.id}`);
-        const circle = document.getElementById(`circle-${section.id}`);
-        const icon = document.getElementById(`icon-${section.id}`);
-        const title = document.querySelector(`#body-${section.id}`).previousElementSibling.querySelector('.accordion-title');
-        
-        if (body && chevron && circle && icon && title) {
-            body.style.display = 'none';
-            chevron.style.transform = 'rotate(0deg)';
-            title.classList.remove('active');
-            circle.classList.remove('active');
-            icon.classList.remove('active');
-        }
+    document.querySelectorAll('.accordion-item.is-open').forEach(function (item) {
+        item.classList.remove('is-open');
+        const header = item.querySelector('.accordion-header');
+        const circle = item.querySelector('.accordion-icon-circle');
+        if (header) header.classList.remove('expanded-header');
+        if (circle) circle.classList.remove('active-circle');
     });
 }
 
@@ -671,11 +712,14 @@ function setActiveItemByCurrentPage() {
     const activeElementId = pageToElementMap[currentPage];
 
     if (activeElementId) {
-        setTimeout(() => {
-            const section = getCurrentFloatingMenuSections().find(s => s.id === activeElementId);
+        setTimeout(function () {
+            const sections = getCurrentFloatingMenuSections();
+            const section = sections.find(function (s) { return s.id === activeElementId; });
 
             if (section && section.isLink) {
                 setActiveDirectLink(activeElementId);
+            } else if (section && section.subitems && section.subitems.length) {
+                expandAccordion(section.id);
             } else {
                 setActiveAccordionLink(activeElementId);
             }
@@ -710,22 +754,25 @@ function setActiveDirectLink(linkId) {
 
 // Función para activar un accordion-link específico
 function setActiveAccordionLink(linkId) {
-    // Remover activo de todos los accordion-links
-    document.querySelectorAll('.accordion-link').forEach(link => {
+    const sectionId = findParentSectionIdForLinkId(linkId);
+    if (sectionId) {
+        expandAccordion(sectionId);
+    }
+
+    document.querySelectorAll('.accordion-link').forEach(function (link) {
         link.classList.remove('active');
     });
-    document.querySelectorAll('.accordion-link .accordion-icon-circle').forEach(circle => {
+    document.querySelectorAll('.accordion-link .accordion-icon-circle').forEach(function (circle) {
         circle.classList.remove('active');
     });
-    document.querySelectorAll('.accordion-link .accordion-icon-circle i').forEach(icon => {
+    document.querySelectorAll('.accordion-link .accordion-icon-circle i').forEach(function (icon) {
         icon.classList.remove('active');
     });
-    
-    // Activar el link específico
-    const link = document.getElementById(`link-${linkId}`);
-    const circle = document.getElementById(`circle-${linkId}`);
-    const icon = document.getElementById(`icon-${linkId}`);
-    
+
+    const link = document.getElementById('link-' + linkId);
+    const circle = document.getElementById('circle-' + linkId);
+    const icon = document.getElementById('icon-' + linkId);
+
     if (link && circle && icon) {
         link.classList.add('active');
         circle.classList.add('active');
@@ -739,10 +786,13 @@ window.loadFloatingMenu = loadFloatingMenu;
 window.showFloatingMenu = showFloatingMenu;
 window.hideFloatingMenu = hideFloatingMenu;
 window.hideFloatingProfileMenu = hideFloatingProfileMenu;
+window.hideAllFloatingMenus = hideAllFloatingMenus;
+window.setFloatingBackdropVisible = setFloatingBackdropVisible;
 window.syncFloatingMenusBodyOverflow = syncFloatingMenusBodyOverflow;
 window.handleProfileFloatingPassword = handleProfileFloatingPassword;
 window.handleProfileFloatingLogout = handleProfileFloatingLogout;
 window.toggleAccordion = toggleAccordion;
+window.expandAccordion = expandAccordion;
 window.closeAllAccordions = closeAllAccordions;
 window.setActiveAccordionLink = setActiveAccordionLink;
 window.setActiveItemByCurrentPage = setActiveItemByCurrentPage;
