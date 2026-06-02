@@ -1272,3 +1272,124 @@
         padding: var(--padding-xs) var(--padding-sm);
     }
 }
+
+/* ========================================
+   Logo — tile compacto (Agregar video)
+   ======================================== */
+
+.cc-vm-logo-section__label {
+    margin: 0;
+    color: var(--ubits-fg-1-high);
+}
+
+.cc-vm-logo-upload {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-xs);
+    width: 100%;
+}
+
+.cc-vm-logo-upload__error {
+    margin: 0;
+    color: var(--ubits-feedback-accent-error);
+}
+
+.cc-vm-logo-upload__error[hidden] {
+    display: none !important;
+}
+
+.cc-vm-logo-tile {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-md);
+    width: 100%;
+    min-height: 64px;
+    padding: var(--padding-sm) var(--padding-md);
+    box-sizing: border-box;
+    border-radius: var(--border-radius-sm);
+    font-family: var(--ubits-font-family-sans);
+    text-align: left;
+}
+
+.cc-vm-logo-tile[hidden] {
+    display: none !important;
+}
+
+.cc-vm-logo-tile--empty {
+    border: 1px dashed var(--ubits-border-1);
+    background: var(--ubits-bg-1);
+    transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.cc-vm-logo-tile--empty:hover {
+    border-color: var(--ubits-accent-brand);
+    background: var(--ubits-bg-2);
+}
+
+.cc-vm-logo-tile__upload-btn {
+    flex-shrink: 0;
+    margin-left: auto;
+}
+
+.cc-vm-logo-tile--filled {
+    border: 1px solid var(--ubits-border-1);
+    background: var(--ubits-bg-1);
+}
+
+.cc-vm-logo-tile__icon {
+    width: 40px;
+    height: 40px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--ubits-fg-1-low);
+    font-size: var(--font-size-md);
+}
+
+.cc-vm-logo-tile__thumb {
+    width: 40px;
+    height: 40px;
+    flex-shrink: 0;
+    border-radius: var(--border-radius-xs);
+    border: 1px solid var(--ubits-border-1);
+    background: var(--ubits-bg-2);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.cc-vm-logo-tile__thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.cc-vm-logo-tile__copy {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-none);
+}
+
+.cc-vm-logo-tile__filename {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: var(--ubits-fg-1-high);
+}
+
+.cc-vm-logo-tile__copy .ubits-body-xs-regular,
+.cc-vm-logo-tile__filesize {
+    color: var(--ubits-fg-1-medium);
+}
+
+.cc-vm-logo-tile__actions {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-xs);
+    flex-shrink: 0;
+    margin-left: auto;
+}
