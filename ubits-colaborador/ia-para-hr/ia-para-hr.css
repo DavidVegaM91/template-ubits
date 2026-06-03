@@ -2,30 +2,59 @@
    ESTILOS ESPECÍFICOS PARA ia-para-hr
    ======================================== */
 
+/* —— Layout: la sección ocupa todo el alto del main —— */
+body.ia-para-hr-page .dashboard-container {
+    min-height: 100vh;
+}
+
+body.ia-para-hr-page .main-content {
+    flex: 1;
+    /* 16px arriba (margin-top global) + 16px abajo (margin-bottom) */
+    min-height: calc(100vh - (2 * var(--gap-lg)));
+    margin-bottom: var(--gap-lg);
+    box-sizing: border-box;
+}
+
+body.ia-para-hr-page .content-area {
+    flex: 1;
+    min-height: 0;
+    align-items: stretch;
+    align-self: stretch;
+    width: 100%;
+}
+
 .content-sections {
     display: flex;
     flex-direction: column;
-    gap: var(--gap-2xl);
+    gap: var(--gap-none);
     flex: 1;
     min-width: 0;
+    min-height: 0;
     width: 100%;
+    height: 100%;
     overflow: visible;
     max-height: none;
 }
 
 .section-single {
     display: flex;
+    flex: 1;
+    min-height: 0;
     width: 100%;
 }
 
 /* Shell único: misma base que la columna central del chat IA (orbes en ::before) */
 .section-single > .ia-hr-shell {
     flex: 1;
+    min-height: 0;
     width: 100%;
     box-sizing: border-box;
     position: relative;
     isolation: isolate;
     overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
     border-radius: var(--border-radius-lg);
     border: 1px solid var(--ubits-border-1);
     background-color: var(--ubits-bg-1);
@@ -110,7 +139,7 @@ body[data-theme="dark"] .ia-hr-shell::before {
     color: var(--ubits-fg-1-high);
 }
 
-/* —— Grid de tarjetas —— */
+/* —— Grid de tarjetas (3 agentes) —— */
 .ia-hr-card-grid {
     position: relative;
     z-index: 1;
@@ -118,11 +147,16 @@ body[data-theme="dark"] .ia-hr-shell::before {
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: var(--gap-lg);
     width: 100%;
-    margin: 0;
+    max-width: 1000px;
+    margin: 0 auto;
     padding: 0;
 }
 
-/* Borde IA: misma técnica que learn-content-img-trailer--empty-ia (gradiente en el propio card, sin ::before) */
+.ia-hr-card-grid--three {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+/* Borde IA en hover vía ::after (sin cambiar grosor del borde → cero layout shift) */
 a.ia-hr-card,
 button.ia-hr-card {
     --ia-hr-card-ia-ring: linear-gradient(
@@ -145,7 +179,7 @@ button.ia-hr-card {
     height: auto;
     width: 100%;
     position: relative;
-    border-radius: var(--border-radius-lg);
+    border-radius: var(--border-radius-xl);
     border: 1px solid var(--ubits-border-1);
     background: var(--ubits-bg-1);
     box-shadow: none;
@@ -156,20 +190,43 @@ button.ia-hr-card {
     font: inherit;
     appearance: none;
     -webkit-appearance: none;
-    transition: border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+    transition: box-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+a.ia-hr-card::after,
+button.ia-hr-card::after {
+    content: '';
+    position: absolute;
+    inset: calc(var(--ubits-ia-gradient-border-width) * -0.5);
+    border-radius: inherit;
+    padding: var(--ubits-ia-gradient-border-width);
+    background: var(--ia-hr-card-ia-ring);
+    -webkit-mask:
+        linear-gradient(#fff 0 0) content-box,
+        linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask:
+        linear-gradient(#fff 0 0) content-box,
+        linear-gradient(#fff 0 0);
+    mask-composite: exclude;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.15s ease;
+    z-index: 2;
 }
 
 a.ia-hr-card:hover,
 button.ia-hr-card:hover {
-    border: 2px solid transparent;
-    background:
-        linear-gradient(var(--ubits-bg-1), var(--ubits-bg-1)) padding-box,
-        var(--ia-hr-card-ia-ring) border-box;
-    background-origin: padding-box, border-box;
-    background-clip: padding-box, border-box;
+    border-color: transparent;
+    background: var(--ubits-bg-1);
     box-shadow:
         0 -4px 14px 0 rgba(12, 91, 239, 0.2),
         0 4px 14px 0 rgba(255, 84, 22, 0.2);
+}
+
+a.ia-hr-card:hover::after,
+button.ia-hr-card:hover::after {
+    opacity: 1;
 }
 
 /* Foco: anillo exterior */
@@ -207,16 +264,28 @@ button.ia-hr-card:hover:focus-visible {
 }
 
 .ia-hr-card__icon {
-    width: var(--size-4xl);
-    height: var(--size-4xl);
-    min-width: var(--size-4xl);
+    width: calc(var(--size-6xl) + var(--gap-sm));
+    height: calc(var(--size-6xl) + var(--gap-sm));
+    min-width: calc(var(--size-6xl) + var(--gap-sm));
     border-radius: var(--border-radius-full);
     display: flex;
     align-items: center;
     justify-content: center;
-    background: var(--ubits-bg-2);
-    font-size: var(--font-size-md);
+    border: var(--ubits-ia-gradient-border-width) solid transparent;
+    background:
+        linear-gradient(var(--ubits-bg-1), var(--ubits-bg-1)) padding-box,
+        var(--ia-hr-card-ia-ring) border-box;
+    background-origin: padding-box, border-box;
+    background-clip: padding-box, border-box;
+    font-size: var(--size-xl);
     flex-shrink: 0;
+    box-sizing: border-box;
+    color: var(--ubits-accent-brand-static);
+}
+
+.ia-hr-card__icon i {
+    line-height: 1;
+    color: inherit;
 }
 
 .ia-hr-card__icon--pink i {
@@ -224,7 +293,7 @@ button.ia-hr-card:hover:focus-visible {
 }
 
 .ia-hr-card__icon--blue i {
-    color: var(--ubits-accent-blue);
+    color: inherit;
 }
 
 .ia-hr-card__icon--yellow i {
@@ -240,6 +309,12 @@ button.ia-hr-card:hover:focus-visible {
 }
 
 @media (max-width: 1023px) {
+    body.ia-para-hr-page .main-content {
+        /* padding-top no-subnav (16px) + margen inferior (16px) + tab bar (60px) */
+        min-height: calc(100vh - (2 * var(--gap-lg)) - 60px);
+        margin-bottom: var(--gap-lg);
+    }
+
     .ia-hr-card-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
@@ -251,6 +326,8 @@ button.ia-hr-card:hover:focus-visible {
     }
 
     .section-single > .ia-hr-shell {
+        justify-content: flex-start;
+        overflow-y: auto;
         padding: var(--padding-2xl) var(--padding-md) var(--padding-3xl) !important;
     }
 }
