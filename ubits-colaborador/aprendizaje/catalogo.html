@@ -894,7 +894,7 @@
                 const competenciaCard = e.target.closest('.competencia-card-v1');
                 if (competenciaCard) {
                     // Si el clic fue en el botón de filtro, no hacer nada
-                    if (e.target.closest('.ubits-button[data-tooltip="Filtrar por esta competencia"]')) {
+                    if (e.target.closest('.competencia-card-v1-filter-btn')) {
                         return;
                     }
                     
@@ -948,11 +948,11 @@
                     return;
                 }
                 
-                // Event delegation para botón de filtro
-                const filterButton = e.target.closest('.ubits-button[data-tooltip="Filtrar por esta competencia"]');
-                if (filterButton) {
+                // Event delegation para botón de filtro (competencia o habilidad)
+                const filterCompetenciaBtn = e.target.closest('.competencia-card-v1-filter-btn');
+                const filterHabilidadBtn = e.target.closest('.habilidad-chip__filter-btn');
+                if (filterCompetenciaBtn || filterHabilidadBtn) {
                     e.stopPropagation();
-                    // No hacer nada, esta funcionalidad se implementará en el futuro
                     return;
                 }
             });
@@ -1124,10 +1124,10 @@
                                                         <p class="ubits-body-xs-regular competencia-card-v1-count">${competencia.habilidades.length} habilidades</p>
                                                     </div>
                                                     <div class="competencia-card-v1-actions">
-                                                        <button class="ubits-button ubits-button--tertiary ubits-button--xs ubits-button--icon-only" aria-label="Filtrar por esta competencia" data-tooltip="Filtrar por esta competencia">
+                                                        <button type="button" class="ubits-button ubits-button--tertiary ubits-button--xs ubits-button--icon-only competencia-card-v1-filter-btn" aria-label="Filtrar por esta competencia" data-tooltip="Filtrar por esta competencia" data-tooltip-position="bottom" data-tooltip-align="center">
                                                             <i class="far fa-filter"></i>
                                                         </button>
-                                                        <button class="ubits-button ubits-button--tertiary ubits-button--xs ubits-button--icon-only competencia-card-v1-chevron-btn" aria-label="Ver habilidades" data-competencia="${competencia.nombre}" data-academia="${academia.nombre}" data-tooltip="Ver habilidades">
+                                                        <button type="button" class="ubits-button ubits-button--tertiary ubits-button--xs ubits-button--icon-only competencia-card-v1-chevron-btn" aria-label="Ver habilidades" data-competencia="${competencia.nombre}" data-academia="${academia.nombre}" data-tooltip="Ver habilidades" data-tooltip-position="bottom" data-tooltip-align="center">
                                                             <i class="far fa-chevron-down competencia-card-v1-chevron"></i>
                                                         </button>
                                                     </div>
@@ -1135,11 +1135,12 @@
                                                 <div class="competencia-habilidades-container" data-competencia="${competencia.nombre}" data-academia="${academia.nombre}">
                                                     <div class="competencias-habilidades-grid">
                                                         ${competencia.habilidades.sort((a, b) => a.localeCompare(b, 'es', { sensitivity: 'base' })).map(habilidad => {
-                                                            const icon = habilidadIconMap[habilidad] || 'fa-circle';
                                                             return `
                                                                 <div class="habilidad-chip">
-                                                                    <i class="far ${icon}"></i>
-                                                                    <span class="ubits-body-sm-regular">${habilidad}</span>
+                                                                    <span class="ubits-body-sm-regular habilidad-chip__label">${habilidad}</span>
+                                                                    <button type="button" class="ubits-button ubits-button--tertiary ubits-button--xs ubits-button--icon-only habilidad-chip__filter-btn" aria-label="Filtrar por esta habilidad" data-tooltip="Filtrar por esta habilidad" data-tooltip-position="bottom" data-tooltip-align="center" data-habilidad="${habilidad}" data-competencia="${competencia.nombre}">
+                                                                        <i class="far fa-filter"></i>
+                                                                    </button>
                                                                 </div>
                                                             `;
                                                         }).join('')}
@@ -1171,56 +1172,9 @@
             attachCatalogEventListeners();
             }
 
-            document.querySelectorAll('.competencia-card-v1-actions .ubits-button').forEach(button => {
-                button.addEventListener('mouseenter', function() {
-                    const tooltipText = this.getAttribute('data-tooltip');
-                    if (!tooltipText) return;
-                    
-                    // Crear tooltip temporal para calcular dimensiones
-                    const tempTooltip = document.createElement('div');
-                    tempTooltip.textContent = tooltipText;
-                    tempTooltip.style.cssText = 'position: absolute; visibility: hidden; white-space: nowrap; padding: 6px 10px; font-size: var(--font-size-sm); font-family: var(--ubits-font-family-sans);';
-                    document.body.appendChild(tempTooltip);
-                    const tooltipWidth = tempTooltip.offsetWidth;
-                    const tooltipHeight = tempTooltip.offsetHeight;
-                    document.body.removeChild(tempTooltip);
-                    
-                    const rect = this.getBoundingClientRect();
-                    const viewportWidth = window.innerWidth;
-                    const viewportHeight = window.innerHeight;
-                    const margin = 10;
-                    
-                    // Determinar posición
-                    const spaceAbove = rect.top;
-                    const spaceBelow = viewportHeight - rect.bottom;
-                    const spaceRight = viewportWidth - rect.right;
-                    const spaceLeft = rect.left;
-                    
-                    // Resetear clases
-                    this.classList.remove('tooltip-top', 'tooltip-bottom', 'tooltip-left', 'tooltip-right');
-                    
-                    // Determinar posición vertical (siempre abajo en fila competencia: el card recorta con overflow:hidden)
-                    const useBottom = true;
-                    
-                    // Determinar posición horizontal
-                    let horizontalPos = 'center';
-                    if (spaceRight < tooltipWidth / 2 + margin) {
-                        horizontalPos = 'right';
-                    } else if (spaceLeft < tooltipWidth / 2 + margin) {
-                        horizontalPos = 'left';
-                    }
-                    
-                    // Aplicar clases
-                    if (useBottom) {
-                        this.classList.add('tooltip-bottom');
-                    }
-                    if (horizontalPos === 'right') {
-                        this.classList.add('tooltip-right');
-                    } else if (horizontalPos === 'left') {
-                        this.classList.add('tooltip-left');
-                    }
-                });
-            });
+            if (typeof initTooltip === 'function') {
+                initTooltip('#competencias-container [data-tooltip]');
+            }
 
         }
 

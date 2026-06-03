@@ -153,9 +153,15 @@
     flex-shrink: 0;
 }
 
+/* Selector de academias (createInput type select) */
+#academia-selector-container {
+    max-width: 469px;
+    width: 100%;
+}
+
 /* Panel del selector de academias: createInput(select) inyecta #ubits-input-select-academia-selector-container (dropdown-menu) */
 #ubits-input-select-academia-selector-container.ubits-dropdown-menu__content {
-    min-width: min(320px, calc(100vw - 16px));
+    min-width: min(469px, calc(100vw - 16px));
 }
 
 .catalog-chips-wrapper {
@@ -666,8 +672,9 @@
 .competencia-card-v1-actions {
     display: flex;
     align-items: center;
+    align-self: stretch;
     gap: var(--gap-none);
-    padding: 0 8px;
+    padding: 0 var(--padding-sm);
     flex-shrink: 0;
 }
 
@@ -701,7 +708,6 @@
 }
 
 .competencia-card-v1-title-wrapper {
-    position: relative;
     width: 100%;
     min-width: 0;
     overflow: visible;
@@ -714,15 +720,16 @@
     display: inline-flex;
     align-items: center;
     gap: var(--gap-sm);
+    min-width: 0;
     max-width: 100%;
 }
 
 .competencia-card-v1-title-text {
-    display: inline-block;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    max-width: 100%;
+    min-width: 0;
+    flex: 0 1 auto;
     color: inherit;
 }
 
@@ -766,114 +773,39 @@
 .habilidad-chip {
     display: flex;
     align-items: center;
+    justify-content: space-between;
     gap: var(--gap-sm);
     padding: var(--padding-xs) var(--padding-sm);
     background: var(--ubits-bg-1);
     border: 1px solid transparent;
     border-radius: var(--border-radius-xl);
     color: var(--ubits-fg-1-medium);
+    min-width: 0;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.habilidad-chip__label {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
     white-space: nowrap;
+    color: var(--ubits-fg-1-medium);
+}
+
+.habilidad-chip__filter-btn {
     flex-shrink: 0;
 }
 
 .habilidad-chip:hover {
     background: var(--ubits-bg-gray-subtle-hover);
-    color: var(--ubits-fg-1-high);
 }
 
-.habilidad-chip i {
-    color: var(--ubits-fg-1-medium);
-    font-size: var(--font-size-sm);
-    transition: color 0.2s ease;
-}
-
-.habilidad-chip:hover i {
+.habilidad-chip:hover .habilidad-chip__label {
     color: var(--ubits-fg-1-high);
-    }
+}
     
-/* Tooltips para botones */
-.competencia-card-v1-actions .ubits-button {
-    position: relative;
-}
-
-.competencia-card-v1-actions .ubits-button::after {
-    content: attr(data-tooltip);
-    position: absolute;
-    bottom: calc(100% + 8px);
-    left: 50%;
-    transform: translateX(-50%);
-    background: var(--ubits-fg-1-high);
-    color: var(--ubits-logo-inverted);
-    padding: var(--padding-sm) var(--padding-md);
-    border-radius: var(--border-radius-sm);
-    font-size: var(--font-size-sm);
-    white-space: nowrap;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.2s ease;
-    z-index: 1000;
-    font-family: var(--ubits-font-family-sans);
-    font-weight: var(--font-weight-regular);
-}
-
-.competencia-card-v1-actions .ubits-button.tooltip-right::after {
-    left: auto;
-    right: 0;
-    transform: none;
-}
-
-.competencia-card-v1-actions .ubits-button.tooltip-left::after {
-    left: 0;
-    right: auto;
-    transform: none;
-}
-
-.competencia-card-v1-actions .ubits-button.tooltip-bottom::after {
-    bottom: auto;
-    top: calc(100% + 8px);
-}
-
-.competencia-card-v1-actions .ubits-button::before {
-    content: '';
-    position: absolute;
-    bottom: calc(100% + 3px);
-    left: 50%;
-    transform: translateX(-50%);
-    width: 0;
-    height: 0;
-    border-left: 5px solid transparent;
-    border-right: 5px solid transparent;
-    border-top: 5px solid var(--ubits-fg-1-high);
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.2s ease;
-    z-index: 1001;
-}
-
-.competencia-card-v1-actions .ubits-button.tooltip-bottom::before {
-    bottom: auto;
-    top: calc(100% + 3px);
-    border-top: none;
-    border-bottom: 5px solid var(--ubits-fg-1-high);
-}
-
-.competencia-card-v1-actions .ubits-button.tooltip-right::before {
-    left: auto;
-    right: 14px;
-    transform: none;
-}
-
-.competencia-card-v1-actions .ubits-button.tooltip-left::before {
-    left: 14px;
-    right: auto;
-    transform: none;
-}
-
-.competencia-card-v1-actions .ubits-button:hover::after,
-.competencia-card-v1-actions .ubits-button:hover::before {
-    opacity: 1;
-}
-
 
 /* Estado vacío */
 .catalog-empty-state {
