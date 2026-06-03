@@ -264,48 +264,26 @@ button.ia-hr-card:hover:focus-visible {
 }
 
 .ia-hr-card__icon {
-    width: calc(var(--size-6xl) + var(--gap-sm));
-    height: calc(var(--size-6xl) + var(--gap-sm));
-    min-width: calc(var(--size-6xl) + var(--gap-sm));
     border-radius: var(--border-radius-full);
     display: flex;
     align-items: center;
     justify-content: center;
+    padding: var(--padding-sm);
     border: var(--ubits-ia-gradient-border-width) solid transparent;
     background:
         linear-gradient(var(--ubits-bg-1), var(--ubits-bg-1)) padding-box,
         var(--ia-hr-card-ia-ring) border-box;
     background-origin: padding-box, border-box;
     background-clip: padding-box, border-box;
-    font-size: var(--size-xl);
     flex-shrink: 0;
     box-sizing: border-box;
-    color: var(--ubits-accent-brand-static);
 }
 
-.ia-hr-card__icon i {
-    line-height: 1;
-    color: inherit;
-}
-
-.ia-hr-card__icon--pink i {
-    color: var(--ubits-accent-pink);
-}
-
-.ia-hr-card__icon--blue i {
-    color: inherit;
-}
-
-.ia-hr-card__icon--yellow i {
-    color: var(--ubits-accent-yellow);
-}
-
-.ia-hr-card__icon--purple i {
-    color: var(--ubits-accent-purple);
-}
-
-.ia-hr-card__icon--teal i {
-    color: var(--ubits-accent-teal);
+.ia-hr-card__icon-svg {
+    display: block;
+    width: var(--size-2xl);
+    height: var(--size-2xl);
+    flex-shrink: 0;
 }
 
 @media (max-width: 1023px) {
