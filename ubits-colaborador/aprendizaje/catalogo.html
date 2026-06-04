@@ -230,6 +230,17 @@
         // Iconos para habilidades (único por habilidad; bd-master + catalogo-competencias-drawer.js)
         const habilidadIconMap = window.HABILIDAD_ICON_MAP || {};
 
+        // Helper para resolver dinámicamente el icono de FontAwesome de la habilidad
+        function getSkillIcon(habilidadNombre) {
+            if (!window.BD_MASTER_HABILIDADES || !window.BD_MASTER_HABILIDADES.habilidades) {
+                return 'far fa-circle';
+            }
+            const hab = window.BD_MASTER_HABILIDADES.habilidades.find(
+                h => h.nombre.toLowerCase().trim() === habilidadNombre.toLowerCase().trim()
+            );
+            return hab && hab.iconoFontAwesome ? hab.iconoFontAwesome : 'far fa-circle';
+        }
+
         // Cargar componentes dinámicamente
         document.addEventListener('DOMContentLoaded', function() {
             loadSidebar('sidebar-container', 'aprendizaje');
@@ -1134,17 +1145,15 @@
                                                 </div>
                                                 <div class="competencia-habilidades-container" data-competencia="${competencia.nombre}" data-academia="${academia.nombre}">
                                                     <div class="competencias-habilidades-grid">
-                                                        ${competencia.habilidades.sort((a, b) => a.localeCompare(b, 'es', { sensitivity: 'base' })).map(habilidad => {
-                                                            return `
-                                                                <div class="habilidad-chip">
-                                                                    <span class="ubits-body-sm-regular habilidad-chip__label">${habilidad}</span>
-                                                                    <button type="button" class="ubits-button ubits-button--tertiary ubits-button--xs ubits-button--icon-only habilidad-chip__filter-btn" aria-label="Filtrar por esta habilidad" data-tooltip="Filtrar por esta habilidad" data-tooltip-position="bottom" data-tooltip-align="center" data-habilidad="${habilidad}" data-competencia="${competencia.nombre}">
-                                                                        <i class="far fa-filter"></i>
-                                                                    </button>
-                                                                </div>
-                                                            `;
-                                                        }).join('')}
-                                                    </div>
+                                                         ${competencia.habilidades.sort((a, b) => a.localeCompare(b, 'es', { sensitivity: 'base' })).map(habilidad => {
+                                                             return `
+                                                                 <div class="habilidad-chip" onclick="alert('Habilidad: ${habilidad}')">
+                                                                     <i class="${getSkillIcon(habilidad)}"></i>
+                                                                     <span class="ubits-body-sm-regular habilidad-chip__label">${habilidad}</span>
+                                                                 </div>
+                                                             `;
+                                                         }).join('')}
+                                                     </div>
                                                 </div>
                                             </div>
                                         `;

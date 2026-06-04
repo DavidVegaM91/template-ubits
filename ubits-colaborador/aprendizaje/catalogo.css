@@ -750,13 +750,24 @@
         flex-direction: column;
 }
 
+/* Cards de competencia expandidas */
+.competencia-card-v1.expanded {
+    border-color: var(--ubits-accent-brand) !important;
+    border-bottom-left-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
 /* Contenedor de habilidades (acordeón) */
 .competencia-habilidades-container {
     display: none;
-    margin-top: 8px;
+    margin-top: 0;
     padding: var(--padding-none);
-    background: var(--ubits-bg-2);
-    border-radius: var(--border-radius-lg);
+    background: var(--ubits-bg-1);
+    border: 1px solid var(--ubits-border-1);
+    border-top: none;
+    border-bottom-left-radius: var(--border-radius-lg);
+    border-bottom-right-radius: var(--border-radius-lg);
     overflow: hidden;
 }
 
@@ -765,45 +776,52 @@
 }
 
 .competencias-habilidades-grid {
+    padding: 12px;
     display: flex;
-    flex-direction: column;
-    gap: var(--gap-sm);
+    flex-wrap: wrap;
+    gap: var(--gap-sm, 8px);
 }
 
 .habilidad-chip {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    gap: var(--gap-sm);
-    padding: var(--padding-xs) var(--padding-sm);
-    background: var(--ubits-bg-1);
-    border: 1px solid transparent;
-    border-radius: var(--border-radius-xl);
-    color: var(--ubits-fg-1-medium);
-    min-width: 0;
-    width: 100%;
-    box-sizing: border-box;
-}
-
-.habilidad-chip__label {
-    flex: 1;
-    min-width: 0;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    gap: 8px;
+    padding: 6px 12px;
+    background: var(--ubits-bg-1, #ffffff);
+    border: 1px solid var(--ubits-border-1, #e0e0e0);
+    border-radius: 16px;
+    color: var(--ubits-fg-1-medium, #6b6b80);
+    font-size: 0.8rem;
     white-space: nowrap;
-    color: var(--ubits-fg-1-medium);
-}
-
-.habilidad-chip__filter-btn {
-    flex-shrink: 0;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-weight: 500;
+    box-sizing: border-box;
+    width: auto;
+    justify-content: flex-start;
 }
 
 .habilidad-chip:hover {
-    background: var(--ubits-bg-gray-subtle-hover);
+    background: var(--ubits-bg-1, #ffffff) !important;
+    color: var(--ubits-fg-1-high, #111130);
+    border-color: var(--ubits-accent-brand, #ff4c1a);
 }
 
-.habilidad-chip:hover .habilidad-chip__label {
-    color: var(--ubits-fg-1-high);
+.habilidad-chip i {
+    color: var(--ubits-fg-1-medium, #6b6b80);
+    font-size: 0.85rem;
+    transition: color 0.2s ease;
+}
+
+.habilidad-chip:hover i {
+    color: var(--ubits-accent-brand, #ff4c1a);
+}
+
+.habilidad-chip__label {
+    color: inherit;
+    font-size: inherit;
+    font-weight: inherit;
+    white-space: nowrap;
 }
     
 

@@ -24,6 +24,7 @@
     --ubits-submenu-fg: var(--ubits-sidebar-button-fg-default);
     --ubits-submenu-fg-muted: var(--ubits-sidebar-button-fg-disabled);
     --ubits-submenu-hover: var(--ubits-sidebar-button-bg-pressed);
+    --ubits-submenu-border: rgba(255, 255, 255, 0.08);
 
     position: fixed;
     z-index: 10020;
@@ -48,6 +49,7 @@
     --ubits-submenu-fg: var(--ubits-fg-1-high);
     --ubits-submenu-fg-muted: var(--ubits-fg-1-medium);
     --ubits-submenu-hover: var(--ubits-bg-2);
+    --ubits-submenu-border: var(--ubits-border-1);
 }
 
 .ubits-submenu__surface {
@@ -60,6 +62,7 @@
 
 .ubits-submenu__header {
     padding: var(--padding-md) var(--padding-lg);
+    border-bottom: 1px solid var(--ubits-submenu-border);
 }
 
 .ubits-submenu__header:empty {
