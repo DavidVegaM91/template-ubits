@@ -1971,15 +1971,15 @@ body[data-theme="dark"] .ubits-ia-chat__main::before {
 /* ---------------------------------------------------------------------------
    Mobile drawer "Mis chats" (chat-ia-grupos, modo-estudio-ia) — body.ia-chat-mobile-drawer-page
    Desktop (≥1024px) sin cambios; solo ≤1023px
-   Scrim = mismo tratamiento que .ubits-drawer-overlay (components/drawer.css): rgba + z-index 1100;
-   Panel historial = z-index 1101 (como .ubits-drawer-content). Sin esto, .main-content { z-index: 5 }
-   encapsula el historial y el backdrop fijo (hermano del dashboard) tapa el drawer.
+   Scrim y panel por encima del tab-bar (components/tab-bar.css z-index 2005); si no, el footer
+   «Nuevo chat» queda tapado. Sin esto, .main-content { z-index: 5 } encapsula el historial y el
+   backdrop fijo (hermano del dashboard) tapa el drawer.
    --------------------------------------------------------------------------- */
 .ia-chat-mobile-drawer-backdrop {
     display: block;
     position: fixed;
     inset: 0;
-    z-index: 1100;
+    z-index: 2100;
     margin: 0;
     padding: 0;
     border: none;
@@ -2083,7 +2083,10 @@ body.ia-chat-mobile-drawer-scroll-lock {
         min-height: 0 !important;
         width: min(88vw, 320px) !important;
         flex: none !important;
-        z-index: 1101 !important;
+        display: flex !important;
+        flex-direction: column !important;
+        overflow: hidden !important;
+        z-index: 2101 !important;
         margin: 0 !important;
         border-radius: 0 !important;
         border: none !important;
@@ -2096,6 +2099,11 @@ body.ia-chat-mobile-drawer-scroll-lock {
 
     body.ia-chat-mobile-drawer-page.ia-chat-mobile-drawer-open .ubits-ia-chat > .ubits-ia-chat-historial {
         transform: translateX(0);
+    }
+
+    body.ia-chat-mobile-drawer-page .ubits-ia-chat-historial__footer {
+        flex-shrink: 0;
+        padding-bottom: calc(var(--padding-md) + env(safe-area-inset-bottom, 0px));
     }
 
     body.ia-chat-mobile-drawer-page .ubits-ia-chat > .ubits-ia-chat__main {
@@ -2111,9 +2119,13 @@ body.ia-chat-mobile-drawer-scroll-lock {
         padding-bottom: calc(var(--padding-lg) + env(safe-area-inset-bottom, 0px)) !important;
     }
 
-    /* Panel tutor (modo estudio): por encima del scrim (1100) y del drawer de historial (1101) */
+    /* Panel tutor (modo estudio): por encima del scrim y del drawer de historial */
     body.ia-chat-mobile-drawer-page .ubits-ia-chat > .ubits-ia-chat__side.is-open {
-        z-index: 1102 !important;
+        z-index: 2102 !important;
+    }
+
+    body.ia-chat-mobile-drawer-open #tab-bar-container {
+        display: none !important;
     }
 }
 
