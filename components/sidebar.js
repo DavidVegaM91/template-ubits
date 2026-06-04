@@ -714,7 +714,7 @@ function loadSidebar(variantOrActiveButton = 'default', activeButton = null) {
                     <button class="nav-button" data-section="tareas" onclick="window.location.href='${basePath}ubits-colaborador/tareas/tareas.html'" style="cursor: pointer;">
                         <i class="far fa-layer-group"></i>
                     </button>
-                    <button class="nav-button" data-section="ia-para-hr" data-sidebar-label="IA para HR" onclick="window.location.href='${basePath}ubits-colaborador/ia-para-hr/ia-para-hr.html'" style="cursor: pointer;">
+                    <button class="nav-button" data-section="ia-para-hr" data-sidebar-label="Agentes" onclick="window.location.href='${basePath}ubits-colaborador/ia-para-hr/ia-para-hr.html'" style="cursor: pointer;">
                         <i class="far fa-sparkles"></i>
                     </button>
                 </div>

@@ -109,6 +109,22 @@
     border-color: var(--ubits-feedback-accent-error) !important;
 }
 
+/*
+ * Portada: la ficha de ruta es más baja que en crear-contenido (sin tipo/tiempo/unidad).
+ * crear-contenido.css estira el shell del RTE para igualar altura con la ficha (flex 1 1 0,
+ * overflow-y auto), pero el contenteditable conserva min-height 104px del componente y
+ * desborda → scroll aunque esté vacío. El shell reparte altura al campo sin forzar mínimo.
+ */
+.page-crear-ruta #crear-ruta-step-portada .crear-contenido-portada__cuerpo-desc .ubits-rich-text-editor__editor-shell {
+    display: flex;
+    flex-direction: column;
+}
+
+.page-crear-ruta #crear-ruta-step-portada .crear-contenido-portada__cuerpo-desc .ubits-rich-text-editor__field {
+    flex: 1 1 auto;
+    min-height: 0;
+}
+
 /* Paso Contenidos */
 .crear-ruta-contenidos {
     display: flex;

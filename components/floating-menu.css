@@ -361,3 +361,15 @@
     bottom: var(--ubits-tab-bar-height);
     z-index: 2000;
 }
+
+/* Preview documentación (desktop): anular ocultar ≥1024px del drawer real */
+@media (min-width: 1024px) {
+    .floating-menu-preview-host .floating-menu,
+    .floating-menu-preview-host #floating-menu-profile {
+        display: flex !important;
+    }
+
+    .floating-menu-preview-host .floating-menu-backdrop.is-visible {
+        display: block !important;
+    }
+}

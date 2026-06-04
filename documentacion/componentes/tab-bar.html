@@ -117,6 +117,27 @@
             width: 100% !important;
             display: block !important;
         }
+
+        .preview-control-btn.active {
+            background: var(--ubits-accent-brand) !important;
+            color: white !important;
+        }
+
+        .preview-control-btn.active span {
+            color: white !important;
+        }
+
+        /* Doc preview en desktop: el drawer real usa display:none ≥1024px */
+        @media (min-width: 1024px) {
+            #floating-menu-container.floating-menu-preview-host .floating-menu,
+            #floating-menu-container.floating-menu-preview-host #floating-menu-profile {
+                display: flex !important;
+            }
+
+            #floating-menu-container.floating-menu-preview-host .floating-menu-backdrop.is-visible {
+                display: block !important;
+            }
+        }
         
     </style>
 </head>
@@ -159,9 +180,20 @@
                         <i class="far fa-eye" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
                         Preview del componente
                     </h2>
-                    <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6;">
+                    <p class="ubits-body-md-regular" style="margin-bottom: 16px; line-height: 1.6;">
                         Usa los ítems del Tab-bar del preview: <strong>Módulos</strong> abre el menú de secciones; <strong>Mi perfil</strong> abre el panel de cuenta (mismo comportamiento que en móvil).
                     </p>
+                    <div style="display: flex; flex-wrap: wrap; gap: var(--gap-sm); margin-bottom: var(--gap-lg); justify-content: center;">
+                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn active" onclick="setPreviewFloatingVariant('default', this)">
+                            <span>Colaborador</span>
+                        </button>
+                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" onclick="setPreviewFloatingVariant('admin', this)">
+                            <span>Admin</span>
+                        </button>
+                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" onclick="setPreviewFloatingVariant('creator', this)">
+                            <span>LMS Creator</span>
+                        </button>
+                    </div>
                     
                     <!-- Preview Container -->
                     <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: var(--border-radius-md); position: relative;">
@@ -652,6 +684,45 @@ document.addEventListener('DOMContentLoaded', function() {
         });
 
         // Funciones para el preview del componente
+        var previewFloatingVariant = 'default';
+
+        function setPreviewFloatingVariant(variant, btn) {
+            previewFloatingVariant = variant || 'default';
+            document.querySelectorAll('.preview-control-btn').forEach(function (b) {
+                b.classList.remove('active');
+            });
+            if (btn) btn.classList.add('active');
+
+            if (typeof loadFloatingMenu === 'function') {
+                loadFloatingMenu('floating-menu-container', previewFloatingVariant);
+            }
+
+            var modulosItem = document.querySelector('#tab-bar-preview-real [data-tab="modulos"]');
+            var modulosLabel = modulosItem ? modulosItem.querySelector('.tab-bar-text') : null;
+            var modulosIcon = modulosItem ? modulosItem.querySelector('.tab-bar-icon') : null;
+            if (modulosLabel) {
+                if (previewFloatingVariant === 'admin') {
+                    modulosLabel.textContent = 'Admin';
+                } else if (previewFloatingVariant === 'creator') {
+                    modulosLabel.textContent = 'LMS Creator';
+                } else {
+                    modulosLabel.textContent = 'Módulos';
+                }
+            }
+            if (modulosIcon) {
+                modulosIcon.className =
+                    previewFloatingVariant === 'creator'
+                        ? 'far fa-bolt tab-bar-icon'
+                        : previewFloatingVariant === 'admin'
+                          ? 'far fa-laptop tab-bar-icon'
+                          : 'far fa-grid-2 tab-bar-icon';
+            }
+
+            setTimeout(function () {
+                setPreviewOption('modulos');
+            }, 80);
+        }
+
         function setPreviewOption(option) {
             // Actualizar items del Tab-bar
             const tabBarItems = document.querySelectorAll('#tab-bar-preview-real .tab-bar-item');
