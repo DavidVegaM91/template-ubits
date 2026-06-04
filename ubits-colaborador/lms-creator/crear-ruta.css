@@ -202,16 +202,6 @@
     z-index: 1103;
 }
 
-/* Pasos certificado / publicación (placeholder alineado al asistente) */
-.crear-ruta-step-placeholder {
-    padding: var(--padding-xl);
-}
-
-.crear-ruta-step-placeholder p {
-    margin: 0;
-    color: var(--ubits-fg-1-medium);
-}
-
 @media (max-width: 1023px) {
     .page-crear-ruta .crear-contenido-editor-workspace {
         flex-direction: column;

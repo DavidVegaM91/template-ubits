@@ -779,6 +779,18 @@
                 'cfq-019': 'Wellness'
             };
 
+            function resolveCategoriaNombreForCard(categoriaFiqshaId) {
+                var cats = window.BD_MASTER_CATEGORIAS_FIQSHA && window.BD_MASTER_CATEGORIAS_FIQSHA.categorias;
+                if (cats && categoriaFiqshaId) {
+                    for (var i = 0; i < cats.length; i++) {
+                        if (cats[i] && cats[i].id === categoriaFiqshaId) {
+                            return cats[i].nombre || COMPETENCIA_POR_CATEGORIA_FIQSHA[categoriaFiqshaId] || 'Liderazgo';
+                        }
+                    }
+                }
+                return COMPETENCIA_POR_CATEGORIA_FIQSHA[categoriaFiqshaId] || 'Liderazgo';
+            }
+
             function cardDataFromFiqshaContent(c) {
                 var nivelesArr = window.BD_MASTER_NIVELES_CONTENIDO && window.BD_MASTER_NIVELES_CONTENIDO.niveles;
                 var nivelNombre = 'Básico';
@@ -805,7 +817,7 @@
                 if (a && a.logo) {
                     providerLogo = '../../' + String(a.logo).replace(/^\.\//, '');
                 }
-                var competency = COMPETENCIA_POR_CATEGORIA_FIQSHA[c.categoriaFiqshaId] || 'Liderazgo';
+                var competency = resolveCategoriaNombreForCard(c.categoriaFiqshaId);
                 var imgPath = c.imagen
                     ? ('../../' + String(c.imagen).replace(/^\.\//, ''))
                     : '../../images/Profile-image.jpg';
@@ -862,6 +874,26 @@
                     c.id != null &&
                     String(c.id) === String(_contenidosPinRecienCreado.id)
                 );
+            }
+
+            function applyContenidoPinOverrides(c) {
+                if (!isContenidoPinRecienCreado(c)) return c;
+                var out = Object.assign({}, c);
+                if (_contenidosPinRecienCreado.titulo) {
+                    out.titulo = _contenidosPinRecienCreado.titulo;
+                    out.title = _contenidosPinRecienCreado.titulo;
+                }
+                if (_contenidosPinRecienCreado.imagen) {
+                    out.imagen = _contenidosPinRecienCreado.imagen;
+                    out.imagePath = String(_contenidosPinRecienCreado.imagen).replace(/^images\//, '');
+                }
+                if (_contenidosPinRecienCreado.tiempoValor != null) {
+                    out.tiempoValor = _contenidosPinRecienCreado.tiempoValor;
+                }
+                if (_contenidosPinRecienCreado.categoriaFiqshaId) {
+                    out.categoriaFiqshaId = _contenidosPinRecienCreado.categoriaFiqshaId;
+                }
+                return out;
             }
 
             function collectContenidosFiqshaItemsSorted() {
@@ -936,7 +968,7 @@
             function buildContenidosCardsPayload() {
                 var cards = [];
                 collectContenidosFiqshaItemsSorted().forEach(function (item) {
-                    var c = item.source;
+                    var c = applyContenidoPinOverrides(item.source);
                     var vis = getContenidoVisibilidadForList(c, item.fromCreatorOnly);
                     var row = cardDataFromFiqshaContent(c);
                     row.lmsTag = vis.cardTag;
@@ -1081,7 +1113,7 @@
                 }
                 var frag = document.createDocumentFragment();
                 collectContenidosFiqshaItemsSorted().forEach(function (item) {
-                    var c = item.source;
+                    var c = applyContenidoPinOverrides(item.source);
                     var vis = getContenidoVisibilidadForList(c, item.fromCreatorOnly);
                     var tr = document.createElement('tr');
                     if (item.fromCreatorOnly) {

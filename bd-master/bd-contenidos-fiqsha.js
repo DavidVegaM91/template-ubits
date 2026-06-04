@@ -431,6 +431,24 @@ window.BDS_CONTENIDOS_FIQSHA = {
       "categoriaFiqshaId": "cfq-002",
       "fechaCreacion": "2026-05-10",
       "visibilidadLms": "Archivado"
+    },
+    {
+      "id": "24004",
+      "origen": "lms_creator_no_publicado",
+      "titulo": "Ruta de liderazgo para equipos de alto rendimiento",
+      "descripcion": "Ruta de aprendizaje creada en LMS Creator; agrupa contenidos de liderazgo inclusivo y estratégico.",
+      "imagen": "images/cards-learn/portadas-ia/01-personas-en-oficina.jpg",
+      "tipoContenido": "Ruta de aprendizaje",
+      "tiempoValor": 150,
+      "unidadTiempo": "minutos",
+      "idioma": "Español",
+      "title": "Ruta de liderazgo para equipos de alto rendimiento",
+      "imagePath": "cards-learn/portadas-ia/01-personas-en-oficina.jpg",
+      "nivelId": "niv-002",
+      "proveedorAliadoId": "aly-018",
+      "categoriaFiqshaId": "cfq-015",
+      "fechaCreacion": "2026-05-29",
+      "visibilidadLms": "Borrador"
     }
   ]
 };

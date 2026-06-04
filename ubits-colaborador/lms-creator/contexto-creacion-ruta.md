@@ -3,7 +3,7 @@
 Documento de referencia sobre el flujo **Crear ruta de aprendizaje** en el módulo LMS Creator. Una **ruta** es un tipo de contenido que **agrupa otros contenidos** (cursos, shorts, etc.); no tiene secciones, páginas ni recursos propios como un curso.
 
 **Para quién es:** producto, diseño y negocio (lenguaje conceptual).  
-**Referencias técnicas en Playground:** `crear-ruta.html`, `crear-ruta.js`, `crear-ruta-contenidos-drawer.js`, `contexto-creacion-contenido.md` (portada compartida), `crear-plan-contenidos.html` (patrón drawer de catálogo).
+**Referencias técnicas en Playground:** `crear-ruta.html`, `crear-ruta.js`, `crear-ruta-certificado.js`, `crear-ruta-publicacion.js`, `crear-ruta-contenidos-drawer.js`, `contexto-creacion-contenido.md` (portada y certificado/visibilidad de referencia), `crear-plan-contenidos.html` (patrón drawer de catálogo).
 
 ---
 
@@ -13,8 +13,8 @@ Documento de referencia sobre el flujo **Crear ruta de aprendizaje** en el módu
 |------|---------------|----------|
 | 1    | Portada       | Título, imagen/tráiler, descripción y ficha técnica **reducida** |
 | 2    | Contenidos    | Añadir y ordenar contenidos hijos de la ruta |
-| 3    | Certificado   | Misma lógica de flujo que crear contenido (navegable; detalle UI alineado al asistente general) |
-| 4    | Visibilidad   | Misma lógica de flujo que crear contenido |
+| 3    | Certificado   | Switch, plantillas mock Fiqsha, preview orientativa, empty state |
+| 4    | Visibilidad   | 4 estados (Borrador, Público, Privado, Oculto); modales y drawer Privado |
 
 **4 pasos** en el stepper lateral (misma estructura inmersiva que `crear-contenido.html`).
 
@@ -82,9 +82,108 @@ Al confirmar **Agregar**: se cierra el drawer y los ítems aparecen en la págin
 
 ---
 
-## Pasos 3 y 4 — Certificado y Visibilidad
+## Paso 3 — Certificado
 
-Misma **navegación y expectativa de producto** que el asistente de crear contenido: el usuario puede recorrer los cuatro pasos; certificado y publicación siguen el roadmap del flujo general (en el prototipo, mismas reglas de avance y mensajes que en crear contenido cuando el detalle UI aún no está completo).
+**Archivos:** `crear-ruta-certificado.js`, `crear-contenido-certificado.css` (clases `certificado-paso__*` compartidas con crear contenido).
+
+**Propósito:** activar o no un certificado para la ruta, elegir **plantilla** (mock Fiqsha) y ver **vista previa orientativa** con datos de la portada y duración estimada.
+
+**Layout:** dos columnas — panel izquierdo (~400px) + preview derecha. En móvil (≤1023px) se apilan.
+
+| Control | Comportamiento |
+|---------|----------------|
+| **Switch** «Habilitar certificado para esta ruta» | **ON por defecto.** OFF → oculta select y hint; empty state en preview. ON → restaura preview. |
+| **Select** plantilla | Solo con switch ON. 3 plantillas mock Fiqsha; default «Cursos empresariales con doble firma». |
+| **Vista previa orientativa** | Proporción 774×598; logo, firmas y textos según plantilla. |
+
+#### Datos de la preview (ruta)
+
+- **Título** — textarea de portada (`#crear-ruta-titulo`).
+- **Categoría** — nombre legible Fiqsha desde ficha técnica.
+- **Duración** — suma de minutos de los contenidos agregados (campo `duration` de cada card); si no hay datos, **30 minutos** por defecto. La ruta **no** tiene tiempo manual en portada.
+
+Texto de preview adaptado a ruta: «Finalizó satisfactoriamente **la ruta:**» y pie «finalización de **esta ruta**».
+
+#### Empty state (certificado deshabilitado)
+
+| Elemento | Contenido |
+|----------|-----------|
+| **Título** | «No has habilitado un certificado» |
+| **Descripción** | «Si deseas, puedes activar un certificado para esta ruta.» |
+
+#### Plantillas mock
+
+Mismas 3 plantillas que crear contenido (doble firma, estándar Fiqsha, onboarding). Ver `contexto-creacion-contenido.md` — Paso 3.
+
+**Hash URL:** `#certificado`.
+
+**Regla para avanzar al paso 4:** ninguna validación adicional en el prototipo.
+
+---
+
+## URLs por paso (hash)
+
+| Paso | Hash canónico | Alias |
+|------|---------------|-------|
+| 1 Portada | `#portada` | — |
+| 2 Contenidos | `#contenidos` | — |
+| 3 Certificado | `#certificado` | — |
+| 4 Visibilidad | `#visibilidad` | `#publicacion` (se normaliza a `#visibilidad`) |
+
+Al cambiar de paso con el stepper o los botones Anterior/Siguiente, la URL se actualiza con `history.replaceState` (mismo patrón que `crear-contenido.html`).
+
+---
+
+## Deep link demo (prototipo)
+
+Si abres la página **sin borrador previo** y el hash apunta a un paso posterior, se rellenan automáticamente los pasos anteriores con una **ruta demo de liderazgo**:
+
+| Hash de entrada | Paso visible | Pasos previos rellenados |
+|-----------------|--------------|---------------------------|
+| `#portada` o vacío | Portada | Ninguno (formulario vacío) |
+| `#contenidos` | Contenidos | Solo portada |
+| `#certificado` | Certificado | Portada + 5 contenidos |
+| `#visibilidad` / `#publicacion` | Visibilidad | Portada + contenidos + certificado (defaults) |
+
+**Demo portada:** título «Ruta de liderazgo para equipos de alto rendimiento», imagen IA, categoría Fiqsha «Comunicación para líderes», nivel Intermedio.
+
+**Demo contenidos (5 cursos, en orden):**
+
+1. `u014` — Cómo ejercer el liderazgo inclusivo  
+2. `u009` — Cambio en el estilo de liderazgo  
+3. `u040` — Emplea los valores del liderazgo femenino  
+4. `u063` — Liderazgo en planeación estrategica  
+5. `u069` — Potencia tu liderazgo en entornos vuca  
+
+La semilla solo corre **una vez** al cargar (`window._crDemoSeeded`); cambiar el hash después no vuelve a rellenar.
+
+---
+
+## Paso 4 — Visibilidad
+
+**Archivos:** `crear-ruta-publicacion.js`, `crear-contenido-publicacion.css` (clases `publicacion-paso__*`).
+
+**Propósito:** configurar visibilidad de la ruta (Borrador, Público, Privado, Oculto).
+
+**Layout:** intro + cuadrícula 2×2 de `ubits-selection-card` + radios.
+
+**Texto introductorio:** «Configura la visibilidad que tendrá **la ruta** al publicarla…»
+
+#### Estados
+
+| Estado | Comportamiento |
+|--------|----------------|
+| **Borrador** *(default)* | Aplicación inmediata; tag header `#crear-ruta-visibilidad-header-tag`. |
+| **Público** / **Privado** | Modal «Publicar ruta» → confirmar aplica estado. |
+| **Oculto** | Modal «Ocultar ruta» → confirmar aplica estado. |
+
+**Privado:** tras confirmar, botón **«Seleccionar colaboradores»** abre drawer con `createUbitsDataTable` (mismo patrón que crear contenido; datos `TAREAS_PLANES_DB.getEmpleadosEjemplo()`). Requiere en `crear-ruta.html`: **`bd-master-colaboradores.js`** + **`bd-tareas-y-planes.js`**, y CSS **`table.css`**, **`checkbox.css`**, **`ubits-data-table.css`**, **`avatar.css`**, **`drawer.css`**, **`chip.css`** (filtros aplicados).
+
+Limitaciones post-publicación en copy de las tarjetas: **orden de contenidos o reemplazar contenidos** (no secciones/páginas como en curso).
+
+**Hash URL:** `#visibilidad` (alias `#publicacion`).
+
+**Siguiente** en Visibilidad: botón **Publicar** → redirige a `contenidos.html` con card anclada (`id` `24004`), imagen `portadas-ia/01-personas-en-oficina.jpg` y tag según la visibilidad elegida (Borrador, Público, Privado u Oculto). Toast: «Ruta creada exitosamente».
 
 ---
 
@@ -102,7 +201,7 @@ El drawer de selección sigue usando `loadCardContentCompact` **sin** menú ni a
 ## Datos mock
 
 - Catálogo: `catalogo-contenidos-drawer.js` → `CATALOGO_CURSOS_DRAWER` con `refreshCatalogoContenidosDrawer({ excludeRutas: true })` en el flujo ruta.
-- Estado de la ruta en sesión: array `rutaContenidosAgregados` en `crear-ruta.js` (prototipo; sin API).
+- Estado de la ruta en sesión: array `rutaContenidosItems` en `crear-ruta.js` (prototipo; sin API).
 
 ---
 
@@ -111,9 +210,13 @@ El drawer de selección sigue usando `loadCardContentCompact` **sin** menú ni a
 | Archivo | Rol |
 |---------|-----|
 | `crear-ruta.html` | Shell inmersivo + 4 pasos |
-| `crear-ruta.css` | Estilos paso Contenidos, lista, drawer |
-| `crear-ruta.js` | Stepper, portada, validaciones, lista |
+| `crear-ruta.css` | Estilos paso Contenidos, lista y drawer catálogo |
+| `crear-ruta.js` | Stepper, portada, validaciones, lista, navegación, hashes URL y demo deep link |
+| `crear-ruta-certificado.js` | Paso Certificado (plantillas, preview) |
+| `crear-ruta-publicacion.js` | Paso Visibilidad (radios, modales, drawer Privado) |
 | `crear-ruta-contenidos-drawer.js` | Drawer catálogo y selección múltiple |
+| `crear-contenido-certificado.css` | Layout y preview certificado (compartido) |
+| `crear-contenido-publicacion.css` | Layout tarjetas Visibilidad y drawer colaboradores (`.page-crear-ruta` + `.page-crear-contenido`) |
 | `contenidos-crear-menu.js` | Menú Crear contenido / Crear ruta en lista |
 | `contexto-creacion-ruta.md` | Este documento |
 
@@ -130,4 +233,4 @@ El drawer de selección sigue usando `loadCardContentCompact` **sin** menú ni a
 
 ---
 
-*Última actualización: alineado con implementación Playground `crear-ruta.html`.*
+*Última actualización: hashes URL por paso y deep link demo progresivo (ruta de liderazgo); pasos Certificado y Visibilidad implementados.*

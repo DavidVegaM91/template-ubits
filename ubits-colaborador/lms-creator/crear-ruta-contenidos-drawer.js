@@ -311,6 +311,9 @@
                 var ret = opts.onConfirm(items);
                 if (typeof ret === 'number' && ret >= 0) agregados = ret;
             }
+            if (typeof window.refreshCrearRutaSiguienteState === 'function') {
+                window.refreshCrearRutaSiguienteState();
+            }
             if (agregados > 0 && typeof window.showToast === 'function') {
                 var msg =
                     agregados === 1
