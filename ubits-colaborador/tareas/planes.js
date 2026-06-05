@@ -94,6 +94,21 @@ function formatPlanDate(dateStr) {
     return d.toLocaleDateString('es-ES', { day: '2-digit', month: 'numeric', year: 'numeric' });
 }
 
+function planCardProgressBarHtml(progress) {
+    var value = Math.max(0, Math.min(100, Math.round(Number(progress) || 0)));
+    if (typeof progressBarHtml === 'function') {
+        return progressBarHtml({
+            value: value,
+            size: 'lg',
+            rounded: true,
+            track: 'subtle',
+            ariaLabel: 'Progreso del plan'
+        });
+    }
+    return '<div class="ubits-progress-bar ubits-progress-bar--lg ubits-progress-bar--rounded ubits-progress-bar--track-subtle" role="progressbar" aria-valuenow="' + value + '" aria-valuemin="0" aria-valuemax="100" aria-label="Progreso del plan">' +
+        '<div class="ubits-progress-bar__track"><div class="ubits-progress-bar__fill" style="width:' + value + '%"></div></div></div>';
+}
+
 function renderPlanCard(plan) {
     const progress = plan.tasksTotal > 0 ? Math.round((plan.tasksDone / plan.tasksTotal) * 100) : 0;
     const statusLabels = { Activo: 'Por hacer', Vencido: 'Vencido', Finalizado: 'Finalizado' };
@@ -122,8 +137,8 @@ function renderPlanCard(plan) {
                 </div>
                 <div class="plan-card__progress-val">${progress}%</div>
             </div>
-            <div class="plan-card__progress-bar">
-                <div class="plan-card__progress-fill" style="width: ${progress}%"></div>
+            <div class="plan-card__progress-mount">
+                ${planCardProgressBarHtml(progress)}
             </div>
         </div>
     `;

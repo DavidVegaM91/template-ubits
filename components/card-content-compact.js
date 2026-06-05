@@ -248,6 +248,24 @@ function validateCardDataCompact(cardData) {
  * @param {boolean} [cardData.showActionsMenu] - Muestra botón menú ⋮ (con listRow)
  * @param {boolean} [cardData.draggable] - Muestra asa de arrastre (con listRow; default true si listRow)
  */
+function cardContentCompactProgressBarHtml(progress, status) {
+    var value = Math.max(0, Math.min(100, Math.round(Number(progress) || 0)));
+    var opts = {
+        value: value,
+        size: 'sm',
+        rounded: false,
+        track: 'static',
+        status: status === 'completed' ? 'complete' : undefined,
+        autoComplete: status === 'completed',
+        ariaLabel: 'Progreso del contenido'
+    };
+    if (typeof progressBarHtml === 'function') return progressBarHtml(opts);
+    var cls = 'ubits-progress-bar ubits-progress-bar--sm ubits-progress-bar--track-static';
+    if (opts.status === 'complete') cls += ' ubits-progress-bar--complete';
+    return '<div class="' + cls + '" role="progressbar" aria-valuenow="' + value + '" aria-valuemin="0" aria-valuemax="100" aria-label="Progreso del contenido">' +
+        '<div class="ubits-progress-bar__track"><div class="ubits-progress-bar__fill" style="width:' + value + '%"></div></div></div>';
+}
+
 function renderCardContentCompact(cardData) {
     // Validar datos
     validateCardDataCompact(cardData);
@@ -331,9 +349,9 @@ function renderCardContentCompact(cardData) {
         '</span></div></div>';
     var progressHTML =
         cardData.progress > 0 || cardData.status !== 'default'
-            ? '<div class="course-progress-overlay-compact"><div class="progress-bar"><div class="progress-fill" style="width: ' +
-              (cardData.progress || 0) +
-              '%"></div></div></div>'
+            ? '<div class="course-progress-overlay-compact">' +
+              cardContentCompactProgressBarHtml(cardData.progress, cardData.status) +
+              '</div>'
             : '';
     var thumbHTML =
         '<div class="course-thumbnail-compact-wrapper"><div class="course-thumbnail-compact"><img src="' +

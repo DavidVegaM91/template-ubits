@@ -135,7 +135,7 @@
 
 .floating-menu-profile-name {
     font-size: var(--font-size-md, 14px);
-    font-weight: 700;
+    font-weight: var(--font-weight-semibold);
     color: #ffffff;
 }
 

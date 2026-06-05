@@ -101,7 +101,7 @@
 .asignacion-plan-card__stat-value {
     font-family: var(--ubits-font-family-sans);
     font-size: var(--font-size-h1);
-    font-weight: var(--font-weight-bold);
+    font-weight: var(--font-weight-semibold);
     line-height: 1.2;
     color: var(--ubits-accent-brand);
 }
@@ -227,7 +227,7 @@
 .asignacion-plan-card__stat-value--masivo {
     font-family: var(--ubits-font-family-sans);
     font-size: var(--font-size-h1);
-    font-weight: var(--font-weight-bold);
+    font-weight: var(--font-weight-semibold);
     line-height: 1.2;
     color: var(--ubits-accent-brand);
 }

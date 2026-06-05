@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="../../images/Ubits-logo-dark.svg">
+    <title>Progreso segmentado | UBITS Playground</title>
+    <link rel="stylesheet" href="../../general-styles/ubits-colors.css">
+    <link rel="stylesheet" href="../../general-styles/styles.css">
+    <link rel="stylesheet" href="../../general-styles/fontawesome-icons.css">
+    <link rel="stylesheet" href="../../general-styles/ubits-typography.css">
+    <link rel="stylesheet" href="../../components/sub-nav.css">
+    <link rel="stylesheet" href="../../components/sidebar.css">
+    <link rel="stylesheet" href="../../docs/docs-sidebar.css">
+    <link rel="stylesheet" href="../../docs/docstyles.css">
+    <link rel="stylesheet" href="../../components/button.css">
+    <link rel="stylesheet" href="../../components/alert.css">
+    <link rel="stylesheet" href="../../components/toast.css">
+    <link rel="stylesheet" href="../../components/switch.css">
+    <link rel="stylesheet" href="../../components/segmented-progress.css">
+    <style>
+        .sp-doc-stage {
+            display: flex;
+            flex-direction: column;
+            gap: var(--gap-xl);
+            background: var(--ubits-bg-2);
+            border-radius: var(--border-radius-lg);
+            border: 1px solid var(--ubits-border-1);
+            padding: var(--padding-xl);
+            max-width: 560px;
+            margin: 0 auto;
+        }
+        .sp-doc-row {
+            display: flex;
+            flex-direction: column;
+            gap: var(--gap-sm);
+        }
+        .sp-doc-meta {
+            color: var(--ubits-fg-1-medium);
+        }
+        .preview-control-btn.active {
+            background: var(--ubits-accent-brand) !important;
+            color: white !important;
+            border-color: var(--ubits-accent-brand) !important;
+        }
+        .preview-control-btn.active span { color: white !important; }
+    </style>
+</head>
+<body class="componentes-page" data-theme="light">
+    <div class="dashboard-container">
+        <main class="main-content">
+            <div id="top-nav-container"></div>
+            <div style="display: flex;">
+                <div id="docs-dropdown-container"></div>
+                <div id="docs-sidebar-container"></div>
+                <div class="components-content">
+                    <div class="content-area" style="display: block; width: 100%;">
+                        <div style="text-align: center; margin-bottom: 60px;">
+                            <h1 class="ubits-display-d2-bold" style="margin-bottom: 24px; color: var(--ubits-accent-brand);">
+                                Progreso segmentado
+                            </h1>
+                            <p class="ubits-body-md-regular" style="max-width: 800px; margin: 0 auto 32px; line-height: 1.6;">
+                                Muestra avance ítem a ítem en quiz, flashcards o flujos con pasos discretos. Con pocos ítems usa segmentos; con muchos (20+) cambia a modo slider con indicador.
+                            </p>
+                        </div>
+
+                        <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; margin-bottom: 40px;">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-eye" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Preview del componente
+                            </h2>
+                            <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6;">
+                                Usa los controles para cambiar el ítem activo. Con 20 o más ítems el modo pasa a slider automáticamente.
+                            </p>
+                            <div style="display: flex; flex-wrap: wrap; gap: var(--gap-md); align-items: center; margin-bottom: var(--gap-lg);">
+                                <label class="ubits-switch ubits-switch--md">
+                                    <input type="checkbox" class="ubits-switch__input" id="sp-preview-many" role="switch">
+                                    <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
+                                    <span class="ubits-switch__label">Simular 24 ítems (modo slider)</span>
+                                </label>
+                                <label class="ubits-switch ubits-switch--md">
+                                    <input type="checkbox" class="ubits-switch__input" id="sp-preview-subtle" role="switch">
+                                    <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
+                                    <span class="ubits-switch__label">Track sutil (flashcards)</span>
+                                </label>
+                            </div>
+                            <div style="display: flex; flex-wrap: wrap; gap: var(--gap-sm); align-items: center; margin-bottom: var(--gap-lg);">
+                                <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Ítem activo:</span>
+                                <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn active" data-sp-index="0"><span>1</span></button>
+                                <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-sp-index="2"><span>3</span></button>
+                                <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-sp-index="4"><span>5</span></button>
+                            </div>
+                            <div class="sp-doc-stage" id="sp-preview-mount"></div>
+                        </div>
+
+                        <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; margin-bottom: 40px;">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-info-circle" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Características generales
+                            </h2>
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
+                                <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-grip-lines"></i></div>
+                                    <div class="ubits-body-sm-bold">Dos modos</div>
+                                    <div class="ubits-body-sm-regular">Segmentos (≤19 ítems) o slider con thumb (20+).</div>
+                                </div>
+                                <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-arrows-alt-v"></i></div>
+                                    <div class="ubits-body-sm-bold">Dos alturas</div>
+                                    <div class="ubits-body-sm-regular">sm (6px) y lg (8px en slider).</div>
+                                </div>
+                                <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-code"></i></div>
+                                    <div class="ubits-body-sm-bold">HTML o función</div>
+                                    <div class="ubits-body-sm-regular">segmentedProgressHtml o createSegmentedProgress; actualiza con setSegmentedProgressValue.</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; margin-bottom: 40px;">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-comments" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Prompts útiles
+                            </h2>
+                            <div id="sp-warning-alert" style="margin-bottom: 24px;"></div>
+                            <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
+                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                                    <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Insertar progreso segmentado</h3>
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('sp-prompt-1')">
+                                        <i class="far fa-copy"></i><span>Copiar</span>
+                                    </button>
+                                </div>
+                                <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
+                                    <pre style="margin: 0; font-family: Monaco, Menlo, monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="sp-prompt-1">Inserta un Progreso segmentado UBITS en [ubicación] con [número] ítems y el ítem activo en [posición]. Importa segmented-progress.css y segmented-progress.js.</code></pre>
+                                </div>
+                            </div>
+                            <div>
+                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                                    <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Actualizar ítem activo</h3>
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('sp-prompt-2')">
+                                        <i class="far fa-copy"></i><span>Copiar</span>
+                                    </button>
+                                </div>
+                                <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
+                                    <pre style="margin: 0; font-family: Monaco, Menlo, monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="sp-prompt-2">Cuando el usuario avance al ítem [n] en [flujo], actualiza el progreso segmentado con setSegmentedProgressValue sobre el nodo .ubits-segmented-progress.</code></pre>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; margin-bottom: 40px;">
+                            <div style="display: flex; align-items: center; justify-content: space-between; cursor: pointer;" onclick="toggleTechnicalDocs()">
+                                <div>
+                                    <h2 class="ubits-heading-h2" style="margin: 0 0 8px; color: var(--ubits-fg-1-high);">Documentación técnica</h2>
+                                    <p class="ubits-body-sm-regular" style="margin: 0; color: var(--ubits-fg-1-medium);">Estructura HTML, API y requisitos de importación.</p>
+                                </div>
+                                <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm" id="sp-docs-toggle" aria-expanded="false">
+                                    <span id="sp-docs-toggle-text">Mostrar</span>
+                                    <i class="far fa-chevron-down" id="sp-docs-chevron"></i>
+                                </button>
+                            </div>
+                            <div id="sp-technical-docs" style="display: none; margin-top: 24px;">
+                                <div style="padding: 24px; border-top: 1px solid var(--ubits-border-1);">
+                                    <h3 class="ubits-body-md-bold" style="margin: 0 0 12px; color: var(--ubits-fg-1-high);">Requisitos</h3>
+                                    <ul class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); line-height: 1.6;">
+                                        <li><code>components/segmented-progress.css</code></li>
+                                        <li><code>components/segmented-progress.js</code></li>
+                                        <li>Tokens UBITS vía <code>styles.css</code></li>
+                                    </ul>
+                                </div>
+                                <div style="padding: 24px; border-top: 1px solid var(--ubits-border-1);">
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                                        <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">segmentedProgressHtml</h3>
+                                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('sp-code-api')">
+                                            <i class="far fa-copy"></i><span>Copiar</span>
+                                        </button>
+                                    </div>
+                                    <pre style="margin: 0; background: var(--ubits-bg-2); padding: 16px; border-radius: 8px; overflow: auto;"><code id="sp-code-api" class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">segmentedProgressHtml({
+  total: 10,           // número de ítems
+  current: 0,          // índice activo (0-based)
+  mode: 'auto',        // auto | segments | slider
+  sliderThreshold: 19, // auto → slider si total &gt; 19
+  size: 'sm',          // sm | lg
+  track: 'default',    // default | subtle (bg más claro, flashcards)
+  id: 'mi-progreso',
+  ariaLabel: 'Progreso del quiz'
+});
+
+setSegmentedProgressValue(document.getElementById('mi-progreso'), 3);</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <div id="ubits-toast-container"></div>
+    <script src="../../components/sidebar.js"></script>
+    <script src="../../components/sub-nav.js"></script>
+    <script src="../../docs/docs-sidebar.js"></script>
+    <script src="../../script.js"></script>
+    <script src="../../components/alert.js"></script>
+    <script src="../../components/toast.js"></script>
+    <script src="../../components/segmented-progress.js"></script>
+    <script>
+        var spPreviewTotal = 8;
+        var spPreviewCurrent = 0;
+        var spPreviewMany = false;
+        var spPreviewSubtle = false;
+
+        function spPaintPreview() {
+            var total = spPreviewMany ? 24 : spPreviewTotal;
+            var current = Math.min(spPreviewCurrent, total - 1);
+            var mount = document.getElementById('sp-preview-mount');
+            if (!mount || typeof segmentedProgressHtml !== 'function') return;
+            mount.innerHTML =
+                '<div class="sp-doc-row">' +
+                    '<span class="ubits-body-md-bold">Modo: ' + (spPreviewMany ? 'slider' : 'segmentos') + '</span>' +
+                    '<span class="ubits-body-xs-regular sp-doc-meta">Ítem ' + (current + 1) + ' de ' + total + '</span>' +
+                    segmentedProgressHtml({
+                        total: total,
+                        current: current,
+                        mode: spPreviewMany ? 'slider' : 'segments',
+                        size: spPreviewMany ? 'lg' : 'sm',
+                        track: spPreviewSubtle ? 'subtle' : 'default',
+                        id: 'sp-preview-bar',
+                        ariaLabel: 'Preview progreso segmentado'
+                    }) +
+                '</div>';
+        }
+
+        function copyPrompt(id) {
+            var el = document.getElementById(id);
+            if (!el) return;
+            navigator.clipboard.writeText(el.textContent).then(function () {
+                if (typeof showToast === 'function') showToast('success', 'Prompt copiado');
+            });
+        }
+
+        function copyCode(id) {
+            var el = document.getElementById(id);
+            if (!el) return;
+            navigator.clipboard.writeText(el.textContent).then(function () {
+                if (typeof showToast === 'function') showToast('success', 'Código copiado');
+            });
+        }
+
+        function toggleTechnicalDocs() {
+            var box = document.getElementById('sp-technical-docs');
+            var chev = document.getElementById('sp-docs-chevron');
+            var txt = document.getElementById('sp-docs-toggle-text');
+            if (!box) return;
+            var open = box.style.display !== 'none';
+            box.style.display = open ? 'none' : 'block';
+            if (chev) chev.style.transform = open ? '' : 'rotate(180deg)';
+            if (txt) txt.textContent = open ? 'Mostrar' : 'Ocultar';
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            if (typeof loadSubNav === 'function') loadSubNav('top-nav-container', 'documentacion');
+            if (typeof loadDocsSidebar === 'function') loadDocsSidebar('segmented-progress');
+            if (typeof loadSidebar === 'function') loadSidebar('ninguno');
+            if (typeof showAlert === 'function') {
+                showAlert('warning', 'Antes de enviar los prompts a Cursor, reemplaza los textos entre [corchetes] con la información de tu proyecto.', { containerId: 'sp-warning-alert' });
+            }
+
+            spPaintPreview();
+
+            document.querySelectorAll('[data-sp-index]').forEach(function (btn) {
+                btn.addEventListener('click', function () {
+                    document.querySelectorAll('[data-sp-index]').forEach(function (b) { b.classList.remove('active'); });
+                    btn.classList.add('active');
+                    spPreviewCurrent = parseInt(btn.getAttribute('data-sp-index'), 10) || 0;
+                    spPaintPreview();
+                });
+            });
+
+            var manySwitch = document.getElementById('sp-preview-many');
+            if (manySwitch) {
+                manySwitch.addEventListener('change', function () {
+                    spPreviewMany = manySwitch.checked;
+                    spPaintPreview();
+                });
+            }
+
+            var subtleSwitch = document.getElementById('sp-preview-subtle');
+            if (subtleSwitch) {
+                subtleSwitch.addEventListener('change', function () {
+                    spPreviewSubtle = subtleSwitch.checked;
+                    spPaintPreview();
+                });
+            }
+        });
+    </script>
+</body>
+</html>

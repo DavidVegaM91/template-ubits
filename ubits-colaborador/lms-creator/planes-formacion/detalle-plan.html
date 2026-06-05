@@ -67,7 +67,7 @@
                             </div>
                             <div class="detalle-plan-progress-card__content">
                                 <span class="ubits-body-sm-semibold detalle-plan-progress-card__label">Progreso del plan</span>
-                                <div class="detalle-plan-progress-card__bar"><div class="detalle-plan-progress-card__bar-fill" id="plan-progress-fill" style="width: 0%"></div></div>
+                                <div class="detalle-plan-progress-card__bar" id="plan-progress-bar-wrap"></div>
                                 <span class="detalle-plan-progress-card__percent" id="plan-progress-value">0%</span>
                             </div>
                         </div>
@@ -120,7 +120,40 @@
     <script src="../../../bd-master/bd-tareas-y-planes.js"></script>
     <script src="../../../script.js"></script>
     <script src="../../../general-utils/humanizador-fechas.js"></script>
+    <script src="../../../components/progress-bar.js"></script>
     <script>
+        function initDetallePlanProgressBarMount(value) {
+            var wrap = document.getElementById('plan-progress-bar-wrap');
+            if (!wrap || wrap.querySelector('.ubits-progress-bar')) return;
+            if (typeof progressBarHtml === 'function') {
+                wrap.innerHTML = progressBarHtml({
+                    value: value,
+                    size: 'lg',
+                    rounded: true,
+                    track: 'subtle',
+                    id: 'plan-progress-bar',
+                    ariaLabel: 'Progreso del plan'
+                });
+            }
+        }
+
+        function setDetallePlanProgressBar(value) {
+            var pct = Math.max(0, Math.min(100, Math.round(Number(value) || 0)));
+            var root = document.getElementById('plan-progress-bar');
+            if (root && typeof setProgressBarValue === 'function') {
+                setProgressBarValue(root, pct);
+            }
+            var valueEl = document.getElementById('plan-progress-value');
+            if (valueEl) valueEl.textContent = pct + '%';
+        }
+
+        function detallePlanTableProgressCell(value) {
+            var html = typeof tableProgressCellHtml === 'function'
+                ? tableProgressCellHtml(value)
+                : '<div class="ubits-table__cell-progress"><span class="ubits-body-sm-regular">' + value + '%</span></div>';
+            return '<td data-col="progreso">' + html + '</td>';
+        }
+
         document.addEventListener('DOMContentLoaded', function() {
             loadSidebar('creator', 'planes-formacion');
             loadSubNav('top-nav-container', 'creator-planes');
@@ -361,11 +394,11 @@
             }
 
             if (plan.estado === 'Planeado' || String(plan.estado).indexOf('Procesando') === 0) {
-                document.getElementById('plan-progress-fill').style.width = '0%';
-                document.getElementById('plan-progress-value').textContent = '0%';
+                initDetallePlanProgressBarMount(0);
+                setDetallePlanProgressBar(0);
             } else {
-                document.getElementById('plan-progress-fill').style.width = plan.progreso + '%';
-                document.getElementById('plan-progress-value').textContent = plan.progreso + '%';
+                initDetallePlanProgressBarMount(plan.progreso);
+                setDetallePlanProgressBar(plan.progreso);
             }
             document.getElementById('plan-fecha-inicio').textContent = (typeof formatDateDDMmmAAAA === 'function' ? formatDateDDMmmAAAA(plan.fechaInicio) : plan.fechaInicio);
             var fechaFinSpan = document.getElementById('plan-fecha-fin');
@@ -477,8 +510,8 @@
                 return planSinProgresoEstado;
             }
             var totalPlan = planSinProgreso() ? 0 : progresoTotalPlan();
-            document.getElementById('plan-progress-fill').style.width = totalPlan + '%';
-            document.getElementById('plan-progress-value').textContent = totalPlan + '%';
+            initDetallePlanProgressBarMount(totalPlan);
+            setDetallePlanProgressBar(totalPlan);
             var asignacionesDetalleTablaRef = null;
             var pendingAsignacionesDeleteIds = [];
 
@@ -499,15 +532,12 @@
                     '<td data-col="ultimo-acceso"><span class="ubits-body-sm-regular">' + escapeDetalleHtml(row.ultimoAcceso) + '</span></td>' +
                     '<td data-col="ultima-fecha-progreso" data-date="' + escapeDetalleHtml(row.ultimaFechaProgreso) + '"><span class="ubits-body-sm-regular">' + escapeDetalleHtml(typeof formatDateDDMmmAAAA === 'function' ? formatDateDDMmmAAAA(row.ultimaFechaProgreso) : row.ultimaFechaProgreso) + '</span></td>' +
                     '<td data-col="contenidos">' + contenidosBtn + '</td>' +
-                    '<td data-col="progreso"><div class="ubits-table__cell-progress"><div class="ubits-table__progress-bar"><div class="ubits-table__progress-bar-fill" style="width:' + progresoMostrar + '%"></div></div><span class="ubits-body-sm-regular">' + progresoMostrar + '%</span></div></td>';
+                    detallePlanTableProgressCell(progresoMostrar);
             }
 
             function updatePlanProgressBar() {
                 var total = planSinProgreso() ? 0 : progresoTotalPlan();
-                var fillEl = document.getElementById('plan-progress-fill');
-                var valueEl = document.getElementById('plan-progress-value');
-                if (fillEl) fillEl.style.width = total + '%';
-                if (valueEl) valueEl.textContent = total + '%';
+                setDetallePlanProgressBar(total);
             }
 
             function getUsernameEmpleado(e) {

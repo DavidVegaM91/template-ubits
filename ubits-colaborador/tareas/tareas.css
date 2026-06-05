@@ -382,12 +382,12 @@ body.page-tareas .dashboard-container {
 
 .calendar-horizontal__day--selected .calendar-horizontal__weekday {
     color: var(--ubits-fg-1-high);
-    font-weight: var(--font-weight-bold);
+    font-weight: var(--font-weight-semibold);
 }
 
 .calendar-horizontal__day--selected .calendar-horizontal__day-number {
     color: var(--ubits-fg-1-high);
-    font-weight: var(--font-weight-bold);
+    font-weight: var(--font-weight-semibold);
 }
 
 /* Hoy + seleccionado: mismo fondo activo (bg-1) y línea inferior */
@@ -399,12 +399,12 @@ body.page-tareas .dashboard-container {
 
 .calendar-horizontal__day--selected.calendar-horizontal__day--today .calendar-horizontal__weekday {
     color: var(--ubits-fg-1-high);
-    font-weight: var(--font-weight-bold);
+    font-weight: var(--font-weight-semibold);
 }
 
 .calendar-horizontal__day--selected.calendar-horizontal__day--today .calendar-horizontal__day-number {
     color: var(--ubits-fg-1-high);
-    font-weight: var(--font-weight-bold);
+    font-weight: var(--font-weight-semibold);
 }
 
 .calendar-horizontal__day--today {
@@ -412,7 +412,7 @@ body.page-tareas .dashboard-container {
 }
 
 .calendar-horizontal__day--today .calendar-horizontal__day-number {
-    font-weight: var(--font-weight-bold);
+    font-weight: var(--font-weight-semibold);
 }
 
 .calendar-horizontal__weekday {
@@ -481,7 +481,7 @@ body.page-tareas .dashboard-container {
 
 .calendar-month-picker__year {
     font-size: var(--font-size-md);
-    font-weight: var(--font-weight-bold);
+    font-weight: var(--font-weight-semibold);
     color: var(--ubits-fg-1-high);
 }
 

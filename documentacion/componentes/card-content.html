@@ -493,8 +493,8 @@
       &lt;img src="imagen.jpg" alt="Título" class="course-image"&gt;
     &lt;/div&gt;
     &lt;div class="course-progress-overlay"&gt;
-      &lt;div class="progress-bar"&gt;
-        &lt;div class="progress-fill"&gt;&lt;/div&gt;
+      &lt;div class="ubits-progress-bar ubits-progress-bar--sm ubits-progress-bar--variant-chart ubits-progress-bar--track-static" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"&gt;
+        &lt;div class="ubits-progress-bar__track"&gt;&lt;div class="ubits-progress-bar__fill" style="width:75%"&gt;&lt;/div&gt;&lt;/div&gt;
       &lt;/div&gt;
     &lt;/div&gt;
   &lt;/div&gt;
@@ -834,8 +834,8 @@ const CONTENT_TYPES = [
   aspect-ratio: 4 / 3; /* Cambiar de 16:9 a 4:3 */
 }
 
-/* Personalizar colores de progreso */
-.course-progress-overlay .progress-fill {
+/* Personalizar colores de progreso (componente progress-bar) */
+.course-progress-overlay .ubits-progress-bar__fill {
   background: var(--ubits-feedback-accent-warning-static); /* Naranja */
 }
 

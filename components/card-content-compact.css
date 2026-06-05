@@ -5,6 +5,7 @@
    ======================================== */
 
 @import url('avatar.css');
+@import url('./progress-bar.css');
 
 /* Course Card Compact Base */
 .course-card-compact {
@@ -154,30 +155,13 @@
     left: 0;
     right: 0;
     padding: var(--padding-none);
-    height: 4px;
+    height: 5px;
     border-radius: 0 0 var(--border-radius-lg) var(--border-radius-lg);
     overflow: hidden;
 }
 
-.course-progress-overlay-compact .progress-bar {
+.course-progress-overlay-compact .ubits-progress-bar {
     width: 100%;
-    height: 4px;
-    background: var(--ubits-bg-4-static);
-    border-radius: var(--border-radius-none);
-    overflow: hidden;
-    position: relative;
-}
-
-.course-progress-overlay-compact .progress-fill {
-    height: 100%;
-    background: var(--ubits-accent-brand);
-    border-radius: var(--border-radius-none);
-    transition: width 0.3s ease;
-}
-
-/* Barra verde para estado completado */
-.course-card-compact[data-status="completed"] .course-progress-overlay-compact .progress-fill {
-    background: var(--ubits-feedback-accent-success-static);
 }
 
 .course-title-compact {
@@ -211,7 +195,7 @@
 
 .course-status-compact {
     font-size: var(--font-size-xs);
-    font-weight: var(--font-weight-bold);
+    font-weight: var(--font-weight-semibold);
 }
 
 .course-status-compact--progress {

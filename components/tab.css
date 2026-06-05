@@ -39,7 +39,7 @@
 .ubits-tab--active {
     background: var(--ubits-bg-1);
     color: var(--ubits-fg-1-high);
-    font-weight: var(--font-weight-bold);
+    font-weight: var(--font-weight-semibold);
 }
 
 .ubits-tab--active i {
@@ -48,7 +48,7 @@
 
 .ubits-tab--active span {
     color: var(--ubits-fg-1-high);
-    font-weight: var(--font-weight-bold);
+    font-weight: var(--font-weight-semibold);
 }
 
 /* Hover State */
@@ -77,7 +77,7 @@
 
 .ubits-tab--active:hover span {
     color: var(--ubits-fg-1-high);
-    font-weight: var(--font-weight-bold);
+    font-weight: var(--font-weight-semibold);
 }
 
 /* Focus State */
@@ -133,7 +133,7 @@
 
 .ubits-tab--active span {
     color: var(--ubits-fg-1-high);
-    font-weight: var(--font-weight-bold);
+    font-weight: var(--font-weight-semibold);
 }
 
 /* ========================================

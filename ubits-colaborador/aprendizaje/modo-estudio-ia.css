@@ -186,10 +186,9 @@ body.modo-estudio-ia-page .ubits-ia-chat__side.is-open .ubits-ia-chat-side__body
 }
 
 /* Recursos del canvas: acentos de marca */
-.modo-estudio-ia-page .ubits-ia-chat-side__quiz-progress-bar--filled,
-.modo-estudio-ia-page .ubits-ia-chat-side__fc-progress-bar--filled,
-.modo-estudio-ia-page .ubits-ia-chat-side__quiz-progress-fill,
-.modo-estudio-ia-page .ubits-ia-chat-side__quiz-progress-thumb {
+.modo-estudio-ia-page .ubits-segmented-progress__segment--filled,
+.modo-estudio-ia-page .ubits-segmented-progress__fill,
+.modo-estudio-ia-page .ubits-segmented-progress__thumb {
     background: var(--ubits-accent-brand) !important;
 }
 .modo-estudio-ia-page .ubits-ia-chat-thread__resource-card-icon {

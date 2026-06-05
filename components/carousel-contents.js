@@ -306,7 +306,32 @@
  * @param {string} options.type - Tipo de variante ('hero' por defecto)
  * @param {Array<Object>} options.slides - Array de slides con información de cada contenido
  * @param {Function} options.onButtonClick - Callback cuando se hace clic en el botón "Ver ahora". Recibe (slide, index)
+ *
+ * Requiere: components/carousel-indicators.css + carousel-indicators.js (initCarouselIndicators)
  */
+function mountCarouselContentsIndicators(containerId, suffix, count, activeIndex, ariaLabel, onSelect) {
+    if (count <= 1 || typeof initCarouselIndicators !== 'function') return null;
+    var mountId = containerId + suffix;
+    if (!document.getElementById(mountId)) return null;
+    return initCarouselIndicators({
+        containerId: mountId,
+        count: count,
+        activeIndex: activeIndex || 0,
+        ariaLabel: ariaLabel || 'Paginación del carrusel',
+        onSelect: onSelect || function () {}
+    });
+}
+
+function scrollCarouselContentsToIndex(containerEl, itemSelector, index, onDone) {
+    if (!containerEl) return;
+    var items = containerEl.querySelectorAll(itemSelector);
+    if (!items[index]) return;
+    items[index].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
+    if (typeof onDone === 'function') {
+        setTimeout(onDone, 400);
+    }
+}
+
 function createCarouselContents(options) {
     const {
         containerId,
@@ -326,6 +351,10 @@ function createCarouselContents(options) {
         console.error('No slides provided');
         return;
     }
+
+    let heroIndicatorsInsideApi = null;
+    let heroIndicatorsOutsideApi = null;
+    let outstandingIndicatorsApi = null;
 
     // Validar variante
     if (type !== 'hero' && type !== 'promo-vertical' && type !== 'allies' && type !== 'content-cards' && type !== 'outstanding') {
@@ -470,15 +499,6 @@ function createCarouselContents(options) {
                                 <span>Ver ahora</span>
                             </button>
                         </div>
-                        ${slides.length > 1 ? `
-                            <div class="carousel-contents--hero__indicators carousel-contents--hero__indicators--inside">
-                                ${slides.map((_, i) => `
-                                    <div class="carousel-contents--hero__indicator ${i === currentSlideIndex ? 'active' : ''}" 
-                                         data-slide="${i}">
-                                    </div>
-                                `).join('')}
-                            </div>
-                        ` : ''}
                     </div>
                 </div>
             </div>
@@ -673,16 +693,10 @@ function createCarouselContents(options) {
                 }
             });
 
-            // Actualizar indicadores (solo visibles en mobile)
-            const indicators = wrapper.querySelectorAll('.carousel-contents--outstanding__indicator');
-            indicators.forEach((indicator) => {
-                const slideIndex = parseInt(indicator.getAttribute('data-slide') || '0');
-                if (slideIndex === currentSlideIndex) {
-                    indicator.classList.add('active');
-                } else {
-                    indicator.classList.remove('active');
-                }
-            });
+            // Actualizar indicadores oficiales (solo visibles en mobile)
+            if (outstandingIndicatorsApi) {
+                outstandingIndicatorsApi.setActive(currentSlideIndex);
+            }
 
             return;
         }
@@ -702,27 +716,13 @@ function createCarouselContents(options) {
             }
         });
 
-        // Actualizar indicadores dentro del card
-        const indicatorsInside = wrapper.querySelectorAll('.carousel-contents--hero__indicators--inside .carousel-contents--hero__indicator');
-        indicatorsInside.forEach((indicator) => {
-            const slideIndex = parseInt(indicator.getAttribute('data-slide') || '0');
-            if (slideIndex === currentSlideIndex) {
-                indicator.classList.add('active');
-            } else {
-                indicator.classList.remove('active');
-            }
-        });
-
-        // Actualizar indicadores fuera del card (mobile)
-        const indicatorsOutside = wrapper.querySelectorAll('.carousel-contents--hero__indicators--outside .carousel-contents--hero__indicator');
-        indicatorsOutside.forEach((indicator) => {
-            const slideIndex = parseInt(indicator.getAttribute('data-slide') || '0');
-            if (slideIndex === currentSlideIndex) {
-                indicator.classList.add('active');
-            } else {
-                indicator.classList.remove('active');
-            }
-        });
+        // Actualizar indicadores oficiales
+        if (heroIndicatorsInsideApi) {
+            heroIndicatorsInsideApi.setActive(currentSlideIndex);
+        }
+        if (heroIndicatorsOutsideApi) {
+            heroIndicatorsOutsideApi.setActive(currentSlideIndex);
+        }
 
         // Actualizar botones de control
         const prevBtn = wrapper.querySelector('.carousel-contents--hero__prev-btn');
@@ -831,11 +831,7 @@ function createCarouselContents(options) {
                 </div>
                 ${slides.length > 1 ? `
                     <div class="carousel-contents--promo-vertical__indicators">
-                        ${slides.map((_, i) => `
-                            <div class="carousel-contents--promo-vertical__indicator ${i === 0 ? 'active' : ''}" 
-                                 data-slide="${i}">
-                            </div>
-                        `).join('')}
+                        <div id="${containerId}-indicators" class="carousel-contents__indicators-mount"></div>
                     </div>
                 ` : ''}
             </div>
@@ -862,11 +858,7 @@ function createCarouselContents(options) {
                 </div>
                 ${slides.length > 1 ? `
                     <div class="carousel-contents--allies__indicators">
-                        ${slides.map((_, i) => `
-                            <div class="carousel-contents--allies__indicator ${i === 0 ? 'active' : ''}" 
-                                 data-slide="${i}">
-                            </div>
-                        `).join('')}
+                        <div id="${containerId}-indicators" class="carousel-contents__indicators-mount"></div>
                     </div>
                 ` : ''}
             </div>
@@ -893,11 +885,7 @@ function createCarouselContents(options) {
                 </div>
                 ${slides.length > 1 ? `
                     <div class="carousel-contents--content-cards__indicators">
-                        ${slides.map((_, i) => `
-                            <div class="carousel-contents--content-cards__indicator ${i === 0 ? 'active' : ''}" 
-                                 data-slide="${i}">
-                            </div>
-                        `).join('')}
+                        <div id="${containerId}-indicators" class="carousel-contents__indicators-mount"></div>
                     </div>
                 ` : ''}
             </div>
@@ -914,23 +902,13 @@ function createCarouselContents(options) {
                 </div>
                 ${slides.length > 1 ? `
                     <div class="carousel-contents--outstanding__indicators">
-                        ${slides.map((_, i) => `
-                            <div class="carousel-contents--outstanding__indicator ${i === 0 ? 'active' : ''}" 
-                                 data-slide="${i}">
-                            </div>
-                        `).join('')}
+                        <div id="${containerId}-indicators" class="carousel-contents__indicators-mount"></div>
                     </div>
                 ` : ''}
             </div>
         `;
     } else {
         // HTML para variante hero
-        const indicatorsHTML = slides.map((_, i) => `
-            <div class="carousel-contents--hero__indicator ${i === currentSlideIndex ? 'active' : ''}" 
-                 data-slide="${i}">
-            </div>
-        `).join('');
-
         carouselHTML = `
             <div class="carousel-contents--hero-wrapper">
                 <div class="carousel-contents--hero">
@@ -946,11 +924,14 @@ function createCarouselContents(options) {
                                 <i class="far fa-chevron-right"></i>
                             </button>
                         </div>
+                        <div class="carousel-contents--hero__indicators carousel-contents--hero__indicators--inside">
+                            <div id="${containerId}-indicators-inside" class="carousel-contents__indicators-mount"></div>
+                        </div>
                     ` : ''}
                 </div>
                 ${slides.length > 1 ? `
                     <div class="carousel-contents--hero__indicators carousel-contents--hero__indicators--outside">
-                        ${indicatorsHTML}
+                        <div id="${containerId}-indicators-outside" class="carousel-contents__indicators-mount"></div>
                     </div>
                 ` : ''}
             </div>
@@ -965,6 +946,22 @@ function createCarouselContents(options) {
         const carouselContainer = container.querySelector('.carousel-contents--promo-vertical__cards-container');
         const prevBtn = container.querySelector('.carousel-contents--promo-vertical__prev-btn');
         const nextBtn = container.querySelector('.carousel-contents--promo-vertical__next-btn');
+
+        let indicatorsApi = mountCarouselContentsIndicators(
+            containerId,
+            '-indicators',
+            slides.length,
+            0,
+            'Paginación del carrusel',
+            function (index) {
+                scrollCarouselContentsToIndex(
+                    carouselContainer,
+                    '.carousel-contents--promo-vertical__card',
+                    index,
+                    updateCarouselButtons
+                );
+            }
+        );
 
         // Función para obtener número de items a mover según breakpoint
         function getItemsToMove() {
@@ -998,18 +995,8 @@ function createCarouselContents(options) {
 
         // Función para actualizar los indicadores (dots)
         function updateIndicators() {
-            const indicators = container.querySelectorAll('.carousel-contents--promo-vertical__indicator');
-            if (indicators.length === 0) return;
-            
-            const firstVisibleIndex = getFirstVisibleIndex();
-            
-            indicators.forEach((indicator, i) => {
-                if (i === firstVisibleIndex) {
-                    indicator.classList.add('active');
-                } else {
-                    indicator.classList.remove('active');
-                }
-            });
+            if (!indicatorsApi) return;
+            indicatorsApi.setActive(getFirstVisibleIndex());
         }
 
         // Función para actualizar el estado de los botones
@@ -1153,23 +1140,6 @@ function createCarouselContents(options) {
             });
         }
 
-        // Event listeners para indicadores (dots)
-        const indicators = container.querySelectorAll('.carousel-contents--promo-vertical__indicator');
-        indicators.forEach((indicator) => {
-            const slideIndex = parseInt(indicator.getAttribute('data-slide') || '0');
-            indicator.addEventListener('click', () => {
-                const cards = carouselContainer.querySelectorAll('.carousel-contents--promo-vertical__card');
-                if (cards[slideIndex]) {
-                    cards[slideIndex].scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'nearest',
-                        inline: 'start'
-                    });
-                    setTimeout(updateCarouselButtons, 400);
-                }
-            });
-        });
-
         // Actualizar estado inicial
         updateCarouselButtons();
     } else if (type === 'allies') {
@@ -1177,6 +1147,22 @@ function createCarouselContents(options) {
         const carouselContainer = container.querySelector('.carousel-contents--allies__carousel');
         const prevBtn = container.querySelector('.carousel-contents--allies__prev-btn');
         const nextBtn = container.querySelector('.carousel-contents--allies__next-btn');
+
+        let indicatorsApi = mountCarouselContentsIndicators(
+            containerId,
+            '-indicators',
+            slides.length,
+            0,
+            'Paginación del carrusel',
+            function (index) {
+                scrollCarouselContentsToIndex(
+                    carouselContainer,
+                    '.carousel-contents--allies__card',
+                    index,
+                    updateCarouselButtons
+                );
+            }
+        );
 
         // Función para obtener número de items a mover según breakpoint
         function getItemsToMove() {
@@ -1208,18 +1194,8 @@ function createCarouselContents(options) {
 
         // Función para actualizar los indicadores (dots)
         function updateIndicators() {
-            const indicators = container.querySelectorAll('.carousel-contents--allies__indicator');
-            if (indicators.length === 0) return;
-            
-            const firstVisibleIndex = getFirstVisibleIndex();
-            
-            indicators.forEach((indicator, i) => {
-                if (i === firstVisibleIndex) {
-                    indicator.classList.add('active');
-                } else {
-                    indicator.classList.remove('active');
-                }
-            });
+            if (!indicatorsApi) return;
+            indicatorsApi.setActive(getFirstVisibleIndex());
         }
 
         // Función para actualizar el estado de los botones
@@ -1456,23 +1432,6 @@ function createCarouselContents(options) {
             });
         }
 
-        // Event listeners para indicadores (dots)
-        const indicators = container.querySelectorAll('.carousel-contents--allies__indicator');
-        indicators.forEach((indicator) => {
-            const slideIndex = parseInt(indicator.getAttribute('data-slide') || '0');
-            indicator.addEventListener('click', () => {
-                const cards = carouselContainer.querySelectorAll('.carousel-contents--allies__card');
-                if (cards[slideIndex]) {
-                    cards[slideIndex].scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'nearest',
-                        inline: 'start'
-                    });
-                    setTimeout(updateCarouselButtons, 400);
-                }
-            });
-        });
-
         // Actualizar estado inicial
         updateCarouselButtons();
     } else if (type === 'content-cards') {
@@ -1533,6 +1492,22 @@ function createCarouselContents(options) {
 
             if (!carouselContainer) return;
 
+            let indicatorsApi = mountCarouselContentsIndicators(
+                containerId,
+                '-indicators',
+                slides.length,
+                0,
+                'Paginación del carrusel',
+                function (index) {
+                    scrollCarouselContentsToIndex(
+                        carouselContainer,
+                        '.course-card',
+                        index,
+                        updateCarouselButtons
+                    );
+                }
+            );
+
             // Función para obtener número de items a mover según breakpoint
             function getItemsToMove() {
                 const windowWidth = window.innerWidth;
@@ -1565,18 +1540,8 @@ function createCarouselContents(options) {
 
             // Función para actualizar los indicadores (dots)
             function updateIndicators() {
-                const indicators = container.querySelectorAll('.carousel-contents--content-cards__indicator');
-                if (indicators.length === 0) return;
-                
-                const firstVisibleIndex = getFirstVisibleIndex();
-                
-                indicators.forEach((indicator, i) => {
-                    if (i === firstVisibleIndex) {
-                        indicator.classList.add('active');
-                    } else {
-                        indicator.classList.remove('active');
-                    }
-                });
+                if (!indicatorsApi) return;
+                indicatorsApi.setActive(getFirstVisibleIndex());
             }
 
             // Función para actualizar el estado de los botones
@@ -1714,28 +1679,20 @@ function createCarouselContents(options) {
                     }
                 }
             });
-
-            // Event listeners para indicadores (dots)
-            const indicators = container.querySelectorAll('.carousel-contents--content-cards__indicator');
-            indicators.forEach((indicator) => {
-                const slideIndex = parseInt(indicator.getAttribute('data-slide') || '0');
-                indicator.addEventListener('click', () => {
-                    const cards = carouselContainer.querySelectorAll('.course-card');
-                    if (cards[slideIndex]) {
-                        cards[slideIndex].scrollIntoView({
-                            behavior: 'smooth',
-                            block: 'nearest',
-                            inline: 'start'
-                        });
-                        setTimeout(updateCarouselButtons, 400);
-                    }
-                });
-            });
         }, 100);
     } else if (type === 'outstanding') {
         // Lógica para variante outstanding
         const wrapper = container.querySelector('.carousel-contents--outstanding-wrapper');
         if (!wrapper) return;
+
+        outstandingIndicatorsApi = mountCarouselContentsIndicators(
+            containerId,
+            '-indicators',
+            slides.length,
+            currentSlideIndex,
+            'Paginación del carrusel',
+            goToSlide
+        );
 
         // Botones de control dentro de la imagen - usar delegación de eventos
         wrapper.addEventListener('click', (e) => {
@@ -1750,13 +1707,6 @@ function createCarouselContents(options) {
             }
         });
 
-        // Indicadores (dots) - solo en mobile
-        const indicators = wrapper.querySelectorAll('.carousel-contents--outstanding__indicator');
-        indicators.forEach((indicator) => {
-            const slideIndex = parseInt(indicator.getAttribute('data-slide') || '0');
-            indicator.addEventListener('click', () => goToSlide(slideIndex));
-        });
-
         // Swipe para mobile - usar el elemento outstanding card directamente con capture phase
         const outstandingCard = wrapper.querySelector('.carousel-contents--outstanding');
         if (outstandingCard) {
@@ -1767,7 +1717,7 @@ function createCarouselContents(options) {
                 // Ignorar si el touch es en un botón o indicador
                 if (e.target.closest('.carousel-contents--outstanding__prev-btn') ||
                     e.target.closest('.carousel-contents--outstanding__next-btn') ||
-                    e.target.closest('.carousel-contents--outstanding__indicator')) {
+                    e.target.closest('.ubits-carousel-indicators')) {
                     return;
                 }
                 touchStartX = e.changedTouches[0].screenX;
@@ -1797,7 +1747,7 @@ function createCarouselContents(options) {
                 // Ignorar si el touch es en un botón o indicador
                 if (e.target.closest('.carousel-contents--outstanding__prev-btn') ||
                     e.target.closest('.carousel-contents--outstanding__next-btn') ||
-                    e.target.closest('.carousel-contents--outstanding__indicator')) {
+                    e.target.closest('.ubits-carousel-indicators')) {
                     touchStartX = 0;
                     touchEndX = 0;
                     touchStartY = 0;
@@ -1853,6 +1803,23 @@ function createCarouselContents(options) {
         // Lógica para variante hero
         const wrapper = container.querySelector('.carousel-contents--hero-wrapper');
         if (!wrapper) return;
+
+        heroIndicatorsInsideApi = mountCarouselContentsIndicators(
+            containerId,
+            '-indicators-inside',
+            slides.length,
+            currentSlideIndex,
+            'Paginación del carrusel',
+            goToSlide
+        );
+        heroIndicatorsOutsideApi = mountCarouselContentsIndicators(
+            containerId,
+            '-indicators-outside',
+            slides.length,
+            currentSlideIndex,
+            'Paginación del carrusel',
+            goToSlide
+        );
         
         // Botones de control - usar delegación de eventos para que funcionen en todos los slides
         wrapper.addEventListener('click', (e) => {
@@ -1870,13 +1837,6 @@ function createCarouselContents(options) {
         // Actualizar estado inicial
         updateCarousel();
 
-        // Indicadores
-        const indicators = wrapper.querySelectorAll('.carousel-contents--hero__indicator');
-        indicators.forEach((indicator) => {
-            const slideIndex = parseInt(indicator.getAttribute('data-slide') || '0');
-            indicator.addEventListener('click', () => goToSlide(slideIndex));
-        });
-
         // Swipe para mobile - usar el elemento hero card directamente con capture phase
         const heroCard = wrapper.querySelector('.carousel-contents--hero');
         if (heroCard) {
@@ -1887,7 +1847,7 @@ function createCarouselContents(options) {
                 // Ignorar si el touch es en un botón o indicador
                 if (e.target.closest('.carousel-contents--hero__prev-btn') ||
                     e.target.closest('.carousel-contents--hero__next-btn') ||
-                    e.target.closest('.carousel-contents--hero__indicator')) {
+                    e.target.closest('.ubits-carousel-indicators')) {
                     return;
                 }
                 touchStartX = e.changedTouches[0].screenX;
@@ -1917,7 +1877,7 @@ function createCarouselContents(options) {
                 // Ignorar si el touch es en un botón o indicador
                 if (e.target.closest('.carousel-contents--hero__prev-btn') ||
                     e.target.closest('.carousel-contents--hero__next-btn') ||
-                    e.target.closest('.carousel-contents--hero__indicator')) {
+                    e.target.closest('.ubits-carousel-indicators')) {
                     touchStartX = 0;
                     touchEndX = 0;
                     touchStartY = 0;

@@ -36,6 +36,8 @@
        __helper            — mensaje de error inline debajo del dropzone
    ======================================== */
 
+@import url('./progress-bar.css');
+
 .ubits-file-upload {
     display: flex;
     flex-direction: column;
@@ -267,27 +269,15 @@
     text-align: right;
 }
 
-/* Contenedor de la barra */
-.ubits-file-upload__progress-bar {
+.ubits-file-upload__progress-mount,
+.ubits-file-upload__processing-mount {
     flex: 1;
-    height: 6px;
-    border-radius: var(--border-radius-full);
-    background: var(--ubits-bg-3);
-    overflow: hidden;
+    min-width: 0;
 }
 
-/* Relleno de la barra */
-.ubits-file-upload__progress-fill {
-    height: 100%;
-    width: 0%;
-    border-radius: var(--border-radius-full);
-    background: var(--ubits-accent-brand);
-    transition: width 0.15s ease, background 0.3s ease;
-}
-
-/* Al llegar a 100 % la barra se vuelve verde */
-.ubits-file-upload__progress-fill--complete {
-    background: var(--ubits-feedback-accent-success);
+.ubits-file-upload__progress-mount .ubits-progress-bar,
+.ubits-file-upload__processing-mount .ubits-progress-bar {
+    width: 100%;
 }
 
 /* Dropzone bloqueado mientras carga (sin hover ni click) */
@@ -313,26 +303,6 @@
 .ubits-file-upload__processing-label {
     color: var(--ubits-fg-1-medium);
     flex-shrink: 0;
-}
-
-.ubits-file-upload__processing-bar {
-    flex: 1;
-    height: 6px;
-    border-radius: var(--border-radius-full);
-    background: var(--ubits-bg-3);
-    overflow: hidden;
-}
-
-.ubits-file-upload__processing-fill {
-    height: 100%;
-    width: 0%;
-    border-radius: var(--border-radius-full);
-    background: var(--ubits-accent-brand);
-    transition: width 0.12s linear;
-}
-
-.ubits-file-upload__processing-fill--complete {
-    background: var(--ubits-feedback-accent-success);
 }
 
 .ubits-file-upload__processing-pct {

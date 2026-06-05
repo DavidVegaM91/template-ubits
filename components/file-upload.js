@@ -47,6 +47,46 @@
 
     /* ─── utilidades ─────────────────────────────────── */
 
+    function fileUploadProgressMarkup(pct) {
+        var value = Math.max(0, Math.min(100, Math.round(Number(pct) || 0)));
+        var opts = {
+            value: value,
+            size: 'sm',
+            rounded: true,
+            track: 'subtle',
+            autoComplete: true
+        };
+        if (typeof progressBarHtml === 'function') return progressBarHtml(opts);
+        var cls = 'ubits-progress-bar ubits-progress-bar--sm ubits-progress-bar--rounded ubits-progress-bar--track-subtle';
+        if (value >= 100) cls += ' ubits-progress-bar--complete';
+        return '<div class="' + cls + '" role="progressbar" aria-valuenow="' + value + '" aria-valuemin="0" aria-valuemax="100">' +
+            '<div class="ubits-progress-bar__track"><div class="ubits-progress-bar__fill" style="width:' + value + '%"></div></div></div>';
+    }
+
+    function resolveFileUploadProgressRoot(el, pct, mountSelector) {
+        var mount = el.querySelector(mountSelector);
+        if (!mount) return null;
+        var root = mount.querySelector('.ubits-progress-bar');
+        if (!root) {
+            mount.innerHTML = fileUploadProgressMarkup(pct);
+            root = mount.querySelector('.ubits-progress-bar');
+        }
+        return root;
+    }
+
+    function applyFileUploadProgressRoot(root, pct) {
+        if (!root) return;
+        if (typeof setProgressBarValue === 'function') {
+            setProgressBarValue(root, pct, { autoComplete: true });
+            return;
+        }
+        var value = Math.max(0, Math.min(100, Math.round(Number(pct) || 0)));
+        var fill = root.querySelector('.ubits-progress-bar__fill');
+        if (fill) fill.style.width = value + '%';
+        root.classList.toggle('ubits-progress-bar--complete', value >= 100);
+        root.setAttribute('aria-valuenow', String(value));
+    }
+
     function formatSize(bytes) {
         if (bytes < 1024) return bytes + ' B';
         if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
@@ -118,9 +158,7 @@
                     '<span class="ubits-body-sm-semibold ubits-file-upload__file-name" data-file-upload-name></span>' +
                     '<span class="ubits-body-sm-regular ubits-file-upload__file-size" data-file-upload-size></span>' +
                     '<div class="ubits-file-upload__progress-wrap">' +
-                      '<div class="ubits-file-upload__progress-bar" data-file-upload-progress-bar>' +
-                        '<div class="ubits-file-upload__progress-fill" data-file-upload-progress-fill></div>' +
-                      '</div>' +
+                      '<div class="ubits-file-upload__progress-mount" data-file-upload-progress-mount></div>' +
                       '<span class="ubits-body-sm-regular ubits-file-upload__progress-pct" data-file-upload-progress-pct>0%</span>' +
                     '</div>' +
                   '</div>' +
@@ -130,9 +168,7 @@
                 '</div>' +
                 '<div class="ubits-file-upload__processing" data-file-upload-processing style="display:none" aria-live="polite">' +
                   '<span class="ubits-body-sm-regular ubits-file-upload__processing-label">Procesando</span>' +
-                  '<div class="ubits-file-upload__processing-bar">' +
-                    '<div class="ubits-file-upload__processing-fill" data-file-upload-processing-fill></div>' +
-                  '</div>' +
+                  '<div class="ubits-file-upload__processing-mount" data-file-upload-processing-mount></div>' +
                   '<span class="ubits-body-sm-regular ubits-file-upload__processing-pct" data-file-upload-processing-pct>0%</span>' +
                 '</div>' +
                 '<input type="file" class="ubits-file-upload__input" data-file-upload-input' +
@@ -535,19 +571,12 @@
         var pct = Math.max(0, Math.min(100, percent));
         var card     = el.querySelector('[data-file-upload-card]');
         var dropzone = el.querySelector('[data-file-upload-dropzone]');
-        var fill     = el.querySelector('[data-file-upload-progress-fill]');
+        var root     = resolveFileUploadProgressRoot(el, pct, '[data-file-upload-progress-mount]');
         var pctEl    = el.querySelector('[data-file-upload-progress-pct]');
 
         if (card) card.classList.add('ubits-file-upload__file-card--uploading');
         if (dropzone) dropzone.classList.add('ubits-file-upload__dropzone--uploading');
-        if (fill) {
-            fill.style.width = pct + '%';
-            if (pct >= 100) {
-                fill.classList.add('ubits-file-upload__progress-fill--complete');
-            } else {
-                fill.classList.remove('ubits-file-upload__progress-fill--complete');
-            }
-        }
+        applyFileUploadProgressRoot(root, pct);
         if (pctEl) pctEl.textContent = pct + '%';
     }
 
@@ -560,15 +589,12 @@
         if (!el) return;
         var card     = el.querySelector('[data-file-upload-card]');
         var dropzone = el.querySelector('[data-file-upload-dropzone]');
-        var fill     = el.querySelector('[data-file-upload-progress-fill]');
+        var mount    = el.querySelector('[data-file-upload-progress-mount]');
         var pctEl    = el.querySelector('[data-file-upload-progress-pct]');
 
         if (card) card.classList.remove('ubits-file-upload__file-card--uploading');
         if (dropzone) dropzone.classList.remove('ubits-file-upload__dropzone--uploading');
-        if (fill) {
-            fill.style.width = '0%';
-            fill.classList.remove('ubits-file-upload__progress-fill--complete');
-        }
+        if (mount) mount.innerHTML = '';
         if (pctEl) pctEl.textContent = '0%';
     }
 
@@ -583,18 +609,11 @@
         if (!el) return;
         var pct = Math.max(0, Math.min(100, percent));
         var dropzone = el.querySelector('[data-file-upload-dropzone]');
-        var fill = el.querySelector('[data-file-upload-processing-fill]');
+        var root = resolveFileUploadProgressRoot(el, pct, '[data-file-upload-processing-mount]');
         var pctEl = el.querySelector('[data-file-upload-processing-pct]');
         el.classList.add('ubits-file-upload--processing');
         if (dropzone) dropzone.classList.add('ubits-file-upload__dropzone--processing');
-        if (fill) {
-            fill.style.width = pct + '%';
-            if (pct >= 100) {
-                fill.classList.add('ubits-file-upload__processing-fill--complete');
-            } else {
-                fill.classList.remove('ubits-file-upload__processing-fill--complete');
-            }
-        }
+        applyFileUploadProgressRoot(root, pct);
         if (pctEl) pctEl.textContent = pct + '%';
     }
 
@@ -602,14 +621,11 @@
         var el = typeof idOrEl === 'string' ? document.getElementById(idOrEl) : idOrEl;
         if (!el) return;
         var dropzone = el.querySelector('[data-file-upload-dropzone]');
-        var fill = el.querySelector('[data-file-upload-processing-fill]');
+        var mount = el.querySelector('[data-file-upload-processing-mount]');
         var pctEl = el.querySelector('[data-file-upload-processing-pct]');
         el.classList.remove('ubits-file-upload--processing');
         if (dropzone) dropzone.classList.remove('ubits-file-upload__dropzone--processing');
-        if (fill) {
-            fill.style.width = '0%';
-            fill.classList.remove('ubits-file-upload__processing-fill--complete');
-        }
+        if (mount) mount.innerHTML = '';
         if (pctEl) pctEl.textContent = '0%';
     }
 

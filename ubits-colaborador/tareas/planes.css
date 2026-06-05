@@ -4,6 +4,8 @@
    fuentes Inter, tokens --font-size-*, --gap-*, --padding-*, --border-radius-*
    ======================================== */
 
+@import url('../../components/progress-bar.css');
+
 /* Fuente coherente con task-group (var(--font-family, "Inter")) */
 .page-planes,
 .page-planes .content-sections,
@@ -644,7 +646,7 @@
     display: inline-flex;
     align-items: center;
     font-size: var(--font-size-sm);
-    font-weight: var(--font-weight-bold);
+    font-weight: var(--font-weight-semibold);
     color: var(--ubits-fg-1-high);
 }
 
@@ -1008,7 +1010,7 @@
 .plans-empty__title {
     font-family: var(--font-family, var(--ubits-font-family-sans));
     font-size: var(--font-size-h1, 24px);
-    font-weight: var(--font-weight-bold);
+    font-weight: var(--font-weight-semibold);
     color: var(--ubits-fg-1-high);
     margin: 0 0 var(--gap-sm, 8px) 0;
 }
@@ -1069,7 +1071,7 @@
     font-family: var(--font-family, var(--ubits-font-family-sans));
     font-size: var(--font-size-h2);
     font-style: normal;
-    font-weight: var(--font-weight-bold);
+    font-weight: var(--font-weight-semibold);
     color: var(--ubits-fg-1-high);
     margin: 0;
 }
@@ -1226,8 +1228,13 @@
     margin-top: 6px;
 }
 
-.plan-card__progress-bar {
+.plan-card__progress-mount {
     margin-top: 6px;
+    width: 100%;
+}
+
+.plan-card__progress-mount .ubits-progress-bar {
+    width: 100%;
 }
 
 .plan-card:hover {
@@ -1248,7 +1255,7 @@
     max-width: 100%;
     font-family: var(--font-family, var(--ubits-font-family-sans));
     font-size: var(--font-size-sm);
-    font-weight: var(--font-weight-bold);
+    font-weight: var(--font-weight-semibold);
     line-height: 19.5px;
     color: var(--ubits-fg-1-high);
     margin: 0;
@@ -1320,21 +1327,6 @@
     font-size: var(--font-size-sm);
     font-weight: var(--font-weight-semibold);
     color: var(--ubits-fg-2-medium);
-}
-
-.plan-card__progress-bar {
-    width: 100%;
-    height: 8px;
-    background: var(--ubits-bg-2);
-    border-radius: var(--border-radius-full);
-    overflow: hidden;
-}
-
-.plan-card__progress-fill {
-    height: 100%;
-    background: var(--ubits-accent-brand);
-    border-radius: var(--border-radius-full);
-    transition: width 0.2s ease;
 }
 
 /* Paginación */

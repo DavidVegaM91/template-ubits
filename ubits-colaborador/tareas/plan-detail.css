@@ -90,7 +90,7 @@
     font-family: var(--font-family, var(--ubits-font-family-sans));
     font-size: var(--font-size-h2, 20px);
     font-style: normal;
-    font-weight: var(--font-weight-bold);
+    font-weight: var(--font-weight-semibold);
     line-height: 100%;
     color: var(--ubits-fg-2-high);
     overflow: hidden;
@@ -388,17 +388,11 @@
 }
 
 .plan-detail-card__bar {
-    height: 8px;
-    background: var(--ubits-bg-3);
-    border-radius: var(--border-radius-full);
-    overflow: hidden;
+    min-width: 0;
 }
 
-.plan-detail-card__bar-fill {
-    height: 100%;
-    background: var(--ubits-accent-brand);
-    border-radius: var(--border-radius-full);
-    transition: width 0.3s ease;
+.plan-detail-card__bar .ubits-progress-bar {
+    width: 100%;
 }
 
 /* Porcentaje: body/sm semibold, fg-1-medium */
@@ -459,7 +453,7 @@
     margin: 0;
     font-family: var(--font-family, var(--ubits-font-family-sans));
     font-size: var(--font-size-md, 16px);
-    font-weight: var(--font-weight-bold);
+    font-weight: var(--font-weight-semibold);
     color: var(--ubits-fg-1-high);
 }
 
@@ -566,7 +560,7 @@
     margin: 0 0 var(--gap-sm, 8px) 0;
     font-family: var(--font-family, var(--ubits-font-family-sans));
     font-size: var(--font-size-h2, 20px);
-    font-weight: var(--font-weight-bold);
+    font-weight: var(--font-weight-semibold);
     color: var(--ubits-fg-1-high);
 }
 

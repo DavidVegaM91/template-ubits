@@ -68,7 +68,7 @@
 
 .sidebar-item.active .sidebar-text {
     color: var(--ubits-accent-brand);
-    font-weight: var(--font-weight-bold);
+    font-weight: var(--font-weight-semibold);
 }
 
 .sidebar-text {
@@ -117,7 +117,7 @@
 
 [data-theme="dark"] .sidebar-item.active .sidebar-text {
     color: var(--ubits-accent-brand);
-    font-weight: var(--font-weight-bold);
+    font-weight: var(--font-weight-semibold);
 }
 
 [data-theme="dark"] .sidebar-title {

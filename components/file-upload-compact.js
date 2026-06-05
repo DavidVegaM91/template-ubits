@@ -39,6 +39,40 @@
         return (bytes / 1048576).toFixed(1).replace(/\.0$/, '') + ' MB';
     }
 
+    function fileUploadCompactProgressMarkup(pct) {
+        var value = Math.max(0, Math.min(100, Math.round(Number(pct) || 0)));
+        var opts = { value: value, size: 'sm', rounded: true, track: 'subtle', autoComplete: true };
+        if (typeof progressBarHtml === 'function') return progressBarHtml(opts);
+        var cls = 'ubits-progress-bar ubits-progress-bar--sm ubits-progress-bar--rounded ubits-progress-bar--track-subtle';
+        if (value >= 100) cls += ' ubits-progress-bar--complete';
+        return '<div class="' + cls + '" role="progressbar" aria-valuenow="' + value + '" aria-valuemin="0" aria-valuemax="100">' +
+            '<div class="ubits-progress-bar__track"><div class="ubits-progress-bar__fill" style="width:' + value + '%"></div></div></div>';
+    }
+
+    function resolveFileUploadCompactProgressRoot(el, pct, mountSelector) {
+        var mount = el.querySelector(mountSelector);
+        if (!mount) return null;
+        var root = mount.querySelector('.ubits-progress-bar');
+        if (!root) {
+            mount.innerHTML = fileUploadCompactProgressMarkup(pct);
+            root = mount.querySelector('.ubits-progress-bar');
+        }
+        return root;
+    }
+
+    function applyFileUploadCompactProgressRoot(root, pct) {
+        if (!root) return;
+        if (typeof setProgressBarValue === 'function') {
+            setProgressBarValue(root, pct, { autoComplete: true });
+            return;
+        }
+        var value = Math.max(0, Math.min(100, Math.round(Number(pct) || 0)));
+        var fill = root.querySelector('.ubits-progress-bar__fill');
+        if (fill) fill.style.width = value + '%';
+        root.classList.toggle('ubits-progress-bar--complete', value >= 100);
+        root.setAttribute('aria-valuenow', String(value));
+    }
+
     function fileMatchesAccept(file, accept) {
         if (!accept) return true;
         var parts = accept.split(',').map(function (s) { return s.trim().toLowerCase(); }).filter(Boolean);
@@ -164,9 +198,7 @@
                   '<span class="ubits-body-sm-semibold ubits-file-upload-compact__name" data-file-upload-compact-name></span>' +
                   '<span class="ubits-body-sm-regular ubits-file-upload-compact__size" data-file-upload-compact-size></span>' +
                   '<div class="ubits-file-upload-compact__progress-wrap">' +
-                    '<div class="ubits-file-upload-compact__progress-bar" data-file-upload-compact-progress-bar>' +
-                      '<div class="ubits-file-upload-compact__progress-fill" data-file-upload-compact-progress-fill></div>' +
-                    '</div>' +
+                    '<div class="ubits-file-upload-compact__progress-mount" data-file-upload-compact-progress-mount></div>' +
                     '<span class="ubits-body-sm-regular ubits-file-upload-compact__progress-pct" data-file-upload-compact-progress-pct>0%</span>' +
                   '</div>' +
                 '</div>' +
@@ -179,9 +211,7 @@
               '</div>' +
               '<div class="ubits-file-upload-compact__processing" data-file-upload-compact-processing hidden aria-live="polite">' +
                 '<span class="ubits-body-sm-regular ubits-file-upload-compact__processing-label">Procesando</span>' +
-                '<div class="ubits-file-upload-compact__processing-bar">' +
-                  '<div class="ubits-file-upload-compact__processing-fill" data-file-upload-compact-processing-fill></div>' +
-                '</div>' +
+                '<div class="ubits-file-upload-compact__processing-mount" data-file-upload-compact-processing-mount></div>' +
                 '<span class="ubits-body-sm-regular ubits-file-upload-compact__processing-pct" data-file-upload-compact-processing-pct>0%</span>' +
               '</div>' +
               '<input type="file" class="ubits-file-upload-compact__input" data-file-upload-compact-input' +
@@ -473,13 +503,10 @@
         if (!el) return;
         var pct = Math.max(0, Math.min(100, percent));
         var filledEl = el.querySelector('[data-file-upload-compact-filled]');
-        var fill = el.querySelector('[data-file-upload-compact-progress-fill]');
+        var root = resolveFileUploadCompactProgressRoot(el, pct, '[data-file-upload-compact-progress-mount]');
         var pctEl = el.querySelector('[data-file-upload-compact-progress-pct]');
         if (filledEl) filledEl.classList.add('ubits-file-upload-compact__tile--uploading');
-        if (fill) {
-            fill.style.width = pct + '%';
-            fill.classList.toggle('ubits-file-upload-compact__progress-fill--complete', pct >= 100);
-        }
+        applyFileUploadCompactProgressRoot(root, pct);
         if (pctEl) pctEl.textContent = Math.round(pct) + '%';
         syncCompactUploadThumbnail(el);
     }
@@ -488,13 +515,10 @@
         var el = resolveEl(idOrEl);
         if (!el) return;
         var filledEl = el.querySelector('[data-file-upload-compact-filled]');
-        var fill = el.querySelector('[data-file-upload-compact-progress-fill]');
+        var mount = el.querySelector('[data-file-upload-compact-progress-mount]');
         var pctEl = el.querySelector('[data-file-upload-compact-progress-pct]');
         if (filledEl) filledEl.classList.remove('ubits-file-upload-compact__tile--uploading');
-        if (fill) {
-            fill.style.width = '0%';
-            fill.classList.remove('ubits-file-upload-compact__progress-fill--complete');
-        }
+        if (mount) mount.innerHTML = '';
         if (pctEl) pctEl.textContent = '0%';
         syncCompactUploadThumbnail(el);
     }
@@ -504,14 +528,11 @@
         if (!el) return;
         var pct = Math.max(0, Math.min(100, percent));
         var block = el.querySelector('[data-file-upload-compact-processing]');
-        var fill = el.querySelector('[data-file-upload-compact-processing-fill]');
+        var root = resolveFileUploadCompactProgressRoot(el, pct, '[data-file-upload-compact-processing-mount]');
         var pctEl = el.querySelector('[data-file-upload-compact-processing-pct]');
         el.classList.add('ubits-file-upload-compact--processing');
         if (block) block.hidden = false;
-        if (fill) {
-            fill.style.width = pct + '%';
-            fill.classList.toggle('ubits-file-upload-compact__processing-fill--complete', pct >= 100);
-        }
+        applyFileUploadCompactProgressRoot(root, pct);
         if (pctEl) pctEl.textContent = Math.round(pct) + '%';
         syncCompactUploadThumbnail(el);
     }
@@ -520,14 +541,11 @@
         var el = resolveEl(idOrEl);
         if (!el) return;
         var block = el.querySelector('[data-file-upload-compact-processing]');
-        var fill = el.querySelector('[data-file-upload-compact-processing-fill]');
+        var mount = el.querySelector('[data-file-upload-compact-processing-mount]');
         var pctEl = el.querySelector('[data-file-upload-compact-processing-pct]');
         el.classList.remove('ubits-file-upload-compact--processing');
         if (block) block.hidden = true;
-        if (fill) {
-            fill.style.width = '0%';
-            fill.classList.remove('ubits-file-upload-compact__processing-fill--complete');
-        }
+        if (mount) mount.innerHTML = '';
         if (pctEl) pctEl.textContent = '0%';
         syncCompactUploadThumbnail(el);
     }

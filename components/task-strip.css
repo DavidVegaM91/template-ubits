@@ -339,7 +339,7 @@
     justify-content: center;
     color: var(--ubits-fg-1-high);
     font-size: var(--font-size-xs);
-    font-weight: var(--font-weight-bold);
+    font-weight: var(--font-weight-semibold);
     flex-shrink: 0;
 }
 

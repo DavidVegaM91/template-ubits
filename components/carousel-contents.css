@@ -4,6 +4,14 @@
    Variante principal: Hero (banner grande horizontal)
    ======================================== */
 
+/* Mount para initCarouselIndicators (requiere carousel-indicators.css) */
+.carousel-contents__indicators-mount {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
 /* Carousel Contents Container - Variante Hero */
 .carousel-contents--hero {
     position: relative;
@@ -281,46 +289,24 @@
 /* Carousel Indicators - Inside (Desktop/Tablet) */
 .carousel-contents--hero__indicators--inside {
     display: flex;
-    gap: var(--gap-md);
     align-items: center;
     justify-content: center;
     position: absolute;
+    bottom: var(--padding-lg);
     left: 50%;
     transform: translateX(-50%);
-    height: 12px;
-    flex: 0 0 auto;
+    z-index: 5;
+    height: auto;
 }
 
 /* Carousel Indicators - Outside (Mobile) */
 .carousel-contents--hero__indicators--outside {
     display: none;
-    gap: var(--gap-md);
     align-items: center;
     justify-content: center;
-    margin-top: 8px;
-    height: 12px;
+    margin-top: var(--gap-sm);
     width: 100%;
-}
-
-.carousel-contents--hero__indicator {
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    background: var(--ubits-fg-gray-subtle-hover);
-    cursor: pointer;
-    transition: all 0.2s ease;
-    flex-shrink: 0;
-}
-
-.carousel-contents--hero__indicator.active {
-    width: 12px;
-    height: 12px;
-    background: var(--ubits-accent-brand);
-}
-
-.carousel-contents--hero__indicator:not(.active) {
-    width: 10px;
-    height: 10px;
+    height: auto;
 }
 
 /* Carousel Contents Wrapper */
@@ -405,7 +391,7 @@
     .carousel-contents--hero__title {
         font-family: var(--ubits-font-family-sans) !important;
         font-size: var(--font-size-sm) !important;
-        font-weight: var(--font-weight-bold) !important;
+        font-weight: var(--font-weight-semibold) !important;
         line-height: 19.5px !important;
     }
 }
@@ -437,7 +423,7 @@
     flex: 1;
     font-family: var(--ubits-font-family-sans);
     font-size: var(--font-size-h2);
-    font-weight: var(--font-weight-bold);
+    font-weight: var(--font-weight-semibold);
     line-height: 1;
     color: var(--ubits-fg-1-high);
     margin: 0;
@@ -512,30 +498,13 @@
     }
 }
 
-/* Indicadores (dots) para mobile */
+/* Indicadores oficiales para mobile */
 .carousel-contents--promo-vertical__indicators {
     display: none;
-    gap: var(--gap-sm);
     align-items: center;
     justify-content: center;
-    margin-top: 8px;
+    margin-top: var(--gap-sm);
     width: 100%;
-}
-
-.carousel-contents--promo-vertical__indicator {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    background: var(--ubits-border-1);
-    cursor: pointer;
-    transition: all 0.2s ease;
-    flex-shrink: 0;
-}
-
-.carousel-contents--promo-vertical__indicator.active {
-    width: 12px;
-    height: 12px;
-    background: var(--ubits-accent-brand);
 }
 
 /* Responsive: Mobile */
@@ -600,7 +569,7 @@
     margin: 0;
     font-family: var(--ubits-font-family-sans);
     font-size: var(--font-size-h2);
-    font-weight: var(--font-weight-bold);
+    font-weight: var(--font-weight-semibold);
     line-height: 1;
 }
 
@@ -775,30 +744,13 @@
     }
 }
 
-/* Indicadores (dots) para mobile - Allies */
+/* Indicadores oficiales para mobile - Allies */
 .carousel-contents--allies__indicators {
     display: none;
-    gap: var(--gap-sm);
     align-items: center;
     justify-content: center;
-    margin-top: 8px;
+    margin-top: var(--gap-sm);
     width: 100%;
-}
-
-.carousel-contents--allies__indicator {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    background: var(--ubits-border-1);
-    cursor: pointer;
-    transition: all 0.2s ease;
-    flex-shrink: 0;
-}
-
-.carousel-contents--allies__indicator.active {
-    width: 12px;
-    height: 12px;
-    background: var(--ubits-accent-brand);
 }
 
 /* Responsive: Mobile */
@@ -848,7 +800,7 @@
     flex: 1;
     font-family: var(--ubits-font-family-sans);
     font-size: var(--font-size-h2);
-    font-weight: var(--font-weight-bold);
+    font-weight: var(--font-weight-semibold);
     line-height: 1;
     color: var(--ubits-fg-1-high);
     margin: 0;
@@ -907,30 +859,13 @@
     }
 }
 
-/* Indicadores (dots) para mobile */
+/* Indicadores oficiales para mobile */
 .carousel-contents--content-cards__indicators {
     display: none;
-    gap: var(--gap-sm);
     align-items: center;
     justify-content: center;
-    margin-top: 8px;
+    margin-top: var(--gap-sm);
     width: 100%;
-}
-
-.carousel-contents--content-cards__indicator {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    background: var(--ubits-border-1);
-    cursor: pointer;
-    transition: all 0.2s ease;
-    flex-shrink: 0;
-}
-
-.carousel-contents--content-cards__indicator.active {
-    width: 12px;
-    height: 12px;
-    background: var(--ubits-accent-brand);
 }
 
 /* Responsive: Mobile */
@@ -1063,7 +998,7 @@
     line-height: 42px;
     font-family: var(--ubits-font-family-sans);
     font-size: var(--font-size-d4);
-    font-weight: var(--font-weight-bold);
+    font-weight: var(--font-weight-semibold);
     display: -webkit-box;
     -webkit-line-clamp: 2;
     line-clamp: 2;
@@ -1266,28 +1201,9 @@
     z-index: 10;
 }
 
-/* Indicadores (dots) - Ocultos por defecto, visibles solo en mobile */
+/* Indicadores oficiales — ocultos por defecto, visibles solo en mobile */
 .carousel-contents--outstanding__indicators {
     display: none;
-}
-
-.carousel-contents--outstanding__indicator {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    background: var(--ubits-border-1);
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-.carousel-contents--outstanding__indicator:hover {
-    background: var(--ubits-fg-1-medium);
-}
-
-.carousel-contents--outstanding__indicator.active {
-    width: 12px;
-    height: 12px;
-    background: var(--ubits-accent-brand);
 }
 
 /* Responsive: Tablet */
@@ -1336,29 +1252,9 @@
     /* Mostrar indicadores solo en mobile */
     .carousel-contents--outstanding__indicators {
         display: flex;
-        gap: var(--gap-sm);
         align-items: center;
         justify-content: center;
-        margin-top: 8px;
-    }
-
-    .carousel-contents--outstanding__indicator {
-        width: 10px;
-        height: 10px;
-        border-radius: 50%;
-        background: var(--ubits-border-1);
-        cursor: pointer;
-        transition: all 0.2s ease;
-    }
-
-    .carousel-contents--outstanding__indicator:hover {
-        background: var(--ubits-fg-1-medium);
-    }
-
-    .carousel-contents--outstanding__indicator.active {
-        width: 12px;
-        height: 12px;
-        background: var(--ubits-accent-brand);
+        margin-top: var(--gap-sm);
     }
 }
 
@@ -1372,7 +1268,7 @@
         /* Usar estilos de ubits-body-sm-bold */
         font-family: var(--ubits-font-family-sans);
         font-size: var(--font-size-sm);
-        font-weight: var(--font-weight-bold);
+        font-weight: var(--font-weight-semibold);
         line-height: 19.5px;
         color: var(--ubits-fg-1-high);
         /* Limitar a 2 líneas con puntos suspensivos */

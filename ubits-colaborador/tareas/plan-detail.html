@@ -35,6 +35,7 @@
     <link rel="stylesheet" href="../../components/dropdown-menu.css">
     <link rel="stylesheet" href="../../components/modal.css">
     <link rel="stylesheet" href="../../components/toast.css">
+    <link rel="stylesheet" href="../../components/progress-bar.css">
     <link rel="stylesheet" href="./tareas.css">
     <link rel="stylesheet" href="./profile.css">
     <link rel="stylesheet" href="./planes.css">
@@ -87,9 +88,7 @@
                             </div>
                             <div class="plan-detail-card__progress-row">
                                 <span class="plan-detail-card__meta-label">Tareas finalizadas </span><span id="plan-detail-tasks-count" class="plan-detail-card__count-regular">0/0</span>
-                                <div class="plan-detail-card__bar">
-                                    <div class="plan-detail-card__bar-fill" id="plan-detail-bar-fill"></div>
-                                </div>
+                                <div class="plan-detail-card__bar" id="plan-detail-bar-wrap"></div>
                                 <div class="plan-detail-card__percent-date-wrap">
                                     <span class="plan-detail-card__percent" id="plan-detail-percent">0%</span>
                                     <div class="plan-detail-card__date-wrap">
@@ -207,6 +206,7 @@
     <script src="../../bd-master/bd-master-colaboradores.js"></script>
     <script src="../../bd-master/bd-tareas-y-planes.js"></script>
     <script src="./planes.js"></script>
+    <script src="../../components/progress-bar.js"></script>
     <script src="./plan-detail.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {

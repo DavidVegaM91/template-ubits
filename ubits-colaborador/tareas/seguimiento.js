@@ -1151,7 +1151,9 @@
             const prioridadHtml = row.prioridad && prioridadBadgeVariant[row.prioridad] ? `<span class="ubits-badge-tag ubits-badge-tag--outlined ubits-badge-tag--${prioridadBadgeVariant[row.prioridad]} ubits-badge-tag--sm ubits-badge-tag--with-icon"><i class="far ${prioridadIcon[row.prioridad]}"></i><span class="ubits-badge-tag__text">${row.prioridad}</span></span>` : '';
             const comentariosText = row.comentarios === 0 ? '0 comentarios' : `${row.comentarios} comentario${row.comentarios > 1 ? 's' : ''}`;
             const avanceNum = typeof row.avance === 'number' ? row.avance : parseInt(row.avance) || 0;
-            const avanceHtml = `<div class="ubits-table__cell-progress"><div class="ubits-table__progress-bar"><div class="ubits-table__progress-bar-fill" style="width: ${avanceNum}%"></div></div><span class="ubits-body-sm-regular">${avanceNum}%</span></div>`;
+            const avanceHtml = typeof tableProgressCellHtml === 'function'
+                ? tableProgressCellHtml(avanceNum)
+                : `<div class="ubits-table__cell-progress"><div class="ubits-progress-bar ubits-progress-bar--lg ubits-progress-bar-row--fixed-60" style="width:60px"><div class="ubits-progress-bar__track"><div class="ubits-progress-bar__fill" style="width:${avanceNum}%"></div></div></div><span class="ubits-body-sm-regular">${avanceNum}%</span></div>`;
 
             const cellByCol = {
                 id: `<td data-col="id">${row.id}</td>`,

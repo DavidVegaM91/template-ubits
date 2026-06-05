@@ -113,7 +113,7 @@
     min-width: var(--size-xl);
     font-family: var(--ubits-font-family-sans);
     font-size: var(--font-size-md);
-    font-weight: var(--font-weight-bold);
+    font-weight: var(--font-weight-semibold);
     line-height: 24px;
     color: var(--ubits-fg-1-high);
     border: none;

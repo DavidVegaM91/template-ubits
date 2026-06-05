@@ -242,7 +242,7 @@ function renderPlanDetail(planId) {
     const descEl = document.getElementById('plan-detail-desc');
     const createdByEl = document.getElementById('plan-detail-created-by');
     const countEl = document.getElementById('plan-detail-tasks-count');
-    const barEl = document.getElementById('plan-detail-bar-fill');
+    const barMount = document.getElementById('plan-detail-bar-wrap');
     const percentEl = document.getElementById('plan-detail-percent');
     const statusEl = document.getElementById('plan-detail-status');
     const tasksListEl = document.getElementById('plan-detail-tasks-list');
@@ -318,7 +318,26 @@ function renderPlanDetail(planId) {
     if (countEl) countEl.textContent = `${doneCount}/${filteredTasks.length}`;
 
     const progress = filteredTasks.length > 0 ? Math.round((doneCount / filteredTasks.length) * 100) : 0;
-    if (barEl) barEl.style.width = progress + '%';
+    if (barMount && !barMount.querySelector('.ubits-progress-bar')) {
+        if (typeof progressBarHtml === 'function') {
+            barMount.innerHTML = progressBarHtml({
+                value: progress,
+                size: 'lg',
+                rounded: true,
+                track: 'subtle',
+                id: 'plan-detail-bar',
+                ariaLabel: 'Progreso de tareas del plan'
+            });
+        }
+    }
+    const barEl = document.getElementById('plan-detail-bar');
+    if (barEl && typeof setProgressBarValue === 'function') {
+        setProgressBarValue(barEl, progress);
+    } else if (barEl) {
+        const fill = barEl.querySelector('.ubits-progress-bar__fill');
+        if (fill) fill.style.width = progress + '%';
+        barEl.setAttribute('aria-valuenow', String(progress));
+    }
     if (percentEl) percentEl.textContent = progress + '%';
 
     /* Selector de fecha de vencimiento (mismo componente que task-detail) */

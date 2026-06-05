@@ -1128,7 +1128,7 @@
 .seguimiento-indicador-card .indicador-number {
     font-family: var(--ubits-font-family-sans);
     font-size: var(--font-size-h2);
-    font-weight: var(--font-weight-bold);
+    font-weight: var(--font-weight-semibold);
     line-height: 22px;
     color: var(--ubits-fg-1-high);
 }

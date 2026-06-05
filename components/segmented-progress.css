@@ -1,0 +1,91 @@
+/* ========================================
+   UBITS Segmented progress
+   Progreso ítem a ítem (quiz, flashcards, pasos discretos).
+   Modos: segments (N segmentos) | slider (barra + thumb si hay muchos ítems).
+   Tamaños: sm (segmentos 6px) · lg (slider track 8px).
+   ======================================== */
+
+.ubits-segmented-progress {
+    display: flex;
+    align-items: center;
+    flex: 1;
+    min-width: 0;
+    width: 100%;
+}
+
+.ubits-segmented-progress__segments {
+    display: flex;
+    gap: var(--gap-xs);
+    align-items: center;
+    flex: 1;
+    min-width: 0;
+    width: 100%;
+}
+
+.ubits-segmented-progress__segment {
+    flex: 1;
+    min-width: 4px;
+    height: 6px;
+    border-radius: var(--border-radius-xs);
+    background: var(--ubits-bg-3);
+    transition: background 0.2s ease;
+}
+
+.ubits-segmented-progress--track-subtle .ubits-segmented-progress__segment {
+    background: var(--ubits-bg-2);
+}
+
+.ubits-segmented-progress__segment--filled {
+    background: var(--ubits-accent-brand);
+}
+
+.ubits-segmented-progress--lg .ubits-segmented-progress__segment {
+    height: 8px;
+}
+
+.ubits-segmented-progress__slider {
+    flex: 1;
+    min-width: 0;
+    width: 100%;
+}
+
+.ubits-segmented-progress__track {
+    position: relative;
+    width: 100%;
+    height: 8px;
+    border-radius: var(--border-radius-xs);
+    background: var(--ubits-bg-3);
+}
+
+.ubits-segmented-progress--track-subtle .ubits-segmented-progress__track {
+    background: var(--ubits-bg-2);
+}
+
+.ubits-segmented-progress--sm .ubits-segmented-progress__track {
+    height: 6px;
+}
+
+.ubits-segmented-progress__fill {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 0;
+    border-radius: var(--border-radius-xs);
+    background: var(--ubits-accent-brand);
+    transition: width 0.2s ease;
+}
+
+.ubits-segmented-progress__thumb {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 14px;
+    height: 14px;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    background: var(--ubits-accent-brand);
+    border: 2px solid var(--ubits-bg-1);
+    transition: left 0.2s ease;
+    pointer-events: none;
+}

@@ -880,7 +880,7 @@ body[data-theme="dark"] .content-placeholder p {
 .step-number {
     font-family: var(--ubits-font-family-sans);
     font-size: var(--font-size-h1);
-    font-weight: var(--font-weight-bold);
+    font-weight: var(--font-weight-semibold);
     line-height: 1;
 }
 

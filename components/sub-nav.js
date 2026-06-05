@@ -408,6 +408,8 @@ const PAGE_TO_TAB = {
     'modal.html': 'section3',
     'number-stepper.html': 'section3',
     'popover.html': 'section3',
+    'progress-bar.html': 'section3',
+    'segmented-progress.html': 'section3',
     'submenu.html': 'section3',
     'paginator.html': 'section3',
     'radio-button.html': 'section3',

@@ -82,7 +82,7 @@
     margin: 0;
     font-family: var(--ubits-font-family-sans);
     font-size: var(--font-size-d3);
-    font-weight: var(--font-weight-bold);
+    font-weight: var(--font-weight-semibold);
     line-height: 48px;
 }
 

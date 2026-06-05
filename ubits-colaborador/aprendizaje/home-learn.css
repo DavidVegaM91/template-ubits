@@ -74,6 +74,16 @@
 .section-triple > .widget-hero,
 .section-quad > .widget-hero,
 .widget-hero,
+.section-single > .widget-home-learn-hero,
+.section-dual > .widget-home-learn-hero,
+.section-triple > .widget-home-learn-hero,
+.section-quad > .widget-home-learn-hero,
+.widget-home-learn-hero,
+.section-single > .widget-zona-estudio,
+.section-dual > .widget-zona-estudio,
+.section-triple > .widget-zona-estudio,
+.section-quad > .widget-zona-estudio,
+.widget-zona-estudio,
 .section-single > .widget-promo-cards,
 .section-dual > .widget-promo-cards,
 .section-triple > .widget-promo-cards,
@@ -137,5 +147,223 @@
     .content-sections .section-triple > div,
     .content-sections .section-quad > div {
         padding: var(--padding-none) !important;
+    }
+}
+
+/* ========================================
+   Hero buscador — diseño APP v3 (hardcodeado)
+   ======================================== */
+
+.home-learn-hero {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    gap: var(--gap-2xl);
+    width: 100%;
+    min-height: 212px;
+    padding: var(--padding-3xl) var(--padding-2xl) var(--padding-2xl);
+    box-sizing: border-box;
+    border-radius: var(--border-radius-lg);
+    /* Gradiente APP v3 (Figma): #04101F → #0C5BEF → #00CAFF */
+    background: linear-gradient(
+        180deg,
+        #04101F 0%,
+        var(--ubits-accent-brand-static) 54%,
+        #00CAFF 100%
+    );
+}
+
+@media (min-width: 1024px) {
+    .home-learn-hero {
+        justify-content: center;
+        padding: var(--padding-2xl);
+    }
+}
+
+.home-learn-hero__title {
+    margin: 0;
+    color: var(--ubits-fg-bold);
+    text-align: center;
+    width: 100%;
+    font-weight: var(--font-weight-semibold);
+}
+
+.home-learn-hero__search {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--gap-sm);
+    width: 100%;
+    max-width: 100%;
+    min-height: 48px;
+    padding: var(--padding-md) var(--padding-sm) var(--padding-md) var(--padding-lg);
+    box-sizing: border-box;
+    border-radius: var(--border-radius-full);
+    border: 1px solid color-mix(in srgb, var(--ubits-fg-bold) 24%, transparent);
+    background: linear-gradient(
+        -12.6deg,
+        color-mix(in srgb, var(--ubits-fg-bold) 5%, transparent) 0%,
+        color-mix(in srgb, var(--ubits-fg-bold) 10%, transparent) 100%
+    );
+}
+
+.home-learn-hero__search-placeholder {
+    flex: 1;
+    min-width: 0;
+    color: var(--ubits-fg-bold);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.home-learn-hero__search-btn {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    padding: var(--padding-none);
+    border: none;
+    border-radius: var(--border-radius-full);
+    background: color-mix(in srgb, var(--ubits-fg-bold) 16%, transparent);
+    color: var(--ubits-fg-bold);
+    cursor: pointer;
+    line-height: 1;
+}
+
+.home-learn-hero__search-icon {
+    display: block;
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+}
+
+.home-learn-hero__search-btn:hover {
+    background: color-mix(in srgb, var(--ubits-fg-bold) 24%, transparent);
+}
+
+/* ========================================
+   Zona de estudio — carrusel de planes
+   ======================================== */
+
+.home-learn-zona-estudio {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-md);
+    width: 100%;
+}
+
+.home-learn-zona-estudio__header {
+    margin: 0;
+}
+
+/* Desktop: 3 columnas, sin controles */
+.home-learn-zona-estudio__controls {
+    display: none;
+}
+
+.home-learn-zona-estudio__track {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--gap-sm);
+    width: 100%;
+}
+
+.home-learn-plan-card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-md);
+    min-width: 0;
+    padding: var(--padding-xl) var(--padding-2xl);
+    box-sizing: border-box;
+    border: 1px solid var(--ubits-border-1);
+    border-radius: var(--border-radius-lg);
+    background: var(--ubits-bg-1);
+    font-family: var(--ubits-font-family-sans);
+}
+
+.home-learn-plan-card__head {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-xs);
+    min-width: 0;
+}
+
+.home-learn-plan-card__cierre {
+    margin: 0;
+    color: var(--ubits-fg-1-medium);
+}
+
+.home-learn-plan-card__title {
+    margin: 0;
+    color: var(--ubits-fg-1-high);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.home-learn-plan-card__progress-block {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-sm);
+    width: 100%;
+}
+
+.home-learn-plan-card__progress-block .ubits-progress-bar {
+    width: 100%;
+}
+
+.home-learn-plan-card__progress-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--gap-sm);
+}
+
+.home-learn-plan-card__progress-label {
+    color: var(--ubits-fg-1-medium);
+}
+
+.home-learn-plan-card__progress-pct {
+    color: var(--ubits-accent-brand);
+}
+
+.home-learn-zona-estudio__indicators {
+    display: none;
+}
+
+@media (max-width: 768px) {
+    .home-learn-zona-estudio__controls {
+        display: flex;
+    }
+
+    .home-learn-zona-estudio__indicators {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-top: var(--gap-sm);
+        width: 100%;
+    }
+
+    .home-learn-zona-estudio__track {
+        display: flex;
+        gap: var(--gap-sm);
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        scroll-behavior: smooth;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+    }
+
+    .home-learn-zona-estudio__track::-webkit-scrollbar {
+        display: none;
+    }
+
+    .home-learn-plan-card {
+        flex: 0 0 100%;
+        scroll-snap-align: start;
+        min-width: 224px;
     }
 }

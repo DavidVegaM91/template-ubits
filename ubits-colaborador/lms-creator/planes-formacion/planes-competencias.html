@@ -81,6 +81,7 @@
     <script src="../../../components/ubits-data-table.js"></script>
     <script src="../../../script.js"></script>
     <script src="../../../general-utils/humanizador-fechas.js"></script>
+    <script src="../../../components/progress-bar.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             loadSidebar('creator', 'planes-formacion');
@@ -157,7 +158,7 @@
                     '<td data-col="fecha-inicio" data-date="' + escapeHtml(row.fechaInicio) + '"><span class="ubits-body-sm-regular">' + escapeHtml(fechaInicioDisplay) + '</span></td>' +
                     '<td data-col="fecha-fin" data-date="' + escapeHtml(row.fechaFin) + '"><span class="ubits-body-sm-regular">' + escapeHtml(fechaFinDisplay) + '</span></td>' +
                     '<td data-col="estado">' + estadoHtml + '</td>' +
-                    '<td data-col="progreso"><div class="ubits-table__cell-progress"><div class="ubits-table__progress-bar"><div class="ubits-table__progress-bar-fill" style="width:' + pct + '%"></div></div><span class="ubits-body-sm-regular">' + pct + '%</span></div></td>' +
+                    '<td data-col="progreso">' + (typeof tableProgressCellHtml === 'function' ? tableProgressCellHtml(pct) : '<div class="ubits-table__cell-progress"><span class="ubits-body-sm-regular">' + pct + '%</span></div>') + '</td>' +
                     '<td data-col="acciones" class="planes-formacion-tabla__td-acciones">' + accionesBtn + '</td>';
             }
 

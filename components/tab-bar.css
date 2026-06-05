@@ -48,7 +48,7 @@
 
 .tab-bar-item.active .tab-bar-text {
     color: var(--ubits-sidebar-button-bg-active);
-    font-weight: var(--font-weight-bold);
+    font-weight: var(--font-weight-semibold);
 }
 
 .tab-bar-icon {

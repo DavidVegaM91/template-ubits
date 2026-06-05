@@ -1,3 +1,5 @@
+@import url('../../../components/progress-bar.css');
+
 /* ========================================
    ESTILOS PARA DETALLE DEL PLAN DE COMPETENCIAS
    ======================================== */
@@ -98,21 +100,14 @@
     flex-shrink: 0;
 }
 
-/* Barra de progreso: mismos estilos que plan-detail (plan-detail-card__bar / bar-fill) */
+/* Barra de progreso del plan (componente oficial lg pill) */
 .detalle-plan-progress-card__bar {
     flex: 1;
     min-width: 100px;
-    height: 8px;
-    background: var(--ubits-bg-3);
-    border-radius: var(--border-radius-full);
-    overflow: hidden;
 }
 
-.detalle-plan-progress-card__bar-fill {
-    height: 100%;
-    background: var(--ubits-accent-brand);
-    border-radius: var(--border-radius-full);
-    transition: width 0.3s ease;
+.detalle-plan-progress-card__bar .ubits-progress-bar {
+    width: 100%;
 }
 
 /* Texto del porcentaje (X%): mismos estilos que plan-detail (plan-detail-card__percent) */
@@ -449,25 +444,13 @@
     bottom: 0;
     left: 0;
     right: 0;
-    height: 4px;
+    height: 5px;
     border-radius: 0 0 var(--border-radius-sm) var(--border-radius-sm);
     overflow: hidden;
 }
-.detalle-plan-competencias-card-progress-bar {
+
+.detalle-plan-competencias-card-progress .ubits-progress-bar {
     width: 100%;
-    height: 4px;
-    background: var(--ubits-bg-4-static);
-    position: relative;
-}
-.detalle-plan-competencias-card-progress-fill {
-    height: 100%;
-    background: var(--ubits-accent-brand);
-    border-radius: 0;
-    transition: width 0.3s ease;
-}
-.detalle-plan-competencias-card-wrapper[data-status="completed"] .detalle-plan-competencias-card-progress-fill,
-.detalle-plan-competencias-card-progress[data-status="completed"] .detalle-plan-competencias-card-progress-fill {
-    background: var(--ubits-feedback-accent-success-static);
 }
 
 /* Drawer Agregar asignación (solo colaboradores): panel sin opciones de empresa/grupos/archivo */
@@ -748,27 +731,14 @@
     left: 0;
     right: 0;
     margin: 0;
-    height: 4px;
+    height: 5px;
     border-radius: 0 0 var(--border-radius-sm) var(--border-radius-sm);
     overflow: hidden;
 }
-#drawer-competencias-estudiante .drawer-competencia-card-progress-bar,
-#drawer-detalle-plan-agregar-cursos .drawer-competencia-card-progress-bar {
+
+#drawer-competencias-estudiante .drawer-competencia-card-progress .ubits-progress-bar,
+#drawer-detalle-plan-agregar-cursos .drawer-competencia-card-progress .ubits-progress-bar {
     width: 100%;
-    height: 4px;
-    background: var(--ubits-bg-4-static);
-    position: relative;
-}
-#drawer-competencias-estudiante .drawer-competencia-card-progress-fill,
-#drawer-detalle-plan-agregar-cursos .drawer-competencia-card-progress-fill {
-    height: 100%;
-    background: var(--ubits-accent-brand);
-    border-radius: 0;
-    transition: width 0.3s ease;
-}
-#drawer-competencias-estudiante .drawer-competencia-card-progress[data-status="completed"] .drawer-competencia-card-progress-fill,
-#drawer-detalle-plan-agregar-cursos .drawer-competencia-card-progress[data-status="completed"] .drawer-competencia-card-progress-fill {
-    background: var(--ubits-feedback-accent-success-static);
 }
 
 /* Card completo con habilidades en drawer-competencias-estudiante (igual que drawer-detalle-plan-agregar-cursos) */

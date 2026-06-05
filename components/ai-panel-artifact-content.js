@@ -67,10 +67,16 @@
     function buildArtifactQuizHtml() {
         var questions = shuffleQuizOptions(cloneQuestions());
         var totalQuestions = questions.length;
-        var progressBlock = '<div class="ubits-ia-chat-side__quiz-progress-bars">' +
-            Array.from({ length: totalQuestions }, function (_, i) {
-                return '<span class="ubits-ia-chat-side__quiz-progress-bar" data-bar-index="' + i + '"></span>';
-            }).join('') + '</div>';
+        var progressBlock = typeof segmentedProgressHtml === 'function'
+            ? segmentedProgressHtml({
+                total: totalQuestions,
+                current: 0,
+                mode: 'segments',
+                size: 'sm',
+                track: 'default',
+                ariaLabel: 'Progreso del quiz'
+            })
+            : '<div class="ubits-segmented-progress ubits-segmented-progress--segments ubits-segmented-progress--sm" role="group" aria-label="Progreso del quiz"></div>';
         var questionsHtml = questions.map(function (qu, i) {
             var optsHtml = qu.options.map(function (opt, j) {
                 var letter = String.fromCharCode(65 + j);
@@ -109,15 +115,22 @@
     function buildArtifactFlashcardsHtml() {
         var cards = DEMO_FLASHCARDS_COMUNICACION.slice();
         var fcTotal = cards.length;
-        var fcProgressBarsHtml = Array.from({ length: fcTotal }, function (_, i) {
-            return '<span class="ubits-ia-chat-side__fc-progress-bar" data-bar-index="' + i + '"></span>';
-        }).join('');
+        var fcProgressBlock = typeof segmentedProgressHtml === 'function'
+            ? segmentedProgressHtml({
+                total: fcTotal,
+                current: 0,
+                mode: 'segments',
+                size: 'sm',
+                track: 'subtle',
+                ariaLabel: 'Progreso de flashcards'
+            })
+            : '<div class="ubits-segmented-progress ubits-segmented-progress--segments ubits-segmented-progress--sm ubits-segmented-progress--track-subtle" role="group" aria-label="Progreso de flashcards"></div>';
         var cardsJson = JSON.stringify(cards).replace(/'/g, '&#39;');
         return '<div class="ubits-ia-chat-side__content ubits-ia-chat-side__flashcards ai-panel-artifact-tutor" data-topic="comunicacion" data-fc-set="0">' +
             '<div class="ubits-ia-chat-side__body">' +
             '<div class="ubits-ia-chat-side__fc-main">' +
             '<div class="ubits-ia-chat-side__fc-progress">' +
-            '<div class="ubits-ia-chat-side__fc-progress-bars">' + fcProgressBarsHtml + '</div>' +
+            fcProgressBlock +
             '<span class="ubits-ia-chat-side__fc-progress-text">1 / ' + fcTotal + '</span></div>' +
             '<div class="ubits-ia-chat-side__fc-card" data-index="0" role="button" tabindex="0" aria-label="Clic para voltear la tarjeta">' +
             '<div class="ubits-ia-chat-side__fc-card-inner">' +
@@ -146,7 +159,7 @@
         if (!panel) return;
         var questions = panel.querySelectorAll('.ubits-ia-chat-side__quiz-q');
         var progressWrap = panel.querySelector('.ubits-ia-chat-side__quiz-progress');
-        var progressBars = panel.querySelectorAll('.ubits-ia-chat-side__quiz-progress-bar');
+        var segmentedProgressRoot = progressWrap ? progressWrap.querySelector('.ubits-segmented-progress') : null;
         var progressText = panel.querySelector('.ubits-ia-chat-side__quiz-progress-text');
         var progressWrongN = panel.querySelector('.ubits-ia-chat-side__quiz-progress-wrong-n');
         var progressCorrectN = panel.querySelector('.ubits-ia-chat-side__quiz-progress-correct-n');
@@ -164,10 +177,8 @@
 
         function updateProgressBar() {
             if (progressText) progressText.textContent = (currentIdx + 1) + ' / ' + total;
-            if (progressBars.length) {
-                progressBars.forEach(function (bar, i) {
-                    bar.classList.toggle('ubits-ia-chat-side__quiz-progress-bar--filled', i <= currentIdx);
-                });
+            if (segmentedProgressRoot && typeof setSegmentedProgressValue === 'function') {
+                setSegmentedProgressValue(segmentedProgressRoot, currentIdx);
             }
             if (progressWrongN) progressWrongN.textContent = wrongCount;
             if (progressCorrectN) progressCorrectN.textContent = correctCount;
@@ -312,7 +323,8 @@
         var cardEl = panel.querySelector('.ubits-ia-chat-side__fc-card');
         var frontEl = panel.querySelector('.ubits-ia-chat-side__fc-front');
         var backEl = panel.querySelector('.ubits-ia-chat-side__fc-back');
-        var progressBars = panel.querySelectorAll('.ubits-ia-chat-side__fc-progress-bar');
+        var fcProgressWrap = panel.querySelector('.ubits-ia-chat-side__fc-progress');
+        var fcSegmentedRoot = fcProgressWrap ? fcProgressWrap.querySelector('.ubits-segmented-progress') : null;
         var progressText = panel.querySelector('.ubits-ia-chat-side__fc-progress-text');
         var fcMain = panel.querySelector('.ubits-ia-chat-side__fc-main');
         var resultDiv = panel.querySelector('.ubits-ia-chat-side__fc-result');
@@ -329,10 +341,8 @@
         }
 
         function updateFcProgress() {
-            if (progressBars.length) {
-                progressBars.forEach(function (bar, i) {
-                    bar.classList.toggle('ubits-ia-chat-side__fc-progress-bar--filled', i <= fcIndex);
-                });
+            if (fcSegmentedRoot && typeof setSegmentedProgressValue === 'function') {
+                setSegmentedProgressValue(fcSegmentedRoot, fcIndex);
             }
             if (progressText) progressText.textContent = (fcIndex + 1) + ' / ' + cards.length;
             var n = navBtns();

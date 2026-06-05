@@ -7,6 +7,8 @@
    JS: file-upload-compact.js (createFileUploadCompact, initFileUploadCompact, …)
    ======================================== */
 
+@import url('./progress-bar.css');
+
 .ubits-file-upload-compact {
     display: flex;
     flex-direction: column;
@@ -181,24 +183,15 @@
     text-align: right;
 }
 
-.ubits-file-upload-compact__progress-bar {
+.ubits-file-upload-compact__progress-mount,
+.ubits-file-upload-compact__processing-mount {
     flex: 1;
-    height: 6px;
-    border-radius: var(--border-radius-full);
-    background: var(--ubits-bg-3);
-    overflow: hidden;
+    min-width: 0;
 }
 
-.ubits-file-upload-compact__progress-fill {
-    height: 100%;
-    width: 0%;
-    border-radius: var(--border-radius-full);
-    background: var(--ubits-accent-brand);
-    transition: width 0.15s ease, background 0.3s ease;
-}
-
-.ubits-file-upload-compact__progress-fill--complete {
-    background: var(--ubits-feedback-accent-success);
+.ubits-file-upload-compact__progress-mount .ubits-progress-bar,
+.ubits-file-upload-compact__processing-mount .ubits-progress-bar {
+    width: 100%;
 }
 
 .ubits-file-upload-compact__actions {
@@ -237,26 +230,6 @@
 .ubits-file-upload-compact__processing-label {
     color: var(--ubits-fg-1-medium);
     flex-shrink: 0;
-}
-
-.ubits-file-upload-compact__processing-bar {
-    flex: 1;
-    height: 6px;
-    border-radius: var(--border-radius-full);
-    background: var(--ubits-bg-3);
-    overflow: hidden;
-}
-
-.ubits-file-upload-compact__processing-fill {
-    height: 100%;
-    width: 0%;
-    border-radius: var(--border-radius-full);
-    background: var(--ubits-accent-brand);
-    transition: width 0.12s linear;
-}
-
-.ubits-file-upload-compact__processing-fill--complete {
-    background: var(--ubits-feedback-accent-success);
 }
 
 .ubits-file-upload-compact__processing-pct {

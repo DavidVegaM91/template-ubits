@@ -444,10 +444,9 @@ fileUploadSetHeaderVisible('mi-file-upload', false);</code></pre>
 
 .ubits-file-upload__file-card--uploading /* Oculta botón eliminar y tamaño; muestra barra de progreso */
 
-/* Barra de progreso */
-.ubits-file-upload__progress-bar         /* Contenedor de la barra (gris) */
-.ubits-file-upload__progress-fill        /* Relleno azul 0-99 % */
-.ubits-file-upload__progress-fill--complete  /* Relleno verde al llegar a 100 % */
+/* Barra de progreso (componente oficial progress-bar en __progress-mount) */
+.ubits-file-upload__progress-mount .ubits-progress-bar   /* sm pill, track subtle */
+.ubits-file-upload__processing-mount .ubits-progress-bar
 
 /* Raíz del componente */
 .ubits-file-upload--hide-header          /* Oculta __header (createFileUpload hideHeader o fileUploadSetHeaderVisible) */</code></pre>

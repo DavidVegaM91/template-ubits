@@ -242,12 +242,12 @@
 .ubits-paginas-creator__item:hover:not(.is-active) .ubits-paginas-creator__label,
 .ubits-paginas-creator__item.is-force-hover:not(.is-active) .ubits-paginas-creator__label {
     color: var(--ubits-fg-1-high);
-    font-weight: 700;
+    font-weight: var(--font-weight-semibold);
 }
 
 .ubits-paginas-creator__item.is-active .ubits-paginas-creator__label {
     color: var(--ubits-accent-brand);
-    font-weight: 700;
+    font-weight: var(--font-weight-semibold);
 }
 
 .ubits-paginas-creator__menu {

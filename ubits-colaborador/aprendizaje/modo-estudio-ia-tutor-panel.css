@@ -17,6 +17,8 @@
    Cargar DESPUÉS de ../../general-styles/ubits-ia-chat.css
    ============================================================================= */
 
+@import url('../../components/segmented-progress.css');
+
 @keyframes ubits-ia-chat-side-panel-open {
     from { opacity: 0; }
     to { opacity: 1; }
@@ -570,65 +572,10 @@ body.ia-chat-side-panel-open #tab-bar-container {
     min-width: 0;
 }
 
-/* Contenedor de barras (1–19 preguntas): aprovecha todo el ancho disponible */
-.ubits-ia-chat-side__quiz-progress-bars {
-    display: flex;
-    gap: var(--gap-xs);
-    align-items: center;
+/* Fila de progreso quiz: segmented-progress (components/segmented-progress.css) + texto + stats */
+.ubits-ia-chat-side__quiz-progress .ubits-segmented-progress {
     flex: 1;
     min-width: 0;
-}
-
-.ubits-ia-chat-side__quiz-progress-bar {
-    flex: 1;
-    min-width: 4px;
-    height: 6px;
-    border-radius: var(--border-radius-xs);
-    background: var(--ubits-bg-3);
-    transition: background 0.2s;
-}
-
-.ubits-ia-chat-side__quiz-progress-bar--filled {
-    background: var(--ubits-accent-brand);
-}
-
-/* Slider de progreso (20+ preguntas): una barra con puntito que marca el avance */
-.ubits-ia-chat-side__quiz-progress-slider {
-    flex: 1;
-    min-width: 0;
-}
-
-.ubits-ia-chat-side__quiz-progress-track {
-    position: relative;
-    width: 100%;
-    height: 8px;
-    border-radius: var(--border-radius-xs);
-    background: var(--ubits-bg-3);
-}
-
-.ubits-ia-chat-side__quiz-progress-fill {
-    position: absolute;
-    left: 0;
-    top: 0;
-    bottom: 0;
-    width: 0;
-    border-radius: var(--border-radius-xs);
-    background: var(--ubits-accent-brand);
-    transition: width 0.2s ease;
-}
-
-.ubits-ia-chat-side__quiz-progress-thumb {
-    position: absolute;
-    top: 50%;
-    left: 0;
-    width: 14px;
-    height: 14px;
-    transform: translate(-50%, -50%);
-    border-radius: 50%;
-    background: var(--ubits-accent-brand);
-    border: 2px solid var(--ubits-bg-1);
-    transition: left 0.2s ease;
-    pointer-events: none;
 }
 
 .ubits-ia-chat-side__quiz-progress-text {
@@ -749,7 +696,7 @@ body.ia-chat-side-panel-open #tab-bar-container {
 
 /* Puntuación y precisión: bold + color por aprobación (alineado con SCORM) */
 .ubits-ia-chat-side__quiz-result-card-value.ubits-ia-chat-side__quiz-score {
-    font-weight: var(--font-weight-bold);
+    font-weight: var(--font-weight-semibold);
 }
 
 .ubits-ia-chat-side__quiz-score--error {
@@ -887,25 +834,10 @@ body.ia-chat-side-panel-open #tab-bar-container {
     min-width: 0;
 }
 
-.ubits-ia-chat-side__fc-progress-bars {
-    display: flex;
-    gap: var(--gap-xs);
-    align-items: center;
+/* Fila de progreso flashcards: segmented-progress + contador */
+.ubits-ia-chat-side__fc-progress .ubits-segmented-progress {
     flex: 1;
     min-width: 0;
-}
-
-.ubits-ia-chat-side__fc-progress-bar {
-    flex: 1;
-    min-width: 4px;
-    height: 6px;
-    border-radius: var(--border-radius-xs);
-    background: var(--ubits-bg-2);
-    transition: background 0.2s;
-}
-
-.ubits-ia-chat-side__fc-progress-bar--filled {
-    background: var(--ubits-accent-brand);
 }
 
 .ubits-ia-chat-side__fc-progress-text {

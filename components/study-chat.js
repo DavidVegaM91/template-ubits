@@ -768,9 +768,18 @@ function renderTutorPanel(type, topic, extraData) {
         const questions = shuffleQuizOptions(questionList);
         const totalQuestions = questions.length;
         const useBars = totalQuestions >= 1 && totalQuestions <= 19;
-        const progressBlock = useBars
-            ? '<div class="ubits-ia-chat-side__quiz-progress-bars">' + Array.from({ length: totalQuestions }, (_, i) => '<span class="ubits-ia-chat-side__quiz-progress-bar" data-bar-index="' + i + '"></span>').join('') + '</div>'
-            : '<div class="ubits-ia-chat-side__quiz-progress-slider" role="presentation"><div class="ubits-ia-chat-side__quiz-progress-track"><div class="ubits-ia-chat-side__quiz-progress-fill"></div><div class="ubits-ia-chat-side__quiz-progress-thumb"></div></div></div>';
+        const progressBlock = typeof segmentedProgressHtml === 'function'
+            ? segmentedProgressHtml({
+                total: totalQuestions,
+                current: 0,
+                mode: useBars ? 'segments' : 'slider',
+                size: useBars ? 'sm' : 'lg',
+                track: 'default',
+                ariaLabel: 'Progreso del quiz'
+            })
+            : (useBars
+                ? '<div class="ubits-segmented-progress ubits-segmented-progress--segments ubits-segmented-progress--sm" role="group" aria-label="Progreso del quiz"></div>'
+                : '<div class="ubits-segmented-progress ubits-segmented-progress--slider ubits-segmented-progress--lg" role="group" aria-label="Progreso del quiz"></div>');
         html = `<div class="ubits-ia-chat-side__content ubits-ia-chat-side__quiz" data-topic="${topicKey}" data-quiz-total="${totalQuestions}">
             <div class="ubits-ia-chat-side__header">
                 <span class="ubits-body-md-bold">Quiz</span>
@@ -893,7 +902,16 @@ function renderTutorPanel(type, topic, extraData) {
         const cards = (sets[fcSetIndex][topicKey] || sets[fcSetIndex].liderazgo).slice();
         const fcSet = String(fcSetIndex);
         const fcTotal = cards.length;
-        const fcProgressBarsHtml = Array.from({ length: fcTotal }, (_, i) => '<span class="ubits-ia-chat-side__fc-progress-bar" data-bar-index="' + i + '"></span>').join('');
+        const fcProgressBlock = typeof segmentedProgressHtml === 'function'
+            ? segmentedProgressHtml({
+                total: fcTotal,
+                current: 0,
+                mode: 'segments',
+                size: 'sm',
+                track: 'subtle',
+                ariaLabel: 'Progreso de flashcards'
+            })
+            : '<div class="ubits-segmented-progress ubits-segmented-progress--segments ubits-segmented-progress--sm ubits-segmented-progress--track-subtle" role="group" aria-label="Progreso de flashcards"></div>';
         html = `<div class="ubits-ia-chat-side__content ubits-ia-chat-side__flashcards" data-topic="${topicKey}" data-fc-set="${fcSet}">
             <div class="ubits-ia-chat-side__header">
                 <span class="ubits-body-md-bold">Flashcards</span>
@@ -902,7 +920,7 @@ function renderTutorPanel(type, topic, extraData) {
             <div class="ubits-ia-chat-side__body">
                 <div class="ubits-ia-chat-side__fc-main">
                     <div class="ubits-ia-chat-side__fc-progress">
-                        <div class="ubits-ia-chat-side__fc-progress-bars">${fcProgressBarsHtml}</div>
+                        ${fcProgressBlock}
                         <span class="ubits-ia-chat-side__fc-progress-text">1 / ${fcTotal}</span>
                     </div>
                     <div class="ubits-ia-chat-side__fc-card" data-index="0" role="button" tabindex="0" aria-label="Clic para voltear la tarjeta">
@@ -1635,9 +1653,7 @@ function bindTutorPanelEvents(panel, type, topicKey) {
     if (type === 'quiz') {
         const questions = panel.querySelectorAll('.ubits-ia-chat-side__quiz-q');
         const progressWrap = panel.querySelector('.ubits-ia-chat-side__quiz-progress');
-        const progressBars = panel.querySelectorAll('.ubits-ia-chat-side__quiz-progress-bar');
-        const progressSliderFill = panel.querySelector('.ubits-ia-chat-side__quiz-progress-fill');
-        const progressSliderThumb = panel.querySelector('.ubits-ia-chat-side__quiz-progress-thumb');
+        const segmentedProgressRoot = progressWrap ? progressWrap.querySelector('.ubits-segmented-progress') : null;
         const progressText = panel.querySelector('.ubits-ia-chat-side__quiz-progress-text');
         const progressWrongN = panel.querySelector('.ubits-ia-chat-side__quiz-progress-wrong-n');
         const progressCorrectN = panel.querySelector('.ubits-ia-chat-side__quiz-progress-correct-n');
@@ -1656,14 +1672,8 @@ function bindTutorPanelEvents(panel, type, topicKey) {
         let wrongCount = 0;
         function updateProgressBar() {
             if (!progressText) return;
-            if (progressBars.length) {
-                progressBars.forEach(function (bar, i) {
-                    bar.classList.toggle('ubits-ia-chat-side__quiz-progress-bar--filled', i <= currentIdx);
-                });
-            } else if (progressSliderFill && progressSliderThumb && total > 0) {
-                var pct = total === 1 ? 100 : ((currentIdx + 1) / total) * 100;
-                progressSliderFill.style.width = pct + '%';
-                progressSliderThumb.style.left = pct + '%';
+            if (segmentedProgressRoot && typeof setSegmentedProgressValue === 'function') {
+                setSegmentedProgressValue(segmentedProgressRoot, currentIdx);
             }
             progressText.textContent = (currentIdx + 1) + ' / ' + total;
             if (progressWrongN) progressWrongN.textContent = wrongCount;
@@ -1932,13 +1942,16 @@ function bindTutorPanelEvents(panel, type, topicKey) {
         const cardInner = panel.querySelector('.ubits-ia-chat-side__fc-card-inner');
         const frontEl = panel.querySelector('.ubits-ia-chat-side__fc-front');
         const backEl = panel.querySelector('.ubits-ia-chat-side__fc-back');
-        const progressBars = panel.querySelectorAll('.ubits-ia-chat-side__fc-progress-bar');
+        const fcProgressWrap = panel.querySelector('.ubits-ia-chat-side__fc-progress');
+        const fcSegmentedRoot = fcProgressWrap ? fcProgressWrap.querySelector('.ubits-segmented-progress') : null;
         const progressText = panel.querySelector('.ubits-ia-chat-side__fc-progress-text');
         const prevBtn = panel.querySelector('#ubits-ia-chat-side__fc-prev');
         const nextBtn = panel.querySelector('#ubits-ia-chat-side__fc-next');
         const doneBtn = panel.querySelector('#ubits-ia-chat-side__fc-done');
         function updateFcProgress() {
-            if (progressBars.length) progressBars.forEach((bar, i) => bar.classList.toggle('ubits-ia-chat-side__fc-progress-bar--filled', i <= fcIndex));
+            if (fcSegmentedRoot && typeof setSegmentedProgressValue === 'function') {
+                setSegmentedProgressValue(fcSegmentedRoot, fcIndex);
+            }
             if (progressText) progressText.textContent = (fcIndex + 1) + ' / ' + cards.length;
             var isFirst = fcIndex === 0;
             var isLast = fcIndex === cards.length - 1;

@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="../../images/Ubits-logo-dark.svg">
+    <title>Progress bar | UBITS Playground</title>
+    <link rel="stylesheet" href="../../general-styles/ubits-colors.css">
+    <link rel="stylesheet" href="../../general-styles/styles.css">
+    <link rel="stylesheet" href="../../general-styles/fontawesome-icons.css">
+    <link rel="stylesheet" href="../../general-styles/ubits-typography.css">
+    <link rel="stylesheet" href="../../components/sub-nav.css">
+    <link rel="stylesheet" href="../../components/sidebar.css">
+    <link rel="stylesheet" href="../../docs/docs-sidebar.css">
+    <link rel="stylesheet" href="../../docs/docstyles.css">
+    <link rel="stylesheet" href="../../components/button.css">
+    <link rel="stylesheet" href="../../components/alert.css">
+    <link rel="stylesheet" href="../../components/toast.css">
+    <link rel="stylesheet" href="../../components/switch.css">
+    <link rel="stylesheet" href="../../components/progress-bar.css">
+    <style>
+        .preview-control-btn.active {
+            background: var(--ubits-accent-brand) !important;
+            color: white !important;
+            border-color: var(--ubits-accent-brand) !important;
+        }
+        .preview-control-btn.active span { color: white !important; }
+        .pb-doc-stage {
+            display: flex;
+            flex-direction: column;
+            gap: var(--gap-xl);
+            background: var(--ubits-bg-2);
+            border-radius: var(--border-radius-lg);
+            border: 1px solid var(--ubits-border-1);
+            padding: var(--padding-xl);
+        }
+        .pb-doc-size-row {
+            display: flex;
+            flex-direction: column;
+            gap: var(--gap-sm);
+            width: 100%;
+            max-width: 480px;
+            margin: 0 auto;
+        }
+        .pb-doc-size-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            gap: var(--gap-sm);
+        }
+        .pb-doc-size-meta {
+            color: var(--ubits-fg-1-medium);
+        }
+        .pb-doc-subgrid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: var(--gap-lg);
+            width: 100%;
+            margin-top: var(--gap-lg);
+        }
+        .pb-doc-variant-card {
+            background: var(--ubits-bg-1);
+            border: 1px solid var(--ubits-border-1);
+            border-radius: var(--border-radius-md);
+            padding: var(--padding-lg);
+            display: flex;
+            flex-direction: column;
+            gap: var(--gap-md);
+        }
+    </style>
+</head>
+<body class="componentes-page" data-theme="light">
+    <div class="dashboard-container">
+        <main class="main-content">
+            <div id="top-nav-container"></div>
+            <div style="display: flex;">
+                <div id="docs-dropdown-container"></div>
+                <div id="docs-sidebar-container"></div>
+                <div class="components-content">
+                    <div class="content-area" style="display: block; width: 100%;">
+                        <div style="text-align: center; margin-bottom: 60px;">
+                            <h1 class="ubits-display-d2-bold" style="margin-bottom: 24px; color: var(--ubits-accent-brand);">
+                                Progress bar
+                            </h1>
+                            <p class="ubits-body-md-regular" style="max-width: 800px; margin: 0 auto 32px; line-height: 1.6;">
+                                Barra horizontal para mostrar avance de un contenido, plan o carga (0–100 %). Unifica los grosores que hoy aparecen en cards de aprendizaje, tablas, planes, file upload y zona de estudio del home.
+                            </p>
+                        </div>
+
+                        <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; margin-bottom: 40px;">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-eye" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Preview del componente
+                            </h2>
+                            <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6;">
+                                Dos alturas oficiales: sm (5px) para cards, overlays, upload y zona de estudio; lg (8px) para tablas y planes. Usa el interruptor para alternar bordes rectos o tipo pill, y los botones de valor para ver el relleno y el estado completado (100 %).
+                            </p>
+
+                            <div style="display: flex; flex-wrap: wrap; gap: var(--gap-lg); align-items: center; margin-bottom: var(--gap-lg);">
+                                <label class="ubits-switch ubits-switch--md">
+                                    <input type="checkbox" class="ubits-switch__input" id="pb-preview-rounded" role="switch" checked>
+                                    <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
+                                    <span class="ubits-switch__label">Bordes redondeados (pill)</span>
+                                </label>
+                                <div style="display: flex; flex-wrap: wrap; gap: var(--gap-sm); align-items: center;">
+                                    <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Valor:</span>
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-pb-value="0"><span>0 %</span></button>
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-pb-value="25"><span>25 %</span></button>
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn active" data-pb-value="65"><span>65 %</span></button>
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-pb-value="100"><span>100 %</span></button>
+                                </div>
+                            </div>
+
+                            <div class="pb-doc-stage" id="pb-preview-sizes"></div>
+
+                            <div class="pb-doc-subgrid">
+                                <div class="pb-doc-variant-card">
+                                    <span class="ubits-body-md-bold">Variante chart (cards)</span>
+                                    <div id="pb-preview-chart"></div>
+                                </div>
+                                <div class="pb-doc-variant-card">
+                                    <span class="ubits-body-md-bold">Fila con % (tabla · 60px)</span>
+                                    <div id="pb-preview-row"></div>
+                                </div>
+                                <div class="pb-doc-variant-card">
+                                    <span class="ubits-body-md-bold">Track estático (overlay card)</span>
+                                    <div id="pb-preview-static"></div>
+                                </div>
+                                <div class="pb-doc-variant-card">
+                                    <span class="ubits-body-md-bold">Track sutil (planes · upload)</span>
+                                    <div id="pb-preview-subtle"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; margin-bottom: 40px;">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-info-circle" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Características generales
+                            </h2>
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
+                                <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-arrows-alt-v"></i></div>
+                                    <div class="ubits-body-sm-bold">Dos alturas</div>
+                                    <div class="ubits-body-sm-regular">sm 5px (cards, upload, home) y lg 8px (tablas, planes). xs y md se normalizan a sm.</div>
+                                </div>
+                                <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-circle"></i></div>
+                                    <div class="ubits-body-sm-bold">Pill opcional</div>
+                                    <div class="ubits-body-sm-regular">Con bordes redondeados tipo pastilla o esquinas rectas para overlays de card.</div>
+                                </div>
+                                <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-check-circle"></i></div>
+                                    <div class="ubits-body-sm-bold">Completado</div>
+                                    <div class="ubits-body-sm-regular">Al llegar a 100 % el relleno pasa a verde de éxito (o puedes forzarlo con status).</div>
+                                </div>
+                                <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-code"></i></div>
+                                    <div class="ubits-body-sm-bold">HTML o función</div>
+                                    <div class="ubits-body-sm-regular">Genera markup con progressBarHtml o monta con createProgressBar en un contenedor.</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; margin-bottom: 40px;">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-comments" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Prompts útiles
+                            </h2>
+                            <div id="pb-warning-alert" style="margin-bottom: 24px;"></div>
+                            <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
+                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                                    <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Insertar barra de progreso</h3>
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('pb-prompt-1')">
+                                        <i class="far fa-copy"></i><span>Copiar</span>
+                                    </button>
+                                </div>
+                                <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
+                                    <pre style="margin: 0; font-family: Monaco, Menlo, monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="pb-prompt-1">Inserta una Progress bar UBITS en [ubicación] con valor [porcentaje], tamaño [sm/lg] y bordes redondeados [sí/no]. Importa progress-bar.css y progress-bar.js.</code></pre>
+                                </div>
+                            </div>
+                            <div>
+                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                                    <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Actualizar avance</h3>
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('pb-prompt-2')">
+                                        <i class="far fa-copy"></i><span>Copiar</span>
+                                    </button>
+                                </div>
+                                <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
+                                    <pre style="margin: 0; font-family: Monaco, Menlo, monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="pb-prompt-2">Cuando cambie el progreso de [elemento], actualiza la barra con setValue del objeto devuelto por createProgressBar o con setProgressBarValue sobre el nodo .ubits-progress-bar.</code></pre>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; margin-bottom: 40px;">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 8px; color: var(--ubits-fg-1-high);">Documentación técnica</h2>
+                            <p class="ubits-body-sm-regular" style="margin: 0 0 16px; color: var(--ubits-fg-1-medium);">Estructura, clases y API.</p>
+                            <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm" id="pb-docs-toggle" style="margin-bottom: 16px;">
+                                <i class="far fa-chevron-down" id="pb-docs-chevron" style="transition: transform 0.3s ease;"></i>
+                                <span id="pb-docs-toggle-text">Mostrar</span>
+                            </button>
+                            <div id="pb-technical-docs" style="display: none; border: 1px solid var(--ubits-border-1); border-radius: var(--border-radius-lg); overflow: hidden;">
+                                <div style="padding: 24px; border-bottom: 1px solid var(--ubits-border-1);">
+                                    <h3 class="ubits-body-md-bold" style="margin: 0 0 12px; color: var(--ubits-fg-1-high);">Requisitos</h3>
+                                    <ul class="ubits-body-sm-regular" style="margin: 0; padding-left: 20px; color: var(--ubits-fg-1-medium); line-height: 1.6;">
+                                        <li><code>general-styles/ubits-colors.css</code> y <code>styles.css</code></li>
+                                        <li><code>components/progress-bar.css</code></li>
+                                        <li><code>components/progress-bar.js</code> (opcional si usas HTML estático)</li>
+                                    </ul>
+                                </div>
+                                <div style="padding: 24px; border-bottom: 1px solid var(--ubits-border-1);">
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                                        <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Estructura HTML</h3>
+                                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('pb-code-html')">
+                                            <i class="far fa-copy"></i><span>Copiar</span>
+                                        </button>
+                                    </div>
+                                    <pre style="margin: 0; background: var(--ubits-bg-2); padding: 16px; border-radius: 8px; overflow: auto;"><code id="pb-code-html" class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">&lt;div class="ubits-progress-bar ubits-progress-bar--sm ubits-progress-bar--rounded"
+     role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="65"
+     aria-label="Progreso del plan"&gt;
+  &lt;div class="ubits-progress-bar__track"&gt;
+    &lt;div class="ubits-progress-bar__fill" style="width:65%"&gt;&lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+                                </div>
+                                <div style="padding: 24px;">
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                                        <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">createProgressBar / progressBarHtml</h3>
+                                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('pb-code-api')">
+                                            <i class="far fa-copy"></i><span>Copiar</span>
+                                        </button>
+                                    </div>
+                                    <pre style="margin: 0; background: var(--ubits-bg-2); padding: 16px; border-radius: 8px; overflow: auto;"><code id="pb-code-api" class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">var bar = createProgressBar({
+  containerId: 'mi-barra',
+  value: 65,
+  size: 'sm',        // sm | lg
+  rounded: true,     // pill; false = esquinas rectas
+  variant: 'default', // 'chart' para cards de aprendizaje
+  track: 'default',  // 'static' | 'subtle'
+  width: '100%',     // opcional, ej. '60px' en tablas
+  withLabelRow: false, // true → progressBarRowHtml + %
+  fixedWidth60: false,
+  ariaLabel: 'Progreso'
+});
+// Tabla: tableProgressCellHtml(75) → fila lg 60px + %
+// bar.setValue(80); bar.setRounded(false); bar.destroy();
+
+// Solo HTML:
+document.getElementById('x').innerHTML = progressBarHtml({ value: 40, size: 'lg', rounded: true });</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <div id="ubits-toast-container"></div>
+    <script src="../../components/sidebar.js"></script>
+    <script src="../../components/sub-nav.js"></script>
+    <script src="../../docs/docs-sidebar.js"></script>
+    <script src="../../script.js"></script>
+    <script src="../../components/alert.js"></script>
+    <script src="../../components/toast.js"></script>
+    <script src="../../components/progress-bar.js"></script>
+    <script>
+        var PB_SIZES = [
+            { id: 'sm', label: 'SM', height: '5px', refs: 'Cards, upload, zona de estudio, drawer competencias' },
+            { id: 'lg', label: 'LG', height: '8px', refs: 'Tabla, planes (tareas), detalle plan' }
+        ];
+        var pbPreviewValue = 65;
+        var pbPreviewRounded = true;
+
+        function pbPaintPreview() {
+            var rounded = pbPreviewRounded;
+            var value = pbPreviewValue;
+            var sizesMount = document.getElementById('pb-preview-sizes');
+            if (sizesMount) {
+                sizesMount.innerHTML = PB_SIZES.map(function (s) {
+                    return (
+                        '<div class="pb-doc-size-row">' +
+                            '<div class="pb-doc-size-label">' +
+                                '<span class="ubits-body-md-bold">' + s.label + ' · ' + s.height + '</span>' +
+                                '<span class="ubits-body-xs-regular pb-doc-size-meta">' + s.refs + '</span>' +
+                            '</div>' +
+                            progressBarHtml({ value: value, size: s.id, rounded: rounded, ariaLabel: 'Progreso ' + s.label }) +
+                        '</div>'
+                    );
+                }).join('');
+            }
+            var chart = document.getElementById('pb-preview-chart');
+            if (chart) {
+                chart.innerHTML = progressBarHtml({ value: value, size: 'sm', rounded: false, variant: 'chart', track: 'static' });
+            }
+            var row = document.getElementById('pb-preview-row');
+            if (row) {
+                row.innerHTML = progressBarRowHtml({ value: value, size: 'lg', rounded: rounded, fixedWidth60: true });
+            }
+            var stat = document.getElementById('pb-preview-static');
+            if (stat) {
+                stat.innerHTML = progressBarHtml({ value: value, size: 'sm', rounded: false, variant: 'chart', track: 'static' });
+            }
+            var subtle = document.getElementById('pb-preview-subtle');
+            if (subtle) {
+                subtle.innerHTML = progressBarHtml({ value: value, size: 'sm', rounded: rounded, track: 'subtle' });
+            }
+        }
+
+        function copyPrompt(id) {
+            var el = document.getElementById(id);
+            if (!el) return;
+            navigator.clipboard.writeText(el.textContent).then(function () {
+                if (typeof showToast === 'function') showToast('success', 'Prompt copiado');
+            });
+        }
+
+        function copyCode(id) {
+            var el = document.getElementById(id);
+            if (!el) return;
+            navigator.clipboard.writeText(el.textContent).then(function () {
+                if (typeof showToast === 'function') showToast('success', 'Código copiado');
+            });
+        }
+
+        function toggleTechnicalDocs() {
+            var box = document.getElementById('pb-technical-docs');
+            var chev = document.getElementById('pb-docs-chevron');
+            var txt = document.getElementById('pb-docs-toggle-text');
+            if (!box) return;
+            var open = box.style.display !== 'none';
+            box.style.display = open ? 'none' : 'block';
+            if (chev) chev.style.transform = open ? '' : 'rotate(180deg)';
+            if (txt) txt.textContent = open ? 'Mostrar' : 'Ocultar';
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            if (typeof loadSubNav === 'function') loadSubNav('top-nav-container', 'documentacion');
+            if (typeof loadDocsSidebar === 'function') loadDocsSidebar('progress-bar');
+            if (typeof loadSidebar === 'function') loadSidebar('ninguno');
+            if (typeof showAlert === 'function') {
+                showAlert('warning', 'Antes de enviar los prompts a Cursor, reemplaza los textos entre [corchetes] con la información de tu proyecto.', { containerId: 'pb-warning-alert' });
+            }
+
+            pbPaintPreview();
+
+            var roundedSwitch = document.getElementById('pb-preview-rounded');
+            if (roundedSwitch) {
+                roundedSwitch.addEventListener('change', function () {
+                    pbPreviewRounded = roundedSwitch.checked;
+                    pbPaintPreview();
+                });
+            }
+
+            document.querySelectorAll('[data-pb-value]').forEach(function (btn) {
+                btn.addEventListener('click', function () {
+                    document.querySelectorAll('[data-pb-value]').forEach(function (b) { b.classList.remove('active'); });
+                    btn.classList.add('active');
+                    pbPreviewValue = parseInt(btn.getAttribute('data-pb-value'), 10) || 0;
+                    pbPaintPreview();
+                });
+            });
+
+            var toggleBtn = document.getElementById('pb-docs-toggle');
+            if (toggleBtn) toggleBtn.addEventListener('click', toggleTechnicalDocs);
+        });
+    </script>
+</body>
+</html>

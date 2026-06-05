@@ -12,6 +12,8 @@
    mosaico). Ver README («Tabla solo de datos: Data Table») y `documentacion/componentes/ubits-data-table.html`.
    ======================================== */
 
+@import url('./progress-bar.css');
+
 /* Wrapper: scroll horizontal en móvil */
 .ubits-table-wrapper {
     overflow-x: auto;
@@ -131,27 +133,12 @@
     color: var(--ubits-fg-1-medium);
 }
 
-/* Tipo celda: progress bar */
-.ubits-table__cell-progress {
+/* Tipo celda: progress bar (componente oficial vía tableProgressCellHtml / progressBarRowHtml) */
+.ubits-table__cell-progress,
+.ubits-table td .ubits-progress-bar-row {
     display: flex;
     align-items: center;
     gap: var(--gap-sm);
-}
-
-.ubits-table__progress-bar {
-    width: 60px;
-    height: 8px;
-    background-color: var(--ubits-bg-4-static);
-    border-radius: var(--border-radius-xs);
-    overflow: hidden;
-    flex-shrink: 0;
-}
-
-.ubits-table__progress-bar-fill {
-    height: 100%;
-    background-color: var(--ubits-chart-bg-neutral-blue-base);
-    border-radius: var(--border-radius-xs);
-    transition: width 0.3s ease;
 }
 
 /* Tipo celda: avatar + nombre (assignee) */

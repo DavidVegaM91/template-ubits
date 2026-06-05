@@ -1,6 +1,7 @@
 /**
  * UBITS Carousel indicators — "Dynamic Dots"
- * Ventana de 5 puntos con strip deslizante. Colores y espaciado vía tokens UBITS en CSS.
+ * Ventana de 5 puntos con strip deslizante; la ventana visible se centra como bloque (no solo el activo).
+ * Colores y espaciado vía tokens UBITS en CSS.
  *
  * API: initCarouselIndicators({ containerId | container, count, activeIndex, ariaLabel, onSelect })
  * → { setActive, setCount, getState, destroy }
@@ -8,8 +9,15 @@
 (function (global) {
     'use strict';
 
+    var VISIBLE_COUNT = 5;
+
     function clamp(n, lo, hi) {
         return Math.max(lo, Math.min(hi, n));
+    }
+
+    function getWindowStart(activeIndex, count) {
+        if (count <= VISIBLE_COUNT) return 0;
+        return clamp(activeIndex - 2, 0, count - VISIBLE_COUNT);
     }
 
     /**
@@ -18,13 +26,12 @@
     function getDotClass(idx, activeIndex, count) {
         var base = 'ubits-carousel-indicators__dot';
         
-        if (count <= 5) {
+        if (count <= VISIBLE_COUNT) {
             if (idx === activeIndex) return base + ' ubits-carousel-indicators__dot--active';
             return base + ' ubits-carousel-indicators__dot--small';
         }
 
-        // Ventana deslizante de 5 puntos
-        var windowStart = clamp(activeIndex - 2, 0, count - 5);
+        var windowStart = getWindowStart(activeIndex, count);
         var windowEnd = windowStart + 4;
 
         if (idx < windowStart || idx > windowEnd) {
@@ -33,10 +40,8 @@
 
         if (idx === activeIndex) return base + ' ubits-carousel-indicators__dot--active';
         
-        // Puntos en los extremos exactos de la ventana son diminutos
         if (idx === windowStart || idx === windowEnd) return base + ' ubits-carousel-indicators__dot--tiny';
         
-        // El resto dentro de la ventana son pequeños
         return base + ' ubits-carousel-indicators__dot--small';
     }
 
@@ -115,7 +120,7 @@
                 }
             }
 
-            // 2. Desplazamiento: leer --ci-* y padding del strip desde CSS (tokens), sin números mágicos sueltos.
+            // 2. Desplazamiento: centrar la ventana visible como bloque (alineado con React propuesta B).
             var rootEl = state._root;
             var stripEl = state._strip;
             var dotBase = 8;
@@ -135,8 +140,12 @@
                 stripPad = parseFloat(getComputedStyle(stripEl).paddingLeft) || 0;
             }
 
-            var centerOfActive = activeIdx * (dotBase + gap) + activeVis / 2;
-            var tx = containerWidth / 2 - centerOfActive - stripPad;
+            var step = dotBase + gap;
+            var windowStart = getWindowStart(activeIdx, count);
+            var visibleCount = Math.min(VISIBLE_COUNT, count);
+            var blockWidth = visibleCount * step - gap + (activeVis - dotBase) * 0.5;
+            var blockCenter = windowStart * step + blockWidth / 2;
+            var tx = containerWidth / 2 - blockCenter - stripPad;
 
             if (immediate) {
                 state._strip.style.transition = 'none';
