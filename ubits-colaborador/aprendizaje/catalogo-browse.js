@@ -128,6 +128,124 @@
 
     var chipCallback = null;
 
+    function getCatalogItemsForTrending() {
+        if (typeof refreshCatalogoContenidosDrawer === 'function') {
+            return refreshCatalogoContenidosDrawer();
+        }
+        if (global.CATALOGO_CURSOS_DRAWER && global.CATALOGO_CURSOS_DRAWER.length) {
+            return global.CATALOGO_CURSOS_DRAWER.slice();
+        }
+        return [];
+    }
+
+    function buildCatalogSearchHaystack(item) {
+        return [
+            item.title,
+            item.descripcion,
+            item.type,
+            item.competency,
+            item.provider,
+            item.categoria,
+            item.level,
+            item.language
+        ].filter(Boolean).join(' ').toLowerCase();
+    }
+
+    function countCatalogSearchResults(query, catalogItems) {
+        var q = String(query || '').toLowerCase().trim();
+        if (!q || !catalogItems.length) return 0;
+        var terms = q.split(/\s+/).filter(Boolean);
+        var matched = 0;
+        for (var i = 0; i < catalogItems.length; i++) {
+            var haystack = buildCatalogSearchHaystack(catalogItems[i]);
+            var ok = true;
+            for (var j = 0; j < terms.length; j++) {
+                if (haystack.indexOf(terms[j]) === -1) {
+                    ok = false;
+                    break;
+                }
+            }
+            if (ok) matched++;
+        }
+        return matched;
+    }
+
+    /**
+     * Términos «Lo más buscado»: competencias o habilidades presentes en BDS_CONTENIDOS_UBITS
+     * con al menos minResults coincidencias en el catálogo unificado (misma lógica que home-learn).
+     */
+    function getTrendingTermsFromUbitsBd(limit, minResults) {
+        limit = limit || 5;
+        minResults = minResults == null ? 2 : minResults;
+
+        var bd = global.BDS_CONTENIDOS_UBITS;
+        var rows = bd && bd.contents ? bd.contents : [];
+        if (!rows.length) {
+            return ['Liderazgo', 'Marketing digital', 'Comunicación', 'Innovación', 'Trabajo en equipo'];
+        }
+
+        var compMap = {};
+        var habMap = {};
+        var compMaster = global.BD_MASTER_COMPETENCIAS && global.BD_MASTER_COMPETENCIAS.competencias;
+        var habMaster = global.BD_MASTER_HABILIDADES && global.BD_MASTER_HABILIDADES.habilidades;
+        if (compMaster) {
+            for (var c = 0; c < compMaster.length; c++) {
+                compMap[compMaster[c].id] = compMaster[c].nombre;
+            }
+        }
+        if (habMaster) {
+            for (var h = 0; h < habMaster.length; h++) {
+                habMap[habMaster[h].id] = habMaster[h].nombre;
+            }
+        }
+
+        var compIds = {};
+        var habIds = {};
+        for (var r = 0; r < rows.length; r++) {
+            var row = rows[r];
+            if (row.competenciaPrincipalId && compMap[row.competenciaPrincipalId]) {
+                compIds[row.competenciaPrincipalId] = compMap[row.competenciaPrincipalId];
+            }
+            if (row.habilidadPrincipalId && habMap[row.habilidadPrincipalId]) {
+                habIds[row.habilidadPrincipalId] = habMap[row.habilidadPrincipalId];
+            }
+            var sec = row.habilidadesSecundariasIds;
+            if (sec && sec.length) {
+                for (var s = 0; s < sec.length; s++) {
+                    if (habMap[sec[s]]) habIds[sec[s]] = habMap[sec[s]];
+                }
+            }
+        }
+
+        var catalogItems = getCatalogItemsForTrending();
+        var candidates = [];
+        var seen = {};
+
+        function pushCandidate(name, kind) {
+            if (!name || seen[name]) return;
+            seen[name] = true;
+            var n = countCatalogSearchResults(name, catalogItems);
+            if (n >= minResults) {
+                candidates.push({ name: name, count: n, kind: kind });
+            }
+        }
+
+        Object.keys(compIds).forEach(function (id) { pushCandidate(compIds[id], 'comp'); });
+        Object.keys(habIds).forEach(function (id) { pushCandidate(habIds[id], 'hab'); });
+
+        candidates.sort(function (a, b) {
+            if (b.count !== a.count) return b.count - a.count;
+            if (a.kind !== b.kind) return a.kind === 'comp' ? -1 : 1;
+            return a.name.localeCompare(b.name, 'es');
+        });
+
+        if (!candidates.length) {
+            return ['Liderazgo', 'Marketing digital', 'Comunicación', 'Innovación', 'Trabajo en equipo'].slice(0, limit);
+        }
+
+        return candidates.slice(0, limit).map(function (item) { return item.name; });
+    }
+
     function getSkillIcon(habilidadNombre) {
         if (!global.BD_MASTER_HABILIDADES || !global.BD_MASTER_HABILIDADES.habilidades) {
             return 'far fa-circle';
@@ -146,13 +264,7 @@
         var chipsContainer = document.getElementById('catalog-chips');
         if (!chipsContainer) return;
 
-        var busquedasFrecuentes = [
-            'Liderazgo',
-            'Comunicación',
-            'Inglés',
-            'Scrum',
-            'Negociación'
-        ];
+        var busquedasFrecuentes = getTrendingTermsFromUbitsBd(5, 2);
 
         chipsContainer.innerHTML = busquedasFrecuentes.map(function (busqueda) {
             return (

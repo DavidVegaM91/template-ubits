@@ -160,130 +160,7 @@
     }
 }
 
-/* ========================================
-   Hero buscador — diseño APP v3 (hardcodeado)
-   ======================================== */
-
-.home-learn-hero {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-end;
-    gap: var(--gap-2xl);
-    width: 100%;
-    min-height: 212px;
-    padding: var(--padding-3xl) var(--padding-2xl) var(--padding-2xl);
-    box-sizing: border-box;
-    border-radius: var(--border-radius-lg);
-    /* Gradiente APP v3 (Figma): #04101F → #0C5BEF → #00CAFF */
-    background: linear-gradient(
-        180deg,
-        #04101F 0%,
-        var(--ubits-accent-brand-static) 54%,
-        #00CAFF 100%
-    );
-}
-
-@media (min-width: 1024px) {
-    .home-learn-hero {
-        justify-content: center;
-        padding: var(--padding-2xl);
-    }
-}
-
-.home-learn-hero__title {
-    margin: 0;
-    color: var(--ubits-fg-bold);
-    text-align: center;
-    width: 100%;
-    font-weight: var(--font-weight-semibold);
-}
-
-.home-learn-hero__search {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: var(--gap-sm);
-    width: 100%;
-    max-width: 100%;
-    min-height: 48px;
-    padding: var(--padding-md) var(--padding-sm) var(--padding-md) var(--padding-lg);
-    box-sizing: border-box;
-    border-radius: var(--border-radius-full);
-    border: 1px solid color-mix(in srgb, var(--ubits-fg-bold) 24%, transparent);
-    background: linear-gradient(
-        -12.6deg,
-        color-mix(in srgb, var(--ubits-fg-bold) 5%, transparent) 0%,
-        color-mix(in srgb, var(--ubits-fg-bold) 10%, transparent) 100%
-    );
-}
-
-.home-learn-hero__search-field {
-    flex: 1;
-    min-width: 0;
-    margin: var(--padding-none);
-    padding: var(--padding-none);
-    border: none;
-    outline: none;
-    background: transparent;
-    color: var(--ubits-fg-bold);
-    font-family: var(--ubits-font-family-sans);
-    font-size: var(--font-size-md);
-    line-height: var(--line-height-md);
-    font-weight: var(--font-weight-regular);
-    appearance: none;
-    -webkit-appearance: none;
-}
-
-.home-learn-hero__search-field::placeholder {
-    color: var(--ubits-fg-bold);
-    opacity: 1;
-}
-
-.home-learn-hero__search-field::-webkit-search-cancel-button {
-    -webkit-appearance: none;
-    appearance: none;
-    height: 16px;
-    width: 16px;
-    margin-right: var(--gap-xs);
-    background: color-mix(in srgb, var(--ubits-fg-bold) 40%, transparent);
-    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='white'%3E%3Cpath d='M12.5 3.5L3.5 12.5M3.5 3.5l9 9' stroke='white' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");
-    mask-size: contain;
-    mask-repeat: no-repeat;
-    mask-position: center;
-    cursor: pointer;
-}
-
-.home-learn-hero__search--active {
-    border-color: color-mix(in srgb, var(--ubits-fg-bold) 40%, transparent);
-}
-
-.home-learn-hero__search-btn {
-    flex-shrink: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 32px;
-    height: 32px;
-    padding: var(--padding-none);
-    border: none;
-    border-radius: var(--border-radius-full);
-    background: color-mix(in srgb, var(--ubits-fg-bold) 16%, transparent);
-    color: var(--ubits-fg-bold);
-    cursor: pointer;
-    line-height: 1;
-}
-
-.home-learn-hero__search-icon {
-    display: block;
-    width: 16px;
-    height: 16px;
-    flex-shrink: 0;
-}
-
-.home-learn-hero__search-btn:hover {
-    background: color-mix(in srgb, var(--ubits-fg-bold) 24%, transparent);
-}
+/* Hero visual: components/hero-search.css (ubits-hero-search) */
 
 /* ========================================
    Buscador — modos exploración / resultados
@@ -359,6 +236,14 @@
     padding: var(--padding-none) !important;
     background: transparent !important;
     gap: var(--gap-2xl);
+}
+
+.home-learn-browse-section #academia-selector-container {
+    max-width: 315px;
+}
+
+.home-learn-browse-section #ubits-input-select-academia-selector-container.ubits-dropdown-menu__content {
+    min-width: min(315px, calc(100vw - 16px));
 }
 
 .home-learn-browse-section[hidden],

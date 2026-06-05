@@ -1,5 +1,5 @@
 /**
- * Home Learn — buscador del hero (hardcodeado APP v3): exploración catálogo + resultados en grid.
+ * Home Learn — buscador del hero (componente hero-search): exploración catálogo + resultados en grid.
  * Busca en bd-contenidos-ubits.js y bd-contenidos-fiqsha.js (vía catalogo-contenidos-drawer).
  *
  * Búsqueda con debounce + skeleton (patrón producción): no re-renderiza en cada tecla;
@@ -161,7 +161,11 @@
         if (chipsWrap) chipsWrap.hidden = state !== 'browse';
         if (browsePanel) browsePanel.hidden = state !== 'browse';
         if (resultsPanel) resultsPanel.hidden = state !== 'results';
-        if (searchShell) searchShell.classList.toggle('home-learn-hero__search--active', state !== 'idle');
+        if (typeof setHeroSearchBarActive === 'function') {
+            setHeroSearchBarActive(searchShell, state !== 'idle');
+        } else if (searchShell) {
+            searchShell.classList.toggle('ubits-hero-search__bar--active', state !== 'idle');
+        }
     }
 
     function ensureBrowseContent() {
@@ -436,7 +440,20 @@
         }
     }
 
+    function mountHomeLearnHeroSearch() {
+        if (typeof mountHeroSearch !== 'function') return;
+        mountHeroSearch({
+            containerId: 'home-learn-hero-mount',
+            title: '¿Qué quieres aprender hoy?',
+            placeholder: 'Buscar contenidos o competencias',
+            barId: 'home-learn-hero-search',
+            inputId: 'home-learn-search-input',
+            submitId: 'home-learn-search-submit'
+        });
+    }
+
     function initHomeLearnSearch() {
+        mountHomeLearnHeroSearch();
         refreshCatalogItems();
         setSearchState('idle');
         wireHeroSearch();

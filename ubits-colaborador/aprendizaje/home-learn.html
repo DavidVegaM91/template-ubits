@@ -28,6 +28,7 @@
     <link rel="stylesheet" href="../../components/badge-tag.css">
     <link rel="stylesheet" href="../../components/empty-state.css">
     <link rel="stylesheet" href="../../components/skeleton.css">
+    <link rel="stylesheet" href="../../components/hero-search.css">
     <link rel="stylesheet" href="./catalogo.css">
     <link rel="stylesheet" href="./resultados-busqueda.css">
     <link rel="stylesheet" href="./home-learn.css">
@@ -43,28 +44,10 @@
             <div class="content-area">
                 <div class="content-sections">
 
-                    <!-- Hero buscador (hardcodeado según diseño APP v3) -->
+                    <!-- Hero buscador — componente ubits-hero-search -->
                     <div class="section-single">
                         <div class="widget-home-learn-hero">
-                            <section class="home-learn-hero" aria-label="Buscar contenidos">
-                                <p class="home-learn-hero__title ubits-heading-h1">¿Qué quieres aprender hoy?</p>
-                                <div class="home-learn-hero__search" id="home-learn-hero-search" role="search">
-                                    <input
-                                        type="search"
-                                        class="home-learn-hero__search-field ubits-body-md-regular"
-                                        id="home-learn-search-input"
-                                        placeholder="Buscar contenidos o competencias"
-                                        autocomplete="off"
-                                        enterkeyhint="search"
-                                        aria-label="Buscar contenidos o competencias"
-                                    >
-                                    <button type="button" class="home-learn-hero__search-btn" id="home-learn-search-submit" aria-label="Buscar">
-                                        <svg class="home-learn-hero__search-icon" viewBox="0 0 16.2499 16.2499" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                                            <path d="M14.1667 7.70833C14.1667 4.1415 11.2752 1.25 7.70833 1.25C4.14149 1.25 1.25 4.14149 1.25 7.70833C1.25 11.2752 4.1415 14.1667 7.70833 14.1667C9.45282 14.1667 11.0343 13.4735 12.1965 12.3494C12.217 12.3203 12.2404 12.2925 12.2664 12.2664C12.292 12.2409 12.3193 12.2183 12.3478 12.1981C13.4728 11.0358 14.1667 9.45365 14.1667 7.70833ZM15.4167 7.70833C15.4167 9.6119 14.7251 11.353 13.5815 12.6978L16.0669 15.1831C16.311 15.4272 16.311 15.8228 16.0669 16.0669C15.8228 16.311 15.4272 16.311 15.1831 16.0669L12.6978 13.5815C11.353 14.7251 9.6119 15.4167 7.70833 15.4167C3.45114 15.4167 0 11.9655 0 7.70833C0 3.45114 3.45114 0 7.70833 0C11.9655 0 15.4167 3.45114 15.4167 7.70833Z" fill="currentColor"/>
-                                        </svg>
-                                    </button>
-                                </div>
-                            </section>
+                            <div id="home-learn-hero-mount"></div>
                         </div>
                     </div>
 
@@ -182,6 +165,7 @@
     <script src="../../bd-master/bd-master-habilidades.js"></script>
     <script src="../../bd-master/bd-master-categorias-fiqsha.js"></script>
     <script src="../lms-creator/planes-formacion/catalogo-contenidos-drawer.js"></script>
+    <script src="../../components/hero-search.js"></script>
     <script src="./catalogo-browse.js"></script>
     <script src="./home-learn.js"></script>
     <script src="./home-learn-search.js"></script>

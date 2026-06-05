@@ -79,7 +79,7 @@ Cuando una lista, tabla o cuadrícula tiene **datos de fondo** pero la combinaci
 
 ## Patrón: búsqueda en Inicio Aprendizaje (`home-learn.html`)
 
-El dashboard **`ubits-colaborador/aprendizaje/home-learn.html`** incluye un **buscador hero hardcodeado** (diseño APP v3; aún no es componente oficial). La lógica vive en **`home-learn-search.js`**; la exploración tipo catálogo en **`catalogo-browse.js`**. **No** uses `createInput` en el hero: el campo es un `<input type="search">` nativo estilizado en **`home-learn.css`**.
+El dashboard **`ubits-colaborador/aprendizaje/home-learn.html`** usa el componente oficial **`hero-search`** (`components/hero-search.css` + `hero-search.js`, doc en **`documentacion/componentes/hero-search.html`**). La lógica de modos y resultados vive en **`home-learn-search.js`**; la exploración tipo catálogo en **`catalogo-browse.js`**. **No** uses `createInput` en el hero: el componente renderiza un `<input type="search">` nativo según diseño APP v3 Figma.
 
 ### Estados de la pantalla
 
@@ -111,18 +111,18 @@ Los resultados unen **`bd-master/bd-contenidos-ubits.js`** y **`bd-master/bd-con
 
 ### Imports obligatorios (home-learn)
 
-Además de los habituales del módulo: `skeleton.css`, `empty-state.css` + `empty-state.js`, `catalogo.css`, `resultados-busqueda.css` (grid), `card-content.css` + `card-content.js`, BD y `catalogo-contenidos-drawer.js`. El selector de academias en modo `browse` sigue usando `createInput` type `select` (`input.css`, `dropdown-menu.js` antes de `input.js`).
+Además de los habituales del módulo: **`hero-search.css`** + **`hero-search.js`**, `skeleton.css`, `empty-state.css` + `empty-state.js`, `catalogo.css`, `resultados-busqueda.css` (grid), `card-content.css` + `card-content.js`, BD y `catalogo-contenidos-drawer.js`. El selector de academias en modo `browse` sigue usando `createInput` type `select` (`input.css`, `dropdown-menu.js` antes de `input.js`).
 
 ### Estructura HTML crítica
 
 - **`section-single` → un solo widget hijo** en resultados: todo va dentro de **`widget-home-learn-resultados`**. Varios hijos directos en `section-single` rompen el flex y desplazan el grid a la derecha.
-- Scripts: `catalogo-browse.js` → `home-learn.js` → `home-learn-search.js`.
+- Scripts: `hero-search.js` → `catalogo-browse.js` → `home-learn.js` → `home-learn-search.js` (este monta el hero con `mountHeroSearch` en `#home-learn-hero-mount`).
 
 ### Evolución hacia producción
 
-Sustituir el `setTimeout` del debounce por una **petición al backend**; mantener skeleton visible hasta la respuesta (y, si producto lo pide, un **mínimo de visualización** del skeleton para evitar flashes en respuestas muy rápidas). El hero hardcodeado está pensado para convertirse en componente oficial cuando se refine el diseño.
+Sustituir el `setTimeout` del debounce por una **petición al backend**; mantener skeleton visible hasta la respuesta (y, si producto lo pide, un **mínimo de visualización** del skeleton para evitar flashes en respuestas muy rápidas). El **marcado y estilos del hero** los cubre el componente **`hero-search`**; la lógica de paneles sigue en la página.
 
-**Referencias:** `home-learn.html`, `home-learn.css`, `home-learn-search.js`, `catalogo-browse.js`, `documentacion/componentes/skeleton.html`.
+**Referencias:** `home-learn.html`, `home-learn.css`, `home-learn-search.js`, `catalogo-browse.js`, `components/hero-search.css`, `components/hero-search.js`, `documentacion/componentes/hero-search.html`, `documentacion/componentes/skeleton.html`.
 
 ### Catálogo fuera del SubNav Aprendizaje
 
@@ -470,7 +470,7 @@ Todos los componentes UBITS requieren imports obligatorios:
 - **`documentacion/plantilla-ubits.html`** - Template base para crear nuevas páginas (1 sección)
 
 #### **🎓 Módulo de Aprendizaje (ubits-colaborador/aprendizaje/):**
-- **`home-learn.html`** - Dashboard de aprendizaje (hero buscador APP v3, carruseles; búsqueda con debounce + skeleton; **exploración catálogo en Inicio** — ver [Patrón: búsqueda en Inicio Aprendizaje](#patrón-búsqueda-en-inicio-aprendizaje-home-learnhtml))
+- **`home-learn.html`** - Dashboard de aprendizaje (componente **hero-search**, carruseles; búsqueda con debounce + skeleton; **exploración catálogo en Inicio** — ver [Patrón: búsqueda en Inicio Aprendizaje](#patrón-búsqueda-en-inicio-aprendizaje-home-learnhtml))
 - **`catalogo.html`** - Catálogo standalone (legacy; **sin pestaña en SubNav**; misma exploración integrada en `home-learn` modo `browse`)
 - **`u-corporativa.html`** - Universidad corporativa (3 secciones)
 - **`zona-estudio.html`** - Zona de estudio (2 secciones con tabs)
@@ -603,137 +603,99 @@ Todos los componentes UBITS requieren imports obligatorios:
 
 ### **🧩 Estructura del proyecto (NUEVA ORGANIZACIÓN):**
 ```
-├── 📁 general-styles/         # Estilos base del sistema (ver abajo qué contiene cada archivo)
+├── 📁 general-styles/         # Estilos base del sistema
 │   ├── ubits-colors.css       # Tokens de color UBITS oficiales
 │   ├── ubits-typography.css   # Clases de tipografía UBITS oficiales
-│   ├── ubits-spacing-tokens.css # Tokens de espaciado, padding, gap, border-radius y size
+│   ├── ubits-spacing-tokens.css # Tokens gap, padding, border-radius, size
+│   ├── ubits-ia-appearance.css # Apariencia IA (gradientes, bordes)
+│   ├── ubits-ia-chat.css      # Estilos compartidos chat IA
 │   ├── fontawesome-icons.css  # Iconos FontAwesome
-│   ├── layout-immersive.css   # Cáscara inmersiva (layout 3): .ubits-layout-immersive*, body.page-layout-immersive
-│   └── styles.css             # Estilos globales compartidos (importa ubits-spacing-tokens)
-├── 📁 general-utils/          # Utilidades JavaScript transversales (no son componentes UBITS)
-│   └── humanizador-fechas.js   # Fechas humanizadas y estado de planes por fechas (window.*)
-├── 📁 bd-master/              # “Bases de datos” de simulación del playground (JS en window, sin fetch)
-│   ├── README.md              # Inventario, mapa por página y relaciones entre archivos
-│   ├── bd-master-competencias.js, bd-master-habilidades.js, bd-master-colaboradores.js, …
-│   ├── bd-contenidos-ubits.js, bd-contenidos-fiqsha.js
-│   └── bd-tareas-y-planes.js  # Tareas, planes, seguimiento (usa colaboradores del maestro)
-├── 📁 components/             # Componentes reutilizables UBITS
-│   ├── sub-nav.css + sub-nav.js
-│   ├── sidebar.css + sidebar.js
-│   ├── sidebar-contenidos-lms.css + sidebar-contenidos-lms.js
-│   ├── tab-bar.css + tab-bar.js
-│   ├── floating-menu.css + floating-menu.js
-│   ├── profile-menu.css + profile-menu.js
-│   ├── button.css + button.js
-│   ├── ia-button.css + ia-button.js
-│   ├── header-product.css + header-product.js
-│   ├── alert.css + alert.js
-│   ├── accordion.css + accordion.js
-│   ├── toast.css + toast.js
-│   ├── input.css + input.js
-│   ├── card-content.css + card-content.js
-│   ├── card-content-compact.css + card-content-compact.js
-│   ├── carousel-contents.css + carousel-contents.js
-│   ├── status-tag.css
-│   ├── radio-button.css
-│   ├── selection-card.css
-│   ├── checkbox.css
-│   ├── chip.css
-│   ├── badge-tag.css
-│   ├── tab.css + tab.js
-│   ├── empty-state.css + empty-state.js
-│   ├── paginator.css + paginator.js
-│   ├── study-chat.css + study-chat.js
-│   ├── avatar.css + avatar.js
-│   ├── calendar.css + calendar.js
-│   ├── drawer.css + drawer.js
-│   ├── dropdown-menu.css + dropdown-menu.js
-│   ├── loader.css + loader.js
-│   ├── ia-loader.css + ia-loader.js
-│   ├── modal.css + modal.js
-│   ├── number-stepper.css + number-stepper.js
-│   ├── table.css
-│   ├── tooltip.css + tooltip.js
+│   ├── layout-immersive.css   # Cáscara inmersiva (layout 3): .ubits-layout-immersive*
+│   └── styles.css             # Estilos globales (importa ubits-spacing-tokens)
+├── 📁 general-utils/          # Utilidades JS transversales (no son componentes UBITS)
+│   └── humanizador-fechas.js  # Fechas humanizadas y estado de planes (window.*)
+├── 📁 bd-master/              # Datos simulados del playground (JS en window, sin fetch)
+│   ├── README.md              # Inventario, mapa por página y relaciones
+│   ├── bd-contenidos-ubits.js
+│   ├── bd-contenidos-fiqsha.js
+│   ├── bd-tareas-y-planes.js
+│   ├── bd-evaluaciones-360.js
+│   ├── bd-master-aliados.js
+│   ├── bd-master-categorias-fiqsha.js
+│   ├── bd-master-colaboradores.js
+│   ├── bd-master-competencias.js
+│   ├── bd-master-habilidades.js
+│   ├── bd-master-niveles-contenido.js
+│   └── bd-master-tipos-contenido.js
+├── 📁 components/             # Componentes reutilizables UBITS (~65 bloques; ver catálogo doc abajo)
+│   ├── Navegación
+│   │   ├── sub-nav, sidebar, sidebar-contenidos-lms, tab-bar, floating-menu, profile-menu, submenu
+│   ├── UI general (documentados en documentacion/componentes/)
+│   │   ├── accordion, ai-panel, alert, attention-badge, avatar, badge-tag, button, calendar
+│   │   ├── carousel-indicators, checkbox, chip, coachmark, color-picker, date-picker-modal
+│   │   ├── drawer, dropdown-menu, empty-state, file-upload, file-upload-compact
+│   │   ├── header-product, ia-button, ia-loader, inline-edit, input, loader, modal
+│   │   ├── number-stepper, paginator, popover, progress-bar, radio-button, save-indicator
+│   │   ├── segmented-progress, selection-card, skeleton, status-panel, status-tag, stepper
+│   │   ├── switch, tab, table, toast, toolbar-panel, tooltip, ubits-data-table, video-player
+│   ├── Aprendizaje / LMS Creator
+│   │   ├── card-content, card-content-compact, complementary-resources, hero-search
+│   │   ├── learn-content-img-trailer, learn-question, indice-creator, paginas-creator
+│   │   ├── resources-card, resources-block, seccion-creator, rich-text-editor
+│   │   └── carousel-contents, study-chat (sin página doc propia aún)
+│   ├── Operations
+│   │   └── task-strip
+│   └── JS auxiliar (sin .css propio)
+│       ├── ai-panel-artifact-content.js, group-creation-chat.js
+│       ├── ia-chat-mobile-drawer.js, ia-chat-streaming.js, ubits-confetti.js
+│   └── Catálogo + doc: documentacion/componentes.html · docs/docs-sidebar.js (DOCS_SIDEBAR_SECTIONS)
 ├── 📁 ubits-admin/           # Módulo de administración
 │   ├── inicio/
-│   ├── empresa/                         # Módulo — SubNav empresa
-│   │   ├── Gestión de usuarios
-│   │   ├── Organigrama
-│   │   ├── Datos de empresa
-│   │   ├── Personalización
-│   │   ├── Roles y permisos
-│   │   └── Comunicaciones
-│   ├── aprendizaje/                     # Módulo — SubNav admin-aprendizaje
-│   │   ├── Planes de formación
-│   │   ├── Universidad corporativa
-│   │   ├── Certificados
-│   │   └── Seguimiento
-│   ├── diagnostico/                     # Módulo — SubNav admin-diagnostico
-│   │   └── Diagnóstico
-│   ├── desempeno/                       # Módulo — SubNav admin-desempeño
-│   │   ├── Evaluaciones 360
-│   │   ├── Objetivos
-│   │   └── Matriz de Talento
-│   ├── encuestas/                       # Módulo — SubNav admin-encuestas
-│   │   └── Encuestas
+│   ├── empresa/                         # SubNav empresa
+│   │   ├── Gestión de usuarios, Organigrama, Datos de empresa
+│   │   ├── Personalización, Roles y permisos, Comunicaciones
+│   ├── aprendizaje/                     # SubNav admin-aprendizaje
+│   │   ├── Planes de formación, Universidad corporativa, Certificados, Seguimiento
+│   ├── diagnostico/                     # SubNav admin-diagnostico
+│   ├── desempeno/                       # SubNav admin-desempeño
+│   │   ├── Evaluaciones 360, Objetivos, Matriz de Talento
+│   ├── encuestas/                       # SubNav admin-encuestas
 │   └── otros/
 ├── 📁 ubits-colaborador/     # Módulo de colaborador
-│   ├── inicio/
-│   ├── aprendizaje/                    # Módulo — SubNav aprendizaje
-│   │   ├── Inicio                      # home-learn (incl. exploración catálogo vía buscador)
-│   │   ├── Modo estudio IA
-│   │   ├── catalogo.html               # legacy; no tab SubNav
-│   │   ├── U. Corporativa
-│   │   └── Zona de estudio
-│   ├── lms-creator/                    # Producto LMS Creator (carpeta del módulo)
-│   │   ├── LMS Creator                 # SubNav creator-lms
-│   │   │   ├── Contenidos
-│   │   │   └── Categorías
-│   │   ├── Planes de formación         # SubNav creator-planes
-│   │   │   ├── Planes
-│   │   │   └── Grupos
-│   │   ├── Certificados                # SubNav creator-certificados
-│   │   │   ├── Descarga
-│   │   │   └── Configuración
-│   │   └── Personalización             # SubNav creator-personalizacion
-│   │       ├── Universidad corporativa
-│   │       └── Seguimiento
-│   ├── diagnostico/                     # Módulo — SubNav diagnostico
-│   │   └── Diagnóstico
-│   ├── desempeno/                       # Módulo — SubNav desempeno
-│   │   ├── Evaluaciones 360
-│   │   ├── Objetivos
-│   │   ├── Métricas
-│   │   └── Reportes
-│   ├── encuestas/                       # Módulo — SubNav encuestas
-│   │   └── Encuestas
-│   ├── reclutamiento/                   # Módulo — SubNav reclutamiento
-│   │   └── Reclutamiento
-│   ├── tareas/                         # Módulo — SubNav tareas
-│   │   ├── Tareas
-│   │   ├── Planes
-│   │   ├── Plantillas
-│   │   └── Seguimiento
-│   ├── ia-para-hr/                      # Módulo — sin SubNav (solo título)
-│   ├── ubits-ai/
+│   ├── aprendizaje/                    # SubNav aprendizaje
+│   │   ├── home-learn.html             # Inicio (hero-search + catálogo vía buscador)
+│   │   ├── modo-estudio-ia.html, u-corporativa.html, zona-estudio.html
+│   │   ├── catalogo.html               # legacy; sin pestaña SubNav
+│   │   ├── home-learn-search.js, catalogo-browse.js  # lógica buscador Inicio
+│   ├── lms-creator/                    # Sidebar creator + SubNav por producto
+│   │   ├── Contenidos, Categorías (creator-lms)
+│   │   ├── Planes de formación, Grupos (creator-planes)
+│   │   ├── Certificados: descarga + configuración (creator-certificados)
+│   │   └── Personalización: U. corporativa + seguimiento (creator-personalizacion)
+│   ├── diagnostico/, desempeno/, encuestas/, reclutamiento/, tareas/
+│   ├── ia-para-hr/                     # Sin SubNav (body.no-subnav)
+│   ├── ubits-ai/                       # Redirección a ia-para-hr
 │   └── perfil/
 ├── 📁 documentacion/         # Sistema de documentación
-│   ├── componentes.html      # Lista de componentes
-│   ├── componentes/          # Documentación de cada componente
-│   ├── guias/                # Guías de diseño (colores, tipografía, iconos)
-│   ├── guia-prompts.html     # Prompts para Cursor AI
-│   ├── validador-ubits.html  # Validador automático
-│   └── plantilla-ubits.html  # Template base para nuevas páginas
-├── 📁 docs/                  # Sistema de documentación (solo para páginas *.html de documentación)
+│   ├── componentes.html      # Índice de componentes
+│   ├── componentes/          # Una página por componente (p. ej. hero-search.html)
+│   ├── guias/                # Colores, tipografía, iconos
+│   ├── guia-prompts.html
+│   ├── validador-ubits.html
+│   └── plantilla-ubits.html
+├── 📁 docs/                  # Shell doc (sidebar + estilos páginas componentes/)
 │   ├── docs-sidebar.css + docs-sidebar.js
-│   └── docstyles.css         # Estilos específicos de documentación
-└── 📁 images/                # Recursos visuales
-    ├── cards-learn/          # Imágenes para cards de aprendizaje (85+ imágenes)
-    ├── Favicons/             # Logos de proveedores (18 proveedores)
-    ├── vertical-cards/       # Imágenes verticales para libros (16 imágenes)
-    ├── academias/            # Imágenes de academias (5 imágenes)
-    ├── imagenes competencias/ # Imágenes de competencias (35 imágenes)
-    └── empty-states/         # Estados vacíos (2 SVG)
+│   └── docstyles.css
+└── 📁 images/                # Recursos visuales (rutas relativas desde cada HTML)
+    ├── cards-learn/          # Portadas aprendizaje (85+)
+    ├── Favicons/             # Logos proveedores (18)
+    ├── vertical-cards/       # Libros / cards verticales
+    ├── academias/            # Academias catálogo
+    ├── imagenes competencias/
+    ├── avatars/ + avatar-temp-thumbs/
+    ├── lms-creator/          # Certificados, creator, portadas IA
+    ├── aprendizaje/, promo/
+    └── Ubits-logo*.svg, Profile-image.jpg, …
 ```
 
 *(En `lms-creator/` el árbol anterior resume **módulos y pestañas** del producto; hay más archivos en disco — flujos crear/editar/detalle, **crear contenido** en página dedicada `crear-contenido.html`, otros flujos con drawer/overlay donde aplique, `lms-creator.css`, `contexto-*.md` —; ver [LMS Creator (producto aparte del colaborador)](#lms-creator-producto-aparte-del-colaborador) y `bd-master/README.md`.)*
@@ -1229,12 +1191,12 @@ Un sistema inspirado que permite a **cualquier usuario** (Product Managers, Dise
 
 1. **SIEMPRE revisa `images/cards-learn/`** para imágenes de cursos (85 imágenes disponibles)
 2. **SIEMPRE revisa `images/Favicons/`** para logos de proveedores (18 proveedores disponibles)
-3. **SIEMPRE revisa `images/empty-states/`** para imágenes de estados vacíos (2 archivos SVG)
+3. **Empty state:** el componente `empty-state` usa iconos FontAwesome por defecto (no hay carpeta `images/empty-states/` en el repo)
 4. **SIEMPRE revisa `images/Profile-image.jpg`** para avatar de usuario
 5. **SIEMPRE revisa `components/card-content.js` o `components/card-content-compact.js`** para lista oficial de competencias (35 competencias)
 6. **NUNCA inventes nombres de recursos** que no existen
 7. **SIEMPRE verifica** las rutas de recursos antes de implementar
-8. **Para otras imágenes** - Usa servicios externos como Unsplash con atribución adecuada
+8. **Para otras imágenes** — revisa subcarpetas bajo `images/` (ver árbol de estructura) o servicios externos con atribución
 
 **Esto previene imágenes rotas y datos inválidos.**
 

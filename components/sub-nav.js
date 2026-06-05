@@ -416,6 +416,7 @@ const PAGE_TO_TAB = {
     'resources-card.html': 'section3',
     'resources-block.html': 'section3',
     'complementary-resources.html': 'section3',
+    'hero-search.html': 'section3',
     'save-indicator.html': 'section3',
     'selection-card.html': 'section3',
     'skeleton.html': 'section3',
