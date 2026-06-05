@@ -15,7 +15,7 @@
     color: var(--ubits-fg-1-high);
     background: var(--ubits-bg-1);
     border: 1px solid var(--ubits-border-1);
-    border-radius: var(--border-radius-sm);
+    border-radius: var(--border-radius-md);
     outline: none;
     transition: all 0.2s ease;
     box-sizing: border-box;
@@ -389,7 +389,7 @@ textarea.ubits-input:disabled {
     right: 0;
     background: var(--ubits-bg-1);
     border: 1px solid var(--ubits-border-1);
-    border-radius: var(--border-radius-sm);
+    border-radius: var(--border-radius-md);
     box-shadow: var(--ubits-elevation-overlay);
     z-index: 10000; /* Alto z-index para estar dentro del filter-menu */
     max-height: 200px;
@@ -478,7 +478,7 @@ textarea.ubits-input:disabled {
     right: 0;
     background: var(--ubits-bg-1);
     border: 1px solid var(--ubits-border-1);
-    border-radius: var(--border-radius-sm);
+    border-radius: var(--border-radius-md);
     box-shadow: var(--ubits-elevation-overlay);
     z-index: 1000;
     max-height: 160px;
