@@ -60,7 +60,6 @@
 .content-sections .section-quad > div {
     background-color: var(--ubits-bg-1);
     border: none !important;
-    border-radius: var(--border-radius-lg);
     padding: var(--padding-none) !important;
     width: 100%;
     box-sizing: border-box;
@@ -116,6 +115,8 @@
 .widget-outstanding {
     padding: var(--padding-none) !important;
     background: transparent !important;
+    border-radius: var(--border-radius-none) !important;
+    overflow: visible !important;
 }
 
 /* Distribución de anchos */
@@ -235,6 +236,8 @@
 .widget-home-learn-browse {
     padding: var(--padding-none) !important;
     background: transparent !important;
+    border-radius: var(--border-radius-none) !important;
+    overflow: visible !important;
     gap: var(--gap-2xl);
 }
 
@@ -262,6 +265,8 @@
     width: 100%;
     padding: var(--padding-none) !important;
     background: transparent !important;
+    border-radius: var(--border-radius-none) !important;
+    overflow: visible !important;
 }
 
 .home-learn-results-section .widget-buscador-filtros,

@@ -620,8 +620,13 @@ body[data-theme="light"] .dashboard-container {
         overflow: visible;
     }
     
-    /* Asegurar que los carruseles no se desborden */
+    /* Carruseles: sin clip en el widget — el scroll va en .carousel-*__cards-container */
     .widget-hero,
+    .widget-home-learn-hero,
+    .widget-home-learn-trending,
+    .widget-home-learn-browse,
+    .widget-home-learn-resultados,
+    .widget-zona-estudio,
     .widget-promo-cards,
     .widget-aliados,
     .widget-continua-viendo,
@@ -629,10 +634,9 @@ body[data-theme="light"] .dashboard-container {
         max-width: 100%;
         width: 100%;
         box-sizing: border-box;
-        overflow-x: hidden;
+        overflow: visible;
     }
     
-    /* Asegurar que los contenedores de carruseles no se desborden */
     #hero-card-container,
     #libros-recomendados-container,
     #promo-vertical-container,
@@ -643,7 +647,7 @@ body[data-theme="light"] .dashboard-container {
         max-width: 100%;
         width: 100%;
         box-sizing: border-box;
-        overflow-x: hidden;
+        overflow: visible;
     }
 }
 
@@ -1083,5 +1087,58 @@ body {
 /* Header de producto: sin marco de tarjeta (alinea con content-area / SubNav). */
 .content-sections > .section-single > .widget-header-product {
     border: none;
+    border-radius: var(--border-radius-none) !important;
+    overflow: visible !important;
+}
+
+/* Widgets transparentes (sin caja bg-1): sin radio ni clip — evita cortar controles de carrusel.
+   Equivalente a Widget transparent en React. El overflow horizontal vive en el track del carrusel. */
+.content-sections > .section-single > div.widget--transparent,
+.content-sections .section-dual > div.widget--transparent,
+.content-sections .section-triple > div.widget--transparent,
+.content-sections .section-quad > div.widget--transparent,
+.content-sections > .section-single > .widget-hero,
+.content-sections > .section-single > .widget-home-learn-hero,
+.content-sections > .section-single > .widget-home-learn-trending,
+.content-sections > .section-single > .widget-home-learn-browse,
+.content-sections > .section-single > .widget-home-learn-resultados,
+.content-sections > .section-single > .widget-zona-estudio,
+.content-sections > .section-single > .widget-promo-cards,
+.content-sections > .section-single > .widget-aliados,
+.content-sections > .section-single > .widget-continua-viendo,
+.content-sections > .section-single > .widget-outstanding,
+.content-sections .section-dual > .widget-hero,
+.content-sections .section-dual > .widget-home-learn-hero,
+.content-sections .section-dual > .widget-home-learn-trending,
+.content-sections .section-dual > .widget-home-learn-browse,
+.content-sections .section-dual > .widget-home-learn-resultados,
+.content-sections .section-dual > .widget-zona-estudio,
+.content-sections .section-dual > .widget-promo-cards,
+.content-sections .section-dual > .widget-aliados,
+.content-sections .section-dual > .widget-continua-viendo,
+.content-sections .section-dual > .widget-outstanding,
+.content-sections .section-triple > .widget-hero,
+.content-sections .section-triple > .widget-home-learn-hero,
+.content-sections .section-triple > .widget-home-learn-trending,
+.content-sections .section-triple > .widget-home-learn-browse,
+.content-sections .section-triple > .widget-home-learn-resultados,
+.content-sections .section-triple > .widget-zona-estudio,
+.content-sections .section-triple > .widget-promo-cards,
+.content-sections .section-triple > .widget-aliados,
+.content-sections .section-triple > .widget-continua-viendo,
+.content-sections .section-triple > .widget-outstanding,
+.content-sections .section-quad > .widget-hero,
+.content-sections .section-quad > .widget-home-learn-hero,
+.content-sections .section-quad > .widget-home-learn-trending,
+.content-sections .section-quad > .widget-home-learn-browse,
+.content-sections .section-quad > .widget-home-learn-resultados,
+.content-sections .section-quad > .widget-zona-estudio,
+.content-sections .section-quad > .widget-promo-cards,
+.content-sections .section-quad > .widget-aliados,
+.content-sections .section-quad > .widget-continua-viendo,
+.content-sections .section-quad > .widget-outstanding {
+    border-radius: var(--border-radius-none) !important;
+    border: none !important;
+    overflow: visible !important;
 }
 
