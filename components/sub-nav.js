@@ -401,6 +401,7 @@ const PAGE_TO_TAB = {
     'ia-button.html': 'section3',
     'ia-loader.html': 'section3',
     'file-upload.html': 'section3',
+    'file-upload-compact.html': 'section3',
     'inline-edit.html': 'section3',
     'input.html': 'section3',
     'loader.html': 'section3',

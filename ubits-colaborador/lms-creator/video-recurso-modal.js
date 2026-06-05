@@ -8,9 +8,10 @@
  * Depende:
  *   modal.js  (openModal, closeModal)
  *   input.js  (createInput)
- *   file-upload.js (createFileUpload, fileUploadSetProgress, fileUploadClearProgress, fileUploadSetSuccess)
+ *   file-upload.js (createFileUpload, …)
+ *   file-upload-compact.js (createFileUploadCompact, …)
  *   video-player.js (videoPlayerHtml) — opcional, usa fallback si no está
- *   tab.css, file-upload.css, checkbox.css, chip.css, ai-panel.css, video-recurso-modal.css
+ *   tab.css, file-upload.css, file-upload-compact.css, checkbox.css, chip.css, ai-panel.css, video-recurso-modal.css
  *   Avatares (grid): ../../images/avatars/* · preview 16:9: ../../images/avatar-temp-thumbs/thumb_*.jpg
  *   · videos opcionales: ../../videos/avatars/{mismo-base}.mp4
  *   Guión: selector modo IA/manual (Figma 644:1611 — icono arriba, título abajo). IA: solo contexto hasta «Generar guión»; luego textarea editable. Manual: un solo textarea.
@@ -519,24 +520,8 @@
         return (
             '<div class="cc-vm-section cc-vm-logo-section">' +
             '<p class="ubits-body-md-bold cc-vm-logo-section__label">Logo de la empresa <span class="cc-vm-optional">(opcional)</span></p>' +
-            '<div class="cc-vm-logo-upload" id="cc-vm-logo-upload">' +
-            '<div class="cc-vm-logo-tile cc-vm-logo-tile--empty" data-cc-vm-logo-empty>' +
-            '<span class="cc-vm-logo-tile__icon" aria-hidden="true"><i class="far fa-image"></i></span>' +
-            '<span class="cc-vm-logo-tile__copy">' +
-            '<span class="ubits-body-xs-regular">PNG · hasta 2 MB</span></span>' +
-            '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm cc-vm-logo-tile__upload-btn" data-cc-vm-logo-trigger><span>Subir</span></button></div>' +
-            '<div class="cc-vm-logo-tile cc-vm-logo-tile--filled" data-cc-vm-logo-filled hidden>' +
-            '<div class="cc-vm-logo-tile__thumb"><img data-cc-vm-logo-img src="" alt="Vista previa del logo"></div>' +
-            '<div class="cc-vm-logo-tile__copy">' +
-            '<span class="ubits-body-sm-semibold cc-vm-logo-tile__filename" data-cc-vm-logo-name></span>' +
-            '<span class="ubits-body-xs-regular cc-vm-logo-tile__filesize" data-cc-vm-logo-size></span></div>' +
-            '<div class="cc-vm-logo-tile__actions">' +
-            '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm cc-vm-logo-tile__upload-btn" data-cc-vm-logo-change><span>Cambiar</span></button>' +
-            '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" data-cc-vm-logo-remove aria-label="Quitar logo">' +
-            '<i class="far fa-times"></i></button></div></div>' +
-            '<input type="file" data-cc-vm-logo-input accept="image/png,.png" hidden>' +
-            '<p class="ubits-body-xs-regular cc-vm-logo-upload__error" data-cc-vm-logo-error hidden role="alert"></p>' +
-            '</div></div>'
+            '<div id="cc-vm-logo-upload-mount"></div>' +
+            '</div>'
         );
     }
 
@@ -1655,32 +1640,6 @@
         });
     }
 
-    function formatLogoFileSize(bytes) {
-        if (!bytes && bytes !== 0) return '';
-        if (bytes < 1024) return bytes + ' B';
-        if (bytes < 1024 * 1024) return Math.round(bytes / 1024) + ' KB';
-        return (bytes / (1024 * 1024)).toFixed(1).replace(/\.0$/, '') + ' MB';
-    }
-
-    function validateLogoPngFile(file) {
-        if (!file) return null;
-        var isPng = file.type === 'image/png' || /\.png$/i.test(file.name || '');
-        if (!isPng) return 'Solo se permite PNG.';
-        if (file.size > 2 * 1024 * 1024) return 'El archivo supera 2 MB.';
-        return null;
-    }
-
-    function setLogoUploadError(errorEl, msg) {
-        if (!errorEl) return;
-        if (msg) {
-            errorEl.textContent = msg;
-            errorEl.hidden = false;
-        } else {
-            errorEl.textContent = '';
-            errorEl.hidden = true;
-        }
-    }
-
     function syncLogoPreviewOverlay(dataUrl) {
         var previewImg = document.getElementById('cc-vm-logo-preview-img');
         var overlay = document.getElementById('cc-vm-logo-overlay');
@@ -1693,99 +1652,31 @@
         }
     }
 
-    function wireLogoCompactUpload(root, cfg) {
-        if (!root || root._ccLogoUploadWired) return;
-        root._ccLogoUploadWired = true;
-
-        var input = root.querySelector(cfg.inputSel);
-        var emptyEl = root.querySelector(cfg.emptySel);
-        var filledEl = root.querySelector(cfg.filledSel);
-        var errorEl = root.querySelector(cfg.errorSel);
-        if (!input || !emptyEl || !filledEl) return;
-
-        function showEmpty() {
-            emptyEl.hidden = false;
-            filledEl.hidden = true;
-            setLogoUploadError(errorEl, null);
-            input.value = '';
-            if (typeof cfg.onClear === 'function') cfg.onClear();
-        }
-
-        function showFilled(file, dataUrl) {
-            if (typeof cfg.onFilled === 'function') {
-                cfg.onFilled(file, dataUrl);
-            }
-            emptyEl.hidden = true;
-            filledEl.hidden = false;
-            setLogoUploadError(errorEl, null);
-        }
-
-        function openPicker() {
-            input.click();
-        }
-
-        root.querySelectorAll(cfg.triggerSel).forEach(function (btn) {
-            btn.addEventListener('click', openPicker);
-        });
-
-        var changeBtn = root.querySelector(cfg.changeSel);
-        if (changeBtn) changeBtn.addEventListener('click', openPicker);
-
-        var removeBtn = root.querySelector(cfg.removeSel);
-        if (removeBtn) removeBtn.addEventListener('click', function (e) {
-            e.preventDefault();
-            e.stopPropagation();
-            showEmpty();
-        });
-
-        input.addEventListener('change', function () {
-            var file = input.files && input.files[0];
-            if (!file) return;
-            var err = validateLogoPngFile(file);
-            if (err) {
-                setLogoUploadError(errorEl, err);
-                input.value = '';
-                if (typeof global.showToast === 'function') {
-                    global.showToast('warning', err, { containerId: 'ubits-toast-container' });
-                }
-                return;
-            }
-            var reader = new FileReader();
-            reader.onload = function (e) {
-                showFilled(file, e && e.target ? e.target.result : null);
-            };
-            reader.readAsDataURL(file);
-        });
-    }
-
-    /* ── Logo upload (tile compacto) ── */
+    /* ── Logo upload (File Upload Compact) ── */
     function initLogoUpload() {
-        var root = document.getElementById('cc-vm-logo-upload');
-        if (!root) return;
+        var mount = document.getElementById('cc-vm-logo-upload-mount');
+        if (!mount || document.getElementById('cc-vm-logo-upload')) return;
+        if (typeof global.createFileUploadCompact !== 'function') return;
 
-        wireLogoCompactUpload(root, {
-            inputSel: '[data-cc-vm-logo-input]',
-            emptySel: '[data-cc-vm-logo-empty]',
-            filledSel: '[data-cc-vm-logo-filled]',
-            errorSel: '[data-cc-vm-logo-error]',
-            triggerSel: '[data-cc-vm-logo-trigger]',
-            changeSel: '[data-cc-vm-logo-change]',
-            removeSel: '[data-cc-vm-logo-remove]',
-            onFilled: function (file, dataUrl) {
-                _logoDataUrl = dataUrl || null;
+        global.createFileUploadCompact({
+            containerId: 'cc-vm-logo-upload-mount',
+            id:          'cc-vm-logo-upload',
+            hideHeader:  true,
+            accept:      'image/png,.png',
+            maxSizeMb:   2,
+            formats:     'PNG · hasta 2 MB',
+            icon:        'image',
+            uploadButtonLabel: 'Subir',
+            changeButtonLabel: 'Cambiar',
+            previewThumbnail:  true,
+            onChange: function (file, detail) {
+                _logoDataUrl = file && detail && detail.previewUrl ? detail.previewUrl : null;
                 syncLogoPreviewOverlay(_logoDataUrl);
-                var img = root.querySelector('[data-cc-vm-logo-img]');
-                var name = root.querySelector('[data-cc-vm-logo-name]');
-                var size = root.querySelector('[data-cc-vm-logo-size]');
-                if (img && dataUrl) img.src = dataUrl;
-                if (name) name.textContent = file.name;
-                if (size) size.textContent = formatLogoFileSize(file.size);
             },
-            onClear: function () {
-                _logoDataUrl = null;
-                syncLogoPreviewOverlay(null);
-                var img = root.querySelector('[data-cc-vm-logo-img]');
-                if (img) img.removeAttribute('src');
+            onError: function (err) {
+                if (typeof global.showToast === 'function' && err && err.message) {
+                    global.showToast('warning', err.message, { containerId: 'ubits-toast-container' });
+                }
             }
         });
     }
