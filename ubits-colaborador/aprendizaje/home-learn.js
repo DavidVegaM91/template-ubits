@@ -113,118 +113,18 @@
         return slides;
     }
 
-    function renderZonaEstudioPlanCard(plan) {
-        var progressBar = '';
-        if (typeof progressBarHtml === 'function') {
-            progressBar = progressBarHtml({
-                value: plan.empty ? 0 : plan.progress,
-                size: 'sm',
-                rounded: true,
-                track: plan.empty ? 'subtle' : 'default',
-                status: plan.empty ? undefined : undefined,
-                ariaLabel: 'Progreso del plan'
-            });
-        } else {
-            progressBar =
-                '<div class="ubits-progress-bar ubits-progress-bar--sm ubits-progress-bar--rounded" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="' + plan.progress + '">' +
-                    '<div class="ubits-progress-bar__track"><div class="ubits-progress-bar__fill" style="width:' + (plan.empty ? 0 : plan.progress) + '%"></div></div>' +
-                '</div>';
-        }
-
-        return (
-            '<article class="home-learn-plan-card" tabindex="0">' +
-                '<div class="home-learn-plan-card__head">' +
-                    '<p class="ubits-body-sm-regular home-learn-plan-card__cierre">' + plan.cierre + '</p>' +
-                    '<p class="ubits-body-md-semibold home-learn-plan-card__title">' + plan.title + '</p>' +
-                '</div>' +
-                '<div class="home-learn-plan-card__progress-block">' +
-                    progressBar +
-                    '<div class="home-learn-plan-card__progress-meta">' +
-                        '<span class="ubits-body-sm-regular home-learn-plan-card__progress-label">' + plan.progressLabel + '</span>' +
-                        '<span class="ubits-body-sm-semibold home-learn-plan-card__progress-pct">' + plan.progress + '%</span>' +
-                    '</div>' +
-                '</div>' +
-            '</article>'
-        );
-    }
-
     function initZonaEstudioCarousel() {
-        var root = document.getElementById('home-learn-zona-estudio');
-        if (!root || root._homeLearnZonaWired) return;
-        root._homeLearnZonaWired = true;
+        if (typeof createCarouselContents !== 'function') return;
 
-        var track = root.querySelector('.home-learn-zona-estudio__track');
-        var prevBtn = root.querySelector('.home-learn-zona-estudio__prev');
-        var nextBtn = root.querySelector('.home-learn-zona-estudio__next');
-        if (!track) return;
-
-        var cards = track.querySelectorAll('.home-learn-plan-card');
-        var indicatorsApi = null;
-
-        if (typeof initCarouselIndicators === 'function' && cards.length > 1) {
-            indicatorsApi = initCarouselIndicators({
-                containerId: 'home-learn-zona-estudio-indicators',
-                count: cards.length,
-                activeIndex: 0,
-                ariaLabel: 'Paginación de planes de estudio',
-                onSelect: function (index) {
-                    if (cards[index]) {
-                        cards[index].scrollIntoView({
-                            behavior: 'smooth',
-                            block: 'nearest',
-                            inline: 'start'
-                        });
-                    }
-                }
-            });
-        }
-
-        function getActivePlanIndex() {
-            if (!cards.length) return 0;
-            var containerRect = track.getBoundingClientRect();
-            var containerLeft = containerRect.left;
-            for (var i = 0; i < cards.length; i++) {
-                var cardRect = cards[i].getBoundingClientRect();
-                if (cardRect.left >= containerLeft - 10) {
-                    return i;
-                }
+        createCarouselContents({
+            containerId: 'home-learn-zona-estudio-mount',
+            type: 'study-zone',
+            sectionTitle: 'Zona de estudio',
+            slides: ZONA_ESTUDIO_PLANES,
+            onPlanClick: function (plan) {
+                console.log('Plan:', plan.title);
             }
-            return 0;
-        }
-
-        function getCardWidth() {
-            var card = track.querySelector('.home-learn-plan-card');
-            if (!card) return track.clientWidth;
-            var gap = parseFloat(getComputedStyle(track).gap) || 0;
-            return card.offsetWidth + gap;
-        }
-
-        function updateControls() {
-            if (!prevBtn || !nextBtn) return;
-            var maxScroll = track.scrollWidth - track.clientWidth - 1;
-            prevBtn.disabled = track.scrollLeft <= 1;
-            nextBtn.disabled = track.scrollLeft >= maxScroll;
-            prevBtn.classList.toggle('disabled', prevBtn.disabled);
-            nextBtn.classList.toggle('disabled', nextBtn.disabled);
-            if (indicatorsApi) {
-                indicatorsApi.setActive(getActivePlanIndex());
-            }
-        }
-
-        if (prevBtn) {
-            prevBtn.addEventListener('click', function () {
-                track.scrollBy({ left: -getCardWidth(), behavior: 'smooth' });
-            });
-        }
-        if (nextBtn) {
-            nextBtn.addEventListener('click', function () {
-                track.scrollBy({ left: getCardWidth(), behavior: 'smooth' });
-            });
-        }
-
-        track.addEventListener('scroll', updateControls, { passive: true });
-        window.addEventListener('resize', updateControls);
-        updateControls();
+        });
     }
 
     function initContinuaAprendiendoCarousel() {
@@ -386,34 +286,7 @@
         });
     }
 
-    function renderZonaEstudioSection() {
-        var mount = document.getElementById('home-learn-zona-estudio-mount');
-        if (!mount) return;
-
-        var cardsHtml = ZONA_ESTUDIO_PLANES.map(renderZonaEstudioPlanCard).join('');
-
-        mount.innerHTML =
-            '<section class="home-learn-zona-estudio" id="home-learn-zona-estudio" aria-label="Zona de estudio">' +
-                '<div class="carousel-contents--content-cards__header home-learn-zona-estudio__header">' +
-                    '<h2 class="carousel-contents--content-cards__title ubits-heading-h2">Zona de estudio</h2>' +
-                    '<div class="carousel-contents--content-cards__controls home-learn-zona-estudio__controls">' +
-                        '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only home-learn-zona-estudio__prev" aria-label="Plan anterior">' +
-                            '<i class="far fa-chevron-left"></i>' +
-                        '</button>' +
-                        '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only home-learn-zona-estudio__next" aria-label="Plan siguiente">' +
-                            '<i class="far fa-chevron-right"></i>' +
-                        '</button>' +
-                    '</div>' +
-                '</div>' +
-                '<div class="home-learn-zona-estudio__track">' + cardsHtml + '</div>' +
-                '<div class="home-learn-zona-estudio__indicators">' +
-                    '<div id="home-learn-zona-estudio-indicators" class="carousel-contents__indicators-mount"></div>' +
-                '</div>' +
-            '</section>';
-    }
-
     function initHomeLearn() {
-        renderZonaEstudioSection();
         initZonaEstudioCarousel();
         initContinuaAprendiendoCarousel();
         initUniversidadCorporativaCarousel();

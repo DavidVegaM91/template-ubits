@@ -309,6 +309,51 @@
  *
  * Requiere: components/carousel-indicators.css + carousel-indicators.js (initCarouselIndicators)
  */
+/**
+ * Card de plan para variante study-zone (Zona de estudio).
+ * Requiere progress-bar.css (+ progress-bar.js opcional) en la página.
+ */
+function renderStudyZonePlanCard(plan) {
+    var value = plan.empty ? 0 : Math.max(0, Math.min(100, Math.round(Number(plan.progress) || 0)));
+    var progressBar = '';
+    if (typeof progressBarHtml === 'function') {
+        progressBar = progressBarHtml({
+            value: value,
+            size: 'sm',
+            rounded: true,
+            track: plan.empty ? 'subtle' : 'default',
+            ariaLabel: 'Progreso del plan'
+        });
+    } else {
+        progressBar =
+            '<div class="ubits-progress-bar ubits-progress-bar--sm ubits-progress-bar--rounded' +
+            (plan.empty ? ' ubits-progress-bar--track-subtle' : '') +
+            '" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="' + value +
+            '" aria-label="Progreso del plan">' +
+            '<div class="ubits-progress-bar__track"><div class="ubits-progress-bar__fill" style="width:' + value + '%"></div></div></div>';
+    }
+    var cierre = plan.cierre || plan.deadline || '';
+    var title = plan.title || '';
+    var progressLabel = plan.progressLabel || '';
+    var pct = plan.empty ? 0 : value;
+
+    return (
+        '<article class="carousel-contents--study-zone__plan-card" tabindex="0">' +
+            '<div class="carousel-contents--study-zone__plan-head">' +
+                '<p class="ubits-body-sm-regular carousel-contents--study-zone__plan-cierre">' + cierre + '</p>' +
+                '<p class="ubits-body-md-semibold carousel-contents--study-zone__plan-title">' + title + '</p>' +
+            '</div>' +
+            '<div class="carousel-contents--study-zone__plan-progress">' +
+                progressBar +
+                '<div class="carousel-contents--study-zone__plan-progress-meta">' +
+                    '<span class="ubits-body-sm-regular carousel-contents--study-zone__plan-progress-label">' + progressLabel + '</span>' +
+                    '<span class="ubits-body-sm-semibold carousel-contents--study-zone__plan-progress-pct">' + pct + '%</span>' +
+                '</div>' +
+            '</div>' +
+        '</article>'
+    );
+}
+
 function mountCarouselContentsIndicators(containerId, suffix, count, activeIndex, ariaLabel, onSelect) {
     if (count <= 1 || typeof initCarouselIndicators !== 'function') return null;
     var mountId = containerId + suffix;
@@ -338,7 +383,8 @@ function createCarouselContents(options) {
         type = 'hero',
         slides = [],
         sectionTitle = 'Section title',
-        onButtonClick
+        onButtonClick,
+        onPlanClick
     } = options;
 
     const container = document.getElementById(containerId);
@@ -357,7 +403,7 @@ function createCarouselContents(options) {
     let outstandingIndicatorsApi = null;
 
     // Validar variante
-    if (type !== 'hero' && type !== 'promo-vertical' && type !== 'allies' && type !== 'content-cards' && type !== 'outstanding') {
+    if (type !== 'hero' && type !== 'promo-vertical' && type !== 'allies' && type !== 'content-cards' && type !== 'outstanding' && type !== 'study-zone') {
         console.warn(`Variante "${type}" no implementada aún. Usando variante "hero" por defecto.`);
         type = 'hero';
     }
@@ -863,6 +909,32 @@ function createCarouselContents(options) {
                 ` : ''}
             </div>
         `;
+    } else if (type === 'study-zone') {
+        carouselHTML = `
+            <section class="carousel-contents--study-zone-wrapper" aria-label="${sectionTitle}">
+                <div class="carousel-contents--study-zone__header">
+                    <h2 class="carousel-contents--study-zone__title ubits-heading-h2">${sectionTitle}</h2>
+                    ${slides.length > 1 ? `
+                        <div class="carousel-contents--study-zone__controls">
+                            <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only carousel-contents--study-zone__prev-btn" aria-label="Plan anterior">
+                                <i class="far fa-chevron-left"></i>
+                            </button>
+                            <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only carousel-contents--study-zone__next-btn" aria-label="Plan siguiente">
+                                <i class="far fa-chevron-right"></i>
+                            </button>
+                        </div>
+                    ` : ''}
+                </div>
+                <div class="carousel-contents--study-zone__track">
+                    ${slides.map(function (slide) { return renderStudyZonePlanCard(slide); }).join('')}
+                </div>
+                ${slides.length > 1 ? `
+                    <div class="carousel-contents--study-zone__indicators">
+                        <div id="${containerId}-indicators" class="carousel-contents__indicators-mount"></div>
+                    </div>
+                ` : ''}
+            </section>
+        `;
     } else if (type === 'content-cards') {
         // HTML para variante content-cards
         carouselHTML = `
@@ -941,7 +1013,88 @@ function createCarouselContents(options) {
     container.innerHTML = carouselHTML;
 
     // Agregar event listeners según la variante
-    if (type === 'promo-vertical') {
+    if (type === 'study-zone') {
+        var studyTrack = container.querySelector('.carousel-contents--study-zone__track');
+        var studyPrevBtn = container.querySelector('.carousel-contents--study-zone__prev-btn');
+        var studyNextBtn = container.querySelector('.carousel-contents--study-zone__next-btn');
+        if (!studyTrack) return;
+
+        var studyCards = studyTrack.querySelectorAll('.carousel-contents--study-zone__plan-card');
+        studyCards.forEach(function (card, index) {
+            function activatePlan() {
+                if (typeof onPlanClick === 'function') onPlanClick(slides[index], index);
+            }
+            card.addEventListener('click', activatePlan);
+            card.addEventListener('keydown', function (e) {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    activatePlan();
+                }
+            });
+        });
+
+        var studyIndicatorsApi = mountCarouselContentsIndicators(
+            containerId,
+            '-indicators',
+            slides.length,
+            0,
+            'Paginación de planes de estudio',
+            function (index) {
+                scrollCarouselContentsToIndex(
+                    studyTrack,
+                    '.carousel-contents--study-zone__plan-card',
+                    index,
+                    updateStudyZoneControls
+                );
+            }
+        );
+
+        function getStudyZoneActiveIndex() {
+            if (!studyCards.length) return 0;
+            var containerRect = studyTrack.getBoundingClientRect();
+            var containerLeft = containerRect.left;
+            for (var i = 0; i < studyCards.length; i++) {
+                var cardRect = studyCards[i].getBoundingClientRect();
+                if (cardRect.left >= containerLeft - 10) return i;
+            }
+            return 0;
+        }
+
+        function getStudyZoneCardStep() {
+            var card = studyTrack.querySelector('.carousel-contents--study-zone__plan-card');
+            if (!card) return studyTrack.clientWidth;
+            var gap = parseFloat(getComputedStyle(studyTrack).gap) || 0;
+            return card.offsetWidth + gap;
+        }
+
+        function updateStudyZoneControls() {
+            if (studyPrevBtn && studyNextBtn) {
+                var maxScroll = studyTrack.scrollWidth - studyTrack.clientWidth - 1;
+                studyPrevBtn.disabled = studyTrack.scrollLeft <= 1;
+                studyNextBtn.disabled = studyTrack.scrollLeft >= maxScroll;
+                studyPrevBtn.classList.toggle('disabled', studyPrevBtn.disabled);
+                studyNextBtn.classList.toggle('disabled', studyNextBtn.disabled);
+            }
+            if (studyIndicatorsApi) {
+                studyIndicatorsApi.setActive(getStudyZoneActiveIndex());
+            }
+        }
+
+        if (studyPrevBtn) {
+            studyPrevBtn.addEventListener('click', function () {
+                studyTrack.scrollBy({ left: -getStudyZoneCardStep(), behavior: 'smooth' });
+            });
+        }
+        if (studyNextBtn) {
+            studyNextBtn.addEventListener('click', function () {
+                studyTrack.scrollBy({ left: getStudyZoneCardStep(), behavior: 'smooth' });
+            });
+        }
+
+        studyTrack.addEventListener('scroll', updateStudyZoneControls, { passive: true });
+        window.addEventListener('resize', updateStudyZoneControls);
+        updateStudyZoneControls();
+    } else if (type === 'promo-vertical') {
         // Lógica para variante promo-vertical (navegación por grupos como allies)
         const carouselContainer = container.querySelector('.carousel-contents--promo-vertical__cards-container');
         const prevBtn = container.querySelector('.carousel-contents--promo-vertical__prev-btn');

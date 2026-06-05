@@ -5,6 +5,7 @@
  * createProgressBar({ containerId | container, ... }) → { getValue, setValue, setStatus, setRounded, destroy }
  *
  * Tamaños (altura del track): sm 5px · lg 8px
+ * Relleno por defecto (sin variant): --ubits-accent-brand. variant: 'chart' solo casos excepcionales.
  * Requiere: progress-bar.css + tokens UBITS (colors, spacing vía styles.css)
  */
 (function (global) {
@@ -33,6 +34,7 @@
             classes.push('ubits-progress-bar--rounded');
         }
         if (opts.variant === 'chart') {
+            /* Excepcional: no usar en cards ni flujos habituales; default = accent-brand */
             classes.push('ubits-progress-bar--variant-chart');
         }
         if (opts.track === 'static') {

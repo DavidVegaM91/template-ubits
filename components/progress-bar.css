@@ -3,6 +3,9 @@
    Barra de progreso horizontal (0–100 %).
    Tamaños: sm (5px), lg (8px).
    Modificador --rounded: bordes tipo pill (border-radius-full).
+   Relleno por defecto: --ubits-accent-brand (azul marca).
+   --variant-chart: solo escenarios puntuales (token chart neutral-blue);
+   no usar en cards de aprendizaje ni flujos habituales de producto.
    ======================================== */
 
 .ubits-progress-bar {
@@ -52,6 +55,7 @@
 }
 
 .ubits-progress-bar--variant-chart .ubits-progress-bar__fill {
+    /* Excepcional: gráficas / contextos analíticos. Por defecto usar relleno accent-brand. */
     background: var(--ubits-chart-bg-neutral-blue-base);
 }
 

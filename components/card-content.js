@@ -310,6 +310,25 @@ function validateCardData(cardData) {
     return errors.length === 0;
 }
 
+/** Barra en overlay de card: azul marca por defecto (sin variant chart). Ver progress-bar.css. */
+function cardContentProgressBarHtml(progress, status) {
+    var value = Math.max(0, Math.min(100, Math.round(Number(progress) || 0)));
+    var opts = {
+        value: value,
+        size: 'sm',
+        rounded: false,
+        track: 'static',
+        status: status === 'completed' ? 'complete' : undefined,
+        autoComplete: status === 'completed',
+        ariaLabel: 'Progreso del contenido'
+    };
+    if (typeof progressBarHtml === 'function') return progressBarHtml(opts);
+    var cls = 'ubits-progress-bar ubits-progress-bar--sm ubits-progress-bar--track-static';
+    if (opts.status === 'complete') cls += ' ubits-progress-bar--complete';
+    return '<div class="' + cls + '" role="progressbar" aria-valuenow="' + value + '" aria-valuemin="0" aria-valuemax="100" aria-label="Progreso del contenido">' +
+        '<div class="ubits-progress-bar__track"><div class="ubits-progress-bar__fill" style="width:' + value + '%"></div></div></div>';
+}
+
 /**
  * Renderiza una course-card con todos sus datos
  * @param {Object} cardData - Datos de la card
@@ -329,25 +348,6 @@ function validateCardData(cardData) {
  * @param {string} [cardData.lmsCardId] - Identificador para data-lms-row-key (evento ubits-lms-content-action).
  * @param {boolean} [cardData.legacyLms] - Si true, badge "Antiguo LMS" (outlined info + puntito) y menú de acciones con Restaurar e Informes. Requiere badge-tag.css.
  */
-function cardContentProgressBarHtml(progress, status) {
-    var value = Math.max(0, Math.min(100, Math.round(Number(progress) || 0)));
-    var opts = {
-        value: value,
-        size: 'sm',
-        rounded: false,
-        variant: 'chart',
-        track: 'static',
-        status: status === 'completed' ? 'complete' : undefined,
-        autoComplete: status === 'completed',
-        ariaLabel: 'Progreso del contenido'
-    };
-    if (typeof progressBarHtml === 'function') return progressBarHtml(opts);
-    var cls = 'ubits-progress-bar ubits-progress-bar--sm ubits-progress-bar--variant-chart ubits-progress-bar--track-static';
-    if (opts.status === 'complete') cls += ' ubits-progress-bar--complete';
-    return '<div class="' + cls + '" role="progressbar" aria-valuenow="' + value + '" aria-valuemin="0" aria-valuemax="100" aria-label="Progreso del contenido">' +
-        '<div class="ubits-progress-bar__track"><div class="ubits-progress-bar__fill" style="width:' + value + '%"></div></div></div>';
-}
-
 function renderCardContent(cardData) {
     // Determinar clase de estado
     let statusClass = '';

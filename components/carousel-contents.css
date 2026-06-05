@@ -304,7 +304,6 @@
     display: none;
     align-items: center;
     justify-content: center;
-    margin-top: var(--gap-sm);
     width: 100%;
     height: auto;
 }
@@ -370,7 +369,6 @@
     /* Mostrar indicadores fuera del card en mobile */
     .carousel-contents--hero__indicators--outside {
         display: flex !important;
-        margin-top: 8px;
         width: 100%;
         justify-content: center;
         align-items: center;
@@ -503,7 +501,6 @@
     display: none;
     align-items: center;
     justify-content: center;
-    margin-top: var(--gap-sm);
     width: 100%;
 }
 
@@ -749,7 +746,6 @@
     display: none;
     align-items: center;
     justify-content: center;
-    margin-top: var(--gap-sm);
     width: 100%;
 }
 
@@ -864,7 +860,6 @@
     display: none;
     align-items: center;
     justify-content: center;
-    margin-top: var(--gap-sm);
     width: 100%;
 }
 
@@ -899,6 +894,156 @@
         width: 100%;
         max-width: 100%;
         min-width: 100%;
+    }
+}
+
+/* ========================================
+   VARIANTE: STUDY ZONE (Zona de estudio)
+   Planes de formación activos — grid desktop, carrusel mobile
+   Requiere progress-bar.css en la página (+ progress-bar.js opcional)
+   ======================================== */
+
+.carousel-contents--study-zone-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-md);
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.carousel-contents--study-zone__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--gap-sm);
+    margin: 0;
+}
+
+.carousel-contents--study-zone__title {
+    flex: 1;
+    margin: 0;
+    color: var(--ubits-fg-1-high);
+}
+
+.carousel-contents--study-zone__controls {
+    display: none;
+    gap: var(--gap-sm);
+    align-items: center;
+}
+
+.carousel-contents--study-zone__controls button.disabled,
+.carousel-contents--study-zone__controls button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+.carousel-contents--study-zone__track {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--gap-2xl);
+    width: 100%;
+}
+
+.carousel-contents--study-zone__plan-card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-md);
+    min-width: 0;
+    padding: var(--padding-xl) var(--padding-2xl);
+    box-sizing: border-box;
+    border: 1px solid var(--ubits-border-1);
+    border-radius: var(--border-radius-lg);
+    background: var(--ubits-bg-1);
+    font-family: var(--ubits-font-family-sans);
+    cursor: pointer;
+}
+
+.carousel-contents--study-zone__plan-card:focus-visible {
+    outline: 2px solid var(--ubits-accent-brand);
+    outline-offset: 2px;
+}
+
+.carousel-contents--study-zone__plan-head {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-xs);
+    min-width: 0;
+}
+
+.carousel-contents--study-zone__plan-cierre {
+    margin: 0;
+    color: var(--ubits-fg-1-medium);
+}
+
+.carousel-contents--study-zone__plan-title {
+    margin: 0;
+    color: var(--ubits-fg-1-high);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.carousel-contents--study-zone__plan-progress {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-sm);
+    width: 100%;
+}
+
+.carousel-contents--study-zone__plan-progress .ubits-progress-bar {
+    width: 100%;
+}
+
+.carousel-contents--study-zone__plan-progress-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--gap-sm);
+}
+
+.carousel-contents--study-zone__plan-progress-label {
+    color: var(--ubits-fg-1-medium);
+}
+
+.carousel-contents--study-zone__plan-progress-pct {
+    color: var(--ubits-accent-brand);
+}
+
+.carousel-contents--study-zone__indicators {
+    display: none;
+}
+
+@media (max-width: 768px) {
+    .carousel-contents--study-zone__controls {
+        display: flex;
+    }
+
+    .carousel-contents--study-zone__indicators {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+    }
+
+    .carousel-contents--study-zone__track {
+        display: flex;
+        gap: var(--gap-2xl);
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        scroll-behavior: smooth;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+    }
+
+    .carousel-contents--study-zone__track::-webkit-scrollbar {
+        display: none;
+    }
+
+    .carousel-contents--study-zone__plan-card {
+        flex: 0 0 100%;
+        scroll-snap-align: start;
+        min-width: 224px;
     }
 }
 
@@ -1254,7 +1399,6 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        margin-top: var(--gap-sm);
     }
 }
 
