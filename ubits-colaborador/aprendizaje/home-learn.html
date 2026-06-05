@@ -23,6 +23,13 @@
     <link rel="stylesheet" href="../../components/card-content.css">
     <link rel="stylesheet" href="../../components/button.css">
     <link rel="stylesheet" href="../../components/tooltip.css">
+    <link rel="stylesheet" href="../../components/input.css">
+    <link rel="stylesheet" href="../../components/dropdown-menu.css">
+    <link rel="stylesheet" href="../../components/badge-tag.css">
+    <link rel="stylesheet" href="../../components/empty-state.css">
+    <link rel="stylesheet" href="../../components/skeleton.css">
+    <link rel="stylesheet" href="./catalogo.css">
+    <link rel="stylesheet" href="./resultados-busqueda.css">
     <link rel="stylesheet" href="./home-learn.css">
 </head>
 <body data-theme="light">
@@ -41,9 +48,17 @@
                         <div class="widget-home-learn-hero">
                             <section class="home-learn-hero" aria-label="Buscar contenidos">
                                 <p class="home-learn-hero__title ubits-heading-h1">¿Qué quieres aprender hoy?</p>
-                                <div class="home-learn-hero__search" role="search">
-                                    <span class="ubits-body-md-regular home-learn-hero__search-placeholder">Buscar contenidos o competencias</span>
-                                    <button type="button" class="home-learn-hero__search-btn" aria-label="Buscar">
+                                <div class="home-learn-hero__search" id="home-learn-hero-search" role="search">
+                                    <input
+                                        type="search"
+                                        class="home-learn-hero__search-field ubits-body-md-regular"
+                                        id="home-learn-search-input"
+                                        placeholder="Buscar contenidos o competencias"
+                                        autocomplete="off"
+                                        enterkeyhint="search"
+                                        aria-label="Buscar contenidos o competencias"
+                                    >
+                                    <button type="button" class="home-learn-hero__search-btn" id="home-learn-search-submit" aria-label="Buscar">
                                         <svg class="home-learn-hero__search-icon" viewBox="0 0 16.2499 16.2499" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                                             <path d="M14.1667 7.70833C14.1667 4.1415 11.2752 1.25 7.70833 1.25C4.14149 1.25 1.25 4.14149 1.25 7.70833C1.25 11.2752 4.1415 14.1667 7.70833 14.1667C9.45282 14.1667 11.0343 13.4735 12.1965 12.3494C12.217 12.3203 12.2404 12.2925 12.2664 12.2664C12.292 12.2409 12.3193 12.2183 12.3478 12.1981C13.4728 11.0358 14.1667 9.45365 14.1667 7.70833ZM15.4167 7.70833C15.4167 9.6119 14.7251 11.353 13.5815 12.6978L16.0669 15.1831C16.311 15.4272 16.311 15.8228 16.0669 16.0669C15.8228 16.311 15.4272 16.311 15.1831 16.0669L12.6978 13.5815C11.353 14.7251 9.6119 15.4167 7.70833 15.4167C3.45114 15.4167 0 11.9655 0 7.70833C0 3.45114 3.45114 0 7.70833 0C11.9655 0 15.4167 3.45114 15.4167 7.70833Z" fill="currentColor"/>
                                         </svg>
@@ -53,29 +68,83 @@
                         </div>
                     </div>
 
+                    <!-- Lo más buscado (debajo del hero, modo exploración) -->
+                    <div class="section-single home-learn-trending-section" id="home-learn-trending-panel" hidden>
+                        <div class="widget-home-learn-trending">
+                            <h2 class="ubits-heading-h2 home-learn-trending__title">Lo más buscado</h2>
+                            <div class="home-learn-trending__chips" id="catalog-chips" role="list"></div>
+                        </div>
+                    </div>
+
+                    <!-- Exploración catálogo (visible al enfocar buscador) -->
+                    <div class="section-single home-learn-browse-section" id="home-learn-browse-panel" hidden>
+                        <div class="widget-home-learn-browse">
+                            <div class="academias-section-wrapper">
+                                <h2 class="ubits-heading-h2 academias-section-title">Explora por academias</h2>
+                                <div id="catalog-results"></div>
+                            </div>
+                            <div id="aliados-container"></div>
+                            <div class="tipos-contenido-section-wrapper">
+                                <div class="tipos-contenido-section-header">
+                                    <h2 class="ubits-heading-h2 tipos-contenido-section-title">Explora por tipo de contenido</h2>
+                                    <div class="tipos-contenido-controls">
+                                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only" id="tipos-contenido-nuevo-prev" aria-label="Anterior">
+                                            <i class="far fa-chevron-left"></i>
+                                        </button>
+                                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only" id="tipos-contenido-nuevo-next" aria-label="Siguiente">
+                                            <i class="far fa-chevron-right"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="tipos-contenido-carousel-nuevo" id="tipos-contenido-carousel-nuevo"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Resultados de búsqueda en grid -->
+                    <div class="section-single home-learn-results-section" id="home-learn-results-panel" hidden>
+                        <div class="widget-home-learn-resultados">
+                            <div class="widget-buscador-filtros">
+                                <div class="buscador-header">
+                                    <div class="buscador-title-container">
+                                        <h2 class="ubits-heading-h2 buscador-title">Resultados de búsqueda</h2>
+                                        <div class="buscador-results">
+                                            <span class="buscador-results-count" id="home-learn-results-count">0</span>
+                                            <span class="buscador-results-text">resultados</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="widget-grid-resultados">
+                                <div class="resultados-grid-container" id="home-learn-results-grid"></div>
+                            </div>
+                            <div id="home-learn-empty-state" style="display: none;"></div>
+                        </div>
+                    </div>
+
                     <!-- Zona de estudio — planes de formación activos -->
-                    <div class="section-single">
+                    <div class="section-single home-learn-home-section">
                         <div class="widget-zona-estudio">
                             <div id="home-learn-zona-estudio-mount"></div>
                         </div>
                     </div>
 
                     <!-- Continúa aprendiendo -->
-                    <div class="section-single">
+                    <div class="section-single home-learn-home-section">
                         <div class="widget-continua-viendo">
                             <div id="continua-viendo-container"></div>
                         </div>
                     </div>
 
                     <!-- Universidad corporativa (contenidos Fiqsha) -->
-                    <div class="section-single">
+                    <div class="section-single home-learn-home-section">
                         <div class="widget-outstanding">
                             <div id="ucorporativa-home-container"></div>
                         </div>
                     </div>
 
                     <!-- Aliados destacados (al final) -->
-                    <div class="section-single">
+                    <div class="section-single home-learn-home-section">
                         <div class="widget-aliados">
                             <div id="allies-container"></div>
                         </div>
@@ -91,6 +160,9 @@
     <div id="profile-menu-container"></div>
 
     <script src="../../components/tooltip.js"></script>
+    <script src="../../components/dropdown-menu.js"></script>
+    <script src="../../components/input.js"></script>
+    <script src="../../components/empty-state.js"></script>
     <script src="../../components/sidebar.js"></script>
     <script src="../../components/sub-nav.js"></script>
     <script src="../../components/tab-bar.js"></script>
@@ -105,7 +177,14 @@
     <script src="../../bd-master/bd-master-niveles-contenido.js"></script>
     <script src="../../bd-master/bd-master-aliados.js"></script>
     <script src="../../bd-master/bd-contenidos-fiqsha.js"></script>
+    <script src="../../bd-master/bd-contenidos-ubits.js"></script>
+    <script src="../../bd-master/bd-master-competencias.js"></script>
+    <script src="../../bd-master/bd-master-habilidades.js"></script>
+    <script src="../../bd-master/bd-master-categorias-fiqsha.js"></script>
+    <script src="../lms-creator/planes-formacion/catalogo-contenidos-drawer.js"></script>
+    <script src="./catalogo-browse.js"></script>
     <script src="./home-learn.js"></script>
+    <script src="./home-learn-search.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             loadSidebar('sidebar-container', 'aprendizaje');

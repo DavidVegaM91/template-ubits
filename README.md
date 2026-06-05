@@ -77,6 +77,65 @@ Cuando una lista, tabla o cuadrícula tiene **datos de fondo** pero la combinaci
 
 **No uses** otro título tipo “Sin resultados” para este caso; el texto de descripción debe ser exactamente una de las dos frases anteriores (salvo override explícito acordado con producto).
 
+## Patrón: búsqueda en Inicio Aprendizaje (`home-learn.html`)
+
+El dashboard **`ubits-colaborador/aprendizaje/home-learn.html`** incluye un **buscador hero hardcodeado** (diseño APP v3; aún no es componente oficial). La lógica vive en **`home-learn-search.js`**; la exploración tipo catálogo en **`catalogo-browse.js`**. **No** uses `createInput` en el hero: el campo es un `<input type="search">` nativo estilizado en **`home-learn.css`**.
+
+### Estados de la pantalla
+
+| Estado | Cuándo | Qué se ve |
+|--------|--------|-----------|
+| **`idle`** | Sin foco en el buscador o campo vacío al salir | Carruseles del home (Zona de estudio, Continúa aprendiendo, U. corporativa, Aliados). |
+| **`browse`** | Foco en el buscador, **sin texto** | Hero + sección **«Lo más buscado»** (debajo del hero, no dentro) + exploración catálogo: academias, aliados destacados, tipos de contenido. |
+| **`results`** | Hay texto en el buscador | Hero + grid de **Card Content** con resultados (se ocultan «Lo más buscado» y el resto del catálogo). |
+
+**«Lo más buscado»:** bloque propio bajo el hero (`#home-learn-trending-panel`), título `ubits-heading-h2` y chips en fila horizontal (Figma APP v3 Search/cursor). Referencia visual: chips tipo pill con borde `var(--ubits-border-1)`.
+
+### Fuente de datos de búsqueda
+
+Los resultados unen **`bd-master/bd-contenidos-ubits.js`** y **`bd-master/bd-contenidos-fiqsha.js`** vía **`ubits-colaborador/lms-creator/planes-formacion/catalogo-contenidos-drawer.js`** (`refreshCatalogoContenidosDrawer()`). El filtro es **local en el playground** (título, descripción, tipo, competencia, proveedor, categoría, nivel, idioma).
+
+### Debounce + skeleton (evitar parpadeo)
+
+**Problema:** re-renderizar el grid en cada tecla (`loadCardContent` vaciando el DOM) produce parpadeo.
+
+**Comportamiento implementado (alineado con producción):**
+
+1. **Debounce (~450 ms)** tras dejar de escribir antes de ejecutar la búsqueda. En producto con API lenta suele subirse a **600–800 ms** o más.
+2. **Skeleton estable:** al haber texto, se muestra de inmediato el panel de resultados con **8 cards skeleton** (`components/skeleton.css`, patrón `ubits-skeleton-card`) en el mismo grid (`#home-learn-results-grid`). **No** se regenera el skeleton en cada tecla si ya está en carga (`data-search-loading`).
+3. **Contador:** `#home-learn-results-count` muestra **`…`** mientras carga; al terminar, el número real de resultados.
+4. **Un solo swap:** al cumplirse el debounce, skeleton → cards (o empty state) de una vez.
+5. **Atajos sin debounce:** **Enter** o botón lupa → búsqueda inmediata (`flushSearchNow`).
+
+**Empty state** (0 resultados tras buscar): mismo copy que [Patrón: empty state](#patrón-empty-state-cuando-no-hay-resultados-búsqueda-yo-filtros) — título `No se encontraron resultados`, descripción `Intenta ajustar tu búsqueda.`, botón `Limpiar búsqueda`.
+
+### Imports obligatorios (home-learn)
+
+Además de los habituales del módulo: `skeleton.css`, `empty-state.css` + `empty-state.js`, `catalogo.css`, `resultados-busqueda.css` (grid), `card-content.css` + `card-content.js`, BD y `catalogo-contenidos-drawer.js`. El selector de academias en modo `browse` sigue usando `createInput` type `select` (`input.css`, `dropdown-menu.js` antes de `input.js`).
+
+### Estructura HTML crítica
+
+- **`section-single` → un solo widget hijo** en resultados: todo va dentro de **`widget-home-learn-resultados`**. Varios hijos directos en `section-single` rompen el flex y desplazan el grid a la derecha.
+- Scripts: `catalogo-browse.js` → `home-learn.js` → `home-learn-search.js`.
+
+### Evolución hacia producción
+
+Sustituir el `setTimeout` del debounce por una **petición al backend**; mantener skeleton visible hasta la respuesta (y, si producto lo pide, un **mínimo de visualización** del skeleton para evitar flashes en respuestas muy rápidas). El hero hardcodeado está pensado para convertirse en componente oficial cuando se refine el diseño.
+
+**Referencias:** `home-learn.html`, `home-learn.css`, `home-learn-search.js`, `catalogo-browse.js`, `documentacion/componentes/skeleton.html`.
+
+### Catálogo fuera del SubNav Aprendizaje
+
+La pestaña **Catálogo** ya **no aparece** en la variante SubNav **`aprendizaje`** (`components/sub-nav.js`): la exploración del catálogo (academias, aliados, tipos de contenido) vive en **Inicio** al enfocar el buscador (modo **`browse`**). Los resultados con texto usan el mismo catálogo unificado (modo **`results`**).
+
+| Qué | Dónde |
+|-----|--------|
+| **Navegación producto** | SubNav Aprendizaje: Inicio, Modo estudio IA, U. Corporativa, Zona de estudio |
+| **Exploración catálogo** | `home-learn.html` → foco en buscador → `catalogo-browse.js` |
+| **Página legacy** | `catalogo.html` sigue en disco (referencia, pruebas, enlaces antiguos); URL directa activa tab **Inicio** en SubNav |
+
+Si vuelves a exponer Catálogo como pestaña, restaura el ítem `{ id: 'catalog', … }` en `TOP_NAV_VARIANTS.aprendizaje.tabs` y el mapeo `'catalogo.html': 'catalog'` en `PAGE_TO_TAB`.
+
 ## Toolbar panel (`ubits-toolbar-panel`)
 
 Bloque reutilizable para la **barra** de una lista o catálogo (título + meta a la izquierda, acciones a la derecha). El CSS **`components/toolbar-panel.css`** solo define layout y tokens; **no** incluye búsqueda, filtros, lista ni lógica: eso lo implementa cada página y su JS.
@@ -126,7 +185,7 @@ Si la pantalla **solo** presenta un listado tabular (filas/columnas) con barra d
 ### **Componentes de navegación:**
 - **SubNav** - Navegación superior (variantes disponibles):
   - `template` - Plantilla personalizable
-  - `aprendizaje` - Módulo de aprendizaje (inicio, catálogo, U. corporativa, zona de estudio)
+  - `aprendizaje` - Módulo de aprendizaje (inicio, modo estudio IA, U. corporativa, zona de estudio; **catálogo oculto en SubNav** — ver [Patrón: búsqueda en Inicio Aprendizaje](#patrón-búsqueda-en-inicio-aprendizaje-home-learnhtml))
   - `desempeno` - Módulo de desempeño (evaluaciones 360, objetivos, métricas, reportes)
   - `encuestas` - Módulo de encuestas
   - `tareas` - Módulo de tareas (planes, tareas)
@@ -410,8 +469,8 @@ Todos los componentes UBITS requieren imports obligatorios:
 - **`documentacion/plantilla-ubits.html`** - Template base para crear nuevas páginas (1 sección)
 
 #### **🎓 Módulo de Aprendizaje (ubits-colaborador/aprendizaje/):**
-- **`home-learn.html`** - Dashboard de aprendizaje (9 secciones)
-- **`catalogo.html`** - Catálogo de contenidos (2 secciones)
+- **`home-learn.html`** - Dashboard de aprendizaje (hero buscador APP v3, carruseles; búsqueda con debounce + skeleton; **exploración catálogo en Inicio** — ver [Patrón: búsqueda en Inicio Aprendizaje](#patrón-búsqueda-en-inicio-aprendizaje-home-learnhtml))
+- **`catalogo.html`** - Catálogo standalone (legacy; **sin pestaña en SubNav**; misma exploración integrada en `home-learn` modo `browse`)
 - **`u-corporativa.html`** - Universidad corporativa (3 secciones)
 - **`zona-estudio.html`** - Zona de estudio (2 secciones con tabs)
 - **`modo-estudio-ia.html`** - Modo de estudio con IA
@@ -620,9 +679,9 @@ Todos los componentes UBITS requieren imports obligatorios:
 ├── 📁 ubits-colaborador/     # Módulo de colaborador
 │   ├── inicio/
 │   ├── aprendizaje/                    # Módulo — SubNav aprendizaje
-│   │   ├── Inicio
+│   │   ├── Inicio                      # home-learn (incl. exploración catálogo vía buscador)
 │   │   ├── Modo estudio IA
-│   │   ├── Catálogo
+│   │   ├── catalogo.html               # legacy; no tab SubNav
 │   │   ├── U. Corporativa
 │   │   └── Zona de estudio
 │   ├── lms-creator/                    # Producto LMS Creator (carpeta del módulo)
@@ -1133,11 +1192,11 @@ Un sistema inspirado que permite a **cualquier usuario** (Product Managers, Dise
 ### **🎯 Páginas con estructura modular:**
 
 #### **Páginas completas:**
-- **`home-learn.html`** - Ejemplo completo con 9 secciones variadas
+- **`home-learn.html`** - Ejemplo completo con hero buscador, carruseles y flujo búsqueda → catálogo → resultados ([patrón documentado](#patrón-búsqueda-en-inicio-aprendizaje-home-learnhtml))
 - **`profile.html`** - Página original que inspiró el sistema
 
 #### **Páginas básicas:**
-- **`catalogo.html`** - 2 secciones (Encabezado + Lista competencias)
+- **`catalogo.html`** - Legacy (2 secciones); sin pestaña SubNav — catálogo en `home-learn` modo `browse`
 - **`u-corporativa.html`** - 3 secciones específicas
 - **`zona-estudio.html`** - 2 secciones con tabs
 - **`index.html`** - 1 sección base

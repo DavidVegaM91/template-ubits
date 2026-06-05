@@ -46,7 +46,7 @@ const TOP_NAV_VARIANTS = {
         tabs: [
             { id: 'home', label: 'Inicio', icon: 'far fa-home', url: '../../ubits-colaborador/aprendizaje/home-learn.html' },
             { id: 'modo-estudio-ia', label: 'Modo estudio IA', icon: 'far fa-sparkles', url: '../../ubits-colaborador/aprendizaje/modo-estudio-ia.html' },
-            { id: 'catalog', label: 'Catálogo', icon: 'far fa-book', url: '../../ubits-colaborador/aprendizaje/catalogo.html' },
+            // Catálogo oculto en SubNav: exploración en home-learn (modo browse). Ver README «Patrón: búsqueda en Inicio Aprendizaje».
             { id: 'corporate', label: 'U. Corporativa', icon: 'far fa-building-columns', url: '../../ubits-colaborador/aprendizaje/u-corporativa.html' },
             { id: 'study-zone', label: 'Zona de estudio', icon: 'far fa-books', url: '../../ubits-colaborador/aprendizaje/zona-estudio.html' }
         ]
@@ -344,9 +344,9 @@ function resolveTabIdFromPage() {
 
 // Mapeo: página -> tab ID (claves en minúsculas). Rutas bajo lms-creator/ usan prefijo vía getPageKeyForSubNav.
 const PAGE_TO_TAB = {
-    // Aprendizaje
+    // Aprendizaje (catalogo.html: tab oculto en SubNav; mapeo legacy → Inicio)
     'home-learn.html': 'home',
-    'catalogo.html': 'catalog',
+    'catalogo.html': 'home',
     'modo-estudio-ia.html': 'modo-estudio-ia',
     'u-corporativa.html': 'corporate',
     'lms-creator/personalizacion-u-corporativa.html': 'universidad-corporativa',
