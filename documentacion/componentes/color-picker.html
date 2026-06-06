@@ -44,23 +44,6 @@
                                 <i class="far fa-eye" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
                                 Preview del componente
                             </h2>
-                            <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6;">
-                                Pulsa el cuadrado de color para abrir el panel. Puedes fijar un color de partida con los botones de muestra antes de abrir. Escape o clic fuera cierran el panel.
-                            </p>
-
-                            <div style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin-bottom: 20px;">
-                                <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Color inicial:</span>
-                                <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn active" data-cp-preset="#0C5BEF" onclick="cpSetPreset(this, '#0C5BEF')">
-                                    <span>Marca</span>
-                                </button>
-                                <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-cp-preset="#1B5E20" onclick="cpSetPreset(this, '#1B5E20')">
-                                    <span>Verde</span>
-                                </button>
-                                <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-cp-preset="#B71C1C" onclick="cpSetPreset(this, '#B71C1C')">
-                                    <span>Rojo</span>
-                                </button>
-                            </div>
-
                             <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: 12px; display: flex; flex-wrap: wrap; align-items: center; gap: var(--gap-lg);">
                                 <button type="button" class="ubits-color-picker-trigger" id="cp-demo-anchor" title="Abrir selector de color" aria-label="Abrir selector de color"></button>
                             </div>
@@ -168,14 +151,6 @@
         function cpApplySwatch() {
             var a = document.getElementById('cp-demo-anchor');
             if (a) a.style.background = cpDemoHex;
-        }
-
-        function cpSetPreset(btn, hex) {
-            cpDemoHex = hex;
-            cpApplySwatch();
-            document.querySelectorAll('.preview-control-btn[data-cp-preset]').forEach(function (b) {
-                b.classList.toggle('active', b === btn);
-            });
         }
 
         function cpOpenFromAnchor() {
