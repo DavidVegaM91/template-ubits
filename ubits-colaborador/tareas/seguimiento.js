@@ -39,13 +39,6 @@
         }
 
         if (typeof window.getModalHtml === 'function') {
-            var datePickerBody = '<div class="date-picker-inputs"><div class="date-picker-input-group"><label class="ubits-body-sm-regular date-picker-label">Fecha de inicio</label><div class="date-picker-input-wrapper"><input type="text" class="date-picker-input" id="date-picker-fecha-inicio" placeholder="DD/MM/YYYY"></div></div>' +
-                '<span class="date-picker-separator">-</span><div class="date-picker-input-group"><label class="ubits-body-sm-regular date-picker-label">Fecha de fin</label><div class="date-picker-input-wrapper"><input type="text" class="date-picker-input" id="date-picker-fecha-fin" placeholder="DD/MM/YYYY"></div></div></div>' +
-                '<div class="date-picker-calendar" id="date-picker-calendar"></div>';
-            var datePickerFooter = '<button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="date-picker-cancelar"><span>Cancelar</span></button>' +
-                '<button type="button" class="ubits-button ubits-button--primary ubits-button--md" id="date-picker-aplicar"><span>Aplicar</span></button>';
-            modalsContainer.innerHTML += window.getModalHtml({ overlayId: 'date-picker-overlay', title: 'Fecha personalizada', bodyHtml: datePickerBody, footerHtml: datePickerFooter, size: 'sm', contentId: 'date-picker-modal', closeButtonId: 'date-picker-close', overlayClass: 'date-picker-overlay', contentClass: 'date-picker-modal-content', headerClass: 'date-picker-modal-header', bodyClass: 'date-picker-modal-body', footerClass: 'date-picker-modal-footer' });
-
             var deleteBody = '<p class="ubits-body-md-regular">¿Estás seguro de que deseas eliminar <strong id="delete-count">0</strong> elemento(s) seleccionado(s)?</p><p class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Esta acción no se puede deshacer.</p><div class="delete-confirm-group" style="margin-top: var(--gap-lg, 16px);"><label class="ubits-body-sm-regular" for="delete-modal-type-input">Escriba <strong>eliminar</strong> para habilitar el botón:</label><input type="text" id="delete-modal-type-input" class="ubits-input delete-modal-type-input" placeholder="Escriba la palabra de confirmación" autocomplete="off" style="margin-top: var(--gap-sm, 8px); width: 100%; padding: var(--padding-sm, 8px) var(--padding-md, 12px); border: 1px solid var(--ubits-border-1); border-radius: var(--border-radius-sm, 8px); font-size: var(--font-size-sm, 13px); color: var(--ubits-fg-1-high); box-sizing: border-box;"></div>';
             var deleteFooter = '<button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="delete-modal-cancel">Cancelar</button><button type="button" class="ubits-button ubits-button--error ubits-button--md" id="delete-modal-confirm" disabled>Eliminar</button>';
             modalsContainer.innerHTML += window.getModalHtml({ overlayId: 'delete-modal-overlay', title: 'Confirmar eliminación', bodyHtml: deleteBody, footerHtml: deleteFooter, size: 'sm', closeButtonId: 'delete-modal-close' });
@@ -54,9 +47,6 @@
             var reabrirFooter = '<button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="reabrir-plan-cancel">Cancelar</button><button type="button" class="ubits-button ubits-button--primary ubits-button--md" id="reabrir-plan-confirm">Continuar</button>';
             modalsContainer.innerHTML += window.getModalHtml({ overlayId: 'reabrir-plan-overlay', title: 'Cambiar estado del plan', bodyHtml: reabrirBody, footerHtml: reabrirFooter, size: 'xs', titleId: 'reabrir-plan-title', closeButtonId: 'reabrir-plan-close' });
 
-            var planFechaBody = '<div class="date-picker-input-group"><label class="ubits-body-sm-regular date-picker-label">Nueva fecha de finalización</label><div class="date-picker-input-wrapper"><input type="text" class="date-picker-input" id="plan-fecha-input" placeholder="DD/MM/YYYY"></div></div><div class="date-picker-calendar" id="plan-fecha-calendar"></div>';
-            var planFechaFooter = '<button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="plan-fecha-cancel"><span>Cancelar</span></button><button type="button" class="ubits-button ubits-button--primary ubits-button--md" id="plan-fecha-aplicar"><span>Aplicar</span></button>';
-            modalsContainer.innerHTML += window.getModalHtml({ overlayId: 'plan-fecha-overlay', title: 'Cambiar fecha de finalización', bodyHtml: planFechaBody, footerHtml: planFechaFooter, size: 'sm', contentId: 'plan-fecha-modal', titleId: 'plan-fecha-modal-title', closeButtonId: 'plan-fecha-close', overlayClass: 'date-picker-overlay', contentClass: 'date-picker-modal-content', headerClass: 'date-picker-modal-header', bodyClass: 'date-picker-modal-body', footerClass: 'date-picker-modal-footer' });
         }
     }
 
@@ -82,6 +72,18 @@
 
     /** Mes inicial del calendario en modales de fecha cuando no hay valor (demo seguimiento). */
     var SEGUIMIENTO_DATE_PICKER_DEFAULT_MONTH = new Date(2026, 2, 1);
+
+    var seguimientoRangeDatePicker = null;
+    var seguimientoPlanDatePicker = null;
+    var seguimientoDatePickerSavedFilters = null;
+
+    function formatearFechaParaMostrar(fecha) {
+        var dia = fecha.getDate();
+        var meses = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
+        var mes = meses[fecha.getMonth()];
+        var anio = fecha.getFullYear();
+        return dia + ' ' + mes + ' ' + anio;
+    }
 
     // Formato de números para indicadores: < 10k con comas (1,556); >= 10k en K (10,5 K); >= 1M en M (2,7 M)
     function formatIndicatorNumber(n) {
@@ -2729,192 +2731,69 @@
         });
     }
 
-    // Inicializar selector de fechas personalizado (modal inyectado: overlay contiene el contenido)
-    function initDatePicker() {
-        const datePickerOverlay = document.getElementById('date-picker-overlay');
-        const datePickerCancelar = document.getElementById('date-picker-cancelar');
-        const datePickerAplicar = document.getElementById('date-picker-aplicar');
-        const fechaInicioInput = document.getElementById('date-picker-fecha-inicio');
-        const fechaFinInput = document.getElementById('date-picker-fecha-fin');
-        const calendarContainer = document.getElementById('date-picker-calendar');
-        const datePickerClose = document.getElementById('date-picker-close');
-
-        if (!datePickerOverlay) return;
-
-        let fechaInicio = null;
-        let fechaFin = null;
-        let currentMonth = new Date(2026, 2, 1); // Marzo 2026
-        let selectingStart = true;
-
-        // Guardar estado del filtro antes de abrir
-        let savedFilterState = null;
-
-        // Función para formatear fecha para mostrar en inputs (DD/MM/YYYY)
-        function formatearFechaParaInput(fecha) {
-            const dia = String(fecha.getDate()).padStart(2, '0');
-            const mes = String(fecha.getMonth() + 1).padStart(2, '0');
-            const anio = fecha.getFullYear();
-            return `${dia}/${mes}/${anio}`;
-        }
-
-        // Función para formatear fecha para mostrar en botón (DD MMM YYYY)
-        function formatearFechaParaMostrar(fecha) {
-            const dia = fecha.getDate();
-            const meses = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
-            const mes = meses[fecha.getMonth()];
-            const anio = fecha.getFullYear();
-            return `${dia} ${mes} ${anio}`;
-        }
-
-        // Función para parsear fecha desde formato DD/MM/YYYY
-        function parsearFechaDesdeInput(texto) {
-            if (!texto || texto.trim() === '') return null;
-
-            // Intentar parsear DD/MM/YYYY
-            const regex = /^(\d{1,2})\/(\d{1,2})\/(\d{4})$/;
-            const match = texto.trim().match(regex);
-
-            if (!match) return null;
-
-            const dia = parseInt(match[1], 10);
-            const mes = parseInt(match[2], 10) - 1; // Meses son 0-indexed
-            const anio = parseInt(match[3], 10);
-
-            // Validar rango de fechas
-            if (dia < 1 || dia > 31 || mes < 0 || mes > 11 || anio < 1900 || anio > 2100) {
-                return null;
-            }
-
-            const fecha = new Date(anio, mes, dia);
-
-            // Validar que la fecha es válida (evita fechas como 31/02/2026)
-            if (fecha.getDate() !== dia || fecha.getMonth() !== mes || fecha.getFullYear() !== anio) {
-                return null;
-            }
-
-            return fecha;
-        }
-
-        // Función para abrir el selector
-        window.openDatePicker = function () {
-            // Guardar el estado actual del filtro antes de abrir
-            savedFilterState = {
-                periodo: currentFilters.periodo,
-                fechaCreacionDesde: currentFilters.fechaCreacionDesde,
-                fechaCreacionHasta: currentFilters.fechaCreacionHasta
+    function restoreSeguimientoPeriodoButtonText() {
+        var periodoText = document.getElementById('seguimiento-periodo-text');
+        if (!periodoText) return;
+        if (currentFilters.periodo) {
+            var periodoTexts = {
+                '7': 'Últimos 7 días',
+                '15': 'Últimos 15 días',
+                '30': 'Últimos 30 días',
+                '90': 'Últimos 3 meses',
+                '180': 'Últimos 6 meses',
+                '365': 'Último año'
             };
-
-            datePickerOverlay.style.display = 'flex';
-            datePickerOverlay.setAttribute('aria-hidden', 'false');
-
-            // Si hay fechas guardadas, restaurarlas
-            if (currentFilters.fechaCreacionDesde && currentFilters.fechaCreacionHasta) {
-                fechaInicio = parseFecha(currentFilters.fechaCreacionDesde);
-                fechaFin = parseFecha(currentFilters.fechaCreacionHasta);
-                updateInputs();
-                // Mostrar el mes de la fecha de inicio
-                if (fechaInicio) {
-                    currentMonth = new Date(fechaInicio);
-                    currentMonth.setDate(1);
-                }
-            } else {
-                fechaInicio = null;
-                fechaFin = null;
-                fechaInicioInput.value = '';
-                fechaFinInput.value = '';
-                // Mostrar mes actual (marzo 2026)
-                currentMonth = new Date(2026, 2, 1);
-            }
-
-            renderCalendar();
-        };
-
-        // Función para cerrar el selector
-        function closeDatePicker() {
-            datePickerOverlay.style.display = 'none';
-            datePickerOverlay.setAttribute('aria-hidden', 'true');
+            periodoText.textContent = periodoTexts[currentFilters.periodo] || 'Últimos 7 días';
+        } else if (currentFilters.fechaCreacionDesde && currentFilters.fechaCreacionHasta) {
+            periodoText.textContent = currentFilters.fechaCreacionDesde + ' - ' + currentFilters.fechaCreacionHasta;
+        } else {
+            periodoText.textContent = 'Últimos 7 días';
         }
+    }
 
-        // Función para cancelar y restaurar estado anterior
-        function cancelDatePicker() {
-            // Restaurar el estado del filtro guardado
-            if (savedFilterState) {
-                currentFilters.periodo = savedFilterState.periodo;
-                currentFilters.fechaCreacionDesde = savedFilterState.fechaCreacionDesde;
-                currentFilters.fechaCreacionHasta = savedFilterState.fechaCreacionHasta;
+    // Date picker modal oficial (components/date-picker-modal.js)
+    function initSeguimientoDatePickers() {
+        if (typeof window.createDatePickerModal !== 'function') return;
+        var modalsContainer = document.getElementById('seguimiento-modals-container');
 
-                // Actualizar texto del botón según el estado restaurado
-                const periodoText = document.getElementById('seguimiento-periodo-text');
-                if (periodoText) {
-                    if (currentFilters.periodo) {
-                        const periodoTexts = {
-                            '7': 'Últimos 7 días',
-                            '15': 'Últimos 15 días',
-                            '30': 'Últimos 30 días',
-                            '90': 'Últimos 3 meses',
-                            '180': 'Últimos 6 meses',
-                            '365': 'Último año'
-                        };
-                        periodoText.textContent = periodoTexts[currentFilters.periodo] || 'Últimos 7 días';
-                    } else if (currentFilters.fechaCreacionDesde && currentFilters.fechaCreacionHasta) {
-                        periodoText.textContent = `${currentFilters.fechaCreacionDesde} - ${currentFilters.fechaCreacionHasta}`;
-                    } else {
-                        periodoText.textContent = 'Últimos 7 días';
-                    }
-                }
-            }
-
-            closeDatePicker();
-        }
-
-        // Cerrar con clic en el overlay (no en el contenido)
-        datePickerOverlay.addEventListener('click', function (e) {
-            if (e.target === datePickerOverlay) cancelDatePicker();
-        });
-
-        // Cerrar con botón X del header
-        if (datePickerClose) {
-            datePickerClose.addEventListener('click', cancelDatePicker);
-        }
-
-        // Cerrar con botón cancelar
-        if (datePickerCancelar) {
-            datePickerCancelar.addEventListener('click', cancelDatePicker);
-        }
-
-        // Aplicar filtro
-        if (datePickerAplicar) {
-            datePickerAplicar.addEventListener('click', function () {
-                if (!fechaInicio || !fechaFin) {
-                    if (typeof showToast === 'function') {
-                        showToast('warning', 'Por favor selecciona ambas fechas');
-                    }
-                    return;
-                }
-                var maxDate = getSeguimientoCalendarMaxDate();
-                if (fechaInicio.getTime() > maxDate.getTime() || fechaFin.getTime() > maxDate.getTime()) {
-                    if (typeof showToast === 'function') {
-                        showToast('warning', 'Las fechas no pueden ser mayores a 3 años en el futuro');
-                    }
-                    return;
-                }
-
-                // Formatear fechas para el filtro (formato: "1 ene 2026")
-                const fechaInicioStr = formatearFechaParaMostrar(fechaInicio);
-                const fechaFinStr = formatearFechaParaMostrar(fechaFin);
-
-                // Aplicar filtro personalizado
-                currentFilters.periodo = null; // Limpiar filtro de período
+        seguimientoRangeDatePicker = window.createDatePickerModal({
+            mountEl: modalsContainer || document.body,
+            overlayId: 'date-picker-overlay',
+            contentId: 'date-picker-modal',
+            titleId: 'date-picker-overlay-title',
+            closeButtonId: 'date-picker-close',
+            cancelButtonId: 'date-picker-cancelar',
+            applyButtonId: 'date-picker-aplicar',
+            startInputId: 'date-picker-fecha-inicio',
+            endInputId: 'date-picker-fecha-fin',
+            calendarContainerId: 'date-picker-calendar',
+            mode: 'range',
+            title: 'Fecha personalizada',
+            initialMonth: SEGUIMIENTO_DATE_PICKER_DEFAULT_MONTH,
+            maxDate: getSeguimientoCalendarMaxDate(),
+            maxDateMessage: 'Las fechas no pueden ser mayores a 3 años en el futuro',
+            onOpen: function () {
+                seguimientoDatePickerSavedFilters = {
+                    periodo: currentFilters.periodo,
+                    fechaCreacionDesde: currentFilters.fechaCreacionDesde,
+                    fechaCreacionHasta: currentFilters.fechaCreacionHasta
+                };
+            },
+            onCancel: function () {
+                if (!seguimientoDatePickerSavedFilters) return;
+                currentFilters.periodo = seguimientoDatePickerSavedFilters.periodo;
+                currentFilters.fechaCreacionDesde = seguimientoDatePickerSavedFilters.fechaCreacionDesde;
+                currentFilters.fechaCreacionHasta = seguimientoDatePickerSavedFilters.fechaCreacionHasta;
+                restoreSeguimientoPeriodoButtonText();
+            },
+            onApply: function (result) {
+                var fechaInicioStr = formatearFechaParaMostrar(result.startDate);
+                var fechaFinStr = formatearFechaParaMostrar(result.endDate);
+                currentFilters.periodo = null;
                 currentFilters.fechaCreacionDesde = fechaInicioStr;
                 currentFilters.fechaCreacionHasta = fechaFinStr;
-
-                // Actualizar texto del botón
-                const periodoText = document.getElementById('seguimiento-periodo-text');
-                if (periodoText) {
-                    periodoText.textContent = `${fechaInicioStr} - ${fechaFinStr}`;
-                }
-
-                // Resetear página y renderizar
+                var periodoText = document.getElementById('seguimiento-periodo-text');
+                if (periodoText) periodoText.textContent = fechaInicioStr + ' - ' + fechaFinStr;
                 displayLimit = SEGUIMIENTO_LOAD_MORE_SIZE;
                 applyFiltersAndSearch();
                 applySorting();
@@ -2924,155 +2803,69 @@
                 initLoadMore();
                 updateSeguimientoUrl();
                 renderFiltrosAplicados();
-
-                closeDatePicker();
-            });
-        }
-
-
-
-        // Actualizar inputs
-        function updateInputs() {
-            if (fechaInicio) {
-                fechaInicioInput.value = formatearFechaParaInput(fechaInicio);
-            } else {
-                fechaInicioInput.value = '';
             }
-            if (fechaFin) {
-                fechaFinInput.value = formatearFechaParaInput(fechaFin);
-            } else {
-                fechaFinInput.value = '';
+        });
+
+        window.openDatePicker = function () {
+            if (!seguimientoRangeDatePicker) return;
+            var openOpts = { initialMonth: SEGUIMIENTO_DATE_PICKER_DEFAULT_MONTH };
+            if (currentFilters.fechaCreacionDesde && currentFilters.fechaCreacionHasta) {
+                openOpts.startDate = parseFecha(currentFilters.fechaCreacionDesde);
+                openOpts.endDate = parseFecha(currentFilters.fechaCreacionHasta);
+                if (openOpts.startDate) {
+                    openOpts.initialMonth = new Date(openOpts.startDate.getFullYear(), openOpts.startDate.getMonth(), 1);
+                }
             }
-        }
+            seguimientoRangeDatePicker.open(openOpts);
+        };
 
-        // Manejar cambios en inputs de fecha
-        function initDateInputs() {
-            // Input de fecha de inicio
-            fechaInicioInput.addEventListener('blur', function () {
-                const texto = this.value.trim();
-                if (texto === '') {
-                    fechaInicio = null;
-                    renderCalendar();
-                    return;
+        seguimientoPlanDatePicker = window.createDatePickerModal({
+            mountEl: modalsContainer || document.body,
+            overlayId: 'plan-fecha-overlay',
+            contentId: 'plan-fecha-modal',
+            titleId: 'plan-fecha-modal-title',
+            closeButtonId: 'plan-fecha-close',
+            cancelButtonId: 'plan-fecha-cancel',
+            applyButtonId: 'plan-fecha-aplicar',
+            singleInputId: 'plan-fecha-input',
+            calendarContainerId: 'plan-fecha-calendar',
+            mode: 'single',
+            title: 'Cambiar fecha de finalización',
+            singleLabel: 'Nueva fecha de finalización',
+            initialMonth: SEGUIMIENTO_DATE_PICKER_DEFAULT_MONTH,
+            maxDate: getSeguimientoCalendarMaxDate(),
+            maxDateMessage: 'La fecha no puede ser mayor a 3 años en el futuro',
+            onApply: function (result) {
+                var fechaStr = formatearFechaParaMostrar(result.date);
+                var hoy = new Date();
+                hoy.setHours(0, 0, 0, 0);
+                var sel = new Date(result.date);
+                sel.setHours(0, 0, 0, 0);
+                if (activeTab === 'tareas') {
+                    selectedIds.forEach(function (id) {
+                        var row = SEGUIMIENTO_DATA.find(function (r) { return r.id === id; });
+                        if (row && row.tipo === 'tarea') {
+                            row.fechaFinalizacion = fechaStr;
+                            if (sel < hoy) row.estado = 'Vencida';
+                        }
+                    });
+                    renderTable();
+                    updateIndicadores();
+                    if (typeof showToast === 'function') showToast('success', 'Fecha de vencimiento actualizada para ' + selectedIds.size + ' tarea(s)');
+                } else {
+                    selectedIds.forEach(function (id) {
+                        var row = SEGUIMIENTO_DATA.find(function (r) { return r.id === id; });
+                        if (row && row.tipo === 'plan') {
+                            row.fechaFinalizacion = fechaStr;
+                            if (sel < hoy) row.estado = 'Vencida';
+                        }
+                    });
+                    renderTable();
+                    updateIndicadores();
+                    if (typeof showToast === 'function') showToast('success', 'Fecha de finalización actualizada para ' + selectedIds.size + ' plan(es)');
                 }
-
-                const fecha = parsearFechaDesdeInput(texto);
-                if (fecha) {
-                    fecha.setHours(0, 0, 0, 0);
-                    if (fecha.getTime() > getSeguimientoCalendarMaxDate().getTime()) {
-                        this.value = '';
-                        fechaInicio = null;
-                        if (typeof showToast === 'function') showToast('warning', 'La fecha no puede ser mayor a 3 años en el futuro');
-                        renderCalendar();
-                        return;
-                    }
-                    fechaInicio = fecha;
-                    this.value = formatearFechaParaInput(fechaInicio);
-
-                    // Actualizar mes mostrado si es necesario
-                    if (fechaInicio.getMonth() !== currentMonth.getMonth() ||
-                        fechaInicio.getFullYear() !== currentMonth.getFullYear()) {
-                        currentMonth = new Date(fechaInicio);
-                        currentMonth.setDate(1);
-                    }
-
-                    renderCalendar();
-                } else if (texto !== '') {
-                    // Fecha inválida, restaurar valor anterior si existe
-                    if (fechaInicio) {
-                        this.value = formatearFechaParaInput(fechaInicio);
-                    } else {
-                        this.value = '';
-                    }
-                }
-            });
-
-            // Input de fecha de fin
-            fechaFinInput.addEventListener('blur', function () {
-                const texto = this.value.trim();
-                if (texto === '') {
-                    fechaFin = null;
-                    renderCalendar();
-                    return;
-                }
-
-                const fecha = parsearFechaDesdeInput(texto);
-                if (fecha) {
-                    fecha.setHours(23, 59, 59, 999);
-                    if (fecha.getTime() > getSeguimientoCalendarMaxDate().getTime()) {
-                        this.value = '';
-                        fechaFin = null;
-                        if (typeof showToast === 'function') showToast('warning', 'La fecha no puede ser mayor a 3 años en el futuro');
-                        renderCalendar();
-                        return;
-                    }
-                    fechaFin = fecha;
-                    this.value = formatearFechaParaInput(fechaFin);
-
-                    // Actualizar mes mostrado si es necesario
-                    if (fechaFin.getMonth() !== currentMonth.getMonth() ||
-                        fechaFin.getFullYear() !== currentMonth.getFullYear()) {
-                        currentMonth = new Date(fechaFin);
-                        currentMonth.setDate(1);
-                    }
-
-                    renderCalendar();
-                } else if (texto !== '') {
-                    // Fecha inválida, restaurar valor anterior si existe
-                    if (fechaFin) {
-                        this.value = formatearFechaParaInput(fechaFin);
-                    } else {
-                        this.value = '';
-                    }
-                }
-            });
-
-            // Permitir Enter para aplicar
-            fechaInicioInput.addEventListener('keypress', function (e) {
-                if (e.key === 'Enter') {
-                    this.blur();
-                }
-            });
-
-            fechaFinInput.addEventListener('keypress', function (e) {
-                if (e.key === 'Enter') {
-                    this.blur();
-                }
-            });
-        }
-
-        // Renderizar calendario oficial UBITS (createCalendar) en modo rango en el modal de fecha personalizada (límite: 3 años en el futuro)
-        function renderCalendar() {
-            if (!calendarContainer || typeof window.createCalendar !== 'function') return;
-            calendarContainer.innerHTML = '';
-            var initialDate = currentMonth ? new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1) : new Date();
-            window.createCalendar({
-                containerId: 'date-picker-calendar',
-                range: true,
-                initialDate: initialDate,
-                selectedStartDate: fechaInicio || undefined,
-                selectedEndDate: fechaFin || undefined,
-                maxDate: getSeguimientoCalendarMaxDate(),
-                onRangeSelect: function (startStr, endStr) {
-                    if (!startStr) return;
-                    var partsInicio = startStr.split('/').map(Number);
-                    fechaInicio = new Date(partsInicio[2], partsInicio[1] - 1, partsInicio[0]);
-                    fechaInicio.setHours(0, 0, 0, 0);
-                    if (endStr) {
-                        var partsFin = endStr.split('/').map(Number);
-                        fechaFin = new Date(partsFin[2], partsFin[1] - 1, partsFin[0]);
-                        fechaFin.setHours(23, 59, 59, 999);
-                    } else {
-                        fechaFin = null;
-                    }
-                    updateInputs();
-                    renderCalendar();
-                }
-            });
-        }
-
-        // Inicializar event listeners de inputs
-        initDateInputs();
+            }
+        });
     }
 
     // Inicializar menú de ordenamiento (Dropdown Menu oficial, sin footer: se aplica al hacer clic en la opción).
@@ -3841,165 +3634,12 @@
             });
         }
 
-        // Cambiar fecha de vencimiento / finalización (date picker + createCalendar)
         var planFechaBtn = document.getElementById('seguimiento-cambiar-fecha-plan');
-        var planFechaOverlay = document.getElementById('plan-fecha-overlay');
-        var planFechaInput = document.getElementById('plan-fecha-input');
-        var planFechaCalendar = document.getElementById('plan-fecha-calendar');
-        var planFechaClose = document.getElementById('plan-fecha-close');
-        var planFechaCancel = document.getElementById('plan-fecha-cancel');
-        var planFechaAplicar = document.getElementById('plan-fecha-aplicar');
-
-        var planFechaSelected = null;
-        var planFechaCurrentMonth = new Date(SEGUIMENTO_DATE_PICKER_DEFAULT_MONTH.getTime());
-
-        function formatearFechaPlan(fecha) {
-            var d = fecha.getDate();
-            var m = fecha.getMonth() + 1;
-            var y = fecha.getFullYear();
-            return (d < 10 ? '0' : '') + d + '/' + (m < 10 ? '0' : '') + m + '/' + y;
-        }
-        function parsearFechaPlan(texto) {
-            if (!texto || !texto.trim()) return null;
-            var match = texto.trim().match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
-            if (!match) return null;
-            var dia = parseInt(match[1], 10);
-            var mes = parseInt(match[2], 10) - 1;
-            var anio = parseInt(match[3], 10);
-            if (dia < 1 || dia > 31 || mes < 0 || mes > 11 || anio < 1900 || anio > 2100) return null;
-            var f = new Date(anio, mes, dia);
-            if (f.getDate() !== dia || f.getMonth() !== mes || f.getFullYear() !== anio) return null;
-            return f;
-        }
-
-        function closePlanFechaModal() {
-            if (typeof window.hideModal === 'function') {
-                window.hideModal('plan-fecha-overlay');
-            } else if (planFechaOverlay) {
-                planFechaOverlay.style.display = 'none';
-                planFechaOverlay.setAttribute('aria-hidden', 'true');
-            }
-            if (planFechaInput) planFechaInput.value = '';
-            planFechaSelected = null;
-        }
-
-        // Calendario oficial UBITS (createCalendar) en el modal cambiar fecha (límite: 3 años en el futuro)
-        function renderPlanFechaCalendar() {
-            if (!planFechaCalendar || typeof window.createCalendar !== 'function') return;
-            planFechaCalendar.innerHTML = '';
-            var initialDate = planFechaCurrentMonth ? new Date(planFechaCurrentMonth.getFullYear(), planFechaCurrentMonth.getMonth(), 1) : new Date();
-            window.createCalendar({
-                containerId: 'plan-fecha-calendar',
-                initialDate: initialDate,
-                selectedDate: planFechaSelected || undefined,
-                maxDate: getSeguimientoCalendarMaxDate(),
-                onDateSelect: function (dateStr) {
-                    var parts = dateStr.split('/').map(Number);
-                    planFechaSelected = new Date(parts[2], parts[1] - 1, parts[0]);
-                    planFechaSelected.setHours(0, 0, 0, 0);
-                    if (planFechaInput) planFechaInput.value = formatearFechaPlan(planFechaSelected);
-                    renderPlanFechaCalendar();
-                }
-            });
-        }
-
-        var planFechaModalTitle = document.getElementById('plan-fecha-modal-title');
-        if (planFechaBtn && planFechaOverlay) {
+        if (planFechaBtn && seguimientoPlanDatePicker) {
             planFechaBtn.addEventListener('click', function () {
                 if (selectedIds.size === 0) return;
-                if (planFechaModalTitle) planFechaModalTitle.textContent = activeTab === 'tareas' ? 'Cambiar fecha de vencimiento' : 'Cambiar fecha de finalización';
-                planFechaSelected = null;
-                planFechaCurrentMonth = new Date(SEGUIMENTO_DATE_PICKER_DEFAULT_MONTH.getTime());
-                if (planFechaInput) planFechaInput.value = '';
-                if (typeof window.showModal === 'function') {
-                    window.showModal('plan-fecha-overlay');
-                } else if (planFechaOverlay) {
-                    planFechaOverlay.style.display = 'flex';
-                    planFechaOverlay.setAttribute('aria-hidden', 'false');
-                }
-                renderPlanFechaCalendar();
-            });
-        }
-        if (planFechaClose) planFechaClose.addEventListener('click', closePlanFechaModal);
-        if (planFechaCancel) planFechaCancel.addEventListener('click', closePlanFechaModal);
-        if (planFechaOverlay) planFechaOverlay.addEventListener('click', function (e) { if (e.target === planFechaOverlay) closePlanFechaModal(); });
-        if (planFechaInput) {
-            planFechaInput.addEventListener('blur', function () {
-                var texto = this.value.trim();
-                if (texto === '') {
-                    planFechaSelected = null;
-                    renderPlanFechaCalendar();
-                    return;
-                }
-                var f = parsearFechaPlan(texto);
-                if (f) {
-                    f.setHours(0, 0, 0, 0);
-                    if (f.getTime() > getSeguimientoCalendarMaxDate().getTime()) {
-                        planFechaSelected = null;
-                        this.value = '';
-                        if (typeof showToast === 'function') showToast('warning', 'La fecha no puede ser mayor a 3 años en el futuro');
-                        renderPlanFechaCalendar();
-                        return;
-                    }
-                    planFechaSelected = f;
-                    this.value = formatearFechaPlan(planFechaSelected);
-                    planFechaCurrentMonth = new Date(planFechaSelected);
-                    planFechaCurrentMonth.setDate(1);
-                    renderPlanFechaCalendar();
-                } else if (texto !== '' && planFechaSelected) {
-                    this.value = formatearFechaPlan(planFechaSelected);
-                }
-            });
-            planFechaInput.addEventListener('keypress', function (e) { if (e.key === 'Enter') this.blur(); });
-        }
-        function formatearFechaPlanParaTabla(fecha) {
-            var d = fecha.getDate();
-            var meses = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
-            var m = meses[fecha.getMonth()];
-            var y = fecha.getFullYear();
-            return d + ' ' + m + ' ' + y;
-        }
-
-        if (planFechaAplicar) {
-            planFechaAplicar.addEventListener('click', function () {
-                if (!planFechaSelected) {
-                    if (typeof showToast === 'function') showToast('warning', 'Selecciona una fecha en el calendario o escríbela en el campo (DD/MM/YYYY)');
-                    return;
-                }
-                if (planFechaSelected.getTime() > getSeguimientoCalendarMaxDate().getTime()) {
-                    if (typeof showToast === 'function') showToast('warning', 'La fecha no puede ser mayor a 3 años en el futuro');
-                    return;
-                }
-                var fechaStr = formatearFechaPlanParaTabla(planFechaSelected);
-                var hoy = new Date();
-                hoy.setHours(0, 0, 0, 0);
-                var sel = new Date(planFechaSelected);
-                sel.setHours(0, 0, 0, 0);
-                if (activeTab === 'tareas') {
-                    selectedIds.forEach(function (id) {
-                        var row = SEGUIMIENTO_DATA.find(function (r) { return r.id === id; });
-                        if (row && row.tipo === 'tarea') {
-                            row.fechaFinalizacion = fechaStr;
-                            if (sel < hoy) row.estado = 'Vencida';
-                        }
-                    });
-                    closePlanFechaModal();
-                    renderTable();
-                    updateIndicadores();
-                    if (typeof showToast === 'function') showToast('success', 'Fecha de vencimiento actualizada para ' + selectedIds.size + ' tarea(s)');
-                } else {
-                    selectedIds.forEach(function (id) {
-                        var row = SEGUIMIENTO_DATA.find(function (r) { return r.id === id; });
-                        if (row && row.tipo === 'plan') {
-                            row.fechaFinalizacion = fechaStr;
-                            if (sel < hoy) row.estado = 'Vencida';
-                        }
-                    });
-                    closePlanFechaModal();
-                    renderTable();
-                    updateIndicadores();
-                    if (typeof showToast === 'function') showToast('success', 'Fecha de finalización actualizada para ' + selectedIds.size + ' plan(es)');
-                }
+                seguimientoPlanDatePicker.setTitle(activeTab === 'tareas' ? 'Cambiar fecha de vencimiento' : 'Cambiar fecha de finalización');
+                seguimientoPlanDatePicker.open({ initialMonth: SEGUIMIENTO_DATE_PICKER_DEFAULT_MONTH });
             });
         }
 
@@ -4272,10 +3912,10 @@
         initFilterMenu();
         initCheckboxMenu();
         initPeriodoMenu();
-        initDatePicker();
+        initSeguimientoDatePickers();
+        initActionButtons();
         initCheckboxes();
         initVerSeleccionados();
-        initActionButtons();
         initMobileAlert();
         initClearFiltersButton();
         initRowClick();

@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="../../images/playground-favicon.svg">
+    <title>Date picker modal | UBITS Playground</title>
+    <link rel="stylesheet" href="../../general-styles/ubits-colors.css">
+    <link rel="stylesheet" href="../../general-styles/styles.css">
+    <link rel="stylesheet" href="../../general-styles/fontawesome-icons.css">
+    <link rel="stylesheet" href="../../general-styles/ubits-typography.css">
+    <link rel="stylesheet" href="../../components/sub-nav.css">
+    <link rel="stylesheet" href="../../components/sidebar.css">
+    <link rel="stylesheet" href="../../docs/docs-sidebar.css">
+    <link rel="stylesheet" href="../../docs/docstyles.css">
+    <link rel="stylesheet" href="../../components/button.css">
+    <link rel="stylesheet" href="../../components/alert.css">
+    <link rel="stylesheet" href="../../components/toast.css">
+    <link rel="stylesheet" href="../../components/input.css">
+    <link rel="stylesheet" href="../../components/calendar.css">
+    <link rel="stylesheet" href="../../components/modal.css">
+    <link rel="stylesheet" href="../../components/date-picker-modal.css">
+</head>
+<body class="componentes-page" data-theme="light">
+    <div class="dashboard-container">
+        <main class="main-content">
+            <div id="top-nav-container"></div>
+            <div style="display: flex;">
+                <div id="docs-dropdown-container"></div>
+                <div id="docs-sidebar-container"></div>
+                <div class="components-content">
+                    <div class="content-area" style="display: block; width: 100%;">
+                        <div style="text-align: center; margin-bottom: 60px;">
+                            <h1 class="ubits-display-d2-bold" style="margin-bottom: 24px; color: var(--ubits-accent-brand);">Date picker modal</h1>
+                            <p class="ubits-body-md-regular" style="max-width: 800px; margin: 0 auto 32px; line-height: 1.6;">
+                                Modal tamaño SM con calendario oficial UBITS (<code>createCalendar</code>). Soporta <strong>fecha única</strong> o <strong>rango</strong> (inicio y fin). Los campos aceptan escritura manual en formato DD/MM/YYYY. Referencia de uso: filtro «Personalizado» y cambio de fecha en <code>seguimiento.html</code>.
+                            </p>
+                        </div>
+
+                        <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: var(--border-radius-lg); margin-bottom: 40px;">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-eye" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Preview del componente
+                            </h2>
+                            <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6;">
+                                Abre cada variante. Cierra con X, Cancelar, Aplicar o clic fuera del contenido.
+                            </p>
+                            <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: 12px; display: flex; flex-wrap: wrap; gap: 12px;">
+                                <button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="demo-single-btn">
+                                    <i class="far fa-calendar-day"></i>
+                                    <span>Fecha única</span>
+                                </button>
+                                <button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="demo-range-btn">
+                                    <i class="far fa-calendar-range"></i>
+                                    <span>Rango de fechas</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: var(--border-radius-lg); margin-bottom: 40px;">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-info-circle" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Características generales
+                            </h2>
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--gap-lg);">
+                                <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-window"></i></div>
+                                    <div class="ubits-body-sm-bold">Modal SM</div>
+                                    <div class="ubits-body-sm-regular">Usa <code>getModalHtml</code> + clases <code>date-picker-modal-*</code></div>
+                                </div>
+                                <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-calendar-alt"></i></div>
+                                    <div class="ubits-body-sm-bold">createCalendar</div>
+                                    <div class="ubits-body-sm-regular">Modo simple o <code>range: true</code> según <code>mode</code></div>
+                                </div>
+                                <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-keyboard"></i></div>
+                                    <div class="ubits-body-sm-bold">Entrada manual</div>
+                                    <div class="ubits-body-sm-regular">Campos DD/MM/YYYY sincronizados con el calendario</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="background: var(--ubits-bg-1); border-radius: var(--border-radius-lg); margin-bottom: 40px; overflow: hidden;">
+                            <div style="padding: 32px; text-align: center; border-bottom: 1px solid var(--ubits-border-1);">
+                                <h2 class="ubits-heading-h2" style="margin-bottom: 0; color: var(--ubits-fg-1-high);">
+                                    <i class="far fa-code" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                    Documentación técnica
+                                </h2>
+                            </div>
+                            <div id="dp-docs-toggle" style="background: var(--ubits-bg-2); padding: 20px; text-align: center; cursor: pointer;">
+                                <span class="ubits-body-md-regular" style="color: var(--ubits-accent-brand); display: flex; align-items: center; justify-content: center; gap: 8px;">
+                                    <i class="far fa-chevron-down" id="dp-docs-chevron"></i>
+                                    <span id="dp-docs-toggle-text">Mostrar</span>
+                                </span>
+                            </div>
+                            <div id="dp-technical-docs" style="display: none; padding: 32px; border-top: 1px solid var(--ubits-border-1);">
+                                <div style="margin-bottom: 24px;">
+                                    <h3 class="ubits-body-md-bold" style="margin-bottom: 12px;">Requisitos (orden)</h3>
+                                    <p class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); margin-bottom: 8px;">CSS: <code>modal.css</code>, <code>button.css</code>, <code>input.css</code>, <code>calendar.css</code>, <code>date-picker-modal.css</code></p>
+                                    <p class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">JS: <code>input.js</code> → <code>calendar.js</code> → <code>modal.js</code> → <code>date-picker-modal.js</code></p>
+                                </div>
+                                <div style="margin-bottom: 24px;">
+                                    <h3 class="ubits-body-md-bold" style="margin-bottom: 12px;">Uso básico</h3>
+                                    <pre style="margin: 0; padding: 16px; background: var(--ubits-bg-2); border-radius: var(--border-radius-sm); overflow-x: auto; font-size: var(--font-size-sm); text-align: left;"><code>var picker = createDatePickerModal({
+  overlayId: 'mi-fecha-overlay',
+  mode: 'single', // o 'range'
+  title: 'Seleccionar fecha',
+  maxDate: new Date(2029, 11, 31),
+  onApply: function (result) {
+    // single: result.date
+    // range: result.startDate, result.endDate
+    console.log(result);
+  }
+});
+picker.open();</code></pre>
+                                </div>
+                                <div>
+                                    <h3 class="ubits-body-md-bold" style="margin-bottom: 12px;">API devuelta</h3>
+                                    <p class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);"><strong>open(openOptions?)</strong> — muestra el modal; opcionalmente <code>startDate</code>, <code>endDate</code>, <code>selectedDate</code>, <code>initialMonth</code>.</p>
+                                    <p class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);"><strong>close()</strong> / <strong>cancel()</strong> — oculta; <code>cancel</code> ejecuta <code>onCancel</code>.</p>
+                                    <p class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);"><strong>setTitle(text)</strong> / <strong>getState()</strong> / <strong>destroy()</strong></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <div id="ubits-toast-container"></div>
+    <script src="../../components/sidebar.js"></script>
+    <script src="../../components/sub-nav.js"></script>
+    <script src="../../docs/docs-sidebar.js"></script>
+    <script src="../../script.js"></script>
+    <script src="../../components/alert.js"></script>
+    <script src="../../components/toast.js"></script>
+    <script src="../../components/input.js"></script>
+    <script src="../../components/calendar.js"></script>
+    <script src="../../components/modal.js"></script>
+    <script src="../../components/date-picker-modal.js"></script>
+    <script>
+        var demoSinglePicker = null;
+        var demoRangePicker = null;
+
+        document.addEventListener('DOMContentLoaded', function () {
+            if (typeof loadSubNav === 'function') loadSubNav('top-nav-container', 'documentacion');
+            if (typeof loadDocsSidebar === 'function') loadDocsSidebar('date-picker-modal');
+
+            demoSinglePicker = createDatePickerModal({
+                overlayId: 'dp-doc-single-overlay',
+                mode: 'single',
+                title: 'Seleccionar fecha',
+                singleLabel: 'Fecha',
+                onApply: function (result) {
+                    if (typeof showToast === 'function') {
+                        showToast('success', 'Fecha: ' + (result.date ? result.date.toLocaleDateString('es-CO') : '—'), { containerId: 'ubits-toast-container', duration: 3000 });
+                    }
+                }
+            });
+
+            demoRangePicker = createDatePickerModal({
+                overlayId: 'dp-doc-range-overlay',
+                mode: 'range',
+                title: 'Rango personalizado',
+                onApply: function (result) {
+                    if (typeof showToast === 'function') {
+                        var msg = result.startDate && result.endDate
+                            ? result.startDate.toLocaleDateString('es-CO') + ' → ' + result.endDate.toLocaleDateString('es-CO')
+                            : 'Rango incompleto';
+                        showToast('success', msg, { containerId: 'ubits-toast-container', duration: 3000 });
+                    }
+                }
+            });
+
+            document.getElementById('demo-single-btn').addEventListener('click', function () { demoSinglePicker.open(); });
+            document.getElementById('demo-range-btn').addEventListener('click', function () { demoRangePicker.open(); });
+        });
+
+        document.getElementById('dp-docs-toggle').addEventListener('click', function () {
+            var content = document.getElementById('dp-technical-docs');
+            var chevron = document.getElementById('dp-docs-chevron');
+            var textEl = document.getElementById('dp-docs-toggle-text');
+            if (content.style.display === 'none') {
+                content.style.display = 'block';
+                chevron.style.transform = 'rotate(180deg)';
+                if (textEl) textEl.textContent = 'Ocultar';
+            } else {
+                content.style.display = 'none';
+                chevron.style.transform = 'rotate(0deg)';
+                if (textEl) textEl.textContent = 'Mostrar';
+            }
+        });
+    </script>
+</body>
+</html>

@@ -341,7 +341,8 @@ Patrón documentado para reutilizarlo en otros flujos o listas similares.
 - **Coachmark** - Product tour (máscara + spotlight, texto del paso con Popover, pasos y navegación; `UBITS_COACHMARK.start` / `close`) - **RENDERIZADO: coachmark.js** (requiere `popover.js` + `button.css`)
 - **Study Chat** - Chat de estudio con IA (interfaz especializada para aprendizaje) - **RENDERIZADO: loadStudyChat()**
 - **Avatar** - Avatar de usuario (tamaños, estados) - **RENDERIZADO: HTML directo**
-- **Calendar** - Selector de fechas (usado también por Input type calendar) - **RENDERIZADO: componente interno / HTML**
+- **Calendar** - Selector de fechas (usado también por Input type calendar) - **RENDERIZADO: `createCalendar()`** — `calendar.css` + `calendar.js` + `input.js`; doc: `documentacion/componentes/calendar.html`
+- **Date picker modal** - Modal SM + calendario (fecha única o rango con `createCalendar`) - **RENDERIZADO: `createDatePickerModal()`** — `date-picker-modal.css` + `modal.css` + `calendar.css` + `input.css` + `modal.js` + `calendar.js` + `input.js` + `date-picker-modal.js`; doc: `documentacion/componentes/date-picker-modal.html` (uso en seguimiento: filtro personalizado y cambiar fecha)
 - **Drawer** - Panel lateral deslizante - **RENDERIZADO: JS del componente**
 - **Dropdown Menu** - Menú desplegable (usado por Input select, Paginator, etc.) - **RENDERIZADO: getDropdownMenuHtml() + openDropdownMenu() / closeDropdownMenu()**
 - **Loader** - Indicador de carga (spinner) - **RENDERIZADO: HTML directo**
