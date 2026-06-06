@@ -2760,7 +2760,6 @@
             mountEl: modalsContainer || document.body,
             overlayId: 'date-picker-overlay',
             contentId: 'date-picker-modal',
-            titleId: 'date-picker-overlay-title',
             closeButtonId: 'date-picker-close',
             cancelButtonId: 'date-picker-cancelar',
             applyButtonId: 'date-picker-aplicar',

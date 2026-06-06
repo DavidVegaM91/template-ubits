@@ -69,28 +69,28 @@
         var isRange = opts.mode === 'range';
         if (isRange) {
             return (
-                '<div class="date-picker-modal__fields date-picker-inputs">' +
-                '<div class="date-picker-modal__field date-picker-input-group">' +
-                '<label class="ubits-body-sm-regular date-picker-modal__label date-picker-label" for="' + opts.startInputId + '">' + escapeHtml(opts.startLabel || 'Fecha de inicio') + '</label>' +
+                '<div class="date-picker-inputs">' +
+                '<div class="date-picker-input-group">' +
+                '<label class="ubits-body-sm-regular date-picker-label">' + escapeHtml(opts.startLabel || 'Fecha de inicio') + '</label>' +
                 '<div class="date-picker-input-wrapper">' +
-                '<input type="text" class="date-picker-input date-picker-modal__date-input" id="' + opts.startInputId + '" placeholder="DD/MM/YYYY" autocomplete="off" inputmode="numeric">' +
+                '<input type="text" class="date-picker-input" id="' + opts.startInputId + '" placeholder="DD/MM/YYYY">' +
                 '</div></div>' +
-                '<span class="date-picker-separator" aria-hidden="true">-</span>' +
-                '<div class="date-picker-modal__field date-picker-input-group">' +
-                '<label class="ubits-body-sm-regular date-picker-modal__label date-picker-label" for="' + opts.endInputId + '">' + escapeHtml(opts.endLabel || 'Fecha de fin') + '</label>' +
+                '<span class="date-picker-separator">-</span>' +
+                '<div class="date-picker-input-group">' +
+                '<label class="ubits-body-sm-regular date-picker-label">' + escapeHtml(opts.endLabel || 'Fecha de fin') + '</label>' +
                 '<div class="date-picker-input-wrapper">' +
-                '<input type="text" class="date-picker-input date-picker-modal__date-input" id="' + opts.endInputId + '" placeholder="DD/MM/YYYY" autocomplete="off" inputmode="numeric">' +
+                '<input type="text" class="date-picker-input" id="' + opts.endInputId + '" placeholder="DD/MM/YYYY">' +
                 '</div></div></div>' +
-                '<div class="date-picker-modal__calendar-wrap"><div class="date-picker-calendar" id="' + opts.calendarContainerId + '"></div></div>'
+                '<div class="date-picker-calendar" id="' + opts.calendarContainerId + '"></div>'
             );
         }
         return (
-            '<div class="date-picker-modal__field date-picker-input-group">' +
-            '<label class="ubits-body-sm-regular date-picker-modal__label date-picker-label" for="' + opts.singleInputId + '">' + escapeHtml(opts.singleLabel || 'Fecha') + '</label>' +
+            '<div class="date-picker-input-group">' +
+            '<label class="ubits-body-sm-regular date-picker-label">' + escapeHtml(opts.singleLabel || 'Fecha') + '</label>' +
             '<div class="date-picker-input-wrapper">' +
-            '<input type="text" class="date-picker-input date-picker-modal__date-input" id="' + opts.singleInputId + '" placeholder="DD/MM/YYYY" autocomplete="off" inputmode="numeric">' +
+            '<input type="text" class="date-picker-input" id="' + opts.singleInputId + '" placeholder="DD/MM/YYYY">' +
             '</div></div>' +
-            '<div class="date-picker-modal__calendar-wrap"><div class="date-picker-calendar" id="' + opts.calendarContainerId + '"></div></div>'
+            '<div class="date-picker-calendar" id="' + opts.calendarContainerId + '"></div>'
         );
     }
 
@@ -229,13 +229,13 @@
             calendarEl.innerHTML = '';
             var initialDate = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1);
             var calOpts = { containerId: ids.calendarContainerId, initialDate: initialDate };
-            if (minDate) calOpts.minDate = formatDateInput(minDate);
-            if (maxDate) calOpts.maxDate = formatDateInput(maxDate);
+            if (minDate) calOpts.minDate = minDate;
+            if (maxDate) calOpts.maxDate = maxDate;
 
             if (isRange) {
                 calOpts.range = true;
-                if (startDate) calOpts.selectedStartDate = formatDateInput(startDate);
-                if (endDate) calOpts.selectedEndDate = formatDateInput(endDate);
+                if (startDate) calOpts.selectedStartDate = startDate;
+                if (endDate) calOpts.selectedEndDate = endDate;
                 calOpts.onRangeSelect = function (startStr, endStr) {
                     if (!startStr) return;
                     startDate = parseDateValue(startStr);
@@ -245,7 +245,7 @@
                     renderCalendar();
                 };
             } else {
-                if (selectedDate) calOpts.selectedDate = formatDateInput(selectedDate);
+                if (selectedDate) calOpts.selectedDate = selectedDate;
                 calOpts.onDateSelect = function (dateStr) {
                     selectedDate = parseDateValue(dateStr);
                     syncInputs();
