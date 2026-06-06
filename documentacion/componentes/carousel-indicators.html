@@ -142,65 +142,7 @@
                             </div>
                         </div>
 
-                        <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; margin-bottom: 40px;">
-                            <h2 class="ubits-heading-h2" style="margin-bottom: 8px; color: var(--ubits-fg-1-high);">
-                                Documentación técnica
-                            </h2>
-                            <p class="ubits-body-sm-regular" style="margin: 0 0 16px; color: var(--ubits-fg-1-medium);">
-                                Estructura, API y requisitos para desarrolladores.
-                            </p>
-                            <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm" id="ci-docs-toggle" style="margin-bottom: 16px;">
-                                <i class="far fa-chevron-down" id="ci-docs-chevron" style="transition: transform 0.3s ease;"></i>
-                                <span id="ci-docs-toggle-text">Mostrar</span>
-                            </button>
-                            <div id="ci-technical-docs" style="display: none; border: 1px solid var(--ubits-border-1); border-radius: var(--border-radius-lg); overflow: hidden;">
-                                <div style="padding: 24px; border-bottom: 1px solid var(--ubits-border-1);">
-                                    <h3 class="ubits-body-md-bold" style="margin: 0 0 12px; color: var(--ubits-fg-1-high);">Requisitos</h3>
-                                    <ul class="ubits-body-sm-regular" style="margin: 0; padding-left: 20px; color: var(--ubits-fg-1-medium); line-height: 1.6;">
-                                        <li><code class="ubits-body-sm-regular">general-styles/ubits-colors.css</code> y <code>styles.css</code> (espaciado)</li>
-                                        <li><code>components/carousel-indicators.css</code></li>
-                                        <li><code>components/carousel-indicators.js</code></li>
-                                    </ul>
-                                    <p class="ubits-body-sm-regular" style="margin: 12px 0 0; color: var(--ubits-fg-1-medium); line-height: 1.6;">
-                                        <code class="ubits-body-sm-regular">maxVisible</code> (1–6, default 6), <code class="ubits-body-sm-regular">dynamicFrom</code> (default 11): si <code>count ≥ dynamicFrom</code>, la ventana efectiva es de <strong>6</strong> puntos; <code>dynamicFrom: false</code> desactiva ese modo.
-                                        Los mismos <code class="ubits-body-sm-regular">button</code> se reutilizan: el cambio de slide es <strong>morph CSS</strong> cuando el activo <strong>cambia de botón</strong>. Si el <strong>mismo</strong> botón sigue activo (ventana centrada), un fotograma <code class="ubits-body-sm-regular">dist-2</code> y luego de nuevo <code class="ubits-body-sm-regular">active</code> (dos <code class="ubits-body-sm-regular">requestAnimationFrame</code>) vuelve a disparar el morph pastilla↔punto <strong>sin translate</strong>. Inspiración UX: <a class="ubits-body-sm-regular" href="https://swiperjs.com/swiper-api#param-pagination-dynamicBullets" target="_blank" rel="noopener noreferrer">Swiper pagination · dynamicBullets</a>.
-                                    </p>
-                                </div>
-                                <div style="padding: 24px; border-bottom: 1px solid var(--ubits-border-1);">
-                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-                                        <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">initCarouselIndicators(options)</h3>
-                                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('ci-code-api')">
-                                            <i class="far fa-copy"></i><span>Copiar</span>
-                                        </button>
-                                    </div>
-                                    <pre style="margin: 0; background: var(--ubits-bg-2); padding: 16px; border-radius: 8px; overflow: auto;"><code id="ci-code-api" class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">initCarouselIndicators({
-  containerId: 'mi-carousel-dots', // o container: elemento HTMLElement
-  count: 15,
-  activeIndex: 0,
-  maxVisible: 6,
-  dynamicFrom: 11,
-  ariaLabel: 'Indicadores de diapositiva',
-  onSelect: function (index) { /* ir a slide index */ }
-});
-// Devuelve: { setActive(i), setCount(n), getState(), destroy() }
-// getState(): count, activeIndex, maxVisible, dynamicFrom, effectiveVisible</code></pre>
-                                </div>
-                                <div style="padding: 24px;">
-                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-                                        <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Estructura HTML generada</h3>
-                                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('ci-code-html')">
-                                            <i class="far fa-copy"></i><span>Copiar</span>
-                                        </button>
-                                    </div>
-                                    <pre style="margin: 0; background: var(--ubits-bg-2); padding: 16px; border-radius: 8px; overflow: auto;"><code id="ci-code-html" class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">&lt;div class="ubits-carousel-indicators" role="group" aria-label="..."&gt;
-  &lt;div class="ubits-carousel-indicators__strip"&gt;
-    &lt;button type="button" class="ubits-carousel-indicators__dot ubits-carousel-indicators__dot--active" aria-current="true" aria-label="Ir a la diapositiva 1 de N"&gt;&lt;/button&gt;
-    ...
-  &lt;/div&gt;
-&lt;/div&gt;</code></pre>
-                                </div>
-                            </div>
-                        </div>
+                        
                     </div>
                 </div>
             </div>
@@ -277,21 +219,6 @@
             });
             if (next) next.addEventListener('click', function () {
                 if (ciActive < ciTotal - 1) { ciActive++; ciPaint(); }
-            });
-
-            document.getElementById('ci-docs-toggle').addEventListener('click', function () {
-                var content = document.getElementById('ci-technical-docs');
-                var chevron = document.getElementById('ci-docs-chevron');
-                var textEl = document.getElementById('ci-docs-toggle-text');
-                if (content.style.display === 'none') {
-                    content.style.display = 'block';
-                    chevron.style.transform = 'rotate(180deg)';
-                    if (textEl) textEl.textContent = 'Ocultar';
-                } else {
-                    content.style.display = 'none';
-                    chevron.style.transform = 'rotate(0deg)';
-                    if (textEl) textEl.textContent = 'Mostrar';
-                }
             });
         });
 

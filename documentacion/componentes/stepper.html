@@ -267,101 +267,7 @@
                             </div>
                         </div>
 
-                        <div style="background: var(--ubits-bg-1); border-radius: 16px; margin-bottom: 40px; overflow: hidden;">
-                            <div style="padding: 32px; text-align: center; border-bottom: 1px solid var(--ubits-border-1);">
-                                <h2 class="ubits-heading-h2" style="margin-bottom: 0; color: var(--ubits-fg-1-high);">
-                                    <i class="far fa-code" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
-                                    Documentación técnica
-                                </h2>
-                                <p class="ubits-body-md-regular" style="margin-top: 16px; color: var(--ubits-fg-1-medium);">
-                                    Estructura HTML, clases y archivos necesarios.
-                                </p>
-                            </div>
-                            <div style="background: var(--ubits-bg-2); padding: 20px; text-align: center; cursor: pointer;" onclick="toggleTechnicalDocs()">
-                                <span class="ubits-body-md-regular" style="color: var(--ubits-accent-brand); display: flex; align-items: center; justify-content: center; gap: 8px;">
-                                    <i class="far fa-chevron-down" style="transition: transform 0.3s ease;"></i>
-                                    Mostrar
-                                </span>
-                            </div>
-                            <div id="technical-docs-content" style="display: none; padding: 0;">
-                                <div style="padding: 32px; border-bottom: 1px solid var(--ubits-border-1);">
-                                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;">
-                                        <h2 class="ubits-heading-h2" style="margin: 0; color: var(--ubits-fg-1-high);">
-                                            <i class="far fa-sitemap" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
-                                            Estructura horizontal (con raíles)
-                                        </h2>
-                                        <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('stepper-structure-h')">
-                                            <i class="far fa-copy"></i>
-                                            <span>Copiar</span>
-                                        </button>
-                                    </div>
-                                    <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
-                                        <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code id="stepper-structure-h">&lt;nav aria-label="Pasos del flujo"&gt;
-  &lt;ol class="ubits-stepper ubits-stepper--horizontal"&gt;
-    &lt;li class="ubits-stepper__step ubits-stepper__step--done" data-step-label="Paso 1"&gt;
-      &lt;span class="ubits-stepper__mark" aria-hidden="true"&gt;
-        &lt;span class="ubits-stepper__mark-num"&gt;1&lt;/span&gt;
-        &lt;i class="far fa-check" aria-hidden="true"&gt;&lt;/i&gt;
-      &lt;/span&gt;
-      &lt;span class="ubits-stepper__label"&gt;Paso 1&lt;/span&gt;
-    &lt;/li&gt;
-    &lt;li class="ubits-stepper__rail" aria-hidden="true"&gt;&lt;/li&gt;
-    &lt;li class="ubits-stepper__step ubits-stepper__step--active" data-step-label="Paso 2" aria-current="step"&gt;...&lt;/li&gt;
-    &lt;li class="ubits-stepper__rail" aria-hidden="true"&gt;&lt;/li&gt;
-    &lt;li class="ubits-stepper__step ubits-stepper__step--pending" data-step-label="Paso 3"&gt;...&lt;/li&gt;
-  &lt;/ol&gt;
-&lt;/nav&gt;</code></pre>
-                                    </div>
-                                    <p class="ubits-body-sm-regular" style="margin-top: 16px; color: var(--ubits-fg-1-medium);">
-                                        Modificadores en el <code>&lt;ol&gt;</code>: <code>ubits-stepper--horizontal-compact</code> (ancho al contenido, raíles visibles) o <code>ubits-stepper--horizontal-stacked</code> (título debajo, ancho completo, conector vía <code>::after</code>; los <code>li.rail</code> siguen en el HTML pero no se muestran). No mezcles compact con stacked: son variantes distintas. Paso completado: el número permanece visible con estilo de éxito. En horizontal clásico/compacto, vista ≤1023px: solo el paso <code>--active</code> muestra el título.
-                                    </p>
-                                </div>
-                                <div style="padding: 32px; border-bottom: 1px solid var(--ubits-border-1);">
-                                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;">
-                                        <h2 class="ubits-heading-h2" style="margin: 0; color: var(--ubits-fg-1-high);">
-                                            <i class="far fa-arrows-alt-v" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
-                                            Vertical
-                                        </h2>
-                                        <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('stepper-structure-v')">
-                                            <i class="far fa-copy"></i>
-                                            <span>Copiar</span>
-                                        </button>
-                                    </div>
-                                    <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
-                                        <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code id="stepper-structure-v">&lt;div class="ubits-stepper__vertical-frame ubits-stepper__vertical-frame--creator-rail" id="mi-stepper-marco"&gt;
-  &lt;nav class="ubits-stepper__vertical-nav" aria-label="Pasos"&gt;
-    &lt;ol class="ubits-stepper ubits-stepper--vertical"&gt;
-      &lt;!-- li.ubits-stepper__step (done / active / pending), sin li.rail --&gt;
-    &lt;/ol&gt;
-  &lt;/nav&gt;
-  &lt;div class="ubits-stepper__vertical-footer"&gt;
-    &lt;button type="button" class="nav-button ubits-stepper__vertical-toggle" id="mi-stepper-toggle" aria-expanded="true" aria-label="Contraer la lista de pasos"&gt;
-      &lt;i class="far fa-angles-left" aria-hidden="true"&gt;&lt;/i&gt;
-      &lt;span class="ubits-body-sm-regular"&gt;Contraer&lt;/span&gt;
-    &lt;/button&gt;
-  &lt;/div&gt;
-&lt;/div&gt;
-&lt;script&gt;
-  wireStepperVerticalCollapse(document.getElementById('mi-stepper-marco'), document.getElementById('mi-stepper-toggle'));
-&lt;/script&gt;</code></pre>
-                                        <p class="ubits-body-sm-regular" style="margin-top: 16px; color: var(--ubits-fg-1-medium);">
-                                            Modificador <code>ubits-stepper__vertical-frame--creator-rail</code>: rail visual alineado al Sidebar contenidos LMS. Sin esa clase, el marco usa el modo clásico: botón <code>ubits-button ubits-button--tertiary ubits-button--sm</code> con chevrons y texto “Colapsar”.
-                                        </p>
-                                    </div>
-                                </div>
-                                <div style="padding: 32px; border-bottom: 1px solid var(--ubits-border-1);">
-                                    <h2 class="ubits-heading-h2" style="margin-bottom: 16px; color: var(--ubits-fg-1-high);">
-                                        Requisitos
-                                    </h2>
-                                    <div class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); line-height: 1.6;">
-                                        <strong>CSS:</strong> <code>components/stepper.css</code>; base <code>ubits-colors.css</code>, <code>ubits-typography.css</code>, <code>fontawesome-icons.css</code>.<br>
-                                        <strong>Colapsar vertical (clásico):</strong> <code>components/button.css</code>, <code>components/tooltip.css</code>, <code>components/tooltip.js</code>, <code>components/stepper.js</code>.<br>
-                                        <strong>Vertical con pie tipo rail (nav-button):</strong> además <code>general-styles/styles.css</code> (clases <code>.nav-button</code>).<br>
-                                        <strong>JS opcional:</strong> <code>initStepper(ol)</code> para demo con clic; <code>setStepperStepStates(ol, índice)</code> si controlas el paso desde tu lógica; <code>wireStepperVerticalCollapse(marco, botón)</code> o <code>wireStepperVerticalCollapse(marco, botón, { creatorRail: true })</code>.
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        
                     </div>
                 </div>
             </div>
@@ -456,20 +362,7 @@
             });
         });
 
-        function toggleTechnicalDocs() {
-            var content = document.getElementById('technical-docs-content');
-            var isHidden = content.style.display === 'none' || !content.style.display;
-            content.style.display = isHidden ? 'block' : 'none';
-            var trigger = content.previousElementSibling;
-            if (trigger) {
-                var span = trigger.querySelector('span');
-                if (span) {
-                    span.innerHTML = isHidden
-                        ? '<i class="far fa-chevron-up" style="transition: transform 0.3s ease;"></i>Ocultar'
-                        : '<i class="far fa-chevron-down" style="transition: transform 0.3s ease;"></i>Mostrar';
-                }
-            }
-        }
+        
 
         function copyPrompt(promptId) {
             var el = document.getElementById(promptId);

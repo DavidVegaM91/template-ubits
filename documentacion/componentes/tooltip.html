@@ -307,75 +307,7 @@
                             </div>
                         </div>
 
-                        <!-- Documentación técnica -->
-                        <div
-                            style="background: var(--ubits-bg-1); border-radius: 16px; margin-bottom: 40px; overflow: hidden;">
-                            <div
-                                style="padding: 32px; text-align: center; border-bottom: 1px solid var(--ubits-border-1);">
-                                <h2 class="ubits-heading-h2" style="margin-bottom: 0; color: var(--ubits-fg-1-high);">
-                                    <i class="far fa-code"
-                                        style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
-                                    Documentación técnica
-                                </h2>
-                            </div>
-                            <div id="tooltip-docs-toggle"
-                                style="background: var(--ubits-bg-2); padding: 20px; text-align: center; cursor: pointer;">
-                                <span class="ubits-body-md-regular"
-                                    style="color: var(--ubits-accent-brand); display: flex; align-items: center; justify-content: center; gap: 8px;">
-                                    <i class="far fa-chevron-down" id="tooltip-docs-chevron"></i>
-                                    <span id="tooltip-docs-toggle-text">Mostrar</span>
-                                </span>
-                            </div>
-                            <div id="tooltip-technical-docs"
-                                style="display: none; padding: 32px; border-top: 1px solid var(--ubits-border-1);">
-                                <div style="margin-bottom: 24px;">
-                                    <h3 class="ubits-body-md-bold"
-                                        style="margin-bottom: 12px; color: var(--ubits-fg-1-high);">Uso básico
-                                        (data-tooltip)</h3>
-                                    <pre
-                                        style="margin: 0; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px; overflow-x: auto; font-size: var(--font-size-sm); color: var(--ubits-fg-1-medium); text-align: left;"><code>&lt;button data-tooltip="Texto del tooltip"&gt;Hover me&lt;/button&gt;
-&lt;script src="components/tooltip.js"&gt;&lt;/script&gt;
-&lt;script&gt;initTooltip('[data-tooltip]');&lt;/script&gt;</code></pre>
-                                </div>
-                                <div style="margin-bottom: 24px;">
-                                    <h3 class="ubits-body-md-bold"
-                                        style="margin-bottom: 12px; color: var(--ubits-fg-1-high);">Atributos opcionales
-                                    </h3>
-                                    <p class="ubits-body-sm-regular"
-                                        style="color: var(--ubits-fg-1-medium); margin-bottom: 8px;">
-                                        data-tooltip-position: top | bottom | left | right</p>
-                                    <p class="ubits-body-sm-regular"
-                                        style="color: var(--ubits-fg-1-medium); margin-bottom: 8px;">data-tooltip-align:
-                                        left | center | right (para top/bottom) o top | center | bottom (para
-                                        left/right)</p>
-                                    <p class="ubits-body-sm-regular"
-                                        style="color: var(--ubits-fg-1-medium); margin-bottom: 8px;">data-tooltip-delay:
-                                        milisegundos (default 200)</p>
-                                    <p class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">
-                                        data-tooltip-no-arrow: atributo presente = sin colita</p>
-                                    <p class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); margin-bottom: 8px;">
-                                        data-tooltip-hide-on-click: "true" (default) = el tooltip se oculta al hacer mousedown en el elemento; "false" = no se oculta al clic</p>
-                                    <div style="background: var(--ubits-bg-2); padding: 12px 16px; border-radius: var(--border-radius-sm); margin-top: 12px; border-left: 4px solid var(--ubits-accent-brand);">
-                                        <p class="ubits-body-sm-bold" style="margin: 0 0 4px 0; color: var(--ubits-fg-1-high);">Comportamiento por defecto (implementación)</p>
-                                        <p class="ubits-body-sm-regular" style="margin: 0; color: var(--ubits-fg-1-medium);">Por defecto el tooltip se oculta al hacer clic (mousedown) en el elemento que lo dispara, para que no quede visible al abrir menús o activar acciones. Si necesitas que el tooltip no se cierre al clic, añade <code>data-tooltip-hide-on-click="false"</code>.</p>
-                                    </div>
-                                </div>
-                                <div>
-                                    <h3 class="ubits-body-md-bold"
-                                        style="margin-bottom: 12px; color: var(--ubits-fg-1-high);">API:
-                                        showTooltip(elemento, texto, opciones)</h3>
-                                    <pre
-                                        style="margin: 0; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px; overflow-x: auto; font-size: var(--font-size-sm); color: var(--ubits-fg-1-medium); text-align: left;"><code>showTooltip(document.getElementById('mi-elem'), 'Texto', {
-  position: 'top',   // top | bottom | left | right
-  align: 'center',   // left | center | right (top/bottom) o top | center | bottom (left/right)
-  delay: 200,
-  duration: 0,      // 0 = persistente
-  noArrow: false,
-  normal: false     // variante bg-1
-});</code></pre>
-                                </div>
-                            </div>
-                        </div>
+                        
                     </div>
                 </div>
             </div>
@@ -413,20 +345,7 @@
                 if (typeof showToast === 'function') showToast('success', 'Prompt copiado', { containerId: 'ubits-toast-container', duration: 2500 });
             });
         }
-        document.getElementById('tooltip-docs-toggle').addEventListener('click', function toggleTooltipDocs() {
-            var content = document.getElementById('tooltip-technical-docs');
-            var chevron = document.getElementById('tooltip-docs-chevron');
-            var textEl = document.getElementById('tooltip-docs-toggle-text');
-            if (content.style.display === 'none') {
-                content.style.display = 'block';
-                chevron.style.transform = 'rotate(180deg)';
-                if (textEl) textEl.textContent = 'Ocultar';
-            } else {
-                content.style.display = 'none';
-                chevron.style.transform = 'rotate(0deg)';
-                if (textEl) textEl.textContent = 'Mostrar';
-            }
-        });
+        document.getElementById('tooltip-docs-toggle').addEventListener('click', );
     </script>
 </body>
 

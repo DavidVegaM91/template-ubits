@@ -125,7 +125,7 @@
                                 Prompts útiles
                             </h2>
                             <p class="ubits-body-md-regular" style="margin-bottom: 24px; color: var(--ubits-fg-1-medium);">
-                                Copia el texto y adapta lo que va entre corchetes. Los imports de estilos y scripts están en la <strong>documentación técnica</strong> al final de la página.
+                                Copia el texto y adapta lo que va entre corchetes. Los imports de estilos y scripts están en el <strong>README.md</strong> del repositorio.
                             </p>
                             <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
                                 <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
@@ -138,61 +138,7 @@
                             </div>
                         </div>
 
-                        <div style="background: var(--ubits-bg-1); border-radius: var(--border-radius-lg); margin-bottom: 40px; overflow: hidden;">
-                            <div style="padding: 32px; text-align: center; border-bottom: 1px solid var(--ubits-border-1);">
-                                <h2 class="ubits-heading-h2" style="margin-bottom: 0; color: var(--ubits-fg-1-high);">
-                                    <i class="far fa-code" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
-                                    Documentación técnica
-                                </h2>
-                                <p class="ubits-body-md-regular" style="margin-top: 16px; color: var(--ubits-fg-1-medium);">Estructura, clases y API.</p>
-                            </div>
-                            <div style="background: var(--ubits-bg-2); padding: 20px; text-align: center; cursor: pointer;" onclick="toggleTechnicalDocs()">
-                                <span class="ubits-body-md-regular" style="color: var(--ubits-accent-brand); display: flex; align-items: center; justify-content: center; gap: 8px;">
-                                    <i class="far fa-chevron-down"></i> Mostrar
-                                </span>
-                            </div>
-                            <div id="technical-docs-content" style="display: none; padding: 0;">
-                                <div style="padding: 32px; border-bottom: 1px solid var(--ubits-border-1);">
-                                    <div style="display: flex; justify-content: space-between; margin-bottom: 24px;">
-                                        <h2 class="ubits-heading-h2" style="margin: 0;">Estructura HTML</h2>
-                                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('rc-tech-html')"><i class="far fa-copy"></i><span>Copiar</span></button>
-                                    </div>
-                                    <pre style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm); overflow-x: auto;"><code id="rc-tech-html" class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">&lt;button type="button" class="ubits-resources-card" data-resources-card-type="video" aria-label="Video"&gt;
-  &lt;span class="ubits-resources-card__inner"&gt;
-    &lt;span class="ubits-resources-card__icon-wrap" aria-hidden="true"&gt;&lt;i class="far fa-video"&gt;&lt;/i&gt;&lt;/span&gt;
-    &lt;span class="ubits-resources-card__label"&gt;Video&lt;/span&gt;
-  &lt;/span&gt;
-&lt;/button&gt;</code></pre>
-                                </div>
-                                <div style="padding: 32px; border-bottom: 1px solid var(--ubits-border-1);">
-                                    <div style="display: flex; justify-content: space-between; margin-bottom: 24px;">
-                                        <h2 class="ubits-heading-h2" style="margin: 0;">Clases y estados</h2>
-                                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('rc-tech-classes')"><i class="far fa-copy"></i><span>Copiar</span></button>
-                                    </div>
-                                    <pre style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm); overflow-x: auto;"><code id="rc-tech-classes" class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Raíz: .ubits-resources-card (&lt;button&gt;; data-resources-card-type)
-  :hover / .is-hover (sin disabled) → borde 2px --ubits-accent-brand
-  :disabled → fondo --ubits-bg-disabled, texto e icono --ubits-fg-disabled
-  :focus-visible → anillo foco accesible
-Hijos: .ubits-resources-card__inner, __icon-wrap (&gt; i.far.fa-*), __label (12px/18px; máx. 2 líneas + ellipsis; fg medio)
-Grid doc: .ubits-resources-card-grid</code></pre>
-                                </div>
-                                <div style="padding: 32px;">
-                                    <div style="display: flex; justify-content: space-between; margin-bottom: 16px;">
-                                        <h2 class="ubits-heading-h2" style="margin: 0;">Requisitos y API</h2>
-                                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('rc-tech-req')"><i class="far fa-copy"></i><span>Copiar</span></button>
-                                    </div>
-                                    <pre style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm); overflow-x: auto;"><code id="rc-tech-req" class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">CSS: ubits-colors.css, ubits-typography.css, fontawesome-icons.css, resources-card.css
-  Si hay distintivo IA en la tarjeta: badge-tag.css, ubits-ia-appearance.css (borde IA), tooltip.css + tooltip.js + initTooltip en .ubits-resources-card__ia-assist
-JS: resources-card.js
-  resourcesCardHtml({ type, disabled?, className?, hoverClass?, ariaLabel? })
-  RESOURCES_CARD_TYPES_ORDER — orden de columnas Figma
-  RESOURCES_CARD_META — icono (clase FA sin prefijo), etiqueta y aiAssist opcional por type
-  RESOURCES_CARD_IA_ASSIST_TOOLTIP — texto del tooltip del distintivo (global, opcional)
-Tipos type: video, pdf, texto, embebido, scorm, evaluacion-final,
-  encuesta-libre, encuesta, archivo-descargable, certificado, imagen</code></pre>
-                                </div>
-                            </div>
-                        </div>
+                        
                     </div>
                 </div>
             </div>
@@ -293,17 +239,7 @@ Tipos type: video, pdf, texto, embebido, scorm, evaluacion-final,
             });
         });
 
-        function toggleTechnicalDocs() {
-            var content = document.getElementById('technical-docs-content');
-            var open = content.style.display === 'none' || !content.style.display;
-            content.style.display = open ? 'block' : 'none';
-            var trigger = content.previousElementSibling;
-            if (trigger && trigger.querySelector('span')) {
-                trigger.querySelector('span').innerHTML = open
-                    ? '<i class="far fa-chevron-up"></i> Ocultar'
-                    : '<i class="far fa-chevron-down"></i> Mostrar';
-            }
-        }
+        
 
         function copyPrompt(id) {
             var t = document.getElementById(id);

@@ -99,30 +99,7 @@
                             </div>
                         </div>
 
-                        <div style="background: var(--ubits-bg-1); border-radius: var(--border-radius-lg); margin-bottom: 40px; overflow: hidden;">
-                            <div style="padding: 32px; text-align: center; border-bottom: 1px solid var(--ubits-border-1);">
-                                <h2 class="ubits-heading-h2" style="margin-bottom: 0; color: var(--ubits-fg-1-high);">
-                                    <i class="far fa-code" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
-                                    Documentación técnica
-                                </h2>
-                            </div>
-                            <div style="background: var(--ubits-bg-2); padding: 20px; text-align: center; cursor: pointer;" onclick="toggleTechnicalDocs()">
-                                <span class="ubits-body-md-regular" style="color: var(--ubits-accent-brand);"><i class="far fa-chevron-down"></i> Mostrar</span>
-                            </div>
-                            <div id="technical-docs-content" style="display: none; padding: 32px;">
-                                <pre style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm); overflow-x: auto;"><code class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">complementaryResourcesInviteHtml({ variant: 'both' | 'download-only' | 'text-only' })
-resolveComplementaryInviteVariant({ primaryType, hasText, hasDownload }) → variant | null
-complementaryResourcesTextFilledHtml({ editorRootId? })
-complementaryResourcesDownloadFilledHtml({ uploadContainerId? })
-initComplementaryResources(root) — incluye initComplementaryDownloadFileUpload en [data-cc-comp-download-upload]
-initComplementaryDownloadFileUpload(containerId) — file-upload.js; PDF, Office, zip, rar, txt, csv · 256 MB
-
-Evento: ubits-complementary-resources-invite — detail: { type: 'texto' | 'archivo-descargable' }
-
-Clases invite: .ubits-complementary-resources--invite, __title, __grid
-Clases filled: .ubits-complementary-resources--filled-stack, __surface, __footer (Eliminar fuera del fondo blanco)</code></pre>
-                            </div>
-                        </div>
+                        
                     </div>
                 </div>
             </div>
@@ -150,10 +127,7 @@ Clases filled: .ubits-complementary-resources--filled-stack, __surface, __footer
                 crRender(btn.getAttribute('data-cr-variant'));
             });
         });
-        function toggleTechnicalDocs() {
-            var el = document.getElementById('technical-docs-content');
-            if (el) el.style.display = el.style.display === 'none' ? 'block' : 'none';
-        }
+        
         function copyPrompt(id) {
             var el = document.getElementById(id);
             if (el && navigator.clipboard) {

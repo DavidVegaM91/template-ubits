@@ -172,118 +172,7 @@
                             </div>
                         </div>
 
-                        <!-- Documentación técnica -->
-                        <div style="background: var(--ubits-bg-1); border-radius: 16px; margin-bottom: 40px; overflow: hidden;">
-                            <div style="padding: 32px; text-align: center; border-bottom: 1px solid var(--ubits-border-1);">
-                                <h2 class="ubits-heading-h2" style="margin-bottom: 0; color: var(--ubits-fg-1-high);">
-                                    <i class="far fa-code" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
-                                    Documentación técnica
-                                </h2>
-                                <p class="ubits-body-md-regular" style="margin-top: 16px; color: var(--ubits-fg-1-medium);">
-                                    Información técnica para implementar el componente Checkbox.
-                                </p>
-                            </div>
-                            <div style="background: var(--ubits-bg-2); padding: 20px; text-align: center; cursor: pointer;" onclick="toggleTechnicalDocs()">
-                                <span class="ubits-body-md-regular" style="color: var(--ubits-accent-brand); display: flex; align-items: center; justify-content: center; gap: 8px;">
-                                    <i class="far fa-chevron-down" style="transition: transform 0.3s ease;"></i>
-                                    Mostrar
-                                </span>
-                            </div>
-                            <div id="technical-docs-content" style="display: none; padding: 0;">
-                                <div style="padding: 32px; border-bottom: 1px solid var(--ubits-border-1);">
-                                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;">
-                                        <h2 class="ubits-heading-h2" style="margin: 0; color: var(--ubits-fg-1-high);">
-                                            <i class="far fa-sitemap" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
-                                            Estructura del componente
-                                        </h2>
-                                        <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('structure-code')">
-                                            <i class="far fa-copy"></i>
-                                            <span>Copiar</span>
-                                        </button>
-                                    </div>
-                                    <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
-                                        <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code id="structure-code">&lt;label class="ubits-checkbox ubits-checkbox--md"&gt;
-  &lt;input type="checkbox" class="ubits-checkbox__input"&gt;
-  &lt;span class="ubits-checkbox__box"&gt;&lt;i class="fas fa-check"&gt;&lt;/i&gt;&lt;/span&gt;
-  &lt;span class="ubits-checkbox__label"&gt;Opción&lt;/span&gt;
-&lt;/label&gt;
-
-&lt;!-- Redondo: añadir ubits-checkbox--round --&gt;
-&lt;label class="ubits-checkbox ubits-checkbox--md ubits-checkbox--round"&gt;
-  &lt;input type="checkbox" class="ubits-checkbox__input"&gt;
-  &lt;span class="ubits-checkbox__box"&gt;&lt;i class="fas fa-check"&gt;&lt;/i&gt;&lt;/span&gt;
-  &lt;span class="ubits-checkbox__label"&gt;Opción&lt;/span&gt;
-&lt;/label&gt;</code></pre>
-                                    </div>
-                                </div>
-                                <div style="padding: 32px; border-bottom: 1px solid var(--ubits-border-1);">
-                                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;">
-                                        <h2 class="ubits-heading-h2" style="margin: 0; color: var(--ubits-fg-1-high);">
-                                            <i class="far fa-tags" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
-                                            Clases disponibles
-                                        </h2>
-                                        <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('classes-code')">
-                                            <i class="far fa-copy"></i>
-                                            <span>Copiar</span>
-                                        </button>
-                                    </div>
-                                    <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
-                                        <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code id="classes-code">/* Contenedor (label) */
-.ubits-checkbox
-.ubits-checkbox--sm          /* 16×16px */
-.ubits-checkbox--md         /* 20×20px */
-.ubits-checkbox--round      /* forma redonda (opcional) */
-
-/* Elementos internos */
-.ubits-checkbox__input      /* input type="checkbox" (oculto visualmente) */
-.ubits-checkbox__box        /* Caja visible */
-.ubits-checkbox__box i     /* Icono: solo &lt;i class="fas fa-check"&gt;&lt;/i&gt; (solid/bold, sin clase propia) */
-.ubits-checkbox__label      /* Texto opcional */</code></pre>
-                                    </div>
-                                </div>
-                                <div style="padding: 32px;">
-                                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;">
-                                        <h2 class="ubits-heading-h2" style="margin: 0; color: var(--ubits-fg-1-high);">
-                                            <i class="far fa-code-branch" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
-                                            Cómo implementar
-                                        </h2>
-                                        <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('implementation-code')">
-                                            <i class="far fa-copy"></i>
-                                            <span>Copiar</span>
-                                        </button>
-                                    </div>
-                                    <div style="background: var(--ubits-feedback-bg-warning-subtle); border: 1px solid var(--ubits-feedback-accent-warning); padding: 16px; border-radius: 8px; margin-bottom: 16px;">
-                                        <h3 class="ubits-body-md-bold" style="margin-bottom: 8px; color: var(--ubits-fg-1-high);">⚠️ OBLIGATORIO: Importar el CSS en cada página</h3>
-                                        <p class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); line-height: 1.5; margin: 0;">
-                                            Si la página que usa checkboxes <strong>no</strong> incluye <code>checkbox.css</code>, los checkboxes no tendrán el estilo UBITS. Añade en el <code>&lt;head&gt;</code>: <code>&lt;link rel="stylesheet" href="../../components/checkbox.css"&gt;</code> (desde subcarpetas usar <code>../../components/</code>; desde raíz usar <code>components/</code>). También se necesita <code>fontawesome-icons.css</code> para el icono de check.
-                                        </p>
-                                    </div>
-                                    <div style="background: var(--ubits-bg-2); padding: 16px; border-radius: 8px; margin-bottom: 16px;">
-                                        <h3 class="ubits-body-md-bold" style="margin-bottom: 12px; color: var(--ubits-fg-1-high);">🔧 REQUISITOS:</h3>
-                                        <div class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); line-height: 1.5;">
-                                            <strong>CSS:</strong> <code>components/checkbox.css</code>, <code>general-styles/ubits-colors.css</code>, <code>general-styles/fontawesome-icons.css</code>.<br>
-                                            <strong>JavaScript:</strong> No requerido. Uso con <code>&lt;label&gt;</code> y <code>input type="checkbox"</code>.<br>
-                                            <strong>Tamaños:</strong> sm (16×16px) y md (20×20px). <strong>Formas:</strong> por defecto cuadrado (border-radius 4px), opcional <code>ubits-checkbox--round</code> para redondo.
-                                        </div>
-                                    </div>
-                                    <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
-                                        <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code id="implementation-code">&lt;!-- Cuadrado md --&gt;
-&lt;label class="ubits-checkbox ubits-checkbox--md"&gt;
-  &lt;input type="checkbox" class="ubits-checkbox__input"&gt;
-  &lt;span class="ubits-checkbox__box"&gt;&lt;i class="fas fa-check"&gt;&lt;/i&gt;&lt;/span&gt;
-  &lt;span class="ubits-checkbox__label"&gt;Acepto condiciones&lt;/span&gt;
-&lt;/label&gt;
-
-&lt;!-- Redondo sm --&gt;
-&lt;label class="ubits-checkbox ubits-checkbox--sm ubits-checkbox--round"&gt;
-  &lt;input type="checkbox" class="ubits-checkbox__input" checked disabled&gt;
-  &lt;span class="ubits-checkbox__box"&gt;&lt;i class="fas fa-check"&gt;&lt;/i&gt;&lt;/span&gt;
-  &lt;span class="ubits-checkbox__label"&gt;Completado&lt;/span&gt;
-&lt;/label&gt;</code></pre>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        
                     </div>
                 </div>
             </div>
@@ -358,20 +247,7 @@
             }
         });
 
-        function toggleTechnicalDocs() {
-            var content = document.getElementById('technical-docs-content');
-            var isHidden = content.style.display === 'none' || !content.style.display;
-            content.style.display = isHidden ? 'block' : 'none';
-            var trigger = content.previousElementSibling;
-            if (trigger) {
-                var span = trigger.querySelector('span');
-                if (span) {
-                    span.innerHTML = isHidden
-                        ? '<i class="far fa-chevron-up" style="transition: transform 0.3s ease;"></i>Ocultar'
-                        : '<i class="far fa-chevron-down" style="transition: transform 0.3s ease;"></i>Mostrar';
-                }
-            }
-        }
+        
 
         function copyPrompt(promptId) {
             var el = document.getElementById(promptId);

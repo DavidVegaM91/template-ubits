@@ -173,78 +173,7 @@ Ubicación: [describe dónde debe estar el botón que abre el menú]</code></pre
                             </div>
                         </div>
 
-                        <!-- Documentación técnica -->
-                        <div style="background: var(--ubits-bg-1); border-radius: var(--border-radius-lg); margin-bottom: 40px; overflow: hidden;">
-                            <div style="padding: 32px; text-align: center; border-bottom: 1px solid var(--ubits-border-1);">
-                                <h2 class="ubits-heading-h2" style="margin-bottom: 0; color: var(--ubits-fg-1-high);">
-                                    <i class="far fa-code" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
-                                    Documentación técnica
-                                </h2>
-                                <p class="ubits-body-md-regular" style="margin-top: 16px; color: var(--ubits-fg-1-medium);">
-                                    Detalle para implementación: estructura HTML, clases y parámetros de la API.
-                                </p>
-                            </div>
-                            <div style="background: var(--ubits-bg-2); padding: 20px; text-align: center; cursor: pointer;" onclick="toggleTechnicalDocs()">
-                                <span class="ubits-body-md-regular" style="color: var(--ubits-accent-brand); display: flex; align-items: center; justify-content: center; gap: 8px;">
-                                    <i class="far fa-chevron-down" id="tech-docs-chevron" style="transition: transform 0.3s ease;"></i>
-                                    Mostrar
-                                </span>
-                            </div>
-                            <div id="technical-docs-content" style="display: none; padding: 0;">
-                                <div style="padding: 32px; border-bottom: 1px solid var(--ubits-border-1);">
-                                    <h2 class="ubits-heading-h2" style="margin-bottom: 16px; color: var(--ubits-fg-1-high);">Estructura</h2>
-                                    <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm);">
-                                        <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code id="dropdown-structure-code">.ubits-dropdown-menu__overlay   /* Overlay transparente, cierre al clic fuera */
-.ubits-dropdown-menu__content   /* Panel: bg-1, elevation-overlay, border-radius-sm */
-  .ubits-dropdown-menu__autocomplete-wrap  /* Opcional: input de búsqueda (lupa + X) */
-    #overlayId-autocomplete-input   /* Input tipo búsqueda, tamaño sm */
-    #overlayId-autocomplete-clear   /* Icono X para limpiar (visible al escribir) */
-  .ubits-dropdown-menu__multiselect-summary  /* Opcional: botón xs Ver/Ocultar seleccionados */
-    #overlayId-multiselect-summary-toggle
-  #overlayId-options  /* id en .ubits-dropdown-menu__options si hasMultiSelectSummary */
-    /* .ubits-dropdown-menu__options--selected-only-scroll → ~5 filas visibles en modo solo seleccionados */
-    .ubits-dropdown-menu__options   /* O bien .ubits-dropdown-menu__custom-body si se pasa customBodyHtml */
-    .ubits-dropdown-menu__option   /* Botón o label por ítem: left + text + right */
-      .ubits-dropdown-menu__option--selected   /* opción activa del menú: selected: true */
-      .ubits-dropdown-menu__option--marked-chosen   /* alreadyChosen: true — mismo criterio que autocomplete “ya en chips” */
-      .ubits-dropdown-menu__option-badge   /* check + “Seleccionado” si alreadyChosen */
-      /* Variante radioGroup: .ubits-dropdown-menu__option--radio + .ubits-radio .ubits-radio__circle .ubits-radio__label */
-      .ubits-dropdown-menu__option-left   /* Icono o checkbox */
-      .ubits-dropdown-menu__option-text   /* Texto, alineado izquierda */
-      .ubits-dropdown-menu__option-right  /* Icono o switch */
-  .ubits-dropdown-menu__footer    /* Opcional: Secundario + Primario a la derecha */</code></pre>
-                                    </div>
-                                </div>
-                                <div style="padding: 32px;">
-                                    <h2 class="ubits-heading-h2" style="margin-bottom: 16px; color: var(--ubits-fg-1-high);">API JavaScript</h2>
-                                    <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm);">
-                                        <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code id="dropdown-api-code">getDropdownMenuHtml(config)
-  config.overlayId, config.contentId
-  config.options = [{ text, value?, leftIcon?, rightIcon?, checkbox?, switch?, selected?, avatar?, alreadyChosen? }]
-    /* selected: true → .ubits-dropdown-menu__option--selected (opción activa del menú) */
-    /* alreadyChosen: true → .ubits-dropdown-menu__option--marked-chosen + badge (como autocomplete; no mezclar con selected en el mismo ítem) */
-  config.radioGroup?          → opciones como lista de radios (ubits-radio--sm). Requiere radio-button.css
-  config.radioName?           → name del grupo de radios (default: overlayId + '-radio')
-  config.hasAutocomplete?     → incluye input de búsqueda (lupa + botón limpiar)
-  config.autocompletePlaceholder?, config.autocompleteContainerId?
-  config.footerSecondaryLabel?, config.footerPrimaryLabel?
-  config.footerSecondaryId?, config.footerPrimaryId?
-  config.customBodyHtml?     → cuerpo personalizado (inputs, formularios) en lugar de .ubits-dropdown-menu__options
-  config.hasMultiSelectSummary? → botón xs que alterna la lista entre filtro y solo ítems marcados (misma .ubits-dropdown-menu__options)
-  config.multiSelectSummaryToggleShowLabel?, multiSelectSummaryToggleHideLabel?
-
-initDropdownMultiSelectSummary(overlayId, { applyListVisibility(mode), searchInput?, anchorElement?, toggleLabelShow?, toggleLabelHide? })
-  mode: 'filter' | 'selected-only'. Clic/focus/input en searchInput vuelve a 'filter'.
-
-openDropdownMenu(overlayId, position, options?)
-  position = elemento ancla (botón) o { top, left } en px
-  options.alignRight = true  → alinear derecha del dropdown con derecha del botón
-
-closeDropdownMenu(overlayId)</code></pre>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        
                     </div>
                 </div>
             </div>
@@ -452,20 +381,7 @@ closeDropdownMenu(overlayId)</code></pre>
                 openDropdownMenu(overlayId, trigger);
             });
         });
-        function toggleTechnicalDocs() {
-            var content = document.getElementById('technical-docs-content');
-            var chevron = document.getElementById('tech-docs-chevron');
-            var toggleText = chevron && chevron.parentElement;
-            if (content.style.display === 'none') {
-                content.style.display = 'block';
-                if (chevron) chevron.style.transform = 'rotate(180deg)';
-                if (toggleText) toggleText.innerHTML = '<i class="far fa-chevron-up" id="tech-docs-chevron" style="transition: transform 0.3s ease;"></i>Ocultar';
-            } else {
-                content.style.display = 'none';
-                if (chevron) chevron.style.transform = 'rotate(0deg)';
-                if (toggleText) toggleText.innerHTML = '<i class="far fa-chevron-down" id="tech-docs-chevron" style="transition: transform 0.3s ease;"></i>Mostrar';
-            }
-        }
+        
         function copyPrompt(promptId) {
             var el = document.getElementById(promptId);
             if (!el) return;

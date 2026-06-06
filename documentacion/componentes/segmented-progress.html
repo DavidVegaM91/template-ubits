@@ -147,48 +147,7 @@
                             </div>
                         </div>
 
-                        <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; margin-bottom: 40px;">
-                            <div style="display: flex; align-items: center; justify-content: space-between; cursor: pointer;" onclick="toggleTechnicalDocs()">
-                                <div>
-                                    <h2 class="ubits-heading-h2" style="margin: 0 0 8px; color: var(--ubits-fg-1-high);">Documentación técnica</h2>
-                                    <p class="ubits-body-sm-regular" style="margin: 0; color: var(--ubits-fg-1-medium);">Estructura HTML, API y requisitos de importación.</p>
-                                </div>
-                                <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm" id="sp-docs-toggle" aria-expanded="false">
-                                    <span id="sp-docs-toggle-text">Mostrar</span>
-                                    <i class="far fa-chevron-down" id="sp-docs-chevron"></i>
-                                </button>
-                            </div>
-                            <div id="sp-technical-docs" style="display: none; margin-top: 24px;">
-                                <div style="padding: 24px; border-top: 1px solid var(--ubits-border-1);">
-                                    <h3 class="ubits-body-md-bold" style="margin: 0 0 12px; color: var(--ubits-fg-1-high);">Requisitos</h3>
-                                    <ul class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); line-height: 1.6;">
-                                        <li><code>components/segmented-progress.css</code></li>
-                                        <li><code>components/segmented-progress.js</code></li>
-                                        <li>Tokens UBITS vía <code>styles.css</code></li>
-                                    </ul>
-                                </div>
-                                <div style="padding: 24px; border-top: 1px solid var(--ubits-border-1);">
-                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-                                        <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">segmentedProgressHtml</h3>
-                                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('sp-code-api')">
-                                            <i class="far fa-copy"></i><span>Copiar</span>
-                                        </button>
-                                    </div>
-                                    <pre style="margin: 0; background: var(--ubits-bg-2); padding: 16px; border-radius: 8px; overflow: auto;"><code id="sp-code-api" class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">segmentedProgressHtml({
-  total: 10,           // número de ítems
-  current: 0,          // índice activo (0-based)
-  mode: 'auto',        // auto | segments | slider
-  sliderThreshold: 19, // auto → slider si total &gt; 19
-  size: 'sm',          // sm | lg
-  track: 'default',    // default | subtle (bg más claro, flashcards)
-  id: 'mi-progreso',
-  ariaLabel: 'Progreso del quiz'
-});
-
-setSegmentedProgressValue(document.getElementById('mi-progreso'), 3);</code></pre>
-                                </div>
-                            </div>
-                        </div>
+                        
                     </div>
                 </div>
             </div>
@@ -245,16 +204,7 @@ setSegmentedProgressValue(document.getElementById('mi-progreso'), 3);</code></pr
             });
         }
 
-        function toggleTechnicalDocs() {
-            var box = document.getElementById('sp-technical-docs');
-            var chev = document.getElementById('sp-docs-chevron');
-            var txt = document.getElementById('sp-docs-toggle-text');
-            if (!box) return;
-            var open = box.style.display !== 'none';
-            box.style.display = open ? 'none' : 'block';
-            if (chev) chev.style.transform = open ? '' : 'rotate(180deg)';
-            if (txt) txt.textContent = open ? 'Mostrar' : 'Ocultar';
-        }
+        
 
         document.addEventListener('DOMContentLoaded', function () {
             if (typeof loadSubNav === 'function') loadSubNav('top-nav-container', 'documentacion');

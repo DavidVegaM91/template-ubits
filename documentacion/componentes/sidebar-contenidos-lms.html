@@ -135,7 +135,7 @@
                                 Prompts útiles
                             </h2>
                             <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6; color: var(--ubits-fg-1-medium);">
-                                Copia el texto y cambia lo que va entre corchetes. Los archivos a enlazar y el orden están en la <strong>documentación técnica</strong> al final de la página.
+                                Copia el texto y cambia lo que va entre corchetes. Los archivos a enlazar y el orden están en el <strong>README.md</strong> del repositorio.
                             </p>
 
                             <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
@@ -178,96 +178,7 @@
                             </div>
                         </div>
 
-                        <div style="background: var(--ubits-bg-1); border-radius: var(--border-radius-lg); margin-bottom: 40px; overflow: hidden;">
-                            <div style="padding: 32px; text-align: center; border-bottom: 1px solid var(--ubits-border-1);">
-                                <h2 class="ubits-heading-h2" style="margin-bottom: 0; color: var(--ubits-fg-1-high);">
-                                    <i class="far fa-code" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
-                                    Documentación técnica
-                                </h2>
-                                <p class="ubits-body-md-regular" style="margin-top: 16px; color: var(--ubits-fg-1-medium);">
-                                    API, archivos y estructura generada.
-                                </p>
-                            </div>
-                            <div style="background: var(--ubits-bg-2); padding: 20px; text-align: center; cursor: pointer;" onclick="toggleTechnicalDocs()">
-                                <span class="ubits-body-md-regular" style="color: var(--ubits-accent-brand); display: flex; align-items: center; justify-content: center; gap: 8px;">
-                                    <i class="far fa-chevron-down" style="transition: transform 0.3s ease;"></i>
-                                    Mostrar
-                                </span>
-                            </div>
-                            <div id="technical-docs-content" style="display: none; padding: 0;">
-                                <div style="padding: 32px; border-bottom: 1px solid var(--ubits-border-1);">
-                                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;">
-                                        <h2 class="ubits-heading-h2" style="margin: 0; color: var(--ubits-fg-1-high);">
-                                            API (JavaScript)
-                                        </h2>
-                                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('scc-api')">
-                                            <i class="far fa-copy"></i>
-                                            <span>Copiar</span>
-                                        </button>
-                                    </div>
-                                    <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm);">
-                                        <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code id="scc-api">// Contenedor vacío en el HTML:
-// &lt;div id="mi-sidebar-creator"&gt;&lt;/div&gt;
-
-loadSidebarContenidosLms('mi-sidebar-creator', {
-  // variant (opcional): 'publicado-lms-creator' (default) | 'publicado-antiguo-lms'
-  // Antigua: sin resultados; recursos se muestra como "Módulos" (id sigue siendo 'recursos')
-  variant: 'publicado-lms-creator',
-  activeStep: 'recursos', // según pasos de la variante elegida
-  onSelect: function (stepId) {
-    // Mostrar panel correspondiente, actualizar URL, etc.
-  }
-});
-
-// Solo cambiar resaltado (p. ej. tras navegar por otra UI):
-setSidebarContenidosLmsActive('mi-sidebar-creator', 'certificado');
-// o pasando el nodo aside:
-// setSidebarContenidosLmsActive(document.querySelector('.sidebar--contenidos-lms'), 'visibilidad');</code></pre>
-                                    </div>
-                                </div>
-                                <div style="padding: 32px; border-bottom: 1px solid var(--ubits-border-1);">
-                                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;">
-                                        <h2 class="ubits-heading-h2" style="margin: 0; color: var(--ubits-fg-1-high);">
-                                            Estructura HTML (referencia)
-                                        </h2>
-                                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('scc-html')">
-                                            <i class="far fa-copy"></i>
-                                            <span>Copiar</span>
-                                        </button>
-                                    </div>
-                                    <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm);">
-                                        <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code id="scc-html">&lt;aside class="sidebar sidebar--contenidos-lms" data-variant="publicado-lms-creator" aria-label="Pasos de creación de contenido"&gt;
-  &lt;div class="sidebar-main"&gt;
-    &lt;div class="sidebar-body"&gt;
-      &lt;button type="button" class="nav-button active" data-step="resultados"
-        data-tooltip="Resultados" aria-label="Resultados" aria-current="page"&gt;
-        &lt;i class="far fa-chart-mixed" aria-hidden="true"&gt;&lt;/i&gt;
-        &lt;span class="sidebar-contenidos-lms__step-label ubits-body-sm-regular"&gt;Resultados&lt;/span&gt;
-      &lt;/button&gt;
-      &lt;!-- …información, recursos, certificado, visibilidad (mismo patrón) --&gt;
-    &lt;/div&gt;
-  &lt;/div&gt;
-  &lt;div class="sidebar-contenidos-lms__footer"&gt;
-    &lt;button type="button" class="nav-button sidebar-contenidos-lms__toggle"&gt;…&lt;/button&gt;
-  &lt;/div&gt;
-&lt;/aside&gt;</code></pre>
-                                    </div>
-                                    <p class="ubits-body-sm-regular" style="margin-top: 16px; color: var(--ubits-fg-1-medium);">
-                                        Equivale al armado del Sidebar en <code>sidebar.js</code>, sin header con logo. El pie añade Expandir/Contraer. Usa <code>loadSidebarContenidosLms</code> para generarlo. Modo expandido: clase <code>sidebar--contenidos-lms--expanded</code> en el <code>aside</code> (la interacción del pie la gestiona el JS del componente).
-                                    </p>
-                                </div>
-                                <div style="padding: 32px;">
-                                    <h2 class="ubits-heading-h2" style="margin-bottom: 16px; color: var(--ubits-fg-1-high);">
-                                        Requisitos
-                                    </h2>
-                                    <div class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); line-height: 1.6;">
-                                        <strong>CSS:</strong> <code>general-styles/styles.css</code> (clases <code>.sidebar</code>, <code>.nav-button</code>), <code>components/sidebar-contenidos-lms.css</code> (modificador <code>sidebar--contenidos-lms</code>); <code>ubits-colors.css</code>, <code>fontawesome-icons.css</code>.<br>
-                                        <strong>JS:</strong> <code>components/sidebar-contenidos-lms.js</code>.<br>
-                                        <strong>Opcional:</strong> <code>tooltip.css</code> + <code>tooltip.js</code>; el loader llama a <code>initTooltip</code> si existe.
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        
                     </div>
                 </div>
             </div>
@@ -391,20 +302,7 @@ setSidebarContenidosLmsActive('mi-sidebar-creator', 'certificado');
             docSccSetStep(docSccLastStep);
         });
 
-        function toggleTechnicalDocs() {
-            var content = document.getElementById('technical-docs-content');
-            var isHidden = content.style.display === 'none' || !content.style.display;
-            content.style.display = isHidden ? 'block' : 'none';
-            var trigger = content.previousElementSibling;
-            if (trigger) {
-                var span = trigger.querySelector('span');
-                if (span) {
-                    span.innerHTML = isHidden
-                        ? '<i class="far fa-chevron-up" style="transition: transform 0.3s ease;"></i>Ocultar'
-                        : '<i class="far fa-chevron-down" style="transition: transform 0.3s ease;"></i>Mostrar';
-                }
-            }
-        }
+        
 
         function copyPrompt(promptId) {
             var el = document.getElementById(promptId);

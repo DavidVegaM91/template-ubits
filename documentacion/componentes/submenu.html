@@ -152,36 +152,7 @@
                             </div>
                         </div>
 
-                        <div style="background: var(--ubits-bg-1); border-radius: var(--border-radius-lg); margin-bottom: 40px; overflow: hidden;">
-                            <div style="padding: 32px; text-align: center; border-bottom: 1px solid var(--ubits-border-1);">
-                                <h2 class="ubits-heading-h2" style="margin-bottom: 0; color: var(--ubits-fg-1-high);">
-                                    <i class="far fa-code" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
-                                    Documentación técnica
-                                </h2>
-                                <p class="ubits-body-md-regular" style="margin-top: 16px; color: var(--ubits-fg-1-medium);">API, opciones y eventos.</p>
-                            </div>
-                            <div style="background: var(--ubits-bg-2); padding: 20px; text-align: center; cursor: pointer;" onclick="toggleTechnicalDocs()">
-                                <span class="ubits-body-md-regular" style="color: var(--ubits-accent-brand); display: flex; align-items: center; justify-content: center; gap: 8px;">
-                                    <i class="far fa-chevron-down"></i> Mostrar
-                                </span>
-                            </div>
-                            <div id="technical-docs-content" style="display: none; padding: 0;">
-                                <div style="padding: 32px; border-bottom: 1px solid var(--ubits-border-1);">
-                                    <div style="display: flex; justify-content: space-between; margin-bottom: 24px;">
-                                        <h2 class="ubits-heading-h2" style="margin: 0;">API</h2>
-                                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('sm-tech')"><i class="far fa-copy"></i><span>Copiar</span></button>
-                                    </div>
-                                    <pre style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm); overflow-x: auto;"><code id="sm-tech" class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">openSubmenu({\n  submenuId: 'mi-submenu',\n  anchorEl: HTMLElement,                  // obligatorio\n  placement: 'top'|'bottom'|'left'|'right',\n  align: 'start'|'center'|'end',          // inicio/centro/fin\n  offset: 8,\n  variant: 'dark'|'light',                // dark por defecto\n  title: 'Título',\n  showTitle: true,                        // true por defecto\n  options: [{ text, value, leftIcon? }],\n  closeOnEscape: true,\n  closeOnClickOutside: true,\n  zIndex: 10020,\n  onClose: function () {}\n});\n\ncloseSubmenu('mi-submenu');\nupdateSubmenuPosition('mi-submenu');\n\nEvento: ubits-submenu-select → detail: { value, text, anchor, submenu }</code></pre>
-                                </div>
-                                <div style="padding: 32px;">
-                                    <div style="display: flex; justify-content: space-between; margin-bottom: 16px;">
-                                        <h2 class="ubits-heading-h2" style="margin: 0;">Requisitos</h2>
-                                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('sm-req')"><i class="far fa-copy"></i><span>Copiar</span></button>
-                                    </div>
-                                    <pre style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm); overflow-x: auto;"><code id="sm-req" class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">CSS: submenu.css (+ ubits-colors.css, ubits-typography.css, fontawesome-icons.css)\nSi usas createInput type select en la misma página: input.css + dropdown-menu.css (antes de input en el head) y dropdown-menu.js antes de input.js.\nJS: submenu.js</code></pre>
-                                </div>
-                            </div>
-                        </div>
+                        
                     </div>
                 </div>
             </div>
@@ -279,17 +250,7 @@
             });
         });
 
-        function toggleTechnicalDocs() {
-            var content = document.getElementById('technical-docs-content');
-            var open = content.style.display === 'none' || !content.style.display;
-            content.style.display = open ? 'block' : 'none';
-            var trigger = content.previousElementSibling;
-            if (trigger && trigger.querySelector('span')) {
-                trigger.querySelector('span').innerHTML = open
-                    ? '<i class=\"far fa-chevron-up\"></i> Ocultar'
-                    : '<i class=\"far fa-chevron-down\"></i> Mostrar';
-            }
-        }
+        
 
         function copyPrompt(id) {
             var t = document.getElementById(id);

@@ -116,77 +116,7 @@
                             </div>
                         </div>
 
-                        <div style="background: var(--ubits-bg-1); border-radius: var(--border-radius-lg); margin-bottom: 40px; overflow: hidden;">
-                            <div style="padding: 32px; text-align: center; border-bottom: 1px solid var(--ubits-border-1);">
-                                <h2 class="ubits-heading-h2" style="margin-bottom: 0; color: var(--ubits-fg-1-high);">
-                                    <i class="far fa-code" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
-                                    Documentación técnica
-                                </h2>
-                                <p class="ubits-body-md-regular" style="margin-top: 16px; color: var(--ubits-fg-1-medium);">Estructura, API y requisitos.</p>
-                            </div>
-                            <div style="background: var(--ubits-bg-2); padding: 20px; text-align: center; cursor: pointer;" onclick="toggleTechnicalDocs()">
-                                <span class="ubits-body-md-regular" style="color: var(--ubits-accent-brand); display: flex; align-items: center; justify-content: center; gap: 8px;">
-                                    <i class="far fa-chevron-down"></i> Mostrar
-                                </span>
-                            </div>
-                            <div id="technical-docs-content" style="display: none; padding: 0;">
-                                <div style="padding: 32px; border-bottom: 1px solid var(--ubits-border-1);">
-                                    <div style="display: flex; justify-content: space-between; margin-bottom: 24px;">
-                                        <h2 class="ubits-heading-h2" style="margin: 0;">Estructura del componente</h2>
-                                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('hs-tech-html')"><i class="far fa-copy"></i><span>Copiar</span></button>
-                                    </div>
-                                    <pre style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm); overflow-x: auto; margin: 0;"><code id="hs-tech-html" class="ubits-body-sm-regular">&lt;section class="ubits-hero-search" aria-label="Buscar contenidos"&gt;
-  &lt;p class="ubits-hero-search__title ubits-heading-h1"&gt;¿Qué quieres aprender hoy?&lt;/p&gt;
-  &lt;div class="ubits-hero-search__bar" id="hero-search-bar" role="search"&gt;
-    &lt;input type="search" class="ubits-hero-search__field ubits-body-md-regular" id="hero-search-input" placeholder="Buscar contenidos o competencias" autocomplete="off" enterkeyhint="search" aria-label="Buscar contenidos o competencias"&gt;
-    &lt;button type="button" class="ubits-hero-search__submit" id="hero-search-submit" aria-label="Buscar"&gt;
-      &lt;!-- SVG lupa --&gt;
-    &lt;/button&gt;
-  &lt;/div&gt;
-&lt;/section&gt;</code></pre>
-                                </div>
-                                <div style="padding: 32px; border-bottom: 1px solid var(--ubits-border-1);">
-                                    <div style="display: flex; justify-content: space-between; margin-bottom: 24px;">
-                                        <h2 class="ubits-heading-h2" style="margin: 0;">Clases CSS</h2>
-                                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('hs-tech-classes')"><i class="far fa-copy"></i><span>Copiar</span></button>
-                                    </div>
-                                    <pre style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm); overflow-x: auto; margin: 0;"><code id="hs-tech-classes" class="ubits-body-sm-regular">.ubits-hero-search              — contenedor gradiente + layout
-.ubits-hero-search__title       — título (ubits-heading-h1)
-.ubits-hero-search__bar         — pill del buscador (role="search")
-.ubits-hero-search__bar--active — borde reforzado (foco / búsqueda)
-.ubits-hero-search__field      — input type="search" nativo
-.ubits-hero-search__submit      — botón lupa circular
-.ubits-hero-search__submit-icon — SVG 16×16</code></pre>
-                                </div>
-                                <div style="padding: 32px;">
-                                    <div style="display: flex; justify-content: space-between; margin-bottom: 24px;">
-                                        <h2 class="ubits-heading-h2" style="margin: 0;">Cómo implementar</h2>
-                                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('hs-tech-impl')"><i class="far fa-copy"></i><span>Copiar</span></button>
-                                    </div>
-                                    <pre style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm); overflow-x: auto; margin: 0;"><code id="hs-tech-impl" class="ubits-body-sm-regular">&lt;link rel="stylesheet" href="../../components/hero-search.css"&gt;
-&lt;div id="mi-hero-mount"&gt;&lt;/div&gt;
-&lt;script src="../../components/hero-search.js"&gt;&lt;/script&gt;
-&lt;script&gt;
-mountHeroSearch({
-  containerId: 'mi-hero-mount',
-  title: '¿Qué quieres aprender hoy?',
-  placeholder: 'Buscar contenidos o competencias',
-  barId: 'mi-hero-bar',
-  inputId: 'mi-hero-input',
-  submitId: 'mi-hero-submit'
-});
-// Estado activo (desde la lógica de la página):
-setHeroSearchBarActive('mi-hero-bar', true);
-&lt;/script&gt;</code></pre>
-                                    <p class="ubits-body-md-regular" style="margin-top: var(--gap-lg); color: var(--ubits-fg-1-medium);">
-                                        <strong>API:</strong> <code class="ubits-body-sm-regular">heroSearchHtml(options)</code> devuelve HTML; <code class="ubits-body-sm-regular">mountHeroSearch({ containerId, title, placeholder, barId, inputId, submitId, … })</code> inyecta y devuelve refs; <code class="ubits-body-sm-regular">setHeroSearchBarActive(barId|element, active)</code>; defaults en <code class="ubits-body-sm-regular">HERO_SEARCH_DEFAULTS</code>.
-                                    </p>
-                                    <p class="ubits-body-md-regular" style="margin-top: var(--gap-md); color: var(--ubits-fg-1-medium);">
-                                        <strong>Referencia producto:</strong> <code class="ubits-body-sm-regular">ubits-colaborador/aprendizaje/home-learn.html</code> + <code class="ubits-body-sm-regular">home-learn-search.js</code> (modos idle / browse / results, debounce, skeleton). Ver README «Patrón: búsqueda en Inicio Aprendizaje».
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
+                        
                     </div>
                 </div>
             </div>
@@ -235,17 +165,7 @@ setHeroSearchBarActive('mi-hero-bar', true);
             }
         });
 
-        function toggleTechnicalDocs() {
-            var content = document.getElementById('technical-docs-content');
-            var open = content.style.display === 'none' || !content.style.display;
-            content.style.display = open ? 'block' : 'none';
-            var trigger = content.previousElementSibling;
-            if (trigger && trigger.querySelector('span')) {
-                trigger.querySelector('span').innerHTML = open
-                    ? '<i class="far fa-chevron-up"></i> Ocultar'
-                    : '<i class="far fa-chevron-down"></i> Mostrar';
-            }
-        }
+        
 
         function copyPrompt(id) {
             var t = document.getElementById(id);

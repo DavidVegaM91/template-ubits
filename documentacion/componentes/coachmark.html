@@ -134,139 +134,7 @@
                         </div>
                     </div>
 
-                    <div style="background: var(--ubits-bg-1); border-radius: 16px; margin-bottom: 40px; overflow: hidden;">
-                        <div style="padding: 32px; text-align: center; border-bottom: 1px solid var(--ubits-border-1);">
-                            <h2 class="ubits-heading-h2" style="margin-bottom: 0; color: var(--ubits-fg-1-high);">
-                                <i class="far fa-code" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
-                                Documentación técnica
-                            </h2>
-                            <p class="ubits-body-md-regular" style="margin-top: 16px; color: var(--ubits-fg-1-medium);">
-                                API JavaScript, capas DOM y dependencias.
-                            </p>
-                        </div>
-                        <div style="background: var(--ubits-bg-2); padding: 20px; text-align: center; cursor: pointer;" onclick="toggleTechnicalDocs()">
-                            <span class="ubits-body-md-regular" style="color: var(--ubits-accent-brand); display: flex; align-items: center; justify-content: center; gap: 8px;">
-                                <i class="far fa-chevron-down" id="tech-docs-chevron"></i>
-                                Mostrar
-                            </span>
-                        </div>
-                        <div id="technical-docs-content" style="display: none; padding: 32px;">
-                            <h3 class="ubits-body-md-bold" style="margin-bottom: 12px; color: var(--ubits-fg-1-high);">Requisitos</h3>
-                            <ul class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); line-height: 1.6;">
-                                <li><code>components/coachmark.css</code> + <code>components/coachmark.js</code></li>
-                                <li><code>components/popover.css</code> + <code>components/popover.js</code></li>
-                                <li><code>components/button.css</code> + <code>fontawesome-icons.css</code></li>
-                                <li><code>components/tooltip.css</code> + <code>components/tooltip.js</code> (tooltip «Cerrar» en el botón X de la cabecera)</li>
-                                <li>Estilos base: <code>ubits-colors.css</code>, <code>ubits-typography.css</code>, <code>styles.css</code></li>
-                            </ul>
-                            <h3 class="ubits-body-md-bold" style="margin: 24px 0 12px; color: var(--ubits-fg-1-high);">Estructura del componente</h3>
-                            <div style="margin-top: 8px; display: flex; justify-content: space-between; align-items: center;">
-                                <span class="ubits-body-md-regular">HTML generado por coachmark + popover</span>
-                                <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('coachmark-structure-code')"><i class="far fa-copy"></i><span>Copiar</span></button>
-                            </div>
-                            <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-md); margin-top: 12px;">
-                                <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="coachmark-structure-code">&lt;!-- Capa de coachmark --&gt;
-&lt;div id="ubits-coachmark-root" class="ubits-coachmark" role="presentation"&gt;
-  &lt;div class="ubits-coachmark__scrim" aria-hidden="true"&gt;&lt;/div&gt;
-  &lt;div class="ubits-coachmark__spotlight" aria-hidden="true"&gt;&lt;/div&gt;
-&lt;/div&gt;
-
-&lt;!-- Popover del paso (creado por openPopover) --&gt;
-&lt;div id="mi-tour-popover" class="ubits-popover ubits-popover--md" role="dialog" aria-modal="true"&gt;
-  &lt;div class="ubits-popover__surface"&gt;
-    &lt;div class="ubits-coachmark__header-row"&gt;
-      &lt;p class="ubits-body-md-semibold ubits-popover__title" id="mi-tour-popover-title"&gt;Título&lt;/p&gt;
-      &lt;div class="ubits-coachmark__header-actions"&gt;
-        &lt;button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" aria-label="Cerrar" data-tooltip="Cerrar"&gt;
-          &lt;i class="far fa-times"&gt;&lt;/i&gt;
-        &lt;/button&gt;
-      &lt;/div&gt;
-    &lt;/div&gt;
-    &lt;p class="ubits-body-sm-regular ubits-popover__text"&gt;Texto del paso&lt;/p&gt;
-    &lt;div class="ubits-popover__actions"&gt;
-      &lt;div class="ubits-popover__actions-start"&gt;
-        &lt;span class="ubits-body-sm-regular ubits-coachmark__progress"&gt;1 de 4&lt;/span&gt;
-      &lt;/div&gt;
-      &lt;div class="ubits-popover__actions-end"&gt;
-        &lt;button class="ubits-button ubits-button--primary ubits-button--sm"&gt;&lt;span&gt;Siguiente&lt;/span&gt;&lt;/button&gt;
-      &lt;/div&gt;
-    &lt;/div&gt;
-    &lt;div class="ubits-popover__arrow" aria-hidden="true"&gt;&lt;/div&gt;
-  &lt;/div&gt;
-&lt;/div&gt;</code></pre>
-                            </div>
-                            <h3 class="ubits-body-md-bold" style="margin: 24px 0 12px; color: var(--ubits-fg-1-high);">Clases CSS clave</h3>
-                            <div style="margin-top: 8px; display: flex; justify-content: space-between; align-items: center;">
-                                <span class="ubits-body-md-regular">Selectores principales de estilo</span>
-                                <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('coachmark-classes-code')"><i class="far fa-copy"></i><span>Copiar</span></button>
-                            </div>
-                            <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-md); margin-top: 12px;">
-                                <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="coachmark-classes-code">.ubits-coachmark                 /* Capa raíz fixed del recorrido */
-.ubits-coachmark__scrim          /* Overlay completo cuando no hay ancla */
-.ubits-coachmark__scrim--visible /* Estado visible del scrim */
-.ubits-coachmark__spotlight      /* Hueco sobre el target (box-shadow máscara) */
-.ubits-coachmark__spotlight--visible
-.ubits-coachmark__header-row     /* Fila título + botón X */
-.ubits-coachmark__header-actions /* Contenedor del cierre icon-only */
-.ubits-coachmark__progress       /* Texto N de M en pie izquierdo */
-body.ubits-coachmark-active      /* Bloqueo de scroll de fondo */</code></pre>
-                            </div>
-                            <h3 class="ubits-body-md-bold" style="margin: 24px 0 12px; color: var(--ubits-fg-1-high);">Capas</h3>
-                            <p class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); line-height: 1.6;">
-                                <code>#ubits-coachmark-root</code> (z-index configurable) contiene scrim y spotlight. El Popover del paso se monta en <code>document.body</code> con z-index por encima (p. ej. 10060).
-                            </p>
-                            <h3 class="ubits-body-md-bold" style="margin: 24px 0 12px; color: var(--ubits-fg-1-high);">API</h3>
-                            <p class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); line-height: 1.6;">
-                                <strong>UBITS_COACHMARK.start(options)</strong> — <code>steps</code> (array de <code>target</code> selector/elemento/función o <code>null</code>, <code>title</code>, <code>body</code> o <code>bodyHtml</code>, <code>placement</code>, <code>align</code>, <code>offset</code>, <code>size</code>, <code>showSpotlight</code>, <code>requireTarget</code>), <code>popoverId</code>, <code>startIndex</code> (índice 0-based del primer paso; útil en tours multi-página), <code>onBeforeNext(index, step)</code> / <code>onBeforePrev(index, step)</code> (devolver <code>false</code> para cancelar el paso y p. ej. navegar con <code>location.href</code>), <code>showProgress</code> (si es true y hay más de un paso: texto <code>N de M</code> en el pie izquierdo; cabecera con título + botón cierre icon-only (<code>fa-times</code>, como en modal) con tooltip «Cerrar» a la derecha salvo en el último paso, donde solo <strong>Finalizar</strong>), <code>padding</code> (default <code>0</code>, exacto al target), <code>zIndexLayer</code>, <code>zIndexPopover</code>, <code>onComplete</code> (solo al pulsar Finalizar), <code>onDismiss(reason)</code> (<code>close</code> | <code>escape</code> | <code>missing-target</code> | <code>dismiss</code>; no se llama con <code>restart</code>), <code>onStepChange(index, step)</code>.<br><br>
-                                <strong>UBITS_COACHMARK.close(reason)</strong> — cierra tour y popover.<br>
-                                <strong>UBITS_COACHMARK.next()</strong> / <strong>prev()</strong> — avanza o retrocede paso.<br>
-                                <strong>UBITS_COACHMARK.layout()</strong> — recalcula spotlight y posición del popover (tras cambios de layout).<br>
-                                <strong>UBITS_COACHMARK.isActive()</strong> — boolean.
-                            </p>
-                            <div style="margin-top: 24px; display: flex; justify-content: space-between; align-items: center;">
-                                <span class="ubits-body-md-regular">Ejemplo mínimo</span>
-                                <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('implement-code')"><i class="far fa-copy"></i><span>Copiar</span></button>
-                            </div>
-                            <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-md); margin-top: 12px;">
-                                <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="implement-code">UBITS_COACHMARK.start({
-  popoverId: 'mi-tour',
-  showProgress: true,
-  steps: [
-    { target: '#paso-1', title: 'Bienvenida', body: 'Texto del paso.', placement: 'bottom', align: 'center' },
-    { target: null, title: 'Resumen', body: 'Sin ancla: scrim + popover centrado.' }
-  ],
-  onComplete: function () { /* tour terminado con Finalizar */ },
-  onDismiss: function (reason) { /* close | escape | missing-target | end */ }
-});</code></pre>
-                            </div>
-                            <h3 class="ubits-body-md-bold" style="margin: 24px 0 12px; color: var(--ubits-fg-1-high);">Troubleshooting técnico</h3>
-                            <div style="margin-top: 8px; display: flex; justify-content: space-between; align-items: center;">
-                                <span class="ubits-body-md-regular">Bugs comunes y cómo resolverlos</span>
-                                <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('coachmark-troubleshooting-code')"><i class="far fa-copy"></i><span>Copiar</span></button>
-                            </div>
-                            <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-md); margin-top: 12px;">
-                                <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="coachmark-troubleshooting-code">1) El tour no abre:
-- Verifica que popover.js cargue antes de coachmark.js.
-- UBITS_COACHMARK.start devuelve false si faltan pasos o openPopover no existe.
-
-2) El spotlight no coincide con el target:
-- Por defecto padding=0 (exacto al elemento).
-- Si quieres margen, define padding: 4 o padding: 8 en start().
-
-3) Tooltip de la X no aparece:
-- Importa tooltip.css y tooltip.js.
-- El botón de cierre usa data-tooltip y se inicializa con initTooltip.
-
-4) El tooltip queda debajo del popover:
-- Mantén #ubits-tooltip-container por encima del z-index del popover.
-- En coachmark.css se fuerza z-index alto mientras el tour está activo.
-
-5) Navegación multi-página:
-- Usa startIndex para continuar en otro paso.
-- Usa onBeforeNext/onBeforePrev y retorna false si vas a redirigir con location.href.</code></pre>
-                            </div>
-                        </div>
-                    </div>
+                    
                 </div>
             </div>
         </div>
@@ -385,17 +253,7 @@ body.ubits-coachmark-active      /* Bloqueo de scroll de fondo */</code></pre>
             initCoachmarkDocPage();
         }
 
-        function toggleTechnicalDocs() {
-            var content = document.getElementById('technical-docs-content');
-            var button = document.querySelector('[onclick="toggleTechnicalDocs()"]');
-            if (content.style.display === 'none' || content.style.display === '') {
-                content.style.display = 'block';
-                button.innerHTML = '<i class="far fa-chevron-up" id="tech-docs-chevron" style="color: var(--ubits-accent-brand);"></i> <span class="ubits-body-md-regular" style="color: var(--ubits-accent-brand);">Ocultar</span>';
-            } else {
-                content.style.display = 'none';
-                button.innerHTML = '<i class="far fa-chevron-down" id="tech-docs-chevron" style="color: var(--ubits-accent-brand);"></i> <span class="ubits-body-md-regular" style="color: var(--ubits-accent-brand);">Mostrar</span>';
-            }
-        }
+        
 
         function copyPrompt(promptId) {
             var el = document.getElementById(promptId);

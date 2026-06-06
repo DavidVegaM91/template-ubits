@@ -404,110 +404,7 @@
                         </div>
                     </div>
 
-                    <!-- Documentación técnica (sección colapsable) -->
-                    <div style="background: var(--ubits-bg-1); border-radius: var(--border-radius-lg); margin-bottom: 40px; overflow: hidden;">
-                        <div style="padding: 32px; text-align: center; border-bottom: 1px solid var(--ubits-border-1);">
-                            <h2 class="ubits-heading-h2" style="margin-bottom: 0; color: var(--ubits-fg-1-high);">
-                                <i class="far fa-code" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
-                                Documentación técnica
-                            </h2>
-                            <p class="ubits-body-md-regular" style="margin-top: 16px; color: var(--ubits-fg-1-medium);">
-                                Requisitos, código de implementación y notas técnicas del componente Header Product.
-                            </p>
-                        </div>
-                        <div style="background: var(--ubits-bg-2); padding: 20px; text-align: center; cursor: pointer;" onclick="toggleTechnicalDocs()">
-                            <span class="ubits-body-md-regular" style="color: var(--ubits-accent-brand); display: flex; align-items: center; justify-content: center; gap: 8px;">
-                                <i class="far fa-chevron-down" id="tech-docs-chevron" style="transition: transform 0.3s ease;"></i>
-                                Mostrar
-                            </span>
-                        </div>
-                        <div id="technical-docs-content" style="display: none; padding: 0;">
-                            <!-- Requisitos obligatorios -->
-                            <div style="padding: 32px; border-bottom: 1px solid var(--ubits-border-1);">
-                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;">
-                                    <h2 class="ubits-heading-h2" style="margin: 0; color: var(--ubits-fg-1-high);">
-                                        <i class="far fa-check-circle" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
-                                        Requisitos obligatorios
-                                    </h2>
-                                </div>
-                                <ul style="list-style: none; padding: 0; margin: 0;">
-                                    <li style="margin-bottom: 12px; display: flex; align-items: flex-start; gap: var(--gap-md);">
-                                        <i class="far fa-check" style="color: var(--ubits-accent-brand); margin-top: 4px;"></i>
-                                        <span class="ubits-body-md-regular">CSS: <code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: var(--border-radius-xs); font-family: 'Courier New', monospace;">&lt;link rel="stylesheet" href="../../components/header-product.css"&gt;</code></span>
-                                    </li>
-                                    <li style="margin-bottom: 12px; display: flex; align-items: flex-start; gap: var(--gap-md);">
-                                        <i class="far fa-check" style="color: var(--ubits-accent-brand); margin-top: 4px;"></i>
-                                        <span class="ubits-body-md-regular">JavaScript: <code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: var(--border-radius-xs); font-family: 'Courier New', monospace;">&lt;script src="../../components/header-product.js"&gt;&lt;/script&gt;</code></span>
-                                    </li>
-                                    <li style="margin-bottom: 12px; display: flex; align-items: flex-start; gap: var(--gap-md);">
-                                        <i class="far fa-check" style="color: var(--ubits-accent-brand); margin-top: 4px;"></i>
-                                        <span class="ubits-body-md-regular">Componentes dependientes: Button, IA-Button (para el botón de IA)</span>
-                                    </li>
-                                    <li style="margin-bottom: 12px; display: flex; align-items: flex-start; gap: var(--gap-md);">
-                                        <i class="far fa-check" style="color: var(--ubits-accent-brand); margin-top: 4px;"></i>
-                                        <span class="ubits-body-md-regular">FontAwesome: <code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: var(--border-radius-xs); font-family: 'Courier New', monospace;">&lt;link rel="stylesheet" href="../../general-styles/fontawesome-icons.css"&gt;</code></span>
-                                    </li>
-                                </ul>
-                            </div>
-                            <!-- Cómo implementar -->
-                            <div style="padding: 32px; border-bottom: 1px solid var(--ubits-border-1);">
-                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;">
-                                    <h2 class="ubits-heading-h2" style="margin: 0; color: var(--ubits-fg-1-high);">
-                                        <i class="far fa-code-branch" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
-                                        Cómo implementar
-                                    </h2>
-                                    <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('header-product-implementation-code')">
-                                        <i class="far fa-copy"></i>
-                                        <span>Copiar</span>
-                                    </button>
-                                </div>
-                                <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm);">
-                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); overflow-x: auto; white-space: pre-wrap;"><code id="header-product-implementation-code">&lt;!-- Contenedor --&gt;
-&lt;div id="header-product-container"&gt;&lt;/div&gt;
-
-&lt;!-- CSS (en &lt;head&gt;) --&gt;
-&lt;link rel="stylesheet" href="../../components/header-product.css"&gt;
-&lt;link rel="stylesheet" href="../../components/button.css"&gt;
-&lt;link rel="stylesheet" href="../../components/ia-button.css"&gt;
-&lt;link rel="stylesheet" href="../../general-styles/fontawesome-icons.css"&gt;
-
-&lt;!-- JavaScript --&gt;
-&lt;script src="../../components/header-product.js"&gt;&lt;/script&gt;
-&lt;script&gt;
-    loadHeaderProduct('header-product-container', {
-        productName: 'Name product',
-        breadcrumbItems: [
-            { text: 'Default', active: false },
-            { text: 'Active', active: true }
-        ],
-    backButton: { onClick: function() { window.history.back(); } },
-    infoButton: { onClick: function() { console.log('Info'); } },
-    aiButton: { text: 'AI', onClick: function() {} },
-    secondaryButtons: [{ text: 'Button', icon: 'fa-th', onClick: function() {} }],
-    primaryButton: { text: 'Primary', icon: 'fa-th', onClick: function() {} },
-    menuButton: { onClick: function() {} }
-    });
-&lt;/script&gt;</code></pre>
-                        </div>
-                    </div>
-                            <!-- Alineación de acciones -->
-                            <div style="padding: 32px;">
-                                <h2 class="ubits-heading-h2" style="margin-bottom: 16px; color: var(--ubits-fg-1-high);">
-                                    <i class="far fa-align-right" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
-                                    Alineación de acciones (header sin título ni flecha atrás)
-                        </h2>
-                                <p class="ubits-body-md-regular" style="color: var(--ubits-fg-1-medium); margin-bottom: 12px;">
-                                    En muchas páginas el header se usa sin nombre de producto y sin botón atrás (ocultando <code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: var(--border-radius-xs);">.ubits-header-product__product-info</code> con CSS). En ese caso las acciones deben seguir siempre a la <strong>derecha</strong>.
-                                </p>
-                                <p class="ubits-body-md-regular" style="color: var(--ubits-fg-1-medium); margin-bottom: 12px;">
-                                    <strong>Por qué:</strong> <code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: var(--border-radius-xs);">product-info</code> tiene <code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: var(--border-radius-xs);">flex: 1</code>. Al ocultarlo, la fila solo tiene <code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: var(--border-radius-xs);">__actions</code> y sin más reglas quedaría a la izquierda.
-                                </p>
-                                <p class="ubits-body-md-regular" style="color: var(--ubits-fg-1-medium); margin-bottom: 0;">
-                                    <strong>Solución:</strong> En <code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: var(--border-radius-xs);">header-product.css</code>, <code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: var(--border-radius-xs);">.ubits-header-product__actions</code> usa <code style="background: var(--ubits-bg-2); padding: 2px 6px; border-radius: var(--border-radius-xs);">margin-left: auto</code>, así las acciones quedan siempre a la derecha. No hace falta añadir estilos en la página.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
+                    
                 </div>
             </div>
             </div>
@@ -528,20 +425,7 @@
     <script src="../../docs/docs-sidebar.js"></script>
     <script src="../../script.js"></script>
     <script>
-        function toggleTechnicalDocs() {
-            var content = document.getElementById('technical-docs-content');
-            var isHidden = content.style.display === 'none' || !content.style.display;
-            content.style.display = isHidden ? 'block' : 'none';
-            var trigger = content.previousElementSibling;
-            if (trigger) {
-                var span = trigger.querySelector('span');
-                if (span) {
-                    span.innerHTML = isHidden
-                        ? '<i class="far fa-chevron-up" id="tech-docs-chevron" style="transition: transform 0.3s ease;"></i>Ocultar'
-                        : '<i class="far fa-chevron-down" id="tech-docs-chevron" style="transition: transform 0.3s ease;"></i>Mostrar';
-                }
-            }
-        }
+        
         function copyPrompt(promptId) {
             var el = document.getElementById(promptId);
             if (!el) return;

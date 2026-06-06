@@ -105,7 +105,7 @@
                                 Prompts útiles
                             </h2>
                             <p class="ubits-body-md-regular" style="margin-bottom: 24px; color: var(--ubits-fg-1-medium);">
-                                Copia el texto y sustituye lo que va entre corchetes. El orden de estilos y scripts está en la <strong>documentación técnica</strong> al final de la página.
+                                Copia el texto y sustituye lo que va entre corchetes. El orden de estilos y scripts está en el <strong>README.md</strong> del repositorio.
                             </p>
                             <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
                                 <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
@@ -118,58 +118,7 @@
                             </div>
                         </div>
 
-                        <div style="background: var(--ubits-bg-1); border-radius: var(--border-radius-lg); margin-bottom: 40px; overflow: hidden;">
-                            <div style="padding: 32px; text-align: center; border-bottom: 1px solid var(--ubits-border-1);">
-                                <h2 class="ubits-heading-h2" style="margin-bottom: 0; color: var(--ubits-fg-1-high);">
-                                    <i class="far fa-code" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
-                                    Documentación técnica
-                                </h2>
-                                <p class="ubits-body-md-regular" style="margin-top: 16px; color: var(--ubits-fg-1-medium);">Estructura, API y eventos.</p>
-                            </div>
-                            <div style="background: var(--ubits-bg-2); padding: 20px; text-align: center; cursor: pointer;" onclick="toggleTechnicalDocs()">
-                                <span class="ubits-body-md-regular" style="color: var(--ubits-accent-brand); display: flex; align-items: center; justify-content: center; gap: 8px;">
-                                    <i class="far fa-chevron-down"></i> Mostrar
-                                </span>
-                            </div>
-                            <div id="technical-docs-content" style="display: none; padding: 0;">
-                                <div style="padding: 32px; border-bottom: 1px solid var(--ubits-border-1);">
-                                    <div style="display: flex; justify-content: space-between; margin-bottom: 24px;">
-                                        <h2 class="ubits-heading-h2" style="margin: 0;">Estructura y API</h2>
-                                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('ic-tech')"><i class="far fa-copy"></i><span>Copiar</span></button>
-                                    </div>
-                                    <pre style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm); overflow-x: auto;"><code id="ic-tech" class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Contenedor: .ubits-indice-creator
-Tarjeta interruptor: .ubits-indice-creator__toggle-card (label + .ubits-switch)
-Cuerpo: .ubits-indice-creator__body
-  · Con secciones: .ubits-indice-creator__index-wrap &gt; .ubits-seccion-creator-index … + .ubits-indice-creator__add-section &gt; botón UBITS .ubits-indice-creator__add-section-btn (terciario, sm, ancho completo)
-  · Sin secciones: .ubits-indice-creator__single-wrap &gt; .ubits-seccion-creator__section--no-header (sin cabecera; solo páginas + «Añadir página»)
-
-indiceCreatorHtml({
-  sectionsEnabled: true|false,  // false por defecto en producto; true = varias secciones + «Añadir sección»
-  toggleId?, toggleLabel?,
-  sections?, indexOpts?,        // modo secciones → seccionCreatorIndexHtml
-  pages?, singleSection?, singleSectionKey?, addSectionButtonId?, addPageLabel?
-})
-
-initIndiceCreator(rootSelector | elemento) — delega initSeccionCreator; cablea toggle y «Añadir sección»
-
-Eventos:
-  ubits-indice-creator-sections-toggle — detail: { sectionsEnabled, root }
-  ubits-indice-creator-add-section — detail: { root }
-(Reutiliza ubits-seccion-creator-* y ubits-paginas-creator-* dentro del bloque)</code></pre>
-                                </div>
-                                <div style="padding: 32px;">
-                                    <div style="display: flex; justify-content: space-between; margin-bottom: 16px;">
-                                        <h2 class="ubits-heading-h2" style="margin: 0;">Requisitos</h2>
-                                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('ic-req')"><i class="far fa-copy"></i><span>Copiar</span></button>
-                                    </div>
-                                    <pre style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm); overflow-x: auto;"><code id="ic-req" class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">CSS: switch.css, button.css, dropdown-menu.css, paginas-creator.css, seccion-creator.css, indice-creator.css (+ colores, tipografía, fontawesome)
-JS (orden): dropdown-menu.js → tooltip.js → paginas-creator.js → seccion-creator.js → indice-creator.js</code></pre>
-                                    <p class="ubits-body-sm-regular" style="margin-top: var(--gap-lg); color: var(--ubits-fg-1-medium); line-height: 1.6;">
-                                        Referencia visual para diseño: biblioteca Learn-Components en Figma (pantalla Índice Creator).
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
+                        
                     </div>
                 </div>
             </div>
@@ -289,17 +238,7 @@ JS (orden): dropdown-menu.js → tooltip.js → paginas-creator.js → seccion-c
             });
         });
 
-        function toggleTechnicalDocs() {
-            var content = document.getElementById('technical-docs-content');
-            var open = content.style.display === 'none' || !content.style.display;
-            content.style.display = open ? 'block' : 'none';
-            var trigger = content.previousElementSibling;
-            if (trigger && trigger.querySelector('span')) {
-                trigger.querySelector('span').innerHTML = open
-                    ? '<i class="far fa-chevron-up"></i> Ocultar'
-                    : '<i class="far fa-chevron-down"></i> Mostrar';
-            }
-        }
+        
 
         function copyPrompt(id) {
             var t = document.getElementById(id);

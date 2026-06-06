@@ -57,7 +57,7 @@
                                 Preview del componente
                             </h2>
                             <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6;">
-                                Cambia la variante en el desplegable para ver cada tipo de formulario. El bloque de abajo reproduce el aspecto en el creador (fondo oscuro). Los detalles de scripts y campos están en la documentación técnica.
+                                Cambia la variante en el desplegable para ver cada tipo de formulario. El bloque de abajo reproduce el aspecto en el creador (fondo oscuro). Los detalles de scripts y campos están en el README.md del repositorio.
                             </p>
                             <div style="margin-bottom: 20px; max-width: 420px;">
                                 <div id="rb-doc-variant-input"></div>
@@ -102,7 +102,7 @@
                                 Prompts útiles
                             </h2>
                             <p class="ubits-body-md-regular" style="margin-bottom: 24px; color: var(--ubits-fg-1-medium);">
-                                Copia el texto y adapta lo que va entre corchetes. El orden de CSS y JS está en la <strong>documentación técnica</strong> al final de la página.
+                                Copia el texto y adapta lo que va entre corchetes. El orden de CSS y JS está en el <strong>README.md</strong> del repositorio.
                             </p>
                             <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px;">
                                 <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
@@ -115,58 +115,7 @@
                             </div>
                         </div>
 
-                        <div style="background: var(--ubits-bg-1); border-radius: var(--border-radius-lg); margin-bottom: 40px; overflow: hidden;">
-                            <div style="padding: 32px; text-align: center; border-bottom: 1px solid var(--ubits-border-1);">
-                                <h2 class="ubits-heading-h2" style="margin-bottom: 0; color: var(--ubits-fg-1-high);">
-                                    <i class="far fa-code" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
-                                    Documentación técnica
-                                </h2>
-                                <p class="ubits-body-md-regular" style="margin-top: 16px; color: var(--ubits-fg-1-medium);">Estructura, clases y API.</p>
-                            </div>
-                            <div style="background: var(--ubits-bg-2); padding: 20px; text-align: center; cursor: pointer;" onclick="toggleTechnicalDocs()">
-                                <span class="ubits-body-md-regular" style="color: var(--ubits-accent-brand); display: flex; align-items: center; justify-content: center; gap: 8px;">
-                                    <i class="far fa-chevron-down"></i> Mostrar
-                                </span>
-                            </div>
-                            <div id="technical-docs-content" style="display: none; padding: 0;">
-                                <div style="padding: 32px; border-bottom: 1px solid var(--ubits-border-1);">
-                                    <div style="display: flex; justify-content: space-between; margin-bottom: 24px;">
-                                        <h2 class="ubits-heading-h2" style="margin: 0;">Requisitos</h2>
-                                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('rb-tech-req')"><i class="far fa-copy"></i><span>Copiar</span></button>
-                                    </div>
-                                    <pre style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm); overflow-x: auto;"><code id="rb-tech-req" class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">CSS: ubits-colors, styles, fontawesome-icons, ubits-typography, button, toast, dropdown-menu, input, file-upload, badge-tag, ubits-ia-appearance (distintivo IA), tooltip, resources-card, resources-block
-JS (orden): dropdown-menu.js → input.js → file-upload.js → tooltip.js → resources-card.js → resources-block.js
-
-resourcesBlockHtml({ variant?, className? })
-initResourcesBlockFields(contenedorRaíz) — tras innerHTML del bloque (monta createInput sm en data-rb-slot; createFileUpload en data-rb-slot pdf-upload; cablea tooltip/stopPropagation en distintivos IA). PDF: evento ubits-resources-block-pdf-change (detail: file, containerId).
-
-variant: default | default-error | video-empty | video-filled | video-error |
-  pdf-empty | pdf-error | mp4-empty | mp4-error |
-  scorm-empty | scorm-error |
-  embed-empty | embed-filled | embed-error | embed-blocked
-
-default-error — mismo HTML que default; borde error (página sin recurso al avanzar de paso)
-
-RESOURCES_BLOCK_SELECTOR_TYPES — ocho tipos del selector (default)
-RESOURCES_BLOCK_VARIANTS_ORDER — lista de variantes para UI</code></pre>
-                                </div>
-                                <div style="padding: 32px;">
-                                    <div style="display: flex; justify-content: space-between; margin-bottom: 16px;">
-                                        <h2 class="ubits-heading-h2" style="margin: 0;">Clases principales</h2>
-                                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('rb-tech-cls')"><i class="far fa-copy"></i><span>Copiar</span></button>
-                                    </div>
-                                    <pre style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm); overflow-x: auto;"><code id="rb-tech-cls" class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">.ubits-resources-block — ancho máx. 803px
-.ubits-resources-block--default — selector + título + .ubits-resources-block__grid
-.ubits-resources-block--default-error — modificador con default (borde --ubits-feedback-accent-error)
-.ubits-resources-block--stack — superficie + cancelar alineados a la derecha
-.ubits-resources-block__surface — min-height 308px, padding 40px, radio lg
-.ubits-resources-block__surface--embed — variante embebido / bloqueado
-.ubits-resources-block__field-stack, __field-inline, __input-cell, __input-mount, __embed-stack, __upload, __blocked
-Cancelar: ubits-button--error-secondary ubits-button--sm
-Campos: createInput size sm; helper con clases ubits-input-helper; botones sm alineados en __field-inline</code></pre>
-                                </div>
-                            </div>
-                        </div>
+                        
                     </div>
                 </div>
             </div>
@@ -246,17 +195,7 @@ Campos: createInput size sm; helper con clases ubits-input-helper; botones sm al
             rbRender('default');
         });
 
-        function toggleTechnicalDocs() {
-            var content = document.getElementById('technical-docs-content');
-            var open = content.style.display === 'none' || !content.style.display;
-            content.style.display = open ? 'block' : 'none';
-            var trigger = content.previousElementSibling;
-            if (trigger && trigger.querySelector('span')) {
-                trigger.querySelector('span').innerHTML = open
-                    ? '<i class="far fa-chevron-up"></i> Ocultar'
-                    : '<i class="far fa-chevron-down"></i> Mostrar';
-            }
-        }
+        
 
         function copyPrompt(id) {
             var t = document.getElementById(id);

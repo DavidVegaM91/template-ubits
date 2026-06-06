@@ -111,7 +111,7 @@
                                 Prompts útiles
                             </h2>
                             <p class="ubits-body-md-regular" style="margin-bottom: 24px; color: var(--ubits-fg-1-medium);">
-                                Copia el texto y adapta lo que va entre corchetes. Los imports están en la <strong>documentación técnica</strong> al final de la página.
+                                Copia el texto y adapta lo que va entre corchetes. Los imports están en el <strong>README.md</strong> del repositorio.
                             </p>
                             <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
                                 <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
@@ -124,80 +124,7 @@
                             </div>
                         </div>
 
-                        <div style="background: var(--ubits-bg-1); border-radius: var(--border-radius-lg); margin-bottom: 40px; overflow: hidden;">
-                            <div style="padding: 32px; text-align: center; border-bottom: 1px solid var(--ubits-border-1);">
-                                <h2 class="ubits-heading-h2" style="margin-bottom: 0; color: var(--ubits-fg-1-high);">
-                                    <i class="far fa-code" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
-                                    Documentación técnica
-                                </h2>
-                                <p class="ubits-body-md-regular" style="margin-top: 16px; color: var(--ubits-fg-1-medium);">Estructura, clases y requisitos.</p>
-                            </div>
-                            <div style="background: var(--ubits-bg-2); padding: 20px; text-align: center; cursor: pointer;" onclick="toggleTechnicalDocs()">
-                                <span class="ubits-body-md-regular" style="color: var(--ubits-accent-brand); display: flex; align-items: center; justify-content: center; gap: 8px;">
-                                    <i class="far fa-chevron-down"></i> Mostrar
-                                </span>
-                            </div>
-                            <div id="technical-docs-content" style="display: none; padding: 0;">
-                                <div style="padding: 32px; border-bottom: 1px solid var(--ubits-border-1);">
-                                    <div style="display: flex; justify-content: space-between; margin-bottom: 24px;">
-                                        <h2 class="ubits-heading-h2" style="margin: 0;">Estructura HTML</h2>
-                                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('pc-tech-html')"><i class="far fa-copy"></i><span>Copiar</span></button>
-                                    </div>
-                                    <pre style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm); overflow-x: auto;"><code id="pc-tech-html" class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">&lt;div class="ubits-paginas-creator" role="list"&gt;
-  &lt;div class="ubits-paginas-creator__item is-active" role="listitem" data-paginas-creator-key="id-pagina"&gt;
-    &lt;div tabindex="0" class="ubits-paginas-creator__row" aria-current="true" aria-label="…"&gt;
-      &lt;span class="ubits-paginas-creator__rail" aria-hidden="true"&gt;&lt;/span&gt;
-      &lt;span class="ubits-paginas-creator__icon-wrap"&gt;&lt;i class="far fa-file"&gt;&lt;/i&gt;&lt;/span&gt;
-      &lt;div class="ubits-paginas-creator__label-wrap"&gt;
-        &lt;span class="ubits-paginas-creator__label ubits-body-sm-semibold"&gt;Título&lt;/span&gt;
-        &lt;button type="button" class="… ubits-paginas-creator__edit-name-btn" data-tooltip="Cambiar nombre"&gt;…&lt;/button&gt;
-      &lt;/div&gt;
-    &lt;/div&gt;
-    &lt;button type="button" class="… ubits-paginas-creator__menu" aria-label="Más acciones"&gt;⋮&lt;/button&gt;
-  &lt;/div&gt;
-&lt;/div&gt;</code></pre>
-                                </div>
-                                <div style="padding: 32px; border-bottom: 1px solid var(--ubits-border-1);">
-                                    <div style="display: flex; justify-content: space-between; margin-bottom: 24px;">
-                                        <h2 class="ubits-heading-h2" style="margin: 0;">Clases y estados</h2>
-                                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('pc-tech-classes')"><i class="far fa-copy"></i><span>Copiar</span></button>
-                                    </div>
-                                    <pre style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm); overflow-x: auto;"><code id="pc-tech-classes" class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Contenedor: .ubits-paginas-creator (role="list")
-Ítem: .ubits-paginas-creator__item
-  .is-active     → fila seleccionada: franja, texto marca, menú visible
-  .is-force-hover → solo demo: mismo aspecto que :hover sin puntero
-  .ubits-paginas-creator__item--error → validación (ej. página sin recursos al paso Certificado): borde 2px --ubits-feedback-accent-error (box-shadow inset)
-Fila clicable: .ubits-paginas-creator__row (div; 1 clic = activar; 2 clics en título o botón lápiz = editar)
-Franja: .ubits-paginas-creator__rail (ancho --space-1 siempre; inactiva transparente; activa marca; alto = fila)
-Icono: .ubits-paginas-creator__icon-wrap 24×24 (--size-2xl) &gt; i.far.fa-*
-Título: .label-wrap &gt; .label + .edit-name-btn (tooltip «Cambiar nombre»)
-Menú: .ubits-paginas-creator__menu (botón UBITS tertiary sm icon-only)
-     → visible al hover de la fila, con foco (teclado) y cuando está activa
-     → dropdown UBITS: Cambiar nombre (edición inline), Mover arriba/abajo, Eliminar
-data-paginas-creator-key en el ítem (opcional) → llega en el evento como pageKey</code></pre>
-                                </div>
-                                <div style="padding: 32px;">
-                                    <div style="display: flex; justify-content: space-between; margin-bottom: 16px;">
-                                        <h2 class="ubits-heading-h2" style="margin: 0;">Requisitos e implementación</h2>
-                                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('pc-tech-req')"><i class="far fa-copy"></i><span>Copiar</span></button>
-                                    </div>
-                                    <pre style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm); overflow-x: auto;"><code id="pc-tech-req" class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">CSS: general-styles/ubits-colors.css, general-styles/ubits-typography.css,
-     general-styles/fontawesome-icons.css, components/button.css,
-     components/dropdown-menu.css, components/paginas-creator.css
-JS: components/dropdown-menu.js, components/tooltip.js (antes de paginas-creator.js),
-     components/paginas-creator.js
-     paginasCreatorIconClass('video') → clase del &lt;i&gt;
-     paginasCreatorItemHtml({ label, tipo, active, pageKey })
-     initPaginasCreator('#contenedor') — menú ⋮, activación, edición inline, tooltips
-Eventos: ubits-paginas-creator-action (menú ⋮; «Cambiar nombre» no emite action, abre edición inline)
-     ubits-paginas-creator-activate (fila activa)
-     ubits-paginas-creator-label-save (nombre guardado)
-     detail: { action, pageKey, label, anchor, item } según evento
-Tipos reconocidos en JS: blank-page, video, texto, pdf, encuesta,
-     embebido, scorm, evaluacion, fin</code></pre>
-                                </div>
-                            </div>
-                        </div>
+                        
                     </div>
                 </div>
             </div>
@@ -295,17 +222,7 @@ Tipos reconocidos en JS: blank-page, video, texto, pdf, encuesta,
             });
         });
 
-        function toggleTechnicalDocs() {
-            var content = document.getElementById('technical-docs-content');
-            var open = content.style.display === 'none' || !content.style.display;
-            content.style.display = open ? 'block' : 'none';
-            var trigger = content.previousElementSibling;
-            if (trigger && trigger.querySelector('span')) {
-                trigger.querySelector('span').innerHTML = open
-                    ? '<i class="far fa-chevron-up"></i> Ocultar'
-                    : '<i class="far fa-chevron-down"></i> Mostrar';
-            }
-        }
+        
 
         function copyPrompt(id) {
             var t = document.getElementById(id);

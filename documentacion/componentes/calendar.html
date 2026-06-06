@@ -128,48 +128,7 @@
                             </div>
                         </div>
 
-                        <!-- Documentación técnica -->
-                        <div style="background: var(--ubits-bg-1); border-radius: var(--border-radius-lg); margin-bottom: 40px; overflow: hidden;">
-                            <div style="padding: 32px; text-align: center; border-bottom: 1px solid var(--ubits-border-1);">
-                                <h2 class="ubits-heading-h2" style="margin-bottom: 0; color: var(--ubits-fg-1-high);">
-                                    <i class="far fa-code" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
-                                    Documentación técnica
-                                </h2>
-                            </div>
-                            <div id="calendar-docs-toggle" style="background: var(--ubits-bg-2); padding: 20px; text-align: center; cursor: pointer;">
-                                <span class="ubits-body-md-regular" style="color: var(--ubits-accent-brand); display: flex; align-items: center; justify-content: center; gap: 8px;">
-                                    <i class="far fa-chevron-down" id="calendar-docs-chevron"></i>
-                                    <span id="calendar-docs-toggle-text">Mostrar</span>
-                                </span>
-                            </div>
-                            <div id="calendar-technical-docs" style="display: none; padding: 32px; border-top: 1px solid var(--ubits-border-1);">
-                                <div style="margin-bottom: 24px;">
-                                    <h3 class="ubits-body-md-bold" style="margin-bottom: 12px; color: var(--ubits-fg-1-high);">Uso básico</h3>
-                                    <pre style="margin: 0; padding: 16px; background: var(--ubits-bg-2); border-radius: var(--border-radius-sm); overflow-x: auto; font-size: var(--font-size-sm); color: var(--ubits-fg-1-medium); text-align: left;"><code>&lt;div id="calendar-container"&gt;&lt;/div&gt;
-&lt;link rel="stylesheet" href="components/input.css"&gt;
-&lt;link rel="stylesheet" href="components/calendar.css"&gt;
-&lt;script src="components/input.js"&gt;&lt;/script&gt;
-&lt;script src="components/calendar.js"&gt;&lt;/script&gt;
-&lt;script&gt;
-createCalendar({
-  containerId: 'calendar-container',
-  onDateSelect: function(dateStr) { console.log(dateStr); }
-});
-&lt;/script&gt;</code></pre>
-                                </div>
-                                <div style="margin-bottom: 24px;">
-                                    <h3 class="ubits-body-md-bold" style="margin-bottom: 12px; color: var(--ubits-fg-1-high);">API: createCalendar(options)</h3>
-                                    <p class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); margin-bottom: 8px;"><strong>containerId</strong> (string, requerido): ID del elemento donde se renderiza el calendario.</p>
-                                    <p class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); margin-bottom: 8px;"><strong>initialDate</strong> (Date | string dd/mm/yyyy, opcional): Mes y año a mostrar. Por defecto: hoy.</p>
-                                    <p class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); margin-bottom: 8px;"><strong>selectedDate</strong> (Date | string dd/mm/yyyy, opcional): Día seleccionado (resaltado).</p>
-                                    <p class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);"><strong>onDateSelect</strong> (function(dateStr), opcional): Callback al hacer clic en un día; recibe la fecha en formato dd/mm/yyyy.</p>
-                                </div>
-                                <div>
-                                    <h3 class="ubits-body-md-bold" style="margin-bottom: 12px; color: var(--ubits-fg-1-high);">Dependencias</h3>
-                                    <p class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">El calendario usa <strong>createInput</strong> (input.js) para los selectores de mes y año. Siempre importa input.js e input.css antes de calendar.js y calendar.css.</p>
-                                </div>
-                            </div>
-                        </div>
+                        
                     </div>
                 </div>
             </div>
@@ -221,20 +180,6 @@ createCalendar({
                 if (typeof showToast === 'function') showToast('success', 'Prompt copiado', { containerId: 'ubits-toast-container', duration: 2500 });
             }
         }
-        document.getElementById('calendar-docs-toggle').addEventListener('click', function() {
-            var content = document.getElementById('calendar-technical-docs');
-            var chevron = document.getElementById('calendar-docs-chevron');
-            var textEl = document.getElementById('calendar-docs-toggle-text');
-            if (content.style.display === 'none') {
-                content.style.display = 'block';
-                chevron.style.transform = 'rotate(180deg)';
-                if (textEl) textEl.textContent = 'Ocultar';
-            } else {
-                content.style.display = 'none';
-                chevron.style.transform = 'rotate(0deg)';
-                if (textEl) textEl.textContent = 'Mostrar';
-            }
-        });
     </script>
 </body>
 </html>

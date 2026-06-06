@@ -140,116 +140,7 @@
                             </div>
                         </div>
 
-                        <!-- Documentación técnica -->
-                        <div style="background: var(--ubits-bg-1); border-radius: 16px; margin-bottom: 40px; overflow: hidden;">
-                            <div style="padding: 32px; text-align: center; border-bottom: 1px solid var(--ubits-border-1);">
-                                <h2 class="ubits-heading-h2" style="margin-bottom: 0; color: var(--ubits-fg-1-high);">
-                                    <i class="far fa-code" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
-                                    Documentación técnica
-                                </h2>
-                                <p class="ubits-body-md-regular" style="margin-top: 16px; color: var(--ubits-fg-1-medium);">
-                                    Información técnica para implementar el componente Drawer.
-                                </p>
-                            </div>
-                            <div style="background: var(--ubits-bg-2); padding: 20px; text-align: center; cursor: pointer;" onclick="toggleTechnicalDocs()">
-                                <span class="ubits-body-md-regular" style="color: var(--ubits-accent-brand); display: flex; align-items: center; justify-content: center; gap: 8px;">
-                                    <i class="far fa-chevron-down" id="tech-docs-chevron" style="transition: transform 0.3s ease;"></i>
-                                    Mostrar
-                                </span>
-                            </div>
-                            <div id="technical-docs-content" style="display: none; padding: 0;">
-                                <div style="padding: 32px; border-bottom: 1px solid var(--ubits-border-1);">
-                                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;">
-                                        <h2 class="ubits-heading-h2" style="margin: 0; color: var(--ubits-fg-1-high);">
-                                            <i class="far fa-sitemap" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
-                                            Estructura del componente
-                                        </h2>
-                                        <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('drawer-structure-code')">
-                                            <i class="far fa-copy"></i>
-                                            <span>Copiar</span>
-                                        </button>
-                                    </div>
-                                    <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
-                                        <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code id="drawer-structure-code">&lt;div class="ubits-drawer-overlay" id="mi-drawer-overlay" style="display: none;"&gt;
-  &lt;div class="ubits-drawer-content ubits-drawer-content--md"&gt;
-    &lt;div class="ubits-drawer-header"&gt;
-      &lt;span class="ubits-drawer-title ubits-body-md-bold"&gt;Título&lt;/span&gt;
-      &lt;button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" aria-label="Cerrar"&gt;
-        &lt;i class="far fa-times"&gt;&lt;/i&gt;
-      &lt;/button&gt;
-    &lt;/div&gt;
-    &lt;div class="ubits-drawer-body"&gt;
-      &lt;!-- Contenido --&gt;
-    &lt;/div&gt;
-    &lt;div class="ubits-drawer-footer"&gt;
-      &lt;button class="ubits-button ubits-button--secondary ubits-button--md"&gt;Cancelar&lt;/button&gt;
-      &lt;button class="ubits-button ubits-button--primary ubits-button--md"&gt;Aplicar&lt;/button&gt;
-    &lt;/div&gt;
-  &lt;/div&gt;
-&lt;/div&gt;</code></pre>
-                                    </div>
-                                </div>
-                                <div style="padding: 32px; border-bottom: 1px solid var(--ubits-border-1);">
-                                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;">
-                                        <h2 class="ubits-heading-h2" style="margin: 0; color: var(--ubits-fg-1-high);">
-                                            <i class="far fa-tags" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
-                                            Clases disponibles
-                                        </h2>
-                                        <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('drawer-classes-code')">
-                                            <i class="far fa-copy"></i>
-                                            <span>Copiar</span>
-                                        </button>
-                                    </div>
-                                    <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
-                                        <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code id="drawer-classes-code">.ubits-drawer-overlay   /* Overlay pantalla completa, fondo rgba(0,0,0,0.7), flex justify-end, z-index 1000 */
-.ubits-drawer-content   /* Panel: ancho máx. 480px por defecto, alto 100%, borde izquierdo, sombra */
-.ubits-drawer-content--xs  /* Ancho máx. 320px (desktop); 100% en móvil */
-.ubits-drawer-content--sm  /* Ancho máx. 440px */
-.ubits-drawer-content--md  /* Ancho máx. 800px */
-.ubits-drawer-content--lg  /* Ancho máx. 1200px */
-.ubits-drawer-content--full  /* 100% ancho y alto útil; sin borde izquierdo ni sombra lateral */
-.ubits-drawer-overlay--full  /* Overlay con justify stretch para que el panel llene el viewport */
-.ubits-drawer-header    /* Header: padding, border-bottom, título + botón cerrar */
-.ubits-drawer-title     /* Título: usar con ubits-body-md-bold */
-.ubits-drawer-body      /* Body: padding, overflow-y auto, flex 1 */
-.ubits-drawer-footer    /* Footer: padding, border-top, flex end, gap 12px */</code></pre>
-                                    </div>
-                                </div>
-                                <div style="padding: 32px;">
-                                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;">
-                                        <h2 class="ubits-heading-h2" style="margin: 0; color: var(--ubits-fg-1-high);">
-                                            <i class="far fa-code-branch" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
-                                            Cómo implementar
-                                        </h2>
-                                        <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('drawer-implementation-code')">
-                                            <i class="far fa-copy"></i>
-                                            <span>Copiar</span>
-                                        </button>
-                                    </div>
-                                    <div style="background: var(--ubits-bg-2); padding: 16px; border-radius: 8px; margin-bottom: 16px;">
-                                        <h3 class="ubits-body-md-bold" style="margin-bottom: 12px; color: var(--ubits-fg-1-high);">🔧 REQUISITOS:</h3>
-                                        <div class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); line-height: 1.5;">
-                                            <strong>CSS:</strong> <code>components/drawer.css</code>, <code>ubits-colors.css</code>, <code>ubits-typography.css</code>, <code>fontawesome-icons.css</code>, <code>components/button.css</code>.<br>
-                                            <strong>JavaScript:</strong> <code>components/drawer.js</code>. Proporciona <code>openDrawer()</code>, <code>closeDrawer()</code>, <code>showDrawer()</code>, <code>hideDrawer()</code>, <code>getDrawerHtml()</code>.
-                                        </div>
-                                    </div>
-                                    <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
-                                        <h3 class="ubits-body-md-bold" style="margin-bottom: 8px; color: var(--ubits-fg-1-high);">Inyectar con getDrawerHtml() (recomendado)</h3>
-                                        <p class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); margin-bottom: 12px;">Para páginas que ya tienen un contenedor de modales/drawers y muestran/ocultan por ID:</p>
-                                        <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code id="drawer-implementation-code">modalsContainer.innerHTML += getDrawerHtml({
-  overlayId: 'filtros-drawer-overlay',
-  title: 'Filtros',
-  bodyHtml: '&lt;div class="filtros-group"&gt;...&lt;/div&gt;',
-  footerHtml: '&lt;button class="ubits-button ubits-button--secondary ubits-button--md" id="filtros-limpiar"&gt;Limpiar&lt;/button&gt;&lt;button class="ubits-button ubits-button--primary ubits-button--md" id="filtros-aplicar"&gt;Aplicar&lt;/button&gt;',
-  size: 'md',
-  closeButtonId: 'filtros-drawer-close'
-});
-// Mostrar: document.getElementById('filtros-drawer-overlay').style.display = 'flex';
-// Cerrar: document.getElementById('filtros-drawer-overlay').style.display = 'none'; o closeDrawer('filtros-drawer-overlay');</code></pre>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        
                     </div>
                 </div>
             </div>
@@ -292,20 +183,7 @@
                 }
             });
         });
-        function toggleTechnicalDocs() {
-            var content = document.getElementById('technical-docs-content');
-            var chevron = document.getElementById('tech-docs-chevron');
-            var toggleText = chevron.parentElement;
-            if (content.style.display === 'none') {
-                content.style.display = 'block';
-                chevron.style.transform = 'rotate(180deg)';
-                toggleText.innerHTML = '<i class="far fa-chevron-up" id="tech-docs-chevron" style="transition: transform 0.3s ease;"></i>Ocultar';
-            } else {
-                content.style.display = 'none';
-                chevron.style.transform = 'rotate(0deg)';
-                toggleText.innerHTML = '<i class="far fa-chevron-down" id="tech-docs-chevron" style="transition: transform 0.3s ease;"></i>Mostrar';
-            }
-        }
+        
         function copyPrompt(promptId) {
             var el = document.getElementById(promptId);
             var text = el.textContent;

@@ -178,82 +178,7 @@
                         </div>
                     </div>
 
-                    <div style="background: var(--ubits-bg-1); border-radius: 16px; margin-bottom: 40px; overflow: hidden;">
-                        <div style="padding: 32px; text-align: center; border-bottom: 1px solid var(--ubits-border-1);">
-                            <h2 class="ubits-heading-h2" style="margin-bottom: 0; color: var(--ubits-fg-1-high);">
-                                <i class="far fa-code" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
-                                Documentación técnica
-                            </h2>
-                            <p class="ubits-body-md-regular" style="margin-top: 16px; color: var(--ubits-fg-1-medium);">
-                                Estructura HTML, API de JavaScript y requisitos de importación.
-                            </p>
-                        </div>
-                        <div style="background: var(--ubits-bg-2); padding: 20px; text-align: center; cursor: pointer;" onclick="toggleTechnicalDocs()">
-                            <span class="ubits-body-md-regular" style="color: var(--ubits-accent-brand); display: flex; align-items: center; justify-content: center; gap: 8px;">
-                                <i class="far fa-chevron-down" id="tech-docs-chevron" style="transition: transform 0.3s ease;"></i>
-                                Mostrar
-                            </span>
-                        </div>
-                        <div id="technical-docs-content" style="display: none; padding: 0;">
-                            <div style="padding: 32px; border-bottom: 1px solid var(--ubits-border-1);">
-                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;">
-                                    <h2 class="ubits-heading-h2" style="margin: 0; color: var(--ubits-fg-1-high);">
-                                        <i class="far fa-sitemap" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
-                                        Estructura del componente
-                                    </h2>
-                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('structure-code')"><i class="far fa-copy"></i><span>Copiar</span></button>
-                                </div>
-                                <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
-                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code id="structure-code">&lt;div class="ubits-popover ubits-popover--md ubits-popover--bottom ubits-popover--align-center" id="mi-popover" role="dialog" aria-labelledby="mi-popover-title"&gt;
-  &lt;div class="ubits-popover__surface"&gt;
-    &lt;div class="ubits-popover__header-row"&gt;
-      &lt;p class="ubits-body-md-semibold ubits-popover__title" id="mi-popover-title"&gt;Título&lt;/p&gt;
-      &lt;div class="ubits-popover__header-actions"&gt;
-        &lt;button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only ubits-popover__close-btn" aria-label="Cerrar" data-tooltip="Cerrar"&gt;
-          &lt;i class="far fa-times"&gt;&lt;/i&gt;
-        &lt;/button&gt;
-      &lt;/div&gt;
-    &lt;/div&gt;
-    &lt;p class="ubits-body-sm-regular ubits-popover__text"&gt;Cuerpo del mensaje.&lt;/p&gt;
-    &lt;div class="ubits-popover__actions"&gt;...&lt;/div&gt;
-    &lt;div class="ubits-popover__arrow" aria-hidden="true"&gt;&lt;/div&gt;
-  &lt;/div&gt;
-&lt;/div&gt;</code></pre>
-                                </div>
-                            </div>
-                            <div style="padding: 32px;">
-                                <h3 class="ubits-body-md-bold" style="margin-bottom: 12px; color: var(--ubits-fg-1-high);">Requisitos</h3>
-                                <ul class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); line-height: 1.6;">
-                                    <li><code>general-styles/ubits-colors.css</code>, <code>ubits-typography.css</code>, <code>styles.css</code></li>
-                                    <li><code>components/popover.css</code></li>
-                                    <li><code>components/popover.js</code> — para <code>openPopover</code> / <code>closePopover</code> / <code>updatePopoverPosition</code></li>
-                                    <li><code>components/button.css</code> + <code>fontawesome-icons.css</code> si usas botones en el pie</li>
-                                    <li><code>components/tooltip.css</code> + <code>components/tooltip.js</code> para tooltip del botón X (opcional)</li>
-                                </ul>
-                                <h3 class="ubits-body-md-bold" style="margin: 24px 0 12px; color: var(--ubits-fg-1-high);">API</h3>
-                                <div class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); line-height: 1.6;">
-                                    <p><strong>openPopover(options)</strong> — Crea el nodo (superficie <code>__surface</code> + <code>__arrow</code> si aplica), lo añade a <code>document.body</code>, posiciona y registra listeners. Opciones: <code>popoverId</code>, <code>anchorEl</code> (omitir para centrado), <code>placement</code>, <code>align</code> (como Tooltip), <code>noArrow</code> — <code>true</code> oculta la colita aunque haya ancla; sin ancla no hay flecha. Resto: <code>offset</code>, <code>title</code> o <code>titleRowHtml</code> (HTML completo del bloque de cabecera; si se usa, incluir <code>id="[popoverId]-title"</code> en el título para accesibilidad), <code>showCloseButton</code> (default <code>true</code>; X icon-only arriba derecha), <code>closeButtonTooltip</code>, <code>bodyHtml</code>/<code>bodyText</code>, <code>actionsStartHtml</code>, <code>actionsEndHtml</code>, <code>size</code>, <code>closeOnEscape</code>, <code>closeOnClickOutside</code>, <code>zIndex</code>, <code>ariaLabel</code>, <code>ariaModal</code>, <code>onClose</code>.</p>
-                                    <p><strong>closePopover(id)</strong> — Elimina el popover y ejecuta <code>onClose</code> si se definió.</p>
-                                    <p><strong>updatePopoverPosition(id)</strong> — Vuelve a calcular posición tras cambios de DOM o tamaño del ancla.</p>
-                                </div>
-                                <div style="margin-top: 24px; display: flex; justify-content: space-between; align-items: center;">
-                                    <span class="ubits-body-md-regular">Ejemplo mínimo (openPopover)</span>
-                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('implement-code')"><i class="far fa-copy"></i><span>Copiar</span></button>
-                                </div>
-                                <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px; margin-top: 12px;">
-                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="implement-code">openPopover({
-  popoverId: 'ayuda-filtro',
-  anchorEl: document.getElementById('btn-filtro'),
-  placement: 'bottom',
-  title: 'Filtros',
-  bodyText: 'Usa los filtros para acotar los resultados.',
-  showCloseButton: true,
-  actionsEndHtml: '&lt;button type="button" class="ubits-button ubits-button--primary ubits-button--sm" onclick="closePopover(\'ayuda-filtro\')"&gt;&lt;span&gt;Entendido&lt;/span&gt;&lt;/button&gt;'
-});</code></pre>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    
                 </div>
             </div>
         </div>
@@ -402,17 +327,7 @@
             });
         });
 
-        function toggleTechnicalDocs() {
-            var content = document.getElementById('technical-docs-content');
-            var button = document.querySelector('[onclick="toggleTechnicalDocs()"]');
-            if (content.style.display === 'none' || content.style.display === '') {
-                content.style.display = 'block';
-                button.innerHTML = '<i class="far fa-chevron-up" id="tech-docs-chevron" style="color: var(--ubits-accent-brand);"></i> <span class="ubits-body-md-regular" style="color: var(--ubits-accent-brand);">Ocultar</span>';
-            } else {
-                content.style.display = 'none';
-                button.innerHTML = '<i class="far fa-chevron-down" id="tech-docs-chevron" style="color: var(--ubits-accent-brand);"></i> <span class="ubits-body-md-regular" style="color: var(--ubits-accent-brand);">Mostrar</span>';
-            }
-        }
+        
 
         function copyPrompt(promptId) {
             var el = document.getElementById(promptId);

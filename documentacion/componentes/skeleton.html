@@ -137,47 +137,7 @@
                             </div>
                         </div>
 
-                        <div style="background: var(--ubits-bg-1); border-radius: var(--border-radius-lg); margin-bottom: 40px; overflow: hidden;">
-                            <div style="padding: 32px; text-align: center; border-bottom: 1px solid var(--ubits-border-1);">
-                                <h2 class="ubits-heading-h2" style="margin-bottom: 0; color: var(--ubits-fg-1-high);">
-                                    <i class="far fa-code" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
-                                    Documentación técnica
-                                </h2>
-                                <p class="ubits-body-md-regular" style="margin-top: 16px; color: var(--ubits-fg-1-medium);">
-                                    Clases, layout y helpers opcionales en skeleton.js.
-                                </p>
-                            </div>
-                            <div style="background: var(--ubits-bg-2); padding: 20px; text-align: center; cursor: pointer;" onclick="toggleTechnicalDocs()">
-                                <span class="ubits-body-md-regular" style="color: var(--ubits-accent-brand); display: flex; align-items: center; justify-content: center; gap: 8px;">
-                                    <i class="far fa-chevron-down" id="tech-docs-chevron" style="transition: transform 0.3s ease;"></i>
-                                    Mostrar
-                                </span>
-                            </div>
-                            <div id="technical-docs-content" style="display: none; padding: 0;">
-                                <div style="padding: 32px; border-bottom: 1px solid var(--ubits-border-1);">
-                                    <div style="display: flex; justify-content: flex-end; margin-bottom: 12px;">
-                                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('sk-classes')">
-                                            <i class="far fa-copy"></i>
-                                            <span>Copiar</span>
-                                        </button>
-                                    </div>
-                                    <pre style="margin: 0; font-family: monospace; font-size: var(--font-size-sm); line-height: 1.6; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code id="sk-classes">Base: .ubits-skeleton (+ ::after shimmer)
-Línea: .ubits-skeleton--line + .ubits-skeleton--sm | --md | --lg
-Formas: .ubits-skeleton--rect | --rounded | --circle
-Avatar: .ubits-skeleton--avatar-sm | --avatar-md | --avatar-lg
-Anchos línea: .ubits-skeleton--w-full | --w-11-12 | --w-3-4 | --w-2-3 | --w-1-2
-Layout: .ubits-skeleton-stack | .ubits-skeleton-row | .ubits-skeleton-row__main
-Tarjeta: .ubits-skeleton-card | .ubits-skeleton-card__media (16:9)
-Accesibilidad: aria-hidden="true" en piezas decorativas; aria-busy="true" en el contenedor que espera datos.</code></pre>
-                                </div>
-                                <div style="padding: 32px;">
-                                    <h3 class="ubits-body-md-bold" style="margin-bottom: 12px; color: var(--ubits-fg-1-high);">Requisitos</h3>
-                                    <p class="ubits-body-md-regular" style="color: var(--ubits-fg-1-medium); line-height: 1.6;">
-                                        CSS: <code>general-styles/ubits-colors.css</code>, <code>components/skeleton.css</code>. Opcional: <code>components/skeleton.js</code> para <code>ubitsSkeletonLineHtml</code>, <code>ubitsSkeletonTextBlockHtml</code>, <code>ubitsSkeletonRowHtml</code>.
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
+                        
                     </div>
                 </div>
             </div>
@@ -191,20 +151,7 @@ Accesibilidad: aria-hidden="true" en piezas decorativas; aria-busy="true" en el 
     <script src="../../docs/docs-sidebar.js"></script>
     <script src="../../script.js"></script>
     <script>
-        function toggleTechnicalDocs() {
-            var content = document.getElementById('technical-docs-content');
-            var isHidden = content.style.display === 'none' || !content.style.display;
-            content.style.display = isHidden ? 'block' : 'none';
-            var trigger = content.previousElementSibling;
-            if (trigger) {
-                var span = trigger.querySelector('span');
-                if (span) {
-                    span.innerHTML = isHidden
-                        ? '<i class="far fa-chevron-up" id="tech-docs-chevron" style="transition: transform 0.3s ease;"></i>Ocultar'
-                        : '<i class="far fa-chevron-down" id="tech-docs-chevron" style="transition: transform 0.3s ease;"></i>Mostrar';
-                }
-            }
-        }
+        
         function copyPrompt(id) {
             var el = document.getElementById(id);
             if (!el) return;

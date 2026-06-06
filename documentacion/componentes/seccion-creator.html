@@ -123,7 +123,7 @@
                                 Prompts útiles
                             </h2>
                             <p class="ubits-body-md-regular" style="margin-bottom: 24px; color: var(--ubits-fg-1-medium);">
-                                Copia el texto y adapta lo que va entre corchetes. El orden de CSS y JS está en la <strong>documentación técnica</strong> al final de la página.
+                                Copia el texto y adapta lo que va entre corchetes. El orden de CSS y JS está en el <strong>README.md</strong> del repositorio.
                             </p>
                             <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
                                 <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
@@ -136,74 +136,7 @@
                             </div>
                         </div>
 
-                        <div style="background: var(--ubits-bg-1); border-radius: var(--border-radius-lg); margin-bottom: 40px; overflow: hidden;">
-                            <div style="padding: 32px; text-align: center; border-bottom: 1px solid var(--ubits-border-1);">
-                                <h2 class="ubits-heading-h2" style="margin-bottom: 0; color: var(--ubits-fg-1-high);">
-                                    <i class="far fa-code" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
-                                    Documentación técnica
-                                </h2>
-                                <p class="ubits-body-md-regular" style="margin-top: 16px; color: var(--ubits-fg-1-medium);">Estructura, clases y requisitos.</p>
-                            </div>
-                            <div style="background: var(--ubits-bg-2); padding: 20px; text-align: center; cursor: pointer;" onclick="toggleTechnicalDocs()">
-                                <span class="ubits-body-md-regular" style="color: var(--ubits-accent-brand); display: flex; align-items: center; justify-content: center; gap: 8px;">
-                                    <i class="far fa-chevron-down"></i> Mostrar
-                                </span>
-                            </div>
-                            <div id="technical-docs-content" style="display: none; padding: 0;">
-                                <div style="padding: 32px; border-bottom: 1px solid var(--ubits-border-1);">
-                                    <div style="display: flex; justify-content: space-between; margin-bottom: 24px;">
-                                        <h2 class="ubits-heading-h2" style="margin: 0;">Estructura HTML</h2>
-                                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('sc-tech-html')"><i class="far fa-copy"></i><span>Copiar</span></button>
-                                    </div>
-                                    <pre style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm); overflow-x: auto;"><code id="sc-tech-html" class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">&lt;div class="ubits-seccion-creator"&gt;
-  &lt;section class="ubits-seccion-creator__section is-active" data-seccion-creator-key="id" aria-current="true"&gt;
-    &lt;div class="ubits-seccion-creator__header"&gt;
-      &lt;div class="title-wrap"&gt;&lt;div class="title-inner"&gt;…&lt;span class="title"&gt;…&lt;/span&gt; + botón lápiz (tooltip Cambiar nombre)&lt;/div&gt;&lt;/div&gt;
-      + menú ⋮
-    &lt;/div&gt;
-    &lt;div class="ubits-seccion-creator__pages"&gt;
-      &lt;div class="ubits-paginas-creator" role="list"&gt;…&lt;/div&gt;
-    &lt;/div&gt;
-    &lt;div class="ubits-seccion-creator__add-wrap"&gt;
-      &lt;button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-seccion-creator__add-btn"&gt;
-        &lt;i class="far fa-plus"&gt;&lt;/i&gt;&lt;span&gt;Añadir página&lt;/span&gt;
-      &lt;/button&gt;
-    &lt;/div&gt;
-  &lt;/section&gt;
-&lt;/div&gt;</code></pre>
-                                </div>
-                                <div style="padding: 32px; border-bottom: 1px solid var(--ubits-border-1);">
-                                    <div style="display: flex; justify-content: space-between; margin-bottom: 24px;">
-                                        <h2 class="ubits-heading-h2" style="margin: 0;">Clases y API JS</h2>
-                                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('sc-tech-classes')"><i class="far fa-copy"></i><span>Copiar</span></button>
-                                    </div>
-                                    <pre style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm); overflow-x: auto;"><code id="sc-tech-classes" class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Bloque: .ubits-seccion-creator
-Sección: .ubits-seccion-creator__section + .is-active (borde marca); .ubits-seccion-creator__section--error (validación: sección sin páginas, borde 2px --ubits-feedback-accent-error); esquinas --border-radius-lg (16px)
-Cabecera: .ubits-seccion-creator__header (flex: título + menú)
-Menú título: .ubits-seccion-creator__section-menu (visible al hover de la sección, con foco/teclado y si .is-active)
-Título: .title-inner &gt; .title (siempre ubits-body-md-bold + fg alto) + .title-edit-btn
-Páginas: .ubits-seccion-creator__pages &gt; .ubits-paginas-creator
-Añadir (dentro de &lt;section&gt; si activa): .ubits-seccion-creator__add-wrap + .add-btn (tertiary sm, Figma 264:5594)
-
-Índice: .ubits-seccion-creator-index + __stack — añadir solo en la sección con active:true
-  → seccionCreatorIndexHtml({ sections, addButtonId?, addButtonLabel? })
-
-seccionCreatorHtml({ title, active?, sectionKey?, pages?, addButtonId?, … })
-seccionCreatorSectionHtml({ …, includeAddButton? }) — &lt;section&gt; completo
-initSeccionCreator(root) — incluye initPaginasCreator en el mismo root
-Eventos: ubits-seccion-creator-add-page | ubits-seccion-creator-edit-section (Editar sección → modal en la página) | ubits-seccion-creator-section-action | ubits-seccion-creator-activate | ubits-seccion-creator-title-save</code></pre>
-                                </div>
-                                <div style="padding: 32px;">
-                                    <div style="display: flex; justify-content: space-between; margin-bottom: 16px;">
-                                        <h2 class="ubits-heading-h2" style="margin: 0;">Requisitos</h2>
-                                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('sc-tech-req')"><i class="far fa-copy"></i><span>Copiar</span></button>
-                                    </div>
-                                    <pre style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm); overflow-x: auto;"><code id="sc-tech-req" class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">CSS: button.css, dropdown-menu.css, tooltip.css, paginas-creator.css, seccion-creator.css (+ tipografía y colores UBITS, fontawesome)
-JS (orden): dropdown-menu.js → tooltip.js → paginas-creator.js → seccion-creator.js
-initSeccionCreator: Paginas creator (activar/editar/menú), sección (título, ⋮, «Añadir página»)</code></pre>
-                                </div>
-                            </div>
-                        </div>
+                        
                     </div>
                 </div>
             </div>
@@ -326,17 +259,7 @@ initSeccionCreator: Paginas creator (activar/editar/menú), sección (título, �
             });
         });
 
-        function toggleTechnicalDocs() {
-            var content = document.getElementById('technical-docs-content');
-            var open = content.style.display === 'none' || !content.style.display;
-            content.style.display = open ? 'block' : 'none';
-            var trigger = content.previousElementSibling;
-            if (trigger && trigger.querySelector('span')) {
-                trigger.querySelector('span').innerHTML = open
-                    ? '<i class="far fa-chevron-up"></i> Ocultar'
-                    : '<i class="far fa-chevron-down"></i> Mostrar';
-            }
-        }
+        
 
         function copyPrompt(id) {
             var t = document.getElementById(id);

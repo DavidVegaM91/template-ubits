@@ -176,79 +176,7 @@
                             </div>
                         </div>
 
-                        <!-- Documentación técnica -->
-                        <div style="background: var(--ubits-bg-1); border-radius: var(--border-radius-lg); margin-bottom: 40px; overflow: hidden;">
-                            <div style="padding: 32px; text-align: center; border-bottom: 1px solid var(--ubits-border-1);">
-                                <h2 class="ubits-heading-h2" style="margin-bottom: 0; color: var(--ubits-fg-1-high);">
-                                    <i class="far fa-code" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
-                                    Documentación técnica
-                                </h2>
-                                <p class="ubits-body-md-regular" style="margin-top: 16px; color: var(--ubits-fg-1-medium);">
-                                    Opciones del config, API y requisitos.
-                                </p>
-                            </div>
-                            <div style="background: var(--ubits-bg-2); padding: 20px; text-align: center; cursor: pointer;" onclick="toggleTechnicalDocs()">
-                                <span class="ubits-body-md-regular" style="color: var(--ubits-accent-brand); display: flex; align-items: center; justify-content: center; gap: var(--gap-sm);">
-                                    <i class="far fa-chevron-down" id="tech-docs-chevron"></i>
-                                    Mostrar
-                                </span>
-                            </div>
-                            <div id="technical-docs-content" style="display: none;">
-                                <div style="padding: 32px; border-bottom: 1px solid var(--ubits-border-1);">
-                                    <h3 class="ubits-body-md-bold" style="margin-bottom: 16px;">Opciones del config (createUbitsDataTable)</h3>
-                                    <ul class="ubits-body-sm-regular" style="margin: 0; padding-left: 24px; line-height: 1.8;">
-                                        <li><strong>containerId</strong> (string): ID del elemento donde se renderiza la tabla.</li>
-                                        <li><strong>tableId</strong> (string, opcional): id del &lt;table&gt;. Por defecto "ubits-data-table".</li>
-                                        <li><strong>columns</strong> (array): { id, label, sortable?, filterable? }.</li>
-                                        <li><strong>getData</strong> (function): devuelve array de filas.</li>
-                                        <li><strong>rowIdField</strong> (string): clave del objeto fila para el id (ej. "id").</li>
-                                        <li><strong>buildRowHtml</strong> (function(row)): devuelve HTML de las celdas (sin checkbox). Cada td debe tener data-col="idColumna".</li>
-                                        <li><strong>features</strong> (object): checkboxes, search, filters, verSeleccionados, actionBar, resultsCount, columnsToggle (boolean).</li>
-                                        <li><strong>emptyState</strong> (object): message, icon. Estado cuando no hay datos.</li>
-                                        <li><strong>emptySearchState</strong> (object): message, description (opcional), buttonText. Estado cuando hay datos pero búsqueda y/o filtros dejan 0 filas visibles. Si omites <code>description</code>, el componente usa <code>Intenta ajustar tu búsqueda.</code> cuando la tabla solo tiene buscador (sin <code>features.filters</code> o sin columnas <code>filterable</code>), y la variante con “búsqueda o filtros” cuando sí hay filtros por columna en UI.</li>
-                                        <li><strong>actionBarButtons</strong> (array): { id, label, icon, onClick(selectedIds), variant? }.</li>
-                                        <li><strong>onSelectionChange</strong> (function, opcional): <code>function (selectedIds)</code> — recibe el array de ids seleccionados tras cada cambio (selección de fila o «Seleccionar todo»).</li>
-                                        <li><strong>primaryButton</strong> (object): { text, icon?, onClick(), variant? }. Botón en el header a la derecha del botón Columnas; <code>variant: 'secondary'</code> usa botón secundario.</li>
-                                        <li><strong>searchColumnIds</strong> (string[], opcional): si hay búsqueda y el array no está vacío, el texto solo se compara contra esas columnas (<code>data-col</code>). Si se omite, se busca en todas las columnas.</li>
-                                        <li><strong>initialSort</strong> (object, opcional): <code>{ column: 'idColumna', direction: 'asc' | 'desc' }</code> para el orden al cargar (la columna debe existir en <code>columns</code>).</li>
-                                        <li><strong>i18n</strong> (object): selectAll, deselectAll, verSeleccionados, clearFilters, filtrosAplicados, buscar, columnasVisibles.</li>
-                                        <li><strong>title</strong> (string): título opcional en la barra superior.</li>
-                                    </ul>
-                                </div>
-                                <div style="padding: 32px; border-bottom: 1px solid var(--ubits-border-1);">
-                                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
-                                        <h3 class="ubits-body-md-bold" style="margin: 0;">Requisitos (CSS/JS)</h3>
-                                        <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('req-code')">
-                                            <i class="far fa-copy"></i>
-                                            <span>Copiar</span>
-                                        </button>
-                                    </div>
-                                    <pre style="margin: 0; font-family: monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); background: var(--ubits-bg-2); padding: 16px; border-radius: var(--border-radius-sm); overflow-x: auto;"><code id="req-code">&lt;link rel="stylesheet" href="components/ubits-data-table.css"&gt;
-&lt;link rel="stylesheet" href="components/table.css"&gt;
-&lt;!-- Si usas checkboxes, búsqueda, filtros, columnas: button, input, checkbox, dropdown-menu, tooltip --&gt;
-&lt;script src="components/ubits-data-table.js"&gt;&lt;/script&gt;</code></pre>
-                                </div>
-                                <div style="padding: 32px;">
-                                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
-                                        <h3 class="ubits-body-md-bold" style="margin: 0;">Ejemplo mínimo</h3>
-                                        <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('min-code')">
-                                            <i class="far fa-copy"></i>
-                                            <span>Copiar</span>
-                                        </button>
-                                    </div>
-                                    <pre style="margin: 0; font-family: monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); background: var(--ubits-bg-2); padding: 16px; border-radius: var(--border-radius-sm); overflow-x: auto; white-space: pre-wrap;"><code id="min-code">createUbitsDataTable({
-  containerId: 'mi-tabla-container',
-  columns: [ { id: 'nombre', label: 'Nombre', sortable: true }, { id: 'estado', label: 'Estado', filterable: true } ],
-  getData: function() { return [ { id: '1', nombre: 'Ejemplo', estado: 'Activo' } ]; },
-  rowIdField: 'id',
-  buildRowHtml: function(row) {
-    return '&lt;td data-col="nombre"&gt;&lt;span class="ubits-body-sm-regular"&gt;' + (row.nombre || '') + '&lt;/span&gt;&lt;/td&gt;&lt;td data-col="estado"&gt;&lt;span class="ubits-body-sm-regular"&gt;' + (row.estado || '') + '&lt;/span&gt;&lt;/td&gt;';
-  },
-  features: { checkboxes: true, search: true, resultsCount: true }
-});</code></pre>
-                                </div>
-                            </div>
-                        </div>
+                        
                     </div>
                 </div>
             </div>
@@ -311,17 +239,7 @@
                 });
             }
         });
-        function toggleTechnicalDocs() {
-            var content = document.getElementById('technical-docs-content');
-            var btn = content.previousElementSibling;
-            if (content.style.display === 'none' || content.style.display === '') {
-                content.style.display = 'block';
-                btn.innerHTML = '<span class="ubits-body-md-regular" style="color: var(--ubits-accent-brand); display: flex; align-items: center; justify-content: center; gap: var(--gap-sm);"><i class="far fa-chevron-up"></i> Ocultar</span>';
-            } else {
-                content.style.display = 'none';
-                btn.innerHTML = '<span class="ubits-body-md-regular" style="color: var(--ubits-accent-brand); display: flex; align-items: center; justify-content: center; gap: var(--gap-sm);"><i class="far fa-chevron-down"></i> Mostrar</span>';
-            }
-        }
+        
         function copyPrompt(promptId) {
             var el = document.getElementById(promptId);
             if (!el) return;

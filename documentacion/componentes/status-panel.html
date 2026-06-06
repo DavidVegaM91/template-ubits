@@ -138,42 +138,7 @@
                             </div>
                         </div>
 
-                        <div style="background: var(--ubits-bg-1); border-radius: var(--border-radius-lg); margin-bottom: 40px; overflow: hidden;">
-                            <div style="padding: 32px; text-align: center; border-bottom: 1px solid var(--ubits-border-1);">
-                                <h2 class="ubits-heading-h2" style="margin-bottom: 0;">
-                                    <i class="far fa-code" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
-                                    Documentación técnica
-                                </h2>
-                            </div>
-                            <div style="background: var(--ubits-bg-2); padding: 20px; text-align: center; cursor: pointer;" onclick="toggleTechnicalDocs()">
-                                <span class="ubits-body-md-regular" style="color: var(--ubits-accent-brand); display: flex; align-items: center; justify-content: center; gap: var(--gap-sm);">
-                                    <i class="far fa-chevron-down" id="tech-docs-chevron"></i>
-                                    Mostrar
-                                </span>
-                            </div>
-                            <div id="technical-docs-content" style="display: none; padding: 32px;">
-                                <h3 class="ubits-body-md-bold" style="margin-bottom: 16px;">Requisitos</h3>
-                                <ul class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); line-height: 1.6;">
-                                    <li><code>general-styles/ubits-colors.css</code>, <code>ubits-typography.css</code>, <code>fontawesome-icons.css</code></li>
-                                    <li><code>components/button.css</code> (acciones de cabecera)</li>
-                                    <li><code>components/status-panel.css</code> + <code>components/status-panel.js</code></li>
-                                    <li>Opcional icono IA: tokens <code>--modo-ia-gradient-*</code> en <code>ubits-colors.css</code> y <code>useIaTitleIcon: true</code></li>
-                                </ul>
-                                <h3 class="ubits-body-md-bold" style="margin: 32px 0 16px;">API</h3>
-                                <pre style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm); overflow-x: auto;"><code class="ubits-body-sm-regular" id="implement-code">renderStatusPanelHtml({ id, title, placement, titleIcon, useIaTitleIcon, hidden })
-initStatusPanel(rootId, { title, autoTitle, titleLoading, titleDone, hidden })
-statusPanelAddItem(root, itemId, { title, subtitle, status, icon, onClick })
-statusPanelUpdateItem(root, itemId, { title, subtitle, status, icon, onClick })
-statusPanelRemoveItem(root, itemId)
-statusPanelClear(root)
-statusPanelSetTitle(root, title)
-statusPanelRefresh(root)
-
-// status: 'loading' | 'success' | 'error' | 'neutral'
-// error: clase ubits-status-panel__item--error; subtítulo con color --ubits-feedback-accent-error
-// placement: 'bottom-left' | 'bottom-right'</code></pre>
-                            </div>
-                        </div>
+                        
                     </div>
                 </div>
             </div>
@@ -277,17 +242,7 @@ statusPanelRefresh(root)
             });
         });
 
-        function toggleTechnicalDocs() {
-            var content = document.getElementById('technical-docs-content');
-            var button = document.querySelector('[onclick="toggleTechnicalDocs()"]');
-            if (content.style.display === 'none' || content.style.display === '') {
-                content.style.display = 'block';
-                button.innerHTML = '<i class="far fa-chevron-up" style="color: var(--ubits-accent-brand);"></i> <span class="ubits-body-md-regular" style="color: var(--ubits-accent-brand);">Ocultar</span>';
-            } else {
-                content.style.display = 'none';
-                button.innerHTML = '<i class="far fa-chevron-down" style="color: var(--ubits-accent-brand);"></i> <span class="ubits-body-md-regular" style="color: var(--ubits-accent-brand);">Mostrar</span>';
-            }
-        }
+        
 
         function copyPrompt(promptId) {
             var text = document.getElementById(promptId).textContent;

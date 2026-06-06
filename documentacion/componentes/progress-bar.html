@@ -201,64 +201,7 @@
                             </div>
                         </div>
 
-                        <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; margin-bottom: 40px;">
-                            <h2 class="ubits-heading-h2" style="margin-bottom: 8px; color: var(--ubits-fg-1-high);">Documentación técnica</h2>
-                            <p class="ubits-body-sm-regular" style="margin: 0 0 16px; color: var(--ubits-fg-1-medium);">Estructura, clases y API.</p>
-                            <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm" id="pb-docs-toggle" style="margin-bottom: 16px;">
-                                <i class="far fa-chevron-down" id="pb-docs-chevron" style="transition: transform 0.3s ease;"></i>
-                                <span id="pb-docs-toggle-text">Mostrar</span>
-                            </button>
-                            <div id="pb-technical-docs" style="display: none; border: 1px solid var(--ubits-border-1); border-radius: var(--border-radius-lg); overflow: hidden;">
-                                <div style="padding: 24px; border-bottom: 1px solid var(--ubits-border-1);">
-                                    <h3 class="ubits-body-md-bold" style="margin: 0 0 12px; color: var(--ubits-fg-1-high);">Requisitos</h3>
-                                    <ul class="ubits-body-sm-regular" style="margin: 0; padding-left: 20px; color: var(--ubits-fg-1-medium); line-height: 1.6;">
-                                        <li><code>general-styles/ubits-colors.css</code> y <code>styles.css</code></li>
-                                        <li><code>components/progress-bar.css</code></li>
-                                        <li><code>components/progress-bar.js</code> (opcional si usas HTML estático)</li>
-                                    </ul>
-                                </div>
-                                <div style="padding: 24px; border-bottom: 1px solid var(--ubits-border-1);">
-                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-                                        <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Estructura HTML</h3>
-                                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('pb-code-html')">
-                                            <i class="far fa-copy"></i><span>Copiar</span>
-                                        </button>
-                                    </div>
-                                    <pre style="margin: 0; background: var(--ubits-bg-2); padding: 16px; border-radius: 8px; overflow: auto;"><code id="pb-code-html" class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">&lt;div class="ubits-progress-bar ubits-progress-bar--sm ubits-progress-bar--rounded"
-     role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="65"
-     aria-label="Progreso del plan"&gt;
-  &lt;div class="ubits-progress-bar__track"&gt;
-    &lt;div class="ubits-progress-bar__fill" style="width:65%"&gt;&lt;/div&gt;
-  &lt;/div&gt;
-&lt;/div&gt;</code></pre>
-                                </div>
-                                <div style="padding: 24px;">
-                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-                                        <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">createProgressBar / progressBarHtml</h3>
-                                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('pb-code-api')">
-                                            <i class="far fa-copy"></i><span>Copiar</span>
-                                        </button>
-                                    </div>
-                                    <pre style="margin: 0; background: var(--ubits-bg-2); padding: 16px; border-radius: 8px; overflow: auto;"><code id="pb-code-api" class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">var bar = createProgressBar({
-  containerId: 'mi-barra',
-  value: 65,
-  size: 'sm',        // sm | lg
-  rounded: true,     // pill; false = esquinas rectas
-  variant: 'default', // omitir variant = azul marca; 'chart' solo excepciones puntuales
-  track: 'default',  // 'static' | 'subtle'
-  width: '100%',     // opcional, ej. '60px' en tablas
-  withLabelRow: false, // true → progressBarRowHtml + %
-  fixedWidth60: false,
-  ariaLabel: 'Progreso'
-});
-// Tabla: tableProgressCellHtml(75) → fila lg 60px + %
-// bar.setValue(80); bar.setRounded(false); bar.destroy();
-
-// Solo HTML:
-document.getElementById('x').innerHTML = progressBarHtml({ value: 40, size: 'lg', rounded: true });</code></pre>
-                                </div>
-                            </div>
-                        </div>
+                        
                     </div>
                 </div>
             </div>
@@ -331,16 +274,7 @@ document.getElementById('x').innerHTML = progressBarHtml({ value: 40, size: 'lg'
             });
         }
 
-        function toggleTechnicalDocs() {
-            var box = document.getElementById('pb-technical-docs');
-            var chev = document.getElementById('pb-docs-chevron');
-            var txt = document.getElementById('pb-docs-toggle-text');
-            if (!box) return;
-            var open = box.style.display !== 'none';
-            box.style.display = open ? 'none' : 'block';
-            if (chev) chev.style.transform = open ? '' : 'rotate(180deg)';
-            if (txt) txt.textContent = open ? 'Mostrar' : 'Ocultar';
-        }
+        
 
         document.addEventListener('DOMContentLoaded', function () {
             if (typeof loadSubNav === 'function') loadSubNav('top-nav-container', 'documentacion');
@@ -368,9 +302,6 @@ document.getElementById('x').innerHTML = progressBarHtml({ value: 40, size: 'lg'
                     pbPaintPreview();
                 });
             });
-
-            var toggleBtn = document.getElementById('pb-docs-toggle');
-            if (toggleBtn) toggleBtn.addEventListener('click', toggleTechnicalDocs);
         });
     </script>
 </body>

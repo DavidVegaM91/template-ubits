@@ -131,43 +131,7 @@
                             </div>
                         </div>
 
-                        <div style="background: var(--ubits-bg-1); border-radius: var(--border-radius-lg); margin-bottom: 40px; overflow: hidden;">
-                            <div style="padding: 32px; text-align: center; border-bottom: 1px solid var(--ubits-border-1);">
-                                <h2 class="ubits-heading-h2" style="margin-bottom: 0; color: var(--ubits-fg-1-high);">
-                                    <i class="far fa-code" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
-                                    Documentación técnica
-                                </h2>
-                                <p class="ubits-body-md-regular" style="margin-top: 16px; color: var(--ubits-fg-1-medium);">API, requisitos y limitaciones.</p>
-                            </div>
-                            <div style="background: var(--ubits-bg-2); padding: 20px; text-align: center; cursor: pointer;" onclick="toggleTechnicalDocs()">
-                                <span class="ubits-body-md-regular" style="color: var(--ubits-accent-brand); display: flex; align-items: center; justify-content: center; gap: 8px;">
-                                    <i class="far fa-chevron-down"></i> Mostrar
-                                </span>
-                            </div>
-                            <div id="technical-docs-content" style="display: none; padding: 0;">
-                                <div style="padding: 32px; border-bottom: 1px solid var(--ubits-border-1);">
-                                    <h2 class="ubits-heading-h2" style="margin-bottom: 16px;">Implementación</h2>
-                                    <p class="ubits-body-md-regular" style="color: var(--ubits-fg-1-medium); margin-bottom: 16px;">El proyecto es HTML, CSS y JS sin build: el área editable es un <code class="ubits-body-sm-regular">div</code> con <code class="ubits-body-sm-regular">contenteditable="true"</code>. La barra usa <code class="ubits-body-sm-regular">document.execCommand</code> (soportado en navegadores para este patrón; obsoleto a nivel estándar, suficiente para plantilla y prototipos).</p>
-                                    <p class="ubits-body-md-regular" style="color: var(--ubits-fg-1-medium); margin-bottom: 16px;">El texto <code class="ubits-body-sm-regular">(Obligatorio)</code> en <code class="ubits-body-sm-regular">.ubits-rich-text-editor__hint</code> está oculto por defecto. Para mostrarlo, añade la clase <code class="ubits-body-sm-regular">ubits-rich-text-editor--show-required-hint</code> al contenedor raíz del editor (desde la página o un control de preview); el componente JS no incluye interruptor interno para esto.</p>
-                                    <pre style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm); overflow-x: auto;"><code id="rte-tech-api" class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">initRichTextEditor('#contenedor')
-initAllRichTextEditors()
-getRichTextHtml('#contenedor')  → string HTML
-setRichTextHtml('#contenedor', html)</code></pre>
-                                </div>
-                                <div style="padding: 32px;">
-                                    <div style="display: flex; justify-content: space-between; margin-bottom: 16px;">
-                                        <h2 class="ubits-heading-h2" style="margin: 0;">Requisitos CSS/JS</h2>
-                                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('rte-tech-req')"><i class="far fa-copy"></i><span>Copiar</span></button>
-                                    </div>
-                                    <pre style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm);"><code id="rte-tech-req" class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">components/rich-text-editor.css
-components/rich-text-editor.js
-components/button.css
-general-styles/fontawesome-icons.css
-general-styles/ubits-typography.css
-general-styles/ubits-colors.css</code></pre>
-                                </div>
-                            </div>
-                        </div>
+                        
                     </div>
                 </div>
             </div>
@@ -198,17 +162,7 @@ general-styles/ubits-colors.css</code></pre>
                 previewRequiredSw.addEventListener('change', syncPreviewRequiredHint);
             }
         });
-        function toggleTechnicalDocs() {
-            var content = document.getElementById('technical-docs-content');
-            var open = content.style.display === 'none' || !content.style.display;
-            content.style.display = open ? 'block' : 'none';
-            var trigger = content.previousElementSibling;
-            if (trigger && trigger.querySelector('span')) {
-                trigger.querySelector('span').innerHTML = open
-                    ? '<i class="far fa-chevron-up"></i> Ocultar'
-                    : '<i class="far fa-chevron-down"></i> Mostrar';
-            }
-        }
+        
         function copyPrompt(id) {
             var t = document.getElementById(id);
             if (t) navigator.clipboard.writeText(t.textContent).then(function () {

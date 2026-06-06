@@ -326,7 +326,7 @@
                                 Prompts útiles
                             </h2>
                             <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6; color: var(--ubits-fg-1-medium);">
-                                Copia el texto que necesites y cambia lo que va entre corchetes. Los detalles de archivos y código están en la <strong>documentación técnica</strong> más abajo.
+                                Copia el texto que necesites y cambia lo que va entre corchetes. Los detalles de archivos y código están en el README.md del repositorio.
                             </p>
                             <div id="ai-panel-warning-alert" style="margin-bottom: 32px;"></div>
                             <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
@@ -355,88 +355,7 @@
                             </div>
                         </div>
 
-                        <div style="background: var(--ubits-bg-1); border-radius: var(--border-radius-lg); margin-bottom: 40px; overflow: hidden;">
-                            <div style="padding: 32px; text-align: center; border-bottom: 1px solid var(--ubits-border-1);">
-                                <h2 class="ubits-heading-h2" style="margin-bottom: 0; color: var(--ubits-fg-1-high);">
-                                    <i class="far fa-code" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
-                                    Documentación técnica
-                                </h2>
-                                <p class="ubits-body-md-regular" style="margin-top: 16px; color: var(--ubits-fg-1-medium);">
-                                    Imports, orden de scripts, API pública y opciones de <code style="font-family: monospace;">initAIPanel</code>.
-                                </p>
-                            </div>
-                            <div style="background: var(--ubits-bg-2); padding: 20px; text-align: center; cursor: pointer;" onclick="toggleTechnicalDocs()">
-                                <span class="ubits-body-md-regular" style="color: var(--ubits-accent-brand); display: flex; align-items: center; justify-content: center; gap: 8px;">
-                                    <i class="far fa-chevron-down" id="tech-docs-chevron" style="transition: transform 0.3s ease;"></i>
-                                    Mostrar
-                                </span>
-                            </div>
-                            <div id="technical-docs-content" style="display: none; padding: 0;">
-                                <div style="padding: 32px; border-bottom: 1px solid var(--ubits-border-1);">
-                                    <h3 class="ubits-body-md-bold" style="margin-bottom: 16px; color: var(--ubits-fg-1-high);">API pública (resumen)</h3>
-                                    <ul class="ubits-body-md-regular" style="margin: 0 0 var(--gap-lg); padding-left: 1.25rem; color: var(--ubits-fg-1-medium); line-height: 1.75;">
-                                        <li><code style="font-family: monospace;">initAIPanel(options)</code> — inicializa e inyecta el panel (una sola vez).</li>
-                                        <li><code style="font-family: monospace;">openAIPanel()</code> / <code style="font-family: monospace;">closeAIPanel()</code></li>
-                                        <li><code style="font-family: monospace;">addAIPanelMessage(text, type[, attachments])</code> — <code style="font-family: monospace;">type</code>: <code style="font-family: monospace;">'user'</code> | <code style="font-family: monospace;">'ai'</code>. Tras enviar desde el input, el panel ya inserta el mensaje del usuario; en <code style="font-family: monospace;">onSend(text)</code> no hace falta (ni conviene) volver a añadirlo salvo un flujo muy custom.</li>
-                                        <li><code style="font-family: monospace;">addAIPanelInteraction(type, options)</code> — inserta un bloque de interacción conversacional. <code style="font-family: monospace;">type</code>: <code style="font-family: monospace;">'quick-reply'</code> | <code style="font-family: monospace;">'multiselect'</code> | <code style="font-family: monospace;">'cards'</code> | <code style="font-family: monospace;">'bottom-sheet'</code> | <code style="font-family: monospace;">'artifacts'</code>. Para artifacts: <code style="font-family: monospace;">options.rows</code> es un array de <code style="font-family: monospace;">{ title, meta?, iconClass?, openButtonVisible?, onOpen(row, rowEl) }</code>; al pulsar Abrir se llama <code style="font-family: monospace;">onOpen</code> (p. ej. montar HTML y <code style="font-family: monospace;">openAIPanelArtifactView</code>).</li>
-                                        <li><strong>Bottom sheet</strong> (<code style="font-family: monospace;">'bottom-sheet'</code>): <code style="font-family: monospace;">onReply(answers, steps)</code> se ejecuta tras enviar el último paso (después de insertar en el chat el mensaje de usuario con todas las respuestas). <code style="font-family: monospace;">onClose</code> solo se llama si el usuario cierra la hoja con la X sin completar el envío.</li>
-                                        <li><code style="font-family: monospace;">openAIPanelArtifactView(html, opts?)</code> / <code style="font-family: monospace;">closeAIPanelArtifactView()</code> — vista de detalle superpuesta; <code style="font-family: monospace;">opts.title</code>, <code style="font-family: monospace;">opts.onAfterMount(scrollEl)</code>.</li>
-                                        <li><code style="font-family: monospace;">showAIPanelTyping()</code> — devuelve <code style="font-family: monospace;">removeTyping</code> (usa <code style="font-family: monospace;">ia-chat-streaming.js</code>).</li>
-                                        <li><code style="font-family: monospace;">clearAIPanelMessages()</code>, <code style="font-family: monospace;">setAIPanelTitle(title)</code>, <code style="font-family: monospace;">setAIPanelTokensBadgeValue(n)</code>, <code style="font-family: monospace;">destroyAIPanel()</code></li>
-                                    </ul>
-                                    <h3 class="ubits-body-md-bold" style="margin-bottom: 16px; color: var(--ubits-fg-1-high);">Opciones de initAIPanel</h3>
-                                    <div style="background: var(--ubits-bg-2); padding: 16px; border-radius: var(--border-radius-sm);">
-                                        <pre style="margin: 0; font-family: 'Courier New', monospace; font-size: var(--font-size-sm); line-height: 1.6; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code>title, agentLabel, placeholder, disclaimer,
-welcomeTitle, welcomeSubtitle,
-tokensBadge — true | false | { value, tooltip, ariaLabel }
-onSend(text), onAttach(), onClose(),
-dockDesktop, dockContainerSelector, dockBreakpoint</code></pre>
-                                    </div>
-                                </div>
-                                <div style="padding: 32px; border-bottom: 1px solid var(--ubits-border-1);">
-                                    <h3 class="ubits-body-md-bold" style="margin-bottom: 16px; color: var(--ubits-fg-1-high);">Requisitos (orden recomendado)</h3>
-                                    <div style="display: flex; justify-content: flex-end; margin-bottom: 8px;">
-                                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('ai-panel-tech-html')">
-                                            <i class="far fa-copy"></i>
-                                            <span>Copiar</span>
-                                        </button>
-                                    </div>
-                                    <div style="background: var(--ubits-bg-2); padding: 16px; border-radius: var(--border-radius-sm);">
-                                        <pre style="margin: 0; font-family: 'Courier New', monospace; font-size: var(--font-size-sm); line-height: 1.6; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code id="ai-panel-tech-html">&lt;link rel="stylesheet" href="[ruta]/general-styles/ubits-colors.css"&gt;
-&lt;link rel="stylesheet" href="[ruta]/general-styles/styles.css"&gt;
-&lt;link rel="stylesheet" href="[ruta]/general-styles/fontawesome-icons.css"&gt;
-&lt;link rel="stylesheet" href="[ruta]/general-styles/ubits-typography.css"&gt;
-&lt;link rel="stylesheet" href="[ruta]/components/button.css"&gt;
-&lt;link rel="stylesheet" href="[ruta]/components/chip.css"&gt;
-&lt;link rel="stylesheet" href="[ruta]/components/ia-button.css"&gt;
-&lt;link rel="stylesheet" href="[ruta]/general-styles/ubits-ia-appearance.css"&gt;
-&lt;link rel="stylesheet" href="[ruta]/components/badge-tag.css"&gt;
-&lt;link rel="stylesheet" href="[ruta]/components/tooltip.css"&gt;
-&lt;link rel="stylesheet" href="[ruta]/general-styles/ubits-ia-chat.css"&gt;
-&lt;!-- Si el artifact usa quiz/flashcards del tutor: --&gt;
-&lt;link rel="stylesheet" href="[ruta]/ubits-colaborador/aprendizaje/modo-estudio-ia-tutor-panel.css"&gt;
-&lt;link rel="stylesheet" href="[ruta]/components/radio-button.css"&gt;
-&lt;link rel="stylesheet" href="[ruta]/components/ai-panel.css"&gt;
-&lt;script src="[ruta]/components/ia-chat-streaming.js"&gt;&lt;/script&gt;
-&lt;script src="[ruta]/components/tooltip.js"&gt;&lt;/script&gt;
-&lt;script src="[ruta]/components/ia-button.js"&gt;&lt;/script&gt;
-&lt;script src="[ruta]/components/ai-panel.js"&gt;&lt;/script&gt;
-&lt;!-- Opcional: HTML/bind demo quiz y flashcards (Modo estudio IA) --&gt;
-&lt;script src="[ruta]/components/ai-panel-artifact-content.js"&gt;&lt;/script&gt;</code></pre>
-                                    </div>
-                                </div>
-                                <div style="padding: 32px;">
-                                    <h3 class="ubits-body-md-bold" style="margin-bottom: 16px; color: var(--ubits-fg-1-high);">Checklist</h3>
-                                    <ol class="ubits-body-md-regular" style="margin: 0; padding-left: 1.25rem; color: var(--ubits-fg-1-medium); line-height: 1.75;">
-                                        <li>Base (colores, styles, fontawesome, tipografía) + <code style="font-family: monospace;">button.css</code> + <code style="font-family: monospace;">chip.css</code> (adjuntos en input y mensajes; obligatorio si usas clip) + <code style="font-family: monospace;">ia-button.css</code>.</li>
-                                        <li>Pila IA: <code style="font-family: monospace;">ubits-ia-appearance.css</code> → <code style="font-family: monospace;">badge-tag.css</code> + <code style="font-family: monospace;">tooltip.css</code> (badge de tokens en cabecera) → <code style="font-family: monospace;">ubits-ia-chat.css</code> → <code style="font-family: monospace;">ai-panel.css</code>.</li>
-                                        <li><code style="font-family: monospace;">ia-chat-streaming.js</code> y <code style="font-family: monospace;">tooltip.js</code> antes de <code style="font-family: monospace;">ai-panel.js</code> (streaming / tooltips del badge).</li>
-                                        <li>Modo dock: contenedor existente (p. ej. <code style="font-family: monospace;">.dashboard-container</code>) y <code style="font-family: monospace;">dockBreakpoint</code> acorde al diseño.</li>
-                                        <li>Referencias en producto: demo <code style="font-family: monospace;">ubits-colaborador/lms-creator/ai-panel-demo.html</code>; pantallas con chat IA pueden combinar con <code style="font-family: monospace;">header-product</code> y toolbar.</li>
-                                    </ol>
-                                </div>
-                            </div>
-                        </div>
+                        
                     </div>
                 </div>
             </div>
@@ -456,20 +375,7 @@ dockDesktop, dockContainerSelector, dockBreakpoint</code></pre>
     <script src="../../docs/docs-sidebar.js"></script>
     <script src="../../script.js"></script>
     <script>
-        function toggleTechnicalDocs() {
-            var content = document.getElementById('technical-docs-content');
-            var isHidden = content.style.display === 'none' || !content.style.display;
-            content.style.display = isHidden ? 'block' : 'none';
-            var trigger = content.previousElementSibling;
-            if (trigger) {
-                var span = trigger.querySelector('span');
-                if (span) {
-                    span.innerHTML = isHidden
-                        ? '<i class="far fa-chevron-up" id="tech-docs-chevron" style="transition: transform 0.3s ease;"></i>Ocultar'
-                        : '<i class="far fa-chevron-down" id="tech-docs-chevron" style="transition: transform 0.3s ease;"></i>Mostrar';
-                }
-            }
-        }
+        
         function copyPrompt(promptId) {
             var el = document.getElementById(promptId);
             if (!el) return;

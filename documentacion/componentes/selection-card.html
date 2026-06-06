@@ -242,98 +242,7 @@
                         </div>
                     </div>
 
-                    <!-- ══ DOCUMENTACIÓN TÉCNICA (colapsable) ══ -->
-                    <div style="background: var(--ubits-bg-1); border: 1px solid var(--ubits-border-1); border-radius: var(--border-radius-sm); overflow: hidden; margin-bottom: 40px;">
-                        <div style="padding: 20px 24px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; gap: 16px;" onclick="toggleTechnicalDocs()">
-                            <div>
-                                <p class="ubits-body-md-bold" style="color: var(--ubits-fg-1-high); margin: 0;">Documentación técnica</p>
-                                <p class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); margin: 4px 0 0;">Estructura HTML, clases, imports y API del componente</p>
-                            </div>
-                            <button class="ubits-button ubits-button--secondary ubits-button--sm" id="tech-docs-btn" style="white-space: nowrap; flex-shrink: 0;">
-                                <i class="far fa-chevron-down"></i><span>Mostrar</span>
-                            </button>
-                        </div>
-
-                        <div id="technical-docs-content" style="display: none; padding: 0 24px 24px; border-top: 1px solid var(--ubits-border-1);">
-
-                            <!-- Estructura HTML -->
-                            <div style="margin-top: 24px; margin-bottom: 24px;">
-                                <p class="ubits-body-md-bold" style="color: var(--ubits-fg-1-high); margin-bottom: 12px;">Estructura HTML — card completo</p>
-                                <pre style="background: var(--ubits-bg-2); border-radius: var(--border-radius-xs); padding: 16px; overflow-x: auto; margin: 0;"><code id="code-html" style="font-family: monospace; font-size: 12px; color: var(--ubits-fg-1-medium);">&lt;!-- Grupo contenedor (grid) --&gt;
-&lt;div class="ubits-selection-card-group ubits-selection-card-group--4"&gt;
-
-    &lt;label class="ubits-selection-card ubits-radio ubits-radio--md" data-opcion="toda-empresa"&gt;
-        &lt;input type="radio" class="ubits-radio__input" name="mi-grupo" value="toda-empresa" checked&gt;
-        &lt;span class="ubits-radio__circle"&gt;&lt;/span&gt;
-        &lt;div class="ubits-selection-card__body"&gt;
-            &lt;div class="ubits-selection-card__header"&gt;
-                &lt;span class="ubits-selection-card__icon"&gt;&lt;i class="far fa-building"&gt;&lt;/i&gt;&lt;/span&gt;
-                &lt;span class="ubits-body-md-semibold ubits-selection-card__title"&gt;Toda la empresa&lt;/span&gt;
-            &lt;/div&gt;
-            &lt;p class="ubits-body-sm-regular ubits-selection-card__desc"&gt;Descripción breve de la opción.&lt;/p&gt;
-            &lt;!-- __meta es opcional --&gt;
-            &lt;span class="ubits-selection-card__meta ubits-body-md-regular"&gt;
-                &lt;span class="ubits-body-md-bold"&gt;48&lt;/span&gt;/48 seleccionados
-            &lt;/span&gt;
-        &lt;/div&gt;
-    &lt;/label&gt;
-
-    &lt;!-- Repetir para cada opción del grupo --&gt;
-
-&lt;/div&gt;</code></pre>
-                                <button class="ubits-button ubits-button--tertiary ubits-button--sm" style="margin-top: 10px;" onclick="copyPrompt('code-html')">
-                                    <i class="far fa-copy"></i><span>Copiar</span>
-                                </button>
-                            </div>
-
-                            <!-- Clases disponibles -->
-                            <div style="margin-bottom: 24px;">
-                                <p class="ubits-body-md-bold" style="color: var(--ubits-fg-1-high); margin-bottom: 12px;">Clases disponibles</p>
-                                <table class="sc-api-table">
-                                    <thead>
-                                        <tr><th>Clase</th><th>Tipo</th><th>Descripción</th></tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr><td><code>ubits-selection-card</code></td><td>Base</td><td>Card base. Siempre se combina con <code>ubits-radio</code> y <code>ubits-radio--md</code></td></tr>
-                                        <tr><td><code>ubits-selection-card--disabled</code></td><td>Modificador</td><td>Opacidad 0.5 y <code>pointer-events: none</code>. Alternativa: <code>disabled</code> en el <code>&lt;input&gt;</code></td></tr>
-                                        <tr><td><code>ubits-selection-card-group</code></td><td>Contenedor</td><td>Grid base (1 columna). Agrupa las cards</td></tr>
-                                        <tr><td><code>ubits-selection-card-group--2</code></td><td>Grid mod.</td><td>2 columnas</td></tr>
-                                        <tr><td><code>ubits-selection-card-group--3</code></td><td>Grid mod.</td><td>3 columnas → colapsa a 2 en &lt;900px</td></tr>
-                                        <tr><td><code>ubits-selection-card-group--4</code></td><td>Grid mod.</td><td>4 columnas → colapsa a 2 en &lt;900px, a 1 en &lt;600px</td></tr>
-                                        <tr><td><code>ubits-selection-card__body</code></td><td>Slot</td><td>Contenido izquierda del card (columna flex)</td></tr>
-                                        <tr><td><code>ubits-selection-card__header</code></td><td>Slot</td><td>Fila icono + título</td></tr>
-                                        <tr><td><code>ubits-selection-card__icon</code></td><td>Slot</td><td>Wrapper del icono FontAwesome. 16px, color fg-1-medium</td></tr>
-                                        <tr><td><code>ubits-selection-card__title</code></td><td>Slot</td><td>Nombre de la opción. Usar con <code>ubits-body-md-semibold</code></td></tr>
-                                        <tr><td><code>ubits-selection-card__desc</code></td><td>Slot</td><td>Descripción breve. Usar con <code>ubits-body-sm-regular</code></td></tr>
-                                        <tr><td><code>ubits-selection-card__meta</code></td><td>Slot (opcional)</td><td>Contador o dato contextual inferior. Usar con <code>ubits-body-md-regular</code></td></tr>
-                                    </tbody>
-                                </table>
-                            </div>
-
-                            <!-- Requisitos -->
-                            <div style="margin-bottom: 24px;">
-                                <p class="ubits-body-md-bold" style="color: var(--ubits-fg-1-high); margin-bottom: 12px;">Imports obligatorios</p>
-                                <pre style="background: var(--ubits-bg-2); border-radius: var(--border-radius-xs); padding: 16px; overflow-x: auto; margin: 0;"><code id="code-imports" style="font-family: monospace; font-size: 12px; color: var(--ubits-fg-1-medium);">&lt;!-- CSS --&gt;
-&lt;link rel="stylesheet" href="../../components/radio-button.css"&gt;
-&lt;link rel="stylesheet" href="../../components/selection-card.css"&gt;
-&lt;link rel="stylesheet" href="../../general-styles/fontawesome-icons.css"&gt;</code></pre>
-                                <button class="ubits-button ubits-button--tertiary ubits-button--sm" style="margin-top: 10px;" onclick="copyPrompt('code-imports')">
-                                    <i class="far fa-copy"></i><span>Copiar</span>
-                                </button>
-                                <p class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); margin-top: 12px;">No hay JS propio del componente. El mecanismo de selección es nativo del navegador (radio buttons HTML agrupados por <code>name</code>).</p>
-                            </div>
-
-                            <!-- Contextos de uso -->
-                            <div>
-                                <p class="ubits-body-md-bold" style="color: var(--ubits-fg-1-high); margin-bottom: 8px;">Contextos donde se usa en el playground</p>
-                                <ul style="margin: 0; padding-left: 20px;">
-                                    <li class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); margin-bottom: 6px;"><code>ubits-admin/desempeno/360/crear-360.html#evaluados</code> — elegir el método de asignación de evaluados (4 opciones).</li>
-                                    <li class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Drawer «Agregar asignación» en <code>ubits-colaborador/lms-creator/crear-plan-contenidos.html</code> — elegir el tipo de asignación de un plan de formación.</li>
-                                </ul>
-                            </div>
-
-                        </div>
-                    </div>
+                    
 
                 </div><!-- /content-area -->
             </div><!-- /components-content -->
@@ -365,14 +274,6 @@ function setColumns(n, btn) {
     btn.classList.add('active');
 }
 
-function toggleTechnicalDocs() {
-    var content = document.getElementById('technical-docs-content');
-    var btn     = document.getElementById('tech-docs-btn');
-    var open    = content.style.display !== 'none';
-    content.style.display = open ? 'none' : 'block';
-    btn.querySelector('i').className  = open ? 'far fa-chevron-down' : 'far fa-chevron-up';
-    btn.querySelector('span').textContent = open ? 'Mostrar' : 'Ocultar';
-}
 
 function copyPrompt(id) {
     var el   = document.getElementById(id);

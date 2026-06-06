@@ -140,128 +140,7 @@
                     </div>
                 </div>
 
-                <!-- ACORDEÓN DE DOCUMENTACIÓN TÉCNICA -->
-                <div style="background: var(--ubits-bg-1); border-radius: var(--border-radius-lg); margin-bottom: 40px; overflow: hidden;">
-                    <!-- Header del acordeón -->
-                    <div style="padding: 32px; text-align: center; border-bottom: 1px solid var(--ubits-border-1);">
-                        <h2 class="ubits-heading-h2" style="margin-bottom: 0; color: var(--ubits-fg-1-high);">
-                            <i class="far fa-code" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
-                            Documentación técnica
-                        </h2>
-                        <p class="ubits-body-md-regular" style="margin-top: 16px; color: var(--ubits-fg-1-medium);">
-                            Documentación técnica completa del componente Loader con estructura, requisitos e implementación.
-                        </p>
-                    </div>
-                    
-                    <!-- Botón de expansión -->
-                    <div style="background: var(--ubits-bg-2); padding: 20px; text-align: center; cursor: pointer;" onclick="toggleTechnicalDocs()">
-                        <span class="ubits-body-md-regular" style="color: var(--ubits-accent-brand); display: flex; align-items: center; justify-content: center; gap: var(--gap-sm);">
-                            <i class="far fa-chevron-down" id="tech-docs-chevron" style="transition: transform 0.3s ease;"></i>
-                            Mostrar
-                        </span>
-                    </div>
-                    
-                    <!-- Contenido del acordeón (inicialmente oculto) -->
-                    <div id="technical-docs-content" style="display: none; padding: 0;">
-                        <!-- Estructura del Componente -->
-                        <div style="padding: 32px; border-bottom: 1px solid var(--ubits-border-1);">
-                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;">
-                                <h2 class="ubits-heading-h2" style="margin: 0; color: var(--ubits-fg-1-high);">
-                                    <i class="far fa-sitemap" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
-                                    Estructura del componente
-                                </h2>
-                                <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('structure-code', event)">
-                                    <i class="far fa-copy"></i>
-                                    <span>Copiar</span>
-                                </button>
-                            </div>
-                            <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: var(--border-radius-md);">
-                                <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); overflow-x: auto;"><code id="structure-code">&lt;!-- Loader solo --&gt;
-&lt;span class="ubits-loader"&gt;&lt;/span&gt;
-
-&lt;!-- Loader con texto (wrapper opcional) --&gt;
-&lt;div class="ubits-loader-wrap"&gt;
-  &lt;span class="ubits-loader"&gt;&lt;/span&gt;
-  &lt;p class="ubits-loader-text ubits-body-md-regular"&gt;Cargando...&lt;/p&gt;
-&lt;/div&gt;</code></pre>
-                            </div>
-                        </div>
-
-                        <!-- Cómo Implementar -->
-                        <div style="padding: 32px; border-bottom: 1px solid var(--ubits-border-1);">
-                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;">
-                                <h2 class="ubits-heading-h2" style="margin: 0; color: var(--ubits-fg-1-high);">
-                                    <i class="far fa-code" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
-                                    Cómo implementar
-                                </h2>
-                                <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyCode('implement-code', event)">
-                                    <i class="far fa-copy"></i>
-                                    <span>Copiar</span>
-                                </button>
-                            </div>
-                            
-                            <!-- REQUISITOS DE RENDERIZADO -->
-                            <div style="background: var(--ubits-bg-2); padding: 16px; border-radius: var(--border-radius-sm); margin-bottom: 16px;">
-                                <h3 class="ubits-body-md-bold" style="margin-bottom: 12px; color: var(--ubits-fg-1-high);">🔧 REQUISITOS OBLIGATORIOS:</h3>
-                                <div class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); line-height: 1.5;">
-                                    <strong>CSS Requerido:</strong><br>
-                                    • <code>components/loader.css</code> - Estilos del componente<br>
-                                    • <code>ubits-colors.css</code> - Tokens de color UBITS<br><br>
-                                    <strong>JavaScript (opcional):</strong><br>
-                                    • <code>components/loader.js</code> - Función getLoaderHTML() para generar HTML dinámicamente<br><br>
-                                    <strong>Renderizado:</strong> HTML directo con clase <code>ubits-loader</code> o getLoaderHTML() function
-                                </div>
-                            </div>
-                            
-                            <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm);">
-                                <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium);"><code id="implement-code">&lt;!-- 1. IMPORTAR ARCHIVOS NECESARIOS --&gt;
-&lt;link rel="stylesheet" href="../../general-styles/ubits-colors.css"&gt;
-&lt;link rel="stylesheet" href="../../components/loader.css"&gt;
-&lt;script src="../../components/loader.js"&gt;&lt;/script&gt;
-
-&lt;!-- 2. USO: HTML directo --&gt;
-&lt;span class="ubits-loader"&gt;&lt;/span&gt;
-
-&lt;!-- 3. USO: Con getLoaderHTML() --&gt;
-&lt;script&gt;
-// Solo loader
-document.getElementById('mi-contenedor').innerHTML = getLoaderHTML();
-
-// Loader + texto con wrapper (centrado)
-document.getElementById('mi-contenedor').innerHTML = getLoaderHTML({ text: 'Generando recurso...' });
-
-// Loader + texto sin wrapper (para contenedores que ya centran)
-document.getElementById('mi-contenedor').innerHTML = getLoaderHTML({ text: 'Cargando...', wrap: false });
-&lt;/script&gt;</code></pre>
-                            </div>
-                        </div>
-
-                        <!-- API y Funciones -->
-                        <div style="padding: 32px;">
-                            <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
-                                <i class="far fa-cogs" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
-                                API y funciones
-                            </h2>
-                            <div style="margin-bottom: 24px;">
-                                <h3 class="ubits-body-md-bold" style="margin-bottom: 12px; color: var(--ubits-fg-1-high);">getLoaderHTML(options)</h3>
-                                <p class="ubits-body-md-regular" style="margin-bottom: 8px; line-height: 1.5;">
-                                    Genera el HTML del loader. Requiere que <code>loader.css</code> y <code>ubits-colors.css</code> estén importados. Si usas esta función, incluye <code>loader.js</code>.
-                                </p>
-                                <div style="background: var(--ubits-bg-2); padding: 12px; border-radius: var(--border-radius-sm); border-left: 4px solid var(--ubits-accent-brand);">
-                                    <div class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">
-                                        <strong>Parámetros (options, opcional):</strong><br>
-                                        • <code>text</code>: string - Texto debajo del loader (ej. "Cargando..."). Si no se pasa, solo se devuelve el <code>&lt;span class="ubits-loader"&gt;</code>.<br>
-                                        • <code>wrap</code>: boolean - Si hay <code>text</code>, envuelve loader + texto en <code>&lt;div class="ubits-loader-wrap"&gt;</code>. Por defecto <code>true</code>. Usa <code>false</code> cuando el contenedor ya centra el contenido (ej. flex column center).<br><br>
-                                        <strong>Ejemplos:</strong><br>
-                                        getLoaderHTML() → <code>&lt;span class="ubits-loader"&gt;&lt;/span&gt;</code><br>
-                                        getLoaderHTML({ text: 'Generando...' }) → wrap + loader + &lt;p class="ubits-loader-text"&gt;Generando...&lt;/p&gt;<br>
-                                        getLoaderHTML({ text: 'Cargando...', wrap: false }) → loader + &lt;p&gt; sin wrapper
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                
             </div>
             </div>
             </div>
@@ -305,20 +184,7 @@ document.getElementById('mi-contenedor').innerHTML = getLoaderHTML({ text: 'Carg
             }
         });
 
-        function toggleTechnicalDocs() {
-            var content = document.getElementById('technical-docs-content');
-            var chevron = document.getElementById('tech-docs-chevron');
-            var toggleText = chevron.parentElement;
-            if (content.style.display === 'none') {
-                content.style.display = 'block';
-                chevron.style.transform = 'rotate(180deg)';
-                toggleText.innerHTML = '<i class="far fa-chevron-up" id="tech-docs-chevron" style="transition: transform 0.3s ease;"></i>Ocultar';
-            } else {
-                content.style.display = 'none';
-                chevron.style.transform = 'rotate(0deg)';
-                toggleText.innerHTML = '<i class="far fa-chevron-down" id="tech-docs-chevron" style="transition: transform 0.3s ease;"></i>Mostrar';
-            }
-        }
+        
 
         function copyPrompt(promptId) {
             var promptElement = document.getElementById(promptId);
