@@ -162,8 +162,8 @@
         flex-wrap: wrap;
     }
 
-    /* Botones del header en celulares: tamaño sm (32px); excluir FAB */
-    .ubits-header-product__actions .ubits-button:not(.ubits-button--icon-only):not(.ubits-header-product__primary-action) {
+    /* Botones del header en celulares: tamaño sm (32px), primario incluido */
+    .ubits-header-product__actions .ubits-button:not(.ubits-button--icon-only) {
         height: 32px !important;
         min-height: 32px !important;
         padding: 9.5px 12px !important;
@@ -268,51 +268,10 @@
     /* No aplicar margin-bottom negativo: el gap natural de content-sections (--gap-xl = 20px) se mantiene */
 }
 
-/* Solo celulares (no tablets): botón primario como FAB icon-only (cuadrado, componente oficial), arriba del tab bar */
-@media (max-width: 767px) {
-    .ubits-header-product__primary-action {
-        position: fixed !important;
-        /* ~32px de separación sobre el tab bar */
-        bottom: calc(60px + 32px + env(safe-area-inset-bottom, 0px));
-        right: 16px;
-        z-index: 1001;
-        /* Icon-only oficial: cuadrado 48px para FAB táctil */
-        width: 48px !important;
-        height: 48px !important;
-        min-width: 48px !important;
-        min-height: 48px !important;
-        max-width: 48px !important;
-        max-height: 48px !important;
-        padding: 0 !important;
-        border-radius: var(--border-radius-sm) !important;
-        box-shadow: var(--ubits-elevation-overlay);
-        /* Forzar cuadrado: centrar icono */
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-    }
-
-    .ubits-header-product__primary-action span {
-        display: none !important;
-    }
-
-    .ubits-header-product__primary-action i {
-        margin: 0;
-    }
-
-    /* Evitar hueco debajo de tabs: el primario es FAB (fuera del flujo), __actions no debe reservar espacio */
-    .ubits-header-product__actions:has(.ubits-header-product__primary-action) {
-        padding: var(--padding-none) !important;
-        margin: 0 !important;
-        min-height: 0 !important;
-    }
-}
-
-/* En mobile pequeño (< 480px), todos los botones se transforman a icon-only */
+/* En mobile pequeño (< 480px), botones secundarios se transforman a icon-only */
 @media (max-width: 480px) {
 
     /* Botones secundarios sm - ocultar texto y hacer icon-only (32x32px) */
-    /* No aplicar icon-only 32px al botón primario: en celulares ya es FAB (ver regla @media max-width 767px) */
     .ubits-header-product__actions .ubits-button--secondary.ubits-button--sm:not(.ubits-button--icon-only) span {
         display: none;
     }
@@ -328,12 +287,12 @@
         border-radius: var(--border-radius-sm) !important;
     }
 
-    /* Botón primario sm - ocultar texto y hacer icon-only (32x32px), excepto el FAB */
-    .ubits-header-product__actions .ubits-button--primary.ubits-button--sm:not(.ubits-button--icon-only):not(.ubits-header-product__primary-action) span {
+    /* Botón primario sm - ocultar texto y hacer icon-only (32x32px) */
+    .ubits-header-product__actions .ubits-button--primary.ubits-button--sm:not(.ubits-button--icon-only) span {
         display: none;
     }
 
-    .ubits-header-product__actions .ubits-button--primary.ubits-button--sm:not(.ubits-button--icon-only):not(.ubits-header-product__primary-action) {
+    .ubits-header-product__actions .ubits-button--primary.ubits-button--sm:not(.ubits-button--icon-only) {
         padding: 9.5px 8px !important;
         width: 32px !important;
         height: 32px !important;

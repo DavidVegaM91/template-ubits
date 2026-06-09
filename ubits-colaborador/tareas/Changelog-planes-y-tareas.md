@@ -38,7 +38,7 @@ Registro de cambios realizados en los archivos del módulo de Tareas y Planes (P
 ### 2. Estructura de páginas
 
 3. [x] **Header product en planes y tareas**  
-   Implementar el componente **header product** oficial en `planes.html` con version mobile de boton flotante.
+   Implementar el componente **header product** oficial en `planes.html` y `tareas.html`.
 
 ### 3. Componentes oficiales UBITS
 

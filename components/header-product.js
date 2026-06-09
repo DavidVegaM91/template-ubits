@@ -463,10 +463,10 @@
  * junto con openDropdownMenu({ alignRight: true }).
  *
  * ⚠️ IMPORTANTE - POSICIONAMIENTO EN MOBILE:
- * En mobile (≤ 767px), el botón primario se convierte en un FAB fijo (position:fixed,
- * bottom: ~92px, right: 16px). El componente openDropdownMenu calcula que hay espacio
- * debajo del FAB y posiciona el dropdown ahí, pero queda tapado por la tab-bar.
- * Por eso, SIEMPRE hay que forzar el dropdown ARRIBA del FAB en mobile.
+ * En mobile el botón primario permanece en la fila de acciones del header (mismo flujo
+ * que desktop), con tamaño compacto (32px). Si abre un dropdown, openDropdownMenu puede
+ * posicionarlo debajo del botón; en pantallas muy bajas revisar que no quede tapado
+ * por la tab-bar y ajustar con el callback de posicionamiento si hace falta.
  *
  * REQUISITOS ADICIONALES al patrón normal del header-product:
  * 1. CSS: <link rel="stylesheet" href="components/dropdown-menu.css">
@@ -519,16 +519,6 @@
  *         }
  *         ensureMenuOverlay();
  *         window.openDropdownMenu(MENU_OVERLAY_ID, anchorElement, { alignRight: true });
- *         // ── MOBILE FIX: forzar dropdown ARRIBA del FAB ──
- *         // Sin esto el dropdown queda debajo del FAB, tapado por la tab-bar.
- *         if (window.matchMedia('(max-width: 767px)').matches) {
- *             var ov = document.getElementById(MENU_OVERLAY_ID);
- *             if (!ov) return;
- *             var ct = ov.querySelector('.ubits-dropdown-menu__content');
- *             if (!ct) return;
- *             var rect = anchorElement.getBoundingClientRect();
- *             ct.style.top = (rect.top - ct.offsetHeight - 4) + 'px';
- *         }
  *     }
  *     window.openCrearMenu = openCrearMenu;
  * })();
@@ -552,7 +542,7 @@
  * });
  * ```
  *
- * CSS RECOMENDADO en la página (z-index del dropdown por encima del FAB y tab-bar):
+ * CSS RECOMENDADO en la página (z-index del dropdown por encima de tab-bar si aplica):
  * ```css
  * .mi-pagina #mi-pagina-crear-menu-overlay.ubits-dropdown-menu__overlay { z-index: 1102; }
  * .mi-pagina #mi-pagina-crear-menu-overlay .ubits-dropdown-menu__content { z-index: 1103; }

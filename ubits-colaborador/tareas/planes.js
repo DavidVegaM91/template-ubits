@@ -437,7 +437,7 @@ function ensureCrearMenuOverlay() {
     });
 }
 
-/** Abre el menú desplegable "Crear" (componente oficial). Desktop: debajo, alineado a la derecha con el botón. Móvil: arriba del FAB, misma alineación. */
+/** Abre el menú desplegable "Crear" (componente oficial). Usado desde el botón primario del header-product; alineado a la derecha con el ancla. */
 function openCrearMenu(anchorElement) {
     if (!anchorElement || !anchorElement.getBoundingClientRect) return;
     if (typeof window.openDropdownMenu !== 'function' || typeof window.closeDropdownMenu !== 'function') return;
