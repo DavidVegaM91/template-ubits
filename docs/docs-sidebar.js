@@ -59,7 +59,7 @@ const DOCS_SIDEBAR_SECTIONS = [
     { id: 'paginator', title: 'Paginator', group: 'ui' },
     { id: 'popover', title: 'Popover', group: 'ui' },
     { id: 'progress-bar', title: 'Progress bar', group: 'ui' },
-    { id: 'segmented-progress', title: 'Progreso segmentado', group: 'ui' },
+    { id: 'segmented-progress', title: 'Segmented progress', group: 'ui' },
     { id: 'radio-button', title: 'Radio Button', group: 'ui' },
     { id: 'rich-text-editor', title: 'Rich text editor', group: 'ui' },
     { id: 'status-panel', title: 'Status panel', group: 'ui' },

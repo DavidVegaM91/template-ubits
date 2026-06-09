@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/svg+xml" href="../../images/playground-favicon.svg">
-    <title>Progreso segmentado / Segmented progress | UBITS Playground</title>
+    <title>Segmented progress | UBITS Playground</title>
     <link rel="stylesheet" href="../../general-styles/ubits-colors.css">
     <link rel="stylesheet" href="../../general-styles/styles.css">
     <link rel="stylesheet" href="../../general-styles/fontawesome-icons.css">
@@ -57,7 +57,7 @@
                     <div class="content-area" style="display: block; width: 100%;">
                         <div style="text-align: center; margin-bottom: 60px;">
                             <h1 class="ubits-display-d2-bold" style="margin-bottom: 24px; color: var(--ubits-accent-brand);">
-                                Progreso segmentado
+                                Segmented progress
                             </h1>
                             <p class="ubits-body-md-regular" style="max-width: 800px; margin: 0 auto 32px; line-height: 1.6;">
                                 Muestra avance ítem a ítem en quiz, flashcards o flujos con pasos discretos. Con pocos ítems usa segmentos; con muchos (20+) cambia a modo slider con indicador.
@@ -79,7 +79,7 @@
                                     <span class="ubits-switch__label">Simular 24 ítems (modo slider)</span>
                                 </label>
                                 <label class="ubits-switch ubits-switch--md">
-                                    <input type="checkbox" class="ubits-switch__input" id="sp-preview-subtle" role="switch">
+                                    <input type="checkbox" class="ubits-switch__input" id="sp-preview-subtle" role="switch" disabled>
                                     <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
                                     <span class="ubits-switch__label">Track sutil (flashcards)</span>
                                 </label>
@@ -226,14 +226,22 @@
             });
 
             var manySwitch = document.getElementById('sp-preview-many');
+            var subtleSwitch = document.getElementById('sp-preview-subtle');
+
             if (manySwitch) {
                 manySwitch.addEventListener('change', function () {
                     spPreviewMany = manySwitch.checked;
+                    if (subtleSwitch) {
+                        subtleSwitch.disabled = !spPreviewMany;
+                        if (!spPreviewMany) {
+                            subtleSwitch.checked = false;
+                            spPreviewSubtle = false;
+                        }
+                    }
                     spPaintPreview();
                 });
             }
 
-            var subtleSwitch = document.getElementById('sp-preview-subtle');
             if (subtleSwitch) {
                 subtleSwitch.addEventListener('change', function () {
                     spPreviewSubtle = subtleSwitch.checked;
