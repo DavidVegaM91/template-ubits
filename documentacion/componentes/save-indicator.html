@@ -18,6 +18,7 @@
     <link rel="stylesheet" href="../../docs/docs-sidebar.css">
     <link rel="stylesheet" href="../../docs/docstyles.css">
     <link rel="stylesheet" href="../../components/button.css">
+    <link rel="stylesheet" href="../../components/input.css">
     <link rel="stylesheet" href="../../components/alert.css">
     <link rel="stylesheet" href="../../components/toast.css">
     <link rel="stylesheet" href="../../components/save-indicator.css">
@@ -79,37 +80,21 @@
                         <i class="far fa-eye" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
                         Preview del componente
                     </h2>
-                    <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6;">
-                        Usa los controles para cambiar estado y tamaño. Abajo se muestran los cuatro tamaños en estado Saved (solo icono) para verificar 28×28, 32×32, 40×40 y 48×48.
-                    </p>
+                    <!-- Controles FUERA del recuadro gris -->
+                    <div style="display: flex; flex-wrap: wrap; gap: 16px; margin-bottom: 20px;">
+                        <div style="flex: 1; min-width: 160px; max-width: 240px;" id="size-select-container"></div>
+                        <div style="flex: 1; min-width: 180px; max-width: 280px;" id="state-select-container"></div>
+                    </div>
 
-                    <!-- Contenedor del preview (controles arriba como Alert/Button) -->
+                    <!-- Recuadro gris: solo vista previa -->
                     <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: 12px; border: 1px solid var(--ubits-border-1);">
-                        <!-- Controles del preview PRIMERO (selector de tamaño + selector de estado) -->
-                        <p class="ubits-body-sm-bold" style="margin: 0 0 12px 0; color: var(--ubits-fg-1-high);">Controles del preview</p>
-                        <p class="ubits-body-sm-regular" style="margin: 0 0 6px 0; color: var(--ubits-fg-1-medium);">Tamaño</p>
-                        <div style="display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 16px;">
-                            <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-control="size" data-size="xs"><span>xs (28×28)</span></button>
-                            <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-control="size" data-size="sm"><span>sm (32×32)</span></button>
-                            <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn active" data-control="size" data-size="md"><span>md (40×40)</span></button>
-                            <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-control="size" data-size="lg"><span>lg (48×48)</span></button>
-                        </div>
-                        <p class="ubits-body-sm-regular" style="margin: 0 0 6px 0; color: var(--ubits-fg-1-medium);">Estado</p>
-                        <div style="display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 24px;">
-                            <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn active" data-control="state" data-state="idle" data-variant="plain"><span>Saved</span></button>
-                            <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-control="state" data-state="idle" data-variant="subtle"><span>Hover</span></button>
-                            <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-control="state" data-state="idle" data-variant="highlighted"><span>Focus</span></button>
-                            <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-control="state" data-state="saving"><span>Saving</span></button>
-                            <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-control="state" data-state="error"><span>Failed</span></button>
-                            <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" data-control="state" data-state="saved"><span>Recently saved</span></button>
-                        </div>
-
-                        <!-- Vista previa dinámica (según controles) -->
                         <p class="ubits-body-sm-bold" style="margin: 0 0 12px 0; color: var(--ubits-fg-1-medium);">Vista previa</p>
-                        <div id="save-indicator-preview"></div>
+                        <div id="save-indicator-preview" style="display: flex; align-items: flex-start; min-height: 64px;"></div>
+                    </div>
 
-                        <!-- Fila de tamaños (Saved) para verificar 28×28, 32×32, 40×40, 48×48 -->
-                        <p class="ubits-body-sm-bold" style="margin: 24px 0 12px 0; color: var(--ubits-fg-1-medium);">Solo icono por tamaño (Saved)</p>
+                    <!-- Fila de tamaños: fuera del recuadro gris -->
+                    <div style="margin-top: 16px;">
+                        <p class="ubits-body-sm-bold" style="margin: 0 0 12px 0; color: var(--ubits-fg-1-medium);">Solo icono por tamaño (Saved)</p>
                         <div class="save-indicator-sizes-row">
                             <div class="save-indicator-size-cell">
                                 <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">xs 28×28</span>
@@ -218,6 +203,7 @@
 
     <script src="../../components/sidebar.js"></script>
     <script src="../../components/sub-nav.js"></script>
+    <script src="../../components/input.js"></script>
     <script src="../../components/alert.js"></script>
     <script src="../../components/toast.js"></script>
     <script src="../../components/save-indicator.js"></script>
@@ -231,9 +217,19 @@
                 containerId: 'save-indicator-warning-alert',
                 noClose: true
             });
+
             var currentSize = 'md';
             var currentState = 'idle';
             var currentVariant = 'plain';
+
+            var STATE_MAP = {
+                'idle-plain':       { state: 'idle', variant: 'plain' },
+                'idle-subtle':      { state: 'idle', variant: 'subtle' },
+                'idle-highlighted': { state: 'idle', variant: 'highlighted' },
+                'saving':           { state: 'saving', variant: '' },
+                'error':            { state: 'error', variant: '' },
+                'saved':            { state: 'saved', variant: '' }
+            };
 
             function getPreviewOptions() {
                 var opts = { state: currentState, size: currentSize };
@@ -258,22 +254,47 @@
             updateMainPreview();
             renderSizeRow();
 
-            document.querySelectorAll('.preview-control-btn').forEach(function(btn) {
-                btn.addEventListener('click', function() {
-                    var control = this.getAttribute('data-control');
-                    if (control === 'size') {
-                        document.querySelectorAll('.preview-control-btn[data-control="size"]').forEach(function(b) { b.classList.remove('active'); });
-                        this.classList.add('active');
-                        currentSize = this.getAttribute('data-size') || 'md';
-                    } else if (control === 'state') {
-                        document.querySelectorAll('.preview-control-btn[data-control="state"]').forEach(function(b) { b.classList.remove('active'); });
-                        this.classList.add('active');
-                        currentState = this.getAttribute('data-state') || 'idle';
-                        currentVariant = this.getAttribute('data-variant') || 'plain';
+            if (typeof createInput === 'function') {
+                createInput({
+                    containerId: 'size-select-container',
+                    type: 'select',
+                    size: 'sm',
+                    label: 'Tamaño',
+                    selectOptions: [
+                        { value: 'xs', text: 'xs (28×28)' },
+                        { value: 'sm', text: 'sm (32×32)' },
+                        { value: 'md', text: 'md (40×40)' },
+                        { value: 'lg', text: 'lg (48×48)' }
+                    ],
+                    value: 'md',
+                    onChange: function(value) {
+                        currentSize = value;
+                        updateMainPreview();
                     }
-                    updateMainPreview();
                 });
-            });
+
+                createInput({
+                    containerId: 'state-select-container',
+                    type: 'select',
+                    size: 'sm',
+                    label: 'Estado',
+                    selectOptions: [
+                        { value: 'idle-plain',       text: 'Saved' },
+                        { value: 'idle-subtle',      text: 'Hover' },
+                        { value: 'idle-highlighted', text: 'Focus' },
+                        { value: 'saving',           text: 'Saving' },
+                        { value: 'error',            text: 'Failed' },
+                        { value: 'saved',            text: 'Recently saved' }
+                    ],
+                    value: 'idle-plain',
+                    onChange: function(value) {
+                        var mapped = STATE_MAP[value] || { state: 'idle', variant: 'plain' };
+                        currentState = mapped.state;
+                        currentVariant = mapped.variant;
+                        updateMainPreview();
+                    }
+                });
+            }
         });
         
         function copyPrompt(promptId) {
