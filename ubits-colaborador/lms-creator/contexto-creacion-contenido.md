@@ -832,6 +832,22 @@ Tras recoger tema y reglas, el flujo llega a un **paso de confirmación** en el 
 
 ---
 
+## Migración a React (`Ubits-React`)
+
+Al portar este flujo a páginas del playground React (`pages/ubits-colaborador/lms-creator/…`), **solo entra lo vigente en vanilla hoy**. No reutilizar variantes, modales ni props que ya se eliminaron del referente.
+
+| Portar (oficial) | No portar (legacy eliminado) |
+|------------------|------------------------------|
+| `learn-content-img-trailer` con **vacío IA** (icono + título + descripción + CTA «Agregar portada») | Vacío clásico con **dos botones** («Generar portada con IA» + «Cargar imagen») |
+| Modal único **`portada-imagen-modal`** (pestañas IA · Subir · Tráiler) desde el CTA y desde «Editar» | Modal `#portada-ai-modal`, panel IA standalone de portada, atajos directos a generar sin el modal con pestañas |
+| Componente React `UbitsLearnContentImgTrailer` (catálogo `/componentes`) | Prop `emptyVariant` / `empty-variant`, variante delete del componente, componente `IAModal` de portada (retirado del playground React) |
+
+**Fuente de verdad para el port:** `Referente-Vanilla/` en `main` (template-ubits), este documento, `documentacion/componentes/learn-content-img-trailer.html` y los archivos `crear-contenido.*` / `portada-imagen-modal.*` actuales — **no** commits antiguos, bocetos ni texto tachado de versiones previas.
+
+**Regla:** si un patrón solo aparece en historial git o en conversaciones de migración, **no** debe contaminar el layout React.
+
+---
+
 ## Notas para quien implemente
 
 Este documento **no** sustituye la **documentación de componentes UBITS** ni las reglas del repositorio para desarrollo. Quien construya pantallas debe partir del catálogo oficial de componentes y de los patrones del Creator ya definidos en código.
@@ -840,4 +856,4 @@ Este documento **no** sustituye la **documentación de componentes UBITS** ni la
 
 ---
 
-*Última revisión: paso **Visibilidad** (4 selection cards, Borrador default). Paso **Certificado** (empty state, plantillas Fiqsha, preview, sync portada, deep link demo). **Complementary resources** (excluido en Evaluación final). **Recursos:** 8 tipos; persistencia por página.*
+*Última revisión: **Portada** — vacío IA único + modal `portada-imagen-modal`; sección **Migración a React**. Paso **Visibilidad** (4 selection cards, Borrador default). Paso **Certificado** (empty state, plantillas Fiqsha, preview, sync portada, deep link demo). **Complementary resources** (excluido en Evaluación final). **Recursos:** 8 tipos; persistencia por página.*

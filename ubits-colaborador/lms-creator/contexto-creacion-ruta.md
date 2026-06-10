@@ -45,6 +45,16 @@ Igual que **crear contenido**, salvo la ficha técnica:
 | Tiempo aproximado / unidad | **No** (el tiempo lo calcula el sistema sumando los contenidos incluidos) |
 | Categoría | Sí |
 
+### Imagen de portada y tráiler (mismo componente y modal que crear contenido)
+
+La miniatura usa el componente **`learn-content-img-trailer`** en `crear-ruta.html` (`#crear-ruta-img-trailer`). La imagen es **obligatoria** para avanzar; el **tráiler es opcional**.
+
+**Hueco sin imagen (vacío oficial):** layout **vacío con IA** — icono, título (*Agrega una portada*), descripción breve y un solo **CTA primario** **«Agregar portada»** (ia-button). **No** hay variante vacía con dos botones («Generar portada con IA» + «Cargar imagen») ni atajos a panel de IA o modal de generación aparte; el único camino desde el hueco es abrir el modal unificado.
+
+**Al pulsar «Agregar portada»** (o **«Editar»** cuando ya hay imagen) se abre el mismo modal **`portada-imagen-modal`** («Añadir portada») que en crear contenido, con tres pestañas: **Portada con IA**, **Subir portada** y **Tráiler (opcional)**. Detalle de pestañas, tokens, retoque con contexto guardado y reproducción del tráiler en la miniatura: ver **`contexto-creacion-contenido.md`** → *Imagen de portada y tráiler: modal «Añadir portada»*.
+
+**Con imagen confirmada:** la cabecera muestra la foto; si vino de IA, puede verse la etiqueta **«Generado con IA»**; con tráiler, botón de play sobre la miniatura.
+
 **Regla para avanzar:** mismos obligatorios que portada de contenido, **sin** tipo ni tiempo.
 
 ---
@@ -222,6 +232,16 @@ El drawer de selección sigue usando `loadCardContentCompact` **sin** menú ni a
 
 ---
 
+## Migración a React (`Ubits-React`)
+
+Misma regla que en **`contexto-creacion-contenido.md` → Migración a React**: al portar `crear-ruta` al playground React, **solo lo vigente en vanilla**.
+
+- **Portada:** `#crear-ruta-img-trailer` con vacío IA + CTA → **`portada-imagen-modal`** (igual que crear contenido). Sin vacío de dos botones, sin `#portada-ai-modal` ni panel IA standalone de portada.
+- **Componente:** `UbitsLearnContentImgTrailer` del catálogo React; sin `emptyVariant` ni flujos paralelos eliminados del referente.
+- **Fuente de verdad:** `crear-ruta.html` / `crear-ruta.js` actuales + sección *Imagen de portada y tráiler* de este documento y del contexto de crear contenido.
+
+---
+
 ## Diferencias clave vs crear contenido
 
 | Aspecto | Crear contenido | Crear ruta |
@@ -233,4 +253,4 @@ El drawer de selección sigue usando `loadCardContentCompact` **sin** menú ni a
 
 ---
 
-*Última actualización: hashes URL por paso y deep link demo progresivo (ruta de liderazgo); pasos Certificado y Visibilidad implementados.*
+*Última actualización: **Portada** documentada (vacío IA + modal único); sección **Migración a React**. Hashes URL por paso y deep link demo progresivo (ruta de liderazgo); pasos Certificado y Visibilidad implementados.*
