@@ -13,10 +13,29 @@
     var currentUiState = 'empty';
     var suppressHashWrite = false;
 
+    /** Usuario del playground (María Alejandra — bd-master-colaboradores E006) */
+    var PLAYGROUND_USER_ID = 'E006';
+    var PLAYGROUND_USER_EMAIL = 'masanchez@fiqsha.demo';
+
+    function getCurrentUserEmail() {
+        var cols = window.BD_MASTER_COLABORADORES && window.BD_MASTER_COLABORADORES.colaboradores;
+        if (Array.isArray(cols)) {
+            for (var i = 0; i < cols.length; i++) {
+                var c = cols[i];
+                if (c.id === PLAYGROUND_USER_ID || c.username === PLAYGROUND_USER_EMAIL) {
+                    return c.correoElectronico || c.email || c.correo || c.username || PLAYGROUND_USER_EMAIL;
+                }
+            }
+        }
+        return PLAYGROUND_USER_EMAIL;
+    }
+
+    var currentUserEmail = getCurrentUserEmail();
+
     var form = {
         fechaInicial: '',
         fechaFinal: '',
-        email: '',
+        email: currentUserEmail,
         emailConfirm: '',
         incluirInactivos: false,
         contenidoId: '',
@@ -31,8 +50,8 @@
     var DEMO = {
         fechaInicial: '2026-01-01',
         fechaFinal: '2026-06-30',
-        email: 'juanbarraza@empresa.com.co',
-        emailConfirm: 'juanbarraza@empresa.com.co',
+        email: currentUserEmail,
+        emailConfirm: '',
         certificadosCount: 128,
         minutosEntrega: 15
     };
@@ -111,35 +130,69 @@
         return list;
     }
 
-    function buildContenidoOptions() {
-        return getCatalogoContenidos().slice(0, 40).map(function (c) {
-            return { value: String(c.id), label: c.title || c.name || 'Contenido' };
+    function buildContenidoAutocompleteOptions() {
+        var opts = getCatalogoContenidos().map(function (c) {
+            var title = c.titulo || c.title || c.name || 'Contenido';
+            var origin = c.origen === 'empresa_fiqsha' ? 'Fiqsha' : 'UBITS';
+            return { value: String(c.id), text: String(title) + ' · ' + origin };
         });
+        opts.sort(function (a, b) {
+            return String(a.text || '').localeCompare(String(b.text || ''), 'es', { sensitivity: 'base' });
+        });
+        return opts;
     }
 
-    function buildColaboradorOptions() {
+    function getContenidoAutocompleteDisplayValue(contenidoId) {
+        if (!contenidoId) return '';
+        var found = contenidoOptions.find(function (o) { return o.value === String(contenidoId); });
+        return found ? found.text : '';
+    }
+
+    function buildColaboradorAutocompleteOptions() {
         var cols = window.BD_MASTER_COLABORADORES && window.BD_MASTER_COLABORADORES.colaboradores;
         if (!Array.isArray(cols)) return [];
-        return cols.slice(0, 55).map(function (c) {
-            var nombre = c.nombreCompleto || [c.nombre, c.apellido].filter(Boolean).join(' ').trim();
+        var opts = cols.map(function (c) {
+            var nombre = c.nombreCompleto || [c.nombre, c.apellido].filter(Boolean).join(' ').trim() || 'Colaborador';
+            var area = c.area || c.cargo || '';
             var user = c.username || c.usuario || '';
-            var mail = c.correoElectronico || c.email || c.correo || '';
-            var label = nombre || 'Colaborador';
-            if (user || mail) {
-                label += ' (' + [user, mail].filter(Boolean).join(' - ') + ')';
-            }
-            return { value: String(c.id || c.idColaborador), label: label };
+            var idColab = c.idColaborador ? String(c.idColaborador) : '';
+            var parts = [nombre];
+            if (area) parts.push(area);
+            if (user) parts.push(user);
+            if (idColab) parts.push(idColab);
+            return { value: String(c.id || c.idColaborador), text: parts.join(' · ') };
         });
+        opts.sort(function (a, b) {
+            return String(a.text || '').localeCompare(String(b.text || ''), 'es', { sensitivity: 'base' });
+        });
+        return opts;
+    }
+
+    function getColaboradorAutocompleteDisplayValue(colaboradorId) {
+        if (!colaboradorId) return '';
+        var found = colaboradorOptions.find(function (o) { return o.value === String(colaboradorId); });
+        return found ? found.text : '';
     }
 
     function getContenidoLabelById(id) {
+        var all = getCatalogoContenidos();
+        var item = all.find(function (c) { return String(c.id) === String(id); });
+        if (item) return item.titulo || item.title || item.name || 'Contenido';
         var found = contenidoOptions.find(function (o) { return o.value === String(id); });
-        return found ? found.label : '';
+        return found ? String(found.text).split(' · ')[0] : '';
     }
 
     function getColaboradorLabelById(id) {
         var found = colaboradorOptions.find(function (o) { return o.value === String(id); });
-        return found ? found.label : '';
+        if (!found) return '';
+        var text = String(found.text || '');
+        return text.split(' · ')[0] || text;
+    }
+
+    function normalizeTipoContenidos(value) {
+        if (value === 'todos') return 'ambos';
+        if (value === 'ubits' || value === 'propios' || value === 'ambos') return value;
+        return 'propios';
     }
 
     function formatDateHuman(iso) {
@@ -334,11 +387,7 @@
         if (tipoWrap) tipoWrap.hidden = mode !== 'colaborador';
 
         if (hint) {
-            if (mode === 'global') {
-                hint.textContent = 'Selecciona un rango de fechas y te enviaremos por correo un archivo .zip con todos los certificados generados en ese periodo.';
-            } else {
-                hint.textContent = 'Al finalizar el proceso, recibirás en tu correo un archivo .zip con los certificados.';
-            }
+            hint.textContent = 'Al finalizar el proceso, recibirás en tu correo un archivo .zip con los certificados.';
         }
     }
 
@@ -348,12 +397,13 @@
         if (document.getElementById('certificados-input-contenido')) {
             window.createInput({
                 containerId: 'certificados-input-contenido',
-                type: 'select',
+                type: 'autocomplete',
                 label: 'Buscar contenido',
-                placeholder: 'Selecciona un contenido',
+                placeholder: 'Buscar contenido…',
                 size: 'md',
-                selectOptions: [{ value: '', label: 'Selecciona un contenido' }].concat(contenidoOptions),
-                value: form.contenidoId,
+                autocompleteOptions: contenidoOptions,
+                autocompleteLazyPageSize: 15,
+                value: getContenidoAutocompleteDisplayValue(form.contenidoId),
                 onChange: function (v) {
                     form.contenidoId = v || '';
                     updateSubmitButton();
@@ -364,14 +414,35 @@
         if (document.getElementById('certificados-input-colaborador')) {
             window.createInput({
                 containerId: 'certificados-input-colaborador',
-                type: 'select',
+                type: 'autocomplete',
                 label: 'Buscar colaborador',
-                placeholder: 'Selecciona un colaborador',
+                placeholder: 'Buscar colaborador…',
                 size: 'md',
-                selectOptions: [{ value: '', label: 'Selecciona un colaborador' }].concat(colaboradorOptions),
-                value: form.colaboradorId,
+                autocompleteOptions: colaboradorOptions,
+                autocompleteLazyPageSize: 15,
+                value: getColaboradorAutocompleteDisplayValue(form.colaboradorId),
                 onChange: function (v) {
                     form.colaboradorId = v || '';
+                    updateSubmitButton();
+                }
+            });
+        }
+
+        if (document.getElementById('certificados-input-tipo-contenidos')) {
+            window.createInput({
+                containerId: 'certificados-input-tipo-contenidos',
+                type: 'select',
+                label: 'Tipo de contenidos',
+                placeholder: 'Selecciona una opción',
+                size: 'md',
+                selectOptions: [
+                    { value: 'ubits', text: 'Solo contenidos UBITS' },
+                    { value: 'propios', text: 'Solo contenidos propios' },
+                    { value: 'ambos', text: 'Ambos tipos de contenido' }
+                ],
+                value: form.tipoContenidos,
+                onChange: function (v) {
+                    form.tipoContenidos = normalizeTipoContenidos(v);
                     updateSubmitButton();
                 }
             });
@@ -381,8 +452,8 @@
     function mountFormInputs() {
         if (inputsMounted || typeof window.createInput !== 'function') return;
 
-        contenidoOptions = buildContenidoOptions();
-        colaboradorOptions = buildColaboradorOptions();
+        contenidoOptions = buildContenidoAutocompleteOptions();
+        colaboradorOptions = buildColaboradorAutocompleteOptions();
 
         window.createInput({
             containerId: 'certificados-input-fecha-inicial',
@@ -436,24 +507,6 @@
             }
         });
 
-        window.createInput({
-            containerId: 'certificados-input-tipo-contenidos',
-            type: 'select',
-            label: 'Tipo de contenidos',
-            placeholder: 'Selecciona una opción',
-            size: 'md',
-            selectOptions: [
-                { value: 'propios', label: 'Solo contenidos propios' },
-                { value: 'todos', label: 'Todos los contenidos' },
-                { value: 'ubits', label: 'Solo contenidos UBITS' }
-            ],
-            value: form.tipoContenidos,
-            onChange: function (v) {
-                form.tipoContenidos = v || 'propios';
-                updateSubmitButton();
-            }
-        });
-
         remountSelectInputs();
         inputsMounted = true;
     }
@@ -466,7 +519,7 @@
         form.incluirInactivos = !!values.incluirInactivos;
         form.contenidoId = values.contenidoId || '';
         form.colaboradorId = values.colaboradorId || '';
-        form.tipoContenidos = values.tipoContenidos || 'propios';
+        form.tipoContenidos = normalizeTipoContenidos(values.tipoContenidos);
         syncToggleUi();
         remountSelectInputs();
         remountCalendarAndEmailInputs();
@@ -501,10 +554,11 @@
     }
 
     function resetFormEmpty() {
+        var userEmail = getCurrentUserEmail();
         setFormValues({
             fechaInicial: '',
             fechaFinal: '',
-            email: '',
+            email: userEmail,
             emailConfirm: '',
             incluirInactivos: false,
             contenidoId: '',
@@ -532,6 +586,16 @@
         clearFieldValidation();
     }
 
+    function buildConfirmacionAlertNote() {
+        return (
+            '<div class="ubits-alert ubits-alert--warning ubits-alert--no-close ubits-alert--block-text certificados-modal-alert">' +
+            '<div class="ubits-alert__icon"><i class="far fa-triangle-exclamation"></i></div>' +
+            '<div class="ubits-alert__content">' +
+            '<div class="ubits-alert__text">El enlace de descarga <span class="ubits-alert__emphasis">estará disponible por 2 días.</span> Después de ese tiempo, deberás volver a generar la solicitud desde esta plataforma.</div>' +
+            '</div></div>'
+        );
+    }
+
     function modalRow(iconClass, label, value) {
         return (
             '<p class="certificados-modal-row">' +
@@ -554,8 +618,7 @@
         rows += modalRow('fa-calendar', 'Rango de fechas:', formatDateRangeHuman());
         rows += modalRow('fa-envelope', 'Enviar a:', form.email);
         rows += modalRow('fa-clock', 'Tiempo de entrega:', 'Aproximadamente ' + DEMO.minutosEntrega + ' minutos');
-        rows += '<p class="certificados-modal-row"><span class="certificados-modal-row__icon"><i class="far fa-triangle-exclamation"></i></span><span class="certificados-modal-row__text certificados-modal-note-title ubits-body-md-semibold">Nota importante</span></p>';
-        rows += '<p class="certificados-modal-note-text ubits-body-md-regular">El enlace de descarga estará disponible por 2 días. Después de ese tiempo, deberás volver a generar la solicitud desde esta plataforma.</p>';
+        rows += buildConfirmacionAlertNote();
         return '<div class="certificados-modal-body">' + rows + '</div>';
     }
 

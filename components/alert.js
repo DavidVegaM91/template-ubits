@@ -337,6 +337,19 @@ window.showAlert = showAlert;
  * 
  * TIPOS DISPONIBLES: 'success', 'info', 'warning', 'error'
  * ICONOS: fa-check-circle, fa-info-circle, fa-exclamation-triangle, fa-times-circle
+ *
+ * NOTA — ÉNFASIS Y COPY MULTILÍNEA (.ubits-alert__text)
+ * __text usa display:flex. Varios hijos directos (texto + <strong>, <p>, etc.) se ven como
+ * columnas separadas. Para resaltar un fragmento: <span class="ubits-alert__emphasis">…</span>
+ * (inline, font-weight 600). No uses <strong> suelto sin el modificador block-text.
+ * Mensajes largos o HTML en modales: class="ubits-alert … ubits-alert--block-text" en el root.
+ * Ejemplo (certificados confirmación):
+ * ```html
+ * <div class="ubits-alert ubits-alert--warning ubits-alert--no-close ubits-alert--block-text">
+ *   …
+ *   <div class="ubits-alert__text">El enlace … <span class="ubits-alert__emphasis">estará disponible por 2 días.</span> …</div>
+ * </div>
+ * ```
  */
 
 // Export for module systems

@@ -56,6 +56,30 @@
     min-height: 24px;
 }
 
+/*
+ * NOTA — énfasis y copy multilínea en .ubits-alert__text
+ * Por defecto __text usa display:flex. Varios hijos directos (texto + <strong>, <p>, etc.)
+ * se alinean como ítems flex y el mensaje se “parte” en columnas.
+ * - Énfasis parcial: <span class="ubits-alert__emphasis">…</span> (inline, font-weight 600).
+ *   No uses <strong> ni bloques sueltos como hermanos sin el modificador block-text.
+ * - Mensaje largo / HTML en modales: añade .ubits-alert--block-text al root del alert.
+ */
+.ubits-alert--block-text .ubits-alert__content {
+    display: block;
+    flex: 1;
+    min-width: 0;
+}
+
+.ubits-alert--block-text .ubits-alert__text {
+    display: block;
+    min-height: 0;
+    align-items: unset;
+}
+
+.ubits-alert__emphasis {
+    font-weight: 600;
+}
+
 .ubits-alert__close {
     flex-shrink: 0;
     width: 24px;
@@ -162,6 +186,8 @@
 .ubits-alert--no-close .ubits-alert__close {
     display: none;
 }
+
+/* Ver nota en .ubits-alert__text — layout en bloque para copy con <span class="ubits-alert__emphasis"> */
 
 /* ========================================
    ALERT — VARIANTE IA

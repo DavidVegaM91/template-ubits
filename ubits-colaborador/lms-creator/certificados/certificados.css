@@ -109,10 +109,8 @@
     color: var(--ubits-fg-1-high);
 }
 
-.certificados-modal-note-title {
-    margin: var(--gap-sm) 0 0;
-    font-weight: 600;
-    color: var(--ubits-fg-1-high);
+.certificados-modal-alert {
+    margin-top: var(--gap-sm);
 }
 
 .certificados-modal-note-text {

@@ -151,6 +151,23 @@
                         </div>
                     </div>
 
+                    <!-- Énfasis y copy multilínea -->
+                    <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; margin-bottom: 40px;">
+                        <h2 class="ubits-heading-h2" style="margin-bottom: 16px; color: var(--ubits-fg-1-high);">
+                            <i class="far fa-align-left" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                            Énfasis y copy multilínea
+                        </h2>
+                        <p class="ubits-body-md-regular" style="margin-bottom: 16px; line-height: 1.6; color: var(--ubits-fg-1-medium);">
+                            <code>.ubits-alert__text</code> usa <code>display: flex</code>. Si el mensaje tiene varios hijos directos
+                            (texto suelto + <code>&lt;strong&gt;</code>, <code>&lt;p&gt;</code>, etc.), cada hijo se alinea como ítem flex y el copy se “parte” en columnas.
+                        </p>
+                        <ul class="ubits-body-md-regular" style="margin: 0; padding-left: 24px; line-height: 1.6; color: var(--ubits-fg-1-medium);">
+                            <li style="margin-bottom: 8px;"><strong>Énfasis parcial:</strong> <code>&lt;span class="ubits-alert__emphasis"&gt;…&lt;/span&gt;</code> (inline, font-weight 600). No uses <code>&lt;strong&gt;</code> suelto sin el modificador <code>ubits-alert--block-text</code>.</li>
+                            <li style="margin-bottom: 8px;"><strong>Mensaje largo o HTML en modales:</strong> añade <code>ubits-alert--block-text</code> al root del alert (junto al tipo y <code>ubits-alert--no-close</code> si aplica).</li>
+                            <li><strong>React:</strong> prop <code>textBlock</code> en <code>UbitsAlert</code> + clase <code>alert__emphasis</code> en el span. La prop <code>title</code> sí usa <code>&lt;strong&gt;</code> al inicio (un solo ítem flex con wrap).</li>
+                        </ul>
+                    </div>
+
                     <!-- PROMPTS ÚTILES -->
                     <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; margin-bottom: 40px;">
                         <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">

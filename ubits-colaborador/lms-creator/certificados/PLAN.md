@@ -82,7 +82,7 @@ Al cambiar de card, se muestra el panel de formulario correspondiente (mismo pat
 |------|-----------------|
 | Global | — |
 | Por contenido | **Buscar contenido** (`createInput` type search; mock desde `bd-master`) |
-| Por colaborador | **Buscar colaborador** (search/combobox; mock `bd-master-colaboradores`) + **Tipo de contenidos** (`createInput` type `select` + `dropdown-menu.js` antes de `input.js`) |
+| Por colaborador | **Buscar colaborador** (`createInput` type `autocomplete`; 55 colaboradores de `bd-master-colaboradores`) + **Tipo de contenidos** (`select`: Solo UBITS / Solo propios / Ambos) |
 
 **Imports según campos:** `input.css`, `input.js`, `dropdown-menu.css`, `dropdown-menu.js`, toggle si existe componente o patrón ya usado en LMS Creator.
 
