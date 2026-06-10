@@ -125,7 +125,7 @@
     margin: 0;
     text-align: center;
     color: var(--ubits-fg-1-high);
-    /* Igual al texto de referencia en “Generar portada con IA” (crear-contenido.js): 1.5rem, sin resaltado. */
+    /* Igual al headline de Portada con IA (portada-imagen-modal.js): 1.5rem, sin resaltado. */
     font-size: 1.5rem;
     line-height: 1.25;
     font-weight: 400;

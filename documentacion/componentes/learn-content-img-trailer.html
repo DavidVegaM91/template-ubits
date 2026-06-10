@@ -53,16 +53,14 @@
                                 Preview del componente
                             </h2>
                             <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6;">
-                                Cambia el estado con los botones. En <strong>vacío</strong> clásico, el borde de marca aparece al pasar el ratón. En <strong>vacío con IA</strong>, al pasar el ratón el borde es un <strong>anillo con gradiente IA</strong> (misma paleta que el botón) más sombras suaves; «Hover forzado» solo aplica al vacío clásico (no combina con vacío con IA).
+                                Cambia el estado con los botones. En <strong>vacío</strong>, al pasar el ratón el borde es un <strong>anillo con gradiente IA</strong> (misma paleta que el CTA) más sombras suaves. <strong>Hover forzado</strong> muestra ese mismo hover sin necesidad del ratón. <strong>Error</strong> mantiene el vacío con IA y añade borde rojo de validación.
                             </p>
                             <div style="margin-bottom: 20px; display: flex; flex-wrap: wrap; gap: var(--gap-sm); align-items: center;">
                                 <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn lcb-state-btn active" data-lcb-state="empty"><span>Vacío</span></button>
-                                <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn lcb-state-btn" data-lcb-state="empty-ia"><span>Vacío con IA</span></button>
                                 <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn lcb-state-btn" data-lcb-state="hover"><span>Hover forzado</span></button>
                                 <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn lcb-state-btn" data-lcb-state="error"><span>Error</span></button>
                                 <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn lcb-state-btn" data-lcb-state="image"><span>Imagen</span></button>
                                 <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn lcb-state-btn" data-lcb-state="image-ai"><span>Imagen + IA</span></button>
-                                <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn lcb-state-btn" data-lcb-state="image-delete"><span>Imagen (eliminar)</span></button>
                                 <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn lcb-state-btn" data-lcb-state="trailer"><span>Tráiler</span></button>
                             </div>
                             <!-- Bloque (no flex centrado): si el padre es flex sin ancho, hijos solo absolute → ancho 0 y colapsa el 16:9 -->
@@ -104,8 +102,8 @@
                                 </div>
                                 <div style="text-align: center; padding: var(--padding-md); background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
                                     <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: var(--gap-sm);"><img src="../../images/lms-creator/learn-content-img-trailer/icon-empty-ia-hero.svg" alt="" width="20" height="20" style="display:inline-block;vertical-align:middle;"></div>
-                                    <div class="ubits-body-sm-bold">Vacío con IA</div>
-                                    <div class="ubits-body-sm-regular">Variante de bloque vacío con icono Image Iconly Pro (SVG Figma 461:4729), título, texto de ayuda y un solo botón IA primario «Agregar portada» (Figma AI-Capabilities; sin segundo botón en el hueco).</div>
+                                    <div class="ubits-body-sm-bold">Vacío</div>
+                                    <div class="ubits-body-sm-regular">Bloque vacío con icono Image Iconly Pro (SVG Figma 461:4729), título, texto de ayuda y un solo botón IA primario «Agregar portada» (Figma AI-Capabilities).</div>
                                 </div>
                             </div>
                         </div>
@@ -124,7 +122,7 @@
                                     <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('lcb-p1')"><i class="far fa-copy"></i><span>Copiar</span></button>
                                 </div>
                                 <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm);">
-                                    <pre style="margin: 0; font-size: var(--font-size-sm); white-space: pre-wrap;"><code id="lcb-p1" class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">En la pantalla [nombre] de aprendizaje, en [ubicación], coloca el bloque UBITS «Learn content imagen y tráiler» como en la documentación: primero el botón IA «Generar portada con IA», luego «Cargar imagen», texto de ayuda debajo (JPG o PNG y tráiler opcional), y estados error, imagen llena y tráiler con play. Usa tokens UBITS y el CSS del componente.</code></pre>
+                                    <pre style="margin: 0; font-size: var(--font-size-sm); white-space: pre-wrap;"><code id="lcb-p1" class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">En la pantalla [nombre] de aprendizaje, en [ubicación], coloca el bloque UBITS «Learn content imagen y tráiler» como en la documentación: vacío con icono, título, descripción y CTA IA «Agregar portada»; estados error, imagen llena, imagen con badge «Generado con IA» y tráiler con play. Usa tokens UBITS y el CSS del componente.</code></pre>
                                 </div>
                             </div>
                         </div>
@@ -148,27 +146,25 @@
 
         function lcbBuildHtml(state) {
             var c = ['ubits-learn-img-trailer'];
+            var isEmpty = state === 'empty' || state === 'hover' || state === 'error';
+            if (isEmpty) c.push('ubits-learn-img-trailer--empty-ia');
             if (state === 'error') c.push('ubits-learn-img-trailer--error');
             if (state === 'hover') c.push('ubits-learn-img-trailer--state-hover');
-            if (state === 'image' || state === 'image-delete' || state === 'trailer' || state === 'image-ai') c.push('ubits-learn-img-trailer--image');
+            if (state === 'image' || state === 'trailer' || state === 'image-ai') c.push('ubits-learn-img-trailer--image');
             if (state === 'trailer') c.push('ubits-learn-img-trailer--trailer');
             if (state === 'image-ai') c.push('ubits-learn-img-trailer--ai-generated');
 
             var def = typeof LEARN_CONTENT_IMG_TRAILER_DEFAULTS !== 'undefined' ? LEARN_CONTENT_IMG_TRAILER_DEFAULTS : {};
-            var emptyOpts = {
-                includeErrorPlaceholder: state === 'error',
-                errorPlaceholder: 'Mensaje de error'
-            };
-            if (state === 'empty-ia') {
-                emptyOpts.emptyVariant = 'ia';
-            }
             var empty =
-                typeof getLearnContentImgTrailerEmptyHtml === 'function'
-                    ? getLearnContentImgTrailerEmptyHtml(emptyOpts)
+                isEmpty && typeof getLearnContentImgTrailerEmptyHtml === 'function'
+                    ? getLearnContentImgTrailerEmptyHtml({
+                          includeErrorPlaceholder: state === 'error',
+                          errorPlaceholder: 'Mensaje de error'
+                      })
                     : '';
 
             var media = '';
-            if (state === 'image' || state === 'image-delete' || state === 'trailer' || state === 'image-ai') {
+            if (state === 'image' || state === 'trailer' || state === 'image-ai') {
                 var iaBadge =
                     state === 'image-ai' && typeof getGeneradoConIaBadgeHtml === 'function'
                         ? '<div class="ubits-learn-img-trailer__generado-ia-host">' + getGeneradoConIaBadgeHtml() + '</div>'
@@ -190,27 +186,22 @@
             var edit = '';
             if (state === 'image' || state === 'trailer' || state === 'image-ai') {
                 edit = typeof getLearnContentImgTrailerEditHtml === 'function' ? getLearnContentImgTrailerEditHtml({}) : '';
-            } else if (state === 'image-delete') {
-                edit = typeof getLearnContentImgTrailerDeleteHtml === 'function' ? getLearnContentImgTrailerDeleteHtml({}) : '';
             }
 
             var trailerAttr =
                 state === 'trailer'
                     ? ' data-trailer-url="https://www.youtube.com/watch?v=dQw4w9WgXcQ"'
                     : '';
-            /* initLearnContentImgTrailer vuelve a pintar el vacío desde data-learn-img-trailer-empty-variant;
-               sin esto el preview «Vacío con IA» se sobrescribe con la variante clásica. */
-            var emptyVariantRootAttr =
-                state === 'empty-ia' ? ' data-learn-img-trailer-empty-variant="ia"' : '';
             return (
                 '<div id="lcb-preview-root" class="' +
                 c.join(' ') +
                 '"' +
                 trailerAttr +
-                emptyVariantRootAttr +
                 ' role="region" aria-label="' +
                 (def.regionAriaLabel || 'Imagen o tráiler del contenido') +
-                '" data-learn-img-trailer-init>' +
+                '"' +
+                (isEmpty ? ' data-learn-img-trailer-init' : '') +
+                '>' +
                 empty +
                 media +
                 edit +

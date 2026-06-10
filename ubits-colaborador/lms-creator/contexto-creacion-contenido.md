@@ -79,7 +79,7 @@ Capturar la **identidad visual y la metadata** del contenido antes de construir 
 
 ### Imagen de portada y tráiler: modal «Añadir portada» (experiencia actual)
 
-Hoy el prototipo **no** reparte la configuración en varios botones sueltos dentro del hueco de la miniatura. Cuando **aún no hay imagen**, lo habitual es ver **un solo botón principal** del estilo **«Añadir portada»**. Al pulsarlo se abre un **modal grande** titulado **«Añadir portada»**, con el mismo **look & feel** que otros asistentes con IA del Creator (cabecera con gradiente, saldo de **tokens de IA** visible junto a un **icono de información** que explica el saldo al pasar el cursor o al pulsar en táctil, pestañas claras).
+Hoy el prototipo **no** reparte la configuración en varios botones sueltos dentro del hueco de la miniatura. Cuando **aún no hay imagen**, el hueco muestra el **vacío con IA** del componente `learn-content-img-trailer`: icono, título (*Agrega una portada*), descripción breve y un **CTA primario** **«Agregar portada»** (ia-button). Al pulsarlo se abre un **modal grande** titulado **«Añadir portada»**, con el mismo **look & feel** que otros asistentes con IA del Creator (cabecera con gradiente, saldo de **tokens de IA** visible junto a un **icono de información** que explica el saldo al pasar el cursor o al pulsar en táctil, pestañas claras).
 
 **Tres formas de trabajar la portada (pestañas):**
 
@@ -94,8 +94,6 @@ Hoy el prototipo **no** reparte la configuración en varios botones sueltos dent
 **Cuando ya hay imagen y la persona quiere retocar («Cambiar» / editar):** se vuelve a abrir **el mismo modal «Añadir portada»**, no un segundo modal distinto. El sistema **recuerda el contexto** para que el retoque sea coherente:
 - Si la portada actual se obtuvo **con IA** y hay **prompt guardado**, al abrir se muestra la pestaña **Portada con IA** con el **texto que usó** y la **vista previa** ya mostrando la imagen actual; puede afinar el texto, regenerar o confirmar de nuevo.
 - Si la portada se **subió a mano** (o no hay prompt de IA guardado), al abrir se va directamente a la pestaña **Subir portada**, con la **zona de carga** mostrando la **imagen actual** como archivo ya listo (puede sustituir el archivo o volver a **Usar esta imagen**).
-
-Los **atajos** del hueco vacío (p. ej. abrir solo el **panel de IA** o el **modal rápido de generación** sin pasar por las pestañas) pueden seguir existiendo para quien quiera ir directo a generar; el flujo principal de “portada completa” sigue siendo el modal con tres pestañas.
 
 **Vista previa en la cabecera:** si **no** hay tráiler, solo se ve la imagen; si **hay** tráiler, aparece un **botón de play** sobre la imagen y el video se reproduce **en el mismo espacio**, con los controles habituales del reproductor embebido según el origen del enlace.
 

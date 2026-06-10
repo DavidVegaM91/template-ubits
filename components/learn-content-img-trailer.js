@@ -1,12 +1,9 @@
 /**
  * UBITS — Learn content: imagen y tráiler
- * Textos por defecto: LEARN_CONTENT_IMG_TRAILER_DEFAULTS
- * Marcado vacío: getLearnContentImgTrailerEmptyHtml({ ... , emptyVariant?: 'ia' })
- *   Variante «vacío con IA» (layout tipo empty-state): data-learn-img-trailer-empty-variant="ia" en la raíz
- *   u opción emptyVariant / vacío-con-ia en la API. Sin distintivo badge; CTA «Agregar portada» con ubits-ia-button--primary--sm (Figma AI-Capabilities 565:5110).
- *   Requiere ia-button.css + ia-button.js antes de este script (+ general-styles/ubits-ia-appearance.css recomendado para borde secundario IA).
- * Reproducir tráiler: data-trailer-url en la raíz + clic en play carga el iframe en el mismo bloque
- * (YouTube, Vimeo, Drive). Sin embed: nueva pestaña. Opcional onPlay() sustituye el comportamiento.
+ * Textos por defecto: LEARN_CONTENT_IMG_TRAILER_DEFAULTS / LEARN_CONTENT_IMG_TRAILER_EMPTY_IA_DEFAULTS
+ * Vacío: layout IA (icono + título + descripción + CTA ia-button primario «Agregar portada»).
+ * Requiere ia-button.css + ia-button.js (+ general-styles/ubits-ia-appearance.css recomendado).
+ * Reproducir tráiler: data-trailer-url + clic en play → iframe inline (YouTube, Vimeo, Drive).
  *
  * @param {string|HTMLElement} rootSelector - .ubits-learn-img-trailer
  * @param {{ onPlay?: function(): void }} [options]
@@ -16,9 +13,6 @@
 
     /** Copys oficiales del componente (única fuente de verdad). */
     var LEARN_CONTENT_IMG_TRAILER_DEFAULTS = {
-        cta: 'Cargar imagen',
-        aiCtaModal: 'Generar portada con IA',
-        hint: 'Imagen en JPG o PNG. Además, tienes la opción de agregar un tráiler de video',
         editButton: 'Editar',
         playAriaLabel: 'Reproducir tráiler',
         regionAriaLabel: 'Imagen o tráiler del contenido',
@@ -26,7 +20,7 @@
         iframeTitle: 'Tráiler'
     };
 
-    /** Vacío con IA — layout compacto (icono + título + descripción + un CTA). */
+    /** Vacío — layout compacto (icono + título + descripción + un CTA IA). */
     var LEARN_CONTENT_IMG_TRAILER_EMPTY_IA_DEFAULTS = {
         /** Figma Learn-Components Cover 461:4729 — Image Iconly Pro (SVG, no Font Awesome). */
         emptyIaHeroIconClass: null,
@@ -35,13 +29,6 @@
         emptyIaCta: 'Agregar portada',
         emptyIaCtaIconClass: 'far fa-sparkles'
     };
-
-    function normalizeEmptyVariant(raw) {
-        if (raw == null || !String(raw).trim()) return 'default';
-        var s = String(raw).trim().toLowerCase();
-        if (s === 'ia' || s === 'vacio-con-ia' || s === 'vacío-con-ia' || s === 'empty-ia') return 'ia';
-        return 'default';
-    }
 
     function escapeHtml(s) {
         if (s == null) return '';
@@ -232,15 +219,15 @@
     }
 
     /**
-     * Variante «vacío con IA»: icono Image Iconly Pro (SVG Figma 461:4729), título, descripción y CTA ia-button primario sm.
-     * @param {{ cta?: string, ctaId?: string, emptyIaTitle?: string, emptyIaDescription?: string, emptyIaHeroIconClass?: string, emptyIaHeroIconSrc?: string, emptyIaCtaIconClass?: string, includeErrorPlaceholder?: boolean, errorPlaceholder?: string }} [opts]
+     * Bloque vacío: icono, título, descripción y CTA ia-button primario sm.
+     * @param {{ ctaId?: string, emptyIaTitle?: string, emptyIaDescription?: string, emptyIaCta?: string, emptyIaHeroIconClass?: string, emptyIaHeroIconSrc?: string, emptyIaCtaIconClass?: string, includeErrorPlaceholder?: boolean, errorPlaceholder?: string }} [opts]
      */
     function getLearnContentImgTrailerEmptyIaHtml(opts) {
         opts = opts || {};
         var defs = LEARN_CONTENT_IMG_TRAILER_EMPTY_IA_DEFAULTS;
         var title = opts.emptyIaTitle != null ? opts.emptyIaTitle : defs.emptyIaTitle;
         var desc = opts.emptyIaDescription != null ? opts.emptyIaDescription : defs.emptyIaDescription;
-        var cta = opts.cta != null ? opts.cta : defs.emptyIaCta;
+        var cta = opts.emptyIaCta != null ? opts.emptyIaCta : defs.emptyIaCta;
         var heroInner = getLearnContentImgTrailerEmptyIaHeroMarkup(opts);
         var ctaIcon = opts.emptyIaCtaIconClass != null ? opts.emptyIaCtaIconClass : defs.emptyIaCtaIconClass;
         var ctaIdAttr = opts.ctaId ? ' id="' + escapeHtml(opts.ctaId) + '"' : '';
@@ -282,52 +269,11 @@
     }
 
     /**
-     * Bloque .ubits-learn-img-trailer__empty con CTA + hint (y opcional fila de error para demos).
-     * @param {{ cta?: string, aiCtaModal?: string, hint?: string, ctaId?: string, aiCtaModalId?: string, aiCtaPanelId?: string, iconClass?: string, includeErrorPlaceholder?: boolean, errorPlaceholder?: string, emptyVariant?: string }} [opts]
-     * emptyVariant: 'ia' | 'vacio-con-ia' | … → layout vacío con IA (sin botón Generar con IA en el bloque).
-     * aiCtaPanelId se conserva en la API por compatibilidad (p. ej. data-* en root); no pinta segundo botón en variante default.
+     * Bloque .ubits-learn-img-trailer__empty (única variante: vacío con IA).
+     * @param {{ ctaId?: string, emptyIaTitle?: string, emptyIaDescription?: string, emptyIaCta?: string, includeErrorPlaceholder?: boolean, errorPlaceholder?: string }} [opts]
      */
     function getLearnContentImgTrailerEmptyHtml(opts) {
-        opts = opts || {};
-        var emptyVariant = normalizeEmptyVariant(opts.emptyVariant);
-        if (emptyVariant === 'ia') {
-            return getLearnContentImgTrailerEmptyIaHtml(opts);
-        }
-
-        var cta = opts.cta != null ? opts.cta : LEARN_CONTENT_IMG_TRAILER_DEFAULTS.cta;
-        var aiCtaModal =
-            opts.aiCtaModal != null ? opts.aiCtaModal : LEARN_CONTENT_IMG_TRAILER_DEFAULTS.aiCtaModal;
-        var hint = opts.hint != null ? opts.hint : LEARN_CONTENT_IMG_TRAILER_DEFAULTS.hint;
-        var icon = opts.iconClass || 'far fa-image';
-        var ctaIdAttr = opts.ctaId ? ' id="' + escapeHtml(opts.ctaId) + '"' : '';
-        var aiModalIdAttr = opts.aiCtaModalId ? ' id="' + escapeHtml(opts.aiCtaModalId) + '"' : '';
-        var errLine = '';
-        if (opts.includeErrorPlaceholder) {
-            var em = opts.errorPlaceholder != null ? opts.errorPlaceholder : 'Mensaje de error';
-            errLine = '<p class="ubits-learn-img-trailer__error-msg ubits-body-sm-regular">' + escapeHtml(em) + '</p>';
-        }
-        return (
-            '<div class="ubits-learn-img-trailer__empty">' +
-            '<div class="ubits-learn-img-trailer__ai-row" role="group" aria-label="Opciones de portada">' +
-            '<button type="button" class="ubits-ia-button ubits-ia-button--secondary ubits-ia-button--sm"' +
-            aiModalIdAttr +
-            '><i class="far fa-sparkles"></i><span>' +
-            escapeHtml(aiCtaModal) +
-            '</span></button>' +
-            '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-learn-img-trailer__cta"' +
-            ctaIdAttr +
-            '><i class="' +
-            escapeHtml(icon) +
-            '"></i><span>' +
-            escapeHtml(cta) +
-            '</span></button>' +
-            '</div>' +
-            '<p class="ubits-learn-img-trailer__hint ubits-body-sm-regular">' +
-            escapeHtml(hint) +
-            '</p>' +
-            errLine +
-            '</div>'
-        );
+        return getLearnContentImgTrailerEmptyIaHtml(opts || {});
     }
 
     /**
@@ -348,25 +294,6 @@
         );
     }
 
-    /**
-     * Botón flotante «Eliminar» (variante de estado imagen / tráiler).
-     * Mismo slot que Editar, pero con botón error-secondary.
-     * @param {{ deleteLabel?: string, deleteButtonId?: string }} [opts]
-     */
-    function getLearnContentImgTrailerDeleteHtml(opts) {
-        opts = opts || {};
-        var label = opts.deleteLabel != null ? opts.deleteLabel : 'Eliminar';
-        var btnId = opts.deleteButtonId ? ' id="' + escapeHtml(opts.deleteButtonId) + '"' : '';
-        return (
-            '<div class="ubits-learn-img-trailer__edit">' +
-            '<button type="button" class="ubits-button ubits-button--error-secondary ubits-button--sm"' +
-            btnId +
-            '><i class="far fa-trash-alt"></i><span>' +
-            escapeHtml(label) +
-            '</span></button></div>'
-        );
-    }
-
     function queryRoot(rootSelector) {
         if (!rootSelector) return null;
         if (typeof rootSelector === 'string') return document.querySelector(rootSelector);
@@ -381,37 +308,24 @@
         if (!root || root.getAttribute('data-img-trailer-init') === 'true') return;
         root.setAttribute('data-img-trailer-init', 'true');
 
-        /*
-         * Fuente de verdad del estado vacío:
-         * - Si el root tiene data-learn-img-trailer-init y NO está en estado imagen/tráiler,
-         *   renderizamos el vacío desde getLearnContentImgTrailerEmptyHtml().
-         * - Preservamos IDs (p. ej. CTA en crear-contenido.js) leyendo:
-         *   1) data-learn-img-trailer-cta-id / data-learn-img-trailer-ai-cta-id en el root, o
-         *   2) ids presentes en el markup existente (para migraciones).
-         */
         if (
             root.hasAttribute('data-learn-img-trailer-init') &&
             !root.classList.contains('ubits-learn-img-trailer--image') &&
             !root.classList.contains('ubits-learn-img-trailer--trailer')
         ) {
             var existingCta = root.querySelector('.ubits-learn-img-trailer__cta');
-            var existingAiModal = root.querySelector('.ubits-learn-img-trailer__empty .ubits-ia-button');
             var ctaId =
                 root.getAttribute('data-learn-img-trailer-cta-id') ||
                 (existingCta && existingCta.id ? existingCta.id : '');
-            var aiCtaModalId =
-                root.getAttribute('data-learn-img-trailer-ai-modal-id') ||
-                (existingAiModal && existingAiModal.id ? existingAiModal.id : '');
-            var aiCtaPanelId = root.getAttribute('data-learn-img-trailer-ai-panel-id') || '';
-            var emptyVariantAttr = root.getAttribute('data-learn-img-trailer-empty-variant') || '';
             root.innerHTML = getLearnContentImgTrailerEmptyHtml({
-                ctaId: ctaId || undefined,
-                aiCtaModalId: aiCtaModalId || undefined,
-                aiCtaPanelId: aiCtaPanelId || undefined,
-                emptyVariant: emptyVariantAttr || undefined
+                ctaId: ctaId || undefined
             });
         }
-        if (root.querySelector('.ubits-learn-img-trailer__empty--ia')) {
+
+        if (
+            !root.classList.contains('ubits-learn-img-trailer--image') &&
+            !root.classList.contains('ubits-learn-img-trailer--trailer')
+        ) {
             root.classList.add('ubits-learn-img-trailer--empty-ia');
         } else {
             root.classList.remove('ubits-learn-img-trailer--empty-ia');
@@ -461,7 +375,6 @@
     window.getLearnContentImgTrailerEmptyIaHtml = getLearnContentImgTrailerEmptyIaHtml;
     window.getLearnContentImgTrailerEmptyIaHeroMarkup = getLearnContentImgTrailerEmptyIaHeroMarkup;
     window.getLearnContentImgTrailerEditHtml = getLearnContentImgTrailerEditHtml;
-    window.getLearnContentImgTrailerDeleteHtml = getLearnContentImgTrailerDeleteHtml;
     window.initLearnContentImgTrailer = initLearnContentImgTrailer;
     window.initAllLearnContentImgTrailers = initAllLearnContentImgTrailers;
     window.getTrailerEmbedUrl = getTrailerEmbedUrl;

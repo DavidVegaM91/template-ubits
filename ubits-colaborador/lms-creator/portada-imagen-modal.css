@@ -51,7 +51,7 @@
     padding-right: 0;
 }
 
-/* Mismo copy que modal «Generar portada con IA» (crear-contenido.js); solo en intro */
+/* Mismo copy que pestaña Portada con IA del modal «Añadir portada» (portada-imagen-modal.js); solo en intro */
 .cc-pim-idea-headline-intro {
     width: 100%;
     margin: 0;

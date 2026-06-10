@@ -1,11 +1,11 @@
 /* ========================================
    UBITS — Learn content: imagen y tráiler
    Bloque único (Figma Learn-Components · Img y trailer content).
-   Estados: vacío, vacío con IA (.ubits-learn-img-trailer__empty--ia), hover, error, imagen cargada, tráiler (preview con play).
+   Estados: vacío con IA (único vacío), hover, error, imagen cargada, tráiler (preview con play).
    Radio del bloque 16:9, capa media e iframe: token global --border-radius-xl.
    Textos por defecto (CTA, hint, Editar, aria): learn-content-img-trailer.js → LEARN_CONTENT_IMG_TRAILER_DEFAULTS.
    Requiere: ubits-colors.css, ubits-typography.css, fontawesome-icons.css, button.css, ia-button.css.
-   Vacío con IA — CTA ia-button primario; tarjeta Figma AI-Capabilities (565:5097 / 565:5124). Clase raíz .ubits-learn-img-trailer--empty-ia (+ general-styles/ubits-ia-appearance.css recomendado).
+   Vacío — CTA ia-button primario; tarjeta Figma AI-Capabilities (565:5097 / 565:5124). Clase raíz .ubits-learn-img-trailer--empty-ia (+ general-styles/ubits-ia-appearance.css recomendado).
    ======================================== */
 
 .ubits-learn-img-trailer {
@@ -21,12 +21,6 @@
     background: var(--ubits-bg-1);
     overflow: hidden;
     transition: border-color 0.15s ease, box-shadow 0.15s ease, background 0.2s ease;
-}
-
-.ubits-learn-img-trailer:hover:not(.ubits-learn-img-trailer--image):not(.ubits-learn-img-trailer--trailer):not(.ubits-learn-img-trailer--error):not(.ubits-learn-img-trailer--empty-ia),
-.ubits-learn-img-trailer--state-hover:not(.ubits-learn-img-trailer--empty-ia) {
-    border-color: var(--ubits-accent-brand);
-    box-shadow: 0 0 0 1px var(--ubits-accent-brand);
 }
 
 /* Mismo criterio de invalidación que inputs obligatorios (--ubits-feedback-accent-error). */
@@ -62,24 +56,7 @@
     text-align: center;
 }
 
-/* CTAs vacío: IA arriba, cargar imagen abajo (columna centrada) */
-.ubits-learn-img-trailer__ai-row {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: var(--gap-md);
-    width: 100%;
-}
-
-.ubits-learn-img-trailer__hint {
-    margin: 0;
-    max-width: 42ch;
-    text-align: center;
-    color: var(--ubits-fg-1-medium);
-}
-
-/* Vacío con IA — inspiración empty-state (sin usar ese componente): icono SVG Figma 461:4729 en caja bg-2, título, descripción, CTA ia-button primario */
+/* Vacío — inspiración empty-state (sin usar ese componente): icono SVG Figma 461:4729 en caja bg-2, título, descripción, CTA ia-button primario */
 .ubits-learn-img-trailer__empty--ia {
     gap: var(--gap-md);
 }
@@ -103,7 +80,7 @@
     flex-shrink: 0;
 }
 
-/* Vacío con IA — Figma AI-Capabilities: Cover 565:5097, Cover-Hover 565:5124
+/* Vacío — Figma AI-Capabilities: Cover 565:5097, Cover-Hover 565:5124
    Hover: borde = gradiente IA (anillo multicolor), no solo azul plano; sombras duales como Figma. */
 .ubits-learn-img-trailer.ubits-learn-img-trailer--empty-ia:not(.ubits-learn-img-trailer--image):not(.ubits-learn-img-trailer--trailer):not(.ubits-learn-img-trailer--error) {
     --learn-img-trailer-ia-ring: linear-gradient(
@@ -377,7 +354,7 @@
 }
 
 /* Móvil/tablet: vacío (sin imagen ni tráiler) sin caja 16:9; el bloque crece con el contenido.
-   Cubre vacío default, vacío con IA, hover y error. Con imagen o tráiler se mantiene 16:9. */
+   Cubre vacío, hover y error. Con imagen o tráiler se mantiene 16:9. */
 @media (max-width: 1023px) {
     .ubits-learn-img-trailer:not(.ubits-learn-img-trailer--image):not(.ubits-learn-img-trailer--trailer) {
         aspect-ratio: auto;

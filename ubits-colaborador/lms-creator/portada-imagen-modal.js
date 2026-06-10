@@ -456,11 +456,8 @@
         if (typeof global.fileUploadClearError === 'function') {
             global.fileUploadClearError(root);
         }
-        if (typeof global.fileUploadSetSuccess === 'function') {
-            global.fileUploadSetSuccess(
-                root,
-                'Portada actual. Puedes sustituir el archivo o pulsar Usar esta imagen.'
-            );
+        if (typeof global.fileUploadClearSuccess === 'function') {
+            global.fileUploadClearSuccess(root);
         }
         syncFooter();
     }
@@ -571,7 +568,7 @@
             maxSizeMb: MAX_IMAGE_MB,
             maxLabel: '5 MB',
             formats: 'JPG, PNG · Hasta 5 MB',
-            successMessage: 'Imagen lista.',
+            successMessage: false,
             onChange: function (file) {
                 _uploadDataUrl = '';
                 if (!file) {

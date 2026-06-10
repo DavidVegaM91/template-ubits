@@ -4,13 +4,17 @@
  */
 
 // Configuración del sidebar de documentación
-// Orden: introducción, navegación (fijo), UI general (alfabético), aprendizaje (alfabético), operations (alfabético)
+// Orden: introducción, navegación (fijo), UI general (alfabético), aprendizaje (alfabético), IA (alfabético), operations (alfabético)
 const DOCS_SIDEBAR_SECTIONS = [
     { id: 'introduccion', title: 'Introducción', group: 'main' },
     { id: 'sidebar', title: 'Sidebar', group: 'navegacion' },
     { id: 'sub-nav', title: 'Sub-nav', group: 'navegacion' },
     { id: 'submenu', title: 'Submenu', group: 'navegacion' },
+    { id: 'tab', title: 'Tab', group: 'navegacion' },
     { id: 'tab-bar', title: 'Tab-bar', group: 'navegacion' },
+    { id: 'header-product', title: 'Header Product', group: 'navegacion' },
+    { id: 'stepper', title: 'Stepper', group: 'navegacion' },
+    { id: 'paginator', title: 'Paginator', group: 'navegacion' },
     // Aprendizaje (alfabético por title)
     { id: 'card-content', title: 'Card content', group: 'aprendizaje' },
     { id: 'card-content-compact', title: 'Card content compact', group: 'aprendizaje' },
@@ -24,9 +28,8 @@ const DOCS_SIDEBAR_SECTIONS = [
     { id: 'resources-block', title: 'Resources block', group: 'aprendizaje' },
     { id: 'seccion-creator', title: 'Seccion creator', group: 'aprendizaje' },
     { id: 'sidebar-contenidos-lms', title: 'Sidebar contenidos LMS', group: 'aprendizaje' },
-    // UI general en orden alfabético
+    // UI general (alfabético por title)
     { id: 'accordion', title: 'Accordion', group: 'ui' },
-    { id: 'ai-panel', title: 'AI panel', group: 'ui' },
     { id: 'alert', title: 'Alert', group: 'ui' },
     { id: 'attention-badge', title: 'Attention badge', group: 'ui' },
     { id: 'save-indicator', title: 'Save Indicator', group: 'ui' },
@@ -42,9 +45,6 @@ const DOCS_SIDEBAR_SECTIONS = [
     { id: 'carousel-indicators', title: 'Carousel indicators', group: 'ui' },
     { id: 'color-picker', title: 'Color picker', group: 'ui' },
     { id: 'empty-state', title: 'Empty State', group: 'ui' },
-    { id: 'header-product', title: 'Header Product', group: 'ui' },
-    { id: 'ia-button', title: 'IA-Button', group: 'ui' },
-    { id: 'ia-loader', title: 'IA Loader', group: 'ui' },
     { id: 'file-upload', title: 'File Upload', group: 'ui' },
     { id: 'file-upload-compact', title: 'File Upload Compact', group: 'ui' },
     { id: 'inline-edit', title: 'Inline Edit', group: 'ui' },
@@ -56,7 +56,6 @@ const DOCS_SIDEBAR_SECTIONS = [
     { id: 'ubits-data-table', title: 'Data Table', group: 'ui' },
     { id: 'modal', title: 'Modal', group: 'ui' },
     { id: 'number-stepper', title: 'Number stepper', group: 'ui' },
-    { id: 'paginator', title: 'Paginator', group: 'ui' },
     { id: 'popover', title: 'Popover', group: 'ui' },
     { id: 'progress-bar', title: 'Progress bar', group: 'ui' },
     { id: 'segmented-progress', title: 'Segmented progress', group: 'ui' },
@@ -64,14 +63,16 @@ const DOCS_SIDEBAR_SECTIONS = [
     { id: 'rich-text-editor', title: 'Rich text editor', group: 'ui' },
     { id: 'status-panel', title: 'Status panel', group: 'ui' },
     { id: 'status-tag', title: 'Status Tag', group: 'ui' },
-    { id: 'stepper', title: 'Stepper', group: 'ui' },
     { id: 'switch', title: 'Switch', group: 'ui' },
-    { id: 'tab', title: 'Tab', group: 'ui' },
     { id: 'table', title: 'Tabla', group: 'ui' },
     { id: 'toast', title: 'Toast', group: 'ui' },
     { id: 'toolbar-panel', title: 'Toolbar panel', group: 'ui' },
     { id: 'tooltip', title: 'Tooltip', group: 'ui' },
     { id: 'video-player', title: 'Video player', group: 'ui' },
+    // IA (alfabético por title)
+    { id: 'ai-panel', title: 'AI panel', group: 'ia' },
+    { id: 'ia-button', title: 'IA-Button', group: 'ia' },
+    { id: 'ia-loader', title: 'IA Loader', group: 'ia' },
     // Operations (alfabético por title)
     { id: 'task-strip', title: 'Task strip', group: 'operations' }
 ];
@@ -83,8 +84,9 @@ function buildDocsSidebarHTML() {
     const main = DOCS_SIDEBAR_SECTIONS.filter(s => s.group === 'main');
     const nav = DOCS_SIDEBAR_SECTIONS.filter(s => s.group === 'navegacion');
     const aprendizaje = DOCS_SIDEBAR_SECTIONS.filter(s => s.group === 'aprendizaje').sort((a, b) => a.title.localeCompare(b.title));
-    const operations = DOCS_SIDEBAR_SECTIONS.filter(s => s.group === 'operations').sort((a, b) => a.title.localeCompare(b.title));
     const ui = DOCS_SIDEBAR_SECTIONS.filter(s => s.group === 'ui').sort((a, b) => a.title.localeCompare(b.title));
+    const ia = DOCS_SIDEBAR_SECTIONS.filter(s => s.group === 'ia').sort((a, b) => a.title.localeCompare(b.title));
+    const operations = DOCS_SIDEBAR_SECTIONS.filter(s => s.group === 'operations').sort((a, b) => a.title.localeCompare(b.title));
 
     const mainItems = main.map(s => `
                 <div class="docs-sidebar-item" data-section="${s.id}">
@@ -121,6 +123,13 @@ function buildDocsSidebarHTML() {
                     </div>`).join('')}
                 </div>
                 <div class="docs-sidebar-subsection">
+                    <div class="docs-sidebar-subtitle">IA</div>
+                    ${ia.map(s => `
+                    <div class="docs-sidebar-item" data-section="${s.id}">
+                        <span class="docs-sidebar-text">${s.title}</span>
+                    </div>`).join('')}
+                </div>
+                <div class="docs-sidebar-subsection">
                     <div class="docs-sidebar-subtitle">OPERATIONS</div>
                     ${operations.map(s => `
                     <div class="docs-sidebar-item" data-section="${s.id}">
@@ -140,8 +149,9 @@ function buildDocsDropdownHTML() {
     const main = DOCS_SIDEBAR_SECTIONS.filter(s => s.group === 'main');
     const nav = DOCS_SIDEBAR_SECTIONS.filter(s => s.group === 'navegacion');
     const aprendizaje = DOCS_SIDEBAR_SECTIONS.filter(s => s.group === 'aprendizaje').sort((a, b) => a.title.localeCompare(b.title));
-    const operations = DOCS_SIDEBAR_SECTIONS.filter(s => s.group === 'operations').sort((a, b) => a.title.localeCompare(b.title));
     const ui = DOCS_SIDEBAR_SECTIONS.filter(s => s.group === 'ui').sort((a, b) => a.title.localeCompare(b.title));
+    const ia = DOCS_SIDEBAR_SECTIONS.filter(s => s.group === 'ia').sort((a, b) => a.title.localeCompare(b.title));
+    const operations = DOCS_SIDEBAR_SECTIONS.filter(s => s.group === 'operations').sort((a, b) => a.title.localeCompare(b.title));
 
     const mainItems = main.map(s => `
             <div class="docs-dropdown-item" data-section="${s.id}">
@@ -154,6 +164,11 @@ function buildDocsDropdownHTML() {
                     </div>`).join('');
 
     const aprendizajeItems = aprendizaje.map(s => `
+                    <div class="docs-dropdown-item" data-section="${s.id}">
+                        <span class="docs-dropdown-item-text ubits-body-md-regular">${s.title}</span>
+                    </div>`).join('');
+
+    const iaItems = ia.map(s => `
                     <div class="docs-dropdown-item" data-section="${s.id}">
                         <span class="docs-dropdown-item-text ubits-body-md-regular">${s.title}</span>
                     </div>`).join('');
@@ -189,6 +204,10 @@ function buildDocsDropdownHTML() {
                 <div class="docs-dropdown-subgroup">
                     <div class="docs-dropdown-subgroup-title ubits-body-sm-regular">APRENDIZAJE</div>
                     ${aprendizajeItems}
+                </div>
+                <div class="docs-dropdown-subgroup">
+                    <div class="docs-dropdown-subgroup-title ubits-body-sm-regular">IA</div>
+                    ${iaItems}
                 </div>
                 <div class="docs-dropdown-subgroup">
                     <div class="docs-dropdown-subgroup-title ubits-body-sm-regular">OPERATIONS</div>

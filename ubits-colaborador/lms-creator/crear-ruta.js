@@ -135,6 +135,7 @@
         crearRutaPortadaTrailerUrl = trailerUrl != null ? String(trailerUrl).trim() : '';
         var hasTrailer = crearRutaPortadaTrailerUrl.length > 0;
         block.classList.add('ubits-learn-img-trailer--image');
+        block.classList.remove('ubits-learn-img-trailer--empty-ia');
         block.classList.toggle('ubits-learn-img-trailer--trailer', hasTrailer);
         block.classList.remove('ubits-learn-img-trailer--playing');
         block.classList.toggle('ubits-learn-img-trailer--ai-generated', fromAi);
@@ -143,7 +144,7 @@
         if (typeof window.getLearnContentImgTrailerEditHtml !== 'function') return;
         block.innerHTML =
             (typeof window.getLearnContentImgTrailerEmptyHtml === 'function'
-                ? window.getLearnContentImgTrailerEmptyHtml({ emptyVariant: 'ia' })
+                ? window.getLearnContentImgTrailerEmptyHtml()
                 : '') +
             buildPortadaFigureHtml(hasTrailer, { aiGenerated: fromAi }) +
             window.getLearnContentImgTrailerEditHtml({ editButtonId: 'crear-ruta-portada-edit' });
