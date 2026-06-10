@@ -17,9 +17,8 @@
     }
   </style>
   <!--
-    PLACEHOLDERS:
-    {{nombre_destinatario}}, {{cantidad_certificados}}, {{rango_fechas}},
-    {{url_descarga}}, {{url_plataforma}}
+    PLACEHOLDERS (copy Figma Creator v3 — node 40008333:35148):
+    {{fecha_inicio}}, {{fecha_final}}, {{url_descarga}}, {{url_plataforma}}
   -->
 </head>
 <body style="margin:0; padding:0; background-color:#f3f3f4; font-family: 'Inter', Arial, sans-serif;">
@@ -28,29 +27,43 @@
       <td align="center" class="email-outer" style="padding: 32px 16px;">
         <table role="presentation" class="email-wrapper" width="600" cellspacing="0" cellpadding="0" border="0" style="max-width:600px; width:100%; background-color:#ffffff; border-radius:8px; border-top: 4px solid #0c5bef; box-shadow:0 2px 8px rgba(0,0,0,0.06);">
           <tr>
-            <td class="email-padding" style="padding: 24px 24px 16px 24px; text-align: center;">
-              <img src="images/certificados-global.png" alt="Tus certificados están listos" width="560" style="display:block; max-width:100%; height:auto; border-radius:8px;" />
+            <td class="email-padding" style="padding: 24px 24px 12px 24px; text-align: center;">
+              <img src="images/ubits-logo.png" alt="UBITS" width="90" height="30" style="display:inline-block; max-width:100%; height:auto;" />
+            </td>
+          </tr>
+          <tr>
+            <td style="border-top:1px solid #e7e8ea; font-size:0; line-height:0;">&nbsp;</td>
+          </tr>
+          <tr>
+            <td class="email-padding" style="padding: 0 24px 16px 24px; text-align: center;">
+              <img src="images/certificados-global.png" alt="¡Tus certificados están listos!" width="560" style="display:block; max-width:100%; height:auto; border-radius:8px; margin:0 auto;" />
             </td>
           </tr>
           <tr>
             <td class="email-padding email-inner" style="padding: 0 24px 24px 24px; text-align: left;">
               <p class="email-body" style="margin:0 0 16px 0; font-size: 16px; line-height: 1.5; color: #5c646f;">
-                Hola {{nombre_destinatario}},
+                Tu solicitud fue procesada con éxito.
               </p>
               <p class="email-body" style="margin:0 0 16px 0; font-size: 16px; line-height: 1.5; color: #5c646f;">
-                Tu solicitud fue procesada con éxito. Hemos generado un archivo con <strong>{{cantidad_certificados}} certificados</strong> emitidos entre el {{rango_fechas}}. Puedes descargarlos en el siguiente enlace:
+                Hemos generado un archivo con todos los certificados emitidos entre el <strong>{{fecha_inicio}}</strong> y el <strong>{{fecha_final}}</strong>.
+              </p>
+              <p class="email-body" style="margin:0 0 16px 0; font-size: 16px; line-height: 1.5; color: #5c646f;">
+                Puedes descargarlos en el siguiente enlace:
               </p>
               <table role="presentation" class="email-cta-wrap" cellspacing="0" cellpadding="0" border="0" width="100%" style="margin: 24px 0;">
                 <tr>
                   <td style="border-radius: 6px; background-color: #0c5bef; text-align: center;">
                     <a href="{{url_descarga}}" target="_blank" rel="noopener" class="email-cta" style="display: inline-block; padding: 12px 24px; font-size: 14px; font-weight: 600; color: #ffffff; text-decoration: none; text-align: center;">
-                      Descargar certificados (.zip)
+                      Descargar certificados
                     </a>
                   </td>
                 </tr>
               </table>
+              <p class="email-body" style="margin:0 0 16px 0; font-size: 16px; line-height: 1.5; color: #5c646f;">
+                📌 Importante: <strong>Este enlace estará disponible por 2 días</strong>. Después de ese tiempo, será necesario volver a generar la solicitud desde la plataforma.
+              </p>
               <p class="email-body" style="margin:0; font-size: 16px; line-height: 1.5; color: #5c646f;">
-                <strong>Importante:</strong> Este enlace estará disponible por 2 días. Después de ese tiempo, será necesario volver a generar la solicitud desde la plataforma. Gracias por usar UBITS.
+                Gracias por usar UBITS.
               </p>
             </td>
           </tr>

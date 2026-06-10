@@ -1,13 +1,16 @@
 /**
  * LMS Creator — Descarga de certificados
  * Modos: global | contenido | colaborador
- * Deep links por hash (ver PLAN.md)
+ * Deep links por hash (ver contexto-descarga-certificados.md)
  */
 (function () {
     'use strict';
 
     var MODAL_CONFIRMACION_ID = 'certificados-modal-confirmacion';
     var MODAL_SIN_RESULTADOS_ID = 'certificados-modal-sin-resultados';
+    var MAIL_PREVIEW_DELAY_MS = 3000;
+    var MAIL_PREVIEW_STORAGE_KEY = 'certificados-mail-preview-html';
+    var mailPreviewTimer = null;
 
     /** Playground: memoria en sesión de página (recargar resetea). Producción: persistir huella 48 h en backend. */
     var DUPLICATE_REQUEST_COOLDOWN_MS = 48 * 60 * 60 * 1000;
@@ -269,6 +272,87 @@
         if (!a && !b) return '';
         if (a && b) return a + ' – ' + b;
         return a || b;
+    }
+
+    function getCertificadosPageBaseUrl() {
+        var href = window.location.href.split('#')[0].split('?')[0];
+        return href.replace(/[^/]+$/, '');
+    }
+
+    function getMailTemplatePath(mode) {
+        return 'mails/mail-certificados-' + mode + '.html';
+    }
+
+    function buildMailPlaceholderValues() {
+        var base = getCertificadosPageBaseUrl();
+        return {
+            fecha_inicio: formatDateHuman(form.fechaInicial),
+            fecha_final: formatDateHuman(form.fechaFinal),
+            nombre_contenido: getContenidoLabelById(form.contenidoId),
+            nombre_colaborador: getColaboradorLabelById(form.colaboradorId),
+            url_descarga: base + 'mails/certificados-demo.zip',
+            url_plataforma: base + 'contenidos.html'
+        };
+    }
+
+    function substituteMailPlaceholders(html, values) {
+        var out = html;
+        Object.keys(values).forEach(function (key) {
+            var token = '{{' + key + '}}';
+            var val = values[key] != null ? String(values[key]) : '';
+            out = out.split(token).join(val);
+        });
+        return out;
+    }
+
+    function openMailPreviewTab(html) {
+        try {
+            sessionStorage.setItem(MAIL_PREVIEW_STORAGE_KEY, html);
+            window.open('mails/mail-preview.html', '_blank', 'noopener,noreferrer');
+        } catch (e) {
+            window.open(getMailTemplatePath(currentMode), '_blank', 'noopener,noreferrer');
+        }
+    }
+
+    /** Playground: tras confirmar solicitud, abre el mail demo con datos del formulario. */
+    function scheduleDemoMailPreview() {
+        if (mailPreviewTimer) {
+            clearTimeout(mailPreviewTimer);
+            mailPreviewTimer = null;
+        }
+        var templatePath = getMailTemplatePath(currentMode);
+        var values = buildMailPlaceholderValues();
+
+        function openAfterDelay(openFn) {
+            mailPreviewTimer = setTimeout(function () {
+                openFn();
+                mailPreviewTimer = null;
+            }, MAIL_PREVIEW_DELAY_MS);
+        }
+
+        if (typeof window.fetch !== 'function') {
+            openAfterDelay(function () {
+                window.open(templatePath, '_blank', 'noopener,noreferrer');
+            });
+            return;
+        }
+
+        fetch(templatePath)
+            .then(function (res) {
+                if (!res.ok) throw new Error('fetch failed');
+                return res.text();
+            })
+            .then(function (html) {
+                var filled = substituteMailPlaceholders(html, values);
+                openAfterDelay(function () {
+                    openMailPreviewTab(filled);
+                });
+            })
+            .catch(function () {
+                openAfterDelay(function () {
+                    window.open(templatePath, '_blank', 'noopener,noreferrer');
+                });
+            });
     }
 
     function isValidEmail(value) {
@@ -731,6 +815,7 @@
                     if (typeof window.showToast === 'function') {
                         window.showToast('success', 'Solicitud registrada. Revisa tu correo en unos minutos.');
                     }
+                    scheduleDemoMailPreview();
                 });
             }
         }, 0);
