@@ -17,6 +17,16 @@
     <link rel="stylesheet" href="../../components/button.css">
     <link rel="stylesheet" href="../../components/toast.css">
     <link rel="stylesheet" href="../../components/skeleton.css">
+    <style>
+        .preview-control-btn.active {
+            background: var(--ubits-accent-brand) !important;
+            color: white !important;
+            border-color: var(--ubits-accent-brand) !important;
+        }
+        .preview-control-btn.active span { color: white !important; }
+        .sk-variant { display: none; }
+        .sk-variant.active { display: block; }
+    </style>
 </head>
 <body class="componentes-page" data-theme="light">
     <div class="dashboard-container">
@@ -45,21 +55,24 @@
                                 <i class="far fa-eye" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
                                 Preview del componente
                             </h2>
-                            <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6;">
-                                Líneas sueltas, fila tipo lista y tarjeta con proporción 16:9.
-                            </p>
+                            <!-- Controles -->
+                            <div style="margin-bottom: 20px; display: inline-flex; gap: 8px; flex-wrap: wrap;">
+                                <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn active" onclick="setSkVariant('lines', this)"><span>lines</span></button>
+                                <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" onclick="setSkVariant('row', this)"><span>row</span></button>
+                                <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" onclick="setSkVariant('card', this)"><span>card</span></button>
+                            </div>
                             <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: var(--border-radius-md);">
-                                <div style="display: grid; gap: var(--gap-xl); max-width: 560px;">
-                                    <div>
-                                        <p class="ubits-body-sm-regular" style="margin: 0 0 var(--gap-sm); color: var(--ubits-fg-1-medium);">Líneas</p>
+                                <div style="max-width: 560px;">
+                                    <!-- lines -->
+                                    <div id="sk-variant-lines" class="sk-variant active">
                                         <div class="ubits-skeleton-stack">
                                             <span class="ubits-skeleton ubits-skeleton--line ubits-skeleton--md ubits-skeleton--w-full" aria-hidden="true"></span>
                                             <span class="ubits-skeleton ubits-skeleton--line ubits-skeleton--md ubits-skeleton--w-11-12" aria-hidden="true"></span>
                                             <span class="ubits-skeleton ubits-skeleton--line ubits-skeleton--md ubits-skeleton--w-2-3" aria-hidden="true"></span>
                                         </div>
                                     </div>
-                                    <div>
-                                        <p class="ubits-body-sm-regular" style="margin: 0 0 var(--gap-sm); color: var(--ubits-fg-1-medium);">Lista</p>
+                                    <!-- row -->
+                                    <div id="sk-variant-row" class="sk-variant">
                                         <div class="ubits-skeleton-row">
                                             <span class="ubits-skeleton ubits-skeleton--circle ubits-skeleton--avatar-md" aria-hidden="true"></span>
                                             <div class="ubits-skeleton-row__main">
@@ -70,11 +83,14 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="ubits-skeleton-card" aria-busy="true">
-                                        <span class="ubits-skeleton ubits-skeleton--rect ubits-skeleton-card__media" aria-hidden="true"></span>
-                                        <div class="ubits-skeleton-stack">
-                                            <span class="ubits-skeleton ubits-skeleton--line ubits-skeleton--lg ubits-skeleton--w-3-4" aria-hidden="true"></span>
-                                            <span class="ubits-skeleton ubits-skeleton--line ubits-skeleton--md ubits-skeleton--w-full" aria-hidden="true"></span>
+                                    <!-- card -->
+                                    <div id="sk-variant-card" class="sk-variant">
+                                        <div class="ubits-skeleton-card" aria-busy="true">
+                                            <span class="ubits-skeleton ubits-skeleton--rect ubits-skeleton-card__media" aria-hidden="true"></span>
+                                            <div class="ubits-skeleton-stack">
+                                                <span class="ubits-skeleton ubits-skeleton--line ubits-skeleton--lg ubits-skeleton--w-3-4" aria-hidden="true"></span>
+                                                <span class="ubits-skeleton ubits-skeleton--line ubits-skeleton--md ubits-skeleton--w-full" aria-hidden="true"></span>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -152,6 +168,13 @@
     <script src="../../script.js"></script>
     <script>
         
+        function setSkVariant(variant, btn) {
+            document.querySelectorAll('.sk-variant').forEach(function(el) { el.classList.remove('active'); });
+            document.getElementById('sk-variant-' + variant).classList.add('active');
+            document.querySelectorAll('.preview-control-btn').forEach(function(b) { b.classList.remove('active'); });
+            btn.classList.add('active');
+        }
+
         function copyPrompt(id) {
             var el = document.getElementById(id);
             if (!el) return;
