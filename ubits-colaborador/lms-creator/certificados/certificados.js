@@ -9,6 +9,13 @@
     var MODAL_CONFIRMACION_ID = 'certificados-modal-confirmacion';
     var MODAL_SIN_RESULTADOS_ID = 'certificados-modal-sin-resultados';
 
+    /** Playground: memoria en sesión de página (recargar resetea). Producción: persistir huella 48 h en backend. */
+    var DUPLICATE_REQUEST_COOLDOWN_MS = 48 * 60 * 60 * 1000;
+    var DUPLICATE_REQUEST_MESSAGE =
+        'Esta solicitud ya está en proceso. Recibirás el archivo .zip en el correo indicado. ' +
+        'Para una nueva solicitud, cambia el rango de fechas o los filtros, o inténtalo de nuevo en 48 horas.';
+    var lastSubmittedRequest = null;
+
     var currentMode = 'global';
     var currentUiState = 'empty';
     var suppressHashWrite = false;
@@ -63,19 +70,68 @@
         { key: 'global-sin-resultados', mode: 'global', uiState: 'sin-resultados' },
         { key: 'global-validacion', mode: 'global', uiState: 'validacion' },
         { key: 'global-error', mode: 'global', uiState: 'error' },
+        { key: 'global-solicitud-duplicada', mode: 'global', uiState: 'solicitud-duplicada' },
         { key: 'contenido', mode: 'contenido', uiState: 'empty' },
         { key: 'contenido-filled', mode: 'contenido', uiState: 'filled' },
         { key: 'contenido-confirmacion', mode: 'contenido', uiState: 'confirmacion' },
         { key: 'contenido-sin-resultados', mode: 'contenido', uiState: 'sin-resultados' },
         { key: 'contenido-validacion', mode: 'contenido', uiState: 'validacion' },
         { key: 'contenido-error', mode: 'contenido', uiState: 'error' },
+        { key: 'contenido-solicitud-duplicada', mode: 'contenido', uiState: 'solicitud-duplicada' },
         { key: 'colaborador', mode: 'colaborador', uiState: 'empty' },
         { key: 'colaborador-filled', mode: 'colaborador', uiState: 'filled' },
         { key: 'colaborador-confirmacion', mode: 'colaborador', uiState: 'confirmacion' },
         { key: 'colaborador-sin-resultados', mode: 'colaborador', uiState: 'sin-resultados' },
         { key: 'colaborador-validacion', mode: 'colaborador', uiState: 'validacion' },
-        { key: 'colaborador-error', mode: 'colaborador', uiState: 'error' }
+        { key: 'colaborador-error', mode: 'colaborador', uiState: 'error' },
+        { key: 'colaborador-solicitud-duplicada', mode: 'colaborador', uiState: 'solicitud-duplicada' }
     ];
+
+    function buildRequestFingerprint() {
+        return [
+            currentMode,
+            form.fechaInicial || '',
+            form.fechaFinal || '',
+            form.email || '',
+            form.incluirInactivos ? '1' : '0',
+            currentMode === 'contenido' ? (form.contenidoId || '') : '',
+            currentMode === 'colaborador' ? (form.colaboradorId || '') : '',
+            currentMode === 'colaborador' ? (form.tipoContenidos || '') : ''
+        ].join('|');
+    }
+
+    function registerSubmittedRequest() {
+        lastSubmittedRequest = {
+            fingerprint: buildRequestFingerprint(),
+            submittedAt: Date.now()
+        };
+    }
+
+    function isDuplicateRequest() {
+        if (!lastSubmittedRequest) return false;
+        if (buildRequestFingerprint() !== lastSubmittedRequest.fingerprint) return false;
+        return (Date.now() - lastSubmittedRequest.submittedAt) < DUPLICATE_REQUEST_COOLDOWN_MS;
+    }
+
+    function showDuplicateRequestAlert() {
+        showFormAlert('warning', DUPLICATE_REQUEST_MESSAGE);
+    }
+
+    function dismissDuplicateFeedback() {
+        if (currentUiState === 'solicitud-duplicada') {
+            currentUiState = 'filled';
+            setLocationHash(currentMode, 'filled', true);
+        }
+        if (!isDuplicateRequest()) {
+            hideFormAlert();
+        }
+    }
+
+    function onFormValueChanged(mutator) {
+        mutator();
+        dismissDuplicateFeedback();
+        updateSubmitButton();
+    }
 
     function hashKeyFromSpec(spec) {
         return '#' + spec.key;
@@ -405,8 +461,9 @@
                 autocompleteLazyPageSize: 15,
                 value: getContenidoAutocompleteDisplayValue(form.contenidoId),
                 onChange: function (v) {
-                    form.contenidoId = v || '';
-                    updateSubmitButton();
+                    onFormValueChanged(function () {
+                        form.contenidoId = v || '';
+                    });
                 }
             });
         }
@@ -422,8 +479,9 @@
                 autocompleteLazyPageSize: 15,
                 value: getColaboradorAutocompleteDisplayValue(form.colaboradorId),
                 onChange: function (v) {
-                    form.colaboradorId = v || '';
-                    updateSubmitButton();
+                    onFormValueChanged(function () {
+                        form.colaboradorId = v || '';
+                    });
                 }
             });
         }
@@ -442,8 +500,9 @@
                 ],
                 value: form.tipoContenidos,
                 onChange: function (v) {
-                    form.tipoContenidos = normalizeTipoContenidos(v);
-                    updateSubmitButton();
+                    onFormValueChanged(function () {
+                        form.tipoContenidos = normalizeTipoContenidos(v);
+                    });
                 }
             });
         }
@@ -463,8 +522,9 @@
             size: 'md',
             value: form.fechaInicial,
             onChange: function (v) {
-                form.fechaInicial = v || '';
-                updateSubmitButton();
+                onFormValueChanged(function () {
+                    form.fechaInicial = v || '';
+                });
             }
         });
 
@@ -476,8 +536,9 @@
             size: 'md',
             value: form.fechaFinal,
             onChange: function (v) {
-                form.fechaFinal = v || '';
-                updateSubmitButton();
+                onFormValueChanged(function () {
+                    form.fechaFinal = v || '';
+                });
             }
         });
 
@@ -489,8 +550,9 @@
             size: 'md',
             value: form.email,
             onChange: function (v) {
-                form.email = (v || '').trim();
-                updateSubmitButton();
+                onFormValueChanged(function () {
+                    form.email = (v || '').trim();
+                });
             }
         });
 
@@ -502,8 +564,9 @@
             size: 'md',
             value: form.emailConfirm,
             onChange: function (v) {
-                form.emailConfirm = (v || '').trim();
-                updateSubmitButton();
+                onFormValueChanged(function () {
+                    form.emailConfirm = (v || '').trim();
+                });
             }
         });
 
@@ -546,8 +609,9 @@
                 size: 'md',
                 value: form[cfg.key],
                 onChange: function (v) {
-                    form[cfg.key] = cfg.type === 'email' ? (v || '').trim() : (v || '');
-                    updateSubmitButton();
+                    onFormValueChanged(function () {
+                        form[cfg.key] = cfg.type === 'email' ? (v || '').trim() : (v || '');
+                    });
                 }
             });
         });
@@ -662,6 +726,7 @@
             var ok = document.getElementById('certificados-modal-confirm-ok');
             if (ok) {
                 ok.addEventListener('click', function () {
+                    registerSubmittedRequest();
                     if (typeof window.closeModal === 'function') window.closeModal(MODAL_CONFIRMACION_ID);
                     if (typeof window.showToast === 'function') {
                         window.showToast('success', 'Solicitud registrada. Revisa tu correo en unos minutos.');
@@ -710,6 +775,12 @@
             setLocationHash(currentMode, 'validacion', true);
             return;
         }
+        if (isDuplicateRequest()) {
+            currentUiState = 'solicitud-duplicada';
+            setLocationHash(currentMode, 'solicitud-duplicada', true);
+            showDuplicateRequestAlert();
+            return;
+        }
         if (mockHasResults()) {
             currentUiState = 'confirmacion';
             setLocationHash(currentMode, 'confirmacion', true);
@@ -727,7 +798,7 @@
 
         if (uiState === 'empty') {
             resetFormEmpty();
-        } else if (uiState === 'filled' || uiState === 'confirmacion' || uiState === 'sin-resultados' || uiState === 'validacion' || uiState === 'error') {
+        } else if (uiState === 'filled' || uiState === 'confirmacion' || uiState === 'sin-resultados' || uiState === 'validacion' || uiState === 'error' || uiState === 'solicitud-duplicada') {
             if (uiState !== 'validacion') {
                 applyDemoFilled();
             } else {
@@ -754,6 +825,11 @@
 
         if (uiState === 'sin-resultados') {
             openSinResultadosModal();
+        }
+
+        if (uiState === 'solicitud-duplicada') {
+            registerSubmittedRequest();
+            showDuplicateRequestAlert();
         }
 
         updateSubmitButton();
@@ -806,8 +882,9 @@
         var toggle = document.getElementById('certificados-toggle-inactivos');
         if (toggle) {
             toggle.addEventListener('change', function () {
-                form.incluirInactivos = toggle.checked;
-                updateSubmitButton();
+                onFormValueChanged(function () {
+                    form.incluirInactivos = toggle.checked;
+                });
             });
         }
 

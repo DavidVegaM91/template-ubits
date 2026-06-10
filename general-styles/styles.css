@@ -375,11 +375,13 @@ body[data-theme="light"] .dashboard-container {
     flex: 1;
     margin: var(--gap-lg) var(--gap-2xl) 0 143px;
     width: calc(100% - 143px - 24px);
+    padding-bottom: var(--gap-2xl);
     overflow: visible;
     max-height: none;
     display: flex;
     flex-direction: column;
     gap: var(--gap-xl);
+    box-sizing: border-box;
     z-index: 5;
 }
 
@@ -590,6 +592,13 @@ body[data-theme="light"] .dashboard-container {
     box-shadow: none !important;
     min-width: 0; /* Permite que el flex item se encoja correctamente */
     width: 100%; /* Respeta el ancho del padre */
+}
+
+/* Desktop: el respiro inferior vive solo en .main-content (alineado con layout-shell React) */
+@media (min-width: 1024px) {
+    .content-area {
+        padding-bottom: 0;
+    }
 }
 
 /* Fix para pantallas grandes - asegurar que content-area y content-sections respeten el ancho máximo del main-content */

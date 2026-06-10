@@ -148,6 +148,7 @@
 }
 .page-planes .content-sections {
     gap: var(--gap-xl);
+    padding-bottom: 0;
 }
 .page-planes .content-sections > *:not(:last-child):not(.section-dual):not(.section-single):not(.section-triple):not(.section-quad) {
     margin-bottom: var(--gap-xl);
@@ -156,6 +157,7 @@
 .page-planes .content-area {
     padding-left: 0 !important;
     padding-right: 0 !important;
+    padding-bottom: 0 !important;
 }
 .page-planes .section-single--plans {
     max-width: 100%;

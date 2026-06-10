@@ -157,13 +157,25 @@ body.modo-estudio-ia-page .ubits-ia-chat__side.is-open .ubits-ia-chat-side__body
     }
 }
 
-/* Altura y padding inferior del área de contenido (complementa ubits-ia-chat-page) */
-.content-area {
+/* Respiro inferior: solo en .main-content (como React); anula gap-2xl global + padding duplicado */
+body.modo-estudio-ia-page .main-content {
+    padding-bottom: var(--padding-lg) !important;
+    box-sizing: border-box;
+}
+
+body.modo-estudio-ia-page .content-area,
+body.modo-estudio-ia-page.ubits-ia-chat-page .content-area {
     display: flex !important;
     flex-direction: column !important;
     min-height: 0 !important;
     height: 100% !important;
-    padding-bottom: var(--padding-lg) !important;
+    padding-bottom: 0 !important;
+}
+
+@media (max-width: 1023px) {
+    body.ia-chat-mobile-drawer-page.modo-estudio-ia-page .main-content {
+        padding-bottom: calc(60px + env(safe-area-inset-bottom, 0px)) !important;
+    }
 }
 
 /* Por encima de .ubits-ia-chat-page .content-sections > .section-single (header no debe crecer) */

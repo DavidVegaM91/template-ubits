@@ -110,6 +110,12 @@ Usar **`modal` UBITS** (`modal.css`, `modal.js` — `openModal` / `closeModal`).
 - Errores de campo: estado `invalid` en `createInput` + helper text (no modal salvo error global).
 - Hash dedicado para demo de error de sistema o validación global si aplica (ver tabla de hashes).
 
+### Solicitud duplicada (misma petición en &lt; 48 h)
+
+- **Playground:** alert `warning` inline en `#certificados-alert-mount` (no modal). Tras confirmar una solicitud, un segundo envío con los **mismos criterios** dentro de 48 h muestra el aviso. Memoria solo en la pestaña (recargar la página resetea).
+- **Producción (nota para devs):** persistir huella de solicitud en backend y rechazar duplicados con la misma ventana de 48 h (modo, fechas, correo, filtros de contenido/colaborador, toggle inactivos).
+- Copy: «Esta solicitud ya está en proceso… inténtalo de nuevo en 48 horas.» Cambiar cualquier criterio del formulario permite volver a solicitar.
+
 ---
 
 ## Deep links por hash (patrón `crear-contenido.html`)
@@ -131,18 +137,21 @@ Cada pantalla o estado del flujo tiene un **hash canónico** en `certificados.ht
 | `#global-sin-resultados` | Modo global — modal sin resultados |
 | `#global-validacion` | Modo global — errores de validación en campos |
 | `#global-error` | Modo global — error fuera del happy path (ej. fallo mock al solicitar) |
+| `#global-solicitud-duplicada` | Modo global — formulario demo + alert solicitud duplicada |
 | `#contenido` | Modo por contenido — formulario vacío |
 | `#contenido-filled` | Modo por contenido — formulario con datos |
 | `#contenido-confirmacion` | Modal confirmación (contexto contenido) |
 | `#contenido-sin-resultados` | Modal sin resultados (contexto contenido) |
 | `#contenido-validacion` | Validación |
 | `#contenido-error` | Error |
+| `#contenido-solicitud-duplicada` | Alert solicitud duplicada (modo contenido) |
 | `#colaborador` | Modo por colaborador — formulario vacío |
 | `#colaborador-filled` | Modo por colaborador — formulario con datos |
 | `#colaborador-confirmacion` | Modal confirmación (contexto colaborador) |
 | `#colaborador-sin-resultados` | Modal sin resultados (contexto colaborador) |
 | `#colaborador-validacion` | Validación |
 | `#colaborador-error` | Error |
+| `#colaborador-solicitud-duplicada` | Alert solicitud duplicada (modo colaborador) |
 
 **Ejemplos de URL para demos:**
 

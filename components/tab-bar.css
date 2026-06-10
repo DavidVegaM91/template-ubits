@@ -127,15 +127,16 @@
         display: none !important;
     }
     
-    /* Ajustar contenido para el tab-bar (subnav pegado al borde superior) */
+    /* Ajustar contenido para el tab-bar (subnav pegado al borde superior).
+       Solo .main-content reserva el hueco inferior; no duplicar en .content-area. */
     .main-content {
         padding-bottom: 60px;
         margin-left: 12px !important;
         margin-top: 0 !important;
     }
-    
+
     .content-area {
-        padding-bottom: 60px;
+        padding-bottom: 0;
     }
 }
 

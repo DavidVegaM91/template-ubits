@@ -9,9 +9,8 @@ body.ia-para-hr-page .dashboard-container {
 
 body.ia-para-hr-page .main-content {
     flex: 1;
-    /* 16px arriba (margin-top global) + 16px abajo (margin-bottom) */
+    /* 16px arriba (margin-top global) + respiro inferior: padding-bottom del shell (styles.css) */
     min-height: calc(100vh - (2 * var(--gap-lg)));
-    margin-bottom: var(--gap-lg);
     box-sizing: border-box;
 }
 
@@ -288,9 +287,8 @@ button.ia-hr-card:hover:focus-visible {
 
 @media (max-width: 1023px) {
     body.ia-para-hr-page .main-content {
-        /* padding-top no-subnav (16px) + margen inferior (16px) + tab bar (60px) */
+        /* padding-top no-subnav (16px) + tab bar (60px); respiro inferior vía tab-bar.css */
         min-height: calc(100vh - (2 * var(--gap-lg)) - 60px);
-        margin-bottom: var(--gap-lg);
     }
 
     .ia-hr-card-grid {
