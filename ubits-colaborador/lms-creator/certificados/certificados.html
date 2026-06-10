@@ -16,11 +16,16 @@
     <link rel="stylesheet" href="../../../components/floating-menu.css">
     <link rel="stylesheet" href="../../../components/profile-menu.css">
     <link rel="stylesheet" href="../../../components/button.css">
-    <link rel="stylesheet" href="../../../components/ia-button.css">
-    <link rel="stylesheet" href="../../../components/header-product.css">
+    <link rel="stylesheet" href="../../../components/radio-button.css">
+    <link rel="stylesheet" href="../../../components/selection-card.css">
+    <link rel="stylesheet" href="../../../components/input.css">
+    <link rel="stylesheet" href="../../../components/dropdown-menu.css">
+    <link rel="stylesheet" href="../../../components/calendar.css">
+    <link rel="stylesheet" href="../../../components/switch.css">
+    <link rel="stylesheet" href="../../../components/modal.css">
+    <link rel="stylesheet" href="../../../components/toast.css">
+    <link rel="stylesheet" href="../../../components/alert.css">
     <link rel="stylesheet" href="../../../components/tooltip.css">
-    <link rel="stylesheet" href="../../../components/popover.css">
-    <link rel="stylesheet" href="../../../components/coachmark.css">
     <link rel="stylesheet" href="../lms-creator.css">
     <link rel="stylesheet" href="./certificados.css">
 </head>
@@ -35,12 +40,92 @@
             <div class="content-area">
                 <div class="content-sections">
                     <div class="section-single">
-                        <div class="widget-header-product" id="header-product-container"></div>
-                    </div>
-                    <div class="section-single">
-                        <div class="widget-contenido-lms">
-                            <p class="ubits-body-md-regular">Descarga</p>
-                            <br><br><br><br><br><br><br><br><br><br><br>
+                        <div class="widget--transparent certificados-widget">
+                            <div class="certificados-flow" id="certificados-flow">
+                                <div class="ubits-selection-card-group ubits-selection-card-group--3 certificados-mode-cards" role="radiogroup" aria-label="Tipo de descarga de certificados">
+                                    <label class="ubits-selection-card ubits-radio ubits-radio--md certificados-mode-card" data-cert-mode="global">
+                                        <input type="radio" class="ubits-radio__input" name="certificados-modo" value="global" checked />
+                                        <span class="ubits-radio__circle" aria-hidden="true"></span>
+                                        <div class="ubits-selection-card__body">
+                                            <div class="ubits-selection-card__header">
+                                                <span class="ubits-selection-card__icon" aria-hidden="true"><i class="far fa-rectangle-history"></i></span>
+                                                <span class="ubits-body-md-semibold ubits-selection-card__title">Descarga global</span>
+                                            </div>
+                                            <p class="ubits-body-sm-regular ubits-selection-card__desc">Todos los certificados emitidos dentro del rango de fechas seleccionado.</p>
+                                        </div>
+                                    </label>
+                                    <label class="ubits-selection-card ubits-radio ubits-radio--md certificados-mode-card" data-cert-mode="contenido">
+                                        <input type="radio" class="ubits-radio__input" name="certificados-modo" value="contenido" />
+                                        <span class="ubits-radio__circle" aria-hidden="true"></span>
+                                        <div class="ubits-selection-card__body">
+                                            <div class="ubits-selection-card__header">
+                                                <span class="ubits-selection-card__icon" aria-hidden="true"><i class="far fa-book-open"></i></span>
+                                                <span class="ubits-body-md-semibold ubits-selection-card__title">Descarga por contenido</span>
+                                            </div>
+                                            <p class="ubits-body-sm-regular ubits-selection-card__desc">Todos los certificados emitidos para el contenido seleccionado dentro de un rango de fechas.</p>
+                                        </div>
+                                    </label>
+                                    <label class="ubits-selection-card ubits-radio ubits-radio--md certificados-mode-card" data-cert-mode="colaborador">
+                                        <input type="radio" class="ubits-radio__input" name="certificados-modo" value="colaborador" />
+                                        <span class="ubits-radio__circle" aria-hidden="true"></span>
+                                        <div class="ubits-selection-card__body">
+                                            <div class="ubits-selection-card__header">
+                                                <span class="ubits-selection-card__icon" aria-hidden="true"><i class="far fa-user"></i></span>
+                                                <span class="ubits-body-md-semibold ubits-selection-card__title">Descarga por colaborador</span>
+                                            </div>
+                                            <p class="ubits-body-sm-regular ubits-selection-card__desc">Todos los certificados emitidos para el colaborador seleccionado dentro de un rango de fechas.</p>
+                                        </div>
+                                    </label>
+                                </div>
+
+                                <div class="certificados-form-card" id="certificados-form-card">
+                                    <p class="ubits-body-sm-regular certificados-form-hint" id="certificados-form-hint">
+                                        Al finalizar el proceso, recibirás en tu correo un archivo .zip con los certificados.
+                                    </p>
+
+                                    <div class="certificados-form-field certificados-form-field--full" id="certificados-field-contenido-wrap" hidden>
+                                        <div id="certificados-input-contenido"></div>
+                                    </div>
+
+                                    <div class="certificados-form-field certificados-form-field--full" id="certificados-field-colaborador-wrap" hidden>
+                                        <div id="certificados-input-colaborador"></div>
+                                    </div>
+
+                                    <div class="certificados-form-field certificados-form-field--full" id="certificados-field-tipo-contenidos-wrap" hidden>
+                                        <div id="certificados-input-tipo-contenidos"></div>
+                                    </div>
+
+                                    <div class="certificados-form-row">
+                                        <div class="certificados-form-field">
+                                            <div id="certificados-input-fecha-inicial"></div>
+                                        </div>
+                                        <div class="certificados-form-field">
+                                            <div id="certificados-input-fecha-final"></div>
+                                        </div>
+                                    </div>
+
+                                    <div class="certificados-form-row">
+                                        <div class="certificados-form-field">
+                                            <div id="certificados-input-email"></div>
+                                        </div>
+                                        <div class="certificados-form-field">
+                                            <div id="certificados-input-email-confirm"></div>
+                                        </div>
+                                    </div>
+
+                                    <label class="ubits-switch ubits-switch--md certificados-form-toggle" for="certificados-toggle-inactivos">
+                                        <input type="checkbox" class="ubits-switch__input" id="certificados-toggle-inactivos" role="switch" />
+                                        <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
+                                        <span class="ubits-switch__label ubits-body-md-regular">Incluir usuarios inactivos</span>
+                                    </label>
+
+                                    <div id="certificados-alert-mount" class="certificados-alert-mount" hidden aria-live="polite"></div>
+
+                                    <button type="button" class="ubits-button ubits-button--primary ubits-button--md certificados-form-submit" id="certificados-btn-solicitar" disabled>
+                                        <span>Solicitar certificados</span>
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -51,18 +136,25 @@
     <div id="tab-bar-container"></div>
     <div id="floating-menu-container"></div>
     <div id="profile-menu-container"></div>
+    <div id="ubits-toast-container"></div>
 
+    <script src="../../../bd-master/bd-master-colaboradores.js"></script>
+    <script src="../../../bd-master/bd-contenidos-ubits.js"></script>
+    <script src="../../../bd-master/bd-contenidos-fiqsha.js"></script>
     <script src="../../../components/tooltip.js"></script>
-    <script src="../../../components/popover.js"></script>
-    <script src="../../../components/coachmark.js"></script>
-    <script src="../lms-creator-admin-migration-tour.js"></script>
+    <script src="../../../components/dropdown-menu.js"></script>
+    <script src="../../../components/input.js"></script>
+    <script src="../../../components/calendar.js"></script>
+    <script src="../../../components/modal.js"></script>
+    <script src="../../../components/toast.js"></script>
+    <script src="../../../components/alert.js"></script>
     <script src="../../../components/sidebar.js"></script>
     <script src="../../../components/sub-nav.js"></script>
     <script src="../../../components/tab-bar.js"></script>
     <script src="../../../components/floating-menu.js"></script>
     <script src="../../../components/profile-menu.js"></script>
-    <script src="../../../components/header-product.js"></script>
     <script src="../../../script.js"></script>
+    <script src="./certificados.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             loadSidebar('creator', 'certificados');
@@ -70,19 +162,6 @@
             loadTabBar('tab-bar-container', 'creator');
             loadFloatingMenu('floating-menu-container', 'creator');
             loadProfileMenu('profile-menu-container');
-
-            if (typeof loadHeaderProduct === 'function') {
-                loadHeaderProduct('header-product-container', {
-                    productName: 'Descarga',
-                    breadcrumbItems: [],
-                    aiButton: { text: 'AI button', onClick: function() { console.log('AI button clicked'); } },
-                    secondaryButtons: [
-                        { text: 'Button text', icon: 'fa-th', onClick: function() { console.log('Secondary button clicked'); } }
-                    ],
-                    primaryButton: { text: 'Primary action', icon: 'fa-th', onClick: function() { console.log('Primary button clicked'); } },
-                    menuButton: { onClick: function() { console.log('Menu button clicked'); } }
-                });
-            }
 
             setTimeout(function() {
                 var descargaTab = document.querySelector('.nav-tab[data-tab="descarga"]');
@@ -105,8 +184,8 @@
                 }
             }, 200);
 
-            if (typeof initUbitsLmsCreatorAdminMigrationTour === 'function') {
-                initUbitsLmsCreatorAdminMigrationTour(450);
+            if (typeof initCertificadosPage === 'function') {
+                initCertificadosPage();
             }
         });
     </script>

@@ -2,6 +2,6 @@
    Estilos específicos para configuración de certificados (LMS Creator)
    ======================================== */
 
-.widget-contenido-lms {
+.certificados-config-widget {
     color: var(--ubits-fg-1-medium);
 }

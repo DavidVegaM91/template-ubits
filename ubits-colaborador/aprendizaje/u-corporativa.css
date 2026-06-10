@@ -21,19 +21,6 @@
     width: 100%;
 }
 
-/* Widgets sin padding ni fondo (el encabezado UC lleva borde propio abajo) */
-.section-single > .widget-encabezado-universidad {
-    padding: var(--padding-none) !important;
-    background: transparent !important;
-}
-
-.section-single > .widget-buscador-filtros,
-.section-single > .widget-grid-cursos-propios {
-    padding: var(--padding-none) !important;
-    background: transparent !important;
-    border: none !important;
-}
-
 /* Encabezado Universidad Corporativa (selector + .widget: gana a styles.css .content-sections > .section-single > div) */
 .content-sections > .section-single > .widget-encabezado-universidad,
 .widget-encabezado-universidad {

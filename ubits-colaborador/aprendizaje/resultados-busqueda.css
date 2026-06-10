@@ -12,18 +12,6 @@
     width: 100%;
 }
 
-.section-single > .widget-buscador-filtros,
-.section-single > .widget-grid-resultados {
-    padding: var(--padding-none) !important;
-    background: transparent !important;
-}
-
-/* Buscador arriba (hero) */
-.resultados-hero-buscador {
-    padding: 0 !important;
-    background: transparent !important;
-}
-
 .resultados-hero-buscador-inner {
     display: flex;
     justify-content: center;
@@ -77,9 +65,11 @@
 
 /* Panel encabezado cerrable: visión IA + recursos */
 .resultados-overview-panel-wrapper {
-    padding: 0 !important;
-    background: transparent !important;
     align-self: flex-start;
+    width: 100%;
+}
+
+.resultados-overview-panel-shell {
     width: 100%;
 }
 

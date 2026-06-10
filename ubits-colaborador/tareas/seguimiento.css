@@ -89,12 +89,6 @@
     flex: 1;
 }
 
-/* Header product (tabs + Crear): sin caja, igual que antes */
-.section-single>.widget-header-product {
-    background-color: transparent !important;
-    padding: var(--padding-none) !important;
-}
-
 /* Header bar */
 .widget-header-seguimiento {
     display: flex;
@@ -161,10 +155,6 @@
 }
 
 .section-single--seguimiento-mobile-alert-only > .seguimiento-alert-experiencia {
-    background-color: transparent !important;
-    padding: var(--padding-none) !important;
-    border-radius: var(--border-radius-none) !important;
-    border: none !important;
     flex: 0 0 auto;
     width: 100%;
     box-sizing: border-box;

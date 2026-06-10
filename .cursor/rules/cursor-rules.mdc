@@ -1859,6 +1859,7 @@ Todas las páginas del template (excepto documentación) ahora usan un sistema m
 
 ### **REGLAS IMPORTANTES:**
 - **SIEMPRE** usar `content-sections` como contenedor principal
+- **Widget sin caja:** si el hijo de `section-single` / `section-dual` / etc. no debe tener tarjeta blanca (carruseles, flujos con cards internas, toolbars), añadir **`widget--transparent`** en ese `div` (regla global en `general-styles/styles.css`; equivalente a `<Widget transparent>` en React). **No** duplicar overrides locales de `background/padding/border`. `widget-header-product` ya está exento globalmente. **No** aplicar a paneles con caja propia (`widget-encabezado-universidad`, shell IA `.ubits-ia-chat-historial` / `__main` / `__side` en `ubits-ia-chat.css`).
 - **SIEMPRE** usar nombres descriptivos para widgets (widget-dashboard, widget-stats, etc.)
 - **NUNCA** usar alturas mínimas forzadas
 - **SIEMPRE** mantener tokens UBITS y navegación correcta

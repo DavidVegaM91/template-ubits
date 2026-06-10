@@ -137,11 +137,6 @@
     }
 }
 
-/* Widget header-product: sin fondo blanco ni padding y mostrar título */
-.section-single > .widget-header-product {
-    background-color: transparent !important;
-    padding: var(--padding-none) !important;
-}
 /* Solo botón primario: ocultar título de producto */
 .page-planes .ubits-header-product__product-info {
     display: none !important;
@@ -162,9 +157,7 @@
     padding-left: 0 !important;
     padding-right: 0 !important;
 }
-.page-planes .section-single--plans,
-.page-planes .section-single--plans > .plans-content {
-    padding: 0 !important;
+.page-planes .section-single--plans {
     max-width: 100%;
 }
 
@@ -960,8 +953,6 @@
     max-width: 100%;
     min-width: 0;
     min-height: 200px;
-    background: transparent !important;
-    padding: 0 !important;
     box-sizing: border-box;
     overflow-x: hidden;
 }
@@ -1364,9 +1355,6 @@
         flex-direction: column;
     }
 
-    .plans-content {
-        padding: 0 !important;
-    }
 }
 
 /* ========================================

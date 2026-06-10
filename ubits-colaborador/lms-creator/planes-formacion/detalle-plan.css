@@ -213,13 +213,6 @@
     border-bottom: 1px solid var(--ubits-border-1);
 }
 
-/* Título Asignaciones fuera del card */
-.section-single--asignaciones-titulo > .detalle-plan-asignaciones-titulo-wrapper {
-    background-color: transparent !important;
-    border: none !important;
-    padding: 0 !important;
-}
-
 .detalle-plan-asignaciones__titulo {
     color: var(--ubits-fg-1-high);
 }

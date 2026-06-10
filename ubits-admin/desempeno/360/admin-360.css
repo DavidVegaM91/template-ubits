@@ -39,13 +39,6 @@
     flex: 1;
 }
 
-/* Header-product: sin fondo ni borde propios */
-.page-admin-360 .section-single > .widget-header-product {
-    background-color: transparent !important;
-    border: none !important;
-    padding: var(--padding-none) !important;
-}
-
 /* widget de tabla: hereda el padding base de section-single > div */
 .page-admin-360 .section-single--a360-tabla > .widget-360-tabla {
     overflow: visible;

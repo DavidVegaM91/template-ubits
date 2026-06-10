@@ -15,15 +15,6 @@
     white-space: nowrap;
 }
 
-/* Sin tarjeta: el layout LMS añade fondo/padding al hijo de .section-single; aquí se anula. */
-.page-contenidos-creator .section-single--contenidos > .widget-contenidos-creator {
-    background: transparent !important;
-    padding: var(--padding-none) !important;
-    border: none !important;
-    border-radius: var(--border-radius-none);
-    box-shadow: none;
-}
-
 .page-contenidos-creator .widget-contenidos-creator {
     display: flex;
     flex-direction: column;

@@ -1133,6 +1133,17 @@ Un sistema inspirado que permite a **cualquier usuario** (Product Managers, Dise
 - **`section-triple`** - 3 columnas (33% cada una)
 - **`section-quad`** - 4 columnas (25% cada una)
 
+#### **Widget sin caja (`widget--transparent`):**
+Cuando el hijo de una `section-*` **no** debe verse como tarjeta blanca (carruseles sueltos, flujos con cards internas, listas con toolbar propio), usa la clase global **`widget--transparent`** en ese `div` (equivalente a `<Widget transparent>` en React). Anula fondo, borde, padding y radio que `styles.css` / el CSS de módulo aplican a hijos de sección.
+
+```html
+<div class="section-single">
+  <div class="widget--transparent widget-contenidos-creator">…</div>
+</div>
+```
+
+**Excepciones fijas (no hace falta la clase):** `widget-header-product` ya está exento en `general-styles/styles.css`. **No** uses `widget--transparent` en widgets que llevan su propio `bg-1` y borde (p. ej. `widget-encabezado-universidad`, paneles `.ubits-ia-chat-historial` / `.ubits-ia-chat__main` / `.ubits-ia-chat__side` — estilos en `ubits-ia-chat.css`).
+
 #### **Widgets personalizables:**
 - Cada widget tiene un **nombre descriptivo** (ej: `widget-dashboard`, `widget-estadisticas`)
 - **Altura flexible** usando `<br>` (sin alturas mínimas forzadas)
@@ -1461,13 +1472,8 @@ Encabezado de producto con breadcrumb, nombre del producto y botones de acción 
 </div>
 ```
 
-#### **3. Agregar CSS para widget (si usas sistema modular):**
-```css
-.section-single > .widget-header-product {
-    background-color: transparent !important;
-    padding: 0 !important;
-}
-```
+#### **3. Sin caja en el header:**
+No añadas CSS por página: `general-styles/styles.css` ya exime `.widget-header-product` del marco de `section-*`.
 
 #### **4. Usar la función (Versión Light - Plataforma actual):**
 ```javascript

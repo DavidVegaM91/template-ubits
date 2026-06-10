@@ -3,6 +3,6 @@
    ======================================== */
 
 /* Estilos propios de la página Categorías (LMS Creator). Identidad visual con tokens UBITS. */
-.widget-contenido-lms {
+.categorias-widget {
     color: var(--ubits-fg-1-medium);
 }

@@ -84,12 +84,6 @@
     flex: 1;
 }
 
-/* Widget header-product: sin fondo blanco ni padding */
-.section-single > .widget-header-product {
-    background-color: transparent !important;
-    padding: var(--padding-none) !important;
-}
-
 /* Responsive para secciones */
 @media (max-width: 1023px) {
     .content-sections {

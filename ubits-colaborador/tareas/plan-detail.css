@@ -41,12 +41,6 @@
     gap: var(--gap-lg, 16px);
 }
 
-/* Sección 1: header product oficial (solo back + nombre). Sin caja. */
-.page-plan-detail .plan-detail-section--header > .widget-header-product {
-    background: transparent !important;
-    padding: 0 !important;
-}
-
 /* Mostrar título del plan en el header product (el componente lo oculta por defecto) */
 .page-plan-detail .ubits-header-product__product-info {
     display: flex;

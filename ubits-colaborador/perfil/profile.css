@@ -72,11 +72,6 @@
     flex: 1;
 }
 
-.section-single > .widget-header-product {
-    background-color: transparent !important;
-    padding: var(--padding-none) !important;
-}
-
 @media (max-width: 1023px) {
     .content-sections {
         padding-bottom: 0;

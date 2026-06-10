@@ -121,11 +121,6 @@ body.modo-estudio-ia-page .ubits-ia-chat__side.is-open .ubits-ia-chat-side__body
     flex: 1;
 }
 
-.section-single > .widget-header-product {
-    background-color: transparent !important;
-    padding: var(--padding-none) !important;
-}
-
 .modo-estudio-ia-page .ubits-header-product__product-info {
     display: none !important;
 }
@@ -154,10 +149,6 @@ body.modo-estudio-ia-page .ubits-ia-chat__side.is-open .ubits-ia-chat-side__body
     .section-triple > div,
     .section-quad > div {
         padding: var(--padding-md) !important;
-    }
-
-    .section-single > .widget-header-product {
-        padding: var(--padding-none) !important;
     }
 
     .section-single > .widget-chat {

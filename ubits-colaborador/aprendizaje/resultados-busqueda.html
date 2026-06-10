@@ -35,7 +35,7 @@
                 <div class="content-sections">
                     <!-- Buscador arriba (como en catálogo) -->
                     <div class="section-single resultados-hero-buscador">
-                        <div class="resultados-hero-buscador-inner">
+                        <div class="widget--transparent resultados-hero-buscador-inner">
                             <div class="resultados-buscador-input-wrap resultados-buscador-input-wrap--top">
                                 <div id="resultados-buscador-input-container"></div>
                             </div>
@@ -43,6 +43,7 @@
                     </div>
                     <!-- Panel encabezado cerrable: visión IA + recursos (solo si hay tema válido) -->
                     <div class="section-single resultados-overview-panel-wrapper" id="resultados-overview-panel-wrapper" style="display: none;">
+                        <div class="widget--transparent resultados-overview-panel-shell">
                         <div class="resultados-overview-panel" id="resultados-overview-panel">
                             <div class="resultados-overview-panel__header">
                                 <span class="resultados-overview-panel__header-title">
@@ -70,10 +71,11 @@
                                 </a>
                             </div>
                         </div>
+                        </div>
                     </div>
                     <!-- Buscador + grid -->
                     <div class="section-single">
-                        <div class="widget-buscador-filtros">
+                        <div class="widget--transparent widget-buscador-filtros">
                             <div class="buscador-header">
                                 <div class="buscador-title-container">
                                     <h2 class="buscador-title">Lista de contenidos</h2>
@@ -91,7 +93,7 @@
                         </div>
                     </div>
                     <div class="section-single">
-                        <div class="widget-grid-resultados">
+                        <div class="widget--transparent widget-grid-resultados">
                             <div class="resultados-grid-container" id="resultados-cards-container"></div>
                         </div>
                         <div id="empty-state-resultados" style="display: none;"></div>

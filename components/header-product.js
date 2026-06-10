@@ -216,22 +216,11 @@
  * El componente automáticamente ocupará todo el ancho disponible y se ajustará
  * a su contenido sin alturas fijas.
  *
- * 🚨 REGLA OBLIGATORIA - EL HEADER NUNCA DEBE TENER CAJA:
- * Cuando el contenedor del header-product está dentro de .section-single (o .section-dual, etc.),
- * el sistema modular suele aplicar a los hijos fondo y padding (estilo "caja"). Para este
- * componente eso no debe aplicarse: el header debe verse plano, sin caja. En la página
- * que use el componente hay que añadir SIEMPRE esta regla CSS:
- *
- * ```css
- * .section-single > .widget-header-product {
- *     background-color: transparent !important;
- *     padding: 0 !important;
- * }
- * ```
- * (Desde subcarpetas usar el selector que corresponda al contenedor padre, por ejemplo
- * .section-single > .widget-header-product en el CSS de la página.)
- * Sin esta regla el header se verá como un bloque con fondo y padding, lo cual no es
- * el diseño deseado.
+ * 🚨 REGLA — EL HEADER NUNCA DEBE TENER CAJA:
+ * Cuando el contenedor está dentro de .section-single (o .section-dual, etc.), el layout
+ * modular aplica fondo y padding a los hijos. Eso no aplica al header: debe verse plano.
+ * La exención vive en `general-styles/styles.css` (`.section-single > .widget-header-product`).
+ * No dupliques esa regla en el CSS de cada página.
  *
  * ⚠️ ALINEACIÓN DE ACCIONES CUANDO SE OCULTA TÍTULO O BOTÓN ATRÁS:
  * Si en una página se oculta .ubits-header-product__product-info (por CSS, ej. display: none)
@@ -279,14 +268,7 @@
  * <link rel="stylesheet" href="components/header-product.css">
  * ```
  *
- * PASO 2: OBLIGATORIO - Sin caja en el header. Agregar el estilo CSS para que el header
- * no tenga caja (fondo transparente, sin padding). Ver "REGLA OBLIGATORIA - EL HEADER NUNCA DEBE TENER CAJA" arriba.
- * ```css
- * .section-single > .widget-header-product {
- *     background-color: transparent !important;
- *     padding: 0 !important;
- * }
- * ```
+ * PASO 2: Sin caja en el header — ya cubierto por `general-styles/styles.css` (no CSS por página).
  *
  * PASO 3: Agregar el contenedor en el HTML dentro de content-sections:
  * ```html

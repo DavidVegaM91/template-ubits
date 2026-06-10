@@ -1084,61 +1084,33 @@ body {
     border: 1px solid var(--ubits-border-1);
 }
 
-/* Header de producto: sin marco de tarjeta (alinea con content-area / SubNav). */
-.content-sections > .section-single > .widget-header-product {
-    border: none;
+/* Widget transparente (sin caja bg-1): sin fondo, borde, padding ni radio.
+   Equivalente a <Widget transparent> en React. Los hijos (cards, formularios, tablas) llevan su propio marco.
+   Uso: class="widget--transparent" en el contenedor widget (hijo directo de section-* o anidado). */
+.widget--transparent,
+.section-single > .widget--transparent,
+.section-dual > .widget--transparent,
+.section-triple > .widget--transparent,
+.section-quad > .widget--transparent {
+    background-color: transparent !important;
+    background: transparent !important;
+    padding: var(--padding-none) !important;
+    border: none !important;
     border-radius: var(--border-radius-none) !important;
     overflow: visible !important;
+    box-shadow: none;
 }
 
-/* Widgets transparentes (sin caja bg-1): sin radio ni clip — evita cortar controles de carrusel.
-   Equivalente a Widget transparent en React. El overflow horizontal vive en el track del carrusel. */
-.content-sections > .section-single > div.widget--transparent,
-.content-sections .section-dual > div.widget--transparent,
-.content-sections .section-triple > div.widget--transparent,
-.content-sections .section-quad > div.widget--transparent,
-.content-sections > .section-single > .widget-hero,
-.content-sections > .section-single > .widget-home-learn-hero,
-.content-sections > .section-single > .widget-home-learn-trending,
-.content-sections > .section-single > .widget-home-learn-browse,
-.content-sections > .section-single > .widget-home-learn-resultados,
-.content-sections > .section-single > .widget-zona-estudio,
-.content-sections > .section-single > .widget-promo-cards,
-.content-sections > .section-single > .widget-aliados,
-.content-sections > .section-single > .widget-continua-viendo,
-.content-sections > .section-single > .widget-outstanding,
-.content-sections .section-dual > .widget-hero,
-.content-sections .section-dual > .widget-home-learn-hero,
-.content-sections .section-dual > .widget-home-learn-trending,
-.content-sections .section-dual > .widget-home-learn-browse,
-.content-sections .section-dual > .widget-home-learn-resultados,
-.content-sections .section-dual > .widget-zona-estudio,
-.content-sections .section-dual > .widget-promo-cards,
-.content-sections .section-dual > .widget-aliados,
-.content-sections .section-dual > .widget-continua-viendo,
-.content-sections .section-dual > .widget-outstanding,
-.content-sections .section-triple > .widget-hero,
-.content-sections .section-triple > .widget-home-learn-hero,
-.content-sections .section-triple > .widget-home-learn-trending,
-.content-sections .section-triple > .widget-home-learn-browse,
-.content-sections .section-triple > .widget-home-learn-resultados,
-.content-sections .section-triple > .widget-zona-estudio,
-.content-sections .section-triple > .widget-promo-cards,
-.content-sections .section-triple > .widget-aliados,
-.content-sections .section-triple > .widget-continua-viendo,
-.content-sections .section-triple > .widget-outstanding,
-.content-sections .section-quad > .widget-hero,
-.content-sections .section-quad > .widget-home-learn-hero,
-.content-sections .section-quad > .widget-home-learn-trending,
-.content-sections .section-quad > .widget-home-learn-browse,
-.content-sections .section-quad > .widget-home-learn-resultados,
-.content-sections .section-quad > .widget-zona-estudio,
-.content-sections .section-quad > .widget-promo-cards,
-.content-sections .section-quad > .widget-aliados,
-.content-sections .section-quad > .widget-continua-viendo,
-.content-sections .section-quad > .widget-outstanding {
-    border-radius: var(--border-radius-none) !important;
+/* Header de producto: siempre sin marco de section-* (regla fija del DS; no requiere CSS por página). */
+.section-single > .widget-header-product,
+.section-dual > .widget-header-product,
+.section-triple > .widget-header-product,
+.section-quad > .widget-header-product {
+    background-color: transparent !important;
+    padding: var(--padding-none) !important;
     border: none !important;
+    border-radius: var(--border-radius-none) !important;
     overflow: visible !important;
+    box-shadow: none;
 }
 
