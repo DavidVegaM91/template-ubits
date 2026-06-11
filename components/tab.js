@@ -85,7 +85,7 @@
  * 
  * <!-- Tab extra pequeño solo icono -->
  * <button class="ubits-tab ubits-tab--xs ubits-tab--icon-only">
- *   <i class="far fa-settings"></i>
+ *   <i class="far fa-gear"></i>
  * </button>
  * 
  * <!-- Tab con badge -->
