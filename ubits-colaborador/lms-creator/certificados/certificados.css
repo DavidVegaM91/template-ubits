@@ -93,7 +93,7 @@
     flex-shrink: 0;
     width: 20px;
     text-align: center;
-    color: var(--ubits-fg-1-medium);
+    color: var(--ubits-accent-brand);
     line-height: var(--md, 24px);
 }
 
