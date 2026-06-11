@@ -35,7 +35,7 @@
                                 Hero search
                             </h1>
                             <p class="ubits-body-md-regular" style="max-width: 800px; margin: 0 auto 32px; line-height: 1.6;">
-                                Buscador principal del Inicio de Aprendizaje: título sobre un fondo con gradiente de marca y un campo pill con lupa. Sirve para invitar a buscar contenidos o competencias sin usar el Input genérico de formularios.
+                                Buscador principal del Inicio de Aprendizaje. Dos variantes: <strong>default</strong> (soft gradient claro, desktop-friendly) y <strong>app</strong> (dark gradient APP v3, optimizada para mobile). Campo pill nativo sin usar createInput.
                             </p>
                         </div>
 
@@ -45,14 +45,23 @@
                                 Preview del componente
                             </h2>
                             <p class="ubits-body-md-regular" style="margin-bottom: var(--gap-lg); line-height: 1.6;">
-                                El interruptor simula el borde reforzado cuando el usuario enfoca el buscador o hay búsqueda activa (clase <code class="ubits-body-sm-regular">ubits-hero-search__bar--active</code>).
+                                Selecciona la variante y activa el estado de borde reforzado (clase <code class="ubits-body-sm-regular">ubits-hero-search__bar--active</code>) para simular foco o búsqueda en curso.
                             </p>
-                            <div style="margin-bottom: var(--gap-lg); display: flex; flex-wrap: wrap; gap: var(--gap-md); align-items: center;">
-                                <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); white-space: nowrap;">Barra activa (foco / búsqueda)</span>
-                                <label class="ubits-switch ubits-switch--md">
-                                    <input type="checkbox" class="ubits-switch__input" id="hero-search-preview-active" role="switch" aria-checked="false" aria-label="Mostrar barra en estado activo">
-                                    <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
-                                </label>
+                            <div style="margin-bottom: var(--gap-lg); display: flex; flex-wrap: wrap; gap: var(--gap-lg); align-items: center;">
+                                <!-- Selector de variante -->
+                                <div style="display: flex; align-items: center; gap: var(--gap-sm);">
+                                    <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); white-space: nowrap;">Variante</span>
+                                    <button type="button" id="hs-btn-default" class="ubits-button ubits-button--primary ubits-button--sm" onclick="setHeroVariant('default')">default</button>
+                                    <button type="button" id="hs-btn-app" class="ubits-button ubits-button--secondary ubits-button--sm" onclick="setHeroVariant('app')">app</button>
+                                </div>
+                                <!-- Toggle activo -->
+                                <div style="display: flex; align-items: center; gap: var(--gap-sm);">
+                                    <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); white-space: nowrap;">Barra activa</span>
+                                    <label class="ubits-switch ubits-switch--md">
+                                        <input type="checkbox" class="ubits-switch__input" id="hero-search-preview-active" role="switch" aria-checked="false" aria-label="Mostrar barra en estado activo">
+                                        <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
+                                    </label>
+                                </div>
                             </div>
                             <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: var(--border-radius-md); width: 100%; box-sizing: border-box;">
                                 <div id="hero-search-doc-preview"></div>
@@ -131,10 +140,12 @@
     <script src="../../script.js"></script>
     <script>
         var HS_DOC_BAR_ID = 'hero-search-doc-bar';
+        var HS_CURRENT_VARIANT = 'default';
 
         function heroSearchDocRender(active) {
             if (typeof mountHeroSearch !== 'function') return;
             mountHeroSearch({
+                variant: HS_CURRENT_VARIANT,
                 containerId: 'hero-search-doc-preview',
                 title: '¿Qué quieres aprender hoy?',
                 placeholder: 'Buscar contenidos o competencias',
@@ -145,6 +156,17 @@
             if (typeof setHeroSearchBarActive === 'function') {
                 setHeroSearchBarActive(HS_DOC_BAR_ID, active);
             }
+        }
+
+        function setHeroVariant(variant) {
+            HS_CURRENT_VARIANT = variant;
+            var activeToggle = document.getElementById('hero-search-preview-active');
+            heroSearchDocRender(activeToggle ? activeToggle.checked : false);
+            // Actualizar estado visual de los botones
+            document.getElementById('hs-btn-default').className =
+                'ubits-button ubits-button--sm ' + (variant === 'default' ? 'ubits-button--primary' : 'ubits-button--secondary');
+            document.getElementById('hs-btn-app').className =
+                'ubits-button ubits-button--sm ' + (variant === 'app' ? 'ubits-button--primary' : 'ubits-button--secondary');
         }
 
         document.addEventListener('DOMContentLoaded', function () {

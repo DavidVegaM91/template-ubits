@@ -1,11 +1,15 @@
 /**
- * UBITS — Hero search (APP v3)
- * Buscador pill sobre gradiente para Inicio Aprendizaje y pantallas similares.
+ * UBITS — Hero search
+ * Buscador pill para Inicio Aprendizaje y pantallas similares.
  * Campo nativo type="search" (no createInput) según diseño Figma.
  *
+ * Variantes:
+ *   'default' — Soft gradient claro, desktop-friendly (por defecto)
+ *   'app'     — Dark gradient APP v3, optimizada para mobile
+ *
  * API:
- *   heroSearchHtml(options) — markup del bloque
- *   mountHeroSearch(options) — inyecta en containerId y devuelve refs
+ *   heroSearchHtml(options)              — markup del bloque
+ *   mountHeroSearch(options)             — inyecta en containerId y devuelve refs
  *   setHeroSearchBarActive(barEl|barId, active) — borde reforzado al enfocar/buscar
  *
  * Referencia producto: ubits-colaborador/aprendizaje/home-learn.html + home-learn-search.js
@@ -19,6 +23,7 @@
         '</svg>';
 
     var HERO_SEARCH_DEFAULTS = {
+        variant: 'default',
         title: '¿Qué quieres aprender hoy?',
         placeholder: 'Buscar contenidos o competencias',
         sectionAriaLabel: 'Buscar contenidos',
@@ -47,36 +52,33 @@
 
     /**
      * @param {object} [options]
+     * @param {'default'|'app'} [options.variant='default']
      * @returns {string}
      */
     function heroSearchHtml(options) {
         var o = Object.assign({}, HERO_SEARCH_DEFAULTS, options || {});
         var sectionIdAttr = o.sectionId ? ' id="' + escapeHtml(o.sectionId) + '"' : '';
+        var isApp = o.variant === 'app';
+
+        var sectionClass = 'ubits-hero-search' + (isApp ? ' ubits-hero-search--app' : '');
+        var titleClass   = 'ubits-hero-search__title ' + (isApp ? 'ubits-heading-h1' : 'ubits-heading-h2');
 
         return (
-            '<section class="ubits-hero-search"' +
+            '<section class="' + sectionClass + '"' +
             sectionIdAttr +
-            ' aria-label="' +
-            escapeHtml(o.sectionAriaLabel) +
-            '">' +
-            '<p class="ubits-hero-search__title ubits-heading-h1">' +
+            ' aria-label="' + escapeHtml(o.sectionAriaLabel) + '">' +
+            '<p class="' + titleClass + '">' +
             escapeHtml(o.title) +
             '</p>' +
-            '<div class="ubits-hero-search__bar" id="' +
-            escapeHtml(o.barId) +
-            '" role="search">' +
+            '<div class="ubits-hero-search__bar" id="' + escapeHtml(o.barId) + '" role="search">' +
             '<input type="search" class="ubits-hero-search__field ubits-body-md-regular" id="' +
             escapeHtml(o.inputId) +
-            '" placeholder="' +
-            escapeHtml(o.placeholder) +
+            '" placeholder="' + escapeHtml(o.placeholder) +
             '" autocomplete="off" enterkeyhint="search" aria-label="' +
-            escapeHtml(o.inputAriaLabel) +
-            '">' +
+            escapeHtml(o.inputAriaLabel) + '">' +
             '<button type="button" class="ubits-hero-search__submit" id="' +
             escapeHtml(o.submitId) +
-            '" aria-label="' +
-            escapeHtml(o.submitAriaLabel) +
-            '">' +
+            '" aria-label="' + escapeHtml(o.submitAriaLabel) + '">' +
             SEARCH_ICON_SVG +
             '</button>' +
             '</div>' +
