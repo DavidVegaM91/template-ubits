@@ -77,5 +77,17 @@
       </td>
     </tr>
   </table>
+  <script>
+    (function () {
+      if (sessionStorage.getItem('certificados-mail-filled-active') !== '1') return;
+      var html = sessionStorage.getItem('certificados-mail-filled-html');
+      sessionStorage.removeItem('certificados-mail-filled-active');
+      sessionStorage.removeItem('certificados-mail-filled-html');
+      if (!html) return;
+      document.open();
+      document.write(html);
+      document.close();
+    })();
+  </script>
 </body>
 </html>

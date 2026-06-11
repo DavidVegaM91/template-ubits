@@ -9,7 +9,8 @@
     var MODAL_CONFIRMACION_ID = 'certificados-modal-confirmacion';
     var MODAL_SIN_RESULTADOS_ID = 'certificados-modal-sin-resultados';
     var MAIL_PREVIEW_DELAY_MS = 3000;
-    var MAIL_PREVIEW_STORAGE_KEY = 'certificados-mail-preview-html';
+    var MAIL_FILLED_HTML_KEY = 'certificados-mail-filled-html';
+    var MAIL_FILLED_ACTIVE_KEY = 'certificados-mail-filled-active';
     var mailPreviewTimer = null;
 
     /** Playground: memoria en sesión de página (recargar resetea). Producción: persistir huella 48 h en backend. */
@@ -305,16 +306,17 @@
         return out;
     }
 
-    function openMailPreviewTab(html) {
+    function openFilledMailTab(templatePath, filledHtml) {
         try {
-            sessionStorage.setItem(MAIL_PREVIEW_STORAGE_KEY, html);
-            window.open('mails/mail-preview.html', '_blank', 'noopener,noreferrer');
+            sessionStorage.setItem(MAIL_FILLED_HTML_KEY, filledHtml);
+            sessionStorage.setItem(MAIL_FILLED_ACTIVE_KEY, '1');
+            window.open(templatePath, '_blank', 'noopener,noreferrer');
         } catch (e) {
-            window.open(getMailTemplatePath(currentMode), '_blank', 'noopener,noreferrer');
+            window.open(templatePath, '_blank', 'noopener,noreferrer');
         }
     }
 
-    /** Playground: tras confirmar solicitud, abre el mail demo con datos del formulario. */
+    /** Playground: tras confirmar solicitud, abre el .html del mail (global/contenido/colaborador) con datos del formulario. */
     function scheduleDemoMailPreview() {
         if (mailPreviewTimer) {
             clearTimeout(mailPreviewTimer);
@@ -345,7 +347,7 @@
             .then(function (html) {
                 var filled = substituteMailPlaceholders(html, values);
                 openAfterDelay(function () {
-                    openMailPreviewTab(filled);
+                    openFilledMailTab(templatePath, filled);
                 });
             })
             .catch(function () {

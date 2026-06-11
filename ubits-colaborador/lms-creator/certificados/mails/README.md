@@ -52,7 +52,7 @@ Extraídas del Figma Creator v3 (hero + logo). En envío real, el backend sustit
 
 ### Automático (playground)
 
-Tras confirmar una solicitud en `certificados.html` (**Entendido** en el modal), a los **3 segundos** se abre una pestaña con `mail-preview.html` y el mail del modo activo (global / contenido / colaborador), con placeholders rellenados desde el formulario.
+Tras confirmar una solicitud en `certificados.html` (**Entendido** en el modal), a los **3 segundos** se abre la plantilla real del modo activo (`mail-certificados-global.html`, `mail-certificados-contenido.html` o `mail-certificados-colaborador.html`) con placeholders rellenados desde el formulario.
 
 Requiere servir la carpeta por **http** (Live Server, `npx serve`, etc.); con `file://` el `fetch` del template puede fallar y solo abrirá el HTML sin datos.
 
