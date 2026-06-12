@@ -192,9 +192,11 @@ body.page-tareas .dashboard-container {
     display: flex !important;
     flex-direction: column !important;
     height: auto !important;
+    background-color: var(--ubits-bg-1) !important;
+    border-radius: var(--border-radius-md) !important;
+    padding: var(--padding-xl) !important;
     /* Permitir que el margen ocupe espacio */
     margin-bottom: var(--gap-lg) !important;
-    /* Token oficial */
 }
 
 /* Cadena flex para que el contenedor de tareas llegue hasta donde termina el sidebar.
