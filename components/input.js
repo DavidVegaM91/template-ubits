@@ -796,6 +796,9 @@ function createAutocompleteDropdown(container, inputElement, autocompleteOptions
             const selectedText = this.textContent.replace(/<[^>]*>/g, '');
             inputElement.value = selectedText;
             dropdown.style.display = 'none';
+            if (typeof inputElement._ubitsToggleAutocompleteClear === 'function') {
+                inputElement._ubitsToggleAutocompleteClear();
+            }
             if (onChange && typeof onChange === 'function') {
                 onChange(selectedValue);
             }
@@ -1018,6 +1021,9 @@ function createAutocompleteDropdown(container, inputElement, autocompleteOptions
                 const selectedText = this.textContent.replace(/<[^>]*>/g, ''); // Remover HTML
                 inputElement.value = selectedText;
                 dropdown.style.display = 'none';
+                if (typeof inputElement._ubitsToggleAutocompleteClear === 'function') {
+                    inputElement._ubitsToggleAutocompleteClear();
+                }
                 if (onChange && typeof onChange === 'function') {
                     onChange(selectedValue);
                 }
@@ -1790,6 +1796,8 @@ function createInput(options = {}) {
                 }
             }
             
+            inputElement._ubitsToggleAutocompleteClear = toggleClearIcon;
+
             // Mostrar/ocultar icono al escribir
             inputElement.addEventListener('input', toggleClearIcon);
             
