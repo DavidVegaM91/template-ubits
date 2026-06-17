@@ -102,7 +102,7 @@ function openTaskDetailPanel(task) {
             planNombre: task.planNombre || null
         }));
     } catch (e) { /* sessionStorage no disponible */ }
-    window.location.href = 'task-detail.html?id=' + encodeURIComponent(task.id);
+    window.location.href = 'task-detail.html?id=' + encodeURIComponent(task.id) + '&from=plan-detail';
 }
 
 function getPlanIdFromUrl() {

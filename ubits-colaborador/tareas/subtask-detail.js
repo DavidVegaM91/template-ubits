@@ -462,7 +462,10 @@
         }
 
         var taskId = getTaskIdFromUrl();
-        var backUrl = taskId != null ? ('task-detail.html?id=' + encodeURIComponent(taskId)) : 'task-detail.html';
+        var fromParam = (new URLSearchParams(window.location.search || '')).get('from') || '';
+        var backUrl = taskId != null
+            ? ('task-detail.html?id=' + encodeURIComponent(taskId) + (fromParam ? '&from=' + encodeURIComponent(fromParam) : ''))
+            : 'task-detail.html';
 
         var btnBack = document.getElementById('subtask-detail-btn-back');
         if (btnBack) {

@@ -2260,7 +2260,7 @@ function handleTaskClick(tareaId) {
             }));
         }
     } catch (e) { /* sessionStorage no disponible (ej. file://) */ }
-    window.location.href = 'task-detail.html?id=' + encodeURIComponent(tareaId);
+    window.location.href = 'task-detail.html?id=' + encodeURIComponent(tareaId) + '&from=tareas';
 }
 
 // Exportar función de inicialización

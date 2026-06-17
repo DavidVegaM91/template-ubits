@@ -2026,6 +2026,28 @@
         return isNaN(num) ? id : num;
     }
 
+    function getFromParamFromUrl() {
+        var params = new URLSearchParams(window.location.search || '');
+        return params.get('from') || '';
+    }
+
+    /* Función global que usa el botón "Salir del detalle" (onclick="taskDetailGoBack()").
+       Navega a la página de origen según el parámetro ?from= de la URL, en vez de
+       usar history.back() que crea bucle si se llegó desde subtask-detail. */
+    window.taskDetailGoBack = function () {
+        var from = getFromParamFromUrl();
+        if (from === 'seguimiento') {
+            window.location.href = 'seguimiento.html';
+        } else if (from === 'plan-detail') {
+            var params = new URLSearchParams(window.location.search || '');
+            var planId = params.get('planId');
+            window.location.href = planId ? ('plan-detail.html?id=' + encodeURIComponent(planId)) : 'tareas.html';
+        } else {
+            /* 'tareas' o sin from */
+            window.location.href = 'tareas.html';
+        }
+    };
+
     function initTaskDetailPage() {
         /* Toast pendiente (ej. tras eliminar subtarea y volver aquí) */
         try {
@@ -2421,7 +2443,7 @@
                     if (taskDetailSubtaskPendingClickTimeout) clearTimeout(taskDetailSubtaskPendingClickTimeout);
                     taskDetailSubtaskPendingClickTimeout = setTimeout(function () {
                         taskDetailSubtaskPendingClickTimeout = null;
-                        window.location.href = 'subtask-detail.html?taskId=' + encodeURIComponent(taskId) + '&id=' + encodeURIComponent(subtaskIdFromRow);
+                        window.location.href = 'subtask-detail.html?taskId=' + encodeURIComponent(taskId) + '&id=' + encodeURIComponent(subtaskIdFromRow) + (getFromParamFromUrl() ? '&from=' + encodeURIComponent(getFromParamFromUrl()) : '');
                     }, 300);
                 } else if (row) {
                     window.location.href = 'subtask-detail.html?taskId=' + encodeURIComponent(taskId) + '&id=' + encodeURIComponent(subtaskIdFromRow);
