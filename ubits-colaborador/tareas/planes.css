@@ -1026,6 +1026,7 @@
 /* Card list container - alineado con .task-group-card-list (padding 16px, border-radius-md, color-bg-1) */
 .plan-section {
     background: var(--ubits-bg-1);
+    border: 1px solid var(--ubits-border-1);
     border-radius: var(--border-radius-md);
     padding: var(--padding-lg, 16px);
     width: 100%;
