@@ -197,6 +197,13 @@
     justify-content: center;
 }
 
+/* Tipo celda: badge-tag de prioridad – ancho uniforme entre Alta / Media / Baja */
+.ubits-table tbody td[data-col="prioridad"] .ubits-badge-tag {
+    min-width: 90px;
+    width: 90px;
+    justify-content: center;
+}
+
 /* Tipo celda: prioridad (icono + texto) */
 .ubits-table__cell-priority {
     display: inline-flex;

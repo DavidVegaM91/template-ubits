@@ -897,6 +897,13 @@
             var toggle = container.querySelector('.ubits-dt-search-toggle');
             var searchCont = document.getElementById(searchContainerId);
             if (!toggle || !searchCont) return;
+
+            function collapseSearch() {
+                searchCont.innerHTML = '';
+                searchCont.style.display = 'none';
+                toggle.style.display = 'flex';
+            }
+
             toggle.addEventListener('click', function () {
                 if (searchCont.style.display === 'none' || !searchCont.innerHTML.trim()) {
                     toggle.style.display = 'none';
@@ -917,6 +924,15 @@
                             if (input) input.focus();
                         }, 100);
                     }
+                }
+            });
+
+            // Click fuera del input sin texto → volver al botón
+            document.addEventListener('mousedown', function (e) {
+                if (searchCont.style.display === 'none') return;
+                if (searchCont.contains(e.target) || e.target === toggle) return;
+                if (!searchQuery.trim()) {
+                    collapseSearch();
                 }
             });
         }

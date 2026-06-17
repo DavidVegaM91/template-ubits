@@ -17,6 +17,7 @@
     <link rel="stylesheet" href="../../components/alert.css">
     <link rel="stylesheet" href="../../components/toast.css">
     <link rel="stylesheet" href="../../components/status-tag.css">
+    <link rel="stylesheet" href="../../components/badge-tag.css">
     <link rel="stylesheet" href="../../components/avatar.css">
     <link rel="stylesheet" href="../../components/table.css">
     <link rel="stylesheet" href="../../components/checkbox.css">
@@ -24,6 +25,98 @@
         /* Preview: ocultar columnas según controles (solo en esta página) */
         #table-demo th.table-preview-hide,
         #table-demo td.table-preview-hide { display: none; }
+
+        /* Filter buttons en TH */
+        .table-demo-th-inner {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            white-space: nowrap;
+        }
+        .table-demo-th-inner > span { flex-shrink: 0; }
+        .table-demo-filter-wrapper { position: relative; display: inline-flex; flex-shrink: 0; }
+        .table-demo-filter-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px;
+            height: 24px;
+            border-radius: var(--border-radius-xs);
+            border: none;
+            background: transparent;
+            color: var(--ubits-fg-1-medium);
+            cursor: pointer;
+            font-size: 11px;
+            line-height: 1;
+            transition: background 0.15s, color 0.15s;
+        }
+        .table-demo-filter-btn:hover { background: var(--ubits-bg-2); color: var(--ubits-fg-1-high); }
+        .table-demo-filter-btn.active {
+            background: var(--ubits-feedback-bg-info-subtle, rgba(0,119,255,0.08));
+            color: var(--ubits-accent-brand);
+        }
+
+        /* Dropdown */
+        .table-demo-filter-dropdown {
+            position: absolute;
+            top: calc(100% + 4px);
+            left: 0;
+            z-index: 1200;
+            width: 200px;
+            background: var(--ubits-bg-1);
+            border: 1px solid var(--ubits-border-1);
+            border-radius: var(--border-radius-sm);
+            box-shadow: 0 4px 16px rgba(0,0,0,.12);
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        .table-demo-filter-dropdown.open { display: flex; }
+        .table-demo-filter-options { padding: 4px 0; }
+        .table-demo-filter-option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 7px 12px;
+            cursor: pointer;
+            transition: background 0.1s;
+        }
+        .table-demo-filter-option:hover { background: var(--ubits-bg-2); }
+        .table-demo-filter-option .ubits-checkbox__label {
+            font-size: var(--font-size-sm);
+            color: var(--ubits-fg-1-high);
+        }
+        .table-demo-filter-footer {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 8px;
+            padding: 8px 12px;
+            border-top: 1px solid var(--ubits-border-1);
+        }
+        .table-demo-filter-cancel {
+            background: none;
+            border: 1px solid var(--ubits-border-1);
+            border-radius: var(--border-radius-xs);
+            color: var(--ubits-fg-1-medium);
+            font-size: var(--font-size-sm);
+            padding: 4px 12px;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+        .table-demo-filter-cancel:hover { background: var(--ubits-bg-2); }
+        .table-demo-filter-apply {
+            background: var(--ubits-accent-brand);
+            border: none;
+            border-radius: var(--border-radius-xs);
+            color: #fff;
+            font-size: var(--font-size-sm);
+            font-weight: var(--font-weight-semibold);
+            padding: 4px 12px;
+            cursor: pointer;
+            transition: opacity 0.15s;
+        }
+        .table-demo-filter-apply:hover { opacity: 0.88; }
     </style>
 </head>
 <body class="componentes-page" data-theme="light">
@@ -103,18 +196,18 @@
                                     <table class="ubits-table" id="table-demo">
                                         <thead>
                                             <tr>
-                                                <th class="ubits-table__th--checkbox" data-col="checkbox"><label class="ubits-checkbox ubits-checkbox--sm"><input type="checkbox" class="ubits-checkbox__input" id="table-demo-select-all" aria-label="Seleccionar todo"><span class="ubits-checkbox__box"><i class="fas fa-check"></i><i class="fas fa-minus"></i></span><span class="ubits-checkbox__label sr-only">Seleccionar todo</span></label></th>
+                                                <th class="ubits-table__th--checkbox" data-col="checkbox" data-tooltip="Seleccionar todo" data-tooltip-delay="1000"><label class="ubits-checkbox ubits-checkbox--sm"><input type="checkbox" class="ubits-checkbox__input" id="table-demo-select-all" aria-label="Seleccionar todo"><span class="ubits-checkbox__box"><i class="fas fa-check"></i><i class="fas fa-minus"></i></span><span class="ubits-checkbox__label sr-only">Seleccionar todo</span></label></th>
                                                 <th data-col="nombre">Nombre</th>
                                                 <th data-col="asignado">Asignado</th>
                                                 <th data-col="profilelist">Asignados</th>
                                                 <th data-col="avance">Avance</th>
-                                                <th data-col="estado">Estado</th>
-                                                <th data-col="prioridad">Prioridad</th>
+                                                <th data-col="estado" style="position:relative;"><div class="table-demo-th-inner"><span>Estado</span><div class="table-demo-filter-wrapper" data-filter-col="estado"><button type="button" class="table-demo-filter-btn" data-filter-col="estado" aria-label="Filtrar por estado" aria-expanded="false"><i class="far fa-filter"></i></button><div class="table-demo-filter-dropdown" id="table-demo-filter-estado"><div class="table-demo-filter-options" id="table-demo-filter-estado-opts"></div><div class="table-demo-filter-footer"><button class="table-demo-filter-cancel" data-filter-cancel="estado">Cancelar</button><button class="table-demo-filter-apply" data-filter-apply="estado">Aplicar</button></div></div></div></div></th>
+                                                <th data-col="prioridad" style="position:relative;"><div class="table-demo-th-inner"><span>Prioridad</span><div class="table-demo-filter-wrapper" data-filter-col="prioridad"><button type="button" class="table-demo-filter-btn" data-filter-col="prioridad" aria-label="Filtrar por prioridad" aria-expanded="false"><i class="far fa-filter"></i></button><div class="table-demo-filter-dropdown" id="table-demo-filter-prioridad"><div class="table-demo-filter-options" id="table-demo-filter-prioridad-opts"></div><div class="table-demo-filter-footer"><button class="table-demo-filter-cancel" data-filter-cancel="prioridad">Cancelar</button><button class="table-demo-filter-apply" data-filter-apply="prioridad">Aplicar</button></div></div></div></div></th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             <tr>
-                                                <td class="ubits-table__td--checkbox" data-col="checkbox"><label class="ubits-checkbox ubits-checkbox--sm"><input type="checkbox" class="ubits-checkbox__input table-demo-row-check" data-id="1"><span class="ubits-checkbox__box"><i class="fas fa-check"></i></span><span class="ubits-checkbox__label sr-only">Seleccionar fila</span></label></td>
+                                                <td class="ubits-table__td--checkbox" data-col="checkbox" data-tooltip="Seleccionar" data-tooltip-delay="1000"><label class="ubits-checkbox ubits-checkbox--sm"><input type="checkbox" class="ubits-checkbox__input table-demo-row-check" data-id="1"><span class="ubits-checkbox__box"><i class="fas fa-check"></i></span><span class="ubits-checkbox__label sr-only">Seleccionar fila</span></label></td>
                                                 <td data-col="nombre"><span class="ubits-body-sm-regular">Tarea de ejemplo A</span></td>
                                                 <td data-col="asignado">
                                                     <div class="ubits-table__cell-assignee">
@@ -140,10 +233,10 @@
                                                     </div>
                                                 </td>
                                                 <td data-col="estado"><span class="ubits-status-tag ubits-status-tag--info ubits-status-tag--sm"><span class="ubits-status-tag__text">Iniciada</span></span></td>
-                                                <td data-col="prioridad"><span class="ubits-table__cell-priority" style="color: var(--ubits-feedback-accent-error);"><i class="far fa-chevrons-up"></i> Alta</span></td>
+                                                <td data-col="prioridad"><span class="ubits-badge-tag ubits-badge-tag--outlined ubits-badge-tag--error ubits-badge-tag--sm ubits-badge-tag--with-icon"><i class="far fa-chevrons-up"></i><span class="ubits-badge-tag__text">Alta</span></span></td>
                                             </tr>
                                             <tr>
-                                                <td class="ubits-table__td--checkbox" data-col="checkbox"><label class="ubits-checkbox ubits-checkbox--sm"><input type="checkbox" class="ubits-checkbox__input table-demo-row-check" data-id="2"><span class="ubits-checkbox__box"><i class="fas fa-check"></i></span><span class="ubits-checkbox__label sr-only">Seleccionar fila</span></label></td>
+                                                <td class="ubits-table__td--checkbox" data-col="checkbox" data-tooltip="Seleccionar" data-tooltip-delay="1000"><label class="ubits-checkbox ubits-checkbox--sm"><input type="checkbox" class="ubits-checkbox__input table-demo-row-check" data-id="2"><span class="ubits-checkbox__box"><i class="fas fa-check"></i></span><span class="ubits-checkbox__label sr-only">Seleccionar fila</span></label></td>
                                                 <td data-col="nombre"><span class="ubits-body-sm-regular">Tarea de ejemplo B</span></td>
                                                 <td data-col="asignado">
                                                     <div class="ubits-table__cell-assignee">
@@ -169,10 +262,10 @@
                                                     </div>
                                                 </td>
                                                 <td data-col="estado"><span class="ubits-status-tag ubits-status-tag--success ubits-status-tag--sm"><span class="ubits-status-tag__text">Finalizada</span></span></td>
-                                                <td data-col="prioridad"><span class="ubits-table__cell-priority" style="color: var(--ubits-fg-1-medium);"><i class="far fa-chevron-up"></i> Media</span></td>
+                                                <td data-col="prioridad"><span class="ubits-badge-tag ubits-badge-tag--outlined ubits-badge-tag--warning ubits-badge-tag--sm ubits-badge-tag--with-icon"><i class="far fa-chevron-up"></i><span class="ubits-badge-tag__text">Media</span></span></td>
                                             </tr>
                                             <tr>
-                                                <td class="ubits-table__td--checkbox" data-col="checkbox"><label class="ubits-checkbox ubits-checkbox--sm"><input type="checkbox" class="ubits-checkbox__input table-demo-row-check" data-id="3"><span class="ubits-checkbox__box"><i class="fas fa-check"></i></span><span class="ubits-checkbox__label sr-only">Seleccionar fila</span></label></td>
+                                                <td class="ubits-table__td--checkbox" data-col="checkbox" data-tooltip="Seleccionar" data-tooltip-delay="1000"><label class="ubits-checkbox ubits-checkbox--sm"><input type="checkbox" class="ubits-checkbox__input table-demo-row-check" data-id="3"><span class="ubits-checkbox__box"><i class="fas fa-check"></i></span><span class="ubits-checkbox__label sr-only">Seleccionar fila</span></label></td>
                                                 <td data-col="nombre"><span class="ubits-body-sm-regular">Tarea de ejemplo C</span></td>
                                                 <td data-col="asignado">
                                                     <div class="ubits-table__cell-assignee">
@@ -198,7 +291,7 @@
                                                     </div>
                                                 </td>
                                                 <td data-col="estado"><span class="ubits-status-tag ubits-status-tag--error ubits-status-tag--sm"><span class="ubits-status-tag__text">Vencida</span></span></td>
-                                                <td data-col="prioridad"><span class="ubits-table__cell-priority" style="color: var(--ubits-feedback-accent-info);"><i class="far fa-chevron-down"></i> Baja</span></td>
+                                                <td data-col="prioridad"><span class="ubits-badge-tag ubits-badge-tag--outlined ubits-badge-tag--info ubits-badge-tag--sm ubits-badge-tag--with-icon"><i class="far fa-chevron-down"></i><span class="ubits-badge-tag__text">Baja</span></span></td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -341,8 +434,13 @@
                 var n = rowChecks.length;
                 var checked = 0;
                 rowChecks.forEach(function(cb) { if (cb.checked) checked++; });
-                selectAll.checked = n > 0 && checked === n;
-                selectAll.indeterminate = checked > 0 && checked < n;
+                var allSelected = checked === n;
+                var someSelected = checked > 0 && checked < n;
+                selectAll.checked = allSelected;
+                selectAll.indeterminate = someSelected;
+                /* Tooltip dinámico del header */
+                var thCb = selectAll.closest('[data-tooltip]');
+                if (thCb) thCb.setAttribute('data-tooltip', (allSelected || someSelected) ? 'Deseleccionar todo' : 'Seleccionar todo');
             }
             if (selectAll && rowChecks.length) {
                 selectAll.addEventListener('click', function() {
@@ -353,18 +451,37 @@
                     if (this.dataset.clickFromIndeterminate) {
                         this.checked = false;
                         delete this.dataset.clickFromIndeterminate;
-                        rowChecks.forEach(function(cb) { cb.checked = false; });
+                        rowChecks.forEach(function(cb) {
+                            cb.checked = false;
+                            var td = cb.closest('[data-tooltip]');
+                            if (td) td.setAttribute('data-tooltip', 'Seleccionar');
+                        });
+                        var thCb = selectAll.closest('[data-tooltip]');
+                        if (thCb) thCb.setAttribute('data-tooltip', 'Seleccionar todo');
                         return;
                     }
-                    rowChecks.forEach(function(cb) { cb.checked = selectAll.checked; });
+                    rowChecks.forEach(function(cb) {
+                        cb.checked = selectAll.checked;
+                        var td = cb.closest('[data-tooltip]');
+                        if (td) td.setAttribute('data-tooltip', selectAll.checked ? 'Deseleccionar' : 'Seleccionar');
+                    });
+                    var thCb = selectAll.closest('[data-tooltip]');
+                    if (thCb) thCb.setAttribute('data-tooltip', selectAll.checked ? 'Deseleccionar todo' : 'Seleccionar todo');
                 });
                 rowChecks.forEach(function(cb) {
-                    cb.addEventListener('change', updateTableSelectAll);
+                    cb.addEventListener('change', function() {
+                        var td = this.closest('[data-tooltip]');
+                        if (td) td.setAttribute('data-tooltip', this.checked ? 'Deseleccionar' : 'Seleccionar');
+                        updateTableSelectAll();
+                    });
                 });
+                if (typeof initTooltip === 'function') {
+                    initTooltip('#table-demo .ubits-table__th--checkbox[data-tooltip], #table-demo .ubits-table__td--checkbox[data-tooltip]');
+                }
             }
             /* Controles de columnas del preview */
             var colIds = ['checkbox', 'nombre', 'asignado', 'profilelist', 'avance', 'estado', 'prioridad'];
-            var defaultVisible = { checkbox: true, nombre: true, asignado: true, profilelist: false, avance: false, estado: false, prioridad: false };
+            var defaultVisible = { checkbox: true, nombre: true, asignado: true, profilelist: false, avance: true, estado: true, prioridad: true };
             function updateTableColumns() {
                 colIds.forEach(function(colId) {
                     var cb = document.getElementById('table-preview-col-' + colId);
@@ -387,6 +504,121 @@
             updateTableColumns();
         });
         
+        /* ── Filter buttons ─────────────────────────────── */
+        (function() {
+            var TABLE_FILTER_DATA = {
+                estado:    ['Iniciada', 'Finalizada', 'Vencida'],
+                prioridad: ['Alta', 'Media', 'Baja'],
+            };
+            var activeFilters = { estado: [], prioridad: [] };
+            var pendingFilters = { estado: [], prioridad: [] };
+
+            function buildOptions(col) {
+                var container = document.getElementById('table-demo-filter-' + col + '-opts');
+                if (!container) return;
+                container.innerHTML = '';
+                TABLE_FILTER_DATA[col].forEach(function(val) {
+                    var id = 'table-demo-filter-' + col + '-' + val.toLowerCase();
+                    var label = document.createElement('label');
+                    label.className = 'table-demo-filter-option ubits-checkbox ubits-checkbox--sm';
+                    label.htmlFor = id;
+                    label.innerHTML =
+                        '<input type="checkbox" class="ubits-checkbox__input" id="' + id + '" value="' + val + '">' +
+                        '<span class="ubits-checkbox__box"><i class="fas fa-check"></i></span>' +
+                        '<span class="ubits-checkbox__label">' + val + '</span>';
+                    container.appendChild(label);
+                    var cb = label.querySelector('input');
+                    cb.checked = pendingFilters[col].indexOf(val) > -1;
+                    cb.addEventListener('change', function() {
+                        if (this.checked) {
+                            if (pendingFilters[col].indexOf(val) === -1) pendingFilters[col].push(val);
+                        } else {
+                            pendingFilters[col] = pendingFilters[col].filter(function(v) { return v !== val; });
+                        }
+                    });
+                });
+            }
+
+            function applyTableFilters() {
+                var rows = document.querySelectorAll('#table-demo tbody tr');
+                rows.forEach(function(row) {
+                    var show = true;
+                    Object.keys(activeFilters).forEach(function(col) {
+                        if (!activeFilters[col].length) return;
+                        var td = row.querySelector('td[data-col="' + col + '"]');
+                        if (!td) return;
+                        var text = (td.textContent || '').trim();
+                        if (activeFilters[col].indexOf(text) === -1) show = false;
+                    });
+                    row.style.display = show ? '' : 'none';
+                });
+            }
+
+            function openDropdown(col) {
+                Object.keys(TABLE_FILTER_DATA).forEach(function(c) {
+                    if (c !== col) closeDropdown(c);
+                });
+                pendingFilters[col] = activeFilters[col].slice();
+                buildOptions(col);
+                var dd = document.getElementById('table-demo-filter-' + col);
+                var btn = document.querySelector('.table-demo-filter-btn[data-filter-col="' + col + '"]');
+                if (dd) dd.classList.add('open');
+                if (btn) btn.setAttribute('aria-expanded', 'true');
+            }
+
+            function closeDropdown(col) {
+                var dd = document.getElementById('table-demo-filter-' + col);
+                var btn = document.querySelector('.table-demo-filter-btn[data-filter-col="' + col + '"]');
+                if (dd) dd.classList.remove('open');
+                if (btn) btn.setAttribute('aria-expanded', 'false');
+            }
+
+            function updateBtnState(col) {
+                var btn = document.querySelector('.table-demo-filter-btn[data-filter-col="' + col + '"]');
+                if (!btn) return;
+                btn.classList.toggle('active', activeFilters[col].length > 0);
+            }
+
+            document.querySelectorAll('.table-demo-filter-btn').forEach(function(btn) {
+                btn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    var col = this.getAttribute('data-filter-col');
+                    var dd = document.getElementById('table-demo-filter-' + col);
+                    if (dd && dd.classList.contains('open')) {
+                        closeDropdown(col);
+                    } else {
+                        openDropdown(col);
+                    }
+                });
+            });
+
+            document.querySelectorAll('[data-filter-apply]').forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    var col = this.getAttribute('data-filter-apply');
+                    activeFilters[col] = pendingFilters[col].slice();
+                    closeDropdown(col);
+                    updateBtnState(col);
+                    applyTableFilters();
+                });
+            });
+
+            document.querySelectorAll('[data-filter-cancel]').forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    var col = this.getAttribute('data-filter-cancel');
+                    pendingFilters[col] = activeFilters[col].slice();
+                    closeDropdown(col);
+                });
+            });
+
+            document.addEventListener('click', function(e) {
+                Object.keys(TABLE_FILTER_DATA).forEach(function(col) {
+                    var wrapper = document.querySelector('.table-demo-filter-wrapper[data-filter-col="' + col + '"]');
+                    if (wrapper && !wrapper.contains(e.target)) closeDropdown(col);
+                });
+            });
+        })();
+        /* ── /Filter buttons ─────────────────────────────── */
+
         function copyCode(codeId) {
             var el = document.getElementById(codeId);
             if (!el) return;

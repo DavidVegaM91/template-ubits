@@ -128,7 +128,7 @@
         return progressBarRowHtml(Object.assign({
             value: value,
             size: 'lg',
-            rounded: false,
+            rounded: true,
             fixedWidth60: true,
             rowClassName: 'ubits-table__cell-progress',
             ariaLabel: 'Progreso'
