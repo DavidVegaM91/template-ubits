@@ -807,6 +807,7 @@
                 size: 'xs',
                 showLabel: false,
                 placeholder: 'Tipo',
+                disabled: task.status === 'Finalizado',
                 selectOptions: [
                     { value: 'standard', text: 'Estándar' },
                     { value: 'aprendizaje', text: 'Aprendizaje' }

@@ -133,11 +133,11 @@
     justify-content: center;
 }
 
-/* Input de fecha (vencimiento) de la tarea padre y del panel Creación a partir de lista: ancho fijo 105px (alineado con drawer Nueva tarea en planes) */
+/* Input de fecha (vencimiento) de la tarea padre y del panel Creación a partir de lista: ancho fijo 115px */
 #task-detail-vencimiento-wrap,
 #task-detail-mass-date-wrap {
-    width: 105px;
-    min-width: 105px;
+    width: 115px;
+    min-width: 115px;
 }
 
 #task-detail-plan-wrap {

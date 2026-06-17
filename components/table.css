@@ -30,7 +30,7 @@
     border-collapse: separate;
     border-spacing: 0;
     border: 1px solid var(--ubits-border-1);
-    border-radius: var(--border-radius-sm);
+    border-radius: var(--border-radius-lg);
     overflow: hidden;
     background: var(--ubits-bg-1);
 }

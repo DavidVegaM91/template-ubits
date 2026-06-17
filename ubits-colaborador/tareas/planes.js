@@ -644,10 +644,10 @@ function renderTemplateDrawer() {
             }
         }, 100);
 
-        // Configurar drag & drop si está en modo excel
+        // Inicializar file upload si está en modo excel
         setTimeout(() => {
             if (templateDrawerState.taskCreationMode === 'excel') {
-                setupDragAndDrop();
+                initTemplateFileUpload();
             }
         }, 100);
     } else {
@@ -667,25 +667,7 @@ function renderTaskCreationSection() {
                 </p>
             </div>
 
-            <button 
-                type="button"
-                id="download-excel-button"
-                class="ubits-button ubits-button--secondary ubits-button--md"
-                onclick="handleDownloadTemplate()"
-            >
-                <i class="far fa-download"></i>
-                <span>Descargar excel de ejemplo</span>
-            </button>
-
-            ${templateDrawerState.csvTasks.length > 0 ? renderFileLoaded() : renderUploadArea()}
-
-            <input 
-                type="file" 
-                id="template-file-input" 
-                class="template-file-input" 
-                accept=".csv"
-                onchange="handleFileChange(event)"
-            />
+            <div id="template-fu-container"></div>
         `;
     } else {
         return `
@@ -856,52 +838,38 @@ function handleTaskCreationModeChange(mode) {
 }
 
 // Configurar drag & drop
-function setupDragAndDrop() {
-    const uploadArea = document.getElementById('upload-excel-area');
-    if (!uploadArea) return;
-
-    uploadArea.addEventListener('dragover', (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        templateDrawerState.isDragOver = true;
-        uploadArea.classList.add('drag-over');
-    });
-
-    uploadArea.addEventListener('dragleave', (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        templateDrawerState.isDragOver = false;
-        uploadArea.classList.remove('drag-over');
-    });
-
-    uploadArea.addEventListener('drop', (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        templateDrawerState.isDragOver = false;
-        uploadArea.classList.remove('drag-over');
-
-        const file = e.dataTransfer.files[0];
-        if (file && file.name.endsWith('.csv')) {
-            handleFile(file);
+function initTemplateFileUpload() {
+    if (typeof createFileUpload !== 'function') return;
+    if (document.getElementById('template-fu-container')?.children.length) return; // ya inicializado
+    createFileUpload({
+        containerId: 'template-fu-container',
+        id: 'template-fu',
+        accept: '.csv,text/csv',
+        maxSizeMb: 50,
+        hideHeader: true,
+        downloadButtons: [
+            {
+                label: 'Descargar excel de ejemplo',
+                icon: 'download',
+                onClick: function () { handleDownloadTemplate(); }
+            }
+        ],
+        onChange: function (file) {
+            if (file) {
+                handleFile(file);
+            } else {
+                templateDrawerState.csvTasks = [];
+                templateDrawerState.csvFile = null;
+            }
         }
     });
 }
 
-// Seleccionar archivo
-function onPickFile() {
-    const fileInput = document.getElementById('template-file-input');
-    if (fileInput) {
-        fileInput.value = '';
-        fileInput.click();
-    }
-}
-
-// Manejar cambio de archivo
+// Manejar cambio de archivo (legacy — mantenido por compatibilidad)
+function onPickFile() {}
 function handleFileChange(event) {
-    const file = event.target.files?.[0] || null;
-    if (file) {
-        handleFile(file);
-    }
+    var file = event && event.target && event.target.files && event.target.files[0];
+    if (file) handleFile(file);
 }
 
 // Procesar archivo CSV
@@ -988,8 +956,6 @@ function handleDownloadTemplate() {
 function handleRemoveFile() {
     templateDrawerState.csvTasks = [];
     templateDrawerState.csvFile = null;
-    const fileInput = document.getElementById('template-file-input');
-    if (fileInput) fileInput.value = '';
     renderTemplateDrawer();
 }
 
@@ -1421,45 +1387,7 @@ function handlePlanSubmit(e) {
 function renderPlanTaskSection() {
     const s = planDrawerState;
     if (s.taskCreationMode === 'excel') {
-        return `
-            <div class="plan-massive-upload">
-                <div class="plan-massive-upload__download">
-                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--md" onclick="handlePlanDownloadTemplate()">
-                        <i class="far fa-download"></i>
-                        <span>Descargar ejemplo</span>
-                    </button>
-                </div>
-                <div class="plan-massive-upload__file-section">
-                    <label class="template-form-label">Archivo:</label>
-                    ${s.csvTasks.length > 0 ? `
-                        <div class="template-file-loaded">
-                            <div class="template-file-loaded__info">
-                                <div class="template-file-loaded__icon"><i class="far fa-file-csv"></i></div>
-                                <div>
-                                    <p class="template-file-loaded__name">${escapeHtml(s.csvFile?.name || 'archivo.csv')}</p>
-                                    <p class="ubits-body-sm-regular">${s.csvTasks.length} tarea(s) cargada(s)</p>
-                                </div>
-                            </div>
-                            <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" onclick="handlePlanRemoveFile()" aria-label="Quitar archivo">
-                                <i class="far fa-times"></i>
-                            </button>
-                        </div>
-                    ` : `
-                        <div class="plan-upload-area" id="plan-upload-area" onclick="handlePlanPickFile()">
-                            <div class="plan-upload-area__icon"><i class="far fa-file-arrow-up"></i></div>
-                            <p class="plan-upload-area__title">Subir archivos</p>
-                            <p class="plan-upload-area__subtitle">Elige o suelta un archivo CSV</p>
-                            <p class="plan-upload-area__limits">Máx. 1 archivos · Hasta 5 MB</p>
-                            <button type="button" class="ubits-button ubits-button--secondary ubits-button--md plan-upload-area__btn">
-                                <i class="far fa-arrow-up-from-line"></i>
-                                <span>Seleccionar archivos</span>
-                            </button>
-                        </div>
-                    `}
-                </div>
-            </div>
-            <input type="file" id="plan-file-input" accept=".csv" class="template-file-input" onchange="handlePlanFileChange(event)" />
-        `;
+        return `<div id="plan-task-fu-container"></div>`;
     }
     return `
         <button type="button" class="ubits-button ubits-button--secondary ubits-button--md plan-add-task-btn" onclick="handlePlanAddTask()">
@@ -1633,39 +1561,7 @@ function renderPlanDrawer() {
                         ` : ''}
                         ${planDrawerState.userAssignmentMode === 'excel' ? `
                         <div class="template-form-group">
-                            ${!planDrawerState.userCsvFile ? `
-                                <div class="plan-download-wrap">
-                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" onclick="handlePlanDownloadUserTemplate()">
-                                        <i class="far fa-download"></i>
-                                        <span>Descargar plantilla de ejemplo de usuarios</span>
-                                    </button>
-                                </div>
-                                <div class="template-upload-area" id="plan-user-upload-area" onclick="handlePlanUserCsvUpload()">
-                                    <div class="template-upload-icon"><i class="far fa-cloud-upload"></i></div>
-                                    <div>
-                                        <p class="template-upload-text">Sube el archivo de tus usuarios para agilizar la gestión</p>
-                                        <p class="template-upload-subtext">CSV, hasta 50 MB</p>
-                                    </div>
-                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm">
-                                        <i class="far fa-file"></i>
-                                        <span>Cargar plantilla de usuarios diligenciada</span>
-                                    </button>
-                                </div>
-                                <input type="file" id="plan-user-file-input" accept=".csv" class="template-file-input" onchange="handlePlanUserFileChange(event)" />
-                            ` : `
-                                <div class="template-file-loaded">
-                                    <div class="template-file-loaded__info">
-                                        <div class="template-file-loaded__icon" style="background:var(--ubits-feedback-bg-success-subtle);color:var(--ubits-feedback-accent-success);"><i class="far fa-check"></i></div>
-                                        <div>
-                                            <p class="template-file-loaded__name">${escapeHtml(planDrawerState.userCsvFile?.name || '')}</p>
-                                            <p class="ubits-body-sm-regular">Archivo con ${planDrawerState.csvUsers.length} usuario(s) cargado(s)</p>
-                                        </div>
-                                    </div>
-                                    <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" onclick="handlePlanRemoveUserCsvFile()" aria-label="Quitar archivo">
-                                        <i class="far fa-times"></i>
-                                    </button>
-                                </div>
-                            `}
+                            <div id="plan-user-fu-container"></div>
                         </div>
                         ` : ''}
                         <div class="template-form-group plan-form-group-divider">
@@ -1718,9 +1614,6 @@ function renderPlanDrawer() {
         initPlanDrawerInputs();
         if (planDrawerState.showTaskCreator && window.planTaskTitleInputApi) {
             window.planTaskTitleInputApi.focus();
-        }
-        if (planDrawerState.taskCreationMode === 'excel') {
-            setupPlanTaskUploadDragDrop();
         }
     }, 80);
 }
@@ -1815,6 +1708,34 @@ function initPlanDrawerInputs() {
                 window.currentPlanTask.description = v;
             }
         });
+    }
+    if (typeof createFileUpload === 'function') {
+        if (document.getElementById('plan-task-fu-container') && !document.getElementById('plan-task-fu-container').children.length) {
+            createFileUpload({
+                containerId: 'plan-task-fu-container',
+                id: 'plan-task-fu',
+                accept: '.csv,text/csv',
+                maxSizeMb: 5,
+                hideHeader: true,
+                downloadButtons: [{ label: 'Descargar excel de ejemplo', icon: 'download', onClick: function() { handlePlanDownloadTemplate(); } }],
+                onChange: function(file) {
+                    planDrawerState.csvFile = file || null;
+                }
+            });
+        }
+        if (document.getElementById('plan-user-fu-container') && !document.getElementById('plan-user-fu-container').children.length) {
+            createFileUpload({
+                containerId: 'plan-user-fu-container',
+                id: 'plan-user-fu',
+                accept: '.csv,text/csv',
+                maxSizeMb: 50,
+                hideHeader: true,
+                downloadButtons: [{ label: 'Descargar plantilla de ejemplo de usuarios', icon: 'download', onClick: function() { handlePlanDownloadUserTemplate(); } }],
+                onChange: function(file) {
+                    planDrawerState.userCsvFile = file || null;
+                }
+            });
+        }
     }
 }
 

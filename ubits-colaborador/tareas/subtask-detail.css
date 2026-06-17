@@ -73,10 +73,10 @@
     }
 }
 
-/* Input fecha: mismo ancho fijo que en task-detail (100px) */
+/* Input fecha: mismo ancho fijo que en task-detail (115px) */
 #subtask-detail-vencimiento-wrap {
-    width: 100px;
-    min-width: 100px;
+    width: 115px;
+    min-width: 115px;
 }
 
 #subtask-detail-vencimiento-wrap .ubits-input {
