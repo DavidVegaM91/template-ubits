@@ -68,7 +68,7 @@
         var footerPrimaryId = config.footerPrimaryId || overlayId + '-footer-primary';
 
         function markedChosenBadgeHtml() {
-            return '<span class="ubits-dropdown-menu__option-badge" aria-hidden="true"><i class="far fa-check"></i><span class="ubits-body-sm-regular">Seleccionado</span></span>';
+            return '<span class="ubits-dropdown-menu__option-badge" aria-hidden="true"><i class="far fa-check"></i></span>';
         }
 
         var optionsHtml = options.map(function (opt, index) {
