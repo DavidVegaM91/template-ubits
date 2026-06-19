@@ -1,36 +1,36 @@
 /* ========================================
-   ESTILOS ESPECÍFICOS PARA CREAR PLAN DE CONTENIDOS
+   ESTILOS ESPECÍFICOS PARA CREAR PLAN DE COMPETENCIAS
    ======================================== */
 
-/* Mostrar título del header (Crear plan de contenidos) — en header-product.css el h2 está oculto por defecto */
+/* Mostrar título del header (Crear plan de competencias) — en header-product.css el h2 está oculto por defecto */
 #header-product-container .ubits-header-product__product-title h2 {
     display: block;
 }
 
-.crear-plan-contenidos-form {
+.crear-plan-competencias-form {
     width: 100%;
     display: flex;
     flex-direction: column;
     gap: var(--gap-xl);
 }
 
-.crear-plan-contenidos-form__field {
+.crear-plan-competencias-form__field {
     display: flex;
     flex-direction: column;
     gap: var(--gap-sm);
 }
 
-.crear-plan-contenidos-form__label {
+.crear-plan-competencias-form__label {
     color: var(--ubits-fg-1-high);
 }
 
-.crear-plan-contenidos-form__helper {
+.crear-plan-competencias-form__helper {
     color: var(--ubits-fg-1-medium);
     margin: 0;
 }
 
 /* Nombre del plan editable inline — estilos base cubiertos por inline-edit.css */
-.crear-plan-contenidos-form__field--nombre-plan {
+.crear-plan-competencias-form__field--nombre-plan {
     display: flex;
     flex-direction: column;
     gap: var(--gap-xs);
@@ -39,13 +39,13 @@
 /* Estilos base y estados cubiertos por components/inline-edit.css (.ubits-inline-edit) */
 
 /* Vigencia - fechas en fila */
-.crear-plan-contenidos-vigencia-row {
+.crear-plan-competencias-vigencia-row {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr;
     gap: var(--gap-lg);
 }
 
-.crear-plan-contenidos-vigencia-item {
+.crear-plan-competencias-vigencia-item {
     min-width: 0;
 }
 
@@ -110,7 +110,7 @@
     color: var(--ubits-fg-1-medium);
 }
 
-.crear-plan-contenidos-asignaciones-section {
+.crear-plan-competencias-asignaciones-section {
     width: 100%;
     display: flex;
     flex-direction: column;
@@ -177,15 +177,15 @@
     display: none;
 }
 
-.crear-plan-contenidos-buttons-row {
+.crear-plan-competencias-buttons-row {
     display: flex;
     flex-wrap: wrap;
     gap: var(--gap-md);
     align-items: center;
 }
 
-.crear-plan-contenidos-asignaciones-section #btn-agregar-asignacion,
-.crear-plan-contenidos-asignaciones-section #btn-agregar-masivo {
+.crear-plan-competencias-asignaciones-section #btn-agregar-asignacion,
+.crear-plan-competencias-asignaciones-section #btn-agregar-masivo {
     align-self: flex-start;
 }
 
@@ -243,7 +243,7 @@
     margin-top: var(--gap-xs);
 }
 
-/* Asistente en drawer: espacio entre stepper y bloque de cards (paso 1) */
+/* Asistente en drawer: espacio entre stepper y bloque de cards (paso 1) — mismo criterio que crear-plan-contenidos */
 .drawer-asignacion-wizard-root {
     display: flex;
     flex-direction: column;
@@ -253,17 +253,13 @@
     min-height: 0;
 }
 
-/* Paso 1: si el body ya no scrollea, el paso 1 puede necesitar scroll propio */
 #drawer-agregar-usuarios #drawer-wizard-step1.drawer-wizard-step {
-    display: flex;
-    flex-direction: column;
-    gap: var(--gap-xl);
     flex: 1;
     min-height: 0;
     overflow-y: auto;
 }
 
-/* Paso 2: participantes (colab / grupos) */
+/* Paso 2: participantes */
 #drawer-agregar-usuarios #drawer-wizard-step2.drawer-wizard-step--participantes {
     flex: 1;
     min-height: 0;
@@ -273,7 +269,7 @@
     gap: var(--gap-md);
 }
 
-/* Paso 3 (contenidos): ocupar alto disponible para lazy load de cards */
+/* Paso 3: competencias — scroll en resultados */
 #drawer-agregar-usuarios #drawer-wizard-step3.drawer-wizard-step {
     flex: 1;
     min-height: 0;
@@ -462,15 +458,9 @@
 
 .drawer-archivo-actions {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     gap: var(--gap-sm);
-}
-
-.drawer-archivo-empty {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
 }
 
 .drawer-archivo-dropzone {
@@ -478,8 +468,6 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    width: 100%;
-    box-sizing: border-box;
     padding: var(--padding-lg);
     border: 1px dashed var(--ubits-border-1);
     border-radius: var(--border-radius-sm);
@@ -488,80 +476,10 @@
     transition: border-color 0.2s ease, background 0.2s ease;
 }
 
-.drawer-archivo-dropzone:hover:not(.drawer-archivo-dropzone--has-file),
+.drawer-archivo-dropzone:hover,
 .drawer-archivo-dropzone--dragover {
     border-color: var(--ubits-accent-brand);
     background: var(--ubits-bg-2);
-}
-
-.drawer-archivo-dropzone--has-file {
-    align-items: center;
-    justify-content: center;
-    cursor: default;
-    padding: var(--padding-md);
-}
-
-.drawer-archivo-dropzone--has-file:hover:not(.drawer-archivo-dropzone--dragover) {
-    border-color: var(--ubits-border-1);
-    background: var(--ubits-bg-1);
-}
-
-.drawer-archivo-file-card {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: var(--gap-md);
-    /* min(100%, 400px) evita width:100% pegado a la izquierda; margin-inline centra en el dropzone */
-    width: min(100%, 400px);
-    max-width: 400px;
-    margin-left: auto;
-    margin-right: auto;
-    align-self: center;
-    padding: var(--padding-md);
-    background: var(--ubits-bg-1);
-    border: 1px solid var(--ubits-border-1);
-    border-radius: var(--border-radius-sm);
-    box-sizing: border-box;
-    pointer-events: auto;
-    text-align: start;
-}
-
-.drawer-archivo-file-card__icon-wrap {
-    flex-shrink: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 40px;
-    height: 40px;
-    border-radius: var(--border-radius-sm);
-    background: var(--ubits-bg-2);
-    border: 1px solid var(--ubits-border-1);
-    color: var(--ubits-fg-1-medium);
-}
-
-.drawer-archivo-file-card__icon-wrap i {
-    font-size: 18px;
-}
-
-.drawer-archivo-file-card__meta {
-    flex: 1;
-    min-width: 0;
-    display: flex;
-    flex-direction: column;
-    gap: var(--gap-xs);
-    align-items: flex-start;
-}
-
-.drawer-archivo-file-card__name {
-    display: block;
-    width: 100%;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-.drawer-archivo-file-card__size {
-    color: var(--ubits-fg-1-medium);
 }
 
 .drawer-archivo-dropzone-inner {
@@ -605,27 +523,6 @@
 .drawer-archivo-dropzone-formats {
     margin: 0;
     color: var(--ubits-fg-1-medium);
-}
-
-/* Botón contenidos bloqueado (CSV/archivo): clic → alert info; sin tooltip */
-.asignacion-contenidos-btn-wrap.js-asignacion-contenidos-csv-bloqueado {
-    display: inline-flex;
-    vertical-align: middle;
-    cursor: pointer;
-    outline: none;
-}
-
-.asignacion-contenidos-btn-wrap.js-asignacion-contenidos-csv-bloqueado:focus-visible {
-    box-shadow: 0 0 0 2px var(--ubits-bg-1), 0 0 0 4px var(--ubits-accent-brand);
-    border-radius: var(--border-radius-sm);
-}
-
-.asignacion-contenidos-btn-wrap.js-asignacion-contenidos-csv-bloqueado .asignacion-contenidos-btn--solo-lectura {
-    pointer-events: none;
-    background: var(--ubits-bg-disabled-button) !important;
-    color: var(--ubits-fg-on-disabled-button) !important;
-    border-color: var(--ubits-border-disabled-button) !important;
-    cursor: default;
 }
 
 /* Tabla asignaciones: celda Asignados con avatares / iconos */
@@ -717,13 +614,8 @@
     white-space: nowrap;
 }
 
-/* Dropdown del filtro del drawer: por encima del drawer (drawer usa z-index 1100–1101).
-   Wizard paso 3 usa #drawer-wiz-cursos-filter-overlay (mismo motivo que #drawer-cursos-filter-overlay).
-   editar-plan-contenidos: drawer solo contenidos usa #drawer-editplan-cursos-filter-overlay. */
+/* Dropdown del filtro del drawer: por encima del drawer (drawer usa z-index 1100–1101) */
 #drawer-cursos-filter-overlay.ubits-dropdown-menu__overlay,
-#drawer-wiz-cursos-filter-overlay.ubits-dropdown-menu__overlay,
-#drawer-editplan-cursos-filter-overlay.ubits-dropdown-menu__overlay,
-#crear-ruta-drawer-filter-overlay.ubits-dropdown-menu__overlay,
 #drawer-colab-filter-overlay.ubits-dropdown-menu__overlay,
 #drawer-grupos-sort-overlay.ubits-dropdown-menu__overlay,
 [id^="ubits-dt-filter-drawer-"].ubits-dropdown-menu__overlay,
@@ -731,9 +623,6 @@
     z-index: 1102;
 }
 #drawer-cursos-filter-overlay .ubits-dropdown-menu__content,
-#drawer-wiz-cursos-filter-overlay .ubits-dropdown-menu__content,
-#drawer-editplan-cursos-filter-overlay .ubits-dropdown-menu__content,
-#crear-ruta-drawer-filter-overlay .ubits-dropdown-menu__content,
 #drawer-colab-filter-overlay .ubits-dropdown-menu__content,
 #drawer-grupos-sort-overlay .ubits-dropdown-menu__content,
 [id^="ubits-dt-filter-drawer-"] .ubits-dropdown-menu__content,
@@ -742,15 +631,15 @@
 }
 
 #drawer-agregar-cursos .ubits-drawer-content,
-#drawer-agregar-usuarios .ubits-drawer-content {
+#drawer-agregar-usuarios .ubits-drawer-content,
+#drawer-agregar-competencias .ubits-drawer-content {
     min-height: 0;
 }
 
-/* Drawer Agregar cursos / wizard Agregar asignación: el body NO hace scroll global.
-   El scroll (y el lazy load) vive en .drawer-cursos-resultados-bg; si el body scrollea,
-   ese div crece con todo el contenido y scrollHeight === clientHeight → no hay evento scroll. */
+/* Drawer Agregar cursos / wizard: scroll interno en resultados (lazy load), no en el body */
 #drawer-agregar-cursos .ubits-drawer-body,
-#drawer-agregar-usuarios .ubits-drawer-body {
+#drawer-agregar-usuarios .ubits-drawer-body,
+#drawer-agregar-competencias .ubits-drawer-body {
     overflow: hidden;
     display: flex;
     flex-direction: column;
@@ -765,7 +654,7 @@
     gap: var(--gap-lg);
 }
 
-/* Dos columnas: izquierda = buscador + catálogo, derecha = contenidos agregados (legacy; preferir --single-col) */
+/* Dos columnas: izquierda = buscador + catálogo, derecha = contenidos agregados */
 .drawer-agregar-cursos--two-cols {
     display: flex;
     flex-direction: row;
@@ -774,14 +663,12 @@
     gap: var(--gap-xl);
 }
 
-/* Paso 2 agregar contenidos: una sola columna (buscador + Ver seleccionados + cards; sin tabla a la derecha) */
+/* Una sola columna (drawer Agregar competencias sin tabla derecha) */
 .drawer-agregar-cursos--single-col {
     display: flex;
     flex-direction: column;
     flex: 1;
     min-height: 0;
-    gap: var(--gap-md);
-    width: 100%;
 }
 
 .drawer-agregar-cursos__left {
@@ -815,6 +702,7 @@
     display: block;
     color: var(--ubits-fg-1-high);
     margin: 0 0 var(--gap-sm) 0;
+    flex-shrink: 0;
 }
 
 /* Fila buscador + botón filtro: input crece, botón alineado a la derecha */
@@ -822,23 +710,23 @@
     display: flex;
     align-items: center;
     gap: var(--gap-md);
+    flex-shrink: 0;
+}
+
+/* Competencias: reemplazar flex column por grid de 3 filas (título / buscador / resultados)
+   para darle altura definitiva (1fr) al contenedor de cards y que overflow-y: auto funcione.
+   Con flex puro el results-bg crece sin límite y scrollHeight === clientHeight → sin scroll. */
+#drawer-agregar-cursos .drawer-agregar-cursos__left,
+#drawer-agregar-usuarios #drawer-wizard-step3 .drawer-agregar-cursos__left,
+#drawer-agregar-competencias .drawer-agregar-cursos__left {
+    display: grid;
+    grid-template-rows: auto auto 1fr;
+    gap: var(--gap-md);
+    min-height: 0;
 }
 .drawer-cursos-search-input-wrap {
     flex: 1;
     min-width: 0;
-}
-
-/* Wizard paso Contenidos y drawer "Agregar contenidos": "Ver seleccionados" a la izquierda del buscador */
-.drawer-wiz-cursos-action-bar,
-.drawer-cursos-action-bar {
-    display: none;
-    align-items: center;
-    flex-shrink: 0;
-}
-
-.drawer-wiz-cursos-action-bar.is-visible,
-.drawer-cursos-action-bar.is-visible {
-    display: flex;
 }
 
 /* =========================================================================
@@ -909,47 +797,21 @@
 }
 
 /* Mismo espacio que empty state de búsqueda en tablas (ubits-dt-empty-state) */
-.drawer-contenidos-empty-search-wrap {
+.drawer-competencias-empty-search-wrap {
     padding: var(--padding-6xl) var(--padding-xl);
     min-height: 200px;
     box-sizing: border-box;
 }
 /* loadEmptyState reemplaza la clase del div por ubits-empty-state; forzar flex para que gap funcione */
-#drawer-contenidos-empty-search.ubits-empty-state {
+#drawer-competencias-empty-search.ubits-empty-state {
     display: flex !important;
     flex-direction: column !important;
     gap: var(--gap-lg) !important;
 }
-#drawer-contenidos-empty-search.ubits-empty-state .ubits-empty-state__header {
+#drawer-competencias-empty-search.ubits-empty-state .ubits-empty-state__header {
     gap: var(--gap-sm);
 }
-#drawer-contenidos-empty-search.ubits-empty-state .ubits-empty-state__footer {
-    gap: var(--gap-md);
-}
-
-/* Wizard paso 2: mismo empty state que drawer-contenidos (IDs distintos) */
-#drawer-wiz-contenidos-empty-search.ubits-empty-state {
-    display: flex !important;
-    flex-direction: column !important;
-    gap: var(--gap-lg) !important;
-}
-#drawer-wiz-contenidos-empty-search.ubits-empty-state .ubits-empty-state__header {
-    gap: var(--gap-sm);
-}
-#drawer-wiz-contenidos-empty-search.ubits-empty-state .ubits-empty-state__footer {
-    gap: var(--gap-md);
-}
-
-/* editar-plan-contenidos: drawer solo contenidos (mismo empty de búsqueda, otro id) */
-#drawer-editplan-contenidos-empty-search.ubits-empty-state {
-    display: flex !important;
-    flex-direction: column !important;
-    gap: var(--gap-lg) !important;
-}
-#drawer-editplan-contenidos-empty-search.ubits-empty-state .ubits-empty-state__header {
-    gap: var(--gap-sm);
-}
-#drawer-editplan-contenidos-empty-search.ubits-empty-state .ubits-empty-state__footer {
+#drawer-competencias-empty-search.ubits-empty-state .ubits-empty-state__footer {
     gap: var(--gap-md);
 }
 
@@ -963,7 +825,6 @@
     overflow-y: auto;
 }
 
-/* Separación con la barra de scroll solo cuando el bloque hace scroll (clase vía syncDrawerResultadosScrollPadding) */
 .drawer-cursos-resultados-bg.drawer-cursos-resultados-bg--has-scroll {
     padding-right: var(--padding-md);
 }
@@ -972,25 +833,6 @@
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: var(--gap-md);
-}
-
-/* Paso 2 a ancho completo: más columnas en el grid de cards */
-.drawer-cursos-resultados-bg--paso2-full .drawer-cursos-cards-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: var(--gap-md);
-}
-
-@media (max-width: 900px) {
-    .drawer-cursos-resultados-bg--paso2-full .drawer-cursos-cards-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-}
-
-@media (max-width: 480px) {
-    .drawer-cursos-resultados-bg--paso2-full .drawer-cursos-cards-grid {
-        grid-template-columns: 1fr;
-    }
 }
 
 .drawer-cursos-cards-grid {
@@ -1018,10 +860,10 @@
 }
 
 @media (max-width: 640px) {
-    .crear-plan-contenidos-tipo-options {
+    .crear-plan-competencias-tipo-options {
         grid-template-columns: 1fr;
     }
-    .crear-plan-contenidos-vigencia-row {
+    .crear-plan-competencias-vigencia-row {
         grid-template-columns: 1fr;
     }
     .asignaciones-plan-list {
@@ -1096,4 +938,225 @@
 
 .drawer-filter-btn--active i {
     color: var(--ubits-accent-brand) !important;
+}
+
+/* ========== Drawer competencias: cards y tabla dos líneas ========== */
+/* Mismo layout que catalogo.html: flex con 3 columnas (flex-direction: column) para que al expandir una card solo crezca su columna */
+.drawer-competencias-cards-grid {
+    /* contenedor; el contenido lo inyecta JS con .drawer-competencias-grid-v1 */
+}
+
+.drawer-competencias-grid-v1 {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--gap-lg);
+    align-items: flex-start;
+    overflow: visible;
+}
+
+.drawer-competencias-column {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-md);
+}
+
+@media (max-width: 900px) {
+    .drawer-competencias-column {
+        min-width: calc(50% - var(--gap-lg) / 2);
+    }
+}
+
+@media (max-width: 480px) {
+    .drawer-competencias-column {
+        min-width: 100%;
+    }
+}
+
+.drawer-competencia-card-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-none);
+}
+
+/* Mismo border-radius que card-content-compact (var(--border-radius-lg)) */
+.drawer-competencia-card {
+    background: var(--ubits-bg-1);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: var(--border-radius-lg);
+    overflow: hidden;
+    cursor: pointer;
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    gap: var(--gap-none);
+    height: 48px;
+    transition: border-color 0.2s ease;
+}
+
+.drawer-competencia-card:hover {
+    border-color: var(--ubits-accent-brand);
+}
+
+.drawer-competencia-card--selected {
+    border-color: var(--ubits-accent-brand);
+    border-width: 2px;
+}
+
+.drawer-competencia-card .competencia-card-v1-image {
+    width: 48px;
+    height: 48px;
+    object-fit: cover;
+    background: var(--ubits-bg-2);
+    flex-shrink: 0;
+    /* Sin border-radius: el card con overflow:hidden recorta la imagen a sus esquinas */
+}
+
+.drawer-competencia-card .competencia-card-v1-content {
+    padding: var(--padding-sm);
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-none);
+    flex: 1;
+    min-width: 0;
+    justify-content: center;
+}
+
+.drawer-competencia-card .competencia-card-v1-title {
+    color: var(--ubits-fg-1-high);
+    margin: 0;
+    line-height: 1.5;
+}
+
+.drawer-competencia-card .competencia-card-v1-title-text {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.drawer-competencia-card .competencia-card-v1-count {
+    color: var(--ubits-fg-1-medium);
+    line-height: 1.2;
+    margin: 0;
+    font-size: var(--font-size-xs);
+}
+
+.drawer-competencia-card-check {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+    padding: 0 var(--padding-sm);
+}
+
+.drawer-competencia-card-check .ubits-checkbox__label {
+    display: none;
+}
+
+/* Estado disabled: máximo 8 competencias alcanzado */
+.drawer-competencia-card--disabled {
+    pointer-events: none;
+    opacity: 0.5;
+    border-color: var(--ubits-border-1) !important;
+}
+
+.drawer-competencia-card--disabled .competencia-card-v1-image {
+    filter: grayscale(1);
+}
+
+.competencia-habilidades-container.drawer-competencias-habilidades {
+    display: none;
+    margin-top: var(--gap-sm);
+    padding: var(--padding-sm);
+    background: var(--ubits-bg-1);
+    border-radius: var(--border-radius-lg);
+}
+
+.competencia-habilidades-container.drawer-competencias-habilidades.is-visible {
+    display: block;
+}
+
+.drawer-habilidades-copy {
+    margin: 0 0 var(--gap-sm) 0;
+    color: var(--ubits-fg-1-medium);
+}
+
+.drawer-competencias-habilidades .competencias-habilidades-grid {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-sm);
+}
+
+.drawer-habilidad-row {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-sm);
+    transition: transform 0.22s ease-out;
+}
+
+.drawer-habilidad-row--draggable {
+    cursor: grab;
+    padding: var(--padding-xs) 0;
+}
+
+.drawer-habilidad-check-wrap {
+    margin-left: auto;
+    flex-shrink: 0;
+}
+
+.drawer-habilidad-row--unchecked .drawer-habilidad-title {
+    text-decoration: line-through;
+    color: var(--ubits-fg-disabled);
+    transition: color 0.2s ease, text-decoration-color 0.2s ease;
+}
+
+.drawer-habilidad-row--unchecked .drawer-habilidad-icon {
+    color: var(--ubits-fg-disabled);
+    transition: color 0.2s ease;
+}
+
+.drawer-habilidad-row--unchecked .drawer-habilidad-drag {
+    color: var(--ubits-fg-disabled);
+}
+
+.drawer-habilidad-row--unchecked.drawer-habilidad-row--draggable {
+    cursor: default;
+}
+
+.drawer-habilidad-row--draggable:active {
+    cursor: grabbing;
+}
+
+.drawer-habilidad-drag {
+    color: var(--ubits-fg-1-medium-inverted);
+    font-size: var(--font-size-sm);
+}
+
+.drawer-habilidad-row .drawer-habilidad-title {
+    color: var(--ubits-fg-1-high);
+}
+
+.drawer-habilidad-row .ubits-checkbox__label {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-sm);
+}
+
+.drawer-habilidad-icon {
+    color: var(--ubits-fg-1-high);
+    font-size: var(--font-size-sm);
+}
+
+/* Tabla derecha: celda con dos líneas (competencia + X habilidades) */
+.drawer-competencias-cell-main {
+    color: var(--ubits-fg-1-high);
+    display: block;
+}
+
+.drawer-competencias-cell-helper {
+    color: var(--ubits-fg-1-medium);
+    font-size: var(--font-size-xs);
+    line-height: 1.4;
+    margin-top: 2px;
 }

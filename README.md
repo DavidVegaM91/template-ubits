@@ -130,11 +130,30 @@ La pestaña **Catálogo** ya **no aparece** en la variante SubNav **`aprendizaje
 
 | Qué | Dónde |
 |-----|--------|
-| **Navegación producto** | SubNav Aprendizaje: Inicio, Modo estudio IA, U. Corporativa, Zona de estudio |
+| **Navegación producto** | SubNav Aprendizaje: Inicio, Modo estudio IA, U. Corporativa, Zona de estudio, **Mi equipo** |
 | **Exploración catálogo** | `home-learn.html` → foco en buscador → `catalogo-browse.js` |
 | **Página legacy** | `catalogo.html` sigue en disco (referencia, pruebas, enlaces antiguos); URL directa activa tab **Inicio** en SubNav |
 
 Si vuelves a exponer Catálogo como pestaña, restaura el ítem `{ id: 'catalog', … }` en `TOP_NAV_VARIANTS.aprendizaje.tabs` y el mapeo `'catalogo.html': 'catalog'` en `PAGE_TO_TAB`.
+
+## Patrón: Mi equipo (planes de formación para líderes)
+
+Flujo en **`ubits-colaborador/aprendizaje/mi-equipo/`** para líderes con permiso admin: crear y gestionar planes de formación **solo para reportes directos**, sin entrar al modo admin ni al LMS Creator.
+
+| Aspecto | Valor |
+|---------|--------|
+| **Layout** | Colaborador estándar: `loadSidebar('default', 'aprendizaje')` + SubNav `aprendizaje` + tab **Mi equipo** activo (`initMiEquipoLayout()` en `mi-equipo-layout.js`) |
+| **Lista** | `planes.html` — Header Product con tabs **Contenidos \| Competencias** (una sola página, no dos HTML como Creator) |
+| **Asignaciones** | Drawer **solo subordinados directos** (`getMiEquipoSubordinadosDirectos()`); sin empresa / grupos / archivo |
+| **Detalle Vigente** | Clic fila → drawer **solo lectura**; edición vía **Acciones → Editar plan** (igual que Creator post-fix jun 2026) |
+| **Mock** | `mi-equipo-planes-mock.js` (`MI_EQUIPO_PLANES_DB`); líder demo E006; subordinados E035–E040 |
+| **Catálogo** | Reutilizar `../../lms-creator/planes-formacion/catalogo-contenidos-drawer.js` y `catalogo-competencias-drawer.js` (no duplicar) |
+
+**Documentación:** `mi-equipo/contexto-mi-equipo.md` (contexto producto + migración React).
+
+**Pantallas:** `planes.html`, `crear-plan-contenidos.html`, `crear-plan-competencias.html`, `editar-plan-contenidos.html`, `editar-plan-competencias.html`, `detalle-plan.html`, `detalle-plan-competencias.html`.
+
+**Referencias:** réplica funcional de `lms-creator/planes-formacion/` excluyendo grupos, chat IA grupos y certificados.
 
 ## Toolbar panel (`ubits-toolbar-panel`)
 
@@ -185,7 +204,7 @@ Si la pantalla **solo** presenta un listado tabular (filas/columnas) con barra d
 ### **Componentes de navegación:**
 - **SubNav** - Navegación superior (variantes disponibles):
   - `template` - Plantilla personalizable
-  - `aprendizaje` - Módulo de aprendizaje (inicio, modo estudio IA, U. corporativa, zona de estudio; **catálogo oculto en SubNav** — ver [Patrón: búsqueda en Inicio Aprendizaje](#patrón-búsqueda-en-inicio-aprendizaje-home-learnhtml))
+  - `aprendizaje` - Módulo de aprendizaje (inicio, modo estudio IA, U. corporativa, zona de estudio, **mi equipo**; **catálogo oculto en SubNav** — ver [Patrón: búsqueda en Inicio Aprendizaje](#patrón-búsqueda-en-inicio-aprendizaje-home-learnhtml) y [Patrón: Mi equipo](#patrón-mi-equipo-planes-de-formación-para-líderes))
   - `desempeno` - Módulo de desempeño (evaluaciones 360, objetivos, métricas, reportes)
   - `encuestas` - Módulo de encuestas
   - `tareas` - Módulo de tareas (planes, tareas)
@@ -290,7 +309,7 @@ Patrón documentado para reutilizarlo en otros flujos o listas similares.
 | Qué | Dónde |
 |-----|--------|
 | **Lógica DnD** | `components/paginas-creator.js`, dentro de `initPaginasCreator(root)` |
-| **HTML del handle** | Mismo archivo, `paginasCreatorItemHtml()`: el icono de tipo va en `<span class="ubits-paginas-creator__icon-wrap ubits-paginas-creator__drag-handle" draggable="true" …>` (solo ese nodo inicia el arrastre; el resto de la fila sigue siendo clic para activar / doble clic para editar). |
+| **HTML del handle** | Mismo archivo, `paginasCreatorItemHtml()`: grip sólido gris (`fas fa-grip-vertical`) en `<span class="ubits-paginas-creator__drag-handle" draggable="true" …>` a la izquierda del icono de tipo (`ubits-paginas-creator__type-icon-wrap`). Solo el handle inicia el arrastre; el resto de la fila sigue siendo clic para activar / doble clic para editar. |
 | **Estilos** | `components/paginas-creator.css`: `.ubits-paginas-creator__drag-handle` (`cursor: grab` / `:active` y `.is-dragging` → `grabbing`); `.is-drop-before` / `.is-drop-after` (línea de inserción arriba/abajo); `.is-dragging` solo opacidad (sin borde/outline en el ítem arrastrado). |
 | **Evento al soltar** | `document` → `CustomEvent` **`ubits-paginas-creator-action`** con `detail.action === 'reordenar'` y `detail.item` (la fila movida). Coexiste con `mover-arriba` / `mover-abajo` / `eliminar` del menú ⋮. |
 | **Consumo actual** | `ubits-colaborador/lms-creator/crear-contenido.js`: en el listener de `ubits-paginas-creator-action` también trata **`reordenar`** (igual que mover arriba/abajo: refrescar tooltips del mount y estado del flujo). |
@@ -476,6 +495,9 @@ Todos los componentes UBITS requieren imports obligatorios:
 - **`u-corporativa.html`** - Universidad corporativa (3 secciones)
 - **`zona-estudio.html`** - Zona de estudio (2 secciones con tabs)
 - **`modo-estudio-ia.html`** - Modo de estudio con IA
+- **`mi-equipo/planes.html`** - Planes de formación para líderes (tabs Contenidos | Competencias; ver [Patrón: Mi equipo](#patrón-mi-equipo-planes-de-formación-para-líderes))
+- **`mi-equipo/crear-plan-contenidos.html`**, **`editar-plan-contenidos.html`**, **`detalle-plan.html`** - Flujo planes por contenidos (líder)
+- **`mi-equipo/crear-plan-competencias.html`**, **`editar-plan-competencias.html`**, **`detalle-plan-competencias.html`** - Flujo planes por competencias (líder)
 
 #### **📊 Módulo de Diagnóstico (ubits-colaborador/diagnostico/):**
 - **`diagnostico.html`** - Página de diagnóstico (1 sección)
@@ -666,6 +688,7 @@ Todos los componentes UBITS requieren imports obligatorios:
 │   ├── aprendizaje/                    # SubNav aprendizaje
 │   │   ├── home-learn.html             # Inicio (hero-search + catálogo vía buscador)
 │   │   ├── modo-estudio-ia.html, u-corporativa.html, zona-estudio.html
+│   │   ├── mi-equipo/                  # Planes de formación para líderes (permiso admin)
 │   │   ├── catalogo.html               # legacy; sin pestaña SubNav
 │   │   ├── home-learn-search.js, catalogo-browse.js  # lógica buscador Inicio
 │   ├── lms-creator/                    # Sidebar creator + SubNav por producto

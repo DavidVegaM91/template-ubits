@@ -51,6 +51,16 @@ Ruta relativa típica desde HTML: `../../bd-master/nombre-archivo.js` (desde `ub
 | `subtask-detail.html` | Detalle subtarea | Igual | Igual. |
 | `plantilla.html` | Plantilla tareas | Igual | Igual. |
 
+### Mi equipo — `ubits-colaborador/aprendizaje/mi-equipo/`
+
+| Página | Scripts `bd-master` / mock | Para qué |
+|--------|---------------------------|----------|
+| `planes.html` | `bd-master-colaboradores.js`, `mi-equipo-planes-mock.js` | Lista unificada; jerarquía líder E006 → subordinados E035–E040. |
+| `crear-plan-contenidos.html`, `editar-plan-contenidos.html`, `detalle-plan.html` | Colaboradores + maestros contenidos (`niveles`, `aliados`, `competencias`, `habilidades`, `categorias-fiqsha`, `bd-contenidos-ubits`, `bd-contenidos-fiqsha`) + `mi-equipo-planes-mock.js` | Drawer catálogo contenidos (reutiliza helper Creator). |
+| `crear-plan-competencias.html`, `editar-plan-competencias.html`, `detalle-plan-competencias.html` | Colaboradores + `bd-master-competencias.js`, `bd-master-habilidades.js` + `mi-equipo-planes-mock.js` | Drawer catálogo competencias (helper Creator). |
+
+Mock de planes: **`mi-equipo-planes-mock.js`** (no `bd-master`); snapshot opcional en `sessionStorage` (`ubits-mi-equipo-planes-db`).
+
 ---
 
 ## Relaciones entre archivos (contenidos)

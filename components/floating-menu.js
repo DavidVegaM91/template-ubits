@@ -14,7 +14,8 @@ const FLOATING_MENU_SECTIONS_DEFAULT = [
             { id: 'modo-estudio-ia', title: 'Modo estudio IA', icon: 'far fa-sparkles', url: '../../ubits-colaborador/aprendizaje/modo-estudio-ia.html' },
             { id: 'catalogo', title: 'Catálogo', icon: 'far fa-book', url: '../../ubits-colaborador/aprendizaje/catalogo.html' },
             { id: 'corporativa', title: 'U. Corporativa', icon: 'far fa-building-columns', url: '../../ubits-colaborador/aprendizaje/u-corporativa.html' },
-            { id: 'zona-estudio', title: 'Zona de estudio', icon: 'far fa-books', url: '../../ubits-colaborador/aprendizaje/zona-estudio.html' }
+            { id: 'zona-estudio', title: 'Zona de estudio', icon: 'far fa-books', url: '../../ubits-colaborador/aprendizaje/zona-estudio.html' },
+            { id: 'mi-equipo', title: 'Mi equipo', icon: 'far fa-users', url: '../../ubits-colaborador/aprendizaje/mi-equipo/planes.html' }
         ]
     },
     {

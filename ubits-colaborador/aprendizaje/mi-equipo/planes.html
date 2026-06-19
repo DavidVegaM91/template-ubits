@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="../../../images/playground-favicon.svg">
+    <title>UBITS Playground - Mi equipo - Planes de formación</title>
+    <!-- Mi equipo: checklist imports → mi-equipo-planes-formacion.css, contexto-mi-equipo.md -->
+
+    <link rel="stylesheet" href="../../../general-styles/ubits-colors.css">
+    <link rel="stylesheet" href="../../../general-styles/styles.css">
+    <link rel="stylesheet" href="./mi-equipo-planes-formacion.css">
+    <link rel="stylesheet" href="../../../general-styles/fontawesome-icons.css">
+    <link rel="stylesheet" href="../../../general-styles/ubits-typography.css">
+    <link rel="stylesheet" href="../../../components/sub-nav.css">
+    <link rel="stylesheet" href="../../../components/sidebar.css">
+    <link rel="stylesheet" href="../../../components/tab-bar.css">
+    <link rel="stylesheet" href="../../../components/floating-menu.css">
+    <link rel="stylesheet" href="../../../components/profile-menu.css">
+    <link rel="stylesheet" href="../../../components/button.css">
+    <link rel="stylesheet" href="../../../components/header-product.css">
+    <link rel="stylesheet" href="../../../components/tab.css">
+    <link rel="stylesheet" href="../../../components/tooltip.css">
+    <link rel="stylesheet" href="../../../components/table.css">
+    <link rel="stylesheet" href="../../../components/status-tag.css">
+    <link rel="stylesheet" href="../../../components/checkbox.css">
+    <link rel="stylesheet" href="../../../components/dropdown-menu.css">
+    <link rel="stylesheet" href="../../../components/input.css">
+    <link rel="stylesheet" href="../../../components/chip.css">
+    <link rel="stylesheet" href="../../../components/toast.css">
+    <link rel="stylesheet" href="../../../components/modal.css">
+    <link rel="stylesheet" href="../../../components/empty-state.css">
+    <link rel="stylesheet" href="../../../components/ubits-data-table.css">
+    <link rel="stylesheet" href="../../../components/progress-bar.css">
+    <link rel="stylesheet" href="./planes.css">
+</head>
+<body data-theme="light" class="page-mi-equipo-planes">
+    <div class="dashboard-container">
+        <div class="tooltip" id="tooltip"></div>
+        <div id="sidebar-container"></div>
+
+        <main class="main-content">
+            <div id="top-nav-container"></div>
+            <div class="content-area">
+                <div class="content-sections">
+                    <div class="section-single">
+                        <div class="widget-header-product" id="header-product-container"></div>
+                    </div>
+                    <div class="section-single section-single--test-tabla">
+                        <div class="widget-planes-formacion">
+                            <div id="planes-data-table-container" class="planes-formacion-tabla"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div id="planes-modals-container"></div>
+    <div id="tab-bar-container"></div>
+    <div id="floating-menu-container"></div>
+    <div id="profile-menu-container"></div>
+    <div id="ubits-toast-container"></div>
+
+    <script src="../../../components/tooltip.js"></script>
+    <script src="../../../components/sidebar.js"></script>
+    <script src="../../../components/sub-nav.js"></script>
+    <script src="../../../components/tab-bar.js"></script>
+    <script src="../../../components/floating-menu.js"></script>
+    <script src="../../../components/profile-menu.js"></script>
+    <script src="../../../components/header-product.js"></script>
+    <script src="../../../components/dropdown-menu.js"></script>
+    <script src="../../../components/input.js"></script>
+    <script src="../../../components/toast.js"></script>
+    <script src="../../../components/modal.js"></script>
+    <script src="../../../components/empty-state.js"></script>
+    <script src="../../../components/ubits-data-table.js"></script>
+    <script src="../../../script.js"></script>
+    <script src="../../../general-utils/humanizador-fechas.js"></script>
+    <script src="../../../components/progress-bar.js"></script>
+    <script src="../../../bd-master/bd-master-colaboradores.js"></script>
+    <script src="./mi-equipo-context.js"></script>
+    <script src="./mi-equipo-planes-mock.js"></script>
+    <script src="./mi-equipo-layout.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            if (typeof initMiEquipoLayout === 'function') initMiEquipoLayout();
+
+            var planesTablaRef = null;
+            var pendingDeleteIds = [];
+            var activeListTab = 'contenidos';
+
+            try {
+                var tabParam = (new URLSearchParams(window.location.search).get('tab') || '').toLowerCase();
+                if (tabParam === 'competencias') activeListTab = 'competencias';
+                else {
+                    var stored = sessionStorage.getItem('ubits-mi-equipo-list-tab');
+                    if (stored === 'competencias' || stored === 'contenidos') activeListTab = stored;
+                }
+            } catch (e) {}
+
+            var planesFormacionData = typeof getMiEquipoPlanesListData === 'function'
+                ? getMiEquipoPlanesListData()
+                : (window.MI_EQUIPO_PLANES_DB && window.MI_EQUIPO_PLANES_DB.planes) || [];
+
+            function refreshPlanesListData() {
+                planesFormacionData = typeof getMiEquipoPlanesListData === 'function'
+                    ? getMiEquipoPlanesListData()
+                    : (window.MI_EQUIPO_PLANES_DB && window.MI_EQUIPO_PLANES_DB.planes) || [];
+            }
+
+            function persistListTab(tabId) {
+                activeListTab = tabId === 'competencias' ? 'competencias' : 'contenidos';
+                try { sessionStorage.setItem('ubits-mi-equipo-list-tab', activeListTab); } catch (e) {}
+            }
+
+            /** Tab activo según el header (fuente de verdad visual al crear plan). */
+            function getActiveMiEquipoListTab() {
+                var container = document.getElementById('header-product-container');
+                if (container) {
+                    var activeBtn = container.querySelector('.ubits-header-product__tabs .ubits-tab--active[data-tab-id]');
+                    if (activeBtn) {
+                        var tid = activeBtn.getAttribute('data-tab-id');
+                        if (tid === 'competencias' || tid === 'contenidos') {
+                            if (tid !== activeListTab) persistListTab(tid);
+                            return tid;
+                        }
+                    }
+                }
+                return activeListTab === 'competencias' ? 'competencias' : 'contenidos';
+            }
+
+            function irCrearPlanMiEquipo() {
+                var tab = getActiveMiEquipoListTab();
+                var url = typeof getMiEquipoCrearPlanUrl === 'function'
+                    ? getMiEquipoCrearPlanUrl(tab)
+                    : (tab === 'competencias' ? 'crear-plan-competencias.html' : 'crear-plan-contenidos.html');
+                window.location.href = url;
+            }
+
+            function getFilteredPlanesData() {
+                if (typeof getMiEquipoPlanesByTipo === 'function') {
+                    return getMiEquipoPlanesByTipo(activeListTab).map(function (p) {
+                        return {
+                            id: p.id,
+                            nombre: p.nombre,
+                            fechaInicio: p.fechaInicio,
+                            fechaFin: p.fechaFin,
+                            estado: p.estado,
+                            progreso: p.progreso,
+                            tipo: p.tipo
+                        };
+                    });
+                }
+                return planesFormacionData.filter(function (p) { return p.tipo === activeListTab; });
+            }
+
+            function getEmptyStateConfig() {
+                if (activeListTab === 'competencias') {
+                    return {
+                        message: 'Aún no tienes planes de competencias',
+                        icon: 'far fa-bullseye',
+                        description: 'Crea planes por competencias para que tu equipo desarrolle habilidades en un periodo definido.',
+                        buttons: {
+                            secondary: { text: 'Crear plan', icon: 'fa-plus', onClick: irCrearPlanMiEquipo }
+                        }
+                    };
+                }
+                return {
+                    message: 'Aún no tienes planes de contenidos',
+                    icon: 'far fa-layer-group',
+                    description: 'Asigna cursos concretos a las personas de tu equipo en un periodo de tiempo.',
+                    buttons: {
+                        secondary: { text: 'Crear plan', icon: 'fa-plus', onClick: irCrearPlanMiEquipo }
+                    }
+                };
+            }
+
+            function updateEmptyStateConfig() {
+                var cfg = getEmptyStateConfig();
+                emptyStateConfig.message = cfg.message;
+                emptyStateConfig.icon = cfg.icon;
+                emptyStateConfig.description = cfg.description;
+                emptyStateConfig.buttons = cfg.buttons;
+            }
+
+            var emptyStateConfig = getEmptyStateConfig();
+
+            if (typeof getModalHtml === 'function') {
+                var deleteBody = '<p class="ubits-body-md-regular">¿Estás seguro de que deseas eliminar <strong id="planes-delete-count">0</strong> plan(es) seleccionado(s)?</p><p class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Esta acción no se puede deshacer.</p><div style="margin-top: var(--gap-lg);"><label class="ubits-body-sm-regular" for="planes-delete-type-input">Escriba <strong>eliminar</strong> para habilitar el botón:</label><input type="text" id="planes-delete-type-input" class="ubits-input" placeholder="Escriba la palabra de confirmación" autocomplete="off" style="margin-top: var(--gap-sm); width: 100%; padding: var(--padding-sm) var(--padding-md); border: 1px solid var(--ubits-border-1); border-radius: var(--border-radius-sm); font-size: var(--font-size-sm); color: var(--ubits-fg-1-high); box-sizing: border-box;"></div>';
+                var deleteFooter = '<button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="planes-delete-cancel"><span>Cancelar</span></button><button type="button" class="ubits-button ubits-button--error ubits-button--md" id="planes-delete-confirm" disabled><span>Eliminar</span></button>';
+                document.getElementById('planes-modals-container').innerHTML = getModalHtml({ overlayId: 'planes-delete-overlay', title: 'Confirmar eliminación', bodyHtml: deleteBody, footerHtml: deleteFooter, size: 'sm', closeButtonId: 'planes-delete-close' });
+            }
+
+            function openPlanesDeleteModal(ids) {
+                if (!ids || ids.length === 0) return;
+                pendingDeleteIds = ids.slice();
+                var countEl = document.getElementById('planes-delete-count');
+                var inputEl = document.getElementById('planes-delete-type-input');
+                var confirmEl = document.getElementById('planes-delete-confirm');
+                if (countEl) countEl.textContent = pendingDeleteIds.length;
+                if (inputEl) { inputEl.value = ''; inputEl.focus(); }
+                if (confirmEl) confirmEl.disabled = true;
+                var overlay = document.getElementById('planes-delete-overlay');
+                if (overlay) { overlay.style.display = 'flex'; overlay.setAttribute('aria-hidden', 'false'); }
+            }
+
+            function escapeHtml(t) {
+                if (t == null) return '';
+                var d = document.createElement('div');
+                d.textContent = t;
+                return d.innerHTML;
+            }
+
+            function getEstadoTagClass(estado) {
+                if (estado === 'Planeado') return 'info';
+                if (String(estado).indexOf('Procesando') === 0) return 'warning';
+                if (estado === 'Vigente') return 'success';
+                if (estado === 'No vigente') return 'neutral';
+                return 'neutral';
+            }
+
+            function getEstadoTooltip(estado) {
+                if (estado === 'Planeado') return 'Plan creado para una fecha futura; aún no ha iniciado. Solo lo ve el administrador, no los estudiantes.';
+                if (estado === 'Vigente') return 'En curso: la fecha actual está entre inicio y fin.';
+                if (estado === 'No vigente') return 'Ya pasó la fecha de cierre. El progreso quedó congelado; lo que estudien después no suma al plan.';
+                return '';
+            }
+
+            function buildPlanesRowHtml(row) {
+                var estadoClass = getEstadoTagClass(row.estado);
+                var tagHtml = '<span class="ubits-status-tag ubits-status-tag--' + estadoClass + ' ubits-status-tag--sm"><span class="ubits-status-tag__text">' + escapeHtml(row.estado) + '</span></span>';
+                var tooltipText = getEstadoTooltip(row.estado);
+                var estadoHtml = tooltipText
+                    ? '<span data-tooltip="' + escapeHtml(tooltipText) + '">' + tagHtml + '</span>'
+                    : tagHtml;
+                var pct = Math.min(100, Math.max(0, parseInt(row.progreso, 10) || 0));
+                var fechaInicioDisplay = (typeof formatDateDDMmmAAAA === 'function' ? formatDateDDMmmAAAA(row.fechaInicio) : row.fechaInicio);
+                var fechaFinDisplay = (typeof formatDateDDMmmAAAA === 'function' ? formatDateDDMmmAAAA(row.fechaFin) : row.fechaFin);
+                var accionesBtn = '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only js-planes-row-acciones-btn" data-plan-id="' + escapeHtml(String(row.id)) + '" data-plan-tipo="' + escapeHtml(row.tipo) + '" aria-label="Acciones del plan" data-tooltip="Acciones" data-tooltip-delay="500"><i class="far fa-ellipsis-vertical"></i></button>';
+                return '<td data-col="nombre"><span class="ubits-body-sm-regular">' + escapeHtml(row.nombre) + '</span></td>' +
+                    '<td data-col="fecha-inicio" data-date="' + escapeHtml(row.fechaInicio) + '"><span class="ubits-body-sm-regular">' + escapeHtml(fechaInicioDisplay) + '</span></td>' +
+                    '<td data-col="fecha-fin" data-date="' + escapeHtml(row.fechaFin) + '"><span class="ubits-body-sm-regular">' + escapeHtml(fechaFinDisplay) + '</span></td>' +
+                    '<td data-col="estado">' + estadoHtml + '</td>' +
+                    '<td data-col="progreso">' + (typeof tableProgressCellHtml === 'function' ? tableProgressCellHtml(pct) : '<div class="ubits-table__cell-progress"><span class="ubits-body-sm-regular">' + pct + '%</span></div>') + '</td>' +
+                    '<td data-col="acciones" class="planes-formacion-tabla__td-acciones">' + accionesBtn + '</td>';
+            }
+
+            function syncHeaderProductTabs() {
+                var container = document.getElementById('header-product-container');
+                if (!container) return;
+                container.querySelectorAll('.ubits-header-product__tabs .ubits-tab[data-tab]').forEach(function (btn) {
+                    var tid = btn.getAttribute('data-tab');
+                    var isActive = tid === activeListTab;
+                    btn.classList.toggle('ubits-tab--active', isActive);
+                    btn.setAttribute('aria-selected', isActive ? 'true' : 'false');
+                });
+            }
+
+            function switchMiEquipoListTab(tabId) {
+                persistListTab(tabId);
+                updateEmptyStateConfig();
+                syncHeaderProductTabs();
+                if (planesTablaRef && typeof planesTablaRef.refresh === 'function') {
+                    planesTablaRef.refresh();
+                }
+                setTimeout(function () {
+                    if (typeof initTooltip === 'function') initTooltip('#planes-data-table-container [data-tooltip]');
+                }, 50);
+            }
+
+            if (typeof createUbitsDataTable === 'function') {
+                planesTablaRef = createUbitsDataTable({
+                    containerId: 'planes-data-table-container',
+                    tableId: 'planes-table',
+                    title: 'Lista de planes',
+                    columns: [
+                        { id: 'nombre', label: 'Nombre del plan', sortable: true },
+                        { id: 'fecha-inicio', label: 'Fecha inicio', sortable: true, sortType: 'date' },
+                        { id: 'fecha-fin', label: 'Fecha fin', sortable: true, sortType: 'date' },
+                        { id: 'estado', label: 'Estado', filterable: true },
+                        { id: 'progreso', label: 'Progreso', sortable: true, sortType: 'number' },
+                        { id: 'acciones', label: 'Acciones' }
+                    ],
+                    getData: function () { return getFilteredPlanesData(); },
+                    rowIdField: 'id',
+                    buildRowHtml: buildPlanesRowHtml,
+                    features: { checkboxes: true, search: true, filters: true, verSeleccionados: true, actionBar: true, resultsCount: true },
+                    actionBarButtons: [
+                        { id: 'eliminar', label: 'Eliminar', icon: 'fa-trash', variant: 'error-secondary', onClick: function (selectedIds) {
+                            openPlanesDeleteModal(selectedIds);
+                        } }
+                    ],
+                    emptyState: emptyStateConfig,
+                    i18n: { selectAll: 'Seleccionar todo', deselectAll: 'Deseleccionar todo', verSeleccionados: 'Ver seleccionados', clearFilters: 'Limpiar filtros', filtrosAplicados: 'Filtros aplicados', buscar: 'Buscar' }
+                });
+                setTimeout(function () { if (typeof initTooltip === 'function') initTooltip('#planes-data-table-container [data-tooltip]'); }, 50);
+            }
+
+            if (typeof loadHeaderProduct === 'function') {
+                loadHeaderProduct('header-product-container', {
+                    variant: 'tabs-with-actions',
+                    tabs: [
+                        { id: 'contenidos', label: 'Planes de contenidos' },
+                        { id: 'competencias', label: 'Planes de competencias' }
+                    ],
+                    activeTabId: activeListTab,
+                    onTabChange: function (tabId) { switchMiEquipoListTab(tabId); },
+                    primaryButton: {
+                        text: 'Crear plan',
+                        icon: 'fa-plus',
+                        onClick: irCrearPlanMiEquipo
+                    }
+                });
+                syncHeaderProductTabs();
+            }
+
+            persistListTab(activeListTab);
+
+            var deleteOverlay = document.getElementById('planes-delete-overlay');
+            var deleteClose = document.getElementById('planes-delete-close');
+            var deleteCancel = document.getElementById('planes-delete-cancel');
+            var deleteConfirm = document.getElementById('planes-delete-confirm');
+            var deleteTypeInput = document.getElementById('planes-delete-type-input');
+
+            function closePlanesDeleteModal() {
+                if (deleteOverlay) { deleteOverlay.style.display = 'none'; deleteOverlay.setAttribute('aria-hidden', 'true'); }
+                if (deleteTypeInput) deleteTypeInput.value = '';
+                if (deleteConfirm) deleteConfirm.disabled = true;
+            }
+            if (deleteTypeInput && deleteConfirm) {
+                deleteTypeInput.addEventListener('input', function () {
+                    deleteConfirm.disabled = this.value.trim().toLowerCase() !== 'eliminar';
+                });
+            }
+            if (deleteClose) deleteClose.addEventListener('click', closePlanesDeleteModal);
+            if (deleteCancel) deleteCancel.addEventListener('click', closePlanesDeleteModal);
+            if (deleteOverlay) deleteOverlay.addEventListener('click', function (e) { if (e.target === deleteOverlay) closePlanesDeleteModal(); });
+            if (deleteConfirm) {
+                deleteConfirm.addEventListener('click', function () {
+                    var ids = pendingDeleteIds.slice();
+                    closePlanesDeleteModal();
+                    pendingDeleteIds = [];
+                    if (typeof deleteMiEquipoPlans === 'function') {
+                        deleteMiEquipoPlans(ids);
+                        refreshPlanesListData();
+                    } else {
+                        var idSet = {};
+                        ids.forEach(function (id) { idSet[String(id)] = true; });
+                        for (var i = planesFormacionData.length - 1; i >= 0; i--) {
+                            if (idSet[String(planesFormacionData[i].id)]) planesFormacionData.splice(i, 1);
+                        }
+                    }
+                    if (planesTablaRef && typeof planesTablaRef.refresh === 'function') planesTablaRef.refresh();
+                    if (typeof showToast === 'function') showToast('success', ids.length + ' plan(es) eliminado(s) correctamente');
+                });
+            }
+
+            function resolvePlanRowFromEvent(e) {
+                var row = e.target.closest('tbody tr[data-id]');
+                if (!row) return null;
+                var planId = row.getAttribute('data-id');
+                if (typeof getMiEquipoPlanById === 'function') {
+                    var fromDb = getMiEquipoPlanById(planId);
+                    if (fromDb) return fromDb;
+                }
+                return planId ? planesFormacionData.find(function (p) { return String(p.id) === String(planId); }) : null;
+            }
+
+            function navigateToDetalle(planRow) {
+                if (!planRow) return;
+                var url = typeof getMiEquipoDetallePlanUrl === 'function'
+                    ? getMiEquipoDetallePlanUrl(planRow.id, planRow.tipo)
+                    : (planRow.tipo === 'competencias' ? 'detalle-plan-competencias.html' : 'detalle-plan.html') + '?id=' + encodeURIComponent(planRow.id);
+                window.location.href = url;
+            }
+
+            function navigateToEditar(planRow) {
+                if (!planRow) return;
+                var url = typeof getMiEquipoEditarPlanUrl === 'function'
+                    ? getMiEquipoEditarPlanUrl(planRow.id, planRow.tipo)
+                    : (planRow.tipo === 'competencias' ? 'editar-plan-competencias.html' : 'editar-plan-contenidos.html') + '?id=' + encodeURIComponent(planRow.id);
+                window.location.href = url;
+            }
+
+            var planesContainer = document.getElementById('planes-data-table-container');
+            if (planesContainer) {
+                planesContainer.addEventListener('click', function (e) {
+                    if (e.target.closest('.js-planes-row-acciones-btn')) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        var accBtn = e.target.closest('.js-planes-row-acciones-btn');
+                        if (!accBtn || typeof window.getDropdownMenuHtml !== 'function') return;
+                        var planIdAcc = accBtn.getAttribute('data-plan-id');
+                        var planTipoAcc = accBtn.getAttribute('data-plan-tipo') || activeListTab;
+                        var planRowAcc = planIdAcc ? (typeof getMiEquipoPlanById === 'function' ? getMiEquipoPlanById(planIdAcc) : planesFormacionData.find(function (p) { return String(p.id) === String(planIdAcc); })) : null;
+                        var estAcc = planRowAcc && planRowAcc.estado != null ? String(planRowAcc.estado) : '';
+                        var mostrarVerProgreso = estAcc === 'Vigente' || estAcc === 'No vigente';
+                        var mostrarEditar = estAcc === 'Planeado' || estAcc === 'Vigente' || String(estAcc).indexOf('Procesando') === 0;
+                        var overlayId = 'planes-formacion-row-options-overlay';
+                        var prev = document.getElementById(overlayId);
+                        if (prev) prev.remove();
+                        var options = [];
+                        if (mostrarVerProgreso) options.push({ text: 'Ver progreso', value: 'ver-progreso', leftIcon: 'chart-line' });
+                        if (mostrarEditar) options.push({ text: 'Editar', value: 'editar', leftIcon: 'pen' });
+                        options.push({ text: 'Eliminar', value: 'eliminar', leftIcon: 'trash' });
+                        document.body.insertAdjacentHTML('beforeend', window.getDropdownMenuHtml({ overlayId: overlayId, options: options }));
+                        var overlayEl = document.getElementById(overlayId);
+                        if (!overlayEl) return;
+                        overlayEl.style.zIndex = '10100';
+                        overlayEl.querySelectorAll('.ubits-dropdown-menu__option').forEach(function (opt) {
+                            opt.addEventListener('click', function () {
+                                var val = this.getAttribute('data-value');
+                                window.closeDropdownMenu(overlayId);
+                                if (overlayEl.parentNode) overlayEl.remove();
+                                if (val === 'ver-progreso' && planRowAcc) { navigateToDetalle(planRowAcc); return; }
+                                if (val === 'editar' && planRowAcc) { navigateToEditar(planRowAcc); return; }
+                                if (val === 'eliminar' && planIdAcc) openPlanesDeleteModal([planIdAcc]);
+                            });
+                        });
+                        overlayEl.addEventListener('click', function (ev) {
+                            if (ev.target === overlayEl) {
+                                window.closeDropdownMenu(overlayId);
+                                if (overlayEl.parentNode) overlayEl.remove();
+                            }
+                        });
+                        window.openDropdownMenu(overlayId, accBtn, { alignRight: true });
+                        return;
+                    }
+                    if (e.target.closest('.ubits-checkbox') || e.target.closest('input[type="checkbox"]')) return;
+                    var planRow = resolvePlanRowFromEvent(e);
+                    if (!planRow) return;
+                    var esProcesando = String(planRow.estado).indexOf('Procesando') === 0;
+                    var esPlaneado = planRow.estado === 'Planeado';
+                    if (esProcesando || esPlaneado) navigateToEditar(planRow);
+                    else navigateToDetalle(planRow);
+                });
+            }
+
+            try {
+                var pendingToast = sessionStorage.getItem('ubits-toast-pending');
+                if (pendingToast) {
+                    sessionStorage.removeItem('ubits-toast-pending');
+                    var pt = JSON.parse(pendingToast);
+                    if (typeof showToast === 'function' && pt && pt.message) showToast(pt.type || 'success', pt.message);
+                }
+            } catch (e) {}
+        });
+    </script>
+</body>
+</html>

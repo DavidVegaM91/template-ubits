@@ -4,12 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/svg+xml" href="../../../images/playground-favicon.svg">
-    <title>UBITS Playground - LMS Creator - Detalle del plan de contenidos</title>
-    
-    <!-- Estilos locales -->
+    <title>UBITS Playground - Mi equipo - Editar plan de contenidos</title>
+    <!-- Mi equipo: checklist imports → contexto-mi-equipo.md §7; catalogo desde lms-creator/planes-formacion/ -->
+
     <link rel="stylesheet" href="../../../general-styles/ubits-colors.css">
     <link rel="stylesheet" href="../../../general-styles/styles.css">
-    <link rel="stylesheet" href="../lms-creator.css">
+    <link rel="stylesheet" href="../../lms-creator/lms-creator.css">
     <link rel="stylesheet" href="../../../general-styles/fontawesome-icons.css">
     <link rel="stylesheet" href="../../../general-styles/ubits-typography.css">
     <link rel="stylesheet" href="../../../components/sub-nav.css">
@@ -41,7 +41,7 @@
     <link rel="stylesheet" href="./crear-plan-contenidos.css">
     <link rel="stylesheet" href="./editar-plan-contenidos.css">
 </head>
-<body data-theme="light">
+<body data-theme="light" class="page-mi-equipo-editar-plan-contenidos">
     <div class="dashboard-container">
         <div class="tooltip" id="tooltip"></div>
         
@@ -120,74 +120,43 @@
     <script src="../../../bd-master/bd-master-categorias-fiqsha.js"></script>
     <script src="../../../bd-master/bd-contenidos-ubits.js"></script>
     <script src="../../../bd-master/bd-contenidos-fiqsha.js"></script>
-    <script src="./catalogo-contenidos-drawer.js"></script>
-    <!-- Misma base de datos que seguimiento.html (empresa de pruebas: Fiqsha) -->
+    <script src="../../lms-creator/planes-formacion/catalogo-contenidos-drawer.js"></script>
     <script src="../../../bd-master/bd-master-colaboradores.js"></script>
-    <script src="../../../bd-master/bd-tareas-y-planes.js"></script>
+    <script src="./mi-equipo-context.js"></script>
+    <script src="./mi-equipo-planes-mock.js"></script>
+    <script src="./mi-equipo-layout.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            try { sessionStorage.setItem('ubits-planes-formacion-list-page', 'contenidos'); } catch (e) {}
-            var params = new URLSearchParams(window.location.search);
-            var planTipo = params.get('tipo') || 'contenidos';
-            var planId = params.get('id') || '';
-            var planTipoInput = document.getElementById('plan-tipo');
-            if (planTipoInput) planTipoInput.value = planTipo;
+            if (typeof initMiEquipoLayout === 'function') initMiEquipoLayout();
 
-            var empleados = (typeof TAREAS_PLANES_DB !== 'undefined' && typeof TAREAS_PLANES_DB.getEmpleadosEjemplo === 'function') ? TAREAS_PLANES_DB.getEmpleadosEjemplo() : [];
-            /** Ítems { id, title, duration } alineados con CATALOGO_CURSOS_DRAWER (bd-master). */
-            function contenidosEjemploDesdeCatalogo(start, len) {
-                var cat = window.CATALOGO_CURSOS_DRAWER || [];
-                var out = [];
-                for (var i = 0; i < len; i++) {
-                    var c = cat[start + i];
-                    if (!c) break;
-                    out.push({ id: c.id, title: c.title, duration: c.duration || '60 min' });
-                }
-                return out;
+            var params = new URLSearchParams(window.location.search);
+            var planId = params.get('id') || '';
+            if (!planId) {
+                window.location.replace('planes.html');
+                return;
             }
-            /** Una fila por colaborador (como detalle-plan id=3); sin grupos ni toda la empresa. */
-            function filasUsuarioDesdeEmpleados(sliceStart, sliceEnd, contenidosPorFilaFn) {
-                var slice = empleados.slice(sliceStart, sliceEnd);
-                return slice.map(function(e, idx) {
-                    var cid = e.id || e.idColaborador || ('E' + (sliceStart + idx + 1));
-                    var cont = typeof contenidosPorFilaFn === 'function' ? contenidosPorFilaFn(idx, e) : contenidosEjemploDesdeCatalogo(0, 2);
-                    return {
-                        id: 'fila-usuario-' + cid,
-                        colaboradorId: String(cid),
-                        nombreUsuario: (e.nombre || '').trim(),
-                        avatar: e.avatar || null,
-                        contenidos: cont.slice(),
-                        contenidosCount: cont.length
-                    };
-                });
+
+            if (typeof hydrateMiEquipoPlanesCatalogData === 'function') hydrateMiEquipoPlanesCatalogData();
+
+            var planEditar = typeof getMiEquipoPlanById === 'function' ? getMiEquipoPlanById(planId) : null;
+            if (!planEditar || planEditar.tipo !== 'contenidos') {
+                window.location.replace('planes.html');
+                return;
             }
-            function getAsignacionesPlan1() {
-                return filasUsuarioDesdeEmpleados(0, 3, function(idx) { return contenidosEjemploDesdeCatalogo(idx % 2, 2); });
-            }
-            function getAsignacionesPlan2() {
-                return filasUsuarioDesdeEmpleados(3, 6, function(idx) { return contenidosEjemploDesdeCatalogo((idx + 1) % 3, 2); });
-            }
-            function getAsignacionesPlan3Vigente() {
-                return filasUsuarioDesdeEmpleados(0, 5, function(idx) { return contenidosEjemploDesdeCatalogo((idx + 3) % 8, 3); });
-            }
-            var plansEditar = {
-                '1': { nombre: 'Plan de onboarding Q3 2026', fechaInicio: '01/07/2026', fechaFin: '30/09/2026', estado: 'Planeado', getAsignaciones: getAsignacionesPlan1 },
-                '2': { nombre: 'Competencias de liderazgo', fechaInicio: '01/04/2026', fechaFin: '30/06/2026', estado: 'Procesando 0%', getAsignaciones: getAsignacionesPlan2 },
-                '3': { nombre: 'Cursos de cumplimiento Q1', fechaInicio: '01/01/2026', fechaFin: '31/03/2026', estado: 'Vigente', getAsignaciones: getAsignacionesPlan3Vigente },
-                '4': { nombre: 'Evaluación técnica 2025', fechaInicio: '01/09/2025', fechaFin: '15/12/2025', estado: 'No vigente', getAsignaciones: getAsignacionesPlan1 }
-            };
+
             function planContenidosPermiteEdicion(estado) {
                 if (estado === 'No vigente') return false;
                 if (estado === 'Planeado' || estado === 'Vigente') return true;
                 if (String(estado).indexOf('Procesando') === 0) return true;
                 return false;
             }
-            if (planId && plansEditar[planId] && !planContenidosPermiteEdicion(plansEditar[planId].estado)) {
+            if (!planContenidosPermiteEdicion(planEditar.estado)) {
                 window.location.replace('detalle-plan.html?id=' + encodeURIComponent(planId));
                 return;
             }
-            /* Sin id o id no válido: ejemplo plan 1 (misma fuente que planes-contenidos.html, lista contenidos) */
-            var planEditar = planId && plansEditar[planId] ? plansEditar[planId] : plansEditar['1'];
+
+            var planTipoInput = document.getElementById('plan-tipo');
+            if (planTipoInput) planTipoInput.value = 'contenidos';
 
             function getEstadoTagClassEditar(estado) {
                 if (estado === 'Planeado') return 'info';
@@ -263,7 +232,7 @@
                 try {
                     sessionStorage.setItem('ubits-toast-pending', JSON.stringify({ type: 'success', message: 'Plan eliminado correctamente.' }));
                 } catch (err) {}
-                window.location.href = 'planes-contenidos.html';
+                window.location.href = 'planes.html';
             }
 
             function openDeletePlanModal(estadoVisual) {
@@ -305,6 +274,7 @@
                 if (confirmBtn) {
                     confirmBtn.addEventListener('click', function() {
                         closeDeleteModal();
+                        if (typeof deleteMiEquipoPlans === 'function') deleteMiEquipoPlans([planId]);
                         redirectAfterPlanDelete();
                     });
                 }
@@ -400,19 +370,16 @@
                 }, intervalMs);
             }
 
-            loadSidebar('creator', 'planes-formacion');
-            loadSubNav('top-nav-container', 'creator-planes');
-            loadTabBar('tab-bar-container', 'creator');
-            loadFloatingMenu('floating-menu-container', 'creator');
-            loadProfileMenu('profile-menu-container');
-            
             renderPlanEstadoTagEditar();
             initPlanActions();
-            document.title = 'UBITS Playground - LMS Creator - Detalle del plan de contenidos — ' + (planEditar && planEditar.nombre ? planEditar.nombre : '');
+            document.title = 'UBITS Playground - Mi equipo - Editar plan de contenidos — ' + (planEditar && planEditar.nombre ? planEditar.nombre : '');
 
             var asignacionesData = [];
             var pendingCursosRow = null;
             var catalogoCursos = (window.CATALOGO_CURSOS_DRAWER || []).slice();
+            if (typeof refreshCatalogoContenidosDrawer === 'function') {
+                catalogoCursos = refreshCatalogoContenidosDrawer().slice();
+            }
             var planEditContenidosBaseline = null;
 
             function serializePlanEditContenidos() {
@@ -437,7 +404,7 @@
                 if (typeof updateGuardarButtonState === 'function') updateGuardarButtonState();
             }
             function confirmLeaveEditarPlanContenidos(dest) {
-                var url = (dest != null && String(dest).trim() !== '') ? String(dest).trim() : 'planes-contenidos.html';
+                var url = (dest != null && String(dest).trim() !== '') ? String(dest).trim() : 'planes.html';
                 window.location.href = url;
             }
             function navigateBackEditarPlanContenidos() {
@@ -585,6 +552,29 @@
                     showToast('error', 'Todas las asignaciones deben tener al menos un contenido. Agrega contenidos a las que faltan antes de guardar.');
                     return;
                 }
+                var nombreEl = document.getElementById('asignacion-nombre');
+                var inicioInput = document.querySelector('#fecha-inicio-container input');
+                var finInput = document.querySelector('#fecha-fin-container input');
+                function yyyyMmDdToDdMmYyyy(val) {
+                    if (!val || typeof val !== 'string') return '';
+                    var parts = val.trim().split('-');
+                    if (parts.length !== 3) return val;
+                    return parts[2] + '/' + parts[1] + '/' + parts[0];
+                }
+                var contenidoPorUsuario = {};
+                asignacionesData.forEach(function(a) {
+                    if (a.colaboradorId) contenidoPorUsuario[String(a.colaboradorId)] = (a.contenidos || []).slice();
+                });
+                if (typeof updateMiEquipoPlan === 'function') {
+                    updateMiEquipoPlan(planId, {
+                        nombre: nombreEl ? String(nombreEl.value || '').trim() : planEditar.nombre,
+                        fechaInicio: yyyyMmDdToDdMmYyyy(inicioInput ? inicioInput.value : ''),
+                        fechaFin: yyyyMmDdToDdMmYyyy(finInput ? finInput.value : ''),
+                        asignaciones: asignacionesData.slice(),
+                        contenidoPorUsuario: contenidoPorUsuario
+                    });
+                    if (typeof persistMiEquipoPlanesDb === 'function') persistMiEquipoPlanesDb();
+                }
                 capturePlanEditContenidosBaseline();
                 if (typeof showToast === 'function') showToast('success', 'Cambios guardados exitosamente');
             }
@@ -598,7 +588,7 @@
 
             if (typeof loadHeaderProduct === 'function') {
                 loadHeaderProduct('header-product-container', {
-                    productName: 'Detalle del plan de contenidos',
+                    productName: 'Editar plan de contenidos',
                     breadcrumbItems: [],
                     backButton: {
                         onClick: function() {
@@ -628,25 +618,7 @@
                 openSalirSinGuardarModalEditarContenidos(pending);
             }, true);
             
-            setTimeout(() => {
-                const tab = document.querySelector('.nav-tab[data-tab="planes-contenidos"]');
-                if (tab) {
-                    document.querySelectorAll('.nav-tab, .hamburger-item').forEach(item => item.classList.remove('active'));
-                    tab.classList.add('active');
-                }
-                const sidebarBtn = document.querySelector('.nav-button[data-section="planes-formacion"]');
-                if (sidebarBtn) {
-                    document.querySelectorAll('.nav-button').forEach(btn => btn.classList.remove('active'));
-                    sidebarBtn.classList.add('active');
-                }
-                const modulosTab = document.querySelector('.tab-bar-item[data-tab="modulos"]');
-                if (modulosTab) {
-                    document.querySelectorAll('.tab-bar-item').forEach(item => item.classList.remove('active'));
-                    modulosTab.classList.add('active');
-                }
-                if (typeof setActiveAccordionLink === 'function') {
-                    setActiveAccordionLink('planes-contenidos');
-                }
+            setTimeout(function() {
                 if (typeof updateGuardarButtonState === 'function') updateGuardarButtonState();
             }, 200);
 
@@ -796,7 +768,7 @@
                     var finInput = document.querySelector('#fecha-fin-container input');
                     if (inicioInput) inicioInput.value = ddMmYyyyToYyyyMmDd(planEditar.fechaInicio);
                     if (finInput) finInput.value = ddMmYyyyToYyyyMmDd(planEditar.fechaFin);
-                    var asignacionesIniciales = planEditar.getAsignaciones ? planEditar.getAsignaciones() : [];
+                    var asignacionesIniciales = (planEditar.asignaciones || []).slice();
                     asignacionesData.length = 0;
                     asignacionesIniciales.forEach(function(a) { asignacionesData.push(a); });
                     if (asignacionesTablaRef && typeof asignacionesTablaRef.refresh === 'function') asignacionesTablaRef.refresh();
@@ -1160,18 +1132,12 @@
                     var iniciales = palabras.map(function(p) { return p.charAt(0); }).join('');
                     return iniciales ? iniciales + '@fiqsha.demo' : 'user@fiqsha.demo';
                 }
-                var empleadosDrawerRaw = (typeof TAREAS_PLANES_DB !== 'undefined' && typeof TAREAS_PLANES_DB.getEmpleadosEjemplo === 'function') ? TAREAS_PLANES_DB.getEmpleadosEjemplo() : [];
-                var empleadosDrawer = empleadosDrawerRaw.map(function(e, idx) {
-                    var id = e.id || e.idColaborador || ('E' + (idx + 1));
-                    return { id: id, username: getUsernameEmpleado(e), nombre: (e.nombre || '').trim(), correo: getUsernameEmpleado(e), area: (e.area || '').trim(), lider: (e.jefe || '').trim(), avatar: e.avatar || null };
-                });
+                var empleadosDrawer = typeof getMiEquipoColaboradoresParaDrawer === 'function'
+                    ? getMiEquipoColaboradoresParaDrawer()
+                    : [];
 
-                function getEmpleadosDisponibles() {
-                    var tomados = {};
-                    asignacionesData.forEach(function(a) {
-                        if (a.colaboradorId) tomados[String(a.colaboradorId)] = true;
-                    });
-                    return empleadosDrawer.filter(function(e) { return !tomados[String(e.id)]; });
+                function getEmpleadosDrawerLista() {
+                    return empleadosDrawer;
                 }
 
                 function setPrimaryLabel(text) {
@@ -1206,7 +1172,7 @@
                 function showWizardStep(num) {
                     overlay._wizardStep = num;
                     if (stepParticipantes) stepParticipantes.style.display = num === 1 ? 'flex' : 'none';
-                    if (stepContenidos) stepContenidos.style.display = num === 2 ? 'block' : 'none';
+                    if (stepContenidos) stepContenidos.style.display = num === 2 ? '' : 'none';
                     if (stepperOlEdit && typeof setStepperStepStates === 'function') {
                         setStepperStepStates(stepperOlEdit, num === 1 ? 0 : 1);
                     }
@@ -1239,11 +1205,11 @@
                         tableId: 'drawer-colab-table-edit-plan',
                         title: 'Lista de colaboradores',
                         columns: [ { id: 'username', label: 'Username', filterable: true }, { id: 'nombre', label: 'Nombre del usuario', filterable: true }, { id: 'correo', label: 'Correo electrónico', filterable: true }, { id: 'area', label: 'Área', filterable: true }, { id: 'lider', label: 'Líder', filterable: true } ],
-                        getData: function() { return getEmpleadosDisponibles(); },
+                        getData: function() { return getEmpleadosDrawerLista(); },
                         rowIdField: 'id',
                         buildRowHtml: buildDrawerColabRowHtml,
                         features: { checkboxes: true, search: true, filters: true, verSeleccionados: true, resultsCount: true },
-                        emptyState: { message: 'No hay colaboradores disponibles', icon: 'far fa-user', description: 'Todos los colaboradores ya tienen una asignación en este plan.' },
+                        emptyState: { message: 'No hay colaboradores en tu equipo', icon: 'far fa-user', description: 'No se encontraron reportes directos para asignar en este plan.' },
                         i18n: {
                             selectAll: 'Seleccionar todo',
                             deselectAll: 'Deseleccionar todo',
@@ -1278,16 +1244,24 @@
                             var full = catalogoCursos.find(function(x) { return String(x.id) === String(c.id); });
                             return full || c;
                         });
-                        var agregados = 0;
+                        var afectados = 0;
                         ids.forEach(function(cid) {
                             var row = empleadosDrawer.find(function(e) { return String(e.id) === String(cid); });
                             if (!row) return;
-                            var nuevaId = 'fila-usuario-' + String(cid);
-                            var exists = asignacionesData.some(function(a) { return String(a.colaboradorId) === String(cid); });
-                            if (exists) return;
-                            agregados++;
+                            var existing = asignacionesData.find(function(a) { return String(a.colaboradorId) === String(cid); });
+                            if (existing) {
+                                if (typeof mergeContenidosEnAsignacion === 'function') {
+                                    mergeContenidosEnAsignacion(existing, cursosSel);
+                                } else {
+                                    existing.contenidos = cursosSel.slice();
+                                    existing.contenidosCount = cursosSel.length;
+                                }
+                                afectados++;
+                                return;
+                            }
+                            afectados++;
                             asignacionesData.push({
-                                id: nuevaId,
+                                id: 'fila-usuario-' + String(cid),
                                 colaboradorId: String(cid),
                                 nombreUsuario: row.nombre || row.username || '',
                                 avatar: row.avatar || null,
@@ -1299,8 +1273,8 @@
                     if (asignacionesTablaRef && typeof asignacionesTablaRef.refresh === 'function') asignacionesTablaRef.refresh();
                     bindAsignacionesRowsAfterRefresh();
                     if (typeof updateGuardarButtonState === 'function') updateGuardarButtonState();
-                        if (agregados > 0 && typeof iniciarAnimacionEstadoProcesandoAsignacion === 'function') iniciarAnimacionEstadoProcesandoAsignacion();
-                        if (typeof showToast === 'function' && agregados > 0) showToast('success', 'Asignación(es) agregada(s) correctamente');
+                        if (afectados > 0 && typeof iniciarAnimacionEstadoProcesandoAsignacion === 'function') iniciarAnimacionEstadoProcesandoAsignacion();
+                        if (typeof showToast === 'function' && afectados > 0) showToast('success', 'Contenidos asignados correctamente');
                     };
                 }
                 if (btnCancel) {

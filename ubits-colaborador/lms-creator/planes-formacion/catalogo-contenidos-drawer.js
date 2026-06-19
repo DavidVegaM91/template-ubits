@@ -30,6 +30,7 @@
             // Este archivo se usa desde pantallas en `lms-creator/` y desde `lms-creator/planes-formacion/`.
             // Las rutas relativas deben resolverse desde el HTML actual.
             if (path.indexOf('/lms-creator/planes-formacion/') !== -1) return '../../../';
+            if (path.indexOf('/mi-equipo/') !== -1) return '../../../';
         } catch (e) { /* noop */ }
         return '../../';
     }

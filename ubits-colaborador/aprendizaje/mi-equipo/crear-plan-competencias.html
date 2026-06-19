@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="../../../images/playground-favicon.svg">
+    <title>UBITS Playground - Mi equipo - Crear plan de competencias</title>
+    <!-- Mi equipo: checklist imports → contexto-mi-equipo.md §7; catalogo desde lms-creator/planes-formacion/ -->
+    <link rel="stylesheet" href="../../../general-styles/ubits-colors.css">
+    <link rel="stylesheet" href="../../../general-styles/styles.css">
+    <link rel="stylesheet" href="../../lms-creator/lms-creator.css">
+    <link rel="stylesheet" href="../../../general-styles/fontawesome-icons.css">
+    <link rel="stylesheet" href="../../../general-styles/ubits-typography.css">
+    <link rel="stylesheet" href="../../../components/sub-nav.css">
+    <link rel="stylesheet" href="../../../components/sidebar.css">
+    <link rel="stylesheet" href="../../../components/tab-bar.css">
+    <link rel="stylesheet" href="../../../components/floating-menu.css">
+    <link rel="stylesheet" href="../../../components/profile-menu.css">
+    <link rel="stylesheet" href="../../../components/button.css">
+    <link rel="stylesheet" href="../../../components/inline-edit.css">
+    <link rel="stylesheet" href="../../../components/header-product.css">
+    <link rel="stylesheet" href="../../../components/tooltip.css">
+    <link rel="stylesheet" href="../../../components/input.css">
+    <link rel="stylesheet" href="../../../components/calendar.css">
+    <link rel="stylesheet" href="../../../components/dropdown-menu.css">
+    <link rel="stylesheet" href="../../../components/drawer.css">
+    <link rel="stylesheet" href="../../../components/table.css">
+    <link rel="stylesheet" href="../../../components/avatar.css">
+    <link rel="stylesheet" href="../../../components/checkbox.css">
+    <link rel="stylesheet" href="../../../components/chip.css">
+    <link rel="stylesheet" href="../../../components/ubits-data-table.css">
+    <link rel="stylesheet" href="../../../components/empty-state.css">
+    <link rel="stylesheet" href="../../../components/toast.css">
+    <link rel="stylesheet" href="../../../components/modal.css">
+    <link rel="stylesheet" href="./crear-plan-contenidos.css">
+    <link rel="stylesheet" href="./crear-plan-competencias.css">
+</head>
+<body data-theme="light" class="page-mi-equipo-crear-plan-competencias">
+    <div class="dashboard-container">
+        <div class="tooltip" id="tooltip"></div>
+        <div id="sidebar-container"></div>
+        <main class="main-content">
+            <div id="top-nav-container"></div>
+            <div class="content-area">
+                <div class="content-sections">
+                    <div class="section-single">
+                        <div class="widget-header-product" id="header-product-container"></div>
+                    </div>
+                    <div class="section-single">
+                        <div class="widget-crear-plan-competencias">
+                            <div class="crear-plan-competencias-form">
+                                <input type="hidden" id="plan-tipo" name="plan-tipo" value="competencias">
+                                <div class="crear-plan-competencias-form__field crear-plan-competencias-form__field--nombre-plan">
+                                    <textarea class="ubits-inline-edit ubits-heading-h1" id="asignacion-nombre" placeholder="Nombre del plan" rows="1" maxlength="250"></textarea>
+                                </div>
+                                <div class="crear-plan-competencias-form__field crear-plan-competencias-form__field--vigencia">
+                                    <div class="crear-plan-competencias-vigencia-row">
+                                        <div class="crear-plan-competencias-vigencia-item" id="fecha-inicio-container"></div>
+                                        <div class="crear-plan-competencias-vigencia-item" id="fecha-fin-container"></div>
+                                        <div class="crear-plan-competencias-vigencia-item" id="horas-por-competencia-container"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="section-single crear-plan-competencias-asignaciones-section">
+                        <div class="widget-asignaciones-lista">
+                            <div id="asignaciones-data-table-container" class="crear-plan-competencias-asignaciones-tabla"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <div id="asignaciones-modals-container"></div>
+    <div id="tab-bar-container"></div>
+    <div id="floating-menu-container"></div>
+    <div id="profile-menu-container"></div>
+    <div id="ubits-toast-container"></div>
+    <script src="../../../components/tooltip.js"></script>
+    <script src="../../../components/inline-edit.js"></script>
+    <script src="../../../components/avatar.js"></script>
+    <script src="../../../components/sidebar.js"></script>
+    <script src="../../../components/sub-nav.js"></script>
+    <script src="../../../components/tab-bar.js"></script>
+    <script src="../../../components/floating-menu.js"></script>
+    <script src="../../../components/profile-menu.js"></script>
+    <script src="../../../components/header-product.js"></script>
+    <script src="../../../components/dropdown-menu.js"></script>
+    <script src="../../../components/input.js"></script>
+    <script src="../../../components/calendar.js"></script>
+    <script src="../../../components/drawer.js"></script>
+    <script src="../../../bd-master/bd-master-competencias.js"></script>
+    <script src="../../../bd-master/bd-master-habilidades.js"></script>
+    <script src="../../lms-creator/planes-formacion/catalogo-competencias-drawer.js"></script>
+    <script src="../../../components/empty-state.js"></script>
+    <script src="../../../components/toast.js"></script>
+    <script src="../../../components/ubits-data-table.js"></script>
+    <script src="../../../components/modal.js"></script>
+    <script src="../../../script.js"></script>
+    <script src="../../../bd-master/bd-master-colaboradores.js"></script>
+    <script src="./mi-equipo-context.js"></script>
+    <script src="./mi-equipo-planes-mock.js"></script>
+    <script src="./mi-equipo-layout.js"></script>
+    <script src="./mi-equipo-plan-competencias-shared.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            if (typeof initMiEquipoLayout === 'function') initMiEquipoLayout();
+            if (typeof hydrateMiEquipoPlanesCatalogData === 'function') hydrateMiEquipoPlanesCatalogData();
+            var Shared = window.MiEquipoPlanCompetenciasShared;
+            var asignacionesData = [];
+            var pendingCompetenciasRow = null;
+            var asignacionesTablaRef = null;
+            var pendingAsignacionesDeleteIds = [];
+
+            function canCrearPlan() {
+                var nombreEl = document.getElementById('asignacion-nombre');
+                var nombre = nombreEl && nombreEl.value ? String(nombreEl.value).trim() : '';
+                var inicioInput = document.querySelector('#fecha-inicio-container input');
+                var finInput = document.querySelector('#fecha-fin-container input');
+                var horasInput = document.querySelector('#horas-por-competencia-container input');
+                var hasInicio = inicioInput && inicioInput.value && String(inicioInput.value).trim() !== '';
+                var hasFin = finInput && finInput.value && String(finInput.value).trim() !== '';
+                var horasVal = horasInput && horasInput.value !== '' ? parseFloat(horasInput.value, 10) : NaN;
+                var hasHoras = !isNaN(horasVal) && horasVal >= 1;
+                var hasAsignacion = asignacionesData.length > 0;
+                var todasConComp = asignacionesData.every(function (a) { return a.contenidos && a.contenidos.length > 0; });
+                return nombre.length > 0 && hasInicio && hasFin && hasHoras && hasAsignacion && todasConComp;
+            }
+
+            function updateCrearPlanButtonState() {
+                var btn = document.getElementById('btn-crear-plan-mi-equipo');
+                if (btn) btn.disabled = !canCrearPlan();
+            }
+
+            function guardarNuevoPlan() {
+                if (!canCrearPlan()) {
+                    if (typeof showToast === 'function') {
+                        var sinComp = asignacionesData.filter(function (a) { return !a.contenidos || a.contenidos.length === 0; });
+                        if (sinComp.length) showToast('error', 'Todas las asignaciones deben tener al menos una competencia. Agrega competencias a las que faltan antes de guardar.');
+                        else showToast('error', 'Completa el nombre, las fechas, las horas y al menos una asignación con competencias.');
+                    }
+                    return;
+                }
+                var nombreEl = document.getElementById('asignacion-nombre');
+                var inicioInput = document.querySelector('#fecha-inicio-container input');
+                var finInput = document.querySelector('#fecha-fin-container input');
+                var horasInput = document.querySelector('#horas-por-competencia-container input');
+                var fechaInicio = Shared.yyyyMmDdToDdMmYyyy(inicioInput ? inicioInput.value : '');
+                var fechaFin = Shared.yyyyMmDdToDdMmYyyy(finInput ? finInput.value : '');
+                var horas = parseInt(horasInput ? horasInput.value : '4', 10) || 4;
+                var estado = Shared.computeEstadoNuevoPlan(inicioInput ? inicioInput.value : '');
+                var competenciaPorUsuario = Shared.buildCompetenciaPorUsuarioFromAsignaciones(asignacionesData);
+                var nuevo = typeof addMiEquipoPlan === 'function' ? addMiEquipoPlan({
+                    nombre: nombreEl.value.trim(),
+                    fechaInicio: fechaInicio,
+                    fechaFin: fechaFin,
+                    estado: estado,
+                    progreso: 0,
+                    tipo: 'competencias',
+                    horasEstudioPorCompetencia: horas,
+                    asignaciones: asignacionesData.slice(),
+                    competenciaPorUsuario: competenciaPorUsuario
+                }) : null;
+                if (!nuevo) return;
+                try {
+                    sessionStorage.setItem('ubits-toast-pending', JSON.stringify({ type: 'success', message: 'Plan creado correctamente.' }));
+                } catch (e) {}
+                if (String(estado).indexOf('Procesando') === 0) {
+                    window.location.href = 'editar-plan-competencias.html?id=' + encodeURIComponent(nuevo.id);
+                } else {
+                    window.location.href = 'planes.html?tab=competencias';
+                }
+            }
+
+            if (typeof loadHeaderProduct === 'function') {
+                loadHeaderProduct('header-product-container', {
+                    productName: 'Crear plan de competencias',
+                    backButton: { onClick: function () { window.location.href = 'planes.html?tab=competencias'; } },
+                    primaryButton: { text: 'Crear plan', icon: 'fa-plus', onClick: guardarNuevoPlan }
+                });
+                setTimeout(function () {
+                    var actions = document.querySelector('#header-product-container .ubits-header-product__actions');
+                    if (actions) {
+                        var primaryBtn = actions.querySelector('.ubits-button--primary');
+                        if (primaryBtn && !primaryBtn.id) {
+                            primaryBtn.id = 'btn-crear-plan-mi-equipo';
+                            primaryBtn.disabled = true;
+                        }
+                    }
+                    updateCrearPlanButtonState();
+                }, 0);
+            }
+
+            setTimeout(function () {
+                var nombreTa = document.getElementById('asignacion-nombre');
+                if (nombreTa) {
+                    nombreTa.addEventListener('input', function () {
+                        this.style.height = 'auto';
+                        this.style.height = Math.min(this.scrollHeight, 80) + 'px';
+                        updateCrearPlanButtonState();
+                    });
+                }
+            }, 0);
+
+            if (typeof createInput === 'function') {
+                createInput({ containerId: 'fecha-inicio-container', type: 'calendar', label: 'Fecha de inicio', placeholder: 'Seleccionar fecha', helperText: 'Igual o mayor a hoy', showHelper: true, size: 'sm', onChange: updateCrearPlanButtonState });
+                createInput({ containerId: 'fecha-fin-container', type: 'calendar', label: 'Fecha de finalización', placeholder: 'Seleccionar fecha', helperText: 'Mayor o igual a la fecha de inicio', showHelper: true, size: 'sm', onChange: updateCrearPlanButtonState });
+                createInput({ containerId: 'horas-por-competencia-container', type: 'number', label: 'Horas de estudio por competencia', placeholder: 'Ej. 4', helperText: 'Solo se admiten números.', showHelper: true, size: 'sm', min: 1, onChange: updateCrearPlanButtonState });
+            }
+
+            setTimeout(function () {
+                var horasInput = document.querySelector('#horas-por-competencia-container input');
+                if (horasInput) {
+                    horasInput.addEventListener('keydown', function (e) {
+                        var k = e.key;
+                        if (k.length === 1 && k >= '0' && k <= '9') return;
+                        if (['Backspace', 'Delete', 'Tab', 'ArrowLeft', 'ArrowRight', 'Home', 'End'].indexOf(k) !== -1) return;
+                        if ((e.ctrlKey || e.metaKey) && ['a', 'c', 'v', 'x'].indexOf(k.toLowerCase()) !== -1) return;
+                        e.preventDefault();
+                    });
+                    horasInput.addEventListener('input', function () {
+                        var v = this.value.replace(/\D/g, '');
+                        if (v !== this.value) this.value = v;
+                        updateCrearPlanButtonState();
+                    });
+                }
+            }, 500);
+
+            if (typeof getModalHtml === 'function') {
+                var deleteBody = '<p class="ubits-body-md-regular">¿Estás seguro de que deseas eliminar <strong id="asignaciones-delete-count">0</strong> asignación(es) seleccionada(s)?</p><p class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Esta acción no se puede deshacer.</p><div style="margin-top: var(--gap-lg);"><label class="ubits-body-sm-regular" for="asignaciones-delete-type-input">Escriba <strong>eliminar</strong> para habilitar el botón:</label><input type="text" id="asignaciones-delete-type-input" class="ubits-input" placeholder="Escriba la palabra de confirmación" autocomplete="off" style="margin-top: var(--gap-sm); width: 100%; padding: var(--padding-sm) var(--padding-md); border: 1px solid var(--ubits-border-1); border-radius: var(--border-radius-sm); font-size: var(--font-size-sm); color: var(--ubits-fg-1-high); box-sizing: border-box;"></div>';
+                var deleteFooter = '<button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="asignaciones-delete-cancel"><span>Cancelar</span></button><button type="button" class="ubits-button ubits-button--error ubits-button--md" id="asignaciones-delete-confirm" disabled><span>Eliminar</span></button>';
+                document.getElementById('asignaciones-modals-container').innerHTML = getModalHtml({ overlayId: 'asignaciones-delete-overlay', title: 'Confirmar eliminación', bodyHtml: deleteBody, footerHtml: deleteFooter, size: 'sm', closeButtonId: 'asignaciones-delete-close' });
+            }
+
+            if (typeof createUbitsDataTable === 'function') {
+                asignacionesTablaRef = createUbitsDataTable({
+                    containerId: 'asignaciones-data-table-container',
+                    tableId: 'asignaciones-table',
+                    title: 'Asignaciones',
+                    columns: [
+                        { id: 'usuario', label: 'Nombre de usuario' },
+                        { id: 'competencias', label: 'Competencias asignadas' }
+                    ],
+                    getData: function () { return asignacionesData; },
+                    rowIdField: 'id',
+                    buildRowHtml: function (row) { return Shared.buildAsignacionRowHtmlCompetencias(row); },
+                    features: { checkboxes: true, search: true, verSeleccionados: true, actionBar: true, resultsCount: true },
+                    primaryButton: {
+                        text: 'Agregar asignación',
+                        icon: 'fa-plus',
+                        onClick: function () {
+                            Shared.openDrawerAgregarAsignacionMiEquipo({
+                                asignacionesData: asignacionesData,
+                                onAdd: function (selectedIds) {
+                                    var subs = typeof getMiEquipoSubordinadosDirectos === 'function' ? getMiEquipoSubordinadosDirectos() : [];
+                                    var mapById = {};
+                                    subs.forEach(function (c) { mapById[String(c.id || c.idColaborador)] = c; });
+                                    var agregados = 0;
+                                    selectedIds.forEach(function (cid) {
+                                        if (asignacionesData.some(function (a) { return String(a.colaboradorId) === String(cid); })) return;
+                                        var col = mapById[String(cid)];
+                                        if (!col) return;
+                                        agregados++;
+                                        asignacionesData.push({
+                                            id: 'fila-usuario-' + cid,
+                                            colaboradorId: String(cid),
+                                            nombreUsuario: (col.nombre || '').trim(),
+                                            avatar: col.avatar || null,
+                                            contenidos: [],
+                                            contenidosCount: 0
+                                        });
+                                    });
+                                    if (asignacionesTablaRef && typeof asignacionesTablaRef.refresh === 'function') asignacionesTablaRef.refresh();
+                                    updateCrearPlanButtonState();
+                                    if (agregados > 0 && typeof showToast === 'function') showToast('success', agregados + ' asignación(es) agregada(s) correctamente');
+                                }
+                            });
+                        }
+                    },
+                    actionBarButtons: [{
+                        id: 'eliminar', label: 'Eliminar', icon: 'fa-trash', variant: 'error-secondary',
+                        onClick: function (selectedIds) {
+                            if (!selectedIds || !selectedIds.length) return;
+                            pendingAsignacionesDeleteIds = selectedIds.slice();
+                            var countEl = document.getElementById('asignaciones-delete-count');
+                            var inputEl = document.getElementById('asignaciones-delete-type-input');
+                            var confirmEl = document.getElementById('asignaciones-delete-confirm');
+                            if (countEl) countEl.textContent = pendingAsignacionesDeleteIds.length;
+                            if (inputEl) { inputEl.value = ''; inputEl.focus(); }
+                            if (confirmEl) confirmEl.disabled = true;
+                            var overlay = document.getElementById('asignaciones-delete-overlay');
+                            if (overlay) { overlay.style.display = 'flex'; overlay.setAttribute('aria-hidden', 'false'); }
+                        }
+                    }],
+                    emptyState: { message: 'Aún no hay asignaciones', icon: 'far fa-user-check', description: 'Agrega colaboradores de tu equipo para asignarles competencias en este plan.' },
+                    i18n: { selectAll: 'Seleccionar todo', deselectAll: 'Deseleccionar todo', verSeleccionados: 'Ver seleccionados', buscar: 'Buscar usuarios', buscarPlaceholder: 'Buscar por nombre de usuario...' }
+                });
+            }
+
+            function abrirDrawerCompetenciasFila(tr) {
+                pendingCompetenciasRow = tr;
+                var asignacionId = tr ? (tr.getAttribute('data-id') || tr.getAttribute('data-asignacion-id')) : null;
+                var item = asignacionId ? asignacionesData.find(function (a) { return String(a.id) === String(asignacionId); }) : null;
+                Shared.openDrawerAgregarCompetencias({
+                    title: 'Agregar competencias',
+                    initialSelection: item && item.contenidos ? item.contenidos.slice() : [],
+                    onApply: function (sel) {
+                        if (pendingCompetenciasRow) {
+                            var id = pendingCompetenciasRow.getAttribute('data-id') || pendingCompetenciasRow.getAttribute('data-asignacion-id');
+                            var rowItem = asignacionesData.find(function (a) { return String(a.id) === String(id); });
+                            if (rowItem) {
+                                rowItem.contenidos = sel.slice();
+                                rowItem.contenidosCount = sel.length;
+                            }
+                            if (asignacionesTablaRef && typeof asignacionesTablaRef.refresh === 'function') asignacionesTablaRef.refresh();
+                            updateCrearPlanButtonState();
+                            pendingCompetenciasRow = null;
+                        }
+                    },
+                    onClose: function () { pendingCompetenciasRow = null; }
+                });
+            }
+
+            var asignacionesContainer = document.getElementById('asignaciones-data-table-container');
+            if (asignacionesContainer) {
+                asignacionesContainer.addEventListener('click', function (e) {
+                    var btn = e.target.closest('.js-asignacion-agregar-competencias');
+                    if (!btn) return;
+                    e.preventDefault();
+                    e.stopPropagation();
+                    var tr = btn.closest('tbody tr[data-id]');
+                    if (tr) abrirDrawerCompetenciasFila(tr);
+                });
+            }
+
+            var deleteOverlay = document.getElementById('asignaciones-delete-overlay');
+            var deleteClose = document.getElementById('asignaciones-delete-close');
+            var deleteCancel = document.getElementById('asignaciones-delete-cancel');
+            var deleteConfirm = document.getElementById('asignaciones-delete-confirm');
+            var deleteTypeInput = document.getElementById('asignaciones-delete-type-input');
+            function closeAsignacionesDeleteModal() {
+                if (deleteOverlay) { deleteOverlay.style.display = 'none'; deleteOverlay.setAttribute('aria-hidden', 'true'); }
+                if (deleteTypeInput) deleteTypeInput.value = '';
+                if (deleteConfirm) deleteConfirm.disabled = true;
+            }
+            if (deleteTypeInput && deleteConfirm) {
+                deleteTypeInput.addEventListener('input', function () { deleteConfirm.disabled = this.value.trim().toLowerCase() !== 'eliminar'; });
+            }
+            if (deleteClose) deleteClose.addEventListener('click', closeAsignacionesDeleteModal);
+            if (deleteCancel) deleteCancel.addEventListener('click', closeAsignacionesDeleteModal);
+            if (deleteOverlay) deleteOverlay.addEventListener('click', function (e) { if (e.target === deleteOverlay) closeAsignacionesDeleteModal(); });
+            if (deleteConfirm) {
+                deleteConfirm.addEventListener('click', function () {
+                    var ids = pendingAsignacionesDeleteIds.slice();
+                    closeAsignacionesDeleteModal();
+                    pendingAsignacionesDeleteIds = [];
+                    var idSet = {};
+                    ids.forEach(function (id) { idSet[String(id)] = true; });
+                    asignacionesData = asignacionesData.filter(function (a) { return !idSet[String(a.id)]; });
+                    if (asignacionesTablaRef && typeof asignacionesTablaRef.refresh === 'function') asignacionesTablaRef.refresh();
+                    updateCrearPlanButtonState();
+                    if (typeof showToast === 'function') showToast('success', ids.length + ' asignación(es) eliminada(s) correctamente');
+                });
+            }
+        });
+    </script>
+</body>
+</html>

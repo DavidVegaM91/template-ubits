@@ -1,0 +1,1038 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="../../../images/playground-favicon.svg">
+    <title>UBITS Playground - Mi equipo - Crear plan de contenidos</title>
+    <!-- Mi equipo: checklist imports → contexto-mi-equipo.md §7; catalogo desde lms-creator/planes-formacion/ -->
+
+    <link rel="stylesheet" href="../../../general-styles/ubits-colors.css">
+    <link rel="stylesheet" href="../../../general-styles/styles.css">
+    <link rel="stylesheet" href="../../lms-creator/lms-creator.css">
+    <link rel="stylesheet" href="../../../general-styles/fontawesome-icons.css">
+    <link rel="stylesheet" href="../../../general-styles/ubits-typography.css">
+    <link rel="stylesheet" href="../../../components/sub-nav.css">
+    <link rel="stylesheet" href="../../../components/sidebar.css">
+    <link rel="stylesheet" href="../../../components/tab-bar.css">
+    <link rel="stylesheet" href="../../../components/floating-menu.css">
+    <link rel="stylesheet" href="../../../components/profile-menu.css">
+    <link rel="stylesheet" href="../../../components/button.css">
+    <link rel="stylesheet" href="../../../components/inline-edit.css">
+    <link rel="stylesheet" href="../../../components/header-product.css">
+    <link rel="stylesheet" href="../../../components/tooltip.css">
+    <link rel="stylesheet" href="../../../components/input.css">
+    <link rel="stylesheet" href="../../../components/calendar.css">
+    <link rel="stylesheet" href="../../../components/dropdown-menu.css">
+    <link rel="stylesheet" href="../../../components/drawer.css">
+    <link rel="stylesheet" href="../../../components/stepper.css">
+    <link rel="stylesheet" href="../../../components/card-content-compact.css">
+    <link rel="stylesheet" href="../../../components/table.css">
+    <link rel="stylesheet" href="../../../components/avatar.css">
+    <link rel="stylesheet" href="../../../components/checkbox.css">
+    <link rel="stylesheet" href="../../../components/chip.css">
+    <link rel="stylesheet" href="../../../components/ubits-data-table.css">
+    <link rel="stylesheet" href="../../../components/empty-state.css">
+    <link rel="stylesheet" href="../../../components/toast.css">
+    <link rel="stylesheet" href="../../../components/modal.css">
+    <link rel="stylesheet" href="./crear-plan-contenidos.css">
+</head>
+<body data-theme="light" class="page-mi-equipo-crear-plan-contenidos">
+    <div class="dashboard-container">
+        <div class="tooltip" id="tooltip"></div>
+        <div id="sidebar-container"></div>
+
+        <main class="main-content">
+            <div id="top-nav-container"></div>
+            <div class="content-area">
+                <div class="content-sections">
+                    <div class="section-single">
+                        <div class="widget-header-product" id="header-product-container"></div>
+                    </div>
+                    <div class="section-single">
+                        <div class="widget-crear-plan-contenidos">
+                            <div class="crear-plan-contenidos-form">
+                                <input type="hidden" id="plan-tipo" name="plan-tipo" value="contenidos">
+                                <div class="crear-plan-contenidos-form__field crear-plan-contenidos-form__field--nombre-plan">
+                                    <textarea class="ubits-inline-edit ubits-heading-h1" id="asignacion-nombre" placeholder="Nombre del plan" rows="1" maxlength="250"></textarea>
+                                </div>
+                                <div class="crear-plan-contenidos-form__field crear-plan-contenidos-form__field--vigencia">
+                                    <div class="crear-plan-contenidos-vigencia-row">
+                                        <div class="crear-plan-contenidos-vigencia-item" id="fecha-inicio-container"></div>
+                                        <div class="crear-plan-contenidos-vigencia-item" id="fecha-fin-container"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="section-single crear-plan-contenidos-asignaciones-section">
+                        <div class="widget-asignaciones-lista">
+                            <div id="asignaciones-data-table-container" class="crear-plan-contenidos-asignaciones-tabla"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div id="asignaciones-modals-container"></div>
+    <div id="tab-bar-container"></div>
+    <div id="floating-menu-container"></div>
+    <div id="profile-menu-container"></div>
+    <div id="ubits-toast-container"></div>
+
+    <script src="../../../components/tooltip.js"></script>
+    <script src="../../../components/inline-edit.js"></script>
+    <script src="../../../components/avatar.js"></script>
+    <script src="../../../components/sidebar.js"></script>
+    <script src="../../../components/sub-nav.js"></script>
+    <script src="../../../components/tab-bar.js"></script>
+    <script src="../../../components/floating-menu.js"></script>
+    <script src="../../../components/profile-menu.js"></script>
+    <script src="../../../components/header-product.js"></script>
+    <script src="../../../components/dropdown-menu.js"></script>
+    <script src="../../../components/input.js"></script>
+    <script src="../../../components/calendar.js"></script>
+    <script src="../../../components/drawer.js"></script>
+    <script src="../../../components/stepper.js"></script>
+    <script src="../../../components/card-content-compact.js"></script>
+    <script src="../../../bd-master/bd-master-niveles-contenido.js"></script>
+    <script src="../../../bd-master/bd-master-aliados.js"></script>
+    <script src="../../../bd-master/bd-master-competencias.js"></script>
+    <script src="../../../bd-master/bd-master-habilidades.js"></script>
+    <script src="../../../bd-master/bd-master-categorias-fiqsha.js"></script>
+    <script src="../../../bd-master/bd-contenidos-ubits.js"></script>
+    <script src="../../../bd-master/bd-contenidos-fiqsha.js"></script>
+    <script src="../../lms-creator/planes-formacion/catalogo-contenidos-drawer.js"></script>
+    <script src="../../../components/empty-state.js"></script>
+    <script src="../../../components/toast.js"></script>
+    <script src="../../../components/ubits-data-table.js"></script>
+    <script src="../../../components/modal.js"></script>
+    <script src="../../../script.js"></script>
+    <script src="../../../bd-master/bd-master-colaboradores.js"></script>
+    <script src="./mi-equipo-context.js"></script>
+    <script src="./mi-equipo-planes-mock.js"></script>
+    <script src="./mi-equipo-layout.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            if (typeof initMiEquipoLayout === 'function') initMiEquipoLayout();
+
+            var asignacionesData = [];
+            var pendingCursosRow = null;
+            var catalogoCursos = (window.CATALOGO_CURSOS_DRAWER || []).slice();
+            if (typeof refreshCatalogoContenidosDrawer === 'function') {
+                catalogoCursos = refreshCatalogoContenidosDrawer().slice();
+            }
+
+            function yyyyMmDdToDdMmYyyy(val) {
+                if (!val || typeof val !== 'string') return '';
+                var parts = val.trim().split('-');
+                if (parts.length !== 3) return val;
+                return parts[2] + '/' + parts[1] + '/' + parts[0];
+            }
+
+            function parseDateInput(val) {
+                if (!val) return null;
+                var parts = String(val).trim().split('-');
+                if (parts.length !== 3) return null;
+                var y = parseInt(parts[0], 10);
+                var m = parseInt(parts[1], 10) - 1;
+                var d = parseInt(parts[2], 10);
+                if (isNaN(y) || isNaN(m) || isNaN(d)) return null;
+                var dt = new Date(y, m, d);
+                return isNaN(dt.getTime()) ? null : dt;
+            }
+
+            function computeEstadoNuevoPlan(fechaInicioStr) {
+                var today = new Date();
+                today.setHours(0, 0, 0, 0);
+                var inicio = parseDateInput(fechaInicioStr);
+                if (!inicio) return 'Planeado';
+                inicio.setHours(0, 0, 0, 0);
+                if (inicio.getTime() > today.getTime()) return 'Planeado';
+                return 'Procesando 0%';
+            }
+
+            function canCrearPlan() {
+                var nombreEl = document.getElementById('asignacion-nombre');
+                var nombre = nombreEl && nombreEl.value ? String(nombreEl.value).trim() : '';
+                var inicioInput = document.querySelector('#fecha-inicio-container input');
+                var finInput = document.querySelector('#fecha-fin-container input');
+                var hasInicio = inicioInput && inicioInput.value && String(inicioInput.value).trim() !== '';
+                var hasFin = finInput && finInput.value && String(finInput.value).trim() !== '';
+                var hasAsignacion = asignacionesData.length > 0;
+                var todasConContenido = asignacionesData.every(function (a) {
+                    return a.contenidos && a.contenidos.length > 0;
+                });
+                return nombre.length > 0 && hasInicio && hasFin && hasAsignacion && todasConContenido;
+            }
+
+            function updateCrearPlanButtonState() {
+                var btn = document.getElementById('btn-crear-plan-mi-equipo');
+                if (btn) btn.disabled = !canCrearPlan();
+            }
+            window.updateCrearPlanButtonState = updateCrearPlanButtonState;
+
+            function guardarNuevoPlan() {
+                if (!canCrearPlan()) {
+                    if (typeof showToast === 'function') {
+                        var sinContenidos = asignacionesData.filter(function (a) {
+                            return !a.contenidos || a.contenidos.length === 0;
+                        });
+                        if (sinContenidos.length > 0) {
+                            showToast('error', 'Todas las asignaciones deben tener al menos un contenido. Agrega contenidos a las que faltan antes de guardar.');
+                        } else {
+                            showToast('error', 'Completa el nombre, las fechas y al menos una asignación con contenidos.');
+                        }
+                    }
+                    return;
+                }
+                var nombreEl = document.getElementById('asignacion-nombre');
+                var inicioInput = document.querySelector('#fecha-inicio-container input');
+                var finInput = document.querySelector('#fecha-fin-container input');
+                var fechaInicio = yyyyMmDdToDdMmYyyy(inicioInput ? inicioInput.value : '');
+                var fechaFin = yyyyMmDdToDdMmYyyy(finInput ? finInput.value : '');
+                var estado = computeEstadoNuevoPlan(inicioInput ? inicioInput.value : '');
+                var contenidoPorUsuario = {};
+                asignacionesData.forEach(function (a) {
+                    if (a.colaboradorId) contenidoPorUsuario[String(a.colaboradorId)] = (a.contenidos || []).slice();
+                });
+                var nuevo = typeof addMiEquipoPlan === 'function' ? addMiEquipoPlan({
+                    nombre: nombreEl.value.trim(),
+                    fechaInicio: fechaInicio,
+                    fechaFin: fechaFin,
+                    estado: estado,
+                    progreso: 0,
+                    tipo: 'contenidos',
+                    asignaciones: asignacionesData.slice(),
+                    contenidoPorUsuario: contenidoPorUsuario
+                }) : null;
+                if (!nuevo) return;
+                try {
+                    sessionStorage.setItem('ubits-toast-pending', JSON.stringify({
+                        type: 'success',
+                        message: 'Plan creado correctamente.'
+                    }));
+                } catch (e) {}
+                if (String(estado).indexOf('Procesando') === 0) {
+                    window.location.href = 'editar-plan-contenidos.html?id=' + encodeURIComponent(nuevo.id);
+                } else {
+                    window.location.href = 'planes.html';
+                }
+            }
+
+            if (typeof loadHeaderProduct === 'function') {
+                loadHeaderProduct('header-product-container', {
+                    productName: 'Crear plan de contenidos',
+                    backButton: {
+                        onClick: function () { window.location.href = 'planes.html'; }
+                    },
+                    primaryButton: {
+                        text: 'Crear plan',
+                        icon: 'fa-plus',
+                        onClick: guardarNuevoPlan
+                    }
+                });
+                setTimeout(function () {
+                    var actions = document.querySelector('#header-product-container .ubits-header-product__actions');
+                    if (actions) {
+                        var primaryBtn = actions.querySelector('.ubits-button--primary');
+                        if (primaryBtn && !primaryBtn.id) {
+                            primaryBtn.id = 'btn-crear-plan-mi-equipo';
+                            primaryBtn.disabled = true;
+                        }
+                    }
+                    updateCrearPlanButtonState();
+                }, 0);
+            }
+
+            setTimeout(function () {
+                var nombreTa = document.getElementById('asignacion-nombre');
+                if (nombreTa) {
+                    nombreTa.addEventListener('input', function () {
+                        this.style.height = 'auto';
+                        this.style.height = Math.min(this.scrollHeight, 80) + 'px';
+                        updateCrearPlanButtonState();
+                    });
+                }
+            }, 0);
+
+            if (typeof createInput === 'function') {
+                createInput({
+                    containerId: 'fecha-inicio-container',
+                    type: 'calendar',
+                    label: 'Fecha de inicio',
+                    placeholder: 'Seleccionar fecha',
+                    helperText: 'Igual o mayor a hoy',
+                    showHelper: true,
+                    size: 'sm',
+                    onChange: updateCrearPlanButtonState
+                });
+                createInput({
+                    containerId: 'fecha-fin-container',
+                    type: 'calendar',
+                    label: 'Fecha de finalización',
+                    placeholder: 'Seleccionar fecha',
+                    helperText: 'Mayor o igual a la fecha de inicio',
+                    showHelper: true,
+                    size: 'sm',
+                    onChange: updateCrearPlanButtonState
+                });
+            }
+
+            if (typeof getModalHtml === 'function') {
+                var deleteBody = '<p class="ubits-body-md-regular">¿Estás seguro de que deseas eliminar <strong id="asignaciones-delete-count">0</strong> asignación(es) seleccionada(s)?</p><p class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Esta acción no se puede deshacer.</p><div style="margin-top: var(--gap-lg);"><label class="ubits-body-sm-regular" for="asignaciones-delete-type-input">Escriba <strong>eliminar</strong> para habilitar el botón:</label><input type="text" id="asignaciones-delete-type-input" class="ubits-input" placeholder="Escriba la palabra de confirmación" autocomplete="off" style="margin-top: var(--gap-sm); width: 100%; padding: var(--padding-sm) var(--padding-md); border: 1px solid var(--ubits-border-1); border-radius: var(--border-radius-sm); font-size: var(--font-size-sm); color: var(--ubits-fg-1-high); box-sizing: border-box;"></div>';
+                var deleteFooter = '<button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="asignaciones-delete-cancel"><span>Cancelar</span></button><button type="button" class="ubits-button ubits-button--error ubits-button--md" id="asignaciones-delete-confirm" disabled><span>Eliminar</span></button>';
+                document.getElementById('asignaciones-modals-container').innerHTML = getModalHtml({ overlayId: 'asignaciones-delete-overlay', title: 'Confirmar eliminación', bodyHtml: deleteBody, footerHtml: deleteFooter, size: 'sm', closeButtonId: 'asignaciones-delete-close' });
+            }
+
+            function escapeHtmlAttr(t) {
+                if (t == null) return '';
+                return String(t).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+            }
+
+            function buildAsignacionRowHtml(row) {
+                var cursosCell = row.contenidosCount === 0
+                    ? '<button type="button" class="ubits-button ubits-button--secondary ubits-button--xs js-asignacion-agregar-contenidos" data-asignacion-id="' + escapeHtmlAttr(row.id) + '"><i class="far fa-plus"></i><span>Agregar contenidos</span></button>'
+                    : '<button type="button" class="ubits-button ubits-button--secondary ubits-button--xs js-asignacion-agregar-contenidos" data-asignacion-id="' + escapeHtmlAttr(row.id) + '"><i class="far fa-plus"></i><span>' + escapeHtmlAttr(String(row.contenidosCount)) + ' contenidos</span></button>';
+                var avatarUrl = (row.avatar && String(row.avatar).trim()) ? String(row.avatar).replace(/"/g, '&quot;') : '';
+                var usuarioCell = '<div class="detalle-plan-usuario-cell">' +
+                    (avatarUrl
+                        ? '<span class="ubits-avatar ubits-avatar--sm"><img src="' + avatarUrl + '" alt="' + escapeHtmlAttr(row.nombreUsuario) + '" class="ubits-avatar__img"></span>'
+                        : '<span class="ubits-avatar ubits-avatar--sm"><span class="ubits-avatar__fallback"><i class="far fa-user"></i></span></span>') +
+                    '<span class="ubits-body-sm-regular">' + escapeHtmlAttr(row.nombreUsuario) + '</span></div>';
+                return '<td data-col="usuario">' + usuarioCell + '</td><td data-col="contenidos">' + cursosCell + '</td>';
+            }
+
+            var asignacionesTablaRef = null;
+            var pendingAsignacionesDeleteIds = [];
+
+            if (typeof createUbitsDataTable === 'function') {
+                asignacionesTablaRef = createUbitsDataTable({
+                    containerId: 'asignaciones-data-table-container',
+                    tableId: 'asignaciones-table',
+                    title: 'Asignaciones',
+                    columns: [
+                        { id: 'usuario', label: 'Nombre de usuario' },
+                        { id: 'contenidos', label: 'Contenidos asignados' }
+                    ],
+                    getData: function () { return asignacionesData; },
+                    rowIdField: 'id',
+                    buildRowHtml: buildAsignacionRowHtml,
+                    features: { checkboxes: true, search: true, verSeleccionados: true, actionBar: true, resultsCount: true },
+                    primaryButton: {
+                        text: 'Agregar asignación',
+                        icon: 'fa-plus',
+                        onClick: function () { if (typeof abrirDrawerAgregarUsuarios === 'function') abrirDrawerAgregarUsuarios(); }
+                    },
+                    actionBarButtons: [{
+                        id: 'eliminar',
+                        label: 'Eliminar',
+                        icon: 'fa-trash',
+                        variant: 'error-secondary',
+                        onClick: function (selectedIds) {
+                            if (!selectedIds || selectedIds.length === 0) return;
+                            pendingAsignacionesDeleteIds = selectedIds.slice();
+                            var countEl = document.getElementById('asignaciones-delete-count');
+                            var inputEl = document.getElementById('asignaciones-delete-type-input');
+                            var confirmEl = document.getElementById('asignaciones-delete-confirm');
+                            if (countEl) countEl.textContent = pendingAsignacionesDeleteIds.length;
+                            if (inputEl) { inputEl.value = ''; inputEl.focus(); }
+                            if (confirmEl) confirmEl.disabled = true;
+                            var overlay = document.getElementById('asignaciones-delete-overlay');
+                            if (overlay) { overlay.style.display = 'flex'; overlay.setAttribute('aria-hidden', 'false'); }
+                        }
+                    }],
+                    emptyState: {
+                        message: 'Aún no hay asignaciones',
+                        icon: 'far fa-user-check',
+                        description: 'Agrega colaboradores de tu equipo para asignarles contenidos en este plan.'
+                    },
+                    i18n: {
+                        selectAll: 'Seleccionar todo',
+                        deselectAll: 'Deseleccionar todo',
+                        verSeleccionados: 'Ver seleccionados',
+                        buscar: 'Buscar usuarios',
+                        buscarPlaceholder: 'Buscar por nombre de usuario...'
+                    }
+                });
+            }
+
+            /** Drawer wizard: Participantes → Contenidos (mismo patrón que editar-plan-contenidos y LMS Creator). */
+            function getDrawerAgregarAsignacionEditarPlanHtml() {
+                var stepperEditHtml = '<nav id="drawer-wiz-stepper-nav-edit" class="drawer-wizard-stepper-nav" aria-label="Pasos de asignación">' +
+                    '<ol id="drawer-wiz-stepper-ol-edit" class="ubits-stepper ubits-stepper--horizontal ubits-stepper--horizontal-compact">' +
+                    '<li class="ubits-stepper__step ubits-stepper__step--active" data-step-label="Participantes">' +
+                    '<span class="ubits-stepper__mark" aria-hidden="true"><span class="ubits-stepper__mark-num">1</span><i class="far fa-check" aria-hidden="true"></i></span>' +
+                    '<span class="ubits-stepper__label">Participantes</span></li>' +
+                    '<li class="ubits-stepper__rail" aria-hidden="true"></li>' +
+                    '<li class="ubits-stepper__step ubits-stepper__step--pending" data-step-label="Contenidos">' +
+                    '<span class="ubits-stepper__mark" aria-hidden="true"><span class="ubits-stepper__mark-num">2</span><i class="far fa-check" aria-hidden="true"></i></span>' +
+                    '<span class="ubits-stepper__label">Contenidos</span></li>' +
+                    '</ol></nav>';
+                var stepParticipantesHtml = '<div id="drawer-wizard-step2" class="drawer-wizard-step drawer-wizard-step--participantes">' +
+                    '<div class="drawer-usuarios-panel drawer-usuarios-panel--colaborador" id="drawer-usuarios-colaborador-panel" style="display:flex">' +
+                    '  <div id="drawer-colab-data-table-container" class="drawer-colab-dt-wrapper"></div>' +
+                    '</div></div>';
+                var step3ContenidosHtml = '<div id="drawer-wizard-step3" class="drawer-wizard-step" style="display:none">' +
+                    '<div class="drawer-agregar-cursos drawer-agregar-cursos--single-col">' +
+                    '  <span class="drawer-agregar-cursos__section-title ubits-body-sm-semibold">Buscar y agregar contenidos</span>' +
+                    '  <div class="drawer-cursos-search-row">' +
+                    '    <div class="drawer-wiz-cursos-action-bar" id="drawer-wiz-cursos-action-bar">' +
+                    '      <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="drawer-wiz-cursos-ver-seleccionados">' +
+                    '        <i class="far fa-eye"></i><span>Ver seleccionados</span></button>' +
+                    '    </div>' +
+                    '    <div id="drawer-wiz-cursos-search-container" class="drawer-cursos-search-input-wrap"></div>' +
+                    '    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only" id="drawer-wiz-cursos-filter-btn" aria-label="Filtrar por origen"><i class="far fa-filter"></i></button>' +
+                    '  </div>' +
+                    '  <div class="drawer-cursos-resultados-bg drawer-cursos-resultados-bg--paso2-full">' +
+                    '    <div id="drawer-wiz-contenidos-empty-search" class="drawer-contenidos-empty-search-wrap" style="display:none;"></div>' +
+                    '    <div class="drawer-cursos-cards-grid" id="drawer-wiz-cursos-cards-container"></div>' +
+                    '  </div>' +
+                    '</div></div>';
+                return '<div class="drawer-asignacion-wizard-root">' + stepperEditHtml + stepParticipantesHtml + step3ContenidosHtml + '</div>';
+            }
+
+            function attachWizardContenidosPaso2(overlay, onSync, opts) {
+                opts = opts || {};
+                var idPrefix = opts.idPrefix || 'drawer-wiz';
+                function I(suffix) { return idPrefix + '-' + suffix; }
+                if (!overlay._wizCursosSeleccionados) overlay._wizCursosSeleccionados = [];
+                var idSearch = I('cursos-search-container');
+                var searchWrap = overlay.querySelector('#' + idSearch);
+                if (searchWrap) searchWrap.innerHTML = '';
+                if (typeof createInput === 'function') {
+                    createInput({
+                        containerId: idSearch,
+                        type: 'search',
+                        placeholder: 'Buscar contenidos...',
+                        size: 'sm',
+                        showLabel: false
+                    });
+                }
+                var searchContainer = overlay.querySelector('#' + idSearch);
+                var searchInput = searchContainer ? searchContainer.querySelector('input') : null;
+                var cardsContainer = overlay.querySelector('#' + I('cursos-cards-container'));
+                var emptySearchContainer = overlay.querySelector('#' + I('contenidos-empty-search'));
+                var DRAWER_CURSOS_PAGE_SIZE = 12;
+                var drawerCursosVisibleCount = DRAWER_CURSOS_PAGE_SIZE;
+                var drawerCursosFilter = 'all';
+                overlay._wizViewOnlySeleccionados = false;
+
+                function getFiltradosDrawerCursos() {
+                    var q = (searchInput && searchInput.value) ? searchInput.value.trim().toLowerCase() : '';
+                    var bySource = catalogoCursos;
+                    if (drawerCursosFilter === 'ubits') bySource = catalogoCursos.filter(function (c) { return c.courseSource === 'ubits'; });
+                    else if (drawerCursosFilter === 'empresa') bySource = catalogoCursos.filter(function (c) { return c.courseSource === 'empresa'; });
+                    return bySource.filter(function (c) {
+                        return !q || (c.title && c.title.toLowerCase().includes(q)) || (c.competency && c.competency.toLowerCase().includes(q)) || (c.categoria && String(c.categoria).toLowerCase().includes(q));
+                    });
+                }
+
+                function getFiltradosParaGrid() {
+                    var filtrados = getFiltradosDrawerCursos();
+                    var sel = overlay._wizCursosSeleccionados || [];
+                    if (!overlay._wizViewOnlySeleccionados || !sel.length) return filtrados;
+                    var idSet = {};
+                    sel.forEach(function (c) { if (c && c.id != null) idSet[String(c.id)] = true; });
+                    return filtrados.filter(function (c) { return idSet[String(c.id)]; });
+                }
+
+                function updateVerSeleccionadosBar() {
+                    var bar = overlay.querySelector('#' + I('cursos-action-bar'));
+                    var btn = overlay.querySelector('#' + I('cursos-ver-seleccionados'));
+                    if (!bar || !btn) return;
+                    var n = (overlay._wizCursosSeleccionados || []).length;
+                    var icon = btn.querySelector('i');
+                    var span = btn.querySelector('span');
+                    if (n === 0) {
+                        overlay._wizViewOnlySeleccionados = false;
+                        bar.classList.remove('is-visible');
+                        if (icon) icon.className = 'far fa-eye';
+                        if (span) span.textContent = 'Ver seleccionados';
+                        btn.classList.remove('active');
+                        return;
+                    }
+                    bar.classList.add('is-visible');
+                    if (overlay._wizViewOnlySeleccionados) {
+                        if (icon) icon.className = 'far fa-eye-slash';
+                        if (span) span.textContent = 'Dejar de ver seleccionados (' + n + ')';
+                        btn.classList.add('active');
+                    } else {
+                        if (icon) icon.className = 'far fa-eye';
+                        if (span) span.textContent = 'Ver seleccionados (' + n + ')';
+                        btn.classList.remove('active');
+                    }
+                }
+
+                function notifyWizardPaso2Sync() {
+                    if (typeof onSync === 'function') onSync();
+                }
+
+                function filtrarYRenderizarCards() {
+                    if (!cardsContainer || typeof loadCardContentCompact !== 'function') return;
+                    var filtrados = getFiltradosDrawerCursos();
+                    var paraGrid = getFiltradosParaGrid();
+                    var q = (searchInput && searchInput.value) ? searchInput.value.trim() : '';
+                    if (q && filtrados.length === 0) {
+                        if (emptySearchContainer) {
+                            emptySearchContainer.style.display = 'block';
+                            emptySearchContainer.innerHTML = '';
+                            if (typeof loadEmptyState === 'function') {
+                                loadEmptyState(I('contenidos-empty-search'), {
+                                    icon: 'fa-search',
+                                    iconSize: 'lg',
+                                    title: 'No se encontraron resultados',
+                                    description: 'Intenta ajustar tu búsqueda o filtros para encontrar lo que buscas.',
+                                    buttons: { secondary: { text: 'Limpiar búsqueda', icon: 'fa-times', onClick: function () {} } }
+                                });
+                                setTimeout(function () {
+                                    var btn = emptySearchContainer.querySelector('.ubits-button--secondary');
+                                    if (btn) {
+                                        btn.onclick = function (e) {
+                                            e.preventDefault();
+                                            e.stopPropagation();
+                                            if (searchInput) { searchInput.value = ''; searchInput.dispatchEvent(new Event('input')); }
+                                            filtrarYRenderizarCards();
+                                        };
+                                    }
+                                }, 50);
+                            }
+                        }
+                        cardsContainer.style.display = 'none';
+                        updateVerSeleccionadosBar();
+                        return;
+                    }
+                    if (overlay._wizViewOnlySeleccionados && paraGrid.length === 0 && (overlay._wizCursosSeleccionados || []).length > 0) {
+                        if (emptySearchContainer) {
+                            emptySearchContainer.style.display = 'block';
+                            emptySearchContainer.innerHTML = '';
+                            if (typeof loadEmptyState === 'function') {
+                                loadEmptyState(I('contenidos-empty-search'), {
+                                    icon: 'fa-search',
+                                    iconSize: 'lg',
+                                    title: 'No se encontraron resultados',
+                                    description: 'Intenta ajustar tu búsqueda o filtros para encontrar lo que buscas.',
+                                    buttons: { secondary: { text: 'Limpiar búsqueda', icon: 'fa-times', onClick: function () {} } }
+                                });
+                                setTimeout(function () {
+                                    var btn = emptySearchContainer.querySelector('.ubits-button--secondary');
+                                    if (btn) {
+                                        btn.onclick = function (e) {
+                                            e.preventDefault();
+                                            e.stopPropagation();
+                                            overlay._wizViewOnlySeleccionados = false;
+                                            if (searchInput) { searchInput.value = ''; searchInput.dispatchEvent(new Event('input')); }
+                                            updateVerSeleccionadosBar();
+                                            filtrarYRenderizarCards();
+                                        };
+                                    }
+                                }, 50);
+                            }
+                        }
+                        cardsContainer.style.display = 'none';
+                        updateVerSeleccionadosBar();
+                        return;
+                    }
+                    if (emptySearchContainer) {
+                        emptySearchContainer.className = 'drawer-contenidos-empty-search-wrap';
+                        emptySearchContainer.style.display = 'none';
+                        emptySearchContainer.innerHTML = '';
+                    }
+                    cardsContainer.style.display = '';
+                    var aMostrar = paraGrid.slice(0, drawerCursosVisibleCount);
+                    loadCardContentCompact(I('cursos-cards-container'), aMostrar);
+                    var listSel = overlay._wizCursosSeleccionados || [];
+                    aMostrar.forEach(function (course, idx) {
+                        var cardEls = cardsContainer.querySelectorAll('.course-card-compact');
+                        var cardEl = cardEls[idx];
+                        if (cardEl) {
+                            cardEl.style.cursor = 'pointer';
+                            cardEl.dataset.courseId = course.id;
+                            if (listSel.some(function (x) { return String(x.id) === String(course.id); })) {
+                                cardEl.classList.add('course-card-compact--selected');
+                            } else {
+                                cardEl.classList.remove('course-card-compact--selected');
+                            }
+                        }
+                    });
+                    updateVerSeleccionadosBar();
+                }
+
+                function maybeLoadMoreDrawerCursos() {
+                    var paraGrid = getFiltradosParaGrid();
+                    if (drawerCursosVisibleCount >= paraGrid.length) return;
+                    drawerCursosVisibleCount += DRAWER_CURSOS_PAGE_SIZE;
+                    filtrarYRenderizarCards();
+                }
+
+                var resultadosBg = overlay.querySelector('#drawer-wizard-step3 .drawer-cursos-resultados-bg')
+                    || overlay.querySelector('.drawer-agregar-cursos--single-col .drawer-cursos-resultados-bg--paso2-full');
+                if (resultadosBg) {
+                    if (overlay._wizContenidosScrollHandler) {
+                        resultadosBg.removeEventListener('scroll', overlay._wizContenidosScrollHandler);
+                    }
+                    overlay._wizContenidosScrollHandler = function () {
+                        var el = resultadosBg;
+                        var threshold = 120;
+                        if (el.scrollTop + el.clientHeight >= el.scrollHeight - threshold) maybeLoadMoreDrawerCursos();
+                    };
+                    resultadosBg.addEventListener('scroll', overlay._wizContenidosScrollHandler);
+                }
+
+                if (cardsContainer) {
+                    if (overlay._wizContenidosCardsClickHandler) {
+                        cardsContainer.removeEventListener('click', overlay._wizContenidosCardsClickHandler);
+                    }
+                    overlay._wizContenidosCardsClickHandler = function (e) {
+                        var cardEl = e.target.closest('.course-card-compact');
+                        if (!cardEl || !cardEl.dataset.courseId) return;
+                        var course = catalogoCursos.find(function (c) { return String(c.id) === String(cardEl.dataset.courseId); });
+                        if (!course) return;
+                        var list = overlay._wizCursosSeleccionados || [];
+                        var ix = list.findIndex(function (x) { return String(x.id) === String(course.id); });
+                        if (ix !== -1) list.splice(ix, 1);
+                        else {
+                            list.push(course);
+                            if (searchInput) { searchInput.value = ''; searchInput.dispatchEvent(new Event('input')); }
+                        }
+                        filtrarYRenderizarCards();
+                        notifyWizardPaso2Sync();
+                    };
+                    cardsContainer.addEventListener('click', overlay._wizContenidosCardsClickHandler);
+                }
+
+                if (searchInput) {
+                    searchInput.addEventListener('input', function () {
+                        drawerCursosVisibleCount = DRAWER_CURSOS_PAGE_SIZE;
+                        filtrarYRenderizarCards();
+                    });
+                    searchInput.addEventListener('keyup', function () {
+                        drawerCursosVisibleCount = DRAWER_CURSOS_PAGE_SIZE;
+                        filtrarYRenderizarCards();
+                    });
+                }
+
+                var filterBtn = overlay.querySelector('#' + I('cursos-filter-btn'));
+                if (filterBtn && typeof getDropdownMenuHtml === 'function' && typeof openDropdownMenu === 'function' && typeof closeDropdownMenu === 'function') {
+                    if (overlay._wizContenidosFilterClickHandler) {
+                        filterBtn.removeEventListener('click', overlay._wizContenidosFilterClickHandler);
+                    }
+                    overlay._wizContenidosFilterClickHandler = function (e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        var filterOverlayId = I('cursos-filter-overlay');
+                        var existing = document.getElementById(filterOverlayId);
+                        if (existing) existing.remove();
+                        document.body.insertAdjacentHTML('beforeend', getDropdownMenuHtml({
+                            overlayId: filterOverlayId,
+                            contentId: filterOverlayId + '-content',
+                            radioGroup: true,
+                            radioName: filterOverlayId + '-radio',
+                            options: [
+                                { text: 'Todos', value: 'all', selected: drawerCursosFilter === 'all' },
+                                { text: 'Solo catálogo UBITS', value: 'ubits', selected: drawerCursosFilter === 'ubits' },
+                                { text: 'Solo catálogo propio', value: 'empresa', selected: drawerCursosFilter === 'empresa' }
+                            ]
+                        }));
+                        var filterOverlay = document.getElementById(filterOverlayId);
+                        if (filterOverlay) {
+                            filterOverlay.addEventListener('click', function (ev) {
+                                if (ev.target === filterOverlay) {
+                                    closeDropdownMenu(filterOverlayId);
+                                    if (filterOverlay.parentNode) filterOverlay.remove();
+                                }
+                            });
+                            var content = filterOverlay.querySelector('.ubits-dropdown-menu__content');
+                            if (content) content.addEventListener('click', function (ev) { ev.stopPropagation(); });
+                            filterOverlay.querySelectorAll('input[type=radio]').forEach(function (radio) {
+                                radio.addEventListener('change', function () {
+                                    drawerCursosFilter = this.value;
+                                    closeDropdownMenu(filterOverlayId);
+                                    if (filterOverlay.parentNode) filterOverlay.remove();
+                                    drawerCursosVisibleCount = DRAWER_CURSOS_PAGE_SIZE;
+                                    filtrarYRenderizarCards();
+                                });
+                            });
+                        }
+                        openDropdownMenu(filterOverlayId, filterBtn, { alignRight: true });
+                        (function alignFilterDropdownToButtonRight() {
+                            var ov = document.getElementById(filterOverlayId);
+                            var cnt = ov ? ov.querySelector('.ubits-dropdown-menu__content') : null;
+                            if (!cnt || !filterBtn) return;
+                            var br = filterBtn.getBoundingClientRect();
+                            cnt.style.left = 'auto';
+                            cnt.style.right = (window.innerWidth - br.right) + 'px';
+                        })();
+                        requestAnimationFrame(function () {
+                            var ov = document.getElementById(filterOverlayId);
+                            var cnt = ov ? ov.querySelector('.ubits-dropdown-menu__content') : null;
+                            if (!cnt || !filterBtn) return;
+                            var br = filterBtn.getBoundingClientRect();
+                            cnt.style.left = 'auto';
+                            cnt.style.right = (window.innerWidth - br.right) + 'px';
+                        });
+                    };
+                    filterBtn.addEventListener('click', overlay._wizContenidosFilterClickHandler);
+                }
+
+                var btnVerSel = overlay.querySelector('#' + I('cursos-ver-seleccionados'));
+                if (btnVerSel) {
+                    btnVerSel.onclick = function () {
+                        var sel = overlay._wizCursosSeleccionados || [];
+                        if (!sel.length) return;
+                        overlay._wizViewOnlySeleccionados = !overlay._wizViewOnlySeleccionados;
+                        drawerCursosVisibleCount = DRAWER_CURSOS_PAGE_SIZE;
+                        filtrarYRenderizarCards();
+                    };
+                }
+
+                filtrarYRenderizarCards();
+                notifyWizardPaso2Sync();
+                overlay._wizContenidosAttached = true;
+            }
+
+            function abrirDrawerAgregarUsuarios() {
+                var footerHtml = '<button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="drawer-wiz-btn-cancel"><span>Cancelar</span></button>' +
+                    '<button type="button" class="ubits-button ubits-button--primary ubits-button--md" id="drawer-wiz-btn-primary" disabled><span>Siguiente</span></button>';
+                openDrawer({
+                    overlayId: 'drawer-agregar-usuarios',
+                    title: 'Agregar asignación',
+                    bodyHtml: getDrawerAgregarAsignacionEditarPlanHtml(),
+                    footerHtml: footerHtml,
+                    size: 'lg',
+                    onClose: function () {
+                        var oDrawer = document.getElementById('drawer-agregar-usuarios');
+                        if (oDrawer) {
+                            oDrawer._wizContenidosAttached = false;
+                            oDrawer._wizCursosSeleccionados = [];
+                        }
+                    }
+                });
+                initDrawerAgregarUsuarios();
+            }
+            window.abrirDrawerAgregarUsuarios = abrirDrawerAgregarUsuarios;
+
+            function initDrawerAgregarUsuarios() {
+                var overlay = document.getElementById('drawer-agregar-usuarios');
+                if (!overlay) return;
+
+                overlay._wizContenidosAttached = false;
+                overlay._wizardStep = 1;
+                overlay._wizCursosSeleccionados = [];
+
+                var stepParticipantes = overlay.querySelector('#drawer-wizard-step2');
+                var stepContenidos = overlay.querySelector('#drawer-wizard-step3');
+                var stepperOlEdit = overlay.querySelector('#drawer-wiz-stepper-ol-edit');
+                var btnPrimary = overlay.querySelector('#drawer-wiz-btn-primary');
+                var btnCancel = overlay.querySelector('#drawer-wiz-btn-cancel');
+
+                var empleadosDrawer = typeof getMiEquipoColaboradoresParaDrawer === 'function'
+                    ? getMiEquipoColaboradoresParaDrawer()
+                    : [];
+
+                function getEmpleadosDrawerLista() {
+                    return empleadosDrawer;
+                }
+
+                function setPrimaryLabel(text) {
+                    if (!btnPrimary) return;
+                    var sp = btnPrimary.querySelector('span');
+                    if (sp) sp.textContent = text;
+                    else btnPrimary.textContent = text;
+                }
+                function setSecondaryLabel(text) {
+                    if (!btnCancel) return;
+                    var sp = btnCancel.querySelector('span');
+                    if (sp) sp.textContent = text;
+                    else btnCancel.textContent = text;
+                }
+
+                function syncWizardPrimary() {
+                    if (!btnPrimary) return;
+                    var ws = overlay._wizardStep || 1;
+                    if (ws === 1) {
+                        setPrimaryLabel('Siguiente');
+                        var ref = overlay._drawerColabTablaRef;
+                        var dis = !ref || typeof ref.getSelectedIds !== 'function' || ref.getSelectedIds().length === 0;
+                        btnPrimary.disabled = dis;
+                        setSecondaryLabel('Cancelar');
+                    } else {
+                        setPrimaryLabel('Agregar');
+                        btnPrimary.disabled = (overlay._wizCursosSeleccionados || []).length === 0;
+                        setSecondaryLabel('Anterior');
+                    }
+                }
+
+                function showWizardStep(num) {
+                    overlay._wizardStep = num;
+                    if (stepParticipantes) stepParticipantes.style.display = num === 1 ? 'flex' : 'none';
+                    if (stepContenidos) stepContenidos.style.display = num === 2 ? '' : 'none';
+                    if (stepperOlEdit && typeof setStepperStepStates === 'function') {
+                        setStepperStepStates(stepperOlEdit, num === 1 ? 0 : 1);
+                    }
+                    if (num === 2 && !overlay._wizContenidosAttached) {
+                        attachWizardContenidosPaso2(overlay, syncWizardPrimary);
+                    }
+                    syncWizardPrimary();
+                }
+
+                function escapeDrawerHtml(t) {
+                    if (t == null) return '';
+                    var d = document.createElement('div');
+                    d.textContent = t;
+                    return d.innerHTML;
+                }
+                function buildDrawerColabRowHtml(row) {
+                    var avatarUrl = (row.avatar && String(row.avatar).trim()) ? String(row.avatar).replace(/"/g, '&quot;') : '';
+                    var usuarioCell = '<div class="detalle-plan-usuario-cell">' +
+                        (avatarUrl
+                            ? '<span class="ubits-avatar ubits-avatar--sm"><img src="' + avatarUrl + '" alt="' + escapeDrawerHtml(row.nombre) + '" class="ubits-avatar__img"></span>'
+                            : '<span class="ubits-avatar ubits-avatar--sm"><span class="ubits-avatar__fallback"><i class="far fa-user"></i></span></span>') +
+                        '<span class="ubits-body-sm-regular">' + escapeDrawerHtml(row.nombre) + '</span></div>';
+                    return '<td data-col="username"><span class="ubits-body-sm-regular">' + escapeDrawerHtml(row.username) + '</span></td>' +
+                        '<td data-col="nombre">' + usuarioCell + '</td>' +
+                        '<td data-col="correo"><span class="ubits-body-sm-regular">' + escapeDrawerHtml(row.correo) + '</span></td>' +
+                        '<td data-col="area"><span class="ubits-body-sm-regular">' + escapeDrawerHtml(row.area) + '</span></td>' +
+                        '<td data-col="lider"><span class="ubits-body-sm-regular">' + escapeDrawerHtml(row.lider) + '</span></td>';
+                }
+
+                var drawerColabContainer = overlay.querySelector('#drawer-colab-data-table-container');
+                var drawerColabTablaRef = null;
+                if (drawerColabContainer && typeof createUbitsDataTable === 'function') {
+                    drawerColabTablaRef = createUbitsDataTable({
+                        containerId: 'drawer-colab-data-table-container',
+                        tableId: 'drawer-colab-table-crear-plan',
+                        title: 'Lista de colaboradores',
+                        columns: [
+                            { id: 'username', label: 'Username', filterable: true },
+                            { id: 'nombre', label: 'Nombre del usuario', filterable: true },
+                            { id: 'correo', label: 'Correo electrónico', filterable: true },
+                            { id: 'area', label: 'Área', filterable: true },
+                            { id: 'lider', label: 'Líder', filterable: true }
+                        ],
+                        getData: function () { return getEmpleadosDrawerLista(); },
+                        rowIdField: 'id',
+                        buildRowHtml: buildDrawerColabRowHtml,
+                        features: { checkboxes: true, search: true, filters: true, verSeleccionados: true, resultsCount: true },
+                        emptyState: {
+                            message: 'No hay colaboradores en tu equipo',
+                            icon: 'far fa-user',
+                            description: 'No se encontraron reportes directos para asignar en este plan.'
+                        },
+                        i18n: {
+                            selectAll: 'Seleccionar todo',
+                            deselectAll: 'Deseleccionar todo',
+                            verSeleccionados: 'Ver seleccionados',
+                            buscar: 'Buscar',
+                            buscarPlaceholder: 'Buscar colaborador...'
+                        }
+                    });
+                    drawerColabContainer.addEventListener('change', function (e) {
+                        if (e.target && e.target.matches && e.target.matches('input[type="checkbox"]')) syncWizardPrimary();
+                    });
+                }
+                overlay._drawerColabTablaRef = drawerColabTablaRef;
+                overlay._empleadosDrawer = empleadosDrawer;
+
+                if (stepParticipantes) stepParticipantes.style.flexDirection = 'column';
+
+                showWizardStep(1);
+
+                if (btnPrimary) {
+                    btnPrimary.onclick = function () {
+                        var ws = overlay._wizardStep || 1;
+                        if (ws === 1) {
+                            overlay._wizCursosSeleccionados = [];
+                            overlay._wizContenidosAttached = false;
+                            showWizardStep(2);
+                            return;
+                        }
+                        var ref = overlay._drawerColabTablaRef;
+                        var ids = (ref && typeof ref.getSelectedIds === 'function') ? ref.getSelectedIds() : [];
+                        var cursosSel = (overlay._wizCursosSeleccionados || []).map(function (c) {
+                            var full = catalogoCursos.find(function (x) { return String(x.id) === String(c.id); });
+                            return full || c;
+                        });
+                        var afectados = 0;
+                        ids.forEach(function (cid) {
+                            var row = empleadosDrawer.find(function (e) { return String(e.id) === String(cid); });
+                            if (!row) return;
+                            var existing = asignacionesData.find(function (a) { return String(a.colaboradorId) === String(cid); });
+                            if (existing) {
+                                if (typeof mergeContenidosEnAsignacion === 'function') {
+                                    mergeContenidosEnAsignacion(existing, cursosSel);
+                                } else {
+                                    existing.contenidos = cursosSel.slice();
+                                    existing.contenidosCount = cursosSel.length;
+                                }
+                                afectados++;
+                                return;
+                            }
+                            afectados++;
+                            asignacionesData.push({
+                                id: 'fila-usuario-' + String(cid),
+                                colaboradorId: String(cid),
+                                nombreUsuario: row.nombre || row.username || '',
+                                avatar: row.avatar || null,
+                                contenidos: cursosSel.slice(),
+                                contenidosCount: cursosSel.length
+                            });
+                        });
+                        if (typeof closeDrawer === 'function') closeDrawer('drawer-agregar-usuarios');
+                        if (asignacionesTablaRef && typeof asignacionesTablaRef.refresh === 'function') asignacionesTablaRef.refresh();
+                        updateCrearPlanButtonState();
+                        if (typeof showToast === 'function' && afectados > 0) {
+                            showToast('success', 'Contenidos asignados correctamente');
+                        }
+                    };
+                }
+                if (btnCancel) {
+                    btnCancel.onclick = function () {
+                        var ws = overlay._wizardStep || 1;
+                        if (ws === 2) {
+                            showWizardStep(1);
+                            return;
+                        }
+                        if (typeof closeDrawer === 'function') closeDrawer('drawer-agregar-usuarios');
+                    };
+                }
+            }
+
+            function getDrawerCursosBodyHtml() {
+                var p = 'drawer-editplan';
+                return '<div class="drawer-agregar-cursos drawer-agregar-cursos--single-col">' +
+                    '  <span class="drawer-agregar-cursos__section-title ubits-body-sm-semibold">Buscar y agregar contenidos</span>' +
+                    '  <div class="drawer-cursos-search-row">' +
+                    '    <div class="drawer-wiz-cursos-action-bar" id="' + p + '-cursos-action-bar">' +
+                    '      <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="' + p + '-cursos-ver-seleccionados">' +
+                    '        <i class="far fa-eye"></i><span>Ver seleccionados</span></button>' +
+                    '    </div>' +
+                    '    <div id="' + p + '-cursos-search-container" class="drawer-cursos-search-input-wrap"></div>' +
+                    '    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only" id="' + p + '-cursos-filter-btn" aria-label="Filtrar por origen"><i class="far fa-filter"></i></button>' +
+                    '  </div>' +
+                    '  <div class="drawer-cursos-resultados-bg drawer-cursos-resultados-bg--paso2-full">' +
+                    '    <div id="' + p + '-contenidos-empty-search" class="drawer-contenidos-empty-search-wrap" style="display:none;"></div>' +
+                    '    <div class="drawer-cursos-cards-grid" id="' + p + '-cursos-cards-container"></div>' +
+                    '  </div>' +
+                    '</div>';
+            }
+
+            function abrirDrawerAgregarCursos(tr) {
+                pendingCursosRow = tr;
+                var asignacionId = tr ? (tr.getAttribute('data-id') || tr.getAttribute('data-asignacion-id')) : null;
+                var item = asignacionId ? asignacionesData.find(function (a) { return String(a.id) === String(asignacionId); }) : null;
+                var footerHtml = '<button type="button" class="ubits-button ubits-button--secondary ubits-button--md" onclick="cerrarDrawerCursos()"><span>Cancelar</span></button>' +
+                    '<button type="button" class="ubits-button ubits-button--primary ubits-button--md" onclick="cerrarDrawerCursosYAplicar()"><span>Agregar</span></button>';
+                openDrawer({
+                    overlayId: 'drawer-agregar-cursos',
+                    title: 'Editar contenidos',
+                    bodyHtml: getDrawerCursosBodyHtml(),
+                    footerHtml: footerHtml,
+                    size: 'lg',
+                    onClose: function () {
+                        pendingCursosRow = null;
+                        var o = document.getElementById('drawer-agregar-cursos');
+                        if (o) {
+                            o._wizCursosSeleccionados = [];
+                            o._wizContenidosAttached = false;
+                        }
+                    }
+                });
+                var overlay = document.getElementById('drawer-agregar-cursos');
+                if (!overlay) return;
+                overlay._wizContenidosAttached = false;
+                overlay._wizCursosSeleccionados = [];
+                if (item && item.contenidos && item.contenidos.length) {
+                    item.contenidos.forEach(function (c) {
+                        var full = catalogoCursos.find(function (x) { return String(x.id) === String(c.id); });
+                        overlay._wizCursosSeleccionados.push(full || c);
+                    });
+                }
+                attachWizardContenidosPaso2(overlay, function () {}, { idPrefix: 'drawer-editplan' });
+            }
+
+            function cerrarDrawerCursos() {
+                if (typeof closeDrawer === 'function') closeDrawer('drawer-agregar-cursos');
+                pendingCursosRow = null;
+            }
+            window.cerrarDrawerCursos = cerrarDrawerCursos;
+
+            function cerrarDrawerCursosYAplicar() {
+                var overlay = document.getElementById('drawer-agregar-cursos');
+                var cursosSeleccionados = [];
+                if (overlay && overlay._wizCursosSeleccionados && overlay._wizCursosSeleccionados.length) {
+                    cursosSeleccionados = overlay._wizCursosSeleccionados.map(function (c) {
+                        var full = catalogoCursos.find(function (x) { return String(x.id) === String(c.id); });
+                        return full || c;
+                    });
+                }
+                if (typeof closeDrawer === 'function') closeDrawer('drawer-agregar-cursos');
+                if (pendingCursosRow) {
+                    aplicarCursosAAsignacion(pendingCursosRow, cursosSeleccionados);
+                    pendingCursosRow = null;
+                }
+            }
+            window.cerrarDrawerCursosYAplicar = cerrarDrawerCursosYAplicar;
+
+            function aplicarCursosAAsignacion(tr, cursosSeleccionados) {
+                if (!tr) return;
+                var list = Array.isArray(cursosSeleccionados) ? cursosSeleccionados : [];
+                var id = tr.getAttribute('data-id') || tr.getAttribute('data-asignacion-id');
+                var item = asignacionesData.find(function (a) { return String(a.id) === String(id); });
+                if (item) {
+                    item.contenidosCount = list.length;
+                    item.contenidos = list.slice();
+                }
+                if (asignacionesTablaRef && typeof asignacionesTablaRef.refresh === 'function') asignacionesTablaRef.refresh();
+                updateCrearPlanButtonState();
+            }
+
+            var asignacionesContainer = document.getElementById('asignaciones-data-table-container');
+            if (asignacionesContainer) {
+                asignacionesContainer.addEventListener('click', function (e) {
+                    var btn = e.target.closest('.js-asignacion-agregar-contenidos');
+                    if (!btn) return;
+                    e.preventDefault();
+                    e.stopPropagation();
+                    var tr = btn.closest('tbody tr[data-id]');
+                    if (tr) abrirDrawerAgregarCursos(tr);
+                });
+            }
+
+            var deleteOverlay = document.getElementById('asignaciones-delete-overlay');
+            var deleteClose = document.getElementById('asignaciones-delete-close');
+            var deleteCancel = document.getElementById('asignaciones-delete-cancel');
+            var deleteConfirm = document.getElementById('asignaciones-delete-confirm');
+            var deleteTypeInput = document.getElementById('asignaciones-delete-type-input');
+
+            function closeAsignacionesDeleteModal() {
+                if (deleteOverlay) { deleteOverlay.style.display = 'none'; deleteOverlay.setAttribute('aria-hidden', 'true'); }
+                if (deleteTypeInput) deleteTypeInput.value = '';
+                if (deleteConfirm) deleteConfirm.disabled = true;
+            }
+            if (deleteTypeInput && deleteConfirm) {
+                deleteTypeInput.addEventListener('input', function () {
+                    deleteConfirm.disabled = this.value.trim().toLowerCase() !== 'eliminar';
+                });
+            }
+            if (deleteClose) deleteClose.addEventListener('click', closeAsignacionesDeleteModal);
+            if (deleteCancel) deleteCancel.addEventListener('click', closeAsignacionesDeleteModal);
+            if (deleteOverlay) deleteOverlay.addEventListener('click', function (e) { if (e.target === deleteOverlay) closeAsignacionesDeleteModal(); });
+            if (deleteConfirm) {
+                deleteConfirm.addEventListener('click', function () {
+                    var ids = pendingAsignacionesDeleteIds.slice();
+                    closeAsignacionesDeleteModal();
+                    pendingAsignacionesDeleteIds = [];
+                    var idSet = {};
+                    ids.forEach(function (id) { idSet[String(id)] = true; });
+                    asignacionesData = asignacionesData.filter(function (a) { return !idSet[String(a.id)]; });
+                    if (asignacionesTablaRef && typeof asignacionesTablaRef.refresh === 'function') asignacionesTablaRef.refresh();
+                    updateCrearPlanButtonState();
+                    if (typeof showToast === 'function') showToast('success', ids.length + ' asignación(es) eliminada(s) correctamente');
+                });
+            }
+        });
+    </script>
+</body>
+</html>

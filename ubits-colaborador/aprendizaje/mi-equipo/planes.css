@@ -1,0 +1,60 @@
+/* Mi equipo — overrides sobre layout Creator + planes-formacion (enlazados en HTML) */
+
+.page-mi-equipo-planes #planes-data-table-container.planes-formacion-tabla tbody tr[data-id] {
+    cursor: pointer;
+}
+
+.page-mi-equipo-planes #planes-formacion-row-options-overlay.ubits-dropdown-menu__overlay {
+    z-index: 10100;
+}
+
+.page-mi-equipo-planes #planes-formacion-row-options-overlay .ubits-dropdown-menu__content {
+    z-index: 10101;
+}
+
+.page-mi-equipo-planes .ubits-dropdown-menu__option-text {
+    white-space: nowrap;
+}
+
+.page-mi-equipo-planes .ubits-table tbody td[data-col="estado"] .ubits-status-tag {
+    min-width: 110px;
+    width: auto;
+    box-sizing: border-box;
+}
+
+.page-mi-equipo-planes .planes-formacion-tabla__td-acciones {
+    cursor: default;
+}
+
+.page-mi-equipo-planes .planes-formacion-tabla__td-acciones .js-planes-row-acciones-btn {
+    cursor: pointer;
+}
+
+.page-mi-equipo-planes .ubits-header-product--tabs-with-actions .ubits-header-product__primary-row {
+    align-items: center;
+    gap: var(--gap-md);
+}
+
+@media (max-width: 768px) {
+    .page-mi-equipo-planes .ubits-header-product--tabs-with-actions .ubits-header-product__primary-row {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .page-mi-equipo-planes .ubits-header-product__tabs {
+        width: 100%;
+        max-width: 100%;
+        overflow-x: auto;
+    }
+}
+
+.page-mi-equipo-planes .mi-equipo-page-placeholder,
+.page-mi-equipo-crear-plan-contenidos .mi-equipo-page-placeholder,
+.page-mi-equipo-crear-plan-competencias .mi-equipo-page-placeholder,
+.page-mi-equipo-editar-plan-contenidos .mi-equipo-page-placeholder,
+.page-mi-equipo-editar-plan-competencias .mi-equipo-page-placeholder,
+.page-mi-equipo-detalle-plan .mi-equipo-page-placeholder,
+.page-mi-equipo-detalle-plan-competencias .mi-equipo-page-placeholder {
+    padding: var(--padding-6xl) var(--padding-xl);
+    color: var(--ubits-fg-1-medium);
+}

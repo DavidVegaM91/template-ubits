@@ -601,8 +601,9 @@ function createHeaderProductHTML(options = {}) {
             const iconHtml = btn.icon ? `<i class="far ${btn.icon}"></i>` : '';
             const textHtml = `<span>${btn.text || 'Button text'}</span>`;
             const inner = btn.iconRight && btn.icon ? `${textHtml}${iconHtml}` : `${iconHtml}${textHtml}`;
+            const onclickAttr = btn.onClick && typeof btn.onClick === 'string' ? ` onclick="${btn.onClick}"` : '';
             return `
-            <button class="ubits-button ubits-button--secondary ubits-button--md" ${btn.onClick ? `onclick="${btn.onClick}"` : ''}>
+            <button type="button" class="ubits-button ubits-button--secondary ubits-button--md"${onclickAttr}>
                 ${inner}
             </button>`;
         }).join('');
@@ -610,9 +611,12 @@ function createHeaderProductHTML(options = {}) {
             var iconHtml = primaryButton.icon ? '<i class="far ' + primaryButton.icon + '"></i>' : '';
             var textHtml = '<span>' + (primaryButton.text || 'Primary action') + '</span>';
             var inner = primaryButton.iconRight && primaryButton.icon ? textHtml + iconHtml : iconHtml + textHtml;
+            var onclickAttr = primaryButton.onClick && typeof primaryButton.onClick === 'string'
+                ? ' onclick="' + primaryButton.onClick + '"'
+                : '';
             return (
                 '<button type="button" class="ubits-button ubits-button--primary ubits-button--md ubits-header-product__primary-action"' +
-                (primaryButton.onClick ? ' onclick="' + primaryButton.onClick + '"' : '') +
+                onclickAttr +
                 '>' +
                 inner +
                 '</button>'

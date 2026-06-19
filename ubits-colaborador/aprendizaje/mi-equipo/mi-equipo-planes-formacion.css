@@ -1,0 +1,25 @@
+/**
+ * Mi equipo — capa base planes de formación (lista y pantallas con tabla planes).
+ *
+ * Enlazar DESPUÉS de general-styles (ubits-colors, styles, fontawesome, typography)
+ * y ANTES de componentes shell + CSS de página.
+ *
+ * CHECKLIST <head> por pantalla (ajustar componentes según flujo Creator):
+ * - general-styles: ubits-colors, styles, fontawesome-icons, ubits-typography
+ * - ESTE archivo (o lms-creator.css + planes-formacion.css por separado)
+ * - Shell: sub-nav, sidebar, tab-bar, floating-menu, profile-menu
+ * - UI: button, header-product, tooltip, table, drawer, toast, modal, …
+ * - Página: ./planes.css | crear-*.css | editar-*.css | detalle-*.css
+ *
+ * JS obligatorio (orden):
+ * - Shell: sidebar, sub-nav, tab-bar, floating-menu, profile-menu, script.js
+ * - Mi equipo: mi-equipo-context.js → mi-equipo-planes-mock.js → mi-equipo-layout.js
+ * - DOMContentLoaded: initMiEquipoLayout()
+ * - Catálogo: ../../lms-creator/planes-formacion/catalogo-contenidos-drawer.js
+ *           o catalogo-competencias-drawer.js (no duplicar en mi-equipo/)
+ *
+ * Decisión fase 9: no portar planes-formacion.css completo; reutilizar Creator vía @import
+ * y overrides locales en CSS de cada página (.page-mi-equipo-*).
+ */
+@import url('../../lms-creator/lms-creator.css');
+@import url('../../lms-creator/planes-formacion/planes-formacion.css');
