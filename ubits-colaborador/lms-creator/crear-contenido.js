@@ -1889,7 +1889,16 @@
                 if (!recursosSectionMeta[sk]) recursosSectionMeta[sk] = {};
                 recursosSectionMeta[sk].descriptionHtml = desc;
                 closeEdit();
-                recursosRefreshIndiceFromDom();
+                // Persistir título: recursosRefreshIndiceFromDom solo re-lee el DOM (título viejo).
+                var preferredPageKey = CC_RECURSOS_CURRENT_PAGE_KEY;
+                var model = recursosSerializeSectionsFromDom();
+                model.forEach(function (s) {
+                    if (s.key === sk) {
+                        s.title = t;
+                    }
+                });
+                recursosMountHtmlAndInit(recursosBuildIndiceMultiHtml(model));
+                recursosRestoreActivePagePreferred(preferredPageKey);
             });
         }
     }

@@ -192,6 +192,17 @@
     margin: var(--gap-xs) 0;
 }
 
+/* Logo — sección en wizard SCORM IA (File Upload Compact) */
+.cc-sm-logo-section__label {
+    margin: 0;
+    color: var(--ubits-fg-1-high);
+}
+
+.cc-sm-optional {
+    font-weight: 400;
+    color: var(--ubits-fg-1-low);
+}
+
 /* Columna derecha: preview */
 .cc-sm-right-col {
     display: flex;

@@ -1646,8 +1646,9 @@
                         '</div>' +
                     '</div>' +
                     '<div class="cc-sm-section-divider"></div>' +
-                    '<div class="cc-sm-section">' +
-                        '<div id="cc-sm-logo-fu-wrap"></div>' +
+                    '<div class="cc-sm-section cc-sm-logo-section">' +
+                        '<p class="ubits-body-md-bold cc-sm-logo-section__label">Logo de la empresa <span class="cc-sm-optional">(opcional)</span></p>' +
+                        '<div id="cc-sm-logo-upload-mount"></div>' +
                     '</div>' +
                 '</div>' +
                 /* Columna derecha: preview (misma pauta que video legacy) */
@@ -1829,36 +1830,26 @@
     }
 
     function initScormLogoUpload() {
-        var wrap = document.getElementById('cc-sm-logo-fu-wrap');
-        if (!wrap || wrap._ccSmLogoFuWired) return;
-        wrap._ccSmLogoFuWired = true;
-        if (typeof global.createFileUpload !== 'function') return;
+        var mount = document.getElementById('cc-sm-logo-upload-mount');
+        if (!mount || document.getElementById('cc-sm-logo-upload')) return;
+        if (typeof global.createFileUploadCompact !== 'function') return;
 
-        global.createFileUpload({
-            containerId: 'cc-sm-logo-fu-wrap',
-            id: 'cc-sm-logo-fu',
-            title: 'Logo de la empresa (opcional)',
+        global.createFileUploadCompact({
+            containerId: 'cc-sm-logo-upload-mount',
+            id: 'cc-sm-logo-upload',
+            hideHeader: true,
             accept: 'image/png,.png',
             maxSizeMb: 2,
-            maxLabel: '2 MB',
-            formats: 'PNG · Hasta 2 MB',
-            successMessage: 'Logo cargado. Se verá en la primera diapositiva.',
-            onChange: function (file) {
-                if (!file) {
-                    _logoDataUrl = null;
-                    refreshPreview();
-                    return;
-                }
-                var reader = new FileReader();
-                reader.onload = function (e) {
-                    _logoDataUrl = e && e.target ? e.target.result : null;
-                    refreshPreview();
-                };
-                reader.readAsDataURL(file);
+            formats: 'PNG · hasta 2 MB',
+            icon: 'image',
+            uploadButtonLabel: 'Subir',
+            changeButtonLabel: 'Cambiar',
+            previewThumbnail: true,
+            onChange: function (file, detail) {
+                _logoDataUrl = file && detail && detail.previewUrl ? detail.previewUrl : null;
+                refreshPreview();
             },
             onError: function (err) {
-                _logoDataUrl = null;
-                refreshPreview();
                 if (typeof global.showToast === 'function' && err && err.message) {
                     global.showToast('warning', err.message, { containerId: 'ubits-toast-container' });
                 }

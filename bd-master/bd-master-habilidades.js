@@ -839,7 +839,7 @@ window.BD_MASTER_HABILIDADES = {
     {
       "id": "hab-139",
       "nombre": "Tendencias digitales",
-      "iconoFontAwesome": "far fa-trending-up",
+      "iconoFontAwesome": "far fa-arrow-trend-up",
       "competenciaId": "comp-009"
     },
     {
