@@ -118,6 +118,9 @@
     <script src="./catalogo-competencias-drawer.js"></script>
     <!-- Misma base de datos que seguimiento.html (empresa de pruebas: Fiqsha) -->
     <script src="../../../bd-master/bd-master-colaboradores.js"></script>
+    <script src="../../../bd-master/bd-contenidos-ubits.js"></script>
+    <script src="../../../bd-master/bd-planes-formacion.js"></script>
+    <script src="./planes-formacion-bd-bridge.js"></script>
     <script src="../../../bd-master/bd-tareas-y-planes.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -165,23 +168,30 @@
             function getAsignacionesPlanC2Vigente() {
                 return filasUsuarioDesdeEmpleados(0, 5, function(idx) { return competenciasEjemploDesdeCatalogo((idx + 1) % 6, 2); });
             }
-            var plansEditar = {
-                'c0': { nombre: 'Plan competencias en revisión', horasPorCompetencia: '4', fechaInicio: '01/04/2026', fechaFin: '30/06/2026', estado: 'Procesando 0%', getAsignaciones: getAsignacionesPlanC0 },
-                'c1': { nombre: 'Plan de competencias de liderazgo', horasPorCompetencia: '6', fechaInicio: '01/07/2026', fechaFin: '30/09/2026', estado: 'Planeado', getAsignaciones: getAsignacionesPlanC1 },
-                'c2': { nombre: 'Desarrollo de competencias Q1', horasPorCompetencia: '5', fechaInicio: '01/01/2026', fechaFin: '31/03/2026', estado: 'Vigente', getAsignaciones: getAsignacionesPlanC2Vigente },
-                'c3': { nombre: 'Evaluación por competencias 2025', horasPorCompetencia: '4', fechaInicio: '01/09/2025', fechaFin: '15/12/2025', estado: 'No vigente', getAsignaciones: getAsignacionesPlanC0 }
-            };
             function planCompetenciasPermiteEdicion(estado) {
                 if (estado === 'No vigente') return false;
                 if (estado === 'Planeado' || estado === 'Vigente') return true;
                 if (String(estado).indexOf('Procesando') === 0) return true;
                 return false;
             }
-            if (planId && plansEditar[planId] && !planCompetenciasPermiteEdicion(plansEditar[planId].estado)) {
+            var planRawBd = typeof loadPlanFormacionFromBd === 'function'
+                ? loadPlanFormacionFromBd(planId, 'competencias')
+                : null;
+            if (planId && !planRawBd) {
+                window.location.replace('planes-competencias.html');
+                return;
+            }
+            if (planRawBd && !planCompetenciasPermiteEdicion(planRawBd.estado)) {
                 window.location.replace('detalle-plan-competencias.html?id=' + encodeURIComponent(planId));
                 return;
             }
-            var planEditar = planId && plansEditar[planId] ? plansEditar[planId] : plansEditar['c0'];
+            var planEditar = typeof loadPlanEditarFromBd === 'function'
+                ? loadPlanEditarFromBd(planId, 'competencias')
+                : null;
+            if (!planEditar) {
+                window.location.replace('planes-competencias.html');
+                return;
+            }
 
             function getEstadoTagClassEditar(estado) {
                 if (estado === 'Planeado') return 'info';

@@ -143,15 +143,21 @@ Un **plan de competencias** asigna **competencias** (no contenidos concretos) a 
 
 No se asignan "contenidos" (cursos/cápsulas); se asignan competencias. La carga de estudio se calcula a partir de las horas por competencia y el número de competencias.
 
-### 4.2 Horas por competencia (intensidad horaria)
+### 4.2 Horas meta de estudio (playground — seed `bd-planes-formacion.js`)
 
-- **Nombre en UI (sugerido):** "Horas por competencia" (o "Intensidad horaria" si se prefiere copy más corto).
-- **Significado:** Número de **horas que cada estudiante debe dedicar por cada competencia** asignada en el plan.
-- **Ejemplo:** Si el administrador indica **4** horas por competencia y asigna **5 competencias** a un grupo de personas, **cada persona** de ese grupo debe estudiar **4 h × 5 = 20 horas** en total (4 h por cada una de las 5 competencias).
-- **Tipo de campo:** Numérico (entero o decimal según reglas de negocio).
-- **Ubicación en la UI:** Junto a la vigencia (al lado de la fecha de finalización) en **crear-plan-competencias** y en **editar-plan-competencias** (editable según estado). En **`detalle-plan-competencias.html`** el valor se muestra solo como **texto** (vista de consulta de progreso; la edición es en **editar-plan-competencias**).
+En el **formulario de producto** el campo sigue llamándose «Horas de estudio por competencia» (`crear-plan-competencias`, `editar-plan-competencias`). En la **BD del playground** (decisión acordada jun 2026):
 
-Este valor es **por plan** (no por asignación): todas las asignaciones del plan comparten la misma "horas por competencia". El total de horas por persona = **horas por competencia × número de competencias asignadas a esa persona/grupo**.
+| Aspecto | Valor en seed |
+|---------|----------------|
+| **Meta por plan** | **2 horas en total** para todo el plan (no 2 h × cada competencia asignada). |
+| **Campo en BD** | `horasEstudioMeta: 2` |
+| **Cálculo de progreso** | Suma de duración de contenidos vistos de **la competencia del plan** dentro de la vigencia ÷ 2 h → cap 100 %. |
+
+**Significado en UI genérica (fuera del seed):** el campo numérico junto a la vigencia indica cuántas horas debe dedicar cada estudiante; en planes reales podría ser «por competencia». En el mock corporativo de Fiqsha se fija **2 h plan completas** para simplificar demos.
+
+**Ejemplo seed:** plan «Empresa Liderazgo 2025» con `horasEstudioMeta: 2`. Si un colaborador consume 1 h de contenidos con `competenciaPrincipalId: comp-024` entre el 1 ene y el 31 dic 2025, su progreso en ese plan ≈ 50 %.
+
+Este valor es **por plan** en el seed: todas las asignaciones del plan comparten la misma meta de 2 h (no se multiplica por número de competencias asignadas a la persona).
 
 ### 4.3 Creación (crear-plan-competencias)
 
@@ -237,7 +243,7 @@ El SubNav del Creator enlaza **dos páginas** (más **Grupos**): **`planes-conte
 | Qué se asigna | Contenidos (cursos, etc.) | Competencias |
 | Columna en tabla de asignaciones | "Contenidos asignados" | "Competencias asignadas" |
 | Drawer de asignación | Agregar contenidos (ver 3.2.1: cards compactos, filtro por origen, scroll) | Agregar competencias (ver 4.3.1: cards competencia + habilidades con checkbox; tabla dos líneas) |
-| Cálculo de carga | Según contenidos/contenidos asignados | Horas por competencia × nº de competencias por persona |
+| Cálculo de carga | Promedio % avance de 3 cursos/persona | Suma horas de contenidos de la competencia en vigencia ÷ meta 2 h |
 
 ---
 
@@ -247,7 +253,112 @@ El SubNav del Creator enlaza **dos páginas** (más **Grupos**): **`planes-conte
 - Progreso en tabla de planes = agregado del avance de estudiantes.
 - Progreso por fila (estudiante) = agregado del avance de ese estudiante en sus contenidos o competencias.
 - **No vigente** solo para planes cuya fecha de fin ya pasó; nunca como resultado de "acabar de crear" un plan.
-- En **planes de competencias**, el total de horas por estudiante = **horas por competencia** × **cantidad de competencias** asignadas a ese estudiante/grupo.
+- En **planes de competencias (seed playground)**, la meta es **2 h por plan** (`horasEstudioMeta`); el progreso suma duración de contenidos de la competencia del plan consumidos **dentro de la vigencia** (ver § 7.4).
+
+---
+
+## 7. Base de datos única — `bd-master/bd-planes-formacion.js`
+
+> **Decisión acordada (jun 2026):** una sola BD alimenta **LMS Creator** (`planes-contenidos.html`, `planes-competencias.html`, crear/editar/detalle) y **Mi equipo** (`mi-equipo/planes.html` y derivados). Reemplaza mocks inline del Creator y `mi-equipo-planes-mock.js`. **No** compartir datos con `bd-tareas-y-planes.js`.
+
+**Global:** `window.BD_PLANES_FORMACION`
+
+**Documentación espejo (Mi equipo):** `ubits-colaborador/aprendizaje/mi-equipo/contexto-mi-equipo.md` § 10.
+
+### 7.1 Fecha de referencia y estados
+
+| Constante | Valor |
+|-----------|--------|
+| **«Hoy» del playground** | **19 jun 2026** |
+| **Rango de planes** | Q1 2025 → Q3 2026 |
+
+**Estados automáticos** (no persistir como fuente de verdad; calcular con helper `getEstadoPlan(plan, hoy)`):
+
+| Estado | Condición |
+|--------|-----------|
+| **Planeado** | `hoy < fechaInicio` |
+| **Vigente** | `fechaInicio ≤ hoy ≤ fechaFin` |
+| **No vigente** | `hoy > fechaFin` |
+
+El estado **Procesando X%** sigue siendo **transitorio de UI** al crear o agregar asignaciones (no forma parte del seed estático).
+
+### 7.2 Planes de contenidos — seed
+
+| Regla | Valor |
+|-------|--------|
+| Granularidad | **1 plan / área / trimestre** |
+| Total planes | **63** (9 áreas × 7 trimestres) |
+| Creador | Líder del área (`esJefe: true`) |
+| Asignados | Reportes directos del líder |
+| Cursos por persona | **3 contenidos distintos** (siempre); pueden variar entre personas del mismo plan; **rotan cada trimestre** |
+| Origen contenidos | `bd-contenidos-ubits.js` (+ catálogo propio si aplica) |
+| Progreso persona | Promedio del **% de avance** de sus 3 cursos |
+| Progreso plan | Promedio del progreso de todos los asignados |
+
+**Áreas y líderes:** Ventas (E002), Instalaciones (E003), Reparaciones (E004), Atención al Cliente (E005), Logística (E006), Administración (E007), Marketing (E008), Recursos Humanos (E052), Gerencia General (E001).
+
+**Nombre tipo:** `{Área} capacitación {Qx yyyy}`.
+
+### 7.3 Planes de competencias — seed
+
+| Regla | Valor |
+|-------|--------|
+| Granularidad | **1 plan corporativo / competencia / año** |
+| Total planes | **6** (3 competencias × años 2025 y 2026) |
+| Vigencia | Año calendario completo |
+| Nombre tipo | `Empresa {Competencia} {año}` |
+| Competencias | Solo **`comp-024` Liderazgo**, **`comp-020` Inglés**, **`comp-004` Comunicación** (únicas con contenidos suficientes en el playground) |
+| Asignación por persona | **3 competencias** al año (una de cada una de las tres anteriores); la mezcla puede cambiar respecto al año anterior |
+| Horas meta | **`horasEstudioMeta: 2`** — **2 h por plan en total** (ver § 4.2) |
+| Creador(es) | **E052** Carmen (Jefa RRHH) como principal; **E053** (OKRs) y **E054** (Encuestas) como creadores secundarios plausibles en el seed |
+
+### 7.4 Progreso competencias — regla de ventana
+
+El progreso **no** es «porcentaje de competencias completadas» ni acumulado vitalicio:
+
+1. Solo cuenta consumo de contenidos cuya **`competenciaPrincipalId`** coincide con la del plan.
+2. Solo cuenta consumo con **fecha dentro de** `[fechaInicio, fechaFin]` del plan.
+3. Se **suman horas** (`tiempoValor` convertido a horas) hacia la meta de **2 h** del plan.
+4. Fórmula: `progresoPct = min(100, (horasEstudiadas / horasEstudioMeta) × 100)`.
+5. **No arrastra** entre planes: un curso visto en «Empresa Inglés 2025» **no** suma al plan «Empresa Inglés 2026»; en el nuevo año hay que consumir **otros** contenidos de Inglés dentro de la vigencia 2026.
+
+**Ejemplo:** En 2025 estudió el curso X (Inglés) → suma solo a «Empresa Inglés 2025». En 2026 está en «Empresa Inglés 2026» → debe estudiar cursos distintos (o no contados en 2025) dentro de ene–dic 2026 para avanzar ese plan.
+
+### 7.5 Visibilidad por rol
+
+| Rol | Qué ve |
+|-----|--------|
+| **LMS Creator (admin)** | **Todos** los planes de la BD |
+| **Mi equipo — líder demo (María E006)** | **Cualquier plan** donde aparezca al menos un subordinado directo (E035–E040), **incluidos planes corporativos de HR** |
+
+Filtro opcional en lista Mi equipo: una persona → solo sus planes y progreso individual (§ 5 de `contexto-mi-equipo.md`).
+
+### 7.6 Esquema y helpers
+
+Estructura mínima de un plan:
+
+```js
+{
+  id, tipo, nombre, fechaInicio, fechaFin,
+  horasEstudioMeta,      // solo competencias; 2 en seed
+  area, trimestre,       // solo contenidos
+  anio, competenciaId,   // solo competencias
+  creadorId,
+  asignaciones: [{ colaboradorId, contenidos?, competencias? }],
+  progresoPorColaborador, progresoAgregado  // precalculados en seed
+}
+```
+
+**Helpers previstos:** `getPlanById`, `getPlanesByTipo`, `getEstadoPlan`, `getProgresoColaboradorEnPlan`, `getProgresoAgregadoPlan`, `getPlanesVisiblesParaLider`, `getPlanesVisiblesCreator`, `getAsignadosFromPlan`.
+
+### 7.7 Implementación
+
+| Paso | Acción |
+|------|--------|
+| 1 | Crear `bd-master/bd-planes-formacion.js` con seed + helpers |
+| 2 | Actualizar `bd-master/README.md` (inventario) |
+| 3 | Sustituir mocks en Creator y Mi equipo |
+| 4 | Mantener `sessionStorage` solo para mutaciones demo (crear/editar/eliminar en sesión), opcional |
 
 ---
 
@@ -414,4 +525,4 @@ En páginas que usen `createUbitsDataTable` con orden o filtros en columnas: **d
 
 ---
 
-*Última actualización: mayo 2026. Prototipo: LMS Creator. **Listas `planes-contenidos.html` y `planes-competencias.html` (§ 4.4):** menú ⋮ (**Ver progreso**, **Editar**, **Eliminar**), plantillas **`?id=`**, redirección edición si No vigente; en **competencias** tres planes de ejemplo (Planeado / Vigente / No vigente), sin fila Procesando. **Card del plan (`detalle-plan-*` / `editar-plan-*`):** botón **Opciones** y menú por estado (**§ 6.2.2**). **Crear contenidos / detalle:** § 3.2.1, 3.3. **Editar plan contenidos y competencias (`editar-plan-*.html`):** § 3.2.2 y § 4.3.2 — catálogo **`?id=`**; tag en reposo **Planeado** si backend **Procesando**; al **agregar asignación** (wizard 2 pasos): texto **«Procesando 0%»…«100%»** **dentro** del **status tag** en 4 s (como la animación en la **lista de contenidos** `planes-contenidos.html`); vuelta a **Planeado** o **Vigente**; toast solo si hubo filas nuevas. Competencias: horas por competencia, `attachWizardCompetenciasPaso2`, prefijos `drawer-wiz` / `drawer-editplan`, navegación lista **§ 2.1.2**. **§ 6.2.1** título + tag en fila; **§ 6.2.2** menú Opciones; **§ 6.4** tabla de archivos; **§ 6.5** wizard 2 vs 3 pasos y filtros; **§ 6.6** búsqueda en `ubits-data-table` (texto de celda por columnas usuario/avatar). Enlaces antiguos con `#competencias` o `?tab=competencias` hacia la URL de contenidos: **JS** en `planes-contenidos.html` redirige a `planes-competencias.html` (Netlify `_redirects` no admite fragmento en el origen).*
+*Última actualización: jun 2026. **BD única `bd-planes-formacion.js` (§ 7):** 63 planes contenidos (9 áreas × 7Q), 6 planes competencias (3 competencias × 2 años), meta 2 h/plan, progreso competencias por ventana de fechas, «hoy» = 19 jun 2026, visibilidad Mi equipo = cualquier plan con subordinado. Prototipo: LMS Creator. **Listas `planes-contenidos.html` y `planes-competencias.html` (§ 4.4):** menú ⋮ (**Ver progreso**, **Editar**, **Eliminar**), plantillas **`?id=`**, redirección edición si No vigente; en **competencias** tres planes de ejemplo (Planeado / Vigente / No vigente), sin fila Procesando. **Card del plan (`detalle-plan-*` / `editar-plan-*`):** botón **Opciones** y menú por estado (**§ 6.2.2**). **Crear contenidos / detalle:** § 3.2.1, 3.3. **Editar plan contenidos y competencias (`editar-plan-*.html`):** § 3.2.2 y § 4.3.2 — catálogo **`?id=`**; tag en reposo **Planeado** si backend **Procesando**; al **agregar asignación** (wizard 2 pasos): texto **«Procesando 0%»…«100%»** **dentro** del **status tag** en 4 s (como la animación en la **lista de contenidos** `planes-contenidos.html`); vuelta a **Planeado** o **Vigente**; toast solo si hubo filas nuevas. Competencias: horas por competencia, `attachWizardCompetenciasPaso2`, prefijos `drawer-wiz` / `drawer-editplan`, navegación lista **§ 2.1.2**. **§ 6.2.1** título + tag en fila; **§ 6.2.2** menú Opciones; **§ 6.4** tabla de archivos; **§ 6.5** wizard 2 vs 3 pasos y filtros; **§ 6.6** búsqueda en `ubits-data-table` (texto de celda por columnas usuario/avatar). Enlaces antiguos con `#competencias` o `?tab=competencias` hacia la URL de contenidos: **JS** en `planes-contenidos.html` redirige a `planes-competencias.html` (Netlify `_redirects` no admite fragmento en el origen).*

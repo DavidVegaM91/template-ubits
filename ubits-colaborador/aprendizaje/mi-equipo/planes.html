@@ -22,6 +22,7 @@
     <link rel="stylesheet" href="../../../components/tab.css">
     <link rel="stylesheet" href="../../../components/tooltip.css">
     <link rel="stylesheet" href="../../../components/table.css">
+    <link rel="stylesheet" href="../../../components/avatar.css">
     <link rel="stylesheet" href="../../../components/status-tag.css">
     <link rel="stylesheet" href="../../../components/checkbox.css">
     <link rel="stylesheet" href="../../../components/dropdown-menu.css">
@@ -62,6 +63,12 @@
     <div id="profile-menu-container"></div>
     <div id="ubits-toast-container"></div>
 
+    <!-- Popover asignados (+N del profile list): solo visualización — igual que seguimiento -->
+    <div class="asignados-popover-overlay" id="planes-asignados-popover-overlay" style="display: none;" aria-hidden="true"></div>
+    <div class="asignados-popover" id="planes-asignados-popover" style="display: none;" role="dialog" aria-label="Personas asignadas">
+        <div class="asignados-popover-list" id="planes-asignados-popover-list"></div>
+    </div>
+
     <script src="../../../components/tooltip.js"></script>
     <script src="../../../components/sidebar.js"></script>
     <script src="../../../components/sub-nav.js"></script>
@@ -75,10 +82,13 @@
     <script src="../../../components/modal.js"></script>
     <script src="../../../components/empty-state.js"></script>
     <script src="../../../components/ubits-data-table.js"></script>
+    <script src="../../../components/avatar.js"></script>
     <script src="../../../script.js"></script>
     <script src="../../../general-utils/humanizador-fechas.js"></script>
     <script src="../../../components/progress-bar.js"></script>
     <script src="../../../bd-master/bd-master-colaboradores.js"></script>
+    <script src="../../../bd-master/bd-contenidos-ubits.js"></script>
+    <script src="../../../bd-master/bd-planes-formacion.js"></script>
     <script src="./mi-equipo-context.js"></script>
     <script src="./mi-equipo-planes-mock.js"></script>
     <script src="./mi-equipo-layout.js"></script>
@@ -138,21 +148,335 @@
                 window.location.href = url;
             }
 
-            function getFilteredPlanesData() {
-                if (typeof getMiEquipoPlanesByTipo === 'function') {
-                    return getMiEquipoPlanesByTipo(activeListTab).map(function (p) {
+            var planesAsignadoFilter = null;
+            var PLANES_ASIGNADO_FILTER_MAX = 5;
+            var planesAsignadoFilterOverlayId = 'planes-asignado-filter-overlay';
+
+            function normalizePlanesFilterText(t) {
+                if (!t) return '';
+                return String(t).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+            }
+
+            function getSubordinadosParaFiltroAsignados() {
+                if (typeof getMiEquipoSubordinadosDirectos === 'function') {
+                    return getMiEquipoSubordinadosDirectos().map(function (c) {
                         return {
-                            id: p.id,
-                            nombre: p.nombre,
-                            fechaInicio: p.fechaInicio,
-                            fechaFin: p.fechaFin,
-                            estado: p.estado,
-                            progreso: p.progreso,
-                            tipo: p.tipo
+                            colaboradorId: String(c.id || c.idColaborador || ''),
+                            nombre: (c.nombre || '').trim(),
+                            avatar: c.avatar || null
                         };
+                    }).filter(function (p) { return p.nombre; });
+                }
+                return [];
+            }
+
+            function planIncluyeColaborador(planRow, colaboradorId) {
+                if (!colaboradorId) return false;
+                return (planRow.asignados || []).some(function (a) {
+                    return String(a.colaboradorId) === String(colaboradorId);
+                });
+            }
+
+            function getProgresoFilaLista(planRow) {
+                if (planesAsignadoFilter && planesAsignadoFilter.colaboradorId) {
+                    if (typeof getMiEquipoProgresoColaboradorEnPlan === 'function') {
+                        return getMiEquipoProgresoColaboradorEnPlan(planRow.id, planesAsignadoFilter.colaboradorId);
+                    }
+                }
+                if (typeof getMiEquipoProgresoAgregadoPlan === 'function') {
+                    return getMiEquipoProgresoAgregadoPlan(planRow.id);
+                }
+                return planRow.progreso != null ? planRow.progreso : 0;
+            }
+
+            function getPlanesTableRowsForDisplay() {
+                var rows = getFilteredPlanesData();
+                if (planesAsignadoFilter && planesAsignadoFilter.colaboradorId) {
+                    rows = rows.filter(function (p) {
+                        return planIncluyeColaborador(p, planesAsignadoFilter.colaboradorId);
                     });
                 }
+                return rows.map(function (p) {
+                    return {
+                        id: p.id,
+                        nombre: p.nombre,
+                        fechaInicio: p.fechaInicio,
+                        fechaFin: p.fechaFin,
+                        estado: p.estado,
+                        progreso: getProgresoFilaLista(p),
+                        tipo: p.tipo,
+                        asignados: p.asignados || []
+                    };
+                });
+            }
+
+            function clearPlanesAsignadoFilter(refreshTable) {
+                planesAsignadoFilter = null;
+                if (refreshTable !== false && planesTablaRef && typeof planesTablaRef.refresh === 'function') {
+                    planesTablaRef.refresh();
+                }
+            }
+
+            function updatePlanesAsignadoFilterChip() {
+                var container = document.getElementById('planes-data-table-container');
+                if (!container) return;
+                var wrap = container.querySelector('.ubits-dt-filtros-aplicados');
+                var chipsCont = container.querySelector('.filtros-chips-container');
+                if (!wrap || !chipsCont) return;
+                chipsCont.querySelectorAll('.js-planes-asignado-filter-chip').forEach(function (el) { el.remove(); });
+                if (!planesAsignadoFilter || !planesAsignadoFilter.nombre) {
+                    return;
+                }
+                wrap.style.display = 'flex';
+                var labelVal = ('Asignados: ' + planesAsignadoFilter.nombre).replace(/"/g, '&quot;');
+                var chipHtml = '<span class="ubits-chip ubits-chip--xs ubits-chip--close ubits-dt-chip js-planes-asignado-filter-chip" data-tooltip="' + labelVal + '">' +
+                    '<span class="ubits-chip__text">Asignados: ' + escapeHtml(planesAsignadoFilter.nombre) + '</span>' +
+                    '<button type="button" class="ubits-chip__close js-planes-asignado-filter-clear" aria-label="Quitar filtro de asignado"><i class="far fa-times"></i></button></span>';
+                chipsCont.insertAdjacentHTML('afterbegin', chipHtml);
+                var clearBtn = chipsCont.querySelector('.js-planes-asignado-filter-clear');
+                if (clearBtn) {
+                    clearBtn.addEventListener('click', function () {
+                        clearPlanesAsignadoFilter(true);
+                        setTimeout(function () { initPlanesTableTooltips(); }, 50);
+                    });
+                }
+                if (typeof initTooltip === 'function') {
+                    initTooltip('#planes-data-table-container .js-planes-asignado-filter-chip[data-tooltip]');
+                }
+            }
+
+            function syncPlanesAsignadosFilterButton() {
+                var btn = document.querySelector('#planes-data-table-container .js-planes-asignados-filter-btn');
+                if (!btn) return;
+                btn.classList.toggle('ubits-dt-filter-btn--active', !!(planesAsignadoFilter && planesAsignadoFilter.colaboradorId));
+            }
+
+            function initPlanesAsignadosColumnFilter() {
+                var th = document.querySelector('#planes-data-table-container th[data-col="asignados"]');
+                if (!th) return;
+                th.classList.add('ubits-dt-th-filterable');
+                var btn = th.querySelector('.js-planes-asignados-filter-btn');
+                if (!btn) {
+                    th.insertAdjacentHTML('beforeend',
+                        ' <button type="button" class="ubits-button ubits-button--tertiary ubits-button--xs ubits-button--icon-only ubits-dt-filter-btn js-planes-asignados-filter-btn" aria-label="Filtrar por asignado" data-tooltip="Filtrar por asignado" data-tooltip-delay="1000"><i class="far fa-filter"></i></button>');
+                    btn = th.querySelector('.js-planes-asignados-filter-btn');
+                }
+                syncPlanesAsignadosFilterButton();
+                if (btn && !btn._planesFilterBound) {
+                    btn._planesFilterBound = true;
+                    btn.addEventListener('click', function (e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        openPlanesAsignadoFilterMenu(btn);
+                    });
+                }
+            }
+
+            function openPlanesAsignadoFilterMenu(anchorBtn) {
+                if (typeof window.getDropdownMenuHtml !== 'function' || typeof window.openDropdownMenu !== 'function') return;
+                var personas = getSubordinadosParaFiltroAsignados();
+                var overlayId = planesAsignadoFilterOverlayId;
+                var existing = document.getElementById(overlayId);
+                if (existing) existing.remove();
+                var options = personas.map(function (p) {
+                    var selected = planesAsignadoFilter && String(planesAsignadoFilter.colaboradorId) === String(p.colaboradorId);
+                    return { text: p.nombre, value: p.colaboradorId, checkbox: true, selected: !!selected };
+                });
+                var autocompleteContainerId = overlayId + '-autocomplete';
+                document.body.insertAdjacentHTML('beforeend', window.getDropdownMenuHtml({
+                    overlayId: overlayId,
+                    hasAutocomplete: true,
+                    autocompletePlaceholder: 'Filtrar por asignado...',
+                    autocompleteContainerId: autocompleteContainerId,
+                    options: options,
+                    footerSecondaryLabel: 'Cancelar',
+                    footerPrimaryLabel: 'Aplicar',
+                    footerSecondaryId: overlayId + '-cancel',
+                    footerPrimaryId: overlayId + '-apply'
+                }));
+                var overlayEl = document.getElementById(overlayId);
+                if (!overlayEl) return;
+                var optionsContainer = overlayEl.querySelector('.ubits-dropdown-menu__options');
+                var optionButtons = optionsContainer ? optionsContainer.querySelectorAll('.ubits-dropdown-menu__option') : [];
+
+                function filterVisibleOptions(searchVal) {
+                    var q = normalizePlanesFilterText(searchVal || '');
+                    var shown = 0;
+                    optionButtons.forEach(function (opt) {
+                        var textEl = opt.querySelector('.ubits-dropdown-menu__option-text');
+                        var labelEl = opt.querySelector('.ubits-checkbox__label');
+                        var text = (textEl ? textEl.textContent : '') || (labelEl ? labelEl.textContent : '') || '';
+                        var match = !q || normalizePlanesFilterText(text).indexOf(q) >= 0;
+                        if (match && shown < PLANES_ASIGNADO_FILTER_MAX) {
+                            opt.style.display = '';
+                            shown++;
+                        } else {
+                            opt.style.display = 'none';
+                        }
+                    });
+                }
+
+                optionButtons.forEach(function (opt) {
+                    var input = opt.querySelector('.ubits-checkbox__input');
+                    if (!input) return;
+                    input.addEventListener('change', function () {
+                        if (!this.checked) return;
+                        optionButtons.forEach(function (other) {
+                            var otherInput = other.querySelector('.ubits-checkbox__input');
+                            if (otherInput && otherInput !== this) otherInput.checked = false;
+                        }.bind(this));
+                    });
+                });
+
+                var inputEl = document.getElementById(overlayId + '-autocomplete-input');
+                var clearIcon = document.getElementById(overlayId + '-autocomplete-clear');
+                if (inputEl) {
+                    inputEl.placeholder = 'Filtrar por asignado...';
+                    inputEl.value = '';
+                    inputEl.setAttribute('aria-label', 'Filtrar por asignado');
+                    inputEl.addEventListener('input', function () {
+                        if (clearIcon) clearIcon.style.display = this.value.length > 0 ? 'block' : 'none';
+                        filterVisibleOptions(this.value);
+                    });
+                }
+                if (clearIcon && inputEl) {
+                    clearIcon.style.display = 'none';
+                    clearIcon.addEventListener('click', function (ev) {
+                        ev.preventDefault();
+                        ev.stopPropagation();
+                        inputEl.value = '';
+                        clearIcon.style.display = 'none';
+                        filterVisibleOptions('');
+                        inputEl.focus();
+                    });
+                }
+                filterVisibleOptions('');
+
+                var applyBtn = document.getElementById(overlayId + '-apply');
+                if (applyBtn) {
+                    applyBtn.addEventListener('click', function () {
+                        var checked = overlayEl.querySelector('.ubits-dropdown-menu__option input.ubits-checkbox__input:checked');
+                        if (checked) {
+                            var cid = checked.getAttribute('data-value');
+                            var persona = personas.find(function (p) { return String(p.colaboradorId) === String(cid); });
+                            var optRow = checked.closest('.ubits-dropdown-menu__option');
+                            var labelFallback = optRow ? (optRow.getAttribute('data-option-label') || '') : '';
+                            planesAsignadoFilter = {
+                                colaboradorId: cid,
+                                nombre: persona ? persona.nombre : labelFallback,
+                                avatar: persona ? persona.avatar : null
+                            };
+                        } else {
+                            planesAsignadoFilter = null;
+                        }
+                        if (typeof window.closeDropdownMenu === 'function') window.closeDropdownMenu(overlayId);
+                        if (overlayEl.parentNode) overlayEl.remove();
+                        if (planesTablaRef && typeof planesTablaRef.refresh === 'function') planesTablaRef.refresh();
+                        setTimeout(function () { initPlanesTableTooltips(); }, 50);
+                    });
+                }
+                var cancelBtn = document.getElementById(overlayId + '-cancel');
+                if (cancelBtn) {
+                    cancelBtn.addEventListener('click', function () {
+                        if (typeof window.closeDropdownMenu === 'function') window.closeDropdownMenu(overlayId);
+                        if (overlayEl.parentNode) overlayEl.remove();
+                    });
+                }
+                overlayEl.addEventListener('click', function (ev) {
+                    if (ev.target === overlayEl) {
+                        if (typeof window.closeDropdownMenu === 'function') window.closeDropdownMenu(overlayId);
+                        if (overlayEl.parentNode) overlayEl.remove();
+                    }
+                });
+                window.openDropdownMenu(overlayId, anchorBtn);
+            }
+
+            function refreshPlanesTableUi() {
+                if (planesTablaRef && typeof planesTablaRef.refresh === 'function') {
+                    planesTablaRef.refresh();
+                } else {
+                    initPlanesAsignadosColumnFilter();
+                    updatePlanesAsignadoFilterChip();
+                    syncPlanesAsignadosFilterButton();
+                    setTimeout(function () { initPlanesTableTooltips(); }, 50);
+                }
+            }
+
+            function getFilteredPlanesData() {
+                if (typeof getMiEquipoPlanesListData === 'function') {
+                    return getMiEquipoPlanesListData().filter(function (p) { return p.tipo === activeListTab; });
+                }
                 return planesFormacionData.filter(function (p) { return p.tipo === activeListTab; });
+            }
+
+            function initPlanesTableTooltips() {
+                if (typeof initTooltip === 'function') {
+                    initTooltip('#planes-data-table-container [data-tooltip]');
+                }
+            }
+
+            function buildAsignadosCellHtml(row) {
+                var asignados = row.asignados || [];
+                var html = '';
+                if (asignados.length > 0 && typeof renderProfileList === 'function') {
+                    html = renderProfileList(asignados, { size: 'sm', maxVisible: 3, showTooltip: true, tooltipDelay: 500 });
+                }
+                return '<td data-col="asignados"><div class="ubits-table__cell-assignee">' + html + '</div></td>';
+            }
+
+            function closePlanesAsignadosPopover() {
+                var overlay = document.getElementById('planes-asignados-popover-overlay');
+                var popover = document.getElementById('planes-asignados-popover');
+                if (overlay) { overlay.style.display = 'none'; overlay.setAttribute('aria-hidden', 'true'); }
+                if (popover) popover.style.display = 'none';
+            }
+
+            function openPlanesAsignadosPopover(chip) {
+                var tr = chip.closest('tr');
+                if (!tr) return;
+                var rowId = tr.getAttribute('data-id');
+                var row = getPlanesTableRowsForDisplay().find(function (r) { return String(r.id) === String(rowId); });
+                if (!row || !row.asignados || row.asignados.length <= 3) return;
+                var remaining = row.asignados.slice(3);
+                var listEl = document.getElementById('planes-asignados-popover-list');
+                var popover = document.getElementById('planes-asignados-popover');
+                var overlay = document.getElementById('planes-asignados-popover-overlay');
+                if (!listEl || !popover || !overlay) return;
+                listEl.innerHTML = '';
+                remaining.forEach(function (p) {
+                    var nombre = (p && (p.nombre || p.name)) || 'Sin asignar';
+                    var div = document.createElement('div');
+                    div.className = 'asignados-popover-item';
+                    if (typeof renderAvatar === 'function') {
+                        div.innerHTML = renderAvatar(p, { size: 'sm' });
+                    }
+                    var span = document.createElement('span');
+                    span.className = 'ubits-body-sm-regular';
+                    span.textContent = nombre;
+                    div.appendChild(span);
+                    listEl.appendChild(div);
+                });
+                overlay.style.display = 'block';
+                overlay.setAttribute('aria-hidden', 'false');
+                popover.style.display = 'block';
+                var rect = chip.getBoundingClientRect();
+                var popoverH = popover.offsetHeight;
+                var gap = 4;
+                var margin = 8;
+                var spaceBelow = window.innerHeight - rect.bottom - margin;
+                var spaceAbove = rect.top - margin;
+                if (spaceBelow >= popoverH + gap) {
+                    popover.style.top = (rect.bottom + gap) + 'px';
+                } else if (spaceAbove >= popoverH + gap) {
+                    popover.style.top = (rect.top - popoverH - gap) + 'px';
+                } else {
+                    popover.style.top = spaceBelow >= spaceAbove ? (rect.bottom + gap) + 'px' : (rect.top - popoverH - gap) + 'px';
+                }
+                var left = rect.left;
+                var maxLeft = window.innerWidth - popover.offsetWidth - margin;
+                if (left > maxLeft) left = maxLeft;
+                if (left < margin) left = margin;
+                popover.style.left = left + 'px';
             }
 
             function getEmptyStateConfig() {
@@ -239,6 +563,7 @@
                 var fechaFinDisplay = (typeof formatDateDDMmmAAAA === 'function' ? formatDateDDMmmAAAA(row.fechaFin) : row.fechaFin);
                 var accionesBtn = '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only js-planes-row-acciones-btn" data-plan-id="' + escapeHtml(String(row.id)) + '" data-plan-tipo="' + escapeHtml(row.tipo) + '" aria-label="Acciones del plan" data-tooltip="Acciones" data-tooltip-delay="500"><i class="far fa-ellipsis-vertical"></i></button>';
                 return '<td data-col="nombre"><span class="ubits-body-sm-regular">' + escapeHtml(row.nombre) + '</span></td>' +
+                    buildAsignadosCellHtml(row) +
                     '<td data-col="fecha-inicio" data-date="' + escapeHtml(row.fechaInicio) + '"><span class="ubits-body-sm-regular">' + escapeHtml(fechaInicioDisplay) + '</span></td>' +
                     '<td data-col="fecha-fin" data-date="' + escapeHtml(row.fechaFin) + '"><span class="ubits-body-sm-regular">' + escapeHtml(fechaFinDisplay) + '</span></td>' +
                     '<td data-col="estado">' + estadoHtml + '</td>' +
@@ -259,14 +584,10 @@
 
             function switchMiEquipoListTab(tabId) {
                 persistListTab(tabId);
+                clearPlanesAsignadoFilter(false);
                 updateEmptyStateConfig();
                 syncHeaderProductTabs();
-                if (planesTablaRef && typeof planesTablaRef.refresh === 'function') {
-                    planesTablaRef.refresh();
-                }
-                setTimeout(function () {
-                    if (typeof initTooltip === 'function') initTooltip('#planes-data-table-container [data-tooltip]');
-                }, 50);
+                refreshPlanesTableUi();
             }
 
             if (typeof createUbitsDataTable === 'function') {
@@ -276,13 +597,14 @@
                     title: 'Lista de planes',
                     columns: [
                         { id: 'nombre', label: 'Nombre del plan', sortable: true },
+                        { id: 'asignados', label: 'Asignados' },
                         { id: 'fecha-inicio', label: 'Fecha inicio', sortable: true, sortType: 'date' },
                         { id: 'fecha-fin', label: 'Fecha fin', sortable: true, sortType: 'date' },
                         { id: 'estado', label: 'Estado', filterable: true },
                         { id: 'progreso', label: 'Progreso', sortable: true, sortType: 'number' },
                         { id: 'acciones', label: 'Acciones' }
                     ],
-                    getData: function () { return getFilteredPlanesData(); },
+                    getData: function () { return getPlanesTableRowsForDisplay(); },
                     rowIdField: 'id',
                     buildRowHtml: buildPlanesRowHtml,
                     features: { checkboxes: true, search: true, filters: true, verSeleccionados: true, actionBar: true, resultsCount: true },
@@ -294,8 +616,32 @@
                     emptyState: emptyStateConfig,
                     i18n: { selectAll: 'Seleccionar todo', deselectAll: 'Deseleccionar todo', verSeleccionados: 'Ver seleccionados', clearFilters: 'Limpiar filtros', filtrosAplicados: 'Filtros aplicados', buscar: 'Buscar' }
                 });
-                setTimeout(function () { if (typeof initTooltip === 'function') initTooltip('#planes-data-table-container [data-tooltip]'); }, 50);
+                if (planesTablaRef && typeof planesTablaRef.refresh === 'function') {
+                    var nativeRefresh = planesTablaRef.refresh.bind(planesTablaRef);
+                    planesTablaRef.refresh = function () {
+                        nativeRefresh();
+                        initPlanesAsignadosColumnFilter();
+                        updatePlanesAsignadoFilterChip();
+                        syncPlanesAsignadosFilterButton();
+                        setTimeout(function () { initPlanesTableTooltips(); }, 50);
+                    };
+                }
+                refreshPlanesTableUi();
+
+                var clearFiltersBtn = document.querySelector('#planes-data-table-container .ubits-dt-clear-filters');
+                if (clearFiltersBtn && !clearFiltersBtn._planesAsignadoClearBound) {
+                    clearFiltersBtn._planesAsignadoClearBound = true;
+                    clearFiltersBtn.addEventListener('click', function () {
+                        planesAsignadoFilter = null;
+                    }, true);
+                }
             }
+
+            var planesAsignadosOverlay = document.getElementById('planes-asignados-popover-overlay');
+            if (planesAsignadosOverlay) planesAsignadosOverlay.addEventListener('click', closePlanesAsignadosPopover);
+            document.addEventListener('keydown', function (e) {
+                if (e.key === 'Escape') closePlanesAsignadosPopover();
+            });
 
             if (typeof loadHeaderProduct === 'function') {
                 loadHeaderProduct('header-product-container', {
@@ -351,7 +697,7 @@
                             if (idSet[String(planesFormacionData[i].id)]) planesFormacionData.splice(i, 1);
                         }
                     }
-                    if (planesTablaRef && typeof planesTablaRef.refresh === 'function') planesTablaRef.refresh();
+                    if (planesTablaRef && typeof planesTablaRef.refresh === 'function') refreshPlanesTableUi();
                     if (typeof showToast === 'function') showToast('success', ids.length + ' plan(es) eliminado(s) correctamente');
                 });
             }
@@ -386,6 +732,13 @@
             var planesContainer = document.getElementById('planes-data-table-container');
             if (planesContainer) {
                 planesContainer.addEventListener('click', function (e) {
+                    var countChip = e.target.closest('.ubits-profile-list__count');
+                    if (countChip) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        openPlanesAsignadosPopover(countChip);
+                        return;
+                    }
                     if (e.target.closest('.js-planes-row-acciones-btn')) {
                         e.preventDefault();
                         e.stopPropagation();

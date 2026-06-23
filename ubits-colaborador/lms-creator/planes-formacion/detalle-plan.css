@@ -402,7 +402,8 @@
     min-height: 0;
 }
 #drawer-detalle-plan-agregar-cursos .ubits-drawer-body {
-    overflow: hidden;
+    overflow-x: visible;
+    overflow-y: hidden;
     display: flex;
     flex-direction: column;
     min-height: 0;
@@ -413,6 +414,7 @@
     flex: 1;
     min-height: 0;
     gap: var(--gap-lg);
+    overflow-x: visible;
 }
 #drawer-detalle-plan-agregar-cursos .drawer-agregar-cursos--two-cols {
     display: flex;
@@ -427,6 +429,7 @@
     flex: 1;
     gap: var(--gap-md);
     min-height: 0;
+    overflow-x: visible;
 }
 #drawer-detalle-plan-agregar-cursos .drawer-agregar-cursos__right {
     position: relative;
@@ -446,11 +449,37 @@
     display: flex;
     align-items: center;
     gap: var(--gap-md);
+    overflow: visible;
+    padding-top: 8px;
+    padding-right: 10px;
+    margin-top: -8px;
+    box-sizing: border-box;
 }
 #drawer-detalle-plan-agregar-cursos .drawer-cursos-search-input-wrap {
     flex: 1;
     min-width: 0;
 }
+
+.drawer-cursos-filtros-btn-wrap {
+    position: relative;
+    flex-shrink: 0;
+    display: inline-flex;
+    overflow: visible;
+}
+
+.drawer-cursos-filtros-btn-wrap > .ubits-attention-badge.ubits-attention-badge--sm {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    z-index: 2;
+    pointer-events: none;
+}
+
+.drawer-cursos-filtros-btn-wrap > .ubits-attention-badge.ubits-attention-badge--sm.ubits-attention-badge--dot-only {
+    top: -2px;
+    right: -2px;
+}
+
 #drawer-detalle-plan-agregar-cursos .drawer-cursos-agregados-content {
     position: absolute;
     top: 32px;
@@ -536,4 +565,26 @@
     min-width: 110px;
     width: auto;
     box-sizing: border-box;
+}
+
+/* Modal filtros del drawer editar contenidos: por encima del drawer */
+.ubits-modal-overlay.drawer-contenidos-filtros-modal {
+    z-index: 1200;
+}
+
+.drawer-contenidos-filtros-modal-fields {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-lg);
+    width: 100%;
+}
+
+.drawer-contenidos-filtros-modal-fields .ucorp-filtros-modal-field {
+    width: 100%;
+    min-width: 0;
+}
+
+.drawer-contenidos-filtros-modal-fields .ucorp-filtros-modal-field .ubits-input-container {
+    width: 100%;
+    max-width: 100%;
 }

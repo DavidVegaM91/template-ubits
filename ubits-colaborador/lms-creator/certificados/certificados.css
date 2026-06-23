@@ -117,6 +117,19 @@
     margin: 0;
 }
 
+.certificados-modal-why-list {
+    margin: 0;
+    padding-left: 28px;
+    list-style: disc;
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-xs);
+}
+
+.certificados-modal-why-list li {
+    color: var(--ubits-fg-1-medium);
+}
+
 @media (max-width: 1023px) {
     .certificados-form-row {
         grid-template-columns: 1fr;

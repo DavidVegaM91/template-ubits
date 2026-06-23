@@ -84,6 +84,10 @@
     <script src="../../../script.js"></script>
     <script src="../../../general-utils/humanizador-fechas.js"></script>
     <script src="../../../components/progress-bar.js"></script>
+    <script src="../../../bd-master/bd-master-colaboradores.js"></script>
+    <script src="../../../bd-master/bd-contenidos-ubits.js"></script>
+    <script src="../../../bd-master/bd-planes-formacion.js"></script>
+    <script src="./planes-formacion-bd-bridge.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             /* Marcadores antiguos (#competencias, ?tab=competencias): Netlify no puede redirigir por hash en _redirects (# = comentario). */
@@ -120,12 +124,15 @@
             var planesTablaRef = null;
             var pendingDeleteIds = [];
 
-            var planesFormacionData = [
-                { id: '2', nombre: 'Competencias de liderazgo', fechaInicio: '01/04/2026', fechaFin: '30/06/2026', estado: 'Procesando 0%', progreso: 0, tipo: 'contenidos' },
-                { id: '1', nombre: 'Plan de onboarding Q3 2026', fechaInicio: '01/07/2026', fechaFin: '30/09/2026', estado: 'Planeado', progreso: 0, tipo: 'contenidos' },
-                { id: '3', nombre: 'Cursos de cumplimiento Q1', fechaInicio: '01/01/2026', fechaFin: '31/03/2026', estado: 'Vigente', progreso: 65, tipo: 'contenidos' },
-                { id: '4', nombre: 'Evaluación técnica 2025', fechaInicio: '01/09/2025', fechaFin: '15/12/2025', estado: 'No vigente', progreso: 85, tipo: 'contenidos' }
-            ];
+            var planesFormacionData = (typeof BD_PLANES_FORMACION !== 'undefined')
+                ? BD_PLANES_FORMACION.getPlanesListData('contenidos')
+                : [];
+
+            function refreshPlanesFormacionData() {
+                planesFormacionData = (typeof BD_PLANES_FORMACION !== 'undefined')
+                    ? BD_PLANES_FORMACION.getPlanesListData('contenidos')
+                    : [];
+            }
 
             function irCrearPlanContenidos() {
                 window.location.href = 'crear-plan-contenidos.html';
@@ -202,7 +209,9 @@
                         { id: 'acciones', label: 'Acciones' }
                     ],
                     getData: function() {
-                        return planesFormacionData;
+                        return (typeof BD_PLANES_FORMACION !== 'undefined')
+                            ? BD_PLANES_FORMACION.getPlanesListData('contenidos')
+                            : planesFormacionData;
                     },
                     rowIdField: 'id',
                     buildRowHtml: buildPlanesRowHtml,
@@ -228,7 +237,7 @@
                 });
                 setTimeout(function() { if (typeof initTooltip === 'function') initTooltip('#planes-data-table-container [data-tooltip]'); }, 50);
 
-                // Animación solo en el status tag (Procesando 0% … 100%); la barra de progreso de la columna se mantiene en 0%
+                // Sin plan Procesando en BD seed — animación solo si se crea uno en sesión
                 var planProcesando = planesFormacionData.filter(function(p) { return String(p.estado).indexOf('Procesando') === 0; })[0];
                 if (planProcesando && planesTablaRef && typeof planesTablaRef.refresh === 'function') {
                     var step = 2;
@@ -290,10 +299,15 @@
                     var ids = pendingDeleteIds.slice();
                     closePlanesDeleteModal();
                     pendingDeleteIds = [];
-                    var idSet = {};
-                    ids.forEach(function(id) { idSet[String(id)] = true; });
-                    for (var i = planesFormacionData.length - 1; i >= 0; i--) {
-                        if (idSet[String(planesFormacionData[i].id)]) planesFormacionData.splice(i, 1);
+                    if (typeof BD_PLANES_FORMACION !== 'undefined') {
+                        BD_PLANES_FORMACION.deletePlans(ids);
+                        refreshPlanesFormacionData();
+                    } else {
+                        var idSet = {};
+                        ids.forEach(function(id) { idSet[String(id)] = true; });
+                        for (var i = planesFormacionData.length - 1; i >= 0; i--) {
+                            if (idSet[String(planesFormacionData[i].id)]) planesFormacionData.splice(i, 1);
+                        }
                     }
                     if (planesTablaRef && typeof planesTablaRef.refresh === 'function') planesTablaRef.refresh();
                     if (typeof showToast === 'function') showToast('success', ids.length + ' plan(es) eliminado(s) correctamente', { containerId: 'ubits-toast-container' });

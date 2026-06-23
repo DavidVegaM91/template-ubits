@@ -782,15 +782,19 @@
             rows += modalRow('fa-user', 'Colaborador:', getColaboradorLabelById(form.colaboradorId));
         }
         rows += modalRow('fa-calendar', 'Rango de fechas:', formatDateRangeHuman());
-        var why = 'Nadie ha finalizado contenidos en ese periodo.';
-        if (currentMode === 'contenido') {
-            why = 'Nadie ha completado ese contenido en el periodo seleccionado.';
-        }
-        if (currentMode === 'colaborador') {
-            why = 'Ese colaborador no tiene certificados emitidos en el periodo seleccionado.';
-        }
         rows += modalRow('fa-circle-question', '¿Por qué puede estar pasando esto?', '');
-        rows += '<p class="ubits-body-md-regular certificados-modal-note-text">' + why + '</p>';
+        if (currentMode === 'contenido') {
+            rows += '<ul class="ubits-body-md-regular certificados-modal-why-list">' +
+                '<li>Nadie ha finalizado este contenido en ese periodo.</li>' +
+                '<li>El contenido no genera certificado</li>' +
+                '</ul>';
+        } else {
+            var why = 'Nadie ha finalizado contenidos en ese periodo.';
+            if (currentMode === 'colaborador') {
+                why = 'Ese colaborador no tiene certificados emitidos en el periodo seleccionado.';
+            }
+            rows += '<p class="ubits-body-md-regular certificados-modal-note-text">' + why + '</p>';
+        }
         return '<div class="certificados-modal-body">' + intro + rows + '</div>';
     }
 

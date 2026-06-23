@@ -14,7 +14,8 @@ Carpeta única de **bases de datos del playground** (JavaScript en `window`, sin
 | `bd-master-niveles-contenido.js` | `window.BD_MASTER_NIVELES_CONTENIDO` | Niveles Básico / Intermedio / Avanzado (`niv-XXX`). |
 | `bd-master-categorias-fiqsha.js` | `window.BD_MASTER_CATEGORIAS_FIQSHA` | Categorías corporativas Fiqsha (`cfq-XXX`). |
 | `bd-master-colaboradores.js` | `window.BD_MASTER_COLABORADORES` | Empresa referencia + **55 colaboradores** Fiqsha (`colaboradores[]`). |
-| `bd-tareas-y-planes.js` | `window.TAREAS_PLANES_DB` | Tareas, planes, seguimiento, datos generados; lee colaboradores del maestro. |
+| `bd-planes-formacion.js` | `window.BD_PLANES_FORMACION` | Planes de formación LMS Creator + Mi equipo (contenidos y competencias). |
+| `bd-tareas-y-planes.js` | `window.TAREAS_PLANES_DB` | Tareas, planes de **tareas**, seguimiento; lee colaboradores del maestro. **No** mezclar con `bd-planes-formacion.js`. |
 | `bd-contenidos-ubits.js` | `window.BDS_CONTENIDOS_UBITS` | Catálogo de contenidos UBITS (`contents[]`, ~85 ítems). |
 | `bd-contenidos-fiqsha.js` | `window.BDS_CONTENIDOS_FIQSHA` | Catálogo empresa Fiqsha: `contents[]` (publicado) y `contentsCreatorOnly[]` (privado/borrador/oculto/archivado; **solo** `lms-creator/contenidos.html`). |
 
@@ -34,7 +35,7 @@ Ruta relativa típica desde HTML: `../../bd-master/nombre-archivo.js` (desde `ub
 | `crear-plan-competencias.html` | Drawer **Agregar competencias** | `bd-master-competencias.js`, `bd-master-habilidades.js` (antes del helper en `lms-creator/`) | Catálogo de competencias y habilidades. El helper `catalogo-competencias-drawer.js` arma `CATALOGO_COMPETENCIAS_DRAWER` en `window` (no es BD). |
 | `detalle-plan-competencias.html` | Igual | Igual | Igual. |
 | `crear-plan-contenidos.html`, `editar-plan-contenidos.html`, `detalle-plan.html` | Planes por contenidos | `bd-master-niveles-contenido.js`, `bd-master-aliados.js`, `bd-master-competencias.js`, `bd-master-habilidades.js`, `bd-master-categorias-fiqsha.js`, `bd-contenidos-ubits.js`, `bd-contenidos-fiqsha.js`; listas: `bd-master-colaboradores.js`, `bd-tareas-y-planes.js` | Maestros y catálogos de contenidos para el drawer y asignaciones (sin detallar helpers fuera de esta carpeta). |
-| `planes-contenidos.html` / `planes-competencias.html` | Listas de planes (contenidos / competencias) | *(mock local en página; sin `bd-master` en el listado)* | Datos de ejemplo de planes LMS Creator. |
+| `planes-contenidos.html` / `planes-competencias.html` | Listas de planes | `bd-master-colaboradores.js`, `bd-contenidos-ubits.js`, `bd-planes-formacion.js` | **69 planes** seed (63 contenidos + 6 competencias). |
 | `contenidos.html` | Lista contenidos LMS Creator | `bd-contenidos-fiqsha.js` (+ maestros ya enlazados en la página) | Cuadrícula y tabla: primero `contentsCreatorOnly`, luego `contents`. El resto del playground que use Fiqsha debe leer **solo** `contents`. |
 | `categorias.html`, `chat-ia-grupos.html` | Placeholder | — | Sin BD aún. |
 
@@ -55,11 +56,11 @@ Ruta relativa típica desde HTML: `../../bd-master/nombre-archivo.js` (desde `ub
 
 | Página | Scripts `bd-master` / mock | Para qué |
 |--------|---------------------------|----------|
-| `planes.html` | `bd-master-colaboradores.js`, `mi-equipo-planes-mock.js` | Lista unificada; jerarquía líder E006 → subordinados E035–E040. |
+| `planes.html` | `bd-master-colaboradores.js`, `bd-contenidos-ubits.js`, `bd-planes-formacion.js`, `mi-equipo-planes-mock.js` | Lista unificada; filtro por subordinados E035–E040 vía capa Mi equipo. |
 | `crear-plan-contenidos.html`, `editar-plan-contenidos.html`, `detalle-plan.html` | Colaboradores + maestros contenidos (`niveles`, `aliados`, `competencias`, `habilidades`, `categorias-fiqsha`, `bd-contenidos-ubits`, `bd-contenidos-fiqsha`) + `mi-equipo-planes-mock.js` | Drawer catálogo contenidos (reutiliza helper Creator). |
 | `crear-plan-competencias.html`, `editar-plan-competencias.html`, `detalle-plan-competencias.html` | Colaboradores + `bd-master-competencias.js`, `bd-master-habilidades.js` + `mi-equipo-planes-mock.js` | Drawer catálogo competencias (helper Creator). |
 
-Mock de planes: **`mi-equipo-planes-mock.js`** (no `bd-master`); snapshot opcional en `sessionStorage` (`ubits-mi-equipo-planes-db`).
+Mock de planes Mi equipo: **`mi-equipo-planes-mock.js`** (capa sobre `BD_PLANES_FORMACION`); persistencia opcional en `sessionStorage` (`ubits-planes-formacion-db`).
 
 ---
 

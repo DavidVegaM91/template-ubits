@@ -114,9 +114,12 @@
     <script src="../../../bd-master/bd-master-competencias.js"></script>
     <script src="../../../bd-master/bd-master-habilidades.js"></script>
     <script src="../../../bd-master/bd-master-categorias-fiqsha.js"></script>
+    <script src="../../../bd-master/bd-master-tipos-contenido.js"></script>
     <script src="../../../bd-master/bd-contenidos-ubits.js"></script>
     <script src="../../../bd-master/bd-contenidos-fiqsha.js"></script>
+    <script src="../../../bd-master/bd-planes-formacion.js"></script>
     <script src="../../lms-creator/planes-formacion/catalogo-contenidos-drawer.js"></script>
+    <script src="../../lms-creator/planes-formacion/drawer-contenidos-filtros.js"></script>
     <script src="../../../bd-master/bd-master-colaboradores.js"></script>
     <script src="./mi-equipo-context.js"></script>
     <script src="./mi-equipo-planes-mock.js"></script>
@@ -816,7 +819,7 @@
                     '  <span class="drawer-agregar-cursos__section-title ubits-body-sm-semibold">Buscar y agregar contenidos</span>' +
                     '  <div class="drawer-cursos-search-row">' +
                     '    <div id="drawer-cursos-search-container" class="drawer-cursos-search-input-wrap"></div>' +
-                    '    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only" id="drawer-cursos-filter-btn" aria-label="Filtrar por origen"><i class="far fa-filter"></i></button>' +
+                    '    <span class="drawer-cursos-filtros-btn-wrap"><button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only ubits-toolbar-panel__filter-btn drawer-cursos-filtros-btn" id="drawer-cursos-filter-btn" data-tooltip="Filtrar" data-tooltip-delay="1000" aria-label="Filtrar"><i class="far fa-filter"></i></button></span>' +
                     '  </div>' +
                     '  <div class="drawer-cursos-resultados-bg drawer-cursos-resultados-bg--dos-columnas">' +
                     '    <div id="drawer-contenidos-empty-search" class="drawer-contenidos-empty-search-wrap" style="display:none;"></div>' +
@@ -836,6 +839,30 @@
                     '  </div>' +
                     '</div>' +
                     '</div>';
+            }
+
+            function wireDrawerDetallePlanFiltros(overlay, onApply) {
+                var DCF = window.DrawerContenidosFiltros;
+                var drawerCursosFiltros = DCF ? DCF.createEmptyFilters() : { tipo: '', categoriaId: '', nivelId: '', idioma: '', catalogo: '' };
+                var filterBtn = overlay.querySelector('#drawer-cursos-filter-btn');
+                if (filterBtn && DCF) {
+                    DCF.wireFilterButton(
+                        filterBtn,
+                        function () { return drawerCursosFiltros; },
+                        function (f) { drawerCursosFiltros = DCF.cloneFilters(f); },
+                        onApply,
+                        'drawer-detalle-plan-contenidos-filtros-modal'
+                    );
+                }
+                return function (catalogoCursos, searchQ) {
+                    if (DCF && typeof DCF.filterCursosBySearchAndFilters === 'function') {
+                        return DCF.filterCursosBySearchAndFilters(catalogoCursos, searchQ, drawerCursosFiltros);
+                    }
+                    var q = (searchQ || '').trim().toLowerCase();
+                    return (catalogoCursos || []).filter(function (c) {
+                        return !q || (c.title && c.title.toLowerCase().includes(q)) || (c.competency && c.competency.toLowerCase().includes(q)) || (c.categoria && String(c.categoria).toLowerCase().includes(q));
+                    });
+                };
             }
 
             function abrirDrawerAgregarContenidosDetallePlan(rowId) {
@@ -895,17 +922,15 @@
                 var emptySearchContainer = overlay.querySelector('#drawer-contenidos-empty-search');
                 var DRAWER_CURSOS_PAGE_SIZE = 12;
                 var drawerCursosVisibleCount = DRAWER_CURSOS_PAGE_SIZE;
-                function getFiltradosDrawerCursos() {
-                    var q = (searchInput && searchInput.value) ? searchInput.value.trim().toLowerCase() : '';
-                    return catalogoCursos.filter(function(c) {
-                        return !q || (c.title && c.title.toLowerCase().includes(q)) || (c.competency && c.competency.toLowerCase().includes(q)) || (c.categoria && String(c.categoria).toLowerCase().includes(q));
-                    });
-                }
+                var getFiltradosDrawerCursos = wireDrawerDetallePlanFiltros(overlay, function () {
+                    drawerCursosVisibleCount = DRAWER_CURSOS_PAGE_SIZE;
+                    filtrarYRenderizarCards();
+                });
                 function filtrarYRenderizarCards() {
                     if (!cardsContainer || typeof loadCardContentCompact !== 'function') return;
-                    var filtrados = getFiltradosDrawerCursos();
                     var q = (searchInput && searchInput.value) ? searchInput.value.trim() : '';
-                    if (q && filtrados.length === 0) {
+                    var filtrados = getFiltradosDrawerCursos(catalogoCursos, q);
+                    if (filtrados.length === 0 && catalogoCursos.length > 0) {
                         if (emptySearchContainer) {
                             emptySearchContainer.style.display = 'block';
                             emptySearchContainer.innerHTML = '';
@@ -962,7 +987,8 @@
                     });
                 }
                 function maybeLoadMoreDrawerCursos() {
-                    var filtrados = getFiltradosDrawerCursos();
+                    var q = (searchInput && searchInput.value) ? searchInput.value.trim() : '';
+                    var filtrados = getFiltradosDrawerCursos(catalogoCursos, q);
                     if (drawerCursosVisibleCount >= filtrados.length) return;
                     drawerCursosVisibleCount += DRAWER_CURSOS_PAGE_SIZE;
                     filtrarYRenderizarCards();
@@ -1061,17 +1087,15 @@
                 var emptySearchContainer = overlay.querySelector('#drawer-contenidos-empty-search');
                 var DRAWER_CURSOS_PAGE_SIZE = 12;
                 var drawerCursosVisibleCount = DRAWER_CURSOS_PAGE_SIZE;
-                function getFiltradosDrawerCursos() {
-                    var q = (searchInput && searchInput.value) ? searchInput.value.trim().toLowerCase() : '';
-                    return catalogoCursos.filter(function(c) {
-                        return !q || (c.title && c.title.toLowerCase().includes(q)) || (c.competency && c.competency.toLowerCase().includes(q)) || (c.categoria && String(c.categoria).toLowerCase().includes(q));
-                    });
-                }
+                var getFiltradosDrawerCursos = wireDrawerDetallePlanFiltros(overlay, function () {
+                    drawerCursosVisibleCount = DRAWER_CURSOS_PAGE_SIZE;
+                    filtrarYRenderizarCards();
+                });
                 function filtrarYRenderizarCards() {
                     if (!cardsContainer || typeof loadCardContentCompact !== 'function') return;
-                    var filtrados = getFiltradosDrawerCursos();
                     var q = (searchInput && searchInput.value) ? searchInput.value.trim() : '';
-                    if (q && filtrados.length === 0) {
+                    var filtrados = getFiltradosDrawerCursos(catalogoCursos, q);
+                    if (filtrados.length === 0 && catalogoCursos.length > 0) {
                         if (emptySearchContainer) {
                             emptySearchContainer.style.display = 'block';
                             emptySearchContainer.innerHTML = '';
@@ -1128,7 +1152,8 @@
                     });
                 }
                 function maybeLoadMoreDrawerCursos() {
-                    var filtrados = getFiltradosDrawerCursos();
+                    var q = (searchInput && searchInput.value) ? searchInput.value.trim() : '';
+                    var filtrados = getFiltradosDrawerCursos(catalogoCursos, q);
                     if (drawerCursosVisibleCount >= filtrados.length) return;
                     drawerCursosVisibleCount += DRAWER_CURSOS_PAGE_SIZE;
                     filtrarYRenderizarCards();
