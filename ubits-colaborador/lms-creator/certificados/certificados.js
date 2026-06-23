@@ -788,12 +788,17 @@
                 '<li>Nadie ha finalizado este contenido en ese periodo.</li>' +
                 '<li>El contenido no genera certificado</li>' +
                 '</ul>';
+        } else if (currentMode === 'colaborador') {
+            rows += '<ul class="ubits-body-md-regular certificados-modal-why-list">' +
+                '<li>El colaborador no completó cursos en el periodo seleccionado.</li>' +
+                '<li>Los cursos que completó no generan certificado.</li>' +
+                '<li>Revisa si seleccionaste el tipo de contenido correcto (UBITS / creados por tu empresa).</li>' +
+                '</ul>';
         } else {
-            var why = 'Nadie ha finalizado contenidos en ese periodo.';
-            if (currentMode === 'colaborador') {
-                why = 'Ese colaborador no tiene certificados emitidos en el periodo seleccionado.';
-            }
-            rows += '<p class="ubits-body-md-regular certificados-modal-note-text">' + why + '</p>';
+            rows += '<ul class="ubits-body-md-regular certificados-modal-why-list">' +
+                '<li>Nadie ha finalizado contenidos en ese periodo.</li>' +
+                '<li>Los contenidos finalizados no generan certificado.</li>' +
+                '</ul>';
         }
         return '<div class="certificados-modal-body">' + intro + rows + '</div>';
     }
