@@ -578,7 +578,7 @@ El pie del modal muestra el botón que corresponde a la pestaña activa (por eje
 2. **`video-recurso-modal.js`** — al confirmar **Generar video**, `startWidgetJob()`:
    - Registra el trabajo en el **Status panel** (`ccGenWidget.addJob`).
    - Llama `onVideoReady` con el HTML del placeholder (`getVideoIaPlaceholderHTML()` envuelto en `.cc-video-ia-loader-host`).
-   - Tras el timeout simulado (~8 s en playground), `onVideoReady` recibe el bloque final con reproductor (`buildRenderedBlock`).
+   - Tras el timeout simulado (~15 s en playground), `onVideoReady` recibe el bloque final con reproductor (`buildRenderedBlock`).
 3. **`crear-contenido.js`** — callback `onVideoReady`: `mount.innerHTML = html` y, si hay `.cc-video-ia-placeholder-video`, **`play()`** como respaldo (Safari tras insertar vía `innerHTML`).
 4. **Estilos:** `video-recurso-modal.css` — `.cc-video-ia-loader-host` y `.cc-video-ia-placeholder-video` (`object-fit: cover`, `pointer-events: none`).
 

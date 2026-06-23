@@ -1546,7 +1546,7 @@
             if (typeof global.ccGenWidget !== 'undefined') global.ccGenWidget.finishJob(jobId);
             updateIndexIcon(job.pageKey);
             emitRecursosChanged({ type: 'video', pageKey: job.pageKey, source: 'ai' });
-        }, 8000);
+        }, 15000);
     }
 
     function updateIndexIcon(pageKey) {
