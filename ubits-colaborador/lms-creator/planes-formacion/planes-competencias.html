@@ -183,6 +183,7 @@
                         { id: 'progreso', label: 'Progreso', sortable: true, sortType: 'number' },
                         { id: 'acciones', label: 'Acciones' }
                     ],
+                    initialSort: { column: 'fecha-inicio', direction: 'desc' },
                     getData: function() {
                         return (typeof BD_PLANES_FORMACION !== 'undefined')
                             ? BD_PLANES_FORMACION.getPlanesListData('competencias')

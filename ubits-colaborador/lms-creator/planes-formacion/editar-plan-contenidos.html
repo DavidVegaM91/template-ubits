@@ -124,6 +124,7 @@
     <script src="./catalogo-contenidos-drawer.js"></script>
     <script src="./drawer-contenidos-filtros.js"></script>
     <script src="./drawer-contenidos-paso2.js"></script>
+    <script src="./drawer-participantes-colab-table.js"></script>
     <!-- Misma base de datos que seguimiento.html (empresa de pruebas: Fiqsha) -->
     <script src="../../../bd-master/bd-master-colaboradores.js"></script>
     <script src="../../../bd-master/bd-contenidos-ubits.js"></script>
@@ -856,16 +857,10 @@
                 var btnPrimary = overlay.querySelector('#drawer-wiz-btn-primary');
                 var btnCancel = overlay.querySelector('#drawer-wiz-btn-cancel');
 
-                function getUsernameEmpleado(e) {
-                    if (e.username) return e.username;
-                    var palabras = (e.nombre || '').toLowerCase().split(' ').filter(function(p) { return p.length > 0; });
-                    var iniciales = palabras.map(function(p) { return p.charAt(0); }).join('');
-                    return iniciales ? iniciales + '@fiqsha.demo' : 'user@fiqsha.demo';
-                }
+                var DPC = window.DrawerParticipantesColabTable;
                 var empleadosDrawerRaw = (typeof TAREAS_PLANES_DB !== 'undefined' && typeof TAREAS_PLANES_DB.getEmpleadosEjemplo === 'function') ? TAREAS_PLANES_DB.getEmpleadosEjemplo() : [];
-                var empleadosDrawer = empleadosDrawerRaw.map(function(e, idx) {
-                    var id = e.id || e.idColaborador || ('E' + (idx + 1));
-                    return { id: id, username: getUsernameEmpleado(e), nombre: (e.nombre || '').trim(), correo: getUsernameEmpleado(e), area: (e.area || '').trim(), lider: (e.jefe || '').trim(), avatar: e.avatar || null };
+                var empleadosDrawer = empleadosDrawerRaw.map(function (e, idx) {
+                    return DPC ? DPC.mapEmpleadoParaDrawerColab(e, idx) : e;
                 });
 
                 function getEmpleadosDisponibles() {
@@ -917,34 +912,13 @@
                     }
                     syncWizardPrimary();
                 }
-
-                    function escapeDrawerHtml(t) { if (t == null) return ''; var d = document.createElement('div'); d.textContent = t; return d.innerHTML; }
-                    function buildDrawerColabRowHtml(row) {
-                        var avatarUrl = (row.avatar && String(row.avatar).trim()) ? String(row.avatar).replace(/"/g, '&quot;') : '';
-                        var usuarioCell = '<div class="detalle-plan-usuario-cell">' +
-                            (avatarUrl
-                                ? '<span class="ubits-avatar ubits-avatar--sm"><img src="' + avatarUrl + '" alt="' + escapeDrawerHtml(row.nombre) + '" class="ubits-avatar__img"></span>'
-                                : '<span class="ubits-avatar ubits-avatar--sm"><span class="ubits-avatar__fallback"><i class="far fa-user"></i></span></span>') +
-                            '<span class="ubits-body-sm-regular">' + escapeDrawerHtml(row.nombre) + '</span></div>';
-                        return '<td data-col="username"><span class="ubits-body-sm-regular">' + escapeDrawerHtml(row.username) + '</span></td>' +
-                            '<td data-col="nombre">' + usuarioCell + '</td>' +
-                            '<td data-col="correo"><span class="ubits-body-sm-regular">' + escapeDrawerHtml(row.correo) + '</span></td>' +
-                            '<td data-col="area"><span class="ubits-body-sm-regular">' + escapeDrawerHtml(row.area) + '</span></td>' +
-                            '<td data-col="lider"><span class="ubits-body-sm-regular">' + escapeDrawerHtml(row.lider) + '</span></td>';
-                    }
-
                 var drawerColabContainer = overlay.querySelector('#drawer-colab-data-table-container');
                 var drawerColabTablaRef = null;
-                if (drawerColabContainer && typeof createUbitsDataTable === 'function') {
-                    drawerColabTablaRef = createUbitsDataTable({
+                if (drawerColabContainer && DPC && typeof DPC.createDrawerParticipantesColabDataTable === 'function') {
+                    drawerColabTablaRef = DPC.createDrawerParticipantesColabDataTable({
                         containerId: 'drawer-colab-data-table-container',
                         tableId: 'drawer-colab-table-edit-plan',
-                        title: 'Lista de colaboradores',
-                        columns: [ { id: 'username', label: 'Username', filterable: true }, { id: 'nombre', label: 'Nombre del usuario', filterable: true }, { id: 'correo', label: 'Correo electrónico', filterable: true }, { id: 'area', label: 'Área', filterable: true }, { id: 'lider', label: 'Líder', filterable: true } ],
-                        getData: function() { return getEmpleadosDisponibles(); },
-                        rowIdField: 'id',
-                        buildRowHtml: buildDrawerColabRowHtml,
-                        features: { checkboxes: true, search: true, filters: true, verSeleccionados: true, resultsCount: true },
+                        getData: function () { return getEmpleadosDisponibles(); },
                         emptyState: { message: 'No hay colaboradores disponibles', icon: 'far fa-user', description: 'Todos los colaboradores ya tienen una asignación en este plan.' },
                         i18n: {
                             selectAll: 'Seleccionar todo',

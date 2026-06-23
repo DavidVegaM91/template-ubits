@@ -113,3 +113,53 @@ window.BD_MASTER_COLABORADORES = {
         { id: 'E055', idColaborador: '1011000055', username: 'msotov@fiqsha.demo', nombre: 'Martín Andrés Soto Vega', cargo: 'Encargado de Nómina', area: 'Recursos Humanos', genero: 'M', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop', jefe: 'Carmen Rosa Díaz Herrera', esJefe: false }
   ]
 };
+
+/**
+ * Campos extendidos (dni, país, ciudad, nivel, columnas A/B) para tablas con columnas opcionales.
+ * Los registros base solo traen id, nombre, cargo, área, etc.; esto completa el schema de ejemploRegistro.
+ */
+(function enrichBdMasterColaboradoresCamposExtendidos() {
+    var master = window.BD_MASTER_COLABORADORES;
+    if (!master || !Array.isArray(master.colaboradores)) return;
+
+    var ciudades = master.ciudadesColombia && master.ciudadesColombia.length
+        ? master.ciudadesColombia
+        : ['Bogotá', 'Medellín', 'Cali'];
+    var niveles = master.nivelesEmpresa && master.nivelesEmpresa.length
+        ? master.nivelesEmpresa
+        : ['Estratégico', 'Operativo', 'Táctico con personal a cargo', 'Táctico sin personal a cargo'];
+    var areaCentroCostos = {
+        'Gerencia General': 'GG',
+        'Ventas': 'VT',
+        'Instalaciones': 'IN',
+        'Reparaciones': 'RP',
+        'Atención al Cliente': 'AC',
+        'Logística': 'LG',
+        'Administración': 'AD',
+        'Marketing': 'MK',
+        'Recursos Humanos': 'RH'
+    };
+    var modalidades = ['Presencial híbrido', 'Presencial', 'Remoto'];
+
+    master.colaboradores.forEach(function (c, idx) {
+        if (!c || typeof c !== 'object') return;
+        var num = idx + 1;
+        var areaCode = areaCentroCostos[c.area] || 'GEN';
+        var idCol = c.idColaborador != null ? String(c.idColaborador) : '';
+
+        if (!c.pais) c.pais = 'Colombia';
+        if (!c.ciudad) c.ciudad = ciudades[idx % ciudades.length];
+        if (!c.dni && idCol) c.dni = idCol.slice(-10);
+        if (!c.nivelEnEmpresa) {
+            if (c.esGerenteGeneral) c.nivelEnEmpresa = niveles[0];
+            else if (c.esJefe) c.nivelEnEmpresa = niveles[2] || niveles[1];
+            else c.nivelEnEmpresa = niveles[1] || niveles[3];
+        }
+        if (!c.columnaA) {
+            c.columnaA = 'Centro de costos: ' + areaCode + '-' + String(num).padStart(2, '0');
+        }
+        if (!c.columnaB) {
+            c.columnaB = 'Modalidad: ' + modalidades[idx % modalidades.length];
+        }
+    });
+})();

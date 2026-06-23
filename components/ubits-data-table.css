@@ -66,12 +66,52 @@
 }
 
 /* Contenedor de la tabla: scroll horizontal en móvil (igual criterio que .ubits-table-wrapper en table.css).
-   No usar overflow:hidden aquí: envuelve a .ubits-table-wrapper (min-width 900px) y lo recortaba sin barra de scroll. */
+   No usar overflow:hidden aquí: envuelve a .ubits-table-wrapper (min-width 900px) y lo recortaba sin barra de scroll.
+   En drawer participantes el scroll vertical también vive aquí (ver .drawer-colab-dt-wrapper más abajo). */
 .ubits-data-table .ubits-dt-table-wrapper {
     width: 100%;
     min-width: 0;
     overflow-x: auto;
     overflow-y: visible;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Drawer «Agregar asignación» paso Participantes: el body del drawer no scrollea; la lista scrollea aquí. */
+.drawer-colab-dt-wrapper,
+.drawer-grupos-dt-wrapper {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    width: 100%;
+    min-width: 0;
+}
+
+.drawer-colab-dt-wrapper .ubits-data-table,
+.drawer-grupos-dt-wrapper .ubits-data-table {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.drawer-colab-dt-wrapper .ubits-data-table .ubits-dt-header-bar,
+.drawer-colab-dt-wrapper .ubits-data-table .ubits-dt-filtros-aplicados,
+.drawer-colab-dt-wrapper .ubits-data-table .ubits-dt-action-bar,
+.drawer-grupos-dt-wrapper .ubits-data-table .ubits-dt-header-bar,
+.drawer-grupos-dt-wrapper .ubits-data-table .ubits-dt-filtros-aplicados,
+.drawer-grupos-dt-wrapper .ubits-data-table .ubits-dt-action-bar {
+    flex-shrink: 0;
+}
+
+.drawer-colab-dt-wrapper .ubits-data-table .ubits-dt-table-wrapper,
+.drawer-grupos-dt-wrapper .ubits-data-table .ubits-dt-table-wrapper {
+    flex: 1;
+    min-height: 0;
+    overflow-x: auto;
+    overflow-y: auto;
     -webkit-overflow-scrolling: touch;
 }
 
@@ -137,4 +177,15 @@
 .ubits-dt-filter-overlay .ubits-dropdown-menu__options {
     max-height: 220px;
     overflow-y: auto;
+}
+
+/* Columnas visibles: lista corta sin scroll interno (evita hueco blanco al marcar Columna A/B) */
+.ubits-dt-columns-overlay .ubits-dropdown-menu__options {
+    max-height: none;
+    overflow-y: visible;
+}
+
+.ubits-dt-columns-overlay .ubits-dropdown-menu__content {
+    height: auto;
+    min-width: 240px;
 }

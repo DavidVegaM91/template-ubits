@@ -273,6 +273,13 @@
     gap: var(--gap-md);
 }
 
+#drawer-agregar-usuarios #drawer-wizard-step2.drawer-wizard-step--participantes .drawer-usuarios-panel--colaborador,
+#drawer-agregar-usuarios #drawer-wizard-step2.drawer-wizard-step--participantes .drawer-usuarios-panel--grupos {
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+}
+
 /* Paso 3 (contenidos): ocupar alto disponible para lazy load de cards */
 #drawer-agregar-usuarios #drawer-wizard-step3.drawer-wizard-step {
     flex: 1;
@@ -1083,7 +1090,11 @@
     }
 }
 
-/* Drawer: Filtros aplicados (igual que seguimiento) */
+/* Drawer: Filtros aplicados (igual que seguimiento / u-corporativa) */
+.drawer-agregar-cursos .drawer-filtros-aplicados {
+    margin-bottom: var(--gap-md);
+}
+
 .drawer-filtros-aplicados {
     display: flex;
     align-items: center;

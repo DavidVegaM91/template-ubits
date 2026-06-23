@@ -306,6 +306,27 @@
     }
 
     /**
+     * Drawer (1100–1101) y modal (1200+) quedan por encima del z-index base del dropdown (999–1000).
+     * Si el ancla está dentro de uno de esos contenedores, elevamos el stacking para que el menú sea usable.
+     */
+    function applyDropdownStackingForAnchor(overlay, content, anchor) {
+        if (!overlay || !content) return;
+        var overlayZ = 999;
+        var contentZ = 1000;
+        if (anchor && typeof anchor.closest === 'function') {
+            if (anchor.closest('.ubits-modal-overlay')) {
+                overlayZ = 1202;
+                contentZ = 1203;
+            } else if (anchor.closest('.ubits-drawer-overlay')) {
+                overlayZ = 1102;
+                contentZ = 1103;
+            }
+        }
+        overlay.style.zIndex = String(overlayZ);
+        content.style.zIndex = String(contentZ);
+    }
+
+    /**
      * Abre el menú desplegable y lo posiciona dentro del viewport.
      * Vertical: debajo del ancla; si no hay espacio, arriba; si no cabe, se recorta con padding.
      * Horizontal: alineado al ancla; si se sale por la derecha o izquierda, se ajusta para no salir nunca.
@@ -318,6 +339,9 @@
         if (!overlay) return;
         var content = overlay.querySelector('.ubits-dropdown-menu__content');
         if (!content) return;
+
+        var anchorEl = (position && typeof position.getBoundingClientRect === 'function') ? position : null;
+        applyDropdownStackingForAnchor(overlay, content, anchorEl);
 
         options = options || {};
         var alignRight = options.alignRight === true;

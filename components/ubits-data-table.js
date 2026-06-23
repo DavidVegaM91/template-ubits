@@ -191,7 +191,9 @@
         var initialSelectedIds = Array.isArray(options.initialSelectedIds) ? options.initialSelectedIds : [];
         var selectedIds = new Set(initialSelectedIds);
         var columnVisibility = {};
-        columns.forEach(function (c) { columnVisibility[c.id] = true; });
+        columns.forEach(function (c) {
+            columnVisibility[c.id] = c.defaultVisible === false ? false : true;
+        });
 
         var container = document.getElementById(containerId);
         if (!container) {
@@ -874,6 +876,7 @@
                 document.body.insertAdjacentHTML('beforeend', html);
                 overlayEl = document.getElementById(overlayId);
                 if (overlayEl) {
+                    overlayEl.classList.add('ubits-dt-columns-overlay');
                     var content = overlayEl.querySelector('.ubits-dropdown-menu__content');
                     if (content) content.addEventListener('click', function (ev) { ev.stopPropagation(); });
                     overlayEl.querySelectorAll('.ubits-dropdown-menu__option input.ubits-checkbox__input').forEach(function (cb) {
@@ -882,13 +885,18 @@
                             if (col) {
                                 columnVisibility[col] = this.checked;
                                 applyColumnVisibility();
+                                if (typeof window.openDropdownMenu === 'function') {
+                                    window.requestAnimationFrame(function () {
+                                        window.openDropdownMenu(overlayId, btn, { alignRight: true });
+                                    });
+                                }
                             }
                         });
                     });
                     overlayEl.addEventListener('click', function (ev) {
                         if (ev.target === overlayEl && typeof window.closeDropdownMenu === 'function') window.closeDropdownMenu(overlayId);
                     });
-                    window.openDropdownMenu(overlayId, btn);
+                    window.openDropdownMenu(overlayId, btn, { alignRight: true });
                 }
             });
         }

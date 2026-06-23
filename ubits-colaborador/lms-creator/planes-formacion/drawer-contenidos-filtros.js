@@ -68,6 +68,166 @@
         return wrap || btn;
     }
 
+    function resolveFilterDomId(idPrefix, suffix) {
+        if (idPrefix) return idPrefix + '-' + suffix;
+        return 'drawer-' + suffix;
+    }
+
+    function escapeHtmlChip(t) {
+        if (t == null) return '';
+        return String(t)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;');
+    }
+
+    function resolveCategoriaNombre(id) {
+        var catRoot = window.BD_MASTER_CATEGORIAS_FIQSHA;
+        if (!id || !catRoot || !Array.isArray(catRoot.categorias)) return id || '';
+        var found = catRoot.categorias.find(function (c) { return c && String(c.id) === String(id); });
+        return (found && found.nombre) ? found.nombre : id;
+    }
+
+    function resolveNivelNombre(id) {
+        var nivRoot = window.BD_MASTER_NIVELES_CONTENIDO;
+        if (!id || !nivRoot || !Array.isArray(nivRoot.niveles)) return id || '';
+        var found = nivRoot.niveles.find(function (n) { return n && String(n.id) === String(id); });
+        return (found && found.nombre) ? found.nombre : id;
+    }
+
+    /** Etiqueta corta solo para chips de filtros aplicados (el modal conserva textos largos). */
+    function resolveCatalogoChipLabel(val) {
+        if (val === 'ubits') return 'UBITS';
+        if (val === 'empresa') return 'propio';
+        return val || '';
+    }
+
+    function filtrosAplicadosSectionHtml(idPrefix) {
+        var wrapId = resolveFilterDomId(idPrefix, 'cursos-filtros-aplicados');
+        var chipsId = resolveFilterDomId(idPrefix, 'cursos-filtros-chips-container');
+        var clearId = resolveFilterDomId(idPrefix, 'cursos-clear-filters-btn');
+        return (
+            '<div class="drawer-filtros-aplicados widget-filtros-aplicados" id="' +
+            wrapId +
+            '" style="display:none" aria-live="polite">' +
+            '<span class="ubits-body-sm-regular">Filtros aplicados:</span>' +
+            '<div class="filtros-chips-container" id="' +
+            chipsId +
+            '"></div>' +
+            '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--xs" id="' +
+            clearId +
+            '" aria-label="Limpiar todos los filtros">' +
+            '<i class="far fa-filter-slash"></i><span>Limpiar filtros</span></button>' +
+            '</div>'
+        );
+    }
+
+    function ensureFiltrosAplicadosDom(overlay, idPrefix) {
+        if (!overlay) return;
+        var wrapId = resolveFilterDomId(idPrefix, 'cursos-filtros-aplicados');
+        if (overlay.querySelector('#' + wrapId)) return;
+        var btnId = resolveFilterDomId(idPrefix, 'cursos-filter-btn');
+        var filterBtn = overlay.querySelector('#' + btnId);
+        var searchRow = filterBtn ? filterBtn.closest('.drawer-cursos-search-row') : null;
+        if (searchRow) searchRow.insertAdjacentHTML('afterend', filtrosAplicadosSectionHtml(idPrefix));
+    }
+
+    function renderFiltrosAplicados(options) {
+        options = options || {};
+        var overlay = options.overlay;
+        var idPrefix = options.idPrefix != null ? options.idPrefix : 'drawer-wiz';
+        if (!overlay) return;
+        ensureFiltrosAplicadosDom(overlay, idPrefix);
+
+        var f = cloneFilters(options.filters);
+        var wrapId = resolveFilterDomId(idPrefix, 'cursos-filtros-aplicados');
+        var chipsId = resolveFilterDomId(idPrefix, 'cursos-filtros-chips-container');
+        var clearId = resolveFilterDomId(idPrefix, 'cursos-clear-filters-btn');
+        var wrap = overlay.querySelector('#' + wrapId);
+        var chipsCont = overlay.querySelector('#' + chipsId);
+        var clearBtn = overlay.querySelector('#' + clearId);
+        if (!wrap || !chipsCont) return;
+
+        var chips = [];
+        if (f.catalogo) {
+            chips.push({ key: 'catalogo', label: 'Catálogo', value: resolveCatalogoChipLabel(f.catalogo) });
+        }
+        if (f.tipo) {
+            chips.push({ key: 'tipo', label: 'Tipo', value: f.tipo });
+        }
+        if (f.categoriaId) {
+            chips.push({ key: 'categoriaId', label: 'Categoría', value: resolveCategoriaNombre(f.categoriaId) });
+        }
+        if (f.nivelId) {
+            chips.push({ key: 'nivelId', label: 'Nivel', value: resolveNivelNombre(f.nivelId) });
+        }
+        if (f.idioma) {
+            chips.push({ key: 'idioma', label: 'Idioma', value: f.idioma });
+        }
+
+        function notifyChange(next) {
+            if (options.filterBtn) {
+                updateFilterButtonBadge(
+                    options.filterBtn,
+                    next,
+                    options.badgeId || (options.filterBtn.id ? options.filterBtn.id + '-badge' : 'drawer-cursos-filter-badge')
+                );
+            }
+            if (typeof options.onFiltersChange === 'function') options.onFiltersChange(cloneFilters(next));
+        }
+
+        if (chips.length === 0) {
+            wrap.style.display = 'none';
+            chipsCont.innerHTML = '';
+            if (clearBtn) clearBtn.style.display = 'none';
+            return;
+        }
+
+        wrap.style.display = 'flex';
+        if (clearBtn) clearBtn.style.display = '';
+        chipsCont.innerHTML = chips
+            .map(function (chip, index) {
+                var full = chip.label + ': ' + chip.value;
+                var labelVal = full.replace(/"/g, '&quot;');
+                return (
+                    '<span class="ubits-chip ubits-chip--xs ubits-chip--close drawer-contenidos-filtro-chip" data-chip-index="' +
+                    index +
+                    '" data-tooltip="' +
+                    labelVal +
+                    '">' +
+                    '<span class="ubits-chip__text">' +
+                    escapeHtmlChip(full) +
+                    '</span>' +
+                    '<button type="button" class="ubits-chip__close" data-chip-index="' +
+                    index +
+                    '" aria-label="Quitar filtro"><i class="far fa-times"></i></button></span>'
+                );
+            })
+            .join('');
+
+        chipsCont.querySelectorAll('.ubits-chip__close').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                var idx = parseInt(btn.getAttribute('data-chip-index'), 10);
+                if (isNaN(idx) || !chips[idx]) return;
+                var next = cloneFilters(f);
+                next[chips[idx].key] = '';
+                notifyChange(next);
+            });
+        });
+
+        if (clearBtn) {
+            clearBtn.onclick = function (e) {
+                e.preventDefault();
+                notifyChange(createEmptyFilters());
+            };
+        }
+
+        if (typeof initTooltip === 'function') {
+            initTooltip('#' + chipsId + ' .ubits-chip[data-tooltip]');
+        }
+    }
+
     function updateFilterButtonBadge(btn, f, badgeId) {
         if (!btn) return;
         var host = getFilterBadgeHost(btn);
@@ -257,18 +417,37 @@
         }
     }
 
-    function wireFilterButton(filterBtn, getFilters, setFilters, onApply, modalOverlayId) {
+    function wireFilterButton(filterBtn, getFilters, setFilters, onApply, modalOverlayId, chipCtx) {
         if (!filterBtn || !window.DrawerContenidosFiltros) return;
         var DCF = window.DrawerContenidosFiltros;
         var badgeId = filterBtn.id ? filterBtn.id + '-badge' : 'drawer-cursos-filter-badge';
-        DCF.updateFilterButtonBadge(filterBtn, getFilters(), badgeId);
+
+        function applyFilters(newFilters) {
+            var next = cloneFilters(newFilters);
+            setFilters(next);
+            DCF.updateFilterButtonBadge(filterBtn, next, badgeId);
+            if (chipCtx && chipCtx.overlay) {
+                DCF.renderFiltrosAplicados({
+                    overlay: chipCtx.overlay,
+                    idPrefix: chipCtx.idPrefix != null ? chipCtx.idPrefix : 'drawer-wiz',
+                    filters: next,
+                    filterBtn: filterBtn,
+                    badgeId: badgeId,
+                    onFiltersChange: function (updated) {
+                        applyFilters(updated);
+                        if (typeof onApply === 'function') onApply(updated);
+                    }
+                });
+            }
+            if (typeof onApply === 'function') onApply(next);
+        }
+
+        applyFilters(getFilters());
         filterBtn.addEventListener('click', function (e) {
             e.preventDefault();
             e.stopPropagation();
             DCF.openFiltrosModal(getFilters(), function (newFilters) {
-                setFilters(newFilters);
-                DCF.updateFilterButtonBadge(filterBtn, newFilters, badgeId);
-                if (typeof onApply === 'function') onApply(newFilters);
+                applyFilters(newFilters);
             }, modalOverlayId);
         });
         if (typeof initTooltip === 'function') {
@@ -286,6 +465,10 @@
         updateFilterButtonBadge: updateFilterButtonBadge,
         filterButtonHtml: filterButtonHtml,
         openFiltrosModal: openFiltrosModal,
-        wireFilterButton: wireFilterButton
+        wireFilterButton: wireFilterButton,
+        resolveFilterDomId: resolveFilterDomId,
+        filtrosAplicadosSectionHtml: filtrosAplicadosSectionHtml,
+        ensureFiltrosAplicadosDom: ensureFiltrosAplicadosDom,
+        renderFiltrosAplicados: renderFiltrosAplicados
     };
 })(window);

@@ -384,10 +384,31 @@
 }
 
 /* Drawer Agregar asignación (solo colaboradores): panel sin opciones de empresa/grupos/archivo */
+#drawer-detalle-plan-agregar-asignacion .ubits-drawer-content,
+#drawer-mi-equipo-agregar-asignacion .ubits-drawer-content {
+    min-height: 0;
+}
+
+#drawer-detalle-plan-agregar-asignacion .ubits-drawer-body,
+#drawer-mi-equipo-agregar-asignacion .ubits-drawer-body {
+    overflow-x: visible;
+    overflow-y: hidden;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+
 .drawer-usuarios-panel--colaborador {
     display: flex;
     flex-direction: column;
     gap: var(--gap-md);
+}
+
+#drawer-detalle-plan-agregar-asignacion .drawer-usuarios-panel--colaborador,
+#drawer-mi-equipo-agregar-asignacion .drawer-usuarios-panel--colaborador {
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
 }
 
 .drawer-colab-dt-wrapper {

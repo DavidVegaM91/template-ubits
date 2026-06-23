@@ -55,7 +55,11 @@
 
     /** Todos los subordinados directos para tablas del drawer (sin ocultar ya asignados). */
     window.getMiEquipoColaboradoresParaDrawer = function getMiEquipoColaboradoresParaDrawer() {
-        return window.getMiEquipoSubordinadosDirectos().map(function (c) {
+        var DPC = window.DrawerParticipantesColabTable;
+        return window.getMiEquipoSubordinadosDirectos().map(function (c, idx) {
+            if (DPC && typeof DPC.mapEmpleadoParaDrawerColab === 'function') {
+                return DPC.mapEmpleadoParaDrawerColab(c, idx);
+            }
             var id = c.id || c.idColaborador;
             var username = getUsernameColaboradorDrawer(c);
             return {

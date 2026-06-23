@@ -37,21 +37,17 @@
     }
 
     function getColaboradoresDisponiblesMiEquipo() {
+        var DPC = global.DrawerParticipantesColabTable;
         if (typeof global.getMiEquipoColaboradoresParaDrawer === 'function') {
-            return global.getMiEquipoColaboradoresParaDrawer();
+            var raw = global.getMiEquipoColaboradoresParaDrawer();
+            if (DPC && typeof DPC.mapEmpleadoParaDrawerColab === 'function') {
+                return raw.map(function (e, idx) { return DPC.mapEmpleadoParaDrawerColab(e, idx); });
+            }
+            return raw;
         }
         var subs = typeof global.getMiEquipoSubordinadosDirectos === 'function' ? global.getMiEquipoSubordinadosDirectos() : [];
-        return subs.map(function (c) {
-            var id = c.id || c.idColaborador;
-            return {
-                id: id,
-                username: getUsernameColaborador(c),
-                nombre: (c.nombre || '').trim(),
-                correo: getUsernameColaborador(c),
-                area: (c.area || '').trim(),
-                lider: (c.jefe || '').trim(),
-                avatar: c.avatar || null
-            };
+        return subs.map(function (c, idx) {
+            return DPC ? DPC.mapEmpleadoParaDrawerColab(c, idx) : c;
         });
     }
 
@@ -471,37 +467,13 @@
             btnAgregar.disabled = !ids.length;
         }
 
-        function buildDrawerColabRowHtml(row) {
-            var avatarUrl = (row.avatar && String(row.avatar).trim()) ? String(row.avatar).replace(/"/g, '&quot;') : '';
-            var usuarioCell = '<div class="detalle-plan-usuario-cell">' +
-                (avatarUrl
-                    ? '<span class="ubits-avatar ubits-avatar--sm"><img src="' + avatarUrl + '" alt="' + escapeDrawerHtml(row.nombre) + '" class="ubits-avatar__img"></span>'
-                    : '<span class="ubits-avatar ubits-avatar--sm"><span class="ubits-avatar__fallback"><i class="far fa-user"></i></span></span>') +
-                '<span class="ubits-body-sm-regular">' + escapeDrawerHtml(row.nombre) + '</span></div>';
-            return '<td data-col="username"><span class="ubits-body-sm-regular">' + escapeDrawerHtml(row.username) + '</span></td>' +
-                '<td data-col="nombre">' + usuarioCell + '</td>' +
-                '<td data-col="correo"><span class="ubits-body-sm-regular">' + escapeDrawerHtml(row.correo) + '</span></td>' +
-                '<td data-col="area"><span class="ubits-body-sm-regular">' + escapeDrawerHtml(row.area) + '</span></td>' +
-                '<td data-col="lider"><span class="ubits-body-sm-regular">' + escapeDrawerHtml(row.lider) + '</span></td>';
-        }
-
+        var DPC = global.DrawerParticipantesColabTable;
         var container = overlay.querySelector('#drawer-mi-equipo-colab-data-table-container');
-        if (container && typeof global.createUbitsDataTable === 'function') {
-            overlay._drawerColabTablaRef = global.createUbitsDataTable({
+        if (container && DPC && typeof DPC.createDrawerParticipantesColabDataTable === 'function') {
+            overlay._drawerColabTablaRef = DPC.createDrawerParticipantesColabDataTable({
                 containerId: 'drawer-mi-equipo-colab-data-table-container',
                 tableId: 'drawer-mi-equipo-colab-table',
-                title: 'Lista de colaboradores',
-                columns: [
-                    { id: 'username', label: 'Username', filterable: true },
-                    { id: 'nombre', label: 'Nombre del usuario', filterable: true },
-                    { id: 'correo', label: 'Correo electrónico', filterable: true },
-                    { id: 'area', label: 'Área', filterable: true },
-                    { id: 'lider', label: 'Líder', filterable: true }
-                ],
                 getData: function () { return getColaboradoresDisponiblesMiEquipo(); },
-                rowIdField: 'id',
-                buildRowHtml: buildDrawerColabRowHtml,
-                features: { checkboxes: true, search: true, filters: true, verSeleccionados: true, resultsCount: true },
                 emptyState: {
                     message: 'No hay colaboradores en tu equipo',
                     icon: 'far fa-user',

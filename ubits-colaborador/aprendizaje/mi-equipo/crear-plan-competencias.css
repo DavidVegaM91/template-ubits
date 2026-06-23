@@ -269,6 +269,13 @@
     gap: var(--gap-md);
 }
 
+#drawer-agregar-usuarios #drawer-wizard-step2.drawer-wizard-step--participantes .drawer-usuarios-panel--colaborador,
+#drawer-agregar-usuarios #drawer-wizard-step2.drawer-wizard-step--participantes .drawer-usuarios-panel--grupos {
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+}
+
 /* Paso 3: competencias — scroll en resultados */
 #drawer-agregar-usuarios #drawer-wizard-step3.drawer-wizard-step {
     flex: 1;

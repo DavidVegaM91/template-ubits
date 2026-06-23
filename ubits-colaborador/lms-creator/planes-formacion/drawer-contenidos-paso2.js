@@ -276,19 +276,30 @@
             }
             var badgeId = I('cursos-filter-btn') + '-badge';
             var modalId = I('contenidos-filtros-modal');
-            DCF.updateFilterButtonBadge(filterBtn, drawerCursosFiltros, badgeId);
+            function applyDrawerFilters(newFilters) {
+                drawerCursosFiltros = DCF.cloneFilters(newFilters);
+                DCF.updateFilterButtonBadge(filterBtn, drawerCursosFiltros, badgeId);
+                DCF.renderFiltrosAplicados({
+                    overlay: overlay,
+                    idPrefix: idPrefix,
+                    filters: drawerCursosFiltros,
+                    filterBtn: filterBtn,
+                    badgeId: badgeId,
+                    onFiltersChange: function (updated) {
+                        applyDrawerFilters(updated);
+                    }
+                });
+                drawerCursosVisibleCount = DRAWER_CURSOS_PAGE_SIZE;
+                filtrarYRenderizarCards();
+            }
             overlay._wizContenidosFilterClickHandler = function (e) {
                 e.preventDefault();
                 e.stopPropagation();
-                DCF.openFiltrosModal(drawerCursosFiltros, function (newFilters) {
-                    drawerCursosFiltros = DCF.cloneFilters(newFilters);
-                    DCF.updateFilterButtonBadge(filterBtn, drawerCursosFiltros, badgeId);
-                    drawerCursosVisibleCount = DRAWER_CURSOS_PAGE_SIZE;
-                    filtrarYRenderizarCards();
-                }, modalId);
+                DCF.openFiltrosModal(drawerCursosFiltros, applyDrawerFilters, modalId);
             };
             filterBtn.addEventListener('click', overlay._wizContenidosFilterClickHandler);
             if (typeof initTooltip === 'function') initTooltip('#' + filterBtn.id);
+            applyDrawerFilters(drawerCursosFiltros);
         }
 
         var btnVerSel = overlay.querySelector('#' + I('cursos-ver-seleccionados'));

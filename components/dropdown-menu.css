@@ -4,7 +4,8 @@
    opcional autocomplete, footer con botones secundario y primario.
    ======================================== */
 
-/* Overlay: cierre al clic fuera */
+/* Overlay: cierre al clic fuera.
+   z-index base 999; openDropdownMenu() eleva a 1102 (drawer) o 1202 (modal) cuando el ancla está dentro. */
 .ubits-dropdown-menu__overlay {
     position: fixed;
     top: 0;
