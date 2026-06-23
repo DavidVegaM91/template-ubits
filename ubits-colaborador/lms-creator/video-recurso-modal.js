@@ -37,6 +37,17 @@
     var VIDEO_GUION_MIN_CHARS = 500;
     var VIDEO_GUION_MAX_CHARS = 1700;
 
+    /** Placeholder mientras se genera video IA (en página; no usar ia-loader por restricción BD). */
+    var VIDEO_IA_PLACEHOLDER_MP4 = '../../videos/ia-loaders/ia-loader-video.mp4';
+
+    function getVideoIaPlaceholderHTML() {
+        return (
+            '<video class="cc-video-ia-placeholder-video" src="' + VIDEO_IA_PLACEHOLDER_MP4 + '" ' +
+            'autoplay loop muted playsinline preload="auto" ' +
+            'aria-label="Generando video" role="status"></video>'
+        );
+    }
+
     /* ══════════════════════════════════════
        TOKEN HELPERS
     ══════════════════════════════════════ */
@@ -2046,9 +2057,7 @@
             global.ccGenWidget.addJob(jobId, { type: 'video', label: label, pageKey: job.pageKey });
         }
 
-        var innerLoader = typeof global.getIaLoaderHTML === 'function'
-            ? global.getIaLoaderHTML({ label: 'Generando video' })
-            : '<p role="status" aria-live="polite">Generando video…</p>';
+        var innerLoader = getVideoIaPlaceholderHTML();
         if (_onVideoReady) _onVideoReady('<div class="cc-video-ia-loader-host">' + innerLoader + '</div>');
 
         setTimeout(function () {

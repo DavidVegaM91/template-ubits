@@ -600,7 +600,7 @@
 }
 
 /* ═══════════════════════════════════════════
-   IA LOADER DE GENERACIÓN (en página)
+   Placeholder video IA mientras se genera (en página)
    ═══════════════════════════════════════════ */
 .cc-video-ia-loader-host {
     width: 100%;
@@ -608,6 +608,17 @@
     aspect-ratio: 16 / 9;
     display: flex;
     align-items: stretch;
+    overflow: hidden;
+    border-radius: var(--border-radius-sm);
+    background: var(--ubits-bg-2);
+}
+
+.cc-video-ia-loader-host .cc-video-ia-placeholder-video {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+    pointer-events: none;
 }
 
 .cc-video-ia-loader-host .ubits-ia-loader,

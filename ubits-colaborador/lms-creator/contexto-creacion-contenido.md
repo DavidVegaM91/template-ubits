@@ -5,7 +5,7 @@ Documento de referencia sobre el flujo de **creación de contenido** en el módu
 **Para quién es este documento:** personas de **producto, diseño, negocio** y cualquier lector que necesite entender **qué hace** el flujo y **cómo lo vive el usuario**, sin depender de nombres de código o archivos.
 
 **Cómo está escrito:** lenguaje **conceptual** (pantallas, reglas, opciones, mensajes).  
-**Excepción acordada:** dentro de **Recurso: PDF**, la subsección **«Implementación técnica del visor»** conserva el detalle técnico del renderizado para quien lo necesite en desarrollo.
+**Excepciones acordadas:** en **Recurso: PDF**, la subsección **«Implementación técnica del visor»**; en **Recurso: Video**, **«Implementación técnica del placeholder de generación»** — conservan detalle técnico del renderizado para quien lo necesite en desarrollo.
 
 **Objetivo:** que no queden dudas sobre el proceso de negocio y la experiencia en pantalla. Se irá ampliando con mensajes posteriores.
 
@@ -518,7 +518,10 @@ El pie del modal muestra el botón que corresponde a la pestaña activa (por eje
 - **Logo de la empresa (opcional):** en la pestaña **Video IA**, zona de carga para un **PNG** (tamaño máximo comunicado en pantalla, p. ej. **2 MB**). Si se sube, el logo puede verse en la **vista previa** del modal y, tras generar, **superpuesto** en el reproductor del recurso. Quitar el archivo limpia el logo.
 - **Generar video:** botón principal con **coste alto en tokens** respecto al guión. Al iniciarlo:
   - El modal puede **cerrarse** y el usuario ve el **panel de operaciones en curso** (esquina inferior izquierda) mientras el sistema procesa la generación.
-  - En el panel de la página, el espacio del recurso muestra **estado de carga** y, al terminar, un **reproductor** con el resultado. Si el video es **generado por IA**, puede mostrarse la **etiqueta «Generado con IA»** y, si se cargó, el **logo** en el video.
+  - En el **panel de la página** (no dentro del modal), el espacio del recurso muestra un **video placeholder en bucle** mientras dura la generación — **no** el componente **IA Loader**. Motivo de producto/backend: en la vista del recurso montado en la lección **no puede persistirse ni renderizarse un IA Loader**; debe mostrarse un **MP4 estático** hasta que llegue el video real.
+  - Ese placeholder ocupa el **mismo hueco 16:9** que tendrá el reproductor final: **reproduce solo** (`autoplay`), **en loop**, **sin controles** visibles y **sin sonido** (política habitual de autoplay en navegadores). Para accesibilidad lleva etiqueta del tipo *«Generando video»*.
+  - **Dentro del modal**, la generación del **guión** con IA **sí** sigue usando el **IA Loader** habitual (animación + texto *«Generando guión»*); la restricción aplica **solo** al estado de espera del video **ya montado en la página**.
+  - Al terminar, el placeholder se sustituye por el **reproductor** con el resultado. Si el video es **generado por IA**, puede mostrarse la **etiqueta «Generado con IA»** y, si se cargó, el **logo** en el video.
 - En el **playground**, la generación es **simulada** (tiempo de espera y video de ejemplo), pero la experiencia debe leerse como **producto real**: tokens, preview y panel de operaciones.
 
 ### Pestaña «Enlace de video»
@@ -546,6 +549,47 @@ El pie del modal muestra el botón que corresponde a la pestaña activa (por eje
 ### Recursos complementarios
 
 - Tras montar el video, debajo puede mostrarse el bloque **Complementary resources** (ver sección **Recursos complementarios**).
+
+### Implementación técnica del placeholder de generación (playground)
+
+> Detalle para desarrollo y port a React. Describe **solo** la fase «generando video IA» en el mount de la página (`#crear-contenido-recursos-resources-mount`), no el IA Loader del guión dentro del modal.
+
+#### Restricción
+
+- **En página:** prohibido usar `getIaLoaderHTML` / componente **IA Loader** como estado intermedio del recurso video IA.
+- **En modal (guión):** el IA Loader **sí** se mantiene en `.cc-vm-guion-loader-host` mientras se genera el texto del guión.
+
+#### Asset
+
+| Recurso | Ruta en repo | Ruta relativa desde `lms-creator/` |
+|---------|--------------|-------------------------------------|
+| Video placeholder | `videos/ia-loaders/ia-loader-video.mp4` | `../../videos/ia-loaders/ia-loader-video.mp4` |
+
+#### Markup y atributos
+
+- Contenedor: `.cc-video-ia-loader-host` (aspect-ratio **16 / 9**, fondo `--ubits-bg-2`, esquinas redondeadas).
+- Elemento: `<video class="cc-video-ia-placeholder-video">` con `src` al MP4 anterior.
+- Atributos: **`autoplay`**, **`loop`**, **`muted`**, **`playsinline`**, **`preload="auto"`** — **sin** atributo **`controls`**.
+- Accesibilidad: `aria-label="Generando video"` y `role="status"`.
+
+#### Flujo en código (vanilla)
+
+1. **`crear-contenido.js`** — clic en tarjeta **Video** → `openVideoRecursoModal({ ui: 'legacy', onVideoReady })`.
+2. **`video-recurso-modal.js`** — al confirmar **Generar video**, `startWidgetJob()`:
+   - Registra el trabajo en el **Status panel** (`ccGenWidget.addJob`).
+   - Llama `onVideoReady` con el HTML del placeholder (`getVideoIaPlaceholderHTML()` envuelto en `.cc-video-ia-loader-host`).
+   - Tras el timeout simulado (~8 s en playground), `onVideoReady` recibe el bloque final con reproductor (`buildRenderedBlock`).
+3. **`crear-contenido.js`** — callback `onVideoReady`: `mount.innerHTML = html` y, si hay `.cc-video-ia-placeholder-video`, **`play()`** como respaldo (Safari tras insertar vía `innerHTML`).
+4. **Estilos:** `video-recurso-modal.css` — `.cc-video-ia-loader-host` y `.cc-video-ia-placeholder-video` (`object-fit: cover`, `pointer-events: none`).
+
+#### Persistencia al cambiar de página
+
+- Mientras genera, el HTML del placeholder queda en **`CC_RECURSOS_PAGE_STATE[pageKey].html`** igual que cualquier otro recurso montado; al volver a esa fila del índice se restaura el placeholder o el video final según el momento del flujo.
+
+#### Port a React
+
+- Sustituir IA Loader en la **vista de página** por `<video>` con el mismo MP4 (copiado dentro de `Ubits-React/public/` o equivalente).
+- Mantener **IA Loader** solo en la UX de **generación de guión** dentro del modal de video, salvo que backend indique lo contrario.
 
 ---
 
@@ -856,4 +900,4 @@ Este documento **no** sustituye la **documentación de componentes UBITS** ni la
 
 ---
 
-*Última revisión: **Portada** — vacío IA único + modal `portada-imagen-modal`; sección **Migración a React**. Paso **Visibilidad** (4 selection cards, Borrador default). Paso **Certificado** (empty state, plantillas Fiqsha, preview, sync portada, deep link demo). **Complementary resources** (excluido en Evaluación final). **Recursos:** 8 tipos; persistencia por página.*
+*Última revisión: **Video IA** — placeholder MP4 en página (sin IA Loader) + subsección técnica; IA Loader conservado solo para guión en modal. **Portada** — vacío IA + modal `portada-imagen-modal`. Paso **Visibilidad** / **Certificado**. **Complementary resources** (excluido en Evaluación final). **Recursos:** 8 tipos; persistencia por página.*

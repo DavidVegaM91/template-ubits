@@ -2595,6 +2595,10 @@
                                 });
                             }
                             mount.innerHTML = html;
+                            var iaPlaceholderVid = mount.querySelector('.cc-video-ia-placeholder-video');
+                            if (iaPlaceholderVid && typeof iaPlaceholderVid.play === 'function') {
+                                iaPlaceholderVid.play().catch(function () {});
+                            }
                             /* Actualizar icono en el índice a "video" */
                             var activeItem = document.querySelector('#crear-contenido-recursos-indice-mount .ubits-paginas-creator__item.is-active');
                             if (activeItem) {
