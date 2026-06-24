@@ -129,8 +129,10 @@
         if (overlay.querySelector('#' + wrapId)) return;
         var btnId = resolveFilterDomId(idPrefix, 'cursos-filter-btn');
         var filterBtn = overlay.querySelector('#' + btnId);
-        var searchRow = filterBtn ? filterBtn.closest('.drawer-cursos-search-row') : null;
-        if (searchRow) searchRow.insertAdjacentHTML('afterend', filtrosAplicadosSectionHtml(idPrefix));
+        var anchor =
+            overlay.querySelector('#' + resolveFilterDomId(idPrefix, 'cursos-toolbar')) ||
+            (filterBtn ? filterBtn.closest('.drawer-cursos-search-row') : null);
+        if (anchor) anchor.insertAdjacentHTML('afterend', filtrosAplicadosSectionHtml(idPrefix));
     }
 
     function renderFiltrosAplicados(options) {
@@ -141,6 +143,8 @@
         ensureFiltrosAplicadosDom(overlay, idPrefix);
 
         var f = cloneFilters(options.filters);
+        var columnFilters = options.columnFilters || null;
+        var columnFilterLabels = options.columnFilterLabels || { tipo: 'Tipo', level: 'Nivel', provider: 'Proveedor' };
         var wrapId = resolveFilterDomId(idPrefix, 'cursos-filtros-aplicados');
         var chipsId = resolveFilterDomId(idPrefix, 'cursos-filtros-chips-container');
         var clearId = resolveFilterDomId(idPrefix, 'cursos-clear-filters-btn');
@@ -151,19 +155,46 @@
 
         var chips = [];
         if (f.catalogo) {
-            chips.push({ key: 'catalogo', label: 'Catálogo', value: resolveCatalogoChipLabel(f.catalogo) });
+            chips.push({
+                kind: 'modal',
+                key: 'catalogo',
+                label: 'Catálogo',
+                value: resolveCatalogoChipLabel(f.catalogo)
+            });
         }
         if (f.tipo) {
-            chips.push({ key: 'tipo', label: 'Tipo', value: f.tipo });
+            chips.push({ kind: 'modal', key: 'tipo', label: 'Tipo', value: f.tipo });
         }
         if (f.categoriaId) {
-            chips.push({ key: 'categoriaId', label: 'Categoría', value: resolveCategoriaNombre(f.categoriaId) });
+            chips.push({
+                kind: 'modal',
+                key: 'categoriaId',
+                label: 'Categoría',
+                value: resolveCategoriaNombre(f.categoriaId)
+            });
         }
         if (f.nivelId) {
-            chips.push({ key: 'nivelId', label: 'Nivel', value: resolveNivelNombre(f.nivelId) });
+            chips.push({
+                kind: 'modal',
+                key: 'nivelId',
+                label: 'Nivel',
+                value: resolveNivelNombre(f.nivelId)
+            });
         }
         if (f.idioma) {
-            chips.push({ key: 'idioma', label: 'Idioma', value: f.idioma });
+            chips.push({ kind: 'modal', key: 'idioma', label: 'Idioma', value: f.idioma });
+        }
+        if (columnFilters) {
+            Object.keys(columnFilterLabels).forEach(function (colKey) {
+                (columnFilters[colKey] || []).forEach(function (val) {
+                    chips.push({
+                        kind: 'column',
+                        colKey: colKey,
+                        label: columnFilterLabels[colKey],
+                        value: val
+                    });
+                });
+            });
         }
 
         function notifyChange(next) {
@@ -210,8 +241,15 @@
             btn.addEventListener('click', function () {
                 var idx = parseInt(btn.getAttribute('data-chip-index'), 10);
                 if (isNaN(idx) || !chips[idx]) return;
+                var chip = chips[idx];
+                if (chip.kind === 'column') {
+                    if (typeof options.onColumnFilterRemove === 'function') {
+                        options.onColumnFilterRemove(chip.colKey, chip.value);
+                    }
+                    return;
+                }
                 var next = cloneFilters(f);
-                next[chips[idx].key] = '';
+                next[chip.key] = '';
                 notifyChange(next);
             });
         });
@@ -219,6 +257,7 @@
         if (clearBtn) {
             clearBtn.onclick = function (e) {
                 e.preventDefault();
+                if (typeof options.onColumnFiltersClear === 'function') options.onColumnFiltersClear();
                 notifyChange(createEmptyFilters());
             };
         }

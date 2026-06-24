@@ -37,6 +37,7 @@
 /* Bloque opcional: autocomplete (mismo padding que cada ítem de lista) */
 .ubits-dropdown-menu__autocomplete-wrap {
     padding: var(--padding-sm) var(--padding-md);
+    flex-shrink: 0;
 }
 
 .ubits-dropdown-menu__autocomplete-wrap .ubits-input-wrapper,
@@ -61,6 +62,7 @@
     width: 100%;
     box-sizing: border-box;
     padding: 0 var(--padding-md) var(--padding-sm);
+    flex-shrink: 0;
 }
 
 /* Cuerpo personalizado (formularios, inputs de selección): padding y scroll si hace falta */
@@ -80,6 +82,10 @@
     width: 100%;
     max-height: 350px;
     overflow-y: auto;
+    overscroll-behavior: contain;
+    flex: 1 1 auto;
+    min-height: 0;
+    box-sizing: border-box;
 }
 
 /* Modo "solo seleccionados" (initDropdownMultiSelectSummary): ~5 filas visibles, resto con scroll */
@@ -206,6 +212,19 @@
     flex-shrink: 0;
 }
 
+/* Filas con checkbox/radio: área clicable a todo el ancho (evita “muertos” al final de la lista) */
+.ubits-dropdown-menu__option:has(.ubits-checkbox) .ubits-dropdown-menu__option-left,
+.ubits-dropdown-menu__option:has(.ubits-radio) .ubits-dropdown-menu__option-left {
+    flex: 1;
+    min-width: 0;
+    width: 100%;
+}
+
+.ubits-dropdown-menu__option:has(.ubits-checkbox) .ubits-checkbox,
+.ubits-dropdown-menu__option:has(.ubits-radio) .ubits-radio {
+    width: 100%;
+}
+
 .ubits-dropdown-menu__option-avatar {
     width: 28px;
     height: 28px;
@@ -282,4 +301,5 @@
     gap: var(--gap-sm);
     padding: var(--padding-sm) var(--padding-md);
     border-top: 1px solid var(--ubits-border-1);
+    flex-shrink: 0;
 }

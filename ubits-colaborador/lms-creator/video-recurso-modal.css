@@ -721,6 +721,22 @@
     max-height: none;
 }
 
+/* Contador bajo el ai-panel (misma fila helper que createInput / guión manual). */
+#cc-video-recurso-modal .cc-vm-context-input-helper {
+    margin-top: var(--gap-xs);
+    width: 100%;
+    box-sizing: border-box;
+}
+
+#cc-video-recurso-modal .cc-vm-context-input-helper .ubits-input-helper-text {
+    color: var(--ubits-fg-1-medium);
+}
+
+#cc-video-recurso-modal .ai-panel__input-box--context-error + .cc-vm-context-input-helper,
+#cc-video-recurso-modal .ubits-ia-chat-thread__input-area:has(.ai-panel__input-box--context-error) .cc-vm-context-input-helper .ubits-input-counter {
+    display: none;
+}
+
 /* Marca el box si falta tema (misma pauta que scorm-recurso-modal / evaluaciones). */
 #cc-video-recurso-modal .ai-panel__input-box--context-error {
     border-color: var(--ubits-accent-brand) !important;

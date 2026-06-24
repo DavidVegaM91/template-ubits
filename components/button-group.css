@@ -1,0 +1,42 @@
+/**
+ * UBITS Button group — botones secondary unidos (patrón btn-group clásico).
+ * Requiere button.css. Variante selectable: ítem activo con .ubits-button--active.
+ */
+
+.ubits-button-group {
+    display: inline-flex;
+    align-items: stretch;
+    vertical-align: middle;
+    max-width: 100%;
+}
+
+.ubits-button-group > .ubits-button {
+    margin-left: -1px;
+    border-radius: 0;
+    position: relative;
+}
+
+.ubits-button-group > .ubits-button:first-child {
+    margin-left: 0;
+    border-top-left-radius: var(--border-radius-sm);
+    border-bottom-left-radius: var(--border-radius-sm);
+}
+
+.ubits-button-group > .ubits-button:last-child {
+    border-top-right-radius: var(--border-radius-sm);
+    border-bottom-right-radius: var(--border-radius-sm);
+}
+
+.ubits-button-group > .ubits-button:only-child {
+    margin-left: 0;
+    border-radius: var(--border-radius-sm);
+}
+
+.ubits-button-group > .ubits-button:hover:not(:disabled),
+.ubits-button-group > .ubits-button:focus-visible {
+    z-index: 2;
+}
+
+.ubits-button-group > .ubits-button.ubits-button--active {
+    z-index: 1;
+}

@@ -756,7 +756,11 @@
 #drawer-colab-filter-overlay.ubits-dropdown-menu__overlay,
 #drawer-grupos-sort-overlay.ubits-dropdown-menu__overlay,
 [id^="ubits-dt-filter-drawer-"].ubits-dropdown-menu__overlay,
-[id^="ubits-dt-sort-drawer-"].ubits-dropdown-menu__overlay {
+[id^="ubits-dt-sort-drawer-"].ubits-dropdown-menu__overlay,
+.drawer-contenidos-col-filter-overlay.ubits-dropdown-menu__overlay,
+[id$="-cursos-col-filter-tipo"].ubits-dropdown-menu__overlay,
+[id$="-cursos-col-filter-level"].ubits-dropdown-menu__overlay,
+[id$="-cursos-col-filter-provider"].ubits-dropdown-menu__overlay {
     z-index: 1102;
 }
 #drawer-cursos-filter-overlay .ubits-dropdown-menu__content,
@@ -766,7 +770,11 @@
 #drawer-colab-filter-overlay .ubits-dropdown-menu__content,
 #drawer-grupos-sort-overlay .ubits-dropdown-menu__content,
 [id^="ubits-dt-filter-drawer-"] .ubits-dropdown-menu__content,
-[id^="ubits-dt-sort-drawer-"] .ubits-dropdown-menu__content {
+[id^="ubits-dt-sort-drawer-"] .ubits-dropdown-menu__content,
+.drawer-contenidos-col-filter-overlay .ubits-dropdown-menu__content,
+[id$="-cursos-col-filter-tipo"] .ubits-dropdown-menu__content,
+[id$="-cursos-col-filter-level"] .ubits-dropdown-menu__content,
+[id$="-cursos-col-filter-provider"] .ubits-dropdown-menu__content {
     z-index: 1103;
 }
 
@@ -900,6 +908,74 @@
 .drawer-wiz-cursos-action-bar.is-visible,
 .drawer-cursos-action-bar.is-visible {
     display: flex;
+}
+
+/* Toolbar panel en paso Contenidos del drawer */
+.drawer-contenidos-toolbar {
+    margin-bottom: var(--gap-sm);
+}
+
+.drawer-contenidos-toolbar .ubits-toolbar-panel__search-group {
+    overflow: visible;
+}
+
+.drawer-contenidos-toolbar .drawer-cursos-filtros-btn-wrap {
+    position: relative;
+    display: inline-flex;
+    overflow: visible;
+}
+
+/* Tabla catálogo — encabezados con filtros (patrón seguimiento) */
+.drawer-contenidos-table-wrap {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.drawer-contenidos-table-scroll {
+    flex: 1;
+    min-height: 0;
+    overflow: auto;
+}
+
+.drawer-contenidos-th-filterable {
+    white-space: nowrap;
+}
+
+.drawer-contenidos-col-filter-btn {
+    opacity: 0.6;
+    transition: opacity 0.2s ease;
+    vertical-align: middle;
+    margin-left: 4px;
+}
+
+.drawer-contenidos-th-filterable:hover .drawer-contenidos-col-filter-btn {
+    opacity: 1;
+}
+
+.drawer-contenidos-col-filter-btn--active {
+    opacity: 1;
+    background: var(--ubits-feedback-bg-info-subtle) !important;
+    border-color: transparent !important;
+    color: var(--ubits-accent-brand) !important;
+}
+
+.drawer-contenidos-col-filter-btn--active i {
+    color: var(--ubits-accent-brand) !important;
+}
+
+.drawer-contenidos-table-row {
+    cursor: pointer;
+}
+
+.drawer-contenidos-table-row.is-selected {
+    background: var(--ubits-feedback-bg-info-subtle);
+}
+
+.drawer-contenidos-catalog-table .ubits-table__th--checkbox,
+.drawer-contenidos-catalog-table td[data-col="checkbox"] {
+    width: 40px;
 }
 
 /* =========================================================================

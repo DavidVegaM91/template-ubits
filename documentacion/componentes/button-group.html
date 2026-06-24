@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="../../images/playground-favicon.svg">
+    <title>Button group | UBITS Playground</title>
+    <link rel="stylesheet" href="../../general-styles/ubits-colors.css">
+    <link rel="stylesheet" href="../../general-styles/styles.css">
+    <link rel="stylesheet" href="../../general-styles/fontawesome-icons.css">
+    <link rel="stylesheet" href="../../general-styles/ubits-typography.css">
+    <link rel="stylesheet" href="../../components/sub-nav.css">
+    <link rel="stylesheet" href="../../components/alert.css">
+    <link rel="stylesheet" href="../../components/sidebar.css">
+    <link rel="stylesheet" href="../../docs/docs-sidebar.css">
+    <link rel="stylesheet" href="../../docs/docstyles.css">
+    <link rel="stylesheet" href="../../components/button.css">
+    <link rel="stylesheet" href="../../components/button-group.css">
+    <link rel="stylesheet" href="../../components/tooltip.css">
+    <link rel="stylesheet" href="../../components/toast.css">
+    <style>
+        .preview-control-btn.active {
+            background: var(--ubits-accent-brand) !important;
+            color: white !important;
+            border-color: var(--ubits-accent-brand) !important;
+        }
+        .preview-control-btn.active span { color: white !important; }
+        #button-group-preview { display: flex; flex-direction: column; gap: 24px; align-items: flex-start; }
+        #button-group-preview .preview-row { display: flex; flex-direction: column; gap: 8px; align-items: flex-start; }
+    </style>
+</head>
+<body class="componentes-page" data-theme="light">
+    <div class="dashboard-container">
+        <div class="tooltip" id="tooltip"></div>
+        <div id="ubits-toast-container"></div>
+
+        <main class="main-content">
+            <div id="top-nav-container"></div>
+            <div style="display: flex;">
+                <div id="docs-dropdown-container"></div>
+                <div id="docs-sidebar-container"></div>
+                <div class="components-content">
+                    <div class="content-area" style="display: block; width: 100%;">
+                        <div style="text-align: center; margin-bottom: 60px;">
+                            <h1 class="ubits-display-d2-bold" style="margin-bottom: 24px; color: var(--ubits-accent-brand);">
+                                Button group
+                            </h1>
+                            <p class="ubits-body-md-regular" style="max-width: 800px; margin: 0 auto 32px; line-height: 1.6;">
+                                Grupo clásico de botones secondary unidos: bordes compartidos, esquinas redondeadas solo en los extremos. Variante neutral o selectable (ítem activo con estilo active).
+                            </p>
+                        </div>
+
+                        <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: var(--border-radius-lg); margin-bottom: 40px;">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-eye" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Preview del componente
+                            </h2>
+                            <p class="ubits-body-md-regular" style="margin-bottom: var(--gap-md); line-height: 1.6;">
+                                Patrón btn-group clásico sobre Button secondary — sin contenedor tipo segmented control.
+                            </p>
+                            <div style="margin-bottom: var(--gap-lg); display: flex; flex-wrap: wrap; gap: var(--gap-md); align-items: center;">
+                                <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Tamaño:</span>
+                                <button type="button" class="ubits-button ubits-button--secondary ubits-button--xs preview-control-btn" data-bg-size="xs" onclick="setButtonGroupPreviewSize('xs')"><span>XS</span></button>
+                                <button type="button" class="ubits-button ubits-button--secondary ubits-button--xs preview-control-btn active" data-bg-size="sm" onclick="setButtonGroupPreviewSize('sm')"><span>SM</span></button>
+                                <button type="button" class="ubits-button ubits-button--secondary ubits-button--xs preview-control-btn" data-bg-size="md" onclick="setButtonGroupPreviewSize('md')"><span>MD</span></button>
+                            </div>
+                            <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: var(--border-radius-md); position: relative;">
+                                <div id="button-group-preview">
+                                    <div class="preview-row">
+                                        <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Neutral — acciones agrupadas sin selección</span>
+                                        <div class="ubits-button-group" role="group" aria-label="Acciones de exportación" data-bg-group="neutral">
+                                            <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" data-value="export">
+                                                <i class="far fa-download"></i>
+                                                <span>Exportar</span>
+                                            </button>
+                                            <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" data-value="refresh">
+                                                <i class="far fa-arrows-rotate"></i>
+                                                <span>Refrescar</span>
+                                            </button>
+                                            <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" data-value="filter">
+                                                <i class="far fa-filter"></i>
+                                                <span>Filtrar</span>
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <div class="preview-row">
+                                        <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Selectable — un ítem activo</span>
+                                        <div class="ubits-button-group" role="group" aria-label="Vista de contenidos" data-variant="selectable" data-value="list" data-bg-group="view" id="button-group-doc-view">
+                                            <button type="button" class="ubits-button ubits-button--active ubits-button--sm" data-value="list" aria-pressed="true">
+                                                <i class="far fa-list"></i>
+                                                <span>Lista</span>
+                                            </button>
+                                            <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" data-value="grid" aria-pressed="false">
+                                                <i class="far fa-th"></i>
+                                                <span>Cuadrícula</span>
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <div class="preview-row">
+                                        <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Selectable — solo iconos</span>
+                                        <div class="ubits-button-group" role="group" aria-label="Vista de pantalla" data-variant="selectable" data-value="desktop" data-bg-group="screen" id="button-group-doc-screen">
+                                            <button type="button" class="ubits-button ubits-button--active ubits-button--sm ubits-button--icon-only" data-value="desktop" data-tooltip="Vista de escritorio" data-tooltip-delay="1000" aria-label="Vista de escritorio" aria-pressed="true">
+                                                <i class="far fa-desktop"></i>
+                                            </button>
+                                            <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only" data-value="mobile" data-tooltip="Vista móvil" data-tooltip-delay="1000" aria-label="Vista móvil" aria-pressed="false">
+                                                <i class="far fa-mobile-android"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: var(--border-radius-lg); margin-bottom: 40px;">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-info-circle" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Características generales
+                            </h2>
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--gap-lg);">
+                                <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-object-group"></i></div>
+                                    <div class="ubits-body-sm-bold">Unidos</div>
+                                    <div class="ubits-body-sm-regular">Bordes compartidos, margin -1px y radius solo en el primer/último botón</div>
+                                </div>
+                                <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-toggle-on"></i></div>
+                                    <div class="ubits-body-sm-bold">Dos variantes</div>
+                                    <div class="ubits-body-sm-regular">neutral: todos secondary; selectable: activo con variante active (outline brand)</div>
+                                </div>
+                                <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-expand-arrows-alt"></i></div>
+                                    <div class="ubits-body-sm-bold">Tamaños</div>
+                                    <div class="ubits-body-sm-regular">xs (28px), sm (32px) y md (40px), alineados con Button</div>
+                                </div>
+                                <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-icons"></i></div>
+                                    <div class="ubits-body-sm-bold">Icono + texto</div>
+                                    <div class="ubits-body-sm-regular">Cada ítem admite icono FontAwesome; icon-only incluye tooltip con data-tooltip</div>
+                                </div>
+                                <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-keyboard"></i></div>
+                                    <div class="ubits-body-sm-bold">Teclado</div>
+                                    <div class="ubits-body-sm-regular">En selectable, flechas ← → cambian el ítem activo</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: var(--border-radius-lg); margin-bottom: 40px;">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-comments" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Prompts útiles
+                            </h2>
+                            <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6; color: var(--ubits-fg-1-medium);">
+                                Copia el prompt y sustituye lo que va entre corchetes.
+                            </p>
+                            <div id="button-group-warning-alert" style="margin-bottom: 32px;"></div>
+                            <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
+                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                                    <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Grupo selectable en toolbar</h3>
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('button-group-prompt-0')">
+                                        <i class="far fa-copy"></i>
+                                        <span>Copiar</span>
+                                    </button>
+                                </div>
+                                <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm);">
+                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="button-group-prompt-0">En [pantalla], usa button-group.css + button.css para el toggle Cuadrícula/Tabla dentro del toolbar panel. Markup: .ubits-button-group con data-variant="selectable" y botones .ubits-button[data-value] secondary/active. Init con initButtonGroup(selector, { variant: 'selectable', value: '[grid|list]', onChange: fn }). Tamaño sm en toolbars.</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="../../components/sidebar.js"></script>
+    <script src="../../components/sub-nav.js"></script>
+    <script src="../../components/alert.js"></script>
+    <script src="../../components/toast.js"></script>
+    <script src="../../components/tooltip.js"></script>
+    <script src="../../components/button-group.js"></script>
+    <script src="../../docs/docs-sidebar.js"></script>
+    <script src="../../script.js"></script>
+    <script>
+        var buttonGroupPreviewSize = 'sm';
+
+        function copyPrompt(promptId) {
+            var el = document.getElementById(promptId);
+            if (!el) return;
+            navigator.clipboard.writeText(el.textContent).then(function() {
+                var btn = document.querySelector('[onclick="copyPrompt(\'' + promptId + '\')"]');
+                if (btn) {
+                    var icon = btn.querySelector('i');
+                    var span = btn.querySelector('span');
+                    if (icon) icon.className = 'far fa-check';
+                    if (span) span.textContent = 'Copiado';
+                    setTimeout(function() { if (icon) icon.className = 'far fa-copy'; if (span) span.textContent = 'Copiar'; }, 2000);
+                }
+                if (typeof showToast === 'function') showToast('success', '¡Copiado!', { containerId: 'ubits-toast-container', duration: 3500 });
+            }).catch(function() {
+                if (typeof showToast === 'function') showToast('error', 'Error al copiar', { containerId: 'ubits-toast-container', duration: 3500 });
+            });
+        }
+
+        function applyButtonGroupPreviewSize(size) {
+            buttonGroupPreviewSize = size;
+            document.querySelectorAll('#button-group-preview [data-bg-group] .ubits-button').forEach(function(btn) {
+                btn.classList.remove('ubits-button--xs', 'ubits-button--sm', 'ubits-button--md');
+                btn.classList.add('ubits-button--' + size);
+            });
+            document.querySelectorAll('[data-bg-size]').forEach(function(ctrl) {
+                ctrl.classList.toggle('active', ctrl.getAttribute('data-bg-size') === size);
+            });
+        }
+
+        function setButtonGroupPreviewSize(size) {
+            applyButtonGroupPreviewSize(size);
+        }
+
+        function initButtonGroupDocPreview() {
+            applyButtonGroupPreviewSize(buttonGroupPreviewSize);
+            if (typeof initButtonGroup === 'function') {
+                initButtonGroup('#button-group-doc-view', { variant: 'selectable', value: 'list' });
+                initButtonGroup('#button-group-doc-screen', { variant: 'selectable', value: 'desktop' });
+            }
+            if (typeof initTooltip === 'function') initTooltip('#button-group-preview [data-tooltip]');
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            loadSidebar('ninguno');
+            loadSubNav('top-nav-container', 'documentacion');
+            loadDocsSidebar('button-group');
+            if (typeof showAlert === 'function') {
+                showAlert('warning', 'Antes de enviar estos prompts a Cursor, reemplaza los textos entre [corchetes] con la información de tu página.', { containerId: 'button-group-warning-alert', noClose: true });
+            }
+            initButtonGroupDocPreview();
+        });
+    </script>
+</body>
+</html>

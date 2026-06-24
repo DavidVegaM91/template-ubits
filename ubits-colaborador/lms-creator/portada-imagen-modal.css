@@ -300,7 +300,23 @@
     max-height: none;
 }
 
-/* Validación: falta descripción y adjuntos (misma pauta que guión video / SCORM). */
+/* Contador bajo el ai-panel (misma fila helper que modal Agregar video / createInput). */
+#cc-portada-imagen-modal .cc-pim-idea-input-helper {
+    margin-top: var(--gap-xs);
+    width: 100%;
+    box-sizing: border-box;
+}
+
+#cc-portada-imagen-modal .cc-pim-idea-input-helper .ubits-input-helper-text {
+    color: var(--ubits-fg-1-medium);
+}
+
+#cc-portada-imagen-modal .ai-panel__input-box--context-error + .cc-pim-idea-input-helper,
+#cc-portada-imagen-modal .ubits-ia-chat-thread__input-area:has(.ai-panel__input-box--context-error) .cc-pim-idea-input-helper .ubits-input-counter {
+    display: none;
+}
+
+/* Validación: falta descripción (misma pauta que guión video / SCORM). */
 #cc-portada-imagen-modal .ai-panel__input-box--context-error {
     border-color: var(--ubits-accent-brand) !important;
     box-shadow: 0 0 0 2px color-mix(in srgb, var(--ubits-accent-brand) 12%, transparent) !important;

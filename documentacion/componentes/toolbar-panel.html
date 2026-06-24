@@ -13,6 +13,8 @@
     <link rel="stylesheet" href="../../components/alert.css">
     <link rel="stylesheet" href="../../components/sidebar.css">
     <link rel="stylesheet" href="../../components/button.css">
+    <link rel="stylesheet" href="../../components/button-group.css">
+    <link rel="stylesheet" href="../../components/input.css">
     <link rel="stylesheet" href="../../components/switch.css">
     <link rel="stylesheet" href="../../components/tooltip.css">
     <link rel="stylesheet" href="../../components/toolbar-panel.css">
@@ -51,18 +53,27 @@
                                 Preview del componente
                             </h2>
                             <p class="ubits-body-md-regular" style="margin-bottom: var(--gap-md); line-height: 1.6;">
-                                Solo se muestra la <strong>barra</strong> del toolbar (sin lista ni filtros aplicados). El interruptor es único de esta página de documentación: en el producto decides con PM si llevas o no el bloque «Ver como».
+                                Solo se muestra la <strong>barra</strong> del toolbar (sin lista ni filtros aplicados). Los interruptores son únicos de esta página de documentación: en el producto decides con PM si llevas o no el bloque «Ver como» y si usas la variante plain.
                             </p>
-                            <div style="margin-bottom: var(--gap-lg); display: flex; flex-wrap: wrap; gap: var(--gap-md); align-items: center;">
-                                <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); white-space: nowrap;">Mostrar «Ver como» (cuadrícula / tabla)</span>
-                                <label class="ubits-switch ubits-switch--md">
-                                    <input type="checkbox" class="ubits-switch__input" id="toolbar-panel-preview-toggle-ver-como" checked role="switch" aria-checked="true" aria-label="Mostrar u ocultar el grupo Ver como en el preview">
-                                    <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
-                                </label>
+                            <div style="margin-bottom: var(--gap-lg); display: flex; flex-direction: column; gap: 12px;">
+                                <div style="display: flex; flex-wrap: wrap; gap: var(--gap-md); align-items: center;">
+                                    <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); white-space: nowrap;">Mostrar «Ver como» (cuadrícula / tabla)</span>
+                                    <label class="ubits-switch ubits-switch--md">
+                                        <input type="checkbox" class="ubits-switch__input" id="toolbar-panel-preview-toggle-ver-como" checked role="switch" aria-checked="true" aria-label="Mostrar u ocultar el grupo Ver como en el preview">
+                                        <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
+                                    </label>
+                                </div>
+                                <div style="display: flex; flex-wrap: wrap; gap: var(--gap-md); align-items: center;">
+                                    <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); white-space: nowrap;">Variante plain (sin fondo, borde ni padding)</span>
+                                    <label class="ubits-switch ubits-switch--md">
+                                        <input type="checkbox" class="ubits-switch__input" id="toolbar-panel-preview-toggle-plain" role="switch" aria-checked="false" aria-label="Activar o desactivar la variante plain del toolbar panel">
+                                        <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
+                                    </label>
+                                </div>
                             </div>
                             <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: var(--border-radius-md); position: relative; width: 100%; min-width: 0; box-sizing: border-box;">
                                 <div id="toolbar-panel-doc-preview">
-                                    <div class="ubits-toolbar-panel">
+                                    <div class="ubits-toolbar-panel" id="toolbar-panel-doc-root">
                                         <div class="ubits-toolbar-panel__bar">
                                             <div class="ubits-toolbar-panel__title-block">
                                                 <span class="ubits-toolbar-panel__title ubits-body-md-bold">Elementos del catálogo</span>
@@ -72,24 +83,27 @@
                                                 </span>
                                             </div>
                                             <div class="ubits-toolbar-panel__actions">
-                                                <div class="ubits-toolbar-panel__search-group">
-                                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--md ubits-button--icon-only ubits-toolbar-panel__search-toggle" data-tooltip="Buscar (en producto: abre búsqueda)" data-tooltip-delay="1000" aria-label="Buscar">
+                                                <div class="ubits-toolbar-panel__search-group" id="toolbar-panel-doc-search-group">
+                                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only ubits-toolbar-panel__search-toggle" id="toolbar-panel-doc-search-toggle" data-tooltip="Buscar" data-tooltip-delay="1000" aria-label="Buscar">
                                                         <i class="far fa-magnifying-glass"></i>
                                                     </button>
-                                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--md ubits-button--icon-only ubits-toolbar-panel__filter-btn" data-tooltip="Filtrar (en producto: modal o drawer)" data-tooltip-delay="1000" aria-label="Filtrar">
+                                                    <div id="toolbar-panel-doc-search-inline" class="ubits-toolbar-panel__search-inline" style="display: none;" aria-hidden="true"></div>
+                                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only ubits-toolbar-panel__filter-btn" id="toolbar-panel-doc-filter-btn" data-tooltip="Filtrar" data-tooltip-delay="1000" aria-label="Filtrar">
                                                         <i class="far fa-filter"></i>
                                                     </button>
                                                 </div>
-                                                <div class="ubits-toolbar-panel__control-group" id="toolbar-panel-preview-ver-como-group" role="group" aria-label="Vista">
+                                                <div class="ubits-toolbar-panel__control-group" id="toolbar-panel-preview-ver-como-group">
                                                     <span class="ubits-toolbar-panel__control-label ubits-body-sm-regular">Ver como:</span>
-                                                    <button type="button" class="ubits-button ubits-button--tertiary ubits-button--md ubits-button--active" id="toolbar-panel-doc-view-cuadricula" aria-pressed="true">
-                                                        <i class="far fa-grid-2"></i>
-                                                        <span>Cuadrícula</span>
-                                                    </button>
-                                                    <button type="button" class="ubits-button ubits-button--tertiary ubits-button--md" id="toolbar-panel-doc-view-tabla" aria-pressed="false">
-                                                        <i class="far fa-list-ul"></i>
-                                                        <span>Tabla</span>
-                                                    </button>
+                                                    <div class="ubits-button-group" role="group" aria-label="Ver como:" data-variant="selectable" data-value="grid" id="toolbar-panel-doc-view-group">
+                                                        <button type="button" class="ubits-button ubits-button--active ubits-button--sm" data-value="grid" aria-pressed="true">
+                                                            <i class="far fa-grid-2"></i>
+                                                            <span>Cuadrícula</span>
+                                                        </button>
+                                                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" data-value="list" aria-pressed="false">
+                                                            <i class="far fa-list-ul"></i>
+                                                            <span>Tabla</span>
+                                                        </button>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -110,19 +124,24 @@
                                     <div class="ubits-body-sm-regular">Fondo y radios coherentes con el resto de tarjetas del producto</div>
                                 </div>
                                 <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-border-none"></i></div>
+                                    <div class="ubits-body-sm-bold">Variante plain</div>
+                                    <div class="ubits-body-sm-regular">Clase ubits-toolbar-panel--plain: solo la barra, sin caja contenedora</div>
+                                </div>
+                                <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
                                     <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-arrows-left-right"></i></div>
                                     <div class="ubits-body-sm-bold">Barra flexible</div>
                                     <div class="ubits-body-sm-regular">Título y acciones se reparten; en móvil la barra se apila de forma ordenada</div>
                                 </div>
                                 <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-object-group"></i></div>
+                                    <div class="ubits-body-sm-bold">Button group en vista</div>
+                                    <div class="ubits-body-sm-regular">Cuadrícula/Tabla usa button-group selectable sm; búsqueda y filtro son botones sueltos sm</div>
+                                </div>
+                                <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
                                     <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-link"></i></div>
                                     <div class="ubits-body-sm-bold">Misma pieza en varios flujos</div>
                                     <div class="ubits-body-sm-regular">Catálogos, LMS Creator u otras listas pueden compartir la misma barra; lo que cambia es qué acciones muestras</div>
-                                </div>
-                                <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
-                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-puzzle-piece"></i></div>
-                                    <div class="ubits-body-sm-bold">Componible</div>
-                                    <div class="ubits-body-sm-regular">Los botones son el componente Button oficial; puedes añadir o quitar grupos según la pantalla</div>
                                 </div>
                             </div>
                         </div>
@@ -145,7 +164,7 @@
                                     </button>
                                 </div>
                                 <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm);">
-                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="toolbar-panel-prompt-0">En [ubicación de la página], añade un bloque toolbar panel (título [título], meta con contador y acciones). Sigue la sección «Toolbar panel» del README y las reglas Cursor «Implementar Toolbar panel»: importa toolbar-panel.css, button.css, fontawesome y el resto de dependencias según si hay búsqueda, select, modal, chips o empty state.</code></pre>
+                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="toolbar-panel-prompt-0">En [ubicación de la página], añade un bloque toolbar panel (título [título], meta con contador y acciones). Sigue la sección «Toolbar panel» del README y las reglas Cursor «Implementar Toolbar panel»: importa toolbar-panel.css, button.css, button-group.css (si hay toggle de vista), fontawesome y el resto de dependencias según si hay búsqueda, select, modal, chips o empty state. Variante plain: añade ubits-toolbar-panel--plain al contenedor.</code></pre>
                                 </div>
                             </div>
                             <div style="padding-bottom: 24px;">
@@ -157,12 +176,11 @@
                                     </button>
                                 </div>
                                 <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm);">
-                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="toolbar-panel-prompt-1">En [pantalla], cablea la barra como en Contenidos: lupa que oculta el botón y muestra createInput type search en .ubits-toolbar-panel__search-inline; clic fuera sin texto colapsa. Si hay filtros con select: dropdown-menu.css y dropdown-menu.js antes de input.js. Actualiza el contador del meta con visibles/total y aplica el patrón del README para el botón Filtrar (active + badge).</code></pre>
+                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="toolbar-panel-prompt-1">En [pantalla], cablea la barra como en Contenidos: lupa sm que oculta el botón y muestra createInput type search sm en .ubits-toolbar-panel__search-inline; clic fuera sin texto colapsa (sin botón X extra). Toggle Cuadrícula/Tabla: button-group selectable sm. Si hay filtros con select: dropdown-menu.css y dropdown-menu.js antes de input.js. Actualiza el contador del meta con visibles/total y aplica el patrón del README para el botón Filtrar (active + badge).</code></pre>
                                 </div>
                             </div>
                         </div>
 
-                        
                     </div>
                 </div>
             </div>
@@ -174,10 +192,14 @@
     <script src="../../components/alert.js"></script>
     <script src="../../components/toast.js"></script>
     <script src="../../components/tooltip.js"></script>
+    <script src="../../components/input.js"></script>
+    <script src="../../components/button-group.js"></script>
     <script src="../../docs/docs-sidebar.js"></script>
     <script src="../../script.js"></script>
     <script>
-        
+        var toolbarPanelDocSearchQuery = '';
+        var toolbarPanelDocSearchOpen = false;
+
         function copyPrompt(promptId) {
             var el = document.getElementById(promptId);
             if (!el) return;
@@ -196,6 +218,21 @@
                 if (typeof showToast === 'function') showToast('error', 'Error al copiar', { containerId: 'ubits-toast-container', duration: 3500 });
             });
         }
+
+        function toolbarPanelDocCollapseSearch() {
+            var toggle = document.getElementById('toolbar-panel-doc-search-toggle');
+            var searchCont = document.getElementById('toolbar-panel-doc-search-inline');
+            toolbarPanelDocSearchQuery = '';
+            toolbarPanelDocSearchOpen = false;
+            if (toggle) toggle.style.display = '';
+            if (searchCont) {
+                searchCont.style.display = 'none';
+                searchCont.setAttribute('aria-hidden', 'true');
+                searchCont.innerHTML = '';
+            }
+            if (typeof initTooltip === 'function') initTooltip('#toolbar-panel-doc-preview [data-tooltip]');
+        }
+
         function toolbarPanelDocSetVerComoPreviewVisible(show) {
             var g = document.getElementById('toolbar-panel-preview-ver-como-group');
             var sw = document.getElementById('toolbar-panel-preview-toggle-ver-como');
@@ -210,25 +247,71 @@
             if (typeof initTooltip === 'function') initTooltip('#toolbar-panel-doc-preview [data-tooltip]');
         }
 
+        function toolbarPanelDocSetPlainPreview(enabled) {
+            var root = document.getElementById('toolbar-panel-doc-root');
+            var sw = document.getElementById('toolbar-panel-preview-toggle-plain');
+            if (root) root.classList.toggle('ubits-toolbar-panel--plain', !!enabled);
+            if (sw) sw.setAttribute('aria-checked', enabled ? 'true' : 'false');
+        }
+
+        function initToolbarPanelDocSearch() {
+            var toggle = document.getElementById('toolbar-panel-doc-search-toggle');
+            var searchCont = document.getElementById('toolbar-panel-doc-search-inline');
+            var filterBtn = document.getElementById('toolbar-panel-doc-filter-btn');
+            if (!toggle || !searchCont) return;
+
+            toggle.addEventListener('click', function(e) {
+                e.stopPropagation();
+                if (toolbarPanelDocSearchOpen) return;
+                toggle.style.display = 'none';
+                searchCont.style.display = 'flex';
+                searchCont.setAttribute('aria-hidden', 'false');
+                if (typeof createInput === 'function') {
+                    createInput({
+                        containerId: 'toolbar-panel-doc-search-inline',
+                        type: 'search',
+                        size: 'sm',
+                        placeholder: 'Buscar…',
+                        showLabel: false,
+                        onChange: function(value) {
+                            toolbarPanelDocSearchQuery = value || '';
+                        }
+                    });
+                    setTimeout(function() {
+                        var input = searchCont.querySelector('input');
+                        if (input) input.focus();
+                    }, 100);
+                }
+                toolbarPanelDocSearchOpen = true;
+            });
+
+            document.addEventListener('click', function(e) {
+                if (!toolbarPanelDocSearchOpen) return;
+                if (searchCont.contains(e.target) || toggle.contains(e.target)) return;
+                if (filterBtn && filterBtn.contains(e.target)) return;
+                if (!toolbarPanelDocSearchQuery || !String(toolbarPanelDocSearchQuery).trim()) {
+                    toolbarPanelDocCollapseSearch();
+                }
+            });
+        }
+
         function initToolbarPanelDocPreviewControls() {
-            var sw = document.getElementById('toolbar-panel-preview-toggle-ver-como');
-            if (sw) {
-                sw.addEventListener('change', function () {
+            var swVerComo = document.getElementById('toolbar-panel-preview-toggle-ver-como');
+            if (swVerComo) {
+                swVerComo.addEventListener('change', function() {
                     toolbarPanelDocSetVerComoPreviewVisible(this.checked);
                 });
             }
-            var btnGrid = document.getElementById('toolbar-panel-doc-view-cuadricula');
-            var btnTable = document.getElementById('toolbar-panel-doc-view-tabla');
-            function setViewToggle(activeEl) {
-                if (!btnGrid || !btnTable) return;
-                var isGrid = activeEl === btnGrid;
-                btnGrid.classList.toggle('ubits-button--active', isGrid);
-                btnTable.classList.toggle('ubits-button--active', !isGrid);
-                btnGrid.setAttribute('aria-pressed', isGrid ? 'true' : 'false');
-                btnTable.setAttribute('aria-pressed', isGrid ? 'false' : 'true');
+            var swPlain = document.getElementById('toolbar-panel-preview-toggle-plain');
+            if (swPlain) {
+                swPlain.addEventListener('change', function() {
+                    toolbarPanelDocSetPlainPreview(this.checked);
+                });
             }
-            if (btnGrid) btnGrid.addEventListener('click', function () { setViewToggle(btnGrid); });
-            if (btnTable) btnTable.addEventListener('click', function () { setViewToggle(btnTable); });
+            if (typeof initButtonGroup === 'function') {
+                initButtonGroup('#toolbar-panel-doc-view-group', { variant: 'selectable', value: 'grid' });
+            }
+            initToolbarPanelDocSearch();
         }
 
         document.addEventListener('DOMContentLoaded', function() {
@@ -240,6 +323,8 @@
             }
             initToolbarPanelDocPreviewControls();
             toolbarPanelDocSetVerComoPreviewVisible(true);
+            toolbarPanelDocSetPlainPreview(false);
+            if (typeof initTooltip === 'function') initTooltip('#toolbar-panel-doc-preview [data-tooltip]');
         });
     </script>
 </body>

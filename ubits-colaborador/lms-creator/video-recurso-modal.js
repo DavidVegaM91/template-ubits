@@ -36,6 +36,9 @@
     /** Guión para «Generar video»: longitud mínima/máxima (coincide con contador createInput). */
     var VIDEO_GUION_MIN_CHARS = 500;
     var VIDEO_GUION_MAX_CHARS = 1700;
+    /** Tema / contexto para «Generar guión» (textarea nativa del ai-panel). */
+    var VIDEO_CONTEXT_TEMA_MIN_CHARS = 250;
+    var VIDEO_CONTEXT_TEMA_MAX_CHARS = 25000;
 
     /** Placeholder mientras se genera video IA (en página; no usar ia-loader por restricción BD). */
     var VIDEO_IA_PLACEHOLDER_MP4 = '../../videos/ia-loaders/ia-loader-video.mp4';
@@ -511,6 +514,54 @@
     }
 
     /** Selector modo guión (Figma AI-Capabilities 644:1611 — icono arriba, título abajo). */
+    function buildContextTemaCounterHtml() {
+        return (
+            '<div class="ubits-input-helper cc-vm-context-input-helper">' +
+            '<div class="ubits-input-helper-row">' +
+            '<span class="ubits-input-helper-text">Mínimo ' +
+            VIDEO_CONTEXT_TEMA_MIN_CHARS +
+            ' · Máximo ' +
+            VIDEO_CONTEXT_TEMA_MAX_CHARS +
+            ' caracteres</span>' +
+            '<span class="ubits-input-counter" id="cc-vm-context-counter">0/' +
+            VIDEO_CONTEXT_TEMA_MAX_CHARS +
+            '</span></div></div>'
+        );
+    }
+
+    function buildContextTemaInputAreaHtml(genGuionBtnVariant) {
+        var btnClass =
+            genGuionBtnVariant === 'secondary'
+                ? 'ubits-ia-button ubits-ia-button--secondary ubits-ia-button--sm ubits-ia-button--with-token-cost'
+                : 'ubits-ia-button ubits-ia-button--primary ubits-ia-button--sm ubits-ia-button--with-token-cost';
+        return (
+            '<div class="cc-vm-guion-ia-context">' +
+            '<div class="ubits-ia-chat-thread__input-area">' +
+            '<div class="ai-panel__input-box" id="cc-vm-ia-input-box">' +
+            '<input type="file" id="cc-vm-files" accept=".txt,.pdf,.doc,.docx,text/plain,application/pdf" multiple hidden>' +
+            '<div class="ai-panel__pending-files-strip" id="cc-vm-pending-files" style="display:none;"></div>' +
+            '<textarea id="cc-vm-context-input" class="ai-panel__input ubits-body-md-regular" rows="2" maxlength="' +
+            VIDEO_CONTEXT_TEMA_MAX_CHARS +
+            '" placeholder="Adjunta un archivo o describe el tema del guión"></textarea>' +
+            '<div class="ai-panel__input-actions">' +
+            '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only ai-panel__attach-btn" id="cc-vm-attach" aria-label="Adjuntar">' +
+            '<i class="far fa-plus"></i></button>' +
+            '<div class="ai-panel__input-spacer" aria-hidden="true"></div>' +
+            '<button type="button" class="' +
+            btnClass +
+            '" id="cc-vm-btn-gen-guion" disabled aria-disabled="true">' +
+            '<span id="cc-vm-gen-guion-label">Generar guión</span>' +
+            '<span class="ubits-ia-button__token-divider" aria-hidden="true"></span>' +
+            '<span class="ubits-ia-button__token-cost" aria-hidden="true">' +
+            '<i class="far fa-coin-vertical"></i>' +
+            '<span class="ubits-ia-button__token-number">' +
+            VIDEO_GUION_IA_TOKEN_COST +
+            '</span></span></button></div></div>' +
+            buildContextTemaCounterHtml() +
+            '</div></div>'
+        );
+    }
+
     function buildGuionModeSelectHtml() {
         return (
             '<div class="cc-vm-guion-mode-select" role="radiogroup" aria-label="Cómo quieres definir el guión">' +
@@ -541,24 +592,7 @@
             '<div class="cc-vm-section cc-vm-wizard-guion">' +
             buildGuionModeSelectHtml() +
             '<div id="cc-vm-guion-panel-ia" class="cc-vm-guion-panel">' +
-            '<div class="cc-vm-guion-ia-context">' +
-            '<div class="ubits-ia-chat-thread__input-area">' +
-            '<div class="ai-panel__input-box" id="cc-vm-ia-input-box">' +
-            '<input type="file" id="cc-vm-files" accept=".txt,.pdf,.doc,.docx,text/plain,application/pdf" multiple hidden>' +
-            '<div class="ai-panel__pending-files-strip" id="cc-vm-pending-files" style="display:none;"></div>' +
-            '<textarea id="cc-vm-context-input" class="ai-panel__input ubits-body-md-regular" rows="2" placeholder="Adjunta un archivo o describe el tema del guión"></textarea>' +
-            '<div class="ai-panel__input-actions">' +
-            '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only ai-panel__attach-btn" id="cc-vm-attach" aria-label="Adjuntar">' +
-            '<i class="far fa-plus"></i></button>' +
-            '<div class="ai-panel__input-spacer" aria-hidden="true"></div>' +
-            '<button type="button" class="ubits-ia-button ubits-ia-button--primary ubits-ia-button--sm ubits-ia-button--with-token-cost" id="cc-vm-btn-gen-guion">' +
-            '<span id="cc-vm-gen-guion-label">Generar guión</span>' +
-            '<span class="ubits-ia-button__token-divider" aria-hidden="true"></span>' +
-            '<span class="ubits-ia-button__token-cost" aria-hidden="true">' +
-            '<i class="far fa-coin-vertical"></i>' +
-            '<span class="ubits-ia-button__token-number">' +
-            VIDEO_GUION_IA_TOKEN_COST +
-            '</span></span></button></div></div></div></div>' +
+            buildContextTemaInputAreaHtml('primary') +
             '<div id="cc-vm-guion-ia-editor-block" class="cc-vm-guion-ia-editor-block" style="display:none">' +
             '<p class="ubits-body-sm-semibold cc-vm-guion-ia-editor-heading">Guión generado</p>' +
             '<div id="cc-vm-guion-ia-editor-wrap" class="cc-vm-guion-input-mount"></div></div></div>' +
@@ -671,29 +705,7 @@
                         buildGuionModeSelectHtml() +
 
                         '<div id="cc-vm-guion-panel-ia" class="cc-vm-guion-panel">' +
-                            '<div class="cc-vm-guion-ia-context">' +
-                                '<div class="ubits-ia-chat-thread__input-area">' +
-                                    '<div class="ai-panel__input-box" id="cc-vm-ia-input-box">' +
-                                        '<input type="file" id="cc-vm-files" accept=".txt,.pdf,.doc,.docx,text/plain,application/pdf" multiple hidden>' +
-                                        '<div class="ai-panel__pending-files-strip" id="cc-vm-pending-files" style="display:none;"></div>' +
-                                        '<textarea id="cc-vm-context-input" class="ai-panel__input ubits-body-md-regular" rows="2" placeholder="Adjunta un archivo o describe el tema del guión"></textarea>' +
-                                        '<div class="ai-panel__input-actions">' +
-                                            '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only ai-panel__attach-btn" id="cc-vm-attach" aria-label="Adjuntar">' +
-                                                '<i class="far fa-plus"></i>' +
-                                            '</button>' +
-                                            '<div class="ai-panel__input-spacer" aria-hidden="true"></div>' +
-                                            '<button type="button" class="ubits-ia-button ubits-ia-button--primary ubits-ia-button--sm ubits-ia-button--with-token-cost" id="cc-vm-btn-gen-guion">' +
-                                                '<span id="cc-vm-gen-guion-label">Generar guión</span>' +
-                                                '<span class="ubits-ia-button__token-divider" aria-hidden="true"></span>' +
-                                                '<span class="ubits-ia-button__token-cost" aria-hidden="true">' +
-                                                    '<i class="far fa-coin-vertical"></i>' +
-                                                    '<span class="ubits-ia-button__token-number">' + VIDEO_GUION_IA_TOKEN_COST + '</span>' +
-                                                '</span>' +
-                                            '</button>' +
-                                        '</div>' +
-                                    '</div>' +
-                                '</div>' +
-                            '</div>' +
+                            buildContextTemaInputAreaHtml('primary') +
                             '<div id="cc-vm-guion-ia-editor-block" class="cc-vm-guion-ia-editor-block" style="display:none">' +
                                 '<p class="ubits-body-sm-semibold cc-vm-guion-ia-editor-heading">Guión generado</p>' +
                                 '<div id="cc-vm-guion-ia-editor-wrap" class="cc-vm-guion-input-mount"></div>' +
@@ -1107,6 +1119,7 @@
     function refreshIaButtons() {
         /* No deshabilitar por tokens insuficientes: al clic, trySpendVideoAiTokens muestra toast (mismo patrón que SCORM). */
         syncVideoModalTokensBadge();
+        refreshGenGuionButtonState();
         if (CC_VIDEO_MODAL_UI === 'v2' && _currentTab === 'ia') {
             if (_iaWizardStep === 1) {
                 var sig = document.getElementById('cc-vm-btn-siguiente');
@@ -1370,9 +1383,40 @@
         return ta ? String(ta.value || '').trim() : '';
     }
 
+    function contextTemaCharCount() {
+        var ta = getContextTemaTextarea();
+        return ta ? String(ta.value || '').length : 0;
+    }
+
+    function hasValidContextTemaForGenGuion() {
+        return contextTemaCharCount() >= VIDEO_CONTEXT_TEMA_MIN_CHARS;
+    }
+
+    function refreshGenGuionButtonState() {
+        var btn = document.getElementById('cc-vm-btn-gen-guion');
+        if (!btn) return;
+        if (btn.classList.contains('ubits-ia-button--generating')) return;
+        var enabled = hasValidContextTemaForGenGuion();
+        btn.disabled = !enabled;
+        btn.setAttribute('aria-disabled', enabled ? 'false' : 'true');
+    }
+
+    function updateContextTemaCounter() {
+        var ta = getContextTemaTextarea();
+        var counter = document.getElementById('cc-vm-context-counter');
+        if (!ta || !counter) return;
+        var len = String(ta.value || '').length;
+        counter.textContent = len + '/' + VIDEO_CONTEXT_TEMA_MAX_CHARS;
+        refreshGenGuionButtonState();
+    }
+
     function clearContextTemaError() {
         var box = getContextTemaBox();
         if (box) box.classList.remove('ai-panel__input-box--context-error');
+        var helper = document.querySelector('#cc-video-recurso-modal .cc-vm-context-input-helper');
+        var counter = document.getElementById('cc-vm-context-counter');
+        if (helper) helper.style.display = '';
+        if (counter) counter.style.display = '';
     }
 
     /** Mismo patrón que SCORM: textarea `.ai-panel__input` (sin borde propio; el borde es el `ai-panel__input-box`). */
@@ -1380,11 +1424,16 @@
         var ta = getContextTemaTextarea();
         if (!ta || ta._ccVmCtxWired) return;
         ta._ccVmCtxWired = true;
+        ta.setAttribute('maxlength', String(VIDEO_CONTEXT_TEMA_MAX_CHARS));
         ta.addEventListener('input', function () {
             clearContextTemaError();
             autosizeContextTemaTextarea();
+            updateContextTemaCounter();
         });
-        setTimeout(autosizeContextTemaTextarea, 0);
+        setTimeout(function () {
+            autosizeContextTemaTextarea();
+            updateContextTemaCounter();
+        }, 0);
     }
 
     function getActiveGuionContainerId() {
@@ -1569,6 +1618,7 @@
         renderPendingFilesStrip();
         clearContextTemaError();
         autosizeContextTemaTextarea();
+        updateContextTemaCounter();
     }
 
     /** Tras generar el guión IA, desplaza el scroll del modal hasta el bloque editable. */
@@ -1616,12 +1666,9 @@
         var btn = document.getElementById('cc-vm-btn-gen-guion');
         if (!btn || btn._ccWired) return;
         btn._ccWired = true;
+        refreshGenGuionButtonState();
         btn.addEventListener('click', function () {
-            var tema = contextTemaValue();
-            if (!tema && _pendingFiles.length > 0) {
-                tema = _pendingFiles.map(function (f) { return f.name; }).join(', ');
-            }
-            if (!tema) {
+            if (!hasValidContextTemaForGenGuion()) {
                 var boxCtx = getContextTemaBox();
                 if (boxCtx) boxCtx.classList.add('ai-panel__input-box--context-error');
                 var taCtx = getContextTemaTextarea();

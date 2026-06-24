@@ -173,9 +173,15 @@
     display: none !important;
 }
 
-/* Dropdown de filtro: autocomplete + mismo alto máximo que seguimiento (220px) */
+/* Dropdown de filtro: autocomplete + lista con scroll contenida (sin hueco blanco al marcar ítems) */
+.ubits-dt-filter-overlay .ubits-dropdown-menu__content {
+    max-height: min(380px, calc(100vh - 16px));
+}
+
 .ubits-dt-filter-overlay .ubits-dropdown-menu__options {
-    max-height: 220px;
+    flex: 1 1 auto;
+    min-height: 0;
+    max-height: none;
     overflow-y: auto;
 }
 

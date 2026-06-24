@@ -19,6 +19,8 @@
     var OVERLAY_ID = 'cc-portada-imagen-modal';
     var TOKEN_GENERATE = 2;
     var MAX_IMAGE_MB = 5;
+    var PIM_IDEA_MIN_WORDS = 6;
+    var PIM_IDEA_MAX_WORDS = 500;
     /** Si innerWidth es estrictamente mayor a este valor, `openModal` usa tamaño `md`; si no, `sm`. */
     var PIM_MODAL_WIDE_MIN_PX = 1440;
     var AI_IMAGES = [
@@ -36,6 +38,8 @@
     var _currentTab = 'ia';
     var _iaImageIndex = 0;
     var _iaResultSrc = '';
+    /** Prompt con el que se generó la vista previa actual (para «Regenerar portada»). */
+    var _iaResultPrompt = '';
     var _uploadDataUrl = '';
     var _modalTrailerUrl = '';
     var _trailerInputInited = false;
@@ -156,6 +160,21 @@
         );
     }
 
+    function buildPimIdeaCounterHtml() {
+        return (
+            '<div class="ubits-input-helper cc-pim-idea-input-helper">' +
+            '<div class="ubits-input-helper-row">' +
+            '<span class="ubits-input-helper-text">Mínimo ' +
+            PIM_IDEA_MIN_WORDS +
+            ' · Máximo ' +
+            PIM_IDEA_MAX_WORDS +
+            ' palabras</span>' +
+            '<span class="ubits-input-counter" id="cc-pim-idea-word-counter">0/' +
+            PIM_IDEA_MAX_WORDS +
+            '</span></div></div>'
+        );
+    }
+
     function buildIaPanel() {
         return (
             '<div class="cc-vmodal-panel" id="cc-pim-tab-ia">' +
@@ -176,15 +195,17 @@
             '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only ai-panel__attach-btn" id="cc-pim-attach" aria-label="Adjuntar referencia">' +
             '<i class="far fa-plus"></i></button>' +
             '<div class="ai-panel__input-spacer" aria-hidden="true"></div>' +
-            '<button type="button" class="ubits-ia-button ubits-ia-button--primary ubits-ia-button--sm ubits-ia-button--with-token-cost" id="cc-pim-btn-generar">' +
-            '<span>Generar portada</span>' +
+            '<button type="button" class="ubits-ia-button ubits-ia-button--primary ubits-ia-button--sm ubits-ia-button--with-token-cost" id="cc-pim-btn-generar" disabled aria-disabled="true">' +
+            '<span id="cc-pim-btn-generar-label">Generar portada</span>' +
             '<span class="ubits-ia-button__token-divider" aria-hidden="true"></span>' +
             '<span class="ubits-ia-button__token-cost" aria-hidden="true">' +
             '<i class="far fa-coin-vertical"></i>' +
             '<span class="ubits-ia-button__token-number">' +
             TOKEN_GENERATE +
             '</span></span></button>' +
-            '</div></div></div></div></div>' +
+            '</div></div>' +
+            buildPimIdeaCounterHtml() +
+            '</div></div></div>' +
             '<div class="cc-vm-right-col">' +
             '<div class="cc-pim-preview-stage" id="cc-pim-preview-stage" aria-live="polite">' +
             '<div id="cc-pim-preview-empty-host"></div>' +
@@ -271,6 +292,53 @@
     function refreshGenButtons() {
         /* Sin bloqueo por tokens: trySpendTokens muestra toast al clic si no alcanza (como SCORM). */
         syncPimTokensBadge();
+        refreshGenPortadaButtonState();
+    }
+
+    function countPimIdeaWords(text) {
+        var t = String(text || '').trim();
+        if (!t) return 0;
+        return t.split(/\s+/).filter(Boolean).length;
+    }
+
+    function trimPimIdeaToMaxWords(text) {
+        var parts = String(text || '').trim().split(/\s+/).filter(Boolean);
+        if (parts.length <= PIM_IDEA_MAX_WORDS) return String(text || '');
+        return parts.slice(0, PIM_IDEA_MAX_WORDS).join(' ');
+    }
+
+    function hasValidPimIdeaForGenerate() {
+        var ta = document.getElementById('cc-pim-idea-input');
+        if (!ta) return false;
+        var wc = countPimIdeaWords(ta.value);
+        return wc >= PIM_IDEA_MIN_WORDS && wc <= PIM_IDEA_MAX_WORDS;
+    }
+
+    function getPimGenPortadaButtonLabel() {
+        if (_iaResultSrc && getPimIdeaText() === _iaResultPrompt) {
+            return 'Regenerar portada';
+        }
+        return 'Generar portada';
+    }
+
+    function refreshGenPortadaButtonState() {
+        var btn = document.getElementById('cc-pim-btn-generar');
+        if (!btn) return;
+        if (btn.classList.contains('ubits-ia-button--generating')) return;
+        var enabled = hasValidPimIdeaForGenerate();
+        btn.disabled = !enabled;
+        btn.setAttribute('aria-disabled', enabled ? 'false' : 'true');
+        var labelEl = document.getElementById('cc-pim-btn-generar-label');
+        if (labelEl) labelEl.textContent = getPimGenPortadaButtonLabel();
+    }
+
+    function updatePimIdeaWordCounter() {
+        var ta = document.getElementById('cc-pim-idea-input');
+        var counter = document.getElementById('cc-pim-idea-word-counter');
+        if (!ta || !counter) return;
+        var wc = countPimIdeaWords(ta.value);
+        counter.textContent = wc + '/' + PIM_IDEA_MAX_WORDS;
+        refreshGenPortadaButtonState();
     }
 
     function pimDownloadFilename(src) {
@@ -313,12 +381,6 @@
     function clearPimIdeaError() {
         var box = getPimIdeaInputBox();
         if (box) box.classList.remove('ai-panel__input-box--context-error');
-    }
-
-    /** Texto en el área o al menos un adjunto (imagen o documento). */
-    function pimHasIdeaMaterial() {
-        if (getPimIdeaText().length) return true;
-        return _pimPendingImgs.length > 0 || _pimPendingFiles.length > 0;
     }
 
     function renderPimPendingImgs() {
@@ -481,29 +543,30 @@
         ta._ccPimIdeaWired = true;
         ta.addEventListener('input', function () {
             clearPimIdeaError();
-            refreshGenButtons();
+            var trimmed = trimPimIdeaToMaxWords(ta.value);
+            if (trimmed !== ta.value) {
+                ta.value = trimmed;
+            }
             autosizePimIdeaTextarea();
+            updatePimIdeaWordCounter();
         });
-        setTimeout(autosizePimIdeaTextarea, 0);
+        setTimeout(function () {
+            autosizePimIdeaTextarea();
+            updatePimIdeaWordCounter();
+        }, 0);
     }
 
     function initGenerarPortada() {
         var btn = document.getElementById('cc-pim-btn-generar');
         if (!btn || btn._ccPimWired) return;
         btn._ccPimWired = true;
+        refreshGenPortadaButtonState();
         btn.addEventListener('click', function () {
-            if (!pimHasIdeaMaterial()) {
+            if (!hasValidPimIdeaForGenerate()) {
                 var box = getPimIdeaInputBox();
                 if (box) box.classList.add('ai-panel__input-box--context-error');
                 var taErr = document.getElementById('cc-pim-idea-input');
                 if (taErr) taErr.focus();
-                if (typeof global.showToast === 'function') {
-                    global.showToast(
-                        'warning',
-                        'Adjunta referencias o escribe una descripción para generar la portada.',
-                        { containerId: 'ubits-toast-container' }
-                    );
-                }
                 return;
             }
             clearPimIdeaError();
@@ -543,6 +606,7 @@
             }
             setTimeout(function () {
                 _iaResultSrc = AI_IMAGES[_iaImageIndex];
+                _iaResultPrompt = getPimIdeaText();
                 renderIaResult(_iaResultSrc);
                 setPreviewState('result');
                 if (typeof global.setIaButtonGenerating === 'function') {
@@ -757,6 +821,7 @@
         _currentTab = 'ia';
         _iaImageIndex = 0;
         _iaResultSrc = '';
+        _iaResultPrompt = '';
         _uploadDataUrl = '';
         _modalTrailerUrl = opts.initialTrailerUrl != null ? String(opts.initialTrailerUrl).trim() : '';
         _trailerInputInited = false;
@@ -864,6 +929,7 @@
 
             if (isIaReopen) {
                 _iaResultSrc = opts.editIaPreviewSrc;
+                _iaResultPrompt = opts.editIaPrompt ? String(opts.editIaPrompt).trim() : '';
                 _pimIaLayoutExpanded = true;
             }
 
@@ -877,6 +943,7 @@
                 if (ta0) {
                     ta0.value = String(opts.editIaPrompt);
                     autosizePimIdeaTextarea();
+                    updatePimIdeaWordCounter();
                 }
             }
 

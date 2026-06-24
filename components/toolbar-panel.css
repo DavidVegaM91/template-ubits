@@ -10,6 +10,8 @@
  * - Modal de filtros: modal.css + modal.js. Chips: chip.css. Empty sin resultados: empty-state.css. Tabla UBITS: table.css.
  * - Patrones de producto (un solo botón Filtrar con badge, copy de empty state): README del repo.
  * - Checklist extendido para automatización: .cursor/rules/cursor-rules.mdc → «Implementar Toolbar panel».
+ * - Vista cuadrícula/tabla: button-group.css (+ button-group.js si es selectable). Botones búsqueda/filtro: ubits-button--sm.
+ * - Variante sin contenedor: .ubits-toolbar-panel--plain (sin fondo, borde ni padding).
  * - Referencia en pantalla: ubits-colaborador/lms-creator/contenidos.html + contenidos.css.
  */
 
@@ -24,6 +26,13 @@
     border: 1px solid var(--ubits-border-1);
     border-radius: var(--border-radius-lg);
     padding: var(--padding-md) var(--padding-lg);
+}
+
+.ubits-toolbar-panel--plain {
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    padding: 0;
 }
 
 .ubits-toolbar-panel__bar {
@@ -108,7 +117,7 @@
 }
 
 @media (max-width: 768px) {
-    .ubits-toolbar-panel {
+    .ubits-toolbar-panel:not(.ubits-toolbar-panel--plain) {
         padding: var(--padding-sm) var(--padding-md);
     }
 

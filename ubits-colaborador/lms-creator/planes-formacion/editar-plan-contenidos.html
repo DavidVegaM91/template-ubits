@@ -18,6 +18,8 @@
     <link rel="stylesheet" href="../../../components/floating-menu.css">
     <link rel="stylesheet" href="../../../components/profile-menu.css">
     <link rel="stylesheet" href="../../../components/button.css">
+    <link rel="stylesheet" href="../../../components/button-group.css">
+    <link rel="stylesheet" href="../../../components/toolbar-panel.css">
     <link rel="stylesheet" href="../../../components/inline-edit.css">
     <link rel="stylesheet" href="../../../components/ia-button.css">
     <link rel="stylesheet" href="../../../components/header-product.css">
@@ -123,6 +125,8 @@
     <script src="../../../bd-master/bd-contenidos-fiqsha.js"></script>
     <script src="./catalogo-contenidos-drawer.js"></script>
     <script src="./drawer-contenidos-filtros.js"></script>
+    <script src="../../../components/button-group.js"></script>
+    <script src="./drawer-contenidos-catalog-section.js"></script>
     <script src="./drawer-contenidos-paso2.js"></script>
     <script src="./drawer-participantes-colab-table.js"></script>
     <!-- Misma base de datos que seguimiento.html (empresa de pruebas: Fiqsha) -->
@@ -722,21 +726,8 @@
                     '  <div id="drawer-colab-data-table-container" class="drawer-colab-dt-wrapper"></div>' +
                     '</div></div>';
                 var step3ContenidosHtml = '<div id="drawer-wizard-step3" class="drawer-wizard-step" style="display:none">' +
-                    '<div class="drawer-agregar-cursos drawer-agregar-cursos--single-col">' +
-                    '  <span class="drawer-agregar-cursos__section-title ubits-body-sm-semibold">Buscar y agregar contenidos</span>' +
-                    '  <div class="drawer-cursos-search-row">' +
-                    '    <div class="drawer-wiz-cursos-action-bar" id="drawer-wiz-cursos-action-bar">' +
-                    '      <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="drawer-wiz-cursos-ver-seleccionados">' +
-                    '        <i class="far fa-eye"></i><span>Ver seleccionados</span></button>' +
-                    '    </div>' +
-                    '    <div id="drawer-wiz-cursos-search-container" class="drawer-cursos-search-input-wrap"></div>' +
-                    '    <span class="drawer-cursos-filtros-btn-wrap"><button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only ubits-toolbar-panel__filter-btn drawer-cursos-filtros-btn" id="drawer-wiz-cursos-filter-btn" data-tooltip="Filtrar" data-tooltip-delay="1000" aria-label="Filtrar"><i class="far fa-filter"></i></button></span>' +
-                    '  </div>' +
-                    '  <div class="drawer-cursos-resultados-bg drawer-cursos-resultados-bg--paso2-full">' +
-                    '    <div id="drawer-wiz-contenidos-empty-search" class="drawer-contenidos-empty-search-wrap" style="display:none;"></div>' +
-                    '    <div class="drawer-cursos-cards-grid" id="drawer-wiz-cursos-cards-container"></div>' +
-                    '  </div>' +
-                    '</div></div>';
+                    (typeof getDrawerContenidosCatalogSectionHtml === 'function' ? getDrawerContenidosCatalogSectionHtml('drawer-wiz') : '') +
+                    '</div>';
                 return '<div class="drawer-asignacion-wizard-root">' + stepperEditHtml + stepParticipantesHtml + step3ContenidosHtml + '</div>';
             }
 
@@ -1039,22 +1030,9 @@
 
             // ========== Drawer Editar contenidos (misma UI que paso Contenidos del wizard, sin stepper) ==========
             function getDrawerCursosBodyHtml() {
-                var p = 'drawer-editplan';
-                return '<div class="drawer-agregar-cursos drawer-agregar-cursos--single-col">' +
-                    '  <span class="drawer-agregar-cursos__section-title ubits-body-sm-semibold">Buscar y agregar contenidos</span>' +
-                    '  <div class="drawer-cursos-search-row">' +
-                    '    <div class="drawer-wiz-cursos-action-bar" id="' + p + '-cursos-action-bar">' +
-                    '      <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="' + p + '-cursos-ver-seleccionados">' +
-                    '        <i class="far fa-eye"></i><span>Ver seleccionados</span></button>' +
-                    '    </div>' +
-                    '    <div id="' + p + '-cursos-search-container" class="drawer-cursos-search-input-wrap"></div>' +
-                    '    <span class="drawer-cursos-filtros-btn-wrap"><button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only ubits-toolbar-panel__filter-btn drawer-cursos-filtros-btn" id="' + p + '-cursos-filter-btn" data-tooltip="Filtrar" data-tooltip-delay="1000" aria-label="Filtrar"><i class="far fa-filter"></i></button></span>' +
-                    '  </div>' +
-                    '  <div class="drawer-cursos-resultados-bg drawer-cursos-resultados-bg--paso2-full">' +
-                    '    <div id="' + p + '-contenidos-empty-search" class="drawer-contenidos-empty-search-wrap" style="display:none;"></div>' +
-                    '    <div class="drawer-cursos-cards-grid" id="' + p + '-cursos-cards-container"></div>' +
-                    '  </div>' +
-                    '</div>';
+                return typeof getDrawerContenidosCatalogSectionHtml === 'function'
+                    ? getDrawerContenidosCatalogSectionHtml('drawer-editplan')
+                    : '';
             }
 
             function abrirDrawerAgregarCursos(tr) {
