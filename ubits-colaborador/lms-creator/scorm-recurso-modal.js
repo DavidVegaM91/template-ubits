@@ -2648,9 +2648,8 @@
         if (!pageKey) return;
         var item = document.querySelector('[data-paginas-creator-key="' + pageKey + '"]');
         if (!item) return;
-        var iconEl = item.querySelector('.ubits-paginas-creator__drag-handle i');
-        if (iconEl && typeof global.paginasCreatorIconClass === 'function') {
-            iconEl.className = global.paginasCreatorIconClass('scorm');
+        if (typeof global.setPaginasCreatorItemTipo === 'function') {
+            global.setPaginasCreatorItemTipo(item, 'scorm');
         }
     }
 

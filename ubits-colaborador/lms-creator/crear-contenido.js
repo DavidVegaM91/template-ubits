@@ -784,9 +784,8 @@
             '#crear-contenido-recursos-indice-mount .ubits-paginas-creator__item.is-active'
         );
         if (!activeItem) return;
-        var iconEl = activeItem.querySelector('.ubits-paginas-creator__drag-handle i');
-        if (iconEl && typeof window.paginasCreatorIconClass === 'function') {
-            iconEl.className = window.paginasCreatorIconClass('embebido');
+        if (typeof window.setPaginasCreatorItemTipo === 'function') {
+            window.setPaginasCreatorItemTipo(activeItem, 'embebido');
         }
     }
 
@@ -901,9 +900,8 @@
             '#crear-contenido-recursos-indice-mount .ubits-paginas-creator__item.is-active'
         );
         if (activeItem) {
-            var iconEl = activeItem.querySelector('.ubits-paginas-creator__drag-handle i');
-            if (iconEl && typeof window.paginasCreatorIconClass === 'function') {
-                iconEl.className = window.paginasCreatorIconClass('pdf');
+            if (typeof window.setPaginasCreatorItemTipo === 'function') {
+                window.setPaginasCreatorItemTipo(activeItem, 'pdf');
             }
         }
         renderCrearContenidoComplementary();
@@ -1191,9 +1189,10 @@
         var mount = getRecursosIndiceMount();
         if (!mount) return;
         var item = mount.querySelector('.ubits-paginas-creator__item[data-paginas-creator-key="' + pageKey + '"]');
-        if (!item || typeof window.paginasCreatorIconClass !== 'function') return;
-        var iconEl = item.querySelector('.ubits-paginas-creator__drag-handle i');
-        if (iconEl) iconEl.className = window.paginasCreatorIconClass(tipo);
+        if (!item) return;
+        if (typeof window.setPaginasCreatorItemTipo === 'function') {
+            window.setPaginasCreatorItemTipo(item, tipo);
+        }
     }
 
     function mountRecursosEvalPage(pageKey) {
@@ -1232,15 +1231,8 @@
     }
 
     function readTipoFromPaginasItem(item) {
-        var icon = item && item.querySelector('.ubits-paginas-creator__drag-handle i');
-        if (!icon) return 'blank-page';
-        var cls = icon.className || '';
-        var map = window.PAGINAS_CREATOR_TIPO_ICONS || {};
-        for (var tipo in map) {
-            if (Object.prototype.hasOwnProperty.call(map, tipo)) {
-                var fa = 'fa-' + map[tipo];
-                if (cls.indexOf(fa) !== -1) return tipo;
-            }
+        if (typeof window.readPaginasCreatorItemTipo === 'function') {
+            return window.readPaginasCreatorItemTipo(item);
         }
         return 'blank-page';
     }
@@ -1628,9 +1620,8 @@
             '#crear-contenido-recursos-indice-mount .ubits-paginas-creator__item.is-active'
         );
         if (activeItemDel) {
-            var iconElDel = activeItemDel.querySelector('.ubits-paginas-creator__drag-handle i');
-            if (iconElDel && typeof window.paginasCreatorIconClass === 'function') {
-                iconElDel.className = window.paginasCreatorIconClass('blank-page');
+            if (typeof window.setPaginasCreatorItemTipo === 'function') {
+                window.setPaginasCreatorItemTipo(activeItemDel, 'blank-page');
             }
         }
     }
@@ -2558,9 +2549,8 @@
                     // Actualizar icono en el índice a "evaluacion" (sin pasos intermedios)
                     var activeItemEval = document.querySelector('#crear-contenido-recursos-indice-mount .ubits-paginas-creator__item.is-active');
                     if (activeItemEval) {
-                        var iconElEval = activeItemEval.querySelector('.ubits-paginas-creator__drag-handle i');
-                        if (iconElEval && typeof window.paginasCreatorIconClass === 'function') {
-                            iconElEval.className = window.paginasCreatorIconClass('evaluacion');
+                        if (typeof window.setPaginasCreatorItemTipo === 'function') {
+                            window.setPaginasCreatorItemTipo(activeItemEval, 'evaluacion');
                         }
                     }
                     renderCrearContenidoComplementary();
@@ -2602,9 +2592,8 @@
                             /* Actualizar icono en el índice a "video" */
                             var activeItem = document.querySelector('#crear-contenido-recursos-indice-mount .ubits-paginas-creator__item.is-active');
                             if (activeItem) {
-                                var iconEl = activeItem.querySelector('.ubits-paginas-creator__drag-handle i');
-                                if (iconEl && typeof window.paginasCreatorIconClass === 'function') {
-                                    iconEl.className = window.paginasCreatorIconClass('video');
+                                if (typeof window.setPaginasCreatorItemTipo === 'function') {
+                                    window.setPaginasCreatorItemTipo(activeItem, 'video');
                                 }
                             }
                             renderCrearContenidoComplementary();
@@ -2638,9 +2627,8 @@
                     '#crear-contenido-recursos-indice-mount .ubits-paginas-creator__item.is-active'
                 );
                 if (activePdfItem) {
-                    var iconPdf = activePdfItem.querySelector('.ubits-paginas-creator__drag-handle i');
-                    if (iconPdf && typeof window.paginasCreatorIconClass === 'function') {
-                        iconPdf.className = window.paginasCreatorIconClass('pdf');
+                    if (typeof window.setPaginasCreatorItemTipo === 'function') {
+                        window.setPaginasCreatorItemTipo(activePdfItem, 'pdf');
                     }
                 }
                 return;
@@ -2689,9 +2677,8 @@
                             mount.innerHTML = html;
                             var activeItem = document.querySelector('#crear-contenido-recursos-indice-mount .ubits-paginas-creator__item.is-active');
                             if (activeItem) {
-                                var iconEl = activeItem.querySelector('.ubits-paginas-creator__drag-handle i');
-                                if (iconEl && typeof window.paginasCreatorIconClass === 'function') {
-                                    iconEl.className = window.paginasCreatorIconClass('scorm');
+                                if (typeof window.setPaginasCreatorItemTipo === 'function') {
+                                    window.setPaginasCreatorItemTipo(activeItem, 'scorm');
                                 }
                             }
                         }
@@ -2811,9 +2798,8 @@
                         // Actualizar icono en el índice a "video"
                         var activeItem = document.querySelector('#crear-contenido-recursos-indice-mount .ubits-paginas-creator__item.is-active');
                         if (activeItem) {
-                            var iconEl = activeItem.querySelector('.ubits-paginas-creator__drag-handle i');
-                            if (iconEl && typeof window.paginasCreatorIconClass === 'function') {
-                                iconEl.className = window.paginasCreatorIconClass('video');
+                            if (typeof window.setPaginasCreatorItemTipo === 'function') {
+                                window.setPaginasCreatorItemTipo(activeItem, 'video');
                             }
                         }
                         renderCrearContenidoComplementary();

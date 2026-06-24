@@ -64,6 +64,30 @@
         return 'far ' + (TIPO_ICONS[key] || 'fa-file');
     }
 
+    /** Icono de tipo de página (no confundir con el grip del drag-handle). */
+    function paginasCreatorTypeIconEl(item) {
+        if (!item) return null;
+        return item.querySelector('.ubits-paginas-creator__type-icon-wrap i');
+    }
+
+    function setPaginasCreatorItemTipo(item, tipo) {
+        var iconEl = paginasCreatorTypeIconEl(item);
+        if (iconEl) iconEl.className = paginasCreatorIconClass(tipo);
+    }
+
+    function readPaginasCreatorItemTipo(item) {
+        var icon = paginasCreatorTypeIconEl(item);
+        if (!icon) return 'blank-page';
+        var cls = icon.className || '';
+        for (var tipo in TIPO_ICONS) {
+            if (Object.prototype.hasOwnProperty.call(TIPO_ICONS, tipo)) {
+                var fa = 'fa-' + TIPO_ICONS[tipo];
+                if (cls.indexOf(fa) !== -1) return tipo;
+            }
+        }
+        return 'blank-page';
+    }
+
     function escapeHtml(s) {
         return String(s)
             .replace(/&/g, '&amp;')
@@ -878,6 +902,9 @@
     }
 
     global.paginasCreatorIconClass = paginasCreatorIconClass;
+    global.paginasCreatorTypeIconEl = paginasCreatorTypeIconEl;
+    global.setPaginasCreatorItemTipo = setPaginasCreatorItemTipo;
+    global.readPaginasCreatorItemTipo = readPaginasCreatorItemTipo;
     global.paginasCreatorItemHtml = paginasCreatorItemHtml;
     global.movePaginasCreatorItem = movePaginasCreatorItem;
     global.getPaginasCreatorMenuOptions = getPaginasCreatorMenuOptions;
