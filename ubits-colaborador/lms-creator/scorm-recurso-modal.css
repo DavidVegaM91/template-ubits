@@ -382,7 +382,7 @@
 }
 
 /* ── Validación del contexto (requerido, azul) ── */
-.ai-panel__input-box--context-error {
+.ia-panel__input-box--context-error {
     border-color: var(--ubits-accent-brand) !important;
     box-shadow: 0 0 0 2px rgba(12, 91, 239, 0.1) !important;
 }

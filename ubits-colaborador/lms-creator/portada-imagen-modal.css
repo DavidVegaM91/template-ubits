@@ -3,7 +3,7 @@
    Estilo alineado a video-recurso-modal / portada-ia-modal (gradiente; alto según contenido, max 90vh).
    Modal sm o md (>1440px). IA expandida: vista previa 16:9, loader e input comparten ancho máximo 600px y quedan centrados aunque el modal sea md.
    Depende: modal.css, tab.css, button.css, file-upload.css, input.css, ia-loader.css, empty-state.css,
-   ai-panel.css, general-styles/ubits-ia-chat.css (área de input del hilo / modal video)
+   ia-panel.css, general-styles/ubits-ia-chat.css (área de input del hilo / modal video)
    ======================================== */
 
 #cc-portada-imagen-modal.ubits-modal-overlay {
@@ -154,8 +154,10 @@
     padding-right: 0;
 }
 
+#cc-portada-imagen-modal:not(.cc-pim--ia-intro) #cc-pim-tab-ia .ubits-ia-input__input-area,
+#cc-portada-imagen-modal:not(.cc-pim--ia-intro) #cc-pim-tab-ia .ubits-ia-input__box,
 #cc-portada-imagen-modal:not(.cc-pim--ia-intro) #cc-pim-tab-ia .ubits-ia-chat-thread__input-area,
-#cc-portada-imagen-modal:not(.cc-pim--ia-intro) #cc-pim-tab-ia .ai-panel__input-box {
+#cc-portada-imagen-modal:not(.cc-pim--ia-intro) #cc-pim-tab-ia .ia-panel__input-box {
     width: 100%;
     max-width: 100%;
     box-sizing: border-box;
@@ -288,36 +290,32 @@
     box-sizing: border-box;
 }
 
-/* Misma caja que «Guión» en modal Agregar video: input-area + ai-panel__input-box */
+/* Misma caja que «Guión» en modal Agregar video */
+#cc-portada-imagen-modal .ubits-ia-input__input-area,
 #cc-portada-imagen-modal .ubits-ia-chat-thread__input-area {
     padding-left: 0;
     padding-right: 0;
 }
 
-/* Textarea nativo como Guión; alto lo ajusta JS (autosize; anula max-height de ai-panel.css) */
-#cc-portada-imagen-modal #cc-pim-idea-input.ai-panel__input {
+#cc-portada-imagen-modal #cc-pim-idea-input.ubits-ia-input__textarea,
+#cc-portada-imagen-modal #cc-pim-idea-input.ia-panel__input {
     min-height: 40px;
     max-height: none;
 }
 
-/* Contador bajo el ai-panel (misma fila helper que modal Agregar video / createInput). */
-#cc-portada-imagen-modal .cc-pim-idea-input-helper {
+#cc-portada-imagen-modal .ubits-ia-input__footer {
     margin-top: var(--gap-xs);
     width: 100%;
     box-sizing: border-box;
 }
 
-#cc-portada-imagen-modal .cc-pim-idea-input-helper .ubits-input-helper-text {
-    color: var(--ubits-fg-1-medium);
-}
-
-#cc-portada-imagen-modal .ai-panel__input-box--context-error + .cc-pim-idea-input-helper,
-#cc-portada-imagen-modal .ubits-ia-chat-thread__input-area:has(.ai-panel__input-box--context-error) .cc-pim-idea-input-helper .ubits-input-counter {
+#cc-portada-imagen-modal .ubits-ia-input__panel:has(.ubits-ia-input__box--context-error) .ubits-ia-input__counter-row,
+#cc-portada-imagen-modal .ubits-ia-input__input-area:has(.ubits-ia-input__box--context-error) .ubits-ia-input__counter-row {
     display: none;
 }
 
-/* Validación: falta descripción (misma pauta que guión video / SCORM). */
-#cc-portada-imagen-modal .ai-panel__input-box--context-error {
+#cc-portada-imagen-modal .ubits-ia-input__box--context-error,
+#cc-portada-imagen-modal .ia-panel__input-box--context-error {
     border-color: var(--ubits-accent-brand) !important;
     box-shadow: 0 0 0 2px color-mix(in srgb, var(--ubits-accent-brand) 12%, transparent) !important;
 }

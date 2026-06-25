@@ -132,6 +132,7 @@
     var _pendingImgs    = [];
     var _zipFile        = null;
     var _tituloInputApi = null;
+    var _smContextIaInputApi = null;
     var _logoDataUrl    = null;
 
     /* Edición por pageKey */
@@ -150,7 +151,7 @@
         }
         var next=Math.max(0,cur-cost);
         global._ubitsAiTokenPool=next;
-        if (typeof global.setAIPanelTokensBadgeValue==='function') global.setAIPanelTokensBadgeValue(next);
+        if (typeof global.setIAPanelTokensBadgeValue==='function') global.setIAPanelTokensBadgeValue(next);
         syncScormTokensBadge();
         return true;
     }
@@ -1619,18 +1620,7 @@
                     '<div class="cc-sm-section-divider"></div>' +
                     '<div class="cc-sm-section">' +
                         '<span class="ubits-input-label">Contexto para la IA</span>' +
-                        '<div class="ubits-ia-chat-thread__input-area">' +
-                            '<div class="ai-panel__input-box">' +
-                                '<input type="file" id="cc-sm-files" accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.txt,.csv,.ppt,.pptx" multiple hidden>' +
-                                '<div class="ai-panel__pending-images-strip" id="cc-sm-pending-imgs" style="display:none;"></div>' +
-                                '<div class="ai-panel__pending-files-strip" id="cc-sm-pending-files" style="display:none;"></div>' +
-                                '<textarea id="cc-sm-context-input" class="ai-panel__input ubits-body-md-regular" rows="2" placeholder="Adjunta un archivo o describe el contexto específico de tu equipo o industria"></textarea>' +
-                                '<div class="ai-panel__input-actions">' +
-                                    '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only ai-panel__attach-btn" id="cc-sm-attach" aria-label="Adjuntar"><i class="far fa-plus"></i></button>' +
-                                    '<div class="ai-panel__input-spacer"></div>' +
-                                '</div>' +
-                            '</div>' +
-                        '</div>' +
+                        '<div id="cc-sm-ia-input-mount"></div>' +
                     '</div>' +
                     '<div class="cc-sm-section-divider"></div>' +
                     '<div class="cc-sm-section">' +
@@ -1858,16 +1848,95 @@
     }
 
     function clearScormContextFieldError() {
-        var ctxTa = document.getElementById('cc-sm-context-input');
-        var box = ctxTa ? ctxTa.closest('.ai-panel__input-box') : null;
-        if (box) box.classList.remove('ai-panel__input-box--context-error');
+        if (_smContextIaInputApi) _smContextIaInputApi.setContextError(false);
+    }
+
+    function scormContextValue() {
+        if (_smContextIaInputApi && typeof _smContextIaInputApi.getValue === 'function') {
+            return String(_smContextIaInputApi.getValue() || '').trim();
+        }
+        return '';
+    }
+
+    function smPendingImagesForApi() {
+        return _pendingImgs.map(function (img) {
+            return { src: img.src, alt: img.name || 'Imagen adjunta' };
+        });
+    }
+
+    function smPendingFilesForApi() {
+        return _pendingFiles.map(function (f) {
+            return { name: f.name || 'Archivo' };
+        });
+    }
+
+    function syncSmPendingToInput() {
+        if (!_smContextIaInputApi) return;
+        _smContextIaInputApi.setPendingImages(smPendingImagesForApi());
+        _smContextIaInputApi.setPendingFiles(smPendingFilesForApi());
+    }
+
+    function handleSmContextAttachFiles(files) {
+        if (!files || !files.length) return;
+        Array.prototype.forEach.call(files, function (f) {
+            if (f.type && f.type.indexOf('image/') === 0) {
+                var reader = new FileReader();
+                reader.onload = function (ev) {
+                    _pendingImgs.push({
+                        name: f.name,
+                        src: ev && ev.target ? ev.target.result : '',
+                    });
+                    syncSmPendingToInput();
+                    clearScormContextFieldError();
+                };
+                reader.readAsDataURL(f);
+            } else {
+                _pendingFiles.push({ name: f.name, type: f.type, size: f.size });
+                syncSmPendingToInput();
+                clearScormContextFieldError();
+            }
+        });
+    }
+
+    function initSmContextIaInput() {
+        var mount = document.getElementById('cc-sm-ia-input-mount');
+        if (!mount || typeof global.createUbitsIAInput !== 'function') return;
+        if (_smContextIaInputApi) {
+            _smContextIaInputApi.destroy();
+            _smContextIaInputApi = null;
+        }
+        mount.innerHTML = '';
+        _smContextIaInputApi = global.createUbitsIAInput({
+            variant: 'panel',
+            id: 'cc-sm-context-input',
+            placeholder: 'Adjunta un archivo o describe el contexto específico de tu equipo o industria',
+            attach: true,
+            attachAriaLabel: 'Adjuntar',
+            attachTooltip: 'Adjuntar',
+            pendingImages: smPendingImagesForApi(),
+            pendingFiles: smPendingFilesForApi(),
+            onAttachFiles: handleSmContextAttachFiles,
+            onRemovePendingImage: function (i) {
+                _pendingImgs.splice(i, 1);
+                syncSmPendingToInput();
+            },
+            onRemovePendingFile: function (i) {
+                _pendingFiles.splice(i, 1);
+                syncSmPendingToInput();
+            },
+            hasContextError: false,
+            contextErrorMessage: 'Mensaje de error',
+            action: { type: 'none' },
+            onChange: clearScormContextFieldError,
+        }).mount(mount);
+        if (typeof global.initTooltip === 'function') {
+            global.initTooltip('#' + OVERLAY_ID + ' [data-tooltip]');
+        }
     }
 
     /** Contexto IA: texto en el área o al menos un adjunto (imagen u otro archivo). */
     function scormIaHasContextMaterial() {
-        var ctxTa = document.getElementById('cc-sm-context-input');
-        var ctx = ctxTa ? String(ctxTa.value || '').trim() : '';
-        if (ctx.length) return true;
+        if (scormContextValue().length) return true;
         return _pendingImgs.length > 0 || _pendingFiles.length > 0;
     }
 
@@ -1879,70 +1948,7 @@
         panel.addEventListener('click', function(e) {
             var swatch=e.target.closest('#cc-sm-cp-swatch');
             if (swatch) { openCpPanel(swatch, null); return; }
-
-            var att=e.target.closest('#cc-sm-attach');
-            if (att) { var fi=document.getElementById('cc-sm-files'); if(fi) fi.click(); return; }
         });
-
-        /* Limpiar error de contexto al escribir */
-        var ctxTa=document.getElementById('cc-sm-context-input');
-        if (ctxTa) ctxTa.addEventListener('input', function(){
-            clearScormContextFieldError();
-        });
-
-        /* File attach */
-        var fileIn=document.getElementById('cc-sm-files');
-        if (fileIn) fileIn.addEventListener('change', function(){
-            if (!this.files||!this.files.length) return;
-            Array.prototype.forEach.call(this.files, function(f){
-                if (f.type && f.type.startsWith('image/')) {
-                    var reader=new FileReader();
-                    reader.onload=function(e){
-                        _pendingImgs.push({name:f.name, src:e.target.result});
-                        renderPendingImgs();
-                    };
-                    reader.readAsDataURL(f);
-                } else {
-                    _pendingFiles.push({name:f.name, type:f.type, size:f.size});
-                    renderPendingFiles();
-                }
-            });
-            fileIn.value='';
-        });
-    }
-
-    function renderPendingImgs() {
-        var strip=document.getElementById('cc-sm-pending-imgs');
-        if (!strip) return;
-        if (!_pendingImgs.length) { strip.style.display='none'; strip.innerHTML=''; return; }
-        strip.style.display='flex';
-        strip.innerHTML=_pendingImgs.map(function(img,i){
-            return '<div class="ai-panel__pending-img-wrap">'+
-                '<img src="'+img.src+'" alt="'+esc(img.name)+'">'+
-                '<button type="button" class="ai-panel__pending-img-remove" data-sm-rm-img="'+i+'" aria-label="Quitar imagen"><i class="far fa-times"></i></button>'+
-            '</div>';
-        }).join('');
-        strip.querySelectorAll('[data-sm-rm-img]').forEach(function(btn){
-            btn.addEventListener('click',function(){ _pendingImgs.splice(parseInt(btn.getAttribute('data-sm-rm-img')),1); renderPendingImgs(); });
-        });
-        if (_pendingImgs.length) clearScormContextFieldError();
-    }
-
-    function renderPendingFiles() {
-        var strip=document.getElementById('cc-sm-pending-files');
-        if (!strip) return;
-        if (!_pendingFiles.length) { strip.style.display='none'; strip.innerHTML=''; return; }
-        strip.style.display='flex';
-        strip.innerHTML=_pendingFiles.map(function(f,i){
-            return '<span class="ubits-chip ubits-chip--sm ubits-chip--icon-left ubits-chip--close ai-panel__pending-file-chip">'+
-                '<i class="far fa-file-lines"></i><span class="ubits-chip__text">'+esc(f.name)+'</span>'+
-                '<button type="button" class="ubits-chip__close" data-sm-rm-file="'+i+'" aria-label="Quitar archivo"><i class="far fa-times"></i></button>'+
-            '</span>';
-        }).join('');
-        strip.querySelectorAll('[data-sm-rm-file]').forEach(function(btn){
-            btn.addEventListener('click',function(){ _pendingFiles.splice(parseInt(btn.getAttribute('data-sm-rm-file')),1); renderPendingFiles(); });
-        });
-        if (_pendingFiles.length) clearScormContextFieldError();
     }
 
     function wireTabBar() {
@@ -1979,7 +1985,6 @@
                 var titWrap=document.getElementById('cc-sm-titulo-wrap');
                 var titInp=titWrap ? titWrap.querySelector('input') : null;
                 var tit=(titInp ? titInp.value.trim() : _titulo);
-                var ctxTa=document.getElementById('cc-sm-context-input');
                 var valid=true;
 
                 if (!tit) {
@@ -1988,10 +1993,12 @@
                     valid=false;
                 }
                 if (!scormIaHasContextMaterial()) {
-                    var box=ctxTa ? ctxTa.closest('.ai-panel__input-box') : null;
-                    if (box) box.classList.add('ai-panel__input-box--context-error');
-                    if (!tit && ctxTa) ctxTa.focus();
-                    else if (ctxTa) ctxTa.focus();
+                    if (_smContextIaInputApi) {
+                        _smContextIaInputApi.setContextError(true, 'Mensaje de error');
+                        var ctxTa = _smContextIaInputApi.getTextarea();
+                        if (!tit && ctxTa) ctxTa.focus();
+                        else if (ctxTa) ctxTa.focus();
+                    }
                     valid=false;
                 }
                 if (!valid) return;
@@ -2585,6 +2592,7 @@
             _enabledSlideTypes = createDefaultEnabledSlideTypes();
         }
         _tituloInputApi = null;
+        _smContextIaInputApi = null;
 
         var overlay=openModal({
             overlayId:           OVERLAY_ID,
@@ -2611,6 +2619,7 @@
             initTituloInput();
             initSlideTypeSelector();
             initScormLogoUpload();
+            initSmContextIaInput();
             wireTabBar();
             wireIaPanel();
             wireFooter();

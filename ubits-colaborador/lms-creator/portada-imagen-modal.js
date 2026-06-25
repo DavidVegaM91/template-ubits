@@ -5,7 +5,7 @@
  * aparece la vista previa 16:9 arriba y el formulario debajo (columna única). Las tres pestañas comparten el mismo tamaño de modal.
  * El ancho sm/md (>1440px) se mantiene al redimensionar la ventana mientras el modal está abierto.
  * Depende: modal.js, button.css, chip.css, input.js (+ dropdown-menu.js antes de input) para pestaña tráiler,
- * file-upload.js, ia-loader.js, empty-state.js, ai-panel.css (+ general-styles/ubits-ia-chat.css), tab.css,
+ * file-upload.js, ia-loader.js, empty-state.js, ia-input.css/js, tab.css,
  * portada-imagen-modal.css.
  *
  * openPortadaImagenModal(opts) — opts opcionales al reabrir con portada ya aplicada en la página:
@@ -49,6 +49,8 @@
     /** Referencias adjuntas en pestaña Portada con IA (mismo patrón que guión video / SCORM). */
     var _pimPendingImgs = [];
     var _pimPendingFiles = [];
+    /** API createUbitsIAInput — pestaña Portada con IA */
+    var _pimIaInputApi = null;
     var _pimOnWindowResize = null;
     var _pimResizeRaf = null;
 
@@ -80,8 +82,8 @@
         }
         var next = Math.max(0, cur - cost);
         global._ubitsAiTokenPool = next;
-        if (typeof global.setAIPanelTokensBadgeValue === 'function') {
-            global.setAIPanelTokensBadgeValue(next);
+        if (typeof global.setIAPanelTokensBadgeValue === 'function') {
+            global.setIAPanelTokensBadgeValue(next);
         }
         syncPimTokensBadge();
         return true;
@@ -160,21 +162,6 @@
         );
     }
 
-    function buildPimIdeaCounterHtml() {
-        return (
-            '<div class="ubits-input-helper cc-pim-idea-input-helper">' +
-            '<div class="ubits-input-helper-row">' +
-            '<span class="ubits-input-helper-text">Mínimo ' +
-            PIM_IDEA_MIN_WORDS +
-            ' · Máximo ' +
-            PIM_IDEA_MAX_WORDS +
-            ' palabras</span>' +
-            '<span class="ubits-input-counter" id="cc-pim-idea-word-counter">0/' +
-            PIM_IDEA_MAX_WORDS +
-            '</span></div></div>'
-        );
-    }
-
     function buildIaPanel() {
         return (
             '<div class="cc-vmodal-panel" id="cc-pim-tab-ia">' +
@@ -185,27 +172,8 @@
             '<p class="cc-pim-idea-headline-intro__text">Tú lo imaginas, nosotros ' +
             '<span class="cc-pim-idea-headline-intro__gradient">lo generamos</span></p>' +
             '</div>' +
-            '<div class="ubits-ia-chat-thread__input-area">' +
-            '<div class="ai-panel__input-box" id="cc-pim-idea-input-box">' +
-            '<input type="file" id="cc-pim-ref-files" accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.txt,.csv,.ppt,.pptx" multiple hidden>' +
-            '<div class="ai-panel__pending-images-strip" id="cc-pim-pending-imgs" style="display:none;"></div>' +
-            '<div class="ai-panel__pending-files-strip" id="cc-pim-pending-files" style="display:none;"></div>' +
-            '<textarea id="cc-pim-idea-input" class="ai-panel__input ubits-body-md-regular" rows="2" placeholder="Describe tu portada de forma específica"></textarea>' +
-            '<div class="ai-panel__input-actions">' +
-            '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only ai-panel__attach-btn" id="cc-pim-attach" aria-label="Adjuntar referencia">' +
-            '<i class="far fa-plus"></i></button>' +
-            '<div class="ai-panel__input-spacer" aria-hidden="true"></div>' +
-            '<button type="button" class="ubits-ia-button ubits-ia-button--primary ubits-ia-button--sm ubits-ia-button--with-token-cost" id="cc-pim-btn-generar" disabled aria-disabled="true">' +
-            '<span id="cc-pim-btn-generar-label">Generar portada</span>' +
-            '<span class="ubits-ia-button__token-divider" aria-hidden="true"></span>' +
-            '<span class="ubits-ia-button__token-cost" aria-hidden="true">' +
-            '<i class="far fa-coin-vertical"></i>' +
-            '<span class="ubits-ia-button__token-number">' +
-            TOKEN_GENERATE +
-            '</span></span></button>' +
+            '<div id="cc-pim-ia-input-mount"></div>' +
             '</div></div>' +
-            buildPimIdeaCounterHtml() +
-            '</div></div></div>' +
             '<div class="cc-vm-right-col">' +
             '<div class="cc-pim-preview-stage" id="cc-pim-preview-stage" aria-live="polite">' +
             '<div id="cc-pim-preview-empty-host"></div>' +
@@ -292,25 +260,25 @@
     function refreshGenButtons() {
         /* Sin bloqueo por tokens: trySpendTokens muestra toast al clic si no alcanza (como SCORM). */
         syncPimTokensBadge();
-        refreshGenPortadaButtonState();
+        refreshPimIaInputAction();
     }
 
     function countPimIdeaWords(text) {
+        if (typeof global.countPromptWords === 'function') return global.countPromptWords(text);
         var t = String(text || '').trim();
         if (!t) return 0;
         return t.split(/\s+/).filter(Boolean).length;
     }
 
-    function trimPimIdeaToMaxWords(text) {
-        var parts = String(text || '').trim().split(/\s+/).filter(Boolean);
-        if (parts.length <= PIM_IDEA_MAX_WORDS) return String(text || '');
-        return parts.slice(0, PIM_IDEA_MAX_WORDS).join(' ');
+    function getPimIdeaText() {
+        if (_pimIaInputApi && typeof _pimIaInputApi.getValue === 'function') {
+            return String(_pimIaInputApi.getValue() || '').trim();
+        }
+        return '';
     }
 
     function hasValidPimIdeaForGenerate() {
-        var ta = document.getElementById('cc-pim-idea-input');
-        if (!ta) return false;
-        var wc = countPimIdeaWords(ta.value);
+        var wc = countPimIdeaWords(getPimIdeaText());
         return wc >= PIM_IDEA_MIN_WORDS && wc <= PIM_IDEA_MAX_WORDS;
     }
 
@@ -321,24 +289,152 @@
         return 'Generar portada';
     }
 
-    function refreshGenPortadaButtonState() {
-        var btn = document.getElementById('cc-pim-btn-generar');
-        if (!btn) return;
-        if (btn.classList.contains('ubits-ia-button--generating')) return;
+    function pimPendingImagesForApi() {
+        return _pimPendingImgs.map(function (img) {
+            return { src: img.src, alt: img.name || 'Imagen adjunta' };
+        });
+    }
+
+    function pimPendingFilesForApi() {
+        return _pimPendingFiles.map(function (f) {
+            return { name: f.name || 'Archivo' };
+        });
+    }
+
+    function syncPimPendingToInput() {
+        if (!_pimIaInputApi) return;
+        _pimIaInputApi.setPendingImages(pimPendingImagesForApi());
+        _pimIaInputApi.setPendingFiles(pimPendingFilesForApi());
+    }
+
+    function handlePimAttachFiles(files) {
+        if (!files || !files.length) return;
+        Array.prototype.forEach.call(files, function (f) {
+            if (f.type && f.type.indexOf('image/') === 0) {
+                var reader = new FileReader();
+                reader.onload = function (ev) {
+                    _pimPendingImgs.push({
+                        name: f.name,
+                        src: ev && ev.target ? ev.target.result : ''
+                    });
+                    syncPimPendingToInput();
+                    if (_pimIaInputApi) _pimIaInputApi.setContextError(false);
+                };
+                reader.readAsDataURL(f);
+            } else {
+                _pimPendingFiles.push({ name: f.name, type: f.type, size: f.size });
+                syncPimPendingToInput();
+                if (_pimIaInputApi) _pimIaInputApi.setContextError(false);
+            }
+        });
+    }
+
+    function refreshPimIaInputAction() {
+        if (!_pimIaInputApi) return;
         var enabled = hasValidPimIdeaForGenerate();
-        btn.disabled = !enabled;
-        btn.setAttribute('aria-disabled', enabled ? 'false' : 'true');
-        var labelEl = document.getElementById('cc-pim-btn-generar-label');
+        _pimIaInputApi.setActionDisabled(!enabled);
+        var labelEl = _pimIaInputApi.element.querySelector('.ubits-ia-input__action-label');
         if (labelEl) labelEl.textContent = getPimGenPortadaButtonLabel();
     }
 
-    function updatePimIdeaWordCounter() {
-        var ta = document.getElementById('cc-pim-idea-input');
-        var counter = document.getElementById('cc-pim-idea-word-counter');
-        if (!ta || !counter) return;
-        var wc = countPimIdeaWords(ta.value);
-        counter.textContent = wc + '/' + PIM_IDEA_MAX_WORDS;
-        refreshGenPortadaButtonState();
+    function handleGenerarPortadaClick() {
+        if (!hasValidPimIdeaForGenerate()) {
+            if (_pimIaInputApi) {
+                _pimIaInputApi.setContextError(true, 'Mensaje de error');
+                var ta = _pimIaInputApi.getTextarea();
+                if (ta) ta.focus();
+            }
+            return;
+        }
+        if (_pimIaInputApi) _pimIaInputApi.setContextError(false);
+        if (!trySpendTokens(TOKEN_GENERATE)) return;
+        if (_pimIaInputApi) _pimIaInputApi.setGenerating(true, 'Generando');
+        _iaResultSrc = '';
+        var justExpanded = false;
+        if (!_pimIaLayoutExpanded) {
+            _pimIaLayoutExpanded = true;
+            justExpanded = true;
+            syncPimOverlayLayout();
+        }
+        syncFooter();
+        randomizeIaImageIndex();
+        function runLoader() {
+            setPreviewState('loader');
+            var ld = document.getElementById('cc-pim-preview-loader');
+            if (ld) {
+                ld.innerHTML =
+                    typeof global.getIaLoaderHTML === 'function'
+                        ? global.getIaLoaderHTML({ label: 'Generando portada' })
+                        : '<p class="ubits-body-sm-regular" role="status">Generando portada…</p>';
+            }
+        }
+        if (justExpanded) {
+            requestAnimationFrame(function () {
+                requestAnimationFrame(function () {
+                    setTimeout(runLoader, 140);
+                });
+            });
+        } else {
+            runLoader();
+        }
+        setTimeout(function () {
+            _iaResultSrc = AI_IMAGES[_iaImageIndex];
+            _iaResultPrompt = getPimIdeaText();
+            renderIaResult(_iaResultSrc);
+            setPreviewState('result');
+            if (_pimIaInputApi) _pimIaInputApi.setGenerating(false, 'Generando');
+            syncFooter();
+            refreshGenButtons();
+        }, 3000);
+    }
+
+    function initPimIaInput(initialValue) {
+        var mount = document.getElementById('cc-pim-ia-input-mount');
+        if (!mount || typeof global.createUbitsIAInput !== 'function') return;
+        if (_pimIaInputApi) {
+            _pimIaInputApi.destroy();
+            _pimIaInputApi = null;
+        }
+        mount.innerHTML = '';
+        _pimIaInputApi = global.createUbitsIAInput({
+            variant: 'panel',
+            id: 'cc-pim-idea-input',
+            inputBoxId: 'cc-pim-idea-input-box',
+            value: initialValue != null ? String(initialValue) : '',
+            placeholder: 'Describe tu portada de forma específica',
+            attach: true,
+            attachAriaLabel: 'Adjuntar referencia',
+            attachTooltip: 'Adjuntar referencia',
+            pendingImages: pimPendingImagesForApi(),
+            pendingFiles: pimPendingFilesForApi(),
+            onAttachFiles: handlePimAttachFiles,
+            onRemovePendingImage: function (i) {
+                _pimPendingImgs.splice(i, 1);
+                syncPimPendingToInput();
+            },
+            onRemovePendingFile: function (i) {
+                _pimPendingFiles.splice(i, 1);
+                syncPimPendingToInput();
+            },
+            counter: { min: PIM_IDEA_MIN_WORDS, max: PIM_IDEA_MAX_WORDS, unit: 'palabras' },
+            hasContextError: false,
+            contextErrorMessage: 'Mensaje de error',
+            action: {
+                type: 'ia',
+                label: getPimGenPortadaButtonLabel(),
+                tokenCost: TOKEN_GENERATE,
+                disabled: !hasValidPimIdeaForGenerate(),
+                onClick: handleGenerarPortadaClick
+            },
+            onChange: function () {
+                if (_pimIaInputApi) _pimIaInputApi.setContextError(false);
+                refreshPimIaInputAction();
+            }
+        }).mount(mount);
+        if (typeof global.initIaButtonSparkles === 'function') {
+            global.initIaButtonSparkles(mount);
+        }
+        refreshPimIaInputAction();
     }
 
     function pimDownloadFilename(src) {
@@ -367,120 +463,6 @@
                 global.showToast('success', 'Descarga iniciada.', { containerId: 'ubits-toast-container' });
             }
         };
-    }
-
-    function getPimIdeaText() {
-        var ta = document.getElementById('cc-pim-idea-input');
-        return ta ? String(ta.value || '').trim() : '';
-    }
-
-    function getPimIdeaInputBox() {
-        return document.getElementById('cc-pim-idea-input-box');
-    }
-
-    function clearPimIdeaError() {
-        var box = getPimIdeaInputBox();
-        if (box) box.classList.remove('ai-panel__input-box--context-error');
-    }
-
-    function renderPimPendingImgs() {
-        var strip = document.getElementById('cc-pim-pending-imgs');
-        if (!strip) return;
-        if (!_pimPendingImgs.length) {
-            strip.style.display = 'none';
-            strip.innerHTML = '';
-            return;
-        }
-        strip.style.display = 'flex';
-        strip.innerHTML = _pimPendingImgs
-            .map(function (img, i) {
-                return (
-                    '<div class="ai-panel__pending-img-wrap">' +
-                    '<img src="' +
-                    img.src +
-                    '" alt="' +
-                    esc(img.name) +
-                    '">' +
-                    '<button type="button" class="ai-panel__pending-img-remove" data-pim-rm-img="' +
-                    i +
-                    '" aria-label="Quitar imagen"><i class="far fa-times"></i></button>' +
-                    '</div>'
-                );
-            })
-            .join('');
-        strip.querySelectorAll('[data-pim-rm-img]').forEach(function (btn) {
-            btn.addEventListener('click', function () {
-                _pimPendingImgs.splice(parseInt(btn.getAttribute('data-pim-rm-img'), 10), 1);
-                renderPimPendingImgs();
-            });
-        });
-        if (_pimPendingImgs.length) clearPimIdeaError();
-    }
-
-    function renderPimPendingFiles() {
-        var strip = document.getElementById('cc-pim-pending-files');
-        if (!strip) return;
-        if (!_pimPendingFiles.length) {
-            strip.style.display = 'none';
-            strip.innerHTML = '';
-            return;
-        }
-        strip.style.display = 'flex';
-        strip.innerHTML = _pimPendingFiles
-            .map(function (f, i) {
-                return (
-                    '<span class="ubits-chip ubits-chip--sm ubits-chip--icon-left ubits-chip--close ai-panel__pending-file-chip">' +
-                    '<i class="far fa-file-lines" aria-hidden="true"></i>' +
-                    '<span class="ubits-chip__text">' +
-                    esc(f.name) +
-                    '</span>' +
-                    '<button type="button" class="ubits-chip__close" data-pim-rm-file="' +
-                    i +
-                    '" aria-label="Quitar archivo">' +
-                    '<i class="far fa-times"></i></button>' +
-                    '</span>'
-                );
-            })
-            .join('');
-        strip.querySelectorAll('[data-pim-rm-file]').forEach(function (btn) {
-            btn.addEventListener('click', function () {
-                _pimPendingFiles.splice(parseInt(btn.getAttribute('data-pim-rm-file'), 10), 1);
-                renderPimPendingFiles();
-            });
-        });
-        if (_pimPendingFiles.length) clearPimIdeaError();
-    }
-
-    function initPimAttach() {
-        var attachBtn = document.getElementById('cc-pim-attach');
-        var fileIn = document.getElementById('cc-pim-ref-files');
-        if (!attachBtn || !fileIn || attachBtn._ccPimAttachWired) return;
-        attachBtn._ccPimAttachWired = true;
-
-        attachBtn.addEventListener('click', function () {
-            fileIn.click();
-        });
-
-        fileIn.addEventListener('change', function () {
-            if (!fileIn.files || !fileIn.files.length) return;
-            Array.prototype.forEach.call(fileIn.files, function (f) {
-                if (f.type && f.type.indexOf('image/') === 0) {
-                    var reader = new FileReader();
-                    reader.onload = function (ev) {
-                        _pimPendingImgs.push({
-                            name: f.name,
-                            src: ev && ev.target ? ev.target.result : ''
-                        });
-                        renderPimPendingImgs();
-                    };
-                    reader.readAsDataURL(f);
-                } else {
-                    _pimPendingFiles.push({ name: f.name, type: f.type, size: f.size });
-                    renderPimPendingFiles();
-                }
-            });
-            fileIn.value = '';
-        });
     }
 
     function formatPimApproxBytes(bytes) {
@@ -522,102 +504,6 @@
             global.fileUploadClearSuccess(root);
         }
         syncFooter();
-    }
-
-    var PIM_IDEA_TEXTAREA_AUTOSIZE_MAX_PX = 360;
-
-    function autosizePimIdeaTextarea() {
-        var ta = document.getElementById('cc-pim-idea-input');
-        if (!ta) return;
-        ta.style.height = 'auto';
-        var sh = ta.scrollHeight;
-        var cap = PIM_IDEA_TEXTAREA_AUTOSIZE_MAX_PX;
-        var next = Math.min(sh, cap);
-        ta.style.height = Math.max(40, next) + 'px';
-        ta.style.overflowY = sh > cap ? 'auto' : 'hidden';
-    }
-
-    function initIdeaInput() {
-        var ta = document.getElementById('cc-pim-idea-input');
-        if (!ta || ta._ccPimIdeaWired) return;
-        ta._ccPimIdeaWired = true;
-        ta.addEventListener('input', function () {
-            clearPimIdeaError();
-            var trimmed = trimPimIdeaToMaxWords(ta.value);
-            if (trimmed !== ta.value) {
-                ta.value = trimmed;
-            }
-            autosizePimIdeaTextarea();
-            updatePimIdeaWordCounter();
-        });
-        setTimeout(function () {
-            autosizePimIdeaTextarea();
-            updatePimIdeaWordCounter();
-        }, 0);
-    }
-
-    function initGenerarPortada() {
-        var btn = document.getElementById('cc-pim-btn-generar');
-        if (!btn || btn._ccPimWired) return;
-        btn._ccPimWired = true;
-        refreshGenPortadaButtonState();
-        btn.addEventListener('click', function () {
-            if (!hasValidPimIdeaForGenerate()) {
-                var box = getPimIdeaInputBox();
-                if (box) box.classList.add('ai-panel__input-box--context-error');
-                var taErr = document.getElementById('cc-pim-idea-input');
-                if (taErr) taErr.focus();
-                return;
-            }
-            clearPimIdeaError();
-            if (!trySpendTokens(TOKEN_GENERATE)) return;
-            if (typeof global.setIaButtonGenerating === 'function') {
-                global.setIaButtonGenerating(btn, true, { label: 'Generando' });
-            } else {
-                btn.disabled = true;
-            }
-            _iaResultSrc = '';
-            var justExpanded = false;
-            if (!_pimIaLayoutExpanded) {
-                _pimIaLayoutExpanded = true;
-                justExpanded = true;
-                syncPimOverlayLayout();
-            }
-            syncFooter();
-            randomizeIaImageIndex();
-            function runLoader() {
-                setPreviewState('loader');
-                var ld = document.getElementById('cc-pim-preview-loader');
-                if (ld) {
-                    ld.innerHTML =
-                        typeof global.getIaLoaderHTML === 'function'
-                            ? global.getIaLoaderHTML({ label: 'Generando portada' })
-                            : '<p class="ubits-body-sm-regular" role="status">Generando portada…</p>';
-                }
-            }
-            if (justExpanded) {
-                requestAnimationFrame(function () {
-                    requestAnimationFrame(function () {
-                        setTimeout(runLoader, 140);
-                    });
-                });
-            } else {
-                runLoader();
-            }
-            setTimeout(function () {
-                _iaResultSrc = AI_IMAGES[_iaImageIndex];
-                _iaResultPrompt = getPimIdeaText();
-                renderIaResult(_iaResultSrc);
-                setPreviewState('result');
-                if (typeof global.setIaButtonGenerating === 'function') {
-                    global.setIaButtonGenerating(btn, false);
-                } else {
-                    btn.disabled = false;
-                }
-                syncFooter();
-                refreshGenButtons();
-            }, 3000);
-        });
     }
 
     function initSubirFileUpload() {
@@ -829,6 +715,10 @@
         _pimIaLayoutExpanded = false;
         _pimPendingImgs = [];
         _pimPendingFiles = [];
+        if (_pimIaInputApi) {
+            _pimIaInputApi.destroy();
+            _pimIaInputApi = null;
+        }
     }
 
     function getPimModalSizeForViewport() {
@@ -919,9 +809,7 @@
 
         setTimeout(function () {
             wireTabBar();
-            initIdeaInput();
-            initPimAttach();
-            initGenerarPortada();
+            initPimIaInput(opts.editIaPrompt || '');
             wireFooterActions();
 
             var isIaReopen = !!(opts.editIaPreviewSrc && opts.editIaPrompt);
@@ -936,15 +824,6 @@
             if (!isIaReopen) {
                 setPreviewState('placeholder');
                 initPimPreviewEmptyState();
-            }
-
-            if (opts.editIaPrompt) {
-                var ta0 = document.getElementById('cc-pim-idea-input');
-                if (ta0) {
-                    ta0.value = String(opts.editIaPrompt);
-                    autosizePimIdeaTextarea();
-                    updatePimIdeaWordCounter();
-                }
             }
 
             if (isIaReopen) {

@@ -64,7 +64,7 @@
 }
 
 /*
- * Panel derecho: gradación IA en todo el lienzo (como .ubits-modal-content--ia / .ai-panel),
+ * Panel derecho: gradación IA en todo el lienzo (como .ubits-modal-content--ia / .ia-panel),
  * no solo en el header. Fondo bg-1 + orbes 0.15; header/body/footer transparentes encima.
  */
 .ubits-ia-chat > .ubits-ia-chat__side.is-open {

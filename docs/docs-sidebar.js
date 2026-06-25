@@ -71,7 +71,7 @@ const DOCS_SIDEBAR_SECTIONS = [
     { id: 'tooltip', title: 'Tooltip', group: 'ui' },
     { id: 'video-player', title: 'Video player', group: 'ui' },
     // IA (alfabético por title)
-    { id: 'ai-panel', title: 'AI panel', group: 'ia' },
+    { id: 'ia-panel', title: 'IA panel', group: 'ia' },
     { id: 'ia-button', title: 'IA-Button', group: 'ia' },
     { id: 'ia-input', title: 'IA Input', group: 'ia' },
     { id: 'ia-loader', title: 'IA Loader', group: 'ia' },
@@ -305,7 +305,7 @@ function initDocsSidebar(activeSection) {
             'sub-nav': 'subnav.html',
             'tab-bar': 'tab-bar.html',
             'accordion': 'accordion.html',
-            'ai-panel': 'ai-panel.html',
+            'ia-panel': 'ia-panel.html',
             'button': 'button.html',
             'button-group': 'button-group.html',
             'ia-button': 'ia-button.html',

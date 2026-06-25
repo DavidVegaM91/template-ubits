@@ -1,25 +1,25 @@
 /* ========================================
-   AI PANEL COMPONENT
+   IA PANEL COMPONENT
    Sidebar anclado a la derecha, redimensionable con el mouse.
    ========================================
 
    API PÚBLICA:
    ------------
-   initAIPanel(options)          — Inicializa e inyecta el panel (una sola vez)
-   openAIPanel()                 — Abre el panel
-   closeAIPanel()                — Cierra el panel
-   addAIPanelMessage(text, type, attachments?, opts?) — Agrega mensaje ('user' | 'ai').
+   initIAPanel(options)          — Inicializa e inyecta el panel (una sola vez)
+   openIAPanel()                 — Abre el panel
+   closeIAPanel()                — Cierra el panel
+   addIAPanelMessage(text, type, attachments?, opts?) — Agrega mensaje ('user' | 'ai').
      opts (solo type ai): { richHtml: string, hideAiCopy?: boolean } — HTML del globo (sin streaming).
-   showAIPanelTyping()           — Muestra “Pensando” (con ia-chat-streaming.js) → retorna removeTyping()
-   clearAIPanelMessages()        — Limpia mensajes, restaura bienvenida
-   setAIPanelTitle(title)        — Cambia título en tiempo real
-   setAIPanelTokensBadgeValue(n) — Actualiza el número del badge de tokens en cabecera (si existe)
-   setAIPanelAlternateMount(mount|null) — Mensajes / typing / bottom-sheet / envío usan nodos alternativos (p. ej. chat dentro de un modal). mount: { messages, scroll?, welcome?, chatBody?, inputArea?, inputEl?, sendBtn?, typingId?, tooltipRoot? }
-   openAIPanelArtifactView(html, opts?) — Superpone el detalle de un artifact (opts.title en cabecera; oculta tokens/cierre; muestra «Atrás»).
-   closeAIPanelArtifactView()    — Vuelve al chat del panel (restaura cabecera).
-   destroyAIPanel()              — Desmonta el panel del DOM
+   showIAPanelTyping()           — Muestra “Pensando” (con ia-chat-streaming.js) → retorna removeTyping()
+   clearIAPanelMessages()        — Limpia mensajes, restaura bienvenida
+   setIAPanelTitle(title)        — Cambia título en tiempo real
+   setIAPanelTokensBadgeValue(n) — Actualiza el número del badge de tokens en cabecera (si existe)
+   setIAPanelAlternateMount(mount|null) — Mensajes / typing / bottom-sheet / envío usan nodos alternativos (p. ej. chat dentro de un modal). mount: { messages, scroll?, welcome?, chatBody?, inputArea?, inputEl?, sendBtn?, typingId?, tooltipRoot? }
+   openIAPanelArtifactView(html, opts?) — Superpone el detalle de un artifact (opts.title en cabecera; oculta tokens/cierre; muestra «Atrás»).
+   closeIAPanelArtifactView()    — Vuelve al chat del panel (restaura cabecera).
+   destroyIAPanel()              — Desmonta el panel del DOM
 
-   OPCIONES (initAIPanel):
+   OPCIONES (initIAPanel):
    -----------------------
    title, agentLabel, placeholder, disclaimer,
    welcomeTitle, welcomeSubtitle,
@@ -32,19 +32,19 @@
 
    CSS recomendado (misma pila que Modo estudio / Chat IA grupos):
    button.css → chip.css (adjuntos: chips en preview y en mensajes; sin chip.css se ven sin estilo)
-   → ubits-ia-appearance.css → badge-tag.css → tooltip.css → ubits-ia-chat.css → ai-panel.css
-   (+ tooltip.js antes de ai-panel.js si usas el badge de tokens en cabecera).
+   → ubits-ia-appearance.css → badge-tag.css → tooltip.css → ubits-ia-chat.css → ia-panel.css
+   (+ tooltip.js antes de ia-panel.js si usas el badge de tokens en cabecera).
    ======================================== */
 
 // ---------------------------------------------------------------------------
 // Ícono del empty state (welcome) — FontAwesome sparkles con gradiente IA
 // ---------------------------------------------------------------------------
-const _AI_PANEL_WELCOME_ICON = '<i class="far fa-sparkles"></i>';
+const _IA_PANEL_WELCOME_ICON = '<i class="far fa-sparkles"></i>';
 
 // ---------------------------------------------------------------------------
 // Estado interno
 // ---------------------------------------------------------------------------
-let _aiPanel = {
+let _iaPanel = {
     inited:  false,
     open:    false,
     options: {},
@@ -58,17 +58,18 @@ let _aiPanel = {
     artifactOpen: false,
     titleBeforeArtifact: '',
     alternateMount: null,
+    iaInputApi: null,
 };
 
 /** Alinea el scroll del panel con ubits-ia-chat (máscara superior solo en conversación). */
-function _aiPanelSyncScrollFade() {
-    var mount = _aiPanelResolveMount({});
+function _iaPanelSyncScrollFade() {
+    var mount = _iaPanelResolveMount({});
     var scroll = mount.scroll;
     var messages = mount.messages;
     if (!scroll || !messages) return;
     var visible = window.getComputedStyle(messages).display !== 'none';
-    if (visible) scroll.classList.add('ai-panel__chat-scroll--conversation');
-    else scroll.classList.remove('ai-panel__chat-scroll--conversation');
+    if (visible) scroll.classList.add('ia-panel__chat-scroll--conversation');
+    else scroll.classList.remove('ia-panel__chat-scroll--conversation');
 }
 
 // ---------------------------------------------------------------------------
@@ -94,7 +95,7 @@ function _aiEscape(str) {
 function _aiEl(id) { return document.getElementById(id); }
 
 /** Normaliza el objeto mount para mensajes/input/bottom-sheet fuera del panel (p. ej. modal). */
-function _normalizeAiPanelMount(m) {
+function _normalizeIaPanelMount(m) {
     if (!m || !m.messages) return null;
     return {
         welcome: m.welcome || null,
@@ -104,33 +105,35 @@ function _normalizeAiPanelMount(m) {
         inputArea: m.inputArea || null,
         inputEl: m.inputEl || null,
         sendBtn: m.sendBtn || null,
-        typingId: m.typingId || 'ai-panel-typing',
-        tooltipRoot: m.tooltipRoot || '#ai-panel',
+        typingId: m.typingId || 'ia-panel-typing',
+        tooltipRoot: m.tooltipRoot || '#ia-panel',
     };
 }
 
 /** Prioridad: opts.mount → alternateMount global → DOM del panel por defecto */
-function _aiPanelResolveMount(opts) {
+function _iaPanelResolveMount(opts) {
     opts = opts || {};
-    var raw = opts.mount || _aiPanel.alternateMount || null;
-    var m = _normalizeAiPanelMount(raw);
+    var raw = opts.mount || _iaPanel.alternateMount || null;
+    var m = _normalizeIaPanelMount(raw);
     if (m) return m;
     return {
-        welcome: _aiEl('ai-panel-welcome'),
-        messages: _aiEl('ai-panel-messages'),
-        scroll: _aiEl('ai-panel-scroll'),
-        chatBody: _aiEl('ai-panel-body'),
-        inputArea: _aiEl('ai-panel-input-area'),
-        inputEl: _aiEl('ai-panel-input'),
-        sendBtn: _aiEl('ai-panel-send'),
-        typingId: 'ai-panel-typing',
-        tooltipRoot: '#ai-panel',
+        welcome: _aiEl('ia-panel-welcome'),
+        messages: _aiEl('ia-panel-messages'),
+        scroll: _aiEl('ia-panel-scroll'),
+        chatBody: _aiEl('ia-panel-body'),
+        inputArea: _aiEl('ia-panel-input-area'),
+        inputEl: (_iaPanel.iaInputApi && typeof _iaPanel.iaInputApi.getTextarea === 'function'
+            ? _iaPanel.iaInputApi.getTextarea()
+            : _aiEl('ia-panel-input')),
+        sendBtn: null,
+        typingId: 'ia-panel-typing',
+        tooltipRoot: '#ia-panel',
     };
 }
 
 /** Enlace opcional del chat IA a contenedores fuera del panel (cerrar modal → pasar null). */
-function setAIPanelAlternateMount(mount) {
-    _aiPanel.alternateMount = mount && mount.messages ? mount : null;
+function setIAPanelAlternateMount(mount) {
+    _iaPanel.alternateMount = mount && mount.messages ? mount : null;
 }
 
 function _defaultIaDisclaimerText() {
@@ -159,7 +162,7 @@ function _aiCopyText(text) {
 // ---------------------------------------------------------------------------
 // Badge de tokens (cabecera, a la izquierda del cierre) — mismo patrón que modal IA portada
 // ---------------------------------------------------------------------------
-function _aiPanelTokensBadgeHtml(o) {
+function _iaPanelTokensBadgeHtml(o) {
     var cfg = o.tokensBadge;
     if (cfg === false) return '';
     var defaults = { value: 50, tooltip: 'Número de tokens restantes.', ariaLabel: '' };
@@ -174,7 +177,7 @@ function _aiPanelTokensBadgeHtml(o) {
             ? merged.ariaLabel
             : String(num) + ' tokens restantes';
     return (
-        '<span class="ubits-badge-tag ubits-badge-tag--outlined ubits-badge-tag--ia ubits-badge-tag--xs ai-panel__tokens-badge" id="ai-panel-tokens-badge" tabindex="0" ' +
+        '<span class="ubits-badge-tag ubits-badge-tag--outlined ubits-badge-tag--ia ubits-badge-tag--xs ia-panel__tokens-badge" id="ia-panel-tokens-badge" tabindex="0" ' +
         'data-tooltip="' +
         _aiEscape(tip) +
         '" data-tooltip-delay="0" data-tooltip-tap-toggle aria-label="' +
@@ -189,20 +192,20 @@ function _aiPanelTokensBadgeHtml(o) {
     );
 }
 
-function _aiPanelInitTokensBadgeTooltip() {
-    var cfg = _aiPanel.options.tokensBadge;
+function _iaPanelInitTokensBadgeTooltip() {
+    var cfg = _iaPanel.options.tokensBadge;
     if (cfg === false) return;
     if (typeof window.initTooltip !== 'function') return;
     window.setTimeout(function () {
-        var el = _aiEl('ai-panel-tokens-badge');
-        if (el) window.initTooltip('#ai-panel-tokens-badge');
+        var el = _aiEl('ia-panel-tokens-badge');
+        if (el) window.initTooltip('#ia-panel-tokens-badge');
     }, 0);
 }
 
 // ---------------------------------------------------------------------------
 // HTML del panel
 // ---------------------------------------------------------------------------
-function _buildAIPanelHTML(o) {
+function _buildIAPanelHTML(o) {
     const title       = o.title       || 'IA';
     const agentLabel  = o.agentLabel  || '';
     const placeholder = o.placeholder || '¿Cómo puedo ayudarte hoy?';
@@ -211,83 +214,62 @@ function _buildAIPanelHTML(o) {
     const wSubtitle   = o.welcomeSubtitle || '¿En qué puedo ayudarte hoy?';
 
     return `
-<div class="ai-panel" id="ai-panel" role="dialog" aria-modal="false" aria-label="${_aiEscape(title)}">
+<div class="ia-panel" id="ia-panel" role="dialog" aria-modal="false" aria-label="${_aiEscape(title)}">
 
     <!-- Handle de resize -->
-    <div class="ai-panel__resize-handle" id="ai-panel-resize"></div>
+    <div class="ia-panel__resize-handle" id="ia-panel-resize"></div>
 
     <!-- Header -->
-    <header class="ai-panel__header">
-        <div class="ai-panel__hdr-leading">
-            <button type="button" class="ubits-button ubits-button--tertiary ubits-button--xs ubits-button--icon-only ai-panel__hdr-back" id="ai-panel-hdr-back" aria-label="Volver al chat">
+    <header class="ia-panel__header">
+        <div class="ia-panel__hdr-leading">
+            <button type="button" class="ubits-button ubits-button--tertiary ubits-button--xs ubits-button--icon-only ia-panel__hdr-back" id="ia-panel-hdr-back" aria-label="Volver al chat">
                 <i class="far fa-chevron-left"></i>
             </button>
         </div>
-        <div class="ai-panel__header-text">
-            <h2 class="ai-panel__title" id="ai-panel-title">${_aiEscape(title)}</h2>
+        <div class="ia-panel__header-text">
+            <h2 class="ia-panel__title" id="ia-panel-title">${_aiEscape(title)}</h2>
         </div>
-        <div class="ai-panel__header-actions" id="ai-panel-header-actions">
-            ${_aiPanelTokensBadgeHtml(o)}
-            <button type="button" class="ubits-button ubits-button--tertiary ubits-button--xs ubits-button--icon-only" id="ai-panel-close-btn" title="Cerrar panel" aria-label="Cerrar">
+        <div class="ia-panel__header-actions" id="ia-panel-header-actions">
+            ${_iaPanelTokensBadgeHtml(o)}
+            <button type="button" class="ubits-button ubits-button--tertiary ubits-button--xs ubits-button--icon-only" id="ia-panel-close-btn" title="Cerrar panel" aria-label="Cerrar">
                 <i class="far fa-xmark"></i>
             </button>
         </div>
     </header>
 
     <!-- Body -->
-    <div class="ai-panel__body" id="ai-panel-body">
+    <div class="ia-panel__body" id="ia-panel-body">
 
-        <div class="ai-panel__main-stack" id="ai-panel-main-stack">
+        <div class="ia-panel__main-stack" id="ia-panel-main-stack">
         <!-- Chat: capa inferior; el artifact se superpone visualmente -->
-        <div class="ai-panel__chat-shell" id="ai-panel-chat-shell">
+        <div class="ia-panel__chat-shell" id="ia-panel-chat-shell">
         <!-- Contenedor con gradiente y border-radius (la "card" del chat) -->
-        <div class="ai-panel__chat-container">
+        <div class="ia-panel__chat-container">
 
             <!-- Zona scrollable: bienvenida o mensajes -->
-            <div class="ai-panel__chat-scroll" id="ai-panel-scroll">
+            <div class="ia-panel__chat-scroll" id="ia-panel-scroll">
 
                 <!-- Bienvenida (sin mensajes) -->
-                <div class="ai-panel__welcome" id="ai-panel-welcome">
-                    <div class="ai-panel__welcome-icon" aria-hidden="true">${_AI_PANEL_WELCOME_ICON}</div>
-                    <p class="ai-panel__welcome-subtitle">${_aiEscape(wSubtitle)}</p>
+                <div class="ia-panel__welcome" id="ia-panel-welcome">
+                    <div class="ia-panel__welcome-icon" aria-hidden="true">${_IA_PANEL_WELCOME_ICON}</div>
+                    <p class="ia-panel__welcome-subtitle">${_aiEscape(wSubtitle)}</p>
                 </div>
 
                 <!-- Mensajes -->
-                <div class="ai-panel__messages" id="ai-panel-messages" style="display:none;"></div>
+                <div class="ia-panel__messages" id="ia-panel-messages" style="display:none;"></div>
 
             </div>
 
-            <!-- Misma estructura que .ubits-ia-chat-thread: input-area + disclaimer (hermanos) -->
-            <div class="ubits-ia-chat-thread__input-area" id="ai-panel-input-area">
-                <div class="ai-panel__input-box" id="ai-panel-input-box">
-                    <input type="file" id="ai-panel-files" accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.txt,.csv,.ppt,.pptx" multiple hidden />
-                    <div class="ai-panel__pending-images-strip" id="ai-panel-pending-images"></div>
-                    <div class="ai-panel__pending-files-strip" id="ai-panel-pending-files"></div>
-                    <textarea
-                        class="ai-panel__input"
-                        id="ai-panel-input"
-                        placeholder="${_aiEscape(placeholder)}"
-                        rows="1"
-                        aria-label="Mensaje"
-                    ></textarea>
-                    <div class="ai-panel__input-actions">
-                        <button class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only ai-panel__attach-btn" id="ai-panel-attach" type="button" aria-label="Adjuntar">
-                            <i class="far fa-plus"></i>
-                        </button>
-                        <div class="ai-panel__input-spacer"></div>
-                        <button class="ubits-ia-button ubits-ia-button--primary ubits-ia-button--icon-only--sm ai-panel__send-btn" id="ai-panel-send" type="button" aria-label="Enviar">
-                            <i class="far fa-arrow-right"></i>
-                        </button>
-                    </div>
-                </div>
+            <!-- Input IA (createUbitsIAInput) -->
+            <div class="ubits-ia-chat-thread__input-area" id="ia-panel-input-area">
+                <div id="ia-panel-ia-input-mount"></div>
             </div>
-            <p class="ubits-ia-chat-thread__disclaimer ubits-body-xs-regular">${_aiEscape(disclaimer)}</p>
 
         </div>
         </div>
 
-        <div class="ai-panel__artifact-layer" id="ai-panel-artifact-layer" aria-hidden="true">
-            <div class="ai-panel__artifact-scroll" id="ai-panel-artifact-scroll"></div>
+        <div class="ia-panel__artifact-layer" id="ia-panel-artifact-layer" aria-hidden="true">
+            <div class="ia-panel__artifact-scroll" id="ia-panel-artifact-scroll"></div>
         </div>
         </div>
     </div>
@@ -296,12 +278,12 @@ function _buildAIPanelHTML(o) {
 }
 
 // ---------------------------------------------------------------------------
-// initAIPanel
+// initIAPanel
 // ---------------------------------------------------------------------------
-function initAIPanel(options) {
-    if (_aiPanel.inited) return;
-    _aiPanel.inited  = true;
-    _aiPanel.options = Object.assign({
+function initIAPanel(options) {
+    if (_iaPanel.inited) return;
+    _iaPanel.inited  = true;
+    _iaPanel.options = Object.assign({
         title: 'IA', agentLabel: '', placeholder: '¿Cómo puedo ayudarte hoy?',
         disclaimer: _defaultIaDisclaimerText(),
         welcomeTitle: '', welcomeSubtitle: '',
@@ -315,52 +297,177 @@ function initAIPanel(options) {
 
     // Inyectar en el DOM
     const root = document.createElement('div');
-    root.id = 'ai-panel-root';
-    root.innerHTML = _buildAIPanelHTML(_aiPanel.options);
+    root.id = 'ia-panel-root';
+    root.innerHTML = _buildIAPanelHTML(_iaPanel.options);
     document.body.appendChild(root);
-    _aiPanel.rootEl = root;
-    _aiPanel.originalParent = document.body;
+    _iaPanel.rootEl = root;
+    _iaPanel.originalParent = document.body;
 
-    _aiPanelBindEvents();
-    _aiPanelBindResize();
-    _aiPanelSyncDockMode();
-    _aiPanel.resizeHandler = _aiPanelSyncDockMode;
-    window.addEventListener('resize', _aiPanel.resizeHandler);
-    _aiPanelInitTokensBadgeTooltip();
+    _iaPanelBindEvents();
+    _iaPanelInitIAInput();
+    _iaPanelBindResize();
+    _iaPanelSyncDockMode();
+    _iaPanel.resizeHandler = _iaPanelSyncDockMode;
+    window.addEventListener('resize', _iaPanel.resizeHandler);
+    _iaPanelInitTokensBadgeTooltip();
     if (typeof window.initIaButtonSparkles === 'function') {
         window.initIaButtonSparkles(root);
     }
 }
 
-function _aiPanelSyncDockMode() {
-    var panel = _aiEl('ai-panel');
-    var root = _aiPanel.rootEl;
+function _iaPanelSyncDockMode() {
+    var panel = _aiEl('ia-panel');
+    var root = _iaPanel.rootEl;
     if (!panel || !root) return;
 
-    var shouldDock = !!_aiPanel.options.dockDesktop &&
-        window.matchMedia('(min-width: ' + (_aiPanel.options.dockBreakpoint || 1024) + 'px)').matches;
+    var shouldDock = !!_iaPanel.options.dockDesktop &&
+        window.matchMedia('(min-width: ' + (_iaPanel.options.dockBreakpoint || 1024) + 'px)').matches;
 
     if (shouldDock) {
-        var host = document.querySelector(_aiPanel.options.dockContainerSelector || '.dashboard-container');
+        var host = document.querySelector(_iaPanel.options.dockContainerSelector || '.dashboard-container');
         if (host && root.parentNode !== host) host.appendChild(root);
-        root.classList.add('ai-panel-root--docked');
-        panel.classList.add('ai-panel--docked-desktop');
+        root.classList.add('ia-panel-root--docked');
+        panel.classList.add('ia-panel--docked-desktop');
         return;
     }
 
-    if (root.parentNode !== _aiPanel.originalParent && _aiPanel.originalParent) {
-        _aiPanel.originalParent.appendChild(root);
+    if (root.parentNode !== _iaPanel.originalParent && _iaPanel.originalParent) {
+        _iaPanel.originalParent.appendChild(root);
     }
-    root.classList.remove('ai-panel-root--docked');
-    panel.classList.remove('ai-panel--docked-desktop');
+    root.classList.remove('ia-panel-root--docked');
+    panel.classList.remove('ia-panel--docked-desktop');
+}
+
+// ---------------------------------------------------------------------------
+// Input IA (createUbitsIAInput)
+// ---------------------------------------------------------------------------
+function _iaPanelPendingImagesForApi() {
+    return _iaPanel.pendingImages.map(function (src) {
+        return { src: src, alt: 'Imagen adjunta' };
+    });
+}
+
+function _iaPanelPendingFilesForApi() {
+    return _iaPanel.pendingFiles.slice();
+}
+
+function _iaPanelSyncPendingToInput() {
+    if (!_iaPanel.iaInputApi) return;
+    _iaPanel.iaInputApi.setPendingImages(_iaPanelPendingImagesForApi());
+    _iaPanel.iaInputApi.setPendingFiles(_iaPanelPendingFilesForApi());
+}
+
+function _iaPanelHandleAttachFiles(files) {
+    if (!files || !files.length) return;
+    var toLoad = 0;
+    Array.prototype.forEach.call(files, function (f) {
+        if (f.type && f.type.indexOf('image/') === 0) toLoad++;
+    });
+    var loaded = 0;
+    Array.prototype.forEach.call(files, function (file) {
+        if (file.type && file.type.indexOf('image/') === 0) {
+            (function (f) {
+                var reader = new FileReader();
+                reader.onload = function () {
+                    if (reader.result) _iaPanel.pendingImages.push(String(reader.result));
+                    loaded++;
+                    if (loaded >= toLoad) _iaPanelSyncPendingToInput();
+                };
+                reader.readAsDataURL(f);
+            })(file);
+        } else {
+            _iaPanel.pendingFiles.push({ name: file.name, type: file.type, size: file.size });
+        }
+    });
+    _iaPanelSyncPendingToInput();
+    _iaPanelRefreshSendAction();
+    if (typeof _iaPanel.options.onAttach === 'function') _iaPanel.options.onAttach();
+}
+
+function _iaPanelRefreshSendAction() {
+    if (!_iaPanel.iaInputApi) return;
+    var text = String(_iaPanel.iaInputApi.getValue() || '').trim();
+    var hasAttachments =
+        _iaPanel.pendingImages.length > 0 || _iaPanel.pendingFiles.length > 0;
+    _iaPanel.iaInputApi.setActionDisabled(!text && !hasAttachments);
+}
+
+function _iaPanelInitIAInput() {
+    var mount = _aiEl('ia-panel-ia-input-mount');
+    if (!mount || typeof window.createUbitsIAInput !== 'function') return;
+    if (_iaPanel.iaInputApi) {
+        _iaPanel.iaInputApi.destroy();
+        _iaPanel.iaInputApi = null;
+    }
+    mount.innerHTML = '';
+    var o = _iaPanel.options || {};
+    var disclaimer = o.disclaimer != null ? o.disclaimer : _defaultIaDisclaimerText();
+    _iaPanel.iaInputApi = window.createUbitsIAInput({
+        wrapInInputArea: false,
+        variant: 'panel',
+        id: 'ia-panel-input',
+        inputBoxId: 'ia-panel-input-box',
+        placeholder: o.placeholder || '¿Cómo puedo ayudarte hoy?',
+        ariaLabel: 'Mensaje',
+        autosizeMaxPx: 140,
+        attach: true,
+        attachAriaLabel: 'Adjuntar',
+        attachTooltip: 'Adjuntar',
+        pendingImages: _iaPanelPendingImagesForApi(),
+        pendingFiles: _iaPanelPendingFilesForApi(),
+        onAttachFiles: _iaPanelHandleAttachFiles,
+        onRemovePendingImage: function (i) {
+            _iaPanel.pendingImages.splice(i, 1);
+            _iaPanelSyncPendingToInput();
+            _iaPanelRefreshSendAction();
+        },
+        onRemovePendingFile: function (i) {
+            _iaPanel.pendingFiles.splice(i, 1);
+            _iaPanelSyncPendingToInput();
+            _iaPanelRefreshSendAction();
+        },
+        action: {
+            type: 'send',
+            ariaLabel: 'Enviar mensaje',
+            disabled: true,
+            onClick: _iaPanelSend,
+        },
+        onEnterSubmit: _iaPanelSend,
+        onChange: _iaPanelRefreshSendAction,
+        disclaimer: disclaimer,
+    }).mount(mount);
+    if (typeof window.initIaButtonSparkles === 'function') {
+        window.initIaButtonSparkles(mount);
+    }
+    if (typeof window.initTooltip === 'function') {
+        window.initTooltip('#ia-panel [data-tooltip]');
+    }
+    _iaPanelRefreshSendAction();
+}
+
+function _iaPanelSetInputDisabled(disabled) {
+    if (!_iaPanel.alternateMount && _iaPanel.iaInputApi) {
+        _iaPanel.iaInputApi.setDisabled(disabled);
+        if (disabled) _iaPanel.iaInputApi.setActionDisabled(true);
+        else _iaPanelRefreshSendAction();
+        return;
+    }
+    var mount = _iaPanelResolveMount({});
+    if (mount.inputEl) mount.inputEl.disabled = disabled;
+    if (mount.sendBtn) mount.sendBtn.disabled = disabled;
 }
 
 // ---------------------------------------------------------------------------
 // Eventos de interacción
 // ---------------------------------------------------------------------------
-function _aiPanelEnsureInputInteractive() {
-    var mount = _aiPanelResolveMount({});
-    var input = mount.inputEl || _aiEl('ai-panel-input');
+function _iaPanelEnsureInputInteractive() {
+    if (!_iaPanel.alternateMount && _iaPanel.iaInputApi) {
+        _iaPanel.iaInputApi.setDisabled(false);
+        _iaPanelRefreshSendAction();
+        return;
+    }
+    var mount = _iaPanelResolveMount({});
+    var input = mount.inputEl || _aiEl('ia-panel-input');
     if (!input) return;
     input.disabled = false;
     input.removeAttribute('readonly');
@@ -369,112 +476,35 @@ function _aiPanelEnsureInputInteractive() {
     input.style.opacity = '';
 }
 
-function _aiPanelBindEvents() {
+function _iaPanelBindEvents() {
     // Cerrar
-    var closeBtn = _aiEl('ai-panel-close-btn');
-    if (closeBtn) closeBtn.addEventListener('click', closeAIPanel);
+    var closeBtn = _aiEl('ia-panel-close-btn');
+    if (closeBtn) closeBtn.addEventListener('click', closeIAPanel);
 
-    var backBtn = _aiEl('ai-panel-hdr-back');
+    var backBtn = _aiEl('ia-panel-hdr-back');
     if (backBtn) backBtn.addEventListener('click', function () {
-        if (_aiPanel.artifactOpen) closeAIPanelArtifactView();
+        if (_iaPanel.artifactOpen) closeIAPanelArtifactView();
     });
-
-    // Enviar con botón
-    var sendBtn = _aiEl('ai-panel-send');
-    if (sendBtn) sendBtn.addEventListener('click', _aiPanelSend);
-
-    // Adjuntar
-    var attachBtn = _aiEl('ai-panel-attach');
-    if (attachBtn) attachBtn.addEventListener('click', function() {
-        var fileInput = _aiEl('ai-panel-files');
-        if (fileInput) {
-            fileInput.click();
-            return;
-        }
-        if (typeof _aiPanel.options.onAttach === 'function') _aiPanel.options.onAttach();
-    });
-
-    var fileInput = _aiEl('ai-panel-files');
-    if (fileInput) {
-        fileInput.addEventListener('change', function() {
-            var files = this.files;
-            if (!files || !files.length) return;
-            var toLoad = 0;
-            for (var i = 0; i < files.length; i++) {
-                if (files[i].type && files[i].type.indexOf('image/') === 0) toLoad++;
-            }
-            var loaded = 0;
-            for (var j = 0; j < files.length; j++) {
-                var file = files[j];
-                if (file.type && file.type.indexOf('image/') === 0) {
-                    (function (f) {
-                        var reader = new FileReader();
-                        reader.onload = function() {
-                            if (reader.result) _aiPanel.pendingImages.push(String(reader.result));
-                            loaded++;
-                            if (loaded >= toLoad) _renderAIPanelPendingImages();
-                        };
-                        reader.readAsDataURL(f);
-                    })(file);
-                } else {
-                    _aiPanel.pendingFiles.push({ name: file.name, type: file.type, size: file.size });
-                }
-            }
-            _renderAIPanelPendingFiles();
-            this.value = '';
-            if (typeof _aiPanel.options.onAttach === 'function') _aiPanel.options.onAttach();
-        });
-    }
-
-    // Textarea: Enter envía, Shift+Enter nueva línea; auto-resize
-    var input = _aiEl('ai-panel-input');
-    if (input) {
-        input.addEventListener('keydown', function(e) {
-            if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); _aiPanelSend(); }
-        });
-        input.addEventListener('input', function() {
-            this.style.height = 'auto';
-            this.style.height = Math.min(this.scrollHeight, 140) + 'px';
-        });
-        _aiPanelEnsureInputInteractive();
-    }
-
-    var inputBox = _aiEl('ai-panel-input-box');
-    if (inputBox && input) {
-        inputBox.addEventListener('mousedown', function (e) {
-            if (e.button !== 0) return;
-            if (e.target.closest('button')) return;
-            if (e.target === input) return;
-            requestAnimationFrame(function () {
-                _aiPanelEnsureInputInteractive();
-                try {
-                    input.focus({ preventScroll: true });
-                } catch (err) {
-                    input.focus();
-                }
-            });
-        });
-    }
 
     // Escape: primero cierra la vista artifact; si no, cierra el panel
     document.addEventListener('keydown', function(e) {
-        if (e.key !== 'Escape' || !_aiPanel.open) return;
-        if (_aiPanel.artifactOpen) {
+        if (e.key !== 'Escape' || !_iaPanel.open) return;
+        if (_iaPanel.artifactOpen) {
             e.preventDefault();
-            closeAIPanelArtifactView();
+            closeIAPanelArtifactView();
             return;
         }
-        closeAIPanel();
+        closeIAPanel();
     });
 
     // Acciones en mensajes IA (delegación)
-    var messages = _aiEl('ai-panel-messages');
+    var messages = _aiEl('ia-panel-messages');
     if (messages) {
         messages.addEventListener('click', function(e) {
-            var actionBtn = e.target.closest('[data-ai-panel-action]');
+            var actionBtn = e.target.closest('[data-ia-panel-action]');
             if (!actionBtn) return;
-            var action = actionBtn.getAttribute('data-ai-panel-action');
-            var msgRoot = actionBtn.closest('.ai-panel__msg');
+            var action = actionBtn.getAttribute('data-ia-panel-action');
+            var msgRoot = actionBtn.closest('.ia-panel__msg');
             var msgText = msgRoot ? (msgRoot.getAttribute('data-ai-text') || '') : '';
 
             if (action === 'copy') {
@@ -486,87 +516,95 @@ function _aiPanelBindEvents() {
     }
 }
 
-function _buildAIPanelAttachmentsHtml(images, files) {
+function _buildIAPanelAttachmentsHtml(images, files) {
     var imagesHtml = (images || []).map(function(src) {
-        return '<img src="' + _aiEscape(src) + '" alt="Imagen adjunta" class="ai-panel__msg-attachment-img" />';
+        return '<img src="' + _aiEscape(src) + '" alt="Imagen adjunta" class="ia-panel__msg-attachment-img" />';
     }).join('');
     var filesHtml = (files || []).map(function(f) {
-        return '<span class="ubits-chip ubits-chip--sm ubits-chip--icon-left ai-panel__msg-file-chip"><i class="far fa-file-lines"></i><span class="ubits-chip__text">' + _aiEscape((f && f.name) ? f.name : 'Archivo') + '</span></span>';
+        return '<span class="ubits-chip ubits-chip--sm ubits-chip--icon-left ia-panel__msg-file-chip"><i class="far fa-file-lines"></i><span class="ubits-chip__text">' + _aiEscape((f && f.name) ? f.name : 'Archivo') + '</span></span>';
     }).join('');
     var out = '';
-    if (imagesHtml) out += '<div class="ai-panel__msg-attachments-images">' + imagesHtml + '</div>';
-    if (filesHtml) out += '<div class="ai-panel__msg-attachments-files">' + filesHtml + '</div>';
+    if (imagesHtml) out += '<div class="ia-panel__msg-attachments-images">' + imagesHtml + '</div>';
+    if (filesHtml) out += '<div class="ia-panel__msg-attachments-files">' + filesHtml + '</div>';
     return out;
 }
 
-function _renderAIPanelPendingImages() {
-    var strip = _aiEl('ai-panel-pending-images');
+function _renderIAPanelPendingImages() {
+    var strip = _aiEl('ia-panel-pending-images');
     if (!strip) return;
-    if (!_aiPanel.pendingImages.length) {
+    if (!_iaPanel.pendingImages.length) {
         strip.innerHTML = '';
         strip.style.display = 'none';
         return;
     }
     strip.style.display = 'flex';
-    strip.innerHTML = _aiPanel.pendingImages.map(function(src, idx) {
-        return '<div class="ai-panel__pending-img-wrap">' +
-            '<img src="' + _aiEscape(src) + '" alt="Imagen adjunta" class="ai-panel__pending-img" />' +
-            '<button type="button" class="ai-panel__pending-img-remove" data-idx="' + idx + '" aria-label="Eliminar imagen"><i class="far fa-times"></i></button>' +
+    strip.innerHTML = _iaPanel.pendingImages.map(function(src, idx) {
+        return '<div class="ia-panel__pending-img-wrap">' +
+            '<img src="' + _aiEscape(src) + '" alt="Imagen adjunta" class="ia-panel__pending-img" />' +
+            '<button type="button" class="ia-panel__pending-img-remove" data-idx="' + idx + '" aria-label="Eliminar imagen"><i class="far fa-times"></i></button>' +
             '</div>';
     }).join('');
-    strip.querySelectorAll('.ai-panel__pending-img-remove').forEach(function(btn) {
+    strip.querySelectorAll('.ia-panel__pending-img-remove').forEach(function(btn) {
         btn.addEventListener('click', function() {
             var idx = Number(btn.getAttribute('data-idx'));
             if (isNaN(idx)) return;
-            _aiPanel.pendingImages.splice(idx, 1);
-            _renderAIPanelPendingImages();
+            _iaPanel.pendingImages.splice(idx, 1);
+            _renderIAPanelPendingImages();
         });
     });
 }
 
-function _renderAIPanelPendingFiles() {
-    var strip = _aiEl('ai-panel-pending-files');
+function _renderIAPanelPendingFiles() {
+    var strip = _aiEl('ia-panel-pending-files');
     if (!strip) return;
-    if (!_aiPanel.pendingFiles.length) {
+    if (!_iaPanel.pendingFiles.length) {
         strip.innerHTML = '';
         strip.style.display = 'none';
         return;
     }
     strip.style.display = 'flex';
-    strip.innerHTML = _aiPanel.pendingFiles.map(function(f, idx) {
-        return '<span class="ubits-chip ubits-chip--sm ubits-chip--icon-left ubits-chip--close ai-panel__pending-file-chip">' +
+    strip.innerHTML = _iaPanel.pendingFiles.map(function(f, idx) {
+        return '<span class="ubits-chip ubits-chip--sm ubits-chip--icon-left ubits-chip--close ia-panel__pending-file-chip">' +
             '<i class="far fa-file-lines"></i><span class="ubits-chip__text">' + _aiEscape((f && f.name) ? f.name : 'Archivo') + '</span>' +
-            '<button type="button" class="ubits-chip__close ai-panel__pending-file-remove" data-idx="' + idx + '" aria-label="Quitar archivo"><i class="far fa-times"></i></button>' +
+            '<button type="button" class="ubits-chip__close ia-panel__pending-file-remove" data-idx="' + idx + '" aria-label="Quitar archivo"><i class="far fa-times"></i></button>' +
             '</span>';
     }).join('');
-    strip.querySelectorAll('.ai-panel__pending-file-remove').forEach(function(btn) {
+    strip.querySelectorAll('.ia-panel__pending-file-remove').forEach(function(btn) {
         btn.addEventListener('click', function() {
             var idx = Number(btn.getAttribute('data-idx'));
             if (isNaN(idx)) return;
-            _aiPanel.pendingFiles.splice(idx, 1);
-            _renderAIPanelPendingFiles();
+            _iaPanel.pendingFiles.splice(idx, 1);
+            _renderIAPanelPendingFiles();
         });
     });
 }
 
-function _aiPanelSend() {
-    var mount = _aiPanelResolveMount({});
-    var input = mount.inputEl || _aiEl('ai-panel-input');
-    if (!input) return;
-    var text = input.value.trim();
-    var hasAttachments = _aiPanel.pendingImages.length > 0 || _aiPanel.pendingFiles.length > 0;
+function _iaPanelSend() {
+    var mount = _iaPanelResolveMount({});
+    var useApi = !_iaPanel.alternateMount && _iaPanel.iaInputApi;
+    var text = useApi
+        ? String(_iaPanel.iaInputApi.getValue() || '').trim()
+        : mount.inputEl
+          ? mount.inputEl.value.trim()
+          : '';
+    var hasAttachments = _iaPanel.pendingImages.length > 0 || _iaPanel.pendingFiles.length > 0;
     if (!text && !hasAttachments) return;
-    addAIPanelMessage(text || 'Adjuntos', 'user', {
-        images: _aiPanel.pendingImages.slice(),
-        files: _aiPanel.pendingFiles.slice()
+    addIAPanelMessage(text || 'Adjuntos', 'user', {
+        images: _iaPanel.pendingImages.slice(),
+        files: _iaPanel.pendingFiles.slice()
     });
-    input.value = '';
-    input.style.height = 'auto';
-    _aiPanel.pendingImages = [];
-    _aiPanel.pendingFiles = [];
-    _renderAIPanelPendingImages();
-    _renderAIPanelPendingFiles();
-    if (typeof _aiPanel.options.onSend !== 'function') return;
+    if (useApi) {
+        _iaPanel.iaInputApi.setValue('');
+        _iaPanel.iaInputApi.setPendingImages([]);
+        _iaPanel.iaInputApi.setPendingFiles([]);
+    } else if (mount.inputEl) {
+        mount.inputEl.value = '';
+        mount.inputEl.style.height = 'auto';
+    }
+    _iaPanel.pendingImages = [];
+    _iaPanel.pendingFiles = [];
+    _iaPanelRefreshSendAction();
+    if (typeof _iaPanel.options.onSend !== 'function') return;
 
     var messages = mount.messages;
     if (window.UbitsIaChatStreaming && typeof window.UbitsIaChatStreaming.afterMinDelay === 'function' && messages) {
@@ -575,15 +613,15 @@ function _aiPanelSend() {
         if (thinkRow) thinkRow.id = mount.typingId;
         var scroll = mount.scroll;
         if (scroll) scroll.scrollTop = scroll.scrollHeight;
-        _aiPanelSyncScrollFade();
+        _iaPanelSyncScrollFade();
         var runAfterThink = function () {
             if (thinkRow && thinkRow.parentNode) thinkRow.remove();
             if (messages && window.UbitsIaChatStreaming.removeThinkingRows) {
                 window.UbitsIaChatStreaming.removeThinkingRows(messages);
             }
-            _aiPanelSyncScrollFade();
+            _iaPanelSyncScrollFade();
             try {
-                var r = _aiPanel.options.onSend(text || 'Adjuntos');
+                var r = _iaPanel.options.onSend(text || 'Adjuntos');
                 return r && typeof r.then === 'function' ? r : Promise.resolve(r);
             } catch (err) {
                 return Promise.resolve();
@@ -591,37 +629,37 @@ function _aiPanelSend() {
         };
         if (typeof window.UbitsIaChatStreaming.afterMinDelay === 'function') {
             window.UbitsIaChatStreaming.afterMinDelay(window.UbitsIaChatStreaming.MIN_THINKING_MS, runAfterThink).finally(function () {
-                _aiPanelSyncScrollFade();
+                _iaPanelSyncScrollFade();
             });
         } else {
             setTimeout(function () {
                 Promise.resolve(runAfterThink()).finally(function () {
-                    _aiPanelSyncScrollFade();
+                    _iaPanelSyncScrollFade();
                 });
             }, window.UbitsIaChatStreaming.MIN_THINKING_MS || 1000);
         }
         return;
     }
 
-    _aiPanel.options.onSend(text || 'Adjuntos');
+    _iaPanel.options.onSend(text || 'Adjuntos');
 }
 
 // ---------------------------------------------------------------------------
 // Resize con el mouse (arrastrar borde izquierdo)
 // ---------------------------------------------------------------------------
-function _aiPanelGetWidthMin_() {
-    return parseInt(getComputedStyle(document.documentElement).getPropertyValue('--ai-panel-width-min'), 10) || 320;
+function _iaPanelGetWidthMin_() {
+    return parseInt(getComputedStyle(document.documentElement).getPropertyValue('--ia-panel-width-min'), 10) || 320;
 }
 
 /** Máximo del token CSS, acotado al viewport para no desbordar en pantallas estrechas. */
-function _aiPanelGetWidthMax_() {
-    var token = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--ai-panel-width-max'), 10) || 720;
-    return Math.min(token, Math.max(_aiPanelGetWidthMin_(), window.innerWidth - 16));
+function _iaPanelGetWidthMax_() {
+    var token = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--ia-panel-width-max'), 10) || 720;
+    return Math.min(token, Math.max(_iaPanelGetWidthMin_(), window.innerWidth - 16));
 }
 
-function _aiPanelBindResize() {
-    var handle = _aiEl('ai-panel-resize');
-    var panel  = _aiEl('ai-panel');
+function _iaPanelBindResize() {
+    var handle = _aiEl('ia-panel-resize');
+    var panel  = _aiEl('ia-panel');
     if (!handle || !panel) return;
 
     var startX = 0;
@@ -630,17 +668,17 @@ function _aiPanelBindResize() {
     function onMouseMove(e) {
         var dx = startX - e.clientX;            // cuánto se movió hacia la izquierda
         var newW = Math.min(
-            Math.max(startW + dx, _aiPanelGetWidthMin_()),
-            _aiPanelGetWidthMax_()
+            Math.max(startW + dx, _iaPanelGetWidthMin_()),
+            _iaPanelGetWidthMax_()
         );
         panel.style.width = newW + 'px';
-        _aiPanel.width = newW;
+        _iaPanel.width = newW;
     }
 
     function onMouseUp() {
         document.removeEventListener('mousemove', onMouseMove);
         document.removeEventListener('mouseup',  onMouseUp);
-        document.body.classList.remove('ai-panel-resizing');
+        document.body.classList.remove('ia-panel-resizing');
         panel.classList.remove('resizing');
     }
 
@@ -648,7 +686,7 @@ function _aiPanelBindResize() {
         e.preventDefault();
         startX = e.clientX;
         startW = panel.offsetWidth;
-        document.body.classList.add('ai-panel-resizing');
+        document.body.classList.add('ia-panel-resizing');
         panel.classList.add('resizing');
         document.addEventListener('mousemove', onMouseMove);
         document.addEventListener('mouseup',  onMouseUp);
@@ -663,9 +701,9 @@ function _aiPanelBindResize() {
 
     handle.addEventListener('touchmove', function(e) {
         var dx = startX - e.touches[0].clientX;
-        var newW = Math.min(Math.max(startW + dx, _aiPanelGetWidthMin_()), _aiPanelGetWidthMax_());
+        var newW = Math.min(Math.max(startW + dx, _iaPanelGetWidthMin_()), _iaPanelGetWidthMax_());
         panel.style.width = newW + 'px';
-        _aiPanel.width = newW;
+        _iaPanel.width = newW;
     }, { passive: true });
 
     handle.addEventListener('touchend', function() {
@@ -676,66 +714,70 @@ function _aiPanelBindResize() {
 // ---------------------------------------------------------------------------
 // API pública
 // ---------------------------------------------------------------------------
-function openAIPanel() {
-    if (!_aiPanel.inited) { console.warn('[AIPanel] Llama initAIPanel() primero.'); return; }
-    var panel = _aiEl('ai-panel');
+function openIAPanel() {
+    if (!_iaPanel.inited) { console.warn('[IAPanel] Llama initIAPanel() primero.'); return; }
+    var panel = _aiEl('ia-panel');
     if (panel) panel.classList.add('active');
-    _aiPanel.open = true;
-    if (panel && panel.classList.contains('ai-panel--docked-desktop')) {
-        panel.style.width = (_aiPanel.width && _aiPanel.width > 0 ? _aiPanel.width : (parseInt(getComputedStyle(panel).getPropertyValue('--ai-panel-width-default'), 10) || 440)) + 'px';
+    _iaPanel.open = true;
+    if (panel && panel.classList.contains('ia-panel--docked-desktop')) {
+        panel.style.width = (_iaPanel.width && _iaPanel.width > 0 ? _iaPanel.width : (parseInt(getComputedStyle(panel).getPropertyValue('--ia-panel-width-default'), 10) || 440)) + 'px';
     }
     setTimeout(function() {
-        var input = _aiEl('ai-panel-input');
-        _aiPanelEnsureInputInteractive();
-        if (input) input.focus();
+        _iaPanelEnsureInputInteractive();
+        if (_iaPanel.iaInputApi && typeof _iaPanel.iaInputApi.focus === 'function') {
+            _iaPanel.iaInputApi.focus();
+        } else {
+            var input = _aiEl('ia-panel-input');
+            if (input) input.focus();
+        }
     }, 300);
 }
 
-function closeAIPanel() {
-    if (_aiPanel.artifactOpen) closeAIPanelArtifactView();
-    var panel = _aiEl('ai-panel');
+function closeIAPanel() {
+    if (_iaPanel.artifactOpen) closeIAPanelArtifactView();
+    var panel = _aiEl('ia-panel');
     if (panel) panel.classList.remove('active');
-    if (panel && panel.classList.contains('ai-panel--docked-desktop')) {
+    if (panel && panel.classList.contains('ia-panel--docked-desktop')) {
         panel.style.width = '0px';
     }
-    _aiPanel.open = false;
-    if (typeof _aiPanel.options.onClose === 'function') _aiPanel.options.onClose();
+    _iaPanel.open = false;
+    if (typeof _iaPanel.options.onClose === 'function') _iaPanel.options.onClose();
 }
 
 /**
  * Superpone el contenido de un artifact (HTML del tutor / detalle) sobre el chat.
- * @param {string} html - Markup a insertar en #ai-panel-artifact-scroll (p. ej. bloque .ubits-ia-chat-side__content).
+ * @param {string} html - Markup a insertar en #ia-panel-artifact-scroll (p. ej. bloque .ubits-ia-chat-side__content).
  * @param {Object} [opts]
  * @param {string} [opts.title] - Título mostrado en la cabecera del panel mientras el artifact está abierto.
  */
-function openAIPanelArtifactView(html, opts) {
-    if (!_aiPanel.inited) { console.warn('[AIPanel] Llama initAIPanel() primero.'); return; }
+function openIAPanelArtifactView(html, opts) {
+    if (!_iaPanel.inited) { console.warn('[IAPanel] Llama initIAPanel() primero.'); return; }
     opts = opts || {};
-    var panel = _aiEl('ai-panel');
-    var layer = _aiEl('ai-panel-artifact-layer');
-    var scroll = _aiEl('ai-panel-artifact-scroll');
-    var titleEl = _aiEl('ai-panel-title');
+    var panel = _aiEl('ia-panel');
+    var layer = _aiEl('ia-panel-artifact-layer');
+    var scroll = _aiEl('ia-panel-artifact-scroll');
+    var titleEl = _aiEl('ia-panel-title');
     if (!panel || !layer || !scroll) return;
 
-    if (!_aiPanel.artifactOpen && titleEl) {
-        _aiPanel.titleBeforeArtifact = titleEl.textContent || '';
+    if (!_iaPanel.artifactOpen && titleEl) {
+        _iaPanel.titleBeforeArtifact = titleEl.textContent || '';
     }
     scroll.innerHTML = html || '';
     if (titleEl && opts.title != null && String(opts.title).length) {
         titleEl.textContent = opts.title;
     }
-    panel.classList.add('ai-panel--artifact-open');
+    panel.classList.add('ia-panel--artifact-open');
     layer.setAttribute('aria-hidden', 'false');
-    var chatShell = _aiEl('ai-panel-chat-shell');
+    var chatShell = _aiEl('ia-panel-chat-shell');
     if (chatShell) chatShell.setAttribute('aria-hidden', 'true');
-    _aiPanel.artifactOpen = true;
+    _iaPanel.artifactOpen = true;
     if (typeof opts.onAfterMount === 'function') {
         try { opts.onAfterMount(scroll); } catch (e) {}
     }
 }
 
-function _aiPanelRestoreArtifactOpenButtons() {
-    var messages = _aiEl('ai-panel-messages');
+function _iaPanelRestoreArtifactOpenButtons() {
+    var messages = _aiEl('ia-panel-messages');
     if (!messages) return;
     var rows = messages.querySelectorAll('.ubits-ia-chat-artifact-row[data-artifact-shows-open="1"]');
     for (var i = 0; i < rows.length; i++) {
@@ -743,28 +785,28 @@ function _aiPanelRestoreArtifactOpenButtons() {
     }
 }
 
-function closeAIPanelArtifactView() {
-    var panel = _aiEl('ai-panel');
-    var layer = _aiEl('ai-panel-artifact-layer');
-    var scroll = _aiEl('ai-panel-artifact-scroll');
-    var titleEl = _aiEl('ai-panel-title');
+function closeIAPanelArtifactView() {
+    var panel = _aiEl('ia-panel');
+    var layer = _aiEl('ia-panel-artifact-layer');
+    var scroll = _aiEl('ia-panel-artifact-scroll');
+    var titleEl = _aiEl('ia-panel-title');
     if (!panel) return;
-    panel.classList.remove('ai-panel--artifact-open');
+    panel.classList.remove('ia-panel--artifact-open');
     if (layer) layer.setAttribute('aria-hidden', 'true');
-    var chatShell = _aiEl('ai-panel-chat-shell');
+    var chatShell = _aiEl('ia-panel-chat-shell');
     if (chatShell) chatShell.removeAttribute('aria-hidden');
     if (scroll) scroll.innerHTML = '';
-    if (titleEl && _aiPanel.titleBeforeArtifact != null) {
-        titleEl.textContent = _aiPanel.titleBeforeArtifact;
+    if (titleEl && _iaPanel.titleBeforeArtifact != null) {
+        titleEl.textContent = _iaPanel.titleBeforeArtifact;
     }
-    _aiPanel.artifactOpen = false;
-    _aiPanel.titleBeforeArtifact = '';
-    _aiPanelRestoreArtifactOpenButtons();
+    _iaPanel.artifactOpen = false;
+    _iaPanel.titleBeforeArtifact = '';
+    _iaPanelRestoreArtifactOpenButtons();
 }
 
-function addAIPanelMessage(text, type, attachments, opts) {
+function addIAPanelMessage(text, type, attachments, opts) {
     opts = opts || {};
-    var mount = _aiPanelResolveMount(opts);
+    var mount = _iaPanelResolveMount(opts);
     var welcome = mount.welcome;
     var messages = mount.messages;
     if (!messages) return;
@@ -774,44 +816,44 @@ function addAIPanelMessage(text, type, attachments, opts) {
 
     var msgType = (type === 'user') ? 'user' : 'ai';
     var el = document.createElement('div');
-    el.className = 'ai-panel__msg ai-panel__msg--' + msgType;
+    el.className = 'ia-panel__msg ia-panel__msg--' + msgType;
     if (msgType === 'user') {
-        _aiPanel.lastUserMessage = String(text || '');
+        _iaPanel.lastUserMessage = String(text || '');
     }
 
     var sentAt = new Date();
     el.setAttribute('data-msg-at', sentAt.toISOString());
     var timeLabel = _aiEscape(_aiFormatMsgTimeLabel(sentAt));
     var copyBtn =
-        '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--xs ubits-button--icon-only" data-tooltip="Copiar" data-tooltip-delay="1000" data-ai-panel-action="copy" aria-label="Copiar">' +
+        '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--xs ubits-button--icon-only" data-tooltip="Copiar" data-tooltip-delay="1000" data-ia-panel-action="copy" aria-label="Copiar">' +
             '<i class="far fa-copy"></i>' +
         '</button>';
     var showAiCopy = msgType === 'ai' && !opts.hideAiCopy;
     var footerHtml =
-        '<div class="ai-panel__msg-footer ubits-ia-chat-thread__message-footer">' +
-        '<span class="ai-panel__msg-time ubits-ia-chat-thread__timestamp">' + timeLabel + '</span>' +
+        '<div class="ia-panel__msg-footer ubits-ia-chat-thread__message-footer">' +
+        '<span class="ia-panel__msg-time ubits-ia-chat-thread__timestamp">' + timeLabel + '</span>' +
         (showAiCopy
-            ? '<div class="ai-panel__msg-actions ubits-ia-chat-thread__message-actions">' + copyBtn + '</div>'
+            ? '<div class="ia-panel__msg-actions ubits-ia-chat-thread__message-actions">' + copyBtn + '</div>'
             : '') +
         '</div>';
 
     el.setAttribute('data-ai-text', String(text || ''));
-    var attHtml = _buildAIPanelAttachmentsHtml(attachments && attachments.images, attachments && attachments.files) || '';
+    var attHtml = _buildIAPanelAttachmentsHtml(attachments && attachments.images, attachments && attachments.files) || '';
     var useRichAi = msgType === 'ai' && opts.richHtml;
     var useStream = !useRichAi && msgType === 'ai' && window.UbitsIaChatStreaming && typeof window.UbitsIaChatStreaming.buildAiGlobeInnerHtmlFromPlainText === 'function';
     if (useRichAi) {
         el.innerHTML =
-            '<div class="ai-panel__msg-bubble ai-panel__msg-bubble--rich">' + opts.richHtml + '</div>' +
+            '<div class="ia-panel__msg-bubble ia-panel__msg-bubble--rich">' + opts.richHtml + '</div>' +
             footerHtml;
     } else if (useStream) {
         el.classList.add('ubits-ia-chat-thread__message', 'ubits-ia-chat-thread__message--ai', 'ubits-ia-chat-thread__message--typing');
         var innerGlobe = window.UbitsIaChatStreaming.buildAiGlobeInnerHtmlFromPlainText(text) + attHtml;
         el.innerHTML =
-            '<div class="ai-panel__msg-bubble ubits-ia-chat-thread__text-globe ubits-ia-chat-thread__text-globe--ai">' + innerGlobe + '</div>' +
+            '<div class="ia-panel__msg-bubble ubits-ia-chat-thread__text-globe ubits-ia-chat-thread__text-globe--ai">' + innerGlobe + '</div>' +
             footerHtml;
     } else {
         el.innerHTML =
-            '<div class="ai-panel__msg-bubble">' + _aiEscape(text) + attHtml + '</div>' +
+            '<div class="ia-panel__msg-bubble">' + _aiEscape(text) + attHtml + '</div>' +
             footerHtml;
     }
     messages.appendChild(el);
@@ -825,17 +867,17 @@ function addAIPanelMessage(text, type, attachments, opts) {
     }
 
     if (typeof window.initTooltip === 'function') {
-        var tipSel = mount.tooltipRoot ? mount.tooltipRoot + ' [data-tooltip]' : '#ai-panel [data-tooltip]';
+        var tipSel = mount.tooltipRoot ? mount.tooltipRoot + ' [data-tooltip]' : '#ia-panel [data-tooltip]';
         setTimeout(function () { window.initTooltip(tipSel); }, 0);
     }
 
     var scroll = mount.scroll;
     if (scroll) scroll.scrollTop = scroll.scrollHeight;
-    _aiPanelSyncScrollFade();
+    _iaPanelSyncScrollFade();
 }
 
-function showAIPanelTyping() {
-    var mount = _aiPanelResolveMount({});
+function showIAPanelTyping() {
+    var mount = _iaPanelResolveMount({});
     var welcome = mount.welcome;
     var messages = mount.messages;
     if (!messages) return function() {};
@@ -849,19 +891,19 @@ function showAIPanelTyping() {
         if (row) row.id = mount.typingId;
     } else {
         var el = document.createElement('div');
-        el.className = 'ai-panel__msg ai-panel__msg--ai';
+        el.className = 'ia-panel__msg ia-panel__msg--ai';
         el.id = mount.typingId;
         el.innerHTML =
-            '<div class="ai-panel__typing">' +
-            '<span class="ai-panel__typing-dot"></span>' +
-            '<span class="ai-panel__typing-dot"></span>' +
-            '<span class="ai-panel__typing-dot"></span>' +
+            '<div class="ia-panel__typing">' +
+            '<span class="ia-panel__typing-dot"></span>' +
+            '<span class="ia-panel__typing-dot"></span>' +
+            '<span class="ia-panel__typing-dot"></span>' +
             '</div>';
         messages.appendChild(el);
     }
     var scroll = mount.scroll;
     if (scroll) scroll.scrollTop = scroll.scrollHeight;
-    _aiPanelSyncScrollFade();
+    _iaPanelSyncScrollFade();
 
     var typingId = mount.typingId;
     return function() {
@@ -870,43 +912,43 @@ function showAIPanelTyping() {
         if (window.UbitsIaChatStreaming && window.UbitsIaChatStreaming.removeThinkingRows) {
             window.UbitsIaChatStreaming.removeThinkingRows(messages);
         }
-        _aiPanelSyncScrollFade();
+        _iaPanelSyncScrollFade();
     };
 }
 
-function clearAIPanelMessages() {
-    var mount = _aiPanelResolveMount({});
+function clearIAPanelMessages() {
+    var mount = _iaPanelResolveMount({});
     var welcome = mount.welcome;
     var messages = mount.messages;
     if (messages) { messages.innerHTML = ''; messages.style.display = 'none'; }
     if (welcome) welcome.style.display = 'flex';
-    _aiPanelSyncScrollFade();
+    _iaPanelSyncScrollFade();
 }
 
-function setAIPanelTitle(title) {
-    var el = _aiEl('ai-panel-title');
+function setIAPanelTitle(title) {
+    var el = _aiEl('ia-panel-title');
     if (el) el.textContent = title;
 }
 
 /** Actualiza el valor mostrado del badge de tokens (cabecera). No-op si `tokensBadge: false` o el nodo no existe. */
-function setAIPanelTokensBadgeValue(value) {
+function setIAPanelTokensBadgeValue(value) {
     var n = parseInt(value, 10);
     if (isNaN(n) || n < 0) n = 0;
-    var el = _aiEl('ai-panel-tokens-badge');
+    var el = _aiEl('ia-panel-tokens-badge');
     if (!el) return;
     var numEl = el.querySelector('.ubits-badge-tag__token-number');
     if (numEl) numEl.textContent = String(n);
     el.setAttribute('aria-label', String(n) + ' tokens restantes');
-    if (_aiPanel.options && _aiPanel.options.tokensBadge !== false) {
-        if (_aiPanel.options.tokensBadge && typeof _aiPanel.options.tokensBadge === 'object') {
-            _aiPanel.options.tokensBadge.value = n;
+    if (_iaPanel.options && _iaPanel.options.tokensBadge !== false) {
+        if (_iaPanel.options.tokensBadge && typeof _iaPanel.options.tokensBadge === 'object') {
+            _iaPanel.options.tokensBadge.value = n;
         }
     }
 }
 
 // ---------------------------------------------------------------------------
 // Tipos de interacción conversacional
-// API pública: addAIPanelInteraction(type, options)
+// API pública: addIAPanelInteraction(type, options)
 //
 // Tipos disponibles:
 //   'quick-reply'  — botones de respuesta rápida bajo el último mensaje IA
@@ -927,9 +969,9 @@ function setAIPanelTokensBadgeValue(value) {
 //   artifacts:    { rows: [{ title, meta?, iconClass?, openButtonVisible?, onOpen(row, rowEl) }] }
 // ---------------------------------------------------------------------------
 
-function addAIPanelInteraction(type, options) {
+function addIAPanelInteraction(type, options) {
     options = options || {};
-    var mount = _aiPanelResolveMount(options);
+    var mount = _iaPanelResolveMount(options);
     var messages = mount.messages;
     var welcome = mount.welcome;
     if (!messages) return;
@@ -937,38 +979,38 @@ function addAIPanelInteraction(type, options) {
     messages.style.display = 'flex';
 
     if (type === 'quick-reply') {
-        _aiPanelInteractionQuickReply(options);
+        _iaPanelInteractionQuickReply(options);
     } else if (type === 'multiselect') {
-        _aiPanelInteractionMultiselect(options);
+        _iaPanelInteractionMultiselect(options);
     } else if (type === 'cards') {
-        _aiPanelInteractionCards(options);
+        _iaPanelInteractionCards(options);
     } else if (type === 'bottom-sheet') {
-        _aiPanelInteractionBottomSheet(options);
+        _iaPanelInteractionBottomSheet(options);
     } else if (type === 'artifacts') {
-        _aiPanelInteractionArtifacts(options);
+        _iaPanelInteractionArtifacts(options);
     }
 
     var scroll = mount.scroll;
     if (scroll) scroll.scrollTop = scroll.scrollHeight;
-    _aiPanelSyncScrollFade();
+    _iaPanelSyncScrollFade();
 }
 
 /* ---- helpers internos ---- */
 
-function _aiPanelConsumeInteraction(wrap) {
+function _iaPanelConsumeInteraction(wrap) {
     wrap.classList.add('ubits-ia-chat-interaction--consumed');
 }
 
 // Inyecta un bloque de interacción DENTRO del último mensaje IA (antes del footer),
 // para que el timestamp quede debajo de la interacción.
-function _aiPanelInjectInLastAiMsg(el) {
-    var mount = _aiPanelResolveMount({});
+function _iaPanelInjectInLastAiMsg(el) {
+    var mount = _iaPanelResolveMount({});
     var messages = mount.messages;
     if (!messages) return;
-    var msgs = messages.querySelectorAll('.ai-panel__msg--ai');
+    var msgs = messages.querySelectorAll('.ia-panel__msg--ai');
     var lastMsg = msgs.length ? msgs[msgs.length - 1] : null;
     if (lastMsg) {
-        var footer = lastMsg.querySelector('.ai-panel__msg-footer');
+        var footer = lastMsg.querySelector('.ia-panel__msg-footer');
         if (footer) {
             lastMsg.insertBefore(el, footer);
         } else {
@@ -979,16 +1021,16 @@ function _aiPanelInjectInLastAiMsg(el) {
     }
 }
 
-function _aiPanelSendInteractionReply(text, onReply, label) {
-    addAIPanelMessage(label || text, 'user');
+function _iaPanelSendInteractionReply(text, onReply, label) {
+    addIAPanelMessage(label || text, 'user');
     if (typeof onReply === 'function') onReply(text, label || text);
-    var mount = _aiPanelResolveMount({});
+    var mount = _iaPanelResolveMount({});
     var scroll = mount.scroll;
     if (scroll) scroll.scrollTop = scroll.scrollHeight;
 }
 
 /** Texto legible para el chat a partir de los values seleccionados en multiselect (items: string | { value, label }). */
-function _aiPanelMultiselectLabelsForChat(items, selectedValues) {
+function _iaPanelMultiselectLabelsForChat(items, selectedValues) {
     var parts = [];
     (selectedValues || []).forEach(function(val) {
         var strVal = String(val);
@@ -1016,7 +1058,7 @@ function _aiPanelMultiselectLabelsForChat(items, selectedValues) {
 }
 
 /* ---- 1. Quick Reply — botones UBITS oficiales dentro del último mensaje IA ---- */
-function _aiPanelInteractionQuickReply(opts) {
+function _iaPanelInteractionQuickReply(opts) {
     var items = opts.items || [];
     if (!items.length) return;
 
@@ -1035,17 +1077,17 @@ function _aiPanelInteractionQuickReply(opts) {
         btn.addEventListener('click', function() {
             if (wrap.classList.contains('ubits-ia-chat-interaction--consumed')) return;
             btn.classList.add('ubits-button--active');
-            _aiPanelConsumeInteraction(wrap);
-            _aiPanelSendInteractionReply(value, opts.onReply, label);
+            _iaPanelConsumeInteraction(wrap);
+            _iaPanelSendInteractionReply(value, opts.onReply, label);
         });
         wrap.appendChild(btn);
     });
 
-    _aiPanelInjectInLastAiMsg(wrap);
+    _iaPanelInjectInLastAiMsg(wrap);
 }
 
 /* ---- 2. Multiselect chips — dentro del último mensaje IA ---- */
-function _aiPanelInteractionMultiselect(opts) {
+function _iaPanelInteractionMultiselect(opts) {
     var items = opts.items || [];
     if (!items.length) return;
     var confirmLabel = opts.confirmLabel || 'Listo →';
@@ -1109,18 +1151,18 @@ function _aiPanelInteractionMultiselect(opts) {
     confirmBtn.addEventListener('click', function() {
         if (wrap.classList.contains('ubits-ia-chat-interaction--consumed')) return;
         if (!selected.length) return;
-        _aiPanelConsumeInteraction(wrap);
-        var label = _aiPanelMultiselectLabelsForChat(items, selected);
-        _aiPanelSendInteractionReply(selected.join(','), opts.onReply, label);
+        _iaPanelConsumeInteraction(wrap);
+        var label = _iaPanelMultiselectLabelsForChat(items, selected);
+        _iaPanelSendInteractionReply(selected.join(','), opts.onReply, label);
     });
 
     footer.appendChild(confirmBtn);
     wrap.appendChild(footer);
-    _aiPanelInjectInLastAiMsg(wrap);
+    _iaPanelInjectInLastAiMsg(wrap);
 }
 
 /* ---- 3. Card-based — dentro del último mensaje IA ---- */
-function _aiPanelInteractionCards(opts) {
+function _iaPanelInteractionCards(opts) {
     var items = opts.items || [];
     if (!items.length) return;
 
@@ -1147,8 +1189,8 @@ function _aiPanelInteractionCards(opts) {
         var select = function() {
             if (wrap.classList.contains('ubits-ia-chat-interaction--consumed')) return;
             card.classList.add('ubits-ia-chat-card--selected');
-            _aiPanelConsumeInteraction(wrap);
-            _aiPanelSendInteractionReply(value, opts.onReply, title);
+            _iaPanelConsumeInteraction(wrap);
+            _iaPanelSendInteractionReply(value, opts.onReply, title);
         };
         card.addEventListener('click', select);
         card.addEventListener('keydown', function(e) {
@@ -1158,11 +1200,11 @@ function _aiPanelInteractionCards(opts) {
         wrap.appendChild(card);
     });
 
-    _aiPanelInjectInLastAiMsg(wrap);
+    _iaPanelInjectInLastAiMsg(wrap);
 }
 
 /* ---- 3b. Artifact cards (recursos generados con Abrir) ---- */
-function _aiPanelInteractionArtifacts(opts) {
+function _iaPanelInteractionArtifacts(opts) {
     var rows = opts.rows || [];
     if (!rows.length) return;
 
@@ -1201,27 +1243,26 @@ function _aiPanelInteractionArtifacts(opts) {
         wrap.appendChild(rowEl);
     });
 
-    _aiPanelInjectInLastAiMsg(wrap);
+    _iaPanelInjectInLastAiMsg(wrap);
 }
 
 /* ---- 4. Bottom Sheet Form ---- */
-function _aiPanelInteractionBottomSheet(opts) {
+function _iaPanelInteractionBottomSheet(opts) {
     var steps = opts.steps || [];
     if (!steps.length) return;
 
-    var mount = _aiPanelResolveMount(opts || {});
+    var mount = _iaPanelResolveMount(opts || {});
     // La hoja se superpone sobre el cuerpo del chat (panel-body o contenedor del modal)
-    var inputArea = mount.inputArea || _aiEl('ai-panel-input-area');
-    var scroll = mount.scroll || _aiEl('ai-panel-scroll');
-    var chatCont = mount.chatBody || _aiEl('ai-panel-body');
+    var inputArea = mount.inputArea || _aiEl('ia-panel-input-area');
+    var scroll = mount.scroll || _aiEl('ia-panel-scroll');
+    var chatCont = mount.chatBody || _aiEl('ia-panel-body');
     if (!chatCont) chatCont = inputArea && inputArea.parentElement;
     if (!chatCont) return;
 
     // Deshabilitar input mientras la hoja está abierta
-    var inputEl = mount.inputEl || _aiEl('ai-panel-input');
-    var sendBtn = mount.sendBtn || _aiEl('ai-panel-send');
-    if (inputEl) inputEl.disabled = true;
-    if (sendBtn) sendBtn.disabled = true;
+    var inputEl = mount.inputEl || _aiEl('ia-panel-input');
+    var sendBtn = mount.sendBtn || _aiEl('ia-panel-send');
+    _iaPanelSetInputDisabled(true);
 
     var currentStep = 0;
     var answers = steps.map(function() { return { selected: [], freeText: '' }; });
@@ -1257,12 +1298,11 @@ function _aiPanelInteractionBottomSheet(opts) {
     // Contenedor principal de la hoja
     var sheet = document.createElement('div');
     sheet.className = 'ubits-ia-chat-bottom-sheet';
-    sheet.id = 'ai-panel-bottom-sheet';
+    sheet.id = 'ia-panel-bottom-sheet';
 
     function closeSheet(skipOnClose) {
         sheet.remove();
-        if (inputEl) inputEl.disabled = false;
-        if (sendBtn) sendBtn.disabled = false;
+        _iaPanelSetInputDisabled(false);
         if (!skipOnClose && typeof opts.onClose === 'function') opts.onClose();
     }
 
@@ -1283,7 +1323,7 @@ function _aiPanelInteractionBottomSheet(opts) {
         if (!lines.length) return;
 
         var combinedLabel = lines.join('\n\n');
-        addAIPanelMessage(combinedLabel, 'user');
+        addIAPanelMessage(combinedLabel, 'user');
         if (typeof opts.onReply === 'function') opts.onReply(answers, steps);
         if (scroll) scroll.scrollTop = scroll.scrollHeight;
     }
@@ -1544,30 +1584,31 @@ function _aiPanelInteractionBottomSheet(opts) {
     if (getComputedStyle(chatCont).position === 'static') chatCont.style.position = 'relative';
 }
 
-function destroyAIPanel() {
-    var root = _aiEl('ai-panel-root');
-    if (_aiPanel.resizeHandler) {
-        window.removeEventListener('resize', _aiPanel.resizeHandler);
+function destroyIAPanel() {
+    var root = _aiEl('ia-panel-root');
+    if (_iaPanel.resizeHandler) {
+        window.removeEventListener('resize', _iaPanel.resizeHandler);
     }
     if (root) root.remove();
-    _aiPanel.inited = false;
-    _aiPanel.open   = false;
-    _aiPanel.options = {};
-    _aiPanel.width   = null;
-    _aiPanel.lastUserMessage = '';
-    _aiPanel.pendingImages = [];
-    _aiPanel.pendingFiles = [];
-    _aiPanel.rootEl = null;
-    _aiPanel.resizeHandler = null;
-    _aiPanel.originalParent = null;
-    _aiPanel.artifactOpen = false;
-    _aiPanel.titleBeforeArtifact = '';
-    _aiPanel.alternateMount = null;
+    _iaPanel.inited = false;
+    _iaPanel.open   = false;
+    _iaPanel.options = {};
+    _iaPanel.width   = null;
+    _iaPanel.lastUserMessage = '';
+    _iaPanel.pendingImages = [];
+    _iaPanel.pendingFiles = [];
+    _iaPanel.iaInputApi = null;
+    _iaPanel.rootEl = null;
+    _iaPanel.resizeHandler = null;
+    _iaPanel.originalParent = null;
+    _iaPanel.artifactOpen = false;
+    _iaPanel.titleBeforeArtifact = '';
+    _iaPanel.alternateMount = null;
 }
 
 // Referencia explícita para páginas que cargan el panel en IIFE strict (p. ej. evaluaciones-recurso.js).
 if (typeof window !== 'undefined') {
-    window._aiPanelSend = _aiPanelSend;
-    window.setAIPanelAlternateMount = setAIPanelAlternateMount;
-    window.showAIPanelTyping = showAIPanelTyping;
+    window._iaPanelSend = _iaPanelSend;
+    window.setIAPanelAlternateMount = setIAPanelAlternateMount;
+    window.showIAPanelTyping = showIAPanelTyping;
 }

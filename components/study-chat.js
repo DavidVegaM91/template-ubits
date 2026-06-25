@@ -2114,7 +2114,8 @@ let chatState = {
     // Historial y nuevo chat (Bloque 2)
     chats: [],
     currentChat: { id: null, title: '', createdAt: 0, messages: [] },
-    historialSearchQuery: ''
+    historialSearchQuery: '',
+    threadIaInputApi: null,
 };
 
 /** Búsqueda expandible en panel Mis chats (modo-estudio-ia): UI + filtro en renderHistorialList */
@@ -2233,7 +2234,7 @@ function startNewChat() {
 }
 
 /**
- * Quick Reply oficial (transversal con ai-panel y ubits-ia-chat.css):
+ * Quick Reply oficial (transversal con ia-panel y ubits-ia-chat.css):
  * contenedor .ubits-ia-chat-interaction--quick-reply + botones ubits-button--secondary ubits-button--sm (homologado).
  * @param {string} id - id del contenedor (opcional; cadena vacía omite el atributo)
  * @param {string} innerButtonsHtml - HTML de los botones ya armado
@@ -2799,20 +2800,8 @@ function createStudyChatHTML(options = {}) {
                     </div>
                 </div>
             <div class="ubits-ia-chat-thread__body" id="ubits-ia-chat-thread-body">${welcomeBlock}</div>
-            <input type="file" id="ubits-ia-chat-thread-files" accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.txt,.csv,.ppt,.pptx" multiple hidden />
-            <div class="ubits-ia-chat-thread__input-area">
-                <div class="ubits-ia-chat-thread__pending-images-strip" id="ubits-ia-chat-thread-pending-images"></div>
-                <div class="ubits-ia-chat-thread__pending-files-strip" id="ubits-ia-chat-thread-pending-files"></div>
-                <div class="ubits-ia-chat-thread__input-container">
-                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only ubits-ia-chat-thread__input-attach" id="ubits-ia-chat-thread-attach-btn" data-tooltip="Adjuntar" aria-label="Adjuntar"><i class="far fa-plus"></i></button>
-                    <div class="ubits-ia-chat-thread__input-wrapper">
-                        <textarea class="ubits-ia-chat-thread__input" id="ubits-ia-chat-thread-input" placeholder="${inputPlaceholder}" rows="1"></textarea>
-                    </div>
-                    <button type="button" class="ubits-ia-button ubits-ia-button--primary ubits-ia-button--sm ubits-ia-button--icon-only ubits-ia-chat-thread__input-send" id="ubits-ia-chat-thread-send-btn" data-tooltip="Enviar" aria-label="Enviar"><i class="far fa-arrow-right"></i></button>
-                </div>
-                <div class="ubits-ia-chat-thread__suggestions" id="ubits-ia-chat-thread-suggestions">${suggestionButtons}</div>
-            </div>
-            <p class="ubits-ia-chat-thread__disclaimer ubits-body-xs-regular">${escapeHTML(iaDisclaimerText)}</p>
+            <div id="ubits-ia-chat-thread-ia-input-mount"></div>
+            <div class="ubits-ia-chat-thread__suggestions" id="ubits-ia-chat-thread-suggestions">${suggestionButtons}</div>
         </div>
     `;
 }
@@ -3441,6 +3430,10 @@ function disableCompetencyPathButtons(containerEl) {
 
 /** Asegura que el textarea del hilo sea editable (por si quedó bloqueado por estado del DOM o atributos). */
 function ensureThreadInputInteractive() {
+    if (chatState.threadIaInputApi) {
+        chatState.threadIaInputApi.setDisabled(false);
+        return;
+    }
     var wrap = document.getElementById('ubits-ia-chat-thread-container');
     var ta = wrap ? wrap.querySelector('#ubits-ia-chat-thread-input') : document.getElementById('ubits-ia-chat-thread-input');
     if (!ta) return;
@@ -4350,15 +4343,123 @@ function initStudyChat(containerId, options = {}) {
         addMessage('ai', '¡Hola! ¿En qué puedo ayudarte?', true);
     }
 
-    const threadInput = container.querySelector('#ubits-ia-chat-thread-input')
-        || container.querySelector('textarea.ubits-ia-chat-thread__input');
-    const sendBtn = container.querySelector('#ubits-ia-chat-thread-send-btn');
-    const attachBtn = container.querySelector('#ubits-ia-chat-thread-attach-btn');
-    const fileInput = container.querySelector('#ubits-ia-chat-thread-files');
-    const suggestionBtns = container.querySelectorAll('.ubits-ia-chat-thread__suggestions .ubits-button');
-    const competencyChips = container.querySelectorAll('.ubits-ia-chat-thread__competency-chip');
     let pendingImages = [];
     let pendingFiles = [];
+
+    function pendingImagesForThreadApi() {
+        return pendingImages.map(function (src) {
+            return { src: src, alt: 'Imagen adjunta' };
+        });
+    }
+
+    function syncThreadPendingToInput() {
+        if (!chatState.threadIaInputApi) return;
+        chatState.threadIaInputApi.setPendingImages(pendingImagesForThreadApi());
+        chatState.threadIaInputApi.setPendingFiles(pendingFiles.slice());
+    }
+
+    function refreshThreadSendAction() {
+        if (!chatState.threadIaInputApi) return;
+        var text = String(chatState.threadIaInputApi.getValue() || '').trim();
+        var hasAttachments = pendingImages.length > 0 || pendingFiles.length > 0;
+        chatState.threadIaInputApi.setActionDisabled(!text && !hasAttachments);
+    }
+
+    function handleThreadAttachFiles(files) {
+        if (!files || !files.length) return;
+        var toLoad = 0;
+        for (var i = 0; i < files.length; i++) {
+            if (files[i].type && files[i].type.indexOf('image/') === 0) toLoad++;
+        }
+        var loaded = 0;
+        for (var j = 0; j < files.length; j++) {
+            var file = files[j];
+            if (file.type && file.type.indexOf('image/') === 0) {
+                (function (f) {
+                    var reader = new FileReader();
+                    reader.onload = function () {
+                        if (reader.result) pendingImages.push(String(reader.result));
+                        loaded++;
+                        if (loaded >= toLoad) {
+                            syncThreadPendingToInput();
+                            refreshThreadSendAction();
+                        }
+                    };
+                    reader.readAsDataURL(f);
+                })(file);
+            } else {
+                pendingFiles.push({ name: file.name, type: file.type, size: file.size });
+            }
+        }
+        syncThreadPendingToInput();
+        refreshThreadSendAction();
+    }
+
+    function initThreadIaInput() {
+        var mount = document.getElementById('ubits-ia-chat-thread-ia-input-mount');
+        if (!mount || typeof window.createUbitsIAInput !== 'function') return;
+        if (chatState.threadIaInputApi) {
+            chatState.threadIaInputApi.destroy();
+            chatState.threadIaInputApi = null;
+        }
+        mount.innerHTML = '';
+        var suggestionsEl = document.getElementById('ubits-ia-chat-thread-suggestions');
+        if (suggestionsEl && suggestionsEl.parentNode) {
+            suggestionsEl.parentNode.removeChild(suggestionsEl);
+        }
+        var disclaimer =
+            (typeof window !== 'undefined' &&
+                window.UbitsIaChatDisclaimer &&
+                window.UbitsIaChatDisclaimer.DEFAULT_TEXT) ||
+            'El agente puede cometer errores; verifica la información.';
+        var inputPlaceholder = chatState.welcomeLayout
+            ? '¿Cuéntame cómo te puedo ayudar?'
+            : 'Escribir mensaje...';
+        chatState.threadIaInputApi = window.createUbitsIAInput({
+            variant: 'chat',
+            id: 'ubits-ia-chat-thread-input',
+            placeholder: inputPlaceholder,
+            inputAreaClassName: 'ubits-ia-chat-thread__input-area',
+            autosizeMaxPx: 144,
+            attach: true,
+            attachAriaLabel: 'Adjuntar',
+            attachTooltip: 'Adjuntar',
+            pendingImages: pendingImagesForThreadApi(),
+            pendingFiles: pendingFiles.slice(),
+            onAttachFiles: handleThreadAttachFiles,
+            onRemovePendingImage: function (i) {
+                pendingImages.splice(i, 1);
+                syncThreadPendingToInput();
+                refreshThreadSendAction();
+            },
+            onRemovePendingFile: function (i) {
+                pendingFiles.splice(i, 1);
+                syncThreadPendingToInput();
+                refreshThreadSendAction();
+            },
+            action: {
+                type: 'send',
+                ariaLabel: 'Enviar',
+                disabled: true,
+                onClick: sendMessage,
+            },
+            onEnterSubmit: sendMessage,
+            onChange: refreshThreadSendAction,
+            disclaimer: disclaimer,
+            slotElement: suggestionsEl,
+            autoFocus: !!chatState.welcomeLayout,
+            autoFocusDelay: 50,
+        }).mount(mount);
+        if (typeof window.initIaButtonSparkles === 'function') {
+            window.initIaButtonSparkles(mount);
+        }
+        refreshThreadSendAction();
+    }
+
+    initThreadIaInput();
+
+    const suggestionBtns = container.querySelectorAll('.ubits-ia-chat-thread__suggestions .ubits-button');
+    const competencyChips = container.querySelectorAll('.ubits-ia-chat-thread__competency-chip');
 
     function buildAttachmentsHtml(images, files) {
         const imagesHtml = (images || []).map(src =>
@@ -4371,144 +4472,6 @@ function initStudyChat(containerId, options = {}) {
         if (imagesHtml) out += '<div class="ubits-ia-chat-thread__msg-attachments-images">' + imagesHtml + '</div>';
         if (filesHtml) out += '<div class="ubits-ia-chat-thread__msg-attachments-files">' + filesHtml + '</div>';
         return out;
-    }
-
-    function renderPendingImagesPreview() {
-        const strip = document.getElementById('ubits-ia-chat-thread-pending-images');
-        if (!strip) return;
-        if (!pendingImages.length) {
-            strip.innerHTML = '';
-            strip.style.display = 'none';
-            return;
-        }
-        strip.style.display = 'flex';
-        strip.innerHTML = pendingImages.map((src, idx) =>
-            '<div class="ubits-ia-chat-thread__pending-img-wrap">' +
-                '<img src="' + escapeHTML(src) + '" alt="Imagen adjunta" class="ubits-ia-chat-thread__pending-img" />' +
-                '<button type="button" class="ubits-ia-chat-thread__pending-img-remove" data-idx="' + idx + '" aria-label="Eliminar imagen"><i class="far fa-times"></i></button>' +
-            '</div>'
-        ).join('');
-        strip.querySelectorAll('.ubits-ia-chat-thread__pending-img-remove').forEach(btn => {
-            btn.addEventListener('click', function () {
-                const idx = Number(this.getAttribute('data-idx'));
-                if (Number.isNaN(idx)) return;
-                pendingImages.splice(idx, 1);
-                renderPendingImagesPreview();
-            });
-        });
-    }
-
-    function renderPendingFilesPreview() {
-        const strip = document.getElementById('ubits-ia-chat-thread-pending-files');
-        if (!strip) return;
-        if (!pendingFiles.length) {
-            strip.innerHTML = '';
-            strip.style.display = 'none';
-            return;
-        }
-        strip.style.display = 'flex';
-        strip.innerHTML = pendingFiles.map((f, idx) =>
-            '<span class="ubits-chip ubits-chip--sm ubits-chip--icon-left ubits-chip--close ubits-ia-chat-thread__pending-file-chip">' +
-                '<i class="far fa-file-lines"></i><span class="ubits-chip__text">' + escapeHTML((f && f.name) ? f.name : 'Archivo') + '</span>' +
-                '<button type="button" class="ubits-chip__close ubits-ia-chat-thread__pending-file-remove" data-idx="' + idx + '" aria-label="Quitar archivo"><i class="far fa-times"></i></button>' +
-            '</span>'
-        ).join('');
-        strip.querySelectorAll('.ubits-ia-chat-thread__pending-file-remove').forEach(btn => {
-            btn.addEventListener('click', function () {
-                const idx = Number(this.getAttribute('data-idx'));
-                if (Number.isNaN(idx)) return;
-                pendingFiles.splice(idx, 1);
-                renderPendingFilesPreview();
-            });
-        });
-    }
-
-    // Auto-resize del textarea (máx 5 líneas = 144px; luego scroll interno)
-    var MAX_INPUT_HEIGHT = 144;
-    if (threadInput) {
-        threadInput.addEventListener('input', function () {
-            this.style.height = 'auto';
-            this.style.height = Math.min(this.scrollHeight, MAX_INPUT_HEIGHT) + 'px';
-        });
-
-        // Enviar con Enter (sin Shift)
-        threadInput.addEventListener('keydown', function (e) {
-            if (e.key !== 'Enter' || e.shiftKey) return;
-            e.preventDefault();
-            sendMessage();
-        });
-        ensureThreadInputInteractive();
-        if (chatState.welcomeLayout) {
-            setTimeout(function () {
-                var taWelcome = container.querySelector('#ubits-ia-chat-thread-input')
-                    || container.querySelector('textarea.ubits-ia-chat-thread__input');
-                if (!taWelcome) return;
-                ensureThreadInputInteractive();
-                try {
-                    taWelcome.focus({ preventScroll: true });
-                } catch (errWelcome) {
-                    taWelcome.focus();
-                }
-            }, 50);
-        }
-    }
-
-    /* Clic en el contenedor del input (no en botones): asegurar foco en el textarea.
-       Mitiga capas de pintado que en algunos navegadores interceptan el hit-test. */
-    var inputContainer = container.querySelector('.ubits-ia-chat-thread__input-container');
-    if (inputContainer && threadInput) {
-        inputContainer.addEventListener('mousedown', function (e) {
-            if (e.button !== 0) return;
-            if (e.target.closest('button')) return;
-            if (e.target === threadInput) return;
-            requestAnimationFrame(function () {
-                var ta = container.querySelector('#ubits-ia-chat-thread-input');
-                if (!ta || ta.disabled) return;
-                ensureThreadInputInteractive();
-                try {
-                    ta.focus({ preventScroll: true });
-                } catch (err) {
-                    ta.focus();
-                }
-            });
-        });
-    }
-
-    // Botón enviar (delegación en el contenedor del widget: mismo handler que Enter)
-    if (sendBtn) {
-        sendBtn.addEventListener('click', function (e) {
-            e.preventDefault();
-            sendMessage();
-        });
-    }
-
-    if (attachBtn && fileInput) {
-        attachBtn.addEventListener('click', function () { fileInput.click(); });
-        fileInput.addEventListener('change', function () {
-            const files = this.files;
-            if (!files || !files.length) return;
-            let toLoad = 0;
-            for (let i = 0; i < files.length; i++) {
-                if (files[i].type && files[i].type.startsWith('image/')) toLoad++;
-            }
-            let loaded = 0;
-            for (let j = 0; j < files.length; j++) {
-                const file = files[j];
-                if (file.type && file.type.startsWith('image/')) {
-                    const reader = new FileReader();
-                    reader.onload = function () {
-                        if (reader.result) pendingImages.push(String(reader.result));
-                        loaded++;
-                        if (loaded >= toLoad) renderPendingImagesPreview();
-                    };
-                    reader.readAsDataURL(file);
-                } else {
-                    pendingFiles.push({ name: file.name, type: file.type, size: file.size });
-                }
-            }
-            renderPendingFilesPreview();
-            this.value = '';
-        });
     }
 
     // Chips de competencias (Modo Tutor): al clic = elegir tema y mostrar definición + opciones (tutor IA, sugerencias, temas).
@@ -5079,10 +5042,14 @@ function initStudyChat(containerId, options = {}) {
 
     // Función para enviar mensaje
     function sendMessage() {
-        var ta = container.querySelector('#ubits-ia-chat-thread-input')
-            || container.querySelector('textarea.ubits-ia-chat-thread__input');
-        if (!ta) return;
-        const message = ta.value.trim();
+        var message = chatState.threadIaInputApi
+            ? String(chatState.threadIaInputApi.getValue() || '').trim()
+            : (function () {
+                  var ta =
+                      container.querySelector('#ubits-ia-chat-thread-input') ||
+                      container.querySelector('textarea.ubits-ia-chat-thread__input');
+                  return ta ? ta.value.trim() : '';
+              })();
         const hasAttachments = pendingImages.length > 0 || pendingFiles.length > 0;
         if (!message && !hasAttachments) return;
 
@@ -5103,13 +5070,14 @@ function initStudyChat(containerId, options = {}) {
             body.scrollTop = body.scrollHeight;
         }
 
-        // Limpiar input
-        ta.value = '';
-        ta.style.height = 'auto';
+        if (chatState.threadIaInputApi) {
+            chatState.threadIaInputApi.setValue('');
+            chatState.threadIaInputApi.setPendingImages([]);
+            chatState.threadIaInputApi.setPendingFiles([]);
+        }
         pendingImages = [];
         pendingFiles = [];
-        renderPendingImagesPreview();
-        renderPendingFilesPreview();
+        refreshThreadSendAction();
 
         // Generar respuesta predefinida
         const responseData = generateResponse(message || 'Adjuntos');

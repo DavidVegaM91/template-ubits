@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/svg+xml" href="../../images/playground-favicon.svg">
-    <title>UBITS Playground - LMS Creator - AI Panel Demo</title>
+    <title>UBITS Playground - LMS Creator - IA Panel Demo</title>
 
     <link rel="stylesheet" href="../../general-styles/ubits-colors.css">
     <link rel="stylesheet" href="../../general-styles/styles.css">
@@ -17,6 +17,7 @@
     <link rel="stylesheet" href="../../components/profile-menu.css">
     <link rel="stylesheet" href="../../components/button.css">
     <link rel="stylesheet" href="../../components/ia-button.css">
+    <link rel="stylesheet" href="../../components/ia-input.css">
     <link rel="stylesheet" href="../../components/header-product.css">
     <link rel="stylesheet" href="../../components/toolbar-panel.css">
     <link rel="stylesheet" href="../../components/table.css">
@@ -28,10 +29,10 @@
     <link rel="stylesheet" href="../../general-styles/ubits-ia-appearance.css">
     <link rel="stylesheet" href="../../components/badge-tag.css">
     <link rel="stylesheet" href="../../general-styles/ubits-ia-chat.css">
-    <link rel="stylesheet" href="../../components/ai-panel.css">
+    <link rel="stylesheet" href="../../components/ia-panel.css">
     <link rel="stylesheet" href="./lms-creator.css">
     <link rel="stylesheet" href="./contenidos.css">
-    <link rel="stylesheet" href="./ai-panel-demo.css">
+    <link rel="stylesheet" href="./ia-panel-demo.css">
 </head>
 <body data-theme="light" class="page-contenidos-creator">
     <div class="dashboard-container">
@@ -58,7 +59,7 @@
                                         </span>
                                     </div>
                                     <div class="ubits-toolbar-panel__actions">
-                                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="abrir-ai-panel-desde-toolbar">
+                                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="abrir-ia-panel-desde-toolbar">
                                             <i class="far fa-sparkles"></i>
                                             <span>Abrir panel IA</span>
                                         </button>
@@ -102,7 +103,8 @@
     <script src="../../components/toast.js"></script>
     <script src="../../components/ia-chat-streaming.js"></script>
     <script src="../../components/ia-button.js"></script>
-    <script src="../../components/ai-panel.js"></script>
+    <script src="../../components/ia-input.js"></script>
+    <script src="../../components/ia-panel.js"></script>
     <script src="../../script.js"></script>
 
     <script>
@@ -118,12 +120,12 @@
             loadProfileMenu('profile-menu-container');
 
             loadHeaderProduct('header-product-container', {
-                productName: 'Contenidos - Demo AI Panel',
+                productName: 'Contenidos - Demo IA Panel',
                 breadcrumbItems: [],
                 aiButton: {
-                    text: 'AI Assistant',
+                    text: 'Asistente IA',
                     onClick: function () {
-                        openAIPanel();
+                        openIAPanel();
                     }
                 },
                 secondaryButtons: [
@@ -148,15 +150,15 @@
                 }
             });
 
-            initAIPanel({
-                title: 'AI Assistant',
+            initIAPanel({
+                title: 'Asistente IA',
                 placeholder: 'Escribe tu solicitud...',
                 welcomeSubtitle: 'Pide ayuda para crear o mejorar contenidos.',
                 dockDesktop: true,
                 dockContainerSelector: '.dashboard-container',
                 dockBreakpoint: 1024,
                 onSend: function (text) {
-                    addAIPanelMessage('Recibi: "' + text + '". Esta respuesta es de demostracion.', 'ai');
+                    addIAPanelMessage('Recibi: "' + text + '". Esta respuesta es de demostracion.', 'ai');
                 },
                 onAttach: function () {
                     if (typeof showToast === 'function') {
@@ -165,10 +167,10 @@
                 }
             });
 
-            var toolbarBtn = document.getElementById('abrir-ai-panel-desde-toolbar');
+            var toolbarBtn = document.getElementById('abrir-ia-panel-desde-toolbar');
             if (toolbarBtn) {
                 toolbarBtn.addEventListener('click', function () {
-                    openAIPanel();
+                    openIAPanel();
                 });
             }
         });

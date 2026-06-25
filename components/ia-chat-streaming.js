@@ -1,7 +1,7 @@
 /* =============================================================================
    ia-chat-streaming.js — Comportamiento transversal de chats IA (UBITS)
    Pensando + espera, revelado palabra a palabra por párrafo.
-   Cargar ANTES de study-chat.js, group-creation-chat.js o ai-panel.js.
+   Cargar ANTES de study-chat.js, group-creation-chat.js o ia-panel.js.
    Expone UbitsIaChatTime.formatMessageTimeLabel (fechas en pie de mensaje IA).
    - afterMinDelay(ms, fn): espera ms y luego ejecuta fn (orden pensando → respuesta).
    - withMinDelay(ms, fn): ejecuta fn al inicio y alarga hasta ms si acabó antes (p. ej. fetch).

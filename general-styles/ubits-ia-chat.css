@@ -20,10 +20,10 @@
    - general-styles/styles.css (o al menos el layout base del dashboard)
    - general-styles/ubits-ia-appearance.css (tokens --modo-ia-gradient-*, --modo-ia-glow-orb-rgb-*).
    - Opcional: components/study-chat.css solo reexporta este archivo (compatibilidad con imports antiguos).
-   - components/ai-panel.css: enlaza este archivo después de ubits-ia-appearance.css
+   - components/ia-panel.css: enlaza este archivo después de ubits-ia-appearance.css
      para reutilizar máscara de scroll superior, scrollbar del hilo y tokens de orbes.
    - components/ia-chat-streaming.js: pensando + animación por párrafo (cargar antes de study-chat /
-     group-creation-chat / flujo onSend del ai-panel).
+     group-creation-chat / flujo onSend del ia-panel).
 
    CÓMO ADOPTARLO (cuando integres en páginas)
    -------------------------------------------
@@ -174,36 +174,36 @@
 
 /* Scrollbar del hilo (misma pista que panel lateral AI: un solo ajuste transversal) */
 .ubits-ia-chat-thread__body::-webkit-scrollbar,
-.ai-panel__chat-scroll::-webkit-scrollbar {
+.ia-panel__chat-scroll::-webkit-scrollbar {
     width: 4px;
 }
 
 .ubits-ia-chat-thread__body::-webkit-scrollbar-track,
-.ai-panel__chat-scroll::-webkit-scrollbar-track {
+.ia-panel__chat-scroll::-webkit-scrollbar-track {
     background: transparent;
 }
 
 .ubits-ia-chat-thread__body::-webkit-scrollbar-thumb,
-.ai-panel__chat-scroll::-webkit-scrollbar-thumb {
+.ia-panel__chat-scroll::-webkit-scrollbar-thumb {
     background: var(--ubits-scroll-bar-color-bg-default);
     border-radius: var(--border-radius-xs);
 }
 
 .ubits-ia-chat-thread__body::-webkit-scrollbar-thumb:hover,
-.ai-panel__chat-scroll::-webkit-scrollbar-thumb:hover {
+.ia-panel__chat-scroll::-webkit-scrollbar-thumb:hover {
     background: var(--ubits-scroll-bar-color-bg-default);
 }
 
 .ubits-ia-chat-thread__body,
-.ai-panel__chat-scroll {
+.ia-panel__chat-scroll {
     scrollbar-width: thin;
     scrollbar-color: var(--ubits-scroll-bar-color-bg-default) transparent;
 }
 
 /* Hilo con mensajes: borde superior suave al hacer scroll (compartido con
-   components/ai-panel: la clase .ai-panel__chat-scroll--conversation la pone el JS). */
+   components/ia-panel: la clase .ia-panel__chat-scroll--conversation la pone el JS). */
 .ubits-ia-chat-thread:not(.ubits-ia-chat-thread--welcome) .ubits-ia-chat-thread__body,
-.ai-panel__chat-scroll.ai-panel__chat-scroll--conversation {
+.ia-panel__chat-scroll.ia-panel__chat-scroll--conversation {
     -webkit-mask-image: linear-gradient(
         to bottom,
         transparent 0,
@@ -310,7 +310,7 @@
     margin-top: var(--gap-md);
 }
 
-/* Quick Reply oficial dentro del globo IA (Modo estudio / hilo; mismo patrón que ai-panel) */
+/* Quick Reply oficial dentro del globo IA (Modo estudio / hilo; mismo patrón que ia-panel) */
 .ubits-ia-chat-thread__text-globe--ai .ubits-ia-chat-interaction--quick-reply {
     margin-top: var(--gap-md);
     align-self: stretch;
@@ -574,13 +574,13 @@
 
 /* Animación palabra por palabra en mensajes de IA (efecto typewriter rápido) */
 .ubits-ia-chat-thread__text-globe--ai .ubits-ia-chat-thread__word,
-.ai-panel__msg-bubble.ubits-ia-chat-thread__text-globe--ai .ubits-ia-chat-thread__word {
+.ia-panel__msg-bubble.ubits-ia-chat-thread__text-globe--ai .ubits-ia-chat-thread__word {
     opacity: 0;
     transition: opacity 0.06s ease-out;
 }
 
 .ubits-ia-chat-thread__text-globe--ai .ubits-ia-chat-thread__word--visible,
-.ai-panel__msg-bubble.ubits-ia-chat-thread__text-globe--ai .ubits-ia-chat-thread__word--visible {
+.ia-panel__msg-bubble.ubits-ia-chat-thread__text-globe--ai .ubits-ia-chat-thread__word--visible {
     opacity: 1;
 }
 
@@ -600,8 +600,8 @@
 /* Estado TYPING: ocultar bloques posteriores al texto (acciones al final) */
 .ubits-ia-chat-thread__message--typing .ubits-ia-chat-thread__message-footer,
 .ubits-ia-chat-thread__message--typing .ubits-ia-chat-thread__message-actions,
-.ubits-ia-chat-thread__message--typing .ai-panel__msg-actions,
-.ubits-ia-chat-thread__message--typing .ai-panel__msg-footer,
+.ubits-ia-chat-thread__message--typing .ia-panel__msg-actions,
+.ubits-ia-chat-thread__message--typing .ia-panel__msg-footer,
 .ubits-ia-chat-thread__message--typing .ubits-ia-chat-thread__material-choices,
 .ubits-ia-chat-thread__message--typing+.ubits-ia-chat-thread__material-choices,
 .ubits-ia-chat-thread__message--typing .ubits-ia-chat-interaction--quick-reply,
@@ -610,8 +610,8 @@
 .ubits-ia-chat-thread__message--typing .ubits-ia-chat-thread__resource-card,
 .ubits-ia-chat-thread__message--typing .ubits-ia-chat-thread__resource-msg,
 .ubits-ia-chat-thread__message--typing .ubits-ia-chat-thread__timestamp,
-.ubits-ia-chat-thread__message--typing .ai-panel__msg-attachments-images,
-.ubits-ia-chat-thread__message--typing .ai-panel__msg-attachments-files,
+.ubits-ia-chat-thread__message--typing .ia-panel__msg-attachments-images,
+.ubits-ia-chat-thread__message--typing .ia-panel__msg-attachments-files,
 .ubits-ia-chat-thread__message--typing .ubits-ia-chat-thread__sub-options-wrap {
     opacity: 0 !important;
     transform: translateY(6px);
@@ -630,14 +630,14 @@
 .ubits-ia-chat-thread__message--typing-done .ubits-ia-chat-thread__resource-card,
 .ubits-ia-chat-thread__message--typing-done .ubits-ia-chat-thread__resource-msg,
 .ubits-ia-chat-thread__message--typing-done .ubits-ia-chat-thread__sub-options-wrap,
-.ubits-ia-chat-thread__message--typing-done .ai-panel__msg-attachments-images,
-.ubits-ia-chat-thread__message--typing-done .ai-panel__msg-attachments-files {
+.ubits-ia-chat-thread__message--typing-done .ia-panel__msg-attachments-images,
+.ubits-ia-chat-thread__message--typing-done .ia-panel__msg-attachments-files {
     opacity: 0;
     animation: ubits-ia-chat-thread-reveal-down 0.28s ease-out 0s forwards;
 }
 
 .ubits-ia-chat-thread__message--typing-done .ubits-ia-chat-thread__message-footer,
-.ubits-ia-chat-thread__message--typing-done .ai-panel__msg-footer {
+.ubits-ia-chat-thread__message--typing-done .ia-panel__msg-footer {
     opacity: 0;
     animation: ubits-ia-chat-thread-reveal-down 0.32s ease-out 0.2s forwards;
 }
@@ -1114,7 +1114,7 @@
     gap: var(--gap-xs);
 }
 
-/* Documentos pendientes (mismo patrón que task-detail / ai-panel) */
+/* Documentos pendientes (mismo patrón que task-detail / ia-panel) */
 .ubits-ia-chat-thread__pending-files-strip {
     display: none;
     flex-direction: row;
@@ -1727,6 +1727,36 @@ body[data-theme="dark"] .ubits-ia-chat__main::before {
     display: none;
 }
 
+/* Modo Estudio — mount de createUbitsIAInput (sustituye padding lateral del __input-area) */
+.ubits-ia-chat #ubits-ia-chat-thread-ia-input-mount {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    flex-shrink: 0;
+    align-self: stretch;
+}
+
+.ubits-ia-chat .ubits-ia-chat-thread--welcome #ubits-ia-chat-thread-ia-input-mount {
+    max-width: 560px;
+    width: 100%;
+    align-self: center;
+    padding-left: var(--padding-xl);
+    padding-right: var(--padding-xl);
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+.ubits-ia-chat .ubits-ia-chat-thread:not(.ubits-ia-chat-thread--welcome) #ubits-ia-chat-thread-ia-input-mount {
+    padding-left: var(--padding-xl);
+    padding-right: var(--padding-xl);
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+.ubits-ia-chat .ubits-ia-chat-thread--welcome .ubits-ia-input__disclaimer {
+    display: none;
+}
+
 .ubits-ia-chat .ubits-ia-chat-thread--welcome .ubits-ia-chat-thread__suggestions {
     justify-content: center;
     flex-wrap: wrap;
@@ -1747,8 +1777,16 @@ body[data-theme="dark"] .ubits-ia-chat__main::before {
 
 @media (max-width: 1023px) {
     .ubits-ia-chat .ubits-ia-chat-thread--welcome .ubits-ia-chat-thread__body,
-    .ubits-ia-chat .ubits-ia-chat-thread--welcome .ubits-ia-chat-thread__input-area {
+    .ubits-ia-chat .ubits-ia-chat-thread--welcome .ubits-ia-chat-thread__input-area,
+    .ubits-ia-chat .ubits-ia-chat-thread--welcome #ubits-ia-chat-thread-ia-input-mount {
         max-width: 100% !important;
+    }
+}
+
+@media (max-width: 768px) {
+    .ubits-ia-chat .ubits-ia-chat-thread:not(.ubits-ia-chat-thread--welcome) #ubits-ia-chat-thread-ia-input-mount {
+        padding-left: 0;
+        padding-right: 0;
     }
 }
 
@@ -1815,7 +1853,7 @@ body[data-theme="dark"] .ubits-ia-chat__main::before {
 }
 
 /* ---------------------------------------------------------------------------
-   Input style unificado (tipo ai-panel): texto arriba + botones abajo
+   Input style unificado (tipo ia-panel): texto arriba + botones abajo
    Aplica en bienvenida y chat iniciado para todos los chats IA.
    --------------------------------------------------------------------------- */
 .ubits-ia-chat .ubits-ia-chat-thread__input-container {
@@ -2131,7 +2169,7 @@ body.ia-chat-mobile-drawer-scroll-lock {
 
 /* ===========================================================================
    TIPOS DE INTERACCIÓN EN CHAT IA
-   Transversales: sirven en ai-panel, modo-estudio-ia y cualquier chat IA.
+   Transversales: sirven en ia-panel, modo-estudio-ia y cualquier chat IA.
 
    Tipos: quick-reply, multiselect, cards, artifacts (tarjetas generadas),
    bottom-sheet. Uso: añadir .ubits-ia-chat-interaction (o el modificador
@@ -2159,13 +2197,13 @@ body.ia-chat-mobile-drawer-scroll-lock {
     opacity: 0.55;
 }
 
-/* Dentro de un mensaje IA del ai-panel: la burbuja ya acota ancho; no repetir 85% en la interacción */
-.ai-panel__msg--ai .ubits-ia-chat-interaction {
+/* Dentro de un mensaje IA del ia-panel: la burbuja ya acota ancho; no repetir 85% en la interacción */
+.ia-panel__msg--ai .ubits-ia-chat-interaction {
     max-width: 85%;
     margin-top: var(--gap-sm);
 }
 
-.ai-panel__msg--ai .ai-panel__msg-bubble .ubits-ia-chat-interaction {
+.ia-panel__msg--ai .ia-panel__msg-bubble .ubits-ia-chat-interaction {
     max-width: 100%;
     width: 100%;
     box-sizing: border-box;
@@ -2378,8 +2416,8 @@ body.ia-chat-mobile-drawer-scroll-lock {
        </div>
      </div>
    </div>
-   API addAIPanelInteraction('artifacts', …) — pendiente de homologar en panel;
-   revisar documentación en documentacion/componentes/ai-panel.html.
+   API addIAPanelInteraction('artifacts', …) — pendiente de homologar en panel;
+   revisar documentación en documentacion/componentes/ia-panel.html.
    --------------------------------------------------------------------------- */
 .ubits-ia-chat-interaction--artifacts {
     display: flex;
@@ -2410,7 +2448,7 @@ body.ia-chat-mobile-drawer-scroll-lock {
    (contador + Omitir + enviar).
 
    Se coloca como hermano del .ubits-ia-chat-thread__input-area o del
-   .ai-panel__input-box, con position: absolute bottom: 0.
+   .ia-panel__input-box, con position: absolute bottom: 0.
 
    HTML (se inyecta via JS):
    <div class="ubits-ia-chat-bottom-sheet" id="…">

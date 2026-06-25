@@ -1,12 +1,12 @@
 /* ========================================
-   AI PANEL COMPONENT
+   IA PANEL COMPONENT
    Sidebar anclado a la derecha, redimensionable.
    Inspirado en el panel lateral de Claude (Chrome).
 
    Coherencia con Modo estudio IA / Chat IA grupos:
    - Cargar general-styles/ubits-ia-appearance.css (orbes --modo-ia-glow-orb-rgb-*).
    - Cargar general-styles/ubits-ia-chat.css para difuminado superior al
-     scroll (.ai-panel__chat-scroll--conversation), scrollbar del hilo y
+     scroll (.ia-panel__chat-scroll--conversation), scrollbar del hilo y
      burbujas alineadas si amplías selectores allí.
    ======================================== */
 
@@ -14,26 +14,26 @@
    Variables
    --------------------------------------------------------------------------- */
 :root {
-    /* Apertura = drawer sm (440px); arrastre del borde izquierdo hasta --ai-panel-width-max */
-    --ai-panel-width-default: 440px;
-    --ai-panel-width-min:     320px;
-    --ai-panel-width-max:     720px;
-    --ai-panel-resize-handle: 5px;
-    --ai-panel-header-h:      48px;
+    /* Apertura = drawer sm (440px); arrastre del borde izquierdo hasta --ia-panel-width-max */
+    --ia-panel-width-default: 440px;
+    --ia-panel-width-min:     320px;
+    --ia-panel-width-max:     720px;
+    --ia-panel-resize-handle: 5px;
+    --ia-panel-header-h:      48px;
 }
 
 /* ---------------------------------------------------------------------------
    Panel principal — sidebar anclado, full height
    --------------------------------------------------------------------------- */
-.ai-panel {
+.ia-panel {
     position: fixed;
     top: 0;
     right: 0;
     bottom: 0;
     min-height: 0;
-    width: var(--ai-panel-width-default);
-    min-width: var(--ai-panel-width-min);
-    max-width: var(--ai-panel-width-max);
+    width: var(--ia-panel-width-default);
+    min-width: var(--ia-panel-width-min);
+    max-width: var(--ia-panel-width-max);
 
     background: var(--ubits-bg-1);
     border-left: 1px solid var(--ubits-border-1);
@@ -51,7 +51,7 @@
 }
 
 /* Orbes: mismas variables que .ubits-ia-chat__main::before (general-styles/ubits-ia-appearance.css) */
-.ai-panel::before {
+.ia-panel::before {
     content: '';
     position: absolute;
     inset: 0;
@@ -63,7 +63,7 @@
         radial-gradient(ellipse 95% 75% at 90% calc(-5% - 70px + var(--ubits-ia-glow-orb-anchor-offset-y, 0px) + var(--ubits-ia-glow-orb-right-extra-y, 0px)), rgba(var(--modo-ia-glow-orb-rgb-3), 0.2) 0%, transparent 50%);
 }
 
-.ai-panel.active {
+.ia-panel.active {
     transform: translateX(0);
     box-shadow: -4px 0 24px rgba(0, 0, 0, 0.08);
 }
@@ -74,7 +74,7 @@
      * con el scroll del main; así header, scroll, input-area y disclaimer (como el hilo)
      * se reparten dentro de la columna del panel.
      */
-    .ai-panel-root--docked {
+    .ia-panel-root--docked {
         position: sticky;
         top: 0;
         align-self: flex-start;
@@ -88,7 +88,7 @@
         min-height: 0;
     }
 
-    .ai-panel.ai-panel--docked-desktop {
+    .ia-panel.ia-panel--docked-desktop {
         position: relative;
         top: auto;
         right: auto;
@@ -107,10 +107,10 @@
                     box-shadow 0.28s ease;
     }
 
-    .ai-panel.ai-panel--docked-desktop.active {
-        width: var(--ai-panel-width-default);
-        min-width: var(--ai-panel-width-min);
-        max-width: var(--ai-panel-width-max);
+    .ia-panel.ia-panel--docked-desktop.active {
+        width: var(--ia-panel-width-default);
+        min-width: var(--ia-panel-width-min);
+        max-width: var(--ia-panel-width-max);
         border-left: 1px solid var(--ubits-border-1);
         box-shadow: -4px 0 24px rgba(0, 0, 0, 0.08);
     }
@@ -119,11 +119,11 @@
 /* ---------------------------------------------------------------------------
    Handle de redimensionado (borde izquierdo del panel)
    --------------------------------------------------------------------------- */
-.ai-panel__resize-handle {
+.ia-panel__resize-handle {
     position: absolute;
     top: 0;
     left: 0;
-    width: var(--ai-panel-resize-handle);
+    width: var(--ia-panel-resize-handle);
     height: 100%;
     cursor: ew-resize;
     z-index: 10;
@@ -131,7 +131,7 @@
     /* Zona de agarre visual sutil */
 }
 
-.ai-panel__resize-handle::after {
+.ia-panel__resize-handle::after {
     content: '';
     position: absolute;
     top: 50%;
@@ -145,31 +145,31 @@
     transition: opacity 0.2s ease;
 }
 
-.ai-panel__resize-handle:hover::after,
-.ai-panel.resizing .ai-panel__resize-handle::after {
+.ia-panel__resize-handle:hover::after,
+.ia-panel.resizing .ia-panel__resize-handle::after {
     opacity: 1;
 }
 
 /* Cursor global mientras arrastra */
-body.ai-panel-resizing {
+body.ia-panel-resizing {
     cursor: ew-resize !important;
     user-select: none !important;
 }
 
-body.ai-panel-resizing * {
+body.ia-panel-resizing * {
     pointer-events: none !important;
 }
 
-body.ai-panel-resizing .ai-panel {
+body.ia-panel-resizing .ia-panel {
     pointer-events: auto !important;
 }
 
 /* ---------------------------------------------------------------------------
    Header
    --------------------------------------------------------------------------- */
-.ai-panel__header {
-    height: var(--ai-panel-header-h);
-    min-height: var(--ai-panel-header-h);
+.ia-panel__header {
+    height: var(--ia-panel-header-h);
+    min-height: var(--ia-panel-header-h);
     display: flex;
     align-items: center;
     gap: 8px;
@@ -181,7 +181,7 @@ body.ai-panel-resizing .ai-panel {
 }
 
 /* Leading: solo ocupa espacio en vista artifact (botón Atrás). Si está siempre visible queda un hueco de 32px. */
-.ai-panel__hdr-leading {
+.ia-panel__hdr-leading {
     display: none;
     align-items: center;
     justify-content: center;
@@ -191,24 +191,24 @@ body.ai-panel-resizing .ai-panel {
     position: relative;
 }
 
-.ai-panel--artifact-open .ai-panel__hdr-leading {
+.ia-panel--artifact-open .ia-panel__hdr-leading {
     display: flex;
 }
 
-.ai-panel__hdr-back {
+.ia-panel__hdr-back {
     display: none;
 }
 
-.ai-panel--artifact-open .ai-panel__hdr-back {
+.ia-panel--artifact-open .ia-panel__hdr-back {
     display: inline-flex;
 }
 
-.ai-panel--artifact-open .ai-panel__header-actions {
+.ia-panel--artifact-open .ia-panel__header-actions {
     display: none;
 }
 
 /* Título + subtítulo (modelo/agente) */
-.ai-panel__header-text {
+.ia-panel__header-text {
     flex: 1;
     min-width: 0;
     display: flex;
@@ -217,7 +217,7 @@ body.ai-panel-resizing .ai-panel {
     overflow: hidden;
 }
 
-.ai-panel__title {
+.ia-panel__title {
     font-family: 'Noto Sans', sans-serif;
     font-weight: var(--font-weight-semibold);
     font-size: var(--font-size-md);
@@ -230,7 +230,7 @@ body.ai-panel-resizing .ai-panel {
 }
 
 /* Selector de modelo/agente (opcional) */
-.ai-panel__model-btn {
+.ia-panel__model-btn {
     display: inline-flex;
     align-items: center;
     gap: 4px;
@@ -247,31 +247,31 @@ body.ai-panel-resizing .ai-panel {
     flex-shrink: 0;
 }
 
-.ai-panel__model-btn:hover {
+.ia-panel__model-btn:hover {
     background: var(--ubits-bg-2);
 }
 
-.ai-panel__model-btn i {
+.ia-panel__model-btn i {
     font-size: 10px;
     color: var(--ubits-fg-1-medium);
 }
 
 /* Acciones del header (derecha) */
-.ai-panel__header-actions {
+.ia-panel__header-actions {
     display: inline-flex;
     align-items: center;
     gap: var(--gap-sm);
     flex-shrink: 0;
 }
 
-.ai-panel__tokens-badge {
+.ia-panel__tokens-badge {
     flex-shrink: 0;
 }
 
 /* ---------------------------------------------------------------------------
    Cuerpo — zona exterior (sin gradiente, solo padding para la card)
    --------------------------------------------------------------------------- */
-.ai-panel__body {
+.ia-panel__body {
     flex: 1;
     min-height: 0;
     min-width: 0;
@@ -285,11 +285,11 @@ body.ai-panel-resizing .ai-panel {
     z-index: 1;
     /* Incluye hilo + bottom sheet (hermano del chat-container) para @container al mismo ancho útil */
     container-type: inline-size;
-    container-name: ai-panel-chat;
+    container-name: ia-panel-chat;
 }
 
 /* Pila chat + capa superpuesta de detalle (artifact) */
-.ai-panel__main-stack {
+.ia-panel__main-stack {
     flex: 1;
     min-height: 0;
     display: flex;
@@ -298,7 +298,7 @@ body.ai-panel-resizing .ai-panel {
     width: 100%;
 }
 
-.ai-panel__chat-shell {
+.ia-panel__chat-shell {
     flex: 1;
     min-height: 0;
     display: flex;
@@ -306,7 +306,7 @@ body.ai-panel-resizing .ai-panel {
     min-width: 0;
 }
 
-.ai-panel__artifact-layer {
+.ia-panel__artifact-layer {
     display: none;
     flex-direction: column;
     position: absolute;
@@ -317,17 +317,17 @@ body.ai-panel-resizing .ai-panel {
     border-radius: var(--border-radius-lg);
 }
 
-.ai-panel--artifact-open .ai-panel__artifact-layer {
+.ia-panel--artifact-open .ia-panel__artifact-layer {
     display: flex;
 }
 
 /* Sin poner fondo opaco sobre el quiz: el hilo e input dejan de pintarse/interactuarse mientras el artifact está abierto */
-.ai-panel--artifact-open .ai-panel__chat-shell {
+.ia-panel--artifact-open .ia-panel__chat-shell {
     visibility: hidden;
     pointer-events: none;
 }
 
-.ai-panel__artifact-scroll {
+.ia-panel__artifact-scroll {
     flex: 1 1 0;
     min-height: 0;
     overflow-x: hidden;
@@ -337,7 +337,7 @@ body.ai-panel-resizing .ai-panel {
     flex-direction: column;
 }
 
-.ai-panel__artifact-scroll > .ubits-ia-chat-side__content {
+.ia-panel__artifact-scroll > .ubits-ia-chat-side__content {
     flex: 1 1 0;
     min-height: 0;
     overflow: hidden;
@@ -346,13 +346,13 @@ body.ai-panel-resizing .ai-panel {
 }
 
 /* Quiz / flashcards en el panel: sin lienzo bg-1 (se ve la card del chat debajo) */
-.ai-panel__artifact-scroll .ai-panel-artifact-tutor.ubits-ia-chat-side__content,
-.ai-panel__artifact-scroll .ai-panel-artifact-tutor .ubits-ia-chat-side__body,
-.ai-panel__artifact-scroll .ai-panel-artifact-tutor .ubits-ia-chat-side__footer {
+.ia-panel__artifact-scroll .ia-panel-artifact-tutor.ubits-ia-chat-side__content,
+.ia-panel__artifact-scroll .ia-panel-artifact-tutor .ubits-ia-chat-side__body,
+.ia-panel__artifact-scroll .ia-panel-artifact-tutor .ubits-ia-chat-side__footer {
     background: transparent !important;
 }
 
-.ai-panel__artifact-scroll .ai-panel-artifact-tutor .ubits-ia-chat-side__fc-back {
+.ia-panel__artifact-scroll .ia-panel-artifact-tutor .ubits-ia-chat-side__fc-back {
     background: var(--ubits-bg-2) !important;
 }
 
@@ -364,7 +364,7 @@ body.ai-panel-resizing .ai-panel {
 /* ---------------------------------------------------------------------------
    Contenedor de chat — card interna con gradiente y border-radius
    --------------------------------------------------------------------------- */
-.ai-panel__chat-container {
+.ia-panel__chat-container {
     flex: 1;
     min-height: 0;
     display: flex;
@@ -381,7 +381,7 @@ body.ai-panel-resizing .ai-panel {
 }
 
 /* Zona scrollable dentro del contenedor */
-.ai-panel__chat-scroll {
+.ia-panel__chat-scroll {
     flex: 1;
     min-height: 0;
     overflow-y: auto;
@@ -390,7 +390,7 @@ body.ai-panel-resizing .ai-panel {
 }
 
 /* Lista de mensajes */
-.ai-panel__messages {
+.ia-panel__messages {
     flex: 1;
     min-height: 0;
     display: flex;
@@ -402,7 +402,7 @@ body.ai-panel-resizing .ai-panel {
 /* ---------------------------------------------------------------------------
    Estado de bienvenida
    --------------------------------------------------------------------------- */
-.ai-panel__welcome {
+.ia-panel__welcome {
     flex: 1;
     min-height: 0;
     display: flex;
@@ -414,7 +414,7 @@ body.ai-panel-resizing .ai-panel {
     text-align: center;
 }
 
-.ai-panel__welcome-icon {
+.ia-panel__welcome-icon {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -423,7 +423,7 @@ body.ai-panel-resizing .ai-panel {
     margin-bottom: 4px;
 }
 
-.ai-panel__welcome-icon i {
+.ia-panel__welcome-icon i {
     font-size: 48px;
     background: linear-gradient(135deg,
         var(--modo-ia-gradient-a) 0%,
@@ -436,7 +436,7 @@ body.ai-panel-resizing .ai-panel {
     color: transparent;
 }
 
-.ai-panel__welcome-title {
+.ia-panel__welcome-title {
     font-family: 'Noto Sans', sans-serif;
     font-weight: var(--font-weight-semibold);
     font-size: var(--font-size-md);
@@ -444,7 +444,7 @@ body.ai-panel-resizing .ai-panel {
     margin: 0;
 }
 
-.ai-panel__welcome-subtitle {
+.ia-panel__welcome-subtitle {
     font-family: 'Noto Sans', sans-serif;
     font-weight: var(--font-weight-regular);
     font-size: var(--font-size-sm);
@@ -457,22 +457,22 @@ body.ai-panel-resizing .ai-panel {
 /* ---------------------------------------------------------------------------
    Mensajes individuales
    --------------------------------------------------------------------------- */
-.ai-panel__msg {
+.ia-panel__msg {
     display: flex;
     flex-direction: column;
     gap: var(--gap-none);
     width: 100%;
 }
 
-.ai-panel__msg--user {
+.ia-panel__msg--user {
     align-items: flex-end;
 }
 
-.ai-panel__msg--ai {
+.ia-panel__msg--ai {
     align-items: flex-start;
 }
 
-.ai-panel__msg-bubble {
+.ia-panel__msg-bubble {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
@@ -487,7 +487,7 @@ body.ai-panel-resizing .ai-panel {
     position: relative;
 }
 
-.ai-panel__msg--user .ai-panel__msg-bubble {
+.ia-panel__msg--user .ia-panel__msg-bubble {
     background: var(--ubits-bg-active) !important;
     color: var(--ubits-fg-1-high) !important;
     border-bottom-right-radius: 0 !important;
@@ -495,7 +495,7 @@ body.ai-panel-resizing .ai-panel {
     max-width: 85%;
 }
 
-.ai-panel__msg--ai .ai-panel__msg-bubble {
+.ia-panel__msg--ai .ia-panel__msg-bubble {
     background: transparent !important;
     color: var(--ubits-fg-1-high) !important;
     border-bottom-left-radius: 0 !important;
@@ -505,40 +505,40 @@ body.ai-panel-resizing .ai-panel {
 }
 
 /* Panel ≤640px de ancho útil: burbuja IA, interacciones (quick reply, chips, cards) y bottom sheet */
-@container ai-panel-chat (max-width: 640px) {
-    .ai-panel__msg--ai .ai-panel__msg-bubble {
+@container ia-panel-chat (max-width: 640px) {
+    .ia-panel__msg--ai .ia-panel__msg-bubble {
         max-width: 100%;
     }
 
-    .ai-panel__msg--ai .ubits-ia-chat-interaction {
+    .ia-panel__msg--ai .ubits-ia-chat-interaction {
         max-width: 100%;
         width: 100%;
         align-self: stretch;
     }
 
     /* Quick reply: fila + wrap homologado con hilo modo estudio (botones al contenido) */
-    .ai-panel__msg--ai .ubits-ia-chat-interaction--quick-reply {
+    .ia-panel__msg--ai .ubits-ia-chat-interaction--quick-reply {
         flex-direction: row;
         flex-wrap: wrap;
         align-items: center;
         justify-content: flex-start;
     }
 
-    .ai-panel__msg--ai .ubits-ia-chat-interaction--quick-reply > .ubits-button {
+    .ia-panel__msg--ai .ubits-ia-chat-interaction--quick-reply > .ubits-button {
         width: auto;
         flex: 0 0 auto;
         justify-content: center;
     }
 
     /* Cards: cada tarjeta ocupa el ancho útil */
-    .ai-panel__msg--ai .ubits-ia-chat-interaction--cards .ubits-ia-chat-card {
+    .ia-panel__msg--ai .ubits-ia-chat-interaction--cards .ubits-ia-chat-card {
         width: 100%;
         max-width: 100%;
         box-sizing: border-box;
     }
 
     /* Bottom sheet: mismo ancho que el cuerpo del panel; cabecera puede envolver */
-    .ai-panel__body > .ubits-ia-chat-bottom-sheet {
+    .ia-panel__body > .ubits-ia-chat-bottom-sheet {
         width: 100%;
         max-width: 100%;
         box-sizing: border-box;
@@ -546,23 +546,23 @@ body.ai-panel-resizing .ai-panel {
         right: 0;
     }
 
-    .ai-panel__body .ubits-ia-chat-bottom-sheet__header {
+    .ia-panel__body .ubits-ia-chat-bottom-sheet__header {
         flex-wrap: wrap;
         row-gap: var(--gap-sm);
     }
 
-    .ai-panel__body .ubits-ia-chat-bottom-sheet__question {
+    .ia-panel__body .ubits-ia-chat-bottom-sheet__question {
         min-width: 0;
     }
 }
 
 /* HTML personalizado (p. ej. imagen + acciones) — sin forzar pre-wrap en hijos */
-.ai-panel__msg-bubble--rich {
+.ia-panel__msg-bubble--rich {
     white-space: normal;
     max-width: 100%;
 }
 
-.ai-panel__msg-time {
+.ia-panel__msg-time {
     font-family: var(--ubits-font-family-sans);
     font-size: var(--font-size-xs);
     font-weight: var(--font-weight-regular);
@@ -571,26 +571,26 @@ body.ai-panel-resizing .ai-panel {
     margin: 0;
 }
 
-.ai-panel__msg--ai .ai-panel__msg-time {
+.ia-panel__msg--ai .ia-panel__msg-time {
     text-align: left;
 }
 
-.ai-panel__msg--user .ai-panel__msg-time {
+.ia-panel__msg--user .ia-panel__msg-time {
     text-align: right;
     color: var(--ubits-btn-tertiary-fg) !important;
 }
 
-.ai-panel__msg-footer {
+.ia-panel__msg-footer {
     width: 100%;
     min-width: 0;
 }
 
-.ai-panel__msg--user .ai-panel__msg-footer {
+.ia-panel__msg--user .ia-panel__msg-footer {
     justify-content: flex-end;
 }
 
 /* Acciones del mensaje IA (copiar) — dentro del pie */
-.ai-panel__msg-actions {
+.ia-panel__msg-actions {
     display: flex;
     gap: var(--gap-sm);
     align-items: center;
@@ -598,8 +598,8 @@ body.ai-panel-resizing .ai-panel {
     flex-shrink: 0;
 }
 
-.ai-panel__msg-attachments-images,
-.ai-panel__msg-attachments-files {
+.ia-panel__msg-attachments-images,
+.ia-panel__msg-attachments-files {
     display: flex;
     flex-wrap: wrap;
     gap: var(--gap-xs);
@@ -607,18 +607,18 @@ body.ai-panel-resizing .ai-panel {
 }
 
 /* Documentos adjuntos en el mensaje (mismo patrón que task-detail: chip + nombre truncado) */
-.ai-panel__msg-attachments-files .ubits-chip {
+.ia-panel__msg-attachments-files .ubits-chip {
     max-width: 220px;
 }
 
-.ai-panel__msg-file-chip .ubits-chip__text {
+.ia-panel__msg-file-chip .ubits-chip__text {
     min-width: 0;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
 
-.ai-panel__msg-attachment-img {
+.ia-panel__msg-attachment-img {
     width: 72px;
     height: 72px;
     border-radius: var(--border-radius-sm);
@@ -629,7 +629,7 @@ body.ai-panel-resizing .ai-panel {
 /* ---------------------------------------------------------------------------
    Typing indicator
    --------------------------------------------------------------------------- */
-.ai-panel__typing {
+.ia-panel__typing {
     display: flex;
     align-items: center;
     gap: 5px;
@@ -640,31 +640,31 @@ body.ai-panel-resizing .ai-panel {
     width: fit-content;
 }
 
-.ai-panel__typing-dot {
+.ia-panel__typing-dot {
     width: 6px;
     height: 6px;
     border-radius: 50%;
     background: var(--ubits-fg-1-medium);
-    animation: ai-panel-bounce 1.2s infinite ease-in-out;
+    animation: ia-panel-bounce 1.2s infinite ease-in-out;
 }
 
-.ai-panel__typing-dot:nth-child(2) { animation-delay: 0.2s; }
-.ai-panel__typing-dot:nth-child(3) { animation-delay: 0.4s; }
+.ia-panel__typing-dot:nth-child(2) { animation-delay: 0.2s; }
+.ia-panel__typing-dot:nth-child(3) { animation-delay: 0.4s; }
 
-@keyframes ai-panel-bounce {
+@keyframes ia-panel-bounce {
     0%, 80%, 100% { transform: scale(0.7); opacity: 0.4; }
     40%            { transform: scale(1);   opacity: 1; }
 }
 
 /* Área de input: mismas clases/tokens que el hilo (.ubits-ia-chat-thread__input-area en ubits-ia-chat.css) */
-.ai-panel .ubits-ia-chat-thread__input-area {
+.ia-panel .ubits-ia-chat-thread__input-area {
     flex-shrink: 0;
     min-width: 0;
     max-width: 100%;
 }
 
 /* Caja del input (layout en columna propio del panel); radios y padding como .ubits-ia-chat-thread__input-container en chat iniciado */
-.ai-panel__input-box {
+.ia-panel__input-box {
     display: flex;
     flex-direction: column;
     gap: var(--gap-sm);
@@ -677,7 +677,7 @@ body.ai-panel-resizing .ai-panel {
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-.ai-panel__pending-images-strip {
+.ia-panel__pending-images-strip {
     display: none;
     flex-direction: row;
     flex-wrap: wrap;
@@ -685,7 +685,7 @@ body.ai-panel-resizing .ai-panel {
 }
 
 /* Strip de documentos antes de enviar (Chip oficial + quitar, como task-detail) */
-.ai-panel__pending-files-strip {
+.ia-panel__pending-files-strip {
     display: none;
     flex-direction: row;
     flex-wrap: wrap;
@@ -694,18 +694,18 @@ body.ai-panel-resizing .ai-panel {
     padding: var(--padding-xs) 0;
 }
 
-.ai-panel__pending-file-chip.ubits-chip {
+.ia-panel__pending-file-chip.ubits-chip {
     max-width: 200px;
 }
 
-.ai-panel__pending-file-chip .ubits-chip__text {
+.ia-panel__pending-file-chip .ubits-chip__text {
     min-width: 0;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
 
-.ai-panel__pending-img-wrap {
+.ia-panel__pending-img-wrap {
     position: relative;
     width: 44px;
     height: 44px;
@@ -714,14 +714,14 @@ body.ai-panel-resizing .ai-panel {
     border: 1px solid var(--ubits-border-1);
 }
 
-.ai-panel__pending-img {
+.ia-panel__pending-img {
     width: 100%;
     height: 100%;
     object-fit: cover;
     display: block;
 }
 
-.ai-panel__pending-img-remove {
+.ia-panel__pending-img-remove {
     position: absolute;
     top: 2px;
     right: 2px;
@@ -737,13 +737,13 @@ body.ai-panel-resizing .ai-panel {
     cursor: pointer;
 }
 
-.ai-panel__input-box:focus-within {
+.ia-panel__input-box:focus-within {
     border-color: rgba(136, 35, 234, 0.35);
     box-shadow: 0 0 0 3px rgba(136, 35, 234, 0.06);
 }
 
 /* Textarea */
-.ai-panel__input {
+.ia-panel__input {
     width: 100%;
     background: transparent;
     border: none;
@@ -759,12 +759,12 @@ body.ai-panel-resizing .ai-panel {
     box-sizing: border-box;
 }
 
-.ai-panel__input::placeholder {
+.ia-panel__input::placeholder {
     color: var(--ubits-fg-disabled);
 }
 
 /* Fila de acciones del input */
-.ai-panel__input-actions {
+.ia-panel__input-actions {
     display: flex;
     align-items: center;
     gap: 4px;
@@ -772,18 +772,18 @@ body.ai-panel-resizing .ai-panel {
 }
 
 /* Espaciador entre botones del input */
-.ai-panel__input-spacer {
+.ia-panel__input-spacer {
     flex: 1;
 }
 
 /* Override: el attach usa ubits-button--secondary → forzar círculo */
-.ai-panel__attach-btn.ubits-button {
+.ia-panel__attach-btn.ubits-button {
     border-radius: 50% !important;
     flex-shrink: 0;
 }
 
 /* Override send button con ID (máxima especificidad) — círculo perfecto */
-#ai-panel-send {
+#ia-panel-send {
     width: 32px !important;
     height: 32px !important;
     min-width: 32px !important;
@@ -798,12 +798,12 @@ body.ai-panel-resizing .ai-panel {
 
 /* Móvil: aire lateral e inferior (el hilo full-page puede ir sin padding; el panel no) */
 @media (max-width: 768px) {
-    .ai-panel .ubits-ia-chat-thread__input-area {
+    .ia-panel .ubits-ia-chat-thread__input-area {
         padding-left: max(var(--padding-lg), env(safe-area-inset-left, 0px));
         padding-right: max(var(--padding-lg), env(safe-area-inset-right, 0px));
     }
 
-    .ai-panel .ubits-ia-chat-thread__disclaimer {
+    .ia-panel .ubits-ia-chat-thread__disclaimer {
         padding-left: max(var(--padding-lg), env(safe-area-inset-left, 0px));
         padding-right: max(var(--padding-lg), env(safe-area-inset-right, 0px));
         padding-bottom: max(var(--padding-md), env(safe-area-inset-bottom, 0px));
@@ -814,12 +814,12 @@ body.ai-panel-resizing .ai-panel {
    Responsive: en móvil ocupa todo el ancho
    --------------------------------------------------------------------------- */
 @media (max-width: 520px) {
-    .ai-panel {
+    .ia-panel {
         width: 100% !important;
         min-width: 100%;
     }
 
-    .ai-panel__resize-handle {
+    .ia-panel__resize-handle {
         display: none;
     }
 }
@@ -827,7 +827,7 @@ body.ai-panel-resizing .ai-panel {
 /* ---------------------------------------------------------------------------
    Dark mode
    --------------------------------------------------------------------------- */
-[data-theme="dark"] .ai-panel::before {
+[data-theme="dark"] .ia-panel::before {
     background:
         radial-gradient(ellipse 100% 80% at 10% calc(-5% - 70px + var(--ubits-ia-glow-orb-anchor-offset-y, 0px)), rgba(var(--modo-ia-glow-orb-rgb-1), 0.2) 0%, transparent 50%),
         radial-gradient(ellipse 95% 78% at calc(50% + var(--ubits-ia-glow-orb-center-extra-x, 0px)) calc(-8% - 25px + var(--ubits-ia-glow-orb-anchor-offset-y, 0px) + var(--ubits-ia-glow-orb-center-extra-y, 0px)), rgba(var(--modo-ia-glow-orb-rgb-2), 0.2) 0%, transparent 48%),

@@ -564,7 +564,7 @@ Todos los componentes UBITS requieren imports obligatorios:
 - **`documentacion/componentes/tab-bar.html`** - Documentación del componente TabBar
 - **`documentacion/componentes/button.html`** - Documentación del componente Button
 - **`documentacion/componentes/ia-button.html`** - Documentación del componente IA-Button
-- **`documentacion/componentes/ai-panel.html`** - Documentación del componente AI panel (panel lateral de chat IA)
+- **`documentacion/componentes/ia-panel.html`** - Documentación del componente IA panel (panel lateral de chat IA)
 - **`documentacion/componentes/header-product.html`** - Documentación del componente Header Product
 - **`documentacion/componentes/alert.html`** - Documentación del componente Alert
 - **`documentacion/componentes/attention-badge.html`** - Documentación del componente Attention badge
@@ -654,7 +654,7 @@ Todos los componentes UBITS requieren imports obligatorios:
 │   ├── Navegación
 │   │   ├── sub-nav, sidebar, sidebar-contenidos-lms, tab-bar, floating-menu, profile-menu, submenu
 │   ├── UI general (documentados en documentacion/componentes/)
-│   │   ├── accordion, ai-panel, alert, attention-badge, avatar, badge-tag, button, calendar
+│   │   ├── accordion, ia-panel, alert, attention-badge, avatar, badge-tag, button, calendar
 │   │   ├── carousel-indicators, checkbox, chip, coachmark, color-picker, date-picker-modal
 │   │   ├── drawer, dropdown-menu, empty-state, file-upload, file-upload-compact
 │   │   ├── header-product, ia-button, ia-loader, inline-edit, input, loader, modal
@@ -669,7 +669,7 @@ Todos los componentes UBITS requieren imports obligatorios:
 │   ├── Operations
 │   │   └── task-strip
 │   └── JS auxiliar (sin .css propio)
-│       ├── ai-panel-artifact-content.js, group-creation-chat.js
+│       ├── ia-panel-artifact-content.js, group-creation-chat.js
 │       ├── ia-chat-mobile-drawer.js, ia-chat-streaming.js, ubits-confetti.js
 │   └── Catálogo + doc: documentacion/componentes.html · docs/docs-sidebar.js (DOCS_SIDEBAR_SECTIONS)
 ├── 📁 ubits-admin/           # Módulo de administración
@@ -1057,7 +1057,7 @@ loadCardContentCompact('mi-contenedor-compact', [
 - **`documentacion/componentes.html`** - Página principal con todos los componentes disponibles
 - **`documentacion/componentes/button.html`** - Documentación del componente Button
 - **`documentacion/componentes/ia-button.html`** - Documentación del componente IA-Button
-- **`documentacion/componentes/ai-panel.html`** - Documentación del componente AI panel (panel lateral de chat IA)
+- **`documentacion/componentes/ia-panel.html`** - Documentación del componente IA panel (panel lateral de chat IA)
 - **`documentacion/componentes/header-product.html`** - Documentación del componente Header Product
 - **`documentacion/componentes/alert.html`** - Documentación del componente Alert
 - **`documentacion/componentes/attention-badge.html`** - Documentación del componente Attention badge

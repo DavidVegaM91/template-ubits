@@ -8,7 +8,7 @@
  * Nota: Esta implementación es standalone (HTML + CSS + JS vanilla) y usa componentes UBITS existentes:
  * - Buttons / IA button
  * - createInput (inputs en modal de configuración)
- * - ai-panel (Panel = agente conversacional para generar evaluación)
+ * - ia-panel (Panel = agente conversacional para generar evaluación)
  */
 (function (global) {
     'use strict';
@@ -1001,7 +1001,7 @@
     }
 
     // ---------------------------
-    // Agente conversacional (AI Panel) — flujo rediseñado v2
+    // Agente conversacional (IA panel) — flujo rediseñado v2
     // Ruta A (rápida):  selección por defecto → material → confirmación con token button
     // Ruta B (larga):   Bottom Sheet Form config → material → count/difficulty/types → confirmación
     // ---------------------------
@@ -1181,21 +1181,21 @@
     function _evalSyncTokensBadges(remaining) {
         var n = parseInt(remaining, 10);
         if (isNaN(n) || n < 0) n = 0;
-        if (typeof global.setAIPanelTokensBadgeValue === 'function') {
-            global.setAIPanelTokensBadgeValue(n);
+        if (typeof global.setIAPanelTokensBadgeValue === 'function') {
+            global.setIAPanelTokensBadgeValue(n);
         }
     }
 
     function evalAgentCloseUiForGeneration() {
-        if (typeof global.closeAIPanel === 'function') global.closeAIPanel();
+        if (typeof global.closeIAPanel === 'function') global.closeIAPanel();
     }
 
     function _evalMsg(text, opts) {
-        if (typeof global.addAIPanelMessage === 'function') global.addAIPanelMessage(text, 'ai', null, opts);
+        if (typeof global.addIAPanelMessage === 'function') global.addIAPanelMessage(text, 'ai', null, opts);
     }
 
     function _evalUserMsg(text) {
-        if (typeof global.addAIPanelMessage === 'function') global.addAIPanelMessage(text, 'user');
+        if (typeof global.addIAPanelMessage === 'function') global.addIAPanelMessage(text, 'user');
     }
 
     /** Misma base que ia-chat-streaming.js / envío del panel (MIN_THINKING_MS). */
@@ -1206,15 +1206,15 @@
     }
 
     /**
-     * Muestra «Pensando…» (showAIPanelTyping + UbitsIaChatStreaming) y luego ejecuta cb.
+     * Muestra «Pensando…» (showIAPanelTyping + UbitsIaChatStreaming) y luego ejecuta cb.
      * @param {function} cb
      * @param {number} [delay] — ms; si se omite, usa MIN_THINKING_MS del streaming (como modo estudio IA).
      */
     function _evalTyping(cb, delay) {
         var ms = typeof delay === 'number' && !isNaN(delay) ? delay : _evalDefaultThinkMs();
         var rm =
-            typeof global.showAIPanelTyping === 'function'
-                ? global.showAIPanelTyping()
+            typeof global.showIAPanelTyping === 'function'
+                ? global.showIAPanelTyping()
                 : null;
         setTimeout(function () {
             if (rm) rm();
@@ -1359,8 +1359,8 @@
     // ---------------------------
 
     function evalAgentInit(rootEl, pageState) {
-        if (typeof global.destroyAIPanel === 'function') global.destroyAIPanel();
-        if (typeof global.initAIPanel !== 'function') return;
+        if (typeof global.destroyIAPanel === 'function') global.destroyIAPanel();
+        if (typeof global.initIAPanel !== 'function') return;
 
         rootEl._ccEvalPageState = pageState;
         rootEl._ccEvalGenToken = null;
@@ -1368,7 +1368,7 @@
 
         var currentTokens = _evalGetTokens();
 
-        global.initAIPanel({
+        global.initIAPanel({
             title: 'Agente de evaluaciones',
             agentLabel: 'Studio IA',
             welcomeTitle: 'Agente creador de evaluaciones',
@@ -1414,8 +1414,8 @@
         // Mostrar card-based selection dentro del mensaje IA
         _evalMsg('¿Cómo quieres crear la evaluación?');
         setTimeout(function () {
-            if (typeof global.addAIPanelInteraction === 'function') {
-                global.addAIPanelInteraction('cards', {
+            if (typeof global.addIAPanelInteraction === 'function') {
+                global.addIAPanelInteraction('cards', {
                     items: [
                         {
                             value: 'fast',
@@ -1548,8 +1548,8 @@
 
     /** Bottom Sheet Form: puntaje mínimo + tiempo + cantidad + dificultad (sin mensaje previo en el hilo). */
     function evalAgentShowConfigBSF(rootEl) {
-        if (typeof global.addAIPanelInteraction !== 'function') return;
-        global.addAIPanelInteraction('bottom-sheet', {
+        if (typeof global.addIAPanelInteraction !== 'function') return;
+        global.addIAPanelInteraction('bottom-sheet', {
                 steps: [
                     {
                         question: '¿Puntaje mínimo de aprobación?',
@@ -1653,8 +1653,8 @@
         state.step = 'long_types';
         _evalTyping(function () {
             _evalMsg('¿Qué tipos de pregunta quieres incluir? Elige uno o varios.');
-            if (typeof global.addAIPanelInteraction === 'function') {
-                global.addAIPanelInteraction('multiselect', {
+            if (typeof global.addIAPanelInteraction === 'function') {
+                global.addIAPanelInteraction('multiselect', {
                     items: [
                         { value: 'multiple_choice_single_answer', label: 'Múltiple, una correcta' },
                         { value: 'multiple_choice_multiple_answers', label: 'Múltiple, varias correctas' },
@@ -2184,11 +2184,11 @@
         if (iaBtn) {
             iaBtn.addEventListener('click', function () {
                 evalAgentInit(rootEl, pageState);
-                if (typeof global.openAIPanel === 'function') global.openAIPanel();
+                if (typeof global.openIAPanel === 'function') global.openIAPanel();
                 setTimeout(function () {
                     var cost = EVAL_AI_TOKEN_COST;
-                    if (_evalGetTokens() >= cost && typeof global.addAIPanelMessage === 'function') {
-                        global.addAIPanelMessage(
+                    if (_evalGetTokens() >= cost && typeof global.addIAPanelMessage === 'function') {
+                        global.addIAPanelMessage(
                             '¡Hola! Soy el Agente de evaluaciones. Voy a ayudarte a crear preguntas sobre el tema de tu contenido.',
                             'ai'
                         );
@@ -2224,8 +2224,8 @@
             if (String(nextKey) === String(curKey)) return;
 
             // Cerrar panel IA (exclusivo de la página de evaluación)
-            if (typeof global.closeAIPanel === 'function') global.closeAIPanel();
-            if (typeof global.setAIPanelAlternateMount === 'function') global.setAIPanelAlternateMount(null);
+            if (typeof global.closeIAPanel === 'function') global.closeIAPanel();
+            if (typeof global.setIAPanelAlternateMount === 'function') global.setIAPanelAlternateMount(null);
 
             // Persistir estado de la página actual usando el rootEl vigente.
             // mountEl._ccEvalRootEl apunta siempre al rootEl del último montaje y sobrevive

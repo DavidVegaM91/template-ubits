@@ -1,7 +1,7 @@
 /* ========================================
    Modo IA — apariencia transversal (tokens compartidos)
    Gradientes de marca, RGB de orbes, borde IA 1.5px y keyframes de borde animado.
-   Lo usan: modales IA, chat IA, AI panel, LMS Creator, resultados búsqueda, ia-button, badge IA, etc.
+   Lo usan: modales IA, chat IA, IA panel, LMS Creator, resultados búsqueda, ia-button, badge IA, etc.
    Paleta alineada con ia-button Figma AI-Capabilities (565:5110; mismos RGB que components/ia-button.css).
    Para cambiar la paleta: edita solo las variables en :root abajo.
 
@@ -34,7 +34,7 @@
 
     /*
      * Desplazamiento vertical de los focos de los orbes (radial-gradient at … Y).
-     * Negativo = más arriba. Suman modal IA, chat, AI panel, ia-para-hr (vía var en sus background-image).
+     * Negativo = más arriba. Suman modal IA, chat, IA panel, ia-para-hr (vía var en sus background-image).
      */
     --ubits-ia-glow-orb-anchor-offset-y: -70px;
 

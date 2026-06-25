@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/svg+xml" href="../../images/playground-favicon.svg">
-    <title>AI panel | UBITS Playground</title>
+    <title>IA panel | UBITS Playground</title>
     <link rel="stylesheet" href="../../general-styles/ubits-colors.css">
     <link rel="stylesheet" href="../../general-styles/styles.css">
     <link rel="stylesheet" href="../../general-styles/fontawesome-icons.css">
@@ -15,13 +15,14 @@
     <link rel="stylesheet" href="../../components/button.css">
     <link rel="stylesheet" href="../../components/chip.css">
     <link rel="stylesheet" href="../../components/ia-button.css">
+    <link rel="stylesheet" href="../../components/ia-input.css">
     <link rel="stylesheet" href="../../general-styles/ubits-ia-appearance.css">
     <link rel="stylesheet" href="../../components/badge-tag.css">
     <link rel="stylesheet" href="../../components/tooltip.css">
     <link rel="stylesheet" href="../../general-styles/ubits-ia-chat.css">
     <link rel="stylesheet" href="../../ubits-colaborador/aprendizaje/modo-estudio-ia-tutor-panel.css">
     <link rel="stylesheet" href="../../components/radio-button.css">
-    <link rel="stylesheet" href="../../components/ai-panel.css">
+    <link rel="stylesheet" href="../../components/ia-panel.css">
     <link rel="stylesheet" href="../../docs/docs-sidebar.css">
     <link rel="stylesheet" href="../../docs/docstyles.css">
     <link rel="stylesheet" href="../../components/toast.css">
@@ -43,7 +44,7 @@
                     <div class="content-area" style="display: block; width: 100%;">
                         <div style="text-align: center; margin-bottom: 60px;">
                             <h1 class="ubits-display-d2-bold" style="margin-bottom: 24px; color: var(--ubits-accent-brand);">
-                                AI panel
+                                IA panel
                             </h1>
                             <p class="ubits-body-md-regular" style="max-width: 800px; margin: 0 auto 32px; line-height: 1.6;">
                                 Ventana lateral para chatear con el asistente de IA: escribir, adjuntar archivos y ver tu saldo de tokens sin salir de la pantalla donde estás trabajando.
@@ -59,11 +60,11 @@
                                 Abre el panel con el botón de abajo, escribe o adjunta un archivo, y prueba el flujo de “Pensando” y respuesta. El segundo botón simula la respuesta de la IA para ver el comportamiento del hilo. Para ver el panel integrado en una lista real, abre la demo de Contenidos en el LMS Creator.
                             </p>
                             <div style="display: flex; flex-wrap: wrap; gap: var(--gap-md); align-items: center; margin-bottom: var(--gap-lg);">
-                                <button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="ai-panel-doc-btn-open">
+                                <button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="ia-panel-doc-btn-open">
                                     <i class="far fa-sparkles"></i>
                                     <span>Abrir panel (demo)</span>
                                 </button>
-                                <button type="button" class="ubits-button ubits-button--tertiary ubits-button--md" id="ai-panel-doc-btn-stream">
+                                <button type="button" class="ubits-button ubits-button--tertiary ubits-button--md" id="ia-panel-doc-btn-stream">
                                     <span>Probar «Pensando» + respuesta</span>
                                 </button>
                             </div>
@@ -81,7 +82,7 @@
                                 Tipos de interacción conversacional
                             </h2>
                             <p class="ubits-body-md-regular" style="margin-bottom: var(--gap-lg); color: var(--ubits-fg-1-medium); line-height: 1.6;">
-                                Bloques interactivos que la IA puede insertar en el hilo de conversación. Funcionan en el AI panel, en modo estudio y en cualquier chat IA. El estilo vive en <code style="font-family: monospace;">general-styles/ubits-ia-chat.css</code>. <strong>Quick Reply</strong> está homologado: fila horizontal (con salto de línea solo si no caben), botones <code style="font-family: monospace;">ubits-button--secondary ubits-button--sm</code> al ancho del texto. Modo estudio IA usa el mismo patrón en el hilo; las tarjetas tipo recurso se documentan como <strong>Artifact cards</strong> para unificar nombre y API futura.
+                                Bloques interactivos que la IA puede insertar en el hilo de conversación. Funcionan en el IA panel, en modo estudio y en cualquier chat IA. El estilo vive en <code style="font-family: monospace;">general-styles/ubits-ia-chat.css</code>. <strong>Quick Reply</strong> está homologado: fila horizontal (con salto de línea solo si no caben), botones <code style="font-family: monospace;">ubits-button--secondary ubits-button--sm</code> al ancho del texto. Modo estudio IA usa el mismo patrón en el hilo; las tarjetas tipo recurso se documentan como <strong>Artifact cards</strong> para unificar nombre y API futura.
                             </p>
 
                             <!-- Quick Reply Buttons -->
@@ -100,7 +101,7 @@
                                             <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--active"><span>Swift</span></button>
                                         </div>
                                     </div>
-                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="ai-panel-doc-btn-qr">
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="ia-panel-doc-btn-qr">
                                         <i class="far fa-play"></i>
                                         <span>Probar en el panel</span>
                                     </button>
@@ -131,7 +132,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="ai-panel-doc-btn-multi">
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="ia-panel-doc-btn-multi">
                                         <i class="far fa-play"></i>
                                         <span>Probar en el panel</span>
                                     </button>
@@ -172,7 +173,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="ai-panel-doc-btn-cards">
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="ia-panel-doc-btn-cards">
                                         <i class="far fa-play"></i>
                                         <span>Probar en el panel</span>
                                     </button>
@@ -187,7 +188,7 @@
                                 </div>
                                 <div style="padding: var(--padding-lg);">
                                     <p class="ubits-body-sm-regular" style="margin: 0 0 var(--gap-md); color: var(--ubits-fg-1-medium);">
-                                        Patrón transversal con nombre de industria «artifact»: una o más filas con el mismo cromo que la tarjeta de recurso del hilo en Modo estudio IA. La clase <code style="font-family: monospace;">open-btn-visible</code> en la fila (<code style="font-family: monospace;">.ubits-ia-chat-artifact-row</code>) muestra el botón <strong>Abrir</strong>; al abrir el detalle en el propio AI panel, quita esa clase en la fila. El contenido del detalle se muestra con <code style="font-family: monospace;">openAIPanelArtifactView(html, { title, onAfterMount })</code>: la cabecera del panel pasa a botón <strong>Atrás</strong> (terciario) y oculta tokens y cierre; <strong>Atrás</strong> o Escape vuelven al chat. Para quiz/flashcards de demo (datos alineados con Modo estudio IA) usa <code style="font-family: monospace;">components/ai-panel-artifact-content.js</code> y los estilos del tutor (<code style="font-family: monospace;">modo-estudio-ia-tutor-panel.css</code> + <code style="font-family: monospace;">radio-button.css</code>).
+                                        Patrón transversal con nombre de industria «artifact»: una o más filas con el mismo cromo que la tarjeta de recurso del hilo en Modo estudio IA. La clase <code style="font-family: monospace;">open-btn-visible</code> en la fila (<code style="font-family: monospace;">.ubits-ia-chat-artifact-row</code>) muestra el botón <strong>Abrir</strong>; al abrir el detalle en el propio IA panel, quita esa clase en la fila. El contenido del detalle se muestra con <code style="font-family: monospace;">openIAPanelArtifactView(html, { title, onAfterMount })</code>: la cabecera del panel pasa a botón <strong>Atrás</strong> (terciario) y oculta tokens y cierre; <strong>Atrás</strong> o Escape vuelven al chat. Para quiz/flashcards de demo (datos alineados con Modo estudio IA) usa <code style="font-family: monospace;">components/ia-panel-artifact-content.js</code> y los estilos del tutor (<code style="font-family: monospace;">modo-estudio-ia-tutor-panel.css</code> + <code style="font-family: monospace;">radio-button.css</code>).
                                     </p>
                                     <div style="background: var(--ubits-bg-2); padding: var(--padding-lg); border-radius: var(--border-radius-sm); margin-bottom: var(--gap-md);">
                                         <div class="ubits-ia-chat-interaction ubits-ia-chat-interaction--artifacts" style="pointer-events: none;">
@@ -222,7 +223,7 @@
                                         </div>
                                     </div>
                                     <p class="ubits-body-sm-regular" style="margin: 0 0 var(--gap-md); color: var(--ubits-fg-1-medium);">La segunda fila del ejemplo no lleva <code style="font-family: monospace;">open-btn-visible</code> (simula detalle ya abierto: sin botón Abrir visible).</p>
-                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="ai-panel-doc-btn-artifacts">
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="ia-panel-doc-btn-artifacts">
                                         <i class="far fa-play"></i>
                                         <span>Probar en el panel</span>
                                     </button>
@@ -278,7 +279,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="ai-panel-doc-btn-bs">
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="ia-panel-doc-btn-bs">
                                         <i class="far fa-play"></i>
                                         <span>Probar en el panel (2 pasos)</span>
                                     </button>
@@ -328,29 +329,29 @@
                             <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6; color: var(--ubits-fg-1-medium);">
                                 Copia el texto que necesites y cambia lo que va entre corchetes. Los detalles de archivos y código están en el README.md del repositorio.
                             </p>
-                            <div id="ai-panel-warning-alert" style="margin-bottom: 32px;"></div>
+                            <div id="ia-panel-warning-alert" style="margin-bottom: 32px;"></div>
                             <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
                                 <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
                                     <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Integrar panel IA en una pantalla</h3>
-                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('ai-panel-prompt-0')">
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('ia-panel-prompt-0')">
                                         <i class="far fa-copy"></i>
                                         <span>Copiar</span>
                                     </button>
                                 </div>
                                 <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm);">
-                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="ai-panel-prompt-0">En [pantalla o módulo], integra el AI panel UBITS: enlaza en este orden ubits-ia-appearance.css, badge-tag.css, tooltip.css, ubits-ia-chat.css, ai-panel.css, además de button.css, chip.css (obligatorio para que los archivos adjuntos se vean como Chip UBITS) e ia-button.css; antes de ai-panel.js incluye ia-chat-streaming.js y tooltip.js. Llama initAIPanel({ title, placeholder, welcomeSubtitle, tokensBadge opcional, onSend, onAttach, onClose, dockDesktop, dockContainerSelector, dockBreakpoint }) una sola vez y abre el panel desde [botón o acción]. Sigue documentacion/componentes/ai-panel.html y el comentario de API al inicio de components/ai-panel.js.</code></pre>
+                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="ia-panel-prompt-0">En [pantalla o módulo], integra el IA panel UBITS: enlaza en este orden ubits-ia-appearance.css, badge-tag.css, tooltip.css, ubits-ia-chat.css, ia-panel.css, además de button.css, chip.css (obligatorio para que los archivos adjuntos se vean como Chip UBITS) e ia-button.css; antes de ia-panel.js incluye ia-chat-streaming.js y tooltip.js. Llama initIAPanel({ title, placeholder, welcomeSubtitle, tokensBadge opcional, onSend, onAttach, onClose, dockDesktop, dockContainerSelector, dockBreakpoint }) una sola vez y abre el panel desde [botón o acción]. Sigue documentacion/componentes/ia-panel.html y el comentario de API al inicio de components/ia-panel.js.</code></pre>
                                 </div>
                             </div>
                             <div style="padding-bottom: 24px;">
                                 <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
                                     <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Streaming y estado «Pensando»</h3>
-                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('ai-panel-prompt-1')">
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('ia-panel-prompt-1')">
                                         <i class="far fa-copy"></i>
                                         <span>Copiar</span>
                                     </button>
                                 </div>
                                 <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm);">
-                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="ai-panel-prompt-1">En [pantalla] con AI panel e ia-chat-streaming.js: en onSend(text) no vuelvas a añadir el mensaje del usuario (el panel ya lo insertó). Limita onSend a llamar a tu backend y pintar la respuesta con addAIPanelMessage(..., 'ai') o streamIaChatHtml. Si construyes mensajes manualmente sin el envío integrado, entonces sí usa showAIPanelTyping() y su removeTyping antes de la respuesta, como en study-chat.</code></pre>
+                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="ia-panel-prompt-1">En [pantalla] con IA panel e ia-chat-streaming.js: en onSend(text) no vuelvas a añadir el mensaje del usuario (el panel ya lo insertó). Limita onSend a llamar a tu backend y pintar la respuesta con addIAPanelMessage(..., 'ai') o streamIaChatHtml. Si construyes mensajes manualmente sin el envío integrado, entonces sí usa showIAPanelTyping() y su removeTyping antes de la respuesta, como en study-chat.</code></pre>
                                 </div>
                             </div>
                         </div>
@@ -369,9 +370,10 @@
     <script src="../../components/ia-chat-streaming.js"></script>
     <script src="../../components/tooltip.js"></script>
     <script src="../../components/ia-button.js"></script>
-    <script src="../../components/ai-panel.js"></script>
+    <script src="../../components/ia-input.js"></script>
+    <script src="../../components/ia-panel.js"></script>
     <script src="../../components/segmented-progress.js"></script>
-    <script src="../../components/ai-panel-artifact-content.js"></script>
+    <script src="../../components/ia-panel-artifact-content.js"></script>
     <script src="../../docs/docs-sidebar.js"></script>
     <script src="../../script.js"></script>
     <script>
@@ -395,14 +397,14 @@
             });
         }
 
-        function ensureAIPanelDocDemo() {
-            if (typeof initAIPanel !== 'function') return;
-            initAIPanel({
+        function ensureIAPanelDocDemo() {
+            if (typeof initIAPanel !== 'function') return;
+            initIAPanel({
                 title: 'IA (demo docs)',
                 placeholder: 'Escribe algo de prueba…',
                 welcomeSubtitle: 'Vista previa en la documentación del playground.',
                 onSend: function (text) {
-                    addAIPanelMessage('Respuesta de demostración (recibido: «' + text + '»). En producto aquí conectarías tu API o streaming.', 'ai');
+                    addIAPanelMessage('Respuesta de demostración (recibido: «' + text + '»). En producto aquí conectarías tu API o streaming.', 'ai');
                 },
                 dockDesktop: false
             });
@@ -411,49 +413,49 @@
         document.addEventListener('DOMContentLoaded', function () {
             loadSidebar('ninguno');
             loadSubNav('top-nav-container', 'documentacion');
-            loadDocsSidebar('ai-panel');
+            loadDocsSidebar('ia-panel');
             if (typeof showAlert === 'function') {
-                showAlert('warning', 'Antes de enviar estos prompts a Cursor, reemplaza los textos entre [corchetes] con la información de tu pantalla.', { containerId: 'ai-panel-warning-alert', noClose: true });
+                showAlert('warning', 'Antes de enviar estos prompts a Cursor, reemplaza los textos entre [corchetes] con la información de tu pantalla.', { containerId: 'ia-panel-warning-alert', noClose: true });
             }
-            var btnOpen = document.getElementById('ai-panel-doc-btn-open');
-            var btnStream = document.getElementById('ai-panel-doc-btn-stream');
+            var btnOpen = document.getElementById('ia-panel-doc-btn-open');
+            var btnStream = document.getElementById('ia-panel-doc-btn-stream');
             if (btnOpen) {
                 btnOpen.addEventListener('click', function () {
-                    ensureAIPanelDocDemo();
-                    if (typeof openAIPanel === 'function') openAIPanel();
+                    ensureIAPanelDocDemo();
+                    if (typeof openIAPanel === 'function') openIAPanel();
                 });
             }
             if (btnStream) {
                 btnStream.addEventListener('click', function () {
-                    ensureAIPanelDocDemo();
-                    if (typeof openAIPanel === 'function') openAIPanel();
-                    if (typeof clearAIPanelMessages === 'function') clearAIPanelMessages();
-                    if (typeof addAIPanelMessage === 'function') addAIPanelMessage('Mensaje de prueba desde la documentación.', 'user');
-                    var rm = typeof showAIPanelTyping === 'function' ? showAIPanelTyping() : null;
+                    ensureIAPanelDocDemo();
+                    if (typeof openIAPanel === 'function') openIAPanel();
+                    if (typeof clearIAPanelMessages === 'function') clearIAPanelMessages();
+                    if (typeof addIAPanelMessage === 'function') addIAPanelMessage('Mensaje de prueba desde la documentación.', 'user');
+                    var rm = typeof showIAPanelTyping === 'function' ? showIAPanelTyping() : null;
                     setTimeout(function () {
                         if (typeof rm === 'function') rm();
-                        if (typeof addAIPanelMessage === 'function') {
-                            addAIPanelMessage('Aquí terminaría el HTML de la respuesta (por ejemplo vía streamIaChatHtml).', 'ai');
+                        if (typeof addIAPanelMessage === 'function') {
+                            addIAPanelMessage('Aquí terminaría el HTML de la respuesta (por ejemplo vía streamIaChatHtml).', 'ai');
                         }
                     }, 900);
                 });
             }
 
             // ---- Demos de tipos de interacción ----
-            var btnQR = document.getElementById('ai-panel-doc-btn-qr');
+            var btnQR = document.getElementById('ia-panel-doc-btn-qr');
             if (btnQR) {
                 btnQR.addEventListener('click', function () {
-                    ensureAIPanelDocDemo();
-                    if (typeof openAIPanel === 'function') openAIPanel();
-                    if (typeof addAIPanelMessage === 'function') {
-                        addAIPanelMessage('¿Cuál es tu lenguaje favorito?', 'ai');
+                    ensureIAPanelDocDemo();
+                    if (typeof openIAPanel === 'function') openIAPanel();
+                    if (typeof addIAPanelMessage === 'function') {
+                        addIAPanelMessage('¿Cuál es tu lenguaje favorito?', 'ai');
                     }
-                    if (typeof addAIPanelInteraction === 'function') {
-                        addAIPanelInteraction('quick-reply', {
+                    if (typeof addIAPanelInteraction === 'function') {
+                        addIAPanelInteraction('quick-reply', {
                             items: ['Python', 'JavaScript', 'Swift', 'TypeScript', 'Go'],
                             onReply: function (value) {
                                 setTimeout(function () {
-                                    addAIPanelMessage('Excelente elección. ' + value + ' es muy popular en la industria.', 'ai');
+                                    addIAPanelMessage('Excelente elección. ' + value + ' es muy popular en la industria.', 'ai');
                                 }, 400);
                             }
                         });
@@ -461,22 +463,22 @@
                 });
             }
 
-            var btnMulti = document.getElementById('ai-panel-doc-btn-multi');
+            var btnMulti = document.getElementById('ia-panel-doc-btn-multi');
             if (btnMulti) {
                 btnMulti.addEventListener('click', function () {
-                    ensureAIPanelDocDemo();
-                    if (typeof openAIPanel === 'function') openAIPanel();
-                    if (typeof addAIPanelMessage === 'function') {
-                        addAIPanelMessage('¿Qué herramientas usas para diseñar?', 'ai');
+                    ensureIAPanelDocDemo();
+                    if (typeof openIAPanel === 'function') openIAPanel();
+                    if (typeof addIAPanelMessage === 'function') {
+                        addIAPanelMessage('¿Qué herramientas usas para diseñar?', 'ai');
                     }
-                    if (typeof addAIPanelInteraction === 'function') {
-                        addAIPanelInteraction('multiselect', {
+                    if (typeof addIAPanelInteraction === 'function') {
+                        addIAPanelInteraction('multiselect', {
                             hint: 'Puedes elegir varias',
                             items: ['Figma', 'Sketch', 'Adobe XD', 'Framer', 'Webflow', 'Canva', 'Illustrator', 'Otro'],
                             confirmLabel: 'Listo →',
                             onReply: function (value, label) {
                                 setTimeout(function () {
-                                    addAIPanelMessage('Gracias, usas: ' + label + '. Tengo recursos para todas esas herramientas.', 'ai');
+                                    addIAPanelMessage('Gracias, usas: ' + label + '. Tengo recursos para todas esas herramientas.', 'ai');
                                 }, 400);
                             }
                         });
@@ -484,16 +486,16 @@
                 });
             }
 
-            var btnCards = document.getElementById('ai-panel-doc-btn-cards');
+            var btnCards = document.getElementById('ia-panel-doc-btn-cards');
             if (btnCards) {
                 btnCards.addEventListener('click', function () {
-                    ensureAIPanelDocDemo();
-                    if (typeof openAIPanel === 'function') openAIPanel();
-                    if (typeof addAIPanelMessage === 'function') {
-                        addAIPanelMessage('¿Para qué quieres aprender diseño UI?', 'ai');
+                    ensureIAPanelDocDemo();
+                    if (typeof openIAPanel === 'function') openIAPanel();
+                    if (typeof addIAPanelMessage === 'function') {
+                        addIAPanelMessage('¿Para qué quieres aprender diseño UI?', 'ai');
                     }
-                    if (typeof addAIPanelInteraction === 'function') {
-                        addAIPanelInteraction('cards', {
+                    if (typeof addIAPanelInteraction === 'function') {
+                        addIAPanelInteraction('cards', {
                             items: [
                                 { emoji: '🎒', title: 'Conseguir trabajo', description: 'Quiero entrar al mundo laboral como diseñador', value: 'trabajo' },
                                 { emoji: '🚀', title: 'Proyectos personales', description: 'Tengo ideas y quiero darles mejor forma visual', value: 'personal' },
@@ -502,7 +504,7 @@
                             ],
                             onReply: function (value, label) {
                                 setTimeout(function () {
-                                    addAIPanelMessage('Entendido. Te voy a recomendar contenidos orientados a «' + label + '».', 'ai');
+                                    addIAPanelMessage('Entendido. Te voy a recomendar contenidos orientados a «' + label + '».', 'ai');
                                 }, 400);
                             }
                         });
@@ -510,17 +512,17 @@
                 });
             }
 
-            var btnArtifacts = document.getElementById('ai-panel-doc-btn-artifacts');
+            var btnArtifacts = document.getElementById('ia-panel-doc-btn-artifacts');
             if (btnArtifacts) {
                 btnArtifacts.addEventListener('click', function () {
-                    ensureAIPanelDocDemo();
-                    if (typeof openAIPanel === 'function') openAIPanel();
-                    if (typeof clearAIPanelMessages === 'function') clearAIPanelMessages();
-                    if (typeof addAIPanelMessage === 'function') {
-                        addAIPanelMessage('Aquí tienes un quiz y unas flashcards generadas (misma base que en Modo estudio IA). Abre cada artifact con el botón correspondiente.', 'ai');
+                    ensureIAPanelDocDemo();
+                    if (typeof openIAPanel === 'function') openIAPanel();
+                    if (typeof clearIAPanelMessages === 'function') clearIAPanelMessages();
+                    if (typeof addIAPanelMessage === 'function') {
+                        addIAPanelMessage('Aquí tienes un quiz y unas flashcards generadas (misma base que en Modo estudio IA). Abre cada artifact con el botón correspondiente.', 'ai');
                     }
-                    if (typeof addAIPanelInteraction === 'function') {
-                        addAIPanelInteraction('artifacts', {
+                    if (typeof addIAPanelInteraction === 'function') {
+                        addIAPanelInteraction('artifacts', {
                             rows: [
                                 {
                                     title: 'Quiz · Liderazgo',
@@ -528,8 +530,8 @@
                                     iconClass: 'far fa-circle-question',
                                     openButtonVisible: true,
                                     onOpen: function () {
-                                        if (window.UbitsAIPanelArtifactContent && typeof window.UbitsAIPanelArtifactContent.openQuizDemo === 'function') {
-                                            window.UbitsAIPanelArtifactContent.openQuizDemo();
+                                        if (window.UbitsIAPanelArtifactContent && typeof window.UbitsIAPanelArtifactContent.openQuizDemo === 'function') {
+                                            window.UbitsIAPanelArtifactContent.openQuizDemo();
                                         }
                                     }
                                 },
@@ -539,8 +541,8 @@
                                     iconClass: 'far fa-bring-forward',
                                     openButtonVisible: true,
                                     onOpen: function () {
-                                        if (window.UbitsAIPanelArtifactContent && typeof window.UbitsAIPanelArtifactContent.openFlashcardsDemo === 'function') {
-                                            window.UbitsAIPanelArtifactContent.openFlashcardsDemo();
+                                        if (window.UbitsIAPanelArtifactContent && typeof window.UbitsIAPanelArtifactContent.openFlashcardsDemo === 'function') {
+                                            window.UbitsIAPanelArtifactContent.openFlashcardsDemo();
                                         }
                                     }
                                 }
@@ -550,16 +552,16 @@
                 });
             }
 
-            var btnBS = document.getElementById('ai-panel-doc-btn-bs');
+            var btnBS = document.getElementById('ia-panel-doc-btn-bs');
             if (btnBS) {
                 btnBS.addEventListener('click', function () {
-                    ensureAIPanelDocDemo();
-                    if (typeof openAIPanel === 'function') openAIPanel();
-                    if (typeof addAIPanelMessage === 'function') {
-                        addAIPanelMessage('Tengo un par de preguntas rápidas para personalizar tu experiencia.', 'ai');
+                    ensureIAPanelDocDemo();
+                    if (typeof openIAPanel === 'function') openIAPanel();
+                    if (typeof addIAPanelMessage === 'function') {
+                        addIAPanelMessage('Tengo un par de preguntas rápidas para personalizar tu experiencia.', 'ai');
                     }
-                    if (typeof addAIPanelInteraction === 'function') {
-                        addAIPanelInteraction('bottom-sheet', {
+                    if (typeof addIAPanelInteraction === 'function') {
+                        addIAPanelInteraction('bottom-sheet', {
                             steps: [
                                 {
                                     question: '¿Cuál es tu color favorito?',
@@ -576,11 +578,11 @@
                             ],
                             onReply: function (answers, steps) {
                                 setTimeout(function () {
-                                    addAIPanelMessage('Gracias por tus respuestas.', 'ai');
+                                    addIAPanelMessage('Gracias por tus respuestas.', 'ai');
                                 }, 400);
                             },
                             onClose: function () {
-                                addAIPanelMessage('Cerraste el formulario sin enviar las respuestas.', 'ai');
+                                addIAPanelMessage('Cerraste el formulario sin enviar las respuestas.', 'ai');
                             }
                         });
                     }

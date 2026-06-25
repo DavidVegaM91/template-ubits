@@ -10,7 +10,7 @@
  *   input.js  (createInput)
  *   file-upload.js (createFileUpload, fileUploadSetProgress, fileUploadClearProgress, fileUploadSetSuccess)
  *   video-player.js (videoPlayerHtml) — opcional, usa fallback si no está
- *   tab.css, file-upload.css, checkbox.css, chip.css, ai-panel.css, video-recurso-modal.css
+ *   tab.css, file-upload.css, checkbox.css, chip.css, ia-panel.css, video-recurso-modal.css
  *   Avatares (grid): ../../images/avatars/* · preview 16:9: ../../images/avatar-temp-thumbs/thumb_*.jpg
  *   · videos opcionales: ../../videos/avatars/{mismo-base}.mp4
  *   Guión: selector tipo selection-card (Generar con IA | Escribir manualmente). IA: solo contexto hasta «Generar guión»; luego textarea editable. Manual: un solo textarea.
@@ -67,8 +67,8 @@
         }
         var next = Math.max(0, cur - cost);
         global._ubitsAiTokenPool = next;
-        if (typeof global.setAIPanelTokensBadgeValue === 'function') {
-            global.setAIPanelTokensBadgeValue(next);
+        if (typeof global.setIAPanelTokensBadgeValue === 'function') {
+            global.setIAPanelTokensBadgeValue(next);
         }
         syncVideoModalTokensBadge();
         return true;
@@ -92,7 +92,7 @@
     var _logoDataUrl    = null;
     var _pendingFiles   = [];
     var _currentCat     = 'staff';
-    /** API createInput (textarea guión); contexto tema = textarea nativa .ai-panel__input como SCORM. */
+    /** API createInput (textarea guión); contexto tema = textarea nativa .ia-panel__input como SCORM. */
     var _guionInputApi   = null;
     /** 'ia' | 'manual' — fuente del guión para «Generar video» (solo el modo activo cuenta). */
     var _guionMode       = 'ia';
@@ -499,15 +499,15 @@
                         '<div id="cc-vm-guion-panel-ia" class="cc-vm-guion-panel">' +
                             '<div class="cc-vm-guion-ia-context">' +
                                 '<div class="ubits-ia-chat-thread__input-area">' +
-                                    '<div class="ai-panel__input-box" id="cc-vm-ia-input-box">' +
+                                    '<div class="ia-panel__input-box" id="cc-vm-ia-input-box">' +
                                         '<input type="file" id="cc-vm-files" accept=".txt,.pdf,.doc,.docx,text/plain,application/pdf" multiple hidden>' +
-                                        '<div class="ai-panel__pending-files-strip" id="cc-vm-pending-files" style="display:none;"></div>' +
-                                        '<textarea id="cc-vm-context-input" class="ai-panel__input ubits-body-md-regular" rows="2" placeholder="Adjunta un archivo o describe el tema del guión"></textarea>' +
-                                        '<div class="ai-panel__input-actions">' +
-                                            '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only ai-panel__attach-btn" id="cc-vm-attach" aria-label="Adjuntar">' +
+                                        '<div class="ia-panel__pending-files-strip" id="cc-vm-pending-files" style="display:none;"></div>' +
+                                        '<textarea id="cc-vm-context-input" class="ia-panel__input ubits-body-md-regular" rows="2" placeholder="Adjunta un archivo o describe el tema del guión"></textarea>' +
+                                        '<div class="ia-panel__input-actions">' +
+                                            '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only ia-panel__attach-btn" id="cc-vm-attach" aria-label="Adjuntar">' +
                                                 '<i class="far fa-plus"></i>' +
                                             '</button>' +
-                                            '<div class="ai-panel__input-spacer" aria-hidden="true"></div>' +
+                                            '<div class="ia-panel__input-spacer" aria-hidden="true"></div>' +
                                             '<button type="button" class="ubits-ia-button ubits-ia-button--secondary ubits-ia-button--sm ubits-ia-button--with-token-cost" id="cc-vm-btn-gen-guion">' +
                                                 '<span id="cc-vm-gen-guion-label">Generar guión</span>' +
                                                 '<span class="ubits-ia-button__token-divider" aria-hidden="true"></span>' +
@@ -847,7 +847,7 @@
         }
         strip.style.display = 'flex';
         strip.innerHTML = _pendingFiles.map(function (f, idx) {
-            return '<span class="ubits-chip ubits-chip--sm ubits-chip--icon-left ubits-chip--close ai-panel__pending-file-chip">' +
+            return '<span class="ubits-chip ubits-chip--sm ubits-chip--icon-left ubits-chip--close ia-panel__pending-file-chip">' +
                 '<i class="far fa-file-lines" aria-hidden="true"></i>' +
                 '<span class="ubits-chip__text">' + esc(f.name) + '</span>' +
                 '<button type="button" class="ubits-chip__close" data-rm-file="' + idx + '" aria-label="Quitar archivo">' +
@@ -918,10 +918,10 @@
 
     function clearContextTemaError() {
         var box = getContextTemaBox();
-        if (box) box.classList.remove('ai-panel__input-box--context-error');
+        if (box) box.classList.remove('ia-panel__input-box--context-error');
     }
 
-    /** Mismo patrón que SCORM: textarea `.ai-panel__input` (sin borde propio; el borde es el `ai-panel__input-box`). */
+    /** Mismo patrón que SCORM: textarea `.ia-panel__input` (sin borde propio; el borde es el `ia-panel__input-box`). */
     function initContextTemaField() {
         var ta = getContextTemaTextarea();
         if (!ta || ta._ccVmCtxWired) return;
@@ -1164,7 +1164,7 @@
             }
             if (!tema) {
                 var boxCtx = getContextTemaBox();
-                if (boxCtx) boxCtx.classList.add('ai-panel__input-box--context-error');
+                if (boxCtx) boxCtx.classList.add('ia-panel__input-box--context-error');
                 var taCtx = getContextTemaTextarea();
                 if (taCtx) taCtx.focus();
                 return;
@@ -1257,7 +1257,7 @@
                         );
                     }
                     var boxCtx = getContextTemaBox();
-                    if (boxCtx) boxCtx.classList.add('ai-panel__input-box--context-error');
+                    if (boxCtx) boxCtx.classList.add('ia-panel__input-box--context-error');
                     var taCtx = getContextTemaTextarea();
                     if (taCtx) taCtx.focus();
                 } else {

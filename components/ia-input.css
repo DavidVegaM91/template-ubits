@@ -1,0 +1,321 @@
+/**
+ * UBITS IA Input — panel + chat (modales IA, IA panel, Modo Estudio).
+ * Clases propias; no depender de ia-panel.css para layout base.
+ */
+
+.ubits-ia-input {
+    width: 100%;
+    align-self: stretch;
+    box-sizing: border-box;
+}
+
+/* Neutraliza reglas globales de ubits-ia-chat.css fuera del shell Modo Estudio */
+.ubits-ia-input .ubits-ia-input__input-area {
+    padding: 0 !important;
+    align-self: stretch !important;
+    width: 100% !important;
+    max-width: 100% !important;
+}
+
+.ubits-ia-chat .ubits-ia-input .ubits-ia-input__chat-container {
+    display: flex !important;
+    flex-direction: column !important;
+    flex-wrap: nowrap !important;
+    align-items: stretch !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin-inline: 0 !important;
+    grid-template-columns: unset !important;
+    grid-template-rows: unset !important;
+}
+
+.ubits-ia-input .ubits-ia-input__chat-wrapper {
+    flex: none !important;
+    width: 100% !important;
+    min-width: 0;
+    grid-column: unset !important;
+    grid-row: unset !important;
+    align-self: stretch !important;
+}
+
+.ubits-ia-input__panel {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.ubits-ia-input__input-area {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-sm);
+    flex-shrink: 0;
+    width: 100%;
+    box-sizing: border-box;
+    position: relative;
+}
+
+/* ── Panel: caja vertical ── */
+.ubits-ia-input__box {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-xs);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: var(--border-radius-lg);
+    background: var(--ubits-bg-1);
+    padding: var(--padding-sm) var(--padding-sm) var(--padding-sm) var(--padding-md);
+    width: 100%;
+    box-sizing: border-box;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.ubits-ia-input__box:focus-within:not(.ubits-ia-input__box--context-error) {
+    border-color: rgba(136, 35, 234, 0.35);
+    box-shadow: 0 0 0 3px rgba(136, 35, 234, 0.06);
+}
+
+.ubits-ia-input__box--context-error,
+.ubits-ia-input__box--context-error:focus-within {
+    border-color: var(--ubits-feedback-accent-error) !important;
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--ubits-feedback-accent-error) 12%, transparent) !important;
+}
+
+.ubits-ia-input__textarea {
+    width: 100%;
+    min-height: 20px;
+    max-height: none;
+    border: none;
+    outline: none;
+    resize: none;
+    background: transparent;
+    color: var(--ubits-fg-1-high);
+    padding: 0;
+    box-sizing: border-box;
+    line-height: 20px;
+    overflow-y: hidden;
+    font-family: var(--font-family-sans, 'Inter', sans-serif);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-regular);
+}
+
+.ubits-ia-input__textarea::placeholder {
+    color: var(--ubits-fg-disabled);
+}
+
+.ubits-ia-input__textarea:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.ubits-ia-input__actions {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    min-height: 32px;
+}
+
+.ubits-ia-input__spacer {
+    flex: 1 1 auto;
+}
+
+.ubits-ia-input__attach.ubits-button {
+    flex-shrink: 0;
+    border-radius: 50% !important;
+}
+
+/* Footer: contador, error, disclaimer */
+.ubits-ia-input__footer {
+    margin-top: var(--gap-xs);
+    width: 100%;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-xs);
+    font-family: var(--font-family-sans, 'Inter', sans-serif);
+    font-size: var(--font-size-sm);
+    line-height: 19.5px;
+}
+
+.ubits-ia-input__counter-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--gap-sm);
+}
+
+.ubits-ia-input__counter-text,
+.ubits-ia-input__counter-value {
+    color: var(--ubits-fg-1-medium);
+}
+
+.ubits-ia-input__counter-value {
+    flex-shrink: 0;
+}
+
+.ubits-ia-input__error-text {
+    color: var(--ubits-feedback-accent-error);
+    font-size: var(--font-size-sm);
+    line-height: 19.5px;
+}
+
+.ubits-ia-input__disclaimer {
+    margin: 0;
+    padding: 0;
+    color: var(--ubits-fg-1-medium);
+    font-size: var(--font-size-xs, 0.75rem);
+    line-height: 1.25;
+    text-align: left;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* ── Adjuntos pendientes (encima del prompt) ── */
+.ubits-ia-input__pending-images {
+    display: none;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: var(--gap-xs);
+}
+
+.ubits-ia-input__pending-images:not(:empty) {
+    display: flex;
+}
+
+.ubits-ia-input__pending-img-wrap {
+    position: relative;
+    width: 44px;
+    height: 44px;
+    border-radius: var(--border-radius-sm);
+    overflow: hidden;
+    border: 1px solid var(--ubits-border-1);
+    flex-shrink: 0;
+    background: var(--ubits-bg-2);
+}
+
+.ubits-ia-input__pending-img {
+    width: 100%;
+    height: 100%;
+    min-width: 100%;
+    min-height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+}
+
+.ubits-ia-input__pending-img-remove {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    width: 18px;
+    height: 18px;
+    border: none;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.6);
+    color: #fff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 10px;
+    padding: 0;
+}
+
+.ubits-ia-input__pending-files {
+    display: none;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: var(--gap-xs);
+}
+
+.ubits-ia-input__pending-files:not(:empty) {
+    display: flex;
+}
+
+.ubits-ia-input__pending-file-chip.ubits-chip {
+    max-width: 200px;
+    min-width: 0;
+}
+
+.ubits-ia-input__pending-file-chip .ubits-chip__text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* ── Chat variant ── */
+.ubits-ia-input--chat .ubits-ia-input__chat-container {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-sm);
+    background: var(--ubits-bg-1);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: var(--border-radius-lg);
+    padding: 8px 10px;
+    width: 100%;
+    box-sizing: border-box;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.ubits-ia-input--chat .ubits-ia-input__chat-container:focus-within:not(.ubits-ia-input__chat-container--context-error) {
+    border-color: rgba(136, 35, 234, 0.35);
+    box-shadow: 0 0 0 3px rgba(136, 35, 234, 0.06);
+}
+
+.ubits-ia-input__chat-container--context-error,
+.ubits-ia-input__chat-container--context-error:focus-within {
+    border-color: var(--ubits-feedback-accent-error) !important;
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--ubits-feedback-accent-error) 12%, transparent) !important;
+}
+
+.ubits-ia-input__chat-wrapper {
+    display: flex;
+    align-items: flex-start;
+    width: 100%;
+    min-width: 0;
+    min-height: 20px;
+}
+
+.ubits-ia-input--chat .ubits-ia-input__textarea {
+    flex: 1;
+    min-width: 0;
+    max-height: 140px;
+    overflow-y: auto;
+}
+
+.ubits-ia-input__chat-actions {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    width: 100% !important;
+    gap: 4px;
+    min-height: 32px;
+    box-sizing: border-box;
+}
+
+.ubits-ia-input__chat-spacer {
+    flex: 1 1 auto !important;
+    min-width: 0;
+}
+
+.ubits-ia-input__send.ubits-ia-button,
+.ubits-ia-input--chat .ubits-ia-input__attach.ubits-button {
+    grid-column: unset !important;
+    grid-row: unset !important;
+    justify-self: unset !important;
+    align-self: center !important;
+    flex-shrink: 0;
+}
+
+.ubits-ia-input__send.ubits-ia-button {
+    border-radius: 50% !important;
+}
+
+.ubits-ia-input__slot {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.ubits-ia-input__file-input {
+    display: none !important;
+}

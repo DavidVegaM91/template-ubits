@@ -395,7 +395,7 @@
     color: var(--ubits-fg-1-high);
 }
 
-/* Misma escala que `.ai-panel__input` (13px / 20px interlineado). */
+/* Misma escala que `.ia-panel__input` (13px / 20px interlineado). */
 #cc-video-recurso-modal .cc-vm-guion-input-mount textarea.ubits-input {
     font-size: var(--font-size-sm);
     line-height: 20px;
@@ -404,14 +404,14 @@
     overflow-y: auto;
 }
 
-/* Contexto tema: textarea nativa `.ai-panel__input` (igual que SCORM); alto lo ajusta JS (autosize). */
-#cc-video-recurso-modal #cc-vm-context-input.ai-panel__input {
+/* Contexto tema: textarea nativa `.ia-panel__input` (igual que SCORM); alto lo ajusta JS (autosize). */
+#cc-video-recurso-modal #cc-vm-context-input.ia-panel__input {
     min-height: 40px;
     max-height: none;
 }
 
 /* Marca el box si falta tema (misma pauta que scorm-recurso-modal / evaluaciones). */
-#cc-video-recurso-modal .ai-panel__input-box--context-error {
+#cc-video-recurso-modal .ia-panel__input-box--context-error {
     border-color: var(--ubits-accent-brand) !important;
     box-shadow: 0 0 0 2px color-mix(in srgb, var(--ubits-accent-brand) 12%, transparent) !important;
 }

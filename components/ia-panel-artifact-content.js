@@ -1,5 +1,5 @@
 /* ========================================
-   AI PANEL — Contenido demo para vista artifact (quiz / flashcards)
+   IA PANEL — Contenido demo para vista artifact (quiz / flashcards)
    Mismos datos base que Modo estudio IA (study-chat.js), sin depender de él.
    Requiere: radio-button.css, modo-estudio-ia-tutor-panel.css (o estilos equivalentes del tutor),
    ubits-ia-chat.css, button.css, typography.
@@ -82,7 +82,7 @@
                 var letter = String.fromCharCode(65 + j);
                 return '<label class="ubits-ia-chat-side__quiz-opt" data-option-index="' + j + '">' +
                     '<div class="ubits-ia-chat-side__quiz-opt-row ubits-radio ubits-radio--sm">' +
-                    '<input type="radio" name="ai-panel-artifact-quiz-' + i + '" class="ubits-radio__input" value="' + j + '">' +
+                    '<input type="radio" name="ia-panel-artifact-quiz-' + i + '" class="ubits-radio__input" value="' + j + '">' +
                     '<span class="ubits-radio__circle"></span>' +
                     '<span class="ubits-radio__label"><span class="ubits-ia-chat-side__quiz-opt-letter">' + letter + '</span> ' +
                     '<span class="ubits-ia-chat-side__quiz-opt-text">' + esc(opt) + '</span></span></div></label>';
@@ -93,7 +93,7 @@
                 '<div class="ubits-ia-chat-side__quiz-feedback" style="display:none;" role="status" aria-hidden="true"></div></div>';
         }).join('');
 
-        return '<div class="ubits-ia-chat-side__content ubits-ia-chat-side__quiz ai-panel-artifact-tutor" data-topic="liderazgo" data-quiz-total="' + totalQuestions + '">' +
+        return '<div class="ubits-ia-chat-side__content ubits-ia-chat-side__quiz ia-panel-artifact-tutor" data-topic="liderazgo" data-quiz-total="' + totalQuestions + '">' +
             '<div class="ubits-ia-chat-side__body">' +
             '<div class="ubits-ia-chat-side__quiz-progress">' + progressBlock +
             '<span class="ubits-ia-chat-side__quiz-progress-text">1 / ' + totalQuestions + '</span>' +
@@ -106,9 +106,9 @@
             '</div>' +
             '<div class="ubits-ia-chat-side__footer">' +
             '<div class="ubits-ia-chat-side__quiz-actions">' +
-            '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="ai-panel-artifact-quiz-back" style="display:none;"><span>Anterior</span></button>' +
-            '<button type="button" class="ubits-button ubits-button--primary ubits-button--sm" id="ai-panel-artifact-quiz-next" style="display:none;"><span>Siguiente</span></button>' +
-            '<button type="button" class="ubits-button ubits-button--primary ubits-button--sm" id="ai-panel-artifact-quiz-submit" style="display:none;"><span>Hecho</span></button>' +
+            '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="ia-panel-artifact-quiz-back" style="display:none;"><span>Anterior</span></button>' +
+            '<button type="button" class="ubits-button ubits-button--primary ubits-button--sm" id="ia-panel-artifact-quiz-next" style="display:none;"><span>Siguiente</span></button>' +
+            '<button type="button" class="ubits-button ubits-button--primary ubits-button--sm" id="ia-panel-artifact-quiz-submit" style="display:none;"><span>Hecho</span></button>' +
             '</div></div></div>';
     }
 
@@ -126,7 +126,7 @@
             })
             : '<div class="ubits-segmented-progress ubits-segmented-progress--segments ubits-segmented-progress--sm ubits-segmented-progress--track-subtle" role="group" aria-label="Progreso de flashcards"></div>';
         var cardsJson = JSON.stringify(cards).replace(/'/g, '&#39;');
-        return '<div class="ubits-ia-chat-side__content ubits-ia-chat-side__flashcards ai-panel-artifact-tutor" data-topic="comunicacion" data-fc-set="0">' +
+        return '<div class="ubits-ia-chat-side__content ubits-ia-chat-side__flashcards ia-panel-artifact-tutor" data-topic="comunicacion" data-fc-set="0">' +
             '<div class="ubits-ia-chat-side__body">' +
             '<div class="ubits-ia-chat-side__fc-main">' +
             '<div class="ubits-ia-chat-side__fc-progress">' +
@@ -144,10 +144,10 @@
             '</div>' +
             '<div class="ubits-ia-chat-side__footer">' +
             '<div class="ubits-ia-chat-side__fc-actions">' +
-            '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm" id="ai-panel-artifact-fc-shuffle"><i class="far fa-shuffle"></i><span>Barajar</span></button>' +
-            '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="ai-panel-artifact-fc-prev" style="display:none;"><i class="far fa-chevron-left"></i><span>Anterior</span></button>' +
-            '<button type="button" class="ubits-button ubits-button--primary ubits-button--sm" id="ai-panel-artifact-fc-next"><span>Siguiente</span><i class="far fa-chevron-right"></i></button>' +
-            '<button type="button" class="ubits-button ubits-button--primary ubits-button--sm" id="ai-panel-artifact-fc-done" style="display:none;"><span>Hecho</span></button>' +
+            '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm" id="ia-panel-artifact-fc-shuffle"><i class="far fa-shuffle"></i><span>Barajar</span></button>' +
+            '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="ia-panel-artifact-fc-prev" style="display:none;"><i class="far fa-chevron-left"></i><span>Anterior</span></button>' +
+            '<button type="button" class="ubits-button ubits-button--primary ubits-button--sm" id="ia-panel-artifact-fc-next"><span>Siguiente</span><i class="far fa-chevron-right"></i></button>' +
+            '<button type="button" class="ubits-button ubits-button--primary ubits-button--sm" id="ia-panel-artifact-fc-done" style="display:none;"><span>Hecho</span></button>' +
             '</div></div></div>';
     }
 
@@ -163,9 +163,9 @@
         var progressText = panel.querySelector('.ubits-ia-chat-side__quiz-progress-text');
         var progressWrongN = panel.querySelector('.ubits-ia-chat-side__quiz-progress-wrong-n');
         var progressCorrectN = panel.querySelector('.ubits-ia-chat-side__quiz-progress-correct-n');
-        var backBtn = panel.querySelector('#ai-panel-artifact-quiz-back');
-        var nextBtn = panel.querySelector('#ai-panel-artifact-quiz-next');
-        var submitBtn = panel.querySelector('#ai-panel-artifact-quiz-submit');
+        var backBtn = panel.querySelector('#ia-panel-artifact-quiz-back');
+        var nextBtn = panel.querySelector('#ia-panel-artifact-quiz-next');
+        var submitBtn = panel.querySelector('#ia-panel-artifact-quiz-submit');
         var resultDiv = panel.querySelector('.ubits-ia-chat-side__quiz-result');
         var questionsContainer = panel.querySelector('.ubits-ia-chat-side__quiz-questions');
         var actionsDiv = panel.querySelector('.ubits-ia-chat-side__quiz-actions');
@@ -209,8 +209,8 @@
         }
 
         function bindResultFooter() {
-            var rev = panel.querySelector('#ai-panel-artifact-quiz-review');
-            var ret = panel.querySelector('#ai-panel-artifact-quiz-retry');
+            var rev = panel.querySelector('#ia-panel-artifact-quiz-review');
+            var ret = panel.querySelector('#ia-panel-artifact-quiz-retry');
             if (ret) ret.onclick = function () { openQuizDemo(); };
             if (rev) {
                 rev.onclick = function () {
@@ -221,10 +221,10 @@
                     questions.forEach(function (q, i) { q.style.display = i === 0 ? 'block' : 'none'; });
                     actionsDiv.innerHTML =
                         '<div class="ubits-ia-chat-side__quiz-result-actions">' +
-                        '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="ai-panel-artifact-quiz-review-prev"><span>Anterior</span></button>' +
-                        '<button type="button" class="ubits-button ubits-button--primary ubits-button--sm" id="ai-panel-artifact-quiz-review-next"><span>Siguiente</span></button></div>';
-                    var prev = panel.querySelector('#ai-panel-artifact-quiz-review-prev');
-                    var next = panel.querySelector('#ai-panel-artifact-quiz-review-next');
+                        '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="ia-panel-artifact-quiz-review-prev"><span>Anterior</span></button>' +
+                        '<button type="button" class="ubits-button ubits-button--primary ubits-button--sm" id="ia-panel-artifact-quiz-review-next"><span>Siguiente</span></button></div>';
+                    var prev = panel.querySelector('#ia-panel-artifact-quiz-review-prev');
+                    var next = panel.querySelector('#ia-panel-artifact-quiz-review-next');
                     function syncReview() {
                         questions.forEach(function (q, i) { q.style.display = i === currentIdx ? 'block' : 'none'; });
                         if (prev) prev.style.display = currentIdx > 0 ? 'inline-flex' : 'none';
@@ -243,8 +243,8 @@
                                 resultDiv.style.display = 'block';
                                 actionsDiv.innerHTML =
                                     '<div class="ubits-ia-chat-side__quiz-result-actions">' +
-                                    '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="ai-panel-artifact-quiz-review"><span>Revisar respuestas</span></button>' +
-                                    '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm" id="ai-panel-artifact-quiz-retry"><span>Reintentar</span></button></div>';
+                                    '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="ia-panel-artifact-quiz-review"><span>Revisar respuestas</span></button>' +
+                                    '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm" id="ia-panel-artifact-quiz-retry"><span>Reintentar</span></button></div>';
                                 bindResultFooter();
                             }
                         };
@@ -276,8 +276,8 @@
             if (progressWrap) progressWrap.style.display = 'none';
             actionsDiv.innerHTML =
                 '<div class="ubits-ia-chat-side__quiz-result-actions">' +
-                '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="ai-panel-artifact-quiz-review"><span>Revisar respuestas</span></button>' +
-                '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm" id="ai-panel-artifact-quiz-retry"><span>Reintentar</span></button>' +
+                '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="ia-panel-artifact-quiz-review"><span>Revisar respuestas</span></button>' +
+                '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm" id="ia-panel-artifact-quiz-retry"><span>Reintentar</span></button>' +
                 '</div>';
             actionsDiv.style.display = 'flex';
             resultDiv.style.display = 'block';
@@ -311,7 +311,7 @@
         updateVisibility();
 
         if (typeof global.initTooltip === 'function') {
-            global.setTimeout(function () { global.initTooltip('#ai-panel-artifact-scroll [data-tooltip]'); }, 0);
+            global.setTimeout(function () { global.initTooltip('#ia-panel-artifact-scroll [data-tooltip]'); }, 0);
         }
     }
 
@@ -333,10 +333,10 @@
 
         function navBtns() {
             return {
-                prev: panel.querySelector('#ai-panel-artifact-fc-prev'),
-                next: panel.querySelector('#ai-panel-artifact-fc-next'),
-                done: panel.querySelector('#ai-panel-artifact-fc-done'),
-                shuffle: panel.querySelector('#ai-panel-artifact-fc-shuffle')
+                prev: panel.querySelector('#ia-panel-artifact-fc-prev'),
+                next: panel.querySelector('#ia-panel-artifact-fc-next'),
+                done: panel.querySelector('#ia-panel-artifact-fc-done'),
+                shuffle: panel.querySelector('#ia-panel-artifact-fc-shuffle')
             };
         }
 
@@ -412,13 +412,13 @@
             if (actionsDiv) {
                 actionsDiv.innerHTML =
                     '<div class="ubits-ia-chat-side__quiz-result-actions">' +
-                    '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="ai-panel-artifact-fc-review"><span>Revisar tarjetas</span></button>' +
-                    '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm" id="ai-panel-artifact-fc-retry"><span>Reintentar</span></button></div>';
+                    '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="ia-panel-artifact-fc-review"><span>Revisar tarjetas</span></button>' +
+                    '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm" id="ia-panel-artifact-fc-retry"><span>Reintentar</span></button></div>';
                 actionsDiv.style.display = 'flex';
             }
             resultDiv.style.display = 'block';
-            var rev = panel.querySelector('#ai-panel-artifact-fc-review');
-            var ret = panel.querySelector('#ai-panel-artifact-fc-retry');
+            var rev = panel.querySelector('#ia-panel-artifact-fc-review');
+            var ret = panel.querySelector('#ia-panel-artifact-fc-retry');
             if (rev) {
                 rev.onclick = function () {
                     resultDiv.style.display = 'none';
@@ -447,30 +447,30 @@
     }
 
     function openQuizDemo() {
-        if (typeof global.openAIPanelArtifactView !== 'function') return;
+        if (typeof global.openIAPanelArtifactView !== 'function') return;
         var html = buildArtifactQuizHtml();
-        global.openAIPanelArtifactView(html, {
+        global.openIAPanelArtifactView(html, {
             title: 'Quiz · Liderazgo',
             onAfterMount: function () {
-                var root = document.querySelector('#ai-panel-artifact-scroll .ubits-ia-chat-side__content');
+                var root = document.querySelector('#ia-panel-artifact-scroll .ubits-ia-chat-side__content');
                 if (root) bindArtifactQuiz(root);
             }
         });
     }
 
     function openFlashcardsDemo() {
-        if (typeof global.openAIPanelArtifactView !== 'function') return;
+        if (typeof global.openIAPanelArtifactView !== 'function') return;
         var html = buildArtifactFlashcardsHtml();
-        global.openAIPanelArtifactView(html, {
+        global.openIAPanelArtifactView(html, {
             title: 'Flashcards · Comunicación',
             onAfterMount: function () {
-                var root = document.querySelector('#ai-panel-artifact-scroll .ubits-ia-chat-side__content');
+                var root = document.querySelector('#ia-panel-artifact-scroll .ubits-ia-chat-side__content');
                 if (root) bindArtifactFlashcards(root);
             }
         });
     }
 
-    global.UbitsAIPanelArtifactContent = {
+    global.UbitsIAPanelArtifactContent = {
         openQuizDemo: openQuizDemo,
         openFlashcardsDemo: openFlashcardsDemo,
         buildArtifactQuizHtml: buildArtifactQuizHtml,

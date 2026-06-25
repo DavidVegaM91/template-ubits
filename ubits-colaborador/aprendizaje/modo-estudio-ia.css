@@ -235,7 +235,7 @@ body.modo-estudio-ia-page.ubits-ia-chat-page .content-area {
     flex-wrap: wrap;
 }
 
-/* Chat central: gradación IA como modal / AI panel (orbes 0.15, visibles en header y body) */
+/* Chat central: gradación IA como modal / IA panel (orbes 0.15, visibles en header y body) */
 .modo-estudio-ia-page .ubits-ia-chat > .ubits-ia-chat__main::before {
     background:
         radial-gradient(ellipse 100% 80% at 10% calc(0% + var(--ubits-ia-glow-orb-anchor-offset-y, 0px)), rgba(var(--modo-ia-glow-orb-rgb-1), 0.15) 0%, transparent 50%),

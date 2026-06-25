@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="../../images/playground-favicon.svg">
+    <title>IA Input | UBITS Playground</title>
+
+    <link rel="stylesheet" href="../../general-styles/ubits-colors.css">
+    <link rel="stylesheet" href="../../general-styles/styles.css">
+    <link rel="stylesheet" href="../../general-styles/fontawesome-icons.css">
+    <link rel="stylesheet" href="../../general-styles/ubits-typography.css">
+    <link rel="stylesheet" href="../../general-styles/ubits-ia-appearance.css">
+    <link rel="stylesheet" href="../../components/sub-nav.css">
+    <link rel="stylesheet" href="../../components/alert.css">
+    <link rel="stylesheet" href="../../components/sidebar.css">
+    <link rel="stylesheet" href="../../docs/docs-sidebar.css">
+    <link rel="stylesheet" href="../../docs/docstyles.css">
+    <link rel="stylesheet" href="../../components/button.css">
+    <link rel="stylesheet" href="../../components/ia-button.css">
+    <link rel="stylesheet" href="../../components/chip.css">
+    <link rel="stylesheet" href="../../components/switch.css">
+    <link rel="stylesheet" href="../../components/input.css">
+    <link rel="stylesheet" href="../../components/dropdown-menu.css">
+    <link rel="stylesheet" href="../../components/ia-input.css">
+    <link rel="stylesheet" href="../../components/toast.css">
+    <style>
+        #ia-input-preview-host {
+            width: 100%;
+            max-width: 560px;
+            margin: 0 auto;
+            box-sizing: border-box;
+        }
+        #ia-input-preview-host.ia-input-preview-host--chat {
+            max-width: 480px;
+        }
+        .ia-input-preview-shell {
+            background: var(--ubits-bg-2);
+            padding: 24px;
+            border-radius: 12px;
+            position: relative;
+        }
+        .preview-controls {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--gap-lg);
+            margin-top: var(--gap-lg);
+            width: 100%;
+        }
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: var(--gap-sm);
+            min-width: 0;
+        }
+        .control-label {
+            font-weight: 600;
+            color: var(--ubits-fg-1-high);
+        }
+        .control-hint {
+            margin: 0;
+            font-size: var(--font-size-sm);
+            color: var(--ubits-fg-1-medium);
+            line-height: 1.5;
+        }
+        .ia-input-attach-preview-block {
+            margin-bottom: var(--gap-xl);
+        }
+        .ia-input-attach-preview-block:last-child {
+            margin-bottom: 0;
+        }
+        .ia-input-attach-preview-mount {
+            max-width: 560px;
+            width: 100%;
+        }
+        .ia-input-attach-preview-mount--chat {
+            max-width: 480px;
+        }
+    </style>
+</head>
+<body class="componentes-page" data-theme="light">
+    <div class="dashboard-container">
+        <div class="tooltip" id="tooltip"></div>
+
+        <main class="main-content">
+            <div id="top-nav-container"></div>
+
+            <div style="display: flex;">
+                <div id="docs-dropdown-container"></div>
+                <div id="docs-sidebar-container"></div>
+
+                <div class="components-content">
+                    <div class="content-area" style="display: block; width: 100%;">
+
+                        <div style="text-align: center; margin-bottom: 60px;">
+                            <h1 class="ubits-display-d2-bold" style="margin-bottom: 24px; color: var(--ubits-accent-brand);">
+                                IA Input
+                            </h1>
+                            <p class="ubits-body-md-regular" style="max-width: 800px; margin: 0 auto 32px; line-height: 1.6;">
+                                Input oficial para flujos IA: variantes <strong>panel</strong> (modales LMS, IA panel) y <strong>chat</strong> (Modo Estudio).
+                                API: <code>createUbitsIAInput(options)</code> — paridad con <code>UbitsIAInput</code> en React.
+                            </p>
+                        </div>
+
+                        <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; margin-bottom: 40px;">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-eye" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Preview del componente
+                            </h2>
+                            <p id="ia-input-preview-hint" class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6; color: var(--ubits-fg-1-medium);"></p>
+
+                            <div class="ia-input-preview-shell">
+                                <div id="ia-input-preview-host">
+                                    <div id="ia-input-preview-mount"></div>
+                                </div>
+                            </div>
+
+                            <!-- Controles: mismos que React IAInputDemo (createInput + switch) -->
+                            <div class="preview-controls">
+                                <div class="control-group">
+                                    <div id="ia-input-ctrl-variant-container"></div>
+                                </div>
+                                <div class="control-group">
+                                    <div id="ia-input-ctrl-action-container"></div>
+                                </div>
+                                <div class="control-group" id="ia-input-ctrl-counter-wrap">
+                                    <span class="control-label ubits-body-sm-semibold">Mostrar contador mín / máx</span>
+                                    <label class="ubits-switch ubits-switch--md" style="align-self: flex-start;">
+                                        <input type="checkbox" class="ubits-switch__input" id="ia-input-ctrl-counter" role="switch" checked aria-label="Mostrar contador mín / máx">
+                                        <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
+                                    </label>
+                                    <p class="control-hint ubits-body-sm-regular">Solo panel. Fila «Mínimo X · Máximo Y» y contador numérico bajo la caja.</p>
+                                </div>
+                                <div class="control-group" id="ia-input-ctrl-unit-wrap">
+                                    <div id="ia-input-ctrl-unit-container"></div>
+                                </div>
+                                <div class="control-group" id="ia-input-ctrl-disclaimer-wrap" style="display: none;">
+                                    <span class="control-label ubits-body-sm-semibold">Mostrar disclaimer</span>
+                                    <label class="ubits-switch ubits-switch--md" style="align-self: flex-start;">
+                                        <input type="checkbox" class="ubits-switch__input" id="ia-input-ctrl-disclaimer" role="switch" checked aria-label="Mostrar disclaimer">
+                                        <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
+                                    </label>
+                                    <p class="control-hint ubits-body-sm-regular">Texto bajo el input; en producto varía según el agente.</p>
+                                </div>
+                                <div class="control-group" id="ia-input-ctrl-disclaimer-text-wrap" style="display: none;">
+                                    <div id="ia-input-ctrl-disclaimer-text-container"></div>
+                                </div>
+                                <div class="control-group">
+                                    <span class="control-label ubits-body-sm-semibold">Botón + adjuntar</span>
+                                    <label class="ubits-switch ubits-switch--md" style="align-self: flex-start;">
+                                        <input type="checkbox" class="ubits-switch__input" id="ia-input-ctrl-attach" role="switch" checked aria-label="Botón + adjuntar">
+                                        <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
+                                    </label>
+                                    <p class="control-hint ubits-body-sm-regular">Muestra el botón circular para elegir archivos.</p>
+                                </div>
+                                <div class="control-group">
+                                    <span class="control-label ubits-body-sm-semibold">Mostrar documentos adjuntos</span>
+                                    <label class="ubits-switch ubits-switch--md" style="align-self: flex-start;">
+                                        <input type="checkbox" class="ubits-switch__input" id="ia-input-ctrl-files" role="switch" aria-label="Mostrar documentos adjuntos">
+                                        <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
+                                    </label>
+                                    <p class="control-hint ubits-body-sm-regular">Añade 3 chips encima del prompt. Quítalos con la X de cada chip.</p>
+                                </div>
+                                <div class="control-group">
+                                    <span class="control-label ubits-body-sm-semibold">Mostrar imágenes adjuntas</span>
+                                    <label class="ubits-switch ubits-switch--md" style="align-self: flex-start;">
+                                        <input type="checkbox" class="ubits-switch__input" id="ia-input-ctrl-images" role="switch" aria-label="Mostrar imágenes adjuntas">
+                                        <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
+                                    </label>
+                                    <p class="control-hint ubits-body-sm-regular">3 miniaturas 44×44 encima del prompt, con botón X para quitar (Portada con IA, chat).</p>
+                                </div>
+                                <div class="control-group">
+                                    <span class="control-label ubits-body-sm-semibold">Estado inválido</span>
+                                    <label class="ubits-switch ubits-switch--md" style="align-self: flex-start;">
+                                        <input type="checkbox" class="ubits-switch__input" id="ia-input-ctrl-error" role="switch" aria-label="Estado inválido">
+                                        <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
+                                    </label>
+                                    <p class="control-hint ubits-body-sm-regular">Borde rojo en la caja, contador numérico visible y texto «Mensaje de error» debajo.</p>
+                                </div>
+                                <div class="control-group" id="ia-input-ctrl-generating-wrap">
+                                    <span class="control-label ubits-body-sm-semibold">Botón IA generando</span>
+                                    <label class="ubits-switch ubits-switch--md" style="align-self: flex-start;">
+                                        <input type="checkbox" class="ubits-switch__input" id="ia-input-ctrl-generating" role="switch" aria-label="Botón IA generando">
+                                        <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
+                                    </label>
+                                    <p class="control-hint ubits-body-sm-regular">Spinner y etiqueta «Generando».</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Adjuntos pendientes (afterPreview en React) -->
+                        <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; margin-bottom: 40px;">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-paperclip" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Adjuntos pendientes
+                            </h2>
+                            <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6; color: var(--ubits-fg-1-medium);">
+                                Previews 44×44 con quitar (imagen) y chip con icono de documento (PDF u otros). Siempre encima del prompt, dentro de la caja.
+                            </p>
+                            <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: 12px;">
+                                <div class="ia-input-attach-preview-block">
+                                    <p class="ubits-body-sm-bold" style="margin: 0 0 var(--gap-sm); color: var(--ubits-fg-1-high);">Solo imagen adjunta — referencia visual (Agregar portada)</p>
+                                    <div id="ia-input-attach-preview-1" class="ia-input-attach-preview-mount"></div>
+                                </div>
+                                <div class="ia-input-attach-preview-block">
+                                    <p class="ubits-body-sm-bold" style="margin: 0 0 var(--gap-sm); color: var(--ubits-fg-1-high);">Solo archivo adjunto — chip brief.pdf</p>
+                                    <div id="ia-input-attach-preview-2" class="ia-input-attach-preview-mount"></div>
+                                </div>
+                                <div class="ia-input-attach-preview-block">
+                                    <p class="ubits-body-sm-bold" style="margin: 0 0 var(--gap-sm); color: var(--ubits-fg-1-high);">Imagen + archivo — Portada con IA (referencia + insumo)</p>
+                                    <div id="ia-input-attach-preview-3" class="ia-input-attach-preview-mount"></div>
+                                </div>
+                                <div class="ia-input-attach-preview-block">
+                                    <p class="ubits-body-sm-bold" style="margin: 0 0 var(--gap-sm); color: var(--ubits-fg-1-high);">Chat — imagen adjunta antes de enviar (Modo Estudio)</p>
+                                    <div id="ia-input-attach-preview-4" class="ia-input-attach-preview-mount ia-input-attach-preview-mount--chat"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; margin-bottom: 40px;">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-info-circle" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Características generales
+                            </h2>
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
+                                <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-layer-group"></i></div>
+                                    <div class="ubits-body-sm-bold">Variantes</div>
+                                    <div class="ubits-body-sm-regular">Panel (modales) y Chat (Modo Estudio)</div>
+                                </div>
+                                <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-hashtag"></i></div>
+                                    <div class="ubits-body-sm-bold">Contador</div>
+                                    <div class="ubits-body-sm-regular">Palabras o caracteres con mín/máx y separador de miles</div>
+                                </div>
+                                <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-paperclip"></i></div>
+                                    <div class="ubits-body-sm-bold">Adjuntos</div>
+                                    <div class="ubits-body-sm-regular">Imágenes en miniatura y chips de archivos sobre el prompt</div>
+                                </div>
+                                <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-sparkles"></i></div>
+                                    <div class="ubits-body-sm-bold">Acciones</div>
+                                    <div class="ubits-body-sm-regular">IA-Button con tokens, Enviar o sin botón (SCORM)</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; margin-bottom: 40px;">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-code" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Uso básico
+                            </h2>
+                            <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
+                                <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code>&lt;link rel="stylesheet" href="components/ia-input.css"&gt;
+&lt;script src="components/ia-input.js"&gt;&lt;/script&gt;
+
+&lt;div id="mi-ia-input"&gt;&lt;/div&gt;
+&lt;script&gt;
+  var iaInput = createUbitsIAInput({
+    variant: 'panel',
+    placeholder: 'Describe tu portada de forma específica',
+    attach: true,
+    counter: { min: 6, max: 500, unit: 'palabras' },
+    action: { type: 'ia', label: 'Generar portada', tokenCost: 2, onClick: function () {} },
+    onChange: function (v) { /* … */ }
+  }).mount('mi-ia-input');
+&lt;/script&gt;</code></pre>
+                            </div>
+                        </div>
+
+                        <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; margin-bottom: 40px;">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-comments" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Prompts útiles
+                            </h2>
+                            <div id="ia-input-warning-alert" style="margin-bottom: 24px;"></div>
+                            <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px;">
+                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                                    <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Montar IA Input en un modal</h3>
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('ia-input-prompt-0')">
+                                        <i class="far fa-copy"></i>
+                                        <span>Copiar</span>
+                                    </button>
+                                </div>
+                                <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
+                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="ia-input-prompt-0">En [archivo.html], reemplaza el textarea hardcodeado del flujo IA por createUbitsIAInput({ variant: 'panel', attach: true, counter: { min: 6, max: 500, unit: 'palabras' }, action: { type: 'ia', label: '[label]', tokenCost: [n], onClick: function () {} } }). Importa ia-input.css, ia-input.js, ia-button.css e ia-button.js.</code></pre>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div id="ubits-toast-container"></div>
+
+    <script src="../../components/sidebar.js"></script>
+    <script src="../../components/sub-nav.js"></script>
+    <script src="../../components/alert.js"></script>
+    <script src="../../components/tooltip.js"></script>
+    <script src="../../components/toast.js"></script>
+    <script src="../../components/dropdown-menu.js"></script>
+    <script src="../../components/input.js"></script>
+    <script src="../../components/ia-button.js"></script>
+    <script src="../../components/ia-input.js"></script>
+    <script src="../../docs/docs-sidebar.js"></script>
+    <script src="../../script.js"></script>
+    <script>
+        function copyPrompt(promptId) {
+            var el = document.getElementById(promptId);
+            if (!el || !navigator.clipboard) return;
+            navigator.clipboard.writeText(el.textContent).then(function () {
+                if (typeof showToast === 'function') showToast('success', 'Prompt copiado al portapapeles');
+            });
+        }
+
+        (function () {
+            var DEMO_IMAGE = {
+                src: '../../images/vertical-cards/ted-La-sorprendente-ciencia-de-la-motivacion.jpg',
+                alt: 'Referencia TED'
+            };
+            var DEMO_IMAGES = [
+                DEMO_IMAGE,
+                {
+                    src: '../../images/vertical-cards/ted-Como-fortalecer-la-propia-confianza-y-despertar-la-de-otros.jpg',
+                    alt: 'Referencia TED 2'
+                },
+                {
+                    src: '../../images/vertical-cards/Libro_Por_que_dormimos_de_Matthew_Walker.webp',
+                    alt: 'Referencia libro'
+                }
+            ];
+            var DEMO_FILES = [
+                { name: 'brief.pdf' },
+                { name: 'guion.docx' },
+                { name: 'moodboard.png' }
+            ];
+            var DISCLAIMER_PRESETS = {
+                'modo-estudio': 'El agente puede cometer errores; verifica la información.',
+                generico: 'Las respuestas son orientativas; revisa antes de publicar.'
+            };
+
+            var state = {
+                variant: 'panel',
+                actionType: 'ia',
+                showCounter: true,
+                unit: 'palabras',
+                attach: true,
+                showImages: false,
+                showFiles: false,
+                hasError: false,
+                generating: false,
+                showDisclaimer: true,
+                disclaimerPreset: 'modo-estudio',
+                value: ''
+            };
+
+            var mountEl = document.getElementById('ia-input-preview-mount');
+            var hostEl = document.getElementById('ia-input-preview-host');
+            var hintEl = document.getElementById('ia-input-preview-hint');
+            var api = null;
+
+            function isPanel() {
+                return state.variant === 'panel';
+            }
+
+            function updatePreviewHint() {
+                if (!hintEl) return;
+                hintEl.textContent = isPanel()
+                    ? 'Panel: modales LMS. Adjuntos siempre encima del prompt; quítalos con la X del chip o miniatura.'
+                    : 'Chat: Modo Estudio / panel IA. Sin contador; incluye disclaimer configurable bajo el input.';
+            }
+
+            function getCounterConfig() {
+                if (!state.showCounter || !isPanel()) return false;
+                if (state.unit === 'caracteres') {
+                    return { min: 250, max: 25000, unit: 'caracteres' };
+                }
+                return { min: 6, max: 500, unit: 'palabras' };
+            }
+
+            function getActionConfig() {
+                if (state.actionType === 'none') return { type: 'none' };
+                if (state.actionType === 'send') {
+                    var canSend = state.value.trim().length > 0 || state.showImages || state.showFiles;
+                    return {
+                        type: 'send',
+                        ariaLabel: 'Enviar',
+                        disabled: !canSend,
+                        onClick: function () {}
+                    };
+                }
+                var min = state.unit === 'caracteres' ? 250 : 6;
+                var current = state.unit === 'caracteres'
+                    ? state.value.length
+                    : countPromptWords(state.value);
+                return {
+                    type: 'ia',
+                    label: isPanel() && state.unit === 'palabras' ? 'Generar portada' : 'Generar',
+                    tokenCost: 2,
+                    disabled: isPanel() && state.showCounter ? current < min : false,
+                    isGenerating: state.generating,
+                    generatingLabel: 'Generando',
+                    onClick: function () {
+                        state.generating = !state.generating;
+                        var genSw = document.getElementById('ia-input-ctrl-generating');
+                        if (genSw) genSw.checked = state.generating;
+                        if (api) api.setGenerating(state.generating, 'Generando');
+                    }
+                };
+            }
+
+            function getDisclaimer() {
+                if (!isPanel() && state.showDisclaimer) {
+                    return DISCLAIMER_PRESETS[state.disclaimerPreset] || DISCLAIMER_PRESETS['modo-estudio'];
+                }
+                return undefined;
+            }
+
+            function syncControlsVisibility() {
+                var counterWrap = document.getElementById('ia-input-ctrl-counter-wrap');
+                var unitWrap = document.getElementById('ia-input-ctrl-unit-wrap');
+                var disclaimerWrap = document.getElementById('ia-input-ctrl-disclaimer-wrap');
+                var disclaimerTextWrap = document.getElementById('ia-input-ctrl-disclaimer-text-wrap');
+                var generatingWrap = document.getElementById('ia-input-ctrl-generating-wrap');
+
+                if (counterWrap) counterWrap.style.display = isPanel() ? '' : 'none';
+                if (unitWrap) unitWrap.style.display = isPanel() && state.showCounter ? '' : 'none';
+                if (disclaimerWrap) disclaimerWrap.style.display = isPanel() ? 'none' : '';
+                if (disclaimerTextWrap) {
+                    disclaimerTextWrap.style.display = !isPanel() && state.showDisclaimer ? '' : 'none';
+                }
+                if (generatingWrap) generatingWrap.style.display = state.actionType === 'ia' ? '' : 'none';
+            }
+
+            function rebuildPreview() {
+                if (api) api.destroy();
+                mountEl.innerHTML = '';
+                hostEl.classList.toggle('ia-input-preview-host--chat', !isPanel());
+                updatePreviewHint();
+                syncControlsVisibility();
+
+                api = createUbitsIAInput({
+                    variant: state.variant,
+                    value: state.value,
+                    placeholder: isPanel()
+                        ? 'Describe tu portada de forma específica'
+                        : '¿Cuéntame cómo te puedo ayudar?',
+                    attach: state.attach,
+                    attachAriaLabel: isPanel() ? 'Adjuntar referencia' : 'Adjuntar',
+                    attachTooltip: isPanel() ? 'Adjuntar referencia' : 'Adjuntar',
+                    pendingImages: state.showImages ? DEMO_IMAGES : [],
+                    pendingFiles: state.showFiles ? DEMO_FILES : [],
+                    counter: getCounterConfig(),
+                    hasContextError: state.hasError,
+                    contextErrorMessage: 'Mensaje de error',
+                    disclaimer: getDisclaimer(),
+                    action: getActionConfig(),
+                    onChange: function (v) {
+                        state.value = v;
+                        if (state.hasError) {
+                            state.hasError = false;
+                            var errSw = document.getElementById('ia-input-ctrl-error');
+                            if (errSw) errSw.checked = false;
+                            api.setContextError(false);
+                        }
+                        api.updateCounter();
+                        if (state.actionType === 'ia' && state.showCounter && isPanel()) {
+                            var min = state.unit === 'caracteres' ? 250 : 6;
+                            var current = state.unit === 'caracteres' ? v.length : countPromptWords(v);
+                            api.setActionDisabled(current < min);
+                        } else if (state.actionType === 'send') {
+                            var canSend = v.trim().length > 0 || state.showImages || state.showFiles;
+                            api.setActionDisabled(!canSend);
+                        }
+                    }
+                }).mount(mountEl);
+
+                if (state.generating && state.actionType === 'ia') {
+                    api.setGenerating(true, 'Generando');
+                }
+            }
+
+            function bindSwitch(id, fn) {
+                var el = document.getElementById(id);
+                if (!el) return;
+                el.addEventListener('change', function () {
+                    fn(this.checked);
+                });
+            }
+
+            function initDocSelects() {
+                if (typeof createInput !== 'function') return;
+
+                createInput({
+                    containerId: 'ia-input-ctrl-variant-container',
+                    type: 'select',
+                    label: 'Variante de layout',
+                    value: state.variant,
+                    size: 'sm',
+                    selectOptions: [
+                        { value: 'panel', text: 'Panel — modales LMS' },
+                        { value: 'chat', text: 'Chat — Modo Estudio / panel IA' }
+                    ],
+                    onChange: function (value) {
+                        state.variant = value;
+                        if (value === 'chat') {
+                            state.showCounter = false;
+                            var counterSw = document.getElementById('ia-input-ctrl-counter');
+                            if (counterSw) counterSw.checked = false;
+                        }
+                        rebuildPreview();
+                    }
+                });
+
+                createInput({
+                    containerId: 'ia-input-ctrl-action-container',
+                    type: 'select',
+                    label: 'Botón principal (derecha)',
+                    value: state.actionType,
+                    size: 'sm',
+                    selectOptions: [
+                        { value: 'ia', text: 'Generar con IA (+ tokens)' },
+                        { value: 'send', text: 'Enviar mensaje (flecha)' },
+                        { value: 'none', text: 'Sin botón (SCORM)' }
+                    ],
+                    onChange: function (value) {
+                        state.actionType = value;
+                        if (value !== 'ia') state.generating = false;
+                        rebuildPreview();
+                    }
+                });
+
+                createInput({
+                    containerId: 'ia-input-ctrl-unit-container',
+                    type: 'select',
+                    label: 'Unidad del contador',
+                    value: state.unit,
+                    size: 'sm',
+                    selectOptions: [
+                        { value: 'palabras', text: 'Palabras — Portada (6–500)' },
+                        { value: 'caracteres', text: 'Caracteres — video (250–25.000)' }
+                    ],
+                    onChange: function (value) {
+                        state.unit = value;
+                        rebuildPreview();
+                    }
+                });
+
+                createInput({
+                    containerId: 'ia-input-ctrl-disclaimer-text-container',
+                    type: 'select',
+                    label: 'Texto del disclaimer',
+                    value: state.disclaimerPreset,
+                    size: 'sm',
+                    selectOptions: [
+                        { value: 'modo-estudio', text: 'Modo Estudio (predeterminado)' },
+                        { value: 'generico', text: 'Otro agente (ejemplo)' }
+                    ],
+                    onChange: function (value) {
+                        state.disclaimerPreset = value;
+                        rebuildPreview();
+                    }
+                });
+            }
+
+            function initAttachmentPreviews() {
+                createUbitsIAInput({
+                    variant: 'panel',
+                    placeholder: 'Describe tu portada de forma específica',
+                    attach: true,
+                    attachAriaLabel: 'Adjuntar referencia',
+                    pendingImages: [DEMO_IMAGE],
+                    counter: { min: 6, max: 500, unit: 'palabras' },
+                    action: { type: 'ia', label: 'Generar portada', tokenCost: 2, disabled: true, onClick: function () {} }
+                }).mount('ia-input-attach-preview-1');
+
+                createUbitsIAInput({
+                    variant: 'panel',
+                    placeholder: 'Describe tu portada de forma específica',
+                    attach: true,
+                    attachAriaLabel: 'Adjuntar referencia',
+                    pendingFiles: [{ name: 'brief.pdf' }],
+                    counter: { min: 6, max: 500, unit: 'palabras' },
+                    action: { type: 'ia', label: 'Generar portada', tokenCost: 2, disabled: true, onClick: function () {} }
+                }).mount('ia-input-attach-preview-2');
+
+                createUbitsIAInput({
+                    variant: 'panel',
+                    placeholder: 'Describe tu portada de forma específica',
+                    attach: true,
+                    attachAriaLabel: 'Adjuntar referencia',
+                    pendingImages: [DEMO_IMAGE],
+                    pendingFiles: [{ name: 'brief.pdf' }],
+                    counter: { min: 6, max: 500, unit: 'palabras' },
+                    action: { type: 'ia', label: 'Generar portada', tokenCost: 2, disabled: true, onClick: function () {} }
+                }).mount('ia-input-attach-preview-3');
+
+                createUbitsIAInput({
+                    variant: 'chat',
+                    placeholder: '¿Cuéntame cómo te puedo ayudar?',
+                    attach: true,
+                    attachAriaLabel: 'Adjuntar',
+                    pendingImages: [DEMO_IMAGE],
+                    disclaimer: DISCLAIMER_PRESETS['modo-estudio'],
+                    action: { type: 'send', ariaLabel: 'Enviar', disabled: true, onClick: function () {} }
+                }).mount('ia-input-attach-preview-4');
+            }
+
+            document.addEventListener('DOMContentLoaded', function () {
+                loadSubNav('top-nav-container', 'documentacion');
+                setTimeout(function () {
+                    document.querySelectorAll('.nav-tab.active, .hamburger-item.active').forEach(function (item) {
+                        item.classList.remove('active');
+                    });
+                    var navTab = document.querySelector('.nav-tab[data-tab="section3"]');
+                    var hamburgerItem = document.querySelector('.hamburger-item[data-tab="section3"]');
+                    if (navTab) navTab.classList.add('active');
+                    if (hamburgerItem) hamburgerItem.classList.add('active');
+                }, 200);
+                loadDocsSidebar('ia-input');
+                if (typeof showAlert === 'function') {
+                    showAlert('warning', 'Importante: Antes de enviar estos prompts a Cursor, reemplaza todos los textos entre [corchetes] con la información específica de tu proyecto.', {
+                        containerId: 'ia-input-warning-alert',
+                        noClose: true
+                    });
+                }
+
+                initDocSelects();
+
+                bindSwitch('ia-input-ctrl-counter', function (on) {
+                    state.showCounter = on;
+                    rebuildPreview();
+                });
+                bindSwitch('ia-input-ctrl-disclaimer', function (on) {
+                    state.showDisclaimer = on;
+                    rebuildPreview();
+                });
+                bindSwitch('ia-input-ctrl-attach', function (on) {
+                    state.attach = on;
+                    rebuildPreview();
+                });
+                bindSwitch('ia-input-ctrl-files', function (on) {
+                    state.showFiles = on;
+                    rebuildPreview();
+                });
+                bindSwitch('ia-input-ctrl-images', function (on) {
+                    state.showImages = on;
+                    rebuildPreview();
+                });
+                bindSwitch('ia-input-ctrl-error', function (on) {
+                    state.hasError = on;
+                    rebuildPreview();
+                });
+                bindSwitch('ia-input-ctrl-generating', function (on) {
+                    state.generating = on;
+                    if (api && state.actionType === 'ia') {
+                        api.setGenerating(on, 'Generando');
+                    } else {
+                        rebuildPreview();
+                    }
+                });
+
+                rebuildPreview();
+                initAttachmentPreviews();
+            });
+        })();
+    </script>
+</body>
+</html>
