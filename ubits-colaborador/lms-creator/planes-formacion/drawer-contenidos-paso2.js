@@ -63,7 +63,14 @@
             overlay._drawerContenidosColumnFilters = overlay._drawerContenidosColumnFilters || {
                 tipo: [],
                 level: [],
-                provider: []
+                aliado: [],
+                catalogo: [],
+                competenciaCategoria: [],
+                habilidad: [],
+                experto: [],
+                idioma: [],
+                nivelIngles: [],
+                certificacion: []
             };
         } else {
             var idSearch = I('cursos-search-container');
@@ -95,13 +102,63 @@
             return searchInput && searchInput.value ? searchInput.value.trim() : '';
         }
 
+        var COLUMN_FILTER_LABELS = {
+            tipo: 'Tipo',
+            level: 'Nivel',
+            aliado: 'Aliado',
+            catalogo: 'Catálogo',
+            competenciaCategoria: 'Competencia / Categoría',
+            habilidad: 'Habilidad',
+            experto: 'Experto',
+            idioma: 'Idioma',
+            nivelIngles: 'Nivel de inglés',
+            certificacion: 'Con certificación'
+        };
+
+        function getDefaultColumnFilters() {
+            return {
+                tipo: [],
+                level: [],
+                aliado: [],
+                catalogo: [],
+                competenciaCategoria: [],
+                habilidad: [],
+                experto: [],
+                idioma: [],
+                nivelIngles: [],
+                certificacion: []
+            };
+        }
+
+        function getColumnFilterRawValue(course, colKey) {
+            if (!course) return '';
+            switch (colKey) {
+                case 'tipo': return course.type;
+                case 'level': return course.level;
+                case 'aliado': return course.aliado || course.provider;
+                case 'catalogo': return course.catalogoLabel;
+                case 'competenciaCategoria': return course.competency || course.categoria;
+                case 'habilidad': return course.habilidad;
+                case 'experto': return course.experto;
+                case 'idioma': return course.language;
+                case 'nivelIngles': return course.nivelIngles;
+                case 'certificacion': return course.certificacionLabel;
+                default: return course[colKey];
+            }
+        }
+
         function applyColumnFilters(cursos) {
             if (!usesToolbarCatalog) return cursos;
-            var cf = overlay._drawerContenidosColumnFilters || { tipo: [], level: [], provider: [] };
+            var cf = overlay._drawerContenidosColumnFilters || getDefaultColumnFilters();
             return (cursos || []).filter(function (c) {
-                if (cf.tipo.length && cf.tipo.indexOf(c.type || '') === -1) return false;
-                if (cf.level.length && cf.level.indexOf(c.level || '') === -1) return false;
-                if (cf.provider.length && cf.provider.indexOf(c.provider || '') === -1) return false;
+                var keys = Object.keys(COLUMN_FILTER_LABELS);
+                for (var i = 0; i < keys.length; i++) {
+                    var colKey = keys[i];
+                    var selected = cf[colKey] || [];
+                    if (!selected.length) continue;
+                    var display = tableCellText(getColumnFilterRawValue(c, colKey));
+                    if (selected.indexOf(display) === -1) return false;
+                }
                 return true;
             });
         }
@@ -262,11 +319,11 @@
             }
         }
 
-        function uniqueColumnValues(field) {
+        function uniqueColumnValues(colKey) {
             var set = {};
             catalogoCursos.forEach(function (c) {
-                var v = c[field];
-                if (v != null && String(v).trim() !== '') set[String(v)] = true;
+                var display = tableCellText(getColumnFilterRawValue(c, colKey));
+                if (display != null && String(display).trim() !== '') set[String(display)] = true;
             });
             return Object.keys(set).sort(function (a, b) { return a.localeCompare(b, 'es'); });
         }
@@ -307,15 +364,26 @@
             initTooltip('#' + tableId + ' tbody .ubits-table__td--checkbox[data-tooltip]');
         }
 
+        function tableCellText(val) {
+            if (val == null || String(val).trim() === '') return '—';
+            return String(val);
+        }
+
         function buildTableHeader() {
             if (!theadRow) return;
             var cols = [
                 { id: 'checkbox', label: '', filter: false },
+                { id: 'catalogo', label: 'Catálogo', filter: 'catalogo' },
                 { id: 'contenido', label: 'Contenido', filter: false },
                 { id: 'tipo', label: 'Tipo', filter: 'tipo' },
+                { id: 'competencia', label: 'Competencia / Categoría', filter: 'competenciaCategoria' },
+                { id: 'habilidad', label: 'Habilidad', filter: 'habilidad' },
+                { id: 'aliado', label: 'Aliado', filter: 'aliado' },
                 { id: 'nivel', label: 'Nivel', filter: 'level' },
-                { id: 'proveedor', label: 'Proveedor', filter: 'provider' },
-                { id: 'duracion', label: 'Duración', filter: false }
+                { id: 'experto', label: 'Experto', filter: 'experto' },
+                { id: 'idioma', label: 'Idioma', filter: 'idioma' },
+                { id: 'nivelIngles', label: 'Nivel de inglés', filter: 'nivelIngles' },
+                { id: 'certificacion', label: 'Con certificación', filter: 'certificacion' }
             ];
             var html = '';
             cols.forEach(function (col) {
@@ -376,6 +444,7 @@
         function buildTableRowHtml(course) {
             var selected = isCourseSelected(course.id);
             var rowTooltip = selected ? CHECKBOX_I18N.deselectRow : CHECKBOX_I18N.selectRow;
+            var competenciaCategoria = course.competency || course.categoria || '';
             return (
                 '<tr class="drawer-contenidos-table-row' + (selected ? ' is-selected' : '') + '" data-course-id="' + escapeHtml(course.id) + '">' +
                 '<td class="ubits-table__td--checkbox" data-col="checkbox" data-tooltip="' + escapeHtml(rowTooltip) + '" data-tooltip-delay="1000">' +
@@ -383,11 +452,17 @@
                 '<input type="checkbox" class="ubits-checkbox__input drawer-contenidos-row-check" ' + (selected ? 'checked' : '') + ' aria-label="' + escapeHtml(rowTooltip) + '">' +
                 '<span class="ubits-checkbox__box"><i class="fas fa-check"></i></span>' +
                 '<span class="ubits-checkbox__label sr-only" aria-hidden="true">&nbsp;</span></label></td>' +
+                '<td data-col="catalogo"><span class="ubits-body-sm-regular">' + escapeHtml(tableCellText(course.catalogoLabel)) + '</span></td>' +
                 '<td data-col="contenido"><span class="ubits-body-sm-regular">' + escapeHtml(course.title || '') + '</span></td>' +
-                '<td data-col="tipo"><span class="ubits-body-sm-regular">' + escapeHtml(course.type || '-') + '</span></td>' +
-                '<td data-col="nivel"><span class="ubits-body-sm-regular">' + escapeHtml(course.level || '-') + '</span></td>' +
-                '<td data-col="proveedor"><span class="ubits-body-sm-regular">' + escapeHtml(course.provider || '-') + '</span></td>' +
-                '<td data-col="duracion"><span class="ubits-body-sm-regular">' + escapeHtml(course.duration || '-') + '</span></td>' +
+                '<td data-col="tipo"><span class="ubits-body-sm-regular">' + escapeHtml(tableCellText(course.type)) + '</span></td>' +
+                '<td data-col="competencia"><span class="ubits-body-sm-regular">' + escapeHtml(tableCellText(competenciaCategoria)) + '</span></td>' +
+                '<td data-col="habilidad"><span class="ubits-body-sm-regular">' + escapeHtml(tableCellText(course.habilidad)) + '</span></td>' +
+                '<td data-col="aliado"><span class="ubits-body-sm-regular">' + escapeHtml(tableCellText(course.aliado || course.provider)) + '</span></td>' +
+                '<td data-col="nivel"><span class="ubits-body-sm-regular">' + escapeHtml(tableCellText(course.level)) + '</span></td>' +
+                '<td data-col="experto"><span class="ubits-body-sm-regular">' + escapeHtml(tableCellText(course.experto)) + '</span></td>' +
+                '<td data-col="idioma"><span class="ubits-body-sm-regular">' + escapeHtml(tableCellText(course.language)) + '</span></td>' +
+                '<td data-col="nivelIngles"><span class="ubits-body-sm-regular">' + escapeHtml(tableCellText(course.nivelIngles)) + '</span></td>' +
+                '<td data-col="certificacion"><span class="ubits-body-sm-regular">' + escapeHtml(tableCellText(course.certificacionLabel)) + '</span></td>' +
                 '</tr>'
             );
         }
@@ -490,7 +565,7 @@
                 filterBtn: filterBtnRef,
                 badgeId: filterBadgeId,
                 columnFilters: usesToolbarCatalog ? overlay._drawerContenidosColumnFilters : null,
-                columnFilterLabels: { tipo: 'Tipo', level: 'Nivel', provider: 'Proveedor' },
+                columnFilterLabels: COLUMN_FILTER_LABELS,
                 onFiltersChange: function (updated) {
                     drawerCursosFiltros = DCF.cloneFilters(updated);
                     DCF.updateFilterButtonBadge(filterBtnRef, drawerCursosFiltros, filterBadgeId);
@@ -499,7 +574,7 @@
                     refreshFiltrosAplicados();
                 },
                 onColumnFilterRemove: function (colKey, value) {
-                    var cf = overlay._drawerContenidosColumnFilters || { tipo: [], level: [], provider: [] };
+                    var cf = overlay._drawerContenidosColumnFilters || getDefaultColumnFilters();
                     cf[colKey] = (cf[colKey] || []).filter(function (v) { return v !== value; });
                     drawerCursosVisibleCount = PAGE_SIZE;
                     buildTableHeader();
@@ -507,7 +582,7 @@
                     refreshFiltrosAplicados();
                 },
                 onColumnFiltersClear: function () {
-                    overlay._drawerContenidosColumnFilters = { tipo: [], level: [], provider: [] };
+                    overlay._drawerContenidosColumnFilters = getDefaultColumnFilters();
                     buildTableHeader();
                 }
             });
@@ -515,28 +590,34 @@
 
         function openColumnFilterMenu(colKey, btn) {
             if (typeof window.getDropdownMenuHtml !== 'function' || typeof window.openDropdownMenu !== 'function') return;
-            var fieldMap = { tipo: 'type', level: 'level', provider: 'provider' };
-            var field = fieldMap[colKey] || colKey;
             var overlayId = I('cursos-col-filter-' + colKey);
             var existing = document.getElementById(overlayId);
             if (existing) existing.remove();
 
             var cf = overlay._drawerContenidosColumnFilters;
             var current = cf[colKey] || [];
-            var allOptions = uniqueColumnValues(field);
+            var allOptions = uniqueColumnValues(colKey);
             var options = allOptions.map(function (v) {
                 return { text: v, value: v, checkbox: true, selected: current.indexOf(v) >= 0 };
             });
-            var labels = { tipo: 'Tipo', level: 'Nivel', provider: 'Proveedor' };
-            var label = labels[colKey] || colKey;
+            var label = COLUMN_FILTER_LABELS[colKey] || colKey;
+            var useAutocomplete = allOptions.length > 3;
+            var autocompletePlaceholder = useAutocomplete
+                ? colKey === 'experto' ||
+                  colKey === 'competenciaCategoria' ||
+                  colKey === 'habilidad' ||
+                  colKey === 'aliado'
+                    ? 'Buscar...'
+                    : 'Filtrar por ' + label + '...'
+                : '';
 
             document.body.insertAdjacentHTML(
                 'beforeend',
                 window.getDropdownMenuHtml({
                     overlayId: overlayId,
                     contentId: overlayId + '-content',
-                    hasAutocomplete: true,
-                    autocompletePlaceholder: 'Filtrar por ' + label + '...',
+                    hasAutocomplete: useAutocomplete,
+                    autocompletePlaceholder: autocompletePlaceholder,
                     autocompleteContainerId: overlayId + '-autocomplete',
                     options: options,
                     footerSecondaryLabel: 'Cancelar',
@@ -589,29 +670,31 @@
                 });
             }
 
-            if (searchInput) {
-                searchInput.addEventListener('mousedown', stopMenuEvent);
-                searchInput.addEventListener('input', filterOptionsBySearch);
-                searchInput.addEventListener('keyup', filterOptionsBySearch);
-                setTimeout(function () { searchInput.focus(); }, 80);
+            if (useAutocomplete) {
+                if (searchInput) {
+                    searchInput.addEventListener('mousedown', stopMenuEvent);
+                    searchInput.addEventListener('input', filterOptionsBySearch);
+                    searchInput.addEventListener('keyup', filterOptionsBySearch);
+                    setTimeout(function () { searchInput.focus(); }, 80);
+                }
+                if (searchClear) {
+                    searchClear.style.pointerEvents = 'auto';
+                    searchClear.addEventListener('mousedown', function (e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                    });
+                    searchClear.addEventListener('click', function (e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        if (searchInput) {
+                            searchInput.value = '';
+                            searchInput.focus();
+                        }
+                        filterOptionsBySearch();
+                    });
+                }
+                filterOptionsBySearch();
             }
-            if (searchClear) {
-                searchClear.style.pointerEvents = 'auto';
-                searchClear.addEventListener('mousedown', function (e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                });
-                searchClear.addEventListener('click', function (e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    if (searchInput) {
-                        searchInput.value = '';
-                        searchInput.focus();
-                    }
-                    filterOptionsBySearch();
-                });
-            }
-            filterOptionsBySearch();
 
             var cancelBtn = document.getElementById(overlayId + '-cancel');
             var applyBtn = document.getElementById(overlayId + '-apply');

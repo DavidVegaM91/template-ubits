@@ -98,9 +98,11 @@
 /* Dropdowns de filtros de la tabla (p. ej. en drawer Agregar integrantes) se insertan en body;
    el drawer tiene z-index 1100, el dropdown por defecto 999/1000 → quedan detrás. Subir z-index
    para que los menús de encabezados de tabla se vean por encima del drawer. */
-body.page-crear-grupo .ubits-dropdown-menu__overlay {
+body.page-crear-grupo .ubits-dropdown-menu__overlay,
+body.page-detalle-grupo .ubits-dropdown-menu__overlay {
     z-index: 1200;
 }
-body.page-crear-grupo .ubits-dropdown-menu__content {
+body.page-crear-grupo .ubits-dropdown-menu__content,
+body.page-detalle-grupo .ubits-dropdown-menu__content {
     z-index: 1201;
 }

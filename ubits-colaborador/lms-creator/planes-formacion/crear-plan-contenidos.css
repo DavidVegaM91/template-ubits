@@ -1,3 +1,5 @@
+@import url('../../../components/switch.css');
+
 /* ========================================
    ESTILOS ESPECÍFICOS PARA CREAR PLAN DE CONTENIDOS
    ======================================== */
@@ -746,6 +748,16 @@
     max-width: 100%;
 }
 
+.drawer-contenidos-filtros-modal-fields .drawer-contenidos-filtro-switch-field {
+    display: flex;
+    align-items: center;
+    min-height: 40px;
+}
+
+.drawer-contenidos-filtros-modal-fields .drawer-contenidos-filtro-switch-field .ubits-switch {
+    width: 100%;
+}
+
 /* Dropdown del filtro del drawer (legacy): por encima del drawer (drawer usa z-index 1100–1101).
    Wizard paso 3 usa #drawer-wiz-cursos-filter-overlay (mismo motivo que #drawer-cursos-filter-overlay).
    editar-plan-contenidos: drawer solo contenidos usa #drawer-editplan-cursos-filter-overlay. */
@@ -758,9 +770,7 @@
 [id^="ubits-dt-filter-drawer-"].ubits-dropdown-menu__overlay,
 [id^="ubits-dt-sort-drawer-"].ubits-dropdown-menu__overlay,
 .drawer-contenidos-col-filter-overlay.ubits-dropdown-menu__overlay,
-[id$="-cursos-col-filter-tipo"].ubits-dropdown-menu__overlay,
-[id$="-cursos-col-filter-level"].ubits-dropdown-menu__overlay,
-[id$="-cursos-col-filter-provider"].ubits-dropdown-menu__overlay {
+[id*="-cursos-col-filter-"].ubits-dropdown-menu__overlay {
     z-index: 1102;
 }
 #drawer-cursos-filter-overlay .ubits-dropdown-menu__content,
@@ -772,10 +782,20 @@
 [id^="ubits-dt-filter-drawer-"] .ubits-dropdown-menu__content,
 [id^="ubits-dt-sort-drawer-"] .ubits-dropdown-menu__content,
 .drawer-contenidos-col-filter-overlay .ubits-dropdown-menu__content,
-[id$="-cursos-col-filter-tipo"] .ubits-dropdown-menu__content,
-[id$="-cursos-col-filter-level"] .ubits-dropdown-menu__content,
-[id$="-cursos-col-filter-provider"] .ubits-dropdown-menu__content {
+[id*="-cursos-col-filter-"] .ubits-dropdown-menu__content {
     z-index: 1103;
+}
+
+/* Dropdown filtro por columna: mismo patrón que ubits-data-table (Participantes / Username) */
+.drawer-contenidos-col-filter-overlay.ubits-dt-filter-overlay .ubits-dropdown-menu__content {
+    max-height: min(380px, calc(100vh - 16px));
+}
+
+.drawer-contenidos-col-filter-overlay.ubits-dt-filter-overlay .ubits-dropdown-menu__options {
+    flex: 1 1 auto;
+    min-height: 0;
+    max-height: none;
+    overflow-y: auto;
 }
 
 #drawer-agregar-cursos .ubits-drawer-content,
@@ -971,6 +991,15 @@
 
 .drawer-contenidos-table-row.is-selected {
     background: var(--ubits-feedback-bg-info-subtle);
+}
+
+.drawer-contenidos-catalog-table {
+    min-width: 1200px;
+}
+
+.drawer-contenidos-catalog-table th[data-col="contenido"],
+.drawer-contenidos-catalog-table td[data-col="contenido"] {
+    min-width: 200px;
 }
 
 .drawer-contenidos-catalog-table .ubits-table__th--checkbox,

@@ -1,5 +1,5 @@
 /**
- * Markup compartido — paso Contenidos / drawer «Buscar y agregar contenidos».
+ * Markup compartido — paso Contenidos del drawer «Agregar asignación».
  * Toolbar panel (plain) + vista tabla (default) + vista cuadrícula (cards).
  * @param {string} [idPrefix] drawer-wiz | drawer-editplan | '' (drawer-cursos-*)
  */
@@ -18,10 +18,10 @@
 
         return (
             '<div class="drawer-agregar-cursos drawer-agregar-cursos--single-col">' +
-            '  <span class="drawer-agregar-cursos__section-title ubits-body-sm-semibold">Buscar y agregar contenidos</span>' +
             '  <div class="ubits-toolbar-panel ubits-toolbar-panel--plain drawer-contenidos-toolbar" id="' + I('cursos-toolbar') + '">' +
             '    <div class="ubits-toolbar-panel__bar">' +
             '      <div class="ubits-toolbar-panel__title-block">' +
+            '        <span class="ubits-toolbar-panel__title ubits-body-md-bold">Lista de contenidos</span>' +
             '        <span class="ubits-toolbar-panel__meta">' +
             '          <span class="ubits-body-sm-regular" id="' + I('cursos-meta-count') + '" aria-live="polite">0/0</span>' +
             '          <span class="ubits-body-sm-regular">resultados</span>' +

@@ -87,6 +87,7 @@
     <script src="../../../components/header-product.js"></script>
     <script src="../../../components/input.js"></script>
     <script src="../../../components/empty-state.js"></script>
+    <script src="./drawer-participantes-colab-table.js"></script>
     <script src="../../../components/ubits-data-table.js"></script>
     <script src="../../../components/dropdown-menu.js"></script>
     <script src="../../../components/drawer.js"></script>
@@ -242,48 +243,28 @@
 
             function initDrawerAgregarIntegrantes(overlay, isGestionar) {
                 if (!overlay) return;
+                var DPC = window.DrawerParticipantesColabTable;
                 var initialSelectedIds = isGestionar ? integrantesData.map(function(i) { return i.id; }) : [];
                 var empleadosDrawerRaw = (typeof TAREAS_PLANES_DB !== 'undefined' && typeof TAREAS_PLANES_DB.getEmpleadosEjemplo === 'function') ? TAREAS_PLANES_DB.getEmpleadosEjemplo() : [];
                 var empleadosDrawer = empleadosDrawerRaw.map(function(e, idx) {
-                    var id = e.id || e.idColaborador || ('E' + (idx + 1));
-                    return { id: id, username: getUsernameEmpleado(e), nombre: (e.nombre || '').trim(), correo: getUsernameEmpleado(e), area: (e.area || '').trim(), lider: (e.jefe || '').trim(), avatar: e.avatar || null };
+                    return DPC ? DPC.mapEmpleadoParaDrawerColab(e, idx) : e;
                 });
                 overlay._empleadosDrawer = empleadosDrawer;
                 overlay._isGestionar = isGestionar;
                 var container = overlay.querySelector('#drawer-integrantes-colab-data-table-container');
-                if (container && typeof createUbitsDataTable === 'function') {
-                    function escapeDrawerHtml(t) { if (t == null) return ''; var d = document.createElement('div'); d.textContent = t; return d.innerHTML; }
-                    function buildDrawerColabRowHtml(row) {
-                        var avatarUrl = (row.avatar && String(row.avatar).trim()) ? String(row.avatar).replace(/"/g, '&quot;') : '';
-                        var usuarioCell = '<div class="detalle-plan-usuario-cell">' +
-                            (avatarUrl
-                                ? '<span class="ubits-avatar ubits-avatar--sm"><img src="' + avatarUrl + '" alt="' + escapeDrawerHtml(row.nombre) + '" class="ubits-avatar__img"></span>'
-                                : '<span class="ubits-avatar ubits-avatar--sm"><span class="ubits-avatar__fallback"><i class="far fa-user"></i></span></span>') +
-                            '<span class="ubits-body-sm-regular">' + escapeDrawerHtml(row.nombre) + '</span></div>';
-                        return '<td data-col="username"><span class="ubits-body-sm-regular">' + escapeDrawerHtml(row.username) + '</span></td>' +
-                            '<td data-col="nombre">' + usuarioCell + '</td>' +
-                            '<td data-col="correo"><span class="ubits-body-sm-regular">' + escapeDrawerHtml(row.correo) + '</span></td>' +
-                            '<td data-col="area"><span class="ubits-body-sm-regular">' + escapeDrawerHtml(row.area) + '</span></td>' +
-                            '<td data-col="lider"><span class="ubits-body-sm-regular">' + escapeDrawerHtml(row.lider) + '</span></td>';
-                    }
-                    var drawerTablaRef = createUbitsDataTable({
+                if (container && DPC && typeof DPC.createDrawerParticipantesColabDataTable === 'function') {
+                    var drawerTablaRef = DPC.createDrawerParticipantesColabDataTable({
                         containerId: 'drawer-integrantes-colab-data-table-container',
                         tableId: 'drawer-integrantes-colab-table',
-                        title: 'Lista de colaboradores',
-                        columns: [
-                            { id: 'username', label: 'Username', filterable: true },
-                            { id: 'nombre', label: 'Nombre del usuario', filterable: true },
-                            { id: 'correo', label: 'Correo electrónico', filterable: true },
-                            { id: 'area', label: 'Área', filterable: true },
-                            { id: 'lider', label: 'Líder', filterable: true }
-                        ],
                         getData: function() { return empleadosDrawer; },
-                        rowIdField: 'id',
-                        buildRowHtml: buildDrawerColabRowHtml,
-                        features: { checkboxes: true, search: true, filters: true, verSeleccionados: true, resultsCount: true },
                         initialSelectedIds: initialSelectedIds,
-                        emptyState: { message: 'No hay colaboradores', icon: 'far fa-user' },
-                        i18n: { selectAll: 'Seleccionar todo', deselectAll: 'Deseleccionar todo', verSeleccionados: 'Ver seleccionados', buscar: 'Buscar' }
+                        i18n: {
+                            selectAll: 'Seleccionar todo',
+                            deselectAll: 'Deseleccionar todo',
+                            verSeleccionados: 'Ver seleccionados',
+                            buscar: 'Buscar',
+                            columnasVisibles: 'Columnas visibles'
+                        }
                     });
                     overlay._drawerIntegrantesTablaRef = drawerTablaRef;
                 }

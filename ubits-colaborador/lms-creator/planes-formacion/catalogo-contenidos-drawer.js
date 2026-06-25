@@ -122,6 +122,37 @@
         return imagesPath('images/cards-learn/default.jpg');
     }
 
+    function getHabilidadesByIdMap() {
+        var out = {};
+        var arr = (global.BD_MASTER_HABILIDADES && global.BD_MASTER_HABILIDADES.habilidades) || [];
+        for (var i = 0; i < arr.length; i++) {
+            out[arr[i].id] = arr[i];
+        }
+        return out;
+    }
+
+    function nombreHabilidadCatalogoUbits(item, idx) {
+        var m = getHabilidadesByIdMap();
+        var hid = item.habilidadPrincipalId;
+        if (hid && m[hid]) return m[hid].nombre;
+        var fallbacks = ['Comunicación efectiva', 'Liderazgo situacional', 'Gestión del tiempo'];
+        return fallbacks[idx % fallbacks.length];
+    }
+
+    function expertoCatalogoDisplay(item) {
+        if (!item.expertos || !item.expertos.length) return '';
+        return String(item.expertos[0]).split(' · ')[0];
+    }
+
+    function certificacionLabel(conCertificacion) {
+        return conCertificacion ? 'Sí' : 'No';
+    }
+
+    function catalogoLabelFromId(catalogoId, courseSource) {
+        if (catalogoId === 'catalogo_fiqsha' || courseSource === 'empresa') return 'Catálogo Fiqsha';
+        return 'Catálogo UBITS';
+    }
+
     function getCompetenciasByIdMap() {
         var out = {};
         var arr = (global.BD_MASTER_COMPETENCIAS && global.BD_MASTER_COMPETENCIAS.competencias) || [];
@@ -180,6 +211,7 @@
                 title: titulo,
                 image: imagenPlaygroundAHtml(item),
                 provider: providerPrim,
+                aliado: providerPrim,
                 providerLogo: providerPrimLogo,
                 providers: providersMulti,
                 type: tipo,
@@ -187,8 +219,14 @@
                 duration: formatDuracionPlayground(item),
                 language: item.idioma || 'Español',
                 competency: competency,
+                habilidad: nombreHabilidadCatalogoUbits(item, idx),
+                experto: expertoCatalogoDisplay(item),
                 categoria: null,
                 courseSource: 'ubits',
+                catalogoId: item.catalogoId || 'catalogo_ubits',
+                catalogoLabel: catalogoLabelFromId(item.catalogoId, 'ubits'),
+                conCertificacion: !!item.conCertificacion,
+                certificacionLabel: certificacionLabel(!!item.conCertificacion),
                 status: 'default',
                 progress: 0,
                 descripcion: item.descripcion,
@@ -216,26 +254,34 @@
                 dur = String(item.tiempoValor) + ' min';
             }
             if (!dur) dur = '60 min';
-            var competencySoloCard = 'Trabajo en equipo';
+            var competencySoloCard = null;
             return {
                 id: item.id || 'f-' + idx,
                 title: titulo,
                 image: imagenPlaygroundAHtml(item),
                 provider: provider,
+                aliado: provider,
                 providerLogo: fiqshaAliado.logo,
                 type: item.tipoContenido || 'Curso',
                 level: nivelNombreDesdeCatalogoItem(item, idx),
                 duration: dur,
                 language: item.idioma || 'Español',
                 categoria: categoria,
-                descripcion: item.descripcion,
+                competency: competencySoloCard,
+                habilidad: null,
+                experto: null,
                 courseSource: 'empresa',
+                catalogoId: item.catalogoId || 'catalogo_fiqsha',
+                catalogoLabel: catalogoLabelFromId(item.catalogoId, 'empresa'),
+                conCertificacion: !!item.conCertificacion,
+                certificacionLabel: certificacionLabel(!!item.conCertificacion),
+                descripcion: item.descripcion,
                 status: 'default',
                 progress: 0,
-                competency: competencySoloCard,
                 nivelId: item.nivelId || null,
                 proveedorAliadoId: item.proveedorAliadoId || 'aly-018',
-                categoriaFiqshaId: item.categoriaFiqshaId || null
+                categoriaFiqshaId: item.categoriaFiqshaId || null,
+                nivelIngles: null
             };
         });
     }

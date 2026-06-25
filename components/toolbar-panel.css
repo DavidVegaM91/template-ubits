@@ -47,16 +47,13 @@
     box-sizing: border-box;
 }
 
+/* __title-block: título con clase global ubits-body-md-bold (igual que ubits-data-table) */
 .ubits-toolbar-panel__title-block {
     display: flex;
     align-items: center;
     gap: var(--gap-sm);
     flex-wrap: wrap;
     min-width: 0;
-}
-
-.ubits-toolbar-panel__title {
-    color: var(--ubits-fg-1-high);
 }
 
 .ubits-toolbar-panel__meta {

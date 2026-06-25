@@ -1,4 +1,5 @@
 @import url('../../../components/progress-bar.css');
+@import url('../../../components/switch.css');
 
 /* ========================================
    ESTILOS PARA DETALLE DEL PLAN
@@ -608,4 +609,14 @@
 .drawer-contenidos-filtros-modal-fields .ucorp-filtros-modal-field .ubits-input-container {
     width: 100%;
     max-width: 100%;
+}
+
+.drawer-contenidos-filtros-modal-fields .drawer-contenidos-filtro-switch-field {
+    display: flex;
+    align-items: center;
+    min-height: 40px;
+}
+
+.drawer-contenidos-filtros-modal-fields .drawer-contenidos-filtro-switch-field .ubits-switch {
+    width: 100%;
 }

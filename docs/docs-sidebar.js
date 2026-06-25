@@ -73,6 +73,7 @@ const DOCS_SIDEBAR_SECTIONS = [
     // IA (alfabético por title)
     { id: 'ai-panel', title: 'AI panel', group: 'ia' },
     { id: 'ia-button', title: 'IA-Button', group: 'ia' },
+    { id: 'ia-input', title: 'IA Input', group: 'ia' },
     { id: 'ia-loader', title: 'IA Loader', group: 'ia' },
     // Operations (alfabético por title)
     { id: 'task-strip', title: 'Task strip', group: 'operations' }
@@ -308,6 +309,7 @@ function initDocsSidebar(activeSection) {
             'button': 'button.html',
             'button-group': 'button-group.html',
             'ia-button': 'ia-button.html',
+            'ia-input': 'ia-input.html',
             'ia-loader': 'ia-loader.html',
             'loader': 'loader.html',
             'alert': 'alert.html',

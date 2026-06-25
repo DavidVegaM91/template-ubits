@@ -92,10 +92,10 @@ No existe el campo "horas por competencia"; ese campo es exclusivo de planes de 
 
 #### 3.2.1 Drawer "Agregar contenidos" (detalle) — crear-plan
 
-- En **crear**, puede mostrarse el **wizard por pasos** (tipo de asignación → participantes → contenidos). Ver **§ 6.5** (stepper, paso participantes, filtro y z-index).
-- **Izquierda:** búsqueda por texto (título o competencia del curso) y filtro por origen (Todos / Solo catálogo UBITS / Solo catálogo propio). Grid de **cards compactos de contenido** (componente `card-content-compact`): miniatura, título, etc. Al hacer clic en una card se agrega a la selección y la card muestra borde azul (estado seleccionado). Scroll infinito: se cargan 12 contenidos inicialmente y más al hacer scroll.
-- **Tabla derecha:** una fila por contenido seleccionado: celda con título del contenido y botón eliminar. Empty state cuando no hay ninguno ("No hay contenidos agregados").
-- **Datos guardados por asignación:** array de ítems de curso (id, title, etc.). Origen: **`bd-master`** (`bd-contenidos-*` + maestros); la lista del drawer la arma **`catalogo-contenidos-drawer.js`** (en esta carpeta) → `window.CATALOGO_CURSOS_DRAWER`.
+- En **crear**, puede mostrarse el **wizard por pasos** (tipo de asignación → participantes → contenidos). Ver **§ 6.5** (stepper, paso participantes) y **§ 6.7** (catálogo: tabla/cuadrícula, filtros, selección).
+- **Paso Contenidos (UI actual):** toolbar **«Buscar y agregar contenidos»** con contador de resultados, búsqueda, toggle **Tabla / Cuadrícula**, **Ver seleccionados** y catálogo unificado UBITS + Fiqsha. **Vista tabla (default):** columnas completas con filtros en encabezado; **vista cuadrícula:** cards `card-content-compact` + **modal «Filtros»** (no hay filtros por columna en cuadrícula). Scroll infinito: 12 ítems iniciales, más al hacer scroll.
+- **Drawer legacy por fila** (sin toolbar de tabla): búsqueda simple + grid de cards; ver **§ 6.7.5** (`usesToolbarCatalog`).
+- **Datos guardados por asignación:** array de ítems de curso (id, title, etc.). Origen: **`bd-master`** (`bd-contenidos-*` + maestros); la lista del drawer la arma **`catalogo-contenidos-drawer.js`** → `window.CATALOGO_CURSOS_DRAWER`.
 
 #### 3.2.2 Edición mientras el plan está en «Procesando» (`editar-plan-contenidos.html`)
 
@@ -103,7 +103,7 @@ Vista de edición del plan de contenidos **antes de salir de Procesando** (misma
 
 - **Tabla de asignaciones:** una **fila por colaborador** (sin filas de tipo grupo, toda la empresa ni importación por archivo). Columnas: **«Nombre de usuario»** (avatar + nombre) y **«Contenidos asignados»** (botón «Agregar contenidos» o «N contenidos»).
 - **Drawer «Agregar asignación»:** solo **2 pasos** en el stepper — **1 · Participantes** → **2 · Contenidos** — mismo patrón que en **crear-plan-contenidos** cuando la asignación es por colaborador (tabla de colaboradores de la empresa con columnas username, nombre, correo, área, líder; luego catálogo de contenidos con búsqueda, filtro por origen, «Ver seleccionados» y cards compactas). No hay paso de «tipo de asignación» (radios toda empresa / colaborador / grupos / archivo). Los colaboradores que **ya tienen fila** en la tabla no se listan de nuevo en participantes.
-- **Clic en «N contenidos» o «Agregar contenidos» (por fila):** se abre el **mismo tipo de UI que el paso de catálogo del wizard** (una columna: búsqueda, filtro, barra «Ver seleccionados», grid de cards con selección por clic/toggle), **sin stepper** (solo ese bloque). Pie: **Cancelar** + **Agregar**. En el prototipo el DOM de este drawer usa prefijo de ids **`drawer-editplan-`** para no colisionar con el wizard (`drawer-wiz-`) si coexistieran overlays; la lógica compartida es `attachWizardContenidosPaso2(..., { idPrefix: 'drawer-editplan' })`.
+- **Clic en «N contenidos» o «Agregar contenidos» (por fila):** se abre el **mismo catálogo del paso Contenidos** (toolbar + tabla/cuadrícula; ver **§ 6.7**), **sin stepper**. Pie: **Cancelar** + **Agregar**. Prefijo de ids **`drawer-editplan-`**; lógica **`attachWizardContenidosPaso2(..., { idPrefix: 'drawer-editplan' })`**.
 - **Datos por fila:** `colaboradorId`, `nombreUsuario`, `avatar`, `contenidos[]`, `contenidosCount`. Validación coherente con crear: guardar exige fechas de vigencia y al menos una asignación con contenidos.
 - **Nombre del plan y tag de estado (misma fila que detalle):** en **`detalle-plan.html`** el nombre es un **`h1` de solo lectura**; en **`editar-plan-contenidos.html`** es **textarea** editable. Ambos usan **`.detalle-plan-progress-card__header`**: fila horizontal con nombre a la izquierda y **`#plan-estado-container`** + **`ubits-status-tag`** a la derecha. Import **`status-tag.css`**. **Importante (CSS):** en **`crear-plan-contenidos.css`**, **`.crear-plan-contenidos-form__field--nombre-plan`** usa **`flex-direction: column`**, lo que por defecto apilaría el tag **debajo** del título. **`editar-plan-contenidos.css`** añade la clase **`editar-plan-nombre-row`** y reglas con **mayor especificidad** (p. ej. **`.crear-plan-contenidos-form__field--nombre-plan.editar-plan-nombre-row`**) con **`flex-direction: row`**, **`align-items: center`**, **`justify-content: space-between`**, y el textarea con **`flex: 1`** / **`min-width: 0`**, alineado al header del detalle en **`detalle-plan.css`**. Ver **§ 6.2.1**.
 - **Tag de estado en reposo (lectura «semántica» vs UI):** si el plan viene del catálogo con estado **Procesando** (p. ej. `Procesando 0%`), **no** se muestra ese texto en el tag: en **`editar-plan-contenidos`** y **`editar-plan-competencias`** el tag en reposo muestra **Planeado** (variante `info`, `sm`) con su tooltip, para no sugerir que el plan sigue «en cola» mientras el administrador ya está completando asignaciones. Los estados **Vigente** y **Planeado** «reales» se muestran tal cual.
@@ -126,7 +126,7 @@ Vista de edición del plan de contenidos **antes de salir de Procesando** (misma
 
 #### 3.3.2 Drawer "Agregar contenidos" en detalle-plan
 
-- Mismo comportamiento que en crear-plan (ver 3.2.1): búsqueda, filtro por origen (si aplica), cards compactos y **scroll infinito** (12 contenidos iniciales, más al hacer scroll en la zona de resultados), de modo que se pueden cargar todos los contenidos del catálogo.
+- Mismo catálogo que en crear-plan (**§ 6.7**): toolbar, vista **Tabla** (default) o **Cuadrícula**, búsqueda, filtros y scroll infinito (12 + carga al scroll).
 
 ---
 
@@ -242,7 +242,7 @@ El SubNav del Creator enlaza **dos páginas** (más **Grupos**): **`planes-conte
 | Campo extra (crear / editar / detalle) | — | **Horas por competencia**: editable en crear y **editar-plan-competencias**; en **detalle-plan-competencias** solo texto |
 | Qué se asigna | Contenidos (cursos, etc.) | Competencias |
 | Columna en tabla de asignaciones | "Contenidos asignados" | "Competencias asignadas" |
-| Drawer de asignación | Agregar contenidos (ver 3.2.1: cards compactos, filtro por origen, scroll) | Agregar competencias (ver 4.3.1: cards competencia + habilidades con checkbox; tabla dos líneas) |
+| Drawer de asignación | Agregar contenidos — catálogo tabla/cuadrícula (**§ 6.7.5**) | Agregar competencias (ver 4.3.1: cards competencia + habilidades con checkbox; tabla dos líneas) |
 | Cálculo de carga | Promedio % avance de 3 cursos/persona | Suma horas de contenidos de la competencia en vigencia ÷ meta 2 h |
 
 ---
@@ -441,7 +441,7 @@ En la **card de progreso del plan** (junto al **status tag**), hay un botón **t
 | `editar-plan-competencias.css` | Incluye la misma lógica de fila título + tag que `editar-plan-contenidos.css` + estilos mínimos propios. |
 | `detalle-plan.html` | Detalle de plan de **contenidos** (solo consulta de progreso: sin Guardar ni «Agregar asignación» en tabla; card en texto). Drawers, barra de acciones de tabla y **botón Opciones** del plan en card (**§ 6.2.2**). Búsqueda de tabla: **§ 6.6**. |
 | `detalle-plan-competencias.html` | Detalle de plan de **competencias** (mismo criterio). Tabla, drawers, **§ 6.2.2**, **§ 6.6**. |
-| `grupos.html`, `detalle-grupo.html`, `crear-grupo.html` | Gestión de grupos. |
+| `grupos.html`, `detalle-grupo.html`, `crear-grupo.html` | Gestión de grupos: lista, crear y detalle; drawer **Agregar integrantes** reutiliza **`drawer-participantes-colab-table.js`** (**§ 6.7.6**). |
 | `contenidos.html`, `categorias.html`, `chat-ia-grupos.html` | Contenidos, categorías y chat IA (otros flujos del LMS Creator). |
 
 ### 6.5 Wizard por pasos — drawer «Agregar asignación»
@@ -464,29 +464,33 @@ En **`editar-plan-competencias.html`** el patrón es el mismo con **Participante
 - **Paso 2 — Participantes** (solo flujo de 3 pasos): se muestra **una** de las tablas según la opción del paso 1:
   - Panel **`.drawer-usuarios-panel--colaborador`** — tabla de colaboradores.
   - Panel **`.drawer-usuarios-panel--grupos`** — tabla de grupos.
-- **Paso 3 — Catálogo:** en **contenidos**, búsqueda + filtro por origen + grid de cards de contenido; en **competencias**, búsqueda + grid de cards de competencia (sin el mismo filtro de catálogo UBITS/propio que en contenidos).
+- **Paso 3 — Catálogo:** en **contenidos**, toolbar + tabla/cuadrícula (**§ 6.7**); en **competencias**, búsqueda + grid de cards de competencia (sin catálogo de contenidos).
 
 #### Reglas de UI acordadas (no duplicar ni líneas extra)
 
 - **Sin título duplicado en paso 2:** el stepper ya muestra la etiqueta **«Participantes»**; **no** se añade un encabezado de texto ni un separador adicional encima de las tablas (el contenido del paso es solo el panel visible).
 - **Sin borde superior en paneles de participantes:** la clase **`.drawer-usuarios-panel`** en `crear-plan-contenidos.css` y `crear-plan-competencias.css` define solo `display: flex`, `flex-direction: column` y `gap` — **sin** `border-top`, **sin** `margin-top` / `padding-top` extra que dibujaran una línea entre las cards del paso 1 y la tabla (vale tanto para colaboradores como para grupos).
 
-#### Paso 3 en plan de contenidos — filtro del catálogo (dropdown)
+#### Paso 3 en plan de contenidos — catálogo (toolbar, tabla, cuadrícula)
 
-- **Textos de las opciones** (UI): **Todos**, **Solo catálogo UBITS**, **Solo catálogo propio**. Valores internos: `all`, `ubits`, `empresa` (filtran por `courseSource` en el catálogo). Mismas etiquetas en **`crear-plan-contenidos.html`**, **`editar-plan-contenidos.html`** (wizard de 2 pasos y drawer solo catálogo por fila).
-- **Visibilidad del menú (z-index):** el overlay del dropdown debe quedar **por encima** del drawer (el drawer usa `z-index` 1100–1101 en `components/drawer.css`; el dropdown por defecto en `dropdown-menu.css` está por debajo). En **`crear-plan-contenidos.css`** se listan explícitamente los IDs de overlay del filtro con **`z-index` 1102** (overlay) y **1103** (`.ubits-dropdown-menu__content`), entre otros:
-  - `#drawer-cursos-filter-overlay`, `#drawer-wiz-cursos-filter-overlay` (crear / wizard),
-  - **`#drawer-editplan-cursos-filter-overlay`** (drawer «Editar contenidos» por fila en `editar-plan-contenidos`, prefijo `drawer-editplan-`).
-- **Id del overlay:** en JS el id debe ser **`…-cursos-filter-overlay`** (p. ej. `drawer-wiz-cursos-filter-overlay`), **no** `…-cursos-filter-overlay-edit`, para que coincida con las reglas CSS anteriores; el prefijo `drawer-editplan` cubre el drawer de edición por fila.
-- **Alineación:** el panel del menú debe quedar con el **borde derecho alineado al botón** de filtro (icono); en JS, tras `openDropdownMenu`, se fuerza `left: auto` y `right` en px respecto al ancho del viewport (`window.innerWidth - getBoundingClientRect().right` del botón), y un segundo ajuste en `requestAnimationFrame` por si cambia el ancho tras el layout.
+Sustituye al antiguo dropdown «Todos / Solo catálogo UBITS / Solo catálogo propio». La especificación completa está en **§ 6.7**. Resumen:
+
+- **Vista Tabla:** filtros por **encabezado de columna** (dropdown con checkboxes; autocomplete solo si hay **más de 3** valores únicos en esa columna).
+- **Vista Cuadrícula:** botón **Filtrar** en toolbar → **modal «Filtros»** (selects + switch «Con certificación»). El botón de modal **solo es visible en cuadrícula**; en tabla los criterios equivalentes van por columna cuando aplica.
+- **Z-index:** overlays de filtros de columna y modal por encima del drawer (`crear-plan-contenidos.css`: `[id*="-cursos-col-filter-"]`, `.drawer-contenidos-filtros-modal`, etc.).
 
 #### Archivos tocados por este flujo
 
 | Archivo | Rol |
 |---------|-----|
-| `crear-plan-contenidos.html` | HTML/JS del wizard: steppers 2 y 3 pasos, pasos DOM `#drawer-wizard-step1` … `step3`, filtro wizard `#drawer-wiz-cursos-filter-btn` / overlay `#drawer-wiz-cursos-filter-overlay`. |
+| `crear-plan-contenidos.html` | HTML/JS del wizard: steppers 2 y 3 pasos, pasos DOM `#drawer-wizard-step1` … `step3`, catálogo paso 3 vía `getDrawerContenidosCatalogSectionHtml('drawer-wiz')` (**§ 6.7.5**). |
 | `crear-plan-competencias.html` | Mismo patrón de wizard; paso 3 es competencias (`#drawer-wiz-comp-search-container`, etc.), sin filtro de catálogo UBITS/propio. |
-| `crear-plan-contenidos.css` | Estilos stepper en drawer, paneles `.drawer-usuarios-panel`, z-index filtros (`#drawer-cursos-filter-overlay`, `#drawer-wiz-cursos-filter-overlay`, **`#drawer-editplan-cursos-filter-overlay`**). |
+| `crear-plan-contenidos.css` | Estilos stepper en drawer, paneles `.drawer-usuarios-panel`, catálogo contenidos (**§ 6.7.5**): tabla ancha, filtros columna/modal, switch certificación, z-index overlays. |
+| `drawer-contenidos-catalog-section.js` | Markup toolbar + tabla/cuadrícula del paso Contenidos (**§ 6.7.5**). |
+| `drawer-contenidos-paso2.js` | Lógica catálogo: vistas Tabla/Cuadrícula, filtros encabezado, selección, scroll (**§ 6.7.5**). |
+| `drawer-contenidos-filtros.js` | Modal Filtros (cuadrícula), chips, badge, `filterCursosBySearchAndFilters` (**§ 6.7.5**). |
+| `catalogo-contenidos-drawer.js` | Fusiona UBITS + Fiqsha → `CATALOGO_CURSOS_DRAWER`. |
+| `drawer-participantes-colab-table.js` | Tabla colaboradores paso Participantes (**§ 6.7.4**) y drawer **Agregar integrantes** de grupos (**§ 6.7.6**). |
 | `crear-plan-competencias.css` | Igual para paneles `.drawer-usuarios-panel` y layout del wizard. |
 | `editar-plan-contenidos.html` | Wizard **2 pasos** (Participantes → Contenidos) para «Agregar asignación»; tabla solo usuarios; drawer por fila «Editar contenidos» = catálogo una columna (`attachWizardContenidosPaso2` con `idPrefix: 'drawer-editplan'`). Título + tag en fila: **§ 6.2.1**. |
 | `editar-plan-competencias.html` | Igual estructura de wizard que `editar-plan-contenidos`, con competencias: **§ 4.3.2**, **§ 6.4**, **§ 6.2.1** (tag + animación compartidos con contenidos). |
@@ -523,6 +527,269 @@ En las tablas de asignaciones del detalle y en el drawer de colaboradores se ali
 
 En páginas que usen `createUbitsDataTable` con orden o filtros en columnas: **dropdown-menu** + **table** + **checkbox** + **empty-state** + **input** + **tooltip**, según indica el comentario de cabecera de `ubits-data-table.js`. Ver también la lista de **§ 6.4** y ejemplos en `crear-plan-contenidos.html` / `planes-contenidos.html`.
 
+### 6.7 Tablas del módulo — columnas, filtros y acciones
+
+Inventario de **todas las tablas** relevantes en planes de formación (LMS Creator). Componente estándar: **`createUbitsDataTable`** (`components/ubits-data-table.js`). **Excepción:** catálogo de contenidos del drawer usa tabla **custom** en `drawer-contenidos-paso2.js` (no es `createUbitsDataTable`).
+
+#### 6.7.1 Lista de planes (`planes-contenidos.html` / `planes-competencias.html`)
+
+| Columna | Orden | Filtro encabezado | Notas |
+|---------|-------|-------------------|--------|
+| Nombre del plan | Sí | No | Clic en fila → edición o detalle (**§ 4.4**) |
+| Fecha inicio | Sí (fecha) | No | |
+| Fecha fin | Sí (fecha) | No | |
+| Estado | No | **Sí** | Valores únicos de la columna (Planeado, Vigente, No vigente, Procesando X%, etc.) |
+| Progreso | Sí (número) | No | Celda con barra + % |
+| Acciones | No | No | Botón **⋮** (Ver progreso, Editar, Eliminar) |
+
+**Features:** checkboxes, búsqueda global, filtros (solo columna Estado), Ver seleccionados, contador de resultados, barra de acciones.
+
+**Barra de acciones (varias filas seleccionadas):** **Eliminar** → modal de confirmación (escribir «eliminar»).
+
+**Filtros encabezado (`ubits-data-table`):** dropdown con checkboxes multi-selección; **Cancelar** / **Aplicar**; chips «Filtros aplicados» + **Limpiar filtros**.
+
 ---
 
-*Última actualización: jun 2026. **BD única `bd-planes-formacion.js` (§ 7):** 63 planes contenidos (9 áreas × 7Q), 6 planes competencias (3 competencias × 2 años), meta 2 h/plan, progreso competencias por ventana de fechas, «hoy» = 19 jun 2026, visibilidad Mi equipo = cualquier plan con subordinado. Prototipo: LMS Creator. **Listas `planes-contenidos.html` y `planes-competencias.html` (§ 4.4):** menú ⋮ (**Ver progreso**, **Editar**, **Eliminar**), plantillas **`?id=`**, redirección edición si No vigente; en **competencias** tres planes de ejemplo (Planeado / Vigente / No vigente), sin fila Procesando. **Card del plan (`detalle-plan-*` / `editar-plan-*`):** botón **Opciones** y menú por estado (**§ 6.2.2**). **Crear contenidos / detalle:** § 3.2.1, 3.3. **Editar plan contenidos y competencias (`editar-plan-*.html`):** § 3.2.2 y § 4.3.2 — catálogo **`?id=`**; tag en reposo **Planeado** si backend **Procesando**; al **agregar asignación** (wizard 2 pasos): texto **«Procesando 0%»…«100%»** **dentro** del **status tag** en 4 s (como la animación en la **lista de contenidos** `planes-contenidos.html`); vuelta a **Planeado** o **Vigente**; toast solo si hubo filas nuevas. Competencias: horas por competencia, `attachWizardCompetenciasPaso2`, prefijos `drawer-wiz` / `drawer-editplan`, navegación lista **§ 2.1.2**. **§ 6.2.1** título + tag en fila; **§ 6.2.2** menú Opciones; **§ 6.4** tabla de archivos; **§ 6.5** wizard 2 vs 3 pasos y filtros; **§ 6.6** búsqueda en `ubits-data-table` (texto de celda por columnas usuario/avatar). Enlaces antiguos con `#competencias` o `?tab=competencias` hacia la URL de contenidos: **JS** en `planes-contenidos.html` redirige a `planes-competencias.html` (Netlify `_redirects` no admite fragmento en el origen).*
+#### 6.7.2 Tabla de asignaciones — crear / editar plan (`crear-plan-contenidos.html`, `editar-plan-contenidos.html`)
+
+| Columna | Filtro | Notas |
+|---------|--------|--------|
+| Asignados | No | Avatar/lista según tipo (toda empresa, grupos, colaboradores, archivo) |
+| Contenidos asignados | No | Botón **Agregar contenidos** / **N contenidos** → drawer catálogo (**§ 6.7.5**) |
+
+**Features:** checkboxes, Ver seleccionados, contador, barra de acciones. **Sin** búsqueda ni filtros por columna.
+
+**Botón primario toolbar:** **Agregar asignación** → wizard drawer (**§ 6.5**).
+
+**Barra de acciones:** **Eliminar** → modal (escribir «eliminar»).
+
+**Editar plan:** mismas columnas pero solo filas **por colaborador** (sin toda empresa / grupos / archivo en tabla).
+
+---
+
+#### 6.7.3 Tabla de asignaciones — detalle plan (`detalle-plan.html`, `detalle-plan-competencias.html`)
+
+**Contenidos:**
+
+| Columna | Orden | Filtro | Notas |
+|---------|-------|--------|--------|
+| Nombre del usuario | Sí | No | Avatar + nombre (**§ 6.6**) |
+| Último acceso | No | No | |
+| Última fecha de progreso | Sí (fecha) | No | |
+| Contenidos | No | No | Botón **N contenidos** → drawer/panel según estado |
+| Progreso | Sí (número) | No | |
+
+**Competencias:** columnas equivalentes con **Competencias** en lugar de Contenidos.
+
+**Features:** checkboxes, búsqueda (**Buscar usuarios** / placeholder **Buscar por nombre de usuario…**), Ver seleccionados, contador, barra de acciones. **Sin** filtros por columna.
+
+**Barra de acciones (varias filas):**
+
+| Botón | Cuándo |
+|-------|--------|
+| Enviar recordatorio | Siempre (demo toast) |
+| Asignar contenidos / Asignar competencias | Solo **Planeado** o **Vigente** (no **No vigente**) |
+| Eliminar del plan | Siempre → modal «eliminar» |
+
+**Sin** botón primario **Agregar asignación** en detalle (solo consulta); edición en `editar-plan-*.html`.
+
+---
+
+#### 6.7.4 Tabla participantes — wizard «Agregar asignación» (`drawer-participantes-colab-table.js`)
+
+Paso **Participantes** (flujo 3 pasos o editar-plan 2 pasos). Datos: colaboradores de empresa (`bd-master-colaboradores.js`).
+
+| Columna | Visible default | Filtro encabezado |
+|---------|-----------------|-------------------|
+| Username | Sí | Sí |
+| Nombre del usuario | Sí | Sí |
+| Correo electrónico | Sí | Sí |
+| Área | Sí | Sí |
+| Líder | Sí | Sí |
+| Cargo, DNI, País, Ciudad, Nivel en empresa, Columna A, Columna B | No (toggle) | Sí (si visible) |
+
+**Features:** checkboxes, búsqueda, **filtros por columna** (`createUbitsDataTable`), Ver seleccionados, contador, **Columnas visibles** (toggle).
+
+**Reutilización:** el mismo módulo y las mismas columnas/features se montan en el drawer **Agregar integrantes** / **Gestionar integrantes** de **`crear-grupo.html`** y **`detalle-grupo.html`** (**§ 6.7.6**).
+
+**Tabla grupos** (mismo wizard, opción por grupos): columnas propias del HTML de crear-plan; búsqueda + selección; ver `drawer-grupos-data-table-container`.
+
+---
+
+#### 6.7.5 Catálogo de contenidos — drawer paso Contenidos (**§ 6.7 detalle**)
+
+**Archivos:** `drawer-contenidos-catalog-section.js` (markup), `drawer-contenidos-paso2.js` (tabla/cuadrícula/selección), `drawer-contenidos-filtros.js` (modal + chips), `catalogo-contenidos-drawer.js` (datos → `CATALOGO_CURSOS_DRAWER`).
+
+**Dónde se monta:** wizard paso 3 (`getDrawerContenidosCatalogSectionHtml('drawer-wiz')`), editar por fila (`drawer-editplan`), detalle-plan drawer agregar contenidos. Prefijos de id: `drawer-wiz-`, `drawer-editplan-`, etc.
+
+##### Toolbar («Buscar y agregar contenidos»)
+
+El **`ubits-toolbar-panel`** (variante `--plain`) incluye en **`__title-block`**: título **«Lista de contenidos»** (`ubits-toolbar-panel__title`) + meta **N/M resultados**, alineado a **`u-corporativa.html`** y al componente toolbar-panel.
+
+| Control | Comportamiento |
+|---------|----------------|
+| Contador | **`N/M resultados`** — `N` = filas/cards visibles tras filtros + «Ver seleccionados»; `M` = total filtrado por búsqueda + filtros modal/columna |
+| **Ver seleccionados** | Visible si hay ≥1 contenido seleccionado. Alterna filtrar la vista solo a la selección (**Dejar de ver seleccionados (N)**) |
+| **Buscar** (lupa) | Despliega input inline **Buscar contenidos…**; filtra título, competencia/categoría, tipo, nivel, habilidad, experto, aliado, catálogo |
+| **Filtrar** (icono) | **Solo en vista Cuadrícula** → abre modal **Filtros** |
+| **Ver como: Tabla / Cuadrícula** | Default **Tabla**. Cambiar vista resetea paginación (12 ítems) |
+
+##### Vista Tabla (default)
+
+Tabla ancha con scroll horizontal (`drawer-contenidos-catalog-table`).
+
+| Columna | Filtro encabezado | Valor mostrado / notas |
+|---------|-------------------|-------------------------|
+| Checkbox | — | Selección múltiple; header con seleccionar/deseleccionar todo (solo página visible) |
+| Catálogo | **Sí** | Catálogo UBITS / Catálogo Fiqsha |
+| Contenido | No | Título |
+| Tipo | **Sí** | Curso, Podcast, Ruta, etc. |
+| Competencia / Categoría | **Sí** | UBITS: competencia; Fiqsha: categoría (`competency \|\| categoria`) |
+| Habilidad | **Sí** | UBITS: habilidad; Fiqsha: suele ser **—** |
+| Aliado | **Sí** | UI dice **Aliado** (dato proveedor/aliado) |
+| Nivel | **Sí** | Básico / Intermedio / Avanzado |
+| Experto | **Sí** | UBITS; Fiqsha: **—** |
+| Idioma | **Sí** | Español, Inglés, Portugués, … |
+| Nivel de inglés | **Sí** | CEFR A1–C2; vacío → **—** |
+| Con certificación | **Sí** | **Sí** / **No** (texto en celda) |
+
+**Filtro encabezado (UX):**
+
+- Botón **tertiary** icon-only con `fa-filter` junto al título de columna; clase activa **`drawer-contenidos-col-filter-btn--active`** si hay criterios.
+- Dropdown (`getDropdownMenuHtml`): lista con **checkboxes** multi-selección, **Cancelar** / **Aplicar**.
+- **Autocomplete** en el dropdown **solo si la columna tiene más de 3 valores únicos** en el catálogo cargado. Placeholder **Buscar…** en Aliado, Experto, Competencia/Categoría, Habilidad; en otras columnas largas: **Filtrar por {columna}…**.
+- Valores vacíos se normalizan a **—** en tabla y en opciones de filtro.
+- Overlay id: `{idPrefix}-cursos-col-filter-{colKey}`; z-index por encima del drawer (**§ 6.5**).
+
+**Acciones fila:** checkbox o clic en fila → añade/quita de selección; al añadir desde tabla se limpia búsqueda inline.
+
+##### Vista Cuadrícula
+
+- Grid de **`card-content-compact`**: miniatura, título, metadatos compactos.
+- Clic en card → toggle selección; borde/clase **`course-card-compact--selected`**.
+- **No** hay filtros por encabezado (no hay tabla visible).
+- Botón **Filtrar** en toolbar → **modal «Filtros»** (ver abajo).
+
+##### Modal «Filtros» (vista Cuadrícula)
+
+Título **Filtros**; tamaño `sm`; **`z-index` 1200** (`.drawer-contenidos-filtros-modal`).
+
+| Campo (orden) | Control | Criterio |
+|---------------|---------|----------|
+| Catálogo | Select | Todos / **Catálogo UBITS** / **Catálogo Fiqsha** (`ubits` / `empresa` → `courseSource`) |
+| Tipo de contenido | Select | Maestro tipos |
+| Competencia | Select | Maestro competencias (id) |
+| Habilidad | Select | Maestro habilidades (id) |
+| Categoría | Select | Maestro categorías Fiqsha (id) |
+| Aliado | Select | Maestro aliados (id) |
+| Nivel | Select | Maestro niveles |
+| Experto | Select | Valores únicos del catálogo |
+| Idioma | Select | Español, Inglés, Portugués |
+| Nivel de inglés | Select | A1–C2 |
+| Con certificación | **Switch** (`ubits-switch`) | **Apagado (default):** sin filtro (muestra con y sin certificado). **Prendido:** solo contenidos **con** certificación. **No** filtra «sin certificación» desde el modal; eso solo vía filtro de columna **Con certificación → No** en vista Tabla |
+
+Pie modal: **Borrar filtros** (terciario, estilo secondary) + **Aplicar**.
+
+**Badge del botón Filtrar:** cuenta **solo criterios del modal** (`getAppliedCount`), no filtros de columna.
+
+##### Filtros aplicados (chips)
+
+Debajo del toolbar (`drawer-filtros-aplicados`):
+
+- Chips de filtros **modal** (ej. **Catálogo: Catálogo UBITS**, **Con certificación: Sí**).
+- Chips de filtros **columna** (ej. **Aliado: Coursera**).
+- Cada chip tiene **×** para quitar ese criterio.
+- **Limpiar filtros** → borra modal **y** columnas; reconstruye encabezado de tabla.
+
+##### Pipeline de filtrado
+
+1. `filterCursosBySearchAndFilters` — búsqueda + criterios **modal**.
+2. `applyColumnFilters` — criterios **encabezado** (solo vista Tabla; estado en `overlay._drawerContenidosColumnFilters`).
+
+##### Paginación / scroll
+
+- **`PAGE_SIZE = 12`**; al llegar al final del scroll en `.drawer-cursos-resultados-bg` se cargan 12 más (`maybeLoadMore`).
+
+##### Empty state
+
+Sin resultados (con catálogo no vacío): **No se encontraron resultados**, icono búsqueda, botón **Limpiar búsqueda** (resetea búsqueda y «Ver seleccionados»).
+
+##### Selección y pie del drawer
+
+- La selección vive en `overlay._wizCursosSeleccionados` (o prop configurable).
+- El wizard sincroniza contadores y tabla derecha de «contenidos agregados» vía callback `onSync`.
+- Drawer por fila / detalle: **Cancelar** + **Agregar** confirman la selección al usuario asignado.
+
+##### Datos por catálogo (campos en fila)
+
+| Campo | Catálogo UBITS | Catálogo Fiqsha |
+|-------|----------------|-----------------|
+| Competencia / Categoría | `competency` | `categoria` |
+| Habilidad, Experto, Nivel inglés | Sí (maestros) | No (celda **—**) |
+| Aliado | Todos los aliados del maestro | Proveedor corporativo |
+| Con certificación | `conCertificacion` → Sí/No | Igual |
+
+##### Drawer legacy (sin toolbar tabla)
+
+Si el HTML **no** incluye `#…-cursos-table-wrap`, `usesToolbarCatalog = false`: solo búsqueda + **cuadrícula** de cards (sin tabla ni filtros de columna). Usado en algunos drawers antiguos con prefijo vacío.
+
+##### CSS e imports
+
+- `crear-plan-contenidos.css` / `detalle-plan.css`: tabla ancha, filtros columna, modal, switch (`switch.css`).
+- Overlays columna: `[id*="-cursos-col-filter-"]` con z-index 1102–1103.
+
+---
+
+#### 6.7.6 Grupos — tabla integrantes y drawer «Agregar integrantes» (`crear-grupo.html`, `detalle-grupo.html`)
+
+Pantallas de **crear** y **detalle** de un grupo de colaboradores. No forman parte del wizard «Agregar asignación» de planes (**§ 6.5**), pero el **drawer de selección de personas** comparte el mismo módulo de tabla que el paso **Participantes** (**§ 6.7.4**).
+
+##### Tabla principal — «Lista de integrantes»
+
+Montada en `#crear-grupo-integrantes-data-table-container` / `#detalle-grupo-integrantes-data-table-container` con **`createUbitsDataTable`**.
+
+| Columna | Filtro encabezado | Notas |
+|---------|-------------------|--------|
+| Nombre del usuario | No | Avatar + nombre (`detalle-plan-usuario-cell`) |
+| Correo | No | |
+| Área | No | |
+
+**Features:** búsqueda, contador de resultados. **Sin** checkboxes, **sin** filtros por columna, **sin** Columnas visibles.
+
+**Botón primario toolbar:**
+
+| Estado | Texto del botón | Acción |
+|--------|-----------------|--------|
+| Grupo vacío | **Agregar integrantes** | Abre drawer en modo alta |
+| Con integrantes | **Gestionar integrantes** | Abre drawer en modo gestión (pre-selección) |
+
+**Empty state:** «Aún no hay integrantes» (crear) / «No hay integrantes en este grupo» (detalle); icono `fa-user-plus`; descripción con copy de producto.
+
+##### Drawer `#drawer-agregar-integrantes`
+
+| Aspecto | Detalle |
+|---------|---------|
+| Título | **Agregar integrantes** (alta) / **Gestionar integrantes** (edición de membresía) |
+| Cuerpo | Panel `.drawer-usuarios-panel--colaborador` con contenedor `#drawer-integrantes-colab-data-table-container.drawer-colab-dt-wrapper` |
+| Tabla | **`DrawerParticipantesColabTable.createDrawerParticipantesColabDataTable()`** — `tableId`: `drawer-integrantes-colab-table` |
+| Datos | `TAREAS_PLANES_DB.getEmpleadosEjemplo()` → **`mapEmpleadoParaDrawerColab(e, idx)`** (misma fila que § 6.7.4; campos extendidos en `bd-master-colaboradores.js`) |
+| Columnas / features | **Idénticas a § 6.7.4** (5 visibles + 7 opcionales vía **Columnas visibles**; filtros por columna, Ver seleccionados, etc.) |
+| Pre-selección | Modo **Gestionar:** `initialSelectedIds` = ids actuales de `integrantesData` |
+| Footer | **Cancelar** + **Agregar** (alta) / **Guardar** (gestionar) |
+
+**Al confirmar:** lee `getSelectedIds()` del data-table del drawer y actualiza el array local `integrantesData` (campos persistidos en la tabla principal: `id`, `nombre`, `correo`, `area`, `avatar`). Modo gestionar **reemplaza** la lista; modo agregar **añade** sin duplicar por `id` o par `correo`+`nombre`. Refresca la tabla principal y cierra el drawer.
+
+##### Archivos
+
+| Archivo | Rol |
+|---------|-----|
+| `crear-grupo.html` | Formulario nombre/descripción + tabla integrantes + drawer |
+| `detalle-grupo.html` | Igual patrón; importa `crear-grupo.css` |
+| `crear-grupo.css` | Panel drawer (`.drawer-usuarios-panel`, `.drawer-colab-dt-wrapper`), celda usuario, **z-index** de dropdowns de filtros/columnas sobre el drawer (`body.page-crear-grupo` y `body.page-detalle-grupo` → overlay 1200 / content 1201) |
+| `drawer-participantes-colab-table.js` | Módulo compartido con paso Participantes (**§ 6.7.4**) |
+
+**Scripts del drawer:** `drawer-participantes-colab-table.js` → `ubits-data-table.js` → `dropdown-menu.js` → `drawer.js` (orden en ambos HTML).
+
+---
+
+*Última actualización: jun 2026. **BD única `bd-planes-formacion.js` (§ 7):** 63 planes contenidos (9 áreas × 7Q), 6 planes competencias (3 competencias × 2 años), meta 2 h/plan, progreso competencias por ventana de fechas, «hoy» = 19 jun 2026, visibilidad Mi equipo = cualquier plan con subordinado. Prototipo: LMS Creator. **Listas `planes-contenidos.html` y `planes-competencias.html` (§ 4.4):** menú ⋮ (**Ver progreso**, **Editar**, **Eliminar**), plantillas **`?id=`**, redirección edición si No vigente; en **competencias** tres planes de ejemplo (Planeado / Vigente / No vigente), sin fila Procesando. **Card del plan (`detalle-plan-*` / `editar-plan-*`):** botón **Opciones** y menú por estado (**§ 6.2.2**). **Catálogo drawer contenidos:** § 3.2.1, 3.3.2, **§ 6.7.5** (tabla/cuadrícula, filtros modal + columna, switch certificación). **Grupos (`crear-grupo.html`, `detalle-grupo.html`):** drawer **Agregar integrantes** reutiliza **`drawer-participantes-colab-table.js`** — mismas columnas/features que paso Participantes (**§ 6.7.6**). **Editar plan contenidos y competencias (`editar-plan-*.html`):** § 3.2.2 y § 4.3.2 — catálogo **`?id=`**; tag en reposo **Planeado** si backend **Procesando**; animación **Procesando 0%…100%** en status tag al agregar asignación; toast solo si hubo filas nuevas. Competencias: horas por competencia, `attachWizardCompetenciasPaso2`, prefijos `drawer-wiz` / `drawer-editplan`. **§ 6.2.1** título + tag en fila; **§ 6.2.2** menú Opciones; **§ 6.4** tabla de archivos; **§ 6.5** wizard 2 vs 3 pasos; **§ 6.6** búsqueda `ubits-data-table`; **§ 6.7** inventario tablas/filtros/acciones. Enlaces antiguos `#competencias` / `?tab=competencias`: redirect JS a `planes-competencias.html`.*

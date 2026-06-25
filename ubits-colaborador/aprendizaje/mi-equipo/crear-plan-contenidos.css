@@ -1,3 +1,5 @@
+@import url('../../../components/switch.css');
+
 /* ========================================
    ESTILOS ESPECÍFICOS PARA CREAR PLAN DE CONTENIDOS
    ======================================== */
@@ -744,6 +746,16 @@
 .drawer-contenidos-filtros-modal-fields .ucorp-filtros-modal-field .ubits-input-container {
     width: 100%;
     max-width: 100%;
+}
+
+.drawer-contenidos-filtros-modal-fields .drawer-contenidos-filtro-switch-field {
+    display: flex;
+    align-items: center;
+    min-height: 40px;
+}
+
+.drawer-contenidos-filtros-modal-fields .drawer-contenidos-filtro-switch-field .ubits-switch {
+    width: 100%;
 }
 
 /* Dropdown del filtro del drawer (legacy): por encima del drawer (drawer usa z-index 1100–1101).

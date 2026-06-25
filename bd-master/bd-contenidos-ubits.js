@@ -4,9 +4,10 @@
  * Nivel: `nivelId` → `bd-master/bd-master-niveles-contenido.js`.
  * Proveedores: `providersAliadosIds` → `bd-master/bd-master-aliados.js`.
  * Competencia / habilidades: `competenciaPrincipalId`, `habilidadPrincipalId`, `habilidadesSecundariasIds` → `bd-master-competencias.js` / `bd-master-habilidades.js` (sin nombre duplicado en esta BD).
+ * Catálogo: `catalogoId` (`catalogo_ubits`). Certificación: `conCertificacion` (boolean).
  */
 window.BDS_CONTENIDOS_UBITS = {
-  "version": "2.0",
+  "version": "2.1",
   "source": "bd-master esquema + rutas UBITS + catálogo cards-learn",
   "total": 85,
   "contents": [
@@ -38,7 +39,9 @@ window.BDS_CONTENIDOS_UBITS = {
       "nivelId": "niv-001",
       "providersAliadosIds": [
         "aly-001"
-      ]
+      ],
+      "catalogoId": "catalogo_ubits",
+      "conCertificacion": false
     },
     {
       "id": "u002",
@@ -68,7 +71,9 @@ window.BDS_CONTENIDOS_UBITS = {
       "nivelId": "niv-002",
       "providersAliadosIds": [
         "aly-001"
-      ]
+      ],
+      "catalogoId": "catalogo_ubits",
+      "conCertificacion": true
     },
     {
       "id": "u003",
@@ -98,7 +103,9 @@ window.BDS_CONTENIDOS_UBITS = {
       "nivelId": "niv-003",
       "providersAliadosIds": [
         "aly-001"
-      ]
+      ],
+      "catalogoId": "catalogo_ubits",
+      "conCertificacion": false
     },
     {
       "id": "u004",
@@ -128,7 +135,9 @@ window.BDS_CONTENIDOS_UBITS = {
       "nivelId": "niv-003",
       "providersAliadosIds": [
         "aly-001"
-      ]
+      ],
+      "catalogoId": "catalogo_ubits",
+      "conCertificacion": false
     },
     {
       "id": "u005",
@@ -158,7 +167,9 @@ window.BDS_CONTENIDOS_UBITS = {
       "nivelId": "niv-003",
       "providersAliadosIds": [
         "aly-001"
-      ]
+      ],
+      "catalogoId": "catalogo_ubits",
+      "conCertificacion": true
     },
     {
       "id": "u006",
@@ -188,7 +199,9 @@ window.BDS_CONTENIDOS_UBITS = {
       "nivelId": "niv-002",
       "providersAliadosIds": [
         "aly-001"
-      ]
+      ],
+      "catalogoId": "catalogo_ubits",
+      "conCertificacion": false
     },
     {
       "id": "u007",
@@ -220,7 +233,9 @@ window.BDS_CONTENIDOS_UBITS = {
         "aly-001",
         "aly-006",
         "aly-002"
-      ]
+      ],
+      "catalogoId": "catalogo_ubits",
+      "conCertificacion": false
     },
     {
       "id": "u008",
@@ -250,7 +265,9 @@ window.BDS_CONTENIDOS_UBITS = {
       "nivelId": "niv-002",
       "providersAliadosIds": [
         "aly-001"
-      ]
+      ],
+      "catalogoId": "catalogo_ubits",
+      "conCertificacion": true
     },
     {
       "id": "u009",
@@ -280,7 +297,9 @@ window.BDS_CONTENIDOS_UBITS = {
       "nivelId": "niv-002",
       "providersAliadosIds": [
         "aly-001"
-      ]
+      ],
+      "catalogoId": "catalogo_ubits",
+      "conCertificacion": false
     },
     {
       "id": "u010",
@@ -310,7 +329,9 @@ window.BDS_CONTENIDOS_UBITS = {
       "nivelId": "niv-002",
       "providersAliadosIds": [
         "aly-001"
-      ]
+      ],
+      "catalogoId": "catalogo_ubits",
+      "conCertificacion": false
     },
     {
       "id": "u011",
@@ -342,7 +363,9 @@ window.BDS_CONTENIDOS_UBITS = {
         "aly-001",
         "aly-015",
         "aly-005"
-      ]
+      ],
+      "catalogoId": "catalogo_ubits",
+      "conCertificacion": true
     },
     {
       "id": "u012",
@@ -372,7 +395,9 @@ window.BDS_CONTENIDOS_UBITS = {
       "nivelId": "niv-001",
       "providersAliadosIds": [
         "aly-001"
-      ]
+      ],
+      "catalogoId": "catalogo_ubits",
+      "conCertificacion": false
     },
     {
       "id": "u013",
@@ -402,7 +427,9 @@ window.BDS_CONTENIDOS_UBITS = {
       "nivelId": "niv-002",
       "providersAliadosIds": [
         "aly-001"
-      ]
+      ],
+      "catalogoId": "catalogo_ubits",
+      "conCertificacion": false
     },
     {
       "id": "u014",
@@ -432,7 +459,9 @@ window.BDS_CONTENIDOS_UBITS = {
       "nivelId": "niv-001",
       "providersAliadosIds": [
         "aly-001"
-      ]
+      ],
+      "catalogoId": "catalogo_ubits",
+      "conCertificacion": true
     },
     {
       "id": "u015",
@@ -462,7 +491,9 @@ window.BDS_CONTENIDOS_UBITS = {
       "nivelId": "niv-002",
       "providersAliadosIds": [
         "aly-001"
-      ]
+      ],
+      "catalogoId": "catalogo_ubits",
+      "conCertificacion": false
     },
     {
       "id": "u016",
@@ -492,7 +523,9 @@ window.BDS_CONTENIDOS_UBITS = {
       "nivelId": "niv-002",
       "providersAliadosIds": [
         "aly-001"
-      ]
+      ],
+      "catalogoId": "catalogo_ubits",
+      "conCertificacion": false
     },
     {
       "id": "u017",
@@ -522,7 +555,9 @@ window.BDS_CONTENIDOS_UBITS = {
       "nivelId": "niv-002",
       "providersAliadosIds": [
         "aly-001"
-      ]
+      ],
+      "catalogoId": "catalogo_ubits",
+      "conCertificacion": true
     },
     {
       "id": "u018",
@@ -554,7 +589,9 @@ window.BDS_CONTENIDOS_UBITS = {
         "aly-001",
         "aly-012",
         "aly-007"
-      ]
+      ],
+      "catalogoId": "catalogo_ubits",
+      "conCertificacion": false
     },
     {
       "id": "u019",
@@ -584,7 +621,9 @@ window.BDS_CONTENIDOS_UBITS = {
       "nivelId": "niv-003",
       "providersAliadosIds": [
         "aly-001"
-      ]
+      ],
+      "catalogoId": "catalogo_ubits",
+      "conCertificacion": false
     },
     {
       "id": "u020",
@@ -614,7 +653,9 @@ window.BDS_CONTENIDOS_UBITS = {
       "nivelId": "niv-002",
       "providersAliadosIds": [
         "aly-001"
-      ]
+      ],
+      "catalogoId": "catalogo_ubits",
+      "conCertificacion": true
     },
     {
       "id": "u021",
@@ -644,7 +685,9 @@ window.BDS_CONTENIDOS_UBITS = {
       "nivelId": "niv-002",
       "providersAliadosIds": [
         "aly-001"
-      ]
+      ],
+      "catalogoId": "catalogo_ubits",
+      "conCertificacion": false
     },
     {
       "id": "u022",
@@ -674,7 +717,9 @@ window.BDS_CONTENIDOS_UBITS = {
       "nivelId": "niv-003",
       "providersAliadosIds": [
         "aly-001"
-      ]
+      ],
+      "catalogoId": "catalogo_ubits",
+      "conCertificacion": false
     },
     {
       "id": "u023",
@@ -704,7 +749,9 @@ window.BDS_CONTENIDOS_UBITS = {
       "nivelId": "niv-003",
       "providersAliadosIds": [
         "aly-001"
-      ]
+      ],
+      "catalogoId": "catalogo_ubits",
+      "conCertificacion": true
     },
     {
       "id": "u024",
@@ -734,7 +781,9 @@ window.BDS_CONTENIDOS_UBITS = {
       "nivelId": "niv-003",
       "providersAliadosIds": [
         "aly-001"
-      ]
+      ],
+      "catalogoId": "catalogo_ubits",
+      "conCertificacion": false
     },
     {
       "id": "u025",
@@ -764,7 +813,9 @@ window.BDS_CONTENIDOS_UBITS = {
       "nivelId": "niv-003",
       "providersAliadosIds": [
         "aly-001"
-      ]
+      ],
+      "catalogoId": "catalogo_ubits",
+      "conCertificacion": false
     },
     {
       "id": "u026",
@@ -794,7 +845,9 @@ window.BDS_CONTENIDOS_UBITS = {
       "nivelId": "niv-003",
       "providersAliadosIds": [
         "aly-001"
-      ]
+      ],
+      "catalogoId": "catalogo_ubits",
+      "conCertificacion": true
     },
     {
       "id": "u027",
@@ -824,7 +877,9 @@ window.BDS_CONTENIDOS_UBITS = {
       "nivelId": "niv-001",
       "providersAliadosIds": [
         "aly-001"
-      ]
+      ],
+      "catalogoId": "catalogo_ubits",
+      "conCertificacion": false
     },
     {
       "id": "u028",
@@ -854,7 +909,9 @@ window.BDS_CONTENIDOS_UBITS = {
       "nivelId": "niv-001",
       "providersAliadosIds": [
         "aly-001"
-      ]
+      ],
+      "catalogoId": "catalogo_ubits",
+      "conCertificacion": false
     },
     {
       "id": "u029",
@@ -886,7 +943,9 @@ window.BDS_CONTENIDOS_UBITS = {
         "aly-001",
         "aly-002",
         "aly-015"
-      ]
+      ],
+      "catalogoId": "catalogo_ubits",
+      "conCertificacion": true
     },
     {
       "id": "u030",
@@ -918,7 +977,9 @@ window.BDS_CONTENIDOS_UBITS = {
         "aly-001",
         "aly-005",
         "aly-004"
-      ]
+      ],
+      "catalogoId": "catalogo_ubits",
+      "conCertificacion": false
     },
     {
       "id": "u031",
@@ -948,7 +1009,9 @@ window.BDS_CONTENIDOS_UBITS = {
       "nivelId": "niv-002",
       "providersAliadosIds": [
         "aly-001"
-      ]
+      ],
+      "catalogoId": "catalogo_ubits",
+      "conCertificacion": false
     },
     {
       "id": "u032",
@@ -978,7 +1041,9 @@ window.BDS_CONTENIDOS_UBITS = {
       "nivelId": "niv-002",
       "providersAliadosIds": [
         "aly-001"
-      ]
+      ],
+      "catalogoId": "catalogo_ubits",
+      "conCertificacion": true
     },
     {
       "id": "u033",
@@ -1008,7 +1073,9 @@ window.BDS_CONTENIDOS_UBITS = {
       "nivelId": "niv-003",
       "providersAliadosIds": [
         "aly-001"
-      ]
+      ],
+      "catalogoId": "catalogo_ubits",
+      "conCertificacion": false
     },
     {
       "id": "u034",
@@ -1038,7 +1105,9 @@ window.BDS_CONTENIDOS_UBITS = {
       "nivelId": "niv-002",
       "providersAliadosIds": [
         "aly-001"
-      ]
+      ],
+      "catalogoId": "catalogo_ubits",
+      "conCertificacion": false
     },
     {
       "id": "u035",
@@ -1068,7 +1137,9 @@ window.BDS_CONTENIDOS_UBITS = {
       "nivelId": "niv-002",
       "providersAliadosIds": [
         "aly-001"
-      ]
+      ],
+      "catalogoId": "catalogo_ubits",
+      "conCertificacion": true
     },
     {
       "id": "u036",
@@ -1098,7 +1169,9 @@ window.BDS_CONTENIDOS_UBITS = {
       "nivelId": "niv-002",
       "providersAliadosIds": [
         "aly-001"
-      ]
+      ],
+      "catalogoId": "catalogo_ubits",
+      "conCertificacion": false
     },
     {
       "id": "u037",
@@ -1128,7 +1201,9 @@ window.BDS_CONTENIDOS_UBITS = {
       "nivelId": "niv-001",
       "providersAliadosIds": [
         "aly-001"
-      ]
+      ],
+      "catalogoId": "catalogo_ubits",
+      "conCertificacion": false
     },
     {
       "id": "u038",
@@ -1158,7 +1233,9 @@ window.BDS_CONTENIDOS_UBITS = {
       "nivelId": "niv-002",
       "providersAliadosIds": [
         "aly-001"
-      ]
+      ],
+      "catalogoId": "catalogo_ubits",
+      "conCertificacion": true
     },
     {
       "id": "u039",
@@ -1188,7 +1265,9 @@ window.BDS_CONTENIDOS_UBITS = {
       "nivelId": "niv-002",
       "providersAliadosIds": [
         "aly-001"
-      ]
+      ],
+      "catalogoId": "catalogo_ubits",
+      "conCertificacion": false
     },
     {
       "id": "u040",
@@ -1218,7 +1297,9 @@ window.BDS_CONTENIDOS_UBITS = {
       "nivelId": "niv-003",
       "providersAliadosIds": [
         "aly-001"
-      ]
+      ],
+      "catalogoId": "catalogo_ubits",
+      "conCertificacion": false
     },
     {
       "id": "u041",
@@ -1250,7 +1331,9 @@ window.BDS_CONTENIDOS_UBITS = {
         "aly-001",
         "aly-003",
         "aly-005"
-      ]
+      ],
+      "catalogoId": "catalogo_ubits",
+      "conCertificacion": true
     },
     {
       "id": "u042",
@@ -1282,7 +1365,9 @@ window.BDS_CONTENIDOS_UBITS = {
         "aly-001",
         "aly-014",
         "aly-004"
-      ]
+      ],
+      "catalogoId": "catalogo_ubits",
+      "conCertificacion": false
     },
     {
       "id": "u043",
@@ -1314,7 +1399,9 @@ window.BDS_CONTENIDOS_UBITS = {
         "aly-001",
         "aly-010",
         "aly-009"
-      ]
+      ],
+      "catalogoId": "catalogo_ubits",
+      "conCertificacion": false
     },
     {
       "id": "u044",
@@ -1344,7 +1431,9 @@ window.BDS_CONTENIDOS_UBITS = {
       "nivelId": "niv-002",
       "providersAliadosIds": [
         "aly-001"
-      ]
+      ],
+      "catalogoId": "catalogo_ubits",
+      "conCertificacion": true
     },
     {
       "id": "u045",
@@ -1374,7 +1463,9 @@ window.BDS_CONTENIDOS_UBITS = {
       "nivelId": "niv-002",
       "providersAliadosIds": [
         "aly-001"
-      ]
+      ],
+      "catalogoId": "catalogo_ubits",
+      "conCertificacion": false
     },
     {
       "id": "u046",
@@ -1404,7 +1495,9 @@ window.BDS_CONTENIDOS_UBITS = {
       "nivelId": "niv-001",
       "providersAliadosIds": [
         "aly-001"
-      ]
+      ],
+      "catalogoId": "catalogo_ubits",
+      "conCertificacion": false
     },
     {
       "id": "u047",
@@ -1434,7 +1527,9 @@ window.BDS_CONTENIDOS_UBITS = {
       "nivelId": "niv-001",
       "providersAliadosIds": [
         "aly-001"
-      ]
+      ],
+      "catalogoId": "catalogo_ubits",
+      "conCertificacion": true
     },
     {
       "id": "u048",
@@ -1464,7 +1559,9 @@ window.BDS_CONTENIDOS_UBITS = {
       "nivelId": "niv-002",
       "providersAliadosIds": [
         "aly-001"
-      ]
+      ],
+      "catalogoId": "catalogo_ubits",
+      "conCertificacion": false
     },
     {
       "id": "u049",
@@ -1494,7 +1591,9 @@ window.BDS_CONTENIDOS_UBITS = {
       "nivelId": "niv-003",
       "providersAliadosIds": [
         "aly-001"
-      ]
+      ],
+      "catalogoId": "catalogo_ubits",
+      "conCertificacion": false
     },
     {
       "id": "u050",
@@ -1524,7 +1623,9 @@ window.BDS_CONTENIDOS_UBITS = {
       "nivelId": "niv-003",
       "providersAliadosIds": [
         "aly-001"
-      ]
+      ],
+      "catalogoId": "catalogo_ubits",
+      "conCertificacion": true
     },
     {
       "id": "u051",
@@ -1554,7 +1655,9 @@ window.BDS_CONTENIDOS_UBITS = {
       "nivelId": "niv-003",
       "providersAliadosIds": [
         "aly-001"
-      ]
+      ],
+      "catalogoId": "catalogo_ubits",
+      "conCertificacion": false
     },
     {
       "id": "u052",
@@ -1584,7 +1687,9 @@ window.BDS_CONTENIDOS_UBITS = {
       "nivelId": "niv-001",
       "providersAliadosIds": [
         "aly-001"
-      ]
+      ],
+      "catalogoId": "catalogo_ubits",
+      "conCertificacion": false
     },
     {
       "id": "u053",
@@ -1614,7 +1719,9 @@ window.BDS_CONTENIDOS_UBITS = {
       "nivelId": "niv-003",
       "providersAliadosIds": [
         "aly-001"
-      ]
+      ],
+      "catalogoId": "catalogo_ubits",
+      "conCertificacion": true
     },
     {
       "id": "u054",
@@ -1644,7 +1751,9 @@ window.BDS_CONTENIDOS_UBITS = {
       "nivelId": "niv-001",
       "providersAliadosIds": [
         "aly-001"
-      ]
+      ],
+      "catalogoId": "catalogo_ubits",
+      "conCertificacion": false
     },
     {
       "id": "u055",
@@ -1674,7 +1783,9 @@ window.BDS_CONTENIDOS_UBITS = {
       "nivelId": "niv-002",
       "providersAliadosIds": [
         "aly-001"
-      ]
+      ],
+      "catalogoId": "catalogo_ubits",
+      "conCertificacion": false
     },
     {
       "id": "u056",
@@ -1704,7 +1815,9 @@ window.BDS_CONTENIDOS_UBITS = {
       "nivelId": "niv-003",
       "providersAliadosIds": [
         "aly-001"
-      ]
+      ],
+      "catalogoId": "catalogo_ubits",
+      "conCertificacion": true
     },
     {
       "id": "u057",
@@ -1734,7 +1847,9 @@ window.BDS_CONTENIDOS_UBITS = {
       "nivelId": "niv-002",
       "providersAliadosIds": [
         "aly-001"
-      ]
+      ],
+      "catalogoId": "catalogo_ubits",
+      "conCertificacion": false
     },
     {
       "id": "u058",
@@ -1764,7 +1879,9 @@ window.BDS_CONTENIDOS_UBITS = {
       "nivelId": "niv-001",
       "providersAliadosIds": [
         "aly-001"
-      ]
+      ],
+      "catalogoId": "catalogo_ubits",
+      "conCertificacion": false
     },
     {
       "id": "u059",
@@ -1794,7 +1911,9 @@ window.BDS_CONTENIDOS_UBITS = {
       "nivelId": "niv-003",
       "providersAliadosIds": [
         "aly-001"
-      ]
+      ],
+      "catalogoId": "catalogo_ubits",
+      "conCertificacion": true
     },
     {
       "id": "u060",
@@ -1824,7 +1943,9 @@ window.BDS_CONTENIDOS_UBITS = {
       "nivelId": "niv-002",
       "providersAliadosIds": [
         "aly-001"
-      ]
+      ],
+      "catalogoId": "catalogo_ubits",
+      "conCertificacion": false
     },
     {
       "id": "u061",
@@ -1854,7 +1975,9 @@ window.BDS_CONTENIDOS_UBITS = {
       "nivelId": "niv-001",
       "providersAliadosIds": [
         "aly-001"
-      ]
+      ],
+      "catalogoId": "catalogo_ubits",
+      "conCertificacion": false
     },
     {
       "id": "u062",
@@ -1884,7 +2007,9 @@ window.BDS_CONTENIDOS_UBITS = {
       "nivelId": "niv-003",
       "providersAliadosIds": [
         "aly-001"
-      ]
+      ],
+      "catalogoId": "catalogo_ubits",
+      "conCertificacion": true
     },
     {
       "id": "u063",
@@ -1914,7 +2039,9 @@ window.BDS_CONTENIDOS_UBITS = {
       "nivelId": "niv-001",
       "providersAliadosIds": [
         "aly-001"
-      ]
+      ],
+      "catalogoId": "catalogo_ubits",
+      "conCertificacion": false
     },
     {
       "id": "u064",
@@ -1944,7 +2071,9 @@ window.BDS_CONTENIDOS_UBITS = {
       "nivelId": "niv-001",
       "providersAliadosIds": [
         "aly-001"
-      ]
+      ],
+      "catalogoId": "catalogo_ubits",
+      "conCertificacion": false
     },
     {
       "id": "u065",
@@ -1974,7 +2103,9 @@ window.BDS_CONTENIDOS_UBITS = {
       "nivelId": "niv-002",
       "providersAliadosIds": [
         "aly-001"
-      ]
+      ],
+      "catalogoId": "catalogo_ubits",
+      "conCertificacion": true
     },
     {
       "id": "u066",
@@ -2004,7 +2135,9 @@ window.BDS_CONTENIDOS_UBITS = {
       "nivelId": "niv-002",
       "providersAliadosIds": [
         "aly-001"
-      ]
+      ],
+      "catalogoId": "catalogo_ubits",
+      "conCertificacion": false
     },
     {
       "id": "u067",
@@ -2034,7 +2167,9 @@ window.BDS_CONTENIDOS_UBITS = {
       "nivelId": "niv-001",
       "providersAliadosIds": [
         "aly-001"
-      ]
+      ],
+      "catalogoId": "catalogo_ubits",
+      "conCertificacion": false
     },
     {
       "id": "u068",
@@ -2064,7 +2199,9 @@ window.BDS_CONTENIDOS_UBITS = {
       "nivelId": "niv-001",
       "providersAliadosIds": [
         "aly-001"
-      ]
+      ],
+      "catalogoId": "catalogo_ubits",
+      "conCertificacion": true
     },
     {
       "id": "u069",
@@ -2094,7 +2231,9 @@ window.BDS_CONTENIDOS_UBITS = {
       "nivelId": "niv-003",
       "providersAliadosIds": [
         "aly-001"
-      ]
+      ],
+      "catalogoId": "catalogo_ubits",
+      "conCertificacion": false
     },
     {
       "id": "u070",
@@ -2124,7 +2263,9 @@ window.BDS_CONTENIDOS_UBITS = {
       "nivelId": "niv-003",
       "providersAliadosIds": [
         "aly-001"
-      ]
+      ],
+      "catalogoId": "catalogo_ubits",
+      "conCertificacion": false
     },
     {
       "id": "u071",
@@ -2154,7 +2295,9 @@ window.BDS_CONTENIDOS_UBITS = {
       "nivelId": "niv-003",
       "providersAliadosIds": [
         "aly-001"
-      ]
+      ],
+      "catalogoId": "catalogo_ubits",
+      "conCertificacion": true
     },
     {
       "id": "u072",
@@ -2184,7 +2327,9 @@ window.BDS_CONTENIDOS_UBITS = {
       "nivelId": "niv-002",
       "providersAliadosIds": [
         "aly-001"
-      ]
+      ],
+      "catalogoId": "catalogo_ubits",
+      "conCertificacion": false
     },
     {
       "id": "u073",
@@ -2214,7 +2359,9 @@ window.BDS_CONTENIDOS_UBITS = {
       "nivelId": "niv-002",
       "providersAliadosIds": [
         "aly-001"
-      ]
+      ],
+      "catalogoId": "catalogo_ubits",
+      "conCertificacion": false
     },
     {
       "id": "u074",
@@ -2244,7 +2391,9 @@ window.BDS_CONTENIDOS_UBITS = {
       "nivelId": "niv-002",
       "providersAliadosIds": [
         "aly-001"
-      ]
+      ],
+      "catalogoId": "catalogo_ubits",
+      "conCertificacion": true
     },
     {
       "id": "u075",
@@ -2255,7 +2404,7 @@ window.BDS_CONTENIDOS_UBITS = {
       "tipoContenido": "Ejercicios de práctica",
       "tiempoValor": 15,
       "unidadTiempo": "minutos",
-      "idioma": "Español",
+      "idioma": "Portugués",
       "competenciaPrincipalId": "comp-022",
       "habilidadPrincipalId": "hab-034",
       "habilidadesSecundariasIds": [
@@ -2274,7 +2423,9 @@ window.BDS_CONTENIDOS_UBITS = {
       "nivelId": "niv-003",
       "providersAliadosIds": [
         "aly-001"
-      ]
+      ],
+      "catalogoId": "catalogo_ubits",
+      "conCertificacion": false
     },
     {
       "id": "u076",
@@ -2285,7 +2436,7 @@ window.BDS_CONTENIDOS_UBITS = {
       "tipoContenido": "Documento técnico",
       "tiempoValor": 120,
       "unidadTiempo": "minutos",
-      "idioma": "Español",
+      "idioma": "Portugués",
       "competenciaPrincipalId": "comp-032",
       "habilidadPrincipalId": "hab-022",
       "habilidadesSecundariasIds": [
@@ -2304,7 +2455,9 @@ window.BDS_CONTENIDOS_UBITS = {
       "nivelId": "niv-001",
       "providersAliadosIds": [
         "aly-001"
-      ]
+      ],
+      "catalogoId": "catalogo_ubits",
+      "conCertificacion": false
     },
     {
       "id": "u077",
@@ -2315,7 +2468,7 @@ window.BDS_CONTENIDOS_UBITS = {
       "tipoContenido": "Ejercicios de práctica",
       "tiempoValor": 30,
       "unidadTiempo": "minutos",
-      "idioma": "Español",
+      "idioma": "Portugués",
       "competenciaPrincipalId": "comp-024",
       "habilidadPrincipalId": "hab-001",
       "habilidadesSecundariasIds": [
@@ -2334,7 +2487,9 @@ window.BDS_CONTENIDOS_UBITS = {
       "nivelId": "niv-003",
       "providersAliadosIds": [
         "aly-001"
-      ]
+      ],
+      "catalogoId": "catalogo_ubits",
+      "conCertificacion": true
     },
     {
       "id": "u078",
@@ -2345,7 +2500,7 @@ window.BDS_CONTENIDOS_UBITS = {
       "tipoContenido": "Charla",
       "tiempoValor": 15,
       "unidadTiempo": "minutos",
-      "idioma": "Español",
+      "idioma": "Inglés",
       "competenciaPrincipalId": "comp-026",
       "habilidadPrincipalId": "hab-016",
       "habilidadesSecundariasIds": [
@@ -2357,14 +2512,16 @@ window.BDS_CONTENIDOS_UBITS = {
         "Lic. Pedro Soto · RR.HH."
       ],
       "aliadoId": "aly-001",
-      "nivelIngles": null,
+      "nivelIngles": "A1",
       "fileName": "ruta-experto-en-inbound-marketing.jpeg",
       "title": "Ruta experto en inbound marketing",
       "imagePath": "cards-learn/ruta-experto-en-inbound-marketing.jpeg",
       "nivelId": "niv-003",
       "providersAliadosIds": [
         "aly-001"
-      ]
+      ],
+      "catalogoId": "catalogo_ubits",
+      "conCertificacion": false
     },
     {
       "id": "u079",
@@ -2375,7 +2532,7 @@ window.BDS_CONTENIDOS_UBITS = {
       "tipoContenido": "Charla",
       "tiempoValor": 180,
       "unidadTiempo": "minutos",
-      "idioma": "Español",
+      "idioma": "Inglés",
       "competenciaPrincipalId": "comp-024",
       "habilidadPrincipalId": "hab-001",
       "habilidadesSecundariasIds": [
@@ -2387,14 +2544,16 @@ window.BDS_CONTENIDOS_UBITS = {
         "Mg. Carlos Vega · Consultor UBITS"
       ],
       "aliadoId": "aly-001",
-      "nivelIngles": null,
+      "nivelIngles": "A2",
       "fileName": "ruta-liderazgo-centrado-en-la-estrategia-empresarial.jpeg",
       "title": "Ruta liderazgo centrado en la estrategia empresarial",
       "imagePath": "cards-learn/ruta-liderazgo-centrado-en-la-estrategia-empresarial.jpeg",
       "nivelId": "niv-002",
       "providersAliadosIds": [
         "aly-001"
-      ]
+      ],
+      "catalogoId": "catalogo_ubits",
+      "conCertificacion": false
     },
     {
       "id": "u080",
@@ -2405,7 +2564,7 @@ window.BDS_CONTENIDOS_UBITS = {
       "tipoContenido": "Charla",
       "tiempoValor": 15,
       "unidadTiempo": "minutos",
-      "idioma": "Español",
+      "idioma": "Inglés",
       "competenciaPrincipalId": "comp-021",
       "habilidadPrincipalId": "hab-023",
       "habilidadesSecundariasIds": [
@@ -2417,14 +2576,16 @@ window.BDS_CONTENIDOS_UBITS = {
         "Ing. Laura Méndez · Especialista en contenido"
       ],
       "aliadoId": "aly-001",
-      "nivelIngles": null,
+      "nivelIngles": "B1",
       "fileName": "ruta-pensamiento-creativo-e-innovacion.jpeg",
       "title": "Ruta pensamiento creativo e innovación",
       "imagePath": "cards-learn/ruta-pensamiento-creativo-e-innovacion.jpeg",
       "nivelId": "niv-001",
       "providersAliadosIds": [
         "aly-001"
-      ]
+      ],
+      "catalogoId": "catalogo_ubits",
+      "conCertificacion": true
     },
     {
       "id": "u081",
@@ -2435,7 +2596,7 @@ window.BDS_CONTENIDOS_UBITS = {
       "tipoContenido": "Podcast",
       "tiempoValor": 45,
       "unidadTiempo": "minutos",
-      "idioma": "Español",
+      "idioma": "Inglés",
       "competenciaPrincipalId": "comp-012",
       "habilidadPrincipalId": "hab-035",
       "habilidadesSecundariasIds": [
@@ -2447,14 +2608,16 @@ window.BDS_CONTENIDOS_UBITS = {
         "Dr. Jorge Pinto · Facilitador senior"
       ],
       "aliadoId": "aly-001",
-      "nivelIngles": null,
+      "nivelIngles": "B2",
       "fileName": "segmenta-la-experiencia-del-cliente.jpg",
       "title": "Segmenta la experiencia del cliente",
       "imagePath": "cards-learn/segmenta-la-experiencia-del-cliente.jpg",
       "nivelId": "niv-003",
       "providersAliadosIds": [
         "aly-001"
-      ]
+      ],
+      "catalogoId": "catalogo_ubits",
+      "conCertificacion": false
     },
     {
       "id": "u082",
@@ -2465,7 +2628,7 @@ window.BDS_CONTENIDOS_UBITS = {
       "tipoContenido": "Artículo",
       "tiempoValor": 240,
       "unidadTiempo": "minutos",
-      "idioma": "Español",
+      "idioma": "Inglés",
       "competenciaPrincipalId": "comp-026",
       "habilidadPrincipalId": "hab-016",
       "habilidadesSecundariasIds": [
@@ -2477,14 +2640,16 @@ window.BDS_CONTENIDOS_UBITS = {
         "Mtra. Elena Ríos · Diseño instruccional"
       ],
       "aliadoId": "aly-001",
-      "nivelIngles": null,
+      "nivelIngles": "C1",
       "fileName": "seo-impacto-en-tu-estrategia-de-content-marketing.jpeg",
       "title": "Seo impacto en tu estrategia de content marketing",
       "imagePath": "cards-learn/seo-impacto-en-tu-estrategia-de-content-marketing.jpeg",
       "nivelId": "niv-001",
       "providersAliadosIds": [
         "aly-001"
-      ]
+      ],
+      "catalogoId": "catalogo_ubits",
+      "conCertificacion": false
     },
     {
       "id": "u083",
@@ -2495,7 +2660,7 @@ window.BDS_CONTENIDOS_UBITS = {
       "tipoContenido": "Curso",
       "tiempoValor": 75,
       "unidadTiempo": "minutos",
-      "idioma": "Español",
+      "idioma": "Inglés",
       "competenciaPrincipalId": "comp-019",
       "habilidadPrincipalId": "hab-025",
       "habilidadesSecundariasIds": [
@@ -2507,14 +2672,16 @@ window.BDS_CONTENIDOS_UBITS = {
         "Dra. Ana Ruiz · Coach ejecutiva"
       ],
       "aliadoId": "aly-001",
-      "nivelIngles": null,
+      "nivelIngles": "C2",
       "fileName": "simplified-suite-de-herramientas-de-inteligencia-artificial-todo-en-uno.jpeg",
       "title": "Simplified suite de herramientas de inteligencia artificial todo en uno",
       "imagePath": "cards-learn/simplified-suite-de-herramientas-de-inteligencia-artificial-todo-en-uno.jpeg",
       "nivelId": "niv-003",
       "providersAliadosIds": [
         "aly-001"
-      ]
+      ],
+      "catalogoId": "catalogo_ubits",
+      "conCertificacion": true
     },
     {
       "id": "u084",
@@ -2525,7 +2692,7 @@ window.BDS_CONTENIDOS_UBITS = {
       "tipoContenido": "Artículo",
       "tiempoValor": 15,
       "unidadTiempo": "minutos",
-      "idioma": "Español",
+      "idioma": "Inglés",
       "competenciaPrincipalId": "comp-024",
       "habilidadPrincipalId": "hab-001",
       "habilidadesSecundariasIds": [
@@ -2537,14 +2704,16 @@ window.BDS_CONTENIDOS_UBITS = {
         "Lic. Pedro Soto · RR.HH."
       ],
       "aliadoId": "aly-001",
-      "nivelIngles": null,
+      "nivelIngles": "A1",
       "fileName": "subastas-en-google-ads.jpeg",
       "title": "Subastas en google ads",
       "imagePath": "cards-learn/subastas-en-google-ads.jpeg",
       "nivelId": "niv-002",
       "providersAliadosIds": [
         "aly-001"
-      ]
+      ],
+      "catalogoId": "catalogo_ubits",
+      "conCertificacion": false
     },
     {
       "id": "u085",
@@ -2555,7 +2724,7 @@ window.BDS_CONTENIDOS_UBITS = {
       "tipoContenido": "Charla",
       "tiempoValor": 30,
       "unidadTiempo": "minutos",
-      "idioma": "Español",
+      "idioma": "Inglés",
       "competenciaPrincipalId": "comp-029",
       "habilidadPrincipalId": "hab-007",
       "habilidadesSecundariasIds": [
@@ -2567,14 +2736,16 @@ window.BDS_CONTENIDOS_UBITS = {
         "Mg. Carlos Vega · Consultor UBITS"
       ],
       "aliadoId": "aly-001",
-      "nivelIngles": null,
+      "nivelIngles": "A2",
       "fileName": "ux-research-conoce-tu-usuario-y-aumenta-el-engagement.jpeg",
       "title": "Ux research conoce tu usuario y aumenta el engagement",
       "imagePath": "cards-learn/ux-research-conoce-tu-usuario-y-aumenta-el-engagement.jpeg",
       "nivelId": "niv-001",
       "providersAliadosIds": [
         "aly-001"
-      ]
+      ],
+      "catalogoId": "catalogo_ubits",
+      "conCertificacion": false
     }
   ]
 };

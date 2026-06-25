@@ -82,11 +82,11 @@ Mock de planes Mi equipo: **`mi-equipo-planes-mock.js`** (capa sobre `BD_PLANES_
 
 ### UBITS (`BDS_CONTENIDOS_UBITS`)
 
-`origen`, `titulo`, `descripcion`, `imagen`, `tipoContenido`, `nivelId`, `tiempoValor`, `unidadTiempo`, `idioma`, `competenciaPrincipalId`, `habilidadPrincipalId`, `habilidadesSecundariasIds`, `expertos`, `aliadoId`, `nivelIngles`, `providersAliadosIds`, más campos de compatibilidad (`id`, `fileName`, `title`, `imagePath`).
+`origen`, `catalogoId` (`catalogo_ubits`), `titulo`, `descripcion`, `imagen`, `tipoContenido`, `nivelId`, `tiempoValor`, `unidadTiempo`, `idioma`, `competenciaPrincipalId`, `habilidadPrincipalId`, `habilidadesSecundariasIds`, `expertos`, `aliadoId`, `nivelIngles`, `conCertificacion`, `providersAliadosIds`, más campos de compatibilidad (`id`, `fileName`, `title`, `imagePath`).
 
 ### Fiqsha (`BDS_CONTENIDOS_FIQSHA`)
 
-- **`contents[]` (publicado):** mismo esquema que antes — `origen`, `titulo`, `descripcion`, `imagen`, `tipoContenido`, `nivelId`, `tiempoValor`, `unidadTiempo`, `idioma`, `categoriaFiqshaId`, `proveedorAliadoId`; campos de compatibilidad `id`, `title`, `imagePath`, `legacyLms` si aplica.
+- **`contents[]` (publicado):** `origen`, `catalogoId` (`catalogo_fiqsha`), `titulo`, `descripcion`, `imagen`, `tipoContenido`, `nivelId`, `tiempoValor`, `unidadTiempo`, `idioma`, `conCertificacion`, `categoriaFiqshaId`, `proveedorAliadoId`; campos de compatibilidad `id`, `title`, `imagePath`, `legacyLms` si aplica.
 - **`contentsCreatorOnly[]` (no publicado):** misma forma que un ítem de `contents` para reutilizar helpers de tarjeta/tabla, más **`visibilidadLms`**: `Privado` \| `Borrador` \| `Oculto` \| `Archivado`. El campo **`id`** es el identificador de curso en LMS (en el playground, rango demo `24000`–`24003` en `contentsCreatorOnly`); en `lms-creator/contenidos.html` el editor borrador sincroniza la URL como `#` + ese id (p. ej. `#24001`). No concatenar este array en catálogos de u-corporativa, planes, tareas ni drawers que consuman solo el catálogo publicado.
 
 ---

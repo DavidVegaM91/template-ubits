@@ -6,7 +6,19 @@
     'use strict';
 
     function createEmptyFilters() {
-        return { tipo: '', categoriaId: '', nivelId: '', idioma: '', catalogo: '' };
+        return {
+            tipo: '',
+            categoriaId: '',
+            nivelId: '',
+            idioma: '',
+            catalogo: '',
+            competenciaId: '',
+            habilidadId: '',
+            aliadoId: '',
+            experto: '',
+            nivelIngles: '',
+            conCertificacion: ''
+        };
     }
 
     function cloneFilters(f) {
@@ -16,13 +28,31 @@
             categoriaId: f.categoriaId || '',
             nivelId: f.nivelId || '',
             idioma: f.idioma || '',
-            catalogo: f.catalogo || ''
+            catalogo: f.catalogo || '',
+            competenciaId: f.competenciaId || '',
+            habilidadId: f.habilidadId || '',
+            aliadoId: f.aliadoId || '',
+            experto: f.experto || '',
+            nivelIngles: f.nivelIngles || '',
+            conCertificacion: f.conCertificacion || ''
         };
     }
 
     function hasActiveFilters(f) {
         f = f || {};
-        return !!(f.tipo || f.categoriaId || f.nivelId || f.idioma || f.catalogo);
+        return !!(
+            f.tipo ||
+            f.categoriaId ||
+            f.nivelId ||
+            f.idioma ||
+            f.catalogo ||
+            f.competenciaId ||
+            f.habilidadId ||
+            f.aliadoId ||
+            f.experto ||
+            f.nivelIngles ||
+            f.conCertificacion === 'si'
+        );
     }
 
     function getAppliedCount(f) {
@@ -33,6 +63,12 @@
         if (f.nivelId) n++;
         if (f.idioma) n++;
         if (f.catalogo) n++;
+        if (f.competenciaId) n++;
+        if (f.habilidadId) n++;
+        if (f.aliadoId) n++;
+        if (f.experto) n++;
+        if (f.nivelIngles) n++;
+        if (f.conCertificacion === 'si') n++;
         return n;
     }
 
@@ -44,6 +80,15 @@
         if (f.categoriaId && (curso.categoriaFiqshaId || '') !== f.categoriaId) return false;
         if (f.nivelId && (curso.nivelId || '') !== f.nivelId) return false;
         if (f.idioma && String(curso.language || '').trim() !== f.idioma) return false;
+        if (f.competenciaId && (curso.competenciaPrincipalId || '') !== f.competenciaId) return false;
+        if (f.habilidadId && (curso.habilidadPrincipalId || '') !== f.habilidadId) return false;
+        if (f.aliadoId) {
+            var aid = curso.aliadoId || curso.proveedorAliadoId || '';
+            if (String(aid) !== String(f.aliadoId)) return false;
+        }
+        if (f.experto && String(curso.experto || '').trim() !== f.experto) return false;
+        if (f.nivelIngles && String(curso.nivelIngles || '').trim() !== f.nivelIngles) return false;
+        if (f.conCertificacion === 'si' && !curso.conCertificacion) return false;
         return true;
     }
 
@@ -57,7 +102,11 @@
                 (c.competency && c.competency.toLowerCase().includes(q)) ||
                 (c.categoria && String(c.categoria).toLowerCase().includes(q)) ||
                 (c.type && c.type.toLowerCase().includes(q)) ||
-                (c.level && c.level.toLowerCase().includes(q))
+                (c.level && c.level.toLowerCase().includes(q)) ||
+                (c.habilidad && String(c.habilidad).toLowerCase().includes(q)) ||
+                (c.experto && String(c.experto).toLowerCase().includes(q)) ||
+                (c.aliado && String(c.aliado).toLowerCase().includes(q)) ||
+                (c.catalogoLabel && String(c.catalogoLabel).toLowerCase().includes(q))
             );
         });
     }
@@ -96,10 +145,36 @@
         return (found && found.nombre) ? found.nombre : id;
     }
 
+    function resolveCompetenciaNombre(id) {
+        var root = window.BD_MASTER_COMPETENCIAS;
+        if (!id || !root || !Array.isArray(root.competencias)) return id || '';
+        var found = root.competencias.find(function (c) { return c && String(c.id) === String(id); });
+        return (found && found.nombre) ? found.nombre : id;
+    }
+
+    function resolveHabilidadNombre(id) {
+        var root = window.BD_MASTER_HABILIDADES;
+        if (!id || !root || !Array.isArray(root.habilidades)) return id || '';
+        var found = root.habilidades.find(function (h) { return h && String(h.id) === String(id); });
+        return (found && found.nombre) ? found.nombre : id;
+    }
+
+    function resolveAliadoNombre(id) {
+        var root = window.BD_MASTER_ALIADOS;
+        if (!id || !root || !Array.isArray(root.aliados)) return id || '';
+        var found = root.aliados.find(function (a) { return a && String(a.id) === String(id); });
+        return (found && found.nombre) ? found.nombre : id;
+    }
+
     /** Etiqueta corta solo para chips de filtros aplicados (el modal conserva textos largos). */
     function resolveCatalogoChipLabel(val) {
-        if (val === 'ubits') return 'UBITS';
-        if (val === 'empresa') return 'propio';
+        if (val === 'ubits') return 'Catálogo UBITS';
+        if (val === 'empresa') return 'Catálogo Fiqsha';
+        return val || '';
+    }
+
+    function resolveCertificacionChipLabel(val) {
+        if (val === 'si') return 'Sí';
         return val || '';
     }
 
@@ -144,7 +219,18 @@
 
         var f = cloneFilters(options.filters);
         var columnFilters = options.columnFilters || null;
-        var columnFilterLabels = options.columnFilterLabels || { tipo: 'Tipo', level: 'Nivel', provider: 'Proveedor' };
+        var columnFilterLabels = options.columnFilterLabels || {
+            tipo: 'Tipo',
+            level: 'Nivel',
+            aliado: 'Aliado',
+            catalogo: 'Catálogo',
+            competenciaCategoria: 'Competencia / Categoría',
+            habilidad: 'Habilidad',
+            experto: 'Experto',
+            idioma: 'Idioma',
+            nivelIngles: 'Nivel de inglés',
+            certificacion: 'Con certificación'
+        };
         var wrapId = resolveFilterDomId(idPrefix, 'cursos-filtros-aplicados');
         var chipsId = resolveFilterDomId(idPrefix, 'cursos-filtros-chips-container');
         var clearId = resolveFilterDomId(idPrefix, 'cursos-clear-filters-btn');
@@ -183,6 +269,44 @@
         }
         if (f.idioma) {
             chips.push({ kind: 'modal', key: 'idioma', label: 'Idioma', value: f.idioma });
+        }
+        if (f.competenciaId) {
+            chips.push({
+                kind: 'modal',
+                key: 'competenciaId',
+                label: 'Competencia',
+                value: resolveCompetenciaNombre(f.competenciaId)
+            });
+        }
+        if (f.habilidadId) {
+            chips.push({
+                kind: 'modal',
+                key: 'habilidadId',
+                label: 'Habilidad',
+                value: resolveHabilidadNombre(f.habilidadId)
+            });
+        }
+        if (f.aliadoId) {
+            chips.push({
+                kind: 'modal',
+                key: 'aliadoId',
+                label: 'Aliado',
+                value: resolveAliadoNombre(f.aliadoId)
+            });
+        }
+        if (f.experto) {
+            chips.push({ kind: 'modal', key: 'experto', label: 'Experto', value: f.experto });
+        }
+        if (f.nivelIngles) {
+            chips.push({ kind: 'modal', key: 'nivelIngles', label: 'Nivel de inglés', value: f.nivelIngles });
+        }
+        if (f.conCertificacion === 'si') {
+            chips.push({
+                kind: 'modal',
+                key: 'conCertificacion',
+                label: 'Con certificación',
+                value: resolveCertificacionChipLabel(f.conCertificacion)
+            });
         }
         if (columnFilters) {
             Object.keys(columnFilterLabels).forEach(function (colKey) {
@@ -346,8 +470,48 @@
         ];
         var selectCatalogo = [
             { value: '', text: 'Todos los catálogos' },
-            { value: 'ubits', text: 'Solo catálogo UBITS' },
-            { value: 'empresa', text: 'Solo catálogo propio' }
+            { value: 'ubits', text: 'Catálogo UBITS' },
+            { value: 'empresa', text: 'Catálogo Fiqsha' }
+        ];
+        var compRoot = window.BD_MASTER_COMPETENCIAS;
+        var habRoot = window.BD_MASTER_HABILIDADES;
+        var aliRoot = window.BD_MASTER_ALIADOS;
+        var selectComp = [{ value: '', text: 'Todas las competencias' }];
+        if (compRoot && Array.isArray(compRoot.competencias)) {
+            compRoot.competencias.forEach(function (c) {
+                if (c && c.id) selectComp.push({ value: c.id, text: c.nombre || c.id });
+            });
+        }
+        var selectHab = [{ value: '', text: 'Todas las habilidades' }];
+        if (habRoot && Array.isArray(habRoot.habilidades)) {
+            habRoot.habilidades.forEach(function (h) {
+                if (h && h.id) selectHab.push({ value: h.id, text: h.nombre || h.id });
+            });
+        }
+        var selectAliado = [{ value: '', text: 'Todos los aliados' }];
+        if (aliRoot && Array.isArray(aliRoot.aliados)) {
+            aliRoot.aliados.forEach(function (a) {
+                if (a && a.id) selectAliado.push({ value: a.id, text: a.nombre || a.id });
+            });
+        }
+        var expertoSet = {};
+        (window.CATALOGO_CURSOS_DRAWER || []).forEach(function (c) {
+            if (c && c.experto) expertoSet[String(c.experto).trim()] = true;
+        });
+        var selectExperto = [{ value: '', text: 'Todos los expertos' }];
+        Object.keys(expertoSet)
+            .sort(function (a, b) { return a.localeCompare(b, 'es'); })
+            .forEach(function (name) {
+                selectExperto.push({ value: name, text: name });
+            });
+        var selectNivelIngles = [
+            { value: '', text: 'Todos los niveles de inglés' },
+            { value: 'A1', text: 'A1' },
+            { value: 'A2', text: 'A2' },
+            { value: 'B1', text: 'B1' },
+            { value: 'B2', text: 'B2' },
+            { value: 'C1', text: 'C1' },
+            { value: 'C2', text: 'C2' }
         ];
 
         var fieldId = function (key) {
@@ -356,11 +520,17 @@
 
         var bodyHtml =
             '<div class="ucorp-filtros-modal-fields drawer-contenidos-filtros-modal-fields">' +
-            '<div id="' + fieldId('tipo') + '" class="ucorp-filtros-modal-field"></div>' +
-            '<div id="' + fieldId('categoria') + '" class="ucorp-filtros-modal-field"></div>' +
-            '<div id="' + fieldId('nivel') + '" class="ucorp-filtros-modal-field"></div>' +
-            '<div id="' + fieldId('idioma') + '" class="ucorp-filtros-modal-field"></div>' +
             '<div id="' + fieldId('catalogo') + '" class="ucorp-filtros-modal-field"></div>' +
+            '<div id="' + fieldId('tipo') + '" class="ucorp-filtros-modal-field"></div>' +
+            '<div id="' + fieldId('competencia') + '" class="ucorp-filtros-modal-field"></div>' +
+            '<div id="' + fieldId('habilidad') + '" class="ucorp-filtros-modal-field"></div>' +
+            '<div id="' + fieldId('categoria') + '" class="ucorp-filtros-modal-field"></div>' +
+            '<div id="' + fieldId('aliado') + '" class="ucorp-filtros-modal-field"></div>' +
+            '<div id="' + fieldId('nivel') + '" class="ucorp-filtros-modal-field"></div>' +
+            '<div id="' + fieldId('experto') + '" class="ucorp-filtros-modal-field"></div>' +
+            '<div id="' + fieldId('idioma') + '" class="ucorp-filtros-modal-field"></div>' +
+            '<div id="' + fieldId('nivelIngles') + '" class="ucorp-filtros-modal-field"></div>' +
+            '<div id="' + fieldId('conCertificacion') + '" class="ucorp-filtros-modal-field"></div>' +
             '</div>';
 
         var overlay = openModal({
@@ -397,6 +567,16 @@
         }
 
         createInput({
+            containerId: fieldId('catalogo'),
+            type: 'select',
+            label: '',
+            placeholder: 'Catálogo',
+            size: 'md',
+            selectOptions: selectCatalogo,
+            value: pending.catalogo,
+            onChange: function (v) { bindPending('catalogo', v); }
+        });
+        createInput({
             containerId: fieldId('tipo'),
             type: 'select',
             label: '',
@@ -405,6 +585,26 @@
             selectOptions: selectTipos,
             value: pending.tipo,
             onChange: function (v) { bindPending('tipo', v); }
+        });
+        createInput({
+            containerId: fieldId('competencia'),
+            type: 'select',
+            label: '',
+            placeholder: 'Competencia',
+            size: 'md',
+            selectOptions: selectComp,
+            value: pending.competenciaId,
+            onChange: function (v) { bindPending('competenciaId', v); }
+        });
+        createInput({
+            containerId: fieldId('habilidad'),
+            type: 'select',
+            label: '',
+            placeholder: 'Habilidad',
+            size: 'md',
+            selectOptions: selectHab,
+            value: pending.habilidadId,
+            onChange: function (v) { bindPending('habilidadId', v); }
         });
         createInput({
             containerId: fieldId('categoria'),
@@ -417,6 +617,16 @@
             onChange: function (v) { bindPending('categoriaId', v); }
         });
         createInput({
+            containerId: fieldId('aliado'),
+            type: 'select',
+            label: '',
+            placeholder: 'Aliado',
+            size: 'md',
+            selectOptions: selectAliado,
+            value: pending.aliadoId,
+            onChange: function (v) { bindPending('aliadoId', v); }
+        });
+        createInput({
             containerId: fieldId('nivel'),
             type: 'select',
             label: '',
@@ -425,6 +635,16 @@
             selectOptions: selectNiv,
             value: pending.nivelId,
             onChange: function (v) { bindPending('nivelId', v); }
+        });
+        createInput({
+            containerId: fieldId('experto'),
+            type: 'select',
+            label: '',
+            placeholder: 'Experto',
+            size: 'md',
+            selectOptions: selectExperto,
+            value: pending.experto,
+            onChange: function (v) { bindPending('experto', v); }
         });
         createInput({
             containerId: fieldId('idioma'),
@@ -437,19 +657,51 @@
             onChange: function (v) { bindPending('idioma', v); }
         });
         createInput({
-            containerId: fieldId('catalogo'),
+            containerId: fieldId('nivelIngles'),
             type: 'select',
             label: '',
-            placeholder: 'Catálogo',
+            placeholder: 'Nivel de inglés',
             size: 'md',
-            selectOptions: selectCatalogo,
-            value: pending.catalogo,
-            onChange: function (v) { bindPending('catalogo', v); }
+            selectOptions: selectNivelIngles,
+            value: pending.nivelIngles,
+            onChange: function (v) { bindPending('nivelIngles', v); }
         });
+
+        var certSwitchId = overlayId + '-switch-conCertificacion';
+        var certField = document.getElementById(fieldId('conCertificacion'));
+        if (certField) {
+            certField.className = 'ucorp-filtros-modal-field drawer-contenidos-filtro-switch-field';
+            var certChecked = pending.conCertificacion === 'si';
+            certField.innerHTML =
+                '<label class="ubits-switch ubits-switch--md" for="' +
+                certSwitchId +
+                '">' +
+                '<input type="checkbox" class="ubits-switch__input" id="' +
+                certSwitchId +
+                '" role="switch" aria-checked="' +
+                (certChecked ? 'true' : 'false') +
+                '" aria-label="Con certificación"' +
+                (certChecked ? ' checked' : '') +
+                '>' +
+                '<span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>' +
+                '<span class="ubits-switch__label ubits-body-md-regular">Con certificación</span>' +
+                '</label>';
+            var certInput = document.getElementById(certSwitchId);
+            if (certInput) {
+                certInput.addEventListener('change', function () {
+                    pending.conCertificacion = certInput.checked ? 'si' : '';
+                    certInput.setAttribute('aria-checked', certInput.checked ? 'true' : 'false');
+                });
+            }
+        }
 
         var aplicarBtn = document.getElementById(overlayId + '-aplicar');
         if (aplicarBtn) {
             aplicarBtn.addEventListener('click', function () {
+                var certInputApply = document.getElementById(certSwitchId);
+                if (certInputApply) {
+                    pending.conCertificacion = certInputApply.checked ? 'si' : '';
+                }
                 if (typeof closeModal === 'function') closeModal(overlayId);
                 if (typeof onApply === 'function') onApply(cloneFilters(pending));
             });
