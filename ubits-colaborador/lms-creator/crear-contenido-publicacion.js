@@ -81,26 +81,6 @@
         syncPrivadoColabButton();
     }
 
-    function escapeHtmlVisibilidad(text) {
-        if (text == null) return '';
-        var div = document.createElement('div');
-        div.textContent = text;
-        return div.innerHTML;
-    }
-
-    function getUsernameEmpleado(e) {
-        if (e.username) return e.username;
-        var palabras = (e.nombre || '').toLowerCase().split(' ').filter(function (p) {
-            return p.length > 0;
-        });
-        var iniciales = palabras
-            .map(function (p) {
-                return p.charAt(0);
-            })
-            .join('');
-        return iniciales ? iniciales + '@fiqsha.demo' : 'user@fiqsha.demo';
-    }
-
     function getPrivadoColabButton() {
         return document.getElementById('cc-visibilidad-privado-colab-btn');
     }
@@ -129,45 +109,10 @@
         }
     }
 
-    function buildDrawerColabRowHtml(row) {
-        var avatarUrl =
-            row.avatar && String(row.avatar).trim()
-                ? String(row.avatar).replace(/"/g, '&quot;')
-                : '';
-        var usuarioCell =
-            '<div class="detalle-plan-usuario-cell">' +
-            (avatarUrl
-                ? '<span class="ubits-avatar ubits-avatar--sm"><img src="' +
-                  avatarUrl +
-                  '" alt="' +
-                  escapeHtmlVisibilidad(row.nombre) +
-                  '" class="ubits-avatar__img"></span>'
-                : '<span class="ubits-avatar ubits-avatar--sm"><span class="ubits-avatar__fallback"><i class="far fa-user"></i></span></span>') +
-            '<span class="ubits-body-sm-regular">' +
-            escapeHtmlVisibilidad(row.nombre) +
-            '</span></div>';
-        return (
-            '<td data-col="username"><span class="ubits-body-sm-regular">' +
-            escapeHtmlVisibilidad(row.username) +
-            '</span></td>' +
-            '<td data-col="nombre">' +
-            usuarioCell +
-            '</td>' +
-            '<td data-col="correo"><span class="ubits-body-sm-regular">' +
-            escapeHtmlVisibilidad(row.correo) +
-            '</span></td>' +
-            '<td data-col="area"><span class="ubits-body-sm-regular">' +
-            escapeHtmlVisibilidad(row.area) +
-            '</span></td>' +
-            '<td data-col="lider"><span class="ubits-body-sm-regular">' +
-            escapeHtmlVisibilidad(row.lider) +
-            '</span></td>'
-        );
-    }
-
     function initDrawerSeleccionColaboradores(overlay, isEdit) {
         if (!overlay) return;
 
+        var DPC = window.DrawerParticipantesColabTable;
         var initialSelectedIds = isEdit ? privadoColaboradores.map(function (c) { return c.id; }) : [];
         var empleadosDrawerRaw =
             typeof TAREAS_PLANES_DB !== 'undefined' &&
@@ -175,54 +120,23 @@
                 ? TAREAS_PLANES_DB.getEmpleadosEjemplo()
                 : [];
         var empleadosDrawer = empleadosDrawerRaw.map(function (e, idx) {
-            var id = e.id || e.idColaborador || 'E' + (idx + 1);
-            return {
-                id: id,
-                username: getUsernameEmpleado(e),
-                nombre: (e.nombre || '').trim(),
-                correo: getUsernameEmpleado(e),
-                area: (e.area || '').trim(),
-                lider: (e.jefe || '').trim(),
-                avatar: e.avatar || null
-            };
+            return DPC && typeof DPC.mapEmpleadoParaDrawerColab === 'function'
+                ? DPC.mapEmpleadoParaDrawerColab(e, idx)
+                : e;
         });
 
         overlay._empleadosDrawer = empleadosDrawer;
         overlay._isEditColab = isEdit;
 
         var container = overlay.querySelector('#cc-visibilidad-drawer-colab-dt-container');
-        if (container && typeof createUbitsDataTable === 'function') {
-            overlay._drawerColabTablaRef = createUbitsDataTable({
+        if (container && DPC && typeof DPC.createDrawerParticipantesColabDataTable === 'function') {
+            overlay._drawerColabTablaRef = DPC.createDrawerParticipantesColabDataTable({
                 containerId: 'cc-visibilidad-drawer-colab-dt-container',
                 tableId: 'cc-visibilidad-drawer-colab-table',
-                title: 'Lista de colaboradores',
-                columns: [
-                    { id: 'username', label: 'Username', filterable: true },
-                    { id: 'nombre', label: 'Nombre del usuario', filterable: true },
-                    { id: 'correo', label: 'Correo electrónico', filterable: true },
-                    { id: 'area', label: 'Área', filterable: true },
-                    { id: 'lider', label: 'Líder', filterable: true }
-                ],
                 getData: function () {
                     return empleadosDrawer;
                 },
-                rowIdField: 'id',
-                buildRowHtml: buildDrawerColabRowHtml,
-                features: {
-                    checkboxes: true,
-                    search: true,
-                    filters: true,
-                    verSeleccionados: true,
-                    resultsCount: true
-                },
-                initialSelectedIds: initialSelectedIds,
-                emptyState: { message: 'No hay colaboradores', icon: 'far fa-user' },
-                i18n: {
-                    selectAll: 'Seleccionar todo',
-                    deselectAll: 'Deseleccionar todo',
-                    verSeleccionados: 'Ver seleccionados',
-                    buscar: 'Buscar'
-                }
+                initialSelectedIds: initialSelectedIds
             });
             container.style.flexDirection = 'column';
         }
@@ -301,7 +215,7 @@
         var tituloDrawer = isEdit ? 'Editar selección' : 'Seleccionar usuarios';
         var labelFooter = isEdit ? 'Guardar' : 'Agregar';
         var bodyHtml =
-            '<div class="drawer-usuarios-panel drawer-usuarios-panel--colaborador" style="display:block">' +
+            '<div class="drawer-usuarios-panel drawer-usuarios-panel--colaborador">' +
             '<div id="cc-visibilidad-drawer-colab-dt-container" class="drawer-colab-dt-wrapper"></div>' +
             '</div>';
         var footerHtml =

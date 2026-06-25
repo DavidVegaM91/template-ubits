@@ -61,7 +61,26 @@
     display: none !important;
 }
 
-/* Drawer selección colaboradores (mismo patrón que crear-grupo) */
+/* Drawer selección colaboradores (mismo patrón que crear-plan-contenidos / crear-grupo) */
+#cc-visibilidad-drawer-colaboradores .ubits-drawer-body,
+#cr-visibilidad-drawer-colaboradores .ubits-drawer-body {
+    overflow-x: visible;
+    overflow-y: hidden;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+
+#cc-visibilidad-drawer-colaboradores .drawer-usuarios-panel--colaborador,
+#cr-visibilidad-drawer-colaboradores .drawer-usuarios-panel--colaborador {
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-md);
+}
+
 .page-crear-contenido .drawer-usuarios-panel,
 .page-crear-ruta .drawer-usuarios-panel {
     display: flex;
@@ -77,10 +96,18 @@
     display: flex;
     flex-direction: column;
     gap: var(--gap-md);
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
 }
 
 .page-crear-contenido .drawer-colab-dt-wrapper,
 .page-crear-ruta .drawer-colab-dt-wrapper {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
     width: 100%;
     min-width: 0;
 }
@@ -98,12 +125,16 @@
 }
 
 body.page-crear-contenido .ubits-dropdown-menu__overlay,
-body.page-crear-ruta .ubits-dropdown-menu__overlay {
+body.page-crear-ruta .ubits-dropdown-menu__overlay,
+[id*="cc-visibilidad-drawer-colab"].ubits-dropdown-menu__overlay,
+[id*="cr-visibilidad-drawer-colab"].ubits-dropdown-menu__overlay {
     z-index: 1200;
 }
 
 body.page-crear-contenido .ubits-dropdown-menu__content,
-body.page-crear-ruta .ubits-dropdown-menu__content {
+body.page-crear-ruta .ubits-dropdown-menu__content,
+[id*="cc-visibilidad-drawer-colab"].ubits-dropdown-menu__content,
+[id*="cr-visibilidad-drawer-colab"].ubits-dropdown-menu__content {
     z-index: 1201;
 }
 
