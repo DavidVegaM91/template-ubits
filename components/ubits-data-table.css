@@ -173,6 +173,51 @@
     display: none !important;
 }
 
+/* Dropdowns de encabezado (filtro / orden / columnas): compactos — paridad React UbitsDataTable */
+.ubits-dt-filter-overlay .ubits-dropdown-menu__content,
+.ubits-dt-columns-overlay .ubits-dropdown-menu__content,
+.ubits-dt-sort-overlay .ubits-dropdown-menu__content {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+    max-width: 280px;
+    width: max-content;
+}
+
+.ubits-dt-filter-overlay .ubits-dropdown-menu__content {
+    min-width: 200px;
+}
+
+.ubits-dt-columns-overlay .ubits-dropdown-menu__content {
+    min-width: 180px;
+    height: auto;
+}
+
+.ubits-dt-sort-overlay .ubits-dropdown-menu__content {
+    min-width: 160px;
+}
+
+.ubits-dt-filter-overlay .ubits-dropdown-menu__autocomplete-wrap {
+    padding: var(--padding-sm) var(--padding-sm) var(--padding-xs);
+    border-bottom: 1px solid var(--ubits-border-1);
+}
+
+.ubits-dt-filter-overlay .ubits-dropdown-menu__options,
+.ubits-dt-columns-overlay .ubits-dropdown-menu__options,
+.ubits-dt-sort-overlay .ubits-dropdown-menu__options {
+    padding: var(--padding-xs) 0;
+}
+
+.ubits-dt-filter-overlay .ubits-dropdown-menu__option,
+.ubits-dt-columns-overlay .ubits-dropdown-menu__option,
+.ubits-dt-sort-overlay .ubits-dropdown-menu__option {
+    gap: var(--gap-sm);
+    padding: var(--padding-xs) var(--padding-sm);
+}
+
+.ubits-dt-filter-overlay .ubits-dropdown-menu__footer {
+    padding: var(--padding-sm);
+    gap: var(--gap-sm);
+}
+
 /* Dropdown de filtro: autocomplete + lista con scroll contenida (sin hueco blanco al marcar ítems) */
 .ubits-dt-filter-overlay .ubits-dropdown-menu__content {
     max-height: min(380px, calc(100vh - 16px));
@@ -189,9 +234,4 @@
 .ubits-dt-columns-overlay .ubits-dropdown-menu__options {
     max-height: none;
     overflow-y: visible;
-}
-
-.ubits-dt-columns-overlay .ubits-dropdown-menu__content {
-    height: auto;
-    min-width: 240px;
 }

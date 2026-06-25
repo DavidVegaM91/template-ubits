@@ -305,15 +305,15 @@
                 html += '</div>';
                 html += '<div class="ubits-dt-header-right">';
                 if (features.search) {
-                    html += '<button type="button" class="ubits-button ubits-button--secondary ubits-button--md ubits-button--icon-only ubits-dt-search-toggle" aria-label="' + escapeHtml(i18n.buscar) + '" data-tooltip="' + escapeHtml(i18n.buscar) + '" data-tooltip-delay="1000"><i class="far fa-magnifying-glass"></i></button>';
+                    html += '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only ubits-dt-search-toggle" aria-label="' + escapeHtml(i18n.buscar) + '" data-tooltip="' + escapeHtml(i18n.buscar) + '" data-tooltip-delay="1000"><i class="far fa-magnifying-glass"></i></button>';
                     html += '<div id="' + searchContainerId + '" class="ubits-dt-search-inline" style="display:none;"></div>';
                 }
                 if (features.columnsToggle && columns.length > 0) {
-                    html += '<button type="button" class="ubits-button ubits-button--secondary ubits-button--md ubits-button--icon-only ubits-dt-columns-toggle" id="' + instanceId + '-columns-toggle" aria-label="' + escapeHtml(i18n.columnasVisibles) + '" data-tooltip="' + escapeHtml(i18n.columnasVisibles) + '" data-tooltip-delay="1000"><i class="far fa-columns-3"></i></button>';
+                    html += '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only ubits-dt-columns-toggle" id="' + instanceId + '-columns-toggle" aria-label="' + escapeHtml(i18n.columnasVisibles) + '" data-tooltip="' + escapeHtml(i18n.columnasVisibles) + '" data-tooltip-delay="1000"><i class="far fa-columns-3"></i></button>';
                 }
                 if (primaryButton && primaryButton.text) {
                     var pbVariant = (primaryButton.variant === 'secondary') ? 'ubits-button--secondary' : 'ubits-button--primary';
-                    html += '<button type="button" class="ubits-button ' + pbVariant + ' ubits-button--md ubits-dt-primary-btn" id="' + instanceId + '-primary-btn">';
+                    html += '<button type="button" class="ubits-button ' + pbVariant + ' ubits-button--sm ubits-dt-primary-btn" id="' + instanceId + '-primary-btn">';
                     if (primaryButton.icon) html += '<i class="far ' + escapeHtml(String(primaryButton.icon).replace(/^fa-/, 'fa-')) + '"></i>';
                     html += '<span>' + escapeHtml(primaryButton.text) + '</span></button>';
                 }
@@ -706,6 +706,7 @@
                     document.body.insertAdjacentHTML('beforeend', sortHtml);
                     var sortOverlayEl = document.getElementById(overlayId);
                     if (sortOverlayEl) {
+                        sortOverlayEl.classList.add('ubits-dt-sort-overlay');
                         sortOverlayEl.querySelectorAll('.ubits-dropdown-menu__option').forEach(function (opt) {
                             opt.addEventListener('click', function () {
                                 var val = this.getAttribute('data-value');
@@ -954,6 +955,7 @@
                         createInput({
                             containerId: searchContainerId,
                             type: 'search',
+                            size: 'sm',
                             placeholder: i18n.buscarPlaceholder || 'Buscar...',
                             showLabel: false,
                             onChange: function (value) {
