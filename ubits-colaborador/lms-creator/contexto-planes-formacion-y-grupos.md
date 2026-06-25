@@ -116,6 +116,7 @@ Vista de edición del plan de contenidos **antes de salir de Procesando** (misma
 - Cada fila = un **estudiante** asignado.
 - Columnas: usuario, último acceso, **contenidos**, **progreso**. Si el plan es Planeado, el progreso del plan y el de cada fila se muestran en 0 %.
 - **Búsqueda en la tabla de asignaciones:** la barra de búsqueda del componente **`ubits-data-table`** filtra por el texto visible en las columnas (nombre de usuario, fechas, «N contenidos», porcentaje, etc.). El texto del **nombre** se obtiene de la celda usuario (avatar + nombre) con la lógica documentada en **§ 6.6** (evita depender solo del primer `span` vacío del avatar).
+- **Descarga CSV (Vigente / No vigente):** botón **«Descargar»** a la derecha del buscador en la barra de la tabla; exporta todas las asignaciones con progreso por contenido. Ver **§ 3.3.3**.
 - Clic en fila (o contenidos) abre el **drawer** de ese estudiante con cards de contenidos y progreso por contenido.
 
 #### 3.3.1 Barra de acciones y "Asignar contenidos" (solo Planeado y Vigente)
@@ -127,6 +128,24 @@ Vista de edición del plan de contenidos **antes de salir de Procesando** (misma
 #### 3.3.2 Drawer "Agregar contenidos" en detalle-plan
 
 - Mismo catálogo que en crear-plan (**§ 6.7**): toolbar, vista **Tabla** (default) o **Cuadrícula**, búsqueda, filtros y scroll infinito (12 + carga al scroll).
+
+#### 3.3.3 Descarga CSV de asignaciones (Vigente y No vigente)
+
+- **Cuándo aparece:** en **`detalle-plan.html`**, si el plan está en estado **Vigente** o **No vigente**, la tabla **Lista de asignaciones** (`ubits-data-table`) muestra en la barra superior un botón secundario **«Descargar»** (`primaryButton` del data table), **a la derecha del botón de búsqueda** (icono lupa). **No** se muestra en **Planeado** ni **Procesando**.
+- **Acción:** al hacer clic se genera y descarga un archivo **`.csv`** (UTF-8 con BOM) con **todas las filas** de asignaciones del plan (no solo las visibles tras filtrar en la UI).
+- **Columnas del CSV:**
+
+| Columna | Origen / formato |
+|---------|------------------|
+| **Nombre del usuario** | Texto de la columna usuario de la tabla |
+| **Último acceso** | Valor de `ultimoAcceso` (ej. «Hace 2 días») |
+| **Última fecha de progreso** | Misma fecha formateada que en la tabla (`formatDateDDMmmAAAA`) |
+| **Contenidos** | Lista de contenidos asignados al usuario, separados por **`; `**. Cada ítem: **`{título del contenido} ({porcentaje}%)`**, p. ej. `Comunicación efectiva (75%); Liderazgo situacional (40%)`. El porcentaje es el avance en ese contenido (`contenidoPorUsuario`). |
+| **Progreso total acumulado** | Promedio de avance de sus contenidos, igual que la columna **Progreso** de la tabla (ej. `68%`) |
+
+- **Nombre del archivo:** `asignaciones-{nombre-del-plan-normalizado}.csv` (slug del nombre del plan).
+- **Feedback:** toast de éxito **«Archivo descargado»** tras la descarga (demo).
+- **Implementación:** helpers `escapeCsvCell`, `descargarCsv` y `buildAndDownloadAsignacionesDetalleCsv` en el script inline de **`detalle-plan.html`**; datos desde `asignacionesDetalleData` + `contenidoPorUsuario` (misma fuente que la tabla y el drawer por estudiante).
 
 ---
 

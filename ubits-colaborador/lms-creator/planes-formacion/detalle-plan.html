@@ -517,6 +517,64 @@
                 setDetallePlanProgressBar(total);
             }
 
+            function escapeCsvCell(val) {
+                var s = (val == null ? '' : String(val)).trim();
+                if (/[,\r\n";]/.test(s)) return '"' + s.replace(/"/g, '""') + '"';
+                return s;
+            }
+
+            function descargarCsv(nombreArchivo, contenido) {
+                var blob = new Blob(['\ufeff' + contenido], { type: 'text/csv;charset=utf-8' });
+                var a = document.createElement('a');
+                a.href = URL.createObjectURL(blob);
+                a.download = nombreArchivo;
+                a.click();
+                URL.revokeObjectURL(a.href);
+            }
+
+            function formatContenidosCsvCell(rowId) {
+                var list = contenidoPorUsuario[rowId] || [];
+                if (!list.length) return '';
+                return list.map(function(c) {
+                    var title = String(c.title || '').trim();
+                    var pct = planSinProgreso() ? 0 : (c.progress != null ? c.progress : 0);
+                    return title + ' (' + pct + '%)';
+                }).join('; ');
+            }
+
+            function buildAndDownloadAsignacionesDetalleCsv() {
+                var headers = [
+                    'Nombre del usuario',
+                    'Último acceso',
+                    'Última fecha de progreso',
+                    'Contenidos',
+                    'Progreso total acumulado'
+                ];
+                var filas = [headers.map(escapeCsvCell).join(',')];
+                asignacionesDetalleData.forEach(function(row) {
+                    var ultimaFecha = typeof formatDateDDMmmAAAA === 'function'
+                        ? formatDateDDMmmAAAA(row.ultimaFechaProgreso)
+                        : (row.ultimaFechaProgreso || '');
+                    var progresoPct = planSinProgreso() ? 0 : (row.progreso || 0);
+                    filas.push([
+                        escapeCsvCell(row.usuario),
+                        escapeCsvCell(row.ultimoAcceso),
+                        escapeCsvCell(ultimaFecha),
+                        escapeCsvCell(formatContenidosCsvCell(row.id)),
+                        escapeCsvCell(progresoPct + '%')
+                    ].join(','));
+                });
+                var safeName = String(plan.nombre || planId || 'plan')
+                    .trim()
+                    .replace(/[^\w\s\u00C0-\u024F-]/g, '')
+                    .replace(/\s+/g, '-')
+                    .toLowerCase() || 'plan';
+                descargarCsv('asignaciones-' + safeName + '.csv', filas.join('\r\n'));
+                if (typeof showToast === 'function') {
+                    showToast('success', 'Archivo descargado');
+                }
+            }
+
             var DPC = window.DrawerParticipantesColabTable;
 
             function abrirDrawerAgregarAsignacionVigente() {
@@ -662,6 +720,16 @@
                         buscarPlaceholder: 'Buscar por nombre de usuario...'
                     }
             };
+            if (isDetallePlanVistaProgreso()) {
+                createUbitsDataTableConfig.primaryButton = {
+                    text: 'Descargar',
+                    icon: 'fa-download',
+                    variant: 'secondary',
+                    onClick: function() {
+                        buildAndDownloadAsignacionesDetalleCsv();
+                    }
+                };
+            }
             if (typeof createUbitsDataTable === 'function') {
                 asignacionesDetalleTablaRef = createUbitsDataTable(createUbitsDataTableConfig);
             }
