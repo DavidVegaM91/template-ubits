@@ -41,11 +41,11 @@
 
     function triggerFakeSave() {
         if (typeof window.renderSaveIndicator !== 'function') return;
-        window.renderSaveIndicator('crear-ruta-save-indicator', { state: 'saving', size: 'xs', idleVariant: 'plain' });
+        window.renderSaveIndicator('crear-ruta-save-indicator', { state: 'saving', size: 'xs' });
         setTimeout(function () {
-            window.renderSaveIndicator('crear-ruta-save-indicator', { state: 'saved', size: 'xs', idleVariant: 'plain' });
+            window.renderSaveIndicator('crear-ruta-save-indicator', { state: 'saved', size: 'xs' });
             setTimeout(function () {
-                window.renderSaveIndicator('crear-ruta-save-indicator', { state: 'idle', size: 'xs', idleVariant: 'plain' });
+                window.renderSaveIndicator('crear-ruta-save-indicator', { state: 'idle', size: 'xs' });
             }, 2000);
         }, 600);
     }
@@ -858,7 +858,7 @@
 
     function init() {
         if (typeof window.renderSaveIndicator === 'function') {
-            window.renderSaveIndicator('crear-ruta-save-indicator', { state: 'idle', size: 'xs', idleVariant: 'plain' });
+            window.renderSaveIndicator('crear-ruta-save-indicator', { state: 'idle', size: 'xs' });
         }
         syncRailHeight();
         window.addEventListener('resize', syncRailHeight);

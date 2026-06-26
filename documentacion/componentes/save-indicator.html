@@ -220,20 +220,9 @@
 
             var currentSize = 'md';
             var currentState = 'idle';
-            var currentVariant = 'plain';
-
-            var STATE_MAP = {
-                'idle-plain':       { state: 'idle', variant: 'plain' },
-                'idle-subtle':      { state: 'idle', variant: 'subtle' },
-                'idle-highlighted': { state: 'idle', variant: 'highlighted' },
-                'saving':           { state: 'saving', variant: '' },
-                'error':            { state: 'error', variant: '' },
-                'saved':            { state: 'saved', variant: '' }
-            };
 
             function getPreviewOptions() {
                 var opts = { state: currentState, size: currentSize };
-                if (currentState === 'idle' && currentVariant) opts.idleVariant = currentVariant;
                 if (currentState === 'error') opts.errorText = 'Error al guardar';
                 return opts;
             }
@@ -245,10 +234,10 @@
 
             function renderSizeRow() {
                 if (typeof renderSaveIndicator !== 'function') return;
-                renderSaveIndicator('save-indicator-preview-xs', { state: 'idle', idleVariant: 'plain', size: 'xs' });
-                renderSaveIndicator('save-indicator-preview-sm', { state: 'idle', idleVariant: 'plain', size: 'sm' });
-                renderSaveIndicator('save-indicator-preview-md', { state: 'idle', idleVariant: 'plain', size: 'md' });
-                renderSaveIndicator('save-indicator-preview-lg', { state: 'idle', idleVariant: 'plain', size: 'lg' });
+                renderSaveIndicator('save-indicator-preview-xs', { state: 'idle', size: 'xs' });
+                renderSaveIndicator('save-indicator-preview-sm', { state: 'idle', size: 'sm' });
+                renderSaveIndicator('save-indicator-preview-md', { state: 'idle', size: 'md' });
+                renderSaveIndicator('save-indicator-preview-lg', { state: 'idle', size: 'lg' });
             }
 
             updateMainPreview();
@@ -279,18 +268,14 @@
                     size: 'sm',
                     label: 'Estado',
                     selectOptions: [
-                        { value: 'idle-plain',       text: 'Saved' },
-                        { value: 'idle-subtle',      text: 'Hover' },
-                        { value: 'idle-highlighted', text: 'Focus' },
-                        { value: 'saving',           text: 'Saving' },
-                        { value: 'error',            text: 'Failed' },
-                        { value: 'saved',            text: 'Recently saved' }
+                        { value: 'idle',   text: 'Guardado (idle)' },
+                        { value: 'saving', text: 'Guardando' },
+                        { value: 'saved',  text: 'Cambios guardados' },
+                        { value: 'error',  text: 'Error' }
                     ],
-                    value: 'idle-plain',
+                    value: 'idle',
                     onChange: function(value) {
-                        var mapped = STATE_MAP[value] || { state: 'idle', variant: 'plain' };
-                        currentState = mapped.state;
-                        currentVariant = mapped.variant;
+                        currentState = value;
                         updateMainPreview();
                     }
                 });

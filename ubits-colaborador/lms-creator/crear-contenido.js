@@ -32,11 +32,11 @@
     function triggerFakeSaveCreator() {
         if (typeof renderSaveIndicator !== 'function') return;
         clearTimeout(saveIndicatorTimeout);
-        renderSaveIndicator('crear-contenido-save-indicator', { state: 'saving', size: 'xs', idleVariant: 'plain' });
+        renderSaveIndicator('crear-contenido-save-indicator', { state: 'saving', size: 'xs' });
         saveIndicatorTimeout = setTimeout(function () {
-            renderSaveIndicator('crear-contenido-save-indicator', { state: 'saved', size: 'xs', idleVariant: 'plain' });
+            renderSaveIndicator('crear-contenido-save-indicator', { state: 'saved', size: 'xs' });
             setTimeout(function () {
-                renderSaveIndicator('crear-contenido-save-indicator', { state: 'idle', size: 'xs', idleVariant: 'plain' });
+                renderSaveIndicator('crear-contenido-save-indicator', { state: 'idle', size: 'xs' });
             }, 2500);
         }, 800);
     }
@@ -3263,7 +3263,6 @@
         if (typeof renderSaveIndicator === 'function') {
             renderSaveIndicator('crear-contenido-save-indicator', {
                 state: 'idle',
-                idleVariant: 'plain',
                 size: 'xs'
             });
         }

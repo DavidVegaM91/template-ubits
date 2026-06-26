@@ -1,7 +1,7 @@
 /* ========================================
    UBITS SAVE INDICATOR COMPONENT
-   Indicador visual de guardado (Saved, Hover, Focus, Saving, Failed, Recently saved)
-   Figma: Planes y Tareas R4 – siempre con padding, focus cuadrado. Solo icono 1:1: xs 28px, sm 32px, md 40px, lg 48px
+   Indicador visual de guardado (idle, saving, saved, error). Solo informativo — sin hover ni focus.
+   Figma: Planes y Tareas R4. Solo icono 1:1: xs 28px, sm 32px, md 40px, lg 48px
    ======================================== */
 
 /* Contenedor base: sin padding; el "padding" lo da el contenedor cuadrado del icono (como en Figma) */
@@ -17,13 +17,6 @@
     font-weight: var(--font-weight-semibold);
     color: var(--ubits-fg-1-high);
     box-sizing: border-box;
-    transition: background-color 0.2s ease;
-}
-
-/* Focus: 4px spread (Figma), contenedor cuadrado en estados solo icono */
-.ubits-save-indicator:focus-visible {
-    outline: none;
-    box-shadow: 0 0 0 4px var(--ubits-button-focus-ring);
 }
 
 /* ---- TAMAÑOS (Figma: Learn-Components 280:6179) ---- */
@@ -129,42 +122,16 @@
 /* ---- ESTADOS SOLO ICONO (idle): ocultar texto ---- */
 /* El icono va siempre dentro del contenedor cuadrado .ubits-save-indicator__icon (mismo tamaño en todos los estados, icono centrado = 12px padding visual). En icon-only se ve el cuadradito; al pasar a saving/saved el cuadrado sigue igual y el icono no se mueve. */
 
-.ubits-save-indicator--idle-plain .ubits-save-indicator__text,
-.ubits-save-indicator--idle-subtle .ubits-save-indicator__text,
-.ubits-save-indicator--idle-highlighted .ubits-save-indicator__text {
+.ubits-save-indicator--idle .ubits-save-indicator__text {
     display: none;
 }
 
-/* Idle (default): sin fondo; al hover fondo tertiary para coherencia con botones */
-.ubits-save-indicator--idle-plain {
+.ubits-save-indicator--idle {
     background-color: transparent;
 }
-.ubits-save-indicator--idle-plain .ubits-save-indicator__icon {
-    color: var(--ubits-fg-1-low);
-    transition: background-color 0.2s ease;
-}
-.ubits-save-indicator--idle-plain:hover .ubits-save-indicator__icon {
-    background-color: var(--ubits-btn-tertiary-bg-hover);
-}
 
-/* Hover (Figma): fondo sutil en el cuadradito; al hover tertiary */
-.ubits-save-indicator--idle-subtle .ubits-save-indicator__icon {
-    color: var(--ubits-fg-1-low);
-    background-color: var(--ubits-bg-2);
-    transition: background-color 0.2s ease;
-}
-.ubits-save-indicator--idle-subtle:hover .ubits-save-indicator__icon {
-    background-color: var(--ubits-btn-tertiary-bg-hover);
-}
-
-/* Focus (Figma): solo box-shadow (ring 4px), sin borde */
-.ubits-save-indicator--idle-highlighted {
-    background-color: var(--ubits-bg-1);
-    box-shadow: 0 0 0 4px var(--ubits-button-focus-ring);
-}
-
-.ubits-save-indicator--idle-highlighted .ubits-save-indicator__icon {
-    color: var(--ubits-fg-1-low);
+.ubits-save-indicator--idle .ubits-save-indicator__icon {
+    color: var(--ubits-fg-1-high);
 }
 
 /* Estados con texto: padding derecho para que el texto no quede pegado al borde (Figma: pr 16px) */

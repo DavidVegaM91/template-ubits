@@ -276,7 +276,7 @@ function renderPlanDetail(planId) {
             }
         }
         if (typeof renderAvatar === 'function') {
-            createdByEl.innerHTML = renderAvatar({ nombre: creatorName, avatar: creatorAvatar }, { size: 'xs' }) + '<span class="plan-detail-card__creado-name ubits-body-sm-regular">' + escapeHtml(creatorName) + '</span>';
+            createdByEl.innerHTML = renderAvatar({ nombre: creatorName, avatar: creatorAvatar }, { size: 'sm' }) + '<span class="plan-detail-card__creado-name ubits-body-sm-regular">' + escapeHtml(creatorName) + '</span>';
         } else {
             createdByEl.textContent = creatorName;
         }
@@ -291,7 +291,7 @@ function renderPlanDetail(planId) {
         } else {
             const tooltipOpts = { showTooltip: true, tooltipDelay: 1000 };
             const listHtml = typeof window.renderProfileList === 'function'
-                ? window.renderProfileList(assigneesList, { size: 'xs', maxVisible: 3, ...tooltipOpts })
+                ? window.renderProfileList(assigneesList, { size: 'sm', maxVisible: 3, ...tooltipOpts })
                 : '';
             assigneesWrap.innerHTML = listHtml;
             const profileList = assigneesWrap.querySelector('.ubits-profile-list');
@@ -368,7 +368,9 @@ function renderPlanDetail(planId) {
                     window.planDetailPlanCache[planId].end_date = ymd || null;
                 }
                 renderPlanDetail(planId);
-                if (typeof showToast === 'function') showToast('success', 'Fecha de vencimiento actualizada');
+                if (typeof triggerSaveIndicatorFeedback === 'function') {
+                    triggerSaveIndicatorFeedback('header-product-container-save-indicator', { size: 'xs' });
+                }
             }
         });
         const dateInput = document.querySelector('#plan-detail-vencimiento-wrap .ubits-input');
@@ -1023,11 +1025,8 @@ function initPlanDetail() {
                 } else {
                     plan.name = this.value.trim();
                 }
-                if (typeof renderSaveIndicator === 'function') {
-                    renderSaveIndicator('header-product-container-save-indicator', { state: 'saving', size: 'xs' });
-                    setTimeout(function () {
-                        renderSaveIndicator('header-product-container-save-indicator', { state: 'idle', size: 'xs' });
-                    }, 600);
+                if (typeof triggerSaveIndicatorFeedback === 'function') {
+                    triggerSaveIndicatorFeedback('header-product-container-save-indicator', { size: 'xs' });
                 }
             }
         });
@@ -1038,11 +1037,8 @@ function initPlanDetail() {
             const plan = window.planDetailPlanCache && window.planDetailPlanCache[planId];
             if (plan) {
                 plan.description = this.value.trim() || '';
-                if (typeof renderSaveIndicator === 'function') {
-                    renderSaveIndicator('header-product-container-save-indicator', { state: 'saving', size: 'xs' });
-                    setTimeout(function () {
-                        renderSaveIndicator('header-product-container-save-indicator', { state: 'idle', size: 'xs' });
-                    }, 600);
+                if (typeof triggerSaveIndicatorFeedback === 'function') {
+                    triggerSaveIndicatorFeedback('header-product-container-save-indicator', { size: 'xs' });
                 }
             }
         });

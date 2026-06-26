@@ -133,14 +133,9 @@
     var SAVE_INDICATOR_ID = 'task-detail-save-indicator';
 
     function triggerFakeSave() {
-        if (typeof renderSaveIndicator !== 'function') return;
-        renderSaveIndicator(SAVE_INDICATOR_ID, { state: 'saving', size: 'xs' });
-        setTimeout(function () {
-            renderSaveIndicator(SAVE_INDICATOR_ID, { state: 'saved', size: 'xs' });
-            setTimeout(function () {
-                renderSaveIndicator(SAVE_INDICATOR_ID, { state: 'idle', size: 'xs' });
-            }, 2500);
-        }, 800);
+        if (typeof triggerSaveIndicatorFeedback === 'function') {
+            triggerSaveIndicatorFeedback(SAVE_INDICATOR_ID, { size: 'xs' });
+        }
     }
 
     var estado = {
