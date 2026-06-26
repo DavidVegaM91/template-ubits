@@ -19,6 +19,39 @@ function escapeAttr(str) {
 }
 
 /**
+ * Prefijo relativo hasta la raíz del playground según la URL actual.
+ * Permite que rutas tipo "../../images/..." de la BD funcionen en cualquier carpeta.
+ */
+function getAvatarImagesPrefixForPage() {
+    try {
+        var path = (typeof window !== 'undefined' && window.location && window.location.pathname)
+            ? String(window.location.pathname)
+            : '';
+        if (path.indexOf('/ubits-colaborador/aprendizaje/mi-equipo/') !== -1) return '../../../';
+        if (path.indexOf('/ubits-colaborador/lms-creator/planes-formacion/') !== -1) return '../../../';
+        if (path.indexOf('/ubits-colaborador/lms-creator/') !== -1) return '../../';
+        if (path.indexOf('/ubits-colaborador/') !== -1) return '../../';
+        if (path.indexOf('/ubits-admin/') !== -1) return '../../';
+        if (path.indexOf('/documentacion/') !== -1) return '../../';
+    } catch (e) { /* noop */ }
+    return '';
+}
+
+/**
+ * Normaliza URL de avatar relativa (p. ej. Profile-image.jpg de E006) al depth de la página actual.
+ * @param {string|null|undefined} avatar
+ * @returns {string|null}
+ */
+function normalizeAvatarUrlForPage(avatar) {
+    var a = String(avatar || '').trim();
+    if (!a) return null;
+    if (a.indexOf('http://') === 0 || a.indexOf('https://') === 0 || a.indexOf('data:') === 0) return a;
+    a = a.replace(/^(\.\.\/)+/, '');
+    if (a.indexOf('images/') === 0) return getAvatarImagesPrefixForPage() + a;
+    return a;
+}
+
+/**
  * Genera el HTML de un avatar único.
  * - Si tiene avatar (URL): muestra la imagen.
  * - Si no tiene avatar: muestra icono de usuario (far fa-user).
@@ -43,7 +76,7 @@ function renderAvatar(persona, options) {
     const size = (opts.size && ['xs', 'sm', 'md', 'lg'].includes(opts.size)) ? opts.size : 'md';
     const sizeClass = `ubits-avatar--${size}`;
     const nombre = persona && (persona.nombre || persona.name);
-    const avatarUrl = persona && (persona.avatar || persona.providerLogo);
+    const avatarUrl = normalizeAvatarUrlForPage(persona && (persona.avatar || persona.providerLogo));
 
     const inner = avatarUrl
         ? `<img src="${escapeAttr(avatarUrl)}" alt="${escapeAttr(opts.alt != null ? opts.alt : (nombre || 'Avatar'))}" class="ubits-avatar__img">`
@@ -114,4 +147,5 @@ function renderProfileList(personas, options) {
 if (typeof window !== 'undefined') {
     window.renderAvatar = renderAvatar;
     window.renderProfileList = renderProfileList;
+    window.normalizeAvatarUrlForPage = normalizeAvatarUrlForPage;
 }

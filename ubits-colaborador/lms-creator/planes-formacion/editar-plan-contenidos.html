@@ -894,12 +894,14 @@
                 function showWizardStep(num) {
                     overlay._wizardStep = num;
                     if (stepParticipantes) stepParticipantes.style.display = num === 1 ? 'flex' : 'none';
-                    if (stepContenidos) stepContenidos.style.display = num === 2 ? 'block' : 'none';
+                    if (stepContenidos) stepContenidos.style.display = num === 2 ? 'flex' : 'none';
                     if (stepperOlEdit && typeof setStepperStepStates === 'function') {
                         setStepperStepStates(stepperOlEdit, num === 1 ? 0 : 1);
                     }
                     if (num === 2 && !overlay._wizContenidosAttached) {
                         attachWizardContenidosPaso2(overlay, syncWizardPrimary);
+                    } else if (num === 2 && typeof resyncDrawerContenidosScrollLayout === 'function') {
+                        requestAnimationFrame(function () { resyncDrawerContenidosScrollLayout(overlay); });
                     }
                     syncWizardPrimary();
                 }
@@ -929,6 +931,13 @@
                 if (stepParticipantes) stepParticipantes.style.flexDirection = 'column';
 
                 showWizardStep(1);
+
+                if (stepperOlEdit && typeof wireDrawerWizardStepperBackNav === 'function') {
+                    wireDrawerWizardStepperBackNav(stepperOlEdit, {
+                        getCurrentStepIndex: function () { return (overlay._wizardStep || 1) - 1; },
+                        onGoToStep: function (n) { showWizardStep(n); }
+                    });
+                }
 
                 if (btnPrimary) {
                     btnPrimary.onclick = function() {

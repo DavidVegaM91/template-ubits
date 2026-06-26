@@ -317,6 +317,11 @@
             if (filterBtnWrap) {
                 filterBtnWrap.style.display = mode === 'grid' ? '' : 'none';
             }
+            requestAnimationFrame(function () {
+                if (typeof window.resyncDrawerContenidosScrollLayout === 'function') {
+                    window.resyncDrawerContenidosScrollLayout(overlay);
+                }
+            });
         }
 
         function uniqueColumnValues(colKey) {
@@ -950,7 +955,29 @@
 
         renderCatalog();
         overlay._wizContenidosAttached = true;
+        requestAnimationFrame(function () {
+            resyncDrawerContenidosScrollLayout(overlay);
+        });
+    }
+
+    function resyncDrawerContenidosScrollLayout(overlay) {
+        if (!overlay) return;
+        var resultadosBg =
+            overlay.querySelector('#drawer-wizard-step3 .drawer-cursos-resultados-bg') ||
+            overlay.querySelector('.drawer-agregar-cursos--single-col .drawer-cursos-resultados-bg--paso2-full') ||
+            overlay.querySelector('.drawer-cursos-resultados-bg');
+        if (!resultadosBg) return;
+        var cardsContainer = resultadosBg.querySelector('.drawer-cursos-cards-grid');
+        var tableWrap = resultadosBg.querySelector('.drawer-contenidos-table-wrap');
+        var scrollTarget = overlay._drawerContenidosViewMode === 'grid' ? cardsContainer : tableWrap;
+        if (typeof window.syncDrawerResultadosScrollPadding === 'function') {
+            window.syncDrawerResultadosScrollPadding(resultadosBg, scrollTarget);
+        }
+        if (overlay._wizContenidosScrollHandler) {
+            overlay._wizContenidosScrollHandler();
+        }
     }
 
     window.attachWizardContenidosPaso2 = attachWizardContenidosPaso2;
+    window.resyncDrawerContenidosScrollLayout = resyncDrawerContenidosScrollLayout;
 })(window);

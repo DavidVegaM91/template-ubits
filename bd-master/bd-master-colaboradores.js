@@ -162,4 +162,9 @@ window.BD_MASTER_COLABORADORES = {
             c.columnaB = 'Modalidad: ' + modalidades[idx % modalidades.length];
         }
     });
+
+    var planesBd = window.BD_PLANES_FORMACION;
+    if (planesBd && typeof planesBd.reseedIfCorrupt === 'function') {
+        planesBd.reseedIfCorrupt();
+    }
 })();

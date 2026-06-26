@@ -101,6 +101,7 @@
     <script src="../../../bd-master/bd-master-colaboradores.js"></script>
     <script src="../../../bd-master/bd-contenidos-ubits.js"></script>
     <script src="../../../bd-master/bd-planes-formacion.js"></script>
+    <script src="../../lms-creator/planes-formacion/planes-formacion-bd-bridge.js"></script>
     <script src="../../../script.js"></script>
     <script src="../../../general-utils/humanizador-fechas.js"></script>
     <script src="../../../components/progress-bar.js"></script>
@@ -116,14 +117,19 @@
             var Shared = window.MiEquipoPlanCompetenciasShared;
             var params = new URLSearchParams(window.location.search);
             var planId = params.get('id') || '';
-            var plan = typeof getMiEquipoPlanById === 'function' ? getMiEquipoPlanById(planId) : null;
-            if (!plan || plan.tipo !== 'competencias') {
+            var planRawBd = typeof loadPlanFormacionFromBd === 'function'
+                ? loadPlanFormacionFromBd(planId, 'competencias')
+                : null;
+            if (!planRawBd || planRawBd.tipo !== 'competencias') {
                 window.location.href = 'planes.html?tab=competencias';
                 return;
             }
+            var plan = typeof planFormacionToDetalleHeader === 'function'
+                ? planFormacionToDetalleHeader(planRawBd)
+                : { nombre: planRawBd.nombre, progreso: 0, fechaInicio: planRawBd.fechaInicio, fechaFin: planRawBd.fechaFin, estado: planRawBd.estado, horasEstudioPorCompetencia: 2 };
 
-            var competenciaPorUsuario = plan.competenciaPorUsuario || {};
-            var asignacionesDetalleData = Shared.buildDetalleRowsFromPlan(plan);
+            var competenciaPorUsuario = planRawBd.competenciaPorUsuario || {};
+            var asignacionesDetalleData = Shared.buildDetalleRowsFromPlan(planRawBd);
             var asignacionesDetalleTablaRef = null;
             var pendingAsignacionesDeleteIds = [];
 

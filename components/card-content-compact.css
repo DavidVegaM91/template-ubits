@@ -92,8 +92,8 @@
 }
 
 .course-card-compact .course-title-compact {
-    -webkit-line-clamp: 2;
-    line-clamp: 2;
+    -webkit-line-clamp: 1;
+    line-clamp: 1;
 }
 
 .course-card-compact .course-content-compact {
@@ -169,10 +169,12 @@
     margin: 0;
     height: auto;
     display: -webkit-box;
-    -webkit-line-clamp: 2;
-    line-clamp: 2;
+    -webkit-line-clamp: 1;
+    line-clamp: 1;
     -webkit-box-orient: vertical;
     overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0;
 }
 
 /* Course Content Compact - Avatar y tipo debajo */

@@ -237,6 +237,7 @@
                     }
                 }
                 cardsContainer.style.display = 'none';
+                if (typeof opts.onSync === 'function') opts.onSync();
                 return;
             }
             if (emptySearchContainer) {
@@ -323,6 +324,7 @@
                     if (grid) reorderHabilidadesGridWithAnimation(grid, compId, cursosSeleccionados);
                 });
             });
+            if (typeof opts.onSync === 'function') opts.onSync();
         }
 
         if (searchInput) {
@@ -439,73 +441,183 @@
         }
     }
 
+    function getDrawerAgregarAsignacionWizardHtml() {
+        var stepperHtml = '<nav id="drawer-wiz-stepper-nav-edit" class="drawer-wizard-stepper-nav" aria-label="Pasos de asignación">' +
+            '<ol id="drawer-wiz-stepper-ol-edit" class="ubits-stepper ubits-stepper--horizontal ubits-stepper--horizontal-compact">' +
+            '<li class="ubits-stepper__step ubits-stepper__step--active" data-step-label="Participantes">' +
+            '<span class="ubits-stepper__mark" aria-hidden="true"><span class="ubits-stepper__mark-num">1</span><i class="far fa-check" aria-hidden="true"></i></span>' +
+            '<span class="ubits-stepper__label">Participantes</span></li>' +
+            '<li class="ubits-stepper__rail" aria-hidden="true"></li>' +
+            '<li class="ubits-stepper__step ubits-stepper__step--pending" data-step-label="Competencias">' +
+            '<span class="ubits-stepper__mark" aria-hidden="true"><span class="ubits-stepper__mark-num">2</span><i class="far fa-check" aria-hidden="true"></i></span>' +
+            '<span class="ubits-stepper__label">Competencias</span></li>' +
+            '</ol></nav>';
+        var stepParticipantesHtml = '<div id="drawer-wizard-step2" class="drawer-wizard-step drawer-wizard-step--participantes">' +
+            '<div class="drawer-usuarios-panel drawer-usuarios-panel--colaborador" id="drawer-usuarios-colaborador-panel" style="display:flex">' +
+            '  <div id="drawer-colab-data-table-container" class="drawer-colab-dt-wrapper"></div>' +
+            '</div></div>';
+        var stepCompetenciasHtml = '<div id="drawer-wizard-step3" class="drawer-wizard-step" style="display:none">' +
+            getDrawerCompetenciasBodyHtml('drawer-wiz') +
+            '</div>';
+        return '<div class="drawer-asignacion-wizard-root">' + stepperHtml + stepParticipantesHtml + stepCompetenciasHtml + '</div>';
+    }
+
     function openDrawerAgregarAsignacionMiEquipo(opts) {
         opts = opts || {};
         var asignacionesData = opts.asignacionesData || [];
         var overlayId = 'drawer-mi-equipo-agregar-asignacion';
-        var bodyHtml = '<div class="drawer-usuarios-panel drawer-usuarios-panel--colaborador" style="display:block">' +
-            '<div id="drawer-mi-equipo-colab-data-table-container" class="drawer-colab-dt-wrapper"></div></div>';
-        var footerHtml = '<button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="drawer-mi-equipo-colab-cancel"><span>Cancelar</span></button>' +
-            '<button type="button" class="ubits-button ubits-button--primary ubits-button--md" id="drawer-mi-equipo-colab-agregar" disabled><span>Agregar</span></button>';
+        var footerHtml = '<button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="drawer-wiz-btn-cancel"><span>Cancelar</span></button>' +
+            '<button type="button" class="ubits-button ubits-button--primary ubits-button--md" id="drawer-wiz-btn-primary" disabled><span>Siguiente</span></button>';
         if (typeof global.openDrawer !== 'function') return;
-        var overlay = global.openDrawer({
+        global.openDrawer({
             overlayId: overlayId,
             title: 'Agregar asignación',
-            bodyHtml: bodyHtml,
+            bodyHtml: getDrawerAgregarAsignacionWizardHtml(),
             footerHtml: footerHtml,
             size: 'lg',
-            onClose: function () {}
+            onClose: function () {
+                var o = document.getElementById(overlayId);
+                if (o) {
+                    o._wizCompetenciasAttached = false;
+                    o._wizCursosSeleccionados = [];
+                    o._miEquipoCompSeleccionados = [];
+                }
+            }
         });
+        var overlay = document.getElementById(overlayId);
         if (!overlay) return;
 
-        var btnAgregar = overlay.querySelector('#drawer-mi-equipo-colab-agregar');
-        var btnCancel = overlay.querySelector('#drawer-mi-equipo-colab-cancel');
+        overlay._wizCompetenciasAttached = false;
+        overlay._wizardStep = 1;
+        overlay._wizCursosSeleccionados = [];
+        overlay._miEquipoCompSeleccionados = [];
 
-        function syncAgregarBtn() {
-            if (!btnAgregar || !overlay._drawerColabTablaRef) return;
-            var ids = typeof overlay._drawerColabTablaRef.getSelectedIds === 'function' ? overlay._drawerColabTablaRef.getSelectedIds() : [];
-            btnAgregar.disabled = !ids.length;
+        var stepParticipantes = overlay.querySelector('#drawer-wizard-step2');
+        var stepCompetencias = overlay.querySelector('#drawer-wizard-step3');
+        var stepperOlEdit = overlay.querySelector('#drawer-wiz-stepper-ol-edit');
+        var btnPrimary = overlay.querySelector('#drawer-wiz-btn-primary');
+        var btnCancel = overlay.querySelector('#drawer-wiz-btn-cancel');
+        var DPC = global.DrawerParticipantesColabTable;
+        var empleadosDrawer = getColaboradoresDisponiblesMiEquipo();
+
+        function getColaboradoresDisponiblesParaAsignacion() {
+            var tomados = {};
+            asignacionesData.forEach(function (a) {
+                if (a.colaboradorId) tomados[String(a.colaboradorId)] = true;
+            });
+            return empleadosDrawer.filter(function (e) { return !tomados[String(e.id)]; });
         }
 
-        var DPC = global.DrawerParticipantesColabTable;
-        var container = overlay.querySelector('#drawer-mi-equipo-colab-data-table-container');
-        if (container && DPC && typeof DPC.createDrawerParticipantesColabDataTable === 'function') {
+        function setPrimaryLabel(text) {
+            if (!btnPrimary) return;
+            var sp = btnPrimary.querySelector('span');
+            if (sp) sp.textContent = text;
+            else btnPrimary.textContent = text;
+        }
+        function setSecondaryLabel(text) {
+            if (!btnCancel) return;
+            var sp = btnCancel.querySelector('span');
+            if (sp) sp.textContent = text;
+            else btnCancel.textContent = text;
+        }
+
+        function syncWizardPrimary() {
+            if (!btnPrimary) return;
+            var ws = overlay._wizardStep || 1;
+            if (ws === 1) {
+                setPrimaryLabel('Siguiente');
+                var ref = overlay._drawerColabTablaRef;
+                var dis = !ref || typeof ref.getSelectedIds !== 'function' || ref.getSelectedIds().length === 0;
+                btnPrimary.disabled = dis;
+                setSecondaryLabel('Cancelar');
+            } else {
+                setPrimaryLabel('Agregar');
+                var sel = overlay._miEquipoCompSeleccionados || [];
+                btnPrimary.disabled = sel.length === 0;
+                setSecondaryLabel('Anterior');
+            }
+        }
+
+        function showWizardStep(num) {
+            overlay._wizardStep = num;
+            if (stepParticipantes) stepParticipantes.style.display = num === 1 ? 'flex' : 'none';
+            if (stepCompetencias) stepCompetencias.style.display = num === 2 ? 'block' : 'none';
+            if (stepperOlEdit && typeof global.setStepperStepStates === 'function') {
+                global.setStepperStepStates(stepperOlEdit, num === 1 ? 0 : 1);
+            }
+            if (num === 2 && !overlay._wizCompetenciasAttached) {
+                overlay._miEquipoCompSeleccionados = [];
+                overlay._wizCompEditor = initDrawerCompetenciasEditor(overlay, {
+                    idPrefix: 'drawer-wiz',
+                    onSync: syncWizardPrimary
+                });
+                overlay._wizCompetenciasAttached = true;
+            }
+            syncWizardPrimary();
+        }
+
+        var drawerColabContainer = overlay.querySelector('#drawer-colab-data-table-container');
+        if (drawerColabContainer && DPC && typeof DPC.createDrawerParticipantesColabDataTable === 'function') {
             overlay._drawerColabTablaRef = DPC.createDrawerParticipantesColabDataTable({
-                containerId: 'drawer-mi-equipo-colab-data-table-container',
-                tableId: 'drawer-mi-equipo-colab-table',
-                getData: function () { return getColaboradoresDisponiblesMiEquipo(); },
+                containerId: 'drawer-colab-data-table-container',
+                tableId: 'drawer-mi-equipo-colab-table-wiz',
+                getData: function () { return getColaboradoresDisponiblesParaAsignacion(); },
                 emptyState: {
                     message: 'No hay colaboradores en tu equipo',
                     icon: 'far fa-user',
-                    description: 'No se encontraron reportes directos para asignar en este plan.'
+                    description: 'No se encontraron reportes directos disponibles para asignar en este plan.'
                 },
                 i18n: {
                     selectAll: 'Seleccionar todo',
                     deselectAll: 'Deseleccionar todo',
                     verSeleccionados: 'Ver seleccionados',
-                    buscar: 'Buscar usuarios',
-                    buscarPlaceholder: 'Buscar por nombre de usuario...'
+                    buscar: 'Buscar',
+                    buscarPlaceholder: 'Buscar colaborador...'
                 }
             });
-            container.addEventListener('change', function (e) {
-                if (e.target && e.target.matches && e.target.matches('input[type="checkbox"]')) syncAgregarBtn();
+            drawerColabContainer.addEventListener('change', function (e) {
+                if (e.target && e.target.matches && e.target.matches('input[type="checkbox"]')) syncWizardPrimary();
             });
         }
 
-        if (btnCancel) {
-            btnCancel.addEventListener('click', function () {
-                if (typeof global.closeDrawer === 'function') global.closeDrawer(overlayId);
+        if (stepParticipantes) stepParticipantes.style.flexDirection = 'column';
+
+        showWizardStep(1);
+
+        if (stepperOlEdit && typeof global.wireDrawerWizardStepperBackNav === 'function') {
+            global.wireDrawerWizardStepperBackNav(stepperOlEdit, {
+                getCurrentStepIndex: function () { return (overlay._wizardStep || 1) - 1; },
+                onGoToStep: function (n) { showWizardStep(n); }
             });
         }
-        if (btnAgregar) {
-            btnAgregar.addEventListener('click', function () {
+
+        if (btnPrimary) {
+            btnPrimary.onclick = function () {
+                var ws = overlay._wizardStep || 1;
+                if (ws === 1) {
+                    overlay._wizCompetenciasAttached = false;
+                    overlay._miEquipoCompSeleccionados = [];
+                    showWizardStep(2);
+                    return;
+                }
                 var ref = overlay._drawerColabTablaRef;
                 var selectedIds = (ref && typeof ref.getSelectedIds === 'function') ? ref.getSelectedIds() : [];
-                if (typeof opts.onAdd === 'function') opts.onAdd(selectedIds);
+                var editor = overlay._wizCompEditor;
+                var competenciasSel = editor && typeof editor.getSelection === 'function' ? editor.getSelection() : [];
+                if (typeof opts.onAdd === 'function') opts.onAdd(selectedIds, competenciasSel);
                 if (typeof global.closeDrawer === 'function') global.closeDrawer(overlayId);
-            });
+            };
         }
-        if (container) container.style.flexDirection = 'column';
+        if (btnCancel) {
+            btnCancel.onclick = function () {
+                var ws = overlay._wizardStep || 1;
+                if (ws === 2) {
+                    showWizardStep(1);
+                    return;
+                }
+                if (typeof global.closeDrawer === 'function') global.closeDrawer(overlayId);
+            };
+        }
     }
 
     function buildAsignacionRowHtmlCompetencias(row) {

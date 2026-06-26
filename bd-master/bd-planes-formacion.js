@@ -8,6 +8,7 @@
     'use strict';
 
     var STORAGE_KEY = 'ubits-planes-formacion-db';
+    var STORAGE_SCHEMA_VERSION = 2;
     var PLAYGROUND_TODAY = '2026-06-19';
     var HORAS_META_COMPETENCIAS = 2;
 
@@ -355,19 +356,43 @@
         return generateContenidosPlans().concat(generateCompetenciasPlans());
     }
 
+    /** Planes generados sin colaboradores cargados quedan sin asignaciones ni progreso. */
+    function seedLooksCorrupt(planes) {
+        if (!planes || !planes.length) return true;
+        for (var i = 0; i < planes.length; i++) {
+            var p = planes[i];
+            if (!p || !p.tipo) continue;
+            if (!p.asignaciones || !p.asignaciones.length) return true;
+        }
+        return false;
+    }
+
     function loadFromStorage() {
         try {
             var raw = sessionStorage.getItem(STORAGE_KEY);
             if (!raw) return null;
             var parsed = JSON.parse(raw);
-            if (parsed && Array.isArray(parsed.planes)) return parsed.planes;
-        } catch (e) { /* noop */ }
-        return null;
+            if (!parsed || !Array.isArray(parsed.planes) || parsed.schemaVersion !== STORAGE_SCHEMA_VERSION) {
+                sessionStorage.removeItem(STORAGE_KEY);
+                return null;
+            }
+            if (seedLooksCorrupt(parsed.planes)) {
+                sessionStorage.removeItem(STORAGE_KEY);
+                return null;
+            }
+            return parsed.planes;
+        } catch (e) {
+            try { sessionStorage.removeItem(STORAGE_KEY); } catch (e2) { /* noop */ }
+            return null;
+        }
     }
 
     function persistPlanesDb() {
         try {
-            sessionStorage.setItem(STORAGE_KEY, JSON.stringify({ planes: db.planes }));
+            sessionStorage.setItem(STORAGE_KEY, JSON.stringify({
+                schemaVersion: STORAGE_SCHEMA_VERSION,
+                planes: db.planes
+            }));
         } catch (e) { /* noop */ }
     }
 
@@ -385,6 +410,17 @@
     };
 
     refreshEstadosPlanes();
+
+    function reseedIfCorrupt() {
+        if (!getColaboradores().length) return false;
+        if (!seedLooksCorrupt(db.planes)) return false;
+        db.planes = buildSeedPlanes();
+        refreshEstadosPlanes();
+        persistPlanesDb();
+        return true;
+    }
+
+    reseedIfCorrupt();
 
     function findPlanIndex(id) {
         var sid = String(id || '');
@@ -478,11 +514,19 @@
         return getReportesDirectos(leaderId).map(function (c) { return String(c.id); });
     }
 
+    function colaboradorIdFromAsignacion(a) {
+        if (!a) return '';
+        if (a.colaboradorId != null && String(a.colaboradorId).trim() !== '') return String(a.colaboradorId);
+        var fid = String(a.id || '');
+        if (fid.indexOf('fila-usuario-') === 0) return fid.slice('fila-usuario-'.length);
+        return fid;
+    }
+
     function planTieneColaborador(plan, colaboradorIds) {
         var ids = {};
         (colaboradorIds || []).forEach(function (id) { ids[String(id)] = true; });
         return (plan.asignaciones || []).some(function (a) {
-            return ids[String(a.colaboradorId)];
+            return ids[colaboradorIdFromAsignacion(a)];
         });
     }
 
@@ -500,9 +544,18 @@
 
     function getPlanesListData(tipo, opts) {
         opts = opts || {};
-        var list = tipo
-            ? getPlanesByTipo(tipo)
-            : (opts.leaderId ? getPlanesVisiblesParaLider(opts.leaderId) : getPlanesVisiblesCreator());
+        var list;
+        if (opts.leaderId) {
+            list = getPlanesVisiblesParaLider(opts.leaderId);
+            if (tipo) {
+                var t = tipo === 'competencias' ? 'competencias' : 'contenidos';
+                list = list.filter(function (p) { return p.tipo === t; });
+            }
+        } else if (tipo) {
+            list = getPlanesByTipo(tipo);
+        } else {
+            list = getPlanesVisiblesCreator();
+        }
         return list.map(function (p) {
             return {
                 id: p.id,
@@ -627,6 +680,7 @@
         deletePlans: deletePlans,
         persistPlanesDb: persistPlanesDb,
         resetToSeed: resetToSeed,
+        reseedIfCorrupt: reseedIfCorrupt,
         isoToDisplay: isoToDisplay
     };
 })();

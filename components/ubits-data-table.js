@@ -131,7 +131,7 @@
      * @param {Object} options
      * @param {string} options.containerId - ID del contenedor donde se renderiza la tabla
      * @param {string} [options.tableId] - id del <table>
-     * @param {Array<{id: string, label: string, sortable?: boolean, filterable?: boolean, sortType?: 'number'|'date'}>} options.columns
+     * @param {Array<{id: string, label: string, sortable?: boolean, filterable?: boolean, sortType?: 'number'|'date', filterOptions?: string[], filterHasAutocomplete?: boolean}>} options.columns - `filterOptions`: valores fijos del filtro (orden preservado). `filterHasAutocomplete`: false omite buscador en el dropdown del filtro.
      * @param {function(): Array} options.getData
      * @param {string} options.rowIdField - clave del row para el id (ej. 'id')
      * @param {function(Object): string} options.buildRowHtml - devuelve HTML de celdas (sin checkbox); si checkboxes, el componente añade la columna
@@ -144,6 +144,7 @@
      * @param {string} [options.title] - título opcional en la barra superior
      * @param {string[]} [options.searchColumnIds] - Si `features.search` y hay al menos un id válido, la búsqueda solo considera esas columnas (`data-col`). Si se omite, se busca en todas las columnas.
      * @param {{ column: string, direction?: 'asc'|'desc' }} [options.initialSort] - Orden inicial por columna (debe existir en `columns` y ser ordenable en la UI si muestra botón de orden).
+     * @param {function(): void} [options.onAfterRefresh] - Callback tras cada `refresh()` (útil para re-inyectar controles custom en el thead).
      */
     function createUbitsDataTable(options) {
         options = options || {};
@@ -171,6 +172,7 @@
         var primaryButton = options.primaryButton || null;
         var i18n = Object.assign({}, defaultI18n, options.i18n || {});
         var title = options.title || '';
+        var onAfterRefresh = typeof options.onAfterRefresh === 'function' ? options.onAfterRefresh : null;
         var searchColumnIds = Array.isArray(options.searchColumnIds) && options.searchColumnIds.length > 0
             ? options.searchColumnIds.filter(function (id) {
                 return columns.some(function (c) { return c.id === id; });
@@ -727,16 +729,22 @@
                     e.preventDefault();
                     e.stopPropagation();
                     var col = filterBtn.getAttribute('data-filter');
+                    var colDef = columns.find(function (c) { return c.id === col; });
                     var currentVals = filters[col] || [];
                     var allVals = [];
-                    getTableRows().forEach(function (r) {
-                        var v = getRowCellText(r, col);
-                        if (v && allVals.indexOf(v) === -1) allVals.push(v);
-                    });
-                    allVals.sort(function (a, b) { return (a || '').localeCompare(b || '', 'es'); });
+                    if (colDef && Array.isArray(colDef.filterOptions) && colDef.filterOptions.length) {
+                        allVals = colDef.filterOptions.slice();
+                    } else {
+                        getTableRows().forEach(function (r) {
+                            var v = getRowCellText(r, col);
+                            if (v && allVals.indexOf(v) === -1) allVals.push(v);
+                        });
+                        allVals.sort(function (a, b) { return (a || '').localeCompare(b || '', 'es'); });
+                    }
                     var options = allVals.map(function (v) {
                         return { text: v, value: v, checkbox: true, selected: currentVals.indexOf(v) >= 0 };
                     });
+                    var hasFilterAutocomplete = !(colDef && colDef.filterHasAutocomplete === false);
                     var overlayId = filterOverlayPrefix + '-' + col;
                     var contentId = overlayId + '-content';
                     var existing = document.getElementById(overlayId);
@@ -745,7 +753,7 @@
                         overlayId: overlayId,
                         contentId: contentId,
                         options: options,
-                        hasAutocomplete: true,
+                        hasAutocomplete: hasFilterAutocomplete,
                         autocompletePlaceholder: 'Buscar...',
                         footerPrimaryLabel: 'Aplicar',
                         footerSecondaryLabel: 'Cancelar',
@@ -788,12 +796,12 @@
                                 opt.style.display = match ? '' : 'none';
                             });
                         }
-                        if (searchInput) {
+                        if (hasFilterAutocomplete && searchInput) {
                             searchInput.addEventListener('mousedown', stopMenuEvent);
                             searchInput.addEventListener('input', filterOptionsBySearch);
                             searchInput.addEventListener('keyup', filterOptionsBySearch);
                         }
-                        if (searchClear) {
+                        if (hasFilterAutocomplete && searchClear) {
                             searchClear.style.pointerEvents = 'auto';
                             searchClear.addEventListener('mousedown', function (ev) {
                                 ev.preventDefault();
@@ -809,9 +817,11 @@
                                 filterOptionsBySearch();
                             });
                         }
-                        filterOptionsBySearch();
-                        if (searchInput) {
-                            setTimeout(function () { searchInput.focus(); }, 80);
+                        if (hasFilterAutocomplete) {
+                            filterOptionsBySearch();
+                            if (searchInput) {
+                                setTimeout(function () { searchInput.focus(); }, 80);
+                            }
                         }
                         var footerPrimary = document.getElementById(overlayId + '-footer-primary');
                         if (footerPrimary) {
@@ -995,6 +1005,7 @@
                 initTooltip('#' + tableId + ' thead [data-tooltip]');
                 initTooltip('#' + instanceId + '-tbody .ubits-table__td--checkbox[data-tooltip]');
             }
+            if (onAfterRefresh) onAfterRefresh();
         }
 
         renderStructure();

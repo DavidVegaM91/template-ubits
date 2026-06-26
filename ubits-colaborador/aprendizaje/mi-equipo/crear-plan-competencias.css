@@ -251,16 +251,19 @@
     width: 100%;
     flex: 1;
     min-height: 0;
+    overflow: hidden;
 }
 
-#drawer-agregar-usuarios #drawer-wizard-step1.drawer-wizard-step {
+#drawer-agregar-usuarios #drawer-wizard-step1.drawer-wizard-step,
+#drawer-mi-equipo-agregar-asignacion #drawer-wizard-step1.drawer-wizard-step {
     flex: 1;
     min-height: 0;
     overflow-y: auto;
 }
 
 /* Paso 2: participantes */
-#drawer-agregar-usuarios #drawer-wizard-step2.drawer-wizard-step--participantes {
+#drawer-agregar-usuarios #drawer-wizard-step2.drawer-wizard-step--participantes,
+#drawer-mi-equipo-agregar-asignacion #drawer-wizard-step2.drawer-wizard-step--participantes {
     flex: 1;
     min-height: 0;
     display: flex;
@@ -270,14 +273,17 @@
 }
 
 #drawer-agregar-usuarios #drawer-wizard-step2.drawer-wizard-step--participantes .drawer-usuarios-panel--colaborador,
-#drawer-agregar-usuarios #drawer-wizard-step2.drawer-wizard-step--participantes .drawer-usuarios-panel--grupos {
+#drawer-mi-equipo-agregar-asignacion #drawer-wizard-step2.drawer-wizard-step--participantes .drawer-usuarios-panel--colaborador,
+#drawer-agregar-usuarios #drawer-wizard-step2.drawer-wizard-step--participantes .drawer-usuarios-panel--grupos,
+#drawer-mi-equipo-agregar-asignacion #drawer-wizard-step2.drawer-wizard-step--participantes .drawer-usuarios-panel--grupos {
     flex: 1;
     min-height: 0;
     overflow: hidden;
 }
 
 /* Paso 3: competencias — scroll en resultados */
-#drawer-agregar-usuarios #drawer-wizard-step3.drawer-wizard-step {
+#drawer-agregar-usuarios #drawer-wizard-step3.drawer-wizard-step,
+#drawer-mi-equipo-agregar-asignacion #drawer-wizard-step3.drawer-wizard-step {
     flex: 1;
     min-height: 0;
     display: flex;
@@ -639,6 +645,7 @@
 
 #drawer-agregar-cursos .ubits-drawer-content,
 #drawer-agregar-usuarios .ubits-drawer-content,
+#drawer-mi-equipo-agregar-asignacion .ubits-drawer-content,
 #drawer-agregar-competencias .ubits-drawer-content {
     min-height: 0;
 }
@@ -646,6 +653,7 @@
 /* Drawer Agregar cursos / wizard: scroll interno en resultados (lazy load), no en el body */
 #drawer-agregar-cursos .ubits-drawer-body,
 #drawer-agregar-usuarios .ubits-drawer-body,
+#drawer-mi-equipo-agregar-asignacion .ubits-drawer-body,
 #drawer-agregar-competencias .ubits-drawer-body {
     overflow: hidden;
     display: flex;
@@ -725,6 +733,7 @@
    Con flex puro el results-bg crece sin límite y scrollHeight === clientHeight → sin scroll. */
 #drawer-agregar-cursos .drawer-agregar-cursos__left,
 #drawer-agregar-usuarios #drawer-wizard-step3 .drawer-agregar-cursos__left,
+#drawer-mi-equipo-agregar-asignacion #drawer-wizard-step3 .drawer-agregar-cursos__left,
 #drawer-agregar-competencias .drawer-agregar-cursos__left {
     display: grid;
     grid-template-rows: auto auto 1fr;

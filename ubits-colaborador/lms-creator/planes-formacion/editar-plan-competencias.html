@@ -1263,6 +1263,13 @@
 
                 showWizardStep(1);
 
+                if (stepperOlEdit && typeof wireDrawerWizardStepperBackNav === 'function') {
+                    wireDrawerWizardStepperBackNav(stepperOlEdit, {
+                        getCurrentStepIndex: function () { return (overlay._wizardStep || 1) - 1; },
+                        onGoToStep: function (n) { showWizardStep(n); }
+                    });
+                }
+
                 if (btnPrimary) {
                     btnPrimary.onclick = function() {
                         var ws = overlay._wizardStep || 1;

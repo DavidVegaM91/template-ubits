@@ -151,7 +151,42 @@
         apply();
     }
 
+    /**
+     * Drawers «Agregar asignación»: clic en pasos completados del stepper vuelve atrás
+     * (solo índice &lt; paso actual; no avanza a pasos pending).
+     * @param {HTMLElement} stepperOl - <ol class="ubits-stepper">
+     * @param {Object} options
+     * @param {function(): number} options.getCurrentStepIndex - índice activo 0-based; ≥ length deshabilita clic
+     * @param {function(number): void} options.onGoToStep - recibe número de paso 1-based (showWizardStep)
+     */
+    function wireDrawerWizardStepperBackNav(stepperOl, options) {
+        if (!stepperOl || !options) return;
+        var getCurrentStepIndex = options.getCurrentStepIndex;
+        var onGoToStep = options.onGoToStep;
+        var steps = stepperOl.querySelectorAll(':scope > .ubits-stepper__step');
+        steps.forEach(function (el, i) {
+            el.style.cursor = 'pointer';
+            el.setAttribute('role', 'button');
+            if (!el.hasAttribute('tabindex')) el.setAttribute('tabindex', '0');
+
+            function tryGoBack() {
+                var current = typeof getCurrentStepIndex === 'function' ? getCurrentStepIndex() : 0;
+                if (current < 0 || i >= current) return;
+                if (typeof onGoToStep === 'function') onGoToStep(i + 1);
+            }
+
+            el.addEventListener('click', tryGoBack);
+            el.addEventListener('keydown', function (e) {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    tryGoBack();
+                }
+            });
+        });
+    }
+
     global.setStepperStepStates = setStepperStepStates;
     global.initStepper = initStepper;
     global.wireStepperVerticalCollapse = wireStepperVerticalCollapse;
+    global.wireDrawerWizardStepperBackNav = wireDrawerWizardStepperBackNav;
 })(typeof window !== 'undefined' ? window : this);

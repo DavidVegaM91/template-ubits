@@ -37,11 +37,17 @@
         var subs = {};
         if (typeof window.getMiEquipoSubordinadosDirectos === 'function') {
             window.getMiEquipoSubordinadosDirectos().forEach(function (c) {
-                subs[String(c.id)] = true;
+                var sid = String(c.id || c.idColaborador || '');
+                if (sid) subs[sid] = true;
             });
         }
         var visible = (plan.asignaciones || []).some(function (a) {
-            return subs[String(a.colaboradorId)];
+            var cid = String(a.colaboradorId || '');
+            if (!cid && a.id) {
+                var fid = String(a.id);
+                if (fid.indexOf('fila-usuario-') === 0) cid = fid.slice('fila-usuario-'.length);
+            }
+            return subs[cid];
         });
         return visible ? plan : null;
     };
@@ -99,5 +105,13 @@
 
     window.hydrateMiEquipoPlanesCatalogData = function hydrateMiEquipoPlanesCatalogData() {
         /* La BD ya incluye contenidoPorUsuario / competenciaPorUsuario generados. */
+    };
+
+    /** Carga plan para pantallas detalle/editar (valida tipo y visibilidad del líder). */
+    window.loadMiEquipoPlanForPage = function loadMiEquipoPlanForPage(planId, tipoEsperado) {
+        var plan = getMiEquipoPlanById(planId);
+        if (!plan) return null;
+        if (tipoEsperado && plan.tipo !== tipoEsperado) return null;
+        return plan;
     };
 })();

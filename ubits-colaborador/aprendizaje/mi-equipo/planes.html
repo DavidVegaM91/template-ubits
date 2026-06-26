@@ -89,6 +89,7 @@
     <script src="../../../bd-master/bd-master-colaboradores.js"></script>
     <script src="../../../bd-master/bd-contenidos-ubits.js"></script>
     <script src="../../../bd-master/bd-planes-formacion.js"></script>
+    <script src="../../lms-creator/planes-formacion/planes-formacion-bd-bridge.js"></script>
     <script src="./mi-equipo-context.js"></script>
     <script src="./mi-equipo-planes-mock.js"></script>
     <script src="./mi-equipo-layout.js"></script>
@@ -280,7 +281,12 @@
                 if (existing) existing.remove();
                 var options = personas.map(function (p) {
                     var selected = planesAsignadoFilter && String(planesAsignadoFilter.colaboradorId) === String(p.colaboradorId);
-                    return { text: p.nombre, value: p.colaboradorId, checkbox: true, selected: !!selected };
+                    return {
+                        text: p.nombre,
+                        value: p.colaboradorId,
+                        avatar: p.avatar || null,
+                        selected: !!selected
+                    };
                 });
                 var autocompleteContainerId = overlayId + '-autocomplete';
                 document.body.insertAdjacentHTML('beforeend', window.getDropdownMenuHtml({
@@ -304,8 +310,7 @@
                     var shown = 0;
                     optionButtons.forEach(function (opt) {
                         var textEl = opt.querySelector('.ubits-dropdown-menu__option-text');
-                        var labelEl = opt.querySelector('.ubits-checkbox__label');
-                        var text = (textEl ? textEl.textContent : '') || (labelEl ? labelEl.textContent : '') || '';
+                        var text = textEl ? textEl.textContent : '';
                         var match = !q || normalizePlanesFilterText(text).indexOf(q) >= 0;
                         if (match && shown < PLANES_ASIGNADO_FILTER_MAX) {
                             opt.style.display = '';
@@ -317,14 +322,11 @@
                 }
 
                 optionButtons.forEach(function (opt) {
-                    var input = opt.querySelector('.ubits-checkbox__input');
-                    if (!input) return;
-                    input.addEventListener('change', function () {
-                        if (!this.checked) return;
+                    opt.addEventListener('click', function () {
                         optionButtons.forEach(function (other) {
-                            var otherInput = other.querySelector('.ubits-checkbox__input');
-                            if (otherInput && otherInput !== this) otherInput.checked = false;
-                        }.bind(this));
+                            other.classList.remove('ubits-dropdown-menu__option--selected');
+                        });
+                        this.classList.add('ubits-dropdown-menu__option--selected');
                     });
                 });
 
@@ -355,15 +357,14 @@
                 var applyBtn = document.getElementById(overlayId + '-apply');
                 if (applyBtn) {
                     applyBtn.addEventListener('click', function () {
-                        var checked = overlayEl.querySelector('.ubits-dropdown-menu__option input.ubits-checkbox__input:checked');
-                        if (checked) {
-                            var cid = checked.getAttribute('data-value');
+                        var selectedOpt = overlayEl.querySelector('.ubits-dropdown-menu__option--selected');
+                        if (selectedOpt) {
+                            var cid = selectedOpt.getAttribute('data-value');
                             var persona = personas.find(function (p) { return String(p.colaboradorId) === String(cid); });
-                            var optRow = checked.closest('.ubits-dropdown-menu__option');
-                            var labelFallback = optRow ? (optRow.getAttribute('data-option-label') || '') : '';
+                            var labelFallback = selectedOpt.querySelector('.ubits-dropdown-menu__option-text');
                             planesAsignadoFilter = {
                                 colaboradorId: cid,
-                                nombre: persona ? persona.nombre : labelFallback,
+                                nombre: persona ? persona.nombre : (labelFallback ? labelFallback.textContent.trim() : ''),
                                 avatar: persona ? persona.avatar : null
                             };
                         } else {
@@ -416,10 +417,30 @@
             }
 
             function buildAsignadosCellHtml(row) {
-                var asignados = row.asignados || [];
                 var html = '';
-                if (asignados.length > 0 && typeof renderProfileList === 'function') {
-                    html = renderProfileList(asignados, { size: 'sm', maxVisible: 3, showTooltip: true, tooltipDelay: 500 });
+                if (planesAsignadoFilter && planesAsignadoFilter.colaboradorId) {
+                    var persona = (row.asignados || []).find(function (a) {
+                        return String(a.colaboradorId) === String(planesAsignadoFilter.colaboradorId);
+                    });
+                    if (!persona) {
+                        persona = {
+                            nombre: planesAsignadoFilter.nombre,
+                            avatar: planesAsignadoFilter.avatar
+                        };
+                    }
+                    if (typeof renderAvatar === 'function') {
+                        var nombre = (persona.nombre || persona.name || planesAsignadoFilter.nombre || '').trim();
+                        var tooltip = nombre.replace(/"/g, '&quot;');
+                        html = '<span class="js-planes-asignado-filter-avatar"' +
+                            (tooltip ? ' data-tooltip="' + tooltip + '" data-tooltip-delay="500"' : '') + '>' +
+                            renderAvatar({ nombre: nombre, avatar: persona.avatar || null }, { size: 'sm' }) +
+                            '</span>';
+                    }
+                } else {
+                    var asignados = row.asignados || [];
+                    if (asignados.length > 0 && typeof renderProfileList === 'function') {
+                        html = renderProfileList(asignados, { size: 'sm', maxVisible: 3, showTooltip: true, tooltipDelay: 500 });
+                    }
                 }
                 return '<td data-col="asignados"><div class="ubits-table__cell-assignee">' + html + '</div></td>';
             }
@@ -600,10 +621,11 @@
                         { id: 'asignados', label: 'Asignados' },
                         { id: 'fecha-inicio', label: 'Fecha inicio', sortable: true, sortType: 'date' },
                         { id: 'fecha-fin', label: 'Fecha fin', sortable: true, sortType: 'date' },
-                        { id: 'estado', label: 'Estado', filterable: true },
+                        { id: 'estado', label: 'Estado', filterable: true, filterOptions: ['Vigente', 'No vigente', 'Planeado'], filterHasAutocomplete: false },
                         { id: 'progreso', label: 'Progreso', sortable: true, sortType: 'number' },
                         { id: 'acciones', label: 'Acciones' }
                     ],
+                    initialSort: { column: 'fecha-inicio', direction: 'desc' },
                     getData: function () { return getPlanesTableRowsForDisplay(); },
                     rowIdField: 'id',
                     buildRowHtml: buildPlanesRowHtml,
@@ -614,18 +636,14 @@
                         } }
                     ],
                     emptyState: emptyStateConfig,
-                    i18n: { selectAll: 'Seleccionar todo', deselectAll: 'Deseleccionar todo', verSeleccionados: 'Ver seleccionados', clearFilters: 'Limpiar filtros', filtrosAplicados: 'Filtros aplicados', buscar: 'Buscar' }
-                });
-                if (planesTablaRef && typeof planesTablaRef.refresh === 'function') {
-                    var nativeRefresh = planesTablaRef.refresh.bind(planesTablaRef);
-                    planesTablaRef.refresh = function () {
-                        nativeRefresh();
+                    i18n: { selectAll: 'Seleccionar todo', deselectAll: 'Deseleccionar todo', verSeleccionados: 'Ver seleccionados', clearFilters: 'Limpiar filtros', filtrosAplicados: 'Filtros aplicados', buscar: 'Buscar' },
+                    onAfterRefresh: function () {
                         initPlanesAsignadosColumnFilter();
                         updatePlanesAsignadoFilterChip();
                         syncPlanesAsignadosFilterButton();
                         setTimeout(function () { initPlanesTableTooltips(); }, 50);
-                    };
-                }
+                    }
+                });
                 refreshPlanesTableUi();
 
                 var clearFiltersBtn = document.querySelector('#planes-data-table-container .ubits-dt-clear-filters');
@@ -702,33 +720,6 @@
                 });
             }
 
-            function resolvePlanRowFromEvent(e) {
-                var row = e.target.closest('tbody tr[data-id]');
-                if (!row) return null;
-                var planId = row.getAttribute('data-id');
-                if (typeof getMiEquipoPlanById === 'function') {
-                    var fromDb = getMiEquipoPlanById(planId);
-                    if (fromDb) return fromDb;
-                }
-                return planId ? planesFormacionData.find(function (p) { return String(p.id) === String(planId); }) : null;
-            }
-
-            function navigateToDetalle(planRow) {
-                if (!planRow) return;
-                var url = typeof getMiEquipoDetallePlanUrl === 'function'
-                    ? getMiEquipoDetallePlanUrl(planRow.id, planRow.tipo)
-                    : (planRow.tipo === 'competencias' ? 'detalle-plan-competencias.html' : 'detalle-plan.html') + '?id=' + encodeURIComponent(planRow.id);
-                window.location.href = url;
-            }
-
-            function navigateToEditar(planRow) {
-                if (!planRow) return;
-                var url = typeof getMiEquipoEditarPlanUrl === 'function'
-                    ? getMiEquipoEditarPlanUrl(planRow.id, planRow.tipo)
-                    : (planRow.tipo === 'competencias' ? 'editar-plan-competencias.html' : 'editar-plan-contenidos.html') + '?id=' + encodeURIComponent(planRow.id);
-                window.location.href = url;
-            }
-
             var planesContainer = document.getElementById('planes-data-table-container');
             if (planesContainer) {
                 planesContainer.addEventListener('click', function (e) {
@@ -739,15 +730,17 @@
                         openPlanesAsignadosPopover(countChip);
                         return;
                     }
+                    /* Menú ⋮ — mismo patrón que planes-contenidos.html */
                     if (e.target.closest('.js-planes-row-acciones-btn')) {
                         e.preventDefault();
                         e.stopPropagation();
                         var accBtn = e.target.closest('.js-planes-row-acciones-btn');
-                        if (!accBtn || typeof window.getDropdownMenuHtml !== 'function') return;
+                        if (!accBtn || typeof window.getDropdownMenuHtml !== 'function' || typeof window.openDropdownMenu !== 'function' || typeof window.closeDropdownMenu !== 'function') return;
                         var planIdAcc = accBtn.getAttribute('data-plan-id');
-                        var planTipoAcc = accBtn.getAttribute('data-plan-tipo') || activeListTab;
-                        var planRowAcc = planIdAcc ? (typeof getMiEquipoPlanById === 'function' ? getMiEquipoPlanById(planIdAcc) : planesFormacionData.find(function (p) { return String(p.id) === String(planIdAcc); })) : null;
+                        refreshPlanesListData();
+                        var planRowAcc = planIdAcc ? planesFormacionData.find(function (p) { return String(p.id) === String(planIdAcc); }) : null;
                         var estAcc = planRowAcc && planRowAcc.estado != null ? String(planRowAcc.estado) : '';
+                        var planTipoAcc = (planRowAcc && planRowAcc.tipo) || accBtn.getAttribute('data-plan-tipo') || activeListTab;
                         var mostrarVerProgreso = estAcc === 'Vigente' || estAcc === 'No vigente';
                         var mostrarEditar = estAcc === 'Planeado' || estAcc === 'Vigente' || String(estAcc).indexOf('Procesando') === 0;
                         var overlayId = 'planes-formacion-row-options-overlay';
@@ -766,9 +759,22 @@
                                 var val = this.getAttribute('data-value');
                                 window.closeDropdownMenu(overlayId);
                                 if (overlayEl.parentNode) overlayEl.remove();
-                                if (val === 'ver-progreso' && planRowAcc) { navigateToDetalle(planRowAcc); return; }
-                                if (val === 'editar' && planRowAcc) { navigateToEditar(planRowAcc); return; }
-                                if (val === 'eliminar' && planIdAcc) openPlanesDeleteModal([planIdAcc]);
+                                if (val === 'ver-progreso') {
+                                    var pid = accBtn.getAttribute('data-plan-id');
+                                    var tipoV = planTipoAcc;
+                                    window.location.href = (tipoV === 'competencias' ? 'detalle-plan-competencias.html' : 'detalle-plan.html') + '?id=' + encodeURIComponent(pid);
+                                    return;
+                                }
+                                if (val === 'editar') {
+                                    var pidEd = accBtn.getAttribute('data-plan-id');
+                                    var tipoE = planTipoAcc;
+                                    window.location.href = (tipoE === 'competencias' ? 'editar-plan-competencias.html' : 'editar-plan-contenidos.html') + '?id=' + encodeURIComponent(pidEd);
+                                    return;
+                                }
+                                if (val === 'eliminar') {
+                                    var pidDel = accBtn.getAttribute('data-plan-id');
+                                    if (pidDel) openPlanesDeleteModal([pidDel]);
+                                }
                             });
                         });
                         overlayEl.addEventListener('click', function (ev) {
@@ -780,13 +786,18 @@
                         window.openDropdownMenu(overlayId, accBtn, { alignRight: true });
                         return;
                     }
-                    if (e.target.closest('.ubits-checkbox') || e.target.closest('input[type="checkbox"]')) return;
-                    var planRow = resolvePlanRowFromEvent(e);
-                    if (!planRow) return;
-                    var esProcesando = String(planRow.estado).indexOf('Procesando') === 0;
-                    var esPlaneado = planRow.estado === 'Planeado';
-                    if (esProcesando || esPlaneado) navigateToEditar(planRow);
-                    else navigateToDetalle(planRow);
+                    var row = e.target.closest('tbody tr[data-id]');
+                    if (!row || e.target.closest('.ubits-checkbox') || e.target.closest('input[type="checkbox"]')) return;
+                    var planId = row.getAttribute('data-id');
+                    if (!planId) return;
+                    refreshPlanesListData();
+                    var planRow = planesFormacionData.find(function (p) { return String(p.id) === String(planId); });
+                    var esProcesando = planRow && String(planRow.estado).indexOf('Procesando') === 0;
+                    var esPlaneadoCont = planRow && planRow.estado === 'Planeado';
+                    var tipoNav = (planRow && planRow.tipo) || activeListTab;
+                    window.location.href = (esProcesando || esPlaneadoCont)
+                        ? (tipoNav === 'competencias' ? 'editar-plan-competencias.html' : 'editar-plan-contenidos.html') + '?id=' + encodeURIComponent(planId)
+                        : (tipoNav === 'competencias' ? 'detalle-plan-competencias.html' : 'detalle-plan.html') + '?id=' + encodeURIComponent(planId);
                 });
             }
 

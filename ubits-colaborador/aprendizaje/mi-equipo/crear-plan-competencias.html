@@ -32,6 +32,7 @@
     <link rel="stylesheet" href="../../../components/empty-state.css">
     <link rel="stylesheet" href="../../../components/toast.css">
     <link rel="stylesheet" href="../../../components/modal.css">
+    <link rel="stylesheet" href="../../../components/stepper.css">
     <link rel="stylesheet" href="./crear-plan-contenidos.css">
     <link rel="stylesheet" href="./crear-plan-competencias.css">
 </head>
@@ -97,6 +98,7 @@
     <script src="../../../components/toast.js"></script>
     <script src="../../../components/ubits-data-table.js"></script>
     <script src="../../../components/modal.js"></script>
+    <script src="../../../components/stepper.js"></script>
     <script src="../../../script.js"></script>
     <script src="../../../bd-master/bd-master-colaboradores.js"></script>
     <script src="../../../bd-master/bd-contenidos-ubits.js"></script>
@@ -255,10 +257,11 @@
                         onClick: function () {
                             Shared.openDrawerAgregarAsignacionMiEquipo({
                                 asignacionesData: asignacionesData,
-                                onAdd: function (selectedIds) {
+                                onAdd: function (selectedIds, competenciasSel) {
                                     var subs = typeof getMiEquipoSubordinadosDirectos === 'function' ? getMiEquipoSubordinadosDirectos() : [];
                                     var mapById = {};
                                     subs.forEach(function (c) { mapById[String(c.id || c.idColaborador)] = c; });
+                                    var comps = (competenciasSel || []).slice();
                                     var agregados = 0;
                                     selectedIds.forEach(function (cid) {
                                         if (asignacionesData.some(function (a) { return String(a.colaboradorId) === String(cid); })) return;
@@ -270,8 +273,8 @@
                                             colaboradorId: String(cid),
                                             nombreUsuario: (col.nombre || '').trim(),
                                             avatar: col.avatar || null,
-                                            contenidos: [],
-                                            contenidosCount: 0
+                                            contenidos: comps.slice(),
+                                            contenidosCount: comps.length
                                         });
                                     });
                                     if (asignacionesTablaRef && typeof asignacionesTablaRef.refresh === 'function') asignacionesTablaRef.refresh();

@@ -123,6 +123,7 @@
     <script src="../../../bd-master/bd-master-tipos-contenido.js"></script>
     <script src="../../../bd-master/bd-contenidos-ubits.js"></script>
     <script src="../../../bd-master/bd-contenidos-fiqsha.js"></script>
+    <script src="../../../bd-master/bd-master-colaboradores.js"></script>
     <script src="../../../bd-master/bd-planes-formacion.js"></script>
     <script src="../../lms-creator/planes-formacion/catalogo-contenidos-drawer.js"></script>
     <script src="../../lms-creator/planes-formacion/drawer-contenidos-filtros.js"></script>
@@ -130,7 +131,6 @@
     <script src="../../lms-creator/planes-formacion/drawer-contenidos-catalog-section.js"></script>
     <script src="../../lms-creator/planes-formacion/drawer-contenidos-paso2.js"></script>
     <script src="../../lms-creator/planes-formacion/drawer-participantes-colab-table.js"></script>
-    <script src="../../../bd-master/bd-master-colaboradores.js"></script>
     <script src="./mi-equipo-context.js"></script>
     <script src="./mi-equipo-planes-mock.js"></script>
     <script src="./mi-equipo-layout.js"></script>
@@ -888,6 +888,13 @@
                 if (stepParticipantes) stepParticipantes.style.flexDirection = 'column';
 
                 showWizardStep(1);
+
+                if (stepperOlEdit && typeof wireDrawerWizardStepperBackNav === 'function') {
+                    wireDrawerWizardStepperBackNav(stepperOlEdit, {
+                        getCurrentStepIndex: function () { return (overlay._wizardStep || 1) - 1; },
+                        onGoToStep: function (n) { showWizardStep(n); }
+                    });
+                }
 
                 if (btnPrimary) {
                     btnPrimary.onclick = function() {

@@ -251,6 +251,7 @@
     width: 100%;
     flex: 1;
     min-height: 0;
+    overflow: hidden;
 }
 
 #drawer-agregar-usuarios #drawer-wizard-step1.drawer-wizard-step {

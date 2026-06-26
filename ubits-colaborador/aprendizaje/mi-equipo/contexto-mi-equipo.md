@@ -103,6 +103,8 @@ Navegación fila:
 
 Menú ⋮: Ver progreso, Editar, Eliminar (mismas reglas de visibilidad que Creator).
 
+**Clic en fila → detalle / editar:** misma regla que Creator (Planeado/Procesando → editar; Vigente/No vigente → detalle). La lista solo debe incluir planes donde **algún subordinado directo del líder demo (E006)** está asignado — vía `getPlanesListData(tipo, { leaderId: 'E006' })`, que filtra con `getPlanesVisiblesParaLider` **antes** de acotar por tipo. Si la lista mostrara planes de otras áreas, el clic iría a `detalle-plan.html` pero `getMiEquipoPlanById` devolvería `null` y la pantalla rebotaría a `planes.html` (pantallas «desconectadas»).
+
 #### Columna **Asignados** (entre nombre del plan y fecha inicio)
 
 Réplica del patrón **Seguimiento → tab Planes / columna Personas asignadas** y del drawer de asignaciones en Creator:
@@ -139,6 +141,14 @@ Copiada del ajuste reciente en `detalle-plan.html` del Creator:
 | **Vigente** | Drawer **solo lectura** (cards compact + progreso) | Solo vía **Acciones → Editar plan** |
 | **No vigente** | Drawer solo lectura | No editable |
 | **Planeado / Procesando** | Drawer edición (en pantalla editar) | En flujo editar |
+
+### 6.1 Descarga CSV de asignaciones (`detalle-plan.html`)
+
+Réplica **1:1** del Creator (**§ 3.3.3** en `contexto-planes-formacion-y-grupos.md`):
+
+- **Cuándo:** plan **Vigente** o **No vigente** → botón secundario **«Descargar»** en la barra de **Lista de asignaciones**, a la derecha del buscador.
+- **CSV:** todas las filas (`asignacionesDetalleData` + `contenidoPorUsuario`): nombre, último acceso, última fecha de progreso, contenidos con `{título} ({%})` separados por `; `, progreso total acumulado.
+- **Archivo:** `asignaciones-{nombre-del-plan}.csv` (UTF-8 BOM). Toast **«Archivo descargado»**.
 
 ---
 

@@ -117,11 +117,12 @@
     <script src="../../../bd-master/bd-master-tipos-contenido.js"></script>
     <script src="../../../bd-master/bd-contenidos-ubits.js"></script>
     <script src="../../../bd-master/bd-contenidos-fiqsha.js"></script>
+    <script src="../../../bd-master/bd-master-colaboradores.js"></script>
     <script src="../../../bd-master/bd-planes-formacion.js"></script>
+    <script src="../../lms-creator/planes-formacion/planes-formacion-bd-bridge.js"></script>
     <script src="../../lms-creator/planes-formacion/catalogo-contenidos-drawer.js"></script>
     <script src="../../lms-creator/planes-formacion/drawer-contenidos-filtros.js"></script>
     <script src="../../lms-creator/planes-formacion/drawer-participantes-colab-table.js"></script>
-    <script src="../../../bd-master/bd-master-colaboradores.js"></script>
     <script src="./mi-equipo-context.js"></script>
     <script src="./mi-equipo-planes-mock.js"></script>
     <script src="./mi-equipo-layout.js"></script>
@@ -173,11 +174,16 @@
 
             if (typeof hydrateMiEquipoPlanesCatalogData === 'function') hydrateMiEquipoPlanesCatalogData();
 
-            var plan = typeof getMiEquipoPlanById === 'function' ? getMiEquipoPlanById(planId) : null;
-            if (!plan || plan.tipo !== 'contenidos') {
+            var planRawBd = typeof loadPlanFormacionFromBd === 'function'
+                ? loadPlanFormacionFromBd(planId, 'contenidos')
+                : null;
+            if (!planRawBd || planRawBd.tipo !== 'contenidos') {
                 window.location.replace('planes.html');
                 return;
             }
+            var plan = typeof planFormacionToDetalleHeader === 'function'
+                ? planFormacionToDetalleHeader(planRawBd)
+                : { nombre: planRawBd.nombre, progreso: 0, fechaInicio: planRawBd.fechaInicio, fechaFin: planRawBd.fechaFin, estado: planRawBd.estado };
 
             function getEstadoTagClass(estado) {
                 if (estado === 'Planeado') return 'info';
@@ -433,9 +439,14 @@
                 if (c.title) copy.title = c.title;
                 return copy;
             }
-            var contenidoPorUsuario = {};
-            Object.keys(plan.contenidoPorUsuario || {}).forEach(function(cid) {
-                contenidoPorUsuario[cid] = (plan.contenidoPorUsuario[cid] || []).map(enrichContenidoItem);
+            var contenidoPorUsuario = (typeof BD_PLANES_FORMACION !== 'undefined' && typeof BD_PLANES_FORMACION.getDetalleContenidoPorUsuario === 'function')
+                ? BD_PLANES_FORMACION.getDetalleContenidoPorUsuario(planRawBd)
+                : {};
+            if (typeof refreshCatalogoContenidosDrawer === 'function') {
+                refreshCatalogoContenidosDrawer();
+            }
+            Object.keys(contenidoPorUsuario).forEach(function (cid) {
+                contenidoPorUsuario[cid] = (contenidoPorUsuario[cid] || []).map(enrichContenidoItem);
             });
             var planSinProgresoEstado = plan.estado === 'Planeado' || String(plan.estado).indexOf('Procesando') === 0;
             if (planSinProgresoEstado) {
@@ -475,18 +486,9 @@
                 var month = ('0' + (d.getMonth() + 1)).slice(-2);
                 return day + '/' + month + '/' + d.getFullYear();
             }
-            var ultimoAccesoOpciones = ['Hace 2 horas', 'Hace 5 horas', 'Hace 1 día', 'Hace 2 días', 'Hace 3 días', 'Hace 5 días', 'Hace 1 semana'];
-            var asignacionesDetalleData = (plan.asignaciones || []).map(function(a, idx) {
-                var cid = String(a.colaboradorId || String(a.id || '').replace('fila-usuario-', ''));
-                return {
-                    id: cid,
-                    usuario: (a.nombreUsuario || '').trim(),
-                    avatar: a.avatar || null,
-                    ultimoAcceso: ultimoAccesoOpciones[idx % ultimoAccesoOpciones.length],
-                    ultimaFechaProgreso: null,
-                    progreso: 0
-                };
-            });
+            var asignacionesDetalleData = typeof buildAsignacionesDetalleFromPlan === 'function'
+                ? buildAsignacionesDetalleFromPlan(planRawBd)
+                : [];
             asignacionesDetalleData.forEach(function(r) {
                 if (planSinProgresoEstado) {
                     r.ultimaFechaProgreso = '-';
@@ -539,6 +541,64 @@
             function updatePlanProgressBar() {
                 var total = planSinProgreso() ? 0 : progresoTotalPlan();
                 setDetallePlanProgressBar(total);
+            }
+
+            function escapeCsvCell(val) {
+                var s = (val == null ? '' : String(val)).trim();
+                if (/[,\r\n";]/.test(s)) return '"' + s.replace(/"/g, '""') + '"';
+                return s;
+            }
+
+            function descargarCsv(nombreArchivo, contenido) {
+                var blob = new Blob(['\ufeff' + contenido], { type: 'text/csv;charset=utf-8' });
+                var a = document.createElement('a');
+                a.href = URL.createObjectURL(blob);
+                a.download = nombreArchivo;
+                a.click();
+                URL.revokeObjectURL(a.href);
+            }
+
+            function formatContenidosCsvCell(rowId) {
+                var list = contenidoPorUsuario[rowId] || [];
+                if (!list.length) return '';
+                return list.map(function(c) {
+                    var title = String(c.title || '').trim();
+                    var pct = planSinProgreso() ? 0 : (c.progress != null ? c.progress : 0);
+                    return title + ' (' + pct + '%)';
+                }).join('; ');
+            }
+
+            function buildAndDownloadAsignacionesDetalleCsv() {
+                var headers = [
+                    'Nombre del usuario',
+                    'Último acceso',
+                    'Última fecha de progreso',
+                    'Contenidos',
+                    'Progreso total acumulado'
+                ];
+                var filas = [headers.map(escapeCsvCell).join(',')];
+                asignacionesDetalleData.forEach(function(row) {
+                    var ultimaFecha = typeof formatDateDDMmmAAAA === 'function'
+                        ? formatDateDDMmmAAAA(row.ultimaFechaProgreso)
+                        : (row.ultimaFechaProgreso || '');
+                    var progresoPct = planSinProgreso() ? 0 : (row.progreso || 0);
+                    filas.push([
+                        escapeCsvCell(row.usuario),
+                        escapeCsvCell(row.ultimoAcceso),
+                        escapeCsvCell(ultimaFecha),
+                        escapeCsvCell(formatContenidosCsvCell(row.id)),
+                        escapeCsvCell(progresoPct + '%')
+                    ].join(','));
+                });
+                var safeName = String(plan.nombre || planId || 'plan')
+                    .trim()
+                    .replace(/[^\w\s\u00C0-\u024F-]/g, '')
+                    .replace(/\s+/g, '-')
+                    .toLowerCase() || 'plan';
+                descargarCsv('asignaciones-' + safeName + '.csv', filas.join('\r\n'));
+                if (typeof showToast === 'function') {
+                    showToast('success', 'Archivo descargado');
+                }
             }
 
             var DPC = window.DrawerParticipantesColabTable;
@@ -686,6 +746,16 @@
                         buscarPlaceholder: 'Buscar por nombre de usuario...'
                     }
             };
+            if (isDetallePlanVistaProgreso()) {
+                createUbitsDataTableConfig.primaryButton = {
+                    text: 'Descargar',
+                    icon: 'fa-download',
+                    variant: 'secondary',
+                    onClick: function() {
+                        buildAndDownloadAsignacionesDetalleCsv();
+                    }
+                };
+            }
             if (typeof createUbitsDataTable === 'function') {
                 asignacionesDetalleTablaRef = createUbitsDataTable(createUbitsDataTableConfig);
             }

@@ -253,6 +253,7 @@
     width: 100%;
     flex: 1;
     min-height: 0;
+    overflow: hidden;
 }
 
 /* Paso 1: si el body ya no scrollea, el paso 1 puede necesitar scroll propio */
@@ -842,6 +843,40 @@
     gap: var(--gap-md);
     width: 100%;
     overflow-x: visible;
+}
+
+/* Catálogo contenidos con toolbar-panel (sin .drawer-agregar-cursos__left): grid toolbar + resultados con scroll */
+#drawer-agregar-usuarios #drawer-wizard-step3 .drawer-agregar-cursos--single-col:has(.drawer-contenidos-toolbar),
+#drawer-agregar-cursos .drawer-agregar-cursos--single-col:has(.drawer-contenidos-toolbar) {
+    display: grid;
+    grid-template-rows: auto 1fr;
+    gap: var(--gap-md);
+    min-height: 0;
+    flex: 1;
+    overflow: hidden;
+}
+
+#drawer-agregar-usuarios #drawer-wizard-step3 .drawer-contenidos-toolbar,
+#drawer-agregar-cursos .drawer-contenidos-toolbar {
+    flex-shrink: 0;
+    min-height: 0;
+}
+
+#drawer-agregar-usuarios #drawer-wizard-step3 .drawer-cursos-resultados-bg--paso2-full,
+#drawer-agregar-cursos .drawer-cursos-resultados-bg--paso2-full {
+    min-height: 0;
+    overflow-y: auto;
+}
+
+/* Contenidos/competencias en drawer: grid 3 filas para que .drawer-cursos-resultados-bg tenga altura acotada y scroll */
+#drawer-agregar-cursos .drawer-agregar-cursos__left,
+#drawer-agregar-usuarios #drawer-wizard-step3 .drawer-agregar-cursos__left,
+#drawer-agregar-competencias .drawer-agregar-cursos__left,
+#drawer-mi-equipo-agregar-asignacion #drawer-wizard-step3 .drawer-agregar-cursos__left {
+    display: grid;
+    grid-template-rows: auto auto 1fr;
+    gap: var(--gap-md);
+    min-height: 0;
 }
 
 .drawer-agregar-cursos__left {

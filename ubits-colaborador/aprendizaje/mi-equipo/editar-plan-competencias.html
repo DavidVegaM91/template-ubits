@@ -32,6 +32,7 @@
     <link rel="stylesheet" href="../../../components/empty-state.css">
     <link rel="stylesheet" href="../../../components/toast.css">
     <link rel="stylesheet" href="../../../components/modal.css">
+    <link rel="stylesheet" href="../../../components/stepper.css">
     <link rel="stylesheet" href="./crear-plan-contenidos.css">
     <link rel="stylesheet" href="./crear-plan-competencias.css">
     <link rel="stylesheet" href="./editar-plan-competencias.css">
@@ -103,6 +104,7 @@
     <script src="../../../components/toast.js"></script>
     <script src="../../../components/ubits-data-table.js"></script>
     <script src="../../../components/modal.js"></script>
+    <script src="../../../components/stepper.js"></script>
     <script src="../../../script.js"></script>
     <script src="../../../bd-master/bd-master-colaboradores.js"></script>
     <script src="../../../bd-master/bd-contenidos-ubits.js"></script>
@@ -384,17 +386,18 @@
                         onClick: function () {
                             Shared.openDrawerAgregarAsignacionMiEquipo({
                                 asignacionesData: asignacionesData,
-                                onAdd: function (selectedIds) {
+                                onAdd: function (selectedIds, competenciasSel) {
                                     var subs = typeof getMiEquipoSubordinadosDirectos === 'function' ? getMiEquipoSubordinadosDirectos() : [];
                                     var mapById = {};
                                     subs.forEach(function (c) { mapById[String(c.id || c.idColaborador)] = c; });
+                                    var comps = (competenciasSel || []).slice();
                                     var hadNew = false;
                                     selectedIds.forEach(function (cid) {
                                         if (asignacionesData.some(function (a) { return String(a.colaboradorId) === String(cid); })) return;
                                         var col = mapById[String(cid)];
                                         if (!col) return;
                                         hadNew = true;
-                                        asignacionesData.push({ id: 'fila-usuario-' + cid, colaboradorId: String(cid), nombreUsuario: (col.nombre || '').trim(), avatar: col.avatar || null, contenidos: [], contenidosCount: 0 });
+                                        asignacionesData.push({ id: 'fila-usuario-' + cid, colaboradorId: String(cid), nombreUsuario: (col.nombre || '').trim(), avatar: col.avatar || null, contenidos: comps.slice(), contenidosCount: comps.length });
                                     });
                                     if (asignacionesTablaRef) asignacionesTablaRef.refresh();
                                     updateGuardarButtonState();
