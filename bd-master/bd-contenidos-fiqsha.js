@@ -8,7 +8,7 @@
  *
  * `contents` — catálogo publicado: úsalo en u-corporativa, planes, tareas, drawer de catálogo, etc.
  *   **Universidad corporativa (`aprendizaje/u-corporativa.html`):** debe listar solo este catálogo publicado; es el reflejo en colaborador de lo que la empresa gestiona como **Publicado** en `lms-creator/contenidos.html` (misma BD, mismos criterios de filtro tipo/categoría/nivel/idioma que el modal Filtros del Creator).
- * `fechaCreacion` — ISO `YYYY-MM-DD`; en `contenidos.html` el listado ordena por esta fecha (más reciente primero).
+ * `fechaCreacion` — ISO `YYYY-MM-DD`; en `contenidos.html` el listado ordena por esta fecha (más reciente primero). El id `24004` (ruta demo) lleva fecha antigua: solo queda primero al publicar vía session pin (igual que `f007` al crear contenido).
  * `contentsCreatorOnly` — privado/borrador/oculto/archivado: SOLO `lms-creator/contenidos.html` (no mezclar en otros consumidores de `contents`).
  */
 window.BDS_CONTENIDOS_FIQSHA = {
@@ -496,7 +496,7 @@ window.BDS_CONTENIDOS_FIQSHA = {
       "nivelId": "niv-002",
       "proveedorAliadoId": "aly-018",
       "categoriaFiqshaId": "cfq-015",
-      "fechaCreacion": "2026-05-29",
+      "fechaCreacion": "2025-10-15",
       "visibilidadLms": "Borrador",
       "catalogoId": "catalogo_fiqsha",
       "conCertificacion": true

@@ -292,7 +292,7 @@
             type: 'select',
             label: 'Seleccionar plantilla de certificado',
             placeholder: 'Selecciona una plantilla…',
-            size: 'sm',
+            size: 'md',
             selectOptions: opts,
             value: selectedTemplateId,
             onChange: function (val) {

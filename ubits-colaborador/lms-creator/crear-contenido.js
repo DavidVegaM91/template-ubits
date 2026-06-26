@@ -3456,6 +3456,14 @@
                 history.replaceState(null, '', path + target);
             }
         }
+        if (idx === 0) {
+            requestAnimationFrame(function () {
+                var titulo = document.getElementById('crear-contenido-titulo');
+                if (titulo && typeof window.autoResizeInlineEdit === 'function') {
+                    window.autoResizeInlineEdit(titulo);
+                }
+            });
+        }
     }
 
     function markCrearContenidoPromoAgentesModalShownThisSession() {
@@ -3634,6 +3642,9 @@
             '<p class="ubits-body-md-regular">Aprende a identificar las causas del conflicto en equipos, comunicarte con calma y aplicar herramientas prácticas para transformar tensiones en acuerdos sostenibles.</p>';
         if (typeof window.setRichTextHtml === 'function' && rteRoot) {
             window.setRichTextHtml(rteRoot, descHtml);
+        }
+        if (titulo && typeof window.autoResizeInlineEdit === 'function') {
+            window.autoResizeInlineEdit(titulo);
         }
         applyPortadaImagenCargada(CC_DEMO_COVER_SRC, '', { fromAi: true, iaPrompt: CC_DEMO_TITLE, skipMetaUpdate: false });
         var catId = findCrearContenidoDemoCategoryId();

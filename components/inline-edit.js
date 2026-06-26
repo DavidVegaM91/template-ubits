@@ -28,13 +28,35 @@
     'use strict';
 
     /**
-     * Ajusta la altura de un textarea al contenido.
+     * Ajusta la altura de un textarea al contenido (incluso si el paso está oculto con display:none).
      * @param {HTMLTextAreaElement} el
      */
     function autoResizeInlineEdit(el) {
         if (!el || el.tagName !== 'TEXTAREA') return;
-        el.style.height = 'auto';
-        el.style.height = el.scrollHeight + 'px';
+        if (el.offsetParent !== null) {
+            el.style.height = 'auto';
+            el.style.height = el.scrollHeight + 'px';
+            return;
+        }
+        var clone = el.cloneNode(true);
+        clone.removeAttribute('id');
+        clone.style.height = '0px';
+        clone.style.minHeight = '0';
+        clone.style.maxHeight = 'none';
+        clone.style.position = 'absolute';
+        clone.style.visibility = 'hidden';
+        clone.style.pointerEvents = 'none';
+        clone.style.left = '-9999px';
+        clone.style.top = '0';
+        var width = el.getBoundingClientRect().width;
+        if (!width && el.parentElement) {
+            width = el.parentElement.getBoundingClientRect().width;
+        }
+        if (width) clone.style.width = width + 'px';
+        document.body.appendChild(clone);
+        var measured = clone.scrollHeight;
+        document.body.removeChild(clone);
+        el.style.height = measured + 'px';
     }
 
     /**

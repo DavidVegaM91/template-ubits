@@ -305,6 +305,9 @@
         if (typeof window.setRichTextHtml === 'function' && rteRoot) {
             window.setRichTextHtml(rteRoot, descHtml);
         }
+        if (titulo && typeof window.autoResizeInlineEdit === 'function') {
+            window.autoResizeInlineEdit(titulo);
+        }
         applyPortadaImagenCargada(CR_DEMO_COVER_SRC, '', {
             fromAi: true,
             iaPrompt: CR_DEMO_TITLE,
@@ -683,6 +686,13 @@
         refreshSiguienteState();
     }
 
+    function refreshCrearRutaPortadaFieldsLayout() {
+        var titulo = document.getElementById('crear-ruta-titulo');
+        if (titulo && typeof window.autoResizeInlineEdit === 'function') {
+            window.autoResizeInlineEdit(titulo);
+        }
+    }
+
     function goToStep(stepIndex, opts) {
         opts = opts || {};
         var idx = Math.max(0, Math.min(3, stepIndex));
@@ -716,6 +726,9 @@
             if (location.hash !== target) {
                 history.replaceState(null, '', location.pathname + location.search + target);
             }
+        }
+        if (idx === 0) {
+            requestAnimationFrame(refreshCrearRutaPortadaFieldsLayout);
         }
         requestAnimationFrame(syncRailHeight);
     }

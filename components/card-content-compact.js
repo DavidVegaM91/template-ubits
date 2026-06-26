@@ -330,7 +330,7 @@ function renderCardContentCompact(cardData) {
             : '';
     var dragHandleHtml =
         listRow && cardData.draggable !== false
-            ? '<span class="course-card-compact__drag-handle" draggable="true" aria-label="Arrastrar para reordenar" data-tooltip="Arrastrar para reordenar" data-tooltip-delay="1000"><i class="far fa-grip-vertical"></i></span>'
+            ? '<span class="course-card-compact__drag-handle" draggable="true" aria-label="Arrastrar para reordenar" data-tooltip="Arrastrar para reordenar" data-tooltip-delay="1000"><i class="fas fa-grip-vertical" aria-hidden="true"></i></span>'
             : '';
     var listRowClass = listRow ? ' course-card-compact--list-row' : '';
     var dataContentId = listRow && contentId ? ' data-content-id="' + escapeHtmlCompact(contentId) + '"' : '';

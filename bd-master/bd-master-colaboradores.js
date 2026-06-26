@@ -163,8 +163,10 @@ window.BD_MASTER_COLABORADORES = {
         }
     });
 
-    var planesBd = window.BD_PLANES_FORMACION;
-    if (planesBd && typeof planesBd.reseedIfCorrupt === 'function') {
-        planesBd.reseedIfCorrupt();
+    if (typeof window !== 'undefined') {
+        var planesBd = window.BD_PLANES_FORMACION;
+        if (planesBd && typeof planesBd.reseedIfCorrupt === 'function') {
+            planesBd.reseedIfCorrupt();
+        }
     }
 })();

@@ -42,19 +42,28 @@
     opacity: 0.55;
 }
 
+/* Paridad ubits-paginas-creator__drag-handle: grip sólido (fas), fg-1-low, 24×24 */
 .course-card-compact__drag-handle {
-    display: flex;
+    flex-shrink: 0;
+    width: var(--size-2xl);
+    height: var(--size-2xl);
+    display: inline-flex;
     align-items: center;
     justify-content: center;
-    flex-shrink: 0;
-    width: var(--size-md);
-    color: var(--ubits-fg-1-medium);
+    box-sizing: border-box;
+    color: var(--ubits-fg-1-low);
     cursor: grab;
     touch-action: none;
 }
 
 .course-card-compact__drag-handle:active {
     cursor: grabbing;
+}
+
+.course-card-compact__drag-handle i {
+    display: block;
+    font-size: var(--font-size-sm);
+    line-height: 1;
 }
 
 /* Miniatura 3:2; título, partner|tipo y specs a la derecha */

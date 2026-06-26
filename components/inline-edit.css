@@ -140,6 +140,7 @@ textarea.ubits-inline-edit {
 .ubits-inline-edit.ubits-display-d3-bold {
     color: var(--ubits-fg-1-high);
     line-height: 48px;
+    padding-bottom: 2px;
 }
 
 /* display/d4 */
