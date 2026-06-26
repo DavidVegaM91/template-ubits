@@ -368,7 +368,27 @@ Patrón documentado para reutilizarlo en otros flujos o listas similares.
 - **IA Loader** - Indicador de carga para flujos IA (`__stage` 16:9 con gradiente modo IA, banda luminosa animada, sparkles SVG y mensaje con puntos; ícono y texto en `--ubits-fg-2-high-static-inverted` en claro y oscuro) - **RENDERIZADO: HTML directo o `getIaLoaderHTML()`**
 - **Modal** - Diálogo modal - **RENDERIZADO: JS del componente**
 - **Table** - Tablas de datos - **RENDERIZADO: HTML directo**
+- **Data Table** - Tabla configurable con búsqueda, filtros, orden, selección, empty states y barra de acciones - **RENDERIZADO: `createUbitsDataTable(options)`** — `ubits-data-table.css` + `ubits-data-table.js` + dependencias (`table.css`, `button.css`, `input.css`, etc.); doc: `documentacion/componentes/ubits-data-table.html`; ver también [Tabla solo de datos](#tabla-solo-de-datos-data-table-createubitsdatatable)
+- **Toolbar panel** - Barra de cabecera de lista/catálogo (título, meta, acciones; solo layout) - **RENDERIZADO: HTML directo** — `toolbar-panel.css` + `button.css`; doc: `documentacion/componentes/toolbar-panel.html`; ver [Toolbar panel](#toolbar-panel-ubits-toolbar-panel)
+- **Button group** - Agrupación visual de botones contiguos (primario/secundario/terciario; tamaños sm/md/lg; icon-only con tooltip) - **RENDERIZADO: HTML directo** — `button-group.css` + `button.css`; doc: `documentacion/componentes/button-group.html`
+- **Carousel indicators** - Puntos de paginación estilo Swiper dynamic bullets (máx. 6 visibles; ventana deslizante; modo `--dynamic` con 11+ slides) - **RENDERIZADO: HTML directo + `initCarouselIndicators()`** — `carousel-indicators.css`; doc: `documentacion/componentes/carousel-indicators.html`
+- **Hero search** - Buscador principal del Inicio Aprendizaje (variantes `default` y `app`; input pill nativo; no usar `createInput`) - **RENDERIZADO: `mountHeroSearch()`** — `hero-search.css` + `hero-search.js`; doc: `documentacion/componentes/hero-search.html`; patrón en [Patrón: búsqueda en Inicio Aprendizaje](#patrón-búsqueda-en-inicio-aprendizaje-home-learnhtml)
+- **Learn question** - Bloque para crear/mostrar preguntas en aprendizaje y evaluaciones (edición, lectura, validación) - **RENDERIZADO: HTML + `learn-question.js`** — `learn-question.css`; doc: `documentacion/componentes/learn-question.html`
+- **Save Indicator** - Estado de autoguardado (idle, saving, saved, error; solo informativo `role="status"`) - **RENDERIZADO: `renderSaveIndicator()` / `triggerSaveIndicatorFeedback()`** — `save-indicator.css` + `save-indicator.js`; doc: `documentacion/componentes/save-indicator.html`
+- **Segmented progress** - Avance ítem a ítem en quiz/flashcards (segmentos discretos; modo slider con 20+ ítems) - **RENDERIZADO: HTML + `initSegmentedProgress()`** — `segmented-progress.css`; doc: `documentacion/componentes/segmented-progress.html`
+- **Skeleton** - Placeholders grises del layout durante carga (líneas, avatar, card) - **RENDERIZADO: HTML directo (clases `ubits-skeleton-*`)** — `skeleton.css`; doc: `documentacion/componentes/skeleton.html`
+- **Task strip** - Fila compacta de tarea en listas (completado, estado, vencimiento, prioridad, asignado, acciones) - **RENDERIZADO: `renderTaskStrip(tarea, opts)`** — `task-strip.css` + `task-strip.js`; doc: `documentacion/componentes/task-strip.html`
+- **IA Input** - Campo oficial para flujos IA (variantes `panel` y `chat`; adjuntos imagen/documento) - **RENDERIZADO: `createUbitsIAInput(options)`** — `ia-input.css` + `ia-input.js`; doc: `documentacion/componentes/ia-input.html`
+- **IA panel** - Panel lateral de chat IA (historial, prompts, artefactos; Modo Estudio y flujos LMS) - **RENDERIZADO: HTML + APIs en `ia-panel.js`** — `ia-panel.css` + `ia-input.css` + `ubits-ia-chat.css` + `ubits-ia-appearance.css`; doc: `documentacion/componentes/ia-panel.html`
+- **Video player** - Envoltorio para YouTube, Vimeo, Drive, OneDrive y HTML5 (border-radius token lg) - **RENDERIZADO: HTML directo** — `video-player.css`; doc: `documentacion/componentes/video-player.html`
 - **Tooltip** - Tooltips - **RENDERIZADO: HTML/JS del componente**
+
+### **JS auxiliar (sin página doc propia):**
+- **Group creation chat** - Hilo de chat IA para creación/edición de grupos LMS - **RENDERIZADO: APIs en `group-creation-chat.js`** — estilos vía `general-styles/ubits-ia-chat.css`
+- **IA chat streaming** - Utilidades de streaming para globos de mensaje IA - **RENDERIZADO: `ia-chat-streaming.js`** (usado por Study Chat, Group creation chat, IA panel)
+- **IA chat mobile drawer** - Drawer móvil del chat IA en Modo Estudio - **RENDERIZADO: `ia-chat-mobile-drawer.js`**
+- **IA panel artifact content** - Renderizado de artefactos dentro del IA panel - **RENDERIZADO: `ia-panel-artifact-content.js`**
+- **Ubits confetti** - Animación de confetti para celebraciones - **RENDERIZADO: `launchUbitsConfetti()`** — `ubits-confetti.js`
 
 ### **🔧 REQUISITOS DE RENDERIZADO:**
 Todos los componentes UBITS requieren imports obligatorios:
