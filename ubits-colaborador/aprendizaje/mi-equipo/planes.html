@@ -150,8 +150,10 @@
             }
 
             var planesAsignadoFilter = null;
+            var planesCreadorFilter = null;
             var PLANES_ASIGNADO_FILTER_MAX = 5;
             var planesAsignadoFilterOverlayId = 'planes-asignado-filter-overlay';
+            var planesCreadorFilterOverlayId = 'planes-creador-filter-overlay';
 
             function normalizePlanesFilterText(t) {
                 if (!t) return '';
@@ -169,6 +171,24 @@
                     }).filter(function (p) { return p.nombre; });
                 }
                 return [];
+            }
+
+            function getCreadoresParaFiltro() {
+                var seen = {};
+                var out = [];
+                getFilteredPlanesData().forEach(function (p) {
+                    var cid = String(p.creadorId || '');
+                    if (!cid || !p.creador || seen[cid]) return;
+                    seen[cid] = true;
+                    out.push({
+                        creadorId: cid,
+                        nombre: p.creador,
+                        avatar: p.creador_avatar || null
+                    });
+                });
+                return out.sort(function (a, b) {
+                    return (a.nombre || '').localeCompare(b.nombre || '', 'es');
+                });
             }
 
             function planIncluyeColaborador(planRow, colaboradorId) {
@@ -197,6 +217,11 @@
                         return planIncluyeColaborador(p, planesAsignadoFilter.colaboradorId);
                     });
                 }
+                if (planesCreadorFilter && planesCreadorFilter.creadorId) {
+                    rows = rows.filter(function (p) {
+                        return String(p.creadorId) === String(planesCreadorFilter.creadorId);
+                    });
+                }
                 return rows.map(function (p) {
                     return {
                         id: p.id,
@@ -206,13 +231,23 @@
                         estado: p.estado,
                         progreso: getProgresoFilaLista(p),
                         tipo: p.tipo,
-                        asignados: p.asignados || []
+                        asignados: p.asignados || [],
+                        creadorId: p.creadorId || '',
+                        creador: p.creador || '',
+                        creador_avatar: p.creador_avatar || null
                     };
                 });
             }
 
             function clearPlanesAsignadoFilter(refreshTable) {
                 planesAsignadoFilter = null;
+                if (refreshTable !== false && planesTablaRef && typeof planesTablaRef.refresh === 'function') {
+                    planesTablaRef.refresh();
+                }
+            }
+
+            function clearPlanesCreadorFilter(refreshTable) {
+                planesCreadorFilter = null;
                 if (refreshTable !== false && planesTablaRef && typeof planesTablaRef.refresh === 'function') {
                     planesTablaRef.refresh();
                 }
@@ -243,6 +278,34 @@
                 }
                 if (typeof initTooltip === 'function') {
                     initTooltip('#planes-data-table-container .js-planes-asignado-filter-chip[data-tooltip]');
+                }
+            }
+
+            function updatePlanesCreadorFilterChip() {
+                var container = document.getElementById('planes-data-table-container');
+                if (!container) return;
+                var wrap = container.querySelector('.ubits-dt-filtros-aplicados');
+                var chipsCont = container.querySelector('.filtros-chips-container');
+                if (!wrap || !chipsCont) return;
+                chipsCont.querySelectorAll('.js-planes-creador-filter-chip').forEach(function (el) { el.remove(); });
+                if (!planesCreadorFilter || !planesCreadorFilter.nombre) {
+                    return;
+                }
+                wrap.style.display = 'flex';
+                var labelVal = ('Creador: ' + planesCreadorFilter.nombre).replace(/"/g, '&quot;');
+                var chipHtml = '<span class="ubits-chip ubits-chip--xs ubits-chip--close ubits-dt-chip js-planes-creador-filter-chip" data-tooltip="' + labelVal + '">' +
+                    '<span class="ubits-chip__text">Creador: ' + escapeHtml(planesCreadorFilter.nombre) + '</span>' +
+                    '<button type="button" class="ubits-chip__close js-planes-creador-filter-clear" aria-label="Quitar filtro de creador"><i class="far fa-times"></i></button></span>';
+                chipsCont.insertAdjacentHTML('afterbegin', chipHtml);
+                var clearBtn = chipsCont.querySelector('.js-planes-creador-filter-clear');
+                if (clearBtn) {
+                    clearBtn.addEventListener('click', function () {
+                        clearPlanesCreadorFilter(true);
+                        setTimeout(function () { initPlanesTableTooltips(); }, 50);
+                    });
+                }
+                if (typeof initTooltip === 'function') {
+                    initTooltip('#planes-data-table-container .js-planes-creador-filter-chip[data-tooltip]');
                 }
             }
 
@@ -392,13 +455,162 @@
                 window.openDropdownMenu(overlayId, anchorBtn);
             }
 
+            function syncPlanesCreadorFilterButton() {
+                var btn = document.querySelector('#planes-data-table-container .js-planes-creador-filter-btn');
+                if (!btn) return;
+                btn.classList.toggle('ubits-dt-filter-btn--active', !!(planesCreadorFilter && planesCreadorFilter.creadorId));
+            }
+
+            function initPlanesCreadorColumnFilter() {
+                var th = document.querySelector('#planes-data-table-container th[data-col="creador"]');
+                if (!th) return;
+                th.classList.add('ubits-dt-th-filterable');
+                var btn = th.querySelector('.js-planes-creador-filter-btn');
+                if (!btn) {
+                    th.insertAdjacentHTML('beforeend',
+                        ' <button type="button" class="ubits-button ubits-button--tertiary ubits-button--xs ubits-button--icon-only ubits-dt-filter-btn js-planes-creador-filter-btn" aria-label="Filtrar por creador" data-tooltip="Filtrar por creador" data-tooltip-delay="1000"><i class="far fa-filter"></i></button>');
+                    btn = th.querySelector('.js-planes-creador-filter-btn');
+                }
+                syncPlanesCreadorFilterButton();
+                if (btn && !btn._planesCreadorFilterBound) {
+                    btn._planesCreadorFilterBound = true;
+                    btn.addEventListener('click', function (e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        openPlanesCreadorFilterMenu(btn);
+                    });
+                }
+            }
+
+            function openPlanesCreadorFilterMenu(anchorBtn) {
+                if (typeof window.getDropdownMenuHtml !== 'function' || typeof window.openDropdownMenu !== 'function') return;
+                var personas = getCreadoresParaFiltro();
+                var overlayId = planesCreadorFilterOverlayId;
+                var existing = document.getElementById(overlayId);
+                if (existing) existing.remove();
+                var options = personas.map(function (p) {
+                    var selected = planesCreadorFilter && String(planesCreadorFilter.creadorId) === String(p.creadorId);
+                    return {
+                        text: p.nombre,
+                        value: p.creadorId,
+                        avatar: p.avatar || null,
+                        selected: !!selected
+                    };
+                });
+                var autocompleteContainerId = overlayId + '-autocomplete';
+                document.body.insertAdjacentHTML('beforeend', window.getDropdownMenuHtml({
+                    overlayId: overlayId,
+                    hasAutocomplete: true,
+                    autocompletePlaceholder: 'Filtrar por creador...',
+                    autocompleteContainerId: autocompleteContainerId,
+                    options: options,
+                    footerSecondaryLabel: 'Cancelar',
+                    footerPrimaryLabel: 'Aplicar',
+                    footerSecondaryId: overlayId + '-cancel',
+                    footerPrimaryId: overlayId + '-apply'
+                }));
+                var overlayEl = document.getElementById(overlayId);
+                if (!overlayEl) return;
+                var optionsContainer = overlayEl.querySelector('.ubits-dropdown-menu__options');
+                var optionButtons = optionsContainer ? optionsContainer.querySelectorAll('.ubits-dropdown-menu__option') : [];
+
+                function filterVisibleOptions(searchVal) {
+                    var q = normalizePlanesFilterText(searchVal || '');
+                    var shown = 0;
+                    optionButtons.forEach(function (opt) {
+                        var textEl = opt.querySelector('.ubits-dropdown-menu__option-text');
+                        var text = textEl ? textEl.textContent : '';
+                        var match = !q || normalizePlanesFilterText(text).indexOf(q) >= 0;
+                        if (match && shown < PLANES_ASIGNADO_FILTER_MAX) {
+                            opt.style.display = '';
+                            shown++;
+                        } else {
+                            opt.style.display = 'none';
+                        }
+                    });
+                }
+
+                optionButtons.forEach(function (opt) {
+                    opt.addEventListener('click', function () {
+                        optionButtons.forEach(function (other) {
+                            other.classList.remove('ubits-dropdown-menu__option--selected');
+                        });
+                        this.classList.add('ubits-dropdown-menu__option--selected');
+                    });
+                });
+
+                var inputEl = document.getElementById(overlayId + '-autocomplete-input');
+                var clearIcon = document.getElementById(overlayId + '-autocomplete-clear');
+                if (inputEl) {
+                    inputEl.placeholder = 'Filtrar por creador...';
+                    inputEl.value = '';
+                    inputEl.setAttribute('aria-label', 'Filtrar por creador');
+                    inputEl.addEventListener('input', function () {
+                        if (clearIcon) clearIcon.style.display = this.value.length > 0 ? 'block' : 'none';
+                        filterVisibleOptions(this.value);
+                    });
+                }
+                if (clearIcon && inputEl) {
+                    clearIcon.style.display = 'none';
+                    clearIcon.addEventListener('click', function (ev) {
+                        ev.preventDefault();
+                        ev.stopPropagation();
+                        inputEl.value = '';
+                        clearIcon.style.display = 'none';
+                        filterVisibleOptions('');
+                        inputEl.focus();
+                    });
+                }
+                filterVisibleOptions('');
+
+                var applyBtn = document.getElementById(overlayId + '-apply');
+                if (applyBtn) {
+                    applyBtn.addEventListener('click', function () {
+                        var selectedOpt = overlayEl.querySelector('.ubits-dropdown-menu__option--selected');
+                        if (selectedOpt) {
+                            var cid = selectedOpt.getAttribute('data-value');
+                            var persona = personas.find(function (p) { return String(p.creadorId) === String(cid); });
+                            var labelFallback = selectedOpt.querySelector('.ubits-dropdown-menu__option-text');
+                            planesCreadorFilter = {
+                                creadorId: cid,
+                                nombre: persona ? persona.nombre : (labelFallback ? labelFallback.textContent.trim() : ''),
+                                avatar: persona ? persona.avatar : null
+                            };
+                        } else {
+                            planesCreadorFilter = null;
+                        }
+                        if (typeof window.closeDropdownMenu === 'function') window.closeDropdownMenu(overlayId);
+                        if (overlayEl.parentNode) overlayEl.remove();
+                        if (planesTablaRef && typeof planesTablaRef.refresh === 'function') planesTablaRef.refresh();
+                        setTimeout(function () { initPlanesTableTooltips(); }, 50);
+                    });
+                }
+                var cancelBtn = document.getElementById(overlayId + '-cancel');
+                if (cancelBtn) {
+                    cancelBtn.addEventListener('click', function () {
+                        if (typeof window.closeDropdownMenu === 'function') window.closeDropdownMenu(overlayId);
+                        if (overlayEl.parentNode) overlayEl.remove();
+                    });
+                }
+                overlayEl.addEventListener('click', function (ev) {
+                    if (ev.target === overlayEl) {
+                        if (typeof window.closeDropdownMenu === 'function') window.closeDropdownMenu(overlayId);
+                        if (overlayEl.parentNode) overlayEl.remove();
+                    }
+                });
+                window.openDropdownMenu(overlayId, anchorBtn);
+            }
+
             function refreshPlanesTableUi() {
                 if (planesTablaRef && typeof planesTablaRef.refresh === 'function') {
                     planesTablaRef.refresh();
                 } else {
                     initPlanesAsignadosColumnFilter();
+                    initPlanesCreadorColumnFilter();
                     updatePlanesAsignadoFilterChip();
+                    updatePlanesCreadorFilterChip();
                     syncPlanesAsignadosFilterButton();
+                    syncPlanesCreadorFilterButton();
                     setTimeout(function () { initPlanesTableTooltips(); }, 50);
                 }
             }
@@ -443,6 +655,25 @@
                     }
                 }
                 return '<td data-col="asignados"><div class="ubits-table__cell-assignee">' + html + '</div></td>';
+            }
+
+            function buildCreadorCellHtml(row) {
+                var html = '';
+                if (row.creador) {
+                    var creatorName = row.creador;
+                    var creatorAvatar = row.creador_avatar || null;
+                    if (typeof renderAvatar === 'function') {
+                        html = renderAvatar({ nombre: creatorName, avatar: creatorAvatar || '' }, { size: 'sm' }) +
+                            '<span class="ubits-body-sm-regular">' + escapeHtml(creatorName) + '</span>';
+                    } else if (creatorAvatar) {
+                        html = '<div class="ubits-table__avatar"><img src="' + escapeHtml(creatorAvatar) + '" alt="" width="28" height="28"></div>' +
+                            '<span class="ubits-body-sm-regular">' + escapeHtml(creatorName) + '</span>';
+                    } else {
+                        html = '<div class="ubits-table__avatar ubits-table__avatar-icon"><i class="far fa-user"></i></div>' +
+                            '<span class="ubits-body-sm-regular">' + escapeHtml(creatorName) + '</span>';
+                    }
+                }
+                return '<td data-col="creador"><div class="ubits-table__cell-assignee">' + html + '</div></td>';
             }
 
             function closePlanesAsignadosPopover() {
@@ -585,6 +816,7 @@
                 var accionesBtn = '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only js-planes-row-acciones-btn" data-plan-id="' + escapeHtml(String(row.id)) + '" data-plan-tipo="' + escapeHtml(row.tipo) + '" aria-label="Acciones del plan" data-tooltip="Acciones" data-tooltip-delay="500"><i class="far fa-ellipsis-vertical"></i></button>';
                 return '<td data-col="nombre"><span class="ubits-body-sm-regular">' + escapeHtml(row.nombre) + '</span></td>' +
                     buildAsignadosCellHtml(row) +
+                    buildCreadorCellHtml(row) +
                     '<td data-col="fecha-inicio" data-date="' + escapeHtml(row.fechaInicio) + '"><span class="ubits-body-sm-regular">' + escapeHtml(fechaInicioDisplay) + '</span></td>' +
                     '<td data-col="fecha-fin" data-date="' + escapeHtml(row.fechaFin) + '"><span class="ubits-body-sm-regular">' + escapeHtml(fechaFinDisplay) + '</span></td>' +
                     '<td data-col="estado">' + estadoHtml + '</td>' +
@@ -606,6 +838,7 @@
             function switchMiEquipoListTab(tabId) {
                 persistListTab(tabId);
                 clearPlanesAsignadoFilter(false);
+                clearPlanesCreadorFilter(false);
                 updateEmptyStateConfig();
                 syncHeaderProductTabs();
                 refreshPlanesTableUi();
@@ -619,7 +852,8 @@
                     columns: [
                         { id: 'nombre', label: 'Nombre del plan', sortable: true },
                         { id: 'asignados', label: 'Asignados' },
-                        { id: 'fecha-inicio', label: 'Fecha inicio', sortable: true, sortType: 'date' },
+                        { id: 'creador', label: 'Creador', defaultVisible: false },
+                        { id: 'fecha-inicio', label: 'Fecha inicio', sortable: true, sortType: 'date', defaultVisible: false },
                         { id: 'fecha-fin', label: 'Fecha fin', sortable: true, sortType: 'date' },
                         { id: 'estado', label: 'Estado', filterable: true, filterOptions: ['Vigente', 'No vigente', 'Planeado'], filterHasAutocomplete: false },
                         { id: 'progreso', label: 'Progreso', sortable: true, sortType: 'number' },
@@ -629,18 +863,21 @@
                     getData: function () { return getPlanesTableRowsForDisplay(); },
                     rowIdField: 'id',
                     buildRowHtml: buildPlanesRowHtml,
-                    features: { checkboxes: true, search: true, filters: true, verSeleccionados: true, actionBar: true, resultsCount: true },
+                    features: { checkboxes: true, search: true, filters: true, verSeleccionados: true, actionBar: true, resultsCount: true, columnsToggle: true },
                     actionBarButtons: [
                         { id: 'eliminar', label: 'Eliminar', icon: 'fa-trash', variant: 'error-secondary', onClick: function (selectedIds) {
                             openPlanesDeleteModal(selectedIds);
                         } }
                     ],
                     emptyState: emptyStateConfig,
-                    i18n: { selectAll: 'Seleccionar todo', deselectAll: 'Deseleccionar todo', verSeleccionados: 'Ver seleccionados', clearFilters: 'Limpiar filtros', filtrosAplicados: 'Filtros aplicados', buscar: 'Buscar' },
+                    i18n: { selectAll: 'Seleccionar todo', deselectAll: 'Deseleccionar todo', verSeleccionados: 'Ver seleccionados', clearFilters: 'Limpiar filtros', filtrosAplicados: 'Filtros aplicados', buscar: 'Buscar', columnasVisibles: 'Columnas visibles' },
                     onAfterRefresh: function () {
                         initPlanesAsignadosColumnFilter();
+                        initPlanesCreadorColumnFilter();
                         updatePlanesAsignadoFilterChip();
+                        updatePlanesCreadorFilterChip();
                         syncPlanesAsignadosFilterButton();
+                        syncPlanesCreadorFilterButton();
                         setTimeout(function () { initPlanesTableTooltips(); }, 50);
                     }
                 });
@@ -651,6 +888,7 @@
                     clearFiltersBtn._planesAsignadoClearBound = true;
                     clearFiltersBtn.addEventListener('click', function () {
                         planesAsignadoFilter = null;
+                        planesCreadorFilter = null;
                     }, true);
                 }
             }

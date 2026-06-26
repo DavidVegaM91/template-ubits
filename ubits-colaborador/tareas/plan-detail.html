@@ -114,10 +114,12 @@
                                 <h2 class="plan-detail-tasks-card__title">Tareas del plan</h2>
                                 <div class="plan-detail-tasks-card__filters">
                                     <button type="button"
-                                        class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only"
-                                        aria-label="Buscar">
-                                        <i class="far fa-search"></i>
+                                        class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only plan-detail-search-toggle"
+                                        id="plan-detail-search-toggle" aria-label="Buscar"
+                                        data-tooltip="Buscar" data-tooltip-delay="1000">
+                                        <i class="far fa-magnifying-glass"></i>
                                     </button>
+                                    <div id="plan-detail-search-container" class="plan-detail-search-inline" style="display: none;"></div>
                                     <button type="button"
                                         class="ubits-button ubits-button--tertiary ubits-button--xs ubits-button--icon-only plan-detail-filters-btn"
                                         aria-label="Filtrar" data-tooltip="Filtrar" data-tooltip-delay="1000">

@@ -118,6 +118,18 @@
     flex-shrink: 0;
 }
 
+.page-mi-equipo-planes #planes-creador-filter-overlay.ubits-dropdown-menu__overlay {
+    z-index: 10100;
+}
+
+.page-mi-equipo-planes #planes-creador-filter-overlay .ubits-dropdown-menu__content {
+    z-index: 10101;
+}
+
+.page-mi-equipo-planes #planes-creador-filter-overlay .ubits-dropdown-menu__option-left .ubits-avatar {
+    flex-shrink: 0;
+}
+
 .page-mi-equipo-planes #planes-data-table-container .ubits-table__cell-assignee .js-planes-asignado-filter-avatar {
     display: inline-flex;
     vertical-align: middle;

@@ -125,6 +125,8 @@ let planDetailAssigneesList = [];
 /** Mismo flujo que tareas.html: botón «Agregar tarea» se expande a input; cierre si vacío (blur / clic fuera). */
 let planDetailAddingTask = false;
 let planDetailIsCreatingTask = false;
+/** Búsqueda expandible (patrón ubits-data-table / seguimiento). */
+let planDetailSearchQuery = '';
 
 function getTasksForPlan(planId) {
     if (!planId) return [];
@@ -308,12 +310,21 @@ function renderPlanDetail(planId) {
         }
     }
 
-    const filteredTasks = planDetailFilterByAssigneeKey
-        ? tasks.filter(function (t) {
-            const key = (t.assignee_email && String(t.assignee_email).trim()) || (t.assignee_name && String(t.assignee_name).trim()) || '';
-            return key === planDetailFilterByAssigneeKey;
-        })
-        : tasks;
+    const filteredTasks = (function () {
+        var list = planDetailFilterByAssigneeKey
+            ? tasks.filter(function (t) {
+                const key = (t.assignee_email && String(t.assignee_email).trim()) || (t.assignee_name && String(t.assignee_name).trim()) || '';
+                return key === planDetailFilterByAssigneeKey;
+            })
+            : tasks.slice();
+        if (planDetailSearchQuery && String(planDetailSearchQuery).trim()) {
+            var q = String(planDetailSearchQuery).trim().toLowerCase();
+            list = list.filter(function (t) {
+                return (t.name || '').toLowerCase().indexOf(q) !== -1;
+            });
+        }
+        return list;
+    })();
     const doneCount = filteredTasks.filter(t => t.done).length;
     if (countEl) countEl.textContent = `${doneCount}/${filteredTasks.length}`;
 
@@ -406,7 +417,30 @@ function renderPlanDetail(planId) {
 
     if (filteredTasks.length === 0) {
         if (tasksListEl) tasksListEl.innerHTML = '';
-        if (emptyEl) emptyEl.style.display = 'flex';
+        if (emptyEl) {
+            emptyEl.style.display = 'flex';
+            if (planDetailSearchQuery && String(planDetailSearchQuery).trim()) {
+                emptyEl.innerHTML =
+                    '<i class="far fa-search plan-detail-empty__icon" aria-hidden="true"></i>' +
+                    '<h2 class="plan-detail-empty__title">No se encontraron resultados</h2>' +
+                    '<p class="plan-detail-empty__desc">Intenta ajustar tu búsqueda.</p>' +
+                    '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="plan-detail-clear-search-btn">' +
+                    '<i class="far fa-times"></i><span>Limpiar búsqueda</span></button>';
+                var clearSearchBtn = document.getElementById('plan-detail-clear-search-btn');
+                if (clearSearchBtn) {
+                    clearSearchBtn.addEventListener('click', function () {
+                        planDetailSearchQuery = '';
+                        collapsePlanDetailSearch();
+                        renderPlanDetail(planId);
+                    });
+                }
+            } else {
+                emptyEl.innerHTML =
+                    '<i class="far fa-clipboard-list plan-detail-empty__icon" aria-hidden="true"></i>' +
+                    '<h2 class="plan-detail-empty__title">¡Crea tu primera tarea!</h2>' +
+                    '<p class="plan-detail-empty__desc">Empieza a organizar tus actividades creando una tarea.</p>';
+            }
+        }
     } else {
         if (emptyEl) emptyEl.style.display = 'none';
         var ordered = filteredTasks.slice().sort(function (a, b) {
@@ -696,6 +730,58 @@ function attachTaskListeners() {
     listEl.addEventListener('dblclick', handlePlanDetailListDblclick);
 }
 
+function collapsePlanDetailSearch() {
+    var searchCont = document.getElementById('plan-detail-search-container');
+    var toggle = document.getElementById('plan-detail-search-toggle');
+    if (searchCont) {
+        searchCont.innerHTML = '';
+        searchCont.style.display = 'none';
+    }
+    if (toggle) toggle.style.display = 'flex';
+}
+
+function initPlanDetailSearchToggle(planId) {
+    var toggle = document.getElementById('plan-detail-search-toggle');
+    var searchCont = document.getElementById('plan-detail-search-container');
+    if (!toggle || !searchCont) return;
+
+    if (!toggle._planDetailSearchBound) {
+        toggle._planDetailSearchBound = true;
+        toggle.addEventListener('click', function (e) {
+            e.stopPropagation();
+            if (searchCont.style.display === 'none' || !searchCont.innerHTML.trim()) {
+                toggle.style.display = 'none';
+                searchCont.style.display = 'flex';
+                if (typeof createInput === 'function') {
+                    createInput({
+                        containerId: 'plan-detail-search-container',
+                        type: 'search',
+                        size: 'sm',
+                        placeholder: 'Buscar tarea…',
+                        showLabel: false,
+                        onChange: function (value) {
+                            planDetailSearchQuery = value || '';
+                            renderPlanDetail(planId);
+                        }
+                    });
+                    setTimeout(function () {
+                        var input = searchCont.querySelector('input');
+                        if (input) input.focus();
+                    }, 100);
+                }
+            }
+        });
+
+        document.addEventListener('mousedown', function (e) {
+            if (searchCont.style.display === 'none') return;
+            if (searchCont.contains(e.target) || toggle.contains(e.target)) return;
+            if (!planDetailSearchQuery || !String(planDetailSearchQuery).trim()) {
+                collapsePlanDetailSearch();
+            }
+        });
+    }
+}
+
 function initPlanDetail() {
     const planId = getPlanIdFromUrl();
     if (!planId) {
@@ -737,6 +823,8 @@ function initPlanDetail() {
 
     // Enlazar clics de la lista de tareas ANTES de renderizar (así funciona al llegar desde seguimiento)
     attachTaskListeners();
+
+    initPlanDetailSearchToggle(planId);
 
     function closePlanDetailAsignadosPopover() {
         const overlay = document.getElementById('plan-detail-asignados-popover-overlay');

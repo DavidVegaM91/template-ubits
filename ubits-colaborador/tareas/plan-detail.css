@@ -363,7 +363,8 @@
 
 .plan-detail-card__progress-row .plan-detail-card__bar {
     flex: 1;
-    min-width: 100px;
+    min-width: 48px;
+    max-width: 100%;
 }
 
 /* Label "Tareas finalizadas": mismo estilo que meta-label (Creado por) */
@@ -413,8 +414,9 @@
 
 /* Input fecha: usa componente oficial .ubits-input; ancho fijo para alineación */
 #plan-detail-vencimiento-wrap {
-    width: 100px;
-    min-width: 100px;
+    width: 120px;
+    min-width: 120px;
+    flex-shrink: 0;
 }
 #plan-detail-vencimiento-wrap .ubits-input {
     width: 100%;
@@ -455,6 +457,18 @@
     display: flex;
     align-items: center;
     gap: var(--gap-md, 12px);
+}
+
+/* Búsqueda expandible (patrón ubits-data-table) */
+.plan-detail-search-inline {
+    display: flex;
+    align-items: center;
+    min-width: 200px;
+}
+
+.plan-detail-search-inline .ubits-input-container {
+    width: 100%;
+    min-width: 0;
 }
 
 .plan-detail-tasks-card__counters {

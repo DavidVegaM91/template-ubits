@@ -61,7 +61,7 @@ En **planes de competencias**, al hacer **clic en una fila** de **`planes-compet
 | **Planeado** | `editar-plan-competencias.html?id=<id>` |
 | **Vigente**, **No vigente** | `detalle-plan-competencias.html?id=<id>` |
 
-- En el prototipo, la tabla **Planes de competencias** en **`planes-competencias.html`** incluye **tres filas de ejemplo** (**`c1`** Planeado, **`c2`** Vigente, **`c3`** No vigente); no hay plan en **Procesando** en esa lista. Si existiera un plan en Procesando (datos reales), el criterio de fila sería el de la tabla: **edición**; **Planeado** → **edición**; **Vigente** / **No vigente** → **detalle**.
+- En el prototipo, la lista **`planes-competencias.html`** consume **`BD_PLANES_FORMACION`** (§ 7): ids tipo **`pf-k-024-2025`**, **`pf-k-024-2026`**, **`pf-k-024-2027`**, etc. Un plan **2027** queda **Planeado** con «hoy» = 19 jun 2026. Si existiera un plan en **Procesando**, el criterio de fila sería **edición**; **Planeado** → **edición**; **Vigente** / **No vigente** → **detalle**.
 
 ### 2.2 Progreso: estudio, no carga
 
@@ -222,7 +222,7 @@ Pantalla de **edición** para planes en **Planeado**, **Procesando** o **Vigente
 
 | Archivo | Uso |
 |---------|-----|
-| `editar-plan-competencias.html` | Marcado, tabla, drawers y scripts inline (catálogo local con ids **`c0`–`c3`** para demos; la lista en **`planes-competencias.html`** solo muestra **`c1`–`c3`**). Query **`?id=`**. JS: **`getEstadoTagEstableVisual`**, **`iniciarAnimacionEstadoProcesandoAsignacion`**, menú **Opciones** del plan (**§ 6.2.2**). |
+| `editar-plan-competencias.html` | Marcado, tabla, drawers y scripts inline; datos desde **`BD_PLANES_FORMACION`** (`?id=`). JS: **`getEstadoTagEstableVisual`**, **`iniciarAnimacionEstadoProcesandoAsignacion`**, menú **Opciones** del plan (**§ 6.2.2**). |
 | `editar-plan-competencias.css` | Estilos propios mínimos + **fila título + status tag** (ver **§ 6.2.1**); el layout reutiliza **`crear-plan-competencias.css`** y **`crear-plan-contenidos.css`**. |
 | `catalogo-competencias-drawer.js` | Catálogo global `CATALOGO_COMPETENCIAS_DRAWER` (+ imágenes / iconos de habilidades vía globales del drawer). |
 | `bd-master-competencias.js`, `bd-master-habilidades.js` | Datos maestros de competencias y habilidades. |
@@ -239,7 +239,7 @@ El SubNav del Creator enlaza **dos páginas** (más **Grupos**): **`planes-conte
   - **Ver progreso:** solo si el estado es **Vigente** o **No vigente**. En la lista de contenidos → `detalle-plan.html?id=`; en la lista de competencias → `detalle-plan-competencias.html?id=`.  
   - **Editar:** solo si el estado es **Planeado**, **Procesando** (cualquier %) o **Vigente**. **No** se muestra para **No vigente**. Navega a **`editar-plan-contenidos.html?id=`** o **`editar-plan-competencias.html?id=`** según la página de lista.  
   - **Eliminar:** abre el **mismo modal** que la barra de acciones al eliminar varios (confirmar escribiendo «eliminar»); aplica a la fila actual.  
-- **Plantillas de edición (`editar-plan-contenidos.html`, `editar-plan-competencias.html`):** reciben **`?id=`** del plan. Los datos mostrados se cargan desde un **catálogo local alineado** con los mismos ids y metadatos que la lista correspondiente (**`planes-contenidos.html`** o **`planes-competencias.html`**). Si alguien abre la URL de edición con un plan **No vigente**, la página **redirige** al detalle correspondiente (`detalle-plan.html` o `detalle-plan-competencias.html`), igual que si entrara solo a “ver” el plan cerrado.
+- **Plantillas de edición (`editar-plan-contenidos.html`, `editar-plan-competencias.html`):** reciben **`?id=`** del plan. Los datos se cargan desde **`BD_PLANES_FORMACION`** vía `loadPlanFormacionFromBd` / `planes-formacion-bd-bridge.js`. Si alguien abre la URL de edición con un plan **No vigente**, la página **redirige** al detalle correspondiente (`detalle-plan.html` o `detalle-plan-competencias.html`), igual que si entrara solo a “ver” el plan cerrado.
 
 ### 4.5 Detalle del plan de competencias (detalle-plan-competencias.html)
 
@@ -247,9 +247,18 @@ El SubNav del Creator enlaza **dos páginas** (más **Grupos**): **`planes-conte
 - **Botón «Opciones»** en la card del plan (junto al status tag): menú contextual por estado (**Editar plan** en Vigente, envío de recordatorio, certificados, eliminar, etc.). Detalle completo en **§ 6.2.2** (mismo patrón que **`detalle-plan.html`**).
 - **Vista de solo consulta:** igual que **`detalle-plan.html`**: sin **Guardar** en el header, sin botón primario **«Agregar asignación»** en la tabla; nombre del plan (**`h1`**), fechas y **horas de estudio por competencia** como **texto** (no inputs). Edición en **`editar-plan-competencias.html`**.
 - Card de progreso: nombre del plan, fechas de vigencia (inicio y fin como texto), horas por competencia como texto, barra de progreso del plan.
-- Tabla de asignaciones: columnas usuario, último acceso, competencias asignadas, progreso. Botón "Agregar competencias" / "X competencias" por fila. Clic en fila o en el botón abre el **drawer "Agregar competencias"** (mismo comportamiento que en crear-plan: cards de competencia, expansión con habilidades y checkboxes, tabla derecha con dos líneas por competencia).
+- Tabla de asignaciones: columnas usuario, último acceso, última fecha de progreso, competencias asignadas, progreso.
+- **Clic en fila o botón «N competencias» según estado del plan:**
+
+| Estado plan | Drawer al clic en fila |
+|-------------|------------------------|
+| **Vigente / No vigente** | Drawer **sm** **«Usuario – competencias y progreso»**: solo lectura — grid de cards con imagen, nombre, habilidades y **barra de progreso** por competencia (`initPanelCompetencias`). **Sin** catálogo ni búsqueda. Pie: **Cerrar**. |
+| **Planeado / Procesando** | No aplica desde detalle (la lista abre **editar**). En **editar-plan-competencias**, el clic abre drawer **lg** **«Agregar competencias»** (catálogo). |
+
+- **Catálogo en detalle:** al montar el script se inicializan `CATALOGO_COMPETENCIAS_DRAWER`, `COMPETENCIA_IMAGE_MAP` y `HABILIDAD_ICON_MAP` vía **`refreshCatalogoCompetenciasDrawer()`** (`catalogo-competencias-drawer.js`) — requisito para renderizar cards del drawer sin error.
+- **Barra de progreso en cards del drawer:** mismo criterio que **`card-content-compact`** — relleno **`--ubits-accent-brand`** (azul) entre **1 % y 99 %**; **100 % / completado** → verde (`progressBarHtml` **sin** `variant: 'chart'`).
 - **Búsqueda en la tabla de asignaciones:** misma implementación que en **detalle-plan** (contenidos): **`ubits-data-table`** + reglas de texto de celda en **§ 6.6**.
-- Con **varias personas seleccionadas**, barra de acciones con **"Asignar competencias"** (solo Planeado/Vigente): se abre el mismo drawer y los ítems elegidos se hacen **merge** en cada persona seleccionada (sin duplicar por id de competencia).
+- Con **varias personas seleccionadas**, barra de acciones con **"Asignar competencias"** (solo **Planeado** o **Vigente** en detalle — en la práctica detalle solo se usa en Vigente/No vigente, donde **no** aparece ese botón; aplica si se reutiliza la plantilla en otros estados): merge por id de competencia.
 
 ### 4.6 Diferencias resumidas frente a planes de contenidos
 
@@ -323,9 +332,10 @@ El estado **Procesando X%** sigue siendo **transitorio de UI** al crear o agrega
 | Regla | Valor |
 |-------|--------|
 | Granularidad | **1 plan corporativo / competencia / año** |
-| Total planes | **6** (3 competencias × años 2025 y 2026) |
+| Total planes | **9** (3 competencias × años **2025, 2026 y 2027**) |
 | Vigencia | Año calendario completo |
 | Nombre tipo | `Empresa {Competencia} {año}` |
+| Demo planeado | Planes **2027** (`pf-k-{comp}-2027`) en estado **Planeado** con «hoy» 19 jun 2026 — probar flujo **editar** / drawer catálogo **Agregar competencias** |
 | Competencias | Solo **`comp-024` Liderazgo**, **`comp-020` Inglés**, **`comp-004` Comunicación** (únicas con contenidos suficientes en el playground) |
 | Asignación por persona | **3 competencias** al año (una de cada una de las tres anteriores); la mezcla puede cambiar respecto al año anterior |
 | Horas meta | **`horasEstudioMeta: 2`** — **2 h por plan en total** (ver § 4.2) |
@@ -350,7 +360,7 @@ El progreso **no** es «porcentaje de competencias completadas» ni acumulado vi
 | **LMS Creator (admin)** | **Todos** los planes de la BD |
 | **Mi equipo — líder demo (María E006)** | **Cualquier plan** donde aparezca al menos un subordinado directo (E035–E040), **incluidos planes corporativos de HR** |
 
-Filtro opcional en lista Mi equipo: una persona → solo sus planes y progreso individual (§ 5 de `contexto-mi-equipo.md`).
+Filtro opcional en lista Mi equipo: una persona → solo sus planes y progreso individual (§ 5 de `contexto-mi-equipo.md`). Lista Mi equipo además: columna **Creador** (filtro, oculta por defecto) y **Columnas visibles** — ver **`contexto-mi-equipo.md`** § 5.
 
 ### 7.6 Esquema y helpers
 
@@ -361,23 +371,23 @@ Estructura mínima de un plan:
   id, tipo, nombre, fechaInicio, fechaFin,
   horasEstudioMeta,      // solo competencias; 2 en seed
   area, trimestre,       // solo contenidos
-  anio, competenciaId,   // solo competencias
+  anio, competenciaId,   // solo competencias (2025 | 2026 | 2027)
   creadorId,
   asignaciones: [{ colaboradorId, contenidos?, competencias? }],
   progresoPorColaborador, progresoAgregado  // precalculados en seed
 }
 ```
 
-**Helpers previstos:** `getPlanById`, `getPlanesByTipo`, `getEstadoPlan`, `getProgresoColaboradorEnPlan`, `getProgresoAgregadoPlan`, `getPlanesVisiblesParaLider`, `getPlanesVisiblesCreator`, `getAsignadosFromPlan`.
+**Helpers previstos:** `getPlanById`, `getPlanesByTipo`, `getEstadoPlan`, `getProgresoColaboradorEnPlan`, `getProgresoAgregadoPlan`, `getPlanesVisiblesParaLider`, `getPlanesVisiblesCreator`, `getAsignadosFromPlan`, `getCreadorFromPlan`. **`getPlanesListData()`** enriquece filas con `creadorId`, `creador`, `creador_avatar`. Persistencia demo: `sessionStorage` con **`schemaVersion` 3** (regenera seed al cambiar versión).
 
 ### 7.7 Implementación
 
 | Paso | Acción |
 |------|--------|
-| 1 | Crear `bd-master/bd-planes-formacion.js` con seed + helpers |
+| 1 | ✅ `bd-master/bd-planes-formacion.js` con seed + helpers |
 | 2 | Actualizar `bd-master/README.md` (inventario) |
-| 3 | Sustituir mocks en Creator y Mi equipo |
-| 4 | Mantener `sessionStorage` solo para mutaciones demo (crear/editar/eliminar en sesión), opcional |
+| 3 | ✅ Creator y Mi equipo consumen la BD (`planes-formacion-bd-bridge.js`) |
+| 4 | `sessionStorage` para mutaciones demo (crear/editar/eliminar en sesión) |
 
 ---
 
@@ -387,20 +397,23 @@ Resumen de decisiones de UI y comportamiento implementado en el prototipo, para 
 
 ### 6.1 Planes de competencias – Drawers
 
-- **Clic en fila (un usuario):**
-  - **Vigente / Planeado:** se abre el drawer **"Usuario – Agregar competencias"** (tamaño **lg**). Una columna de resultados con **varias columnas de cards** (grid de 3 columnas). Permite buscar, seleccionar/deseleccionar competencias y ordenar habilidades por prioridad (drag).
-  - **No vigente:** se abre el drawer **"Usuario – competencias y progreso"** (tamaño **sm**). **Una sola columna** de cards; solo se muestran las competencias asignadas y su progreso (sin búsqueda ni catálogo).
+- **Clic en fila en `detalle-plan-competencias.html` (plan Vigente o No vigente):**
+  - Se abre el drawer **«Usuario – competencias y progreso»** (tamaño **sm**). **Una o dos columnas** de cards (`detalle-plan-drawer-cards-grid`); solo competencias ya asignadas + barra de progreso. **Sin** búsqueda ni catálogo. Overlay id: **`drawer-competencias-estudiante`**. Implementación: **`initPanelCompetencias(rowId)`** + `renderCompetenciaDrawerProgressBlock` (requiere catálogo inicializado — § 4.5).
 
-- **Acciones masivas – "Asignar competencias" (varios usuarios):** se abre el **mismo drawer "Agregar competencias"** que a nivel de plan (búsqueda, cards, habilidades). Los cards de competencia tienen **ancho 100 %** de la columna para aprovechar bien el espacio (igual que en el drawer por usuario).
+- **Clic en fila en `editar-plan-competencias.html` (Planeado / Procesando / Vigente en edición):**
+  - Se abre el drawer **«Usuario – Agregar competencias»** (tamaño **lg**). Grid de **3 columnas** de cards con búsqueda, selección y habilidades (drag). Pie: **Cancelar** + **Agregar**.
 
-- **Plan en estado Procesando — `editar-plan-competencias.html`:** no es detalle; es la pantalla de edición previa a salir de Procesando. Los drawers de catálogo (wizard 2 pasos y **Editar competencias** por fila) reutilizan la misma lógica de cards/habilidades que en crear; ver **§ 4.3.2**.
+- **Acciones masivas – "Asignar competencias" (varios usuarios, solo Planeado/Vigente):** drawer **lg** de catálogo; merge por id de competencia en cada persona seleccionada.
+
+- **Plan en estado Procesando — `editar-plan-competencias.html`:** pantalla de edición previa a salir de Procesando; drawers de catálogo como en crear (§ 4.3.2).
 
 ### 6.2 Cards de competencias – Estilo y progreso
 
 - **Bordes:** borde por defecto con token **`--ubits-border-1`** (nunca blanco/transparente). En contextos con selección: **hover** = borde azul (`--ubits-accent-brand`); **seleccionado** = borde azul **2 px**. Aplica en `detalle-plan-competencias` y `crear-plan-competencias`.
-- **Barra de progreso:** se renderiza **siempre** en cada card (con o sin progreso) para mantener **altura fija**. La barra va en **overlay** (position absolute, bottom 0) para no cambiar la altura del card (referente: `card-content-compact`).
+- **Barra de progreso:** se renderiza **siempre** en cada card (con o sin progreso) para mantener **altura fija**. La barra va en **overlay** (position absolute, bottom 0) para no cambiar la altura del card (referente: **`card-content-compact`**).
+- **Color del relleno:** **1–99 %** → **`--ubits-accent-brand`** (azul marca); **100 % / completado** → verde success. Usar **`progressBarHtml`** con `track: 'static'` y **sin** `variant: 'chart'` (el variant chart es para gráficas analíticas, no cards de aprendizaje).
 - **Planeado:** el progreso mostrado en los cards es **0 %** (no hay avance antes de que inicie el plan).
-- **Vigente:** si el usuario deselecciona una competencia y vuelve a seleccionarla, se **conserva el progreso** que ya tenía (no se resetea a 0). El progreso se toma de `competenciaPorUsuario` al añadir de nuevo la competencia.
+- **Vigente:** si el usuario deselecciona una competencia y vuelve a seleccionarla en el drawer de **edición**, se **conserva el progreso** que ya tenía (no se resetea a 0). El progreso se toma de `competenciaPorUsuario` al añadir de nuevo la competencia.
 
 #### 6.2.1 Pantallas `editar-plan-*` — título y status tag (misma fila que `detalle-plan`)
 
@@ -459,7 +472,7 @@ En la **card de progreso del plan** (junto al **status tag**), hay un botón **t
 | `editar-plan-competencias.html` | Misma idea que la fila anterior con competencias y **horas por competencia**; wizard 2 pasos, `attachWizardCompetenciasPaso2`, drawer fila `#drawer-agregar-competencias`. Mismo criterio de **tag en reposo**, **animación al agregar asignación** y menú **Opciones** (**§ 4.3.2**, **§ 6.2.1**, **§ 6.2.2**). |
 | `editar-plan-competencias.css` | Incluye la misma lógica de fila título + tag que `editar-plan-contenidos.css` + estilos mínimos propios. |
 | `detalle-plan.html` | Detalle de plan de **contenidos** (solo consulta de progreso: sin Guardar ni «Agregar asignación» en tabla; card en texto). Drawers, barra de acciones de tabla y **botón Opciones** del plan en card (**§ 6.2.2**). Búsqueda de tabla: **§ 6.6**. |
-| `detalle-plan-competencias.html` | Detalle de plan de **competencias** (mismo criterio). Tabla, drawers, **§ 6.2.2**, **§ 6.6**. |
+| `detalle-plan-competencias.html` | Detalle competencias (**Vigente / No vigente**): drawer sm progreso por fila; catálogo vía `catalogo-competencias-drawer.js`; **§ 4.5**, **§ 6.1**, **§ 6.2**, **§ 6.6**. |
 | `grupos.html`, `detalle-grupo.html`, `crear-grupo.html` | Gestión de grupos: lista, crear y detalle; drawer **Agregar integrantes** reutiliza **`drawer-participantes-colab-table.js`** (**§ 6.7.6**). |
 | `contenidos.html`, `categorias.html`, `chat-ia-grupos.html` | Contenidos, categorías y chat IA (otros flujos del LMS Creator). |
 
@@ -811,4 +824,4 @@ Montada en `#crear-grupo-integrantes-data-table-container` / `#detalle-grupo-int
 
 ---
 
-*Última actualización: jun 2026. **BD única `bd-planes-formacion.js` (§ 7):** 63 planes contenidos (9 áreas × 7Q), 6 planes competencias (3 competencias × 2 años), meta 2 h/plan, progreso competencias por ventana de fechas, «hoy» = 19 jun 2026, visibilidad Mi equipo = cualquier plan con subordinado. Prototipo: LMS Creator. **Listas `planes-contenidos.html` y `planes-competencias.html` (§ 4.4):** menú ⋮ (**Ver progreso**, **Editar**, **Eliminar**), plantillas **`?id=`**, redirección edición si No vigente; en **competencias** tres planes de ejemplo (Planeado / Vigente / No vigente), sin fila Procesando. **Card del plan (`detalle-plan-*` / `editar-plan-*`):** botón **Opciones** y menú por estado (**§ 6.2.2**). **Catálogo drawer contenidos:** § 3.2.1, 3.3.2, **§ 6.7.5** (tabla/cuadrícula, filtros modal + columna, switch certificación). **Grupos (`crear-grupo.html`, `detalle-grupo.html`):** drawer **Agregar integrantes** reutiliza **`drawer-participantes-colab-table.js`** — mismas columnas/features que paso Participantes (**§ 6.7.6**). **Editar plan contenidos y competencias (`editar-plan-*.html`):** § 3.2.2 y § 4.3.2 — catálogo **`?id=`**; tag en reposo **Planeado** si backend **Procesando**; animación **Procesando 0%…100%** en status tag al agregar asignación; toast solo si hubo filas nuevas. Competencias: horas por competencia, `attachWizardCompetenciasPaso2`, prefijos `drawer-wiz` / `drawer-editplan`. **§ 6.2.1** título + tag en fila; **§ 6.2.2** menú Opciones; **§ 6.4** tabla de archivos; **§ 6.5** wizard 2 vs 3 pasos; **§ 6.6** búsqueda `ubits-data-table`; **§ 6.7** inventario tablas/filtros/acciones. Enlaces antiguos `#competencias` / `?tab=competencias`: redirect JS a `planes-competencias.html`.*
+*Última actualización: jun 2026. **BD única `bd-planes-formacion.js` (§ 7):** 63 planes contenidos (9 áreas × 7Q), **9 planes competencias** (3 competencias × **2025–2027**), meta 2 h/plan, `schemaVersion` 3, progreso competencias por ventana de fechas, «hoy» = 19 jun 2026. **Detalle competencias (§ 4.5, § 6.1):** Vigente/No vigente → drawer **sm** solo progreso; Planeado → **editar** + drawer catálogo lg; barra azul `accent-brand` 1–99 % (como `card-content-compact`); fix catálogo `refreshCatalogoCompetenciasDrawer`. **Mi equipo:** columna Creador + `columnsToggle` (`contexto-mi-equipo.md`). Prototipo: LMS Creator. **Listas `planes-contenidos.html` y `planes-competencias.html` (§ 4.4):** menú ⋮ (**Ver progreso**, **Editar**, **Eliminar**), **`?id=`** desde BD, redirección edición si No vigente. **Card del plan (`detalle-plan-*` / `editar-plan-*`):** botón **Opciones** y menú por estado (**§ 6.2.2**). **Catálogo drawer contenidos:** § 3.2.1, 3.3.2, **§ 6.7.5**. **Grupos:** **§ 6.7.6**. **Editar plan (`editar-plan-*.html`):** § 3.2.2, § 4.3.2. **§ 6.2.1** título + tag; **§ 6.5** wizard; **§ 6.6** búsqueda `ubits-data-table`; **§ 6.7** inventario tablas.*

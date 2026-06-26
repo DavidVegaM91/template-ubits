@@ -894,6 +894,10 @@
                 if (pageCurrentStep > 0) goToStep(pageCurrentStep - 1);
             });
         wireStepperClicks();
+        if (typeof window.initInlineEdit === 'function') {
+            var portadaMount = document.getElementById('crear-ruta-step-portada');
+            if (portadaMount) window.initInlineEdit(portadaMount);
+        }
         var initialHash = location.hash || '';
         var seedLevel = getDemoSeedLevelForHash(initialHash);
         if (seedLevel > 0 && isCrearRutaEmptyForDemo()) {

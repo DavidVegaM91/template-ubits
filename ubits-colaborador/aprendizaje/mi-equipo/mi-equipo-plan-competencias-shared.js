@@ -60,10 +60,9 @@
                     value: value,
                     size: 'sm',
                     rounded: false,
-                    variant: 'chart',
                     track: 'static',
                     status: isComplete ? 'complete' : undefined,
-                    autoComplete: status === 'completed',
+                    autoComplete: status === 'completed' || status === 'complete',
                     ariaLabel: 'Progreso de competencia'
                 }) + '</div>';
         }
@@ -399,10 +398,10 @@
         var list = opts.competencias || [];
         var sinProgreso = !!opts.sinProgreso;
         var userName = opts.userName || 'Estudiante';
-        var overlayId = opts.overlayId || 'drawer-competencias-estudiante-mi-equipo';
+        var overlayId = opts.overlayId || 'drawer-competencias-estudiante';
         var bodyHtml = '<div class="detalle-plan-panel-competencias"><div class="detalle-plan-drawer-cards-bg">' +
             '<div id="detalle-plan-compact-cards" class="detalle-plan-drawer-cards-grid"></div></div></div>';
-        var footerHtml = '<button type="button" class="ubits-button ubits-button--primary ubits-button--md" id="' + overlayId + '-cerrar"><span>Cerrar</span></button>';
+        var footerHtml = '<button type="button" class="ubits-button ubits-button--primary ubits-button--md" id="drawer-competencias-cerrar"><span>Cerrar</span></button>';
         if (typeof global.openDrawer !== 'function') return;
         global.openDrawer({
             overlayId: overlayId,
@@ -432,7 +431,7 @@
                     '<span class="drawer-competencia-card-check"></span></div>' + barraHtml + '</div></div>';
             }).join('');
         }
-        var cerrarBtn = overlay.querySelector('#' + overlayId + '-cerrar');
+        var cerrarBtn = overlay.querySelector('#drawer-competencias-cerrar');
         if (cerrarBtn) {
             cerrarBtn.addEventListener('click', function () {
                 if (typeof global.closeDrawer === 'function') global.closeDrawer(overlayId);

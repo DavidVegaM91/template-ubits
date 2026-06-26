@@ -8,7 +8,7 @@
     'use strict';
 
     var STORAGE_KEY = 'ubits-planes-formacion-db';
-    var STORAGE_SCHEMA_VERSION = 2;
+    var STORAGE_SCHEMA_VERSION = 3;
     var PLAYGROUND_TODAY = '2026-06-19';
     var HORAS_META_COMPETENCIAS = 2;
 
@@ -41,7 +41,7 @@
     ];
 
     var COMP_CREADORES = ['E052', 'E053', 'E054'];
-    var ANIOS_COMPETENCIAS = [2025, 2026];
+    var ANIOS_COMPETENCIAS = [2025, 2026, 2027];
 
     function hashStr(s) {
         var h = 0;
@@ -483,6 +483,22 @@
         return Math.round(sum / asignaciones.length);
     }
 
+    function getCreadorFromPlan(planOrId) {
+        var plan = planOrId;
+        if (planOrId != null && typeof planOrId !== 'object') {
+            plan = getPlanById(planOrId);
+        }
+        plan = hydratePlan(plan);
+        if (!plan) return { creadorId: '', creador: '', creador_avatar: null };
+        var creadorId = String(plan.creadorId || '');
+        var col = getColaboradorById(creadorId);
+        return {
+            creadorId: creadorId,
+            creador: col ? String(col.nombre || '').trim() : '',
+            creador_avatar: col && col.avatar ? col.avatar : null
+        };
+    }
+
     function getAsignadosFromPlan(planOrId) {
         var plan = planOrId;
         if (planOrId != null && typeof planOrId !== 'object') {
@@ -557,6 +573,7 @@
             list = getPlanesVisiblesCreator();
         }
         return list.map(function (p) {
+            var creadorInfo = getCreadorFromPlan(p);
             return {
                 id: p.id,
                 nombre: p.nombre,
@@ -566,7 +583,10 @@
                 progreso: getProgresoAgregadoPlan(p),
                 progresoAgregado: getProgresoAgregadoPlan(p),
                 tipo: p.tipo,
-                asignados: getAsignadosFromPlan(p)
+                asignados: getAsignadosFromPlan(p),
+                creadorId: creadorInfo.creadorId,
+                creador: creadorInfo.creador,
+                creador_avatar: creadorInfo.creador_avatar
             };
         });
     }

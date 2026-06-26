@@ -159,17 +159,16 @@
                 value: value,
                 size: 'sm',
                 rounded: false,
-                variant: 'chart',
                 track: 'static',
                 status: isComplete ? 'complete' : undefined,
-                autoComplete: status === 'completed',
+                autoComplete: status === 'completed' || status === 'complete',
                 ariaLabel: 'Progreso de competencia'
             };
             var barInner;
             if (typeof progressBarHtml === 'function') {
                 barInner = progressBarHtml(barOpts);
             } else {
-                var cls = 'ubits-progress-bar ubits-progress-bar--sm ubits-progress-bar--variant-chart ubits-progress-bar--track-static';
+                var cls = 'ubits-progress-bar ubits-progress-bar--sm ubits-progress-bar--track-static';
                 if (isComplete) cls += ' ubits-progress-bar--complete';
                 barInner = '<div class="' + cls + '" role="progressbar" aria-valuenow="' + value + '" aria-valuemin="0" aria-valuemax="100" aria-label="Progreso de competencia">' +
                     '<div class="ubits-progress-bar__track"><div class="ubits-progress-bar__fill" style="width:' + value + '%"></div></div></div>';
@@ -459,6 +458,12 @@
                     });
                 });
             }
+            if (typeof refreshCatalogoCompetenciasDrawer === 'function') {
+                refreshCatalogoCompetenciasDrawer();
+            }
+            var catalogoCompetencias = (window.CATALOGO_COMPETENCIAS_DRAWER || []).slice();
+            var competenciaImageMap = window.COMPETENCIA_IMAGE_MAP || {};
+            var habilidadIconMap = window.HABILIDAD_ICON_MAP || {};
             function progresoEstudiante(rowId) {
                 var list = competenciaPorUsuario[rowId] || [];
                 if (list.length === 0) return 0;
@@ -507,6 +512,10 @@
             function planSinProgreso() {
                 return plan.estado === 'Planeado' || String(plan.estado).indexOf('Procesando') === 0;
             }
+
+            function isDetallePlanVistaProgreso() {
+                return plan.estado === 'Vigente' || plan.estado === 'No vigente';
+            }
             var totalPlan = planSinProgreso() ? 0 : progresoTotalPlan();
             initDetallePlanProgressBarMount(totalPlan);
             setDetallePlanProgressBar(totalPlan);
@@ -516,9 +525,10 @@
             function escapeDetalleHtml(t) { if (t == null) return ''; var d = document.createElement('div'); d.textContent = t; return d.innerHTML; }
             function buildDetalleAsignacionRowHtml(row) {
                 var count = (competenciaPorUsuario[row.id] || []).length;
-                var competenciasBtn = count === 0
-                    ? '<button type="button" class="ubits-button ubits-button--secondary ubits-button--xs js-detalle-plan-competencias-btn" data-row-id="' + escapeDetalleHtml(row.id) + '"><span>Agregar competencias</span></button>'
-                    : '<button type="button" class="ubits-button ubits-button--secondary ubits-button--xs js-detalle-plan-competencias-btn" data-row-id="' + escapeDetalleHtml(row.id) + '"><span>' + count + ' competencias</span></button>';
+                var competenciasLabel = count === 0
+                    ? (isDetallePlanVistaProgreso() ? '0 competencias' : 'Agregar competencias')
+                    : (count + ' competencias');
+                var competenciasBtn = '<button type="button" class="ubits-button ubits-button--secondary ubits-button--xs js-detalle-plan-competencias-btn" data-row-id="' + escapeDetalleHtml(row.id) + '"><span>' + competenciasLabel + '</span></button>';
                 var progresoMostrar = planSinProgreso() ? 0 : (row.progreso || 0);
                 var avatarUrl = (row.avatar && String(row.avatar).trim()) ? String(row.avatar).replace(/"/g, '&quot;') : '';
                 var usuarioCell = '<div class="detalle-plan-usuario-cell">' +
@@ -719,9 +729,7 @@
             function abrirDrawerCompetenciasEstudiante(rowId) {
                 var rowData = asignacionesDetalleData.find(function(r) { return String(r.id) === String(rowId); });
                 var userName = rowData ? rowData.usuario : '';
-                var esEditable = (plan.estado === 'Vigente' || plan.estado === 'Planeado');
-
-                if (esEditable) {
+                if (!isDetallePlanVistaProgreso()) {
                     var bodyHtml = getDrawerCompetenciasBodyHtmlDetallePlan();
                     var footerHtml = '<button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="drawer-competencias-cancel"><span class="ubits-body-sm-regular">Cancelar</span></button>' +
                         '<button type="button" class="ubits-button ubits-button--primary ubits-button--md" id="drawer-competencias-agregar"><span class="ubits-body-sm-regular">Agregar</span></button>';
@@ -770,7 +778,9 @@
                 var overlay = document.getElementById('drawer-competencias-estudiante');
                 if (!overlay) return;
 
-                var list = competenciaPorUsuario[rowId] || [];
+                var list = Array.isArray(competenciasActuales) && competenciasActuales.length
+                    ? competenciasActuales
+                    : (competenciaPorUsuario[rowId] || []);
                 var compactContainer = overlay.querySelector('#detalle-plan-compact-cards');
                 if (!compactContainer) return;
 

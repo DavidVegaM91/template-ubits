@@ -1089,3 +1089,23 @@
         min-height: 200px;
     }
 }
+
+/* Mi equipo — detalle plan competencias: tabla y drawer de progreso */
+.page-mi-equipo-detalle-plan-competencias .ubits-header-product__product-title h2 {
+    display: block;
+    margin: 0;
+}
+
+.page-mi-equipo-detalle-plan-competencias #asignaciones-detalle-data-table-container .ubits-dt-table-wrapper {
+    overflow-x: auto;
+}
+
+.page-mi-equipo-detalle-plan-competencias #asignaciones-detalle-data-table-container .ubits-table__cell-progress {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-sm);
+}
+
+.page-mi-equipo-detalle-plan-competencias #asignaciones-detalle-data-table-container .ubits-table__cell-progress .ubits-progress-bar-row--fixed-60 {
+    flex-shrink: 0;
+}

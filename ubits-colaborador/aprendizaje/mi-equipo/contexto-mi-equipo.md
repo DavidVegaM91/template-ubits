@@ -70,8 +70,8 @@ Réplica del flujo `planes-formacion/` **sin** grupos, chat IA grupos ni certifi
 | `crear-plan-competencias.html` | `crear-plan-competencias.html` | ✅ Completo |
 | `editar-plan-contenidos.html` | `editar-plan-contenidos.html` | ✅ Completo |
 | `editar-plan-competencias.html` | `editar-plan-competencias.html` | ✅ Completo |
-| `detalle-plan.html` | `detalle-plan.html` (post-fix jun 2026) | ✅ Solo lectura Vigente |
-| `detalle-plan-competencias.html` | `detalle-plan-competencias.html` | ✅ Solo lectura Vigente |
+| `detalle-plan.html` | `detalle-plan.html` (post-fix jun 2026) | ✅ Vigente / No vigente (progreso + CSV) |
+| `detalle-plan-competencias.html` | `detalle-plan-competencias.html` | ✅ Vigente / No vigente (drawer progreso); Planeado → editar |
 
 **No incluido en Mi equipo:** `grupos.html`, `crear-grupo.html`, `detalle-grupo.html`, `chat-ia-grupos.html` (gestión de grupos es admin/Creator).
 
@@ -94,7 +94,9 @@ Réplica del flujo `planes-formacion/` **sin** grupos, chat IA grupos ni certifi
 
 ### Tabla
 
-Misma UX que Creator: `createUbitsDataTable`, columnas nombre / **asignados** / fechas / estado / progreso / acciones ⋮.
+Misma UX que Creator: `createUbitsDataTable`, columnas nombre / **asignados** / **creador** / fechas / estado / progreso / acciones ⋮.
+
+**Visibilidad de columnas:** botón oficial `columnsToggle` (icono columnas en la barra de la tabla). Por defecto **ocultas:** **Creador** y **Fecha inicio**; el usuario puede activarlas desde el menú.
 
 Navegación fila:
 
@@ -126,9 +128,23 @@ Réplica del patrón **Seguimiento → tab Planes / columna Personas asignadas**
 - `getMiEquipoProgresoAgregadoPlan(planOrId)` → promedio de todos los asignados
 - `getMiEquipoProgresoColaboradorEnPlan(planOrId, colaboradorId)` → % de esa persona en ese plan
 
+**Lista de planes — campos extra por fila:** `creadorId`, `creador`, `creador_avatar` (resueltos en `getPlanesListData()`).
+
 > Tras la migración a `BD_PLANES_FORMACION`, estas funciones delegan en los helpers globales de la BD (ver § 10 en este doc y § 7 en `contexto-planes-formacion-y-grupos.md`).
 
 **Assets:** `avatar.css`, `avatar.js`, popover en `planes.html`, estilos en `planes.css`.
+
+#### Columna **Creador** (entre Asignados y Fecha inicio)
+
+Réplica del patrón **Seguimiento → tab Planes / columna Creador del plan**:
+
+| Elemento | Comportamiento |
+|----------|----------------|
+| **Celda** | Avatar + nombre del creador del plan (`creadorId` → `bd-master-colaboradores.js`). |
+| **Datos** | `getPlanesListData()` expone `creadorId`, `creador`, `creador_avatar` vía `getCreadorFromPlan()` en `bd-planes-formacion.js`. |
+| **Filtro en encabezado** | Botón filtro con dropdown (autocomplete + avatares, máx. 5 visibles, Cancelar / Aplicar). Opciones: creadores únicos de los planes visibles en el tab activo. **Selección única.** |
+| **Chip «Filtros aplicados»** | `Creador: {nombre}` con ✕; se limpia con el chip o con **Limpiar filtros**. |
+| **Visibilidad por defecto** | Columna **oculta** (activar desde botón de columnas visibles). |
 
 ---
 
@@ -142,7 +158,16 @@ Copiada del ajuste reciente en `detalle-plan.html` del Creator:
 | **No vigente** | Drawer solo lectura | No editable |
 | **Planeado / Procesando** | Drawer edición (en pantalla editar) | En flujo editar |
 
-### 6.1 Descarga CSV de asignaciones (`detalle-plan.html`)
+### 6.1 Detalle plan de competencias (`detalle-plan-competencias.html`)
+
+| Estado plan | Clic en fila / botón competencias |
+|-------------|-----------------------------------|
+| **Vigente / No vigente** | Drawer **sm** solo lectura: cards de competencias + barra de progreso (`mi-equipo-plan-competencias-shared.js` → `openPanelCompetenciasReadOnly`). Barra en progreso (1–99%): relleno `--ubits-accent-brand` (igual que `card-content-compact`); 100%: verde. |
+| **Planeado / Procesando** | Redirige a `editar-plan-competencias.html` (asignar/editar competencias). |
+
+**Estilos:** `detalle-plan-competencias.css` + `crear-plan-competencias.css` + `table.css`, `mi-equipo-planes-formacion.css`. Drawer overlay id: `drawer-competencias-estudiante`.
+
+### 6.2 Descarga CSV de asignaciones (`detalle-plan.html`)
 
 Réplica **1:1** del Creator (**§ 3.3.3** en `contexto-planes-formacion-y-grupos.md`):
 
@@ -237,8 +262,9 @@ Los estados **Planeado / Vigente / No vigente** se calculan **automáticamente**
 | Regla | Definición |
 |-------|------------|
 | **Granularidad** | **1 plan corporativo por competencia por año** — muchas personas en el mismo plan. |
-| **Volumen estimado** | **3 competencias × 2 años (2025, 2026) = 6 planes** |
+| **Volumen estimado** | **3 competencias × 3 años (2025, 2026, 2027) = 9 planes** |
 | **Nombre sugerido** | `Empresa {Competencia} {año}` — p. ej. «Empresa Liderazgo 2025» |
+| **Año planeado (demo)** | Planes **2027** (`pf-k-{comp}-2027`) quedan en estado **Planeado** con «hoy» = 19 jun 2026 — útil para probar flujo editar / agregar competencias en Creator y Mi equipo. |
 | **Competencias usables** | Solo las **3 del catálogo acordadas para el playground**: **Liderazgo** (`comp-024`), **Inglés** (`comp-020`), **Comunicación** (`comp-004`). No asignar otras competencias en el seed. *(En `bd-contenidos-ubits.js` hoy hay más ítems ligados a Liderazgo y Comunicación que a Inglés; el seed usará los contenidos disponibles por competencia.)* |
 | **Competencias por persona/año** | Cada colaborador recibe **exactamente 3 competencias** (una de cada una de las tres anteriores) dentro del año. La combinación puede **rotar** respecto al año anterior. |
 | **Ventana de vigencia** | Todo el **año calendario** (p. ej. 2025-01-01 → 2025-12-31). |
@@ -279,7 +305,7 @@ María **no** ve planes de otras áreas donde **ningún** subordinado suyo esté
   // Metadatos seed:
   area: string | null,           // contenidos: área del plan
   trimestre: '2025-Q1' | …,      // contenidos
-  anio: 2025 | 2026,             // competencias
+  anio: 2025 | 2026 | 2027,             // competencias
   competenciaId: string | null,  // competencias: comp-024 | comp-020 | comp-004
   creadorId: string,             // colaboradorId del creador (E006, E052, …)
   asignaciones: [
@@ -315,14 +341,17 @@ La columna **Asignados** y el filtro por persona en `planes.html` (§ 5) se mant
 
 1. Abrir `mi-equipo/planes.html` — SubNav **Mi equipo** activo; tabs Contenidos | Competencias.
 2. Columna **Asignados**: hover en avatars (tooltip), clic en +N (popover), filtro por persona (progreso individual vs promedio sin filtro).
-3. `?tab=competencias` abre tab competencias; cambiar tab re-inicializa tooltips y limpia filtro de asignado.
-3. Crear plan (contenidos o competencias) → asignar solo E035–E040 → guardar → lista actualizada.
-4. Detalle Vigente (`me-c1` / `me-k1`): clic fila = drawer solo lectura; **Acciones → Editar plan**.
-5. Editar: Guardar disabled hasta dirty; modal salir sin guardar; eliminar plan con modal.
-6. Floating menu móvil incluye Mi equipo en todas las pantallas.
+3. Columna **Creador** (oculta por defecto): activar desde botón columnas; filtro por creador; chip en filtros aplicados.
+4. `?tab=competencias` abre tab competencias; cambiar tab re-inicializa tooltips y limpia filtros de asignado/creador.
+5. Crear plan (contenidos o competencias) → asignar solo E035–E040 → guardar → lista actualizada.
+6. Detalle contenidos Vigente: clic fila = drawer solo lectura; **Acciones → Editar plan**; **Descargar** CSV.
+7. Detalle competencias Vigente/No vigente: clic fila = drawer cards + progreso azul (1–99%); Planeado → editar.
+8. Editar: Guardar disabled hasta dirty; modal salir sin guardar; eliminar plan con modal.
+9. Floating menu móvil incluye Mi equipo en todas las pantallas.
+10. Creator: plan competencias 2027 (`?id=pf-k-024-2027`) en **Planeado**; vigente 2026 abre drawer progreso (no catálogo vacío).
 
 ---
 
 **Autor del flujo:** extensión playground UBITS — Mi equipo (líderes con permiso admin).
 
-**Última actualización:** jun 2026 — definición BD única `bd-planes-formacion.js` (§ 10).
+**Última actualización:** jun 2026 — columna Creador + `columnsToggle` en lista (§ 5); detalle competencias drawer progreso (§ 6.1); seed competencias 2027 (§ 10.3); BD única `bd-planes-formacion.js` (`schemaVersion` 3).
