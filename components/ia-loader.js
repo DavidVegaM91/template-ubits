@@ -1,12 +1,13 @@
 /**
  * UBITS IA Loader — indicador de carga para flujos IA.
  *
- * Estructura: __frame → __stage (gradiente IA) → __cluster (__center sparkles 3×<g> + __label).
+ * Estructura: __frame → __stage (gradiente IA) → __cluster (__center sparkles + __text-block: __title + __description opcional).
  * Ícono y texto en `--ubits-fg-2-high-static-inverted` en claro y oscuro.
  *
  * Uso:
  *   getIaLoaderHTML()
- *   getIaLoaderHTML({ label: 'Texto' })
+ *   getIaLoaderHTML({ label: 'Generando portada' })
+ *   getIaLoaderHTML({ label: 'Generando portada', description: 'No recargues…' })
  *   initIaLoaderParticles(loaderEl) — tras innerHTML (o MutationObserver automático)
  *
  * Requiere: ia-loader.css, ubits-colors.css; gradientes IA: --modo-ia-gradient-a…d, orbes rgb-1…3
@@ -53,16 +54,30 @@ function getIaLoaderSparklesSvg() {
     );
 }
 
+function iaLoaderEscapeHtml(str) {
+    if (str == null || str === '') return '';
+    return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+}
+
 function getIaLoaderHTML(options) {
     options = options || {};
     var label =
         options.label != null && String(options.label).trim() !== ''
-            ? String(options.label)
-                .replace(/&/g, '&amp;')
-                .replace(/</g, '&lt;')
-                .replace(/>/g, '&gt;')
-                .replace(/"/g, '&quot;')
+            ? iaLoaderEscapeHtml(String(options.label).trim())
             : 'Generando recurso';
+
+    var description =
+        options.description != null && String(options.description).trim() !== ''
+            ? iaLoaderEscapeHtml(String(options.description).trim())
+            : '';
+
+    var descriptionHtml = description
+        ? '<p class="ubits-ia-loader__description ubits-body-sm-regular">' + description + '</p>'
+        : '';
 
     var inner =
         '<div class="ubits-ia-loader__frame">' +
@@ -74,10 +89,13 @@ function getIaLoaderHTML(options) {
         getIaLoaderSparklesSvg() +
         '</span>' +
         '</div>' +
-        '<p class="ubits-ia-loader__label ubits-body-sm-regular">' +
+        '<div class="ubits-ia-loader__text-block">' +
+        '<p class="ubits-ia-loader__title ubits-body-md-semibold">' +
         label +
         '<span class="ubits-ia-loader__dots" aria-hidden="true">' +
         '<span>.</span><span>.</span><span>.</span></span></p>' +
+        descriptionHtml +
+        '</div>' +
         '</div>' +
         '</div>' +
         '</div>';

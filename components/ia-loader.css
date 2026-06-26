@@ -190,6 +190,43 @@
     }
 }
 
+.ubits-ia-loader__text-block {
+    position: relative;
+    z-index: 2;
+    flex: 0 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--gap-xs);
+    width: 100%;
+    max-width: 20rem;
+    margin: 0;
+    padding: 0 var(--padding-md) var(--padding-sm);
+    box-sizing: border-box;
+    text-align: center;
+}
+
+.ubits-ia-loader__title {
+    margin: 0;
+    color: var(--ubits-fg-2-high-static-inverted);
+    box-sizing: border-box;
+}
+
+.ubits-ia-loader__title.ubits-body-md-semibold {
+    color: var(--ubits-fg-2-high-static-inverted) !important;
+}
+
+.ubits-ia-loader__description {
+    margin: 0;
+    color: var(--ubits-fg-2-high-static-inverted);
+    box-sizing: border-box;
+}
+
+.ubits-ia-loader__description.ubits-body-sm-regular {
+    color: var(--ubits-fg-2-high-static-inverted) !important;
+}
+
+/* Alias legacy (antes __label = título único sm-regular) */
 .ubits-ia-loader__label {
     position: relative;
     z-index: 2;
@@ -202,11 +239,11 @@
     box-sizing: border-box;
 }
 
-/* Tipografía ubits-body-sm-regular en el mismo <p> pisa el color; forzar blanco en etiqueta y puntos */
 .ubits-ia-loader__label.ubits-body-sm-regular {
     color: var(--ubits-fg-2-high-static-inverted) !important;
 }
 
+.ubits-ia-loader__title .ubits-ia-loader__dots span,
 .ubits-ia-loader__label .ubits-ia-loader__dots span,
 .ubits-ia-loader__dots span {
     display: inline-block;

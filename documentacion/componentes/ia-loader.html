@@ -17,6 +17,7 @@
     <link rel="stylesheet" href="../../components/button.css">
     <link rel="stylesheet" href="../../components/alert.css">
     <link rel="stylesheet" href="../../components/toast.css">
+    <link rel="stylesheet" href="../../components/switch.css">
     <link rel="stylesheet" href="../../components/ia-loader.css">
     <style>
         .ia-loader-doc-preview-single {
@@ -70,6 +71,13 @@
                                 Preview del componente
                             </h2>
                             <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: var(--border-radius-md); position: relative;">
+                                <div style="display: flex; align-items: center; gap: var(--gap-sm); margin-bottom: var(--gap-md);">
+                                    <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Descripción</span>
+                                    <label class="ubits-switch ubits-switch--md">
+                                        <input type="checkbox" class="ubits-switch__input" id="ia-loader-ctrl-description" role="switch" checked aria-label="Mostrar descripción">
+                                        <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
+                                    </label>
+                                </div>
                                 <div class="ia-loader-doc-preview-single">
                                     <div class="ia-loader-doc-host">
                                         <div id="ia-loader-doc-preview"></div>
@@ -134,7 +142,7 @@
                                         <span>Copiar</span>
                                     </button>
                                 </div>
-                                <pre style="margin: 0; background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm);"><code id="ia-loader-prompt-2" class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); white-space: pre-wrap;">Mantén el IA Loader pero cambia el texto visible a [tu mensaje] usando la API de getIaLoaderHTML descrita en la documentación técnica.</code></pre>
+                                <pre style="margin: 0; background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm);"><code id="ia-loader-prompt-2" class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium); white-space: pre-wrap;">Mantén el IA Loader pero cambia el texto visible con getIaLoaderHTML({ label: '[título]', description: '[descripción opcional]' }). La descripción se omite si no la pasas o va vacía.</code></pre>
                             </div>
                         </div>
 
@@ -173,11 +181,24 @@
                 );
             }
             var previewHost = document.getElementById('ia-loader-doc-preview');
-            if (previewHost && typeof getIaLoaderHTML === 'function') {
-                previewHost.innerHTML = getIaLoaderHTML();
+            var descToggle = document.getElementById('ia-loader-ctrl-description');
+            var portadaDescription = 'No recargues la página ni cierres el modal mientras generamos tu portada.';
+
+            function renderIaLoaderDocPreview() {
+                if (!previewHost || typeof getIaLoaderHTML !== 'function') return;
+                var showDesc = descToggle ? descToggle.checked : true;
+                previewHost.innerHTML = getIaLoaderHTML({
+                    label: 'Generando portada',
+                    description: showDesc ? portadaDescription : ''
+                });
                 if (typeof initIaLoaderParticles === 'function') {
                     initIaLoaderParticles(previewHost);
                 }
+            }
+
+            renderIaLoaderDocPreview();
+            if (descToggle) {
+                descToggle.addEventListener('change', renderIaLoaderDocPreview);
             }
         });
         

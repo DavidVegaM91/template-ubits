@@ -364,7 +364,10 @@
             if (ld) {
                 ld.innerHTML =
                     typeof global.getIaLoaderHTML === 'function'
-                        ? global.getIaLoaderHTML({ label: 'Generando portada' })
+                        ? global.getIaLoaderHTML({
+                            label: 'Generando portada',
+                            description: 'No recargues la página ni cierres el modal mientras generamos tu portada.'
+                        })
                         : '<p class="ubits-body-sm-regular" role="status">Generando portada…</p>';
             }
         }
