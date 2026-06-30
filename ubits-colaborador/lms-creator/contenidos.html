@@ -16,6 +16,7 @@
     <link rel="stylesheet" href="../../components/floating-menu.css">
     <link rel="stylesheet" href="../../components/profile-menu.css">
     <link rel="stylesheet" href="../../components/button.css">
+    <link rel="stylesheet" href="../../components/button-group.css">
     <link rel="stylesheet" href="../../components/toolbar-panel.css">
     <link rel="stylesheet" href="../../components/save-indicator.css">
     <link rel="stylesheet" href="../../components/ia-button.css">
@@ -74,24 +75,26 @@
                                 </div>
                                 <div class="ubits-toolbar-panel__actions">
                                     <div class="ubits-toolbar-panel__search-group">
-                                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--md ubits-button--icon-only ubits-toolbar-panel__search-toggle" id="contenidos-btn-buscar" data-tooltip="Buscar" data-tooltip-delay="1000" aria-label="Buscar">
+                                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only ubits-toolbar-panel__search-toggle" id="contenidos-btn-buscar" data-tooltip="Buscar" data-tooltip-delay="1000" aria-label="Buscar">
                                             <i class="far fa-magnifying-glass"></i>
                                         </button>
                                         <div id="contenidos-search-inline" class="ubits-toolbar-panel__search-inline" style="display: none;" aria-hidden="true"></div>
-                                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--md ubits-button--icon-only ubits-toolbar-panel__filter-btn" id="contenidos-btn-filtro" data-tooltip="Filtrar" data-tooltip-delay="1000" aria-label="Filtrar">
+                                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only ubits-toolbar-panel__filter-btn" id="contenidos-btn-filtro" data-tooltip="Filtrar" data-tooltip-delay="1000" aria-label="Filtrar">
                                             <i class="far fa-filter"></i>
                                         </button>
                                     </div>
-                                    <div class="ubits-toolbar-panel__control-group" role="group" aria-label="Ver como">
+                                    <div class="ubits-toolbar-panel__control-group">
                                         <span class="ubits-toolbar-panel__control-label ubits-body-sm-regular">Ver como:</span>
-                                        <button type="button" class="ubits-button ubits-button--tertiary ubits-button--md ubits-button--active" id="contenidos-view-cuadricula" aria-pressed="true">
-                                            <i class="far fa-grid-2"></i>
-                                            <span>Cuadrícula</span>
-                                        </button>
-                                        <button type="button" class="ubits-button ubits-button--tertiary ubits-button--md" id="contenidos-view-tabla" aria-pressed="false">
-                                            <i class="far fa-list-ul"></i>
-                                            <span>Tabla</span>
-                                        </button>
+                                        <div class="ubits-button-group" role="group" aria-label="Ver como:" data-variant="selectable" data-value="grid" id="contenidos-view-group">
+                                            <button type="button" class="ubits-button ubits-button--active ubits-button--sm" data-value="grid" id="contenidos-view-cuadricula" aria-pressed="true">
+                                                <i class="far fa-grid-2"></i>
+                                                <span>Cuadrícula</span>
+                                            </button>
+                                            <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" data-value="table" id="contenidos-view-tabla" aria-pressed="false">
+                                                <i class="far fa-list-ul"></i>
+                                                <span>Tabla</span>
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -143,6 +146,7 @@
     <div id="profile-menu-container"></div>
     <div id="ubits-toast-container"></div>
 
+    <script src="../../components/button-group.js"></script>
     <script src="../../components/tooltip.js"></script>
     <script src="../../components/save-indicator.js"></script>
     <script src="../../components/sidebar.js"></script>
@@ -1813,36 +1817,13 @@
                     });
                 }
 
-                var btnGrid = document.getElementById('contenidos-view-cuadricula');
-                var btnTable = document.getElementById('contenidos-view-tabla');
+                var viewGroup = document.getElementById('contenidos-view-group');
                 var tablePanel = document.querySelector('.contenidos-table-panel');
                 var cardsPanel = document.getElementById('contenidos-cards-panel');
 
-                function setViewToggle(activeEl) {
-                    if (!btnGrid || !btnTable) return;
-                    var isGrid = activeEl === btnGrid;
-                    btnGrid.classList.toggle('ubits-button--active', isGrid);
-                    btnTable.classList.toggle('ubits-button--active', !isGrid);
-                    btnGrid.setAttribute('aria-pressed', isGrid ? 'true' : 'false');
-                    btnTable.setAttribute('aria-pressed', isGrid ? 'false' : 'true');
-                }
-
-                if (contenidosViewMode === 'grid') {
-                    setViewToggle(btnGrid);
-                    renderContenidosCardsGrid();
-                    if (tablePanel) tablePanel.style.display = 'none';
-                    if (cardsPanel) {
-                        cardsPanel.style.display = '';
-                        cardsPanel.setAttribute('aria-hidden', 'false');
-                    }
-                }
-
-                syncListaContenidos();
-
-                if (btnGrid) {
-                    btnGrid.addEventListener('click', function () {
-                        setViewToggle(btnGrid);
-                        contenidosViewMode = 'grid';
+                function applyContenidosViewMode(mode) {
+                    contenidosViewMode = mode === 'table' ? 'table' : 'grid';
+                    if (contenidosViewMode === 'grid') {
                         if (!contenidosCardsBuilt) {
                             renderContenidosCardsGrid();
                         } else {
@@ -1856,21 +1837,27 @@
                             cardsPanel.style.display = '';
                             cardsPanel.setAttribute('aria-hidden', 'false');
                         }
-                        syncListaContenidos();
-                    });
-                }
-                if (btnTable) {
-                    btnTable.addEventListener('click', function () {
-                        setViewToggle(btnTable);
-                        contenidosViewMode = 'table';
+                    } else {
                         if (tablePanel) tablePanel.style.display = '';
                         if (cardsPanel) {
                             cardsPanel.style.display = 'none';
                             cardsPanel.setAttribute('aria-hidden', 'true');
                         }
-                        syncListaContenidos();
+                    }
+                    syncListaContenidos();
+                }
+
+                if (viewGroup && typeof initButtonGroup === 'function') {
+                    initButtonGroup(viewGroup, {
+                        variant: 'selectable',
+                        value: contenidosViewMode === 'table' ? 'table' : 'grid',
+                        onChange: function (val) {
+                            applyContenidosViewMode(val);
+                        }
                     });
                 }
+
+                applyContenidosViewMode(contenidosViewMode);
 
                 function initContenidosHeaderCatalogSelect() {
                     var actions = document.querySelector('#header-product-container .ubits-header-product__actions');
