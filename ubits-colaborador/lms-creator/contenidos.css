@@ -167,7 +167,6 @@
     align-items: center;
     gap: var(--gap-sm);
     min-width: 0;
-    flex: 1 1 auto;
 }
 
 .page-contenidos-creator .contenidos-filtros-aplicados .filtros-chips-container .ubits-chip {

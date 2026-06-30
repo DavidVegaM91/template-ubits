@@ -78,11 +78,11 @@
                                     </div>
                                     <div class="ubits-toolbar-panel__actions">
                                         <div class="ubits-toolbar-panel__search-group" id="ucorporativa-search-group">
-                                            <button type="button" id="buscador-toggle-btn" class="ubits-button ubits-button--secondary ubits-button--md ubits-button--icon-only ubits-toolbar-panel__search-toggle" data-tooltip="Buscar" data-tooltip-delay="1000" aria-label="Buscar">
-                                                <i class="far fa-magnifying-glass"></i>
-                                            </button>
-                                            <div id="buscador-input-container" class="ubits-toolbar-panel__search-inline" style="display: none;" aria-hidden="true"></div>
-                                            <button type="button" id="ucorporativa-btn-filtro" class="ubits-button ubits-button--secondary ubits-button--md ubits-button--icon-only ubits-toolbar-panel__filter-btn" data-tooltip="Filtrar" data-tooltip-delay="1000" aria-label="Filtrar">
+                                            <button type="button" id="buscador-toggle-btn" class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only ubits-toolbar-panel__search-toggle" data-tooltip="Buscar" data-tooltip-delay="1000" aria-label="Buscar">
+                                            <i class="far fa-magnifying-glass"></i>
+                                        </button>
+                                        <div id="buscador-input-container" class="ubits-toolbar-panel__search-inline" style="display: none;" aria-hidden="true"></div>
+                                            <button type="button" id="ucorporativa-btn-filtro" class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only ubits-toolbar-panel__filter-btn" data-tooltip="Filtrar" data-tooltip-delay="1000" aria-label="Filtrar">
                                                 <i class="far fa-filter"></i>
                                             </button>
                                         </div>
@@ -833,7 +833,7 @@
                                 containerId: 'buscador-input-container',
                                 type: 'search',
                                 placeholder: 'Buscar contenidos...',
-                                size: 'md',
+                                size: 'sm',
                                 onChange: function(value) {
                                     currentSearchValue = value || '';
                                     applyFiltersAndRender();

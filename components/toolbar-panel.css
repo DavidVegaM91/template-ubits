@@ -12,7 +12,7 @@
  * - Checklist extendido para automatización: .cursor/rules/cursor-rules.mdc → «Implementar Toolbar panel».
  * - Vista cuadrícula/tabla: button-group.css (+ button-group.js si es selectable). Botones búsqueda/filtro: ubits-button--sm.
  * - Variante sin contenedor: .ubits-toolbar-panel--plain (sin fondo, borde ni padding).
- * - Referencia en pantalla: ubits-colaborador/lms-creator/contenidos.html + contenidos.css.
+ * - Referencia en pantalla: ubits-colaborador/lms-creator/contenidos.html, ubits-colaborador/aprendizaje/u-corporativa.html.
  */
 
 .ubits-toolbar-panel {
@@ -84,6 +84,42 @@
     flex-shrink: 0;
 }
 
+/*
+ * Acciones de barra (lupa/filtro) e input embebido: tamaño sm obligatorio.
+ * Cubre instancias legacy con ubits-button--md (clase inexistente en button.css → caía al default 40px).
+ */
+.ubits-toolbar-panel__search-toggle.ubits-button,
+.ubits-toolbar-panel__filter-btn.ubits-button {
+    padding: 9.5px 8px;
+    width: 32px;
+    height: 32px;
+    min-height: 32px;
+    box-sizing: border-box;
+}
+
+.ubits-toolbar-panel__search-toggle.ubits-button i,
+.ubits-toolbar-panel__filter-btn.ubits-button i {
+    font-size: var(--font-size-sm);
+    line-height: 1;
+}
+
+.ubits-toolbar-panel__control-group .ubits-button-group .ubits-button {
+    padding: 9.5px 12px;
+    height: 32px;
+    min-height: 32px;
+    box-sizing: border-box;
+}
+
+.ubits-toolbar-panel__control-group .ubits-button-group .ubits-button span:not(.ubits-attention-badge) {
+    font-size: var(--font-size-sm);
+    line-height: 19.5px;
+}
+
+.ubits-toolbar-panel__control-group .ubits-button-group .ubits-button i {
+    font-size: var(--font-size-sm);
+    line-height: 1;
+}
+
 /* Ancho acotado para input de búsqueda embebido en la barra */
 .ubits-toolbar-panel__search-inline {
     display: flex;
@@ -98,6 +134,13 @@
     flex: 1 1 auto;
     min-width: 0;
     max-width: 100%;
+}
+
+.ubits-toolbar-panel__search-inline .ubits-input,
+.ubits-toolbar-panel__search-inline .ubits-input-wrapper .ubits-input {
+    height: 32px;
+    padding: var(--padding-sm) var(--padding-sm);
+    font-size: 0.875rem;
 }
 
 /* Grupo de controles secundarios (ej. vista cuadrícula / tabla) */

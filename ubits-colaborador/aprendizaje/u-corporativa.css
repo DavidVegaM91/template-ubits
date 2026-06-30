@@ -112,7 +112,6 @@
     align-items: center;
     gap: var(--gap-sm);
     min-width: 0;
-    flex: 1 1 auto;
 }
 
 .ucorp-filtros-aplicados .filtros-chips-container .ubits-chip {
