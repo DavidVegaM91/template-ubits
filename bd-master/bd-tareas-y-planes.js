@@ -26,13 +26,12 @@
       (función repartoEstados, determinista por seed).
       Excepción: si la fecha de la tarea (endDate) es posterior a hoy, solo ~5% Finalizadas y el resto Por hacer (realista para días futuros; el día actual puede usar lógica dinámica por hora en tareas.html).
 
-   4. Distribución de estados en PLANES (asignada por seed, no derivada de tareas):
-      - Finalizados: 70–85%
-      - Iniciados (Activos): 10–20%
-      - Vencidos: 5–15%
-      (función repartoEstadoPlan, determinista por seed). El progreso (tasksDone/
-      tasksTotal) sigue siendo el real de las tareas; el estado del plan es independiente
-      para reflejar que se puede finalizar manualmente y mover tareas a otro plan.
+   4. Distribución de estados en PLANES (coherente con avance y fecha):
+      - El estado se deriva con derivePlanStatus(progress, end_date, planIndex).
+      - Nunca Finalizado si avance < 65% (evita Finalizado al 5%).
+      - Fecha futura → Activo (Por hacer).
+      - Fecha pasada + avance ≥ 65%: reparto 70–85% Finalizado / 10–20% Activo / 5–15% Vencido
+        (repartoEstadoPlan), coherente con el avance de las tareas del plan.
 
    5. Rango de fechas: INICIO_RANGO fijo; FIN_RANGO = hoy + 5 días laborables (una semana por delante, sin sáb/dom). No se generan tareas con fecha posterior a FIN_RANGO.
 
@@ -273,7 +272,9 @@
     const TAREAS_GRUPALES_POR_MES = 20;
     const PLANES_INDIVIDUALES_POR_MES = 3;
     // 95% tareas en plan, 5% sueltas (solo las ve el creador). 9 en 3 planes de 3, 1 suelta.
-    const TAMANOS_GRUPOS_INDIVIDUALES = [3, 3, 3];
+    const TAMANOS_GRUPOS_INDIVIDUALES = [3, 3, 4];
+    /** Tareas grupales por área y mes (plan compartido del equipo, no por persona). */
+    const TAREAS_GRUPALES_POR_AREA_MES = 20;
 
     // Regla 3: rangos de distribución de estados en tareas (70-85% / 10-20% / 5-15%)
     const PCT_FINALIZADAS_MIN = 0.70;
@@ -281,20 +282,66 @@
     const PCT_INICIADAS_MIN = 0.10;
     const PCT_INICIADAS_RANGO = 0.10;
 
-    // Regla 4: rangos de distribución de estados en planes (70-85% / 10-20% / 5-15%)
+    // Regla 4: reparto de estados en planes (70–85% / 10–20% / 5–15%), acotado por avance mínimo.
     const PCT_PLAN_FINALIZADOS_MIN = 0.70;
     const PCT_PLAN_FINALIZADOS_RANGO = 0.15;
     const PCT_PLAN_INICIADOS_MIN = 0.10;
     const PCT_PLAN_INICIADOS_RANGO = 0.10;
+    const PLAN_STATUS_SEED = 7777;
+    /** Avance mínimo para permitir estado Finalizado (evita cierre con 3–5%). */
+    const PLAN_MIN_PCT_PARA_FINALIZAR = 65;
 
+    /** Reparto objetivo de estado de plan (determinista por seed). */
     function repartoEstadoPlan(seed, planIndex) {
         const pF = PCT_PLAN_FINALIZADOS_MIN + seeder(seed, planIndex * 3) * PCT_PLAN_FINALIZADOS_RANGO;
         const pI = PCT_PLAN_INICIADOS_MIN + seeder(seed, planIndex * 3 + 1) * PCT_PLAN_INICIADOS_RANGO;
-        const pV = 1 - pF - pI;
         const r = seeder(seed, planIndex * 3 + 2);
         if (r < pF) return 'Finalizado';
         if (r < pF + pI) return 'Activo';
         return 'Vencido';
+    }
+
+    /**
+     * Estado del plan coherente con avance y fecha.
+     * planIndex alimenta el reparto 70–85% / 10–20% / 5–15% en planes ya vencidos.
+     */
+    function derivePlanStatus(progress, endDateStr, todayStr, planIndex) {
+        const end = (endDateStr || '').split('T')[0];
+        const pct = typeof progress === 'number' ? progress : 0;
+        const idx = typeof planIndex === 'number' ? planIndex : 0;
+
+        if (!end || end > todayStr) {
+            return { status: 'Activo', finished: false };
+        }
+        if (pct < PLAN_MIN_PCT_PARA_FINALIZAR) {
+            return { status: 'Vencido', finished: false };
+        }
+        if (pct >= 100) {
+            return { status: 'Finalizado', finished: true };
+        }
+
+        const target = repartoEstadoPlan(PLAN_STATUS_SEED, idx);
+        if (target === 'Finalizado') {
+            return { status: 'Finalizado', finished: true };
+        }
+        if (target === 'Activo') {
+            return { status: 'Activo', finished: false };
+        }
+        return { status: 'Vencido', finished: false };
+    }
+
+    /** Reparte estados para un total arbitrario de tareas (misma regla 70–85% / 10–20% / 5–15%). */
+    function repartoEstadosCount(seed, baseIndex, total) {
+        const r = seeder(seed, baseIndex);
+        const pFinalizadas = PCT_FINALIZADAS_MIN + r * PCT_FINALIZADAS_RANGO;
+        const r2 = seeder(seed, baseIndex + 1);
+        const pIniciadas = PCT_INICIADAS_MIN + r2 * PCT_INICIADAS_RANGO;
+        let nF = Math.round(total * pFinalizadas);
+        let nI = Math.round(total * pIniciadas);
+        let nV = total - nF - nI;
+        if (nV < 0) { nV = 0; nI = total - nF; }
+        if (nI < 0) { nI = 0; nV = total - nF; }
+        return { nFinalizadas: nF, nIniciadas: nI, nVencidas: nV };
     }
 
     /** Nombres genéricos para subtareas (se eligen por seed). */
@@ -514,8 +561,13 @@
         planNombreToId = {};
         taskDetallePorId = {};
         let planGlobalIndex = 0;
-        const PLAN_SEED = 7777;
         const reportesDirectosMaria = getReportesDirectosEjemplo(USUARIO_ACTUAL.nombre) || [];
+        const empleadosPorArea = {};
+        empleados.forEach(function (emp) {
+            const area = emp.area || 'General';
+            if (!empleadosPorArea[area]) empleadosPorArea[area] = [];
+            empleadosPorArea[area].push(emp);
+        });
 
         empleados.forEach((emp, empIndex) => {
             const username = emp.username || generarUsername(emp.nombre);
@@ -531,35 +583,21 @@
                 const daysInMonth = new Date(year, month, 0).getDate();
                 const isLastMonth = (year === y1 && month === m1);
                 const maxDay = isLastMonth ? Math.min(daysInMonth, d1) : daysInMonth;
-                const baseIdx = empIndex * 1000 + mi * TAREAS_POR_MES;
-                const { nFinalizadas, nIniciadas, nVencidas } = repartoEstados(seed, baseIdx);
+                const baseIdx = empIndex * 1000 + mi * TAREAS_INDIVIDUALES_POR_MES;
+                const { nFinalizadas, nIniciadas, nVencidas } = repartoEstadosCount(seed, baseIdx, TAREAS_INDIVIDUALES_POR_MES);
                 const estados = [];
                 for (let i = 0; i < nFinalizadas; i++) estados.push('Finalizada');
                 for (let i = 0; i < nIniciadas; i++) estados.push('Por hacer');
                 for (let i = 0; i < nVencidas; i++) estados.push('Vencida');
-                for (let i = estados.length; i < TAREAS_POR_MES; i++) estados.push('Finalizada');
+                for (let i = estados.length; i < TAREAS_INDIVIDUALES_POR_MES; i++) estados.push('Finalizada');
                 shuffleArray(estados, seed + baseIdx);
 
-                const planNombreGrupo = `Plan ${emp.area || 'General'} ${pad(month)}/${year}`;
-                const lider = obtenerJefe(emp.area, emp.esJefe, jefes);
-                const asignado = { nombre: emp.nombre, avatar: emp.avatar || '', username: username };
-                // Las 20 tareas grupales son creadas por el líder del área (para toda la compañía), asignadas al empleado
-                const creadorNombre = lider || emp.nombre;
-                const liderObj = jefes.find(j => j.nombre === creadorNombre);
-                const creadorAvatar = (liderObj && liderObj.avatar && String(liderObj.avatar).trim()) ? liderObj.avatar : null;
-                const areaCreadorTarea = emp.area || 'General';
-
-                for (let i = 0; i < TAREAS_POR_MES; i++) {
+                for (let i = 0; i < TAREAS_INDIVIDUALES_POR_MES; i++) {
                     const estado = estados[i];
                     const done = estado === 'Finalizada';
-                    // Individuales: día aleatorio. Grupales: repartidas en todo el mes (días 1..daysInMonth) para que el líder vea tareas del equipo también a fin de mes y en la semana por delante
-                    const esGrupal = i >= TAREAS_INDIVIDUALES_POR_MES;
-                    const idxGrupal = i - TAREAS_INDIVIDUALES_POR_MES; // 0..19
-                    let day = esGrupal
-                        ? (maxDay <= 1 ? 1 : 1 + Math.round((idxGrupal / (TAREAS_GRUPALES_POR_MES - 1)) * (maxDay - 1)))
-                        : Math.max(1, Math.min(maxDay, Math.floor(seeder(seed, baseIdx + i + 100) * maxDay) + 1));
-                    day = toWeekdayInMonth(year, month, day); // Solo días laborables (lun–vie), nunca sáb/dom
-                    if (day > maxDay) day = maxDay; // por si toWeekdayInMonth devolvió un día mayor en el mes
+                    let day = Math.max(1, Math.min(maxDay, Math.floor(seeder(seed, baseIdx + i + 100) * maxDay) + 1));
+                    day = toWeekdayInMonth(year, month, day);
+                    if (day > maxDay) day = maxDay;
                     let endDateStr = `${year}-${pad(month)}-${pad(day)}`;
                     if (endDateStr > FIN_RANGO) { endDateStr = FIN_RANGO; }
                     /* Días futuros: solo ~5% finalizadas (realista); pasado/hoy mantienen la distribución normal */
@@ -602,53 +640,16 @@
                         description: seeder(seed, baseIdx + i + 400) > 0.7 ? 'Seguimiento y cierre.' : null
                     };
 
-                    const creadorParaDetalle = esGrupal ? creadorNombre : emp.nombre;
                     const tieneSubtareas = (seeder(seed, baseIdx + i + 500) < 0.8) ||
-                        (creadorParaDetalle === USUARIO_ACTUAL.nombre && reportesDirectosMaria.indexOf(emp.nombre) >= 0);
+                        (emp.nombre === USUARIO_ACTUAL.nombre && reportesDirectosMaria.indexOf(emp.nombre) >= 0);
 
-                    if (i < TAREAS_INDIVIDUALES_POR_MES) {
-                        tareasPorEmpleadoParaVistaTareas[empleadoId].individuales.push(Object.assign({}, tareaVista));
-                    } else {
-                        const tareaGrupo = Object.assign({}, tareaVista, {
-                            planNombre: planNombreGrupo,
-                            created_by: creadorNombre,
-                            created_by_avatar_url: creadorAvatar || ''
-                        });
-                        tareasPorEmpleadoParaVistaTareas[empleadoId].grupales.push(tareaGrupo);
-                        actividadesSeguimiento.push({
-                            id: idActividad,
-                            tipo: 'tarea',
-                            nombre: nombreTarea,
-                            plan: planNombreGrupo,
-                            asignado: asignado,
-                            idColaborador: emp.idColaborador || emp.id,
-                            area: emp.area || 'General',
-                            areaCreador: areaCreadorTarea,
-                            lider: lider,
-                            cargo: emp.cargo || '',
-                            estado: estadoFinal,
-                            prioridad: prioridad,
-                            avance: doneFinal ? 100 : 0,
-                            fechaCreacion: formatearFechaSeguimiento(fechaCreacion),
-                            fechaFinalizacion: formatearFechaSeguimiento(endDate),
-                            creador: creadorNombre,
-                            creador_avatar: creadorAvatar,
-                            comentarios: Math.floor(seeder(seed, baseIdx + i + 300) * 5)
-                        });
-                    }
+                    tareasPorEmpleadoParaVistaTareas[empleadoId].individuales.push(Object.assign({}, tareaVista));
 
-                    const taskParaDetalle = i < TAREAS_INDIVIDUALES_POR_MES
-                        ? Object.assign({}, tareaVista, { created_at: fechaCreacion.toISOString() })
-                        : Object.assign({}, tareaVista, {
-                            planNombre: planNombreGrupo,
-                            created_by: creadorNombre,
-                            created_by_avatar_url: creadorAvatar || '',
-                            created_at: fechaCreacion.toISOString()
-                        });
+                    const taskParaDetalle = Object.assign({}, tareaVista, { created_at: fechaCreacion.toISOString() });
                     const detalle = generarDetalleTarea(idActividad, {
                         nombreTarea: nombreTarea,
-                        creador: creadorParaDetalle,
-                        creadorAvatar: i < TAREAS_INDIVIDUALES_POR_MES ? (emp.avatar || null) : creadorAvatar,
+                        creador: emp.nombre,
+                        creadorAvatar: emp.avatar || null,
                         asignado: { nombre: emp.nombre, avatar: emp.avatar || null, username: username },
                         fechaCreacion: fechaCreacion,
                         endDateStr: endDateStr,
@@ -685,19 +686,18 @@
                         const planEndDate = `${year}-${pad(month)}-${pad(planEndDay)}`;
                         const planName = NOMBRES_PLANES_IND[(mi + p) % NOMBRES_PLANES_IND.length] + ' ' + pad(month) + '/' + year;
                         const tasksDone = tasks.filter(t => t.done).length;
-                        const statusPlan = repartoEstadoPlan(PLAN_SEED, planGlobalIndex++);
-                        const finished = statusPlan === 'Finalizado';
                         const progress = tasks.length > 0 ? Math.round((tasksDone / tasks.length) * 100) : 0;
+                        const derivedPlan = derivePlanStatus(progress, planEndDate, todayStr, planGlobalIndex++);
                         tasks.forEach(t => { t.planId = planId; });
                         const planObj = {
                             id: planId,
                             name: planName,
                             description: 'Plan individual de ' + emp.nombre + '.',
                             end_date: planEndDate,
-                            status: statusPlan,
+                            status: derivedPlan.status,
                             tasksDone: tasksDone,
                             tasksTotal: tasks.length,
-                            finished: finished,
+                            finished: derivedPlan.finished,
                             hasMembers: false,
                             created_by: emp.nombre,
                             created_by_avatar_url: (emp.avatar && String(emp.avatar).trim()) ? emp.avatar : null,
@@ -708,6 +708,134 @@
                         planDetalleCompleto[planId] = planObj;
                         tareasPorPlanCompleto[planId] = tasks.map(t => Object.assign({}, t));
                     });
+                }
+            }
+        });
+
+        // Tareas grupales: 1 plan por área/mes con TAREAS_GRUPALES_POR_AREA_MES tareas repartidas en el equipo.
+        Object.keys(empleadosPorArea).forEach(function (area, areaIdx) {
+            const areaEmps = empleadosPorArea[area];
+            if (!areaEmps || areaEmps.length === 0) return;
+            const lider = obtenerJefe(area, false, jefes) || areaEmps[0].nombre;
+            const liderObj = jefes.find(function (j) { return j.nombre === lider; });
+            const creadorAvatar = (liderObj && liderObj.avatar && String(liderObj.avatar).trim()) ? liderObj.avatar : null;
+
+            for (let mi = 0; mi < monthsTotal; mi++) {
+                const year = y0 + Math.floor(mi / 12);
+                const month = (mi % 12) + 1;
+                const daysInMonth = new Date(year, month, 0).getDate();
+                const isLastMonth = (year === y1 && month === m1);
+                const maxDay = isLastMonth ? Math.min(daysInMonth, d1) : daysInMonth;
+                const planNombreGrupo = 'Plan ' + area + ' ' + pad(month) + '/' + year;
+                const baseIdx = 50000 + areaIdx * 1000 + mi * TAREAS_GRUPALES_POR_AREA_MES;
+                const seedArea = (areaIdx + 1) * 2000;
+                const { nFinalizadas, nIniciadas, nVencidas } = repartoEstadosCount(seedArea, baseIdx, TAREAS_GRUPALES_POR_AREA_MES);
+                const estadosGrupo = [];
+                for (let gi = 0; gi < nFinalizadas; gi++) estadosGrupo.push('Finalizada');
+                for (let gi = 0; gi < nIniciadas; gi++) estadosGrupo.push('Por hacer');
+                for (let gi = 0; gi < nVencidas; gi++) estadosGrupo.push('Vencida');
+                for (let gi = estadosGrupo.length; gi < TAREAS_GRUPALES_POR_AREA_MES; gi++) estadosGrupo.push('Finalizada');
+                shuffleArray(estadosGrupo, seedArea + baseIdx);
+
+                for (let gi = 0; gi < TAREAS_GRUPALES_POR_AREA_MES; gi++) {
+                    const emp = areaEmps[gi % areaEmps.length];
+                    const username = emp.username || generarUsername(emp.nombre);
+                    const empleadoId = emp.id || emp.idColaborador || String(areaIdx);
+                    const estado = estadosGrupo[gi];
+                    const done = estado === 'Finalizada';
+                    let day = maxDay <= 1 ? 1 : 1 + Math.round((gi / (TAREAS_GRUPALES_POR_AREA_MES - 1)) * (maxDay - 1));
+                    day = toWeekdayInMonth(year, month, day);
+                    if (day > maxDay) day = maxDay;
+                    let endDateStr = year + '-' + pad(month) + '-' + pad(day);
+                    if (endDateStr > FIN_RANGO) { endDateStr = FIN_RANGO; }
+                    let estadoFinal = estado;
+                    let doneFinal = done;
+                    if (endDateStr > todayStr) {
+                        estadoFinal = seeder(seedArea, baseIdx + gi + 777) < 0.05 ? 'Finalizada' : 'Por hacer';
+                        doneFinal = estadoFinal === 'Finalizada';
+                    }
+                    const [ey, em, ed] = endDateStr.split('-').map(Number);
+                    const endDate = new Date(ey, em - 1, ed);
+                    let fechaCreacion = new Date(ey, em - 1, Math.max(1, ed - 2));
+                    if (endDateStr >= todayStr) {
+                        const tp = todayStr.split('-').map(Number);
+                        const todayMidnight = new Date(tp[0], tp[1] - 1, tp[2]);
+                        if (fechaCreacion.getTime() > todayMidnight.getTime()) {
+                            fechaCreacion = new Date(todayMidnight);
+                        }
+                    }
+                    const prioridades = ['Alta', 'Media', 'Baja'];
+                    const prioridad = prioridades[Math.floor(seeder(seedArea, baseIdx + gi + 200) * 3)];
+                    const nombreTarea = TITULOS_TAREAS[(baseIdx + gi) % TITULOS_TAREAS.length];
+                    const asignado = { nombre: emp.nombre, avatar: emp.avatar || '', username: username };
+
+                    const tareaGrupo = {
+                        id: idActividad,
+                        name: nombreTarea,
+                        done: doneFinal,
+                        status: estadoFinal === 'Finalizada' ? 'Finalizado' : (estadoFinal === 'Vencida' ? 'Vencido' : 'Activo'),
+                        endDate: endDateStr,
+                        priority: prioridad.toLowerCase(),
+                        assignee_email: username,
+                        assignee_name: emp.nombre || null,
+                        assignee_avatar_url: (emp.avatar && String(emp.avatar).trim()) ? emp.avatar : null,
+                        etiqueta: null,
+                        created_by: lider,
+                        created_by_avatar_url: creadorAvatar || '',
+                        role: 'colaborador',
+                        planId: null,
+                        planNombre: planNombreGrupo,
+                        description: seeder(seedArea, baseIdx + gi + 400) > 0.7 ? 'Seguimiento y cierre.' : null
+                    };
+
+                    if (!tareasPorEmpleadoParaVistaTareas[empleadoId]) {
+                        tareasPorEmpleadoParaVistaTareas[empleadoId] = { individuales: [], grupales: [] };
+                    }
+                    tareasPorEmpleadoParaVistaTareas[empleadoId].grupales.push(Object.assign({}, tareaGrupo));
+
+                    actividadesSeguimiento.push({
+                        id: idActividad,
+                        tipo: 'tarea',
+                        nombre: nombreTarea,
+                        plan: planNombreGrupo,
+                        asignado: asignado,
+                        idColaborador: emp.idColaborador || emp.id,
+                        area: area,
+                        areaCreador: area,
+                        lider: lider,
+                        cargo: emp.cargo || '',
+                        estado: estadoFinal,
+                        prioridad: prioridad,
+                        avance: doneFinal ? 100 : 0,
+                        fechaCreacion: formatearFechaSeguimiento(fechaCreacion),
+                        fechaFinalizacion: formatearFechaSeguimiento(endDate),
+                        creador: lider,
+                        creador_avatar: creadorAvatar,
+                        comentarios: Math.floor(seeder(seedArea, baseIdx + gi + 300) * 5)
+                    });
+
+                    const tieneSubtareas = (seeder(seedArea, baseIdx + gi + 500) < 0.8) ||
+                        (lider === USUARIO_ACTUAL.nombre && reportesDirectosMaria.indexOf(emp.nombre) >= 0);
+                    const detalle = generarDetalleTarea(idActividad, {
+                        nombreTarea: nombreTarea,
+                        creador: lider,
+                        creadorAvatar: creadorAvatar,
+                        asignado: { nombre: emp.nombre, avatar: emp.avatar || null, username: username },
+                        fechaCreacion: fechaCreacion,
+                        endDateStr: endDateStr,
+                        prioridad: prioridad.toLowerCase(),
+                        done: doneFinal,
+                        estado: tareaGrupo.status,
+                        tieneSubtareas: tieneSubtareas
+                    }, seedArea, baseIdx + gi);
+                    taskDetallePorId[idActividad] = {
+                        task: Object.assign({}, tareaGrupo, { created_at: fechaCreacion.toISOString() }),
+                        subtasks: detalle.subtasks,
+                        comments: detalle.comments,
+                        activities: detalle.activities
+                    };
+
+                    idActividad++;
                 }
             }
         });
@@ -915,8 +1043,6 @@
             const asignados = Array.from(g.asignadosMap.values());
             const tareasFinalizadas = tareas.filter(function (t) { return t.estado === 'Finalizada'; }).length;
             const avancePlan = tareas.length > 0 ? Math.round((tareasFinalizadas / tareas.length) * 100) : 0;
-            const statusPlan = repartoEstadoPlan(PLAN_SEED, planGlobalIndex++);
-            const estadoPlan = statusPlan === 'Finalizado' ? 'Finalizada' : (statusPlan === 'Vencido' ? 'Vencida' : 'Por hacer');
             const fechasCreacion = tareas.map(function (t) { return parseFechaSeguimiento(t.fechaCreacion); }).filter(Boolean);
             const fechasFinVal = tareas.map(function (t) { return parseFechaSeguimiento(t.fechaFinalizacion); }).filter(Boolean);
             const minCreacion = fechasCreacion.length ? new Date(Math.min.apply(null, fechasCreacion)) : primera.fechaCreacion;
@@ -924,16 +1050,18 @@
             const planId = planIdNext++;
             const planEndDateStr = typeof maxFin === 'object' && maxFin instanceof Date ? (maxFin.getFullYear() + '-' + pad(maxFin.getMonth() + 1) + '-' + pad(maxFin.getDate())) : null;
             const planFechaCreacionStr = typeof minCreacion === 'object' && minCreacion instanceof Date ? (minCreacion.getFullYear() + '-' + pad(minCreacion.getMonth() + 1) + '-' + pad(minCreacion.getDate())) : null;
+            const derivedPlan = derivePlanStatus(avancePlan, planEndDateStr, todayStr, planGlobalIndex++);
+            const estadoPlan = derivedPlan.status === 'Finalizado' ? 'Finalizada' : (derivedPlan.status === 'Vencido' ? 'Vencida' : 'Por hacer');
             const planCreadorAvatar = (esPlanGrupalPorArea && areaLider && areaLider.avatar && String(areaLider.avatar).trim()) ? areaLider.avatar : null;
             const planObj = {
                 id: planId,
                 name: nombrePlan,
                 description: 'Plan grupal de ' + (primera.area || 'área') + '.',
                 end_date: planEndDateStr,
-                status: estadoPlan === 'Finalizada' ? 'Finalizado' : (estadoPlan === 'Vencida' ? 'Vencido' : 'Activo'),
+                status: derivedPlan.status,
                 tasksDone: tareasFinalizadas,
                 tasksTotal: tareas.length,
-                finished: estadoPlan === 'Finalizada',
+                finished: derivedPlan.finished,
                 hasMembers: true,
                 created_by: planCreador,
                 created_by_avatar_url: planCreadorAvatar,
@@ -1283,12 +1411,21 @@
         return 'Activo';
     }
 
-    // Una sola BD de planes: lista y detalle usan el mismo objeto (cada vista usa los campos que necesita).
+    function planVisibleEnVistaPlanes(plan) {
+        if (!plan || !plan.name) return false;
+        var name = plan.name;
+        if (name.indexOf('Plan ' + USUARIO_ACTUAL.area + ' ') === 0) return true;
+        if (name.indexOf('Objetivos ') === 0 || name.indexOf('Encuestas ') === 0) return true;
+        return false;
+    }
+
+    // Vista planes (María): individuales propios + plan grupal de su área + planes empresa.
     function getPlanesVistaPlanes() {
         var individuales = planesIndividualesMaria.map(function (p) { return Object.assign({}, p); });
         var grupales = Object.keys(planDetalleCompleto).filter(function (k) {
             var n = parseInt(k, 10);
-            return !isNaN(n) && n >= 50000;
+            if (isNaN(n) || n < 50000) return false;
+            return planVisibleEnVistaPlanes(planDetalleCompleto[k]);
         }).map(function (k) { return Object.assign({}, planDetalleCompleto[k]); });
         return individuales.concat(grupales);
     }

@@ -446,8 +446,10 @@ function renderPlanDetail(planId) {
     } else {
         if (emptyEl) emptyEl.style.display = 'none';
         var ordered = filteredTasks.slice().sort(function (a, b) {
-            if (a.done !== b.done) return (a.done ? 1 : 0) - (b.done ? 1 : 0);
-            if (a.done && b.done) return (a._justFinalized ? 0 : 1) - (b._justFinalized ? 0 : 1);
+            var aDone = !!(a.done || a.status === 'Finalizado' || a.status === 'Finalizada');
+            var bDone = !!(b.done || b.status === 'Finalizado' || b.status === 'Finalizada');
+            if (aDone !== bDone) return (aDone ? 1 : 0) - (bDone ? 1 : 0);
+            if (aDone && bDone) return (a._justFinalized ? 0 : 1) - (b._justFinalized ? 0 : 1);
             return 0;
         });
         const html = ordered.map(t => window.renderTaskStrip(t, { today, formatDate: formatDateForDisplayDDMM, escapeHtml, getAssignee: getAssigneeForPlanDetail, renderAvatar: typeof renderAvatar === 'function' ? renderAvatar : undefined, esVencidaSection: vencidas.some(v => v.id === t.id) })).join('');
