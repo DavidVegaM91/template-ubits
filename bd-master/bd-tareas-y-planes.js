@@ -1419,6 +1419,32 @@
         return false;
     }
 
+    function normalizeNameForPlanAssign(str) {
+        if (str == null) return '';
+        return String(str).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/\s+/g, ' ').trim();
+    }
+
+    /** Planes donde María participa como creadora o tiene tareas asignadas (selector tirilla / task-detail). */
+    function getPlanesParaAsignarTarea() {
+        var userName = USUARIO_ACTUAL.nombre;
+        var userEmail = USUARIO_ACTUAL.username;
+        var userNorm = normalizeNameForPlanAssign(userName);
+        var planes = getPlanesVistaPlanes();
+        if (!Array.isArray(planes)) return [];
+        return planes.filter(function (p) {
+            if (!p) return false;
+            if (normalizeNameForPlanAssign(p.created_by) === userNorm) return true;
+            var planTasks = getTareasPorPlan(p.id) || [];
+            return planTasks.some(function (t) {
+                if (!t) return false;
+                return normalizeNameForPlanAssign(t.assignee_name) === userNorm
+                    || (userEmail && t.assignee_email === userEmail);
+            });
+        }).map(function (p) {
+            return { id: p.id, name: p.name || 'Plan sin nombre' };
+        });
+    }
+
     // Vista planes (María): individuales propios + plan grupal de su área + planes empresa.
     function getPlanesVistaPlanes() {
         var individuales = planesIndividualesMaria.map(function (p) { return Object.assign({}, p); });
@@ -1687,6 +1713,7 @@
         getUsuarioActual: getUsuarioActual,
         getTareasVistaTareas: getTareasVistaTareas,
         getPlanesVistaPlanes: getPlanesVistaPlanes,
+        getPlanesParaAsignarTarea: getPlanesParaAsignarTarea,
         getPlanDetalle: getPlanDetalle,
         getTareasPorPlan: getTareasPorPlan,
         getActividadesSeguimiento: getActividadesSeguimiento,

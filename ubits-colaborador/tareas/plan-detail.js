@@ -583,6 +583,23 @@ function handlePlanDetailListClick(e) {
         return;
     }
 
+    // Agregar / cambiar plan: dropdown con autocomplete
+    if (e.target.closest('.tarea-action-btn--add-plan') && typeof window.openTaskStripPlanPicker === 'function') {
+        e.preventDefault();
+        e.stopPropagation();
+        const btn = e.target.closest('.tarea-action-btn--add-plan');
+        const item = e.target.closest('.tarea-item');
+        const id = item && (item.dataset.tareaId || item.getAttribute('data-tarea-id'));
+        if (!id) return;
+        const task = tasks.find(t => String(t.id) === String(id));
+        if (!task) return;
+        window.openTaskStripPlanPicker(btn, task, function () {
+            renderPlanDetail(planId);
+            if (typeof showToast === 'function') showToast('success', 'Plan actualizado');
+        });
+        return;
+    }
+
     // Prioridad: abrir dropdown y actualizar prioridad de la tarea
     if (e.target.closest('.tarea-priority-badge') && typeof window.getDropdownMenuHtml === 'function' && typeof window.openDropdownMenu === 'function' && typeof window.closeDropdownMenu === 'function') {
         e.preventDefault();

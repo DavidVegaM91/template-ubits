@@ -40,7 +40,7 @@ let estadoTareas = {
     isCreatingTask: false, // Estado de carga al crear tarea
     taskIdToDelete: null, // ID de tarea pendiente de confirmar eliminar (modal)
     editingDateId: null, // ID de tarea cuya fecha se está editando
-    moveTaskId: null, // ID de tarea que se está moviendo a otro plan
+    moveTaskId: null, // legacy — ya no se usa (plan picker en dropdown)
     userDropdownTaskId: null, // ID de tarea para la cual se muestra el dropdown de usuarios
     userSearch: '', // Búsqueda de usuarios
     pendingTaskClickTimeout: null, // Timeout para retrasar navegación al detalle y permitir doble clic en título
@@ -1567,14 +1567,21 @@ function initTareasView() {
                 }, { once: true });
             }
 
-            // Botones de acción
+            // Botón agregar a plan: dropdown con autocomplete (planes de María)
             if (e.target.closest('.tarea-action-btn--add-plan')) {
+                e.preventDefault();
+                e.stopPropagation();
+                const btn = e.target.closest('.tarea-action-btn--add-plan');
                 const tareaItem = e.target.closest('.tarea-item');
-                const tareaId = parseInt(tareaItem.querySelector('input.ubits-checkbox__input')?.dataset.tareaId);
-                if (tareaId) {
-                    estadoTareas.moveTaskId = estadoTareas.moveTaskId === tareaId ? null : tareaId;
+                const tareaId = parseInt(tareaItem && (tareaItem.dataset.tareaId || tareaItem.getAttribute('data-tarea-id')), 10);
+                if (isNaN(tareaId)) return;
+                const { tarea } = findTaskById(tareaId);
+                if (!tarea || typeof window.openTaskStripPlanPicker !== 'function') return;
+                window.openTaskStripPlanPicker(btn, tarea, function () {
+                    renderTareasVencidas();
                     renderAllTasks();
-                }
+                    if (typeof showToast === 'function') showToast('success', 'Plan actualizado');
+                });
             }
             /* Opciones de la tirilla: dropdown Enviar recordatorio / Eliminar (derecha alineada al botón) */
             if (e.target.closest('.tarea-action-btn--options') && typeof window.getDropdownMenuHtml === 'function' && typeof window.openDropdownMenu === 'function' && typeof window.closeDropdownMenu === 'function') {

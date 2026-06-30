@@ -2,7 +2,7 @@
  * Tirilla de tarea - Componente reutilizable.
  * Modelo único: el de tareas.html. Se reutiliza tal cual en tareas y en plan-detail.
  *
- * @param {Object} tarea - { id, name, done, status, endDate, priority, etiqueta, taskType?, assignee_email?, assignee_name?, assignee_avatar_url? }
+ * @param {Object} tarea - { id, name, done, status, endDate, priority, etiqueta, taskType?, planId?, planNombre?, assignee_email?, assignee_name?, assignee_avatar_url? }
  *   taskType: si es 'aprendizaje', variante con icono junto al título (primera línea alineada).
  * @param {Object} opts - { today, esVencidaSection?, formatDate, escapeHtml, getAssignee?, renderAvatar?, hideAddToPlan? }
  * @returns {string} HTML de una tarea-item
@@ -58,6 +58,17 @@ function renderTaskStrip(tarea, opts) {
     }
 
     const idSafe = escapeHtml(String(tarea.id));
+    var planNombreDisplay = (tarea.planNombre && String(tarea.planNombre).trim()) ? String(tarea.planNombre).trim() : '';
+    if (!planNombreDisplay && tarea.planId != null && tarea.planId !== '' && typeof getPlanesParaTaskStripPicker === 'function') {
+        var planesPicker = getPlanesParaTaskStripPicker();
+        var planMatch = planesPicker.find(function (p) { return String(p.id) === String(tarea.planId); });
+        if (planMatch && planMatch.name) planNombreDisplay = planMatch.name;
+    }
+    const hasPlan = !!planNombreDisplay || (tarea.planId != null && tarea.planId !== '');
+    const planLabel = hasPlan ? escapeHtml(planNombreDisplay || 'Plan') : 'Agregar a un plan';
+    const planIcon = hasPlan ? 'fa-layer-group' : 'fa-layer-plus';
+    const planTooltip = hasPlan ? escapeAttr(planNombreDisplay || 'Plan') : 'Agregar a un plan';
+    const planAria = hasPlan ? escapeHtml(planNombreDisplay || 'Plan') : 'Agregar a un plan';
     const esAprendizaje = tarea.taskType === 'aprendizaje';
     const classes = 'tarea-item' + (esFinalizada ? ' tarea-item--completed' : '') + (esVencidaReal ? ' tarea-item--overdue' : '') + (esAprendizaje ? ' tarea-item--aprendizaje' : '');
     const etiquetaBlock = tarea.etiqueta
@@ -111,8 +122,9 @@ function renderTaskStrip(tarea, opts) {
         '</button>' +
         '</div>' +
         '<div class="tarea-actions">' +
-        (hideAddToPlan ? '' : '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only tarea-action-btn tarea-action-btn--add-plan" data-tooltip="Agregar a un plan">' +
-        '<i class="far fa-layer-group"></i>' +
+        (hideAddToPlan ? '' : '<button type="button" class="ubits-button ubits-button--secondary ubits-button--xs tarea-action-btn tarea-action-btn--add-plan' + (hasPlan ? ' tarea-action-btn--add-plan--selected' : '') + '" data-tarea-id="' + idSafe + '" data-tooltip="' + planTooltip + '" aria-label="' + planAria + '">' +
+        '<i class="far ' + planIcon + '"></i>' +
+        '<span class="tarea-add-plan-btn__label">' + planLabel + '</span>' +
         '</button>') +
         '<button type="button" class="ubits-badge-tag ubits-badge-tag--outlined ubits-badge-tag--' + (prioridadBadgeVariant[prioridad] || 'warning') + ' ubits-badge-tag--sm ubits-badge-tag--with-icon tarea-priority-badge" data-tarea-id="' + idSafe + '" data-tooltip="Prioridad" aria-label="Prioridad">' +
         '<i class="far ' + (prioridadIcon[prioridad] || 'fa-chevron-up') + '"></i>' +
@@ -188,7 +200,103 @@ function startInlineEditTaskName(tareaItem, taskId, onSave) {
     input.select();
 }
 
+function getPlanesParaTaskStripPicker() {
+    if (typeof TAREAS_PLANES_DB !== 'undefined' && typeof TAREAS_PLANES_DB.getPlanesParaAsignarTarea === 'function') {
+        return TAREAS_PLANES_DB.getPlanesParaAsignarTarea();
+    }
+    if (typeof TAREAS_PLANES_DB !== 'undefined' && typeof TAREAS_PLANES_DB.getPlanesVistaPlanes === 'function') {
+        return TAREAS_PLANES_DB.getPlanesVistaPlanes().map(function (p) {
+            return { id: p.id, name: p.name || 'Plan sin nombre' };
+        });
+    }
+    return [];
+}
+
+/**
+ * Abre dropdown con autocomplete para asignar la tarea a un plan (mismo patrón que avatar/asignado).
+ * @param {Element} anchorEl - botón .tarea-action-btn--add-plan
+ * @param {Object} tarea - objeto tarea mutable
+ * @param {function} [onAfterSelect] - callback tras seleccionar plan
+ */
+function openTaskStripPlanPicker(anchorEl, tarea, onAfterSelect) {
+    if (!anchorEl || !tarea || typeof window.getDropdownMenuHtml !== 'function' || typeof window.openDropdownMenu !== 'function' || typeof window.closeDropdownMenu !== 'function') return;
+    var planes = getPlanesParaTaskStripPicker();
+    var overlayId = 'task-strip-plan-overlay-' + (tarea.id != null ? String(tarea.id) : 'x');
+    var existing = document.getElementById(overlayId);
+    if (existing) existing.remove();
+    var options = planes.map(function (p) {
+        return { value: String(p.id), text: p.name || 'Plan sin nombre', leftIcon: 'layer-group' };
+    });
+    var html = window.getDropdownMenuHtml({
+        overlayId: overlayId,
+        hasAutocomplete: true,
+        autocompletePlaceholder: 'Buscar...',
+        options: options
+    });
+    document.body.insertAdjacentHTML('beforeend', html);
+    var overlayEl = document.getElementById(overlayId);
+    if (!overlayEl) return;
+    overlayEl.style.zIndex = '10100';
+    var optionsContainer = overlayEl.querySelector('.ubits-dropdown-menu__options');
+    if (optionsContainer) optionsContainer.classList.add('ubits-dropdown-menu__options--max-h-255');
+    var contentEl = overlayEl.querySelector('.ubits-dropdown-menu__content');
+    if (contentEl) contentEl.style.zIndex = '10100';
+    var optionButtons = overlayEl.querySelectorAll('.ubits-dropdown-menu__option');
+    function normalizeText(str) {
+        if (str == null) return '';
+        return String(str).toLowerCase().trim().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    }
+    function filterVisibleOptions(searchVal) {
+        var q = normalizeText(searchVal || '');
+        optionButtons.forEach(function (opt) {
+            var textEl = opt.querySelector('.ubits-dropdown-menu__option-text');
+            var text = textEl ? textEl.textContent : '';
+            opt.style.display = (!q || normalizeText(text).indexOf(q) >= 0) ? '' : 'none';
+        });
+    }
+    var inputEl = document.getElementById(overlayId + '-autocomplete-input');
+    var clearIcon = document.getElementById(overlayId + '-autocomplete-clear');
+    if (inputEl && clearIcon) {
+        clearIcon.style.pointerEvents = 'auto';
+        clearIcon.style.display = 'none';
+        clearIcon.addEventListener('click', function (ev) {
+            ev.preventDefault();
+            ev.stopPropagation();
+            inputEl.value = '';
+            filterVisibleOptions('');
+            inputEl.focus();
+        });
+        inputEl.addEventListener('input', function () {
+            clearIcon.style.display = inputEl.value.length > 0 ? 'block' : 'none';
+            filterVisibleOptions(inputEl.value);
+        });
+        filterVisibleOptions('');
+    }
+    optionButtons.forEach(function (btn) {
+        btn.addEventListener('click', function (ev) {
+            ev.stopPropagation();
+            var val = btn.getAttribute('data-value');
+            var planSeleccionado = planes.find(function (p) { return String(p.id) === val; });
+            if (planSeleccionado) {
+                tarea.planId = planSeleccionado.id;
+                tarea.planNombre = planSeleccionado.name;
+            }
+            window.closeDropdownMenu(overlayId);
+            if (overlayEl.parentNode) overlayEl.remove();
+            if (typeof onAfterSelect === 'function') onAfterSelect(planSeleccionado || null);
+        });
+    });
+    overlayEl.addEventListener('click', function (ev) {
+        if (ev.target === overlayEl) {
+            window.closeDropdownMenu(overlayId);
+            if (overlayEl.parentNode) overlayEl.remove();
+        }
+    });
+    window.openDropdownMenu(overlayId, anchorEl, { alignRight: true });
+}
+
 if (typeof window !== 'undefined') {
     window.renderTaskStrip = renderTaskStrip;
     window.startInlineEditTaskName = startInlineEditTaskName;
+    window.openTaskStripPlanPicker = openTaskStripPlanPicker;
 }

@@ -540,20 +540,16 @@
     }
 
     function getPlanesParaSelector() {
-        var targetCreator = 'María Alejandra Sánchez Pardo';
-        if (typeof TAREAS_PLANES_DB === 'undefined' || typeof TAREAS_PLANES_DB.getPlanesVistaPlanes !== 'function') return [];
+        if (typeof TAREAS_PLANES_DB === 'undefined') return [];
+        if (typeof TAREAS_PLANES_DB.getPlanesParaAsignarTarea === 'function') {
+            return TAREAS_PLANES_DB.getPlanesParaAsignarTarea();
+        }
+        if (typeof TAREAS_PLANES_DB.getPlanesVistaPlanes !== 'function') return [];
         var planes = TAREAS_PLANES_DB.getPlanesVistaPlanes();
         if (!Array.isArray(planes)) return [];
-        return planes
-            .filter(function (p) {
-                return normalizeName(p && p.created_by) === normalizeName(targetCreator);
-            })
-            .map(function (p) {
-                return {
-                    id: p.id,
-                    name: p.name || 'Plan sin nombre'
-                };
-            });
+        return planes.map(function (p) {
+            return { id: p.id, name: p.name || 'Plan sin nombre' };
+        });
     }
 
     function openAssigneeDropdown(anchorEl, entity, onAfterUpdate) {

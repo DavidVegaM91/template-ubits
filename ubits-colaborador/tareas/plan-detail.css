@@ -511,12 +511,12 @@
     width: 100%;
 }
 
-/* Tirilla "Mover tarea" en contexto de plan */
+/* Tirilla "Mover tarea" en contexto de plan (legacy) */
 .plan-detail-tasks-list .tarea-action-btn--mover .tarea-action-btn__label {
     display: inline;
 }
 
-.tarea-action-btn__label {
+.tarea-action-btn--mover .tarea-action-btn__label {
     display: none;
 }
 
