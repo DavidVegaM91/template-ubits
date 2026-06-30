@@ -2988,9 +2988,15 @@ function generateMockSearchResults(topicKey, filters) {
         if (filters && filters.duration) item.duration = filters.duration;
 
         // Asegurar campos requeridos por compact card (imagen y logo con ruta correcta)
-        if (!item.provider) item.provider = 'UBITS';
+        if (window.CATALOGO_PROVEEDORES && typeof window.CATALOGO_PROVEEDORES.patchCardProviderFromBdByTitle === 'function') {
+            window.CATALOGO_PROVEEDORES.patchCardProviderFromBdByTitle(item, '../../');
+        } else if (!item.provider) {
+            item.provider = 'UBITS';
+        }
         if (!item.image) item.image = item.imagePath ? ('../../images/' + item.imagePath) : '../../images/cards-learn/cambio-en-el-estilo-de-liderazgo.jpeg';
-        if (item.providerLogo && item.providerLogo.indexOf('images/') === -1) item.providerLogo = '../../images/' + item.providerLogo;
+        if (item.providerLogo && item.providerLogo.indexOf('images/') === -1 && item.providerLogo.indexOf('../../') !== 0) {
+            item.providerLogo = '../../images/' + item.providerLogo;
+        }
 
         results.push(item);
     }

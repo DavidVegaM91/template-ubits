@@ -83,11 +83,17 @@
         var slides = [];
         for (var i = 0; i < bd.contents.length; i++) {
             var c = bd.contents[i];
-            var a = aliadoPorId(c.proveedorAliadoId);
-            var providerName = a && a.nombre ? a.nombre : 'UBITS';
-            var providerLogo = '../../images/Favicons/UBITS.jpg';
-            if (a && a.logo) {
-                providerLogo = '../../' + String(a.logo).replace(/^\.\//, '');
+            var cp = window.CATALOGO_PROVEEDORES;
+            var providerName = 'Fiqsha Smart Consulting';
+            var providerLogo = '../../images/Favicons/Fiqsha Smart Consulting.jpg';
+            if (cp && typeof cp.resolveProviderFromCatalogoItem === 'function') {
+                var prov = cp.resolveProviderFromCatalogoItem(c, '../../');
+                providerName = prov.nombre;
+                providerLogo = prov.logo;
+            } else {
+                var a = aliadoPorId(c.proveedorAliadoId);
+                if (a && a.nombre) providerName = a.nombre;
+                if (a && a.logo) providerLogo = '../../' + String(a.logo).replace(/^\.\//, '');
             }
             var durMin = c.tiempoValor != null ? String(c.tiempoValor) : '60';
             var imgPath = c.imagen
@@ -130,11 +136,9 @@
     function initContinuaAprendiendoCarousel() {
         if (typeof createCarouselContents !== 'function') return;
 
-        createCarouselContents({
-            containerId: 'continua-viendo-container',
-            type: 'content-cards',
-            sectionTitle: 'Continúa aprendiendo',
-            slides: [
+        var slides = buildContinuaAprendiendoSlidesFromBd();
+        if (!slides || !slides.length) {
+            slides = [
                 {
                     image: '../../images/cards-learn/el-manejo-de-las-emociones.jpeg',
                     contentType: 'Curso',
@@ -144,101 +148,95 @@
                         logo: '../../images/Favicons/Harvard-Business-Publishing.jpg'
                     },
                     competency: 'Inteligencia emocional',
-                    specs: {
-                        level: 'Intermedio',
-                        duration: '60 min',
-                        language: 'Español'
-                    },
+                    specs: { level: 'Intermedio', duration: '60 min', language: 'Español' },
                     status: 'progress',
                     progress: 85
-                },
-                {
-                    image: '../../images/cards-learn/liderar-con-inteligencia-emocional.jpeg',
-                    contentType: 'Charla',
-                    title: 'Liderar con inteligencia emocional',
-                    provider: {
-                        name: 'TED',
-                        logo: '../../images/Favicons/TED.jpg'
-                    },
-                    competency: 'Liderazgo',
-                    specs: {
-                        level: 'Avanzado',
-                        duration: '90 min',
-                        language: 'Inglés'
-                    },
-                    status: 'progress',
-                    progress: 75
-                },
-                {
-                    image: '../../images/cards-learn/comunicacion-efectiva-para-liderar-equipos.jpeg',
-                    contentType: 'Short',
-                    title: 'Comunicación efectiva para liderar equipos',
-                    provider: {
-                        name: 'UBITS',
-                        logo: '../../images/Favicons/UBITS.jpg'
-                    },
-                    competency: 'Comunicación',
-                    specs: {
-                        level: 'Básico',
-                        duration: '15 min',
-                        language: 'Español'
-                    },
-                    status: 'progress',
-                    progress: 65
-                },
-                {
-                    image: '../../images/cards-learn/agilidad-emocional.jpeg',
-                    contentType: 'Ruta de aprendizaje',
-                    title: 'Agilidad emocional',
-                    providers: [
-                        { name: 'WOBI', logo: '../../images/Favicons/WOBI.jpg' },
-                        { name: 'Harvard Business Publishing', logo: '../../images/Favicons/Harvard-Business-Publishing.jpg' },
-                        { name: 'TED', logo: '../../images/Favicons/TED.jpg' }
-                    ],
-                    competency: 'Inteligencia emocional',
-                    specs: {
-                        level: 'Intermedio',
-                        duration: '120 min',
-                        language: 'Español'
-                    },
-                    status: 'progress',
-                    progress: 55
-                },
-                {
-                    image: '../../images/cards-learn/liderazgo-en-tiempos-de-crisi.jpeg',
-                    contentType: 'Curso',
-                    title: 'Liderazgo en tiempos de crisis',
-                    provider: {
-                        name: 'Harvard Business Publishing',
-                        logo: '../../images/Favicons/Harvard-Business-Publishing.jpg'
-                    },
-                    competency: 'Liderazgo',
-                    specs: {
-                        level: 'Avanzado',
-                        duration: '120 min',
-                        language: 'Español'
-                    },
-                    status: 'progress',
-                    progress: 45
-                },
-                {
-                    image: '../../images/cards-learn/la-confianza-una-clave-para-el-liderazgo.jpeg',
-                    contentType: 'Podcast',
-                    title: 'La confianza: una clave para el liderazgo',
-                    provider: {
-                        name: 'IE University',
-                        logo: '../../images/Favicons/IE-University-Publishing.jpg'
-                    },
-                    competency: 'Liderazgo',
-                    specs: {
-                        level: 'Intermedio',
-                        duration: '45 min',
-                        language: 'Español'
-                    },
-                    status: 'progress',
-                    progress: 35
                 }
-            ]
+            ];
+        }
+
+        createCarouselContents({
+            containerId: 'continua-viendo-container',
+            type: 'content-cards',
+            sectionTitle: 'Continúa aprendiendo',
+            slides: slides
+        });
+    }
+
+    function buildContinuaAprendiendoSlidesFromBd() {
+        var bd = window.BDS_CONTENIDOS_UBITS;
+        var cp = window.CATALOGO_PROVEEDORES;
+        if (!bd || !bd.contents || !bd.contents.length || !cp) return null;
+
+        var compMaster = window.BD_MASTER_COMPETENCIAS && window.BD_MASTER_COMPETENCIAS.competencias;
+        var nivelesArr = window.BD_MASTER_NIVELES_CONTENIDO && window.BD_MASTER_NIVELES_CONTENIDO.niveles;
+        var progressValues = [85, 75, 65, 55, 45, 35];
+        var targetTypes = ['Curso', 'Short', 'Podcast', 'Ruta de aprendizaje', 'Curso', 'Short'];
+        var selected = [];
+        var usedIds = {};
+
+        function nivelNombrePorId(nivelId) {
+            if (!nivelesArr || !nivelId) return 'Intermedio';
+            for (var j = 0; j < nivelesArr.length; j++) {
+                if (nivelesArr[j].id === nivelId) return nivelesArr[j].nombre || 'Intermedio';
+            }
+            return 'Intermedio';
+        }
+
+        function competenciaNombrePorId(compId) {
+            if (!compMaster || !compId) return '';
+            for (var k = 0; k < compMaster.length; k++) {
+                if (compMaster[k].id === compId) return compMaster[k].nombre || '';
+            }
+            return '';
+        }
+
+        for (var t = 0; t < targetTypes.length; t++) {
+            var tipo = targetTypes[t];
+            for (var i = 0; i < bd.contents.length; i++) {
+                var c = bd.contents[i];
+                if (usedIds[c.id] || c.tipoContenido !== tipo) continue;
+                selected.push(c);
+                usedIds[c.id] = true;
+                break;
+            }
+        }
+        for (var i2 = 0; i2 < bd.contents.length && selected.length < 6; i2++) {
+            if (!usedIds[bd.contents[i2].id]) {
+                selected.push(bd.contents[i2]);
+                usedIds[bd.contents[i2].id] = true;
+            }
+        }
+
+        return selected.slice(0, 6).map(function (c, idx) {
+            var prov = cp.resolveProviderFromCatalogoItem(c, '../../');
+            var provs = cp.resolveProveedoresCatalogoUbits(c, '../../');
+            var multi = cp.buildProvidersMultiForCard(c, provs);
+            var durMin = c.tiempoValor != null ? String(c.tiempoValor) : '60';
+            var imgPath = c.imagen
+                ? ('../../' + String(c.imagen).replace(/^\.\//, ''))
+                : '../../images/Profile-image.jpg';
+            var slide = {
+                image: imgPath,
+                contentType: c.tipoContenido || 'Curso',
+                title: c.titulo || '',
+                competency: competenciaNombrePorId(c.competenciaPrincipalId),
+                specs: {
+                    level: nivelNombrePorId(c.nivelId),
+                    duration: durMin + ' min',
+                    language: (c.idioma || 'Español').trim()
+                },
+                status: 'progress',
+                progress: progressValues[idx] || 50
+            };
+            if (multi && multi.length) {
+                slide.providers = multi.map(function (p) {
+                    return { name: p.name || p.provider, logo: p.logo || p.providerLogo };
+                });
+            } else {
+                slide.provider = { name: prov.nombre, logo: prov.logo };
+            }
+            return slide;
         });
     }
 

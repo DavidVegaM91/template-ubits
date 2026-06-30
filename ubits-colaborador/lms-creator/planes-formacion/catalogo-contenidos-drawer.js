@@ -58,6 +58,9 @@
     }
 
     function resolveAliadoPorId(aliadoId) {
+        if (global.CATALOGO_PROVEEDORES && typeof global.CATALOGO_PROVEEDORES.resolveAliadoDisplay === 'function') {
+            return global.CATALOGO_PROVEEDORES.resolveAliadoDisplay(aliadoId, getImagesPrefix());
+        }
         var byId = getAliadosByIdMap();
         var a = byId[aliadoId];
         if (!a) {
@@ -67,6 +70,9 @@
     }
 
     function resolveProveedoresCatalogoUbits(item) {
+        if (global.CATALOGO_PROVEEDORES && typeof global.CATALOGO_PROVEEDORES.resolveProveedoresCatalogoUbits === 'function') {
+            return global.CATALOGO_PROVEEDORES.resolveProveedoresCatalogoUbits(item, getImagesPrefix());
+        }
         var ids = item.providersAliadosIds;
         if (ids && ids.length) {
             return ids.map(function (aid) {
@@ -85,6 +91,33 @@
             });
         }
         return [resolveAliadoPorId(item.aliadoId || 'aly-001')];
+    }
+
+    function resolvePrimaryAliadoId(item) {
+        if (global.CATALOGO_PROVEEDORES && typeof global.CATALOGO_PROVEEDORES.resolvePrimaryAliadoId === 'function') {
+            return global.CATALOGO_PROVEEDORES.resolvePrimaryAliadoId(item);
+        }
+        var ids = item.providersAliadosIds;
+        if (ids && ids.length) {
+            for (var i = 0; i < ids.length; i++) {
+                if (ids[i] && ids[i] !== 'aly-001') return ids[i];
+            }
+            return ids[0];
+        }
+        return item.aliadoId || 'aly-001';
+    }
+
+    function buildProvidersMultiForCard(item, provs) {
+        if (global.CATALOGO_PROVEEDORES && typeof global.CATALOGO_PROVEEDORES.buildProvidersMultiForCard === 'function') {
+            return global.CATALOGO_PROVEEDORES.buildProvidersMultiForCard(item, provs);
+        }
+        var tipo = item.tipoContenido || '';
+        if ((tipo === 'Ruta de aprendizaje' || tipo === 'Programa') && provs.length > 1) {
+            return provs.map(function (p) {
+                return { name: p.nombre, provider: p.nombre, logo: p.logo, providerLogo: p.logo };
+            });
+        }
+        return null;
     }
 
     function formatDuracionPlayground(item) {
@@ -198,14 +231,10 @@
             var nivel = nivelNombreDesdeCatalogoItem(item, idx);
             var competency = nombreCompetenciaCatalogoUbits(item, idx);
             var provs = resolveProveedoresCatalogoUbits(item);
-            var providerPrim = provs[0] ? provs[0].nombre : 'UBITS';
-            var providerPrimLogo = provs[0] ? provs[0].logo : imagesPath('images/Favicons/UBITS.jpg');
-            var providersMulti = null;
-            if (tipo === 'Ruta de aprendizaje' && provs.length > 1) {
-                providersMulti = provs.map(function (p) {
-                    return { name: p.nombre, provider: p.nombre, logo: p.logo, providerLogo: p.logo };
-                });
-            }
+            var primary = resolveAliadoPorId(resolvePrimaryAliadoId(item));
+            var providerPrim = primary.nombre;
+            var providerPrimLogo = primary.logo;
+            var providersMulti = buildProvidersMultiForCard(item, provs);
             return {
                 id: item.id || 'u-' + idx,
                 title: titulo,

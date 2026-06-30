@@ -18,6 +18,7 @@
     <link rel="stylesheet" href="../../components/radio-button.css">
     <link rel="stylesheet" href="../../components/checkbox.css">
     <link rel="stylesheet" href="../../components/dropdown-menu.css">
+    <link rel="stylesheet" href="../../components/status-tag.css">
     <script src="../../components/input.js"></script>
     <script src="../../components/dropdown-menu.js"></script>
 </head>
@@ -72,6 +73,20 @@
                                     </label>
                                 </div>
                                 <div id="preview-opciones-tipo-container" style="min-width: 200px;"></div>
+                            </div>
+                        </div>
+
+                        <!-- Preview: filtrar plan (texto + meta + status-tag) -->
+                        <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: var(--border-radius-lg); margin-bottom: 40px;">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-filter" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Filtrar plan (texto + meta + status-tag)
+                            </h2>
+                            <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6; max-width: 800px;">
+                                Variante enriquecida para selects de plan en Zona de estudio. Cada opción lleva <strong>texto</strong> (nombre del plan), <strong>metaText</strong> (p. ej. «2 de 8 contenidos» o «50% de avance») y <strong>statusTag</strong> (componente <code>ubits-status-tag</code>). En el preview de arriba elige <strong>Filtrar plan</strong> en «En las opciones»; abajo está el mismo patrón montado con <code>createInput</code> type select (como en producto).
+                            </p>
+                            <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: var(--border-radius-md); max-width: 480px;">
+                                <div id="dropdown-demo-plan-filter-select"></div>
                             </div>
                         </div>
 
@@ -197,6 +212,7 @@ Ubicación: [describe dónde debe estar el botón que abre el menú]</code></pre
 
             var opcionesTipoSelectOptions = [
                 { value: 'ninguno', text: 'Lista simple (una opción resaltada)' },
+                { value: 'plan-filter', text: 'Filtrar plan (texto + meta + tag)' },
                 { value: 'iconos', text: 'Iconos' },
                 { value: 'checklist', text: 'Checklist (checkbox)' },
                 { value: 'marcados', text: 'Ya elegidos (como crear tarea)' },
@@ -229,6 +245,15 @@ Ubicación: [describe dónde debe estar el botón que abre el menú]</code></pre
                 var t = s.opcionesTipo || 'ninguno';
                 if (t === 'radios') {
                     return [opt1, opt2, opt3];
+                }
+                if (t === 'plan-filter') {
+                    return [
+                        { value: '1', text: 'Área producto - 1er semestre - 2025', metaText: '2 de 8 contenidos', statusTag: { text: 'Vigente', variant: 'success' }, selected: true },
+                        { value: '2', text: 'UX 2025 semestre 1', metaText: '6 de 6 contenidos', statusTag: { text: 'Vigente', variant: 'success' } },
+                        { value: '3', text: 'Plan obligatorio empresa 2025 - formación IA', metaText: '7 de 10 contenidos', statusTag: { text: 'Vigente', variant: 'success' } },
+                        { value: '4', text: 'Área Marketing 2025 Q1', metaText: '3 de 15 contenidos', statusTag: { text: 'No vigente', variant: 'neutral' } },
+                        { value: '5', text: 'Área Producto 2024 Q4', metaText: '4 de 16 contenidos', statusTag: { text: 'No vigente', variant: 'neutral' } }
+                    ];
                 }
                 if (t === 'iconos') {
                     opt1.leftIcon = 'arrow-up';
@@ -380,6 +405,24 @@ Ubicación: [describe dónde debe estar el botón que abre el menú]</code></pre
                 renderDropdown();
                 openDropdownMenu(overlayId, trigger);
             });
+
+            if (typeof createInput === 'function') {
+                createInput({
+                    containerId: 'dropdown-demo-plan-filter-select',
+                    type: 'select',
+                    label: 'Filtrar por plan',
+                    placeholder: 'Seleccionar plan',
+                    size: 'md',
+                    value: '1',
+                    selectOptions: [
+                        { value: '1', text: 'Área producto - 1er semestre - 2025', metaText: '2 de 8 contenidos', statusTag: { text: 'Vigente', variant: 'success' } },
+                        { value: '2', text: 'UX 2025 semestre 1', metaText: '6 de 6 contenidos', statusTag: { text: 'Vigente', variant: 'success' } },
+                        { value: '3', text: 'Plan obligatorio empresa 2025 - formación IA', metaText: '7 de 10 contenidos', statusTag: { text: 'Vigente', variant: 'success' } },
+                        { value: '4', text: 'Área Marketing 2025 Q1', metaText: '50% de avance', statusTag: { text: 'No vigente', variant: 'neutral' } },
+                        { value: '5', text: 'UX 2024 semestre 1', metaText: '100% de avance', statusTag: { text: 'No vigente', variant: 'neutral' } }
+                    ]
+                });
+            }
         });
         
         function copyPrompt(promptId) {

@@ -195,6 +195,48 @@
     color: var(--ubits-fg-1-high);
 }
 
+/* Variante enriquecida: texto + meta + status-tag (Figma Zona de estudio · filtrar plan) */
+.ubits-dropdown-menu__content--rich-options {
+    min-width: 520px;
+    max-width: min(640px, calc(100vw - 16px));
+}
+
+.ubits-dropdown-menu__option--rich {
+    gap: 5px;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.ubits-dropdown-menu__option--rich .ubits-dropdown-menu__option-text {
+    flex: 1 1 0;
+    min-width: 0;
+    color: var(--ubits-fg-1-medium);
+    word-break: break-word;
+}
+
+.ubits-dropdown-menu__option-rich-meta {
+    flex-shrink: 0;
+    white-space: nowrap;
+    text-align: right;
+    color: var(--ubits-fg-1-medium);
+}
+
+.ubits-dropdown-menu__option-rich-tag {
+    flex-shrink: 0;
+    min-width: 83px;
+    justify-content: center;
+    box-sizing: border-box;
+}
+
+.ubits-dropdown-menu__option--rich.ubits-dropdown-menu__option--selected .ubits-dropdown-menu__option-text {
+    font-weight: var(--font-weight-semibold);
+    color: var(--ubits-fg-1-high);
+}
+
+.ubits-dropdown-menu__option--rich.ubits-dropdown-menu__option--selected .ubits-dropdown-menu__option-rich-meta {
+    font-weight: var(--font-weight-regular);
+}
+
 /* Variante: opciones como lista de radios (componente oficial ubits-radio). Requiere radio-button.css */
 .ubits-dropdown-menu__option--radio {
     cursor: pointer;

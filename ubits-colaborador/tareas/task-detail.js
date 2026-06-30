@@ -919,9 +919,10 @@
 
             if (typeof window.loadCardContentCompact !== 'function') return;
 
-            var isFiqsha = content.origen === 'empresa_fiqsha';
-            var provider = isFiqsha ? 'Fiqsha Smart Consulting' : 'UBITS';
-            var providerLogo = isFiqsha ? '../../images/Favicons/Fiqsha Smart Consulting.jpg' : '../../images/Favicons/UBITS.jpg';
+            var provFields = { provider: 'UBITS', providerLogo: '../../images/Favicons/UBITS.jpg' };
+            if (window.CATALOGO_PROVEEDORES && typeof window.CATALOGO_PROVEEDORES.resolveLearningContentProviderFields === 'function') {
+                provFields = window.CATALOGO_PROVEEDORES.resolveLearningContentProviderFields(content, '../../');
+            }
 
             var progressVal = 0;
             var statusVal = 'default';
@@ -939,8 +940,9 @@
             window.loadCardContentCompact(wrapId, [{
                 type: content.tipoContenido || 'Curso',
                 title: content.titulo || content.title || 'Contenido',
-                provider: provider,
-                providerLogo: providerLogo,
+                provider: provFields.provider,
+                providerLogo: provFields.providerLogo,
+                providers: provFields.providers,
                 duration: String(content.tiempoValor || 60) + ' min',
                 level: getNivelLabelFromId(content.nivelId),
                 progress: progressVal,

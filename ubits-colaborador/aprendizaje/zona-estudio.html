@@ -4,9 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/svg+xml" href="../../images/playground-favicon.svg">
-    <title>UBITS Playground - Dashboard</title>
-    
-    <!-- Estilos locales -->
+    <title>UBITS Playground - Zona de estudio</title>
+
     <link rel="stylesheet" href="../../general-styles/ubits-colors.css">
     <link rel="stylesheet" href="../../general-styles/styles.css">
     <link rel="stylesheet" href="../../general-styles/fontawesome-icons.css">
@@ -16,37 +15,209 @@
     <link rel="stylesheet" href="../../components/tab-bar.css">
     <link rel="stylesheet" href="../../components/floating-menu.css">
     <link rel="stylesheet" href="../../components/profile-menu.css">
+    <link rel="stylesheet" href="../../components/tab.css">
+    <link rel="stylesheet" href="../../components/button.css">
+    <link rel="stylesheet" href="../../components/input.css">
+    <link rel="stylesheet" href="../../components/dropdown-menu.css">
+    <link rel="stylesheet" href="../../components/status-tag.css">
+    <link rel="stylesheet" href="../../components/progress-bar.css">
+    <link rel="stylesheet" href="../../components/toolbar-panel.css">
+    <link rel="stylesheet" href="../../components/avatar.css">
+    <link rel="stylesheet" href="../../components/card-content.css">
+    <link rel="stylesheet" href="../../components/empty-state.css">
     <link rel="stylesheet" href="../../components/tooltip.css">
+    <link rel="stylesheet" href="../../components/carousel-indicators.css">
+    <link rel="stylesheet" href="../../components/alert.css">
     <link rel="stylesheet" href="./zona-estudio.css">
 </head>
-<body data-theme="light">
+<body data-theme="light" class="page-zona-estudio">
     <div class="dashboard-container">
         <div class="tooltip" id="tooltip"></div>
-        
-        <!-- Sidebar Container -->
         <div id="sidebar-container"></div>
 
-        <!-- Main Content -->
         <main class="main-content">
-            <!-- Top Navigation -->
             <div id="top-nav-container"></div>
-            <!-- Content Area -->
             <div class="content-area">
-                <!-- Content wrapper con secciones de widgets -->
                 <div class="content-sections">
-                    <!-- Sección tabs de zona de estudio -->
+                    <!-- Sección 1: tabs oficiales (ubits-tabs-on-bg + ubits-tab) -->
                     <div class="section-single">
-                        <div class="widget-tabs-zona-estudio">
-                            <p class="ubits-body-md-regular">Tabs de zona de estudio</p>
-                            <br>
+                        <div class="widget--transparent widget-tabs-zona-estudio">
+                            <div class="ubits-tabs-on-bg" id="zona-estudio-tabs" role="tablist" aria-label="Zona de estudio">
+                                <button type="button" class="ubits-tab ubits-tab--active" role="tab" aria-selected="true" data-tab-id="contenidos" id="zona-estudio-tab-contenidos">
+                                    <span>Plan de contenidos</span>
+                                </button>
+                                <button type="button" class="ubits-tab" role="tab" aria-selected="false" data-tab-id="competencias" id="zona-estudio-tab-competencias">
+                                    <span>Plan de competencias</span>
+                                </button>
+                                <button type="button" class="ubits-tab" role="tab" aria-selected="false" data-tab-id="exclusivo" id="zona-estudio-tab-exclusivo">
+                                    <span>Exclusivo para mi</span>
+                                </button>
+                                <button type="button" class="ubits-tab" role="tab" aria-selected="false" data-tab-id="historial" id="zona-estudio-tab-historial">
+                                    <span>Historial y certificados</span>
+                                </button>
+                            </div>
                         </div>
                     </div>
 
-                    <!-- Sección contenido de tabs -->
+                    <!-- Sección 2: contenido del tab activo -->
                     <div class="section-single">
                         <div class="widget-contenido-tabs">
-                            <p class="ubits-body-md-regular">Contenido de tabs</p>
-                            <br><br><br><br><br><br><br><br><br><br><br><br><br>
+                            <!-- Panel: Plan de contenidos -->
+                            <div class="zona-estudio-tab-panel" id="zona-estudio-panel-contenidos" role="tabpanel" aria-labelledby="zona-estudio-tab-contenidos">
+                                <div class="zona-estudio-tab-panel__inner">
+                                    <!-- Filtro y progreso del plan -->
+                                    <div class="widget-zona-estudio-plan" id="zona-estudio-plan-widget">
+                                        <div class="zona-estudio-plan__top">
+                                            <div class="zona-estudio-plan__select" id="zona-estudio-plan-select"></div>
+                                            <div class="zona-estudio-plan__vigencia">
+                                                <p class="ubits-body-sm-regular zona-estudio-plan__vigencia-text" id="zona-estudio-plan-vigencia"></p>
+                                                <span class="ubits-status-tag ubits-status-tag--info ubits-status-tag--sm" id="zona-estudio-plan-status">
+                                                    <span class="ubits-status-tag__text">Vigente</span>
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div id="zona-estudio-plan-vencido-alert" class="zona-estudio-plan__vencido-alert" hidden></div>
+                                        <div class="zona-estudio-plan__progress">
+                                            <div class="zona-estudio-plan__progress-meta">
+                                                <span class="ubits-body-sm-bold zona-estudio-plan__progress-label">Progreso:</span>
+                                                <span class="ubits-body-sm-regular zona-estudio-plan__progress-count" id="zona-estudio-plan-progress-count"></span>
+                                                <span class="ubits-body-sm-bold zona-estudio-plan__progress-pct" id="zona-estudio-plan-progress-pct"></span>
+                                            </div>
+                                            <div id="zona-estudio-plan-progress-bar"></div>
+                                        </div>
+                                    </div>
+
+                                    <p class="ubits-body-sm-regular zona-estudio-plan__desc" id="zona-estudio-plan-desc"></p>
+
+                                    <!-- Toolbar + grid -->
+                                    <div class="zona-estudio-contenidos-block">
+                                        <div class="ubits-toolbar-panel ubits-toolbar-panel--plain" id="zona-estudio-toolbar">
+                                            <div class="ubits-toolbar-panel__bar">
+                                                <div class="ubits-toolbar-panel__title-block">
+                                                    <span class="ubits-toolbar-panel__title ubits-body-md-bold">Lista de contenidos</span>
+                                                    <span class="ubits-toolbar-panel__meta">
+                                                        <span class="ubits-body-sm-regular" id="zona-estudio-results-count" aria-live="polite">0</span>
+                                                        <span class="ubits-body-sm-regular">resultados</span>
+                                                    </span>
+                                                </div>
+                                                <div class="ubits-toolbar-panel__actions">
+                                                    <div class="ubits-toolbar-panel__search-group" id="zona-estudio-search-group">
+                                                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only ubits-toolbar-panel__search-toggle" id="zona-estudio-search-toggle" data-tooltip="Buscar" data-tooltip-delay="1000" aria-label="Buscar">
+                                                            <i class="far fa-magnifying-glass"></i>
+                                                        </button>
+                                                        <div id="zona-estudio-search-inline" class="ubits-toolbar-panel__search-inline" style="display: none;" aria-hidden="true"></div>
+                                                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only ubits-toolbar-panel__filter-btn" id="zona-estudio-filter-btn" data-tooltip="Filtrar" data-tooltip-delay="1000" aria-label="Filtrar">
+                                                            <i class="far fa-filter"></i>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="grid-cards-container" id="zona-estudio-cards-grid"></div>
+                                        <div id="zona-estudio-empty-state" style="display: none;"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Panel: Plan de competencias -->
+                            <div class="zona-estudio-tab-panel" id="zona-estudio-panel-competencias" role="tabpanel" aria-labelledby="zona-estudio-tab-competencias" hidden>
+                                <div class="zona-estudio-tab-panel__inner">
+                                    <div class="widget-zona-estudio-plan" id="zona-estudio-comp-plan-widget">
+                                        <div class="zona-estudio-plan__top">
+                                            <div class="zona-estudio-plan__select" id="zona-estudio-comp-plan-select"></div>
+                                            <div class="zona-estudio-plan__vigencia">
+                                                <p class="ubits-body-sm-regular zona-estudio-plan__vigencia-text" id="zona-estudio-comp-plan-vigencia"></p>
+                                                <span class="ubits-status-tag ubits-status-tag--info ubits-status-tag--sm" id="zona-estudio-comp-plan-status">
+                                                    <span class="ubits-status-tag__text">Vigente</span>
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div id="zona-estudio-comp-plan-vencido-alert" class="zona-estudio-plan__vencido-alert" hidden></div>
+                                        <div class="zona-estudio-plan__progress">
+                                            <div class="zona-estudio-plan__progress-meta">
+                                                <span class="ubits-body-sm-bold zona-estudio-plan__progress-label">Progreso:</span>
+                                                <span class="ubits-body-sm-regular zona-estudio-plan__progress-count" id="zona-estudio-comp-plan-progress-count"></span>
+                                                <span class="ubits-body-sm-bold zona-estudio-plan__progress-pct" id="zona-estudio-comp-plan-progress-pct"></span>
+                                            </div>
+                                            <div id="zona-estudio-comp-plan-progress-bar"></div>
+                                        </div>
+                                    </div>
+
+                                    <p class="ubits-body-sm-regular zona-estudio-plan__desc" id="zona-estudio-comp-plan-desc"></p>
+
+                                    <div class="zona-estudio-competencias-list" id="zona-estudio-competencias-list"></div>
+                                    <div id="zona-estudio-competencias-empty" style="display: none;"></div>
+                                </div>
+                            </div>
+
+                            <!-- Panel: Exclusivo para mi -->
+                            <div class="zona-estudio-tab-panel" id="zona-estudio-panel-exclusivo" role="tabpanel" aria-labelledby="zona-estudio-tab-exclusivo" hidden>
+                                <div class="zona-estudio-tab-panel__inner">
+                                    <p class="ubits-body-sm-regular zona-estudio-plan__desc" id="zona-estudio-exclusivo-desc"></p>
+                                    <div class="zona-estudio-contenidos-block">
+                                        <div class="ubits-toolbar-panel ubits-toolbar-panel--plain zona-estudio-toolbar" id="zona-estudio-exclusivo-toolbar">
+                                            <div class="ubits-toolbar-panel__bar">
+                                                <div class="ubits-toolbar-panel__title-block">
+                                                    <span class="ubits-toolbar-panel__title ubits-body-md-bold">Lista de contenidos</span>
+                                                    <span class="ubits-toolbar-panel__meta">
+                                                        <span class="ubits-body-sm-regular" id="zona-estudio-exclusivo-results-count" aria-live="polite">0</span>
+                                                        <span class="ubits-body-sm-regular">resultados</span>
+                                                    </span>
+                                                </div>
+                                                <div class="ubits-toolbar-panel__actions">
+                                                    <div class="ubits-toolbar-panel__search-group" id="zona-estudio-exclusivo-search-group">
+                                                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only ubits-toolbar-panel__search-toggle" id="zona-estudio-exclusivo-search-toggle" data-tooltip="Buscar" data-tooltip-delay="1000" aria-label="Buscar">
+                                                            <i class="far fa-magnifying-glass"></i>
+                                                        </button>
+                                                        <div id="zona-estudio-exclusivo-search-inline" class="ubits-toolbar-panel__search-inline" style="display: none;" aria-hidden="true"></div>
+                                                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only ubits-toolbar-panel__filter-btn" id="zona-estudio-exclusivo-filter-btn" data-tooltip="Filtrar" data-tooltip-delay="1000" aria-label="Filtrar">
+                                                            <i class="far fa-filter"></i>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="grid-cards-container" id="zona-estudio-exclusivo-cards-grid"></div>
+                                        <div id="zona-estudio-exclusivo-empty-state" style="display: none;"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Panel: Historial y certificados -->
+                            <div class="zona-estudio-tab-panel" id="zona-estudio-panel-historial" role="tabpanel" aria-labelledby="zona-estudio-tab-historial" hidden>
+                                <div class="zona-estudio-tab-panel__inner">
+                                    <p class="ubits-body-sm-regular zona-estudio-plan__desc" id="zona-estudio-historial-desc"></p>
+                                    <div class="zona-estudio-contenidos-block">
+                                        <div class="ubits-toolbar-panel ubits-toolbar-panel--plain zona-estudio-toolbar" id="zona-estudio-historial-toolbar">
+                                            <div class="ubits-toolbar-panel__bar">
+                                                <div class="ubits-toolbar-panel__title-block">
+                                                    <span class="ubits-toolbar-panel__title ubits-body-md-bold">Lista de contenidos</span>
+                                                    <span class="ubits-toolbar-panel__meta">
+                                                        <span class="ubits-body-sm-regular" id="zona-estudio-historial-results-count" aria-live="polite">0</span>
+                                                        <span class="ubits-body-sm-regular">resultados</span>
+                                                    </span>
+                                                </div>
+                                                <div class="ubits-toolbar-panel__actions">
+                                                    <div class="ubits-toolbar-panel__search-group" id="zona-estudio-historial-search-group">
+                                                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only ubits-toolbar-panel__search-toggle" id="zona-estudio-historial-search-toggle" data-tooltip="Buscar" data-tooltip-delay="1000" aria-label="Buscar">
+                                                            <i class="far fa-magnifying-glass"></i>
+                                                        </button>
+                                                        <div id="zona-estudio-historial-search-inline" class="ubits-toolbar-panel__search-inline" style="display: none;" aria-hidden="true"></div>
+                                                        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only ubits-toolbar-panel__filter-btn" id="zona-estudio-historial-filter-btn" data-tooltip="Filtrar" data-tooltip-delay="1000" aria-label="Filtrar">
+                                                            <i class="far fa-filter"></i>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="grid-cards-container" id="zona-estudio-historial-cards-grid"></div>
+                                        <div id="zona-estudio-historial-empty-state" style="display: none;"></div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -54,73 +225,69 @@
         </main>
     </div>
 
-    <!-- Tab Bar Container -->
     <div id="tab-bar-container"></div>
-
-    <!-- Floating Menu Container -->
     <div id="floating-menu-container"></div>
-    
-    <!-- Profile Menu Container -->
     <div id="profile-menu-container"></div>
 
-        <script src="../../components/tooltip.js"></script>
-<script src="../../components/sidebar.js"></script>
+    <script src="../../components/tooltip.js"></script>
+    <script src="../../components/sidebar.js"></script>
     <script src="../../components/sub-nav.js"></script>
     <script src="../../components/tab-bar.js"></script>
     <script src="../../components/floating-menu.js"></script>
     <script src="../../components/profile-menu.js"></script>
+    <script src="../../components/tab.js"></script>
+    <script src="../../components/input.js"></script>
+    <script src="../../components/dropdown-menu.js"></script>
+    <script src="../../components/progress-bar.js"></script>
+    <script src="../../components/avatar.js"></script>
+    <script src="../../components/card-content.js"></script>
+    <script src="../../components/empty-state.js"></script>
+    <script src="../../components/carousel-indicators.js"></script>
+    <script src="../../components/alert.js"></script>
+    <script src="../../bd-master/bd-master-niveles-contenido.js"></script>
+    <script src="../../bd-master/bd-master-aliados.js"></script>
+    <script src="../../bd-master/bd-master-competencias.js"></script>
+    <script src="../../bd-master/catalogo-proveedores-helpers.js"></script>
+    <script src="../../bd-master/bd-master-colaboradores.js"></script>
+    <script src="../../bd-master/bd-contenidos-ubits.js"></script>
+    <script src="../../bd-master/bd-contenidos-fiqsha.js"></script>
+    <script src="../../bd-master/bd-planes-formacion.js"></script>
     <script src="../../script.js"></script>
+    <script src="./zona-estudio.js"></script>
     <script>
-        // Cargar componentes dinámicamente
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             loadSidebar('sidebar-container', 'aprendizaje');
             loadSubNav('top-nav-container', 'aprendizaje');
             loadTabBar('tab-bar-container');
             loadFloatingMenu('floating-menu-container');
             loadProfileMenu('profile-menu-container');
-            
-            // Activar el tab "Zona de estudio" específicamente después de cargar el SubNav
-            setTimeout(() => {
-                // Remover active de todos los tabs (desktop y móvil)
-                document.querySelectorAll('.nav-tab, .hamburger-item').forEach(item => {
+
+            setTimeout(function () {
+                document.querySelectorAll('.nav-tab, .hamburger-item').forEach(function (item) {
                     item.classList.remove('active');
                 });
-                
-                // Activar el tab Zona de estudio en desktop
-                const studyZoneTab = document.querySelector('.nav-tab[data-tab="study-zone"]');
-                if (studyZoneTab) {
-                    studyZoneTab.classList.add('active');
-                }
-                
-                // Activar el tab Zona de estudio en móvil (hamburger menu)
-                const studyZoneHamburger = document.querySelector('.hamburger-item[data-tab="study-zone"]');
-                if (studyZoneHamburger) {
-                    studyZoneHamburger.classList.add('active');
-                }
-                
-                // Activar el botón de aprendizaje en el sidebar
-                const aprendizajeButton = document.querySelector('.nav-button[data-section="aprendizaje"]');
+                var studyZoneTab = document.querySelector('.nav-tab[data-tab="study-zone"]');
+                if (studyZoneTab) studyZoneTab.classList.add('active');
+                var studyZoneHamburger = document.querySelector('.hamburger-item[data-tab="study-zone"]');
+                if (studyZoneHamburger) studyZoneHamburger.classList.add('active');
+                var aprendizajeButton = document.querySelector('.nav-button[data-section="aprendizaje"]');
                 if (aprendizajeButton) {
-                    // Remover active de todos los botones del sidebar
-                    document.querySelectorAll('.nav-button').forEach(btn => btn.classList.remove('active'));
-                    // Activar el botón de aprendizaje
+                    document.querySelectorAll('.nav-button').forEach(function (btn) { btn.classList.remove('active'); });
                     aprendizajeButton.classList.add('active');
                 }
-                
-                // Activar el botón "Módulos" del Tab-bar móvil
-                const modulosTabBarItem = document.querySelector('.tab-bar-item[data-tab="modulos"]');
+                var modulosTabBarItem = document.querySelector('.tab-bar-item[data-tab="modulos"]');
                 if (modulosTabBarItem) {
-                    // Remover active de todos los items del tab-bar
-                    document.querySelectorAll('.tab-bar-item').forEach(item => item.classList.remove('active'));
-                    // Activar el item módulos
+                    document.querySelectorAll('.tab-bar-item').forEach(function (item) { item.classList.remove('active'); });
                     modulosTabBarItem.classList.add('active');
                 }
-                
-                // Activar la opción "Zona de estudio" dentro del grupo "Aprendizaje" del floating menu
                 if (typeof setActiveAccordionLink === 'function') {
                     setActiveAccordionLink('zona-estudio');
                 }
             }, 200);
+
+            if (typeof initZonaEstudioPage === 'function') {
+                initZonaEstudioPage();
+            }
         });
     </script>
 </body>

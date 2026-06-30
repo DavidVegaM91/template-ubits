@@ -521,6 +521,35 @@
         return hydratePlan(db.planes[idx]);
     }
 
+    function estadoSortRank(estado) {
+        if (estado === 'Vigente') return 0;
+        if (estado === 'No vigente') return 1;
+        if (String(estado || '').indexOf('Procesando') === 0) return 2;
+        if (estado === 'Planeado') return 3;
+        return 4;
+    }
+
+    /** Planes de formación asignados a un colaborador (vista learner / zona de estudio). */
+    function getPlanesParaColaborador(colaboradorId, opts) {
+        opts = opts || {};
+        var cid = String(colaboradorId || '');
+        var tipo = opts.tipo;
+        var estados = opts.estados;
+        return db.planes.map(hydratePlan).filter(function (p) {
+            if (tipo && p.tipo !== tipo) return false;
+            if (!planTieneColaborador(p, [cid])) return false;
+            if (estados && estados.length && estados.indexOf(p.estado) < 0) return false;
+            return true;
+        }).sort(function (a, b) {
+            var ra = estadoSortRank(a.estado);
+            var rb = estadoSortRank(b.estado);
+            if (ra !== rb) return ra - rb;
+            var endA = parseIsoDate(a.fechaFinIso) || new Date(0);
+            var endB = parseIsoDate(b.fechaFinIso) || new Date(0);
+            return endB - endA;
+        });
+    }
+
     function getPlanesByTipo(tipo) {
         var t = tipo === 'competencias' ? 'competencias' : 'contenidos';
         return db.planes.filter(function (p) { return p.tipo === t; }).map(hydratePlan);
@@ -690,6 +719,7 @@
         getProgresoAgregadoPlan: getProgresoAgregadoPlan,
         getAsignadosFromPlan: getAsignadosFromPlan,
         getPlanesVisiblesParaLider: getPlanesVisiblesParaLider,
+        getPlanesParaColaborador: getPlanesParaColaborador,
         getPlanesVisiblesCreator: getPlanesVisiblesCreator,
         getPlanesListData: getPlanesListData,
         toEditarView: toEditarView,

@@ -31,14 +31,15 @@ window.BDS_CONTENIDOS_UBITS = {
         "Dra. Ana Ruiz · Coach ejecutiva",
         "Mg. Carlos Vega · Consultor UBITS"
       ],
-      "aliadoId": "aly-001",
+      "aliadoId": "aly-014",
       "nivelIngles": null,
       "fileName": "360-grados-Citas-glosas-reflexiones.jpeg",
       "title": "360 Grados citas glosas reflexiones",
       "imagePath": "cards-learn/360-grados-Citas-glosas-reflexiones.jpeg",
       "nivelId": "niv-001",
       "providersAliadosIds": [
-        "aly-001"
+        "aly-001",
+        "aly-014"
       ],
       "catalogoId": "catalogo_ubits",
       "conCertificacion": false
@@ -63,14 +64,15 @@ window.BDS_CONTENIDOS_UBITS = {
         "Lic. Pedro Soto · RR.HH.",
         "Ing. Laura Méndez · Especialista en contenido"
       ],
-      "aliadoId": "aly-001",
+      "aliadoId": "aly-015",
       "nivelIngles": null,
       "fileName": "abm-marketing-la-mejor-estrategia-para-ventas-b2b.jpeg",
       "title": "Abm marketing la mejor estrategia para ventas b2b",
       "imagePath": "cards-learn/abm-marketing-la-mejor-estrategia-para-ventas-b2b.jpeg",
       "nivelId": "niv-002",
       "providersAliadosIds": [
-        "aly-001"
+        "aly-001",
+        "aly-015"
       ],
       "catalogoId": "catalogo_ubits",
       "conCertificacion": true
@@ -95,14 +97,15 @@ window.BDS_CONTENIDOS_UBITS = {
         "Mg. Carlos Vega · Consultor UBITS",
         "Dr. Jorge Pinto · Facilitador senior"
       ],
-      "aliadoId": "aly-001",
+      "aliadoId": "aly-016",
       "nivelIngles": null,
       "fileName": "administracion-efectiva-del-tiempo.jpg",
       "title": "Administración efectiva del tiempo",
       "imagePath": "cards-learn/administracion-efectiva-del-tiempo.jpg",
       "nivelId": "niv-003",
       "providersAliadosIds": [
-        "aly-001"
+        "aly-001",
+        "aly-016"
       ],
       "catalogoId": "catalogo_ubits",
       "conCertificacion": false
@@ -127,14 +130,15 @@ window.BDS_CONTENIDOS_UBITS = {
         "Ing. Laura Méndez · Especialista en contenido",
         "Mtra. Elena Ríos · Diseño instruccional"
       ],
-      "aliadoId": "aly-001",
+      "aliadoId": "aly-017",
       "nivelIngles": null,
       "fileName": "agilidad-emocional.jpeg",
       "title": "Agilidad emocional",
       "imagePath": "cards-learn/agilidad-emocional.jpeg",
       "nivelId": "niv-003",
       "providersAliadosIds": [
-        "aly-001"
+        "aly-001",
+        "aly-017"
       ],
       "catalogoId": "catalogo_ubits",
       "conCertificacion": false
@@ -159,14 +163,15 @@ window.BDS_CONTENIDOS_UBITS = {
         "Dr. Jorge Pinto · Facilitador senior",
         "Dra. Ana Ruiz · Coach ejecutiva"
       ],
-      "aliadoId": "aly-001",
+      "aliadoId": "aly-002",
       "nivelIngles": null,
       "fileName": "analisis-de-mercado.jpeg",
       "title": "Análisis de mercado",
       "imagePath": "cards-learn/analisis-de-mercado.jpeg",
       "nivelId": "niv-003",
       "providersAliadosIds": [
-        "aly-001"
+        "aly-001",
+        "aly-002"
       ],
       "catalogoId": "catalogo_ubits",
       "conCertificacion": true
@@ -191,14 +196,15 @@ window.BDS_CONTENIDOS_UBITS = {
         "Mtra. Elena Ríos · Diseño instruccional",
         "Lic. Pedro Soto · RR.HH."
       ],
-      "aliadoId": "aly-001",
+      "aliadoId": "aly-003",
       "nivelIngles": null,
       "fileName": "apps-de-inteligencia-artificial-que-todo-profe-debe-conocer.jpeg",
       "title": "Apps de inteligencia artificial que todo profe debe conocer",
       "imagePath": "cards-learn/apps-de-inteligencia-artificial-que-todo-profe-debe-conocer.jpeg",
       "nivelId": "niv-002",
       "providersAliadosIds": [
-        "aly-001"
+        "aly-001",
+        "aly-003"
       ],
       "catalogoId": "catalogo_ubits",
       "conCertificacion": false
@@ -257,14 +263,15 @@ window.BDS_CONTENIDOS_UBITS = {
         "Lic. Pedro Soto · RR.HH.",
         "Ing. Laura Méndez · Especialista en contenido"
       ],
-      "aliadoId": "aly-001",
+      "aliadoId": "aly-005",
       "nivelIngles": null,
       "fileName": "autodireccion-de-equipos-de-alto-desmpeno.jpeg",
       "title": "Autodirección de equipos de alto desempeño",
       "imagePath": "cards-learn/autodireccion-de-equipos-de-alto-desmpeno.jpeg",
       "nivelId": "niv-002",
       "providersAliadosIds": [
-        "aly-001"
+        "aly-001",
+        "aly-005"
       ],
       "catalogoId": "catalogo_ubits",
       "conCertificacion": true
@@ -289,14 +296,15 @@ window.BDS_CONTENIDOS_UBITS = {
         "Mg. Carlos Vega · Consultor UBITS",
         "Dr. Jorge Pinto · Facilitador senior"
       ],
-      "aliadoId": "aly-001",
+      "aliadoId": "aly-006",
       "nivelIngles": null,
       "fileName": "cambio-en-el-estilo-de-liderazgo.jpeg",
       "title": "Cambio en el estilo de liderazgo",
       "imagePath": "cards-learn/cambio-en-el-estilo-de-liderazgo.jpeg",
       "nivelId": "niv-002",
       "providersAliadosIds": [
-        "aly-001"
+        "aly-001",
+        "aly-006"
       ],
       "catalogoId": "catalogo_ubits",
       "conCertificacion": false
@@ -321,14 +329,15 @@ window.BDS_CONTENIDOS_UBITS = {
         "Ing. Laura Méndez · Especialista en contenido",
         "Mtra. Elena Ríos · Diseño instruccional"
       ],
-      "aliadoId": "aly-001",
+      "aliadoId": "aly-012",
       "nivelIngles": null,
       "fileName": "campanas-de-marketing.jpeg",
       "title": "Campañas de marketing",
       "imagePath": "cards-learn/campanas-de-marketing.jpeg",
       "nivelId": "niv-002",
       "providersAliadosIds": [
-        "aly-001"
+        "aly-001",
+        "aly-012"
       ],
       "catalogoId": "catalogo_ubits",
       "conCertificacion": false
@@ -387,14 +396,15 @@ window.BDS_CONTENIDOS_UBITS = {
         "Mtra. Elena Ríos · Diseño instruccional",
         "Lic. Pedro Soto · RR.HH."
       ],
-      "aliadoId": "aly-001",
+      "aliadoId": "aly-014",
       "nivelIngles": null,
       "fileName": "como-dirigir-un-equipo-de-producto.jpeg",
       "title": "Cómo dirigir un equipo de producto",
       "imagePath": "cards-learn/como-dirigir-un-equipo-de-producto.jpeg",
       "nivelId": "niv-001",
       "providersAliadosIds": [
-        "aly-001"
+        "aly-001",
+        "aly-014"
       ],
       "catalogoId": "catalogo_ubits",
       "conCertificacion": false
@@ -419,14 +429,15 @@ window.BDS_CONTENIDOS_UBITS = {
         "Dra. Ana Ruiz · Coach ejecutiva",
         "Mg. Carlos Vega · Consultor UBITS"
       ],
-      "aliadoId": "aly-001",
+      "aliadoId": "aly-015",
       "nivelIngles": null,
       "fileName": "como-disenar-una-organizacion-para-la-creatividad.jpeg",
       "title": "Cómo diseñar una organización para la creatividad",
       "imagePath": "cards-learn/como-disenar-una-organizacion-para-la-creatividad.jpeg",
       "nivelId": "niv-002",
       "providersAliadosIds": [
-        "aly-001"
+        "aly-001",
+        "aly-015"
       ],
       "catalogoId": "catalogo_ubits",
       "conCertificacion": false
@@ -451,14 +462,15 @@ window.BDS_CONTENIDOS_UBITS = {
         "Lic. Pedro Soto · RR.HH.",
         "Ing. Laura Méndez · Especialista en contenido"
       ],
-      "aliadoId": "aly-001",
+      "aliadoId": "aly-016",
       "nivelIngles": null,
       "fileName": "como-ejercer-el-liderazgo-inclusivo.jpeg",
       "title": "Cómo ejercer el liderazgo inclusivo",
       "imagePath": "cards-learn/como-ejercer-el-liderazgo-inclusivo.jpeg",
       "nivelId": "niv-001",
       "providersAliadosIds": [
-        "aly-001"
+        "aly-001",
+        "aly-016"
       ],
       "catalogoId": "catalogo_ubits",
       "conCertificacion": true
@@ -483,14 +495,15 @@ window.BDS_CONTENIDOS_UBITS = {
         "Mg. Carlos Vega · Consultor UBITS",
         "Dr. Jorge Pinto · Facilitador senior"
       ],
-      "aliadoId": "aly-001",
+      "aliadoId": "aly-017",
       "nivelIngles": null,
       "fileName": "como-hablar-y-escuchar-mejor-competencias-de-comunicacion-oral.jpeg",
       "title": "Cómo hablar y escuchar mejor competencias de comunicación oral",
       "imagePath": "cards-learn/como-hablar-y-escuchar-mejor-competencias-de-comunicacion-oral.jpeg",
       "nivelId": "niv-002",
       "providersAliadosIds": [
-        "aly-001"
+        "aly-001",
+        "aly-017"
       ],
       "catalogoId": "catalogo_ubits",
       "conCertificacion": false
@@ -515,14 +528,15 @@ window.BDS_CONTENIDOS_UBITS = {
         "Ing. Laura Méndez · Especialista en contenido",
         "Mtra. Elena Ríos · Diseño instruccional"
       ],
-      "aliadoId": "aly-001",
+      "aliadoId": "aly-002",
       "nivelIngles": null,
       "fileName": "componentes y propiedades en react.jpeg",
       "title": "Componentes y propiedades en react",
       "imagePath": "cards-learn/componentes y propiedades en react.jpeg",
       "nivelId": "niv-002",
       "providersAliadosIds": [
-        "aly-001"
+        "aly-001",
+        "aly-002"
       ],
       "catalogoId": "catalogo_ubits",
       "conCertificacion": false
@@ -547,14 +561,15 @@ window.BDS_CONTENIDOS_UBITS = {
         "Dr. Jorge Pinto · Facilitador senior",
         "Dra. Ana Ruiz · Coach ejecutiva"
       ],
-      "aliadoId": "aly-001",
+      "aliadoId": "aly-003",
       "nivelIngles": null,
       "fileName": "comunicacion-efectiva-para-liderar-equipos.jpeg",
       "title": "Comunicación efectiva para liderar equipos",
       "imagePath": "cards-learn/comunicacion-efectiva-para-liderar-equipos.jpeg",
       "nivelId": "niv-002",
       "providersAliadosIds": [
-        "aly-001"
+        "aly-001",
+        "aly-003"
       ],
       "catalogoId": "catalogo_ubits",
       "conCertificacion": true
@@ -613,14 +628,15 @@ window.BDS_CONTENIDOS_UBITS = {
         "Dra. Ana Ruiz · Coach ejecutiva",
         "Mg. Carlos Vega · Consultor UBITS"
       ],
-      "aliadoId": "aly-001",
+      "aliadoId": "aly-005",
       "nivelIngles": null,
       "fileName": "comunicacion-y-empatia-claves-para-el-exito-en-equipo.jpeg",
       "title": "Comunicación y empatía claves para el éxito en equipo",
       "imagePath": "cards-learn/comunicacion-y-empatia-claves-para-el-exito-en-equipo.jpeg",
       "nivelId": "niv-003",
       "providersAliadosIds": [
-        "aly-001"
+        "aly-001",
+        "aly-005"
       ],
       "catalogoId": "catalogo_ubits",
       "conCertificacion": false
@@ -645,14 +661,15 @@ window.BDS_CONTENIDOS_UBITS = {
         "Lic. Pedro Soto · RR.HH.",
         "Ing. Laura Méndez · Especialista en contenido"
       ],
-      "aliadoId": "aly-001",
+      "aliadoId": "aly-011",
       "nivelIngles": null,
       "fileName": "conoce-el-diagnostico-de-innovacion-empresarial.jpeg",
       "title": "Conoce el diagnóstico de innovación empresarial",
       "imagePath": "cards-learn/conoce-el-diagnostico-de-innovacion-empresarial.jpeg",
       "nivelId": "niv-002",
       "providersAliadosIds": [
-        "aly-001"
+        "aly-001",
+        "aly-011"
       ],
       "catalogoId": "catalogo_ubits",
       "conCertificacion": true
@@ -677,14 +694,15 @@ window.BDS_CONTENIDOS_UBITS = {
         "Mg. Carlos Vega · Consultor UBITS",
         "Dr. Jorge Pinto · Facilitador senior"
       ],
-      "aliadoId": "aly-001",
+      "aliadoId": "aly-012",
       "nivelIngles": null,
       "fileName": "content-marketing-crea-el-plan-de-tu-marca.jpeg",
       "title": "Content marketing crea el plan de tu marca",
       "imagePath": "cards-learn/content-marketing-crea-el-plan-de-tu-marca.jpeg",
       "nivelId": "niv-002",
       "providersAliadosIds": [
-        "aly-001"
+        "aly-001",
+        "aly-012"
       ],
       "catalogoId": "catalogo_ubits",
       "conCertificacion": false
@@ -709,14 +727,15 @@ window.BDS_CONTENIDOS_UBITS = {
         "Ing. Laura Méndez · Especialista en contenido",
         "Mtra. Elena Ríos · Diseño instruccional"
       ],
-      "aliadoId": "aly-001",
+      "aliadoId": "aly-013",
       "nivelIngles": null,
       "fileName": "content-marketing-mas-alla-de-las-redes-sociales.jpeg",
       "title": "Content marketing más allá de las redes sociales",
       "imagePath": "cards-learn/content-marketing-mas-alla-de-las-redes-sociales.jpeg",
       "nivelId": "niv-003",
       "providersAliadosIds": [
-        "aly-001"
+        "aly-001",
+        "aly-013"
       ],
       "catalogoId": "catalogo_ubits",
       "conCertificacion": false
@@ -741,14 +760,15 @@ window.BDS_CONTENIDOS_UBITS = {
         "Dr. Jorge Pinto · Facilitador senior",
         "Dra. Ana Ruiz · Coach ejecutiva"
       ],
-      "aliadoId": "aly-001",
+      "aliadoId": "aly-014",
       "nivelIngles": null,
       "fileName": "content-marketing-mide-el-rendimiento-de-tu-estrategia.jpeg",
       "title": "Content marketing mide el rendimiento de tu estrategia",
       "imagePath": "cards-learn/content-marketing-mide-el-rendimiento-de-tu-estrategia.jpeg",
       "nivelId": "niv-003",
       "providersAliadosIds": [
-        "aly-001"
+        "aly-001",
+        "aly-014"
       ],
       "catalogoId": "catalogo_ubits",
       "conCertificacion": true
@@ -773,14 +793,15 @@ window.BDS_CONTENIDOS_UBITS = {
         "Mtra. Elena Ríos · Diseño instruccional",
         "Lic. Pedro Soto · RR.HH."
       ],
-      "aliadoId": "aly-001",
+      "aliadoId": "aly-015",
       "nivelIngles": null,
       "fileName": "crea-historias-de-usuario-mas-efectivas.jpeg",
       "title": "Crea historias de usuario más efectivas",
       "imagePath": "cards-learn/crea-historias-de-usuario-mas-efectivas.jpeg",
       "nivelId": "niv-003",
       "providersAliadosIds": [
-        "aly-001"
+        "aly-001",
+        "aly-015"
       ],
       "catalogoId": "catalogo_ubits",
       "conCertificacion": false
@@ -805,14 +826,15 @@ window.BDS_CONTENIDOS_UBITS = {
         "Dra. Ana Ruiz · Coach ejecutiva",
         "Mg. Carlos Vega · Consultor UBITS"
       ],
-      "aliadoId": "aly-001",
+      "aliadoId": "aly-016",
       "nivelIngles": null,
       "fileName": "creatividad-e-innovacion-en-equipos.jpeg",
       "title": "Creatividad e innovación en equipos",
       "imagePath": "cards-learn/creatividad-e-innovacion-en-equipos.jpeg",
       "nivelId": "niv-003",
       "providersAliadosIds": [
-        "aly-001"
+        "aly-001",
+        "aly-016"
       ],
       "catalogoId": "catalogo_ubits",
       "conCertificacion": false
@@ -837,14 +859,15 @@ window.BDS_CONTENIDOS_UBITS = {
         "Lic. Pedro Soto · RR.HH.",
         "Ing. Laura Méndez · Especialista en contenido"
       ],
-      "aliadoId": "aly-001",
+      "aliadoId": "aly-017",
       "nivelIngles": null,
       "fileName": "de-la-comunicacion-a-la-neurocomunicacion.jpeg",
       "title": "De la comunicación a la neurocomunicación",
       "imagePath": "cards-learn/de-la-comunicacion-a-la-neurocomunicacion.jpeg",
       "nivelId": "niv-003",
       "providersAliadosIds": [
-        "aly-001"
+        "aly-001",
+        "aly-017"
       ],
       "catalogoId": "catalogo_ubits",
       "conCertificacion": true
@@ -869,14 +892,15 @@ window.BDS_CONTENIDOS_UBITS = {
         "Mg. Carlos Vega · Consultor UBITS",
         "Dr. Jorge Pinto · Facilitador senior"
       ],
-      "aliadoId": "aly-001",
+      "aliadoId": "aly-002",
       "nivelIngles": null,
       "fileName": "de-soldado-a-ceo.jpeg",
       "title": "De soldado a ceo",
       "imagePath": "cards-learn/de-soldado-a-ceo.jpeg",
       "nivelId": "niv-001",
       "providersAliadosIds": [
-        "aly-001"
+        "aly-001",
+        "aly-002"
       ],
       "catalogoId": "catalogo_ubits",
       "conCertificacion": false
@@ -901,14 +925,15 @@ window.BDS_CONTENIDOS_UBITS = {
         "Ing. Laura Méndez · Especialista en contenido",
         "Mtra. Elena Ríos · Diseño instruccional"
       ],
-      "aliadoId": "aly-001",
+      "aliadoId": "aly-003",
       "nivelIngles": null,
       "fileName": "define-una-estrategia-de-marketing-de-influencia.jpeg",
       "title": "Define una estrategia de marketing de influencia",
       "imagePath": "cards-learn/define-una-estrategia-de-marketing-de-influencia.jpeg",
       "nivelId": "niv-001",
       "providersAliadosIds": [
-        "aly-001"
+        "aly-001",
+        "aly-003"
       ],
       "catalogoId": "catalogo_ubits",
       "conCertificacion": false
@@ -1001,14 +1026,15 @@ window.BDS_CONTENIDOS_UBITS = {
         "Dra. Ana Ruiz · Coach ejecutiva",
         "Mg. Carlos Vega · Consultor UBITS"
       ],
-      "aliadoId": "aly-001",
+      "aliadoId": "aly-011",
       "nivelIngles": null,
       "fileName": "digital-marketing-master.jpeg",
       "title": "Digital marketing master",
       "imagePath": "cards-learn/digital-marketing-master.jpeg",
       "nivelId": "niv-002",
       "providersAliadosIds": [
-        "aly-001"
+        "aly-001",
+        "aly-011"
       ],
       "catalogoId": "catalogo_ubits",
       "conCertificacion": false
@@ -1033,14 +1059,15 @@ window.BDS_CONTENIDOS_UBITS = {
         "Lic. Pedro Soto · RR.HH.",
         "Ing. Laura Méndez · Especialista en contenido"
       ],
-      "aliadoId": "aly-001",
+      "aliadoId": "aly-012",
       "nivelIngles": null,
       "fileName": "disena-el-modelo-de-negocio-de-tu-producto.jpeg",
       "title": "Diseña el modelo de negocio de tu producto",
       "imagePath": "cards-learn/disena-el-modelo-de-negocio-de-tu-producto.jpeg",
       "nivelId": "niv-002",
       "providersAliadosIds": [
-        "aly-001"
+        "aly-001",
+        "aly-012"
       ],
       "catalogoId": "catalogo_ubits",
       "conCertificacion": true
@@ -1065,14 +1092,15 @@ window.BDS_CONTENIDOS_UBITS = {
         "Mg. Carlos Vega · Consultor UBITS",
         "Dr. Jorge Pinto · Facilitador senior"
       ],
-      "aliadoId": "aly-001",
+      "aliadoId": "aly-013",
       "nivelIngles": null,
       "fileName": "disena-la-estrategia-de-lanzamiento-de-tu-producto.jpeg",
       "title": "Diseña la estrategia de lanzamiento de tu producto",
       "imagePath": "cards-learn/disena-la-estrategia-de-lanzamiento-de-tu-producto.jpeg",
       "nivelId": "niv-003",
       "providersAliadosIds": [
-        "aly-001"
+        "aly-001",
+        "aly-013"
       ],
       "catalogoId": "catalogo_ubits",
       "conCertificacion": false
@@ -1097,14 +1125,15 @@ window.BDS_CONTENIDOS_UBITS = {
         "Ing. Laura Méndez · Especialista en contenido",
         "Mtra. Elena Ríos · Diseño instruccional"
       ],
-      "aliadoId": "aly-001",
+      "aliadoId": "aly-014",
       "nivelIngles": null,
       "fileName": "disena-tu-primer-contenido-con-ayuda-de-ux-writing.jpeg",
       "title": "Diseña tu primer contenido con ayuda de ux writing",
       "imagePath": "cards-learn/disena-tu-primer-contenido-con-ayuda-de-ux-writing.jpeg",
       "nivelId": "niv-002",
       "providersAliadosIds": [
-        "aly-001"
+        "aly-001",
+        "aly-014"
       ],
       "catalogoId": "catalogo_ubits",
       "conCertificacion": false
@@ -1129,14 +1158,15 @@ window.BDS_CONTENIDOS_UBITS = {
         "Dr. Jorge Pinto · Facilitador senior",
         "Dra. Ana Ruiz · Coach ejecutiva"
       ],
-      "aliadoId": "aly-001",
+      "aliadoId": "aly-015",
       "nivelIngles": null,
       "fileName": "ejecuta-tu-campana-de-marketing-de-influencia.jpeg",
       "title": "Ejecuta tu campaña de marketing de influencia",
       "imagePath": "cards-learn/ejecuta-tu-campana-de-marketing-de-influencia.jpeg",
       "nivelId": "niv-002",
       "providersAliadosIds": [
-        "aly-001"
+        "aly-001",
+        "aly-015"
       ],
       "catalogoId": "catalogo_ubits",
       "conCertificacion": true
@@ -1161,14 +1191,15 @@ window.BDS_CONTENIDOS_UBITS = {
         "Mtra. Elena Ríos · Diseño instruccional",
         "Lic. Pedro Soto · RR.HH."
       ],
-      "aliadoId": "aly-001",
+      "aliadoId": "aly-016",
       "nivelIngles": null,
       "fileName": "el-buen-coaching-inspira-liderazgo.jpeg",
       "title": "El buen coaching inspira liderazgo",
       "imagePath": "cards-learn/el-buen-coaching-inspira-liderazgo.jpeg",
       "nivelId": "niv-002",
       "providersAliadosIds": [
-        "aly-001"
+        "aly-001",
+        "aly-016"
       ],
       "catalogoId": "catalogo_ubits",
       "conCertificacion": false
@@ -1193,14 +1224,15 @@ window.BDS_CONTENIDOS_UBITS = {
         "Dra. Ana Ruiz · Coach ejecutiva",
         "Mg. Carlos Vega · Consultor UBITS"
       ],
-      "aliadoId": "aly-001",
+      "aliadoId": "aly-017",
       "nivelIngles": null,
       "fileName": "el-liderazgo-suficiente.jpeg",
       "title": "El liderazgo suficiente",
       "imagePath": "cards-learn/el-liderazgo-suficiente.jpeg",
       "nivelId": "niv-001",
       "providersAliadosIds": [
-        "aly-001"
+        "aly-001",
+        "aly-017"
       ],
       "catalogoId": "catalogo_ubits",
       "conCertificacion": false
@@ -1225,14 +1257,15 @@ window.BDS_CONTENIDOS_UBITS = {
         "Lic. Pedro Soto · RR.HH.",
         "Ing. Laura Méndez · Especialista en contenido"
       ],
-      "aliadoId": "aly-001",
+      "aliadoId": "aly-002",
       "nivelIngles": null,
       "fileName": "el-manejo-de-las-emociones.jpeg",
       "title": "El manejo de las emociones",
       "imagePath": "cards-learn/el-manejo-de-las-emociones.jpeg",
       "nivelId": "niv-002",
       "providersAliadosIds": [
-        "aly-001"
+        "aly-001",
+        "aly-002"
       ],
       "catalogoId": "catalogo_ubits",
       "conCertificacion": true
@@ -1257,14 +1290,15 @@ window.BDS_CONTENIDOS_UBITS = {
         "Mg. Carlos Vega · Consultor UBITS",
         "Dr. Jorge Pinto · Facilitador senior"
       ],
-      "aliadoId": "aly-001",
+      "aliadoId": "aly-003",
       "nivelIngles": null,
       "fileName": "el-producto-interior-bruto-pib.jpeg",
       "title": "El producto interior bruto pib",
       "imagePath": "cards-learn/el-producto-interior-bruto-pib.jpeg",
       "nivelId": "niv-002",
       "providersAliadosIds": [
-        "aly-001"
+        "aly-001",
+        "aly-003"
       ],
       "catalogoId": "catalogo_ubits",
       "conCertificacion": false
@@ -1289,14 +1323,15 @@ window.BDS_CONTENIDOS_UBITS = {
         "Ing. Laura Méndez · Especialista en contenido",
         "Mtra. Elena Ríos · Diseño instruccional"
       ],
-      "aliadoId": "aly-001",
+      "aliadoId": "aly-009",
       "nivelIngles": null,
       "fileName": "emplea-los-valores-del-liderazgo-femenino.jpeg",
       "title": "Emplea los valores del liderazgo femenino",
       "imagePath": "cards-learn/emplea-los-valores-del-liderazgo-femenino.jpeg",
       "nivelId": "niv-003",
       "providersAliadosIds": [
-        "aly-001"
+        "aly-001",
+        "aly-009"
       ],
       "catalogoId": "catalogo_ubits",
       "conCertificacion": false
@@ -1423,14 +1458,15 @@ window.BDS_CONTENIDOS_UBITS = {
         "Lic. Pedro Soto · RR.HH.",
         "Ing. Laura Méndez · Especialista en contenido"
       ],
-      "aliadoId": "aly-001",
+      "aliadoId": "aly-013",
       "nivelIngles": null,
       "fileName": "flexbox-y-grid.jpeg",
       "title": "Flexbox y grid",
       "imagePath": "cards-learn/flexbox-y-grid.jpeg",
       "nivelId": "niv-002",
       "providersAliadosIds": [
-        "aly-001"
+        "aly-001",
+        "aly-013"
       ],
       "catalogoId": "catalogo_ubits",
       "conCertificacion": true
@@ -1455,14 +1491,15 @@ window.BDS_CONTENIDOS_UBITS = {
         "Mg. Carlos Vega · Consultor UBITS",
         "Dr. Jorge Pinto · Facilitador senior"
       ],
-      "aliadoId": "aly-001",
+      "aliadoId": "aly-014",
       "nivelIngles": null,
       "fileName": "hooks-secundariosypersonalizados-en-react.jpeg",
       "title": "Hooks secundariosypersonalizados en react",
       "imagePath": "cards-learn/hooks-secundariosypersonalizados-en-react.jpeg",
       "nivelId": "niv-002",
       "providersAliadosIds": [
-        "aly-001"
+        "aly-001",
+        "aly-014"
       ],
       "catalogoId": "catalogo_ubits",
       "conCertificacion": false
@@ -1487,14 +1524,15 @@ window.BDS_CONTENIDOS_UBITS = {
         "Ing. Laura Méndez · Especialista en contenido",
         "Mtra. Elena Ríos · Diseño instruccional"
       ],
-      "aliadoId": "aly-001",
+      "aliadoId": "aly-015",
       "nivelIngles": null,
       "fileName": "implementa-el-liderazgo-coletivo-en-tu-empresa.jpeg",
       "title": "Implementa el liderazgo coletivo en tu empresa",
       "imagePath": "cards-learn/implementa-el-liderazgo-coletivo-en-tu-empresa.jpeg",
       "nivelId": "niv-001",
       "providersAliadosIds": [
-        "aly-001"
+        "aly-001",
+        "aly-015"
       ],
       "catalogoId": "catalogo_ubits",
       "conCertificacion": false
@@ -1519,14 +1557,15 @@ window.BDS_CONTENIDOS_UBITS = {
         "Dr. Jorge Pinto · Facilitador senior",
         "Dra. Ana Ruiz · Coach ejecutiva"
       ],
-      "aliadoId": "aly-001",
+      "aliadoId": "aly-016",
       "nivelIngles": null,
       "fileName": "implementa-la-estrategia-de-go-to-market.jpeg",
       "title": "Implementa la estrategia de go to market",
       "imagePath": "cards-learn/implementa-la-estrategia-de-go-to-market.jpeg",
       "nivelId": "niv-001",
       "providersAliadosIds": [
-        "aly-001"
+        "aly-001",
+        "aly-016"
       ],
       "catalogoId": "catalogo_ubits",
       "conCertificacion": true
@@ -1551,14 +1590,15 @@ window.BDS_CONTENIDOS_UBITS = {
         "Mtra. Elena Ríos · Diseño instruccional",
         "Lic. Pedro Soto · RR.HH."
       ],
-      "aliadoId": "aly-001",
+      "aliadoId": "aly-017",
       "nivelIngles": null,
       "fileName": "ingenieria-de-prompts-habla-con-la-ia.jpeg",
       "title": "Ingenieria de prompts habla con la ia",
       "imagePath": "cards-learn/ingenieria-de-prompts-habla-con-la-ia.jpeg",
       "nivelId": "niv-002",
       "providersAliadosIds": [
-        "aly-001"
+        "aly-001",
+        "aly-017"
       ],
       "catalogoId": "catalogo_ubits",
       "conCertificacion": false
@@ -1583,14 +1623,15 @@ window.BDS_CONTENIDOS_UBITS = {
         "Dra. Ana Ruiz · Coach ejecutiva",
         "Mg. Carlos Vega · Consultor UBITS"
       ],
-      "aliadoId": "aly-001",
+      "aliadoId": "aly-002",
       "nivelIngles": null,
       "fileName": "innovacion-disruptiva.jpeg",
       "title": "Innovación disruptiva",
       "imagePath": "cards-learn/innovacion-disruptiva.jpeg",
       "nivelId": "niv-003",
       "providersAliadosIds": [
-        "aly-001"
+        "aly-001",
+        "aly-002"
       ],
       "catalogoId": "catalogo_ubits",
       "conCertificacion": false
@@ -1615,14 +1656,15 @@ window.BDS_CONTENIDOS_UBITS = {
         "Lic. Pedro Soto · RR.HH.",
         "Ing. Laura Méndez · Especialista en contenido"
       ],
-      "aliadoId": "aly-001",
+      "aliadoId": "aly-008",
       "nivelIngles": null,
       "fileName": "introduccion-a-la-innovacion-corporativa.jpeg",
       "title": "Introducción a la innovación corporativa",
       "imagePath": "cards-learn/introduccion-a-la-innovacion-corporativa.jpeg",
       "nivelId": "niv-003",
       "providersAliadosIds": [
-        "aly-001"
+        "aly-001",
+        "aly-008"
       ],
       "catalogoId": "catalogo_ubits",
       "conCertificacion": true
@@ -1647,14 +1689,15 @@ window.BDS_CONTENIDOS_UBITS = {
         "Mg. Carlos Vega · Consultor UBITS",
         "Dr. Jorge Pinto · Facilitador senior"
       ],
-      "aliadoId": "aly-001",
+      "aliadoId": "aly-009",
       "nivelIngles": null,
       "fileName": "introduccion-al-backend-node-js.jpeg",
       "title": "Introducción al backend node js",
       "imagePath": "cards-learn/introduccion-al-backend-node-js.jpeg",
       "nivelId": "niv-003",
       "providersAliadosIds": [
-        "aly-001"
+        "aly-001",
+        "aly-009"
       ],
       "catalogoId": "catalogo_ubits",
       "conCertificacion": false
@@ -1679,14 +1722,15 @@ window.BDS_CONTENIDOS_UBITS = {
         "Ing. Laura Méndez · Especialista en contenido",
         "Mtra. Elena Ríos · Diseño instruccional"
       ],
-      "aliadoId": "aly-001",
+      "aliadoId": "aly-010",
       "nivelIngles": null,
       "fileName": "introduccion-al-desarrollo-web.jpeg",
       "title": "Introducción al desarrollo web",
       "imagePath": "cards-learn/introduccion-al-desarrollo-web.jpeg",
       "nivelId": "niv-001",
       "providersAliadosIds": [
-        "aly-001"
+        "aly-001",
+        "aly-010"
       ],
       "catalogoId": "catalogo_ubits",
       "conCertificacion": false
@@ -1711,14 +1755,15 @@ window.BDS_CONTENIDOS_UBITS = {
         "Dr. Jorge Pinto · Facilitador senior",
         "Dra. Ana Ruiz · Coach ejecutiva"
       ],
-      "aliadoId": "aly-001",
+      "aliadoId": "aly-011",
       "nivelIngles": null,
       "fileName": "introduccion-al-growth-marketing.jpeg",
       "title": "Introducción al growth marketing",
       "imagePath": "cards-learn/introduccion-al-growth-marketing.jpeg",
       "nivelId": "niv-003",
       "providersAliadosIds": [
-        "aly-001"
+        "aly-001",
+        "aly-011"
       ],
       "catalogoId": "catalogo_ubits",
       "conCertificacion": true
@@ -1743,14 +1788,15 @@ window.BDS_CONTENIDOS_UBITS = {
         "Mtra. Elena Ríos · Diseño instruccional",
         "Lic. Pedro Soto · RR.HH."
       ],
-      "aliadoId": "aly-001",
+      "aliadoId": "aly-012",
       "nivelIngles": null,
       "fileName": "introduccion-al-marketing-con-google-ads.jpeg",
       "title": "Introducción al marketing con google ads",
       "imagePath": "cards-learn/introduccion-al-marketing-con-google-ads.jpeg",
       "nivelId": "niv-001",
       "providersAliadosIds": [
-        "aly-001"
+        "aly-001",
+        "aly-012"
       ],
       "catalogoId": "catalogo_ubits",
       "conCertificacion": false
@@ -1775,14 +1821,15 @@ window.BDS_CONTENIDOS_UBITS = {
         "Dra. Ana Ruiz · Coach ejecutiva",
         "Mg. Carlos Vega · Consultor UBITS"
       ],
-      "aliadoId": "aly-001",
+      "aliadoId": "aly-013",
       "nivelIngles": null,
       "fileName": "la-clave-del-liderazgo-inclusivo.jpeg",
       "title": "La clave del liderazgo inclusivo",
       "imagePath": "cards-learn/la-clave-del-liderazgo-inclusivo.jpeg",
       "nivelId": "niv-002",
       "providersAliadosIds": [
-        "aly-001"
+        "aly-001",
+        "aly-013"
       ],
       "catalogoId": "catalogo_ubits",
       "conCertificacion": false
@@ -1807,14 +1854,15 @@ window.BDS_CONTENIDOS_UBITS = {
         "Lic. Pedro Soto · RR.HH.",
         "Ing. Laura Méndez · Especialista en contenido"
       ],
-      "aliadoId": "aly-001",
+      "aliadoId": "aly-014",
       "nivelIngles": null,
       "fileName": "la-confianza-una-clave-para-el-liderazgo.jpeg",
       "title": "La confianza una clave para el liderazgo",
       "imagePath": "cards-learn/la-confianza-una-clave-para-el-liderazgo.jpeg",
       "nivelId": "niv-003",
       "providersAliadosIds": [
-        "aly-001"
+        "aly-001",
+        "aly-014"
       ],
       "catalogoId": "catalogo_ubits",
       "conCertificacion": true
@@ -1839,14 +1887,15 @@ window.BDS_CONTENIDOS_UBITS = {
         "Mg. Carlos Vega · Consultor UBITS",
         "Dr. Jorge Pinto · Facilitador senior"
       ],
-      "aliadoId": "aly-001",
+      "aliadoId": "aly-015",
       "nivelIngles": null,
       "fileName": "la-inteligencia-artificial-como-habilidad-digital-en-los-negocios.jpeg",
       "title": "La inteligencia artificial como habilidad digital en los negocios",
       "imagePath": "cards-learn/la-inteligencia-artificial-como-habilidad-digital-en-los-negocios.jpeg",
       "nivelId": "niv-002",
       "providersAliadosIds": [
-        "aly-001"
+        "aly-001",
+        "aly-015"
       ],
       "catalogoId": "catalogo_ubits",
       "conCertificacion": false
@@ -1871,14 +1920,15 @@ window.BDS_CONTENIDOS_UBITS = {
         "Ing. Laura Méndez · Especialista en contenido",
         "Mtra. Elena Ríos · Diseño instruccional"
       ],
-      "aliadoId": "aly-001",
+      "aliadoId": "aly-016",
       "nivelIngles": null,
       "fileName": "la-inteligencia-social-y-biologia-del-liderazgo.jpeg",
       "title": "La inteligencia social y biologia del liderazgo",
       "imagePath": "cards-learn/la-inteligencia-social-y-biologia-del-liderazgo.jpeg",
       "nivelId": "niv-001",
       "providersAliadosIds": [
-        "aly-001"
+        "aly-001",
+        "aly-016"
       ],
       "catalogoId": "catalogo_ubits",
       "conCertificacion": false
@@ -1903,14 +1953,15 @@ window.BDS_CONTENIDOS_UBITS = {
         "Dr. Jorge Pinto · Facilitador senior",
         "Dra. Ana Ruiz · Coach ejecutiva"
       ],
-      "aliadoId": "aly-001",
+      "aliadoId": "aly-017",
       "nivelIngles": null,
       "fileName": "lean-startup-emprendimiento-agil.jpeg",
       "title": "Lean startup emprendimiento ágil",
       "imagePath": "cards-learn/lean-startup-emprendimiento-agil.jpeg",
       "nivelId": "niv-003",
       "providersAliadosIds": [
-        "aly-001"
+        "aly-001",
+        "aly-017"
       ],
       "catalogoId": "catalogo_ubits",
       "conCertificacion": true
@@ -1935,14 +1986,15 @@ window.BDS_CONTENIDOS_UBITS = {
         "Mtra. Elena Ríos · Diseño instruccional",
         "Lic. Pedro Soto · RR.HH."
       ],
-      "aliadoId": "aly-001",
+      "aliadoId": "aly-007",
       "nivelIngles": null,
       "fileName": "liderar-como-los-grandes-directores-de-orquesta.jpeg",
       "title": "Liderar como los grandes directores de orquesta",
       "imagePath": "cards-learn/liderar-como-los-grandes-directores-de-orquesta.jpeg",
       "nivelId": "niv-002",
       "providersAliadosIds": [
-        "aly-001"
+        "aly-001",
+        "aly-007"
       ],
       "catalogoId": "catalogo_ubits",
       "conCertificacion": false
@@ -1967,14 +2019,15 @@ window.BDS_CONTENIDOS_UBITS = {
         "Dra. Ana Ruiz · Coach ejecutiva",
         "Mg. Carlos Vega · Consultor UBITS"
       ],
-      "aliadoId": "aly-001",
+      "aliadoId": "aly-008",
       "nivelIngles": null,
       "fileName": "liderar-con-inteligencia-emocional.jpeg",
       "title": "Liderar con inteligencia emocional",
       "imagePath": "cards-learn/liderar-con-inteligencia-emocional.jpeg",
       "nivelId": "niv-001",
       "providersAliadosIds": [
-        "aly-001"
+        "aly-001",
+        "aly-008"
       ],
       "catalogoId": "catalogo_ubits",
       "conCertificacion": false
@@ -1999,14 +2052,15 @@ window.BDS_CONTENIDOS_UBITS = {
         "Lic. Pedro Soto · RR.HH.",
         "Ing. Laura Méndez · Especialista en contenido"
       ],
-      "aliadoId": "aly-001",
+      "aliadoId": "aly-009",
       "nivelIngles": null,
       "fileName": "liderazgo-ambicion-y-culpa.jpeg",
       "title": "Liderazgo ambicion y culpa",
       "imagePath": "cards-learn/liderazgo-ambicion-y-culpa.jpeg",
       "nivelId": "niv-003",
       "providersAliadosIds": [
-        "aly-001"
+        "aly-001",
+        "aly-009"
       ],
       "catalogoId": "catalogo_ubits",
       "conCertificacion": true
@@ -2031,14 +2085,15 @@ window.BDS_CONTENIDOS_UBITS = {
         "Mg. Carlos Vega · Consultor UBITS",
         "Dr. Jorge Pinto · Facilitador senior"
       ],
-      "aliadoId": "aly-001",
+      "aliadoId": "aly-010",
       "nivelIngles": null,
       "fileName": "liderazgo-en-planeacion-estrategica.jpeg",
       "title": "Liderazgo en planeación estrategica",
       "imagePath": "cards-learn/liderazgo-en-planeacion-estrategica.jpeg",
       "nivelId": "niv-001",
       "providersAliadosIds": [
-        "aly-001"
+        "aly-001",
+        "aly-010"
       ],
       "catalogoId": "catalogo_ubits",
       "conCertificacion": false
@@ -2063,14 +2118,15 @@ window.BDS_CONTENIDOS_UBITS = {
         "Ing. Laura Méndez · Especialista en contenido",
         "Mtra. Elena Ríos · Diseño instruccional"
       ],
-      "aliadoId": "aly-001",
+      "aliadoId": "aly-011",
       "nivelIngles": null,
       "fileName": "liderazgo-en-tiempos-de-crisi.jpeg",
       "title": "Liderazgo en tiempos de crisi",
       "imagePath": "cards-learn/liderazgo-en-tiempos-de-crisi.jpeg",
       "nivelId": "niv-001",
       "providersAliadosIds": [
-        "aly-001"
+        "aly-001",
+        "aly-011"
       ],
       "catalogoId": "catalogo_ubits",
       "conCertificacion": false
@@ -2095,14 +2151,15 @@ window.BDS_CONTENIDOS_UBITS = {
         "Dr. Jorge Pinto · Facilitador senior",
         "Dra. Ana Ruiz · Coach ejecutiva"
       ],
-      "aliadoId": "aly-001",
+      "aliadoId": "aly-012",
       "nivelIngles": null,
       "fileName": "liderazgo-femenino.jpeg",
       "title": "Liderazgo femenino",
       "imagePath": "cards-learn/liderazgo-femenino.jpeg",
       "nivelId": "niv-002",
       "providersAliadosIds": [
-        "aly-001"
+        "aly-001",
+        "aly-012"
       ],
       "catalogoId": "catalogo_ubits",
       "conCertificacion": true
@@ -2127,14 +2184,15 @@ window.BDS_CONTENIDOS_UBITS = {
         "Mtra. Elena Ríos · Diseño instruccional",
         "Lic. Pedro Soto · RR.HH."
       ],
-      "aliadoId": "aly-001",
+      "aliadoId": "aly-013",
       "nivelIngles": null,
       "fileName": "lideres-cotidianos.jpeg",
       "title": "Líderes cotidianos",
       "imagePath": "cards-learn/lideres-cotidianos.jpeg",
       "nivelId": "niv-002",
       "providersAliadosIds": [
-        "aly-001"
+        "aly-001",
+        "aly-013"
       ],
       "catalogoId": "catalogo_ubits",
       "conCertificacion": false
@@ -2159,14 +2217,15 @@ window.BDS_CONTENIDOS_UBITS = {
         "Dra. Ana Ruiz · Coach ejecutiva",
         "Mg. Carlos Vega · Consultor UBITS"
       ],
-      "aliadoId": "aly-001",
+      "aliadoId": "aly-014",
       "nivelIngles": null,
       "fileName": "neuroliderazgo-configura-tu-mente.jpeg",
       "title": "Neuroliderazgo configura tu mente",
       "imagePath": "cards-learn/neuroliderazgo-configura-tu-mente.jpeg",
       "nivelId": "niv-001",
       "providersAliadosIds": [
-        "aly-001"
+        "aly-001",
+        "aly-014"
       ],
       "catalogoId": "catalogo_ubits",
       "conCertificacion": false
@@ -2191,14 +2250,15 @@ window.BDS_CONTENIDOS_UBITS = {
         "Lic. Pedro Soto · RR.HH.",
         "Ing. Laura Méndez · Especialista en contenido"
       ],
-      "aliadoId": "aly-001",
+      "aliadoId": "aly-015",
       "nivelIngles": null,
       "fileName": "personaliza-tu-pagina-web-con-css.jpeg",
       "title": "Personaliza tu pagina web con css",
       "imagePath": "cards-learn/personaliza-tu-pagina-web-con-css.jpeg",
       "nivelId": "niv-001",
       "providersAliadosIds": [
-        "aly-001"
+        "aly-001",
+        "aly-015"
       ],
       "catalogoId": "catalogo_ubits",
       "conCertificacion": true
@@ -2223,14 +2283,15 @@ window.BDS_CONTENIDOS_UBITS = {
         "Mg. Carlos Vega · Consultor UBITS",
         "Dr. Jorge Pinto · Facilitador senior"
       ],
-      "aliadoId": "aly-001",
+      "aliadoId": "aly-016",
       "nivelIngles": null,
       "fileName": "potencia-tu-liderazgo-en-entornos-vuca.jpeg",
       "title": "Potencia tu liderazgo en entornos vuca",
       "imagePath": "cards-learn/potencia-tu-liderazgo-en-entornos-vuca.jpeg",
       "nivelId": "niv-003",
       "providersAliadosIds": [
-        "aly-001"
+        "aly-001",
+        "aly-016"
       ],
       "catalogoId": "catalogo_ubits",
       "conCertificacion": false
@@ -2255,14 +2316,15 @@ window.BDS_CONTENIDOS_UBITS = {
         "Ing. Laura Méndez · Especialista en contenido",
         "Mtra. Elena Ríos · Diseño instruccional"
       ],
-      "aliadoId": "aly-001",
+      "aliadoId": "aly-006",
       "nivelIngles": null,
       "fileName": "primeros-pasos-en-react.jpeg",
       "title": "Primeros pasos en react",
       "imagePath": "cards-learn/primeros-pasos-en-react.jpeg",
       "nivelId": "niv-003",
       "providersAliadosIds": [
-        "aly-001"
+        "aly-001",
+        "aly-006"
       ],
       "catalogoId": "catalogo_ubits",
       "conCertificacion": false
@@ -2287,14 +2349,15 @@ window.BDS_CONTENIDOS_UBITS = {
         "Dr. Jorge Pinto · Facilitador senior",
         "Dra. Ana Ruiz · Coach ejecutiva"
       ],
-      "aliadoId": "aly-001",
+      "aliadoId": "aly-007",
       "nivelIngles": null,
       "fileName": "prototipo-y-mvp-de-los-productos.jpeg",
       "title": "Prototipo y mvp de los productos",
       "imagePath": "cards-learn/prototipo-y-mvp-de-los-productos.jpeg",
       "nivelId": "niv-003",
       "providersAliadosIds": [
-        "aly-001"
+        "aly-001",
+        "aly-007"
       ],
       "catalogoId": "catalogo_ubits",
       "conCertificacion": true
@@ -2319,14 +2382,15 @@ window.BDS_CONTENIDOS_UBITS = {
         "Mtra. Elena Ríos · Diseño instruccional",
         "Lic. Pedro Soto · RR.HH."
       ],
-      "aliadoId": "aly-001",
+      "aliadoId": "aly-008",
       "nivelIngles": null,
       "fileName": "que-hace-que-alugnos-equipos-tengan-alto-desempeno.jpeg",
       "title": "Que hace que alugnos equipos tengan alto desempeno",
       "imagePath": "cards-learn/que-hace-que-alugnos-equipos-tengan-alto-desempeno.jpeg",
       "nivelId": "niv-002",
       "providersAliadosIds": [
-        "aly-001"
+        "aly-001",
+        "aly-008"
       ],
       "catalogoId": "catalogo_ubits",
       "conCertificacion": false
@@ -2351,14 +2415,15 @@ window.BDS_CONTENIDOS_UBITS = {
         "Dra. Ana Ruiz · Coach ejecutiva",
         "Mg. Carlos Vega · Consultor UBITS"
       ],
-      "aliadoId": "aly-001",
+      "aliadoId": "aly-009",
       "nivelIngles": null,
       "fileName": "react-context-api.jpeg",
       "title": "React context api",
       "imagePath": "cards-learn/react-context-api.jpeg",
       "nivelId": "niv-002",
       "providersAliadosIds": [
-        "aly-001"
+        "aly-001",
+        "aly-009"
       ],
       "catalogoId": "catalogo_ubits",
       "conCertificacion": false
@@ -2383,14 +2448,15 @@ window.BDS_CONTENIDOS_UBITS = {
         "Lic. Pedro Soto · RR.HH.",
         "Ing. Laura Méndez · Especialista en contenido"
       ],
-      "aliadoId": "aly-001",
+      "aliadoId": "aly-010",
       "nivelIngles": null,
       "fileName": "react-reducers.jpeg",
       "title": "React reducers",
       "imagePath": "cards-learn/react-reducers.jpeg",
       "nivelId": "niv-002",
       "providersAliadosIds": [
-        "aly-001"
+        "aly-001",
+        "aly-010"
       ],
       "catalogoId": "catalogo_ubits",
       "conCertificacion": true
@@ -2415,14 +2481,15 @@ window.BDS_CONTENIDOS_UBITS = {
         "Mg. Carlos Vega · Consultor UBITS",
         "Dr. Jorge Pinto · Facilitador senior"
       ],
-      "aliadoId": "aly-001",
+      "aliadoId": "aly-011",
       "nivelIngles": null,
       "fileName": "reconectate-contigo-y-con-los-demas-tips-para-el-bienestar-emocional.jpeg",
       "title": "Reconectate contigo y con los demas tips para el bienestar emocional",
       "imagePath": "cards-learn/reconectate-contigo-y-con-los-demas-tips-para-el-bienestar-emocional.jpeg",
       "nivelId": "niv-003",
       "providersAliadosIds": [
-        "aly-001"
+        "aly-001",
+        "aly-011"
       ],
       "catalogoId": "catalogo_ubits",
       "conCertificacion": false
@@ -2447,14 +2514,15 @@ window.BDS_CONTENIDOS_UBITS = {
         "Ing. Laura Méndez · Especialista en contenido",
         "Mtra. Elena Ríos · Diseño instruccional"
       ],
-      "aliadoId": "aly-001",
+      "aliadoId": "aly-012",
       "nivelIngles": null,
       "fileName": "resolver-las-disfunciones-del-equipo.jpeg",
       "title": "Resolver las disfunciones del equipo",
       "imagePath": "cards-learn/resolver-las-disfunciones-del-equipo.jpeg",
       "nivelId": "niv-001",
       "providersAliadosIds": [
-        "aly-001"
+        "aly-001",
+        "aly-012"
       ],
       "catalogoId": "catalogo_ubits",
       "conCertificacion": false
@@ -2479,14 +2547,15 @@ window.BDS_CONTENIDOS_UBITS = {
         "Dr. Jorge Pinto · Facilitador senior",
         "Dra. Ana Ruiz · Coach ejecutiva"
       ],
-      "aliadoId": "aly-001",
+      "aliadoId": "aly-013",
       "nivelIngles": null,
       "fileName": "ruta-desarrollo-de-habilidades-de-liderazgo.jpeg",
       "title": "Ruta desarrollo de habilidades de liderazgo",
       "imagePath": "cards-learn/ruta-desarrollo-de-habilidades-de-liderazgo.jpeg",
       "nivelId": "niv-003",
       "providersAliadosIds": [
-        "aly-001"
+        "aly-001",
+        "aly-013"
       ],
       "catalogoId": "catalogo_ubits",
       "conCertificacion": true
@@ -2511,14 +2580,15 @@ window.BDS_CONTENIDOS_UBITS = {
         "Mtra. Elena Ríos · Diseño instruccional",
         "Lic. Pedro Soto · RR.HH."
       ],
-      "aliadoId": "aly-001",
+      "aliadoId": "aly-014",
       "nivelIngles": "A1",
       "fileName": "ruta-experto-en-inbound-marketing.jpeg",
       "title": "Ruta experto en inbound marketing",
       "imagePath": "cards-learn/ruta-experto-en-inbound-marketing.jpeg",
       "nivelId": "niv-003",
       "providersAliadosIds": [
-        "aly-001"
+        "aly-001",
+        "aly-014"
       ],
       "catalogoId": "catalogo_ubits",
       "conCertificacion": false
@@ -2543,14 +2613,15 @@ window.BDS_CONTENIDOS_UBITS = {
         "Dra. Ana Ruiz · Coach ejecutiva",
         "Mg. Carlos Vega · Consultor UBITS"
       ],
-      "aliadoId": "aly-001",
+      "aliadoId": "aly-015",
       "nivelIngles": "A2",
       "fileName": "ruta-liderazgo-centrado-en-la-estrategia-empresarial.jpeg",
       "title": "Ruta liderazgo centrado en la estrategia empresarial",
       "imagePath": "cards-learn/ruta-liderazgo-centrado-en-la-estrategia-empresarial.jpeg",
       "nivelId": "niv-002",
       "providersAliadosIds": [
-        "aly-001"
+        "aly-001",
+        "aly-015"
       ],
       "catalogoId": "catalogo_ubits",
       "conCertificacion": false
@@ -2575,14 +2646,15 @@ window.BDS_CONTENIDOS_UBITS = {
         "Lic. Pedro Soto · RR.HH.",
         "Ing. Laura Méndez · Especialista en contenido"
       ],
-      "aliadoId": "aly-001",
+      "aliadoId": "aly-005",
       "nivelIngles": "B1",
       "fileName": "ruta-pensamiento-creativo-e-innovacion.jpeg",
       "title": "Ruta pensamiento creativo e innovación",
       "imagePath": "cards-learn/ruta-pensamiento-creativo-e-innovacion.jpeg",
       "nivelId": "niv-001",
       "providersAliadosIds": [
-        "aly-001"
+        "aly-001",
+        "aly-005"
       ],
       "catalogoId": "catalogo_ubits",
       "conCertificacion": true
@@ -2607,14 +2679,15 @@ window.BDS_CONTENIDOS_UBITS = {
         "Mg. Carlos Vega · Consultor UBITS",
         "Dr. Jorge Pinto · Facilitador senior"
       ],
-      "aliadoId": "aly-001",
+      "aliadoId": "aly-006",
       "nivelIngles": "B2",
       "fileName": "segmenta-la-experiencia-del-cliente.jpg",
       "title": "Segmenta la experiencia del cliente",
       "imagePath": "cards-learn/segmenta-la-experiencia-del-cliente.jpg",
       "nivelId": "niv-003",
       "providersAliadosIds": [
-        "aly-001"
+        "aly-001",
+        "aly-006"
       ],
       "catalogoId": "catalogo_ubits",
       "conCertificacion": false
@@ -2639,14 +2712,15 @@ window.BDS_CONTENIDOS_UBITS = {
         "Ing. Laura Méndez · Especialista en contenido",
         "Mtra. Elena Ríos · Diseño instruccional"
       ],
-      "aliadoId": "aly-001",
+      "aliadoId": "aly-007",
       "nivelIngles": "C1",
       "fileName": "seo-impacto-en-tu-estrategia-de-content-marketing.jpeg",
       "title": "Seo impacto en tu estrategia de content marketing",
       "imagePath": "cards-learn/seo-impacto-en-tu-estrategia-de-content-marketing.jpeg",
       "nivelId": "niv-001",
       "providersAliadosIds": [
-        "aly-001"
+        "aly-001",
+        "aly-007"
       ],
       "catalogoId": "catalogo_ubits",
       "conCertificacion": false
@@ -2671,14 +2745,15 @@ window.BDS_CONTENIDOS_UBITS = {
         "Dr. Jorge Pinto · Facilitador senior",
         "Dra. Ana Ruiz · Coach ejecutiva"
       ],
-      "aliadoId": "aly-001",
+      "aliadoId": "aly-008",
       "nivelIngles": "C2",
       "fileName": "simplified-suite-de-herramientas-de-inteligencia-artificial-todo-en-uno.jpeg",
       "title": "Simplified suite de herramientas de inteligencia artificial todo en uno",
       "imagePath": "cards-learn/simplified-suite-de-herramientas-de-inteligencia-artificial-todo-en-uno.jpeg",
       "nivelId": "niv-003",
       "providersAliadosIds": [
-        "aly-001"
+        "aly-001",
+        "aly-008"
       ],
       "catalogoId": "catalogo_ubits",
       "conCertificacion": true
@@ -2703,14 +2778,15 @@ window.BDS_CONTENIDOS_UBITS = {
         "Mtra. Elena Ríos · Diseño instruccional",
         "Lic. Pedro Soto · RR.HH."
       ],
-      "aliadoId": "aly-001",
+      "aliadoId": "aly-009",
       "nivelIngles": "A1",
       "fileName": "subastas-en-google-ads.jpeg",
       "title": "Subastas en google ads",
       "imagePath": "cards-learn/subastas-en-google-ads.jpeg",
       "nivelId": "niv-002",
       "providersAliadosIds": [
-        "aly-001"
+        "aly-001",
+        "aly-009"
       ],
       "catalogoId": "catalogo_ubits",
       "conCertificacion": false
@@ -2735,14 +2811,15 @@ window.BDS_CONTENIDOS_UBITS = {
         "Dra. Ana Ruiz · Coach ejecutiva",
         "Mg. Carlos Vega · Consultor UBITS"
       ],
-      "aliadoId": "aly-001",
+      "aliadoId": "aly-010",
       "nivelIngles": "A2",
       "fileName": "ux-research-conoce-tu-usuario-y-aumenta-el-engagement.jpeg",
       "title": "Ux research conoce tu usuario y aumenta el engagement",
       "imagePath": "cards-learn/ux-research-conoce-tu-usuario-y-aumenta-el-engagement.jpeg",
       "nivelId": "niv-001",
       "providersAliadosIds": [
-        "aly-001"
+        "aly-001",
+        "aly-010"
       ],
       "catalogoId": "catalogo_ubits",
       "conCertificacion": false

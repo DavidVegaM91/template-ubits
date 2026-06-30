@@ -115,6 +115,12 @@
     <script src="../../components/card-content.js"></script>
     <script src="../../components/empty-state.js"></script>
     <script src="../../components/ia-button.js"></script>
+    <script src="../../bd-master/bd-master-niveles-contenido.js"></script>
+    <script src="../../bd-master/bd-master-aliados.js"></script>
+    <script src="../../bd-master/bd-master-competencias.js"></script>
+    <script src="../../bd-master/bd-contenidos-ubits.js"></script>
+    <script src="../../bd-master/bd-contenidos-fiqsha.js"></script>
+    <script src="../../bd-master/catalogo-proveedores-helpers.js"></script>
     <script src="../../script.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -123,6 +129,40 @@
             loadTabBar('tab-bar-container');
             loadFloatingMenu('floating-menu-container');
             loadProfileMenu('profile-menu-container');
+
+            function compIdPorNombre(nombre) {
+                var arr = window.BD_MASTER_COMPETENCIAS && window.BD_MASTER_COMPETENCIAS.competencias;
+                if (!arr) return null;
+                for (var i = 0; i < arr.length; i++) {
+                    if (arr[i].nombre === nombre) return arr[i].id;
+                }
+                return null;
+            }
+
+            function nivelNombrePorId(nivelId) {
+                var arr = window.BD_MASTER_NIVELES_CONTENIDO && window.BD_MASTER_NIVELES_CONTENIDO.niveles;
+                if (!arr || !nivelId) return 'Intermedio';
+                for (var j = 0; j < arr.length; j++) {
+                    if (arr[j].id === nivelId) return arr[j].nombre || 'Intermedio';
+                }
+                return 'Intermedio';
+            }
+
+            function buildResultadosCardsFromBd(competencyName) {
+                var cp = window.CATALOGO_PROVEEDORES;
+                var rows = window.BDS_CONTENIDOS_UBITS && window.BDS_CONTENIDOS_UBITS.contents;
+                if (!cp || !rows || !rows.length) return [];
+                var compId = compIdPorNombre(competencyName);
+                if (!compId) return [];
+                return rows.filter(function (c) { return c.competenciaPrincipalId === compId; }).map(function (c) {
+                    return cp.buildCardFromCatalogoContent(c, '../../', {
+                        progress: 0,
+                        status: 'default',
+                        level: nivelNombrePorId(c.nivelId),
+                        competency: competencyName
+                    });
+                });
+            }
 
             var temaValidos = { 'liderazgo': 'Liderazgo', 'inglés': 'Inglés', 'ingles': 'Inglés', 'comunicación': 'Comunicación', 'comunicacion': 'Comunicación' };
             var params = new URLSearchParams(window.location.search);
@@ -151,7 +191,7 @@
                 { action: 'podcast', icon: 'fa-podcast', title: 'Podcast', desc: 'Escucha un podcast sobre este tema para aprender mientras haces otras cosas.' }
             ];
 
-            var datosPorTema = {
+            var datosPorTemaFallback = {
                 'Liderazgo': [
                     { type: 'Curso', title: 'Ruta: liderazgo centrado en la estrategia empresarial', provider: 'UBITS', providerLogo: '../../images/Favicons/UBITS.jpg', duration: '60 min', level: 'Básico', progress: 0, status: 'default', image: '../../images/cards-learn/ruta-liderazgo-centrado-en-la-estrategia-empresarial.jpeg', competency: 'Liderazgo', language: 'Español' },
                     { type: 'Short', title: 'De soldado a CEO', provider: 'Harvard Business Publishing', providerLogo: '../../images/Favicons/Harvard-Business-Publishing.jpg', duration: '15 min', level: 'Básico', progress: 0, status: 'default', image: '../../images/cards-learn/de-soldado-a-ceo.jpeg', competency: 'Liderazgo', language: 'Español' },
@@ -223,6 +263,15 @@
                     { type: 'Short', title: 'Expresiones idiomáticas en el trabajo', provider: 'Advanced English', providerLogo: '../../images/Favicons/Advanced-English.jpg', duration: '15 min', level: 'Básico', progress: 0, status: 'default', image: 'https://images.unsplash.com/photo-1546410531-bb4caa6b424d?w=400&h=250&fit=crop', competency: 'Inglés', language: 'Español' }
                 ]
             };
+
+            var datosPorTema = {
+                'Liderazgo': buildResultadosCardsFromBd('Liderazgo'),
+                'Comunicación': buildResultadosCardsFromBd('Comunicación'),
+                'Inglés': buildResultadosCardsFromBd('Inglés')
+            };
+            if (!datosPorTema['Liderazgo'] || !datosPorTema['Liderazgo'].length) {
+                datosPorTema = datosPorTemaFallback;
+            }
 
             var container = document.getElementById('resultados-cards-container');
             var emptyEl = document.getElementById('empty-state-resultados');

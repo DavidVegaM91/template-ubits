@@ -141,6 +141,7 @@
     <script src="../../bd-master/bd-master-categorias-fiqsha.js"></script>
     <script src="../../bd-master/bd-master-tipos-contenido.js"></script>
     <script src="../../bd-master/bd-contenidos-fiqsha.js"></script>
+    <script src="../../bd-master/catalogo-proveedores-helpers.js"></script>
     <script>
         // Cargar componentes dinámicamente
         document.addEventListener('DOMContentLoaded', function() {
@@ -238,14 +239,20 @@
                 }
 
                 var out = [];
+                var cp = window.CATALOGO_PROVEEDORES;
                 for (var i = 0; i < bd.contents.length; i++) {
                     var c = bd.contents[i];
                     var nivelNombre = nivelNombrePorId(c.nivelId);
-                    var a = aliadoPorId(c.proveedorAliadoId);
-                    var providerName = a && a.nombre ? a.nombre : 'UBITS';
-                    var providerLogo = '../../images/Favicons/UBITS.jpg';
-                    if (a && a.logo) {
-                        providerLogo = '../../' + String(a.logo).replace(/^\.\//, '');
+                    var providerName = 'Fiqsha Smart Consulting';
+                    var providerLogo = '../../images/Favicons/Fiqsha Smart Consulting.jpg';
+                    if (cp && typeof cp.resolveProviderFromCatalogoItem === 'function') {
+                        var prov = cp.resolveProviderFromCatalogoItem(c, '../../');
+                        providerName = prov.nombre;
+                        providerLogo = prov.logo;
+                    } else {
+                        var a = aliadoPorId(c.proveedorAliadoId);
+                        if (a && a.nombre) providerName = a.nombre;
+                        if (a && a.logo) providerLogo = '../../' + String(a.logo).replace(/^\.\//, '');
                     }
                     var durMin = c.tiempoValor != null ? String(c.tiempoValor) : '60';
                     var duration = durMin + ' min';

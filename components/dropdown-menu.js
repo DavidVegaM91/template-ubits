@@ -25,6 +25,57 @@
     }
 
     /**
+     * Opción enriquecida: texto principal + meta (secundario) + status-tag.
+     * @param {Object} opt
+     * @param {string} [opt.text] - Texto principal (nombre del plan, etc.)
+     * @param {string} [opt.metaText] - Texto secundario (p. ej. "2 de 8 contenidos", "50% de avance")
+     * @param {{ text: string, variant?: string }} [opt.statusTag] - Tag de estado (variantes ubits-status-tag)
+     */
+    function isRichDropdownOption(opt) {
+        return !!(opt && (opt.metaText != null || opt.statusTag));
+    }
+
+    function renderDropdownStatusTagHtml(statusTag) {
+        if (!statusTag || statusTag.text == null || String(statusTag.text).trim() === '') return '';
+        var variant = statusTag.variant != null ? String(statusTag.variant) : 'neutral';
+        var text = escapeHtml(String(statusTag.text));
+        return '<span class="ubits-status-tag ubits-status-tag--' + escapeHtml(variant) + ' ubits-status-tag--sm ubits-dropdown-menu__option-rich-tag">' +
+            '<span class="ubits-status-tag__text">' + text + '</span></span>';
+    }
+
+    /**
+     * HTML de un botón de opción (lista simple o enriquecida).
+     * @param {Object} opt
+     * @param {string} [selectedValue] - Valor seleccionado actual (marca --selected)
+     * @returns {string}
+     */
+    function renderDropdownMenuOptionButtonHtml(opt, selectedValue) {
+        opt = opt || {};
+        var optVal = opt.value != null ? String(opt.value) : '';
+        var text = opt.text != null ? String(opt.text) : '';
+        var valueStr = selectedValue != null ? String(selectedValue) : '';
+        var selectedClass = (opt.selected && !opt.alreadyChosen) || (valueStr && optVal === valueStr)
+            ? ' ubits-dropdown-menu__option--selected' : '';
+        var markedClass = opt.alreadyChosen ? ' ubits-dropdown-menu__option--marked-chosen' : '';
+        var safeText = escapeHtml(text);
+        var safeVal = escapeHtml(optVal);
+
+        if (isRichDropdownOption(opt)) {
+            var metaText = opt.metaText != null ? escapeHtml(String(opt.metaText)) : '';
+            var tagHtml = renderDropdownStatusTagHtml(opt.statusTag);
+            return '<button type="button" class="ubits-dropdown-menu__option ubits-dropdown-menu__option--rich' + selectedClass + markedClass + '" data-value="' + safeVal + '">' +
+                '<span class="ubits-dropdown-menu__option-text ubits-body-sm-regular">' + safeText + '</span>' +
+                (metaText ? '<span class="ubits-dropdown-menu__option-rich-meta ubits-body-sm-regular">' + metaText + '</span>' : '') +
+                tagHtml +
+                '</button>';
+        }
+
+        return '<button type="button" class="ubits-dropdown-menu__option' + selectedClass + markedClass + '" data-value="' + safeVal + '">' +
+            '<span class="ubits-dropdown-menu__option-text">' + safeText + '</span>' +
+            '</button>';
+    }
+
+    /**
      * Genera el HTML de un menú desplegable UBITS.
      * @param {Object} config
      * @param {string} config.overlayId - ID del overlay (cierre al clic fuera).
@@ -112,6 +163,9 @@
             if (opt.alreadyChosen && !opt.checkbox) {
                 right += markedChosenBadgeHtml();
             }
+            if (isRichDropdownOption(opt)) {
+                return renderDropdownMenuOptionButtonHtml(opt, opt.selected ? opt.value : null);
+            }
             var inner = left + (opt.checkbox ? '' : '<span class="ubits-dropdown-menu__option-text">' + text + '</span>') + right;
             if (opt.checkbox) {
                 return '<div class="ubits-dropdown-menu__option' + selectedClass + '" data-value="' + value + '" data-option-label="' + text + '">' + left + '</div>';
@@ -146,11 +200,13 @@
             : '';
 
         var optionsAttrs = hasMultiSelectSummary ? ' id="' + escapeHtml(optionsListId) + '"' : '';
+        var hasRichOptions = options.some(isRichDropdownOption);
+        var contentClass = 'ubits-dropdown-menu__content' + (hasRichOptions ? ' ubits-dropdown-menu__content--rich-options' : '');
         var bodyBlock = customBodyHtml
             ? '<div class="ubits-dropdown-menu__custom-body">' + customBodyHtml + '</div>'
             : '<div class="ubits-dropdown-menu__options"' + optionsAttrs + '>' + optionsHtml + '</div>';
         return '<div class="ubits-dropdown-menu__overlay" id="' + escapeHtml(overlayId) + '" style="display: none;" aria-hidden="true">' +
-            '<div class="ubits-dropdown-menu__content" id="' + escapeHtml(contentId) + '" onclick="event.stopPropagation();">' +
+            '<div class="' + contentClass + '" id="' + escapeHtml(contentId) + '" onclick="event.stopPropagation();">' +
             autocompleteBlock +
             summaryBlock +
             bodyBlock +
@@ -412,5 +468,7 @@
         window.openDropdownMenu = openDropdownMenu;
         window.closeDropdownMenu = closeDropdownMenu;
         window.initDropdownMultiSelectSummary = initDropdownMultiSelectSummary;
+        window.isRichDropdownOption = isRichDropdownOption;
+        window.renderDropdownMenuOptionButtonHtml = renderDropdownMenuOptionButtonHtml;
     }
 })();

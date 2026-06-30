@@ -1,111 +1,382 @@
 /* ========================================
-   ESTILOS ESPECÍFICOS PARA ZONA-ESTUDIO
+   ZONA DE ESTUDIO — estilos de página
+   Figma: Learner v4 · Plan de contenidos en progreso
    ======================================== */
 
-/* Estilos específicos para content-sections - idéntico a left-wrapper */
 .content-sections {
     display: flex;
     flex-direction: column;
-    gap: var(--gap-lg);
+    gap: var(--gap-2xl);
     flex: 1;
     min-width: 0;
     width: 100%;
     overflow: visible;
-    max-height: none;
 }
 
-/* Espaciador para alinear elementos - idéntico a left-wrapper */
-.content-sections > *:not(:last-child):not(.section-dual):not(.section-single):not(.section-triple):not(.section-quad) {
-    margin-bottom: 16px;
-}
-
-/* Espaciador final - idéntico a left-wrapper */
-.content-sections::after {
-    content: '';
-    height: 0px;
-    flex-shrink: 0;
-}
-
-/* Reducir el gap del último elemento - idéntico a left-wrapper */
-.content-sections > *:last-child {
-    margin-bottom: 0;
-}
-
-/* Secciones de widgets */
 .section-single {
     display: flex;
     width: 100%;
 }
 
-.section-dual {
-    display: flex;
-    gap: var(--gap-xl);
-}
-
-.section-triple {
-    display: flex;
-    gap: var(--gap-xl);
-}
-
-.section-quad {
-    display: flex;
-    gap: var(--gap-xl);
-}
-
-/* Widgets en secciones - sin altura mínima forzada */
-.section-single > div,
-.section-dual > div,
-.section-triple > div,
-.section-quad > div {
-    background-color: var(--ubits-bg-1);
-    border: none;
-    border-radius: var(--border-radius-lg);
-    padding: var(--padding-md) !important; /* !important para sobrescribir el reset */
+/* Tabs: componente oficial — sin overrides (ver components/tab.css) */
+.widget-tabs-zona-estudio {
     width: 100%;
-    box-sizing: border-box;
+    min-width: 0;
+}
+
+/* Sección contenido tabs — sin caja extra (widgets internos llevan bg) */
+.widget-contenido-tabs {
+    width: 100%;
     display: flex;
     flex-direction: column;
+    gap: var(--gap-2xl);
+    background: transparent;
+    border: none;
+    padding: 0 !important;
+    box-sizing: border-box;
 }
 
-/* Distribución de anchos */
-.section-single > div {
-    flex: 1;
+.content-sections > .section-single > .widget-contenido-tabs {
+    background: transparent;
+    border: none;
+    padding: 0 !important;
 }
 
-.section-dual > div {
-    flex: 1;
+.zona-estudio-tab-panel__inner {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-2xl);
+    width: 100%;
 }
 
-.section-triple > div {
-    flex: 1;
+/* Widget filtro + progreso del plan */
+.widget-zona-estudio-plan {
+    width: 100%;
+    box-sizing: border-box;
+    background: var(--ubits-bg-1);
+    border: none;
+    border-radius: var(--border-radius-lg);
+    padding: var(--padding-lg) !important;
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-lg);
 }
 
-.section-quad > div {
-    flex: 1;
+.zona-estudio-plan__top {
+    display: flex;
+    align-items: flex-end;
+    gap: var(--gap-lg);
+    width: 100%;
 }
 
-/* Responsive para secciones */
+.zona-estudio-plan__select {
+    flex: 1 1 0;
+    min-width: 0;
+}
+
+.zona-estudio-plan__vigencia {
+    flex: 1 1 0;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--gap-sm);
+    min-height: 32px;
+}
+
+.zona-estudio-plan__vigencia-text {
+    margin: 0;
+    color: var(--ubits-fg-1-medium);
+}
+
+.zona-estudio-plan__vigencia-text strong {
+    font-weight: var(--font-weight-bold);
+    color: var(--ubits-fg-1-medium);
+}
+
+.zona-estudio-plan__progress {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-xs);
+    width: 100%;
+}
+
+.zona-estudio-plan__vencido-alert {
+    width: 100%;
+}
+
+.zona-estudio-plan__vencido-alert:empty {
+    display: none;
+}
+
+.zona-estudio-plan__progress-meta {
+    display: flex;
+    align-items: baseline;
+    gap: var(--gap-sm);
+    width: 100%;
+}
+
+.zona-estudio-plan__progress-label,
+.zona-estudio-plan__progress-pct {
+    color: var(--ubits-fg-1-medium);
+    flex-shrink: 0;
+}
+
+.zona-estudio-plan__progress-pct {
+    margin-left: auto;
+    color: var(--ubits-fg-1-high);
+}
+
+.zona-estudio-plan__progress-count {
+    flex: 1 1 auto;
+    min-width: 0;
+    color: var(--ubits-fg-1-medium);
+}
+
+.zona-estudio-plan__progress .ubits-progress-bar {
+    width: 100%;
+}
+
+.zona-estudio-plan__desc {
+    margin: 0;
+    color: var(--ubits-fg-1-medium);
+}
+
+/* Bloque lista de contenidos */
+.zona-estudio-contenidos-block {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-2xl);
+    width: 100%;
+}
+
+.zona-estudio-toolbar .ubits-toolbar-panel__title-block {
+    align-items: center;
+}
+
+.grid-cards-container {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--gap-2xl);
+    width: 100%;
+}
+
+.grid-cards-container .course-card {
+    min-width: 0;
+    width: 100%;
+}
+
+#zona-estudio-empty-state {
+    width: 100%;
+}
+
+#zona-estudio-empty-state.ubits-empty-state {
+    display: flex !important;
+    padding: var(--padding-xl) !important;
+    gap: 12px !important;
+}
+
+#zona-estudio-competencias-empty {
+    width: 100%;
+}
+
+#zona-estudio-competencias-empty.ubits-empty-state {
+    display: flex !important;
+    padding: var(--padding-xl) !important;
+    gap: 12px !important;
+}
+
+/* Plan de competencias — bloques por competencia (Figma 40006073:17044) */
+.zona-estudio-competencias-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-2xl);
+    width: 100%;
+}
+
+.zona-estudio-competencia-block {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-lg);
+    width: 100%;
+    box-sizing: border-box;
+    background: var(--ubits-bg-1);
+    border-radius: var(--border-radius-lg);
+    padding: var(--padding-lg);
+}
+
+.zona-estudio-competencia-block__head {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: var(--gap-lg);
+    width: 100%;
+}
+
+.zona-estudio-competencia-block__identity {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-md);
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.zona-estudio-competencia-block__icon {
+    width: 50px;
+    height: 50px;
+    border-radius: var(--border-radius-lg);
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.zona-estudio-competencia-block__meta {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-xs);
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.zona-estudio-competencia-block__title {
+    margin: 0;
+    color: var(--ubits-fg-1-high);
+}
+
+.zona-estudio-competencia-block__progress-row {
+    display: flex;
+    align-items: baseline;
+    gap: var(--gap-sm);
+    width: 100%;
+}
+
+.zona-estudio-competencia-block__progress-count {
+    flex: 1 1 auto;
+    min-width: 0;
+    color: var(--ubits-fg-1-medium);
+}
+
+.zona-estudio-competencia-block__progress-pct {
+    color: var(--ubits-fg-1-high);
+    flex-shrink: 0;
+}
+
+.zona-estudio-competencia-block__progress-bar {
+    width: 100%;
+}
+
+.zona-estudio-competencia-block__progress-bar .ubits-progress-bar {
+    width: 100%;
+}
+
+.zona-estudio-competencia-block__nav-group {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-sm);
+    flex-shrink: 0;
+}
+
+.zona-estudio-competencia-block__indicators {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+
+.zona-estudio-competencia-block__carousel {
+    display: flex;
+    gap: var(--gap-2xl);
+    align-items: flex-start;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    padding-bottom: 2px;
+}
+
+.zona-estudio-competencia-block__carousel::-webkit-scrollbar {
+    display: none;
+}
+
+/* Misma partición que carousel-contents--content-cards (Continúa aprendiendo) */
+.zona-estudio-competencia-block__carousel .course-card {
+    flex: 0 0 calc((100% - (3 * 24px)) / 4);
+    width: calc((100% - (3 * 24px)) / 4);
+    max-width: calc((100% - (3 * 24px)) / 4);
+    min-width: calc((100% - (3 * 24px)) / 4);
+    box-sizing: border-box;
+    flex-shrink: 0;
+}
+
+/* Placeholder tabs */
+.zona-estudio-tab-panel--placeholder {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+@media (max-width: 1365px) {
+    .grid-cards-container {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .zona-estudio-competencia-block__carousel .course-card {
+        flex: 0 0 calc((100% - (2 * 24px)) / 3);
+        width: calc((100% - (2 * 24px)) / 3);
+        max-width: calc((100% - (2 * 24px)) / 3);
+        min-width: calc((100% - (2 * 24px)) / 3);
+    }
+}
+
 @media (max-width: 1023px) {
     .content-sections {
-        padding-bottom: 0;
-    }
-    
-    .section-dual,
-    .section-triple,
-    .section-quad {
-        flex-direction: column;
         gap: var(--gap-lg);
     }
-    
-    /* Ajustar widgets para móvil - sin altura mínima forzada */
+
+    .zona-estudio-plan__top {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .grid-cards-container {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: var(--gap-lg);
+    }
+}
+
+@media (max-width: 768px) {
+    .zona-estudio-competencia-block__nav-group {
+        display: none;
+    }
+
+    .zona-estudio-competencia-block__identity {
+        flex: 1 1 100%;
+        width: 100%;
+    }
+
+    .zona-estudio-competencia-block__indicators {
+        display: flex;
+    }
+
+    .zona-estudio-competencia-block__carousel .course-card {
+        flex: 0 0 calc((100% - (1 * 24px)) / 2);
+        width: calc((100% - (1 * 24px)) / 2);
+        max-width: calc((100% - (1 * 24px)) / 2);
+        min-width: calc((100% - (1 * 24px)) / 2);
+    }
 }
 
 @media (max-width: 480px) {
-    /* Padding reducido en móviles pequeños - sin altura mínima forzada */
-    .section-single > div,
-    .section-dual > div,
-    .section-triple > div,
-    .section-quad > div {
-        padding: var(--padding-md) !important; /* !important para sobrescribir el reset */
+    .grid-cards-container {
+        grid-template-columns: 1fr;
+    }
+
+    .zona-estudio-competencia-block__carousel .course-card {
+        flex: 0 0 100%;
+        width: 100%;
+        max-width: 100%;
+        min-width: 100%;
     }
 }

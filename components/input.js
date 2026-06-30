@@ -1089,13 +1089,36 @@ function createAutocompleteDropdown(container, inputElement, autocompleteOptions
  * @param {string} containerId - ID del contenedor del input
  * @param {HTMLElement} container - Elemento contenedor (ancla para posicionar el menú)
  * @param {HTMLInputElement} inputElement - Input readonly que muestra el valor seleccionado
- * @param {Array<{value: string, text: string}>} selectOptions - Opciones del select
+ * @param {Array<{value: string, text: string, metaText?: string, statusTag?: { text: string, variant?: string }}>} selectOptions - Opciones del select. Con `metaText` y/o `statusTag` se renderiza variante enriquecida (texto + meta + status-tag).
  * @param {string} value - Valor inicial seleccionado
  * @param {string} placeholder - Texto cuando no hay selección
  * @param {function} onChange - Callback al cambiar valor
  */
 var INPUT_SELECT_ITEMS_PER_PAGE = 50;
 var INPUT_SELECT_LOAD_MORE_DELAY_MS = 333;
+
+function inputSelectBuildOptionHtml(opt, selectedValue) {
+    if (typeof renderDropdownMenuOptionButtonHtml === 'function') {
+        return renderDropdownMenuOptionButtonHtml(opt, selectedValue);
+    }
+    var optVal = opt.value != null ? String(opt.value) : '';
+    var text = opt.text != null ? String(opt.text) : '';
+    var valueStr = selectedValue != null ? String(selectedValue) : '';
+    var selectedClass = optVal === valueStr ? ' ubits-dropdown-menu__option--selected' : '';
+    var safeText = text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+    var safeVal = optVal.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+    return '<button type="button" class="ubits-dropdown-menu__option' + selectedClass + '" data-value="' + safeVal + '">' +
+        '<span class="ubits-dropdown-menu__option-text">' + safeText + '</span></button>';
+}
+
+function inputSelectHasRichOptions(selectOptions) {
+    if (typeof isRichDropdownOption === 'function') {
+        return (selectOptions || []).some(isRichDropdownOption);
+    }
+    return (selectOptions || []).some(function (opt) {
+        return opt && (opt.metaText != null || opt.statusTag);
+    });
+}
 
 function setupSelectWithDropdownMenu(containerId, container, inputElement, selectOptions, value, placeholder, onChange) {
     var overlayId = 'ubits-input-select-' + containerId;
@@ -1104,6 +1127,7 @@ function setupSelectWithDropdownMenu(containerId, container, inputElement, selec
 
     var valueStr = value != null ? String(value) : '';
     var allOptions = selectOptions || [];
+    var hasRichOptions = inputSelectHasRichOptions(allOptions);
     var initialCount = allOptions.length > INPUT_SELECT_ITEMS_PER_PAGE ? INPUT_SELECT_ITEMS_PER_PAGE : allOptions.length;
     var initialSlice = allOptions.slice(0, initialCount);
 
@@ -1111,7 +1135,7 @@ function setupSelectWithDropdownMenu(containerId, container, inputElement, selec
     // Mimics Calendar component: direct body child, fixed position, high z-index
     var dropdown = document.createElement('div');
     dropdown.id = overlayId;
-    dropdown.className = 'ubits-dropdown-menu__content';
+    dropdown.className = 'ubits-dropdown-menu__content' + (hasRichOptions ? ' ubits-dropdown-menu__content--rich-options' : '');
     // Force styles: fixed, max z-index, initially hidden. No inline overflow — el CSS de
     // .ubits-dropdown-menu__content usa overflow:hidden para recortar hijos al border-radius
     // (overflow:visible rompía esquinas redondeadas en listas con scroll).
@@ -1120,17 +1144,7 @@ function setupSelectWithDropdownMenu(containerId, container, inputElement, selec
 
     // Build internal HTML manually (options)
     var optionsHtml = initialSlice.map(function (opt) {
-        var optVal = opt.value != null ? String(opt.value) : '';
-        var text = opt.text != null ? String(opt.text) : '';
-        var selectedClass = optVal === valueStr ? ' ubits-dropdown-menu__option--selected' : '';
-
-        // Escape HTML for safety
-        var safeText = text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
-        var safeVal = optVal.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
-
-        return '<button type="button" class="ubits-dropdown-menu__option' + selectedClass + '" data-value="' + safeVal + '">' +
-            '<span class="ubits-dropdown-menu__option-text">' + safeText + '</span>' +
-            '</button>';
+        return inputSelectBuildOptionHtml(opt, valueStr);
     }).join('');
 
     dropdown.innerHTML = '<div class="ubits-dropdown-menu__options">' + optionsHtml + '</div>';
@@ -1171,8 +1185,12 @@ function setupSelectWithDropdownMenu(containerId, container, inputElement, selec
         dropdown.style.display = 'flex'; // dropdown-menu__content needs flex
 
         var contentWidth = dropdown.offsetWidth;
-        // If content is too narrow, match input width
-        if (rect.width > contentWidth) {
+        // Si content is too narrow, match input width (rich options: ancho mínimo del panel)
+        var minPanelWidth = hasRichOptions ? Math.max(rect.width, 520) : rect.width;
+        if (minPanelWidth > contentWidth) {
+            dropdown.style.minWidth = minPanelWidth + 'px';
+            contentWidth = minPanelWidth;
+        } else if (rect.width > contentWidth) {
             dropdown.style.minWidth = rect.width + 'px';
             contentWidth = rect.width;
         }
@@ -1257,10 +1275,7 @@ function setupSelectWithDropdownMenu(containerId, container, inputElement, selec
                 setTimeout(function () {
                     var nextSlice = allOptions.slice(loadedCount, loadedCount + INPUT_SELECT_ITEMS_PER_PAGE);
                     var newHtml = nextSlice.map(function (opt) {
-                        var safeVal = (opt.value != null ? String(opt.value) : '').replace(/&/g, "&amp;").replace(/"/g, "&quot;");
-                        var safeText = (opt.text != null ? String(opt.text) : '').replace(/&/g, "&amp;").replace(/</g, "&lt;");
-                        return '<button type="button" class="ubits-dropdown-menu__option" data-value="' + safeVal + '">' +
-                            '<span class="ubits-dropdown-menu__option-text">' + safeText + '</span></button>';
+                        return inputSelectBuildOptionHtml(opt, valueStr);
                     }).join('');
 
                     loadingRow.insertAdjacentHTML('beforebegin', newHtml);
