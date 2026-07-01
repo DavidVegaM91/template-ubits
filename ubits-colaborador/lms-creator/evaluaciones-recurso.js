@@ -1006,7 +1006,7 @@
     // Ruta B (larga):   Bottom Sheet Form config → material → count/difficulty/types → confirmación
     // ---------------------------
 
-    var EVAL_AI_TOKEN_COST = 2;
+    var EVAL_AI_TOKEN_COST = 80;
     var EVAL_AI_TOPIC_DEFAULT = 'Resolución efectiva de conflictos en equipos de trabajo';
 
     // ---------------------------
@@ -1223,7 +1223,7 @@
     }
 
     function _evalGetTokens() {
-        return window._ubitsAiTokenPool != null ? window._ubitsAiTokenPool : 50;
+        return window._ubitsAiTokenPool != null ? window._ubitsAiTokenPool : 500000;
     }
 
     function _evalSpendTokens(n) {

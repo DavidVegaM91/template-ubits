@@ -336,9 +336,16 @@ function renderStudyZonePlanCard(plan) {
     var title = plan.title || '';
     var progressLabel = plan.progressLabel || '';
     var pct = plan.empty ? 0 : value;
+    var dataAttrs = '';
+    if (plan.planId) {
+        dataAttrs += ' data-plan-id="' + String(plan.planId).replace(/"/g, '&quot;') + '"';
+    }
+    if (plan.planTipo) {
+        dataAttrs += ' data-plan-tipo="' + String(plan.planTipo).replace(/"/g, '&quot;') + '"';
+    }
 
     return (
-        '<article class="carousel-contents--study-zone__plan-card" tabindex="0">' +
+        '<article class="carousel-contents--study-zone__plan-card" tabindex="0"' + dataAttrs + '>' +
             '<div class="carousel-contents--study-zone__plan-head">' +
                 '<p class="ubits-body-sm-regular carousel-contents--study-zone__plan-cierre">' + cierre + '</p>' +
                 '<p class="ubits-body-md-semibold carousel-contents--study-zone__plan-title">' + title + '</p>' +

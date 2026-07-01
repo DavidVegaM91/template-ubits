@@ -247,6 +247,87 @@ function initCardContentLmsRowActions() {
     });
 }
 
+/** Menú de opciones para descarga de certificado (Zona de estudio — historial). */
+function getCertificadoDownloadDropdownOptions() {
+    return [{ text: 'Descargar certificado', value: 'descargar-certificado', leftIcon: 'down-to-line' }];
+}
+
+var CERTIFICADO_ROW_ACTIONS_OVERLAY_ID = 'card-content-certificado-row-actions-overlay';
+var _certificadoActionsOpenAnchor = null;
+
+function openCertificadoRowActionsMenu(anchorEl) {
+    if (!anchorEl || typeof window.getDropdownMenuHtml !== 'function' ||
+        typeof window.openDropdownMenu !== 'function' ||
+        typeof window.closeDropdownMenu !== 'function') {
+        console.warn('UBITS: carga dropdown-menu.js para el menú de certificado en card-content.');
+        return;
+    }
+    if (_certificadoActionsOpenAnchor && _certificadoActionsOpenAnchor !== anchorEl) {
+        _certificadoActionsOpenAnchor.setAttribute('aria-expanded', 'false');
+    }
+    _certificadoActionsOpenAnchor = anchorEl;
+
+    var prev = document.getElementById(CERTIFICADO_ROW_ACTIONS_OVERLAY_ID);
+    if (prev) prev.remove();
+
+    document.body.insertAdjacentHTML('beforeend', window.getDropdownMenuHtml({
+        overlayId: CERTIFICADO_ROW_ACTIONS_OVERLAY_ID,
+        options: getCertificadoDownloadDropdownOptions()
+    }));
+
+    var overlay = document.getElementById(CERTIFICADO_ROW_ACTIONS_OVERLAY_ID);
+    if (!overlay) return;
+
+    function tearDown() {
+        window.closeDropdownMenu(CERTIFICADO_ROW_ACTIONS_OVERLAY_ID);
+        if (_certificadoActionsOpenAnchor) {
+            _certificadoActionsOpenAnchor.setAttribute('aria-expanded', 'false');
+            _certificadoActionsOpenAnchor = null;
+        }
+        overlay.removeEventListener('click', onOverlayClick);
+        if (overlay.parentNode) overlay.parentNode.removeChild(overlay);
+    }
+
+    function onOverlayClick(ev) {
+        if (ev.target === overlay) tearDown();
+    }
+
+    overlay.addEventListener('click', onOverlayClick);
+
+    overlay.querySelectorAll('.ubits-dropdown-menu__option[data-value]').forEach(function (row) {
+        row.addEventListener('click', function (ev) {
+            ev.stopPropagation();
+            var key = anchorEl.getAttribute('data-certificado-row-key') || '';
+            document.dispatchEvent(new CustomEvent('ubits-certificado-download-request', {
+                bubbles: true,
+                detail: { action: 'descargar-certificado', contentId: key, anchor: anchorEl }
+            }));
+            tearDown();
+        });
+    });
+
+    anchorEl.setAttribute('aria-expanded', 'true');
+    window.openDropdownMenu(CERTIFICADO_ROW_ACTIONS_OVERLAY_ID, anchorEl, { alignRight: true });
+}
+
+var _certificadoRowActionsDocBound = false;
+
+/**
+ * Registra el clic en botones de opciones de certificado (card). Idempotente.
+ * Requiere dropdown-menu.js + dropdown-menu.css y button.css.
+ */
+function initCardContentCertificadoRowActions() {
+    if (_certificadoRowActionsDocBound) return;
+    _certificadoRowActionsDocBound = true;
+    document.addEventListener('click', function (e) {
+        var btn = e.target.closest('.course-card__certificado-options-btn');
+        if (!btn) return;
+        e.preventDefault();
+        e.stopPropagation();
+        openCertificadoRowActionsMenu(btn);
+    });
+}
+
 // ALIADOS OFICIALES (18 proveedores)
 // NOTA: Las rutas son relativas al HTML que carga el componente, no al JS
 // Desde subcarpetas (ubits-admin/*, ubits-colaborador/*) usar: '../../images/Favicons/...'
@@ -345,6 +426,8 @@ function cardContentProgressBarHtml(progress, status) {
  * @param {string} cardData.language - Idioma (Español, Inglés, etc.)
  * @param {string} [cardData.lmsTag] - Opcional. Tag LMS (Publicado, Borrador, Privado, Oculto, Archivado) en la esquina superior izquierda de la imagen; solo pantallas como LMS Creator / contenidos. Si es Archivado, la imagen se muestra en blanco y negro (grayscale) vía data-lms-tag + CSS.
  * @param {boolean} [cardData.lmsRowActions] - Si true, muestra botón de opciones (elipsis vertical, terciario xs) arriba a la derecha; menú Editar/Duplicar/Archivar o extendido si legacyLms. Requiere initCardContentLmsRowActions() y dropdown-menu.
+ * @param {boolean} [cardData.certificadoRowActions] - Si true, muestra botón de opciones con menú «Descargar certificado» (historial / certificados). Requiere initCardContentCertificadoRowActions() y dropdown-menu.
+ * @param {string} [cardData.certificadoCardId] - ID del contenido para el menú de certificado (por defecto contentId o id).
  * @param {string} [cardData.lmsCardId] - Identificador para data-lms-row-key (evento ubits-lms-content-action).
  * @param {boolean} [cardData.legacyLms] - Si true, badge "Antiguo LMS" (outlined info + puntito) y menú de acciones con Restaurar e Informes. Requiere badge-tag.css.
  */
@@ -453,13 +536,30 @@ function renderCardContent(cardData) {
     }
 
     const showLmsOptions = cardData.lmsRowActions === true;
+    const showCertificadoOptions = cardData.certificadoRowActions === true;
     const lmsRowKey = escapeHtmlAttr(
         cardData.lmsCardId != null ? String(cardData.lmsCardId) : (cardData.id != null ? String(cardData.id) : '')
+    );
+    const certificadoRowKey = escapeHtmlAttr(
+        cardData.certificadoCardId != null ? String(cardData.certificadoCardId)
+            : (cardData.contentId != null ? String(cardData.contentId)
+                : (cardData.id != null ? String(cardData.id) : ''))
     );
     const lmsOptionsBtn = showLmsOptions
         ? `<div class="course-header__actions">
                     <button type="button" class="ubits-button ubits-button--tertiary ubits-button--xs ubits-button--icon-only course-card__lms-options-btn"
                         data-lms-row-key="${lmsRowKey}"
+                        aria-haspopup="true" aria-expanded="false"
+                        aria-label="Opciones del contenido"
+                        data-tooltip="Opciones" data-tooltip-delay="1000">
+                        <i class="far fa-ellipsis-vertical"></i>
+                    </button>
+                </div>`
+        : '';
+    const certificadoOptionsBtn = showCertificadoOptions
+        ? `<div class="course-header__actions">
+                    <button type="button" class="ubits-button ubits-button--tertiary ubits-button--xs ubits-button--icon-only course-card__certificado-options-btn"
+                        data-certificado-row-key="${certificadoRowKey}"
                         aria-haspopup="true" aria-expanded="false"
                         aria-label="Opciones del contenido"
                         data-tooltip="Opciones" data-tooltip-delay="1000">
@@ -489,7 +589,7 @@ function renderCardContent(cardData) {
                         <span class="course-type ubits-body-xs-regular">${cardData.type}</span>
                         ${statusText ? `<span class="course-status ${statusClass} ubits-body-sm-bold">${statusText}</span>` : ''}
                     </div>
-                    ${lmsOptionsBtn}
+                    ${lmsOptionsBtn}${certificadoOptionsBtn}
                 </div>
                 <h3 class="course-title ubits-body-sm-bold">${cardData.title}</h3>
                 ${providerHTML}
@@ -556,17 +656,31 @@ function loadCardContent(containerId, cardsData, options) {
                 merged.lmsCardId = 'row-' + index;
             }
         }
+        if (merged.certificadoRowActions === true) {
+            if (merged.certificadoCardId == null && merged.contentId != null) {
+                merged.certificadoCardId = String(merged.contentId);
+            }
+            if (merged.certificadoCardId == null && merged.id != null) {
+                merged.certificadoCardId = String(merged.id);
+            }
+            if (merged.certificadoCardId == null) {
+                merged.certificadoCardId = 'row-' + index;
+            }
+        }
         const cardHTML = renderCardContent(merged);
         container.insertAdjacentHTML('beforeend', cardHTML);
     });
 
-    if (cardsData.some(function (c) {
+    var needsLmsActions = false;
+    var needsCertificadoActions = false;
+    cardsData.forEach(function (c) {
         const m = Object.assign({}, c);
         if (defaultLms && m.lmsRowActions === undefined) m.lmsRowActions = true;
-        return m.lmsRowActions === true;
-    })) {
-        initCardContentLmsRowActions();
-    }
+        if (m.lmsRowActions === true) needsLmsActions = true;
+        if (m.certificadoRowActions === true) needsCertificadoActions = true;
+    });
+    if (needsLmsActions) initCardContentLmsRowActions();
+    if (needsCertificadoActions) initCardContentCertificadoRowActions();
 }
 
 
@@ -597,7 +711,9 @@ const sampleCardData = {
 window.renderCardContent = renderCardContent;
 window.loadCardContent = loadCardContent;
 window.initCardContentLmsRowActions = initCardContentLmsRowActions;
+window.initCardContentCertificadoRowActions = initCardContentCertificadoRowActions;
 window.getLmsRowActionsDropdownOptions = getLmsRowActionsDropdownOptions;
+window.getCertificadoDownloadDropdownOptions = getCertificadoDownloadDropdownOptions;
 window.validateCardData = validateCardData;
 window.getRecommendedDuration = getRecommendedDuration;
 window.getLmsTagStatusClass = getLmsTagStatusClass;

@@ -159,6 +159,19 @@ function _aiCopyText(text) {
     document.body.removeChild(ta);
 }
 
+function _iaPanelFormatTokensBadgeNumber(value) {
+    var n = Number(value);
+    if (!isFinite(n) || n < 0) n = 0;
+    if (typeof window.formatCounterNumber === 'function') {
+        return window.formatCounterNumber(n);
+    }
+    return n.toLocaleString('en-US');
+}
+
+function _iaPanelTokensBadgeAriaLabel(value) {
+    return _iaPanelFormatTokensBadgeNumber(value) + ' tokens restantes';
+}
+
 // ---------------------------------------------------------------------------
 // Badge de tokens (cabecera, a la izquierda del cierre) — mismo patrón que modal IA portada
 // ---------------------------------------------------------------------------
@@ -175,7 +188,7 @@ function _iaPanelTokensBadgeHtml(o) {
     var aria =
         merged.ariaLabel != null && merged.ariaLabel !== ''
             ? merged.ariaLabel
-            : String(num) + ' tokens restantes';
+            : _iaPanelTokensBadgeAriaLabel(num);
     return (
         '<span class="ubits-badge-tag ubits-badge-tag--outlined ubits-badge-tag--ia ubits-badge-tag--xs ia-panel__tokens-badge" id="ia-panel-tokens-badge" tabindex="0" ' +
         'data-tooltip="' +
@@ -186,7 +199,7 @@ function _iaPanelTokensBadgeHtml(o) {
         '<span class="ubits-badge-tag__token-cost" aria-hidden="true">' +
         '<i class="far fa-coin-vertical"></i>' +
         '<span class="ubits-badge-tag__token-number">' +
-        _aiEscape(String(num)) +
+        _aiEscape(_iaPanelFormatTokensBadgeNumber(num)) +
         '</span>' +
         '</span></span>'
     );
@@ -937,8 +950,8 @@ function setIAPanelTokensBadgeValue(value) {
     var el = _aiEl('ia-panel-tokens-badge');
     if (!el) return;
     var numEl = el.querySelector('.ubits-badge-tag__token-number');
-    if (numEl) numEl.textContent = String(n);
-    el.setAttribute('aria-label', String(n) + ' tokens restantes');
+    if (numEl) numEl.textContent = _iaPanelFormatTokensBadgeNumber(n);
+    el.setAttribute('aria-label', _iaPanelTokensBadgeAriaLabel(n));
     if (_iaPanel.options && _iaPanel.options.tokensBadge !== false) {
         if (_iaPanel.options.tokensBadge && typeof _iaPanel.options.tokensBadge === 'object') {
             _iaPanel.options.tokensBadge.value = n;

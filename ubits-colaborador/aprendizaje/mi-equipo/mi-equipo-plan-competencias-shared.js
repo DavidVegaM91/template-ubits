@@ -29,6 +29,40 @@
         };
     }
 
+    /** Copy learner: «1 hora 20 min. de 2 horas». */
+    function formatMinutosEstudioVsMeta(doneMin, totalMin) {
+        doneMin = Math.max(0, Math.round(Number(doneMin) || 0));
+        totalMin = Math.max(0, Math.round(Number(totalMin) || 0));
+
+        function formatMinutosPart(min) {
+            var h = Math.floor(min / 60);
+            var m = min % 60;
+            if (h && m) return h + ' hora' + (h !== 1 ? 's' : '') + ' ' + m + ' min.';
+            if (h) return h + ' hora' + (h !== 1 ? 's' : '');
+            return m + ' min.';
+        }
+
+        function formatMetaPart(min) {
+            var h = Math.floor(min / 60);
+            if (h >= 1) return h + ' hora' + (h !== 1 ? 's' : '');
+            return min + ' min.';
+        }
+
+        return formatMinutosPart(doneMin) + ' de ' + formatMetaPart(totalMin);
+    }
+
+    function getCompetenciaMinutosLabelForPlanPerson(plan, colaboradorId) {
+        var pf = global.BD_PLANES_FORMACION;
+        var metaHoras = (plan && plan.horasEstudioMeta != null)
+            ? plan.horasEstudioMeta
+            : ((pf && pf.HORAS_META_COMPETENCIAS) || 2);
+        var totalMin = Math.round(Number(metaHoras) * 60);
+        var cid = String(colaboradorId || '');
+        var consumo = (plan && plan.consumoPorUsuario && plan.consumoPorUsuario[cid]) || { horas: 0 };
+        var doneMin = Math.round((Number(consumo.horas) || 0) * 60);
+        return formatMinutosEstudioVsMeta(doneMin, totalMin);
+    }
+
     function getUsernameColaborador(c) {
         if (c.username) return c.username;
         var palabras = (c.nombre || '').toLowerCase().split(' ').filter(function (p) { return p.length > 0; });
@@ -415,6 +449,9 @@
         if (!overlay) return;
         var compactContainer = overlay.querySelector('#detalle-plan-compact-cards');
         if (compactContainer) {
+            var minutosLabel = (opts.plan && opts.colaboradorId)
+                ? getCompetenciaMinutosLabelForPlanPerson(opts.plan, opts.colaboradorId)
+                : '';
             compactContainer.innerHTML = list.map(function (c) {
                 var progress = sinProgreso ? 0 : (c.progress != null ? c.progress : 0);
                 var status = sinProgreso ? 'default' : (c.status || 'default');
@@ -422,12 +459,13 @@
                 var imgPath = imageBase + imgName;
                 var nombre = c.title || c.nombre || '';
                 var barraHtml = renderCompetenciaProgressBlock(progress, status);
+                var subcopy = c.minutosLabel || minutosLabel || '';
                 return '<div class="drawer-competencia-card-wrapper"><div class="drawer-competencia-card competencia-card-v1" data-competencia-id="' + escapeDrawerHtml(c.id) + '">' +
                     '<div class="drawer-competencia-card-row">' +
                     '<img src="' + escapeDrawerHtml(imgPath) + '" alt="" class="competencia-card-v1-image" loading="lazy" onerror="this.src=\'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=400&h=300&fit=crop\'">' +
                     '<div class="competencia-card-v1-content">' +
                     '<p class="ubits-body-sm-semibold competencia-card-v1-title"><span class="competencia-card-v1-title-text">' + escapeDrawerHtml(nombre) + '</span></p>' +
-                    '<p class="ubits-body-xs-regular competencia-card-v1-count">' + (c.habilidades ? c.habilidades.length : 0) + ' habilidades</p></div>' +
+                    '<p class="ubits-body-xs-regular competencia-card-v1-count">' + escapeDrawerHtml(subcopy) + '</p></div>' +
                     '<span class="drawer-competencia-card-check"></span></div>' + barraHtml + '</div></div>';
             }).join('');
         }
@@ -720,6 +758,8 @@
         getUsernameColaborador: getUsernameColaborador,
         getColaboradoresDisponiblesMiEquipo: getColaboradoresDisponiblesMiEquipo,
         renderCompetenciaProgressBlock: renderCompetenciaProgressBlock,
+        formatMinutosEstudioVsMeta: formatMinutosEstudioVsMeta,
+        getCompetenciaMinutosLabelForPlanPerson: getCompetenciaMinutosLabelForPlanPerson,
         openDrawerAgregarCompetencias: openDrawerAgregarCompetencias,
         openPanelCompetenciasReadOnly: openPanelCompetenciasReadOnly,
         openDrawerAgregarAsignacionMiEquipo: openDrawerAgregarAsignacionMiEquipo,

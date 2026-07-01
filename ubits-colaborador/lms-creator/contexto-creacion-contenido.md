@@ -46,6 +46,26 @@ El asistente de creación tiene **4 pasos**, en este orden:
 
 **Navegación real en el playground:** desde **Recursos**, con al menos una página y **títulos válidos** en todas (y el resto de reglas del paso Recursos), **Siguiente** o el paso **3** del stepper llevan a **Certificado** (`#certificado`). Desde Certificado, **Siguiente** lleva a **Visibilidad** (`#visibilidad`). **Anterior** en Certificado vuelve a Recursos; **Anterior** en Visibilidad vuelve a Certificado. Ver también **Deep link demo** en los pasos Certificado y Visibilidad.
 
+### Créditos de IA (saldo y costos)
+
+En el flujo **crear contenido**, el cliente **nace con un saldo inicial de 500.000 créditos** (tokens de IA) al cargar la pantalla. Ese saldo es **único y compartido** entre portada, video, evaluación, SCORM y el resto de acciones con IA del Creator en la misma sesión: cada consumo **descuenta** del mismo pool y el **badge de saldo** en modales y panel de IA refleja el **restante**.
+
+| Acción | Créditos consumidos | Dónde se muestra el costo |
+|--------|---------------------|---------------------------|
+| **Generar portada** (imagen con IA) | **50** | Botón **Generar portada** / **Regenerar portada** en modal «Añadir portada» |
+| **Generar guión** (video con avatar, pestaña Video IA) | **80** | Botón **Generar guión** |
+| **Generar video** (video con avatar, pestaña Video IA) | **320** | Botón **Generar video** (pie del modal) |
+| **Generar evaluación** (agente de evaluaciones) | **80** | Botón **Generar evaluación** en el hilo del panel de IA |
+| **Generar presentación SCORM** (pestaña SCORM con IA) | **15** | Botón **Generar presentación** (sin cambio respecto al prototipo anterior) |
+
+**Reglas de producto:**
+
+- Si el saldo **no alcanza** para una acción, el sistema **no ejecuta** la generación y muestra un **aviso** (toast) indicando cuántos créditos se requieren.
+- **Subir** portada, **enlace/subida** de video, **subir .zip** SCORM y el resto de flujos **sin IA** **no consumen** créditos.
+- Regenerar portada o volver a generar guión/video/evaluación **vuelve a cobrar** el costo de esa acción.
+
+**Referencia en código (playground vanilla):** saldo inicial en `crear-contenido.js` (`window._ubitsAiTokenPool`); costos en `portada-imagen-modal.js` (portada), `video-recurso-modal.js` (guión y video), `evaluaciones-recurso.js` (evaluación), `scorm-recurso-modal.js` (SCORM). En React: `Ubits-React/lib/lms-creator/creatorAiTokens.ts` y pool compartido en `crear-contenido.tsx`.
+
 ### Desde la lista de contenidos
 
 - El **asistente de creación** vive en una **pantalla propia** a casi pantalla completa, separada de la lista. No hay un “mini creador” embebido en la tabla de contenidos.
@@ -83,7 +103,7 @@ Hoy el prototipo **no** reparte la configuración en varios botones sueltos dent
 
 **Tres formas de trabajar la portada (pestañas):**
 
-1. **Portada con IA** — Mensaje inspirador (*tú lo imaginas…*) y un campo para **describir con palabras** la portada. El usuario pulsa **Generar portada**; cada generación **consume tokens**. La primera vez que genera, el modal **se ensancha** y aparece a un lado una **zona de vista previa**: primero un estado vacío amable, luego una **animación de “generando”**, después la **imagen resultante** (en el prototipo es una simulación con imagen de ejemplo y una espera corta). Puede **regenerar** otra imagen (de nuevo con coste en tokens) o pulsar **Usar esta imagen** para aplicarla a la portada.
+1. **Portada con IA** — Mensaje inspirador (*tú lo imaginas…*) y un campo para **describir con palabras** la portada. El usuario pulsa **Generar portada**; cada generación **consume 50 créditos** del saldo compartido. La primera vez que genera, el modal **se ensancha** y aparece a un lado una **zona de vista previa**: primero un estado vacío amable, luego una **animación de “generando”**, después la **imagen resultante** (en el prototipo es una simulación con imagen de ejemplo y una espera corta). Puede **regenerar** otra imagen (de nuevo con **50 créditos**) o pulsar **Usar esta imagen** para aplicarla a la portada.
 
 2. **Subir portada** — El usuario **elige un archivo** de imagen desde su equipo. Los formatos y el **tamaño máximo** se comunican en la propia zona de carga. Confirma con **Usar esta imagen**.
 
@@ -510,13 +530,13 @@ El pie del modal muestra el botón que corresponde a la pestaña activa (por eje
 
 - **Presentador / avatar:** el usuario elige un **sector o categoría** (lista desplegable) y luego un **personaje** entre avatares disponibles; al seleccionar, ve una **vista previa** grande (imagen o clip de ejemplo según lo disponible en el prototipo).
 - **Guión — cómo se define:** antes del texto largo del guión, la persona elige **un modo** mediante **dos tarjetas con radio** (mismo patrón que otros flujos del producto, p. ej. asignación en tareas): solo **icono + título + radio**, sin descripción debajo.
-  - **Generar con IA** (opción por defecto): primero solo aparece el **contexto del tema** — área para describir de qué debe hablar el video y **adjuntos** (chips), más **Generar guión** con coste en tokens. **No** hay segundo campo de guión hasta que el usuario genera; entonces aparece **debajo** el **guión generado** en un campo amplio **editable** (mínimo y máximo de caracteres según reglas en pantalla). Ese texto **solo vive** en esta subsección; **no** se copia al modo manual.
+  - **Generar con IA** (opción por defecto): primero solo aparece el **contexto del tema** — área para describir de qué debe hablar el video y **adjuntos** (chips), más **Generar guión** (**80 créditos**). **No** hay segundo campo de guión hasta que el usuario genera; entonces aparece **debajo** el **guión generado** en un campo amplio **editable** (mínimo y máximo de caracteres según reglas en pantalla). Ese texto **solo vive** en esta subsección; **no** se copia al modo manual.
   - **Escribir manualmente:** solo se muestra **un** campo amplio para escribir el guión completo (mismos límites de caracteres). Es **independiente** del guión de IA: al cambiar de modo **no** se rellena con lo generado por IA; lo que el usuario escriba a mano **solo** aplica cuando ese modo está seleccionado.
   - **Qué cuenta para «Generar video»:** solo el modo **activo** y su buffer correspondiente (IA vs manual). Si está en manual, el texto del campo manual es el definitivo; si está en IA, el definitivo es el del campo de guión **después** de generar (o tras editarlo). Si intenta generar el video **sin** haber generado antes el guión en modo IA, el sistema lo orienta a **generar el guión** o a **cambiar a manual**.
 - **Contexto del tema** (solo flujo IA): área de texto libre para describir **de qué debe hablar** el video (tema, tono, público). Opcionalmente puede **adjuntar archivos de referencia** (aparecen como chips que puede quitar).
 - **Duración / expectations:** el prototipo puede mostrar un **aviso informativo** sobre duración u orientación del formato (se puede cerrar).
 - **Logo de la empresa (opcional):** en la pestaña **Video IA**, zona de carga para un **PNG** (tamaño máximo comunicado en pantalla, p. ej. **2 MB**). Si se sube, el logo puede verse en la **vista previa** del modal y, tras generar, **superpuesto** en el reproductor del recurso. Quitar el archivo limpia el logo.
-- **Generar video:** botón principal con **coste alto en tokens** respecto al guión. Al iniciarlo:
+- **Generar video:** botón principal con **320 créditos** (cuatro veces el costo del guión). Al iniciarlo:
   - El modal puede **cerrarse** y el usuario ve el **panel de operaciones en curso** (esquina inferior izquierda) mientras el sistema procesa la generación.
   - En el **panel de la página** (no dentro del modal), el espacio del recurso muestra un **video placeholder en bucle** mientras dura la generación — **no** el componente **IA Loader**. Motivo de producto/backend: en la vista del recurso montado en la lección **no puede persistirse ni renderizarse un IA Loader**; debe mostrarse un **MP4 estático** hasta que llegue el video real.
   - Ese placeholder ocupa el **mismo hueco 16:9** que tendrá el reproductor final: **reproduce solo** (`autoplay`), **en loop**, **sin controles** visibles y **sin sonido** (política habitual de autoplay en navegadores). Para accesibilidad lleva etiqueta del tipo *«Generando video»*.
@@ -619,7 +639,7 @@ El pie del modal muestra **Generar presentación** en la pestaña IA o **Cargar 
 - **Logo de la empresa (opcional)** — carga de **PNG** (máximo indicado en UI, p. ej. **2 MB**). Tras generar, el logo aparece en la **primera diapositiva (portada)**, anclado a la **esquina superior derecha de la imagen de portada** (posición fija respecto al recorte 16:9, sin “bailar” al cambiar el ancho de pantalla).
 - **Vista previa orientativa** — a la derecha, un **iframe** muestra cómo podría verse la navegación (barra de progreso, paso anterior/siguiente). El texto aclara que es **orientativa**: el contenido final usará el contexto, logo y estructura definidos al generar.
 
-**Generar presentación** — botón con **coste en tokens**. Si falta título o contexto, los campos se marcan para corrección. Al confirmar:
+**Generar presentación** — botón con **15 créditos**. Si falta título o contexto, los campos se marcan para corrección. Al confirmar:
 
 1. El modal se **cierra**.
 2. Aparece el **panel de operaciones en curso** (misma familia que video IA) mientras el sistema procesa.
@@ -834,7 +854,7 @@ En la ruta larga, cuando ya hay material, el agente puede pedir **qué tipos de 
 
 Cuando el usuario termina el **asistente por pasos** de configuración (nota mínima, tiempo, cantidad de preguntas, nivel), el agente muestra en el hilo un mensaje que empieza por **«Configuración seleccionada:»** y debajo un **resumen en una línea** (porcentaje mínimo, tiempo si aplica, número de preguntas y nivel), antes de pedir el tema o material.
 
-Tras recoger tema y reglas, el flujo llega a un **paso de confirmación** en el hilo: resumen de lo que se va a generar y un botón de acción con **coste en tokens** (**Generar evaluación**). Si no hay tokens suficientes, el botón queda deshabilitado con el mensaje correspondiente.
+Tras recoger tema y reglas, el flujo llega a un **paso de confirmación** en el hilo: resumen de lo que se va a generar y un botón de acción con **80 créditos** (**Generar evaluación**). Si no hay créditos suficientes, el botón queda deshabilitado con el mensaje correspondiente.
 
 ### Qué ocurre al generar
 
@@ -861,7 +881,7 @@ Tras recoger tema y reglas, el flujo llega a un **paso de confirmación** en el 
 
 ### Nota de producto
 
-- El prototipo combina **agente conversacional**, **formularios embebidos en el hilo** y **coste en tokens** compartido con el resto del Creator; una implementación con backend real sustituiría la simulación y el banco fijo por generación o catálogo remotos **sin cambiar** la narrativa de pantalla descrita.
+- El prototipo combina **agente conversacional**, **formularios embebidos en el hilo** y **coste en créditos** compartido con el resto del Creator (ver tabla en **Créditos de IA**); una implementación con backend real sustituiría la simulación y el banco fijo por generación o catálogo remotos **sin cambiar** la narrativa de pantalla descrita.
 
 ---
 
@@ -871,7 +891,7 @@ Tras recoger tema y reglas, el flujo llega a un **paso de confirmación** en el 
 - **Visibilidad (paso 4):** lógica de cambio de estado, selección de colaboradores (Privado), acción **Publicar** y reglas de edición post-publicación.  
 - Integración real con plantillas de **LMS Creator → Certificados** (hoy mock Fiqsha en memoria; el paso Certificado ya está documentado en detalle de producto).  
 - Reglas de validación global (publicar, borradores, etc.) si aplica.  
-- Detalle de **consumo** SCORM por tipo de diapositiva (quizzes, hotspots, emparejamiento) más allá de lo ya descrito en **Recurso: SCORM**.  
+- Detalle de **consumo** SCORM por tipo de diapositiva (quizzes, hotspots, emparejamiento) más allá del **costo fijo de 15 créditos** por generación ya descrito en **Recurso: SCORM**.  
 - Si producto **reactiva** la variante wizard de video: documentar aquí como flujo alternativo o sustituto (hoy **reservada**, no expuesta).
 
 ---
@@ -896,8 +916,8 @@ Al portar este flujo a páginas del playground React (`pages/ubits-colaborador/l
 
 Este documento **no** sustituye la **documentación de componentes UBITS** ni las reglas del repositorio para desarrollo. Quien construya pantallas debe partir del catálogo oficial de componentes y de los patrones del Creator ya definidos en código.
 
-- Cualquier cambio en **producto o UX** debe reflejarse aquí para que PM, diseño y negocio sigan alineados.
+- Cualquier cambio en **producto o UX** (incluidos **saldo inicial** y **costos por acción IA**) debe reflejarse aquí y en los archivos de constantes del playground para que PM, diseño y negocio sigan alineados.
 
 ---
 
-*Última revisión: **Video IA** — placeholder MP4 en página (sin IA Loader) + subsección técnica; IA Loader conservado solo para guión en modal. **Portada** — vacío IA + modal `portada-imagen-modal`. Paso **Visibilidad** / **Certificado**. **Complementary resources** (excluido en Evaluación final). **Recursos:** 8 tipos; persistencia por página.*
+*Última revisión: **Créditos de IA** — saldo inicial **500.000**; portada **50**, guión **80**, video **320**, evaluación **80**, SCORM **15** (pool compartido). **Video IA** — placeholder MP4 en página (sin IA Loader) + subsección técnica; IA Loader conservado solo para guión en modal. **Portada** — vacío IA + modal `portada-imagen-modal`. Paso **Visibilidad** / **Certificado**. **Complementary resources** (excluido en Evaluación final). **Recursos:** 8 tipos; persistencia por página.*

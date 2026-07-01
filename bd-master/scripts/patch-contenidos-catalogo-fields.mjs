@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
- * Añade catalogoId + conCertificacion a todos los ítems.
- * UBITS: diversifica idioma/nivelIngles en una muestra para filtros del playground.
+ * Añade catalogoId, conCertificacion y plantillaCertificado* a todos los ítems.
+ * ~80 % con certificado; Fiqsha → plantillas Creator; UBITS → plantilla «UBITS».
  * Regenerar React: cd Ubits-React && npm run sync:bd-master
  */
 import fs from 'fs'
@@ -10,6 +10,16 @@ import { fileURLToPath } from 'url'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const BD_DIR = path.resolve(__dirname, '..')
+
+const FIQSHA_CERTIFICATE_TEMPLATES = [
+  { id: 'tpl-doble-firma', nombre: 'Cursos empresariales con doble firma' },
+  { id: 'tpl-estandar', nombre: 'Certificado estándar Fiqsha' },
+  { id: 'tpl-onboarding', nombre: 'Onboarding colaboradores' },
+]
+
+const UBITS_CERTIFICATE_TEMPLATE = { id: 'tpl-ubits', nombre: 'UBITS' }
+
+const NIVEL_INGLES = ['A1', 'A2', 'B1', 'B2', 'C1', 'C2']
 
 function loadBd(filename, exportName) {
   const g = {}
@@ -29,19 +39,38 @@ function writeBd(filename, exportName, data, header) {
   fs.writeFileSync(path.join(BD_DIR, filename), `${header}window.${exportName} = ${body};\n`, 'utf8')
 }
 
-function hashCert(id, salt = 0) {
-  const n = parseInt(String(id).replace(/\D/g, ''), 10) || 0
-  return (n + salt) % 3 === 0
+function numericSeed(id) {
+  return parseInt(String(id).replace(/\D/g, ''), 10) || 0
 }
 
-const NIVEL_INGLES = ['A1', 'A2', 'B1', 'B2', 'C1', 'C2']
+/** ~80 % con certificado (4 de cada 5). */
+function hasCertificado(id, salt = 0) {
+  return (numericSeed(id) + salt) % 5 !== 0
+}
+
+function applyCertificadoFields(item, salt, isFiqsha) {
+  const cert = hasCertificado(item.id, salt)
+  item.conCertificacion = cert
+  if (cert) {
+    if (isFiqsha) {
+      const tpl = FIQSHA_CERTIFICATE_TEMPLATES[numericSeed(item.id) % FIQSHA_CERTIFICATE_TEMPLATES.length]
+      item.plantillaCertificadoId = tpl.id
+      item.plantillaCertificado = tpl.nombre
+    } else {
+      item.plantillaCertificadoId = UBITS_CERTIFICATE_TEMPLATE.id
+      item.plantillaCertificado = UBITS_CERTIFICATE_TEMPLATE.nombre
+    }
+  } else {
+    item.plantillaCertificadoId = null
+    item.plantillaCertificado = null
+  }
+}
 
 function patchUbitsItem(item, index) {
   item.catalogoId = 'catalogo_ubits'
-  item.conCertificacion = hashCert(item.id, 1)
+  applyCertificadoFields(item, 1, false)
 
-  // Muestra para filtros: últimos 8 ítems en Inglés con nivel CEFR; 3 en Portugués
-  const num = parseInt(String(item.id).replace(/\D/g, ''), 10) || index
+  const num = numericSeed(item.id) || index
   if (num >= 78) {
     item.idioma = 'Inglés'
     item.nivelIngles = NIVEL_INGLES[(num - 78) % NIVEL_INGLES.length]
@@ -57,24 +86,32 @@ function patchUbitsItem(item, index) {
 
 function patchFiqshaItem(item, index) {
   item.catalogoId = 'catalogo_fiqsha'
-  item.conCertificacion =
-    item.categoriaFiqshaId === 'cfq-002' || item.categoriaFiqshaId === 'cfq-003' || hashCert(item.id, 2)
+  applyCertificadoFields(item, 2, true)
   return item
 }
 
 const ubitsHeader = readHeader('bd-contenidos-ubits.js')
 const ubits = loadBd('bd-contenidos-ubits.js', 'BDS_CONTENIDOS_UBITS')
-ubits.version = '2.1'
+ubits.version = '2.2'
 ubits.contents = ubits.contents.map(patchUbitsItem)
 writeBd('bd-contenidos-ubits.js', 'BDS_CONTENIDOS_UBITS', ubits, ubitsHeader)
 
 const fiqHeader = readHeader('bd-contenidos-fiqsha.js')
 const fiq = loadBd('bd-contenidos-fiqsha.js', 'BDS_CONTENIDOS_FIQSHA')
-fiq.version = '2.2'
+fiq.version = '2.3'
 fiq.contents = fiq.contents.map(patchFiqshaItem)
 if (Array.isArray(fiq.contentsCreatorOnly)) {
   fiq.contentsCreatorOnly = fiq.contentsCreatorOnly.map(patchFiqshaItem)
 }
 writeBd('bd-contenidos-fiqsha.js', 'BDS_CONTENIDOS_FIQSHA', fiq, fiqHeader)
 
-console.log('OK — UBITS:', ubits.contents.length, 'Fiqsha:', fiq.contents.length)
+const uCert = ubits.contents.filter((c) => c.conCertificacion).length
+const fCert = fiq.contents.filter((c) => c.conCertificacion).length
+console.log(
+  'OK — UBITS:',
+  ubits.contents.length,
+  `(${uCert} con certificado, ${ubits.contents.length - uCert} sin)`,
+  'Fiqsha:',
+  fiq.contents.length,
+  `(${fCert} con certificado, ${fiq.contents.length - fCert} sin)`
+)

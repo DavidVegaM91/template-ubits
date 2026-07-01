@@ -4,13 +4,21 @@
  * Requiere: bd-master-colaboradores.js, bd-contenidos-ubits.js (opcional bd-master-competencias.js).
  * «Hoy» del playground: 2026-06-19. No mezclar con bd-tareas-y-planes.js.
  */
-(function () {
+(function (global) {
     'use strict';
 
     var STORAGE_KEY = 'ubits-planes-formacion-db';
-    var STORAGE_SCHEMA_VERSION = 3;
+    var STORAGE_SCHEMA_VERSION = 5;
     var PLAYGROUND_TODAY = '2026-06-19';
     var HORAS_META_COMPETENCIAS = 2;
+    /** Usuario demo zona de estudio (María Alejandra — bd-master-colaboradores E006). */
+    var PLAYGROUND_DEMO_USER_ID = 'E006';
+    /** 3 de sus 6 planes de contenidos (Gerencia General, reporte de Patricia) al 100 %. */
+    var DEMO_CONTENIDOS_PLANES_COMPLETOS = [
+        'pf-c-gerencia-general-2025-q1',
+        'pf-c-gerencia-general-2025-q2',
+        'pf-c-gerencia-general-2025-q3'
+    ];
 
     var AREAS_LIDERES = [
         { slug: 'ventas', area: 'Ventas', leaderId: 'E002' },
@@ -233,6 +241,49 @@
         return Math.min(100, Math.round((h / metaHoras) * 100));
     }
 
+    function setItemsProgress(items, pct) {
+        (items || []).forEach(function (it) {
+            var value = Math.max(0, Math.min(100, Math.round(Number(pct) || 0)));
+            it.progress = value;
+            it.status = progressStatus(value);
+        });
+    }
+
+    function recalcProgresoAgregadoContenidos(plan) {
+        var estado = plan.estado || getEstadoPlan(plan, PLAYGROUND_TODAY);
+        if (planSinProgresoReal(estado)) {
+            plan.progresoAgregado = 0;
+            return;
+        }
+        var map = plan.contenidoPorUsuario || {};
+        var keys = Object.keys(map);
+        if (!keys.length) {
+            plan.progresoAgregado = 0;
+            return;
+        }
+        var sum = 0;
+        keys.forEach(function (cid) {
+            sum += progresoPromedioItems(map[cid]);
+        });
+        plan.progresoAgregado = Math.round(sum / keys.length);
+        plan._progresoStale = false;
+    }
+
+    /** Demo: María — 3/6 planes de contenidos (Gerencia General) con los 3 ítems al 100 %. */
+    function applyPlaygroundDemoUserProgress(planes) {
+        if (!planes || !planes.length) return;
+        var demoId = PLAYGROUND_DEMO_USER_ID;
+        planes.forEach(function (plan) {
+            if (!plan || plan.tipo !== 'contenidos') return;
+            if (!planTieneColaborador(plan, [demoId])) return;
+            var items = (plan.contenidoPorUsuario || {})[demoId];
+            if (!items || !items.length) return;
+            if (DEMO_CONTENIDOS_PLANES_COMPLETOS.indexOf(String(plan.id)) < 0) return;
+            setItemsProgress(items, 100);
+            recalcProgresoAgregadoContenidos(plan);
+        });
+    }
+
     function generateContenidosPlans() {
         var planes = [];
         var catalogo = getContenidosCatalogo();
@@ -353,7 +404,9 @@
     }
 
     function buildSeedPlanes() {
-        return generateContenidosPlans().concat(generateCompetenciasPlans());
+        var planes = generateContenidosPlans().concat(generateCompetenciasPlans());
+        applyPlaygroundDemoUserProgress(planes);
+        return planes;
     }
 
     /** Planes generados sin colaboradores cargados quedan sin asignaciones ni progreso. */
@@ -708,7 +761,7 @@
         persistPlanesDb();
     }
 
-    window.BD_PLANES_FORMACION = {
+    global.BD_PLANES_FORMACION = {
         PLAYGROUND_TODAY: PLAYGROUND_TODAY,
         HORAS_META_COMPETENCIAS: HORAS_META_COMPETENCIAS,
         get planes() { return db.planes; },
@@ -733,4 +786,4 @@
         reseedIfCorrupt: reseedIfCorrupt,
         isoToDisplay: isoToDisplay
     };
-})();
+})(typeof globalThis !== 'undefined' ? globalThis : (typeof window !== 'undefined' ? window : this));

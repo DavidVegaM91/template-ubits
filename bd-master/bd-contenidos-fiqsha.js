@@ -4,6 +4,7 @@
  * Tipos de contenido (lista canónica): `bd-master/bd-master-tipos-contenido.js` (alineado con card-content CONTENT_TYPES).
  * Sin competencias/habilidades UBITS en modelo; sin expertos ni nivel inglés.
  * Catálogo: `catalogoId` (`catalogo_fiqsha`). Certificación: `conCertificacion` (boolean).
+ * Si `conCertificacion` es true: `plantillaCertificadoId` + `plantillaCertificado` (plantillas Fiqsha del Creator).
  * Nivel: `nivelId` → `bd-master-niveles-contenido.js`. Proveedor: `proveedorAliadoId` (`aly-018` Fiqsha) → `bd-master-aliados.js`.
  *
  * `contents` — catálogo publicado: úsalo en u-corporativa, planes, tareas, drawer de catálogo, etc.
@@ -12,7 +13,7 @@
  * `contentsCreatorOnly` — privado/borrador/oculto/archivado: SOLO `lms-creator/contenidos.html` (no mezclar en otros consumidores de `contents`).
  */
 window.BDS_CONTENIDOS_FIQSHA = {
-  "version": "2.2",
+  "version": "2.3",
   "source": "catálogo Fiqsha/empresa; categorías por id en bd-master-categorias-fiqsha.js",
   "total": 20,
   "contents": [
@@ -34,7 +35,9 @@ window.BDS_CONTENIDOS_FIQSHA = {
       "categoriaFiqshaId": "cfq-001",
       "fechaCreacion": "2026-05-02",
       "catalogoId": "catalogo_fiqsha",
-      "conCertificacion": true
+      "conCertificacion": true,
+      "plantillaCertificadoId": "tpl-estandar",
+      "plantillaCertificado": "Certificado estándar Fiqsha"
     },
     {
       "id": "f002",
@@ -53,7 +56,9 @@ window.BDS_CONTENIDOS_FIQSHA = {
       "categoriaFiqshaId": "cfq-002",
       "fechaCreacion": "2026-04-24",
       "catalogoId": "catalogo_fiqsha",
-      "conCertificacion": true
+      "conCertificacion": true,
+      "plantillaCertificadoId": "tpl-onboarding",
+      "plantillaCertificado": "Onboarding colaboradores"
     },
     {
       "id": "f003",
@@ -72,7 +77,9 @@ window.BDS_CONTENIDOS_FIQSHA = {
       "categoriaFiqshaId": "cfq-003",
       "fechaCreacion": "2026-04-16",
       "catalogoId": "catalogo_fiqsha",
-      "conCertificacion": true
+      "conCertificacion": false,
+      "plantillaCertificadoId": null,
+      "plantillaCertificado": null
     },
     {
       "id": "f004",
@@ -91,7 +98,9 @@ window.BDS_CONTENIDOS_FIQSHA = {
       "categoriaFiqshaId": "cfq-002",
       "fechaCreacion": "2026-04-08",
       "catalogoId": "catalogo_fiqsha",
-      "conCertificacion": true
+      "conCertificacion": true,
+      "plantillaCertificadoId": "tpl-estandar",
+      "plantillaCertificado": "Certificado estándar Fiqsha"
     },
     {
       "id": "f005",
@@ -110,7 +119,9 @@ window.BDS_CONTENIDOS_FIQSHA = {
       "categoriaFiqshaId": "cfq-004",
       "fechaCreacion": "2026-03-31",
       "catalogoId": "catalogo_fiqsha",
-      "conCertificacion": false
+      "conCertificacion": true,
+      "plantillaCertificadoId": "tpl-onboarding",
+      "plantillaCertificado": "Onboarding colaboradores"
     },
     {
       "id": "f006",
@@ -129,7 +140,9 @@ window.BDS_CONTENIDOS_FIQSHA = {
       "categoriaFiqshaId": "cfq-005",
       "fechaCreacion": "2026-03-23",
       "catalogoId": "catalogo_fiqsha",
-      "conCertificacion": false
+      "conCertificacion": true,
+      "plantillaCertificadoId": "tpl-doble-firma",
+      "plantillaCertificado": "Cursos empresariales con doble firma"
     },
     {
       "id": "f007",
@@ -148,7 +161,9 @@ window.BDS_CONTENIDOS_FIQSHA = {
       "categoriaFiqshaId": "cfq-006",
       "fechaCreacion": "2025-12-01",
       "catalogoId": "catalogo_fiqsha",
-      "conCertificacion": true
+      "conCertificacion": true,
+      "plantillaCertificadoId": "tpl-estandar",
+      "plantillaCertificado": "Certificado estándar Fiqsha"
     },
     {
       "id": "f008",
@@ -167,7 +182,9 @@ window.BDS_CONTENIDOS_FIQSHA = {
       "categoriaFiqshaId": "cfq-007",
       "fechaCreacion": "2026-03-15",
       "catalogoId": "catalogo_fiqsha",
-      "conCertificacion": false
+      "conCertificacion": false,
+      "plantillaCertificadoId": null,
+      "plantillaCertificado": null
     },
     {
       "id": "f009",
@@ -186,7 +203,9 @@ window.BDS_CONTENIDOS_FIQSHA = {
       "categoriaFiqshaId": "cfq-008",
       "fechaCreacion": "2026-03-07",
       "catalogoId": "catalogo_fiqsha",
-      "conCertificacion": false
+      "conCertificacion": true,
+      "plantillaCertificadoId": "tpl-doble-firma",
+      "plantillaCertificado": "Cursos empresariales con doble firma"
     },
     {
       "id": "f010",
@@ -205,7 +224,9 @@ window.BDS_CONTENIDOS_FIQSHA = {
       "categoriaFiqshaId": "cfq-009",
       "fechaCreacion": "2026-02-27",
       "catalogoId": "catalogo_fiqsha",
-      "conCertificacion": true
+      "conCertificacion": true,
+      "plantillaCertificadoId": "tpl-estandar",
+      "plantillaCertificado": "Certificado estándar Fiqsha"
     },
     {
       "id": "f011",
@@ -224,7 +245,9 @@ window.BDS_CONTENIDOS_FIQSHA = {
       "categoriaFiqshaId": "cfq-010",
       "fechaCreacion": "2026-02-19",
       "catalogoId": "catalogo_fiqsha",
-      "conCertificacion": false
+      "conCertificacion": true,
+      "plantillaCertificadoId": "tpl-onboarding",
+      "plantillaCertificado": "Onboarding colaboradores"
     },
     {
       "id": "f012",
@@ -243,7 +266,9 @@ window.BDS_CONTENIDOS_FIQSHA = {
       "categoriaFiqshaId": "cfq-011",
       "fechaCreacion": "2026-02-11",
       "catalogoId": "catalogo_fiqsha",
-      "conCertificacion": false
+      "conCertificacion": true,
+      "plantillaCertificadoId": "tpl-doble-firma",
+      "plantillaCertificado": "Cursos empresariales con doble firma"
     },
     {
       "id": "f013",
@@ -262,7 +287,9 @@ window.BDS_CONTENIDOS_FIQSHA = {
       "categoriaFiqshaId": "cfq-012",
       "fechaCreacion": "2026-02-03",
       "catalogoId": "catalogo_fiqsha",
-      "conCertificacion": true
+      "conCertificacion": false,
+      "plantillaCertificadoId": null,
+      "plantillaCertificado": null
     },
     {
       "id": "f014",
@@ -281,7 +308,9 @@ window.BDS_CONTENIDOS_FIQSHA = {
       "categoriaFiqshaId": "cfq-013",
       "fechaCreacion": "2026-01-26",
       "catalogoId": "catalogo_fiqsha",
-      "conCertificacion": false
+      "conCertificacion": true,
+      "plantillaCertificadoId": "tpl-onboarding",
+      "plantillaCertificado": "Onboarding colaboradores"
     },
     {
       "id": "f015",
@@ -300,7 +329,9 @@ window.BDS_CONTENIDOS_FIQSHA = {
       "categoriaFiqshaId": "cfq-014",
       "fechaCreacion": "2026-01-18",
       "catalogoId": "catalogo_fiqsha",
-      "conCertificacion": false
+      "conCertificacion": true,
+      "plantillaCertificadoId": "tpl-doble-firma",
+      "plantillaCertificado": "Cursos empresariales con doble firma"
     },
     {
       "id": "f016",
@@ -319,7 +350,9 @@ window.BDS_CONTENIDOS_FIQSHA = {
       "categoriaFiqshaId": "cfq-015",
       "fechaCreacion": "2026-01-10",
       "catalogoId": "catalogo_fiqsha",
-      "conCertificacion": true
+      "conCertificacion": true,
+      "plantillaCertificadoId": "tpl-estandar",
+      "plantillaCertificado": "Certificado estándar Fiqsha"
     },
     {
       "id": "f017",
@@ -338,7 +371,9 @@ window.BDS_CONTENIDOS_FIQSHA = {
       "categoriaFiqshaId": "cfq-016",
       "fechaCreacion": "2026-01-02",
       "catalogoId": "catalogo_fiqsha",
-      "conCertificacion": false
+      "conCertificacion": true,
+      "plantillaCertificadoId": "tpl-onboarding",
+      "plantillaCertificado": "Onboarding colaboradores"
     },
     {
       "id": "f018",
@@ -357,7 +392,9 @@ window.BDS_CONTENIDOS_FIQSHA = {
       "categoriaFiqshaId": "cfq-017",
       "fechaCreacion": "2025-12-25",
       "catalogoId": "catalogo_fiqsha",
-      "conCertificacion": false
+      "conCertificacion": false,
+      "plantillaCertificadoId": null,
+      "plantillaCertificado": null
     },
     {
       "id": "f019",
@@ -376,7 +413,9 @@ window.BDS_CONTENIDOS_FIQSHA = {
       "categoriaFiqshaId": "cfq-018",
       "fechaCreacion": "2025-12-17",
       "catalogoId": "catalogo_fiqsha",
-      "conCertificacion": true
+      "conCertificacion": true,
+      "plantillaCertificadoId": "tpl-estandar",
+      "plantillaCertificado": "Certificado estándar Fiqsha"
     },
     {
       "id": "f020",
@@ -395,7 +434,9 @@ window.BDS_CONTENIDOS_FIQSHA = {
       "categoriaFiqshaId": "cfq-019",
       "fechaCreacion": "2025-12-09",
       "catalogoId": "catalogo_fiqsha",
-      "conCertificacion": false
+      "conCertificacion": true,
+      "plantillaCertificadoId": "tpl-onboarding",
+      "plantillaCertificado": "Onboarding colaboradores"
     }
   ],
   "contentsCreatorOnly": [
@@ -418,7 +459,9 @@ window.BDS_CONTENIDOS_FIQSHA = {
       "fechaCreacion": "2026-05-28",
       "visibilidadLms": "Privado",
       "catalogoId": "catalogo_fiqsha",
-      "conCertificacion": false
+      "conCertificacion": true,
+      "plantillaCertificadoId": "tpl-doble-firma",
+      "plantillaCertificado": "Cursos empresariales con doble firma"
     },
     {
       "id": "24001",
@@ -438,7 +481,9 @@ window.BDS_CONTENIDOS_FIQSHA = {
       "fechaCreacion": "2026-05-22",
       "visibilidadLms": "Borrador",
       "catalogoId": "catalogo_fiqsha",
-      "conCertificacion": true
+      "conCertificacion": true,
+      "plantillaCertificadoId": "tpl-estandar",
+      "plantillaCertificado": "Certificado estándar Fiqsha"
     },
     {
       "id": "24002",
@@ -459,7 +504,9 @@ window.BDS_CONTENIDOS_FIQSHA = {
       "fechaCreacion": "2026-05-18",
       "visibilidadLms": "Oculto",
       "catalogoId": "catalogo_fiqsha",
-      "conCertificacion": false
+      "conCertificacion": true,
+      "plantillaCertificadoId": "tpl-onboarding",
+      "plantillaCertificado": "Onboarding colaboradores"
     },
     {
       "id": "24003",
@@ -479,7 +526,9 @@ window.BDS_CONTENIDOS_FIQSHA = {
       "fechaCreacion": "2026-05-10",
       "visibilidadLms": "Archivado",
       "catalogoId": "catalogo_fiqsha",
-      "conCertificacion": true
+      "conCertificacion": false,
+      "plantillaCertificadoId": null,
+      "plantillaCertificado": null
     },
     {
       "id": "24004",
@@ -499,7 +548,9 @@ window.BDS_CONTENIDOS_FIQSHA = {
       "fechaCreacion": "2025-10-15",
       "visibilidadLms": "Borrador",
       "catalogoId": "catalogo_fiqsha",
-      "conCertificacion": true
+      "conCertificacion": true,
+      "plantillaCertificadoId": "tpl-estandar",
+      "plantillaCertificado": "Certificado estándar Fiqsha"
     }
   ]
 };

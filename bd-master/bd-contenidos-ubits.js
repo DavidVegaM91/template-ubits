@@ -5,9 +5,10 @@
  * Proveedores: `providersAliadosIds` → `bd-master/bd-master-aliados.js`.
  * Competencia / habilidades: `competenciaPrincipalId`, `habilidadPrincipalId`, `habilidadesSecundariasIds` → `bd-master-competencias.js` / `bd-master-habilidades.js` (sin nombre duplicado en esta BD).
  * Catálogo: `catalogoId` (`catalogo_ubits`). Certificación: `conCertificacion` (boolean).
+ * Si `conCertificacion` es true: `plantillaCertificadoId` + `plantillaCertificado` (plantilla «UBITS»).
  */
 window.BDS_CONTENIDOS_UBITS = {
-  "version": "2.1",
+  "version": "2.2",
   "source": "bd-master esquema + rutas UBITS + catálogo cards-learn",
   "total": 85,
   "contents": [
@@ -42,7 +43,9 @@ window.BDS_CONTENIDOS_UBITS = {
         "aly-014"
       ],
       "catalogoId": "catalogo_ubits",
-      "conCertificacion": false
+      "conCertificacion": true,
+      "plantillaCertificadoId": "tpl-ubits",
+      "plantillaCertificado": "UBITS"
     },
     {
       "id": "u002",
@@ -75,7 +78,9 @@ window.BDS_CONTENIDOS_UBITS = {
         "aly-015"
       ],
       "catalogoId": "catalogo_ubits",
-      "conCertificacion": true
+      "conCertificacion": true,
+      "plantillaCertificadoId": "tpl-ubits",
+      "plantillaCertificado": "UBITS"
     },
     {
       "id": "u003",
@@ -108,7 +113,9 @@ window.BDS_CONTENIDOS_UBITS = {
         "aly-016"
       ],
       "catalogoId": "catalogo_ubits",
-      "conCertificacion": false
+      "conCertificacion": true,
+      "plantillaCertificadoId": "tpl-ubits",
+      "plantillaCertificado": "UBITS"
     },
     {
       "id": "u004",
@@ -141,7 +148,9 @@ window.BDS_CONTENIDOS_UBITS = {
         "aly-017"
       ],
       "catalogoId": "catalogo_ubits",
-      "conCertificacion": false
+      "conCertificacion": false,
+      "plantillaCertificadoId": null,
+      "plantillaCertificado": null
     },
     {
       "id": "u005",
@@ -174,7 +183,9 @@ window.BDS_CONTENIDOS_UBITS = {
         "aly-002"
       ],
       "catalogoId": "catalogo_ubits",
-      "conCertificacion": true
+      "conCertificacion": true,
+      "plantillaCertificadoId": "tpl-ubits",
+      "plantillaCertificado": "UBITS"
     },
     {
       "id": "u006",
@@ -207,7 +218,9 @@ window.BDS_CONTENIDOS_UBITS = {
         "aly-003"
       ],
       "catalogoId": "catalogo_ubits",
-      "conCertificacion": false
+      "conCertificacion": true,
+      "plantillaCertificadoId": "tpl-ubits",
+      "plantillaCertificado": "UBITS"
     },
     {
       "id": "u007",
@@ -241,7 +254,9 @@ window.BDS_CONTENIDOS_UBITS = {
         "aly-002"
       ],
       "catalogoId": "catalogo_ubits",
-      "conCertificacion": false
+      "conCertificacion": true,
+      "plantillaCertificadoId": "tpl-ubits",
+      "plantillaCertificado": "UBITS"
     },
     {
       "id": "u008",
@@ -274,7 +289,9 @@ window.BDS_CONTENIDOS_UBITS = {
         "aly-005"
       ],
       "catalogoId": "catalogo_ubits",
-      "conCertificacion": true
+      "conCertificacion": true,
+      "plantillaCertificadoId": "tpl-ubits",
+      "plantillaCertificado": "UBITS"
     },
     {
       "id": "u009",
@@ -307,7 +324,9 @@ window.BDS_CONTENIDOS_UBITS = {
         "aly-006"
       ],
       "catalogoId": "catalogo_ubits",
-      "conCertificacion": false
+      "conCertificacion": false,
+      "plantillaCertificadoId": null,
+      "plantillaCertificado": null
     },
     {
       "id": "u010",
@@ -340,7 +359,9 @@ window.BDS_CONTENIDOS_UBITS = {
         "aly-012"
       ],
       "catalogoId": "catalogo_ubits",
-      "conCertificacion": false
+      "conCertificacion": true,
+      "plantillaCertificadoId": "tpl-ubits",
+      "plantillaCertificado": "UBITS"
     },
     {
       "id": "u011",
@@ -374,7 +395,9 @@ window.BDS_CONTENIDOS_UBITS = {
         "aly-005"
       ],
       "catalogoId": "catalogo_ubits",
-      "conCertificacion": true
+      "conCertificacion": true,
+      "plantillaCertificadoId": "tpl-ubits",
+      "plantillaCertificado": "UBITS"
     },
     {
       "id": "u012",
@@ -407,7 +430,9 @@ window.BDS_CONTENIDOS_UBITS = {
         "aly-014"
       ],
       "catalogoId": "catalogo_ubits",
-      "conCertificacion": false
+      "conCertificacion": true,
+      "plantillaCertificadoId": "tpl-ubits",
+      "plantillaCertificado": "UBITS"
     },
     {
       "id": "u013",
@@ -440,7 +465,9 @@ window.BDS_CONTENIDOS_UBITS = {
         "aly-015"
       ],
       "catalogoId": "catalogo_ubits",
-      "conCertificacion": false
+      "conCertificacion": true,
+      "plantillaCertificadoId": "tpl-ubits",
+      "plantillaCertificado": "UBITS"
     },
     {
       "id": "u014",
@@ -473,7 +500,9 @@ window.BDS_CONTENIDOS_UBITS = {
         "aly-016"
       ],
       "catalogoId": "catalogo_ubits",
-      "conCertificacion": true
+      "conCertificacion": false,
+      "plantillaCertificadoId": null,
+      "plantillaCertificado": null
     },
     {
       "id": "u015",
@@ -506,7 +535,9 @@ window.BDS_CONTENIDOS_UBITS = {
         "aly-017"
       ],
       "catalogoId": "catalogo_ubits",
-      "conCertificacion": false
+      "conCertificacion": true,
+      "plantillaCertificadoId": "tpl-ubits",
+      "plantillaCertificado": "UBITS"
     },
     {
       "id": "u016",
@@ -539,7 +570,9 @@ window.BDS_CONTENIDOS_UBITS = {
         "aly-002"
       ],
       "catalogoId": "catalogo_ubits",
-      "conCertificacion": false
+      "conCertificacion": true,
+      "plantillaCertificadoId": "tpl-ubits",
+      "plantillaCertificado": "UBITS"
     },
     {
       "id": "u017",
@@ -572,7 +605,9 @@ window.BDS_CONTENIDOS_UBITS = {
         "aly-003"
       ],
       "catalogoId": "catalogo_ubits",
-      "conCertificacion": true
+      "conCertificacion": true,
+      "plantillaCertificadoId": "tpl-ubits",
+      "plantillaCertificado": "UBITS"
     },
     {
       "id": "u018",
@@ -606,7 +641,9 @@ window.BDS_CONTENIDOS_UBITS = {
         "aly-007"
       ],
       "catalogoId": "catalogo_ubits",
-      "conCertificacion": false
+      "conCertificacion": true,
+      "plantillaCertificadoId": "tpl-ubits",
+      "plantillaCertificado": "UBITS"
     },
     {
       "id": "u019",
@@ -639,7 +676,9 @@ window.BDS_CONTENIDOS_UBITS = {
         "aly-005"
       ],
       "catalogoId": "catalogo_ubits",
-      "conCertificacion": false
+      "conCertificacion": false,
+      "plantillaCertificadoId": null,
+      "plantillaCertificado": null
     },
     {
       "id": "u020",
@@ -672,7 +711,9 @@ window.BDS_CONTENIDOS_UBITS = {
         "aly-011"
       ],
       "catalogoId": "catalogo_ubits",
-      "conCertificacion": true
+      "conCertificacion": true,
+      "plantillaCertificadoId": "tpl-ubits",
+      "plantillaCertificado": "UBITS"
     },
     {
       "id": "u021",
@@ -705,7 +746,9 @@ window.BDS_CONTENIDOS_UBITS = {
         "aly-012"
       ],
       "catalogoId": "catalogo_ubits",
-      "conCertificacion": false
+      "conCertificacion": true,
+      "plantillaCertificadoId": "tpl-ubits",
+      "plantillaCertificado": "UBITS"
     },
     {
       "id": "u022",
@@ -738,7 +781,9 @@ window.BDS_CONTENIDOS_UBITS = {
         "aly-013"
       ],
       "catalogoId": "catalogo_ubits",
-      "conCertificacion": false
+      "conCertificacion": true,
+      "plantillaCertificadoId": "tpl-ubits",
+      "plantillaCertificado": "UBITS"
     },
     {
       "id": "u023",
@@ -771,7 +816,9 @@ window.BDS_CONTENIDOS_UBITS = {
         "aly-014"
       ],
       "catalogoId": "catalogo_ubits",
-      "conCertificacion": true
+      "conCertificacion": true,
+      "plantillaCertificadoId": "tpl-ubits",
+      "plantillaCertificado": "UBITS"
     },
     {
       "id": "u024",
@@ -804,7 +851,9 @@ window.BDS_CONTENIDOS_UBITS = {
         "aly-015"
       ],
       "catalogoId": "catalogo_ubits",
-      "conCertificacion": false
+      "conCertificacion": false,
+      "plantillaCertificadoId": null,
+      "plantillaCertificado": null
     },
     {
       "id": "u025",
@@ -837,7 +886,9 @@ window.BDS_CONTENIDOS_UBITS = {
         "aly-016"
       ],
       "catalogoId": "catalogo_ubits",
-      "conCertificacion": false
+      "conCertificacion": true,
+      "plantillaCertificadoId": "tpl-ubits",
+      "plantillaCertificado": "UBITS"
     },
     {
       "id": "u026",
@@ -870,7 +921,9 @@ window.BDS_CONTENIDOS_UBITS = {
         "aly-017"
       ],
       "catalogoId": "catalogo_ubits",
-      "conCertificacion": true
+      "conCertificacion": true,
+      "plantillaCertificadoId": "tpl-ubits",
+      "plantillaCertificado": "UBITS"
     },
     {
       "id": "u027",
@@ -903,7 +956,9 @@ window.BDS_CONTENIDOS_UBITS = {
         "aly-002"
       ],
       "catalogoId": "catalogo_ubits",
-      "conCertificacion": false
+      "conCertificacion": true,
+      "plantillaCertificadoId": "tpl-ubits",
+      "plantillaCertificado": "UBITS"
     },
     {
       "id": "u028",
@@ -936,7 +991,9 @@ window.BDS_CONTENIDOS_UBITS = {
         "aly-003"
       ],
       "catalogoId": "catalogo_ubits",
-      "conCertificacion": false
+      "conCertificacion": true,
+      "plantillaCertificadoId": "tpl-ubits",
+      "plantillaCertificado": "UBITS"
     },
     {
       "id": "u029",
@@ -970,7 +1027,9 @@ window.BDS_CONTENIDOS_UBITS = {
         "aly-015"
       ],
       "catalogoId": "catalogo_ubits",
-      "conCertificacion": true
+      "conCertificacion": false,
+      "plantillaCertificadoId": null,
+      "plantillaCertificado": null
     },
     {
       "id": "u030",
@@ -1004,7 +1063,9 @@ window.BDS_CONTENIDOS_UBITS = {
         "aly-004"
       ],
       "catalogoId": "catalogo_ubits",
-      "conCertificacion": false
+      "conCertificacion": true,
+      "plantillaCertificadoId": "tpl-ubits",
+      "plantillaCertificado": "UBITS"
     },
     {
       "id": "u031",
@@ -1037,7 +1098,9 @@ window.BDS_CONTENIDOS_UBITS = {
         "aly-011"
       ],
       "catalogoId": "catalogo_ubits",
-      "conCertificacion": false
+      "conCertificacion": true,
+      "plantillaCertificadoId": "tpl-ubits",
+      "plantillaCertificado": "UBITS"
     },
     {
       "id": "u032",
@@ -1070,7 +1133,9 @@ window.BDS_CONTENIDOS_UBITS = {
         "aly-012"
       ],
       "catalogoId": "catalogo_ubits",
-      "conCertificacion": true
+      "conCertificacion": true,
+      "plantillaCertificadoId": "tpl-ubits",
+      "plantillaCertificado": "UBITS"
     },
     {
       "id": "u033",
@@ -1103,7 +1168,9 @@ window.BDS_CONTENIDOS_UBITS = {
         "aly-013"
       ],
       "catalogoId": "catalogo_ubits",
-      "conCertificacion": false
+      "conCertificacion": true,
+      "plantillaCertificadoId": "tpl-ubits",
+      "plantillaCertificado": "UBITS"
     },
     {
       "id": "u034",
@@ -1136,7 +1203,9 @@ window.BDS_CONTENIDOS_UBITS = {
         "aly-014"
       ],
       "catalogoId": "catalogo_ubits",
-      "conCertificacion": false
+      "conCertificacion": false,
+      "plantillaCertificadoId": null,
+      "plantillaCertificado": null
     },
     {
       "id": "u035",
@@ -1169,7 +1238,9 @@ window.BDS_CONTENIDOS_UBITS = {
         "aly-015"
       ],
       "catalogoId": "catalogo_ubits",
-      "conCertificacion": true
+      "conCertificacion": true,
+      "plantillaCertificadoId": "tpl-ubits",
+      "plantillaCertificado": "UBITS"
     },
     {
       "id": "u036",
@@ -1202,7 +1273,9 @@ window.BDS_CONTENIDOS_UBITS = {
         "aly-016"
       ],
       "catalogoId": "catalogo_ubits",
-      "conCertificacion": false
+      "conCertificacion": true,
+      "plantillaCertificadoId": "tpl-ubits",
+      "plantillaCertificado": "UBITS"
     },
     {
       "id": "u037",
@@ -1235,7 +1308,9 @@ window.BDS_CONTENIDOS_UBITS = {
         "aly-017"
       ],
       "catalogoId": "catalogo_ubits",
-      "conCertificacion": false
+      "conCertificacion": true,
+      "plantillaCertificadoId": "tpl-ubits",
+      "plantillaCertificado": "UBITS"
     },
     {
       "id": "u038",
@@ -1268,7 +1343,9 @@ window.BDS_CONTENIDOS_UBITS = {
         "aly-002"
       ],
       "catalogoId": "catalogo_ubits",
-      "conCertificacion": true
+      "conCertificacion": true,
+      "plantillaCertificadoId": "tpl-ubits",
+      "plantillaCertificado": "UBITS"
     },
     {
       "id": "u039",
@@ -1301,7 +1378,9 @@ window.BDS_CONTENIDOS_UBITS = {
         "aly-003"
       ],
       "catalogoId": "catalogo_ubits",
-      "conCertificacion": false
+      "conCertificacion": false,
+      "plantillaCertificadoId": null,
+      "plantillaCertificado": null
     },
     {
       "id": "u040",
@@ -1334,7 +1413,9 @@ window.BDS_CONTENIDOS_UBITS = {
         "aly-009"
       ],
       "catalogoId": "catalogo_ubits",
-      "conCertificacion": false
+      "conCertificacion": true,
+      "plantillaCertificadoId": "tpl-ubits",
+      "plantillaCertificado": "UBITS"
     },
     {
       "id": "u041",
@@ -1368,7 +1449,9 @@ window.BDS_CONTENIDOS_UBITS = {
         "aly-005"
       ],
       "catalogoId": "catalogo_ubits",
-      "conCertificacion": true
+      "conCertificacion": true,
+      "plantillaCertificadoId": "tpl-ubits",
+      "plantillaCertificado": "UBITS"
     },
     {
       "id": "u042",
@@ -1402,7 +1485,9 @@ window.BDS_CONTENIDOS_UBITS = {
         "aly-004"
       ],
       "catalogoId": "catalogo_ubits",
-      "conCertificacion": false
+      "conCertificacion": true,
+      "plantillaCertificadoId": "tpl-ubits",
+      "plantillaCertificado": "UBITS"
     },
     {
       "id": "u043",
@@ -1436,7 +1521,9 @@ window.BDS_CONTENIDOS_UBITS = {
         "aly-009"
       ],
       "catalogoId": "catalogo_ubits",
-      "conCertificacion": false
+      "conCertificacion": true,
+      "plantillaCertificadoId": "tpl-ubits",
+      "plantillaCertificado": "UBITS"
     },
     {
       "id": "u044",
@@ -1469,7 +1556,9 @@ window.BDS_CONTENIDOS_UBITS = {
         "aly-013"
       ],
       "catalogoId": "catalogo_ubits",
-      "conCertificacion": true
+      "conCertificacion": false,
+      "plantillaCertificadoId": null,
+      "plantillaCertificado": null
     },
     {
       "id": "u045",
@@ -1502,7 +1591,9 @@ window.BDS_CONTENIDOS_UBITS = {
         "aly-014"
       ],
       "catalogoId": "catalogo_ubits",
-      "conCertificacion": false
+      "conCertificacion": true,
+      "plantillaCertificadoId": "tpl-ubits",
+      "plantillaCertificado": "UBITS"
     },
     {
       "id": "u046",
@@ -1535,7 +1626,9 @@ window.BDS_CONTENIDOS_UBITS = {
         "aly-015"
       ],
       "catalogoId": "catalogo_ubits",
-      "conCertificacion": false
+      "conCertificacion": true,
+      "plantillaCertificadoId": "tpl-ubits",
+      "plantillaCertificado": "UBITS"
     },
     {
       "id": "u047",
@@ -1568,7 +1661,9 @@ window.BDS_CONTENIDOS_UBITS = {
         "aly-016"
       ],
       "catalogoId": "catalogo_ubits",
-      "conCertificacion": true
+      "conCertificacion": true,
+      "plantillaCertificadoId": "tpl-ubits",
+      "plantillaCertificado": "UBITS"
     },
     {
       "id": "u048",
@@ -1601,7 +1696,9 @@ window.BDS_CONTENIDOS_UBITS = {
         "aly-017"
       ],
       "catalogoId": "catalogo_ubits",
-      "conCertificacion": false
+      "conCertificacion": true,
+      "plantillaCertificadoId": "tpl-ubits",
+      "plantillaCertificado": "UBITS"
     },
     {
       "id": "u049",
@@ -1634,7 +1731,9 @@ window.BDS_CONTENIDOS_UBITS = {
         "aly-002"
       ],
       "catalogoId": "catalogo_ubits",
-      "conCertificacion": false
+      "conCertificacion": false,
+      "plantillaCertificadoId": null,
+      "plantillaCertificado": null
     },
     {
       "id": "u050",
@@ -1667,7 +1766,9 @@ window.BDS_CONTENIDOS_UBITS = {
         "aly-008"
       ],
       "catalogoId": "catalogo_ubits",
-      "conCertificacion": true
+      "conCertificacion": true,
+      "plantillaCertificadoId": "tpl-ubits",
+      "plantillaCertificado": "UBITS"
     },
     {
       "id": "u051",
@@ -1700,7 +1801,9 @@ window.BDS_CONTENIDOS_UBITS = {
         "aly-009"
       ],
       "catalogoId": "catalogo_ubits",
-      "conCertificacion": false
+      "conCertificacion": true,
+      "plantillaCertificadoId": "tpl-ubits",
+      "plantillaCertificado": "UBITS"
     },
     {
       "id": "u052",
@@ -1733,7 +1836,9 @@ window.BDS_CONTENIDOS_UBITS = {
         "aly-010"
       ],
       "catalogoId": "catalogo_ubits",
-      "conCertificacion": false
+      "conCertificacion": true,
+      "plantillaCertificadoId": "tpl-ubits",
+      "plantillaCertificado": "UBITS"
     },
     {
       "id": "u053",
@@ -1766,7 +1871,9 @@ window.BDS_CONTENIDOS_UBITS = {
         "aly-011"
       ],
       "catalogoId": "catalogo_ubits",
-      "conCertificacion": true
+      "conCertificacion": true,
+      "plantillaCertificadoId": "tpl-ubits",
+      "plantillaCertificado": "UBITS"
     },
     {
       "id": "u054",
@@ -1799,7 +1906,9 @@ window.BDS_CONTENIDOS_UBITS = {
         "aly-012"
       ],
       "catalogoId": "catalogo_ubits",
-      "conCertificacion": false
+      "conCertificacion": false,
+      "plantillaCertificadoId": null,
+      "plantillaCertificado": null
     },
     {
       "id": "u055",
@@ -1832,7 +1941,9 @@ window.BDS_CONTENIDOS_UBITS = {
         "aly-013"
       ],
       "catalogoId": "catalogo_ubits",
-      "conCertificacion": false
+      "conCertificacion": true,
+      "plantillaCertificadoId": "tpl-ubits",
+      "plantillaCertificado": "UBITS"
     },
     {
       "id": "u056",
@@ -1865,7 +1976,9 @@ window.BDS_CONTENIDOS_UBITS = {
         "aly-014"
       ],
       "catalogoId": "catalogo_ubits",
-      "conCertificacion": true
+      "conCertificacion": true,
+      "plantillaCertificadoId": "tpl-ubits",
+      "plantillaCertificado": "UBITS"
     },
     {
       "id": "u057",
@@ -1898,7 +2011,9 @@ window.BDS_CONTENIDOS_UBITS = {
         "aly-015"
       ],
       "catalogoId": "catalogo_ubits",
-      "conCertificacion": false
+      "conCertificacion": true,
+      "plantillaCertificadoId": "tpl-ubits",
+      "plantillaCertificado": "UBITS"
     },
     {
       "id": "u058",
@@ -1931,7 +2046,9 @@ window.BDS_CONTENIDOS_UBITS = {
         "aly-016"
       ],
       "catalogoId": "catalogo_ubits",
-      "conCertificacion": false
+      "conCertificacion": true,
+      "plantillaCertificadoId": "tpl-ubits",
+      "plantillaCertificado": "UBITS"
     },
     {
       "id": "u059",
@@ -1964,7 +2081,9 @@ window.BDS_CONTENIDOS_UBITS = {
         "aly-017"
       ],
       "catalogoId": "catalogo_ubits",
-      "conCertificacion": true
+      "conCertificacion": false,
+      "plantillaCertificadoId": null,
+      "plantillaCertificado": null
     },
     {
       "id": "u060",
@@ -1997,7 +2116,9 @@ window.BDS_CONTENIDOS_UBITS = {
         "aly-007"
       ],
       "catalogoId": "catalogo_ubits",
-      "conCertificacion": false
+      "conCertificacion": true,
+      "plantillaCertificadoId": "tpl-ubits",
+      "plantillaCertificado": "UBITS"
     },
     {
       "id": "u061",
@@ -2030,7 +2151,9 @@ window.BDS_CONTENIDOS_UBITS = {
         "aly-008"
       ],
       "catalogoId": "catalogo_ubits",
-      "conCertificacion": false
+      "conCertificacion": true,
+      "plantillaCertificadoId": "tpl-ubits",
+      "plantillaCertificado": "UBITS"
     },
     {
       "id": "u062",
@@ -2063,7 +2186,9 @@ window.BDS_CONTENIDOS_UBITS = {
         "aly-009"
       ],
       "catalogoId": "catalogo_ubits",
-      "conCertificacion": true
+      "conCertificacion": true,
+      "plantillaCertificadoId": "tpl-ubits",
+      "plantillaCertificado": "UBITS"
     },
     {
       "id": "u063",
@@ -2096,7 +2221,9 @@ window.BDS_CONTENIDOS_UBITS = {
         "aly-010"
       ],
       "catalogoId": "catalogo_ubits",
-      "conCertificacion": false
+      "conCertificacion": true,
+      "plantillaCertificadoId": "tpl-ubits",
+      "plantillaCertificado": "UBITS"
     },
     {
       "id": "u064",
@@ -2129,7 +2256,9 @@ window.BDS_CONTENIDOS_UBITS = {
         "aly-011"
       ],
       "catalogoId": "catalogo_ubits",
-      "conCertificacion": false
+      "conCertificacion": false,
+      "plantillaCertificadoId": null,
+      "plantillaCertificado": null
     },
     {
       "id": "u065",
@@ -2162,7 +2291,9 @@ window.BDS_CONTENIDOS_UBITS = {
         "aly-012"
       ],
       "catalogoId": "catalogo_ubits",
-      "conCertificacion": true
+      "conCertificacion": true,
+      "plantillaCertificadoId": "tpl-ubits",
+      "plantillaCertificado": "UBITS"
     },
     {
       "id": "u066",
@@ -2195,7 +2326,9 @@ window.BDS_CONTENIDOS_UBITS = {
         "aly-013"
       ],
       "catalogoId": "catalogo_ubits",
-      "conCertificacion": false
+      "conCertificacion": true,
+      "plantillaCertificadoId": "tpl-ubits",
+      "plantillaCertificado": "UBITS"
     },
     {
       "id": "u067",
@@ -2228,7 +2361,9 @@ window.BDS_CONTENIDOS_UBITS = {
         "aly-014"
       ],
       "catalogoId": "catalogo_ubits",
-      "conCertificacion": false
+      "conCertificacion": true,
+      "plantillaCertificadoId": "tpl-ubits",
+      "plantillaCertificado": "UBITS"
     },
     {
       "id": "u068",
@@ -2261,7 +2396,9 @@ window.BDS_CONTENIDOS_UBITS = {
         "aly-015"
       ],
       "catalogoId": "catalogo_ubits",
-      "conCertificacion": true
+      "conCertificacion": true,
+      "plantillaCertificadoId": "tpl-ubits",
+      "plantillaCertificado": "UBITS"
     },
     {
       "id": "u069",
@@ -2294,7 +2431,9 @@ window.BDS_CONTENIDOS_UBITS = {
         "aly-016"
       ],
       "catalogoId": "catalogo_ubits",
-      "conCertificacion": false
+      "conCertificacion": false,
+      "plantillaCertificadoId": null,
+      "plantillaCertificado": null
     },
     {
       "id": "u070",
@@ -2327,7 +2466,9 @@ window.BDS_CONTENIDOS_UBITS = {
         "aly-006"
       ],
       "catalogoId": "catalogo_ubits",
-      "conCertificacion": false
+      "conCertificacion": true,
+      "plantillaCertificadoId": "tpl-ubits",
+      "plantillaCertificado": "UBITS"
     },
     {
       "id": "u071",
@@ -2360,7 +2501,9 @@ window.BDS_CONTENIDOS_UBITS = {
         "aly-007"
       ],
       "catalogoId": "catalogo_ubits",
-      "conCertificacion": true
+      "conCertificacion": true,
+      "plantillaCertificadoId": "tpl-ubits",
+      "plantillaCertificado": "UBITS"
     },
     {
       "id": "u072",
@@ -2393,7 +2536,9 @@ window.BDS_CONTENIDOS_UBITS = {
         "aly-008"
       ],
       "catalogoId": "catalogo_ubits",
-      "conCertificacion": false
+      "conCertificacion": true,
+      "plantillaCertificadoId": "tpl-ubits",
+      "plantillaCertificado": "UBITS"
     },
     {
       "id": "u073",
@@ -2426,7 +2571,9 @@ window.BDS_CONTENIDOS_UBITS = {
         "aly-009"
       ],
       "catalogoId": "catalogo_ubits",
-      "conCertificacion": false
+      "conCertificacion": true,
+      "plantillaCertificadoId": "tpl-ubits",
+      "plantillaCertificado": "UBITS"
     },
     {
       "id": "u074",
@@ -2459,7 +2606,9 @@ window.BDS_CONTENIDOS_UBITS = {
         "aly-010"
       ],
       "catalogoId": "catalogo_ubits",
-      "conCertificacion": true
+      "conCertificacion": false,
+      "plantillaCertificadoId": null,
+      "plantillaCertificado": null
     },
     {
       "id": "u075",
@@ -2492,7 +2641,9 @@ window.BDS_CONTENIDOS_UBITS = {
         "aly-011"
       ],
       "catalogoId": "catalogo_ubits",
-      "conCertificacion": false
+      "conCertificacion": true,
+      "plantillaCertificadoId": "tpl-ubits",
+      "plantillaCertificado": "UBITS"
     },
     {
       "id": "u076",
@@ -2525,7 +2676,9 @@ window.BDS_CONTENIDOS_UBITS = {
         "aly-012"
       ],
       "catalogoId": "catalogo_ubits",
-      "conCertificacion": false
+      "conCertificacion": true,
+      "plantillaCertificadoId": "tpl-ubits",
+      "plantillaCertificado": "UBITS"
     },
     {
       "id": "u077",
@@ -2558,7 +2711,9 @@ window.BDS_CONTENIDOS_UBITS = {
         "aly-013"
       ],
       "catalogoId": "catalogo_ubits",
-      "conCertificacion": true
+      "conCertificacion": true,
+      "plantillaCertificadoId": "tpl-ubits",
+      "plantillaCertificado": "UBITS"
     },
     {
       "id": "u078",
@@ -2591,7 +2746,9 @@ window.BDS_CONTENIDOS_UBITS = {
         "aly-014"
       ],
       "catalogoId": "catalogo_ubits",
-      "conCertificacion": false
+      "conCertificacion": true,
+      "plantillaCertificadoId": "tpl-ubits",
+      "plantillaCertificado": "UBITS"
     },
     {
       "id": "u079",
@@ -2624,7 +2781,9 @@ window.BDS_CONTENIDOS_UBITS = {
         "aly-015"
       ],
       "catalogoId": "catalogo_ubits",
-      "conCertificacion": false
+      "conCertificacion": false,
+      "plantillaCertificadoId": null,
+      "plantillaCertificado": null
     },
     {
       "id": "u080",
@@ -2657,7 +2816,9 @@ window.BDS_CONTENIDOS_UBITS = {
         "aly-005"
       ],
       "catalogoId": "catalogo_ubits",
-      "conCertificacion": true
+      "conCertificacion": true,
+      "plantillaCertificadoId": "tpl-ubits",
+      "plantillaCertificado": "UBITS"
     },
     {
       "id": "u081",
@@ -2690,7 +2851,9 @@ window.BDS_CONTENIDOS_UBITS = {
         "aly-006"
       ],
       "catalogoId": "catalogo_ubits",
-      "conCertificacion": false
+      "conCertificacion": true,
+      "plantillaCertificadoId": "tpl-ubits",
+      "plantillaCertificado": "UBITS"
     },
     {
       "id": "u082",
@@ -2723,7 +2886,9 @@ window.BDS_CONTENIDOS_UBITS = {
         "aly-007"
       ],
       "catalogoId": "catalogo_ubits",
-      "conCertificacion": false
+      "conCertificacion": true,
+      "plantillaCertificadoId": "tpl-ubits",
+      "plantillaCertificado": "UBITS"
     },
     {
       "id": "u083",
@@ -2756,7 +2921,9 @@ window.BDS_CONTENIDOS_UBITS = {
         "aly-008"
       ],
       "catalogoId": "catalogo_ubits",
-      "conCertificacion": true
+      "conCertificacion": true,
+      "plantillaCertificadoId": "tpl-ubits",
+      "plantillaCertificado": "UBITS"
     },
     {
       "id": "u084",
@@ -2789,7 +2956,9 @@ window.BDS_CONTENIDOS_UBITS = {
         "aly-009"
       ],
       "catalogoId": "catalogo_ubits",
-      "conCertificacion": false
+      "conCertificacion": false,
+      "plantillaCertificadoId": null,
+      "plantillaCertificado": null
     },
     {
       "id": "u085",
@@ -2822,7 +2991,9 @@ window.BDS_CONTENIDOS_UBITS = {
         "aly-010"
       ],
       "catalogoId": "catalogo_ubits",
-      "conCertificacion": false
+      "conCertificacion": true,
+      "plantillaCertificadoId": "tpl-ubits",
+      "plantillaCertificado": "UBITS"
     }
   ]
 };

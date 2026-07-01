@@ -61,6 +61,20 @@
         return div.innerHTML;
     }
 
+    /** Separador de miles en badge de tokens restantes (ej. 500,000). */
+    function formatIaTokensBadgeNumber(value) {
+        var n = Number(value);
+        if (!isFinite(n) || n < 0) n = 0;
+        if (typeof window.formatCounterNumber === 'function') {
+            return window.formatCounterNumber(n);
+        }
+        return n.toLocaleString('en-US');
+    }
+
+    function formatIaTokensBadgeAriaLabel(value) {
+        return formatIaTokensBadgeNumber(value) + ' tokens restantes';
+    }
+
     /**
      * Markup del badge de tokens en header (variante IA): icono moneda → número.
      * Requiere badge-tag.css y fontawesome-icons.css en la página.
@@ -68,8 +82,9 @@
     function buildIaTokensBadgeHtml(overlayId, tokensValue, badgeIdOpt, tooltipText) {
         var id = badgeIdOpt || (overlayId + '-tokens-badge');
         var tip = tooltipText != null ? String(tooltipText) : 'Número de tokens restantes.';
-        var n = tokensValue != null && tokensValue !== '' ? String(tokensValue) : '0';
-        var aria = n + ' tokens restantes';
+        var raw = tokensValue != null && tokensValue !== '' ? Number(tokensValue) : 0;
+        var n = formatIaTokensBadgeNumber(raw);
+        var aria = formatIaTokensBadgeAriaLabel(raw);
         return '<span id="' + id + '" class="ubits-badge-tag ubits-badge-tag--outlined ubits-badge-tag--ia ubits-badge-tag--xs" tabindex="0" ' +
             'data-tooltip="' + escapeHtml(tip) + '" data-tooltip-delay="0" data-tooltip-tap-toggle="" ' +
             'aria-label="' + escapeHtml(aria) + '">' +
@@ -426,4 +441,6 @@
     window.showModal = showModal;
     window.hideModal = hideModal;
     window.getModalHtml = getModalHtml;
+    window.formatIaTokensBadgeNumber = formatIaTokensBadgeNumber;
+    window.formatIaTokensBadgeAriaLabel = formatIaTokensBadgeAriaLabel;
 })();

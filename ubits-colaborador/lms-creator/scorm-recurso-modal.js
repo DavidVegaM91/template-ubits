@@ -141,7 +141,7 @@
     /* ══════════════════════════════════════
        TOKENS
     ══════════════════════════════════════ */
-    function getTokens() { return global._ubitsAiTokenPool!=null ? global._ubitsAiTokenPool : 50; }
+    function getTokens() { return global._ubitsAiTokenPool!=null ? global._ubitsAiTokenPool : 500000; }
 
     function trySpendTokens(cost) {
         var cur=getTokens();
@@ -161,8 +161,17 @@
         var el=document.getElementById('cc-scorm-modal-tokens-badge');
         if (!el) return;
         var num=el.querySelector('.ubits-badge-tag__token-number');
-        if (num) num.textContent=String(n);
-        el.setAttribute('aria-label',n+' tokens restantes');
+        var display=
+            typeof global.formatIaTokensBadgeNumber==='function'
+                ? global.formatIaTokensBadgeNumber(n)
+                : String(n);
+        if (num) num.textContent=display;
+        el.setAttribute(
+            'aria-label',
+            typeof global.formatIaTokensBadgeAriaLabel==='function'
+                ? global.formatIaTokensBadgeAriaLabel(n)
+                : n+' tokens restantes'
+        );
         var show=_currentTab==='ia';
         el.style.display=show?'':'none';
         el.setAttribute('aria-hidden',show?'false':'true');

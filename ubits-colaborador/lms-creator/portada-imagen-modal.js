@@ -17,7 +17,7 @@
     'use strict';
 
     var OVERLAY_ID = 'cc-portada-imagen-modal';
-    var TOKEN_GENERATE = 2;
+    var TOKEN_GENERATE = 50;
     var MAX_IMAGE_MB = 5;
     var PIM_IDEA_MIN_WORDS = 6;
     var PIM_IDEA_MAX_WORDS = 500;
@@ -55,7 +55,7 @@
     var _pimResizeRaf = null;
 
     function getTokens() {
-        return global._ubitsAiTokenPool != null ? global._ubitsAiTokenPool : 200;
+        return global._ubitsAiTokenPool != null ? global._ubitsAiTokenPool : 500000;
     }
 
     function syncPimTokensBadge() {
@@ -63,8 +63,17 @@
         var el = document.getElementById('cc-pim-modal-tokens-badge');
         if (!el) return;
         var num = el.querySelector('.ubits-badge-tag__token-number');
-        if (num) num.textContent = String(n);
-        el.setAttribute('aria-label', String(n) + ' tokens restantes');
+        var display =
+            typeof global.formatIaTokensBadgeNumber === 'function'
+                ? global.formatIaTokensBadgeNumber(n)
+                : String(n);
+        if (num) num.textContent = display;
+        el.setAttribute(
+            'aria-label',
+            typeof global.formatIaTokensBadgeAriaLabel === 'function'
+                ? global.formatIaTokensBadgeAriaLabel(n)
+                : String(n) + ' tokens restantes'
+        );
         var show = _currentTab === 'ia';
         el.style.display = show ? '' : 'none';
         el.setAttribute('aria-hidden', show ? 'false' : 'true');

@@ -25,6 +25,7 @@
     var recursosResourcesValidationFlash = false;
     var PORTADA_INVALID_CLASS = 'crear-contenido-portada-field--invalid';
     var CATEGORIA_SELECT_PLACEHOLDER_TEXT = 'Selecciona una opción';
+    var CREATOR_AI_INITIAL_TOKEN_POOL = 500000;
 
     // Portada: CTA «Agregar portada» y «Editar» abren `openPortadaImagenModal` (IA · Subir · Tráiler).
     // ----- FAKE SAVE INDICATOR -----
@@ -195,6 +196,7 @@
                         skipMetaUpdate: true
                     });
                 }
+                refreshCrearContenidoPageSiguienteState();
             },
             onApply: function (payload) {
                 if (!payload || !payload.dataUrl) return;
@@ -356,11 +358,10 @@
         if (!tituloOk) missing.push('titulo');
 
         var block = document.getElementById('crear-contenido-img-trailer');
-        var portadaOk =
-            block &&
-            (block.classList.contains('ubits-learn-img-trailer--image') ||
-                block.classList.contains('ubits-learn-img-trailer--trailer'));
-        if (!portadaOk && block) {
+        var portadaOk = false;
+        if (block && block.classList.contains('ubits-learn-img-trailer--image')) {
+            portadaOk = true;
+        } else if (block) {
             var img = block.querySelector('.ubits-learn-img-trailer__img');
             var src = img && img.getAttribute('src');
             if (src && String(src).trim().length > 0) {
@@ -3168,16 +3169,13 @@
         }
         var imgBlock = document.getElementById('crear-contenido-img-trailer');
         if (imgBlock) {
-            function portadaBlockHasImageOrTrailerClass(el) {
+            function portadaBlockHasCoverImage(el) {
                 var c = (el && el.getAttribute('class')) || '';
-                return (
-                    c.indexOf('ubits-learn-img-trailer--image') !== -1 ||
-                    c.indexOf('ubits-learn-img-trailer--trailer') !== -1
-                );
+                return c.indexOf('ubits-learn-img-trailer--image') !== -1;
             }
-            var lastPortadaMediaState = portadaBlockHasImageOrTrailerClass(imgBlock);
+            var lastPortadaMediaState = portadaBlockHasCoverImage(imgBlock);
             new MutationObserver(function () {
-                var next = portadaBlockHasImageOrTrailerClass(imgBlock);
+                var next = portadaBlockHasCoverImage(imgBlock);
                 if (next === lastPortadaMediaState) return;
                 lastPortadaMediaState = next;
                 refreshCrearContenidoPageSiguienteState();
@@ -3260,6 +3258,7 @@
     }
 
     function initCrearContenidoPage() {
+        window._ubitsAiTokenPool = CREATOR_AI_INITIAL_TOKEN_POOL;
         if (typeof renderSaveIndicator === 'function') {
             renderSaveIndicator('crear-contenido-save-indicator', {
                 state: 'idle',

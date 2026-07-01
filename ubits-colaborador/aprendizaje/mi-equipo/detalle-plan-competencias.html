@@ -394,6 +394,8 @@
                     Shared.openPanelCompetenciasReadOnly({
                         userName: userName,
                         competencias: competenciaPorUsuario[rowId] || [],
+                        plan: planRawBd,
+                        colaboradorId: rowId,
                         sinProgreso: planSinProgreso(),
                         onClose: function () {
                             if (asignacionesDetalleTablaRef) asignacionesDetalleTablaRef.refresh();

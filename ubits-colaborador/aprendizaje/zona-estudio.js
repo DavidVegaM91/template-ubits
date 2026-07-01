@@ -12,6 +12,7 @@
     var HISTORIAL_DESC = 'Consulta lo que has visto y descarga certificados de contenidos finalizados que lo incluyan.';
     var HISTORIAL_COUNT = 40;
     var HISTORIAL_IN_PROGRESS_PCT = [75, 25, 42, 88, 53, 31, 67, 18, 92, 48, 61, 36];
+    var HISTORIAL_CERTIFICADO_TOAST_MSG = 'Esta acción aún no está disponible en el Playground.';
 
     var COMPETENCIA_POR_CATEGORIA_FIQSHA = {
         'cfq-001': 'Liderazgo',
@@ -42,7 +43,7 @@
         { id: 'f003', progress: 65 },
         { id: 'f004', progress: 0 }
     ];
-    var TAB_IDS = ['contenidos', 'competencias', 'exclusivo', 'historial'];
+    var TAB_IDS = ['contenidos', 'competencias', 'exclusivo', 'historial', 'progreso'];
 
     var MESES_LARGO = [
         'enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio',
@@ -61,11 +62,32 @@
         historialContents: [],
         historialFilteredContents: [],
         historialSearchQuery: '',
+        historialViewMode: 'grid',
         searchQuery: '',
         planSelectReady: { contenidos: false, competencias: false },
         exclusivoSearchReady: false,
-        historialSearchReady: false
+        historialSearchReady: false,
+        historialViewReady: false
     };
+
+    var _historialCertificadoToastBound = false;
+
+    function showHistorialCertificadoToast() {
+        if (typeof showToast === 'function') {
+            showToast('info', HISTORIAL_CERTIFICADO_TOAST_MSG, {
+                containerId: 'ubits-toast-container',
+                duration: 4000
+            });
+        }
+    }
+
+    function bindHistorialCertificadoToast() {
+        if (_historialCertificadoToastBound) return;
+        _historialCertificadoToastBound = true;
+        document.addEventListener('ubits-certificado-download-request', function () {
+            showHistorialCertificadoToast();
+        });
+    }
 
     function formatIndicatorNumber(n) {
         var num = Number(n);
@@ -151,21 +173,24 @@
         var daysSince = daysSinceEnd(plan.fechaFinIso);
         var haceText = formatPlanVencidoHace(daysSince, plan.fechaFinIso);
         var message =
-            'Recordatorio: Lo que completes después de la fecha límite no se suma al progreso del plan. ' +
-            'Este plan se venció hace ' + haceText + '.';
+            '<span class="ubits-alert__emphasis">Recordatorio:</span> Lo que completes después de la fecha límite no se suma al progreso del plan. ' +
+            'Este plan se venció hace ' + escapeHtml(haceText) + '.';
 
         alertEl.hidden = false;
         if (typeof showAlert === 'function') {
-            showAlert('error', message, {
+            var alertResult = showAlert('error', message, {
                 containerId: prefix + '-plan-vencido-alert',
                 noClose: true
             });
+            if (alertResult && alertResult.element) {
+                alertResult.element.classList.add('ubits-alert--block-text');
+            }
         } else {
             alertEl.innerHTML =
-                '<div class="ubits-alert ubits-alert--error ubits-alert--no-close" role="alert">' +
+                '<div class="ubits-alert ubits-alert--error ubits-alert--no-close ubits-alert--block-text" role="alert">' +
                     '<div class="ubits-alert__icon"><i class="far fa-times-circle"></i></div>' +
                     '<div class="ubits-alert__content">' +
-                        '<div class="ubits-alert__text">' + escapeHtml(message) + '</div>' +
+                        '<div class="ubits-alert__text">' + message + '</div>' +
                     '</div>' +
                 '</div>';
         }
@@ -184,12 +209,8 @@
         if (tabId === 'competencias') {
             metaText = getCompetenciaProgressMinutes(plan).pct + '% de avance';
         } else {
-            var items = ((plan.contenidoPorUsuario || {})[PLAYGROUND_USER_ID]) || [];
-            var started = 0;
-            items.forEach(function (it) {
-                if (Number(it.progress) > 0) started += 1;
-            });
-            metaText = started + ' de ' + items.length + ' contenidos';
+            var prog = getContenidosProgressCount(plan);
+            metaText = prog.done + ' de ' + prog.total + ' contenidos';
         }
         return {
             value: plan.id,
@@ -562,6 +583,36 @@
         return pool.slice(0, HISTORIAL_COUNT);
     }
 
+    function enrichHistorialFromCatalogo(c, card) {
+        card.contentId = (c && c.id) ? c.id : '';
+        card.conCertificacion = !!(c && c.conCertificacion);
+        if (card.conCertificacion) {
+            card.plantillaCertificadoId = (c && c.plantillaCertificadoId) || '';
+            card.plantillaCertificado = (c && c.plantillaCertificado) || '';
+        }
+        var pct = Number(card.progress);
+        if (isNaN(pct)) pct = 0;
+        if (card.conCertificacion && pct >= 100) {
+            card.certificadoRowActions = true;
+            card.certificadoCardId = card.contentId;
+        }
+        return card;
+    }
+
+    function historialCertificadoCellHtml(row) {
+        if (!row.conCertificacion) {
+            return '<span class="ubits-body-sm-regular zona-estudio-historial__cert-text">No aplica</span>';
+        }
+        var pct = Number(row.progress);
+        if (isNaN(pct)) pct = 0;
+        pct = Math.min(100, Math.max(0, pct));
+        if (pct >= 100) {
+            return '<button type="button" class="ubits-button ubits-button--secondary ubits-button--xs zona-estudio-historial__cert-download" data-historial-cert-download="1">' +
+                '<i class="far fa-down-to-line" aria-hidden="true"></i><span>Descargar</span></button>';
+        }
+        return '<span class="ubits-body-sm-regular zona-estudio-historial__cert-text">Pendiente</span>';
+    }
+
     function buildHistorialCards() {
         var items = getHistorialSourcePool();
         var inProgressCount = Math.max(1, Math.round(HISTORIAL_COUNT * 0.1));
@@ -582,11 +633,13 @@
                 var pctIdx = historialSeed('pct-' + (item.c.id || '') + '-' + idx) % HISTORIAL_IN_PROGRESS_PCT.length;
                 progress = HISTORIAL_IN_PROGRESS_PCT[pctIdx];
             }
+            var card;
             if (item.source === 'fiqsha') {
-                cards.push(mapFiqshaContenidoToCard(item.c, progress));
+                card = mapFiqshaContenidoToCard(item.c, progress);
             } else {
-                cards.push(mapCatalogoToCard(item.c, progress));
+                card = mapCatalogoToCard(item.c, progress);
             }
+            cards.push(enrichHistorialFromCatalogo(item.c, card));
         });
         cards.sort(function (a, b) {
             var aInProgress = a.status === 'progress' ? 0 : 1;
@@ -617,14 +670,42 @@
         if (el) el.textContent = formatIndicatorNumber(state.historialFilteredContents.length);
     }
 
-    function renderHistorialCards() {
+    function renderHistorialTable() {
+        var tbody = document.getElementById('zona-estudio-historial-table-tbody');
+        if (!tbody) return;
+
+        var rows = state.historialFilteredContents;
+        if (!rows.length) {
+            tbody.innerHTML = '';
+            return;
+        }
+
+        var html = '';
+        rows.forEach(function (row) {
+            var progressHtml = typeof tableProgressCellHtml === 'function'
+                ? tableProgressCellHtml(row.progress)
+                : '<div class="ubits-table__cell-progress"><span class="ubits-body-sm-regular">' + escapeHtml(String(row.progress)) + '%</span></div>';
+            html += '<tr class="zona-estudio-historial-table__row">' +
+                '<td data-col="nombre"><span class="ubits-body-sm-regular zona-estudio-historial-table__title">' + escapeHtml(row.title || '') + '</span></td>' +
+                '<td data-col="tipo"><span class="ubits-body-sm-regular">' + escapeHtml(row.type || '') + '</span></td>' +
+                '<td data-col="nivel"><span class="ubits-body-sm-regular">' + escapeHtml(row.level || '') + '</span></td>' +
+                '<td data-col="progreso">' + progressHtml + '</td>' +
+                '<td data-col="certificado">' + historialCertificadoCellHtml(row) + '</td>' +
+                '</tr>';
+        });
+        tbody.innerHTML = html;
+    }
+
+    function renderHistorialContent() {
         var grid = document.getElementById('zona-estudio-historial-cards-grid');
+        var tableWrap = document.getElementById('zona-estudio-historial-table-wrap');
         var empty = document.getElementById('zona-estudio-historial-empty-state');
         if (!grid) return;
 
         if (!state.historialFilteredContents.length) {
             grid.style.display = 'none';
             grid.innerHTML = '';
+            if (tableWrap) tableWrap.hidden = true;
             if (empty) {
                 empty.style.display = 'flex';
                 if (typeof loadEmptyState === 'function') {
@@ -664,12 +745,52 @@
             empty.style.display = 'none';
             empty.innerHTML = '';
         }
-        grid.style.display = 'grid';
 
-        if (typeof loadCardContent === 'function') {
-            loadCardContent('zona-estudio-historial-cards-grid', state.historialFilteredContents);
+        if (state.historialViewMode === 'list') {
+            grid.style.display = 'none';
+            grid.innerHTML = '';
+            if (tableWrap) tableWrap.hidden = false;
+            renderHistorialTable();
+        } else {
+            if (tableWrap) tableWrap.hidden = true;
+            grid.style.display = 'grid';
+            if (typeof loadCardContent === 'function') {
+                loadCardContent('zona-estudio-historial-cards-grid', state.historialFilteredContents);
+            }
+            if (typeof initTooltip === 'function') {
+                initTooltip('#zona-estudio-historial-cards-grid [data-tooltip]');
+            }
         }
         updateHistorialResultsCount();
+    }
+
+    function renderHistorialCards() {
+        renderHistorialContent();
+    }
+
+    function setupHistorialViewToggle() {
+        if (state.historialViewReady) return;
+        bindHistorialCertificadoToast();
+        var tableWrap = document.getElementById('zona-estudio-historial-table-wrap');
+        if (tableWrap) {
+            tableWrap.addEventListener('click', function (e) {
+                var btn = e.target.closest && e.target.closest('[data-historial-cert-download]');
+                if (!btn) return;
+                e.preventDefault();
+                showHistorialCertificadoToast();
+            });
+        }
+        if (typeof initButtonGroup === 'function') {
+            initButtonGroup('#zona-estudio-historial-view-group', {
+                variant: 'selectable',
+                value: state.historialViewMode,
+                onChange: function (val) {
+                    state.historialViewMode = val === 'list' ? 'list' : 'grid';
+                    renderHistorialContent();
+                }
+            });
+        }
+        state.historialViewReady = true;
     }
 
     function renderHistorialTab() {
@@ -680,7 +801,7 @@
             state.historialContents = buildHistorialCards();
         }
         applyHistorialFilters();
-        renderHistorialCards();
+        renderHistorialContent();
 
         if (typeof initTooltip === 'function') {
             initTooltip('#zona-estudio-historial-toolbar [data-tooltip]');
@@ -1433,6 +1554,10 @@
             renderExclusivoTab();
         } else if (tabId === 'historial') {
             renderHistorialTab();
+        } else if (tabId === 'progreso') {
+            if (typeof window.renderZonaEstudioProgresoTab === 'function') {
+                window.renderZonaEstudioProgresoTab();
+            }
         }
 
         if (!opts.skipHash) updateHash(tabId);
@@ -1464,9 +1589,17 @@
         setupSearch();
         setupExclusivoSearch();
         setupHistorialSearch();
+        setupHistorialViewToggle();
         setupTabs();
         setActiveTab(parseTabFromHash(), { skipHash: true });
         updateHash(state.activeTab);
+
+        window.zonaEstudioNavigateToPlan = function (planId, tipo) {
+            var tabId = tipo === 'competencias' ? 'competencias' : 'contenidos';
+            state.selectedPlanByTab[tabId] = planId || '';
+            resetPlanSelect(tabId);
+            setActiveTab(tabId);
+        };
 
         if (typeof initTooltip === 'function') {
             initTooltip('#zona-estudio-toolbar [data-tooltip]');

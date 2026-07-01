@@ -794,6 +794,10 @@
                         return '../../images/imagenes competencias/';
                     }
                 })();
+                var minutosLabelDrawer = (typeof MiEquipoPlanCompetenciasShared !== 'undefined' &&
+                    typeof MiEquipoPlanCompetenciasShared.getCompetenciaMinutosLabelForPlanPerson === 'function')
+                    ? MiEquipoPlanCompetenciasShared.getCompetenciaMinutosLabelForPlanPerson(planRawBd, rowId)
+                    : '';
                 var cardsHtml = list.map(function(c) {
                     var progress = sinProgreso ? 0 : (c.progress != null ? c.progress : 0);
                     var status = sinProgreso ? 'default' : (c.status || 'default');
@@ -801,13 +805,14 @@
                     var imgPath = (c.image && String(c.image).indexOf('../../') === 0) ? c.image : (imgBase + imgName);
                     var nombre = c.title || c.nombre || '';
                     var barraHtml = renderCompetenciaDrawerProgressBlock(progress, status);
+                    var subcopy = c.minutosLabel || minutosLabelDrawer || '';
                     return '<div class="drawer-competencia-card-wrapper">' +
                         '<div class="drawer-competencia-card competencia-card-v1" data-competencia-id="' + escapeDrawerHtml(c.id) + '">' +
                         '<div class="drawer-competencia-card-row">' +
                         '<img src="' + escapeDrawerHtml(imgPath) + '" alt="" class="competencia-card-v1-image" loading="lazy" onerror="this.src=\'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=400&h=300&fit=crop\'">' +
                         '<div class="competencia-card-v1-content">' +
                         '<p class="ubits-body-sm-semibold competencia-card-v1-title"><span class="competencia-card-v1-title-text">' + escapeDrawerHtml(nombre) + '</span></p>' +
-                        '<p class="ubits-body-xs-regular competencia-card-v1-count">' + (c.habilidades ? c.habilidades.length : 0) + ' habilidades</p>' +
+                        '<p class="ubits-body-xs-regular competencia-card-v1-count">' + escapeDrawerHtml(subcopy) + '</p>' +
                         '</div>' +
                         '<span class="drawer-competencia-card-check"></span>' +
                         '</div>' +

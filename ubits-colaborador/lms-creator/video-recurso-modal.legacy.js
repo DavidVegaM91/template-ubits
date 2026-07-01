@@ -20,8 +20,8 @@
 
     var OVERLAY_ID = 'cc-video-recurso-modal';
 
-    var VIDEO_GUION_IA_TOKEN_COST = 2;
-    var VIDEO_GEN_TOKEN_COST      = 20;
+    var VIDEO_GUION_IA_TOKEN_COST = 80;
+    var VIDEO_GEN_TOKEN_COST      = 320;
     /** Guión para «Generar video»: longitud mínima/máxima (coincide con contador createInput). */
     var VIDEO_GUION_MIN_CHARS = 500;
     var VIDEO_GUION_MAX_CHARS = 1700;
@@ -40,7 +40,7 @@
        TOKEN HELPERS
     ══════════════════════════════════════ */
     function getVideoAiTokens() {
-        return global._ubitsAiTokenPool != null ? global._ubitsAiTokenPool : 50;
+        return global._ubitsAiTokenPool != null ? global._ubitsAiTokenPool : 500000;
     }
 
     function syncVideoModalTokensBadge() {
@@ -48,8 +48,17 @@
         var el = document.getElementById('cc-video-modal-tokens-badge');
         if (!el) return;
         var num = el.querySelector('.ubits-badge-tag__token-number');
-        if (num) num.textContent = String(n);
-        el.setAttribute('aria-label', String(n) + ' tokens restantes');
+        var display =
+            typeof global.formatIaTokensBadgeNumber === 'function'
+                ? global.formatIaTokensBadgeNumber(n)
+                : String(n);
+        if (num) num.textContent = display;
+        el.setAttribute(
+            'aria-label',
+            typeof global.formatIaTokensBadgeAriaLabel === 'function'
+                ? global.formatIaTokensBadgeAriaLabel(n)
+                : String(n) + ' tokens restantes'
+        );
         var show = _currentTab === 'ia';
         el.style.display = show ? '' : 'none';
         el.setAttribute('aria-hidden', show ? 'false' : 'true');
