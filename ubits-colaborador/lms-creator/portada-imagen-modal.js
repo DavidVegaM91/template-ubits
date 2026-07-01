@@ -220,12 +220,8 @@
             '<div class="ubits-modal-footer__right">' +
             '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="cc-pim-footer-cancel">' +
             '<span>Cancelar</span></button>' +
-            '<button type="button" class="ubits-button ubits-button--primary ubits-button--sm" id="cc-pim-footer-use-ia" style="display:none">' +
-            '<span>Usar esta imagen</span></button>' +
-            '<button type="button" class="ubits-button ubits-button--primary ubits-button--sm" id="cc-pim-footer-use-upload" style="display:none">' +
-            '<span>Usar esta imagen</span></button>' +
-            '<button type="button" class="ubits-button ubits-button--primary ubits-button--sm" id="cc-pim-footer-save-trailer" style="display:none">' +
-            '<span>Guardar tráiler</span></button>' +
+            '<button type="button" class="ubits-button ubits-button--primary ubits-button--sm" id="cc-pim-footer-save">' +
+            '<span>Guardar</span></button>' +
             '</div>'
         );
     }
@@ -588,25 +584,18 @@
         syncFooter();
     }
 
+    function getPimPortadaDataUrl() {
+        return _iaResultSrc || _uploadDataUrl || '';
+    }
+
     function syncFooter() {
-        var useIa = document.getElementById('cc-pim-footer-use-ia');
-        var useUp = document.getElementById('cc-pim-footer-use-upload');
-        var saveT = document.getElementById('cc-pim-footer-save-trailer');
-        var hasIaResult = !!_iaResultSrc;
-        var trailerSaveEnabled =
+        var saveBtn = document.getElementById('cc-pim-footer-save');
+        var hasImage = !!getPimPortadaDataUrl();
+        var hasValidTrailer =
             _modalTrailerUrl.length > 0 && isAllowedTrailerUrl(_modalTrailerUrl);
 
-        if (useIa) {
-            useIa.style.display = _currentTab === 'ia' ? '' : 'none';
-            useIa.disabled = !hasIaResult;
-        }
-        if (useUp) {
-            useUp.style.display = _currentTab === 'subir' ? '' : 'none';
-            useUp.disabled = !_uploadDataUrl;
-        }
-        if (saveT) {
-            saveT.style.display = _currentTab === 'trailer' ? '' : 'none';
-            saveT.disabled = !trailerSaveEnabled;
+        if (saveBtn) {
+            saveBtn.disabled = !hasImage && !hasValidTrailer;
         }
 
         syncPimOverlayLayout();
@@ -632,6 +621,35 @@
         }
     }
 
+    function handlePimSave() {
+        var saveBtn = document.getElementById('cc-pim-footer-save');
+        if (!saveBtn || saveBtn.disabled) return;
+
+        var dataUrl = getPimPortadaDataUrl();
+        var hasValidTrailer =
+            _modalTrailerUrl.length > 0 && isAllowedTrailerUrl(_modalTrailerUrl);
+
+        if (dataUrl && _onApply) {
+            _onApply({
+                dataUrl: dataUrl,
+                trailerUrl: hasValidTrailer ? _modalTrailerUrl : '',
+                fromAi: !!_iaResultSrc && dataUrl === _iaResultSrc,
+                iaPrompt: _iaResultSrc && dataUrl === _iaResultSrc ? getPimIdeaText() : ''
+            });
+            if (typeof global.closeModal === 'function') global.closeModal(OVERLAY_ID);
+            return;
+        }
+
+        if (hasValidTrailer) {
+            if (_onTrailerSaved) _onTrailerSaved(_modalTrailerUrl);
+            if (typeof global.showToast === 'function') {
+                global.showToast('success', 'Tráiler guardado. Se aplicará al confirmar la portada.', {
+                    containerId: 'ubits-toast-container'
+                });
+            }
+        }
+    }
+
     function wireFooterActions() {
         var cancel = document.getElementById('cc-pim-footer-cancel');
         if (cancel) {
@@ -639,39 +657,9 @@
                 if (typeof global.closeModal === 'function') global.closeModal(OVERLAY_ID);
             };
         }
-        var useIa = document.getElementById('cc-pim-footer-use-ia');
-        if (useIa) {
-            useIa.onclick = function () {
-                if (!_iaResultSrc || !_onApply) return;
-                _onApply({
-                    dataUrl: _iaResultSrc,
-                    trailerUrl: _modalTrailerUrl,
-                    fromAi: true,
-                    iaPrompt: getPimIdeaText()
-                });
-                if (typeof global.closeModal === 'function') global.closeModal(OVERLAY_ID);
-            };
-        }
-        var useUp = document.getElementById('cc-pim-footer-use-upload');
-        if (useUp) {
-            useUp.onclick = function () {
-                if (!_uploadDataUrl || !_onApply) return;
-                _onApply({ dataUrl: _uploadDataUrl, trailerUrl: _modalTrailerUrl, fromAi: false });
-                if (typeof global.closeModal === 'function') global.closeModal(OVERLAY_ID);
-            };
-        }
-        var saveT = document.getElementById('cc-pim-footer-save-trailer');
-        if (saveT) {
-            saveT.onclick = function () {
-                if (saveT.disabled) return;
-                if (!_modalTrailerUrl.length || !isAllowedTrailerUrl(_modalTrailerUrl)) return;
-                if (_onTrailerSaved) _onTrailerSaved(_modalTrailerUrl);
-                if (typeof global.showToast === 'function') {
-                    global.showToast('success', 'Tráiler guardado. Se aplicará al confirmar la portada.', {
-                        containerId: 'ubits-toast-container'
-                    });
-                }
-            };
+        var saveBtn = document.getElementById('cc-pim-footer-save');
+        if (saveBtn) {
+            saveBtn.onclick = handlePimSave;
         }
     }
 
