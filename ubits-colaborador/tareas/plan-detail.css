@@ -231,69 +231,9 @@
     color: var(--ubits-fg-1-medium);
 }
 
-/* Avatar de asignado con filtro activo: borde brand 2px */
-#plan-detail-assignees-wrap .ubits-profile-list__avatar.plan-detail-assignee-avatar--active {
-    outline: 2px solid var(--ubits-accent-brand);
-    outline-offset: 1px;
-    border-radius: var(--border-radius-full);
-}
-
-#plan-detail-assignees-wrap .ubits-profile-list__avatar {
-    border-radius: var(--border-radius-full);
-}
-
 /* Botón Configurar miembros: al lado del profile list */
 .plan-detail-card__asignados-value .ubits-button#plan-detail-configurar-miembros-btn {
     flex-shrink: 0;
-}
-
-/* Popover asignados (+N): mismo patrón que seguimiento */
-.plan-detail-asignados-popover-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: 999;
-}
-
-.plan-detail-asignados-popover {
-    position: fixed;
-    min-width: 220px;
-    max-width: 320px;
-    max-height: 320px;
-    overflow-y: auto;
-    background: var(--ubits-bg-1);
-    border: 1px solid var(--ubits-border-1);
-    border-radius: var(--border-radius-sm);
-    box-shadow: var(--ubits-elevation-overlay);
-    z-index: 1001;
-    padding: var(--padding-sm) 0;
-}
-
-.plan-detail-asignados-popover-list {
-    display: flex;
-    flex-direction: column;
-    gap: 0;
-}
-
-.plan-detail-asignados-popover-item {
-    display: flex;
-    align-items: center;
-    gap: var(--gap-md);
-    padding: var(--padding-sm) var(--padding-md);
-    color: var(--ubits-fg-1-medium);
-}
-
-.plan-detail-asignados-popover-item .ubits-avatar {
-    flex-shrink: 0;
-}
-
-.plan-detail-asignados-popover-item .ubits-body-sm-regular {
-    color: var(--ubits-fg-1-medium);
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
 }
 
 /* Filtros aplicados (debajo del header de tareas del plan): igual que seguimiento */

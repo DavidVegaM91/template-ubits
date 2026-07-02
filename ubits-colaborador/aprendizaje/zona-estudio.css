@@ -440,18 +440,7 @@
 
 .zona-estudio-progreso-profile {
     flex-shrink: 0;
-}
-
-.zona-estudio-progreso-profile .ubits-profile-list__avatar {
-    cursor: pointer;
-    border-radius: 50%;
-    outline: 2px solid transparent;
-    outline-offset: 2px;
-    transition: outline-color 0.15s ease;
-}
-
-.zona-estudio-progreso-profile__avatar--active {
-    outline-color: var(--ubits-accent-brand) !important;
+    overflow: visible;
 }
 
 .zona-estudio-progreso-hero__progress {
@@ -582,6 +571,11 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: var(--gap-2xl);
     width: 100%;
+    min-width: 0;
+}
+
+.zona-estudio-progreso-ranking-card {
+    min-width: 0;
 }
 
 .zona-estudio-progreso-ranking-card__title {
@@ -611,7 +605,7 @@
 
 .zona-estudio-progreso-ranking-row {
     display: grid;
-    grid-template-columns: 32px minmax(80px, 1.2fr) minmax(0, 2fr) 44px;
+    grid-template-columns: 32px minmax(0, 1fr) minmax(0, 1fr) 44px;
     gap: var(--gap-md);
     align-items: center;
     min-height: var(--ranking-row-min-height);
@@ -675,22 +669,6 @@
     text-overflow: ellipsis;
     white-space: nowrap;
     display: block;
-}
-
-#zona-estudio-progreso-ranking-equipo .zona-estudio-progreso-ranking-row:not(.zona-estudio-progreso-ranking-row--time) {
-    grid-template-columns: 32px minmax(0, 1fr) 64px 40px;
-    gap: var(--gap-sm);
-}
-
-#zona-estudio-progreso-ranking-equipo .zona-estudio-progreso-ranking-row__bar {
-    width: 64px;
-    max-width: 64px;
-    min-width: 64px;
-}
-
-#zona-estudio-progreso-ranking-equipo .zona-estudio-progreso-ranking-row__bar .ubits-progress-bar {
-    width: 64px;
-    max-width: 64px;
 }
 
 #zona-estudio-progreso-ranking-equipo .zona-estudio-progreso-ranking-row--time {
@@ -774,6 +752,99 @@
     margin: 0;
 }
 
+/* Desktop rankings: mitad identidad (puesto + nombre) | mitad progreso (barra + %) */
+@media (min-width: 769px) {
+    .zona-estudio-progreso-ranking-row:not(.zona-estudio-progreso-ranking-row--time) {
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        grid-template-rows: auto;
+        column-gap: var(--gap-md);
+    }
+
+    .zona-estudio-progreso-ranking-row:not(.zona-estudio-progreso-ranking-row--time) > :first-child {
+        grid-column: 1;
+        grid-row: 1;
+        justify-self: start;
+        z-index: 1;
+    }
+
+    .zona-estudio-progreso-ranking-row:not(.zona-estudio-progreso-ranking-row--time) > .zona-estudio-progreso-ranking-row__medal {
+        margin-inline: 2px;
+    }
+
+    .zona-estudio-progreso-ranking-row__rank {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 32px;
+        text-align: center;
+    }
+
+    .zona-estudio-progreso-ranking-row__label,
+    .zona-estudio-progreso-ranking-row__label-wrap {
+        grid-column: 1;
+        grid-row: 1;
+        padding-left: calc(32px + var(--gap-sm));
+        min-width: 0;
+        align-self: center;
+    }
+
+    .zona-estudio-progreso-ranking-row__bar {
+        grid-column: 2;
+        grid-row: 1;
+        width: calc(100% - 44px - var(--gap-sm));
+        max-width: none;
+        min-width: 0;
+        justify-self: start;
+        align-self: center;
+    }
+
+    .zona-estudio-progreso-ranking-row__bar .ubits-progress-bar {
+        width: 100%;
+        max-width: none;
+    }
+
+    .zona-estudio-progreso-ranking-row__pct {
+        grid-column: 2;
+        grid-row: 1;
+        justify-self: end;
+        align-self: center;
+        z-index: 1;
+    }
+
+    .zona-estudio-progreso-ranking-row--time,
+    #zona-estudio-progreso-ranking-equipo .zona-estudio-progreso-ranking-row--time {
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        column-gap: var(--gap-md);
+    }
+
+    .zona-estudio-progreso-ranking-row--time > :first-child {
+        grid-column: 1;
+        grid-row: 1;
+        justify-self: start;
+        z-index: 1;
+    }
+
+    .zona-estudio-progreso-ranking-row--time > .zona-estudio-progreso-ranking-row__medal {
+        margin-inline: 2px;
+    }
+
+    .zona-estudio-progreso-ranking-row--time .zona-estudio-progreso-ranking-row__label {
+        grid-column: 1;
+        grid-row: 1;
+        padding-left: calc(32px + var(--gap-sm));
+        min-width: 0;
+    }
+
+    .zona-estudio-progreso-ranking-row--time .zona-estudio-progreso-ranking-row__time,
+    #zona-estudio-progreso-ranking-equipo .zona-estudio-progreso-ranking-row__time {
+        grid-column: 2;
+        grid-row: 1;
+        justify-self: end;
+        align-self: center;
+        padding-left: 0;
+    }
+}
+
 @media (max-width: 1023px) {
     .zona-estudio-progreso-kpis {
         grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -800,27 +871,109 @@
         gap: var(--gap-lg);
     }
 
-    .zona-estudio-progreso-ranking-row {
-        grid-template-columns: 28px 1fr 52px;
-        grid-template-rows: auto auto;
+    /* Rankings mobile: fila 1 = medalla | nombre | %; fila 2 = barra a ancho completo */
+    .zona-estudio-progreso-ranking-list {
+        --ranking-row-min-height: 0;
+        --ranking-row-slot: 48px;
     }
 
-    #zona-estudio-progreso-ranking-equipo .zona-estudio-progreso-ranking-row:not(.zona-estudio-progreso-ranking-row--time) {
-        grid-template-columns: 28px minmax(0, 1fr) 40px;
+    .zona-estudio-progreso-ranking-row:not(.zona-estudio-progreso-ranking-row--time) {
+        grid-template-columns: 28px minmax(0, 1fr) auto;
         grid-template-rows: auto auto;
+        row-gap: 2px;
+        column-gap: var(--gap-sm);
+        align-items: center;
+        min-height: 0;
+        padding-block: var(--padding-xs);
+    }
+
+    .zona-estudio-progreso-ranking-row:not(.zona-estudio-progreso-ranking-row--time) > :first-child {
+        grid-column: 1;
+        grid-row: 1 / -1;
+        align-self: center;
+        justify-self: center;
+    }
+
+    .zona-estudio-progreso-ranking-row__label,
+    .zona-estudio-progreso-ranking-row__label-wrap {
+        grid-column: 2;
+        grid-row: 1;
+        min-width: 0;
+        align-self: center;
+    }
+
+    .zona-estudio-progreso-ranking-row__pct {
+        grid-column: 3;
+        grid-row: 1 / -1;
+        align-self: center;
     }
 
     .zona-estudio-progreso-ranking-row__bar {
         grid-column: 2 / -1;
+        grid-row: 2;
+        align-self: start;
+        width: 100%;
+        max-width: none;
+        min-width: 0;
     }
 
+    .zona-estudio-progreso-ranking-row__bar .ubits-progress-bar {
+        width: 100%;
+        max-width: none;
+    }
+
+    #zona-estudio-progreso-ranking-equipo .zona-estudio-progreso-ranking-row:not(.zona-estudio-progreso-ranking-row--time) {
+        grid-template-columns: 28px minmax(0, 1fr) auto;
+    }
+
+    #zona-estudio-progreso-ranking-equipo .zona-estudio-progreso-ranking-row__bar {
+        width: 100%;
+        max-width: none;
+        min-width: 0;
+    }
+
+    #zona-estudio-progreso-ranking-equipo .zona-estudio-progreso-ranking-row__bar .ubits-progress-bar {
+        width: 100%;
+        max-width: none;
+    }
+
+    .zona-estudio-progreso-ranking-row--time,
     #zona-estudio-progreso-ranking-equipo .zona-estudio-progreso-ranking-row--time {
         grid-template-columns: 28px minmax(0, 1fr) auto;
         grid-template-rows: auto;
     }
 
-    .zona-estudio-progreso-ranking-row--time {
-        grid-template-columns: 28px 1fr auto;
-        grid-template-rows: auto;
+    .zona-estudio-progreso-ranking-row--time > :first-child {
+        grid-column: 1;
+        grid-row: 1;
+    }
+
+    .zona-estudio-progreso-ranking-row--time .zona-estudio-progreso-ranking-row__label {
+        grid-column: 2;
+        grid-row: 1;
+    }
+
+    .zona-estudio-progreso-ranking-row--time .zona-estudio-progreso-ranking-row__time {
+        grid-column: 3;
+        grid-row: 1;
+    }
+
+    /* Podio sticky asume filas de 44px; en mobile son más altas → desactivar */
+    .zona-estudio-progreso-ranking-list--empresa .zona-estudio-progreso-ranking-row--rank-1,
+    .zona-estudio-progreso-ranking-list--empresa .zona-estudio-progreso-ranking-row--rank-2,
+    .zona-estudio-progreso-ranking-list--empresa .zona-estudio-progreso-ranking-row--rank-3,
+    .zona-estudio-progreso-ranking-list--empresa .zona-estudio-progreso-ranking-podium-divider {
+        position: static;
+        top: auto;
+        z-index: auto;
+    }
+
+    .zona-estudio-progreso-ranking-card__head {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .zona-estudio-progreso-ranking-card__head .ubits-button-group {
+        width: 100%;
     }
 }

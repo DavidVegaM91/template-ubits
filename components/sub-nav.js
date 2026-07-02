@@ -48,8 +48,7 @@ const TOP_NAV_VARIANTS = {
             { id: 'modo-estudio-ia', label: 'Modo estudio IA', icon: 'far fa-sparkles', url: '../../ubits-colaborador/aprendizaje/modo-estudio-ia.html' },
             // Catálogo oculto en SubNav: exploración en home-learn (modo browse). Ver README «Patrón: búsqueda en Inicio Aprendizaje».
             { id: 'corporate', label: 'U. Corporativa', icon: 'far fa-building-columns', url: '../../ubits-colaborador/aprendizaje/u-corporativa.html' },
-            { id: 'study-zone', label: 'Zona de estudio', icon: 'far fa-books', url: '../../ubits-colaborador/aprendizaje/zona-estudio.html' },
-            { id: 'mi-equipo', label: 'Mi equipo', icon: 'far fa-users', url: '../../ubits-colaborador/aprendizaje/mi-equipo/planes.html' }
+            { id: 'study-zone', label: 'Zona de estudio', icon: 'far fa-books', url: '../../ubits-colaborador/aprendizaje/zona-estudio.html' }
         ]
     },
     desempeno: {

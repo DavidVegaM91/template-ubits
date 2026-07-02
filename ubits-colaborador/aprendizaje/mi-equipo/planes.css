@@ -30,64 +30,6 @@
     cursor: pointer;
 }
 
-.page-mi-equipo-planes #planes-data-table-container .ubits-table__cell-assignee .ubits-profile-list__count {
-    cursor: pointer;
-}
-
-/* Popover asignados (+N del profile list): solo visualización — igual que seguimiento */
-.page-mi-equipo-planes .asignados-popover-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: 999;
-    pointer-events: none;
-}
-
-.page-mi-equipo-planes .asignados-popover-overlay[aria-hidden="false"] {
-    pointer-events: auto;
-}
-
-.page-mi-equipo-planes .asignados-popover {
-    position: fixed;
-    min-width: 220px;
-    max-width: 320px;
-    max-height: 320px;
-    overflow-y: auto;
-    background: var(--ubits-bg-1);
-    border: 1px solid var(--ubits-border-1);
-    border-radius: var(--border-radius-sm);
-    box-shadow: 0 4px 16px var(--ubits-bottom-nav-shadow-opacity);
-    z-index: 1001;
-    padding: var(--padding-sm) 0;
-}
-
-.page-mi-equipo-planes .asignados-popover-list {
-    display: flex;
-    flex-direction: column;
-    gap: var(--gap-none);
-}
-
-.page-mi-equipo-planes .asignados-popover-item {
-    display: flex;
-    align-items: center;
-    gap: var(--gap-md);
-    padding: var(--padding-sm) var(--padding-md);
-    color: var(--ubits-fg-1-medium);
-}
-
-.page-mi-equipo-planes .asignados-popover-item .ubits-avatar {
-    flex-shrink: 0;
-}
-
-.page-mi-equipo-planes .asignados-popover-item .ubits-body-sm-regular {
-    color: var(--ubits-fg-1-medium);
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
 .page-mi-equipo-planes .ubits-header-product--tabs-with-actions .ubits-header-product__primary-row {
     align-items: center;
     gap: var(--gap-md);

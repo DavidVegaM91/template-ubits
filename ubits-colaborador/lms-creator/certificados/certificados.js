@@ -287,6 +287,7 @@
     function buildMailPlaceholderValues() {
         var base = getCertificadosPageBaseUrl();
         return {
+            nombre_destinatario: window.MI_EQUIPO_CURRENT_LEADER || 'María Alejandra Sánchez Pardo',
             fecha_inicio: formatDateHuman(form.fechaInicial),
             fecha_final: formatDateHuman(form.fechaFinal),
             nombre_contenido: getContenidoLabelById(form.contenidoId),

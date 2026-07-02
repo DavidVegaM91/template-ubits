@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/svg+xml" href="../../images/playground-favicon.svg">
     <title>UBITS Playground - Zona de estudio</title>
-
+    
     <link rel="stylesheet" href="../../general-styles/ubits-colors.css">
     <link rel="stylesheet" href="../../general-styles/styles.css">
     <link rel="stylesheet" href="../../general-styles/fontawesome-icons.css">
@@ -33,6 +33,7 @@
     <link rel="stylesheet" href="../../components/alert.css">
     <link rel="stylesheet" href="../../components/carousel-contents.css">
     <link rel="stylesheet" href="../../components/drawer.css">
+    <link rel="stylesheet" href="../../components/modal.css">
     <link rel="stylesheet" href="../../components/card-content-compact.css">
     <link rel="stylesheet" href="./mi-equipo/detalle-plan-competencias.css">
     <link rel="stylesheet" href="../../components/toast.css">
@@ -318,8 +319,8 @@
     <div id="floating-menu-container"></div>
     <div id="profile-menu-container"></div>
 
-    <script src="../../components/tooltip.js"></script>
-    <script src="../../components/sidebar.js"></script>
+        <script src="../../components/tooltip.js"></script>
+<script src="../../components/sidebar.js"></script>
     <script src="../../components/sub-nav.js"></script>
     <script src="../../components/tab-bar.js"></script>
     <script src="../../components/floating-menu.js"></script>
@@ -335,6 +336,7 @@
     <script src="../../components/alert.js"></script>
     <script src="../../components/button-group.js"></script>
     <script src="../../components/toast.js"></script>
+    <script src="../../components/modal.js"></script>
     <script src="../../components/drawer.js"></script>
     <script src="../../components/card-content-compact.js"></script>
     <script src="../../components/carousel-contents.js"></script>
@@ -358,7 +360,7 @@
             loadTabBar('tab-bar-container');
             loadFloatingMenu('floating-menu-container');
             loadProfileMenu('profile-menu-container');
-
+            
             setTimeout(function () {
                 document.querySelectorAll('.nav-tab, .hamburger-item').forEach(function (item) {
                     item.classList.remove('active');

@@ -63,12 +63,6 @@
     <div id="profile-menu-container"></div>
     <div id="ubits-toast-container"></div>
 
-    <!-- Popover asignados (+N del profile list): solo visualización — igual que seguimiento -->
-    <div class="asignados-popover-overlay" id="planes-asignados-popover-overlay" style="display: none;" aria-hidden="true"></div>
-    <div class="asignados-popover" id="planes-asignados-popover" style="display: none;" role="dialog" aria-label="Personas asignadas">
-        <div class="asignados-popover-list" id="planes-asignados-popover-list"></div>
-    </div>
-
     <script src="../../../components/tooltip.js"></script>
     <script src="../../../components/sidebar.js"></script>
     <script src="../../../components/sub-nav.js"></script>
@@ -651,7 +645,7 @@
                 } else {
                     var asignados = row.asignados || [];
                     if (asignados.length > 0 && typeof renderProfileList === 'function') {
-                        html = renderProfileList(asignados, { size: 'sm', maxVisible: 3, showTooltip: true, tooltipDelay: 500 });
+                        html = renderProfileList(asignados, { size: 'sm', maxVisible: 3 });
                     }
                 }
                 return '<td data-col="asignados"><div class="ubits-table__cell-assignee">' + html + '</div></td>';
@@ -674,61 +668,6 @@
                     }
                 }
                 return '<td data-col="creador"><div class="ubits-table__cell-assignee">' + html + '</div></td>';
-            }
-
-            function closePlanesAsignadosPopover() {
-                var overlay = document.getElementById('planes-asignados-popover-overlay');
-                var popover = document.getElementById('planes-asignados-popover');
-                if (overlay) { overlay.style.display = 'none'; overlay.setAttribute('aria-hidden', 'true'); }
-                if (popover) popover.style.display = 'none';
-            }
-
-            function openPlanesAsignadosPopover(chip) {
-                var tr = chip.closest('tr');
-                if (!tr) return;
-                var rowId = tr.getAttribute('data-id');
-                var row = getPlanesTableRowsForDisplay().find(function (r) { return String(r.id) === String(rowId); });
-                if (!row || !row.asignados || row.asignados.length <= 3) return;
-                var remaining = row.asignados.slice(3);
-                var listEl = document.getElementById('planes-asignados-popover-list');
-                var popover = document.getElementById('planes-asignados-popover');
-                var overlay = document.getElementById('planes-asignados-popover-overlay');
-                if (!listEl || !popover || !overlay) return;
-                listEl.innerHTML = '';
-                remaining.forEach(function (p) {
-                    var nombre = (p && (p.nombre || p.name)) || 'Sin asignar';
-                    var div = document.createElement('div');
-                    div.className = 'asignados-popover-item';
-                    if (typeof renderAvatar === 'function') {
-                        div.innerHTML = renderAvatar(p, { size: 'sm' });
-                    }
-                    var span = document.createElement('span');
-                    span.className = 'ubits-body-sm-regular';
-                    span.textContent = nombre;
-                    div.appendChild(span);
-                    listEl.appendChild(div);
-                });
-                overlay.style.display = 'block';
-                overlay.setAttribute('aria-hidden', 'false');
-                popover.style.display = 'block';
-                var rect = chip.getBoundingClientRect();
-                var popoverH = popover.offsetHeight;
-                var gap = 4;
-                var margin = 8;
-                var spaceBelow = window.innerHeight - rect.bottom - margin;
-                var spaceAbove = rect.top - margin;
-                if (spaceBelow >= popoverH + gap) {
-                    popover.style.top = (rect.bottom + gap) + 'px';
-                } else if (spaceAbove >= popoverH + gap) {
-                    popover.style.top = (rect.top - popoverH - gap) + 'px';
-                } else {
-                    popover.style.top = spaceBelow >= spaceAbove ? (rect.bottom + gap) + 'px' : (rect.top - popoverH - gap) + 'px';
-                }
-                var left = rect.left;
-                var maxLeft = window.innerWidth - popover.offsetWidth - margin;
-                if (left > maxLeft) left = maxLeft;
-                if (left < margin) left = margin;
-                popover.style.left = left + 'px';
             }
 
             function getEmptyStateConfig() {
@@ -893,12 +832,6 @@
                 }
             }
 
-            var planesAsignadosOverlay = document.getElementById('planes-asignados-popover-overlay');
-            if (planesAsignadosOverlay) planesAsignadosOverlay.addEventListener('click', closePlanesAsignadosPopover);
-            document.addEventListener('keydown', function (e) {
-                if (e.key === 'Escape') closePlanesAsignadosPopover();
-            });
-
             if (typeof loadHeaderProduct === 'function') {
                 loadHeaderProduct('header-product-container', {
                     variant: 'tabs-with-actions',
@@ -961,13 +894,6 @@
             var planesContainer = document.getElementById('planes-data-table-container');
             if (planesContainer) {
                 planesContainer.addEventListener('click', function (e) {
-                    var countChip = e.target.closest('.ubits-profile-list__count');
-                    if (countChip) {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        openPlanesAsignadosPopover(countChip);
-                        return;
-                    }
                     /* Menú ⋮ — mismo patrón que planes-contenidos.html */
                     if (e.target.closest('.js-planes-row-acciones-btn')) {
                         e.preventDefault();

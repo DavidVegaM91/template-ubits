@@ -11,6 +11,12 @@ Cuatro variantes de correo para el módulo de tareas/subtareas:
 
 ---
 
+## Saludo (patrón transversal)
+
+Primera línea del cuerpo: **¡Hola, {{nombre_destinatario}}!** — negrilla, color `#303a47`, clase `email-greeting`.
+
+---
+
 ## Placeholders para el backend
 
 El backend debe reemplazar estos placeholders antes de enviar. Usar el mismo nombre en las tres plantillas donde aplique.

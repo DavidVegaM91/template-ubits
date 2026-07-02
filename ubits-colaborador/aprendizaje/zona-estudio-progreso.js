@@ -16,6 +16,7 @@
         rankingEquipoScope: 'equipo',
         profileReady: false,
         recordatorioReady: false,
+        recordatorioEventsBound: false,
         rankingScopeReady: false,
         areasRendered: false
     };
@@ -45,15 +46,55 @@
         return num.toLocaleString('es-CO');
     }
 
-    function showPlaygroundToast() {
+    function confirmRecordatorioEquipo() {
         if (typeof showToast === 'function') {
-            showToast('info', 'Esta acción aún no está disponible en el Playground.', {
-                containerId: 'ubits-toast-container',
-                duration: 4000
-            });
+            showToast('success', 'Recordatorios enviados', { containerId: 'ubits-toast-container' });
         }
     }
 
+    function openRecordatorioConfirmModal() {
+        if (typeof openModal !== 'function' || typeof closeModal !== 'function') return;
+        var overlayId = 'zona-estudio-recordatorio-modal';
+        var cancelId = 'zona-estudio-recordatorio-cancel';
+        var confirmId = 'zona-estudio-recordatorio-confirm';
+        var bodyHtml = '<p class="ubits-body-md-regular">Se enviará un recordatorio por correo a todas las personas de tu equipo que no hayan completado sus planes de formación, informándoles su avance hasta el momento y la fecha de vencimiento de cada plan.</p>';
+        var footerHtml =
+            '<button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="' + cancelId + '"><span>Cancelar</span></button>' +
+            '<button type="button" class="ubits-button ubits-button--primary ubits-button--md" id="' + confirmId + '"><span>Confirmar</span></button>';
+        openModal({
+            overlayId: overlayId,
+            title: 'Enviar recordatorio',
+            bodyHtml: bodyHtml,
+            footerHtml: footerHtml,
+            size: 'sm'
+        });
+        setTimeout(function () {
+            var cancelBtn = document.getElementById(cancelId);
+            var confirmBtn = document.getElementById(confirmId);
+            function closeRecordatorioModal() {
+                closeModal(overlayId);
+            }
+            if (cancelBtn) cancelBtn.addEventListener('click', closeRecordatorioModal);
+            if (confirmBtn) {
+                confirmBtn.addEventListener('click', function () {
+                    closeRecordatorioModal();
+                    confirmRecordatorioEquipo();
+                });
+            }
+        }, 0);
+    }
+
+    function initRecordatorio() {
+        if (progresoState.recordatorioEventsBound) return;
+        var wrap = document.getElementById('zona-estudio-progreso-recordatorio');
+        if (!wrap) return;
+        progresoState.recordatorioEventsBound = true;
+        wrap.addEventListener('click', function (e) {
+            var btn = e.target.closest('#zona-estudio-progreso-btn-recordatorio');
+            if (!btn) return;
+            openRecordatorioConfirmModal();
+        });
+    }
     function getColaboradorById(id) {
         var master = window.BD_MASTER_COLABORADORES;
         var list = (master && master.colaboradores) ? master.colaboradores : [];
@@ -230,8 +271,7 @@
             html = window.renderProfileList(listForRender, {
                 size: 'sm',
                 maxVisible: listForRender.length,
-                showTooltip: true,
-                tooltipDelay: 1000
+                selectable: true
             });
         }
         wrap.innerHTML = html;
@@ -241,8 +281,7 @@
         avatars.forEach(function (el, i) {
             if (!personas[i]) return;
             el.setAttribute('data-colaborador-id', personas[i].id);
-            el.style.cursor = 'pointer';
-            el.classList.toggle('zona-estudio-progreso-profile__avatar--active',
+            el.classList.toggle('ubits-profile-list__avatar--selected',
                 personas[i].id === progresoState.selectedColaboradorId);
         });
         if (!progresoState.profileReady) {
@@ -442,24 +481,15 @@
         return '<span class="zona-estudio-progreso-ranking-row__rank ubits-body-sm-bold">' + rank + '</span>';
     }
 
-    function tuAreaBadgeHtml() {
-        return '<span class="ubits-badge-tag ubits-badge-tag--outlined ubits-badge-tag--info ubits-badge-tag--xs zona-estudio-progreso-ranking-row__badge">' +
-            '<span class="ubits-badge-tag__indicator" aria-hidden="true"></span>' +
-            '<span class="ubits-badge-tag__text">Tu área</span>' +
-        '</span>';
-    }
-
     function rankingAreaRowHtml(rank, area, pct, isMine) {
         var barHtml = typeof progressBarHtml === 'function'
             ? progressBarHtml({ value: pct, size: 'sm', rounded: true, track: 'subtle', ariaLabel: 'Progreso ' + area })
             : '';
+        var safeArea = escapeRankingHtml(area);
         return '<div class="zona-estudio-progreso-ranking-row zona-estudio-progreso-ranking-row--area' +
             (isMine ? ' zona-estudio-progreso-ranking-row--highlight' : '') + '">' +
             getMedalHtml(rank) +
-            '<span class="zona-estudio-progreso-ranking-row__label-wrap">' +
-                '<span class="zona-estudio-progreso-ranking-row__label ubits-body-sm-regular">' + area + '</span>' +
-                (isMine ? tuAreaBadgeHtml() : '') +
-            '</span>' +
+            '<span class="zona-estudio-progreso-ranking-row__label ubits-body-sm-regular">' + safeArea + '</span>' +
             '<div class="zona-estudio-progreso-ranking-row__bar">' + barHtml + '</div>' +
             '<span class="zona-estudio-progreso-ranking-row__pct ubits-body-sm-bold">' + pct + '%</span>' +
         '</div>';
@@ -507,8 +537,7 @@
     }
 
     function formatRankingPersonName(nombre, colaboradorId) {
-        var full = (nombre || '').trim();
-        return full + (String(colaboradorId) === LEADER_ID ? ' (Tú)' : '');
+        return (nombre || '').trim();
     }
 
     function applyRankingListScrollLimit(listEl) {
@@ -631,18 +660,6 @@
         renderRankingAreas();
         initRankingEquipoScope();
         renderRankingEquipo();
-    }
-
-    function initRecordatorio() {
-        if (progresoState.recordatorioReady) return;
-        var wrap = document.getElementById('zona-estudio-progreso-recordatorio');
-        if (!wrap) return;
-        progresoState.recordatorioReady = true;
-        wrap.addEventListener('click', function (e) {
-            var btn = e.target.closest('#zona-estudio-progreso-btn-recordatorio');
-            if (!btn) return;
-            showPlaygroundToast();
-        });
     }
 
     function renderRecordatorio() {

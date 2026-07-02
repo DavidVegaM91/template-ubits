@@ -11,9 +11,25 @@
     justify-content: center;
     overflow: hidden;
     position: relative;
+    box-sizing: border-box;
     background: var(--ubits-bg-2);
     border: 1px solid var(--ubits-border-1);
     border-radius: 50%;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+/* Opt-in: avatar clickeable (seleccionado = borde brand 2px visual) */
+.ubits-avatar--selectable {
+    cursor: pointer;
+}
+
+.ubits-avatar--selectable:focus-visible {
+    outline: none;
+}
+
+.ubits-avatar--selectable.ubits-avatar--selected {
+    border-color: var(--ubits-accent-brand);
+    box-shadow: 0 0 0 1px var(--ubits-accent-brand);
 }
 
 /* Tamaños: xs 20px, sm 28px, md 36px (default), lg 40px */
@@ -131,6 +147,32 @@
     flex-shrink: 0;
 }
 
+.ubits-profile-list--selectable {
+    overflow: visible;
+    padding-top: 4px;
+    margin-top: -4px;
+}
+
+.ubits-profile-list--selectable .ubits-profile-list__avatar {
+    cursor: pointer;
+    transition: transform 0.15s ease;
+}
+
+.ubits-profile-list--selectable .ubits-profile-list__avatar:hover,
+.ubits-profile-list--selectable .ubits-profile-list__avatar:focus-visible {
+    transform: translateY(-3px);
+    z-index: 20 !important;
+}
+
+.ubits-profile-list--selectable .ubits-profile-list__avatar.ubits-profile-list__avatar--selected {
+    z-index: 15 !important;
+}
+
+.ubits-profile-list--selectable .ubits-profile-list__avatar.ubits-profile-list__avatar--selected .ubits-avatar {
+    border-color: var(--ubits-accent-brand);
+    box-shadow: 0 0 0 1px var(--ubits-accent-brand);
+}
+
 /* Chip +N cuando hay más de maxVisible personas */
 .ubits-profile-list__count {
     position: relative;
@@ -174,4 +216,63 @@
 
 .ubits-profile-list__count-text {
     line-height: 1;
+}
+
+.ubits-profile-list__count-btn {
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    padding: 0;
+    font: inherit;
+    color: inherit;
+}
+
+/* Popover global +N (initProfileLists / delegación en avatar.js) */
+.ubits-profile-list-overflow-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 999;
+}
+
+.ubits-profile-list-overflow-popover {
+    position: fixed;
+    min-width: 220px;
+    max-width: 320px;
+    max-height: 320px;
+    overflow-y: auto;
+    background: var(--ubits-bg-1);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: var(--border-radius-sm);
+    box-shadow: 0 4px 16px var(--ubits-bottom-nav-shadow-opacity);
+    z-index: 1001;
+    padding: var(--padding-sm) 0;
+}
+
+.ubits-profile-list-overflow-popover-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-none);
+}
+
+.ubits-profile-list-overflow-popover-item {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-md);
+    padding: var(--padding-sm) var(--padding-md);
+    color: var(--ubits-fg-1-medium);
+}
+
+.ubits-profile-list-overflow-popover-item .ubits-avatar {
+    flex-shrink: 0;
+}
+
+.ubits-profile-list-overflow-popover-item .ubits-body-sm-regular {
+    color: var(--ubits-fg-1-medium);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.ubits-profile-list-overflow-popover-item[data-profile-list-overflow-item-key] {
+    cursor: pointer;
 }

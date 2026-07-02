@@ -145,6 +145,17 @@
                                         </button>
                                     </div>
                                 </div>
+                                <div style="margin-bottom: 16px;">
+                                    <span class="ubits-body-sm-bold" style="color: var(--ubits-fg-1-medium); margin-right: 12px;">Seleccionable:</span>
+                                    <div style="display: inline-flex; gap: 8px; flex-wrap: wrap;">
+                                        <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn active" onclick="setPreviewSelectable(false)">
+                                            <span>No</span>
+                                        </button>
+                                        <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" onclick="setPreviewSelectable(true)">
+                                            <span>Sí (elevación + selección)</span>
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
@@ -174,6 +185,11 @@
                                     <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-id-badge"></i></div>
                                     <div class="ubits-body-sm-bold">Modo de rol</div>
                                     <div class="ubits-body-sm-regular">Badge "Admin" (amber) o "LMS" (azul) para roles especiales. Colaborador no muestra badge.</div>
+                                </div>
+                                <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-hand-pointer"></i></div>
+                                    <div class="ubits-body-sm-bold">Seleccionable (opt-in)</div>
+                                    <div class="ubits-body-sm-regular">Hover: sube sobre los demás; seleccionado = doble borde brand pegado (2px)</div>
                                 </div>
                             </div>
                         </div>
@@ -211,7 +227,7 @@
                                     </button>
                                 </div>
                                 <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
-                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="avatar-prompt-2">En [ubicación], pon el componente Profile list de UBITS con las personas asignadas a [este plan / esta tarea]. Muestra hasta 3 avatares visibles y si hay más, el chip +N. Tamaño: [xs, sm, md o lg].</code></pre>
+                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="avatar-prompt-2">En [ubicación], pon el componente Profile list de UBITS con las personas asignadas a [este plan / esta tarea]. Muestra hasta 3 avatares visibles y si hay más, el chip +N (popover con nombres al clic). Tooltips con nombre al hover incluidos por defecto. Tamaño: [xs, sm, md o lg]. Solo renderProfileList + avatar.js; no reimplementar popover ni tooltips a mano.</code></pre>
                                 </div>
                             </div>
 
@@ -256,6 +272,9 @@
         var previewVariant = 'imagen';
         var profileListCount = 3;
         var previewMode = null;
+        var previewSelectable = false;
+        var previewSelectedIndex = 0;
+        var previewAvatarSelected = true;
 
         var demoPersonaImagen = {
             nombre: 'Ana García',
@@ -296,12 +315,38 @@
                 var persona = previewVariant === 'imagen' ? demoPersonaImagen : demoPersonaIcono;
                 var opts = { size: previewSize };
                 if (previewMode) opts.mode = previewMode;
+                if (previewSelectable) {
+                    opts.selectable = true;
+                    opts.selected = previewAvatarSelected;
+                }
                 container.innerHTML = renderAvatar(persona, opts);
+                if (previewSelectable) {
+                    var avatarEl = container.querySelector('.ubits-avatar--selectable');
+                    if (avatarEl) {
+                        avatarEl.addEventListener('click', function () {
+                            previewAvatarSelected = !previewAvatarSelected;
+                            updateAvatarPreview();
+                        });
+                    }
+                }
                 if (modeControls) modeControls.style.display = 'block';
             } else {
-                var list = demoPersonas.slice(0, profileListCount);
-                container.innerHTML = renderProfileList(list, { size: previewSize, maxVisible: 3 });
+                var list = demoPersonas.slice(0, profileListCount).map(function (p, i) {
+                    return Object.assign({}, p, { selected: previewSelectable && i === previewSelectedIndex });
+                });
+                container.innerHTML = renderProfileList(list, { size: previewSize, maxVisible: 3, selectable: previewSelectable });
+                if (previewSelectable) {
+                    container.querySelectorAll('.ubits-profile-list__avatar').forEach(function (el, i) {
+                        el.addEventListener('click', function () {
+                            previewSelectedIndex = i;
+                            updateAvatarPreview();
+                        });
+                    });
+                }
                 if (modeControls) modeControls.style.display = 'none';
+            }
+            if (previewType === 'profile-list' && typeof wireProfileLists === 'function') {
+                wireProfileLists('#avatar-preview');
             }
         }
 
@@ -346,6 +391,15 @@
         function setProfileListCount(n) {
             profileListCount = n;
             document.querySelectorAll('[onclick^="setProfileListCount"]').forEach(function(btn) {
+                btn.classList.remove('active');
+            });
+            event.target.closest('.preview-control-btn').classList.add('active');
+            updateAvatarPreview();
+        }
+
+        function setPreviewSelectable(enabled) {
+            previewSelectable = enabled;
+            document.querySelectorAll('[onclick^="setPreviewSelectable"]').forEach(function(btn) {
                 btn.classList.remove('active');
             });
             event.target.closest('.preview-control-btn').classList.add('active');

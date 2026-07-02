@@ -1112,17 +1112,17 @@
         tbody.innerHTML = slice.map(row => {
             const sel = selectedIds.has(row.id) ? ' checked' : '';
             let asignadoHtml;
-            const tooltipOpts = activeTab === 'planes' ? { showTooltip: true, tooltipDelay: 500 } : {};
+            const avatarTooltipOpts = { showTooltip: true, tooltipDelay: 500 };
             if (row.asignados && Array.isArray(row.asignados) && row.asignados.length > 0) {
                 asignadoHtml = typeof renderProfileList === 'function'
-                    ? renderProfileList(row.asignados, { size: 'sm', maxVisible: 3, ...tooltipOpts })
-                    : (row.asignado ? (typeof renderAvatar === 'function' ? renderAvatar(row.asignado, { size: 'sm', ...tooltipOpts }) + '<span class="ubits-body-sm-regular">' + row.asignado.nombre + '</span>' : '') : '');
+                    ? renderProfileList(row.asignados, { size: 'sm', maxVisible: 3 })
+                    : (row.asignado ? (typeof renderAvatar === 'function' ? renderAvatar(row.asignado, { size: 'sm', ...avatarTooltipOpts }) + '<span class="ubits-body-sm-regular">' + row.asignado.nombre + '</span>' : '') : '');
             } else if (activeTab === 'planes' && row.asignado) {
                 asignadoHtml = typeof renderProfileList === 'function'
-                    ? renderProfileList([row.asignado], { size: 'sm', maxVisible: 3, ...tooltipOpts })
-                    : (typeof renderAvatar === 'function' ? renderAvatar(row.asignado, { size: 'sm', ...tooltipOpts }) : '');
+                    ? renderProfileList([row.asignado], { size: 'sm', maxVisible: 3 })
+                    : (typeof renderAvatar === 'function' ? renderAvatar(row.asignado, { size: 'sm', ...avatarTooltipOpts }) : '');
             } else if (typeof renderAvatar === 'function' && row.asignado) {
-                asignadoHtml = renderAvatar(row.asignado, { size: 'sm', ...tooltipOpts }) + '<span class="ubits-body-sm-regular">' + row.asignado.nombre + '</span>';
+                asignadoHtml = renderAvatar(row.asignado, { size: 'sm', ...avatarTooltipOpts }) + '<span class="ubits-body-sm-regular">' + row.asignado.nombre + '</span>';
             } else if (row.asignado) {
                 asignadoHtml = row.asignado.avatar
                     ? '<div class="ubits-table__avatar"><img src="' + row.asignado.avatar + '" alt="" width="28" height="28"></div><span class="ubits-body-sm-regular">' + row.asignado.nombre + '</span>'
@@ -1218,9 +1218,11 @@
         if (typeof initTooltip === 'function') {
             initTooltip('#seguimiento-table tbody .ubits-table__td--checkbox[data-tooltip]');
         }
-        // Tooltips en avatares solo en tab Planes (nombre al hacer hover 1 s)
-        if (activeTab === 'planes' && typeof initTooltip === 'function') {
-            initTooltip('#seguimiento-table .ubits-table__cell-assignee [data-tooltip]');
+        // Tooltips en avatares y profile lists (nombre al hover)
+        if (typeof wireProfileLists === 'function') {
+            wireProfileLists('#seguimiento-table');
+        } else if (typeof initTooltip === 'function') {
+            initTooltip('#seguimiento-table .ubits-table__cell-assignee [data-tooltip], #seguimiento-table .ubits-profile-list [data-tooltip]');
         }
     }
 
@@ -2591,71 +2593,6 @@
         const columnsOverlay = document.getElementById('columns-menu-overlay');
         if (columnsBtn) columnsBtn.addEventListener('click', function (e) { e.stopPropagation(); toggleColumnsMenu(); });
         if (columnsOverlay) columnsOverlay.addEventListener('click', toggleColumnsMenu);
-
-        // Popover asignados: al hacer clic en +N del profile list (tab Planes) se muestra lista de personas restantes (solo visualización)
-        function closeAsignadosPopover() {
-            const overlay = document.getElementById('asignados-popover-overlay');
-            const popover = document.getElementById('asignados-popover');
-            if (overlay) { overlay.style.display = 'none'; overlay.setAttribute('aria-hidden', 'true'); }
-            if (popover) popover.style.display = 'none';
-        }
-        const asignadosOverlay = document.getElementById('asignados-popover-overlay');
-        if (asignadosOverlay) asignadosOverlay.addEventListener('click', closeAsignadosPopover);
-        document.addEventListener('keydown', function (e) {
-            if (e.key === 'Escape') closeAsignadosPopover();
-        });
-        document.addEventListener('click', function (e) {
-            const chip = e.target.closest('.ubits-profile-list__count');
-            if (!chip || activeTab !== 'planes') return;
-            e.preventDefault();
-            e.stopPropagation();
-            const tr = chip.closest('tr');
-            if (!tr) return;
-            const rowId = tr.dataset.id;
-            const data = getDisplayData();
-            const row = data.find(function (r) { return String(r.id) === String(rowId); });
-            if (!row || !row.asignados || row.asignados.length <= 3) return;
-            var remaining = row.asignados.slice(3);
-            var listEl = document.getElementById('asignados-popover-list');
-            var popover = document.getElementById('asignados-popover');
-            var overlay = document.getElementById('asignados-popover-overlay');
-            if (!listEl || !popover || !overlay) return;
-            listEl.innerHTML = '';
-            remaining.forEach(function (p) {
-                var nombre = (p && (p.nombre || p.name)) || 'Sin asignar';
-                var div = document.createElement('div');
-                div.className = 'asignados-popover-item';
-                if (typeof renderAvatar === 'function') {
-                    div.innerHTML = renderAvatar(p, { size: 'sm' });
-                }
-                var span = document.createElement('span');
-                span.className = 'ubits-body-sm-regular';
-                span.textContent = nombre;
-                div.appendChild(span);
-                listEl.appendChild(div);
-            });
-            overlay.style.display = 'block';
-            overlay.setAttribute('aria-hidden', 'false');
-            popover.style.display = 'block';
-            var rect = chip.getBoundingClientRect();
-            var popoverH = popover.offsetHeight;
-            var gap = 4;
-            var margin = 8;
-            var spaceBelow = window.innerHeight - rect.bottom - margin;
-            var spaceAbove = rect.top - margin;
-            if (spaceBelow >= popoverH + gap) {
-                popover.style.top = (rect.bottom + gap) + 'px';
-            } else if (spaceAbove >= popoverH + gap) {
-                popover.style.top = (rect.top - popoverH - gap) + 'px';
-            } else {
-                popover.style.top = spaceBelow >= spaceAbove ? (rect.bottom + gap) + 'px' : (rect.top - popoverH - gap) + 'px';
-            }
-            var left = rect.left;
-            var maxLeft = window.innerWidth - popover.offsetWidth - margin;
-            if (left > maxLeft) left = maxLeft;
-            if (left < margin) left = margin;
-            popover.style.left = left + 'px';
-        });
     }
 
     // Inicializar menú de período (Dropdown Menu oficial)

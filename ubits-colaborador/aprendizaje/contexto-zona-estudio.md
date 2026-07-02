@@ -325,7 +325,9 @@ Segundo widget, **encima de los rankings**. Sin sección «Acciones» — el tí
 |----------|-----------|
 | Título | «Recordatorio de estudio» |
 | Descripción | «Enviar recordatorio a quienes no hayan completado sus planes de formación asignados.» |
-| Botón | Secondary «Enviar recordatorio» → toast info del playground |
+| Botón | Secondary «Enviar recordatorio» → modal confirmación → toast success «Recordatorio enviado» |
+
+**Correo:** ejemplo estático en `aprendizaje/mails/mail-recordatorio-plan-formacion.html` (referencia visual para backend). En producto: un mail por subordinado con planes Vigente incompletos. Playground: modal → toast «Recordatorios enviados» (sin preview automático). Ver `mails/README.md`.
 
 Siempre visible (acción de líder); no cambia al seleccionar otra persona en el profile list.
 
@@ -344,7 +346,7 @@ Button-group **Equipo / Empresa** (`#zona-estudio-progreso-equipo-scope-group`, 
 
 Tiempo de estudio empresa: suma en planes **Vigente** — competencias (`consumoPorUsuario.horas`) + contenidos (duración × progreso de cada ítem).
 
-Top 3: medallas con borde. **Nombre completo** + «(Tú)» solo en María. **Resaltada** la fila de la persona seleccionada en el hero (Equipo y Empresa). Filas sin gap.
+Top 3: medallas con borde. **Nombre completo** (sin sufijo «(Tú)»). **Resaltada** la fila de la persona seleccionada en el hero (fondo `bg-2` + nombre en azul marca) — Equipo y Empresa. Filas sin gap.
 
 Listas con **máximo 10 filas visibles**; el resto con scroll.
 
@@ -356,8 +358,17 @@ Modo **Empresa:** top 3 sticky; **autoscroll** a la persona seleccionada en el h
 - Por `plan.area`: promedio de `getProgresoAgregadoPlan(plan)`.
 - Orden descendente por %.
 - **Top 3:** medallas (trofeo / medal / award).
-- **Tu área:** badge «Tu área» en fila de `Logística` + fondo resaltado.
+- **Tu área (`Logística`):** solo fondo resaltado + nombre en azul marca (sin badge «Tu área»).
 - Lista con **máx. 10 filas visibles** y scroll para el resto. **Gap 0** entre filas.
+
+#### C.3 Layout responsive — filas de ranking
+
+| Viewport | Filas con barra (Equipo + Áreas) |
+|----------|----------------------------------|
+| **Desktop** (≥769px) | Grid **50/50**: mitad izquierda = puesto + nombre; mitad derecha = barra + %. Mismo ancho de barra en ambos rankings (`zona-estudio.css`, `@media (min-width: 769px)`). |
+| **Mobile** (≤768px) | Fila 1: puesto \| nombre \| %; fila 2: barra a ancho completo. Puesto y % centrados verticalmente respecto al bloque nombre + barra. |
+
+Modo **Empresa** (tiempo, sin barra): desktop 50/50 (nombre \| tiempo); mobile una sola fila. Podio sticky del top 3 **solo desktop** — en mobile `position: static`.
 
 ## 7.6 Drawers de progreso (subordinados)
 
@@ -745,6 +756,9 @@ Si `conCertificacion === false` → `plantillaCertificadoId` y `plantillaCertifi
 - [ ] Profile list cambia hero (nombre, barra, KPIs, carrusel) sin mover rankings ni recordatorio
 - [ ] Clic en plan de María navega a tab contenidos/competencias con plan preseleccionado
 - [ ] Clic en plan de subordinado abre drawer read-only
+- [ ] Rankings desktop: barra mismo ancho en Top de estudio y Ranking entre áreas (split 50/50)
+- [ ] Rankings mobile: barra bajo nombre/%; puesto y % centrados verticalmente
+- [ ] Sin «(Tú)» en Top de estudio; sin badge «Tu área» en ranking entre áreas (solo resaltado)
 
 ### Checklist Plan de contenidos
 
@@ -771,7 +785,7 @@ Si `conCertificacion === false` → `plantillaCertificadoId` y `plantillaCertifi
 | Ítem | Tab | Notas |
 |------|-----|-------|
 | Modal / filtros avanzados | Contenidos, Exclusivo, Historial | Botón Filtrar sin handler |
-| Envío recordatorio estudio | Progreso | Toast placeholder |
+| Envío recordatorio estudio | Progreso | Modal → toast «Recordatorios enviados» · ejemplo mail en `mails/mail-recordatorio-plan-formacion.html` |
 | Migración React completa | Todos | `zona-estudio.tsx` es placeholder |
 | Historial real por usuario | Historial | Hoy es muestra del catálogo, no tracking LMS real |
 
@@ -808,4 +822,4 @@ Si `conCertificacion === false` → `plantillaCertificadoId` y `plantillaCertifi
 
 ---
 
-*Última actualización: alineado con vanilla — 5 tabs (Progreso primero), proveedores en cards, alerta vencido con `ubits-alert__emphasis`, selector plan con finalizados/total (jul 2026).*
+*Última actualización: alineado con vanilla — 5 tabs (Progreso primero), proveedores en cards, alerta vencido con `ubits-alert__emphasis`, selector plan con finalizados/total, rankings responsive desktop 50/50 + mobile apilado, sin «(Tú)» ni badge «Tu área» (jul 2026).*

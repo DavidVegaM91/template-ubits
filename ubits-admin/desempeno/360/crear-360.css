@@ -946,46 +946,6 @@
 }
 
 /* ════════════════════════════════════════
-   POPOVER: Evaluadores +X
-   ════════════════════════════════════════ */
-
-.eval360-eval-popover-overlay {
-    position: fixed;
-    inset: 0;
-    z-index: 9000;
-    background: transparent;
-}
-
-.eval360-eval-popover {
-    position: absolute;
-    z-index: 9001;
-    background: var(--ubits-bg-1);
-    border: 1px solid var(--ubits-border-1);
-    border-radius: var(--border-radius-md);
-    box-shadow: var(--ubits-shadow-md);
-    padding: var(--padding-sm);
-    min-width: 200px;
-    max-width: 280px;
-    max-height: 240px;
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
-    gap: var(--gap-xs);
-}
-
-.eval360-eval-popover-item {
-    display: flex;
-    align-items: center;
-    gap: var(--gap-sm);
-    padding: var(--padding-xs) var(--padding-sm);
-    border-radius: var(--border-radius-sm);
-}
-
-.eval360-eval-popover-item:hover {
-    background: var(--ubits-bg-2);
-}
-
-/* ════════════════════════════════════════
    MODAL: Añadir evaluador
    ════════════════════════════════════════ */
 

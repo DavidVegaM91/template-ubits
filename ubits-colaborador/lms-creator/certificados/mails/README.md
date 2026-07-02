@@ -13,11 +13,11 @@ Tres variantes según el tipo de solicitud en `certificados.html`. **Copy y estr
 1. Borde superior brand `#0c5bef` (4px) + card 600px (estilo `tareas/mails/`)
 2. Logo UBITS (`ubits-logo.png`) centrado
 3. Ilustración hero (zorro + «¡Tus certificados están listos!»)
-4. Cuerpo: **copy Figma** + CTA **Descargar certificados** (`#0c5bef`)
+4. Saludo **¡Hola, {{nombre_destinatario}}!** (negrilla `#303a47`) + cuerpo con **copy Figma** + CTA **Descargar certificados** (`#0c5bef`)
 5. Nota 📌 Importante (enlace válido **2 días**) + «Gracias por usar UBITS.»
 6. Footer texto: «Este correo fue enviado por UBITS LMS Creator.» + **Ir a la plataforma**
 
-> **Copy** = Figma. **Estilos** = patrón playground (`#0c5bef`, `#5c646f`, paddings de `tareas/mails/`). Sin saludo «Hola {nombre}» ni bloque resumen.
+> **Copy** = Figma. **Estilos** = patrón playground (`#0c5bef`, `#5c646f`, paddings de `tareas/mails/`).
 
 ---
 
@@ -25,6 +25,7 @@ Tres variantes según el tipo de solicitud en `certificados.html`. **Copy y estr
 
 | Placeholder | Global | Contenido | Colaborador | Descripción |
 |-------------|:------:|:---------:|:-----------:|-------------|
+| `{{nombre_destinatario}}` | ✅ | ✅ | ✅ | Persona que recibe el correo (admin/creator que solicitó la descarga) |
 | `{{fecha_inicio}}` | ✅ | ✅ | ✅ | Fecha inicial legible (ej. 1 de enero de 2026) |
 | `{{fecha_final}}` | ✅ | ✅ | ✅ | Fecha final legible |
 | `{{nombre_contenido}}` | — | ✅ | — | Título del contenido filtrado |

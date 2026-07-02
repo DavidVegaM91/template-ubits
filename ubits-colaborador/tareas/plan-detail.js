@@ -289,9 +289,8 @@ function renderPlanDetail(planId) {
         if (assigneesList.length === 0) {
             assigneesWrap.innerHTML = '<span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-low);">Sin asignados</span>';
         } else {
-            const tooltipOpts = { showTooltip: true, tooltipDelay: 1000 };
             const listHtml = typeof window.renderProfileList === 'function'
-                ? window.renderProfileList(assigneesList, { size: 'sm', maxVisible: 3, ...tooltipOpts })
+                ? window.renderProfileList(assigneesList, { size: 'sm', maxVisible: 3, selectable: true })
                 : '';
             assigneesWrap.innerHTML = listHtml;
             const profileList = assigneesWrap.querySelector('.ubits-profile-list');
@@ -300,12 +299,11 @@ function renderPlanDetail(planId) {
                 avatars.forEach(function (el, i) {
                     if (assigneesList[i]) {
                         el.setAttribute('data-assignee-key', assigneesList[i]._key);
-                        el.style.cursor = 'pointer';
-                        if (assigneesList[i]._key === planDetailFilterByAssigneeKey) el.classList.add('plan-detail-assignee-avatar--active');
+                        if (assigneesList[i]._key === planDetailFilterByAssigneeKey) {
+                            el.classList.add('ubits-profile-list__avatar--selected');
+                        }
                     }
                 });
-                const countEl = profileList.querySelector('.ubits-profile-list__count');
-                if (countEl) countEl.style.cursor = 'pointer';
             }
         }
     }
@@ -847,85 +845,26 @@ function initPlanDetail() {
 
     initPlanDetailSearchToggle(planId);
 
-    function closePlanDetailAsignadosPopover() {
-        const overlay = document.getElementById('plan-detail-asignados-popover-overlay');
-        const popover = document.getElementById('plan-detail-asignados-popover');
-        if (overlay) { overlay.style.display = 'none'; overlay.setAttribute('aria-hidden', 'true'); }
-        if (popover) popover.style.display = 'none';
-    }
-
     document.addEventListener('click', function (e) {
         const wrap = document.getElementById('plan-detail-assignees-wrap');
         if (!wrap || !wrap.contains(e.target)) return;
         const avatar = e.target.closest('.ubits-profile-list__avatar');
-        const countEl = e.target.closest('.ubits-profile-list__count');
         if (avatar && avatar.hasAttribute('data-assignee-key')) {
             e.preventDefault();
             e.stopPropagation();
             planDetailFilterByAssigneeKey = avatar.getAttribute('data-assignee-key');
             renderPlanDetail(planId);
-            return;
-        }
-        if (countEl && planDetailAssigneesList.length > 3) {
-            e.preventDefault();
-            e.stopPropagation();
-            const remaining = planDetailAssigneesList.slice(3);
-            const listEl = document.getElementById('plan-detail-asignados-popover-list');
-            const popover = document.getElementById('plan-detail-asignados-popover');
-            const overlay = document.getElementById('plan-detail-asignados-popover-overlay');
-            if (!listEl || !popover || !overlay) return;
-            listEl.innerHTML = '';
-            remaining.forEach(function (p) {
-                const div = document.createElement('div');
-                div.className = 'plan-detail-asignados-popover-item';
-                div.setAttribute('data-assignee-key', p._key);
-                if (typeof renderAvatar === 'function') {
-                    const av = document.createElement('span');
-                    av.innerHTML = renderAvatar(p, { size: 'sm' });
-                    div.appendChild(av);
-                }
-                const span = document.createElement('span');
-                span.className = 'ubits-body-sm-regular';
-                span.textContent = p.name || 'Sin asignar';
-                div.appendChild(span);
-                div.style.cursor = 'pointer';
-                div.addEventListener('click', function (ev) {
-                    ev.preventDefault();
-                    ev.stopPropagation();
-                    planDetailFilterByAssigneeKey = p._key;
-                    closePlanDetailAsignadosPopover();
-                    renderPlanDetail(planId);
-                });
-                listEl.appendChild(div);
-            });
-            overlay.style.display = 'block';
-            overlay.setAttribute('aria-hidden', 'false');
-            popover.style.display = 'block';
-            const rect = countEl.getBoundingClientRect();
-            const popoverH = popover.offsetHeight;
-            const gap = 4;
-            const margin = 8;
-            const spaceBelow = window.innerHeight - rect.bottom - margin;
-            const spaceAbove = rect.top - margin;
-            if (spaceBelow >= popoverH + gap) {
-                popover.style.top = (rect.bottom + gap) + 'px';
-            } else if (spaceAbove >= popoverH + gap) {
-                popover.style.top = (rect.top - popoverH - gap) + 'px';
-            } else {
-                popover.style.top = spaceBelow >= spaceAbove ? (rect.bottom + gap) + 'px' : (rect.top - popoverH - gap) + 'px';
-            }
-            let left = rect.left;
-            const maxLeft = window.innerWidth - popover.offsetWidth - margin;
-            if (left > maxLeft) left = maxLeft;
-            if (left < margin) left = margin;
-            popover.style.left = left + 'px';
         }
     });
 
-    const asignadosOverlay = document.getElementById('plan-detail-asignados-popover-overlay');
-    if (asignadosOverlay) asignadosOverlay.addEventListener('click', closePlanDetailAsignadosPopover);
-    document.addEventListener('keydown', function (e) {
-        if (e.key === 'Escape') closePlanDetailAsignadosPopover();
+    document.addEventListener('click', function (e) {
+        const item = e.target.closest('[data-profile-list-overflow-item-key]');
+        if (!item) return;
+        const key = item.getAttribute('data-profile-list-overflow-item-key');
+        if (!key) return;
+        planDetailFilterByAssigneeKey = key;
+        if (typeof closeProfileListOverflowPopover === 'function') closeProfileListOverflowPopover();
+        renderPlanDetail(planId);
     });
 
     document.addEventListener('click', function (e) {

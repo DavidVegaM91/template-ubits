@@ -214,11 +214,6 @@
         </div><!-- /view evaluados-asignados -->
 
         <!-- Popover evaluadores (+X del profile list) -->
-        <div class="eval360-eval-popover-overlay" id="eval360-eval-popover-overlay" style="display:none;" aria-hidden="true"></div>
-        <div class="eval360-eval-popover" id="eval360-eval-popover" style="display:none;" role="dialog" aria-label="Evaluadores asignados">
-            <div class="eval360-eval-popover-list" id="eval360-eval-popover-list"></div>
-        </div>
-
         <!-- ════════════════════════════════════════
              VISTA: editar-asignacion
              ════════════════════════════════════════ -->
@@ -3320,34 +3315,6 @@
 
     /** Delegación: popover +X de evaluadores y menú ellipsis (sobre #eval360-asign-dt-container) */
     function eval360AsignOnContainerClick(e) {
-        var countChip = e.target.closest('.ubits-profile-list__count');
-        if (countChip) {
-            e.preventDefault();
-            e.stopPropagation();
-            var tr = countChip.closest('tr[data-id]');
-            if (!tr) return;
-            var rid = tr.getAttribute('data-id');
-            var rowData = _eval360AsignacionesData.find(function (r) { return String(r.evaluadoId) === String(rid); });
-            if (!rowData || !rowData.evaluadores) return;
-            var restantes = rowData.evaluadores.slice(3);
-            var listEl    = document.getElementById('eval360-eval-popover-list');
-            var popEl     = document.getElementById('eval360-eval-popover');
-            var overlayEl = document.getElementById('eval360-eval-popover-overlay');
-            if (!listEl || !popEl || !overlayEl) return;
-            listEl.innerHTML = restantes.map(function (ev) {
-                var av = (typeof renderAvatar === 'function')
-                    ? renderAvatar({ nombre: ev.nombre, avatar: ev.avatar || null }, { size: 'sm' })
-                    : '';
-                return '<div class="eval360-eval-popover-item">' + av + '<span class="ubits-body-sm-regular">' + hubEscHtml(ev.nombre) + '</span></div>';
-            }).join('');
-            var rect = countChip.getBoundingClientRect();
-            popEl.style.top   = (rect.bottom + window.scrollY + 4) + 'px';
-            popEl.style.left  = (rect.left + window.scrollX) + 'px';
-            popEl.style.display = '';
-            overlayEl.style.display = '';
-            return;
-        }
-
         var btn = e.target.closest('.js-eval360-asign-opts-btn');
         if (!btn) return;
         e.preventDefault();
@@ -3390,20 +3357,9 @@
         });
     }
 
-    function eval360AsignEvalPopoverOverlayInit() {
-        var popOverlay = document.getElementById('eval360-eval-popover-overlay');
-        if (!popOverlay || popOverlay.dataset.eval360Bound === '1') return;
-        popOverlay.dataset.eval360Bound = '1';
-        popOverlay.addEventListener('click', function () {
-            this.style.display = 'none';
-            var popEl = document.getElementById('eval360-eval-popover');
-            if (popEl) popEl.style.display = 'none';
-        });
-    }
-
     function buildEval360AsignRowHtml(row) {
         var profileListHtml = typeof renderProfileList === 'function'
-            ? renderProfileList((row.evaluadores || []).map(function (e) { return { nombre: e.nombre, avatar: e.avatar || null }; }), { size: 'sm', maxVisible: 3, showTooltip: true, tooltipDelay: 600 })
+            ? renderProfileList((row.evaluadores || []).map(function (e) { return { nombre: e.nombre, avatar: e.avatar || null }; }), { size: 'sm', maxVisible: 3 })
             : '<span class="ubits-body-sm-regular">' + (row.evaluadores ? row.evaluadores.length : 0) + '</span>';
 
         var evaluadoAvatar = (typeof renderAvatar === 'function')
@@ -3443,8 +3399,6 @@
         }
 
         if (typeof createUbitsDataTable !== 'function') return;
-
-        eval360AsignEvalPopoverOverlayInit();
 
         _eval360AsignTablaRef = createUbitsDataTable({
             containerId:      'eval360-asign-dt-container',
