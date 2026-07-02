@@ -812,6 +812,10 @@
     margin: 0;
     line-height: 1.5;
 }
+#drawer-competencias-estudiante .drawer-competencia-card-wrapper:not(.drawer-competencia-card-wrapper--compact) .competencia-card-v1-count {
+    color: var(--ubits-fg-1-medium);
+    font-size: var(--font-size-xs);
+}
 #drawer-competencias-estudiante .drawer-competencia-card-wrapper:not(.drawer-competencia-card-wrapper--compact) .competencia-card-v1-title-text {
     display: block;
     overflow: hidden;

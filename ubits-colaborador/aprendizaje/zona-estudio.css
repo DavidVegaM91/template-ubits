@@ -595,8 +595,23 @@
     gap: 0;
 }
 
+.zona-estudio-progreso-ranking-stack {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.zona-estudio-progreso-ranking-list--podium {
+    flex-shrink: 0;
+}
+
+.zona-estudio-progreso-ranking-list--scroll {
+    min-height: 0;
+}
+
+/* Podio (3 filas) + hasta 7 filas scroll = 10 visibles en total */
 .zona-estudio-progreso-ranking-list--scroll-limit {
-    max-height: calc(var(--ranking-row-slot) * 10);
+    max-height: calc(var(--ranking-row-slot) * 7);
     overflow-y: auto;
     overflow-x: hidden;
     scrollbar-width: thin;
@@ -614,28 +629,7 @@
     box-sizing: border-box;
 }
 
-.zona-estudio-progreso-ranking-list--empresa .zona-estudio-progreso-ranking-row--rank-1 {
-    position: sticky;
-    top: 0;
-    z-index: 3;
-    background: var(--ubits-bg-1);
-}
-
-.zona-estudio-progreso-ranking-list--empresa .zona-estudio-progreso-ranking-row--rank-2 {
-    position: sticky;
-    top: var(--ranking-row-slot);
-    z-index: 2;
-    background: var(--ubits-bg-1);
-}
-
-.zona-estudio-progreso-ranking-list--empresa .zona-estudio-progreso-ranking-row--rank-3 {
-    position: sticky;
-    top: calc(var(--ranking-row-slot) * 2);
-    z-index: 1;
-    background: var(--ubits-bg-1);
-}
-
-.zona-estudio-progreso-ranking-list--empresa .zona-estudio-progreso-ranking-podium-divider {
+.zona-estudio-progreso-ranking-podium-divider {
     display: block;
     height: 1px;
     margin: 0;
@@ -644,15 +638,6 @@
     border-radius: 0;
     background: var(--ubits-border-1);
     flex-shrink: 0;
-    position: sticky;
-    top: calc(var(--ranking-row-slot) * 3);
-    z-index: 4;
-}
-
-.zona-estudio-progreso-ranking-list--empresa .zona-estudio-progreso-ranking-row--rank-1.zona-estudio-progreso-ranking-row--highlight,
-.zona-estudio-progreso-ranking-list--empresa .zona-estudio-progreso-ranking-row--rank-2.zona-estudio-progreso-ranking-row--highlight,
-.zona-estudio-progreso-ranking-list--empresa .zona-estudio-progreso-ranking-row--rank-3.zona-estudio-progreso-ranking-row--highlight {
-    background: var(--ubits-bg-2);
 }
 
 .zona-estudio-progreso-ranking-row--highlight {
@@ -752,7 +737,16 @@
     margin: 0;
 }
 
-/* Desktop rankings: mitad identidad (puesto + nombre) | mitad progreso (barra + %) */
+#zona-estudio-progreso-ranking-areas .zona-estudio-progreso-ranking-row--time {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+}
+
+#zona-estudio-progreso-ranking-areas .zona-estudio-progreso-ranking-row__time {
+    text-align: right;
+    white-space: nowrap;
+}
+
+/* Desktop rankings: mitad identidad (puesto + nombre) | mitad tiempo */
 @media (min-width: 769px) {
     .zona-estudio-progreso-ranking-row:not(.zona-estudio-progreso-ranking-row--time) {
         grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
@@ -956,16 +950,6 @@
     .zona-estudio-progreso-ranking-row--time .zona-estudio-progreso-ranking-row__time {
         grid-column: 3;
         grid-row: 1;
-    }
-
-    /* Podio sticky asume filas de 44px; en mobile son más altas → desactivar */
-    .zona-estudio-progreso-ranking-list--empresa .zona-estudio-progreso-ranking-row--rank-1,
-    .zona-estudio-progreso-ranking-list--empresa .zona-estudio-progreso-ranking-row--rank-2,
-    .zona-estudio-progreso-ranking-list--empresa .zona-estudio-progreso-ranking-row--rank-3,
-    .zona-estudio-progreso-ranking-list--empresa .zona-estudio-progreso-ranking-podium-divider {
-        position: static;
-        top: auto;
-        z-index: auto;
     }
 
     .zona-estudio-progreso-ranking-card__head {

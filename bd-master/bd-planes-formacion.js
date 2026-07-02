@@ -698,6 +698,10 @@
         var out = {};
         var map = plan.contenidoPorUsuario || {};
         var sinProg = planSinProgresoReal(plan.estado);
+        var enrich = (typeof global !== 'undefined' && global.CATALOGO_PROVEEDORES &&
+            typeof global.CATALOGO_PROVEEDORES.enrichPlanContenidoItemForCard === 'function')
+            ? global.CATALOGO_PROVEEDORES.enrichPlanContenidoItemForCard
+            : null;
         Object.keys(map).forEach(function (cid) {
             out[cid] = (map[cid] || []).map(function (c) {
                 var copy = {};
@@ -706,6 +710,7 @@
                     copy.progress = 0;
                     copy.status = 'default';
                 }
+                if (enrich) copy = enrich(copy);
                 return copy;
             });
         });

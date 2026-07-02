@@ -242,6 +242,8 @@ loadCardContent('cards-container', [{
 </script>
 ```
 
+**Card Content Compact (`loadCardContentCompact`):** misma API de datos que `loadCardContent`. Ver regla **«Card Content SIEMPRE desde BD»** más abajo — **toda** card de aprendizaje debe salir del catálogo en BD, salvo que el usuario pida lo contrario.
+
 #### **Modal Component (openModal() or HTML directo):**
 ```html
 <!-- CSS Required -->
@@ -1545,12 +1547,39 @@ document.addEventListener('DOMContentLoaded', function() {
 
 **CRITICAL CARD CONTENT RULES:**
 - ❌ **NEVER create custom card components** when Card Content exists
-- ❌ **NEVER use hardcoded images** - use images from `images/cards-learn/`
+- ❌ **NEVER invent card data** in pages (títulos, imágenes o aliados sueltos) cuando el contenido existe en BD — **usar la BD**
+- ❌ **NEVER reuse one image/aliado for every card** (p. ej. misma portada + logo UBITS para todos)
 - ❌ **NEVER use invalid competencies** - only use the 35 official UBITS competencies
-- ❌ **NEVER use invalid providers** - only use the 18 official providers with logos
+- ❌ **NEVER use invalid providers** - only use the 18 official providers with logos (resueltos desde `bd-master-aliados.js`)
 - ✅ **ALWAYS use existing Card Content component**
 - ✅ **ALWAYS import required CSS and JS files**
 - ✅ **ALWAYS validate data with official options**
+- ✅ **ALWAYS** poblar `loadCardContent` / `loadCardContentCompact` desde **`bd-contenidos-ubits.js`** + **`bd-contenidos-fiqsha.js`** (+ maestros), vía helpers de catálogo
+
+#### **CRITICAL — Card Content / Compact SIEMPRE desde BD de catálogo**
+
+**Regla general (playground):** cada card de aprendizaje debe corresponder a un ítem real del catálogo en BD — imagen, aliado, tipo, nivel, competencia e idioma vienen de ahí. **No inventar datos de card en la page.** La única excepción es cuando **David pide explícitamente** placeholders, demos aisladas o datos ficticios.
+
+**BDs y helpers (fuente de verdad):**
+
+| Fuente | Para qué |
+|--------|----------|
+| `bd-contenidos-ubits.js` / `bd-contenidos-fiqsha.js` | Catálogo: `id`, `titulo`, `imagen`, `tipoContenido`, `nivelId`, `competenciaPrincipalId`, `providersAliadosIds`, … |
+| `bd-master-aliados.js` | Nombre y logo del aliado (`aly-XXX`) |
+| `bd-master-niveles-contenido.js`, `bd-master-competencias.js` | Nivel y competencia en la card |
+| `bd-master/catalogo-proveedores-helpers.js` | `CATALOGO_PROVEEDORES.buildCardFromCatalogoContent()`, `enrichPlanContenidoItemForCard()`, `resolvePrimaryAliadoId()` |
+| `lms-creator/.../catalogo-contenidos-drawer.js` | `CATALOGO_CURSOS_DRAWER` / `refreshCatalogoContenidosDrawer()` — catálogo unificado listo para cards |
+
+**Reglas obligatorias antes de `loadCardContent()` o `loadCardContentCompact()`:**
+
+- ❌ **NEVER** armar arrays hardcodeados de cards en HTML/JS si el contenido está (o debería estar) en `bd-contenidos-*.js`.
+- ❌ **NEVER** tomar «cualquier» imagen de `images/cards-learn/` — la ruta sale del campo **`imagen`** del ítem en BD.
+- ❌ **NEVER** mostrar «UBITS» como proveedor si el ítem tiene aliado distinto de `aly-001` en `providersAliadosIds`.
+- ✅ **ALWAYS** resolver el ítem por **`id`** en UBITS + Fiqsha (fallback: título) y mapear con **`CATALOGO_PROVEEDORES.buildCardFromCatalogoContent()`** o equivalente.
+- ✅ **ALWAYS** cargar las BD y maestros necesarios antes de renderizar (ver tabla arriba).
+- ✅ Si solo tienes referencia slim (`id`, `title`, `progress` — p. ej. planes, tareas, historial): **enriquecer** con `enrichPlanContenidoItemForCard()` o `CATALOGO_CURSOS_DRAWER` **antes** de pintar la card. Eso no sustituye la regla general: sigue siendo catálogo BD, no inventar.
+
+**Referencias canónicas:** `catalogo-proveedores-helpers.js`, `catalogo-contenidos-drawer.js`, `zona-estudio.js` (`mapCatalogoToCard`), `components/card-content.js` (JSDoc de `cardData`).
 
 #### **8. DOCS SIDEBAR (Documentation Navigation)**
 ```html
@@ -1899,6 +1928,7 @@ Before finishing any task, verify:
 - [ ] **CLASSES:** NO fictitious classes like ubits-button__icon, span, ubits-button__text
 - [ ] **CLASSES:** All button elements use correct structure: <i class="far fa-icon"></i> <span>text</span>
 - [ ] **CLASSES:** JavaScript selectors use correct element names: querySelector('i'), querySelector('span')
+- [ ] **CARD CONTENT DESDE BD:** toda card de aprendizaje resuelta desde `bd-contenidos-ubits.js` + `bd-contenidos-fiqsha.js` (+ maestros/helpers) — no arrays inventados ni misma imagen/aliado para todos; excepción solo si David pide placeholders explícitos
 
 ## 🚨 COMPONENT CSS REQUIREMENTS (CRITICAL)
 
@@ -2288,6 +2318,7 @@ document.addEventListener('DOMContentLoaded', function() {
 3. ✅ **Import component CSS** - Cada componente necesita su CSS (rutas relativas: `../../components/...`)
 4. ✅ **Use UBITS tokens** - Solo `var(--ubits-*)`, nunca colores hardcodeados
 5. ✅ **Validate with `documentacion/validador-ubits.html`** - Objetivo: 100% score
+6. ✅ **Card Content desde BD** — catálogo UBITS + Fiqsha (+ helpers); nunca inventar cards en la page salvo petición explícita de David
 
 #### **🎯 USUARIOS SON NO-TÉCNICOS:**
 - ❌ **NEVER ask users** to run commands, install things, or code

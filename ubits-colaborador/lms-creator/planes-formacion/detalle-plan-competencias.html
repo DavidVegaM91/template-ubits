@@ -119,6 +119,7 @@
     <script src="../../../script.js"></script>
     <script src="../../../general-utils/humanizador-fechas.js"></script>
     <script src="../../../components/progress-bar.js"></script>
+    <script src="../../aprendizaje/mi-equipo/mi-equipo-plan-competencias-shared.js"></script>
     <script>
         function initDetallePlanProgressBarMount(value) {
             var wrap = document.getElementById('plan-progress-bar-wrap');
@@ -794,10 +795,6 @@
                         return '../../images/imagenes competencias/';
                     }
                 })();
-                var minutosLabelDrawer = (typeof MiEquipoPlanCompetenciasShared !== 'undefined' &&
-                    typeof MiEquipoPlanCompetenciasShared.getCompetenciaMinutosLabelForPlanPerson === 'function')
-                    ? MiEquipoPlanCompetenciasShared.getCompetenciaMinutosLabelForPlanPerson(planRawBd, rowId)
-                    : '';
                 var cardsHtml = list.map(function(c) {
                     var progress = sinProgreso ? 0 : (c.progress != null ? c.progress : 0);
                     var status = sinProgreso ? 'default' : (c.status || 'default');
@@ -805,7 +802,10 @@
                     var imgPath = (c.image && String(c.image).indexOf('../../') === 0) ? c.image : (imgBase + imgName);
                     var nombre = c.title || c.nombre || '';
                     var barraHtml = renderCompetenciaDrawerProgressBlock(progress, status);
-                    var subcopy = c.minutosLabel || minutosLabelDrawer || '';
+                    var subcopy = c.minutosLabel || ((typeof MiEquipoPlanCompetenciasShared !== 'undefined' &&
+                        typeof MiEquipoPlanCompetenciasShared.getCompetenciaMinutosLabelForItem === 'function')
+                        ? MiEquipoPlanCompetenciasShared.getCompetenciaMinutosLabelForItem(planRawBd, rowId, c)
+                        : '');
                     return '<div class="drawer-competencia-card-wrapper">' +
                         '<div class="drawer-competencia-card competencia-card-v1" data-competencia-id="' + escapeDrawerHtml(c.id) + '">' +
                         '<div class="drawer-competencia-card-row">' +

@@ -15,6 +15,18 @@
     }
 
     function getCompetenciasImageBase() {
+        try {
+            var path = String(window.location.pathname || '');
+            if (path.indexOf('/lms-creator/planes-formacion/') !== -1) {
+                return '../../../images/imagenes competencias/';
+            }
+            if (path.indexOf('/aprendizaje/mi-equipo/') !== -1) {
+                return '../../../images/imagenes competencias/';
+            }
+            if (path.indexOf('/aprendizaje/') !== -1) {
+                return '../../images/imagenes competencias/';
+            }
+        } catch (e) { /* noop */ }
         return '../../../images/imagenes competencias/';
     }
 
@@ -51,16 +63,58 @@
         return formatMinutosPart(doneMin) + ' de ' + formatMetaPart(totalMin);
     }
 
-    function getCompetenciaMinutosLabelForPlanPerson(plan, colaboradorId) {
+    /** Copy learner (rankings zona estudio): «1 hrs. 20 min. de 2 hrs. 0 min.» */
+    function formatHorasMinutosAbreviado(totalMin) {
+        var min = Math.max(0, Math.round(Number(totalMin) || 0));
+        var h = Math.floor(min / 60);
+        var m = min % 60;
+        return h + ' hrs. ' + m + ' min.';
+    }
+
+    function formatMinutosEstudioVsMetaAbreviado(doneMin, totalMin) {
+        return formatHorasMinutosAbreviado(doneMin) + ' de ' + formatHorasMinutosAbreviado(totalMin);
+    }
+
+    function getHorasMetaCompetenciaPlan(plan) {
         var pf = global.BD_PLANES_FORMACION;
-        var metaHoras = (plan && plan.horasEstudioMeta != null)
-            ? plan.horasEstudioMeta
-            : ((pf && pf.HORAS_META_COMPETENCIAS) || 2);
-        var totalMin = Math.round(Number(metaHoras) * 60);
+        if (plan && plan.horasEstudioPorCompetencia != null) {
+            return Number(plan.horasEstudioPorCompetencia) || 2;
+        }
+        if (plan && plan.horasEstudioMeta != null) {
+            return Number(plan.horasEstudioMeta) || 2;
+        }
+        return (pf && pf.HORAS_META_COMPETENCIAS) || 2;
+    }
+
+    function getCompetenciaMinutosLabelForItem(plan, colaboradorId, competenciaItem) {
+        var metaHoras = getHorasMetaCompetenciaPlan(plan);
+        var totalMin = Math.round(metaHoras * 60);
         var cid = String(colaboradorId || '');
+        var comps = (plan && plan.competenciaPorUsuario && plan.competenciaPorUsuario[cid]) || [];
+        var consumo = (plan && plan.consumoPorUsuario && plan.consumoPorUsuario[cid]) || null;
+        var doneMin;
+
+        if (comps.length === 1 && consumo && consumo.horas != null) {
+            doneMin = Math.round((Number(consumo.horas) || 0) * 60);
+        } else {
+            var progress = Math.max(0, Math.min(100, Math.round(Number(competenciaItem && competenciaItem.progress) || 0)));
+            doneMin = Math.round((totalMin * progress) / 100);
+        }
+        return formatMinutosEstudioVsMetaAbreviado(doneMin, totalMin);
+    }
+
+    /** @deprecated plan-level — prefer getCompetenciaMinutosLabelForItem por card */
+    function getCompetenciaMinutosLabelForPlanPerson(plan, colaboradorId) {
+        var cid = String(colaboradorId || '');
+        var comps = (plan && plan.competenciaPorUsuario && plan.competenciaPorUsuario[cid]) || [];
+        if (comps.length === 1) {
+            return getCompetenciaMinutosLabelForItem(plan, colaboradorId, comps[0]);
+        }
+        var pf = global.BD_PLANES_FORMACION;
+        var totalMin = Math.round(getHorasMetaCompetenciaPlan(plan) * 60);
         var consumo = (plan && plan.consumoPorUsuario && plan.consumoPorUsuario[cid]) || { horas: 0 };
         var doneMin = Math.round((Number(consumo.horas) || 0) * 60);
-        return formatMinutosEstudioVsMeta(doneMin, totalMin);
+        return formatMinutosEstudioVsMetaAbreviado(doneMin, totalMin);
     }
 
     function getUsernameColaborador(c) {
@@ -433,13 +487,14 @@
         var sinProgreso = !!opts.sinProgreso;
         var userName = opts.userName || 'Estudiante';
         var overlayId = opts.overlayId || 'drawer-competencias-estudiante';
+        var drawerTitle = opts.drawerTitle || (userName + ' – competencias y progreso');
         var bodyHtml = '<div class="detalle-plan-panel-competencias"><div class="detalle-plan-drawer-cards-bg">' +
             '<div id="detalle-plan-compact-cards" class="detalle-plan-drawer-cards-grid"></div></div></div>';
         var footerHtml = '<button type="button" class="ubits-button ubits-button--primary ubits-button--md" id="drawer-competencias-cerrar"><span>Cerrar</span></button>';
         if (typeof global.openDrawer !== 'function') return;
         global.openDrawer({
             overlayId: overlayId,
-            title: userName + ' – competencias y progreso',
+            title: drawerTitle,
             bodyHtml: bodyHtml,
             footerHtml: footerHtml,
             size: 'sm',
@@ -447,11 +502,9 @@
         });
         var overlay = document.getElementById(overlayId);
         if (!overlay) return;
+        overlay.classList.add('drawer-competencias-readonly-host');
         var compactContainer = overlay.querySelector('#detalle-plan-compact-cards');
         if (compactContainer) {
-            var minutosLabel = (opts.plan && opts.colaboradorId)
-                ? getCompetenciaMinutosLabelForPlanPerson(opts.plan, opts.colaboradorId)
-                : '';
             compactContainer.innerHTML = list.map(function (c) {
                 var progress = sinProgreso ? 0 : (c.progress != null ? c.progress : 0);
                 var status = sinProgreso ? 'default' : (c.status || 'default');
@@ -459,7 +512,9 @@
                 var imgPath = imageBase + imgName;
                 var nombre = c.title || c.nombre || '';
                 var barraHtml = renderCompetenciaProgressBlock(progress, status);
-                var subcopy = c.minutosLabel || minutosLabel || '';
+                var subcopy = c.minutosLabel || ((opts.plan && opts.colaboradorId)
+                    ? getCompetenciaMinutosLabelForItem(opts.plan, opts.colaboradorId, c)
+                    : '');
                 return '<div class="drawer-competencia-card-wrapper"><div class="drawer-competencia-card competencia-card-v1" data-competencia-id="' + escapeDrawerHtml(c.id) + '">' +
                     '<div class="drawer-competencia-card-row">' +
                     '<img src="' + escapeDrawerHtml(imgPath) + '" alt="" class="competencia-card-v1-image" loading="lazy" onerror="this.src=\'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=400&h=300&fit=crop\'">' +
@@ -759,6 +814,8 @@
         getColaboradoresDisponiblesMiEquipo: getColaboradoresDisponiblesMiEquipo,
         renderCompetenciaProgressBlock: renderCompetenciaProgressBlock,
         formatMinutosEstudioVsMeta: formatMinutosEstudioVsMeta,
+        formatMinutosEstudioVsMetaAbreviado: formatMinutosEstudioVsMetaAbreviado,
+        getCompetenciaMinutosLabelForItem: getCompetenciaMinutosLabelForItem,
         getCompetenciaMinutosLabelForPlanPerson: getCompetenciaMinutosLabelForPlanPerson,
         openDrawerAgregarCompetencias: openDrawerAgregarCompetencias,
         openPanelCompetenciasReadOnly: openPanelCompetenciasReadOnly,

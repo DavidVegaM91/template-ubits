@@ -325,11 +325,77 @@ Segundo widget, **encima de los rankings**. Sin sección «Acciones» — el tí
 |----------|-----------|
 | Título | «Recordatorio de estudio» |
 | Descripción | «Enviar recordatorio a quienes no hayan completado sus planes de formación asignados.» |
-| Botón | Secondary «Enviar recordatorio» → modal confirmación → toast success «Recordatorio enviado» |
+| Botón | Secondary «Enviar recordatorio» → modal confirmación → toast success «Recordatorios enviados» |
 
-**Correo:** ejemplo estático en `aprendizaje/mails/mail-recordatorio-plan-formacion.html` (referencia visual para backend). En producto: un mail por subordinado con planes Vigente incompletos. Playground: modal → toast «Recordatorios enviados» (sin preview automático). Ver `mails/README.md`.
+Siempre visible (acción de líder). **No** depende de la persona seleccionada en el profile list del hero.
 
-Siempre visible (acción de líder); no cambia al seleccionar otra persona en el profile list.
+#### B.1 Flujo en playground (`zona-estudio-progreso.js`)
+
+| Paso | Comportamiento |
+|------|----------------|
+| 1 | Clic «Enviar recordatorio» → modal `openModal` tamaño **sm**, título «Enviar recordatorio» |
+| 2 | Cuerpo modal | «Se enviará un recordatorio por correo a todas las personas de tu equipo que no hayan completado sus planes de formación, informándoles su avance hasta el momento y la fecha de vencimiento de cada plan.» |
+| 3 | Confirmar → cierra modal → toast **success** «Recordatorios enviados» |
+| 4 | **3 s después** (`MAIL_PREVIEW_DELAY_MS`) abre en pestaña nueva el HTML estático de ejemplo (`mails/mail-recordatorio-plan-formacion.html`) — mismo patrón que certificados en LMS Creator |
+
+Implementación: `openRecordatorioConfirmModal()` → `confirmRecordatorioEquipo()` → `openRecordatorioMailPreview()`. Sin fetch, sessionStorage ni placeholders dinámicos en el playground.
+
+#### B.2 Comportamiento en producto (referencia backend)
+
+- Envío **masivo**: **un correo por cada subordinado directo** con al menos un plan **Vigente** incompleto.
+- Cada mail puede listar **varios planes** del destinatario (repetir el bloque gris por plan).
+- El líder que dispara la acción es quien aparece en el copy del mail (ej. María Alejandra Sánchez Pardo).
+- **No** es un recordatorio sobre la persona seleccionada en el profile list — ese selector solo afecta el hero.
+
+> Recordatorio por **un solo plan** en Mi equipo / LMS Creator (`detalle-plan.html`) es **otro flujo** y otro mail.
+
+#### B.3 Plantilla de correo (referencia visual)
+
+| Recurso | Ruta |
+|---------|------|
+| HTML ejemplo | `aprendizaje/mails/mail-recordatorio-plan-formacion.html` |
+| Documentación carpeta | `aprendizaje/mails/README.md` |
+| Hero | `aprendizaje/mails/imagen-mail-recordatorio-lider-zona-de-estudio.png` — banner «Recordatorio de tu plan de formación» |
+
+**Tipo:** HTML **estático** con datos de ejemplo ya puestos (sin `{{placeholders}}` en el playground). En producción el backend rellena nombre destinatario, líder, N bloques de plan y URLs absolutas (CDN para la imagen).
+
+**Cómo previsualizar:** abrir el `.html` en navegador o confirmar recordatorio en Progreso (preview a los 3 s). Servir por **http** si la imagen hero no carga con `file://`.
+
+#### B.4 Contenido del ejemplo estático (Ana Lucía Torres)
+
+| Campo | Valor |
+|-------|--------|
+| Saludo | **¡Hola, Ana Lucía Torres!** — negrilla `#303a47` |
+| Intro | «{nombre_lider} te envió un recordatorio sobre tus planes de formación pendientes:» |
+| Líder ejemplo | María Alejandra Sánchez Pardo |
+| Cierre | «Continúa con tu formación y completa tus planes antes de sus fechas de vencimiento.» |
+| CTA primario | «Continuar mi formación» → `../zona-estudio.html` |
+| Footer | «Este correo fue enviado por {líder} a través de UBITS.» + enlace «Ir a la plataforma» |
+
+**Planes de ejemplo (2 bloques):**
+
+| Plan | Tipo | Avance | Color % | Vencimiento |
+|------|------|--------|---------|-------------|
+| Onboarding logística 2026 | Plan de contenidos | 45 % | Azul marca `#0c5bef` | 30 jun 2026 |
+| Capacitación Seguridad 2027 | Plan de competencias | 0 % | Rojo error `#cf0e34` (sin avance) | 15 ago 2026 |
+
+#### B.5 Bloque por plan (HTML inline en el mail)
+
+Card fondo `#f3f3f4`, `border-radius: 10px`, padding 18px 20px. **16px** entre bloques.
+
+1. **Fila superior:** nombre del plan (izq, 15px semibold `#303a47`) + **%** grande (der, 22px bold).
+2. **Fila inferior:** tipo de plan (izq, 13px `#5c646f`) + «Vence el **{fecha}**» (der, fecha natural tipo `30 jun 2026`, negrilla `#303a47`).
+
+Reglas de color del porcentaje:
+
+- Progreso &gt; 0 % → `#0c5bef` (brand).
+- **0 %** (sin iniciar) → `#cf0e34` (error).
+
+Sin barra de progreso ni badge en el mail — solo el número grande.
+
+#### B.6 Formato de fechas en el mail
+
+Fechas de vencimiento en copy **naturalizado**, igual que tareas (`15 mar 2026`): `{día} {mes abrev} {año}` en minúsculas (`jun`, `ago`, …). No usar `DD/MM/AAAA` en el correo.
 
 ### C) Rankings — dos columnas (`zona-estudio-progreso-rankings`)
 
@@ -341,34 +407,33 @@ Button-group **Equipo / Empresa** (`#zona-estudio-progreso-equipo-scope-group`, 
 
 | Modo | Datos | Descripción | Columna valor |
 |------|-------|-------------|-----------------|
-| **Equipo** (default) | María + subordinados | «De mayor a menor avance.» | Barra + % |
+| **Equipo** (default) | María + subordinados | «De mayor a menor tiempo de estudio.» | `X hrs. X min.` (sin barra) |
 | **Empresa** | Todos los colaboradores (`BD_MASTER_COLABORADORES`) | «De mayor a menor tiempo de estudio.» | `X hrs. X min.` (sin barra) |
 
-Tiempo de estudio empresa: suma en planes **Vigente** — competencias (`consumoPorUsuario.horas`) + contenidos (duración × progreso de cada ítem).
+Tiempo de estudio (Equipo y Empresa): suma en planes **Vigente** — competencias (`consumoPorUsuario.horas`) + contenidos (duración × progreso de cada ítem).
 
 Top 3: medallas con borde. **Nombre completo** (sin sufijo «(Tú)»). **Resaltada** la fila de la persona seleccionada en el hero (fondo `bg-2` + nombre en azul marca) — Equipo y Empresa. Filas sin gap.
 
 Listas con **máximo 10 filas visibles**; el resto con scroll.
 
-Modo **Empresa:** top 3 sticky; **autoscroll** a la persona seleccionada en el hero debajo del podio (si puesto &gt; 3). Línea divisora separada bajo el 3.º lugar (no borde del card).
+Modo **Equipo** y **Empresa:** top 3 sticky; **autoscroll** a la persona seleccionada en el hero debajo del podio (si puesto &gt; 3). Línea divisora separada bajo el 3.º lugar (no borde del card).
 
 #### C.2 Ranking entre áreas (`#zona-estudio-progreso-ranking-areas`)
 
 - Planes de **contenidos** **`Vigente`** (`getPlanesVisiblesCreator()`, `tipo === 'contenidos'`).
-- Por `plan.area`: promedio de `getProgresoAgregadoPlan(plan)`.
-- Orden descendente por %.
+- Por `plan.area`: **suma** del tiempo de estudio de todos los asignados en ese plan (misma lógica minutos que Top de estudio).
+- Orden descendente por tiempo (`X hrs. X min.`, sin barra ni %).
 - **Top 3:** medallas (trofeo / medal / award).
 - **Tu área (`Logística`):** solo fondo resaltado + nombre en azul marca (sin badge «Tu área»).
 - Lista con **máx. 10 filas visibles** y scroll para el resto. **Gap 0** entre filas.
+- Si hay más de 3 áreas: **línea divisora** bajo el 3.º lugar y top 3 sticky (igual que Top de estudio).
 
 #### C.3 Layout responsive — filas de ranking
 
-| Viewport | Filas con barra (Equipo + Áreas) |
-|----------|----------------------------------|
-| **Desktop** (≥769px) | Grid **50/50**: mitad izquierda = puesto + nombre; mitad derecha = barra + %. Mismo ancho de barra en ambos rankings (`zona-estudio.css`, `@media (min-width: 769px)`). |
-| **Mobile** (≤768px) | Fila 1: puesto \| nombre \| %; fila 2: barra a ancho completo. Puesto y % centrados verticalmente respecto al bloque nombre + barra. |
-
-Modo **Empresa** (tiempo, sin barra): desktop 50/50 (nombre \| tiempo); mobile una sola fila. Podio sticky del top 3 **solo desktop** — en mobile `position: static`.
+| Viewport | Filas (Top de estudio + Ranking entre áreas) |
+|----------|----------------------------------------------|
+| **Desktop** (≥769px) | Grid **50/50**: puesto + nombre \| tiempo |
+| **Mobile** (≤768px) | Una fila: puesto \| nombre \| tiempo. Podio sticky del top 3 **solo desktop** en Top de estudio — en mobile `position: static`. |
 
 ## 7.6 Drawers de progreso (subordinados)
 
@@ -756,7 +821,7 @@ Si `conCertificacion === false` → `plantillaCertificadoId` y `plantillaCertifi
 - [ ] Profile list cambia hero (nombre, barra, KPIs, carrusel) sin mover rankings ni recordatorio
 - [ ] Clic en plan de María navega a tab contenidos/competencias con plan preseleccionado
 - [ ] Clic en plan de subordinado abre drawer read-only
-- [ ] Rankings desktop: barra mismo ancho en Top de estudio y Ranking entre áreas (split 50/50)
+- [ ] Rankings desktop: split 50/50 (nombre \| tiempo) en Top de estudio y Ranking entre áreas
 - [ ] Rankings mobile: barra bajo nombre/%; puesto y % centrados verticalmente
 - [ ] Sin «(Tú)» en Top de estudio; sin badge «Tu área» en ranking entre áreas (solo resaltado)
 
@@ -785,7 +850,7 @@ Si `conCertificacion === false` → `plantillaCertificadoId` y `plantillaCertifi
 | Ítem | Tab | Notas |
 |------|-----|-------|
 | Modal / filtros avanzados | Contenidos, Exclusivo, Historial | Botón Filtrar sin handler |
-| Envío recordatorio estudio | Progreso | Modal → toast «Recordatorios enviados» · ejemplo mail en `mails/mail-recordatorio-plan-formacion.html` |
+| Envío recordatorio estudio | Progreso | Modal → toast «Recordatorios enviados» → preview mail estático a los 3 s · ver §7.3 B.1–B.6 |
 | Migración React completa | Todos | `zona-estudio.tsx` es placeholder |
 | Historial real por usuario | Historial | Hoy es muestra del catálogo, no tracking LMS real |
 
@@ -811,6 +876,7 @@ Si `conCertificacion === false` → `plantillaCertificadoId` y `plantillaCertifi
 
 | Tema | Documento / archivo |
 |------|---------------------|
+| Mail recordatorio estudio (Progreso) | `aprendizaje/mails/mail-recordatorio-plan-formacion.html` · §7.3 B.1–B.6 |
 | Planes de formación (modelo BD) | `lms-creator/contexto-planes-formacion-y-grupos.md` |
 | Mi equipo (líder vs learner) | `aprendizaje/mi-equipo/contexto-mi-equipo.md` |
 | Descarga certificados (Creator) | `lms-creator/certificados/contexto-descarga-certificados.md` |

@@ -11,6 +11,10 @@
         'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
     ];
 
+    var MAIL_TEMPLATE_PATH = 'mails/mail-recordatorio-plan-formacion.html';
+    var MAIL_PREVIEW_DELAY_MS = 3000;
+    var mailPreviewTimer = null;
+
     var progresoState = {
         selectedColaboradorId: LEADER_ID,
         rankingEquipoScope: 'equipo',
@@ -46,7 +50,27 @@
         return num.toLocaleString('es-CO');
     }
 
+    function getRecordatorioMailUrl() {
+        try {
+            return new URL(MAIL_TEMPLATE_PATH, window.location.href).href;
+        } catch (e) {
+            return MAIL_TEMPLATE_PATH;
+        }
+    }
+
+    function openRecordatorioMailPreview() {
+        if (mailPreviewTimer) {
+            clearTimeout(mailPreviewTimer);
+            mailPreviewTimer = null;
+        }
+        mailPreviewTimer = setTimeout(function () {
+            window.open(getRecordatorioMailUrl(), '_blank', 'noopener,noreferrer');
+            mailPreviewTimer = null;
+        }, MAIL_PREVIEW_DELAY_MS);
+    }
+
     function confirmRecordatorioEquipo() {
+        openRecordatorioMailPreview();
         if (typeof showToast === 'function') {
             showToast('success', 'Recordatorios enviados', { containerId: 'ubits-toast-container' });
         }
@@ -179,24 +203,44 @@
         return formatMinutosEstudioVsMetaAbreviado(doneMin, totalMin);
     }
 
-    function getMinutosEstudioTotalColaborador(colaboradorId) {
+    function getMinutosEstudioColaboradorEnPlan(plan, colaboradorId) {
         var pf = getPf();
-        if (!pf) return 0;
+        var hydrated = pf && pf.hydratePlan ? pf.hydratePlan(plan) : plan;
+        if (!hydrated) return 0;
+        var cid = String(colaboradorId || '');
+        if (hydrated.tipo === 'competencias') {
+            var consumo = (hydrated.consumoPorUsuario || {})[cid] || { horas: 0 };
+            return Math.round((Number(consumo.horas) || 0) * 60);
+        }
+        if (hydrated.tipo === 'contenidos') {
+            var items = (hydrated.contenidoPorUsuario || {})[cid] || [];
+            var total = 0;
+            items.forEach(function (it) {
+                var dur = parseDurationToMinutes(it.duration);
+                var pct = Number(it.progress) || 0;
+                total += Math.round(dur * pct / 100);
+            });
+            return total;
+        }
+        return 0;
+    }
+
+    function getMinutosEstudioTotalColaborador(colaboradorId) {
         var planes = getPlanesVigentesParaColaborador(colaboradorId);
         var total = 0;
         planes.forEach(function (rawPlan) {
-            var plan = pf.hydratePlan(rawPlan);
-            if (plan.tipo === 'competencias') {
-                var consumo = (plan.consumoPorUsuario || {})[String(colaboradorId)] || { horas: 0 };
-                total += Math.round((Number(consumo.horas) || 0) * 60);
-            } else if (plan.tipo === 'contenidos') {
-                var items = (plan.contenidoPorUsuario || {})[String(colaboradorId)] || [];
-                items.forEach(function (it) {
-                    var dur = parseDurationToMinutes(it.duration);
-                    var pct = Number(it.progress) || 0;
-                    total += Math.round(dur * pct / 100);
-                });
-            }
+            total += getMinutosEstudioColaboradorEnPlan(rawPlan, colaboradorId);
+        });
+        return total;
+    }
+
+    function getMinutosEstudioEnPlan(plan) {
+        var pf = getPf();
+        var hydrated = pf && pf.hydratePlan ? pf.hydratePlan(plan) : plan;
+        if (!hydrated) return 0;
+        var total = 0;
+        (hydrated.asignaciones || []).forEach(function (a) {
+            total += getMinutosEstudioColaboradorEnPlan(hydrated, a.colaboradorId);
         });
         return total;
     }
@@ -429,32 +473,31 @@
             return p.estado === 'Vigente' && p.tipo === 'contenidos';
         });
         var byArea = {};
-        planes.forEach(function (p) {
-            var area = (p.area || '').trim();
+        planes.forEach(function (rawPlan) {
+            var plan = pf.hydratePlan(rawPlan);
+            var area = (plan.area || '').trim();
             if (!area) return;
-            if (!byArea[area]) byArea[area] = { sum: 0, count: 0 };
-            byArea[area].sum += pf.getProgresoAgregadoPlan(p);
-            byArea[area].count += 1;
+            if (!byArea[area]) byArea[area] = 0;
+            byArea[area] += getMinutosEstudioEnPlan(plan);
         });
         return Object.keys(byArea).map(function (area) {
             return {
                 area: area,
-                pct: Math.round(byArea[area].sum / byArea[area].count),
+                minutos: byArea[area],
                 isMine: area === LEADER_AREA
             };
-        }).sort(function (a, b) { return b.pct - a.pct; });
+        }).sort(function (a, b) { return b.minutos - a.minutos; });
     }
 
     function getRankingEquipo() {
         return getEquipoPersonas().map(function (person) {
-            var meta = getProgresoGeneralColaborador(person.id);
             return {
                 id: person.id,
                 nombre: person.nombre,
-                pct: meta.pct,
+                minutos: getMinutosEstudioTotalColaborador(person.id),
                 esLider: person.esLider
             };
-        }).sort(function (a, b) { return b.pct - a.pct; });
+        }).sort(function (a, b) { return b.minutos - a.minutos; });
     }
 
     function getRankingEmpresa() {
@@ -481,40 +524,19 @@
         return '<span class="zona-estudio-progreso-ranking-row__rank ubits-body-sm-bold">' + rank + '</span>';
     }
 
-    function rankingAreaRowHtml(rank, area, pct, isMine) {
-        var barHtml = typeof progressBarHtml === 'function'
-            ? progressBarHtml({ value: pct, size: 'sm', rounded: true, track: 'subtle', ariaLabel: 'Progreso ' + area })
-            : '';
+    function rankingAreaTimeRowHtml(rank, area, minutos, isMine) {
         var safeArea = escapeRankingHtml(area);
-        return '<div class="zona-estudio-progreso-ranking-row zona-estudio-progreso-ranking-row--area' +
+        return '<div class="zona-estudio-progreso-ranking-row zona-estudio-progreso-ranking-row--time zona-estudio-progreso-ranking-row--area' +
             (isMine ? ' zona-estudio-progreso-ranking-row--highlight' : '') + '">' +
             getMedalHtml(rank) +
             '<span class="zona-estudio-progreso-ranking-row__label ubits-body-sm-regular">' + safeArea + '</span>' +
-            '<div class="zona-estudio-progreso-ranking-row__bar">' + barHtml + '</div>' +
-            '<span class="zona-estudio-progreso-ranking-row__pct ubits-body-sm-bold">' + pct + '%</span>' +
-        '</div>';
-    }
-
-    function rankingTeamRowHtml(rank, label, pct, highlight, esLider, colaboradorId) {
-        var barHtml = typeof progressBarHtml === 'function'
-            ? progressBarHtml({ value: pct, size: 'sm', rounded: true, track: 'subtle', ariaLabel: 'Progreso ' + label })
-            : '';
-        var rankStickyClass = rank <= 3 ? ' zona-estudio-progreso-ranking-row--rank-' + rank : '';
-        return '<div class="zona-estudio-progreso-ranking-row' + rankStickyClass +
-            (highlight ? ' zona-estudio-progreso-ranking-row--highlight' : '') + '"' +
-            ' data-rank="' + rank + '" data-colaborador-id="' + colaboradorId + '"' +
-            (esLider ? ' data-es-lider="1"' : '') + '>' +
-            getMedalHtml(rank) +
-            rankingPersonLabelHtml(label) +
-            '<div class="zona-estudio-progreso-ranking-row__bar">' + barHtml + '</div>' +
-            '<span class="zona-estudio-progreso-ranking-row__pct ubits-body-sm-bold">' + pct + '%</span>' +
+            '<span class="zona-estudio-progreso-ranking-row__time ubits-body-sm-bold">' + formatHorasMinutosAbreviado(minutos) + '</span>' +
         '</div>';
     }
 
     function rankingTeamTimeRowHtml(rank, label, minutos, highlight, esLider, colaboradorId) {
-        var rankStickyClass = rank <= 3 ? ' zona-estudio-progreso-ranking-row--rank-' + rank : '';
         return '<div class="zona-estudio-progreso-ranking-row zona-estudio-progreso-ranking-row--time' +
-            rankStickyClass + (highlight ? ' zona-estudio-progreso-ranking-row--highlight' : '') + '"' +
+            (highlight ? ' zona-estudio-progreso-ranking-row--highlight' : '') + '"' +
             ' data-rank="' + rank + '" data-colaborador-id="' + colaboradorId + '"' +
             (esLider ? ' data-es-lider="1"' : '') + '>' +
             getMedalHtml(rank) +
@@ -545,100 +567,99 @@
         listEl.classList.add('zona-estudio-progreso-ranking-list--scroll-limit');
     }
 
-    function scrollRankingEquipoToSelected() {
-        if (progresoState.rankingEquipoScope !== 'empresa') return;
-        var list = document.getElementById('zona-estudio-progreso-ranking-equipo');
-        if (!list) return;
-        var selectedRow = list.querySelector('[data-colaborador-id="' + progresoState.selectedColaboradorId + '"]');
-        if (!selectedRow) return;
-        var rank = parseInt(selectedRow.getAttribute('data-rank'), 10);
-        if (isNaN(rank) || rank <= 3) {
-            list.scrollTop = 0;
-            return;
-        }
-        var sampleRow = list.querySelector('.zona-estudio-progreso-ranking-row--rank-3') ||
-            list.querySelector('.zona-estudio-progreso-ranking-row');
-        if (!sampleRow) return;
-        var rowSlot = sampleRow.getBoundingClientRect().height;
-        list.scrollTop = Math.max(0, (rank - 4) * rowSlot);
-    }
-
-    function updateRankingEquipoDesc() {
-        var descEl = document.getElementById('zona-estudio-progreso-equipo-desc');
-        if (!descEl) return;
-        descEl.textContent = progresoState.rankingEquipoScope === 'empresa'
-            ? 'De mayor a menor tiempo de estudio.'
-            : 'De mayor a menor avance.';
-    }
-
-    function renderRankingAreas() {
-        var areasEl = document.getElementById('zona-estudio-progreso-ranking-areas');
-        if (!areasEl || progresoState.areasRendered) return;
-        var areas = getRankingAreas();
-        areasEl.innerHTML = areas.length
-            ? areas.map(function (row, idx) {
-                return rankingAreaRowHtml(idx + 1, row.area, row.pct, row.isMine);
-            }).join('')
-            : '<p class="ubits-body-sm-regular zona-estudio-progreso-empty">Sin datos de áreas.</p>';
-        applyRankingListScrollLimit(areasEl);
-        progresoState.areasRendered = true;
+    function clearRankingListScrollLimit(listEl) {
+        if (!listEl) return;
+        listEl.classList.remove('zona-estudio-progreso-ranking-list--scroll-limit');
     }
 
     function rankingPodiumDividerHtml() {
         return '<div class="zona-estudio-progreso-ranking-podium-divider" aria-hidden="true"></div>';
     }
 
-    function renderRankingEmpresaHtml(rows) {
-        var html = '';
+    function splitRankingRowsHtml(rows, buildRowHtml) {
+        var podium = '';
+        var scroll = '';
         rows.forEach(function (row, idx) {
-            html += rankingTeamTimeRowHtml(
-                idx + 1,
+            var rank = idx + 1;
+            var rowHtml = buildRowHtml(row, rank);
+            if (rank <= 3) podium += rowHtml;
+            else scroll += rowHtml;
+        });
+        if (rows.length > 3) podium += rankingPodiumDividerHtml();
+        return { podium: podium, scroll: scroll };
+    }
+
+    function renderRankingSplitLists(podiumEl, scrollEl, rows, buildRowHtml, emptyMessage) {
+        if (!scrollEl) return;
+        if (!rows.length) {
+            if (podiumEl) podiumEl.innerHTML = '';
+            scrollEl.innerHTML = '<p class="ubits-body-sm-regular zona-estudio-progreso-empty">' + emptyMessage + '</p>';
+            clearRankingListScrollLimit(scrollEl);
+            return;
+        }
+        var parts = splitRankingRowsHtml(rows, buildRowHtml);
+        if (podiumEl) podiumEl.innerHTML = parts.podium;
+        scrollEl.innerHTML = parts.scroll;
+        if (rows.length > 3) applyRankingListScrollLimit(scrollEl);
+        else clearRankingListScrollLimit(scrollEl);
+    }
+
+    function scrollRankingEquipoToSelected() {
+        var scrollList = document.getElementById('zona-estudio-progreso-ranking-equipo');
+        var podiumList = document.getElementById('zona-estudio-progreso-ranking-equipo-podium');
+        if (!scrollList) return;
+        var selectedRow = (podiumList && podiumList.querySelector('[data-colaborador-id="' + progresoState.selectedColaboradorId + '"]')) ||
+            scrollList.querySelector('[data-colaborador-id="' + progresoState.selectedColaboradorId + '"]');
+        if (!selectedRow) return;
+        var rank = parseInt(selectedRow.getAttribute('data-rank'), 10);
+        if (isNaN(rank) || rank <= 3) {
+            scrollList.scrollTop = 0;
+            return;
+        }
+        var sampleRow = scrollList.querySelector('.zona-estudio-progreso-ranking-row');
+        if (!sampleRow) return;
+        var rowSlot = sampleRow.getBoundingClientRect().height;
+        scrollList.scrollTop = Math.max(0, (rank - 4) * rowSlot);
+    }
+
+    function updateRankingEquipoDesc() {
+        var descEl = document.getElementById('zona-estudio-progreso-equipo-desc');
+        if (!descEl) return;
+        descEl.textContent = 'De mayor a menor tiempo de estudio.';
+    }
+
+    function renderRankingAreas() {
+        var podiumEl = document.getElementById('zona-estudio-progreso-ranking-areas-podium');
+        var scrollEl = document.getElementById('zona-estudio-progreso-ranking-areas');
+        if (!scrollEl || progresoState.areasRendered) return;
+        var areas = getRankingAreas();
+        renderRankingSplitLists(podiumEl, scrollEl, areas, function (row, rank) {
+            return rankingAreaTimeRowHtml(rank, row.area, row.minutos, row.isMine);
+        }, 'Sin datos de áreas.');
+        progresoState.areasRendered = true;
+    }
+
+    function renderRankingEquipo() {
+        var podiumEl = document.getElementById('zona-estudio-progreso-ranking-equipo-podium');
+        var scrollEl = document.getElementById('zona-estudio-progreso-ranking-equipo');
+        if (!scrollEl) return;
+        updateRankingEquipoDesc();
+        var rows = progresoState.rankingEquipoScope === 'empresa' ? getRankingEmpresa() : getRankingEquipo();
+        renderRankingSplitLists(podiumEl, scrollEl, rows, function (row, rank) {
+            return rankingTeamTimeRowHtml(
+                rank,
                 formatRankingPersonName(row.nombre, row.id),
                 row.minutos,
                 isSelectedColaborador(row.id),
                 String(row.id) === LEADER_ID,
                 row.id
             );
-            if (idx === 2 && rows.length > 3) {
-                html += rankingPodiumDividerHtml();
-            }
-        });
-        return html;
-    }
-
-    function renderRankingEquipo() {
-        var teamEl = document.getElementById('zona-estudio-progreso-ranking-equipo');
-        if (!teamEl) return;
-        updateRankingEquipoDesc();
-        var isEmpresa = progresoState.rankingEquipoScope === 'empresa';
-        teamEl.classList.toggle('zona-estudio-progreso-ranking-list--empresa', isEmpresa);
-        applyRankingListScrollLimit(teamEl);
-        if (isEmpresa) {
-            var empresa = getRankingEmpresa();
-            teamEl.innerHTML = empresa.length
-                ? renderRankingEmpresaHtml(empresa)
-                : '<p class="ubits-body-sm-regular zona-estudio-progreso-empty">Sin datos de empresa.</p>';
+        }, 'Sin datos.');
+        window.requestAnimationFrame(function () {
             window.requestAnimationFrame(function () {
-                window.requestAnimationFrame(function () {
-                    scrollRankingEquipoToSelected();
-                });
+                scrollRankingEquipoToSelected();
             });
-            return;
-        }
-        var team = getRankingEquipo();
-        teamEl.innerHTML = team.length
-            ? team.map(function (row, idx) {
-                return rankingTeamRowHtml(
-                    idx + 1,
-                    formatRankingPersonName(row.nombre, row.id),
-                    row.pct,
-                    isSelectedColaborador(row.id),
-                    String(row.id) === LEADER_ID,
-                    row.id
-                );
-            }).join('')
-            : '<p class="ubits-body-sm-regular zona-estudio-progreso-empty">Sin datos de equipo.</p>';
-        teamEl.scrollTop = 0;
+        });
     }
 
     function initRankingEquipoScope() {
@@ -682,6 +703,13 @@
         initRecordatorio();
     }
 
+    function formatProgresoEmpleadoDrawerTitle(userName, plan) {
+        var pf = getPf();
+        var hydrated = pf && typeof pf.hydratePlan === 'function' ? pf.hydratePlan(plan) : plan;
+        var planNombre = (hydrated && hydrated.nombre) ? String(hydrated.nombre).trim() : '';
+        return (userName || 'Colaborador') + ' – ' + planNombre;
+    }
+
     function openProgresoContenidosDrawer(plan, colaboradorId, userName) {
         if (typeof openDrawer !== 'function') return;
         var pf = getPf();
@@ -695,12 +723,13 @@
         var footerHtml = '<button type="button" class="ubits-button ubits-button--primary ubits-button--md" id="zona-estudio-progreso-contenidos-cerrar"><span>Cerrar</span></button>';
         openDrawer({
             overlayId: 'drawer-zona-estudio-progreso-contenidos',
-            title: (userName || 'Colaborador') + ' – contenidos y progreso',
+            title: formatProgresoEmpleadoDrawerTitle(userName, plan),
             bodyHtml: bodyHtml,
             footerHtml: footerHtml,
-            size: 'md'
+            size: 'sm'
         });
         var overlay = document.getElementById('drawer-zona-estudio-progreso-contenidos');
+        if (overlay) overlay.classList.add('drawer-progreso-empleado-host');
         var cerrar = overlay && overlay.querySelector('#zona-estudio-progreso-contenidos-cerrar');
         if (cerrar) {
             cerrar.addEventListener('click', function () {
@@ -708,22 +737,29 @@
             });
         }
         if (typeof loadCardContentCompact === 'function') {
-            var logoFallback = '../../images/Favicons/UBITS.jpg';
-            var imagenBase = '../../images/cards-learn/administracion-efectiva-del-tiempo.jpg';
+            var enrich = (window.CATALOGO_PROVEEDORES &&
+                typeof window.CATALOGO_PROVEEDORES.enrichPlanContenidoItemForCard === 'function')
+                ? window.CATALOGO_PROVEEDORES.enrichPlanContenidoItemForCard
+                : null;
             var cardsData = list.map(function (c) {
-                return {
-                    type: c.type || 'Curso',
-                    title: c.title || '',
-                    duration: c.duration || '',
-                    progress: c.progress != null ? c.progress : 0,
-                    status: c.status || 'default',
-                    provider: c.provider || 'UBITS',
-                    providerLogo: c.providerLogo || logoFallback,
-                    level: c.level || 'Intermedio',
-                    competency: c.competency || 'Liderazgo',
-                    language: c.language || 'Español',
-                    image: c.image || imagenBase
+                var item = enrich ? enrich(c) : c;
+                var row = {
+                    type: item.type || 'Curso',
+                    title: item.title || '',
+                    duration: item.duration || '',
+                    progress: item.progress != null ? item.progress : 0,
+                    status: item.status || 'default',
+                    provider: item.provider || 'UBITS',
+                    providerLogo: item.providerLogo || '../../images/Favicons/UBITS.jpg',
+                    level: item.level || 'Intermedio',
+                    competency: item.competency || '',
+                    language: item.language || 'Español',
+                    image: item.image || '../../images/Profile-image.jpg'
                 };
+                if (Array.isArray(item.providers) && item.providers.length > 1) {
+                    row.providers = item.providers;
+                }
+                return row;
             });
             loadCardContentCompact('zona-estudio-progreso-compact-cards', cardsData);
         }
@@ -736,6 +772,7 @@
         var comps = ((hydrated.competenciaPorUsuario || {})[String(colaboradorId)]) || [];
         Shared.openPanelCompetenciasReadOnly({
             overlayId: 'drawer-zona-estudio-progreso-competencias',
+            drawerTitle: formatProgresoEmpleadoDrawerTitle(userName, plan),
             userName: userName,
             competencias: comps,
             plan: hydrated,

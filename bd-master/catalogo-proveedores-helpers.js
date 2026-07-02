@@ -142,9 +142,7 @@
             (!!item.proveedorAliadoId && !(item.providersAliadosIds && item.providersAliadosIds.length));
     }
 
-    function findCatalogoContentByTitle(title) {
-        if (!title) return null;
-        var key = String(title).toLowerCase().trim();
+    function getCatalogoContentPools() {
         var pools = [];
         if (global.BDS_CONTENIDOS_UBITS && global.BDS_CONTENIDOS_UBITS.contents) {
             pools = pools.concat(global.BDS_CONTENIDOS_UBITS.contents);
@@ -152,12 +150,94 @@
         if (global.BDS_CONTENIDOS_FIQSHA && global.BDS_CONTENIDOS_FIQSHA.contents) {
             pools = pools.concat(global.BDS_CONTENIDOS_FIQSHA.contents);
         }
+        return pools;
+    }
+
+    function getImagesPrefixForPage() {
+        try {
+            var path = (global.location && global.location.pathname) ? String(global.location.pathname) : '';
+            if (path.indexOf('/mi-equipo/') !== -1) return '../../../';
+            if (path.indexOf('/lms-creator/planes-formacion/') !== -1) return '../../../';
+            if (path.indexOf('/lms-creator/') !== -1) return '../../';
+            if (path.indexOf('/aprendizaje/') !== -1) return '../../';
+        } catch (e) { /* noop */ }
+        return '../../';
+    }
+
+    function findCatalogoContentById(contentId) {
+        if (contentId == null || contentId === '') return null;
+        var key = String(contentId);
+        var pools = getCatalogoContentPools();
+        for (var i = 0; i < pools.length; i++) {
+            if (String(pools[i].id) === key) return pools[i];
+        }
+        return null;
+    }
+
+    function findCatalogoContentByTitle(title) {
+        if (!title) return null;
+        var key = String(title).toLowerCase().trim();
+        var pools = getCatalogoContentPools();
         for (var i = 0; i < pools.length; i++) {
             var c = pools[i];
             var t = (c.titulo || c.title || '').toLowerCase().trim();
             if (t === key) return c;
         }
         return null;
+    }
+
+    function resolveNivelNombreById(nivelId) {
+        var niveles = (global.BD_MASTER_NIVELES_CONTENIDO && global.BD_MASTER_NIVELES_CONTENIDO.niveles) || [];
+        for (var i = 0; i < niveles.length; i++) {
+            if (niveles[i].id === nivelId) return niveles[i].nombre;
+        }
+        return 'Intermedio';
+    }
+
+    function resolveCompetenciaNombreById(compId) {
+        var comps = (global.BD_MASTER_COMPETENCIAS && global.BD_MASTER_COMPETENCIAS.competencias) || [];
+        for (var i = 0; i < comps.length; i++) {
+            if (comps[i].id === compId) return comps[i].nombre;
+        }
+        return '';
+    }
+
+    /** Enriquece un ítem slim del plan (id, title, progress…) con imagen, aliado y metadatos del catálogo UBITS/Fiqsha. */
+    function enrichPlanContenidoItemForCard(item, imagesPrefix) {
+        if (!item) return item;
+        imagesPrefix = imagesPrefix || getImagesPrefixForPage();
+        var catalog = findCatalogoContentById(item.id);
+        if (!catalog) {
+            if (item.title) {
+                catalog = findCatalogoContentByTitle(item.title);
+            }
+            if (!catalog) return item;
+        }
+        var card = buildCardFromCatalogoContent(catalog, imagesPrefix, {
+            progress: item.progress != null ? item.progress : 0,
+            status: item.status || undefined,
+            level: resolveNivelNombreById(catalog.nivelId),
+            competency: resolveCompetenciaNombreById(catalog.competenciaPrincipalId)
+        });
+        var out = {};
+        Object.keys(item).forEach(function (k) { out[k] = item[k]; });
+        out.type = card.type;
+        out.title = item.title || card.title;
+        out.duration = item.duration || card.duration;
+        out.progress = card.progress;
+        out.status = card.status;
+        out.provider = card.provider;
+        out.providerLogo = card.providerLogo;
+        out.level = card.level;
+        out.competency = card.competency;
+        out.language = card.language;
+        out.image = card.image;
+        if (card.providers) {
+            out.providers = card.providers;
+        } else {
+            delete out.providers;
+        }
+        return out;
     }
 
     /** Proveedor primario (nombre + logo) para cualquier ítem de catálogo UBITS o Fiqsha. */
@@ -246,7 +326,10 @@
         resolveProveedoresCatalogoUbits: resolveProveedoresCatalogoUbits,
         buildProvidersMultiForCard: buildProvidersMultiForCard,
         isContenidoEmpresaFiqsha: isContenidoEmpresaFiqsha,
+        findCatalogoContentById: findCatalogoContentById,
         findCatalogoContentByTitle: findCatalogoContentByTitle,
+        getImagesPrefixForPage: getImagesPrefixForPage,
+        enrichPlanContenidoItemForCard: enrichPlanContenidoItemForCard,
         resolveProviderFromCatalogoItem: resolveProviderFromCatalogoItem,
         patchCardProviderFromBdByTitle: patchCardProviderFromBdByTitle,
         resolveLearningContentProviderFields: resolveLearningContentProviderFields,

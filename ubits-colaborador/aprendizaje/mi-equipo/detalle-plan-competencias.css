@@ -812,6 +812,10 @@
     margin: 0;
     line-height: 1.5;
 }
+#drawer-competencias-estudiante .drawer-competencia-card-wrapper:not(.drawer-competencia-card-wrapper--compact) .competencia-card-v1-count {
+    color: var(--ubits-fg-1-medium);
+    font-size: var(--font-size-xs);
+}
 #drawer-competencias-estudiante .drawer-competencia-card-wrapper:not(.drawer-competencia-card-wrapper--compact) .competencia-card-v1-title-text {
     display: block;
     overflow: hidden;
@@ -1108,4 +1112,122 @@
 
 .page-mi-equipo-detalle-plan-competencias #asignaciones-detalle-data-table-container .ubits-table__cell-progress .ubits-progress-bar-row--fixed-60 {
     flex-shrink: 0;
+}
+
+/* Zona de estudio (y otros hosts read-only fuera de #drawer-competencias-estudiante) */
+.drawer-competencias-readonly-host .ubits-drawer-footer {
+    justify-content: flex-end;
+}
+
+.drawer-competencias-readonly-host #detalle-plan-compact-cards.detalle-plan-drawer-cards-grid {
+    grid-template-columns: 1fr;
+}
+
+/* Zona de estudio — drawer progreso empleado (contenidos): sm, una columna */
+.drawer-progreso-empleado-host .ubits-drawer-footer,
+#drawer-zona-estudio-progreso-contenidos .ubits-drawer-footer {
+    justify-content: flex-end;
+}
+
+.drawer-progreso-empleado-host .detalle-plan-drawer-cards-grid,
+#drawer-zona-estudio-progreso-contenidos .detalle-plan-drawer-cards-grid,
+#drawer-zona-estudio-progreso-contenidos #zona-estudio-progreso-compact-cards.detalle-plan-drawer-cards-grid {
+    grid-template-columns: 1fr;
+}
+
+.drawer-competencias-readonly-host .drawer-competencia-card-progress {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: 0;
+    height: 5px;
+    border-radius: 0 0 var(--border-radius-sm) var(--border-radius-sm);
+    overflow: hidden;
+}
+
+.drawer-competencias-readonly-host .drawer-competencia-card-progress .ubits-progress-bar {
+    width: 100%;
+}
+
+.drawer-competencias-readonly-host .drawer-competencia-card-wrapper:not(.drawer-competencia-card-wrapper--compact) {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-none);
+    width: 100%;
+}
+
+.drawer-competencias-readonly-host .drawer-competencia-card-wrapper:not(.drawer-competencia-card-wrapper--compact) .drawer-competencia-card {
+    position: relative;
+    background: var(--ubits-bg-1);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: var(--border-radius-sm);
+    overflow: hidden;
+    cursor: default;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    min-height: 48px;
+}
+
+.drawer-competencias-readonly-host .drawer-competencia-card-wrapper:not(.drawer-competencia-card-wrapper--compact) .drawer-competencia-card-row {
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    gap: 0;
+    height: 48px;
+    flex-shrink: 0;
+}
+
+.drawer-competencias-readonly-host .drawer-competencia-card-wrapper:not(.drawer-competencia-card-wrapper--compact) .competencia-card-v1-image {
+    width: 48px;
+    height: 48px;
+    object-fit: cover;
+    background: var(--ubits-bg-2);
+    flex-shrink: 0;
+}
+
+.drawer-competencias-readonly-host .drawer-competencia-card-wrapper:not(.drawer-competencia-card-wrapper--compact) .competencia-card-v1-content {
+    padding: var(--padding-sm);
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-none);
+    flex: 1;
+    min-width: 0;
+    justify-content: center;
+}
+
+.drawer-competencias-readonly-host .drawer-competencia-card-wrapper:not(.drawer-competencia-card-wrapper--compact) .competencia-card-v1-title,
+.drawer-competencias-readonly-host .drawer-competencia-card-wrapper:not(.drawer-competencia-card-wrapper--compact) .competencia-card-v1-count {
+    margin: 0;
+    line-height: 1.5;
+}
+
+.drawer-competencias-readonly-host .drawer-competencia-card-wrapper:not(.drawer-competencia-card-wrapper--compact) .competencia-card-v1-title-text {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.drawer-competencias-readonly-host .drawer-competencia-card-wrapper:not(.drawer-competencia-card-wrapper--compact) .competencia-card-v1-count {
+    color: var(--ubits-fg-1-medium);
+    font-size: var(--font-size-xs);
+}
+
+.drawer-competencias-readonly-host .drawer-competencia-card-wrapper:not(.drawer-competencia-card-wrapper--compact) .drawer-competencia-card-check {
+    display: none;
+}
+
+/* Zona de estudio — drawer progreso empleado (contenidos + competencias): sm, una columna */
+.drawer-progreso-empleado-host .ubits-drawer-footer,
+#drawer-zona-estudio-progreso-contenidos .ubits-drawer-footer {
+    justify-content: flex-end;
+}
+
+.drawer-progreso-empleado-host .detalle-plan-drawer-cards-grid,
+#drawer-zona-estudio-progreso-contenidos .detalle-plan-drawer-cards-grid,
+#drawer-zona-estudio-progreso-contenidos #zona-estudio-progreso-compact-cards.detalle-plan-drawer-cards-grid {
+    grid-template-columns: 1fr;
 }
