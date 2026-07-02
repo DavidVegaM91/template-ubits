@@ -1,6 +1,6 @@
 # Zona de estudio — contexto de producto y playground
 
-> Documento de referencia para implementar, mantener y migrar a React la experiencia **Zona de estudio** del colaborador. Cubre las **4 pestañas**, reglas de negocio, composición de UI, fuentes de datos mock y comportamiento actual del vanilla (source of truth visual).
+> Documento de referencia para implementar, mantener y migrar a React la experiencia **Zona de estudio** del colaborador. Cubre las **5 pestañas**, reglas de negocio, composición de UI, fuentes de datos mock y comportamiento actual del vanilla (source of truth visual).
 
 **Figma (referencia en código):** Learner v4 · nodos `40006050:5454` (plan de contenidos) y `40006073:17044` (plan de competencias).
 
@@ -12,6 +12,7 @@ La **Zona de estudio** es el espacio del colaborador donde **consume y da seguim
 
 | Necesidad | Qué resuelve la pantalla |
 |-----------|--------------------------|
+| Ver progreso propio y del equipo | Tab **Progreso** — KPIs, carrusel de planes activos, rankings (vista líder demo) |
 | Ver planes activos | Planes de **contenidos** y de **competencias** en los que el colaborador está asignado |
 | Avanzar en lo asignado | Lista o carrusel de contenidos con progreso individual |
 | Contenido privilegiado | Ítems habilitados solo para el usuario («Exclusivo para mi») |
@@ -27,7 +28,8 @@ No es administración ni LMS Creator: es **vista learner** dentro de **Aprendiza
 |--------|--------|
 | **Carpeta** | `ubits-colaborador/aprendizaje/` |
 | **Página** | `zona-estudio.html` |
-| **Lógica** | `zona-estudio.js` |
+| **Lógica tabs learner** | `zona-estudio.js` |
+| **Lógica tab Progreso** | `zona-estudio-progreso.js` |
 | **Estilos página** | `zona-estudio.css` |
 | **Layout** | **Estándar colaborador** — Sidebar `default` + SubNav `aprendizaje` + TabBar + Floating menu |
 | **SubNav** | Pestaña **Zona de estudio** (`id: study-zone`) |
@@ -38,10 +40,10 @@ No es administración ni LMS Creator: es **vista learner** dentro de **Aprendiza
 
 ```
 body.page-zona-estudio
-├── sidebar-container          → loadSidebar('aprendizaje')
+├── sidebar-container          → loadSidebar('sidebar-container', 'aprendizaje')
 ├── top-nav-container          → loadSubNav('aprendizaje') — tab study-zone activo
 ├── content-sections
-│   ├── section-single         → widget-tabs-zona-estudio (4 ubits-tab)
+│   ├── section-single         → widget-tabs-zona-estudio (5 ubits-tab)
 │   └── section-single         → widget-contenido-tabs (panel del tab activo)
 ├── tab-bar-container
 ├── floating-menu-container
@@ -78,18 +80,19 @@ El resto de planes asignados a `E006` conservan el progreso pseudoaleatorio gene
 
 ## 4. Arquitectura de tabs
 
-### 4.1 Lista de pestañas
+### 4.1 Lista de pestañas (orden en UI)
 
-| `data-tab-id` | Label UI | Hash URL | Panel DOM |
-|---------------|----------|----------|-----------|
-| `contenidos` | Plan de contenidos | `#contenidos` | `#zona-estudio-panel-contenidos` |
-| `competencias` | Plan de competencias | `#competencias` | `#zona-estudio-panel-competencias` |
-| `exclusivo` | Exclusivo para mi | `#exclusivo` | `#zona-estudio-panel-exclusivo` |
-| `historial` | Historial y certificados | `#historial` | `#zona-estudio-panel-historial` |
-| `progreso` | Progreso | `#progreso` | `#zona-estudio-panel-progreso` |
+| Orden UI | `data-tab-id` | Label UI | Hash URL | Panel DOM |
+|----------|---------------|----------|----------|-----------|
+| 1 | `progreso` | Progreso | `#progreso` | `#zona-estudio-panel-progreso` |
+| 2 | `contenidos` | Plan de contenidos | `#contenidos` | `#zona-estudio-panel-contenidos` |
+| 3 | `competencias` | Plan de competencias | `#competencias` | `#zona-estudio-panel-competencias` |
+| 4 | `exclusivo` | Exclusivo para mi | `#exclusivo` | `#zona-estudio-panel-exclusivo` |
+| 5 | `historial` | Historial y certificados | `#historial` | `#zona-estudio-panel-historial` |
 
 - Componente: `ubits-tabs-on-bg` + `ubits-tab` (ver `components/tab.css`).
-- Tab por defecto: **Plan de contenidos** (`contenidos`).
+- Constante `TAB_IDS` en JS: `['progreso', 'contenidos', 'competencias', 'exclusivo', 'historial']`.
+- Tab por defecto: **Progreso** (`progreso`) — sin hash en URL se normaliza a `#progreso`.
 - Navegación: clic en tab → `setActiveTab()`; `hashchange` sincroniza tab desde URL.
 - Persistencia URL: `history.replaceState` / `location.hash` con `#<tab-id>`.
 
@@ -97,7 +100,7 @@ El resto de planes asignados a `E006` conservan el progreso pseudoaleatorio gene
 
 | Campo | Uso |
 |-------|-----|
-| `activeTab` | Tab visible |
+| `activeTab` | Tab visible (default `'progreso'`) |
 | `selectedPlanByTab.contenidos` / `.competencias` | Plan elegido en el selector de cada tab |
 | `planesContenidos` / `planesCompetencias` | Planes filtrados para el usuario demo |
 | `filteredContents` | Cards del plan de contenidos tras búsqueda |
@@ -113,8 +116,8 @@ El resto de planes asignados a `E006` conservan el progreso pseudoaleatorio gene
 
 | Archivo | Rol |
 |---------|-----|
-| `zona-estudio.html` | Markup de los 4 paneles |
-| `zona-estudio.js` | Toda la lógica de tabs, filtros, render |
+| `zona-estudio.html` | Markup de los 5 paneles + tab bar de pestañas |
+| `zona-estudio.js` | Tabs learner (contenidos, competencias, exclusivo, historial), filtros, render |
 | `zona-estudio.css` | Grid responsive, bloques competencias, tabla historial |
 | `bd-master/bd-planes-formacion.js` | Planes asignados, progreso por usuario |
 | `bd-master/bd-contenidos-ubits.js` | Catálogo UBITS (~85 ítems) |
@@ -143,6 +146,7 @@ El resto de planes asignados a `E006` conservan el progreso pseudoaleatorio gene
 |---------|--------|
 | `Ubits-React/pages/ubits-colaborador/aprendizaje/zona-estudio.tsx` | Placeholder |
 | `Ubits-React/lib/mockData/bd-contenidos-*.ts` | Sincronizados vía `npm run sync:bd-master` |
+| `Ubits-React/lib/mockData/providerLogos.ts` | Paridad `resolvePrimaryAliadoId` / logos aliados |
 
 ---
 
@@ -202,7 +206,7 @@ Objeto card típico (mapeado desde catálogo):
 |-------|----------------|
 | `type` | `tipoContenido` |
 | `title` | `titulo` |
-| `provider` / `providerLogo` | Aliado principal o «Varios» en rutas multi-proveedor |
+| `provider` / `providerLogo` | Aliado principal vía `CATALOGO_PROVEEDORES` (ver §6.5.1) o «Varios» en rutas multi-proveedor |
 | `providers` | Opcional — rutas/programas con varios aliados |
 | `duration` | `{tiempoValor} min` |
 | `level` | `nivelId` → nombre en maestro niveles |
@@ -213,6 +217,22 @@ Objeto card típico (mapeado desde catálogo):
 | `language` | `idioma` |
 
 Solo en **historial** se añaden además: `contentId`, `conCertificacion`, `plantillaCertificadoId`, `plantillaCertificado`.
+
+#### 6.5.1 Resolución de proveedor en cards
+
+Helper central: `bd-master/catalogo-proveedores-helpers.js` → `window.CATALOGO_PROVEEDORES`.
+
+| Función | Uso en zona de estudio |
+|---------|------------------------|
+| `resolvePrimaryAliadoId(item)` | Primer ID en `providersAliadosIds` **distinto de** `aly-001` (plataforma UBITS); si solo hay `aly-001`, usa ese |
+| `resolveAliadoDisplay(id, prefix)` | Nombre + ruta logo desde `bd-master-aliados.js` |
+| `buildCardFromCatalogoContent(item, …)` | Atajo para mapear ítem BD → objeto card |
+
+En `zona-estudio.js`, `mapCatalogoToCard` y `mapFiqshaContenidoToCard` consumen esos helpers.
+
+**BD catálogo UBITS:** cada ítem tiene `providersAliadosIds` (patrón `["aly-001", "aly-XXX"]` donde el segundo es el aliado visible en la card). Tras enriquecimiento del playground, **todos** los contenidos UBITS incluyen un aliado distinto de plataforma para demo visual (Harvard, TED, AWS, etc.). Fiqsha corporativo usa `proveedorAliadoId` / `aly-018`.
+
+**Regla:** nunca mostrar «UBITS» como proveedor del contenido cuando el ítem tiene un aliado secundario en `providersAliadosIds`.
 
 ### 6.6 Grid responsive (cuadrículas)
 
@@ -226,15 +246,174 @@ Clase `.grid-cards-container`:
 
 ---
 
-# 7. Tab 1 — Plan de contenidos
+# 7. Tab 1 — Progreso (vista líder)
 
-## 7.1 Copy fijo
+## 7.1 Alcance y usuario
+
+Pestaña para **María Alejandra (E006)** como **líder de Logística** con permiso de ver progreso de su equipo (mismo universo que **Mi equipo**).
+
+| Constante | Valor |
+|-----------|--------|
+| Líder demo | `E006` — María Alejandra Sánchez Pardo |
+| Área resaltada en ranking | `Logística` |
+| Subordinados | `E035`–`E040` vía `getMiEquipoSubordinadosDirectos()` |
+
+## 7.2 Jerarquía visual
+
+| Bloque | Comportamiento al cambiar persona |
+|--------|-----------------------------------|
+| Hero unificado (`zona-estudio-progreso-hero`) | **Sí** — identidad, barra, KPIs y carrusel |
+| Recordatorio de estudio (`zona-estudio-progreso-recordatorio-widget`) | **No** — widget fijo de líder |
+| Rankings (`zona-estudio-progreso-rankings`) | **No** — dos columnas fijas |
+
+## 7.3 Composición de pantalla (de arriba a abajo)
+
+### A) Hero unificado
+
+Un solo widget `.zona-estudio-progreso-hero` con:
+
+#### A.1 Cabecera + profile list
+
+| Elemento | Detalle |
+|----------|---------|
+| Nombre | `#zona-estudio-progreso-hero-name` — nombre completo del colaborador seleccionado |
+| Profile list | `#zona-estudio-progreso-profile` — María primero + subordinados; clic cambia solo el hero |
+
+#### A.2 Cumplimiento promedio
+
+Promedio de `getProgresoColaboradorEnPlan(plan, personaId)` en planes **`Vigente`** de la persona seleccionada.
+
+| Elemento | Contenido |
+|----------|-----------|
+| Label | «Cumplimiento promedio» (sin repetir «planes vigentes») |
+| % | `#zona-estudio-progreso-general-pct` — `{pct} %` |
+| Barra | `progressBarHtml` lg, track subtle |
+
+#### A.3 KPIs en fila (`#zona-estudio-progreso-kpis`)
+
+Cuatro stats cards; gap entre cards = `var(--gap-2xl)` (igual que cards del carrusel de planes).
+
+| KPI | Regla |
+|-----|--------|
+| Planes vigentes | Count de planes `Vigente` asignados |
+| Completados | Progreso ≥ 100 % |
+| En curso | Progreso &gt; 0 % y &lt; 100 % |
+| Sin iniciar | Progreso = 0 % (sin avance registrado) · icono `fa-triangle-exclamation` |
+
+#### A.4 Carrusel planes activos (`#zona-estudio-progreso-planes-carousel`)
+
+| Regla | Detalle |
+|-------|---------|
+| Componente | `createCarouselContents({ type: 'study-zone' })` — **misma card** que home-learn |
+| Título sección | «Planes activos» |
+| Datos | Solo planes **`Vigente`** de la persona seleccionada |
+| Label progreso card | Contenidos: `{done}/{total} contenidos` · Competencias: minutos abreviados (`X hrs. X min. de X hrs. X min.`) |
+| Cierre | `Cierre: {Mes} {día}` desde `fechaFinIso` |
+
+#### Clic en card de plan
+
+| Persona seleccionada | Acción |
+|---------------------|--------|
+| **María (E006)** | `zonaEstudioNavigateToPlan(planId, tipo)` → tab **Plan de contenidos** o **Plan de competencias** con ese plan en el selector |
+| **Subordinado** | Drawer oficial de progreso individual (§7.6) |
+
+### B) Recordatorio de estudio (`#zona-estudio-progreso-recordatorio`)
+
+Segundo widget, **encima de los rankings**. Sin sección «Acciones» — el título vive dentro del widget.
+
+| Elemento | Contenido |
+|----------|-----------|
+| Título | «Recordatorio de estudio» |
+| Descripción | «Enviar recordatorio a quienes no hayan completado sus planes de formación asignados.» |
+| Botón | Secondary «Enviar recordatorio» → toast info del playground |
+
+Siempre visible (acción de líder); no cambia al seleccionar otra persona en el profile list.
+
+### C) Rankings — dos columnas (`zona-estudio-progreso-rankings`)
+
+Sin título de sección intermedio. **Izquierda:** Top de estudio · **Derecha:** Ranking entre áreas.
+
+#### C.1 Top de estudio (`#zona-estudio-progreso-ranking-equipo`)
+
+Button-group **Equipo / Empresa** (`#zona-estudio-progreso-equipo-scope-group`, `initButtonGroup`).
+
+| Modo | Datos | Descripción | Columna valor |
+|------|-------|-------------|-----------------|
+| **Equipo** (default) | María + subordinados | «De mayor a menor avance.» | Barra + % |
+| **Empresa** | Todos los colaboradores (`BD_MASTER_COLABORADORES`) | «De mayor a menor tiempo de estudio.» | `X hrs. X min.` (sin barra) |
+
+Tiempo de estudio empresa: suma en planes **Vigente** — competencias (`consumoPorUsuario.horas`) + contenidos (duración × progreso de cada ítem).
+
+Top 3: medallas con borde. **Nombre completo** + «(Tú)» solo en María. **Resaltada** la fila de la persona seleccionada en el hero (Equipo y Empresa). Filas sin gap.
+
+Listas con **máximo 10 filas visibles**; el resto con scroll.
+
+Modo **Empresa:** top 3 sticky; **autoscroll** a la persona seleccionada en el hero debajo del podio (si puesto &gt; 3). Línea divisora separada bajo el 3.º lugar (no borde del card).
+
+#### C.2 Ranking entre áreas (`#zona-estudio-progreso-ranking-areas`)
+
+- Planes de **contenidos** **`Vigente`** (`getPlanesVisiblesCreator()`, `tipo === 'contenidos'`).
+- Por `plan.area`: promedio de `getProgresoAgregadoPlan(plan)`.
+- Orden descendente por %.
+- **Top 3:** medallas (trofeo / medal / award).
+- **Tu área:** badge «Tu área» en fila de `Logística` + fondo resaltado.
+- Lista con **máx. 10 filas visibles** y scroll para el resto. **Gap 0** entre filas.
+
+## 7.6 Drawers de progreso (subordinados)
+
+Réplica de **Mi equipo → detalle plan** (solo lectura).
+
+### Plan de contenidos
+
+| Aspecto | Valor |
+|---------|--------|
+| Overlay | `drawer-zona-estudio-progreso-contenidos` |
+| Título | `{nombre} – contenidos y progreso` |
+| Body | `loadCardContentCompact` con ítems de `getDetalleContenidoPorUsuario(plan)[colaboradorId]` |
+| Referencia | `mi-equipo/detalle-plan.html` → `abrirPanelContenidos` |
+
+### Plan de competencias
+
+| Aspecto | Valor |
+|---------|--------|
+| Función | `MiEquipoPlanCompetenciasShared.openPanelCompetenciasReadOnly` |
+| Overlay | `drawer-zona-estudio-progreso-competencias` |
+| Título | `{nombre} – competencias y progreso` |
+| Subcopy card | **Minutos estudiados vs meta** — no «X habilidades» |
+
+## 7.7 Fix transversal — drawer competencias (minutos, no habilidades)
+
+En vista **progreso de estudiante** (read-only), el subtítulo de la card de competencia debe ser:
+
+**«{done} de {meta}»** en formato horas/minutos — ej. `1 hora 20 min. de 2 horas`.
+
+Helper compartido en `mi-equipo-plan-competencias-shared.js`:
+
+- `formatMinutosEstudioVsMeta(doneMin, totalMin)`
+- `getCompetenciaMinutosLabelForPlanPerson(plan, colaboradorId)` — usa `consumoPorUsuario[id].horas` vs `horasEstudioMeta` (default 2 h).
+
+**Archivos corregidos:**
+
+| Archivo | Cambio |
+|---------|--------|
+| `mi-equipo/mi-equipo-plan-competencias-shared.js` | `openPanelCompetenciasReadOnly` acepta `plan` + `colaboradorId` |
+| `mi-equipo/detalle-plan-competencias.html` | Pasa `planRawBd` y `rowId` al drawer |
+| `lms-creator/planes-formacion/detalle-plan-competencias.html` | `initPanelCompetencias` read-only usa minutos |
+| `zona-estudio-progreso.js` | Drawer subordinado competencias con mismos helpers |
+
+> Los drawers de **edición** (agregar competencias, ordenar habilidades) siguen mostrando habilidades — solo cambia la vista **progreso estudiante**.
+
+---
+
+# 8. Tab 2 — Plan de contenidos
+
+## 8.1 Copy fijo
 
 | Elemento | Texto |
 |----------|-------|
 | Descripción bajo widget plan | `Contenidos que hacen parte de este plan de formación.` |
 
-## 7.2 Composición de pantalla (de arriba a abajo)
+## 8.2 Composición de pantalla (de arriba a abajo)
 
 ### A) Widget plan (`#zona-estudio-plan-widget`)
 
@@ -265,9 +444,15 @@ Cada opción (`buildPlanSelectOption`):
 
 #### Alerta plan vencido
 
-Solo **No vigente**. Copy:
+Solo **No vigente**. Copy (texto visible):
 
 > **Recordatorio:** Lo que completes después de la fecha límite no se suma al progreso del plan. Este plan se venció hace {haceText}.
+
+Implementación (`renderPlanVencidoAlert` + `showAlert` / fallback HTML):
+
+- Variante: `ubits-alert--error ubits-alert--no-close ubits-alert--block-text`
+- Énfasis en «Recordatorio:» con `<span class="ubits-alert__emphasis">Recordatorio:</span>` (patrón oficial de `components/alert.js` — no usar `<strong>` suelto)
+- `{haceText}` escapado con `escapeHtml`
 
 `haceText` humanizado: días → semanas → meses (`formatPlanVencidoHace`).
 
@@ -304,15 +489,15 @@ Mismas reglas transversales de búsqueda (§6.3).
 
 ---
 
-# 8. Tab 2 — Plan de competencias
+# 9. Tab 3 — Plan de competencias
 
-## 8.1 Copy fijo
+## 9.1 Copy fijo
 
 | Elemento | Texto |
 |----------|-------|
 | Descripción | `Sugerencias de contenidos para este plan de formación.` |
 
-## 8.2 Composición
+## 9.2 Composición
 
 ### A) Widget plan (`#zona-estudio-comp-plan-widget`)
 
@@ -368,22 +553,22 @@ Si no hay plan seleccionable:
 
 ---
 
-# 9. Tab 3 — Exclusivo para mi
+# 10. Tab 4 — Exclusivo para mi
 
-## 9.1 Copy fijo
+## 10.1 Copy fijo
 
 | Elemento | Texto |
 |----------|-------|
 | Descripción | `Contenidos habilitados solo para ti. No tienen fecha límite para ser completados.` |
 
-## 9.2 Composición
+## 10.2 Composición
 
 1. Párrafo descriptivo (`#zona-estudio-exclusivo-desc`)
 2. Toolbar lista (igual patrón §6.3, sin toggle vista)
 3. Cuadrícula `#zona-estudio-exclusivo-cards-grid`
 4. Empty state `#zona-estudio-exclusivo-empty-state`
 
-## 9.3 Reglas de negocio y datos
+## 10.3 Reglas de negocio y datos
 
 **No** usa planes de formación. Lista **hardcodeada** en `EXCLUSIVO_FIQSHA_ITEMS`:
 
@@ -402,15 +587,15 @@ Mapeo card: `mapFiqshaContenidoToCard` — proveedor Fiqsha, competencia derivad
 
 ---
 
-# 10. Tab 4 — Historial y certificados
+# 11. Tab 5 — Historial y certificados
 
-## 10.1 Copy fijo
+## 11.1 Copy fijo
 
 | Elemento | Texto |
 |----------|-------|
 | Descripción | `Consulta lo que has visto y descarga certificados de contenidos finalizados que lo incluyan.` |
 
-## 10.2 Composición
+## 11.2 Composición
 
 1. Párrafo descriptivo (`#zona-estudio-historial-desc`)
 2. Toolbar con búsqueda + **Ver como: Cuadrícula / Tabla**
@@ -428,7 +613,7 @@ Mapeo card: `mapFiqshaContenidoToCard` — proveedor Fiqsha, competencia derivad
 
 Implementación: `initButtonGroup('#zona-estudio-historial-view-group')` — patrón idéntico a drawer catálogo / `contenidos.html`.
 
-## 10.3 Origen de datos del historial
+## 11.3 Origen de datos del historial
 
 Constantes:
 
@@ -461,7 +646,7 @@ Por cada fila/card se copian desde el ítem de catálogo:
 - `conCertificacion` (boolean)
 - `plantillaCertificadoId` / `plantillaCertificado` (si aplica)
 
-## 10.4 Vista tabla — columnas
+## 11.4 Vista tabla — columnas
 
 | Columna | Contenido | Notas |
 |---------|-----------|-------|
@@ -469,7 +654,7 @@ Por cada fila/card se copian desde el ítem de catálogo:
 | **Tipo de contenido** | `row.type` | ej. Curso, Ruta, Podcast |
 | **Nivel** | `row.level` | Básico / Intermedio / Avanzado |
 | **Progreso** | Barra + % | `tableProgressCellHtml(row.progress)` — patrón `mi-equipo/planes.html` |
-| **Certificado** | Ver §10.5 | Lógica exclusiva de este tab |
+| **Certificado** | Ver §11.5 | Lógica exclusiva de este tab |
 
 La cuadrícula muestra la **misma información** en formato card (progreso en overlay). Los contenidos **completados con certificado** muestran además el botón de opciones (`card-content` → `certificadoRowActions`) con acción **Descargar certificado** en el dropdown.
 
@@ -482,7 +667,7 @@ La cuadrícula muestra la **misma información** en formato card (progreso en ov
 
 Componente: `card-content.js` → `initCardContentCertificadoRowActions()`, menú vía `dropdown-menu.js` (una opción: Descargar certificado, ícono `down-to-line`).
 
-## 10.5 Columna Certificado — reglas de negocio
+## 11.5 Columna Certificado — reglas de negocio
 
 Evaluación en `historialCertificadoCellHtml(row)`:
 
@@ -496,7 +681,7 @@ El clic en **Descargar** (tabla) o **Descargar certificado** (menú de la card) 
 
 > La plantilla concreta (`plantillaCertificado`) **no** se muestra en la columna; vive en BD para futura generación del PDF/certificado.
 
-## 10.6 Certificación en catálogos (BD)
+## 11.6 Certificación en catálogos (BD)
 
 Script: `bd-master/scripts/patch-contenidos-catalogo-fields.mjs`  
 Regenerar React: `cd Ubits-React && npm run sync:bd-master`
@@ -531,174 +716,15 @@ Si `conCertificacion === false` → `plantillaCertificadoId` y `plantillaCertifi
 
 ---
 
-# 11. Tab 5 — Progreso (vista líder)
-
-## 11.1 Alcance y usuario
-
-Pestaña para **María Alejandra (E006)** como **líder de Logística** con permiso de ver progreso de su equipo (mismo universo que **Mi equipo**).
-
-| Constante | Valor |
-|-----------|--------|
-| Líder demo | `E006` — María Alejandra Sánchez Pardo |
-| Área resaltada en ranking | `Logística` |
-| Subordinados | `E035`–`E040` vía `getMiEquipoSubordinadosDirectos()` |
-
-## 11.2 Jerarquía visual
-
-| Bloque | Comportamiento al cambiar persona |
-|--------|-----------------------------------|
-| Hero unificado (`zona-estudio-progreso-hero`) | **Sí** — identidad, barra, KPIs y carrusel |
-| Recordatorio de estudio (`zona-estudio-progreso-recordatorio-widget`) | **No** — widget fijo de líder |
-| Rankings (`zona-estudio-progreso-rankings`) | **No** — dos columnas fijas |
-
-## 11.3 Composición de pantalla (de arriba a abajo)
-
-### A) Hero unificado
-
-Un solo widget `.zona-estudio-progreso-hero` con:
-
-#### A.1 Cabecera + profile list
-
-| Elemento | Detalle |
-|----------|---------|
-| Nombre | `#zona-estudio-progreso-hero-name` — nombre completo del colaborador seleccionado |
-| Profile list | `#zona-estudio-progreso-profile` — María primero + subordinados; clic cambia solo el hero |
-
-#### A.2 Cumplimiento promedio
-
-Promedio de `getProgresoColaboradorEnPlan(plan, personaId)` en planes **`Vigente`** de la persona seleccionada.
-
-| Elemento | Contenido |
-|----------|-----------|
-| Label | «Cumplimiento promedio» (sin repetir «planes vigentes») |
-| % | `#zona-estudio-progreso-general-pct` — `{pct} %` |
-| Barra | `progressBarHtml` lg, track subtle |
-
-#### A.3 KPIs en fila (`#zona-estudio-progreso-kpis`)
-
-Cuatro stats cards; gap entre cards = `var(--gap-2xl)` (igual que cards del carrusel de planes).
-
-| KPI | Regla |
-|-----|--------|
-| Planes vigentes | Count de planes `Vigente` asignados |
-| Completados | Progreso ≥ 100 % |
-| En curso | Progreso &gt; 0 % y &lt; 100 % |
-| Sin iniciar | Progreso = 0 % (sin avance registrado) · icono `fa-triangle-exclamation` |
-
-#### A.4 Carrusel planes activos (`#zona-estudio-progreso-planes-carousel`)
-
-| Regla | Detalle |
-|-------|---------|
-| Componente | `createCarouselContents({ type: 'study-zone' })` — **misma card** que home-learn |
-| Título sección | «Planes activos» |
-| Datos | Solo planes **`Vigente`** de la persona seleccionada |
-| Label progreso card | Contenidos: `{done}/{total} contenidos` · Competencias: minutos abreviados (`X hrs. X min. de X hrs. X min.`) |
-| Cierre | `Cierre: {Mes} {día}` desde `fechaFinIso` |
-
-#### Clic en card de plan
-
-| Persona seleccionada | Acción |
-|---------------------|--------|
-| **María (E006)** | `zonaEstudioNavigateToPlan(planId, tipo)` → tab **Plan de contenidos** o **Plan de competencias** con ese plan en el selector |
-| **Subordinado** | Drawer oficial de progreso individual (§11.6) |
-
-### B) Recordatorio de estudio (`#zona-estudio-progreso-recordatorio`)
-
-Segundo widget, **encima de los rankings**. Sin sección «Acciones» — el título vive dentro del widget.
-
-| Elemento | Contenido |
-|----------|-----------|
-| Título | «Recordatorio de estudio» |
-| Descripción | «Enviar recordatorio a quienes no hayan completado sus planes de formación asignados.» |
-| Botón | Secondary «Enviar recordatorio» → toast info del playground |
-
-Siempre visible (acción de líder); no cambia al seleccionar otra persona en el profile list.
-
-### C) Rankings — dos columnas (`zona-estudio-progreso-rankings`)
-
-Sin título de sección intermedio. **Izquierda:** Top de estudio · **Derecha:** Ranking entre áreas.
-
-#### C.1 Top de estudio (`#zona-estudio-progreso-ranking-equipo`)
-
-Button-group **Equipo / Empresa** (`#zona-estudio-progreso-equipo-scope-group`, `initButtonGroup`).
-
-| Modo | Datos | Descripción | Columna valor |
-|------|-------|-------------|-----------------|
-| **Equipo** (default) | María + subordinados | «De mayor a menor avance.» | Barra + % |
-| **Empresa** | Todos los colaboradores (`BD_MASTER_COLABORADORES`) | «De mayor a menor tiempo de estudio.» | `X hrs. X min.` (sin barra) |
-
-Tiempo de estudio empresa: suma en planes **Vigente** — competencias (`consumoPorUsuario.horas`) + contenidos (duración × progreso de cada ítem).
-
-Top 3: medallas con borde. **Nombre completo** + «(Tú)» solo en María. **Resaltada** la fila de la persona seleccionada en el hero (Equipo y Empresa). Filas sin gap.
-
-Listas con **máximo 10 filas visibles**; el resto con scroll.
-
-Modo **Empresa:** top 3 sticky; **autoscroll** a la persona seleccionada en el hero debajo del podio (si puesto &gt; 3). Línea divisora separada bajo el 3.º lugar (no borde del card).
-
-#### C.2 Ranking entre áreas (`#zona-estudio-progreso-ranking-areas`)
-
-- Planes de **contenidos** **`Vigente`** (`getPlanesVisiblesCreator()`, `tipo === 'contenidos'`).
-- Por `plan.area`: promedio de `getProgresoAgregadoPlan(plan)`.
-- Orden descendente por %.
-- **Top 3:** medallas (trofeo / medal / award).
-- **Tu área:** badge «Tu área» en fila de `Logística` + fondo resaltado.
-- Lista con **máx. 10 filas visibles** y scroll para el resto. **Gap 0** entre filas.
-
-## 11.6 Drawers de progreso (subordinados)
-
-Réplica de **Mi equipo → detalle plan** (solo lectura).
-
-### Plan de contenidos
-
-| Aspecto | Valor |
-|---------|--------|
-| Overlay | `drawer-zona-estudio-progreso-contenidos` |
-| Título | `{nombre} – contenidos y progreso` |
-| Body | `loadCardContentCompact` con ítems de `getDetalleContenidoPorUsuario(plan)[colaboradorId]` |
-| Referencia | `mi-equipo/detalle-plan.html` → `abrirPanelContenidos` |
-
-### Plan de competencias
-
-| Aspecto | Valor |
-|---------|--------|
-| Función | `MiEquipoPlanCompetenciasShared.openPanelCompetenciasReadOnly` |
-| Overlay | `drawer-zona-estudio-progreso-competencias` |
-| Título | `{nombre} – competencias y progreso` |
-| Subcopy card | **Minutos estudiados vs meta** — no «X habilidades» |
-
-## 11.7 Fix transversal — drawer competencias (minutos, no habilidades)
-
-En vista **progreso de estudiante** (read-only), el subtítulo de la card de competencia debe ser:
-
-**«{done} de {meta}»** en formato horas/minutos — ej. `1 hora 20 min. de 2 horas`.
-
-Helper compartido en `mi-equipo-plan-competencias-shared.js`:
-
-- `formatMinutosEstudioVsMeta(doneMin, totalMin)`
-- `getCompetenciaMinutosLabelForPlanPerson(plan, colaboradorId)` — usa `consumoPorUsuario[id].horas` vs `horasEstudioMeta` (default 2 h).
-
-**Archivos corregidos:**
-
-| Archivo | Cambio |
-|---------|--------|
-| `mi-equipo/mi-equipo-plan-competencias-shared.js` | `openPanelCompetenciasReadOnly` acepta `plan` + `colaboradorId` |
-| `mi-equipo/detalle-plan-competencias.html` | Pasa `planRawBd` y `rowId` al drawer |
-| `lms-creator/planes-formacion/detalle-plan-competencias.html` | `initPanelCompetencias` read-only usa minutos |
-| `zona-estudio-progreso.js` | Drawer subordinado competencias con mismos helpers |
-
-> Los drawers de **edición** (agregar competencias, ordenar habilidades) siguen mostrando habilidades — solo cambia la vista **progreso estudiante**.
-
----
-
 # 12. Mapa de fuentes de datos por tab
 
 | Tab | Fuente principal | Progreso |
 |-----|------------------|----------|
+| **Progreso** | `BD_PLANES_FORMACION` + `BD_MASTER_COLABORADORES` + `mi-equipo-context` | Planes `Vigente`; progreso real por persona/área |
 | Plan de contenidos | `BD_PLANES_FORMACION` → `contenidoPorUsuario[E006]` + `BDS_CONTENIDOS_UBITS` | Real (BD planes) + demo 3 planes al 100 % |
 | Plan de competencias | `BD_PLANES_FORMACION` → `consumoPorUsuario[E006]` + sugerencias `BDS_CONTENIDOS_UBITS` por `competenciaId` | Horas consumidas vs meta |
 | Exclusivo para mi | `EXCLUSIVO_FIQSHA_ITEMS` + `BDS_CONTENIDOS_FIQSHA` | Hardcode por ítem |
 | Historial y certificados | Mezcla `BDS_CONTENIDOS_UBITS` + `BDS_CONTENIDOS_FIQSHA` | Simulado (seed); certificado desde catálogo |
-| Progreso | `BD_PLANES_FORMACION` + `BD_MASTER_COLABORADORES` + `mi-equipo-context` | Planes `Vigente`; progreso real por persona/área |
 
 ---
 
@@ -706,11 +732,28 @@ Helper compartido en `mi-equipo-plan-competencias-shared.js`:
 
 | URL | Tab esperado |
 |-----|--------------|
-| `zona-estudio.html` | Plan de contenidos |
+| `zona-estudio.html` | **Progreso** (tab por defecto → `#progreso`) |
+| `zona-estudio.html#progreso` | Progreso (vista líder) |
+| `zona-estudio.html#contenidos` | Plan de contenidos |
 | `zona-estudio.html#competencias` | Plan de competencias |
 | `zona-estudio.html#exclusivo` | Exclusivo para mi |
 | `zona-estudio.html#historial` | Historial y certificados |
-| `zona-estudio.html#progreso` | Progreso (vista líder) |
+
+### Checklist Progreso
+
+- [ ] Tab **Progreso** es la primera pestaña y la activa al entrar sin hash
+- [ ] Profile list cambia hero (nombre, barra, KPIs, carrusel) sin mover rankings ni recordatorio
+- [ ] Clic en plan de María navega a tab contenidos/competencias con plan preseleccionado
+- [ ] Clic en plan de subordinado abre drawer read-only
+
+### Checklist Plan de contenidos
+
+- [ ] Selector lista solo planes Vigente / No vigente asignados a E006
+- [ ] Meta del selector: `{finalizados} de {total} contenidos` (ítems al 100 %)
+- [ ] Cambiar plan actualiza widget + grid
+- [ ] Plan No vigente muestra alerta error; «Recordatorio:» con `ubits-alert__emphasis`
+- [ ] Cards muestran proveedor real (no solo UBITS plataforma)
+- [ ] Búsqueda filtra por título, competencia, tipo, nivel
 
 ### Checklist Historial y certificados
 
@@ -720,13 +763,6 @@ Helper compartido en `mi-equipo-plan-competencias-shared.js`:
 - [ ] Descargar muestra toast informativo (sin descarga real)
 - [ ] ~4 filas «en progreso» aparecen antes que completados
 - [ ] Contador resultados respeta `formatIndicatorNumber`
-
-### Checklist Plan de contenidos
-
-- [ ] Selector lista solo planes Vigente / No vigente asignados a E006
-- [ ] Cambiar plan actualiza widget + grid
-- [ ] Plan No vigente muestra alerta error con «hace X días/semanas/meses»
-- [ ] Búsqueda filtra por título, competencia, tipo, nivel
 
 ---
 
@@ -744,15 +780,16 @@ Helper compartido en `mi-equipo-plan-competencias-shared.js`:
 # 15. Guía de migración a React
 
 1. **Layout:** `ColaboradorLayout` `activeTab="study-zone"` (layout estándar con SubNav aprendizaje).
-2. **Tabs:** componente Tab oficial + estado URL (`useRouter` hash o query).
-3. **Planes:** importar `TAREAS_PLANES_DB` / helpers desde `@/lib/mockData` — usar misma API que `getPlanesParaColaborador`.
-4. **Cards:** `<CardContent />` — nunca HTML crudo `course-card`.
+2. **Tabs:** componente Tab oficial + estado URL (`useRouter` hash). Orden UI y default: **Progreso** primero (`#progreso`).
+3. **Planes:** importar helpers desde `@/lib/mockData` — misma API que `getPlanesParaColaborador` (`bd-planes-formacion.ts`).
+4. **Cards:** `<CardContent />` — nunca HTML crudo `course-card`. Proveedor vía `resolvePrimaryAliadoId` en `lib/mockData/providerLogos.ts`.
 5. **Toolbar:** composición `HeaderProduct` / toolbar-panel; historial añade `ButtonGroup` para vista.
 6. **Tabla historial:** `UbitsTable` + `ProgressBar` + `UbitsButton` secondary xs para Descargar.
-7. **Tokens:** solo `var(--color-*)` en CSS Modules.
-8. **Copy:** textos **exactos** del vanilla (§7–10).
-9. **Números:** `formatIndicatorNumber` en contadores.
-10. **Sincronizar BD:** tras editar `bd-master/`, correr `npm run sync:bd-master` en `Ubits-React/`.
+7. **Alert plan vencido:** `UbitsAlert` con `ubits-alert__emphasis` en «Recordatorio:».
+8. **Tokens:** solo `var(--color-*)` en CSS Modules.
+9. **Copy:** textos **exactos** del vanilla (§7–§11).
+10. **Números:** `formatIndicatorNumber` en contadores.
+11. **Sincronizar BD:** tras editar `bd-master/`, correr `npm run sync:bd-master` en `Ubits-React/`.
 
 ---
 
@@ -765,8 +802,10 @@ Helper compartido en `mi-equipo-plan-competencias-shared.js`:
 | Descarga certificados (Creator) | `lms-creator/certificados/contexto-descarga-certificados.md` |
 | Toolbar + Ver como | `documentacion/componentes/toolbar-panel.html` |
 | Empty state sin resultados | Regla producto en `CLAUDE.md` / cursor-rules |
+| Énfasis en Alert | `documentacion/componentes/alert.html` → `ubits-alert__emphasis` |
+| Proveedores catálogo | `bd-master/catalogo-proveedores-helpers.js` |
 | Progreso en tabla | `aprendizaje/mi-equipo/planes.html` + `progress-bar.js` → `tableProgressCellHtml` |
 
 ---
 
-*Última actualización: documentación alineada con vanilla post-implementación de vista tabla + certificados en Historial (jul 2026).*
+*Última actualización: alineado con vanilla — 5 tabs (Progreso primero), proveedores en cards, alerta vencido con `ubits-alert__emphasis`, selector plan con finalizados/total (jul 2026).*

@@ -52,7 +52,10 @@
                     <div class="section-single">
                         <div class="widget--transparent widget-tabs-zona-estudio">
                             <div class="ubits-tabs-on-bg" id="zona-estudio-tabs" role="tablist" aria-label="Zona de estudio">
-                                <button type="button" class="ubits-tab ubits-tab--active" role="tab" aria-selected="true" data-tab-id="contenidos" id="zona-estudio-tab-contenidos">
+                                <button type="button" class="ubits-tab ubits-tab--active" role="tab" aria-selected="true" data-tab-id="progreso" id="zona-estudio-tab-progreso">
+                                    <span>Progreso</span>
+                                </button>
+                                <button type="button" class="ubits-tab" role="tab" aria-selected="false" data-tab-id="contenidos" id="zona-estudio-tab-contenidos">
                                     <span>Plan de contenidos</span>
                                 </button>
                                 <button type="button" class="ubits-tab" role="tab" aria-selected="false" data-tab-id="competencias" id="zona-estudio-tab-competencias">
@@ -64,9 +67,6 @@
                                 <button type="button" class="ubits-tab" role="tab" aria-selected="false" data-tab-id="historial" id="zona-estudio-tab-historial">
                                     <span>Historial y certificados</span>
                                 </button>
-                                <button type="button" class="ubits-tab" role="tab" aria-selected="false" data-tab-id="progreso" id="zona-estudio-tab-progreso">
-                                    <span>Progreso</span>
-                                </button>
                             </div>
                         </div>
                     </div>
@@ -75,7 +75,7 @@
                     <div class="section-single">
                         <div class="widget-contenido-tabs">
                             <!-- Panel: Plan de contenidos -->
-                            <div class="zona-estudio-tab-panel" id="zona-estudio-panel-contenidos" role="tabpanel" aria-labelledby="zona-estudio-tab-contenidos">
+                            <div class="zona-estudio-tab-panel" id="zona-estudio-panel-contenidos" role="tabpanel" aria-labelledby="zona-estudio-tab-contenidos" hidden>
                                 <div class="zona-estudio-tab-panel__inner">
                                     <!-- Filtro y progreso del plan -->
                                     <div class="widget-zona-estudio-plan" id="zona-estudio-plan-widget">
@@ -259,7 +259,7 @@
                             </div>
 
                             <!-- Panel: Progreso (vista líder) -->
-                            <div class="zona-estudio-tab-panel" id="zona-estudio-panel-progreso" role="tabpanel" aria-labelledby="zona-estudio-tab-progreso" hidden>
+                            <div class="zona-estudio-tab-panel" id="zona-estudio-panel-progreso" role="tabpanel" aria-labelledby="zona-estudio-tab-progreso">
                                 <div class="zona-estudio-tab-panel__inner zona-estudio-progreso">
                                     <!-- Nivel 1: hero unificado (cambia con la persona seleccionada) -->
                                     <section class="widget-zona-estudio-plan zona-estudio-progreso-hero" aria-labelledby="zona-estudio-progreso-hero-name">

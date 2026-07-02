@@ -3004,6 +3004,13 @@
         return false;
     }
 
+    function syncCrearContenidoFooterHint() {
+        var hint = document.getElementById('crear-contenido-footer-hint');
+        if (!hint) return;
+        var show = pageCurrentStep === 0 && !isCrearContenidoPortadaComplete();
+        hint.hidden = !show;
+    }
+
     function refreshCrearContenidoPageSiguienteState() {
         var btn = document.getElementById('crear-contenido-btn-siguiente');
         if (!btn) return;
@@ -3016,22 +3023,26 @@
             var n = list ? list.querySelectorAll(':scope > .ubits-paginas-creator__item').length : 0;
             btn.disabled = n === 0;
             btn.setAttribute('aria-disabled', n === 0 ? 'true' : 'false');
+            syncCrearContenidoFooterHint();
             return;
         }
         if (pageCurrentStep === 2) {
             btn.disabled = false;
             btn.setAttribute('aria-disabled', 'false');
+            syncCrearContenidoFooterHint();
             return;
         }
         if (pageCurrentStep >= 3) {
             btn.disabled = false;
             btn.setAttribute('aria-disabled', 'false');
+            syncCrearContenidoFooterHint();
             return;
         }
         var ok = isCrearContenidoPortadaComplete();
         btn.disabled = !ok;
         btn.setAttribute('aria-disabled', ok ? 'false' : 'true');
         syncPortadaInvalidOutline();
+        syncCrearContenidoFooterHint();
     }
 
     function finalizeCrearContenidoFlow() {

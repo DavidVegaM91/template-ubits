@@ -43,7 +43,7 @@
         { id: 'f003', progress: 65 },
         { id: 'f004', progress: 0 }
     ];
-    var TAB_IDS = ['contenidos', 'competencias', 'exclusivo', 'historial', 'progreso'];
+    var TAB_IDS = ['progreso', 'contenidos', 'competencias', 'exclusivo', 'historial'];
 
     var MESES_LARGO = [
         'enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio',
@@ -51,7 +51,7 @@
     ];
 
     var state = {
-        activeTab: 'contenidos',
+        activeTab: 'progreso',
         selectedPlanByTab: { contenidos: '', competencias: '' },
         planesContenidos: [],
         planesCompetencias: [],
@@ -1494,7 +1494,7 @@
     function parseTabFromHash() {
         var hash = (location.hash || '').replace(/^#/, '').toLowerCase();
         if (TAB_IDS.indexOf(hash) >= 0) return hash;
-        return 'contenidos';
+        return 'progreso';
     }
 
     function updateHash(tabId) {
@@ -1525,7 +1525,7 @@
 
     function setActiveTab(tabId, opts) {
         opts = opts || {};
-        if (TAB_IDS.indexOf(tabId) < 0) tabId = 'contenidos';
+        if (TAB_IDS.indexOf(tabId) < 0) tabId = 'progreso';
         state.activeTab = tabId;
 
         var tabsRoot = document.getElementById('zona-estudio-tabs');
@@ -1572,7 +1572,7 @@
         if (!tabsRoot) return;
         tabsRoot.querySelectorAll('.ubits-tab[data-tab-id]').forEach(function (btn) {
             btn.addEventListener('click', function () {
-                setActiveTab(btn.getAttribute('data-tab-id') || 'contenidos');
+                setActiveTab(btn.getAttribute('data-tab-id') || 'progreso');
             });
         });
         if (typeof initUbitsTabsScroll === 'function') {

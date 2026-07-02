@@ -637,6 +637,38 @@ body.crear-contenido-app-open .ubits-dropdown-menu__content {
     display: none;
 }
 
+/* Footer — hint paso Portada (izquierda; oculto cuando el formulario está completo) */
+.crear-contenido-footer-hint {
+    margin: 0;
+    flex: 0 1 auto;
+    min-width: 0;
+    max-width: 28rem;
+    text-align: left;
+    color: var(--ubits-fg-1-medium);
+}
+
+@media (max-width: 639px) {
+    .page-crear-contenido .ubits-layout-immersive__footer-actions {
+        flex-wrap: nowrap;
+        align-items: center;
+    }
+
+    .page-crear-contenido .crear-contenido-footer-hint {
+        flex: 1 1 0;
+        max-width: none;
+    }
+
+    .page-crear-contenido .ubits-layout-immersive__footer-actions:has(.crear-contenido-footer-hint:not([hidden])) .ubits-layout-immersive__footer-grow {
+        display: none;
+    }
+
+    .page-crear-contenido .ubits-layout-immersive__footer-nav {
+        flex: 0 0 auto;
+        flex-wrap: nowrap;
+        margin-left: auto;
+    }
+}
+
 .contenidos-creator-titulo-wrap {
     display: flex;
     flex-direction: column;
