@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="../../images/playground-favicon.svg">
+    <title>Card plan formación - Plan de formación activo | UBITS Playground</title>
+    <link rel="stylesheet" href="../../general-styles/ubits-colors.css">
+    <link rel="stylesheet" href="../../general-styles/styles.css">
+    <link rel="stylesheet" href="../../general-styles/fontawesome-icons.css">
+    <link rel="stylesheet" href="../../general-styles/ubits-typography.css">
+    <link rel="stylesheet" href="../../components/sub-nav.css">
+    <link rel="stylesheet" href="../../components/sidebar.css">
+    <link rel="stylesheet" href="../../docs/docs-sidebar.css">
+    <link rel="stylesheet" href="../../docs/docstyles.css">
+    <link rel="stylesheet" href="../../components/button.css">
+    <link rel="stylesheet" href="../../components/input.css">
+    <link rel="stylesheet" href="../../components/dropdown-menu.css">
+    <link rel="stylesheet" href="../../components/progress-bar.css">
+    <link rel="stylesheet" href="../../components/card-plan-formacion.css">
+    <link rel="stylesheet" href="../../components/alert.css">
+    <link rel="stylesheet" href="../../components/toast.css">
+    <style>
+        .card-preview-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 220px;
+            margin-bottom: 24px;
+        }
+        .single-card-preview {
+            max-width: 360px;
+            width: 100%;
+        }
+        .preview-controls {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--gap-lg);
+            margin-top: 24px;
+        }
+        .control-group { display: flex; flex-direction: column; gap: var(--gap-sm); }
+        .card-plan-formacion.hover-state { border-color: var(--ubits-accent-brand); }
+    </style>
+</head>
+<body class="componentes-page" data-theme="light">
+    <div class="dashboard-container">
+        <div class="tooltip" id="tooltip"></div>
+        <main class="main-content">
+            <div id="top-nav-container"></div>
+            <div style="display: flex;">
+                <div id="docs-dropdown-container"></div>
+                <div id="docs-sidebar-container"></div>
+                <div class="components-content">
+                    <div class="content-area" style="display: block; width: 100%;">
+                        <div style="text-align: center; margin-bottom: 60px;">
+                            <h1 class="ubits-display-d2-bold" style="margin-bottom: 24px; color: var(--ubits-accent-brand);">
+                                Card plan formación
+                            </h1>
+                            <p class="ubits-body-md-regular" style="max-width: 800px; margin: 0 auto 32px; line-height: 1.6;">
+                                Tarjeta clickeable de plan de formación activo: fecha de cierre, título, barra de progreso y meta (contenidos o minutos). Categoría <strong>Aprendizaje</strong>. Hover con borde azul como Card Content.
+                            </p>
+                        </div>
+
+                        <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: var(--border-radius-lg); margin-bottom: 40px;">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-eye" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Preview del componente
+                            </h2>
+                            <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: var(--border-radius-md);">
+                                <div class="card-preview-container">
+                                    <div class="single-card-preview" id="card-preview"></div>
+                                </div>
+                            </div>
+                            <div class="preview-controls">
+                                <div class="control-group" id="estado-select-container"></div>
+                                <div class="control-group" id="progreso-select-container"></div>
+                            </div>
+                        </div>
+
+                        <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: var(--border-radius-lg); margin-bottom: 40px;">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-sparkles" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Características principales
+                            </h2>
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: var(--gap-xl);">
+                                <div style="text-align: center; padding: 24px; background: var(--ubits-bg-2); border-radius: var(--border-radius-md);">
+                                    <div style="font-size: var(--font-size-d3); color: var(--ubits-accent-brand); margin-bottom: 16px;"><i class="far fa-calendar"></i></div>
+                                    <div class="ubits-body-md-bold" style="margin-bottom: 8px;">Cierre del plan</div>
+                                    <div class="ubits-body-sm-regular">Meta superior con fecha de cierre del plan vigente.</div>
+                                </div>
+                                <div style="text-align: center; padding: 24px; background: var(--ubits-bg-2); border-radius: var(--border-radius-md);">
+                                    <div style="font-size: var(--font-size-d3); color: var(--ubits-accent-brand); margin-bottom: 16px;"><i class="far fa-chart-line"></i></div>
+                                    <div class="ubits-body-md-bold" style="margin-bottom: 8px;">Progreso</div>
+                                    <div class="ubits-body-sm-regular">Barra sm redondeada: track subtle (default), azul marca (progreso) o verde success (completado).</div>
+                                </div>
+                                <div style="text-align: center; padding: 24px; background: var(--ubits-bg-2); border-radius: var(--border-radius-md);">
+                                    <div style="font-size: var(--font-size-d3); color: var(--ubits-accent-brand); margin-bottom: 16px;"><i class="far fa-hand-pointer"></i></div>
+                                    <div class="ubits-body-md-bold" style="margin-bottom: 8px;">Hover interactivo</div>
+                                    <div class="ubits-body-sm-regular">Borde azul marca al hover, igual que Card Content.</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- PROMPTS ÚTILES -->
+                        <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: var(--border-radius-lg); margin-bottom: 40px;">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-comments" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Prompts útiles
+                            </h2>
+                            <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6; color: var(--ubits-fg-1-medium);">
+                                Usa estos prompts con Cursor AI para integrar card-plan-formacion en pantallas de aprendizaje.
+                            </p>
+
+                            <div id="cardplanformacion-warning-alert" style="margin-bottom: 32px;"></div>
+
+                            <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
+                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                                    <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">
+                                        Carrusel de planes en Zona de estudio
+                                    </h3>
+                                    <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('cardplanformacion-prompt-1')">
+                                        <i class="far fa-copy"></i><span>Copiar</span>
+                                    </button>
+                                </div>
+                                <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm);">
+                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="cardplanformacion-prompt-1">En [ubicación], muestra los planes vigentes de [colaborador/equipo] con createCarouselContents type study-zone. Importa progress-bar.css, card-plan-formacion.css, card-plan-formacion.js, carousel-contents.css y carousel-contents.js. Usa renderCardPlanFormacion / datos de bd-planes-formacion.</code></pre>
+                                </div>
+                            </div>
+
+                            <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
+                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                                    <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">
+                                        Plan sin iniciar
+                                    </h3>
+                                    <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('cardplanformacion-prompt-2')">
+                                        <i class="far fa-copy"></i><span>Copiar</span>
+                                    </button>
+                                </div>
+                                <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm);">
+                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="cardplanformacion-prompt-2">Muestra la card-plan-formacion del plan [nombre_del_plan] en estado sin iniciar (empty: true, progressLabel: «Sin iniciar»).</code></pre>
+                                </div>
+                            </div>
+
+                            <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
+                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                                    <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">
+                                        Plan completado
+                                    </h3>
+                                    <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('cardplanformacion-prompt-3')">
+                                        <i class="far fa-copy"></i><span>Copiar</span>
+                                    </button>
+                                </div>
+                                <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm);">
+                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="cardplanformacion-prompt-3">Haz que la card-plan-formacion de [nombre_del_plan] muestre progreso completado al 100% con barra verde (status: completed).</code></pre>
+                                </div>
+                            </div>
+
+                            <div>
+                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                                    <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">
+                                        Lista de cards sueltas
+                                    </h3>
+                                    <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('cardplanformacion-prompt-4')">
+                                        <i class="far fa-copy"></i><span>Copiar</span>
+                                    </button>
+                                </div>
+                                <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm);">
+                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="cardplanformacion-prompt-4">En [ubicación], renderiza [número] cards de plan de formación con loadCardPlanFormacion. Importa progress-bar.css, card-plan-formacion.css, progress-bar.js y card-plan-formacion.js.</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <div id="ubits-toast-container"></div>
+    <script src="../../components/sidebar.js"></script>
+    <script src="../../components/sub-nav.js"></script>
+    <script src="../../components/alert.js"></script>
+    <script src="../../components/toast.js"></script>
+    <script src="../../components/dropdown-menu.js"></script>
+    <script src="../../components/input.js"></script>
+    <script src="../../docs/docs-sidebar.js"></script>
+    <script src="../../components/progress-bar.js"></script>
+    <script src="../../components/card-plan-formacion.js"></script>
+    <script src="../../script.js"></script>
+    <script>
+        var previewData = {
+            cierre: 'Cierre: Abril 16',
+            title: 'Onboarding Corporativo',
+            progress: 60,
+            progressLabel: '2/6 contenidos',
+            empty: false,
+            status: 'progress'
+        };
+
+        function renderPreview() {
+            var el = document.getElementById('card-preview');
+            if (el && typeof renderCardPlanFormacion === 'function') {
+                el.innerHTML = renderCardPlanFormacion(previewData);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            loadSubNav('top-nav-container', 'documentacion');
+            setTimeout(function () {
+                document.querySelectorAll('.nav-tab.active, .hamburger-item.active').forEach(function (item) {
+                    item.classList.remove('active');
+                });
+                var navTab = document.querySelector('.nav-tab[data-tab="section3"]');
+                var hamburgerItem = document.querySelector('.hamburger-item[data-tab="section3"]');
+                if (navTab) navTab.classList.add('active');
+                if (hamburgerItem) hamburgerItem.classList.add('active');
+            }, 200);
+            loadDocsSidebar('card-plan-formacion');
+
+            if (typeof showAlert === 'function') {
+                showAlert('warning', 'Importante: Antes de enviar estos prompts a Cursor, reemplaza todos los textos entre [corchetes] con la información específica de tu proyecto.', {
+                    containerId: 'cardplanformacion-warning-alert',
+                    noClose: true
+                });
+            }
+
+            if (typeof createInput === 'function') {
+                createInput({
+                    containerId: 'estado-select-container',
+                    type: 'select',
+                    label: 'Estado hover',
+                    placeholder: 'Seleccionar...',
+                    selectOptions: [
+                        { value: 'default', text: 'Default' },
+                        { value: 'hover', text: 'Hover (simulado)' }
+                    ],
+                    value: 'default',
+                    size: 'sm',
+                    onChange: function (val) {
+                        var card = document.querySelector('#card-preview .card-plan-formacion');
+                        if (card) card.classList.toggle('hover-state', val === 'hover');
+                    }
+                });
+                createInput({
+                    containerId: 'progreso-select-container',
+                    type: 'select',
+                    label: 'Progreso',
+                    placeholder: 'Seleccionar...',
+                    selectOptions: [
+                        { value: 'default', text: 'Default (sin iniciar)' },
+                        { value: 'progress', text: 'En progreso (60 %)' },
+                        { value: 'completed', text: 'Completado (100 %)' }
+                    ],
+                    value: 'progress',
+                    size: 'sm',
+                    onChange: function (val) {
+                        if (val === 'default') {
+                            previewData.empty = true;
+                            previewData.progress = 0;
+                            previewData.status = 'default';
+                            previewData.progressLabel = 'Sin iniciar';
+                        } else if (val === 'completed') {
+                            previewData.empty = false;
+                            previewData.progress = 100;
+                            previewData.status = 'completed';
+                            previewData.progressLabel = '6/6 contenidos';
+                        } else {
+                            previewData.empty = false;
+                            previewData.progress = 60;
+                            previewData.status = 'progress';
+                            previewData.progressLabel = '2/6 contenidos';
+                        }
+                        renderPreview();
+                    }
+                });
+            }
+            renderPreview();
+        });
+
+        function copyPrompt(promptId) {
+            var el = document.getElementById(promptId);
+            if (!el) return;
+            var text = el.textContent || '';
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(text).then(function () {
+                    if (typeof showToast === 'function') {
+                        showToast('success', 'Prompt copiado al portapapeles');
+                    }
+                });
+            }
+        }
+    </script>
+</body>
+</html>

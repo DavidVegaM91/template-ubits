@@ -1,0 +1,79 @@
+/* ========================================
+   UBITS CARD PLAN FORMACIÓN
+   Tarjeta de plan de formación (Zona de estudio, carruseles)
+   Requiere progress-bar.css (+ progress-bar.js opcional) en la página
+   ======================================== */
+
+.card-plan-formacion {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-md);
+    min-width: 0;
+    padding: var(--padding-xl) var(--padding-2xl);
+    box-sizing: border-box;
+    border: 1px solid var(--ubits-border-1);
+    border-radius: var(--border-radius-lg);
+    background: var(--ubits-bg-1);
+    font-family: var(--ubits-font-family-sans);
+    cursor: pointer;
+    transition: border-color 0.2s ease;
+}
+
+.card-plan-formacion:hover {
+    border-color: var(--ubits-accent-brand);
+}
+
+.card-plan-formacion:focus-visible {
+    outline: 2px solid var(--ubits-accent-brand);
+    outline-offset: 2px;
+}
+
+.card-plan-formacion__head {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-xs);
+    min-width: 0;
+}
+
+.card-plan-formacion__cierre {
+    margin: 0;
+    color: var(--ubits-fg-1-medium);
+}
+
+.card-plan-formacion__title {
+    margin: 0;
+    color: var(--ubits-fg-1-high);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.card-plan-formacion__progress {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-sm);
+    width: 100%;
+}
+
+.card-plan-formacion__progress .ubits-progress-bar {
+    width: 100%;
+}
+
+.card-plan-formacion__progress-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--gap-sm);
+}
+
+.card-plan-formacion__progress-label {
+    color: var(--ubits-fg-1-medium);
+}
+
+.card-plan-formacion__progress-pct {
+    color: var(--ubits-accent-brand);
+}
+
+.card-plan-formacion--completed .card-plan-formacion__progress-pct {
+    color: var(--ubits-feedback-accent-success);
+}

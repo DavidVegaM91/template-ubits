@@ -295,7 +295,8 @@
             title: plan.nombre || '',
             progress: pct,
             progressLabel: progressLabel,
-            empty: pct <= 0
+            empty: pct <= 0,
+            status: pct >= 100 ? 'completed' : (pct > 0 ? 'progress' : 'default')
         };
     }
 

@@ -900,8 +900,10 @@
 /* ========================================
    VARIANTE: STUDY ZONE (Zona de estudio)
    Planes de formación activos — grid desktop, carrusel mobile
-   Requiere progress-bar.css en la página (+ progress-bar.js opcional)
+   Cards: components/card-plan-formacion.css (+ progress-bar.css)
    ======================================== */
+
+@import url('./card-plan-formacion.css');
 
 .carousel-contents--study-zone-wrapper {
     display: flex;
@@ -945,71 +947,6 @@
     width: 100%;
 }
 
-.carousel-contents--study-zone__plan-card {
-    display: flex;
-    flex-direction: column;
-    gap: var(--gap-md);
-    min-width: 0;
-    padding: var(--padding-xl) var(--padding-2xl);
-    box-sizing: border-box;
-    border: 1px solid var(--ubits-border-1);
-    border-radius: var(--border-radius-lg);
-    background: var(--ubits-bg-1);
-    font-family: var(--ubits-font-family-sans);
-    cursor: pointer;
-}
-
-.carousel-contents--study-zone__plan-card:focus-visible {
-    outline: 2px solid var(--ubits-accent-brand);
-    outline-offset: 2px;
-}
-
-.carousel-contents--study-zone__plan-head {
-    display: flex;
-    flex-direction: column;
-    gap: var(--gap-xs);
-    min-width: 0;
-}
-
-.carousel-contents--study-zone__plan-cierre {
-    margin: 0;
-    color: var(--ubits-fg-1-medium);
-}
-
-.carousel-contents--study-zone__plan-title {
-    margin: 0;
-    color: var(--ubits-fg-1-high);
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-.carousel-contents--study-zone__plan-progress {
-    display: flex;
-    flex-direction: column;
-    gap: var(--gap-sm);
-    width: 100%;
-}
-
-.carousel-contents--study-zone__plan-progress .ubits-progress-bar {
-    width: 100%;
-}
-
-.carousel-contents--study-zone__plan-progress-meta {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: var(--gap-sm);
-}
-
-.carousel-contents--study-zone__plan-progress-label {
-    color: var(--ubits-fg-1-medium);
-}
-
-.carousel-contents--study-zone__plan-progress-pct {
-    color: var(--ubits-accent-brand);
-}
-
 .carousel-contents--study-zone__indicators {
     display: none;
 }
@@ -1040,7 +977,7 @@
         display: none;
     }
 
-    .carousel-contents--study-zone__plan-card {
+    .carousel-contents--study-zone__track .card-plan-formacion {
         flex: 0 0 100%;
         scroll-snap-align: start;
         min-width: 224px;

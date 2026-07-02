@@ -311,54 +311,14 @@
  */
 /**
  * Card de plan para variante study-zone (Zona de estudio).
- * Requiere progress-bar.css (+ progress-bar.js opcional) en la página.
+ * Delegado en components/card-plan-formacion.js
  */
 function renderStudyZonePlanCard(plan) {
-    var value = plan.empty ? 0 : Math.max(0, Math.min(100, Math.round(Number(plan.progress) || 0)));
-    var progressBar = '';
-    if (typeof progressBarHtml === 'function') {
-        progressBar = progressBarHtml({
-            value: value,
-            size: 'sm',
-            rounded: true,
-            track: plan.empty ? 'subtle' : 'default',
-            ariaLabel: 'Progreso del plan'
-        });
-    } else {
-        progressBar =
-            '<div class="ubits-progress-bar ubits-progress-bar--sm ubits-progress-bar--rounded' +
-            (plan.empty ? ' ubits-progress-bar--track-subtle' : '') +
-            '" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="' + value +
-            '" aria-label="Progreso del plan">' +
-            '<div class="ubits-progress-bar__track"><div class="ubits-progress-bar__fill" style="width:' + value + '%"></div></div></div>';
+    if (typeof renderCardPlanFormacion === 'function') {
+        return renderCardPlanFormacion(plan);
     }
-    var cierre = plan.cierre || plan.deadline || '';
-    var title = plan.title || '';
-    var progressLabel = plan.progressLabel || '';
-    var pct = plan.empty ? 0 : value;
-    var dataAttrs = '';
-    if (plan.planId) {
-        dataAttrs += ' data-plan-id="' + String(plan.planId).replace(/"/g, '&quot;') + '"';
-    }
-    if (plan.planTipo) {
-        dataAttrs += ' data-plan-tipo="' + String(plan.planTipo).replace(/"/g, '&quot;') + '"';
-    }
-
-    return (
-        '<article class="carousel-contents--study-zone__plan-card" tabindex="0"' + dataAttrs + '>' +
-            '<div class="carousel-contents--study-zone__plan-head">' +
-                '<p class="ubits-body-sm-regular carousel-contents--study-zone__plan-cierre">' + cierre + '</p>' +
-                '<p class="ubits-body-md-semibold carousel-contents--study-zone__plan-title">' + title + '</p>' +
-            '</div>' +
-            '<div class="carousel-contents--study-zone__plan-progress">' +
-                progressBar +
-                '<div class="carousel-contents--study-zone__plan-progress-meta">' +
-                    '<span class="ubits-body-sm-regular carousel-contents--study-zone__plan-progress-label">' + progressLabel + '</span>' +
-                    '<span class="ubits-body-sm-semibold carousel-contents--study-zone__plan-progress-pct">' + pct + '%</span>' +
-                '</div>' +
-            '</div>' +
-        '</article>'
-    );
+    console.warn('renderCardPlanFormacion no disponible — carga card-plan-formacion.js antes de carousel-contents.js');
+    return '';
 }
 
 function mountCarouselContentsIndicators(containerId, suffix, count, activeIndex, ariaLabel, onSelect) {
@@ -1026,7 +986,7 @@ function createCarouselContents(options) {
         var studyNextBtn = container.querySelector('.carousel-contents--study-zone__next-btn');
         if (!studyTrack) return;
 
-        var studyCards = studyTrack.querySelectorAll('.carousel-contents--study-zone__plan-card');
+        var studyCards = studyTrack.querySelectorAll('.card-plan-formacion');
         studyCards.forEach(function (card, index) {
             function activatePlan() {
                 if (typeof onPlanClick === 'function') onPlanClick(slides[index], index);
@@ -1049,7 +1009,7 @@ function createCarouselContents(options) {
             function (index) {
                 scrollCarouselContentsToIndex(
                     studyTrack,
-                    '.carousel-contents--study-zone__plan-card',
+                    '.card-plan-formacion',
                     index,
                     updateStudyZoneControls
                 );
@@ -1068,7 +1028,7 @@ function createCarouselContents(options) {
         }
 
         function getStudyZoneCardStep() {
-            var card = studyTrack.querySelector('.carousel-contents--study-zone__plan-card');
+            var card = studyTrack.querySelector('.card-plan-formacion');
             if (!card) return studyTrack.clientWidth;
             var gap = parseFloat(getComputedStyle(studyTrack).gap) || 0;
             return card.offsetWidth + gap;
