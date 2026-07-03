@@ -311,18 +311,14 @@
             onChange: tick
         });
         var catOpts = [{ value: '', text: 'Selecciona una opción' }].concat(o.categorias);
-        var firstRealCat = (o.categorias || []).filter(function (c) {
-            return c && c.value != null && String(c.value).trim() !== '';
-        })[0];
-        var defaultCatId = firstRealCat ? String(firstRealCat.value) : '';
         crearContenidoInputApis.categoria = createInput({
             containerId: 'crear-contenido-in-categoria',
             type: 'select',
-            label: 'Categoría',
+            label: 'Categoría (opcional)',
             placeholder: CATEGORIA_SELECT_PLACEHOLDER_TEXT,
             size: 'sm',
             selectOptions: catOpts,
-            value: defaultCatId,
+            value: '',
             onChange: tick
         });
         refreshCrearContenidoPageSiguienteState();
@@ -389,12 +385,6 @@
         var tv = a.tiempo ? String(a.tiempo.getValue()) : '';
         if (isNaN(parseTiempoPositive(tv))) missing.push('tiempo');
         if (!a.unidad || !String(a.unidad.getValue() || '').trim()) missing.push('unidad');
-        var catDisp = a.categoria ? String(a.categoria.getValue() || '').trim() : '';
-        var catOk =
-            catDisp.length > 0 &&
-            catDisp !== CATEGORIA_SELECT_PLACEHOLDER_TEXT &&
-            catDisp !== 'Selecciona una opción...';
-        if (!catOk) missing.push('categoria');
 
         return { complete: missing.length === 0, missing: missing };
     }
@@ -443,9 +433,6 @@
             } else if (key === 'unidad') {
                 var u = document.getElementById('crear-contenido-in-unidad');
                 if (u) u.classList.add(PORTADA_INVALID_CLASS);
-            } else if (key === 'categoria') {
-                var c = document.getElementById('crear-contenido-in-categoria');
-                if (c) c.classList.add(PORTADA_INVALID_CLASS);
             }
         });
     }

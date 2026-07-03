@@ -53,6 +53,10 @@
     var _pimIaInputApi = null;
     var _pimOnWindowResize = null;
     var _pimResizeRaf = null;
+    /** Overlay ya construido: reabrir solo oculta/muestra (conserva conversación IA). */
+    var _pimModalBuilt = false;
+    /** Borrador del modal al cerrar sin Guardar (vista previa IA + prompt). */
+    var _pimSessionDraft = null;
 
     function getTokens() {
         return global._ubitsAiTokenPool != null ? global._ubitsAiTokenPool : 500000;
@@ -256,8 +260,8 @@
             '<img id="cc-pim-result-img" class="cc-pim-result-img" src="' +
             esc(src) +
             '" alt="Portada generada">' +
-            '<button type="button" class="ubits-button ubits-button--secondary ubits-button--xs ubits-button--icon-only cc-pim-result-download" id="cc-pim-btn-download" aria-label="Descargar portada">' +
-            '<i class="far fa-download"></i></button></div>';
+            '<button type="button" class="ubits-button ubits-button--secondary ubits-button--xs cc-pim-result-download" id="cc-pim-btn-download" aria-label="Descargar portada">' +
+            '<i class="far fa-download"></i><span>Descargar</span></button></div>';
         wireDownload();
         refreshGenButtons();
     }
@@ -636,7 +640,8 @@
                 fromAi: !!_iaResultSrc && dataUrl === _iaResultSrc,
                 iaPrompt: _iaResultSrc && dataUrl === _iaResultSrc ? getPimIdeaText() : ''
             });
-            if (typeof global.closeModal === 'function') global.closeModal(OVERLAY_ID);
+            _pimSessionDraft = null;
+            hidePimModal();
             return;
         }
 
@@ -650,12 +655,31 @@
         }
     }
 
+    function snapshotPimDraft() {
+        _pimSessionDraft = {
+            iaResultSrc: _iaResultSrc,
+            iaResultPrompt: _iaResultPrompt,
+            iaPrompt: getPimIdeaText(),
+            iaLayoutExpanded: _pimIaLayoutExpanded,
+            pendingImgs: _pimPendingImgs.slice(),
+            pendingFiles: _pimPendingFiles.slice(),
+            uploadDataUrl: _uploadDataUrl,
+            currentTab: _currentTab,
+            modalTrailerUrl: _modalTrailerUrl,
+            iaImageIndex: _iaImageIndex
+        };
+    }
+
+    function hidePimModal() {
+        snapshotPimDraft();
+        teardownPimModalResize();
+        if (typeof global.closeModal === 'function') global.closeModal(OVERLAY_ID);
+    }
+
     function wireFooterActions() {
         var cancel = document.getElementById('cc-pim-footer-cancel');
         if (cancel) {
-            cancel.onclick = function () {
-                if (typeof global.closeModal === 'function') global.closeModal(OVERLAY_ID);
-            };
+            cancel.onclick = hidePimModal;
         }
         var saveBtn = document.getElementById('cc-pim-footer-save');
         if (saveBtn) {
@@ -700,24 +724,94 @@
         });
     }
 
-    function resetState(opts) {
+    /**
+     * Prepara estado al construir el overlay por primera vez (o tras eliminarlo del DOM).
+     * Prioridad: portada guardada en página > borrador de sesión > vacío.
+     */
+    function preparePimOpenState(opts) {
         opts = opts || {};
         _onApply = typeof opts.onApply === 'function' ? opts.onApply : null;
         _onTrailerSaved = typeof opts.onTrailerSaved === 'function' ? opts.onTrailerSaved : null;
+        _trailerInputInited = false;
+        _subirFuInited = false;
+        _pimIaInputApi = null;
+        _pimPendingImgs = [];
+        _pimPendingFiles = [];
+
+        var isSavedReopen = !!(opts.editIaPreviewSrc && opts.editIaPrompt);
+
+        if (_pimSessionDraft) {
+            var d = _pimSessionDraft;
+            _iaResultSrc = d.iaResultSrc || '';
+            _iaResultPrompt = d.iaResultPrompt || '';
+            _pimIaLayoutExpanded = !!d.iaLayoutExpanded;
+            _uploadDataUrl = d.uploadDataUrl || '';
+            _currentTab = d.currentTab || 'ia';
+            _pimPendingImgs = (d.pendingImgs || []).slice();
+            _pimPendingFiles = (d.pendingFiles || []).slice();
+            _iaImageIndex = typeof d.iaImageIndex === 'number' ? d.iaImageIndex : 0;
+            _modalTrailerUrl =
+                d.modalTrailerUrl != null
+                    ? String(d.modalTrailerUrl).trim()
+                    : opts.initialTrailerUrl != null
+                      ? String(opts.initialTrailerUrl).trim()
+                      : '';
+            return {
+                iaPrompt: d.iaPrompt || '',
+                isIaReopen: !!(_iaResultSrc && _pimIaLayoutExpanded),
+                startTab: _currentTab,
+                subirData: _uploadDataUrl && _currentTab === 'subir' ? _uploadDataUrl : opts.editSubirDataUrl || ''
+            };
+        }
+
         _currentTab = 'ia';
         _iaImageIndex = 0;
         _iaResultSrc = '';
         _iaResultPrompt = '';
         _uploadDataUrl = '';
-        _modalTrailerUrl = opts.initialTrailerUrl != null ? String(opts.initialTrailerUrl).trim() : '';
-        _trailerInputInited = false;
-        _subirFuInited = false;
         _pimIaLayoutExpanded = false;
-        _pimPendingImgs = [];
-        _pimPendingFiles = [];
-        if (_pimIaInputApi) {
-            _pimIaInputApi.destroy();
-            _pimIaInputApi = null;
+        _modalTrailerUrl = opts.initialTrailerUrl != null ? String(opts.initialTrailerUrl).trim() : '';
+
+        if (isSavedReopen) {
+            _iaResultSrc = opts.editIaPreviewSrc;
+            _iaResultPrompt = opts.editIaPrompt ? String(opts.editIaPrompt).trim() : '';
+            _pimIaLayoutExpanded = true;
+            _pimSessionDraft = null;
+        }
+
+        var startTab = opts.editStartTab || 'ia';
+        if (opts.editSubirDataUrl && !isSavedReopen) startTab = 'subir';
+
+        return {
+            iaPrompt: isSavedReopen ? opts.editIaPrompt || '' : opts.editIaPrompt || '',
+            isIaReopen: isSavedReopen,
+            startTab: startTab,
+            subirData: opts.editSubirDataUrl || ''
+        };
+    }
+
+    function reopenExistingPimModal(opts) {
+        opts = opts || {};
+        _onApply = typeof opts.onApply === 'function' ? opts.onApply : null;
+        _onTrailerSaved = typeof opts.onTrailerSaved === 'function' ? opts.onTrailerSaved : null;
+        if (opts.initialTrailerUrl != null) {
+            _modalTrailerUrl = String(opts.initialTrailerUrl).trim();
+        }
+        syncPimTokensBadge();
+        syncFooter();
+        syncPimOverlayLayout();
+        wirePimModalResize();
+        if (typeof global.showModal === 'function') {
+            global.showModal(OVERLAY_ID);
+        } else {
+            var existing = document.getElementById(OVERLAY_ID);
+            if (existing) {
+                existing.style.display = 'flex';
+                existing.setAttribute('aria-hidden', 'false');
+            }
+        }
+        if (typeof global.initTooltip === 'function') {
+            global.initTooltip('#' + OVERLAY_ID + ' [data-tooltip]');
         }
     }
 
@@ -783,9 +877,17 @@
     }
 
     function openPortadaImagenModal(opts) {
+        opts = opts || {};
         if (typeof global.openModal !== 'function') return;
+
+        var existingOverlay = document.getElementById(OVERLAY_ID);
+        if (existingOverlay && _pimModalBuilt) {
+            reopenExistingPimModal(opts);
+            return;
+        }
+
         teardownPimModalResize();
-        resetState(opts);
+        var hydration = preparePimOpenState(opts);
 
         var overlay = global.openModal({
             overlayId: OVERLAY_ID,
@@ -798,52 +900,46 @@
             iaTokensRemaining: getTokens(),
             iaTokensBadgeId: 'cc-pim-modal-tokens-badge',
             onClose: function () {
+                snapshotPimDraft();
                 teardownPimModalResize();
                 _onApply = null;
                 _onTrailerSaved = null;
             }
         });
 
-        if (overlay) applyAiChrome(overlay);
+        if (overlay) {
+            applyAiChrome(overlay);
+            _pimModalBuilt = true;
+        }
         wirePimModalResize();
 
         setTimeout(function () {
             wireTabBar();
-            initPimIaInput(opts.editIaPrompt || '');
+            initPimIaInput(hydration.iaPrompt || '');
             wireFooterActions();
 
-            var isIaReopen = !!(opts.editIaPreviewSrc && opts.editIaPrompt);
-            var subirData = opts.editSubirDataUrl;
-
-            if (isIaReopen) {
-                _iaResultSrc = opts.editIaPreviewSrc;
-                _iaResultPrompt = opts.editIaPrompt ? String(opts.editIaPrompt).trim() : '';
-                _pimIaLayoutExpanded = true;
-            }
+            var isIaReopen = hydration.isIaReopen;
+            var subirData = hydration.subirData;
 
             if (!isIaReopen) {
                 setPreviewState('placeholder');
                 initPimPreviewEmptyState();
             }
 
-            if (isIaReopen) {
+            if (isIaReopen && _iaResultSrc) {
                 setPreviewState('result');
                 renderIaResult(_iaResultSrc);
             }
 
-            var startTab = opts.editStartTab || 'ia';
-            if (subirData && !isIaReopen) {
-                startTab = 'subir';
-            }
+            switchToTab(hydration.startTab || 'ia');
 
-            switchToTab(startTab);
-
-            if (startTab === 'subir' && subirData) {
+            if (hydration.startTab === 'subir' && subirData) {
                 setTimeout(function () {
                     hydrateSubirTabFromDataUrl(subirData);
                 }, 0);
             }
 
+            syncPimPendingToInput();
             refreshGenButtons();
             syncFooter();
             if (typeof global.initTooltip === 'function') {
