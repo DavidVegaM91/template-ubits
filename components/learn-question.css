@@ -417,13 +417,20 @@
   min-width: 0;
 }
 
+.learn-question__opt-feedback-slot {
+  width: 100%;
+  box-sizing: border-box;
+}
+
 .learn-question__opt-feedback {
   margin-top: 6px;
   padding: 8px 10px;
   border-radius: var(--border-radius-sm);
-  display: inline-flex;
+  display: flex;
   align-items: center;
   gap: var(--gap-xs);
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .learn-question__opt-feedback i {

@@ -22,6 +22,7 @@
   'use strict';
 
   var LEARN_QUESTION_MENU_OVERLAY_ID = 'learn-question-menu-overlay';
+  var LEARN_QUESTION_ESSAY_MAX_CHARS = 5000;
   var _learnQuestionMenuAnchor = null;
 
   function getLearnQuestionMenuOptions(canMoveUp, canMoveDown) {
@@ -1165,6 +1166,10 @@
               label: 'Tu respuesta',
               size: 'md',
               placeholder: 'Escribe tu respuesta',
+              showHelper: false,
+              showCounter: true,
+              maxLength: LEARN_QUESTION_ESSAY_MAX_CHARS,
+              value: '',
               onChange: function (v) {
                 notifyCollabChange();
                 if (withFeedback) {
