@@ -45,6 +45,11 @@
   flex-shrink: 0;
 }
 
+/* Colaborador / Colaborador (feedback): sin menú ⋮ — el estudiante no elimina preguntas */
+.learn-question--collab .learn-question__menu {
+  display: none;
+}
+
 .learn-question__menu:focus-visible {
   outline: 2px solid var(--ubits-accent-brand);
   outline-offset: 2px;
@@ -371,6 +376,23 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: var(--gap-sm);
+}
+
+.learn-question__match-pairs {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-md);
+}
+
+.learn-question__match-pair-label {
+  margin: 0;
+  color: var(--ubits-fg-1-high);
+}
+
+.learn-question__collab-block {
+  display: flex;
+  flex-direction: column;
   gap: var(--gap-sm);
 }
 

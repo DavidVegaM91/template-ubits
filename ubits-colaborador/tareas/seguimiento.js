@@ -1142,7 +1142,7 @@
                     creatorImg = (resolved.avatar && String(resolved.avatar).trim()) ? resolved.avatar : null;
                 }
                 if (typeof renderAvatar === 'function') {
-                    creadorHtml = renderAvatar({ nombre: creatorName, avatar: creatorImg || '' }, { size: 'sm', ...tooltipOpts }) + '<span class="ubits-body-sm-regular">' + (creatorName || row.creador) + '</span>';
+                    creadorHtml = renderAvatar({ nombre: creatorName, avatar: creatorImg || '' }, { size: 'sm', ...avatarTooltipOpts }) + '<span class="ubits-body-sm-regular">' + (creatorName || row.creador) + '</span>';
                 } else if (creatorImg) {
                     creadorHtml = '<div class="ubits-table__avatar"><img src="' + creatorImg + '" alt="" width="28" height="28"></div><span class="ubits-body-sm-regular">' + (creatorName || row.creador) + '</span>';
                 } else {

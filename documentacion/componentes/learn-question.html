@@ -102,7 +102,7 @@
                                             <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" onclick="setLqMode('read_error')"><span>Lectura error</span></button>
                                             <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" onclick="setLqMode('edit_error')"><span>Edición error</span></button>
                                             <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" onclick="setLqMode('collab')"><span>Colaborador</span></button>
-                                            <button class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" onclick="setLqMode('collab_feedback')"><span>Colaborador (feedback)</span></button>
+                                            <button id="lq-mode-collab-feedback-btn" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn" onclick="setLqMode('collab_feedback')"><span>Colaborador (feedback)</span></button>
                                         </div>
                                         <div id="lq-feedback-demo-controls" style="display:none; flex-wrap:wrap; gap: var(--gap-sm);">
                                             <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="demoFeedbackCorrect()"><span>Ver correcto</span></button>
@@ -240,10 +240,10 @@
             },
             matching: {
                 type: 'matching',
-                statement: 'Empareja cada concepto con su definición.',
+                statement: 'Relaciona cada estilo con su descripción principal:',
                 pairs: [
-                    { a: '', b: '' },
-                    { a: '', b: '' }
+                    { a: 'Competitivo', b: 'Prioriza el resultado sobre la relación y puede generar resistencia.' },
+                    { a: 'Acomodador', b: 'Prioriza la relación sobre el resultado y ayuda a mantener la armonía.' }
                 ]
             },
             fill_blank: {
@@ -298,8 +298,40 @@
                     { text: 'Opción B', correct: false },
                     { text: 'Opción C', correct: true }
                 ]
+            },
+            short_answer: {
+                type: 'short_answer',
+                statement: 'Escribe la sigla en inglés que significa “mejor alternativa si no hay acuerdo”.',
+                shortAnswer: { answer: 'BATNA', accuracy: 'exact' }
+            },
+            essay: {
+                type: 'essay',
+                statement: 'Explica el concepto con tus palabras.',
+                essay: { minWords: '10' }
+            },
+            matching: {
+                type: 'matching',
+                statement: 'Relaciona cada estilo con su descripción principal:',
+                pairs: [
+                    { a: 'Competitivo', b: 'Prioriza el resultado sobre la relación y puede generar resistencia.' },
+                    { a: 'Acomodador', b: 'Prioriza la relación sobre el resultado y ayuda a mantener la armonía.' }
+                ]
             }
         };
+
+        function supportsFeedbackDemo(type) {
+            return type === 'multiple_choice_single'
+                || type === 'multiple_choice_multiple'
+                || type === 'true_false'
+                || type === 'short_answer'
+                || type === 'essay'
+                || type === 'matching';
+        }
+
+        function syncFeedbackModeAvailability() {
+            const fbBtn = document.getElementById('lq-mode-collab-feedback-btn');
+            if (fbBtn) fbBtn.disabled = lqType === 'instruction';
+        }
 
         function mountPreview() {
             const mountId = 'lq-preview-mount';
@@ -320,38 +352,29 @@
             });
 
             const demoCtl = document.getElementById('lq-feedback-demo-controls');
-            if (demoCtl) demoCtl.style.display = isFeedback ? 'flex' : 'none';
+            if (demoCtl) demoCtl.style.display = (isFeedback && supportsFeedbackDemo(lqType)) ? 'flex' : 'none';
         }
 
         function setLqMode(mode) {
+            if (mode === 'collab_feedback' && lqType === 'instruction') return;
             lqMode = mode;
             document.querySelectorAll('.preview-control-btn').forEach(btn => btn.classList.remove('active'));
             const activeBtn = document.querySelector(`[onclick="setLqMode('${mode}')"]`);
             if (activeBtn) activeBtn.classList.add('active');
+            syncFeedbackModeAvailability();
             mountPreview();
         }
 
-        function _selectInput(selector) {
-            const el = document.querySelector(selector);
-            if (!el) return;
-            el.checked = true;
-            el.dispatchEvent(new Event('change', { bubbles: true }));
-        }
-
         function demoFeedbackCorrect() {
-            if (lqType === 'true_false') {
-                _selectInput('#lq-preview-inner input[name="collab-q-1"][value="true"]');
-                return;
+            if (lqApi && typeof lqApi.applyCollabFeedbackDemo === 'function') {
+                lqApi.applyCollabFeedbackDemo('correct');
             }
-            _selectInput('#lq-preview-inner input[name="collab-q-1"][value="2"]');
         }
 
         function demoFeedbackIncorrect() {
-            if (lqType === 'true_false') {
-                _selectInput('#lq-preview-inner input[name="collab-q-1"][value="false"]');
-                return;
+            if (lqApi && typeof lqApi.applyCollabFeedbackDemo === 'function') {
+                lqApi.applyCollabFeedbackDemo('incorrect');
             }
-            _selectInput('#lq-preview-inner input[name="collab-q-1"][value="1"]');
         }
 
         
@@ -411,12 +434,18 @@
                     ],
                     onChange: function (v) {
                         lqType = String(v || 'multiple_choice_single');
+                        syncFeedbackModeAvailability();
+                        if (lqType === 'instruction' && lqMode === 'collab_feedback') {
+                            setLqMode('collab');
+                            return;
+                        }
                         mountPreview();
                     }
                 });
             }
 
             mountPreview();
+            syncFeedbackModeAvailability();
             if (typeof initTooltip === 'function') initTooltip('[data-tooltip]');
         });
     </script>

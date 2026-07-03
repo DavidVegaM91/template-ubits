@@ -2,6 +2,8 @@
 
 > Documento de referencia para implementar, mantener y migrar a React la experiencia **Zona de estudio** del colaborador. Cubre las **5 pestañas**, reglas de negocio, composición de UI, fuentes de datos mock y comportamiento actual del vanilla (source of truth visual).
 
+**Contexto del módulo:** [`contexto-aprendizaje.md`](contexto-aprendizaje.md) — usuario demo, diferencia vs Modo estudio IA y vs exp-estudio.
+
 **Figma (referencia en código):** Learner v4 · nodos `40006050:5454` (plan de contenidos) y `40006073:17044` (plan de competencias).
 
 ---

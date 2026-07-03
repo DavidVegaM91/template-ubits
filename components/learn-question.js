@@ -8,6 +8,8 @@
  *  - getModel()
  *  - setMode(mode)
  *  - validate()
+ *  - getCollabAnswer()
+ *  - isCollabAnswerComplete()
  *  - onMenuAction(qId, action) — 'mover-arriba' | 'mover-abajo' | 'eliminar'
  *  - canMoveUp / canMoveDown — habilitan opciones del menú ⋮
  *
@@ -103,6 +105,61 @@
     var d = document.createElement('div');
     d.textContent = String(s == null ? '' : s);
     return d.innerHTML;
+  }
+
+  function normalizeCollabShortAnswer(str, accuracy) {
+    var s = String(str || '').trim().toLowerCase();
+    if (accuracy === 'ignore_accents') {
+      try {
+        return s.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+      } catch (e) {
+        return s;
+      }
+    }
+    return s;
+  }
+
+  function evaluateCollabShortAnswer(model, userVal) {
+    var expected = String(model.shortAnswer && model.shortAnswer.answer || '').trim();
+    if (!expected) return false;
+    var accuracy = String(model.shortAnswer.accuracy || 'exact');
+    if (accuracy === 'any') return String(userVal || '').trim().length > 0;
+    return normalizeCollabShortAnswer(userVal, accuracy) === normalizeCollabShortAnswer(expected, accuracy);
+  }
+
+  function countCollabWords(text) {
+    return String(text || '').trim().split(/\s+/).filter(function (w) { return w.length > 0; }).length;
+  }
+
+  function evaluateCollabEssay(model, text) {
+    var minRaw = String(model.essay && model.essay.minWords || '').trim();
+    var min = parseInt(minRaw, 10);
+    var wc = countCollabWords(text);
+    if (minRaw && !isNaN(min) && min > 0) return wc >= min;
+    return String(text || '').trim().length > 0;
+  }
+
+  function evaluateCollabMatchingPair(pairIdx, selectedBIndex) {
+    if (selectedBIndex == null || String(selectedBIndex).trim() === '') return false;
+    return String(selectedBIndex) === String(pairIdx);
+  }
+
+  function collabFeedbackBadgeHtml(ok) {
+    return '<div class="learn-question__opt-feedback ' + (ok ? 'learn-question__opt-feedback--correct' : 'learn-question__opt-feedback--incorrect') + '">' +
+      '  <i class="far ' + (ok ? 'fa-check-circle' : 'fa-times-circle') + '" aria-hidden="true"></i>' +
+      '  <span class="ubits-body-xs-semibold">' + (ok ? 'Correcto' : 'Incorrecto') + '</span>' +
+      '</div>';
+  }
+
+  function supportsCollabFeedbackDemo(type) {
+    return (
+      type === 'multiple_choice_single' ||
+      type === 'multiple_choice_multiple' ||
+      type === 'true_false' ||
+      type === 'short_answer' ||
+      type === 'essay' ||
+      type === 'matching'
+    );
   }
 
   /** Evita que Enter/Espacio en inputs o contenteditable disparen onRequestFocus (scroll / pérdida de foco). */
@@ -310,6 +367,7 @@
     var menuBtn = root.querySelector('.learn-question__menu');
 
     var inputApis = {};
+    var collabMatchAnswers = {};
 
     function clearGeneratedByAiOnUserEdit() {
       if (model.generatedByAi) model.generatedByAi = false;
@@ -319,6 +377,7 @@
       if (!modeMount) return;
       modeMount.innerHTML = '';
       inputApis = {};
+      collabMatchAnswers = {};
       // Asegurar que el hint vuelva a su "home" (debajo de modeMount) para modos lectura/colaborador.
       if (bodyEl && hintEl && hintEl.parentNode && hintEl.parentNode !== bodyEl) {
         bodyEl.appendChild(hintEl);
@@ -326,11 +385,12 @@
     }
 
     function setRootModeClasses() {
-      root.classList.remove('learn-question--editing', 'learn-question--readonly', 'learn-question--error', 'learn-question--feedback');
+      root.classList.remove('learn-question--editing', 'learn-question--readonly', 'learn-question--error', 'learn-question--feedback', 'learn-question--collab');
       if (mode === 'edit' || mode === 'edit_error') root.classList.add('learn-question--editing');
       else root.classList.add('learn-question--readonly');
       if (mode === 'read_error' || mode === 'edit_error') root.classList.add('learn-question--error');
       if (mode === 'collab_feedback') root.classList.add('learn-question--feedback');
+      if (mode === 'collab' || mode === 'collab_feedback') root.classList.add('learn-question--collab');
     }
 
     function setHint(text, visible, isError) {
@@ -927,6 +987,100 @@
       setHint('', false, false);
     }
 
+    function getCollabAnswer() {
+      var t = model.type;
+      if (t === 'matching') {
+        return (model.pairs || []).map(function (_p, idx) {
+          var raw = collabMatchAnswers[idx];
+          var selectedBIndex = raw != null && String(raw).trim() !== '' ? parseInt(String(raw), 10) : null;
+          return {
+            pairIndex: idx,
+            selectedBIndex: isNaN(selectedBIndex) ? null : selectedBIndex
+          };
+        });
+      }
+      if (t === 'multiple_choice_single' || t === 'true_false') {
+        if (!modeMount) return null;
+        var pick = modeMount.querySelector('input[name="collab-q-' + qId + '"]:checked');
+        return pick ? String(pick.value) : null;
+      }
+      if (t === 'multiple_choice_multiple') {
+        if (!modeMount) return [];
+        return Array.prototype.slice
+          .call(modeMount.querySelectorAll('input[name="collab-q-' + qId + '"]:checked'))
+          .map(function (inp) { return String(inp.value); });
+      }
+      if (t === 'short_answer') {
+        var api = inputApis.collabShortAnswer;
+        if (api && typeof api.getValue === 'function') return String(api.getValue() || '').trim();
+        return '';
+      }
+      return null;
+    }
+
+    function isCollabAnswerComplete() {
+      var t = model.type;
+      if (t === 'matching') {
+        var pairs = model.pairs || [];
+        if (!pairs.length) return false;
+        return pairs.every(function (_p, idx) {
+          var raw = collabMatchAnswers[idx];
+          return raw != null && String(raw).trim() !== '';
+        });
+      }
+      return false;
+    }
+
+    function notifyCollabChange() {
+      if (typeof options.onCollabChange === 'function') {
+        options.onCollabChange({
+          qId: qId,
+          type: model.type,
+          answer: getCollabAnswer(),
+          complete: isCollabAnswerComplete()
+        });
+      }
+    }
+
+    function paintFeedbackSlot(slot, ok) {
+      if (!slot) return;
+      slot.innerHTML = collabFeedbackBadgeHtml(ok);
+    }
+
+    function clearOptionFeedbackSlots() {
+      if (!modeMount) return;
+      modeMount.querySelectorAll('[data-opt-feedback-slot]').forEach(function (slot) {
+        var key = String(slot.getAttribute('data-opt-feedback-slot') || '');
+        if (key.indexOf('match-') === 0) return;
+        slot.innerHTML = '';
+      });
+    }
+
+    function showOptionFeedback(key, ok) {
+      clearOptionFeedbackSlots();
+      paintFeedbackSlot(modeMount.querySelector('[data-opt-feedback-slot="' + key + '"]'), ok);
+    }
+
+    function showBlockFeedback(key, ok) {
+      paintFeedbackSlot(modeMount.querySelector('[data-feedback-block="' + key + '"]'), ok);
+    }
+
+    function showMatchFeedback(pairNum, ok) {
+      paintFeedbackSlot(modeMount.querySelector('[data-opt-feedback-slot="match-' + pairNum + '"]'), ok);
+    }
+
+    function evaluateMultiSelectCollab() {
+      var ok = true;
+      var checks = Array.prototype.slice.call(
+        modeMount.querySelectorAll('input[name="collab-q-' + qId + '"]')
+      );
+      checks.forEach(function (c, idx) {
+        var should = !!(model.options && model.options[idx] && model.options[idx].correct);
+        if (!!c.checked !== should) ok = false;
+      });
+      return ok;
+    }
+
     function renderCollab(withFeedback) {
       teardown();
       if (!modeMount) return;
@@ -976,39 +1130,120 @@
         html += '</div>';
       } else if (t === 'short_answer') {
         var ansWrap = 'learn-collab-q-' + qId + '-sa';
+        html += '<div class="learn-question__collab-block">';
         html += '<div id="' + ansWrap + '"></div>';
+        if (withFeedback) html += '<div class="learn-question__opt-feedback-slot" data-feedback-block="short_answer"></div>';
+        html += '</div>';
         setTimeout(function () {
           if (typeof global.createInput === 'function') {
-            global.createInput({ containerId: ansWrap, type: 'text', label: 'Tu respuesta', size: 'md', placeholder: 'Escribe tu respuesta' });
+            inputApis.collabShortAnswer = global.createInput({
+              containerId: ansWrap,
+              type: 'text',
+              label: 'Tu respuesta',
+              size: 'md',
+              placeholder: 'Escribe tu respuesta',
+              onChange: function (v) {
+                notifyCollabChange();
+                if (withFeedback) {
+                  showBlockFeedback('short_answer', evaluateCollabShortAnswer(model, String(v || '')));
+                }
+              }
+            });
           }
+        }, 0);
+      } else if (t === 'essay') {
+        var essayWrap = 'learn-collab-q-' + qId + '-essay';
+        html += '<div class="learn-question__collab-block">';
+        html += '<div id="' + essayWrap + '"></div>';
+        if (withFeedback) html += '<div class="learn-question__opt-feedback-slot" data-feedback-block="essay"></div>';
+        html += '</div>';
+        setTimeout(function () {
+          if (typeof global.createInput === 'function') {
+            inputApis.collabEssay = global.createInput({
+              containerId: essayWrap,
+              type: 'textarea',
+              label: 'Tu respuesta',
+              size: 'md',
+              placeholder: 'Escribe tu respuesta',
+              onChange: function (v) {
+                notifyCollabChange();
+                if (withFeedback) {
+                  showBlockFeedback('essay', evaluateCollabEssay(model, String(v || '')));
+                }
+              }
+            });
+          }
+        }, 0);
+      } else if (t === 'matching') {
+        var pairs = model.pairs || [];
+        var matchOptionPool = pairs
+          .map(function (p, i) {
+            return { value: String(i), text: String((p && p.b) || '').trim() };
+          })
+          .filter(function (o) { return o.text; });
+
+        html += '<div class="learn-question__match-pairs">';
+        pairs.forEach(function (pair, idx) {
+          var pairNum = idx + 1;
+          var mountId = 'learn-collab-match-' + qId + '-' + pairNum;
+          var labelA = String((pair && pair.a) || '').trim() || '—';
+          html +=
+            '<div class="learn-question__match-pair">' +
+            '  <div class="learn-question__match-pair-header">' +
+            '    <span class="ubits-body-xs-semibold">Pareja ' + pairNum + '</span>' +
+            '  </div>' +
+            '  <p class="ubits-body-sm-semibold learn-question__match-pair-label">' + esc(labelA) + '</p>' +
+            '  <div id="' + mountId + '"></div>' +
+            (withFeedback ? ('  <div class="learn-question__opt-feedback-slot" data-opt-feedback-slot="match-' + pairNum + '"></div>') : '') +
+            '</div>';
+        });
+        html += '</div>';
+
+        setTimeout(function () {
+          if (typeof global.createInput !== 'function') return;
+          pairs.forEach(function (pair, idx) {
+            var pairNum = idx + 1;
+            var mountId = 'learn-collab-match-' + qId + '-' + pairNum;
+            var apiKey = 'collabMatch_' + pairNum;
+            inputApis[apiKey] = global.createInput({
+              containerId: mountId,
+              type: 'select',
+              label: '',
+              size: 'md',
+              showLabel: false,
+              placeholder: 'Selecciona el par',
+              selectOptions: matchOptionPool,
+              value: collabMatchAnswers[idx] || '',
+              onChange: function (v) {
+                collabMatchAnswers[idx] = String(v || '');
+                notifyCollabChange();
+                if (withFeedback) {
+                  showMatchFeedback(pairNum, evaluateCollabMatchingPair(idx, v));
+                }
+              }
+            });
+          });
+          notifyCollabChange();
         }, 0);
       } else {
         showBasicNotReady();
       }
 
       modeMount.innerHTML = html;
-      // Colaborador: el hint debe ir encima de las opciones.
+      // Colaborador: el hint debe ir encima de las opciones / bloques de emparejamiento.
       var optsEl = modeMount.querySelector('.learn-question__options');
-      if (optsEl && hintEl) modeMount.insertBefore(hintEl, optsEl);
+      var matchEl = modeMount.querySelector('.learn-question__match-pairs');
+      var blockEl = modeMount.querySelector('.learn-question__collab-block');
+      var hintAnchor = optsEl || matchEl || blockEl;
+      if (hintAnchor && hintEl) modeMount.insertBefore(hintEl, hintAnchor);
       refreshHintCorrectness();
 
       if (withFeedback) {
-        // Feedback: solo se muestra cuando se selecciona una opción, y va debajo de la opción seleccionada.
-        function clearAllSlots() {
-          modeMount.querySelectorAll('[data-opt-feedback-slot]').forEach(function (slot) { slot.innerHTML = ''; });
-        }
         function renderSlot(key, ok) {
-          clearAllSlots();
-          var slot = modeMount.querySelector('[data-opt-feedback-slot="' + key + '"]');
-          if (!slot) return;
-          slot.innerHTML =
-            '<div class="learn-question__opt-feedback ' + (ok ? 'learn-question__opt-feedback--correct' : 'learn-question__opt-feedback--incorrect') + '">' +
-            '  <i class="far ' + (ok ? 'fa-check-circle' : 'fa-times-circle') + '" aria-hidden="true"></i>' +
-            '  <span class="ubits-body-xs-semibold">' + (ok ? 'Correcto' : 'Incorrecto') + '</span>' +
-            '</div>';
+          showOptionFeedback(String(key), ok);
         }
 
-        var inputs = modeMount.querySelectorAll('input');
+        var inputs = modeMount.querySelectorAll('.learn-question__options input');
         inputs.forEach(function (inp) {
           inp.addEventListener('change', function () {
             var ok = false;
@@ -1022,18 +1257,95 @@
               ok = pick2 ? String(pick2.value) === String(model.trueFalseCorrect) : false;
               if (pick2) renderSlot(String(pick2.value), ok);
             } else if (t === 'multiple_choice_multiple') {
-              ok = true;
-              var checks = Array.prototype.slice.call(modeMount.querySelectorAll('input[name="collab-q-' + qId + '"]'));
-              checks.forEach(function (c, idx) {
-                var should = !!(model.options && model.options[idx] && model.options[idx].correct);
-                if (!!c.checked !== should) ok = false;
-              });
-              // En multi-select, mostramos feedback debajo de la última opción tocada.
-              var last = String(inp.value || '');
-              if (last) renderSlot(last, ok);
+              ok = evaluateMultiSelectCollab();
+              renderSlot(String(inp.value || ''), ok);
             }
           });
         });
+      }
+    }
+
+    function applyCollabFeedbackDemo(variant) {
+      if (mode !== 'collab_feedback' || !modeMount) return;
+      var isCorrect = variant === 'correct';
+      var t = model.type;
+
+      function triggerRadio(name, value) {
+        var el = modeMount.querySelector('input[name="' + name + '"][value="' + value + '"]');
+        if (!el) return;
+        el.checked = true;
+        el.dispatchEvent(new Event('change', { bubbles: true }));
+      }
+
+      function setCheckbox(name, value, checked) {
+        var el = modeMount.querySelector('input[name="' + name + '"][value="' + value + '"]');
+        if (!el) return;
+        el.checked = !!checked;
+        el.dispatchEvent(new Event('change', { bubbles: true }));
+      }
+
+      if (t === 'multiple_choice_single') {
+        var pickIdxSingle = isCorrect
+          ? (model.options || []).findIndex(function (o) { return o && o.correct; })
+          : (model.options || []).findIndex(function (o) { return o && !o.correct; });
+        if (pickIdxSingle < 0) pickIdxSingle = 0;
+        triggerRadio('collab-q-' + qId, String(pickIdxSingle + 1));
+        return;
+      }
+
+      if (t === 'multiple_choice_multiple') {
+        (model.options || []).forEach(function (o, idx) {
+          setCheckbox('collab-q-' + qId, String(idx + 1), isCorrect ? !!o.correct : !o.correct);
+        });
+        return;
+      }
+
+      if (t === 'true_false') {
+        var correctVal = String(model.trueFalseCorrect || 'true');
+        triggerRadio('collab-q-' + qId, isCorrect ? correctVal : (correctVal === 'true' ? 'false' : 'true'));
+        return;
+      }
+
+      if (t === 'short_answer') {
+        var saApi = inputApis.collabShortAnswer;
+        var saVal = isCorrect
+          ? String(model.shortAnswer && model.shortAnswer.answer || 'Respuesta correcta')
+          : 'Respuesta incorrecta';
+        if (saApi && typeof saApi.setValue === 'function') {
+          saApi.setValue(saVal);
+          showBlockFeedback('short_answer', evaluateCollabShortAnswer(model, saVal));
+        }
+        return;
+      }
+
+      if (t === 'essay') {
+        var essayApi = inputApis.collabEssay;
+        var minWords = parseInt(String(model.essay && model.essay.minWords || '10'), 10);
+        if (isNaN(minWords) || minWords < 1) minWords = 10;
+        var essayVal = isCorrect
+          ? Array(minWords + 2).join('palabra ').trim()
+          : 'Muy corto';
+        if (essayApi && typeof essayApi.setValue === 'function') {
+          essayApi.setValue(essayVal);
+          showBlockFeedback('essay', evaluateCollabEssay(model, essayVal));
+        }
+        return;
+      }
+
+      if (t === 'matching') {
+        (model.pairs || []).forEach(function (_p, idx) {
+          var pairNum = idx + 1;
+          var api = inputApis['collabMatch_' + pairNum];
+          var selected = isCorrect
+            ? String(idx)
+            : String((idx + 1) % Math.max((model.pairs || []).length, 2));
+          if (api && typeof api.setValue === 'function') {
+            api.setValue(selected);
+            collabMatchAnswers[idx] = selected;
+            showMatchFeedback(pairNum, evaluateCollabMatchingPair(idx, selected));
+          }
+        });
+        notifyCollabChange();
       }
     }
 
@@ -1116,7 +1428,16 @@
 
     render();
 
-    return { el: root, setMode: setMode, getModel: getModel, validate: validate };
+    return {
+      el: root,
+      setMode: setMode,
+      getModel: getModel,
+      validate: validate,
+      getCollabAnswer: getCollabAnswer,
+      isCollabAnswerComplete: isCollabAnswerComplete,
+      applyCollabFeedbackDemo: applyCollabFeedbackDemo,
+      supportsFeedbackDemo: function () { return supportsCollabFeedbackDemo(model.type); }
+    };
   }
 
   global.createLearnQuestion = createLearnQuestion;

@@ -510,11 +510,25 @@ Todos los componentes UBITS requieren imports obligatorios:
 - **`documentacion/plantilla-ubits.html`** - Template base para crear nuevas páginas (1 sección)
 
 #### **🎓 Módulo de Aprendizaje (ubits-colaborador/aprendizaje/):**
+
+**Documentación de contexto (leer antes de implementar):**
+
+| Documento | Qué cubre |
+|-----------|-----------|
+| [`aprendizaje/contexto-aprendizaje.md`](ubits-colaborador/aprendizaje/contexto-aprendizaje.md) | **Índice maestro** — usuario demo (María Alejandra), mapa de productos (Modo estudio IA vs exp-estudio vs Zona de estudio) |
+| [`aprendizaje/contexto-zona-estudio.md`](ubits-colaborador/aprendizaje/contexto-zona-estudio.md) | Zona de estudio — 5 tabs, planes, historial |
+| [`aprendizaje/exp-estudio/contexto-exp-estudio.md`](ubits-colaborador/aprendizaje/exp-estudio/contexto-exp-estudio.md) | Consumo de contenido estructurado (portada → recursos → cierre) |
+| [`aprendizaje/mi-equipo/contexto-mi-equipo.md`](ubits-colaborador/aprendizaje/mi-equipo/contexto-mi-equipo.md) | Planes de formación para líderes |
+| [`aprendizaje/HU-modo-estudio-IA.md`](ubits-colaborador/aprendizaje/HU-modo-estudio-IA.md) | Modo estudio IA — chat tutor |
+
+**Páginas:**
+
 - **`home-learn.html`** - Dashboard de aprendizaje (componente **hero-search**, carruseles; búsqueda con debounce + skeleton; **exploración catálogo en Inicio** — ver [Patrón: búsqueda en Inicio Aprendizaje](#patrón-búsqueda-en-inicio-aprendizaje-home-learnhtml))
 - **`catalogo.html`** - Catálogo standalone (legacy; **sin pestaña en SubNav**; misma exploración integrada en `home-learn` modo `browse`)
 - **`u-corporativa.html`** - Universidad corporativa (3 secciones)
 - **`zona-estudio.html`** - Zona de estudio (2 secciones con tabs)
-- **`modo-estudio-ia.html`** - Modo de estudio con IA
+- **`modo-estudio-ia.html`** - Modo de estudio con IA (chat tutor — **no** es consumo de curso; ver `contexto-aprendizaje.md`)
+- **`exp-estudio/exp-estudio.html`** - Experiencia de estudio — consumo de contenido estructurado LMS Creator (`?id=`)
 - **`mi-equipo/planes.html`** - Planes de formación para líderes (tabs Contenidos | Competencias; ver [Patrón: Mi equipo](#patrón-mi-equipo-planes-de-formación-para-líderes))
 - **`mi-equipo/crear-plan-contenidos.html`**, **`editar-plan-contenidos.html`**, **`detalle-plan.html`** - Flujo planes por contenidos (líder)
 - **`mi-equipo/crear-plan-competencias.html`**, **`editar-plan-competencias.html`**, **`detalle-plan-competencias.html`** - Flujo planes por competencias (líder)

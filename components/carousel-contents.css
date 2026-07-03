@@ -4,6 +4,9 @@
    Variante principal: Hero (banner grande horizontal)
    ======================================== */
 
+/* study-zone: card-plan-formacion (import al inicio; @import tardío lo ignoran los navegadores) */
+@import url('./card-plan-formacion.css');
+
 /* Mount para initCarouselIndicators (requiere carousel-indicators.css) */
 .carousel-contents__indicators-mount {
     display: flex;
@@ -901,9 +904,8 @@
    VARIANTE: STUDY ZONE (Zona de estudio)
    Planes de formación activos — grid desktop, carrusel mobile
    Cards: components/card-plan-formacion.css (+ progress-bar.css)
+   Requiere card-plan-formacion.css (import arriba o link explícito en la página)
    ======================================== */
-
-@import url('./card-plan-formacion.css');
 
 .carousel-contents--study-zone-wrapper {
     display: flex;
