@@ -1,16 +1,17 @@
-# Ejemplo de correo — Zona de estudio · Recordatorio de plan
+# Ejemplos de correo — Zona de estudio
 
-Referencia visual para backend / diseño. **Un solo HTML estático** con datos de ejemplo ya puestos (no hay plantilla dinámica ni placeholders en el playground).
+Referencia visual para backend / diseño. **HTML estático** con datos de ejemplo ya puestos.
 
 | Archivo | Qué es |
 |---------|--------|
-| `mail-recordatorio-plan-formacion.html` | **Ejemplo listo para abrir en el navegador** — recordatorio masivo desde Progreso → «Enviar recordatorio». |
+| `mail-recordatorio-plan-formacion.html` | Recordatorio masivo desde Progreso → «Enviar recordatorio» (envía el líder). |
+| `mail-progreso-estudio-mensual.html` | Reporte mensual automático del sistema — tiempo de estudio + progreso por plan. |
 
 ---
 
 ## Cómo verlo
 
-Abrir `mail-recordatorio-plan-formacion.html` en el navegador (servir por **http** si la imagen hero no carga con `file://`).
+Abrir el `.html` en el navegador (servir por **http** si las imágenes no cargan con `file://`).
 
 ---
 
@@ -52,3 +53,38 @@ Fondo `#f3f3f4`, `border-radius: 10px`, padding 18px 20px:
 ## Relacionado
 
 Recordatorio por **un solo plan** en Mi equipo / LMS (`detalle-plan.html`) — otro flujo y otro mail.
+
+---
+
+## Mail mensual — `mail-progreso-estudio-mensual.html`
+
+Correo **automático del sistema** (no lo envía el líder). Resumen del mes:
+
+- **Destinatario de ejemplo:** Yully  
+- **Mes:** junio  
+- **Indicador:** Tiempo de estudio → `1 hora y 17 minutos`  
+- **CTA:** Ir a mi zona de estudio  
+
+### Imagen hero
+
+`tu-ptogreso-de-estudio-este-mes.png` — banner «Tu progreso de estudio este mes». En envío real, el backend sustituye por URL absoluta del CDN.
+
+### Encabezado (logo)
+
+Igual que `lms-creator/certificados/mails/`: logo UBITS centrado (`images/ubits-logo.png`, 90×30) + línea `#e7e8ea` + hero debajo.
+
+### Bloque por plan (card rediseñado)
+
+Mismo contenedor que el recordatorio: fondo `#f3f3f4`, `border-radius: 10px`, padding 18px 20px. **Una sola fila** con dos columnas:
+
+| Izquierda (apilado) | Derecha (`valign: middle`) |
+|---------------------|----------------------------|
+| Nombre del plan (15px, semibold) | Progreso del mes |
+| Tipo: «Plan de competencias» o «Plan de contenidos» (13px, gris) | |
+
+**Progreso según tipo:**
+
+- **Competencias:** tiempo acumulado vs meta — ej. `30 minutos de 1 día y 4 horas`. Sin avance → color `#cf0e34`; con avance → `#5c646f`.
+- **Contenidos:** conteo — ej. `2 de 5 contenidos` (gris `#5c646f`).
+
+- **16px** de separación entre cards

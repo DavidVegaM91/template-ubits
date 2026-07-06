@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Tu tiempo de estudio en junio</title>
+  <style type="text/css">
+    @media only screen and (max-width: 620px) {
+      .email-wrapper { width: 100% !important; max-width: 100% !important; }
+      .email-inner { padding: 24px 16px !important; }
+      .email-padding { padding-left: 16px !important; padding-right: 16px !important; }
+      .email-body { font-size: 15px !important; }
+      .email-cta-wrap { width: 100% !important; }
+      .email-cta { display: block !important; width: 100% !important; text-align: center !important; box-sizing: border-box !important; }
+      .email-outer { padding: 16px 12px !important; }
+      .email-plan-progress { white-space: normal !important; text-align: left !important; padding-top: 8px !important; }
+      .email-plan-progress-cell { display: block !important; width: 100% !important; }
+    }
+  </style>
+  <!--
+    PLACEHOLDERS para backend:
+    {{nombre_destinatario}}  - Nombre del colaborador
+    {{mes_reporte}}          - Mes del reporte (ej. junio)
+    {{tiempo_estudio}}       - Tiempo total del mes (ej. 1 hora y 17 minutos)
+    {{url_zona_estudio}}     - Link a zona de estudio
+    {{url_plataforma}}       - Link a la plataforma
+
+    Por cada plan (repetir bloque .email-plan-card):
+    {{nombre_plan}}, {{tipo_plan}} (Plan de competencias | Plan de contenidos),
+    {{progreso_plan}} (competencias: «30 minutos de 1 día y 4 horas» · contenidos: «2 de 5 contenidos»),
+    {{progreso_color}} (#5c646f avance · #cf0e34 sin avance en competencias)
+  -->
+</head>
+<body style="margin:0; padding:0; background-color:#f3f3f4; font-family: 'Inter', Arial, sans-serif;">
+  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background-color:#f3f3f4;">
+    <tr>
+      <td align="center" class="email-outer" style="padding: 32px 16px;">
+        <table role="presentation" class="email-wrapper" width="600" cellspacing="0" cellpadding="0" border="0" style="max-width:600px; width:100%; background-color:#ffffff; border-radius:8px; border-top: 4px solid #0c5bef; box-shadow:0 2px 8px rgba(0,0,0,0.06);">
+          <tr>
+            <td class="email-padding" style="padding: 24px 24px 12px 24px; text-align: center;">
+              <img src="images/ubits-logo.png" alt="UBITS" width="90" height="30" style="display:inline-block; max-width:100%; height:auto;" />
+            </td>
+          </tr>
+          <tr>
+            <td style="border-top:1px solid #e7e8ea; font-size:0; line-height:0;">&nbsp;</td>
+          </tr>
+          <tr>
+            <td class="email-padding" style="padding: 0 24px 16px 24px; text-align: center;">
+              <img src="tu-ptogreso-de-estudio-este-mes.png" alt="Tu progreso de estudio este mes" width="560" style="display:block; max-width:100%; height:auto; border-radius:8px; margin:0 auto;" />
+            </td>
+          </tr>
+          <tr>
+            <td class="email-padding email-inner" style="padding: 0 24px 24px 24px; text-align: left;">
+              <p class="email-greeting" style="margin:0 0 16px 0; font-size: 16px; line-height: 1.5; color: #303a47; font-weight: 600; text-align: center;">
+                ¡Hola, Yully!
+              </p>
+              <p class="email-body" style="margin:0 0 24px 0; font-size: 16px; line-height: 1.5; color: #5c646f; text-align: center;">
+                Aquí podrás encontrar tu reporte de estudio del mes de junio.
+              </p>
+
+              <!-- Indicador: tiempo de estudio -->
+              <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin:0 0 16px 0;">
+                <tr>
+                  <td style="padding:0 0 8px 0; font-size:14px; font-weight:600; color:#303a47;">Indicador</td>
+                  <td align="right" style="padding:0 0 8px 0; font-size:14px; font-weight:600; color:#303a47;">Tu progreso</td>
+                </tr>
+              </table>
+              <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin:0 0 24px 0;">
+                <tr>
+                  <td style="background-color:#f3f3f4; border-radius:10px; padding:18px 20px;">
+                    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
+                      <tr>
+                        <td valign="middle" style="font-size:15px; font-weight:600; color:#303a47; line-height:1.35; padding-right:12px;">Tiempo de estudio</td>
+                        <td valign="middle" align="right" style="font-size:15px; font-weight:600; color:#0c5bef; line-height:1.35; white-space:nowrap;">1 hora y 17 minutos</td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+
+              <p class="email-body" style="margin:24px 0 16px 0; font-size: 16px; line-height: 1.5; color: #5c646f; text-align: center;">
+                También el progreso de tus planes de formación en el mes de junio.
+              </p>
+
+              <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin:0 0 16px 0;">
+                <tr>
+                  <td style="padding:0 0 8px 0; font-size:14px; font-weight:600; color:#303a47;">Planes de formación</td>
+                  <td align="right" style="padding:0 0 8px 0; font-size:14px; font-weight:600; color:#303a47;">Tu progreso</td>
+                </tr>
+              </table>
+
+              <!-- Plan competencias — sin avance -->
+              <table role="presentation" class="email-plan-card" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin:0 0 16px 0;">
+                <tr>
+                  <td style="background-color:#f3f3f4; border-radius:10px; padding:18px 20px;">
+                    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
+                      <tr>
+                        <td class="email-plan-progress-cell" valign="middle" style="padding-right:12px;">
+                          <p style="margin:0 0 4px 0; font-size:15px; line-height:1.35;"><a href="#" style="font-weight:600; color:#0c5bef; text-decoration:underline;">Copia de - competencias 007</a></p>
+                          <p style="margin:0; font-size:13px; color:#5c646f; line-height:1.4;">Plan de competencias</p>
+                        </td>
+                        <td class="email-plan-progress email-plan-progress-cell" valign="middle" align="right" style="font-size:13px; font-weight:600; color:#cf0e34; line-height:1.4; white-space:nowrap;">0 minutos de 4 días y 23 horas</td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+
+              <!-- Plan competencias — con avance -->
+              <table role="presentation" class="email-plan-card" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin:0 0 16px 0;">
+                <tr>
+                  <td style="background-color:#f3f3f4; border-radius:10px; padding:18px 20px;">
+                    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
+                      <tr>
+                        <td class="email-plan-progress-cell" valign="middle" style="padding-right:12px;">
+                          <p style="margin:0 0 4px 0; font-size:15px; line-height:1.35;"><a href="#" style="font-weight:600; color:#0c5bef; text-decoration:underline;">backoffice dev</a></p>
+                          <p style="margin:0; font-size:13px; color:#5c646f; line-height:1.4;">Plan de competencias</p>
+                        </td>
+                        <td class="email-plan-progress email-plan-progress-cell" valign="middle" align="right" style="font-size:13px; font-weight:600; color:#5c646f; line-height:1.4; white-space:nowrap;">30 minutos de 1 día y 4 horas</td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+
+              <!-- Plan competencias — sin avance (horas) -->
+              <table role="presentation" class="email-plan-card" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin:0 0 16px 0;">
+                <tr>
+                  <td style="background-color:#f3f3f4; border-radius:10px; padding:18px 20px;">
+                    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
+                      <tr>
+                        <td class="email-plan-progress-cell" valign="middle" style="padding-right:12px;">
+                          <p style="margin:0 0 4px 0; font-size:15px; line-height:1.35;"><a href="#" style="font-weight:600; color:#0c5bef; text-decoration:underline;">copia backoffice dev</a></p>
+                          <p style="margin:0; font-size:13px; color:#5c646f; line-height:1.4;">Plan de competencias</p>
+                        </td>
+                        <td class="email-plan-progress email-plan-progress-cell" valign="middle" align="right" style="font-size:13px; font-weight:600; color:#cf0e34; line-height:1.4; white-space:nowrap;">0 minutos de 119 horas</td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+
+              <!-- Plan contenidos — avance por cantidad -->
+              <table role="presentation" class="email-plan-card" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin:0 0 16px 0;">
+                <tr>
+                  <td style="background-color:#f3f3f4; border-radius:10px; padding:18px 20px;">
+                    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
+                      <tr>
+                        <td class="email-plan-progress-cell" valign="middle" style="padding-right:12px;">
+                          <p style="margin:0 0 4px 0; font-size:15px; line-height:1.35;"><a href="#" style="font-weight:600; color:#0c5bef; text-decoration:underline;">Onboarding logística 2026</a></p>
+                          <p style="margin:0; font-size:13px; color:#5c646f; line-height:1.4;">Plan de contenidos</p>
+                        </td>
+                        <td class="email-plan-progress email-plan-progress-cell" valign="middle" align="right" style="font-size:13px; font-weight:600; color:#5c646f; line-height:1.4; white-space:nowrap;">2 de 5 contenidos</td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+
+              <!-- Plan competencias — sin avance -->
+              <table role="presentation" class="email-plan-card" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin:0 0 24px 0;">
+                <tr>
+                  <td style="background-color:#f3f3f4; border-radius:10px; padding:18px 20px;">
+                    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
+                      <tr>
+                        <td class="email-plan-progress-cell" valign="middle" style="padding-right:12px;">
+                          <p style="margin:0 0 4px 0; font-size:15px; line-height:1.35;"><a href="#" style="font-weight:600; color:#0c5bef; text-decoration:underline;">Plan de continuidad de negocio 2026</a></p>
+                          <p style="margin:0; font-size:13px; color:#5c646f; line-height:1.4;">Plan de competencias</p>
+                        </td>
+                        <td class="email-plan-progress email-plan-progress-cell" valign="middle" align="right" style="font-size:13px; font-weight:600; color:#cf0e34; line-height:1.4; white-space:nowrap;">0 minutos de 4 días</td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+
+              <p class="email-body" style="margin:0 0 24px 0; font-size: 16px; line-height: 1.5; color: #5c646f;">
+                Tienes una fecha límite para completar tu plan de formación. ¡No lo dejes para el último día!
+              </p>
+
+              <table role="presentation" class="email-cta-wrap" cellspacing="0" cellpadding="0" border="0" width="100%" style="margin:0 0 24px 0;">
+                <tr>
+                  <td style="border-radius: 6px; background-color: #0c5bef; text-align: center;">
+                    <a href="../zona-estudio.html" target="_blank" rel="noopener" class="email-cta" style="display: inline-block; padding: 12px 24px; font-size: 14px; font-weight: 600; color: #ffffff; text-decoration: none; text-align: center;">
+                      Ir a mi zona de estudio
+                    </a>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+          <tr>
+            <td class="email-padding email-inner" style="padding: 24px; border-top: 1px solid #e7e8ea; font-size: 12px; color: #5c646f; text-align: center;">
+              <p style="margin:0;">Este correo fue enviado automáticamente por UBITS.</p>
+              <p style="margin:8px 0 0 0;"><a href="../home-learn.html" style="color:#0c5bef; text-decoration:none;">Ir a la plataforma</a></p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
