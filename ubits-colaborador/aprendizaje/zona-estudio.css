@@ -60,6 +60,7 @@
     display: flex;
     flex-direction: column;
     gap: var(--gap-lg);
+    overflow: visible;
 }
 
 .zona-estudio-plan__top {
@@ -424,6 +425,7 @@
     justify-content: space-between;
     gap: var(--gap-xl);
     flex-wrap: wrap;
+    overflow: visible;
 }
 
 .zona-estudio-progreso-hero__identity {
@@ -440,6 +442,15 @@
 
 .zona-estudio-progreso-profile {
     flex-shrink: 0;
+    overflow: visible;
+}
+
+/* Profile list selectable: anillo/hover no deben recortarse en el hero */
+.zona-estudio-progreso-profile .ubits-profile-list--sm.ubits-profile-list--selectable {
+    height: auto;
+    min-height: 28px;
+    margin-top: 0;
+    padding-top: 2px;
     overflow: visible;
 }
 
@@ -850,16 +861,78 @@
     }
 
     .zona-estudio-progreso-recordatorio {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        grid-template-rows: auto auto;
+        column-gap: var(--gap-md);
+        row-gap: var(--gap-md);
+        align-items: start;
+    }
+
+    .zona-estudio-progreso-recordatorio__icon {
+        grid-column: 1;
+        grid-row: 1;
+        align-self: start;
+    }
+
+    .zona-estudio-progreso-recordatorio__copy {
+        grid-column: 2;
+        grid-row: 1;
+        flex: unset;
+    }
+
+    .zona-estudio-progreso-recordatorio > .ubits-button,
+    .zona-estudio-progreso-recordatorio > #zona-estudio-progreso-btn-recordatorio {
+        grid-column: 1 / -1;
+        grid-row: 2;
+        width: 100%;
+        justify-content: center;
+    }
+
+    /* Hero cabecera: apilar nombre + profile list (shell móvil <1024px) */
+    .zona-estudio-progreso-hero__top {
         flex-direction: column;
         align-items: stretch;
+        justify-content: flex-start;
+        gap: var(--gap-md);
+    }
+
+    .zona-estudio-progreso-hero__identity {
+        flex: 0 0 auto;
+        width: 100%;
+        min-width: 0;
+        min-height: 0;
+    }
+
+    .zona-estudio-progreso-hero__name {
+        overflow-wrap: anywhere;
+        word-break: break-word;
+    }
+
+    .zona-estudio-progreso-profile {
+        width: 100%;
+        max-width: 100%;
+        overflow-x: auto;
+        overflow-y: hidden;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        padding-top: 6px;
+        padding-left: 2px;
+        padding-bottom: 4px;
+        box-sizing: border-box;
+    }
+
+    .zona-estudio-progreso-profile::-webkit-scrollbar {
+        display: none;
+    }
+
+    .zona-estudio-progreso-profile .ubits-profile-list {
+        width: max-content;
+        max-width: none;
     }
 }
 
 @media (max-width: 768px) {
-    .zona-estudio-progreso-hero__top {
-        flex-direction: column;
-    }
-
     .zona-estudio-progreso-kpis {
         grid-template-columns: 1fr;
         gap: var(--gap-lg);
