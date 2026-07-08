@@ -3,7 +3,7 @@
  * Figma Learn-Components: https://www.figma.com/design/ZWcvS9Z7YQaz59GZIrnWM6/Learn-Components?node-id=247-5165
  *
  * API: resourcesCardHtml({ type, disabled?, className?, hoverClass? })
- *   Video, SCORM y Evaluación muestran distintivo IA (Badge Tag outlined IA, solo icono xs).
+ *   Video y Evaluación muestran distintivo IA (Badge Tag outlined IA, solo icono xs).
  *   Tras montar HTML en el DOM, initResourcesBlockFields (resources-block.js) cablea tooltip y stopPropagation en el distintivo.
  *   type: video | pdf | texto | embebido | scorm | evaluacion-final |
  *         encuesta-libre | encuesta | archivo-descargable | certificado | imagen
@@ -22,7 +22,7 @@
         pdf: { icon: 'fa-file-pdf', label: 'PDF' },
         texto: { icon: 'fa-text', label: 'Texto' },
         embebido: { icon: 'fa-code', label: 'Embebido' },
-        scorm: { icon: 'fa-cube', label: 'SCORM', aiAssist: true },
+        scorm: { icon: 'fa-cube', label: 'SCORM' },
         'evaluacion-final': { icon: 'fa-clipboard-check', label: 'Evaluación', aiAssist: true },
         'encuesta-libre': { icon: 'fa-list', label: 'Encuesta libre' },
         encuesta: { icon: 'fa-star', label: 'Encuesta de satisfacción' },
