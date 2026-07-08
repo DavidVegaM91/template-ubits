@@ -53,7 +53,7 @@
 
 /* Hover State */
 .ubits-tab:hover:not(.ubits-tab--active) {
-    background: var(--ubits-btn-secondary-bg-hover);
+    background: var(--ubits-bg-3);
     color: var(--ubits-fg-1-medium);
 }
 
