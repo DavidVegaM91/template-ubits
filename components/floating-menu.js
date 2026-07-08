@@ -88,7 +88,7 @@ const FLOATING_MENU_SECTIONS_DEFAULT = [
     },
     {
         id: 'ia-para-hr',
-        title: 'IA para HR',
+        title: 'Agentes',
         icon: 'far fa-sparkles',
         accent: 'ia-gradient',
         url: '../../ubits-colaborador/ia-para-hr/ia-para-hr.html',
