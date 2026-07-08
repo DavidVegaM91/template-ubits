@@ -1377,7 +1377,12 @@
             disclaimer: 'El agente puede cometer errores. Revisa las preguntas antes de publicar.',
             tokensBadge: { value: currentTokens },
             onSend: function (msg) {
-                evalAgentHandleUserMsg(rootEl, String(msg || ''));
+                var st = rootEl._ccEvalState;
+                if (st && st.mvp) {
+                    evalAgentHandleUserMsgMvp(rootEl, String(msg || ''));
+                } else {
+                    evalAgentHandleUserMsg(rootEl, String(msg || ''));
+                }
             },
             onClose: function () {}
         });
@@ -2125,6 +2130,375 @@
         });
     }
 
+    // =====================================================================================
+    // MVP del Agente de evaluaciones (versión que SÍ puede construir desarrollo)
+    // La versión "ideal" (evalAgentStart + cards/bottom-sheet/multiselect) queda INTACTA.
+    //
+    // SWITCH entre versiones:
+    //   - Por defecto: EVAL_AGENT_MODE_DEFAULT ('mvp' | 'ideal') — cambia esta línea para el switch definitivo.
+    //   - En vivo (para demos): URL ?eval=mvp  ó  ?eval=ideal
+    //   - En vivo (consola):    window.setEvalAgentMode('ideal')  ó  window.setEvalAgentMode('mvp')  (guarda en localStorage)
+    // =====================================================================================
+    var EVAL_AGENT_MODE_DEFAULT = 'ideal'; // ← cambia a 'mvp' para mostrar la experiencia MVP
+
+    function getEvalAgentMode() {
+        try {
+            var q = new URLSearchParams(window.location.search).get('eval');
+            if (q === 'mvp' || q === 'ideal') return q;
+        } catch (e) {}
+        try {
+            var ls = window.localStorage.getItem('ccEvalAgentMode');
+            if (ls === 'mvp' || ls === 'ideal') return ls;
+        } catch (e) {}
+        return EVAL_AGENT_MODE_DEFAULT;
+    }
+
+    global.setEvalAgentMode = function (mode) {
+        var m = (mode === 'ideal') ? 'ideal' : 'mvp';
+        try { window.localStorage.setItem('ccEvalAgentMode', m); } catch (e) {}
+        return m;
+    };
+
+    // ---- Parsers tolerantes a ortografía ----
+    function _mvpNormalize(s) {
+        return String(s == null ? '' : s)
+            .toLowerCase()
+            .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+            .trim();
+    }
+
+    var _MVP_AFFIRMATIVES = [
+        'si', 'sisas', 'sip', 'claro', 'dale', 'ok', 'oka', 'okay', 'vale', 'listo',
+        'continua', 'continuemos', 'continuar', 'continuamos', 'adelante', 'prosigue', 'proseguir',
+        'sigue', 'sigamos', 'seguir', 'de una', 'hagamoslo', 'perfecto', 'genial', 'bueno',
+        'esta bien', 'me parece', 'afirmativo', 'yes', 'yep', 'confirmo', 'confirmar', 'aprobado',
+        'apruebo', 'aprobar', 'de acuerdo', 'correcto', 'excelente', 'obvio', 'por supuesto', 'va'
+    ];
+
+    function _mvpIsAffirmative(text) {
+        var t = _mvpNormalize(text);
+        if (!t) return false;
+        // "no" suelto o "no, ..." se trata como negativo
+        if (t === 'no' || /^no[\s,.!]/.test(t)) return false;
+        for (var i = 0; i < _MVP_AFFIRMATIVES.length; i++) {
+            var kw = _MVP_AFFIRMATIVES[i];
+            if (t === kw || t.indexOf(kw) !== -1) return true;
+        }
+        return false;
+    }
+
+    function _mvpParseCount(text) {
+        var t = _mvpNormalize(text);
+        var m = t.match(/\d{1,3}/);
+        if (!m) return null;
+        var n = parseInt(m[0], 10);
+        if (isNaN(n)) return null;
+        if (n < 1) n = 1;
+        if (n > 50) n = 50;
+        return n;
+    }
+
+    function _mvpParseDifficulty(text) {
+        var t = _mvpNormalize(text);
+        if (!t) return null;
+        if (t.indexOf('avanz') !== -1 || t.indexOf('dificil') !== -1 || t.indexOf('experto') !== -1) return 'advanced';
+        if (t.indexOf('interm') !== -1 || t.indexOf('medi') !== -1) return 'intermediate';
+        if (t.indexOf('basic') !== -1 || t.indexOf('facil') !== -1 || t.indexOf('sencill') !== -1) return 'basic';
+        return null;
+    }
+
+    var _MVP_TYPE_LABELS = {
+        multiple_choice_single_answer: 'Selección múltiple — una sola respuesta correcta',
+        multiple_choice_multiple_answers: 'Selección múltiple — varias respuestas correctas',
+        binary: 'Binaria (Sí/No, Verdadero/Falso, etc.)',
+        closed_text: 'Texto cerrado',
+        matching: 'Emparejamiento'
+    };
+    var _MVP_TYPE_ORDER = ['multiple_choice_single_answer', 'binary', 'multiple_choice_multiple_answers', 'matching', 'closed_text'];
+    var _MVP_DIFF_LABEL = { basic: 'básico', intermediate: 'intermedio', advanced: 'avanzado' };
+
+    function _mvpBankAvailability(difficulty) {
+        var pool = EVAL_QUESTION_BANK[difficulty] || EVAL_QUESTION_BANK.intermediate;
+        var avail = {};
+        pool.forEach(function (q) { avail[q.agentType] = (avail[q.agentType] || 0) + 1; });
+        return avail;
+    }
+
+    // Combinación de tipos: variada, equitativa y con predominio de selección múltiple
+    // (una sola respuesta), acotada a lo disponible en el banco para esa dificultad.
+    function _mvpComputeMix(difficulty, count) {
+        var avail = _mvpBankAvailability(difficulty);
+        var order = _MVP_TYPE_ORDER.filter(function (t) { return avail[t] > 0; });
+        var totalAvail = order.reduce(function (s, t) { return s + avail[t]; }, 0);
+        var target = Math.max(1, Math.min(parseInt(count, 10) || 1, totalAvail));
+        var weights = {
+            multiple_choice_single_answer: 0.45,
+            binary: 0.25,
+            multiple_choice_multiple_answers: 0.15,
+            matching: 0.08,
+            closed_text: 0.07
+        };
+        var mix = {};
+        var sum = 0;
+        order.forEach(function (t) {
+            var c = Math.round(target * (weights[t] || 0.1));
+            if (c > avail[t]) c = avail[t];
+            if (c < 0) c = 0;
+            mix[t] = c;
+            sum += c;
+        });
+        if ((mix.multiple_choice_single_answer || 0) < 1 && avail.multiple_choice_single_answer > 0) {
+            mix.multiple_choice_single_answer = 1;
+            sum = order.reduce(function (s, t) { return s + mix[t]; }, 0);
+        }
+        var guard = 0;
+        while (sum < target && guard < 2000) {
+            guard++;
+            var added = false;
+            for (var i = 0; i < order.length && sum < target; i++) {
+                if (mix[order[i]] < avail[order[i]]) { mix[order[i]]++; sum++; added = true; }
+            }
+            if (!added) break;
+        }
+        guard = 0;
+        while (sum > target && guard < 2000) {
+            guard++;
+            var removed = false;
+            for (var j = order.length - 1; j >= 0 && sum > target; j--) {
+                var floor = (order[j] === 'multiple_choice_single_answer') ? 1 : 0;
+                if (mix[order[j]] > floor) { mix[order[j]]--; sum--; removed = true; }
+            }
+            if (!removed) break;
+        }
+        return order.map(function (t) { return { type: t, count: mix[t] }; })
+            .filter(function (r) { return r.count > 0; });
+    }
+
+    function _mvpGenQuestionsFromMix(difficulty, mix) {
+        var pool = EVAL_QUESTION_BANK[difficulty] || EVAL_QUESTION_BANK.intermediate;
+        var out = [];
+        (mix || []).forEach(function (row) {
+            var ofType = evalShuffleBankArray(pool.filter(function (q) { return q.agentType === row.type; }));
+            for (var i = 0; i < row.count && i < ofType.length; i++) {
+                out.push(Object.assign({}, ofType[i]));
+            }
+        });
+        return evalShuffleBankArray(out);
+    }
+
+    // Tabla dentro del comentario de la IA — SIN botones (Exportar CSV / copiar) debajo.
+    function _mvpTableHtml(headers, rows, numericLast) {
+        var cls = 'cc-eval-chat-table' + (numericLast ? ' cc-eval-chat-table--num-right' : '');
+        var head =
+            '<tr>' +
+            '<th class="ubits-body-sm-semibold">' + drEsc(headers[0]) + '</th>' +
+            '<th class="ubits-body-sm-semibold">' + drEsc(headers[1]) + '</th>' +
+            '</tr>';
+        var body = rows.map(function (r) {
+            return '<tr>' +
+                '<td class="ubits-body-sm-regular">' + drEsc(r[0]) + '</td>' +
+                '<td class="ubits-body-sm-regular">' + drEsc(r[1]) + '</td>' +
+                '</tr>';
+        }).join('');
+        return '<div class="cc-eval-chat-table-wrap"><table class="' + cls + '">' +
+            '<thead>' + head + '</thead><tbody>' + body + '</tbody></table></div>';
+    }
+
+    function _mvpConfigRows(cfg) {
+        var minScore = (cfg && cfg.minScore != null) ? cfg.minScore : 70;
+        var tiempo = (cfg && cfg.timeLimit) ? (cfg.timeLimitValue + ' min') : 'Sin límite';
+        var intentos = (cfg && cfg.limitAttempts) ? String(cfg.attemptsValue) : 'Sin límite';
+        var ordP = (cfg && cfg.questionsRandom) ? 'Activado' : 'Desactivado';
+        var ordO = (cfg && cfg.answersRandom) ? 'Activado' : 'Desactivado';
+        var porIntento = (cfg && cfg.limitQPerAttempt) ? String(cfg.qPerAttemptValue) : 'Todas';
+        return [
+            ['Porcentaje mínimo de aprobación', minScore + ' %'],
+            ['Tiempo límite', tiempo],
+            ['Límite de intentos', intentos],
+            ['Orden aleatorio de preguntas', ordP],
+            ['Orden aleatorio de opciones', ordO],
+            ['Preguntas por intento', porIntento]
+        ];
+    }
+
+    // ---- Flujo conversacional MVP ----
+    function evalAgentStartMvp(rootEl) {
+        var baseCfg = Object.assign({}, (rootEl._ccEvalPageState && rootEl._ccEvalPageState.config) || {});
+        rootEl._ccEvalState = { mvp: true, step: 'mvp_confirm_config', config: baseCfg };
+        var rich =
+            '<p class="ubits-body-md-regular" style="margin:0 0 12px;">¡Hola! Vamos a generar las preguntas de tu evaluación en Creator. Esta es la configuración actual del cuestionario:</p>' +
+            _mvpTableHtml(['Parámetro', 'Valor'], _mvpConfigRows(baseCfg), false) +
+            '<p class="ubits-body-md-regular" style="margin:12px 0 0;">¿Continuamos con esta configuración o deseas modificar algún parámetro?</p>';
+        _evalMsg('', { richHtml: rich, hideAiCopy: true });
+    }
+
+    function evalAgentMvpAskCount(rootEl) {
+        rootEl._ccEvalState.step = 'mvp_await_count';
+        _evalTyping(function () {
+            _evalMsg('¿Cuántas preguntas deseas incluir en la evaluación?');
+        });
+    }
+
+    function evalAgentMvpAskDifficulty(rootEl) {
+        rootEl._ccEvalState.step = 'mvp_await_difficulty';
+        var rich =
+            '<p class="ubits-body-md-regular" style="margin:0 0 8px;">¿Qué nivel de dificultad deben tener las preguntas?</p>' +
+            '<ul class="cc-eval-chat-list"><li><strong>Básica</strong></li><li><strong>Intermedia</strong></li><li><strong>Avanzada</strong></li></ul>';
+        _evalTyping(function () {
+            _evalMsg('¿Qué nivel de dificultad deben tener las preguntas?\n- Básica\n- Intermedia\n- Avanzada', { richHtml: rich });
+        });
+    }
+
+    function evalAgentMvpAskMaterial(rootEl) {
+        rootEl._ccEvalState.step = 'mvp_await_material';
+        var rich =
+            '<p class="ubits-body-md-regular" style="margin:0 0 8px;">Ahora necesito el material sobre el cual se generarán las preguntas. Puedes compartirlo de dos formas:</p>' +
+            '<ul class="cc-eval-chat-list">' +
+            '<li><strong>Archivo adjunto</strong> (documento de aproximadamente 8.000 palabras)</li>' +
+            '<li><strong>Texto libre</strong> pegado directamente aquí (aproximadamente 4.000–4.500 palabras)</li>' +
+            '</ul>' +
+            '<p class="ubits-body-md-regular" style="margin:8px 0 0;">Una vez que reciba el material, lo validaré y te haré una propuesta de opciones de preguntas, lo cual puede tardar unos segundos.</p>';
+        _evalTyping(function () {
+            _evalMsg('Ahora necesito el material sobre el cual se generarán las preguntas.', { richHtml: rich });
+        });
+    }
+
+    function evalAgentMvpShowProposal(rootEl) {
+        var state = rootEl._ccEvalState;
+        var difficulty = (state.config && state.config.difficulty) || 'intermediate';
+        var count = (state.config && state.config.questionCount) || 10;
+        var mix = _mvpComputeMix(difficulty, count);
+        state.mvpMix = mix;
+        state.config.questionTypes = mix.map(function (r) { return r.type; });
+        state.config.questionCount = mix.reduce(function (s, r) { return s + r.count; }, 0);
+
+        var rows = mix.map(function (r) { return [_MVP_TYPE_LABELS[r.type] || r.type, String(r.count)]; });
+        var diffLabel = _MVP_DIFF_LABEL[difficulty] || 'intermedio';
+        var rich =
+            '<p class="ubits-body-md-regular" style="margin:0 0 12px;">Basándome en tu contenido y la dificultad seleccionada, te propongo la siguiente combinación de preguntas:</p>' +
+            _mvpTableHtml(['Tipo de pregunta', 'Cantidad'], rows, true) +
+            '<p class="ubits-body-md-regular" style="margin:12px 0 0;">Esta combinación permite evaluar la comprensión de los conceptos clave del contenido y comprobar el reconocimiento de afirmaciones directas de forma clara y equilibrada para un nivel ' + diffLabel + '.</p>' +
+            '<p class="ubits-body-md-regular" style="margin:12px 0 0;">Al aprobar y continuar con la generación, se consumirán los créditos correspondientes. <strong>Solo se te cobrarán si todas las preguntas se crean de forma exitosa.</strong></p>' +
+            '<p class="ubits-body-md-regular" style="margin:12px 0 0;">¿Apruebas esta propuesta para continuar con la generación?</p>';
+
+        state.step = 'mvp_analyzing';
+        _evalTyping(function () {
+            _evalMsg('', { richHtml: rich, hideAiCopy: true });
+            state.step = 'mvp_await_approve';
+        }, 1800);
+    }
+
+    function evalAgentMvpShowGenerateButton(rootEl) {
+        var state = rootEl._ccEvalState;
+        state.step = 'mvp_ready_generate';
+        var cost = EVAL_AI_TOKEN_COST;
+        var rich =
+            '<p class="ubits-body-md-regular" style="margin:0 0 12px;">¡Perfecto! Cuando quieras, genero las preguntas.</p>' +
+            '<button type="button" id="cc-eval-gen-confirm-btn"' +
+            ' class="ubits-ia-button ubits-ia-button--secondary ubits-ia-button--sm ubits-ia-button--with-token-cost">' +
+            '<span>Generar preguntas</span>' +
+            '<span class="ubits-ia-button__token-divider" aria-hidden="true"></span>' +
+            '<span class="ubits-ia-button__token-cost" aria-hidden="true"><i class="far fa-coin-vertical"></i><span class="ubits-ia-button__token-number">' + cost + '</span></span>' +
+            '</button>';
+        _evalTyping(function () {
+            _evalMsg('', { richHtml: rich, hideAiCopy: true });
+            setTimeout(function () {
+                var btn = document.getElementById('cc-eval-gen-confirm-btn');
+                if (!btn) return;
+                btn.addEventListener('click', function () {
+                    if (!_evalTrySpendTokens(cost)) return;
+                    if (typeof global.setIaButtonGenerating === 'function') {
+                        global.setIaButtonGenerating(btn, true, { label: 'Generando' });
+                    } else {
+                        btn.disabled = true;
+                    }
+                    state.step = 'generating';
+                    evalAgentCloseUiForGeneration();
+                    setTimeout(function () { evalAgentRunGenerationMvp(rootEl); }, 150);
+                });
+            }, 100);
+        });
+    }
+
+    function evalAgentRunGenerationMvp(rootEl) {
+        var state = rootEl._ccEvalState;
+        evalAgentShowSkeleton(rootEl);
+        setTimeout(function () {
+            evalAgentRemoveSkeleton();
+            var difficulty = (state && state.config && state.config.difficulty) || 'intermediate';
+            var questions = _mvpGenQuestionsFromMix(difficulty, state && state.mvpMix);
+            applyAIQuestions(rootEl, questions);
+            if (rootEl._ccEvalPageState) {
+                rootEl._ccEvalPageState.config = Object.assign({}, (state && state.config) || {});
+            }
+            if (state) state.step = 'done';
+        }, 4000);
+    }
+
+    function evalAgentHandleUserMsgMvp(rootEl, text) {
+        var state = rootEl._ccEvalState;
+        if (!state || !state.mvp) { evalAgentStartMvp(rootEl); return; }
+        var step = state.step;
+
+        if (step === 'mvp_confirm_config') {
+            if (_mvpIsAffirmative(text)) {
+                evalAgentMvpAskCount(rootEl);
+            } else {
+                _evalTyping(function () {
+                    _evalMsg('Puedes ajustar los parámetros con el botón "Configuración". Cuando quieras continuar con esta configuración, escribe "continuar".');
+                });
+            }
+            return;
+        }
+
+        if (step === 'mvp_await_count') {
+            var n = _mvpParseCount(text);
+            if (n == null) {
+                _evalTyping(function () {
+                    _evalMsg('Escribe un número de preguntas entre 1 y 50. Por ejemplo: "10" o "10 preguntas".');
+                });
+                return;
+            }
+            state.config.questionCount = n;
+            evalAgentMvpAskDifficulty(rootEl);
+            return;
+        }
+
+        if (step === 'mvp_await_difficulty') {
+            var d = _mvpParseDifficulty(text);
+            if (!d) {
+                _evalTyping(function () {
+                    _evalMsg('Elige un nivel: Básica, Intermedia o Avanzada.');
+                });
+                return;
+            }
+            state.config.difficulty = d;
+            evalAgentMvpAskMaterial(rootEl);
+            return;
+        }
+
+        if (step === 'mvp_await_material') {
+            evalAgentMvpShowProposal(rootEl);
+            return;
+        }
+
+        if (step === 'mvp_await_approve') {
+            if (_mvpIsAffirmative(text)) {
+                evalAgentMvpShowGenerateButton(rootEl);
+            } else {
+                _evalTyping(function () {
+                    _evalMsg('Sin problema. Si quieres ajustar la cantidad, la dificultad o el material, dímelo. Cuando estés de acuerdo con la propuesta, escribe "apruebo" para generar.');
+                });
+            }
+            return;
+        }
+
+        if (step === 'done') {
+            evalAgentStartMvp(rootEl);
+            return;
+        }
+    }
+
     // ---------------------------
     // Wiring principal
     // ---------------------------
@@ -2186,6 +2560,12 @@
                 evalAgentInit(rootEl, pageState);
                 if (typeof global.openIAPanel === 'function') global.openIAPanel();
                 setTimeout(function () {
+                    // MVP: primera burbuja = saludo + tabla de configuración (sin cards).
+                    if (getEvalAgentMode() === 'mvp') {
+                        evalAgentStartMvp(rootEl);
+                        return;
+                    }
+                    // Ideal (experiencia completa): saludo + agente con tarjetas de camino.
                     var cost = EVAL_AI_TOKEN_COST;
                     if (_evalGetTokens() >= cost && typeof global.addIAPanelMessage === 'function') {
                         global.addIAPanelMessage(

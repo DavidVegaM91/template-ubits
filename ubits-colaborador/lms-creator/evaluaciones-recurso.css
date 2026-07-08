@@ -428,3 +428,66 @@
 .cc-eval-ai-gen-overlay .cc-portada-ai-generating__stage {
     max-width: none;
 }
+
+/* ─────────────────────────────────────────────
+   Agente de evaluaciones (MVP) — tablas y listas dentro del comentario de la IA
+   (Sin botones de "Exportar CSV / copiar" debajo de la tabla.)
+   ───────────────────────────────────────────── */
+
+.cc-eval-chat-table-wrap {
+    width: 100%;
+    margin: 4px 0;
+    overflow: hidden;
+    border: 1px solid var(--ubits-border-1);
+    border-radius: var(--border-radius-md);
+    background: var(--ubits-bg-1);
+}
+
+.cc-eval-chat-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+.cc-eval-chat-table th,
+.cc-eval-chat-table td {
+    text-align: left;
+    padding: 10px 12px;
+    vertical-align: top;
+    word-break: break-word;
+}
+
+.cc-eval-chat-table thead th {
+    background: var(--ubits-bg-2);
+    color: var(--ubits-fg-1-high);
+    border-bottom: 1px solid var(--ubits-border-1);
+}
+
+.cc-eval-chat-table tbody td {
+    color: var(--ubits-fg-1-medium);
+    border-top: 1px solid var(--ubits-border-1);
+}
+
+.cc-eval-chat-table tbody tr:first-child td {
+    border-top: none;
+}
+
+.cc-eval-chat-table--num-right th:last-child,
+.cc-eval-chat-table--num-right td:last-child {
+    text-align: right;
+    width: 96px;
+}
+
+.cc-eval-chat-list {
+    margin: 4px 0;
+    padding-left: 20px;
+    color: var(--ubits-fg-1-medium);
+}
+
+.cc-eval-chat-list li {
+    margin: 2px 0;
+}
+
+.cc-eval-chat-list li strong {
+    color: var(--ubits-fg-1-high);
+}
