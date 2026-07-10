@@ -253,6 +253,193 @@
         return links;
     }
 
+    /** Tokens + botones + indicadores para HTML descargable (sin deps relativas al playground). */
+    function buildScormStandaloneChromeCss() {
+        return (
+            ':root{' +
+            '--ubits-font-family-sans:"Inter",system-ui,-apple-system,sans-serif;' +
+            '--ubits-bg-1:#fff;--ubits-bg-2:#f3f3f4;--ubits-border-1:#e7e8ea;--ubits-fg-1-high:#303a47;--ubits-fg-1-medium:#5c646f;' +
+            '--ubits-button-primary-bg-default:#0c5bef;--ubits-button-primary-hover:#223a91;--ubits-button-primary-pressed:#1e4abf;' +
+            '--ubits-btn-primary-fg:#fff;--ubits-btn-secondary-bg-default:#fff;--ubits-btn-secondary-bg-hover:#f3f3f4;' +
+            '--ubits-btn-secondary-bg-pressed:#e7e8ea;--ubits-btn-secondary-fg-default:#303a47;--ubits-btn-secondary-border:#d0d2d5;' +
+            '--ubits-bg-disabled-button:#e7e8ea;--ubits-fg-on-disabled-button:#a8abb2;--ubits-border-disabled-button:#d0d2d5;' +
+            '--ubits-button-focus-ring:rgba(82,151,244,.3);' +
+            '--padding-md:12px;--padding-lg:16px;--gap-sm:8px;--border-radius-sm:8px;--border-radius-full:999px;' +
+            '}' +
+            '*,*::before,*::after{box-sizing:border-box;}' +
+            'html,body{margin:0;padding:0;height:100%;font-family:var(--ubits-font-family-sans);color:var(--ubits-fg-1-high);}' +
+            '.ubits-body-sm-semibold{font-size:14px;font-weight:600;line-height:1.4;}' +
+            '.ubits-body-sm-bold{font-size:14px;font-weight:700;line-height:1.4;}' +
+            '.ubits-button{display:inline-flex;align-items:center;justify-content:center;gap:var(--gap-sm);padding:var(--padding-md) var(--padding-lg);border:none;border-radius:var(--border-radius-sm);font-family:inherit;font-weight:600;font-size:inherit;line-height:1;cursor:pointer;user-select:none;white-space:nowrap;}' +
+            '.ubits-button--primary{background:var(--ubits-button-primary-bg-default);color:var(--ubits-btn-primary-fg);border:1px solid var(--ubits-button-primary-bg-default);}' +
+            '.ubits-button--primary:hover:not(:disabled){background:var(--ubits-button-primary-hover);border-color:var(--ubits-button-primary-hover);}' +
+            '.ubits-button--secondary{background:var(--ubits-btn-secondary-bg-default);color:var(--ubits-btn-secondary-fg-default);border:1px solid var(--ubits-btn-secondary-border);}' +
+            '.ubits-button--secondary:hover:not(:disabled){background:var(--ubits-btn-secondary-bg-hover);}' +
+            '.ubits-button:disabled{background:var(--ubits-bg-disabled-button)!important;color:var(--ubits-fg-on-disabled-button)!important;border-color:var(--ubits-border-disabled-button)!important;cursor:not-allowed;pointer-events:none;}' +
+            '#sp-dots{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;max-width:min(100%,220px);margin:0 auto;}' +
+            '.sp-dl-dot{width:8px;height:8px;min-width:8px;padding:0;border:none;border-radius:var(--border-radius-full);background:var(--ubits-fg-1-medium);opacity:.45;cursor:pointer;transition:transform .2s ease,opacity .2s ease,background .2s ease;}' +
+            '.sp-dl-dot.is-active{width:12px;height:12px;min-width:12px;opacity:1;background:var(--ubits-button-primary-bg-default);}' +
+            '.sp-footer i[class*="fa-"]{font-family:"Font Awesome 6 Free";font-style:normal;font-weight:900;display:inline-block;line-height:1;}'
+        );
+    }
+
+    function ccScormInlineImagesForDownload(html, done) {
+        if (typeof done !== 'function') return;
+        var baseHref = window.location.href;
+        var imgRe = /(<img[^>]+src=")([^"]+)(")/gi;
+        var urls = [];
+        var seen = {};
+        var m;
+        while ((m = imgRe.exec(html)) !== null) {
+            var u = m[2];
+            if (!u || u.indexOf('data:') === 0) continue;
+            if (seen[u]) continue;
+            seen[u] = true;
+            var abs = u;
+            try {
+                abs = new URL(u, baseHref).href;
+            } catch (eAbs) {}
+            urls.push({ orig: u, abs: abs });
+        }
+        if (!urls.length) {
+            done(html);
+            return;
+        }
+        var pending = urls.length;
+        var map = {};
+        urls.forEach(function (item) {
+            fetch(item.abs)
+                .then(function (r) {
+                    if (!r.ok) throw new Error('fetch');
+                    return r.blob();
+                })
+                .then(function (blob) {
+                    return new Promise(function (resolve, reject) {
+                        var fr = new FileReader();
+                        fr.onload = function () {
+                            map[item.orig] = fr.result;
+                            resolve();
+                        };
+                        fr.onerror = reject;
+                        fr.readAsDataURL(blob);
+                    });
+                })
+                .catch(function () {
+                    map[item.orig] = item.abs;
+                })
+                .finally(function () {
+                    pending -= 1;
+                    if (pending === 0) {
+                        var out = html;
+                        urls.forEach(function (it) {
+                            if (map[it.orig]) out = out.split(it.orig).join(map[it.orig]);
+                        });
+                        done(out);
+                    }
+                });
+        });
+    }
+
+    function ccScormUnescapeHtmlAttr(s) {
+        if (!s) return '';
+        return String(s)
+            .replace(/&quot;/g, '"')
+            .replace(/&#39;/g, "'")
+            .replace(/&lt;/g, '<')
+            .replace(/&gt;/g, '>')
+            .replace(/&amp;/g, '&');
+    }
+
+    function ccScormFetchTextUrl(url, done) {
+        if (typeof done !== 'function') return;
+        fetch(url)
+            .then(function (r) {
+                if (!r.ok) throw new Error('fetch-fail');
+                return r.text();
+            })
+            .then(function (t) {
+                done(t || null);
+            })
+            .catch(function () {
+                try {
+                    var xhr = new XMLHttpRequest();
+                    xhr.open('GET', url, true);
+                    xhr.onload = function () {
+                        if ((xhr.status >= 200 && xhr.status < 300) || xhr.status === 0) {
+                            done(xhr.responseText || null);
+                        } else {
+                            done(null);
+                        }
+                    };
+                    xhr.onerror = function () {
+                        done(null);
+                    };
+                    xhr.send();
+                } catch (eXhr) {
+                    done(null);
+                }
+            });
+    }
+
+    function ccScormGetSimuladorEmbeddedHtml() {
+        if (typeof global.SIMULADOR_SCORM_SRCDOC === 'string' && global.SIMULADOR_SCORM_SRCDOC.length > 100) {
+            return global.SIMULADOR_SCORM_SRCDOC;
+        }
+        return null;
+    }
+
+    /** Extrae HTML standalone de un bloque SCORM (iframe src o srcdoc). */
+    function ccScormResolveEmbeddedHtmlFromBlock(blockHtml, done) {
+        if (typeof done !== 'function') return;
+        var htmlStr = blockHtml != null ? String(blockHtml) : '';
+        if (!htmlStr.trim()) {
+            done(null);
+            return;
+        }
+
+        var srcdocMatch = htmlStr.match(/<iframe[^>]*\ssrcdoc="([\s\S]*?)"[^>]*>/i);
+        if (srcdocMatch && srcdocMatch[1]) {
+            var fromSrcdoc = ccScormUnescapeHtmlAttr(srcdocMatch[1]);
+            if (fromSrcdoc.indexOf('<html') !== -1 || fromSrcdoc.indexOf('<!DOCTYPE') !== -1) {
+                ccScormInlineImagesForDownload(fromSrcdoc, done);
+                return;
+            }
+        }
+
+        var srcMatch = htmlStr.match(/<iframe[^>]*\ssrc="([^"]+)"[^>]*>/i);
+        if (srcMatch && srcMatch[1]) {
+            var src = ccScormUnescapeHtmlAttr(srcMatch[1]);
+            if (src.indexOf('simulador-scorm') !== -1) {
+                var bundled = ccScormGetSimuladorEmbeddedHtml();
+                if (bundled) {
+                    done(bundled);
+                    return;
+                }
+            }
+            var absUrl;
+            try {
+                absUrl = new URL(src, global.location.href).href;
+            } catch (eUrl) {
+                done(null);
+                return;
+            }
+            ccScormFetchTextUrl(absUrl, function (text) {
+                if (text) {
+                    done(text);
+                    return;
+                }
+                if (src.indexOf('simulador-scorm') !== -1) {
+                    done(ccScormGetSimuladorEmbeddedHtml());
+                    return;
+                }
+                done(null);
+            });
+            return;
+        }
+
+        done(null);
+    }
+
     function ccScormDeleteSlideAt(pageKey, index) {
         var stored = _scormDataStore[pageKey];
         if (!stored || !stored.slides || stored.slides.length <= 1) return false;
@@ -1202,8 +1389,23 @@
         'body.sp--compact-viewport.sp--modal-preview .sp-slide{padding:8px 10px;}';
     }
 
-    function buildScormScript(n, editMode) {
-        return 'var cur=0,tot='+n+',__spIxT=null,__ci=null;' +
+    function buildScormScript(n, editMode, standaloneDownload) {
+        var standalone = !!standaloneDownload;
+        var standalonePrefix = standalone
+            ? 'function launchUbitsConfetti(){}' +
+              'function spInitStandaloneDots_(cid,n0,active){var c=document.getElementById(cid);var api={setActive:function(i){spUpdateStandaloneDots_(c,n0,i);}};if(!c)return api;c.innerHTML="";for(var i=0;i<n0;i++){var b=document.createElement("button");b.type="button";b.className="sp-dl-dot"+(i===active?" is-active":"");b.setAttribute("aria-label","Diapositiva "+(i+1));(function(ix){b.addEventListener("click",function(){gotoSlide(ix);});})(i);c.appendChild(b);}return api;}' +
+              'function spUpdateStandaloneDots_(c,n0,active){if(!c)return;var ds=c.querySelectorAll(".sp-dl-dot");for(var i=0;i<ds.length;i++){ds[i].classList.toggle("is-active",i===active);if(i===active)ds[i].setAttribute("aria-current","true");else ds[i].removeAttribute("aria-current");}}'
+            : '';
+        var domReadyBlock = standalone
+            ? 'document.addEventListener("DOMContentLoaded",function(){var ss=document.querySelectorAll(".sp-slide");if(ss[0])ss[0].classList.add("active");__ci=spInitStandaloneDots_("sp-dots",tot,cur);upd();wireScormIx();try{spFitSlideToStage_();}catch(eFit0){}var spRzFit_=function(){try{spFitSlideToStage_();}catch(eF){}};window.addEventListener("resize",spRzFit_,{passive:true});});'
+            : 'document.addEventListener("DOMContentLoaded",function(){' +
+              'try{if(!document.querySelector("base")){var pu=window.parent&&window.parent.location&&window.parent.location.href;var u=new URL(pu);u.hash="";u.search="";var p=u.pathname.split("/");p.pop();u.pathname=p.join("/")+"/";var be=document.createElement("base");be.href=u.href;document.head.insertBefore(be,document.head.firstChild);}}catch(e1){}' +
+              '  var ss=document.querySelectorAll(".sp-slide");if(ss[0])ss[0].classList.add("active");' +
+              '  if(typeof initCarouselIndicators==="function"){__ci=initCarouselIndicators({containerId:"sp-dots",count:tot,activeIndex:cur,maxVisible:6,dynamicFrom:11,ariaLabel:"Indicadores de diapositiva",onSelect:function(i){gotoSlide(i);}});}' +
+              '  upd();wireScormIx();if(document.body.classList.contains("sp--editing")){try{wireSpTooltips_();}catch(eTt2){}}' +
+              '  try{spFitSlideToStage_();}catch(eFit0){}' +
+              '  if(document.body.classList.contains("sp--compact-viewport")){var spRzFit_=function(){try{spFitSlideToStage_();}catch(eF){}};window.addEventListener("resize",spRzFit_,{passive:true});}});';
+        return standalonePrefix + 'var cur=0,tot='+n+',__spIxT=null,__ci=null;' +
         'function spFitSlideToStage_(){' +
         'if(document.body.classList.contains("sp--editing"))return;' +
         'var stage=document.querySelector(".sp-stage");var slide=document.querySelector(".sp-slide.active");' +
@@ -1371,13 +1573,7 @@
         'clr();}' +
         '});});});' +
         '}' +
-        'document.addEventListener("DOMContentLoaded",function(){' +
-        'try{if(!document.querySelector("base")){var pu=window.parent&&window.parent.location&&window.parent.location.href;var u=new URL(pu);u.hash="";u.search="";var p=u.pathname.split("/");p.pop();u.pathname=p.join("/")+"/";var be=document.createElement("base");be.href=u.href;document.head.insertBefore(be,document.head.firstChild);}}catch(e1){}' +
-        '  var ss=document.querySelectorAll(".sp-slide");if(ss[0])ss[0].classList.add("active");' +
-        '  if(typeof initCarouselIndicators==="function"){__ci=initCarouselIndicators({containerId:"sp-dots",count:tot,activeIndex:cur,maxVisible:6,dynamicFrom:11,ariaLabel:"Indicadores de diapositiva",onSelect:function(i){gotoSlide(i);}});}' +
-        '  upd();wireScormIx();if(document.body.classList.contains("sp--editing")){try{wireSpTooltips_();}catch(eTt2){}}' +
-        '  try{spFitSlideToStage_();}catch(eFit0){}' +
-        '  if(document.body.classList.contains("sp--compact-viewport")){var spRzFit_=function(){try{spFitSlideToStage_();}catch(eF){}};window.addEventListener("resize",spRzFit_,{passive:true});}});';
+        domReadyBlock;
     }
 
     function generateScormHtml(titulo, slides, color, editMode, isModalPreview, pageKey, logoSrc) {
@@ -1428,6 +1624,41 @@
             '<script src="../../components/ubits-confetti.js"><\/script>'+
             (editMode ? '<script src="../../components/tooltip.js"><\/script>' : '') +
             '<script>'+script+'<\/script></body></html>';
+    }
+
+    /** HTML autocontenido para descarga local (sin iframe ni rutas relativas al playground). */
+    function generateScormStandaloneDownloadHtml(titulo, slides, color, logoSrc) {
+        var n = slides.length;
+        var logo = logoSrc || '';
+        var slidesHtml = slides.map(function (s, i) {
+            return buildSlideHtml(s, i, false, logo);
+        }).join('\n');
+        var css = buildScormCss(color, false);
+        var script = buildScormScript(n, false, true);
+        var headerInner =
+            '<span class="sp-ct ubits-body-sm-semibold" id="sp-ct-num">1 / ' + n + '</span>';
+
+        return (
+            '<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">' +
+            '<title>' + esc(titulo) + '</title>' +
+            '<link rel="preconnect" href="https://fonts.googleapis.com">' +
+            '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>' +
+            '<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">' +
+            '<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">' +
+            '<style>' + buildScormStandaloneChromeCss() + css + '</style></head>' +
+            '<body class="sp--compact-viewport">' +
+            '<div class="sp-header">' +
+            '<div class="sp-pb"><div class="sp-pf" id="sp-pf"></div></div>' +
+            '<div class="sp-hi sp-hi--viewer">' + headerInner + '</div>' +
+            '</div>' +
+            '<div class="sp-stage"><div class="sp-slides">' + slidesHtml + '</div></div>' +
+            '<div class="sp-footer">' +
+            '<button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="sp-prev" onclick="nav(-1)" aria-label="Anterior"><i class="fas fa-arrow-left" aria-hidden="true"></i><span>Anterior</span></button>' +
+            '<div id="sp-dots"></div>' +
+            '<button type="button" class="ubits-button ubits-button--primary ubits-button--md" id="sp-next" onclick="nav(1)" aria-label="Siguiente"><span>Siguiente</span><i class="fas fa-arrow-right" aria-hidden="true"></i></button>' +
+            '</div>' +
+            '<script>' + script + '<\/script></body></html>'
+        );
     }
 
     function applyPlaceholderSlidesForPreview(slides) {
@@ -1585,9 +1816,21 @@
             aiGenerated && typeof global.getGeneradoConIaBadgeHtml === 'function'
                 ? '<div class="cc-scorm-resource__generado-ia-host">' + global.getGeneradoConIaBadgeHtml() + '</div>'
                 : '';
-        var editBtn = pageKey
-            ? '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="cc-editar-scorm-recurso"><i class="far fa-pencil"></i><span>Editar SCORM</span></button>'
-            : '';
+        var footerHtml;
+        if (global.CC_PUBLISHED_EDIT_MODE && typeof global.ccBuildCrearContenidoResourceFooterHtml === 'function') {
+            footerHtml = global.ccBuildCrearContenidoResourceFooterHtml(
+                ' style="display:flex;align-items:center;gap:var(--gap-sm);flex-wrap:wrap;"'
+            );
+        } else {
+            var editBtn = pageKey
+                ? '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="cc-editar-scorm-recurso"><i class="far fa-pencil"></i><span>Editar SCORM</span></button>'
+                : '';
+            footerHtml =
+                '<div class="ubits-resources-block__footer" style="display:flex;align-items:center;gap:var(--gap-sm);flex-wrap:wrap;">' +
+                editBtn +
+                '<button type="button" class="ubits-button ubits-button--error-secondary ubits-button--sm" id="cc-eliminar-recurso"><i class="far fa-trash-alt"></i><span>Eliminar</span></button>' +
+                '</div>';
+        }
         var escaped = scormHtml.replace(/"/g, '&quot;');
         return '<div class="ubits-resources-block ubits-resources-block--stack">' +
             '<div class="ubits-resources-block__surface cc-scorm-resource__surface" style="padding:0;">' +
@@ -1598,10 +1841,7 @@
                     '</div>' +
                 '</div>' +
             '</div>' +
-            '<div class="ubits-resources-block__footer" style="display:flex;align-items:center;gap:var(--gap-sm);flex-wrap:wrap;">' +
-                editBtn +
-                '<button type="button" class="ubits-button ubits-button--error-secondary ubits-button--sm" id="cc-eliminar-recurso"><i class="far fa-trash-alt"></i><span>Eliminar</span></button>' +
-            '</div>' +
+            footerHtml +
         '</div>';
     }
 
@@ -2677,6 +2917,30 @@
     global.openScormRecursoModal = openScormRecursoModal;
     global.openScormEditModal    = openScormEditModal;
     global.ccScormDataStore      = _scormDataStore;
+
+    /** Genera HTML SCORM listo para descargar (standalone + imágenes embebidas si aplica). */
+    global.ccScormPrepareDownloadHtml = function (pageKey, done, opts) {
+        if (typeof done !== 'function') return;
+        opts = opts || {};
+        var pk = pageKey != null ? String(pageKey) : '';
+        var stored = _scormDataStore[pk];
+        if (stored && stored.slides && stored.slides.length) {
+            var html = generateScormStandaloneDownloadHtml(
+                stored.titulo || 'Presentación',
+                stored.slides,
+                stored.color || '#0C5BEF',
+                stored.logoDataUrl || ''
+            );
+            ccScormInlineImagesForDownload(html, done);
+            return;
+        }
+        var blockHtml = opts.blockHtml != null ? String(opts.blockHtml) : '';
+        if (blockHtml) {
+            ccScormResolveEmbeddedHtmlFromBlock(blockHtml, done);
+            return;
+        }
+        done(null);
+    };
 
     /** SCORM generado por IA ya renderizado (demo deep link). */
     global.ccScormBuildDemoAiRenderedBlock = function (pageKey, titulo) {

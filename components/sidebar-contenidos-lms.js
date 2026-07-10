@@ -113,8 +113,11 @@
             btn.addEventListener('click', function () {
                 var stepId = btn.getAttribute('data-step');
                 if (!stepId) return;
-                setSidebarContenidosLmsActive(root, stepId);
-                if (typeof onSelect === 'function') onSelect(stepId);
+                if (typeof onSelect === 'function') {
+                    onSelect(stepId);
+                } else {
+                    setSidebarContenidosLmsActive(root, stepId);
+                }
             });
         });
     }

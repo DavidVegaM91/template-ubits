@@ -77,7 +77,7 @@
         if (txt) txt.textContent = label === 'Publicado' ? 'Público' : label;
     }
 
-    function showEditSection(sectionId) {
+    function applyEditSection(sectionId) {
         var resultados = document.getElementById('editar-contenido-step-resultados');
         var steps = document.querySelectorAll('#editar-contenido-root .crear-contenido-step[data-crear-step]');
         if (resultados) {
@@ -100,7 +100,7 @@
         editState.activeSection = sectionId;
 
         if (sectionId === 'recursos') {
-            tryEnterRecursosWithWarning();
+            enterRecursosSection();
         } else if (sectionId === 'visibilidad') {
             if (window.CrearContenidoPageApi) {
                 window.CrearContenidoPageApi.goToCrearContenidoPageStep(3, { skipUrl: true });
@@ -120,56 +120,96 @@
         }
     }
 
-    function tryEnterRecursosWithWarning() {
-        if (editState.readonly) {
-            enterRecursosSection();
-            return;
-        }
+    function shouldShowRecursosWarning() {
+        if (editState.readonly) return false;
         try {
-            if (sessionStorage.getItem(SS_RECURSOS_WARN) === '1') {
-                enterRecursosSection();
-                return;
-            }
+            if (sessionStorage.getItem(SS_RECURSOS_WARN) === '1') return false;
         } catch (e) {}
-        if (typeof window.openModal !== 'function') {
-            enterRecursosSection();
+        return typeof window.openModal === 'function';
+    }
+
+    function dismissRecursosWarningModal(previousSection) {
+        applyEditSection(previousSection || editState.activeSection || 'informacion');
+    }
+
+    function showEditSection(sectionId) {
+        if (sectionId === 'recursos' && shouldShowRecursosWarning()) {
+            if (editState.activeSection !== 'recursos') {
+                editState.previousSectionBeforeRecursos = editState.activeSection;
+            }
+            openRecursosWarningModal();
             return;
         }
+        applyEditSection(sectionId);
+    }
+
+    function openRecursosWarningModal() {
+        var OVERLAY_ID = 'ec-recursos-warn-modal';
+        var sectionBeforePrompt = editState.activeSection;
+
+        var existing = document.getElementById(OVERLAY_ID);
+        if (existing && typeof window.closeModal === 'function') {
+            window.closeModal(existing);
+        }
+
         var overlay = window.openModal({
+            overlayId: OVERLAY_ID,
             title: 'Advertencia sobre edición',
             bodyHtml:
                 '<p class="ubits-body-md-regular">Este contenido ya ha sido publicado. Solo puedes realizar cambios limitados, como editar textos. No es posible eliminar ni agregar nuevos elementos. Las modificaciones que realices serán visibles para los estudiantes de forma inmediata.</p>',
             size: 'md',
             closeOnOverlayClick: false,
+            onClose: function () {
+                dismissRecursosWarningModal(sectionBeforePrompt);
+            },
             footerHtml:
-                '<button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="ec-recursos-warn-secondary"><span>Salir sin editar</span></button>' +
-                '<button type="button" class="ubits-button ubits-button--primary ubits-button--md" id="ec-recursos-warn-primary"><span>Sí, editar</span></button>'
+                '<button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="' +
+                OVERLAY_ID +
+                '-secondary"><span>Salir sin editar</span></button>' +
+                '<button type="button" class="ubits-button ubits-button--primary ubits-button--md" id="' +
+                OVERLAY_ID +
+                '-primary"><span>Sí, editar</span></button>'
         });
-        setTimeout(function () {
-            var overlayId = overlay && (overlay.id || overlay);
-            function closeWarnModal() {
-                if (typeof window.closeModal === 'function' && overlayId) {
-                    window.closeModal(overlayId);
-                }
+
+        if (!overlay) return;
+
+        function closeOverlayOnly() {
+            if (typeof window.closeModal === 'function') {
+                window.closeModal(overlay);
             }
-            var primary = document.getElementById('ec-recursos-warn-primary');
-            var secondary = document.getElementById('ec-recursos-warn-secondary');
-            if (primary) {
-                primary.addEventListener('click', function () {
-                    try {
-                        sessionStorage.setItem(SS_RECURSOS_WARN, '1');
-                    } catch (e) {}
-                    closeWarnModal();
-                    enterRecursosSection();
-                });
-            }
-            if (secondary) {
-                secondary.addEventListener('click', function () {
-                    closeWarnModal();
-                    showEditSection(editState.previousSectionBeforeRecursos || 'informacion');
-                });
-            }
-        }, 0);
+        }
+
+        function confirmRecursosEdit() {
+            try {
+                sessionStorage.setItem(SS_RECURSOS_WARN, '1');
+            } catch (e) {}
+            closeOverlayOnly();
+            applyEditSection('recursos');
+        }
+
+        function dismissRecursosEdit() {
+            closeOverlayOnly();
+            dismissRecursosWarningModal(sectionBeforePrompt);
+        }
+
+        var primaryBtn = overlay.querySelector('#' + OVERLAY_ID + '-primary');
+        var secondaryBtn = overlay.querySelector('#' + OVERLAY_ID + '-secondary');
+
+        if (primaryBtn) {
+            primaryBtn.addEventListener('click', function (ev) {
+                ev.preventDefault();
+                ev.stopPropagation();
+                confirmRecursosEdit();
+            });
+        }
+
+        if (secondaryBtn) {
+            secondaryBtn.addEventListener('click', function (ev) {
+                ev.preventDefault();
+                ev.stopPropagation();
+                dismissRecursosEdit();
+            });
+        }
     }
 
     function enterRecursosSection() {
@@ -287,9 +327,6 @@
                 variant: 'publicado-lms-creator',
                 activeStep: 'resultados',
                 onSelect: function (stepId) {
-                    if (stepId === 'recursos') {
-                        editState.previousSectionBeforeRecursos = editState.activeSection;
-                    }
                     showEditSection(stepId);
                 }
             });

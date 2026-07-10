@@ -38,11 +38,11 @@
  * -------------------------------------------------------------------------
  *
  * PIEZA 1 — CSS: el rail (este mismo bloque, líneas siguientes)
- *   position: sticky; top: 0; align-self: flex-start;
+ *   position: sticky; top: var(--padding-xl); align-self: flex-start;
  *   height: calc(var(--cc-main-h, calc(100dvh - 120px)) - 40px);
  *
- *   - sticky + top:0  → el rail se "pega" al tope del scrollport (#crear-contenido-main)
- *                       y nunca desaparece aunque el usuario scrollee.
+ *   - sticky + top:var(--padding-xl) → el rail se pega respetando el mismo gap
+ *                       de 20px que tiene con el header antes de scrollear.
  *   - align-self:flex-start → permite que el elemento tenga height explícito dentro
  *                              de un contenedor flex sin depender del alto del workspace.
  *   - height: --cc-main-h - 40px → el alto exacto del __main menos 20px arriba y 20px
@@ -118,7 +118,7 @@
  */
 #crear-contenido-main > .crear-contenido-editor-workspace > .crear-contenido-editor__rail {
     position: sticky;
-    top: 0;
+    top: var(--padding-xl);
     align-self: flex-start;
     height: calc(var(--cc-main-h, calc(100dvh - 120px)) - 40px);
     display: flex;

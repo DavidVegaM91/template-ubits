@@ -8,7 +8,7 @@
     'use strict';
 
     var STORAGE_KEY = 'ubits-planes-formacion-db';
-    var STORAGE_SCHEMA_VERSION = 5;
+    var STORAGE_SCHEMA_VERSION = 6;
     var PLAYGROUND_TODAY = '2026-06-19';
     var HORAS_META_COMPETENCIAS = 2;
     /** Usuario demo zona de estudio (María Alejandra — bd-master-colaboradores E006). */
@@ -176,11 +176,33 @@
         return out;
     }
 
-    function genPctContenido(planId, colaboradorId, contentId, estado) {
+    function genPctContenido(planId, colaboradorId, contentId, estado, itemIndex, totalItems) {
         if (planSinProgresoReal(estado)) return 0;
+        var total = totalItems || 3;
+        var idx = itemIndex != null ? itemIndex : 0;
+        var completeSeed = hashStr(planId + '|' + colaboradorId + '|complete-count');
+        var numComplete = Math.min(total, 1 + (completeSeed % 2));
+        if (idx < numComplete) return 100;
         var h = hashStr(planId + colaboradorId + contentId);
-        if (estado === 'No vigente') return Math.min(100, 25 + (h % 76));
-        return Math.min(100, (h % 97));
+        if (estado === 'No vigente') return Math.min(99, 15 + (h % 70));
+        return Math.min(99, 10 + (h % 75));
+    }
+
+    function itemEstaFinalizado(it) {
+        if (!it) return false;
+        var pct = Number(it.progress);
+        if (pct >= 100) return true;
+        return String(it.status || '') === 'completed';
+    }
+
+    /** Porcentaje de ítems finalizados (100 %), no promedio de avance parcial. */
+    function progresoFinalizacionItems(items) {
+        if (!items || !items.length) return 0;
+        var done = 0;
+        items.forEach(function (it) {
+            if (itemEstaFinalizado(it)) done += 1;
+        });
+        return Math.round((done / items.length) * 100);
     }
 
     function buildContenidoItem(c, pct) {
@@ -263,7 +285,7 @@
         }
         var sum = 0;
         keys.forEach(function (cid) {
-            sum += progresoPromedioItems(map[cid]);
+            sum += progresoFinalizacionItems(map[cid]);
         });
         plan.progresoAgregado = Math.round(sum / keys.length);
         plan._progresoStale = false;
@@ -296,8 +318,8 @@
                 var asignaciones = [];
                 reportes.forEach(function (col) {
                     var picked = pickContenidosParaPersona(planId, col.id, q.key, catalogo, 3);
-                    var items = picked.map(function (c) {
-                        var pct = genPctContenido(planId, col.id, c.id, estado);
+                    var items = picked.map(function (c, itemIdx) {
+                        var pct = genPctContenido(planId, col.id, c.id, estado, itemIdx, picked.length);
                         return buildContenidoItem(c, pct);
                     });
                     contenidoPorUsuario[String(col.id)] = items;
@@ -307,7 +329,7 @@
                 if (!planSinProgresoReal(estado) && asignaciones.length) {
                     var sum = 0;
                     Object.keys(contenidoPorUsuario).forEach(function (cid) {
-                        sum += progresoPromedioItems(contenidoPorUsuario[cid]);
+                        sum += progresoFinalizacionItems(contenidoPorUsuario[cid]);
                     });
                     progresoAgregado = Math.round(sum / Object.keys(contenidoPorUsuario).length);
                 }
@@ -352,6 +374,14 @@
                 empleados.forEach(function (col) {
                     var consumo = genConsumoCompetencia(planId, col.id, comp.id, start, end, HORAS_META_COMPETENCIAS, estado);
                     var pct = progresoCompetenciaPersona(consumo, HORAS_META_COMPETENCIAS);
+                    if (!planSinProgresoReal(estado)) {
+                        var hDone = hashStr(planId + '|' + col.id + '|comp-done');
+                        if (hDone % 3 !== 0) {
+                            pct = 100;
+                        } else {
+                            pct = Math.min(99, Math.max(10, pct));
+                        }
+                    }
                     consumoPorUsuario[String(col.id)] = consumo;
                     var compItem = {
                         id: comp.id,
@@ -375,7 +405,7 @@
                 if (!planSinProgresoReal(estado) && empleados.length) {
                     var sum = 0;
                     Object.keys(competenciaPorUsuario).forEach(function (cid) {
-                        sum += progresoPromedioItems(competenciaPorUsuario[cid]);
+                        sum += progresoFinalizacionItems(competenciaPorUsuario[cid]);
                     });
                     progresoAgregado = Math.round(sum / Object.keys(competenciaPorUsuario).length);
                 }
@@ -509,10 +539,10 @@
         if (!plan || planSinProgresoReal(plan.estado)) return 0;
         var cid = String(colaboradorId || '');
         if (plan.tipo === 'contenidos') {
-            return progresoPromedioItems((plan.contenidoPorUsuario || {})[cid] || []);
+            return progresoFinalizacionItems((plan.contenidoPorUsuario || {})[cid] || []);
         }
         if (plan.tipo === 'competencias') {
-            return progresoPromedioItems((plan.competenciaPorUsuario || {})[cid] || []);
+            return progresoFinalizacionItems((plan.competenciaPorUsuario || {})[cid] || []);
         }
         return 0;
     }
@@ -775,6 +805,7 @@
         getEstadoPlan: getEstadoPlan,
         getProgresoColaboradorEnPlan: getProgresoColaboradorEnPlan,
         getProgresoAgregadoPlan: getProgresoAgregadoPlan,
+        progresoFinalizacionItems: progresoFinalizacionItems,
         getAsignadosFromPlan: getAsignadosFromPlan,
         getPlanesVisiblesParaLider: getPlanesVisiblesParaLider,
         getPlanesParaColaborador: getPlanesParaColaborador,

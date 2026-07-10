@@ -70,6 +70,7 @@
                                 <span class="ubits-body-sm-semibold detalle-plan-progress-card__label">Progreso del plan</span>
                                 <div class="detalle-plan-progress-card__bar" id="plan-progress-bar-wrap"></div>
                                 <span class="detalle-plan-progress-card__percent" id="plan-progress-value">0%</span>
+                                <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only detalle-plan-progress-card__info-btn" id="plan-progress-info-btn" aria-label="Información sobre el progreso del plan"><i class="far fa-circle-info" aria-hidden="true"></i></button>
                             </div>
                         </div>
                         </div>
@@ -131,6 +132,74 @@
     <script src="../../../general-utils/humanizador-fechas.js"></script>
     <script src="../../../components/progress-bar.js"></script>
     <script>
+        var PLAN_PROGRESS_INFO_TOOLTIP =
+            'Solo cuenta los contenidos finalizados del plan; no incluye avances parciales en curso. El porcentaje se actualiza cada 30 minutos, no en tiempo real.';
+
+        function wireDetallePlanProgressInfoTooltip() {
+            var btn = document.getElementById('plan-progress-info-btn');
+            if (!btn) return;
+            btn.setAttribute('aria-label', PLAN_PROGRESS_INFO_TOOLTIP);
+            if (typeof showTooltip !== 'function' || typeof hideTooltip !== 'function') return;
+
+            if (btn._detallePlanProgressTooltipCleanup) {
+                btn._detallePlanProgressTooltipCleanup();
+                btn._detallePlanProgressTooltipCleanup = null;
+            }
+
+            var autoHideTimer = null;
+            var outsideHandler = null;
+
+            function clearAutoHide() {
+                if (autoHideTimer) {
+                    clearTimeout(autoHideTimer);
+                    autoHideTimer = null;
+                }
+            }
+
+            function removeOutsideListener() {
+                if (outsideHandler) {
+                    document.removeEventListener('click', outsideHandler, true);
+                    outsideHandler = null;
+                }
+            }
+
+            function hideProgressInfoTooltip() {
+                clearAutoHide();
+                removeOutsideListener();
+                hideTooltip();
+            }
+
+            function showProgressInfoTooltip() {
+                hideProgressInfoTooltip();
+                showTooltip(btn, PLAN_PROGRESS_INFO_TOOLTIP, {
+                    position: 'top',
+                    align: 'center',
+                    delay: 0,
+                    duration: 0
+                });
+                autoHideTimer = setTimeout(hideProgressInfoTooltip, 7000);
+                setTimeout(function () {
+                    outsideHandler = function (docEv) {
+                        if (btn.contains(docEv.target)) return;
+                        hideProgressInfoTooltip();
+                    };
+                    document.addEventListener('click', outsideHandler, true);
+                }, 0);
+            }
+
+            function onClick(ev) {
+                ev.preventDefault();
+                ev.stopPropagation();
+                showProgressInfoTooltip();
+            }
+
+            btn.addEventListener('click', onClick);
+            btn._detallePlanProgressTooltipCleanup = function () {
+                btn.removeEventListener('click', onClick);
+                hideProgressInfoTooltip();
+            };
+        }
+
         function initDetallePlanProgressBarMount(value) {
             var wrap = document.getElementById('plan-progress-bar-wrap');
             if (!wrap || wrap.querySelector('.ubits-progress-bar')) return;
@@ -414,6 +483,7 @@
                 initDetallePlanProgressBarMount(plan.progreso);
                 setDetallePlanProgressBar(plan.progreso);
             }
+            wireDetallePlanProgressInfoTooltip();
             document.getElementById('plan-fecha-inicio').textContent = (typeof formatDateDDMmmAAAA === 'function' ? formatDateDDMmmAAAA(plan.fechaInicio) : plan.fechaInicio);
             var fechaFinSpan = document.getElementById('plan-fecha-fin');
             if (fechaFinSpan) fechaFinSpan.textContent = (typeof formatDateDDMmmAAAA === 'function' ? formatDateDDMmmAAAA(plan.fechaFin) : plan.fechaFin);
@@ -459,10 +529,15 @@
                 });
             }
             function progresoEstudiante(rowId) {
+                if (typeof BD_PLANES_FORMACION !== 'undefined' && typeof BD_PLANES_FORMACION.getProgresoColaboradorEnPlan === 'function') {
+                    return BD_PLANES_FORMACION.getProgresoColaboradorEnPlan(planRawBd, rowId);
+                }
                 var list = contenidoPorUsuario[rowId] || [];
                 if (list.length === 0) return 0;
-                var sum = list.reduce(function(acc, c) { return acc + (c.progress || 0); }, 0);
-                return Math.round(sum / list.length);
+                var done = list.filter(function (c) {
+                    return Number(c.progress) >= 100 || c.status === 'completed';
+                }).length;
+                return Math.round((done / list.length) * 100);
             }
 
             function parseDateDDMMYYYY(str) {
@@ -500,6 +575,9 @@
             });
             asignacionesDetalleData.forEach(function(r) { r.progreso = progresoEstudiante(r.id); });
             function progresoTotalPlan() {
+                if (typeof BD_PLANES_FORMACION !== 'undefined' && typeof BD_PLANES_FORMACION.getProgresoAgregadoPlan === 'function') {
+                    return BD_PLANES_FORMACION.getProgresoAgregadoPlan(planRawBd);
+                }
                 var rows = asignacionesDetalleData;
                 if (!rows.length) return 0;
                 var sum = rows.reduce(function(acc, row) { return acc + (row.progreso || 0); }, 0);

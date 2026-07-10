@@ -11,7 +11,7 @@
 /* Rail: mismo patrón que crear-contenido (sticky + alto = main − 20px arriba − 20px abajo) */
 .page-editar-contenido #crear-contenido-main > .crear-contenido-editor-workspace > .crear-contenido-editor__rail {
     position: sticky;
-    top: 0;
+    top: var(--padding-xl);
     align-self: flex-start;
     height: calc(var(--cc-main-h, calc(100dvh - 120px)) - 40px);
     display: flex;

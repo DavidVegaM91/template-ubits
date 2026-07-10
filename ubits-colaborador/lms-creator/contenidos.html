@@ -565,7 +565,7 @@
                 }
             }
 
-            function wireContenidoAntiguoLmsDrawerHeader(overlay) {
+            function wireContenidoAntiguoLmsDrawerHeader(overlay, visLabel) {
                 if (!overlay) return;
                 var titleSpan = overlay.querySelector('.ubits-drawer-header .ubits-drawer-title');
                 if (!titleSpan || !titleSpan.parentNode) return;
@@ -575,9 +575,14 @@
                 row.className = 'contenido-borrador-editor__drawer-title-row';
                 headerText.insertBefore(row, titleSpan);
                 row.appendChild(titleSpan);
+                var label = String(visLabel || 'Publicado').trim() || 'Publicado';
+                var mod = visibilidadLmsToTagModifierList(label);
                 var tag = document.createElement('span');
-                tag.className = 'ubits-status-tag ubits-status-tag--sm ubits-status-tag--info';
-                tag.innerHTML = '<span class="ubits-status-tag__text">Antiguo LMS</span>';
+                tag.className = 'ubits-status-tag ubits-status-tag--sm ubits-status-tag--' + mod;
+                var tagInner = document.createElement('span');
+                tagInner.className = 'ubits-status-tag__text';
+                tagInner.textContent = label;
+                tag.appendChild(tagInner);
                 row.appendChild(tag);
             }
 
@@ -594,6 +599,7 @@
                 var overlayId = contenidoIdToAntiguoDrawerOverlayId(contentId);
                 var titleEl = courseCard.querySelector('.course-title');
                 var title = titleEl ? titleEl.textContent.trim() : 'Contenido';
+                var vis = getVisibilidadFromCardOrRow(courseCard) || 'Publicado';
                 document.body.classList.add('contenido-borrador-drawer-abierto');
                 var overlayDrawer = openDrawer({
                     overlayId: overlayId,
@@ -616,7 +622,7 @@
                     if (drawerBody) drawerBody.id = 'contenido-antiguo-lms-drawer-body';
                     syncUrlAfterAntiguoLmsDrawerOpen(contentId);
                 }
-                wireContenidoAntiguoLmsDrawerHeader(overlayDrawer);
+                wireContenidoAntiguoLmsDrawerHeader(overlayDrawer, vis);
                 var sidebarHostId = contenidoIdToAntiguoSidebarHostId(contentId);
                 setTimeout(function () {
                     if (typeof loadSidebarContenidosLms === 'function') {

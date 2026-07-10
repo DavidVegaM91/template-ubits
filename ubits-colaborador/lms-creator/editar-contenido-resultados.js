@@ -304,9 +304,7 @@
             '<div class="editar-contenido-resultados__header widget--transparent">' +
             '<div class="editar-contenido-resultados__title-row">' +
             '<div class="editar-contenido-resultados__title-block">' +
-            '<h2 class="ubits-heading-h2 editar-contenido-resultados__title">' +
-            escapeHtml(state.contentTitle) +
-            '</h2>' +
+            '<h2 class="ubits-heading-h2 editar-contenido-resultados__title">Resultados</h2>' +
             '<p class="ubits-body-sm-regular editar-contenido-resultados__description">Consulta los resultados, el progreso, las evaluaciones y encuestas de este contenido. La información se actualiza cada 3 horas.</p>' +
             '</div>' +
             '<button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="ec-resultados-periodo-toggle" aria-label="Período" data-tooltip="Período" data-tooltip-delay="1000">' +

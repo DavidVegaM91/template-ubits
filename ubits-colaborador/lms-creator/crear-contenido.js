@@ -1219,6 +1219,26 @@
         return true;
     }
 
+    function ensurePublishedEditResourceFooterInMount(mount) {
+        if (!window.CC_PUBLISHED_EDIT_MODE || !mount) return;
+        var block = mount.querySelector('.ubits-resources-block');
+        if (!block) return;
+        var footer = block.querySelector('.ubits-resources-block__footer');
+        if (!footer) return;
+        if (footer.querySelector('#cc-descargar-recurso') && footer.querySelector('#cc-reemplazar-recurso')) {
+            return;
+        }
+        if (typeof window.ccBuildCrearContenidoResourceFooterHtml !== 'function') return;
+        var wrap = document.createElement('div');
+        wrap.innerHTML = window.ccBuildCrearContenidoResourceFooterHtml(
+            ' style="display:flex;align-items:center;gap:var(--gap-sm);flex-wrap:wrap;"'
+        );
+        var nextFooter = wrap.firstElementChild;
+        if (nextFooter) {
+            footer.replaceWith(nextFooter);
+        }
+    }
+
     function restoreRecursosPage(pageKey) {
         var rb = document.getElementById('crear-contenido-recursos-resources-mount');
         if (!rb) return false;
@@ -1229,6 +1249,7 @@
         }
         if (!saved.html) return false;
         rb.innerHTML = saved.html;
+        ensurePublishedEditResourceFooterInMount(rb);
         if (typeof window.initResourcesBlockFields === 'function') {
             window.initResourcesBlockFields(rb);
         }
@@ -2468,6 +2489,26 @@
             );
             return;
         }
+        if (pt === 'scorm' && pk && typeof window.ccScormPrepareDownloadHtml === 'function') {
+            var scormBlockHtml = (st && st.html) || (mount ? mount.innerHTML : '');
+            window.ccScormPrepareDownloadHtml(
+                pk,
+                function (html) {
+                    if (!html) {
+                        if (typeof window.showToast === 'function') {
+                            window.showToast('error', 'No se pudo generar el HTML del SCORM.');
+                        }
+                        return;
+                    }
+                    triggerBrowserFileDownload(
+                        new Blob([html], { type: 'text/html;charset=utf-8' }),
+                        safeName + '.html'
+                    );
+                },
+                { blockHtml: scormBlockHtml }
+            );
+            return;
+        }
         if (st && st.html) {
             var ext = pt === 'scorm' || String(st.html).indexOf('cc-scorm-resource') !== -1 ? '.html' : '.html';
             triggerBrowserFileDownload(new Blob([st.html], { type: 'text/html;charset=utf-8' }), safeName + ext);
@@ -2520,7 +2561,31 @@
             return;
         }
         if (pt === 'scorm') {
-            if (typeof window.openScormEditModal === 'function') {
+            if (typeof window.openScormRecursoModal === 'function') {
+                window.openScormRecursoModal({
+                    pageKey: CC_RECURSOS_CURRENT_PAGE_KEY,
+                    onScormReady: function (html) {
+                        if (CC_RECURSOS_CURRENT_PAGE_KEY) {
+                            if (typeof window.ccRecursosSetPageHtml === 'function') {
+                                window.ccRecursosSetPageHtml(CC_RECURSOS_CURRENT_PAGE_KEY, html);
+                            } else {
+                                CC_RECURSOS_PAGE_STATE[CC_RECURSOS_CURRENT_PAGE_KEY] = {
+                                    html: html,
+                                    primaryType: 'scorm'
+                                };
+                            }
+                        }
+                        mount.innerHTML = html;
+                        var activeItem = document.querySelector(
+                            '#crear-contenido-recursos-indice-mount .ubits-paginas-creator__item.is-active'
+                        );
+                        if (activeItem && typeof window.setPaginasCreatorItemTipo === 'function') {
+                            window.setPaginasCreatorItemTipo(activeItem, 'scorm');
+                        }
+                        renderCrearContenidoComplementary();
+                    }
+                });
+            } else if (typeof window.openScormEditModal === 'function') {
                 window.openScormEditModal(CC_RECURSOS_CURRENT_PAGE_KEY);
             }
             return;
@@ -2896,6 +2961,9 @@
             // 5. Click en botón Eliminar recurso cargado (evaluar antes de Cancelar)
             var eliminarBtn = ev.target.closest('#cc-eliminar-recurso');
             if (eliminarBtn) {
+                if (eliminarBtn.disabled || eliminarBtn.getAttribute('aria-disabled') === 'true') {
+                    return;
+                }
                 openCrearContenidoDeleteResourceModal(mount);
                 return;
             }
