@@ -10,7 +10,7 @@
  * - Footer “Expandir”: ensancha el rail y muestra el texto del paso; con data-tooltip vacío no se muestra tooltip al hover.
  *
  * Variantes (options.variant):
- * - publicado-lms-creator (default): Resultados → Información → Recursos → Certificado → Visibilidad.
+ * - publicado-lms-creator (default): Resultados → Portada → Recursos → Certificado → Visibilidad.
  * - publicado-antiguo-lms: sin Resultados; paso recursos con icono fa-layer-group y etiqueta “Módulos” (id interno sigue siendo recursos).
  */
 (function () {
@@ -20,7 +20,7 @@
     var VARIANT_STEPS = {
         'publicado-lms-creator': [
             { id: 'resultados', tooltip: 'Resultados', icon: 'fa-chart-mixed' },
-            { id: 'informacion', tooltip: 'Información', icon: 'fa-circle-info' },
+            { id: 'informacion', tooltip: 'Portada', icon: 'fa-image' },
             { id: 'recursos', tooltip: 'Recursos', icon: 'fa-layer-group' },
             { id: 'certificado', tooltip: 'Certificado', icon: 'fa-award' },
             { id: 'visibilidad', tooltip: 'Visibilidad', icon: 'fa-eye' }

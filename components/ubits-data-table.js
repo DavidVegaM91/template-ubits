@@ -33,6 +33,16 @@
  * Pantallas que son solo tabla de datos: usar siempre este componente (ver README «Tabla solo de datos»).
  *
  * -----------------------------------------------------------------------------
+ * COLUMNAS DE FECHA (formato en celdas)
+ * -----------------------------------------------------------------------------
+ * El data table NO humaniza fechas automáticamente. En buildRowHtml (o al renderizar filas):
+ *   1. Importar general-utils/humanizador-fechas.js → window.formatDateDDMmmAAAA
+ *   2. Texto visible en la celda: formato DD mmm AAAA (ej. "21 jun 2026", "28 feb 2025")
+ *   3. Atributo data-date en el <td> con el valor ISO YYYY-MM-DD (o DD/MM/YYYY) para sortType: 'date'
+ *   4. NO usar toLocaleDateString('es-CO') en celdas (muestra 21/6/2026 y rompe la convención del DS)
+ * Referencia: detalle-plan.html, planes-contenidos.html. Doc: documentacion/componentes/ubits-data-table.html
+ *
+ * -----------------------------------------------------------------------------
  * TABLA TIPO SEGUIMIENTO (cuando el producto pide algo que va más allá del componente)
  * -----------------------------------------------------------------------------
  * Si en algún momento se requiere una tabla que se parezca a la de seguimiento
@@ -377,7 +387,7 @@
                 var thClass = 'ubits-dt-th';
                 if (c.sortable) thClass += ' ubits-dt-th-sortable';
                 if (c.filterable) thClass += ' ubits-dt-th-filterable';
-                html += '<th class="' + thClass + '" data-col="' + escapeHtml(c.id) + '">' + escapeHtml(c.label);
+                html += '<th class="' + thClass + '" data-col="' + escapeHtml(c.id) + '">' + (c.labelHtml || escapeHtml(c.label));
                 if (c.sortable) {
                     html += ' <button type="button" class="ubits-button ubits-button--tertiary ubits-button--xs ubits-button--icon-only ubits-dt-sort-btn" data-sort="' + escapeHtml(c.id) + '" aria-label="Ordenar por ' + escapeHtml(c.label) + '" data-tooltip="Ordenar por ' + escapeHtml(c.label) + '" data-tooltip-delay="1000"><i class="far fa-arrow-up-arrow-down"></i></button>';
                 }

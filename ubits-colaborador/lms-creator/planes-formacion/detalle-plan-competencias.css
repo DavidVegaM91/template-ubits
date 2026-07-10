@@ -75,18 +75,19 @@
     align-items: center;
     flex-wrap: wrap;
     gap: var(--gap-sm);
-    color: var(--ubits-fg-1-medium);
 }
 
-/* Labels "Fecha de inicio:" y "Fecha de finalización:" siempre mismo tamaño y peso (xs + semibold), nunca regular */
-.detalle-plan-progress-card__fechas .detalle-plan-card__meta-label {
-    color: var(--ubits-fg-1-medium);
-    font-size: var(--font-size-xs);
-    font-weight: var(--font-weight-semibold);
+/* Fechas encima del progreso — alineado con editar-contenido-resultados__meta (body-sm) */
+.detalle-plan-fechas-label-wrap {
+    display: inline-flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--gap-xs);
 }
 
-.detalle-plan-fechas-label-wrap .ubits-body-xs-regular.detalle-plan-card__meta-label {
-    font-weight: var(--font-weight-semibold);
+.detalle-plan-progress-card__fechas .ubits-body-sm-semibold,
+.detalle-plan-progress-card__fechas .ubits-body-sm-regular {
+    color: var(--ubits-fg-1-medium);
 }
 
 .detalle-plan-progress-card__content {

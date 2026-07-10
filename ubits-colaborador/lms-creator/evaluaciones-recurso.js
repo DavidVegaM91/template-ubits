@@ -85,13 +85,23 @@
     // ---------------------------
 
     function buildExamFormHtml() {
+        var deleteBtn =
+            '<button type="button" class="ubits-button ubits-button--error-secondary ubits-button--sm" id="cc-eliminar-recurso"' +
+            (global.CC_PUBLISHED_EDIT_MODE ? ' disabled aria-disabled="true"' : '') +
+            '>' +
+            '      <i class="far fa-trash-alt"></i><span>Eliminar</span>' +
+            '    </button>';
+        var downloadBtn = global.CC_PUBLISHED_EDIT_MODE
+            ? '    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="cc-descargar-recurso">' +
+              '      <i class="far fa-download"></i><span>Descargar</span>' +
+              '    </button>'
+            : '';
         return (
             '<div class="cc-eval-root" data-cc-eval-root>' +
             '  <div class="cc-eval-config-bar">' +
             '    <p class="ubits-body-sm-semibold cc-eval-config-title">Contenido de la evaluación</p>' +
-            '    <button type="button" class="ubits-button ubits-button--error-secondary ubits-button--sm" id="cc-eliminar-recurso">' +
-            '      <i class="far fa-trash-alt"></i><span>Eliminar</span>' +
-            '    </button>' +
+            downloadBtn +
+            deleteBtn +
             '    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="cc-eval-cfg-btn">' +
             '      <i class="far fa-gear"></i><span>Configuración</span>' +
             '    </button>' +

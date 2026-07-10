@@ -68,6 +68,13 @@ This is a UBITS template for creating interfaces quickly with Cursor AI. The val
    Si pasas `description` explícita, debe coincidir con una de esas dos según corresponda (no mezclar “filtros” en la copia si la tabla no ofrece filtros por columna).
 3. **No confundir vacío inicial con vacío por búsqueda:** `emptyState` = sin filas en la fuente de datos; `emptySearchState` = hay datos pero la búsqueda/filtros dejan 0 filas visibles.
 4. **Búsqueda ≠ chip de “Filtros aplicados”:** el componente no debe tratar el texto de búsqueda como un filtro aplicado en la barra de chips; los chips de esa barra son solo para **filtros por columna** (`filterable`).
+5. **Columnas de fecha:** texto visible **`DD mmm AAAA`** (ej. `21 jun 2026`) con **`formatDateDDMmmAAAA`** de **`general-utils/humanizador-fechas.js`**. En cada `<td>` de fecha: **`data-date`** con el valor ISO (`YYYY-MM-DD`) para que `sortType: 'date'` ordene bien. El data table **no** formatea fechas solo — hay que hacerlo en `buildRowHtml`. **Prohibido** `toLocaleDateString('es-CO')` en celdas de tabla. Meta fuera de tabla (ej. «Publicado el») puede usar formato largo (`24 de abril de 2026`). Referencia: `detalle-plan.html`, `planes-contenidos.html`.
+
+### **📅 FECHAS EN COLUMNAS DE TABLA (`ubits-table` y data table):**
+Misma regla aunque la tabla no use `createUbitsDataTable`:
+- Import: `../../general-utils/humanizador-fechas.js`
+- Celda: `formatDateDDMmmAAAA(valor)` + `data-date` con el valor crudo ISO
+- Doc: `documentacion/componentes/table.html` y `ubits-data-table.html`
 
 ### **🚨 WHEN CHANGING AN OFFICIAL COMPONENT (modal, input, button, etc.):**
 **Los componentes UBITS se usan con HTML hardcodeado en varias páginas. Si cambias la estructura o clases de un componente oficial (en `components/*.css`, `components/*.js` o su documentación), DEBES:**

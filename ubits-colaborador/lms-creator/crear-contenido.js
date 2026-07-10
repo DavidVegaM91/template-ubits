@@ -6,6 +6,11 @@
 (function () {
     'use strict';
 
+    var IS_EDITAR_CONTENIDO_PAGE = document.body.classList.contains('page-editar-contenido');
+    if (typeof window !== 'undefined') {
+        window.CC_PUBLISHED_EDIT_MODE = IS_EDITAR_CONTENIDO_PAGE;
+    }
+
     var crearContenidoPortadaTrailerUrl = '';
     /** Último prompt de portada con IA (para reabrir modal en edición). */
     var crearContenidoPortadaLastIaPrompt = '';
@@ -751,6 +756,30 @@
         };
     }
 
+    function buildCrearContenidoResourceFooterHtml(extraAttrs) {
+        extraAttrs = extraAttrs || '';
+        if (window.CC_PUBLISHED_EDIT_MODE) {
+            return (
+                '<div class="ubits-resources-block__footer"' +
+                extraAttrs +
+                ' style="display:flex;align-items:center;gap:var(--gap-sm);flex-wrap:wrap;">' +
+                '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="cc-descargar-recurso">' +
+                '<i class="far fa-download"></i><span>Descargar</span></button>' +
+                '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="cc-reemplazar-recurso">' +
+                '<i class="far fa-arrows-rotate"></i><span>Reemplazar</span></button>' +
+                '<button type="button" class="ubits-button ubits-button--error-secondary ubits-button--sm" id="cc-eliminar-recurso" disabled aria-disabled="true">' +
+                '<i class="far fa-trash-alt"></i><span>Eliminar</span></button></div>'
+            );
+        }
+        return (
+            '<div class="ubits-resources-block__footer"' +
+            extraAttrs +
+            '>' +
+            '<button type="button" class="ubits-button ubits-button--error-secondary ubits-button--sm" id="cc-eliminar-recurso">' +
+            '<i class="far fa-trash-alt"></i><span>Eliminar</span></button></div>'
+        );
+    }
+
     function buildCrearContenidoEmbedResourceHtml(innerHtml) {
         return (
             '<div class="ubits-resources-block ubits-resources-block--stack">' +
@@ -759,11 +788,8 @@
             '<div class="cc-embed-resource__frame-wrap">' +
             innerHtml +
             '</div></div></div>' +
-            '<div class="ubits-resources-block__footer">' +
-            '<button type="button" class="ubits-button ubits-button--error-secondary ubits-button--sm" id="cc-eliminar-recurso">' +
-            '<i class="far fa-trash-alt"></i><span>Eliminar</span>' +
-            '</button>' +
-            '</div></div>'
+            buildCrearContenidoResourceFooterHtml() +
+            '</div>'
         );
     }
 
@@ -822,11 +848,8 @@
             '<p class="cc-pdf-resource__pdfjs-loading ubits-body-sm-regular" aria-live="polite">Cargando vista previa…</p>' +
             '<div class="cc-pdf-resource__pdfjs-pages"></div>' +
             '</div></div>' +
-            '<div class="ubits-resources-block__footer">' +
-            '<button type="button" class="ubits-button ubits-button--error-secondary ubits-button--sm" id="cc-eliminar-recurso">' +
-            '<i class="far fa-trash-alt"></i><span>Eliminar</span>' +
-            '</button>' +
-            '</div></div>'
+            buildCrearContenidoResourceFooterHtml() +
+            '</div>'
         );
     }
 
@@ -1311,6 +1334,7 @@
     }
 
     function recursosBuildIndiceMultiHtml(sectionsModel) {
+        var editMode = !!window.CC_PUBLISHED_EDIT_MODE;
         var idx = sectionsModel.map(function (s) {
             return {
                 sectionKey: s.key,
@@ -1325,7 +1349,8 @@
                 }),
                 active: !!s.active,
                 hideTitle: false,
-                hasDescription: recursosSectionHasDescription(s.key)
+                hasDescription: recursosSectionHasDescription(s.key),
+                includeAddButton: !editMode
             };
         });
         return window.indiceCreatorHtml({
@@ -1543,6 +1568,7 @@
     }
 
     function openCrearContenidoDeletePageModal(item) {
+        if (window.CC_PUBLISHED_EDIT_MODE) return;
         function runDelete() {
             recursosApplyDeletePage(item);
         }
@@ -1615,6 +1641,7 @@
     }
 
     function openCrearContenidoDeleteResourceModal(mount) {
+        if (window.CC_PUBLISHED_EDIT_MODE) return;
         function runDelete() {
             recursosApplyDeleteCurrentResource(mount);
         }
@@ -1909,6 +1936,7 @@
     }
 
     function onRecursosIndiceSectionsToggle(ev) {
+        if (window.CC_PUBLISHED_EDIT_MODE) return;
         var d = ev.detail || {};
         var mount = getRecursosIndiceMount();
         if (!d.root || !mount || !mount.contains(d.root)) return;
@@ -1928,6 +1956,7 @@
     }
 
     function onRecursosIndiceAddSection(ev) {
+        if (window.CC_PUBLISHED_EDIT_MODE) return;
         var d = ev.detail || {};
         var mount = getRecursosIndiceMount();
         if (!d.root || !mount || !mount.contains(d.root)) return;
@@ -1981,6 +2010,7 @@
         }
 
         if (action !== 'seccion-eliminar') return;
+        if (window.CC_PUBLISHED_EDIT_MODE) return;
 
         var model = recursosSerializeSectionsFromDom();
         if (model.length <= 1) {
@@ -2346,7 +2376,173 @@
         hideRecursosComplementaryMount();
     }
 
+    function triggerBrowserFileDownload(blob, filename) {
+        if (!blob) return;
+        var a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = filename || 'recurso';
+        a.rel = 'noopener';
+        document.body.appendChild(a);
+        a.click();
+        setTimeout(function () {
+            URL.revokeObjectURL(a.href);
+            a.remove();
+        }, 200);
+    }
+
+    function getRecursosActivePageTitleForDownload() {
+        var titleInp = document.getElementById('crear-contenido-recursos-page-title');
+        var raw = titleInp ? String(titleInp.value || '').trim() : '';
+        if (raw) return raw;
+        var activeItem = document.querySelector(
+            '#crear-contenido-recursos-indice-mount .ubits-paginas-creator__item.is-active .ubits-paginas-creator__label'
+        );
+        return activeItem ? String(activeItem.textContent || '').trim() : 'recurso';
+    }
+
+    function sanitizeDownloadBaseName(name) {
+        return (
+            String(name || 'recurso')
+                .replace(/[^\w\s-áéíóúñÁÉÍÓÚÑ]/g, '')
+                .replace(/\s+/g, '-')
+                .slice(0, 60) || 'recurso'
+        );
+    }
+
+    function buildEvalExportTextFromMount(mount) {
+        var lines = ['Evaluación — exportación playground', ''];
+        if (!mount) return lines.join('\n');
+        mount.querySelectorAll('.ubits-learn-question, .learn-question, [data-eval-question]').forEach(function (q, idx) {
+            var titleEl = q.querySelector('.ubits-learn-question__title, .learn-question__title, h3, h4');
+            lines.push((idx + 1) + '. ' + String(titleEl ? titleEl.textContent : 'Pregunta').trim());
+            q.querySelectorAll('label, .ubits-learn-question__option').forEach(function (opt) {
+                var t = String(opt.textContent || '').trim();
+                if (t) lines.push('  - ' + t);
+            });
+            lines.push('');
+        });
+        if (lines.length <= 2) {
+            lines.push('(Sin preguntas visibles en el recurso actual.)');
+        }
+        return lines.join('\n');
+    }
+
+    function downloadCrearContenidoPrimaryResource() {
+        var pk = CC_RECURSOS_CURRENT_PAGE_KEY;
+        var st = pk ? CC_RECURSOS_PAGE_STATE[pk] : null;
+        var mount = document.getElementById('crear-contenido-recursos-resources-mount');
+        var safeName = sanitizeDownloadBaseName(getRecursosActivePageTitleForDownload());
+        var pt = st && st.primaryType ? String(st.primaryType) : '';
+
+        if (pt === 'pdf' && st && st.pdfBlob) {
+            triggerBrowserFileDownload(st.pdfBlob, safeName + '.pdf');
+            return;
+        }
+        if (pt === 'pdf' && st && st.pdfFile && st.pdfFile.name) {
+            triggerBrowserFileDownload(st.pdfFile, st.pdfFile.name);
+            return;
+        }
+        if (pt === 'video') {
+            var vid = mount ? mount.querySelector('video') : null;
+            var src = vid ? vid.getAttribute('src') : '';
+            if (src) {
+                fetch(src)
+                    .then(function (r) {
+                        return r.blob();
+                    })
+                    .then(function (b) {
+                        triggerBrowserFileDownload(b, safeName + '.mp4');
+                    })
+                    .catch(function () {
+                        if (typeof window.showToast === 'function') {
+                            window.showToast('error', 'No se pudo descargar el video.');
+                        }
+                    });
+                return;
+            }
+        }
+        if (pt === 'evaluacion-final' || pt === 'evaluacion') {
+            triggerBrowserFileDownload(
+                new Blob([buildEvalExportTextFromMount(mount)], { type: 'text/plain;charset=utf-8' }),
+                safeName + '.txt'
+            );
+            return;
+        }
+        if (st && st.html) {
+            var ext = pt === 'scorm' || String(st.html).indexOf('cc-scorm-resource') !== -1 ? '.html' : '.html';
+            triggerBrowserFileDownload(new Blob([st.html], { type: 'text/html;charset=utf-8' }), safeName + ext);
+            return;
+        }
+        if (typeof window.showToast === 'function') {
+            window.showToast('info', 'No hay archivo disponible para descargar.');
+        }
+    }
+
+    function openCrearContenidoReplaceResourceFlow(mount) {
+        if (!mount) return;
+        var pk = CC_RECURSOS_CURRENT_PAGE_KEY;
+        var st = pk ? CC_RECURSOS_PAGE_STATE[pk] : null;
+        var pt = st && st.primaryType ? String(st.primaryType) : '';
+        beforeReplaceRecursosMountIfPdfShowing(mount);
+
+        if (pt === 'video') {
+            if (typeof window.openVideoRecursoModal === 'function') {
+                window.openVideoRecursoModal({
+                    ui: 'legacy',
+                    pageKey: CC_RECURSOS_CURRENT_PAGE_KEY,
+                    onVideoReady: function (html) {
+                        if (CC_RECURSOS_CURRENT_PAGE_KEY) {
+                            var pkVid = String(CC_RECURSOS_CURRENT_PAGE_KEY);
+                            var prevVid = CC_RECURSOS_PAGE_STATE[pkVid] || {};
+                            CC_RECURSOS_PAGE_STATE[pkVid] = Object.assign({}, prevVid, {
+                                html: html,
+                                primaryType: 'video'
+                            });
+                        }
+                        mount.innerHTML = html;
+                        var activeItem = document.querySelector(
+                            '#crear-contenido-recursos-indice-mount .ubits-paginas-creator__item.is-active'
+                        );
+                        if (activeItem && typeof window.setPaginasCreatorItemTipo === 'function') {
+                            window.setPaginasCreatorItemTipo(activeItem, 'video');
+                        }
+                        renderCrearContenidoComplementary();
+                    }
+                });
+            }
+            return;
+        }
+        if (pt === 'pdf') {
+            mount.innerHTML = window.resourcesBlockHtml({ variant: 'pdf-empty' });
+            if (typeof window.initResourcesBlockFields === 'function') {
+                window.initResourcesBlockFields(mount);
+            }
+            return;
+        }
+        if (pt === 'scorm') {
+            if (typeof window.openScormEditModal === 'function') {
+                window.openScormEditModal(CC_RECURSOS_CURRENT_PAGE_KEY);
+            }
+            return;
+        }
+        if (pt === 'evaluacion-final' || pt === 'evaluacion') {
+            if (typeof window.rcMountEvalForm === 'function') {
+                window.rcMountEvalForm(mount);
+            }
+            return;
+        }
+        if (pt === 'embebido') {
+            mount.innerHTML = window.resourcesBlockHtml({ variant: 'embed-empty' });
+            if (typeof window.initResourcesBlockFields === 'function') {
+                window.initResourcesBlockFields(mount);
+            }
+            return;
+        }
+        renderRecursosResourcesBlock({ variant: 'default' });
+    }
+
     function loadRecursosEmptyPanel() {
+        if (window.CC_PUBLISHED_EDIT_MODE) return;
         if (typeof window.loadEmptyState !== 'function') return;
         var prev = document.getElementById('crear-contenido-recursos-preview');
         var titleSec = document.getElementById('crear-contenido-recursos-page-title-section');
@@ -2388,6 +2584,7 @@
     }
 
     function onRecursosSecAddPage(ev) {
+        if (window.CC_PUBLISHED_EDIT_MODE) return;
         var d = ev.detail || {};
         var anchor = d.anchor;
         var mount = getRecursosIndiceMount();
@@ -2675,7 +2872,19 @@
                 return;
             }
 
-            // 2c. Click en botón «Editar SCORM» del bloque ya generado
+            // 2c. Descargar / Reemplazar (modo edición publicada)
+            var descargarBtn = ev.target.closest('#cc-descargar-recurso');
+            if (descargarBtn) {
+                downloadCrearContenidoPrimaryResource();
+                return;
+            }
+            var reemplazarBtn = ev.target.closest('#cc-reemplazar-recurso');
+            if (reemplazarBtn) {
+                openCrearContenidoReplaceResourceFlow(mount);
+                return;
+            }
+
+            // 2d. Click en botón «Editar SCORM» del bloque ya generado
             var editScormBtn = ev.target.closest('#cc-editar-scorm-recurso');
             if (editScormBtn) {
                 if (typeof window.openScormEditModal === 'function') {
@@ -2891,6 +3100,12 @@
 
     function initCrearContenidoPageRecursosStepOnce() {
         if (recursosUiDone) return;
+        if (window.CC_PUBLISHED_EDIT_MODE) {
+            if (!recursosIndiceHasPages()) return;
+            recursosUiDone = true;
+            bindRecursosEventsOnce();
+            return;
+        }
         recursosUiDone = true;
         recursosPageSeq = 0;
         recursosSectionsEnabled = false;
@@ -3265,7 +3480,8 @@
         }
         wireAutoSave();
         if (typeof initTooltip === 'function') {
-            initTooltip('#crear-contenido-root [data-tooltip]');
+            var rootId = document.getElementById('editar-contenido-root') ? '#editar-contenido-root' : '#crear-contenido-root';
+            initTooltip(rootId + ' [data-tooltip]');
         }
         if (typeof initRichTextEditor === 'function') {
             var rte = document.getElementById('crear-contenido-rte');
@@ -3282,36 +3498,41 @@
         }
         initFichaInputs();
         wirePortadaCta();
+        tryHydrateCrearContenidoFromQueryId();
         setTimeout(function () {
             wireCrearContenidoPageInteractionsDeferred();
         }, 0);
-        wireCrearContenidoPageStepperStepClicks();
+        if (!IS_EDITAR_CONTENIDO_PAGE) {
+            wireCrearContenidoPageStepperStepClicks();
+        }
         var initialHashForPromo = location.hash || '';
         var deepDemoSeed =
-            isRecursosUrlHash(initialHashForPromo) ||
-            initialHashForPromo === HASH_PAGE_CERTIFICADO ||
-            initialHashForPromo === HASH_PAGE_VISIBILIDAD ||
-            initialHashForPromo === HASH_PAGE_PUBLICACION;
+            !IS_EDITAR_CONTENIDO_PAGE &&
+            (isRecursosUrlHash(initialHashForPromo) ||
+                initialHashForPromo === HASH_PAGE_CERTIFICADO ||
+                initialHashForPromo === HASH_PAGE_VISIBILIDAD ||
+                initialHashForPromo === HASH_PAGE_PUBLICACION);
         if (deepDemoSeed && isCrearContenidoEmptyForDemo()) {
             seedCrearContenidoDemo(function () {
-                applyCrearContenidoPageHash();
+                if (!IS_EDITAR_CONTENIDO_PAGE) applyCrearContenidoPageHash();
                 refreshCrearContenidoPageSiguienteState();
                 setTimeout(function () {
                     tryOfferCrearContenidoPromoAgentesModal(initialHashForPromo);
                 }, 0);
             });
-        } else {
+        } else if (!IS_EDITAR_CONTENIDO_PAGE) {
             applyCrearContenidoPageHash();
             setTimeout(function () {
                 tryOfferCrearContenidoPromoAgentesModal(initialHashForPromo);
             }, 0);
         }
-        window.addEventListener('hashchange', function onCrearContenidoHashChange() {
-            var hc = location.hash || '';
-            applyCrearContenidoPageHash();
-            tryOfferCrearContenidoPromoAgentesModal(hc);
-        });
-        /* Rail height: leer el alto real del __main y exponerlo como CSS var */
+        if (!IS_EDITAR_CONTENIDO_PAGE) {
+            window.addEventListener('hashchange', function onCrearContenidoHashChange() {
+                var hc = location.hash || '';
+                applyCrearContenidoPageHash();
+                tryOfferCrearContenidoPromoAgentesModal(hc);
+            });
+        }
         syncRailHeight();
         window.addEventListener('resize', syncRailHeight);
     }
@@ -3630,6 +3851,88 @@
         inputApi.setValue(label);
     }
 
+    function resolveContenidoImagenPath(imagen) {
+        if (!imagen) return '';
+        var s = String(imagen).trim();
+        if (!s) return '';
+        if (/^(https?:|data:|\/\/)/i.test(s)) return s;
+        if (s.indexOf('../') === 0 || s.indexOf('/') === 0) return s;
+        return '../../' + s.replace(/^\//, '');
+    }
+
+    function hydrateFromContentRecord(record, done) {
+        if (!record) {
+            if (typeof done === 'function') done();
+            return;
+        }
+        var titulo = document.getElementById('crear-contenido-titulo');
+        if (titulo && record.titulo) {
+            titulo.value = record.titulo;
+            if (typeof window.autoResizeInlineEdit === 'function') window.autoResizeInlineEdit(titulo);
+        }
+        var rteRoot = document.getElementById('crear-contenido-rte');
+        if (typeof window.setRichTextHtml === 'function' && rteRoot && record.descripcion) {
+            window.setRichTextHtml(rteRoot, '<p class="ubits-body-md-regular">' + String(record.descripcion) + '</p>');
+        }
+        if (record.imagen) {
+            applyPortadaImagenCargada(resolveContenidoImagenPath(record.imagen), '', { fromAi: false, skipMetaUpdate: false });
+        }
+        if (record.categoriaFiqshaId && crearContenidoInputApis.categoria) {
+            var catOpts = buildSelectOptionsFromMaster().categorias;
+            setCrearContenidoSelectDisplayByValue(crearContenidoInputApis.categoria, record.categoriaFiqshaId, catOpts);
+        }
+        if (record.tipoContenido && crearContenidoInputApis.tipo) {
+            crearContenidoInputApis.tipo.setValue(record.tipoContenido);
+        }
+        if (record.nivelId && crearContenidoInputApis.nivel) {
+            var nOpts = buildSelectOptionsFromMaster().niveles;
+            setCrearContenidoSelectDisplayByValue(crearContenidoInputApis.nivel, record.nivelId, nOpts);
+        }
+        if (record.idioma && crearContenidoInputApis.idioma) {
+            crearContenidoInputApis.idioma.setValue(record.idioma);
+        }
+        if (record.tiempoValor != null && crearContenidoInputApis.tiempo) {
+            crearContenidoInputApis.tiempo.setValue(String(record.tiempoValor));
+        }
+        if (record.unidadTiempo && crearContenidoInputApis.unidad) {
+            crearContenidoInputApis.unidad.setValue(record.unidadTiempo);
+        }
+        var payload = (window.BD_CONTENIDO_EDITOR_PAYLOAD || {})[String(record.id)];
+        var afterSeed = function () {
+            refreshCrearContenidoPageSiguienteState();
+            if (typeof done === 'function') done();
+        };
+        if (payload && payload.useDemoSeed) {
+            fetchCrearContenidoDemoPdfBinary()
+                .then(function (pdfBin) {
+                    seedCrearContenidoDemoRecursosPageStates(pdfBin);
+                    seedCrearContenidoDemoRecursosIndice();
+                    afterSeed();
+                })
+                .catch(function () {
+                    seedCrearContenidoDemoRecursosPageStates(null);
+                    seedCrearContenidoDemoRecursosIndice();
+                    afterSeed();
+                });
+        } else {
+            afterSeed();
+        }
+    }
+
+    function tryHydrateCrearContenidoFromQueryId() {
+        try {
+            var id = new URLSearchParams(location.search).get('id');
+            if (!id || IS_EDITAR_CONTENIDO_PAGE) return;
+            var db = window.BDS_CONTENIDOS_FIQSHA || {};
+            var list = db.contentsCreatorOnly || [];
+            var record = list.find(function (c) {
+                return String(c.id) === String(id);
+            });
+            if (!record) return;
+            hydrateFromContentRecord(record);
+        } catch (e) {}
+    }
+
     function seedCrearContenidoDemoPortada() {
         var titulo = document.getElementById('crear-contenido-titulo');
         if (titulo) titulo.value = CC_DEMO_TITLE;
@@ -3656,9 +3959,8 @@
             '<div class="cc-scorm-iframe-container">' +
             '<iframe src="simulador-scorm.html" allowfullscreen></iframe>' +
             '</div></div></div>' +
-            '<div class="ubits-resources-block__footer" style="display:flex;align-items:center;gap:var(--gap-sm);flex-wrap:wrap;">' +
-            '<button type="button" class="ubits-button ubits-button--error-secondary ubits-button--sm" id="cc-eliminar-recurso">' +
-            '<i class="far fa-trash-alt"></i><span>Eliminar</span></button></div></div>'
+            buildCrearContenidoResourceFooterHtml(' style="display:flex;align-items:center;gap:var(--gap-sm);flex-wrap:wrap;"') +
+            '</div>'
         );
     }
 
@@ -3892,9 +4194,25 @@
         }
     }
 
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', initCrearContenidoPage);
-    } else {
+    function initCrearContenidoEditorCore() {
         initCrearContenidoPage();
+    }
+
+    window.CrearContenidoPageApi = {
+        initCrearContenidoPage: initCrearContenidoPage,
+        initCrearContenidoEditorCore: initCrearContenidoEditorCore,
+        goToCrearContenidoPageStep: goToCrearContenidoPageStep,
+        seedCrearContenidoDemo: seedCrearContenidoDemo,
+        hydrateFromContentRecord: hydrateFromContentRecord
+    };
+
+    window.ccBuildCrearContenidoResourceFooterHtml = buildCrearContenidoResourceFooterHtml;
+
+    if (!IS_EDITAR_CONTENIDO_PAGE) {
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initCrearContenidoPage);
+        } else {
+            initCrearContenidoPage();
+        }
     }
 })();

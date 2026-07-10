@@ -191,6 +191,8 @@ Si la pantalla **solo** presenta un listado tabular (filas/columnas) con barra d
 
 **Documentación:** `documentacion/componentes/ubits-data-table.html` y comentario de cabecera en `components/table.css`.
 
+**Columnas de fecha:** el data table no formatea fechas automáticamente. En `buildRowHtml`, importa `general-utils/humanizador-fechas.js` y muestra **`formatDateDDMmmAAAA`** en la celda (ej. `21 jun 2026`). En el `<td>` pon **`data-date`** con el valor ISO (`YYYY-MM-DD`) para ordenar con `sortType: 'date'`. No uses `toLocaleDateString('es-CO')` en celdas de tabla. Misma regla en tablas `ubits-table` sueltas. Referencia: `detalle-plan.html`, `planes-contenidos.html`.
+
 ## 🚀 Cómo usar esta plantilla
 
 1. **Descarga:** Haz clon o descarga como ZIP

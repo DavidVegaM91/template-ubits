@@ -634,80 +634,61 @@
                 }, 50);
             }
 
-            function openContenidoBorradorEditorFromCard(courseCard) {
-                if (!courseCard || typeof openDrawer !== 'function') return;
-                var wrap = courseCard.closest('.contenidos-card-item');
-                var contentId = '';
+            function navigateToContenidoEditor(contentId, visLabel) {
+                if (!contentId) return;
+                var vis = String(visLabel || '').trim();
+                var visLower = vis.toLowerCase();
+                if (visLower === 'borrador') {
+                    window.location.href = 'crear-contenido.html?id=' + encodeURIComponent(String(contentId));
+                    return;
+                }
+                if (visLower === 'archivado') {
+                    window.location.href =
+                        'editar-contenido.html?id=' +
+                        encodeURIComponent(String(contentId)) +
+                        '&readonly=1';
+                    return;
+                }
+                window.location.href = 'editar-contenido.html?id=' + encodeURIComponent(String(contentId));
+            }
+
+            function getContentIdFromCardOrRow(el) {
+                if (!el) return '';
+                var wrap = el.closest('.contenidos-card-item');
                 if (wrap && wrap.getAttribute('data-contenido-id')) {
-                    contentId = wrap.getAttribute('data-contenido-id');
-                } else {
-                    var keyBtn = courseCard.querySelector('.course-card__lms-options-btn[data-lms-row-key]');
-                    contentId = keyBtn ? keyBtn.getAttribute('data-lms-row-key') : '';
+                    return wrap.getAttribute('data-contenido-id');
                 }
-                var overlayId = contenidoIdToDrawerOverlayId(contentId);
-                var titleEl = courseCard.querySelector('.course-title');
-                var title = titleEl ? titleEl.textContent.trim() : 'Contenido';
-                document.body.classList.add('contenido-borrador-drawer-abierto');
-                var overlayDrawer = openDrawer({
-                    overlayId: overlayId,
-                    title: title,
-                    bodyHtml: getContenidoBorradorEditorBodyHtml(contentId),
-                    size: 'full',
-                    closeOnOverlayClick: false,
-                    onClose: function () {
-                        document.body.classList.remove('contenido-borrador-drawer-abierto');
-                        syncUrlAfterBorradorDrawerClose();
-                    }
-                });
-                if (overlayDrawer) {
-                    overlayDrawer.classList.add('contenido-borrador-drawer-overlay');
-                    overlayDrawer.setAttribute('data-contenido-id', contentId);
-                    var drawerPanel = overlayDrawer.querySelector('.ubits-drawer-content');
-                    if (drawerPanel) drawerPanel.id = 'contenido-borrador-drawer-panel';
-                    var drawerBody = overlayDrawer.querySelector('.ubits-drawer-body');
-                    if (drawerBody) drawerBody.id = 'contenido-borrador-drawer-body';
-                    syncUrlAfterBorradorDrawerOpen(contentId);
+                var tr = el.closest('tr[data-fiqsha-id]');
+                if (tr && tr.getAttribute('data-fiqsha-id')) {
+                    return tr.getAttribute('data-fiqsha-id');
                 }
-                wireContenidoBorradorDrawerHeader(overlayDrawer);
-                var sidebarHostId = contenidoIdToSidebarHostId(contentId);
-                setTimeout(function () {
-                    if (typeof loadSidebarContenidosLms === 'function') {
-                        loadSidebarContenidosLms(sidebarHostId, {
-                            variant: 'publicado-lms-creator',
-                            activeStep: 'recursos'
-                        });
-                    }
-                    if (typeof setSidebarContenidosLmsActive === 'function') {
-                        setSidebarContenidosLmsActive(sidebarHostId, 'recursos');
-                    }
-                    if (typeof initTooltip === 'function') {
-                        initTooltip('#' + overlayId + ' [data-tooltip]');
-                    }
-                }, 50);
+                var keyBtn = el.querySelector
+                    ? el.querySelector('.course-card__lms-options-btn[data-lms-row-key]')
+                    : null;
+                if (keyBtn) return keyBtn.getAttribute('data-lms-row-key') || '';
+                return '';
+            }
+
+            function getVisibilidadFromCardOrRow(el) {
+                if (!el) return '';
+                var card = el.classList && el.classList.contains('course-card') ? el : el.closest('.course-card');
+                if (card) return card.getAttribute('data-lms-tag') || '';
+                var tr = el.closest('tr[data-visibilidad-lms]');
+                if (tr) return tr.getAttribute('data-visibilidad-lms') || '';
+                return '';
+            }
+
+            function openContenidoBorradorEditorFromCard(courseCard) {
+                if (!courseCard) return;
+                var contentId = getContentIdFromCardOrRow(courseCard);
+                var vis = getVisibilidadFromCardOrRow(courseCard) || 'Borrador';
+                navigateToContenidoEditor(contentId, vis);
             }
 
             function tryOpenContenidoBorradorFromUrlHash() {
                 var cid = getContentIdFromBorradorUrlHash();
                 if (!cid) return;
-                if (document.body.classList.contains('contenido-borrador-drawer-abierto')) return;
-                var grid = document.getElementById('contenidos-cards-grid');
-                if (!grid) return;
-                var wraps = grid.querySelectorAll('.contenidos-card-item');
-                var card = null;
-                for (var i = 0; i < wraps.length; i++) {
-                    if (wraps[i].getAttribute('data-contenido-id') === cid) {
-                        var c = wraps[i].querySelector('.course-card');
-                        if (
-                            c &&
-                            c.getAttribute('data-lms-tag') === 'Borrador' &&
-                            c.getAttribute('data-legacy-lms') !== 'true'
-                        ) {
-                            card = c;
-                        }
-                        break;
-                    }
-                }
-                if (card) openContenidoBorradorEditorFromCard(card);
+                navigateToContenidoEditor(cid, 'Borrador');
             }
 
             function tryOpenContenidoAntiguoLmsFromUrlHash() {
@@ -742,9 +723,10 @@
                         openContenidoAntiguoLmsEditorFromCard(card);
                         return;
                     }
-                    if (card.getAttribute('data-lms-tag') !== 'Borrador') return;
                     ev.preventDefault();
-                    openContenidoBorradorEditorFromCard(card);
+                    var contentId = getContentIdFromCardOrRow(card);
+                    var vis = getVisibilidadFromCardOrRow(card);
+                    navigateToContenidoEditor(contentId, vis);
                 });
             }
 
@@ -1010,7 +992,7 @@
                     );
                     if (card.getAttribute('data-legacy-lms') === 'true') {
                         wrap.classList.add('contenidos-card-item--abrir-antiguo-lms');
-                    } else if (card.getAttribute('data-lms-tag') === 'Borrador') {
+                    } else {
                         wrap.classList.add('contenidos-card-item--abrir-editor');
                     }
                     card.parentNode.insertBefore(wrap, card);
@@ -1124,6 +1106,7 @@
                     }
                     tr.setAttribute('data-fiqsha-id', c.id || '');
                     tr.setAttribute('data-legacy-lms', c.legacyLms === true ? 'true' : 'false');
+                    tr.setAttribute('data-visibilidad-lms', vis.label || '');
                     tr.setAttribute('data-tipo', c.tipoContenido || 'Curso');
                     tr.setAttribute('data-categoria-fiqsha-id', c.categoriaFiqshaId || '');
                     tr.setAttribute('data-nivel-id', c.nivelId || '');
@@ -1146,6 +1129,21 @@
             })();
 
             var _tbodyContenidos = document.getElementById('creator-contenidos-tbody');
+            if (_tbodyContenidos) {
+                _tbodyContenidos.addEventListener('click', function (ev) {
+                    if (ev.target.closest && ev.target.closest('.ubits-dropdown-menu')) return;
+                    if (ev.target.closest && ev.target.closest('.creator-contenidos-acciones-btn')) return;
+                    var tr = ev.target.closest('tr[data-fiqsha-id]');
+                    if (!tr) return;
+                    if (tr.getAttribute('data-legacy-lms') === 'true') return;
+                    ev.preventDefault();
+                    navigateToContenidoEditor(
+                        tr.getAttribute('data-fiqsha-id'),
+                        tr.getAttribute('data-visibilidad-lms')
+                    );
+                });
+            }
+
             var _contenidosTotalFilas = _tbodyContenidos ? _tbodyContenidos.querySelectorAll('tr').length : 24;
 
             (function initContenidosTableSearch() {

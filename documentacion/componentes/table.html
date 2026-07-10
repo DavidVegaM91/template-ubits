@@ -142,6 +142,26 @@
                             </div>
                         </div>
 
+                        <!-- Fechas en columnas -->
+                        <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: var(--border-radius-lg); margin-bottom: 40px;">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-calendar" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Fechas en columnas
+                            </h2>
+                            <p class="ubits-body-md-regular" style="margin-bottom: 16px; line-height: 1.6; color: var(--ubits-fg-1-medium);">
+                                El componente tabla <strong>no</strong> formatea fechas automáticamente. En columnas de fecha (inicio, fin, vencimiento, etc.) — ya sea en <code>ubits-table</code> suelta o dentro de <code>createUbitsDataTable</code> — usa <code>general-utils/humanizador-fechas.js</code> → <code>formatDateDDMmmAAAA</code>.
+                            </p>
+                            <ul class="ubits-body-md-regular" style="margin: 0 0 16px; padding-left: 24px; line-height: 1.8; color: var(--ubits-fg-1-medium);">
+                                <li><strong>Texto visible en la celda:</strong> <code>DD mmm AAAA</code> — ej. <code>21 jun 2026</code>, <code>28 feb 2025</code> (mes en minúsculas, sin cero a la izquierda en el día).</li>
+                                <li><strong>Orden cronológico:</strong> atributo <code>data-date</code> en el <code>td</code> con el valor ISO <code>YYYY-MM-DD</code> (o <code>DD/MM/YYYY</code>) y columna con <code>sortType: 'date'</code>.</li>
+                                <li><strong>Evitar:</strong> <code>toLocaleDateString('es-CO')</code> en celdas (muestra <code>21/6/2026</code> y no coincide con el resto del producto).</li>
+                                <li><strong>Fuera de la tabla</strong> (meta, títulos): formato largo permitido — ej. «Publicado el 24 de abril de 2026».</li>
+                            </ul>
+                            <p class="ubits-body-md-regular" style="margin: 0; line-height: 1.6; color: var(--ubits-fg-1-medium);">
+                                Referencia de implementación: <code>detalle-plan.html</code>, <code>planes-contenidos.html</code>.
+                            </p>
+                        </div>
+
                         <!-- Preview Section -->
                         <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; margin-bottom: 40px;">
                             <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">

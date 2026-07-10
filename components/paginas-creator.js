@@ -100,12 +100,15 @@
     }
 
     function getPaginasCreatorMenuOptions() {
-        return [
+        var opts = [
             { text: 'Cambiar nombre', value: 'cambiar-nombre', leftIcon: 'pen-to-square' },
             { text: 'Mover arriba', value: 'mover-arriba', leftIcon: 'arrow-up' },
-            { text: 'Mover abajo', value: 'mover-abajo', leftIcon: 'arrow-down' },
-            { text: 'Eliminar', value: 'eliminar', leftIcon: 'trash' }
+            { text: 'Mover abajo', value: 'mover-abajo', leftIcon: 'arrow-down' }
         ];
+        if (!global.CC_PUBLISHED_EDIT_MODE) {
+            opts.push({ text: 'Eliminar', value: 'eliminar', leftIcon: 'trash' });
+        }
+        return opts;
     }
 
     /** Ámbito de orden global: índice creator, índice de secciones, bloque sección o la lista sola. */

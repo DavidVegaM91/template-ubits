@@ -408,11 +408,13 @@
                     logoOverlay +
                     '</div>' +
                 '</div>' +
-                '<div class="ubits-resources-block__footer">' +
-                    '<button type="button" class="ubits-button ubits-button--error-secondary ubits-button--sm" id="cc-eliminar-recurso">' +
-                        '<i class="far fa-trash-alt"></i><span>Eliminar</span>' +
-                    '</button>' +
-                '</div>' +
+                (typeof global.ccBuildCrearContenidoResourceFooterHtml === 'function'
+                    ? global.ccBuildCrearContenidoResourceFooterHtml(
+                          ' style="display:flex;align-items:center;gap:var(--gap-sm);flex-wrap:wrap;"'
+                      )
+                    : '<div class="ubits-resources-block__footer">' +
+                      '<button type="button" class="ubits-button ubits-button--error-secondary ubits-button--sm" id="cc-eliminar-recurso">' +
+                      '<i class="far fa-trash-alt"></i><span>Eliminar</span></button></div>') +
             '</div>'
         );
     }

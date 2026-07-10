@@ -54,7 +54,9 @@
     };
 
     /**
-     * Formato DD mmm AAAA (igual que tabla de seguimiento), ej. "28 feb 2025"
+     * Formato DD mmm AAAA (igual que tabla de seguimiento), ej. "28 feb 2025", "21 jun 2026".
+     * Uso estándar en columnas de ubits-table y createUbitsDataTable (texto visible en celda;
+     * conservar ISO en data-date para sortType: 'date'). Ver documentacion/componentes/table.html.
      * dateStr: DD/MM/YYYY o YYYY-MM-DD
      */
     window.formatDateDDMmmAAAA = function (dateStr) {

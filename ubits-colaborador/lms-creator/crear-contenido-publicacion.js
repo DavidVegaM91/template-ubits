@@ -386,11 +386,33 @@
         });
     }
 
+    function visibilidadLmsLabelToValue(label) {
+        var map = {
+            Público: 'publico',
+            Publico: 'publico',
+            Publicado: 'publico',
+            Privado: 'privado',
+            Oculto: 'oculto',
+            Archivado: 'oculto'
+        };
+        return map[label] || 'publico';
+    }
+
+    window.applyCrearContenidoVisibilidadForEdit = function (visLabel) {
+        var value = visibilidadLmsLabelToValue(visLabel);
+        applyVisibilidad(value);
+        lockBorradorSelection();
+    };
+
     window.initCrearContenidoPublicacionStepOnce = function () {
         if (wired) return;
         wired = true;
         privadoColabBtnEnabled = false;
-        applyVisibilidad(currentVisibilidad);
+        if (window.CC_PUBLISHED_EDIT_MODE && window.CC_EDIT_INITIAL_VISIBILIDAD) {
+            window.applyCrearContenidoVisibilidadForEdit(window.CC_EDIT_INITIAL_VISIBILIDAD);
+        } else {
+            applyVisibilidad(currentVisibilidad);
+        }
         syncPrivadoColabButton();
         wirePrivadoColabButton();
         wireCrearContenidoVisibilidadSelection();

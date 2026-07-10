@@ -225,8 +225,12 @@
     max-width: 150px;
 }
 
-/* Tarjetas borrador (no Antiguo LMS): abrir editor al clic */
+/* Tarjetas LMS Creator (no Antiguo LMS): abrir editor al clic */
 .contenidos-card-item--abrir-editor .course-card {
+    cursor: pointer;
+}
+
+#creator-contenidos-tbody tr[data-fiqsha-id]:not([data-legacy-lms="true"]) {
     cursor: pointer;
 }
 

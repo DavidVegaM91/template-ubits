@@ -187,12 +187,15 @@
     }
 
     function getSeccionCreatorSectionMenuOptions() {
-        return [
+        var opts = [
             { text: 'Editar sección', value: 'editar-seccion', leftIcon: 'pen-to-square' },
             { text: 'Mover arriba', value: 'seccion-mover-arriba', leftIcon: 'arrow-up' },
-            { text: 'Mover abajo', value: 'seccion-mover-abajo', leftIcon: 'arrow-down' },
-            { text: 'Eliminar sección', value: 'seccion-eliminar', leftIcon: 'trash' }
+            { text: 'Mover abajo', value: 'seccion-mover-abajo', leftIcon: 'arrow-down' }
         ];
+        if (!global.CC_PUBLISHED_EDIT_MODE) {
+            opts.push({ text: 'Eliminar sección', value: 'seccion-eliminar', leftIcon: 'trash' });
+        }
+        return opts;
     }
 
     /** Hermano sección en el stack (solo .ubits-seccion-creator__section). */
