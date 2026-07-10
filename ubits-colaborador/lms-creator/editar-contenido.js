@@ -114,7 +114,10 @@
             window.CrearContenidoPageApi.goToCrearContenidoPageStep(SECTION_TO_STEP[sectionId], { skipUrl: true });
         }
 
-        var hash = HASH_SECTION[sectionId];
+        var hash =
+            sectionId === 'resultados' && typeof window.resolveEditarContenidoHashForSection === 'function'
+                ? window.resolveEditarContenidoHashForSection(sectionId, window.location.hash)
+                : HASH_SECTION[sectionId];
         if (hash) {
             history.replaceState(null, '', location.pathname + location.search + hash);
         }
@@ -270,12 +273,15 @@
     }
 
     function hashToSection() {
+        if (typeof window.parseEditarContenidoHash === 'function') {
+            return window.parseEditarContenidoHash(window.location.hash).section;
+        }
         var h = (location.hash || '').replace(/^#/, '');
         if (h === 'informacion' || h === 'portada') return 'informacion';
         if (h === 'recursos') return 'recursos';
         if (h === 'certificado') return 'certificado';
         if (h === 'visibilidad' || h === 'publicacion') return 'visibilidad';
-        if (h === 'resultados') return 'resultados';
+        if (h === 'resultados' || h.indexOf('resultados-') === 0) return 'resultados';
         return 'resultados';
     }
 
@@ -337,9 +343,24 @@
 
         var initial = hashToSection();
         showEditSection(initial);
+        if (
+            initial === 'resultados' &&
+            typeof window.syncEditarContenidoResultadosTab === 'function' &&
+            typeof window.parseResultadosTabFromHash === 'function'
+        ) {
+            window.syncEditarContenidoResultadosTab(window.parseResultadosTabFromHash(window.location.hash));
+        }
 
         window.addEventListener('hashchange', function () {
-            showEditSection(hashToSection());
+            var section = hashToSection();
+            showEditSection(section);
+            if (
+                section === 'resultados' &&
+                typeof window.syncEditarContenidoResultadosTab === 'function' &&
+                typeof window.parseResultadosTabFromHash === 'function'
+            ) {
+                window.syncEditarContenidoResultadosTab(window.parseResultadosTabFromHash(window.location.hash));
+            }
         });
     }
 

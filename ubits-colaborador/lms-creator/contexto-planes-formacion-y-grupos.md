@@ -65,9 +65,15 @@ En **planes de competencias**, al hacer **clic en una fila** de **`planes-compet
 
 ### 2.2 Progreso: estudio, no carga
 
-- **Progreso en la tabla de planes:** agregado del avance de **todos los estudiantes** en lo asignado (contenidos o competencias).
-- **Progreso por estudiante:** avance de **ese estudiante** en sus contenidos o competencias.
-- La barra total del plan debe ser coherente con la suma/promedio de los progresos de los estudiantes.
+Dos niveles distintos — **no mezclar**:
+
+| Nivel | Dónde se ve | Qué mide |
+|-------|-------------|----------|
+| **Barra del plan** | Card grande en detalle, columna **Progreso** en listas (`planes-contenidos`, `planes-competencias`, Mi equipo) | **Porcentaje de estudiantes que completaron el 100 % de su plan** (todos los contenidos o competencias asignados a esa persona), sobre el total de asignados. **No** es promedio de avances parciales ni cuenta contenidos sueltos terminados por distintas personas. |
+| **Progreso por estudiante** | Columna **Progreso** en la tabla de asignaciones del detalle | Avance de **ese estudiante** en lo que le corresponde: en planes de **contenidos**, % de ítems **finalizados** de sus cursos; en planes de **competencias**, horas consumidas en vigencia ÷ meta (§ 7.4). |
+
+- La barra total del plan **no** debe coincidir con el promedio de la columna Progreso de la tabla: un plan puede tener mucha gente al 67 % individual y **0 %** en la barra si nadie terminó todo.
+- **Tooltip info** (botón `fa-circle-info` junto a la barra en **`detalle-plan.html`** y Mi equipo): *«Refleja el porcentaje de estudiantes que completaron todo su plan asignado. No incluye avances parciales. El porcentaje se actualiza cada 30 minutos, no en tiempo real.»* — clic abre tooltip; auto-cierre **7 s**; clic fuera cierra.
 
 ---
 
@@ -141,7 +147,7 @@ Vista de edición del plan de contenidos **antes de salir de Procesando** (misma
 | **Último acceso** | Valor de `ultimoAcceso` (ej. «Hace 2 días») |
 | **Última fecha de progreso** | Misma fecha formateada que en la tabla (`formatDateDDMmmAAAA`) |
 | **Contenidos** | Lista de contenidos asignados al usuario, separados por **`; `**. Cada ítem: **`{título del contenido} ({porcentaje}%)`**, p. ej. `Comunicación efectiva (75%); Liderazgo situacional (40%)`. El porcentaje es el avance en ese contenido (`contenidoPorUsuario`). |
-| **Progreso total acumulado** | Promedio de avance de sus contenidos, igual que la columna **Progreso** de la tabla (ej. `68%`) |
+| **Progreso total acumulado** | % de ítems **finalizados** del estudiante en el plan, igual que la columna **Progreso** de la tabla (ej. `67%`). **Distinto** de la barra grande del plan (§ 2.2). |
 
 - **Nombre del archivo:** `asignaciones-{nombre-del-plan-normalizado}.csv` (slug del nombre del plan).
 - **Feedback:** toast de éxito **«Archivo descargado»** tras la descarga (demo).
@@ -271,15 +277,16 @@ El SubNav del Creator enlaza **dos páginas** (más **Grupos**): **`planes-conte
 | Qué se asigna | Contenidos (cursos, etc.) | Competencias |
 | Columna en tabla de asignaciones | "Contenidos asignados" | "Competencias asignadas" |
 | Drawer de asignación | Agregar contenidos — catálogo tabla/cuadrícula (**§ 6.7.5**) | Agregar competencias (ver 4.3.1: cards competencia + habilidades con checkbox; tabla dos líneas) |
-| Cálculo de carga | Promedio % avance de 3 cursos/persona | Suma horas de contenidos de la competencia en vigencia ÷ meta 2 h |
+| Cálculo barra del plan (lista + detalle) | % estudiantes con plan **100 % completo** | % estudiantes con plan **100 % completo** (meta 2 h alcanzada) |
+| Progreso por fila (tabla asignaciones) | % contenidos **finalizados** del estudiante | Horas en vigencia ÷ meta 2 h |
 
 ---
 
 ## 5. Resumen de coherencia de datos
 
 - Plan recién creado (sale de Procesando): **estado** = Planeado o Vigente; **progreso** = 0 % (o bajo).
-- Progreso en tabla de planes = agregado del avance de estudiantes.
-- Progreso por fila (estudiante) = agregado del avance de ese estudiante en sus contenidos o competencias.
+- **Barra del plan** (lista y detalle) = **% de estudiantes que completaron el 100 %** de su asignación (§ 2.2).
+- Progreso por fila (estudiante) = avance individual de ese estudiante (contenidos finalizados o horas/meta en competencias).
 - **No vigente** solo para planes cuya fecha de fin ya pasó; nunca como resultado de "acabar de crear" un plan.
 - En **planes de competencias (seed playground)**, la meta es **2 h por plan** (`horasEstudioMeta`); el progreso suma duración de contenidos de la competencia del plan consumidos **dentro de la vigencia** (ver § 7.4).
 
@@ -320,8 +327,8 @@ El estado **Procesando X%** sigue siendo **transitorio de UI** al crear o agrega
 | Asignados | Reportes directos del líder |
 | Cursos por persona | **3 contenidos distintos** (siempre); pueden variar entre personas del mismo plan; **rotan cada trimestre** |
 | Origen contenidos | `bd-contenidos-ubits.js` (+ catálogo propio si aplica) |
-| Progreso persona | Promedio del **% de avance** de sus 3 cursos |
-| Progreso plan | Promedio del progreso de todos los asignados |
+| Progreso persona (tabla asignaciones) | % de contenidos **finalizados** de sus 3 cursos (no promedio de avance parcial) |
+| Progreso plan (barra + lista) | **% de asignados que completaron todo** su plan (los 3 contenidos al 100 %) |
 
 **Áreas y líderes:** Ventas (E002), Instalaciones (E003), Reparaciones (E004), Atención al Cliente (E005), Logística (E006), Administración (E007), Marketing (E008), Recursos Humanos (E052), Gerencia General (E001).
 
@@ -339,6 +346,7 @@ El estado **Procesando X%** sigue siendo **transitorio de UI** al crear o agrega
 | Competencias | Solo **`comp-024` Liderazgo**, **`comp-020` Inglés**, **`comp-004` Comunicación** (únicas con contenidos suficientes en el playground) |
 | Asignación por persona | **3 competencias** al año (una de cada una de las tres anteriores); la mezcla puede cambiar respecto al año anterior |
 | Horas meta | **`horasEstudioMeta: 2`** — **2 h por plan en total** (ver § 4.2) |
+| Progreso plan (barra + lista) | **% de asignados** que alcanzaron **100 %** (meta 2 h) en ese plan |
 | Creador(es) | **E052** Carmen (Jefa RRHH) como principal; **E053** (OKRs) y **E054** (Encuestas) como creadores secundarios plausibles en el seed |
 
 ### 7.4 Progreso competencias — regla de ventana
@@ -378,7 +386,7 @@ Estructura mínima de un plan:
 }
 ```
 
-**Helpers previstos:** `getPlanById`, `getPlanesByTipo`, `getEstadoPlan`, `getProgresoColaboradorEnPlan`, `getProgresoAgregadoPlan`, `getPlanesVisiblesParaLider`, `getPlanesVisiblesCreator`, `getAsignadosFromPlan`, `getCreadorFromPlan`. **`getPlanesListData()`** enriquece filas con `creadorId`, `creador`, `creador_avatar`. Persistencia demo: `sessionStorage` con **`schemaVersion` 3** (regenera seed al cambiar versión).
+**Helpers previstos:** `getPlanById`, `getPlanesByTipo`, `getEstadoPlan`, `getProgresoColaboradorEnPlan`, `getProgresoAgregadoPlan` (% usuarios con plan completo), `getPlanesVisiblesParaLider`, `getPlanesVisiblesCreator`, `getAsignadosFromPlan`, `getCreadorFromPlan`. **`getPlanesListData()`** enriquece filas con `creadorId`, `creador`, `creador_avatar`. Persistencia demo: `sessionStorage` con **`schemaVersion` 7** (regenera seed al cambiar versión).
 
 ### 7.7 Implementación
 
@@ -824,4 +832,4 @@ Montada en `#crear-grupo-integrantes-data-table-container` / `#detalle-grupo-int
 
 ---
 
-*Última actualización: jun 2026. **BD única `bd-planes-formacion.js` (§ 7):** 63 planes contenidos (9 áreas × 7Q), **9 planes competencias** (3 competencias × **2025–2027**), meta 2 h/plan, `schemaVersion` 3, progreso competencias por ventana de fechas, «hoy» = 19 jun 2026. **Detalle competencias (§ 4.5, § 6.1):** Vigente/No vigente → drawer **sm** solo progreso; Planeado → **editar** + drawer catálogo lg; barra azul `accent-brand` 1–99 % (como `card-content-compact`); fix catálogo `refreshCatalogoCompetenciasDrawer`. **Mi equipo:** columna Creador + `columnsToggle` (`contexto-mi-equipo.md`). Prototipo: LMS Creator. **Listas `planes-contenidos.html` y `planes-competencias.html` (§ 4.4):** menú ⋮ (**Ver progreso**, **Editar**, **Eliminar**), **`?id=`** desde BD, redirección edición si No vigente. **Card del plan (`detalle-plan-*` / `editar-plan-*`):** botón **Opciones** y menú por estado (**§ 6.2.2**). **Catálogo drawer contenidos:** § 3.2.1, 3.3.2, **§ 6.7.5**. **Grupos:** **§ 6.7.6**. **Editar plan (`editar-plan-*.html`):** § 3.2.2, § 4.3.2. **§ 6.2.1** título + tag; **§ 6.5** wizard; **§ 6.6** búsqueda `ubits-data-table`; **§ 6.7** inventario tablas.*
+*Última actualización: jul 2026. **BD única `bd-planes-formacion.js` (§ 7):** 63 planes contenidos (9 áreas × 7Q), **9 planes competencias** (3 competencias × **2025–2027**), meta 2 h/plan, `schemaVersion` **7**, barra del plan = **% usuarios con plan 100 % completo** (§ 2.2), progreso competencias por ventana de fechas, «hoy» = 19 jun 2026. **Detalle competencias (§ 4.5, § 6.1):** Vigente/No vigente → drawer **sm** solo progreso; Planeado → **editar** + drawer catálogo lg; barra azul `accent-brand` 1–99 % (como `card-content-compact`); fix catálogo `refreshCatalogoCompetenciasDrawer`. **Mi equipo:** columna Creador + `columnsToggle` (`contexto-mi-equipo.md`). Prototipo: LMS Creator. **Listas `planes-contenidos.html` y `planes-competencias.html` (§ 4.4):** menú ⋮ (**Ver progreso**, **Editar**, **Eliminar**), **`?id=`** desde BD, redirección edición si No vigente. **Card del plan (`detalle-plan-*` / `editar-plan-*`):** botón **Opciones** y menú por estado (**§ 6.2.2**). **Catálogo drawer contenidos:** § 3.2.1, 3.3.2, **§ 6.7.5**. **Grupos:** **§ 6.7.6**. **Editar plan (`editar-plan-*.html`):** § 3.2.2, § 4.3.2. **§ 6.2.1** título + tag; **§ 6.5** wizard; **§ 6.6** búsqueda `ubits-data-table`; **§ 6.7** inventario tablas.*

@@ -15,6 +15,85 @@
 
     var KPI_INFO_TOOLTIP_TEXT = 'Mide el porcentaje de personas que completaron todo el contenido.';
 
+    var RESULTADOS_TAB_IDS = {
+        progreso: true,
+        evaluaciones: true,
+        'gestion-intentos': true
+    };
+
+    function parseResultadosTabFromHash(hash) {
+        var h = String(hash || '').replace(/^#/, '');
+        if (h === 'resultados') return 'progreso';
+        if (h.indexOf('resultados-') === 0) {
+            var slug = h.slice('resultados-'.length);
+            if (RESULTADOS_TAB_IDS[slug]) return slug;
+        }
+        return 'progreso';
+    }
+
+    function buildResultadosHash(tab) {
+        return '#resultados-' + (tab || 'progreso');
+    }
+
+    function parseEditarContenidoHash(hash) {
+        var h = String(hash || '').replace(/^#/, '');
+        var resultadosTab = parseResultadosTabFromHash(hash);
+        if (h === 'informacion' || h === 'portada') {
+            return { section: 'informacion', resultadosTab: 'progreso' };
+        }
+        if (h === 'recursos') return { section: 'recursos', resultadosTab: 'progreso' };
+        if (h === 'certificado') return { section: 'certificado', resultadosTab: 'progreso' };
+        if (h === 'visibilidad' || h === 'publicacion') {
+            return { section: 'visibilidad', resultadosTab: 'progreso' };
+        }
+        if (h === 'resultados' || h.indexOf('resultados-') === 0) {
+            return { section: 'resultados', resultadosTab: resultadosTab };
+        }
+        return { section: 'resultados', resultadosTab: 'progreso' };
+    }
+
+    function resolveEditarContenidoHashForSection(section, currentHash) {
+        var parsed = parseEditarContenidoHash(currentHash);
+        if (section === 'resultados') {
+            if (parsed.section === 'resultados') {
+                return buildResultadosHash(parsed.resultadosTab);
+            }
+            return buildResultadosHash('progreso');
+        }
+        var HASH_SECTION = {
+            resultados: '#resultados',
+            informacion: '#informacion',
+            recursos: '#recursos',
+            certificado: '#certificado',
+            visibilidad: '#visibilidad'
+        };
+        return HASH_SECTION[section] || '#resultados-progreso';
+    }
+
+    function applyResultadosTabUi(tabId) {
+        var mount = document.getElementById('editar-contenido-resultados-mount');
+        if (!mount) return;
+        state.activeTab = tabId;
+        mount.querySelectorAll('[data-ec-tab]').forEach(function (b) {
+            b.classList.toggle('ubits-tab--active', b.getAttribute('data-ec-tab') === tabId);
+        });
+        mount.querySelectorAll('[data-ec-panel]').forEach(function (p) {
+            p.classList.toggle('is-active', p.getAttribute('data-ec-panel') === tabId);
+        });
+    }
+
+    function syncEditarContenidoResultadosTab(tabId) {
+        var nextTab = RESULTADOS_TAB_IDS[tabId] ? tabId : 'progreso';
+        applyResultadosTabUi(nextTab);
+    }
+
+    function updateResultadosTabHash(tabId) {
+        var nextHash = buildResultadosHash(tabId);
+        if (window.location.hash !== nextHash) {
+            history.replaceState(null, '', window.location.pathname + window.location.search + nextHash);
+        }
+    }
+
     var state = {
         contentId: '',
         contentTitle: '',
@@ -793,13 +872,10 @@
         mount.addEventListener('click', function (ev) {
             var tabBtn = ev.target.closest('[data-ec-tab]');
             if (tabBtn) {
-                state.activeTab = tabBtn.getAttribute('data-ec-tab');
-                mount.querySelectorAll('[data-ec-tab]').forEach(function (b) {
-                    b.classList.toggle('ubits-tab--active', b === tabBtn);
-                });
-                mount.querySelectorAll('[data-ec-panel]').forEach(function (p) {
-                    p.classList.toggle('is-active', p.getAttribute('data-ec-panel') === state.activeTab);
-                });
+                var tabId = tabBtn.getAttribute('data-ec-tab');
+                if (!tabId) return;
+                applyResultadosTabUi(tabId);
+                updateResultadosTabHash(tabId);
                 return;
             }
 
@@ -835,6 +911,17 @@
         initDataTables();
         refreshAllTables();
         wirePanelEvents();
+        syncEditarContenidoResultadosTab(parseResultadosTabFromHash(window.location.hash));
+        if (!window._ecResultadosHashWired) {
+            window._ecResultadosHashWired = true;
+            window.addEventListener('hashchange', function () {
+                if (typeof window.syncEditarContenidoResultadosTab === 'function') {
+                    window.syncEditarContenidoResultadosTab(
+                        window.parseResultadosTabFromHash(window.location.hash)
+                    );
+                }
+            });
+        }
         if (typeof window.initTooltip === 'function') {
             window.initTooltip('#editar-contenido-resultados-mount [data-tooltip]');
         }
@@ -845,4 +932,8 @@
     }
 
     window.initEditarContenidoResultados = initEditarContenidoResultados;
+    window.parseEditarContenidoHash = parseEditarContenidoHash;
+    window.resolveEditarContenidoHashForSection = resolveEditarContenidoHashForSection;
+    window.syncEditarContenidoResultadosTab = syncEditarContenidoResultadosTab;
+    window.parseResultadosTabFromHash = parseResultadosTabFromHash;
 })();

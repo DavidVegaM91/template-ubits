@@ -154,9 +154,14 @@
             }
 
             function progresoTotalPlan() {
+                if (typeof BD_PLANES_FORMACION !== 'undefined' && typeof BD_PLANES_FORMACION.getProgresoAgregadoPlan === 'function') {
+                    return BD_PLANES_FORMACION.getProgresoAgregadoPlan(planRawBd);
+                }
                 if (!asignacionesDetalleData.length) return 0;
-                var sum = asignacionesDetalleData.reduce(function (acc, r) { return acc + progresoEstudiante(r.id); }, 0);
-                return Math.round(sum / asignacionesDetalleData.length);
+                var completos = asignacionesDetalleData.filter(function (r) {
+                    return progresoEstudiante(r.id) >= 100;
+                }).length;
+                return Math.round((completos / asignacionesDetalleData.length) * 100);
             }
 
             function initDetallePlanProgressBarMount(value) {

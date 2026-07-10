@@ -8,7 +8,7 @@
     'use strict';
 
     var STORAGE_KEY = 'ubits-planes-formacion-db';
-    var STORAGE_SCHEMA_VERSION = 6;
+    var STORAGE_SCHEMA_VERSION = 7;
     var PLAYGROUND_TODAY = '2026-06-19';
     var HORAS_META_COMPETENCIAS = 2;
     /** Usuario demo zona de estudio (María Alejandra — bd-master-colaboradores E006). */
@@ -180,8 +180,9 @@
         if (planSinProgresoReal(estado)) return 0;
         var total = totalItems || 3;
         var idx = itemIndex != null ? itemIndex : 0;
-        var completeSeed = hashStr(planId + '|' + colaboradorId + '|complete-count');
-        var numComplete = Math.min(total, 1 + (completeSeed % 2));
+        var profile = hashStr(planId + '|' + colaboradorId + '|plan-profile') % 5;
+        if (profile === 0) return 100;
+        var numComplete = profile === 1 ? 1 : (profile === 2 || profile === 3 ? 2 : 0);
         if (idx < numComplete) return 100;
         var h = hashStr(planId + colaboradorId + contentId);
         if (estado === 'No vigente') return Math.min(99, 15 + (h % 70));
@@ -271,23 +272,46 @@
         });
     }
 
-    function recalcProgresoAgregadoContenidos(plan) {
+    function colaboradorCompletoPlan(plan, colaboradorId) {
+        if (!plan) return false;
         var estado = plan.estado || getEstadoPlan(plan, PLAYGROUND_TODAY);
-        if (planSinProgresoReal(estado)) {
-            plan.progresoAgregado = 0;
-            return;
+        if (planSinProgresoReal(estado)) return false;
+        var cid = String(colaboradorId || '');
+        var items = [];
+        if (plan.tipo === 'contenidos') {
+            items = (plan.contenidoPorUsuario || {})[cid] || [];
+        } else if (plan.tipo === 'competencias') {
+            items = (plan.competenciaPorUsuario || {})[cid] || [];
+        } else {
+            return false;
         }
-        var map = plan.contenidoPorUsuario || {};
-        var keys = Object.keys(map);
-        if (!keys.length) {
-            plan.progresoAgregado = 0;
-            return;
+        if (!items.length) return false;
+        for (var i = 0; i < items.length; i++) {
+            if (!itemEstaFinalizado(items[i])) return false;
         }
-        var sum = 0;
-        keys.forEach(function (cid) {
-            sum += progresoFinalizacionItems(map[cid]);
+        return true;
+    }
+
+    function progresoUsuariosPlanCompleto(plan) {
+        if (!plan) return 0;
+        var estado = plan.estado || getEstadoPlan(plan, PLAYGROUND_TODAY);
+        if (planSinProgresoReal(estado)) return 0;
+        var asignaciones = plan.asignaciones || [];
+        if (!asignaciones.length) return 0;
+        var completos = 0;
+        asignaciones.forEach(function (a) {
+            var cid = a.colaboradorId != null && String(a.colaboradorId).trim() !== ''
+                ? String(a.colaboradorId)
+                : (String(a.id || '').indexOf('fila-usuario-') === 0
+                    ? String(a.id).slice('fila-usuario-'.length)
+                    : String(a.id || ''));
+            if (colaboradorCompletoPlan(plan, cid)) completos += 1;
         });
-        plan.progresoAgregado = Math.round(sum / keys.length);
+        return Math.round((completos / asignaciones.length) * 100);
+    }
+
+    function recalcProgresoAgregado(plan) {
+        plan.progresoAgregado = progresoUsuariosPlanCompleto(plan);
         plan._progresoStale = false;
     }
 
@@ -302,7 +326,7 @@
             if (!items || !items.length) return;
             if (DEMO_CONTENIDOS_PLANES_COMPLETOS.indexOf(String(plan.id)) < 0) return;
             setItemsProgress(items, 100);
-            recalcProgresoAgregadoContenidos(plan);
+            recalcProgresoAgregado(plan);
         });
     }
 
@@ -325,15 +349,7 @@
                     contenidoPorUsuario[String(col.id)] = items;
                     asignaciones.push(buildAsignacionContenidos(planId, col, items));
                 });
-                var progresoAgregado = 0;
-                if (!planSinProgresoReal(estado) && asignaciones.length) {
-                    var sum = 0;
-                    Object.keys(contenidoPorUsuario).forEach(function (cid) {
-                        sum += progresoFinalizacionItems(contenidoPorUsuario[cid]);
-                    });
-                    progresoAgregado = Math.round(sum / Object.keys(contenidoPorUsuario).length);
-                }
-                planes.push({
+                var planDraft = {
                     id: planId,
                     tipo: 'contenidos',
                     nombre: areaDef.area + ' capacitación ' + q.label,
@@ -347,8 +363,10 @@
                     creadorId: areaDef.leaderId,
                     asignaciones: asignaciones,
                     contenidoPorUsuario: contenidoPorUsuario,
-                    progresoAgregado: progresoAgregado
-                });
+                    progresoAgregado: 0
+                };
+                planDraft.progresoAgregado = progresoUsuariosPlanCompleto(planDraft);
+                planes.push(planDraft);
             });
         });
         return planes;
@@ -376,7 +394,7 @@
                     var pct = progresoCompetenciaPersona(consumo, HORAS_META_COMPETENCIAS);
                     if (!planSinProgresoReal(estado)) {
                         var hDone = hashStr(planId + '|' + col.id + '|comp-done');
-                        if (hDone % 3 !== 0) {
+                        if (hDone % 5 === 0) {
                             pct = 100;
                         } else {
                             pct = Math.min(99, Math.max(10, pct));
@@ -401,15 +419,7 @@
                         contenidosCount: 1
                     });
                 });
-                var progresoAgregado = 0;
-                if (!planSinProgresoReal(estado) && empleados.length) {
-                    var sum = 0;
-                    Object.keys(competenciaPorUsuario).forEach(function (cid) {
-                        sum += progresoFinalizacionItems(competenciaPorUsuario[cid]);
-                    });
-                    progresoAgregado = Math.round(sum / Object.keys(competenciaPorUsuario).length);
-                }
-                planes.push({
+                var planDraft = {
                     id: planId,
                     tipo: 'competencias',
                     nombre: 'Empresa ' + comp.nombre + ' ' + anio,
@@ -426,8 +436,10 @@
                     asignaciones: asignaciones,
                     competenciaPorUsuario: competenciaPorUsuario,
                     consumoPorUsuario: consumoPorUsuario,
-                    progresoAgregado: progresoAgregado
-                });
+                    progresoAgregado: 0
+                };
+                planDraft.progresoAgregado = progresoUsuariosPlanCompleto(planDraft);
+                planes.push(planDraft);
             });
         });
         return planes;
@@ -557,13 +569,7 @@
         if (plan.progresoAgregado != null && !plan._progresoStale) {
             return plan.progresoAgregado;
         }
-        var asignaciones = plan.asignaciones || [];
-        if (!asignaciones.length) return 0;
-        var sum = 0;
-        asignaciones.forEach(function (a) {
-            sum += getProgresoColaboradorEnPlan(plan, a.colaboradorId);
-        });
-        return Math.round(sum / asignaciones.length);
+        return progresoUsuariosPlanCompleto(plan);
     }
 
     function getCreadorFromPlan(planOrId) {

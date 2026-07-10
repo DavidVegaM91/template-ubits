@@ -514,10 +514,15 @@
             });
             asignacionesDetalleData.forEach(function(r) { r.progreso = progresoEstudiante(r.id); });
             function progresoTotalPlan() {
+                if (typeof BD_PLANES_FORMACION !== 'undefined' && typeof BD_PLANES_FORMACION.getProgresoAgregadoPlan === 'function') {
+                    return BD_PLANES_FORMACION.getProgresoAgregadoPlan(planRawBd);
+                }
                 var rows = asignacionesDetalleData;
                 if (!rows.length) return 0;
-                var sum = rows.reduce(function(acc, row) { return acc + (row.progreso || 0); }, 0);
-                return Math.round(sum / rows.length);
+                var completos = rows.filter(function (row) {
+                    return progresoEstudiante(row.id) >= 100;
+                }).length;
+                return Math.round((completos / rows.length) * 100);
             }
             function planSinProgreso() {
                 return plan.estado === 'Planeado' || String(plan.estado).indexOf('Procesando') === 0;
