@@ -55,6 +55,7 @@
 
 /* ── Panel: caja vertical ── */
 .ubits-ia-input__box {
+    position: relative;
     display: flex;
     flex-direction: column;
     gap: var(--gap-xs);
@@ -64,18 +65,60 @@
     padding: var(--padding-sm) var(--padding-sm) var(--padding-sm) var(--padding-md);
     width: 100%;
     box-sizing: border-box;
+    overflow: visible;
     transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
+/* Borde IA 1.5px vía ::after (mismo patrón que cards ia-para-hr → cero layout shift) */
+.ubits-ia-input__box::after {
+    content: '';
+    position: absolute;
+    inset: calc(var(--ubits-ia-gradient-border-width, 1.5px) * -0.5);
+    border-radius: inherit;
+    padding: var(--ubits-ia-gradient-border-width, 1.5px);
+    background: var(
+        --ubits-ia-badge-border-gradient,
+        linear-gradient(
+            90deg,
+            rgb(12, 91, 239) 0%,
+            rgb(136, 35, 234) 35.59%,
+            rgb(234, 6, 111) 67.19%,
+            rgb(255, 84, 22) 100%
+        )
+    );
+    -webkit-mask:
+        linear-gradient(#fff 0 0) content-box,
+        linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask:
+        linear-gradient(#fff 0 0) content-box,
+        linear-gradient(#fff 0 0);
+    mask-composite: exclude;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.15s ease;
+    z-index: 2;
+}
+
+.ubits-ia-input__box:hover:not(.ubits-ia-input__box--context-error),
 .ubits-ia-input__box:focus-within:not(.ubits-ia-input__box--context-error) {
-    border-color: rgba(136, 35, 234, 0.35);
-    box-shadow: 0 0 0 3px rgba(136, 35, 234, 0.06);
+    border-color: transparent;
+    box-shadow: none;
+}
+
+.ubits-ia-input__box:hover:not(.ubits-ia-input__box--context-error)::after,
+.ubits-ia-input__box:focus-within:not(.ubits-ia-input__box--context-error)::after {
+    opacity: 1;
 }
 
 .ubits-ia-input__box--context-error,
 .ubits-ia-input__box--context-error:focus-within {
     border-color: var(--ubits-feedback-accent-error) !important;
     box-shadow: 0 0 0 2px color-mix(in srgb, var(--ubits-feedback-accent-error) 12%, transparent) !important;
+}
+
+.ubits-ia-input__box--context-error::after {
+    opacity: 0 !important;
 }
 
 .ubits-ia-input__textarea {
@@ -243,6 +286,7 @@
 
 /* ── Chat variant ── */
 .ubits-ia-input--chat .ubits-ia-input__chat-container {
+    position: relative;
     display: flex;
     flex-direction: column;
     gap: var(--gap-sm);
@@ -252,18 +296,59 @@
     padding: 8px 10px;
     width: 100%;
     box-sizing: border-box;
+    overflow: visible;
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
+.ubits-ia-input--chat .ubits-ia-input__chat-container::after {
+    content: '';
+    position: absolute;
+    inset: calc(var(--ubits-ia-gradient-border-width, 1.5px) * -0.5);
+    border-radius: inherit;
+    padding: var(--ubits-ia-gradient-border-width, 1.5px);
+    background: var(
+        --ubits-ia-badge-border-gradient,
+        linear-gradient(
+            90deg,
+            rgb(12, 91, 239) 0%,
+            rgb(136, 35, 234) 35.59%,
+            rgb(234, 6, 111) 67.19%,
+            rgb(255, 84, 22) 100%
+        )
+    );
+    -webkit-mask:
+        linear-gradient(#fff 0 0) content-box,
+        linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask:
+        linear-gradient(#fff 0 0) content-box,
+        linear-gradient(#fff 0 0);
+    mask-composite: exclude;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.15s ease;
+    z-index: 2;
+}
+
+.ubits-ia-input--chat .ubits-ia-input__chat-container:hover:not(.ubits-ia-input__chat-container--context-error),
 .ubits-ia-input--chat .ubits-ia-input__chat-container:focus-within:not(.ubits-ia-input__chat-container--context-error) {
-    border-color: rgba(136, 35, 234, 0.35);
-    box-shadow: 0 0 0 3px rgba(136, 35, 234, 0.06);
+    border-color: transparent;
+    box-shadow: none;
+}
+
+.ubits-ia-input--chat .ubits-ia-input__chat-container:hover:not(.ubits-ia-input__chat-container--context-error)::after,
+.ubits-ia-input--chat .ubits-ia-input__chat-container:focus-within:not(.ubits-ia-input__chat-container--context-error)::after {
+    opacity: 1;
 }
 
 .ubits-ia-input__chat-container--context-error,
 .ubits-ia-input__chat-container--context-error:focus-within {
     border-color: var(--ubits-feedback-accent-error) !important;
     box-shadow: 0 0 0 2px color-mix(in srgb, var(--ubits-feedback-accent-error) 12%, transparent) !important;
+}
+
+.ubits-ia-input__chat-container--context-error::after {
+    opacity: 0 !important;
 }
 
 .ubits-ia-input__chat-wrapper {
