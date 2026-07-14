@@ -36,6 +36,61 @@
         }
     ];
 
+    /** Filas del tab Descargas (recorrido lineal → participantes decrecientes). */
+    var DESCARGAS_DEFAULT = [
+        {
+            id: 'eval-parcial-1',
+            titulo: 'Parcial 1',
+            tipo: 'evaluacion',
+            participantes: 20
+        },
+        {
+            id: 'eval-parcial-2',
+            titulo: 'Parcial 2',
+            tipo: 'evaluacion',
+            participantes: 17
+        },
+        {
+            id: 'eval-final',
+            titulo: 'Evaluación final del módulo de resolución de conflictos en equipos de trabajo',
+            tipo: 'evaluacion',
+            participantes: 14
+        },
+        {
+            id: 'encuesta-satisfaccion',
+            titulo: 'Encuesta de satisfacción',
+            tipo: 'encuesta',
+            participantes: 10
+        }
+    ];
+
+    var DESCARGAS_SMALL = [
+        {
+            id: 'eval-parcial-1',
+            titulo: 'Parcial 1',
+            tipo: 'evaluacion',
+            participantes: 7
+        },
+        {
+            id: 'eval-parcial-2',
+            titulo: 'Parcial 2',
+            tipo: 'evaluacion',
+            participantes: 6
+        },
+        {
+            id: 'eval-final',
+            titulo: 'Evaluación final del módulo de resolución de conflictos en equipos de trabajo',
+            tipo: 'evaluacion',
+            participantes: 5
+        },
+        {
+            id: 'encuesta-satisfaccion',
+            titulo: 'Encuesta de satisfacción',
+            tipo: 'encuesta',
+            participantes: 3
+        }
+    ];
+
     function daysAgoISO(days) {
         var d = new Date();
         d.setHours(12, 0, 0, 0);
@@ -347,31 +402,36 @@
             fechaPublicacion: daysAgoISO(76),
             evaluaciones: EVALUACIONES_DEFAULT,
             estudiantes: ESTUDIANTES_DEMO,
-            bloqueos: BLOQUEOS_DEMO
+            bloqueos: BLOQUEOS_DEMO,
+            descargas: DESCARGAS_DEFAULT
         },
         f007: {
             fechaPublicacion: daysAgoISO(24),
             evaluaciones: EVALUACIONES_DEFAULT,
             estudiantes: ESTUDIANTES_DEMO,
-            bloqueos: BLOQUEOS_DEMO
+            bloqueos: BLOQUEOS_DEMO,
+            descargas: DESCARGAS_DEFAULT
         },
         '24003': {
             fechaPublicacion: daysAgoISO(90),
             evaluaciones: EVALUACIONES_DEFAULT,
             estudiantes: ESTUDIANTES_DEMO.slice(0, 8),
-            bloqueos: []
+            bloqueos: [],
+            descargas: DESCARGAS_SMALL
         },
         '24000': {
             fechaPublicacion: daysAgoISO(45),
             evaluaciones: EVALUACIONES_DEFAULT,
             estudiantes: ESTUDIANTES_DEMO,
-            bloqueos: BLOQUEOS_DEMO
+            bloqueos: BLOQUEOS_DEMO,
+            descargas: DESCARGAS_DEFAULT
         },
         'testing-eval': {
             fechaPublicacion: daysAgoISO(3),
             evaluaciones: EVALUACIONES_DEFAULT,
             estudiantes: [],
-            bloqueos: []
+            bloqueos: [],
+            descargas: []
         }
     };
 })();

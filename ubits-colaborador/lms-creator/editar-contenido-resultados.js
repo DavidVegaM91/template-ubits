@@ -18,7 +18,8 @@
     var RESULTADOS_TAB_IDS = {
         progreso: true,
         evaluaciones: true,
-        'gestion-intentos': true
+        'gestion-intentos': true,
+        descargas: true
     };
 
     function parseResultadosTabFromHash(hash) {
@@ -104,6 +105,7 @@
         tables: {
             progreso: null,
             evaluaciones: null,
+            descargas: null,
             gestion: null
         }
     };
@@ -148,7 +150,8 @@
             fechaPublicacion: null,
             evaluaciones: [],
             estudiantes: [],
-            bloqueos: []
+            bloqueos: [],
+            descargas: []
         };
         if (!key) return empty;
 
@@ -169,7 +172,8 @@
                         : template.fechaPublicacion,
                 evaluaciones: template.evaluaciones,
                 estudiantes: template.estudiantes,
-                bloqueos: template.bloqueos
+                bloqueos: template.bloqueos,
+                descargas: template.descargas || []
             };
         }
 
@@ -179,7 +183,8 @@
                 fechaPublicacion: template.fechaPublicacion,
                 evaluaciones: template.evaluaciones,
                 estudiantes: template.estudiantes,
-                bloqueos: template.bloqueos
+                bloqueos: template.bloqueos,
+                descargas: template.descargas || []
             };
         }
 
@@ -456,6 +461,7 @@
             '<button type="button" class="ubits-tab ubits-tab--sm ubits-tab--active" data-ec-tab="progreso" role="tab"><span>Progreso</span></button>' +
             '<button type="button" class="ubits-tab ubits-tab--sm" data-ec-tab="evaluaciones" role="tab"><span>Evaluaciones</span></button>' +
             '<button type="button" class="ubits-tab ubits-tab--sm" data-ec-tab="gestion-intentos" role="tab"><span>Gestión de intentos</span></button>' +
+            '<button type="button" class="ubits-tab ubits-tab--sm" data-ec-tab="descargas" role="tab"><span>Descargas</span></button>' +
             '</div>' +
             '</div>' +
             '<div class="editar-contenido-resultados__widget-body">' +
@@ -466,6 +472,9 @@
             '<div id="ec-resultados-panel-gestion-intentos" class="editar-contenido-resultados__tab-panel" data-ec-panel="gestion-intentos">' +
             '<p class="editar-contenido-resultados__intro-text ubits-body-sm-regular">Desbloquear otorga 1 intento más a cada usuario.</p>' +
             '<div id="ec-gestion-dt-container"></div></div>' +
+            '<div id="ec-resultados-panel-descargas" class="editar-contenido-resultados__tab-panel" data-ec-panel="descargas">' +
+            '<p class="editar-contenido-resultados__intro-text ubits-body-sm-regular">Descarga los reportes por cada uno de los siguientes recursos.</p>' +
+            '<div id="ec-descargas-dt-container"></div></div>' +
             '</div>' +
             '</div>' +
             '</div>';
@@ -786,6 +795,58 @@
         if (span) span.textContent = 'Desbloquear (' + formatIndicatorNumber(n) + ')';
     }
 
+    function getDescargasFilas(record) {
+        return (record && record.descargas ? record.descargas : []).map(function (row, idx) {
+            return {
+                id: row.id || 'descarga-' + idx,
+                titulo: row.titulo || '',
+                tipo: row.tipo || '',
+                participantes: Number(row.participantes) || 0
+            };
+        });
+    }
+
+    function initDescargasTable() {
+        if (typeof window.createUbitsDataTable !== 'function') return;
+        state.tables.descargas = window.createUbitsDataTable({
+            containerId: 'ec-descargas-dt-container',
+            tableId: 'ec-descargas-table',
+            title: 'Descargas',
+            columns: [
+                { id: 'titulo', label: 'Título del recurso', sortable: true },
+                { id: 'participantes', label: 'Participantes', sortable: true, sortType: 'number' },
+                { id: 'reporte', label: 'Reporte' }
+            ],
+            getData: function () {
+                return getDescargasFilas(getResultadosRecord(state.contentId));
+            },
+            rowIdField: 'id',
+            buildRowHtml: function (row) {
+                return (
+                    '<td data-col="titulo"><span class="ubits-body-sm-regular">' +
+                    escapeHtml(row.titulo) +
+                    '</span></td>' +
+                    '<td data-col="participantes"><span class="ubits-body-sm-regular">' +
+                    escapeHtml(formatIndicatorNumber(row.participantes)) +
+                    '</span></td>' +
+                    '<td data-col="reporte">' +
+                    '<button type="button" class="ubits-button ubits-button--secondary ubits-button--xs" data-ec-descarga-reporte="' +
+                    escapeHtml(row.id) +
+                    '"><span>Descargar</span></button></td>'
+                );
+            },
+            features: { search: true, resultsCount: true },
+            searchColumnIds: ['titulo'],
+            i18n: { buscarPlaceholder: 'Busca un recurso' },
+            emptyState: {
+                message: 'No hay reportes disponibles',
+                icon: 'far fa-download',
+                description:
+                    'Cuando el contenido tenga evaluaciones o encuestas, podrás descargar sus reportes aquí.'
+            }
+        });
+    }
+
     function initGestionTable() {
         if (typeof window.createUbitsDataTable !== 'function') return;
         state.tables.gestion = window.createUbitsDataTable({
@@ -854,13 +915,14 @@
         var record = getResultadosRecord(state.contentId);
         initProgresoTable();
         initEvaluacionesTable(record);
+        initDescargasTable();
         initGestionTable();
     }
 
     function refreshAllTables() {
         var record = getResultadosRecord(state.contentId);
         renderKpi(record);
-        ['progreso', 'evaluaciones', 'gestion'].forEach(function (key) {
+        ['progreso', 'evaluaciones', 'descargas', 'gestion'].forEach(function (key) {
             var table = state.tables[key];
             if (table && typeof table.refresh === 'function') table.refresh();
         });
@@ -1021,7 +1083,7 @@
         state.visibilidadLabel = String(opts.visibilidadLabel || 'Público');
         var record = getResultadosRecord(state.contentId);
         state.bloqueos = (record.bloqueos || []).slice();
-        state.tables = { progreso: null, evaluaciones: null, gestion: null };
+        state.tables = { progreso: null, evaluaciones: null, descargas: null, gestion: null };
         mount._ecWired = false;
         renderShell(mount);
         initPeriodoMenu();
