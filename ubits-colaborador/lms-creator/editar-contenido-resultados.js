@@ -143,13 +143,47 @@
     }
 
     function getResultadosRecord(contentId) {
-        var db = window.BD_RESULTADOS_CONTENIDO || {};
-        return db[String(contentId)] || {
+        var key = String(contentId || '').trim();
+        var empty = {
             fechaPublicacion: null,
             evaluaciones: [],
             estudiantes: [],
             bloqueos: []
         };
+        if (!key) return empty;
+
+        var db = window.BD_RESULTADOS_CONTENIDO || {};
+        if (db[key]) return db[key];
+
+        var payload =
+            window.BD_CONTENIDO_EDITOR_PAYLOAD && window.BD_CONTENIDO_EDITOR_PAYLOAD[key]
+                ? window.BD_CONTENIDO_EDITOR_PAYLOAD[key]
+                : null;
+        var template = db.f007 || db['f007'] || null;
+
+        if (payload && payload.useDemoSeed && template) {
+            return {
+                fechaPublicacion:
+                    payload.fechaPublicacion != null
+                        ? String(payload.fechaPublicacion)
+                        : template.fechaPublicacion,
+                evaluaciones: template.evaluaciones,
+                estudiantes: template.estudiantes,
+                bloqueos: template.bloqueos
+            };
+        }
+
+        /* Playground: cualquier contenido sin fila dedicada reutiliza el demo f007 (igual que React). */
+        if (template) {
+            return {
+                fechaPublicacion: template.fechaPublicacion,
+                evaluaciones: template.evaluaciones,
+                estudiantes: template.estudiantes,
+                bloqueos: template.bloqueos
+            };
+        }
+
+        return empty;
     }
 
     function getPeriodBounds() {
@@ -610,6 +644,58 @@
         });
     }
 
+    function formatEvalAprobar(n) {
+        return n == null || n === '' ? 'No aplica' : String(n) + '%';
+    }
+
+    function formatEvalIntentos(n) {
+        return n == null || n === '' ? 'No aplica' : String(n);
+    }
+
+    function formatEvalTiempo(n) {
+        return n == null || n === '' ? 'No aplica' : String(n) + ' minutos';
+    }
+
+    function openEvalDetailsModal(ev) {
+        if (!ev || typeof window.openModal !== 'function') return;
+        var bodyHtml =
+            '<div class="editar-contenido-resultados__eval-details">' +
+            '<p class="ubits-body-md-bold editar-contenido-resultados__eval-details-title">' +
+            escapeHtml(ev.nombre || '') +
+            '</p>' +
+            '<ul class="editar-contenido-resultados__eval-details-list">' +
+            '<li class="ubits-body-sm-regular"><span class="ubits-body-sm-semibold">Porcentaje requerido para aprobar:</span> ' +
+            escapeHtml(formatEvalAprobar(ev.porcentajeAprobar)) +
+            '</li>' +
+            '<li class="ubits-body-sm-regular"><span class="ubits-body-sm-semibold">Límite de intentos:</span> ' +
+            escapeHtml(formatEvalIntentos(ev.limiteIntentos)) +
+            '</li>' +
+            '<li class="ubits-body-sm-regular"><span class="ubits-body-sm-semibold">Tiempo límite:</span> ' +
+            escapeHtml(formatEvalTiempo(ev.tiempoLimiteMinutos)) +
+            '</li>' +
+            '<li class="ubits-body-sm-regular"><span class="ubits-body-sm-semibold">Total de preguntas:</span> ' +
+            escapeHtml(String(ev.totalPreguntas != null ? ev.totalPreguntas : '—')) +
+            '</li>' +
+            '</ul>' +
+            '</div>';
+        var overlay = window.openModal({
+            title: 'Detalles de evaluación',
+            bodyHtml: bodyHtml,
+            size: 'sm',
+            closeOnOverlayClick: true,
+            footerHtml:
+                '<button type="button" class="ubits-button ubits-button--primary ubits-button--md" id="ec-eval-details-entendido"><span>Entendido</span></button>'
+        });
+        var overlayId = overlay && (overlay.id || overlay);
+        setTimeout(function () {
+            var btn = document.getElementById('ec-eval-details-entendido');
+            if (!btn) return;
+            btn.addEventListener('click', function () {
+                if (typeof window.closeModal === 'function' && overlayId) window.closeModal(overlayId);
+            });
+        }, 0);
+    }
+
     function initEvaluacionesTable(record) {
         if (typeof window.createUbitsDataTable !== 'function') return;
         var evals = record.evaluaciones || [];
@@ -625,6 +711,14 @@
                     escapeHtml(ev.nombre) +
                     '">' +
                     escapeHtml(ev.nombre) +
+                    '</span>' +
+                    '<span class="ubits-dt-th-label__action">' +
+                    '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--xs ubits-button--icon-only" ' +
+                    'data-ec-eval-details="' +
+                    escapeHtml(ev.id) +
+                    '" aria-label="Ver detalles" data-tooltip="Ver detalles" data-tooltip-delay="1000">' +
+                    '<i class="far fa-circle-info" aria-hidden="true"></i>' +
+                    '</button>' +
                     '</span>' +
                     '<span class="ubits-dt-th-label__meta ubits-body-xs-regular">' +
                     escapeHtml(pesoText) +
@@ -676,6 +770,9 @@
                 description: 'Aún no hay datos de evaluaciones para el periodo seleccionado.'
             }
         });
+        if (typeof window.initTooltip === 'function') {
+            window.initTooltip('#ec-eval-dt-container [data-tooltip]');
+        }
     }
 
     function updateGestionActionBar(selectedIds) {
@@ -895,6 +992,19 @@
                 openDesbloqueoModal([bid], function () {
                     desbloquearIds([bid]);
                 });
+                return;
+            }
+
+            var detailsBtn = ev.target.closest('[data-ec-eval-details]');
+            if (detailsBtn) {
+                ev.preventDefault();
+                ev.stopPropagation();
+                var evalId = detailsBtn.getAttribute('data-ec-eval-details');
+                var record = getResultadosRecord(state.contentId);
+                var found = (record.evaluaciones || []).find(function (e) {
+                    return e.id === evalId;
+                });
+                if (found) openEvalDetailsModal(found);
             }
         });
     }

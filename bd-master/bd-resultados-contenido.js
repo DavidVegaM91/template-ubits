@@ -7,12 +7,32 @@
     'use strict';
 
     var EVALUACIONES_DEFAULT = [
-        { id: 'eval-parcial-1', nombre: 'Parcial 1', peso: 20 },
-        { id: 'eval-parcial-2', nombre: 'Parcial 2', peso: 30 },
+        {
+            id: 'eval-parcial-1',
+            nombre: 'Parcial 1',
+            peso: 20,
+            porcentajeAprobar: 60,
+            limiteIntentos: 3,
+            tiempoLimiteMinutos: 30,
+            totalPreguntas: 10
+        },
+        {
+            id: 'eval-parcial-2',
+            nombre: 'Parcial 2',
+            peso: 30,
+            porcentajeAprobar: null,
+            limiteIntentos: 2,
+            tiempoLimiteMinutos: null,
+            totalPreguntas: 15
+        },
         {
             id: 'eval-final',
             nombre: 'Evaluación final del módulo de resolución de conflictos en equipos de trabajo',
-            peso: 50
+            peso: 50,
+            porcentajeAprobar: 70,
+            limiteIntentos: null,
+            tiempoLimiteMinutos: 45,
+            totalPreguntas: 25
         }
     ];
 
@@ -340,6 +360,12 @@
             evaluaciones: EVALUACIONES_DEFAULT,
             estudiantes: ESTUDIANTES_DEMO.slice(0, 8),
             bloqueos: []
+        },
+        '24000': {
+            fechaPublicacion: daysAgoISO(45),
+            evaluaciones: EVALUACIONES_DEFAULT,
+            estudiantes: ESTUDIANTES_DEMO,
+            bloqueos: BLOQUEOS_DEMO
         },
         'testing-eval': {
             fechaPublicacion: daysAgoISO(3),

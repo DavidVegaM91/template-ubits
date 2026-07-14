@@ -270,6 +270,12 @@
     min-width: 0;
 }
 
+.ubits-table__th-label__action {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+}
+
 .ubits-table__th-label__meta {
     flex-shrink: 0;
     display: inline-flex;

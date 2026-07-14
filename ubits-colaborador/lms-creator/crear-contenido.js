@@ -3970,7 +3970,10 @@
             refreshCrearContenidoPageSiguienteState();
             if (typeof done === 'function') done();
         };
-        if (payload && payload.useDemoSeed) {
+        /* Playground editar-contenido: siempre precargar índice demo (paridad con React shouldApplyDemoRecursosSeed). */
+        var shouldSeedRecursos =
+            !!window.CC_PUBLISHED_EDIT_MODE || !!(payload && payload.useDemoSeed);
+        if (shouldSeedRecursos) {
             fetchCrearContenidoDemoPdfBinary()
                 .then(function (pdfBin) {
                     seedCrearContenidoDemoRecursosPageStates(pdfBin);

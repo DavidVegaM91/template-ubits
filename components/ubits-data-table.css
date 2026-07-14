@@ -162,6 +162,12 @@
     min-width: 0;
 }
 
+.ubits-data-table .ubits-dt-th-label__action {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+}
+
 .ubits-data-table .ubits-dt-th-label__meta {
     flex-shrink: 0;
     display: inline-flex;

@@ -198,7 +198,7 @@ Las columnas de evaluación son **dinámicas**: una por cada evaluación definid
 
 | Encabezado | Formato |
 |------------|---------|
-| `{Nombre evaluación}` + peso | En el **`<th>`**: nombre truncable + **texto secundario** con el peso (ej. `20%`) siempre visible a la derecha. El nombre puede cortarse con `…`; el peso **no** se trunca. Usa `labelHtml` / `headerLabel` + patrón título + meta (`.ubits-dt-th-label__meta` / `TableHeaderWithMeta`). |
+| `{Nombre evaluación}` + peso + info | En el **`<th>`**: nombre truncable + botón `fa-circle-info` (tooltip **Ver detalles**) + **texto secundario** con el peso (ej. `20%`) siempre visible. Clic en info → modal **Detalles de evaluación** (título de la evaluación, % para aprobar, límite de intentos, tiempo límite, total de preguntas; botón **Entendido**). Campos nulos se muestran como **No aplica**. |
 
 **Celda cuando el estudiante ya rindió la evaluación:**
 
