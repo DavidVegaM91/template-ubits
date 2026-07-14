@@ -252,3 +252,28 @@
 .ubits-table tbody td[data-col="fechaFinalizacion"] {
     max-width: 140px;
 }
+
+/* Encabezado: título truncable + meta fijo (peso %, etc.) — headerContent en React */
+.ubits-table__th-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-width: 0;
+    max-width: 220px;
+    vertical-align: middle;
+}
+
+.ubits-table__th-label__title {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    min-width: 0;
+}
+
+.ubits-table__th-label__accessory {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    color: var(--ubits-fg-1-medium);
+    white-space: nowrap;
+}

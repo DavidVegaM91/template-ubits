@@ -9,7 +9,11 @@
     var EVALUACIONES_DEFAULT = [
         { id: 'eval-parcial-1', nombre: 'Parcial 1', peso: 20 },
         { id: 'eval-parcial-2', nombre: 'Parcial 2', peso: 30 },
-        { id: 'eval-final', nombre: 'Final', peso: 50 }
+        {
+            id: 'eval-final',
+            nombre: 'Evaluación final del módulo de resolución de conflictos en equipos de trabajo',
+            peso: 50
+        }
     ];
 
     function daysAgoISO(days) {

@@ -145,6 +145,31 @@
     margin-left: var(--gap-xs);
 }
 
+/* Encabezado rico: título truncable + accesorio fijo (texto meta, peso %, etc.) — labelHtml */
+.ubits-data-table .ubits-dt-th-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-width: 0;
+    max-width: 220px;
+    vertical-align: middle;
+}
+
+.ubits-data-table .ubits-dt-th-label__title {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    min-width: 0;
+}
+
+.ubits-data-table .ubits-dt-th-label__accessory {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    color: var(--ubits-fg-1-medium);
+    white-space: nowrap;
+}
+
 /* Badge de prioridad: ancho fijo como en seguimiento */
 .ubits-data-table td[data-col="prioridad"] .ubits-badge-tag {
     width: 72px;

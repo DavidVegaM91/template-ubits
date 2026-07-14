@@ -26,6 +26,10 @@
  * -----------------------------------------------------------------------------
  *
  * Uso: createUbitsDataTable({ containerId, tableId, columns, getData, rowIdField, buildRowHtml, features, ... })
+ * Columnas: { id, label, sortable?, filterable?, sortType?, labelHtml? }.
+ *   - label (string): texto plano para chips, columnas visibles, aria y tooltips.
+ *   - labelHtml (string HTML opcional): contenido visual del <th>. Patrón título truncable + meta fijo:
+ *     .ubits-dt-th-label > .ubits-dt-th-label__title + .ubits-dt-th-label__accessory (texto, p. ej. peso %).
  * Opciones útiles: searchColumnIds (búsqueda solo en esas columnas), initialSort ({ column, direction }).
  * API: table.getSelectedIds(), table.getVisibleRows(), table.setFilter(), table.refresh()
  * Opcional: onSelectionChange(selectedIds) — se invoca tras cada cambio de selección (ids actuales como array de strings).

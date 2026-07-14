@@ -198,7 +198,7 @@ Las columnas de evaluación son **dinámicas**: una por cada evaluación definid
 
 | Encabezado | Formato |
 |------------|---------|
-| `{Nombre evaluación}` + peso | En el **`<th>`**: nombre de la evaluación y, debajo o junto, el **peso** sobre el total (ej. `Parcial 1` + `20%`). El peso sale del contenido (suma de pesos = 100%). |
+| `{Nombre evaluación}` + peso | En el **`<th>`**: nombre truncable + **texto meta** con el peso (ej. `20%`) siempre visible a la derecha. El nombre puede cortarse con `…`; el peso **no** se trunca. Usa `labelHtml` / `headerLabel` + patrón `DataTableHeaderWithAccessory`. |
 
 **Celda cuando el estudiante ya rindió la evaluación:**
 

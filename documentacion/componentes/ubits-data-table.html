@@ -22,6 +22,8 @@
     <link rel="stylesheet" href="../../components/tooltip.css">
     <link rel="stylesheet" href="../../components/input.css">
     <link rel="stylesheet" href="../../components/ubits-data-table.css">
+    <link rel="stylesheet" href="../../components/badge-tag.css">
+    <link rel="stylesheet" href="../../components/switch.css">
     <link rel="stylesheet" href="../../components/alert.css">
     <link rel="stylesheet" href="../../components/toast.css">
     <style>
@@ -81,7 +83,36 @@
                             <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6;">
                                 Tabla generada con <code>createUbitsDataTable(options)</code>: título, búsqueda, columnas visibles, botón primario, checkboxes, orden y filtros por columna.
                             </p>
+                            <div style="margin-bottom: 16px;">
+                                <label class="ubits-switch ubits-switch--md" style="align-items: center; gap: var(--gap-sm); display: inline-flex;">
+                                    <input type="checkbox" class="ubits-switch__input" id="ubits-dt-preview-header-badge" role="switch" aria-checked="false" aria-label="Encabezado con badge">
+                                    <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
+                                    <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Encabezado con meta (título truncable + peso fijo en texto)</span>
+                                </label>
+                            </div>
                             <div id="ubits-dt-doc-preview" class="ubits-dt-doc-preview-wrap"></div>
+                        </div>
+
+                        <!-- Encabezado con meta -->
+                        <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: var(--border-radius-lg); margin-bottom: 40px;">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-tags" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Encabezado con meta (<code>labelHtml</code>)
+                            </h2>
+                            <p class="ubits-body-md-regular" style="margin-bottom: 16px; line-height: 1.6; color: var(--ubits-fg-1-medium);">
+                                Usa <code>label</code> (texto plano) para chips, columnas visibles y aria. Usa <code>labelHtml</code> solo para el contenido visual del <code>&lt;th&gt;</code>.
+                                El patrón reutilizable es: título truncable (<code>.ubits-dt-th-label__title</code>) + accesorio fijo (<code>.ubits-dt-th-label__accessory</code>) con <strong>texto</strong> (p. ej. peso %).
+                                Así, si el nombre es largo, se corta con ellipsis y el peso <strong>siempre permanece visible</strong>, sin parecer clickeable.
+                            </p>
+                            <pre style="margin: 0; font-family: monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap; background: var(--ubits-bg-2); padding: 16px; border-radius: var(--border-radius-sm);"><code>{
+  id: 'eval-1',
+  label: 'Evaluación final… (40%)',
+  labelHtml:
+    '&lt;span class="ubits-dt-th-label"&gt;' +
+      '&lt;span class="ubits-dt-th-label__title" title="…"&gt;…&lt;/span&gt;' +
+      '&lt;span class="ubits-dt-th-label__accessory ubits-body-xs-regular"&gt;40%&lt;/span&gt;' +
+    '&lt;/span&gt;'
+}</code></pre>
                         </div>
 
                         <!-- Características generales -->
@@ -120,6 +151,11 @@
                                     <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-bolt"></i></div>
                                     <div class="ubits-body-sm-bold">Botón primario</div>
                                     <div class="ubits-body-sm-regular">Botón con texto e icono opcional en el header (p. ej. "Nueva tarea").</div>
+                                </div>
+                                <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-tags"></i></div>
+                                    <div class="ubits-body-sm-bold">Encabezado con meta</div>
+                                    <div class="ubits-body-sm-regular"><code>labelHtml</code>: título truncable + peso fijo en texto. El porcentaje no se corta.</div>
                                 </div>
                             </div>
                         </div>
@@ -229,33 +265,69 @@
 
             if (typeof createUbitsDataTable === 'function') {
                 var docPreviewData = [
-                    { id: '1', nombre: 'Revisar presupuesto Q1', asignado: 'Ana García', estado: 'Por hacer' },
-                    { id: '2', nombre: 'Configurar entorno de pruebas', asignado: 'Carlos Ruiz', estado: 'Finalizada' },
-                    { id: '3', nombre: 'Capacitación equipo comercial', asignado: 'María López', estado: 'Vencida' },
-                    { id: '4', nombre: 'Actualizar políticas de RRHH', asignado: 'Pedro Sánchez', estado: 'Por hacer' }
+                    { id: '1', nombre: 'Revisar presupuesto Q1', asignado: 'Ana García', estado: 'Por hacer', evaluacion: 'Aprobado con 85%' },
+                    { id: '2', nombre: 'Configurar entorno de pruebas', asignado: 'Carlos Ruiz', estado: 'Finalizada', evaluacion: 'Aprobado con 90%' },
+                    { id: '3', nombre: 'Capacitación equipo comercial', asignado: 'María López', estado: 'Vencida', evaluacion: 'Pendiente' },
+                    { id: '4', nombre: 'Actualizar políticas de RRHH', asignado: 'Pedro Sánchez', estado: 'Por hacer', evaluacion: 'Fallido con 55%' }
                 ];
+                var EVAL_TITLE = 'Evaluación final del módulo de resolución de conflictos en equipos de trabajo';
                 function escapeDoc(t) { if (t == null) return ''; var d = document.createElement('div'); d.textContent = t; return d.innerHTML; }
-                function buildDocRow(row) {
-                    return '<td data-col="nombre"><span class="ubits-body-sm-regular">' + escapeDoc(row.nombre) + '</span></td>' +
+                function buildDocRow(row, withBadge) {
+                    var html =
+                        '<td data-col="nombre"><span class="ubits-body-sm-regular">' + escapeDoc(row.nombre) + '</span></td>' +
                         '<td data-col="asignado"><span class="ubits-body-sm-regular">' + escapeDoc(row.asignado) + '</span></td>' +
                         '<td data-col="estado"><span class="ubits-body-sm-regular">' + escapeDoc(row.estado) + '</span></td>';
+                    if (withBadge) {
+                        html += '<td data-col="evaluacion"><span class="ubits-body-sm-regular">' + escapeDoc(row.evaluacion) + '</span></td>';
+                    }
+                    return html;
                 }
-                createUbitsDataTable({
-                    containerId: 'ubits-dt-doc-preview',
-                    tableId: 'ubits-dt-doc-preview-table',
-                    title: 'Lista de ejemplo',
-                    columns: [
+                function getDocColumns(withBadge) {
+                    var cols = [
                         { id: 'nombre', label: 'Nombre', sortable: true, filterable: true },
                         { id: 'asignado', label: 'Asignado', sortable: true, filterable: true },
                         { id: 'estado', label: 'Estado', sortable: true, filterable: true }
-                    ],
-                    getData: function() { return docPreviewData; },
-                    rowIdField: 'id',
-                    buildRowHtml: buildDocRow,
-                    features: { checkboxes: true, search: true, filters: true, verSeleccionados: true, resultsCount: true, columnsToggle: true },
-                    primaryButton: { text: 'Nueva fila', icon: 'fa-plus', onClick: function() { if (typeof showToast === 'function') showToast('info', 'Nueva fila (preview)', { containerId: 'ubits-toast-container' }); } },
-                    emptyState: { message: 'No hay elementos.', icon: 'far fa-folder-open' }
-                });
+                    ];
+                    if (withBadge) {
+                        cols.push({
+                            id: 'evaluacion',
+                            label: EVAL_TITLE + ' (40%)',
+                            labelHtml:
+                                '<span class="ubits-dt-th-label">' +
+                                '<span class="ubits-dt-th-label__title" title="' + escapeDoc(EVAL_TITLE) + '">' + escapeDoc(EVAL_TITLE) + '</span>' +
+                                '<span class="ubits-dt-th-label__accessory ubits-body-xs-regular">40%</span>' +
+                                '</span>'
+                        });
+                    }
+                    return cols;
+                }
+                var previewTable = null;
+                function mountDocPreview(withBadge) {
+                    var host = document.getElementById('ubits-dt-doc-preview');
+                    if (!host) return;
+                    host.innerHTML = '';
+                    previewTable = createUbitsDataTable({
+                        containerId: 'ubits-dt-doc-preview',
+                        tableId: 'ubits-dt-doc-preview-table',
+                        title: 'Lista de ejemplo',
+                        columns: getDocColumns(withBadge),
+                        getData: function() { return docPreviewData; },
+                        rowIdField: 'id',
+                        buildRowHtml: function(row) { return buildDocRow(row, withBadge); },
+                        features: { checkboxes: true, search: true, filters: true, verSeleccionados: true, resultsCount: true, columnsToggle: true },
+                        primaryButton: { text: 'Nueva fila', icon: 'fa-plus', onClick: function() { if (typeof showToast === 'function') showToast('info', 'Nueva fila (preview)', { containerId: 'ubits-toast-container' }); } },
+                        emptyState: { message: 'No hay elementos.', icon: 'far fa-folder-open' }
+                    });
+                }
+                mountDocPreview(false);
+                var badgeSwitch = document.getElementById('ubits-dt-preview-header-badge');
+                if (badgeSwitch) {
+                    badgeSwitch.addEventListener('change', function () {
+                        var on = !!badgeSwitch.checked;
+                        badgeSwitch.setAttribute('aria-checked', on ? 'true' : 'false');
+                        mountDocPreview(on);
+                    });
+                }
             }
         });
         

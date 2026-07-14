@@ -21,6 +21,7 @@
     <link rel="stylesheet" href="../../components/avatar.css">
     <link rel="stylesheet" href="../../components/table.css">
     <link rel="stylesheet" href="../../components/checkbox.css">
+    <link rel="stylesheet" href="../../components/switch.css">
     <style>
         /* Preview: ocultar columnas según controles (solo en esta página) */
         #table-demo th.table-preview-hide,
@@ -135,31 +136,6 @@
                             <p class="ubits-body-md-regular" style="max-width: 800px; margin: 0 auto 32px; line-height: 1.6;">
                                 Tabla para listar datos en filas y columnas. Permite texto, checkboxes, avatares, barras de avance, etiquetas de estado y prioridad. Se adapta a pantallas pequeñas con scroll horizontal.
                             </p>
-                            <div style="max-width: 800px; margin: 0 auto 32px; text-align: left; padding: 16px 20px; background: var(--ubits-bg-2); border: 1px solid var(--ubits-border-1); border-radius: var(--border-radius-md); box-sizing: border-box;">
-                                <p class="ubits-body-md-regular" style="margin: 0; line-height: 1.6;">
-                                    <strong>Solo datos en tabla:</strong> si la pantalla no mezcla cards ni layout de catálogo, usa el componente <strong>Data Table</strong> (<code>createUbitsDataTable</code> en <code>ubits-data-table.js</code>), que ya incluye barra de título, búsqueda, contador X/Y y vacíos alineados al producto. Montar solo <code>ubits-table</code> + buscador manual queda reservado para casos muy puntuales o vistas mixtas (toolbar + tabla + grid); ver el README sección «Tabla solo de datos: Data Table» y la página <a href="ubits-data-table.html">Data Table</a>.
-                                </p>
-                            </div>
-                        </div>
-
-                        <!-- Fechas en columnas -->
-                        <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: var(--border-radius-lg); margin-bottom: 40px;">
-                            <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
-                                <i class="far fa-calendar" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
-                                Fechas en columnas
-                            </h2>
-                            <p class="ubits-body-md-regular" style="margin-bottom: 16px; line-height: 1.6; color: var(--ubits-fg-1-medium);">
-                                El componente tabla <strong>no</strong> formatea fechas automáticamente. En columnas de fecha (inicio, fin, vencimiento, etc.) — ya sea en <code>ubits-table</code> suelta o dentro de <code>createUbitsDataTable</code> — usa <code>general-utils/humanizador-fechas.js</code> → <code>formatDateDDMmmAAAA</code>.
-                            </p>
-                            <ul class="ubits-body-md-regular" style="margin: 0 0 16px; padding-left: 24px; line-height: 1.8; color: var(--ubits-fg-1-medium);">
-                                <li><strong>Texto visible en la celda:</strong> <code>DD mmm AAAA</code> — ej. <code>21 jun 2026</code>, <code>28 feb 2025</code> (mes en minúsculas, sin cero a la izquierda en el día).</li>
-                                <li><strong>Orden cronológico:</strong> atributo <code>data-date</code> en el <code>td</code> con el valor ISO <code>YYYY-MM-DD</code> (o <code>DD/MM/YYYY</code>) y columna con <code>sortType: 'date'</code>.</li>
-                                <li><strong>Evitar:</strong> <code>toLocaleDateString('es-CO')</code> en celdas (muestra <code>21/6/2026</code> y no coincide con el resto del producto).</li>
-                                <li><strong>Fuera de la tabla</strong> (meta, títulos): formato largo permitido — ej. «Publicado el 24 de abril de 2026».</li>
-                            </ul>
-                            <p class="ubits-body-md-regular" style="margin: 0; line-height: 1.6; color: var(--ubits-fg-1-medium);">
-                                Referencia de implementación: <code>detalle-plan.html</code>, <code>planes-contenidos.html</code>.
-                            </p>
                         </div>
 
                         <!-- Preview Section -->
@@ -171,9 +147,10 @@
                             <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6;">
                                 Activa o desactiva columnas para ver cada tipo de celda. Por defecto: checkbox, texto y avatar. El resto se controlan con los toggles.
                             </p>
-                            <div style="margin-bottom: 24px; padding: 16px; background: var(--ubits-bg-2); border-radius: 12px; border: 1px solid var(--ubits-border-1);">
-                                <p class="ubits-body-sm-bold" style="margin-bottom: 12px; color: var(--ubits-fg-1-high);">Columnas visibles</p>
-                                <div style="display: flex; flex-wrap: wrap; gap: 16px 24px; align-items: center;">
+                            <div style="margin-bottom: 24px; padding: 16px; background: var(--ubits-bg-2); border-radius: 12px; border: 1px solid var(--ubits-border-1); display: flex; flex-direction: column; gap: 16px;">
+                                <div>
+                                    <p class="ubits-body-sm-bold" style="margin-bottom: 12px; color: var(--ubits-fg-1-high);">Columnas visibles</p>
+                                    <div style="display: flex; flex-wrap: wrap; gap: 16px 24px; align-items: center;">
                                     <label class="ubits-checkbox ubits-checkbox--sm ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">
                                         <input type="checkbox" class="ubits-checkbox__input" id="table-preview-col-checkbox" checked aria-label="Mostrar columna checkbox">
                                         <span class="ubits-checkbox__box"><i class="fas fa-check"></i></span>
@@ -209,7 +186,13 @@
                                         <span class="ubits-checkbox__box"><i class="fas fa-check"></i></span>
                                         <span class="ubits-checkbox__label">Prioridad</span>
                                     </label>
+                                    </div>
                                 </div>
+                                <label class="ubits-switch ubits-switch--md" style="align-items: center; gap: var(--gap-sm); display: inline-flex;">
+                                    <input type="checkbox" class="ubits-switch__input" id="table-preview-header-meta" role="switch" aria-checked="false" aria-label="Encabezado con meta">
+                                    <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
+                                    <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Encabezado con meta (título truncable + peso fijo en texto)</span>
+                                </label>
                             </div>
                             <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: 12px; overflow-x: auto;">
                                 <div class="ubits-table-wrapper ubits-table-wrapper--min-width">
@@ -223,6 +206,12 @@
                                                 <th data-col="avance">Avance</th>
                                                 <th data-col="estado" style="position:relative;"><div class="table-demo-th-inner"><span>Estado</span><div class="table-demo-filter-wrapper" data-filter-col="estado"><button type="button" class="table-demo-filter-btn" data-filter-col="estado" aria-label="Filtrar por estado" aria-expanded="false"><i class="far fa-filter"></i></button><div class="table-demo-filter-dropdown" id="table-demo-filter-estado"><div class="table-demo-filter-options" id="table-demo-filter-estado-opts"></div><div class="table-demo-filter-footer"><button class="table-demo-filter-cancel" data-filter-cancel="estado">Cancelar</button><button class="table-demo-filter-apply" data-filter-apply="estado">Aplicar</button></div></div></div></div></th>
                                                 <th data-col="prioridad" style="position:relative;"><div class="table-demo-th-inner"><span>Prioridad</span><div class="table-demo-filter-wrapper" data-filter-col="prioridad"><button type="button" class="table-demo-filter-btn" data-filter-col="prioridad" aria-label="Filtrar por prioridad" aria-expanded="false"><i class="far fa-filter"></i></button><div class="table-demo-filter-dropdown" id="table-demo-filter-prioridad"><div class="table-demo-filter-options" id="table-demo-filter-prioridad-opts"></div><div class="table-demo-filter-footer"><button class="table-demo-filter-cancel" data-filter-cancel="prioridad">Cancelar</button><button class="table-demo-filter-apply" data-filter-apply="prioridad">Aplicar</button></div></div></div></div></th>
+                                                <th data-col="evaluacion" class="table-preview-hide">
+                                                    <span class="ubits-table__th-label">
+                                                        <span class="ubits-table__th-label__title" title="Evaluación final del módulo de resolución de conflictos en equipos de trabajo">Evaluación final del módulo de resolución de conflictos en equipos de trabajo</span>
+                                                        <span class="ubits-table__th-label__accessory ubits-body-xs-regular">40%</span>
+                                                    </span>
+                                                </th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -254,6 +243,7 @@
                                                 </td>
                                                 <td data-col="estado"><span class="ubits-status-tag ubits-status-tag--info ubits-status-tag--sm"><span class="ubits-status-tag__text">Iniciada</span></span></td>
                                                 <td data-col="prioridad"><span class="ubits-badge-tag ubits-badge-tag--outlined ubits-badge-tag--error ubits-badge-tag--sm ubits-badge-tag--with-icon"><i class="far fa-chevrons-up"></i><span class="ubits-badge-tag__text">Alta</span></span></td>
+                                                <td data-col="evaluacion" class="table-preview-hide"><span class="ubits-body-sm-regular">Aprobado con 85%</span></td>
                                             </tr>
                                             <tr>
                                                 <td class="ubits-table__td--checkbox" data-col="checkbox" data-tooltip="Seleccionar" data-tooltip-delay="1000"><label class="ubits-checkbox ubits-checkbox--sm"><input type="checkbox" class="ubits-checkbox__input table-demo-row-check" data-id="2"><span class="ubits-checkbox__box"><i class="fas fa-check"></i></span><span class="ubits-checkbox__label sr-only">Seleccionar fila</span></label></td>
@@ -283,6 +273,7 @@
                                                 </td>
                                                 <td data-col="estado"><span class="ubits-status-tag ubits-status-tag--success ubits-status-tag--sm"><span class="ubits-status-tag__text">Finalizada</span></span></td>
                                                 <td data-col="prioridad"><span class="ubits-badge-tag ubits-badge-tag--outlined ubits-badge-tag--warning ubits-badge-tag--sm ubits-badge-tag--with-icon"><i class="far fa-chevron-up"></i><span class="ubits-badge-tag__text">Media</span></span></td>
+                                                <td data-col="evaluacion" class="table-preview-hide"><span class="ubits-body-sm-regular">Aprobado con 90%</span></td>
                                             </tr>
                                             <tr>
                                                 <td class="ubits-table__td--checkbox" data-col="checkbox" data-tooltip="Seleccionar" data-tooltip-delay="1000"><label class="ubits-checkbox ubits-checkbox--sm"><input type="checkbox" class="ubits-checkbox__input table-demo-row-check" data-id="3"><span class="ubits-checkbox__box"><i class="fas fa-check"></i></span><span class="ubits-checkbox__label sr-only">Seleccionar fila</span></label></td>
@@ -312,6 +303,7 @@
                                                 </td>
                                                 <td data-col="estado"><span class="ubits-status-tag ubits-status-tag--error ubits-status-tag--sm"><span class="ubits-status-tag__text">Vencida</span></span></td>
                                                 <td data-col="prioridad"><span class="ubits-badge-tag ubits-badge-tag--outlined ubits-badge-tag--info ubits-badge-tag--sm ubits-badge-tag--with-icon"><i class="far fa-chevron-down"></i><span class="ubits-badge-tag__text">Baja</span></span></td>
+                                                <td data-col="evaluacion" class="table-preview-hide"><span class="ubits-body-sm-regular">Pendiente</span></td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -344,9 +336,24 @@
                                 <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
                                     <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-sliders-h"></i></div>
                                     <div class="ubits-body-sm-bold">Encabezados</div>
-                                    <div class="ubits-body-sm-regular">Opcional: botones de filtro u orden en las cabeceras</div>
+                                    <div class="ubits-body-sm-regular">Filtros, orden o meta fija (peso %) junto al título truncable</div>
                                 </div>
                             </div>
+                        </div>
+
+                        <!-- Encabezado con meta -->
+                        <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: 16px; margin-bottom: 40px;">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 16px; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-percent" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Encabezado con meta
+                            </h2>
+                            <p class="ubits-body-md-regular" style="margin-bottom: 16px; line-height: 1.6; color: var(--ubits-fg-1-medium);">
+                                Cuando el título de una columna es largo y lleva un dato fijo (p. ej. peso %), el patrón es: título truncable + meta a la derecha <strong>siempre visible</strong> en texto simple (no badge). Activa el switch del preview para verlo.
+                            </p>
+                            <pre class="ubits-body-sm-regular" style="padding: 16px; background: var(--ubits-bg-2); border-radius: 8px; overflow-x: auto; margin: 0; color: var(--ubits-fg-1-high);"><code>&lt;span class="ubits-table__th-label"&gt;
+  &lt;span class="ubits-table__th-label__title" title="…"&gt;…&lt;/span&gt;
+  &lt;span class="ubits-table__th-label__accessory ubits-body-xs-regular"&gt;40%&lt;/span&gt;
+&lt;/span&gt;</code></pre>
                         </div>
 
                         <!-- Botones en encabezados de columna -->
@@ -522,6 +529,21 @@
                 cb.addEventListener('change', updateTableColumns);
             });
             updateTableColumns();
+
+            var headerMetaSwitch = document.getElementById('table-preview-header-meta');
+            function updateHeaderMetaColumn() {
+                var table = document.getElementById('table-demo');
+                if (!table || !headerMetaSwitch) return;
+                var visible = headerMetaSwitch.checked;
+                headerMetaSwitch.setAttribute('aria-checked', visible ? 'true' : 'false');
+                table.querySelectorAll('th[data-col="evaluacion"], td[data-col="evaluacion"]').forEach(function(cell) {
+                    cell.classList.toggle('table-preview-hide', !visible);
+                });
+            }
+            if (headerMetaSwitch) {
+                headerMetaSwitch.addEventListener('change', updateHeaderMetaColumn);
+                updateHeaderMetaColumn();
+            }
         });
         
         /* ── Filter buttons ─────────────────────────────── */

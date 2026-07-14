@@ -615,14 +615,21 @@
         var evals = record.evaluaciones || [];
         var columns = [{ id: 'usuario', label: 'Nombre del usuario', sortable: true }];
         evals.forEach(function (ev) {
+            var pesoText = String(ev.peso) + '%';
             columns.push({
                 id: 'eval-' + ev.id,
-                label: ev.nombre + ' (' + ev.peso + '%)',
+                label: ev.nombre + ' (' + pesoText + ')',
                 labelHtml:
+                    '<span class="ubits-dt-th-label">' +
+                    '<span class="ubits-dt-th-label__title" title="' +
                     escapeHtml(ev.nombre) +
-                    ' <span class="ubits-body-xs-regular">(' +
-                    escapeHtml(String(ev.peso)) +
-                    '%)</span>'
+                    '">' +
+                    escapeHtml(ev.nombre) +
+                    '</span>' +
+                    '<span class="ubits-dt-th-label__accessory ubits-body-xs-regular">' +
+                    escapeHtml(pesoText) +
+                    '</span>' +
+                    '</span>'
             });
         });
         columns.push({ id: 'final-ponderada', label: 'Final ponderada', sortable: true, sortType: 'number' });
