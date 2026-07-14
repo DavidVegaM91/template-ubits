@@ -21,7 +21,6 @@
     <link rel="stylesheet" href="../../components/avatar.css">
     <link rel="stylesheet" href="../../components/table.css">
     <link rel="stylesheet" href="../../components/checkbox.css">
-    <link rel="stylesheet" href="../../components/switch.css">
     <style>
         /* Preview: ocultar columnas según controles (solo en esta página) */
         #table-demo th.table-preview-hide,
@@ -147,10 +146,9 @@
                             <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6;">
                                 Activa o desactiva columnas para ver cada tipo de celda. Por defecto: checkbox, texto y avatar. El resto se controlan con los toggles.
                             </p>
-                            <div style="margin-bottom: 24px; padding: 16px; background: var(--ubits-bg-2); border-radius: 12px; border: 1px solid var(--ubits-border-1); display: flex; flex-direction: column; gap: 16px;">
-                                <div>
-                                    <p class="ubits-body-sm-bold" style="margin-bottom: 12px; color: var(--ubits-fg-1-high);">Columnas visibles</p>
-                                    <div style="display: flex; flex-wrap: wrap; gap: 16px 24px; align-items: center;">
+                            <div style="margin-bottom: 24px; padding: 16px; background: var(--ubits-bg-2); border-radius: 12px; border: 1px solid var(--ubits-border-1);">
+                                <p class="ubits-body-sm-bold" style="margin-bottom: 12px; color: var(--ubits-fg-1-high);">Columnas visibles</p>
+                                <div style="display: flex; flex-wrap: wrap; gap: 16px 24px; align-items: center;">
                                     <label class="ubits-checkbox ubits-checkbox--sm ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">
                                         <input type="checkbox" class="ubits-checkbox__input" id="table-preview-col-checkbox" checked aria-label="Mostrar columna checkbox">
                                         <span class="ubits-checkbox__box"><i class="fas fa-check"></i></span>
@@ -186,13 +184,12 @@
                                         <span class="ubits-checkbox__box"><i class="fas fa-check"></i></span>
                                         <span class="ubits-checkbox__label">Prioridad</span>
                                     </label>
-                                    </div>
+                                    <label class="ubits-checkbox ubits-checkbox--sm ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">
+                                        <input type="checkbox" class="ubits-checkbox__input" id="table-preview-header-meta" aria-label="Encabezado con texto secundario">
+                                        <span class="ubits-checkbox__box"><i class="fas fa-check"></i></span>
+                                        <span class="ubits-checkbox__label">Encabezado con texto secundario</span>
+                                    </label>
                                 </div>
-                                <label class="ubits-switch ubits-switch--md" style="align-items: center; gap: var(--gap-sm); display: inline-flex;">
-                                    <input type="checkbox" class="ubits-switch__input" id="table-preview-header-meta" role="switch" aria-checked="false" aria-label="Encabezado con meta">
-                                    <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
-                                    <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Encabezado con meta (título truncable + peso fijo en texto)</span>
-                                </label>
                             </div>
                             <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: 12px; overflow-x: auto;">
                                 <div class="ubits-table-wrapper ubits-table-wrapper--min-width">
@@ -209,7 +206,7 @@
                                                 <th data-col="evaluacion" class="table-preview-hide">
                                                     <span class="ubits-table__th-label">
                                                         <span class="ubits-table__th-label__title" title="Evaluación final del módulo de resolución de conflictos en equipos de trabajo">Evaluación final del módulo de resolución de conflictos en equipos de trabajo</span>
-                                                        <span class="ubits-table__th-label__accessory ubits-body-xs-regular">40%</span>
+                                                        <span class="ubits-table__th-label__meta ubits-body-xs-regular">40%</span>
                                                     </span>
                                                 </th>
                                             </tr>
@@ -348,11 +345,11 @@
                                 Encabezado con meta
                             </h2>
                             <p class="ubits-body-md-regular" style="margin-bottom: 16px; line-height: 1.6; color: var(--ubits-fg-1-medium);">
-                                Cuando el título de una columna es largo y lleva un dato fijo (p. ej. peso %), el patrón es: título truncable + meta a la derecha <strong>siempre visible</strong> en texto simple (no badge). Activa el switch del preview para verlo.
+                                Cuando el título de una columna es largo y lleva un dato fijo (p. ej. peso %), el patrón es: título truncable + <strong>texto secundario</strong> a la derecha siempre visible. Activa el checkbox del preview para verlo.
                             </p>
                             <pre class="ubits-body-sm-regular" style="padding: 16px; background: var(--ubits-bg-2); border-radius: 8px; overflow-x: auto; margin: 0; color: var(--ubits-fg-1-high);"><code>&lt;span class="ubits-table__th-label"&gt;
   &lt;span class="ubits-table__th-label__title" title="…"&gt;…&lt;/span&gt;
-  &lt;span class="ubits-table__th-label__accessory ubits-body-xs-regular"&gt;40%&lt;/span&gt;
+  &lt;span class="ubits-table__th-label__meta ubits-body-xs-regular"&gt;40%&lt;/span&gt;
 &lt;/span&gt;</code></pre>
                         </div>
 
@@ -530,18 +527,17 @@
             });
             updateTableColumns();
 
-            var headerMetaSwitch = document.getElementById('table-preview-header-meta');
+            var headerMetaCb = document.getElementById('table-preview-header-meta');
             function updateHeaderMetaColumn() {
                 var table = document.getElementById('table-demo');
-                if (!table || !headerMetaSwitch) return;
-                var visible = headerMetaSwitch.checked;
-                headerMetaSwitch.setAttribute('aria-checked', visible ? 'true' : 'false');
+                if (!table || !headerMetaCb) return;
+                var visible = headerMetaCb.checked;
                 table.querySelectorAll('th[data-col="evaluacion"], td[data-col="evaluacion"]').forEach(function(cell) {
                     cell.classList.toggle('table-preview-hide', !visible);
                 });
             }
-            if (headerMetaSwitch) {
-                headerMetaSwitch.addEventListener('change', updateHeaderMetaColumn);
+            if (headerMetaCb) {
+                headerMetaCb.addEventListener('change', updateHeaderMetaColumn);
                 updateHeaderMetaColumn();
             }
         });

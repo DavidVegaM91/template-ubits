@@ -145,7 +145,7 @@
     margin-left: var(--gap-xs);
 }
 
-/* Encabezado rico: título truncable + accesorio fijo (texto meta, peso %, etc.) — labelHtml */
+/* Encabezado rico: título truncable + texto secundario fijo (peso %, etc.) — labelHtml */
 .ubits-data-table .ubits-dt-th-label {
     display: inline-flex;
     align-items: center;
@@ -162,7 +162,7 @@
     min-width: 0;
 }
 
-.ubits-data-table .ubits-dt-th-label__accessory {
+.ubits-data-table .ubits-dt-th-label__meta {
     flex-shrink: 0;
     display: inline-flex;
     align-items: center;

@@ -198,7 +198,7 @@ Las columnas de evaluación son **dinámicas**: una por cada evaluación definid
 
 | Encabezado | Formato |
 |------------|---------|
-| `{Nombre evaluación}` + peso | En el **`<th>`**: nombre truncable + **texto meta** con el peso (ej. `20%`) siempre visible a la derecha. El nombre puede cortarse con `…`; el peso **no** se trunca. Usa `labelHtml` / `headerLabel` + patrón `DataTableHeaderWithAccessory`. |
+| `{Nombre evaluación}` + peso | En el **`<th>`**: nombre truncable + **texto secundario** con el peso (ej. `20%`) siempre visible a la derecha. El nombre puede cortarse con `…`; el peso **no** se trunca. Usa `labelHtml` / `headerLabel` + patrón título + meta (`.ubits-dt-th-label__meta` / `TableHeaderWithMeta`). |
 
 **Celda cuando el estudiante ya rindió la evaluación:**
 

@@ -626,7 +626,7 @@
                     '">' +
                     escapeHtml(ev.nombre) +
                     '</span>' +
-                    '<span class="ubits-dt-th-label__accessory ubits-body-xs-regular">' +
+                    '<span class="ubits-dt-th-label__meta ubits-body-xs-regular">' +
                     escapeHtml(pesoText) +
                     '</span>' +
                     '</span>'

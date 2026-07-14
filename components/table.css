@@ -253,7 +253,7 @@
     max-width: 140px;
 }
 
-/* Encabezado: título truncable + meta fijo (peso %, etc.) — headerContent en React */
+/* Encabezado: título truncable + texto secundario fijo (peso %, etc.) — headerContent en React */
 .ubits-table__th-label {
     display: inline-flex;
     align-items: center;
@@ -270,7 +270,7 @@
     min-width: 0;
 }
 
-.ubits-table__th-label__accessory {
+.ubits-table__th-label__meta {
     flex-shrink: 0;
     display: inline-flex;
     align-items: center;
