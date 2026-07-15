@@ -101,6 +101,7 @@
                 : '../../images/Profile-image.jpg';
 
             slides.push({
+                id: c.id,
                 image: imgPath,
                 contentType: c.tipoContenido || 'Curso',
                 title: c.titulo || '',
@@ -133,6 +134,13 @@
         });
     }
 
+    function goToExpEstudio(id, contentType) {
+        if (!id) return;
+        if (contentType === 'Ruta de aprendizaje') return;
+        window.location.href =
+            'exp-estudio/exp-estudio.html?id=' + encodeURIComponent(String(id));
+    }
+
     function initContinuaAprendiendoCarousel() {
         if (typeof createCarouselContents !== 'function') return;
 
@@ -140,6 +148,7 @@
         if (!slides || !slides.length) {
             slides = [
                 {
+                    id: 'u001',
                     image: '../../images/cards-learn/el-manejo-de-las-emociones.jpeg',
                     contentType: 'Curso',
                     title: 'El manejo de las emociones',
@@ -159,7 +168,10 @@
             containerId: 'continua-viendo-container',
             type: 'content-cards',
             sectionTitle: 'Continúa aprendiendo',
-            slides: slides
+            slides: slides,
+            onButtonClick: function (slide) {
+                goToExpEstudio(slide.id, slide.contentType);
+            }
         });
     }
 
@@ -217,6 +229,7 @@
                 ? ('../../' + String(c.imagen).replace(/^\.\//, ''))
                 : '../../images/Profile-image.jpg';
             var slide = {
+                id: c.id,
                 image: imgPath,
                 contentType: c.tipoContenido || 'Curso',
                 title: c.titulo || '',
@@ -252,7 +265,7 @@
             sectionTitle: 'Universidad corporativa',
             slides: slides,
             onButtonClick: function (slide) {
-                console.log('Ver ahora:', slide.title);
+                goToExpEstudio(slide.id, slide.contentType);
             }
         });
     }

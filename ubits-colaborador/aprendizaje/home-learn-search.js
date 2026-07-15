@@ -118,6 +118,7 @@
 
     function toCardPayload(item) {
         var card = {
+            contentId: item.id,
             type: item.type,
             title: item.title,
             provider: item.provider,
@@ -139,6 +140,28 @@
             });
         }
         return card;
+    }
+
+    function goToExpEstudio(id, contentType) {
+        if (!id) return;
+        if (contentType === 'Ruta de aprendizaje') return;
+        window.location.href =
+            'exp-estudio/exp-estudio.html?id=' + encodeURIComponent(String(id));
+    }
+
+    function bindResultsGridClicks(results) {
+        var grid = $('home-learn-results-grid');
+        if (!grid || !results || !results.length) return;
+        var cards = grid.querySelectorAll('.course-card');
+        cards.forEach(function (card, idx) {
+            var item = results[idx];
+            if (!item) return;
+            card.style.cursor = 'pointer';
+            card.addEventListener('click', function (e) {
+                if (e.target.closest('button, a')) return;
+                goToExpEstudio(item.id, item.type);
+            });
+        });
     }
 
     function setSearchState(state) {
@@ -283,6 +306,9 @@
         grid.style.display = 'grid';
         if (typeof loadCardContent === 'function') {
             loadCardContent('home-learn-results-grid', results.map(toCardPayload));
+            setTimeout(function () {
+                bindResultsGridClicks(results);
+            }, 50);
         }
     }
 

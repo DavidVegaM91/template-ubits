@@ -1,0 +1,53 @@
+/**
+ * EvalStickyBarExpEstudio — tiempo restante + intentos (fase evaluación).
+ */
+
+.ubits-eval-sticky-bar-exp {
+  box-sizing: border-box;
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--gap-md);
+  width: 100%;
+  padding: var(--padding-md) var(--padding-lg);
+  background: var(--ubits-feedback-bg-info-subtle);
+  border-radius: var(--border-radius-md);
+  color: var(--ubits-fg-1-high);
+}
+
+.ubits-eval-sticky-bar-exp__time,
+.ubits-eval-sticky-bar-exp__attempts {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--gap-sm);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+.ubits-eval-sticky-bar-exp__time i {
+  font-size: 16px;
+  color: var(--ubits-fg-1-high);
+}
+
+.ubits-eval-sticky-bar-exp__sep {
+  display: none;
+}
+
+.ubits-eval-sticky-bar-exp__value {
+  font-weight: 600;
+  color: var(--ubits-accent-brand);
+}
+
+.ubits-eval-sticky-bar-exp--urgent .ubits-eval-sticky-bar-exp__value {
+  color: var(--ubits-feedback-accent-error);
+}
+
+.ubits-eval-sticky-bar-exp__attempts-text {
+  font-weight: 600;
+  color: var(--ubits-fg-1-high);
+}

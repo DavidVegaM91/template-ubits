@@ -1,0 +1,17 @@
+/**
+ * IndiceExpEstudio — stack de SeccionExpEstudio (gap como Creator).
+ * Depende: seccion-exp-estudio.css, paginas-exp-estudio.css, feedback-exp-estudio.css
+ * Sin card envolvente ni bg-3.
+ */
+
+.ubits-indice-exp {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-width: 0;
+  padding: 0;
+  gap: var(--gap-md);
+  background: transparent;
+  border: none;
+}

@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="../../images/playground-favicon.svg">
+    <title>Cierre Exp Estudio | UBITS Playground</title>
+    <link rel="stylesheet" href="../../general-styles/ubits-colors.css">
+    <link rel="stylesheet" href="../../general-styles/styles.css">
+    <link rel="stylesheet" href="../../general-styles/fontawesome-icons.css">
+    <link rel="stylesheet" href="../../general-styles/ubits-typography.css">
+    <link rel="stylesheet" href="../../components/sub-nav.css">
+    <link rel="stylesheet" href="../../components/sidebar.css">
+    <link rel="stylesheet" href="../../components/button.css">
+    <link rel="stylesheet" href="../../components/toast.css">
+    <link rel="stylesheet" href="../../components/tooltip.css">
+    <link rel="stylesheet" href="../../components/avatar.css">
+    <link rel="stylesheet" href="../../components/status-tag.css">
+    <link rel="stylesheet" href="../../components/badge-tag.css">
+    <link rel="stylesheet" href="../../components/card-content.css">
+    <link rel="stylesheet" href="../../components/progress-bar.css">
+    <link rel="stylesheet" href="../../components/carousel-contents.css">
+    <link rel="stylesheet" href="../../components/carousel-indicators.css">
+    <link rel="stylesheet" href="../../docs/docs-sidebar.css">
+    <link rel="stylesheet" href="../../docs/docstyles.css">
+    <link rel="stylesheet" href="../../components/cierre-exp-estudio.css">
+</head>
+<body class="componentes-page" data-theme="light">
+    <div class="dashboard-container">
+        <div class="tooltip" id="tooltip"></div>
+        <main class="main-content">
+            <div id="top-nav-container"></div>
+            <div style="display: flex;">
+                <div id="docs-dropdown-container"></div>
+                <div id="docs-sidebar-container"></div>
+                <div class="components-content">
+                    <div class="content-area" style="display: block; width: 100%;">
+                        <div style="text-align: center; margin-bottom: 60px;">
+                            <h1 class="ubits-display-d2-bold" style="margin-bottom: 24px; color: var(--ubits-accent-brand);">Cierre Exp Estudio</h1>
+                            <p class="ubits-body-md-regular" style="max-width: 800px; margin: 0 auto 32px; line-height: 1.6;">
+                                Columna izquierda de Fin del contenido: wash verde, ícono Figma APP, card de certificado y carrusel «Sigue el camino» (`createCarouselContents`).
+                            </p>
+                        </div>
+                        <div style="background: var(--ubits-bg-1); padding: 32px; border-radius: var(--border-radius-lg); margin-bottom: 40px;">
+                            <h2 class="ubits-heading-h2" style="margin-bottom: 24px; color: var(--ubits-fg-1-high);">
+                                <i class="far fa-eye" style="margin-right: 8px; color: var(--ubits-accent-brand);"></i>
+                                Preview del componente
+                            </h2>
+                            <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: var(--border-radius-md); width: 100%; max-width: 720px; box-sizing: border-box;">
+                                <div id="preview-mount"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <div id="ubits-toast-container"></div>
+    <script src="../../components/sidebar.js"></script>
+    <script src="../../components/sub-nav.js"></script>
+    <script src="../../components/toast.js"></script>
+    <script src="../../components/tooltip.js"></script>
+    <script src="../../components/avatar.js"></script>
+    <script src="../../components/progress-bar.js"></script>
+    <script src="../../components/card-content.js"></script>
+    <script src="../../components/carousel-indicators.js"></script>
+    <script src="../../components/carousel-contents.js"></script>
+    <script src="../../components/cierre-exp-estudio.js"></script>
+    <script src="../../docs/docs-sidebar.js"></script>
+    <script src="../../script.js"></script>
+    <script>
+        var CIERRE_DEMO_SLIDES = [
+            {
+                image: '../../images/cards-learn/cambio-en-el-estilo-de-liderazgo.jpeg',
+                contentType: 'Ruta de aprendizaje',
+                title: 'Del liderazgo de equipos al liderazgo personal',
+                provider: { name: 'UBITS', logo: '../../images/Favicons/UBITS.jpg' },
+                competency: 'Liderazgo',
+                specs: { level: 'Intermedio', duration: '1h', language: 'Español' }
+            },
+            {
+                image: '../../images/cards-learn/comunicacion-efectiva-para-liderar-equipos.jpeg',
+                contentType: 'Curso',
+                title: 'Nuevo paradigma de creación de contratos',
+                provider: { name: 'UBITS', logo: '../../images/Favicons/UBITS.jpg' },
+                competency: 'Comunicación',
+                specs: { level: 'Intermedio', duration: '1h', language: 'Español' },
+                status: 'progress',
+                progress: 45
+            },
+            {
+                image: '../../images/cards-learn/agilidad-emocional.jpeg',
+                contentType: 'Curso',
+                title: 'Resolución efectiva de conflictos en equipos de trabajo',
+                provider: { name: 'Harvard Business Publishing', logo: '../../images/Favicons/Harvard-Business-Publishing.jpg' },
+                competency: 'Inteligencia emocional',
+                specs: { level: 'Básico', duration: '60 min', language: 'Español' }
+            }
+        ];
+
+        function renderPreview() {
+            var mount = document.getElementById('preview-mount');
+            if (!mount || typeof cierreExpEstudioHtml !== 'function') return;
+            var assetBase = '../../ubits-colaborador/aprendizaje/exp-estudio/assets/';
+            mount.innerHTML = cierreExpEstudioHtml({
+                contentTitle: 'Resolución efectiva de conflictos en equipos de trabajo',
+                iconSrc: '../../images/icons/success-icon.svg',
+                certThumbSrc: assetBase + 'cierre-cert-thumb.png',
+                carouselMountId: 'cierre-demo-carousel'
+            });
+            if (typeof initCierreExpEstudio === 'function') {
+                initCierreExpEstudio(mount.firstElementChild, {
+                    carouselSlides: CIERRE_DEMO_SLIDES,
+                    onDownloadCertificate: function () {
+                        if (typeof showToast === 'function') {
+                            showToast('success', 'Descargar certificado (demo)', {
+                                containerId: 'ubits-toast-container',
+                                duration: 1800
+                            });
+                        }
+                    }
+                });
+            }
+            if (typeof initTooltip === 'function') initTooltip('#preview-mount [data-tooltip]');
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            if (typeof loadSubNav === 'function') loadSubNav('top-nav-container', 'documentacion');
+            if (typeof loadSidebar === 'function') loadSidebar('ninguno');
+            if (typeof loadDocsSidebar === 'function') loadDocsSidebar('cierre-exp-estudio');
+            if (typeof renderPreview === 'function') renderPreview();
+        });
+    </script>
+</body>
+</html>

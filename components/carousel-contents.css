@@ -845,7 +845,22 @@
     min-width: calc((100% - (3 * 24px)) / 4);
     box-sizing: border-box;
     flex-shrink: 0;
-    /* Asegurar que el card no tenga width: 100% que pueda interferir */
+    overflow: hidden;
+}
+
+/* Columna estrecha (Cierre / cardsPerView: 2) — 2 cards visibles */
+.carousel-contents--content-cards-wrapper--per-view-2 .carousel-contents--content-cards__cards-container .course-card {
+    flex: 0 0 calc((100% - 24px) / 2);
+    width: calc((100% - 24px) / 2);
+    max-width: calc((100% - 24px) / 2);
+    min-width: calc((100% - 24px) / 2);
+}
+
+.carousel-contents--content-cards-wrapper--per-view-3 .carousel-contents--content-cards__cards-container .course-card {
+    flex: 0 0 calc((100% - (2 * 24px)) / 3);
+    width: calc((100% - (2 * 24px)) / 3);
+    max-width: calc((100% - (2 * 24px)) / 3);
+    min-width: calc((100% - (2 * 24px)) / 3);
 }
 
 /* Responsive: Tablet */
@@ -892,7 +907,9 @@
 
 /* Responsive: Mobile pequeño */
 @media (max-width: 480px) {
-    .carousel-contents--content-cards__cards-container .course-card {
+    .carousel-contents--content-cards__cards-container .course-card,
+    .carousel-contents--content-cards-wrapper--per-view-2 .carousel-contents--content-cards__cards-container .course-card,
+    .carousel-contents--content-cards-wrapper--per-view-3 .carousel-contents--content-cards__cards-container .course-card {
         flex: 0 0 100%;
         width: 100%;
         max-width: 100%;

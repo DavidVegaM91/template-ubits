@@ -1,0 +1,82 @@
+/**
+ * TituloSpecsCtaExpEstudio — Figma Learn-Components 83:2754
+ * Variantes: Default | En progreso | Completado
+ * Tipo de contenido: Badge Tag oficial (outlined + info).
+ * Sin card envolvente (el progreso trae su propia superficie).
+ * Depende: badge-tag.css, button.css, progreso-exp-estudio.css
+ */
+
+.ubits-titulo-specs-cta-exp {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  width: 100%;
+  min-width: 0;
+  padding: 0;
+  background: transparent;
+  border: none;
+}
+
+.ubits-titulo-specs-cta-exp__heading {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-2);
+  width: 100%;
+  min-width: 0;
+}
+
+.ubits-titulo-specs-cta-exp__title {
+  margin: 0;
+  width: 100%;
+  color: var(--ubits-fg-1-high);
+}
+
+.ubits-titulo-specs-cta-exp__specs {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  width: 100%;
+  color: var(--ubits-fg-1-medium);
+}
+
+.ubits-titulo-specs-cta-exp__specs-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-5, 20px);
+  align-items: center;
+  width: 100%;
+}
+
+.ubits-titulo-specs-cta-exp__spec {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--ubits-fg-1-medium);
+  font-size: 11px;
+  font-weight: 400;
+  line-height: 16.5px;
+}
+
+.ubits-titulo-specs-cta-exp__spec i {
+  width: 18px;
+  height: 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  color: var(--ubits-fg-1-medium);
+}
+
+.ubits-titulo-specs-cta-exp__actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  width: 100%;
+}
+
+.ubits-titulo-specs-cta-exp__actions .ubits-button {
+  width: 100%;
+  justify-content: center;
+}

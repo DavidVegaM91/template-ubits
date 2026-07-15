@@ -1,0 +1,58 @@
+/**
+ * Feedback Exp Estudio — estado de fila en IndiceExpEstudio (24px).
+ * Variantes: Locked | Check | Progress
+ * Tokens: --ubits-*
+ */
+
+.ubits-feedback-exp {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  min-width: 24px;
+  min-height: 24px;
+  border-radius: var(--border-radius-full);
+  flex-shrink: 0;
+  border: 1px solid transparent;
+}
+
+.ubits-feedback-exp i {
+  font-size: 12px;
+  line-height: 1;
+}
+
+.ubits-feedback-exp--locked {
+  background: var(--ubits-bg-2);
+  border-color: var(--ubits-border-1);
+  color: var(--ubits-fg-on-disabled);
+}
+
+.ubits-feedback-exp--check {
+  background: var(--ubits-feedback-bg-success-subtle);
+  border-color: var(--ubits-feedback-accent-success);
+  color: var(--ubits-feedback-accent-success);
+}
+
+.ubits-feedback-exp--progress {
+  background: var(--ubits-feedback-bg-info-subtle);
+  border-color: var(--ubits-accent-brand);
+  color: var(--ubits-accent-brand);
+}
+
+.ubits-feedback-exp--progress i {
+  animation: ubits-feedback-exp-spin 0.8s linear infinite;
+}
+
+@keyframes ubits-feedback-exp-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ubits-feedback-exp--progress i {
+    animation: none;
+  }
+}

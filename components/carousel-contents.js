@@ -351,8 +351,17 @@ function createCarouselContents(options) {
         slides = [],
         sectionTitle = 'Section title',
         onButtonClick,
-        onPlanClick
+        onPlanClick,
+        /** content-cards: fuerza N cards visibles (ej. 2 en columna de Cierre). Si omitido → breakpoints home-learn (4/3/2/1). */
+        cardsPerView: cardsPerViewOption
     } = options;
+    const cardsPerView =
+        type === 'content-cards' &&
+        Number.isFinite(Number(cardsPerViewOption)) &&
+        Number(cardsPerViewOption) >= 1 &&
+        Number(cardsPerViewOption) <= 4
+            ? Math.floor(Number(cardsPerViewOption))
+            : null;
 
     const container = document.getElementById(containerId);
     if (!container) {
@@ -904,10 +913,16 @@ function createCarouselContents(options) {
         `;
     } else if (type === 'content-cards') {
         // HTML para variante content-cards
+        const perViewClass = cardsPerView
+            ? ` carousel-contents--content-cards-wrapper--per-view-${cardsPerView}`
+            : '';
+        const perViewAttr = cardsPerView ? ` data-cards-per-view="${cardsPerView}"` : '';
         carouselHTML = `
-            <div class="carousel-contents--content-cards-wrapper">
+            <div class="carousel-contents--content-cards-wrapper${perViewClass}"${perViewAttr}>
                 <div class="carousel-contents--content-cards__header">
-                    <h2 class="carousel-contents--content-cards__title ubits-heading-h2">${sectionTitle}</h2>
+                    ${sectionTitle
+                        ? `<h2 class="carousel-contents--content-cards__title ubits-heading-h2">${sectionTitle}</h2>`
+                        : '<span aria-hidden="true"></span>'}
                     ${slides.length > 1 ? `
                         <div class="carousel-contents--content-cards__controls">
                             <button class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only carousel-contents--content-cards__prev-btn">
@@ -1564,6 +1579,7 @@ function createCarouselContents(options) {
             // Si es Ruta de aprendizaje y tiene múltiples proveedores, usar providers
             if (isRutaAprendizaje && Array.isArray(slide.providers) && slide.providers.length > 1) {
                 return {
+                    contentId: slide.id || slide.contentId || null,
                     type: contentType,
                     title: slide.title,
                     image: slide.image,
@@ -1582,6 +1598,7 @@ function createCarouselContents(options) {
             
             // Comportamiento normal (un solo proveedor)
             return {
+                contentId: slide.id || slide.contentId || null,
                 type: contentType,
                 title: slide.title,
                 image: slide.image,
@@ -1612,6 +1629,20 @@ function createCarouselContents(options) {
 
             if (!carouselContainer) return;
 
+            // Card click → onButtonClick(slide, index) (home-learn → exp-estudio)
+            if (typeof onButtonClick === 'function') {
+                const cards = carouselContainer.querySelectorAll('.course-card');
+                cards.forEach((card, idx) => {
+                    card.style.cursor = 'pointer';
+                    card.addEventListener('click', (e) => {
+                        if (e.target.closest('button, a, .course-card__lms-options-btn, .course-card__certificado-options-btn')) {
+                            return;
+                        }
+                        onButtonClick(slides[idx], idx);
+                    });
+                });
+            }
+
             let indicatorsApi = mountCarouselContentsIndicators(
                 containerId,
                 '-indicators',
@@ -1630,6 +1661,9 @@ function createCarouselContents(options) {
 
             // Función para obtener número de items a mover según breakpoint
             function getItemsToMove() {
+                if (cardsPerView) {
+                    return window.innerWidth <= 480 ? 1 : cardsPerView;
+                }
                 const windowWidth = window.innerWidth;
                 if (windowWidth <= 480) {
                     return 1; // Mobile pequeño

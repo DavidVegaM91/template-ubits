@@ -2,7 +2,7 @@
 
 > Documento de referencia para implementar y mantener en **Referente-Vanilla** la **experiencia del colaborador al estudiar un contenido** (curso demo y, en el futuro, otros tipos). Cubre la **portada**, la **navegación y consumo de recursos** y la **página de cierre** tras finalizar.
 
-**Estado del documento:** § 6.8.4a–b cerrados (Bienvenida + Evaluación). Pendiente: Resultado § 6.8.4c, persistencia § 8.1, id catálogo § 3.1.
+**Estado del documento:** experiencia demo `f007` orquestada en vanilla (`exp-estudio.html`) + React (`/ubits-colaborador/aprendizaje/exp-estudio`). Componentes § 11 ✅. Pendiente opcional: persistencia § 8.1.
 
 **Alcance explícito:** vista **100 % colaborador** (learner). **No** es LMS Creator, **no** es administrador HR, **no** es creación/edición de contenido.
 
@@ -91,12 +91,15 @@ Durante Portada / Recursos / Cierre el usuario **sí** puede navegar al resto de
 **Esquema acordado para vanilla:**
 
 ```
-ubits-colaborador/aprendizaje/exp-estudio/exp-estudio.html?id=<contentId>
+ubits-colaborador/aprendizaje/exp-estudio/exp-estudio.html?id=<contentId>#<vista>
 ```
 
-| Parámetro | Uso |
-|-----------|-----|
+| Pieza | Uso |
+|-------|-----|
 | `id` | Identificador del contenido en catálogo mock (`u001`, `f014`, etc.) |
+| `#<vista>` | Deep link de pantalla/estado para QA (mismo espíritu que LMS Creator `#recursos` / `#certificado`) |
+
+Sin hash → portada según progreso en sesión (o **sin iniciar** si no hay estado).
 
 **Resolución de datos en portada (mínimo v1):**
 
@@ -104,12 +107,68 @@ ubits-colaborador/aprendizaje/exp-estudio/exp-estudio.html?id=<contentId>
 2. Si no existe, buscar en `bd-master/bd-contenidos-fiqsha.js` → `contents` y `contentsCreatorOnly`
 3. Con el registro encontrado, pintar en portada al menos: **imagen**, **título**, **descripción** y demás propiedades del objeto catálogo (`tipoContenido`, `tiempoValor`, `nivelId`, `conCertificacion`, etc.)
 
-**Estado interno del flujo (portada / sección / página / cierre):** se maneja en **memoria de sesión** (JS) para no perder avance al navegar dentro del producto sin refrescar. Hash opcional en fases posteriores (`#portada`, `#cierre`) — no bloqueante para v1.
+**Estado en sesión:** memoria JS para no perder avance al navegar el producto sin refrescar. Los hashes permiten **saltar** a cualquier vista con valores demo precargados (páginas anteriores = Completadas cuando haga falta). Semilla una vez por carga si la sesión está vacía (`window._expEstudioDemoSeeded` o equivalente). Cambiar el hash en caliente **sí** debe poder saltar entre vistas (QA).
 
-**Enlaces desde el resto del playground:**
+#### 2.3.1 Catálogo de deep links (curso demo § 3.3)
+
+IDs de página = mock § 11.1 (`p-1` … `p-6`). Alias cortos opcionales = misma vista.
+
+##### Portada (§ 5)
+
+| Hash | Vista | Seed demo al entrar directo |
+|------|-------|-----------------------------|
+| `#portada` o `#portada-sin-iniciar` | Portada **sin iniciar** | 0 %; índice todo Bloqueada; CTA **Comenzar ahora** |
+| `#portada-en-progreso` | Portada **en progreso** | Ej. 2/5 completadas (video+PDF); CTA **Continuar**; índice con ✓ / activa / 🔒 |
+| `#portada-completado` | Portada **completado** | 100 %; índice todo ✓; CTAs **Ver más contenidos** + **Descargar certificado** |
+
+##### Recursos — páginas del índice (§ 6)
+
+| Hash canónico | Alias | Página mock | Tipo | Seed demo |
+|---------------|-------|-------------|------|-----------|
+| `#pagina-p-1` | `#video` | `p-1` Comunicación… | Video + complementarios | Páginas anteriores: ninguna; fila Activa; % 0 o parcial según reglas |
+| `#pagina-p-2` | `#pdf` | `p-2` Guía mapa… | PDF | `p-1` Completada |
+| `#pagina-p-3` | `#scorm-1` | `p-3` Simulador… | SCORM | `p-1`–`p-2` Completadas |
+| `#pagina-p-4` | `#scorm-2` | `p-4` Conversaciones… Thomas-Kilmann | SCORM | `p-1`–`p-3` Completadas |
+| `#pagina-p-5` | `#evaluacion` | `p-5` Evaluación | Evaluación | Equivale a **`#eval-bienvenida`** (primera llegada a la fila) |
+| `#pagina-p-6` | `#cierre` | `p-6` Fin del contenido | Cierre § 7 | Todas consumibles Completadas + confeti al montar |
+
+Vista Recursos = layout § 6.1 (visor izq. + `TituloProgresoYNav` + índice).
+
+##### Evaluación — subestados (§ 6.8)
+
+Misma fila `p-5`; el hash elige la fase/variante **sin** obligar a contestar. Detalle copy/Figma: § 6.8.0.
+
+| Hash | Estado | Seed demo |
+|------|--------|-----------|
+| `#eval-bienvenida` | Fase 1 Bienvenida | = primera entrada a Evaluación; intento no iniciado |
+| `#eval-intento` | Fase 2 preguntas + sticky | Banco `collab`; respuestas vacías o parciales |
+| `#eval-resultado-aprobado` | Resultado aprobado | Score mock alto; CTA **Continuar** → cierre |
+| `#eval-resultado-reprobado` | Resultado reprobado (quedan intentos) | Score bajo; CTA **Reintentar** |
+| `#eval-resultado-tiempo` | Tiempo agotado | CTA **Reintentar** |
+| `#eval-resultado-limite` | Límite de intentos | CTA **Ir al inicio** |
+
+##### Ejemplos listos para copiar
+
+```
+…/exp-estudio/exp-estudio.html?id=<contentId>#portada-sin-iniciar
+…/exp-estudio/exp-estudio.html?id=<contentId>#portada-en-progreso
+…/exp-estudio/exp-estudio.html?id=<contentId>#portada-completado
+…/exp-estudio/exp-estudio.html?id=<contentId>#video
+…/exp-estudio/exp-estudio.html?id=<contentId>#pdf
+…/exp-estudio/exp-estudio.html?id=<contentId>#scorm-1
+…/exp-estudio/exp-estudio.html?id=<contentId>#scorm-2
+…/exp-estudio/exp-estudio.html?id=<contentId>#eval-bienvenida
+…/exp-estudio/exp-estudio.html?id=<contentId>#eval-intento
+…/exp-estudio/exp-estudio.html?id=<contentId>#eval-resultado-aprobado
+…/exp-estudio/exp-estudio.html?id=<contentId>#eval-resultado-reprobado
+…/exp-estudio/exp-estudio.html?id=<contentId>#eval-resultado-tiempo
+…/exp-estudio/exp-estudio.html?id=<contentId>#eval-resultado-limite
+…/exp-estudio/exp-estudio.html?id=<contentId>#cierre
+```
+
+**Enlaces desde el resto del playground** (entrada normal = portada, sin forzar hash):
 
 ```html
-<!-- Ejemplo desde card-content o celda de tabla -->
 <a href="../aprendizaje/exp-estudio/exp-estudio.html?id=u014">…</a>
 ```
 
@@ -142,7 +201,7 @@ En `BDS_CONTENIDOS_UBITS` las rutas ya vienen con `tipoContenido: "Ruta de apren
 
 **Tipo:** `Curso` (contenido genérico de conflictos en equipos).
 
-**ID catálogo:** pendiente de enlazar con un registro de `bd-contenidos-fiqsha.js` o `bd-contenidos-ubits.js` (§ 2.3). La **estructura pedagógica** (índice) vive aparte del catálogo — ver § 3.3 y § 11.1.
+**ID catálogo:** **`f007`** — `bd-contenidos-fiqsha.js` · «Resolución efectiva de conflictos en equipos de trabajo» · `catalogo_fiqsha` · `conCertificacion: true`. La **estructura pedagógica** (índice) vive en `bd-exp-estudio-demo.js` — ver § 3.3 y § 11.1.
 
 ### 3.2 Estructura del flujo por tipo
 
@@ -152,31 +211,37 @@ En `BDS_CONTENIDOS_UBITS` las rutas ya vienen con `tipoContenido: "Ruta de apren
 
 ### 3.3 Índice del curso demo (playground) — definición cerrada
 
-Curso genérico con **2 secciones** y **5 ítems** en el índice (`IndiceExpEstudio`). Copy **exacto** de títulos.
+Curso genérico con **2 secciones** y **6 ítems** en el índice (`IndiceExpEstudio`). Copy **exacto** de títulos.
+
+**Alineación con Creator:** mismos títulos y tipos de página que el seed de `crear-contenido.html` (video, PDF, **dos SCORM**, evaluación). En learner se añade el ítem fijo `Fin del contenido`.
 
 **Fuera de alcance v1:** encuesta de satisfacción y sección índice `Cierre` con encuesta (existen en Figma producción, pero **no** se implementan hasta tener ese contenido creado).
 
 ```
-Sección 1: Fundamentos                                    [i]
-  Comunicación para desescalar un conflicto                 🔒
-  Guía mapa de conflicto                                    🔒
+Sección 1: Fundamentos                              ▾
+  Comunicación para desescalar un conflicto         🔒
+  Guía mapa de conflicto                           🔒
 
-Sección 2: Herramientas para resolver conflictos          [i]
-  Simulador de conversación difícil                         🔒
-  Evaluación                                                🔒
-  Fin del contenido                                         🔒
+Sección 2: Herramientas para resolver conflictos    ▾
+  Simulador de conversación difícil                 🔒
+  Conversaciones difíciles según Thomas-Kilmann     🔒
+  Evaluación                                        🔒
+  Fin del contenido                                 🔒
 ```
+
+> Cada sección = tarjeta separada (como Creator). Encabezado: título + chevron; botón info si hay descripción (§ 4.3.1). Sin contador ni `bg-3`.
 
 | # | Sección | Título página | Tipo recurso (índice) | Notas |
 |---|---------|---------------|----------------------|-------|
 | 1 | `Sección 1: Fundamentos` | `Comunicación para desescalar un conflicto` | Video | Primera página al «Comenzar ahora»; **complementarios** descarga + texto en demo (§ 6.3) |
 | 2 | `Sección 1: Fundamentos` | `Guía mapa de conflicto` | PDF | |
-| 3 | `Sección 2: Herramientas para resolver conflictos` | `Simulador de conversación difícil` | Embebido | |
-| 4 | `Sección 2: Herramientas para resolver conflictos` | `Evaluación` | Evaluación | |
-| 5 | `Sección 2: Herramientas para resolver conflictos` | `Fin del contenido` | Fin | Ítem fijo; al **`Continuar`** desde la evaluación → **pantalla de cierre** § 7 (confeti) |
+| 3 | `Sección 2: Herramientas para resolver conflictos` | `Simulador de conversación difícil` | SCORM | Mismo mount Creator (`.cc-scorm-resource` / `simulador-scorm.html`) |
+| 4 | `Sección 2: Herramientas para resolver conflictos` | `Conversaciones difíciles según Thomas-Kilmann` | SCORM | Segundo SCORM del seed Creator (ruta IA en edición) |
+| 5 | `Sección 2: Herramientas para resolver conflictos` | `Evaluación` | Evaluación | |
+| 6 | `Sección 2: Herramientas para resolver conflictos` | `Fin del contenido` | Fin | Ítem fijo; al **`Continuar`** desde la evaluación → **pantalla de cierre** § 7 (confeti) |
 
-- **Total páginas consumibles:** 4 (video, PDF, embebido, evaluación). `Fin del contenido` es marcador de cierre en el índice, no una página de recurso intermedio.
-- **Encuesta:** omitida en v1 — no aparece en el índice del playground.
+- **Total páginas consumibles:** 5 (video, PDF, 2× SCORM, evaluación). `Fin del contenido` es marcador de cierre en el índice, no una página de recurso intermedio.
+- **Encuesta / Embebido / Texto principal:** omitidos en el índice demo v1 (Embebido y Texto sí se pueden renderizar si un contenido futuro los trae — § 6.2).
 
 ---
 
@@ -231,15 +296,51 @@ Referencia autor: `lms-creator/contexto-creacion-contenido.md`, `lms-creator/cre
 
 **Definición cerrada:** **no** reutilizar tal cual `indice-creator` ni `sidebar-contenidos-lms`.
 
-- En Figma: componente **`IndiceExpEstudio`** + filas **`PaginasExpEstudio`** (ver § 5.7)
-- Estados documentados: `Por iniciar` (§ 5.4.3), `En progreso` (§ 5.6.3), `Completado` (§ 5.6b.3)
-- Candado: componente **`Feedback` Locked** (24px)
+- Componente **`SeccionExpEstudio`** — tarjeta por sección (misma base visual que `seccion-creator`)
+- Componente **`IndiceExpEstudio`** — stack de secciones + filas de página (ver § 5.4.3 / § 5.7)
+- Estados de progreso: `Por iniciar` (§ 5.4.3), `En progreso` (§ 5.6.3), `Completado` (§ 5.6b.3)
+- Candado / check / progress: **`Feedback`** 24px (`Locked` \| `Check` \| `Progress`)
+
+**UX visual (acordado — alineado a Creator):** cada sección es una **tarjeta separada** (`bg-1`, borde `border-1`, `border-radius-lg`). El índice es un **stack** con `gap-md` — **sin** card envolvente ni cabecera `bg-3`. Las secciones son **colapsables** (chevron animado). **Sin** contador de páginas. Si la sección tiene descripción en Creator, se muestra el botón **info** (`fa-circle-info`) como en `seccion-creator`.
+
+**Referencia Figma APP (colapso):** [Content course — secciones colapsables](https://www.figma.com/design/zHCCbQamZeiZJPlT7GEKDs/APP-v3.0.0?node-id=1756-11404&m=dev) (`1756:11404`). Base visual de tarjeta: Creator (`seccion-creator`). Botón info: patrón Creator / seed `crear-contenido.js`.
+
+| Aspecto | Comportamiento |
+|---------|----------------|
+| Contenedor índice | Stack transparente + `gap-md` (como `indice-creator` / `seccion-creator-index__stack`) |
+| Cada sección | Tarjeta propia (`SeccionExpEstudio`) — no un único card con varias cabeceras |
+| Encabezado sección | Título a la izquierda; a la derecha **info** (si hay descripción) + **chevron**; fondo transparente / `bg-1` (**sin** `bg-3`) |
+| Expandida / colapsada | Chevron `fa-chevron-down` con rotación 180° |
+| Toggle | Clic en el encabezado (excepto el botón info) |
+| Botón info `[i]` | Solo si la sección trae `descriptionHtml` no vacío (igual criterio Creator `hasDescription`) |
+| Contenido demo | Títulos § 3.3; **Sección 2** tiene descripción del seed Creator (§ 4.3.1) |
+
+#### 4.3.1 Modal «descripción de sección» (botón info)
+
+Misma intención que el ⓘ de Creator, pero **solo lectura** para el colaborador (no editar).
+
+| Parte | Valor |
+|-------|--------|
+| Trigger | Botón icon-only `fa-circle-info` en el encabezado — tooltip / `aria-label`: **`Sección con descripción`** (igual Creator) |
+| Cuándo se muestra | Solo secciones con descripción (demo: **Sección 2**; Sección 1 sin descripción → sin botón) |
+| Título del modal | Título de la sección (ej. `Sección 2: Herramientas para resolver conflictos`) |
+| Cuerpo | HTML/texto de descripción de Creator — **no editable**, solo lectura |
+| Footer | Un solo botón primario: **`Entendido`** (cierra el modal) |
+| Componente | Modal DS (`openModal` / `UbitsModal`) tamaño `sm` |
+
+**Copy descripción demo (Sección 2)** — exacto seed Creator:
+
+```
+Simulaciones, marcos de referencia y evaluación para aplicar lo aprendido en situaciones reales de conflicto en el trabajo.
+```
+
+(HTML seed: `<p class="ubits-body-md-regular">…</p>` en `crear-contenido.js` → `recursosSectionMeta[CC_DEMO_SEC2]`.)
 
 | Componente existente | Rol | ¿Usar en learner? |
 |---------------------|-----|-------------------|
 | `indice-creator` | Índice edición Creator | ❌ No directo |
 | `sidebar-contenidos-lms` | Sidebar catálogo LMS | ❌ No directo |
-| **`IndiceExpEstudio`** (nuevo) | Índice navegación consumo | ✅ Portar desde Figma |
+| **`IndiceExpEstudio`** (nuevo) | Índice navegación consumo | ✅ Portar patrón APP + tokens UBITS |
 
 ### 4.4 Barra de progreso global
 
@@ -261,6 +362,8 @@ Detalle visual portada documentado en § 5.6.2 y § 5.6b.2. Métrica: % páginas
 **Propósito:** pantalla de bienvenida al contenido antes de consumir recursos. Equivalente conceptual al **paso Portada del Creator**, pero en modo **solo lectura** para el estudiante.
 
 **Datos:** catálogo vía `?id=` (§ 2.3) + estructura pedagógica (secciones/páginas) desde mock de consumo (§ 11 — pendiente).
+
+**Deep links QA:** `#portada-sin-iniciar` · `#portada-en-progreso` · `#portada-completado` (§ 2.3.1).
 
 **Fuente de verdad visual:** Figma **Learner v4** (archivo `ivTgxM9bL6vcvGU90P8oGg`). Las capturas LXP sirven como referencia complementaria; ante discrepancia, **prevalece Figma**.
 
@@ -349,10 +452,44 @@ Dos bloques apilados (no una sola card que los envuelva):
 
 | Elemento | Detalle Figma |
 |----------|---------------|
-| **Badge tipo** | Pill blanco con borde; dot azul info 8px + texto `tipoContenido` (ej. `Curso`) |
+| **Badge tipo** | **Badge Tag** oficial (§ 5.4.1a) — encima del título; texto = `tipoContenido` (ej. `Curso`) |
 | **Título** | `display/d4/bold` — 28px, ej. «Resolución efectiva de conflictos en equipos de trabajo» |
 | **Specs fila 1** | `SpecNivel` + `SpecText` tiempo + `SpecText` idioma |
 | **Specs fila 2** | `SpecText` **Con certificado** + `SpecText` **Subtítulos** (solo UBITS; oculto en empresa) |
+| **CTAs** | Botón oficial UBITS (`primary` / `secondary`, `md`) — § 5.4.2 / § 5.6 / § 5.6b |
+| **Progreso** | Solo en *En progreso* / *Completado*: componente **`ProgresoExpEstudio`** (§ 5.6.2) |
+
+##### 5.4.1a Badge de tipo de contenido — Badge Tag oficial (obligatorio)
+
+El pill encima del título del curso **no** se inventa con CSS/HTML suelto. Es el componente **Badge Tag** del design system.
+
+| Aspecto | Valor |
+|---------|--------|
+| Componente | **Badge Tag** — Vanilla: `components/badge-tag.css` · React: `UbitsBadge` (`@/components/ui/Badge`) |
+| Variante | `outlined` |
+| Color | `info` (punto azul / indicador info) |
+| Tamaño | `sm` |
+| Contenido | Texto de `tipoContenido` del catálogo (ej. `Curso`, `Ruta de aprendizaje`) — **sin** ícono FontAwesome (solo el **dot** del badge) |
+| Layout | El badge **abraza el texto** (`align-items: flex-start` en el heading); **no** estirar a full width |
+
+**React (playground):**
+
+```tsx
+<UbitsBadge color="info" variant="outlined" size="sm">
+  {contentType}
+</UbitsBadge>
+```
+
+**Vanilla (markup):**
+
+```html
+<span class="ubits-badge-tag ubits-badge-tag--outlined ubits-badge-tag--info ubits-badge-tag--sm">
+  <span class="ubits-badge-tag__indicator" aria-hidden="true"></span>
+  <span class="ubits-badge-tag__text">Curso</span>
+</span>
+```
+
+**Prohibido:** reimplementar el pill con clases locales tipo `__badge` / `__badge-dot` dentro de `titulo-specs-cta-exp-estudio`. Si hace falta otro color/variante, se cambia en Badge Tag; no se forkear estilos.
 
 **Metadata — componentes `SpecNivel` / `SpecText`:**
 
@@ -379,53 +516,65 @@ Dos bloques apilados (no una sola card que los envuelva):
 
 #### 5.4.3 `IndiceExpEstudio` — preview en portada (`state: Por iniciar`)
 
-Card blanca, `border-radius-lg`, padding 12px. Lista de secciones y páginas **antes** de empezar.
+Stack de **`SeccionExpEstudio`** (una tarjeta por sección, como Creator): cada una con tokens `bg-1`, borde `border-1`, `border-radius-lg`. Separadas con `gap-md`. **Sin** card envolvente del índice ni cabecera `bg-3`. Secciones colapsables (sin contador) + filas de página (§ 4.3).
 
-**Encabezado de sección (`Seción`):**
-
-- Título bold 16px — en demo: `Sección 1: Fundamentos`, `Sección 2: Herramientas para resolver conflictos`
-- Botón icon-only **info** (`fa-circle-info`) a la derecha en cada sección
-- **Sin** sección índice `Cierre` ni ítem de encuesta en el curso demo (§ 3.3)
-
-**Fila de página (`PaginasExpEstudio`, `state: Bloqueada`):**
+**Encabezado de sección (colapsable — base Creator):**
 
 | Parte | Detalle |
 |-------|---------|
-| Ícono tipo | FA 16px, color `fg/on-disabled` — ver tabla abajo |
-| Título | `body/sm/semibold` 13px, color disabled, ellipsis |
-| Candado | Componente `Feedback` **Locked** — círculo 24px gris + `fa-lock` 12px |
+| Contenedor | Cada sección = tarjeta propia; índice = stack con gap |
+| Fondo cabecera | Transparente / `bg-1` — **no** `bg-3` |
+| Padding cabecera | `padding-sm` / `padding-md`, `min-height: space-12` (como Creator) |
+| Izquierda | Título sección, semibold ~16px, `fg-1-high` — demo: `Sección 1: Fundamentos`, `Sección 2: Herramientas para resolver conflictos` |
+| Derecha | **Info** (`fa-circle-info`) si hay descripción + **chevron** animado. **Sin** contador `{N}` |
+| Interacción | Toggle expand/collapse; info abre modal § 4.3.1 (demo: solo Sección 2) |
 
-**Tipos de página en índice (variantes Figma `PaginasExpEstudio`):**
+**Sin** sección índice `Cierre` ni encuesta en el curso demo (§ 3.3) — aunque el frame APP las muestre como ejemplo.
 
-| Tipo | Ícono FA (unicode en Figma) |
-|------|----------------------------|
-| Video | `\f03d` (fa-video) |
-| Texto | `\f893` |
-| PDF | `\f1c1` |
-| Encuesta | `\e28d` | _No en curso demo v1_ |
-| Embebido | `\e165` |
-| Scorm | `\f1c6` |
-| Evaluación | `\f733` |
-| Fin | `\e31b` — texto fijo `Fin del contenido` |
+**Fila de página (`PaginasExpEstudio`) — base = Páginas Creator:**
 
-**Índice del curso demo (playground)** — ver estructura completa § 3.3:
+Misma fila de lista que `paginas-creator` / `PaginasCreator`: borde inferior, rail izquierdo, icono tipo 24×24, título ellipsis. **Sin** drag handle ni menú ⋮.
+
+| Parte | Detalle |
+|-------|---------|
+| Ícono tipo | Igual Creator (`far fa-video`, `fa-cube`, etc.) en wrap 24×24 |
+| Título | `ubits-body-sm-semibold`; colores como Creator (medium / brand si Activa / on-disabled si Bloqueada) |
+| Trailing | En lugar del menú: **Feedback** **Locked** / **Progress** / **Check** (24px), siempre visible |
+| Rail activa | Franja brand `--space-1` (igual Creator `is-active`) |
+
+**Tipos de página en índice (íconos):**
+
+| Tipo | Ícono (FA / patrón) |
+|------|---------------------|
+| Video | `fa-video` / camera |
+| Texto | Doc texto |
+| PDF | `fa-file-pdf` |
+| Encuesta | — _No en curso demo v1_ |
+| Embebido | Embed |
+| SCORM | `fa-cube` |
+| Evaluación | Checklist / test |
+| Fin | Party / cierre — texto fijo `Fin del contenido` |
+
+**Índice del curso demo (playground)** — § 3.3:
 
 ```
-Sección 1: Fundamentos                          [i]
-  ▶ Comunicación para desescalar un conflicto   🔒
-  📕 Guía mapa de conflicto                     🔒
-Sección 2: Herramientas para resolver conflictos [i]
-  ⧉ Simulador de conversación difícil           🔒
-  ☑ Evaluación                                  🔒
-  🎉 Fin del contenido                          🔒
+Sección 1: Fundamentos                              ▾
+  ▶ Comunicación para desescalar un conflicto       🔒
+  📕 Guía mapa de conflicto                         🔒
+Sección 2: Herramientas para resolver conflictos    ▾
+  📦 Simulador de conversación difícil               🔒
+  📦 Conversaciones difíciles según Thomas-Kilmann   🔒
+  ☑ Evaluación                                      🔒
+  🎉 Fin del contenido                              🔒
 ```
 
-> Figma Learner v4 muestra más páginas y una sección `Cierre` con encuesta; el **playground** usa solo § 3.3 hasta que exista ese contenido.
+> Default playground: secciones **expandidas** al cargar portada. El usuario puede colapsar cualquiera.
 
 **Reglas estado Por iniciar:**
 
-- Todas las páginas: `state: Bloqueada`, candado visible, texto gris
+- Todas las páginas: `state: Bloqueada`, candado visible, texto disabled
 - Páginas **no clicables** hasta pulsar `Comenzar ahora`
+- Colapsar/expandir sección **sí** permitido en todos los estados de portada/recursos
 
 #### 5.4.4 Lo que NO aparece en columna derecha (sin iniciar)
 
@@ -454,14 +603,16 @@ Sección 2: Herramientas para resolver conflictos [i]
 
 Componente Figma: **`ProgresoExpEstudio`** — `state: In Progress`.
 
-Card blanca, `border-radius` 10px, padding horizontal 16px / vertical 8px, ancho ~471px (full width columna derecha).
+Card blanca, `border-radius` 10px, padding horizontal 16px / vertical 8px. **Layout en una sola fila** (Figma Learn-Components):
+
+`[fa-flag] [Tu progreso:] [======== barra ========] [NN %]`
 
 | Parte | Detalle |
 |-------|---------|
 | Ícono | `fa-flag` (`\f024`), 16px, `fg-1-medium` |
-| Label | **`Tu progreso:`** — `display/bold` 16px |
-| Barra | Track `bg-4-static` (#dbdde0), indicador `bg-blue-bold` (#0c5bef), altura **8px**, `border-radius-full` |
-| Porcentaje | Texto **`NN %`** a la derecha de la barra — `semibold` 13px (ej. `50 %` en Figma) |
+| Label | **`Tu progreso:`** — `body/md/bold` 16px |
+| Barra | Track `bg-4-static` (#dbdde0), indicador azul (o **verde** si Completed), altura **8px**, `border-radius-full`, `flex: 1` |
+| Porcentaje | Texto **`NN %`** a la derecha de la barra — `semibold` 13px (ej. `50 %`) |
 
 **Cálculo playground (curso demo § 3.3):**
 
@@ -469,12 +620,12 @@ Card blanca, `border-radius` 10px, padding horizontal 16px / vertical 8px, ancho
 % = (páginas completadas) / (páginas consumibles) × 100
 ```
 
-- **Páginas consumibles:** las 4 de recurso (video, PDF, embebido, evaluación). **`Fin del contenido`** no cuenta para el % hasta completarse el flujo (confirmar en finalizado).
-- Redondear para UI como en Figma (entero, ej. `50 %`).
+- **Páginas consumibles:** las 5 de recurso (video, PDF, 2× SCORM, evaluación). **`Fin del contenido`** no cuenta para el % hasta completarse el flujo (confirmar en finalizado).
+- Redondear para UI como en Figma (entero, ej. `40 %` = 2/5).
 
 #### 5.6.3 `IndiceExpEstudio` — `state: En progreso`
 
-Misma card estructura que § 5.4.3, pero cada fila `PaginasExpEstudio` adopta uno de **tres estados**:
+Mismo stack de tarjetas que § 5.4.3 (secciones colapsables). Cada fila adopta uno de **tres estados**:
 
 ##### Estado `Completada`
 
@@ -502,18 +653,19 @@ Igual que § 5.4.3 sin iniciar: texto `fg/on-disabled`, Feedback **`Locked`**.
 
 ##### Ejemplo mapeado al curso demo (§ 3.3)
 
-Usuario completó sección 1 y está en el simulador (50 %):
+Usuario completó sección 1 y está en el primer SCORM (2/5 → **40 %**):
 
 ```
-Sección 1: Fundamentos                          [i]
-  ▶ Comunicación para desescalar un conflicto   ✓
-  📕 Guía mapa de conflicto                     ✓
-Sección 2: Herramientas para resolver conflictos [i]
-  ⧉ Simulador de conversación difícil           ⟳  ← Activa (spinner)
-  ☑ Evaluación                                  🔒
-  🎉 Fin del contenido                          🔒
+Sección 1: Fundamentos                              ▾
+  ▶ Comunicación para desescalar un conflicto       ✓
+  📕 Guía mapa de conflicto                         ✓
+Sección 2: Herramientas para resolver conflictos    ▾
+  📦 Simulador de conversación difícil               ⟳  ← Activa
+  📦 Conversaciones difíciles según Thomas-Kilmann   🔒
+  ☑ Evaluación                                      🔒
+  🎉 Fin del contenido                              🔒
 
-Tu progreso: [████████░░░░░░░░] 50 %
+Tu progreso: [████████░░░░░░░░] 40 %
 [ Continuar ▶ ]
 ```
 
@@ -561,9 +713,9 @@ IndiceExpEstudio (En progreso)
 2. **Enfocar** el input del hero: `#home-learn-search-input` (componente `hero-search`, bar `#home-learn-hero-search`)
 3. Activar estado visual de búsqueda (`setHeroSearchBarActive` / panel browse) — implementar en `home-learn-search.js` al detectar hash `#buscar`
 
-**Botón secundario — detalle Figma:**
+**Botón secundario — detalle Figma (Learn-Components `83:2754`):**
 
-- Ícono certificado (`fa-file-certificate` o equivalente) a la izquierda
+- Ícono **`fa-file-arrow-down`** a la izquierda
 - Texto: **`Descargar certificado`**
 - Visible cuando el contenido tiene certificado; en demo § 3.1 usar contenido con `conCertificacion: true`
 
@@ -592,13 +744,14 @@ Todas las filas del índice (§ 3.3, **sin encuesta**):
 **Ejemplo curso demo § 3.3 — todo completado:**
 
 ```
-Sección 1: Fundamentos                          [i]
-  ▶ Comunicación para desescalar un conflicto   ✓
-  📕 Guía mapa de conflicto                     ✓
-Sección 2: Herramientas para resolver conflictos [i]
-  ⧉ Simulador de conversación difícil           ✓
-  ☑ Evaluación                                  ✓
-  🎉 Fin del contenido                          ✓
+Sección 1: Fundamentos                              ▾
+  ▶ Comunicación para desescalar un conflicto       ✓
+  📕 Guía mapa de conflicto                         ✓
+Sección 2: Herramientas para resolver conflictos    ▾
+  📦 Simulador de conversación difícil               ✓
+  📦 Conversaciones difíciles según Thomas-Kilmann   ✓
+  ☑ Evaluación                                      ✓
+  🎉 Fin del contenido                              ✓
 
 [ + Ver más contenidos ]
 [ Descargar certificado ]
@@ -626,7 +779,7 @@ IndiceExpEstudio (Completado)
 | Specs subtítulos | No | Sí (`Subtítulos: Español, Inglés, Portugués`) |
 | Spec certificado | Sí (`Con certificado`) | Sí |
 | Columna derecha | TituloSpecsCta + IndiceExpEstudio | Igual |
-| Índice | 2 secciones, 5 ítems (§ 3.3); sin encuesta | Igual |
+| Índice | 2 secciones, 6 ítems (§ 3.3); sin encuesta | Igual |
 | CTA sin iniciar | `Comenzar ahora` | `Comenzar ahora` |
 | CTA en progreso | **`Continuar`** | **`Continuar`** |
 | CTA finalizado | **`Ver más contenidos`** + **`Descargar certificado`** | Igual |
@@ -640,9 +793,10 @@ Nombres del archivo Learner v4 — base para `components/` vanilla:
 
 | Componente Figma | Rol | Notas playground |
 |------------------|-----|------------------|
-| `IndiceExpEstudio` | Índice learner (§ 4.3) | `Por iniciar` \| `En progreso` \| **`Completado`** |
-| `PaginasExpEstudio` | Fila de página en índice | `Bloqueada` \| `Activa` \| `Completada` |
-| `TituloSpecsCtaExpEstudio` | Badge + título + specs + CTAs + progreso | `Por iniciar` \| `En progreso` \| **`Completado`** |
+| `SeccionExpEstudio` | Tarjeta sección (§ 4.3) | Base Creator; colapsable; info → modal (§ 4.3.1) |
+| `IndiceExpEstudio` | Índice learner (§ 4.3) | Stack de `SeccionExpEstudio` (gap-md); sin card envolvente ni `bg-3`. Estados `Por iniciar` \| `En progreso` \| **`Completado`** |
+| `PaginasExpEstudio` | Fila de página en índice | Base visual = `paginas-creator` (sin drag/menú) + Feedback; `Bloqueada` \| `Activa` \| `Completada` |
+| `TituloSpecsCtaExpEstudio` | Badge Tag oficial (§ 5.4.1a) + título + specs + CTAs oficiales + `ProgresoExpEstudio` | `Por iniciar` \| `En progreso` \| **`Completado`** |
 | `ProgresoExpEstudio` | Widget «Tu progreso:» + barra + % | `In Progress` (azul) \| **`Completed`** (verde 100 %) |
 | `DescripcionExpEstudio` | Card descripción | Soporta rich text / bold inline |
 | `FichaCompetenciasYHabilidades` | Competencia/habilidades o categoría | Variante `Contenido Ubits` \| `Empresa` |
@@ -651,8 +805,8 @@ Nombres del archivo Learner v4 — base para `components/` vanilla:
 | `Feedback` | Icono estado fila índice | Tipos: `Locked` \| `Check` \| `Progress` (24px) |
 | **`TituloProgresoYNav`** | Título curso + nav + progreso | Recursos § 6.4 \| Cierre § 7.3 (`Ver más contenidos`) |
 | **`CierreExpEstudio`** | Felicitación + certificado | Solo columna izquierda § 7 |
-| **`EvalExpEstudio`** (orquestador) | 3 fases consumo evaluación | `bienvenida` \| `evaluacion` \| `resultado` — § 6.8 |
-| **`EvalStickyBarExpEstudio`** | Barra sticky timer + intento | Solo fase 2 § 6.8.4b |
+| **`EvalExpEstudio`** (orquestador) | 3 fases consumo evaluación | `bienvenida` \| `evaluacion` \| `resultado` (+ 4 kinds) — § 6.8 |
+| **`EvalStickyBarExpEstudio`** | Sticky APP v3: tiempo + intentos | Solo fase 2 § 6.8.4b; Figma `2387:41633` |
 | **`learn-question`** | Preguntas fase 2 | **Solo** `mode: 'collab'` — § 6.8.4b |
 | **`DescargarArchivo`** | Tarjeta archivo descargable complementario (learner) | Solo lectura + CTA **`Descargar archivo`** |
 | **`DescripcionExpEstudio`** (bloque texto página) | Texto complementario o cuerpo de página | Card blanca bajo recursos complementarios |
@@ -681,6 +835,8 @@ Tokens Figma usan prefijo `--color-*` (alineado con playground React; en vanilla
 
 **Propósito:** zona donde el estudiante **consume** cada página del contenido. Tras pulsar **`Comenzar ahora`** (portada sin iniciar) o **`Continuar`** (portada en progreso), la pantalla cambia de **portada** a **Recursos**: columna izquierda = visor del recurso activo; columna derecha = navegación + progreso + índice.
 
+**Deep links QA por página:** `#video` / `#pdf` / `#scorm-1` / `#scorm-2` / `#evaluacion`… (§ 2.3.1).
+
 **Referencia Figma (ejemplo página 1 — video):** frame `Video` — node `40006360:4608` — [Figma Dev Mode](https://www.figma.com/design/ivTgxM9bL6vcvGU90P8oGg/Learner-v4--Deprecated--mejor-ver-Playground?node-id=40006360-4608&m=dev).
 
 **Layout shell:** igual que portada (§ 2) — layout estándar colaborador, sidebar + SubNav, área principal en **dos columnas** desktop (gap 24px). La columna izquierda **ya no** muestra metadata del catálogo (competencia, aliados, etc.); solo el recurso de la página activa.
@@ -691,7 +847,7 @@ Tokens Figma usan prefijo `--color-*` (alineado con playground React; en vanilla
 |---------|-------------|---------|--------------|
 | Página 1 — **Video** (+ complementarios descarga + texto) | `Video` | `40006360:4608` | [Figma](https://www.figma.com/design/ivTgxM9bL6vcvGU90P8oGg/Learner-v4--Deprecated--mejor-ver-Playground?node-id=40006360-4608&m=dev) |
 
-> Frames adicionales por tipo (PDF, embebido, evaluación) — pendiente Dave. El patrón de **columna derecha** (`TituloProgresoYNav` + índice) se mantiene en todos.
+> Frames adicionales por tipo (PDF, SCORM, embebido, evaluación) — pendiente Dave. El patrón de **columna derecha** (`TituloProgresoYNav` + índice) se mantiene en todos.
 
 ### 6.1 Layout general — Recursos
 
@@ -732,7 +888,7 @@ Tokens Figma usan prefijo `--color-*` (alineado con playground React; en vanilla
 | Embebido | `.cc-embed-resource` | `buildCrearContenidoEmbedResourceHtml` |
 | Texto | `[data-cc-text-resource]` | RTE solo lectura (sin toolbar edición) |
 | SCORM | `.cc-scorm-resource` | Mismo mount que Creator |
-| Evaluación | `[data-cc-eval-root]`, `.cc-eval-root` | Flujo eval Creator; **sin** complementarios |
+| Evaluación | Tres fases § 6.8; preguntas con `learn-question` **`collab`** | Specs/banco desde Creator; **sin** modos read/edit/`collab_feedback`; **sin** complementarios |
 | Complementario texto | `.ubits-complementary-resources--filled-stack[data-complementary-filled="texto"]` | `complementary-resources.js` — ocultar `__footer` |
 | Complementario descarga | `[data-complementary-filled="archivo-descargable"]` o patrón **`DescargarArchivo`** learner | Card consumo § 6.3 |
 
@@ -740,7 +896,7 @@ Tokens Figma usan prefijo `--color-*` (alineado con playground React; en vanilla
 
 **Datos:** el mock § 11.1 guarda por página el HTML montado o referencias (URL video, blob PDF, embed snippet) **copiados del patrón Creator**, no el flujo de subida.
 
-**Progreso:** al marcar páginas consumibles como completadas, `ProgresoExpEstudio` en columna derecha sube el **%** (ej. 1/4 → 25 %, 4/4 + cierre → 100 % verde).
+**Progreso:** al marcar páginas consumibles como completadas, `ProgresoExpEstudio` en columna derecha sube el **%** (ej. 1/5 → 20 %, 5/5 + cierre → 100 % verde).
 
 ### 6.2b Ejemplo Figma — página 1 video (§ 3.3)
 
@@ -793,8 +949,8 @@ Componente Figma: título del **curso** (no de la página) + fila de navegación
 | Título | Nombre del contenido, `display/d4/bold` 28px, `fg-1-high`, ellipsis |
 | Nav | Fila gap 16px, **dos botones 50 % / 50 %** |
 | Botón **`Regresar`** | `ubits-button--secondary`, copy exacto **`Regresar`** |
-| Botón primario nav | **`Continuar`** mientras hay páginas consumibles pendientes; **`Ver más contenidos`** en vista **cierre § 7** (misma acción que § 5.6b) |
-| `ProgresoExpEstudio` | Debajo de Nav — label **`Tu progreso:`** + barra 8px + **`NN %`** (avanza al completar páginas) |
+| Botón primario nav | **`Continuar`** (sin ícono) en No progress / En progreso; **`Ver más contenidos`** (sin ícono) en Completado / cierre § 7 |
+| `ProgresoExpEstudio` | Debajo de Nav — fila Figma con flag + label + barra + **`NN %`** |
 
 **Estados `ProgresoExpEstudio` en Recursos:**
 
@@ -817,15 +973,15 @@ Componente Figma: título del **curso** (no de la página) + fila de navegación
 
 #### 6.4.3 `IndiceExpEstudio` en vista Recursos
 
-Mismo componente que portada, estado **`En progreso`**, con la página actual en fila **`Activa`**:
+Mismo componente que portada (§ 4.3 / § 5.4.3): secciones **colapsables** + chevron. Estado de progreso **`En progreso`**, página actual en fila **`Activa`**:
 
-| Estado fila | Visual (Figma) |
-|-------------|----------------|
-| **`Activa`** | Fondo `bg-2`, barra azul **5px** izquierda, título e ícono tipo en **brand**, `Feedback` **Progress** (spinner) |
+| Estado fila | Visual |
+|-------------|--------|
+| **`Activa`** | Tint brand / barra lateral, título e ícono en **brand**, `Feedback` **Progress** (spinner) |
 | **`Completada`** | Check verde, título bold |
 | **`Bloqueada`** | Texto disabled, `Feedback` **Locked** |
 
-**Índice demo § 3.3:** 2 secciones, 5 ítems; **sin** sección `Cierre` ni encuesta (Figma producción las muestra; playground las omite).
+**Índice demo § 3.3:** 2 secciones, 6 ítems; **sin** sección `Cierre` ni encuesta. Expand/collapse disponible también en Recursos.
 
 #### 6.4.4 Orden vertical columna derecha (Recursos)
 
@@ -839,38 +995,62 @@ IndiceExpEstudio (En progreso)
 
 ### 6.5 Tipos de recurso principal — curso demo (§ 3.3)
 
-**No hay frames Figma adicionales:** PDF, embebido, evaluación y texto usan **la misma estructura de página** que el video (§ 6.1): columna izquierda = render Creator § 6.2; columna derecha = `TituloProgresoYNav` + índice.
+**No hay frames Figma adicionales por tipo:** PDF, SCORM, embebido, evaluación y texto usan **la misma estructura de página** que el video (§ 6.1): columna izquierda = render Creator § 6.2; columna derecha = `TituloProgresoYNav` + índice.
 
 | Tipo | En curso demo v1 | Columna izquierda |
 |------|------------------|-------------------|
 | Video | ✅ p.1 | `.cc-video-resource` + complementarios demo |
 | PDF | ✅ p.2 | Visor PDF.js (`mountCrearContenidoPdfViewer`) |
-| Embebido | ✅ p.3 | `.cc-embed-resource` |
-| Evaluación | ✅ p.4 | **Tres fases** en la misma fila del índice (§ 6.8); sin complementarios |
-| Fin (índice) | ✅ p.5 | **No** es recurso Creator — pantalla cierre § 7 |
-| Encuesta / Texto / SCORM | ❌ | No en índice demo |
+| SCORM | ✅ p.3 y p.4 | `.cc-scorm-resource` (mismo mount Creator / `simulador-scorm.html`) — títulos § 3.3 |
+| Evaluación | ✅ p.5 | **Tres fases** en la misma fila del índice (§ 6.8); sin complementarios |
+| Fin (índice) | ✅ p.6 | **No** es recurso Creator — pantalla cierre § 7 |
+| Embebido / Texto / Encuesta | ❌ | No en índice demo; Embebido/Texto sí tienen render § 6.2 si un contenido los trae |
 
-En Creator el autor puede montar más tipos; el playground demo implementa solo la tabla.
+**Por qué SCORM en learner:** el seed de creación/edición en LMS Creator ya monta **dos páginas SCORM** (`Simulador de conversación difícil`, `Conversaciones difíciles según Thomas-Kilmann`). El estudiante debe ver el **mismo tipo de recurso** en consumo (solo lectura, sin «Editar presentación» / Eliminar).
 
 ### 6.6 Reglas de «página completada» (v1 playground)
 
+**Regla general:** la mayoría de tipos de recurso se marcan **Completada** solo con pulsar **`Continuar`** en la columna derecha — **sin** exigir consumir el recurso (ver, leer, terminar diapositivas, etc.).
+
+**Únicas excepciones con obligatoriedad de consumo / completar flujo interno:**
+
+| Tipo | ¿Obligatoriedad? | Criterio |
+|------|------------------|----------|
+| **Evaluación** | **Sí** | Debe recorrer las 3 fases y **aprobar** (§ 6.8) antes de que **`Continuar`** avance al siguiente ítem del índice |
+| **Encuesta** | **Sí** (futuro) | Habrá flujo propio de respuesta; **no** se pinta en el índice demo v1 — Dave aún no la diseñó (§ 3.3) |
+
 | Tipo | Criterio mock v1 | Notas |
 |------|------------------|-------|
-| Video | Al pulsar **`Continuar`** (o % visionado — _pendiente producto_) | Figma muestra 0 % en primera visita |
-| PDF | **`Continuar`** tras abrir visor | |
-| Embebido | **`Continuar`** tras interacción mínima mock | |
-| **Evaluación** | Fase **Resultado** con **aprobado** + **`Continuar`** → recién ahí la fila cuenta como **Completada** y se puede avanzar en el índice (§ 6.8) | No basta un solo `Continuar` como en video/PDF |
+| Video | Solo **`Continuar`** | Sin umbral de % reproducido — § 6.6b |
+| PDF | Solo **`Continuar`** | No exige leer / llegar al final del documento |
+| SCORM | Solo **`Continuar`** | No exige completar diapositivas / quizzes internos del paquete |
+| Embebido | Solo **`Continuar`** | No en índice demo § 3.3 |
+| Texto | Solo **`Continuar`** | No en índice demo § 3.3 |
+| **Evaluación** | Fases + **aprobado** + **`Continuar`** | § 6.8 — no basta un solo `Continuar` |
+| **Encuesta** | _(pendiente diseño)_ | Fuera de v1 — misma familia de «debe completar» que Evaluación |
 | Complementarios | **No** afectan % ni bloqueo | Opcionales para el alumno |
 
-**PREGUNTA 6.6b — ¿Umbral de video (% reproducido) para marcar completada?**
+#### 6.6b Umbral de video (% reproducido) — **cerrado**
 
-> _Pendiente producto / LXP._
+**Respuesta:** **No** hay umbral de reproducción.
+
+El colaborador puede pulsar **`Continuar`** en la columna derecha (`TituloProgresoYNav`) y **avanzar** sin haber reproducido el video (ni un %). La página queda **Completada** con ese clic. Es el mismo criterio «solo Continuar» que PDF, SCORM, embebido y texto — la **única** excepción activa en v1 es **Evaluación**.
 
 ### 6.8 Página tipo **Evaluación** — tres fases (misma fila del índice)
 
 **Regla clave:** una página de **Evaluación** en el índice **no** es una sola pantalla estática. El alumno vive **tres fases** en la **misma fila activa** del índice. **`Continuar`** en la columna derecha **no** avanza al siguiente ítem del índice hasta completar el ciclo con **resultado positivo**.
 
-**Origen de datos (specs / preguntas):** configuración y banco montados en Creator (`evaluaciones-recurso.js`, `.cc-eval-root`, modal **Configuración** en `contexto-creacion-contenido.md` § Evaluación final). En consumo: **solo lectura** — sin barra Eliminar / Generar con IA.
+**Origen de datos (specs / preguntas):** configuración y banco montados en Creator (`evaluaciones-recurso.js`, `.cc-eval-root`, modal **Configuración** en `contexto-creacion-contenido.md` § Evaluación final).
+
+**Vista de preguntas en consumo (fase 2):** el componente oficial **`learn-question`** en modo **Colaborador** (`mode: 'collab'`). El alumno **responde** (selecciona / escribe) — **no** es vista de solo lectura (`read` / `read_error`).
+
+| Permitido | Prohibido |
+|-----------|-----------|
+| **`collab`** (label doc: **Colaborador**) | **`collab_feedback`** (Colaborador con feedback) |
+| | `read`, `read_error`, `edit`, `edit_error` |
+| | Chrome de Creator: Eliminar, Generar con IA, edición del banco |
+
+Detalle de UX y criterio «todas contestadas»: § 6.8.4b.
 
 #### 6.8.1 Las tres fases
 
@@ -878,32 +1058,68 @@ En Creator el autor puede montar más tipos; el playground demo implementa solo 
 |---|------|---------------------|---------------------------|---------------------------|
 | **1** | **Bienvenida** | `bienvenida` | Pantalla de bienvenida con **specs** (§ 6.8.4a) | **No** va a la siguiente página del índice → pasa a fase **2 Evaluación** |
 | **2** | **Evaluación** | `evaluacion` | Barra sticky timer + intento (§ 6.8.4b) + **10 preguntas** `learn-question` | **No** va a la siguiente página del índice → fase **3 Resultado** |
-| **3** | **Resultado** | `resultado` | Pantalla de **resultado** del intento (aprobado / no aprobado — **contenido detallado pendiente Dave § 6.8.4**) | **Si resultado positivo (aprobado):** **sí** avanza al **siguiente ítem del índice** (en demo § 3.3 → `Fin del contenido` § 7). **Si no aprobado:** _pendiente Dave_ (reintentar, quedarse en resultado, etc.) |
+| **3** | **Resultado** | `resultado` | 4 variantes § 6.8.4c: aprobado / reprobado / tiempo / límite | **Aprobado + Continuar** → siguiente ítem (`Fin del contenido`). **Reprobado / tiempo** → **Reintentar**. **Límite** → **Ir al inicio**. |
 
 **Primera llegada:** al entrar por primera vez a una fila **Evaluación** (desde índice, **`Continuar`** global o **`Comenzar ahora`** en secuencia), la fase inicial es siempre **1 Bienvenida** — **no** se muestran las preguntas de golpe.
+
+#### 6.8.0 Fuente visual (APP v3) y deep links por estado
+
+**Qué tomar de Figma APP v3.0.0** (`zHCCbQamZeiZJPlT7GEKDs`):
+
+| Sí (fuente de verdad) | No |
+|------------------------|-----|
+| **Textos / copy** exactos | Colores hex del frame (`#e7effd`, `#0c5bef`, etc.) |
+| **Imágenes / ilustraciones / íconos** de estado (check, X, reloj, warning, info) | Gradientes o fondos “aproximados” del export |
+| Jerarquía de contenido (título → cuerpo → CTA) | Layout mobile a ciegas sin adaptar a § 6.1 / § 6.4 |
+
+**Colores e implementación:** usar **solo tokens UBITS** (`var(--ubits-*)` en vanilla; mapa semántico: brand, feedback info/success/error/warning, `bg-*`, `fg-*`, `border-*`). El playground / design system tiene la **versión final** de la paleta — Figma APP es guía de producto para **imagen + texto**, no para hardcodear estilos.
+
+Los frames son **mobile** (sin columna derecha); en playground web el contenido de cada fase vive en la **columna izquierda** y la nav sigue en **`TituloProgresoYNav`** (§ 6.4). Ante discrepancia de **copy/imagen** con capturas LXP antiguas, **prevalece APP v3**.
+
+| Estado | Frame Figma | Node ID | URL Dev Mode |
+|--------|-------------|---------|--------------|
+| Bienvenida | Course evaluation | `2369:36043` | [Figma](https://www.figma.com/design/zHCCbQamZeiZJPlT7GEKDs/APP-v3.0.0?node-id=2369-36043&m=dev) |
+| Intento (preguntas) | Evaluation-type answers | `2389:42852` | [Figma](https://www.figma.com/design/zHCCbQamZeiZJPlT7GEKDs/APP-v3.0.0?node-id=2389-42852&m=dev) |
+| Sticky tiempo + intentos | Description (widget) | `2387:41633` | [Figma](https://www.figma.com/design/zHCCbQamZeiZJPlT7GEKDs/APP-v3.0.0?node-id=2387-41633&m=dev) |
+| Resultado aprobatorio | Evaluation-success | `2389:46663` | [Figma](https://www.figma.com/design/zHCCbQamZeiZJPlT7GEKDs/APP-v3.0.0?node-id=2389-46663&m=dev) |
+| Resultado reprobatorio | Evaluation-Failed | `2389:47137` | [Figma](https://www.figma.com/design/zHCCbQamZeiZJPlT7GEKDs/APP-v3.0.0?node-id=2389-47137&m=dev) |
+| Resultado tiempo agotado | Evaluation-Time out | `2389:47261` | [Figma](https://www.figma.com/design/zHCCbQamZeiZJPlT7GEKDs/APP-v3.0.0?node-id=2389-47261&m=dev) |
+| Resultado límite de intentos | Evaluation-Attempt limit | `2389:47401` | [Figma](https://www.figma.com/design/zHCCbQamZeiZJPlT7GEKDs/APP-v3.0.0?node-id=2389-47401&m=dev) |
+
+##### Deep links de evaluación
+
+Catálogo maestro de **toda** la experiencia (portada, cada página, cierre + evaluación): **§ 2.3.1**.
+
+Hashes de esta fase: `#eval-bienvenida`, `#eval-intento`, `#eval-resultado-aprobado`, `#eval-resultado-reprobado`, `#eval-resultado-tiempo`, `#eval-resultado-limite`. Al abrir uno con sesión vacía, precargar páginas `p-1`…`p-4` como Completadas + fila Evaluación activa (mismo espíritu que Creator con `#recursos`).
 
 #### 6.8.2 Diagrama de flujo (fase × nav)
 
 ```
-Índice: fila «Evaluación» ACTIVA (misma fila en las 3 fases)
+Índice: fila «Evaluación» ACTIVA (misma fila en todas las fases)
         │
         ▼
 ┌───────────────┐
-│ 1 BIENVENIDA  │  specs evaluación
+│ 1 BIENVENIDA  │  Recordatorio (tiempo / intentos / Importante)
 └───────┬───────┘
-        │ Continuar (nav derecha)
+        │ Continuar (nav derecha) → inicia intento
         ▼
 ┌───────────────┐
-│ 2 EVALUACIÓN  │  preguntas / intento
+│ 2 EVALUACIÓN  │  sticky + preguntas collab
 └───────┬───────┘
-        │ Continuar (nav derecha)
-        ▼
-┌───────────────┐
-│ 3 RESULTADO   │  aprobado / no aprobado
-└───────┬───────┘
-        │ Continuar
-        ├── resultado POSITIVO ──► siguiente ítem índice (Fin del contenido)
-        └── resultado NEGATIVO ──► _pendiente Dave_
+        │
+        ├── Continuar (todas contestadas) ──► 3 RESULTADO (score)
+        ├── Timer llega a 0 ──► resultado-tiempo
+        └── Salida / recarga / cierre a mitad ──► consume intento (§ 6.8.3b)
+                │
+                ▼
+┌───────────────────────────────┐
+│ 3 RESULTADO (variantes)       │
+├───────────────────────────────┤
+│ aprobado  → Continuar → Fin   │
+│ reprobado → Reintentar        │
+│ tiempo    → Reintentar        │
+│ límite    → Ir al inicio      │
+└───────────────────────────────┘
 ```
 
 #### 6.8.3 Columna derecha durante evaluación
@@ -912,91 +1128,101 @@ En Creator el autor puede montar más tipos; el playground demo implementa solo 
 |---------|----------------|
 | Shell | Igual § 6.4 — `TituloProgresoYNav` + `IndiceExpEstudio` |
 | Fila índice | **`Evaluación`** permanece **`Activa`** en fases 1–3 |
-| Botones nav | **`Regresar`** + **`Continuar`** visibles en las tres fases (_comportamiento de Regresar por fase — pendiente Dave_) |
-| **`Continuar`** fase **`evaluacion`** | **`disabled`** hasta que **todas** las preguntas del intento tengan respuesta (§ 6.8.4b). Habilitado → fase **3 Resultado** |
-| **`Continuar`** otras fases | Bienvenida → fase 2; Resultado aprobado → siguiente ítem índice (§ 6.8.1) |
-| **`Continuar`** (regla general) | Significado **depende de la fase** — no equivale a «siguiente página del curso» hasta fase 3 aprobada |
+| Botones nav | **`Regresar`** + CTA primario (`Continuar` / **`Reintentar`** / **`Ir al inicio`** según fase y variante de resultado) |
+| **`Continuar`** fase **`evaluacion`** | **`disabled`** hasta que **todas** las preguntas del intento tengan respuesta (§ 6.8.4b). Habilitado → envía intento → fase **3 Resultado** (aprobado o reprobado según score) |
+| **`Continuar`** fase **`bienvenida`** | Inicia intento → fase 2 |
+| CTA en resultado | Ver § 6.8.4c — copy exacto por variante |
 | Progreso % | La evaluación cuenta como página consumible completada **solo** tras **aprobado** en fase 3 (alinea § 8.3) |
+
+##### 6.8.3b Salida a mitad de un intento (sin enviar respuestas)
+
+**Cuándo cuenta como intento consumido** (copy Bienvenida → «Importante»):
+
+- Cualquier **salida** del contenido / flujo mientras la fase es **`evaluacion`** (sidebar, otra pestaña del producto, cerrar ventana).
+- **Recarga** (`F5`) o cierre de pestaña durante el intento.
+- **Abandonar** el intento **sin** haber pulsado **`Continuar`** habilitado en la columna derecha (es decir, sin enviar el intento completo).
+
+**Qué no es envío válido:** pulsar **`Continuar`** con el botón **disabled** (faltan respuestas) — no avanza ni cierra el intento.
+
+**Efecto:** se descuenta 1 del cupo de intentos; al volver, mostrar Bienvenida o Resultado límite si ya no quedan intentos (mismas reglas que timeout / reprobado). Deep link útil para QA de sticky post-consumo: `#eval-resultado-limite`.
 
 #### 6.8.4 Contenido por fase
 
-##### 6.8.4a Fase 1 — **Bienvenida** (copy cerrado)
+##### 6.8.4a Fase 1 — **Bienvenida** (copy cerrado — APP v3)
 
-**Referencia visual:** captura LXP jul 2026 → `exp-estudio/assets/eval-bienvenida-ref.png`
+**Referencia Figma:** § 6.8.0 — node `2369:36043`. Deep link: `#eval-bienvenida`.
 
-**Ubicación:** columna izquierda (703px), contenido **centrado** en card / bloque sobre fondo claro.
+**Ubicación playground:** columna izquierda (703px), contenido **centrado**. (En app el CTA **Continuar** va al pie; en web el CTA primario de avance es el de **`TituloProgresoYNav`**.)
 
-**Layout tipográfico:**
+**Estructura (APP v3):**
 
-| Elemento | Estilo (referencia captura) |
-|----------|----------------------------|
-| Título principal | Grande, bold, `fg-1-high` / navy, centrado |
-| Cuerpo | Párrafos centrados, `body/md/regular` |
-| Números dinámicos | **Bold** inline (ej. cantidad de intentos) |
-| Etiquetas spec | **Bold** inline (`Tiempo límite:`, `Importante:`) |
-| Ícono tiempo | Emoji reloj de arena **⌛** antes de «Tiempo límite» |
+| Orden | Elemento | Copy / detalle |
+|-------|----------|----------------|
+| 1 | Ícono | Info (círculos azules + «i») — asset Figma / equivalente playground |
+| 2 | Título | **`Vas a iniciar una evaluación`** |
+| 3 | Subtítulo | **`Antes de hacerlo, ten en cuenta lo siguiente:`** |
+| 4 | Card **Recordatorio** | Fondo token feedback info subtle (`var(--ubits-feedback-bg-info-subtle)` o el token oficial equivalente del alert/toast info); título **`Recordatorio`**; texto `var(--ubits-feedback-fg-info-subtle)` (o tokens fg del DS) |
+| 5 | Lista (3 bullets) | Ver plantilla abajo |
 
-**Copy exacto (plantilla — valores `{…}` vienen de config Creator / mock):**
+**Copy exacto — lista Recordatorio** (valores `{…}` de config Creator / mock):
 
 ```
-Estás a punto de iniciar la evaluación
-
-Antes de comenzar, ten en cuenta lo siguiente:
-
-Tienes {N} intentos disponibles.
-
-⌛ Tiempo límite: {M} minutos para completar la evaluación.
-
-Importante: Una vez inicies la evaluación, cualquier salida, recarga o cierre de esta ventana contará como un intento.
+Recordatorio
+• Tiempo límite: ({M}) minutos para completar la evaluación.
+• Intentos: Tienes ({N}) intentos disponibles.
+• Importante: Una vez inicies la evaluación, cualquier salida, recarga o cierre de esta ventana, contará como un intento.
 ```
 
-**Ejemplo captura bienvenida:** `{N} = 5`. **Demo § 11.1 (alineado con widget «Intento 1 de 3»):** `{N} = 3`, `{M} = 30`.
+> En Figma los placeholders aparecen como `(x)`. En playground sustituir por número real, sin paréntesis si queda mejor tipográficamente — **mantener el copy de etiqueta** (`Tiempo límite:`, `Intentos:`, `Importante:`).
 
-| Línea | Tipo | Fuente mock / Creator |
-|-------|------|------------------------|
-| Título + intro | Fijo | Copy producto — no parametrizar |
-| `Tienes {N} intentos disponibles.` | Dinámico | Config evaluación — **límite de intentos** (`maxAttempts` o equivalente en `evaluaciones-recurso.js`). Si intentos ilimitados en config → _pendiente copy alternativo_ |
-| `⌛ Tiempo límite: {M} minutos…` | Dinámico | Config — **tiempo máximo** activado. Si **sin** límite de tiempo → **ocultar** esta línea |
-| Párrafo **Importante** | Fijo | Copy producto — advertencia de intento consumido |
+| Línea | Tipo | Fuente |
+|-------|------|--------|
+| Título + subtítulo | Fijo | APP v3 — no parametrizar |
+| `Tiempo límite: ({M}) minutos…` | Dinámico | `timeLimitMinutes`. Si **sin** límite de tiempo → **ocultar** este bullet |
+| `Intentos: Tienes ({N}) intentos disponibles.` | Dinámico | `maxAttempts`. Intentos ilimitados → _pendiente copy alternativo_ |
+| `Importante:…` | Fijo | APP v3 — cuenta salida / recarga / cierre (§ 6.8.3b) |
 
-**Qué NO aparece en esta pantalla (captura actual):** nota mínima para aprobar, número de preguntas, aleatoriedad — no documentados en bienvenida hasta que producto los incluya en otra ronda.
+**Qué NO aparece en Bienvenida APP v3:** nota mínima para aprobar, número de preguntas, aleatoriedad.
 
-**Nav columna derecha:** **`Regresar`** + **`Continuar`** (§ 6.8.3). **`Continuar`** → fase 2 **Evaluación** (inicia el intento; desde aquí aplica la regla del párrafo Importante).
+**Nav:** **`Continuar`** → fase 2 (inicia el intento; desde aquí aplica «Importante»).
 
 ##### 6.8.4b Fase 2 — **Evaluación** (copy y banco demo cerrados)
 
 Al pulsar **`Continuar`** en Bienvenida, la columna izquierda pasa a la **UI de preguntas**. Arranca el **intento** (cuenta para la regla «Importante» § 6.8.4a) y el **cronómetro** si hay límite de tiempo.
 
-**Referencia visual widget:** `exp-estudio/assets/eval-widget-timer-ref.png`
+**Referencia Figma frame completo:** § 6.8.0 — `2389:42852`. Deep link: `#eval-intento`.  
+**Referencia sticky (widget actualizado):** § 6.8.0 — `2387:41633` (**reemplaza** la captura LXP antigua `eval-widget-timer-ref.png`).
 
-#### Barra sticky `EvalStickyBarExpEstudio`
+#### Barra sticky `EvalStickyBarExpEstudio` (APP v3)
 
 | Aspecto | Detalle |
 |---------|---------|
-| **Posición** | **Sticky** — pegada **justo debajo del SubNav**, ancho del área de contenido (entre sidebar y borde derecho). Permanece visible al hacer scroll de preguntas |
-| **Layout** | Fila horizontal: **izquierda** contador tiempo · **derecha** número de intento |
-| **Cuándo** | Solo en fase **`evaluacion`** (oculta en Bienvenida y Resultado) |
+| **Posición** | **Sticky** — bajo el SubNav (o bajo el título de página en el frame app); visible al scrollear preguntas |
+| **Contenedor** | Fondo con token de superficie info / subtle del DS (p. ej. familia feedback info bg); `border-radius` con `--border-radius-md`; padding con tokens `--padding-*` / `--space-*` |
+| **Layout** | Una fila: **tiempo** · separador `|` · **intentos** |
+| **Cuándo** | Solo fase **`evaluacion`** (oculta en Bienvenida y Resultado) |
 
-**Lado izquierdo — tiempo restante**
+**Tiempo restante**
 
-| Parte | Copy / estilo |
-|-------|---------------|
-| Ícono | Reloj despertador outline (`far fa-alarm-clock` o equivalente captura) |
-| Label | **`Tiempo restante:`** — bold, `fg-1-medium` |
-| Valor | **`{MM}:{SS} minutos`** — bold; ejemplo captura: **`29:13 minutos`** |
-| Color valor | **Verde** (mint/teal feedback success) mientras queden **> 1 minuto** |
-| Color valor ≤ 1 min | Cambia a **rojo** (`feedback-accent-error`) cuando el tiempo restante es **≤ 1:00** |
-| Origen | Countdown desde `timeLimitMinutes` de config al **iniciar** fase 2 |
+| Parte | Copy APP v3 / estilo tokens |
+|-------|-----------------------------|
+| Ícono | Reloj dashed outline (`far fa-clock` / asset Figma clock-dash) — color `var(--ubits-fg-1-high)` vía padre |
+| Label | **`Tiempo restante:`** — `var(--ubits-fg-1-high)`, tipografía medium |
+| Valor | **`{M}:{SS} min`** — `var(--ubits-accent-brand)`; ejemplo copy Figma: **`9:58 min`** |
+| Color ≤ 1 min | `var(--ubits-feedback-accent-error)` (u otro token error oficial) |
+| Origen | Countdown desde `timeLimitMinutes` al iniciar fase 2 |
 
-**Lado derecho — intento**
+**Intentos**
 
-| Copy plantilla | **`Intento {A} de {T}`** |
-|----------------|---------------------------|
-| Ejemplo captura | **`Intento 1 de 3`** |
-| `{A}` | Intento actual (`evalIntentoActual`) |
-| `{T}` | Máximo intentos (`maxAttempts` de config) |
+| Copy plantilla | **`Intentos: {A} de {T}`** — tipografía/color con tokens fg (`var(--ubits-fg-1-high)`), sin hex |
+|----------------|-----------------------------------------------------------------------------------------------|
+| Ejemplo Figma (copy) | **`Intentos: 2 de 2`** |
+| `{A}` | Intento actual |
+| `{T}` | `maxAttempts` |
 
-**Debajo de la barra sticky:** listado de preguntas (scroll en columna izquierda).
+> **Diff vs doc anterior:** ya no es «Intento 1 de 3» ni valor verde «29:13 minutos». Usar copy APP v3 de arriba.
+
+**Debajo de la barra sticky:** listado de preguntas `learn-question` **`collab`** (scroll en columna izquierda). El frame APP muestra tipos varios (checkbox, radio, estrellas, texto); **el playground demo** sigue el banco § 6.8.4b.1 (10 preguntas del curso conflictos) — no hay que portar el copy comercial del frame APP.
 
 #### Preguntas — componente `learn-question` (solo modo Colaborador)
 
@@ -1224,11 +1450,67 @@ global.createInput({
   - Colaborativo → Alto interés en resultado y en relación; busca integración de intereses.
 - **UI collab:** § 6.8.4b.2 — bloque «Evitativo» + select; bloque «Colaborativo» + select; opciones = textos columna B.
 
-##### 6.8.4c Fase 3 — **Resultado** (pendiente)
+##### 6.8.4c Fase 3 — **Resultado** (4 variantes — APP v3)
 
-> _Pendiente Dave — copy aprobado / reprobado, nota, reintentos, `Continuar` si no aprueba._
+**Layout común (columna izquierda, centrado):** ícono de estado (~80px) + título + cuerpos + CTA en nav derecha (en app el CTA va al pie). Deep links § 6.8.0.
 
-**Referencia autor (resto de config Creator):** `contexto-creacion-contenido.md` — modal Configuración (% mínimo aprobar, orden aleatorio, nº preguntas por intento, etc.) — aplica en fases 2–3, no todos los campos se muestran en bienvenida § 6.8.4a.
+**Placeholders dinámicos** (demo / Creator): `{PUNTATE_MIN}` (ej. `10` o `%`), `{CORRECTAS}`, `{TOTAL}`, `{PCT}` / umbral en texto de límite.
+
+###### A) Aprobatorio — `#eval-resultado-aprobado`
+
+**Figma:** `2389:46663`
+
+| Elemento | Copy exacto |
+|----------|-------------|
+| Ícono | Tick / check verde (glass APP) |
+| Título | **`¡Aprobaste!`** |
+| Línea 1 | **`El puntaje requerido para aprobar es {PUNTAJE_MIN}`** (ej. Figma: `10`) |
+| Línea 2 (bold) | **`Respuestas correctas {CORRECTAS} de {TOTAL}`** (ej.: `11 de 12`) |
+| Línea 3 | **`Sigue aprendiendo,`** / **`¡puedes continuar a la siguiente página!`** |
+| CTA primario | **`Continuar`** → siguiente ítem del índice (`Fin del contenido` § 7) |
+
+###### B) Reprobatorio (quedan intentos) — `#eval-resultado-reprobado`
+
+**Figma:** `2389:47137`
+
+| Elemento | Copy exacto |
+|----------|-------------|
+| Ícono | Close / X magenta-rosa |
+| Título | **`¡No aprobaste!`** |
+| Línea 1 | **`El puntaje requerido para aprobar es {PUNTAJE_MIN}`** |
+| Línea 2 (bold) | **`Respuestas correctas {CORRECTAS} de {TOTAL}`** (ej.: `7 de 12`) |
+| Línea 3 | **`Inténtalo de nuevo para poder continuar`** |
+| CTA primario | **`Reintentar`** → vuelve a **Bienvenida** (o directo a fase 2 si producto unifica; playground: **Bienvenida**) y consume el cupo al iniciar de nuevo |
+
+> Mientras queden intentos, **no** avanzar índice ni marcar Evaluación como Completada.
+
+###### C) Tiempo agotado — `#eval-resultado-tiempo`
+
+**Figma:** `2389:47261`
+
+| Elemento | Copy exacto |
+|----------|-------------|
+| Ícono | Reloj azul (glass Clock) |
+| Título | **`¡Tiempo agotado!`** |
+| Cuerpo | **`Se ha agotado el tiempo para responder la evaluación correctamente. Inténtalo de nuevo para poder continuar`** |
+| CTA primario | **`Reintentar`** → misma regla que reprobatorio (consume intento al reentrar) |
+
+###### D) Límite de intentos — `#eval-resultado-limite`
+
+**Figma:** `2389:47401`
+
+| Elemento | Copy exacto |
+|----------|-------------|
+| Ícono | Warning / danger naranja (¡) |
+| Título | **`¡Alcanzaste el límite de intentos permitidos!`** |
+| Línea 1 | **`Para aprobar necesitas {PCT}%, es decir, al menos {MIN_ACIERTOS} de las {TOTAL} preguntas`** (ej. Figma: `70%` / `3.5` / `5` — usar valores del mock demo; si el umbral es “nota 10”, alinear wording con Creator) |
+| Línea 2 (bold) | **`Respuestas correctas {CORRECTAS} de {TOTAL}`** |
+| Cuerpo | **`Has agotado todos tus intentos y no alcanzaste la puntuación mínima para aprobar. Comunícate con el administrador de capacitación de tu empresa para solicitar un nuevo intento.`** |
+| CTA primario | **`Ir al inicio`** → `../home-learn.html` (o portada del curso si producto lo define; playground: **home-learn**) |
+
+**Cuándo mostrar D vs B:** si tras un intento (score bajo **o** timeout **o** salida mid-intento) `evalIntentoActual > maxAttempts` → variante **límite**; si aún quedan intentos → **reprobado** o **tiempo**.
+
+**Referencia autor (config):** `contexto-creacion-contenido.md` — modal Configuración (% mínimo, orden aleatorio, nº preguntas, etc.).
 
 #### 6.8.5 Estado en sesión (implementación)
 
@@ -1237,16 +1519,22 @@ Por cada página `tipo: 'evaluacion'` en el mock § 11.1:
 ```js
 {
   evalFase: 'bienvenida' | 'evaluacion' | 'resultado',
+  evalResultadoKind: null | 'aprobado' | 'reprobado' | 'tiempo' | 'limite',
   evalIntentoActual: 1,
-  evalUltimoResultado: null | { aprobado: boolean, puntaje: number /* … */ }
+  evalUltimoResultado: null | {
+    aprobado: boolean,
+    correctas: number,
+    total: number,
+    puntajeMin: number
+  }
 }
 ```
 
-Al cambiar de fila en el índice y volver, restaurar fase según reglas de persistencia § 8.1 (_pendiente_).
+Al abrir un hash `#eval-*` (§ 6.8.0), setear `evalFase` / `evalResultadoKind` y precargar score mock. Persistencia tras refresh real: § 8.1 (_pendiente_).
 
 #### 6.8.6 Relación con cierre § 7
 
-Solo tras **fase 3 + resultado positivo + `Continuar`**, el flujo avanza a **`Fin del contenido`** (pantalla felicitación + confeti § 7). No antes.
+Solo tras **resultado `aprobado` + `Continuar`**, el flujo avanza a **`Fin del contenido`** (§ 7). Reprobado / tiempo / límite **no** abren el cierre.
 
 ---
 
@@ -1260,76 +1548,138 @@ Solo tras **fase 3 + resultado positivo + `Continuar`**, el flujo avanza a **`Fi
 | 6.4 | Navegación principal | **`Regresar`** + **`Continuar`** en `TituloProgresoYNav` |
 | 6.5 | Regresar en página 1 | Vuelve a **portada** del curso |
 | 6.6 | Secuencia | Bloqueada — candado en páginas futuras |
+| 6.6b | Umbral % video | **No** — basta **`Continuar`** (§ 6.6b) |
+| 6.6c | ¿Qué tipos exigen consumo? | Solo **Evaluación** (y **Encuesta** en el futuro); resto = solo Continuar |
 | 6.7 | Progreso en Recursos | Mismo `ProgresoExpEstudio` bajo botones nav |
 | 6.8 | Header visor aparte | **No** — título curso va en columna derecha, no en chrome extra |
 | 6.9 | Modo oscuro | Sigue `[data-theme="dark"]` del producto |
 | 6.10 | Evaluación | Tres fases § 6.8; `learn-question` **solo `collab`**; **`Continuar` disabled** hasta responder todas |
+| 6.12 | Resultado eval | 4 variantes APP v3 + hashes § 2.3.1 / § 6.8.4c |
+| 6.13 | Salida mid-intento | Cuenta como intento (§ 6.8.3b) |
 | 6.11 | Render recursos | Reutilizar mounts Creator § 6.2; sin footers edición |
 
 ---
 
 ## 7. Bloque 3 — Cierre del contenido (`Fin del contenido`)
 
-**Propósito:** felicitar al colaborador por **terminar** el contenido y ofrecer certificado + siguiente paso en el catálogo.
+**Propósito:** felicitar al colaborador por **terminar** el contenido, ofrecer certificado y sugerir siguientes contenidos.
 
-**Referencia visual:** captura LXP jul 2026 (no hay Figma). Dave sustituirá la **ilustración** por asset definitivo.
+**Referencia Figma APP (copy + ilustración + atmósfera):** [Thank you / Fin de contenido](https://www.figma.com/design/zHCCbQamZeiZJPlT7GEKDs/APP-v3.0.0?node-id=2389-47632&m=dev) (`2389:47632`).
 
-| Recurso | Ruta |
-|---------|------|
-| Captura referencia | `exp-estudio/assets/cierre-exp-estudio-ref.png` (copiar desde captura producto; placeholder hasta arte final) |
+> **OJO — APP ≠ desktop:** el frame es **móvil** (una sola columna, CTA inferior sticky, sin índice). En **desktop playground** el cierre sigue el **layout de dos columnas** (§ 6.1 / § 7.1): izquierda = `CierreExpEstudio`; **derecha siempre visible** = `TituloProgresoYNav` + `IndiceExpEstudio` completado. De Figma se toma **contenido visual y copy** de la zona de felicitación + el patrón de “siguientes contenidos”; **no** se copia el shell móvil ni se oculta el índice.
 
-**Cuándo se muestra:** tras **evaluación aprobada** (§ 6.8 fase 3 + **`Continuar`**) → ítem **`Fin del contenido`** → pantalla de cierre (columna izquierda § 7.2; columna derecha nav + índice completado).
+**Regla de tokens (§ 6.8.0):** de Figma — ilustración, textos, estructura y gradiente de atmósfera. **Colores de UI** con tokens `--ubits-*` (no hex del frame).
 
-**Efecto al entrar:** **`launchUbitsConfetti()`** — mismo confeti del playground (`components/ubits-confetti.js`, usado en modo estudio IA, SCORM quiz, etc.). Pantalla completa, `pointer-events: none`, respeta `prefers-reduced-motion`.
+**Cuándo se muestra:** tras **evaluación aprobada** (§ 6.8 fase 3 + **`Continuar`**) → ítem **`Fin del contenido`** → pantalla de cierre.
 
-### 7.1 Layout — misma estructura dos columnas (§ 6.1)
+**Deep link QA:** `#cierre` o `#pagina-p-6` (§ 2.3.1) — monta cierre con consumibles Completadas + confeti, sin recorrer el flujo.
+
+**Efecto al entrar:** **`launchUbitsConfetti()`** — `components/ubits-confetti.js`. Pantalla completa, `pointer-events: none`, respeta `prefers-reduced-motion`.
+
+### 7.1 Layout desktop — dos columnas (obligatorio)
 
 ```
-┌──────────────────────────────┬──────────────────────────────────┐
-│  COLUMNA IZQUIERDA         │  COLUMNA DERECHA                 │
-│  CierreExpEstudio          │  TituloProgresoYNav (Completed)  │
-│  (felicitación)            │  + IndiceExpEstudio (Completado) │
-└──────────────────────────────┴──────────────────────────────────┘
+┌────────────────────────────────────┬──────────────────────────────────┐
+│  COLUMNA IZQUIERDA                 │  COLUMNA DERECHA (siempre)       │
+│  CierreExpEstudio                  │  TituloProgresoYNav (Completed)  │
+│  · wash verde superior             │  · Regresar / Ver más contenidos │
+│  · ícono éxito + copy APP          │  · ProgresoExpEstudio 100 %      │
+│  · card Certificado disponible     │  · IndiceExpEstudio Completado   │
+│  · carrusel «Sigue el camino»      │    (secciones colapsables § 4.3) │
+│    (createCarouselContents)        │                                  │
+└────────────────────────────────────┴──────────────────────────────────┘
 ```
+
+| Superficie | APP (referencia) | Desktop playground |
+|------------|------------------|--------------------|
+| Shell | Fullscreen móvil, CTA sticky **`Ir al inicio`** | Shell dos columnas Recursos/Cierre |
+| Índice | No visible | **Siempre** a la derecha, estado Completado |
+| Salida catálogo | Botón **`Ir al inicio`** → home Aprende | Nav derecha: **`Ver más contenidos`** → `../home-learn.html#buscar` (§ 5.6b.1). Mismo destino; **copy desktop** de nav permanece |
+| Carrusel sugeridos | Cards horizontales APP | **`createCarouselContents`** como en `home-learn` (§ 7.2.5) — no portar cards APP a mano |
 
 ### 7.2 Columna izquierda — `CierreExpEstudio`
 
-Card centrada sobre fondo `bg-2` / blanco según captura:
+Orden vertical (de APP, adaptado a columna scrollable desktop):
 
-| Orden | Elemento | Copy / comportamiento |
-|-------|----------|----------------------|
-| 1 | **Ilustración** | Imagen celebración (high-five). **Placeholder** en v1 — Dave entrega PNG/SVG definitivo |
-| 2 | Título | **`¡Felicidades!`** |
-| 3 | Línea 1 | **`Has culminado con éxito el contenido:`** |
-| 4 | Título contenido | **`“{Nombre del contenido}”`** — comillas tipográficas; `{Nombre}` = `titulo` del catálogo (`?id=`) |
-| 5 | Mensaje | **`Tu dedicación es una inspiración. ¡Sigue construyendo tu camino hacia el conocimiento!`** |
-| 6 | CTA | **`Descargar certificado`** — botón primario, ícono descarga; mock PDF (no obligatorio funcional en v1) |
+#### 7.2.1 Atmósfera — gradación verde superior
 
-**Copy exacto (bloque completo):**
+Wash suave **verde éxito** que nace arriba y se disuelve hacia abajo (APP: gradiente diagonal / radial verde traslúcido sobre fondo claro).
+
+| Aspecto | Implementación playground |
+|---------|---------------------------|
+| Base | Fondo página/columna con token superficie (`bg-1` / página) |
+| Wash | Gradiente superior con **verde success / accent-green del DS** a baja opacidad (p. ej. `color-mix` / alpha sobre `--ubits-feedback-accent-success` o `--ubits-accent-green`) — **no** hardcodear el verdoso del frame APP |
+| Alcance | Solo columna izquierda del cierre (o stage del bloque felicitación); no pintar encima del índice derecho |
+
+#### 7.2.2 Ícono / ilustración de éxito
+
+| Aspecto | Detalle |
+|---------|---------|
+| Motivo APP | Dos cuadrados redondeados verdes apilados (efecto 3D) + **check** blanco al centro |
+| Nodo Figma | Ícono `2389:47693` dentro de Thank you `2389:47632` ([APP](https://www.figma.com/design/zHCCbQamZeiZJPlT7GEKDs/APP-v3.0.0?node-id=2389-47632&m=dev)) |
+| Asset playground | SVG export Figma en set compartido **`images/icons/`** (también `Ubits-React/public/images/icons/`): `success-icon.svg`, `error-icon.svg`, `info-icon.svg`, `warning-icon.svg`, `time-icon.svg`. Cierre usa `success-icon.svg`. **No** high-five LXP |
+| Cert thumb | **`cierre-cert-thumb.png`** — miniatura de la card certificado (mismo frame APP) |
+| Tamaño ref. | Ícono ~80×80 px |
+
+#### 7.2.3 Copy felicitación (APP — exacto)
 
 ```
 ¡Felicidades!
-Has culminado con éxito el contenido:
-“{Nombre del contenido}”
-Tu dedicación es una inspiración. ¡Sigue construyendo tu camino hacia el conocimiento!
-[ Descargar certificado ]
+Has culminado con éxito el curso
+{Nombre del contenido}
 ```
 
-**Certificado:** visible si `conCertificacion === true` en catálogo; si no, ocultar botón o toast «no disponible» (alinear con § 5.6b).
+| Línea | Tipografía / tokens |
+|-------|---------------------|
+| **`¡Felicidades!`** | Semibold / heading corto, `fg-1-high`, centrado |
+| **`Has culminado con éxito el curso`** | Medium, `fg-1-medium` — **sin** dos puntos al final; copy APP (demo = curso) |
+| **`{Nombre del contenido}`** | Semibold, `fg-1-high` — `titulo` del catálogo (`?id=`). **Sin** comillas tipográficas |
+
+> **Retirado** el mensaje largo LXP (*«Tu dedicación es una inspiración…»*). Fuente de verdad: APP.
+
+#### 7.2.4 Card certificado — `Certificado disponible`
+
+Sustituye el botón primario suelto «Descargar certificado» de la captura LXP antigua.
+
+| Parte | Detalle |
+|-------|---------|
+| Contenedor | Card redondeada; fondo token **info subtle** (familia feedback info bg — no hex del frame) |
+| Thumb izq. | Miniatura certificado APP → `cierre-cert-thumb.png` |
+| Título | **`Certificado disponible`** — color **brand** |
+| Subtítulo | Nombre del contenido truncado con ellipsis |
+| Acción | Botón **icon-only** descarga (`fa-arrow-down-to-line`) + tooltip / `aria-label` «Descargar certificado» |
+| Visibilidad | Si `conCertificacion === true`; si no, ocultar card |
+
+#### 7.2.5 Carrusel «Sigue el camino»
+
+**Intención APP:** sugerir siguientes contenidos tras cerrar.
+
+**Implementación playground (acordado):** reutilizar **nuestros carruseles** de `home-learn` — componente **`createCarouselContents`** (`components/carousel-contents.js` + CSS), **no** reimplementar las cards horizontales del frame móvil.
+
+| Aspecto | Valor |
+|---------|-------|
+| Título sección | **`Sigue el camino`** |
+| Descripción | **`Este contenido es parte de estas rutas de aprendizaje. Explóralas y sigue avanzando.`** |
+| API | `createCarouselContents` / `UbitsCarouselContents` `type: 'content-cards'` — mismo patrón que `initContinuaAprendiendoCarousel` en `home-learn.js` |
+| Título/desc | Viven en `CierreExpEstudio` (no duplicar el `sectionTitle` del carrusel; vacío o oculto) |
+| Datos | Slides mock desde `BDS_CONTENIDOS_UBITS` / `CONTINUA_APRENDIENDO_SLIDES` (mismo pipeline que home-learn). Si aún no hay “rutas padre” del curso demo, mostrar **sugeridos de catálogo** |
+| Mount | `initCierreExpEstudio(root, { carouselSlides })` monta el carrusel en el slot; React pasa `<UbitsCarouselContents …>` como `carousel` |
+| Layout en columna | Ancho de la columna izquierda; `cardsPerView: 2` (no 4 de home-learn); flechas/indicadores desktop de `carousel-contents` (no dots móviles APP). Doc vanilla: cargar `avatar.css` + `avatar.js` con `card-content` |
+| Clic slide | Navegar a portada del contenido (`exp-estudio.html?id=…`) o destino equivalente home-learn |
 
 ### 7.3 Columna derecha — nav + progreso + índice completado
 
-Mismo shell que Recursos (§ 6.4), variante **post-cierre**:
+Mismo shell que Recursos (§ 6.4), variante **post-cierre** — **no** eliminar ni colapsar en desktop:
 
 | Parte | Valor |
 |-------|-------|
 | Título curso | Nombre del contenido (igual Recursos) |
-| **`Regresar`** | Secundario — vuelve a la **última página consumible** (evaluación) o a portada según implementación; captura LXP: página anterior del flujo |
-| **`Ver más contenidos`** | Primario — **`../home-learn.html#buscar`** + focus `#home-learn-search-input` (§ 5.6b.1) |
+| **`Regresar`** | Secundario — vuelve a la **última página consumible** (evaluación) |
+| **`Ver más contenidos`** | Primario — **`../home-learn.html#buscar`** + focus buscador (§ 5.6b.1). Equivale funcionalmente al **`Ir al inicio`** del APP |
 | `ProgresoExpEstudio` | **`Completed`** — barra **verde**, **`100 %`** |
-| `IndiceExpEstudio` | **`Completado`** — todas las filas ✓ verde; fila **`Fin del contenido`** en estado **`Activa`** (barra azul + check, según captura) |
+| `IndiceExpEstudio` | **`Completado`** — ✓ en todas; fila **`Fin del contenido`** **`Activa`**; secciones colapsables (§ 4.3) |
 
-> En **portada** completada (§ 5.6b) los dos CTAs (`Ver más contenidos` + `Descargar certificado`) viven en **`TituloSpecsCtaExpEstudio`**. En **cierre § 7**, el certificado va en la **columna izquierda** y `Ver más contenidos` en la **nav derecha**.
+> **Portada** completada (§ 5.6b): CTAs `Ver más contenidos` + `Descargar certificado` en `TituloSpecsCtaExpEstudio`. **Cierre § 7:** certificado = **card** en izquierda (§ 7.2.4); salida catálogo = nav derecha.
 
 ### 7.4 Confeti
 
@@ -1338,14 +1688,14 @@ Mismo shell que Recursos (§ 6.4), variante **post-cierre**:
 | Script | `../../components/ubits-confetti.js` en `exp-estudio.html` |
 | API | `launchUbitsConfetti()` al montar vista cierre (primera llegada tras completar) |
 | Referencias | `study-chat.js`, `scorm-recurso-modal.js`, `modo-estudio-ia.html` |
-| Accesibilidad | Sin confeti si `prefers-reduced-motion: reduce` (ya en `ubits-confetti.js`) |
+| Accesibilidad | Sin confeti si `prefers-reduced-motion: reduce` |
 
 ### 7.5 Relación portada completada (§ 5.6b)
 
 | Vista | Cuándo | Columna izquierda | CTAs salida |
 |-------|--------|-------------------|-------------|
-| **Cierre § 7** | Tras `Continuar` en última consumible | Felicitación + certificado | Nav derecha: `Ver más contenidos` |
-| **Portada § 5.6b** | Usuario vuelve a portada con curso ya terminado | Hero + ficha catálogo (sin cambio) | `Ver más contenidos` + `Descargar certificado` |
+| **Cierre § 7** | Tras `Continuar` en evaluación aprobada | Felicitación APP + cert card + carrusel | Nav derecha: `Ver más contenidos` |
+| **Portada § 5.6b** | Vuelve a portada con curso terminado | Hero + ficha catálogo | `Ver más contenidos` + `Descargar certificado` |
 
 Ambas marcan el contenido como **100 %** en índice y progreso.
 
@@ -1354,11 +1704,13 @@ Ambas marcan el contenido como **100 %** en índice y progreso.
 | # | Pregunta | Respuesta |
 |---|----------|-----------|
 | 7.1 | ¿Pantalla aparte? | **Sí** — § 7, ítem `Fin del contenido` |
-| 7.2 | Copy felicitación | § 7.2 — copy exacto arriba |
-| 7.3 | Ilustración | Placeholder v1; asset definitivo pendiente Dave |
-| 7.4 | CTAs | Izq: **`Descargar certificado`**. Der: **`Regresar`** + **`Ver más contenidos`** |
-| 7.5 | Confeti | **Sí** — `launchUbitsConfetti()` |
-| 7.6 | Volver a recursos | Índice con páginas completadas clicables (repaso) |
+| 7.2 | Copy / ilustración | APP `2389:47632` — § 7.2.2–7.2.3 |
+| 7.3 | Gradiente verde | **Sí** — wash superior success (§ 7.2.1), tokens |
+| 7.4 | Certificado | Card **`Certificado disponible`** + icon-download (§ 7.2.4) |
+| 7.5 | Sugeridos | Carrusel **`Sigue el camino`** vía `createCarouselContents` / home-learn (§ 7.2.5) |
+| 7.6 | Layout desktop | **Dos columnas**; índice derecho siempre (§ 7.1) |
+| 7.7 | Confeti | **Sí** — `launchUbitsConfetti()` |
+| 7.8 | Volver a recursos | Índice: páginas Completadas clicables (repaso) |
 
 ---
 
@@ -1390,14 +1742,14 @@ Ambas marcan el contenido como **100 %** en índice y progreso.
 
 | Regla | Detalle |
 |-------|---------|
-| Obligatoriedad | **Todas** las páginas consumibles (video, PDF, embebido, evaluación en demo) |
-| **Evaluación** | Debe **aprobar** (fase 3 resultado positivo) para contar como página completada — § 6.8 |
+| Obligatoriedad de recorrido | Debe **pasar** por todas las páginas consumibles del índice (video, PDF, 2× SCORM, evaluación en demo) |
+| Criterio por tipo | Video / PDF / SCORM (y equivalentes): basta **`Continuar`**. **Evaluación**: debe **aprobar** (§ 6.8). **Encuesta**: misma idea de completar flujo, pero **fuera de v1** (§ 6.6) |
 | Ítem `Fin del contenido` | Pantalla de cierre § 7 — corona el 100 % |
 | Complementarios | **No** cuentan para completado (§ 6.3) |
 
-**§ 8.3b — Detalle por fase (Bienvenida / Evaluación / Resultado) y resultado negativo:**
+**§ 8.3b — Detalle por fase y resultado negativo:**
 
-> _Pendiente Dave — estructura de fases cerrada en § 6.8; copy y reglas de reintento en § 6.8.4._
+Cerrado en § 6.8.4c: reprobado / tiempo → **Reintentar**; límite de intentos → **Ir al inicio**; solo **aprobado** desbloquea avance al cierre.
 
 ### 8.4 Formato de números
 
@@ -1424,7 +1776,7 @@ Ver **[`contexto-aprendizaje.md` § 1](../contexto-aprendizaje.md#1-usuario-demo
 |------|------------------------|----------|
 | Estructura pedagógica (autor) | `lms-creator/contexto-creacion-contenido.md` | Creator **define** secciones/páginas + **complementarios**; exp-estudio **consume** (§ 6.3) |
 | Jerarquía secciones/páginas | `crear-contenido.html`, `indice-creator`, `paginas-creator` | Misma estructura, vista learner |
-| Índice learner | **Nuevo componente** (§ 4.3) | Inspirado en Creator, no es reutilización directa |
+| Índice learner | **Nuevos** `SeccionExpEstudio` + `IndiceExpEstudio` (§ 4.3) | Tarjetas separadas como Creator (sin `bg-3`); colapsables; no reutilizar `indice-creator` |
 | Portada visual | `learn-content-img-trailer` | Candidato para imagen/tráiler en portada |
 | Catálogo | `bd-contenidos-ubits.js`, `bd-contenidos-fiqsha.js` | Metadata portada vía `?id=` |
 | Cards y tablas | `card-content.js`, tablas historial/tareas | **Puntos de entrada** → `exp-estudio.html?id=` |
@@ -1457,23 +1809,30 @@ Documentación canónica: [`contexto-aprendizaje.md` § 2.1](../contexto-aprendi
 
 ---
 
-## 11. Inventario de archivos (pendiente de implementación)
+## 11. Inventario de archivos
 
-| Archivo | Rol |
-|---------|-----|
-| `exp-estudio/contexto-exp-estudio.md` | Este documento |
-| `exp-estudio/exp-estudio.html` | Página principal (layout estándar colaborador) |
-| `exp-estudio/exp-estudio.js` | Lógica portada / recursos / cierre, estado de sesión |
-| `exp-estudio/exp-estudio.css` | Estilos de página |
-| `components/indice-exp-estudio.*` (desde Figma `IndiceExpEstudio`) | Índice lateral learner |
-| `components/titulo-progreso-y-nav-exp-estudio.*` (`TituloProgresoYNav`) | Columna derecha vista Recursos § 6.4 |
-| `components/cierre-exp-estudio.*` (`CierreExpEstudio`) | Columna izquierda pantalla cierre § 7 |
-| `exp-estudio/assets/cierre-illustration.png` | Ilustración felicitación — **placeholder** hasta asset Dave |
-| `../../components/ubits-confetti.js` | Confeti al entrar a cierre § 7.4 |
-| Reutiliza preguntas | `components/learn-question.js` | **Solo** `mode: 'collab'` — § 6.8.4b; matching § 6.8.4b.2 |
-| `components/eval-sticky-bar-exp-estudio.*` | Barra sticky timer + intento | § 6.8.4b |
-| Reutiliza CSS/JS Creator | `crear-contenido.css`, `crear-contenido-pdf-viewer.js`, `vendor/pdfjs/` | Renders § 6.2 |
-| `exp-estudio/bd-exp-estudio-demo.js` | Mock índice + páginas del curso demo (§ 3.3) |
+| Archivo | Rol | Estado |
+|---------|-----|--------|
+| `exp-estudio/contexto-exp-estudio.md` | Este documento | ✅ |
+| `components/feedback-exp-estudio.*` | Feedback Locked/Check/Progress 24px | ✅ Vanilla + React `Feedback` + doc |
+| `components/paginas-exp-estudio.*` | Fila de página índice | ✅ Vanilla + React `PaginasExpEstudio` + doc |
+| `components/seccion-exp-estudio.*` | Tarjeta sección índice (base Creator) | ✅ Vanilla + React `SeccionExpEstudio` + doc |
+| `components/indice-exp-estudio.*` | Stack de secciones learner | ✅ Vanilla + React `IndiceExpEstudio` + doc |
+| `documentacion/componentes/*-exp-estudio.html` | Previews en catálogo vanilla | ✅ 9 páginas en sidebar Aprendizaje |
+| `components/progreso-exp-estudio.*` | Widget «Tu progreso:» | ✅ Vanilla + React `ProgresoExpEstudio` |
+| `components/titulo-specs-cta-exp-estudio.*` | Portada derecha | ✅ Vanilla + React `TituloSpecsCtaExpEstudio` |
+| `components/titulo-progreso-y-nav-exp-estudio.*` | Recursos/Cierre derecha | ✅ Vanilla + React `TituloProgresoYNavExpEstudio` |
+| `components/cierre-exp-estudio.*` | Columna izquierda cierre § 7 | ✅ Vanilla + React `CierreExpEstudio` |
+| `components/eval-sticky-bar-exp-estudio.*` | Sticky timer + intentos | ✅ Vanilla + React `EvalStickyBarExpEstudio` |
+| `images/icons/{success,error,info,warning,time}-icon.svg` | Set feedback Figma (eval + cierre); React: `public/images/icons/` | ✅ |
+| `exp-estudio/assets/cierre-cert-thumb.png` | Thumb card certificado Figma APP | ✅ |
+| `exp-estudio/exp-estudio.html` + `.js` + `.css` | Página principal | ✅ Vanilla |
+| `exp-estudio/bd-exp-estudio-demo.js` | Mock § 3.3 (`f007`) | ✅ |
+| React `pages/.../exp-estudio.tsx` + `lib/aprendizaje/expEstudioDemo.ts` | Misma experiencia en playground React | ✅ |
+| `../../components/carousel-contents.js` | Carrusel «Sigue el camino» | ✅ Reutilizar |
+| `../../components/ubits-confetti.js` | Confeti cierre | ✅ Reutilizar |
+| `components/learn-question.js` | Eval fase 2 — solo `collab` | ✅ Reutilizar |
+| Creator CSS/JS / pdfjs | Renders § 6.2 | ✅ Reutilizar |
 
 **§ 11.1 — Mock estructura pedagógica (cerrado):**
 
@@ -1482,7 +1841,7 @@ Archivo `exp-estudio/bd-exp-estudio-demo.js` — objeto JS con secciones, págin
 ```js
 // Esquema orientativo
 window.BD_EXP_ESTUDIO_DEMO = {
-  contentId: null, // enlazar al id de catálogo cuando se defina § 3.1
+  contentId: 'f007', // § 3.1 — Fiqsha conflictos
   secciones: [
     {
       id: 'sec-1',
@@ -1501,19 +1860,21 @@ window.BD_EXP_ESTUDIO_DEMO = {
       id: 'sec-2',
       titulo: 'Sección 2: Herramientas para resolver conflictos',
       paginas: [
-        { id: 'p-3', titulo: 'Simulador de conversación difícil', tipo: 'embebido' },
-        { id: 'p-4', titulo: 'Evaluación', tipo: 'evaluacion',
+        { id: 'p-3', titulo: 'Simulador de conversación difícil', tipo: 'scorm' },
+        { id: 'p-4', titulo: 'Conversaciones difíciles según Thomas-Kilmann', tipo: 'scorm' },
+        { id: 'p-5', titulo: 'Evaluación', tipo: 'evaluacion',
           evalConfig: {
-            maxAttempts: 3,
-            timeLimitMinutes: 30,
+            maxAttempts: 2, /* Figma sticky ejemplo «Intentos: 2 de 2»; ajustable */
+            timeLimitMinutes: 10,
             timeLimitEnabled: true,
-            minPassPercent: null /* § 8.3b / fase Resultado */
+            minPassScore: 10 /* copy resultado; o % — alinear con Creator */
           },
           evalFase: 'bienvenida',
+          evalResultadoKind: null,
           evalIntentoActual: 1,
           preguntas: '/* array 10 ítems — copy § 6.8.4b.1 */'
         },
-        { id: 'p-5', titulo: 'Fin del contenido', tipo: 'fin' }
+        { id: 'p-6', titulo: 'Fin del contenido', tipo: 'fin' }
       ]
     }
   ]
@@ -1531,26 +1892,31 @@ window.BD_EXP_ESTUDIO_DEMO = {
 - [x] 2.1 Layout estándar colaborador
 - [x] 2.2 Chrome visible (sidebar, tab bar)
 - [x] 2.3 URL `exp-estudio.html?id=`
+- [x] 2.3.1 Deep links: portada ×3, páginas `p-1`…`p-6` / alias, eval ×6, `#cierre`
 - [x] 3.2 Misma estructura Portada → Recursos → Cierre
 - [x] 4.1 Secciones con páginas
-- [x] 4.2 Componente índice nuevo (learner)
-- [x] 4.3 Barra de progreso global (sí)
+- [x] 4.2 / 4.3 Índice learner: `SeccionExpEstudio` tarjetas separadas (como Creator, sin `bg-3`) + stack `IndiceExpEstudio`; colapsables (APP `1756:11404`; sin contador)
+- [x] 4.4 Barra de progreso global (sí)
 - [x] 5.1–5.8 Portada sin iniciar (Figma UBITS + FIQSHA)
 - [x] 10.2 Figma Learner v4 (nodes § 5.0)
 
-- [x] 3.3 Índice curso demo (2 secciones, sin encuesta)
-- [x] 6.1 Tipos recurso curso demo
+- [x] 3.3 Índice curso demo (2 secciones, 6 ítems: video, PDF, 2× SCORM, evaluación, fin; sin encuesta)
+- [x] 6.1 / 6.5 Tipos recurso curso demo (incluye SCORM alineado a Creator)
+- [x] 6.6b Umbral % video — **No**; basta `Continuar` sin reproducir
 - [x] 11.1 Mock `bd-exp-estudio-demo.js`
 
 ### Pendiente (Figma / siguiente ronda)
-- [ ] 3.1 ID contenido en catálogo (`?id=`)
+- [x] 3.1 ID contenido en catálogo (`f007`)
 - [x] 5.6 Portada en progreso — delta columna derecha (Figma `40006338:44692`)
 - [x] 5.6b Portada finalizada — delta columna derecha (Figma `40006350:2730`)
-- [x] 7.1–7.6 Cierre — felicitación, confeti, captura LXP (§ 7)
+- [x] 7.1–7.6 Cierre APP `2389:47632` — wash verde, copy, cert card, carrusel home-learn; desktop 2 cols + índice
 - [x] 6.1–6.10 Recursos — vista consumo (Figma video `40006360:4608`, § 6)
 - [x] 6.8 Evaluación — 3 fases (Bienvenida → Evaluación → Resultado)
-- [x] 6.8.4b Evaluación — sticky bar + 10 preguntas demo
-- [ ] 6.8.4c Resultado evaluación (Dave)
+- [x] 6.8.0 Figma APP v3 (copy/assets); deep links eval → § 2.3.1
+- [x] 6.8.3b Salida mid-intento cuenta como intento
+- [x] 6.8.4a Bienvenida APP v3 (Recordatorio)
+- [x] 6.8.4b Sticky APP v3 (`Tiempo restante: … min` \| `Intentos: A de T`) + 10 preguntas demo
+- [x] 6.8.4c Resultado — 4 variantes (aprobado / reprobado / tiempo / límite)
 - [ ] 8.1 Persistencia tras refresh
 - [x] 8.2 Sin sync exp-estudio → zona de estudio / historial
 - [x] 8.3 Completado = todas las páginas + eval **aprobada** (§ 6.8)
@@ -1566,10 +1932,10 @@ window.BD_EXP_ESTUDIO_DEMO = {
 2. ~~Figma portada en progreso (UBITS)~~ ✅ § 5.6.
 3. ~~Figma portada finalizada (UBITS)~~ ✅ § 5.6b.
 4. ~~Vista Recursos + reutilizar renders Creator~~ ✅ § 6.2, § 6.0–6.7.
-5. ~~Página cierre (`Fin del contenido`)~~ ✅ § 7.
-6. ~~Evaluación — 3 fases en misma página~~ ✅ § 6.8 (detalle UI/copy por fase: siguiente ronda Dave).
-7. Implementación vanilla: `exp-estudio.html` + componentes + eval consumo + confeti.
+5. ~~Página cierre (`Fin del contenido`)~~ ✅ § 7 — APP copy/atmósfera + carrusel home-learn; desktop 2 cols.
+6. ~~Evaluación — 3 fases + resultados APP v3 + deep links~~ ✅ § 6.8.0–6.8.4c.
+7. Implementación vanilla: `exp-estudio.html` + componentes + eval + confeti + **deep links § 2.3.1** (portada / páginas / eval / cierre).
 
 ---
 
-*Última actualización: jul 2026 — § 6.8.4b.2 matching collab (select + label pair.a).*
+*Última actualización: jul 2026 — Componentes § 11 creados en vanilla + React (Feedback, Paginas, Indice, Progreso, TituloSpecsCta, TituloProgresoYNav, Cierre, EvalStickyBar). Página exp-estudio pendiente.*

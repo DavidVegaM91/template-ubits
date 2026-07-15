@@ -1,0 +1,52 @@
+/**
+ * ProgresoExpEstudio — Figma Learn-Components 66:2966
+ * Fila: flag + «Tu progreso:» + barra 8px + NN%
+ * Depende: progress-bar.css
+ */
+
+.ubits-progreso-exp {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-width: 0;
+  padding: var(--space-2) var(--space-4);
+  background: var(--ubits-bg-1);
+  border-radius: 10px;
+}
+
+.ubits-progreso-exp__flag {
+  flex-shrink: 0;
+  width: 20px;
+  text-align: center;
+  font-size: 16px;
+  line-height: 24px;
+  color: var(--ubits-fg-1-medium);
+}
+
+.ubits-progreso-exp__label {
+  margin: 0;
+  flex-shrink: 0;
+  color: var(--ubits-fg-1-high);
+  font-size: var(--font-size-md, 16px);
+  font-weight: 600;
+  line-height: 24px;
+  white-space: nowrap;
+}
+
+.ubits-progreso-exp__bar {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.ubits-progreso-exp__percent {
+  margin: 0;
+  flex-shrink: 0;
+  color: var(--ubits-fg-1-high);
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 13px;
+  white-space: nowrap;
+}

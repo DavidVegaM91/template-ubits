@@ -1,0 +1,122 @@
+/**
+ * SeccionExpEstudio — base visual = SeccionCreator (tarjeta borde + bg-1).
+ * Learner: colapsable, info → modal, paginas-exp-estudio.
+ * Depende: paginas-exp-estudio.css, feedback-exp-estudio.css, button.css, modal.
+ */
+
+.ubits-seccion-exp {
+  margin: 0;
+  padding: 0;
+  border: 1px solid var(--ubits-border-1);
+  border-radius: var(--border-radius-lg);
+  background: var(--ubits-bg-1);
+  box-sizing: border-box;
+  overflow: hidden;
+  width: 100%;
+}
+
+.ubits-seccion-exp__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--gap-sm);
+  padding: var(--padding-sm) var(--padding-md);
+  min-height: var(--space-12);
+  box-sizing: border-box;
+  cursor: pointer;
+  background: transparent;
+  outline: none;
+}
+
+.ubits-seccion-exp__header:focus-visible {
+  outline: 2px solid var(--ubits-accent-brand);
+  outline-offset: -2px;
+}
+
+.ubits-seccion-exp__title {
+  flex: 1 1 auto;
+  min-width: 0;
+  margin: 0;
+  font-size: var(--font-size-md);
+  line-height: 24px;
+  font-weight: 600;
+  color: var(--ubits-fg-1-high);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  word-break: break-word;
+  text-align: left;
+}
+
+.ubits-seccion-exp__actions {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--gap-xs);
+  flex-shrink: 0;
+  color: var(--ubits-fg-1-medium);
+}
+
+.ubits-seccion-exp__info-btn {
+  flex-shrink: 0;
+  color: var(--ubits-fg-1-medium);
+}
+
+/* Wrapper del chevron: el transform va aquí, no en el <i> (FA usa ::before). */
+.ubits-seccion-exp__chevron {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--size-2xl);
+  height: var(--size-2xl);
+  flex-shrink: 0;
+  color: inherit;
+  font-size: 12px;
+  line-height: 1;
+  transform: rotate(180deg);
+  transition: transform 0.2s ease;
+}
+
+.ubits-seccion-exp__chevron i {
+  color: inherit;
+  font-size: inherit;
+  line-height: 1;
+}
+
+.ubits-seccion-exp.is-collapsed .ubits-seccion-exp__chevron {
+  transform: rotate(0deg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ubits-seccion-exp__chevron {
+    transition: none;
+  }
+}
+
+.ubits-seccion-exp__pages {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  border-top: 1px solid var(--ubits-border-1);
+  background: var(--ubits-bg-1);
+}
+
+.ubits-seccion-exp.is-collapsed .ubits-seccion-exp__pages {
+  display: none;
+}
+
+.ubits-seccion-exp__pages .ubits-paginas-exp__item:last-child {
+  border-bottom: none;
+}
+
+.ubits-seccion-exp__description-body {
+  color: var(--ubits-fg-1-high);
+}
+
+.ubits-seccion-exp__description-body p {
+  margin: 0 0 var(--gap-md);
+}
+
+.ubits-seccion-exp__description-body p:last-child {
+  margin-bottom: 0;
+}

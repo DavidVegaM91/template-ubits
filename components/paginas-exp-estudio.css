@@ -1,0 +1,149 @@
+/**
+ * PaginasExpEstudio — misma base visual que Paginas Creator (lista + rail + icono 24×24).
+ * Sin drag handle ni menú de opciones; a la derecha Feedback Locked/Progress/Check.
+ * Depende: feedback-exp-estudio.css, ubits-colors, ubits-typography, fontawesome.
+ */
+
+.ubits-paginas-exp {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.ubits-paginas-exp__item {
+  display: flex;
+  align-items: stretch;
+  width: 100%;
+  box-sizing: border-box;
+  background: var(--ubits-bg-1);
+  border-bottom: 1px solid var(--ubits-border-1);
+}
+
+.ubits-paginas-exp__item:hover,
+.ubits-paginas-exp__item.is-activa {
+  background: var(--ubits-bg-2);
+}
+
+.ubits-paginas-exp__item.is-bloqueada:hover {
+  background: var(--ubits-bg-1);
+}
+
+.ubits-paginas-exp__row {
+  position: relative;
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--gap-sm);
+  min-height: var(--space-12);
+  margin: 0;
+  /* Lateral: más aire que Creator; izquierda = rail + padding */
+  padding: var(--padding-md) var(--padding-2xl) var(--padding-md) calc(var(--space-1) + var(--padding-md));
+  border: none;
+  background: transparent;
+  cursor: default;
+  text-align: left;
+  font: inherit;
+  color: inherit;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.ubits-paginas-exp__item.is-clickable .ubits-paginas-exp__row {
+  cursor: pointer;
+}
+
+.ubits-paginas-exp__row:focus-visible {
+  outline: 2px solid var(--ubits-accent-brand);
+  outline-offset: -2px;
+  z-index: 1;
+}
+
+.ubits-paginas-exp__rail {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: var(--space-1);
+  margin: 0;
+  border-radius: var(--border-radius-none);
+  background: transparent;
+  transition: background-color 0.15s ease;
+  pointer-events: none;
+}
+
+.ubits-paginas-exp__item.is-activa .ubits-paginas-exp__rail {
+  background: var(--ubits-accent-brand);
+}
+
+.ubits-paginas-exp__type-icon-wrap {
+  flex-shrink: 0;
+  width: var(--size-2xl);
+  height: var(--size-2xl);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  color: var(--ubits-fg-1-medium);
+}
+
+.ubits-paginas-exp__type-icon-wrap i {
+  display: block;
+  font-size: var(--font-size-sm);
+  line-height: 1;
+}
+
+.ubits-paginas-exp__item:hover:not(.is-activa):not(.is-bloqueada) .ubits-paginas-exp__type-icon-wrap {
+  color: var(--ubits-fg-1-high);
+}
+
+.ubits-paginas-exp__item.is-activa .ubits-paginas-exp__type-icon-wrap {
+  color: var(--ubits-accent-brand);
+}
+
+.ubits-paginas-exp__item.is-bloqueada .ubits-paginas-exp__type-icon-wrap {
+  color: var(--ubits-fg-on-disabled);
+}
+
+.ubits-paginas-exp__label-wrap {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+}
+
+.ubits-paginas-exp__label {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--ubits-fg-1-medium);
+  font-weight: 600;
+}
+
+.ubits-paginas-exp__item:hover:not(.is-activa):not(.is-bloqueada) .ubits-paginas-exp__label {
+  color: var(--ubits-fg-1-high);
+  font-weight: var(--font-weight-semibold);
+}
+
+.ubits-paginas-exp__item.is-completada:not(.is-activa) .ubits-paginas-exp__label {
+  color: var(--ubits-fg-1-high);
+  font-weight: var(--font-weight-semibold);
+}
+
+.ubits-paginas-exp__item.is-activa .ubits-paginas-exp__label {
+  color: var(--ubits-accent-brand);
+  font-weight: var(--font-weight-semibold);
+}
+
+.ubits-paginas-exp__item.is-bloqueada .ubits-paginas-exp__label {
+  color: var(--ubits-fg-on-disabled);
+  font-weight: 600;
+}
+
+.ubits-paginas-exp__feedback {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-self: center;
+  margin-right: var(--padding-lg);
+}

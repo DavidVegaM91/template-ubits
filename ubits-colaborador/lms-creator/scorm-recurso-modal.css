@@ -438,13 +438,21 @@
     height: auto;
 }
 
+/*
+ * Badge «Generado con IA» — centrado verticalmente con la fila .sp-hi del SCORM compact
+ * (viewer): progress .sp-pb 3px + padding vertical 6px + line-height body-xs 16.5px.
+ * left: 14px = padding horizontal del .sp-hi compact.
+ */
 .cc-scorm-resource__generado-ia-host {
     position: absolute;
-    top: var(--gap-sm);
-    left: var(--gap-sm);
+    top: 3px;
+    left: 14px;
     z-index: 2;
+    height: calc(12px + 16.5px);
+    display: flex;
+    align-items: center;
     pointer-events: none;
-    max-width: calc(100% - var(--gap-md));
+    max-width: calc(100% - 28px);
     box-sizing: border-box;
 }
 

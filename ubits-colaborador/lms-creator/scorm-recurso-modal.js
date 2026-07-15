@@ -1088,8 +1088,10 @@
         '.sp-hi--edit .sp-hi__actions{display:flex;align-items:center;gap:var(--gap-sm);flex-shrink:0;margin-left:auto;}' +
         '.sp-hi--viewer{justify-content:flex-end;}' +
         '.sp-hi--viewer--modal-preview{justify-content:space-between;}' +
+        '.sp-hi--viewer-with-title{justify-content:space-between;gap:var(--gap-md);}' +
         '.sp-preview-rep,.sp-title,.sp-ct{color:var(--ubits-fg-1-high);}' +
         '.sp-title{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:60%;}' +
+        '.sp-hi--viewer-with-title .sp-title{flex:1;min-width:0;max-width:none;}' +
         '.sp-ct{white-space:nowrap;flex-shrink:0;}' +
         '.sp-color-field{display:flex;align-items:center;gap:12px;flex-shrink:0;min-width:0;}' +
         '.sp-color-label{line-height:1.2;white-space:nowrap;color:var(--ubits-fg-1-high);}' +
@@ -1589,14 +1591,13 @@
               '<span class="sp-color-swatch" id="sp-cpsw"></span></button></div>'
             : '';
         var headerInner = editMode
-            ? '<div class="sp-hi__left">' + colorTrigger +
-              '<span class="sp-title ubits-body-sm-bold">'+esc(titulo)+'</span></div>' +
+            ? '<div class="sp-hi__left">' + colorTrigger + '</div>' +
               '<div class="sp-hi__actions">' +
-              '<span class="sp-ct ubits-body-sm-semibold" id="sp-ct-num">1 / '+n+'</span></div>'
+              '<span class="sp-ct ubits-body-xs-semibold" id="sp-ct-num">1 / '+n+'</span></div>'
             : isModalPreview
                 ? '<span class="sp-preview-rep ubits-body-sm-semibold">Vista previa representativa</span>' +
-                  '<span class="sp-ct ubits-body-sm-semibold" id="sp-ct-num">1 / '+n+'</span>'
-                : '<span class="sp-ct ubits-body-sm-semibold" id="sp-ct-num">1 / '+n+'</span>';
+                  '<span class="sp-ct ubits-body-xs-semibold" id="sp-ct-num">1 / '+n+'</span>'
+                : '<span class="sp-ct ubits-body-xs-semibold" id="sp-ct-num">1 / '+n+'</span>';
         var headerRowClass = editMode
             ? 'sp-hi sp-hi--edit'
             : 'sp-hi sp-hi--viewer' + (isModalPreview ? ' sp-hi--viewer--modal-preview' : '');
@@ -1636,7 +1637,7 @@
         var css = buildScormCss(color, false);
         var script = buildScormScript(n, false, true);
         var headerInner =
-            '<span class="sp-ct ubits-body-sm-semibold" id="sp-ct-num">1 / ' + n + '</span>';
+            '<span class="sp-ct ubits-body-xs-semibold" id="sp-ct-num">1 / ' + n + '</span>';
 
         return (
             '<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">' +

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="../../../images/playground-favicon.svg">
+    <title>Experiencia de estudio — UBITS Playground</title>
+
+    <link rel="stylesheet" href="../../../general-styles/ubits-colors.css">
+    <link rel="stylesheet" href="../../../general-styles/styles.css">
+    <link rel="stylesheet" href="../../../general-styles/fontawesome-icons.css">
+    <link rel="stylesheet" href="../../../general-styles/ubits-typography.css">
+    <link rel="stylesheet" href="../../../components/sub-nav.css">
+    <link rel="stylesheet" href="../../../components/sidebar.css">
+    <link rel="stylesheet" href="../../../components/tab-bar.css">
+    <link rel="stylesheet" href="../../../components/floating-menu.css">
+    <link rel="stylesheet" href="../../../components/profile-menu.css">
+    <link rel="stylesheet" href="../../../components/button.css">
+    <link rel="stylesheet" href="../../../components/badge-tag.css">
+    <link rel="stylesheet" href="../../../components/avatar.css">
+    <link rel="stylesheet" href="../../../components/progress-bar.css">
+    <link rel="stylesheet" href="../../../components/toast.css">
+    <link rel="stylesheet" href="../../../components/tooltip.css">
+    <link rel="stylesheet" href="../../../components/modal.css">
+    <link rel="stylesheet" href="../../../components/input.css">
+    <link rel="stylesheet" href="../../../components/dropdown-menu.css">
+    <link rel="stylesheet" href="../../../components/checkbox.css">
+    <link rel="stylesheet" href="../../../components/radio-button.css">
+    <link rel="stylesheet" href="../../../components/learn-question.css">
+    <link rel="stylesheet" href="../../../components/carousel-contents.css">
+    <link rel="stylesheet" href="../../../components/carousel-indicators.css">
+    <link rel="stylesheet" href="../../../components/card-content.css">
+    <link rel="stylesheet" href="../../../components/learn-content-img-trailer.css">
+    <link rel="stylesheet" href="../../../components/feedback-exp-estudio.css">
+    <link rel="stylesheet" href="../../../components/paginas-exp-estudio.css">
+    <link rel="stylesheet" href="../../../components/seccion-exp-estudio.css">
+    <link rel="stylesheet" href="../../../components/indice-exp-estudio.css">
+    <link rel="stylesheet" href="../../../components/progreso-exp-estudio.css">
+    <link rel="stylesheet" href="../../../components/titulo-specs-cta-exp-estudio.css">
+    <link rel="stylesheet" href="../../../components/titulo-progreso-y-nav-exp-estudio.css">
+    <link rel="stylesheet" href="../../../components/cierre-exp-estudio.css">
+    <link rel="stylesheet" href="../../../components/eval-sticky-bar-exp-estudio.css">
+    <link rel="stylesheet" href="./exp-estudio.css">
+</head>
+<body data-theme="light" class="page-exp-estudio">
+    <div id="ubits-toast-container"></div>
+    <div class="dashboard-container">
+        <div class="tooltip" id="tooltip"></div>
+        <div id="sidebar-container"></div>
+
+        <main class="main-content">
+            <div id="top-nav-container"></div>
+            <div class="content-area">
+                <div class="content-sections">
+                    <div class="section-single">
+                        <div class="widget--transparent">
+                            <div id="exp-estudio-stage" class="exp-estudio-stage">
+                                <div id="exp-estudio-main" class="exp-estudio-col" aria-live="polite"></div>
+                                <aside id="exp-estudio-aside" class="exp-estudio-col exp-estudio-col--aside"></aside>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div id="tab-bar-container"></div>
+    <div id="floating-menu-container"></div>
+    <div id="profile-menu-container"></div>
+
+    <script src="../../../components/tooltip.js"></script>
+    <script src="../../../components/toast.js"></script>
+    <script src="../../../components/modal.js"></script>
+    <script src="../../../components/input.js"></script>
+    <script src="../../../components/dropdown-menu.js"></script>
+    <script src="../../../components/sidebar.js"></script>
+    <script src="../../../components/sub-nav.js"></script>
+    <script src="../../../components/tab-bar.js"></script>
+    <script src="../../../components/floating-menu.js"></script>
+    <script src="../../../components/profile-menu.js"></script>
+    <script src="../../../components/progress-bar.js"></script>
+    <script src="../../../components/avatar.js"></script>
+    <script src="../../../components/card-content.js"></script>
+    <script src="../../../components/carousel-indicators.js"></script>
+    <script src="../../../components/carousel-contents.js"></script>
+    <script src="../../../components/learn-question.js"></script>
+    <script src="../../../components/learn-content-img-trailer.js"></script>
+    <script src="../../../components/ubits-confetti.js"></script>
+    <script src="../../../components/feedback-exp-estudio.js"></script>
+    <script src="../../../components/paginas-exp-estudio.js"></script>
+    <script src="../../../components/seccion-exp-estudio.js"></script>
+    <script src="../../../components/indice-exp-estudio.js"></script>
+    <script src="../../../components/progreso-exp-estudio.js"></script>
+    <script src="../../../components/titulo-specs-cta-exp-estudio.js"></script>
+    <script src="../../../components/titulo-progreso-y-nav-exp-estudio.js"></script>
+    <script src="../../../components/cierre-exp-estudio.js"></script>
+    <script src="../../../components/eval-sticky-bar-exp-estudio.js"></script>
+    <script src="../../../script.js"></script>
+    <script src="../../../bd-master/bd-master-niveles-contenido.js"></script>
+    <script src="../../../bd-master/bd-master-aliados.js"></script>
+    <script src="../../../bd-master/bd-contenidos-ubits.js"></script>
+    <script src="../../../bd-master/bd-contenidos-fiqsha.js"></script>
+    <script src="../../../bd-master/catalogo-proveedores-helpers.js"></script>
+    <script src="./bd-exp-estudio-demo.js"></script>
+    <script src="./exp-estudio.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            loadSidebar('sidebar-container', 'aprendizaje');
+            loadSubNav('top-nav-container', 'aprendizaje');
+            loadTabBar('tab-bar-container');
+            loadFloatingMenu('floating-menu-container');
+            loadProfileMenu('profile-menu-container');
+
+            setTimeout(function () {
+                var homeTab = document.querySelector('.nav-tab[data-tab="home"]');
+                if (homeTab) {
+                    document.querySelectorAll('.nav-tab').forEach(function (tab) {
+                        tab.classList.remove('active');
+                    });
+                    homeTab.classList.add('active');
+                }
+                var aprendizajeButton = document.querySelector('.nav-button[data-section="aprendizaje"]');
+                if (aprendizajeButton) {
+                    document.querySelectorAll('.nav-button').forEach(function (btn) {
+                        btn.classList.remove('active');
+                    });
+                    aprendizajeButton.classList.add('active');
+                }
+                if (typeof setActiveAccordionLink === 'function') {
+                    setActiveAccordionLink('inicio');
+                }
+            }, 200);
+
+            if (typeof window.initExpEstudioPage === 'function') {
+                window.initExpEstudioPage();
+            }
+        });
+    </script>
+</body>
+</html>
