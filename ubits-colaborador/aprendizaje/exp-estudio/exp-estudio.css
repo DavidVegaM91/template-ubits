@@ -120,6 +120,15 @@ body.page-exp-estudio .exp-estudio-recurso__title {
   color: var(--ubits-fg-1-high);
 }
 
+/* PDF principal: Descargar debajo del visor (si allowPdfDownload en Creator) */
+body.page-exp-estudio .exp-estudio-recurso__pdf-download {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  padding: var(--padding-md) var(--padding-lg) var(--padding-lg);
+  box-sizing: border-box;
+}
+
 body.page-exp-estudio .exp-estudio-comps {
   display: flex;
   flex-direction: column;

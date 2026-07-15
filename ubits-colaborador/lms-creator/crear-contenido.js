@@ -840,7 +840,40 @@
         return field ? String(field.value || '').trim() : '';
     }
 
-    function buildCrearContenidoPdfViewerShellHtml() {
+    function getAllowPdfDownloadForPage(pageKey) {
+        var pk = pageKey != null ? String(pageKey) : '';
+        var st = pk ? CC_RECURSOS_PAGE_STATE[pk] : null;
+        if (st && typeof st.allowPdfDownload === 'boolean') return st.allowPdfDownload;
+        return true;
+    }
+
+    function readAllowPdfDownloadFromMount(mount) {
+        if (!mount) return null;
+        var inp = mount.querySelector('[data-cc-pdf-allow-download]');
+        if (!inp) return null;
+        return !!inp.checked;
+    }
+
+    function buildCrearContenidoPdfAllowDownloadHtml(checked) {
+        var isOn = checked !== false;
+        return (
+            '<div class="cc-pdf-allow-download">' +
+            '<label class="ubits-switch ubits-switch--md" for="cc-pdf-allow-download">' +
+            '<span class="ubits-switch__label">Permitir descarga del PDF a los estudiantes</span>' +
+            '<input type="checkbox" class="ubits-switch__input" id="cc-pdf-allow-download" role="switch" ' +
+            'data-cc-pdf-allow-download aria-label="Permitir descarga del PDF a los estudiantes"' +
+            (isOn ? ' checked' : '') +
+            ' />' +
+            '<span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>' +
+            '</label></div>'
+        );
+    }
+
+    function buildCrearContenidoPdfViewerShellHtml(allowDownload) {
+        var allow =
+            typeof allowDownload === 'boolean'
+                ? allowDownload
+                : getAllowPdfDownloadForPage(CC_RECURSOS_CURRENT_PAGE_KEY);
         return (
             '<div class="ubits-resources-block ubits-resources-block--stack">' +
             '<div class="ubits-resources-block__surface cc-pdf-resource__surface" style="padding:0;">' +
@@ -848,9 +881,34 @@
             '<p class="cc-pdf-resource__pdfjs-loading ubits-body-sm-regular" aria-live="polite">Cargando vista previa…</p>' +
             '<div class="cc-pdf-resource__pdfjs-pages"></div>' +
             '</div></div>' +
+            buildCrearContenidoPdfAllowDownloadHtml(allow) +
             buildCrearContenidoResourceFooterHtml() +
             '</div>'
         );
+    }
+
+    function bindCrearContenidoPdfAllowDownloadOnce() {
+        if (window.__ccPdfAllowDownloadBound) return;
+        window.__ccPdfAllowDownloadBound = true;
+        document.addEventListener('change', function (ev) {
+            var t = ev.target;
+            if (!t || !t.matches || !t.matches('[data-cc-pdf-allow-download]')) return;
+            var pk = CC_RECURSOS_CURRENT_PAGE_KEY;
+            if (!pk) return;
+            var prev = CC_RECURSOS_PAGE_STATE[pk] || {};
+            CC_RECURSOS_PAGE_STATE[pk] = Object.assign({}, prev, {
+                allowPdfDownload: !!t.checked
+            });
+        });
+    }
+
+    function syncPdfAllowDownloadSwitch(mount, saved) {
+        if (!mount) return;
+        var inp = mount.querySelector('[data-cc-pdf-allow-download]');
+        if (!inp) return;
+        var allow =
+            saved && typeof saved.allowPdfDownload === 'boolean' ? saved.allowPdfDownload : true;
+        inp.checked = allow;
     }
 
     function syncRecursosPdfPageTitle(newTitle) {
@@ -881,7 +939,7 @@
             revokeRecursosPdfBlobFromState(CC_RECURSOS_CURRENT_PAGE_KEY);
         }
         var url = URL.createObjectURL(file);
-        var html = buildCrearContenidoPdfViewerShellHtml();
+        var html = buildCrearContenidoPdfViewerShellHtml(true);
         mainMount.innerHTML = html;
         if (CC_RECURSOS_CURRENT_PAGE_KEY) {
             var pkPdf = String(CC_RECURSOS_CURRENT_PAGE_KEY);
@@ -890,7 +948,9 @@
                 html: html,
                 pdfBlobUrl: url,
                 pdfFileBlob: file,
-                primaryType: 'pdf'
+                primaryType: 'pdf',
+                /* Al añadir/reemplazar PDF: descarga para estudiantes ON por defecto */
+                allowPdfDownload: true
             });
         }
         var viewerRoot = mainMount.querySelector('[data-cc-pdf-js-viewer]');
@@ -1038,8 +1098,15 @@
         var prev = CC_RECURSOS_PAGE_STATE[pk] || {};
         var html = rb.innerHTML;
         var pdfBlobUrl = prev.pdfBlobUrl;
+        var allowPdfFromDom = readAllowPdfDownloadFromMount(rb);
+        var allowPdfDownload =
+            allowPdfFromDom !== null
+                ? allowPdfFromDom
+                : typeof prev.allowPdfDownload === 'boolean'
+                  ? prev.allowPdfDownload
+                  : true;
         if (pdfBlobUrl && html.indexOf('data-cc-pdf-js-viewer') !== -1) {
-            html = buildCrearContenidoPdfViewerShellHtml();
+            html = buildCrearContenidoPdfViewerShellHtml(allowPdfDownload);
         }
         CC_RECURSOS_PAGE_STATE[pk] = Object.assign({}, prev, compFlags, {
             html: html,
@@ -1047,7 +1114,8 @@
             pdfFileBlob: prev.pdfFileBlob,
             pdfArrayBuffer: prev.pdfArrayBuffer,
             pdfSourcePath: prev.pdfSourcePath,
-            primaryType: prev.primaryType || detectRecursosPrimaryType(rb, pk)
+            primaryType: prev.primaryType || detectRecursosPrimaryType(rb, pk),
+            allowPdfDownload: allowPdfDownload
         });
     }
 
@@ -1252,6 +1320,9 @@
         ensurePublishedEditResourceFooterInMount(rb);
         if (typeof window.initResourcesBlockFields === 'function') {
             window.initResourcesBlockFields(rb);
+        }
+        if (saved.primaryType === 'pdf' || (saved.html && saved.html.indexOf('data-cc-pdf-js-viewer') !== -1)) {
+            syncPdfAllowDownloadSwitch(rb, saved);
         }
         scheduleMountRecursosPdfViewerFromState(rb, saved);
         renderCrearContenidoComplementary();
@@ -3126,6 +3197,7 @@
         
         bindRecursosBlockInteractions();
         bindCrearContenidoResourcesBlockPdfChangeOnce();
+        bindCrearContenidoPdfAllowDownloadOnce();
         bindCrearContenidoComplementaryInteractionsOnce();
     }
 
@@ -4124,7 +4196,8 @@
             html: pdfHtml,
             pdfSourcePath: (pdfBin && pdfBin.sourcePath) || CC_DEMO_PDF_PATH,
             primaryType: 'pdf',
-            pdfBlobUrl: ''
+            pdfBlobUrl: '',
+            allowPdfDownload: true
         };
         if (pdfBin && pdfBin.arrayBuffer) {
             pdfState.pdfArrayBuffer = pdfBin.arrayBuffer;

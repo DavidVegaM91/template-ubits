@@ -426,6 +426,22 @@ body.crear-contenido-app-open .ubits-dropdown-menu__content {
     justify-content: stretch;
 }
 
+/* Switch «Permitir descarga del PDF…» encima del footer del recurso (crear + editar) */
+.page-crear-contenido .cc-pdf-allow-download,
+.page-editar-contenido .cc-pdf-allow-download {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.page-crear-contenido .cc-pdf-allow-download .ubits-switch,
+.page-editar-contenido .cc-pdf-allow-download .ubits-switch {
+    margin: 0;
+    max-width: 100%;
+}
+
 .page-crear-contenido .cc-pdf-resource__viewer-wrap--pdfjs {
     width: 100%;
     min-height: min(70vh, 640px);

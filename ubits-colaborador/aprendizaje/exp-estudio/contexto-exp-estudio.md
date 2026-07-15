@@ -1000,11 +1000,22 @@ IndiceExpEstudio (En progreso)
 | Tipo | En curso demo v1 | Columna izquierda |
 |------|------------------|-------------------|
 | Video | ✅ p.1 | `.cc-video-resource` + complementarios demo |
-| PDF | ✅ p.2 | Visor PDF.js (`mountCrearContenidoPdfViewer`) |
+| PDF | ✅ p.2 | Visor del PDF + botón **Descargar** debajo si `allowPdfDownload` (Creator) está ON — demo ON |
 | SCORM | ✅ p.3 y p.4 | `.cc-scorm-resource` (mismo mount Creator / `simulador-scorm.html`) — títulos § 3.3 |
 | Evaluación | ✅ p.5 | **Tres fases** en la misma fila del índice (§ 6.8); sin complementarios |
 | Fin (índice) | ✅ p.6 | **No** es recurso Creator — pantalla cierre § 7 |
 | Embebido / Texto / Encuesta | ❌ | No en índice demo; Embebido/Texto sí tienen render § 6.2 si un contenido los trae |
+
+#### 6.5.1 PDF — descarga del recurso principal (desde Creator)
+
+En LMS Creator (`crear-contenido` / `editar-contenido`), cada página PDF tiene el switch **«Permitir descarga del PDF a los estudiantes»** (ON por defecto al subir el PDF).
+
+| Valor en Creator (`allowPdfDownload`) | En experiencia de estudio |
+|---------------------------------------|---------------------------|
+| **ON** (default / demo `p-2`) | Debajo del PDF renderizado: botón **`Descargar`** (`secondary` sm, `fa-download`) que descarga el mismo archivo |
+| **OFF** | Sin botón de descarga del recurso principal |
+
+No confundir con el complementario **archivo descargable** (§ 6.3), cuyo CTA es **`Descargar archivo`**.
 
 **Por qué SCORM en learner:** el seed de creación/edición en LMS Creator ya monta **dos páginas SCORM** (`Simulador de conversación difícil`, `Conversaciones difíciles según Thomas-Kilmann`). El estudiante debe ver el **mismo tipo de recurso** en consumo (solo lectura, sin «Editar presentación» / Eliminar).
 
@@ -1853,7 +1864,8 @@ window.BD_EXP_ESTUDIO_DEMO = {
             { tipo: 'texto', html: '<p>Un conflicto es una diferencia de intereses…</p>' }
           ]
         },
-        { id: 'p-2', titulo: 'Guía mapa de conflicto', tipo: 'pdf' }
+        { id: 'p-2', titulo: 'Guía mapa de conflicto', tipo: 'pdf',
+          pdfSrc: '…/guia-mapa-conflicto.pdf', allowPdfDownload: true }
       ]
     },
     {

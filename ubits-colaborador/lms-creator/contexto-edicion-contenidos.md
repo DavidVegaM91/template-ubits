@@ -457,6 +457,20 @@ Orden visual en la fila de acciones (de izquierda a derecha):
 
 **Iconos (FontAwesome outline):** Descargar `fa-download`, Reemplazar `fa-arrows-rotate`, Eliminar `fa-trash`.
 
+### PDF — switch «Permitir descarga del PDF a los estudiantes»
+
+Solo en páginas cuyo recurso principal es **PDF**, **encima** de la fila Descargar / Reemplazar / Eliminar:
+
+| Elemento | Comportamiento |
+|----------|----------------|
+| Copy | **`Permitir descarga del PDF a los estudiantes`** |
+| Control | Switch `ubits-switch` (md) |
+| Default al añadir / reemplazar PDF | **ON** |
+| Persistencia | Por página (`allowPdfDownload`) — mismo criterio que en creación |
+| Efecto en learner | **ON** → botón **Descargar** debajo del PDF en experiencia de estudio; **OFF** → no se muestra |
+
+Demo seed (`p2` / Guía mapa de conflicto): switch **ON**.
+
 ### Descargar — comportamiento por tipo de recurso
 
 En el playground, generar la descarga en cliente a partir de los datos mock guardados del contenido:

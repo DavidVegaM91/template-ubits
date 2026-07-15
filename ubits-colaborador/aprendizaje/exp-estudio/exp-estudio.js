@@ -808,12 +808,25 @@
           esc(page.titulo || '') +
           '</h2>';
 
+    var pdfDownloadBlock = '';
+    if (page.tipo === 'pdf' && page.allowPdfDownload !== false) {
+      pdfDownloadBlock =
+        '<div class="exp-estudio-recurso__pdf-download">' +
+        '<a class="ubits-button ubits-button--secondary ubits-button--sm" href="' +
+        esc(page.pdfSrc || '#') +
+        '" download>' +
+        '<i class="far fa-download" aria-hidden="true"></i><span>Descargar</span></a>' +
+        '</div>';
+    }
+
     main.innerHTML =
       '<div class="exp-estudio-recurso">' +
       titleBlock +
       '<div class="exp-estudio-recurso__surface">' +
       surface +
-      '</div></div>' +
+      '</div>' +
+      pdfDownloadBlock +
+      '</div>' +
       renderComplementarios(page.complementarios);
   }
 

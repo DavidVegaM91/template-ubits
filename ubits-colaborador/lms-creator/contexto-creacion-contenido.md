@@ -735,6 +735,7 @@ En diapositivas **interactivas** (imagen con puntos, acordeón, pestañas, tarje
 - El usuario **sube un PDF** desde el panel de recurso; ve una **barra de progreso** mientras se procesa y luego una **vista previa** donde las **páginas aparecen una debajo de otra** (lectura vertical), **sin** el panel lateral de miniaturas del visor nativo del navegador.
 - **Eliminar** abre el **modal de confirmación** antes de volver al selector de tipos (la página queda en blanco tras confirmar).
 - Si cambia de **página** en el índice del contenido y vuelve, la vista previa del PDF se **restaura** de forma coherente.
+- **Switch «Permitir descarga del PDF a los estudiantes»** (encima de los botones del pie del recurso): al montar un PDF viene **encendido por defecto**. Controla si en **experiencia de estudio** el estudiante ve el botón **Descargar** debajo del PDF. Si está apagado, ese botón no aparece en learner. El valor se guarda por página (`allowPdfDownload` en el estado del recurso).
 
 ### Implementación técnica del visor (playground)
 
@@ -757,7 +758,7 @@ En diapositivas **interactivas** (imagen con puntos, acordeón, pestañas, tarje
 #### Creación y montaje (playground)
 
 1. **Resources block** — variante PDF + **file upload**; al elegir archivo se emite `ubits-resources-block-pdf-change` → el listener en `crear-contenido.js` llama a `finishCrearContenidoPdfRender` tras la barra de progreso simulada (`runCrearContenidoPdfUploadProgressAndRender`).
-2. **`finishCrearContenidoPdfRender`** crea un `blob:` con `URL.createObjectURL`, pinta el **shell** HTML (`buildCrearContenidoPdfViewerShellHtml`) en `#crear-contenido-recursos-resources-mount` y guarda estado en `CC_RECURSOS_PAGE_STATE` para la página activa: `{ html: shell, pdfBlobUrl }`. Revoca el blob anterior si el usuario sube **otro PDF** en la misma página.
+2. **`finishCrearContenidoPdfRender`** crea un `blob:` con `URL.createObjectURL`, pinta el **shell** HTML (`buildCrearContenidoPdfViewerShellHtml`) en `#crear-contenido-recursos-resources-mount` y guarda estado en `CC_RECURSOS_PAGE_STATE` para la página activa: `{ html: shell, pdfBlobUrl, allowPdfDownload: true }`. Revoca el blob anterior si el usuario sube **otro PDF** en la misma página (y vuelve a poner `allowPdfDownload: true`).
 3. **`mountCrearContenidoPdfViewer(viewerRoot, blobUrl)`** (`crear-contenido-pdf-viewer.js`) ejecuta `pdfjsLib.getDocument({ url: blobUrl })` y renderiza **página a página en serie** cada `getPage(n)` en un `<canvas>` dentro de `.cc-pdf-resource__pdfjs-pages`, con escala según el ancho del contenedor (tope de escala para legibilidad).
 
 #### Persistencia al cambiar de página del índice
@@ -774,7 +775,8 @@ En diapositivas **interactivas** (imagen con puntos, acordeón, pestañas, tarje
 | Área scroll del visor (`.cc-pdf-resource__viewer-wrap--pdfjs`) | Fondo **`var(--ubits-bg-3)`** para superficie de lectura coherente con el sistema. |
 | Cada **canvas** (hoja renderizada) | Fondo **`var(--ubits-bg-3)`** para zonas transparentes del PDF; borde **`1px solid var(--ubits-border-1)`**; **`border-radius: var(--border-radius-lg)`** (16px en la escala de tokens). |
 | Texto de carga / error | Tipografía y color de error UBITS en el shell. |
-| Pie | Botón **Eliminar** alineado al mismo patrón que otros recursos apilados (video). |
+| Switch descarga estudiantes | Fila `.cc-pdf-allow-download` encima del pie; alineada a la derecha; label + `ubits-switch`. |
+| Pie | Botón **Eliminar** (creación) o **Descargar / Reemplazar / Eliminar** (edición publicada), debajo del switch. |
 
 #### Sincronización con el índice (técnico)
 

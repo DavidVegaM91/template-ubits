@@ -45,7 +45,9 @@
             titulo: 'Guía mapa de conflicto',
             tipo: 'pdf',
             /* Mismo PDF del seed Creator (demo-assets/guia-mapa-conflicto.pdf) */
-            pdfSrc: '../../lms-creator/demo-assets/guia-mapa-conflicto.pdf'
+            pdfSrc: '../../lms-creator/demo-assets/guia-mapa-conflicto.pdf',
+            /* Paridad Creator: switch «Permitir descarga del PDF…» ON por defecto */
+            allowPdfDownload: true
           }
         ]
       },
