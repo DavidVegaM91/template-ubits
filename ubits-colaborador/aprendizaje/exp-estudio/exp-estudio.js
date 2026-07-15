@@ -384,8 +384,27 @@
     toast('success', 'Certificado descargado (demo)');
   }
 
+  /* ─── Stage shell ─── */
+  function ensureStandardStage() {
+    var stage = document.getElementById('exp-estudio-stage');
+    if (!stage) return null;
+    stage.className = 'exp-estudio-stage';
+    if (!document.getElementById('exp-estudio-main') || !document.getElementById('exp-estudio-aside')) {
+      stage.innerHTML =
+        '<div id="exp-estudio-main" class="exp-estudio-col" aria-live="polite"></div>' +
+        '<aside id="exp-estudio-aside" class="exp-estudio-col exp-estudio-col--aside"></aside>';
+    }
+    return {
+      stage: stage,
+      main: document.getElementById('exp-estudio-main'),
+      aside: document.getElementById('exp-estudio-aside')
+    };
+  }
+
   /* ─── Portada ─── */
-  function renderPortadaLeft(main, content) {
+  function renderPortada(content) {
+    var stage = document.getElementById('exp-estudio-stage');
+    if (!stage) return;
     var img = resolveImage(content.imagen || content.imagePath);
     var isFiqsha =
       content.catalogoId === 'catalogo_fiqsha' || String(content.origen || '').indexOf('fiqsha') !== -1;
@@ -398,19 +417,25 @@
         '<span class="ubits-badge-tag ubits-badge-tag--outlined ubits-badge-tag--neutral ubits-badge-tag--sm">' +
         '<span class="ubits-badge-tag__text">Trabajo en equipo</span></span></div></div>';
     }
-    main.innerHTML =
+    /* Tres hijos directos (como React): hero | aside | meta — grid areas controlan orden */
+    stage.className = 'exp-estudio-stage exp-estudio-stage--portada';
+    stage.innerHTML =
       '<div class="exp-estudio-hero"><img src="' +
       esc(img) +
       '" alt="" /></div>' +
+      '<aside id="exp-estudio-aside" class="exp-estudio-col exp-estudio-col--aside"></aside>' +
+      '<div class="exp-estudio-portada-meta">' +
       ficha +
       '<div class="exp-estudio-ficha">' +
       '<p class="exp-estudio-ficha__title ubits-body-md-semibold">Descripción</p>' +
       '<p class="exp-estudio-desc ubits-body-md-regular">' +
       esc(content.descripcion || '') +
-      '</p></div>';
+      '</p></div></div>';
+    renderPortadaAside(document.getElementById('exp-estudio-aside'), content);
   }
 
   function renderPortadaAside(aside, content) {
+    if (!aside) return;
     var mode = session.portadaMode || 'por-iniciar';
     var pct = progressPercent();
     var html = '<div class="exp-estudio-aside-stack">';
@@ -1251,32 +1276,35 @@
   /* ─── Render root ─── */
   function render() {
     clearDestroyers();
-    var main = document.getElementById('exp-estudio-main');
-    var aside = document.getElementById('exp-estudio-aside');
-    if (!main || !aside || !session) return;
+    if (!session) return;
 
     var content = session.content;
     if (!content) {
-      main.innerHTML = '<p class="ubits-body-md-regular">Contenido no encontrado.</p>';
-      aside.innerHTML = '';
+      var empty = ensureStandardStage();
+      if (empty && empty.main) {
+        empty.main.innerHTML = '<p class="ubits-body-md-regular">Contenido no encontrado.</p>';
+        if (empty.aside) empty.aside.innerHTML = '';
+      }
       return;
     }
 
     if (session.view === 'portada') {
       session.portadaMode = session.portadaMode || portadaModeFromProgress();
-      renderPortadaLeft(main, content);
-      renderPortadaAside(aside, content);
+      renderPortada(content);
       return;
     }
+
+    var shell = ensureStandardStage();
+    if (!shell || !shell.main || !shell.aside) return;
     if (session.view === 'cierre') {
-      renderCierre(main, aside, content);
+      renderCierre(shell.main, shell.aside, content);
       return;
     }
     // Recursos
     var page = getPage(session.currentPageId) || getPage('p-1');
     session.currentPageId = page.id;
-    renderRecursoMain(main, page);
-    renderRecursosAside(aside, content);
+    renderRecursoMain(shell.main, page);
+    renderRecursosAside(shell.aside, content);
   }
 
   function createSession() {

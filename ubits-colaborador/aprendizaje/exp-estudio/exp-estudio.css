@@ -38,6 +38,46 @@ body.page-exp-estudio .exp-estudio-col--aside {
   }
 }
 
+/*
+ * Portada (paridad React): grid areas — desktop imagen|aside / meta|aside;
+ * mobile: imagen → aside (TituloSpecsCta+índice) → meta (categoría+descripción).
+ * Sin display:contents (rompe min-width:0 y desborda el content-area).
+ */
+body.page-exp-estudio .exp-estudio-stage--portada {
+  grid-template-columns: minmax(0, 1.35fr) minmax(280px, 0.9fr);
+  grid-template-areas:
+    'hero aside'
+    'meta aside';
+}
+
+body.page-exp-estudio .exp-estudio-stage--portada .exp-estudio-hero {
+  grid-area: hero;
+  min-width: 0;
+}
+
+body.page-exp-estudio .exp-estudio-stage--portada > #exp-estudio-aside {
+  grid-area: aside;
+  min-width: 0;
+}
+
+body.page-exp-estudio .exp-estudio-portada-meta {
+  grid-area: meta;
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-lg);
+  min-width: 0;
+}
+
+@media (max-width: 1023px) {
+  body.page-exp-estudio .exp-estudio-stage--portada {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      'hero'
+      'aside'
+      'meta';
+  }
+}
+
 /* Portada izquierda */
 body.page-exp-estudio .exp-estudio-hero {
   width: 100%;
@@ -115,7 +155,22 @@ body.page-exp-estudio .exp-estudio-recurso__surface {
   overflow: hidden;
 }
 
-body.page-exp-estudio .exp-estudio-recurso video,
+/* Video: mantener 16:9 en desktop y mobile (sin altura fija que aplaste en pantallas angostas) */
+body.page-exp-estudio .exp-estudio-recurso__surface:has(> video) {
+  min-height: 0;
+}
+
+body.page-exp-estudio .exp-estudio-recurso video {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  border: 0;
+  background: var(--ubits-bg-2);
+  border-radius: var(--border-radius-lg);
+}
+
 body.page-exp-estudio .exp-estudio-recurso iframe,
 body.page-exp-estudio .exp-estudio-recurso embed,
 body.page-exp-estudio .exp-estudio-recurso object {
@@ -244,27 +299,31 @@ body.page-exp-estudio .exp-estudio-comps {
 body.page-exp-estudio .exp-estudio-download-card {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--gap-md);
   width: 100%;
   min-width: 0;
   box-sizing: border-box;
-  padding: 12px 16px;
+  padding: var(--padding-md);
   background: var(--ubits-bg-1);
   border: 1px solid var(--ubits-border-1);
   border-radius: var(--border-radius-lg);
 }
 
 body.page-exp-estudio .exp-estudio-download-card__icon {
-  width: 40px;
-  height: 40px;
-  display: grid;
-  place-items: center;
-  color: var(--ubits-fg-1-medium);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   flex-shrink: 0;
+  width: var(--size-6xl);
+  height: var(--size-6xl);
+  box-sizing: border-box;
+  background: var(--ubits-bg-3);
+  border-radius: var(--border-radius-sm);
+  color: var(--ubits-fg-1-medium);
 }
 
 body.page-exp-estudio .exp-estudio-download-card__icon i {
-  font-size: var(--font-size-md, 16px);
+  font-size: var(--font-size-md);
   line-height: 1;
 }
 
@@ -293,7 +352,7 @@ body.page-exp-estudio .exp-estudio-download-card > .ubits-button {
 
 /* Texto complementario (DescripcionExpEstudio) */
 body.page-exp-estudio .exp-estudio-comp {
-  padding: var(--padding-lg);
+  padding: var(--padding-md);
   background: var(--ubits-bg-1);
   border: 1px solid var(--ubits-border-1);
   border-radius: var(--border-radius-lg);
