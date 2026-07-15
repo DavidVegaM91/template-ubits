@@ -14,16 +14,27 @@
   min-width: 0;
   padding: var(--space-2) var(--space-4);
   background: var(--ubits-bg-1);
+  border: 1px solid var(--ubits-border-1);
   border-radius: 10px;
 }
 
+/* Wrapper del flag: layout aquí; el <i> solo lleva far fa-flag (FA usa ::before). */
 .ubits-progreso-exp__flag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   flex-shrink: 0;
   width: 20px;
-  text-align: center;
-  font-size: 16px;
-  line-height: 24px;
+  height: 24px;
   color: var(--ubits-fg-1-medium);
+  font-size: 16px;
+  line-height: 1;
+}
+
+.ubits-progreso-exp__flag i {
+  color: inherit;
+  font-size: inherit;
+  line-height: 1;
 }
 
 .ubits-progreso-exp__label {

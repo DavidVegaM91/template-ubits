@@ -136,6 +136,8 @@
   font-weight: var(--font-weight-semibold);
 }
 
+/* Completada + actual: chrome de .is-activa + check (no Progress). Clases: is-completada + is-activa */
+
 .ubits-paginas-exp__item.is-bloqueada .ubits-paginas-exp__label {
   color: var(--ubits-fg-on-disabled);
   font-weight: 600;

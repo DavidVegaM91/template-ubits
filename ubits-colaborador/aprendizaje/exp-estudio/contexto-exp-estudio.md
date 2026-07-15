@@ -603,7 +603,7 @@ Sección 2: Herramientas para resolver conflictos    ▾
 
 Componente Figma: **`ProgresoExpEstudio`** — `state: In Progress`.
 
-Card blanca, `border-radius` 10px, padding horizontal 16px / vertical 8px. **Layout en una sola fila** (Figma Learn-Components):
+Card blanca (`bg-1`), borde gris `border-1` 1px, `border-radius` 10px, padding horizontal 16px / vertical 8px. **Layout en una sola fila** (Figma Learn-Components). Se ve igual dentro de `TituloSpecsCtaExpEstudio` y `TituloProgresoYNav`:
 
 `[fa-flag] [Tu progreso:] [======== barra ========] [NN %]`
 
@@ -625,7 +625,7 @@ Card blanca, `border-radius` 10px, padding horizontal 16px / vertical 8px. **Lay
 
 #### 5.6.3 `IndiceExpEstudio` — `state: En progreso`
 
-Mismo stack de tarjetas que § 5.4.3 (secciones colapsables). Cada fila adopta uno de **tres estados**:
+Mismo stack de tarjetas que § 5.4.3 (secciones colapsables). Cada fila adopta uno de **cuatro estados**:
 
 ##### Estado `Completada`
 
@@ -636,7 +636,7 @@ Mismo stack de tarjetas que § 5.4.3 (secciones colapsables). Cada fila adopta u
 | Ícono tipo | Color normal (no disabled) |
 | Feedback derecho | **`Check`** — círculo 24px verde (`feedback/bg/success/subtle`) + borde success + ícono check 12px |
 
-##### Estado `Activa` (página actual / última vista)
+##### Estado `Activa` (página actual / última vista — aún no completada)
 
 | Aspecto | Detalle |
 |---------|---------|
@@ -646,6 +646,19 @@ Mismo stack de tarjetas que § 5.4.3 (secciones colapsables). Cada fila adopta u
 | Feedback derecho | **`Progress`** — círculo 24px fondo info subtle + borde brand + **spinner** 12px |
 
 > En Figma el ejemplo activo usa tipo Scorm; el **patrón visual aplica a cualquier tipo** de página (video, PDF, embebido, evaluación, etc.).
+
+##### Estado `Completada-activa` (completada **y** es la página actual)
+
+Cuando el estudiante **vuelve** a una página que ya marcó como completada, el índice debe resaltarla para saber dónde está parado:
+
+| Aspecto | Detalle |
+|---------|---------|
+| Fondo fila | `bg-2` (igual que Activa) |
+| Barra lateral | Franja brand (igual que Activa) |
+| Título + ícono tipo | Color **`accent-brand`** (igual que Activa) |
+| Feedback derecho | **`Check`** (igual que Completada — **no** Progress) |
+
+Estado en código: `completada-activa` (clases Vanilla `is-completada` + `is-activa` + `is-completada-activa`).
 
 ##### Estado `Bloqueada` (pendiente)
 
@@ -1000,11 +1013,12 @@ IndiceExpEstudio (En progreso)
 | Tipo | En curso demo v1 | Columna izquierda |
 |------|------------------|-------------------|
 | Video | ✅ p.1 | `.cc-video-resource` + complementarios demo |
-| PDF | ✅ p.2 | Visor del PDF + botón **Descargar** debajo si `allowPdfDownload` (Creator) está ON — demo ON |
-| SCORM | ✅ p.3 y p.4 | `.cc-scorm-resource` (mismo mount Creator / `simulador-scorm.html`) — títulos § 3.3 |
+| PDF | ✅ p.2 | Visor del PDF + acciones debajo (§ 6.5.1 / § 6.5.2) |
+| SCORM | ✅ p.3 y p.4 | `.cc-scorm-resource` + **Ver en pantalla completa** (§ 6.5.2) |
 | Evaluación | ✅ p.5 | **Tres fases** en la misma fila del índice (§ 6.8); sin complementarios |
 | Fin (índice) | ✅ p.6 | **No** es recurso Creator — pantalla cierre § 7 |
-| Embebido / Texto / Encuesta | ❌ | No en índice demo; Embebido/Texto sí tienen render § 6.2 si un contenido los trae |
+| Embebido | ❌ demo | Render § 6.2 + **Ver en pantalla completa** (§ 6.5.2) cuando el contenido lo traiga |
+| Texto / Encuesta | ❌ | Texto sí tiene render § 6.2; encuesta fuera de v1 |
 
 #### 6.5.1 PDF — descarga del recurso principal (desde Creator)
 
@@ -1016,6 +1030,42 @@ En LMS Creator (`crear-contenido` / `editar-contenido`), cada página PDF tiene 
 | **OFF** | Sin botón de descarga del recurso principal |
 
 No confundir con el complementario **archivo descargable** (§ 6.3), cuyo CTA es **`Descargar archivo`**.
+
+#### 6.5.2 Pantalla completa (PDF / Embebido / SCORM)
+
+Debajo del recurso principal renderizado, estos tipos llevan un botón:
+
+| Campo | Valor |
+|-------|--------|
+| Label | **`Ver en pantalla completa`** |
+| Variante | `secondary` sm |
+| Icono | `far fa-expand` |
+
+**Fila de acciones (debajo de la superficie, fuera de la card):**
+
+Mismo patrón de alineación que el footer del Resources block en Creator (`.ubits-resources-block--stack` + `align-items: flex-end`): recurso renderizado **sin card blanca envolvente**; los botones van **abajo a la derecha**, debajo del recurso.
+
+**Prohibido:** poner el nombre de la página (`h2` / título) **encima** del recurso renderizado (video, PDF, embebido, SCORM). En Creator el título de página va en el índice / inline-edit del panel, no sobre el visor. En SCORM IA el título vive **solo dentro** del paquete (barra interna). El título de página en learner sí aparece en el **header del lightbox** de pantalla completa.
+
+| Tipo | Orden (derecha, de izquierda a derecha en la fila) |
+|------|---------------------------|
+| **PDF** (con descarga ON) | **`Descargar`** · **`Ver en pantalla completa`** |
+| **PDF** (descarga OFF) | Solo **`Ver en pantalla completa`** |
+| **Embebido** / **SCORM** | Solo **`Ver en pantalla completa`** |
+
+**Al hacer clic:** se abre un **lightbox** a viewport completo con el **mismo elemento renderizado** (mismo `src` del iframe: PDF / embebido / SCORM), en solo lectura.
+
+**Chrome del lightbox (learner):**
+
+| Zona | Contenido |
+|------|-----------|
+| Header | **Título de la página** + botón icon-only **Cerrar** (`fa-times`, tooltip «Cerrar») |
+| Centro | iframe / superficie del recurso a pantalla casi completa |
+| Footer | **Ninguno** (no es el lightbox de edición de Creator) |
+
+**Patrón visual:** mismo overlay / bandas / acotado a 1440px que el lightbox **«Editar presentación»** del LMS Creator (SCORM IA). En learner **no** hay Cancelar/Guardar ni herramientas de edición.
+
+**Cierre:** botón Cerrar, clic en el scrim (fuera del contenido), o tecla `Escape`.
 
 **Por qué SCORM en learner:** el seed de creación/edición en LMS Creator ya monta **dos páginas SCORM** (`Simulador de conversación difícil`, `Conversaciones difíciles según Thomas-Kilmann`). El estudiante debe ver el **mismo tipo de recurso** en consumo (solo lectura, sin «Editar presentación» / Eliminar).
 

@@ -87,19 +87,32 @@ body.page-exp-estudio .exp-estudio-ficha__label {
   color: var(--ubits-fg-1-medium);
 }
 
-/* Recursos — mount */
+/* Stack learner — paridad .ubits-resources-block--stack (Creator):
+   superficie a ancho completo; footer/acciones afuera, abajo a la derecha */
+body.page-exp-estudio .exp-estudio-recurso-stack {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--gap-sm);
+  width: 100%;
+  min-width: 0;
+}
+
+/* Contenedor del recurso: sin card (sin fondo/borde). Botones van afuera en el stack. */
 body.page-exp-estudio .exp-estudio-recurso {
   width: 100%;
   min-width: 0;
-  background: var(--ubits-bg-1);
-  border: 1px solid var(--ubits-border-1);
-  border-radius: var(--border-radius-lg);
-  overflow: hidden;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  overflow: visible;
 }
 
 body.page-exp-estudio .exp-estudio-recurso__surface {
   width: 100%;
   min-height: 280px;
+  border-radius: var(--border-radius-lg);
+  overflow: hidden;
 }
 
 body.page-exp-estudio .exp-estudio-recurso video,
@@ -111,53 +124,180 @@ body.page-exp-estudio .exp-estudio-recurso object {
   min-height: 420px;
   border: 0;
   background: var(--ubits-bg-2);
+  border-radius: var(--border-radius-lg);
 }
 
-body.page-exp-estudio .exp-estudio-recurso__title {
-  margin: 0;
-  padding: var(--padding-lg);
-  border-bottom: 1px solid var(--ubits-border-1);
-  color: var(--ubits-fg-1-high);
-}
-
-/* PDF principal: Descargar debajo del visor (si allowPdfDownload en Creator) */
-body.page-exp-estudio .exp-estudio-recurso__pdf-download {
+/* Descargar / Ver en pantalla completa — fuera de la superficie, a la derecha (como footer Creator) */
+body.page-exp-estudio .exp-estudio-recurso__actions {
   display: flex;
-  justify-content: flex-start;
+  flex-wrap: wrap;
+  justify-content: flex-end;
   align-items: center;
-  padding: var(--padding-md) var(--padding-lg) var(--padding-lg);
+  gap: var(--gap-sm);
+  flex-shrink: 0;
   box-sizing: border-box;
+}
+
+/* Lightbox pantalla completa — misma familia visual que «Editar presentación» (Creator) */
+body.exp-estudio-fs-open {
+  overflow: hidden;
+}
+
+.exp-estudio-fs-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 1400;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: stretch;
+  padding: 0;
+  box-sizing: border-box;
+  background: rgba(0, 0, 0, 0.7);
+}
+
+.exp-estudio-fs-lightbox__band {
+  flex-shrink: 0;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.exp-estudio-fs-lightbox__band--head {
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.82) 0%,
+    rgba(0, 0, 0, 0.55) 45%,
+    rgba(0, 0, 0, 0) 100%
+  );
+}
+
+.exp-estudio-fs-lightbox__band-inner {
+  max-width: 1440px;
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  padding: var(--padding-md) var(--padding-xl);
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--gap-md);
+}
+
+.exp-estudio-fs-lightbox__title {
+  margin: 0;
+  font-family: var(--ubits-font-family-sans);
+  font-size: 13px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.95);
+  line-height: 1.35;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  letter-spacing: 0.01em;
+}
+
+.exp-estudio-fs-lightbox__main {
+  align-self: center;
+  width: 100%;
+  max-width: 1440px;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 0 var(--padding-xl) var(--padding-md);
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.exp-estudio-fs-lightbox__body {
+  flex: 1;
+  min-height: 0;
+  position: relative;
+  background: #000;
+  border-radius: var(--border-radius-md);
+  overflow: hidden;
+}
+
+.exp-estudio-fs-lightbox__body iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+  display: block;
+  border-radius: var(--border-radius-md);
+  overflow: hidden;
+  background: var(--ubits-bg-2);
 }
 
 body.page-exp-estudio .exp-estudio-comps {
   display: flex;
   flex-direction: column;
   gap: var(--gap-md);
+  width: 100%;
+  min-width: 0;
 }
 
-body.page-exp-estudio .exp-estudio-comp {
-  padding: var(--padding-lg);
+/* DescargarArchivo — paridad React .downloadCard */
+body.page-exp-estudio .exp-estudio-download-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  padding: 12px 16px;
   background: var(--ubits-bg-1);
   border: 1px solid var(--ubits-border-1);
   border-radius: var(--border-radius-lg);
 }
 
-body.page-exp-estudio .exp-estudio-comp__head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--gap-md);
-  margin-bottom: var(--gap-sm);
+body.page-exp-estudio .exp-estudio-download-card__icon {
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  color: var(--ubits-fg-1-medium);
+  flex-shrink: 0;
 }
 
-body.page-exp-estudio .exp-estudio-comp__title {
+body.page-exp-estudio .exp-estudio-download-card__icon i {
+  font-size: var(--font-size-md, 16px);
+  line-height: 1;
+}
+
+body.page-exp-estudio .exp-estudio-download-card__meta {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+body.page-exp-estudio .exp-estudio-download-card__name {
   margin: 0;
   color: var(--ubits-fg-1-high);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-body.page-exp-estudio .exp-estudio-comp__meta {
-  margin: 0;
+body.page-exp-estudio .exp-estudio-download-card__size {
+  margin: 2px 0 0;
   color: var(--ubits-fg-1-medium);
+}
+
+body.page-exp-estudio .exp-estudio-download-card > .ubits-button {
+  flex-shrink: 0;
+  align-self: center;
+}
+
+/* Texto complementario (DescripcionExpEstudio) */
+body.page-exp-estudio .exp-estudio-comp {
+  padding: var(--padding-lg);
+  background: var(--ubits-bg-1);
+  border: 1px solid var(--ubits-border-1);
+  border-radius: var(--border-radius-lg);
+  box-sizing: border-box;
 }
 
 body.page-exp-estudio .exp-estudio-comp__body {

@@ -31,6 +31,9 @@
     user-select: none;
     white-space: nowrap;
     overflow: visible;
+    /* height sm/md/lg incluye padding+borde. Sin esto, un <a.ubits-button> (content-box)
+       sale más alto que un <button> (border-box de UA) con la misma clase. */
+    box-sizing: border-box;
     
     /* Default state */
     background: var(--ubits-button-primary-bg-default);

@@ -297,22 +297,35 @@
   }
 
   function pageState(pageId) {
-    if (session.completedPageIds[pageId]) return 'completada';
+    var isCompleted = !!session.completedPageIds[pageId];
+    if (pageId === 'p-6' && (session.view === 'cierre' || session.completedPageIds['p-6'])) {
+      isCompleted = true;
+    }
+    var isCurrent =
+      (session.view === 'recursos' && session.currentPageId === pageId) ||
+      (session.view === 'cierre' && pageId === 'p-6') ||
+      (session.view === 'portada' &&
+        session.portadaMode === 'en-progreso' &&
+        pageId === session.lastPageId);
+
     if (session.view === 'cierre' && pageId === 'p-6') return 'activa';
+    if (isCompleted && isCurrent && session.view !== 'cierre') return 'completada-activa';
+    if (isCompleted) return 'completada';
     if (session.view === 'recursos' && session.currentPageId === pageId) return 'activa';
-    if (session.view === 'portada' && session.portadaMode === 'en-progreso' && pageId === session.lastPageId) {
+    if (
+      session.view === 'portada' &&
+      session.portadaMode === 'en-progreso' &&
+      pageId === session.lastPageId
+    ) {
       return 'activa';
     }
-    if (pageId === 'p-6') {
-      if (session.view === 'cierre' || session.completedPageIds['p-6']) return 'completada';
-      return 'bloqueada';
-    }
+    if (pageId === 'p-6') return 'bloqueada';
     return 'bloqueada';
   }
 
   function isPageClickable(pageId, state) {
     if (session.view === 'portada' && session.portadaMode === 'por-iniciar') return false;
-    if (state === 'completada' || state === 'activa') return true;
+    if (state === 'completada' || state === 'completada-activa' || state === 'activa') return true;
     var order = flatPages().map(function (p) {
       return p.id;
     });
@@ -443,9 +456,10 @@
   }
 
   /* ─── Recursos mount ─── */
+  /** Paridad React formatPesoBytes (MiB, 1 decimal es-CO) */
   function formatBytes(n) {
-    var mb = n / 1000000;
-    return (Math.round(mb * 10) / 10).toLocaleString('es-CO') + ' MB';
+    var mb = Number(n || 0) / (1024 * 1024);
+    return mb.toLocaleString('es-CO', { maximumFractionDigits: 1 }) + ' MB';
   }
 
   function renderComplementarios(comps) {
@@ -455,24 +469,29 @@
       comps
         .map(function (c) {
           if (c.tipo === 'archivo-descargable') {
+            /* Paridad React downloadCard: ícono + nombre/peso + Descargar archivo tertiary sm */
             return (
-              '<div class="exp-estudio-comp">' +
-              '<div class="exp-estudio-comp__head">' +
-              '<div><p class="exp-estudio-comp__title ubits-body-md-semibold">' +
+              '<div class="exp-estudio-download-card">' +
+              '<span class="exp-estudio-download-card__icon" aria-hidden="true">' +
+              '<i class="far fa-file-pdf"></i></span>' +
+              '<div class="exp-estudio-download-card__meta">' +
+              '<p class="exp-estudio-download-card__name ubits-body-sm-semibold">' +
               esc(c.nombre || 'Archivo') +
-              '</p><p class="exp-estudio-comp__meta ubits-body-sm-regular">' +
+              '</p>' +
+              '<p class="exp-estudio-download-card__size ubits-body-xs-regular">' +
               formatBytes(c.pesoBytes || 0) +
               '</p></div>' +
-              '<a class="ubits-button ubits-button--tertiary ubits-button--md" href="' +
+              '<a class="ubits-button ubits-button--tertiary ubits-button--sm" href="' +
               esc(c.url || '#') +
               '" download>' +
-              '<i class="far fa-file-arrow-down" aria-hidden="true"></i><span>Descargar archivo</span></a>' +
-              '</div></div>'
+              '<i class="far fa-file-arrow-down" aria-hidden="true"></i>' +
+              '<span>Descargar archivo</span></a></div>'
             );
           }
           if (c.tipo === 'texto') {
             return (
-              '<div class="exp-estudio-comp"><div class="exp-estudio-comp__body ubits-body-md-regular">' +
+              '<div class="exp-estudio-comp">' +
+              '<div class="exp-estudio-comp__body ubits-body-md-regular">' +
               (c.html || '') +
               '</div></div>'
             );
@@ -796,38 +815,147 @@
     } else if (page.tipo === 'scorm') {
       surface =
         '<iframe title="SCORM" src="' + esc(page.scormSrc || '') + '" allowfullscreen></iframe>';
+    } else if (page.tipo === 'embebido') {
+      surface =
+        '<iframe title="Contenido embebido" src="' +
+        esc(page.embedSrc || '') +
+        '" loading="lazy" allow="fullscreen; autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>';
     } else {
       surface = '<p class="ubits-body-md-regular" style="padding:var(--padding-lg)">Recurso</p>';
     }
 
-    /* SCORM: el título va en la barra interna (junto a 1/N), no como encabezado arriba */
-    var titleBlock =
-      page.tipo === 'scorm'
-        ? ''
-        : '<h2 class="exp-estudio-recurso__title ubits-body-md-bold">' +
-          esc(page.titulo || '') +
-          '</h2>';
-
-    var pdfDownloadBlock = '';
-    if (page.tipo === 'pdf' && page.allowPdfDownload !== false) {
-      pdfDownloadBlock =
-        '<div class="exp-estudio-recurso__pdf-download">' +
-        '<a class="ubits-button ubits-button--secondary ubits-button--sm" href="' +
-        esc(page.pdfSrc || '#') +
-        '" download>' +
-        '<i class="far fa-download" aria-hidden="true"></i><span>Descargar</span></a>' +
-        '</div>';
-    }
-
+    /* Sin título encima del recurso (paridad Creator). SCORM IA lleva el título solo adentro del paquete. */
+    var actionsHtml = buildResourceActionsHtml(page);
     main.innerHTML =
+      '<div class="exp-estudio-recurso-stack">' +
       '<div class="exp-estudio-recurso">' +
-      titleBlock +
       '<div class="exp-estudio-recurso__surface">' +
       surface +
       '</div>' +
-      pdfDownloadBlock +
+      '</div>' +
+      actionsHtml +
       '</div>' +
       renderComplementarios(page.complementarios);
+  }
+
+  function getPageFullscreenSrc(page) {
+    if (!page) return '';
+    if (page.tipo === 'pdf') return String(page.pdfSrc || '').trim();
+    if (page.tipo === 'scorm') return String(page.scormSrc || '').trim();
+    if (page.tipo === 'embebido') return String(page.embedSrc || '').trim();
+    return '';
+  }
+
+  function buildResourceActionsHtml(page) {
+    if (!page) return '';
+    var tipo = page.tipo;
+    var showFs = tipo === 'pdf' || tipo === 'scorm' || tipo === 'embebido';
+    var parts = [];
+    if (tipo === 'pdf' && page.allowPdfDownload !== false && page.pdfSrc) {
+      parts.push(
+        '<a class="ubits-button ubits-button--secondary ubits-button--sm" href="' +
+          esc(page.pdfSrc) +
+          '" download>' +
+          '<i class="far fa-download" aria-hidden="true"></i><span>Descargar</span></a>'
+      );
+    }
+    if (showFs) {
+      var fsSrc = getPageFullscreenSrc(page);
+      if (fsSrc) {
+        parts.push(
+          '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" ' +
+            'data-exp-estudio-fs' +
+            ' data-fs-src="' +
+            esc(fsSrc) +
+            '"' +
+            ' data-fs-title="' +
+            esc(page.titulo || '') +
+            '"' +
+            ' data-fs-tipo="' +
+            esc(tipo) +
+            '">' +
+            '<i class="far fa-expand" aria-hidden="true"></i><span>Ver en pantalla completa</span></button>'
+        );
+      }
+    }
+    if (!parts.length) return '';
+    return (
+      '<div class="exp-estudio-recurso__actions">' + parts.join('') + '</div>'
+    );
+  }
+
+  function closeExpEstudioFullscreenLightbox() {
+    var overlay = document.getElementById('exp-estudio-fs-lightbox');
+    if (overlay) overlay.remove();
+    document.body.classList.remove('exp-estudio-fs-open');
+    if (global.__expEstudioFsKeydown) {
+      document.removeEventListener('keydown', global.__expEstudioFsKeydown);
+      global.__expEstudioFsKeydown = null;
+    }
+  }
+
+  function openExpEstudioFullscreenLightbox(src, title, tipo) {
+    closeExpEstudioFullscreenLightbox();
+    if (!src) return;
+    var label = title || 'Recurso';
+    var iframeTitle =
+      tipo === 'pdf' ? 'PDF' : tipo === 'scorm' ? 'SCORM' : 'Contenido embebido';
+    var overlay = document.createElement('div');
+    overlay.id = 'exp-estudio-fs-lightbox';
+    overlay.className = 'exp-estudio-fs-lightbox';
+    overlay.setAttribute('role', 'dialog');
+    overlay.setAttribute('aria-modal', 'true');
+    overlay.setAttribute('aria-label', label);
+    overlay.innerHTML =
+      '<div class="exp-estudio-fs-lightbox__band exp-estudio-fs-lightbox__band--head">' +
+      '<div class="exp-estudio-fs-lightbox__band-inner">' +
+      '<p class="exp-estudio-fs-lightbox__title">' +
+      esc(label) +
+      '</p>' +
+      '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only" ' +
+      'data-exp-estudio-fs-close aria-label="Cerrar" data-tooltip="Cerrar" data-tooltip-delay="1000">' +
+      '<i class="far fa-times" aria-hidden="true"></i></button>' +
+      '</div></div>' +
+      '<div class="exp-estudio-fs-lightbox__main">' +
+      '<div class="exp-estudio-fs-lightbox__body">' +
+      '<iframe title="' +
+      esc(iframeTitle) +
+      '" src="' +
+      esc(src) +
+      '" allowfullscreen></iframe>' +
+      '</div></div>';
+
+    overlay.addEventListener('click', function (ev) {
+      if (ev.target === overlay) closeExpEstudioFullscreenLightbox();
+    });
+    document.body.appendChild(overlay);
+    document.body.classList.add('exp-estudio-fs-open');
+
+    global.__expEstudioFsKeydown = function (ev) {
+      if (ev.key === 'Escape') closeExpEstudioFullscreenLightbox();
+    };
+    document.addEventListener('keydown', global.__expEstudioFsKeydown);
+  }
+
+  function bindExpEstudioFullscreenOnce() {
+    if (global.__expEstudioFsBound) return;
+    global.__expEstudioFsBound = true;
+    document.addEventListener('click', function (ev) {
+      var closeBtn = ev.target && ev.target.closest && ev.target.closest('[data-exp-estudio-fs-close]');
+      if (closeBtn) {
+        ev.preventDefault();
+        closeExpEstudioFullscreenLightbox();
+        return;
+      }
+      var openBtn = ev.target && ev.target.closest && ev.target.closest('[data-exp-estudio-fs]');
+      if (!openBtn) return;
+      ev.preventDefault();
+      openExpEstudioFullscreenLightbox(
+        openBtn.getAttribute('data-fs-src') || '',
+        openBtn.getAttribute('data-fs-title') || '',
+        openBtn.getAttribute('data-fs-tipo') || ''
+      );
+    });
   }
 
   function evalPrimaryLabel() {
@@ -1177,6 +1305,7 @@
 
   function onHashChange() {
     if (applyingHash) return;
+    closeExpEstudioFullscreenLightbox();
     applyDeepLink(global.location.hash);
     render();
   }
@@ -1184,6 +1313,7 @@
   function initExpEstudioPage() {
     createSession();
     applyDeepLink(global.location.hash);
+    bindExpEstudioFullscreenOnce();
     render();
     global.addEventListener('hashchange', onHashChange);
   }

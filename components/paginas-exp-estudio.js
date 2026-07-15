@@ -3,7 +3,8 @@
  * A la derecha: Feedback Locked | Progress | Check.
  *
  * paginasExpEstudioHtml({ id, title, tipo, state, clickable, className })
- * state: 'bloqueada' | 'activa' | 'completada'
+ * state: 'bloqueada' | 'activa' | 'completada' | 'completada-activa'
+ * completada-activa = ya completada y es la página actual (resalte activa + check)
  */
 (function (global) {
   'use strict';
@@ -42,14 +43,17 @@
   }
 
   function normalizeState(state) {
-    var s = String(state || 'bloqueada').toLowerCase();
+    var s = String(state || 'bloqueada')
+      .toLowerCase()
+      .replace(/_/g, '-');
+    if (s === 'completada-activa' || s === 'activa-completada') return 'completada-activa';
     if (s === 'activa' || s === 'active') return 'activa';
     if (s === 'completada' || s === 'completed') return 'completada';
     return 'bloqueada';
   }
 
   function feedbackTypeForState(state) {
-    if (state === 'completada') return 'check';
+    if (state === 'completada' || state === 'completada-activa') return 'check';
     if (state === 'activa') return 'progress';
     return 'locked';
   }
@@ -67,10 +71,13 @@
     var state = normalizeState(opts.state);
     var title = opts.title != null ? String(opts.title) : '';
     var clickable = opts.clickable === true && state !== 'bloqueada';
-    var itemCls = [
-      'ubits-paginas-exp__item',
-      'is-' + state
-    ];
+    /* completada-activa reutiliza chrome de activa + class propia; feedback = check */
+    var itemCls = ['ubits-paginas-exp__item'];
+    if (state === 'completada-activa') {
+      itemCls.push('is-completada', 'is-activa', 'is-completada-activa');
+    } else {
+      itemCls.push('is-' + state);
+    }
     if (clickable) itemCls.push('is-clickable');
     if (opts.className) itemCls.push(opts.className);
 
@@ -85,7 +92,8 @@
     var idAttr = opts.id ? ' data-page-id="' + escapeHtml(opts.id) + '"' : '';
     var rowTag = clickable ? 'button' : 'div';
     var rowType = clickable ? ' type="button"' : '';
-    var ariaCurrent = state === 'activa' ? ' aria-current="true"' : '';
+    var ariaCurrent =
+      state === 'activa' || state === 'completada-activa' ? ' aria-current="true"' : '';
     var ariaLabel =
       state === 'bloqueada'
         ? 'Página bloqueada: ' + title

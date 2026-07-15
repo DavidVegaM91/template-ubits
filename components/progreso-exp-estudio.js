@@ -56,7 +56,10 @@
       '" data-status="' +
       status +
       '">' +
-      '<i class="far fa-flag ubits-progreso-exp__flag" aria-hidden="true"></i>' +
+      /* Wrapper: no poner clases ubits-* en el <i> (el fallback tipográfico pisa Font Awesome). */
+      '<span class="ubits-progreso-exp__flag" aria-hidden="true">' +
+      '<i class="far fa-flag"></i>' +
+      '</span>' +
       '<p class="ubits-progreso-exp__label ubits-body-md-bold">' +
       escapeHtml(label) +
       '</p>' +
