@@ -104,6 +104,13 @@
     max-width: 1047px;
 }
 
+/* display:flex arriba pisa el [hidden] del UA si no reforzamos */
+.cc-config-hub[hidden],
+.cc-config-panel[hidden],
+#cc-config-step-title[hidden] {
+    display: none !important;
+}
+
 .cc-config-panel__back {
     flex-shrink: 0;
 }
