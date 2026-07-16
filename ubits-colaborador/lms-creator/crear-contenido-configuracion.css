@@ -1,0 +1,314 @@
+/* Hub Configuración (Visibilidad + Pesos) — crear / editar contenido */
+
+.cc-config-hub-intro {
+    margin: 0 0 var(--gap-lg);
+    color: var(--ubits-fg-1-medium);
+}
+
+.cc-config-hub-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--gap-lg);
+}
+
+@media (max-width: 767px) {
+    .cc-config-hub-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.cc-config-hub-card {
+    background: var(--ubits-bg-1);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: var(--border-radius-lg);
+    padding: var(--padding-lg);
+    display: flex;
+    align-items: center;
+    gap: var(--gap-lg);
+    cursor: pointer;
+    user-select: none;
+    transition: border-color 0.15s, background 0.15s;
+    outline: none;
+}
+
+.cc-config-hub-card:hover {
+    border-color: var(--ubits-accent-brand);
+}
+
+.cc-config-hub-card:focus-visible {
+    box-shadow: 0 0 0 2px var(--ubits-accent-brand);
+    border-color: var(--ubits-accent-brand);
+}
+
+.cc-config-hub-card--warn {
+    border-color: var(--ubits-feedback-accent-error);
+}
+
+.cc-config-hub-card--warn:hover {
+    border-color: var(--ubits-feedback-accent-error);
+}
+
+.cc-config-hub-card__leading {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-xs);
+}
+
+.cc-config-hub-card__title-row {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-sm);
+}
+
+.cc-config-hub-card__icon {
+    font-size: 14px;
+    color: var(--ubits-fg-2-medium);
+    flex-shrink: 0;
+}
+
+.cc-config-hub-card:hover .cc-config-hub-card__icon {
+    color: var(--ubits-accent-brand);
+}
+
+.cc-config-hub-card--warn .cc-config-hub-card__icon {
+    color: var(--ubits-feedback-accent-error);
+}
+
+.cc-config-hub-card__title {
+    color: var(--ubits-fg-1-high);
+}
+
+.cc-config-hub-card__desc {
+    margin: 0;
+    color: var(--ubits-fg-1-medium);
+    line-height: 1.45;
+}
+
+.cc-config-hub-card__arrow {
+    color: var(--ubits-fg-1-low);
+    flex-shrink: 0;
+}
+
+.cc-config-hub-card:hover .cc-config-hub-card__arrow {
+    color: var(--ubits-accent-brand);
+}
+
+.cc-config-panel {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-md);
+    min-width: 0;
+    width: 100%;
+    max-width: 1047px;
+}
+
+.cc-config-panel__back {
+    flex-shrink: 0;
+}
+
+.cc-config-panel__header {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-md);
+    min-width: 0;
+}
+
+.cc-config-panel__title {
+    margin: 0;
+    min-width: 0;
+}
+
+.cc-config-pesos-body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-lg);
+    width: 100%;
+    min-width: 0;
+}
+
+.cc-config-pesos-header {
+    display: flex;
+    align-items: flex-start;
+    align-content: flex-start;
+    justify-content: space-between;
+    gap: var(--gap-lg);
+    flex-wrap: wrap;
+}
+
+.cc-config-pesos-intro {
+    margin: 0;
+    flex: 1 1 auto;
+    min-width: 0;
+    color: var(--ubits-fg-1-medium);
+}
+
+.cc-config-pesos-total-block {
+    display: flex;
+    align-items: baseline;
+    gap: var(--gap-xs);
+    flex-shrink: 0;
+    color: var(--ubits-fg-1-medium);
+}
+
+.cc-config-pesos-total-block > * {
+    margin: 0;
+}
+
+.cc-config-pesos-total-num {
+    color: var(--ubits-fg-1-high);
+    min-width: 1.5ch;
+    text-align: right;
+}
+
+.cc-config-pesos-total-num--ok {
+    color: var(--ubits-feedback-accent-success);
+}
+
+.cc-config-pesos-total-num--error {
+    color: var(--ubits-feedback-accent-error);
+}
+
+.cc-config-pesos-bar {
+    width: 100%;
+    height: 4px;
+    border-radius: var(--border-radius-full);
+    background: var(--ubits-bg-3);
+    overflow: hidden;
+}
+
+.cc-config-pesos-bar__fill {
+    height: 100%;
+    border-radius: var(--border-radius-full);
+    background: var(--ubits-accent-brand);
+    transition: width 0.2s ease, background 0.2s ease;
+}
+
+.cc-config-pesos-bar__fill--ok {
+    background: var(--ubits-feedback-accent-success);
+}
+
+.cc-config-pesos-bar__fill--error {
+    background: var(--ubits-feedback-accent-error);
+}
+
+.cc-config-pesos-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    background: var(--ubits-bg-1);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: var(--border-radius-lg);
+    overflow: hidden;
+}
+
+.cc-config-pesos-list-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--gap-lg);
+    padding: var(--padding-sm) var(--padding-lg);
+    background: var(--ubits-bg-2);
+    border-bottom: 1px solid var(--ubits-border-1);
+    color: var(--ubits-fg-1-medium);
+}
+
+.cc-config-pesos-list-head__label {
+    padding-left: calc(var(--size-3xl, 32px) + var(--gap-md));
+}
+
+.cc-config-pesos-list-head__peso {
+    flex: 0 0 96px;
+    width: 96px;
+    text-align: right;
+}
+
+.cc-config-pesos-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--gap-lg);
+    padding: var(--padding-md) var(--padding-lg);
+    min-height: 64px;
+    box-sizing: border-box;
+}
+
+.cc-config-pesos-row + .cc-config-pesos-row {
+    border-top: 1px solid var(--ubits-border-1);
+}
+
+.cc-config-pesos-row__main {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-md);
+    min-width: 0;
+    flex: 1 1 auto;
+}
+
+.cc-config-pesos-row__index {
+    flex-shrink: 0;
+    width: var(--size-3xl, 32px);
+    height: var(--size-3xl, 32px);
+    border-radius: var(--border-radius-full);
+    background: var(--ubits-bg-3);
+    color: var(--ubits-fg-1-medium);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.cc-config-pesos-row__label {
+    margin: 0;
+    min-width: 0;
+    color: var(--ubits-fg-1-high);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.cc-config-pesos-row__input {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    gap: var(--gap-xs);
+}
+
+.cc-config-pesos-row__input .ubits-input {
+    width: 72px;
+    text-align: right;
+}
+
+.cc-config-pesos-row__suffix {
+    color: var(--ubits-fg-1-medium);
+    flex-shrink: 0;
+}
+
+.cc-config-pesos-empty {
+    margin-top: var(--gap-xl);
+}
+
+@media (max-width: 767px) {
+    .cc-config-pesos-header {
+        flex-direction: column;
+        flex-wrap: nowrap;
+        align-items: stretch;
+        gap: var(--gap-sm);
+    }
+
+    .cc-config-pesos-intro {
+        flex: none;
+        width: 100%;
+    }
+
+    .cc-config-pesos-row {
+        flex-wrap: wrap;
+        align-items: flex-start;
+    }
+
+    .cc-config-pesos-row__input {
+        margin-left: calc(var(--size-3xl, 32px) + var(--gap-md));
+    }
+}

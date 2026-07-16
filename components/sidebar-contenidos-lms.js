@@ -23,7 +23,7 @@
             { id: 'informacion', tooltip: 'Portada', icon: 'fa-image' },
             { id: 'recursos', tooltip: 'Recursos', icon: 'fa-layer-group' },
             { id: 'certificado', tooltip: 'Certificado', icon: 'fa-award' },
-            { id: 'visibilidad', tooltip: 'Visibilidad', icon: 'fa-eye' }
+            { id: 'visibilidad', tooltip: 'Configuración', icon: 'fa-sliders' }
         ],
         'publicado-antiguo-lms': [
             { id: 'informacion', tooltip: 'Información', icon: 'fa-circle-info' },

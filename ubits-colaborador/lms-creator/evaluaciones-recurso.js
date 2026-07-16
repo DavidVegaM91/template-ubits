@@ -2522,6 +2522,11 @@
 
         // Marcar esta página como página de evaluación
         global._ccEvalPageKeys[String(pageKey)] = true;
+        if (typeof global.refreshCrearContenidoConfigHub === 'function') {
+            try {
+                global.refreshCrearContenidoConfigHub();
+            } catch (e) {}
+        }
 
         mountEl.innerHTML = buildExamFormHtml();
 

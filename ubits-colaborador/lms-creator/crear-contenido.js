@@ -1716,6 +1716,14 @@
         }
         if (CC_RECURSOS_CURRENT_PAGE_KEY) {
             delete CC_RECURSOS_PAGE_STATE[CC_RECURSOS_CURRENT_PAGE_KEY];
+            if (window._ccEvalPageKeys) {
+                delete window._ccEvalPageKeys[String(CC_RECURSOS_CURRENT_PAGE_KEY)];
+            }
+            if (typeof window.refreshCrearContenidoConfigHub === 'function') {
+                try {
+                    window.refreshCrearContenidoConfigHub();
+                } catch (e) {}
+            }
         }
         mount.innerHTML = window.resourcesBlockHtml({ variant: 'default' });
         if (typeof window.initResourcesBlockFields === 'function') {
@@ -3388,6 +3396,21 @@
     }
 
     function finalizeCrearContenidoFlow() {
+        if (
+            typeof window.areCrearContenidoEvalPesosValid === 'function' &&
+            !window.areCrearContenidoEvalPesosValid()
+        ) {
+            if (typeof window.openCrearContenidoPesosIfInvalid === 'function') {
+                window.openCrearContenidoPesosIfInvalid();
+            }
+            if (typeof window.showToast === 'function') {
+                window.showToast({
+                    type: 'warning',
+                    message: 'La suma de los pesos de evaluación debe ser 100%. Revísalo en Configuración.'
+                });
+            }
+            return;
+        }
         try {
             sessionStorage.setItem(
                 'ubits-toast-pending',
@@ -3650,6 +3673,9 @@
             !IS_EDITAR_CONTENIDO_PAGE &&
             (isRecursosUrlHash(initialHashForPromo) ||
                 initialHashForPromo === HASH_PAGE_CERTIFICADO ||
+                initialHashForPromo === HASH_PAGE_CONFIGURACION ||
+                initialHashForPromo === HASH_PAGE_CONFIG_VISIBILIDAD ||
+                initialHashForPromo === HASH_PAGE_CONFIG_PESOS ||
                 initialHashForPromo === HASH_PAGE_VISIBILIDAD ||
                 initialHashForPromo === HASH_PAGE_PUBLICACION);
         if (deepDemoSeed && isCrearContenidoEmptyForDemo()) {
@@ -3681,8 +3707,12 @@
     var HASH_PAGE_PORTADA = '#portada';
     var HASH_PAGE_RECURSOS = '#recursos';
     var HASH_PAGE_CERTIFICADO = '#certificado';
+    /** Hub Configuración (paso 4). Paneles: #configuracion-visibilidad, #configuracion-pesos */
+    var HASH_PAGE_CONFIGURACION = '#configuracion';
+    var HASH_PAGE_CONFIG_VISIBILIDAD = '#configuracion-visibilidad';
+    var HASH_PAGE_CONFIG_PESOS = '#configuracion-pesos';
+    /** Alias legacy del paso 4 / hub */
     var HASH_PAGE_VISIBILIDAD = '#visibilidad';
-    /** Alias legacy del paso 4 */
     var HASH_PAGE_PUBLICACION = '#publicacion';
     var HASH_PAGE_PORTADA_LEGACY = '#crear-contenido';
     var HASH_DRAWER_RECURSOS = '#crear-contenido-recursos';
@@ -3693,6 +3723,26 @@
     /** sessionStorage: pending = clic en «Crear contenido» en contenidos.html; shown = ya se mostró el promo en esta pestaña */
     var SS_PROMO_PENDING_KEY = 'ubits-cc-promo-agentes-pending';
     var SS_PROMO_SHOWN_KEY = 'ubits-cc-promo-agentes-shown-session';
+
+    function isConfiguracionUrlHash(h) {
+        return (
+            h === HASH_PAGE_CONFIGURACION ||
+            h === HASH_PAGE_CONFIG_VISIBILIDAD ||
+            h === HASH_PAGE_CONFIG_PESOS ||
+            h === HASH_PAGE_VISIBILIDAD ||
+            h === HASH_PAGE_PUBLICACION
+        );
+    }
+
+    function configPanelFromCrearHash(h) {
+        if (typeof window.panelFromCrearContenidoConfigHash === 'function') {
+            return window.panelFromCrearContenidoConfigHash(h);
+        }
+        if (h === HASH_PAGE_CONFIG_VISIBILIDAD) return 'visibilidad';
+        if (h === HASH_PAGE_CONFIG_PESOS) return 'pesos';
+        if (isConfiguracionUrlHash(h)) return 'hub';
+        return null;
+    }
 
     function isRecursosUrlHash(h) {
         return (
@@ -3730,7 +3780,7 @@
     function hashForCrearContenidoPageStep(idx) {
         if (idx === 1) return HASH_PAGE_RECURSOS;
         if (idx === 2) return HASH_PAGE_CERTIFICADO;
-        if (idx === 3) return HASH_PAGE_VISIBILIDAD;
+        if (idx === 3) return HASH_PAGE_CONFIGURACION;
         return HASH_PAGE_PORTADA;
     }
 
@@ -3801,6 +3851,16 @@
         }
         if (idx === 3 && typeof window.initCrearContenidoPublicacionStepOnce === 'function') {
             window.initCrearContenidoPublicacionStepOnce();
+        }
+        if (idx === 3 && typeof window.initCrearContenidoConfiguracionHub === 'function') {
+            window.initCrearContenidoConfiguracionHub({
+                readonly: !!(document.body && document.body.classList.contains('page-editar-contenido--readonly')),
+                /* Deep link (skipUrl): respetar panel del hash. Navegación normal: siempre hub. */
+                panel: opts.skipUrl ? configPanelFromCrearHash(location.hash) || 'hub' : 'hub',
+                skipUrl: true
+            });
+        } else if (idx === 3 && typeof window.showCrearContenidoConfiguracionHub === 'function') {
+            window.showCrearContenidoConfiguracionHub();
         }
         updateCrearContenidoPageFooterNav(idx);
         if (typeof window.initTooltip === 'function') {
@@ -4359,10 +4419,13 @@
             }
         } else if (h === HASH_PAGE_CERTIFICADO) {
             goToCrearContenidoPageStep(2, { skipUrl: true });
-        } else if (h === HASH_PAGE_VISIBILIDAD || h === HASH_PAGE_PUBLICACION) {
+        } else if (isConfiguracionUrlHash(h)) {
             goToCrearContenidoPageStep(3, { skipUrl: true });
-            if (h === HASH_PAGE_PUBLICACION && typeof history.replaceState === 'function') {
-                history.replaceState(null, '', location.pathname + location.search + HASH_PAGE_VISIBILIDAD);
+            if (
+                (h === HASH_PAGE_PUBLICACION || h === HASH_PAGE_VISIBILIDAD) &&
+                typeof history.replaceState === 'function'
+            ) {
+                history.replaceState(null, '', location.pathname + location.search + HASH_PAGE_CONFIGURACION);
             }
         } else if (h === HASH_PAGE_PORTADA || h === HASH_PAGE_PORTADA_LEGACY || h === '') {
             goToCrearContenidoPageStep(0, { skipUrl: true });

@@ -39,18 +39,29 @@
     function parseEditarContenidoHash(hash) {
         var h = String(hash || '').replace(/^#/, '');
         var resultadosTab = parseResultadosTabFromHash(hash);
+        var configPanel = 'hub';
+        if (h === 'configuracion-visibilidad') configPanel = 'visibilidad';
+        else if (h === 'configuracion-pesos') configPanel = 'pesos';
+        else if (h === 'configuracion' || h === 'visibilidad' || h === 'publicacion') configPanel = 'hub';
+
         if (h === 'informacion' || h === 'portada') {
-            return { section: 'informacion', resultadosTab: 'progreso' };
+            return { section: 'informacion', resultadosTab: 'progreso', configPanel: 'hub' };
         }
-        if (h === 'recursos') return { section: 'recursos', resultadosTab: 'progreso' };
-        if (h === 'certificado') return { section: 'certificado', resultadosTab: 'progreso' };
-        if (h === 'visibilidad' || h === 'publicacion') {
-            return { section: 'visibilidad', resultadosTab: 'progreso' };
+        if (h === 'recursos') return { section: 'recursos', resultadosTab: 'progreso', configPanel: 'hub' };
+        if (h === 'certificado') return { section: 'certificado', resultadosTab: 'progreso', configPanel: 'hub' };
+        if (
+            h === 'configuracion' ||
+            h === 'configuracion-visibilidad' ||
+            h === 'configuracion-pesos' ||
+            h === 'visibilidad' ||
+            h === 'publicacion'
+        ) {
+            return { section: 'visibilidad', resultadosTab: 'progreso', configPanel: configPanel };
         }
         if (h === 'resultados' || h.indexOf('resultados-') === 0) {
-            return { section: 'resultados', resultadosTab: resultadosTab };
+            return { section: 'resultados', resultadosTab: resultadosTab, configPanel: 'hub' };
         }
-        return { section: 'resultados', resultadosTab: 'progreso' };
+        return { section: 'resultados', resultadosTab: 'progreso', configPanel: 'hub' };
     }
 
     function resolveEditarContenidoHashForSection(section, currentHash) {
@@ -61,12 +72,19 @@
             }
             return buildResultadosHash('progreso');
         }
+        if (section === 'visibilidad') {
+            if (parsed.section === 'visibilidad') {
+                if (parsed.configPanel === 'visibilidad') return '#configuracion-visibilidad';
+                if (parsed.configPanel === 'pesos') return '#configuracion-pesos';
+            }
+            return '#configuracion';
+        }
         var HASH_SECTION = {
             resultados: '#resultados',
             informacion: '#informacion',
             recursos: '#recursos',
             certificado: '#certificado',
-            visibilidad: '#visibilidad'
+            visibilidad: '#configuracion'
         };
         return HASH_SECTION[section] || '#resultados-progreso';
     }
