@@ -661,9 +661,34 @@
         /* No usar overflow-y: hidden: recorta el halo (box-shadow 4px) del paso activo arriba/abajo */
         overflow-y: visible;
         -webkit-overflow-scrolling: touch;
-        scrollbar-gutter: stable;
+        /* Scrollbar oculto en reposo (no forzar gutter: quedaba visible al cargar) */
+        scrollbar-width: none;
+        -ms-overflow-style: none;
         /* Refuerzo por si el motor fuerza overflow en ambos ejes */
         padding-block: var(--gap-xs);
+    }
+
+    .ubits-stepper--horizontal::-webkit-scrollbar {
+        height: 0;
+        background: transparent;
+    }
+
+    .ubits-stepper--horizontal.ubits-stepper--scroll-active {
+        scrollbar-width: thin;
+        scrollbar-color: var(--ubits-border-1) transparent;
+    }
+
+    .ubits-stepper--horizontal.ubits-stepper--scroll-active::-webkit-scrollbar {
+        height: 6px;
+    }
+
+    .ubits-stepper--horizontal.ubits-stepper--scroll-active::-webkit-scrollbar-thumb {
+        background: var(--ubits-border-1);
+        border-radius: var(--border-radius-full);
+    }
+
+    .ubits-stepper--horizontal.ubits-stepper--scroll-active::-webkit-scrollbar-track {
+        background: transparent;
     }
 
     .ubits-stepper--horizontal.ubits-stepper--horizontal-compact:not(.ubits-stepper--horizontal-stacked) {

@@ -203,6 +203,8 @@
         shell.classList.toggle('ubits-tabs-scroll--right-fade', !atEnd);
     }
 
+    var SCROLLBAR_HIDE_MS = 900;
+
     function wireGroup(shell) {
         if (!shell || shell.nodeType !== 1) return;
         if (shell._ubitsTabsScrollCleanup) {
@@ -211,22 +213,39 @@
         }
         ensureScrollStrip(shell);
         var scrollEl = getScrollStrip(shell) || shell;
-        var onScrollOrResize = function () {
+        var hideTimer = null;
+        var onResize = function () {
             updateScrollFades(shell);
         };
-        scrollEl.addEventListener('scroll', onScrollOrResize, { passive: true });
-        global.addEventListener('resize', onScrollOrResize, { passive: true });
-        var ro = typeof ResizeObserver !== 'undefined' ? new ResizeObserver(onScrollOrResize) : null;
+        var onScroll = function () {
+            updateScrollFades(shell);
+            scrollEl.classList.add('ubits-tabs-scroll--active');
+            if (scrollEl === shell) {
+                shell.classList.add('ubits-tabs-scroll--active');
+            }
+            if (hideTimer) clearTimeout(hideTimer);
+            hideTimer = setTimeout(function () {
+                scrollEl.classList.remove('ubits-tabs-scroll--active');
+                shell.classList.remove('ubits-tabs-scroll--active');
+                hideTimer = null;
+            }, SCROLLBAR_HIDE_MS);
+        };
+        scrollEl.addEventListener('scroll', onScroll, { passive: true });
+        global.addEventListener('resize', onResize, { passive: true });
+        var ro = typeof ResizeObserver !== 'undefined' ? new ResizeObserver(onResize) : null;
         if (ro) ro.observe(scrollEl);
         updateScrollFades(shell);
         shell._ubitsTabsScrollCleanup = function () {
-            scrollEl.removeEventListener('scroll', onScrollOrResize);
-            global.removeEventListener('resize', onScrollOrResize);
+            scrollEl.removeEventListener('scroll', onScroll);
+            global.removeEventListener('resize', onResize);
             if (ro) ro.disconnect();
+            if (hideTimer) clearTimeout(hideTimer);
+            scrollEl.classList.remove('ubits-tabs-scroll--active');
             shell.classList.remove(
                 'ubits-tabs-scroll--overflow',
                 'ubits-tabs-scroll--left-fade',
-                'ubits-tabs-scroll--right-fade'
+                'ubits-tabs-scroll--right-fade',
+                'ubits-tabs-scroll--active'
             );
             shell._ubitsTabsScrollCleanup = null;
         };

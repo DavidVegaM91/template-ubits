@@ -223,10 +223,54 @@
         });
     }
 
+    var SCROLLBAR_HIDE_MS = 900;
+
+    /**
+     * Scrollbar horizontal del stepper (móvil): oculto en reposo, visible solo al scrollear.
+     * @param {HTMLElement} root - <ol class="ubits-stepper--horizontal">
+     */
+    function wireHorizontalStepperScrollbar(root) {
+        if (!root || !root.classList || !root.classList.contains('ubits-stepper--horizontal')) return;
+        if (root._ubitsStepperScrollCleanup) return;
+        var hideTimer = null;
+        function onScroll() {
+            root.classList.add('ubits-stepper--scroll-active');
+            if (hideTimer) clearTimeout(hideTimer);
+            hideTimer = setTimeout(function () {
+                root.classList.remove('ubits-stepper--scroll-active');
+                hideTimer = null;
+            }, SCROLLBAR_HIDE_MS);
+        }
+        root.addEventListener('scroll', onScroll, { passive: true });
+        root._ubitsStepperScrollCleanup = function () {
+            root.removeEventListener('scroll', onScroll);
+            if (hideTimer) clearTimeout(hideTimer);
+            root.classList.remove('ubits-stepper--scroll-active');
+            root._ubitsStepperScrollCleanup = null;
+        };
+    }
+
+    function initHorizontalStepperScrollbars(scope) {
+        var root = scope && scope.querySelectorAll ? scope : document;
+        root.querySelectorAll('.ubits-stepper--horizontal').forEach(wireHorizontalStepperScrollbar);
+    }
+
+    if (typeof document !== 'undefined') {
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', function () {
+                initHorizontalStepperScrollbars(document);
+            });
+        } else {
+            initHorizontalStepperScrollbars(document);
+        }
+    }
+
     global.setStepperStepStates = setStepperStepStates;
     global.setStepperActiveOnly = setStepperActiveOnly;
     global.getStepperIndexByStepId = getStepperIndexByStepId;
     global.initStepper = initStepper;
     global.wireStepperVerticalCollapse = wireStepperVerticalCollapse;
     global.wireDrawerWizardStepperBackNav = wireDrawerWizardStepperBackNav;
+    global.wireHorizontalStepperScrollbar = wireHorizontalStepperScrollbar;
+    global.initHorizontalStepperScrollbars = initHorizontalStepperScrollbars;
 })(typeof window !== 'undefined' ? window : this);

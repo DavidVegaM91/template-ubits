@@ -312,8 +312,27 @@
         scroll-snap-type: x proximity;
         scroll-padding-inline: var(--padding-xs);
         -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+    }
+
+    .ubits-tabs-on-bg:not(:has(> .ubits-tabs-scroll-strip))::-webkit-scrollbar {
+        height: 0;
+        background: transparent;
+    }
+
+    .ubits-tabs-on-bg:not(:has(> .ubits-tabs-scroll-strip)).ubits-tabs-scroll--active {
         scrollbar-width: thin;
         scrollbar-color: var(--ubits-border-1) transparent;
+    }
+
+    .ubits-tabs-on-bg:not(:has(> .ubits-tabs-scroll-strip)).ubits-tabs-scroll--active::-webkit-scrollbar {
+        height: 6px;
+    }
+
+    .ubits-tabs-on-bg:not(:has(> .ubits-tabs-scroll-strip)).ubits-tabs-scroll--active::-webkit-scrollbar-thumb {
+        background: var(--ubits-border-1);
+        border-radius: var(--border-radius-full);
     }
 
     .ubits-tabs-on-bg:not(:has(> .ubits-tabs-scroll-strip)) > .ubits-tab {
@@ -338,20 +357,31 @@
     scroll-snap-type: x proximity;
     scroll-padding-inline: var(--padding-xs);
     -webkit-overflow-scrolling: touch;
+    /* Oculto en reposo; visible solo con .ubits-tabs-scroll--active (mientras se hace scroll) */
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.ubits-tabs-scroll-strip::-webkit-scrollbar {
+    height: 0;
+    background: transparent;
+}
+
+.ubits-tabs-scroll-strip.ubits-tabs-scroll--active {
     scrollbar-width: thin;
     scrollbar-color: var(--ubits-border-1) transparent;
 }
 
-.ubits-tabs-scroll-strip::-webkit-scrollbar {
+.ubits-tabs-scroll-strip.ubits-tabs-scroll--active::-webkit-scrollbar {
     height: 6px;
 }
 
-.ubits-tabs-scroll-strip::-webkit-scrollbar-thumb {
+.ubits-tabs-scroll-strip.ubits-tabs-scroll--active::-webkit-scrollbar-thumb {
     background: var(--ubits-border-1);
     border-radius: var(--border-radius-full);
 }
 
-.ubits-tabs-scroll-strip::-webkit-scrollbar-track {
+.ubits-tabs-scroll-strip.ubits-tabs-scroll--active::-webkit-scrollbar-track {
     background: transparent;
 }
 
@@ -389,8 +419,27 @@
         scroll-snap-type: x proximity;
         scroll-padding-inline: var(--padding-xs);
         -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+    }
+
+    .ubits-tabs-row:not(:has(> .ubits-tabs-scroll-strip))::-webkit-scrollbar {
+        height: 0;
+        background: transparent;
+    }
+
+    .ubits-tabs-row:not(:has(> .ubits-tabs-scroll-strip)).ubits-tabs-scroll--active {
         scrollbar-width: thin;
         scrollbar-color: var(--ubits-border-1) transparent;
+    }
+
+    .ubits-tabs-row:not(:has(> .ubits-tabs-scroll-strip)).ubits-tabs-scroll--active::-webkit-scrollbar {
+        height: 6px;
+    }
+
+    .ubits-tabs-row:not(:has(> .ubits-tabs-scroll-strip)).ubits-tabs-scroll--active::-webkit-scrollbar-thumb {
+        background: var(--ubits-border-1);
+        border-radius: var(--border-radius-full);
     }
 
     .ubits-tabs-row:not(:has(> .ubits-tabs-scroll-strip)) > .ubits-tab {
