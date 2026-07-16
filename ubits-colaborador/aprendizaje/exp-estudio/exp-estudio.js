@@ -519,6 +519,68 @@
     'images/avatars/cmas_m27_luis.jpg'
   ];
 
+  /** Género del archivo: `_f` mujer, `_m` hombre (convención avatares playground). */
+  function avatarGenderFromPath(path) {
+    var m = String(path).match(/_(f|m)\d/i);
+    return m ? m[1].toLowerCase() : null;
+  }
+
+  var EXPERT_AVATARS_BY_GENDER = {
+    f: EXPERT_AVATAR_POOL.filter(function (p) {
+      return avatarGenderFromPath(p) === 'f';
+    }),
+    m: EXPERT_AVATAR_POOL.filter(function (p) {
+      return avatarGenderFromPath(p) === 'm';
+    })
+  };
+
+  function expertoIsFemale(nombre) {
+    var n = String(nombre || '').trim();
+    if (/^Dra\.?\b/i.test(n) || /^Mtra\.?\b/i.test(n)) return true;
+    if (/^Dr\.?\b/i.test(n) || /^Mg\.?\b/i.test(n)) return false;
+    var first = n
+      .replace(/^(Dra|Dr|Mtra|Mg|Lic|Ing)\.?\s+/i, '')
+      .split(/\s+/)[0]
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '');
+    var female = {
+      ana: 1,
+      elena: 1,
+      paula: 1,
+      laura: 1,
+      maria: 1,
+      beatriz: 1,
+      lorena: 1,
+      isabella: 1,
+      sofia: 1,
+      camila: 1,
+      carolina: 1
+    };
+    var male = {
+      carlos: 1,
+      jorge: 1,
+      pedro: 1,
+      hugo: 1,
+      javier: 1,
+      luis: 1,
+      andres: 1,
+      diego: 1,
+      miguel: 1,
+      jose: 1,
+      juan: 1
+    };
+    if (female[first]) return true;
+    if (male[first]) return false;
+    return false;
+  }
+
+  function pickExpertoAvatar(nombre, index) {
+    var pool = expertoIsFemale(nombre) ? EXPERT_AVATARS_BY_GENDER.f : EXPERT_AVATARS_BY_GENDER.m;
+    if (!pool.length) return EXPERT_AVATAR_POOL[index % EXPERT_AVATAR_POOL.length];
+    return pool[index % pool.length];
+  }
+
   var LINKEDIN_PLAYGROUND_URL = 'https://www.linkedin.com/in/david-vega-ux/';
 
   var ALIADO_BIO_PREVIEW =
@@ -546,7 +608,7 @@
     return {
       nombre: nombre,
       rol: rol,
-      avatar: EXPERT_AVATAR_POOL[index % EXPERT_AVATAR_POOL.length],
+      avatar: pickExpertoAvatar(nombre, index),
       bio: EXPERTO_BIO_PREVIEW
     };
   }

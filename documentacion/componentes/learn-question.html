@@ -316,6 +316,20 @@
                     { a: 'Competitivo', b: 'Prioriza el resultado sobre la relación y puede generar resistencia.' },
                     { a: 'Acomodador', b: 'Prioriza la relación sobre el resultado y ayuda a mantener la armonía.' }
                 ]
+            },
+            fill_blank: {
+                type: 'fill_blank',
+                statement: 'La capital de Colombia es {{1}} y la de México es {{2}}.',
+                fillBlank: { options: ['Bogotá', 'Ciudad de México'] }
+            },
+            instruction: {
+                type: 'instruction',
+                instructionHtml: '<p>Lee el siguiente texto y responde las preguntas asociadas a este bloque.</p>'
+            },
+            rating_scale: {
+                type: 'rating_scale',
+                statement: 'Califica tu nivel de acuerdo.',
+                rating: { min: '1', max: '5', minLabel: 'Muy malo', maxLabel: 'Excelente' }
             }
         };
 
@@ -339,9 +353,13 @@
             if (!mount) return;
             mount.innerHTML = '<div id="lq-preview-inner"></div>';
             const isFeedback = lqMode === 'collab_feedback';
+            const isReadOk = lqMode === 'read';
             const isErrorMode = (lqMode === 'read_error' || lqMode === 'edit_error');
             const baseModel = isErrorMode ? (demoModelsEmptyByType[lqType] || demoModelsByType[lqType]) : demoModelsByType[lqType];
-            const model = isFeedback ? (demoModelsWithCorrect[lqType] || baseModel) : baseModel;
+            /* Lectura válida: debe venir con respuesta correcta (si no, el preview se ve como error). */
+            const model = (isFeedback || isReadOk)
+                ? (demoModelsWithCorrect[lqType] || baseModel)
+                : baseModel;
             lqApi = createLearnQuestion({
                 containerId: 'lq-preview-inner',
                 qId: 1,

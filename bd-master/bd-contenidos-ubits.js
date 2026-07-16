@@ -64,8 +64,8 @@ window.BDS_CONTENIDOS_UBITS = {
         "hab-001"
       ],
       "expertos": [
-        "Lic. Pedro Soto · RR.HH.",
-        "Ing. Laura Méndez · Especialista en contenido"
+        "Lic. Paula Soto · RR.HH.",
+        "Ing. Andrés Méndez · Especialista en contenido"
       ],
       "aliadoId": "aly-015",
       "nivelIngles": null,
@@ -134,7 +134,7 @@ window.BDS_CONTENIDOS_UBITS = {
         "hab-001"
       ],
       "expertos": [
-        "Ing. Laura Méndez · Especialista en contenido",
+        "Ing. Andrés Méndez · Especialista en contenido",
         "Mtra. Elena Ríos · Diseño instruccional"
       ],
       "aliadoId": "aly-017",
@@ -205,7 +205,7 @@ window.BDS_CONTENIDOS_UBITS = {
       ],
       "expertos": [
         "Mtra. Elena Ríos · Diseño instruccional",
-        "Lic. Pedro Soto · RR.HH."
+        "Lic. Paula Soto · RR.HH."
       ],
       "aliadoId": "aly-003",
       "nivelIngles": null,
@@ -275,8 +275,8 @@ window.BDS_CONTENIDOS_UBITS = {
         "hab-002"
       ],
       "expertos": [
-        "Lic. Pedro Soto · RR.HH.",
-        "Ing. Laura Méndez · Especialista en contenido"
+        "Lic. Paula Soto · RR.HH.",
+        "Ing. Andrés Méndez · Especialista en contenido"
       ],
       "aliadoId": "aly-005",
       "nivelIngles": null,
@@ -345,7 +345,7 @@ window.BDS_CONTENIDOS_UBITS = {
         "hab-001"
       ],
       "expertos": [
-        "Ing. Laura Méndez · Especialista en contenido",
+        "Ing. Andrés Méndez · Especialista en contenido",
         "Mtra. Elena Ríos · Diseño instruccional"
       ],
       "aliadoId": "aly-012",
@@ -417,7 +417,7 @@ window.BDS_CONTENIDOS_UBITS = {
       ],
       "expertos": [
         "Mtra. Elena Ríos · Diseño instruccional",
-        "Lic. Pedro Soto · RR.HH."
+        "Lic. Paula Soto · RR.HH."
       ],
       "aliadoId": "aly-014",
       "nivelIngles": null,
@@ -486,8 +486,8 @@ window.BDS_CONTENIDOS_UBITS = {
         "hab-003"
       ],
       "expertos": [
-        "Lic. Pedro Soto · RR.HH.",
-        "Ing. Laura Méndez · Especialista en contenido"
+        "Lic. Paula Soto · RR.HH.",
+        "Ing. Andrés Méndez · Especialista en contenido"
       ],
       "aliadoId": "aly-016",
       "nivelIngles": null,
@@ -556,7 +556,7 @@ window.BDS_CONTENIDOS_UBITS = {
         "hab-002"
       ],
       "expertos": [
-        "Ing. Laura Méndez · Especialista en contenido",
+        "Ing. Andrés Méndez · Especialista en contenido",
         "Mtra. Elena Ríos · Diseño instruccional"
       ],
       "aliadoId": "aly-002",
@@ -627,7 +627,7 @@ window.BDS_CONTENIDOS_UBITS = {
       ],
       "expertos": [
         "Mtra. Elena Ríos · Diseño instruccional",
-        "Lic. Pedro Soto · RR.HH."
+        "Lic. Paula Soto · RR.HH."
       ],
       "aliadoId": "aly-001",
       "nivelIngles": null,
@@ -697,8 +697,8 @@ window.BDS_CONTENIDOS_UBITS = {
         "hab-002"
       ],
       "expertos": [
-        "Lic. Pedro Soto · RR.HH.",
-        "Ing. Laura Méndez · Especialista en contenido"
+        "Lic. Paula Soto · RR.HH.",
+        "Ing. Andrés Méndez · Especialista en contenido"
       ],
       "aliadoId": "aly-011",
       "nivelIngles": null,
@@ -767,7 +767,7 @@ window.BDS_CONTENIDOS_UBITS = {
         "hab-001"
       ],
       "expertos": [
-        "Ing. Laura Méndez · Especialista en contenido",
+        "Ing. Andrés Méndez · Especialista en contenido",
         "Mtra. Elena Ríos · Diseño instruccional"
       ],
       "aliadoId": "aly-013",
@@ -838,7 +838,7 @@ window.BDS_CONTENIDOS_UBITS = {
       ],
       "expertos": [
         "Mtra. Elena Ríos · Diseño instruccional",
-        "Lic. Pedro Soto · RR.HH."
+        "Lic. Paula Soto · RR.HH."
       ],
       "aliadoId": "aly-015",
       "nivelIngles": null,
@@ -907,8 +907,8 @@ window.BDS_CONTENIDOS_UBITS = {
         "hab-041"
       ],
       "expertos": [
-        "Lic. Pedro Soto · RR.HH.",
-        "Ing. Laura Méndez · Especialista en contenido"
+        "Lic. Paula Soto · RR.HH.",
+        "Ing. Andrés Méndez · Especialista en contenido"
       ],
       "aliadoId": "aly-017",
       "nivelIngles": null,
@@ -977,7 +977,7 @@ window.BDS_CONTENIDOS_UBITS = {
         "hab-001"
       ],
       "expertos": [
-        "Ing. Laura Méndez · Especialista en contenido",
+        "Ing. Andrés Méndez · Especialista en contenido",
         "Mtra. Elena Ríos · Diseño instruccional"
       ],
       "aliadoId": "aly-003",
@@ -1049,7 +1049,7 @@ window.BDS_CONTENIDOS_UBITS = {
       ],
       "expertos": [
         "Mtra. Elena Ríos · Diseño instruccional",
-        "Lic. Pedro Soto · RR.HH."
+        "Lic. Paula Soto · RR.HH."
       ],
       "aliadoId": "aly-001",
       "nivelIngles": null,
@@ -1119,8 +1119,8 @@ window.BDS_CONTENIDOS_UBITS = {
         "hab-043"
       ],
       "expertos": [
-        "Lic. Pedro Soto · RR.HH.",
-        "Ing. Laura Méndez · Especialista en contenido"
+        "Lic. Paula Soto · RR.HH.",
+        "Ing. Andrés Méndez · Especialista en contenido"
       ],
       "aliadoId": "aly-012",
       "nivelIngles": null,
@@ -1189,7 +1189,7 @@ window.BDS_CONTENIDOS_UBITS = {
         "hab-043"
       ],
       "expertos": [
-        "Ing. Laura Méndez · Especialista en contenido",
+        "Ing. Andrés Méndez · Especialista en contenido",
         "Mtra. Elena Ríos · Diseño instruccional"
       ],
       "aliadoId": "aly-014",
@@ -1260,7 +1260,7 @@ window.BDS_CONTENIDOS_UBITS = {
       ],
       "expertos": [
         "Mtra. Elena Ríos · Diseño instruccional",
-        "Lic. Pedro Soto · RR.HH."
+        "Lic. Paula Soto · RR.HH."
       ],
       "aliadoId": "aly-016",
       "nivelIngles": null,
@@ -1329,8 +1329,8 @@ window.BDS_CONTENIDOS_UBITS = {
         "hab-003"
       ],
       "expertos": [
-        "Lic. Pedro Soto · RR.HH.",
-        "Ing. Laura Méndez · Especialista en contenido"
+        "Lic. Paula Soto · RR.HH.",
+        "Ing. Andrés Méndez · Especialista en contenido"
       ],
       "aliadoId": "aly-002",
       "nivelIngles": null,
@@ -1399,7 +1399,7 @@ window.BDS_CONTENIDOS_UBITS = {
         "hab-003"
       ],
       "expertos": [
-        "Ing. Laura Méndez · Especialista en contenido",
+        "Ing. Andrés Méndez · Especialista en contenido",
         "Mtra. Elena Ríos · Diseño instruccional"
       ],
       "aliadoId": "aly-009",
@@ -1471,7 +1471,7 @@ window.BDS_CONTENIDOS_UBITS = {
       ],
       "expertos": [
         "Mtra. Elena Ríos · Diseño instruccional",
-        "Lic. Pedro Soto · RR.HH."
+        "Lic. Paula Soto · RR.HH."
       ],
       "aliadoId": "aly-001",
       "nivelIngles": null,
@@ -1542,8 +1542,8 @@ window.BDS_CONTENIDOS_UBITS = {
         "hab-003"
       ],
       "expertos": [
-        "Lic. Pedro Soto · RR.HH.",
-        "Ing. Laura Méndez · Especialista en contenido"
+        "Lic. Paula Soto · RR.HH.",
+        "Ing. Andrés Méndez · Especialista en contenido"
       ],
       "aliadoId": "aly-013",
       "nivelIngles": null,
@@ -1612,7 +1612,7 @@ window.BDS_CONTENIDOS_UBITS = {
         "hab-003"
       ],
       "expertos": [
-        "Ing. Laura Méndez · Especialista en contenido",
+        "Ing. Andrés Méndez · Especialista en contenido",
         "Mtra. Elena Ríos · Diseño instruccional"
       ],
       "aliadoId": "aly-015",
@@ -1683,7 +1683,7 @@ window.BDS_CONTENIDOS_UBITS = {
       ],
       "expertos": [
         "Mtra. Elena Ríos · Diseño instruccional",
-        "Lic. Pedro Soto · RR.HH."
+        "Lic. Paula Soto · RR.HH."
       ],
       "aliadoId": "aly-017",
       "nivelIngles": null,
@@ -1752,8 +1752,8 @@ window.BDS_CONTENIDOS_UBITS = {
         "hab-002"
       ],
       "expertos": [
-        "Lic. Pedro Soto · RR.HH.",
-        "Ing. Laura Méndez · Especialista en contenido"
+        "Lic. Paula Soto · RR.HH.",
+        "Ing. Andrés Méndez · Especialista en contenido"
       ],
       "aliadoId": "aly-008",
       "nivelIngles": null,
@@ -1822,7 +1822,7 @@ window.BDS_CONTENIDOS_UBITS = {
         "hab-044"
       ],
       "expertos": [
-        "Ing. Laura Méndez · Especialista en contenido",
+        "Ing. Andrés Méndez · Especialista en contenido",
         "Mtra. Elena Ríos · Diseño instruccional"
       ],
       "aliadoId": "aly-010",
@@ -1893,7 +1893,7 @@ window.BDS_CONTENIDOS_UBITS = {
       ],
       "expertos": [
         "Mtra. Elena Ríos · Diseño instruccional",
-        "Lic. Pedro Soto · RR.HH."
+        "Lic. Paula Soto · RR.HH."
       ],
       "aliadoId": "aly-012",
       "nivelIngles": null,
@@ -1962,8 +1962,8 @@ window.BDS_CONTENIDOS_UBITS = {
         "hab-003"
       ],
       "expertos": [
-        "Lic. Pedro Soto · RR.HH.",
-        "Ing. Laura Méndez · Especialista en contenido"
+        "Lic. Paula Soto · RR.HH.",
+        "Ing. Andrés Méndez · Especialista en contenido"
       ],
       "aliadoId": "aly-014",
       "nivelIngles": null,
@@ -2032,7 +2032,7 @@ window.BDS_CONTENIDOS_UBITS = {
         "hab-003"
       ],
       "expertos": [
-        "Ing. Laura Méndez · Especialista en contenido",
+        "Ing. Andrés Méndez · Especialista en contenido",
         "Mtra. Elena Ríos · Diseño instruccional"
       ],
       "aliadoId": "aly-016",
@@ -2103,7 +2103,7 @@ window.BDS_CONTENIDOS_UBITS = {
       ],
       "expertos": [
         "Mtra. Elena Ríos · Diseño instruccional",
-        "Lic. Pedro Soto · RR.HH."
+        "Lic. Paula Soto · RR.HH."
       ],
       "aliadoId": "aly-007",
       "nivelIngles": null,
@@ -2172,8 +2172,8 @@ window.BDS_CONTENIDOS_UBITS = {
         "hab-003"
       ],
       "expertos": [
-        "Lic. Pedro Soto · RR.HH.",
-        "Ing. Laura Méndez · Especialista en contenido"
+        "Lic. Paula Soto · RR.HH.",
+        "Ing. Andrés Méndez · Especialista en contenido"
       ],
       "aliadoId": "aly-009",
       "nivelIngles": null,
@@ -2242,7 +2242,7 @@ window.BDS_CONTENIDOS_UBITS = {
         "hab-003"
       ],
       "expertos": [
-        "Ing. Laura Méndez · Especialista en contenido",
+        "Ing. Andrés Méndez · Especialista en contenido",
         "Mtra. Elena Ríos · Diseño instruccional"
       ],
       "aliadoId": "aly-011",
@@ -2313,7 +2313,7 @@ window.BDS_CONTENIDOS_UBITS = {
       ],
       "expertos": [
         "Mtra. Elena Ríos · Diseño instruccional",
-        "Lic. Pedro Soto · RR.HH."
+        "Lic. Paula Soto · RR.HH."
       ],
       "aliadoId": "aly-013",
       "nivelIngles": null,
@@ -2382,8 +2382,8 @@ window.BDS_CONTENIDOS_UBITS = {
         "hab-003"
       ],
       "expertos": [
-        "Lic. Pedro Soto · RR.HH.",
-        "Ing. Laura Méndez · Especialista en contenido"
+        "Lic. Paula Soto · RR.HH.",
+        "Ing. Andrés Méndez · Especialista en contenido"
       ],
       "aliadoId": "aly-015",
       "nivelIngles": null,
@@ -2452,7 +2452,7 @@ window.BDS_CONTENIDOS_UBITS = {
         "hab-002"
       ],
       "expertos": [
-        "Ing. Laura Méndez · Especialista en contenido",
+        "Ing. Andrés Méndez · Especialista en contenido",
         "Mtra. Elena Ríos · Diseño instruccional"
       ],
       "aliadoId": "aly-006",
@@ -2523,7 +2523,7 @@ window.BDS_CONTENIDOS_UBITS = {
       ],
       "expertos": [
         "Mtra. Elena Ríos · Diseño instruccional",
-        "Lic. Pedro Soto · RR.HH."
+        "Lic. Paula Soto · RR.HH."
       ],
       "aliadoId": "aly-008",
       "nivelIngles": null,
@@ -2592,8 +2592,8 @@ window.BDS_CONTENIDOS_UBITS = {
         "hab-002"
       ],
       "expertos": [
-        "Lic. Pedro Soto · RR.HH.",
-        "Ing. Laura Méndez · Especialista en contenido"
+        "Lic. Paula Soto · RR.HH.",
+        "Ing. Andrés Méndez · Especialista en contenido"
       ],
       "aliadoId": "aly-010",
       "nivelIngles": null,
@@ -2662,7 +2662,7 @@ window.BDS_CONTENIDOS_UBITS = {
         "hab-002"
       ],
       "expertos": [
-        "Ing. Laura Méndez · Especialista en contenido",
+        "Ing. Andrés Méndez · Especialista en contenido",
         "Mtra. Elena Ríos · Diseño instruccional"
       ],
       "aliadoId": "aly-012",
@@ -2733,7 +2733,7 @@ window.BDS_CONTENIDOS_UBITS = {
       ],
       "expertos": [
         "Mtra. Elena Ríos · Diseño instruccional",
-        "Lic. Pedro Soto · RR.HH."
+        "Lic. Paula Soto · RR.HH."
       ],
       "aliadoId": "aly-014",
       "nivelIngles": "A1",
@@ -2802,8 +2802,8 @@ window.BDS_CONTENIDOS_UBITS = {
         "hab-002"
       ],
       "expertos": [
-        "Lic. Pedro Soto · RR.HH.",
-        "Ing. Laura Méndez · Especialista en contenido"
+        "Lic. Paula Soto · RR.HH.",
+        "Ing. Andrés Méndez · Especialista en contenido"
       ],
       "aliadoId": "aly-005",
       "nivelIngles": "B1",
@@ -2872,7 +2872,7 @@ window.BDS_CONTENIDOS_UBITS = {
         "hab-001"
       ],
       "expertos": [
-        "Ing. Laura Méndez · Especialista en contenido",
+        "Ing. Andrés Méndez · Especialista en contenido",
         "Mtra. Elena Ríos · Diseño instruccional"
       ],
       "aliadoId": "aly-007",
@@ -2943,7 +2943,7 @@ window.BDS_CONTENIDOS_UBITS = {
       ],
       "expertos": [
         "Mtra. Elena Ríos · Diseño instruccional",
-        "Lic. Pedro Soto · RR.HH."
+        "Lic. Paula Soto · RR.HH."
       ],
       "aliadoId": "aly-009",
       "nivelIngles": "A1",
