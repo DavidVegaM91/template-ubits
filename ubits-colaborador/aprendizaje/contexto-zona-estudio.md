@@ -66,7 +66,9 @@ body.page-zona-estudio
 
 ### Demo de progreso en planes de contenidos
 
-Tras generar la BD de planes, `applyPlaygroundDemoUserProgress()` marca **3 planes de contenidos** de María con **todos sus ítems al 100 %**:
+Tras generar la BD de planes, `applyPlaygroundDemoUserProgress()`:
+
+1. Marca **3 planes de contenidos** de María (Gerencia General 2025 Q1–Q3) con **todos sus ítems al 100 %** (estado **No vigente** — útiles en tab Plan de contenidos):
 
 | Plan ID | Área |
 |---------|------|
@@ -74,7 +76,13 @@ Tras generar la BD de planes, `applyPlaygroundDemoUserProgress()` marca **3 plan
 | `pf-c-gerencia-general-2025-q2` | Gerencia General Q2 2025 |
 | `pf-c-gerencia-general-2025-q3` | Gerencia General Q3 2025 |
 
-El resto de planes asignados a `E006` conservan el progreso pseudoaleatorio generado por la BD (no forzado al 100 %).
+2. Fija los **4 planes Vigente** de María en tab **Progreso** (schema v8):
+
+| KPI | Plan | Avance |
+|-----|------|--------|
+| Completado | `pf-k-024-2026` (Empresa Liderazgo 2026) | 100 % |
+| En curso | `pf-c-gerencia-general-2026-q2` | 1/3 contenidos |
+| Sin iniciar | `pf-k-020-2026`, `pf-k-004-2026` | 0 % |
 
 > María también es líder demo en **Mi equipo** (`E006`). En Zona de estudio se evalúa siempre como **colaboradora asignada**, no como creadora de planes.
 
