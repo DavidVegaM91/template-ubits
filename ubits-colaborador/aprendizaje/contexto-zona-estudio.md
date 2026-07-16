@@ -379,11 +379,12 @@ Siempre visible (acción de líder). **No** depende de la persona seleccionada e
 | Paso | Comportamiento |
 |------|----------------|
 | 1 | Clic «Enviar recordatorio» → modal `openModal` tamaño **sm**, título «Enviar recordatorio» |
-| 2 | Cuerpo modal | «Se enviará un recordatorio por correo a todas las personas de tu equipo que no hayan completado sus planes de formación, informándoles su avance hasta el momento y la fecha de vencimiento de cada plan.» |
-| 3 | Confirmar → cierra modal → toast **success** «Recordatorios enviados» |
+| 2a | **Hay** personas con planes Vigente incompletos → cuerpo de confirmación de envío · footer **Cancelar** + **Confirmar** |
+| 2b | **No hay** nadie con planes incompletos (demo `?demo=sin-planes` o todos al 100 %) → cuerpo: «En este momento no hay personas con planes de formación sin completar.» · footer solo **Entendido** (cierra; sin toast ni mail) |
+| 3 | Confirmar (solo 2a) → cierra modal → toast **success** «Recordatorios enviados» |
 | 4 | **3 s después** (`MAIL_PREVIEW_DELAY_MS`) abre en pestaña nueva el HTML estático de ejemplo (`mails/mail-recordatorio-plan-formacion.html`) — mismo patrón que certificados en LMS Creator |
 
-Implementación: `openRecordatorioConfirmModal()` → `confirmRecordatorioEquipo()` → `openRecordatorioMailPreview()`. Sin fetch, sessionStorage ni placeholders dinámicos en el playground.
+Implementación: `openRecordatorioConfirmModal()` → si hay destinatarios: `confirmRecordatorioEquipo()` → `openRecordatorioMailPreview()`. Sin fetch, sessionStorage ni placeholders dinámicos en el playground.
 
 #### B.2 Comportamiento en producto (referencia backend)
 
@@ -444,16 +445,21 @@ Fechas de vencimiento en copy **naturalizado**, igual que tareas (`15 mar 2026`)
 
 ### C) Rankings — dos columnas (`zona-estudio-progreso-rankings`)
 
-Sin título de sección intermedio. **Izquierda:** Top de estudio · **Derecha:** Ranking entre áreas.
+Sin título de sección intermedio. **Izquierda:** Ranking de estudio del mes · **Derecha:** Ranking entre áreas este mes.
 
-#### C.1 Top de estudio (`#zona-estudio-progreso-ranking-equipo`)
+#### C.1 Ranking de estudio del mes (`#zona-estudio-progreso-ranking-equipo`)
+
+| Campo UI | Copy |
+|----------|------|
+| Título | «Ranking de estudio del mes» |
+| Descripción | «De mayor a menor tiempo de estudio.» |
 
 Button-group **Equipo / Empresa** (`#zona-estudio-progreso-equipo-scope-group`, `initButtonGroup`).
 
-| Modo | Datos | Descripción | Columna valor |
-|------|-------|-------------|-----------------|
-| **Equipo** (default) | María + subordinados | «De mayor a menor tiempo de estudio.» | `X hrs. X min.` (sin barra) |
-| **Empresa** | Todos los colaboradores (`BD_MASTER_COLABORADORES`) | «De mayor a menor tiempo de estudio.» | `X hrs. X min.` (sin barra) |
+| Modo | Datos | Columna valor |
+|------|-------|-----------------|
+| **Equipo** (default) | María + subordinados (o equipo demo) | `X hrs. X min.` (sin barra) |
+| **Empresa** | Todos los colaboradores (`BD_MASTER_COLABORADORES`) | `X hrs. X min.` (sin barra) |
 
 Tiempo de estudio (Equipo y Empresa): suma en planes **Vigente** — competencias (`consumoPorUsuario.horas`) + contenidos (duración × progreso de cada ítem).
 
@@ -463,22 +469,51 @@ Listas con **máximo 10 filas visibles**; el resto con scroll.
 
 Modo **Equipo** y **Empresa:** top 3 sticky; **autoscroll** a la persona seleccionada en el hero debajo del podio (si puesto &gt; 3). Línea divisora separada bajo el 3.º lugar (no borde del card).
 
-#### C.2 Ranking entre áreas (`#zona-estudio-progreso-ranking-areas`)
+**Empty state (`?demo=sin-planes`):** sin tabla; EmptyState.
+
+| # | Copy (título) | Uso |
+|---|----------------|-----|
+| **1** | **Aún nadie ha estudiado este mes** | **Recomendada (activa)** |
+| 2 | Este mes todavía no hay tiempo de estudio registrado | Alternativa |
+| 3 | No hay actividad de estudio este mes | Alternativa |
+| 4 | Todavía no hay datos de estudio para este mes | Alternativa |
+| 5 | Cuando tu equipo estudie, verás el ranking aquí | Alternativa |
+
+Descripción activa (recomendada): «Cuando alguien registre tiempo de estudio, aparecerá en este ranking.» · Ícono `fa-clock`.
+
+#### C.2 Ranking entre áreas este mes (`#zona-estudio-progreso-ranking-areas`)
+
+| Campo UI | Copy |
+|----------|------|
+| Título | «Ranking entre áreas este mes» |
+| Descripción | «Tiempo de estudio acumulado por área» |
 
 - Planes de **contenidos** **`Vigente`** (`getPlanesVisiblesCreator()`, `tipo === 'contenidos'`).
-- Por `plan.area`: **suma** del tiempo de estudio de todos los asignados en ese plan (misma lógica minutos que Top de estudio).
+- Por `plan.area`: **suma** del tiempo de estudio de todos los asignados en ese plan (misma lógica minutos que Ranking de estudio del mes).
 - Orden descendente por tiempo (`X hrs. X min.`, sin barra ni %).
 - **Top 3:** medallas (trofeo / medal / award).
 - **Tu área (`Logística`):** solo fondo resaltado + nombre en azul marca (sin badge «Tu área»).
 - Lista con **máx. 10 filas visibles** y scroll para el resto. **Gap 0** entre filas.
-- Si hay más de 3 áreas: **línea divisora** bajo el 3.º lugar y top 3 sticky (igual que Top de estudio).
+- Si hay más de 3 áreas: **línea divisora** bajo el 3.º lugar y top 3 sticky (igual que Ranking de estudio del mes).
+
+**Empty state (`?demo=sin-planes`):** sin tabla; EmptyState.
+
+| # | Copy (título) | Uso |
+|---|----------------|-----|
+| **1** | **Aún no hay estudio registrado por área este mes** | **Recomendada (activa)** |
+| 2 | Este mes ninguna área ha acumulado tiempo de estudio | Alternativa |
+| 3 | No hay datos de estudio por área este mes | Alternativa |
+| 4 | Cuando haya actividad, verás el ranking entre áreas aquí | Alternativa |
+| 5 | Todavía no se registró tiempo de estudio por área | Alternativa |
+
+Descripción activa (recomendada): «El ranking se actualizará cuando haya actividad de estudio en las áreas.» · Ícono `fa-chart-simple`.
 
 #### C.3 Layout responsive — filas de ranking
 
-| Viewport | Filas (Top de estudio + Ranking entre áreas) |
-|----------|----------------------------------------------|
+| Viewport | Filas (ambos rankings) |
+|----------|------------------------|
 | **Desktop** (≥769px) | Grid **50/50**: puesto + nombre \| tiempo |
-| **Mobile** (≤768px) | Una fila: puesto \| nombre \| tiempo. Podio sticky del top 3 **solo desktop** en Top de estudio — en mobile `position: static`. |
+| **Mobile** (≤768px) | Una fila: puesto \| nombre \| tiempo. Podio sticky del top 3 **solo desktop** en Ranking de estudio del mes — en mobile `position: static`. |
 
 ## 7.6 Drawers de progreso (subordinados)
 
@@ -876,12 +911,14 @@ Si `conCertificacion === false` → `plantillaCertificadoId` y `plantillaCertifi
 - [ ] Profile list cambia hero (nombre, barra, KPIs, carrusel) sin mover rankings ni recordatorio
 - [ ] `?demo=equipo-grande`: 10 avatares + chip `+15`; clic en overflow selecciona persona
 - [ ] `?demo=sin-planes`: empty state «Sin planes asignados» + CTA → Home Learn `#buscar`
+- [ ] `?demo=sin-planes`: «Enviar recordatorio» abre modal informativo + solo **Entendido** (sin toast/mail)
 - [ ] CTA «Explorar catálogo» abre browse del buscador (lo más buscado / academias) sin necesidad de tipear y borrar
 - [ ] Clic en plan de María navega a tab contenidos/competencias con plan preseleccionado
 - [ ] Clic en plan de subordinado abre drawer read-only
-- [ ] Rankings desktop: split 50/50 (nombre \| tiempo) en Top de estudio y Ranking entre áreas
+- [ ] `?demo=sin-planes`: rankings con empty state (estudio + áreas), sin tabla de posiciones
+- [ ] Rankings desktop: split 50/50 (nombre \| tiempo) en Ranking de estudio del mes y Ranking entre áreas este mes
 - [ ] Rankings mobile: barra bajo nombre/%; puesto y % centrados verticalmente
-- [ ] Sin «(Tú)» en Top de estudio; sin badge «Tu área» en ranking entre áreas (solo resaltado)
+- [ ] Sin «(Tú)» en Ranking de estudio del mes; sin badge «Tu área» en ranking entre áreas (solo resaltado)
 
 ### Checklist Plan de contenidos
 

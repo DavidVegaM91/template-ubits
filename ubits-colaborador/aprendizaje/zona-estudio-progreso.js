@@ -27,6 +27,19 @@
     var PROGRESO_EMPTY_DESC =
         'Contacta al responsable de recursos humanos de tu empresa para solicitar la asignación de un plan de formación. Mientras tanto, explora nuestro catálogo.';
     var PROGRESO_EMPTY_BTN = 'Explorar catálogo';
+    var PROGRESO_RECORDATORIO_CONFIRM_BODY =
+        'Se enviará un recordatorio por correo a todas las personas de tu equipo que no hayan completado sus planes de formación, informándoles su avance hasta el momento y la fecha de vencimiento de cada plan.';
+    var PROGRESO_RECORDATORIO_EMPTY_BODY =
+        'En este momento no hay personas con planes de formación sin completar.';
+    var PROGRESO_RECORDATORIO_EMPTY_BTN = 'Entendido';
+    var PROGRESO_RANKING_EQUIPO_EMPTY_TITLE = 'Aún nadie ha estudiado este mes';
+    var PROGRESO_RANKING_EQUIPO_EMPTY_DESC =
+        'Cuando alguien registre tiempo de estudio, aparecerá en este ranking.';
+    var PROGRESO_RANKING_EQUIPO_EMPTY_ICON = 'fa-clock';
+    var PROGRESO_RANKING_AREAS_EMPTY_TITLE = 'Aún no hay estudio registrado por área este mes';
+    var PROGRESO_RANKING_AREAS_EMPTY_DESC =
+        'El ranking se actualizará cuando haya actividad de estudio en las áreas.';
+    var PROGRESO_RANKING_AREAS_EMPTY_ICON = 'fa-chart-simple';
 
     function parseProgresoDemoScenario() {
         try {
@@ -102,15 +115,42 @@
         }
     }
 
+    function hasPersonasConPlanesFormacionIncompletos() {
+        if (progresoForceEmptyPlanes) return false;
+        var pf = getPf();
+        if (!pf || typeof pf.getProgresoColaboradorEnPlan !== 'function') return false;
+        var equipo = getEquipoPersonas();
+        for (var i = 0; i < equipo.length; i++) {
+            var planes = getPlanesVigentesParaColaborador(equipo[i].id);
+            for (var j = 0; j < planes.length; j++) {
+                if (pf.getProgresoColaboradorEnPlan(planes[j], equipo[i].id) < 100) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     function openRecordatorioConfirmModal() {
         if (typeof openModal !== 'function' || typeof closeModal !== 'function') return;
         var overlayId = 'zona-estudio-recordatorio-modal';
-        var cancelId = 'zona-estudio-recordatorio-cancel';
-        var confirmId = 'zona-estudio-recordatorio-confirm';
-        var bodyHtml = '<p class="ubits-body-md-regular">Se enviará un recordatorio por correo a todas las personas de tu equipo que no hayan completado sus planes de formación, informándoles su avance hasta el momento y la fecha de vencimiento de cada plan.</p>';
-        var footerHtml =
-            '<button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="' + cancelId + '"><span>Cancelar</span></button>' +
-            '<button type="button" class="ubits-button ubits-button--primary ubits-button--md" id="' + confirmId + '"><span>Confirmar</span></button>';
+        var canSend = hasPersonasConPlanesFormacionIncompletos();
+        var bodyHtml =
+            '<p class="ubits-body-md-regular">' +
+            (canSend ? PROGRESO_RECORDATORIO_CONFIRM_BODY : PROGRESO_RECORDATORIO_EMPTY_BODY) +
+            '</p>';
+        var footerHtml;
+        if (canSend) {
+            var cancelId = 'zona-estudio-recordatorio-cancel';
+            var confirmId = 'zona-estudio-recordatorio-confirm';
+            footerHtml =
+                '<button type="button" class="ubits-button ubits-button--secondary ubits-button--md" id="' + cancelId + '"><span>Cancelar</span></button>' +
+                '<button type="button" class="ubits-button ubits-button--primary ubits-button--md" id="' + confirmId + '"><span>Confirmar</span></button>';
+        } else {
+            var understoodId = 'zona-estudio-recordatorio-entendido';
+            footerHtml =
+                '<button type="button" class="ubits-button ubits-button--primary ubits-button--md" id="' + understoodId + '"><span>' + PROGRESO_RECORDATORIO_EMPTY_BTN + '</span></button>';
+        }
         openModal({
             overlayId: overlayId,
             title: 'Enviar recordatorio',
@@ -119,17 +159,22 @@
             size: 'sm'
         });
         setTimeout(function () {
-            var cancelBtn = document.getElementById(cancelId);
-            var confirmBtn = document.getElementById(confirmId);
             function closeRecordatorioModal() {
                 closeModal(overlayId);
             }
-            if (cancelBtn) cancelBtn.addEventListener('click', closeRecordatorioModal);
-            if (confirmBtn) {
-                confirmBtn.addEventListener('click', function () {
-                    closeRecordatorioModal();
-                    confirmRecordatorioEquipo();
-                });
+            if (canSend) {
+                var cancelBtn = document.getElementById('zona-estudio-recordatorio-cancel');
+                var confirmBtn = document.getElementById('zona-estudio-recordatorio-confirm');
+                if (cancelBtn) cancelBtn.addEventListener('click', closeRecordatorioModal);
+                if (confirmBtn) {
+                    confirmBtn.addEventListener('click', function () {
+                        closeRecordatorioModal();
+                        confirmRecordatorioEquipo();
+                    });
+                }
+            } else {
+                var understoodBtn = document.getElementById('zona-estudio-recordatorio-entendido');
+                if (understoodBtn) understoodBtn.addEventListener('click', closeRecordatorioModal);
             }
         }, 0);
     }
@@ -616,6 +661,7 @@
     }
 
     function getRankingEquipo() {
+        if (progresoForceEmptyPlanes) return [];
         return getEquipoPersonas().map(function (person) {
             return {
                 id: person.id,
@@ -627,6 +673,7 @@
     }
 
     function getRankingEmpresa() {
+        if (progresoForceEmptyPlanes) return [];
         return getEmpresaPersonas().map(function (person) {
             return {
                 id: person.id,
@@ -715,12 +762,23 @@
         return { podium: podium, scroll: scroll };
     }
 
-    function renderRankingSplitLists(podiumEl, scrollEl, rows, buildRowHtml, emptyMessage) {
+    function renderRankingSplitLists(podiumEl, scrollEl, rows, buildRowHtml, emptyOpts) {
         if (!scrollEl) return;
         if (!rows.length) {
             if (podiumEl) podiumEl.innerHTML = '';
-            scrollEl.innerHTML = '<p class="ubits-body-sm-regular zona-estudio-progreso-empty">' + emptyMessage + '</p>';
             clearRankingListScrollLimit(scrollEl);
+            var hostId = (emptyOpts && emptyOpts.hostId) || (scrollEl.id + '-empty');
+            scrollEl.innerHTML = '<div id="' + hostId + '" class="zona-estudio-progreso-ranking-empty"></div>';
+            if (typeof loadEmptyState === 'function' && emptyOpts && emptyOpts.title) {
+                loadEmptyState(hostId, {
+                    icon: emptyOpts.icon || 'fa-inbox',
+                    iconSize: 'lg',
+                    title: emptyOpts.title,
+                    description: emptyOpts.description || ' '
+                });
+            } else if (emptyOpts && emptyOpts.title) {
+                scrollEl.innerHTML = '<p class="ubits-body-sm-regular zona-estudio-progreso-empty">' + emptyOpts.title + '</p>';
+            }
             return;
         }
         var parts = splitRankingRowsHtml(rows, buildRowHtml);
@@ -759,9 +817,22 @@
         var scrollEl = document.getElementById('zona-estudio-progreso-ranking-areas');
         if (!scrollEl || progresoState.areasRendered) return;
         var areas = getRankingAreas();
+        var emptyOpts = progresoForceEmptyPlanes
+            ? {
+                hostId: 'zona-estudio-progreso-ranking-areas-empty',
+                icon: PROGRESO_RANKING_AREAS_EMPTY_ICON,
+                title: PROGRESO_RANKING_AREAS_EMPTY_TITLE,
+                description: PROGRESO_RANKING_AREAS_EMPTY_DESC
+            }
+            : {
+                hostId: 'zona-estudio-progreso-ranking-areas-empty',
+                icon: 'fa-inbox',
+                title: 'Sin datos de áreas.',
+                description: ' '
+            };
         renderRankingSplitLists(podiumEl, scrollEl, areas, function (row, rank) {
             return rankingAreaTimeRowHtml(rank, row.area, row.minutos, row.isMine);
-        }, 'Sin datos de áreas.');
+        }, emptyOpts);
         progresoState.areasRendered = true;
     }
 
@@ -771,6 +842,19 @@
         if (!scrollEl) return;
         updateRankingEquipoDesc();
         var rows = progresoState.rankingEquipoScope === 'empresa' ? getRankingEmpresa() : getRankingEquipo();
+        var emptyOpts = progresoForceEmptyPlanes
+            ? {
+                hostId: 'zona-estudio-progreso-ranking-equipo-empty',
+                icon: PROGRESO_RANKING_EQUIPO_EMPTY_ICON,
+                title: PROGRESO_RANKING_EQUIPO_EMPTY_TITLE,
+                description: PROGRESO_RANKING_EQUIPO_EMPTY_DESC
+            }
+            : {
+                hostId: 'zona-estudio-progreso-ranking-equipo-empty',
+                icon: 'fa-inbox',
+                title: 'Sin datos.',
+                description: ' '
+            };
         renderRankingSplitLists(podiumEl, scrollEl, rows, function (row, rank) {
             return rankingTeamTimeRowHtml(
                 rank,
@@ -780,7 +864,7 @@
                 String(row.id) === LEADER_ID,
                 row.id
             );
-        }, 'Sin datos.');
+        }, emptyOpts);
         window.requestAnimationFrame(function () {
             window.requestAnimationFrame(function () {
                 scrollRankingEquipoToSelected();

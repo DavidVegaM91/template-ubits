@@ -761,6 +761,12 @@
     margin: 0;
 }
 
+.zona-estudio-progreso-ranking-empty {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
 #zona-estudio-progreso-ranking-areas .zona-estudio-progreso-ranking-row--time {
     grid-template-columns: auto minmax(0, 1fr) auto;
 }
