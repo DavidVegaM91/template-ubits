@@ -142,6 +142,7 @@ Misma fila `p-5`; el hash elige la fase/variante **sin** obligar a contestar. De
 |------|--------|-----------|
 | `#eval-bienvenida` | Fase 1 Bienvenida | = primera entrada a Evaluación; intento no iniciado |
 | `#eval-intento` | Fase 2 preguntas + sticky | Banco `collab`; respuestas vacías o parciales |
+| `#eval-retomar` | APP: evaluación en pausa | Copy «Dejaste en pausa…»; CTA **Responder la evaluación** → `#eval-intento` |
 | `#eval-resultado-aprobado` | Resultado aprobado | Score mock alto; CTA **Continuar** → cierre |
 | `#eval-resultado-reprobado` | Resultado reprobado (quedan intentos) | Score bajo; CTA **Reintentar** |
 | `#eval-resultado-tiempo` | Tiempo agotado | CTA **Reintentar** |
@@ -159,6 +160,7 @@ Misma fila `p-5`; el hash elige la fase/variante **sin** obligar a contestar. De
 …/exp-estudio/exp-estudio.html?id=<contentId>#scorm-2
 …/exp-estudio/exp-estudio.html?id=<contentId>#eval-bienvenida
 …/exp-estudio/exp-estudio.html?id=<contentId>#eval-intento
+…/exp-estudio/exp-estudio.html?id=<contentId>#eval-retomar
 …/exp-estudio/exp-estudio.html?id=<contentId>#eval-resultado-aprobado
 …/exp-estudio/exp-estudio.html?id=<contentId>#eval-resultado-reprobado
 …/exp-estudio/exp-estudio.html?id=<contentId>#eval-resultado-tiempo
@@ -1146,12 +1148,13 @@ Los frames son **mobile** (sin columna derecha); en playground web el contenido 
 | Resultado reprobatorio | Evaluation-Failed | `2389:47137` | [Figma](https://www.figma.com/design/zHCCbQamZeiZJPlT7GEKDs/APP-v3.0.0?node-id=2389-47137&m=dev) |
 | Resultado tiempo agotado | Evaluation-Time out | `2389:47261` | [Figma](https://www.figma.com/design/zHCCbQamZeiZJPlT7GEKDs/APP-v3.0.0?node-id=2389-47261&m=dev) |
 | Resultado límite de intentos | Evaluation-Attempt limit | `2389:47401` | [Figma](https://www.figma.com/design/zHCCbQamZeiZJPlT7GEKDs/APP-v3.0.0?node-id=2389-47401&m=dev) |
+| Retomar (APP — evaluación en pausa) | Evaluation-resuming evaluation | `3341:13137` | [Figma](https://www.figma.com/design/zHCCbQamZeiZJPlT7GEKDs/APP-v3.0.0?node-id=3341-13137&m=dev) |
 
 ##### Deep links de evaluación
 
 Catálogo maestro de **toda** la experiencia (portada, cada página, cierre + evaluación): **§ 2.3.1**.
 
-Hashes de esta fase: `#eval-bienvenida`, `#eval-intento`, `#eval-resultado-aprobado`, `#eval-resultado-reprobado`, `#eval-resultado-tiempo`, `#eval-resultado-limite`. Al abrir uno con sesión vacía, precargar páginas `p-1`…`p-4` como Completadas + fila Evaluación activa (mismo espíritu que Creator con `#recursos`).
+Hashes de esta fase: `#eval-bienvenida`, `#eval-intento`, `#eval-retomar`, `#eval-resultado-aprobado`, `#eval-resultado-reprobado`, `#eval-resultado-tiempo`, `#eval-resultado-limite`. Al abrir uno con sesión vacía, precargar páginas `p-1`…`p-4` como Completadas + fila Evaluación activa (mismo espíritu que Creator con `#recursos`).
 
 #### 6.8.2 Diagrama de flujo (fase × nav)
 
@@ -1207,6 +1210,8 @@ Hashes de esta fase: `#eval-bienvenida`, `#eval-intento`, `#eval-resultado-aprob
 
 **Efecto:** se descuenta 1 del cupo de intentos; al volver, mostrar Bienvenida o Resultado límite si ya no quedan intentos (mismas reglas que timeout / reprobado). Deep link útil para QA de sticky post-consumo: `#eval-resultado-limite`.
 
+**APP — evaluación dejada en pausa (sin cerrar el intento en servidor):** al reabrir el contenido desde la **app móvil**, APP v3 muestra la pantalla **Evaluation-resuming evaluation** (`3341:13137`): invita a retomar **desde el sitio web**. En playground: deep link **`#eval-retomar`** (demo). CTA **`Responder la evaluación`** → fase 2 (`#eval-intento`). Copy exacto § 6.8.4a-bis.
+
 #### 6.8.4 Contenido por fase
 
 ##### 6.8.4a Fase 1 — **Bienvenida** (copy cerrado — APP v3)
@@ -1246,6 +1251,23 @@ Recordatorio
 **Qué NO aparece en Bienvenida APP v3:** nota mínima para aprobar, número de preguntas, aleatoriedad.
 
 **Nav:** **`Continuar`** → fase 2 (inicia el intento; desde aquí aplica «Importante»).
+
+##### 6.8.4a-bis — **Retomar** (APP — evaluación en pausa)
+
+**Referencia Figma:** § 6.8.0 — node `3341:13137` (*Evaluation-resuming evaluation*). Deep link: `#eval-retomar`.
+
+**Cuándo (producto APP):** el estudiante inició el intento y dejó la evaluación **en pausa**; al volver desde la **app**, se muestra esta pantalla intermedia (no las preguntas) y se le invita a retomar en el **sitio web**.
+
+**Ubicación playground:** columna izquierda, contenido centrado (mismo patrón que Bienvenida / Resultado). En APP el CTA va al pie; en web el CTA primario es el de **`TituloProgresoYNav`**.
+
+| Orden | Elemento | Copy / detalle |
+|-------|----------|----------------|
+| 1 | Ícono | Info (mismo asset que Bienvenida) — `info-icon.svg` |
+| 2 | Título | **`Evaluación de conocimientos`** |
+| 3 | Cuerpo | **`Dejaste en pausa la evaluación, te invitamos a retomarla desde nuestro sitio web.`** |
+| 4 | CTA primario | **`Responder la evaluación`** → fase 2 (`#eval-intento`) |
+
+> El copy habla de «sitio web» porque el frame es de **APP**. En el playground web se muestra tal cual para QA visual / copy.
 
 ##### 6.8.4b Fase 2 — **Evaluación** (copy y banco demo cerrados)
 

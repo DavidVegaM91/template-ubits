@@ -385,6 +385,7 @@ body.page-exp-estudio .exp-estudio-eval {
 }
 
 body.page-exp-estudio .exp-estudio-eval--bienvenida,
+body.page-exp-estudio .exp-estudio-eval--retomar,
 body.page-exp-estudio .exp-estudio-eval--resultado {
   align-items: center;
   text-align: center;

@@ -30,6 +30,7 @@
     'pagina-p-5': { view: 'recursos', pageId: 'p-5', evalFase: 'bienvenida' },
     'eval-bienvenida': { view: 'recursos', pageId: 'p-5', evalFase: 'bienvenida' },
     'eval-intento': { view: 'recursos', pageId: 'p-5', evalFase: 'evaluacion' },
+    'eval-retomar': { view: 'recursos', pageId: 'p-5', evalFase: 'retomar' },
     'eval-resultado-aprobado': {
       view: 'recursos',
       pageId: 'p-5',
@@ -679,6 +680,18 @@
       '</ul></div></div>';
   }
 
+  /** APP Evaluation-resuming evaluation (3341:13137) — demo #eval-retomar */
+  function renderEvalRetomar(main) {
+    main.innerHTML =
+      '<div class="exp-estudio-eval exp-estudio-eval--retomar">' +
+      '<img class="exp-estudio-eval__icon" src="' +
+      ICONS.info +
+      '" alt="" />' +
+      '<h2 class="exp-estudio-eval__heading ubits-heading-h2">Evaluación de conocimientos</h2>' +
+      '<p class="exp-estudio-eval__lead ubits-body-md-regular">Dejaste en pausa la evaluación, te invitamos a retomarla desde nuestro sitio web.</p>' +
+      '</div>';
+  }
+
   function renderEvalPreguntas(main, page) {
     main.innerHTML =
       '<div class="exp-estudio-eval">' +
@@ -819,6 +832,7 @@
     if (page.tipo === 'evaluacion') {
       if (session.evalFase === 'evaluacion') renderEvalPreguntas(main, page);
       else if (session.evalFase === 'resultado') renderEvalResultado(main);
+      else if (session.evalFase === 'retomar') renderEvalRetomar(main);
       else renderEvalBienvenida(main, page);
       return;
     }
@@ -984,6 +998,7 @@
   }
 
   function evalPrimaryLabel() {
+    if (session.evalFase === 'retomar') return 'Responder la evaluación';
     if (session.evalFase === 'resultado') {
       if (session.evalResultadoKind === 'aprobado') return 'Continuar';
       if (session.evalResultadoKind === 'limite') return 'Ir al inicio';
@@ -997,7 +1012,7 @@
     var cfg = (page && page.evalConfig) || {};
     var maxA = cfg.maxAttempts || 2;
 
-    if (session.evalFase === 'bienvenida') {
+    if (session.evalFase === 'bienvenida' || session.evalFase === 'retomar') {
       session.evalFase = 'evaluacion';
       session.answers = {};
       setHash('eval-intento');
@@ -1096,23 +1111,31 @@
     session.currentPageId = pageId;
     session.lastPageId = pageId;
     if (page.tipo === 'evaluacion') {
-      if (!session.evalFase || session.evalFase === 'resultado' && session.evalResultadoKind === 'aprobado') {
-        /* keep */
-      }
-      if (!session.completedPageIds['p-5']) {
-        session.evalFase = session.evalFase || 'bienvenida';
-        if (session.evalFase === 'resultado' && session.evalResultadoKind === 'aprobado') {
-          /* ok */
-        } else if (!session.evalResultadoKind) {
-          session.evalFase = 'bienvenida';
-        }
+      /* No pisar fase deep-link (retomar / resultado / evaluacion) al reentrar a p-5 */
+      if (!session.evalFase) {
+        session.evalFase = 'bienvenida';
+      } else if (
+        session.evalFase === 'resultado' &&
+        session.evalResultadoKind === 'aprobado' &&
+        !session.completedPageIds['p-5']
+      ) {
+        /* mantener resultado aprobado hasta marcar completada */
+      } else if (
+        !session.completedPageIds['p-5'] &&
+        session.evalFase !== 'retomar' &&
+        session.evalFase !== 'evaluacion' &&
+        !(session.evalFase === 'resultado' && session.evalResultadoKind)
+      ) {
+        session.evalFase = 'bienvenida';
       }
       setHash(
         session.evalFase === 'evaluacion'
           ? 'eval-intento'
-          : session.evalFase === 'resultado'
-            ? 'eval-resultado-' + (session.evalResultadoKind || 'reprobado')
-            : 'eval-bienvenida'
+          : session.evalFase === 'retomar'
+            ? 'eval-retomar'
+            : session.evalFase === 'resultado'
+              ? 'eval-resultado-' + (session.evalResultadoKind || 'reprobado')
+              : 'eval-bienvenida'
       );
     } else {
       setHash('pagina-' + pageId);
