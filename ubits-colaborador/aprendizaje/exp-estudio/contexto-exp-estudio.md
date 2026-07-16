@@ -392,14 +392,22 @@ Discriminación en BD: `origen` / `catalogoId` — `catalogo_fiqsha` vs `catalog
 
 ### 5.1 Layout general de portada
 
-Dentro del **layout estándar colaborador** (sidebar + SubNav), el área de contenido usa **dos columnas** en desktop (gap 24px):
+Dentro del **layout estándar colaborador** (sidebar + SubNav), el área de contenido usa **dos columnas** en desktop:
+
+| Token / medida | Valor | Uso |
+|----------------|-------|-----|
+| **Proporción columnas** | **65 / 35** | Izquierda (hero + fichas) / derecha (TituloSpecsCta + índice). CSS: `minmax(0, 65fr) minmax(280px, 35fr)` |
+| Gap **entre** columnas | **24px** (`--gap-2xl` / `--space-6`) | Separación horizontal del grid |
+| Gap **vertical** entre bloques de cada columna | **20px** (`--gap-xl` / `--space-5`) | Izquierda: hero ↔ Categoría/Competencia ↔ Descripción ↔ Aliado ↔ Expertos. Derecha: `TituloSpecsCta` (o progreso) ↔ `IndiceExpEstudio` |
+
+> **Nota tokens:** en el DS UBITS, `--gap-lg` = **16px** y `--gap-xl` = **20px**. En Figma la columna izquierda/derecha de portada usa `space/5` (**20px**). En implementación se usa **`--gap-xl`**, no `--gap-lg`.
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
 │ SubNav (logo cliente en empresa; tabs aprendizaje)               │
 ├──────────────────────────────┬──────────────────────────────────┤
-│  COLUMNA IZQUIERDA (703px)   │  COLUMNA DERECHA (flex ~471px)   │
-│  bg-2, cards apiladas gap 20 │  gap 20 entre bloques            │
+│  COLUMNA IZQUIERDA (~65%)    │  COLUMNA DERECHA (~35%)          │
+│  gap vertical 20px (--gap-xl)│  gap vertical 20px (--gap-xl)    │
 │                              │                                  │
 │  · Hero video/tráiler        │  · TituloSpecsCtaExpEstudio       │
 │  · Bloques informativos      │  · IndiceExpEstudio (preview)    │
@@ -409,7 +417,7 @@ Dentro del **layout estándar colaborador** (sidebar + SubNav), el área de cont
 
 - **Columna izquierda:** **igual** en todos los estados (sin iniciar / en progreso / finalizado). Solo cambia § 5.2 vs § 5.3 por origen catálogo.
 - **Columna derecha (portada):** cambia según progreso del usuario — ver § 5.4 (sin iniciar), § 5.6 (en progreso), § 5.6b (finalizado).
-- **Columna derecha (Recursos):** layout distinto — ver § 6.4 (`TituloProgresoYNav` + índice navegable).
+- **Columna derecha (Recursos):** layout distinto — ver § 6.4 (`TituloProgresoYNav` + índice navegable). Misma proporción **65/35**.
 
 **Hero / tráiler (Figma):** bloque `Video` — imagen 396px alto, `border-radius-lg`. Overlay central **play** (fondo `rgba(0,0,0,0.7)`, ícono play sólido). Equivalente playground: `learn-content-img-trailer` con tráiler reproducible.
 
@@ -420,31 +428,67 @@ Frame: `Home contenido - Version empresa - sin iniciar`.
 | Orden | Componente Figma | Contenido | Fuente mock |
 |-------|------------------|-----------|-------------|
 | 1 | `Video` | Hero con play de tráiler | `imagen` + URL tráiler si aplica |
-| 2 | `FichaCompetenciasYHabilidades` **tipo `Empresa`** | Label **`Categoría`** + un chip (ej. `Trabajo en equipo`) | Categoría corporativa / competencia simplificada |
-| 3 | `DescripcionExpEstudio` | Título `Descripción` + párrafos con **negritas inline** en frases clave | `descripcion` (puede ser copy enriquecido del autor) |
+| 2 | `FichaCompetenciasYHabilidades` **tipo `Empresa`** | Label **`Categoría`** + un chip | `categoriaFiqshaId` → `BD_MASTER_CATEGORIAS_FIQSHA` (ej. `f007` → `cfq-006` → **Gestión de conflictos**) |
+| 3 | `DescripcionExpEstudio` | Título `Descripción` + párrafos | `descripcion` del catálogo Fiqsha |
+
+**Interacción chip Categoría (playground):** abre **nueva pestaña** en U. Corporativa con el filtro de esa categoría ya aplicado.
+
+| App | URL |
+|-----|-----|
+| Vanilla | `../u-corporativa.html?categoria=<categoriaFiqshaId>` |
+| React | `/ubits-colaborador/aprendizaje/u-corporativa?categoria=<categoriaFiqshaId>` |
+
+Alias aceptado: `categoriaId` (mismo valor `cfq-XXX`).
 
 **No aparecen** en Figma empresa: bloque `Competencia` + `Habilidades de este contenido` separados, `Aliados`, `Expertos`.
 
-**Ejemplo copy (Figma):** descripción larga en varios párrafos con bold en «comprender mejor los conflictos…», «qué es un conflicto…», «herramientas prácticas», etc.
-
 ### 5.3 Columna izquierda — **UBITS** (`catalogo_ubits`)
 
-Frame: `Home contenido - Version UBITS - sin iniciar`.
+Frame: `Home contenido - Version UBITS - sin iniciar` ([Figma `40006351:17931`](https://www.figma.com/design/ivTgxM9bL6vcvGU90P8oGg/Learner-v4--Deprecated--mejor-ver-Playground?node-id=40006351-17931)).
 
 | Orden | Componente Figma | Contenido | Fuente mock |
 |-------|------------------|-----------|-------------|
 | 1 | `Video` | Hero con play de tráiler | `imagen` del catálogo |
-| 2 | `FichaCompetenciasYHabilidades` **tipo `Contenido Ubits`** | **`Competencia`** (avatar 28px + nombre) + **`Habilidades de este contenido`** (chips) | `competenciaPrincipalId`, `habilidadPrincipalId`, `habilidadesSecundariasIds` |
-| 3 | `DescripcionExpEstudio` | Título `Descripción` + texto (puede incluir negritas) | `descripcion` |
-| 4 | `AliadosExpEstudio` | Label `Aliados` + logo + nombre/enlace + párrafo | `aliadoId` / `providersAliadosIds` |
-| 5 | `ExpertosExpEstudio` | Label `Expertos` + lista (avatar 96px, LinkedIn, cargo, bio) | campo `expertos[]` del catálogo |
+| 2 | `FichaCompetenciasYHabilidades` **tipo `Contenido Ubits`** | **`Competencia`** (avatar **28px** + nombre) + **`Habilidades de este contenido`** (chips) | `competenciaPrincipalId` → `BD_MASTER_COMPETENCIAS` (`archivoImagen` en `images/imagenes competencias/`); `habilidadPrincipalId` + `habilidadesSecundariasIds` → `BD_MASTER_HABILIDADES` |
+| 3 | `DescripcionExpEstudio` | Título `Descripción` + texto | `descripcion` |
+| 4 | `AliadosExpEstudio` | Label **`Aliado`** + logo **96px** + nombre (subrayado) + párrafo | Aliado primario: `resolvePrimaryAliadoId` (`providersAliadosIds` / `aliadoId`) → logo y nombre de `BD_MASTER_ALIADOS`. **Bio:** texto mock de playground (Customer Success / preview), no viene de BD |
+| 5 | `ExpertosExpEstudio` | Label **`Expertos`** + lista (avatar **96px**, botón LinkedIn, nombre subrayado, cargo, bio) | `expertos[]` del catálogo (strings `Nombre · Cargo`). Foto: avatares locales `images/avatars/…`. **Bio:** texto mock de playground |
 
-**Ejemplo Figma (curso conflictos):**
+**Interacciones de descubrimiento (playground):**
 
-- **Competencia:** Trabajo en equipo
-- **Habilidades:** `Gestión del conflicto`, `Relacionamiento`, `Autoconocimiento`, `Comunicación`
-- **Aliado:** WOBI
-- **Expertos:** Laura Huang (+ opcionalmente más con divider)
+| Elemento | Acción | Destino |
+|----------|--------|---------|
+| Chip / pill **Competencia** | Nueva pestaña | Home Learn con búsqueda = nombre de la competencia |
+| Chip **Habilidad** | Nueva pestaña | Home Learn con búsqueda = nombre de la habilidad |
+| **Nombre Aliado** (subrayado) | Nueva pestaña | Home Learn con búsqueda = nombre del aliado (`provider` en catálogo) |
+| **Nombre Experto** (subrayado) | Nueva pestaña | Home Learn con búsqueda = nombre del experto (parseado de `expertos[]`) |
+| Botón **LinkedIn** del experto | Nueva pestaña | `https://www.linkedin.com/in/david-vega-ux/` (easter egg del playground) |
+
+| App | URL Home Learn con término |
+|-----|----------------------------|
+| Vanilla | `../home-learn.html?q=<término>` |
+| React | `/ubits-colaborador/aprendizaje?q=<término>` |
+
+Al cargar con `?q=`, el hero busca ese término (misma UX que si el usuario lo hubiera escrito) y muestra resultados. Sin `q`, el hash `#buscar` solo enfoca el input (estado browse).
+
+**Buscador Home Learn — campos indexados:** título, descripción, tipo, competencia, **proveedor/aliado**, categoría (Fiqsha), nivel, idioma, **expertos** (`expertos[]` de `bd-contenidos-ubits.js`). Los **85** contenidos UBITS del catálogo traen al menos un experto en BD; el haystack incluye el string completo (`Nombre · Cargo`) para que coincidan búsquedas por nombre.
+
+**Datos que deben coincidir siempre con la BD del contenido** (portada):
+
+- Imagen de portada, título, specs (nivel, tiempo, idioma, certificado)
+- Categoría (Fiqsha) **o** competencia + habilidades (UBITS)
+- Logo y nombre del aliado (UBITS)
+
+**Ejemplo QA:** `?id=u001` (UBITS) — clic en competencia/habilidad → Home Learn filtrado. `?id=f007` (Fiqsha) — clic en Categoría → U. Corporativa con filtro `cfq-006`.
+
+### 5.3.1 Deep links de catálogo (referencia cruzada)
+
+| Query | Página | Efecto |
+|-------|--------|--------|
+| `?q=<texto>` | Home Learn (`home-learn.html` / `/aprendizaje`) | Prefill + ejecutar búsqueda en el hero |
+| `#buscar` | Home Learn | Activar browse + focus input (sin término) |
+| `?categoria=<cfq-XXX>` | U. Corporativa (`u-corporativa.html` / `/u-corporativa`) | Aplicar filtro **Categoría** = ese id |
+| `?categoriaId=<cfq-XXX>` | U. Corporativa | Alias de `categoria` |
 
 ### 5.4 Columna derecha — estado **SIN INICIAR** (común FIQSHA y UBITS)
 
@@ -793,7 +837,7 @@ IndiceExpEstudio (Completado)
 
 | Aspecto | FIQSHA / Empresa | UBITS |
 |---------|------------------|-------|
-| Columna izquierda | Video + **Categoría** (chip) + Descripción | Video + Competencia + Habilidades + Descripción + Aliados + Expertos |
+| Columna izquierda | Video + **Categoría** (chip desde `categoriaFiqshaId`) + Descripción | Video + Competencia + Habilidades + Descripción + **Aliado** + **Expertos** |
 | Specs subtítulos | No | Sí (`Subtítulos: Español, Inglés, Portugués`) |
 | Spec certificado | Sí (`Con certificado`) | Sí |
 | Columna derecha | TituloSpecsCta + IndiceExpEstudio | Igual |
@@ -846,6 +890,10 @@ Tokens Figma usan prefijo `--color-*` (alineado con playground React; en vanilla
 | 5.12 | CTA finalizado | `Ver más contenidos` → `home-learn.html#buscar` + focus input |
 | 5.13 | Certificado finalizado | `Descargar certificado` (secundario, bajo primario) |
 | 5.14 | Progreso finalizado | Barra **verde** 100 %; índice todo ✓ |
+| 5.15 | Chip Categoría (Fiqsha) | Nueva pestaña → U. Corporativa `?categoria=<cfq-id>` (§ 5.2 / § 5.3.1) |
+| 5.16 | Competencia / Habilidades (UBITS) | Nueva pestaña → Home Learn `?q=<nombre>` (§ 5.3 / § 5.3.1) |
+| 5.17 | Nombre Aliado / Experto (UBITS) | Nueva pestaña → Home Learn `?q=<nombre>` |
+| 5.18 | LinkedIn experto | Nueva pestaña → `https://www.linkedin.com/in/david-vega-ux/` (playground) |
 
 ---
 
@@ -857,7 +905,7 @@ Tokens Figma usan prefijo `--color-*` (alineado con playground React; en vanilla
 
 **Referencia Figma (ejemplo página 1 — video):** frame `Video` — node `40006360:4608` — [Figma Dev Mode](https://www.figma.com/design/ivTgxM9bL6vcvGU90P8oGg/Learner-v4--Deprecated--mejor-ver-Playground?node-id=40006360-4608&m=dev).
 
-**Layout shell:** igual que portada (§ 2) — layout estándar colaborador, sidebar + SubNav, área principal en **dos columnas** desktop (gap 24px). La columna izquierda **ya no** muestra metadata del catálogo (competencia, aliados, etc.); solo el recurso de la página activa.
+**Layout shell:** igual que portada (§ 5.1) — layout estándar colaborador, sidebar + SubNav, área principal en **dos columnas** desktop (**65/35**, gap entre columnas 24px). La columna izquierda **ya no** muestra metadata del catálogo (competencia, aliados, etc.); solo el recurso de la página activa.
 
 ### 6.0 Referencias Figma — Recursos
 
@@ -873,14 +921,16 @@ Tokens Figma usan prefijo `--color-*` (alineado con playground React; en vanilla
 ┌─────────────────────────────────────────────────────────────────┐
 │ SubNav (aprendizaje / zona de estudio según entrada)             │
 ├──────────────────────────────┬──────────────────────────────────┤
-│  COLUMNA IZQUIERDA (703px)   │  COLUMNA DERECHA (~479px)        │
-│  Visor página activa         │  · TituloProgresoYNav             │
-│                              │  · IndiceExpEstudio (navegable)  │
-│  · Recurso principal         │                                  │
+│  COLUMNA IZQUIERDA (~65%)    │  COLUMNA DERECHA (~35%)          │
+│  Visor página activa         │  gap 20px (--gap-xl)             │
+│                              │  · TituloProgresoYNav             │
+│  · Recurso principal         │  · IndiceExpEstudio (navegable)  │
 │  · Complementarios (0–2)     │                                  │
 │    (orden de alta Creator)   │                                  │
 └──────────────────────────────┴──────────────────────────────────┘
 ```
+
+Misma proporción **65/35** y gaps que portada (§ 5.1).
 
 | Columna | Portada (§ 5) | Recursos (§ 6) |
 |---------|---------------|----------------|
@@ -984,7 +1034,7 @@ Componente Figma: título del **curso** (no de la página) + fila de navegación
 |--------|----------------|
 | **`Continuar`** | Avanza a la **siguiente** página del índice (orden § 3.3) — **excepto** en página **Evaluación**: ver § 6.8 (fases Bienvenida → Evaluación → Resultado). Tras **resultado positivo** en evaluación → siguiente ítem (`Fin del contenido` § 7) |
 | **`Regresar`** en **página 1** | Vuelve a la **portada** del curso (mismo `?id=`, vista Portada) |
-| **`Regresar`** en página 2+ | Va a la **página anterior** del índice |
+| **`Regresar`** en página 2+ | Va a la **página anterior** del índice. Si estaba en **fase Evaluación** (intento abierto), el intento queda **en pausa**: al volver con **Continuar** (o el índice) se muestra **Retomar** (`#eval-retomar` / `#eval2-retomar`), no Bienvenida; el timer retoma el tiempo restante al abandonar. |
 | Índice lateral | Páginas **`Completada`**: clicables (repaso). **`Activa`**: página actual. **`Bloqueada`**: no clicable (secuencia) |
 
 **Secuencia:** v1 **bloqueada** — solo la página activa y las ya completadas son accesibles; el resto muestra candado (igual Figma frame `40006360:4608`).
@@ -1627,7 +1677,7 @@ Solo tras **resultado `aprobado` + `Continuar`**, el flujo avanza a **`Fin del c
 | # | Pregunta | Respuesta |
 |---|----------|-----------|
 | 6.1 | ¿Entrada a Recursos? | `Comenzar ahora` o `Continuar` desde portada → página 1 o última vista |
-| 6.2 | Layout Recursos | Dos columnas: visor 703px + nav/índice ~479px (§ 6.1) |
+| 6.2 | Layout Recursos | Dos columnas **65/35**: visor + nav/índice (§ 6.1 / § 5.1) |
 | 6.3 | Complementarios al alumno | Sí — descarga (`DescargarArchivo`) + texto (card); orden Creator; § 6.3 |
 | 6.4 | Navegación principal | **`Regresar`** + **`Continuar`** en `TituloProgresoYNav` |
 | 6.5 | Regresar en página 1 | Vuelve a **portada** del curso |

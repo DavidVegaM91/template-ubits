@@ -481,6 +481,246 @@
     };
   }
 
+  function categoriaFiqshaLabel(categoriaId) {
+    var bd = global.BD_MASTER_CATEGORIAS_FIQSHA;
+    if (!bd || !bd.categorias) return '';
+    for (var i = 0; i < bd.categorias.length; i++) {
+      if (String(bd.categorias[i].id) === String(categoriaId)) return bd.categorias[i].nombre;
+    }
+    return '';
+  }
+
+  function getCompetencia(compId) {
+    var comps = (global.BD_MASTER_COMPETENCIAS && global.BD_MASTER_COMPETENCIAS.competencias) || [];
+    for (var i = 0; i < comps.length; i++) {
+      if (String(comps[i].id) === String(compId)) return comps[i];
+    }
+    return null;
+  }
+
+  function getHabilidad(habId) {
+    var habs = (global.BD_MASTER_HABILIDADES && global.BD_MASTER_HABILIDADES.habilidades) || [];
+    for (var i = 0; i < habs.length; i++) {
+      if (String(habs[i].id) === String(habId)) return habs[i];
+    }
+    return null;
+  }
+
+  function competenciaImageSrc(archivoImagen) {
+    return resolveImage('images/imagenes competencias/' + (archivoImagen || 'Liderazgo.jpg'));
+  }
+
+  var EXPERT_AVATAR_POOL = [
+    'images/avatars/fin_f45_beatriz.jpg',
+    'images/avatars/cons_m45_hugo.jpg',
+    'images/avatars/crea_f27_lorena.jpg',
+    'images/avatars/ener_m45_javier.jpg',
+    'images/avatars/gob_f27_isabella.jpg',
+    'images/avatars/cmas_m27_luis.jpg'
+  ];
+
+  var LINKEDIN_PLAYGROUND_URL = 'https://www.linkedin.com/in/david-vega-ux/';
+
+  var ALIADO_BIO_PREVIEW =
+    'Aquí va la descripción de este aliado proporcionada por el equipo de Customer Success. ' +
+    'Este es un texto de previsualización solo para el prototipo del playground: resume la propuesta de valor del aliado, ' +
+    'su trayectoria y cómo aporta contenidos prácticos al catálogo UBITS.';
+
+  var EXPERTO_BIO_PREVIEW =
+    'Aquí va la biografía de previsualización del experto para el playground. Este texto es ficticio y solo sirve para ' +
+    'validar el layout de la portada: experiencia docente, trayectoria profesional y el enfoque con el que guía este contenido.';
+
+  function homeLearnSearchUrl(term) {
+    return '../home-learn.html?q=' + encodeURIComponent(String(term || '').trim());
+  }
+
+  function uCorporativaCategoriaUrl(categoriaId) {
+    return '../u-corporativa.html?categoria=' + encodeURIComponent(String(categoriaId || '').trim());
+  }
+
+  function parseExpertoEntry(raw, index) {
+    var text = String(raw || '').trim();
+    var parts = text.split(/\s*[·|]\s*/);
+    var nombre = (parts[0] || 'Experto').trim();
+    var rol = (parts.slice(1).join(' · ') || 'Especialista UBITS').trim();
+    return {
+      nombre: nombre,
+      rol: rol,
+      avatar: EXPERT_AVATAR_POOL[index % EXPERT_AVATAR_POOL.length],
+      bio: EXPERTO_BIO_PREVIEW
+    };
+  }
+
+  function collectHabilidades(content) {
+    var ids = [];
+    if (content.habilidadPrincipalId) ids.push(content.habilidadPrincipalId);
+    var secs = content.habilidadesSecundariasIds || [];
+    for (var i = 0; i < secs.length; i++) {
+      if (secs[i] && ids.indexOf(secs[i]) === -1) ids.push(secs[i]);
+    }
+    var out = [];
+    for (var j = 0; j < ids.length; j++) {
+      var h = getHabilidad(ids[j]);
+      if (h) out.push(h);
+    }
+    return out;
+  }
+
+  function chipHtml(label, href) {
+    var text =
+      '<span class="ubits-chip__text">' + esc(label) + '</span>';
+    if (href) {
+      return (
+        '<a class="ubits-chip ubits-chip--sm exp-estudio-meta-chip-link" href="' +
+        esc(href) +
+        '" target="_blank" rel="noopener noreferrer">' +
+        text +
+        '</a>'
+      );
+    }
+    return '<span class="ubits-chip ubits-chip--sm">' + text + '</span>';
+  }
+
+  function renderPortadaMetaHtml(content, isFiqsha) {
+    var parts = [];
+    if (isFiqsha) {
+      var catId = content.categoriaFiqshaId || '';
+      var catName = categoriaFiqshaLabel(catId) || 'Sin categoría';
+      parts.push(
+        '<div class="exp-estudio-ficha">' +
+          '<p class="exp-estudio-ficha__label ubits-body-sm-semibold">Categoría</p>' +
+          '<div class="exp-estudio-ficha__row">' +
+          chipHtml(catName, catId ? uCorporativaCategoriaUrl(catId) : '') +
+          '</div></div>'
+      );
+    } else {
+      var comp = getCompetencia(content.competenciaPrincipalId);
+      var habs = collectHabilidades(content);
+      var fichaInner = '';
+      if (comp) {
+        var compImg = competenciaImageSrc(comp.archivoImagen);
+        var compHref = homeLearnSearchUrl(comp.nombre);
+        var avatarHtml =
+          '<span class="ubits-avatar ubits-avatar--sm">' +
+          '<img class="ubits-avatar__img" src="' +
+          esc(compImg) +
+          '" alt="' +
+          esc(comp.nombre || '') +
+          '" /></span>';
+        fichaInner +=
+          '<div class="exp-estudio-ficha__block">' +
+          '<p class="exp-estudio-ficha__label ubits-body-sm-semibold">Competencia</p>' +
+          '<a class="exp-estudio-competencia-chip" href="' +
+          esc(compHref) +
+          '" target="_blank" rel="noopener noreferrer">' +
+          avatarHtml +
+          '<span class="exp-estudio-competencia-chip__name ubits-body-sm-regular">' +
+          esc(comp.nombre) +
+          '</span></a></div>';
+      }
+      if (habs.length) {
+        fichaInner +=
+          '<div class="exp-estudio-ficha__block">' +
+          '<p class="exp-estudio-ficha__label ubits-body-sm-semibold">Habilidades de este contenido</p>' +
+          '<div class="exp-estudio-ficha__row">' +
+          habs
+            .map(function (h) {
+              return chipHtml(h.nombre, homeLearnSearchUrl(h.nombre));
+            })
+            .join('') +
+          '</div></div>';
+      }
+      if (fichaInner) {
+        parts.push('<div class="exp-estudio-ficha">' + fichaInner + '</div>');
+      }
+    }
+
+    parts.push(
+      '<div class="exp-estudio-ficha">' +
+        '<p class="exp-estudio-ficha__title ubits-body-md-semibold">Descripción</p>' +
+        '<p class="exp-estudio-desc ubits-body-md-regular">' +
+        esc(content.descripcion || '') +
+        '</p></div>'
+    );
+
+    if (!isFiqsha) {
+      var imagesPrefix = '../../../';
+      var aliadoId =
+        typeof global.resolvePrimaryAliadoId === 'function'
+          ? global.resolvePrimaryAliadoId(content)
+          : content.aliadoId;
+      var aliado =
+        typeof global.resolveAliadoDisplay === 'function'
+          ? global.resolveAliadoDisplay(aliadoId, imagesPrefix)
+          : null;
+      if (aliado && aliado.nombre) {
+        parts.push(
+          '<div class="exp-estudio-ficha">' +
+            '<p class="exp-estudio-ficha__title ubits-body-md-semibold">Aliado</p>' +
+            '<div class="exp-estudio-media-row">' +
+            '<div class="exp-estudio-media-avatar">' +
+            '<img class="exp-estudio-media-avatar__img" src="' +
+            esc(aliado.logo) +
+            '" alt="" />' +
+            '</div>' +
+            '<div class="exp-estudio-media-body">' +
+            '<a class="exp-estudio-media-name ubits-body-md-semibold" href="' +
+            esc(homeLearnSearchUrl(aliado.nombre)) +
+            '" target="_blank" rel="noopener noreferrer">' +
+            esc(aliado.nombre) +
+            '</a>' +
+            '<p class="exp-estudio-media-bio ubits-body-md-regular">' +
+            esc(ALIADO_BIO_PREVIEW) +
+            '</p></div></div></div>'
+        );
+      }
+
+      var expertosRaw = content.expertos || [];
+      if (expertosRaw.length) {
+        var expertosHtml = expertosRaw
+          .map(function (raw, idx) {
+            var ex = parseExpertoEntry(raw, idx);
+            return (
+              '<div class="exp-estudio-media-row">' +
+              '<div class="exp-estudio-media-avatar">' +
+              '<img class="exp-estudio-media-avatar__img" src="' +
+              esc(resolveImage(ex.avatar)) +
+              '" alt="" />' +
+              '<a class="exp-estudio-media-avatar__linkedin" href="' +
+              esc(LINKEDIN_PLAYGROUND_URL) +
+              '" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn de ' +
+              esc(ex.nombre) +
+              '">' +
+              '<i class="fab fa-linkedin-in" aria-hidden="true"></i></a>' +
+              '</div>' +
+              '<div class="exp-estudio-media-body">' +
+              '<a class="exp-estudio-media-name ubits-body-md-semibold" href="' +
+              esc(homeLearnSearchUrl(ex.nombre)) +
+              '" target="_blank" rel="noopener noreferrer">' +
+              esc(ex.nombre) +
+              '</a>' +
+              '<p class="exp-estudio-media-role ubits-body-sm-regular">' +
+              esc(ex.rol) +
+              '</p>' +
+              '<p class="exp-estudio-media-bio ubits-body-md-regular">' +
+              esc(ex.bio) +
+              '</p></div></div>'
+            );
+          })
+          .join('');
+        parts.push(
+          '<div class="exp-estudio-ficha">' +
+            '<p class="exp-estudio-ficha__title ubits-body-md-semibold">Expertos</p>' +
+            '<div class="exp-estudio-expertos-list">' +
+            expertosHtml +
+            '</div></div>'
+        );
+      }
+    }
+
+    return parts.join('');
+  }
+
   /* ─── Portada ─── */
   function renderPortada(content) {
     var stage = document.getElementById('exp-estudio-stage');
@@ -488,15 +728,6 @@
     var img = resolveImage(content.imagen || content.imagePath);
     var isFiqsha =
       content.catalogoId === 'catalogo_fiqsha' || String(content.origen || '').indexOf('fiqsha') !== -1;
-    var ficha = '';
-    if (isFiqsha) {
-      ficha =
-        '<div class="exp-estudio-ficha">' +
-        '<p class="exp-estudio-ficha__label ubits-body-sm-semibold">Categoría</p>' +
-        '<div class="exp-estudio-ficha__row">' +
-        '<span class="ubits-badge-tag ubits-badge-tag--outlined ubits-badge-tag--neutral ubits-badge-tag--sm">' +
-        '<span class="ubits-badge-tag__text">Trabajo en equipo</span></span></div></div>';
-    }
     /* Tres hijos directos (como React): hero | aside | meta — grid areas controlan orden */
     stage.className = 'exp-estudio-stage exp-estudio-stage--portada';
     stage.innerHTML =
@@ -505,16 +736,12 @@
       '" alt="" /></div>' +
       '<aside id="exp-estudio-aside" class="exp-estudio-col exp-estudio-col--aside"></aside>' +
       '<div class="exp-estudio-portada-meta">' +
-      ficha +
-      '<div class="exp-estudio-ficha">' +
-      '<p class="exp-estudio-ficha__title ubits-body-md-semibold">Descripción</p>' +
-      '<p class="exp-estudio-desc ubits-body-md-regular">' +
-      esc(content.descripcion || '') +
-      '</p></div></div>';
-    renderPortadaAside(document.getElementById('exp-estudio-aside'), content);
+      renderPortadaMetaHtml(content, isFiqsha) +
+      '</div>';
+    renderPortadaAside(document.getElementById('exp-estudio-aside'), content, isFiqsha);
   }
 
-  function renderPortadaAside(aside, content) {
+  function renderPortadaAside(aside, content, isFiqsha) {
     if (!aside) return;
     var mode = session.portadaMode || 'por-iniciar';
     var pct = progressPercent();
@@ -527,7 +754,7 @@
         duration: durationLabel(content),
         language: content.idioma || 'Español',
         hasCertificate: !!content.conCertificacion,
-        subtitles: false,
+        subtitles: isFiqsha ? false : 'Subtítulos: Español, Inglés, Portugués',
         mode: mode,
         progressValue: mode === 'completado' ? 100 : pct
       });
@@ -720,8 +947,37 @@
     stickyApi = null;
   }
 
+  /** Guarda tiempo restante (+ respuestas) si sale a mitad de un intento abierto. */
+  function pauseOpenEvalAttemptIfNeeded(leavingPageId) {
+    var page = getPage(leavingPageId);
+    if (!page || page.tipo !== 'evaluacion') return;
+    if (session.evalFase !== 'evaluacion') return;
+    var remaining = null;
+    if (stickyApi && typeof stickyApi.getRemainingSeconds === 'function') {
+      remaining = stickyApi.getRemainingSeconds();
+    }
+    var answers = [];
+    questionApis.forEach(function (api) {
+      answers.push(api && typeof api.getCollabAnswer === 'function' ? api.getCollabAnswer() : null);
+    });
+    session.evalAttemptPaused = true;
+    session.evalPausedPageId = leavingPageId;
+    session.evalRemainingSeconds = remaining;
+    session.evalPausedAnswers = answers;
+    stopEvalTimer();
+    session.evalFase = 'retomar';
+  }
+
+  function clearEvalPauseState() {
+    session.evalAttemptPaused = false;
+    session.evalPausedPageId = null;
+    session.evalRemainingSeconds = null;
+    session.evalPausedAnswers = null;
+  }
+
   function finishEvalWithKind(kind, score) {
     stopEvalTimer();
+    clearEvalPauseState();
     session.evalFase = 'resultado';
     session.evalResultadoKind = kind;
     session.evalScore = score || session.evalScore;
@@ -777,8 +1033,12 @@
       '<div class="exp-estudio-eval__questions" id="exp-estudio-eval-questions"></div></div>';
 
     var cfg = page.evalConfig || {};
-    var seconds =
+    var fullSeconds =
       cfg.timeLimitEnabled !== false ? Math.max(1, (cfg.timeLimitMinutes || 10) * 60) : 99999;
+    var seconds =
+      session.evalRemainingSeconds != null && session.evalRemainingSeconds >= 0
+        ? Math.max(0, Math.floor(session.evalRemainingSeconds))
+        : fullSeconds;
     var stickyHost = document.getElementById('exp-estudio-eval-sticky');
     if (typeof global.createEvalStickyBarExpEstudio === 'function' && stickyHost) {
       stickyApi = global.createEvalStickyBarExpEstudio({
@@ -790,19 +1050,20 @@
           var scored = gradeEval();
           var attempts = session.evalIntentoActual || 1;
           var maxA = cfg.maxAttempts || 2;
+          var minPass = (cfg && cfg.minPassScore) || 4;
           if (attempts >= maxA) {
             finishEvalWithKind('limite', {
               aprobado: false,
               correctas: scored.correctas,
               total: scored.total,
-              puntajeMin: 7
+              puntajeMin: minPass
             });
           } else {
             finishEvalWithKind('tiempo', {
               aprobado: false,
               correctas: scored.correctas,
               total: scored.total,
-              puntajeMin: 7
+              puntajeMin: minPass
             });
           }
         }
@@ -836,6 +1097,47 @@
     });
     host.addEventListener('change', updateEvalContinuarEnabled);
     host.addEventListener('input', updateEvalContinuarEnabled);
+
+    /* Restaurar respuestas del intento pausado (si las hay) */
+    var paused = session.evalPausedAnswers;
+    if (paused && paused.length) {
+      setTimeout(function () {
+        questionApis.forEach(function (api, i) {
+          restoreCollabAnswer(api, paused[i], i + 1);
+        });
+        updateEvalContinuarEnabled();
+      }, 0);
+    }
+  }
+
+  function restoreCollabAnswer(api, answer, qId) {
+    if (!api || answer == null) return;
+    var root = api.el;
+    if (!root) return;
+    var model = typeof api.getModel === 'function' ? api.getModel() : null;
+    var t = (model && model.type) || '';
+
+    if (t === 'multiple_choice_single' || t === 'true_false') {
+      var radio = root.querySelector(
+        'input[name="collab-q-' + qId + '"][value="' + String(answer) + '"]'
+      );
+      if (radio) {
+        radio.checked = true;
+        radio.dispatchEvent(new Event('change', { bubbles: true }));
+      }
+      return;
+    }
+    if (t === 'multiple_choice_multiple' && Array.isArray(answer)) {
+      answer.forEach(function (val) {
+        var cb = root.querySelector(
+          'input[name="collab-q-' + qId + '"][value="' + String(val) + '"]'
+        );
+        if (cb) {
+          cb.checked = true;
+          cb.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+      });
+    }
   }
 
   function renderEvalResultado(main) {
@@ -1091,7 +1393,14 @@
     var maxA = cfg.maxAttempts || 2;
     var evalId = session.currentPageId;
 
-    if (session.evalFase === 'bienvenida' || session.evalFase === 'retomar') {
+    if (session.evalFase === 'retomar') {
+      session.evalFase = 'evaluacion';
+      setHash(evalHashFor(evalId, 'evaluacion'));
+      render();
+      return;
+    }
+    if (session.evalFase === 'bienvenida') {
+      clearEvalPauseState();
       session.evalFase = 'evaluacion';
       session.answers = {};
       setHash(evalHashFor(evalId, 'evaluacion'));
@@ -1148,6 +1457,7 @@
       } else if (kind === 'limite') {
         goHomeLearn();
       } else {
+        clearEvalPauseState();
         session.evalIntentoActual = (session.evalIntentoActual || 1) + 1;
         session.evalFase = 'evaluacion';
         session.evalResultadoKind = null;
@@ -1198,16 +1508,23 @@
       goToCierre();
       return;
     }
+    var leavingId = session.currentPageId;
+    if (leavingId && leavingId !== pageId) {
+      pauseOpenEvalAttemptIfNeeded(leavingId);
+    }
     var switchingEval =
       page.tipo === 'evaluacion' &&
-      session.currentPageId &&
-      session.currentPageId !== pageId &&
-      isEvalPageId(session.currentPageId);
+      leavingId &&
+      leavingId !== pageId &&
+      isEvalPageId(leavingId);
     session.view = 'recursos';
     session.currentPageId = pageId;
     session.lastPageId = pageId;
     if (page.tipo === 'evaluacion') {
-      if (switchingEval || !session.evalFase) {
+      if (session.evalAttemptPaused && session.evalPausedPageId === pageId) {
+        session.evalFase = 'retomar';
+        session.evalResultadoKind = null;
+      } else if (switchingEval || !session.evalFase) {
         if (session.completedPageIds[pageId]) {
           session.evalFase = 'resultado';
           session.evalResultadoKind = 'aprobado';
@@ -1216,6 +1533,7 @@
           session.evalResultadoKind = null;
           session.evalIntentoActual = 1;
           session.answers = {};
+          if (session.evalPausedPageId !== pageId) clearEvalPauseState();
         }
       } else if (
         session.evalFase === 'resultado' &&
@@ -1233,8 +1551,11 @@
       }
       setHash(evalHashFor(pageId, session.evalFase, session.evalResultadoKind));
     } else {
-      session.evalFase = null;
-      session.evalResultadoKind = null;
+      /* No pisar evalFase si quedó en retomar por pausa (ya guardado en pauseOpen…) */
+      if (!(session.evalAttemptPaused && session.evalFase === 'retomar')) {
+        session.evalFase = null;
+        session.evalResultadoKind = null;
+      }
       setHash('pagina-' + pageId);
     }
     render();
@@ -1259,8 +1580,12 @@
       return;
     }
     if (nextPage && nextPage.tipo === 'evaluacion') {
-      session.evalFase = 'bienvenida';
-      session.evalResultadoKind = null;
+      if (session.evalAttemptPaused && session.evalPausedPageId === next) {
+        session.evalFase = 'retomar';
+      } else {
+        session.evalFase = 'bienvenida';
+        session.evalResultadoKind = null;
+      }
     }
     goToPage(next);
   }
@@ -1302,11 +1627,14 @@
     var primaryDisabled = false;
     var page = getPage(session.currentPageId);
 
-    if (session.view === 'cierre' || mode === 'completado') {
+    if (session.view === 'cierre') {
       primaryLabel = 'Ver más contenidos';
     } else if (page && page.tipo === 'evaluacion') {
+      /* En evaluación (aunque el % ya esté en 100 tras aprobar) el CTA sigue siendo el de la fase */
       primaryLabel = evalPrimaryLabel();
       if (session.evalFase === 'evaluacion') primaryDisabled = true;
+    } else if (mode === 'completado') {
+      primaryLabel = 'Ver más contenidos';
     }
 
     var html = '<div class="exp-estudio-aside-stack">';
@@ -1326,7 +1654,18 @@
       global.initTituloProgresoYNavExpEstudio(aside.querySelector('.ubits-titulo-progreso-nav-exp'), {
         onRegresar: handleRegresar,
         onPrimary: function () {
-          if (session.view === 'cierre' || (mode === 'completado' && (!page || page.tipo !== 'evaluacion'))) {
+          /* Leer página al clic (no del closure): en eval aprobatoria Continuar avanza,
+             no debe ir a home-learn#buscar solo porque el % ya llegó a 100. */
+          var livePage = getPage(session.currentPageId);
+          var liveMode = navModeForProgress();
+          if (session.view === 'cierre') {
+            goHomeLearn();
+            return;
+          }
+          if (
+            liveMode === 'completado' &&
+            !(livePage && livePage.tipo === 'evaluacion')
+          ) {
             goHomeLearn();
             return;
           }
@@ -1344,29 +1683,60 @@
   function buildCarouselSlides() {
     var bd = global.BDS_CONTENIDOS_UBITS;
     if (!bd || !bd.contents) return [];
+    var routes = bd.contents.filter(function (c) {
+      return c.tipoContenido === 'Ruta de aprendizaje';
+    });
+    /* En progreso: el colaborador ya completó un contenido de la ruta (este curso). */
+    var progressValues = [40, 55, 30, 65, 20, 45];
     var slides = [];
-    var max = Math.min(6, bd.contents.length);
+    var max = Math.min(6, routes.length);
+    var cp = global.CATALOGO_PROVEEDORES;
     for (var i = 0; i < max; i++) {
-      var c = bd.contents[i];
-      var providerName = 'UBITS';
-      var providerLogo = '../../../images/Favicons/UBITS.jpg';
-      if (global.CATALOGO_PROVEEDORES && typeof global.CATALOGO_PROVEEDORES.resolveProviderFromCatalogoItem === 'function') {
-        var prov = global.CATALOGO_PROVEEDORES.resolveProviderFromCatalogoItem(c, '../../../');
-        providerName = prov.nombre || providerName;
-        providerLogo = prov.logo || providerLogo;
-      }
-      slides.push({
+      var c = routes[i];
+      var slide = {
+        id: c.id,
         image: resolveImage(c.imagen),
-        contentType: c.tipoContenido || 'Curso',
+        contentType: 'Ruta de aprendizaje',
         title: c.titulo || '',
-        provider: { name: providerName, logo: providerLogo },
         competency: 'Aprendizaje',
         specs: {
           level: nivelLabel(c.nivelId),
           duration: durationLabel(c),
           language: (c.idioma || 'Español').trim()
+        },
+        status: 'progress',
+        progress: progressValues[i] || 40
+      };
+      if (
+        cp &&
+        typeof cp.resolveProveedoresCatalogoUbits === 'function' &&
+        typeof cp.buildProvidersMultiForCard === 'function'
+      ) {
+        var provs = cp.resolveProveedoresCatalogoUbits(c, '../../../');
+        var multi = cp.buildProvidersMultiForCard(c, provs);
+        if (multi && multi.length > 1) {
+          slide.providers = multi.map(function (p) {
+            return { name: p.name || p.provider, logo: p.logo || p.providerLogo };
+          });
+        } else if (typeof cp.resolveProviderFromCatalogoItem === 'function') {
+          var prov = cp.resolveProviderFromCatalogoItem(c, '../../../');
+          slide.provider = {
+            name: prov.nombre || 'UBITS',
+            logo: prov.logo || '../../../images/Favicons/UBITS.jpg'
+          };
+        } else {
+          slide.provider = {
+            name: 'UBITS',
+            logo: '../../../images/Favicons/UBITS.jpg'
+          };
         }
-      });
+      } else {
+        slide.provider = {
+          name: 'UBITS',
+          logo: '../../../images/Favicons/UBITS.jpg'
+        };
+      }
+      slides.push(slide);
     }
     return slides;
   }
@@ -1446,7 +1816,11 @@
       evalResultadoKind: null,
       evalIntentoActual: 1,
       evalScore: null,
-      answers: {}
+      answers: {},
+      evalAttemptPaused: false,
+      evalPausedPageId: null,
+      evalRemainingSeconds: null,
+      evalPausedAnswers: null
     };
     global.__expEstudioSession = session;
   }

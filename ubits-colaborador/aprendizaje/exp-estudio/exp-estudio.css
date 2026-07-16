@@ -3,10 +3,35 @@
  * body.page-exp-estudio
  */
 
+/* Cadena full-width (paridad React PageLayout .contentSections { width:100% }) */
+body.page-exp-estudio .content-area {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  width: 100%;
+  min-width: 0;
+}
+
+body.page-exp-estudio .content-sections,
+body.page-exp-estudio .content-sections > .section-single,
+body.page-exp-estudio .widget--transparent,
+body.page-exp-estudio .exp-estudio-stage {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+/*
+ * Desktop dos columnas: 65% recurso/hero | 35% índice (portada y recursos).
+ * Gap entre columnas = --gap-2xl (24px). Entre bloques de cada columna (portada) = --gap-xl (20px).
+ */
 body.page-exp-estudio .exp-estudio-stage {
   display: grid;
-  grid-template-columns: minmax(0, 1.35fr) minmax(280px, 0.9fr);
-  gap: var(--gap-xl);
+  grid-template-columns: minmax(0, 65fr) minmax(280px, 35fr);
+  gap: var(--gap-2xl);
+  row-gap: var(--gap-xl);
   align-items: start;
   width: 100%;
   min-width: 0;
@@ -20,16 +45,20 @@ body.page-exp-estudio .exp-estudio-stage {
 }
 
 body.page-exp-estudio .exp-estudio-col {
+  width: 100%;
   min-width: 0;
   display: flex;
   flex-direction: column;
   gap: var(--gap-lg);
+  box-sizing: border-box;
 }
 
 body.page-exp-estudio .exp-estudio-col--aside {
   position: sticky;
   top: calc(40px + var(--gap-lg));
   align-self: start;
+  width: 100%;
+  justify-self: stretch;
 }
 
 @media (max-width: 1023px) {
@@ -39,12 +68,11 @@ body.page-exp-estudio .exp-estudio-col--aside {
 }
 
 /*
- * Portada (paridad React): grid areas — desktop imagen|aside / meta|aside;
- * mobile: imagen → aside (TituloSpecsCta+índice) → meta (categoría+descripción).
- * Sin display:contents (rompe min-width:0 y desborda el content-area).
+ * Portada: mismas columnas 65/35 + grid areas
+ * (imagen+meta | título+índice).
  */
 body.page-exp-estudio .exp-estudio-stage--portada {
-  grid-template-columns: minmax(0, 1.35fr) minmax(280px, 0.9fr);
+  grid-template-columns: minmax(0, 65fr) minmax(280px, 35fr);
   grid-template-areas:
     'hero aside'
     'meta aside';
@@ -60,11 +88,12 @@ body.page-exp-estudio .exp-estudio-stage--portada > #exp-estudio-aside {
   min-width: 0;
 }
 
+/* Stack izquierda portada: hero ↔ fichas y entre fichas = 20px (--gap-xl) */
 body.page-exp-estudio .exp-estudio-portada-meta {
   grid-area: meta;
   display: flex;
   flex-direction: column;
-  gap: var(--gap-lg);
+  gap: var(--gap-xl);
   min-width: 0;
 }
 
@@ -123,7 +152,7 @@ body.page-exp-estudio .exp-estudio-ficha__row {
 }
 
 body.page-exp-estudio .exp-estudio-ficha__label {
-  margin: 0 0 var(--gap-xs);
+  margin: 0;
   color: var(--ubits-fg-1-medium);
 }
 
@@ -444,12 +473,154 @@ body.page-exp-estudio .exp-estudio-eval__result-line--strong {
   font-weight: 600;
 }
 
-/* Aside stack */
+/* Aside stack: TituloSpecsCta/Progreso ↔ índice = 20px (--gap-xl) */
 body.page-exp-estudio .exp-estudio-aside-stack {
   display: flex;
   flex-direction: column;
-  gap: var(--gap-lg);
+  gap: var(--gap-xl);
+  width: 100%;
   min-width: 0;
+  box-sizing: border-box;
+}
+
+/* Competencia (UBITS): chip con borde + avatar 28px */
+body.page-exp-estudio .exp-estudio-competencia-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--gap-sm);
+  padding: var(--padding-xs);
+  border: 1px solid var(--ubits-border-1);
+  border-radius: var(--border-radius-lg);
+  background: var(--ubits-bg-1);
+  width: fit-content;
+  max-width: 100%;
+  align-self: flex-start;
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+
+body.page-exp-estudio .exp-estudio-competencia-chip:hover {
+  background: var(--ubits-bg-2);
+}
+
+body.page-exp-estudio a.exp-estudio-meta-chip-link {
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+}
+
+body.page-exp-estudio a.exp-estudio-meta-chip-link:hover {
+  background: var(--ubits-bg-gray-subtle-hover);
+}
+
+body.page-exp-estudio .exp-estudio-competencia-chip .ubits-avatar {
+  flex-shrink: 0;
+}
+
+body.page-exp-estudio .exp-estudio-competencia-chip__name {
+  margin: 0;
+  color: var(--ubits-fg-1-high);
+}
+
+body.page-exp-estudio .exp-estudio-ficha__block {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-sm);
+}
+
+body.page-exp-estudio .exp-estudio-ficha__block + .exp-estudio-ficha__block {
+  margin-top: var(--gap-md);
+}
+
+/* Aliado / Expertos — media 96px (Figma) */
+body.page-exp-estudio .exp-estudio-media-row {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--gap-lg);
+  width: 100%;
+  min-width: 0;
+}
+
+body.page-exp-estudio .exp-estudio-media-avatar {
+  position: relative;
+  flex-shrink: 0;
+  width: 96px;
+  height: 96px;
+}
+
+body.page-exp-estudio .exp-estudio-media-avatar__img {
+  display: block;
+  width: 96px;
+  height: 96px;
+  object-fit: cover;
+  border-radius: var(--border-radius-full);
+  border: 1px solid var(--ubits-border-1);
+  background: var(--ubits-bg-2);
+}
+
+body.page-exp-estudio .exp-estudio-media-avatar__linkedin {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  border: 1px solid var(--ubits-border-1);
+  background: var(--ubits-bg-1);
+  color: var(--ubits-fg-1-high);
+  text-decoration: none;
+  box-sizing: border-box;
+}
+
+body.page-exp-estudio .exp-estudio-media-avatar__linkedin:hover {
+  background: var(--ubits-bg-2);
+}
+
+body.page-exp-estudio .exp-estudio-media-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-sm);
+  min-width: 0;
+  flex: 1;
+}
+
+body.page-exp-estudio .exp-estudio-media-name {
+  margin: 0;
+  color: var(--ubits-fg-1-high);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+body.page-exp-estudio a.exp-estudio-media-name:hover {
+  color: var(--ubits-fg-1-high);
+}
+
+body.page-exp-estudio .exp-estudio-media-role {
+  margin: 0;
+  color: var(--ubits-fg-1-medium);
+}
+
+body.page-exp-estudio .exp-estudio-media-bio {
+  margin: 0;
+  color: var(--ubits-fg-1-medium);
+  line-height: 1.5;
+}
+
+body.page-exp-estudio .exp-estudio-expertos-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-md);
+  width: 100%;
+}
+
+body.page-exp-estudio .exp-estudio-expertos-list > .exp-estudio-media-row + .exp-estudio-media-row {
+  padding-top: var(--gap-md);
+  border-top: 1px solid var(--ubits-border-1);
 }
 
 body.page-exp-estudio .exp-estudio-hidden {

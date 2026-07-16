@@ -74,8 +74,6 @@
       '</div></div>' +
       certBlock +
       '<div class="ubits-cierre-exp__suggest">' +
-      '<h3 class="ubits-cierre-exp__suggest-title">Sigue el camino</h3>' +
-      '<p class="ubits-cierre-exp__suggest-desc">Este contenido es parte de estas rutas de aprendizaje. Explóralas y sigue avanzando.</p>' +
       '<div class="ubits-cierre-exp__carousel-mount" id="' +
       escapeHtml(mountId) +
       '"></div>' +
@@ -94,7 +92,9 @@
     return global.createCarouselContents({
       containerId: id,
       type: 'content-cards',
-      sectionTitle: '',
+      sectionTitle: 'Sigue el camino',
+      sectionDescription:
+        'Este contenido es parte de estas rutas de aprendizaje. Explóralas y sigue avanzando.',
       slides: slides,
       /* Columna estrecha de Cierre: 2 cards visibles (home-learn usa 4) */
       cardsPerView: 2

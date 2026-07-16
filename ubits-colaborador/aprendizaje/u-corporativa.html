@@ -898,6 +898,28 @@
                 });
             }
 
+            /* Deep link: ?categoria=cfq-XXX (también acepta categoriaId) */
+            (function applyCategoriaDeepLink() {
+                try {
+                    var params = new URLSearchParams(window.location.search || '');
+                    var cat = String(params.get('categoria') || params.get('categoriaId') || '').trim();
+                    if (!cat) return;
+                    var catRoot = window.BD_MASTER_CATEGORIAS_FIQSHA;
+                    var valid = false;
+                    if (catRoot && Array.isArray(catRoot.categorias)) {
+                        for (var i = 0; i < catRoot.categorias.length; i++) {
+                            if (String(catRoot.categorias[i].id) === cat) {
+                                valid = true;
+                                break;
+                            }
+                        }
+                    }
+                    if (!valid) return;
+                    ucorpFiltrosActive.categoriaId = cat;
+                    ucorpFiltrosPending.categoriaId = cat;
+                } catch (e) { /* noop */ }
+            })();
+
             applyFiltersAndRender();
         });
     </script>

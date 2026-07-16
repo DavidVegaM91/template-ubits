@@ -28,6 +28,7 @@ function getAvatarImagesPrefixForPage() {
             ? String(window.location.pathname)
             : '';
         if (path.indexOf('/ubits-colaborador/aprendizaje/mi-equipo/') !== -1) return '../../../';
+        if (path.indexOf('/ubits-colaborador/aprendizaje/exp-estudio/') !== -1) return '../../../';
         if (path.indexOf('/ubits-colaborador/lms-creator/planes-formacion/') !== -1) return '../../../';
         if (path.indexOf('/ubits-colaborador/lms-creator/') !== -1) return '../../';
         if (path.indexOf('/ubits-colaborador/') !== -1) return '../../';

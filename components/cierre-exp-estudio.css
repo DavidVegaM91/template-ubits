@@ -147,26 +147,9 @@
 .ubits-cierre-exp__suggest {
   position: relative;
   z-index: 1;
-  display: flex;
-  flex-direction: column;
-  gap: var(--gap-md);
   width: 100%;
   min-width: 0;
-}
-
-.ubits-cierre-exp__suggest-title {
-  margin: 0;
-  font-size: 18px;
-  font-weight: 600;
-  color: var(--ubits-fg-1-high);
-}
-
-.ubits-cierre-exp__suggest-desc {
-  margin: 0;
-  font-size: 14px;
-  font-weight: 500;
-  line-height: 21px;
-  color: var(--ubits-fg-1-medium);
+  margin-top: var(--gap-md);
 }
 
 .ubits-cierre-exp__carousel-mount {

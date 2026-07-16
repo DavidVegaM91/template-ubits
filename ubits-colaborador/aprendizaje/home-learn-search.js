@@ -90,15 +90,24 @@
     }
 
     function buildSearchHaystack(item) {
+        var expertosText = '';
+        if (item.expertos && item.expertos.length) {
+            expertosText = item.expertos.join(' ');
+        } else if (item.experto) {
+            expertosText = String(item.experto);
+        }
         return [
             item.title,
             item.descripcion,
             item.type,
             item.competency,
             item.provider,
+            item.aliado,
+            item.habilidad,
             item.categoria,
             item.level,
-            item.language
+            item.language,
+            expertosText
         ].filter(Boolean).join(' ').toLowerCase();
     }
 
@@ -478,12 +487,43 @@
         });
     }
 
+    function applyDeepLinkFromUrl() {
+        var params;
+        try {
+            params = new URLSearchParams(window.location.search || '');
+        } catch (e) {
+            params = null;
+        }
+        var q = params ? String(params.get('q') || '').trim() : '';
+        if (q) {
+            var input = getSearchInput();
+            if (input) input.value = q;
+            flushSearchNow();
+            if (input) {
+                try {
+                    input.focus();
+                } catch (err) { /* noop */ }
+            }
+            return;
+        }
+        if (window.location.hash === '#buscar') {
+            activateSearchMode();
+            var input2 = getSearchInput();
+            if (input2) {
+                try {
+                    input2.focus();
+                } catch (err2) { /* noop */ }
+            }
+        }
+    }
+
     function initHomeLearnSearch() {
         mountHomeLearnHeroSearch();
         refreshCatalogItems();
         setSearchState('idle');
         wireHeroSearch();
         document.addEventListener('click', handleDocumentClick);
+        applyDeepLinkFromUrl();
     }
 
     document.addEventListener('DOMContentLoaded', initHomeLearnSearch);

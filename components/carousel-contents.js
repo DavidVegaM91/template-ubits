@@ -350,6 +350,7 @@ function createCarouselContents(options) {
         type = 'hero',
         slides = [],
         sectionTitle = 'Section title',
+        sectionDescription = '',
         onButtonClick,
         onPlanClick,
         /** content-cards: fuerza N cards visibles (ej. 2 en columna de Cierre). Si omitido → breakpoints home-learn (4/3/2/1). */
@@ -919,9 +920,16 @@ function createCarouselContents(options) {
         const perViewAttr = cardsPerView ? ` data-cards-per-view="${cardsPerView}"` : '';
         carouselHTML = `
             <div class="carousel-contents--content-cards-wrapper${perViewClass}"${perViewAttr}>
-                <div class="carousel-contents--content-cards__header">
-                    ${sectionTitle
-                        ? `<h2 class="carousel-contents--content-cards__title ubits-heading-h2">${sectionTitle}</h2>`
+                <div class="carousel-contents--content-cards__header${sectionDescription ? ' carousel-contents--content-cards__header--with-desc' : ''}">
+                    ${sectionTitle || sectionDescription
+                        ? `<div class="carousel-contents--content-cards__header-copy">
+                            ${sectionTitle
+                                ? `<h2 class="carousel-contents--content-cards__title${sectionDescription ? ' carousel-contents--content-cards__title--compact ubits-body-md-semibold' : ' ubits-heading-h2'}">${sectionTitle}</h2>`
+                                : ''}
+                            ${sectionDescription
+                                ? `<p class="carousel-contents--content-cards__description ubits-body-sm-regular">${sectionDescription}</p>`
+                                : ''}
+                           </div>`
                         : '<span aria-hidden="true"></span>'}
                     ${slides.length > 1 ? `
                         <div class="carousel-contents--content-cards__controls">

@@ -406,7 +406,9 @@ body[data-theme="light"] .dashboard-container {
     }
 }
 
-/* Centrado para pantallas grandes */
+/* Centrado para pantallas grandes — paridad React layout-shell.css:
+   max-width 1607 sin width fijo → 1440–1606 fluido (sin overflow que recorte la col. derecha);
+   ≥1607px se centra con margin:auto. */
 @media (min-width: 1440px) {
     .dashboard-container {
         overflow-x: hidden;
@@ -416,7 +418,6 @@ body[data-theme="light"] .dashboard-container {
         margin: var(--gap-lg) auto 0 auto;
         padding-left: 143px;
         padding-right: var(--gap-2xl);
-        width: 1607px;
         max-width: 1607px;
         box-sizing: border-box;
         overflow-x: hidden;
@@ -426,7 +427,6 @@ body[data-theme="light"] .dashboard-container {
         margin: var(--gap-lg) auto 0 auto;
         padding-left: 143px;
         padding-right: var(--gap-2xl);
-        width: 1607px;
         max-width: 1607px;
         box-sizing: border-box;
         overflow-x: hidden;
