@@ -35,6 +35,8 @@
     min-height: 0;
     height: 100%;
     max-height: 100%;
+    /* Paridad con stepper creator-rail de crear-contenido */
+    border: 1px solid var(--ubits-border-1);
 }
 
 .page-editar-contenido .editar-contenido-step {
@@ -388,9 +390,20 @@
     gap: var(--gap-md);
 }
 
+.editar-contenido-resultados__eval-details-header {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-xs);
+}
+
 .editar-contenido-resultados__eval-details-title {
     margin: 0;
     color: var(--ubits-fg-1-high);
+}
+
+.editar-contenido-resultados__eval-details-peso {
+    margin: 0;
+    color: var(--ubits-fg-1-medium);
 }
 
 .editar-contenido-resultados__eval-details-list {

@@ -8,53 +8,38 @@
 
     var EVALUACIONES_DEFAULT = [
         {
-            id: 'eval-parcial-1',
-            nombre: 'Parcial 1',
-            peso: 20,
+            id: 'eval-seccion-1',
+            nombre: 'Evaluación Sección 1',
+            peso: 50,
             porcentajeAprobar: 60,
             limiteIntentos: 3,
             tiempoLimiteMinutos: 30,
-            totalPreguntas: 10
+            totalPreguntas: 5
         },
         {
-            id: 'eval-parcial-2',
-            nombre: 'Parcial 2',
-            peso: 30,
-            porcentajeAprobar: null,
-            limiteIntentos: 2,
-            tiempoLimiteMinutos: null,
-            totalPreguntas: 15
-        },
-        {
-            id: 'eval-final',
-            nombre: 'Evaluación final del módulo de resolución de conflictos en equipos de trabajo',
+            id: 'eval-seccion-2',
+            nombre: 'Evaluación Sección 2',
             peso: 50,
-            porcentajeAprobar: 70,
-            limiteIntentos: null,
-            tiempoLimiteMinutos: 45,
-            totalPreguntas: 25
+            porcentajeAprobar: 60,
+            limiteIntentos: 2,
+            tiempoLimiteMinutos: 30,
+            totalPreguntas: 5
         }
     ];
 
     /** Filas del tab Descargas (recorrido lineal → participantes decrecientes). */
     var DESCARGAS_DEFAULT = [
         {
-            id: 'eval-parcial-1',
-            titulo: 'Parcial 1',
+            id: 'eval-seccion-1',
+            titulo: 'Evaluación Sección 1',
             tipo: 'evaluacion',
             participantes: 20
         },
         {
-            id: 'eval-parcial-2',
-            titulo: 'Parcial 2',
+            id: 'eval-seccion-2',
+            titulo: 'Evaluación Sección 2',
             tipo: 'evaluacion',
             participantes: 17
-        },
-        {
-            id: 'eval-final',
-            titulo: 'Evaluación final del módulo de resolución de conflictos en equipos de trabajo',
-            tipo: 'evaluacion',
-            participantes: 14
         },
         {
             id: 'encuesta-satisfaccion',
@@ -66,22 +51,16 @@
 
     var DESCARGAS_SMALL = [
         {
-            id: 'eval-parcial-1',
-            titulo: 'Parcial 1',
+            id: 'eval-seccion-1',
+            titulo: 'Evaluación Sección 1',
             tipo: 'evaluacion',
             participantes: 7
         },
         {
-            id: 'eval-parcial-2',
-            titulo: 'Parcial 2',
+            id: 'eval-seccion-2',
+            titulo: 'Evaluación Sección 2',
             tipo: 'evaluacion',
             participantes: 6
-        },
-        {
-            id: 'eval-final',
-            titulo: 'Evaluación final del módulo de resolución de conflictos en equipos de trabajo',
-            tipo: 'evaluacion',
-            participantes: 5
         },
         {
             id: 'encuesta-satisfaccion',
@@ -108,7 +87,7 @@
         return { estado: estado, percent: percent, correctas: correctas, total: total };
     }
 
-    function estudiante(nombre, email, daysAgoInicio, daysAgoFin, progresoPercent, ev1, ev2, ev3) {
+    function estudiante(nombre, email, daysAgoInicio, daysAgoFin, progresoPercent, ev1, ev2) {
         return {
             nombre: nombre,
             email: email,
@@ -116,9 +95,8 @@
             fechaFin: daysAgoFin != null ? daysAgoISO(daysAgoFin) : null,
             progresoPercent: progresoPercent,
             evaluaciones: {
-                'eval-parcial-1': ev1,
-                'eval-parcial-2': ev2,
-                'eval-final': ev3
+                'eval-seccion-1': ev1,
+                'eval-seccion-2': ev2
             }
         };
     }
@@ -137,9 +115,8 @@
                 2,
                 null,
                 45,
-                evalCell('Aprobado', 70, 7, 10),
-                evalCell('Fallido', 58, 7, 12),
-                evalCell('Pendiente')
+                evalCell('Aprobado', 70, 4, 5),
+                evalCell('Fallido', 58, 3, 5)
             ),
             estudiante(
                 'Laura Patricia Gómez Ruiz',
@@ -147,9 +124,8 @@
                 4,
                 12,
                 100,
-                evalCell('Aprobado', 80, 8, 10),
-                evalCell('Aprobado', 75, 9, 12),
-                evalCell('Aprobado', 82, 9, 11)
+                evalCell('Aprobado', 80, 4, 5),
+                evalCell('Aprobado', 75, 4, 5)
             ),
             estudiante(
                 'Carlos Andrés García López',
@@ -157,9 +133,8 @@
                 6,
                 18,
                 100,
-                evalCell('Aprobado', 90, 9, 10),
-                evalCell('Aprobado', 83, 10, 12),
-                evalCell('Aprobado', 91, 10, 11)
+                evalCell('Aprobado', 90, 5, 5),
+                evalCell('Aprobado', 83, 4, 5)
             ),
             estudiante(
                 'Laura Valentina Rodríguez Martínez',
@@ -167,9 +142,8 @@
                 8,
                 null,
                 62,
-                evalCell('Aprobado', 65, 6, 10),
-                evalCell('Aprobado', 72, 9, 12),
-                evalCell('Pendiente')
+                evalCell('Aprobado', 65, 3, 5),
+                evalCell('Aprobado', 72, 4, 5)
             ),
             estudiante(
                 'Miguel Ángel Hernández Díaz',
@@ -177,8 +151,7 @@
                 10,
                 null,
                 38,
-                evalCell('Fallido', 45, 4, 10),
-                evalCell('Pendiente'),
+                evalCell('Fallido', 45, 2, 5),
                 evalCell('Pendiente')
             ),
             estudiante(
@@ -187,9 +160,8 @@
                 12,
                 20,
                 100,
-                evalCell('Aprobado', 75, 7, 10),
-                evalCell('Aprobado', 67, 8, 12),
-                evalCell('Aprobado', 73, 8, 11)
+                evalCell('Aprobado', 75, 4, 5),
+                evalCell('Aprobado', 67, 3, 5)
             ),
             estudiante(
                 'Sebastián Felipe Gómez Álvarez',
@@ -197,9 +169,8 @@
                 14,
                 null,
                 55,
-                evalCell('Aprobado', 60, 6, 10),
-                evalCell('Fallido', 50, 6, 12),
-                evalCell('Pendiente')
+                evalCell('Aprobado', 60, 3, 5),
+                evalCell('Fallido', 50, 3, 5)
             ),
             estudiante(
                 'Juliana Andrea Pérez Castro',
@@ -207,7 +178,6 @@
                 16,
                 null,
                 28,
-                evalCell('Pendiente'),
                 evalCell('Pendiente'),
                 evalCell('Pendiente')
             ),
@@ -217,9 +187,8 @@
                 18,
                 25,
                 100,
-                evalCell('Aprobado', 85, 8, 10),
-                evalCell('Aprobado', 78, 9, 12),
-                evalCell('Aprobado', 88, 10, 11)
+                evalCell('Aprobado', 85, 4, 5),
+                evalCell('Aprobado', 78, 4, 5)
             ),
             estudiante(
                 'Diego Alejandro Martínez Romero',
@@ -227,9 +196,8 @@
                 19,
                 null,
                 72,
-                evalCell('Aprobado', 70, 7, 10),
-                evalCell('Aprobado', 68, 8, 12),
-                evalCell('Pendiente')
+                evalCell('Aprobado', 70, 4, 5),
+                evalCell('Aprobado', 68, 3, 5)
             ),
             estudiante(
                 'Camilo Ernesto Sánchez Vargas',
@@ -237,7 +205,6 @@
                 21,
                 null,
                 15,
-                evalCell('Pendiente'),
                 evalCell('Pendiente'),
                 evalCell('Pendiente')
             ),
@@ -247,8 +214,7 @@
                 22,
                 null,
                 48,
-                evalCell('Aprobado', 55, 5, 10),
-                evalCell('Pendiente'),
+                evalCell('Aprobado', 55, 3, 5),
                 evalCell('Pendiente')
             ),
             estudiante(
@@ -257,9 +223,8 @@
                 24,
                 28,
                 100,
-                evalCell('Aprobado', 92, 9, 10),
-                evalCell('Aprobado', 88, 11, 12),
-                evalCell('Aprobado', 95, 10, 11)
+                evalCell('Aprobado', 92, 5, 5),
+                evalCell('Aprobado', 88, 4, 5)
             ),
             estudiante(
                 'Daniel Esteban Ortiz Restrepo',
@@ -267,8 +232,7 @@
                 25,
                 null,
                 33,
-                evalCell('Fallido', 40, 4, 10),
-                evalCell('Pendiente'),
+                evalCell('Fallido', 40, 2, 5),
                 evalCell('Pendiente')
             ),
             estudiante(
@@ -277,9 +241,8 @@
                 27,
                 null,
                 80,
-                evalCell('Aprobado', 78, 8, 10),
-                evalCell('Aprobado', 81, 10, 12),
-                evalCell('Pendiente')
+                evalCell('Aprobado', 78, 4, 5),
+                evalCell('Aprobado', 81, 4, 5)
             ),
             estudiante(
                 'Pablo Antonio Castro Ríos',
@@ -287,9 +250,8 @@
                 35,
                 40,
                 100,
-                evalCell('Aprobado', 86, 9, 10),
-                evalCell('Aprobado', 80, 10, 12),
-                evalCell('Aprobado', 89, 10, 11)
+                evalCell('Aprobado', 86, 4, 5),
+                evalCell('Aprobado', 80, 4, 5)
             ),
             estudiante(
                 'Sandra Milena Rojas Pineda',
@@ -297,9 +259,8 @@
                 42,
                 null,
                 58,
-                evalCell('Aprobado', 68, 7, 10),
-                evalCell('Aprobado', 70, 8, 12),
-                evalCell('Pendiente')
+                evalCell('Aprobado', 68, 3, 5),
+                evalCell('Aprobado', 70, 4, 5)
             ),
             estudiante(
                 'Gustavo Hernán Mejía López',
@@ -307,8 +268,7 @@
                 48,
                 null,
                 35,
-                evalCell('Fallido', 48, 5, 10),
-                evalCell('Pendiente'),
+                evalCell('Fallido', 48, 2, 5),
                 evalCell('Pendiente')
             ),
             estudiante(
@@ -317,9 +277,8 @@
                 52,
                 55,
                 100,
-                evalCell('Aprobado', 77, 8, 10),
-                evalCell('Aprobado', 74, 9, 12),
-                evalCell('Aprobado', 80, 9, 11)
+                evalCell('Aprobado', 77, 4, 5),
+                evalCell('Aprobado', 74, 4, 5)
             ),
             estudiante(
                 'Paola Andrea Hernández Gil',
@@ -327,8 +286,7 @@
                 58,
                 null,
                 42,
-                evalCell('Aprobado', 58, 6, 10),
-                evalCell('Pendiente'),
+                evalCell('Aprobado', 58, 3, 5),
                 evalCell('Pendiente')
             ),
             estudiante(
@@ -338,7 +296,6 @@
                 null,
                 20,
                 evalCell('Pendiente'),
-                evalCell('Pendiente'),
                 evalCell('Pendiente')
             ),
             estudiante(
@@ -347,9 +304,8 @@
                 105,
                 108,
                 100,
-                evalCell('Aprobado', 88, 9, 10),
-                evalCell('Aprobado', 79, 9, 12),
-                evalCell('Aprobado', 84, 9, 11)
+                evalCell('Aprobado', 88, 4, 5),
+                evalCell('Aprobado', 79, 4, 5)
             )
         ];
     }
@@ -360,35 +316,35 @@
                 id: 'bloq-demo-001',
                 nombre: 'Cristian Andrés Mejía López',
                 email: 'crismejia@fiqsha.demo',
-                evaluacionNombre: 'Parcial 2',
+                evaluacionNombre: 'Evaluación Sección 2',
                 fechaBloqueo: daysAgoISO(5)
             },
             {
                 id: 'bloq-demo-002',
                 nombre: 'Miguel Ángel Hernández Díaz',
                 email: 'mhernd@fiqsha.demo',
-                evaluacionNombre: 'Parcial 1',
+                evaluacionNombre: 'Evaluación Sección 1',
                 fechaBloqueo: daysAgoISO(8)
             },
             {
                 id: 'bloq-demo-003',
                 nombre: 'Sebastián Felipe Gómez Álvarez',
                 email: 'sgomea@fiqsha.demo',
-                evaluacionNombre: 'Parcial 2',
+                evaluacionNombre: 'Evaluación Sección 2',
                 fechaBloqueo: daysAgoISO(11)
             },
             {
                 id: 'bloq-demo-004',
                 nombre: 'Daniel Esteban Ortiz Restrepo',
                 email: 'dortir@fiqsha.demo',
-                evaluacionNombre: 'Parcial 1',
+                evaluacionNombre: 'Evaluación Sección 1',
                 fechaBloqueo: daysAgoISO(20)
             },
             {
                 id: 'bloq-demo-005',
                 nombre: 'Gustavo Hernán Mejía López',
                 email: 'gmejil@fiqsha.demo',
-                evaluacionNombre: 'Parcial 2',
+                evaluacionNombre: 'Evaluación Sección 2',
                 fechaBloqueo: daysAgoISO(45)
             }
         ];

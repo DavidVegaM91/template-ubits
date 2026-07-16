@@ -669,9 +669,15 @@
         if (!ev || typeof window.openModal !== 'function') return;
         var bodyHtml =
             '<div class="editar-contenido-resultados__eval-details">' +
+            '<div class="editar-contenido-resultados__eval-details-header">' +
             '<p class="ubits-body-md-bold editar-contenido-resultados__eval-details-title">' +
             escapeHtml(ev.nombre || '') +
             '</p>' +
+            '<p class="ubits-body-sm-regular editar-contenido-resultados__eval-details-peso">' +
+            '<span class="ubits-body-sm-semibold">Peso de esta evaluación:</span> ' +
+            escapeHtml(String(ev.peso != null ? ev.peso : '—')) +
+            '%</p>' +
+            '</div>' +
             '<ul class="editar-contenido-resultados__eval-details-list">' +
             '<li class="ubits-body-sm-regular"><span class="ubits-body-sm-semibold">Porcentaje requerido para aprobar:</span> ' +
             escapeHtml(formatEvalAprobar(ev.porcentajeAprobar)) +

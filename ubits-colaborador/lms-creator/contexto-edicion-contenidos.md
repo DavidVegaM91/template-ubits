@@ -214,7 +214,7 @@ Componente **`Tab`** UBITS. **Orden fijo:**
 
 ### Tab 2 — Evaluaciones
 
-Las columnas de evaluación son **dinámicas**: una por cada evaluación definida en el contenido (mock: Parcial 1, Parcial 2, Evaluación final…; en producto vienen del recurso evaluación + su **peso %**).
+Las columnas de evaluación son **dinámicas**: una por cada evaluación definida en el contenido (mock curso demo: Evaluación Sección 1, Evaluación Sección 2; en producto vienen del recurso evaluación + su **peso %**).
 
 **Columnas (orden):**
 
@@ -240,6 +240,7 @@ En el **`<th>`** (patrón título + acción + meta; React: `DataTableHeaderWithM
 |----------|----------------|
 | **Título del modal** | `Detalles de evaluación` |
 | **Título dentro del body** | Nombre de la evaluación (bold). |
+| **Peso de esta evaluación:** | `{n}%` (debajo del título; valor de `peso` del mock). |
 | **Porcentaje requerido para aprobar:** | `{n}%` o **`No aplica`** si el campo es `null`. |
 | **Límite de intentos:** | `{n}` o **`No aplica`**. |
 | **Tiempo límite:** | `{n} minutos` o **`No aplica`**. |
@@ -365,12 +366,11 @@ La navegación del contenido es **lineal**, así que el número de participantes
 
 | # | Título del recurso | Tipo | Participantes (ejemplo demo ~22 inscritos) |
 |---|--------------------|------|--------------------------------------------|
-| 1 | `Parcial 1` | Evaluación | `20` — casi todos ya lo vieron. |
-| 2 | `Parcial 2` | Evaluación | `17` — un poco menos. |
-| 3 | `Evaluación final del módulo de resolución de conflictos en equipos de trabajo` | Evaluación | `14` — aún menos. |
-| 4 | `Encuesta de satisfacción` | Encuesta | `10` — la que menos han completado. |
+| 1 | `Evaluación Sección 1` | Evaluación | `20` — casi todos ya lo vieron. |
+| 2 | `Evaluación Sección 2` | Evaluación | `17` — un poco menos. |
+| 3 | `Encuesta de satisfacción` | Encuesta | `10` — la que menos han completado. |
 
-Las tres evaluaciones son las **mismas** del mock de Resultados (`eval-parcial-1`, `eval-parcial-2`, `eval-final`). La encuesta es un recurso adicional solo para este tab (no aparece como columna en Evaluaciones).
+Las dos evaluaciones son las **mismas** del curso demo / mock de Resultados (`eval-seccion-1`, `eval-seccion-2`). La encuesta es un recurso adicional solo para este tab (no aparece como columna en Evaluaciones).
 
 **Empty state** (si no hay recursos con reporte):
 
