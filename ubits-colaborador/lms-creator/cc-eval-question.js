@@ -398,7 +398,7 @@
             var val = idx === 0 ? 'true' : 'false';
             return (
               '<div class="cc-eval-q__opt-row cc-eval-q__opt-row--static">' +
-              '<label class="ubits-radio ubits-radio--sm cc-eval-q__opt-correct" title="Marcar como correcta">' +
+              '<label class="ubits-radio ubits-radio--md cc-eval-q__opt-correct" title="Marcar como correcta">' +
               '<input type="radio" class="ubits-radio__input cc-eval-q__opt-check" name="q-' + qId + '-correct" value="' + val + '" aria-label="Marcar como correcta">' +
               '<span class="ubits-radio__circle" aria-hidden="true"></span>' +
               '<span class="ubits-radio__label ubits-body-sm-regular">' + esc(label) + '</span>' +
@@ -428,12 +428,12 @@
           row.className = 'cc-eval-q__opt-row';
           row.setAttribute('data-opt-id', String(optNum));
           var checkHtml = isMulti
-            ? '<label class="ubits-checkbox ubits-checkbox--sm cc-eval-q__opt-correct" title="Marcar como correcta">' +
+            ? '<label class="ubits-checkbox ubits-checkbox--md cc-eval-q__opt-correct" title="Marcar como correcta">' +
               '<input type="checkbox" class="ubits-checkbox__input cc-eval-q__opt-check" name="' + groupName + '" value="' + optNum + '" aria-label="Marcar como correcta">' +
               '<span class="ubits-checkbox__box" aria-hidden="true"><i class="fas fa-check"></i><i class="fas fa-minus"></i></span>' +
               '<span class="ubits-checkbox__label ubits-body-sm-regular" style="display:none;">Correcta</span>' +
               '</label>'
-            : '<label class="ubits-radio ubits-radio--sm cc-eval-q__opt-correct" title="Marcar como correcta">' +
+            : '<label class="ubits-radio ubits-radio--md cc-eval-q__opt-correct" title="Marcar como correcta">' +
               '<input type="radio" class="ubits-radio__input cc-eval-q__opt-check" name="' + groupName + '" value="' + optNum + '" aria-label="Marcar como correcta">' +
               '<span class="ubits-radio__circle" aria-hidden="true"></span>' +
               '<span class="ubits-radio__label ubits-body-sm-regular" style="display:none;">Correcta</span>' +

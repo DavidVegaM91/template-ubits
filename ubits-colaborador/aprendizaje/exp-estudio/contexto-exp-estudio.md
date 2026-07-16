@@ -111,42 +111,43 @@ Sin hash → portada según progreso en sesión (o **sin iniciar** si no hay est
 
 #### 2.3.1 Catálogo de deep links (curso demo § 3.3)
 
-IDs de página = mock § 11.1 (`p-1` … `p-6`). Alias cortos opcionales = misma vista.
+IDs de página = mock § 11.1 (`p-1` … `p-7`). Alias cortos opcionales = misma vista.
 
 ##### Portada (§ 5)
 
 | Hash | Vista | Seed demo al entrar directo |
 |------|-------|-----------------------------|
 | `#portada` o `#portada-sin-iniciar` | Portada **sin iniciar** | 0 %; índice todo Bloqueada; CTA **Comenzar ahora** |
-| `#portada-en-progreso` | Portada **en progreso** | Ej. 2/5 completadas (video+PDF); CTA **Continuar**; índice con ✓ / activa / 🔒 |
+| `#portada-en-progreso` | Portada **en progreso** | Ej. 2/6 completadas (video + SCORM TK); CTA **Continuar**; índice con ✓ / activa / 🔒 |
 | `#portada-completado` | Portada **completado** | 100 %; índice todo ✓; CTAs **Ver más contenidos** + **Descargar certificado** |
 
 ##### Recursos — páginas del índice (§ 6)
 
 | Hash canónico | Alias | Página mock | Tipo | Seed demo |
 |---------------|-------|-------------|------|-----------|
-| `#pagina-p-1` | `#video` | `p-1` Comunicación… | Video + complementarios | Páginas anteriores: ninguna; fila Activa; % 0 o parcial según reglas |
-| `#pagina-p-2` | `#pdf` | `p-2` Guía mapa… | PDF | `p-1` Completada |
-| `#pagina-p-3` | `#scorm-1` | `p-3` Simulador… | SCORM | `p-1`–`p-2` Completadas |
-| `#pagina-p-4` | `#scorm-2` | `p-4` Conversaciones… Thomas-Kilmann | SCORM | `p-1`–`p-3` Completadas |
-| `#pagina-p-5` | `#evaluacion` | `p-5` Evaluación | Evaluación | Equivale a **`#eval-bienvenida`** (primera llegada a la fila) |
-| `#pagina-p-6` | `#cierre` | `p-6` Fin del contenido | Cierre § 7 | Todas consumibles Completadas + confeti al montar |
+| `#pagina-p-1` | `#video` | `p-1` Comunicación… | Video + complementarios | Páginas anteriores: ninguna; fila Activa |
+| `#pagina-p-2` | `#scorm-1` | `p-2` Conversaciones… Thomas-Kilmann | SCORM | `p-1` Completada |
+| `#pagina-p-3` | `#evaluacion` | `p-3` Evaluación Sección 1 | Evaluación | Equivale a **`#eval-bienvenida`** |
+| `#pagina-p-4` | `#scorm-2` | `p-4` Simulador… | SCORM | `p-1`–`p-3` Completadas |
+| `#pagina-p-5` | `#pdf` | `p-5` Guía mapa… | PDF | `p-1`–`p-4` Completadas |
+| `#pagina-p-6` | `#evaluacion-2` | `p-6` Evaluación Sección 2 | Evaluación | Equivale a **`#eval2-bienvenida`** |
+| `#pagina-p-7` | `#cierre` | `p-7` Fin del contenido | Cierre § 7 | Todas consumibles Completadas + confeti al montar |
 
 Vista Recursos = layout § 6.1 (visor izq. + `TituloProgresoYNav` + índice).
 
 ##### Evaluación — subestados (§ 6.8)
 
-Misma fila `p-5`; el hash elige la fase/variante **sin** obligar a contestar. Detalle copy/Figma: § 6.8.0.
+Hay **dos** filas de evaluación (`p-3` y `p-6`). Prefijo `#eval-*` = Sección 1; `#eval2-*` = Sección 2. El hash elige la fase/variante **sin** obligar a contestar. Detalle copy/Figma: § 6.8.0.
 
 | Hash | Estado | Seed demo |
 |------|--------|-----------|
-| `#eval-bienvenida` | Fase 1 Bienvenida | = primera entrada a Evaluación; intento no iniciado |
-| `#eval-intento` | Fase 2 preguntas + sticky | Banco `collab`; respuestas vacías o parciales |
-| `#eval-retomar` | APP: evaluación en pausa | Copy «Dejaste en pausa…»; CTA **Responder la evaluación** → `#eval-intento` |
-| `#eval-resultado-aprobado` | Resultado aprobado | Score mock alto; CTA **Continuar** → cierre |
-| `#eval-resultado-reprobado` | Resultado reprobado (quedan intentos) | Score bajo; CTA **Reintentar** |
-| `#eval-resultado-tiempo` | Tiempo agotado | CTA **Reintentar** |
-| `#eval-resultado-limite` | Límite de intentos | CTA **Ir al inicio** |
+| `#eval-bienvenida` / `#eval2-bienvenida` | Fase 1 Bienvenida | Primera entrada a esa evaluación; intento no iniciado |
+| `#eval-intento` / `#eval2-intento` | Fase 2 preguntas + sticky | Banco `collab` (5 preguntas); respuestas vacías o parciales |
+| `#eval-retomar` / `#eval2-retomar` | APP: evaluación en pausa | Copy «Dejaste en pausa…»; CTA **Responder la evaluación** → intento |
+| `#eval-resultado-aprobado` / `#eval2-resultado-aprobado` | Resultado aprobado | Score mock alto; CTA **Continuar** → siguiente página (eval 1) o cierre (eval 2) |
+| `#eval-resultado-reprobado` / `#eval2-resultado-reprobado` | Resultado reprobado (quedan intentos) | Score bajo; CTA **Reintentar** |
+| `#eval-resultado-tiempo` / `#eval2-resultado-tiempo` | Tiempo agotado | CTA **Reintentar** |
+| `#eval-resultado-limite` / `#eval2-resultado-limite` | Límite de intentos | CTA **Ir al inicio** |
 
 ##### Ejemplos listos para copiar
 
@@ -222,12 +223,13 @@ Curso genérico con **2 secciones** y **6 ítems** en el índice (`IndiceExpEstu
 ```
 Sección 1: Fundamentos                              ▾
   Comunicación para desescalar un conflicto         🔒
-  Guía mapa de conflicto                           🔒
+  Conversaciones difíciles según Thomas-Kilmann     🔒
+  Evaluación Sección 1                              🔒
 
 Sección 2: Herramientas para resolver conflictos    ▾
   Simulador de conversación difícil                 🔒
-  Conversaciones difíciles según Thomas-Kilmann     🔒
-  Evaluación                                        🔒
+  Guía mapa de conflicto                           🔒
+  Evaluación Sección 2                              🔒
   Fin del contenido                                 🔒
 ```
 
@@ -236,13 +238,14 @@ Sección 2: Herramientas para resolver conflictos    ▾
 | # | Sección | Título página | Tipo recurso (índice) | Notas |
 |---|---------|---------------|----------------------|-------|
 | 1 | `Sección 1: Fundamentos` | `Comunicación para desescalar un conflicto` | Video | Primera página al «Comenzar ahora»; **complementarios** descarga + texto en demo (§ 6.3) |
-| 2 | `Sección 1: Fundamentos` | `Guía mapa de conflicto` | PDF | |
-| 3 | `Sección 2: Herramientas para resolver conflictos` | `Simulador de conversación difícil` | SCORM | Mismo mount Creator (`.cc-scorm-resource` / `simulador-scorm.html`) |
-| 4 | `Sección 2: Herramientas para resolver conflictos` | `Conversaciones difíciles según Thomas-Kilmann` | SCORM | Segundo SCORM del seed Creator (ruta IA en edición) |
-| 5 | `Sección 2: Herramientas para resolver conflictos` | `Evaluación` | Evaluación | |
-| 6 | `Sección 2: Herramientas para resolver conflictos` | `Fin del contenido` | Fin | Ítem fijo; al **`Continuar`** desde la evaluación → **pantalla de cierre** § 7 (confeti) |
+| 2 | `Sección 1: Fundamentos` | `Conversaciones difíciles según Thomas-Kilmann` | SCORM | SCORM IA del seed Creator |
+| 3 | `Sección 1: Fundamentos` | `Evaluación Sección 1` | Evaluación | Preguntas `eq-1`…`eq-5`; deep link `#eval-*` |
+| 4 | `Sección 2: Herramientas para resolver conflictos` | `Simulador de conversación difícil` | SCORM | Mount Creator (`simulador-scorm.html`) |
+| 5 | `Sección 2: Herramientas para resolver conflictos` | `Guía mapa de conflicto` | PDF | |
+| 6 | `Sección 2: Herramientas para resolver conflictos` | `Evaluación Sección 2` | Evaluación | Preguntas `eq-6`…`eq-10`; deep link `#eval2-*` |
+| 7 | `Sección 2: Herramientas para resolver conflictos` | `Fin del contenido` | Fin | Al **`Continuar`** tras aprobar Evaluación Sección 2 → **pantalla de cierre** § 7 (confeti) |
 
-- **Total páginas consumibles:** 5 (video, PDF, 2× SCORM, evaluación). `Fin del contenido` es marcador de cierre en el índice, no una página de recurso intermedio.
+- **Total páginas consumibles:** 6 (video, SCORM TK, eval 1, simulador, PDF, eval 2). `Fin del contenido` es marcador de cierre en el índice, no una página de recurso intermedio.
 - **Encuesta / Embebido / Texto principal:** omitidos en el índice demo v1 (Embebido y Texto sí se pueden renderizar si un contenido futuro los trae — § 6.2).
 
 ---
@@ -1120,7 +1123,7 @@ Detalle de UX y criterio «todas contestadas»: § 6.8.4b.
 | # | Fase | Id interno sugerido | Columna izquierda (visor) | Al pulsar **`Continuar`** |
 |---|------|---------------------|---------------------------|---------------------------|
 | **1** | **Bienvenida** | `bienvenida` | Pantalla de bienvenida con **specs** (§ 6.8.4a) | **No** va a la siguiente página del índice → pasa a fase **2 Evaluación** |
-| **2** | **Evaluación** | `evaluacion` | Barra sticky timer + intento (§ 6.8.4b) + **10 preguntas** `learn-question` | **No** va a la siguiente página del índice → fase **3 Resultado** |
+| **2** | **Evaluación** | `evaluacion` | Barra sticky timer + intento (§ 6.8.4b) + **5 preguntas** `learn-question` (por evaluación) | **No** va a la siguiente página del índice → fase **3 Resultado** |
 | **3** | **Resultado** | `resultado` | 4 variantes § 6.8.4c: aprobado / reprobado / tiempo / límite | **Aprobado + Continuar** → siguiente ítem (`Fin del contenido`). **Reprobado / tiempo** → **Reintentar**. **Límite** → **Ir al inicio**. |
 
 **Primera llegada:** al entrar por primera vez a una fila **Evaluación** (desde índice, **`Continuar`** global o **`Comenzar ahora`** en secuencia), la fase inicial es siempre **1 Bienvenida** — **no** se muestran las preguntas de golpe.
@@ -1228,7 +1231,7 @@ Hashes de esta fase: `#eval-bienvenida`, `#eval-intento`, `#eval-retomar`, `#eva
 | 2 | Título | **`Vas a iniciar una evaluación`** |
 | 3 | Subtítulo | **`Antes de hacerlo, ten en cuenta lo siguiente:`** |
 | 4 | Card **Recordatorio** | Fondo token feedback info subtle (`var(--ubits-feedback-bg-info-subtle)` o el token oficial equivalente del alert/toast info); título **`Recordatorio`**; texto `var(--ubits-feedback-fg-info-subtle)` (o tokens fg del DS) |
-| 5 | Lista (3 bullets) | Ver plantilla abajo |
+| 5 | Lista (2 bullets) | Ver plantilla abajo |
 
 **Copy exacto — lista Recordatorio** (valores `{…}` de config Creator / mock):
 
@@ -1236,21 +1239,19 @@ Hashes de esta fase: `#eval-bienvenida`, `#eval-intento`, `#eval-retomar`, `#eva
 Recordatorio
 • Tiempo límite: ({M}) minutos para completar la evaluación.
 • Intentos: Tienes ({N}) intentos disponibles.
-• Importante: Una vez inicies la evaluación, cualquier salida, recarga o cierre de esta ventana, contará como un intento.
 ```
 
-> En Figma los placeholders aparecen como `(x)`. En playground sustituir por número real, sin paréntesis si queda mejor tipográficamente — **mantener el copy de etiqueta** (`Tiempo límite:`, `Intentos:`, `Importante:`).
+> En Figma los placeholders aparecen como `(x)`. En playground sustituir por número real, sin paréntesis si queda mejor tipográficamente — **mantener el copy de etiqueta** (`Tiempo límite:`, `Intentos:`).
 
 | Línea | Tipo | Fuente |
 |-------|------|--------|
 | Título + subtítulo | Fijo | APP v3 — no parametrizar |
 | `Tiempo límite: ({M}) minutos…` | Dinámico | `timeLimitMinutes`. Si **sin** límite de tiempo → **ocultar** este bullet |
 | `Intentos: Tienes ({N}) intentos disponibles.` | Dinámico | `maxAttempts`. Intentos ilimitados → _pendiente copy alternativo_ |
-| `Importante:…` | Fijo | APP v3 — cuenta salida / recarga / cierre (§ 6.8.3b) |
 
-**Qué NO aparece en Bienvenida APP v3:** nota mínima para aprobar, número de preguntas, aleatoriedad.
+**Qué NO aparece en Bienvenida:** nota mínima para aprobar, número de preguntas, aleatoriedad, ni el bullet «Importante:…» de salida/recarga.
 
-**Nav:** **`Continuar`** → fase 2 (inicia el intento; desde aquí aplica «Importante»).
+**Nav:** **`Continuar`** → fase 2 (inicia el intento).
 
 ##### 6.8.4a-bis — **Retomar** (APP — evaluación en pausa)
 
@@ -1316,7 +1317,7 @@ Al pulsar **`Continuar`** en Bienvenida, la columna izquierda pasa a la **UI de 
 | **Prohibido en exp-estudio** | `read`, `read_error`, `edit`, `edit_error`, **`collab_feedback`** (Colaborador con feedback), y cualquier otro modo |
 | UX Colaborador | Enunciado + controles de respuesta **vacíos** (ninguna opción preseleccionada, sin texto en respuesta corta); el alumno **solo selecciona o escribe** — **sin** revelar cuál es la correcta ni feedback inmediato por opción |
 | Tipos demo § 6.8.4b.1 | `multiple_choice_single`, `multiple_choice_multiple`, `true_false`, `short_answer`, `matching` |
-| Orden | **10 preguntas** apiladas en columna izquierda (debajo de barra sticky) |
+| Orden | **5 preguntas** apiladas en columna izquierda (debajo de barra sticky) por cada evaluación del índice |
 
 **Regla estricta (Dave):** en fase Evaluación **solo** la variante **Colaborador** (`collab`). **No** usar **Colaborador (feedback)** ni modos de lectura/edición Creator.
 
@@ -1932,36 +1933,33 @@ window.BD_EXP_ESTUDIO_DEMO = {
       paginas: [
         { id: 'p-1', titulo: 'Comunicación para desescalar un conflicto', tipo: 'video',
           complementarios: [
-            { tipo: 'archivo-descargable', nombre: 'Documento de ejemplo.pdf', pesoBytes: 2200000, url: '…' },
+            { tipo: 'archivo-descargable', nombre: 'guia-mapa-conflicto.pdf', pesoBytes: 2200000, url: '…' },
             { tipo: 'texto', html: '<p>Un conflicto es una diferencia de intereses…</p>' }
           ]
         },
-        { id: 'p-2', titulo: 'Guía mapa de conflicto', tipo: 'pdf',
-          pdfSrc: '…/guia-mapa-conflicto.pdf', allowPdfDownload: true }
+        { id: 'p-2', titulo: 'Conversaciones difíciles según Thomas-Kilmann', tipo: 'scorm' },
+        { id: 'p-3', titulo: 'Evaluación Sección 1', tipo: 'evaluacion',
+          evalConfig: { maxAttempts: 2, timeLimitMinutes: 5, timeLimitEnabled: true, minPassScore: 4 },
+          preguntas: '/* eq-1 … eq-5 — § 6.8.4b.1 */'
+        }
       ]
     },
     {
       id: 'sec-2',
       titulo: 'Sección 2: Herramientas para resolver conflictos',
       paginas: [
-        { id: 'p-3', titulo: 'Simulador de conversación difícil', tipo: 'scorm' },
-        { id: 'p-4', titulo: 'Conversaciones difíciles según Thomas-Kilmann', tipo: 'scorm' },
-        { id: 'p-5', titulo: 'Evaluación', tipo: 'evaluacion',
-          evalConfig: {
-            maxAttempts: 2, /* Figma sticky ejemplo «Intentos: 2 de 2»; ajustable */
-            timeLimitMinutes: 10,
-            timeLimitEnabled: true,
-            minPassScore: 10 /* copy resultado; o % — alinear con Creator */
-          },
-          evalFase: 'bienvenida',
-          evalResultadoKind: null,
-          evalIntentoActual: 1,
-          preguntas: '/* array 10 ítems — copy § 6.8.4b.1 */'
+        { id: 'p-4', titulo: 'Simulador de conversación difícil', tipo: 'scorm' },
+        { id: 'p-5', titulo: 'Guía mapa de conflicto', tipo: 'pdf',
+          pdfSrc: '…/guia-mapa-conflicto.pdf', allowPdfDownload: true },
+        { id: 'p-6', titulo: 'Evaluación Sección 2', tipo: 'evaluacion',
+          evalConfig: { maxAttempts: 2, timeLimitMinutes: 5, timeLimitEnabled: true, minPassScore: 4 },
+          preguntas: '/* eq-6 … eq-10 — § 6.8.4b.1 */'
         },
-        { id: 'p-6', titulo: 'Fin del contenido', tipo: 'fin' }
+        { id: 'p-7', titulo: 'Fin del contenido', tipo: 'fin' }
       ]
     }
-  ]
+  ],
+  paginasConsumibles: ['p-1', 'p-2', 'p-3', 'p-4', 'p-5', 'p-6']
 };
 ```
 
@@ -1976,7 +1974,7 @@ window.BD_EXP_ESTUDIO_DEMO = {
 - [x] 2.1 Layout estándar colaborador
 - [x] 2.2 Chrome visible (sidebar, tab bar)
 - [x] 2.3 URL `exp-estudio.html?id=`
-- [x] 2.3.1 Deep links: portada ×3, páginas `p-1`…`p-6` / alias, eval ×6, `#cierre`
+- [x] 2.3.1 Deep links: portada ×3, páginas `p-1`…`p-7` / alias, eval ×6 + eval2 ×6, `#cierre`
 - [x] 3.2 Misma estructura Portada → Recursos → Cierre
 - [x] 4.1 Secciones con páginas
 - [x] 4.2 / 4.3 Índice learner: `SeccionExpEstudio` tarjetas separadas (como Creator, sin `bg-3`) + stack `IndiceExpEstudio`; colapsables (APP `1756:11404`; sin contador)
@@ -1984,7 +1982,7 @@ window.BD_EXP_ESTUDIO_DEMO = {
 - [x] 5.1–5.8 Portada sin iniciar (Figma UBITS + FIQSHA)
 - [x] 10.2 Figma Learner v4 (nodes § 5.0)
 
-- [x] 3.3 Índice curso demo (2 secciones, 6 ítems: video, PDF, 2× SCORM, evaluación, fin; sin encuesta)
+- [x] 3.3 Índice curso demo (2 secciones, 7 ítems: video, SCORM TK, eval 1, simulador, PDF, eval 2, fin; sin encuesta)
 - [x] 6.1 / 6.5 Tipos recurso curso demo (incluye SCORM alineado a Creator)
 - [x] 6.6b Umbral % video — **No**; basta `Continuar` sin reproducir
 - [x] 11.1 Mock `bd-exp-estudio-demo.js`

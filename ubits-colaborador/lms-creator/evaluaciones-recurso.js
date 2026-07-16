@@ -529,7 +529,7 @@
             var val = idx === 0 ? 'true' : 'false';
             return (
                 '<div class="cc-exam-opt-row cc-exam-opt-row--static">' +
-                '<label class="ubits-radio ubits-radio--sm cc-exam-opt-correct" title="Marcar como correcta">' +
+                '<label class="ubits-radio ubits-radio--md cc-exam-opt-correct" title="Marcar como correcta">' +
                 '<input type="radio" class="ubits-radio__input cc-exam-opt-check" name="q-' + qId + '-correct" value="' + val + '" aria-label="Marcar como correcta">' +
                 '<span class="ubits-radio__circle" aria-hidden="true"></span>' +
                 '<span class="ubits-radio__label ubits-body-sm-regular">' + drEsc(label) + '</span>' +
@@ -670,12 +670,12 @@
         row.setAttribute('data-opt-id', String(optNum));
         var checkHtml =
             questionType === 'multiple_choice_multiple'
-                ? '<label class="ubits-checkbox ubits-checkbox--sm cc-exam-opt-correct" title="Marcar como correcta">' +
+                ? '<label class="ubits-checkbox ubits-checkbox--md cc-exam-opt-correct" title="Marcar como correcta">' +
                   '<input type="checkbox" class="ubits-checkbox__input cc-exam-opt-check" name="q-' + qId + '-correct" value="' + optNum + '" aria-label="Marcar como correcta">' +
                   '<span class="ubits-checkbox__box" aria-hidden="true"><i class="fas fa-check"></i><i class="fas fa-minus"></i></span>' +
                   '<span class="ubits-checkbox__label ubits-body-sm-regular cc-exam-opt-label-hidden">Correcta</span>' +
                   '</label>'
-                : '<label class="ubits-radio ubits-radio--sm cc-exam-opt-correct" title="Marcar como correcta">' +
+                : '<label class="ubits-radio ubits-radio--md cc-exam-opt-correct" title="Marcar como correcta">' +
                   '<input type="radio" class="ubits-radio__input cc-exam-opt-check" name="q-' + qId + '-correct" value="' + optNum + '" aria-label="Marcar como correcta">' +
                   '<span class="ubits-radio__circle" aria-hidden="true"></span>' +
                   '<span class="ubits-radio__label ubits-body-sm-regular cc-exam-opt-label-hidden">Correcta</span>' +
@@ -2642,8 +2642,9 @@
         document.addEventListener('ubits-paginas-creator-activate', mountEl._ccEvalActivateHandler);
     }
 
-    /** Configuración estándar + 10 preguntas del banco (demo deep link / QA). */
-    function getStandardEvalDemoPackage() {
+        /** Configuración estándar + N preguntas del banco (demo deep link / QA). */
+    function getStandardEvalDemoPackage(questionCount) {
+        var count = questionCount != null ? questionCount : 5;
         var config = {
             title: '',
             minScore: 70,
@@ -2655,7 +2656,7 @@
             qPerAttemptValue: 5,
             questionsRandom: true,
             answersRandom: true,
-            questionCount: 10,
+            questionCount: count,
             difficulty: 'intermediate',
             questionTypes: ['multiple_choice_single_answer', 'binary']
         };
@@ -2668,10 +2669,65 @@
         return { config: config, questions: bankQuestionsToExamModels(raw) };
     }
 
-    global.ccEvalSeedStandardPage = function (pageKey) {
+    /** IDs tipo `B-01` / `I-27` — catálogo básico/intermedio/avanzado. */
+    function getEvalBankQuestionsByIds(ids) {
+        var out = [];
+        (ids || []).forEach(function (rawId) {
+            var id = String(rawId || '')
+                .trim()
+                .toUpperCase();
+            var m = id.match(/^([BIA])-(\d+)$/);
+            if (!m) return;
+            var diff = m[1] === 'B' ? 'basic' : m[1] === 'A' ? 'advanced' : 'intermediate';
+            var pool = EVAL_QUESTION_BANK[diff] || [];
+            var q = pool[parseInt(m[2], 10) - 1];
+            if (q) out.push(q);
+        });
+        return out;
+    }
+
+    /**
+     * Seed demo con preguntas fijas del banco (paridad React DEMO_EVAL_*_BANK_IDS).
+     * @param {string} pageKey
+     * @param {string[]} bankIds
+     */
+    global.ccEvalSeedFixedBankIds = function (pageKey, bankIds) {
         var pk = String(pageKey || '');
         if (!pk) return null;
-        var pack = getStandardEvalDemoPackage();
+        var ids = Array.isArray(bankIds) ? bankIds : [];
+        var raw = getEvalBankQuestionsByIds(ids);
+        var config = {
+            title: '',
+            minScore: 70,
+            timeLimit: true,
+            timeLimitValue: 5,
+            limitAttempts: true,
+            attemptsValue: 2,
+            limitQPerAttempt: false,
+            qPerAttemptValue: 5,
+            questionsRandom: false,
+            answersRandom: false,
+            questionCount: raw.length || ids.length || 5,
+            difficulty: 'intermediate',
+            questionTypes: [
+                'multiple_choice_single_answer',
+                'multiple_choice_multiple_answers',
+                'binary',
+                'matching'
+            ]
+        };
+        var pageState = ensurePageState(pk);
+        pageState.config = Object.assign({}, pageState.config, config);
+        pageState.questions = bankQuestionsToExamModels(raw);
+        pageState.activeQId = 1;
+        global._ccEvalPageKeys[pk] = true;
+        return pageState;
+    };
+
+    global.ccEvalSeedStandardPage = function (pageKey, questionCount) {
+        var pk = String(pageKey || '');
+        if (!pk) return null;
+        var pack = getStandardEvalDemoPackage(questionCount != null ? questionCount : 5);
         var pageState = ensurePageState(pk);
         pageState.config = Object.assign({}, pageState.config, pack.config);
         pageState.questions = pack.questions.slice();

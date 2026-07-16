@@ -621,7 +621,7 @@
             var val = idx === 0 ? 'true' : 'false';
             return (
               '<div class="learn-question__opt-row">' +
-              '<label class="ubits-radio ubits-radio--sm learn-question__opt-correct" title="Marcar como correcta">' +
+              '<label class="ubits-radio ubits-radio--md learn-question__opt-correct" title="Marcar como correcta">' +
               '<input type="radio" class="ubits-radio__input learn-question__opt-check" name="q-' + qId + '-correct" value="' + val + '" aria-label="Marcar como correcta">' +
               '<span class="ubits-radio__circle" aria-hidden="true"></span>' +
               '<span class="ubits-radio__label ubits-body-sm-regular">' + esc(label) + '</span>' +
@@ -653,12 +653,12 @@
           row.setAttribute('data-opt-id', String(optNum));
           var inputWrapId = 'learn-opt-' + qId + '-' + optNum + '-wrap';
           var checkHtml = isMulti
-            ? '<label class="ubits-checkbox ubits-checkbox--sm learn-question__opt-correct" title="Marcar como correcta">' +
+            ? '<label class="ubits-checkbox ubits-checkbox--md learn-question__opt-correct" title="Marcar como correcta">' +
               '<input type="checkbox" class="ubits-checkbox__input learn-question__opt-check" name="' + groupName + '" value="' + optNum + '" aria-label="Marcar como correcta">' +
               '<span class="ubits-checkbox__box" aria-hidden="true"><i class="fas fa-check"></i><i class="fas fa-minus"></i></span>' +
               '<span class="ubits-checkbox__label ubits-body-sm-regular" style="display:none;">Correcta</span>' +
               '</label>'
-            : '<label class="ubits-radio ubits-radio--sm learn-question__opt-correct" title="Marcar como correcta">' +
+            : '<label class="ubits-radio ubits-radio--md learn-question__opt-correct" title="Marcar como correcta">' +
               '<input type="radio" class="ubits-radio__input learn-question__opt-check" name="' + groupName + '" value="' + optNum + '" aria-label="Marcar como correcta">' +
               '<span class="ubits-radio__circle" aria-hidden="true"></span>' +
               '<span class="ubits-radio__label ubits-body-sm-regular" style="display:none;">Correcta</span>' +
@@ -948,14 +948,14 @@
           var txtOpt = String((o && o.text) || '').trim();
           var fallback = mode === 'read_error' ? 'Opción de respuesta' : '—';
           if (t === 'multiple_choice_multiple') {
-            html += '<label class="ubits-checkbox ubits-checkbox--sm learn-question__readonly-opt">' +
+            html += '<label class="ubits-checkbox ubits-checkbox--md learn-question__readonly-opt">' +
               '<input type="checkbox" class="ubits-checkbox__input" disabled ' + (markCorrect ? 'checked' : '') + '>' +
               '<span class="ubits-checkbox__box" aria-hidden="true"><i class="fas fa-check"></i><i class="fas fa-minus"></i></span>' +
               '<span class="ubits-checkbox__label ubits-body-sm-regular">' + esc(txtOpt || fallback) + '</span>' +
               '</label>';
           } else {
-            html += '<label class="ubits-radio ubits-radio--sm learn-question__readonly-opt">' +
-              '<input type="radio" class="ubits-radio__input" disabled ' + (markCorrect ? 'checked' : '') + '>' +
+            html += '<label class="ubits-radio ubits-radio--md learn-question__readonly-opt">' +
+              '<input type="radio" class="ubits-radio__input" name="lq-read-' + qId + '-single" value="' + (idx + 1) + '" disabled ' + (markCorrect ? 'checked' : '') + '>' +
               '<span class="ubits-radio__circle" aria-hidden="true"></span>' +
               '<span class="ubits-radio__label ubits-body-sm-regular">' + esc(txtOpt || fallback) + '</span>' +
               '</label>';
@@ -969,8 +969,8 @@
         ['Verdadero', 'Falso'].forEach(function (lbl, idx2) {
           var val = idx2 === 0 ? 'true' : 'false';
           var markTf = tfVal === val;
-          html += '<label class="ubits-radio ubits-radio--sm learn-question__readonly-opt">' +
-            '<input type="radio" class="ubits-radio__input" disabled ' + (markTf ? 'checked' : '') + '>' +
+          html += '<label class="ubits-radio ubits-radio--md learn-question__readonly-opt">' +
+            '<input type="radio" class="ubits-radio__input" name="lq-read-' + qId + '-tf" value="' + val + '" disabled ' + (markTf ? 'checked' : '') + '>' +
             '<span class="ubits-radio__circle" aria-hidden="true"></span>' +
             '<span class="ubits-radio__label ubits-body-sm-regular">' + esc(lbl) + '</span>' +
             '</label>';

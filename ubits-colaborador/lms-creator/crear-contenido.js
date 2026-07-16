@@ -3923,10 +3923,11 @@
     var CC_DEMO_SEC1 = 'cc-demo-sec-1';
     var CC_DEMO_SEC2 = 'cc-demo-sec-2';
     var CC_DEMO_PG_VIDEO = 'cc-demo-pg-1';
-    var CC_DEMO_PG_PDF = 'cc-demo-pg-2';
-    var CC_DEMO_PG_SCORM_MANUAL = 'cc-demo-pg-3';
-    var CC_DEMO_PG_SCORM_IA = 'cc-demo-pg-4';
-    var CC_DEMO_PG_EVAL = 'cc-demo-pg-5';
+    var CC_DEMO_PG_SCORM_IA = 'cc-demo-pg-2';
+    var CC_DEMO_PG_EVAL_1 = 'cc-demo-pg-3';
+    var CC_DEMO_PG_SCORM_MANUAL = 'cc-demo-pg-4';
+    var CC_DEMO_PG_PDF = 'cc-demo-pg-5';
+    var CC_DEMO_PG_EVAL_2 = 'cc-demo-pg-6';
 
     function isCrearContenidoEmptyForDemo() {
         if (window._ccDemoSeeded) return false;
@@ -4213,10 +4214,32 @@
         CC_RECURSOS_PAGE_STATE[CC_DEMO_PG_PDF] = pdfState;
         CC_RECURSOS_PAGE_STATE[CC_DEMO_PG_SCORM_MANUAL] = { html: scormManualHtml, primaryType: 'scorm' };
         CC_RECURSOS_PAGE_STATE[CC_DEMO_PG_SCORM_IA] = { html: scormIaHtml, primaryType: 'scorm' };
-        if (typeof window.ccEvalSeedStandardPage === 'function') {
-            window.ccEvalSeedStandardPage(CC_DEMO_PG_EVAL);
+        if (typeof window.ccEvalSeedFixedBankIds === 'function') {
+            window.ccEvalSeedFixedBankIds(CC_DEMO_PG_EVAL_1, [
+                'B-01',
+                'I-27',
+                'B-31',
+                'I-20',
+                'I-24'
+            ]);
+            window.ccEvalSeedFixedBankIds(CC_DEMO_PG_EVAL_2, [
+                'B-27',
+                'B-30',
+                'I-08',
+                'I-29',
+                'B-02'
+            ]);
+        } else if (typeof window.ccEvalSeedStandardPage === 'function') {
+            window.ccEvalSeedStandardPage(CC_DEMO_PG_EVAL_1, 5);
+            window.ccEvalSeedStandardPage(CC_DEMO_PG_EVAL_2, 5);
         }
-        CC_RECURSOS_PAGE_STATE[CC_DEMO_PG_EVAL] = {
+        CC_RECURSOS_PAGE_STATE[CC_DEMO_PG_EVAL_1] = {
+            primaryType: 'evaluacion-final',
+            hasComplementaryText: false,
+            hasComplementaryDownload: false,
+            complementaryOrder: []
+        };
+        CC_RECURSOS_PAGE_STATE[CC_DEMO_PG_EVAL_2] = {
             primaryType: 'evaluacion-final',
             hasComplementaryText: false,
             hasComplementaryDownload: false,
@@ -4228,7 +4251,7 @@
         recursosUiDone = true;
         recursosSectionsEnabled = true;
         recursosSectionIdSeq = 3;
-        recursosPageSeq = 5;
+        recursosPageSeq = 6;
         recursosSectionMeta[CC_DEMO_SEC1] = { descriptionHtml: '' };
         recursosSectionMeta[CC_DEMO_SEC2] = {
             descriptionHtml:
@@ -4247,9 +4270,15 @@
                         active: true
                     },
                     {
-                        label: 'Guía mapa de conflicto',
-                        pageKey: CC_DEMO_PG_PDF,
-                        tipo: 'pdf',
+                        label: 'Conversaciones difíciles según Thomas-Kilmann',
+                        pageKey: CC_DEMO_PG_SCORM_IA,
+                        tipo: 'scorm',
+                        active: false
+                    },
+                    {
+                        label: 'Evaluación Sección 1',
+                        pageKey: CC_DEMO_PG_EVAL_1,
+                        tipo: 'evaluacion',
                         active: false
                     }
                 ],
@@ -4266,12 +4295,17 @@
                         active: false
                     },
                     {
-                        label: 'Conversaciones difíciles según Thomas-Kilmann',
-                        pageKey: CC_DEMO_PG_SCORM_IA,
-                        tipo: 'scorm',
+                        label: 'Guía mapa de conflicto',
+                        pageKey: CC_DEMO_PG_PDF,
+                        tipo: 'pdf',
                         active: false
                     },
-                    { label: 'Evaluación', pageKey: CC_DEMO_PG_EVAL, tipo: 'evaluacion', active: false }
+                    {
+                        label: 'Evaluación Sección 2',
+                        pageKey: CC_DEMO_PG_EVAL_2,
+                        tipo: 'evaluacion',
+                        active: false
+                    }
                 ],
                 active: false
             }
@@ -4281,7 +4315,8 @@
         if (tgl) tgl.checked = true;
         recursosRestoreActivePagePreferred(CC_DEMO_PG_VIDEO);
         setRecursosEditorVisible(true);
-        syncRecursosPaginasItemIconForPage(CC_DEMO_PG_EVAL, 'evaluacion');
+        syncRecursosPaginasItemIconForPage(CC_DEMO_PG_EVAL_1, 'evaluacion');
+        syncRecursosPaginasItemIconForPage(CC_DEMO_PG_EVAL_2, 'evaluacion');
         syncRecursosPageCounter();
         refreshCrearContenidoPageSiguienteState();
     }

@@ -13,6 +13,11 @@
     time: '../../../images/icons/time-icon.svg'
   };
 
+  /** Eval Sección 1 (deep link `#eval-*`) / Eval Sección 2 (`#eval2-*`) / Fin */
+  var EVAL_PAGE_1 = 'p-3';
+  var EVAL_PAGE_2 = 'p-6';
+  var FIN_PAGE_ID = 'p-7';
+
   var HASH_PAGE = {
     portada: { view: 'portada', mode: 'por-iniciar' },
     'portada-sin-iniciar': { view: 'portada', mode: 'por-iniciar' },
@@ -20,43 +25,72 @@
     'portada-completado': { view: 'portada', mode: 'completado' },
     video: { view: 'recursos', pageId: 'p-1' },
     'pagina-p-1': { view: 'recursos', pageId: 'p-1' },
-    pdf: { view: 'recursos', pageId: 'p-2' },
+    'scorm-1': { view: 'recursos', pageId: 'p-2' },
     'pagina-p-2': { view: 'recursos', pageId: 'p-2' },
-    'scorm-1': { view: 'recursos', pageId: 'p-3' },
-    'pagina-p-3': { view: 'recursos', pageId: 'p-3' },
-    'scorm-2': { view: 'recursos', pageId: 'p-4' },
-    'pagina-p-4': { view: 'recursos', pageId: 'p-4' },
-    evaluacion: { view: 'recursos', pageId: 'p-5', evalFase: 'bienvenida' },
-    'pagina-p-5': { view: 'recursos', pageId: 'p-5', evalFase: 'bienvenida' },
-    'eval-bienvenida': { view: 'recursos', pageId: 'p-5', evalFase: 'bienvenida' },
-    'eval-intento': { view: 'recursos', pageId: 'p-5', evalFase: 'evaluacion' },
-    'eval-retomar': { view: 'recursos', pageId: 'p-5', evalFase: 'retomar' },
+    evaluacion: { view: 'recursos', pageId: EVAL_PAGE_1, evalFase: 'bienvenida' },
+    'pagina-p-3': { view: 'recursos', pageId: EVAL_PAGE_1, evalFase: 'bienvenida' },
+    'eval-bienvenida': { view: 'recursos', pageId: EVAL_PAGE_1, evalFase: 'bienvenida' },
+    'eval-intento': { view: 'recursos', pageId: EVAL_PAGE_1, evalFase: 'evaluacion' },
+    'eval-retomar': { view: 'recursos', pageId: EVAL_PAGE_1, evalFase: 'retomar' },
     'eval-resultado-aprobado': {
       view: 'recursos',
-      pageId: 'p-5',
+      pageId: EVAL_PAGE_1,
       evalFase: 'resultado',
       evalResultadoKind: 'aprobado'
     },
     'eval-resultado-reprobado': {
       view: 'recursos',
-      pageId: 'p-5',
+      pageId: EVAL_PAGE_1,
       evalFase: 'resultado',
       evalResultadoKind: 'reprobado'
     },
     'eval-resultado-tiempo': {
       view: 'recursos',
-      pageId: 'p-5',
+      pageId: EVAL_PAGE_1,
       evalFase: 'resultado',
       evalResultadoKind: 'tiempo'
     },
     'eval-resultado-limite': {
       view: 'recursos',
-      pageId: 'p-5',
+      pageId: EVAL_PAGE_1,
       evalFase: 'resultado',
       evalResultadoKind: 'limite'
     },
-    cierre: { view: 'cierre', pageId: 'p-6' },
-    'pagina-p-6': { view: 'cierre', pageId: 'p-6' }
+    'scorm-2': { view: 'recursos', pageId: 'p-4' },
+    'pagina-p-4': { view: 'recursos', pageId: 'p-4' },
+    pdf: { view: 'recursos', pageId: 'p-5' },
+    'pagina-p-5': { view: 'recursos', pageId: 'p-5' },
+    'evaluacion-2': { view: 'recursos', pageId: EVAL_PAGE_2, evalFase: 'bienvenida' },
+    'pagina-p-6': { view: 'recursos', pageId: EVAL_PAGE_2, evalFase: 'bienvenida' },
+    'eval2-bienvenida': { view: 'recursos', pageId: EVAL_PAGE_2, evalFase: 'bienvenida' },
+    'eval2-intento': { view: 'recursos', pageId: EVAL_PAGE_2, evalFase: 'evaluacion' },
+    'eval2-retomar': { view: 'recursos', pageId: EVAL_PAGE_2, evalFase: 'retomar' },
+    'eval2-resultado-aprobado': {
+      view: 'recursos',
+      pageId: EVAL_PAGE_2,
+      evalFase: 'resultado',
+      evalResultadoKind: 'aprobado'
+    },
+    'eval2-resultado-reprobado': {
+      view: 'recursos',
+      pageId: EVAL_PAGE_2,
+      evalFase: 'resultado',
+      evalResultadoKind: 'reprobado'
+    },
+    'eval2-resultado-tiempo': {
+      view: 'recursos',
+      pageId: EVAL_PAGE_2,
+      evalFase: 'resultado',
+      evalResultadoKind: 'tiempo'
+    },
+    'eval2-resultado-limite': {
+      view: 'recursos',
+      pageId: EVAL_PAGE_2,
+      evalFase: 'resultado',
+      evalResultadoKind: 'limite'
+    },
+    cierre: { view: 'cierre', pageId: FIN_PAGE_ID },
+    'pagina-p-7': { view: 'cierre', pageId: FIN_PAGE_ID }
   };
 
   var session = null;
@@ -133,7 +167,8 @@
       'p-2',
       'p-3',
       'p-4',
-      'p-5'
+      'p-5',
+      'p-6'
     ];
   }
 
@@ -147,6 +182,33 @@
     return global.BD_EXP_ESTUDIO_DEMO && typeof global.BD_EXP_ESTUDIO_DEMO.getPageById === 'function'
       ? global.BD_EXP_ESTUDIO_DEMO.getPageById(id)
       : null;
+  }
+
+  function isEvalPageId(pageId) {
+    var p = getPage(pageId);
+    return !!(p && p.tipo === 'evaluacion');
+  }
+
+  function evalHashPrefix(pageId) {
+    return pageId === EVAL_PAGE_2 ? 'eval2' : 'eval';
+  }
+
+  function evalHashFor(pageId, fase, resultadoKind) {
+    var prefix = evalHashPrefix(pageId);
+    if (fase === 'evaluacion') return prefix + '-intento';
+    if (fase === 'retomar') return prefix + '-retomar';
+    if (fase === 'resultado') return prefix + '-resultado-' + (resultadoKind || 'reprobado');
+    return prefix + '-bienvenida';
+  }
+
+  function finPageId() {
+    if (
+      global.BD_EXP_ESTUDIO_DEMO &&
+      typeof global.BD_EXP_ESTUDIO_DEMO.getFinPageId === 'function'
+    ) {
+      return global.BD_EXP_ESTUDIO_DEMO.getFinPageId();
+    }
+    return FIN_PAGE_ID;
   }
 
   function progressPercent() {
@@ -198,11 +260,12 @@
   }
 
   function seedCompletedBefore(pageId) {
-    var order = consumibles().concat(['p-6']);
+    var fin = finPageId();
+    var order = consumibles().concat([fin]);
     var idx = order.indexOf(pageId);
     session.completedPageIds = {};
     for (var i = 0; i < idx; i++) {
-      if (order[i] !== 'p-6') session.completedPageIds[order[i]] = true;
+      if (order[i] !== fin) session.completedPageIds[order[i]] = true;
     }
   }
 
@@ -238,8 +301,8 @@
         consumibles().forEach(function (pid) {
           session.completedPageIds[pid] = true;
         });
-        session.completedPageIds['p-6'] = true;
-        session.lastPageId = 'p-6';
+        session.completedPageIds[finPageId()] = true;
+        session.lastPageId = finPageId();
       }
       return;
     }
@@ -248,10 +311,10 @@
       consumibles().forEach(function (pid) {
         session.completedPageIds[pid] = true;
       });
-      session.completedPageIds['p-6'] = true;
+      session.completedPageIds[finPageId()] = true;
       session.view = 'cierre';
-      session.currentPageId = 'p-6';
-      session.lastPageId = 'p-6';
+      session.currentPageId = finPageId();
+      session.lastPageId = finPageId();
       session.portadaMode = 'completado';
       return;
     }
@@ -262,7 +325,7 @@
     session.lastPageId = cfg.pageId;
     seedCompletedBefore(cfg.pageId);
 
-    if (cfg.pageId === 'p-5') {
+    if (isEvalPageId(cfg.pageId)) {
       session.evalFase = cfg.evalFase || 'bienvenida';
       session.evalResultadoKind = cfg.evalResultadoKind || null;
       if (session.evalFase === 'evaluacion') {
@@ -271,26 +334,41 @@
       }
       if (session.evalFase === 'resultado') {
         var kind = session.evalResultadoKind;
-        var total = 10;
+        var evalPageSeed = getPage(cfg.pageId);
+        var total = (evalPageSeed && evalPageSeed.preguntas && evalPageSeed.preguntas.length) || 5;
         var minPassSeed =
-          (getPage('p-5') && getPage('p-5').evalConfig && getPage('p-5').evalConfig.minPassScore) ||
-          7;
+          (evalPageSeed && evalPageSeed.evalConfig && evalPageSeed.evalConfig.minPassScore) || 4;
         if (kind === 'aprobado') {
           session.evalScore = {
             aprobado: true,
-            correctas: Math.max(minPassSeed, 8),
+            correctas: Math.max(minPassSeed, Math.min(total, minPassSeed + 1)),
             total: total,
             puntajeMin: minPassSeed
           };
           session.evalIntentoActual = 1;
         } else if (kind === 'reprobado') {
-          session.evalScore = { aprobado: false, correctas: 4, total: total, puntajeMin: minPassSeed };
+          session.evalScore = {
+            aprobado: false,
+            correctas: Math.max(0, minPassSeed - 1),
+            total: total,
+            puntajeMin: minPassSeed
+          };
           session.evalIntentoActual = 1;
         } else if (kind === 'tiempo') {
-          session.evalScore = { aprobado: false, correctas: 3, total: total, puntajeMin: minPassSeed };
+          session.evalScore = {
+            aprobado: false,
+            correctas: Math.max(0, minPassSeed - 2),
+            total: total,
+            puntajeMin: minPassSeed
+          };
           session.evalIntentoActual = 1;
         } else if (kind === 'limite') {
-          session.evalScore = { aprobado: false, correctas: 3, total: total, puntajeMin: minPassSeed };
+          session.evalScore = {
+            aprobado: false,
+            correctas: Math.max(0, minPassSeed - 2),
+            total: total,
+            puntajeMin: minPassSeed
+          };
           session.evalIntentoActual = 2;
         }
       }
@@ -298,18 +376,19 @@
   }
 
   function pageState(pageId) {
+    var fin = finPageId();
     var isCompleted = !!session.completedPageIds[pageId];
-    if (pageId === 'p-6' && (session.view === 'cierre' || session.completedPageIds['p-6'])) {
+    if (pageId === fin && (session.view === 'cierre' || session.completedPageIds[fin])) {
       isCompleted = true;
     }
     var isCurrent =
       (session.view === 'recursos' && session.currentPageId === pageId) ||
-      (session.view === 'cierre' && pageId === 'p-6') ||
+      (session.view === 'cierre' && pageId === fin) ||
       (session.view === 'portada' &&
         session.portadaMode === 'en-progreso' &&
         pageId === session.lastPageId);
 
-    if (session.view === 'cierre' && pageId === 'p-6') return 'activa';
+    if (session.view === 'cierre' && pageId === fin) return 'activa';
     if (isCompleted && isCurrent && session.view !== 'cierre') return 'completada-activa';
     if (isCompleted) return 'completada';
     if (session.view === 'recursos' && session.currentPageId === pageId) return 'activa';
@@ -320,7 +399,7 @@
     ) {
       return 'activa';
     }
-    if (pageId === 'p-6') return 'bloqueada';
+    if (pageId === fin) return 'bloqueada';
     return 'bloqueada';
   }
 
@@ -581,7 +660,7 @@
   }
 
   function gradeEval() {
-    var page = getPage('p-5');
+    var page = getPage(session.currentPageId);
     var preguntas = (page && page.preguntas) || [];
     var correct = 0;
     questionApis.forEach(function (api, i) {
@@ -632,7 +711,7 @@
         if (allOk) correct += 1;
       }
     });
-    return { correctas: correct, total: preguntas.length || 10 };
+    return { correctas: correct, total: preguntas.length || 5 };
   }
 
   function stopEvalTimer() {
@@ -647,9 +726,9 @@
     session.evalResultadoKind = kind;
     session.evalScore = score || session.evalScore;
     if (kind === 'aprobado') {
-      session.completedPageIds['p-5'] = true;
+      session.completedPageIds[session.currentPageId] = true;
     }
-    setHash('eval-resultado-' + kind);
+    setHash(evalHashFor(session.currentPageId, 'resultado', kind));
     render();
   }
 
@@ -663,8 +742,7 @@
         : '') +
       '<li><strong>Intentos:</strong> Tienes ' +
       N +
-      ' intentos disponibles.</li>' +
-      '<li><strong>Importante:</strong> Una vez inicies la evaluación, cualquier salida, recarga o cierre de esta ventana, contará como un intento.</li>';
+      ' intentos disponibles.</li>';
 
     main.innerHTML =
       '<div class="exp-estudio-eval exp-estudio-eval--bienvenida">' +
@@ -762,7 +840,7 @@
 
   function renderEvalResultado(main) {
     var kind = session.evalResultadoKind || 'reprobado';
-    var score = session.evalScore || { correctas: 0, total: 10, puntajeMin: 7 };
+    var score = session.evalScore || { correctas: 0, total: 5, puntajeMin: 4 };
     var icon = ICONS.error;
     var title = '¡No aprobaste!';
     var body = '';
@@ -1008,23 +1086,22 @@
   }
 
   function handleEvalPrimary() {
-    var page = getPage('p-5');
+    var page = getPage(session.currentPageId);
     var cfg = (page && page.evalConfig) || {};
     var maxA = cfg.maxAttempts || 2;
+    var evalId = session.currentPageId;
 
     if (session.evalFase === 'bienvenida' || session.evalFase === 'retomar') {
       session.evalFase = 'evaluacion';
       session.answers = {};
-      setHash('eval-intento');
+      setHash(evalHashFor(evalId, 'evaluacion'));
       render();
       return;
     }
     if (session.evalFase === 'evaluacion') {
       if (!allQuestionsAnswered()) return;
       var scored = gradeEval();
-      var minPass =
-        (getPage('p-5') && getPage('p-5').evalConfig && getPage('p-5').evalConfig.minPassScore) ||
-        7;
+      var minPass = (page && page.evalConfig && page.evalConfig.minPassScore) || 4;
       var pass = scored.correctas >= minPass;
       if (pass) {
         finishEvalWithKind('aprobado', {
@@ -1053,8 +1130,21 @@
     if (session.evalFase === 'resultado') {
       var kind = session.evalResultadoKind;
       if (kind === 'aprobado') {
-        session.completedPageIds['p-5'] = true;
-        goToCierre();
+        session.completedPageIds[evalId] = true;
+        var next = nextPageId(evalId);
+        var nextPage = next ? getPage(next) : null;
+        if (!next || (nextPage && nextPage.tipo === 'fin')) {
+          goToCierre();
+        } else {
+          session.evalFase = null;
+          session.evalResultadoKind = null;
+          session.answers = {};
+          session.evalIntentoActual = 1;
+          if (nextPage && nextPage.tipo === 'evaluacion') {
+            session.evalFase = 'bienvenida';
+          }
+          goToPage(next);
+        }
       } else if (kind === 'limite') {
         goHomeLearn();
       } else {
@@ -1062,20 +1152,21 @@
         session.evalFase = 'evaluacion';
         session.evalResultadoKind = null;
         session.answers = {};
-        setHash('eval-intento');
+        setHash(evalHashFor(evalId, 'evaluacion'));
         render();
       }
     }
   }
 
   function goToCierre() {
+    var fin = finPageId();
     consumibles().forEach(function (pid) {
       session.completedPageIds[pid] = true;
     });
-    session.completedPageIds['p-6'] = true;
+    session.completedPageIds[fin] = true;
     session.view = 'cierre';
-    session.currentPageId = 'p-6';
-    session.lastPageId = 'p-6';
+    session.currentPageId = fin;
+    session.lastPageId = fin;
     session.portadaMode = 'completado';
     confettiLaunched = false;
     setHash('cierre');
@@ -1107,37 +1198,43 @@
       goToCierre();
       return;
     }
+    var switchingEval =
+      page.tipo === 'evaluacion' &&
+      session.currentPageId &&
+      session.currentPageId !== pageId &&
+      isEvalPageId(session.currentPageId);
     session.view = 'recursos';
     session.currentPageId = pageId;
     session.lastPageId = pageId;
     if (page.tipo === 'evaluacion') {
-      /* No pisar fase deep-link (retomar / resultado / evaluacion) al reentrar a p-5 */
-      if (!session.evalFase) {
-        session.evalFase = 'bienvenida';
+      if (switchingEval || !session.evalFase) {
+        if (session.completedPageIds[pageId]) {
+          session.evalFase = 'resultado';
+          session.evalResultadoKind = 'aprobado';
+        } else {
+          session.evalFase = 'bienvenida';
+          session.evalResultadoKind = null;
+          session.evalIntentoActual = 1;
+          session.answers = {};
+        }
       } else if (
         session.evalFase === 'resultado' &&
         session.evalResultadoKind === 'aprobado' &&
-        !session.completedPageIds['p-5']
+        !session.completedPageIds[pageId]
       ) {
         /* mantener resultado aprobado hasta marcar completada */
       } else if (
-        !session.completedPageIds['p-5'] &&
+        !session.completedPageIds[pageId] &&
         session.evalFase !== 'retomar' &&
         session.evalFase !== 'evaluacion' &&
         !(session.evalFase === 'resultado' && session.evalResultadoKind)
       ) {
         session.evalFase = 'bienvenida';
       }
-      setHash(
-        session.evalFase === 'evaluacion'
-          ? 'eval-intento'
-          : session.evalFase === 'retomar'
-            ? 'eval-retomar'
-            : session.evalFase === 'resultado'
-              ? 'eval-resultado-' + (session.evalResultadoKind || 'reprobado')
-              : 'eval-bienvenida'
-      );
+      setHash(evalHashFor(pageId, session.evalFase, session.evalResultadoKind));
     } else {
+      session.evalFase = null;
+      session.evalResultadoKind = null;
       setHash('pagina-' + pageId);
     }
     render();
@@ -1170,11 +1267,11 @@
 
   function handleRegresar() {
     if (session.view === 'cierre') {
-      goToPage('p-5');
+      goToPage(EVAL_PAGE_2);
       session.evalFase = 'resultado';
       session.evalResultadoKind = 'aprobado';
-      session.completedPageIds['p-5'] = true;
-      setHash('eval-resultado-aprobado');
+      session.completedPageIds[EVAL_PAGE_2] = true;
+      setHash(evalHashFor(EVAL_PAGE_2, 'resultado', 'aprobado'));
       render();
       return;
     }

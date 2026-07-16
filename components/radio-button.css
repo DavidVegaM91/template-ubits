@@ -149,12 +149,22 @@
     box-shadow: none;
 }
 
+/* Disabled + checked: azul brand (modo lectura que muestra la correcta) */
 .ubits-radio .ubits-radio__input:disabled:checked + .ubits-radio__circle {
-    background: var(--ubits-fg-1-medium);
-    border-color: var(--ubits-fg-1-medium);
+    background: var(--ubits-accent-brand);
+    border-color: var(--ubits-accent-brand);
+}
+
+.ubits-radio .ubits-radio__input:disabled:checked + .ubits-radio__circle::after {
+    transform: scale(1);
 }
 
 .ubits-radio .ubits-radio__input:disabled:hover + .ubits-radio__circle {
     border-color: var(--ubits-border-1);
+    box-shadow: none;
+}
+
+.ubits-radio .ubits-radio__input:disabled:checked:hover + .ubits-radio__circle {
+    border-color: var(--ubits-accent-brand);
     box-shadow: none;
 }
