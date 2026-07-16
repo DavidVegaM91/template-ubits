@@ -94,9 +94,7 @@
             var visible = map[sectionId] === step;
             el.classList.toggle('crear-contenido-step--visible', visible);
         });
-        if (typeof window.setSidebarContenidosLmsActive === 'function') {
-            window.setSidebarContenidosLmsActive('editar-contenido-sidebar-host', sectionId);
-        }
+        syncEditarContenidoStepper(sectionId);
         editState.activeSection = sectionId;
 
         if (sectionId === 'recursos') {
@@ -150,6 +148,59 @@
         if (hash) {
             history.replaceState(null, '', location.pathname + location.search + hash);
         }
+    }
+
+    function syncEditarContenidoStepper(sectionId) {
+        var ols = [
+            document.getElementById('editar-contenido-stepper-ol'),
+            document.getElementById('editar-contenido-stepper-ol-mobile')
+        ];
+        ols.forEach(function (ol) {
+            if (!ol) return;
+            var idx =
+                typeof window.getStepperIndexByStepId === 'function'
+                    ? window.getStepperIndexByStepId(ol, sectionId)
+                    : -1;
+            if (idx < 0) idx = 0;
+            if (typeof window.setStepperActiveOnly === 'function') {
+                window.setStepperActiveOnly(ol, idx);
+            }
+        });
+    }
+
+    function wireEditarContenidoStepper() {
+        var frame = document.getElementById('editar-contenido-stepper-frame');
+        var toggle = document.getElementById('editar-contenido-stepper-toggle');
+        if (frame && toggle && typeof window.wireStepperVerticalCollapse === 'function') {
+            window.wireStepperVerticalCollapse(frame, toggle, { creatorRail: true });
+        }
+
+        function onStepActivate(stepId) {
+            if (!stepId) return;
+            showEditSection(stepId);
+        }
+
+        function wireOl(ol) {
+            if (!ol) return;
+            ol.querySelectorAll(':scope > .ubits-stepper__step').forEach(function (el) {
+                el.style.cursor = 'pointer';
+                el.setAttribute('tabindex', '0');
+                el.setAttribute('role', 'button');
+                function go() {
+                    onStepActivate(el.getAttribute('data-step-id'));
+                }
+                el.addEventListener('click', go);
+                el.addEventListener('keydown', function (e) {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        go();
+                    }
+                });
+            });
+        }
+
+        wireOl(document.getElementById('editar-contenido-stepper-ol'));
+        wireOl(document.getElementById('editar-contenido-stepper-ol-mobile'));
     }
 
     function shouldShowRecursosWarning() {
@@ -365,15 +416,7 @@
             });
         }
 
-        if (typeof window.loadSidebarContenidosLms === 'function') {
-            window.loadSidebarContenidosLms('editar-contenido-sidebar-host', {
-                variant: 'publicado-lms-creator',
-                activeStep: 'resultados',
-                onSelect: function (stepId) {
-                    showEditSection(stepId);
-                }
-            });
-        }
+        wireEditarContenidoStepper();
 
         applyReadonlyMode();
         wireClosePin();

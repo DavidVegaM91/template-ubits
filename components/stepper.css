@@ -168,6 +168,11 @@
     max-width: 100%;
 }
 
+/* display:flex del vertical pisa [hidden] si no se refuerza */
+.ubits-stepper[hidden] {
+    display: none !important;
+}
+
 .ubits-stepper--vertical .ubits-stepper__step {
     display: grid;
     grid-template-columns: var(--ubits-stepper-ring) minmax(0, 1fr);
@@ -250,11 +255,46 @@
     display: block;
 }
 
-/* Icono solo FontAwesome en <i>; estilos vía padre */
+/* Icono solo FontAwesome en <i>; estilos vía padre.
+ * En variante numerada el <i> suele ser fa-check (oculto salvo casos legacy).
+ * En --icons el <i> es el mark principal. */
 .ubits-stepper__mark > i {
     display: none;
     font-size: var(--font-size-md);
     line-height: 1;
+}
+
+/* Variante icons: ícono visible, número oculto */
+.ubits-stepper--icons .ubits-stepper__mark-num {
+    display: none;
+}
+
+.ubits-stepper--icons .ubits-stepper__mark > i {
+    display: block;
+}
+
+.ubits-stepper--icons.ubits-stepper--horizontal:not(.ubits-stepper--horizontal-stacked) {
+    /* Misma huella que horizontal-compact */
+    justify-content: flex-start;
+    width: fit-content;
+    max-width: 100%;
+}
+
+.ubits-stepper--icons.ubits-stepper--horizontal:not(.ubits-stepper--horizontal-stacked) .ubits-stepper__step {
+    flex: 0 0 auto;
+    max-width: none;
+}
+
+.ubits-stepper--icons.ubits-stepper--horizontal:not(.ubits-stepper--horizontal-stacked) .ubits-stepper__label {
+    flex: 0 1 auto;
+    max-width: 10rem;
+}
+
+.ubits-stepper--icons.ubits-stepper--horizontal:not(.ubits-stepper--horizontal-stacked) .ubits-stepper__rail {
+    flex: 0 0 auto;
+    flex-grow: 0;
+    width: var(--gap-2xl);
+    min-width: var(--gap-xl);
 }
 
 .ubits-stepper__step--pending .ubits-stepper__mark {
@@ -283,6 +323,15 @@
 
 .ubits-stepper__step--done .ubits-stepper__mark > i {
     display: none;
+}
+
+/* Icons + done: el ícono permanece (no hay check aparte) */
+.ubits-stepper--icons .ubits-stepper__step--done .ubits-stepper__mark-num {
+    display: none;
+}
+
+.ubits-stepper--icons .ubits-stepper__step--done .ubits-stepper__mark > i {
+    display: block;
 }
 
 .ubits-stepper__label {

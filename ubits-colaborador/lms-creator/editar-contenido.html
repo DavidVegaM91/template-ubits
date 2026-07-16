@@ -51,7 +51,6 @@
     <link rel="stylesheet" href="../../components/file-upload.css">
     <link rel="stylesheet" href="../../components/file-upload-compact.css">
     <link rel="stylesheet" href="../../components/sidebar.css">
-    <link rel="stylesheet" href="../../components/sidebar-contenidos-lms.css">
     <link rel="stylesheet" href="../../components/progress-bar.css">
     <link rel="stylesheet" href="./crear-contenido.css">
     <link rel="stylesheet" href="./crear-contenido-configuracion.css">
@@ -90,7 +89,67 @@
         </header>
 
                 <main class="ubits-layout-immersive__main" id="crear-contenido-main" tabindex="-1">
-<div class="crear-contenido-editor-workspace ubits-layout-immersive__stage">  <div class="crear-contenido-editor__rail editar-contenido-editor__rail"><div id="editar-contenido-sidebar-host" class="editar-contenido-sidebar-host"></div></div>  <div class="crear-contenido-editor__main">        <div id="editar-contenido-step-resultados" class="crear-contenido-step editar-contenido-step editar-contenido-step--resultados" data-editar-step="resultados">      <div id="editar-contenido-resultados-mount" class="editar-contenido-resultados-mount"></div>    </div>    <div id="crear-contenido-step-portada" class="crear-contenido-step crear-contenido-step--portada" data-crear-step="portada">      <div class="crear-contenido-portada__cabecera">        <div class="crear-contenido-portada__cabecera-titulo">
+<div class="crear-contenido-editor-workspace ubits-layout-immersive__stage">  <div class="crear-contenido-editor__rail editar-contenido-editor__rail">
+<div class="ubits-stepper__vertical-frame ubits-stepper__vertical-frame--creator-rail is-collapsed" id="editar-contenido-stepper-frame">
+  <nav class="ubits-stepper__vertical-nav" aria-label="Secciones de edición">
+    <ol class="ubits-stepper ubits-stepper--vertical ubits-stepper--icons" id="editar-contenido-stepper-ol">
+      <li class="ubits-stepper__step ubits-stepper__step--active" data-step-id="resultados" data-step-label="Resultados" aria-current="step">
+        <span class="ubits-stepper__mark" aria-hidden="true"><span class="ubits-stepper__mark-num">1</span><i class="far fa-chart-mixed" aria-hidden="true"></i></span>
+        <span class="ubits-stepper__label">Resultados</span>
+      </li>
+      <li class="ubits-stepper__step ubits-stepper__step--pending" data-step-id="informacion" data-step-label="Portada">
+        <span class="ubits-stepper__mark" aria-hidden="true"><span class="ubits-stepper__mark-num">2</span><i class="far fa-image" aria-hidden="true"></i></span>
+        <span class="ubits-stepper__label">Portada</span>
+      </li>
+      <li class="ubits-stepper__step ubits-stepper__step--pending" data-step-id="recursos" data-step-label="Recursos">
+        <span class="ubits-stepper__mark" aria-hidden="true"><span class="ubits-stepper__mark-num">3</span><i class="far fa-layer-group" aria-hidden="true"></i></span>
+        <span class="ubits-stepper__label">Recursos</span>
+      </li>
+      <li class="ubits-stepper__step ubits-stepper__step--pending" data-step-id="certificado" data-step-label="Certificado">
+        <span class="ubits-stepper__mark" aria-hidden="true"><span class="ubits-stepper__mark-num">4</span><i class="far fa-award" aria-hidden="true"></i></span>
+        <span class="ubits-stepper__label">Certificado</span>
+      </li>
+      <li class="ubits-stepper__step ubits-stepper__step--pending" data-step-id="visibilidad" data-step-label="Configuración">
+        <span class="ubits-stepper__mark" aria-hidden="true"><span class="ubits-stepper__mark-num">5</span><i class="far fa-sliders" aria-hidden="true"></i></span>
+        <span class="ubits-stepper__label">Configuración</span>
+      </li>
+    </ol>
+  </nav>
+  <div class="ubits-stepper__vertical-footer">
+    <button type="button" class="nav-button ubits-stepper__vertical-toggle" id="editar-contenido-stepper-toggle" aria-expanded="false" aria-label="Expandir la lista de pasos">
+      <i class="far fa-angles-right" aria-hidden="true"></i>
+    </button>
+  </div>
+</div>
+<nav class="editar-contenido-stepper-mobile" aria-label="Secciones de edición">
+  <ol class="ubits-stepper ubits-stepper--horizontal ubits-stepper--horizontal-compact ubits-stepper--icons" id="editar-contenido-stepper-ol-mobile">
+    <li class="ubits-stepper__step ubits-stepper__step--active" data-step-id="resultados" data-step-label="Resultados" aria-current="step">
+      <span class="ubits-stepper__mark" aria-hidden="true"><span class="ubits-stepper__mark-num">1</span><i class="far fa-chart-mixed" aria-hidden="true"></i></span>
+      <span class="ubits-stepper__label">Resultados</span>
+    </li>
+    <li class="ubits-stepper__rail" aria-hidden="true"></li>
+    <li class="ubits-stepper__step ubits-stepper__step--pending" data-step-id="informacion" data-step-label="Portada">
+      <span class="ubits-stepper__mark" aria-hidden="true"><span class="ubits-stepper__mark-num">2</span><i class="far fa-image" aria-hidden="true"></i></span>
+      <span class="ubits-stepper__label">Portada</span>
+    </li>
+    <li class="ubits-stepper__rail" aria-hidden="true"></li>
+    <li class="ubits-stepper__step ubits-stepper__step--pending" data-step-id="recursos" data-step-label="Recursos">
+      <span class="ubits-stepper__mark" aria-hidden="true"><span class="ubits-stepper__mark-num">3</span><i class="far fa-layer-group" aria-hidden="true"></i></span>
+      <span class="ubits-stepper__label">Recursos</span>
+    </li>
+    <li class="ubits-stepper__rail" aria-hidden="true"></li>
+    <li class="ubits-stepper__step ubits-stepper__step--pending" data-step-id="certificado" data-step-label="Certificado">
+      <span class="ubits-stepper__mark" aria-hidden="true"><span class="ubits-stepper__mark-num">4</span><i class="far fa-award" aria-hidden="true"></i></span>
+      <span class="ubits-stepper__label">Certificado</span>
+    </li>
+    <li class="ubits-stepper__rail" aria-hidden="true"></li>
+    <li class="ubits-stepper__step ubits-stepper__step--pending" data-step-id="visibilidad" data-step-label="Configuración">
+      <span class="ubits-stepper__mark" aria-hidden="true"><span class="ubits-stepper__mark-num">5</span><i class="far fa-sliders" aria-hidden="true"></i></span>
+      <span class="ubits-stepper__label">Configuración</span>
+    </li>
+  </ol>
+</nav>
+</div>  <div class="crear-contenido-editor__main">        <div id="editar-contenido-step-resultados" class="crear-contenido-step editar-contenido-step editar-contenido-step--resultados" data-editar-step="resultados">      <div id="editar-contenido-resultados-mount" class="editar-contenido-resultados-mount"></div>    </div>    <div id="crear-contenido-step-portada" class="crear-contenido-step crear-contenido-step--portada" data-crear-step="portada">      <div class="crear-contenido-portada__cabecera">        <div class="crear-contenido-portada__cabecera-titulo">
           <label class="contenidos-creator-titulo-wrap">
             <textarea id="crear-contenido-titulo" class="ubits-inline-edit ubits-display-d3-bold contenidos-creator-titulo-input" placeholder="Escribe aquí el título del contenido" rows="1" maxlength="180" aria-label="Nombre del contenido"></textarea>
             <span class="contenidos-creator-titulo-hint ubits-body-xs-regular">Máximo 180 caracteres.</span>
@@ -219,7 +278,6 @@
     <script src="../../bd-master/bd-resultados-contenido.js"></script>
     <script src="../../general-utils/humanizador-fechas.js"></script>
     <script src="../../bd-master/bd-contenido-editor-payload.js"></script>
-    <script src="../../components/sidebar-contenidos-lms.js"></script>
     <script src="./crear-contenido-certificado.js"></script>
     <script src="./crear-contenido-configuracion.js"></script>
     <script src="./crear-contenido-publicacion.js"></script>

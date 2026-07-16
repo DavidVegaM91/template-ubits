@@ -5,6 +5,7 @@
  * - Paso completado: el número sigue visible en el círculo (color éxito); el <i class="far fa-check"> en el mark queda oculto por CSS (puede permanecer en el HTML por compatibilidad).
  * - Horizontal en viewport ≤1023px: solo el paso activo muestra .ubits-stepper__label; el resto solo el número (ver stepper.css).
  * - Horizontal stacked: cada paso flex-1; título con wrap; conector vía ::after (los li.rail no se muestran). No combinar con --horizontal-compact (misma vista). Ver stepper.css.
+ * - Variante --icons: el mark muestra <i class="far fa-…"> y oculta .ubits-stepper__mark-num. En edición LMS: setStepperActiveOnly (sin done secuencial).
  * - wireStepperVerticalCollapse: tras colapsar, re-inicializar tooltips del marco si usas initTooltip (ver documentación).
  * - Marco con clase ubits-stepper__vertical-frame--creator-rail: rail tipo sidebar creator (bg-1, borde), toggle nav-button con fa-angles-right/left y “Contraer” (mismo patrón que Sidebar contenidos LMS).
  *
@@ -25,7 +26,7 @@
         steps.forEach(function (el, i) {
             el.classList.remove('ubits-stepper__step--done', 'ubits-stepper__step--active', 'ubits-stepper__step--pending');
             var label = el.getAttribute('data-step-label') || '';
-            el.setAttribute('aria-label', 'Paso ' + (i + 1) + (label ? ': ' + label : ''));
+            el.setAttribute('aria-label', label || ('Paso ' + (i + 1)));
 
             if (i < activeIndex) {
                 el.classList.add('ubits-stepper__step--done');
@@ -38,6 +39,43 @@
                 el.removeAttribute('aria-current');
             }
         });
+    }
+
+    /**
+     * Navegación libre (editar contenido): solo active / pending, sin “done” secuencial.
+     * @param {HTMLElement} root
+     * @param {number} activeIndex
+     */
+    function setStepperActiveOnly(root, activeIndex) {
+        if (!root) return;
+        var steps = root.querySelectorAll(':scope > .ubits-stepper__step');
+        steps.forEach(function (el, i) {
+            el.classList.remove('ubits-stepper__step--done', 'ubits-stepper__step--active', 'ubits-stepper__step--pending');
+            var label = el.getAttribute('data-step-label') || '';
+            el.setAttribute('aria-label', label || ('Paso ' + (i + 1)));
+            if (i === activeIndex) {
+                el.classList.add('ubits-stepper__step--active');
+                el.setAttribute('aria-current', 'step');
+            } else {
+                el.classList.add('ubits-stepper__step--pending');
+                el.removeAttribute('aria-current');
+            }
+        });
+    }
+
+    /**
+     * Índice 0-based del paso con data-step-id, o -1.
+     * @param {HTMLElement} root
+     * @param {string} stepId
+     * @returns {number}
+     */
+    function getStepperIndexByStepId(root, stepId) {
+        if (!root) return -1;
+        var steps = root.querySelectorAll(':scope > .ubits-stepper__step');
+        for (var i = 0; i < steps.length; i++) {
+            if (steps[i].getAttribute('data-step-id') === String(stepId)) return i;
+        }
+        return -1;
     }
 
     /**
@@ -186,6 +224,8 @@
     }
 
     global.setStepperStepStates = setStepperStepStates;
+    global.setStepperActiveOnly = setStepperActiveOnly;
+    global.getStepperIndexByStepId = getStepperIndexByStepId;
     global.initStepper = initStepper;
     global.wireStepperVerticalCollapse = wireStepperVerticalCollapse;
     global.wireDrawerWizardStepperBackNav = wireDrawerWizardStepperBackNav;
