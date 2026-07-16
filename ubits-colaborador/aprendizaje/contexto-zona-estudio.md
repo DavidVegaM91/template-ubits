@@ -258,13 +258,55 @@ Pestaña para **María Alejandra (E006)** como **líder de Logística** con perm
 |-----------|--------|
 | Líder demo | `E006` — María Alejandra Sánchez Pardo |
 | Área resaltada en ranking | `Logística` |
-| Subordinados | `E035`–`E040` vía `getMiEquipoSubordinadosDirectos()` |
+| Subordinados (caso normal) | `E035`–`E040` vía `getMiEquipoSubordinadosDirectos()` (~7 personas con María) |
+
+## 7.1.1 Escenarios demo (`?demo=`)
+
+Tres URLs para QA del ProfileList y del empty state. El hash del tab sigue siendo `#progreso`.
+
+| Escenario | Vanilla | React | Qué simula |
+|-----------|---------|-------|------------|
+| **Normal** | `zona-estudio.html#progreso` | `/ubits-colaborador/aprendizaje/zona-estudio#progreso` | Equipo real (~7). ProfileList sin `+N` (`maxVisible` = tamaño del equipo). Planes desde BD. |
+| **Equipo grande** | `zona-estudio.html?demo=equipo-grande#progreso` | `/ubits-colaborador/aprendizaje/zona-estudio?demo=equipo-grande#progreso` | María con **25** personas a cargo (líder + subordinados + relleno desde `BD_MASTER_COLABORADORES`). ProfileList: **10** avatares visibles + chip **`+15`** con dropdown del resto. Planes desde BD. |
+| **Sin planes** | `zona-estudio.html?demo=sin-planes#progreso` | `/ubits-colaborador/aprendizaje/zona-estudio?demo=sin-planes#progreso` | Mismo equipo grande (25 / maxVisible 10). **Nadie** tiene planes vigentes: al seleccionar cualquier persona el hero muestra empty state (sin barra, sin KPIs, sin carrusel). Recordatorio y rankings siguen visibles. |
+
+**Reglas ProfileList (equipo grande / sin planes):**
+
+| Regla | Valor |
+|-------|--------|
+| Tamaño equipo | `25` (`PROGRESO_EQUIPO_GRANDE_SIZE`) |
+| Avatares visibles | `10` (`PROGRESO_PROFILE_LIST_MAX_VISIBLE`) |
+| Overflow | Chip `+N` → popover; clic en fila selecciona esa persona (mismo efecto que avatar visible) |
+
+Implementación: Vanilla `zona-estudio-progreso.js` · React `progresoDemo.ts` + `ZonaEstudioProgresoTab.tsx`.
+
+## 7.1.2 Empty state — sin planes asignados
+
+Cuando la persona seleccionada **no tiene planes `Vigente`** (caso natural en BD o demo `sin-planes`):
+
+| Elemento | Comportamiento |
+|----------|----------------|
+| Barra «Cumplimiento promedio» | **Oculta** |
+| Cards KPI | **Ocultas** |
+| Carrusel «Planes activos» | **Oculto** |
+| Nombre + ProfileList | Siguen visibles |
+| Recordatorio + rankings | Siguen visibles (no dependen de la selección) |
+
+| Campo | Copy / destino |
+|-------|----------------|
+| Ícono | `fa-book-open` |
+| Título | `Sin planes asignados` |
+| Descripción | `Contacta al responsable de recursos humanos de tu empresa para solicitar la asignación de un plan de formación. Mientras tanto, explora nuestro catálogo.` |
+| CTA primario | `Explorar catálogo` (`fa-search`) |
+| Destino CTA | Home Learn en modo browse — Vanilla `home-learn.html#buscar` · React `/ubits-colaborador/aprendizaje#buscar` |
+
+Montaje: `#zona-estudio-progreso-empty-planes` (oculta `#zona-estudio-progreso-hero-metrics`). Componente `loadEmptyState` / `EmptyState`.
 
 ## 7.2 Jerarquía visual
 
 | Bloque | Comportamiento al cambiar persona |
 |--------|-----------------------------------|
-| Hero unificado (`zona-estudio-progreso-hero`) | **Sí** — identidad, barra, KPIs y carrusel |
+| Hero unificado (`zona-estudio-progreso-hero`) | **Sí** — identidad; métricas o empty state |
 | Recordatorio de estudio (`zona-estudio-progreso-recordatorio-widget`) | **No** — widget fijo de líder |
 | Rankings (`zona-estudio-progreso-rankings`) | **No** — dos columnas fijas |
 
@@ -279,7 +321,7 @@ Un solo widget `.zona-estudio-progreso-hero` con:
 | Elemento | Detalle |
 |----------|---------|
 | Nombre | `#zona-estudio-progreso-hero-name` — nombre completo del colaborador seleccionado |
-| Profile list | `#zona-estudio-progreso-profile` — María primero + subordinados; clic cambia solo el hero |
+| Profile list | `#zona-estudio-progreso-profile` — María primero + equipo; clic (o overflow) cambia el hero. Caso normal: todos visibles. `equipo-grande` / `sin-planes`: maxVisible **10** + chip `+N` (§7.1.1) |
 
 #### A.2 Cumplimiento promedio
 
@@ -311,6 +353,7 @@ Cuatro stats cards; gap entre cards = `var(--gap-2xl)` (igual que cards del carr
 | Datos | Solo planes **`Vigente`** de la persona seleccionada |
 | Label progreso card | Contenidos: `{done}/{total} contenidos` · Competencias: minutos abreviados (`X hrs. X min. de X hrs. X min.`) |
 | Cierre | `Cierre: {Mes} {día}` desde `fechaFinIso` |
+| Sin planes | No se monta el carrusel; ver §7.1.2 empty state (reemplaza métricas completas) |
 
 #### Clic en card de plan
 
@@ -811,16 +854,29 @@ Si `conCertificacion === false` → `plantillaCertificadoId` y `plantillaCertifi
 | URL | Tab esperado |
 |-----|--------------|
 | `zona-estudio.html` | **Progreso** (tab por defecto → `#progreso`) |
-| `zona-estudio.html#progreso` | Progreso (vista líder) |
+| `zona-estudio.html#progreso` | Progreso (vista líder) — caso **normal** |
+| `zona-estudio.html?demo=equipo-grande#progreso` | Progreso — **25** personas, ProfileList 10 + `+N` |
+| `zona-estudio.html?demo=sin-planes#progreso` | Progreso — empty state sin planes (equipo grande) |
 | `zona-estudio.html#contenidos` | Plan de contenidos |
 | `zona-estudio.html#competencias` | Plan de competencias |
 | `zona-estudio.html#exclusivo` | Exclusivo para mi |
 | `zona-estudio.html#historial` | Historial y certificados |
 
+**React (equivalentes):**
+
+| URL | Escenario |
+|-----|-----------|
+| `/ubits-colaborador/aprendizaje/zona-estudio#progreso` | Normal |
+| `/ubits-colaborador/aprendizaje/zona-estudio?demo=equipo-grande#progreso` | Equipo grande |
+| `/ubits-colaborador/aprendizaje/zona-estudio?demo=sin-planes#progreso` | Sin planes |
+
 ### Checklist Progreso
 
 - [ ] Tab **Progreso** es la primera pestaña y la activa al entrar sin hash
 - [ ] Profile list cambia hero (nombre, barra, KPIs, carrusel) sin mover rankings ni recordatorio
+- [ ] `?demo=equipo-grande`: 10 avatares + chip `+15`; clic en overflow selecciona persona
+- [ ] `?demo=sin-planes`: empty state «Sin planes asignados» + CTA → Home Learn `#buscar`
+- [ ] CTA «Explorar catálogo» abre browse del buscador (lo más buscado / academias) sin necesidad de tipear y borrar
 - [ ] Clic en plan de María navega a tab contenidos/competencias con plan preseleccionado
 - [ ] Clic en plan de subordinado abre drawer read-only
 - [ ] Rankings desktop: split 50/50 (nombre \| tiempo) en Top de estudio y Ranking entre áreas
@@ -890,4 +946,4 @@ Si `conCertificacion === false` → `plantillaCertificadoId` y `plantillaCertifi
 
 ---
 
-*Última actualización: alineado con vanilla — 5 tabs (Progreso primero), proveedores en cards, alerta vencido con `ubits-alert__emphasis`, selector plan con finalizados/total, rankings responsive desktop 50/50 + mobile apilado, sin «(Tú)» ni badge «Tu área» (jul 2026).*
+*Última actualización: escenarios demo Progreso (`?demo=equipo-grande` / `sin-planes`), empty state sin planes + CTA catálogo `#buscar`, fix HeroSearch React (`ubits-hero-search` en variante default) — jul 2026.*

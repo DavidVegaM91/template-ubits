@@ -4,7 +4,8 @@
  * Una sola fuente de verdad para el markup; evita desincronización entre páginas.
  *
  * Footer: por defecto solo zona derecha (primary + secondary). Opcionalmente footerTertiary
- * para un botón terciario a la izquierda.
+ * para un botón terciario a la izquierda. Con showFooter: false no se renderiza el pie
+ * (aunque haya footerHtml) — caso oficial para listados / índices.
  *
  * Uso:
  *   openModal({
@@ -13,6 +14,7 @@
  *     bodyHtml: '<p>Contenido</p>',
  *     footerHtml: '<button class="ubits-button ubits-button--secondary ubits-button--md">Cancelar</button><button class="ubits-button ubits-button--primary ubits-button--md">Aceptar</button>',
  *     footerTertiary: { text: 'Eliminar', onClick: function() { } },  // opcional: botón a la izquierda
+ *     showFooter: true,  // false = modal sin pie
  *     size: 'sm',  // 'xs' | 'sm' | 'md' | 'lg' | null (default 560px)
  *     closeOnOverlayClick: true,
  *     onClose: function() { }
@@ -159,6 +161,7 @@
      * @param {string} options.title - Título del header (se escapa HTML).
      * @param {string} options.bodyHtml - HTML del cuerpo del modal.
      * @param {string} [options.footerHtml] - HTML del pie (botones a la derecha: secundario + primario). Opcional.
+     * @param {boolean} [options.showFooter=true] - Si false, no se renderiza el pie aunque haya footerHtml (modal sin footer).
      * @param {Object} [options.footerTertiary] - Botón terciario a la izquierda. { text: string, onClick: function }. Opcional.
      * @param {string} [options.size] - 'xs' | 'sm' | 'md' | 'lg'. Ancho del contenido.
      * @param {boolean} [options.closeOnOverlayClick=true] - Cerrar al clic fuera del contenido.
@@ -176,6 +179,7 @@
         var bodyHtml = options.bodyHtml != null ? options.bodyHtml : '';
         var footerHtml = options.footerHtml != null ? options.footerHtml : '';
         var footerTertiary = options.footerTertiary || null;
+        var showFooter = options.showFooter !== false;
         var size = options.size || '';
         var closeOnOverlayClick = options.closeOnOverlayClick !== false;
         var onClose = options.onClose || null;
@@ -193,7 +197,7 @@
         var contentIaClass = options.variant === 'ia' ? ' ubits-modal-content--ia' : '';
         var contentPromoClass = isPromo ? ' ubits-modal-content--promo' : '';
 
-        var         overlay = document.getElementById(overlayId);
+        var overlay = document.getElementById(overlayId);
         if (overlay) {
             if (overlay._ubitsModalPromoEscape) {
                 document.removeEventListener('keydown', overlay._ubitsModalPromoEscape);
@@ -230,7 +234,7 @@
                 '<div class="ubits-modal-content' + sizeClass + contentIaClass + '" onclick="event.stopPropagation();">' +
                 buildModalHeaderHtml(overlayId, title, options) +
                 '  <div class="ubits-modal-body">' + bodyHtml + '</div>' +
-                (footerHtml ? ('  <div class="ubits-modal-footer">' +
+                (showFooter && footerHtml ? ('  <div class="ubits-modal-footer">' +
                     '<div class="ubits-modal-footer__left">' +
                     (footerTertiary ? ('<button type="button" class="ubits-button ubits-button--tertiary ubits-button--md" id="' + overlayId + '-footer-tertiary"><span>' + escapeHtml(footerTertiary.text || '') + '</span></button>') : '') +
                     '</div>' +
@@ -265,7 +269,7 @@
             document.addEventListener('keydown', overlay._ubitsModalPromoEscape);
         }
 
-        if (!isPromo && footerTertiary && footerTertiary.onClick && typeof footerTertiary.onClick === 'function') {
+        if (!isPromo && showFooter && footerTertiary && footerTertiary.onClick && typeof footerTertiary.onClick === 'function') {
             var tertiaryBtn = overlay.querySelector('#' + overlayId + '-footer-tertiary');
             if (tertiaryBtn) tertiaryBtn.addEventListener('click', footerTertiary.onClick);
         }
@@ -353,6 +357,7 @@
         var bodyHtml = options.bodyHtml != null ? options.bodyHtml : '';
         var footerHtml = options.footerHtml != null ? options.footerHtml : '';
         var footerTertiary = options.footerTertiary || null;
+        var showFooter = options.showFooter !== false;
         var size = options.size || '';
         var contentId = options.contentId || '';
         var titleId = options.titleId || '';
@@ -426,7 +431,7 @@
             '<div class="ubits-modal-content' + sizeClass + contentIaClass + contentClassAttr + '"' + contentIdAttr + ' onclick="event.stopPropagation();">' +
             headerInner +
             '<div class="ubits-modal-body' + bodyClassAttr + '">' + bodyHtml + '</div>' +
-            (footerHtml ? ('<div class="ubits-modal-footer' + footerClassAttr + '">' +
+            (showFooter && footerHtml ? ('<div class="ubits-modal-footer' + footerClassAttr + '">' +
             '<div class="ubits-modal-footer__left">' +
             (footerTertiary ? ('<button type="button" class="ubits-button ubits-button--tertiary ubits-button--md" id="' + overlayId + '-footer-tertiary"><span>' + escapeHtml(footerTertiary.text || '') + '</span></button>') : '') +
             '</div>' +

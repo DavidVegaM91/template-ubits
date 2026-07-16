@@ -1,17 +1,47 @@
 /**
  * IndiceExpEstudio — stack de SeccionExpEstudio (gap como Creator).
- * Depende: seccion-exp-estudio.css, paginas-exp-estudio.css, feedback-exp-estudio.css
+ * Depende: seccion-exp-estudio.css, paginas-exp-estudio.css, feedback-exp-estudio.css, modal.css
  * Sin card envolvente ni bg-3.
+ * Desktop: índice inline. ≤1023px: botón «Ver índice» → modal sin footer.
  */
 
 .ubits-indice-exp {
   box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  padding: 0;
+  background: transparent;
+  border: none;
+}
+
+.ubits-indice-exp__stack {
   display: flex;
   flex-direction: column;
   width: 100%;
   min-width: 0;
-  padding: 0;
   gap: var(--gap-md);
-  background: transparent;
-  border: none;
+}
+
+.ubits-indice-exp__desktop {
+  display: block;
+  width: 100%;
+}
+
+.ubits-indice-exp__mobile {
+  display: none;
+  width: 100%;
+}
+
+.ubits-indice-exp__trigger {
+  width: 100%;
+}
+
+@media (max-width: 1023px) {
+  .ubits-indice-exp__desktop {
+    display: none;
+  }
+
+  .ubits-indice-exp__mobile {
+    display: block;
+  }
 }

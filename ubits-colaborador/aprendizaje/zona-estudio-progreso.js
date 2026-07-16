@@ -1,5 +1,10 @@
 /**
  * Zona de estudio — tab Progreso (vista líder: María + equipo).
+ *
+ * Escenarios demo vía `?demo=`:
+ * - (sin param) / normal — equipo real (~7) y planes de BD
+ * - equipo-grande — 25 personas; ProfileList maxVisible 10 (+N dropdown)
+ * - sin-planes — mismo equipo grande; nadie tiene planes vigentes (empty state en hero)
  */
 (function () {
     'use strict';
@@ -15,10 +20,31 @@
     var MAIL_PREVIEW_DELAY_MS = 3000;
     var mailPreviewTimer = null;
 
+    var PROGRESO_PROFILE_LIST_MAX_VISIBLE = 10;
+    var PROGRESO_EQUIPO_GRANDE_SIZE = 25;
+    var PROGRESO_HOME_BUSCAR = 'home-learn.html#buscar';
+    var PROGRESO_EMPTY_TITLE = 'Sin planes asignados';
+    var PROGRESO_EMPTY_DESC =
+        'Contacta al responsable de recursos humanos de tu empresa para solicitar la asignación de un plan de formación. Mientras tanto, explora nuestro catálogo.';
+    var PROGRESO_EMPTY_BTN = 'Explorar catálogo';
+
+    function parseProgresoDemoScenario() {
+        try {
+            var params = new URLSearchParams(window.location.search || '');
+            var v = params.get('demo');
+            if (v === 'equipo-grande' || v === 'sin-planes') return v;
+        } catch (e) { /* noop */ }
+        return 'normal';
+    }
+
+    var progresoDemoScenario = parseProgresoDemoScenario();
+    var progresoForceEmptyPlanes = progresoDemoScenario === 'sin-planes';
+
     var progresoState = {
         selectedColaboradorId: LEADER_ID,
         rankingEquipoScope: 'equipo',
         profileReady: false,
+        overflowSelectReady: false,
         recordatorioReady: false,
         recordatorioEventsBound: false,
         rankingScopeReady: false,
@@ -152,10 +178,39 @@
                 esLider: false
             });
         });
-        return out;
+
+        if (progresoDemoScenario === 'normal') return out;
+
+        var seen = {};
+        out.forEach(function (p) { seen[p.id] = true; });
+        var master = window.BD_MASTER_COLABORADORES;
+        var list = (master && master.colaboradores) ? master.colaboradores : [];
+        for (var i = 0; i < list.length && out.length < PROGRESO_EQUIPO_GRANDE_SIZE; i++) {
+            var c = list[i];
+            if (!c || c.esGerenteGeneral) continue;
+            var id = String(c.id);
+            if (seen[id]) continue;
+            seen[id] = true;
+            out.push({
+                id: id,
+                nombre: (c.nombre || '').trim() || ('Colaborador ' + id),
+                avatar: c.avatar || null,
+                area: (c.area || LEADER_AREA).trim(),
+                esLider: id === LEADER_ID
+            });
+        }
+        return out.slice(0, PROGRESO_EQUIPO_GRANDE_SIZE);
+    }
+
+    function progresoProfileListMaxVisible(equipoLength) {
+        if (progresoDemoScenario === 'equipo-grande' || progresoDemoScenario === 'sin-planes') {
+            return Math.min(PROGRESO_PROFILE_LIST_MAX_VISIBLE, equipoLength);
+        }
+        return equipoLength;
     }
 
     function getPlanesVigentesParaColaborador(colaboradorId) {
+        if (progresoForceEmptyPlanes) return [];
         var pf = getPf();
         if (!pf || typeof pf.getPlanesParaColaborador !== 'function') return [];
         return pf.getPlanesParaColaborador(colaboradorId, { estados: ['Vigente'] });
@@ -309,13 +364,13 @@
             return;
         }
         var listForRender = personas.map(function (p) {
-            return { name: p.nombre, avatar: p.avatar };
+            return { name: p.nombre, avatar: p.avatar, id: p.id };
         });
         var html = '';
         if (typeof window.renderProfileList === 'function') {
             html = window.renderProfileList(listForRender, {
                 size: 'sm',
-                maxVisible: listForRender.length,
+                maxVisible: progresoProfileListMaxVisible(listForRender.length),
                 selectable: true
             });
         }
@@ -333,10 +388,30 @@
             progresoState.profileReady = true;
             wrap.addEventListener('click', function (e) {
                 var avatar = e.target.closest('.ubits-profile-list__avatar');
-                if (!avatar) return;
+                if (!avatar || !wrap.contains(avatar)) return;
                 var cid = avatar.getAttribute('data-colaborador-id');
                 if (!cid || cid === progresoState.selectedColaboradorId) return;
                 progresoState.selectedColaboradorId = cid;
+                renderNivel1();
+                renderRankingEquipo();
+                if (typeof initTooltip === 'function') {
+                    initTooltip('#zona-estudio-panel-progreso [data-tooltip]');
+                }
+            });
+        }
+        if (!progresoState.overflowSelectReady) {
+            progresoState.overflowSelectReady = true;
+            document.addEventListener('click', function (e) {
+                var item = e.target.closest('[data-profile-list-overflow-item-key]');
+                if (!item) return;
+                var panel = document.getElementById('zona-estudio-panel-progreso');
+                if (!panel || panel.hasAttribute('hidden')) return;
+                var cid = item.getAttribute('data-profile-list-overflow-item-key');
+                if (!cid || cid === progresoState.selectedColaboradorId) return;
+                progresoState.selectedColaboradorId = cid;
+                if (typeof closeProfileListOverflowPopover === 'function') {
+                    closeProfileListOverflowPopover();
+                }
                 renderNivel1();
                 renderRankingEquipo();
                 if (typeof initTooltip === 'function') {
@@ -454,10 +529,7 @@
             return planToCarouselSlide(p, progresoState.selectedColaboradorId);
         });
         mount.innerHTML = '';
-        if (!slides.length) {
-            mount.innerHTML = '<p class="ubits-body-sm-regular zona-estudio-progreso-empty">No hay planes vigentes asignados.</p>';
-            return;
-        }
+        if (!slides.length) return;
         createCarouselContents({
             containerId: 'zona-estudio-progreso-planes-carousel',
             type: 'study-zone',
@@ -467,7 +539,60 @@
         });
     }
 
+    function goExplorarCatalogo() {
+        window.location.href = PROGRESO_HOME_BUSCAR;
+    }
+
+    function renderHeroMetricsOrEmpty() {
+        var metrics = document.getElementById('zona-estudio-progreso-hero-metrics');
+        var emptyHost = document.getElementById('zona-estudio-progreso-empty-planes');
+        var planes = getPlanesVigentesParaColaborador(progresoState.selectedColaboradorId);
+        var showEmpty = planes.length === 0;
+
+        if (showEmpty) {
+            if (metrics) metrics.style.display = 'none';
+            if (emptyHost) {
+                emptyHost.style.display = 'flex';
+                if (typeof loadEmptyState === 'function') {
+                    loadEmptyState('zona-estudio-progreso-empty-planes', {
+                        icon: 'fa-book-open',
+                        iconSize: 'lg',
+                        title: PROGRESO_EMPTY_TITLE,
+                        description: PROGRESO_EMPTY_DESC,
+                        buttons: {
+                            primary: {
+                                text: PROGRESO_EMPTY_BTN,
+                                icon: 'fa-search',
+                                onClick: goExplorarCatalogo
+                            }
+                        }
+                    });
+                    setTimeout(function () {
+                        var btn = emptyHost.querySelector('.ubits-button--primary');
+                        if (btn) {
+                            btn.onclick = function (e) {
+                                e.preventDefault();
+                                goExplorarCatalogo();
+                            };
+                        }
+                    }, 50);
+                }
+            }
+            return;
+        }
+
+        if (metrics) metrics.style.display = '';
+        if (emptyHost) {
+            emptyHost.style.display = 'none';
+            emptyHost.innerHTML = '';
+        }
+        renderProgresoGeneral();
+        renderKpis();
+        renderPlanesCarousel();
+    }
+
     function getRankingAreas() {
+        if (progresoForceEmptyPlanes) return [];
         var pf = getPf();
         if (!pf || typeof pf.getPlanesVisiblesCreator !== 'function') return [];
         var planes = pf.getPlanesVisiblesCreator().filter(function (p) {
@@ -785,9 +910,7 @@
     function renderNivel1() {
         renderProfileList();
         renderHeroIdentity();
-        renderProgresoGeneral();
-        renderKpis();
-        renderPlanesCarousel();
+        renderHeroMetricsOrEmpty();
     }
 
     function renderNivel2y3() {
