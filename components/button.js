@@ -52,6 +52,7 @@
  * 
  * MODIFICADORES:
  * - ubits-button--icon-only (solo icono, sin texto)
+ * - ubits-button--pill (forma píldora, border-radius-full)
  * 
  * ESTRUCTURA HTML CORRECTA:
  * 1. Button con icono y texto: <i> + <span>

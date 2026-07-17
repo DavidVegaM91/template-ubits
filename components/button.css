@@ -99,6 +99,15 @@
     pointer-events: none;
 }
 
+/* Forma píldora — border-radius-full */
+.ubits-button--pill {
+    border-radius: var(--border-radius-full);
+}
+
+.ubits-button--pill:disabled::before {
+    border-radius: var(--border-radius-full);
+}
+
 /* ========================================
    BUTTON VARIANTS
    ======================================== */

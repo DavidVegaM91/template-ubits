@@ -162,6 +162,15 @@
                                     <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
                                 </label>
                             </div>
+
+                            <!-- Switch para Pill -->
+                            <div style="display: flex; align-items: center; gap: 8px; margin-left: 16px;">
+                                <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Pill:</span>
+                                <label class="ubits-switch ubits-switch--md">
+                                    <input type="checkbox" class="ubits-switch__input" id="pill-toggle" role="switch" onchange="togglePill()">
+                                    <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
+                                </label>
+                            </div>
                             
                             <!-- Switch para Badge + selector puntito / número -->
                             <div style="display: flex; align-items: center; gap: 8px; margin-left: 16px;">
@@ -454,6 +463,11 @@
         function toggleIconOnly() {
             updatePreview(currentPreviewOption);
         }
+
+        // Función para toggle de pill (border-radius-full)
+        function togglePill() {
+            updatePreview(currentPreviewOption);
+        }
         
         // Función para toggle de badge: muestra/oculta selector puntito vs número y actualiza preview
         function toggleBadge() {
@@ -477,6 +491,8 @@
             const iconHTML = showIcons ? `<i class="far fa-${icon}"></i>` : '';
             const disabledAttr = isDisabled ? ' disabled' : '';
             const iconOnlyClass = isIconOnly ? ` ubits-button--icon-only` : '';
+            const isPill = document.getElementById('pill-toggle')?.checked ?? false;
+            const pillClass = isPill ? ' ubits-button--pill' : '';
             const textHTML = isIconOnly ? '' : `<span>${text}</span>`;
             const tokenClass = tokenCost !== null && !isIconOnly ? ` ubits-button--with-token-cost` : '';
             const tokenHTML = tokenCost !== null && !isIconOnly
@@ -493,7 +509,7 @@
                     badgeHTML = `<span class="${attnBase}${circleClass}">${s}</span>`;
                 }
             }
-            return `<button class="ubits-button ubits-button--${variant} ubits-button--${size}${iconOnlyClass}${tokenClass}"${disabledAttr}>
+            return `<button class="ubits-button ubits-button--${variant} ubits-button--${size}${iconOnlyClass}${pillClass}${tokenClass}"${disabledAttr}>
                 ${iconHTML}
                 ${tokenHTML}
                 ${textHTML}
