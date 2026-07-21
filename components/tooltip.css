@@ -14,14 +14,88 @@
     min-width: 0;
     pointer-events: none;
     opacity: 0;
-    transition: opacity 0.2s ease;
+    /* Exit: fade corto. Enter: snap settle (keyframes al añadir --visible). */
+    transition: opacity 0.12s ease;
     overflow: visible;
     filter: drop-shadow(0 0 2px var(--ubits-tooltip-shadow-ambient))
         drop-shadow(0 4px 8px var(--ubits-tooltip-shadow-key));
 }
 
-.ubits-tooltip.ubits-tooltip--visible {
-    opacity: 1;
+/* Snap settle — entra con micro bounce hacia el trigger (según posición) */
+.ubits-tooltip.ubits-tooltip--top.ubits-tooltip--visible {
+    animation: ubits-tooltip-snap-top 320ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.ubits-tooltip.ubits-tooltip--bottom.ubits-tooltip--visible {
+    animation: ubits-tooltip-snap-bottom 320ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.ubits-tooltip.ubits-tooltip--left.ubits-tooltip--visible {
+    animation: ubits-tooltip-snap-left 320ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.ubits-tooltip.ubits-tooltip--right.ubits-tooltip--visible {
+    animation: ubits-tooltip-snap-right 320ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes ubits-tooltip-snap-top {
+    0% {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+    55% {
+        opacity: 1;
+        transform: translateY(-2px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes ubits-tooltip-snap-bottom {
+    0% {
+        opacity: 0;
+        transform: translateY(-8px);
+    }
+    55% {
+        opacity: 1;
+        transform: translateY(2px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes ubits-tooltip-snap-left {
+    0% {
+        opacity: 0;
+        transform: translateX(8px);
+    }
+    55% {
+        opacity: 1;
+        transform: translateX(-2px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes ubits-tooltip-snap-right {
+    0% {
+        opacity: 0;
+        transform: translateX(-8px);
+    }
+    55% {
+        opacity: 1;
+        transform: translateX(2px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateX(0);
+    }
 }
 
 .ubits-tooltip__content {

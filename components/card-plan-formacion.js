@@ -35,6 +35,14 @@ function resolveCardPlanFormacionStatus(plan) {
     return 'default';
 }
 
+/** Label visible «Tipo: Contenidos» | «Tipo: Competencias» según planTipo. */
+function formatCardPlanFormacionTipoLabel(planTipo) {
+    var t = String(planTipo || '').toLowerCase().trim();
+    if (t === 'competencias') return 'Tipo: Competencias';
+    if (t === 'contenidos') return 'Tipo: Contenidos';
+    return '';
+}
+
 function renderCardPlanFormacion(plan, options) {
     plan = plan || {};
     options = options || {};
@@ -67,6 +75,7 @@ function renderCardPlanFormacion(plan, options) {
     var cierre = plan.cierre || plan.deadline || '';
     var title = plan.title || '';
     var progressLabel = plan.progressLabel || '';
+    var tipoLabel = formatCardPlanFormacionTipoLabel(plan.planTipo);
     var pct = status === 'default' ? 0 : value;
     var dataAttrs = '';
     if (plan.planId) {
@@ -81,11 +90,19 @@ function renderCardPlanFormacion(plan, options) {
         ? ' card-plan-formacion--completed'
         : (status === 'progress' ? ' card-plan-formacion--progress' : ' card-plan-formacion--default');
 
+    var metaRow =
+        '<div class="card-plan-formacion__meta">' +
+            (tipoLabel
+                ? '<p class="ubits-body-sm-regular card-plan-formacion__tipo">' + tipoLabel + '</p>'
+                : '<span class="card-plan-formacion__tipo-spacer" aria-hidden="true"></span>') +
+            '<p class="ubits-body-sm-regular card-plan-formacion__cierre">' + cierre + '</p>' +
+        '</div>';
+
     return (
         '<article class="card-plan-formacion' + statusClass + extraClass + '" tabindex="' + tabIndex + '"' +
             ' data-status="' + status + '"' + dataAttrs + '>' +
             '<div class="card-plan-formacion__head">' +
-                '<p class="ubits-body-sm-regular card-plan-formacion__cierre">' + cierre + '</p>' +
+                metaRow +
                 '<p class="ubits-body-md-semibold card-plan-formacion__title">' + title + '</p>' +
             '</div>' +
             '<div class="card-plan-formacion__progress">' +
@@ -114,4 +131,5 @@ function loadCardPlanFormacion(containerId, plans) {
 if (typeof window !== 'undefined') {
     window.renderCardPlanFormacion = renderCardPlanFormacion;
     window.loadCardPlanFormacion = loadCardPlanFormacion;
+    window.formatCardPlanFormacionTipoLabel = formatCardPlanFormacionTipoLabel;
 }

@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="../../images/playground-favicon.svg">
+    <title>Notifications menu | UBITS Playground</title>
+
+    <link rel="stylesheet" href="../../general-styles/ubits-colors.css">
+    <link rel="stylesheet" href="../../general-styles/styles.css">
+    <link rel="stylesheet" href="../../general-styles/fontawesome-icons.css">
+    <link rel="stylesheet" href="../../general-styles/ubits-typography.css">
+    <link rel="stylesheet" href="../../general-styles/ubits-spacing-tokens.css">
+    <link rel="stylesheet" href="../../components/sub-nav.css">
+    <link rel="stylesheet" href="../../components/sidebar.css">
+    <link rel="stylesheet" href="../../docs/docs-sidebar.css">
+    <link rel="stylesheet" href="../../docs/docstyles.css">
+    <link rel="stylesheet" href="../../components/button.css">
+    <link rel="stylesheet" href="../../components/attention-badge.css">
+    <link rel="stylesheet" href="../../components/tooltip.css">
+    <link rel="stylesheet" href="../../components/notifications-menu.css">
+</head>
+<body class="componentes-page" data-theme="light">
+    <div class="dashboard-container">
+        <div class="tooltip" id="tooltip"></div>
+
+        <aside id="sidebar-container"></aside>
+
+        <main class="main-content">
+            <div id="subnav-container"></div>
+            <div class="content-area">
+                <div class="content-sections">
+                    <section class="section-single">
+                        <div class="widget widget--transparent">
+                            <div class="header-product">
+                                <h1 class="ubits-heading-h1">Notifications menu</h1>
+                                <p class="ubits-body-md-regular" style="color: var(--ubits-fg-1-medium); margin: var(--gap-sm) 0 0;">
+                                    Panel de notificaciones del header: campana con puntito de atención y lista de avisos (título, descripción y fecha). No es una variante del dropdown-menu.
+                                </p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="section-single">
+                        <div class="widget">
+                            <h2 class="ubits-heading-h2" style="margin: 0 0 var(--gap-md);">Vista previa</h2>
+                            <div id="notifications-menu-preview" style="display: flex; justify-content: flex-end; padding: var(--padding-xl);"></div>
+                        </div>
+                    </section>
+
+                    <section class="section-single">
+                        <div class="widget">
+                            <h2 class="ubits-heading-h2" style="margin: 0 0 var(--gap-md);">Uso</h2>
+                            <pre class="ubits-body-sm-regular" style="margin: 0; white-space: pre-wrap;"><code>createNotificationsMenu({
+  items: [
+    {
+      id: '1',
+      title: 'Evaluaciones vencidas',
+      description: '27 colaboradores no han completado su evaluación.',
+      date: 'Hoy, 9:12 a.m.',
+      onClick: function () {}
+    }
+  ],
+  hasUnread: true
+})</code></pre>
+                            <p class="ubits-body-sm-regular" style="margin: var(--gap-md) 0 0; color: var(--ubits-fg-1-medium);">
+                                Importa <code>notifications-menu.css</code>, <code>notifications-menu.js</code>, <code>button.css</code> y <code>attention-badge.css</code>.
+                            </p>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="../../components/sidebar.js"></script>
+    <script src="../../components/sub-nav.js"></script>
+    <script src="../../docs/docs-sidebar.js"></script>
+    <script src="../../components/button.js"></script>
+    <script src="../../components/tooltip.js"></script>
+    <script src="../../components/notifications-menu.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            if (typeof loadSidebar === 'function') loadSidebar('documentacion', 'componentes');
+            if (typeof loadSubNav === 'function') loadSubNav(document.getElementById('subnav-container'), 'documentacion');
+            if (typeof loadDocsSidebar === 'function') loadDocsSidebar('notifications-menu');
+            if (typeof initTooltip === 'function') initTooltip('[data-tooltip]');
+
+            var mount = document.getElementById('notifications-menu-preview');
+            if (mount && typeof createNotificationsMenu === 'function') {
+                mount.appendChild(createNotificationsMenu({
+                    hasUnread: true,
+                    items: [
+                        {
+                            id: 'eval-vencidas',
+                            title: 'Evaluaciones vencidas',
+                            description: '27 colaboradores no han completado su evaluación de desempeño.',
+                            date: 'Hoy, 9:12 a.m.'
+                        },
+                        {
+                            id: 'reporte',
+                            title: 'Nuevo reporte disponible',
+                            description: 'El reporte mensual de formación de junio ya está listo para descargar.',
+                            date: 'Ayer, 4:30 p.m.'
+                        },
+                        {
+                            id: 'onboarding',
+                            title: 'Onboarding completado',
+                            description: '12 nuevos colaboradores finalizaron su ruta de onboarding.',
+                            date: '14 jul, 11:05 a.m.'
+                        }
+                    ]
+                }));
+            }
+        });
+    </script>
+</body>
+</html>

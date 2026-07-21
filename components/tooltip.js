@@ -30,7 +30,7 @@
  * showTooltip(document.getElementById('mi-boton'), 'Texto del tooltip', {
  *     position: 'top', // 'top', 'bottom', 'left', 'right'
  *     align: 'center', // 'left', 'center', 'right' (para top/bottom) o 'top', 'center', 'bottom' (para left/right)
- *     delay: 200, // milisegundos antes de mostrar
+ *     delay: 0, // milisegundos antes de mostrar (0 = inmediato)
  *     duration: 0 // milisegundos antes de ocultar (0 = persistente)
  * });
  * </script>
@@ -227,7 +227,7 @@
      * @param {Object} options - Opciones de configuración
      * @param {string} options.position - Posición preferida: 'top', 'bottom', 'left', 'right'
      * @param {string} options.align - Alineación: 'left', 'center', 'right' (para top/bottom) o 'top', 'center', 'bottom' (para left/right)
-     * @param {number} options.delay - Delay antes de mostrar (ms, default: 200)
+     * @param {number} options.delay - Delay antes de mostrar (ms, default: 0)
      * @param {number} options.duration - Duración antes de ocultar (ms, 0 = persistente, default: 0)
      * @param {boolean} options.noArrow - Ocultar la flecha/cola (default: false)
      * @param {boolean} options.normal - Usar variación normal (bg-1 y fg-1-high sin modificadores) (default: false)
@@ -243,7 +243,7 @@
         const config = {
             position: options.position || 'top',
             align: options.align || 'center',
-            delay: options.delay !== undefined ? options.delay : 200,
+            delay: options.delay !== undefined ? options.delay : 0,
             duration: options.duration !== undefined ? options.duration : 0,
             noArrow: options.noArrow || false,
             normal: options.normal || false,
@@ -293,14 +293,18 @@
         tooltip.style.top = position.top + 'px';
         tooltip.style.left = position.left + 'px';
 
-        // Mostrar con delay
+        // Mostrar: snap settle necesita un frame sin --visible; con delay>0 el timeout ya lo garantiza
         let showTimeout;
         if (config.delay > 0) {
             showTimeout = setTimeout(() => {
                 tooltip.classList.add('ubits-tooltip--visible');
             }, config.delay);
         } else {
-            tooltip.classList.add('ubits-tooltip--visible');
+            requestAnimationFrame(() => {
+                requestAnimationFrame(() => {
+                    if (tooltip.isConnected) tooltip.classList.add('ubits-tooltip--visible');
+                });
+            });
         }
 
         // Ocultar después de duration si está configurado
@@ -391,7 +395,7 @@
      *
      * Atributos data opcionales:
      * - data-tooltip: texto del tooltip (puede cambiarse en DOM para texto dinámico)
-     * - data-tooltip-delay: ms antes de mostrar (default 200). Usar "0" para inmediato (antes fallaba por bug de parseo).
+     * - data-tooltip-delay: ms antes de mostrar (default 0 = inmediato).
      * - data-tooltip-tap-toggle: sin hover primario (hover:none) o puntero táctil grueso (pointer:coarse), el clic alterna el tooltip; tap fuera cierra.
      * - data-tooltip-position, data-tooltip-align: posición y alineación
      * - data-tooltip-hide-on-click: "true" (default) oculta el tooltip al hacer mousedown en el elemento; "false" no lo oculta (útil si el clic no abre menús/acciones)
@@ -417,7 +421,7 @@
 
             const position = element.getAttribute('data-tooltip-position') || 'top';
             const align = element.getAttribute('data-tooltip-align') || 'center';
-            const delay = parseTooltipDelayMs(element, 200);
+            const delay = parseTooltipDelayMs(element, 0);
             const duration = parseInt(element.getAttribute('data-tooltip-duration'), 10) || 0;
             const noArrow = element.hasAttribute('data-tooltip-no-arrow');
             const normal = element.hasAttribute('data-tooltip-normal');
@@ -560,7 +564,7 @@
 showTooltip(element, 'Texto del tooltip', {
     position: 'top',    // 'top', 'bottom', 'left', 'right'
     align: 'center',    // 'left', 'center', 'right' (top/bottom) o 'top', 'center', 'bottom' (left/right)
-    delay: 200,         // ms antes de mostrar
+    delay: 0,           // ms antes de mostrar (0 = inmediato)
     duration: 0,        // ms antes de ocultar (0 = persistente)
     noArrow: false,     // true para ocultar la flecha/cola
     normal: false       // true para variación normal (bg-1 y fg-1-high sin modificadores)

@@ -370,7 +370,7 @@
         var tagHtml = '<span class="ubits-status-tag ubits-status-tag--' + tipo + ' ubits-status-tag--sm"><span class="ubits-status-tag__text">' + escapeHtml(label) + '</span></span>';
         var accionesBtn = '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only js-a360-row-acciones-btn" ' +
             'data-id="' + escapeHtml(String(row.id)) + '" data-estado="' + escapeHtml(estadoCalc) + '" ' +
-            'aria-label="Acciones" data-tooltip="Acciones" data-tooltip-delay="500">' +
+            'aria-label="Acciones" data-tooltip="Acciones">' +
             '<i class="far fa-ellipsis-vertical"></i></button>';
         return '<td data-col="nombre"><span class="ubits-body-sm-regular">' + escapeHtml(row.nombre) + '</span></td>' +
             '<td data-col="fecha-inicio" data-date="' + escapeHtml(row.fechaInicio) + '"><span class="ubits-body-sm-regular">' + escapeHtml(formatDate(row.fechaInicio)) + '</span></td>' +
@@ -621,7 +621,7 @@
                     var btn = document.createElement('button');
                     btn.type    = 'button';
                     btn.id      = 'a360-btn-resultados-generales';
-                    btn.className = 'ubits-button ubits-button--secondary ubits-button--md';
+                    btn.className = 'ubits-button ubits-button--secondary ubits-button--sm';
                     btn.innerHTML = '<i class="far fa-chart-line-up"></i><span>Resultados generales</span>';
                     if (anchorEl) {
                         anchorEl.insertAdjacentElement('afterend', btn);

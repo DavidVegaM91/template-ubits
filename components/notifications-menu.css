@@ -1,0 +1,78 @@
+/**
+ * UBITS Notifications Menu
+ * Panel de notificaciones del header (campana + lista título/descripción/fecha).
+ * No es una variante del dropdown-menu: es un feed de avisos.
+ */
+
+.ubits-notifications-menu {
+  position: relative;
+  display: inline-flex;
+  flex-shrink: 0;
+}
+
+.ubits-notifications-menu__panel {
+  position: absolute;
+  top: calc(100% + var(--gap-sm));
+  right: 0;
+  width: var(--space-72, 288px);
+  max-height: calc(var(--space-80, 320px) + var(--space-5, 20px));
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  background: var(--ubits-bg-1, var(--color-bg-1));
+  border: 1px solid var(--ubits-border-1, var(--color-border-1));
+  border-radius: var(--border-radius-md);
+  box-shadow: var(--ubits-elevation-overlay, var(--color-elevation-overlay));
+  padding: var(--padding-sm);
+  z-index: 30;
+  box-sizing: border-box;
+  display: none;
+}
+
+.ubits-notifications-menu__panel.is-open {
+  display: block;
+}
+
+.ubits-notifications-menu__item {
+  display: block;
+  width: 100%;
+  border: none;
+  background: transparent;
+  text-align: left;
+  padding: var(--padding-sm) var(--padding-md);
+  border-radius: var(--border-radius-sm);
+  cursor: pointer;
+  font-family: inherit;
+  box-sizing: border-box;
+}
+
+.ubits-notifications-menu__item + .ubits-notifications-menu__item {
+  margin-top: var(--gap-xs);
+}
+
+.ubits-notifications-menu__item:hover {
+  background: var(--ubits-bg-2, var(--color-bg-2));
+}
+
+.ubits-notifications-menu__title {
+  display: block;
+  color: var(--ubits-fg-1-high, var(--color-fg-1-high));
+}
+
+.ubits-notifications-menu__desc {
+  display: block;
+  margin-top: var(--gap-xs);
+  color: var(--ubits-fg-1-medium, var(--color-fg-1-medium));
+  line-height: 1.4;
+}
+
+.ubits-notifications-menu__date {
+  display: block;
+  margin-top: var(--gap-xs);
+  color: var(--ubits-fg-1-low, var(--color-fg-1-low));
+}
+
+.ubits-notifications-menu__empty {
+  padding: var(--padding-md);
+  text-align: center;
+  color: var(--ubits-fg-1-medium, var(--color-fg-1-medium));
+}

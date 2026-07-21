@@ -23,7 +23,7 @@
     var PROGRESO_PROFILE_LIST_MAX_VISIBLE = 10;
     var PROGRESO_EQUIPO_GRANDE_SIZE = 25;
     var PROGRESO_HOME_BUSCAR = 'home-learn.html#buscar';
-    var PROGRESO_EMPTY_TITLE = 'Sin planes asignados';
+    var PROGRESO_EMPTY_TITLE = 'Sin planes vigentes';
     var PROGRESO_EMPTY_DESC =
         'Contacta al responsable de recursos humanos de tu empresa para solicitar la asignación de un plan de formación. Mientras tanto, explora nuestro catálogo.';
     var PROGRESO_EMPTY_BTN = 'Explorar catálogo';
@@ -480,7 +480,7 @@
         var barEl = document.getElementById('zona-estudio-progreso-general-bar');
         var labelEl = document.getElementById('zona-estudio-progreso-general-label');
         if (labelEl) {
-            labelEl.textContent = 'Cumplimiento promedio';
+            labelEl.textContent = 'Cumplimiento promedio de los planes vigentes';
         }
         if (pctEl) pctEl.textContent = meta.pct + ' %';
         if (barEl && typeof progressBarHtml === 'function') {
@@ -489,7 +489,7 @@
                 size: 'lg',
                 rounded: true,
                 track: 'subtle',
-                ariaLabel: 'Cumplimiento promedio en planes vigentes'
+                ariaLabel: 'Cumplimiento promedio de los planes vigentes'
             });
         }
     }
@@ -578,7 +578,7 @@
         createCarouselContents({
             containerId: 'zona-estudio-progreso-planes-carousel',
             type: 'study-zone',
-            sectionTitle: 'Planes activos',
+            sectionTitle: 'Planes vigentes',
             slides: slides,
             onPlanClick: onPlanCardClick
         });

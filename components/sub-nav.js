@@ -382,6 +382,7 @@ const PAGE_TO_TAB = {
     'ia-panel.html': 'section3',
     'alert.html': 'section3',
     'attention-badge.html': 'section3',
+    'notifications-menu.html': 'section3',
     'avatar.html': 'section3',
     'badge-tag.html': 'section3',
     'button.html': 'section3',

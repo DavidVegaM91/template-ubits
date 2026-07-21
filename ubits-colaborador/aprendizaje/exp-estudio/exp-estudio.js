@@ -1440,11 +1440,14 @@
   }
 
   function evalPrimaryLabel() {
-    if (session.evalFase === 'retomar') return 'Responder la evaluación';
+    if (session.evalFase === 'retomar') return 'Continuar';
     if (session.evalFase === 'resultado') {
       if (session.evalResultadoKind === 'aprobado') return 'Continuar';
       if (session.evalResultadoKind === 'limite') return 'Ir al inicio';
-      return 'Reintentar';
+      if (session.evalResultadoKind === 'reprobado' || session.evalResultadoKind === 'tiempo') {
+        return 'Reintentar';
+      }
+      return 'Continuar';
     }
     return 'Continuar';
   }

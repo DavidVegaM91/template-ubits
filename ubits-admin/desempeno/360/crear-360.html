@@ -249,7 +249,7 @@
                             <span class="ubits-switch__track"><span class="ubits-switch__thumb"></span></span>
                         </label>
                         <span class="ubits-body-sm-regular">Permitir vista de resultados a los líderes</span>
-                        <i class="far fa-circle-info res360-info-icon" data-tooltip="Los líderes podrán ver los resultados de sus equipos." data-tooltip-delay="600"></i>
+                        <i class="far fa-circle-info res360-info-icon" data-tooltip="Los líderes podrán ver los resultados de sus equipos."></i>
                     </label>
                     <label class="res360-toggle-row">
                         <label class="ubits-switch ubits-switch--md">
@@ -257,7 +257,7 @@
                             <span class="ubits-switch__track"><span class="ubits-switch__thumb"></span></span>
                         </label>
                         <span class="ubits-body-sm-regular">Permitir respuesta de "No sabe / No responde"</span>
-                        <i class="far fa-circle-info res360-info-icon" data-tooltip="Habilita una opción adicional para que el evaluador indique que no tiene información suficiente." data-tooltip-delay="600"></i>
+                        <i class="far fa-circle-info res360-info-icon" data-tooltip="Habilita una opción adicional para que el evaluador indique que no tiene información suficiente."></i>
                     </label>
                     <label class="res360-toggle-row">
                         <label class="ubits-switch ubits-switch--md">
@@ -265,7 +265,7 @@
                             <span class="ubits-switch__track"><span class="ubits-switch__thumb"></span></span>
                         </label>
                         <span class="ubits-body-sm-regular">Asegurar anonimato (No aplica para descendente y autoevaluación)</span>
-                        <i class="far fa-circle-info res360-info-icon" data-tooltip="Las respuestas de pares, clientes y ascendentes serán anónimas." data-tooltip-delay="600"></i>
+                        <i class="far fa-circle-info res360-info-icon" data-tooltip="Las respuestas de pares, clientes y ascendentes serán anónimas."></i>
                     </label>
                 </div>
 
@@ -622,7 +622,7 @@
                 '</div>' +
                 '<a href="javascript:void(0)" id="crear360-btn-close" ' +
                     'class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" ' +
-                    'data-tooltip="Salir del proceso" data-tooltip-delay="1000" aria-label="Salir">' +
+                    'data-tooltip="Salir del proceso" aria-label="Salir">' +
                     '<i class="far fa-times"></i>' +
                 '</a>';
 
@@ -638,7 +638,7 @@
             inner.innerHTML =
                 '<a href="javascript:void(0)" id="crear360-btn-back" ' +
                     'class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only" ' +
-                    'data-tooltip="Volver" data-tooltip-delay="800" aria-label="Volver">' +
+                    'data-tooltip="Volver" aria-label="Volver">' +
                     '<i class="far fa-arrow-left"></i>' +
                 '</a>' +
                 '<div class="ubits-layout-immersive__leading">' +
@@ -2341,21 +2341,22 @@
             var item = document.createElement('div');
             item.className = 'comp360-item';
             var numEnunciados = Array.isArray(comp.enunciados) ? comp.enunciados.length : 0;
+            var badgeVariant = numEnunciados === 0 ? 'error' : 'info';
             item.innerHTML =
                 '<div class="comp360-item__header" data-idx="' + idx + '">' +
                     '<div class="comp360-item__nombre-wrap">' +
                         '<span class="ubits-body-md-bold comp360-item__nombre">' + comp.nombre + '</span>' +
-                        '<span class="ubits-attention-badge ubits-attention-badge--sm ubits-attention-badge--neutral" aria-label="' + numEnunciados + ' enunciados">' + numEnunciados + '</span>' +
+                        '<span class="ubits-attention-badge ubits-attention-badge--sm ubits-attention-badge--' + badgeVariant + '" aria-label="' + numEnunciados + ' enunciados">' + numEnunciados + '</span>' +
                     '</div>' +
                     '<div class="comp360-item__actions">' +
-                        '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only comp360-item__edit-btn" data-idx="' + idx + '" aria-label="Editar competencia">' +
+                        '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only comp360-item__edit-btn" data-idx="' + idx + '" aria-label="Editar competencia" data-tooltip="Editar competencia">' +
                             '<i class="far fa-pen"></i>' +
                         '</button>' +
-                        '<button type="button" class="ubits-button ubits-button--error-tertiary ubits-button--sm ubits-button--icon-only comp360-item__delete-btn" data-idx="' + idx + '" aria-label="Eliminar competencia">' +
+                        '<button type="button" class="ubits-button ubits-button--error-tertiary ubits-button--sm ubits-button--icon-only comp360-item__delete-btn" data-idx="' + idx + '" aria-label="Eliminar competencia" data-tooltip="Eliminar competencia">' +
                             '<i class="far fa-trash"></i>' +
                         '</button>' +
                     '</div>' +
-                    '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only comp360-item__expand-btn" data-idx="' + idx + '" aria-label="Expandir">' +
+                    '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only comp360-item__expand-btn" data-idx="' + idx + '" aria-label="' + (comp.expandida ? 'Colapsar' : 'Expandir') + '" data-tooltip="' + (comp.expandida ? 'Colapsar' : 'Expandir') + '">' +
                         '<i class="far fa-chevron-' + (comp.expandida ? 'up' : 'down') + '"></i>' +
                     '</button>' +
                 '</div>' +
@@ -2369,7 +2370,7 @@
                                       '<p class="comp360-enum-card__enunciado ubits-body-md-regular">' + hubEscHtml(en.texto || '') + '</p>' +
                                       '<p class="comp360-enum-card__tipos ubits-body-sm-regular">' + hubEscHtml(tiposLine) + '</p>' +
                                   '</div>' +
-                                  '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only comp360-enum-card__menu" aria-label="Opciones del enunciado">' +
+                                  '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only comp360-enum-card__menu" aria-label="Opciones del enunciado" data-tooltip="Opciones del enunciado">' +
                                       '<i class="far fa-ellipsis-vertical"></i>' +
                                   '</button>' +
                               '</div>';
@@ -2414,6 +2415,7 @@
             });
         });
 
+        if (typeof initTooltip === 'function') initTooltip('#comp360-list [data-tooltip]');
     }
 
     function saveCompetencias() {
@@ -3371,7 +3373,7 @@
             '<td data-col="area"><span class="ubits-body-sm-regular">' + hubEscHtml(row.area) + '</span></td>' +
             '<td data-col="evaluadores"><div class="ubits-table__cell-assignee">' + profileListHtml + '</div></td>' +
             '<td data-col="acciones" class="ubits-table__td--actions">' +
-                '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only js-eval360-asign-opts-btn" data-evaluado-id="' + String(row.evaluadoId).replace(/"/g, '&quot;') + '" aria-label="Opciones" data-tooltip="Opciones" data-tooltip-delay="600">' +
+                '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only js-eval360-asign-opts-btn" data-evaluado-id="' + String(row.evaluadoId).replace(/"/g, '&quot;') + '" aria-label="Opciones" data-tooltip="Opciones">' +
                     '<i class="far fa-ellipsis-vertical"></i>' +
                 '</button></td>';
     }
@@ -3557,7 +3559,7 @@
             '<td data-col="area"><span class="ubits-body-sm-regular">' + hubEscHtml(row.area) + '</span></td>' +
             '<td data-col="tipo"><span class="ubits-body-sm-regular">' + hubEscHtml(row.tipoNombre) + '</span></td>' +
             '<td data-col="eliminar" class="ubits-table__td--actions">' +
-                '<button type="button" class="ubits-button ubits-button--error-secondary ubits-button--sm ubits-button--icon-only js-eval360-del-evaluador-btn" data-row-key="' + rk + '" aria-label="Eliminar evaluador" data-tooltip="Eliminar" data-tooltip-delay="600">' +
+                '<button type="button" class="ubits-button ubits-button--error-secondary ubits-button--sm ubits-button--icon-only js-eval360-del-evaluador-btn" data-row-key="' + rk + '" aria-label="Eliminar evaluador" data-tooltip="Eliminar">' +
                     '<i class="far fa-trash"></i>' +
                 '</button></td>';
     }
