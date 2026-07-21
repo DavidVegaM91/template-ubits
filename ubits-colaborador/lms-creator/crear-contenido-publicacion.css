@@ -28,7 +28,7 @@
 
 .publicacion-paso__cards {
     width: 100%;
-    max-width: 1047px;
+    max-width: none;
 }
 
 .publicacion-paso__cards .ubits-selection-card__desc {
