@@ -29,21 +29,21 @@
 
     var ZONA_ESTUDIO_PLANES = [
         {
-            cierre: 'Cierre: Abril 16',
+            cierre: 'Cierre: 16 abr 2026',
             title: 'Onboarding Corporativo',
             progress: 60,
             progressLabel: '2/6 contenidos',
             empty: false
         },
         {
-            cierre: 'Cierre: Abril 24',
+            cierre: 'Cierre: 24 abr 2026',
             title: 'Formación SST Colombia - 2026',
             progress: 25,
             progressLabel: '2/4 contenidos',
             empty: false
         },
         {
-            cierre: 'Cierre: Abril 28',
+            cierre: 'Cierre: 28 abr 2026',
             title: 'PDI Q2 - 2026',
             progress: 0,
             progressLabel: 'Sin iniciar',

@@ -1,5 +1,5 @@
 /**
- * Zona de estudio — tab Progreso (vista líder: María + equipo).
+ * Progreso — vista líder (antes tab de Zona de estudio).
  *
  * Escenarios demo vía `?demo=`:
  * - (sin param) / normal — equipo real (~7) y planes de BD
@@ -12,8 +12,8 @@
     var LEADER_ID = 'E006';
     var LEADER_AREA = 'Logística';
     var MESES_CORTO = [
-        'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
-        'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+        'ene', 'feb', 'mar', 'abr', 'may', 'jun',
+        'jul', 'ago', 'sep', 'oct', 'nov', 'dic'
     ];
 
     var MAIL_TEMPLATE_PATH = 'mails/mail-recordatorio-plan-formacion.html';
@@ -78,7 +78,10 @@
     function formatCierrePlan(fechaFinIso) {
         var d = parseYmd(fechaFinIso);
         if (!d) return 'Cierre: —';
-        return 'Cierre: ' + MESES_CORTO[d.getMonth()] + ' ' + d.getDate();
+        if (typeof window.formatDateDDMmmAAAA === 'function') {
+            return 'Cierre: ' + window.formatDateDDMmmAAAA(fechaFinIso);
+        }
+        return 'Cierre: ' + d.getDate() + ' ' + MESES_CORTO[d.getMonth()] + ' ' + d.getFullYear();
     }
 
     function formatIndicatorNumber(n) {
@@ -468,9 +471,31 @@
 
     function renderHeroIdentity() {
         var persona = getColaboradorById(progresoState.selectedColaboradorId);
+        var nombre = persona && persona.nombre ? String(persona.nombre).trim() : 'Colaborador';
+        var cargo = persona && persona.cargo ? String(persona.cargo).trim() : '';
+        var mail = persona && persona.username ? String(persona.username).trim() : '';
         var nameEl = document.getElementById('zona-estudio-progreso-hero-name');
-        if (nameEl) {
-            nameEl.textContent = persona ? persona.nombre : 'Colaborador';
+        var cargoEl = document.getElementById('zona-estudio-progreso-hero-cargo');
+        var mailEl = document.getElementById('zona-estudio-progreso-hero-mail');
+        var avatarHost = document.getElementById('zona-estudio-progreso-hero-avatar');
+        if (nameEl) nameEl.textContent = nombre;
+        if (cargoEl) {
+            cargoEl.textContent = cargo;
+            cargoEl.hidden = !cargo;
+        }
+        if (mailEl) {
+            mailEl.textContent = mail;
+            mailEl.hidden = !mail;
+        }
+        if (avatarHost) {
+            if (typeof renderAvatar === 'function') {
+                avatarHost.innerHTML = renderAvatar(
+                    { nombre: nombre, avatar: persona ? persona.avatar : null },
+                    { size: 'xl', alt: nombre }
+                );
+            } else {
+                avatarHost.innerHTML = '';
+            }
         }
     }
 

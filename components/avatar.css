@@ -32,7 +32,7 @@
     box-shadow: 0 0 0 1px var(--ubits-accent-brand);
 }
 
-/* Tamaños: xs 20px, sm 28px, md 36px (default), lg 40px */
+/* Tamaños: xs 20px, sm 28px, md 36px (default), lg 40px, xl 64px */
 .ubits-avatar--xs {
     width: 20px;
     height: 20px;
@@ -51,6 +51,11 @@
 .ubits-avatar--lg {
     width: 40px;
     height: 40px;
+}
+
+.ubits-avatar--xl {
+    width: 64px;
+    height: 64px;
 }
 
 /* Imagen del avatar */
@@ -86,6 +91,10 @@
 
 .ubits-avatar--lg .ubits-avatar__fallback i {
     font-size: var(--font-size-sm);
+}
+
+.ubits-avatar--xl .ubits-avatar__fallback i {
+    font-size: var(--font-size-lg);
 }
 
 /* ========================================

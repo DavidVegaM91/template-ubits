@@ -270,13 +270,24 @@ Pestaña para **María Alejandra (E006)** como **líder de Logística** con perm
 
 ## 7.1.1 Escenarios demo (`?demo=`)
 
-Tres URLs para QA del ProfileList y del empty state. El hash del tab sigue siendo `#progreso`.
+Progreso es **página propia**. Las URLs canónicas (compartir estas):
 
 | Escenario | Vanilla | React | Qué simula |
 |-----------|---------|-------|------------|
-| **Normal** | `zona-estudio.html#progreso` | `/ubits-colaborador/aprendizaje/zona-estudio#progreso` | Equipo real (~7). ProfileList sin `+N` (`maxVisible` = tamaño del equipo). Planes desde BD. |
-| **Equipo grande** | `zona-estudio.html?demo=equipo-grande#progreso` | `/ubits-colaborador/aprendizaje/zona-estudio?demo=equipo-grande#progreso` | María con **25** personas a cargo (líder + subordinados + relleno desde `BD_MASTER_COLABORADORES`). ProfileList: **10** avatares visibles + chip **`+15`** con dropdown del resto. Planes desde BD. |
-| **Sin planes** | `zona-estudio.html?demo=sin-planes#progreso` | `/ubits-colaborador/aprendizaje/zona-estudio?demo=sin-planes#progreso` | Mismo equipo grande (25 / maxVisible 10). **Nadie** tiene planes vigentes: al seleccionar cualquier persona el hero muestra empty state (sin barra, sin KPIs, sin carrusel). Recordatorio y rankings siguen visibles. |
+| **Normal** | `progreso.html` | `/ubits-colaborador/aprendizaje/progreso` | Equipo real (~7). ProfileList sin `+N` (`maxVisible` = tamaño del equipo). Planes desde BD. |
+| **Equipo grande** | `progreso.html?demo=equipo-grande` | `/ubits-colaborador/aprendizaje/progreso?demo=equipo-grande` | María con **25** personas a cargo (líder + subordinados + relleno desde `BD_MASTER_COLABORADORES`). ProfileList: **10** avatares visibles + chip **`+15`** con dropdown del resto. Planes desde BD. |
+| **Sin planes** | `progreso.html?demo=sin-planes` | `/ubits-colaborador/aprendizaje/progreso?demo=sin-planes` | Mismo equipo grande (25 / maxVisible 10). **Nadie** tiene planes vigentes: al seleccionar cualquier persona el hero muestra empty state (sin barra, sin KPIs, sin carrusel). Recordatorio y rankings siguen visibles. |
+
+**Redirect legacy** (las URLs viejas del tab siguen funcionando; redirigen y conservan `?demo=`):
+
+| Vieja | Nueva |
+|-------|-------|
+| `zona-estudio.html#progreso` | `progreso.html` |
+| `zona-estudio.html?demo=equipo-grande#progreso` | `progreso.html?demo=equipo-grande` |
+| `zona-estudio.html?demo=sin-planes#progreso` | `progreso.html?demo=sin-planes` |
+| `/ubits-colaborador/aprendizaje/zona-estudio#progreso` | `/ubits-colaborador/aprendizaje/progreso` |
+| `…/zona-estudio?demo=equipo-grande#progreso` | `…/progreso?demo=equipo-grande` |
+| `…/zona-estudio?demo=sin-planes#progreso` | `…/progreso?demo=sin-planes` |
 
 **Reglas ProfileList (equipo grande / sin planes):**
 
@@ -894,12 +905,15 @@ Si `conCertificacion === false` → `plantillaCertificadoId` y `plantillaCertifi
 
 # 13. Deep links y QA rápido
 
-| URL | Tab esperado |
-|-----|--------------|
-| `zona-estudio.html` | **Progreso** (tab por defecto → `#progreso`) |
-| `zona-estudio.html#progreso` | Progreso (vista líder) — caso **normal** |
-| `zona-estudio.html?demo=equipo-grande#progreso` | Progreso — **25** personas, ProfileList 10 + `+N` |
-| `zona-estudio.html?demo=sin-planes#progreso` | Progreso — empty state sin planes (equipo grande) |
+| URL | Destino |
+|-----|---------|
+| `progreso.html` | **Progreso** (página propia) — caso **normal** |
+| `progreso.html?demo=equipo-grande` | Progreso — **25** personas, ProfileList 10 + `+N` |
+| `progreso.html?demo=sin-planes` | Progreso — empty state sin planes (equipo grande) |
+| `zona-estudio.html#progreso` *(legacy)* | Redirect → `progreso.html` |
+| `zona-estudio.html?demo=equipo-grande#progreso` *(legacy)* | Redirect → `progreso.html?demo=equipo-grande` |
+| `zona-estudio.html?demo=sin-planes#progreso` *(legacy)* | Redirect → `progreso.html?demo=sin-planes` |
+| `zona-estudio.html` | Plan de contenidos (default) |
 | `zona-estudio.html#contenidos` | Plan de contenidos |
 | `zona-estudio.html#competencias` | Plan de competencias |
 | `zona-estudio.html#exclusivo` | Exclusivo para mi |
@@ -909,13 +923,17 @@ Si `conCertificacion === false` → `plantillaCertificadoId` y `plantillaCertifi
 
 | URL | Escenario |
 |-----|-----------|
-| `/ubits-colaborador/aprendizaje/zona-estudio#progreso` | Normal |
-| `/ubits-colaborador/aprendizaje/zona-estudio?demo=equipo-grande#progreso` | Equipo grande |
-| `/ubits-colaborador/aprendizaje/zona-estudio?demo=sin-planes#progreso` | Sin planes |
+| `/ubits-colaborador/aprendizaje/progreso` | Normal |
+| `/ubits-colaborador/aprendizaje/progreso?demo=equipo-grande` | Equipo grande |
+| `/ubits-colaborador/aprendizaje/progreso?demo=sin-planes` | Sin planes |
+| `/ubits-colaborador/aprendizaje/zona-estudio#progreso` *(legacy)* | Redirect → `/progreso` |
+| `…/zona-estudio?demo=equipo-grande#progreso` *(legacy)* | Redirect → `…/progreso?demo=equipo-grande` |
+| `…/zona-estudio?demo=sin-planes#progreso` *(legacy)* | Redirect → `…/progreso?demo=sin-planes` |
 
 ### Checklist Progreso
 
-- [ ] Tab **Progreso** es la primera pestaña y la activa al entrar sin hash
+- [ ] SubNav **Progreso** lleva a `/aprendizaje/progreso` (página propia)
+- [ ] URLs legacy `zona-estudio#progreso` (+ `?demo=`) redirigen y conservan el query
 - [ ] Profile list cambia hero (nombre, barra, KPIs, carrusel) sin mover rankings ni recordatorio
 - [ ] `?demo=equipo-grande`: 10 avatares + chip `+15`; clic en overflow selecciona persona
 - [ ] `?demo=sin-planes`: empty state «Sin planes asignados» + CTA → Home Learn `#buscar`

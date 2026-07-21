@@ -8,7 +8,7 @@
     'use strict';
 
     var STORAGE_KEY = 'ubits-planes-formacion-db';
-    var STORAGE_SCHEMA_VERSION = 8;
+    var STORAGE_SCHEMA_VERSION = 9;
     var PLAYGROUND_TODAY = '2026-06-19';
     var HORAS_META_COMPETENCIAS = 2;
     /** Usuario demo zona de estudio (María Alejandra — bd-master-colaboradores E006). */
@@ -20,12 +20,14 @@
         'pf-c-gerencia-general-2025-q3'
     ];
     /**
-     * Tab Progreso (#progreso): planes Vigente de María — 1 completado, 1 en curso, 2 sin iniciar.
+     * Progreso (página): planes Vigente de María — 1 completado, 1 en curso, 2 sin iniciar.
      * Completado / sin iniciar = competencias (ítem único 0|100). En curso = contenidos (1/3 ítems al 100 %).
+     * Tiempo de estudio del mes (ranking): 9 h 15 min.
      */
     var DEMO_PROGRESO_PLAN_COMPLETADO = 'pf-k-024-2026';
     var DEMO_PROGRESO_PLAN_EN_CURSO = 'pf-c-gerencia-general-2026-q2';
     var DEMO_PROGRESO_PLANES_SIN_INICIAR = ['pf-k-020-2026', 'pf-k-004-2026'];
+    var DEMO_PROGRESO_MINUTOS_ESTUDIO_LIDER = 9 * 60 + 15;
 
     var AREAS_LIDERES = [
         { slug: 'ventas', area: 'Ventas', leaderId: 'E002' },
@@ -350,7 +352,58 @@
      * Demo María (E006):
      * - 3 planes de contenidos 2025 Gerencia General al 100 % (No vigente).
      * - Planes Vigente en Progreso: 1 completado, 1 en curso, 2 sin iniciar.
+     * - Ranking del mes: DEMO_PROGRESO_MINUTOS_ESTUDIO_LIDER (9 h 15 min).
      */
+    function parseDemoDurationToMinutes(str) {
+        if (!str) return 60;
+        var s = String(str).trim().toLowerCase();
+        var num = parseFloat(s.replace(/[^\d.]/g, '')) || 60;
+        if (s.indexOf('h') >= 0) return Math.round(num * 60);
+        return Math.round(num);
+    }
+
+    function minutosEstudioContenidosPlanDemo(plan, colaboradorId) {
+        var cid = String(colaboradorId || '');
+        var items = (plan.contenidoPorUsuario || {})[cid] || [];
+        var total = 0;
+        items.forEach(function (it) {
+            var dur = parseDemoDurationToMinutes(it.duration);
+            var pct = Number(it.progress) || 0;
+            total += Math.round(dur * pct / 100);
+        });
+        return total;
+    }
+
+    function applyDemoLiderMinutosEstudioMes(planes) {
+        var demoId = PLAYGROUND_DEMO_USER_ID;
+        var targetMin = DEMO_PROGRESO_MINUTOS_ESTUDIO_LIDER;
+        var otrosMin = 0;
+        var completedPlan = null;
+        (planes || []).forEach(function (plan) {
+            if (!plan || !planTieneColaborador(plan, [demoId])) return;
+            if (plan.estado !== 'Vigente') return;
+            var planId = String(plan.id);
+            if (planId === DEMO_PROGRESO_PLAN_COMPLETADO) {
+                completedPlan = plan;
+                return;
+            }
+            if (plan.tipo === 'contenidos') {
+                otrosMin += minutosEstudioContenidosPlanDemo(plan, demoId);
+            } else if (plan.tipo === 'competencias') {
+                var consumo = (plan.consumoPorUsuario || {})[demoId] || { horas: 0 };
+                otrosMin += Math.round((Number(consumo.horas) || 0) * 60);
+            }
+        });
+        if (!completedPlan) return;
+        var needMin = Math.max(0, targetMin - otrosMin);
+        if (!completedPlan.consumoPorUsuario) completedPlan.consumoPorUsuario = {};
+        var prev = completedPlan.consumoPorUsuario[demoId] || { horas: 0, items: [] };
+        completedPlan.consumoPorUsuario[demoId] = {
+            horas: Math.round((needMin / 60) * 100) / 100,
+            items: prev.items || []
+        };
+    }
+
     function applyPlaygroundDemoUserProgress(planes) {
         if (!planes || !planes.length) return;
         var demoId = PLAYGROUND_DEMO_USER_ID;
@@ -387,6 +440,7 @@
                 recalcProgresoAgregado(plan);
             }
         });
+        applyDemoLiderMinutosEstudioMes(planes);
     }
 
     function generateContenidosPlans() {

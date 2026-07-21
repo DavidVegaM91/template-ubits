@@ -39,6 +39,15 @@
     <link rel="stylesheet" href="./mi-equipo/detalle-plan-competencias.css">
     <link rel="stylesheet" href="../../components/toast.css">
     <link rel="stylesheet" href="./zona-estudio.css">
+    <!-- Legacy: #progreso → página Progreso (conserva ?demo=). Antes de pintar la UI. -->
+    <script>
+    (function () {
+        var hash = (location.hash || '').replace(/^#/, '').toLowerCase();
+        if (hash === 'progreso') {
+            location.replace('progreso.html' + (location.search || ''));
+        }
+    })();
+    </script>
 </head>
 <body data-theme="light" class="page-zona-estudio">
     <div id="ubits-toast-container"></div>
@@ -54,10 +63,7 @@
                     <div class="section-single">
                         <div class="widget--transparent widget-tabs-zona-estudio">
                             <div class="ubits-tabs-on-bg" id="zona-estudio-tabs" role="tablist" aria-label="Zona de estudio">
-                                <button type="button" class="ubits-tab ubits-tab--active" role="tab" aria-selected="true" data-tab-id="progreso" id="zona-estudio-tab-progreso">
-                                    <span>Progreso</span>
-                                </button>
-                                <button type="button" class="ubits-tab" role="tab" aria-selected="false" data-tab-id="contenidos" id="zona-estudio-tab-contenidos">
+                                <button type="button" class="ubits-tab ubits-tab--active" role="tab" aria-selected="true" data-tab-id="contenidos" id="zona-estudio-tab-contenidos">
                                     <span>Plan de contenidos</span>
                                 </button>
                                 <button type="button" class="ubits-tab" role="tab" aria-selected="false" data-tab-id="competencias" id="zona-estudio-tab-competencias">
@@ -77,7 +83,7 @@
                     <div class="section-single">
                         <div class="widget-contenido-tabs">
                             <!-- Panel: Plan de contenidos -->
-                            <div class="zona-estudio-tab-panel" id="zona-estudio-panel-contenidos" role="tabpanel" aria-labelledby="zona-estudio-tab-contenidos" hidden>
+                            <div class="zona-estudio-tab-panel" id="zona-estudio-panel-contenidos" role="tabpanel" aria-labelledby="zona-estudio-tab-contenidos">
                                 <div class="zona-estudio-tab-panel__inner">
                                     <!-- Filtro y progreso del plan -->
                                     <div class="widget-zona-estudio-plan" id="zona-estudio-plan-widget">
@@ -260,65 +266,7 @@
                                 </div>
                             </div>
 
-                            <!-- Panel: Progreso (vista líder) -->
-                            <div class="zona-estudio-tab-panel" id="zona-estudio-panel-progreso" role="tabpanel" aria-labelledby="zona-estudio-tab-progreso">
-                                <div class="zona-estudio-tab-panel__inner zona-estudio-progreso">
-                                    <!-- Nivel 1: hero unificado (cambia con la persona seleccionada) -->
-                                    <section class="widget-zona-estudio-plan zona-estudio-progreso-hero" aria-labelledby="zona-estudio-progreso-hero-name">
-                                        <div class="zona-estudio-progreso-hero__top">
-                                            <div class="zona-estudio-progreso-hero__identity">
-                                                <h2 class="ubits-heading-h2 zona-estudio-progreso-hero__name" id="zona-estudio-progreso-hero-name"></h2>
-                                            </div>
-                                            <div id="zona-estudio-progreso-profile" class="zona-estudio-progreso-profile" aria-label="Seleccionar persona"></div>
-                                        </div>
-
-                                        <div id="zona-estudio-progreso-hero-metrics" class="zona-estudio-progreso-hero__metrics">
-                                            <div class="zona-estudio-plan__progress zona-estudio-progreso-hero__progress">
-                                                <div class="zona-estudio-plan__progress-meta">
-                                                    <span class="ubits-body-sm-regular" id="zona-estudio-progreso-general-label"></span>
-                                                    <span class="ubits-body-sm-bold zona-estudio-plan__progress-pct" id="zona-estudio-progreso-general-pct"></span>
-                                                </div>
-                                                <div id="zona-estudio-progreso-general-bar"></div>
-                                            </div>
-
-                                            <div id="zona-estudio-progreso-kpis" class="zona-estudio-progreso-kpis" aria-label="Indicadores del colaborador"></div>
-
-                                            <div id="zona-estudio-progreso-planes-carousel" class="zona-estudio-progreso-carousel-mount"></div>
-                                        </div>
-
-                                        <div id="zona-estudio-progreso-empty-planes" class="zona-estudio-progreso-empty-planes" style="display: none;"></div>
-                                    </section>
-
-                                    <section class="widget-zona-estudio-plan zona-estudio-progreso-recordatorio-widget" aria-labelledby="zona-estudio-progreso-recordatorio-title">
-                                        <div id="zona-estudio-progreso-recordatorio"></div>
-                                    </section>
-
-                                    <div class="zona-estudio-progreso-rankings">
-                                        <article class="widget-zona-estudio-plan zona-estudio-progreso-ranking-card">
-                                            <div class="zona-estudio-progreso-ranking-card__head">
-                                                <h3 class="ubits-body-md-bold zona-estudio-progreso-ranking-card__title">Ranking de estudio del mes</h3>
-                                                <div class="ubits-button-group" role="group" aria-label="Alcance del ranking" data-variant="selectable" data-value="equipo" id="zona-estudio-progreso-equipo-scope-group">
-                                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--xs" data-value="equipo" aria-pressed="true"><span>Equipo</span></button>
-                                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--xs" data-value="empresa" aria-pressed="false"><span>Empresa</span></button>
-                                                </div>
-                                            </div>
-                                            <p class="ubits-body-sm-regular zona-estudio-progreso-ranking-card__desc" id="zona-estudio-progreso-equipo-desc">De mayor a menor tiempo de estudio.</p>
-                                            <div class="zona-estudio-progreso-ranking-stack">
-                                                <div id="zona-estudio-progreso-ranking-equipo-podium" class="zona-estudio-progreso-ranking-list zona-estudio-progreso-ranking-list--podium"></div>
-                                                <div id="zona-estudio-progreso-ranking-equipo" class="zona-estudio-progreso-ranking-list zona-estudio-progreso-ranking-list--scroll"></div>
-                                            </div>
-                                        </article>
-                                        <article class="widget-zona-estudio-plan zona-estudio-progreso-ranking-card">
-                                            <h3 class="ubits-body-md-bold zona-estudio-progreso-ranking-card__title">Ranking entre áreas este mes</h3>
-                                            <p class="ubits-body-sm-regular zona-estudio-progreso-ranking-card__desc">Tiempo de estudio acumulado por área</p>
-                                            <div class="zona-estudio-progreso-ranking-stack">
-                                                <div id="zona-estudio-progreso-ranking-areas-podium" class="zona-estudio-progreso-ranking-list zona-estudio-progreso-ranking-list--podium"></div>
-                                                <div id="zona-estudio-progreso-ranking-areas" class="zona-estudio-progreso-ranking-list zona-estudio-progreso-ranking-list--scroll"></div>
-                                            </div>
-                                        </article>
-                                    </div>
-                                </div>
-                            </div>
+                            
                         </div>
                     </div>
                 </div>
@@ -364,7 +312,6 @@
     <script src="../../bd-master/bd-planes-formacion.js"></script>
     <script src="../../script.js"></script>
     <script src="./zona-estudio.js"></script>
-    <script src="./zona-estudio-progreso.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             loadSidebar('sidebar-container', 'aprendizaje');

@@ -48,7 +48,8 @@ const TOP_NAV_VARIANTS = {
             { id: 'modo-estudio-ia', label: 'Modo estudio IA', icon: 'far fa-sparkles', url: '../../ubits-colaborador/aprendizaje/modo-estudio-ia.html' },
             // Catálogo oculto en SubNav: exploración en home-learn (modo browse). Ver README «Patrón: búsqueda en Inicio Aprendizaje».
             { id: 'corporate', label: 'U. Corporativa', icon: 'far fa-building-columns', url: '../../ubits-colaborador/aprendizaje/u-corporativa.html' },
-            { id: 'study-zone', label: 'Zona de estudio', icon: 'far fa-books', url: '../../ubits-colaborador/aprendizaje/zona-estudio.html' }
+            { id: 'study-zone', label: 'Zona de estudio', icon: 'far fa-books', url: '../../ubits-colaborador/aprendizaje/zona-estudio.html' },
+            { id: 'progreso', label: 'Progreso', icon: 'far fa-chart-line', url: '../../ubits-colaborador/aprendizaje/progreso.html' }
         ]
     },
     desempeno: {
@@ -353,6 +354,7 @@ const PAGE_TO_TAB = {
     'lms-creator/personalizacion-u-corporativa.html': 'universidad-corporativa',
     'lms-creator/personalizacion/personalizacion-u-corporativa.html': 'universidad-corporativa',
     'zona-estudio.html': 'study-zone',
+    'progreso.html': 'progreso',
     'mi-equipo/planes.html': 'mi-equipo',
     'mi-equipo/crear-plan-contenidos.html': 'mi-equipo',
     'mi-equipo/crear-plan-competencias.html': 'mi-equipo',

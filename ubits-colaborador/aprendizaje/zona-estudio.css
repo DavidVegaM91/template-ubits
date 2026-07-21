@@ -444,13 +444,37 @@
 .zona-estudio-progreso-hero__identity {
     display: flex;
     align-items: center;
+    gap: var(--gap-md);
     min-width: 0;
-    flex: 1 1 240px;
-    min-height: 40px;
+    flex: 1 1 280px;
+}
+
+.zona-estudio-progreso-hero__avatar {
+    flex-shrink: 0;
+}
+
+.zona-estudio-progreso-hero__text {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-xs);
+    min-width: 0;
 }
 
 .zona-estudio-progreso-hero__name {
     margin: 0;
+}
+
+.zona-estudio-progreso-hero__cargo,
+.zona-estudio-progreso-hero__mail {
+    margin: 0;
+    color: var(--ubits-fg-1-medium);
+    overflow-wrap: anywhere;
+    word-break: break-word;
+}
+
+.zona-estudio-progreso-hero__cargo[hidden],
+.zona-estudio-progreso-hero__mail[hidden] {
+    display: none;
 }
 
 .zona-estudio-progreso-profile {
@@ -923,7 +947,9 @@
         min-height: 0;
     }
 
-    .zona-estudio-progreso-hero__name {
+    .zona-estudio-progreso-hero__name,
+    .zona-estudio-progreso-hero__cargo,
+    .zona-estudio-progreso-hero__mail {
         overflow-wrap: anywhere;
         word-break: break-word;
     }

@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="../../images/playground-favicon.svg">
+    <title>UBITS Playground - Progreso</title>
+    
+    <link rel="stylesheet" href="../../general-styles/ubits-colors.css">
+    <link rel="stylesheet" href="../../general-styles/styles.css">
+    <link rel="stylesheet" href="../../general-styles/fontawesome-icons.css">
+    <link rel="stylesheet" href="../../general-styles/ubits-typography.css">
+    <link rel="stylesheet" href="../../components/sub-nav.css">
+    <link rel="stylesheet" href="../../components/sidebar.css">
+    <link rel="stylesheet" href="../../components/tab-bar.css">
+    <link rel="stylesheet" href="../../components/floating-menu.css">
+    <link rel="stylesheet" href="../../components/profile-menu.css">
+    <link rel="stylesheet" href="../../components/button.css">
+    <link rel="stylesheet" href="../../components/button-group.css">
+    <link rel="stylesheet" href="../../components/input.css">
+    <link rel="stylesheet" href="../../components/dropdown-menu.css">
+    <link rel="stylesheet" href="../../components/status-tag.css">
+    <link rel="stylesheet" href="../../components/badge-tag.css">
+    <link rel="stylesheet" href="../../components/progress-bar.css">
+    <link rel="stylesheet" href="../../components/toolbar-panel.css">
+    <link rel="stylesheet" href="../../components/avatar.css">
+    <link rel="stylesheet" href="../../components/card-content.css">
+    <link rel="stylesheet" href="../../components/empty-state.css">
+    <link rel="stylesheet" href="../../components/tooltip.css">
+    <link rel="stylesheet" href="../../components/carousel-indicators.css">
+    <link rel="stylesheet" href="../../components/alert.css">
+    <link rel="stylesheet" href="../../components/card-plan-formacion.css">
+    <link rel="stylesheet" href="../../components/carousel-contents.css">
+    <link rel="stylesheet" href="../../components/drawer.css">
+    <link rel="stylesheet" href="../../components/modal.css">
+    <link rel="stylesheet" href="../../components/card-content-compact.css">
+    <link rel="stylesheet" href="./mi-equipo/detalle-plan-competencias.css">
+    <link rel="stylesheet" href="../../components/toast.css">
+    <link rel="stylesheet" href="./zona-estudio.css">
+</head>
+<body data-theme="light" class="page-zona-estudio page-progreso">
+    <div id="ubits-toast-container"></div>
+    <div class="dashboard-container">
+        <div class="tooltip" id="tooltip"></div>
+        <div id="sidebar-container"></div>
+
+        <main class="main-content">
+            <div id="top-nav-container"></div>
+            <div class="content-area">
+                <div class="content-sections">
+                    <div class="section-single">
+                        <div class="widget-contenido-tabs">
+<div id="zona-estudio-panel-progreso" class="zona-estudio-progreso-page">
+                                <div class="zona-estudio-tab-panel__inner zona-estudio-progreso">
+                                    <!-- Nivel 1: hero unificado (cambia con la persona seleccionada) -->
+                                    <section class="widget-zona-estudio-plan zona-estudio-progreso-hero" aria-labelledby="zona-estudio-progreso-hero-name">
+                                        <div class="zona-estudio-progreso-hero__top">
+                                            <div class="zona-estudio-progreso-hero__identity">
+                                                <div id="zona-estudio-progreso-hero-avatar" class="zona-estudio-progreso-hero__avatar" aria-hidden="true"></div>
+                                                <div class="zona-estudio-progreso-hero__text">
+                                                    <h2 class="ubits-heading-h2 zona-estudio-progreso-hero__name" id="zona-estudio-progreso-hero-name"></h2>
+                                                    <p class="ubits-body-sm-regular zona-estudio-progreso-hero__cargo" id="zona-estudio-progreso-hero-cargo"></p>
+                                                    <p class="ubits-body-sm-regular zona-estudio-progreso-hero__mail" id="zona-estudio-progreso-hero-mail"></p>
+                                                </div>
+                                            </div>
+                                            <div id="zona-estudio-progreso-profile" class="zona-estudio-progreso-profile" aria-label="Seleccionar persona"></div>
+                                        </div>
+
+                                        <div id="zona-estudio-progreso-hero-metrics" class="zona-estudio-progreso-hero__metrics">
+                                            <div class="zona-estudio-plan__progress zona-estudio-progreso-hero__progress">
+                                                <div class="zona-estudio-plan__progress-meta">
+                                                    <span class="ubits-body-sm-regular" id="zona-estudio-progreso-general-label"></span>
+                                                    <span class="ubits-body-sm-bold zona-estudio-plan__progress-pct" id="zona-estudio-progreso-general-pct"></span>
+                                                </div>
+                                                <div id="zona-estudio-progreso-general-bar"></div>
+                                            </div>
+
+                                            <div id="zona-estudio-progreso-kpis" class="zona-estudio-progreso-kpis" aria-label="Indicadores del colaborador"></div>
+
+                                            <div id="zona-estudio-progreso-planes-carousel" class="zona-estudio-progreso-carousel-mount"></div>
+                                        </div>
+
+                                        <div id="zona-estudio-progreso-empty-planes" class="zona-estudio-progreso-empty-planes" style="display: none;"></div>
+                                    </section>
+
+                                    <section class="widget-zona-estudio-plan zona-estudio-progreso-recordatorio-widget" aria-labelledby="zona-estudio-progreso-recordatorio-title">
+                                        <div id="zona-estudio-progreso-recordatorio"></div>
+                                    </section>
+
+                                    <div class="zona-estudio-progreso-rankings">
+                                        <article class="widget-zona-estudio-plan zona-estudio-progreso-ranking-card">
+                                            <div class="zona-estudio-progreso-ranking-card__head">
+                                                <h3 class="ubits-body-md-bold zona-estudio-progreso-ranking-card__title">Ranking de estudio del mes</h3>
+                                                <div class="ubits-button-group" role="group" aria-label="Alcance del ranking" data-variant="selectable" data-value="equipo" id="zona-estudio-progreso-equipo-scope-group">
+                                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--xs" data-value="equipo" aria-pressed="true"><span>Equipo</span></button>
+                                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--xs" data-value="empresa" aria-pressed="false"><span>Empresa</span></button>
+                                                </div>
+                                            </div>
+                                            <p class="ubits-body-sm-regular zona-estudio-progreso-ranking-card__desc" id="zona-estudio-progreso-equipo-desc">De mayor a menor tiempo de estudio.</p>
+                                            <div class="zona-estudio-progreso-ranking-stack">
+                                                <div id="zona-estudio-progreso-ranking-equipo-podium" class="zona-estudio-progreso-ranking-list zona-estudio-progreso-ranking-list--podium"></div>
+                                                <div id="zona-estudio-progreso-ranking-equipo" class="zona-estudio-progreso-ranking-list zona-estudio-progreso-ranking-list--scroll"></div>
+                                            </div>
+                                        </article>
+                                        <article class="widget-zona-estudio-plan zona-estudio-progreso-ranking-card">
+                                            <h3 class="ubits-body-md-bold zona-estudio-progreso-ranking-card__title">Ranking entre áreas este mes</h3>
+                                            <p class="ubits-body-sm-regular zona-estudio-progreso-ranking-card__desc">Tiempo de estudio acumulado por área</p>
+                                            <div class="zona-estudio-progreso-ranking-stack">
+                                                <div id="zona-estudio-progreso-ranking-areas-podium" class="zona-estudio-progreso-ranking-list zona-estudio-progreso-ranking-list--podium"></div>
+                                                <div id="zona-estudio-progreso-ranking-areas" class="zona-estudio-progreso-ranking-list zona-estudio-progreso-ranking-list--scroll"></div>
+                                            </div>
+                                        </article>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div id="tab-bar-container"></div>
+    <div id="floating-menu-container"></div>
+    <div id="profile-menu-container"></div>
+
+    <script src="../../components/tooltip.js"></script>
+    <script src="../../components/sidebar.js"></script>
+    <script src="../../components/sub-nav.js"></script>
+    <script src="../../components/tab-bar.js"></script>
+    <script src="../../components/floating-menu.js"></script>
+    <script src="../../components/profile-menu.js"></script>
+    <script src="../../components/input.js"></script>
+    <script src="../../components/dropdown-menu.js"></script>
+    <script src="../../components/progress-bar.js"></script>
+    <script src="../../components/avatar.js"></script>
+    <script src="../../components/card-content.js"></script>
+    <script src="../../components/empty-state.js"></script>
+    <script src="../../components/carousel-indicators.js"></script>
+    <script src="../../components/alert.js"></script>
+    <script src="../../components/button-group.js"></script>
+    <script src="../../components/toast.js"></script>
+    <script src="../../components/modal.js"></script>
+    <script src="../../components/drawer.js"></script>
+    <script src="../../components/card-content-compact.js"></script>
+    <script src="../../components/card-plan-formacion.js"></script>
+    <script src="../../components/carousel-contents.js"></script>
+    <script src="./mi-equipo/mi-equipo-context.js"></script>
+    <script src="./mi-equipo/mi-equipo-plan-competencias-shared.js"></script>
+    <script src="../../bd-master/bd-master-niveles-contenido.js"></script>
+    <script src="../../bd-master/bd-master-aliados.js"></script>
+    <script src="../../bd-master/bd-master-competencias.js"></script>
+    <script src="../../bd-master/catalogo-proveedores-helpers.js"></script>
+    <script src="../../bd-master/bd-master-colaboradores.js"></script>
+    <script src="../../bd-master/bd-contenidos-ubits.js"></script>
+    <script src="../../bd-master/bd-contenidos-fiqsha.js"></script>
+    <script src="../../bd-master/bd-planes-formacion.js"></script>
+    <script src="../../script.js"></script>
+    <script src="../../general-utils/humanizador-fechas.js"></script>
+    <script src="./zona-estudio-progreso.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            loadSidebar('sidebar-container', 'aprendizaje');
+            loadSubNav('top-nav-container', 'aprendizaje');
+            loadTabBar('tab-bar-container');
+            loadFloatingMenu('floating-menu-container');
+            loadProfileMenu('profile-menu-container');
+
+            window.zonaEstudioNavigateToPlan = function (planId, tipo) {
+                var tabId = tipo === 'competencias' ? 'competencias' : 'contenidos';
+                var q = planId ? ('?planId=' + encodeURIComponent(planId)) : '';
+                window.location.href = 'zona-estudio.html' + q + '#' + tabId;
+            };
+
+            setTimeout(function () {
+                document.querySelectorAll('.nav-tab, .hamburger-item').forEach(function (item) {
+                    item.classList.remove('active');
+                });
+                var progresoTab = document.querySelector('.nav-tab[data-tab="progreso"]');
+                if (progresoTab) progresoTab.classList.add('active');
+                var progresoHamburger = document.querySelector('.hamburger-item[data-tab="progreso"]');
+                if (progresoHamburger) progresoHamburger.classList.add('active');
+                var aprendizajeButton = document.querySelector('.nav-button[data-section="aprendizaje"]');
+                if (aprendizajeButton) {
+                    document.querySelectorAll('.nav-button').forEach(function (btn) { btn.classList.remove('active'); });
+                    aprendizajeButton.classList.add('active');
+                }
+                var modulosTabBarItem = document.querySelector('.tab-bar-item[data-tab="modulos"]');
+                if (modulosTabBarItem) {
+                    document.querySelectorAll('.tab-bar-item').forEach(function (item) { item.classList.remove('active'); });
+                    modulosTabBarItem.classList.add('active');
+                }
+                if (typeof setActiveAccordionLink === 'function') {
+                    setActiveAccordionLink('progreso');
+                }
+            }, 200);
+
+            if (typeof renderZonaEstudioProgresoTab === 'function') {
+                renderZonaEstudioProgresoTab();
+            }
+        });
+    </script>
+</body>
+</html>

@@ -15,6 +15,7 @@ const FLOATING_MENU_SECTIONS_DEFAULT = [
             { id: 'catalogo', title: 'Catálogo', icon: 'far fa-book', url: '../../ubits-colaborador/aprendizaje/catalogo.html' },
             { id: 'corporativa', title: 'U. Corporativa', icon: 'far fa-building-columns', url: '../../ubits-colaborador/aprendizaje/u-corporativa.html' },
             { id: 'zona-estudio', title: 'Zona de estudio', icon: 'far fa-books', url: '../../ubits-colaborador/aprendizaje/zona-estudio.html' },
+            { id: 'progreso', title: 'Progreso', icon: 'far fa-chart-line', url: '../../ubits-colaborador/aprendizaje/progreso.html' },
             { id: 'mi-equipo', title: 'Mi equipo', icon: 'far fa-users', url: '../../ubits-colaborador/aprendizaje/mi-equipo/planes.html' }
         ]
     },
@@ -623,6 +624,7 @@ function setActiveItemByCurrentPage() {
         'catalogo.html': 'catalogo',
         'u-corporativa.html': 'corporativa',
         'zona-estudio.html': 'zona-estudio',
+        'progreso.html': 'progreso',
         'evaluaciones-360.html': 'evaluaciones-360',
         'objetivos.html': 'objetivos',
         'metricas.html': 'metricas',

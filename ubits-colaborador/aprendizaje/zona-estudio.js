@@ -43,7 +43,7 @@
         { id: 'f003', progress: 65 },
         { id: 'f004', progress: 0 }
     ];
-    var TAB_IDS = ['progreso', 'contenidos', 'competencias', 'exclusivo', 'historial'];
+    var TAB_IDS = ['contenidos', 'competencias', 'exclusivo', 'historial'];
 
     var MESES_LARGO = [
         'enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio',
@@ -51,7 +51,7 @@
     ];
 
     var state = {
-        activeTab: 'progreso',
+        activeTab: 'contenidos',
         selectedPlanByTab: { contenidos: '', competencias: '' },
         planesContenidos: [],
         planesCompetencias: [],
@@ -1491,10 +1491,16 @@
         });
     }
 
+    /** @returns {string|null} tab id, o null si redirige a progreso.html (legacy #progreso) */
     function parseTabFromHash() {
         var hash = (location.hash || '').replace(/^#/, '').toLowerCase();
+        if (hash === 'progreso') {
+            /* Legacy: Progreso es página propia. Conserva ?demo=equipo-grande|sin-planes */
+            location.replace('progreso.html' + (location.search || ''));
+            return null;
+        }
         if (TAB_IDS.indexOf(hash) >= 0) return hash;
-        return 'progreso';
+        return 'contenidos';
     }
 
     function updateHash(tabId) {
@@ -1525,7 +1531,7 @@
 
     function setActiveTab(tabId, opts) {
         opts = opts || {};
-        if (TAB_IDS.indexOf(tabId) < 0) tabId = 'progreso';
+        if (TAB_IDS.indexOf(tabId) < 0) tabId = 'contenidos';
         state.activeTab = tabId;
 
         var tabsRoot = document.getElementById('zona-estudio-tabs');
@@ -1554,10 +1560,6 @@
             renderExclusivoTab();
         } else if (tabId === 'historial') {
             renderHistorialTab();
-        } else if (tabId === 'progreso') {
-            if (typeof window.renderZonaEstudioProgresoTab === 'function') {
-                window.renderZonaEstudioProgresoTab();
-            }
         }
 
         if (!opts.skipHash) updateHash(tabId);
@@ -1572,7 +1574,7 @@
         if (!tabsRoot) return;
         tabsRoot.querySelectorAll('.ubits-tab[data-tab-id]').forEach(function (btn) {
             btn.addEventListener('click', function () {
-                setActiveTab(btn.getAttribute('data-tab-id') || 'progreso');
+                setActiveTab(btn.getAttribute('data-tab-id') || 'contenidos');
             });
         });
         if (typeof initUbitsTabsScroll === 'function') {
@@ -1580,18 +1582,33 @@
         }
         window.addEventListener('hashchange', function () {
             var tab = parseTabFromHash();
+            if (tab == null) return;
             if (tab !== state.activeTab) setActiveTab(tab, { skipHash: true });
         });
     }
 
     window.initZonaEstudioPage = function () {
+        var initialTab = parseTabFromHash();
+        if (initialTab == null) return; /* redirect legacy #progreso → progreso.html */
+
         loadPlanesFromBd();
         setupSearch();
         setupExclusivoSearch();
         setupHistorialSearch();
         setupHistorialViewToggle();
         setupTabs();
-        setActiveTab(parseTabFromHash(), { skipHash: true });
+
+        try {
+            var params = new URLSearchParams(location.search || '');
+            var planId = params.get('planId');
+            if (planId) {
+                var hashTab = (location.hash || '').replace(/^#/, '').toLowerCase();
+                var tabForPlan = hashTab === 'competencias' ? 'competencias' : 'contenidos';
+                state.selectedPlanByTab[tabForPlan] = planId;
+            }
+        } catch (e) { /* noop */ }
+
+        setActiveTab(initialTab, { skipHash: true });
         updateHash(state.activeTab);
 
         window.zonaEstudioNavigateToPlan = function (planId, tipo) {

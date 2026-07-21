@@ -18,7 +18,7 @@
         },
         carmenRosa: {
             name: 'Carmen Rosa Díaz Herrera',
-            role: 'Jefa de Recursos Humanos',
+            role: 'Líder de Recursos Humanos',
             imageSrc: '../../images/lms-creator/certificados/firma-carmen.webp'
         }
     };

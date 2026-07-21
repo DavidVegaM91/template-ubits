@@ -155,7 +155,7 @@
         id: 'J005',
         idColaborador: '1011000006',
         nombre: 'María Alejandra Sánchez Pardo',
-        cargo: 'Jefe de Logística',
+        cargo: 'Líder de Logística',
         area: 'Logística',
         username: 'masanchez@fiqsha.demo',
         avatar: normalizeAvatarUrl('../../images/Profile-image.jpg'),
@@ -920,7 +920,7 @@
             const mesInicio = q.monthStart;
             ['Objetivos', 'Encuestas'].forEach(function (tipo, tipoIdx) {
                 const nombrePlan = tipo + ' ' + q.label;
-                // Las tareas de compañía (Objetivos/Encuestas) se muestran como creadas por la Jefa de RH
+                // Las tareas de compañía (Objetivos/Encuestas) se muestran como creadas por la Líder de RH
                 const creadorEmp = jefaRH || (tipo === 'Objetivos' ? encargadoObjetivos : encargadaEncuestas);
                 const creadorNombre = creadorEmp ? creadorEmp.nombre : (tipo === 'Objetivos' ? 'Roberto Carlos Méndez Soto' : 'Adriana Lucía Ríos Calle');
                 const tareasTitulos = tipo === 'Objetivos' ? tareasObjetivos : tareasEncuestas;

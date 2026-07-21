@@ -223,6 +223,7 @@ function activateCurrentPageTab() {
         case 'personalizacion-u-corporativa':
         case 'personalizacion-seguimiento':
         case 'zona-estudio':
+        case 'progreso':
         case 'diagnostico':
         case 'evaluaciones-360':
         case 'objetivos':

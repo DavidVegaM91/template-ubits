@@ -7,7 +7,7 @@
 /**
  * @typedef {Object} CardPlanFormacionData
  * @property {string} [title] - Nombre del plan
- * @property {string} [cierre] - Meta de cierre (p. ej. "Cierre: Jun 30")
+ * @property {string} [cierre] - Meta de cierre (p. ej. "Cierre: 16 abr 2026")
  * @property {string} [deadline] - Alias de cierre
  * @property {number} [progress] - 0–100
  * @property {string} [progressLabel] - Meta bajo la barra (p. ej. "2/6 contenidos")
