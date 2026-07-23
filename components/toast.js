@@ -11,7 +11,8 @@
 // - duration: number (milliseconds, 0 = persistent). Si se omite, la duración es
 //   max(duración por tipo, toastDurationMs(message)) — escala con la longitud del texto.
 // - readingTime: { minMs?, maxMs?, msPerChar? } — overrides para toastDurationMs (solo si no pasas duration)
-// - noClose: boolean (hide close button)
+// - showClose: boolean (mostrar botón de cerrar; default false)
+// - noClose: boolean (legacy: noClose === false fuerza mostrar el botón de cerrar)
 // - pauseOnHover: boolean (pause on mouse hover)
 // - action: {label: string, onClick: function} (action button)
 // - containerId: string (custom container ID)
@@ -22,7 +23,7 @@
 // EXAMPLES:
 // showToast('success', '¡Operación exitosa!');
 // showToast('info', 'Ya estás en la documentación 😆', { duration: 3500 });
-// showToast('error', 'Error al guardar', { noClose: true });
+// showToast('error', 'Error al guardar', { showClose: true });
 // showToast('warning', 'Datos no guardados', { 
 //   action: { label: 'Guardar', onClick: () => save() } 
 // });
@@ -104,7 +105,7 @@
 
     // Close button (optional)
     let closeBtn;
-    if (!opts || !opts.noClose) {
+    if (opts && (opts.showClose === true || opts.noClose === false)) {
       closeBtn = document.createElement('button');
       closeBtn.className = 'ubits-toast__close';
       closeBtn.setAttribute('aria-label', 'Cerrar notificación');
@@ -226,7 +227,7 @@
  * <script>
  * showToast('success', '¡Operación exitosa!');
  * showToast('info', 'Información importante', { duration: 3500 });
- * showToast('warning', 'Advertencia', { noClose: true });
+ * showToast('warning', 'Advertencia', { showClose: true });
  * showToast('error', 'Error crítico', { 
  *   action: { label: 'Reintentar', onClick: () => retry() } 
  * });

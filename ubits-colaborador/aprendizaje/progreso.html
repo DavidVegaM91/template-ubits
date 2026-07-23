@@ -17,6 +17,9 @@
     <link rel="stylesheet" href="../../components/profile-menu.css">
     <link rel="stylesheet" href="../../components/button.css">
     <link rel="stylesheet" href="../../components/button-group.css">
+    <link rel="stylesheet" href="../../components/chip.css">
+    <link rel="stylesheet" href="../../components/ia-button.css">
+    <link rel="stylesheet" href="../../components/ia-input.css">
     <link rel="stylesheet" href="../../components/input.css">
     <link rel="stylesheet" href="../../components/dropdown-menu.css">
     <link rel="stylesheet" href="../../components/status-tag.css">
@@ -34,6 +37,9 @@
     <link rel="stylesheet" href="../../components/drawer.css">
     <link rel="stylesheet" href="../../components/modal.css">
     <link rel="stylesheet" href="../../components/card-content-compact.css">
+    <link rel="stylesheet" href="../../general-styles/ubits-ia-appearance.css">
+    <link rel="stylesheet" href="../../general-styles/ubits-ia-chat.css">
+    <link rel="stylesheet" href="../../components/ia-panel.css">
     <link rel="stylesheet" href="./mi-equipo/detalle-plan-competencias.css">
     <link rel="stylesheet" href="../../components/toast.css">
     <link rel="stylesheet" href="./zona-estudio.css">
@@ -63,7 +69,12 @@
                                                     <p class="ubits-body-sm-regular zona-estudio-progreso-hero__mail" id="zona-estudio-progreso-hero-mail"></p>
                                                 </div>
                                             </div>
-                                            <div id="zona-estudio-progreso-profile" class="zona-estudio-progreso-profile" aria-label="Seleccionar persona"></div>
+                                            <div class="zona-estudio-progreso-hero__aside">
+                                                <button type="button" class="ubits-ia-button ubits-ia-button--primary ubits-ia-button--sm" id="zona-estudio-progreso-btn-generar-plan-ia">
+                                                    <i class="far fa-sparkles"></i><span>Generar Plan con IA</span>
+                                                </button>
+                                                <div id="zona-estudio-progreso-profile" class="zona-estudio-progreso-profile" aria-label="Seleccionar persona"></div>
+                                            </div>
                                         </div>
 
                                         <div id="zona-estudio-progreso-hero-metrics" class="zona-estudio-progreso-hero__metrics">
@@ -145,6 +156,10 @@
     <script src="../../components/card-content-compact.js"></script>
     <script src="../../components/card-plan-formacion.js"></script>
     <script src="../../components/carousel-contents.js"></script>
+    <script src="../../components/ia-button.js"></script>
+    <script src="../../components/ia-input.js"></script>
+    <script src="../../components/ia-chat-streaming.js"></script>
+    <script src="../../components/ia-panel.js"></script>
     <script src="./mi-equipo/mi-equipo-context.js"></script>
     <script src="./mi-equipo/mi-equipo-plan-competencias-shared.js"></script>
     <script src="../../bd-master/bd-master-niveles-contenido.js"></script>

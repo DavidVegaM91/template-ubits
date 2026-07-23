@@ -1030,8 +1030,838 @@
     function renderZonaEstudioProgresoTab() {
         renderNivel1();
         renderNivel2y3();
+        bindGenerarPlanIAButton();
         if (typeof initTooltip === 'function') {
             initTooltip('#zona-estudio-panel-progreso [data-tooltip]');
+        }
+    }
+
+    // ─── Agente de planes (IA panel) — paridad con React / evaluación Creator ───
+
+    var PLAN_IA_TOKEN_COST = 80;
+    var PLAN_IA_SUCCESS_MESSAGE =
+        'Plan generado exitosamente. Lo verás en esta página cuando entre en vigencia.';
+    var planIAState = null;
+    var planIABound = false;
+    var PLAN_IA_MESES = {
+        enero: 1, ene: 1, febrero: 2, feb: 2, marzo: 3, mar: 3,
+        abril: 4, abr: 4, mayo: 5, may: 5, junio: 6, jun: 6,
+        julio: 7, jul: 7, agosto: 8, ago: 8, septiembre: 9, setiembre: 9,
+        sep: 9, sept: 9, octubre: 10, oct: 10, noviembre: 11, nov: 11,
+        diciembre: 12, dic: 12
+    };
+
+    function planIAGetTokens() {
+        return window._ubitsAiTokenPool != null ? window._ubitsAiTokenPool : 500000;
+    }
+
+    function planIASetTokens(n) {
+        window._ubitsAiTokenPool = Math.max(0, Number(n) || 0);
+        if (typeof window.setIAPanelTokensBadgeValue === 'function') {
+            window.setIAPanelTokensBadgeValue(window._ubitsAiTokenPool);
+        }
+    }
+
+    function planIATrySpend(cost) {
+        var cur = planIAGetTokens();
+        if (cur < cost) {
+            if (typeof showToast === 'function') {
+                showToast('warning', 'No tienes suficientes tokens (' + cost + ' requeridos).');
+            }
+            return false;
+        }
+        planIASetTokens(cur - cost);
+        return true;
+    }
+
+    function planIAMsg(text, opts) {
+        if (typeof window.addIAPanelMessage === 'function') {
+            window.addIAPanelMessage(text, 'ai', null, opts || null);
+        }
+    }
+
+    function planIATipoLabel(tipo) {
+        return tipo === 'competencias' ? 'competencias' : 'contenidos';
+    }
+
+    function normalizeText(value) {
+        return String(value || '')
+            .normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '')
+            .toLowerCase()
+            .replace(/[^\w\s]/g, ' ')
+            .replace(/\s+/g, ' ')
+            .trim();
+    }
+
+    function planIAPad2(number) {
+        return ('0' + number).slice(-2);
+    }
+
+    function parseFlexibleDate(raw) {
+        var text = String(raw || '').trim();
+        var match;
+        var year;
+        var month;
+        var day;
+        if (!text) return null;
+
+        match = text.match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/);
+        if (match) {
+            year = Number(match[1]);
+            month = Number(match[2]);
+            day = Number(match[3]);
+        } else {
+            match = text.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})$/);
+            if (match) {
+                day = Number(match[1]);
+                month = Number(match[2]);
+                year = Number(match[3]);
+            } else {
+                var normalized = normalizeText(text).replace(/\bde\b/g, ' ').replace(/\s+/g, ' ').trim();
+                match = normalized.match(/^(\d{1,2})\s+([a-z]+)\s+(\d{4})$/);
+                if (!match || !PLAN_IA_MESES[match[2]]) return null;
+                day = Number(match[1]);
+                month = PLAN_IA_MESES[match[2]];
+                year = Number(match[3]);
+            }
+        }
+
+        var date = new Date(year, month - 1, day);
+        if (
+            date.getFullYear() !== year ||
+            date.getMonth() !== month - 1 ||
+            date.getDate() !== day
+        ) return null;
+        return year + '-' + planIAPad2(month) + '-' + planIAPad2(day);
+    }
+
+    function formatDateLongEs(iso) {
+        var parts = String(iso || '').split('-');
+        var meses = [
+            'enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio',
+            'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'
+        ];
+        if (parts.length !== 3 || !meses[Number(parts[1]) - 1]) return iso;
+        return Number(parts[2]) + ' de ' + meses[Number(parts[1]) - 1] + ' de ' + parts[0];
+    }
+
+    function planIAIsoToDisplay(iso) {
+        var parts = String(iso || '').split('-');
+        return parts.length === 3 ? parts[2] + '/' + parts[1] + '/' + parts[0] : iso;
+    }
+
+    function planIAEscapeHtml(value) {
+        return String(value || '')
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;');
+    }
+
+    function planIAEmptyDraft() {
+        return {
+            tipo: null,
+            titulo: '',
+            personas: [],
+            personasTodos: false,
+            fechaInicioIso: '',
+            fechaFinIso: '',
+            contenidos: [],
+            competencias: [],
+            horasPorCompetencia: {}
+        };
+    }
+
+    function planIATokens(value) {
+        return normalizeText(value).split(' ').filter(Boolean);
+    }
+
+    function planIANameMatches(persona, query) {
+        var name = normalizeText(persona.nombre);
+        var requested = normalizeText(query);
+        if (!name || !requested) return false;
+        if (name === requested || String(persona.id) === String(query).trim()) return true;
+        if (name.indexOf(requested) !== -1 && requested.length >= 4) return true;
+        var nameTokens = planIATokens(persona.nombre);
+        var queryTokens = planIATokens(query);
+        return queryTokens.length > 0 && queryTokens.every(function (token) {
+            return nameTokens.some(function (nameToken) {
+                return nameToken === token || (token.length >= 4 && nameToken.indexOf(token) === 0);
+            });
+        });
+    }
+
+    function matchPersonas(raw) {
+        var text = String(raw || '').trim();
+        var normalized = normalizeText(text);
+        var equipo = getEquipoPersonas();
+        if (
+            /^(todos?|todo el equipo|a todo el equipo|mi equipo|el equipo completo|todo mi equipo)$/.test(normalized) ||
+            (/\btodos\b/.test(normalized) && text.indexOf(',') === -1 && planIATokens(text).length <= 4)
+        ) {
+            return { matched: equipo.slice(), unknown: [], isTodos: true };
+        }
+
+        var segments = text.split(/\n|;|\by\b|,/i).map(function (segment) {
+            return segment.replace(/^(para|a)\s+/i, '').trim();
+        }).filter(Boolean);
+        var matched = [];
+        var unknown = [];
+        var seen = {};
+        segments.forEach(function (segment) {
+            var normalizedSegment = normalizeText(segment);
+            if (/^(mi|yo|para mi|para mi mismo|para mi misma|a mi|a mi misma)$/.test(normalizedSegment)) {
+                var lider = equipo.filter(function (persona) { return persona.id === LEADER_ID; })[0];
+                if (lider && !seen[lider.id]) {
+                    seen[lider.id] = true;
+                    matched.push(lider);
+                } else if (!lider) {
+                    unknown.push(segment);
+                }
+                return;
+            }
+            var hits = equipo.filter(function (persona) {
+                return planIANameMatches(persona, segment);
+            });
+            if (!hits.length) {
+                unknown.push(segment);
+                return;
+            }
+            hits.forEach(function (persona) {
+                if (!seen[persona.id]) {
+                    seen[persona.id] = true;
+                    matched.push(persona);
+                }
+            });
+        });
+        return { matched: matched, unknown: unknown, isTodos: false };
+    }
+
+    function planIAContentTitle(content) {
+        return String((content && (content.title || content.titulo)) || '').trim();
+    }
+
+    function planIAContentDuration(content) {
+        var value = (content && content.tiempoValor) || 60;
+        return String((content && content.unidadTiempo) || 'minutos').toLowerCase().indexOf('hora') !== -1
+            ? value + ' h'
+            : value + ' min';
+    }
+
+    function planIAMatchScore(title, query) {
+        var normalizedTitle = normalizeText(title);
+        var normalizedQuery = normalizeText(query);
+        if (!normalizedTitle || !normalizedQuery) return 0;
+        if (normalizedTitle === normalizedQuery) return 1000;
+        if (normalizedTitle.indexOf(normalizedQuery) !== -1 || normalizedQuery.indexOf(normalizedTitle) !== -1) {
+            return 800 + Math.min(normalizedTitle.length, normalizedQuery.length);
+        }
+        var titleTokens = planIATokens(title);
+        var queryTokens = planIATokens(query);
+        var hits = queryTokens.filter(function (queryToken) {
+            return titleTokens.some(function (titleToken) {
+                return titleToken === queryToken ||
+                    titleToken.indexOf(queryToken) === 0 ||
+                    queryToken.indexOf(titleToken) === 0;
+            });
+        }).length;
+        return hits ? hits * 50 + (hits === queryTokens.length ? 200 : 0) : 0;
+    }
+
+    function matchContenidos(raw) {
+        var ubits = (window.BDS_CONTENIDOS_UBITS && window.BDS_CONTENIDOS_UBITS.contents) || [];
+        var fiqshaDb = window.BDS_CONTENIDOS_FIQSHA || {};
+        var catalog = ubits.concat(fiqshaDb.contents || [], fiqshaDb.contentsCreatorOnly || []);
+        var lines = String(raw || '').split(/\n|;/).map(function (line) {
+            return line.replace(/^[-•*]\s*/, '').trim();
+        }).filter(Boolean);
+        var segments = lines.length === 1 && lines[0].indexOf(',') !== -1
+            ? lines[0].split(',').map(function (item) { return item.trim(); }).filter(Boolean)
+            : lines;
+        var matched = [];
+        var unknown = [];
+        var seen = {};
+        segments.forEach(function (segment) {
+            var best = null;
+            var bestScore = 0;
+            catalog.forEach(function (content) {
+                var score = planIAMatchScore(planIAContentTitle(content), segment);
+                if (score > bestScore) {
+                    best = content;
+                    bestScore = score;
+                }
+            });
+            if (best && bestScore >= 100) {
+                if (!seen[best.id]) {
+                    seen[best.id] = true;
+                    matched.push({
+                        id: best.id,
+                        title: planIAContentTitle(best),
+                        duration: planIAContentDuration(best)
+                    });
+                }
+            } else {
+                unknown.push(segment);
+            }
+        });
+        return { matched: matched, unknown: unknown };
+    }
+
+    function matchCompetencias(raw) {
+        var master = window.BD_MASTER_COMPETENCIAS || {};
+        var competencias = master.competencias || [];
+        var segments = String(raw || '').split(/\n|;|,/).map(function (line) {
+            return line.replace(/^[-•*]\s*/, '').trim();
+        }).filter(Boolean);
+        var matched = [];
+        var unknown = [];
+        var seen = {};
+        segments.forEach(function (segment) {
+            var normalizedSegment = normalizeText(segment);
+            var best = null;
+            var bestScore = 0;
+            competencias.forEach(function (competencia) {
+                var normalizedName = normalizeText(competencia.nombre);
+                var score = 0;
+                if (normalizedName === normalizedSegment) score = 1000;
+                else if (
+                    normalizedName.indexOf(normalizedSegment) !== -1 ||
+                    normalizedSegment.indexOf(normalizedName) !== -1
+                ) score = 700;
+                else {
+                    var matches = planIATokens(segment).filter(function (token) {
+                        return planIATokens(competencia.nombre).indexOf(token) !== -1;
+                    }).length;
+                    score = matches * 80;
+                }
+                if (score > bestScore) {
+                    best = competencia;
+                    bestScore = score;
+                }
+            });
+            if (best && bestScore >= 80) {
+                if (!seen[best.id]) {
+                    seen[best.id] = true;
+                    matched.push({ id: best.id, nombre: best.nombre });
+                }
+            } else {
+                unknown.push(segment);
+            }
+        });
+        return { matched: matched, unknown: unknown };
+    }
+
+    function parseHoras(raw, competencias) {
+        var text = String(raw || '').trim();
+        if (!text || !competencias.length) {
+            return { ok: false, error: 'Indica las horas de estudio (por ejemplo: 2, o «Comunicación: 3, Agilidad: 2»).' };
+        }
+        var single = text.match(/^(\d+(?:[.,]\d+)?)\s*(?:h|hrs?|horas?)?$/i);
+        var map = {};
+        if (single) {
+            var hours = Number(String(single[1]).replace(',', '.'));
+            if (!hours || hours <= 0) return { ok: false, error: 'Las horas deben ser un número mayor que 0.' };
+            competencias.forEach(function (competencia) { map[competencia.id] = hours; });
+            return { ok: true, map: map };
+        }
+        text.split(/,|\n|;/).forEach(function (part) {
+            var match = part.trim().match(/^(.+?)\s*[:=\-]\s*(\d+(?:[.,]\d+)?)\s*(?:h|hrs?|horas?)?$/i);
+            if (!match) return;
+            var found = matchCompetencias(match[1]).matched[0];
+            var hours = Number(String(match[2]).replace(',', '.'));
+            if (found && hours > 0) map[found.id] = hours;
+        });
+        var missing = competencias.filter(function (competencia) {
+            return map[competencia.id] == null;
+        });
+        return missing.length
+            ? { ok: false, error: 'Faltan horas para: ' + missing.map(function (c) { return c.nombre; }).join(', ') + '. Usa un número para todas o «Nombre: horas».' }
+            : { ok: true, map: map };
+    }
+
+    function tryParseOneShot(raw) {
+        var text = String(raw || '').trim();
+        var normalized = normalizeText(text);
+        var looksLikeOneShot =
+            /titulado/.test(normalized) &&
+            (/(periodo|vigencia)/.test(normalized) || /del .+ al /.test(normalized)) &&
+            /(incluye|contenidos|competencias)/.test(normalized);
+        if (!looksLikeOneShot) return { looksLikeOneShot: false };
+
+        var out = { looksLikeOneShot: true };
+        var match = text.match(/plan\s+de\s+(contenidos|competencias)/i);
+        if (match) out.tipo = match[1].toLowerCase();
+        var titleAndPeople = text.match(
+            /titulado\s+(.+)\s+para\s+(.+?)(?=\s*(?:,|\.|\n)?\s*(?:periodo|período|del|incluye)\b)/i
+        );
+        if (titleAndPeople) {
+            out.titulo = titleAndPeople[1].trim().replace(/[.,;]+$/, '');
+            out.personasRaw = titleAndPeople[2].trim();
+        } else {
+            match = text.match(/titulado\s+(.+?)(?=\s*(?:,|\.|\n)?\s*(?:periodo|período|del|incluye)\b|$)/i);
+            if (match) out.titulo = match[1].trim().replace(/[.,;]+$/, '');
+            match = text.match(/para\s+(.+?)(?=\s*(?:,|\.|\n)?\s*(?:periodo|período|del|incluye)\b|$)/i);
+            if (match) out.personasRaw = match[1].trim();
+        }
+        match = text.match(/(?:periodo|período)(?:\s+de\s+vigencia)?\s*:?\s*del\s+(.+?)\s+al\s+(.+?)(?:\.|$|\n)/i) ||
+            text.match(/del\s+(\d{1,2}\s+de\s+\w+\s+de\s+\d{4})\s+al\s+(\d{1,2}\s+de\s+\w+\s+de\s+\d{4})/i);
+        if (match) {
+            out.fechaInicioIso = parseFlexibleDate(match[1]);
+            out.fechaFinIso = parseFlexibleDate(match[2]);
+        }
+        match = text.match(/incluye\s+los\s+siguientes\s+contenidos\s*:?\s*([\s\S]+)$/i);
+        if (match) {
+            out.tipo = out.tipo || 'contenidos';
+            out.contenidos = matchContenidos(match[1]).matched;
+        }
+        match = text.match(/incluye\s+las?\s+siguientes?\s+competencias\s*:?\s*([\s\S]+?)(?=horas|$)/i);
+        if (match) {
+            out.tipo = out.tipo || 'competencias';
+            out.competencias = matchCompetencias(match[1]).matched;
+        }
+        match = text.match(/horas(?:\s+de\s+estudio)?(?:\s+por\s+competencia)?\s*:?\s*([\s\S]+)$/i);
+        if (match && out.competencias && out.competencias.length) {
+            var parsedHours = parseHoras(match[1], out.competencias);
+            if (parsedHours.ok) out.horasPorCompetencia = parsedHours.map;
+        }
+        return out;
+    }
+
+    function planIADraftReady(draft) {
+        if (!draft || !draft.tipo || !draft.titulo.trim() || !draft.personas.length) return false;
+        if (!draft.fechaInicioIso || !draft.fechaFinIso || draft.fechaFinIso < draft.fechaInicioIso) return false;
+        if (draft.tipo === 'contenidos') return draft.contenidos.length > 0;
+        return draft.competencias.length > 0 && draft.competencias.every(function (competencia) {
+            return draft.horasPorCompetencia[competencia.id] > 0;
+        });
+    }
+
+    function planIAPersonasLabel(draft) {
+        if (draft.personasTodos) return 'todo el equipo';
+        if (draft.personas.length === 1) return draft.personas[0].nombre;
+        if (draft.personas.length <= 3) {
+            return draft.personas.map(function (p) { return p.nombre; }).join(', ').replace(/, ([^,]*)$/, ' y $1');
+        }
+        return draft.personas.length + ' personas de tu equipo';
+    }
+
+    function buildAndPersistPlan(draft) {
+        if (!planIADraftReady(draft)) return null;
+        var pf = getPf();
+        if (!pf || typeof pf.addPlan !== 'function') return null;
+        var contenidoPorUsuario = {};
+        var competenciaPorUsuario = {};
+        var consumoPorUsuario = {};
+        var asignaciones = [];
+        if (draft.tipo === 'contenidos') {
+            var items = draft.contenidos.map(function (content) {
+                return { id: content.id, title: content.title, duration: content.duration || '60 min', progress: 0, status: 'default' };
+            });
+            draft.personas.forEach(function (persona) {
+                contenidoPorUsuario[persona.id] = items.map(function (item) {
+                    return { id: item.id, title: item.title, duration: item.duration, progress: item.progress, status: item.status };
+                });
+                asignaciones.push({
+                    id: 'fila-usuario-' + persona.id,
+                    colaboradorId: persona.id,
+                    nombreUsuario: persona.nombre,
+                    avatar: persona.avatar || null,
+                    contenidos: items.map(function (item) { return { id: item.id, title: item.title, duration: item.duration }; }),
+                    contenidosCount: items.length
+                });
+            });
+        } else {
+            var hoursValues = draft.competencias.map(function (competencia) {
+                return draft.horasPorCompetencia[competencia.id] || 2;
+            });
+            var horasEstudioMeta = Math.max.apply(Math, hoursValues.concat([1]));
+            draft.personas.forEach(function (persona) {
+                competenciaPorUsuario[persona.id] = draft.competencias.map(function (competencia) {
+                    return {
+                        id: competencia.id, title: competencia.nombre, nombre: competencia.nombre,
+                        habilidades: [], progress: 0, status: 'default',
+                        horasMeta: draft.horasPorCompetencia[competencia.id]
+                    };
+                });
+                consumoPorUsuario[persona.id] = { horas: 0, items: [] };
+                asignaciones.push({
+                    id: 'fila-usuario-' + persona.id,
+                    colaboradorId: persona.id,
+                    nombreUsuario: persona.nombre,
+                    avatar: persona.avatar || null,
+                    contenidos: draft.competencias.map(function (competencia) {
+                        return { id: competencia.id, title: competencia.nombre, nombre: competencia.nombre, habilidades: [] };
+                    }),
+                    contenidosCount: draft.competencias.length
+                });
+            });
+        }
+        var plan = {
+            tipo: draft.tipo,
+            nombre: draft.titulo.trim(),
+            fechaInicioIso: draft.fechaInicioIso,
+            fechaFinIso: draft.fechaFinIso,
+            fechaInicio: planIAIsoToDisplay(draft.fechaInicioIso),
+            fechaFin: planIAIsoToDisplay(draft.fechaFinIso),
+            creadorId: LEADER_ID,
+            area: LEADER_AREA,
+            asignaciones: asignaciones,
+            progresoAgregado: 0
+        };
+        if (draft.tipo === 'contenidos') {
+            plan.contenidoPorUsuario = contenidoPorUsuario;
+        } else {
+            plan.competenciaPorUsuario = competenciaPorUsuario;
+            plan.consumoPorUsuario = consumoPorUsuario;
+            plan.horasEstudioMeta = horasEstudioMeta;
+            plan.horasEstudioPorCompetencia = horasEstudioMeta;
+            plan.horasPorCompetencia = draft.horasPorCompetencia;
+        }
+        return pf.addPlan(plan);
+    }
+
+    function planIAShowConfirmation() {
+        if (!planIAState || !planIADraftReady(planIAState.draft)) return;
+        planIAState.step = 'pre_confirm';
+        var draft = planIAState.draft;
+        var tipo = planIATipoLabel(draft.tipo);
+        var list = draft.tipo === 'competencias'
+            ? draft.competencias.map(function (competencia) {
+                return '<li>' + planIAEscapeHtml(competencia.nombre) + ' (' + planIAEscapeHtml(draft.horasPorCompetencia[competencia.id]) + ' h)</li>';
+            }).join('')
+            : draft.contenidos.map(function (content) {
+                return '<li>' + planIAEscapeHtml(content.title) + '</li>';
+            }).join('');
+        var richHtml =
+            '<p class="ubits-body-md-regular" style="margin:0 0 4px;">Crearé un plan de ' + tipo + ' titulado ' +
+            planIAEscapeHtml(draft.titulo) + ' para ' + planIAEscapeHtml(planIAPersonasLabel(draft)) + '.</p>' +
+            '<p class="ubits-body-md-regular" style="margin:0 0 4px;">Período de vigencia: del ' +
+            formatDateLongEs(draft.fechaInicioIso) + ' al ' + formatDateLongEs(draft.fechaFinIso) + '.</p>' +
+            '<p class="ubits-body-md-regular" style="margin:0 0 4px;">Incluye los siguientes ' + tipo + ':</p>' +
+            '<ul class="ubits-body-md-regular" style="margin:0 0 12px;padding-left:20px;">' + list + '</ul>' +
+            '<button type="button" id="zona-estudio-progreso-plan-ia-confirm-btn"' +
+            ' class="ubits-ia-button ubits-ia-button--secondary ubits-ia-button--sm ubits-ia-button--with-token-cost">' +
+            '<span>Generar plan</span>' +
+            '<span class="ubits-ia-button__token-divider" aria-hidden="true"></span>' +
+            '<span class="ubits-ia-button__token-cost" aria-hidden="true"><i class="far fa-coin-vertical"></i><span class="ubits-ia-button__token-number">' +
+            PLAN_IA_TOKEN_COST +
+            '</span></span>' +
+            '</button>';
+
+        planIAMsg('', { richHtml: richHtml, hideAiCopy: true });
+
+        setTimeout(function () {
+            var btn = document.getElementById('zona-estudio-progreso-plan-ia-confirm-btn');
+            if (!btn) return;
+            if (typeof window.initIaButtonSparkles === 'function') {
+                window.initIaButtonSparkles(btn);
+            }
+            btn.addEventListener('click', function () {
+                if (!planIATrySpend(PLAN_IA_TOKEN_COST)) return;
+                if (!buildAndPersistPlan(draft)) {
+                    if (typeof showToast === 'function') showToast('error', 'No se pudo guardar el plan. Intenta de nuevo.');
+                    return;
+                }
+                planIAState.step = 'done';
+                if (typeof window.closeIAPanel === 'function') window.closeIAPanel();
+                if (typeof showToast === 'function') {
+                    showToast('success', PLAN_IA_SUCCESS_MESSAGE, { duration: 10000, showClose: true });
+                }
+                renderNivel1();
+                renderNivel2y3();
+            });
+        }, 100);
+    }
+
+    function planIAWithTyping(callback, delay) {
+        var removeTyping = typeof window.showIAPanelTyping === 'function' ? window.showIAPanelTyping() : null;
+        setTimeout(function () {
+            if (typeof removeTyping === 'function') removeTyping();
+            callback();
+        }, delay || 600);
+    }
+
+    function planIAAskTitulo() {
+        if (!planIAState) return;
+        planIAState.step = 'await_titulo';
+        planIAWithTyping(function () { planIAMsg('¿Cuál será el título del plan?'); });
+    }
+
+    function planIAAskPersonas() {
+        planIAState.step = 'await_personas';
+        planIAWithTyping(function () {
+            planIAMsg('¿Para quiénes de tu equipo quieres crear el plan? Puedes nombrar a una o varias personas (nombre y apellido), incluirte a ti, o escribir «todos».');
+        });
+    }
+
+    function planIAAskFechaInicio() {
+        planIAState.step = 'await_fecha_inicio';
+        planIAWithTyping(function () {
+            planIAMsg('¿Cuál es la fecha de inicio? (por ejemplo: 20 de junio de 2026 o 20/06/2026)');
+        });
+    }
+
+    function planIAAskFechaFin() {
+        planIAState.step = 'await_fecha_fin';
+        planIAWithTyping(function () {
+            planIAMsg('¿Y la fecha de finalización? (por ejemplo: 30 de septiembre de 2026)');
+        });
+    }
+
+    function planIAAskContenidos() {
+        planIAState.step = 'await_contenidos';
+        planIAWithTyping(function () {
+            planIAMsg('¿Qué contenidos del catálogo quieres asignar? Escribe uno o varios títulos (uno por línea o separados por coma).');
+        });
+    }
+
+    function planIAAskCompetencias() {
+        planIAState.step = 'await_competencias';
+        planIAWithTyping(function () {
+            planIAMsg('¿Qué competencias oficiales de UBITS quieres asignar? Pueden ser una o varias (por ejemplo: Comunicación, Agilidad).');
+        });
+    }
+
+    function planIAAskHoras() {
+        planIAState.step = 'await_horas';
+        planIAWithTyping(function () {
+            planIAMsg('¿Cuántas horas de estudio asignas por competencia? Puedes indicar un número para todas (ej. 2) o detallar: «Comunicación: 3, Agilidad: 2».');
+        });
+    }
+
+    function planIAStartFlow() {
+        var cost = PLAN_IA_TOKEN_COST;
+        if (planIAGetTokens() < cost) {
+            planIAState = { step: 'no_tokens', draft: planIAEmptyDraft() };
+            planIAMsg(
+                'No tienes tokens suficientes para generar un plan (' +
+                    cost +
+                    ' requeridos). Recarga saldo e inténtalo de nuevo.'
+            );
+            return;
+        }
+
+        planIAState = { step: 'path_select', draft: planIAEmptyDraft() };
+        planIAWithTyping(function () {
+            planIAMsg('¿Qué tipo de plan quieres crear? Elige una opción para continuar.');
+            setTimeout(function () {
+                if (typeof window.addIAPanelInteraction !== 'function') return;
+                window.addIAPanelInteraction('cards', {
+                    items: [
+                        {
+                            value: 'contenidos',
+                            emoji: '📚',
+                            title: 'Plan por contenidos',
+                            description: 'Arma un plan con cursos y recursos del catálogo.'
+                        },
+                        {
+                            value: 'competencias',
+                            emoji: '🎯',
+                            title: 'Plan por competencias',
+                            description: 'Define competencias y habilidades a desarrollar.'
+                        }
+                    ],
+                    onReply: function (value) {
+                        if (!planIAState) return;
+                        planIAState.draft.tipo = value === 'competencias' ? 'competencias' : 'contenidos';
+                        planIAAskTitulo();
+                    }
+                });
+            }, 300);
+        });
+    }
+
+    function planIAContinueFromDraft() {
+        var draft = planIAState.draft;
+        if (!draft.tipo) return planIAStartFlow();
+        if (!draft.titulo) return planIAAskTitulo();
+        if (!draft.personas.length) return planIAAskPersonas();
+        if (!draft.fechaInicioIso) return planIAAskFechaInicio();
+        if (!draft.fechaFinIso) return planIAAskFechaFin();
+        if (draft.tipo === 'contenidos' && !draft.contenidos.length) return planIAAskContenidos();
+        if (draft.tipo === 'competencias' && !draft.competencias.length) return planIAAskCompetencias();
+        if (draft.tipo === 'competencias' && !draft.competencias.every(function (competencia) {
+            return draft.horasPorCompetencia[competencia.id] > 0;
+        })) return planIAAskHoras();
+        planIAShowConfirmation();
+    }
+
+    function planIATryApplyOneShot(text) {
+        var parsed = tryParseOneShot(text);
+        if (!parsed.looksLikeOneShot || !planIAState) return false;
+        var draft = planIAState.draft;
+        if (parsed.tipo) draft.tipo = parsed.tipo;
+        if (parsed.titulo) draft.titulo = parsed.titulo;
+        if (parsed.fechaInicioIso) draft.fechaInicioIso = parsed.fechaInicioIso;
+        if (parsed.fechaFinIso) draft.fechaFinIso = parsed.fechaFinIso;
+        if (parsed.contenidos && parsed.contenidos.length) draft.contenidos = parsed.contenidos;
+        if (parsed.competencias && parsed.competencias.length) draft.competencias = parsed.competencias;
+        if (parsed.horasPorCompetencia) draft.horasPorCompetencia = parsed.horasPorCompetencia;
+        if (parsed.personasRaw) {
+            var result = matchPersonas(parsed.personasRaw);
+            if (result.unknown.length && !result.matched.length) {
+                planIAMsg(result.unknown[0] + ' no está bajo tu supervisión en el organigrama, así que no puedes crear un plan para ella. Elige a alguien de tu equipo (o escribe «todos»).');
+                planIAState.step = 'await_personas';
+                return true;
+            }
+            if (result.matched.length) {
+                draft.personas = result.matched;
+                draft.personasTodos = result.isTodos;
+            }
+        }
+        planIAWithTyping(function () {
+            if (planIADraftReady(draft)) {
+                planIAMsg('Perfecto, armé el plan con lo que me compartiste. Confirma para generarlo:');
+                setTimeout(planIAShowConfirmation, 300);
+            } else {
+                planIAMsg('Recibí parte del plan. Completemos lo que falta.');
+                setTimeout(planIAContinueFromDraft, 400);
+            }
+        });
+        return true;
+    }
+
+    function planIAHandleUserMsg(msg) {
+        var trimmed = String(msg || '').trim();
+        if (!planIAState || planIAState.step === 'done') return planIAStartFlow();
+        if (planIAState.step === 'no_tokens') {
+            if (trimmed) planIAMsg('Sigo sin poder generar el plan: el saldo es insuficiente. Cuando tengas tokens, cierra y vuelve a abrir el agente.');
+            return;
+        }
+        if (planIAState.step === 'pre_confirm') return;
+        if (trimmed && planIATryApplyOneShot(trimmed)) return;
+        if (planIAState.step === 'path_select') return;
+
+        var draft = planIAState.draft;
+        if (planIAState.step === 'await_titulo') {
+            if (!trimmed) return planIAMsg('Necesito un título para el plan. ¿Cómo lo llamamos?');
+            draft.titulo = trimmed.replace(/^["«]|["»]$/g, '').trim();
+            return planIAAskPersonas();
+        }
+        if (planIAState.step === 'await_personas') {
+            if (!trimmed) return planIAMsg('Indica al menos una persona de tu equipo, o escribe «todos».');
+            var personasResult = matchPersonas(trimmed);
+            if (personasResult.unknown.length) {
+                planIAMsg(
+                    personasResult.unknown[0] +
+                    ' no está bajo tu supervisión en el organigrama, así que no puedes crear un plan para ella. Elige a alguien de tu equipo (o escribe «todos»).' +
+                    (personasResult.matched.length ? ' Las personas válidas que detecté son: ' + personasResult.matched.map(function (p) { return p.nombre; }).join(', ') + '.' : '')
+                );
+                return;
+            }
+            if (!personasResult.matched.length) return planIAMsg('No reconocí a nadie de tu equipo. Escribe un nombre y apellido, varios nombres, o «todos».');
+            draft.personas = personasResult.matched;
+            draft.personasTodos = personasResult.isTodos;
+            planIAWithTyping(function () {
+                if (personasResult.isTodos) {
+                    planIAMsg('Perfecto. Crearé el plan para todo tu equipo (' + personasResult.matched.length + ' personas).');
+                } else if (personasResult.matched.length === 1) {
+                    planIAMsg('Listo. El plan será para ' + personasResult.matched[0].nombre + '.');
+                } else {
+                    planIAMsg('Listo. El plan será para ' + planIAPersonasLabel(draft) + '.');
+                }
+                setTimeout(planIAAskFechaInicio, 350);
+            }, 500);
+            return;
+        }
+        if (planIAState.step === 'await_fecha_inicio') {
+            var startIso = parseFlexibleDate(trimmed);
+            if (!startIso) return planIAMsg('No pude leer esa fecha. Prueba con «20 de junio de 2026» o «20/06/2026».');
+            var hoyIso = (getPf() && getPf().PLAYGROUND_TODAY) || '2026-06-19';
+            if (startIso < hoyIso) {
+                return planIAMsg(
+                    'La fecha de inicio no puede ser anterior a hoy (' +
+                        formatDateLongEs(hoyIso) +
+                        '). Prueba con una fecha posterior, por ejemplo «20 de junio de 2026».'
+                );
+            }
+            draft.fechaInicioIso = startIso;
+            return planIAAskFechaFin();
+        }
+        if (planIAState.step === 'await_fecha_fin') {
+            var endIso = parseFlexibleDate(trimmed);
+            if (!endIso) return planIAMsg('No pude leer esa fecha. Prueba con «30 de septiembre de 2026» o «30/09/2026».');
+            if (draft.fechaInicioIso && endIso < draft.fechaInicioIso) {
+                return planIAMsg('La fecha de finalización debe ser igual o posterior a la de inicio. ¿Cuál es la fecha de fin?');
+            }
+            draft.fechaFinIso = endIso;
+            return draft.tipo === 'competencias' ? planIAAskCompetencias() : planIAAskContenidos();
+        }
+        if (planIAState.step === 'await_contenidos') {
+            var contentsResult = matchContenidos(trimmed);
+            if (!contentsResult.matched.length) return planIAMsg('No encontré esos títulos en el catálogo. Escribe el nombre exacto o muy parecido de uno o más contenidos.');
+            draft.contenidos = contentsResult.matched;
+            planIAWithTyping(function () {
+                if (contentsResult.unknown.length) planIAMsg('Tomé ' + contentsResult.matched.length + ' contenido(s). No encontré: ' + contentsResult.unknown.join(', ') + '.');
+                planIAShowConfirmation();
+            });
+            return;
+        }
+        if (planIAState.step === 'await_competencias') {
+            var competenciasResult = matchCompetencias(trimmed);
+            if (!competenciasResult.matched.length) return planIAMsg('No coinciden con las competencias oficiales de UBITS. Prueba con nombres como Comunicación, Agilidad o Gestión de proyectos.');
+            draft.competencias = competenciasResult.matched;
+            planIAWithTyping(function () {
+                if (competenciasResult.unknown.length) planIAMsg('Asigné: ' + competenciasResult.matched.map(function (c) { return c.nombre; }).join(', ') + '. No reconocí: ' + competenciasResult.unknown.join(', ') + '.');
+                planIAAskHoras();
+            });
+            return;
+        }
+        if (planIAState.step === 'await_horas') {
+            var hoursResult = parseHoras(trimmed, draft.competencias);
+            if (!hoursResult.ok) return planIAMsg(hoursResult.error);
+            draft.horasPorCompetencia = hoursResult.map;
+            planIAWithTyping(planIAShowConfirmation);
+        }
+    }
+
+    function openGenerarPlanIA() {
+        if (typeof window.destroyIAPanel === 'function') window.destroyIAPanel();
+        if (typeof window.initIAPanel !== 'function') return;
+
+        planIAState = null;
+        var currentTokens = planIAGetTokens();
+
+        window.initIAPanel({
+            title: 'Agente de planes',
+            agentLabel: 'Studio IA',
+            welcomeTitle: 'Agente de planes',
+            welcomeSubtitle: 'Genera un plan de formación para tu equipo con IA.',
+            placeholder: 'Escribe aquí…',
+            disclaimer: 'El agente puede cometer errores. Revisa el plan antes de asignarlo.',
+            tokensBadge: { value: currentTokens, tooltip: 'Número de tokens restantes.' },
+            onSend: function (msg) {
+                planIAHandleUserMsg(msg);
+            },
+            onClose: function () {}
+        });
+
+        if (typeof window.openIAPanel === 'function') window.openIAPanel();
+
+        setTimeout(function () {
+            if (typeof window.addIAPanelMessage === 'function') {
+                window.addIAPanelMessage(
+                    '¡Hola! Soy el Agente de planes. Te ayudo a generar un plan de formación para tu equipo con IA. También puedes pegar un brief completo en un solo mensaje.',
+                    'ai'
+                );
+            }
+            setTimeout(function () {
+                planIAStartFlow();
+            }, 400);
+        }, 250);
+    }
+
+    function bindGenerarPlanIAButton() {
+        if (planIABound) return;
+        var btn = document.getElementById('zona-estudio-progreso-btn-generar-plan-ia');
+        if (!btn) return;
+        planIABound = true;
+        btn.addEventListener('click', function () {
+            openGenerarPlanIA();
+        });
+        if (typeof window.initIaButtonSparkles === 'function') {
+            window.initIaButtonSparkles(btn);
         }
     }
 
