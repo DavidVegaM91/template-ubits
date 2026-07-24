@@ -194,6 +194,7 @@
         'log_m27_rodrigo.jpg',
         'log_m45_manuel.jpg',
         'ret_f27_martina.jpg',
+        'ret_f27_valeria.jpg',
         'ret_f45_daniela.jpg',
         'ret_m27_leonardo.jpg',
         'ret_m45_miguel.jpg',
@@ -296,7 +297,8 @@
         'staff_m30_rafael',
         'staff_m30_esteban',
         'staff_m32_jorge',
-        'staff_m35_david'
+        'staff_m35_david',
+        'ret_f27_valeria'
     ];
 
     var AVATAR_VIDEO_BASE = '../../videos/avatars/';

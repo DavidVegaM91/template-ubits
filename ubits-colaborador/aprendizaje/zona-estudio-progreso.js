@@ -1098,35 +1098,21 @@
         return ('0' + number).slice(-2);
     }
 
-    function parseFlexibleDate(raw) {
-        var text = String(raw || '').trim();
-        var match;
-        var year;
-        var month;
-        var day;
-        if (!text) return null;
-
-        match = text.match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/);
-        if (match) {
-            year = Number(match[1]);
-            month = Number(match[2]);
-            day = Number(match[3]);
-        } else {
-            match = text.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})$/);
-            if (match) {
-                day = Number(match[1]);
-                month = Number(match[2]);
-                year = Number(match[3]);
-            } else {
-                var normalized = normalizeText(text).replace(/\bde\b/g, ' ').replace(/\s+/g, ' ').trim();
-                match = normalized.match(/^(\d{1,2})\s+([a-z]+)\s+(\d{4})$/);
-                if (!match || !PLAN_IA_MESES[match[2]]) return null;
-                day = Number(match[1]);
-                month = PLAN_IA_MESES[match[2]];
-                year = Number(match[3]);
+    function planIAResolveMonth(token) {
+        var t = normalizeText(token).replace(/\./g, '');
+        if (!t) return null;
+        if (PLAN_IA_MESES[t]) return PLAN_IA_MESES[t];
+        if (t.length < 3) return null;
+        var bestKey = null;
+        Object.keys(PLAN_IA_MESES).forEach(function (key) {
+            if (key.indexOf(t) === 0 || t.indexOf(key) === 0) {
+                if (!bestKey || key.length > bestKey.length) bestKey = key;
             }
-        }
+        });
+        return bestKey ? PLAN_IA_MESES[bestKey] : null;
+    }
 
+    function planIABuildIso(year, month, day) {
         var date = new Date(year, month - 1, day);
         if (
             date.getFullYear() !== year ||
@@ -1134,6 +1120,99 @@
             date.getDate() !== day
         ) return null;
         return year + '-' + planIAPad2(month) + '-' + planIAPad2(day);
+    }
+
+    function planIAAddDaysIso(iso, days) {
+        var parts = String(iso || '').split('-').map(Number);
+        if (parts.length !== 3 || parts.some(function (n) { return !n; })) return iso;
+        var date = new Date(parts[0], parts[1] - 1, parts[2]);
+        date.setDate(date.getDate() + days);
+        return planIABuildIso(date.getFullYear(), date.getMonth() + 1, date.getDate()) || iso;
+    }
+
+    function planIAPlaygroundToday() {
+        return (getPf() && getPf().PLAYGROUND_TODAY) || (function () {
+            var d = new Date();
+            var m = ('0' + (d.getMonth() + 1)).slice(-2);
+            var day = ('0' + d.getDate()).slice(-2);
+            return d.getFullYear() + '-' + m + '-' + day;
+        })();
+    }
+
+    function planIAIsVigenteHoy(fechaInicioIso, fechaFinIso) {
+        var hoy = planIAPlaygroundToday();
+        return Boolean(fechaInicioIso && fechaFinIso && fechaInicioIso <= hoy && fechaFinIso >= hoy);
+    }
+
+    function planIASuccessToastMessage(fechaInicioIso, fechaFinIso) {
+        var hoy = planIAPlaygroundToday();
+        if (fechaInicioIso && fechaInicioIso <= hoy && (!fechaFinIso || fechaFinIso >= hoy)) {
+            return 'Plan generado exitosamente. Ya está vigente: lo verás en los planes de las personas asignadas.';
+        }
+        if (fechaInicioIso && fechaInicioIso > hoy) {
+            return 'Plan generado exitosamente. Entrará en vigencia el ' +
+                formatDateLongEs(fechaInicioIso) +
+                '; lo verás en esta página a partir de ese día.';
+        }
+        return PLAN_IA_SUCCESS_MESSAGE;
+    }
+
+    /** Extrae fecha de texto libre: «el 30 de sept de 2026», «me gustaría el 30 de septiembre…», «hoy». */
+    function parseFlexibleDate(raw) {
+        var text = String(raw || '').trim();
+        var match;
+        var iso;
+        if (!text) return null;
+
+        var hoy = planIAPlaygroundToday();
+        var nFull = normalizeText(text);
+        var hasNumericDay = /\d{1,2}/.test(text);
+        var hasYear = /\d{4}/.test(text);
+
+        if (!hasNumericDay && !hasYear && /\bpasado\s+manana\b/.test(nFull)) return planIAAddDaysIso(hoy, 2);
+        if (!hasNumericDay && !hasYear && /\bmanana\b/.test(nFull)) return planIAAddDaysIso(hoy, 1);
+        if (
+            /^(hoy|today)$/.test(nFull) ||
+            (!hasNumericDay && !hasYear && /\b(hoy|today)\b/.test(nFull))
+        ) return hoy;
+
+        match = text.match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/);
+        if (match) return planIABuildIso(Number(match[1]), Number(match[2]), Number(match[3]));
+
+        match = text.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})$/);
+        if (match) return planIABuildIso(Number(match[3]), Number(match[2]), Number(match[1]));
+
+        var human = text
+            .normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '')
+            .toLowerCase()
+            .replace(/,/g, ' ')
+            .replace(/\s+/g, ' ')
+            .trim();
+
+        var humanRe = /(\d{1,2})\s*(?:de\s+)?([a-z]+)\.?\s*(?:de(?:l)?\s+)?(?:ano\s+)?(\d{4})/g;
+        while ((match = humanRe.exec(human)) !== null) {
+            var month = planIAResolveMonth(match[2]);
+            if (!month) continue;
+            iso = planIABuildIso(Number(match[3]), month, Number(match[1]));
+            if (iso) return iso;
+        }
+
+        match = human.match(/(\d{4})-(\d{1,2})-(\d{1,2})/);
+        if (match) {
+            iso = planIABuildIso(Number(match[1]), Number(match[2]), Number(match[3]));
+            if (iso) return iso;
+        }
+
+        match = human.match(/(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})/);
+        if (match) {
+            iso = planIABuildIso(Number(match[3]), Number(match[2]), Number(match[1]));
+            if (iso) return iso;
+        }
+
+        if (/\b(hoy|today)\b/.test(nFull) && !hasYear) return hoy;
+
+        return null;
     }
 
     function formatDateLongEs(iso) {
@@ -1539,7 +1618,14 @@
             '<p class="ubits-body-md-regular" style="margin:0 0 4px;">Período de vigencia: del ' +
             formatDateLongEs(draft.fechaInicioIso) + ' al ' + formatDateLongEs(draft.fechaFinIso) + '.</p>' +
             '<p class="ubits-body-md-regular" style="margin:0 0 4px;">Incluye los siguientes ' + tipo + ':</p>' +
-            '<ul class="ubits-body-md-regular" style="margin:0 0 12px;padding-left:20px;">' + list + '</ul>' +
+            '<ul class="ubits-body-md-regular" style="margin:0 0 12px;padding-left:20px;">' + list + '</ul>';
+        if (!planIAIsVigenteHoy(draft.fechaInicioIso, draft.fechaFinIso)) {
+            richHtml +=
+                '<p class="ubits-body-sm-regular" style="margin:0 0 12px;color:var(--ubits-fg-1-medium);">Nota: el «hoy» del playground es ' +
+                formatDateLongEs(planIAPlaygroundToday()) +
+                '. Como el inicio es posterior, el plan quedará programado y no aparecerá aún en planes vigentes.</p>';
+        }
+        richHtml +=
             '<button type="button" id="zona-estudio-progreso-plan-ia-confirm-btn"' +
             ' class="ubits-ia-button ubits-ia-button--secondary ubits-ia-button--sm ubits-ia-button--with-token-cost">' +
             '<span>Generar plan</span>' +
@@ -1565,8 +1651,14 @@
                 }
                 planIAState.step = 'done';
                 if (typeof window.closeIAPanel === 'function') window.closeIAPanel();
+                if (draft.personas && draft.personas.length) {
+                    progresoState.selectedColaboradorId = draft.personas[0].id;
+                }
                 if (typeof showToast === 'function') {
-                    showToast('success', PLAN_IA_SUCCESS_MESSAGE, { duration: 10000, showClose: true });
+                    showToast('success', planIASuccessToastMessage(draft.fechaInicioIso, draft.fechaFinIso), {
+                        duration: 10000,
+                        showClose: true
+                    });
                 }
                 renderNivel1();
                 renderNivel2y3();
@@ -1598,14 +1690,18 @@
     function planIAAskFechaInicio() {
         planIAState.step = 'await_fecha_inicio';
         planIAWithTyping(function () {
-            planIAMsg('¿Cuál es la fecha de inicio? (por ejemplo: 20 de junio de 2026 o 20/06/2026)');
+            planIAMsg(
+                '¿Cuál es la fecha de inicio? Puedes decir «hoy» (' +
+                    formatDateLongEs(planIAPlaygroundToday()) +
+                    ' en este playground), o escribirla con naturalidad, por ejemplo: «el 20 de junio de 2026».'
+            );
         });
     }
 
     function planIAAskFechaFin() {
         planIAState.step = 'await_fecha_fin';
         planIAWithTyping(function () {
-            planIAMsg('¿Y la fecha de finalización? (por ejemplo: 30 de septiembre de 2026)');
+            planIAMsg('¿Y la fecha de finalización? Por ejemplo: «me gustaría el 30 de septiembre de 2026» o «30/09/2026».');
         });
     }
 
@@ -1767,13 +1863,13 @@
         }
         if (planIAState.step === 'await_fecha_inicio') {
             var startIso = parseFlexibleDate(trimmed);
-            if (!startIso) return planIAMsg('No pude leer esa fecha. Prueba con «20 de junio de 2026» o «20/06/2026».');
-            var hoyIso = (getPf() && getPf().PLAYGROUND_TODAY) || '2026-06-19';
+            if (!startIso) return planIAMsg('No pude identificar una fecha en tu mensaje. Prueba con «hoy», «20 de junio de 2026» o «20/06/2026».');
+            var hoyIso = planIAPlaygroundToday();
             if (startIso < hoyIso) {
                 return planIAMsg(
                     'La fecha de inicio no puede ser anterior a hoy (' +
                         formatDateLongEs(hoyIso) +
-                        '). Prueba con una fecha posterior, por ejemplo «20 de junio de 2026».'
+                        '). Prueba con «hoy» o una fecha posterior.'
                 );
             }
             draft.fechaInicioIso = startIso;
@@ -1781,7 +1877,7 @@
         }
         if (planIAState.step === 'await_fecha_fin') {
             var endIso = parseFlexibleDate(trimmed);
-            if (!endIso) return planIAMsg('No pude leer esa fecha. Prueba con «30 de septiembre de 2026» o «30/09/2026».');
+            if (!endIso) return planIAMsg('No pude identificar una fecha en tu mensaje. Prueba algo como «30 de septiembre de 2026», «el 30 de sept de 2026» o «30/09/2026».');
             if (draft.fechaInicioIso && endIso < draft.fechaInicioIso) {
                 return planIAMsg('La fecha de finalización debe ser igual o posterior a la de inicio. ¿Cuál es la fecha de fin?');
             }

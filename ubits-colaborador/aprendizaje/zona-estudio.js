@@ -116,7 +116,12 @@
 
     function getPlaygroundToday() {
         var pf = window.BD_PLANES_FORMACION;
-        return (pf && pf.PLAYGROUND_TODAY) ? pf.PLAYGROUND_TODAY : '2026-06-19';
+        return (pf && pf.PLAYGROUND_TODAY) ? pf.PLAYGROUND_TODAY : (function () {
+            var d = new Date();
+            var m = ('0' + (d.getMonth() + 1)).slice(-2);
+            var day = ('0' + d.getDate()).slice(-2);
+            return d.getFullYear() + '-' + m + '-' + day;
+        })();
     }
 
     function daysUntilEnd(endIso) {
