@@ -55,7 +55,7 @@
     min-height: 64px;
     padding: var(--padding-sm) var(--padding-md);
     box-sizing: border-box;
-    border-radius: var(--border-radius-sm);
+    border-radius: var(--border-radius-lg);
     text-align: left;
 }
 

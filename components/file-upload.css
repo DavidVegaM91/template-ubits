@@ -86,7 +86,7 @@
     box-sizing: border-box;
     padding: var(--padding-2xl);
     border: 1px dashed var(--ubits-border-1);
-    border-radius: var(--border-radius-sm);
+    border-radius: var(--border-radius-lg);
     background: var(--ubits-bg-1);
     cursor: pointer;
     min-height: 140px;
@@ -185,7 +185,7 @@
     padding: var(--padding-md);
     background: var(--ubits-bg-1);
     border: 1px solid var(--ubits-border-1);
-    border-radius: var(--border-radius-sm);
+    border-radius: var(--border-radius-lg);
     box-sizing: border-box;
     pointer-events: auto;
     text-align: start;

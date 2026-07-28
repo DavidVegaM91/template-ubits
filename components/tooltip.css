@@ -103,7 +103,7 @@
     background: var(--ubits-bg-1-inverted);
     color: var(--ubits-fg-1-high-inverted);
     padding: var(--padding-sm) var(--padding-md);
-    border-radius: var(--border-radius-sm);
+    border-radius: var(--border-radius-md);
     font-family: var(--ubits-font-family-sans);
     font-size: var(--font-size-sm);
     line-height: 19.5px;

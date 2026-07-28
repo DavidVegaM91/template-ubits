@@ -21,7 +21,7 @@
     gap: var(--gap-sm); /* match alert */
     align-items: center;
     padding: var(--padding-sm); /* match alert */
-    border-radius: var(--border-radius-md); /* match alert */
+    border-radius: var(--border-radius-lg); /* match alert */
     position: relative; /* for pseudo border */
     font-family: var(--ubits-font-family-sans);
     box-sizing: border-box;
@@ -40,7 +40,7 @@
     right: 0;
     bottom: 0;
     border: 1px solid var(--ubits-border-1); /* default border */
-    border-radius: var(--border-radius-md);
+    border-radius: var(--border-radius-lg);
     pointer-events: none;
 }
 

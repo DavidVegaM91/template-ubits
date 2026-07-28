@@ -103,24 +103,28 @@
     line-height: 16.5px;
     height: 28px;
     font-family: var(--ubits-font-family-sans);
+    border-radius: var(--border-radius-xs);
 }
 
 .ubits-input--sm {
     padding: var(--padding-sm) var(--padding-sm);
     font-size: 0.875rem;
     height: 32px; /* Same as ubits-button--sm */
+    border-radius: var(--border-radius-xs);
 }
 
 .ubits-input--md {
     padding: var(--padding-md) var(--padding-sm);
     font-size: 1rem;
     height: 40px; /* Same as ubits-button--md */
+    border-radius: var(--border-radius-md);
 }
 
 .ubits-input--lg {
     padding: var(--padding-lg) var(--padding-sm);
     font-size: 1.125rem;
     height: 48px; /* Same as ubits-button--lg */
+    border-radius: var(--border-radius-md);
 }
 
 /* ========================================

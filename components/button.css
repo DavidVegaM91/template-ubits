@@ -17,7 +17,7 @@
     gap: var(--gap-sm);
     padding: var(--padding-md) var(--padding-lg);
     border: none;
-    border-radius: var(--border-radius-sm);
+    border-radius: var(--border-radius-md);
     font-family: var(--ubits-font-family-sans);
     font-weight: var(--font-weight-semibold);
     /* Evita que <button> herede font-size: small del browser (distinto a <a> que hereda del padre).
@@ -95,7 +95,7 @@
     right: 0;
     bottom: 0;
     border: 1px solid var(--ubits-border-disabled-button);
-    border-radius: var(--border-radius-sm);
+    border-radius: var(--border-radius-md);
     pointer-events: none;
 }
 
@@ -348,7 +348,12 @@
 .ubits-button--xs {
     padding: 7.5px 8px;
     height: 28px;
+    border-radius: var(--border-radius-xs);
     /* Hereda de ubits-body-xs-semibold: 11px, weight 600, line-height 16.5px */
+}
+
+.ubits-button--xs:disabled::before {
+    border-radius: var(--border-radius-xs);
 }
 
 /* Aplicar tipografía UBITS al texto del botón extra small - ubits-body-xs-semibold */
@@ -371,7 +376,12 @@
 .ubits-button--sm {
     padding: 9.5px 12px;
     height: 32px;
+    border-radius: var(--border-radius-xs);
     /* Hereda de ubits-body-sm-semibold: 13px, weight 600, line-height 19.5px */
+}
+
+.ubits-button--sm:disabled::before {
+    border-radius: var(--border-radius-xs);
 }
 
 /* Aplicar tipografía UBITS al texto del botón small - ubits-body-sm-semibold */
@@ -394,6 +404,7 @@
 .ubits-button--lg {
     padding: var(--padding-lg) var(--padding-xl);
     height: 48px;
+    border-radius: var(--border-radius-md);
     /* Hereda de ubits-body-lg-semibold: 20px, weight 600, line-height 30px */
 }
 

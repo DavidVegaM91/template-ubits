@@ -31,7 +31,7 @@
     position: relative;
     background: var(--ubits-bg-1);
     border: 1px solid var(--ubits-border-1);
-    border-radius: var(--border-radius-md);
+    border-radius: var(--border-radius-lg);
     padding: var(--padding-lg);
     overflow: visible;
 }
