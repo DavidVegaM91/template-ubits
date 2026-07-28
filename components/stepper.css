@@ -2,6 +2,7 @@
    UBITS STEPPER
    Pasos de un flujo (horizontal o vertical); tokens UBITS.
    Vertical colapsable: marco .ubits-stepper__vertical-frame; variante creator-rail (tipo Sidebar contenidos LMS) con nav.ubits-stepper__vertical-nav + .ubits-stepper__vertical-footer y toggle .nav-button.
+   Vertical apilado: ol --vertical-stacked a 94px (círculo → nombre → línea; fondo/borde; sin botón expandir).
    Documentación: documentacion/componentes/stepper.html
    ======================================== */
 
@@ -222,6 +223,91 @@
     background: var(--ubits-button-primary-bg-default);
 }
 
+/*
+ * Vertical apilado (título debajo del círculo):
+ * mark → nombre → línea. Contenedor 94px (mismo ancho visual que el vertical contraído).
+ * Sin botón expandir. Combinable con --icons.
+ */
+.ubits-stepper--vertical.ubits-stepper--vertical-stacked {
+    align-items: center;
+    box-sizing: border-box;
+    width: 94px;
+    min-width: 94px;
+    max-width: 94px;
+    padding: var(--padding-lg) var(--padding-sm);
+    background-color: var(--ubits-bg-1);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: var(--border-radius-lg);
+}
+
+.ubits-stepper--vertical.ubits-stepper--vertical-stacked .ubits-stepper__step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 0;
+    padding-bottom: 0;
+    text-align: center;
+    width: 100%;
+    grid-template-columns: none;
+    grid-template-rows: none;
+    column-gap: 0;
+}
+
+.ubits-stepper--vertical.ubits-stepper--vertical-stacked .ubits-stepper__mark {
+    grid-column: unset;
+    grid-row: unset;
+    align-self: center;
+    justify-self: unset;
+    position: relative;
+    z-index: 1;
+}
+
+.ubits-stepper--vertical.ubits-stepper--vertical-stacked .ubits-stepper__label {
+    grid-column: unset;
+    grid-row: unset;
+    align-self: stretch;
+    text-align: center;
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    margin-top: var(--gap-sm);
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+}
+
+.ubits-stepper--vertical.ubits-stepper--vertical-stacked .ubits-stepper__step:not(:last-child)::after {
+    content: '';
+    position: static;
+    left: auto;
+    top: auto;
+    width: 2px;
+    height: var(--gap-4xl);
+    flex-shrink: 0;
+    margin-top: 4px;
+    background: var(--ubits-border-1);
+    pointer-events: none;
+}
+
+.ubits-stepper--vertical.ubits-stepper--vertical-stacked .ubits-stepper__step--done:not(:last-child)::after {
+    background: var(--ubits-feedback-accent-success);
+}
+
+.ubits-stepper--vertical.ubits-stepper--vertical-stacked .ubits-stepper__step--active:not(:last-child)::after {
+    background: var(--ubits-button-primary-bg-default);
+}
+
+[data-theme="dark"] .ubits-stepper--vertical.ubits-stepper--vertical-stacked {
+    background-color: var(--ubits-bg-1) !important;
+    border-color: var(--ubits-border-1);
+}
+
 /* Círculo / marca */
 .ubits-stepper {
     --ubits-stepper-ring: var(--size-4xl);
@@ -274,10 +360,11 @@
 }
 
 .ubits-stepper--icons.ubits-stepper--horizontal:not(.ubits-stepper--horizontal-stacked) {
-    /* Misma huella que horizontal-compact */
+    /* Misma huella que horizontal-compact; gap más corto entre línea e ícono */
     justify-content: flex-start;
     width: fit-content;
     max-width: 100%;
+    gap: var(--gap-xs);
 }
 
 .ubits-stepper--icons.ubits-stepper--horizontal:not(.ubits-stepper--horizontal-stacked) .ubits-stepper__step {
@@ -293,8 +380,8 @@
 .ubits-stepper--icons.ubits-stepper--horizontal:not(.ubits-stepper--horizontal-stacked) .ubits-stepper__rail {
     flex: 0 0 auto;
     flex-grow: 0;
-    width: var(--gap-2xl);
-    min-width: var(--gap-xl);
+    width: var(--gap-xl);
+    min-width: var(--gap-md);
 }
 
 .ubits-stepper__step--pending .ubits-stepper__mark {

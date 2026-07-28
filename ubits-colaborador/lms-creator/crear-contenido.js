@@ -3406,7 +3406,7 @@
             if (typeof window.showToast === 'function') {
                 window.showToast({
                     type: 'warning',
-                    message: 'La suma de los pesos de evaluación debe ser 100%. Revísalo en Configuración.'
+                    message: 'La suma de los pesos de evaluación debe ser 100%. Revísalo en Ajustes.'
                 });
             }
             return;
@@ -3707,13 +3707,16 @@
     var HASH_PAGE_PORTADA = '#portada';
     var HASH_PAGE_RECURSOS = '#recursos';
     var HASH_PAGE_CERTIFICADO = '#certificado';
-    /** Hub Configuración (paso 4). Paneles: #configuracion-visibilidad, #configuracion-pesos */
-    var HASH_PAGE_CONFIGURACION = '#configuracion';
-    var HASH_PAGE_CONFIG_VISIBILIDAD = '#configuracion-visibilidad';
-    var HASH_PAGE_CONFIG_PESOS = '#configuracion-pesos';
-    /** Alias legacy del paso 4 / hub */
+    /** Hub Ajustes (paso 4). Paneles: #ajustes-visibilidad, #ajustes-pesos */
+    var HASH_PAGE_CONFIGURACION = '#ajustes';
+    var HASH_PAGE_CONFIG_VISIBILIDAD = '#ajustes-visibilidad';
+    var HASH_PAGE_CONFIG_PESOS = '#ajustes-pesos';
+    /** Alias legacy del paso 4 / hub (incl. #configuracion*) */
     var HASH_PAGE_VISIBILIDAD = '#visibilidad';
     var HASH_PAGE_PUBLICACION = '#publicacion';
+    var HASH_PAGE_CONFIG_LEGACY = '#configuracion';
+    var HASH_PAGE_CONFIG_VISIBILIDAD_LEGACY = '#configuracion-visibilidad';
+    var HASH_PAGE_CONFIG_PESOS_LEGACY = '#configuracion-pesos';
     var HASH_PAGE_PORTADA_LEGACY = '#crear-contenido';
     var HASH_DRAWER_RECURSOS = '#crear-contenido-recursos';
     var HASH_DRAWER_RECURSOS_ALIAS = '#crear-contenido-step-recursos';
@@ -3729,6 +3732,9 @@
             h === HASH_PAGE_CONFIGURACION ||
             h === HASH_PAGE_CONFIG_VISIBILIDAD ||
             h === HASH_PAGE_CONFIG_PESOS ||
+            h === HASH_PAGE_CONFIG_LEGACY ||
+            h === HASH_PAGE_CONFIG_VISIBILIDAD_LEGACY ||
+            h === HASH_PAGE_CONFIG_PESOS_LEGACY ||
             h === HASH_PAGE_VISIBILIDAD ||
             h === HASH_PAGE_PUBLICACION
         );
@@ -4421,11 +4427,24 @@
             goToCrearContenidoPageStep(2, { skipUrl: true });
         } else if (isConfiguracionUrlHash(h)) {
             goToCrearContenidoPageStep(3, { skipUrl: true });
-            if (
-                (h === HASH_PAGE_PUBLICACION || h === HASH_PAGE_VISIBILIDAD) &&
-                typeof history.replaceState === 'function'
-            ) {
-                history.replaceState(null, '', location.pathname + location.search + HASH_PAGE_CONFIGURACION);
+            var panelFromHash = configPanelFromCrearHash(h) || 'hub';
+            if (typeof window.setCrearContenidoConfigPanel === 'function') {
+                window.setCrearContenidoConfigPanel(panelFromHash, { skipUrl: true });
+            }
+            var isLegacyConfig =
+                (typeof window.isLegacyCrearContenidoConfigHash === 'function' &&
+                    window.isLegacyCrearContenidoConfigHash(h)) ||
+                h === HASH_PAGE_PUBLICACION ||
+                h === HASH_PAGE_VISIBILIDAD ||
+                h === HASH_PAGE_CONFIG_LEGACY ||
+                h === HASH_PAGE_CONFIG_VISIBILIDAD_LEGACY ||
+                h === HASH_PAGE_CONFIG_PESOS_LEGACY;
+            if (isLegacyConfig && typeof history.replaceState === 'function') {
+                var canonicalConfig =
+                    typeof window.hashForCrearContenidoConfigPanel === 'function'
+                        ? window.hashForCrearContenidoConfigPanel(panelFromHash)
+                        : HASH_PAGE_CONFIGURACION;
+                history.replaceState(null, '', location.pathname + location.search + canonicalConfig);
             }
         } else if (h === HASH_PAGE_PORTADA || h === HASH_PAGE_PORTADA_LEGACY || h === '') {
             goToCrearContenidoPageStep(0, { skipUrl: true });

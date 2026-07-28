@@ -90,9 +90,7 @@
 
                 <main class="ubits-layout-immersive__main" id="crear-contenido-main" tabindex="-1">
 <div class="crear-contenido-editor-workspace ubits-layout-immersive__stage">  <div class="crear-contenido-editor__rail editar-contenido-editor__rail">
-<div class="ubits-stepper__vertical-frame ubits-stepper__vertical-frame--creator-rail is-collapsed" id="editar-contenido-stepper-frame">
-  <nav class="ubits-stepper__vertical-nav" aria-label="Secciones de edición">
-    <ol class="ubits-stepper ubits-stepper--vertical ubits-stepper--icons" id="editar-contenido-stepper-ol">
+<nav class="editar-contenido-stepper-desktop" aria-label="Secciones de edición"><ol class="ubits-stepper ubits-stepper--vertical ubits-stepper--vertical-stacked ubits-stepper--icons" id="editar-contenido-stepper-ol">
       <li class="ubits-stepper__step ubits-stepper__step--active" data-step-id="resultados" data-step-label="Resultados" aria-current="step">
         <span class="ubits-stepper__mark" aria-hidden="true"><span class="ubits-stepper__mark-num">1</span><i class="far fa-chart-mixed" aria-hidden="true"></i></span>
         <span class="ubits-stepper__label">Resultados</span>
@@ -109,19 +107,11 @@
         <span class="ubits-stepper__mark" aria-hidden="true"><span class="ubits-stepper__mark-num">4</span><i class="far fa-award" aria-hidden="true"></i></span>
         <span class="ubits-stepper__label">Certificado</span>
       </li>
-      <li class="ubits-stepper__step ubits-stepper__step--pending" data-step-id="visibilidad" data-step-label="Configuración">
+      <li class="ubits-stepper__step ubits-stepper__step--pending" data-step-id="visibilidad" data-step-label="Ajustes">
         <span class="ubits-stepper__mark" aria-hidden="true"><span class="ubits-stepper__mark-num">5</span><i class="far fa-sliders" aria-hidden="true"></i></span>
-        <span class="ubits-stepper__label">Configuración</span>
+        <span class="ubits-stepper__label">Ajustes</span>
       </li>
-    </ol>
-  </nav>
-  <div class="ubits-stepper__vertical-footer">
-    <button type="button" class="nav-button ubits-stepper__vertical-toggle" id="editar-contenido-stepper-toggle" aria-expanded="false" aria-label="Expandir la lista de pasos">
-      <i class="far fa-angles-right" aria-hidden="true"></i>
-    </button>
-  </div>
-</div>
-<nav class="editar-contenido-stepper-mobile" aria-label="Secciones de edición">
+    </ol></nav><nav class="editar-contenido-stepper-mobile" aria-label="Secciones de edición">
   <ol class="ubits-stepper ubits-stepper--horizontal ubits-stepper--horizontal-compact ubits-stepper--icons" id="editar-contenido-stepper-ol-mobile">
     <li class="ubits-stepper__step ubits-stepper__step--active" data-step-id="resultados" data-step-label="Resultados" aria-current="step">
       <span class="ubits-stepper__mark" aria-hidden="true"><span class="ubits-stepper__mark-num">1</span><i class="far fa-chart-mixed" aria-hidden="true"></i></span>
@@ -143,9 +133,9 @@
       <span class="ubits-stepper__label">Certificado</span>
     </li>
     <li class="ubits-stepper__rail" aria-hidden="true"></li>
-    <li class="ubits-stepper__step ubits-stepper__step--pending" data-step-id="visibilidad" data-step-label="Configuración">
+    <li class="ubits-stepper__step ubits-stepper__step--pending" data-step-id="visibilidad" data-step-label="Ajustes">
       <span class="ubits-stepper__mark" aria-hidden="true"><span class="ubits-stepper__mark-num">5</span><i class="far fa-sliders" aria-hidden="true"></i></span>
-      <span class="ubits-stepper__label">Configuración</span>
+      <span class="ubits-stepper__label">Ajustes</span>
     </li>
   </ol>
 </nav>
@@ -162,7 +152,7 @@
               <p id="crear-contenido-recursos-page-counter" class="ubits-body-sm-regular crear-contenido-recursos__page-counter" aria-live="polite" hidden></p>
             </div>
           </div>          <div id="crear-contenido-recursos-resources-mount" class="crear-contenido-recursos__resources-mount" hidden></div>          <div id="crear-contenido-recursos-complementary-mount" class="crear-contenido-recursos__complementary-mount" hidden aria-label="Recursos complementarios"></div>        </div>      </div>    </div>    <div id="crear-contenido-step-certificado" class="crear-contenido-step crear-contenido-step--certificado" data-crear-step="certificado">      <div class="certificado-paso__workspace">        <aside class="certificado-paso__panel" aria-label="Configuración de certificado">          <h2 class="ubits-heading-h2 crear-contenido-step__title">Certificado</h2>          <div class="contenidos-creator-card certificado-paso__panel-card">            <label class="ubits-switch ubits-switch--md certificado-paso__toggle" for="certificado-paso-toggle">              <input type="checkbox" class="ubits-switch__input" id="certificado-paso-toggle" role="switch" checked />              <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>              <span class="ubits-switch__label ubits-body-md-regular">Habilitar certificado para este contenido</span>            </label>            <div id="certificado-paso-template-field" class="certificado-paso__template-field">              <div id="certificado-paso-template-mount"></div>            </div>          </div>        </aside>        <div class="certificado-paso__preview-col" role="region" aria-label="Vista previa de certificado">          <p id="certificado-paso-preview-hint" class="certificado-paso__preview-hint ubits-body-sm-regular">Vista previa orientativa.</p>          <div id="certificado-paso-preview-host" class="certificado-paso__preview-host contenidos-creator-card"></div>        </div>      </div>    </div>    <div id="crear-contenido-step-publicacion" class="crear-contenido-step crear-contenido-step--publicacion" data-crear-step="publicacion">
-      <h2 class="ubits-heading-h2 crear-contenido-step__title" id="cc-config-step-title">Configuración</h2>
+      <h2 class="ubits-heading-h2 crear-contenido-step__title" id="cc-config-step-title">Ajustes</h2>
       <div id="cc-config-hub" class="cc-config-hub">
         <p class="cc-config-hub-intro ubits-body-md-regular">Define la visibilidad del contenido y cómo se distribuye el peso de las evaluaciones en la nota final.</p>
         <div class="cc-config-hub-grid">

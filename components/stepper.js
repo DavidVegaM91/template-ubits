@@ -5,6 +5,7 @@
  * - Paso completado: el número sigue visible en el círculo (color éxito); el <i class="far fa-check"> en el mark queda oculto por CSS (puede permanecer en el HTML por compatibilidad).
  * - Horizontal en viewport ≤1023px: solo el paso activo muestra .ubits-stepper__label; el resto solo el número (ver stepper.css).
  * - Horizontal stacked: cada paso flex-1; título con wrap; conector vía ::after (los li.rail no se muestran). No combinar con --horizontal-compact (misma vista). Ver stepper.css.
+ * - Vertical stacked (--vertical-stacked): círculo → nombre → línea debajo del nombre; sin marco ni botón colapsar. Combinable con --icons.
  * - Variante --icons: el mark muestra <i class="far fa-…"> y oculta .ubits-stepper__mark-num. En edición LMS: setStepperActiveOnly (sin done secuencial).
  * - wireStepperVerticalCollapse: tras colapsar, re-inicializar tooltips del marco si usas initTooltip (ver documentación).
  * - Marco con clase ubits-stepper__vertical-frame--creator-rail: rail tipo sidebar creator (bg-1, borde), toggle nav-button con fa-angles-right/left y “Contraer” (mismo patrón que Sidebar contenidos LMS).

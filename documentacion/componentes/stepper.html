@@ -49,7 +49,9 @@
         }
 
         #stepper-doc-nav-h-numbered[hidden],
-        #stepper-doc-nav-h-icons[hidden] {
+        #stepper-doc-nav-h-icons[hidden],
+        #stepper-doc-nav-v-stacked[hidden],
+        #stepper-doc-nav-v-stacked-icons[hidden] {
             display: none !important;
         }
     </style>
@@ -79,7 +81,7 @@
                                 Preview del componente
                             </h2>
                             <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6;">
-                                Elige una variante con los botones. En horizontal puedes cambiar de paso haciendo clic. En <strong>vertical</strong> (número o íconos), el preview usa una caja de <strong>400px</strong> de alto: el rail <strong>ocupa ese alto</strong>. Por defecto viene <strong>contraída</strong> (solo círculos); el pie muestra <strong>Expandir</strong> con tooltip. Comparte la vista vertical con <code>#vertical</code> o <code>#vertical-icons</code>. El rail usa <code>--creator-rail</code> (alineado al sidebar LMS Creator). La variante <strong>íconos</strong> es la de editar contenido (Resultados, Portada, etc.).
+                                Elige una variante con los botones. En horizontal puedes cambiar de paso haciendo clic. En <strong>vertical</strong> (número o íconos), el preview usa una caja de <strong>400px</strong> de alto: el rail <strong>ocupa ese alto</strong>. Por defecto viene <strong>contraída</strong> (solo círculos); el pie muestra <strong>Expandir</strong> con tooltip. La variante <strong>vertical apilado</strong> pone el nombre debajo del círculo y la línea debajo del nombre, sin botón de expandir. Comparte la vista vertical con <code>#vertical</code>, <code>#vertical-icons</code>, <code>#vertical-stacked</code> o <code>#vertical-stacked-icons</code>. El rail usa <code>--creator-rail</code> (alineado al sidebar LMS Creator). La variante <strong>íconos</strong> es la de editar contenido (Resultados, Portada, etc.).
                             </p>
 
                             <div style="margin-bottom: 20px; display: flex; flex-wrap: wrap; gap: var(--gap-sm); align-items: center;">
@@ -100,6 +102,12 @@
                                 </button>
                                 <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn stepper-variant-btn" data-variant="vertical-icons" onclick="setStepperDocVariant('vertical-icons')">
                                     <span>Vertical íconos</span>
+                                </button>
+                                <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn stepper-variant-btn" data-variant="vertical-stacked" onclick="setStepperDocVariant('vertical-stacked')">
+                                    <span>Vertical apilado</span>
+                                </button>
+                                <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn stepper-variant-btn" data-variant="vertical-stacked-icons" onclick="setStepperDocVariant('vertical-stacked-icons')">
+                                    <span>Vertical apilado íconos</span>
                                 </button>
                             </div>
 
@@ -154,9 +162,9 @@
                                                 <span class="ubits-stepper__label">Certificado</span>
                                             </li>
                                             <li class="ubits-stepper__rail" aria-hidden="true"></li>
-                                            <li class="ubits-stepper__step ubits-stepper__step--pending" data-step-id="visibilidad" data-step-label="Configuración">
+                                            <li class="ubits-stepper__step ubits-stepper__step--pending" data-step-id="visibilidad" data-step-label="Ajustes">
                                                 <span class="ubits-stepper__mark" aria-hidden="true"><span class="ubits-stepper__mark-num">5</span><i class="far fa-sliders" aria-hidden="true"></i></span>
-                                                <span class="ubits-stepper__label">Configuración</span>
+                                                <span class="ubits-stepper__label">Ajustes</span>
                                             </li>
                                         </ol>
                                     </nav>
@@ -204,9 +212,9 @@
                                                     <span class="ubits-stepper__mark" aria-hidden="true"><span class="ubits-stepper__mark-num">4</span><i class="far fa-award" aria-hidden="true"></i></span>
                                                     <span class="ubits-stepper__label">Certificado</span>
                                                 </li>
-                                                <li class="ubits-stepper__step ubits-stepper__step--pending" data-step-id="visibilidad" data-step-label="Configuración">
+                                                <li class="ubits-stepper__step ubits-stepper__step--pending" data-step-id="visibilidad" data-step-label="Ajustes">
                                                     <span class="ubits-stepper__mark" aria-hidden="true"><span class="ubits-stepper__mark-num">5</span><i class="far fa-sliders" aria-hidden="true"></i></span>
-                                                    <span class="ubits-stepper__label">Configuración</span>
+                                                    <span class="ubits-stepper__label">Ajustes</span>
                                                 </li>
                                             </ol>
                                         </nav>
@@ -217,6 +225,57 @@
                                         </div>
                                     </div>
                                 </div>
+                                <div id="stepper-doc-vertical-stacked-area" style="display: none;">
+                                    <nav aria-label="Preview stepper vertical apilado" id="stepper-doc-nav-v-stacked">
+                                        <ol class="ubits-stepper ubits-stepper--vertical ubits-stepper--vertical-stacked js-stepper-doc-demo" id="stepper-doc-ol-vertical-stacked">
+                                            <li class="ubits-stepper__step ubits-stepper__step--done" data-step-label="Datos básicos">
+                                                <span class="ubits-stepper__mark" aria-hidden="true">
+                                                    <span class="ubits-stepper__mark-num">1</span>
+                                                    <i class="far fa-check" aria-hidden="true"></i>
+                                                </span>
+                                                <span class="ubits-stepper__label">Datos básicos</span>
+                                            </li>
+                                            <li class="ubits-stepper__step ubits-stepper__step--active" data-step-label="Requisitos" aria-current="step">
+                                                <span class="ubits-stepper__mark" aria-hidden="true">
+                                                    <span class="ubits-stepper__mark-num">2</span>
+                                                    <i class="far fa-check" aria-hidden="true"></i>
+                                                </span>
+                                                <span class="ubits-stepper__label">Requisitos</span>
+                                            </li>
+                                            <li class="ubits-stepper__step ubits-stepper__step--pending" data-step-label="Publicar">
+                                                <span class="ubits-stepper__mark" aria-hidden="true">
+                                                    <span class="ubits-stepper__mark-num">3</span>
+                                                    <i class="far fa-check" aria-hidden="true"></i>
+                                                </span>
+                                                <span class="ubits-stepper__label">Publicar</span>
+                                            </li>
+                                        </ol>
+                                    </nav>
+                                    <nav aria-label="Preview stepper vertical apilado íconos" id="stepper-doc-nav-v-stacked-icons" hidden>
+                                        <ol class="ubits-stepper ubits-stepper--vertical ubits-stepper--vertical-stacked ubits-stepper--icons js-stepper-doc-demo" id="stepper-doc-ol-vertical-stacked-icons">
+                                            <li class="ubits-stepper__step ubits-stepper__step--pending" data-step-id="resultados" data-step-label="Resultados">
+                                                <span class="ubits-stepper__mark" aria-hidden="true"><span class="ubits-stepper__mark-num">1</span><i class="far fa-chart-mixed" aria-hidden="true"></i></span>
+                                                <span class="ubits-stepper__label">Resultados</span>
+                                            </li>
+                                            <li class="ubits-stepper__step ubits-stepper__step--active" data-step-id="informacion" data-step-label="Portada" aria-current="step">
+                                                <span class="ubits-stepper__mark" aria-hidden="true"><span class="ubits-stepper__mark-num">2</span><i class="far fa-image" aria-hidden="true"></i></span>
+                                                <span class="ubits-stepper__label">Portada</span>
+                                            </li>
+                                            <li class="ubits-stepper__step ubits-stepper__step--pending" data-step-id="recursos" data-step-label="Recursos">
+                                                <span class="ubits-stepper__mark" aria-hidden="true"><span class="ubits-stepper__mark-num">3</span><i class="far fa-layer-group" aria-hidden="true"></i></span>
+                                                <span class="ubits-stepper__label">Recursos</span>
+                                            </li>
+                                            <li class="ubits-stepper__step ubits-stepper__step--pending" data-step-id="certificado" data-step-label="Certificado">
+                                                <span class="ubits-stepper__mark" aria-hidden="true"><span class="ubits-stepper__mark-num">4</span><i class="far fa-award" aria-hidden="true"></i></span>
+                                                <span class="ubits-stepper__label">Certificado</span>
+                                            </li>
+                                            <li class="ubits-stepper__step ubits-stepper__step--pending" data-step-id="visibilidad" data-step-label="Ajustes">
+                                                <span class="ubits-stepper__mark" aria-hidden="true"><span class="ubits-stepper__mark-num">5</span><i class="far fa-sliders" aria-hidden="true"></i></span>
+                                                <span class="ubits-stepper__label">Ajustes</span>
+                                            </li>
+                                        </ol>
+                                    </nav>
+                                </div>
                             </div>
                         </div>
 
@@ -226,7 +285,7 @@
                                 Características generales
                             </h2>
                             <p class="ubits-body-md-regular" style="margin-bottom: 24px; color: var(--ubits-fg-1-medium);">
-                                Cinco formas de mostrar los mismos pasos, según el espacio y la jerarquía visual que necesites.
+                                Cinco formas de mostrar los mismos pasos, según el espacio y la jerarquía visual que necesites — más la variante vertical apilada.
                             </p>
                             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
                                 <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
@@ -253,6 +312,11 @@
                                     <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-arrows-alt-v"></i></div>
                                     <div class="ubits-body-sm-bold">Vertical</div>
                                     <div class="ubits-body-sm-regular">Lista en columna con estados y conector; el alto del rail sigue al del contenedor. En doc se muestra con <code>--creator-rail</code> (marco claro); pie con <code>nav-button</code>, doble flecha y Contraer / tooltip Expandir.</div>
+                                </div>
+                                <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-ellipsis-vertical"></i></div>
+                                    <div class="ubits-body-sm-bold">Vertical apilado</div>
+                                    <div class="ubits-body-sm-regular">Círculo, nombre debajo (máx. 2 líneas) y línea debajo del nombre. Contenedor de 94px (como el vertical contraído), con fondo y borde, sin botón de expandir. Combinable con íconos.</div>
                                 </div>
                             </div>
                         </div>
@@ -321,6 +385,19 @@
 
                             <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
                                 <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                                    <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Vertical apilado (nombre debajo del círculo)</h3>
+                                    <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('stepper-prompt-7')">
+                                        <i class="far fa-copy"></i>
+                                        <span>Copiar</span>
+                                    </button>
+                                </div>
+                                <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
+                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="stepper-prompt-7">En [ubicación] usa el Stepper UBITS vertical apilado (clases ubits-stepper--vertical ubits-stepper--vertical-stacked en el ol): cada paso muestra el círculo, el nombre debajo (máximo 2 líneas con puntos suspensivos) y la línea conectora debajo del nombre. El contenedor mide 94px de ancho (como el vertical contraído), con fondo y borde, sin botón de expandir. Si necesitas íconos, añade también ubits-stepper--icons. Importa stepper.css y fontawesome-icons.css.</code></pre>
+                                </div>
+                            </div>
+
+                            <div style="border-bottom: 1px solid var(--ubits-border-1); padding-bottom: 24px; margin-bottom: 24px;">
+                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
                                     <h3 class="ubits-body-md-bold" style="margin: 0; color: var(--ubits-fg-1-high);">Stepper con íconos (editar contenido)</h3>
                                     <button class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('stepper-prompt-6')">
                                         <i class="far fa-copy"></i>
@@ -328,7 +405,7 @@
                                     </button>
                                 </div>
                                 <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: 8px;">
-                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="stepper-prompt-6">En [editar contenido / navegación de secciones] usa el Stepper UBITS variante íconos (clase ubits-stepper--icons en el ol): cada paso lleva un ícono FontAwesome (far) en el círculo en lugar del número. En desktop: vertical + creator-rail; en móvil ≤1023px: horizontal compacto con íconos. Secciones: Resultados, Portada, Recursos, Certificado, Configuración. Navegación libre (solo activo/pendiente, sin completados secuenciales). Importa stepper.css y fontawesome-icons.css.</code></pre>
+                                    <pre style="margin: 0; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: var(--font-size-sm); line-height: 1.5; color: var(--ubits-fg-1-medium); white-space: pre-wrap;"><code id="stepper-prompt-6">En [editar contenido / navegación de secciones] usa el Stepper UBITS variante íconos (clase ubits-stepper--icons en el ol): cada paso lleva un ícono FontAwesome (far) en el círculo en lugar del número. En desktop: vertical + creator-rail; en móvil ≤1023px: horizontal compacto con íconos. Secciones: Resultados, Portada, Recursos, Certificado, Ajustes. Navegación libre (solo activo/pendiente, sin completados secuenciales). Importa stepper.css y fontawesome-icons.css.</code></pre>
                                 </div>
                             </div>
 
@@ -366,6 +443,8 @@
     <script>
         var STEPPER_DOC_HASH_VERTICAL = '#vertical';
         var STEPPER_DOC_HASH_VERTICAL_ICONS = '#vertical-icons';
+        var STEPPER_DOC_HASH_VERTICAL_STACKED = '#vertical-stacked';
+        var STEPPER_DOC_HASH_VERTICAL_STACKED_ICONS = '#vertical-stacked-icons';
 
         function syncStepperDocPreviewUrl(variantKey) {
             var base = location.pathname + location.search;
@@ -373,9 +452,17 @@
             var target = '';
             if (variantKey === 'vertical') target = STEPPER_DOC_HASH_VERTICAL;
             else if (variantKey === 'vertical-icons') target = STEPPER_DOC_HASH_VERTICAL_ICONS;
+            else if (variantKey === 'vertical-stacked') target = STEPPER_DOC_HASH_VERTICAL_STACKED;
+            else if (variantKey === 'vertical-stacked-icons') target = STEPPER_DOC_HASH_VERTICAL_STACKED_ICONS;
+            var verticalHashes = [
+                STEPPER_DOC_HASH_VERTICAL,
+                STEPPER_DOC_HASH_VERTICAL_ICONS,
+                STEPPER_DOC_HASH_VERTICAL_STACKED,
+                STEPPER_DOC_HASH_VERTICAL_STACKED_ICONS
+            ];
             if (target) {
                 if (h !== target) history.replaceState(null, '', base + target);
-            } else if (h === STEPPER_DOC_HASH_VERTICAL || h === STEPPER_DOC_HASH_VERTICAL_ICONS) {
+            } else if (verticalHashes.indexOf(h) !== -1) {
                 history.replaceState(null, '', base);
             }
         }
@@ -383,22 +470,27 @@
         function setStepperDocVariant(key) {
             var horizArea = document.getElementById('stepper-doc-horizontal-area');
             var vertArea = document.getElementById('stepper-doc-vertical-area');
+            var vertStackedArea = document.getElementById('stepper-doc-vertical-stacked-area');
             var olH = document.getElementById('stepper-doc-ol-horizontal');
             var navHNum = document.getElementById('stepper-doc-nav-h-numbered');
             var navHIcons = document.getElementById('stepper-doc-nav-h-icons');
             var olV = document.getElementById('stepper-doc-ol-vertical');
             var olVIcons = document.getElementById('stepper-doc-ol-vertical-icons');
+            var navVStacked = document.getElementById('stepper-doc-nav-v-stacked');
+            var navVStackedIcons = document.getElementById('stepper-doc-nav-v-stacked-icons');
             var previewHost = document.getElementById('stepper-doc-preview-host');
-            var isVertical = key === 'vertical' || key === 'vertical-icons';
-            var useIcons = key === 'h-icons' || key === 'vertical-icons';
+            var isVerticalRail = key === 'vertical' || key === 'vertical-icons';
+            var isVerticalStacked = key === 'vertical-stacked' || key === 'vertical-stacked-icons';
+            var useIcons = key === 'h-icons' || key === 'vertical-icons' || key === 'vertical-stacked-icons';
 
             document.querySelectorAll('.stepper-variant-btn').forEach(function (btn) {
                 btn.classList.toggle('active', btn.getAttribute('data-variant') === key);
             });
 
-            if (isVertical) {
+            if (isVerticalRail) {
                 if (previewHost) previewHost.classList.add('stepper-doc-preview-host--vertical-tall');
                 horizArea.style.display = 'none';
+                if (vertStackedArea) vertStackedArea.style.display = 'none';
                 vertArea.style.display = '';
                 if (olV) {
                     olV.hidden = useIcons;
@@ -408,10 +500,24 @@
                     olVIcons.hidden = !useIcons;
                     olVIcons.style.display = useIcons ? '' : 'none';
                 }
+            } else if (isVerticalStacked) {
+                if (previewHost) previewHost.classList.remove('stepper-doc-preview-host--vertical-tall');
+                horizArea.style.display = 'none';
+                vertArea.style.display = 'none';
+                if (vertStackedArea) vertStackedArea.style.display = '';
+                if (navVStacked) {
+                    navVStacked.hidden = useIcons;
+                    navVStacked.style.display = useIcons ? 'none' : '';
+                }
+                if (navVStackedIcons) {
+                    navVStackedIcons.hidden = !useIcons;
+                    navVStackedIcons.style.display = useIcons ? '' : 'none';
+                }
             } else {
                 if (previewHost) previewHost.classList.remove('stepper-doc-preview-host--vertical-tall');
                 horizArea.style.display = '';
                 vertArea.style.display = 'none';
+                if (vertStackedArea) vertStackedArea.style.display = 'none';
                 if (navHNum) {
                     navHNum.hidden = useIcons;
                     navHNum.style.display = useIcons ? 'none' : '';
@@ -440,6 +546,8 @@
 
         function hashToStepperDocVariant() {
             var h = (location.hash || '').toLowerCase();
+            if (h === STEPPER_DOC_HASH_VERTICAL_STACKED_ICONS) return 'vertical-stacked-icons';
+            if (h === STEPPER_DOC_HASH_VERTICAL_STACKED) return 'vertical-stacked';
             if (h === STEPPER_DOC_HASH_VERTICAL_ICONS) return 'vertical-icons';
             if (h === STEPPER_DOC_HASH_VERTICAL) return 'vertical';
             return 'h';
@@ -459,7 +567,9 @@
                 'stepper-doc-ol-horizontal',
                 'stepper-doc-ol-horizontal-icons',
                 'stepper-doc-ol-vertical',
-                'stepper-doc-ol-vertical-icons'
+                'stepper-doc-ol-vertical-icons',
+                'stepper-doc-ol-vertical-stacked',
+                'stepper-doc-ol-vertical-stacked-icons'
             ].forEach(function (id) {
                 var el = document.getElementById(id);
                 if (!el || typeof initStepper !== 'function') return;
@@ -497,13 +607,23 @@
             }
             var initial = hashToStepperDocVariant();
             setStepperDocVariant(initial);
-            if (initial === 'vertical' || initial === 'vertical-icons') {
+            if (
+                initial === 'vertical' ||
+                initial === 'vertical-icons' ||
+                initial === 'vertical-stacked' ||
+                initial === 'vertical-stacked-icons'
+            ) {
                 setTimeout(scrollStepperDocPreviewIntoView, 150);
             }
 
             window.addEventListener('hashchange', function () {
                 var next = hashToStepperDocVariant();
-                if (next === 'vertical' || next === 'vertical-icons') {
+                if (
+                    next === 'vertical' ||
+                    next === 'vertical-icons' ||
+                    next === 'vertical-stacked' ||
+                    next === 'vertical-stacked-icons'
+                ) {
                     setStepperDocVariant(next);
                     setTimeout(scrollStepperDocPreviewIntoView, 50);
                 }

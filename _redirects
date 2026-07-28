@@ -9,6 +9,13 @@
 /template-ubits/ubits-colaborador/lms-creator/planes-formacion/planes-formacion.html        /template-ubits/ubits-colaborador/lms-creator/planes-formacion/planes-contenidos.html        301
 # En _redirects el carácter # inicia comentario: no existe regla con fragmento #competencias en el origen.
 # Equivalente a .../planes-formacion.html#competencias → planes-competencias: al cargar planes-contenidos.html el script comprueba hash o ?tab=competencias y hace replace a planes-competencias (y si la ruta incluye /template-ubits/, usa esa base).
+
+# Ajustes (antes Configuración) en crear/editar contenido — solo hash, no se puede redirigir en este archivo:
+#   #configuracion → #ajustes
+#   #configuracion-visibilidad → #ajustes-visibilidad
+#   #configuracion-pesos → #ajustes-pesos
+# La redirección vive en crear-contenido.js / crear-contenido-configuracion.js / editar-contenido-resultados.js
+# (history.replaceState al cargar). Ver también Ubits-React/lib/lms-creator/configuracionHash.ts.
 /ubits-colaborador/lms-creator/grupos.html                  /ubits-colaborador/lms-creator/planes-formacion/grupos.html                   301
 /ubits-colaborador/lms-creator/detalle-plan.html            /ubits-colaborador/lms-creator/planes-formacion/detalle-plan.html             301
 /ubits-colaborador/lms-creator/crear-plan-contenidos.html   /ubits-colaborador/lms-creator/planes-formacion/crear-plan-contenidos.html    301

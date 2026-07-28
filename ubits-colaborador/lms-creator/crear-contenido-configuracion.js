@@ -1,5 +1,5 @@
 /**
- * Paso Configuración — hub Visibilidad + Pesos de evaluación (crear / editar contenido).
+ * Paso Ajustes — hub Visibilidad + Pesos de evaluación (crear / editar contenido).
  * Depende de: createInput (opcional), empty-state, toast.
  */
 (function (global) {
@@ -154,26 +154,35 @@
     }
 
     function hashForConfigPanel(panel) {
-        if (panel === 'visibilidad') return '#configuracion-visibilidad';
-        if (panel === 'pesos') return '#configuracion-pesos';
-        return '#configuracion';
+        if (panel === 'visibilidad') return '#ajustes-visibilidad';
+        if (panel === 'pesos') return '#ajustes-pesos';
+        return '#ajustes';
     }
 
     function panelFromConfigHash(hash) {
-        var h = String(hash || '');
-        if (h === '#configuracion-visibilidad' || h === 'configuracion-visibilidad') return 'visibilidad';
-        if (h === '#configuracion-pesos' || h === 'configuracion-pesos') return 'pesos';
+        var h = String(hash || '').replace(/^#/, '');
+        if (h === 'ajustes-visibilidad' || h === 'configuracion-visibilidad') return 'visibilidad';
+        if (h === 'ajustes-pesos' || h === 'configuracion-pesos') return 'pesos';
         if (
-            h === '#configuracion' ||
+            h === 'ajustes' ||
             h === 'configuracion' ||
-            h === '#visibilidad' ||
             h === 'visibilidad' ||
-            h === '#publicacion' ||
             h === 'publicacion'
         ) {
             return 'hub';
         }
         return null;
+    }
+
+    function isLegacyConfigHash(hash) {
+        var h = String(hash || '').replace(/^#/, '');
+        return (
+            h === 'visibilidad' ||
+            h === 'publicacion' ||
+            h === 'configuracion' ||
+            h === 'configuracion-visibilidad' ||
+            h === 'configuracion-pesos'
+        );
     }
 
     function setPanel(next, opts) {
@@ -442,5 +451,6 @@
     global.refreshCrearContenidoConfigHub = refreshHubCards;
     global.hashForCrearContenidoConfigPanel = hashForConfigPanel;
     global.panelFromCrearContenidoConfigHash = panelFromConfigHash;
+    global.isLegacyCrearContenidoConfigHash = isLegacyConfigHash;
     global.setCrearContenidoConfigPanel = setPanel;
 })(typeof window !== 'undefined' ? window : this);

@@ -27,7 +27,7 @@
         informacion: '#informacion',
         recursos: '#recursos',
         certificado: '#certificado',
-        visibilidad: '#configuracion'
+        visibilidad: '#ajustes'
     };
 
     function getQueryParam(name) {
@@ -361,6 +361,9 @@
         if (h === 'recursos') return 'recursos';
         if (h === 'certificado') return 'certificado';
         if (
+            h === 'ajustes' ||
+            h === 'ajustes-visibilidad' ||
+            h === 'ajustes-pesos' ||
             h === 'configuracion' ||
             h === 'configuracion-visibilidad' ||
             h === 'configuracion-pesos' ||

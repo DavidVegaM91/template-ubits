@@ -40,9 +40,16 @@
         var h = String(hash || '').replace(/^#/, '');
         var resultadosTab = parseResultadosTabFromHash(hash);
         var configPanel = 'hub';
-        if (h === 'configuracion-visibilidad') configPanel = 'visibilidad';
-        else if (h === 'configuracion-pesos') configPanel = 'pesos';
-        else if (h === 'configuracion' || h === 'visibilidad' || h === 'publicacion') configPanel = 'hub';
+        if (h === 'ajustes-visibilidad' || h === 'configuracion-visibilidad') configPanel = 'visibilidad';
+        else if (h === 'ajustes-pesos' || h === 'configuracion-pesos') configPanel = 'pesos';
+        else if (
+            h === 'ajustes' ||
+            h === 'configuracion' ||
+            h === 'visibilidad' ||
+            h === 'publicacion'
+        ) {
+            configPanel = 'hub';
+        }
 
         if (h === 'informacion' || h === 'portada') {
             return { section: 'informacion', resultadosTab: 'progreso', configPanel: 'hub' };
@@ -50,6 +57,9 @@
         if (h === 'recursos') return { section: 'recursos', resultadosTab: 'progreso', configPanel: 'hub' };
         if (h === 'certificado') return { section: 'certificado', resultadosTab: 'progreso', configPanel: 'hub' };
         if (
+            h === 'ajustes' ||
+            h === 'ajustes-visibilidad' ||
+            h === 'ajustes-pesos' ||
             h === 'configuracion' ||
             h === 'configuracion-visibilidad' ||
             h === 'configuracion-pesos' ||
@@ -74,17 +84,17 @@
         }
         if (section === 'visibilidad') {
             if (parsed.section === 'visibilidad') {
-                if (parsed.configPanel === 'visibilidad') return '#configuracion-visibilidad';
-                if (parsed.configPanel === 'pesos') return '#configuracion-pesos';
+                if (parsed.configPanel === 'visibilidad') return '#ajustes-visibilidad';
+                if (parsed.configPanel === 'pesos') return '#ajustes-pesos';
             }
-            return '#configuracion';
+            return '#ajustes';
         }
         var HASH_SECTION = {
             resultados: '#resultados',
             informacion: '#informacion',
             recursos: '#recursos',
             certificado: '#certificado',
-            visibilidad: '#configuracion'
+            visibilidad: '#ajustes'
         };
         return HASH_SECTION[section] || '#resultados-progreso';
     }
