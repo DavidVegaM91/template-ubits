@@ -11,6 +11,7 @@
  *   openModal({
  *     overlayId: 'mi-modal',
  *     title: 'Título',
+ *     description: 'Texto opcional bajo el título',  // opcional; sin valor = sin descripción
  *     bodyHtml: '<p>Contenido</p>',
  *     footerHtml: '<button class="ubits-button ubits-button--secondary ubits-button--md">Cancelar</button><button class="ubits-button ubits-button--primary ubits-button--md">Aceptar</button>',
  *     footerTertiary: { text: 'Eliminar', onClick: function() { } },  // opcional: botón a la izquierda
@@ -108,15 +109,29 @@
         );
     }
 
+    function buildModalHeaderTextHtml(overlayId, title, description) {
+        var desc = description != null ? String(description).trim() : '';
+        var descHtml = desc
+            ? ('    <p id="' + overlayId + '-description" class="ubits-modal-description ubits-body-sm-regular">' + escapeHtml(desc) + '</p>')
+            : '';
+        return (
+            '    <div class="ubits-modal-header__text">' +
+            '      <span id="' + overlayId + '-title" class="ubits-modal-title ubits-body-md-bold">' + escapeHtml(title) + '</span>' +
+            descHtml +
+            '    </div>'
+        );
+    }
+
     function buildModalHeaderHtml(overlayId, title, options) {
         if (options && options.variant === 'promo') {
             return '';
         }
+        var description = options && options.description != null ? options.description : '';
         var isIa = options && options.variant === 'ia';
         if (!isIa) {
             return (
                 '  <div class="ubits-modal-header">' +
-                '    <span id="' + overlayId + '-title" class="ubits-modal-title ubits-body-md-bold">' + escapeHtml(title) + '</span>' +
+                buildModalHeaderTextHtml(overlayId, title, description) +
                 '    <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only ubits-modal-close" aria-label="Cerrar">' +
                 '      <i class="far fa-times"></i>' +
                 '    </button>' +
@@ -134,7 +149,7 @@
         }
         return (
             '  <div class="ubits-modal-header ubits-modal-header--ia">' +
-            '    <span id="' + overlayId + '-title" class="ubits-modal-title ubits-body-md-bold">' + escapeHtml(title) + '</span>' +
+            buildModalHeaderTextHtml(overlayId, title, description) +
             '    <div class="ubits-modal-header__actions">' +
             badge +
             '      <button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only ubits-modal-close" aria-label="Cerrar">' +
@@ -159,6 +174,7 @@
      * @param {Object} options
      * @param {string} [options.overlayId] - ID del overlay. Si no se pasa, se genera uno.
      * @param {string} options.title - Título del header (se escapa HTML).
+     * @param {string} [options.description] - Texto opcional bajo el título (ubits-body-sm-regular). Sin valor = sin descripción.
      * @param {string} options.bodyHtml - HTML del cuerpo del modal.
      * @param {string} [options.footerHtml] - HTML del pie (botones a la derecha: secundario + primario). Opcional.
      * @param {boolean} [options.showFooter=true] - Si false, no se renderiza el pie aunque haya footerHtml (modal sin footer).
@@ -221,6 +237,10 @@
             overlay.setAttribute('aria-label', promoLabel);
         } else {
             overlay.setAttribute('aria-labelledby', overlayId + '-title');
+            var openDesc = options.description != null ? String(options.description).trim() : '';
+            if (openDesc) {
+                overlay.setAttribute('aria-describedby', overlayId + '-description');
+            }
         }
 
         var innerContent;
@@ -331,6 +351,7 @@
      * @param {Object} options
      * @param {string} options.overlayId - ID del overlay.
      * @param {string} options.title - Título del header (se escapa HTML).
+     * @param {string} [options.description] - Texto opcional bajo el título (ubits-body-sm-regular).
      * @param {string} options.bodyHtml - HTML del cuerpo.
      * @param {string} [options.footerHtml] - HTML del pie (botones derecha). Opcional.
      * @param {Object} [options.footerTertiary] - Botón terciario izquierda. { text: string }. Opcional (onClick se asocia por id en la página).
@@ -398,6 +419,16 @@
         var bodyClassAttr = bodyClass ? (' ' + bodyClass) : '';
         var footerClassAttr = footerClass ? (' ' + footerClass) : '';
 
+        var description = options.description != null ? String(options.description).trim() : '';
+        var descHtml = description
+            ? ('<p id="' + overlayId + '-description" class="ubits-modal-description ubits-body-sm-regular">' + escapeHtml(description) + '</p>')
+            : '';
+        var headerTextHtml =
+            '<div class="ubits-modal-header__text">' +
+            '<span class="ubits-modal-title ubits-body-md-bold"' + titleIdAttr + '>' + escapeHtml(title) + '</span>' +
+            descHtml +
+            '</div>';
+
         var headerInner;
         if (options.variant === 'ia') {
             var badge = '';
@@ -411,7 +442,7 @@
             }
             headerInner =
                 '<div class="ubits-modal-header ubits-modal-header--ia' + headerClassAttr + '">' +
-                '<span class="ubits-modal-title ubits-body-md-bold"' + titleIdAttr + '>' + escapeHtml(title) + '</span>' +
+                headerTextHtml +
                 '<div class="ubits-modal-header__actions">' +
                 badge +
                 '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only ubits-modal-close"' + closeIdAttr + ' aria-label="Cerrar">' +
@@ -420,7 +451,7 @@
         } else {
             headerInner =
                 '<div class="ubits-modal-header' + headerClassAttr + '">' +
-                '<span class="ubits-modal-title ubits-body-md-bold"' + titleIdAttr + '>' + escapeHtml(title) + '</span>' +
+                headerTextHtml +
                 '<button type="button" class="ubits-button ubits-button--tertiary ubits-button--sm ubits-button--icon-only ubits-modal-close"' + closeIdAttr + ' aria-label="Cerrar">' +
                 '<i class="far fa-times"></i>' +
                 '</button>' +

@@ -50,13 +50,23 @@
                             <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6;">
                                 Haz clic en un botón para abrir el modal en el tamaño indicado. Cierra con el botón X, Cancelar, Aceptar o clic fuera del contenido.
                             </p>
-                            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
-                                <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Footer:</span>
-                                <label class="ubits-switch ubits-switch--sm" style="margin: 0;">
-                                    <input type="checkbox" id="modal-demo-show-footer" class="ubits-switch__input" checked>
-                                    <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
-                                    <span class="ubits-switch__label ubits-body-sm-regular">Activo</span>
-                                </label>
+                            <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 16px 24px; margin-bottom: 16px;">
+                                <div style="display: flex; align-items: center; gap: 12px;">
+                                    <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Footer:</span>
+                                    <label class="ubits-switch ubits-switch--sm" style="margin: 0;">
+                                        <input type="checkbox" id="modal-demo-show-footer" class="ubits-switch__input" checked>
+                                        <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
+                                        <span class="ubits-switch__label ubits-body-sm-regular">Activo</span>
+                                    </label>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 12px;">
+                                    <span class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Descripción:</span>
+                                    <label class="ubits-switch ubits-switch--sm" style="margin: 0;">
+                                        <input type="checkbox" id="modal-demo-show-description" class="ubits-switch__input">
+                                        <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>
+                                        <span class="ubits-switch__label ubits-body-sm-regular">Activa</span>
+                                    </label>
+                                </div>
                             </div>
                             <div style="background: var(--ubits-bg-2); padding: 24px; border-radius: 12px; position: relative;">
                                 <div id="modal-preview" style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center;">
@@ -106,7 +116,7 @@
                                 <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
                                     <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-window-maximize"></i></div>
                                     <div class="ubits-body-sm-bold">Partes</div>
-                                    <div class="ubits-body-sm-regular">Título con botón cerrar, contenido y pie opcional (se puede ocultar)</div>
+                                    <div class="ubits-body-sm-regular">Título con descripción opcional y botón cerrar, contenido y pie opcional (se puede ocultar)</div>
                                 </div>
                                 <div style="text-align: center; padding: 16px; background: var(--ubits-bg-2); border-radius: 8px;">
                                     <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: 8px;"><i class="far fa-calendar-alt"></i></div>
@@ -264,6 +274,11 @@
                 var el = document.getElementById('modal-demo-show-footer');
                 return !el || !!el.checked;
             }
+            function modalDemoDescription() {
+                var el = document.getElementById('modal-demo-show-description');
+                if (!el || !el.checked) return undefined;
+                return 'Descripción opcional del modal.';
+            }
             document.querySelectorAll('.modal-demo-btn').forEach(function(btn) {
                 var size = btn.getAttribute('data-size') || 'sm';
                 if (typeof openModal === 'function') {
@@ -271,6 +286,7 @@
                         openModal({
                             overlayId: modalDemoOverlayId,
                             title: 'Modal ' + size.toUpperCase(),
+                            description: modalDemoDescription(),
                             bodyHtml: modalDemoBodyHtml,
                             footerHtml: modalDemoFooterHtml,
                             showFooter: modalDemoShowFooter(),
@@ -288,6 +304,7 @@
                     openModal({
                         overlayId: modalIaDemoId,
                         title: 'Generar con IA',
+                        description: modalDemoDescription(),
                         bodyHtml: '<p class="ubits-body-md-regular" style="color: var(--ubits-fg-1-medium);">Ejemplo de variante IA: badge de tokens en la cabecera y fondo con orbes.</p>',
                         footerHtml: modalIaFooterHtml,
                         showFooter: modalDemoShowFooter(),

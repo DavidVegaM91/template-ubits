@@ -53,11 +53,30 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: var(--gap-md);
+}
+
+.ubits-modal-header:has(.ubits-modal-description) {
+    align-items: flex-start;
+}
+
+.ubits-modal-header__text {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    flex: 1;
+    min-width: 0;
 }
 
 .ubits-modal-header .ubits-modal-title {
     margin: 0;
     color: var(--ubits-fg-1-high);
+}
+
+/* Descripción opcional bajo el título (apagada por defecto vía JS: sin description) */
+.ubits-modal-description {
+    margin: 0;
+    color: var(--ubits-fg-1-medium);
 }
 
 .ubits-modal-body {
@@ -114,7 +133,7 @@
     flex-shrink: 0;
 }
 
-.ubits-modal-header--ia .ubits-modal-title {
+.ubits-modal-header--ia .ubits-modal-header__text {
     flex: 1;
     min-width: 0;
 }
