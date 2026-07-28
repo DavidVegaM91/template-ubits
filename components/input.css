@@ -103,14 +103,14 @@
     line-height: 16.5px;
     height: 28px;
     font-family: var(--ubits-font-family-sans);
-    border-radius: var(--border-radius-xs);
+    border-radius: var(--border-radius-sm);
 }
 
 .ubits-input--sm {
     padding: var(--padding-sm) var(--padding-sm);
     font-size: 0.875rem;
     height: 32px; /* Same as ubits-button--sm */
-    border-radius: var(--border-radius-xs);
+    border-radius: var(--border-radius-sm);
 }
 
 .ubits-input--md {

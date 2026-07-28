@@ -348,12 +348,12 @@
 .ubits-button--xs {
     padding: 7.5px 8px;
     height: 28px;
-    border-radius: var(--border-radius-xs);
+    border-radius: var(--border-radius-sm);
     /* Hereda de ubits-body-xs-semibold: 11px, weight 600, line-height 16.5px */
 }
 
 .ubits-button--xs:disabled::before {
-    border-radius: var(--border-radius-xs);
+    border-radius: var(--border-radius-sm);
 }
 
 /* Aplicar tipografía UBITS al texto del botón extra small - ubits-body-xs-semibold */
@@ -376,12 +376,12 @@
 .ubits-button--sm {
     padding: 9.5px 12px;
     height: 32px;
-    border-radius: var(--border-radius-xs);
+    border-radius: var(--border-radius-sm);
     /* Hereda de ubits-body-sm-semibold: 13px, weight 600, line-height 19.5px */
 }
 
 .ubits-button--sm:disabled::before {
-    border-radius: var(--border-radius-xs);
+    border-radius: var(--border-radius-sm);
 }
 
 /* Aplicar tipografía UBITS al texto del botón small - ubits-body-sm-semibold */
@@ -406,6 +406,21 @@
     height: 48px;
     border-radius: var(--border-radius-md);
     /* Hereda de ubits-body-lg-semibold: 20px, weight 600, line-height 30px */
+}
+
+/* Pill debe ganar sobre el radius por tamaño (xs/sm/md/lg) */
+.ubits-button--xs.ubits-button--pill,
+.ubits-button--sm.ubits-button--pill,
+.ubits-button--lg.ubits-button--pill,
+.ubits-button.ubits-button--pill {
+    border-radius: var(--border-radius-full);
+}
+
+.ubits-button--xs.ubits-button--pill:disabled::before,
+.ubits-button--sm.ubits-button--pill:disabled::before,
+.ubits-button--lg.ubits-button--pill:disabled::before,
+.ubits-button.ubits-button--pill:disabled::before {
+    border-radius: var(--border-radius-full);
 }
 
 /* Aplicar tipografía UBITS al texto del botón large */
