@@ -1,7 +1,8 @@
 /**
  * UBITS Button group — botones secondary unidos (patrón btn-group clásico).
  * Requiere button.css. Variante selectable: ítem activo con .ubits-button--active.
- * Esquinas: xs/sm → --border-radius-xs; md/lg (default) → --border-radius-md.
+ * Esquinas: xs/sm → --border-radius-sm; md/lg (default) → --border-radius-md
+ * (igual que button.css por tamaño).
  */
 
 .ubits-button-group {
@@ -35,19 +36,19 @@
 
 .ubits-button-group > .ubits-button--xs:first-child,
 .ubits-button-group > .ubits-button--sm:first-child {
-    border-top-left-radius: var(--border-radius-xs);
-    border-bottom-left-radius: var(--border-radius-xs);
+    border-top-left-radius: var(--border-radius-sm);
+    border-bottom-left-radius: var(--border-radius-sm);
 }
 
 .ubits-button-group > .ubits-button--xs:last-child,
 .ubits-button-group > .ubits-button--sm:last-child {
-    border-top-right-radius: var(--border-radius-xs);
-    border-bottom-right-radius: var(--border-radius-xs);
+    border-top-right-radius: var(--border-radius-sm);
+    border-bottom-right-radius: var(--border-radius-sm);
 }
 
 .ubits-button-group > .ubits-button--xs:only-child,
 .ubits-button-group > .ubits-button--sm:only-child {
-    border-radius: var(--border-radius-xs);
+    border-radius: var(--border-radius-sm);
 }
 
 .ubits-button-group > .ubits-button:hover:not(:disabled),
