@@ -44,11 +44,19 @@
       evalFase: 'resultado',
       evalResultadoKind: 'reprobado'
     },
-    'eval-resultado-tiempo': {
+    'eval-resultado-aprobado-tiempo': {
       view: 'recursos',
       pageId: EVAL_PAGE_1,
       evalFase: 'resultado',
-      evalResultadoKind: 'tiempo'
+      evalResultadoKind: 'aprobado',
+      timedOut: true
+    },
+    'eval-resultado-reprobado-tiempo': {
+      view: 'recursos',
+      pageId: EVAL_PAGE_1,
+      evalFase: 'resultado',
+      evalResultadoKind: 'reprobado',
+      timedOut: true
     },
     'eval-resultado-limite': {
       view: 'recursos',
@@ -77,11 +85,19 @@
       evalFase: 'resultado',
       evalResultadoKind: 'reprobado'
     },
-    'eval2-resultado-tiempo': {
+    'eval2-resultado-aprobado-tiempo': {
       view: 'recursos',
       pageId: EVAL_PAGE_2,
       evalFase: 'resultado',
-      evalResultadoKind: 'tiempo'
+      evalResultadoKind: 'aprobado',
+      timedOut: true
+    },
+    'eval2-resultado-reprobado-tiempo': {
+      view: 'recursos',
+      pageId: EVAL_PAGE_2,
+      evalFase: 'resultado',
+      evalResultadoKind: 'reprobado',
+      timedOut: true
     },
     'eval2-resultado-limite': {
       view: 'recursos',
@@ -193,12 +209,28 @@
     return pageId === EVAL_PAGE_2 ? 'eval2' : 'eval';
   }
 
-  function evalHashFor(pageId, fase, resultadoKind) {
+  function evalHashFor(pageId, fase, resultadoKind, timedOut) {
     var prefix = evalHashPrefix(pageId);
     if (fase === 'evaluacion') return prefix + '-intento';
     if (fase === 'retomar') return prefix + '-retomar';
-    if (fase === 'resultado') return prefix + '-resultado-' + (resultadoKind || 'reprobado');
+    if (fase === 'resultado') {
+      var base = prefix + '-resultado-' + (resultadoKind || 'reprobado');
+      if (
+        timedOut &&
+        (resultadoKind === 'aprobado' || resultadoKind === 'reprobado')
+      ) {
+        return base + '-tiempo';
+      }
+      return base;
+    }
     return prefix + '-bienvenida';
+  }
+
+  /** Legacy `#…-resultado-tiempo` → `#…-resultado-reprobado-tiempo` */
+  function normalizeLegacyEvalHash(key) {
+    if (key === 'eval-resultado-tiempo') return 'eval-resultado-reprobado-tiempo';
+    if (key === 'eval2-resultado-tiempo') return 'eval2-resultado-reprobado-tiempo';
+    return key;
   }
 
   function finPageId() {
@@ -278,12 +310,19 @@
       session.view = 'portada';
       session.portadaMode = portadaModeFromProgress();
       session.currentPageId = null;
+      session.evalTimedOut = false;
       return;
+    }
+    var canonical = normalizeLegacyEvalHash(key);
+    if (canonical !== key) {
+      setHash(canonical);
+      key = canonical;
     }
     var cfg = HASH_PAGE[key];
     if (!cfg) {
       session.view = 'portada';
       session.portadaMode = 'por-iniciar';
+      session.evalTimedOut = false;
       return;
     }
 
@@ -291,6 +330,7 @@
       session.view = 'portada';
       session.portadaMode = cfg.mode;
       session.currentPageId = null;
+      session.evalTimedOut = false;
       if (cfg.mode === 'por-iniciar') {
         session.completedPageIds = {};
         session.lastPageId = null;
@@ -316,6 +356,7 @@
       session.currentPageId = finPageId();
       session.lastPageId = finPageId();
       session.portadaMode = 'completado';
+      session.evalTimedOut = false;
       return;
     }
 
@@ -328,6 +369,7 @@
     if (isEvalPageId(cfg.pageId)) {
       session.evalFase = cfg.evalFase || 'bienvenida';
       session.evalResultadoKind = cfg.evalResultadoKind || null;
+      session.evalTimedOut = !!cfg.timedOut;
       if (session.evalFase === 'evaluacion') {
         session.evalIntentoActual = session.evalIntentoActual || 1;
         session.answers = {};
@@ -354,14 +396,6 @@
             puntajeMin: minPassSeed
           };
           session.evalIntentoActual = 1;
-        } else if (kind === 'tiempo') {
-          session.evalScore = {
-            aprobado: false,
-            correctas: Math.max(0, minPassSeed - 2),
-            total: total,
-            puntajeMin: minPassSeed
-          };
-          session.evalIntentoActual = 1;
         } else if (kind === 'limite') {
           session.evalScore = {
             aprobado: false,
@@ -372,6 +406,8 @@
           session.evalIntentoActual = 2;
         }
       }
+    } else {
+      session.evalTimedOut = false;
     }
   }
 
@@ -1037,16 +1073,20 @@
     session.evalPausedAnswers = null;
   }
 
-  function finishEvalWithKind(kind, score) {
+  function finishEvalWithKind(kind, score, opts) {
+    var timedOut = !!(opts && opts.timedOut);
     stopEvalTimer();
     clearEvalPauseState();
     session.evalFase = 'resultado';
     session.evalResultadoKind = kind;
     session.evalScore = score || session.evalScore;
+    session.evalTimedOut = timedOut;
     if (kind === 'aprobado') {
       session.completedPageIds[session.currentPageId] = true;
     }
-    setHash(evalHashFor(session.currentPageId, 'resultado', kind));
+    setHash(
+      evalHashFor(session.currentPageId, 'resultado', kind, timedOut)
+    );
     render();
   }
 
@@ -1113,20 +1153,40 @@
           var attempts = session.evalIntentoActual || 1;
           var maxA = cfg.maxAttempts || 2;
           var minPass = (cfg && cfg.minPassScore) || 4;
-          if (attempts >= maxA) {
-            finishEvalWithKind('limite', {
-              aprobado: false,
-              correctas: scored.correctas,
-              total: scored.total,
-              puntajeMin: minPass
-            });
+          var aprobado = scored.correctas >= minPass;
+          if (aprobado) {
+            finishEvalWithKind(
+              'aprobado',
+              {
+                aprobado: true,
+                correctas: scored.correctas,
+                total: scored.total,
+                puntajeMin: minPass
+              },
+              { timedOut: true }
+            );
+          } else if (attempts >= maxA) {
+            finishEvalWithKind(
+              'limite',
+              {
+                aprobado: false,
+                correctas: scored.correctas,
+                total: scored.total,
+                puntajeMin: minPass
+              },
+              { timedOut: true }
+            );
           } else {
-            finishEvalWithKind('tiempo', {
-              aprobado: false,
-              correctas: scored.correctas,
-              total: scored.total,
-              puntajeMin: minPass
-            });
+            finishEvalWithKind(
+              'reprobado',
+              {
+                aprobado: false,
+                correctas: scored.correctas,
+                total: scored.total,
+                puntajeMin: minPass
+              },
+              { timedOut: true }
+            );
           }
         }
       });
@@ -1223,11 +1283,6 @@
         '</p>' +
         '<p class="exp-estudio-eval__result-line ubits-body-md-regular">Sigue aprendiendo,</p>' +
         '<p class="exp-estudio-eval__result-line ubits-body-md-regular">¡puedes continuar a la siguiente página!</p>';
-    } else if (kind === 'tiempo') {
-      icon = ICONS.time;
-      title = '¡Tiempo agotado!';
-      body =
-        '<p class="exp-estudio-eval__lead ubits-body-md-regular">Se ha agotado el tiempo para responder la evaluación correctamente. Inténtalo de nuevo para poder continuar</p>';
     } else if (kind === 'limite') {
       icon = ICONS.warning;
       title = '¡Alcanzaste el límite de intentos permitidos!';
@@ -1254,8 +1309,13 @@
         '<p class="exp-estudio-eval__result-line ubits-body-md-regular">Inténtalo de nuevo para poder continuar</p>';
     }
 
+    var alertHtml = session.evalTimedOut
+      ? '<div id="exp-estudio-eval-time-alert" class="exp-estudio-eval__time-alert"></div>'
+      : '';
+
     main.innerHTML =
       '<div class="exp-estudio-eval exp-estudio-eval--resultado">' +
+      alertHtml +
       '<img class="exp-estudio-eval__icon" src="' +
       icon +
       '" alt="" />' +
@@ -1264,6 +1324,12 @@
       '</h2>' +
       body +
       '</div>';
+
+    if (session.evalTimedOut && typeof global.showAlert === 'function') {
+      global.showAlert('info', 'Se ha agotado el tiempo límite', {
+        containerId: 'exp-estudio-eval-time-alert'
+      });
+    }
   }
 
   function renderRecursoMain(main, page) {
@@ -1444,7 +1510,7 @@
     if (session.evalFase === 'resultado') {
       if (session.evalResultadoKind === 'aprobado') return 'Continuar';
       if (session.evalResultadoKind === 'limite') return 'Ir al inicio';
-      if (session.evalResultadoKind === 'reprobado' || session.evalResultadoKind === 'tiempo') {
+      if (session.evalResultadoKind === 'reprobado') {
         return 'Reintentar';
       }
       return 'Continuar';
@@ -1467,6 +1533,7 @@
     if (session.evalFase === 'bienvenida') {
       clearEvalPauseState();
       session.evalFase = 'evaluacion';
+      session.evalTimedOut = false;
       session.answers = {};
       setHash(evalHashFor(evalId, 'evaluacion'));
       render();
@@ -1526,6 +1593,7 @@
         session.evalIntentoActual = (session.evalIntentoActual || 1) + 1;
         session.evalFase = 'evaluacion';
         session.evalResultadoKind = null;
+        session.evalTimedOut = false;
         session.answers = {};
         setHash(evalHashFor(evalId, 'evaluacion'));
         render();
@@ -1614,7 +1682,7 @@
       ) {
         session.evalFase = 'bienvenida';
       }
-      setHash(evalHashFor(pageId, session.evalFase, session.evalResultadoKind));
+      setHash(evalHashFor(pageId, session.evalFase, session.evalResultadoKind, session.evalTimedOut));
     } else {
       /* No pisar evalFase si quedó en retomar por pausa (ya guardado en pauseOpen…) */
       if (!(session.evalAttemptPaused && session.evalFase === 'retomar')) {
@@ -1879,6 +1947,7 @@
       lastPageId: null,
       evalFase: 'bienvenida',
       evalResultadoKind: null,
+      evalTimedOut: false,
       evalIntentoActual: 1,
       evalScore: null,
       answers: {},

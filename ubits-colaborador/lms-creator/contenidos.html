@@ -44,7 +44,6 @@
     <link rel="stylesheet" href="../../components/stepper.css">
     <link rel="stylesheet" href="../../components/learn-content-img-trailer.css">
     <link rel="stylesheet" href="../../components/rich-text-editor.css">
-    <link rel="stylesheet" href="../../components/sidebar-contenidos-lms.css">
     <link rel="stylesheet" href="./lms-creator.css">
     <link rel="stylesheet" href="./contenidos.css">
 </head>
@@ -164,7 +163,6 @@
     <script src="../../components/stepper.js"></script>
     <script src="../../components/learn-content-img-trailer.js"></script>
     <script src="../../components/rich-text-editor.js"></script>
-    <script src="../../components/sidebar-contenidos-lms.js"></script>
     <script src="../../script.js"></script>
     <script src="../../bd-master/bd-master-niveles-contenido.js"></script>
     <script src="../../bd-master/bd-master-tipos-contenido.js"></script>
@@ -250,27 +248,11 @@
                 return CONTENIDO_BORRADOR_DRAWER_ID_PREFIX + safe;
             }
 
-            /** Id único del rail del sidebar por contenido (evita duplicados si varios drawers siguen en el DOM ocultos). */
-            function contenidoIdToSidebarHostId(contentId) {
-                var raw = String(contentId != null && contentId !== '' ? contentId : 'sin-id');
-                var safe = raw.replace(/[^a-zA-Z0-9_-]/g, '-');
-                if (!safe) safe = 'sin-id';
-                return 'contenido-editor-sidebar-host--' + safe;
-            }
-
             function contenidoIdToAntiguoDrawerOverlayId(contentId) {
                 var raw = String(contentId != null && contentId !== '' ? contentId : 'sin-id');
                 var safe = raw.replace(/[^a-zA-Z0-9_-]/g, '-');
                 if (!safe) safe = 'sin-id';
                 return CONTENIDO_ANTIGUO_LMS_DRAWER_ID_PREFIX + safe;
-            }
-
-            /** Host del sidebar en el drawer Antiguo LMS (distinto del borrador por si coexisten overlays ocultos). */
-            function contenidoIdToAntiguoSidebarHostId(contentId) {
-                var raw = String(contentId != null && contentId !== '' ? contentId : 'sin-id');
-                var safe = raw.replace(/[^a-zA-Z0-9_-]/g, '-');
-                if (!safe) safe = 'sin-id';
-                return 'contenido-antiguo-lms-sidebar-host--' + safe;
             }
 
             /**
@@ -433,10 +415,8 @@
 
             function getContenidoBorradorEditorBodyHtml(contentId) {
                 var videoSrc = escapeHtmlAttrContenidos(CONTENIDO_EDITOR_VIDEO_DEMO_URL);
-                var sidebarHostId = escapeHtmlAttrContenidos(contenidoIdToSidebarHostId(contentId));
                 return (
                     '<div id="contenido-borrador-editor-workspace" class="contenido-borrador-editor-workspace">' +
-                    '  <div id="' + sidebarHostId + '" class="contenido-borrador-editor__rail" aria-label="Pasos del contenido"></div>' +
                     '  <div id="contenido-borrador-editor-index" class="contenido-borrador-editor__index">' +
                     '    <div id="contenido-borrador-seccion-1" class="contenido-borrador-editor__seccion contenido-borrador-editor__seccion--activa">' +
                     '      <div class="contenido-borrador-editor__seccion-head">' +
@@ -526,12 +506,8 @@
             }
 
             function getContenidoAntiguoLmsEditorBodyHtml(contentId) {
-                var sidebarHostId = escapeHtmlAttrContenidos(contenidoIdToAntiguoSidebarHostId(contentId));
                 return (
                     '<div class="contenido-antiguo-lms-editor-workspace">' +
-                    '  <div id="' +
-                    sidebarHostId +
-                    '" class="contenido-borrador-editor__rail" aria-label="Pasos del contenido"></div>' +
                     '  <div class="contenido-antiguo-lms-editor__embed" role="region" aria-label="Vista embebida de Moodle">' +
                     '    <p class="contenido-antiguo-lms-editor__embed-title ubits-display-d2-regular">Experiencia embebida de Moodle</p>' +
                     '  </div>' +
@@ -623,17 +599,7 @@
                     syncUrlAfterAntiguoLmsDrawerOpen(contentId);
                 }
                 wireContenidoAntiguoLmsDrawerHeader(overlayDrawer, vis);
-                var sidebarHostId = contenidoIdToAntiguoSidebarHostId(contentId);
                 setTimeout(function () {
-                    if (typeof loadSidebarContenidosLms === 'function') {
-                        loadSidebarContenidosLms(sidebarHostId, {
-                            variant: 'publicado-antiguo-lms',
-                            activeStep: 'recursos'
-                        });
-                    }
-                    if (typeof setSidebarContenidosLmsActive === 'function') {
-                        setSidebarContenidosLmsActive(sidebarHostId, 'recursos');
-                    }
                     if (typeof initTooltip === 'function') {
                         initTooltip('#' + overlayId + ' [data-tooltip]');
                     }

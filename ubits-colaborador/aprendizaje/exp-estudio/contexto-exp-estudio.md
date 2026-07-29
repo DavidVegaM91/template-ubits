@@ -146,8 +146,11 @@ Hay **dos** filas de evaluación (`p-3` y `p-6`). Prefijo `#eval-*` = Sección 1
 | `#eval-retomar` / `#eval2-retomar` | APP: evaluación en pausa | Copy «Dejaste en pausa…»; CTA **Responder la evaluación** → intento |
 | `#eval-resultado-aprobado` / `#eval2-resultado-aprobado` | Resultado aprobado | Score mock alto; CTA **Continuar** → siguiente página (eval 1) o cierre (eval 2) |
 | `#eval-resultado-reprobado` / `#eval2-resultado-reprobado` | Resultado reprobado (quedan intentos) | Score bajo; CTA **Reintentar** |
-| `#eval-resultado-tiempo` / `#eval2-resultado-tiempo` | Tiempo agotado | CTA **Reintentar** |
+| `#eval-resultado-aprobado-tiempo` / `#eval2-resultado-aprobado-tiempo` | Tiempo agotado + aprobado | Misma UI de aprobado + Alert info «Se ha agotado el tiempo límite» (cerrable) |
+| `#eval-resultado-reprobado-tiempo` / `#eval2-resultado-reprobado-tiempo` | Tiempo agotado + reprobado | Misma UI de reprobado + Alert info «Se ha agotado el tiempo límite» (cerrable) |
 | `#eval-resultado-limite` / `#eval2-resultado-limite` | Límite de intentos | CTA **Ir al inicio** |
+
+**Redirect legacy:** `#eval-resultado-tiempo` / `#eval2-resultado-tiempo` → `#…-resultado-reprobado-tiempo` (replaceState).
 
 ##### Ejemplos listos para copiar
 
@@ -164,7 +167,8 @@ Hay **dos** filas de evaluación (`p-3` y `p-6`). Prefijo `#eval-*` = Sección 1
 …/exp-estudio/exp-estudio.html?id=<contentId>#eval-retomar
 …/exp-estudio/exp-estudio.html?id=<contentId>#eval-resultado-aprobado
 …/exp-estudio/exp-estudio.html?id=<contentId>#eval-resultado-reprobado
-…/exp-estudio/exp-estudio.html?id=<contentId>#eval-resultado-tiempo
+…/exp-estudio/exp-estudio.html?id=<contentId>#eval-resultado-aprobado-tiempo
+…/exp-estudio/exp-estudio.html?id=<contentId>#eval-resultado-reprobado-tiempo
 …/exp-estudio/exp-estudio.html?id=<contentId>#eval-resultado-limite
 …/exp-estudio/exp-estudio.html?id=<contentId>#cierre
 ```
@@ -299,7 +303,7 @@ Referencia autor: `lms-creator/contexto-creacion-contenido.md`, `lms-creator/cre
 
 ### 4.3 Índice lateral (componente nuevo)
 
-**Definición cerrada:** **no** reutilizar tal cual `indice-creator` ni `sidebar-contenidos-lms`.
+**Definición cerrada:** **no** reutilizar tal cual `indice-creator`.
 
 - Componente **`SeccionExpEstudio`** — tarjeta por sección (misma base visual que `seccion-creator`)
 - Componente **`IndiceExpEstudio`** — stack de secciones + filas de página (ver § 5.4.3 / § 5.7)
@@ -344,7 +348,6 @@ Simulaciones, marcos de referencia y evaluación para aplicar lo aprendido en si
 | Componente existente | Rol | ¿Usar en learner? |
 |---------------------|-----|-------------------|
 | `indice-creator` | Índice edición Creator | ❌ No directo |
-| `sidebar-contenidos-lms` | Sidebar catálogo LMS | ❌ No directo |
 | **`IndiceExpEstudio`** (nuevo) | Índice navegación consumo | ✅ Portar patrón APP + tokens UBITS |
 
 ### 4.4 Barra de progreso global
@@ -1174,7 +1177,7 @@ Detalle de UX y criterio «todas contestadas»: § 6.8.4b.
 |---|------|---------------------|---------------------------|---------------------------|
 | **1** | **Bienvenida** | `bienvenida` | Pantalla de bienvenida con **specs** (§ 6.8.4a) | **No** va a la siguiente página del índice → pasa a fase **2 Evaluación** |
 | **2** | **Evaluación** | `evaluacion` | Barra sticky timer + intento (§ 6.8.4b) + **5 preguntas** `learn-question` (por evaluación) | **No** va a la siguiente página del índice → fase **3 Resultado** |
-| **3** | **Resultado** | `resultado` | 4 variantes § 6.8.4c: aprobado / reprobado / tiempo / límite | **Aprobado + Continuar** → siguiente ítem (`Fin del contenido`). **Reprobado / tiempo** → **Reintentar**. **Límite** → **Ir al inicio**. |
+| **3** | **Resultado** | `resultado` | Aprobado / reprobado / límite; timeout = mismo resultado + Alert info | **Aprobado + Continuar** → siguiente ítem (`Fin del contenido`). **Reprobado** → **Reintentar**. **Límite** → **Ir al inicio**. |
 
 **Primera llegada:** al entrar por primera vez a una fila **Evaluación** (desde índice, **`Continuar`** global o **`Comenzar ahora`** en secuencia), la fase inicial es siempre **1 Bienvenida** — **no** se muestran las preguntas de golpe.
 
@@ -1199,7 +1202,7 @@ Los frames son **mobile** (sin columna derecha); en playground web el contenido 
 | Sticky tiempo + intentos | Description (widget) | `2387:41633` | [Figma](https://www.figma.com/design/zHCCbQamZeiZJPlT7GEKDs/APP-v3.0.0?node-id=2387-41633&m=dev) |
 | Resultado aprobatorio | Evaluation-success | `2389:46663` | [Figma](https://www.figma.com/design/zHCCbQamZeiZJPlT7GEKDs/APP-v3.0.0?node-id=2389-46663&m=dev) |
 | Resultado reprobatorio | Evaluation-Failed | `2389:47137` | [Figma](https://www.figma.com/design/zHCCbQamZeiZJPlT7GEKDs/APP-v3.0.0?node-id=2389-47137&m=dev) |
-| Resultado tiempo agotado | Evaluation-Time out | `2389:47261` | [Figma](https://www.figma.com/design/zHCCbQamZeiZJPlT7GEKDs/APP-v3.0.0?node-id=2389-47261&m=dev) |
+| Tiempo agotado (alert sobre resultado) | — | — | Ya no hay pantalla aparte: Alert info + UI de aprobado/reprobado (`#…-resultado-*-tiempo`) |
 | Resultado límite de intentos | Evaluation-Attempt limit | `2389:47401` | [Figma](https://www.figma.com/design/zHCCbQamZeiZJPlT7GEKDs/APP-v3.0.0?node-id=2389-47401&m=dev) |
 | Retomar (APP — evaluación en pausa) | Evaluation-resuming evaluation | `3341:13137` | [Figma](https://www.figma.com/design/zHCCbQamZeiZJPlT7GEKDs/APP-v3.0.0?node-id=3341-13137&m=dev) |
 
@@ -1207,7 +1210,7 @@ Los frames son **mobile** (sin columna derecha); en playground web el contenido 
 
 Catálogo maestro de **toda** la experiencia (portada, cada página, cierre + evaluación): **§ 2.3.1**.
 
-Hashes de esta fase: `#eval-bienvenida`, `#eval-intento`, `#eval-retomar`, `#eval-resultado-aprobado`, `#eval-resultado-reprobado`, `#eval-resultado-tiempo`, `#eval-resultado-limite`. Al abrir uno con sesión vacía, precargar páginas `p-1`…`p-4` como Completadas + fila Evaluación activa (mismo espíritu que Creator con `#recursos`).
+Hashes de esta fase: `#eval-bienvenida`, `#eval-intento`, `#eval-retomar`, `#eval-resultado-aprobado`, `#eval-resultado-reprobado`, `#eval-resultado-aprobado-tiempo`, `#eval-resultado-reprobado-tiempo`, `#eval-resultado-limite`. Al abrir uno con sesión vacía, precargar páginas `p-1`…`p-4` como Completadas + fila Evaluación activa (mismo espíritu que Creator con `#recursos`).
 
 #### 6.8.2 Diagrama de flujo (fase × nav)
 
@@ -1225,7 +1228,8 @@ Hashes de esta fase: `#eval-bienvenida`, `#eval-intento`, `#eval-retomar`, `#eva
 └───────┬───────┘
         │
         ├── Continuar (todas contestadas) ──► 3 RESULTADO (score)
-        ├── Timer llega a 0 ──► resultado-tiempo
+        ├── Timer llega a 0 ──► resultado aprobado/reprobado + alert tiempo
+        │                        (o límite si no quedan intentos)
         └── Salida / recarga / cierre a mitad ──► consume intento (§ 6.8.3b)
                 │
                 ▼
@@ -1234,7 +1238,7 @@ Hashes de esta fase: `#eval-bienvenida`, `#eval-intento`, `#eval-retomar`, `#eva
 ├───────────────────────────────┤
 │ aprobado  → Continuar → Fin   │
 │ reprobado → Reintentar        │
-│ tiempo    → Reintentar        │
+│ (+ alert si timeout)          │
 │ límite    → Ir al inicio      │
 └───────────────────────────────┘
 ```
@@ -1618,16 +1622,16 @@ global.createInput({
 
 > Mientras queden intentos, **no** avanzar índice ni marcar Evaluación como Completada.
 
-###### C) Tiempo agotado — `#eval-resultado-tiempo`
+###### C) Tiempo agotado — `#eval-resultado-aprobado-tiempo` / `#eval-resultado-reprobado-tiempo`
 
-**Figma:** `2389:47261`
+**Ya no** hay pantalla aparte «¡Tiempo agotado!». Al llegar el timer a 0 se califica el intento y se muestra **aprobado** o **reprobado** (misma UI A/B) con un **Alert info** arriba de la imagen:
 
 | Elemento | Copy exacto |
 |----------|-------------|
-| Ícono | Reloj azul (glass Clock) |
-| Título | **`¡Tiempo agotado!`** |
-| Cuerpo | **`Se ha agotado el tiempo para responder la evaluación correctamente. Inténtalo de nuevo para poder continuar`** |
-| CTA primario | **`Reintentar`** → misma regla que reprobatorio (consume intento al reentrar) |
+| Alert | tipo **info**, dismissible | **`Se ha agotado el tiempo límite`** |
+| Resto | Igual que resultado aprobado o reprobado según score |
+
+Deep links QA: `#eval-resultado-aprobado-tiempo`, `#eval-resultado-reprobado-tiempo` (y `eval2-*`). Legacy `#eval-resultado-tiempo` redirige a `#eval-resultado-reprobado-tiempo`.
 
 ###### D) Límite de intentos — `#eval-resultado-limite`
 
@@ -1642,7 +1646,7 @@ global.createInput({
 | Cuerpo | **`Has agotado todos tus intentos y no alcanzaste la puntuación mínima para aprobar. Comunícate con el administrador de capacitación de tu empresa para solicitar un nuevo intento.`** |
 | CTA primario | **`Ir al inicio`** → `../home-learn.html` (o portada del curso si producto lo define; playground: **home-learn**) |
 
-**Cuándo mostrar D vs B:** si tras un intento (score bajo **o** timeout **o** salida mid-intento) `evalIntentoActual > maxAttempts` → variante **límite**; si aún quedan intentos → **reprobado** o **tiempo**.
+**Cuándo mostrar D vs B:** si tras un intento (score bajo **o** timeout **o** salida mid-intento) `evalIntentoActual > maxAttempts` → variante **límite**; si aún quedan intentos → **reprobado** (con o sin alert de tiempo).
 
 **Referencia autor (config):** `contexto-creacion-contenido.md` — modal Configuración (% mínimo, orden aleatorio, nº preguntas, etc.).
 
@@ -1653,7 +1657,8 @@ Por cada página `tipo: 'evaluacion'` en el mock § 11.1:
 ```js
 {
   evalFase: 'bienvenida' | 'evaluacion' | 'resultado',
-  evalResultadoKind: null | 'aprobado' | 'reprobado' | 'tiempo' | 'limite',
+  evalResultadoKind: null | 'aprobado' | 'reprobado' | 'limite',
+  evalTimedOut: boolean,
   evalIntentoActual: 1,
   evalUltimoResultado: null | {
     aprobado: boolean,
@@ -1883,7 +1888,7 @@ Ambas marcan el contenido como **100 %** en índice y progreso.
 
 **§ 8.3b — Detalle por fase y resultado negativo:**
 
-Cerrado en § 6.8.4c: reprobado / tiempo → **Reintentar**; límite de intentos → **Ir al inicio**; solo **aprobado** desbloquea avance al cierre.
+Cerrado en § 6.8.4c: reprobado → **Reintentar**; límite de intentos → **Ir al inicio**; solo **aprobado** desbloquea avance al cierre. Timeout = mismo resultado + Alert info.
 
 ### 8.4 Formato de números
 
@@ -2048,7 +2053,7 @@ window.BD_EXP_ESTUDIO_DEMO = {
 - [x] 6.8.3b Salida mid-intento cuenta como intento
 - [x] 6.8.4a Bienvenida APP v3 (Recordatorio)
 - [x] 6.8.4b Sticky APP v3 (`Tiempo restante: … min` \| `Intentos: A de T`) + 10 preguntas demo
-- [x] 6.8.4c Resultado — 4 variantes (aprobado / reprobado / tiempo / límite)
+- [x] 6.8.4c Resultado — aprobado / reprobado / límite (+ timeout = alert sobre resultado)
 - [ ] 8.1 Persistencia tras refresh
 - [x] 8.2 Sin sync exp-estudio → zona de estudio / historial
 - [x] 8.3 Completado = todas las páginas + eval **aprobada** (§ 6.8)

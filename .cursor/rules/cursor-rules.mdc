@@ -298,7 +298,6 @@ openModal({
 - **TabBar** (Mobile navigation) → `components/tab-bar.css` + `components/tab-bar.js`
   - Features: Responsive, options: `modulos`, `perfil`, `modo-oscuro`
 - **Floating Menu** (Modal navigation) → `components/floating-menu.css` + `components/floating-menu.js`
-- **Sidebar contenidos LMS** (Misma estructura que Sidebar: `.sidebar` + `.nav-button` + tooltips; colores para `bg-1` en LMS Creator) → `general-styles/styles.css` + `components/sidebar-contenidos-lms.css` + `components/sidebar-contenidos-lms.js` — `loadSidebarContenidosLms({ variant?: 'publicado-lms-creator' | 'publicado-antiguo-lms', ... })`, `setSidebarContenidosLmsActive()`. Variante antigua: sin Resultados; paso `recursos` con etiqueta Módulos. Doc: `documentacion/componentes/sidebar-contenidos-lms.html`
 
 #### **2. 🎨 UI COMPONENTS:**
 - **Button** (All actions) → `components/button.css`

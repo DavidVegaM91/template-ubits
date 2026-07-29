@@ -35,7 +35,6 @@ const DOCS_SIDEBAR_SECTIONS = [
     { id: 'resources-block', title: 'Resources block', group: 'aprendizaje' },
     { id: 'seccion-creator', title: 'Seccion creator', group: 'aprendizaje' },
     { id: 'seccion-exp-estudio', title: 'Seccion Exp Estudio', group: 'aprendizaje' },
-    { id: 'sidebar-contenidos-lms', title: 'Sidebar contenidos LMS', group: 'aprendizaje' },
     { id: 'titulo-progreso-y-nav-exp-estudio', title: 'Titulo Progreso y Nav Exp Estudio', group: 'aprendizaje' },
     { id: 'titulo-specs-cta-exp-estudio', title: 'Titulo Specs CTA Exp Estudio', group: 'aprendizaje' },
     // UI general (alfabético por title)
@@ -312,7 +311,6 @@ function initDocsSidebar(activeSection) {
         const sectionToFile = {
             'introduccion': 'componentes.html',
             'sidebar': 'sidebar.html',
-            'sidebar-contenidos-lms': 'sidebar-contenidos-lms.html',
             'sub-nav': 'subnav.html',
             'tab-bar': 'tab-bar.html',
             'accordion': 'accordion.html',

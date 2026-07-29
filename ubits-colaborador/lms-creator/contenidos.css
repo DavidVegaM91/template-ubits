@@ -276,35 +276,8 @@ body.contenido-borrador-drawer-abierto {
     box-sizing: border-box;
 }
 
-.contenido-borrador-editor__rail {
-    flex-shrink: 0;
-    display: flex;
-    align-items: stretch;
-}
 
-.contenido-borrador-drawer-overlay .contenido-borrador-editor__rail .sidebar.sidebar--contenidos-lms,
-.contenido-antiguo-lms-drawer-overlay .contenido-borrador-editor__rail .sidebar.sidebar--contenidos-lms {
-    min-height: 100%;
-    max-height: none;
-    height: auto;
-    align-self: stretch;
-    border: none;
-    box-shadow: none;
-}
-
-/* Rail de pasos: sin bordes; el acento es solo fondo/icono (sidebar-contenidos-lms.css) */
-.contenido-borrador-drawer-overlay .sidebar.sidebar--contenidos-lms .nav-button[data-step],
-.contenido-antiguo-lms-drawer-overlay .sidebar.sidebar--contenidos-lms .nav-button[data-step] {
-    border: none;
-    box-shadow: none;
-}
-
-.contenido-borrador-drawer-overlay .sidebar.sidebar--contenidos-lms .sidebar-contenidos-lms__footer,
-.contenido-antiguo-lms-drawer-overlay .sidebar.sidebar--contenidos-lms .sidebar-contenidos-lms__footer {
-    border-top: none;
-}
-
-/* Drawer Antiguo LMS: rail + panel único (placeholder Moodle) */
+/* Drawer Antiguo LMS: panel único (placeholder Moodle) */
 .contenido-antiguo-lms-editor-workspace {
     display: flex;
     flex-direction: row;
@@ -609,14 +582,6 @@ body.contenido-borrador-drawer-abierto {
         max-height: 40vh;
     }
 
-    .contenido-borrador-editor__rail {
-        justify-content: center;
-    }
-
-    .contenido-borrador-drawer-overlay .contenido-borrador-editor__rail .sidebar.sidebar--contenidos-lms,
-    .contenido-antiguo-lms-drawer-overlay .contenido-borrador-editor__rail .sidebar.sidebar--contenidos-lms {
-        min-height: min(400px, 50vh);
-    }
 
 }
 

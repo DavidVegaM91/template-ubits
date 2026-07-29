@@ -67,7 +67,7 @@ La decisión de flujo depende del campo de negocio **`visibilidadLms`** (en mock
 | Aspecto | Creación (`crear-contenido`) | Edición (`editar-contenido`) |
 |---------|------------------------------|------------------------------|
 | **URL** | `crear-contenido.html` | **`editar-contenido.html?id={contentId}`** |
-| **Navegación lateral** | **Stepper vertical** (4 pasos: Portada → Recursos → Certificado → Visibilidad) | **Sidebar contenidos LMS** (`loadSidebarContenidosLms`, variante **`publicado-lms-creator`**) |
+| **Navegación lateral** | **Stepper vertical** (4 pasos: Portada → Recursos → Certificado → Visibilidad) | **Misma cáscara inmersiva** + navegación por hash (Resultados → Información → Recursos → Certificado → Visibilidad) |
 | **Primer ítem lateral** | Portada | **Resultados** *(no existe en creación)* |
 | **Siguiente ítem** | Recursos | **Información** *(equivalente funcional a Portada)* |
 | **Resto de ítems** | Certificado, Visibilidad | Recursos, Certificado, Visibilidad |
@@ -91,13 +91,11 @@ La decisión de flujo depende del campo de negocio **`visibilidadLms`** (en mock
 
 - Misma **cáscara inmersiva** que `crear-contenido.html` (`layout-immersive.css`, `body.page-layout-immersive`): cabecera con título del contenido, **tag de visibilidad** actual y **`SaveIndicator`** (mismo componente que creación).
 - **No** usar el stepper vertical de creación en la columna izquierda.
-- **Modo Archivado (solo lectura):** deshabilitar inputs, botones de guardado y acciones destructivas; el sidebar sigue permitiendo **navegar** entre secciones para **consultar**.
+- **Modo Archivado (solo lectura):** deshabilitar inputs, botones de guardado y acciones destructivas; la navegación por pasos sigue permitiendo **consultar** secciones.
 
-### Sidebar lateral — Sidebar contenidos LMS
+### Navegación de pasos (edición)
 
-Componente: **Sidebar contenidos LMS** (`components/sidebar-contenidos-lms.js` + CSS).
-
-**Variante:** `publicado-lms-creator` (orden oficial del componente):
+Orden oficial de secciones en edición (cáscara inmersiva + hash; sin rail lateral de pasos):
 
 | Orden | `id` interno | Etiqueta en UI | Icono (referencia) |
 |-------|--------------|----------------|---------------------|
@@ -106,8 +104,6 @@ Componente: **Sidebar contenidos LMS** (`components/sidebar-contenidos-lms.js` +
 | 3 | `recursos` | **Recursos** | `fa-layer-group` |
 | 4 | `certificado` | **Certificado** | `fa-award` |
 | 5 | `visibilidad` | **Visibilidad** | `fa-eye` |
-
-**Comportamiento:** rail colapsable, tooltips, botón **Expandir** en el pie. Cambio de sección **solo por el sidebar** (sin pie Anterior/Siguiente entre pasos, como en el drawer Antiguo LMS).
 
 **Sección activa vía URL:** `editar-contenido.html?id={contentId}#recursos` (u `#informacion`, `#certificado`, `#visibilidad`). En **Resultados**, el hash incluye el tab: `#resultados-progreso`, `#resultados-evaluaciones`, `#resultados-gestion-intentos`, `#resultados-descargas` (ver [Resultados](#sección-resultados)).
 
@@ -528,7 +524,6 @@ Si el tipo no tiene archivo físico, la descarga debe ser igualmente **un único
 | Hash opcional | `#recursos`, `#informacion`, `#certificado`, `#visibilidad`; Resultados: `#resultados-progreso`, `#resultados-evaluaciones`, `#resultados-gestion-intentos`, `#resultados-descargas` | Igual |
 | Lista origen | `contenidos.html` | `contenidos.tsx` |
 | Borrador | `crear-contenido.html?id={contentId}` | `crear-contenido.tsx?contentId=` |
-| Sidebar | `sidebar-contenidos-lms.js` | `SidebarContenidosLMS` |
 
 ---
 

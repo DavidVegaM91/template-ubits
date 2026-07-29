@@ -418,8 +418,6 @@ const PAGE_TO_TAB = {
     'guia-prompts.html': 'section2',
     'componentes.html': 'section3',
     'sidebar.html': 'section3',
-    'sidebar-contenido-creator.html': 'section3',
-    'sidebar-contenidos-lms.html': 'section3',
     'subnav.html': 'section3',
     'tab-bar.html': 'section3',
     'accordion.html': 'section3',

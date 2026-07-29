@@ -227,7 +227,6 @@ Si la pantalla **solo** presenta un listado tabular (filas/columnas) con barra d
   - **Variante default:** (opciones: admin, aprendizaje, diagnóstico, desempeño, encuestas, reclutamiento, tareas, ia-para-hr, ninguno) — modo oscuro en footer. **No** incluye acceso directo en el rail a LMS Creator; el colaborador entra por el menú del avatar (**Modo LMS Creator**) o desde **Aprendizaje → Universidad corporativa** (botón *Acceder a LMS Creator* → `lms-creator/contenidos.html`).
   - **Variante admin:** (opciones: inicio, empresa, aprendizaje, diagnóstico, desempeño, encuestas; footer: api, centro-de-ayuda, modo-oscuro, perfil) - Incluye modo oscuro en footer
   - **Variante creator:** rail oscuro con cuatro módulos del producto LMS Creator — `lms-creator` (Contenidos), `planes-formacion`, `certificados`, `personalizacion`. Uso típico: `loadSidebar('creator', 'lms-creator')` (o la sección activa correspondiente). Detalle en [LMS Creator (producto aparte)](#lms-creator-producto-aparte-del-colaborador) más abajo.
-- **Sidebar contenidos LMS** - Misma estructura que el Sidebar (`.sidebar` + `.nav-button` con iconos y tooltips), colores para superficie `--ubits-bg-1`; variantes **Publicado LMS Creator** (cinco pasos) y **Publicado Antiguo LMS** (sin Resultados; recursos como Módulos) vía `options.variant` - **RENDERIZADO: `loadSidebarContenidosLms()`**
 - **TabBar** - Navegación móvil (primer tab abre el floating menu; opciones: modulos, perfil, modo-oscuro). **Variantes** (segundo argumento de `loadTabBar`): omitido o `'default'` → primer tab «Módulos» (colaborador); `'admin'` → «Admin» (páginas `ubits-admin/`); `'creator'` → «LMS Creator» (páginas `ubits-colaborador/lms-creator/`). Debe coincidir con `loadFloatingMenu(containerId, variant)` en la misma página.
 - **Floating Menu** - Menú flotante modal para navegación móvil (acordeones con subitems). **Variantes** `'default' | 'admin' | 'creator'`: misma estructura de módulos que el README (colaborador / administración / LMS Creator).
 - **Profile Menu** - Menú desplegable del perfil de usuario
@@ -424,7 +423,6 @@ Todos los componentes UBITS requieren imports obligatorios:
 <link rel="stylesheet" href="../../components/floating-menu.css">
 <link rel="stylesheet" href="../../components/profile-menu.css">
 <link rel="stylesheet" href="../../components/sidebar.css">
-<link rel="stylesheet" href="../../components/sidebar-contenidos-lms.css">
 <link rel="stylesheet" href="../../components/sub-nav.css">
 <link rel="stylesheet" href="../../components/tab-bar.css">
 <link rel="stylesheet" href="../../components/avatar.css">
@@ -455,7 +453,6 @@ Todos los componentes UBITS requieren imports obligatorios:
 <script src="../../components/floating-menu.js"></script>
 <script src="../../components/profile-menu.js"></script>
 <script src="../../components/sidebar.js"></script>
-<script src="../../components/sidebar-contenidos-lms.js"></script>
 <script src="../../components/sub-nav.js"></script>
 <script src="../../components/tab-bar.js"></script>
 <script src="../../components/calendar.js"></script>
@@ -596,7 +593,6 @@ Todos los componentes UBITS requieren imports obligatorios:
 #### **📖 Documentación de Componentes (documentacion/componentes/):**
 - **`documentacion/componentes.html`** - Introducción y bienvenida a los componentes UBITS
 - **`documentacion/componentes/sidebar.html`** - Documentación del componente Sidebar
-- **`documentacion/componentes/sidebar-contenidos-lms.html`** - Documentación del Sidebar contenidos LMS (LMS Creator)
 - **`documentacion/componentes/subnav.html`** - Documentación del componente SubNav
 - **`documentacion/componentes/tab-bar.html`** - Documentación del componente TabBar
 - **`documentacion/componentes/button.html`** - Documentación del componente Button
@@ -689,7 +685,7 @@ Todos los componentes UBITS requieren imports obligatorios:
 │   └── bd-master-tipos-contenido.js
 ├── 📁 components/             # Componentes reutilizables UBITS (~65 bloques; ver catálogo doc abajo)
 │   ├── Navegación
-│   │   ├── sub-nav, sidebar, sidebar-contenidos-lms, tab-bar, floating-menu, profile-menu, submenu
+│   │   ├── sub-nav, sidebar, tab-bar, floating-menu, profile-menu, submenu
 │   ├── UI general (documentados en documentacion/componentes/)
 │   │   ├── accordion, ia-panel, alert, attention-badge, avatar, badge-tag, button, calendar
 │   │   ├── carousel-indicators, checkbox, chip, coachmark, color-picker, date-picker-modal
@@ -842,7 +838,6 @@ ubits-colaborador/
 
 <!-- Componentes que uses -->
 <link rel="stylesheet" href="../../components/sidebar.css">
-<link rel="stylesheet" href="../../components/sidebar-contenidos-lms.css">
 <link rel="stylesheet" href="../../components/sub-nav.css">
 <!-- ... otros componentes -->
 
@@ -1126,7 +1121,6 @@ loadCardContentCompact('mi-contenedor-compact', [
 - **`documentacion/componentes/empty-state.html`** - Documentación del componente Empty State
 - **`documentacion/componentes/paginator.html`** - Documentación del componente Paginator
 - **`documentacion/componentes/sidebar.html`** - Documentación del componente Sidebar
-- **`documentacion/componentes/sidebar-contenidos-lms.html`** - Documentación del Sidebar contenidos LMS (LMS Creator)
 - **`documentacion/componentes/subnav.html`** - Documentación del componente SubNav
 - **`documentacion/componentes/tab-bar.html`** - Documentación del componente TabBar
 - **`documentacion/componentes/avatar.html`** - Documentación del componente Avatar
