@@ -2343,8 +2343,12 @@
 
     // Inicializar navegación
     function initNav() {
-        if (typeof loadSidebar === 'function') loadSidebar('tareas');
-        if (typeof loadSubNav === 'function') loadSubNav('top-nav-container', 'tareas');
+        if (typeof initWorkspaceLayout === 'function') {
+            initWorkspaceLayout({ audience: 'colaborador', activeSidebar: 'seguimiento', headerVariant: 'tareas' });
+        } else {
+            if (typeof loadSidebar === 'function') loadSidebar('tareas');
+            if (typeof loadSubNav === 'function') loadSubNav('top-nav-container', 'tareas');
+        }
         if (typeof loadTabBar === 'function') loadTabBar('tab-bar-container');
         if (typeof loadFloatingMenu === 'function') loadFloatingMenu('floating-menu-container');
         if (typeof loadProfileMenu === 'function') loadProfileMenu('profile-menu-container');

@@ -9,6 +9,7 @@
     <!-- Estilos locales -->
     <link rel="stylesheet" href="../../general-styles/ubits-colors.css">
     <link rel="stylesheet" href="../../general-styles/styles.css">
+    <link rel="stylesheet" href="../../general-styles/layout-workspace.css">
     <link rel="stylesheet" href="../../general-styles/fontawesome-icons.css">
     <link rel="stylesheet" href="../../general-styles/ubits-typography.css">
     <link rel="stylesheet" href="../../components/sub-nav.css">
@@ -229,6 +230,7 @@
     <!-- Filtros de tareas: se abren en dropdown (tareas.js openFiltrosDropdown + dropdown-menu.js customBodyHtml) -->
 
     <script src="../../components/tooltip.js"></script>
+    <script src="../../components/layout-workspace.js"></script>
     <script src="../../components/sidebar.js"></script>
     <script src="../../components/sub-nav.js"></script>
     <script src="../../components/tab-bar.js"></script>
@@ -258,8 +260,7 @@
     <script>
         // Cargar componentes dinámicamente
         document.addEventListener('DOMContentLoaded', function() {
-            loadSidebar('sidebar-container', 'tareas');
-            loadSubNav('top-nav-container', 'tareas');
+            initWorkspaceLayout({ audience: 'colaborador', activeSidebar: 'tareas', headerVariant: 'tareas' });
             loadTabBar('tab-bar-container');
             loadFloatingMenu('floating-menu-container');
             loadProfileMenu('profile-menu-container');

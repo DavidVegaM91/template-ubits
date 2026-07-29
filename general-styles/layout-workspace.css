@@ -1,0 +1,149 @@
+/* ========================================
+   UBITS — Layout Workspace
+   Paridad React WorkspaceLayout: sidebar flotante + AppHeader + main con scroll.
+   Activar con body.page-layout-workspace (initWorkspaceLayout / loadSidebar admin|default).
+   ======================================== */
+
+body.page-layout-workspace {
+  margin: 0;
+  box-sizing: border-box;
+  height: 100vh;
+  height: 100dvh;
+  max-height: 100vh;
+  max-height: 100dvh;
+  overflow: hidden !important;
+  overscroll-behavior: none;
+  background: var(--ubits-bg-2);
+}
+
+/* Raíz: era .dashboard-container */
+.ubits-layout-workspace,
+body.page-layout-workspace .dashboard-container.ubits-layout-workspace {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  height: 100%;
+  min-height: 0;
+  max-height: 100%;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  padding: var(--gap-md) 0 var(--gap-md) var(--gap-md);
+  gap: var(--gap-sm);
+  background: var(--ubits-bg-2);
+  color: var(--ubits-fg-1-high);
+  overflow: hidden;
+  position: relative;
+}
+
+body.page-layout-workspace #sidebar-container {
+  flex: 0 0 auto;
+  align-self: stretch;
+  height: 100%;
+  min-height: 0;
+  position: relative;
+  z-index: 20;
+}
+
+/* Sidebar Workspace: deja de ser fixed; vive en el flex del shell */
+body.page-layout-workspace .ws-sidebar {
+  position: relative !important;
+  left: auto !important;
+  top: auto !important;
+  height: 100% !important;
+  max-height: none !important;
+  min-height: 0 !important;
+}
+
+body.page-layout-workspace .ubits-layout-workspace__main-wrap {
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 0;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+  overflow-y: auto;
+  background: transparent;
+  scrollbar-gutter: stable;
+  box-sizing: border-box;
+}
+
+body.page-layout-workspace .ubits-layout-workspace__header,
+body.page-layout-workspace #top-nav-container.ubits-layout-workspace__header {
+  position: sticky;
+  top: 0;
+  z-index: 6;
+  flex-shrink: 0;
+  background: var(--ubits-bg-2);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+body.page-layout-workspace .ubits-app-header {
+  margin-bottom: 0;
+}
+
+/* Main: sin el margen 143px del rail clásico */
+body.page-layout-workspace .ubits-layout-workspace__main,
+body.page-layout-workspace .main-content.ubits-layout-workspace__main,
+body.page-layout-workspace .main-content {
+  flex: 0 0 auto;
+  position: relative;
+  margin: 0 !important;
+  width: 100% !important;
+  max-width: none !important;
+  padding: var(--padding-lg) !important;
+  padding-bottom: var(--gap-2xl) !important;
+  box-sizing: border-box;
+  overflow: visible;
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-xl);
+  z-index: 5;
+  background: transparent;
+}
+
+body.page-layout-workspace .main-content-profile {
+  margin: 0 !important;
+  width: 100% !important;
+  max-width: none !important;
+  padding: var(--padding-lg) !important;
+  box-sizing: border-box;
+}
+
+@media (min-width: 1024px) {
+  body.page-layout-workspace.no-subnav .main-content,
+  body.page-layout-workspace .main-content {
+    padding-top: var(--padding-lg) !important;
+  }
+}
+
+@media (max-width: 1023px) {
+  body.page-layout-workspace .ubits-layout-workspace,
+  body.page-layout-workspace .dashboard-container.ubits-layout-workspace {
+    padding: var(--gap-md) var(--padding-md) calc(var(--gap-md) + 72px) var(--padding-md);
+  }
+
+  body.page-layout-workspace #sidebar-container,
+  body.page-layout-workspace .ws-sidebar:not(.ws-sidebar--embedded) {
+    display: none !important;
+  }
+
+  body.page-layout-workspace .main-content {
+    margin: 0 !important;
+    width: 100% !important;
+    padding: var(--padding-md) !important;
+  }
+}
+
+/* Anchos grandes: sin padding-left fantasma del rail (styles.css ≥1440) */
+@media (min-width: 1440px) {
+  body.page-layout-workspace .main-content,
+  body.page-layout-workspace .main-content-profile {
+    margin: 0 !important;
+    padding-left: var(--padding-lg) !important;
+    padding-right: var(--padding-lg) !important;
+    max-width: none !important;
+  }
+}

@@ -268,12 +268,54 @@ function getTopNavHTML(variant = 'template', customTabs = []) {
 }
 
 /**
- * Carga el top-nav en el contenedor especificado
- * @param {string} containerId - ID del contenedor donde cargar el top-nav
- * @param {string} variant - Variante del top-nav
- * @param {Array} customTabs - Array opcional de tabs personalizados
+ * Carga el top-nav en el contenedor especificado.
+ * Producto (admin / colaborador / LMS): monta AppHeader (Workspace).
+ * Solo `documentacion` y `template` conservan el SubNav clásico (docs legacy).
  */
 function loadSubNav(containerId, variant = 'template', customTabs = []) {
+    const keepSubNav = variant === 'documentacion' || variant === 'template';
+
+    if (!keepSubNav) {
+        const container =
+            typeof containerId === 'string' ? document.getElementById(containerId) : containerId;
+        if (!container) {
+            console.error(`Contenedor '${containerId}' no encontrado`);
+            return;
+        }
+
+        function mountAppHeader() {
+            if (typeof window.loadAppHeader !== 'function') {
+                console.error('loadAppHeader no disponible');
+                return;
+            }
+            const opts =
+                typeof window.resolveAppHeaderFromSubNavVariant === 'function'
+                    ? window.resolveAppHeaderFromSubNavVariant(variant)
+                    : { variant: 'colaborador', title: 'Workspace', borderless: true };
+            window.loadAppHeader(container, opts);
+        }
+
+        if (typeof window.loadAppHeader === 'function') {
+            mountAppHeader();
+            return;
+        }
+
+        const basePath =
+            typeof getSubNavBasePath === 'function' ? getSubNavBasePath() : '';
+        if (!document.querySelector('script[src*="components/app-header.js"]')) {
+            const s = document.createElement('script');
+            s.src = basePath + 'components/app-header.js';
+            s.onload = mountAppHeader;
+            s.onerror = function () {
+                console.error('No se pudo cargar app-header.js');
+            };
+            document.head.appendChild(s);
+        } else {
+            setTimeout(mountAppHeader, 50);
+        }
+        return;
+    }
+
     const container = document.getElementById(containerId);
     if (!container) {
         console.error(`Contenedor '${containerId}' no encontrado`);

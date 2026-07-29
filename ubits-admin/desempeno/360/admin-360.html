@@ -8,6 +8,7 @@
 
     <link rel="stylesheet" href="../../../general-styles/ubits-colors.css">
     <link rel="stylesheet" href="../../../general-styles/styles.css">
+    <link rel="stylesheet" href="../../../general-styles/layout-workspace.css">
     <link rel="stylesheet" href="../../../general-styles/fontawesome-icons.css">
     <link rel="stylesheet" href="../../../general-styles/ubits-typography.css">
     <link rel="stylesheet" href="../../../components/sub-nav.css">
@@ -66,7 +67,8 @@
 <div id="ubits-toast-container"></div>
 
 <script src="../../../components/tooltip.js"></script>
-<script src="../../../components/sidebar.js"></script>
+<script src="../../../components/layout-workspace.js"></script>
+    <script src="../../../components/sidebar.js"></script>
 <script src="../../../components/sub-nav.js"></script>
 <script src="../../../components/tab-bar.js"></script>
 <script src="../../../components/floating-menu.js"></script>
@@ -455,8 +457,7 @@
 
     /* ── inicialización ── */
     document.addEventListener('DOMContentLoaded', function () {
-        loadSidebar('admin', 'desempeño');
-        loadSubNav('top-nav-container', 'admin-desempeño');
+        initWorkspaceLayout({ audience: 'admin', activeSidebar: 'eval360', tabBarVariant: 'admin', floatingMenuVariant: 'admin' });
         /* Forzar tab activo tras el timer interno del componente (200 ms) */
         setTimeout(function () {
             var nav = document.getElementById('top-nav-container');

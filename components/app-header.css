@@ -1,0 +1,234 @@
+/* AppHeader — paridad React components/ui/AppHeader (Workspace). */
+
+.ubits-app-header {
+  height: var(--space-14, 56px);
+  flex: 0 0 auto;
+  background: transparent;
+  border-bottom: none;
+  display: flex;
+  align-items: center;
+  padding: 0 var(--padding-lg);
+  position: relative;
+  z-index: 6;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+  margin: 0 0 var(--gap-md) 0;
+  font-family: var(--ubits-font-family-sans);
+}
+
+.ubits-app-header--bordered {
+  background: var(--ubits-bg-1);
+  border-bottom: 1px solid var(--ubits-border-1);
+  border-radius: var(--border-radius-sm);
+  margin-bottom: var(--gap-lg);
+}
+
+.ubits-app-header__left {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-md);
+  min-width: 0;
+}
+
+.ubits-app-header__breadcrumb {
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.ubits-app-header__crumb {
+  display: inline-flex;
+  align-items: center;
+  min-width: 0;
+}
+
+.ubits-app-header__sep {
+  margin: 0 var(--gap-xs);
+  color: var(--ubits-fg-1-medium);
+  flex-shrink: 0;
+  font-weight: var(--font-weight-regular);
+}
+
+.ubits-app-header__ancestor,
+.ubits-app-header__link {
+  color: var(--ubits-fg-1-medium);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ubits-app-header__link {
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.ubits-app-header__link:hover {
+  color: var(--ubits-fg-1-high);
+}
+
+.ubits-app-header__current {
+  color: var(--ubits-fg-1-high);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ubits-app-header__right {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: var(--gap-md);
+  flex-shrink: 0;
+}
+
+.ubits-app-header__company-logo {
+  height: 24px;
+  width: auto;
+  display: block;
+  object-fit: contain;
+}
+
+.ubits-app-header__icon-btn {
+  width: var(--size-4xl);
+  height: var(--size-4xl);
+  border-radius: var(--border-radius-full);
+  border: 1px solid var(--ubits-border-1);
+  background: var(--ubits-bg-1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--ubits-fg-1-low);
+  padding: 0;
+}
+
+.ubits-app-header__icon-btn:hover {
+  background: var(--ubits-bg-2);
+  color: var(--ubits-fg-1-high);
+}
+
+.ubits-app-header__avatar-btn {
+  padding: 0;
+  margin: 0;
+  background: none;
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  overflow: visible;
+  line-height: 0;
+}
+
+.ubits-app-header__menu-wrap {
+  position: relative;
+}
+
+.ubits-app-header__dropdown {
+  position: absolute;
+  top: calc(100% + var(--gap-sm));
+  right: 0;
+  width: var(--space-56, 224px);
+  background: var(--ubits-bg-1);
+  border: 1px solid var(--ubits-border-1);
+  border-radius: var(--border-radius-md);
+  box-shadow: var(--ubits-elevation-overlay, var(--ubits-elevation-default));
+  padding: var(--padding-sm);
+  z-index: 30;
+  display: none;
+}
+
+.ubits-app-header__dropdown.is-open {
+  display: block;
+}
+
+.ubits-app-header__user-block {
+  padding: var(--padding-sm) var(--padding-md);
+  border-bottom: 1px solid var(--ubits-border-1);
+  margin-bottom: var(--gap-sm);
+}
+
+.ubits-app-header__user-name {
+  color: var(--ubits-fg-1-high);
+}
+
+.ubits-app-header__user-email {
+  color: var(--ubits-fg-1-low);
+  margin-top: var(--gap-xs);
+  margin-bottom: var(--gap-sm);
+}
+
+.ubits-app-header__menu-item {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-sm);
+  width: 100%;
+  border: none;
+  background: transparent;
+  text-align: left;
+  padding: var(--padding-sm) var(--padding-md);
+  border-radius: var(--border-radius-sm);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--ubits-fg-1-medium);
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.ubits-app-header__menu-item:hover {
+  background: var(--ubits-bg-2);
+  color: var(--ubits-fg-1-high);
+}
+
+.ubits-app-header__menu-item.is-danger {
+  color: var(--ubits-feedback-fg-error-subtle);
+}
+
+.ubits-app-header__theme-row {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-sm);
+  padding: var(--padding-sm) var(--padding-md);
+  border-radius: var(--border-radius-sm);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--ubits-fg-1-medium);
+}
+
+.ubits-app-header__theme-row > span {
+  flex: 1;
+}
+
+.ubits-app-header__role-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--gap-xs);
+  padding: 2px 8px;
+  border-radius: var(--border-radius-full);
+  border: 1px solid var(--ubits-feedback-border-info);
+  color: var(--ubits-feedback-accent-info);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  background: transparent;
+}
+
+@media (max-width: 1023px) {
+  .ubits-app-header {
+    padding: 0 var(--padding-lg);
+  }
+
+  .ubits-app-header__right {
+    gap: var(--gap-sm);
+  }
+
+  .ubits-app-header__breadcrumb {
+    display: none;
+  }
+
+  .ubits-app-header__label-desktop {
+    display: none;
+  }
+}

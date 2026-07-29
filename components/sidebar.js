@@ -548,6 +548,63 @@ window.openAdminLmsMigrateConfirm = function (basePathOpt, destinationFullUrl) {
 // FILES REQUIRED:
 //   - components-sidebar.css (o components/sidebar.css)
 //   - components/sidebar.js
+function ensureWorkspaceSidebarAssets(basePath, callback) {
+    if (!document.querySelector('link[href*="general-styles/layout-workspace.css"]') &&
+        !document.querySelector('link[href*="layout-workspace.css"]')) {
+        const layoutCss = document.createElement('link');
+        layoutCss.rel = 'stylesheet';
+        layoutCss.href = basePath + 'general-styles/layout-workspace.css';
+        document.head.appendChild(layoutCss);
+    }
+    if (!document.querySelector('link[href*="components/workspace-sidebar.css"]')) {
+        const link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.href = basePath + 'components/workspace-sidebar.css';
+        document.head.appendChild(link);
+    }
+    if (!document.querySelector('link[href*="components/ia-button.css"]')) {
+        const iaCss = document.createElement('link');
+        iaCss.rel = 'stylesheet';
+        iaCss.href = basePath + 'components/ia-button.css';
+        document.head.appendChild(iaCss);
+    }
+    function afterLayoutJs(cb) {
+        if (typeof window.prepareWorkspaceLayoutShell === 'function') {
+            cb();
+            return;
+        }
+        if (document.querySelector('script[src*="components/layout-workspace.js"]')) {
+            setTimeout(cb, 30);
+            return;
+        }
+        const layoutJs = document.createElement('script');
+        layoutJs.src = basePath + 'components/layout-workspace.js';
+        layoutJs.onload = function () { cb(); };
+        layoutJs.onerror = function () { cb(); };
+        document.head.appendChild(layoutJs);
+    }
+    function ensureIaButtonThenCb() {
+        if (!document.querySelector('script[src*="components/ia-button.js"]')) {
+            const iaJs = document.createElement('script');
+            iaJs.src = basePath + 'components/ia-button.js';
+            document.head.appendChild(iaJs);
+        }
+        afterLayoutJs(callback);
+    }
+    if (typeof window.loadWorkspaceSidebar === 'function') {
+        ensureIaButtonThenCb();
+        return;
+    }
+    const s = document.createElement('script');
+    s.src = basePath + 'components/workspace-sidebar.js';
+    s.onload = function () { ensureIaButtonThenCb(); };
+    s.onerror = function () {
+        console.error('No se pudo cargar workspace-sidebar.js');
+        callback();
+    };
+    document.head.appendChild(s);
+}
+
 function loadSidebar(variantOrActiveButton = 'default', activeButton = null) {
     // Compatibilidad hacia atrás: si el primer parámetro no es una variante conocida,
     // se usa la API antigua (sidebar default + ese data-section como activo).
@@ -555,7 +612,11 @@ function loadSidebar(variantOrActiveButton = 'default', activeButton = null) {
     let variant = 'default';
     let actualActiveButton = activeButton;
 
-    if (!VARIANT_KEYS.includes(variantOrActiveButton)) {
+    // Legacy: loadSidebar('sidebar-container', 'aprendizaje') — el 1er arg era el id del contenedor.
+    if (variantOrActiveButton === 'sidebar-container') {
+        variant = 'default';
+        actualActiveButton = activeButton;
+    } else if (!VARIANT_KEYS.includes(variantOrActiveButton)) {
         variant = 'default';
         actualActiveButton = variantOrActiveButton;
     } else {
@@ -583,69 +644,27 @@ function loadSidebar(variantOrActiveButton = 'default', activeButton = null) {
     // Obtener la ruta base dinámica
     const basePath = getBasePath();
     console.log('Base path calculado:', basePath);
-    
-    // Determinar qué HTML usar según la variante
-    let sidebarHTML = '';
-    
-    if (variant === 'admin') {
-        // Variante Admin
-        sidebarHTML = `
-        <aside class="sidebar" id="sidebar">
-            <!-- Contenedor principal para header y body -->
-            <div class="sidebar-main">
-                <!-- Header -->
-                <div class="sidebar-header">
-                    <div class="logo" aria-hidden="true">
-                        <img src="${basePath}images/Ubits-logo.svg" alt="" />
-                    </div>
-                </div>
-                
-                <!-- Body -->
-                <div class="sidebar-body">
-                    <button class="nav-button" data-section="inicio" data-sidebar-label="Inicio" onclick="window.location.href='${basePath}ubits-admin/inicio/admin.html'" style="cursor: pointer;">
-                        <i class="far fa-house"></i>
-                    </button>
-                    <button class="nav-button" data-section="empresa" onclick="window.location.href='${basePath}ubits-admin/empresa/gestion-de-usuarios.html'" style="cursor: pointer;">
-                        <i class="far fa-building"></i>
-                    </button>
-                    <button type="button" class="nav-button" data-section="aprendizaje" style="cursor: pointer;">
-                        <i class="far fa-graduation-cap"></i>
-                    </button>
-                    <button class="nav-button" data-section="diagnóstico" onclick="window.location.href='${basePath}ubits-admin/diagnostico/admin-diagnostico.html'" style="cursor: pointer;">
-                        <i class="far fa-chart-mixed"></i>
-                    </button>
-                    <button class="nav-button" data-section="desempeño" onclick="window.location.href='${basePath}ubits-admin/desempeno/360/admin-360.html'" style="cursor: pointer;">
-                        <i class="far fa-bars-progress"></i>
-                    </button>
-                    <button class="nav-button" data-section="encuestas" onclick="window.location.href='${basePath}ubits-admin/encuestas/admin-encuestas.html'" style="cursor: pointer;">
-                        <i class="far fa-clipboard"></i>
-                    </button>
-                </div>
-            </div>
-            
-            <!-- Footer -->
-            <div class="sidebar-footer">
-                <button class="nav-button" data-sidebar-hover="simple" data-sidebar-title="API" onclick="window.location.href='${basePath}ubits-admin/otros/admin-api.html'" style="cursor: pointer;">
-                    <i class="far fa-code"></i>
-                </button>
-                <button class="nav-button" data-sidebar-hover="simple" data-sidebar-title="Centro de ayuda" onclick="window.location.href='${basePath}ubits-admin/otros/admin-help-center.html'" style="cursor: pointer;">
-                    <i class="far fa-circle-question"></i>
-                </button>
-                <button class="nav-button" id="darkmode-toggle" data-theme="light">
-                    <i class="far fa-moon"></i>
-                </button>
-                <div class="user-avatar-container">
-                    <div class="user-avatar" id="sidebar-avatar-admin" role="button" tabindex="0" aria-label="Menú de cuenta">
-                        <img src="${basePath}images/Profile-image.jpg" alt="Usuario" class="avatar-image">
-                    </div>
-                    <span class="sidebar-modo-badge" aria-hidden="true"><i class="far fa-laptop"></i></span>
-                </div>
-            </div>
-        </aside>
-    `;
-    } else if (variant === 'creator') {
-        // Variante Creator: accesos a LMS Creator, planes, certificados y universidad corporativa (mismo pie que colaborador)
-        sidebarHTML = `
+
+    // Admin + colaborador (default) → Workspace sidebar (paridad React).
+    // Creator sigue con rail clásico hasta unificar layouts.
+    if (variant === 'admin' || variant === 'default') {
+        ensureWorkspaceSidebarAssets(basePath, function () {
+            if (typeof window.loadWorkspaceSidebar !== 'function') {
+                console.error('loadWorkspaceSidebar no disponible');
+                return;
+            }
+            const audience = variant === 'admin' ? 'admin' : 'colaborador';
+            window.loadWorkspaceSidebar(audience, actualActiveButton);
+        });
+        return;
+    }
+
+    if (typeof window.unloadWorkspaceLayoutHints === 'function') {
+        window.unloadWorkspaceLayoutHints();
+    }
+
+    // Rail clásico — solo variant creator (LMS). Admin/colaborador usan Workspace arriba.
+    const sidebarHTML = `
         <aside class="sidebar" id="sidebar">
             <div class="sidebar-main">
                 <div class="sidebar-header">
@@ -681,59 +700,6 @@ function loadSidebar(variantOrActiveButton = 'default', activeButton = null) {
             </div>
         </aside>
     `;
-    } else {
-        // Variante Default
-        sidebarHTML = `
-        <aside class="sidebar" id="sidebar">
-            <!-- Contenedor principal para header y body -->
-            <div class="sidebar-main">
-                <!-- Header -->
-                <div class="sidebar-header">
-                    <div class="logo" aria-hidden="true">
-                        <img src="${basePath}images/Ubits-logo.svg" alt="" />
-                    </div>
-                </div>
-                
-                <!-- Body -->
-                <div class="sidebar-body">
-                    <button class="nav-button" data-section="aprendizaje" onclick="window.location.href='${basePath}ubits-colaborador/aprendizaje/home-learn.html'" style="cursor: pointer;">
-                        <i class="far fa-graduation-cap"></i>
-                    </button>
-                    <button class="nav-button" data-section="diagnóstico" onclick="window.location.href='${basePath}ubits-colaborador/diagnostico/diagnostico.html'" style="cursor: pointer;">
-                        <i class="far fa-chart-mixed"></i>
-                    </button>
-                    <button class="nav-button" data-section="desempeño" onclick="window.location.href='${basePath}ubits-colaborador/desempeno/evaluaciones-360.html'" style="cursor: pointer;">
-                        <i class="far fa-bars-progress"></i>
-                    </button>
-                    <button class="nav-button" data-section="encuestas" onclick="window.location.href='${basePath}ubits-colaborador/encuestas/encuestas.html'" style="cursor: pointer;">
-                        <i class="far fa-clipboard"></i>
-                    </button>
-                    <button class="nav-button" data-section="reclutamiento" onclick="window.location.href='${basePath}ubits-colaborador/reclutamiento/reclutamiento.html'" style="cursor: pointer;">
-                        <i class="far fa-users"></i>
-                    </button>
-                    <button class="nav-button" data-section="tareas" onclick="window.location.href='${basePath}ubits-colaborador/tareas/tareas.html'" style="cursor: pointer;">
-                        <i class="far fa-layer-group"></i>
-                    </button>
-                    <button class="nav-button" data-section="ia-para-hr" data-sidebar-label="Agentes" onclick="window.location.href='${basePath}ubits-colaborador/ia-para-hr/ia-para-hr.html'" style="cursor: pointer;">
-                        <i class="far fa-sparkles"></i>
-                    </button>
-                </div>
-            </div>
-            
-            <!-- Footer -->
-            <div class="sidebar-footer">
-                <button class="nav-button" id="darkmode-toggle" data-theme="light">
-                    <i class="far fa-moon"></i>
-                </button>
-                <div class="user-avatar-container">
-                    <div class="user-avatar" id="sidebar-avatar-default" role="button" tabindex="0" aria-label="Menú de cuenta">
-                        <img src="${basePath}images/Profile-image.jpg" alt="Usuario" class="avatar-image">
-                    </div>
-                </div>
-            </div>
-        </aside>
-    `;
-    }
     
     // Insertar el HTML
     sidebarContainer.innerHTML = sidebarHTML;

@@ -249,3 +249,65 @@ body[data-theme="dark"].modo-estudio-ia-page .ubits-ia-chat > .ubits-ia-chat__ma
         radial-gradient(ellipse 95% 78% at calc(50% + var(--ubits-ia-glow-orb-center-extra-x, 0px)) calc(0% + var(--ubits-ia-glow-orb-anchor-offset-y, 0px) + var(--ubits-ia-glow-orb-center-extra-y, 0px)), rgba(var(--modo-ia-glow-orb-rgb-2), 0.15) 0%, transparent 48%),
         radial-gradient(ellipse 95% 75% at 90% calc(0% + var(--ubits-ia-glow-orb-anchor-offset-y, 0px) + var(--ubits-ia-glow-orb-right-extra-y, 0px)), rgba(var(--modo-ia-glow-orb-rgb-3), 0.15) 0%, transparent 50%);
 }
+
+/* ========================================
+   Workspace layout: chat a altura de viewport
+   (paridad React modo-estudio-ia-page-overrides.css)
+   Sin esto, .main-content queda flex: 0 0 auto y
+   .content-area / .ubits-ia-chat colapsan a height: 0.
+   ======================================== */
+body.modo-estudio-ia-page.page-layout-workspace .ubits-layout-workspace__main-wrap {
+    overflow: hidden !important;
+    display: flex !important;
+    flex-direction: column !important;
+    flex: 1 1 0 !important;
+    min-height: 0 !important;
+    height: 100% !important;
+    max-height: 100% !important;
+    scrollbar-gutter: auto !important;
+}
+
+body.modo-estudio-ia-page.page-layout-workspace .main-content,
+body.modo-estudio-ia-page.page-layout-workspace .main-content.ubits-layout-workspace__main {
+    flex: 1 1 0 !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    height: auto !important;
+    overflow: hidden !important;
+    display: flex !important;
+    flex-direction: column !important;
+    box-sizing: border-box;
+    padding: var(--padding-lg) !important;
+    gap: 0 !important;
+}
+
+@media (max-width: 1023px) {
+    body.modo-estudio-ia-page.page-layout-workspace .main-content,
+    body.modo-estudio-ia-page.page-layout-workspace .main-content.ubits-layout-workspace__main {
+        padding: var(--padding-md) !important;
+        padding-bottom: calc(60px + env(safe-area-inset-bottom, 0px)) !important;
+    }
+}
+
+body.modo-estudio-ia-page.page-layout-workspace .content-area {
+    flex: 1 1 0 !important;
+    min-height: 0 !important;
+    min-width: 0 !important;
+    height: 100% !important;
+    max-height: none !important;
+    overflow: hidden !important;
+}
+
+body.modo-estudio-ia-page.page-layout-workspace .content-sections {
+    flex: 1 1 0 !important;
+    min-height: 0 !important;
+    height: 100% !important;
+    max-height: none !important;
+    overflow: hidden !important;
+    gap: 0 !important;
+}
+
+body.modo-estudio-ia-page.page-layout-workspace .dashboard-container.ubits-layout-workspace,
+body.modo-estudio-ia-page.page-layout-workspace .ubits-layout-workspace {
+    background-color: transparent !important;
+}

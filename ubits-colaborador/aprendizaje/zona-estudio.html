@@ -8,6 +8,7 @@
     
     <link rel="stylesheet" href="../../general-styles/ubits-colors.css">
     <link rel="stylesheet" href="../../general-styles/styles.css">
+    <link rel="stylesheet" href="../../general-styles/layout-workspace.css">
     <link rel="stylesheet" href="../../general-styles/fontawesome-icons.css">
     <link rel="stylesheet" href="../../general-styles/ubits-typography.css">
     <link rel="stylesheet" href="../../components/sub-nav.css">
@@ -279,7 +280,8 @@
     <div id="profile-menu-container"></div>
 
         <script src="../../components/tooltip.js"></script>
-<script src="../../components/sidebar.js"></script>
+<script src="../../components/layout-workspace.js"></script>
+    <script src="../../components/sidebar.js"></script>
     <script src="../../components/sub-nav.js"></script>
     <script src="../../components/tab-bar.js"></script>
     <script src="../../components/floating-menu.js"></script>
@@ -314,8 +316,7 @@
     <script src="./zona-estudio.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            loadSidebar('sidebar-container', 'aprendizaje');
-            loadSubNav('top-nav-container', 'aprendizaje');
+            initWorkspaceLayout({ audience: 'colaborador', activeSidebar: 'zona-estudio', headerVariant: 'aprendizaje' });
             loadTabBar('tab-bar-container');
             loadFloatingMenu('floating-menu-container');
             loadProfileMenu('profile-menu-container');

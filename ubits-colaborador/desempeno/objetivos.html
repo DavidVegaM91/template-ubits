@@ -9,6 +9,7 @@
     <!-- Estilos locales -->
     <link rel="stylesheet" href="../../general-styles/ubits-colors.css">
     <link rel="stylesheet" href="../../general-styles/styles.css">
+    <link rel="stylesheet" href="../../general-styles/layout-workspace.css">
     <link rel="stylesheet" href="../../general-styles/fontawesome-icons.css">
     <link rel="stylesheet" href="../../general-styles/ubits-typography.css">
     <link rel="stylesheet" href="../../components/sub-nav.css">
@@ -65,7 +66,8 @@
     <div id="profile-menu-container"></div>
 
         <script src="../../components/tooltip.js"></script>
-<script src="../../components/sidebar.js"></script>
+<script src="../../components/layout-workspace.js"></script>
+    <script src="../../components/sidebar.js"></script>
     <script src="../../components/sub-nav.js"></script>
     <script src="../../components/tab-bar.js"></script>
     <script src="../../components/floating-menu.js"></script>
@@ -75,8 +77,7 @@
     <script>
         // Cargar componentes dinámicamente
         document.addEventListener('DOMContentLoaded', function() {
-            loadSidebar('sidebar-container', 'desempeño');
-            loadSubNav('top-nav-container', 'desempeno');
+            initWorkspaceLayout({ audience: 'colaborador', activeSidebar: 'objetivos', headerVariant: 'desempeno' });
             loadTabBar('tab-bar-container');
             loadFloatingMenu('floating-menu-container');
             loadProfileMenu('profile-menu-container');

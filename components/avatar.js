@@ -65,7 +65,7 @@ function normalizeAvatarUrlForPage(avatar) {
  * @param {string} [persona.name] - Nombre (alternativo a nombre)
  * @param {string|null} [persona.avatar] - URL de la imagen del avatar
  * @param {Object} [options] - Opciones del avatar
- * @param {string} [options.size='md'] - Tamaño: 'xs' (20px), 'sm' (28px), 'md' (36px), 'lg' (40px), 'xl' (64px)
+ * @param {string} [options.size='md'] - Tamaño: 'xs' (20px), 'sm' (28px), 'md' (32px), 'lg' (48px), 'xl' (64px)
  * @param {string} [options.alt] - Texto alternativo para la imagen (por defecto usa el nombre)
  * @param {boolean} [options.showTooltip=false] - Si true, añade data-tooltip con el nombre (requiere initTooltip del componente tooltip)
  * @param {number} [options.tooltipDelay=1000] - Delay en ms antes de mostrar el tooltip (solo si showTooltip es true)
@@ -111,7 +111,7 @@ function renderAvatar(persona, options) {
  *
  * @param {Array<Object>} personas - Array de objetos { nombre/name, avatar }
  * @param {Object} [options] - Opciones
- * @param {string} [options.size='md'] - Tamaño: 'xs' (20px), 'sm' (28px), 'md' (36px), 'lg' (40px), 'xl' (64px)
+ * @param {string} [options.size='md'] - Tamaño: 'xs' (20px), 'sm' (28px), 'md' (32px), 'lg' (48px), 'xl' (64px)
  * @param {number} [options.maxVisible=3] - Número de avatares visibles antes del chip +N
  * @param {boolean} [options.showTooltip=true] - Tooltip con nombre en cada avatar visible (requiere initTooltip o wireProfileLists)
  * @param {number} [options.tooltipDelay=300] - Delay en ms del tooltip

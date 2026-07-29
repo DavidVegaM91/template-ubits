@@ -32,7 +32,7 @@
     box-shadow: 0 0 0 1px var(--ubits-accent-brand);
 }
 
-/* Tamaños: xs 20px, sm 28px, md 36px (default), lg 40px, xl 64px */
+/* Tamaños: xs 20px, sm 28px, md 32px (default), lg 48px, xl 64px */
 .ubits-avatar--xs {
     width: 20px;
     height: 20px;
@@ -44,13 +44,13 @@
 }
 
 .ubits-avatar--md {
-    width: 36px;
-    height: 36px;
+    width: 32px;
+    height: 32px;
 }
 
 .ubits-avatar--lg {
-    width: 40px;
-    height: 40px;
+    width: 48px;
+    height: 48px;
 }
 
 .ubits-avatar--xl {
@@ -143,11 +143,11 @@
 }
 
 .ubits-profile-list--md {
-    height: 36px;
+    height: 32px;
 }
 
 .ubits-profile-list--lg {
-    height: 40px;
+    height: 48px;
 }
 
 /* Cada avatar en la lista: superpuesto (margin negativo), z-index por JS */
@@ -212,14 +212,14 @@
 }
 
 .ubits-profile-list--md .ubits-profile-list__count {
-    width: 36px;
-    height: 36px;
+    width: 32px;
+    height: 32px;
     font-size: var(--font-size-sm);
 }
 
 .ubits-profile-list--lg .ubits-profile-list__count {
-    width: 40px;
-    height: 40px;
+    width: 48px;
+    height: 48px;
     font-size: var(--font-size-sm);
 }
 

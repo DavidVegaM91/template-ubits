@@ -9,6 +9,7 @@
 
     <link rel="stylesheet" href="../../general-styles/ubits-colors.css">
     <link rel="stylesheet" href="../../general-styles/styles.css">
+    <link rel="stylesheet" href="../../general-styles/layout-workspace.css">
     <link rel="stylesheet" href="../../general-styles/fontawesome-icons.css">
     <link rel="stylesheet" href="../../general-styles/ubits-typography.css">
     <link rel="stylesheet" href="../../general-styles/ubits-ia-appearance.css">
@@ -37,7 +38,7 @@
     <link rel="stylesheet" href="../../components/empty-state.css">
     <link rel="stylesheet" href="../../components/dropdown-menu.css">
     <link rel="stylesheet" href="../../components/radio-button.css">
-    <link rel="stylesheet" href="./modo-estudio-ia.css">
+    <link rel="stylesheet" href="./modo-estudio-ia.css?v=ws-fill-1">
 </head>
 
 <body class="modo-estudio-ia-page modo-tutor-ia-page aprendizaje-ia-pages ubits-ia-chat-page ia-chat-mobile-drawer-page" data-theme="light">
@@ -142,6 +143,7 @@
     <div id="modo-estudio-ia-modals-container"></div>
 
     <script src="../../components/tooltip.js"></script>
+    <script src="../../components/layout-workspace.js"></script>
     <script src="../../components/sidebar.js"></script>
     <script src="../../components/sub-nav.js"></script>
     <script src="../../components/tab-bar.js"></script>
@@ -173,8 +175,7 @@
         // Cargar componentes dinámicamente
         document.addEventListener('DOMContentLoaded', function () {
             if (typeof initTooltip === 'function') initTooltip('[data-tooltip]');
-            loadSidebar('default', 'aprendizaje');
-            loadSubNav('top-nav-container', 'aprendizaje');
+            initWorkspaceLayout({ audience: 'colaborador', activeSidebar: 'modo-estudio-ia', headerVariant: 'aprendizaje' });
             loadTabBar('tab-bar-container');
             loadFloatingMenu('floating-menu-container');
             loadProfileMenu('profile-menu-container');
