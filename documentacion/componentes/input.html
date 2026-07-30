@@ -19,6 +19,7 @@
     <link rel="stylesheet" href="../../components/button.css">
     <link rel="stylesheet" href="../../components/toast.css">
     <link rel="stylesheet" href="../../components/input.css">
+    <link rel="stylesheet" href="../../components/duration-input.css">
     <link rel="stylesheet" href="../../components/dropdown-menu.css">
     <link rel="stylesheet" href="../../components/calendar.css">
     <link rel="stylesheet" href="../../components/switch.css">
@@ -370,6 +371,14 @@
                                     <div id="calendar-input-demo"></div>
                                 </div>
 
+                                <!-- Duration Input (mm:ss) -->
+                                <div style="margin-bottom: 20px;">
+                                    <label class="ubits-input-label" style="display: block; margin-bottom: 8px; font-weight: 600; color: var(--ubits-fg-1-high);">
+                                        Duration Input (mm:ss)
+                                    </label>
+                                    <div id="duration-input-demo"></div>
+                                </div>
+
                                 <!-- Input con iconos -->
                                 <div style="margin-bottom: 20px;">
                                     <label class="ubits-input-label" style="display: block; margin-bottom: 8px; font-weight: 600; color: var(--ubits-fg-1-high);">
@@ -446,8 +455,8 @@
                     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
                         <div style="text-align: center; padding: 20px; background: var(--ubits-bg-2); border-radius: 12px;">
                             <div style="font-size: var(--font-size-d3); color: var(--ubits-accent-brand); margin-bottom: 12px;"><i class="far fa-keyboard"></i></div>
-                            <div class="ubits-body-md-bold" style="margin-bottom: 8px;">11 Tipos de Input</div>
-                            <div class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">text, email, password, number, tel, url, select, textarea, search, autocomplete, calendar</div>
+                            <div class="ubits-body-md-bold" style="margin-bottom: 8px;">12 Tipos de Input</div>
+                            <div class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">text, email, password, number, tel, url, select, textarea, search, autocomplete, calendar, duration</div>
                         </div>
                         <div style="text-align: center; padding: 20px; background: var(--ubits-bg-2); border-radius: 12px;">
                             <div style="font-size: var(--font-size-d3); color: var(--ubits-accent-brand); margin-bottom: 12px;"><i class="far fa-palette"></i></div>
@@ -503,6 +512,11 @@
                             <div style="font-size: var(--font-size-d3); color: var(--ubits-accent-brand); margin-bottom: 12px;"><i class="far fa-calendar-alt"></i></div>
                             <div class="ubits-body-md-bold" style="margin-bottom: 8px;">Date Picker</div>
                             <div class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Navegación por mes y año para fechas antiguas</div>
+                        </div>
+                        <div style="text-align: center; padding: 20px; background: var(--ubits-bg-2); border-radius: 12px;">
+                            <div style="font-size: var(--font-size-d3); color: var(--ubits-accent-brand); margin-bottom: 12px;"><i class="far fa-clock"></i></div>
+                            <div class="ubits-body-md-bold" style="margin-bottom: 8px;">Duration Input</div>
+                            <div class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">Duración mm:ss con “:” fijo — <code>createDurationInput()</code></div>
                         </div>
                     </div>
                 </div>
@@ -778,6 +792,7 @@
     <script src="../../components/toast.js"></script>
     <script src="../../components/dropdown-menu.js"></script>
     <script src="../../components/input.js"></script>
+    <script src="../../components/duration-input.js"></script>
     <script src="../../components/calendar.js"></script>
     <script src="../../docs/docs-sidebar.js"></script>
     <script src="../../script.js"></script>
@@ -1216,6 +1231,16 @@
                 type: 'calendar',
                 placeholder: 'Selecciona una fecha...',
                 size: 'sm'
+            });
+
+            // Duration Input (mm:ss) — createDurationInput
+            createDurationInput({
+                containerId: 'duration-input-demo',
+                valueSec: 65,
+                minSec: 1,
+                maxSec: 600,
+                size: 'sm',
+                showIcon: true
             });
 
             // Input con iconos

@@ -1,0 +1,209 @@
+/* ========================================
+   UBITS Duration Input — mm:ss
+   Hermano visual de Input (tokens --ubits-*)
+   ======================================== */
+
+.ubits-duration-input-field {
+    display: flex;
+    flex-direction: column;
+    width: fit-content;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+.ubits-duration-input-field--full-width {
+    width: 100%;
+}
+
+.ubits-duration-input-field--full-width .ubits-duration-input {
+    width: 100%;
+}
+
+.ubits-duration-input-label {
+    display: block;
+    color: var(--ubits-fg-1-high);
+    margin-bottom: 8px;
+    font-family: var(--ubits-font-family-sans);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    line-height: 19.5px;
+}
+
+.ubits-duration-input-field--label-left {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    column-gap: var(--gap-md);
+    align-items: center;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+.ubits-duration-input-label--left {
+    margin-bottom: 0;
+    max-width: min(42vw, 200px);
+    overflow-wrap: break-word;
+    hyphens: auto;
+}
+
+.ubits-duration-input-field__body {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+}
+
+.ubits-duration-input-field--full-width .ubits-duration-input-field__body .ubits-duration-input {
+    width: 100%;
+}
+
+/* Shell — mismo look que .ubits-input */
+.ubits-duration-input {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 2px;
+    width: max-content;
+    min-width: 112px;
+    max-width: 100%;
+    box-sizing: border-box;
+    padding: 0 var(--padding-sm);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: var(--border-radius-md);
+    background: var(--ubits-bg-1);
+    color: var(--ubits-fg-1-high);
+    transition: all 0.2s ease;
+}
+
+.ubits-duration-input:hover:not(.ubits-duration-input--disabled) {
+    border-color: var(--ubits-accent-brand);
+}
+
+.ubits-duration-input:focus-within:not(.ubits-duration-input--disabled) {
+    border-color: var(--ubits-accent-brand);
+    box-shadow: 0 0 0 2px rgba(12, 91, 239, 0.1);
+}
+
+.ubits-duration-input--disabled {
+    background: var(--ubits-bg-3) !important;
+    color: var(--ubits-fg-1-low) !important;
+    border-color: var(--ubits-border-2) !important;
+    box-shadow: none !important;
+    cursor: not-allowed !important;
+}
+
+.ubits-duration-input--disabled .ubits-duration-input__segment,
+.ubits-duration-input--disabled .ubits-duration-input__colon,
+.ubits-duration-input--disabled .ubits-duration-input__icon {
+    color: var(--ubits-fg-1-low) !important;
+}
+
+.ubits-duration-input--with-icon {
+    padding-left: 40px;
+}
+
+.ubits-duration-input--with-icon.ubits-duration-input--xs {
+    padding-left: 32px;
+}
+
+.ubits-duration-input--with-icon.ubits-duration-input--sm {
+    padding-left: 36px;
+}
+
+.ubits-duration-input--with-icon.ubits-duration-input--lg {
+    padding-left: 44px;
+}
+
+.ubits-duration-input__icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--ubits-fg-1-medium);
+    font-size: var(--font-size-sm);
+    pointer-events: none;
+    z-index: 1;
+}
+
+.ubits-duration-input--xs {
+    height: 28px;
+    border-radius: var(--border-radius-sm);
+    font-size: var(--font-size-xs);
+}
+
+.ubits-duration-input--sm {
+    height: 32px;
+    border-radius: var(--border-radius-sm);
+    font-size: 0.875rem;
+}
+
+.ubits-duration-input--md {
+    height: 40px;
+    border-radius: var(--border-radius-md);
+    font-size: 1rem;
+}
+
+.ubits-duration-input--lg {
+    height: 48px;
+    border-radius: var(--border-radius-md);
+    font-size: 1.125rem;
+}
+
+.ubits-duration-input__colon {
+    flex: 0 0 auto;
+    color: var(--ubits-fg-1-medium);
+    font-family: var(--ubits-font-family-sans);
+    font-weight: var(--font-weight-semibold);
+    font-variant-numeric: tabular-nums;
+    user-select: none;
+    pointer-events: none;
+    line-height: 1;
+}
+
+.ubits-duration-input__segment {
+    border: 0;
+    outline: none;
+    background: transparent;
+    color: inherit;
+    font-family: var(--ubits-font-family-sans);
+    font-size: inherit;
+    font-weight: var(--font-weight-semibold);
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.02em;
+    min-width: 0;
+    padding: 0;
+    line-height: 1.4;
+}
+
+.ubits-duration-input__segment:disabled {
+    cursor: not-allowed;
+}
+
+.ubits-duration-input__segment--min {
+    width: 2.25ch;
+    flex: 0 0 auto;
+    text-align: right;
+}
+
+.ubits-duration-input__segment--sec {
+    width: 2.5ch;
+    flex: 0 0 auto;
+    text-align: left;
+}
+
+.ubits-duration-input-helper {
+    margin-top: 4px;
+    font-family: var(--ubits-font-family-sans);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-regular);
+    line-height: 19.5px;
+    color: var(--ubits-fg-1-medium);
+    width: 100%;
+    max-width: 280px;
+}
+
+.ubits-duration-input-helper p {
+    margin: 0;
+}
