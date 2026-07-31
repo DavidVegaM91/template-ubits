@@ -8,7 +8,9 @@ Documento de referencia sobre el flujo de **edición de contenido ya publicado**
 
 **Documento hermano:** [`contexto-creacion-contenido.md`](./contexto-creacion-contenido.md) — describe el asistente de **creación** (4 pasos con stepper vertical). Este documento describe la experiencia de **edición**, que reutiliza gran parte de la misma UI pero con reglas distintas.
 
-**Objetivo:** dejar claro cuándo entra cada flujo, qué ve el usuario y qué **no** puede hacer en edición. La sección **Resultados** refleja el estado **actual** del playground (vanilla + React).
+**Q edición estructural (fuente de decisiones):** [`decisiones-q-edicion-estructural-contenidos.md`](./decisiones-q-edicion-estructural-contenidos.md) — añadir páginas, ocultar/mostrar, modal de impacto (T5), flujos inmersivos tipo Agregar video. Este contexto refleja el **producto deseado** tras ese Q (no el playground viejo “solo textos / sin añadir páginas”).
+
+**Objetivo:** dejar claro cuándo entra cada flujo, qué ve el usuario, qué **sí** puede cambiar en estructura publicada y cómo se gobierna el impacto en progreso / rutas / planes / certificados. La sección **Resultados** refleja el estado del playground (vanilla + React).
 
 ---
 
@@ -17,7 +19,7 @@ Documento de referencia sobre el flujo de **edición de contenido ya publicado**
 | Visibilidad del contenido | Dónde entra el usuario | Experiencia |
 |-------------------------|------------------------|-------------|
 | **Borrador** | Lista **Contenidos** | **`crear-contenido.html`** con datos **prellenados** (misma vista de creación; paso Visibilidad con **Borrador** seleccionado). Sigue siendo un contenido **en construcción**, no la vista de edición publicada. |
-| **Público**, **Privado** u **Oculto** | Lista **Contenidos** | **`editar-contenido.html`** — vista de edición con **sidebar lateral** (no stepper) y restricciones para no romper el progreso de estudiantes. |
+| **Público**, **Privado** u **Oculto** | Lista **Contenidos** | **`editar-contenido.html`** — vista de edición con **sidebar lateral** (no stepper). Puede **editar estructura** (añadir páginas, ocultar/mostrar) tras el **modal de impacto** en Recursos. |
 | **Archivado** | Lista **Contenidos** | **`editar-contenido.html` en modo solo lectura** — misma estructura visual, sin permitir guardar cambios. |
 | **Antiguo LMS** | Lista **Contenidos** | Flujo aparte ya prototipado (drawer + sidebar variante `publicado-antiguo-lms`). **Fuera de alcance** de este documento salvo notas de convivencia. |
 
@@ -71,16 +73,19 @@ La decisión de flujo depende del campo de negocio **`visibilidadLms`** (en mock
 | **Primer ítem lateral** | Portada | **Resultados** *(no existe en creación)* |
 | **Siguiente ítem** | Recursos | **Información** *(equivalente funcional a Portada)* |
 | **Resto de ítems** | Certificado, Visibilidad | Recursos, Certificado, Visibilidad |
-| **Añadir / eliminar páginas y secciones** | Permitido (con confirmaciones) | **No permitido** — acciones **ocultas** |
-| **Reordenar páginas y secciones** | Permitido | **Sí permitido** (solo reordenar; no eliminar) |
+| **Añadir página** | Modal tipo → flujo hermano inmersivo (patrón Agregar video); fila solo al confirmar | **Igual** (habilitado; hoy ya no está oculto) |
+| **Eliminar página** | **Sí** (modal confirmación) | **No** — sustituido por **Ocultar / Mostrar** |
+| **Ocultar / Mostrar página** | **No** existe | **Sí** (siempre ≥ 1 página visible) |
+| **Añadir / ocultar sección** | Añadir / eliminar sección permitido | **Prohibido** en este Q (solo páginas) |
+| **Reordenar páginas y secciones** | Permitido | **Sí** (incluye páginas **ocultas**) |
 | **Interruptor «usar secciones»** | Visible y editable | **No se muestra** — el modo con/sin secciones queda **fijado** según cómo se publicó |
-| **Eliminar recurso principal** | Permitido (modal) | Botón **Eliminar** **deshabilitado** en todos los recursos principales |
-| **Reemplazar recurso principal** | Flujo de alta | **Mismos modales** que en creación (video, PDF, SCORM, etc.) |
-| **Recursos complementarios** | Añadir / editar / eliminar | **Sí** — añadir, editar y eliminar permitidos |
+| **Eliminar recurso principal** | **No** se muestra bajo el recurso montado | **No** se muestra |
+| **Reemplazar recurso principal** | Solo **mismo tipo**; cambiar tipo = nueva página | Igual |
+| **Recursos complementarios** | Añadir / editar / eliminar | **Sí** — comportamiento actual |
 | **Descargar recurso principal** | No aplica | Botón **Descargar** — un solo archivo por tipo (ver tabla abajo) |
-| **Modal al entrar a Recursos** | No | **Sí**, solo la **primera vez por sesión** que entra a Recursos |
+| **Modal al entrar a Recursos** | No | **Sí**, **cada vez** que entran a Recursos (política Proteger / Afectar + impacto) |
 | **Indicador de guardado** | `SaveIndicator` | **El mismo** `SaveIndicator` que en creación |
-| **Cambios visibles para estudiantes** | No (aún no publicado) | **Sí, de forma inmediata** al guardar (mensaje del modal) |
+| **Cambios visibles para estudiantes** | No (aún no publicado) | **Sí** — gobernados por la política elegida en el modal T5 |
 | **Archivado** | N/A en creación activa | Vista **solo lectura** |
 
 ---
@@ -398,64 +403,148 @@ Al abrir edición:
 
 - **Imagen de portada** y **tráiler** (si existía) ya cargados.
 - **Descripción** y **ficha técnica** (tipo, nivel, idioma, tiempo, categoría) **completos**.
-- El usuario puede **editar textos** y los campos de metadata que el producto permita en contenido publicado (alineado al modal: «cambios limitados, como editar textos»).
+- El usuario puede **editar textos** y los campos de metadata que el producto permita en contenido publicado. Los cambios **estructurales** (añadir / ocultar páginas) se gobiernan en **Recursos** tras el modal de impacto.
 
 ---
 
 ## Sección: Recursos (reglas de edición publicada)
 
-### Modal obligatorio al entrar a Recursos
+Fuente de decisiones: [`decisiones-q-edicion-estructural-contenidos.md`](./decisiones-q-edicion-estructural-contenidos.md).
 
-Se muestra **solo la primera vez en la sesión** que el usuario entra a la sección **Recursos** (flag en `sessionStorage` o equivalente; si recarga la página en la misma sesión del navegador, **no** vuelve a mostrarse).
+### Modal obligatorio al entrar a Recursos (T5 — pieza crítica)
 
-| Elemento | Copy obligatorio |
-|----------|------------------|
-| **Título** | `Advertencia sobre edición` |
-| **Descripción** | `Este contenido ya ha sido publicado. Solo puedes realizar cambios limitados, como editar textos. No es posible eliminar ni agregar nuevos elementos. Las modificaciones que realices serán visibles para los estudiantes de forma inmediata.` |
-| **Botón secundario** | `Salir sin editar` — cierra el modal **sin activar** Recursos; el usuario **permanece en la sección del sidebar en la que estaba** antes de intentar abrir Recursos (si entró directo a Recursos vía URL, volver a la sección previa o **Información** por defecto). |
-| **Botón primario** | `Sí, editar` — cierra el modal y muestra Recursos con las restricciones de esta sección. |
+Se muestra **cada vez** que el usuario entra a la sección **Recursos** (si sale a Información, Certificado, Visibilidad, Resultados, etc. y vuelve → **vuelve a salir**). **Ya no** aplica el `sessionStorage` “solo primera vez por sesión” del modal viejo «Advertencia sobre edición» (ese copy **muere**).
 
-**Interpretación del copy del modal:** «no agregar nuevos elementos» se refiere a **páginas, secciones y recursos principales** (la estructura del curso). Los **recursos complementarios** sí se pueden gestionar (excepción confirmada por producto).
+**Prioridad de producto:** si el creador **no entiende** este modal, el Q de edición estructural **falla**.
 
-Implementación: **`openModal`** UBITS (`components/modal.js`), tamaño `sm` o `md`.
+#### Política de impacto (obligatoria)
+
+| Opción | Efecto para quien ya estaba al **100 %** en este contenido |
+|--------|-------------------------------------------------------------|
+| **Proteger** *(default al primer acceso / tras reload en prototipo)* | Conserva el **100 %** y los **certificados**. Las ediciones estructurales no le revierten el logro. |
+| **Afectar** | Se **recalcula** el progreso (puede bajar de 100 %). Se afecta avance en **contenido**, **rutas** y **planes**. El certificado se **revoca** / **deja de mostrarse**. |
+
+**Persistencia de la elección:**
+
+- Al cambiar la opción, **esa** queda marcada.
+- Si sale de Recursos y **vuelve**, el modal sale otra vez con la **última opción** ya seleccionada.
+- **Producción:** la selección se **persiste** en el contenido.
+- **Playground:** sin reload se respeta la sesión; si **recarga** la página → vuelve a **Proteger**.
+
+#### Contenido del modal
+
+**Layout:** modal `lg` con **dos columnas 50/50 arriba** (gap `lg`; una columna bajo 900px) + **bloque de indicadores a ancho completo abajo**.
+
+| Zona | Bloques |
+|------|---------|
+| Izquierda | Intro + selector de impacto |
+| Derecha | Video 16:9 |
+| Abajo (100 %) | Label `A quiénes afecta este contenido` + indicadores: 3 con Proteger; 4 con Recalcular (incluye «Estudiantes que finalizaron») |
+| Pie, zona izquierda | Checkbox de entendimiento — mismo patrón que el checkbox del pie del modal **Avatar del video** (`agregar-video/editor`); los CTA siguen a la derecha |
+
+| Bloque | Obligatorio | Notas |
+|--------|-------------|--------|
+| Título | Sí | `Antes de editar los recursos` |
+| Intro corta | Sí | `Vas a poder añadir u ocultar páginas. Eso puede…` — negrita solo en la primera oración |
+| Selector de impacto (2 opciones) | Sí | Default = Proteger (o última elección). Copy de opciones abajo. |
+| Video explicativo | Sí | YouTube placeholder: `https://www.youtube.com/watch?v=HXoFyBxwv7s` (UBITS; no es el oficial del impacto) |
+| **Indicadores** | Sí | Hardcode en la page. Con Proteger: En curso · Planes · Rutas. Con Recalcular: suma **Estudiantes que finalizaron** (solo entonces se les afecta). |
+| Checkbox | Sí | En el **pie** del modal (zona izquierda). Obliga a marcar para habilitar el CTA primario |
+| CTA secundario | Sí | `Salir sin editar` — cierra **sin** activar Recursos; permanece en la sección previa (si entró directo a Recursos vía URL → **Información** por defecto). |
+| CTA primario | Sí | `Sí, editar` — solo habilitado con checkbox marcado |
+
+**Labels de indicadores (neutro, confirmados):**
+
+| Dato | Label |
+|------|--------|
+| N finalizaron | `Estudiantes que finalizaron` | Solo visible con política **Recalcular** |
+| N en curso | `Estudiantes en curso` |
+| N planes | `Planes de contenidos` |
+| N rutas | `Rutas de aprendizaje` |
+
+**Checkbox (copy aprobado):**  
+`Entiendo el impacto que pueden tener estas ediciones en el progreso de los estudiantes, rutas, planes y certificados.`
+
+**Opciones de impacto:**
+
+| Opción | Título | Descripción |
+|--------|--------|-------------|
+| **Proteger** (default) | `Proteger a quienes ya finalizaron` | `Los estudiantes que ya completaron este contenido al 100 % mantienen su progreso y sus certificados. Los cambios estructurales no les quitan lo que ya lograron.` |
+| **Afectar** | `Recalcular el progreso de todos` | `El progreso se vuelve a calcular. Quienes habían finalizado pueden dejar de estar al 100 %, perder el certificado, y ver afectado su avance en rutas y planes de contenidos que incluyen este contenido.` |
+
+Implementación: modal UBITS tamaño **`lg`**.
 
 ### Estructura ya existente
 
-- **Índice** solo con **páginas que ya tienen recurso principal** (y **secciones** si el contenido se publicó con secciones). No puede haber páginas vacías en edición.
-- **Panel derecho** con el **recurso principal** renderizado por página (video, PDF, SCORM, evaluación, etc.).
+- Al abrir edición, el índice trae **páginas con recurso principal** (y **secciones** si se publicó con secciones).
+- **Panel derecho:** recurso **montado** de la página activa (no la cuadrícula de 8 tipos como vía de alta).
+- Tras el Q: se pueden **añadir** páginas nuevas (con recurso al confirmar) y **ocultar / mostrar** páginas existentes.
 
-### Restricciones estructurales (páginas / secciones / recurso principal)
+### Acciones estructurales (páginas / secciones / recurso principal)
 
 | Acción | Edición publicada |
 |--------|-------------------|
-| Añadir página | **Oculto** |
-| Eliminar página | **Oculto** / no disponible |
-| Añadir sección | **Oculto** |
-| Eliminar sección | **Oculto** / no disponible |
+| Añadir página | **Permitido** — modal solo **tipo** (8 tarjetas) → flujo hermano inmersivo (patrón **Agregar video**) → fila en el índice **solo al confirmar**. Si abandona el flujo → **no se crea** la página. Nombre default: `Título de la página` (vacío → vuelve al default). |
+| Eliminar página | **No** — sustituido por Ocultar / Mostrar |
+| Ocultar página | **Sí** — menú ⋮ **Ocultar** |
+| Mostrar página | **Sí** — menú ⋮ **Mostrar** (si estaba oculta) |
+| Última página visible | **No** se puede ocultar → toast: `Debe haber al menos una página visible.` |
+| Añadir / ocultar sección | **Prohibido** en este Q |
 | Interruptor «usar secciones» | **No se muestra** |
-| Reordenar páginas | **Permitido** (menú ⋮ o drag, igual que creación) |
+| Reordenar páginas | **Permitido** (incluye **ocultas**) |
 | Reordenar secciones | **Permitido** |
-| Editar título de página (inline) | **Permitido** |
+| Editar título de página (inline) | **Permitido** (mismo default / fallback que creación) |
 | Editar título de sección (modal) | **Permitido** |
-| Eliminar recurso principal | Botón **Eliminar** **`disabled`** |
-| Reemplazar recurso principal | **Permitido** — **mismos modales** que en `crear-contenido` |
-| Recursos complementarios | **Añadir, editar y eliminar** permitidos |
+| Eliminar recurso principal | **No se muestra** el botón |
+| Reemplazar recurso principal | **Permitido** — solo **mismo tipo**. Para cambiar de tipo: **ocultar** la página y **añadir** otra. |
+| Recursos complementarios | **Añadir, editar y eliminar** — comportamiento actual |
+
+### Página oculta — visual (Páginas creator) y learner
+
+**En el índice del creador:**
+
+- Opacidad baja + icono `fa-eye-slash` + label **«Oculta»** + **título tachado**.
+- Menú ⋮: **sin Eliminar**; **Ocultar** / **Mostrar** según estado; Mover arriba/abajo como hoy.
+- Se pueden **reordenar**.
+
+**Para el estudiante (learner):**
+
+- La página **no aparece** en su índice y **no se puede abrir**.
+- El efecto en **avance / certificado** al ocultar lo gobierna la política del modal T5 (**Proteger** vs **Afectar**).
+
+### Añadir página — los 8 tipos (flujo hermano inmersivo)
+
+Mismo patrón de navegación que **Agregar video** en React (`/agregar-video` → revisar → editor, `ImmersiveLayout`, return al padre `#recursos`):
+
+| Tipo | Flujo hermano inmersivo |
+|------|-------------------------|
+| Video | Sí (ya en React) |
+| PDF | Sí |
+| SCORM | Sí |
+| Embebido | Sí |
+| Texto | Sí |
+| Evaluación final | Sí |
+| Encuesta libre | Sí |
+| Encuesta de satisfacción | Sí |
+
+La UI **interna** puede diferir por tipo; el **patrón** (modal tipo → inmersivo → return con recurso) es el mismo. Detalle de alta compartido con creación: ver [`contexto-creacion-contenido.md`](./contexto-creacion-contenido.md).
 
 ### Botones en el recurso principal renderizado
 
-Orden visual en la fila de acciones (de izquierda a derecha):
+Orden visual (izquierda → derecha):
 
 | Orden | Botón | Variante | Comportamiento |
 |-------|--------|----------|----------------|
-| 1 | **Descargar** | `secondary` | Descarga **un solo archivo** según tipo de recurso (tabla siguiente). |
-| 2 | **Reemplazar** | `secondary` | Abre el **mismo modal** que en creación para ese tipo de recurso. |
-| 3 | **Eliminar** | `error-secondary` | Siempre **`disabled`**. |
+| 1 | **Descargar** | `secondary` | Descarga **un solo archivo** según tipo (tabla siguiente). |
+| 2 | **Reemplazar** | `secondary` | Solo **mismo tipo** — abre el flujo de reemplazo de ese tipo. |
 
-**Iconos (FontAwesome outline):** Descargar `fa-download`, Reemplazar `fa-arrows-rotate`, Eliminar `fa-trash`.
+**No hay botón Eliminar** bajo el recurso montado.
+
+**Iconos (FontAwesome outline):** Descargar `fa-download`, Reemplazar `fa-arrows-rotate`.
 
 ### PDF — switch «Permitir descarga del PDF a los estudiantes»
 
-Solo en páginas cuyo recurso principal es **PDF**, **encima** de la fila Descargar / Reemplazar / Eliminar:
+Solo en páginas cuyo recurso principal es **PDF**, **encima** de la fila Descargar / Reemplazar:
 
 | Elemento | Comportamiento |
 |----------|----------------|
@@ -483,9 +572,12 @@ Si el tipo no tiene archivo físico, la descarga debe ser igualmente **un único
 ### Ediciones permitidas en Recursos (resumen)
 
 - Textos editables en recursos (RTE, enunciados de evaluación, etc.).
-- **Reemplazar** recurso principal (modales de creación).
-- **Reordenar** páginas y secciones; **editar títulos** de página y sección.
+- **Añadir página** (modal tipo → flujo inmersivo → recurso confirmado).
+- **Ocultar / Mostrar** página (con toast si intenta ocultar la última visible).
+- **Reemplazar** recurso principal (**mismo tipo**).
+- **Reordenar** páginas (incl. ocultas) y secciones; **editar títulos**.
 - **Complementarios:** CRUD completo.
+- **No:** eliminar página, añadir/ocultar sección, eliminar recurso principal, cambiar tipo vía Reemplazar.
 
 ---
 
@@ -566,10 +658,10 @@ En el **playground** no se simula login por rol; se documenta la regla de produc
 
 ## Migración a React (`Ubits-React`)
 
-1. Leer este documento y [`contexto-creacion-contenido.md`](./contexto-creacion-contenido.md).
-2. Reutilizar `ImmersiveLayout`, subvistas de `crear-contenido.tsx` y **los mismos modales** de reemplazo de recurso.
+1. Leer este documento, [`contexto-creacion-contenido.md`](./contexto-creacion-contenido.md) y [`decisiones-q-edicion-estructural-contenidos.md`](./decisiones-q-edicion-estructural-contenidos.md).
+2. Reutilizar `ImmersiveLayout`, subvistas de `crear-contenido.tsx` / `editar-contenido.tsx` y el patrón **`AgregarVideoImmersive`** + return path para los 8 tipos.
 3. Sidebar **`publicado-lms-creator`** con ítem **Resultados** primero.
-4. Copy del modal: **carácter por carácter**.
+4. Copy del modal T5 (checkbox, labels de indicadores): **carácter por carácter**.
 5. Repo autocontenido — no importar desde `Referente-Vanilla/`.
 
 ---
@@ -577,11 +669,12 @@ En el **playground** no se simula login por rol; se documenta la regla de produc
 ## Notas para quien implemente
 
 - Este documento **no** sustituye la documentación de **Sidebar contenidos LMS** ni la de componentes del paso Recursos.
-- Cualquier cambio de copy del **modal de advertencia** debe actualizarse aquí y en React (regla 13 del playground).
+- Cualquier cambio de copy del **modal de impacto (T5)** o toasts estructurales debe actualizarse aquí y en React (regla 13 del playground).
 - Actualizar **`contenidos.html`** para enrutar **Público / Privado / Oculto / Archivado** a `editar-contenido.html` (hoy solo **Borrador** abre drawer al clic en card).
 - Al salir de **`editar-contenido.html`** tras guardar: pin en lista (mismo patrón que `ubits-contenidos-pin-recien-creado`).
-- Modal Recursos: clave `sessionStorage` sugerida p. ej. `ubits-lms-edit-recursos-warning-dismissed` — **una vez por sesión de navegador** al entrar a Recursos (confirmado).
+- Modal Recursos: **cada entrada** a la sección (no flag “una vez por sesión”). Política: última elección; prototipo pierde al reload → Proteger.
+- Orden de implementación del Q (recomendado): **T5 → T1 → T3/T4 → T2**; vanilla + React en paralelo.
 
 ---
 
-*Última revisión: tab **Descargas** al final de Resultados (después de Gestión de intentos; tabla Título / Participantes / Reporte; sin Descargar en header).*
+*Última revisión: 2026-07-30 — Q edición estructural: modal T5 cada vez + Proteger/Afectar; añadir página vía flujos inmersivos (8 tipos); ocultar/mostrar en edición; sin Eliminar bajo recurso montado.*

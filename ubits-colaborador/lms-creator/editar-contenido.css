@@ -476,3 +476,117 @@
         max-width: 100%;
     }
 }
+
+/* T5 — Modal impacto: fila 50/50 arriba + indicadores a ancho completo abajo */
+.ec-recursos-impacto {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-lg);
+    min-height: 0;
+}
+
+.ec-recursos-impacto__cols {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--gap-lg);
+    min-height: 0;
+}
+
+.ec-recursos-impacto__left {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-md);
+    min-height: 0;
+}
+
+.ec-recursos-impacto__right {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-sm);
+    min-height: 0;
+}
+
+.ec-recursos-impacto__bottom {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-sm);
+    width: 100%;
+    min-width: 0;
+}
+
+.ec-recursos-impacto__intro {
+    margin: 0;
+    color: var(--ubits-fg-1-high);
+}
+
+.ec-recursos-impacto__video-wrap {
+    width: 100%;
+    border-radius: var(--border-radius-lg);
+    overflow: hidden;
+    background: var(--ubits-bg-3);
+    flex: 0 0 auto;
+}
+
+.ec-recursos-impacto__video-wrap .ubits-video-player,
+.ec-recursos-impacto__video {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    display: block;
+    border: 0;
+}
+
+.ec-recursos-impacto__policies {
+    width: 100%;
+}
+
+.ec-recursos-impacto__stats-label {
+    margin: 0;
+    color: var(--ubits-fg-1-high);
+}
+
+.ec-recursos-impacto__stats {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--gap-sm);
+}
+
+.ec-recursos-impacto__stats--afectar {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.ec-recursos-impacto__stat {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-xs);
+    padding: var(--padding-md);
+    border: 1px solid var(--ubits-border-1);
+    border-radius: var(--border-radius-md);
+    background: var(--ubits-bg-1);
+    box-sizing: border-box;
+}
+
+.ec-recursos-impacto__stat-value {
+    margin: 0;
+    color: var(--ubits-fg-1-high);
+}
+
+.ec-recursos-impacto__stat-label {
+    margin: 0;
+    color: var(--ubits-fg-1-medium);
+}
+
+/* Checkbox en el pie del modal (zona izquierda), como el modal «Avatar del video».
+   Sin tope de ancho: en desktop el texto entra en una línea; solo envuelve si el pie se estrecha. */
+.ec-recursos-impacto__check {
+    align-items: flex-start;
+}
+
+@media (max-width: 900px) {
+    .ec-recursos-impacto__cols {
+        grid-template-columns: 1fr;
+    }
+
+    .ec-recursos-impacto__stats {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}

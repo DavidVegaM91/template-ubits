@@ -9,6 +9,10 @@ Documento de referencia sobre el flujo de **creación de contenido** en el módu
 
 **Objetivo:** que no queden dudas sobre el proceso de negocio y la experiencia en pantalla. Se irá ampliando con mensajes posteriores.
 
+**Documento hermano (edición publicada):** [`contexto-edicion-contenidos.md`](./contexto-edicion-contenidos.md).
+
+**Q edición estructural (decisiones compartidas con creación en T1/T2):** [`decisiones-q-edicion-estructural-contenidos.md`](./decisiones-q-edicion-estructural-contenidos.md) — sin Eliminar bajo recurso montado; **Añadir página** = modal tipo → flujo hermano inmersivo (patrón Agregar video); la página **solo nace al confirmar** el recurso.
+
 ---
 
 ## Referencias de diseño
@@ -17,9 +21,10 @@ Los bocetos en herramienta de diseño fueron **exploratorios**. La referencia pa
 
 - **Creator (prototipo):** asistente por pasos (portada y recursos, entre otros) en una **pantalla dedicada** de creación.  
 - **Paso Recursos (vacío):** panel izquierdo con índice + en el derecho un estado vacío que invita a crear la primera página.  
-- **Paso Recursos (con página nueva):** a la derecha, **título editable** de la página y debajo el **bloque para elegir y configurar el tipo de recurso**.  
-- **Índice:** interruptor de secciones (si aplica), listado de páginas, **Añadir página** / **Añadir sección**.  
-- **Tarjetas de tipo de recurso** y **bloque de recurso:** el usuario elige entre **ocho tipos** (video, PDF, texto, etc.) y completa el formulario que corresponda; si intenta avanzar sin **título válido** o sin **recurso** en alguna página, esa página (o sección vacía) puede mostrarse en **error** según las reglas del paso.  
+- **Paso Recursos (con página):** a la derecha, **título editable** de la página y debajo el **recurso principal ya montado** (preview / acciones). El alta de recurso **no** pasa por la cuadrícula embebida del panel derecho.  
+- **Añadir página:** modal elige **tipo** (8 tarjetas) → **flujo hermano inmersivo** (mismo patrón que **Agregar video** en React) → al confirmar, la fila aparece en el índice **con** recurso. Si abandona el flujo → **no se crea** la página.  
+- **Índice:** interruptor de secciones (si aplica), listado de páginas, **Añadir página** / **Añadir sección**. En creación, menú ⋮ incluye **Eliminar** página (en edición publicada eso se sustituye por Ocultar/Mostrar — ver contexto de edición).  
+- **Ocho tipos de recurso:** Video, PDF, Texto, Embebido, SCORM, Evaluación final, Encuesta libre, Encuesta de satisfacción — **todos** con el mismo patrón de navegación inmersiva al añadir página.  
 - **Orden de páginas:** desde el menú de cada fila (**Mover arriba / abajo**) o **arrastrando** la página por el icono.  
 - **Criterio:** misma identidad visual y patrones UBITS que el resto del producto; si hay duda puntual, ganan **negocio + producto** y la documentación del componente.
 
@@ -148,7 +153,7 @@ Definir la **estructura del contenido** (secciones opcionales, páginas/leccione
 | Panel | Ubicación | Rol |
 |-------|-----------|-----|
 | **Izquierda** | Configuración de la estructura | Secciones (opcional), lista **Páginas creator** (selección, menú ⋮, **reordenar arrastrando** el icono de tipo), acciones “Añadir página” / “Añadir sección”. |
-| **Derecha** | Previsualizador de recursos | Estado vacío si no hay páginas; con una página activa: **título editable**, **indicador «Página X de X»** (posición dentro de la sección activa) y debajo el **selector y configuración del recurso** (formulario o vista previa según el tipo). |
+| **Derecha** | Previsualizador de recursos | Estado vacío si no hay páginas; con una página activa: **título editable**, **indicador «Página X de X»** y debajo el **recurso principal montado** (preview + acciones). **No** hay cuadrícula de 8 tipos embebida como vía de alta. |
 
 Los dos paneles trabajan acoplados: la selección de página en la izquierda determina qué se edita/previsualiza a la derecha.
 
@@ -195,12 +200,16 @@ Si el usuario **desactiva** secciones (o nunca las activa): **todas las páginas
 ### Páginas
 
 - Las **páginas** son las unidades que componen el contenido en el sentido de **lecciones** o pantallas de consumo.  
-- **Icono en el índice:** mientras la página **no tiene aún un recurso principal**, la fila muestra el icono de **página en blanco**. Cuando el usuario **elige y confirma un tipo de recurso**, el icono pasa al del tipo (**video**, **PDF**, **SCORM**, **embebido**, **evaluación**, etc.) según lo implementado en el prototipo.  
+- **Icono en el índice:** la fila solo existe **después** de confirmar el recurso en el flujo inmersivo; el icono es el del **tipo** (video, PDF, SCORM, etc.). **No** hay estado “página en blanco sin recurso” en el índice (invariante del Q).  
 - **Selección:** al hacer **clic en una página**, esa fila queda activa y su **sección** queda resaltada frente al resto. Solo hay **una página activa** (y una sección activa) a la vez.  
-- **Añadir una página** (equivalente en resultado; dos entradas):  
+- **Añadir una página** (mismo resultado; varias entradas al modal de tipo):  
   1. **Empty state del panel derecho** (CTA cuando no hay páginas), **o**  
   2. Botón **«Añadir página»** en la parte inferior de **cada sección** (solo en la sección activa cuando hay secciones; en modo sin secciones, el botón del bloque único).  
-- **Menú ⋮ de cada página:** **Mover arriba**, **Mover abajo** (con las reglas de orden global) y **Eliminar** (ver **Confirmación al eliminar una página**).  
+  - Se abre un **modal** que solo pide el **tipo** de recurso (**8 tarjetas**).  
+  - Luego un **flujo hermano inmersivo** (patrón **Agregar video** en React: rutas propias + `ImmersiveLayout` + return al padre `#recursos`). Aplica a **los 8 tipos**.  
+  - Al **confirmar** el recurso → aparece la fila en el índice **con** recurso montado. Nombre default: **`Título de la página`**. Si el usuario deja el título **vacío**, vuelve a **`Título de la página`**.  
+  - Si **abandona** el flujo inmersivo sin finalizar → **no se crea** la página (como si no hubiera pulsado Añadir).  
+- **Menú ⋮ de cada página (creación):** **Mover arriba**, **Mover abajo** (con las reglas de orden global) y **Eliminar** (ver **Confirmación al eliminar una página**). En creación **no** hay Ocultar/Mostrar (eso es solo edición publicada).  
 - **Orden — menú (⋮) y arrastrar y soltar:** cada fila puede **reordenarse** de dos formas:  
   1. **Arrastrar y soltar** usando el **icono de tipo** como asa: el usuario arrastra la fila y la suelta donde quiera (alternativa importante para accesibilidad frente al solo arrastre libre).  
   2. **Menú ⋮ — «Mover arriba» / «Mover abajo»** con las mismas reglas de orden global.  
@@ -212,15 +221,15 @@ Si el usuario **desactiva** secciones (o nunca las activa): **todas las páginas
 
 - Se muestra **solo cuando no existe ninguna página** en el contenido (lista vacía en el índice).  
 - **Textos en pantalla:** título del estilo *«Añade tu primera página»*, texto que explica que podrá añadir recursos (video, texto, PDF, etc.) y un botón principal **«Añadir página»**. Los textos exactos son los que muestre la pantalla de creación en el prototipo.  
-- **En cuanto se añade la primera página**, el panel derecho deja ese empty y pasa al flujo de **selector de tipo de recurso** (u otra vista según el tipo de recurso); **no** debe volver a mostrarse este empty salvo que el usuario **elimine todas las páginas** y vuelva a quedar el índice en cero páginas.  
-- **Disparadores equivalentes** para crear la primera (y siguientes) páginas: CTA del empty state **o** **«Añadir página»** en el panel izquierdo (según sección activa).  
-- Efecto esperado al añadir: en el **panel izquierdo** aparece la **fila de página** (Páginas creator) y queda **activa/seleccionada**; en el **derecho** se muestra el **selector general de recursos** para esa página.
+- **En cuanto se confirma la primera página** (flujo inmersivo), el panel derecho deja ese empty y muestra el **recurso montado**; **no** debe volver a mostrarse este empty salvo que el usuario **elimine todas las páginas** y vuelva a quedar el índice en cero páginas.  
+- **Disparadores equivalentes** para crear la primera (y siguientes) páginas: CTA del empty state **o** **«Añadir página»** en el panel izquierdo (según sección activa) → mismo modal de tipo → mismo patrón inmersivo.
 
-### Panel derecho: página recién añadida
+### Panel derecho: página con recurso montado
 
 - **Orden vertical:**  
-  1. **Fila de título:** a la izquierda, **título de la página** **editable inline** (mismo criterio que el nombre en la fila del índice: al guardar o al perder foco debe mantenerse alineado con la etiqueta de la página activa en Páginas creator). A la **derecha** de esa fila, texto auxiliar en tipografía pequeña: **«Página X de X»** (por ejemplo *Página 1 de 3*).  
-  2. Debajo, el **bloque para elegir el tipo de recurso** (tarjetas de video, PDF, texto, etc.) según el diseño UBITS.
+  1. **Fila de título:** a la izquierda, **título de la página** **editable inline** (alineado con la etiqueta en Páginas creator; default / fallback **`Título de la página`**). A la **derecha** de esa fila, texto auxiliar: **«Página X de X»**.  
+  2. Debajo, el **recurso principal montado** (preview + acciones: **Reemplazar** mismo tipo; **sin** botón **Eliminar**).  
+  3. Debajo, **recursos complementarios** si aplican (ver sección correspondiente).
 
 **Indicador «Página X de X»**
 
@@ -235,8 +244,9 @@ Si el usuario **desactiva** secciones (o nunca las activa): **todas las páginas
 
 Para poder **avanzar** desde Recursos (botón **Siguiente** o equivalente), **cada página** del índice debe tener un **título válido**:
 
-- **Válido:** texto con contenido tras quitar espacios en blanco.  
-- **No válido:** campo vacío o el texto genérico **«Sin título»** (sin distinguir mayúsculas/minúsculas).
+- **Válido:** texto con contenido tras quitar espacios en blanco (incluye el default **`Título de la página`**).  
+- **No válido:** campo vacío — al perder foco / guardar, si queda vacío, **vuelve** a **`Título de la página`**.  
+- El literal genérico **«Sin título»** (si apareciera por datos viejos) **no** es un título aceptable para publicar; normalizar al default.
 
 **Cómo se comunica el error:**
 
@@ -250,12 +260,12 @@ Esta regla es **independiente** de si la página ya tiene recurso asignado: una 
 
 ### Persistencia del panel derecho al cambiar de página
 
-Cada **página del índice** guarda **su propio estado** del panel derecho (selector de tipos, recurso montado, evaluación, etc.). Al **activar otra fila** en el índice:
+Cada **página del índice** guarda **su propio estado** del panel derecho (recurso montado, evaluación, complementarios, etc.). Al **activar otra fila** en el índice:
 
 1. Se **guarda** lo que había en la página que se abandona.  
-2. Se **restaura** lo correspondiente a la página nueva (o el selector vacío si aún no tiene recurso).
+2. Se **restaura** lo correspondiente a la página nueva (**siempre** con recurso montado — no hay selector vacío embebido).
 
-En el prototipo esto aplica, entre otros, a **video**, **PDF** (vista previa con el archivo ya subido), **SCORM**, **embebido** y **evaluación final**. El usuario puede alternar entre lecciones sin perder el trabajo de cada una en la misma sesión de creación.
+En el prototipo esto aplica, entre otros, a **video**, **PDF**, **SCORM**, **embebido** y **evaluación final**. El usuario puede alternar entre lecciones sin perder el trabajo de cada una en la misma sesión de creación.
 
 ### Paso 3 — Certificado
 
@@ -330,7 +340,7 @@ Desde **Recursos**, **Siguiente** o el paso **3** del stepper solo llevan a Cert
 
 1. Al menos **una página** en el índice.  
 2. **Título válido en todas las páginas**.  
-3. **Al menos un recurso principal** en cada página (evaluación final cuenta como recurso). Páginas sin recurso: borde rojo en el índice; en la página activa el **resources block** pasa a variante `default-error`.  
+3. **Recurso principal confirmado** en cada página (evaluación final cuenta como recurso). Con el flujo T2, las páginas del índice **nacen ya con recurso**; el caso `default-error` por página vacía queda **obsoleto** como camino normal.  
 4. Con **secciones activas:** ninguna sección vacía (borde rojo en el bloque de sección).
 
 Desde Certificado, **Siguiente** lleva a **Visibilidad**. **Anterior** vuelve a Recursos.
@@ -386,14 +396,14 @@ Desde el **stepper** (paso **4**), aplican las mismas reglas que para ir a Certi
 
 El hash **`#visibilidad`** participa del mismo **deep link demo** que `#recursos` y `#certificado`: con borrador vacío se precarga el curso de ejemplo y se abre directamente en el paso Visibilidad.
 
-### Tipos de recurso (selector general)
+### Tipos de recurso (alta vía modal + flujo inmersivo)
 
-El usuario elige el tipo mediante **tarjetas** y completa el **panel** que corresponda (formulario o vista previa). La documentación de **Resources card** y **Resources block** en el design system describe las variantes y estados.
+El usuario elige el tipo en el **modal «Añadir página»** (8 tarjetas) y completa el recurso en un **flujo hermano inmersivo** (patrón **Agregar video**). Al confirmar, vuelve al paso Recursos con la página y el recurso montados. La documentación de **Resources card** / **Resources block** en el design system sigue valiendo para **demos** y para el contenido interno de cada flujo; **no** como cuadrícula embebida en el panel derecho del producto Creator.
 
-### Distintivo IA en las tarjetas del bloque de recursos
+### Distintivo IA en las tarjetas del modal de tipo
 
-- En la **cuadrícula de tarjetas** del selector, los tipos que incluyen **asistencia con IA** en el Creator llevan un **badge pequeño de IA**: variante **outlined** del sistema de insignias, **solo icono** (el mismo lenguaje visual que otros puntos de IA del producto), situado en la tarjeta para **destacar** ese tipo frente al resto.
-- El distintivo tiene un **tooltip** al pasar el cursor (con un **retardo breve** para no molestar en movimientos rápidos): el texto informa de forma explícita que ese tipo **incluye asistencia con IA** (en el prototipo el mensaje por defecto es del estilo *«Incluye asistencia con IA.»*; producto puede afinar la redacción manteniendo el criterio).
+- En la **cuadrícula de tarjetas** del modal «Añadir página», los tipos que incluyen **asistencia con IA** llevan un **badge pequeño de IA**: variante **outlined**, **solo icono**, para **destacar** ese tipo frente al resto.
+- El distintivo tiene un **tooltip** al pasar el cursor (con un **retardo breve**): el texto informa de forma explícita que ese tipo **incluye asistencia con IA** (en el prototipo el mensaje por defecto es del estilo *«Incluye asistencia con IA.»*; producto puede afinar la redacción manteniendo el criterio).
 - Los tipos **sin** flujo asistido por IA **no** muestran ese badge.
 - En la versión actual del playground, el distintivo aplica a **Video**, **SCORM** y **Evaluación**: son los que ya exponen generación o agente asistido; si en el futuro otro tipo incorpora IA, puede adoptarse la misma convención.
 
@@ -406,22 +416,22 @@ Cuando el usuario **genera con IA** un **video** o un **SCORM** (o tiene varias 
 | **Cabecera** | Título con icono de IA: **«Generando recursos»** mientras hay trabajos en curso; **«Recursos generados»** cuando todos terminaron. Se puede **minimizar** o **cerrar** el panel. |
 | **Cada trabajo** | Una fila con icono del tipo (video / SCORM), **título del recurso** (p. ej. título de la presentación SCORM) y subtítulo **«Generando…»** con spinner. |
 | **Al terminar** | La fila pasa a **completado** (marca verde): subtítulo **«Listo · Haz clic para ver»**. Al pulsar la fila, el sistema **activa la página** correspondiente en el índice para que el usuario vea el resultado. |
-| **Si elimina el recurso** en el panel derecho (ver **Confirmación al eliminar recurso**) **sin cerrar** este panel, la fila **no desaparece**: pasa a estado **error** (marca roja), el subtítulo bajo el título se muestra en **rojo** con el texto **«Se eliminó el recurso»** y ya **no** es clicable para navegar. |
+| **Si elimina la página** mientras hay una fila de generación | La fila puede pasar a estado **error** (marca roja) con subtítulo **«Se eliminó el recurso»** y ya **no** es clicable. *(Ya no hay Eliminar bajo el recurso montado — T1.)* |
 
 Solo aplica a generaciones **Video IA** y **SCORM con IA** que dispararon ese indicador; otros tipos (PDF subido, evaluación manual, etc.) no añaden filas salvo que producto lo extienda.
 
-### Confirmación al eliminar un recurso ya añadido
+### Recurso principal montado — sin Eliminar (T1)
 
-**Ámbito:** todo recurso que ya está montado en la página y muestra el botón **Eliminar** en el pie del bloque (video, SCORM, PDF, evaluación, texto, etc.).
+**Ámbito:** video, SCORM, PDF, evaluación, texto, embebido, encuestas, etc.
 
-- Al pulsar **Eliminar**, **no** se borra al instante: se abre un **modal pequeño** titulado **«Eliminar recurso»**.
-- **Mensaje:** «¿Seguro que deseas eliminar este recurso? La página quedará en blanco.»
-- **Botones:** **Cancelar** (cierra sin cambios) y **Sí, eliminar** (confirma).
-- Tras confirmar: el panel derecho vuelve al **selector de tipos de recurso**, el icono de la página en el índice pasa a **página en blanco** y, si había una fila en el **panel de operaciones** para ese video o SCORM generado por IA, esa fila queda en **error** con **«Se eliminó el recurso»** (ver tabla anterior).
+- **No** se muestra el botón **Eliminar** bajo el recurso principal ya montado (ni en crear ni en editar).
+- Para **cambiar el archivo / contenido del mismo tipo:** usar **Reemplazar**.
+- Para **cambiar de tipo** (p. ej. video → PDF): en **crear**, **eliminar la página** y añadir otra; en **editar**, **ocultar** la página y añadir otra.
+- El modal legacy **«Eliminar recurso»** (*«La página quedará en blanco»*) **queda fuera** del producto Creator.
 
 ### Confirmación al eliminar una página del índice
 
-**Ámbito:** cualquier fila de **Páginas creator** con al menos una página en el contenido.
+**Ámbito:** cualquier fila de **Páginas creator** en **creación** (en edición publicada no hay Eliminar página — ver contexto de edición).
 
 - Menú **⋮** de la fila → **Eliminar**.  
 - **No** se borra al instante: modal titulado **«Eliminar página»**.  
@@ -429,24 +439,24 @@ Solo aplica a generaciones **Video IA** y **SCORM con IA** que dispararon ese in
 - **Botones:** **Cancelar** y **Sí, eliminar**.  
 - Tras confirmar: la fila desaparece del índice; si era la activa, el sistema selecciona otra página (habitualmente la **primera** que quede) o vuelve al **empty state** del panel derecho si no quedan páginas.
 
-### Tipos en el selector (orden y estado en el prototipo)
+### Tipos en el modal «Añadir página» (orden)
 
-Al configurar una página, el usuario ve **ocho tarjetas** en este orden (cuadrícula del **Resources block**):
+El usuario ve **ocho tarjetas** en este orden. Cada una abre un **flujo hermano inmersivo** (mismo patrón de navegación que Agregar video); la UI interna puede diferir:
 
-| # | Tipo en pantalla | Entrada al flujo en el prototipo |
-|---|------------------|----------------------------------|
-| 1 | **Video** | Modal **«Agregar video»** con pestañas **Video IA**, **enlace** y **subir** (ver **Recurso: Video**). |
-| 2 | **PDF** | Panel: subida de archivo y vista previa (ver **Recurso: PDF**). |
-| 3 | **Texto** | Tarjeta visible; **clic aún no abre** el editor (flujo **pendiente** — ver **Recurso: Texto**). |
-| 4 | **Embebido** | Panel enlace o código embebible (ver **Recurso: Embebido**). |
-| 5 | **SCORM** | Modal **«Agregar SCORM»** (ver **Recurso: SCORM**). |
-| 6 | **Evaluación final** | Constructor + panel IA (ver **Recurso: Evaluación final**). |
-| 7 | **Encuesta libre** | Tarjeta visible; **clic sin flujo** (pendiente de producto). |
-| 8 | **Encuesta de satisfacción** | Tarjeta visible; **clic sin flujo** (pendiente de producto; ver nota abajo). |
+| # | Tipo en pantalla | Entrada al flujo |
+|---|------------------|------------------|
+| 1 | **Video** | Flujo inmersivo **Agregar video** (React: `/agregar-video` → revisar → editor). Detalle de pestañas/IA en **Recurso: Video**. |
+| 2 | **PDF** | Flujo hermano inmersivo PDF. |
+| 3 | **Texto** | Flujo hermano inmersivo Texto. |
+| 4 | **Embebido** | Flujo hermano inmersivo Embebido. |
+| 5 | **SCORM** | Flujo hermano inmersivo SCORM (IA / upload según producto). |
+| 6 | **Evaluación final** | Flujo hermano inmersivo Evaluación. |
+| 7 | **Encuesta libre** | Flujo hermano inmersivo Encuesta libre. |
+| 8 | **Encuesta de satisfacción** | Flujo hermano inmersivo Encuesta de satisfacción. |
 
-**Nota:** en el catálogo de tarjetas del design system pueden existir **otros tipos** (archivo descargable, certificado, imagen, etc.) que **no** forman parte de esta cuadrícula de ocho en el paso Recursos del prototipo actual.
+**Nota:** en el catálogo de tarjetas del design system pueden existir **otros tipos** (archivo descargable, certificado, imagen, etc.) que **no** forman parte de estas ocho en el paso Recursos.
 
-*(Detalle de flujos implementados más abajo; encuestas y texto principal en estado **pendiente** o parcial.)*
+*(El detalle de pantallas internas de cada tipo sigue en las secciones «Recurso: …» más abajo; donde digan “selector embebido en panel derecho” o “Eliminar recurso → página en blanco”, prevalece este apartado y el MD de decisiones.)*
 
 ---
 
@@ -454,7 +464,7 @@ Al configurar una página, el usuario ve **ocho tarjetas** en este orden (cuadr�
 
 ### Relación con el recurso principal
 
-- El **Resources block** (selector y formularios de la cuadrícula de ocho tipos) define el **recurso principal** de la página: al confirmarlo, el **icono de la fila** en el índice pasa al tipo correspondiente (video, PDF, SCORM, etc.).
+- El **recurso principal** de la página se define al **confirmar** el flujo inmersivo de alta (modal tipo → inmersivo). El **icono de la fila** en el índice es el del tipo (video, PDF, SCORM, etc.).
 - Los **recursos complementarios** son **opcionales** y **no cambian** ese icono: solo enriquecen la lección con material adicional.
 - Tipos complementarios en el prototipo:
   - **Texto** — **Rich text editor** oficial (misma barra de herramientas que la descripción de portada: negrita, cursiva, subrayado, listas, alineación, imagen, video/enlace, código, quitar formato). **Sin título** encima del editor (ni «Contenido» ni «Texto complementario»).
@@ -462,11 +472,11 @@ Al configurar una página, el usuario ve **ocho tarjetas** en este orden (cuadr�
 
 ### Dónde aparece en pantalla
 
-- Solo cuando la página ya tiene un **recurso principal montado** (no en el selector vacío ni en formularios intermedios tipo «PDF vacío» / «Video enlace» sin confirmar).
+- Solo cuando la página ya tiene un **recurso principal montado**.
 - El bloque vive **debajo** del área del recurso principal (`#crear-contenido-recursos-resources-mount`), en **`#crear-contenido-recursos-complementary-mount`**.
 - Orden vertical:
   1. Recurso principal (video, PDF, SCORM, evaluación, etc.).
-  2. Bloques complementarios **ya añadidos**, en el **orden en que se añadieron** (p. ej. primero descargable y luego texto, o al revés). Cada bloque: superficie blanca (contenido) + botón **Eliminar** **fuera** de esa superficie (mismo patrón que el recurso principal apilado).
+  2. Bloques complementarios **ya añadidos**, en el **orden en que se añadieron** (p. ej. primero descargable y luego texto, o al revés). Cada bloque: superficie blanca (contenido) + botón **Eliminar** **fuera** de esa superficie.
   3. Bloque de invitación **«Añade un recurso complementario (opcional)»** con una o dos tarjetas según lo que aún falte.
 
 ### Variantes del bloque de invitación (componente Complementary resources)
@@ -485,7 +495,8 @@ Al configurar una página, el usuario ve **ocho tarjetas** en este orden (cuadr�
 | Clic en tarjeta **Texto** (invite) | Monta el bloque de texto (RTE completo, sin títulos) + **Eliminar** debajo. El bloque queda en la posición según orden de alta (`complementaryOrder` por página). Debajo sigue el invite si falta el otro tipo. |
 | Clic en tarjeta **Archivo descargable** (invite) | Monta **File Upload** (dropzone, sin mensaje «Archivo validado…») + **Eliminar** debajo. Mismo criterio de orden. Debajo sigue el invite si falta texto. |
 | **Eliminar** en un complementario | Quita solo ese bloque; el invite vuelve a ofrecer ese tipo. |
-| **Eliminar recurso principal** | Vuelve el selector de tipos; **se ocultan** los complementarios de esa página. |
+| **Eliminar página** (crear) | Desaparecen principal + complementarios de esa página. |
+| **Reemplazar** recurso principal (mismo tipo) | Comportamiento actual de complementarios (sin regla nueva en este Q). |
 | Cambiar de página en el índice | Se **guardan** por página qué complementarios había y su **orden**; al volver se **restauran** (`CC_RECURSOS_PAGE_STATE`: `complementaryOrder`, flags derivados). |
 
 ### Reglas de producto (resumen)
@@ -503,16 +514,16 @@ Al configurar una página, el usuario ve **ocho tarjetas** en este orden (cuadr�
 
 ### Cómo se entra al flujo
 
-- En el **selector de tipo de recurso** de la página, la persona elige la tarjeta **Video**.
-- **No** aparece primero un formulario fijo en el panel derecho: se abre un **modal** titulado **«Agregar video»**, con el mismo **criterio visual que otros flujos con IA** del Creator (cabecera con gradiente, **saldo de tokens** con icono de información, modal ancho).
-- Ese modal concentra **todas** las formas de aportar un video a la página: generación asistida por IA, enlace externo o archivo subido.
+- En el modal **«Añadir página»**, la persona elige la tarjeta **Video**.
+- Se abre el **flujo hermano inmersivo** (referente React: `AgregarVideoImmersive` / `/agregar-video` → revisar escenas → editor). **No** se deja una fila vacía en el índice ni el selector embebido en el panel derecho.
+- Ese flujo concentra las formas de aportar un video: generación asistida por IA, enlace externo o archivo subido (detalle de pestañas abajo — puede vivir dentro del layout inmersivo; el modal legacy suelto queda como descripción de contenido, no como patrón de navegación canónico).
 
-### Variante de modal en producción (decisión de producto)
+### Variante de experiencia en producción (decisión de producto)
 
-Tras un **test A/B** entre dos experiencias de modal de video, el prototipo **cerró** a favor del modal **clásico** descrito en esta sección (**tres pestañas**: Video IA, enlace, subir; guión con modo **Generar con IA** / **Escribir manualmente** en la pestaña IA).
+Tras un **test A/B** entre dos experiencias de video, el prototipo **cerró** a favor de la experiencia **clásica** descrita abajo (**tres vías**: Video IA, enlace, subir; guión con modo **Generar con IA** / **Escribir manualmente** en IA).
 
-- **En pantalla hoy:** solo la tarjeta **Video** abre esa variante. **No** hay segunda tarjeta «Video 2» ni atajo desde **Encuesta de satisfacción**.  
-- **Reserva:** existe en el repositorio una **variante alternativa** tipo **asistente por pasos** (avatar, guión en wizard, logo en pasos). Queda **sin disparador** en el selector hasta que producto la reactive. No debe documentarse como flujo activo para usuarios finales.
+- **En pantalla hoy (alta de página):** tarjeta **Video** → flujo inmersivo. **No** hay segunda tarjeta «Video 2» ni atajo desde **Encuesta de satisfacción**.  
+- **Reserva:** existe en el repositorio una **variante alternativa** tipo **asistente por pasos**. Queda **sin disparador** hasta que producto la reactive.
 
 ### Tres pestañas dentro del modal
 
@@ -558,13 +569,13 @@ El pie del modal muestra el botón que corresponde a la pestaña activa (por eje
 
 ### Después de confirmar (cualquier pestaña)
 
-- El **panel derecho** deja de mostrar el selector de tipos y pasa a mostrar el **video** con el patrón de bloque apilado del Creator (**superficie** + pie con **Eliminar**).
-- En el **índice de páginas**, el icono de la fila activa pasa a **video**.
-- **Eliminar** abre el **modal de confirmación** (ver **Confirmación al eliminar un recurso ya añadido**); solo tras **Sí, eliminar** se quita el recurso y la página vuelve al selector de tipos.
+- El usuario **vuelve** al paso Recursos del padre; la **página aparece en el índice** (si era alta nueva) con el **video** montado en el panel derecho (patrón de bloque apilado: **superficie** + pie con **Reemplazar**; **sin Eliminar**).
+- En el **índice de páginas**, el icono de la fila activa es **video**.
+- Para quitar el video de la lección en **crear:** **Eliminar página**. Para cambiar el archivo del mismo tipo: **Reemplazar**.
 
-### Si el modal no estuviera disponible (caso excepcional)
+### Si el flujo inmersivo no estuviera disponible (caso excepcional)
 
-- El prototipo puede **degradarse** a un formulario **solo por enlace** embebido en el panel; es un respaldo, no el camino principal.
+- El prototipo no debe degradarse a “página en blanco + selector en panel”; si falla el flujo, **no se crea** la página (misma regla que abandonar).
 
 ### Recursos complementarios
 
@@ -889,8 +900,8 @@ Tras recoger tema y reglas, el flujo llega a un **paso de confirmación** en el 
 
 ## Pendiente de documentar (próximos mensajes)
 
-- **Flujos a cablear en prototipo:** **Texto** (editor en panel), **Encuesta libre**, **Encuesta de satisfacción**.  
-- **Visibilidad (paso 4):** lógica de cambio de estado, selección de colaboradores (Privado), acción **Publicar** y reglas de edición post-publicación.  
+- **Detalle UI interna** de los flujos inmersivos hermanos aún no cableados (Texto, encuestas, PDF/SCORM/Embebido/Evaluación a la paridad del patrón Agregar video).  
+- **Visibilidad (paso 4):** lógica de cambio de estado, selección de colaboradores (Privado), acción **Publicar** y reglas de edición post-publicación (ver también [`contexto-edicion-contenidos.md`](./contexto-edicion-contenidos.md) + MD de decisiones).  
 - Integración real con plantillas de **LMS Creator → Certificados** (hoy mock Fiqsha en memoria; el paso Certificado ya está documentado en detalle de producto).  
 - Reglas de validación global (publicar, borradores, etc.) si aplica.  
 - Detalle de **consumo** SCORM por tipo de diapositiva (quizzes, hotspots, emparejamiento) más allá del **costo fijo de 15 créditos** por generación ya descrito en **Recurso: SCORM**.  
@@ -900,15 +911,16 @@ Tras recoger tema y reglas, el flujo llega a un **paso de confirmación** en el 
 
 ## Migración a React (`Ubits-React`)
 
-Al portar este flujo a páginas del playground React (`pages/ubits-colaborador/lms-creator/…`), **solo entra lo vigente en vanilla hoy**. No reutilizar variantes, modales ni props que ya se eliminaron del referente.
+Al portar este flujo a páginas del playground React (`pages/ubits-colaborador/lms-creator/…`), **solo entra lo vigente en vanilla hoy** y lo cerrado en [`decisiones-q-edicion-estructural-contenidos.md`](./decisiones-q-edicion-estructural-contenidos.md). No reutilizar variantes, modales ni props que ya se eliminaron del referente.
 
 | Portar (oficial) | No portar (legacy eliminado) |
 |------------------|------------------------------|
 | `learn-content-img-trailer` con **vacío IA** (icono + título + descripción + CTA «Agregar portada») | Vacío clásico con **dos botones** («Generar portada con IA» + «Cargar imagen») |
 | Modal único **`portada-imagen-modal`** (pestañas IA · Subir · Tráiler) desde el CTA y desde «Editar» | Modal `#portada-ai-modal`, panel IA standalone de portada, atajos directos a generar sin el modal con pestañas |
 | Componente React `UbitsLearnContentImgTrailer` (catálogo `/componentes`) | Prop `emptyVariant` / `empty-variant`, variante delete del componente, componente `IAModal` de portada (retirado del playground React) |
+| Patrón **Agregar video** inmersivo + return path para alta de los 8 tipos | Cuadrícula Resources block embebida como vía de alta; **Eliminar** bajo recurso montado; página en blanco sin recurso |
 
-**Fuente de verdad para el port:** `Referente-Vanilla/` en `main` (template-ubits), este documento, `documentacion/componentes/learn-content-img-trailer.html` y los archivos `crear-contenido.*` / `portada-imagen-modal.*` actuales — **no** commits antiguos, bocetos ni texto tachado de versiones previas.
+**Fuente de verdad para el port:** `Referente-Vanilla/` en `main` (template-ubits), este documento, el MD de decisiones del Q, `documentacion/componentes/learn-content-img-trailer.html` y los archivos `crear-contenido.*` / `portada-imagen-modal.*` actuales — **no** commits antiguos, bocetos ni texto tachado de versiones previas.
 
 **Regla:** si un patrón solo aparece en historial git o en conversaciones de migración, **no** debe contaminar el layout React.
 
@@ -919,7 +931,8 @@ Al portar este flujo a páginas del playground React (`pages/ubits-colaborador/l
 Este documento **no** sustituye la **documentación de componentes UBITS** ni las reglas del repositorio para desarrollo. Quien construya pantallas debe partir del catálogo oficial de componentes y de los patrones del Creator ya definidos en código.
 
 - Cualquier cambio en **producto o UX** (incluidos **saldo inicial** y **costos por acción IA**) debe reflejarse aquí y en los archivos de constantes del playground para que PM, diseño y negocio sigan alineados.
+- En secciones «Recurso: …» más abajo puede quedar copy histórico de “selector en panel / Eliminar → página en blanco”; **prevalece** el apartado **Tipos de recurso (alta vía modal + flujo inmersivo)** y **Recurso principal montado — sin Eliminar (T1)**.
 
 ---
 
-*Última revisión: **Créditos de IA** — saldo inicial **500.000**; portada **50**, guión **80**, video **320**, evaluación **80**, SCORM **15** (pool compartido). **Video IA** — placeholder MP4 en página (sin IA Loader) + subsección técnica; IA Loader conservado solo para guión en modal. **Portada** — vacío IA + modal `portada-imagen-modal`. Paso **Visibilidad** / **Certificado**. **Complementary resources** (excluido en Evaluación final). **Recursos:** 8 tipos; persistencia por página.*
+*Última revisión: 2026-07-30 — Q edición estructural alineado: Añadir página = modal tipo → flujo inmersivo (8 tipos); sin Eliminar bajo recurso montado; título default `Título de la página`; Eliminar página solo en crear.*

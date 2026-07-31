@@ -4,7 +4,8 @@
  * Una sola fuente de verdad para el markup; evita desincronización entre páginas.
  *
  * Footer: por defecto solo zona derecha (primary + secondary). Opcionalmente footerTertiary
- * para un botón terciario a la izquierda. Con showFooter: false no se renderiza el pie
+ * para un botón terciario a la izquierda, o footerLeftHtml para otro control en esa zona
+ * (ej. checkbox de confirmación). Con showFooter: false no se renderiza el pie
  * (aunque haya footerHtml) — caso oficial para listados / índices.
  *
  * Uso:
@@ -15,6 +16,7 @@
  *     bodyHtml: '<p>Contenido</p>',
  *     footerHtml: '<button class="ubits-button ubits-button--secondary ubits-button--md">Cancelar</button><button class="ubits-button ubits-button--primary ubits-button--md">Aceptar</button>',
  *     footerTertiary: { text: 'Eliminar', onClick: function() { } },  // opcional: botón a la izquierda
+ *     footerLeftHtml: '<label class="ubits-checkbox">…</label>',  // opcional: control libre a la izquierda
  *     showFooter: true,  // false = modal sin pie
  *     size: 'sm',  // 'xs' | 'sm' | 'md' | 'lg' | null (default 560px)
  *     closeOnOverlayClick: true,
@@ -179,6 +181,7 @@
      * @param {string} [options.footerHtml] - HTML del pie (botones a la derecha: secundario + primario). Opcional.
      * @param {boolean} [options.showFooter=true] - Si false, no se renderiza el pie aunque haya footerHtml (modal sin footer).
      * @param {Object} [options.footerTertiary] - Botón terciario a la izquierda. { text: string, onClick: function }. Opcional.
+     * @param {string} [options.footerLeftHtml] - HTML libre en la zona izquierda del pie (ej. checkbox de confirmación). Opcional.
      * @param {string} [options.size] - 'xs' | 'sm' | 'md' | 'lg'. Ancho del contenido.
      * @param {boolean} [options.closeOnOverlayClick=true] - Cerrar al clic fuera del contenido.
      * @param {function} [options.onClose] - Callback al cerrar el modal.
@@ -195,6 +198,7 @@
         var bodyHtml = options.bodyHtml != null ? options.bodyHtml : '';
         var footerHtml = options.footerHtml != null ? options.footerHtml : '';
         var footerTertiary = options.footerTertiary || null;
+        var footerLeftHtml = options.footerLeftHtml != null ? options.footerLeftHtml : '';
         var showFooter = options.showFooter !== false;
         var size = options.size || '';
         var closeOnOverlayClick = options.closeOnOverlayClick !== false;
@@ -257,6 +261,7 @@
                 (showFooter && footerHtml ? ('  <div class="ubits-modal-footer">' +
                     '<div class="ubits-modal-footer__left">' +
                     (footerTertiary ? ('<button type="button" class="ubits-button ubits-button--tertiary ubits-button--md" id="' + overlayId + '-footer-tertiary"><span>' + escapeHtml(footerTertiary.text || '') + '</span></button>') : '') +
+                    footerLeftHtml +
                     '</div>' +
                     '<div class="ubits-modal-footer__right">' + footerHtml + '</div>' +
                     '</div>') : '') +
@@ -355,6 +360,7 @@
      * @param {string} options.bodyHtml - HTML del cuerpo.
      * @param {string} [options.footerHtml] - HTML del pie (botones derecha). Opcional.
      * @param {Object} [options.footerTertiary] - Botón terciario izquierda. { text: string }. Opcional (onClick se asocia por id en la página).
+     * @param {string} [options.footerLeftHtml] - HTML libre en la zona izquierda del pie (ej. checkbox). Opcional.
      * @param {string} [options.size] - 'xs' | 'sm' | 'md' | 'lg'.
      * @param {string} [options.contentId] - ID opcional del div .ubits-modal-content (para date-picker-modal, etc.).
      * @param {string} [options.titleId] - ID opcional del span del título (ej. reabrir-plan-title).
@@ -378,6 +384,7 @@
         var bodyHtml = options.bodyHtml != null ? options.bodyHtml : '';
         var footerHtml = options.footerHtml != null ? options.footerHtml : '';
         var footerTertiary = options.footerTertiary || null;
+        var footerLeftHtml = options.footerLeftHtml != null ? options.footerLeftHtml : '';
         var showFooter = options.showFooter !== false;
         var size = options.size || '';
         var contentId = options.contentId || '';
@@ -465,6 +472,7 @@
             (showFooter && footerHtml ? ('<div class="ubits-modal-footer' + footerClassAttr + '">' +
             '<div class="ubits-modal-footer__left">' +
             (footerTertiary ? ('<button type="button" class="ubits-button ubits-button--tertiary ubits-button--md" id="' + overlayId + '-footer-tertiary"><span>' + escapeHtml(footerTertiary.text || '') + '</span></button>') : '') +
+            footerLeftHtml +
             '</div>' +
             '<div class="ubits-modal-footer__right">' + footerHtml + '</div>' +
             '</div>') : '') +
