@@ -310,7 +310,7 @@
             '<div class="ec-recursos-impacto">' +
             '<div class="ec-recursos-impacto__cols">' +
             '<div class="ec-recursos-impacto__left">' +
-            '<p class="ubits-body-md-regular ec-recursos-impacto__intro"><strong class="ubits-body-md-bold">Vas a poder añadir u ocultar páginas.</strong> Eso puede afectar el progreso de los estudiantes, las rutas, los planes de contenidos y los certificados. Elige cómo quieres manejar el impacto.</p>' +
+            '<p class="ubits-body-md-regular ec-recursos-impacto__intro"><strong class="ubits-weight-bold">Vas a poder añadir u ocultar páginas.</strong> Eso puede afectar el progreso de los estudiantes, las rutas, los planes de contenidos y los certificados. Elige cómo quieres manejar el impacto.</p>' +
             '<div class="ubits-selection-card-group ubits-selection-card-group--1 ec-recursos-impacto__policies" role="radiogroup" aria-label="Política de impacto">' +
             card(
                 'proteger',
