@@ -435,6 +435,8 @@ Se muestra **cada vez** que el usuario entra a la sección **Recursos** (si sale
 
 **Layout:** modal `lg` con **dos columnas 50/50 arriba** (gap `lg`; una columna bajo 900px) + **bloque de indicadores a ancho completo abajo**.
 
+**URL de prototipo (React):** `/ubits-admin/lms-creator/editar-contenido?id=f007&seccion=recursos` — entra al flujo real de edición con el modal encima de Recursos. «Sí, editar» deja en Recursos; «Salir sin editar» vuelve a **Portada** (entrada directa). También listada en `/design-system/sitemap` como «Editar · Recursos».
+
 | Zona | Bloques |
 |------|---------|
 | Izquierda | Intro + selector de impacto |
@@ -450,7 +452,7 @@ Se muestra **cada vez** que el usuario entra a la sección **Recursos** (si sale
 | Video explicativo | Sí | YouTube placeholder: `https://www.youtube.com/watch?v=HXoFyBxwv7s` (UBITS; no es el oficial del impacto) |
 | **Indicadores** | Sí | Hardcode en la page. Con Proteger: En curso · Planes · Rutas. Con Recalcular: suma **Estudiantes que finalizaron** (solo entonces se les afecta). |
 | Checkbox | Sí | En el **pie** del modal (zona izquierda). Obliga a marcar para habilitar el CTA primario |
-| CTA secundario | Sí | `Salir sin editar` — cierra **sin** activar Recursos; permanece en la sección previa (si entró directo a Recursos vía URL → **Información** por defecto). |
+| CTA secundario | Sí | `Salir sin editar` — cierra **sin** desbloquear Recursos. Si venía de otro paso → vuelve a ese paso. Si entró directo a Recursos por URL → **Portada**. |
 | CTA primario | Sí | `Sí, editar` — solo habilitado con checkbox marcado |
 
 **Labels de indicadores (neutro, confirmados):**

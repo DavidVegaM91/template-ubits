@@ -1,6 +1,6 @@
 # Decisiones Q — Edición estructural de contenidos (LMS Creator)
 
-**Estado:** borrador de aterrizaje (sin implementación).  
+**Estado:** T5 entregado; **T1 implementado** (2026-08-03); pendientes T3/T4 y T2.  
 **Autor / dueño:** Hector David Vega  
 **Audiencia:** Dave (UX), PM Learn, agentes Cursor  
 **Fecha de apertura:** 2026-07-30  
@@ -170,6 +170,8 @@ Hay **dos** opciones. **Default al primer acceso / tras reload del prototipo = P
 | Derecha (1fr) | Video explicativo 16:9 |
 | Abajo (100 %) | Label `A quiénes afecta este contenido` + indicadores en fila: **3** con Proteger (En curso · Planes · Rutas); **4** con Recalcular (suma `Estudiantes que finalizaron`, porque solo entonces se les afecta) |
 | **Pie del modal, zona izquierda** | Checkbox de entendimiento (`ubits-modal-footer__left`), igual que el checkbox «Aplicar a todas las escenas con avatar» del modal **Avatar del video** en `agregar-video/editor`. Los CTA siguen a la derecha del pie. |
+
+**URL de prototipo (React):** `/ubits-admin/lms-creator/editar-contenido?id=f007&seccion=recursos` — entra al flujo real de edición con el modal encima de Recursos. «Sí, editar» deja en Recursos; «Salir sin editar» vuelve a **Portada** (entrada directa). También listada en `/design-system/sitemap` como «Editar · Recursos».
 
 > El pie del modal vanilla acepta control libre a la izquierda vía la opción **`footerLeftHtml`** de `openModal` (añadida en `components/modal.js` para igualar la prop `footerLeft` que ya existía en el `UbitsModal` de React).
 
@@ -804,7 +806,8 @@ Cuando cerremos este MD, hay que actualizar también:
 | 2026-07-30 | Checkbox T5 obligatorio + copy aprobado | P15 |
 | 2026-07-30 | Contextos hermanos actualizados con decisiones cerradas | P22 hecho |
 | 2026-07-31 | Copy + tamaño modal T5 propuestos y cerrados (`lg`; título `Antes de editar los recursos`; CTA `Sí, editar`) | §3.4 |
+| 2026-08-03 | **T1 implementado** (vanilla + React): sin botón Eliminar bajo recurso principal montado (crear + editar). Editar publicado: footer Descargar / Reemplazar. SCORM crear: solo Editar SCORM. | T1 |
 
 ---
 
-**Próximo paso:** implementar en orden **T5 → T1 → T3/T4 → T2** (vanilla + React).
+**Próximo paso:** implementar **T3 + T4** (ocultar/mostrar + ≥1 visible), luego **T2** (añadir página vía flujos inmersivos). Vanilla + React.

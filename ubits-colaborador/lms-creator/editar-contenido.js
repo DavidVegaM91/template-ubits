@@ -245,15 +245,23 @@
     }
 
     function dismissRecursosWarningModal(previousSection) {
-        applyEditSection(previousSection || editState.activeSection || 'informacion');
+        var target = previousSection || editState.previousSectionBeforeRecursos || 'informacion';
+        if (target === 'recursos') target = 'informacion';
+        editState.recursosUnlocked = false;
+        applyEditSection(target);
     }
 
-    function showEditSection(sectionId) {
+    function showEditSection(sectionId, opts) {
+        opts = opts || {};
         if (sectionId === 'recursos' && shouldShowRecursosWarning()) {
-            if (editState.activeSection !== 'recursos') {
-                editState.previousSectionBeforeRecursos = editState.activeSection;
-            }
-            openRecursosWarningModal();
+            var dismissTo =
+                opts.dismissTo ||
+                (editState.activeSection !== 'recursos' ? editState.activeSection : 'informacion');
+            if (dismissTo === 'recursos') dismissTo = 'informacion';
+            editState.previousSectionBeforeRecursos = dismissTo;
+            /* Modal siempre encima de la página de Recursos. */
+            applyEditSection('recursos');
+            openRecursosWarningModal(dismissTo);
             return;
         }
         applyEditSection(sectionId);
@@ -354,9 +362,13 @@
         );
     }
 
-    function openRecursosWarningModal() {
+    function openRecursosWarningModal(dismissTo) {
         var OVERLAY_ID = 'ec-recursos-warn-modal';
-        var sectionBeforePrompt = editState.activeSection;
+        var sectionBeforePrompt =
+            dismissTo ||
+            editState.previousSectionBeforeRecursos ||
+            (editState.activeSection !== 'recursos' ? editState.activeSection : 'informacion');
+        if (sectionBeforePrompt === 'recursos') sectionBeforePrompt = 'informacion';
         var policy = getSavedImpactoPolicy();
         var modalCtl = { skipDismiss: false };
 
@@ -595,7 +607,11 @@
         wireClosePin();
 
         var initial = hashToSection();
-        showEditSection(initial);
+        if (initial === 'recursos' && !editState.readonly) {
+            showEditSection('recursos', { dismissTo: 'informacion' });
+        } else {
+            showEditSection(initial);
+        }
         if (
             initial === 'resultados' &&
             typeof window.syncEditarContenidoResultadosTab === 'function' &&
@@ -605,6 +621,7 @@
         }
 
         window.addEventListener('hashchange', function () {
+            if (document.getElementById('ec-recursos-warn-modal')) return;
             var section = hashToSection();
             showEditSection(section);
             if (

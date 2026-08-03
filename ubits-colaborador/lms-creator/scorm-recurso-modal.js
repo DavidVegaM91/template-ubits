@@ -1822,15 +1822,14 @@
             footerHtml = global.ccBuildCrearContenidoResourceFooterHtml(
                 ' style="display:flex;align-items:center;gap:var(--gap-sm);flex-wrap:wrap;"'
             );
-        } else {
-            var editBtn = pageKey
-                ? '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="cc-editar-scorm-recurso"><i class="far fa-pencil"></i><span>Editar SCORM</span></button>'
-                : '';
+        } else if (pageKey) {
+            /* Crear: solo Editar SCORM — T1 sin Eliminar bajo recurso montado. */
             footerHtml =
                 '<div class="ubits-resources-block__footer" style="display:flex;align-items:center;gap:var(--gap-sm);flex-wrap:wrap;">' +
-                editBtn +
-                '<button type="button" class="ubits-button ubits-button--error-secondary ubits-button--sm" id="cc-eliminar-recurso"><i class="far fa-trash-alt"></i><span>Eliminar</span></button>' +
+                '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" id="cc-editar-scorm-recurso"><i class="far fa-pencil"></i><span>Editar SCORM</span></button>' +
                 '</div>';
+        } else {
+            footerHtml = '';
         }
         var escaped = scormHtml.replace(/"/g, '&quot;');
         return '<div class="ubits-resources-block ubits-resources-block--stack">' +
@@ -2283,6 +2282,12 @@
     }
 
     function confirmZipLoad() {
+        var zipFooter =
+            typeof global.ccBuildCrearContenidoResourceFooterHtml === 'function'
+                ? global.ccBuildCrearContenidoResourceFooterHtml(
+                      ' style="display:flex;align-items:center;gap:var(--gap-sm);flex-wrap:wrap;"'
+                  )
+                : '';
         var html = '<div class="ubits-resources-block ubits-resources-block--stack">' +
             '<div class="ubits-resources-block__surface cc-scorm-resource__surface" style="padding:0;">' +
                 '<div class="cc-scorm-resource__embed-wrap">' +
@@ -2291,9 +2296,7 @@
                     '</div>' +
                 '</div>' +
             '</div>' +
-            '<div class="ubits-resources-block__footer" style="display:flex;align-items:center;gap:var(--gap-sm);flex-wrap:wrap;">' +
-                '<button type="button" class="ubits-button ubits-button--error-secondary ubits-button--sm" id="cc-eliminar-recurso"><i class="far fa-trash-alt"></i><span>Eliminar</span></button>' +
-            '</div>' +
+            zipFooter +
         '</div>';
         closeModal(OVERLAY_ID);
         if (_onScormReady) _onScormReady(html);
