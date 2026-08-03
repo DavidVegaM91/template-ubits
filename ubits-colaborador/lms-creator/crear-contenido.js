@@ -1341,13 +1341,36 @@
             var pk = item.getAttribute('data-paginas-creator-key') || '';
             var lab = item.querySelector('.ubits-paginas-creator__label');
             var label = lab ? String(lab.textContent || '').trim() : '';
+            var hidden =
+                typeof window.isPaginasCreatorItemHidden === 'function'
+                    ? window.isPaginasCreatorItemHidden(item)
+                    : item.classList.contains('ubits-paginas-creator__item--hidden') ||
+                      item.getAttribute('data-paginas-hidden') === 'true';
             return {
                 pageKey: pk,
                 label: label,
                 tipo: readTipoFromPaginasItem(item),
-                active: item.classList.contains('is-active')
+                active: item.classList.contains('is-active'),
+                hidden: !!hidden
             };
         });
+    }
+
+    /** T4 — cuenta páginas no ocultas en el índice de Recursos (todas las secciones). */
+    function countVisiblePaginasInRecursosIndice() {
+        var mount = getRecursosIndiceMount();
+        if (!mount) return 0;
+        var items = mount.querySelectorAll('.ubits-paginas-creator__item');
+        var n = 0;
+        Array.prototype.forEach.call(items, function (item) {
+            var hidden =
+                typeof window.isPaginasCreatorItemHidden === 'function'
+                    ? window.isPaginasCreatorItemHidden(item)
+                    : item.classList.contains('ubits-paginas-creator__item--hidden') ||
+                      item.getAttribute('data-paginas-hidden') === 'true';
+            if (!hidden) n++;
+        });
+        return n;
     }
 
     function recursosSerializeSectionsFromDom() {
@@ -1430,7 +1453,8 @@
                         label: p.label,
                         pageKey: p.pageKey,
                         tipo: p.tipo,
-                        active: !!p.active
+                        active: !!p.active,
+                        hidden: !!p.hidden
                     };
                 }),
                 active: !!s.active,
@@ -1514,7 +1538,8 @@
                 pageKey: p.pageKey,
                 label: p.label,
                 tipo: p.tipo,
-                active: false
+                active: false,
+                hidden: !!p.hidden
             };
         });
         if (pages.length) {
@@ -2835,6 +2860,25 @@
             }
             syncRecursosPageCounter();
             refreshCrearContenidoPageSiguienteState();
+            return;
+        }
+        /* T3 + T4 — Ocultar / Mostrar (solo edición publicada; menú ya no ofrece Eliminar). */
+        if (d.action === 'ocultar') {
+            if (countVisiblePaginasInRecursosIndice() <= 1) {
+                if (typeof window.showToast === 'function') {
+                    window.showToast('error', 'Debe haber al menos una página visible.');
+                }
+                return;
+            }
+            if (typeof window.setPaginasCreatorItemHidden === 'function') {
+                window.setPaginasCreatorItemHidden(item, true);
+            }
+            return;
+        }
+        if (d.action === 'mostrar') {
+            if (typeof window.setPaginasCreatorItemHidden === 'function') {
+                window.setPaginasCreatorItemHidden(item, false);
+            }
             return;
         }
         if (d.action !== 'eliminar') return;

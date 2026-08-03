@@ -52,7 +52,7 @@
                                 Preview del componente
                             </h2>
                             <p class="ubits-body-md-regular" style="margin-bottom: 24px; line-height: 1.6;">
-                                Cambia el estado y el tipo de página. «Hover forzado» aplica el mismo fondo y tipografía que el puntero encima, sin depender del ratón. En estado <strong>Activo</strong>, el botón de tres puntos abre el menú con iconos; al elegir una opción verás un toast de demostración.
+                                Cambia el estado y el tipo de página. «Hover forzado» aplica el mismo fondo y tipografía que el puntero encima, sin depender del ratón. <strong>Oculta</strong> es el estado de edición publicada (opacidad baja, título tachado y badge «Oculta»). En estado <strong>Activo</strong>, el botón de tres puntos abre el menú con iconos; al elegir una opción verás un toast de demostración.
                             </p>
                             <div style="margin-bottom: 16px;">
                                 <p class="ubits-body-sm-bold" style="margin: 0 0 var(--gap-sm) 0; color: var(--ubits-fg-1-high);">Estado</p>
@@ -60,6 +60,7 @@
                                     <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn pc-state-btn active" data-pc-state="default"><span>Default</span></button>
                                     <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn pc-state-btn" data-pc-state="hover"><span>Hover forzado</span></button>
                                     <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn pc-state-btn" data-pc-state="active"><span>Activo</span></button>
+                                    <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm preview-control-btn pc-state-btn" data-pc-state="oculto"><span>Oculta</span></button>
                                 </div>
                             </div>
                             <div style="margin-bottom: 20px;">
@@ -95,12 +96,17 @@
                                 <div style="text-align: center; padding: var(--padding-md); background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
                                     <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: var(--gap-sm);"><i class="far fa-list"></i></div>
                                     <div class="ubits-body-sm-bold">Estados claros</div>
-                                    <div class="ubits-body-sm-regular">Default, resaltado al pasar el ratón y fila seleccionada con color de marca.</div>
+                                    <div class="ubits-body-sm-regular">Default, hover, fila activa y estado Oculta (edición publicada: opacidad, tachado y badge).</div>
                                 </div>
                                 <div style="text-align: center; padding: var(--padding-md); background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
                                     <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: var(--gap-sm);"><i class="far fa-ellipsis-vertical"></i></div>
                                     <div class="ubits-body-sm-bold">Menú de opciones</div>
-                                    <div class="ubits-body-sm-regular">El botón de más acciones aparece al pasar el mouse por la fila (y cuando está activa) y abre un dropdown con mover arriba, mover abajo y eliminar.</div>
+                                    <div class="ubits-body-sm-regular">El botón de más acciones aparece al pasar el mouse por la fila (y cuando está activa). En crear: mover y eliminar. En edición publicada: Ocultar / Mostrar en lugar de eliminar.</div>
+                                </div>
+                                <div style="text-align: center; padding: var(--padding-md); background: var(--ubits-bg-2); border-radius: var(--border-radius-sm);">
+                                    <div style="font-size: var(--font-size-h1); color: var(--ubits-accent-brand); margin-bottom: var(--gap-sm);"><i class="far fa-eye-slash"></i></div>
+                                    <div class="ubits-body-sm-bold">Página oculta</div>
+                                    <div class="ubits-body-sm-regular">Variante visual oficial: opacidad baja, título tachado, icono eye-slash y label «Oculta». Se puede reordenar.</div>
                                 </div>
                             </div>
                         </div>
@@ -161,12 +167,14 @@
             var mount = document.getElementById('pc-preview-mount');
             if (!mount || typeof paginasCreatorItemHtml !== 'function') return;
             var active = pcPreviewState.state === 'active';
+            var hidden = pcPreviewState.state === 'oculto';
             mount.innerHTML =
                 '<div class="ubits-paginas-creator" role="list">' +
                 paginasCreatorItemHtml({
                     label: pcTipoLabel(pcPreviewState.tipo),
                     tipo: pcPreviewState.tipo,
                     active: active,
+                    hidden: hidden,
                     pageKey: 'preview-pagina'
                 }) +
                 '</div>';
@@ -199,7 +207,9 @@
                 var map = {
                     'mover-arriba': 'Mover arriba',
                     'mover-abajo': 'Mover abajo',
-                    eliminar: 'Eliminar'
+                    eliminar: 'Eliminar',
+                    ocultar: 'Ocultar',
+                    mostrar: 'Mostrar'
                 };
                 var accion = map[d.action] || d.action || 'Acción';
                 var msg = accion + (d.label ? ' · ' + d.label : '');

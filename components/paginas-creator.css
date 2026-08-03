@@ -254,3 +254,28 @@
     outline: 2px solid var(--ubits-accent-brand);
     outline-offset: 2px;
 }
+
+/*
+ * T3 — página oculta (edición publicada).
+ * Opacidad baja + título tachado + badge «Oculta» con fa-eye-slash.
+ */
+.ubits-paginas-creator__item--hidden {
+    opacity: 0.55;
+}
+
+.ubits-paginas-creator__item--hidden .ubits-paginas-creator__label {
+    text-decoration: line-through;
+}
+
+.ubits-paginas-creator__hidden-badge {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--gap-xs);
+    color: var(--ubits-fg-1-medium);
+}
+
+.ubits-paginas-creator__hidden-badge i {
+    font-size: var(--font-size-sm);
+    line-height: 1;
+}

@@ -1,6 +1,6 @@
 # Decisiones Q — Edición estructural de contenidos (LMS Creator)
 
-**Estado:** T5 entregado; **T1 implementado** (2026-08-03); pendientes T3/T4 y T2.  
+**Estado:** T5 entregado; **T1 implementado** (2026-08-03); **T3+T4 implementados** (2026-08-03); pendiente T2.  
 **Autor / dueño:** Hector David Vega  
 **Audiencia:** Dave (UX), PM Learn, agentes Cursor  
 **Fecha de apertura:** 2026-07-30  
@@ -807,7 +807,8 @@ Cuando cerremos este MD, hay que actualizar también:
 | 2026-07-30 | Contextos hermanos actualizados con decisiones cerradas | P22 hecho |
 | 2026-07-31 | Copy + tamaño modal T5 propuestos y cerrados (`lg`; título `Antes de editar los recursos`; CTA `Sí, editar`) | §3.4 |
 | 2026-08-03 | **T1 implementado** (vanilla + React): sin botón Eliminar bajo recurso principal montado (crear + editar). Editar publicado: footer Descargar / Reemplazar. SCORM crear: solo Editar SCORM. | T1 |
+| 2026-08-03 | **T3+T4 implementados** (vanilla + React): menú ⋮ en edición con Ocultar/Mostrar; variante visual (opacidad + tachado + badge «Oculta»); toast si intenta ocultar la última visible. Crear sigue con Eliminar (sin Ocultar). | T3 / T4 |
 
 ---
 
-**Próximo paso:** implementar **T3 + T4** (ocultar/mostrar + ≥1 visible), luego **T2** (añadir página vía flujos inmersivos). Vanilla + React.
+**Próximo paso:** implementar **T2** (añadir página vía flujos inmersivos tipo Agregar video). Vanilla + React.

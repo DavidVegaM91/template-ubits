@@ -111,6 +111,40 @@
         return opts;
     }
 
+    function isPaginasCreatorItemHidden(item) {
+        if (!item) return false;
+        return (
+            item.classList.contains('ubits-paginas-creator__item--hidden') ||
+            item.getAttribute('data-paginas-hidden') === 'true'
+        );
+    }
+
+    /**
+     * Aplica / quita el estado visual «Oculta» (T3). No valida ≥1 visible — eso lo hace la página.
+     */
+    function setPaginasCreatorItemHidden(item, hidden) {
+        if (!item) return;
+        var labelWrap = item.querySelector('.ubits-paginas-creator__label-wrap');
+        var badge = item.querySelector('.ubits-paginas-creator__hidden-badge');
+        if (hidden) {
+            item.classList.add('ubits-paginas-creator__item--hidden');
+            item.setAttribute('data-paginas-hidden', 'true');
+            if (labelWrap && !badge) {
+                var span = document.createElement('span');
+                span.className = 'ubits-paginas-creator__hidden-badge';
+                span.setAttribute('aria-label', 'Oculta');
+                span.innerHTML =
+                    '<i class="far fa-eye-slash" aria-hidden="true"></i>' +
+                    '<span class="ubits-body-sm-regular">Oculta</span>';
+                labelWrap.appendChild(span);
+            }
+        } else {
+            item.classList.remove('ubits-paginas-creator__item--hidden');
+            item.removeAttribute('data-paginas-hidden');
+            if (badge && badge.parentNode) badge.parentNode.removeChild(badge);
+        }
+    }
+
     /** Ámbito de orden global: índice creator, índice de secciones, bloque sección o la lista sola. */
     function findPaginasNavigationScope(item) {
         if (!item) return null;
@@ -256,18 +290,28 @@
         var base = getPaginasCreatorMenuOptions();
         var scope = findPaginasNavigationScope(item);
         if (!scope) {
-            return base.filter(function (opt) {
+            base = base.filter(function (opt) {
                 var v = opt.value;
                 if (v === 'mover-arriba' || v === 'mover-abajo') return false;
                 return true;
             });
+        } else {
+            base = base.filter(function (opt) {
+                var v = opt.value;
+                if (v === 'mover-arriba') return canMovePaginasCreatorUp(item, scope);
+                if (v === 'mover-abajo') return canMovePaginasCreatorDown(item, scope);
+                return true;
+            });
         }
-        return base.filter(function (opt) {
-            var v = opt.value;
-            if (v === 'mover-arriba') return canMovePaginasCreatorUp(item, scope);
-            if (v === 'mover-abajo') return canMovePaginasCreatorDown(item, scope);
-            return true;
-        });
+        /* T3: en edición publicada, Ocultar / Mostrar según estado (sin Eliminar). */
+        if (global.CC_PUBLISHED_EDIT_MODE && item) {
+            if (isPaginasCreatorItemHidden(item)) {
+                base.push({ text: 'Mostrar', value: 'mostrar', leftIcon: 'eye' });
+            } else {
+                base.push({ text: 'Ocultar', value: 'ocultar', leftIcon: 'eye-slash' });
+            }
+        }
+        return base;
     }
 
     function ensureRootId(root) {
@@ -848,7 +892,7 @@
     }
 
     /**
-     * HTML de un ítem (lista). opts: { label, tipo, active, pageKey } — menú ⋮: tooltip «Opciones».
+     * HTML de un ítem (lista). opts: { label, tipo, active, pageKey, hidden } — menú ⋮: tooltip «Opciones».
      */
     function paginasCreatorItemHtml(opts) {
         opts = opts || {};
@@ -862,24 +906,36 @@
         var labelTrim = label.trim();
         var tipo = normalizeTipo(opts.tipo);
         var active = !!opts.active;
+        var hidden = !!opts.hidden;
         var pageKey = opts.pageKey != null ? String(opts.pageKey) : '';
         var dataKeyAttr = pageKey ? ' data-paginas-creator-key="' + escapeAttr(pageKey) + '"' : '';
-        var itemClass = 'ubits-paginas-creator__item' + (active ? ' is-active' : '');
+        var dataHiddenAttr = hidden ? ' data-paginas-hidden="true"' : '';
+        var itemClass =
+            'ubits-paginas-creator__item' +
+            (active ? ' is-active' : '') +
+            (hidden ? ' ubits-paginas-creator__item--hidden' : '');
         var rowAria =
             labelTrim.length > 0
                 ? 'Seleccionar página ' + labelTrim
                 : 'Seleccionar página (sin título)';
+        if (hidden) rowAria += ' (oculta)';
         var rowAttrs =
             ' tabindex="0" class="ubits-paginas-creator__row"' +
             (active ? ' aria-current="true"' : '') +
             ' aria-label="' +
             escapeAttr(rowAria) +
             '"';
+        var hiddenBadge = hidden
+            ? '<span class="ubits-paginas-creator__hidden-badge" aria-label="Oculta">' +
+              '<i class="far fa-eye-slash" aria-hidden="true"></i>' +
+              '<span class="ubits-body-sm-regular">Oculta</span></span>'
+            : '';
         return (
             '<div class="' +
             itemClass +
             '"' +
             dataKeyAttr +
+            dataHiddenAttr +
             ' role="listitem">' +
             '<div' +
             rowAttrs +
@@ -894,6 +950,7 @@
             '<span class="ubits-paginas-creator__label ubits-body-sm-semibold">' +
             escapeHtml(labelTrim) +
             '</span>' +
+            hiddenBadge +
             buildEditNameBtnHtml() +
             '</div>' +
             '</div>' +
@@ -911,6 +968,8 @@
     global.paginasCreatorItemHtml = paginasCreatorItemHtml;
     global.movePaginasCreatorItem = movePaginasCreatorItem;
     global.getPaginasCreatorMenuOptions = getPaginasCreatorMenuOptions;
+    global.isPaginasCreatorItemHidden = isPaginasCreatorItemHidden;
+    global.setPaginasCreatorItemHidden = setPaginasCreatorItemHidden;
     global.openPaginasCreatorMenu = openPaginasCreatorMenu;
     global.initPaginasCreatorMenus = initPaginasCreatorMenus;
     global.initPaginasCreator = initPaginasCreator;
