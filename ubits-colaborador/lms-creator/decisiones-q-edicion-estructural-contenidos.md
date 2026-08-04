@@ -1,6 +1,6 @@
 # Decisiones Q — Edición estructural de contenidos (LMS Creator)
 
-**Estado:** T5 entregado; **T1 implementado** (2026-08-03); **T3+T4 implementados** (2026-08-03); pendiente T2.  
+**Estado:** T5 entregado; **T1 implementado** (2026-08-03); **T3+T4 implementados** (2026-08-03); **T2 en curso** — modal de tipo + salto a flujos inmersivos (2026-08-03).  
 **Autor / dueño:** Hector David Vega  
 **Audiencia:** Dave (UX), PM Learn, agentes Cursor  
 **Fecha de apertura:** 2026-07-30  
@@ -808,7 +808,8 @@ Cuando cerremos este MD, hay que actualizar también:
 | 2026-07-31 | Copy + tamaño modal T5 propuestos y cerrados (`lg`; título `Antes de editar los recursos`; CTA `Sí, editar`) | §3.4 |
 | 2026-08-03 | **T1 implementado** (vanilla + React): sin botón Eliminar bajo recurso principal montado (crear + editar). Editar publicado: footer Descargar / Reemplazar. SCORM crear: solo Editar SCORM. | T1 |
 | 2026-08-03 | **T3+T4 implementados** (vanilla + React): menú ⋮ en edición con Ocultar/Mostrar; variante visual (opacidad + tachado + badge «Oculta»); toast si intenta ocultar la última visible. Crear sigue con Eliminar (sin Ocultar). | T3 / T4 |
+| 2026-08-03 | **T2 (fase 1):** modal «Añadir página» con 8 Resources cards → flujo inmersivo por tipo. React: video = Agregar video; resto = `/agregar-recurso/[tipo]` (stub confirmar). Vanilla: modal + video/scorm legacy + empty states. Botón visible en edición. Página nace al confirmar (P5/P6 en React). | T2 |
 
 ---
 
-**Próximo paso:** implementar **T2** (añadir página vía flujos inmersivos tipo Agregar video). Vanilla + React.
+**Próximo paso:** enriquecer UI inmersiva de cada tipo (PDF, texto, SCORM, eval, encuestas) más allá del stub; cerrar P8 (retirar selector del panel derecho como vía de alta). Vanilla + React.

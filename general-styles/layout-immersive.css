@@ -178,7 +178,8 @@ main.ubits-layout-immersive__main > .ubits-layout-immersive__stage {
     align-items: center;
     gap: var(--gap-md);
     flex-wrap: wrap;
-    justify-content: stretch;
+    /* Acciones a la derecha (Cancelar / Confirmar / Siguiente). El grow interno empuja si hay hint a la izq. */
+    justify-content: flex-end;
     padding-left: max(var(--padding-2xl), env(safe-area-inset-left, 0px));
     padding-right: max(var(--padding-2xl), env(safe-area-inset-right, 0px));
 }

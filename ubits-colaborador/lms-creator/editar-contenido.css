@@ -93,10 +93,9 @@
     opacity: 1;
 }
 
-/* Recursos — edición publicada: ocultar estructura */
+/* Recursos — edición publicada: ocultar estructura (excepto botón añadir página) */
 .page-editar-contenido .ubits-indice-creator__toggle-card,
 .page-editar-contenido .ubits-indice-creator__add-section,
-.page-editar-contenido .ubits-seccion-creator__add-wrap,
 .page-editar-contenido #ccCrearContenidoRecursosEmpty {
     display: none !important;
 }

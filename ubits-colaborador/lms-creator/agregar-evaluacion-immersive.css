@@ -1,0 +1,54 @@
+/* ========================================
+   LMS Creator — Flujo inmersivo «Agregar evaluación»
+   Cubre el shell de crear/editar sin navegar (conserva borrador).
+   ======================================== */
+
+#cc-agregar-eval-immersive {
+    position: fixed;
+    inset: 0;
+    z-index: 1300;
+    display: flex;
+    flex-direction: column;
+    background: var(--ubits-bg-1);
+    color: var(--ubits-fg-1-medium);
+}
+
+#cc-agregar-eval-immersive[hidden] {
+    display: none !important;
+}
+
+#cc-agregar-eval-immersive .ubits-layout-immersive {
+    height: 100%;
+    max-height: 100%;
+}
+
+/* Paridad React agregar-recurso-page.module.css .flow */
+#cc-agregar-eval-immersive .cc-agregar-eval-immersive__stage {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-lg);
+    width: 100%;
+    max-width: 803px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: var(--padding-xl) var(--padding-2xl);
+    min-height: 0;
+}
+
+#cc-agregar-eval-immersive .cc-agregar-eval-immersive__mount {
+    width: 100%;
+    min-width: 0;
+}
+
+@media (max-width: 639px) {
+    #cc-agregar-eval-immersive .cc-agregar-eval-immersive__stage {
+        padding: var(--padding-md);
+    }
+}
+
+body.cc-agregar-eval-open #crear-contenido-root,
+body.cc-agregar-eval-open #editar-contenido-root {
+    visibility: hidden;
+    pointer-events: none;
+}

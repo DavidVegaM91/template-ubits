@@ -1,0 +1,65 @@
+/* ========================================
+   LMS Creator — Modal «Agregar PDF» / «Agregar embebido»
+   Paridad video/SCORM: overlay por encima del shell inmersivo.
+   Embebido: mismo layout que tab «Enlace de video» (.cc-vmodal-enlace-*).
+   ======================================== */
+
+#cc-pdf-recurso-modal.ubits-modal-overlay,
+#cc-embebido-recurso-modal.ubits-modal-overlay {
+    z-index: 1200;
+}
+
+#cc-pdf-recurso-modal .ubits-modal-content,
+#cc-embebido-recurso-modal .ubits-modal-content {
+    z-index: 1201;
+}
+
+#cc-pdf-recurso-modal .cc-pdf-embebido-modal__mount,
+#cc-embebido-recurso-modal .cc-pdf-embebido-modal__mount {
+    width: 100%;
+    min-width: 0;
+}
+
+/* PDF: solo file upload */
+#cc-pdf-recurso-modal .cc-pdf-embebido-modal__mount--pdf {
+    display: block;
+}
+
+/* Embebido — paridad AgregarVideoImmersive .enlaceTitle / .enlaceEm */
+#cc-embebido-recurso-modal .cc-embebido-enlace-layout {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-lg);
+    flex: 0 1 auto;
+}
+
+#cc-embebido-recurso-modal .cc-embebido-enlace-centered {
+    width: 100%;
+    max-width: 560px;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--gap-lg);
+}
+
+#cc-embebido-recurso-modal .cc-embebido-enlace-title {
+    margin: 0;
+    text-align: center;
+    font-size: var(--font-size-lg, 18px);
+    line-height: 1.35;
+    font-weight: 400;
+    color: var(--ubits-fg-1-high);
+}
+
+#cc-embebido-recurso-modal .cc-embebido-enlace-title-em {
+    font-weight: 600;
+}
+
+#cc-embebido-recurso-modal .cc-embebido-enlace-input-wrap {
+    width: 100%;
+}
+
+#cc-embebido-recurso-modal .cc-embebido-enlace-input-wrap textarea.ubits-input {
+    min-height: 140px;
+}

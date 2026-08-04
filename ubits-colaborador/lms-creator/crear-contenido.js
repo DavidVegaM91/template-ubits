@@ -1443,7 +1443,6 @@
     }
 
     function recursosBuildIndiceMultiHtml(sectionsModel) {
-        var editMode = !!window.CC_PUBLISHED_EDIT_MODE;
         var idx = sectionsModel.map(function (s) {
             return {
                 sectionKey: s.key,
@@ -1460,7 +1459,7 @@
                 active: !!s.active,
                 hideTitle: false,
                 hasDescription: recursosSectionHasDescription(s.key),
-                includeAddButton: !editMode
+                includeAddButton: true
             };
         });
         return window.indiceCreatorHtml({
@@ -2254,7 +2253,7 @@
         var needError = shouldShowRecursosResourcesBlockError(pk);
         var hasError = !!mount.querySelector('.ubits-resources-block--default-error');
         if (needError && !hasError) {
-            renderRecursosResourcesBlock({ variant: 'default-error' });
+            renderRecursosResourcesBlock({ variant: 'default' });
         } else if (!needError && hasError) {
             renderRecursosResourcesBlock({ variant: 'default' });
         }
@@ -2485,7 +2484,7 @@
 
     function renderRecursosResourcesBlock(opts) {
         opts = opts || {};
-        var variant = opts.variant === 'default-error' ? 'default-error' : 'default';
+        var variant = 'default';
         var mount = document.getElementById('crear-contenido-recursos-resources-mount');
         if (!mount || typeof window.resourcesBlockHtml !== 'function') return;
         mount.innerHTML = window.resourcesBlockHtml({ variant: variant });
@@ -2652,9 +2651,18 @@
             return;
         }
         if (pt === 'pdf') {
-            mount.innerHTML = window.resourcesBlockHtml({ variant: 'pdf-empty' });
-            if (typeof window.initResourcesBlockFields === 'function') {
-                window.initResourcesBlockFields(mount);
+            if (typeof window.openPdfRecursoModal === 'function') {
+                window.openPdfRecursoModal({
+                    onReady: function (payload) {
+                        var file = payload && payload.file;
+                        if (!file || !mount) return;
+                        if (typeof finishCrearContenidoPdfRender === 'function') {
+                            finishCrearContenidoPdfRender(file, mount);
+                        }
+                    }
+                });
+            } else if (typeof window.showToast === 'function') {
+                window.showToast('error', 'No se pudo abrir el modal de PDF.');
             }
             return;
         }
@@ -2695,9 +2703,26 @@
             return;
         }
         if (pt === 'embebido') {
-            mount.innerHTML = window.resourcesBlockHtml({ variant: 'embed-empty' });
-            if (typeof window.initResourcesBlockFields === 'function') {
-                window.initResourcesBlockFields(mount);
+            if (typeof window.openEmbebidoRecursoModal === 'function') {
+                window.openEmbebidoRecursoModal({
+                    onReady: function (payload) {
+                        var val = payload && payload.value != null ? String(payload.value) : '';
+                        var parsed =
+                            payload && payload.html
+                                ? { html: payload.html }
+                                : parseCrearContenidoEmbedInput(val);
+                        if (!parsed || !parsed.html) {
+                            if (typeof window.showToast === 'function') {
+                                window.showToast('warning', 'Este no es un enlace embebible válido.');
+                            }
+                            return;
+                        }
+                        finishCrearContenidoEmbedRender(parsed.html, mount);
+                        syncRecursosEmbedPageIcon();
+                    }
+                });
+            } else if (typeof window.showToast === 'function') {
+                window.showToast('error', 'No se pudo abrir el modal de embebido.');
             }
             return;
         }
@@ -2733,7 +2758,13 @@
                     text: 'Añadir página',
                     icon: 'fa-plus',
                     onClick: function () {
-                        if (!clickRecursosSeccionAddPage() && typeof window.showToast === 'function') {
+                        if (typeof window.openAnadirPaginaTipoModal === 'function') {
+                            window.openAnadirPaginaTipoModal({
+                                onSelect: function (tipo) {
+                                    handleAnadirPaginaTipoSelect(tipo, {});
+                                }
+                            });
+                        } else if (!clickRecursosSeccionAddPage() && typeof window.showToast === 'function') {
                             window.showToast('info', 'No se pudo abrir el índice. Vuelve a abrir el paso Recursos.', {
                                 containerId: 'ubits-toast-container',
                                 duration: 2500
@@ -2746,23 +2777,27 @@
         refreshCrearContenidoPageSiguienteState();
     }
 
-    function onRecursosSecAddPage(ev) {
-        if (window.CC_PUBLISHED_EDIT_MODE) return;
-        var d = ev.detail || {};
-        var anchor = d.anchor;
+    /**
+     * Crea una página nueva con tipo y label dados, la activa, y opcionalmente monta el recurso.
+     * @param {{ sectionEl?: Element, tipo: string, label?: string, mountResource?: boolean }} opts
+     * @returns {{ pageKey: string, list: Element }|null}
+     */
+    function recursosCreatePageWithType(opts) {
+        opts = opts || {};
         var mount = getRecursosIndiceMount();
-        if (!anchor || !mount || !mount.contains(anchor)) return;
+        if (!mount || typeof window.paginasCreatorItemHtml !== 'function') return null;
 
-        var sec = anchor.closest('.ubits-seccion-creator__section');
-        var list = sec ? sec.querySelector('.ubits-paginas-creator') : null;
+        var sec = opts.sectionEl || mount.querySelector('.ubits-seccion-creator__section');
+        var list = sec ? sec.querySelector('.ubits-paginas-creator') : getRecursosPaginasList();
         if (!list || !mount.contains(list)) {
             list = getRecursosPaginasList();
         }
-        if (!list || typeof window.paginasCreatorItemHtml !== 'function') return;
+        if (!list) return null;
 
         recursosPageSeq += 1;
         var pageKey = 'cc-pg-' + recursosPageSeq;
-        var label = '';
+        var label = opts.label != null ? String(opts.label) : 'Título de la página';
+        var tipo = opts.tipo || 'blank-page';
 
         list.querySelectorAll('.ubits-paginas-creator__item.is-active').forEach(function (el) {
             el.classList.remove('is-active');
@@ -2774,7 +2809,7 @@
             'beforeend',
             window.paginasCreatorItemHtml({
                 label: label,
-                tipo: 'blank-page',
+                tipo: tipo,
                 active: true,
                 pageKey: pageKey
             })
@@ -2785,14 +2820,264 @@
             window.setPaginasCreatorActiveItem(newItem);
         }
 
+        CC_RECURSOS_CURRENT_PAGE_KEY = pageKey;
+
         var titInp = document.getElementById('crear-contenido-recursos-page-title');
-        if (titInp) titInp.value = '';
+        if (titInp) titInp.value = label;
+
         setRecursosEditorVisible(true);
-        renderRecursosResourcesBlock();
+
         if (typeof initTooltip === 'function') {
             initTooltip('#crear-contenido-recursos-indice-mount [data-tooltip]');
         }
+
+        return { pageKey: pageKey, list: list };
+    }
+
+    /**
+     * Maneja la selección de tipo del modal «Añadir página».
+     * La página NACE solo al confirmar el recurso (P5/P6). Cancelar modal = sin página vacía.
+     * @param {string} tipo
+     * @param {{ sectionEl?: Element }} ctx
+     */
+    function handleAnadirPaginaTipoSelect(tipo, ctx) {
+        ctx = ctx || {};
+        var sectionEl = ctx.sectionEl;
+        var rbMount = document.getElementById('crear-contenido-recursos-resources-mount');
+
+        function hideRecursosEmptyHost() {
+            var emptyHost = document.getElementById(CREAR_CONTENIDO_RECURSOS_EMPTY_HOST_ID);
+            if (emptyHost) emptyHost.style.display = 'none';
+        }
+
+        function createPageForTipo() {
+            return recursosCreatePageWithType({
+                sectionEl: sectionEl,
+                tipo: tipo,
+                label: 'Título de la página',
+                mountResource: false
+            });
+        }
+
+        function afterNewPageMounted(pageKey, iconTipo) {
+            hideRecursosEmptyHost();
+            var activeItem = document.querySelector(
+                '#crear-contenido-recursos-indice-mount .ubits-paginas-creator__item.is-active'
+            );
+            if (activeItem && typeof window.setPaginasCreatorItemTipo === 'function') {
+                window.setPaginasCreatorItemTipo(activeItem, iconTipo || tipo);
+            }
+            renderCrearContenidoComplementary();
+            refreshCrearContenidoPageSiguienteState();
+            if (typeof window.showToast === 'function') {
+                window.showToast('success', 'Página añadida.');
+            }
+            void pageKey;
+        }
+
+        if (tipo === 'video') {
+            if (typeof window.openVideoRecursoModal !== 'function') return;
+            var videoPageKey = null;
+            window.openVideoRecursoModal({
+                ui: 'legacy',
+                pageKey: null,
+                onVideoReady: function (html) {
+                    if (!videoPageKey) {
+                        var created = createPageForTipo();
+                        if (!created) return;
+                        videoPageKey = created.pageKey;
+                        afterNewPageMounted(videoPageKey, 'video');
+                    }
+                    if (!rbMount) return;
+                    beforeReplaceRecursosMountIfPdfShowing(rbMount);
+                    CC_RECURSOS_PAGE_STATE[videoPageKey] = { html: html, primaryType: 'video' };
+                    rbMount.innerHTML = html;
+                    renderCrearContenidoComplementary();
+                    refreshCrearContenidoPageSiguienteState();
+                }
+            });
+            return;
+        }
+
+        if (tipo === 'scorm') {
+            if (typeof window.openScormRecursoModal !== 'function') return;
+            var scormPageKey = null;
+            window.openScormRecursoModal({
+                pageKey: null,
+                onScormReady: function (html) {
+                    if (!scormPageKey) {
+                        var created = createPageForTipo();
+                        if (!created) return;
+                        scormPageKey = created.pageKey;
+                        afterNewPageMounted(scormPageKey, 'scorm');
+                    }
+                    if (!rbMount) return;
+                    beforeReplaceRecursosMountIfPdfShowing(rbMount);
+                    CC_RECURSOS_PAGE_STATE[scormPageKey] = { html: html, primaryType: 'scorm' };
+                    rbMount.innerHTML = html;
+                    renderCrearContenidoComplementary();
+                    refreshCrearContenidoPageSiguienteState();
+                }
+            });
+            return;
+        }
+
+        if (tipo === 'pdf') {
+            if (typeof window.openPdfRecursoModal !== 'function') {
+                if (typeof window.showToast === 'function') {
+                    window.showToast('error', 'No se pudo abrir el modal de PDF.');
+                }
+                return;
+            }
+            window.openPdfRecursoModal({
+                onReady: function (payload) {
+                    var file = payload && payload.file;
+                    if (!file) return;
+                    var created = createPageForTipo();
+                    if (!created || !rbMount) return;
+                    CC_RECURSOS_CURRENT_PAGE_KEY = created.pageKey;
+                    afterNewPageMounted(created.pageKey, 'pdf');
+                    finishCrearContenidoPdfRender(file, rbMount);
+                }
+            });
+            return;
+        }
+
+        if (tipo === 'embebido') {
+            if (typeof window.openEmbebidoRecursoModal !== 'function') {
+                if (typeof window.showToast === 'function') {
+                    window.showToast('error', 'No se pudo abrir el modal de embebido.');
+                }
+                return;
+            }
+            window.openEmbebidoRecursoModal({
+                onReady: function (payload) {
+                    var val = payload && payload.value != null ? String(payload.value) : '';
+                    var parsed =
+                        payload && payload.html
+                            ? { html: payload.html }
+                            : parseCrearContenidoEmbedInput(val);
+                    if (!parsed || !parsed.html) {
+                        if (typeof window.showToast === 'function') {
+                            window.showToast('warning', 'Este no es un enlace embebible válido.');
+                        }
+                        return;
+                    }
+                    var created = createPageForTipo();
+                    if (!created || !rbMount) return;
+                    CC_RECURSOS_CURRENT_PAGE_KEY = created.pageKey;
+                    afterNewPageMounted(created.pageKey, 'embebido');
+                    finishCrearContenidoEmbedRender(parsed.html, rbMount);
+                    syncRecursosEmbedPageIcon();
+                }
+            });
+            return;
+        }
+
+        if (tipo === 'evaluacion-final') {
+            /* Evaluación: flujo inmersivo fullscreen (paridad React agregar-recurso/evaluacion-final).
+               Cancelar = sin página. Confirmar (≥1 pregunta) = nace la página. */
+            if (typeof window.openAgregarEvaluacionImmersive !== 'function') {
+                if (typeof window.showToast === 'function') {
+                    window.showToast('error', 'No se pudo abrir el flujo de evaluación.');
+                }
+                return;
+            }
+            window.openAgregarEvaluacionImmersive({
+                onConfirm: function (result) {
+                    var draftKey =
+                        (result && result.draftPageKey) ||
+                        window.CC_EVAL_ADD_DRAFT_PAGE_KEY ||
+                        'cc-eval-add-draft';
+                    var createdEval = createPageForTipo();
+                    if (!createdEval) {
+                        if (typeof window.ccEvalClearPageState === 'function') {
+                            window.ccEvalClearPageState(draftKey);
+                        }
+                        return;
+                    }
+                    if (typeof window.ccEvalTransferPageState === 'function') {
+                        window.ccEvalTransferPageState(draftKey, createdEval.pageKey);
+                    }
+                    hideRecursosEmptyHost();
+                    if (rbMount && typeof window.rcMountEvalForm === 'function') {
+                        window.rcMountEvalForm(rbMount, { pageKey: createdEval.pageKey });
+                    }
+                    setRecursosPrimaryType(createdEval.pageKey, 'evaluacion-final');
+                    afterNewPageMounted(createdEval.pageKey, 'evaluacion-final');
+                }
+            });
+            return;
+        }
+
+        if (tipo === 'texto' || tipo === 'encuesta-libre' || tipo === 'encuesta') {
+            if (typeof window.showToast === 'function') {
+                window.showToast('info', 'Flujo de ' + tipo + ' próximamente.', {
+                    containerId: 'ubits-toast-container',
+                    duration: 2500
+                });
+            }
+            return;
+        }
+
         refreshCrearContenidoPageSiguienteState();
+    }
+
+    function onRecursosSecAddPage(ev) {
+        var d = ev.detail || {};
+        var anchor = d.anchor;
+        var mount = getRecursosIndiceMount();
+        if (!anchor || !mount || !mount.contains(anchor)) return;
+
+        var sec = anchor.closest('.ubits-seccion-creator__section');
+
+        if (typeof window.openAnadirPaginaTipoModal === 'function') {
+            window.openAnadirPaginaTipoModal({
+                onSelect: function (tipo) {
+                    handleAnadirPaginaTipoSelect(tipo, { sectionEl: sec });
+                }
+            });
+        } else {
+            var list = sec ? sec.querySelector('.ubits-paginas-creator') : null;
+            if (!list || !mount.contains(list)) {
+                list = getRecursosPaginasList();
+            }
+            if (!list || typeof window.paginasCreatorItemHtml !== 'function') return;
+
+            recursosPageSeq += 1;
+            var pageKey = 'cc-pg-' + recursosPageSeq;
+            var label = 'Título de la página';
+
+            list.querySelectorAll('.ubits-paginas-creator__item.is-active').forEach(function (el) {
+                el.classList.remove('is-active');
+                var row = el.querySelector('.ubits-paginas-creator__row');
+                if (row) row.removeAttribute('aria-current');
+            });
+
+            list.insertAdjacentHTML(
+                'beforeend',
+                window.paginasCreatorItemHtml({
+                    label: label,
+                    tipo: 'blank-page',
+                    active: true,
+                    pageKey: pageKey
+                })
+            );
+
+            var newItem = list.querySelector('.ubits-paginas-creator__item[data-paginas-creator-key="' + pageKey + '"]');
+            if (newItem && typeof window.setPaginasCreatorActiveItem === 'function') {
+                window.setPaginasCreatorActiveItem(newItem);
+            }
+
+            var titInp = document.getElementById('crear-contenido-recursos-page-title');
+            if (titInp) titInp.value = label;
+            setRecursosEditorVisible(true);
+            renderRecursosResourcesBlock();
+            if (typeof initTooltip === 'function') {
+                initTooltip('#crear-contenido-recursos-indice-mount [data-tooltip]');
+            }
+            refreshCrearContenidoPageSiguienteState();
+        }
     }
 
     function onRecursosPaginasActivate(ev) {
@@ -2968,10 +3253,8 @@
                     });
                 } else {
                     /* Fallback si el modal no está disponible */
-                    beforeReplaceRecursosMountIfPdfShowing(mount);
-                    mount.innerHTML = window.resourcesBlockHtml({ variant: 'video-empty' });
-                    if (typeof window.initResourcesBlockFields === 'function') {
-                        window.initResourcesBlockFields(mount);
+                    if (typeof window.showToast === 'function') {
+                        window.showToast('error', 'No se pudo abrir el flujo de video.');
                     }
                 }
                 return;
@@ -2979,47 +3262,57 @@
 
             // Encuesta de satisfacción: sin flujo aún (solo tarjeta visible en el selector).
 
-            // 1b. Tarjeta PDF → subida local + vista previa (sin IA ni modales)
+            // 1b. Tarjeta PDF → modal de subida (T2)
             var pdfCard = ev.target.closest('[data-resources-card-type="pdf"]');
             if (pdfCard && !pdfCard.disabled) {
-                beforeReplaceRecursosMountIfPdfShowing(mount);
-                mount.innerHTML = window.resourcesBlockHtml({ variant: 'pdf-empty' });
-                if (typeof window.initResourcesBlockFields === 'function') {
-                    window.initResourcesBlockFields(mount);
-                }
-                if (CC_RECURSOS_CURRENT_PAGE_KEY) {
-                    CC_RECURSOS_PAGE_STATE[String(CC_RECURSOS_CURRENT_PAGE_KEY)] = { html: mount.innerHTML };
-                }
-                var activePdfItem = document.querySelector(
-                    '#crear-contenido-recursos-indice-mount .ubits-paginas-creator__item.is-active'
-                );
-                if (activePdfItem) {
-                    if (typeof window.setPaginasCreatorItemTipo === 'function') {
-                        window.setPaginasCreatorItemTipo(activePdfItem, 'pdf');
-                    }
+                if (typeof window.openPdfRecursoModal === 'function') {
+                    window.openPdfRecursoModal({
+                        onReady: function (payload) {
+                            var file = payload && payload.file;
+                            if (!file) return;
+                            beforeReplaceRecursosMountIfPdfShowing(mount);
+                            if (typeof finishCrearContenidoPdfRender === 'function') {
+                                finishCrearContenidoPdfRender(file, mount);
+                            }
+                            var activePdfItem = document.querySelector(
+                                '#crear-contenido-recursos-indice-mount .ubits-paginas-creator__item.is-active'
+                            );
+                            if (activePdfItem && typeof window.setPaginasCreatorItemTipo === 'function') {
+                                window.setPaginasCreatorItemTipo(activePdfItem, 'pdf');
+                            }
+                        }
+                    });
+                } else if (typeof window.showToast === 'function') {
+                    window.showToast('error', 'No se pudo abrir el modal de PDF.');
                 }
                 return;
             }
 
-            // 1c. Tarjeta Embebido → variante embed-empty (enlace o código iframe)
+            // 1c. Tarjeta Embebido → modal (mismo patrón que Enlace de video)
             var embebidoCard = ev.target.closest('[data-resources-card-type="embebido"]');
             if (embebidoCard && !embebidoCard.disabled) {
-                beforeReplaceRecursosMountIfPdfShowing(mount);
-                mount.innerHTML = window.resourcesBlockHtml({ variant: 'embed-empty' });
-                if (typeof window.initResourcesBlockFields === 'function') {
-                    window.initResourcesBlockFields(mount);
+                if (typeof window.openEmbebidoRecursoModal === 'function') {
+                    window.openEmbebidoRecursoModal({
+                        onReady: function (payload) {
+                            var val = payload && payload.value != null ? String(payload.value) : '';
+                            var parsed =
+                                payload && payload.html
+                                    ? { html: payload.html }
+                                    : parseCrearContenidoEmbedInput(val);
+                            if (!parsed || !parsed.html) {
+                                if (typeof window.showToast === 'function') {
+                                    window.showToast('warning', 'Este no es un enlace embebible válido.');
+                                }
+                                return;
+                            }
+                            beforeReplaceRecursosMountIfPdfShowing(mount);
+                            finishCrearContenidoEmbedRender(parsed.html, mount);
+                            syncRecursosEmbedPageIcon();
+                        }
+                    });
+                } else if (typeof window.showToast === 'function') {
+                    window.showToast('error', 'No se pudo abrir el modal de embebido.');
                 }
-                if (CC_RECURSOS_CURRENT_PAGE_KEY) {
-                    if (typeof window.ccRecursosSetPageHtml === 'function') {
-                        window.ccRecursosSetPageHtml(CC_RECURSOS_CURRENT_PAGE_KEY, mount.innerHTML);
-                    } else {
-                        CC_RECURSOS_PAGE_STATE[String(CC_RECURSOS_CURRENT_PAGE_KEY)] = {
-                            html: mount.innerHTML,
-                            primaryType: 'embebido'
-                        };
-                    }
-                }
-                syncRecursosEmbedPageIcon();
                 return;
             }
 
@@ -3101,23 +3394,12 @@
                 return;
             }
 
-            // 4. Click en botón Cargar (video por enlace o embebido)
+            // 4. Click en botón Cargar (legacy video por enlace en panel — embebido ya va por modal)
             var cargarBtn = ev.target.closest('.ubits-resources-block__field-inline .ubits-button--primary');
             if (cargarBtn && !cargarBtn.disabled) {
                 var fieldInline = cargarBtn.closest('.ubits-resources-block__field-inline');
                 var embedSlot = fieldInline ? fieldInline.querySelector('[data-rb-slot="embed-url"]') : null;
                 if (embedSlot) {
-                    var embedVal = getRecursosBlockUrlInputValue(fieldInline, 'embed-url');
-                    var parsedEmbed = parseCrearContenidoEmbedInput(embedVal);
-                    if (parsedEmbed && parsedEmbed.html) {
-                        finishCrearContenidoEmbedRender(parsedEmbed.html, mount);
-                    } else if (embedVal) {
-                        beforeReplaceRecursosMountIfPdfShowing(mount);
-                        mount.innerHTML = window.resourcesBlockHtml({ variant: 'embed-error' });
-                        if (typeof window.initResourcesBlockFields === 'function') {
-                            window.initResourcesBlockFields(mount);
-                        }
-                    }
                     return;
                 }
 
@@ -3183,11 +3465,9 @@
                         renderCrearContenidoComplementary();
 
                     } else {
-                        // B. Enlace inválido -> variante error
-                        beforeReplaceRecursosMountIfPdfShowing(mount);
-                        mount.innerHTML = window.resourcesBlockHtml({ variant: 'video-error', value: val });
-                        if (typeof window.initResourcesBlockFields === 'function') {
-                            window.initResourcesBlockFields(mount);
+                        // B. Enlace inválido
+                        if (typeof window.showToast === 'function') {
+                            window.showToast('warning', 'Este no es un enlace válido');
                         }
                     }
                 }
@@ -3361,7 +3641,7 @@
             }
             syncRecursosRightTitleFromActive();
             if (!restoreRecursosPage(CC_RECURSOS_CURRENT_PAGE_KEY)) {
-                renderRecursosResourcesBlock({ variant: 'default-error' });
+                renderRecursosResourcesBlock({ variant: 'default' });
             }
             syncRecursosTitleValidationVisuals();
             if (showToast && typeof window.showToast === 'function') {

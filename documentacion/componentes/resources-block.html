@@ -110,7 +110,7 @@
                                     <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm" onclick="copyPrompt('rb-p1')"><i class="far fa-copy"></i><span>Copiar</span></button>
                                 </div>
                                 <div style="background: var(--ubits-bg-2); padding: 20px; border-radius: var(--border-radius-sm);">
-                                    <pre style="margin: 0; font-size: var(--font-size-sm); white-space: pre-wrap;"><code id="rb-p1" class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">En [pantalla] del LMS Creator, añade el bloque UBITS «Resources block» para el paso Recursos: primero el selector de tipos (variante default) y al elegir un tipo muestra la variante correspondiente (video-empty, pdf-empty, etc.). Importa dropdown-menu.js e input.js antes de tooltip.js, resources-card.js y resources-block.js; CSS: dropdown-menu, input, badge-tag, ubits-ia-appearance, tooltip, resources-card, resources-block y button. Tras asignar innerHTML con resourcesBlockHtml({ variant: '[variante]' }), llama initResourcesBlockFields(contenedor) para montar los Input UBITS (tamaño sm) y selects oficiales.</code></pre>
+                                    <pre style="margin: 0; font-size: var(--font-size-sm); white-space: pre-wrap;"><code id="rb-p1" class="ubits-body-sm-regular" style="color: var(--ubits-fg-1-medium);">En [pantalla] del LMS Creator, usa el bloque UBITS «Resources block» variante default (selector de tipos). El alta de embebido/PDF/video va por modales o flujos hermanos. En React también hay eval-editor y vistas *-rendered. Importa resources-card.js y resources-block.js; tras innerHTML con resourcesBlockHtml({ variant: 'default' }), llama initResourcesBlockFields(contenedor).</code></pre>
                                 </div>
                             </div>
                         </div>
@@ -135,21 +135,7 @@
     <script src="../../script.js"></script>
     <script>
         var RB_OPTION_LABELS = {
-            'default': 'Selector (7 tipos)',
-            'default-error': 'Selector · sin recurso (borde error)',
-            'video-empty': 'Video · enlace vacío',
-            'video-filled': 'Video · enlace cargado',
-            'video-error': 'Video · error de enlace',
-            'pdf-empty': 'PDF · vacío',
-            'pdf-error': 'PDF · error',
-            'mp4-empty': 'Video archivo · vacío',
-            'mp4-error': 'Video archivo · error',
-            'scorm-empty': 'SCORM · vacío',
-            'scorm-error': 'SCORM · error',
-            'embed-empty': 'Embebido · vacío',
-            'embed-filled': 'Embebido · relleno',
-            'embed-error': 'Embebido · error',
-            'embed-blocked': 'Embebido · no embebible'
+            'default': 'Selector (8 tipos)'
         };
 
         function rbVariantSelectOptions() {

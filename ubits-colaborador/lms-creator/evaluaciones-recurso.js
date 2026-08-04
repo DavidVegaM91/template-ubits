@@ -217,6 +217,14 @@
             return;
         }
         if (action === 'eliminar') {
+            /* Página de evaluación ya montada (crear/editar): no permitir 0 preguntas.
+             * El flujo inmersivo de alta en React sí permite vaciar y desactiva Confirmar. */
+            if (pageState.questions.length <= 1) {
+                if (typeof global.showToast === 'function') {
+                    global.showToast('error', 'Debe haber al menos una pregunta.');
+                }
+                return;
+            }
             pageState.questions.splice(iDel, 1);
             ensureQuestionErrors(pageState, pageState.questions.length + 1);
             if (Array.isArray(pageState.questionErrors)) pageState.questionErrors.splice(iDel, 1);
@@ -2510,8 +2518,12 @@
     // Registro global: qué pageKeys tienen recurso de evaluación activo
     if (!global._ccEvalPageKeys) global._ccEvalPageKeys = {};
 
-    function mountEvalIn(mountEl) {
-        var pageKey = getActivePageKeyFromCrearContenido();
+    function mountEvalIn(mountEl, opts) {
+        opts = opts || {};
+        var pageKey =
+            opts.pageKey != null && String(opts.pageKey).trim() !== ''
+                ? String(opts.pageKey).trim()
+                : getActivePageKeyFromCrearContenido();
         var pageState = ensurePageState(pageKey);
 
         // Marcar esta página como página de evaluación
@@ -2736,9 +2748,55 @@
     };
 
     // API pública
-    global.rcMountEvalForm = function (mountEl) {
+    global.rcMountEvalForm = function (mountEl, opts) {
         if (!mountEl) return;
-        mountEvalIn(mountEl);
+        mountEvalIn(mountEl, opts);
+    };
+
+    /** Cuenta preguntas montadas en un host (flujo inmersivo Añadir evaluación). */
+    global.ccEvalCountQuestions = function (mountEl) {
+        if (!mountEl) return 0;
+        var root = mountEl._ccEvalRootEl || mountEl.querySelector('[data-cc-eval-root]') || mountEl;
+        persistCurrentPage(root);
+        var pk = root._ccEvalCurrentPageKey || getActivePageKeyFromCrearContenido();
+        var ps = ensurePageState(pk);
+        return Array.isArray(ps.questions) ? ps.questions.length : 0;
+    };
+
+    /** Persiste el DOM al estado de la pageKey actual del mount. */
+    global.ccEvalPersistMount = function (mountEl) {
+        if (!mountEl) return null;
+        var root = mountEl._ccEvalRootEl || mountEl.querySelector('[data-cc-eval-root]') || mountEl;
+        persistCurrentPage(root);
+        return ensurePageState(root._ccEvalCurrentPageKey || getActivePageKeyFromCrearContenido());
+    };
+
+    /**
+     * Mueve estado de evaluación de fromKey → toKey (draft inmersivo → página real).
+     */
+    global.ccEvalTransferPageState = function (fromKey, toKey) {
+        var from = String(fromKey || '');
+        var to = String(toKey || '');
+        if (!from || !to || from === to) return ensurePageState(to);
+        var src = ensurePageState(from);
+        var dst = ensurePageState(to);
+        dst.config = Object.assign({}, src.config);
+        dst.questions = (src.questions || []).slice();
+        dst.activeQId = src.activeQId || 1;
+        if (src.errors) dst.errors = Object.assign({}, src.errors);
+        delete CC_EVAL_STATE[from];
+        if (global._ccEvalPageKeys) {
+            delete global._ccEvalPageKeys[from];
+            global._ccEvalPageKeys[to] = true;
+        }
+        return dst;
+    };
+
+    global.ccEvalClearPageState = function (pageKey) {
+        var k = String(pageKey || '');
+        if (!k) return;
+        delete CC_EVAL_STATE[k];
+        if (global._ccEvalPageKeys) delete global._ccEvalPageKeys[k];
     };
 })(typeof window !== 'undefined' ? window : this);
 
