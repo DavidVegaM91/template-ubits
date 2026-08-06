@@ -1,6 +1,6 @@
 # Decisiones Q — Edición estructural de contenidos (LMS Creator)
 
-**Estado:** T5 entregado; **T1 implementado** (2026-08-03); **T3+T4 implementados** (2026-08-03); **T2 en curso** — modal de tipo + salto a flujos inmersivos (2026-08-03).  
+**Estado:** T5 entregado; **T1 implementado** (2026-08-03); **T3+T4 implementados** (2026-08-03); **T2 en curso** — modal de tipo + salto a flujos inmersivos (2026-08-03); **T5b propuesto/cerrado** (2026-08-05) — card «Impacto en el progreso» en Ajustes.
 **Autor / dueño:** Hector David Vega  
 **Audiencia:** Dave (UX), PM Learn, agentes Cursor  
 **Fecha de apertura:** 2026-07-30  
@@ -41,6 +41,7 @@ Permitir a creadores **editar de verdad** la estructura del contenido (añadir p
 | **T3** | En edición: reemplazar **Eliminar página** por **Ocultar / Desocultar**; diseñar variante visual de **Páginas creator** | solo `editar-contenido` |
 | **T4** | Validación: no se pueden ocultar **todas** las páginas; siempre ≥ 1 página visible para el learner | solo `editar-contenido` |
 | **T5** | Modal de impacto al entrar a Recursos — **prioridad #1 del Q** (si no se entiende, fallamos) | solo `editar-contenido` |
+| **T5b** | Card + panel **Impacto en el progreso** en Ajustes (misma política que T5; preguarda para el modal) | solo `editar-contenido` |
 
 Todas apuntan al mismo objetivo: **edición estructural segura + cero páginas vacías**.
 
@@ -209,6 +210,19 @@ Descripción: `El progreso se vuelve a calcular. Quienes habían finalizado pued
 
 **Frecuencia (cerrada):** el modal sale **cada vez** que entran a Recursos. Si salen a Certificado, Portada/Información, Visibilidad, etc. y vuelven a Recursos → **vuelve a salir**.
 
+#### Extensión T5b (Dave, 2026-08-05) — misma política también desde Ajustes
+
+Además del modal al entrar a Recursos, en **Ajustes** (hub) se añade una **tercera card** para configurar la misma política **antes** de ir a Recursos. Ver **P23**.
+
+| Pieza | Decisión |
+|-------|----------|
+| Nombre card / panel | `Impacto en el progreso` |
+| Dónde | Solo `editar-contenido` (no en crear) |
+| Contenido del panel | **Igual que el cuerpo del modal T5**: intro + 2 selection cards + video + indicadores |
+| Sin en el panel | Checkbox · botones `Salir sin editar` / `Sí, editar` (eso sigue solo en el modal) |
+| Modal al entrar a Recursos | **Sigue saliendo cada vez**; solo **preselecciona** la última política guardada (Ajustes o modal) |
+| Fuente de verdad | Una sola: `proteger` \| `afectar` (misma persistencia P12) |
+
 ---
 
 ## 4. Invariantes de producto
@@ -227,7 +241,7 @@ Descripción: `El progreso se vuelve a calcular. Quienes habían finalizado pued
 
 | Área | Impacto si implementamos el paquete |
 |------|-------------------------------------|
-| Índice + «Añadir página» | Modal tipo → flujo hermano; **índice sin fila** hasta confirmar recurso. Si abandona el flujo → **no se crea** la página. |
+| Índice + «Añadir página» | Modal tipo → flujo hermano; **índice sin fila** hasta confirmar recurso. Si abandona el flujo → **no se crea** la página. **Excepción Video con IA:** si ya entró al editor y cierra → sí hay página con IA loader «Video en edición». |
 | Panel derecho Resources block (cuadrícula 8 tipos) | **Fuera** como vía de alta (P8). Panel derecho = recurso montado / preview. Selector de tipos solo en modal T2. |
 | Cancelar en formulario intermedio (PDF vacío, etc.) | **Obsoleto** con T2: no hay formularios intermedios en panel derecho que dejen página sin recurso. Abandonar inmersivo = no se crea página (P6). |
 | Eliminar recurso principal | Se quita (T1) |
@@ -242,6 +256,7 @@ Descripción: `El progreso se vuelve a calcular. Quienes habían finalizado pued
 | Área | Impacto |
 |------|---------|
 | Modal entrada Recursos | Sustituir por modal T5; sale **cada vez** que entran a Recursos (no sessionStorage de “solo 1 vez”) |
+| Ajustes (hub) | Tercera card **Impacto en el progreso** (T5b): misma política; preselecciona el modal |
 | Añadir página | Se habilita (hoy oculto) + flujo T2 |
 | Eliminar página | Se reemplaza por Ocultar/Desocultar (T3) |
 | Páginas creator | Nueva variante visual (oculta / visible) |
@@ -413,9 +428,22 @@ El nombre **no** se pide en el modal de tipo; se edita en el flujo / índice com
 
 - [x] **A.** Si abandona sin finalizar, la página **ni siquiera se crea** (como si no hubiera pulsado Añadir página).
 
+**Excepción — Video con IA (Dave, 2026-08-04):**
+
+Si el autor **ya entró al editor** de Video con IA y cierra sin exportar:
+
+- **Sí** nace / se conserva la página de video.
+- El panel de Recursos (y el learner) muestran un **IA loader**:
+  - Título: `Video en edición`
+  - Descripción: `Finaliza el video para visualizarlo acá.`
+- La sesión del editor se conserva para retomar (click en el placeholder).
+- Motivo: el proceso es largo; no queremos que pierda el avance. En producción la página de video exige un video real; en el prototipo el loader es el placeholder hasta el export.
+
+Detalle técnico (React): `Ubits-React/lib/video-ia-escenas/video-editing-placeholder.md`.
+
 **Notas:**
 
-> _
+> Excepción solo para **Video con IA** tras llegar al editor. PDF / SCORM / embebido / resto siguen P6 estricto (abandonar = no se crea).
 
 ---
 
@@ -705,29 +733,43 @@ Menú ⋮ en edición *(cerrado — Dave, 2026-07-30)*:
 
 ### P22 — ¿Cuándo actualizamos los contextos hermanos?
 
-**Qué pregunta:**  
-Cuando cerremos este MD, hay que actualizar también:
+| Opción | Descripción |
+|--------|-------------|
+| **A.** Antes de codear T5/T1/… | Menos drift docs ↔ código |
+| **B.** Al cerrar el Q completo | Más drift temporal |
 
-- `contexto-edicion-contenidos.md`  
-- `contexto-creacion-contenido.md`  
+**Cerrado (Dave, 2026-07-30):** **A** — contextos hermanos actualizados con las decisiones cerradas **antes** (o al arrancar) la implementación.
 
-(hoy dicen cosas viejas, tipo “no puedes agregar/eliminar páginas” y el modal chiquito).
+---
 
-**Opciones:**
+### P23 — Card «Impacto en el progreso» en Ajustes (T5b) (CERRADA)
 
-- **A.** Actualizar esos docs **ya**, antes de codear.  
-- **B.** Ir actualizando **trozo a trozo** cada vez que cerremos una tarea (T1…T5).  
-- **C.** Dejarlos para el **final** del Q, cuando todo esté implementado.
+**Pedido (PM / Dave, 2026-08-05):** además del modal al entrar a Recursos, dar acceso a la **misma configuración** desde Ajustes (tercera card junto a Visibilidad y Pesos). Si se configura ahí, queda **preguardada** la próxima vez que entren a Recursos.
 
-**No es código de producto** — solo documentación de contexto para no mentirle al siguiente agente/PM.
+| Decisión | Cierre |
+|----------|--------|
+| ¿El modal sigue saliendo siempre? | **Sí.** Ajustes no salta el modal; solo **preselecciona** la política. |
+| Nombre card / panel | **`Impacto en el progreso`** |
+| ¿Solo editar? | **Sí** — no en `crear-contenido` |
+| Contenido del panel | Cuerpo del modal T5 **completo**: intro + 2 opciones + **video** + indicadores |
+| Qué **no** lleva el panel | Checkbox · CTA `Salir sin editar` / `Sí, editar` |
+| Hash | `#ajustes-impacto` |
+| Summary de la card | Opción actual: `Proteger a quienes finalizaron` \| `Recalcular el progreso de todos` (default Proteger) |
+| Sync | Una sola fuente de verdad con el modal (P12). Cambio en Ajustes ↔ cambio en modal. |
+| Intro del hub Ajustes | Ampliar para mencionar también el impacto en el progreso |
 
-**Cerrado (Dave, 2026-07-30):**
+**Wireframe hub (editar):**
 
-- [x] **A.** Actualizar `contexto-edicion-contenidos.md` y `contexto-creacion-contenido.md` **antes** de codear (a partir de este MD de decisiones).
+```
+Ajustes
+Define la visibilidad del contenido, los pesos de evaluación
+y cómo se maneja el impacto en el progreso de los estudiantes.
 
-**Notas:**
+[ Visibilidad › ]     [ Pesos de evaluación › ]
+[ Impacto en el progreso ›  · Proteger a quienes finalizaron ]
+```
 
-> _
+**Panel:** mismo layout 50/50 (opciones | video) + indicadores abajo que el modal T5; header con Volver como Visibilidad/Pesos.
 
 ---
 
@@ -754,6 +796,7 @@ Cuando cerremos este MD, hay que actualizar también:
 - [x] Copy UI del modal T5 (título, intro, opciones, checkbox, labels, botones) — §3.4  
 - [x] Persistencia de la política (P12): última elección al reentrar; prod guarda; prototipo pierde al reload → Proteger  
 - [x] P12b: certificado se revoca / deja de mostrarse  
+- [x] **T5b / P23:** card Ajustes `Impacto en el progreso` (panel = cuerpo modal + video; modal sigue saliendo)
 - [ ] Ref Figma o wire del modal ampliado — **opcional**; se prototipa directo en código  
 - [x] Tamaño modal T5 = `lg`  
 - [x] Referente «como el de video» = flujo React **Agregar video** (`AgregarVideoImmersive` + `/agregar-video/*`)  
@@ -809,7 +852,9 @@ Cuando cerremos este MD, hay que actualizar también:
 | 2026-08-03 | **T1 implementado** (vanilla + React): sin botón Eliminar bajo recurso principal montado (crear + editar). Editar publicado: footer Descargar / Reemplazar. SCORM crear: solo Editar SCORM. | T1 |
 | 2026-08-03 | **T3+T4 implementados** (vanilla + React): menú ⋮ en edición con Ocultar/Mostrar; variante visual (opacidad + tachado + badge «Oculta»); toast si intenta ocultar la última visible. Crear sigue con Eliminar (sin Ocultar). | T3 / T4 |
 | 2026-08-03 | **T2 (fase 1):** modal «Añadir página» con 8 Resources cards → flujo inmersivo por tipo. React: video = Agregar video; resto = `/agregar-recurso/[tipo]` (stub confirmar). Vanilla: modal + video/scorm legacy + empty states. Botón visible en edición. Página nace al confirmar (P5/P6 en React). | T2 |
+| 2026-08-04 | **Excepción P6 — Video con IA:** si el autor llega al editor y cierra, nace/conserva página con IA loader «Video en edición» (sesión retocable). Resto de tipos sigue P6 estricto. | P6 excepción |
+| 2026-08-05 | **T5b / P23 cerrada:** tercera card en Ajustes `Impacto en el progreso` (solo editar). Panel = cuerpo del modal T5 (opciones + video + indicadores). Modal sigue saliendo cada vez; solo preselecciona. Hash `#ajustes-impacto`. | P23 / T5b |
 
 ---
 
-**Próximo paso:** enriquecer UI inmersiva de cada tipo (PDF, texto, SCORM, eval, encuestas) más allá del stub; cerrar P8 (retirar selector del panel derecho como vía de alta). Vanilla + React.
+**Próximo paso:** implementar **T5b** (card + panel Impacto en Ajustes, vanilla + React); enriquecer UI inmersiva de cada tipo (PDF, texto, SCORM, eval, encuestas) más allá del stub; cerrar P8 (retirar selector del panel derecho como vía de alta).

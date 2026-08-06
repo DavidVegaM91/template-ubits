@@ -4021,16 +4021,19 @@
     var HASH_PAGE_PORTADA = '#portada';
     var HASH_PAGE_RECURSOS = '#recursos';
     var HASH_PAGE_CERTIFICADO = '#certificado';
-    /** Hub Ajustes (paso 4). Paneles: #ajustes-visibilidad, #ajustes-pesos */
+    /** Hub Ajustes (paso 4). Paneles: #ajustes-visibilidad, #ajustes-pesos, #ajustes-navegacion, #ajustes-impacto (editar) */
     var HASH_PAGE_CONFIGURACION = '#ajustes';
     var HASH_PAGE_CONFIG_VISIBILIDAD = '#ajustes-visibilidad';
     var HASH_PAGE_CONFIG_PESOS = '#ajustes-pesos';
+    var HASH_PAGE_CONFIG_NAVEGACION = '#ajustes-navegacion';
+    var HASH_PAGE_CONFIG_IMPACTO = '#ajustes-impacto';
     /** Alias legacy del paso 4 / hub (incl. #configuracion*) */
     var HASH_PAGE_VISIBILIDAD = '#visibilidad';
     var HASH_PAGE_PUBLICACION = '#publicacion';
     var HASH_PAGE_CONFIG_LEGACY = '#configuracion';
     var HASH_PAGE_CONFIG_VISIBILIDAD_LEGACY = '#configuracion-visibilidad';
     var HASH_PAGE_CONFIG_PESOS_LEGACY = '#configuracion-pesos';
+    var HASH_PAGE_CONFIG_NAVEGACION_LEGACY = '#configuracion-navegacion';
     var HASH_PAGE_PORTADA_LEGACY = '#crear-contenido';
     var HASH_DRAWER_RECURSOS = '#crear-contenido-recursos';
     var HASH_DRAWER_RECURSOS_ALIAS = '#crear-contenido-step-recursos';
@@ -4046,9 +4049,12 @@
             h === HASH_PAGE_CONFIGURACION ||
             h === HASH_PAGE_CONFIG_VISIBILIDAD ||
             h === HASH_PAGE_CONFIG_PESOS ||
+            h === HASH_PAGE_CONFIG_NAVEGACION ||
+            h === HASH_PAGE_CONFIG_IMPACTO ||
             h === HASH_PAGE_CONFIG_LEGACY ||
             h === HASH_PAGE_CONFIG_VISIBILIDAD_LEGACY ||
             h === HASH_PAGE_CONFIG_PESOS_LEGACY ||
+            h === HASH_PAGE_CONFIG_NAVEGACION_LEGACY ||
             h === HASH_PAGE_VISIBILIDAD ||
             h === HASH_PAGE_PUBLICACION
         );
@@ -4060,6 +4066,8 @@
         }
         if (h === HASH_PAGE_CONFIG_VISIBILIDAD) return 'visibilidad';
         if (h === HASH_PAGE_CONFIG_PESOS) return 'pesos';
+        if (h === HASH_PAGE_CONFIG_NAVEGACION) return 'navegacion';
+        if (h === HASH_PAGE_CONFIG_IMPACTO) return 'impacto';
         if (isConfiguracionUrlHash(h)) return 'hub';
         return null;
     }

@@ -1,10 +1,19 @@
 /**
  * PaginasExpEstudio — fila learner basada en Paginas Creator (sin drag ni menú).
- * A la derecha: Feedback Locked | Progress | Check.
+ * A la derecha: Feedback Locked | Progress | Check (según estado).
  *
  * paginasExpEstudioHtml({ id, title, tipo, state, clickable, className })
- * state: 'bloqueada' | 'activa' | 'completada' | 'completada-activa'
- * completada-activa = ya completada y es la página actual (resalte activa + check)
+ *
+ * Estados (state):
+ * - bloqueada          → no se puede abrir; feedback locked
+ * - disponible         → libre: aún no visitada, se puede abrir; sin feedback
+ * - activa             → en curso (primera visita); feedback progress (cosito azul)
+ * - completada         → ya finalizada, no es la actual; feedback check
+ * - completada-activa  → ya finalizada y es la actual al revisitar; check + resalte
+ *
+ * Completar recurso: al salir de la página (Continuar / índice). Eval: solo con
+ * resultado aprobado. En libre, la visita actual cuenta para desbloquear Fin
+ * aunque visualmente siga en `activa`.
  */
 (function (global) {
   'use strict';
@@ -49,12 +58,14 @@
     if (s === 'completada-activa' || s === 'activa-completada') return 'completada-activa';
     if (s === 'activa' || s === 'active') return 'activa';
     if (s === 'completada' || s === 'completed') return 'completada';
+    if (s === 'disponible' || s === 'available') return 'disponible';
     return 'bloqueada';
   }
 
   function feedbackTypeForState(state) {
     if (state === 'completada' || state === 'completada-activa') return 'check';
     if (state === 'activa') return 'progress';
+    if (state === 'disponible') return null;
     return 'locked';
   }
 
@@ -82,7 +93,7 @@
     if (opts.className) itemCls.push(opts.className);
 
     var feedbackHtml =
-      typeof global.feedbackExpEstudioHtml === 'function'
+      feedbackTypeForState(state) && typeof global.feedbackExpEstudioHtml === 'function'
         ? global.feedbackExpEstudioHtml({
             type: feedbackTypeForState(state),
             className: 'ubits-paginas-exp__feedback'

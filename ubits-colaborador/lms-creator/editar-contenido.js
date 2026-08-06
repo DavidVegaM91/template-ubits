@@ -267,7 +267,10 @@
         applyEditSection(sectionId);
     }
 
-    function buildRecursosImpactoBodyHtml(policy) {
+    function buildRecursosImpactoBodyHtml(policy, options) {
+        options = options || {};
+        var radioName = options.radioName || 'ec-recursos-impacto-policy';
+        var disabled = !!options.disabled;
         var stats = RECURSOS_IMPACTO_STATS;
         var videoHtml =
             typeof window.videoPlayerHtml === 'function'
@@ -285,10 +288,13 @@
                 '<label class="ubits-selection-card ubits-radio ubits-radio--md' +
                 (checked ? ' is-selected' : '') +
                 '">' +
-                '<input type="radio" class="ubits-radio__input" name="ec-recursos-impacto-policy" value="' +
+                '<input type="radio" class="ubits-radio__input" name="' +
+                radioName +
+                '" value="' +
                 value +
                 '"' +
                 (checked ? ' checked' : '') +
+                (disabled ? ' disabled' : '') +
                 ' />' +
                 '<span class="ubits-radio__circle"></span>' +
                 '<div class="ubits-selection-card__body">' +
@@ -362,8 +368,60 @@
         );
     }
 
+    function selectedImpactoPolicy(root, radioName) {
+        var checked = root.querySelector('input[name="' + radioName + '"]:checked');
+        return checked && checked.value === 'afectar' ? 'afectar' : 'proteger';
+    }
+
+    function syncImpactoPolicyUi(root, radioName) {
+        var isAfectar = selectedImpactoPolicy(root, radioName) === 'afectar';
+        root.querySelectorAll('.ec-recursos-impacto__policies .ubits-selection-card').forEach(function (card) {
+            var radio = card.querySelector('input[type="radio"]');
+            card.classList.toggle('is-selected', !!(radio && radio.checked));
+        });
+        var finalizaronStat = root.querySelector('.ec-recursos-impacto__stat--finalizaron');
+        var statsWrap = root.querySelector('.ec-recursos-impacto__stats');
+        if (finalizaronStat) finalizaronStat.hidden = !isAfectar;
+        if (statsWrap) statsWrap.classList.toggle('ec-recursos-impacto__stats--afectar', isAfectar);
+    }
+
+    function wireImpactoPolicyControls(root, radioName, onChange) {
+        root.querySelectorAll('input[name="' + radioName + '"]').forEach(function (inp) {
+            inp.addEventListener('change', function () {
+                syncImpactoPolicyUi(root, radioName);
+                if (typeof onChange === 'function') {
+                    onChange(selectedImpactoPolicy(root, radioName));
+                }
+            });
+        });
+        syncImpactoPolicyUi(root, radioName);
+    }
+
+    function impactoPolicySummary() {
+        return getSavedImpactoPolicy() === 'afectar'
+            ? 'Recalcular el progreso de todos'
+            : 'Proteger a quienes finalizaron';
+    }
+
+    function renderImpactoSettingsPanel(mount, readonly) {
+        if (!mount) return;
+        var radioName = 'ec-ajustes-impacto-policy';
+        mount.innerHTML = buildRecursosImpactoBodyHtml(getSavedImpactoPolicy(), {
+            radioName: radioName,
+            disabled: !!readonly
+        });
+        wireImpactoPolicyControls(mount, radioName, function (policy) {
+            if (readonly) return;
+            saveImpactoPolicy(policy);
+            if (typeof window.refreshCrearContenidoConfigHub === 'function') {
+                window.refreshCrearContenidoConfigHub();
+            }
+        });
+    }
+
     function openRecursosWarningModal(dismissTo) {
         var OVERLAY_ID = 'ec-recursos-warn-modal';
+        var radioName = 'ec-recursos-impacto-policy';
         var sectionBeforePrompt =
             dismissTo ||
             editState.previousSectionBeforeRecursos ||
@@ -411,8 +469,7 @@
         }
 
         function selectedPolicy() {
-            var checked = overlay.querySelector('input[name="ec-recursos-impacto-policy"]:checked');
-            return checked && checked.value === 'afectar' ? 'afectar' : 'proteger';
+            return selectedImpactoPolicy(overlay, radioName);
         }
 
         function syncPrimaryEnabled() {
@@ -446,19 +503,7 @@
         }
         syncPrimaryEnabled();
 
-        overlay.querySelectorAll('input[name="ec-recursos-impacto-policy"]').forEach(function (inp) {
-            inp.addEventListener('change', function () {
-                overlay.querySelectorAll('.ec-recursos-impacto__policies .ubits-selection-card').forEach(function (card) {
-                    var radio = card.querySelector('input[type="radio"]');
-                    card.classList.toggle('is-selected', !!(radio && radio.checked));
-                });
-                var isAfectar = selectedPolicy() === 'afectar';
-                var finalizaronStat = overlay.querySelector('.ec-recursos-impacto__stat--finalizaron');
-                var statsWrap = overlay.querySelector('.ec-recursos-impacto__stats');
-                if (finalizaronStat) finalizaronStat.hidden = !isAfectar;
-                if (statsWrap) statsWrap.classList.toggle('ec-recursos-impacto__stats--afectar', isAfectar);
-            });
-        });
+        wireImpactoPolicyControls(overlay, radioName);
 
         if (primaryBtn) {
             primaryBtn.addEventListener('click', function (ev) {
@@ -546,6 +591,7 @@
             h === 'ajustes' ||
             h === 'ajustes-visibilidad' ||
             h === 'ajustes-pesos' ||
+            h === 'ajustes-impacto' ||
             h === 'configuracion' ||
             h === 'configuracion-visibilidad' ||
             h === 'configuracion-pesos' ||
@@ -557,6 +603,9 @@
         if (h === 'resultados' || h.indexOf('resultados-') === 0) return 'resultados';
         return 'resultados';
     }
+
+    window.renderEditarContenidoImpactoSettings = renderImpactoSettingsPanel;
+    window.getEditarContenidoImpactoSummary = impactoPolicySummary;
 
     function initEditarContenidoPage() {
         window.CC_PUBLISHED_EDIT_MODE = true;

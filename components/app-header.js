@@ -134,8 +134,14 @@
   }
 
   function ensureAsset(tag, attr, hrefOrSrc, cb) {
-    var sel = tag + '[' + attr + '*="' + hrefOrSrc.split('/').pop() + '"]';
-    if (document.querySelector(sel)) {
+    var file = hrefOrSrc.split('/').pop().split('?')[0];
+    /* Match solo el archivo exacto (…/button.css), no substrings (ia-button.css). */
+    var re = new RegExp('(?:^|/)' + file.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '(?:\\?|$)');
+    var already = Array.prototype.some.call(document.querySelectorAll(tag + '[' + attr + ']'), function (el) {
+      var v = el.getAttribute(attr) || '';
+      return v === hrefOrSrc || re.test(v);
+    });
+    if (already) {
       if (cb) cb();
       return;
     }

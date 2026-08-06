@@ -27,6 +27,10 @@
   background: var(--ubits-bg-1);
 }
 
+.ubits-paginas-exp__item.is-disponible:hover {
+  background: var(--ubits-bg-2);
+}
+
 .ubits-paginas-exp__row {
   position: relative;
   flex: 1 1 auto;

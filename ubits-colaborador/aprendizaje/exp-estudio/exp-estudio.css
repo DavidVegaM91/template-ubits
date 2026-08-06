@@ -54,9 +54,10 @@ body.page-exp-estudio .exp-estudio-col {
 }
 
 body.page-exp-estudio .exp-estudio-col--aside {
-  position: sticky;
-  top: calc(40px + var(--gap-lg));
-  align-self: start;
+  /* Stretch: CB tan alto como la izquierda para que sticky se fije al scrollear.
+     Sticky vive en .exp-estudio-aside-stack (hijo). */
+  position: static;
+  align-self: stretch;
   width: 100%;
   justify-self: stretch;
 }
@@ -64,6 +65,7 @@ body.page-exp-estudio .exp-estudio-col--aside {
 @media (max-width: 1023px) {
   body.page-exp-estudio .exp-estudio-col--aside {
     position: static;
+    align-self: start;
   }
 }
 
@@ -86,6 +88,8 @@ body.page-exp-estudio .exp-estudio-stage--portada .exp-estudio-hero {
 body.page-exp-estudio .exp-estudio-stage--portada > #exp-estudio-aside {
   grid-area: aside;
   min-width: 0;
+  position: static;
+  align-self: stretch;
 }
 
 /* Stack izquierda portada: hero ↔ fichas y entre fichas = 20px (--gap-xl) */
@@ -480,14 +484,76 @@ body.page-exp-estudio .exp-estudio-eval__result-line--strong {
   font-weight: 600;
 }
 
-/* Aside stack: TituloSpecsCta/Progreso ↔ índice = 20px (--gap-xl) */
+/*
+ * Aside stack — sticky sidebar + índice con scroll (paridad crear-contenido recursos).
+ * Sticky en el stack (hijo). Outer stretch = CB alto. max-height (no height) evita hueco.
+ */
 body.page-exp-estudio .exp-estudio-aside-stack {
   display: flex;
   flex-direction: column;
   gap: var(--gap-xl);
   width: 100%;
   min-width: 0;
+  min-height: 0;
   box-sizing: border-box;
+  position: sticky;
+  top: calc(var(--space-14, 56px) + var(--gap-lg));
+  /* Llena hasta el borde inferior del scrollport (= izquierda cuando es larga) */
+  height: calc(
+    var(--ee-main-h, 100dvh) - var(--space-14, 56px) - var(--gap-lg)
+  );
+  max-height: calc(
+    var(--ee-main-h, 100dvh) - var(--space-14, 56px) - var(--gap-lg)
+  );
+  overflow: hidden;
+}
+
+body.page-exp-estudio .exp-estudio-aside-stack > :not(#exp-estudio-indice-mount) {
+  flex-shrink: 0;
+}
+
+body.page-exp-estudio #exp-estudio-indice-mount {
+  flex: 1 1 auto;
+  min-height: 0;
+  min-width: 0;
+  height: auto;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: var(--ubits-border-1) transparent;
+}
+
+body.page-exp-estudio #exp-estudio-indice-mount::-webkit-scrollbar {
+  width: 8px;
+}
+
+body.page-exp-estudio #exp-estudio-indice-mount::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+body.page-exp-estudio #exp-estudio-indice-mount::-webkit-scrollbar-thumb {
+  background: var(--ubits-border-1);
+  border-radius: var(--border-radius-full);
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+
+body.page-exp-estudio #exp-estudio-indice-mount::-webkit-scrollbar-thumb:hover {
+  background: var(--ubits-fg-1-low);
+  background-clip: content-box;
+}
+
+@media (max-width: 1023px) {
+  body.page-exp-estudio .exp-estudio-aside-stack {
+    position: static;
+    height: auto;
+    max-height: none;
+    overflow: visible;
+  }
+
+  body.page-exp-estudio #exp-estudio-indice-mount {
+    overflow: visible;
+  }
 }
 
 /* Competencia (UBITS): chip con borde + avatar 28px */

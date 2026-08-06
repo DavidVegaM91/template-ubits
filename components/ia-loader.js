@@ -210,11 +210,15 @@ function initIaLoaderParticles(loaderOrRoot) {
                 : Math.min(state.W, state.H);
         for (i = 0; i < cols; i++) {
             for (j = 0; j < rows; j++) {
+                /* x/y = ox/oy desde el inicio: si nacen en 0,0 el primer frame
+                   deja la malla colapsada en la esquina. */
+                var ox = cols > 1 ? (i / (cols - 1)) * state.W : state.W * 0.5;
+                var oy = rows > 1 ? (j / (rows - 1)) * state.H : state.H * 0.5;
                 list.push({
-                    ox: cols > 1 ? (i / (cols - 1)) * state.W : state.W * 0.5,
-                    oy: rows > 1 ? (j / (rows - 1)) * state.H : state.H * 0.5,
-                    x: 0,
-                    y: 0,
+                    ox: ox,
+                    oy: oy,
+                    x: ox,
+                    y: oy,
                     vx: 0,
                     vy: 0
                 });

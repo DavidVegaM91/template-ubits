@@ -1,14 +1,20 @@
 /**
- * Paso Ajustes — hub Visibilidad + Pesos de evaluación (crear / editar contenido).
+ * Paso Ajustes — hub Visibilidad + Pesos + Tipo de navegación + Impacto (solo editar).
  * Depende de: createInput (opcional), empty-state, toast.
  */
 (function (global) {
     'use strict';
 
-    var PANEL = 'hub'; // hub | visibilidad | pesos
+    var PANEL = 'hub'; // hub | visibilidad | pesos | navegacion | impacto
     var PESOS = {}; // pageKey -> number
+    var TIPO_NAVEGACION = 'lineal'; // lineal | libre
     var READONLY = false;
     var wired = false;
+
+    var TIPO_NAVEGACION_LABEL = {
+        lineal: 'Lineal',
+        libre: 'Libre'
+    };
 
     function redistributeEqual(ids) {
         var n = ids.length;
@@ -156,6 +162,8 @@
     function hashForConfigPanel(panel) {
         if (panel === 'visibilidad') return '#ajustes-visibilidad';
         if (panel === 'pesos') return '#ajustes-pesos';
+        if (panel === 'navegacion') return '#ajustes-navegacion';
+        if (panel === 'impacto') return '#ajustes-impacto';
         return '#ajustes';
     }
 
@@ -163,6 +171,8 @@
         var h = String(hash || '').replace(/^#/, '');
         if (h === 'ajustes-visibilidad' || h === 'configuracion-visibilidad') return 'visibilidad';
         if (h === 'ajustes-pesos' || h === 'configuracion-pesos') return 'pesos';
+        if (h === 'ajustes-navegacion' || h === 'configuracion-navegacion') return 'navegacion';
+        if (h === 'ajustes-impacto') return 'impacto';
         if (
             h === 'ajustes' ||
             h === 'configuracion' ||
@@ -181,23 +191,50 @@
             h === 'publicacion' ||
             h === 'configuracion' ||
             h === 'configuracion-visibilidad' ||
-            h === 'configuracion-pesos'
+            h === 'configuracion-pesos' ||
+            h === 'configuracion-navegacion'
         );
+    }
+
+    function syncNavegacionRadios() {
+        document
+            .querySelectorAll('input[name="crear-contenido-tipo-navegacion"]')
+            .forEach(function (input) {
+                input.checked = input.value === TIPO_NAVEGACION;
+                input.disabled = READONLY;
+            });
     }
 
     function setPanel(next, opts) {
         opts = opts || {};
-        PANEL = next;
         var hub = document.getElementById('cc-config-hub');
         var pVis = document.getElementById('cc-config-panel-visibilidad');
         var pPesos = document.getElementById('cc-config-panel-pesos');
+        var pNav = document.getElementById('cc-config-panel-navegacion');
+        var pImpacto = document.getElementById('cc-config-panel-impacto');
         var title = document.getElementById('cc-config-step-title');
+        if (next === 'impacto' && !pImpacto) next = 'hub';
+        if (next === 'navegacion' && !pNav) next = 'hub';
+        PANEL = next;
         if (hub) hub.hidden = next !== 'hub';
         if (pVis) pVis.hidden = next !== 'visibilidad';
         if (pPesos) pPesos.hidden = next !== 'pesos';
+        if (pNav) pNav.hidden = next !== 'navegacion';
+        if (pImpacto) pImpacto.hidden = next !== 'impacto';
         if (title) title.hidden = next !== 'hub';
         if (next === 'hub') refreshHubCards();
         if (next === 'pesos') renderPesosPanel();
+        if (next === 'navegacion') syncNavegacionRadios();
+        if (
+            next === 'impacto' &&
+            pImpacto &&
+            typeof global.renderEditarContenidoImpactoSettings === 'function'
+        ) {
+            global.renderEditarContenidoImpactoSettings(
+                document.getElementById('cc-config-impacto-mount'),
+                READONLY
+            );
+        }
         if (!opts.skipUrl && typeof history.replaceState === 'function') {
             history.replaceState(null, '', location.pathname + location.search + hashForConfigPanel(next));
         }
@@ -213,8 +250,14 @@
         var visDesc = document.getElementById('cc-config-card-visibilidad-desc');
         var pesosDesc = document.getElementById('cc-config-card-pesos-desc');
         var pesosCard = document.getElementById('cc-config-card-pesos');
+        var navDesc = document.getElementById('cc-config-card-navegacion-desc');
+        var impactoDesc = document.getElementById('cc-config-card-impacto-desc');
         if (visDesc) visDesc.textContent = getVisibilidadSummary();
         if (pesosDesc) pesosDesc.textContent = formatPesosSummary(items);
+        if (navDesc) navDesc.textContent = TIPO_NAVEGACION_LABEL[TIPO_NAVEGACION] || 'Lineal';
+        if (impactoDesc && typeof global.getEditarContenidoImpactoSummary === 'function') {
+            impactoDesc.textContent = global.getEditarContenidoImpactoSummary();
+        }
         if (pesosCard) {
             var ids = items.map(function (i) {
                 return i.id;
@@ -351,8 +394,12 @@
 
         var cardVis = document.getElementById('cc-config-card-visibilidad');
         var cardPesos = document.getElementById('cc-config-card-pesos');
+        var cardNav = document.getElementById('cc-config-card-navegacion');
+        var cardImpacto = document.getElementById('cc-config-card-impacto');
         var backVis = document.getElementById('cc-config-back-visibilidad');
         var backPesos = document.getElementById('cc-config-back-pesos');
+        var backNav = document.getElementById('cc-config-back-navegacion');
+        var backImpacto = document.getElementById('cc-config-back-impacto');
 
         if (cardVis) {
             cardVis.addEventListener('click', function () {
@@ -376,8 +423,32 @@
                 }
             });
         }
+        if (cardNav) {
+            cardNav.addEventListener('click', function () {
+                setPanel('navegacion');
+            });
+            cardNav.addEventListener('keydown', function (e) {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    setPanel('navegacion');
+                }
+            });
+        }
+        if (cardImpacto) {
+            cardImpacto.addEventListener('click', function () {
+                setPanel('impacto');
+            });
+            cardImpacto.addEventListener('keydown', function (e) {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    setPanel('impacto');
+                }
+            });
+        }
         if (backVis) backVis.addEventListener('click', function () { setPanel('hub'); });
         if (backPesos) backPesos.addEventListener('click', function () { setPanel('hub'); });
+        if (backNav) backNav.addEventListener('click', function () { setPanel('hub'); });
+        if (backImpacto) backImpacto.addEventListener('click', function () { setPanel('hub'); });
 
         document.addEventListener('change', function (e) {
             var t = e.target;
@@ -388,13 +459,23 @@
             ) {
                 if (PANEL === 'hub') refreshHubCards();
             }
+            if (t.name === 'crear-contenido-tipo-navegacion') {
+                if (t.value === 'lineal' || t.value === 'libre') {
+                    TIPO_NAVEGACION = t.value;
+                    if (PANEL === 'hub') refreshHubCards();
+                }
+            }
         });
     }
 
     function initConfiguracionHub(options) {
         options = options || {};
         READONLY = !!options.readonly;
+        if (options.tipoNavegacion === 'lineal' || options.tipoNavegacion === 'libre') {
+            TIPO_NAVEGACION = options.tipoNavegacion;
+        }
         wireOnce();
+        syncNavegacionRadios();
         var panel =
             options.panel != null
                 ? options.panel
@@ -443,6 +524,18 @@
         return false;
     }
 
+    function getTipoNavegacion() {
+        return TIPO_NAVEGACION === 'libre' ? 'libre' : 'lineal';
+    }
+
+    function setTipoNavegacion(value) {
+        if (value === 'lineal' || value === 'libre') {
+            TIPO_NAVEGACION = value;
+            syncNavegacionRadios();
+            if (PANEL === 'hub') refreshHubCards();
+        }
+    }
+
     global.initCrearContenidoConfiguracionHub = initConfiguracionHub;
     global.showCrearContenidoConfiguracionHub = showConfiguracionHub;
     global.getCrearContenidoEvalPesos = getEvalPesosMap;
@@ -453,4 +546,6 @@
     global.panelFromCrearContenidoConfigHash = panelFromConfigHash;
     global.isLegacyCrearContenidoConfigHash = isLegacyConfigHash;
     global.setCrearContenidoConfigPanel = setPanel;
+    global.getCrearContenidoTipoNavegacion = getTipoNavegacion;
+    global.setCrearContenidoTipoNavegacion = setTipoNavegacion;
 })(typeof window !== 'undefined' ? window : this);

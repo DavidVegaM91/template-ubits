@@ -319,3 +319,21 @@
         margin-left: calc(var(--size-3xl, 32px) + var(--gap-md));
     }
 }
+
+/* Tipo de navegación */
+.cc-config-navegacion-body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-lg);
+    width: 100%;
+    min-width: 0;
+}
+
+.cc-config-navegacion-intro {
+    margin: 0;
+    color: var(--ubits-fg-1-medium);
+}
+
+.cc-config-navegacion-cards {
+    width: 100%;
+}

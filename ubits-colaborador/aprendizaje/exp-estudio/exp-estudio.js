@@ -134,6 +134,49 @@
     }
   }
 
+  /** Demo Libre: f002 (Prevención del acoso). Override: ?nav=libre|lineal */
+  var EXP_ESTUDIO_NAV_LIBRE_CONTENT_ID = 'f002';
+
+  function getQueryNav() {
+    try {
+      var p = new URLSearchParams(global.location.search);
+      var v = String(p.get('nav') || '').trim().toLowerCase();
+      if (v === 'libre' || v === 'lineal') return v;
+    } catch (e) { /* ignore */ }
+    return null;
+  }
+
+  function isNavLibre() {
+    var q = getQueryNav();
+    if (q) return q === 'libre';
+    return getQueryId() === EXP_ESTUDIO_NAV_LIBRE_CONTENT_ID;
+  }
+
+  function allConsumablesDone() {
+    return consumibles().every(function (pid) {
+      if (session.completedPageIds[pid]) return true;
+      /* Libre: recurso actual en curso cuenta para desbloquear Fin. */
+      if (
+        isNavLibre() &&
+        session.view === 'recursos' &&
+        pid === session.currentPageId
+      ) {
+        var cur = getPage(session.currentPageId);
+        if (cur && cur.tipo !== 'evaluacion' && cur.tipo !== 'fin') return true;
+      }
+      return false;
+    });
+  }
+
+  function markLibreLeaveIfNeeded(leavingId) {
+    if (!leavingId || !isNavLibre()) return;
+    if (session.view !== 'recursos') return;
+    var leaving = getPage(leavingId);
+    if (!leaving || leaving.tipo === 'evaluacion' || leaving.tipo === 'fin') return;
+    if (consumibles().indexOf(leavingId) < 0) return;
+    session.completedPageIds[leavingId] = true;
+  }
+
   function findContentById(id) {
     var lists = [];
     if (global.BDS_CONTENIDOS_UBITS && global.BDS_CONTENIDOS_UBITS.contents) {
@@ -413,43 +456,55 @@
 
   function pageState(pageId) {
     var fin = finPageId();
-    var isCompleted = !!session.completedPageIds[pageId];
-    if (pageId === fin && (session.view === 'cierre' || session.completedPageIds[fin])) {
-      isCompleted = true;
-    }
-    var isCurrent =
-      (session.view === 'recursos' && session.currentPageId === pageId) ||
-      (session.view === 'cierre' && pageId === fin) ||
-      (session.view === 'portada' &&
-        session.portadaMode === 'en-progreso' &&
-        pageId === session.lastPageId);
+    var page = getPage(pageId);
+    var isFin = pageId === fin || (page && page.tipo === 'fin');
+    var isCompleted =
+      !!session.completedPageIds[pageId] ||
+      (isFin && (session.view === 'cierre' || session.portadaMode === 'completado'));
+    var isCurrentResource =
+      session.view === 'recursos' && session.currentPageId === pageId;
+    var allDone = allConsumablesDone();
+    var libre = isNavLibre();
 
-    if (session.view === 'cierre' && pageId === fin) return 'activa';
-    if (isCompleted && isCurrent && session.view !== 'cierre') return 'completada-activa';
-    if (isCompleted) return 'completada';
-    if (session.view === 'recursos' && session.currentPageId === pageId) return 'activa';
-    if (
-      session.view === 'portada' &&
-      session.portadaMode === 'en-progreso' &&
-      pageId === session.lastPageId
-    ) {
-      return 'activa';
+    if (session.view === 'portada' && session.portadaMode === 'por-iniciar') {
+      return 'bloqueada';
     }
-    if (pageId === fin) return 'bloqueada';
+    if (session.view === 'portada' && session.portadaMode === 'en-progreso') {
+      if (isFin) return allDone ? 'disponible' : 'bloqueada';
+      if (isCompleted && pageId === session.lastPageId) return 'completada-activa';
+      if (isCompleted) return 'completada';
+      if (pageId === session.lastPageId) return 'activa';
+      if (libre) return 'disponible';
+      return 'bloqueada';
+    }
+    if (session.view === 'portada' && session.portadaMode === 'completado') {
+      return 'completada';
+    }
+    if (session.view === 'cierre') {
+      return pageId === fin ? 'activa' : 'completada';
+    }
+    if (isFin) {
+      if (session.view === 'cierre' || (isCurrentResource && allDone)) return 'activa';
+      if (allDone) return 'disponible';
+      return 'bloqueada';
+    }
+    if (isCurrentResource) {
+      /* Primera visita → activa (progreso). Revisita ya completada → check + activa. */
+      return isCompleted ? 'completada-activa' : 'activa';
+    }
+    if (isCompleted) return 'completada';
+    if (libre) return 'disponible';
     return 'bloqueada';
   }
 
   function isPageClickable(pageId, state) {
     if (session.view === 'portada' && session.portadaMode === 'por-iniciar') return false;
-    if (state === 'completada' || state === 'completada-activa' || state === 'activa') return true;
-    var order = flatPages().map(function (p) {
-      return p.id;
-    });
-    var idx = order.indexOf(pageId);
-    if (idx === 0) return session.portadaMode !== 'por-iniciar' || session.view !== 'portada';
-    if (idx < 0) return false;
-    var prev = order[idx - 1];
-    return !!session.completedPageIds[prev];
+    return (
+      state === 'completada' ||
+      state === 'completada-activa' ||
+      state === 'activa' ||
+      state === 'disponible'
+    );
   }
 
   function buildIndiceSections() {
@@ -1602,6 +1657,11 @@
   }
 
   function goToCierre() {
+    markLibreLeaveIfNeeded(session.currentPageId);
+    if (!allConsumablesDone()) {
+      toast('warning', 'Aún no has completado todas las páginas de este contenido.');
+      return;
+    }
     var fin = finPageId();
     consumibles().forEach(function (pid) {
       session.completedPageIds[pid] = true;
@@ -1644,6 +1704,8 @@
     var leavingId = session.currentPageId;
     if (leavingId && leavingId !== pageId) {
       pauseOpenEvalAttemptIfNeeded(leavingId);
+      /* Libre: al salir del recurso queda finalizada (visual check). */
+      markLibreLeaveIfNeeded(leavingId);
     }
     var switchingEval =
       page.tipo === 'evaluacion' &&
@@ -1653,6 +1715,8 @@
     session.view = 'recursos';
     session.currentPageId = pageId;
     session.lastPageId = pageId;
+    if (session.portadaMode === 'por-iniciar') session.portadaMode = 'en-progreso';
+
     if (page.tipo === 'evaluacion') {
       if (session.evalAttemptPaused && session.evalPausedPageId === pageId) {
         session.evalFase = 'retomar';
@@ -1703,12 +1767,13 @@
     }
     session.completedPageIds[page.id] = true;
     var next = nextPageId(page.id);
-    if (!next) {
-      goToCierre();
-      return;
-    }
-    var nextPage = getPage(next);
-    if (nextPage && nextPage.tipo === 'fin') {
+    var nextPage = next ? getPage(next) : null;
+    if (!next || (nextPage && nextPage.tipo === 'fin')) {
+      if (!allConsumablesDone()) {
+        toast('warning', 'Aún no has completado todas las páginas de este contenido.');
+        render();
+        return;
+      }
       goToCierre();
       return;
     }
@@ -1735,10 +1800,11 @@
     }
     var cur = session.currentPageId;
     if (cur === 'p-1') {
+      markLibreLeaveIfNeeded('p-1');
       session.view = 'portada';
-      session.portadaMode = portadaModeFromProgress();
+      session.portadaMode = 'en-progreso';
       session.currentPageId = null;
-      setHash(session.portadaMode === 'en-progreso' ? 'portada-en-progreso' : 'portada');
+      setHash('portada-en-progreso');
       render();
       return;
     }
@@ -1966,10 +2032,29 @@
     render();
   }
 
+  function syncExpEstudioAsideHeight() {
+    var wrap =
+      document.querySelector('body.page-exp-estudio .ubits-layout-workspace__main-wrap') ||
+      document.querySelector('body.page-layout-workspace .ubits-layout-workspace__main-wrap');
+    if (!wrap) return;
+    document.documentElement.style.setProperty('--ee-main-h', wrap.clientHeight + 'px');
+  }
+
   function initExpEstudioPage() {
     createSession();
     applyDeepLink(global.location.hash);
     bindExpEstudioFullscreenOnce();
+    syncExpEstudioAsideHeight();
+    if (typeof ResizeObserver !== 'undefined') {
+      var wrap =
+        document.querySelector('body.page-exp-estudio .ubits-layout-workspace__main-wrap') ||
+        document.querySelector('body.page-layout-workspace .ubits-layout-workspace__main-wrap');
+      if (wrap) {
+        var ro = new ResizeObserver(syncExpEstudioAsideHeight);
+        ro.observe(wrap);
+      }
+    }
+    global.addEventListener('resize', syncExpEstudioAsideHeight);
     render();
     global.addEventListener('hashchange', onHashChange);
   }

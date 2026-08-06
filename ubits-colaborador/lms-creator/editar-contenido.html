@@ -156,7 +156,7 @@
           </div>          <div id="crear-contenido-recursos-resources-mount" class="crear-contenido-recursos__resources-mount" hidden></div>          <div id="crear-contenido-recursos-complementary-mount" class="crear-contenido-recursos__complementary-mount" hidden aria-label="Recursos complementarios"></div>        </div>      </div>    </div>    <div id="crear-contenido-step-certificado" class="crear-contenido-step crear-contenido-step--certificado" data-crear-step="certificado">      <div class="certificado-paso__workspace">        <aside class="certificado-paso__panel" aria-label="Configuración de certificado">          <h2 class="ubits-heading-h2 crear-contenido-step__title">Certificado</h2>          <div class="contenidos-creator-card certificado-paso__panel-card">            <label class="ubits-switch ubits-switch--md certificado-paso__toggle" for="certificado-paso-toggle">              <input type="checkbox" class="ubits-switch__input" id="certificado-paso-toggle" role="switch" checked />              <span class="ubits-switch__track" aria-hidden="true"><span class="ubits-switch__thumb"></span></span>              <span class="ubits-switch__label ubits-body-md-regular">Habilitar certificado para este contenido</span>            </label>            <div id="certificado-paso-template-field" class="certificado-paso__template-field">              <div id="certificado-paso-template-mount"></div>            </div>          </div>        </aside>        <div class="certificado-paso__preview-col" role="region" aria-label="Vista previa de certificado">          <p id="certificado-paso-preview-hint" class="certificado-paso__preview-hint ubits-body-sm-regular">Vista previa orientativa.</p>          <div id="certificado-paso-preview-host" class="certificado-paso__preview-host contenidos-creator-card"></div>        </div>      </div>    </div>    <div id="crear-contenido-step-publicacion" class="crear-contenido-step crear-contenido-step--publicacion" data-crear-step="publicacion">
       <h2 class="ubits-heading-h2 crear-contenido-step__title" id="cc-config-step-title">Ajustes</h2>
       <div id="cc-config-hub" class="cc-config-hub">
-        <p class="cc-config-hub-intro ubits-body-md-regular">Define la visibilidad del contenido y cómo se distribuye el peso de las evaluaciones en la nota final.</p>
+        <p class="cc-config-hub-intro ubits-body-md-regular">Define la visibilidad, los pesos de evaluación, el tipo de navegación y cómo se maneja el impacto en el progreso de los estudiantes.</p>
         <div class="cc-config-hub-grid">
           <article class="cc-config-hub-card" id="cc-config-card-visibilidad" role="button" tabindex="0" aria-label="Configurar visibilidad">
             <div class="cc-config-hub-card__leading">
@@ -178,6 +178,26 @@
             </div>
             <i class="far fa-chevron-right cc-config-hub-card__arrow" aria-hidden="true"></i>
           </article>
+          <article class="cc-config-hub-card" id="cc-config-card-navegacion" role="button" tabindex="0" aria-label="Configurar tipo de navegación">
+            <div class="cc-config-hub-card__leading">
+              <div class="cc-config-hub-card__title-row">
+                <i class="far fa-route cc-config-hub-card__icon" aria-hidden="true"></i>
+                <span class="ubits-body-md-bold cc-config-hub-card__title">Tipo de navegación</span>
+              </div>
+              <p class="ubits-body-sm-regular cc-config-hub-card__desc" id="cc-config-card-navegacion-desc">Lineal</p>
+            </div>
+            <i class="far fa-chevron-right cc-config-hub-card__arrow" aria-hidden="true"></i>
+          </article>
+          <article class="cc-config-hub-card" id="cc-config-card-impacto" role="button" tabindex="0" aria-label="Configurar impacto en el progreso">
+            <div class="cc-config-hub-card__leading">
+              <div class="cc-config-hub-card__title-row">
+                <i class="far fa-shield-check cc-config-hub-card__icon" aria-hidden="true"></i>
+                <span class="ubits-body-md-bold cc-config-hub-card__title">Impacto en el progreso</span>
+              </div>
+              <p class="ubits-body-sm-regular cc-config-hub-card__desc" id="cc-config-card-impacto-desc">Proteger a quienes finalizaron</p>
+            </div>
+            <i class="far fa-chevron-right cc-config-hub-card__arrow" aria-hidden="true"></i>
+          </article>
         </div>
       </div>
       <div id="cc-config-panel-visibilidad" class="cc-config-panel" hidden>
@@ -193,6 +213,46 @@
         <h2 class="ubits-heading-h2 cc-config-panel__title">Pesos de evaluación</h2>
         </div>
         <div id="cc-config-pesos-mount"></div>
+      </div>
+      <div id="cc-config-panel-navegacion" class="cc-config-panel" hidden>
+        <div class="cc-config-panel__header">
+        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only cc-config-panel__back" id="cc-config-back-navegacion" aria-label="Volver" data-tooltip="Volver" data-tooltip-delay="1000"><i class="far fa-arrow-left" aria-hidden="true"></i></button>
+        <h2 class="ubits-heading-h2 cc-config-panel__title">Tipo de navegación</h2>
+        </div>
+        <div class="cc-config-navegacion-body">
+          <p class="ubits-body-md-regular cc-config-navegacion-intro">Define cómo los colaboradores avanzan por las páginas de este contenido.</p>
+          <div class="ubits-selection-card-group ubits-selection-card-group--2 cc-config-navegacion-cards" role="radiogroup" aria-label="Tipo de navegación del contenido">
+            <label class="ubits-selection-card ubits-radio ubits-radio--md">
+              <input type="radio" class="ubits-radio__input" name="crear-contenido-tipo-navegacion" value="lineal" checked />
+              <span class="ubits-radio__circle"></span>
+              <div class="ubits-selection-card__body">
+                <div class="ubits-selection-card__header">
+                  <span class="ubits-selection-card__icon" aria-hidden="true"><i class="far fa-arrow-down-1-9"></i></span>
+                  <span class="ubits-selection-card__title ubits-body-md-bold">Lineal</span>
+                </div>
+                <p class="ubits-body-sm-regular ubits-selection-card__desc">Los colaboradores deben completar las páginas <strong>en orden</strong>. No pueden saltar a una página posterior desde el índice.</p>
+              </div>
+            </label>
+            <label class="ubits-selection-card ubits-radio ubits-radio--md">
+              <input type="radio" class="ubits-radio__input" name="crear-contenido-tipo-navegacion" value="libre" />
+              <span class="ubits-radio__circle"></span>
+              <div class="ubits-selection-card__body">
+                <div class="ubits-selection-card__header">
+                  <span class="ubits-selection-card__icon" aria-hidden="true"><i class="far fa-shuffle"></i></span>
+                  <span class="ubits-selection-card__title ubits-body-md-bold">Libre</span>
+                </div>
+                <p class="ubits-body-sm-regular ubits-selection-card__desc">Los colaboradores pueden abrir <strong>cualquier página</strong> desde el índice. La página de fin del contenido solo se habilita cuando completen el resto.</p>
+              </div>
+            </label>
+          </div>
+        </div>
+      </div>
+      <div id="cc-config-panel-impacto" class="cc-config-panel" hidden>
+        <div class="cc-config-panel__header">
+        <button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--icon-only cc-config-panel__back" id="cc-config-back-impacto" aria-label="Volver" data-tooltip="Volver"><i class="far fa-arrow-left" aria-hidden="true"></i></button>
+        <h2 class="ubits-heading-h2 cc-config-panel__title">Impacto en el progreso</h2>
+        </div>
+        <div id="cc-config-impacto-mount"></div>
       </div>
     </div>  </div></div>
         

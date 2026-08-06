@@ -263,6 +263,7 @@
                         : '../../images/Profile-image.jpg';
                     var tipo = c.tipoContenido || 'Curso';
                     out.push({
+                        id: c.id || '',
                         type: tipo,
                         title: c.titulo || '',
                         provider: providerName,
@@ -305,6 +306,29 @@
                 if (f.nivelId && (curso.nivelId || '') !== f.nivelId) return false;
                 if (f.idioma && String(curso.language || '').trim() !== f.idioma) return false;
                 return true;
+            }
+
+            function goToExpEstudioFromUcorp(id, contentType) {
+                if (!id) return;
+                if (contentType === 'Ruta de aprendizaje') return;
+                window.location.href =
+                    'exp-estudio/exp-estudio.html?id=' + encodeURIComponent(String(id));
+            }
+
+            /** Misma idea que home-learn-search: card-content no tiene onClick nativo. */
+            function bindUcorpCardsToExpEstudio(pageCards) {
+                var container = document.getElementById('cursos-corporativos-container');
+                if (!container || !pageCards || !pageCards.length) return;
+                var cards = container.querySelectorAll('.course-card');
+                cards.forEach(function (card, idx) {
+                    var item = pageCards[idx];
+                    if (!item || !item.id) return;
+                    card.style.cursor = 'pointer';
+                    card.addEventListener('click', function (e) {
+                        if (e.target.closest('button, a')) return;
+                        goToExpEstudioFromUcorp(item.id, item.type);
+                    });
+                });
             }
 
             function escapeHtmlUcorpChip(str) {
@@ -706,6 +730,7 @@
                     const pageCards = cursosFiltrados.slice(startIndex, endIndex);
 
                     loadCardContent('cursos-corporativos-container', pageCards);
+                    bindUcorpCardsToExpEstudio(pageCards);
                 }
                 
                 // Mostrar paginador cuando hay resultados
