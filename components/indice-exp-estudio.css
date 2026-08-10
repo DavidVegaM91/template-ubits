@@ -36,6 +36,15 @@
   width: 100%;
 }
 
+/* Embedded (drawer / panel): siempre stack inline */
+.ubits-indice-exp--embedded .ubits-indice-exp__desktop {
+  display: block;
+}
+
+.ubits-indice-exp--embedded .ubits-indice-exp__mobile {
+  display: none;
+}
+
 @media (max-width: 1023px) {
   .ubits-indice-exp__desktop {
     display: none;
@@ -43,5 +52,13 @@
 
   .ubits-indice-exp__mobile {
     display: block;
+  }
+
+  .ubits-indice-exp--embedded .ubits-indice-exp__desktop {
+    display: block;
+  }
+
+  .ubits-indice-exp--embedded .ubits-indice-exp__mobile {
+    display: none;
   }
 }

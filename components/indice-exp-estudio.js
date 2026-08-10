@@ -55,6 +55,7 @@
     });
 
     var cls = ['ubits-indice-exp'];
+    if (opts.embedded) cls.push('ubits-indice-exp--embedded');
     if (opts.className) cls.push(opts.className);
 
     var stack = sectionsStackHtml(sections, collapsed);
@@ -67,11 +68,14 @@
       '<div class="ubits-indice-exp__stack">' +
       stack +
       '</div></div>' +
-      '<div class="ubits-indice-exp__mobile">' +
-      '<button type="button" class="ubits-button ubits-button--secondary ubits-button--md ubits-indice-exp__trigger" data-action="open-indice-modal">' +
-      '<i class="far fa-list" aria-hidden="true"></i><span>Ver índice</span>' +
-      '</button>' +
-      '</div></div>'
+      (opts.embedded
+        ? ''
+        : '<div class="ubits-indice-exp__mobile">' +
+          '<button type="button" class="ubits-button ubits-button--secondary ubits-button--md ubits-indice-exp__trigger" data-action="open-indice-modal">' +
+          '<i class="far fa-list" aria-hidden="true"></i><span>Ver índice</span>' +
+          '</button>' +
+          '</div>') +
+      '</div>'
     );
   }
 

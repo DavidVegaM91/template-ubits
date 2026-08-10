@@ -1434,6 +1434,52 @@
         return String(tmp.textContent || '').trim().length > 0;
     }
 
+    function recursosGetIndiceBlueprintForLearner() {
+        var mount = getRecursosIndiceMount();
+        if (!mount) return [];
+
+        function mapPages(pages) {
+            return (pages || [])
+                .filter(function (p) {
+                    return !p.hidden;
+                })
+                .map(function (p) {
+                    return {
+                        id: String(p.pageKey || ''),
+                        title: String(p.label || 'Página'),
+                        tipo: p.tipo || 'blank-page'
+                    };
+                });
+        }
+
+        if (recursosSectionsEnabled) {
+            return recursosSerializeSectionsFromDom()
+                .map(function (s) {
+                    var meta = recursosSectionMeta[s.key] || {};
+                    return {
+                        id: String(s.key || ''),
+                        title: String(s.title || 'Sección'),
+                        descriptionHtml: meta.descriptionHtml || '',
+                        pages: mapPages(s.pages)
+                    };
+                })
+                .filter(function (s) {
+                    return (s.pages || []).length > 0;
+                });
+        }
+
+        var singlePages = mapPages(recursosSerializeSingleSectionFromDom());
+        if (!singlePages.length) return [];
+        return [
+            {
+                id: 'default',
+                title: 'Contenido',
+                descriptionHtml: '',
+                pages: singlePages
+            }
+        ];
+    }
+
     function recursosRefreshIndiceFromDom() {
         if (!recursosSectionsEnabled) return;
         var preferredPageKey = CC_RECURSOS_CURRENT_PAGE_KEY;
@@ -4786,8 +4832,11 @@
         initCrearContenidoEditorCore: initCrearContenidoEditorCore,
         goToCrearContenidoPageStep: goToCrearContenidoPageStep,
         seedCrearContenidoDemo: seedCrearContenidoDemo,
-        hydrateFromContentRecord: hydrateFromContentRecord
+        hydrateFromContentRecord: hydrateFromContentRecord,
+        getRecursosIndiceBlueprintForLearner: recursosGetIndiceBlueprintForLearner
     };
+
+    window.ccGetRecursosIndiceBlueprintForLearner = recursosGetIndiceBlueprintForLearner;
 
     window.ccBuildCrearContenidoResourceFooterHtml = buildCrearContenidoResourceFooterHtml;
 

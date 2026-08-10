@@ -359,6 +359,143 @@
         );
     }
 
+    /** Fallback demo (paridad seedCrearContenidoDemoRecursosIndice) si el índice Creator aún no está en DOM. */
+    var DEMO_INDICE_BLUEPRINT = [
+        {
+            id: 'cc-demo-sec-1',
+            title: 'Sección 1: Fundamentos',
+            descriptionHtml: '',
+            pages: [
+                { id: 'cc-demo-pg-1', title: 'Comunicación para desescalar un conflicto', tipo: 'video' },
+                {
+                    id: 'cc-demo-pg-2',
+                    title: 'Conversaciones difíciles según Thomas-Kilmann',
+                    tipo: 'scorm'
+                },
+                { id: 'cc-demo-pg-3', title: 'Evaluación Sección 1', tipo: 'evaluacion' }
+            ]
+        },
+        {
+            id: 'cc-demo-sec-2',
+            title: 'Sección 2: Herramientas para resolver conflictos',
+            descriptionHtml:
+                '<p class="ubits-body-md-regular">Simulaciones, marcos de referencia y evaluación para aplicar lo aprendido en situaciones reales de conflicto en el trabajo.</p>',
+            pages: [
+                { id: 'cc-demo-pg-4', title: 'Simulador de conversación difícil', tipo: 'scorm' },
+                { id: 'cc-demo-pg-5', title: 'Guía mapa de conflicto', tipo: 'pdf' },
+                { id: 'cc-demo-pg-6', title: 'Evaluación Sección 2', tipo: 'evaluacion' }
+            ]
+        }
+    ];
+
+    function getCourseIndiceBlueprint() {
+        if (typeof window.ccGetRecursosIndiceBlueprintForLearner === 'function') {
+            var fromEditor = window.ccGetRecursosIndiceBlueprintForLearner();
+            if (fromEditor && fromEditor.length) return fromEditor;
+        }
+        return DEMO_INDICE_BLUEPRINT;
+    }
+
+    function completedPagesForPercent(progresoPercent, totalPages) {
+        var total = Math.max(0, Math.floor(totalPages));
+        if (total === 0) return 0;
+        var pct = Math.max(0, Math.min(100, Number(progresoPercent) || 0));
+        if (pct >= 100) return total;
+        if (pct <= 0) return 0;
+        return Math.min(total, Math.max(0, Math.round((pct / 100) * total)));
+    }
+
+    function pageStateAt(index, done, total, pct) {
+        if (total === 0) return 'disponible';
+        if (pct >= 100 || index < done) return 'completada';
+        if (pct > 0 && pct < 100 && index === done) return 'activa';
+        if (pct <= 0 && index === 0) return 'disponible';
+        return 'bloqueada';
+    }
+
+    function buildIndiceSectionsForStudentProgress(progresoPercent) {
+        var blueprint = getCourseIndiceBlueprint();
+        var flat = [];
+        blueprint.forEach(function (section, si) {
+            (section.pages || []).forEach(function (page, pi) {
+                flat.push({ si: si, pi: pi });
+            });
+        });
+        var total = flat.length;
+        var pct = Math.max(0, Math.min(100, Number(progresoPercent) || 0));
+        var done = completedPagesForPercent(pct, total);
+        var stateMap = {};
+        flat.forEach(function (ref, i) {
+            stateMap[ref.si + ':' + ref.pi] = pageStateAt(i, done, total, pct);
+        });
+        return blueprint.map(function (section, si) {
+            return {
+                id: section.id,
+                title: section.title,
+                descriptionHtml: section.descriptionHtml,
+                pages: (section.pages || []).map(function (page, pi) {
+                    return {
+                        id: page.id,
+                        title: page.title,
+                        tipo: page.tipo || 'blank-page',
+                        state: stateMap[si + ':' + pi] || 'bloqueada',
+                        clickable: false
+                    };
+                })
+            };
+        });
+    }
+
+    var progresoDrawerIndiceApi = null;
+
+    function openProgresoEstudianteDrawer(row) {
+        if (!row || typeof window.openDrawer !== 'function') return;
+        if (typeof window.createIndiceExpEstudio !== 'function') {
+            console.warn('[editar-contenido-resultados] falta createIndiceExpEstudio');
+            return;
+        }
+        if (progresoDrawerIndiceApi && typeof progresoDrawerIndiceApi.destroy === 'function') {
+            progresoDrawerIndiceApi.destroy();
+            progresoDrawerIndiceApi = null;
+        }
+        var overlayId = 'ec-progreso-estudiante-drawer';
+        var existing = document.getElementById(overlayId);
+        if (existing && typeof window.closeDrawer === 'function') {
+            window.closeDrawer(overlayId);
+        }
+        var sections = buildIndiceSectionsForStudentProgress(row.progresoPercent || 0);
+        window.openDrawer({
+            overlayId: overlayId,
+            title: 'Progreso del estudiante',
+            subtitle: row.nombre || '',
+            size: 'sm',
+            bodyHtml: '<div id="ec-progreso-estudiante-indice" class="editar-contenido-resultados__progreso-indice"></div>',
+            closeOnOverlayClick: true,
+            onClose: function () {
+                if (progresoDrawerIndiceApi && typeof progresoDrawerIndiceApi.destroy === 'function') {
+                    progresoDrawerIndiceApi.destroy();
+                }
+                progresoDrawerIndiceApi = null;
+            }
+        });
+        var mount = document.getElementById('ec-progreso-estudiante-indice');
+        if (!mount) return;
+        progresoDrawerIndiceApi = window.createIndiceExpEstudio({
+            container: mount,
+            sections: sections,
+            embedded: true,
+            modalTitle: 'Progreso del estudiante'
+        });
+    }
+
+    function findProgresoRowById(rowId) {
+        var rows = getEstudiantesFiltrados(getResultadosRecord(state.contentId));
+        for (var i = 0; i < rows.length; i++) {
+            if (String(rows[i].id) === String(rowId)) return rows[i];
+        }
+        return null;
+    }
+
     function visibilidadToTagModifier(label) {
         var v = String(label || '').toLowerCase();
         if (v === 'público' || v === 'publico' || v === 'publicado') return 'success';
@@ -686,6 +823,8 @@
                 description: 'Aún no hay estudiantes inscritos en este contenido para el periodo seleccionado.'
             }
         });
+        var progresoTableEl = document.getElementById('ec-progreso-table');
+        if (progresoTableEl) progresoTableEl.classList.add('editar-contenido-resultados__progreso-table--clickable');
     }
 
     function formatEvalAprobar(n) {
@@ -1108,6 +1247,15 @@
                     return e.id === evalId;
                 });
                 if (found) openEvalDetailsModal(found);
+                return;
+            }
+
+            var progresoRow = ev.target.closest('#ec-progreso-table tbody tr[data-id]');
+            if (progresoRow) {
+                if (ev.target.closest('button, a, input, label')) return;
+                var rowId = progresoRow.getAttribute('data-id');
+                var est = findProgresoRowById(rowId);
+                if (est) openProgresoEstudianteDrawer(est);
             }
         });
     }

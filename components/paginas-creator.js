@@ -78,14 +78,20 @@
     function readPaginasCreatorItemTipo(item) {
         var icon = paginasCreatorTypeIconEl(item);
         if (!icon) return 'blank-page';
-        var cls = icon.className || '';
+        var tokens = String(icon.className || '').split(/\s+/);
+        var best = 'blank-page';
+        var bestLen = 0;
         for (var tipo in TIPO_ICONS) {
-            if (Object.prototype.hasOwnProperty.call(TIPO_ICONS, tipo)) {
-                var fa = 'fa-' + TIPO_ICONS[tipo];
-                if (cls.indexOf(fa) !== -1) return tipo;
+            if (!Object.prototype.hasOwnProperty.call(TIPO_ICONS, tipo)) continue;
+            var fa = TIPO_ICONS[tipo];
+            if (tokens.indexOf(fa) === -1) continue;
+            /* Preferir match más específico (fa-file-pdf vs fa-file). */
+            if (fa.length >= bestLen) {
+                best = tipo;
+                bestLen = fa.length;
             }
         }
-        return 'blank-page';
+        return best;
     }
 
     function escapeHtml(s) {

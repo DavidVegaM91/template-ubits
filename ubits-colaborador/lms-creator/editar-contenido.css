@@ -377,6 +377,15 @@
     min-width: 80px;
 }
 
+#ec-progreso-table.editar-contenido-resultados__progreso-table--clickable tbody tr {
+    cursor: pointer;
+}
+
+.editar-contenido-resultados__progreso-indice {
+    width: 100%;
+    min-width: 0;
+}
+
 .editar-contenido-resultados__eval-th-weight {
     display: block;
     color: var(--ubits-fg-1-medium);
