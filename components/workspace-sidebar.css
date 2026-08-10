@@ -456,6 +456,40 @@
   width: auto;
 }
 
+.ws-sidebar__nav-group {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  text-transform: none;
+  letter-spacing: normal;
+  color: var(--ws-fg-muted);
+  padding: var(--padding-md) var(--padding-sm) var(--padding-xs);
+  line-height: 1.3;
+  white-space: normal;
+  overflow: visible;
+  word-break: break-word;
+}
+
+.ws-sidebar.is-collapsed .ws-sidebar__nav-group {
+  display: none;
+}
+
+.ws-sidebar__nav-badge {
+  flex-shrink: 0;
+  margin-left: auto;
+}
+
+.ws-sidebar.is-collapsed .ws-sidebar__nav-badge {
+  display: none;
+}
+
+.ws-sidebar__nav-top .ws-sidebar__chev {
+  margin-left: 0;
+}
+
+.ws-sidebar__nav-top:has(.ws-sidebar__nav-badge) .ws-sidebar__chev {
+  margin-left: var(--gap-xs);
+}
+
 .ws-sidebar__ch-group {
   font-size: var(--font-size-xs);
   font-weight: var(--font-weight-semibold);

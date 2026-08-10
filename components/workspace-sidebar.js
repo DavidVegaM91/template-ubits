@@ -4,7 +4,7 @@
  *   audience: 'admin' | 'colaborador' (también alias 'default' → colaborador)
  *   activeId: id del árbol o data-section legacy (aprendizaje, desempeño, …)
  *
- * Requiere: workspace-sidebar.css, submenu.js (flyouts colapsado), ia-button (Agente IA).
+ * Requiere: workspace-sidebar.css, badge-tag.css (badge «Nuevo»), submenu.js (flyouts colapsado), ia-button (Agente IA).
  */
 (function (global) {
   'use strict';
@@ -44,7 +44,20 @@
 
   function adminNav() {
     return [
-      { id: 'home', label: 'Home', icon: 'fa-house', href: 'ubits-admin/inicio/admin.html' },
+      { id: 'home', label: 'Inicio', icon: 'fa-house', href: 'ubits-admin/inicio/admin.html' },
+      { type: 'group', id: 'group-productos', label: 'Productos' },
+      {
+        id: 'seleccion',
+        label: 'Selección',
+        icon: 'fa-user-plus',
+        badge: 'Nuevo',
+        children: [
+          { id: 'seldash', label: 'Dashboard', href: '#' },
+          { id: 'vacantes', label: 'Vacantes', href: '#' },
+          { id: 'plantillasrecl', label: 'Plantillas', href: '#' },
+          { id: 'creditos', label: 'Créditos', href: '#' },
+        ],
+      },
       {
         id: 'aprendizaje',
         label: 'Aprendizaje',
@@ -61,9 +74,9 @@
                 label: 'Universidad corporativa',
                 href: 'ubits-colaborador/lms-creator/personalizacion/personalizacion-u-corporativa.html',
               },
+              { id: 'lmsai', label: 'LMS AI', href: 'ubits-colaborador/lms-creator/ia-panel-demo.html' },
             ],
           },
-          { id: 'lmsai', label: 'LMS AI', href: 'ubits-colaborador/lms-creator/ia-panel-demo.html' },
           {
             id: 'planes',
             label: 'Planes de formación',
@@ -96,19 +109,8 @@
               },
             ],
           },
-          {
-            id: 'seguimiento',
-            label: 'Seguimiento',
-            href: 'ubits-colaborador/lms-creator/personalizacion/personalizacion-seguimiento.html',
-          },
           { id: 'reportes', label: 'Reportes', href: '#' },
         ],
-      },
-      {
-        id: 'diagnostico',
-        label: 'Diagnóstico',
-        icon: 'fa-chart-mixed',
-        href: 'ubits-admin/diagnostico/admin-diagnostico.html',
       },
       {
         id: 'desempeno',
@@ -126,23 +128,31 @@
             label: 'Matriz de talento',
             href: 'ubits-admin/desempeno/admin-matriz-talento.html',
           },
+          {
+            id: 'encuestas',
+            label: 'Encuestas',
+            href: 'ubits-admin/encuestas/admin-encuestas.html',
+          },
         ],
       },
       {
-        id: 'encuestas',
-        label: 'Encuestas',
-        icon: 'fa-clipboard-list-check',
-        href: 'ubits-admin/encuestas/admin-encuestas.html',
+        id: 'diagnostico',
+        label: 'Diagnóstico',
+        icon: 'fa-chart-mixed',
+        href: 'ubits-admin/diagnostico/admin-diagnostico.html',
+      },
+      { type: 'group', id: 'group-herramientas', label: 'Herramientas' },
+      {
+        id: 'tareas',
+        label: 'Tareas',
+        icon: 'fa-layer-group',
+        href: 'ubits-colaborador/tareas/tareas.html',
       },
       {
-        id: 'reclutamiento',
-        label: 'Reclutamiento',
-        icon: 'fa-user-plus',
-        children: [
-          { id: 'recldash', label: 'Dashboard', href: '#' },
-          { id: 'vacantes', label: 'Vacantes', href: '#' },
-          { id: 'plantillasrecl', label: 'Plantillas', href: '#' },
-        ],
+        id: 'avisos',
+        label: 'Avisos',
+        icon: 'fa-bullhorn',
+        href: 'ubits-admin/empresa/comunicaciones.html',
       },
     ];
   }
@@ -261,7 +271,7 @@
     certificados: 'cert-descarga',
     personalizacion: 'u-corporativa',
     'u-corporativa': 'u-corporativa',
-    seguimiento: 'seguimiento',
+    seguimiento: 'u-corporativa',
     reportes: 'reportes',
     diagnostico: 'diagnostico',
     'diagnóstico': 'diagnostico',
@@ -273,7 +283,16 @@
     metricas: 'metricas',
     matriztalento: 'matriztalento',
     encuestas: 'encuestas',
-    reclutamiento: 'reclutamiento',
+    seleccion: 'seleccion',
+    reclutamiento: 'seleccion',
+    recldash: 'seldash',
+    seldash: 'seldash',
+    vacantes: 'vacantes',
+    plantillasrecl: 'plantillasrecl',
+    creditos: 'creditos',
+    tareas: 'tareas',
+    avisos: 'avisos',
+    comunicaciones: 'avisos',
     'ia-para-hr': 'agentes',
     agentes: 'agentes',
     catalogo: 'catalogo',
@@ -408,6 +427,7 @@
   function getNavContext(navTree, activeId) {
     for (var r = 0; r < navTree.length; r++) {
       var root = navTree[r];
+      if (root.type === 'group') continue;
       if (!root.children || !root.children.length) continue;
       for (var c = 0; c < root.children.length; c++) {
         var child = root.children[c];
@@ -478,6 +498,7 @@
   function findInTree(id) {
     function walk(items) {
       for (var i = 0; i < items.length; i++) {
+        if (items[i].type === 'group') continue;
         if (items[i].id === id) return items[i];
         if (items[i].children) {
           var f = walk(items[i].children);
@@ -495,6 +516,16 @@
       .replace(/</g, '&lt;')
       .replace(/>/g, '&gt;')
       .replace(/"/g, '&quot;');
+  }
+
+  function badgeHtml(badge) {
+    if (!badge || state.collapsed) return '';
+    return (
+      '<span class="ubits-badge-tag ubits-badge-tag--outlined ubits-badge-tag--info ubits-badge-tag--xs ubits-badge-tag--text-only ws-sidebar__nav-badge">' +
+      '<span class="ubits-badge-tag__text">' +
+      esc(badge) +
+      '</span></span>'
+    );
   }
 
   function renderWorkspaceNavHtml() {
@@ -524,6 +555,13 @@
 
     return state.navTree
       .map(function (item) {
+        if (item.type === 'group') {
+          return (
+            '<div class="ws-sidebar__nav-group" role="presentation">' +
+            esc(item.label) +
+            '</div>'
+          );
+        }
         if (item.children && item.children.length) {
           var isOpen = !!state.openSections[item.id];
           var kids = item.children
@@ -579,6 +617,7 @@
             '<span class="ws-sidebar__label">' +
             esc(item.label) +
             '</span>' +
+            badgeHtml(item.badge) +
             '<i class="far fa-chevron-down ws-sidebar__chev" aria-hidden="true"></i>' +
             '</button>' +
             '<div class="ws-sidebar__nav-children">' +
@@ -605,7 +644,9 @@
           ' ws-sidebar__nav-icon" aria-hidden="true"></i>' +
           '<span class="ws-sidebar__label">' +
           esc(item.label) +
-          '</span></button>'
+          '</span>' +
+          badgeHtml(item.badge) +
+          '</button>'
         );
       })
       .join('');
@@ -949,8 +990,7 @@
     state.openSections = {
       aprendizaje: true,
       desempeno: ctx.rootSectionId === 'desempeno',
-      reclutamiento: ctx.rootSectionId === 'reclutamiento',
-      tareas: ctx.rootSectionId === 'tareas',
+      seleccion: ctx.rootSectionId === 'seleccion',
     };
     if (ctx.rootSectionId) state.openSections[ctx.rootSectionId] = true;
 

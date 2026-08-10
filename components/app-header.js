@@ -19,7 +19,6 @@
 
   var EMPRESA_LINKS = [
     { id: 'gestion-usuarios', label: 'Gestión de usuarios', href: 'ubits-admin/empresa/gestion-de-usuarios.html', icon: 'users' },
-    { id: 'comunicaciones', label: 'Comunicaciones', href: 'ubits-admin/empresa/comunicaciones.html', icon: 'envelope' },
     { id: 'personalizacion', label: 'Personalización', href: 'ubits-admin/empresa/personalizacion.html', icon: 'paint-brush' },
     { id: 'organigrama', label: 'Organigrama', href: 'ubits-admin/empresa/organigrama.html', icon: 'sitemap' },
     { id: 'datos-empresa', label: 'Datos de empresa', href: 'ubits-admin/empresa/datos-de-empresa.html', icon: 'building' },
@@ -27,7 +26,7 @@
   ];
 
   var PAGE_TITLES = {
-    'admin.html': 'Home',
+    'admin.html': 'Inicio',
     'home-learn.html': 'Catálogo',
     'modo-estudio-ia.html': 'Modo estudio IA',
     'u-corporativa.html': 'Contenidos de mi Empresa',
@@ -63,7 +62,7 @@
     'personalizacion-u-corporativa.html': 'Universidad corporativa',
     'personalizacion-seguimiento.html': 'Seguimiento',
     'gestion-de-usuarios.html': 'Gestión de usuarios',
-    'comunicaciones.html': 'Comunicaciones',
+    'comunicaciones.html': 'Avisos',
     'personalizacion.html': 'Personalización',
     'organigrama.html': 'Organigrama',
     'datos-de-empresa.html': 'Datos de empresa',
@@ -259,9 +258,9 @@
         '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--pill" data-ah-action="novedades" aria-label="Novedades" data-tooltip="Novedades">' +
         '<i class="far fa-bullhorn" aria-hidden="true"></i>' +
         '<span class="ubits-app-header__label-desktop">Novedades</span></button>' +
-        '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--pill" data-ah-action="empresa" aria-label="Empresa" aria-haspopup="menu" data-tooltip="Empresa">' +
-        '<i class="far fa-building" aria-hidden="true"></i>' +
-        '<span class="ubits-app-header__label-desktop">Empresa</span>' +
+        '<button type="button" class="ubits-button ubits-button--secondary ubits-button--sm ubits-button--pill" data-ah-action="empresa" aria-label="Configuración" aria-haspopup="menu" data-tooltip="Configuración">' +
+        '<i class="far fa-gear" aria-hidden="true"></i>' +
+        '<span class="ubits-app-header__label-desktop">Configuración</span>' +
         '<i class="far fa-angle-down ubits-app-header__label-desktop" aria-hidden="true"></i></button>' +
         '<button type="button" class="ubits-app-header__icon-btn" data-ah-action="help" aria-label="Centro de ayuda" data-tooltip="Centro de ayuda">' +
         '<i class="far fa-circle-question" aria-hidden="true"></i></button>';

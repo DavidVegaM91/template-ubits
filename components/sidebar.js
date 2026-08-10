@@ -562,6 +562,12 @@ function ensureWorkspaceSidebarAssets(basePath, callback) {
         link.href = basePath + 'components/workspace-sidebar.css';
         document.head.appendChild(link);
     }
+    if (!document.querySelector('link[href*="components/badge-tag.css"]')) {
+        const badgeCss = document.createElement('link');
+        badgeCss.rel = 'stylesheet';
+        badgeCss.href = basePath + 'components/badge-tag.css';
+        document.head.appendChild(badgeCss);
+    }
     if (!document.querySelector('link[href*="components/ia-button.css"]')) {
         const iaCss = document.createElement('link');
         iaCss.rel = 'stylesheet';
