@@ -1,0 +1,130 @@
+/**
+ * Paginas Progreso Estudiante — solo lectura (drawer Resultados).
+ * Depende: feedback-exp-estudio.css
+ */
+
+.ubits-paginas-progreso__item {
+  display: flex;
+  align-items: stretch;
+  width: 100%;
+  box-sizing: border-box;
+  background: var(--ubits-bg-1);
+  border-bottom: 1px solid var(--ubits-border-1);
+}
+
+.ubits-paginas-progreso__item.is-activa {
+  background: var(--ubits-bg-2);
+}
+
+.ubits-paginas-progreso__row {
+  position: relative;
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--gap-sm);
+  min-height: var(--space-12);
+  margin: 0;
+  padding: var(--padding-md) var(--padding-2xl) var(--padding-md) calc(var(--space-1) + var(--padding-md));
+  border: none;
+  background: transparent;
+  cursor: default;
+  text-align: left;
+  font: inherit;
+  color: inherit;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.ubits-paginas-progreso__rail {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: var(--space-1);
+  margin: 0;
+  border-radius: var(--border-radius-none);
+  background: transparent;
+  pointer-events: none;
+}
+
+.ubits-paginas-progreso__item.is-activa .ubits-paginas-progreso__rail {
+  background: var(--ubits-accent-brand);
+}
+
+.ubits-paginas-progreso__type-icon-wrap {
+  flex-shrink: 0;
+  width: var(--size-2xl);
+  height: var(--size-2xl);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  color: var(--ubits-fg-1-medium);
+}
+
+.ubits-paginas-progreso__type-icon-wrap i {
+  display: block;
+  font-size: var(--font-size-sm);
+  line-height: 1;
+}
+
+.ubits-paginas-progreso__item.is-activa .ubits-paginas-progreso__type-icon-wrap {
+  color: var(--ubits-accent-brand);
+}
+
+.ubits-paginas-progreso__item.is-bloqueada .ubits-paginas-progreso__type-icon-wrap {
+  color: var(--ubits-fg-on-disabled);
+}
+
+.ubits-paginas-progreso__label-wrap {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+}
+
+.ubits-paginas-progreso__label {
+  flex: 0 1 auto;
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--ubits-fg-1-medium);
+  font-weight: 600;
+}
+
+.ubits-paginas-progreso__meta {
+  flex: 0 0 auto;
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--ubits-fg-1-medium);
+}
+
+.ubits-paginas-progreso__item.is-completada:not(.is-activa) .ubits-paginas-progreso__label {
+  color: var(--ubits-fg-1-high);
+  font-weight: var(--font-weight-semibold);
+}
+
+.ubits-paginas-progreso__item.is-activa .ubits-paginas-progreso__label {
+  color: var(--ubits-accent-brand);
+  font-weight: var(--font-weight-semibold);
+}
+
+.ubits-paginas-progreso__item.is-bloqueada .ubits-paginas-progreso__label {
+  color: var(--ubits-fg-on-disabled);
+  font-weight: 600;
+}
+
+.ubits-paginas-progreso__feedback {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-self: center;
+  margin-right: var(--padding-lg);
+}

@@ -413,7 +413,8 @@
         return 'bloqueada';
     }
 
-    function buildIndiceSectionsForStudentProgress(progresoPercent) {
+    function buildIndiceSectionsForStudentProgress(row) {
+        var progresoPercent = row && row.progresoPercent != null ? row.progresoPercent : 0;
         var blueprint = getCourseIndiceBlueprint();
         var flat = [];
         blueprint.forEach(function (section, si) {
@@ -424,9 +425,26 @@
         var total = flat.length;
         var pct = Math.max(0, Math.min(100, Number(progresoPercent) || 0));
         var done = completedPagesForPercent(pct, total);
+        var labels =
+            typeof window.ubitsBuildPageCompletionLabels === 'function'
+                ? window.ubitsBuildPageCompletionLabels({
+                      fechaInicio: row && row.fechaInicio,
+                      fechaFin: row && row.fechaFin,
+                      completedCount: done,
+                      seed: (row && (row.email || row.id)) || 'student'
+                  })
+                : [];
         var stateMap = {};
+        var labelMap = {};
+        var completedOrdinal = 0;
         flat.forEach(function (ref, i) {
-            stateMap[ref.si + ':' + ref.pi] = pageStateAt(i, done, total, pct);
+            var key = ref.si + ':' + ref.pi;
+            var st = pageStateAt(i, done, total, pct);
+            stateMap[key] = st;
+            if (st === 'completada' || st === 'completada-activa') {
+                if (labels[completedOrdinal]) labelMap[key] = labels[completedOrdinal];
+                completedOrdinal += 1;
+            }
         });
         return blueprint.map(function (section, si) {
             return {
@@ -434,12 +452,13 @@
                 title: section.title,
                 descriptionHtml: section.descriptionHtml,
                 pages: (section.pages || []).map(function (page, pi) {
+                    var key = si + ':' + pi;
                     return {
                         id: page.id,
                         title: page.title,
                         tipo: page.tipo || 'blank-page',
-                        state: stateMap[si + ':' + pi] || 'bloqueada',
-                        clickable: false
+                        state: stateMap[key] || 'bloqueada',
+                        completedAtLabel: labelMap[key] || ''
                     };
                 })
             };
@@ -450,8 +469,8 @@
 
     function openProgresoEstudianteDrawer(row) {
         if (!row || typeof window.openDrawer !== 'function') return;
-        if (typeof window.createIndiceExpEstudio !== 'function') {
-            console.warn('[editar-contenido-resultados] falta createIndiceExpEstudio');
+        if (typeof window.createIndiceProgresoEstudiante !== 'function') {
+            console.warn('[editar-contenido-resultados] falta createIndiceProgresoEstudiante');
             return;
         }
         if (progresoDrawerIndiceApi && typeof progresoDrawerIndiceApi.destroy === 'function') {
@@ -463,7 +482,7 @@
         if (existing && typeof window.closeDrawer === 'function') {
             window.closeDrawer(overlayId);
         }
-        var sections = buildIndiceSectionsForStudentProgress(row.progresoPercent || 0);
+        var sections = buildIndiceSectionsForStudentProgress(row);
         window.openDrawer({
             overlayId: overlayId,
             title: 'Progreso del estudiante',
@@ -480,11 +499,9 @@
         });
         var mount = document.getElementById('ec-progreso-estudiante-indice');
         if (!mount) return;
-        progresoDrawerIndiceApi = window.createIndiceExpEstudio({
+        progresoDrawerIndiceApi = window.createIndiceProgresoEstudiante({
             container: mount,
-            sections: sections,
-            embedded: true,
-            modalTitle: 'Progreso del estudiante'
+            sections: sections
         });
     }
 

@@ -440,6 +440,8 @@ const PAGE_TO_TAB = {
     'paginas-exp-estudio.html': 'section3',
     'seccion-exp-estudio.html': 'section3',
     'indice-exp-estudio.html': 'section3',
+    'indice-progreso-estudiante.html': 'section3',
+    'paginas-progreso-estudiante.html': 'section3',
     'progreso-exp-estudio.html': 'section3',
     'titulo-specs-cta-exp-estudio.html': 'section3',
     'titulo-progreso-y-nav-exp-estudio.html': 'section3',
